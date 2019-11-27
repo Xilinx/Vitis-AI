@@ -1,0 +1,81 @@
+/*
+-- (c) Copyright 2018 Xilinx, Inc. All rights reserved.
+--
+-- This file contains confidential and proprietary information
+-- of Xilinx, Inc. and is protected under U.S. and
+-- international copyright and other intellectual property
+-- laws.
+--
+-- DISCLAIMER
+-- This disclaimer is not a license and does not grant any
+-- rights to the materials distributed herewith. Except as
+-- otherwise provided in a valid license issued to you by
+-- Xilinx, and to the maximum extent permitted by applicable
+-- law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+-- WITH ALL FAULTS, AND XILINX HEREBY DISCLAIMS ALL WARRANTIES
+-- AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+-- BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+-- INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+-- (2) Xilinx shall not be liable (whether in contract or tort,
+-- including negligence, or under any other theory of
+-- liability) for any loss or damage of any kind or nature
+-- related to, arising under or in connection with these
+-- materials, including for any direct, or any indirect,
+-- special, incidental, or consequential loss or damage
+-- (including loss of data, profits, goodwill, or any type of
+-- loss or damage suffered as a result of any action brought
+-- by a third party) even if such damage or loss was
+-- reasonably foreseeable or Xilinx had been advised of the
+-- possibility of the same.
+--
+-- CRITICAL APPLICATIONS
+-- Xilinx products are not designed or intended to be fail-
+-- safe, or for use in any application requiring fail-safe
+-- performance, such as life-support or safety devices or
+-- systems, Class III medical devices, nuclear facilities,
+-- applications related to the deployment of airbags, or any
+-- other applications that could lead to death, personal
+-- injury, or severe property or environmental damage
+-- (individually and collectively, "Critical
+-- Applications"). Customer assumes the sole risk and
+-- liability of any use of Xilinx products in Critical
+-- Applications, subject only to applicable laws and
+-- regulations governing limitations on product liability.
+--
+-- THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+-- PART OF THIS FILE AT ALL TIMES.
+*/
+Important:
+  ./test_jpeg_posedetect, ./test_performance_posedetect, ./test_video_posedetect first param followed must be with model name.
+  Valid model name:
+    sp_net
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_jpeg_posedetect sp_net sample_posedetect.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:22.960857  5125 process_result.hpp:119] (0.6875,0.142857)
+I1108 22:41:22.961032  5125 process_result.hpp:119] (0.65625,0.285714)
+I1108 22:41:22.961058  5125 process_result.hpp:119] (0.75,0.410714)
+I1108 22:41:22.961082  5125 process_result.hpp:119] (0.3125,0.160714)
+I1108 22:41:22.961105  5125 process_result.hpp:119] (0.1875,0.321429)
+I1108 22:41:22.961128  5125 process_result.hpp:119] (0.25,0.428571)
+I1108 22:41:22.961151  5125 process_result.hpp:119] (0.53125,0.464286)
+I1108 22:41:22.961174  5125 process_result.hpp:119] (0.5,0.660714)
+I1108 22:41:22.961196  5125 process_result.hpp:119] (0.25,0.875)
+I1108 22:41:22.961220  5125 process_result.hpp:119] (0.46875,0.464286)
+I1108 22:41:22.961242  5125 process_result.hpp:119] (0.6875,0.642857)
+I1108 22:41:22.961264  5125 process_result.hpp:119] (0.71875,0.875)
+I1108 22:41:22.961287  5125 process_result.hpp:119] (0.5,0.0178571)
+I1108 22:41:22.961310  5125 process_result.hpp:119] (0.53125,0.0892857)
+

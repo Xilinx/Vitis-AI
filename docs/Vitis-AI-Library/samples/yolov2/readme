@@ -1,0 +1,89 @@
+/*
+-- (c) Copyright 2018 Xilinx, Inc. All rights reserved.
+--
+-- This file contains confidential and proprietary information
+-- of Xilinx, Inc. and is protected under U.S. and
+-- international copyright and other intellectual property
+-- laws.
+--
+-- DISCLAIMER
+-- This disclaimer is not a license and does not grant any
+-- rights to the materials distributed herewith. Except as
+-- otherwise provided in a valid license issued to you by
+-- Xilinx, and to the maximum extent permitted by applicable
+-- law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+-- WITH ALL FAULTS, AND XILINX HEREBY DISCLAIMS ALL WARRANTIES
+-- AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+-- BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+-- INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+-- (2) Xilinx shall not be liable (whether in contract or tort,
+-- including negligence, or under any other theory of
+-- liability) for any loss or damage of any kind or nature
+-- related to, arising under or in connection with these
+-- materials, including for any direct, or any indirect,
+-- special, incidental, or consequential loss or damage
+-- (including loss of data, profits, goodwill, or any type of
+-- loss or damage suffered as a result of any action brought
+-- by a third party) even if such damage or loss was
+-- reasonably foreseeable or Xilinx had been advised of the
+-- possibility of the same.
+--
+-- CRITICAL APPLICATIONS
+-- Xilinx products are not designed or intended to be fail-
+-- safe, or for use in any application requiring fail-safe
+-- performance, such as life-support or safety devices or
+-- systems, Class III medical devices, nuclear facilities,
+-- applications related to the deployment of airbags, or any
+-- other applications that could lead to death, personal
+-- injury, or severe property or environmental damage
+-- (individually and collectively, "Critical
+-- Applications"). Customer assumes the sole risk and
+-- liability of any use of Xilinx products in Critical
+-- Applications, subject only to applicable laws and
+-- regulations governing limitations on product liability.
+--
+-- THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+-- PART OF THIS FILE AT ALL TIMES.
+*/
+Important:
+  ./test_jpeg_yolov2, ./test_performance_yolov2, ./test_video_yolov2 first param followed must be with model name.
+  Valid model name:
+    yolov2_voc
+    yolov2_voc_pruned_0_66
+    yolov2_voc_pruned_0_71
+    yolov2_voc_pruned_0_77
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_jpeg_yolov2 yolov2_voc sample_yolov2.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:32.618218  5266 process_result.hpp:77] RESULT: 18	143.267	205.602	206.603	304.018	0.88575
+
+
+    sample : ./test_jpeg_yolov2 yolov2_voc_pruned_0_66 sample_yolov2.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:33.040750  5273 process_result.hpp:77] RESULT: 18	137.978	186.895	214.376	305.607	0.837984
+
+
+    sample : ./test_jpeg_yolov2 yolov2_voc_pruned_0_71 sample_yolov2.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:33.429782  5280 process_result.hpp:77] RESULT: 18	139.689	192.022	216.087	303.542	0.85253
+
+
+    sample : ./test_jpeg_yolov2 yolov2_voc_pruned_0_77 sample_yolov2.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:33.762524  5287 process_result.hpp:77] RESULT: 18	143.833	189.319	215.602	315.687	0.887326
+

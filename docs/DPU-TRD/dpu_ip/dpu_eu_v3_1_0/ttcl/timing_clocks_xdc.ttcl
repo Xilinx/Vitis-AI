@@ -1,0 +1,97 @@
+<: ;#Component and file information :>
+<: setOutputDirectory "./" :>
+<: set ComponentName [getComponentNameString] :>
+<: setFileName $ComponentName :>
+<: setFileExtension ".xdc" :>
+<: setFileUsedIn [list synthesis implementation] :>
+<: setFileProcessingOrder late :>
+<: set dpu_num            [getIntValue      "VER_DPU_NUM"           ] :>
+<: set enable_clk_gating  [getBooleanValue  "CLK_GATING_ENA"        ] :>
+<: set enable_clk_indpd   [getBooleanValue  "S_AXI_CLK_INDEPENDENT" ] :>
+# (c) Copyright 2018-2019 Xilinx, Inc. All rights reserved.
+#
+# This file contains confidential and proprietary information
+# of Xilinx, Inc. and is protected under U.S. and
+# international copyright and other intellectual property
+# laws.
+#
+# DISCLAIMER
+# This disclaimer is not a license and does not grant any
+# rights to the materials distributed herewith. Except as
+# otherwise provided in a valid license issued to you by
+# Xilinx, and to the maximum extent permitted by applicable
+# law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+# WITH ALL FAULTS, AND XILINX HEREBY DISCLAIMS ALL WARRANTIES
+# AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+# BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+# INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+# (2) Xilinx shall not be liable (whether in contract or tort,
+# including negligence, or under any other theory of
+# liability) for any loss or damage of any kind or nature
+# related to, arising under or in connection with these
+# materials, including for any direct, or any indirect,
+# special, incidental, or consequential loss or damage
+# (including loss of data, profits, goodwill, or any type of
+# loss or damage suffered as a result of any action brought
+# by a third party) even if such damage or loss was
+# reasonably foreseeable or Xilinx had been advised of the
+# possibility of the same.
+#
+# CRITICAL APPLICATIONS
+# Xilinx products are not designed or intended to be fail-
+# safe, or for use in any application requiring fail-safe
+# performance, such as life-support or safety devices or
+# systems, Class III medical devices, nuclear facilities,
+# applications related to the deployment of airbags, or any
+# other applications that could lead to death, personal
+# injury, or severe property or environmental damage
+# (individually and collectively, "Critical
+# Applications"). Customer assumes the sole risk and
+# liability of any use of Xilinx products in Critical
+# Applications, subject only to applicable laws and
+# regulations governing limitations on product liability.
+#
+# THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+# PART OF THIS FILE AT ALL TIMES.
+
+##########################
+# constrains for DDR-DSP #
+##########################
+
+set clk_2x    [get_clocks -of_objects [get_ports dpu_2x_clk     ] ]
+<: if { $enable_clk_gating == {1} } { :>
+<: ttcl_for {set i 1} {$i<$dpu_num} {incr i} { :>
+set clk_2x_<=: $i :>  [get_clocks -of_objects [get_ports dpu<=: $i :>_2x_clk    ] ]
+<: } :>
+<: } :>
+set clk_1x    [get_clocks -of_objects [get_ports m_axi_dpu_aclk ] ]
+set_multicycle_path 2 -setup -start -from $clk_2x   -to $clk_1x
+set_multicycle_path 2 -setup -end   -from $clk_1x   -to $clk_2x
+<: if { $enable_clk_gating == {1} } { :>
+<: ttcl_for {set i 1} {$i<$dpu_num} {incr i} { :>
+set_multicycle_path 2 -setup -start -from $clk_2x_<=: $i :> -to $clk_1x
+set_multicycle_path 2 -setup -end   -from $clk_1x   -to $clk_2x_<=: $i :>
+<: } :>
+<: } :>
+<: if { $enable_clk_gating == {1} } { :>
+
+#############################
+# constrains for CLK_GATING #
+#############################
+
+set clk_1x_period     [get_property PERIOD $clk_1x]
+set clk_2x_max_delay  [expr $clk_1x_period+0.4]
+set_max_delay $clk_2x_max_delay -through [get_ports dpu*_2x_clk_ce  ]
+<: } :>
+<: if { $enable_clk_indpd == {1} } { :>
+
+########################################
+# constrains for S_AXI_CLK_INDEPENDENT #
+########################################
+
+set clk_rs  [get_clocks -of_objects [get_ports s_axi_aclk]]
+expr {($clk_rs!=$clk_1x)?[set_false_path -from $clk_1x  -to $clk_rs]:{}}
+expr {($clk_rs!=$clk_1x)?[set_false_path -from $clk_rs  -to $clk_1x]:{}}
+<: } :>
+
+#  41d051e7f991c9dacbe8d368b85f57380b272bd2d7dc26e6c472a2d06e70908e
