@@ -1,5 +1,5 @@
 DPU V3.1
 
-Plsease go to the prj/Vitis path to get the details for the vitis flow. 
+For the Vitis flow, go to <a href="prj/Vitis">prj/Vitis</a>.
 
-The Vivado flow will come soon.
+The Vivado flow is coming soon.
