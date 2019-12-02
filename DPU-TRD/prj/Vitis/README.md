@@ -207,7 +207,7 @@ The DPU IP provides some user-configurable parameters to optimize resource utili
 
 The TRD also support the softmax function.
    
-For more details about the DPU, please read [DPU IP Product Guide](https://www.xilinx.com/support/documentation/ip_documentation/dpu/v3_0/pg338-dpu.pdf)
+For more details about the DPU, please read [DPU IP Product Guide](https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=latest;d=pg338-dpu.pdf)
 
  
 #### 5.3.1 Set the DPU Core Number
