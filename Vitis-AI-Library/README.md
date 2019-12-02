@@ -123,7 +123,9 @@ $sh -x build.sh
 
 3. Installing AI Library Package
 	* Download the [Vitis AI Library 1.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_2019.2-r1.0.deb)  
-	* Download the [demo video files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.0_video.tar.gz) and untar into the corresponding directories  
+	* Download the [demo video files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.0_video.tar.gz) and untar into the corresponding directories.  
+	
+	* Download the [demo image files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.0_images.tar.gz)and untar into the corresponding directories.  
 	
 	* Copy the downloaded file to the board using scp with the following command.
 	```
