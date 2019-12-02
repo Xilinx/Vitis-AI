@@ -63,7 +63,7 @@ vitis_ai_library
 
 ## Quick Start
 ### Setting Up the Host
-1. Download the vitis-ai-docker-runtime image from https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html
+1. Download the [vitis-ai-docker-runtime image](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.0.0.tar.gz)
 
 2. Set up the docker runtime system according to the docker installation document.
 ```
