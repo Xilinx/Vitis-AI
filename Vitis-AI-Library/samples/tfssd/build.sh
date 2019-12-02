@@ -1,3 +1,5 @@
+#!/bin/bash
+
 CXX=${CXX:-g++}
 $CXX -std=c++11 -I. -o test_accuracy_tfssd test_accuracy_tfssd.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -ldptfssd  -ldpproto -ljson-c -lglog
 $CXX -std=c++11 -I. -o test_jpeg_tfssd test_jpeg_tfssd.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -ldptfssd  -ldpcommon -pthread -lglog

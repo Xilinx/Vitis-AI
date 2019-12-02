@@ -1,3 +1,5 @@
+#!/bin/bash
+
 CXX=${CXX:-g++}
 $CXX -std=c++11 -I. -o test_accuracy_yolov3_adas_pruned_0_9 test_accuracy_yolov3_adas_pruned_0_9.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -ldpyolov3  -ldpproto -lprotobuf -lglog
 $CXX -std=c++11 -I. -o test_accuracy_yolov3_bdd test_accuracy_yolov3_bdd.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -ldpyolov3  -ldpproto -lprotobuf -lglog

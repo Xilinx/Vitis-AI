@@ -64,9 +64,10 @@ Required:
   - install the Vitis 2019.2.[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis.html) 
   - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
-  - install the xrt drivers. [xrt](https://www.xilinx.com/products/boards-and-kits/alveo/u200.html#gettingStarted)  
-  - install the zcu102 base platform. [zcu102 base](https://gitenterprise.xilinx.com/swm/Vitis_Embedded_Platform_Source/tree/master/Xilinx_Official_Platforms/zcu102_base)
-  - The matching DNNDK version is VAI1.0
+  - install [XRT 2019.2](https://github.com/Xilinx/XRT/tree/2019.2)
+  - install [zcu102 base platform](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=zcu102_base_2019.2.zip)
+  - install [Vitis AI 1.0](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
+  - install [Vitis AI Library 1.0](https://github.com/Xilinx/Vitis-AI/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
 ------
 
@@ -196,7 +197,7 @@ After the linux boot, Run:
 ```
 
 
-###### **Note:** If you want to run other network. Please refer to the [DNNDK](https://www.xilinx.com/products/design-tools/ai-inference/ai-developer-hub.html#edge)
+###### **Note:** If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](???).
 
 
 ### 5.3 Change the Configuration
@@ -206,7 +207,7 @@ The DPU IP provides some user-configurable parameters to optimize resource utili
 
 The TRD also support the softmax function.
    
-More details about the DPU. [DPU](https://www.xilinx.com/support/documentation/ip_documentation/dpu/v2_0/pg338-dpu.pdf#nameddest=xDPUTRDOverview)
+For more details about the DPU, please read [DPU IP Product Guide](https://www.xilinx.com/support/documentation/ip_documentation/dpu/v3_0/pg338-dpu.pdf)
 
  
 #### 5.3.1 Set the DPU Core Number
@@ -402,9 +403,9 @@ If you meet some timing issues. you can modify the [vivado] part of prj_config f
 
 ------
 
-### 5.5 Integrate the DPU for zcu102 and zcu104 AI-SDK release
+### 5.5 Integrate the DPU for Vitis AI Library release
 
-This chapter introduces how to configue the project for the zcu102 and zcu104 AI-SDK released package.
+This chapter introduces how to configue the project for [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/Vitis-AI-Library) released package for ZCU102 and ZCU104.
 
 #### 5.5.1 Configue the zcu102 released project
 

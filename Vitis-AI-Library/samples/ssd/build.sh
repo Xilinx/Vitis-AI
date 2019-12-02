@@ -1,3 +1,5 @@
+#!/bin/bash
+
 CXX=${CXX:-g++}
 $CXX -std=c++11 -I. -o test_accuracy_mlperf_ssd_resnet34_tf test_accuracy_mlperf_ssd_resnet34_tf.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -ldpssd  -ldpproto -ljson-c -ldpmath -lprotobuf -lglog
 $CXX -std=c++11 -I. -o test_accuracy_ssd_adas_pruned_0_95 test_accuracy_ssd_adas_pruned_0_95.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -ldpssd  -ldpproto -ldpmath -lprotobuf -lglog
