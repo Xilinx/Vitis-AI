@@ -67,7 +67,7 @@ Required:
   - install [XRT 2019.2](https://github.com/Xilinx/XRT/tree/2019.2)
   - install [zcu102 base platform](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=zcu102_base_2019.2.zip)
   - install [Vitis AI 1.0](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
-  - install [Vitis AI Library 1.0](https://github.com/Xilinx/Vitis-AI/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
+  - install [Vitis AI Library 1.0](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
 ------
 
@@ -197,7 +197,7 @@ After the linux boot, Run:
 ```
 
 
-###### **Note:** If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](???).
+###### **Note:** If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](https://www.xilinx.com/cgi-bin/docs/ndoc?t=user_guides;d=ug1414-vitis-ai.pdf).
 
 
 ### 5.3 Change the Configuration
@@ -405,7 +405,7 @@ If you meet some timing issues. you can modify the [vivado] part of prj_config f
 
 ### 5.5 Integrate the DPU for Vitis AI Library release
 
-This chapter introduces how to configue the project for [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/Vitis-AI-Library) released package for ZCU102 and ZCU104.
+This chapter introduces how to configue the project for [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) released package for ZCU102 and ZCU104.
 
 #### 5.5.1 Configue the zcu102 released project
 
