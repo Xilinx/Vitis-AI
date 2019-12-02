@@ -10,7 +10,6 @@ The Vitis AI Library is a set of high-level libraries and APIs built for efficie
 
 The Vitis AI Library provides an easy-to-use and unified interface by encapsulating many efficient and high-quality neural networks. This simplifies the use of deep-learning neural networks, even for users without knowledge of deep-learning or FPGAs. The Vitis AI Library allows users to focus more on the development of their applications, rather than the underlying hardware.
 
-Please check <https://www.xilinx.com/products/design-tools/ai-inference/ai-developer-hub.html#edge> for updates.
 
 <p align="center">
   <img src="ai_library_diagram.png" >
@@ -64,7 +63,7 @@ vitis_ai_library
 
 ## Quick Start
 ### Setting Up the Host
-1. Download the vitis-ai-docker-runtime image from https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html
+1. Download the [vitis-ai-docker-runtime image](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.0.0.tar.gz)
 
 2. Set up the docker runtime system according to the docker installation document.
 ```
