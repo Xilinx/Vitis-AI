@@ -10,14 +10,14 @@ Please replace it with the actual name of the loaded docker.**
 ## CPU tools docker
 
 ```shell
-docker load < /PATH_TO/vitis-ai-tools-cpu-<x.y.z>.tar.gz
+docker load < /PATH_TO/vitis-ai-tools-<x.y.z>-cpu.tar.gz
 ./docker_run.sh xdock:5000/vitis-ai:<x.y.z>-cpu
 ```
 
 ## GPU tools docker
 
 ```shell
-docker load < /PATH_TO/vitis-ai-tools-gpu-<x.y.z>.tar.gz
+docker load < /PATH_TO/vitis-ai-tools-<x.y.z>-gpu.tar.gz
 ./docker_run.sh xdock:5000/vitis-ai:<x.y.z>-gpu
 ```
 
