@@ -65,7 +65,7 @@ for Xilinx ZCU102 and ZCU104 evaluation boards, samples, and Arm GCC cross-compi
     ```
     #### Runtime container:
     ```
-    wget -O vitis-ai-runtime-1.0.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.0.0.tar.gz
+    wget -O vitis-ai-runtime-1.0.1.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.0.1.tar.gz
     ```
     
  - [Install Docker](doc/install_docker/README.md) - if Docker not installed on your machine yet  
