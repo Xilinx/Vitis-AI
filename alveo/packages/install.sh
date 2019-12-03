@@ -131,7 +131,7 @@ if [ -z ${XILINX_XRT} ]; then
 		echo "Download and installing XRT... done!"
 	else
 		found=1
-	else
+	fi
 fi
 if [ $found -eq 1 ]; then
 	echo "XRT found!"
