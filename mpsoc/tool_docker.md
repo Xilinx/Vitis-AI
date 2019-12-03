@@ -9,7 +9,7 @@
 
 Caffe and TensorFlow Resnet50 are used in following examples. Network packages can be found on [Xilinx AI Model Zoo](https://github.com/Xilinx/AI-Model-Zoo). 
 
-Refernece files used in the examples can be found on [Workflow Example](//mpsoc/vitis-ai-tool-example). After downloading the model packages (No. 1 and No. 6) from AI Model Zoo, please unzip them under `vitis-ai-tool-example/` and rename model folders as ***cf_resnet50*** and ***tf_resnet50*** respectively.
+Refernece files used in the examples can be found on [Workflow Example](https://github.com/Xilinx/Vitis-AI/tree/master/mpsoc/vitis-ai-tool-example). After downloading the model packages (No. 1 and No. 6) from AI Model Zoo, please unzip them under `vitis-ai-tool-example/` and rename model folders as ***cf_resnet50*** and ***tf_resnet50*** respectively.
 
 In order to conduct calibration and evaluation in quantization phase, please download pictures and labels from ImageNet and place them under `vitis-ai-tool-example/images/`. *ILSVRC2012_val_00000001.JPEG* to *ILSVRC2012_val_00001000.JPEG* are used as example. 
 
