@@ -165,6 +165,10 @@ Vitis-AI-Tool-Example/tf_resnet50/
 
 Due to the nature of TensorFlow, the input function and evaluation scripts need to be prepared for networks repectively. The files used in this example are listed in **tf_eval_script**.
 
+Before started, please use **0_set_env.sh** to set several necessary parameters, such as path to the networks. 
+
+`. 0_set_env.sh`
+
 In order to use TensorFlow and quantization tool (**vai_q_tensorflow**), please use following command to activate TensorFlow tool conda environment
 
 `conda activate vitis-ai-tensorflow`
