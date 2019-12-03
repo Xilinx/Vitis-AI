@@ -13,7 +13,7 @@ gid=`id -g`
 
 #echo "$user $uid $gid"
 
-DOCKER_REPO="xdock.xilinx.com/"
+DOCKER_REPO="xilinx/"
 
 BRAND=vitis-ai
 VERSION=1.0.0
