@@ -67,5 +67,5 @@ Copy the execuatle and necessary file on to board and run.
 
 For DNNDK example, the files might be different but the procedures are identical.   
 
-For more information, please refer to [UG1414](???).
+For more information, please refer to [UG1414](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf).
 
