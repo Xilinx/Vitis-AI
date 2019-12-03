@@ -1,18 +1,16 @@
-'''
-Copyright 2019 Xilinx Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 from ctypes import *
 import numpy as np
@@ -38,7 +36,7 @@ class Runner:
     metaFile = os.path.join(path, "meta.json")
     if not os.path.isfile(metaFile):
       raise AssertionError("meta.json file %s not found" % metaFile)
-      
+
     # select .so file based on path/meta.json
     with open(metaFile) as f:
       meta = json.load(f)
@@ -54,11 +52,11 @@ class Runner:
     self._lib.DpuPyRunnerCreate.restype = c_void_p
     self._lib.DpuPyRunnerGetInputTensors.argtypes = [c_void_p,
       POINTER(c_void_p), POINTER(c_int)]
-    self._lib.DpuPyRunnerGetOutputTensors.argtypes = [c_void_p, 
+    self._lib.DpuPyRunnerGetOutputTensors.argtypes = [c_void_p,
       POINTER(c_void_p), POINTER(c_int)]
     self._lib.DpuPyRunnerGetTensorFormat.argtypes = [c_void_p]
     self._lib.DpuPyRunnerGetTensorFormat.restype = c_int
-    self._lib.DpuPyRunnerExecuteAsync.argtypes = [c_void_p, 
+    self._lib.DpuPyRunnerExecuteAsync.argtypes = [c_void_p,
       POINTER(np.ctypeslib.ndpointer(c_float, flags="C_CONTIGUOUS")),
       POINTER(np.ctypeslib.ndpointer(c_float, flags="C_CONTIGUOUS")),
       c_int, POINTER(c_int)]
@@ -86,7 +84,7 @@ class Runner:
     for i in range(n.value):
       tensors.append(Tensor.from_address(ptr.value + (i*sizeof(Tensor))))
     return tensors
-  
+
   def get_tensor_format(self):
     return(self._lib.DpuPyRunnerGetTensorFormat(self._runner))
 
@@ -96,13 +94,13 @@ class Runner:
         inputs: list of numpy arrays
         outputs: list of numpy arrays
 
-        order of numpy arrays in inputs/outputs must match 
+        order of numpy arrays in inputs/outputs must match
           the order in get_input_tensors() and get_output_tensors()
     """
     status = c_int(0)
-    ret = self._lib.DpuPyRunnerExecuteAsync(self._runner, 
-			self._numpy_list_2_cptr_list(inputs), 
-      self._numpy_list_2_cptr_list(outputs), 
+    ret = self._lib.DpuPyRunnerExecuteAsync(self._runner,
+			self._numpy_list_2_cptr_list(inputs),
+      self._numpy_list_2_cptr_list(outputs),
       inputs[0].shape[0], byref(status))
 
     if status.value != 0:

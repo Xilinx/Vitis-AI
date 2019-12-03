@@ -1,18 +1,17 @@
-'''
-Copyright 2019 Xilinx Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
+#!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import argparse
 import os.path
@@ -28,7 +27,7 @@ from six import itervalues, iterkeys
 def run(pid, args, resultQ):
   fpgaRT = xdnn.XDNNFPGAOp(args)
   xdnnCPUOp = xdnn.XDNNCPUOp(args['weights'])
-  args['in_shape'] = tuple((fpgaRT.getBatchSize(),) + tuple(next(itervalues(fpgaRT.getInputDescriptors()))[1:] )) 
+  args['in_shape'] = tuple((fpgaRT.getBatchSize(),) + tuple(next(itervalues(fpgaRT.getInputDescriptors()))[1:] ))
   fpgaInput = np.empty(args['in_shape'], dtype=np.float32, order='C')
   fpgaOutput = np.empty ((fpgaRT.getBatchSize(), int(args['fpgaoutsz']),), dtype=np.float32, order='C')
   labels = xdnn_io.get_labels(args['labels'])
@@ -43,7 +42,7 @@ def run(pid, args, resultQ):
 
   firstInputName = next(iterkeys(fpgaRT.getInputs()))
   firstOutputName = next(iterkeys(fpgaRT.getOutputs()))
-  fpgaRT.exec_async({ firstInputName: fpgaInput }, 
+  fpgaRT.exec_async({ firstInputName: fpgaInput },
                     { firstOutputName: fpgaOutput })
   fpgaRT.get_result()
 
@@ -63,7 +62,7 @@ def main():
   for pid, runArgs in enumerate(args['jsoncfg']):
     proc = mp.Process(target=run, args=(pid, runArgs, resultQ,))
     proc.start()
-    procs.append(proc) 
+    procs.append(proc)
 
   # collect results out-of-order
   results = {}

@@ -1,30 +1,38 @@
+// Copyright 2019 Xilinx Inc.
 //
-// SPDX-License-Identifier: BSD-3-CLAUSE
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-// (C) Copyright 2018, Xilinx, Inc.
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "interface.h"
 
-//# Classify infernce on xfdnn                                
+//# Classify infernce on xfdnn
 int main(int argc, char** argv)
 {
-    
+
     vector<string> img_path;
     string xclbin, netCfgFile, quantCfgFile, labelFile;
     int height, width, out_h, out_w, out_d, batch_sz;
     string dir_path_s, dataDir;
     int err_status=0;
     int ret=0;
-    
+
 	//# Arguments parser
     ProcessArgs(argc, argv, xclbin, dataDir, netCfgFile, quantCfgFile,
     labelFile,batch_sz, dir_path_s, img_path);
 
-    //# create classifion Object and initialization 
+    //# create classifion Object and initialization
     classifycpp classify_obj(xclbin,dataDir,netCfgFile,quantCfgFile,labelFile,batch_sz,dir_path_s,img_path);
-	
-    
+
+
     cout << PFX << " Running xdnn_infer_init() .......... " << endl;
 
     //# Create FPGA handle and initialize script executor
@@ -35,7 +43,7 @@ int main(int argc, char** argv)
     double total_latency=0.0, total_hw=0.0, total_sw=0.0;
     //# xdnn_infer_preprocess do image read and subtraction mean from it
     cout<< PFX <<" Prepare input "<<endl;
-    
+
     gettimeofday(&start, 0);
     err_status = classify_obj.xdnn_infer_preprocess();
     if(err_status != 0)
@@ -45,7 +53,7 @@ int main(int argc, char** argv)
     gettimeofday(&end, 0);
     cout << PFX <<" Profile pre process : " << (end.tv_sec * 1e6 + end.tv_usec) - (start.tv_sec * 1e6 + start.tv_usec) <<" usec" << endl;
 
-    //# Run inference       
+    //# Run inference
     int exec_count=0;
     double latency_num=0.0;
     gettimeofday(&start, 0);

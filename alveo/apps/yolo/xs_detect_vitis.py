@@ -1,19 +1,16 @@
-'''
-Copyright 2019 Xilinx Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 import collections
 import json
 import logging
@@ -63,11 +60,11 @@ class yoloDispatcher(Dispatcher):
       if idx % 1000 == 0:
         print("Put query %d to objstore" % idx)
         sys.stdout.flush()
-       
-      Dispatcher.xspub[token].put_blob(chanIdx2Str(chanIdx), Dispatcher.inBlob[token], meta) 
+
+      Dispatcher.xspub[token].put_blob(chanIdx2Str(chanIdx), Dispatcher.inBlob[token], meta)
       Dispatcher.xstoken[token].get_msg()
     except Exception as e:
-      logging.error("Producer exception " + str(e)) 
+      logging.error("Producer exception " + str(e))
 
   def run(self, work):
     self.pool.map_async(yoloDispatcher._run, work)
@@ -84,7 +81,7 @@ class yoloWorkerPool(WorkerPool):
       # wait for worker to be ready before starting next worker
       # because the last worker overwrites the IP programming
       # (Note: this assumes all workers must have the same IP instructions)
-      self.wq.get() 
+      self.wq.get()
 
   @staticmethod
   def run(rundir, chanIdx, q, args):
@@ -115,7 +112,7 @@ class yoloWorkerPool(WorkerPool):
         if fpgaBlobs == None:
           # allocate buffers
           fpgaBlobs = []
-          batchsz = meta['shape'][0] # inTensors[0].dims[0] 
+          batchsz = meta['shape'][0] # inTensors[0].dims[0]
 
           for io in [inTensors, outTensors]:
             blobs = []
@@ -165,7 +162,7 @@ class yoloWorkerPool(WorkerPool):
         xspub.send(meta['from'], "success")
 
       except Exception as e:
-        logging.error("Worker exception " + str(e)) 
+        logging.error("Worker exception " + str(e))
 
 def main():
   parser = xdnn_io.default_parser_args()
@@ -208,7 +205,7 @@ def main():
   for qIdx in range(g_nQueries):
     idx = qIdx * inshape[0]
     workBatch = [images[(idx+i) % len(images)] for i in range(inshape[0])]
-    work.append((qIdx, workBatch, 
+    work.append((qIdx, workBatch,
       (args['img_raw_scale'], args['img_mean'], args['img_input_scale'])))
 
   startTime = timeit.default_timer()

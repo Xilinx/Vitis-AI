@@ -1,10 +1,17 @@
 #!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#!/usr/bin/python
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 from __future__ import print_function
 
 import os,sys,argparse
@@ -47,7 +54,7 @@ def Getopts():
 
 # Generate hardware instructions for runtime -> compiler.json
 def Compile(output_dir="work"):
-  
+
   compiler = xfdnnCompiler(
     networkfile=output_dir+"/deploy.prototxt",
     weights=output_dir+"/deploy.caffemodel",
@@ -60,7 +67,7 @@ def Compile(output_dir="work"):
 
 # Generate a new prototxt with custom python layer in place of FPGA subgraph
 def Cut(prototxt,output_dir="work"):
-  
+
   cutter = xfdnnCutter(
     cutAfter="data", # Prototxt expected to have layer named "data"
     trainproto=prototxt, # train_val prototxt used to extract accuracy layers
@@ -82,13 +89,13 @@ def Infer(prototxt,caffemodel,numBatches=1):
   print ("Running with shape of: ",ptxtShape)
   results_dict = {}
   accum = {}
-  for i in xrange(1,numBatches+1): 
+  for i in xrange(1,numBatches+1):
     out = net.forward()
     for k in out:
       if out[k].size != 1:
         continue
       if k not in accum:
-        accum[k] = 0.0 
+        accum[k] = 0.0
       accum[k] += out[k]
       result = (k, " -- This Batch: ",out[k]," Average: ",accum[k]/i," Batch#: ",i)
       print (*result)
@@ -140,13 +147,13 @@ if __name__ == "__main__":
     print("Generated model artifacts in %s"%os.path.abspath(args["output_dir"]))
     for f in os.listdir(args["output_dir"]):
       print("  "+f)
-  
+
   # Both validate, and image require that the user has previously called prepare.
 
   # Run the model on the FPGA. It will run a batch of images, and report accuracy. The images are pointed to by the prototxt.
   if args["validate"]:
     Infer(args["output_dir"]+"/xfdnn_auto_cut_train_val.prototxt",args["output_dir"]+"/deploy.caffemodel",args["numBatches"])
-  
+
   # Run the original model on the CPU. It will run a batch of images, and report accuracy
   if args["validate_cpu"]:
     Infer(args["prototxt"],args["caffemodel"],args["numBatches"])
@@ -154,8 +161,7 @@ if __name__ == "__main__":
   # Run a single image on the FPGA
   if args["image"]:
     Classify(args["output_dir"]+"/xfdnn_auto_cut_deploy.prototxt",args["output_dir"]+"/deploy.caffemodel",args["image"],"mnist_words.txt")
-  
+
   # Run a single image on the CPU
   if args["image_cpu"]:
     Classify(args["output_dir"]+"/deploy.prototxt",args["output_dir"]+"/deploy.caffemodel",args["image_cpu"],"mnist_words.txt")
-  

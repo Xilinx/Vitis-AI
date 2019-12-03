@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#!/usr/bin/env bash
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 export VAI_ALVEO_ROOT="$( readlink -f "$( dirname "${BASH_SOURCE[0]}" )/.." )"
 
@@ -21,7 +28,7 @@ echo $LD_LIBRARY_PATH
 
 
 LIBXDNN_PATH=${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so
-if [ -f $LIBXDNN_PATH ]; then 
+if [ -f $LIBXDNN_PATH ]; then
   echo "---------------------"
   echo "Developer Flow"
   echo "---------------------"
@@ -32,7 +39,7 @@ if [ -f $LIBXDNN_PATH ]; then
   export MLSUITE_ROOT
 else
   LIBXDNN_PATH=${CONDA_PREFIX}/lib/libxfdnn.so
-fi 
+fi
 export LIBXDNN_PATH
 export PYTHONPATH
 

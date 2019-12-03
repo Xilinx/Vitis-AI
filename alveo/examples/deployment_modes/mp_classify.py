@@ -1,19 +1,17 @@
-'''
-Copyright 2019 Xilinx Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
+#!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 from __future__ import print_function
 from six import itervalues,iterkeys
 
@@ -38,7 +36,7 @@ class UserPreProcess():
     self._args = args
     self._firstInputShape = input_shapes[0]
     self._shared_trans_arrs = shared_trans_arrs
-        
+
     self._imgpaths = img_paths
     current = mp.current_process()
     self._procid = (int(current._identity[0]) - 1) % args['numprepproc']
@@ -48,10 +46,10 @@ class UserPreProcess():
     self._meanarr += args['img_mean']
 
   def run(self, inum_chunk):
-    
+
     write_slot = self._shared_trans_arrs.openWriteId()
     write_arrs = self._shared_trans_arrs.accessNumpyBuffer(write_slot)
-   
+
     if not self._args['benchmarkmode']:
       for i, inum in enumerate(inum_chunk):
         write_arrs[0][i][:], shape = xdnn_io.loadImageBlobFromFile(self._imgpaths[inum], self._args['img_raw_scale'], self._meanarr,
@@ -61,7 +59,7 @@ class UserPreProcess():
 
       # Fill -1 for unfilled image slots in whole batch
       write_arrs[-1][len(inum_chunk):][:] = -1
-    
+
     self._shared_trans_arrs.closeWriteId(write_slot)
 
 ###################################################
@@ -82,7 +80,7 @@ class UserPostProcess():
   def __init__(self,  args, img_paths,  fpgaOutputs, output_shapes,shared_output_arrs):
     self.args = args
     self.img_paths = img_paths
-    
+
     self.fpgaOutputs = fpgaOutputs
     self.output_shapes = output_shapes
     self._shared_output_arrs = shared_output_arrs
@@ -110,11 +108,11 @@ class UserPostProcess():
         self.goldenMap = xdnn_io.getGoldenMap(self.args['golden'])
         self.top5Count = 0
         self.top1Count = 0
-      self.fcOutput = np.empty((self.args['batch_sz'], self.args['outsz'],), 
+      self.fcOutput = np.empty((self.args['batch_sz'], self.args['outsz'],),
         dtype=np.float32, order='C')
 
     self.numProcessed += len(imgList)
-  
+
     npout_view = fpgaOutput
     self.cpuOp.computeFC(npout_view, self.fcOutput)
     smaxOutput = self.cpuOp.computeSoftmax(self.fcOutput)
@@ -127,12 +125,12 @@ class UserPostProcess():
           smaxOutput[i], self.goldenMap, p, self.labels, 1)
         self.top5Count += xdnn_io.isTopK(\
           smaxOutput[i], self.goldenMap, p, self.labels, 5)
-  
+
     if self.zmqPub is not None:
       predictMsg = xdnn_io.getClassification(\
         smaxOutput, imgList, self.labels, zmqPub=True)
       self.zmqPub.send(predictMsg)
-  
+
   def loop(self):
     fpgaOutputShape = self.output_shapes[0]
     fpgaOutputShape[0] = self.args['batch_sz']
@@ -143,8 +141,8 @@ class UserPostProcess():
 
       if read_slot is None:
           break
-      
-      read_slot_arrs = self._shared_output_arrs.accessNumpyBuffer(read_slot)  
+
+      read_slot_arrs = self._shared_output_arrs.accessNumpyBuffer(read_slot)
       # array_sum = [read_slot_arrs[0][i].sum() for i in range(self.args['batch_sz'])]
 
       imgList = []
@@ -152,17 +150,17 @@ class UserPostProcess():
       num_images = (read_slot_arrs[-1].shape)[0]
       for image_num in range(num_images):
           image_id = read_slot_arrs[-1][image_num][0]
-          
+
           if image_id == -1:
               break
-          
+
           imgList.append(self.img_paths[int(image_id)])
           shape_list.append(read_slot_arrs[-1][image_num][1:4])
-      
-             
+
+
       if self.args["benchmarkmode"]:
         self.numProcessed += len(imgList)
-        self._shared_output_arrs.closeReadId(read_slot)        
+        self._shared_output_arrs.closeReadId(read_slot)
         continue
 
       self.run(imgList,read_slot_arrs[0:-1], [fpgaOutputShape], shape_list)
@@ -220,7 +218,7 @@ def fpga_wait( runner, q, shared_output_arrs, shared_trans_arrs):
   numProcessed = 0
   while True:
     write_slot, read_slot, jid = q.get()
-    
+
     if write_slot is None:
       break
 
@@ -236,24 +234,24 @@ def fpga_wait( runner, q, shared_output_arrs, shared_trans_arrs):
 def fpga_process(args, num_img,  compJson, shared_trans_arrs,shared_output_arrs):
     runner = Runner(args['vitis_rundir'])
     qWait = mp.Queue(maxsize=100)
-    
+
     t = threading.Thread(target=fpga_wait, args=(runner, qWait, shared_output_arrs, shared_trans_arrs))
     t.start()
 
     numProcessed = 0
     startTime = time.time()
-    while numProcessed < num_img or args['perpetual']: 
+    while numProcessed < num_img or args['perpetual']:
         # Get the buffer for fpga output
-        write_slot = shared_output_arrs.openWriteId()        
+        write_slot = shared_output_arrs.openWriteId()
         write_slot_arrs = shared_output_arrs.accessNumpyBuffer(write_slot)
-        
+
         # Get the input buffer for fpga exec
         read_slot = shared_trans_arrs.openReadId()
-        if read_slot is None: break            
+        if read_slot is None: break
         read_slot_arrs = shared_trans_arrs.accessNumpyBuffer(read_slot)
 
         # Copy meta data from input to output
-        write_slot_arrs[-1][:] = read_slot_arrs[-1][:]            
+        write_slot_arrs[-1][:] = read_slot_arrs[-1][:]
 
         # Start execution
         jid = runner.execute_async(read_slot_arrs[:-1], write_slot_arrs[:-1])
@@ -265,8 +263,8 @@ def fpga_process(args, num_img,  compJson, shared_trans_arrs,shared_output_arrs)
         if(args['perpetual'] == False):
             if numProcessed == num_img:
                 break
-        
-        
+
+
     qWait.put((None, None, None))
     t.join()
     elapsedTime = ( time.time() - startTime )
@@ -284,7 +282,7 @@ class SharedMemoryQueue:
         # Hard coded for floats...
         self._mem_type = ctypes.c_float
         self._np_type = np.float32
-        
+
         # put() function copies into the free list
         self._freeList = mp.Queue(length)
 
@@ -295,7 +293,7 @@ class SharedMemoryQueue:
         self._buf_sizes_list = list(map(lambda x: int(np.prod(x)), buf_shapes_list))
 
         print("Creating Shared Memory with buf_shape_list =", self._buf_shapes_list)
-        
+
         self._shared_memory_arrs = list()
         for i in range(length):
             buf_list = list()
@@ -304,7 +302,7 @@ class SharedMemoryQueue:
             self._shared_memory_arrs.append(buf_list)
             self._freeList.put(i)
 
-        
+
     def close(self):
         self._readList.put(None)
 
@@ -319,17 +317,17 @@ class SharedMemoryQueue:
             np_arr = np.frombuffer(self._shared_memory_arrs[slot_id][i].get_obj(), dtype = self._np_type)
             np_arr = np.reshape(np_arr, self._buf_shapes_list[i], order = 'C')
             buf_list.append(np_arr)
-        
+
         return buf_list
 
-    
+
     def openWriteId(self):
         id = self._freeList.get()
         return id
 
 
     def closeWriteId(self, id):
-        # finished writing slot id 
+        # finished writing slot id
         self._readList.put(id)
 
 
@@ -348,7 +346,7 @@ class SharedMemoryQueue:
           buf_list = self.accessNumpyBUffer(i)
           for np_arr in buf_list:
               print("Slot=",i,"Array=",j,"Val=",np_arr)
-        
+
 
 ###################################################
 # "Main"
@@ -370,10 +368,10 @@ def run(args=None):
 
     args = parser.parse_args()
     args = xdnn_io.make_dict_args(args)
-    
+
   sharedInputArrs = []
   fpgaOutputs = []
-  
+
   compilerJSONObj = xdnn.CompilerJsonParser(args['netcfg'])
 
   input_shapes = [v for k,v in compilerJSONObj.getInputs().items()]
@@ -383,11 +381,11 @@ def run(args=None):
       input_shapes[in_idx][0] = args['batch_sz']
   for out_idx in range(len(output_shapes)):
       output_shapes[out_idx][0] = args['batch_sz']
-      
+
   input_sizes = map(lambda x: np.prod(x), input_shapes)
   output_sizes = map(lambda x: np.prod(x), output_shapes)
-  
-  num_shared_slots = args['numstream'] 
+
+  num_shared_slots = args['numstream']
 
   # shared memory from preprocessing to fpga forward
   shared_trans_arrs = SharedMemoryQueue("trans",num_shared_slots*(args['numprepproc']*args['batch_sz']),
@@ -400,9 +398,9 @@ def run(args=None):
   img_paths = xdnn_io.getFilePaths(args['images'])
   imgids = list(range(len(img_paths)))
   imgid_chunks = [ imgids[i:i+args['batch_sz']] for i in range(0, len(img_paths), args['batch_sz']) ]
-  
+
   # Start all processes
-  p = mp.Pool(initializer = init_pre_process, 
+  p = mp.Pool(initializer = init_pre_process,
     initargs = (args,  img_paths, input_shapes, shared_trans_arrs, ), processes = args['numprepproc'])
 
   xdnnProc = mp.Process(target=fpga_process, args=(args, len(imgid_chunks), compilerJSONObj,shared_trans_arrs,shared_output_arrs,))
@@ -431,6 +429,6 @@ def run(args=None):
   if(args['profile']):
     print("Total time taken: {} s\n Total images: {}\nAverage FPS: {}".format(total_t, \
             len(img_paths), len(img_paths)/total_t))
-  
+
 if __name__ == '__main__':
   run()

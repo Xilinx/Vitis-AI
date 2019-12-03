@@ -1,9 +1,17 @@
 #!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 from __future__ import print_function
 from six import itervalues,iterkeys
 import os, sys
@@ -30,7 +38,7 @@ class YoloPreProcess(mp_classify.UserPreProcess):
   def run(self, inum_chunk):
     write_slot = self._shared_trans_arrs.openWriteId()
     write_arrs = self._shared_trans_arrs.accessNumpyBuffer(write_slot)
-    
+
     if not self._args['benchmarkmode']:
       for i, inum in enumerate(inum_chunk):
         write_arrs[0][i][:], shape = xdnn_io.loadYoloImageBlobFromFile(self._imgpaths[inum], self._firstInputShape[2], self._firstInputShape[3])
@@ -39,14 +47,14 @@ class YoloPreProcess(mp_classify.UserPreProcess):
 
       # Fill -1 for unfilled image slots in whole batch
       write_arrs[-1][len(inum_chunk):][:] = -1
-      
-    self._shared_trans_arrs.closeWriteId(write_slot)    
-  
+
+    self._shared_trans_arrs.closeWriteId(write_slot)
+
 class YoloPostProcess(mp_classify.UserPostProcess):
   def loop(self):
     fpgaOutputShapes = []
     for idx in range(len( self.output_shapes)):
-        fpgaOutputShape_l = self.output_shapes[idx] 
+        fpgaOutputShape_l = self.output_shapes[idx]
         fpgaOutputShape_l[0] = self.args['batch_sz']
         fpgaOutputShapes.append(fpgaOutputShape_l)
 
@@ -61,29 +69,29 @@ class YoloPostProcess(mp_classify.UserPostProcess):
       read_slot = self._shared_output_arrs.openReadId()
       if read_slot is None:
           break
-      
-      read_slot_arrs = self._shared_output_arrs.accessNumpyBuffer(read_slot)  
+
+      read_slot_arrs = self._shared_output_arrs.accessNumpyBuffer(read_slot)
       imgList = []
       shape_list = []
       #image_id = self._qFrom.get()
       num_images = (read_slot_arrs[-1].shape)[0]
       for image_num in range(num_images):
           image_id = read_slot_arrs[-1][image_num][0]
-          
+
           if image_id == -1:
               break
           imgList.append(self.img_paths[int(image_id)])
           shape_list.append(read_slot_arrs[-1][image_num][1:4])
-      
+
       if self.args["benchmarkmode"]:
         self.numProcessed += len(imgList)
         #self.streamQ.put(sId)
-        self._shared_output_arrs.closeReadId(read_slot)        
+        self._shared_output_arrs.closeReadId(read_slot)
         continue
-    
-      self.run(imgList,read_slot_arrs[0:-1], fpgaOutputShapes, shape_list)  
-      self._shared_output_arrs.closeReadId(read_slot)   
-      
+
+      self.run(imgList,read_slot_arrs[0:-1], fpgaOutputShapes, shape_list)
+      self._shared_output_arrs.closeReadId(read_slot)
+
     self.finish()
 
   def run(self, imgList, fpgaOutput_list, fpgaOutputShape_list, shapeArr):
@@ -100,7 +108,7 @@ class YoloPostProcess(mp_classify.UserPostProcess):
     if(not self.args['profile']):
       for i in range(min(self.args['batch_sz'], len(shapeArr))):
         print("Detected {} boxes in {}".format(len(bboxlist_for_images[i]), imgList[i]))
-      
+
 
     if(self.args['results_dir']):
       boxes = bboxlist_for_images
@@ -117,7 +125,7 @@ class YoloPostProcess(mp_classify.UserPostProcess):
 
   def finish(self):
     print("[XDNN] Total Images Processed : {}".format(self.numProcessed)); sys.stdout.flush()
-    
+
     # mAP calculation
     if(args['golden']):
       print()
@@ -146,15 +154,15 @@ if __name__ == '__main__':
 
   for out_idx in range(len(output_shapes)):
       output_shapes[out_idx][0] = args['batch_sz']
-      
+
   input_sizes  = map(lambda x: np.prod(x), input_shapes)
   output_sizes = map(lambda x: np.prod(x), output_shapes)
-  
+
   out_w = output_shapes[0][2]
   out_h = output_shapes[0][3]
 
   args['net_w'] = int(input_shapes[0][2])
-  args['net_h'] = int(input_shapes[0][3])   
+  args['net_h'] = int(input_shapes[0][3])
   args['out_w'] = int(out_w)
   args['out_h'] = int(out_h)
   args['coords'] = 4
@@ -164,7 +172,7 @@ if __name__ == '__main__':
   args['groupstride'] = 1
   args['classes'] = args['outsz']
   args['bboxplanes'] = args['anchorCnt']
-  
+
   print ("running yolo_model : ", args['yolo_model'])
 
   mp_classify.run(args)

@@ -1,19 +1,16 @@
-'''
-Copyright 2019 Xilinx Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 import collections
 import json
 import logging
@@ -67,7 +64,7 @@ class Dispatcher():
   nWorkers = 0
   inBlob = {}
   inBlobCache = LRUCache(512)
-  
+
   def __init__(self, nDispatchers, nWorkers, inshape):
     self.nWorkers = nWorkers
     Pool = mp.Pool # mpp.ThreadPool
@@ -95,7 +92,7 @@ class Dispatcher():
       for i, img in enumerate(images):
         cached = Dispatcher.inBlobCache.get(img)
         if cached is None:
-          Dispatcher.inBlob[token][i, ...], _ = xdnn_io.loadImageBlobFromFile(img, 
+          Dispatcher.inBlob[token][i, ...], _ = xdnn_io.loadImageBlobFromFile(img,
             args[0], args[1], args[2], shape[2], shape[3])
           Dispatcher.inBlobCache.set(img, np.copy(Dispatcher.inBlob[token][i]))
         else:
@@ -105,12 +102,12 @@ class Dispatcher():
       if idx % 1000 == 0:
         print("Put query %d to objstore" % idx)
         sys.stdout.flush()
-       
-      Dispatcher.xspub[token].put_blob(chanIdx2Str(chanIdx), 
-        Dispatcher.inBlob[token], meta) 
+
+      Dispatcher.xspub[token].put_blob(chanIdx2Str(chanIdx),
+        Dispatcher.inBlob[token], meta)
       Dispatcher.xstoken[token].get_msg()
     except Exception as e:
-      logging.error("Producer exception " + str(e)) 
+      logging.error("Producer exception " + str(e))
 
   def run(self, work):
     self.pool.map_async(Dispatcher._run, work)
@@ -122,7 +119,7 @@ class Dispatcher():
 class FpgaMaster():
   def __init__(self, rundir, numFPGAs=1):
     self.hwq = mp.Queue()
-    self.hw = mp.Process(target=FpgaMaster.run, 
+    self.hw = mp.Process(target=FpgaMaster.run,
       args=(rundir, numFPGAs, self.hwq,))
     self.hw.start()
     self.inshape = self.hwq.get() # wait to finish acquiring resources
@@ -153,7 +150,7 @@ class WorkerPool():
       # wait for worker to be ready before starting next worker
       # because the last worker overwrites the IP programming
       # (Note: this assumes all workers must have the same IP instructions)
-      self.wq.get() 
+      self.wq.get()
 
   @staticmethod
   def run(rundir, chanIdx, q, args):
@@ -179,7 +176,7 @@ class WorkerPool():
         if fpgaBlobs == None:
           # allocate buffers
           fpgaBlobs = []
-          batchsz = meta['shape'][0] # inTensors[0].dims[0] 
+          batchsz = meta['shape'][0] # inTensors[0].dims[0]
 
           for io in [inTensors, outTensors]:
             blobs = []
@@ -202,7 +199,7 @@ class WorkerPool():
         softmaxOut = xdnnCPUOp.computeSoftmax(fcOutput)
         xdnn_io.printClassification(softmaxOut, meta['images'], labels)
         sys.stdout.flush()
-          
+
         if meta['id'] % 1000 == 0:
           print("Recvd query %d" % meta['id'])
           sys.stdout.flush()
@@ -214,7 +211,7 @@ class WorkerPool():
         xspub.send(meta['from'], "success")
 
       except Exception as e:
-        logging.error("Worker exception " + str(e)) 
+        logging.error("Worker exception " + str(e))
 
   def __del__(self):
     # close workers
@@ -246,7 +243,7 @@ def main():
   for qIdx in range(g_nQueries):
     idx = qIdx * inshape[0]
     workBatch = [images[(idx+i) % len(images)] for i in range(inshape[0])]
-    work.append((qIdx, workBatch, 
+    work.append((qIdx, workBatch,
       (args['img_raw_scale'], args['img_mean'], args['img_input_scale'])))
   startTime = timeit.default_timer()
   dispatcher.run(work)

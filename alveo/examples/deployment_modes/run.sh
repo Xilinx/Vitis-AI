@@ -1,16 +1,17 @@
-## Copyright 2019 Xilinx Inc.
-##
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-##
-##     http://www.apache.org/licenses/LICENSE-2.0
-##
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
+#!/usr/bin/env bash
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 usage() {
   echo "Usage:"
@@ -140,7 +141,7 @@ if [ -z $VITIS_RUNDIR ]; then
   ln -s $(get_abs_filename $WEIGHTS) ${VITIS_RUNDIR}/weights.h5
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"publish_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}/meta.json
   # meta.json accepts {env_variables} in paths as well, e.g.:
-  #echo "{ \"lib\": \"{VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_ALVEO_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json 
+  #echo "{ \"lib\": \"{VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_ALVEO_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
   cp -fr $VITIS_RUNDIR ${VITIS_RUNDIR}_worker
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"subscribe_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}_worker/meta.json
   BASEOPT+=" --vitis_rundir ${VITIS_RUNDIR}"

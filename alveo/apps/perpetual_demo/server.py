@@ -1,9 +1,17 @@
 #!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 import datetime, getopt, json, os, socket, sys, time, zmq
 from multiprocessing.pool import Pool
 from multiprocessing import Manager, Process
@@ -49,7 +57,7 @@ class MyWebSocketHandler(tornado.websocket.WebSocketHandler):
       msgPOD['data'] = msg
 
       print "[WS] broadcast %s to %d client(s)" \
-        % (topic, 
+        % (topic,
            len(MyWebSocketHandler.clientConnections))
       for socket in MyWebSocketHandler.clientConnections:
         socket.write_message(json.dumps(msgPOD))
@@ -136,8 +144,8 @@ def main():
 
   try:
     opts, args = getopt.getopt(\
-      sys.argv[1:], 
-      "z:x:", 
+      sys.argv[1:],
+      "z:x:",
       ["zmq_url=", "zmq_xmlrt_url"])
   except getopt.GetoptError as err:
     print(err)
@@ -148,14 +156,14 @@ def main():
       listUrls(a, zmqSubUrl)
     elif o == "-x":
       listUrls(a, zmqXSubUrl)
-  
+
   multiMgr = Manager()
   webSocketQ = multiMgr.Queue(maxsize=1)
 
   assert len(zmqSubUrl) > 0 and len(zmqXSubUrl) > 0
   assert len(zmqSubUrl) == len(zmqXSubUrl)
   workers = Pool(len(zmqSubUrl) + len(zmqXSubUrl) + 1)
-  
+
   for uri in zmqSubUrl:
     workers.apply_async(backgroundZmqCaffeListener, [uri, webSocketQ])
   for uri in  zmqXSubUrl:

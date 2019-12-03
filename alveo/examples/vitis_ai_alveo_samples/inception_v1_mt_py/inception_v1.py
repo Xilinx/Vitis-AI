@@ -1,18 +1,16 @@
-'''
-Copyright 2019 Xilinx Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 from ctypes import *
 import cv2
@@ -92,7 +90,7 @@ def runInceptionV1(dpu, img, cnt):
     """get tensor"""
     inputTensors = dpu.get_input_tensors()
     outputTensors = dpu.get_output_tensors()
-    tensorformat = dpu.get_tensor_format() 
+    tensorformat = dpu.get_tensor_format()
     if tensorformat == dpu.TensorFormat.NCHW:
         outputHeight = outputTensors[0].dims[2]
         outputWidth = outputTensors[0].dims[3]
@@ -103,12 +101,12 @@ def runInceptionV1(dpu, img, cnt):
         outputChannel = outputTensors[0].dims[3]
     else:
         exit("Format error")
-    
-    outputSize = outputHeight * outputWidth * outputChannel    
+
+    outputSize = outputHeight * outputWidth * outputChannel
     softmax = np.empty(outputSize)
-    
+
     global runTotall
-    count = cnt 
+    count = cnt
     while count < runTotall:
         l.acquire()
         if (runTotall < (count+batchSize)):
@@ -117,14 +115,14 @@ def runInceptionV1(dpu, img, cnt):
             runSize = batchSize
         l.release()
         shapeIn = (runSize,) + tuple([inputTensors[0].dims[i] for i in range(inputTensors[0].ndims)][1:])
-        
+
         """prepare batch input/output """
         outputData = []
         inputData = []
         outputData.append(np.empty((runSize, outputSize), dtype = np.float32, order = 'C'))
         inputData.append(np.empty((shapeIn), dtype = np.float32, order = 'C'))
         #imgT = np.transpose(img, (0, 3, 1, 2))
-        
+
         """init input image to input buffer """
         for j in range(runSize):
             imageRun = inputData[0]
@@ -140,7 +138,7 @@ def runInceptionV1(dpu, img, cnt):
         l.acquire()
         count = count + threadnum*runSize
         l.release()
-    
+
 def main(argv):
     global threadnum
 
@@ -160,7 +158,7 @@ def main(argv):
         path = os.path.join(calib_image_dir, listimage[i])
         image = cv2.imread(path)
         img.append(input_fn.preprocess_fn(image))
-    
+
     imgT = np.transpose(img, (0, 3, 1, 2))
 
     """run with batch """
@@ -180,10 +178,9 @@ def main(argv):
     print("%.2f FPS" %fps)
 
     del dpu
-    
+
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("please input thread number and json file path.")
     else :
         main(sys.argv)
-

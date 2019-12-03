@@ -1,9 +1,17 @@
 #!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 from __future__ import print_function
 
@@ -156,9 +164,9 @@ def top5_accuracy(graph, input_nodes, output_nodes, iter_cnt, batch_size, pre_pr
 
 
 def plot_all(X):
-  import numpy as np 
+  import numpy as np
   import matplotlib.pyplot as plt
-  
+
   ax = plt.subplot(221)
   ax.set_title("Vector X in FP32 Representation",fontsize=20)
   plt.setp(ax.get_xticklabels(), visible=False)
@@ -175,7 +183,7 @@ def plot_all(X):
 
   for i in range(128):
     plt.plot(i/X["sf"]*np.ones_like(X["fp32"]),"m",linewidth=0.1)
-        
+
   for i in range(128):
     plt.plot(-1*i/X["sf"]*np.ones_like(X["fp32"]),"m",linewidth=0.1)
 
@@ -194,9 +202,9 @@ def plot_all(X):
   plt.subplots_adjust(top=2,bottom=0.1,left=0.1,right=4,wspace=0.2)
 
 def plot_all2(X):
-  import numpy as np 
+  import numpy as np
   import matplotlib.pyplot as plt
-  
+
   ax = plt.subplot(221)
   ax.set_title("Vector Y in FP32 Representation",fontsize=20)
   plt.setp(ax.get_xticklabels(), visible=False)
@@ -240,7 +248,7 @@ def findShiftScale(val):
   approx = x * 2**e
   delta = val-approx
   oldloss = np.square(val-approx)
-  
+
   while True:
     approx = x * 2**e
     delta = val-approx

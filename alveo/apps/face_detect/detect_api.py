@@ -1,24 +1,21 @@
-'''
-Copyright 2019 Xilinx Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 import numpy as np
 import scipy.misc
 import scipy.io
-import matplotlib.pyplot as plt   
-from matplotlib.patches import Rectangle 
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 import datetime
 import cv2
 import math
@@ -43,7 +40,7 @@ def padProcess(image,h,w):
     else:
         newWidth = int(math.ceil(oriSize[0]*sz_ratio))
         imagePad = np.zeros((oriSize[0], newWidth, 3), np.uint8)
-    
+
     imagePad[0:oriSize[0], 0:oriSize[1], :] = image
     return imagePad
 
@@ -57,7 +54,7 @@ class Detect(object):
     #self.pixel_blob_name_='pixel-conv-tiled'
     self.pixel_blob_name_='pixel-prob'
     self.bb_blob_name_='bb-output-tiled'
-    
+
     self.res_stride_=4
     self.det_threshold_=0.7
     #self.det_threshold_=0.4
@@ -70,7 +67,7 @@ class Detect(object):
     #sys.path.insert(0,caffe_python_path)
     import caffe
     #self.caffe_path_=caffe_python_path
-    self.net_=caffe.Net(def_path,model_path,caffe.TEST)  
+    self.net_=caffe.Net(def_path,model_path,caffe.TEST)
 
   def detect(self,image):
     #sys.path.insert(0,self.caffe_path_)
@@ -83,7 +80,7 @@ class Detect(object):
       self.input_channels_=1
     else:
       self.transformer_.set_transpose('data', (2,0,1))
-    
+
     transformed_image=self.transformer_.preprocess('data',image)
     transformed_image=(transformed_image-self.input_mean_value_)*self.input_scale_
     sz=image.shape
@@ -93,7 +90,7 @@ class Detect(object):
     output = self.net_.forward()
     prob = output[self.pixel_blob_name_][0, 1, ...]
     bb = output[self.bb_blob_name_][0, ...]
-    
+
     if sz[0]%32 == 0 :
         add_v = 0
     else:
@@ -115,8 +112,8 @@ class Detect(object):
     bb = bb[prob.ravel() > self.det_threshold_, :]
     prob = prob[prob.ravel() > self.det_threshold_, :]
     rects = np.hstack((bb, prob))
-    #keep = nms.nms(rects, self.nms_threshold_)	
-    keep = nms_facedetect.nms(rects, self.nms_threshold_)	
+    #keep = nms.nms(rects, self.nms_threshold_)
+    keep = nms_facedetect.nms(rects, self.nms_threshold_)
     rects = rects[keep, :]
     rects_expand=[]
     for rect in rects:
@@ -128,5 +125,5 @@ class Detect(object):
       rect_expand.append(int(min(sz[1],rect[2]+rect_w*self.expand_scale_)))
       rect_expand.append(int(min(sz[0],rect[3]+rect_h*self.expand_scale_)))
       rects_expand.append(rect_expand)
- 
-    return rects_expand 
+
+    return rects_expand

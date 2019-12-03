@@ -24,7 +24,7 @@ usage() {
   echo "Some tests require a batchSize argument to know how many images to load simultaneously."
   echo "To provide batchSize use --batchsize <batchsize>"
   echo "-c allows to choose compiler optimization, for example, latency or throughput or autoAllOptimizations."
-  
+
 
 }
 
@@ -137,7 +137,7 @@ if [ -z $VITIS_RUNDIR ]; then
   ln -s $(get_abs_filename $WEIGHTS) ${VITIS_RUNDIR}/weights.h5
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"publish_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}/meta.json
   # meta.json accepts {env_variables} in paths as well, e.g.:
-  #echo "{ \"lib\": \"{MLSUITE_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{MLSUITE_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json 
+  #echo "{ \"lib\": \"{MLSUITE_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{MLSUITE_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
   cp -fr $VITIS_RUNDIR ${VITIS_RUNDIR}_worker
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"subscribe_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}_worker/meta.json
   BASEOPT+=" --vitis_rundir ${VITIS_RUNDIR}"

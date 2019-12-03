@@ -1,8 +1,16 @@
+// Copyright 2019 Xilinx Inc.
 //
-// SPDX-License-Identifier: BSD-3-CLAUSE
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-// (C) Copyright 2018, Xilinx, Inc.
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 
 #include "interface.h"
@@ -19,10 +27,10 @@ classifycpp::classifycpp(string xclbin_t, string dataDir_t, string netCfgFile_t,
 	mean[1]=116.669f;
 	mean[2]=122.679f;
     //# Classification neworks trained on Imagenet dataset,it has thousand classes.
-	numClasses=1000;	
-	
+	numClasses=1000;
+
     xclbin=xclbin_t;
-    netCfgFile=netCfgFile_t; 
+    netCfgFile=netCfgFile_t;
     quantCfgFile=quantCfgFile_t;
     dataDir=dataDir_t;
 	batch_sz=batch_sz_t;
@@ -35,7 +43,7 @@ classifycpp::classifycpp(string xclbin_t, string dataDir_t, string netCfgFile_t,
 classifycpp::~classifycpp(){
     //# Release Memory
     delete [] input;
-    delete [] output;	
+    delete [] output;
     //# cleanup
     xblasDestroy(handle);
 }
@@ -57,7 +65,7 @@ int prepareInputData(cv::Mat &in_frame, int img_h, int img_w, int img_depth, flo
     uchar *img_data = resize_frame.data;
 
     int idx = 0, frame_cntr = 0;
-    
+
     // The googlenet_v1 & resnet50 models trained based on below mean values
     //const float mean[3] = {104.007f,116.669f,122.679f};
 
@@ -77,7 +85,7 @@ int prepareInputData(cv::Mat &in_frame, int img_h, int img_w, int img_depth, flo
 // prepareInputData
 
 
-void softmax(vector<float> &input) 
+void softmax(vector<float> &input)
 {
     float m = numeric_limits<float>::min();
     for (size_t i = 0; i < input.size(); i++)
@@ -92,7 +100,7 @@ void softmax(vector<float> &input)
         input[i] = expf(input[i] - m) / sum;
 }
 // Read Imagenet dataset classes label file
-vector<string> getLabels(string fname) 
+vector<string> getLabels(string fname)
 {
     ifstream f(fname.c_str());
     assert(f.good());
@@ -149,7 +157,7 @@ void ProcessArgs(int argc, char** argv, string &xclbin, string &dataDir, string 
 {
     map<string ,string> arg_map;
     vector<string> app_args;
-    
+
     update_app_args(app_args);
     for(int i=1;i<argc;i=i+2){
         vector<string> result;
@@ -178,7 +186,7 @@ void ProcessArgs(int argc, char** argv, string &xclbin, string &dataDir, string 
         arg_list_help();
         exit(0);
     }
-    
+
     xclbin=arg_map[app_args[0]];
     dataDir=arg_map[app_args[1]];
     netCfgFile=arg_map[app_args[2]];
@@ -194,12 +202,12 @@ void ProcessArgs(int argc, char** argv, string &xclbin, string &dataDir, string 
     }
     for(int i=1;i<batch_sz;i++){
         image_path.push_back(arg_map[app_args[7]]);
-    }   
+    }
 
 }
 
 int classifycpp::xdnn_infer_preprocess(void)
-{ 
+{
 
     vector<cv::Mat> in_frame;
 
@@ -219,7 +227,7 @@ int classifycpp::xdnn_infer_preprocess(void)
 	    }
 
         float *ptr = &input[bi*(in_dim.height*in_dim.width*in_dim.depth)];
-        
+
 		int status = prepareInputData(in_frame[bi], in_dim.height, in_dim.width, in_dim.depth, ptr,mean);
     }
 
@@ -229,7 +237,7 @@ int classifycpp::xdnn_infer_preprocess(void)
 int classifycpp::xdnn_infer_postprocess(void)
 {
       //# FC Output buffer
-	
+
 	vector<float> fcWeight;
 	vector<float> fcBias;
 	vector<vector<float>> fc_layer_vect;
@@ -254,7 +262,7 @@ int classifycpp::xdnn_infer_postprocess(void)
         float *out_ptr = &fcOutPtr[bi*fc_outsize];
 
         computeFC(&(fcWeight[0]), &(fcBias[0]), in_ptr, 1, fc_outsize, fc_insize, out_ptr);
-        
+
         vector<float> sx_ptr(out_ptr, out_ptr+fc_outsize);
         softmax(sx_ptr);
 
@@ -285,7 +293,7 @@ int input_dim_read(boost::property_tree::ptree const& pt,x_blob_dim_t &in_dim){
 		in_dim.depth = v_in_dim[1];
 		in_dim.height = v_in_dim[2];
 		in_dim.width = v_in_dim[3];
-		
+
 	}else{
 		cout<< PFX << "compiler input dim read failed "<< endl;
 		return -1;
@@ -307,7 +315,7 @@ int output_dim_read(boost::property_tree::ptree const& pt,x_blob_dim_t &out_dim)
 		out_dim.depth = v_out_dim[1];
 		out_dim.height = v_out_dim[2];
 		out_dim.width = v_out_dim[3];
-		
+
 	}else{
 		cout<< PFX << "compiler input dim read failed "<< endl;
 		return -1;
@@ -361,23 +369,23 @@ int classifycpp::xdnn_infer_init(void)
     ptree pt;
 
     ifstream jsonFile(netCfgFile);
-    
-    // Read compiler json and build trees structure 
+
+    // Read compiler json and build trees structure
     read_json(jsonFile, pt);
-    
+
     for ( const auto & layer : pt.get_child("inputs"))
     {
 		string name = layer.second.get<string>("input_name", "");
 		input_layer_name=name;
     }
-    
+
     for ( const auto & layer : pt.get_child("outputs"))
     {
         string name = layer.second.get<string>("output_name", "");
 		output_layer_name=name;
     }
     ret=json_search(pt);
-    
+
     //# Allocate input/output buffers
 	input = new float[in_dim.height*in_dim.width*in_dim.depth*batch_sz*sizeof(float)];
     output = new float[out_dim.depth * batch_sz *sizeof(float)];
@@ -388,29 +396,29 @@ int classifycpp::xdnn_infer_init(void)
         assert(ret==0);
     }
     int layercnt = 0;
-        
+
     vector<XBLASHandle*> handles;
     handles.push_back(handle);
     char *wgt_path = new char[dataDir.size()+1];
-    char *cnetCfgFile=new char [netCfgFile.size() + 1]; 
-    char *cquantCfgFile=new char [quantCfgFile.size() + 1]; 
+    char *cnetCfgFile=new char [netCfgFile.size() + 1];
+    char *cquantCfgFile=new char [quantCfgFile.size() + 1];
     strcpy(wgt_path, dataDir.c_str());
     strcpy(cnetCfgFile, netCfgFile.c_str());
     strcpy(cquantCfgFile, quantCfgFile.c_str());
-    
+
     // Load weights and get the executor handler for launching acceletor function
     executor = (XDNNScriptExecutor<float>*)XDNNMakeScriptExecutorAndLoadWeights(&handle,
     handles.size(),wgt_path,cnetCfgFile,cquantCfgFile,0);
-	
+
     //# Load FC Data
 	XDNNLoadFCWeights(fc_wb_map, wgt_path);
-    
+
     // get labels
     labels = getLabels(labelFile);
-	
-    delete [] wgt_path;	
-    delete [] cnetCfgFile;	
-    delete [] cquantCfgFile;	
+
+    delete [] wgt_path;
+    delete [] cnetCfgFile;
+    delete [] cquantCfgFile;
 	return 0;
 }
 
@@ -422,7 +430,7 @@ int classifycpp::xdnn_infer_Execute(void)
         float *ptr = &input[bi*(in_dim.height*in_dim.width*in_dim.depth)];
         vector<const float*> hw_in;
         hw_in.push_back(ptr);
-		
+
         float *out_ptr = &output[bi*out_dim.depth];
         vector<float*> hw_out;
         hw_out.push_back(out_ptr);
@@ -435,7 +443,7 @@ int classifycpp::xdnn_infer_Execute(void)
 
         input_ptrs[input_layer_name]=hw_in;
         output_ptrs[output_layer_name]=hw_out;
-        
+
         // gettimeofday(&start, 0);
         executor->execute(input_ptrs, output_ptrs, 0);
 		// gettimeofday(&end, 0);

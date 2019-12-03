@@ -1,9 +1,17 @@
 #!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 from __future__ import print_function
 
 import colorsys
@@ -77,10 +85,10 @@ def yolo_parser_args(parser):
   parser.add_argument("--yolo_model",  type=str, default='xilinx_yolo_v2',
                       help='Model Name [xilinx_yolo_v2 | tinyyolo_v3_426 | custom')
   parser.add_argument('--in_shape', default=[3,224,224], nargs=3, type=int,
-                      help='input dimensions') 
+                      help='input dimensions')
   parser.add_argument('--anchorCnt', type=int, default=5,
                       help='Number of anchors')
-  parser.add_argument('--results_dir', default=None, type=str, metavar="FILE", 
+  parser.add_argument('--results_dir', default=None, type=str, metavar="FILE",
                       help="directory path to store results in darknet style")
   parser.add_argument('--prob_threshold', type=float, default=0.1,
                       help='threshold for calculation of f1 score')
@@ -113,7 +121,7 @@ def cal_iou(box, truth) :
         return 0
     inter_area = w * h
     union_area = box[2] * box[3] + truth[2] * truth[3] - inter_area
-    
+
     return inter_area * 1.0 / union_area
 
 
@@ -121,104 +129,104 @@ def sortSecond(val):
     return val[1]
 
 def  apply_nms(boxes, classes, scorethresh, overlap_threshold):
-    
+
     result_boxes=[]
     box_len = (boxes.shape)[0]
     # print(box_len)
     #print "apply_nms :box shape", boxes.shape
-    for k in range(classes):  
-        
-        key_box_class=[]    
+    for k in range(classes):
+
+        key_box_class=[]
         for i in range(box_len):
             key_box_class.append((i, boxes[i,5+k]))
 
         key_box_class.sort(key = sortSecond, reverse = True)
 
-        exist_box=np.ones(box_len)        
+        exist_box=np.ones(box_len)
         for i in range(box_len):
-            
+
             box_id = key_box_class[i][0]
-            
+
             if(exist_box[box_id] == 0):
                 continue
-                
+
             if(boxes[box_id,5 + k] < scorethresh):
                 exist_box[box_id] = 0;
                 continue
-            
+
             result_boxes.append([boxes[box_id,0], boxes[box_id,1], boxes[box_id,2], boxes[box_id,3], k, boxes[box_id,5+k]])
-            
+
             for j in range(i+1, box_len):
-                
+
                 box_id_compare = key_box_class[j][0]
                 if(exist_box[box_id_compare] == 0):
                     continue
-                
+
                 overlap = cal_iou(boxes[box_id_compare,:], boxes[box_id,:])
                 if(overlap >= overlap_threshold):
                     exist_box[box_id_compare] = 0
-    
+
     return result_boxes
-                
+
 def sigmoid_ndarray(data_in):
     data_in = -1*data_in
     data_in = np.exp(data_in) + 1
     data_in = np.reciprocal(data_in)
-    
+
     return data_in
-                 
+
 def process_all_yolo_layers(yolo_layers, classes, anchorCnt, nw_in_width, nw_in_height):
-    
+
     biases =[10,13,16,30,33,23, 30,61,62,45,59,119, 116,90,156,198,373,326]
-    
+
     scale_feature=[]
     out_yolo_layers=[]
     for output_id in range(len(yolo_layers)):
         scale_feature.append([output_id,yolo_layers[output_id].shape[3]])
-    
+
     scale_feature.sort(key = sortSecond, reverse = True)
-    
+
     for output_id in range(len(yolo_layers)):
-        
+
         out_id_process = scale_feature[output_id][0]
         #print "process_all_yolo_layers :layer shape", out_id_process, yolo_layers[out_id_process].shape
         width  = yolo_layers[out_id_process].shape[3]
         height = yolo_layers[out_id_process].shape[2]
         w_range = np.arange(float(width))
         h_range = np.arange(float(height)).reshape(height,1)
-        
-        
+
+
         yolo_layers[out_id_process][:,4::(5+classes),:,:] = sigmoid_ndarray(yolo_layers[out_id_process][:,4::(5+classes),:,:])
-        
+
         yolo_layers[out_id_process][:,0::(5+classes),:,:] = sigmoid_ndarray(yolo_layers[out_id_process][:,0::(5+classes),:,:])
         yolo_layers[out_id_process][:,1::(5+classes),:,:] = sigmoid_ndarray(yolo_layers[out_id_process][:,1::(5+classes),:,:])
         yolo_layers[out_id_process][:,0::(5+classes),:,:] = (yolo_layers[out_id_process][:,0::(5+classes),:,:] + w_range)/float(width)
         yolo_layers[out_id_process][:,1::(5+classes),:,:] = (yolo_layers[out_id_process][:,1::(5+classes),:,:] + h_range)/float(height)
-        
+
         yolo_layers[out_id_process][:,2::(5+classes),:,:] = np.exp(yolo_layers[out_id_process][:,2::(5+classes),:,:])
         yolo_layers[out_id_process][:,3::(5+classes),:,:] = np.exp(yolo_layers[out_id_process][:,3::(5+classes),:,:])
-        
-        
-        
+
+
+
         for ankr_cnt in range(anchorCnt):
             channel_number_box_width = ankr_cnt * (5+classes) + 2
             scale_value_width = float(biases[2*ankr_cnt + 2 * anchorCnt * output_id]) /float(nw_in_width)
             channel_number_box_height = ankr_cnt * (5+classes) + 3
             scale_value_height = float(biases[2*ankr_cnt + 2 * anchorCnt * output_id + 1]) /float(nw_in_height)
-            
+
             yolo_layers[out_id_process][:,channel_number_box_width,:,:] = yolo_layers[out_id_process][:,channel_number_box_width,:,:] * scale_value_width
             yolo_layers[out_id_process][:,channel_number_box_height,:,:] = yolo_layers[out_id_process][:,channel_number_box_height,:,:] * scale_value_height
-            
+
             channel_number_classes = ankr_cnt * (5+classes) + 5
             channel_number_obj_score = ankr_cnt * (5+classes) + 4
-            
-            for class_id in range(classes):                
-                cur_channel = channel_number_classes + class_id                
+
+            for class_id in range(classes):
+                cur_channel = channel_number_classes + class_id
                 yolo_layers[out_id_process][:,cur_channel,:,:] = np.multiply(sigmoid_ndarray(yolo_layers[out_id_process][:,cur_channel,:,:]) , yolo_layers[out_id_process][:,channel_number_obj_score,:,:])
-                
+
         yolo_layer_shape = yolo_layers[out_id_process].shape
         out_yolo_layers.append(yolo_layers[out_id_process])
-        
+
     return out_yolo_layers
 
 def darknet_style_xywh(image_width, image_height, llx,lly,urx,ury):
@@ -253,7 +261,7 @@ def cornersToxywh(llx,lly,urx,ury):
     #print("Becomes:")
     #print("x: %d, y: %d, w %d, h %d"%(x,y,w,h))
     return x,y,w,h
-    
+
 def softmax(startidx, inputarr, outputarr, n, stride):
     import math
 
@@ -272,7 +280,7 @@ def softmax(startidx, inputarr, outputarr, n, stride):
     for i in range(0, n):
         outputarr[startidx+i*stride] /= sumexp
 
-        
+
 def sigmoid(x):
     import math
     #print("Sigmoid called on:")
@@ -308,7 +316,7 @@ def generate_colors(classes):
     return colors
 
 def draw_boxes(iimage,bboxes,names,colors=[],outpath="out",fontpath="font",display=False):
-    
+
     if os.path.isdir('./out') is False:
         os.makedirs('./out')
 
@@ -332,17 +340,17 @@ def draw_boxes(iimage,bboxes,names,colors=[],outpath="out",fontpath="font",displ
         for k in range(thickness):
             draw.rectangle([bboxes[j]['ll']['x']+k, bboxes[j]['ll']['y']+k, bboxes[j]['ur']['x']+k, bboxes[j]['ur']['y']+k],outline=colors[classid])
         draw.rectangle([bboxes[j]['ll']['x'], bboxes[j]['ur']['y'], bboxes[j]['ll']['x']+2*thickness+labelsize[0], bboxes[j]['ur']['y']+thickness+labelsize[1]],fill=colors[classid],outline=colors[classid])
-        
+
     for j in range(0, len(bboxes)):
         classid = bboxes[j]['classid']
         label   = '{} {:.2f}'.format(names[bboxes[j]['classid']],bboxes[j]['prob'])
         labelsize = draw.textsize(label)
         draw.text([bboxes[j]['ll']['x']+2*thickness, bboxes[j]['ur']['y']+thickness], label, font=font)
-    
-    del draw 
+
+    del draw
 
     image.save(outpath,quality=90)
-    
+
     # DISPLAY BOXES
     if os.getenv('DISPLAY') is not None and display:
       img = cv2.imread(outpath)

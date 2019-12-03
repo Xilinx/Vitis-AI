@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#!/usr/bin/env bash
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 usage() {
   echo "Usage: ./detect.sh --test <test> --model <model> [...]"
@@ -61,7 +68,7 @@ usage() {
 
   echo -e ""
   echo "  --profile                     Provides performance related metrics"
-  echo "  --visualize                   Draws the boxes on input images and saves them to --results_dir" 
+  echo "  --visualize                   Draws the boxes on input images and saves them to --results_dir"
   echo "  -h, --help                    Print this message."
 }
 
@@ -88,7 +95,7 @@ NUM_CLASSES=80
 LABELS='./coco.names'
 IOU_THRESHOLD=0.45
 SCORE_THRESHOLD=0.24
-ANCHOR_COUNT=5 
+ANCHOR_COUNT=5
 YOLO_VERSION='v3'
 RESULTS_DIR=out_labels
 
@@ -315,7 +322,7 @@ if [[ ( -v NETWORK_HEIGHT ) && ( -v NETWORK_WIDTH ) ]]; then
 fi
 
 ## Run Quantizer
-if [[ ( ! -z $CUSTOM_NETCFG ) && ( ! -z $CUSTOM_WEIGHTS ) && ( ! -z $CUSTOM_QUANTCFG ) || 
+if [[ ( ! -z $CUSTOM_NETCFG ) && ( ! -z $CUSTOM_WEIGHTS ) && ( ! -z $CUSTOM_QUANTCFG ) ||
       ( RUN_QUANTIZER == 0 ) || ( $TEST == "cpu_detect" ) ]]; then
   RUN_QUANTIZER=0
 fi
@@ -331,7 +338,7 @@ if [[ $RUN_QUANTIZER == 1 ]]; then
   echo -e "quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir work/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH"
   $QUANTIZER quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir work/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH
   if [[ $? != 0 ]]; then echo "Quantization failed. Exiting ..."; exit 1; fi
-else 
+else
   cp $NET_WEIGHTS work/deploy.caffemodel
 fi
 
@@ -369,11 +376,11 @@ then
       --output_dir work"
 
   COMPILER_OTHER_OPT="{"
-  COMPILER_OTHER_OPT+=" 'ddr':1024, 'quant_cfgfile': 'work/quantize_info.txt', " 
+  COMPILER_OTHER_OPT+=" 'ddr':1024, 'quant_cfgfile': 'work/quantize_info.txt', "
 
   if [ "$KCFG" == "v3" ] ; then
     if [ $COMPILEROPT == "latency" ] || [ $COMPILEROPT == "throughput" ]; then
-       COMPILER_OTHER_OPT+=" 'mixmemorystrategy': True, 'poolingaround': True, "  
+       COMPILER_OTHER_OPT+=" 'mixmemorystrategy': True, 'poolingaround': True, "
        COMPILER_OTHER_OPT+=" 'parallism':True, 'parallelread':['bottom','tops'], 'parallelismstrategy':['tops','bottom'], "
        COMPILER_OTHER_OPT+=" 'pipelineconvmaxpool':True, 'fancyreplication':True "
     fi
@@ -387,9 +394,9 @@ then
   QUANTCFG=work/quantizer.json
 
   if [ $COMPILEROPT == "throughput" ] && [ "$KCFG" == "v3" ]; then
-     python $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/scripts/xfdnn_gen_throughput_json.py --i work/compiler.json --o work/compiler_tput.json            
+     python $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/scripts/xfdnn_gen_throughput_json.py --i work/compiler.json --o work/compiler_tput.json
      NETCFG=work/compiler_tput.json
-  fi  
+  fi
 fi
 
 if [[ -z $QSCORE_THRESHOLD ]]; then
@@ -411,7 +418,7 @@ if [ ! -z $GOLDEN ];  then
   echo -e "   To get COCO data in darknet format run script https://github.com/pjreddie/darknet/blob/master/scripts/get_coco_dataset.sh  "
   echo -e "   To get VOC data in darknet format run script https://github.com/pjreddie/darknet/blob/master/scripts/voc_label.py  "
   echo -e "   All the images in the Val dataset should be provided in one folder and specified by --directory option"
-  echo -e "   The corresponding groud truth label .txt files with same name as images should be provided in one folder and specified by --checkaccuracy option"  
+  echo -e "   The corresponding groud truth label .txt files with same name as images should be provided in one folder and specified by --checkaccuracy option"
   echo -e "   The script will generate the corresponding labels in ./out_labels folder "
   BASEOPT+=" --golden $GOLDEN --results_dir $RESULTS_DIR"
   echo "Image Directory : $DIRECTORY"
@@ -444,7 +451,7 @@ if [ -z $VITIS_RUNDIR ]; then
   ln -s $(get_abs_filename $WEIGHTS) ${VITIS_RUNDIR}/weights.h5
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"publish_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}/meta.json
   # meta.json accepts {env_variables} in paths as well, e.g.:
-  #echo "{ \"lib\": \"{VAI_ALVEO_ROOT}/xfdnn/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_ALVEO_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json 
+  #echo "{ \"lib\": \"{VAI_ALVEO_ROOT}/xfdnn/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_ALVEO_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
   cp -fr $VITIS_RUNDIR ${VITIS_RUNDIR}_worker
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"subscribe_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}_worker/meta.json
 fi
@@ -518,5 +525,5 @@ if [ $ZELDA -eq "0" ]; then
   python $TEST $BASEOPT 2>&1 | tee single_img_out.txt
   if [[ $? != 0 ]]; then echo "Execution failed. Exiting ..."; exit 1; fi
 else
-  gdb --args python $TEST $BASEOPT 
+  gdb --args python $TEST $BASEOPT
 fi

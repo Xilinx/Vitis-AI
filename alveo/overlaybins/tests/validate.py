@@ -1,10 +1,17 @@
 #!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#!/usr/bin/env python3
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 '''
 Goal is to traverse all xclbin files and find matching json files
@@ -36,7 +43,7 @@ def validate_json(jsonfname, verbose=False):
                        "XDNN_VERSION_MAJOR" in data.keys() and \
                        "XDNN_VERSION_MINOR" in data.keys() and \
                        "XDNN_VERSION" not in data.keys()
-    
+
     valid_xdnn_config = \
                       "XDNN_BITWIDTH" in data.keys() and \
                       "XDNN_NUM_KERNELS" in data.keys()
@@ -58,8 +65,8 @@ def validate_json(jsonfname, verbose=False):
       print("Valid SDX Version:  {0}".format(valid_sdx_version))
 
     return True if valid_xdnn_version and valid_xdnn_config and valid_sdx_version else False
-    
-    
+
+
 def fixdir(dirname, excludes, prefix=" "):
     objs = os.listdir(dirname)
     objs = list(set(objs) - set(excludes))

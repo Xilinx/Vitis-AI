@@ -1,9 +1,17 @@
 #!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import cv2
@@ -46,12 +54,12 @@ def prep_image(image_file, net_width, net_height, pix_scale, pad_val, img_transp
     neww   = int(maxdim * scalew)
     newh   = int(maxdim * scaleh)
     img    = cv2.resize(img, (neww, newh))
-    
+
     if img.dtype != np.float32:
         img = img.astype(np.float32, order='C')
-    
+
     img = img * pix_scale
-    
+
     height, width, channels = img.shape
     newdim = max(height, width)
     letter_image = np.zeros((newdim, newdim, channels))
@@ -60,20 +68,20 @@ def prep_image(image_file, net_width, net_height, pix_scale, pad_val, img_transp
         letter_image[(newdim-height)/2:((newdim-height)/2+height),0:width] = img
     else:
         letter_image[0:height,(newdim-width)/2:((newdim-width)/2+width)] = img
-    
+
     img = letter_image
-    
+
     img = np.transpose(img, (img_transpose[0], img_transpose[1], img_transpose[2]))
-    
+
     ch = 3*[None]
     ch[0] = img[0,:,:]
     ch[1] = img[1,:,:]
     ch[2] = img[2,:,:]
     img   = np.stack((ch[ch_swp[0]],ch[ch_swp[1]],ch[ch_swp[2]]))
-    
+
     return img, orig_shape
-        
-    
+
+
 def yolo_gpu_inference(backend_path,
                        image_dir,
                        deploy_model,
@@ -87,7 +95,7 @@ def yolo_gpu_inference(backend_path,
                        channel_swap,
                        yolo_model,
                        num_classes, args):
-    
+
     # Setup the environment
     images = xdnn_io.getFilePaths(args['images'])
     if(args['golden'] or args['visualize']):
@@ -113,11 +121,11 @@ def yolo_gpu_inference(backend_path,
     net_h, net_w = net.blobs['data'].data.shape[-2:]
     args['net_h'] = net_h
     args['net_w'] = net_w
-    
+
     for i,img in enumerate(images):
         if((i+1)%100 == 0): print(i+1, "images processed")
         raw_img, img_shape = xdnn_io.loadYoloImageBlobFromFile(img, net_h, net_w)
-        
+
         net.blobs['data'].data[...] = raw_img
         out = net.forward()
 
@@ -125,7 +133,7 @@ def yolo_gpu_inference(backend_path,
         boxes = yolo_postproc(caffeOutput, args, [img_shape], biases=biases)
 
         print("{}. Detected {} boxes in {}".format(i, len(boxes[0]), img))
-    
+
         # Save the result
         boxes = boxes[0]
         if(args['results_dir']):
@@ -138,10 +146,10 @@ def yolo_gpu_inference(backend_path,
                 print("Saving result to {}".format(out_file_png)); sys.stdout.flush()
                 draw_boxes(img, boxes, labels, colors, out_file_png)
         # draw_boxes(images[i],bboxes,class_names,colors=[(0,0,0)]*num_classes)
-    
+
     return len(images)
-    
-        
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser = yolo_parser_args(parser)

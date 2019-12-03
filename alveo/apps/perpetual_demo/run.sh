@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#!/bin/bash
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #python server.py -z 127.0.0.1:5505,5515,5525,5535,5545,5555,5565,5575 -x 127.0.0.1:5506,5516,5526,5536,5546,5556,5566,5576
 
 # User must set this - maybe in future we can auto-detect
@@ -36,7 +43,7 @@ echo ""
 let "NUMCARDS = $NUMCARDS -1"
 PORTSZ=""
 PORTSX=""
-cd $VAI_ALVEO_ROOT/examples/deployment_modes 
+cd $VAI_ALVEO_ROOT/examples/deployment_modes
 for i in $(seq 0 $NUMCARDS)
   do
     PORTSZ="${PORTSZ}55${i}5"
@@ -46,7 +53,7 @@ for i in $(seq 0 $NUMCARDS)
       PORTSX="${PORTSX},"
     fi
     ./run.sh -t streaming_classify -i $i -x -v -c throughput -ns 8 -d $DIRECTORY > /dev/null &
-  done 
+  done
 
 cd -
 python server.py -z 127.0.0.1:$PORTSZ -x 127.0.0.1:$PORTSX > /dev/null

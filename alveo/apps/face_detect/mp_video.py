@@ -1,25 +1,22 @@
-'''
-Copyright 2019 Xilinx Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 # Multiprocessing video with queue
-   
+
 import multiprocessing as mp
 
 import os
-import cv2    
+import cv2
 import time
 import ctypes
 import threading
@@ -33,7 +30,7 @@ import numpy as np
 # CONSTANTS
 ##################################################
 num_shared_slots = 200
-    
+
 
 # Current version does copies...
 # Assumes all types are np.float32/ctypes.c_float
@@ -47,7 +44,7 @@ class SharedMemoryQueue:
         # Hard coded for floats...
         self._mem_type = ctypes.c_float
         self._np_type = np.float32
-        
+
         # put() function copies into the free list
         self._freeList = mp.Queue(length)
 
@@ -58,7 +55,7 @@ class SharedMemoryQueue:
         self._buf_sizes_list = map(lambda x: np.prod(x), buf_shapes_list)
 
         print "Creating Shared Memory with buf_shape_list=",self._buf_shapes_list
-        
+
         self._shared_memory_arrs = list()
         for i in range(length):
             buf_list = list()
@@ -67,7 +64,7 @@ class SharedMemoryQueue:
             self._shared_memory_arrs.append(buf_list)
             self._freeList.put(i)
 
-        
+
     def close(self):
         self._readList.put(None)
 
@@ -82,17 +79,17 @@ class SharedMemoryQueue:
             np_arr = np.frombuffer(self._shared_memory_arrs[slot_id][i].get_obj(), dtype = self._np_type)
             np_arr = np.reshape(np_arr, self._buf_shapes_list[i], order = 'C')
             buf_list.append(np_arr)
-        
+
         return buf_list
 
-    
+
     def openWriteId(self):
         id = self._freeList.get()
         return id
 
 
     def closeWriteId(self, id):
-        # finished writing slot id 
+        # finished writing slot id
         self._readList.put(id)
 
 
@@ -111,7 +108,7 @@ class SharedMemoryQueue:
           buf_list = self.accessNumpyBUffer(i)
           for np_arr in buf_list:
               print "Slot=",i,"Array=",j,"Val=",np_arr
-        
+
 
 
 
@@ -148,7 +145,7 @@ def cam_loop(shared_frame_arrs, ready_fpga):
     end_time = time.time()
     shared_frame_arrs.close()
 
-    
+
     print funcname(),"Video Ending! Frame Count = ",frame_cnt
     print('{0} cam loading time: {1} seconds'.format(funcname(),end_time - start_time))
 
@@ -161,11 +158,11 @@ def detect_pre(shared_frame_arrs, shared_trans_arrs):
         read_slot = shared_frame_arrs.openReadId()
         if start_time is None:
             start_time = time.time()
-            
+
         if read_slot is None:
             break
         read_arrs = shared_frame_arrs.accessNumpyBuffer(read_slot)
-            
+
         frame_id += 1
 
         write_slot = shared_trans_arrs.openWriteId()
@@ -177,7 +174,7 @@ def detect_pre(shared_frame_arrs, shared_trans_arrs):
         shared_trans_arrs.closeWriteId(write_slot)
     end_time = time.time()
     shared_trans_arrs.close()
-    
+
     print "Ran",frame_id,"frames"
     print('detect_preprocessing time: {0} seconds'.format(end_time - start_time))
 
@@ -222,26 +219,26 @@ def detect_forward(shared_trans_arrs, shared_output_arrs, ready_fpga):
                 "\'xclbin\': \'" + VAI_ALVEO_ROOT + "/overlaybins/" + MLSUITE_PLATFORM + "/overlay_4.xclbin\'," +\
                 "\'output_names\': [u\'pixel-conv\', u\'bb-output\']," +\
                 "\'overlaycfg\': {u\'XDNN_NUM_KERNELS\': u\'2\', u\'SDX_VERSION\': u\'2018.2\', u\'XDNN_VERSION_MINOR\': u\'0\', u\'XDNN_SLR_IDX\': u\'1, 1\', u\'XDNN_DDR_BANK\': u\'0, 3\', u\'XDNN_CSR_BASE\': u\'0x1800000, 0x1810000\', u\'XDNN_BITWIDTH\': u\'8\', u\'DSA_VERSION\': u\'xilinx_u200_xdma_201820_1\', u\'XDNN_VERSION_MAJOR\': u\'3\'}}"
-    
+
     det = run_fpga.RunFPGA(param_str)
     ready_fpga.put(1)
 
-    qWait = mp.Queue(maxsize=100)    
+    qWait = mp.Queue(maxsize=100)
     t = threading.Thread(target=fpga_wait, args=(det._fpgaRT, qWait, shared_output_arrs))
     t.start()
-  
+
     frame_id = 0
     start_time = None
 
     while True:
         read_slot = shared_trans_arrs.openReadId()
-        
+
         if start_time is None:
             start_time = time.time()
-            
+
         if read_slot is None:
             break
-        
+
         read_slot_arrs = shared_trans_arrs.accessNumpyBuffer(read_slot)
 
         write_slot = shared_output_arrs.openWriteId()
@@ -252,11 +249,11 @@ def detect_forward(shared_trans_arrs, shared_output_arrs, ready_fpga):
         shared_trans_arrs.closeReadId(read_slot)
 
         qWait.put(write_slot)
-        
+
         frame_id += 1
     end_time = time.time()
     shared_output_arrs.close()
-    
+
     print('detect forward time: {0} seconds'.format(end_time - start_time))
 
     qWait.put(None)
@@ -270,8 +267,8 @@ def detect_post(shared_output_arrs, face_q):
         read_slot = shared_output_arrs.openReadId()
 
         if start_time is None:
-            start_time = time.time() 
-        
+            start_time = time.time()
+
         if read_slot is None:
             break
 
@@ -282,16 +279,16 @@ def detect_post(shared_output_arrs, face_q):
         shared_output_arrs.closeReadId(read_slot)
         frame_cnt += 1
         face_q.put(face_rects)
-        
+
     end_time = time.time()
     face_q.put(None)
-    
+
     print('detect post processing time: {0} seconds'.format(end_time - start_time))
 
     total_time = end_time-start_time
     print('Total run: {0} frames in {1} seconds ({2} fps)'.format(frame_cnt, total_time, frame_cnt/total_time))
 
-            
+
 def show_loop(face_q):
 
     cv2.namedWindow('face_detection')
@@ -326,29 +323,29 @@ def show_loop(face_q):
         frame_id += 1
     end_time = time.time()
     print('drawing boxes time: {0} seconds'.format(end_time - start_time))
-        
- 
+
+
 
 if __name__ == '__main__':
- 
+
     frame_q = mp.Queue()
     resize_q = mp.Queue()
     trans_q = mp.Queue()
     output_q = mp.Queue()
-    face_q = mp.Queue()    
+    face_q = mp.Queue()
 
     ready_fpga = mp.Queue()
-    
+
     sharedInputArrs = []
 
     compilerJSONObj = xdnn.CompilerJsonParser('deploy.compiler.json')
 
     input_shapes = map(lambda x: tuple(x), compilerJSONObj.getInputs().itervalues())
-    output_shapes = map(lambda x: tuple(x), compilerJSONObj.getOutputs().itervalues())    
+    output_shapes = map(lambda x: tuple(x), compilerJSONObj.getOutputs().itervalues())
 
     input_sizes = map(lambda x: np.prod(x), input_shapes)
     output_sizes = map(lambda x: np.prod(x), output_shapes)
-    
+
     print input_shapes
     print output_shapes
 
@@ -370,7 +367,7 @@ if __name__ == '__main__':
     detect_process3 = mp.Process(target=detect_post,args=(shared_output_arrs, face_q, ))
     show_process = mp.Process(target=show_loop,args=(face_q, ))
 
-    start_time = time.time()     
+    start_time = time.time()
     cam_process.start()
     detect_process1.start()
     detect_process2.start()
@@ -388,4 +385,4 @@ if __name__ == '__main__':
     detect_process1.terminate()
     detect_process2.terminate()
     detect_process3.terminate()
-    show_process.terminate()    
+    show_process.terminate()

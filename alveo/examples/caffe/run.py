@@ -1,10 +1,17 @@
 #!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2018, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#!/usr/bin/python
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 from __future__ import print_function
 
 import os, sys, argparse
@@ -46,7 +53,7 @@ def Getopts():
 
 # Generate hardware instructions for runtime -> compiler.json
 def Compile(output_dir="work"):
-  
+
   compiler = xfdnnCompiler(
     networkfile = output_dir+"/deploy.prototxt",
     weights = output_dir+"/deploy.caffemodel",
@@ -59,7 +66,7 @@ def Compile(output_dir="work"):
 
 # Generate a new prototxt with custom python layer in place of FPGA subgraph
 def Cut(prototxt,output_dir="work"):
-  
+
   cutter = xfdnnCutter(
     cutAfter = "data", # Prototxt expected to have layer named "data"
     trainproto = prototxt, # train_val prototxt used to extract accuracy layers
@@ -87,13 +94,13 @@ def Infer(prototxt, caffemodel, numBatches=1):
   print ("Running with shape of: ",ptxtShape)
   results_dict = {}
   accum = {}
-  for i in range(1, numBatches+1): 
+  for i in range(1, numBatches+1):
     out = net.forward()
     for k in out:
       if out[k].size != 1:
         continue
       if k not in accum:
-        accum[k] = 0.0 
+        accum[k] = 0.0
       accum[k] += out[k]
       curAcc = out[k]
       avgAcc = accum[k] / i
@@ -113,8 +120,8 @@ def Classify(prototxt,caffemodel,image,labels):
   image_dims = []
   image_dims.append(data.shape[2])
   image_dims.append(data.shape[3])
-  classifier = caffe.Classifier(prototxt, caffemodel, 
-          image_dims, mean=np.array([104,117,123]), 
+  classifier = caffe.Classifier(prototxt, caffemodel,
+          image_dims, mean=np.array([104,117,123]),
           raw_scale=255, channel_swap=[2,1,0])
   predictions = classifier.predict([caffe.io.load_image(image)]).flatten()
   labels = np.loadtxt(labels, str, delimiter='\t')

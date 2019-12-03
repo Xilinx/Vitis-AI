@@ -1,11 +1,19 @@
 #!/usr/bin/env python
+# Copyright 2019 Xilinx Inc.
 #
-# // SPDX-License-Identifier: BSD-3-CLAUSE
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# (C) Copyright 2019, Xilinx, Inc.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-from __future__ import print_function 
+from __future__ import print_function
 import os, sys
 from six import itervalues, iteritems
 from ctypes import *
@@ -43,7 +51,7 @@ def main():
   outTensors = runner.get_output_tensors()
   batch_sz = args['batch_sz']
   if batch_sz == -1:
-    batch_sz = inTensors[0].dims[0] 
+    batch_sz = inTensors[0].dims[0]
 
   fpgaBlobs = []
   for io in [inTensors, outTensors]:
@@ -69,7 +77,7 @@ def main():
   for i in range(0, len(img_paths), batch_sz):
     pl = []
     img_shapes = []
-    
+
     # Prep images
     t1 = timeit.default_timer()
     for j, p in enumerate(img_paths[i:i + batch_sz]):
@@ -124,4 +132,3 @@ def main():
 
 if __name__ == '__main__':
   main()
-
