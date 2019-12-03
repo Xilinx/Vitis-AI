@@ -73,20 +73,20 @@ vitis_ai_library
 
 4. Cross compile the demo in the AI Library, using yolov3 as example.
 ```
-$cd /workspace/vitis_ai_library_r1.0/demo/yolov3
+$cd /workspace/Vitis-AI/Vitis-AI-Library/demo/yolov3
 $sh -x build.sh
 ```	
 
 5. To compile the library sample in the AI Library, take classification for example, execute the following command.
 ```
-$cd /workspace/vitis_ai_library_r1.0/samples/classification
+$cd /workspace/Vitis-AI/Vitis-AI-Library/samples/classification
 $sh -x build.sh
 ```	
 
-6. To modify the library source code, view and modify them under `/workspace/vitis_ai_library_r1.0/libsrc`.
+6. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library/libsrc`.
    If you want to recompile the library, take libdpclassification for example, execute the following command:
 ```
-$cd /workspace/vitis_ai_library_r1.0/libsrc/libdpclassification
+$cd /workspace/Vitis-AI/Vitis-AI-Library/libsrc/libdpclassification
 $sh -x build.sh
 ```
 
