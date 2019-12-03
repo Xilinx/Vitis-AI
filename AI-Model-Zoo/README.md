@@ -225,7 +225,7 @@ For a Tensorflow model, you should see the following directory structure:
         └── frozen.pb                   # Float-point frozen model, the input to the `vai_q_tensorflow`.
 
 
-**Note:** For more information on `vai_q_caffe` and `vai_q_tensorflow`, see the [Vitis AI User Guide](https://www.xilinx.com/cgi-bin/docs/ndoc?t=user_guides;d=ug1414-vitis-ai.pdf).
+**Note:** For more information on `vai_q_caffe` and `vai_q_tensorflow`, see the [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf).
 
 
 ## Model Performance
