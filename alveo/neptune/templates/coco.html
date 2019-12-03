@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <link rel="shortcut icon" href="{{ static_url('favicon.ico') }}">
+  <script src="{{ static_url('scripts/drawboxes.js') }}" type="application/javascript"></script>
+  <style>
+    .deep-rect{
+      z-index:1000
+    }
+  </style>
+{% end %}
+
+{% block body %}
+  <h1>FPGA inference service</h1>
+  <div id="my_image_wrapper" style="height: 500px; position: relative;">
+    <img id="my_image" style="position: absolute; height: 500px" src="http://farm1.staticflickr.com/26/50531313_4422f0787e_z.jpg"/>
+  </div>
+
+  <script id="hbt-predictions" type="text/x-handlebars-template">
+    {{!#each response}}
+      <div style="font-family: monospace;">
+        {{!this}}
+      </div>
+    {{!/each}}
+  </script>
+
+  <script>
+    var hbsource = document.getElementById("hbt-predictions").innerHTML;
+    var hbtemplate = Handlebars.compile(hbsource);
+
+    $(document).ready(function() {
+      $.post('/serve/coco', {'url': 'http://farm1.staticflickr.com/26/50531313_4422f0787e_z.jpg', 'dtype': 'uint8'})
+      .done(function(resp) {
+        var data = JSON.parse(resp);
+        console.log(data)
+        $("#response").html("<em>-- no response --</em>");
+
+        if (!data.boxes)
+          return;
+
+        $("#my_image_wrapper").css('width', data.resized_shape[1])
+        $("#my_image_wrapper").css('height', data.resized_shape[0])
+        $("#my_image").css('width', data.resized_shape[1])
+        $("#my_image").css('height', data.resized_shape[0])
+
+
+        const dr = new DeepRect("#my_image_wrapper");
+
+        function set_resp(val){
+          console.log(val)
+          const resp = val;
+          dr.clear();
+          if (resp) {
+            for (let i = 0; i < resp.length; i++) {
+              const entry = resp[i];
+                var w = entry[2] - entry[0];
+                var h = entry[3] - entry[1];
+                var x = entry[0];
+                var y = entry[1];
+              dr.draw(x, y, w, h, entry[4]);
+              //dr.draw(entry[0], entry[1], entry[2], entry[3], entry[4]);
+            }
+          }
+        }
+
+        set_resp(data.boxes);
+        $("#response").html(hbtemplate(data));
+      })
+      .fail(function(xhr, status, error) {
+          console.log(status);
+          console.log(error);
+          console.log(xhr);
+      });
+    });
+  </script>
+{% end %}

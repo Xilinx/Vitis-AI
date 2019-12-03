@@ -1,0 +1,8 @@
+{
+    "lib": "libn2cube.so",
+    "vitis_dpu_kernel": "ssd",
+    "pre_processing_pool": 4,
+    "post_processing_pool": 4,
+    "dpu_thread_pool": 3,
+    "dpu_task_pool": 16
+}

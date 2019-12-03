@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <script src="{{ static_url('scripts/facedetect.js') }}" type="application/javascript"></script>
+  <style>
+    .deep-rect{
+      z-index:1000
+    }
+  </style>
+{% end %}
+
+{% block body %}
+  <h1>FPGA inference service</h1>
+  <div id="my_image_wrapper" style="height: 320px; position: relative;">
+    <img id="my_image" style="position: absolute; height: 320px" src="https://upload.wikimedia.org/wikipedia/commons/5/54/Peng_Victor-Wikipedia.jpg"/>
+  </div>
+  <div style="position: relative;">foo</div>
+
+  <script id="hbt-predictions" type="text/x-handlebars-template">
+    {{!#each response}}
+      <div style="font-family: monospace;">
+        {{!this}}
+      </div>
+    {{!/each}}
+  </script>
+
+  <script>
+    var hbsource = document.getElementById("hbt-predictions").innerHTML;
+    var hbtemplate = Handlebars.compile(hbsource);
+
+    $(document).ready(function() {
+      $.post('/serve/face', {'url': 'https://upload.wikimedia.org/wikipedia/commons/5/54/Peng_Victor-Wikipedia.jpg', 'dtype': 'uint8'})
+      .done(function(resp) {
+        console.log(data)
+        var data = JSON.parse(resp);
+        console.log(data)
+        $("#response").html("<em>-- no response --</em>");
+
+        if (!data.boxes)
+          return;
+
+        set_resp(data.boxes);
+        $("#response").html(hbtemplate(data));
+      })
+      .fail(function(xhr, status, error) {
+          console.log(status);
+          console.log(error);
+          console.log(xhr);
+      });
+    });
+  </script>
+{% end %}

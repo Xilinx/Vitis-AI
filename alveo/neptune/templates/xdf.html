@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script src="/static/scripts/index.js"></script>
+<script src="/static/scripts/drawboxes.js"></script>
+<script src="/static/scripts/demo.js"></script>
+{% end %}
+
+{% block body %}
+<div id="world" class="container-fluid"></div>
+
+<script>
+  var feeds = [
+    ["https://www.youtube.com/watch?v=s1FaRCRgXHc", // china market food ranger
+      ["sface"]],
+    ["https://www.youtube.com/watch?v=mH9pDONwq3I", // ellen firefighters
+      ["sface"]],
+    ["https://www.youtube.com/watch?v=diDuEAKA0wA", // india street food ranger
+      ["sface"]],
+    ["https://www.youtube.com/watch?v=3w6UuOARJxs", // mark weins china street food
+      ["sface"]],
+    ["https://www.youtube.com/watch?v=2RnGwkWL94I", // geneva motor show
+      ["scoco"]],
+    ["https://www.youtube.com/watch?v=AFHGVQKH6Fc", // riding motorcycle vietnam
+      ["scoco"]],
+    ["https://www.youtube.com/watch?v=3l2-BVCSXJ0", // vietnam floating market
+      ["scoco"]],
+    ["https://www.youtube.com/watch?v=L1srjjZ8Vo4", // erik otto nyc hotline
+      ["scoco"]],
+    ["https://www.youtube.com/watch?v=8579iHc0CTY", // melbourne walking
+      ["scoco"]],
+    ["https://www.youtube.com/watch?v=BDW9P60NgHs", // shibuya walking
+      ["scoco"]],
+    ["https://www.youtube.com/watch?v=_SlhB1euxxo", // dog show
+      ["simnet"]],
+    ["https://www.youtube.com/watch?v=MuB7HHeuNbc", // zoo
+      ["simnet"]],
+    ["https://www.youtube.com/watch?v=UY3S3tO7frM", // Life Story nature
+      ["simnet"]],
+    ["https://www.youtube.com/watch?v=xExzNVgjpoo", // life of panda
+      ["simnet"]],
+    ["https://www.youtube.com/watch?v=HRlLFVcDdBs", // wildlife serengeti
+      ["simnet"]],
+    ["https://www.youtube.com/watch?v=5gDdliyH02E", // savannah life
+      ["simnet"]],
+  ];
+  var feedWidgets = [];
+
+  var world = $("#world");
+  const numCols = 4;
+  for (var i=0; i < feeds.length; i++)
+  {
+    if (i % numCols == 0)
+    {
+      var row = $("<div/>", { class: 'row no-gutters' });
+      for (var c=0; c < numCols; c++)
+      {
+        var id = i + c;
+        var col = $("<div/>", { class: 'col-3', id: "demo"+id });
+        row.append(col);
+      }
+      world.append(row);
+    }
+
+    feedWidgets.push(new DemoWidget({
+      selector: "#demo"+i,
+      client_id: "xdf_"+(i+1), // use static IDs instead of using auto-ID from server
+      wsport: {{ wsport }},
+      uioff: true
+    }));
+  }
+
+  function startFeeds(idx) {
+    if (idx >= feeds.length)
+      return;
+
+    feedWidgets[idx].submit(feeds[idx][0], feeds[idx][1], /*keepalive=*/true);
+    setTimeout(function() {
+      startFeeds(idx+1);
+    }, 1000);
+  }
+  startFeeds(0);
+
+  function switchFeeds(iter, widgetIdx, feedIdx) {
+    console.log("[XDF] switching widget " + widgetIdx + " to feed " + feedIdx);
+    var nextFeeds = [
+     ["https://www.youtube.com/watch?v=3w6UuOARJxs", // mark weins china street food
+       ["sface"]],
+     ["https://www.youtube.com/watch?v=BDW9P60NgHs", // shibuya walking
+       ["sface"]],
+     ["https://www.youtube.com/watch?v=sxSokGqIOms", // food ranger vietnam
+       ["sface"]],
+     ["https://www.youtube.com/watch?v=L1srjjZ8Vo4", // erik otto nyc hotline
+       ["scoco"]],
+     ["https://www.youtube.com/watch?v=3l2-BVCSXJ0", // vietnam floating market
+       ["scoco"]],
+     ["https://www.youtube.com/watch?v=8579iHc0CTY", // melbourne walking
+       ["scoco"]],
+     ["https://www.youtube.com/watch?v=HRlLFVcDdBs", // wildlife serengeti
+       ["simnet"]],
+     ["https://www.youtube.com/watch?v=5gDdliyH02E", // savannah life
+       ["simnet"]],
+     ["https://www.youtube.com/watch?v=xExzNVgjpoo", // life of panda
+       ["simnet"]],
+    ];
+    nextFeeds = nextFeeds.concat(feeds);
+    console.log(nextFeeds);
+
+    // let orig feeds run 3 minutes b4 switching;
+    // then switch every 30 seconds
+    const switchDelay = (iter > 0) ? 30000 : 180000;
+    setTimeout(function() {
+      feedWidgets[widgetIdx].submit(nextFeeds[feedIdx][0],
+        nextFeeds[feedIdx][1], /*keepalive=*/true);
+
+      switchFeeds(1,
+        (widgetIdx+1) % feedWidgets.length,
+        (feedIdx+1) % nextFeeds.length);
+    }, switchDelay);
+  }
+  //switchFeeds(0, 0, 0);
+</script>
+{% end %}

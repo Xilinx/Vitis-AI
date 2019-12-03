@@ -1,0 +1,22 @@
+{
+"confs":[
+  {
+    "name":"googlenet",
+    "net":"googlenet_v1",
+    "netcfg":"data/googlenet_v1_8b_autoAllOpt.json",
+    "weights":"data/googlenet_v1_data.h5",
+    "quantizecfg":"data/googlenet_v1_8b_xdnnv3.json",
+    "PE":"0",
+    "fpgaoutsz":"1024"
+    },
+  {
+    "name":"resnet",
+    "net":"resnet50",
+    "netcfg":"data/resnet50_8b_latency.json",
+    "weights":"data/resnet50_data.h5",
+    "quantizecfg":"data/resnet50_8b_xdnnv3.json",
+    "PE":"1",
+    "fpgaoutsz":"2048"
+  }
+]
+}

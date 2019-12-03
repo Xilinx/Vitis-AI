@@ -1,0 +1,9 @@
+#!/bin/sh
+
+vai_q_tensorflow quantize --input_frozen_graph ${TF_NETWORK_PATH}/float/frozen.pb \
+			  --input_fn ${TF_NETWORK_PATH}.input_fn.calib_input \
+			  --output_dir ${TF_NETWORK_PATH}/vai_q_output \
+	                  --input_nodes input \
+			  --output_nodes resnet_v1_50/predictions/Reshape_1 \
+			  --input_shapes ?,224,224,3 \
+			  --calib_iter 50 \

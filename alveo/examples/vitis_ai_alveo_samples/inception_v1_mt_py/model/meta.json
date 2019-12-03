@@ -1,0 +1,8 @@
+{
+  "target": "xdnn", 
+  "filename": "", 
+  "kernel": "xdnn", 
+  "config_file": "", 
+  "lib": "/opt/vitis_ai/conda/envs/vitis-ai-caffe/lib/libxfdnn.so", 
+  "xclbin": "/opt/xilinx/overlaybins/xdnnv3"
+}

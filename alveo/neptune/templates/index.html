@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/index.css">
+<script src="/static/scripts/index.js"></script>
+<script src="/static/scripts/drawboxes.js"></script>
+<script src="/static/scripts/demo.js"></script>
+<script src="/static/scripts/services.js"></script>
+<script src="/static/scripts/speedometer.js"></script>
+{% end %}
+
+{% block body %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-3 sidebar bg-dark p-4 ">
+      <div class="position-fixed">
+        <h5 class="text-muted">VAI dashboard</h5>
+        <div class="mb-2 text-light">Quantize</div>
+        <div class="mb-2 text-light">Compile</div>
+        <div class="mb-2 text-light">Deploy</div>
+        <div class="mb-2 text-light">Services</div>
+        <div class="mb-2 text-light">Speedometer</div>
+      </div>
+    </div><!--.sidebar-->
+    <div class="col canvas p-4">
+      <div id="services" class='mb-5'></div>
+      <div id="demo" class='mb-5'></div>
+      <div id="speedometer" class='mb-5'></div>
+    </div><!--.canvas-->
+  </div><!--.row-->
+</div>
+
+<script>
+  var svcwidget = new ServicesWidget({
+    selector: "#services"
+  });
+
+  var demowidget = new DemoWidget({
+    selector: "#demo",
+    wsport: {{ wsport }},
+    //uioff: true
+  });
+
+  // ANDBG test programmatic submit
+  // setTimeout(function() {
+  //   demowidget.submit(
+  //     "https://www-tc.pbs.org/wnet/nature/files/2018/07/Bear133-1280x720.jpg",
+  //     ["ping"]);
+  // }, 1000);
+
+  var spdo = new Speedometer({
+    selector: "#speedometer"
+  });
+
+
+  var hostname = window.location.hostname;
+  var wsMgr = new WebsocketMgr({
+    url: "ws://" + hostname + ":" + {{ wsport }} + "/",
+    callbacks: {
+      'speedodata': function(data) {
+        spdo.update(data);
+      }
+    }
+  });
+</script>
+{% end %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <h1>FPGA inference service</h1>
+  <img style="max-width: 400px" src="https://www-tc.pbs.org/wnet/nature/files/2018/07/Bear133-1280x720.jpg"/>
+  <div>https://www-tc.pbs.org/wnet/nature/files/2018/07/Bear133-1280x720.jpg</div>
+  <div id="predictions"></div>
+
+<script id="hbt-predictions" type="text/x-handlebars-template">
+  {{!#each predictions}}
+    <div>
+    {{!#each this}}
+      <div style="font-family: monospace">{{!score}} {{!label}}</div>
+    {{!/each}}
+    </div>
+  {{!/each}}
+</script>
+
+<script>
+var hbsource = document.getElementById("hbt-predictions").innerHTML;
+var hbtemplate = Handlebars.compile(hbsource);
+
+$(document).ready(function() {
+  $.get('/serve/imagenet?url=https://www-tc.pbs.org/wnet/nature/files/2018/07/Bear133-1280x720.jpg&dtype=uint8')
+    .done(function(resp) {
+      var data = JSON.parse(resp);
+      console.log(data);
+      $("#predictions").html("<em>-- no response --</em>");
+
+      if (!data.predictions)
+        return;
+
+      $("#predictions").html(hbtemplate(data));
+    })
+    .fail(function(xhr, status, error) {
+        console.log(status);
+        console.log(error);
+        console.log(xhr);
+    });
+});
+</script>
+{% end %}

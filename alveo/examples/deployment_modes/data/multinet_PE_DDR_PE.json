@@ -1,0 +1,33 @@
+{
+"confs":[
+  {
+    "name":"yolo",
+    "net":"yolo_v2",
+    "datadir":"data/yolo_v2_data",
+    "quantizecfg":"data/yolo_v2_16b.json",
+    "PE":"0",
+    "transform":"yolo",
+    "firstfpgalayer":"conv0",
+    "labels":"coco_names.txt",
+    "images":"['dog.jpg']",
+    "img_mean":"[0.0, 0.0, 0.0]",
+    "img_raw_scale": "1.0",
+    "in_shape":"[3,608,608]",
+    "fpgaoutsz":"153425"
+  },
+  {
+    "name":"googlenet",
+    "net":"googlenet_v1",
+    "datadir":"data/googlenet_v1_data",
+    "quantizecfg":"data/googlenet_v1_16b.json",
+    "PE":"1",
+    "transform":"resize",
+    "firstfpgalayer":"conv1/7x7_s2",
+    "labels":"synset_words.txt",
+    "img_mean":"[104.007, 116.669, 122.679]",
+    "img_raw_scale":"255.0",
+    "in_shape":"[3,224,224]",
+    "fpgaoutsz":"1024"
+   }
+]
+}
