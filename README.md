@@ -94,7 +94,7 @@ to help you get familiar with the unfied programming APIs.
 | 6  | adas\_detection       | YOLO\-v3            | Caffe      | ADAS detection with Vitis AI unified C\+\+ APIs\.                         |
 | 7  | segmentation          | FPN                 | Caffe      | Semantic segmentation with Vitis AI unified C\+\+ APIs\.                  |
 
-For more information, please refer to [Vitis AI User Guide](https://www.xilinx.com/cgi-bin/docs/ndoc?t=user_guides;d=ug1414-vitis-ai.pdf)
+For more information, please refer to [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf)
 
  
 ## References 
