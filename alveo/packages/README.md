@@ -6,7 +6,7 @@ Requirements: XRT 2019.2+.
 Ubuntu:
 
                 % cd ${VAI_ALVEO_ROOT}/packages/ubuntu/
-                % sudo apt install ./xbutler_2.0-5.deb
+                % sudo apt install ./xbutler_2.0-6.deb
 
 CentOS:
 

@@ -200,6 +200,6 @@ inputs.clear();
 outputs.clear();
 ```
 
-## Reference (TODO)
+## Reference
 
-- Refer to example <a href="../examples/deployment_modes/MentionFilePATH">FileName.cpp</a> for use case of the C++ APIs. 
+- Refer to <a href="../examples/vitis_ai_alveo_samples/resnet50/src/main.cc">ResNet50 Classification Example</a> for use case of the C++ APIs. 

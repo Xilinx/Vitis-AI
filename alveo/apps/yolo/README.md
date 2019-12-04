@@ -21,7 +21,7 @@ The authors of the YOLO papers used their own programming framework called "Dark
  To run:
  1. Connect to F1 or Local Hardware
  
- 2. Setup the docker/container. Please refer to [container_pipeline.md](../../docs/container_pipeline.md) for details on setting up the container
+ 2. Setup the docker/container. Please refer to [Getting Started](https://github.com/Xilinx/Vitis-AI#getting-started) for details on setting up the container.
  
  4. `cd $VAI_ALVEO_ROOT/apps/yolo`
 

@@ -53,6 +53,8 @@ XRM_INSTALLER=""
 OVERLAYBINS_URL=""
 OVERLAYBINS_INSTALLER=""
 
+INSTALLER=""
+
 ##############################
 # Download XRT
 ##############################
@@ -89,6 +91,7 @@ if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* ]]; the
   XRM_INSTALLER=./ubuntu/xbutler_2.0-6.deb
   OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-overlaybins.deb"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.deb
+  INSTALLER="apt"
 elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
   U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015.x86_64.rpm"
   U200_INSTALLER=/tmp/u200.rpm
@@ -97,6 +100,7 @@ elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
   XRM_INSTALLER=./centos/xbutler-2.0.6-1.el7.centos.x86_64.rpm
   OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-overlaybins.rpm"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.rpm
+  INSTALLER="yum"
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
@@ -119,19 +123,15 @@ fi
 echo "----------------------"
 echo "Verifying XILINX_XRT"
 echo "----------------------"
-found=1
+found=0
+test -f /opt/xilinx/xrt/setup.sh && source /opt/xilinx/xrt/setup.sh
 if [ -z ${XILINX_XRT} ]; then
-	found=0
-	echo "XILINX_XRT not defined!"
-	source /opt/xilinx/xrt/setup.sh
-	if [ -z ${XILINX_XRT} ]; then
-		echo "XRT not found!"
-		echo "Download and installing XRT..."
-		wget $XRT_URL -O $XRT_INSTALLER && apt install $XRT_INSTALLER && rm $XRT_INSTALLER
-		echo "Download and installing XRT... done!"
-	else
-		found=1
-	fi
+	echo "XRT not found!"
+	echo "Download and installing XRT..."
+	wget $XRT_URL -O $XRT_INSTALLER && ${INSTALLER} install $XRT_INSTALLER -y && rm $XRT_INSTALLER
+	echo "Download and installing XRT... done!"
+else
+	found=1
 fi
 if [ $found -eq 1 ]; then
 	echo "XRT found!"
@@ -143,9 +143,9 @@ fi
 echo "----------------------"
 echo "Download and Install DSA/Overlaybins"
 echo "----------------------"
-wget $U200_URL -O $U200_INSTALLER && apt install $U200_INSTALLER && rm $U200_INSTALLER
-wget $U250_URL -O $U250_INSTALLER && apt install $U250_INSTALLER && rm $U250_INSTALLER
-wget $OVERLAYBINS_URL -O $OVERLAYBINS_INSTALLER && apt install $OVERLAYBINS_INSTALLER && rm $OVERLAYBINS_INSTALLER
+wget $U200_URL -O $U200_INSTALLER && ${INSTALLER} install $U200_INSTALLER -y && rm $U200_INSTALLER
+wget $U250_URL -O $U250_INSTALLER && ${INSTALLER} install $U250_INSTALLER -y && rm $U250_INSTALLER
+wget $OVERLAYBINS_URL -O $OVERLAYBINS_INSTALLER && ${INSTALLER} install $OVERLAYBINS_INSTALLER -y && rm $OVERLAYBINS_INSTALLER
 
 # reload drivers for XRT (xocl, xclmgmt)
 modprobe -r xocl
@@ -157,7 +157,7 @@ modprobe xclmgmt
 echo "----------------------"
 echo "Install XRM"
 echo "----------------------"
-apt install $XRM_INSTALLER
+${INSTALLER} install $XRM_INSTALLER -y 
 
 # source XRT
 source /opt/xilinx/xrt/setup.sh
@@ -174,10 +174,13 @@ if [ "${result}" -eq "0" ]; then
 	# detect cards
 	CARDS=`python DSANameDetect.py`
 	result=$?
+	if [ -z "$CARDS" ]; then
+		result=1
+	fi
 	if [ "${result}" -eq "0" ]; then
 		# flash cards
 		for card in ${CARDS}; do
-			sudo /opt/xilinx/xrt/bin/xbutil flash -a ${card}
+			/opt/xilinx/xrt/bin/xbutil flash -a ${card}
 		done
 	fi
 fi
