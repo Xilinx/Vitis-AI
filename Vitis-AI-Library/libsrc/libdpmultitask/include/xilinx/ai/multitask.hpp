@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 /*
- * Copyright (c) 2016-2018 Xilinx Tech, Inc.
- *
- * All Rights Reserved. No part of this source code may be reproduced
- * or transmitted in any form or by any means without the prior written
- * permission of Xilinx Tech, Inc.
- *
  * Filename: multitask.hpp
  *
  * Description:
  * This module implement MultiTask Network for ADAS, include detection,
- *segmentation and car towards angle;
+ * segmentation and car towards angle;
  *
  * Please refer to document "xilinx_XILINX_AI_SDK_user_guide.pdf" for more
- *details of these APIs.
+ * details of these APIs.
  */
 #pragma once
 #include <memory>

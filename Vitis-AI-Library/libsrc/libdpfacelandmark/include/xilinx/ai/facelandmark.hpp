@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 /*
- * Copyright (c) 2016-2018 Xilinx Tech, Inc.
- *
- * All Rights Reserved. No part of this source code may be reproduced
- * or transmitted in any form or by any means without the prior written
- * permission of Xilinx Tech, Inc.
- *
  * Filename: facelandmark.hpp
  *
  * Description:
