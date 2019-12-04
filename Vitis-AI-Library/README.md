@@ -109,7 +109,7 @@ $sh -x build.sh
 2. Installing AI Model Package   
 	* Download [ZCU102 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_model_ZCU102_2019.2-r1.0.deb)  
 	
-		You can also download [ZCU104 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_model_ZCU102_2019.2-r1.0.deb) if you use ZCU104 
+		You can also download [ZCU104 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_model_ZCU104_2019.2-r1.0.deb) if you use ZCU104 
 	
 	* Copy the downloaded file to the board using scp with the following command.
 	```
