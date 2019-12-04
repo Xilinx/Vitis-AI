@@ -235,7 +235,7 @@ For more information about DPU, see [DPU IP Product Guide](https://www.xilinx.co
 
 
 **Note:** The model performance number listed in the following sections is generated with Vitis AI v1.0 and Vitis AI Lirary v1.0. For each board, a different DPU configuration is used. Vitis AI and Vitis AI Library can be downloaded for free from [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library Github](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library).
-We will continue to improve the performance with Vitis AI. The performance number reported here is subject to change in near future.
+We will continue to improve the performance with Vitis AI. The performance number reported here is subject to change in the near future.
 
 ### Performance on ZCU102 (0432055-04)  
 This version of ZCU102 is out of stock. The performance number shown below was measured with the previous AI SDK v2.0.4.
@@ -420,7 +420,7 @@ The following table lists the performance number including end-to-end throughput
 
 ### Performance on Ultra96  
 The performance number shown below was measured with the previous AI SDK v2.0.4 on Ultra96 v1.
-The Vitis platform of Ultra96 v2 has not been released yet. So the performance number on it in not reported in this Model Zoo release.  
+The Vitis platform of Ultra96 v2 has not been released yet. So the performance numbers are therefore not reported for this Model Zoo release.  
 
 <details>
  <summary><b>Click here to view details</b></summary>
