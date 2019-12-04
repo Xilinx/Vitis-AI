@@ -97,7 +97,7 @@ $sh -x build.sh
 	
 		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2019.2.img.gz)  
 	
-		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2019.4.img.gz)  
+		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2019.2.img.gz)  
 	
       	Note: The version of the board image should be 2019.2 or above.
 	* Use Win32DiskImager (free opensource software) to burn the image file onto the SD card.
