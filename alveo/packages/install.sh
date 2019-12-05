@@ -123,17 +123,12 @@ fi
 echo "----------------------"
 echo "Verifying XILINX_XRT"
 echo "----------------------"
-found=0
-test -f /opt/xilinx/xrt/setup.sh && source /opt/xilinx/xrt/setup.sh
-if [ -z ${XILINX_XRT} ]; then
+if [ ! -f /opt/xilinx/xrt/setup.sh ]; then
 	echo "XRT not found!"
 	echo "Download and installing XRT..."
 	wget $XRT_URL -O $XRT_INSTALLER && ${INSTALLER} install $XRT_INSTALLER -y && rm $XRT_INSTALLER
 	echo "Download and installing XRT... done!"
 else
-	found=1
-fi
-if [ $found -eq 1 ]; then
 	echo "XRT found!"
 fi
 
@@ -147,50 +142,64 @@ wget $U200_URL -O $U200_INSTALLER && ${INSTALLER} install $U200_INSTALLER -y && 
 wget $U250_URL -O $U250_INSTALLER && ${INSTALLER} install $U250_INSTALLER -y && rm $U250_INSTALLER
 wget $OVERLAYBINS_URL -O $OVERLAYBINS_INSTALLER && ${INSTALLER} install $OVERLAYBINS_INSTALLER -y && rm $OVERLAYBINS_INSTALLER
 
+##############################
+#TODO: detect datacenters
+##############################
+# install xrt_azure, xrt_aws, etc...
+
+
 # reload drivers for XRT (xocl, xclmgmt)
 modprobe -r xocl
 modprobe -r xclmgmt
 modprobe xocl
 modprobe xclmgmt
 
+##############################
 # install XRM
+##############################
 echo "----------------------"
 echo "Install XRM"
 echo "----------------------"
 ${INSTALLER} install $XRM_INSTALLER -y 
 
-# source XRT
-source /opt/xilinx/xrt/setup.sh
-
+################
+# Dead Code
+# keep for 
+# reference
+################
 # Detect Python
-PYTHON_EXISTS=`which python`
-result=$?
+if [ 1 -eq 0 ]
+then
+	PYTHON_EXISTS=`which python`
+	result=$?
 
+	echo "----------------------"
+	echo "Attemptimg to Flash Cards"
+	echo "----------------------"
+	# Python exists
+	if [ "${result}" -eq "0" ]; then
+		# detect cards
+		CARDS=`python DSANameDetect.py`
+		result=$?
+		if [ -z "$CARDS" ]; then
+			result=1
+		fi
+		if [ "${result}" -eq "0" ]; then
+			# flash cards
+			for card in ${CARDS}; do
+				/opt/xilinx/xrt/bin/xbutil flash -a ${card}
+			done
+		fi
+	fi
+fi
+
+# source XRT
 echo "----------------------"
 echo "Attemptimg to Flash Cards"
 echo "----------------------"
-# Python exists
-if [ "${result}" -eq "0" ]; then
-	# detect cards
-	CARDS=`python DSANameDetect.py`
-	result=$?
-	if [ -z "$CARDS" ]; then
-		result=1
-	fi
-	if [ "${result}" -eq "0" ]; then
-		# flash cards
-		for card in ${CARDS}; do
-			/opt/xilinx/xrt/bin/xbutil flash -a ${card}
-		done
-	fi
-fi
-
-# Error occured, kindly ask user to flash cards
-if [ "${result}" -ne "0" ]; then
-	/opt/xilinx/xrt/bin/xbutil list
-
-	echo "Use commands similar to the below, to flash your cards, then cold reboot."
-	echo "sudo /opt/xilinx/xrt/bin/xbutil flash -a xilinx_u200_xdma_201830_2 -d 0"
-	echo "sudo /opt/xilinx/xrt/bin/xbutil flash -a xilinx_u250_xdma_201830_2 -d 1"
-fi
-
+source /opt/xilinx/xrt/setup.sh
+SUPPORTED_DEVICES="u200 u250"
+for device in ${SUPPORTED_DEVICES}
+do
+	/opt/xilinx/xrt/bin/xbutil flash -a xilinx_${device}_xdma_201830_2 <<< y
+done
