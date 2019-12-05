@@ -54,7 +54,9 @@ for Xilinx ZCU102 and ZCU104 evaluation boards, samples, and Arm GCC cross-compi
     
     cd Vitis-AI
     ```  
- - [Install Docker](doc/install_docker/README.md) - if Docker not installed on your machine yet  
+ - [Install Docker](doc/install_docker/README.md) - if Docker not installed on your machine yet
+ 
+ - [Ensure your linux user is in the group docker](https://docs.docker.com/install/linux/linux-postinstall/)
  
  - [Load&Run Docker Container](doc/install_docker/load_run_docker.md)  
  
