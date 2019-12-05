@@ -48,26 +48,12 @@ The vitis-ai-docker-tools contains the Vitis AI quantizer, AI compiler and examp
 The vitis-ai-docker-runtime is the runtime docker image for DPU-v2 development, which holds Vitis AI installation package 
 for Xilinx ZCU102 and ZCU104 evaluation boards, samples, and Arm GCC cross-compilation toolchain.
 
- - Download Docker Containers - Please use CPU tools container if no GPU available on your machine  
+ - Clone the Vitis-AI repository to obtain the examples, reference code, and scripts. 
     ```
     git clone https://github.com/Xilinx/Vitis-AI  
     
     cd Vitis-AI
-    ```
-    
-    #### CPU tools container:
-    ```
-    wget -O vitis-ai-tools-1.0.0-cpu.tar.gz 'https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-tools-1.0.0-cpu.tar.gz'
-    ```
-    #### GPU tools container:
-    ```
-    wget -O vitis-ai-tools-1.0.0-gpu.tar.gz 'https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-tools-1.0.0-gpu.tar.gz'
-    ```
-    #### Runtime container:
-    ```
-    wget -O vitis-ai-runtime-1.0.1.tar.gz 'https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.0.1.tar.gz'
-    ```
-    
+    ```  
  - [Install Docker](doc/install_docker/README.md) - if Docker not installed on your machine yet  
  
  - [Load&Run Docker Container](doc/install_docker/load_run_docker.md)  
