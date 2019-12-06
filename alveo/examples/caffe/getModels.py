@@ -43,6 +43,14 @@ models = [
    "https://www.xilinx.com/bin/public/openDownload?filename=models.container.caffe.squeezenet_2019-05-02_12_32.zip",
    "https://www.xilinx.com/bin/public/openDownload?filename=models.container.caffe.vgg16_2019-05-02_12_32.zip",
    "https://www.xilinx.com/bin/public/openDownload?filename=models.container.caffe.inception_v2_ssd_2019-05-06_0765.zip",
+   "https://www.xilinx.com/bin/public/openDownload?filename=FPN_CityScapes.zip",
+   "https://www.xilinx.com/bin/public/openDownload?filename=maps_BtoA.zip",
+   "https://www.xilinx.com/bin/public/openDownload?filename=maps_AtoB.zip",
+   "https://www.xilinx.com/bin/public/openDownload?filename=cityscapes_BtoA.zip",
+   "https://www.xilinx.com/bin/public/openDownload?filename=cityscapes_AtoB.zip",
+   "https://www.xilinx.com/bin/public/openDownload?filename=facades_BtoA.zip",
+   "https://www.xilinx.com/bin/public/openDownload?filename=bw2color.zip",
+   
 ]
 
 # Where will we work
