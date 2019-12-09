@@ -145,7 +145,7 @@ The following tutorials assume that the $TRD_HOME environment variable is set as
 
 #### 5.2.1 Building the Hardware Design
 
-We need install the Vitis Core De
+We need install the Vitis Core Development Environment.
 
 We prepare the zcu102_base platform in the vitis TRD project. The platform include all the libs that needed.
 
