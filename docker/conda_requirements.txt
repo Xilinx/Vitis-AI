@@ -1,0 +1,10 @@
+xip
+vitis-ai
+pydot
+pyyaml
+jupyter
+ipywidgets
+dill
+progressbar2
+pytest
+scikit-learn

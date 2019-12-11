@@ -18,8 +18,9 @@ import cv2
 import os
 import sys
 
-from vai.dpuv1.tools.compile.bin.xfdnn_compiler_caffe  import CaffeFrontend as xfdnnCompiler
-from decent import CaffeFrontend as xfdnnQuantizer
+#from vai.dpuv1.tools.compile.bin.xfdnn_compiler_caffe  import CaffeFrontend as xfdnnCompiler
+#from decent import CaffeFrontend as xfdnnQuantizer
+import subprocess
 from vai.dpuv1.rt.scripts.framework.caffe.xfdnn_subgraph import CaffeCutter as xfdnnCutter
 
 import caffe
@@ -30,14 +31,11 @@ import argparse
 
 
 def Quantize(prototxt,caffemodel,test_iter=1,calib_iter=1):
-  quantizer = xfdnnQuantizer(
-    model=prototxt,
-    weights=caffemodel,
-    test_iter=test_iter,
-    calib_iter=calib_iter,
-    auto_test=False,
-  )
-  quantizer.quantize()
+    os.environ["DECENT_DEBUG"] = "1"
+    subprocess.call(["vai_q_caffe", "quantize",
+                 "--model", prototxt,
+                 "--weights", caffemodel,
+                 "--calib_iter", str(calib_iter)])
 
 # Standard compiler arguments for XDNNv3
 def Getopts():
@@ -50,18 +48,20 @@ def Getopts():
      "usedeephi":True,
   }
 
+name = "inception_v2_ssd"
 # Generate hardware instructions for runtime -> compiler.json
 def Compile(prototxt="quantize_results/deploy.prototxt",\
             caffemodel="quantize_results/deploy.caffemodel",\
             quantize_info="quantize_results/quantize_info.txt"):
-  compiler = xfdnnCompiler(
-    networkfile=prototxt,
-    weights=caffemodel,
-    quant_cfgfile=quantize_info,
-    generatefile="work/compiler",
-    quantz="work/quantizer", **Getopts()
-  )
-  compiler.compile()
+    subprocess.call(["vai_c_caffe",
+                    "--prototxt", prototxt,
+                    "--caffemodel", caffemodel,
+                    "--net_name", name,
+                    "--output_dir", "work",
+                    "--arch", "/opt/vitis_ai/compiler/arch/dpuv1/ALVEO/ALVEO.json",
+                    "--options", "{\"quant_cfgfile\":\"%s\", \
+                    \"pipelineconvmaxpool\":False, \
+                    }" %(quantize_info)])
 
 # Generate a new prototxt with custom python layer in place of FPGA subgraph
 def Cut(prototxt):
@@ -71,10 +71,10 @@ def Cut(prototxt):
     outproto="xfdnn_auto_cut_deploy.prototxt",
     outtrainproto="xfdnn_auto_cut_train_val.prototxt",
     cutAfter="data",
-    xclbin=os.getenv("VAI_ALVEO_ROOT")+"/overlaybins/"+"xdnnv3",
+    xclbin="/opt/xilinx/overlaybins/xdnnv3",
     netcfg="work/compiler.json",
     quantizecfg="work/quantizer.json",
-    weights="work/deploy.caffemodel_data.h5",
+    weights="work/weights.h5",
     #profile=True
   )
   cutter.cut()

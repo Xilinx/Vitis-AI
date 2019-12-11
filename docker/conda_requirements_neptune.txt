@@ -1,0 +1,9 @@
+xip
+neptune
+pydot
+dill
+pyyaml
+jupyter
+ipywidgets
+pytest-html
+pytest-xdist

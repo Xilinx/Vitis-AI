@@ -25,9 +25,9 @@ The following three examples of applications using the Python xfDNN API are prov
 
 To run any of the three examples, use the provided bash run.sh script. 
 
-1. Navigate to the `ml-suite/examples/deployment_modes` dir.
+1. Navigate to the `$VAI_ALVEO_ROOT/examples/deployment_modes` dir.
     ```sh
-    $ cd ml-suite/examples/deployment_modes
+    cd $VAI_ALVEO_ROOT/examples/deployment_modes
     ```
 
 2. Familiarize yourself with the script usage by:  
@@ -43,29 +43,29 @@ To run any of the three examples, use the provided bash run.sh script.
 ## Example Invocations
 1. Single Image Classification on alveo, ResNet50 v1:
     ```sh
-    $ ./run.sh -t test_classify -m resnet50
+    ./run.sh -t test_classify -m resnet50
     ```
-2. Single Image Classification on AWS, GoogLeNet:
+2. Single Image Classification on alveo, GoogLeNet:
     ```sh
-    $ ./run.sh -t test_classify -m googlenet_v1
+    ./run.sh -t test_classify -m googlenet_v1
     ```
 3. Streaming Image Classification on alveo, GoogLeNet:
     ```sh
-    $ ./run.sh -t streaming_classify -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
+    ./run.sh -t streaming_classify -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 4. Streaming Image Classification on alveo, throughput optimized, and reporting accuracy for Imagenet validation set:
     ```sh
-    $ ./run.sh -t streaming_classify -g -c throughput -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
+    ./run.sh -t streaming_classify -g -c throughput -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 5. Streaming Image Classification FPGA-only mode on alveo (image pre-processing and output accuracy check are skipped), throughput optimized:
     ```sh
-    $ ./run.sh -t streaming_classify_fpgaonly -c throughput -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
+    ./run.sh -t streaming_classify_fpgaonly -c throughput -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 6. Streaming Image Classification FPGA-only mode with live pipeline performance report:
     ```sh
-    $ ./run.sh -t streaming_classify_fpgaonly -c throughput -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min -x -v | python $VAI_ALVEO_ROOT/vai/dpuv1/rt/scripts/speedometer.py
+    ./run.sh -t streaming_classify_fpgaonly -c throughput -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min -x -v | python $VAI_ALVEO_ROOT/vai/dpuv1/rt/scripts/speedometer.py
     ```
-   To exit the streaming report view, press CTRL-Z and type kill -9 %%.
+   To exit the streaming report view, press `CTRL-Z` and type `kill -9 %%`.
 7. Multinet Image Classification on alveo
     ```sh
     ./run.sh -t multinet
@@ -95,39 +95,65 @@ For Multinet deployments, the different models/networks are set in the `--jsoncf
 ## Example Output From Single Image Classification
 
   ```sh
-  $ ./run.sh -t test_classify
-  =============== pyXDNN =============================
-  [XBLAS] # kernels: 1
-  Linux:4.4.0-121-generic:#145-Ubuntu SMP Fri Apr 13 13:47:23 UTC 2018:x86_64
-  Distribution: Ubuntu 16.04.2 LTS
-  GLIBC: 2.23
-  ---
+  ./run.sh -t test_classify
+  ```
+  #### Output
 
-  ---
-  CL_PLATFORM_VENDOR Xilinx
-  CL_PLATFORM_NAME Xilinx
-  CL_DEVICE_0: 0x21f60c0
-  CL_DEVICES_FOUND 1, using 0
-  loading /opt/ml-suite/overlaybins/1525/overlay_4.xclbin
-  [XBLAS] kernel0: kernelSxdnn_0
-  [XDNN] loading xclbin settings from /opt/ml-suite/overlaybins/1525/overlay_4.xclbin.json
-  [XDNN] using custom DDR banks 0, 3
-  Loading weights/bias/quant_params to FPGA...
+  ```sh
+------------------
+Using VAI_ALVEO_ROOT
+------------------
+/workspace/alveo
 
-  [XDNN] kernel configuration
-  [XDNN]   num cores                  : 2
-  [XDNN]   dsp array width            : 96
-  [XDNN]   axi data width (in 32bits) : 16
-  [XDNN]   img mem size               : 9 MB
-  [XDNN]   max instr num              : 1536
-  [XDNN]   max xbar entries           : 4096
-  [XDNN]   version                    : 3.1
-  [XDNN]   8-bit mode                 : 1
-  ---------- Prediction 1/2 for /opt/ml-suite/examples/deployment_modes/dog.jpg ----------
-  0.5986 "n02112018 Pomeranian"
-  0.2033 "n02123394 Persian cat"
-  0.0319 "n02492035 capuchin, ringtail, Cebus capucinus"
-  0.0271 "n02085620 Chihuahua"
-  0.0198 "n02123597 Siamese cat, Siamese"
+---------------------
+Using LD_LIBRARY_PATH
+---------------------
+/opt/xilinx/xrt/lib:
+-------------------
+Using LIBXDNN_PATH
+-------------------
+/opt/vitis_ai/conda/envs/vitis-ai-caffe/lib/libxfdnn.so
+
+-------------------
+PYTHONPATH
+-------------------
+/opt/xilinx/xrt/python:/opt/vitis_ai/compiler
+
+---------------------
+Verifying XILINX_XRT
+---------------------
+XILINX_XRT      : /opt/xilinx/xrt
+PATH            : /opt/xilinx/xrt/bin:/opt/vitis_ai/conda/envs/vitis-ai-caffe/bin:/opt/vitis_ai/conda/condabin:/opt/xilinx/xrt/bin:/opt/vitis_ai/conda/bin:/opt/vitis_ai/utility:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+LD_LIBRARY_PATH : /opt/xilinx/xrt/lib:/opt/xilinx/xrt/lib:
+PYTHONPATH     : /opt/xilinx/xrt/python:/opt/xilinx/xrt/python:/opt/vitis_ai/compiler
+--- Using System XCLBIN ---
+Running:
+ Test: test_classify
+ Model: googlenet_v1
+ Xclbin: /opt/xilinx/overlaybins/xdnnv3
+ Accelerator: 0
+
+...
+...
+
+Loading weights/bias/quant_params to FPGA...
+
+[XDNN] kernel configuration
+[XDNN]   num cores                  : 2
+[XDNN]   dsp array width            : 96
+[XDNN]   axi data width (in 32bits) : 16
+[XDNN]   img mem size               : 9 MB
+[XDNN]   max instr num              : 1536
+[XDNN]   max xbar entries           : 4096
+[XDNN]   version                    : 3.2
+[XDNN]   8-bit mode                 : 1
+
+---------- Prediction 1/4 for /workspace/alveo/examples/deployment_modes/dog.jpg ----------
+0.6316 "n02112018 Pomeranian"
+0.1798 "n02123394 Persian cat"
+0.0359 "n02492035 capuchin, ringtail, Cebus capucinus"
+0.0246 "n02085620 Chihuahua"
+0.0185 "n02123597 Siamese cat, Siamese"
+
   ```
 
