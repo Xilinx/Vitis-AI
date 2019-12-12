@@ -88,8 +88,8 @@ For more information, please refer to [Vitis AI User Guide](http://www.xilinx.co
 ## References 
 - [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)
 - [Vitis AI User Guide](  http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf)
-- [Vitis AI Model Zoo with performance&accuracy data](https://github.com/Xilinx/Vitis-AI/tree/master/AI-Model-Zoo)
-- [Tutotrials & Articles](https://developer.xilinx.com/en/get-started/ai.html)
+- [Vitis AI Model Zoo with Performance & Accuracy Data](https://github.com/Xilinx/Vitis-AI/tree/master/AI-Model-Zoo)
+- [Tutorials & Articles](https://developer.xilinx.com/en/get-started/ai.html)
 - [Performance Whitepaper][]
 
 ## [System Requirements](doc/system_requirements.md)
