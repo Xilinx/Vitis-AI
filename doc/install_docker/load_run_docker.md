@@ -28,6 +28,7 @@ cd Vitis-AI/docker
 
 # i.e.
 
+cd Vitis-AI
 ./docker_run.sh xilinx/vitis-ai:runtime-1.0.0-gpu
 
 ```
