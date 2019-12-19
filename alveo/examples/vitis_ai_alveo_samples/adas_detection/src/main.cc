@@ -39,12 +39,19 @@ using namespace std::chrono;
 using namespace vitis;
 using namespace ai;
 
+// input video
+VideoCapture video;
+// flags for each thread
+bool is_reading = true;
+bool is_running = true;
+bool is_displaying = true;
 
 #define NMS_THRESHOLD 0.3f
 
+
 int idxInputImage = 0;  // frame index of input video
 int idxShowImage = 0;   // next frame index to be displayed
-bool bReading = true;   // flag of reding input frame
+bool bReading = true;   // flag of reading input frame
 chrono::system_clock::time_point start_time;
 
 typedef pair<int, Mat> imagePair;
@@ -131,39 +138,26 @@ void setInputImageForYOLO(vitis::ai::DpuRunner* runner, float *data, const Mat& 
  *
  * @return none
  */
-void readFrame(const char *fileName) {
-    static int loop = 3;
-    VideoCapture video;
-    string videoFile = fileName;
-    start_time = chrono::system_clock::now();
-    while (loop>0) {
-        loop--;
-        if (!video.open(videoFile)) {
-            cout<<"Fail to open specified video file:" << videoFile << endl;
-            exit(-1);
-        }
-
-        while (true) {
-            usleep(20000);
-            Mat img;
-            if (queueInput.size() < 30) {
-                if (!video.read(img) ) {
-                    break;
-                }
-                mtxQueueInput.lock();
-                queueInput.push(make_pair(idxInputImage++, img));
-                mtxQueueInput.unlock();
-            } else {
-                usleep(10);
+void readFrame(bool &is_reading) {
+	
+	while (is_reading) {
+        Mat img;
+        if (queueInput.size() < 30) {
+            if (!video.read(img)) {
+                cout << "Finish reading the video." << endl;
+                is_reading = false;
+                is_running = false;
+                is_displaying = false;
+                break;
             }
+            mtxQueueInput.lock();
+            queueInput.push(make_pair(idxInputImage++, img));
+            mtxQueueInput.unlock();
+        } else {
+            usleep(20);
         }
-
-        video.release();
     }
-
-    exit(0);
 }
-
 /**
  * @brief Thread entry for displaying image frames
  *
@@ -171,15 +165,19 @@ void readFrame(const char *fileName) {
  * @return none
  *
  */
-void displayFrame() {
+void displayFrame(bool &is_displaying) {
     Mat frame;
     static int fm_cnt=0;
-    while (true) {
+    while (is_displaying) {
         mtxQueueShow.lock();
-
         if (queueShow.empty()) {
-            mtxQueueShow.unlock();
-            usleep(10);
+            if (is_running) {
+                mtxQueueShow.unlock();
+                usleep(10);
+            } else {
+                is_displaying = false;
+                break;
+            }
         } else if (idxShowImage == queueShow.top().first) {
             auto show_time = chrono::system_clock::now();
             stringstream buffer;
@@ -194,7 +192,7 @@ void displayFrame() {
             sprintf(img_name,"output/image%d.jpg",fm_cnt); // writing inference output as image in output folder
             cv::imwrite(img_name,frame);
 	    if(fm_cnt==0)
-		cout<<"Saving results to output folder as .jpg images "<<endl;
+	    	cout<<"Saving results to output folder as .jpg images "<<endl;
             idxShowImage++;
             fm_cnt++;
             queueShow.pop();
@@ -292,7 +290,7 @@ void postProcess(vitis::ai::DpuRunner* runner, Mat& frame,vector<float*> results
  *
  * @return none
  */
-void runYOLO(vitis::ai::DpuRunner* runner) {
+void runYOLO(vitis::ai::DpuRunner* runner,bool &is_running1) {
     /* mean values for YOLO-v3 */
     float mean[3] = {0.0f, 0.0f, 0.0f};
 	
@@ -340,16 +338,17 @@ void runYOLO(vitis::ai::DpuRunner* runner) {
     result.push_back(result2);
     result.push_back(result3);
 
-    while (true) {
+    while (is_running1) {
         pair<int, Mat> pairIndexImage;
 
         mtxQueueInput.lock();
         if (queueInput.empty()) {
             mtxQueueInput.unlock();
-            if (bReading)
+            if (is_reading)
             {
                 continue;
             } else {
+				is_running = false;
                 break;
             }
         } else {
@@ -398,26 +397,33 @@ int main(const int argc, const char** argv) {
     }
 
 
-    /* Create 4 DPU Tasks for YOLO-v3 network model */
+	string file_name = argv[2];
+    cout << "Detect video: " << file_name << endl;
+    video.open(file_name);
+    if (!video.isOpened()) {
+        cout << "Failed to open video: " << file_name;
+        return -1;
+    }
+	
+    /* Create 1 XDNN Tasks for YOLO-v3 network model */
 
-    /* Spawn 6 threads:
+    /* Spawn 3 threads:
     - 1 thread for reading video frame
-    - 4 identical threads for running YOLO-v3 network model
+    - 1 identical threads for running YOLO-v3 network model
     - 1 thread for displaying frame in monitor
-    */
+    */	
     auto runners = vitis::ai::DpuRunner::create_dpu_runner(argv[1]);
     auto runner = runners[0].get();
        array<thread, 3> threadsList = {
-    thread(readFrame, argv[2]),
-    thread(displayFrame),
-    thread(runYOLO, runner)
+    thread(readFrame, ref(is_reading)),
+    thread(runYOLO, runner,ref(is_running)),
+	thread(displayFrame,ref(is_displaying))
 
     };
     for (int i = 0; i < 3; i++) {
         threadsList[i].join();
     }
-    delete runner;
-
+    video.release();
     return 0;
 }
 

@@ -60,9 +60,32 @@ Some additonal packages are required different from the base Vitis-AI Caffe/TF e
 conda activate vitis-ai-neptune
 ```
 
-There are some additional requirements for [testing](#testing).
+```sh
+# without Docker
+# note: due to changing default packages in the Vitis-AI conda env, you may need
+# additional packages that were once default but are no longer. These instructions
+# require access to the xdnn_cpp source code. You have to remake libxfdnn.so in
+# the new environment after setting it up.
 
-Python 3 is recommended.
+# first setup the default Vitis-AI conda env for Caffe, then in that env run:
+ 
+# there's a dependency conflict with updating opencv (3.4.2 by default in
+# MLsuite) and other packages. This command removes py-opencv and caffe_decent
+conda remove -y -q py-opencv
+ 
+conda install -y -q -c conda-forge "opencv>=4.1.1" ffmpeg
+pip install youtube-dl pafy wget requests pyarrow orderedset
+ 
+# libnms.so is also needed for some services. Make sure it's in the PYTHONPATH/site-packages!
+cd $VAI_ALVEO_ROOT/apps/yolo/nms && make
+ 
+# for full testing, you'll need these
+pip install pytest coverage coverage-badge websocket-client
+
+# Note that the Vitis C++ libraries will have to be rebuilt after the Conda env changes above
+```
+
+Python 3.6+ is recommended.
 
 ### Running a Basic Service
 Neptune comes with a simple _ping_ service that can be used to demonstrate basic functionality  

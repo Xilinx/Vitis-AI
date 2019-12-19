@@ -1,6 +1,6 @@
 # Classification using Unified Vitis-AI Python APIs
 
-This example uses unified Vitis-AI Python APIs to run `inception_v1` on alveo platforms.
+This example uses unified Vitis-AI Python APIs to run `inception_v1` on alveo platforms. 
 
 ## Prerequisite
 
@@ -11,7 +11,7 @@ This example uses unified Vitis-AI Python APIs to run `inception_v1` on alveo pl
   - `meta.json` : File containing library path, xclbin paths.
 - Image directory
   - Containing `.jpg` images
-  
+
 ## Run Inference
 
 The script takes the compiler output directory and an image directory (fixed to `image` in currect path, can be changed) and run classification.
@@ -31,11 +31,11 @@ python inception_v1.py 1 ./model
 ## Classification results display on console window
 
 ```sh
-Top[0] 0.924427 golfcart, golf cart
-Top[1] 0.004281 pinwheel
-Top[2] 0.003334 basketball
-Top[3] 0.001785 sea cucumber, holothurian
-Top[4] 0.001575 rule, ruler
+Top[0] 0.924427 golf ball
+Top[1] 0.004281 ping-pong ball
+Top[2] 0.003334 baseball
+Top[3] 0.001785 sea urchin
+Top[4] 0.001575 rugby ball
 ```
 
 >**:pushpin: NOTE:** `vitis-ai-caffe` or `vitis-ai-tensorflow` conda environment must be activated to run this example.

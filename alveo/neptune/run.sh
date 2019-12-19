@@ -1,10 +1,10 @@
 #!/bin/bash
 # Copyright 2019 Xilinx Inc.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
@@ -57,10 +57,10 @@ fi
 
 if [[ $QUIET == 1 ]]; then
     . ../overlaybins/setup.sh &> /dev/null
-    export PYTHONPATH=${PYTHONPATH}$VAI_ALVEO_ROOT:
+    export PYTHONPATH=${PYTHONPATH}:$VAI_ALVEO_ROOT
     $cmd server.py --port=$PORT --wsport=$WSPORT &> /dev/null
 else
     . ../overlaybins/setup.sh
-    export PYTHONPATH=${PYTHONPATH}$VAI_ALVEO_ROOT:
+    export PYTHONPATH=${PYTHONPATH}:$VAI_ALVEO_ROOT
     $cmd server.py --port=$PORT --wsport=$WSPORT
 fi
