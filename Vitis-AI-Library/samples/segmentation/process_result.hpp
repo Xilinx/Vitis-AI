@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
+static void overLay(cv::Mat &src1, const cv::Mat &src2) {
+  const int imsize = src1.cols * src2.rows * 3;
+  for (int i = 0; i < imsize; ++i) {
+    src1.data[i] = src1.data[i] / 2 + src2.data[i] / 2;
+  }
+}
+
 static cv::Mat process_result(cv::Mat &m1,
                               const xilinx::ai::SegmentationResult &result,
                               bool is_jpeg) {
   cv::Mat image;
-  cv::resize(m1, image, result.segmentation.size());
-  for (auto row_ind = 0; row_ind < image.size().height; ++row_ind) {
-    for (auto col_ind = 0; col_ind < image.size().width; ++col_ind) {
-      image.at<cv::Vec3b>(row_ind, col_ind) =
-          image.at<cv::Vec3b>(row_ind, col_ind) * 0.5 +
-          result.segmentation.at<cv::Vec3b>(row_ind, col_ind) * 0.5;
-    }
-  }
+  cv::resize(result.segmentation, image, m1.size());
+  overLay(image, m1);
   return image;
 }
