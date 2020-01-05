@@ -15,7 +15,7 @@ alias c="clear"
 
 cd ${SD_ROOT}
 cp ${SD_ROOT}/dnndk/lib*so ${SD_ROOT}/dpu.xclbin  /usr/lib
-
+cp ${SD_ROOT}/models/* /usr/lib
 
 
 #ifconfig eth0 192.168.1.2 netmask 255.255.255.0

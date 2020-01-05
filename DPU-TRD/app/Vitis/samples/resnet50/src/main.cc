@@ -46,10 +46,9 @@
 -- THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
 -- PART OF THIS FILE AT ALL TIMES.
 */
-#include "main.h"
 #include <assert.h>
 #include <dirent.h>
-#include <dnndk.h>
+#include <dnndk/dnndk.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -64,13 +63,15 @@
 #include <queue>
 #include <string>
 #include <vector>
+#include "main.h"
+#include "dputils.h"
 
 using namespace std;
 using namespace std::chrono;
 using namespace cv;
 
 /* DPU Kernel Name for ResNet50 CONV & FC layers */
-#define KRENEL_CONV "resnet50_0"
+#define KRENEL_CONV "resnet50"
 
 #define CONV_INPUT_NODE "conv1"
 #define CONV_OUTPUT_NODE "res5c_branch2c"
