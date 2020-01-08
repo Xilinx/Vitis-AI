@@ -57,7 +57,7 @@ elif [[ $IMAGE_NAME == *"gpu"* ]]; then
     -w /workspace \
     -it \
     --rm \
-    --runtime=nvidia \
+    --gpus all \
     --network=host \
     $IMAGE_NAME \
     bash
