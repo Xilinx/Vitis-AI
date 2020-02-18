@@ -90,7 +90,7 @@ For example, `cf_refinedet_coco_480_360_0.8_25G_1.0` is a `RefineDet` model trai
 ### Caffe_Xilinx 
 This is a custom distribution of Caffe. Please use Caffe_Xilinx to test/finetune the caffe models listed in this page.
 
-**Note:** To download Caffe_Xlinx, visit [Caffe_Xilinx.zip](https://www.xilinx.com/bin/public/openDownload?filename=Caffe_Xilinx_1.0.zip)
+**Note:** To download Caffe_Xlinx, visit [Caffe_Xilinx.zip](https://www.xilinx.com/bin/public/openDownload?filename=Caffe_Xilinx_1.1.zip)
 
 
 
