@@ -15,7 +15,7 @@ Vitis AI is Xilinx’s development stack for AI inference on Xilinx hardware pla
 Vitis AI is composed of the following key components:
 
 * **AI Model Zoo**  - A comprehensive set of pre-optimized models that are ready to deploy on Xilinx devices.
-* **AI Optimizer** - An optional model optimizer that can prune a model by up to 90%. It is seperately available with commercial licenses.
+* **AI Optimizer** - An optional model optimizer that can prune a model by up to 90%. It is separately available with commercial licenses.
 * **AI Quantizer** - A powerful quantizer that supports model quantization, calibration, and fine tuning.
 * **AI Compiler** - Compiles the quantized model to a high-efficient instruction set and data flow. 
 * **AI Profiler** - Perform an in-depth analysis of the efficiency and utilization of AI inference implementation.
@@ -34,7 +34,7 @@ Vitis AI is composed of the following key components:
  - Neptune API for X + AI and Butler API for Multiprocess & Scaleout support for cloud deployment
  - Introduce adaptive operating layer to support non-Linux RTOS such as QNX
  - Vitis AI Library is open source with XRT 2019.2 support
- - Tensorflow and Darkenet model pruning
+ - Tensorflow and Darknet model pruning
  - Ease of use enhancements
     - Docker Images for both tool and runtime 
     - Cross compilation support for Zynq/ZU+ MPSoC platform
