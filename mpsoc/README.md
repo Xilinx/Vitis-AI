@@ -12,7 +12,7 @@ With Vitis-AI, Xilinx has integrated all the edge and cloud solutions under an u
 
 ## Board Images
 
- Download the prebuilt board image from the following links and flash it to SD card using Etcher or Win32DiskImager.   
+ Download the prebuilt board image from the following links and flash it to SD card (16GB recommanded) using Etcher or Win32DiskImager.   
  For more information, pleaser refer to [Vitis AI User Guide](https://www.xilinx.com/cgi-bin/docs/ndoc?t=user_guides;d=ug1414-vitis-ai.pdf).
 
  - [ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2019.2.img.gz)
