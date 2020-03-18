@@ -87,10 +87,10 @@ Model name: `F_M_D_H_W_(P)_C`
 For example, `cf_refinedet_coco_480_360_0.8_25G_1.0` is a `RefineDet` model trained with `Caffe` using `COCO` dataset, input data size is `480*360`, `80%` pruned, and the computation per image is `25Gops`.
 
 
-### Caffe_Xilinx 
-This is a custom distribution of Caffe. Please use Caffe_Xilinx to test/finetune the caffe models listed in this page.
+### caffe-xilinx 
+This is a custom distribution of Caffe. Please use caffe-xilinx to test/finetune the caffe models listed in this page.
 
-**Note:** To download Caffe_Xlinx, visit [Caffe_Xilinx.zip](https://www.xilinx.com/bin/public/openDownload?filename=Caffe_Xilinx_1.1.zip)
+**Note:** To download caffe-xlinx, visit [caffe-xilinx.zip](https://www.xilinx.com/bin/public/openDownload?filename=Caffe_Xilinx_1.1.zip)
 
 
 
@@ -167,36 +167,33 @@ If you are a:
 ### Model Directory Structure
 Download and extract the model archive to your working area on the local hard disk. For details on the various models, their download link and MD5 checksum for the zip file of each model, see [Model Download](#model-download).
 
-#### Caffe Model Directory Structure
-For a Caffe model, you should see the following directory structure:
+#### caffe Model Directory Structure
+For a caffe model, you should see the following directory structure:
 
-    ├── code                            # Contains code and instructions.
+    ├── code                            # Contains code 
     │   ├── test                        # Contains test code which can run demo and evaluate model performance.
-    │   ├── train                       # Contains train code and data preprocess code.
-    │   └── readme.md                   # Contains environment requirements and train eval instructions.
+    │   └── train                       # Contains training code 
     │                                     
     │                                   
-    ├── readme.md                       # Contains the environment requirement and data preprocess information.
-    │                                     Refer this file to know more about creating `float.prototxt` by adding
-    │                                     datalayer to `test.prototxt` in the `float` directory.
-    ├── compiler                          
-    │   ├── deploy.caffemodel           # Input to the compiler. The same with deploy.caffemodel in the `quantized` directory.
-    │   └── deploy.prototxt             # Input to the compiler. The modified prototxt based on deploy.prototxt
-    │                                     in the `quantized` directory, which removes unnecessary or unsupported layers
-    │                                     for compilation.
+    ├── readme.md                       # Contains the environment requirements, data preprocess and model information.
+    │                                     Refer this to know that how to test and train the model with scripts.
+    │                                        
+    ├── data                            # Contains the dataset that used for model test and training.
+    │                                     When test or training script runs successfully, dataset will be automatically placed in it.
+    │                                                       
     ├── quantized                             
     │   ├── deploy.caffemodel           # Quantized weights, the output of vai_q_caffe without modification.
     │   ├── deploy.prototxt             # Quantized prototxt, the output of vai_q_caffe without modification.
-    │   ├── quantized_test.prototxt           # Used to run evaluation with quantized_train_test.caffemodel on GPU
-    │   │                                 using python test code released in near future. Some models
-    │   │                                 don't have this file if they are converted from Darknet (Yolov2, Yolov3),
-    │   │                                 Pytorch (ReID) or there is no Caffe Test (Densebox).
+    │   ├── quantized_test.prototxt     # Used to run evaluation with quantized_train_test.caffemodel on GPU
+    │   │                                 using python test code released in near future. Some models don't have this file 
+    │   │                                 if they are converted from Darknet (Yolov2, Yolov3),
+    │   │                                 Pytorch (ReID) or there is no Caffe Test (Densebox).                                 
     │   ├── quantized_train_test.caffemodel   # Quantized weights can be used for quantizeded-point training and evaluation.    
     │   └── quantized_train_test.prototxt     # Used for quantized-point training and testing with quantized_train_test.caffemodel
-    │                                     on GPU when datalayer modified to user's data path.
+    │                                           on GPU when datalayer modified to user's data path.
     └── float                           
         ├── float.caffemodel            # Trained float-point weights.
-        ├── float.prototxt              # Modified test.prototxt as the input to vai_q_caffe along
+        ├── float.prototxt              # Modified test.prototxt as the input to vai_q_caffe along 
         │                                 with float.caffemodel. vai_q_caffe is Xilinx quantization tool
         │                                 which quantizes float-point to quantized-point model with minimal
         │                                 accuracy loss.
@@ -211,12 +208,12 @@ For a Caffe model, you should see the following directory structure:
 For a Tensorflow model, you should see the following directory structure:
 
 
-    ├── test_code                       # Contains code and instructions.
-    │   ├── float                       # Test code and instruction for floating model for evaluation.
-    │   └── quantized                         # Test code and instruction for quantized model for evaluation.
+    ├── code                            # Contains code 
+    │   └── test                        # Contains test code which can run demo and evaluate model performance.
     │
-    ├── readme.md                       # Contains the environment requirement, the input and output nodes as well as
-    │                                     the data preprocess and postprocess information.
+    ├── readme.md                       # Contains the environment requirements, data preprocess and model information.
+    │                                     Refer this to know that how to test the model with scripts.
+    │
     ├── quantized                          
     │   ├── deploy.model.pb             # Quantized model for the compiler (extended Tensorflow format).
     │   └── quantize_eval_model.pb      # Quantized model for evaluation.
