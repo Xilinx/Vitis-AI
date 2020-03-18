@@ -157,7 +157,7 @@ If you are a:
 | 46   | tf_ssdmobilenetv1_coco_300_300_2.47G         |135.78 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdmobilenetv1_coco_300_300_1.0.zip               |6c013ef52898b68699c1b3bc5ddc5909          |
 | 47   | tf_ssdmobilenetv2_coco_300_300_3.75G         |318.32 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdmobilenetv2_coco_300_300_1.0.zip               |53ace1f075ad0b01b53cca5f6884e0df          |
 | 48   | tf_ssdresnet50v1_fpn_coco_640_640_178.4G     |732.25 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdresnet50v1_fpn_coco_640_640_1.0.zip            |fb5f1fbd4dbee9d4e19d4a382ddd893f          |
-| 49   | tf_yolov3_voc_416_416_65.63G                 |500.31 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_yolov3_voc_416_416_1.0.zip               |9f134db4acff5f028d822f15ee5da189          |
+| 49   | tf_yolov3_voc_416_416_65.63G                 |500.31 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_yolov3_voc_416_416_1.0.zip                |9f134db4acff5f028d822f15ee5da189          |
 | 50   | tf_mlperf_resnet34_coco_1200_1200_433G       |508.07 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_mlperf_resnet34_coco_1200_1200_1.0.zip               |b6a43644b9ff8d59c7c76201a62d8970          |
 | -    | all models                                   |13.87 GB      |https://www.xilinx.com/bin/public/openDownload?filename=all_models_1.0.zip               |ed5509bcd0ce5e3aa2b220145acc17f5          |
 
@@ -213,6 +213,9 @@ For a Tensorflow model, you should see the following directory structure:
     │
     ├── readme.md                       # Contains the environment requirements, data preprocess and model information.
     │                                     Refer this to know that how to test the model with scripts.
+    │
+    ├── data                            # Contains the dataset that used for model test and training.
+    │                                     When test or training script runs successfully, dataset will be automatically placed in it.
     │
     ├── quantized                          
     │   ├── deploy.model.pb             # Quantized model for the compiler (extended Tensorflow format).
