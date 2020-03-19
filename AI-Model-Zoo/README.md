@@ -97,7 +97,7 @@ This is a custom distribution of caffe. Please use caffe-xilinx to test/finetune
 ## Model Download
 The following table lists various models, download link and MD5 checksum for the zip file of each model.
 
-**Note:** To download all the models, visit [all_models_1.0.zip](https://www.xilinx.com/bin/public/openDownload?filename=all_models_1.0.zip).
+**Note:** To download all the models, visit [all_models_1.1.zip](https://www.xilinx.com/bin/public/openDownload?filename=all_models_1.1.zip).
 
 <details>
  <summary><b>Click here to view details</b></summary>
