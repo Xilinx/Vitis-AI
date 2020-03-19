@@ -475,6 +475,30 @@ The following table lists the performance number including end-to-end throughput
 </details>
 
 
+### Performance on U200
+Measured with Vitis AI 1.1, Vitis AI Library 1.1 and Vitis DPU 1.1 in MAR 2020 
+
+<details>
+ <summary><b>Click here to view details</b></summary>
+
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with DPUv1 running at 250Mhz in Gen3x16:
+  
+
+| No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
+| ---- | :------------------------- | :------------------------------------------- | -------------------------------- | ------------------------------------- | ------------------------------------ |
+| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G            | 2.13                            | 470.6                                 | 500.2                                 |
+| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G           | 2.08                             | 481                                 | 1012.9                               |
+| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G        | 2.39                            | 418.5                                 | 1202.4                                 |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G           | 2.11                            | 475.1                                 | 972                               |
+| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G        | 15.67                            | 63.8                                   | 356.1                               |
+| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G        | 10.77                           | 92.8                                   | 215.6                                |
+| 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 10.99                            | 91                                 | 683.3                                 |
+| 8    | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 87.12                            | 8.7                                 | 115.1                               |
+| 9    | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 155.79                           | 19.2                                   | 42                                  |
+| 10   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 122.24                           | 24.5                                   | 54.9                                |
+| 11   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                    | 58.87                            | 50.9                                   | 141.6                               |
+
+</details>
 
 ### Performance on Ultra96  
 The performance number shown below was measured with the previous AI SDK v2.0.4 on Ultra96 v1.
