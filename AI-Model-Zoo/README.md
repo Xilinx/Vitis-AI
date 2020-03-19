@@ -20,7 +20,7 @@ The following table includes comprehensive information about each model, includi
 
 | No\. | Application              | Model                          | Name                                                | Framework  | Backbone       | Input Size | OPS per image | Training Set                            | Val Set                 | Float \(Top1, Top5\)/ mAP/mIoU | Quantized \(Top1, Top5\)/mAP/mIoU |
 | :--- | :----------------------- | :----------------------------- | :-------------------------------------------------- | :--------- | -------------- | ---------- | ------------- | --------------------------------------- | ----------------------- | ------------------------------ | --------------------------------- |
-| 1    | Image Classification     | resnet50                       | cf\_resnet50\_imagenet\_224\_224\_7\.7G            | caffe      | resnet50       | 224\*224   | 7\.7G         | ImageNet Train                          | ImageNet Validataion    | 0\.7444/0\.9185                | 0\.7334/0\.9131                   |
+| 1    | Image Classification     | resnet50                       | cf\_resnet50\_imagenet\_224\_224\_7\.7G\_1\.1            | caffe      | resnet50       | 224\*224   | 7\.7G         | ImageNet Train                          | ImageNet Validataion    | 0\.7444/0\.9185                | 0\.7334/0\.9131                   |
 | 2    | Image Classifiction      | resnet18                       | cf\_resnet18\_imagenet\_224\_224\_3\.65G           | caffe      | resnet18       | 224\*224   | 3\.65G        | ImageNet Train                          | ImageNet Validataion    | 0\.6832/0\.8848                | 66\.94%/88\.25%                   |
 | 3    | Image Classification     | Inception\_v1                  | cf\_inceptionv1\_imagenet\_224\_224\_3\.16G         | caffe      | inception\_v1  | 224\*224   | 3\.16G        | ImageNet Train                          | ImageNet Validataion    | 0\.7030/0\.8971                | 0\.6984/0\.8942                   |
 | 4    | Image Classification     | Inception\_v2                  | cf\_inceptionv2\_imagenet\_224\_224\_4G             | caffe      | bn\-inception  | 224\*224   | 4G            | ImageNet Train                          | ImageNet Validataion    | 0\.7275/0\.9111                | 0\.7168/0\.9029                   |
@@ -88,9 +88,9 @@ For example, `cf_refinedet_coco_480_360_0.8_25G_1.0` is a `RefineDet` model trai
 
 
 ### caffe-xilinx 
-This is a custom distribution of Caffe. Please use caffe-xilinx to test/finetune the caffe models listed in this page.
+This is a custom distribution of caffe. Please use caffe-xilinx to test/finetune the caffe models listed in this page.
 
-**Note:** To download caffe-xlinx, visit [caffe-xilinx.zip](https://www.xilinx.com/bin/public/openDownload?filename=Caffe_Xilinx_1.1.zip)
+**Note:** To download caffe-xlinx, visit [caffe-xilinx.zip](https://www.xilinx.com/bin/public/openDownload?filename=caffe-xilinx-1.1.zip)
 
 
 
