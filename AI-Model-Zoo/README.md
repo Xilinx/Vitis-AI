@@ -493,7 +493,7 @@ The following table lists the performance number including end-to-end throughput
 | 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G        | 15.67                            | 63.8                                   | 356.1                               |
 | 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G        | 10.77                           | 92.8                                   | 215.6                                |
 | 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 10.99                            | 91                                 | 683.3                                 |
-| 8    | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 87.12                            | 8.7                                 | 115.1                               |
+| 8    | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 8.69                            | 115.1                                 | 667.9                               |
 | 9    | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 14.53                           | 68.9                                   | 75.9                                  |
 | 10   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 19.90                           | 50.3                                   | 82.1                                |
 
@@ -518,8 +518,8 @@ The following table lists the performance number including end-to-end throughput
 | 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G        | 5.77                           | 173.4                                   | 426.4                                |
 | 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 5.44                            | 183.7                                 | 1205.5                                 |
 | 8    | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 7.43                            | 134.7                                 | 424.6                               |
-| 9    | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 46.95                           | 14.3                                   | 70.1                                  |
-| 10   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 79.84                           | 9.5                                   | 105.7                                |
+| 9    | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 14.27                           | 70.1                                   | 146.7                                  |
+| 10   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 9.46                           | 105.7                                   | 139.4                                |
 
 </details>
 
