@@ -42,9 +42,9 @@ The following table includes comprehensive information about each model, includi
 | 20   | Face Detection           | densebox\_320\_320             | cf\_densebox\_wider\_320\_320\_0\.49G\_1\.1               | caffe      | VGG\-16        | 320\*320   | 0\.49G        | wider\_face                             | FDDB                    | 0\.8833                        | 0\.8791                           |
 | 21   | Face Detection           | densebox\_360\_640             | cf\_densebox\_wider\_360\_640\_1\.11G\_1\.1               | caffe      | VGG\-16        | 360\*640   | 1\.11G        | wider\_face                             | FDDB                    | 0\.8931                        | 0\.8925                           |
 | 22   | Face Recognition         | face\_landmark                 | cf\_landmark\_celeba\_96\_72\_0\.14G\_1\.1                | caffe      | lenet          | 96\*72     | 0\.14G        | celebA                                  | processed helen         | 0\.1952\(L2 loss\)              | 0\.1972\(L2 loss\)                |
-| 23   | Re\-identification       | reid                           | cf\_reid\_marketcuhk\_160\_80\_0\.95G\_1\.1               | caffe      | resnet18       | 160\*80    | 0\.95G        | Market1501\+CUHK03                      | Market1501              | 0\.7800                        | 0\.7790                           |
+| 23   | Re\-identification       | reid                           | cf\_reid\_market1501\_160\_80\_0\.95G\_1\.1               | caffe      | resnet18       | 160\*80    | 0\.95G        | Market1501\+CUHK03                      | Market1501              | 0\.7800                        | 0\.7790                           |
 | 24   | Detection+Segmentation   | multi-task                     | cf\_multitask\_bdd\_288\_512\_14\.8G\_1\.1                | caffe      | ssd            | 288\*512   | 14\.8G        | BDD100K+Cityscapes                      | BDD100K+Cityscapes      | 0\.2228(Det) 0\.4088(Seg)       | 0\.2202(Det) 0\.4058(Seg)           |
-| 25   | Object Detection         | yolov3\_bdd                    | cf\_yolov3\_bdd\_288\_512\_53\.7G\_1\.1                   | darknet    | darknet\-53    | 288\*512   | 53\.7G        | bdd100k                                 | bdd100k                 | 0\.5058                        | 0\.4914                           |
+| 25   | Object Detection         | yolov3\_bdd                    | dk\_yolov3\_bdd\_288\_512\_53\.7G\_1\.1                   | darknet    | darknet\-53    | 288\*512   | 53\.7G        | bdd100k                                 | bdd100k                 | 0\.5058                        | 0\.4914                           |
 | 26   | Object Detection         | yolov3\_adas\_prune\_0\.9      | dk\_yolov3\_cityscapes\_256\_512\_0\.9\_5\.46G\_1\.1      | darknet    | darknet\-53    | 256\*512   | 5\.46G        | cityscape train                         | cityscape val           | 0\.5520                        | 0\.5300                           |
 | 27   | Object Detection         | yolov3\_voc                    | dk\_yolov3\_voc\_416\_416\_65\.42G\_1\.1                  | darknet    | darknet\-53    | 416\*416   | 65\.42G       | voc07\+12\_trainval                     | voc07\_test             | 0\.8240\(MaxIntegral\)          | 0\.8150\(MaxIntegral\)            |
 | 28   | Object Detection         | yolov2\_voc                    | dk\_yolov2\_voc\_448\_448\_34G\_1\.1                      | darknet    | darknet\-19    | 448\*448   | 34G           | voc07\+12\_trainval                     | voc07\_test             | 0\.7845\(MaxIntegral\)          | 0\.7739\(MaxIntegral\)            |
@@ -109,57 +109,57 @@ If you are a:
 
 | No\. | Model                                        | Size      | Download link | Checksum |
 | ---- | -------------------------------------------- | --------- | ------------- | -------- |
-| 1    | cf_resnet50_imagenet_224_224_7.7G            |226.62 MB  |https://www.xilinx.com/bin/public/openDownload?filename=cf_resnet50_imagenet_224_224_1.0.zip               |26a8881c800f6e27888a167947c33559          |
-| 2    | cf_inceptionv1_imagenet_224_224_3.16G        |86.47 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv1_imagenet_224_224_1.0.zip               |b3e6f9d61fe25ae4425c8efa24138625          |
-| 3    | cf_inceptionv2_imagenet_224_224_4G           |143.38 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv2_imagenet_224_224_1.0.zip               |c8db5d52d6b5fd061c17b5ef116c3f54          |
-| 4    | cf_inceptionv3_imagenet_299_299_11.4G        |212.43 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv3_imagenet_299_299_1.0.zip               |ebe9184731d13ce35c567c5f4a200f32          |
-| 5    | cf_inceptionv4_imagenet_299_299_24.5G        |380.38 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv4_imagenet_299_299_1.0.zip               |cca381dfe5c84e43195aadabe2899622          |
-| 6    | cf_mobilenetv2_imagenet_224_224_0.59G        |23.27 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_mobilenetv2_imagenet_224_224_1.0.zip               |fc7de15fbcff8d318327716a7f04b7bd          |
-| 7    | cf_squeeze_imagenet_227_227_0.76G            |11.27 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_squeeze_imagenet_227_227_1.0.zip               |efeed69bb60e4807d08a9ed4dee42731          |
-| 8    | cf_resnet18_imagenet_224_224_3.65G           |175.28MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_resnet18_imagenet_224_224_1.0.zip               |cc6e2a7d48ddc9c1a68b5d2839fa2b84          |
-| 9    | cf_ssdpedestrian_coco_360_640_0.97_5.9G      |7.78 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdpedestrian_coco_360_640_0.97_1.0.zip               |46b992db8718d98dbf212d203b0f1ec6          |
-| 10   | cf_refinedet_coco_360_480_0.8_25G            |37.92 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_refinedet_coco_480_360_0.8_1.0.zip               |1bf37b830552b1cc7fbf671414889074          |
-| 11   | cf_refinedet_coco_360_480_0.92_10.10G        |10.66 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_refinedet_coco_480_360_0.92_1.0.zip               |dde4c33563eafefbe499bcb4b4cd6d1a          |
-| 12   | cf_refinedet_coco_360_480_0.96_5.08G         |5.53 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_refinedet_coco_480_360_0.96_1.0.zip              |0db83cf6ce87325fc34813f1c14ac6df          |
-| 13   | cf_ssdadas_bdd_360_480_0.95_6.3G             |11.34 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdadas_bdd_360_480_0.95_1.0.zip               |5becc3e0853612277350d295687fd94e          |
-| 14   | cf_ssdtraffic_360_480_0.9_11.6G              |20.13 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdtraffic_360_480_0.9_1.0.zip               |a9b1b10f2f493a34074b70f70ee2dd84          |
-| 15   | cf_VPGnet_caltechlane_480_640_0.99_2.5G      |10.39 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_VPGnet_caltechlane_480_640_0.99_1.0.zip               |b4e1091016917b2d0ccaf3e51ecfab3f          |
-| 16   | cf_ssdmobilenetv2_bdd_360_480_6.57G          |100.77 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdmobilenetv2_bdd_360_480_1.0.zip               |171746d4c1a2d97408ff8eb9c08a7b6a          |
-| 17   | cf_fpn_cityscapes_256_512_8.9G               |58.17MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_fpn_cityscapes_256_512_1.0.zip               | dbae0fba17aaf3c6242d511032efb0fd         |
-| 18   | cf_SPnet_aichallenger_224_128_0.54G          |12.06 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_SPnet_aichallenger_224_128_1.0.zip               |a4ef58d3eaec7ff284af2c22f0178d2b          |
-| 19   | cf_openpose_aichallenger_368_368_0.3_189.7G  |544.23 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_openpose_aichallenger_368_368_0.3_1.0.zip               |b62adb84d7df0aa976f5485bbec6a375          |
-| 20   | cf_densebox_wider_320_320_0.49G              |6.26 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_densebox_wider_320_320_1.0.zip               |15f2e1c780dc8ba72d01491b773c10be          |
-| 21   | cf_densebox_wider_360_640_1.11G              |6.26 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_densebox_wider_360_640_1.0.zip               |fd9f136fe664cc4f56b3e0133efcfc49          |
-| 22   | cf_landmark_celeba_96_72_0.14G               |50.47 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_landmark_celeba_96_72_1.0.zip               |200993da21ada189110a34ba2f4b65ca          |
-| 23   | cf_reid_marketcuhk_160_80_0.95G              |98.36 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_reid_marketcuhk_160_80_1.0.zip               |092c2e42674af381b8a19564077b3c85          |
-| 24   | cf_multitask_bdd_288_512_14.8G               |122.37 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_multitask_bdd_288_512_1.0.zip               |d7b1f54bf6a5ecbc91651b50c63bd1cb          |
-| 25   | cf_yolov3_bdd_288_512_53.7G                  |948 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_yolov3_bdd_288_512_1.0.zip               |83661dba91ac4acf5ddb6db6ee7413c5          |
-| 26   | dk_yolov3_cityscapes_256_512_0.9_5.46G       |38.08 MB      |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov3_cityscapes_256_512_0.9_1.0.zip               |be571f096cf2c52e56293f5a68837a50          |
-| 27   | dk_yolov3_voc_416_416_65.42G                 |940.24 MB      |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov3_voc_416_416_1.0.zip               |fc7f103d657a39b9efbe2d675c3de70e          |
-| 28   | dk_yolov2_voc_448_448_34G                    |476.55 MB      |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_1.0.zip               |a02a009aed9f36185c5901604ad49c76          |
-| 29   | dk_yolov2_voc_448_448_0.66_11.56G            |223.44 MB      |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_0.66_1.0.zip               |28f7ea8f29c73cc6507c79d86968c2cb          |
-| 30   | dk_yolov2_voc_448_448_0.71_9.86G             |202.46 MB      |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_0.71_1.0.zip               |626971b06f893b24f4a4750fe150101f          |
-| 31   | dk_yolov2_voc_448_448_0.77_7.82G             |146.72 MB      |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_0.77_1.0.zip               |4cb61f9312dc91f7150e599a133059ba          |
-| 32   | tf_inceptionresnetv2_imagenet_299_299_26.35G |657.27 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_inception_resnet_v2_imagenet_299_299_1.0.zip               |bf515feaf817b156420c7043aa7ee744          |
-| 33   | tf_inceptionv1_imagenet_224_224_3G           |76.95 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv1_imagenet_224_224_1.0.zip               |7df195f8045c5d6d44e56c03c675f8fe          |
-| 34   | tf_inceptionv3_imagenet_299_299_11.45G       |287.42 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv3_imagenet_299_299_1.0.zip               |88c5d39491e143e7b10de7718e1e94f1          |
-| 35   | tf_inceptionv4_imagenet_299_299_24.55G       |505.64 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv4_imagenet_299_299_1.0.zip               |03f69653b71145fa893c66c0fffcf257          |
-| 36   | tf_mobilenetv1_0.25_imagenet_128_128_27.15M  |10.74 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_0.25_imagenet_128_128_1.0.zip               |f698cddfe7334c13dd1268d3e1d59b11          |
-| 37   | tf_mobilenetv1_0.5_imagenet_160_160_150.07M  |29.72 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_0.5_imagenet_160_160_1.0.zip               |d9cafa9cf361e99e7aabf836982dee3f          |
-| 38   | tf_mobilenetv1_1.0_imagenet_224_224_1.14G    |93.97 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_1.0_imagenet_224_224_1.0.zip               |7747fad0fd70d7fd5e6688abeeb52817          |
-| 39   | tf_mobilenetv2_1.0_imagenet_224_224_0.59G    |78.33 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv2_1.0_imagenet_224_224_1.0.zip               |4fb81d606c2b78fb34e1cc06acc58c00          |
-| 40   | tf_mobilenetv2_1.4_imagenet_224_224_1.16G    |135.64 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv2_1.4_imagenet_224_224_1.0.zip               |f31c3cf368c0c04762d3a251b173ed43          |
-| 41   | tf_resnetv1_50_imagenet_224_224_6.97G        |295.19 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_1.0.zip               |fb6c2b68f6f5dd356100d6f630d21c35          |
-| 42   | tf_resnetv1_101_imagenet_224_224_14.4G       |514.12 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_101_imagenet_224_224_1.0.zip               |4d72ed81fbf5ac01de244083f6fcadee          |
-| 43   | tf_resnetv1_152_imagenet_224_224_21.83G      |695.86 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_152_imagenet_224_224_1.0.zip               |5c9321bc0e469f4d4f21cd075e2fadae          |
-| 44   | tf_vgg16_imagenet_224_224_30.96G             |1.57 GB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg16_imagenet_224_224_1.0.zip               |b5c5ed1e8bc6d50821e6802c6702da7f          |
-| 45   | tf_vgg19_imagenet_224_224_39.28G             |1.63 GB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg19_imagenet_224_224_1.0.zip               |5ca310d0410eb266f4fccf49dd378e23          |
-| 46   | tf_ssdmobilenetv1_coco_300_300_2.47G         |135.78 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdmobilenetv1_coco_300_300_1.0.zip               |6c013ef52898b68699c1b3bc5ddc5909          |
-| 47   | tf_ssdmobilenetv2_coco_300_300_3.75G         |318.32 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdmobilenetv2_coco_300_300_1.0.zip               |53ace1f075ad0b01b53cca5f6884e0df          |
-| 48   | tf_ssdresnet50v1_fpn_coco_640_640_178.4G     |732.25 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdresnet50v1_fpn_coco_640_640_1.0.zip            |fb5f1fbd4dbee9d4e19d4a382ddd893f          |
-| 49   | tf_yolov3_voc_416_416_65.63G                 |500.31 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_yolov3_voc_416_416_1.0.zip                |9f134db4acff5f028d822f15ee5da189          |
-| 50   | tf_mlperf_resnet34_coco_1200_1200_433G       |508.07 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_mlperf_resnet34_coco_1200_1200_1.0.zip               |b6a43644b9ff8d59c7c76201a62d8970          |
-| -    | all models                                   |13.87 GB      |https://www.xilinx.com/bin/public/openDownload?filename=all_models_1.0.zip               |ed5509bcd0ce5e3aa2b220145acc17f5          |
+| 1    | cf_resnet50_imagenet_224_224_7.7G_1.1            |203.99 MB    |https://www.xilinx.com/bin/public/openDownload?filename=cf_resnet50_imagenet_224_224_1.1.zip                  |fe1fcbbdc935dc5cdf75a95780f8983e          |
+| 2    | cf_inceptionv1_imagenet_224_224_3.16G_1.1        |79.41 MB     |https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv1_imagenet_224_224_1.1.zip               |17417893abee5c489c25de0420d927b6          |
+| 3    | cf_inceptionv2_imagenet_224_224_4G_1.1           |128.63 MB    |https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv2_imagenet_224_224_1.1.zip               |ae52f235af9f1e21aee8aa20d68905f5          |
+| 4    | cf_inceptionv3_imagenet_299_299_11.4G_1.1        |190.74 MB    |https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv3_imagenet_299_299_1.1.zip               |b44315d620c4a9e5266763f34f44b7c8          |
+| 5    | cf_inceptionv4_imagenet_299_299_24.5G_1.1        |341.64 MB    |https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv4_imagenet_299_299_1.1.zip               |5df3ae9c4daf6f3276612de579239359          |
+| 6    | cf_mobilenetv2_imagenet_224_224_0.59G_1.1        |19.67 MB     |https://www.xilinx.com/bin/public/openDownload?filename=cf_mobilenetv2_imagenet_224_224_1.1.zip               |1dbae9a4a8f968ffba665fe67af1ceb6          |
+| 7    | cf_squeeze_imagenet_227_227_0.76G_1.1            |10.04 MB     |https://www.xilinx.com/bin/public/openDownload?filename=cf_squeeze_imagenet_227_227_1.1.zip                   |9da53315ea5bfdde385c57e3a451afd5          |
+| 8    | cf_resnet18_imagenet_224_224_3.65G_1.1           |130.7MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_resnet18_imagenet_224_224_1.1.zip                  |f8a926550af500b0848db74e8e2e1381          |
+| 9    | cf_ssdpedestrian_coco_360_640_0.97_5.9G_1.1      |5.96 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdpedestrian_coco_360_640_0.97_1.1.zip            |0f9ad09d11e250b8a43aa110084090a2          |
+| 10   | cf_refinedet_coco_360_480_0.8_25G_1.1            |92.9 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_refinedet_coco_480_360_0.8_1.1.zip                 |a0a5c91b9f641c71727b786ea22ae018          |
+| 11   | cf_refinedet_coco_360_480_0.92_10.10G_1.1        |8.12 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_refinedet_coco_480_360_0.92_1.1.zip                |02cbc7ea6b8c2b668af3e6f912303315          |
+| 12   | cf_refinedet_coco_360_480_0.96_5.08G_1.1         |4.28 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_refinedet_coco_480_360_0.96_1.1.zip                |1756e7e8c9ec30e5948076acadbed811          |
+| 13   | cf_ssdadas_bdd_360_480_0.95_6.3G_1.1             |10.71 MB     |https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdadas_bdd_360_480_0.95_1.1.zip                   |e5a0f9b3b6e2c72aa8961e279a3cef11          |
+| 14   | cf_ssdtraffic_360_480_0.9_11.6G_1.1              |15.62 MB     |https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdtraffic_360_480_0.9_1.1.zip                     |a8d6a9db2bb40b16cc1de435709bf570          |
+| 15   | cf_VPGnet_caltechlane_480_640_0.99_2.5G_1.1      |5.97 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_VPGnet_caltechlane_480_640_0.99_1.1.zip            |02bd13eaa6d7d4e1b5a4fd0280c8d2e1          |
+| 16   | cf_ssdmobilenetv2_bdd_360_480_6.57G_1.1          |77 MB        |https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdmobilenetv2_bdd_360_480_1.1.zip                 |868b430065d39cf60f3ca0662e8e8b9e          |
+| 17   | cf_fpn_cityscapes_256_512_8.9G_1.1               |69.27MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_fpn_cityscapes_256_512_1.1.zip                     | 37b49ee32d0b8974ce2787fff6eebca2         |
+| 18   | cf_SPnet_aichallenger_224_128_0.54G_1.1          |11 MB        |https://www.xilinx.com/bin/public/openDownload?filename=cf_SPnet_aichallenger_224_128_1.1.zip                 |13f4c7702b94aeb7bcb2dfecc29c5e87          |
+| 19   | cf_openpose_aichallenger_368_368_0.3_189.7G_1.1  |408.42 MB    |https://www.xilinx.com/bin/public/openDownload?filename=cf_openpose_aichallenger_368_368_0.3_1.1.zip          |446b135dc57408868f49de7a61142dd7          |
+| 20   | cf_densebox_wider_320_320_0.49G_1.1              |4.33 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_densebox_wider_320_320_1.1.zip                     |83ca356836a21d37affd97b129b636ff          |
+| 21   | cf_densebox_wider_360_640_1.11G_1.1              |4.33 MB      |https://www.xilinx.com/bin/public/openDownload?filename=cf_densebox_wider_360_640_1.1.zip                     |7f2e1e2599260a5dd0ab43df6ee1ca61          |
+| 22   | cf_landmark_celeba_96_72_0.14G_1.1               |45.25 MB     |https://www.xilinx.com/bin/public/openDownload?filename=cf_landmark_celeba_96_72_1.1.zip                      |8adfd25d1a3225fe0fdd2152c170e4e3          |
+| 23   | cf_reid_market1501_160_80_0.95G_1.1              |88.96 MB     |https://www.xilinx.com/bin/public/openDownload?filename=cf_reid_market1501_160_80_1.1.zip                     |4ef83b5e9ef601d3ad99ca71b19bab26          |
+| 24   | cf_multitask_bdd_288_512_14.8G_1.1               |108.75 MB    |https://www.xilinx.com/bin/public/openDownload?filename=cf_multitask_bdd_288_512_1.1.zip                      |3d35e68e71cd8911e40c3d57fb7328e5          |
+| 25   | dk_yolov3_bdd_288_512_53.7G_1.1                  |695.59 MB    |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov3_bdd_288_512_1.1.zip                         |346a0810ed3f5d8f004f74934d9a8464          |
+| 26   | dk_yolov3_cityscapes_256_512_0.9_5.46G_1.1       |26.96 MB     |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov3_cityscapes_256_512_0.9_1.1.zip              |63e1a349a35188e9e08136072750690e          |
+| 27   | dk_yolov3_voc_416_416_65.42G_1.1                 |689.58 MB    |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov3_voc_416_416_1.1.zip                         |7bb0afd4766f46d298e07fcc595a6f4a          |
+| 28   | dk_yolov2_voc_448_448_34G_1.1                    |410.57 MB    |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_1.1.zip                         |8f7c48f9c5da0d652fef7091c1c11c34          |
+| 29   | dk_yolov2_voc_448_448_0.66_11.56G_1.1            |167.56 MB    |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_0.66_1.1.zip                    |2184ea9b85c94dd04cdd05c4556bab8e          |
+| 30   | dk_yolov2_voc_448_448_0.71_9.86G_1.1             |151.83 MB    |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_0.71_1.1.zip                    |33b830f11b6f89d351b465705cd67e3f          |
+| 31   | dk_yolov2_voc_448_448_0.77_7.82G_1.1             |110.02 MB    |https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_0.77_1.1.zip                    |1619814a35f439836ef69a5c34249af1          |
+| 32   | tf_inceptionresnetv2_imagenet_299_299_26.35G_1.1 |446.69 MB    |https://www.xilinx.com/bin/public/openDownload?filename=tf_inception_resnet_v2_imagenet_299_299_1.1.zip       |95b6f5bbc7c0b7772fc55963e2d4bb47          |
+| 33   | tf_inceptionv1_imagenet_224_224_3G_1.1           |53.43 MB     |https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv1_imagenet_224_224_1.1.zip               |935705a7a371f508953128ba3d07fda5          |
+| 34   | tf_inceptionv3_imagenet_299_299_11.45G_1.1       |191.14 MB    |https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv3_imagenet_299_299_1.1.zip               |c12517b59ab5d05c40f501072bfbd270          |
+| 35   | tf_inceptionv4_imagenet_299_299_24.55G_1.1       |342.44 MB    |https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv4_imagenet_299_299_1.1.zip               |b8dc266e3261c32ebc18de0be9a84a00          |
+| 36   | tf_mobilenetv1_0.25_imagenet_128_128_27.15M_1.1  |3.84 MB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_0.25_imagenet_128_128_1.1.zip          |90c3f9e0fe33c52f4bd5e3c33e78c22d          |
+| 37   | tf_mobilenetv1_0.5_imagenet_160_160_150.07M_1.1  |10.67 MB     |https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_0.5_imagenet_160_160_1.1.zip           |132e6ac454918ae82e0024ee976a2c49          |
+| 38   | tf_mobilenetv1_1.0_imagenet_224_224_1.14G_1.1    |33.38 MB     |https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_1.0_imagenet_224_224_1.1.zip           |077deb4d3fdf2d42765b8fe55e251f76          |
+| 39   | tf_mobilenetv2_1.0_imagenet_224_224_0.59G_1.1    |28.31 MB     |https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv2_1.0_imagenet_224_224_1.1.zip           |032ca92d995ff4b8dc654566f48024b0          |
+| 40   | tf_mobilenetv2_1.4_imagenet_224_224_1.16G_1.1    |49.07 MB     |https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv2_1.4_imagenet_224_224_1.1.zip           |80d41f50d67d4674d63852968675d462          |
+| 41   | tf_resnetv1_50_imagenet_224_224_6.97G_1.1        |204.47 MB    |https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_1.1.zip               |56336c2b37584bac07b0c5aa2b6e408e          |
+| 42   | tf_resnetv1_101_imagenet_224_224_14.4G_1.1       |356.08 MB    |https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_101_imagenet_224_224_1.1.zip              |3fccc5a329fd77bf82717454628e78e4          |
+| 43   | tf_resnetv1_152_imagenet_224_224_21.83G_1.1      |481.89 MB    |https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_152_imagenet_224_224_1.1.zip              |8350c88145eac9bc82a7f5a1998580a3          |
+| 44   | tf_vgg16_imagenet_224_224_30.96G_1.1             |1.1 GB       |https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg16_imagenet_224_224_1.1.zip                     |be883c1bf5be7e5ee889144035e48600          |
+| 45   | tf_vgg19_imagenet_224_224_39.28G_1.1             |1.14 GB      |https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg19_imagenet_224_224_1.1.zip                     |885ec350b6d913e5ddd3f1b38190440b          |
+| 46   | tf_ssdmobilenetv1_coco_300_300_2.47G_1.1         |53.59 MB     |https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdmobilenetv1_coco_300_300_1.1.zip                |7693181b6a74bfc3eb6edf93d2e484ff          |
+| 47   | tf_ssdmobilenetv2_coco_300_300_3.75G_1.1         |129.96 MB    |https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdmobilenetv2_coco_300_300_1.1.zip                |1f2efc1eb61d4bf43ca814944fd20c6f          |
+| 48   | tf_ssdresnet50v1_fpn_coco_640_640_178.4G_1.1     |373.07 MB    |https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdresnet50_fpn_coco_640_640_1.1.zip               |f9b4832e9abe06c8dffff2b6d6e12323          |
+| 49   | tf_yolov3_voc_416_416_65.63G_1.1                 |500.1 MB     |https://www.xilinx.com/bin/public/openDownload?filename=tf_yolov3_voc_416_416_1.1.zip                         |3c592d349dfeb0c8807409e34cce9145          |
+| 50   | tf_mlperf_resnet34_coco_1200_1200_433G_1.1       |236.3 MB     |https://www.xilinx.com/bin/public/openDownload?filename=tf_mlperf_resnet34_coco_1200_1200_1.1.zip             |29a689286036842c34405b42372ad6a3          |
+| -    | all_models_1.1                                   |9.86 GB      |https://www.xilinx.com/bin/public/openDownload?filename=all_models_1.1.zip                                    |10bedfa99692c5d0e7f840d23d0cd8d0          |
 
 
 </details>
@@ -281,7 +281,7 @@ The following table lists the performance number including end-to-end throughput
 | 31   | SqueezeNet                     | cf\_squeeze\_imagenet\_227\_227\_0\.76G             | 3\.6                            | 277\.65                                 | 1080\.77                               |
 | 32   | face\_landmark                 | cf\_landmark\_celeba\_96\_72\_0\.14G                | 1\.13                           | 885\.033                                | 1623\.3                                |
 | 33   | reid                           | cf\_reid\_marketcuhk\_160\_80\_0\.95G               | 2\.67                           | 375                                     | 773\.533                               |
-| 34   | yolov3\_bdd                    | cf\_yolov3\_bdd\_288\_512\_53\.7G                   | 73\.89                          | 13\.5333                                | 42\.8833                               |
+| 34   | yolov3\_bdd                    | dk\_yolov3\_bdd\_288\_512\_53\.7G                   | 73\.89                          | 13\.5333                                | 42\.8833                               |
 | 35   | tf\_mobilenet\_v1              | tf\_mobilenetv1\_imagenet\_224\_224\_1\.14G         | 3\.2                            | 312\.067                                | 875\.967                               |
 | 36   | resnet18                       | cf\_resnet18\_imagenet\_224\_224\_3\.65G            | 5\.1                            | 195\.95                                 | 524\.433                               |
 | 37   | resnet18\_wide                 | tf\_resnet18\_imagenet\_224\_224\_28G               | 33\.28                          | 30\.05                                  | 83\.4167                               |
@@ -289,7 +289,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on ZCU102 (0432055-05)
-Measured with Vitis AI 1.0, Vitis AI Library 1.0 and Vitis DPU 1.0 in Nov 2019  
+Measured with Vitis AI 1.1, Vitis AI Library 1.1 and Vitis DPU 1.1 in MAR 2020  
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -321,7 +321,7 @@ The following table lists the performance number including end-to-end throughput
 | 20   | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 2.57                             | 388.3                                | 1279                               |
 | 21   | densebox_640_360           | cf_densebox_wider_360_640_1.11G              | 5.13                             | 195.0                                | 627.8                                |
 | 22   | face_landmark              | cf_landmark_celeba_96_72_0.14G               | 1.18                             | 846.7                                | 1378                                 |
-| 23   | reid                       | cf_reid_marketcuhk_160_80_0.95G              | 2.76                             | 361.9                                | 672.8                                |
+| 23   | reid                       | cf_reid_market1501_160_80_0.95G              | 2.76                             | 361.9                                | 672.8                                |
 | 24   | multi_task                 | cf_multitask_bdd_288_512_14.8G               | 28.26                            | 35.4                                  | 133.0                                |
 | 25   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 77.12                            | 13.0                                  | 37.1                                 |
 | 26   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G       | 11.93                            | 83.8                                    | 235.3                                |
@@ -354,7 +354,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on ZCU104
-Measured with Vitis AI 1.0, Vitis AI Library 1.0 and Vitis DPU 1.0 in Nov 2019 
+Measured with Vitis AI 1.1, Vitis AI Library 1.1 and Vitis DPU 1.1 in MAR 2020 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -367,13 +367,13 @@ The following table lists the performance number including end-to-end throughput
 | 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G            | 12.46                            | 80.2                                   | 146.8                                |
 | 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G           | 5.08                             | 196.7                                 | 403.7                                |
 | 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G        | 5.27                             | 189.8                                 | 387.0                                |
-| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G           | 6.55                             | 152.7                                 | 298.2                                  |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G           | 6.55                             | 152.7                                 | 298.2                                |
 | 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G        | 16.51                            | 60.5                                   | 117.3                                |
 | 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G        | 33.10                            | 30.2                                   | 58.6                                 |
 | 7    | Mobilenet_v2               | cf_mobilenetv2_imagenet_224_224_0.59G        | 4.01                             | 249.3                                 | 536.6                                |
-| 8    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 3.64                             | 274.4                                 | 941.8                               |
+| 8    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 3.64                             | 274.4                                 | 941.8                                |
 | 9    | ssd_pedestrain_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 12.80                            | 78.1                                   | 221.5                                |
-| 10   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G            | 30.68                            | 32.6                                   | 76.1                                   |
+| 10   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G            | 30.68                            | 32.6                                   | 76.1                                 |
 | 11   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G        | 16.32                            | 61.3                                   | 154.2                                |
 | 12   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G         | 11.96                            | 83.6                                   | 228.7                                |
 | 13   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G             | 11.80                            | 84.7                                   | 231.9                                |
@@ -386,8 +386,8 @@ The following table lists the performance number including end-to-end throughput
 | 20   | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 2.52                             | 397.4                                 | 1250.3                               |
 | 21   | densebox_640_360           | cf_densebox_wider_360_640_1.11G              | 5.03                             | 198.7                                 | 606.6                                |
 | 22   | face_landmark              | cf_landmark_celeba_96_72_0.14G               | 1.12                             | 890.1                                 | 1363.2                               |
-| 23   | reid                       | cf_reid_marketcuhk_160_80_0.95G              | 2.59                             | 385.6                                 | 668.8                                |
-| 24   | multi_task                 | cf_multitask_bdd_288_512_14.8G               | 27.76                            | 36.0                                     | 108.4                                |
+| 23   | reid                       | cf_reid_market1501_160_80_0.95G              | 2.59                             | 385.6                                 | 668.8                                |
+| 24   | multi_task                 | cf_multitask_bdd_288_512_14.8G               | 27.76                            | 36.0                                     | 108.4                              |
 | 25   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 73.62                            | 13.6                                   | 28.7                                 |
 | 26   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G       | 11.83                            | 84.5                                   | 218.5                                |
 | 27   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 70.27                            | 14.2                                   | 29.5                                 |
@@ -408,7 +408,7 @@ The following table lists the performance number including end-to-end throughput
 | 42   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G       | 21.15                            | 47.3                                   | 87.2                                 |
 | 43   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G      | 30.80                            | 32.5                                   | 60.1                                 |
 | 44   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G             | 46.99                            | 21.3                                   | 38.3                                 |
-| 45   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G             | 54.41                            | 18.4                                   | 33.8                                   |
+| 45   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G             | 54.41                            | 18.4                                   | 33.8                                 |
 | 46   | ssd_mobilenet_v1           | tf_ssdmobilenetv1_coco_300_300_2.47G         | 10.82                            | 92.4                                   | 330.0                                |
 | 47   | ssd_mobilenet_v2           | tf_ssdmobilenetv2_coco_300_300_3.75G         | 14.99                            | 66.7                                   | 185.0                                |
 | 48   | ssd_resnet50_v1_fpn        | tf_ssdresnet50v1_fpn_coco_640_640_178.4G     | 747.43                           | 1.3                                   | 5.1                                  |
@@ -416,6 +416,63 @@ The following table lists the performance number including end-to-end throughput
 | 50   | mlperf_ssd_resnet34        | tf_mlperf_resnet34_coco_1200_1200_433G       | 626.09                           | 1.6                                   | 5.3                                  |
 
 </details>
+
+
+### Performance on U50
+Measured with Vitis AI 1.1, Vitis AI Library 1.1 and Vitis DPU 1.1 in MAR 2020 
+
+<details>
+ <summary><b>Click here to view details</b></summary>
+
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U50` board with DPUv3E running at 250Mhz in Gen3x16:
+  
+
+| No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
+| ---- | :------------------------- | :------------------------------------------- | -------------------------------- | ------------------------------------- | ------------------------------------ |
+| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G            | 18.00                            | 166.4                                 | 394                                 |
+| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G           | 8.95                             | 334.6                                 | 995.1                               |
+| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G        | 14.13                            | 212.1                                 | 551                                 |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G           | 17.07                            | 175.5                                 | 426.4                               |
+| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G        | 49.55                            | 60.5                                   | 133.3                               |
+| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G        | 101.98                           | 29.4                                   | 61.5                                |
+| 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 18.01                            | 166.3                                 | 418                                 |
+| 8    | ssd_pedestrain_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 88.34                            | 33.9                                   | 83.1                                |
+| 9    | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G            | 104.57                           | 28.7                                   | 64.4                                |
+| 10   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G        | 72.56                            | 41.3                                   | 97.6                                |
+| 11   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G         | 73.04                            | 41                                     | 96.8                                |
+| 12   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G             | 64.45                            | 46.5                                   | 118.1                               |
+| 13   | ssd_traffic_pruned_0_9     | cf_ssdtraffic_360_480_0.9_11.6G              | 82.49                            | 36.3                                   | 91.1                                |
+| 14   | VPGnet_pruned_0_99         | cf_VPGnet_caltechlane_480_640_0.99_2.5G      | 105.83                           | 28.3                                   | 65.1                                |
+| 15   | FPN                        | cf_fpn_cityscapes_256_512_8.9G               | 80.24                            | 37.3                                   | 116.9                               |
+| 16   | SP_net                     | cf_SPnet_aichallenger_224_128_0.54G          | 7.39                             | 405.5                                 | 1074.5                              |
+| 17   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G  | 342.87                           | 8.7                                   | 22.3                                |
+| 18   | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 12.57                            | 238.4                                 | 796.2                               |
+| 19   | densebox_640_360           | cf_densebox_wider_360_640_1.11G              | 29.00                            | 103.3                                 | 360.6                               |
+| 20   | face_landmark              | cf_landmark_celeba_96_72_0.14G               | 1.42                             | 2107.7                                 | 6631.9                              |
+| 21   | reid                       | cf_reid_market1501_160_80_0.95G              | 3.99                             | 751.4                                 | 2301                                |
+| 22   | multi_task                 | cf_multitask_bdd_288_512_14.8G               | 120.52                           | 24.9                                   | 70.8                                |
+| 23   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 155.79                           | 19.2                                   | 42                                  |
+| 24   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G       | 90.55                            | 33.1                                   | 75.4                                |
+| 25   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 122.24                           | 24.5                                   | 54.9                                |
+| 26   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                    | 58.87                            | 50.9                                   | 141.6                               |
+| 27   | yolov2_voc_pruned_0_66     | dk_yolov2_voc_448_448_0.66_11.56G            | 47.24                            | 63.4                                   | 187.5                               |
+| 28   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G             | 45.20                            | 66.3                                   | 203                                 |
+| 29   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G             | 42.27                            | 70.9                                   | 227.9                               |
+| 30   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G | 136.51                           | 21.9                                   | 46.5                                |
+| 31   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G           | 13.16                            | 227.7                                 | 682                                 |
+| 32   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G       | 52.42                            | 57.2                                   | 133.3                               |
+| 33   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G       | 105.11                           | 28.5                                   | 61.3                                |
+| 34   | resnet_v1_50               | tf_resnetv1_50_imagenet_224_224_6.97G        | 17.63                            | 169.9                                 | 460.7                               |
+| 35   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G       | 28.56                            | 104.9                                 | 247                                 |
+| 36   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G      | 40.49                            | 74                                     | 165.8                               |
+| 37   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G             | 48.11                            | 62.3                                   | 137.9                               |
+| 38   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G             | 56.95                            | 52.6                                   | 114.4                               |
+| 39   | ssd_resnet50_v1_fpn        | tf_ssdresnet50v1_fpn_coco_640_640_178.4G     | 525.11                           | 5.7                                   | 15.2                                |
+| 40   | yolov3_voc                 | tf_yolov3_voc_416_416_65.63G                 | 121.91                           | 24.6                                   | 54.7                                |
+
+
+</details>
+
 
 
 ### Performance on Ultra96  
@@ -464,8 +521,8 @@ The following table lists the performance number including end-to-end throughput
 | 30   | Inception\-v4                  | cf\_inceptionv4\_imagenet\_299\_299\_24\.5G         | 88\.76                          | 11\.2667                                | 11\.5333                               |
 | 31   | SqueezeNet                     | cf\_squeeze\_imagenet\_227\_227\_0\.76G             | 5\.96                           | 167\.867                                | 283\.583                               |
 | 32   | face\_landmark                 | cf\_landmark\_celeba\_96\_72\_0\.14G                | 2\.95                           | 339\.183                                | 347\.633                               |
-| 33   | reid                           | cf\_reid\_marketcuhk\_160\_80\_0\.95G               | 6\.28                           | 159\.15                                 | 166\.633                               |
-| 34   | yolov3\_bdd                    | cf\_yolov3\_bdd\_288\_512\_53\.7G                   | 193\.55                         | 5\.16667                                | 5\.31667                               |
+| 33   | reid                           | cf\_reid\_market1501\_160\_80\_0\.95G               | 6\.28                           | 159\.15                                 | 166\.633                               |
+| 34   | yolov3\_bdd                    | dk\_yolov3\_bdd\_288\_512\_53\.7G                   | 193\.55                         | 5\.16667                                | 5\.31667                               |
 | 35   | tf\_mobilenet\_v1              | tf\_mobilenetv1\_imagenet\_224\_224\_1\.14G         | 5\.97                           | 167\.567                                | 186\.55                                |
 | 36   | resnet18                       | cf\_resnet18\_imagenet\_224\_224\_3\.65G            | 13\.47                          | 74\.2167                                | 77\.8167                               |
 | 37   | resnet18\_wide                 | tf\_resnet18\_imagenet\_224\_224\_28G               | 97\.72                          | 10\.2333                                | 10\.3833                               |
