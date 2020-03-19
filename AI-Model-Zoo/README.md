@@ -290,7 +290,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on ZCU102 (0432055-05)
-Measured with Vitis AI 1.1, Vitis AI Library 1.1 and DPUv2 in MAR 2020  
+Measured with Vitis AI 1.1 and Vitis AI Library 1.1  
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -355,7 +355,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on ZCU104
-Measured with Vitis AI 1.1, Vitis AI Library 1.1 and DPUv2 in MAR 2020 
+Measured with Vitis AI 1.1 and Vitis AI Library 1.1 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -420,7 +420,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U50
-Measured with Vitis AI 1.1, Vitis AI Library 1.1 and DPUv3e in MAR 2020 
+Measured with Vitis AI 1.1 and Vitis AI Library 1.1 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -476,7 +476,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U200
-Measured with Vitis AI 1.1, Vitis AI Library 1.1 and DPUv1 in MAR 2020 
+Measured with Vitis AI 1.1 and Vitis AI Library 1.1 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -500,7 +500,7 @@ The following table lists the performance number including end-to-end throughput
 </details>
 
 ### Performance on U250
-Measured with Vitis AI 1.1, Vitis AI Library 1.1 and DPUv1 in MAR 2020 
+Measured with Vitis AI 1.1 and Vitis AI Library 1.1 
 
 <details>
  <summary><b>Click here to view details</b></summary>
