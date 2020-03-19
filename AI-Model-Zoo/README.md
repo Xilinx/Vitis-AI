@@ -74,7 +74,7 @@ The following table includes comprehensive information about each model, includi
 </details>
 
 ### Naming Rules
-Model name: `F_M_D_H_W_(P)_C`
+Model name: `F_M_D_H_W_(P)_C_V`
 * `F` specifies training framework: `cf` is Caffe, `tf` is Tensorflow, `dk` is Darknet, `pt` is PyTorch
 * `M` specifies the model
 * `D` specifies the dataset
@@ -82,9 +82,10 @@ Model name: `F_M_D_H_W_(P)_C`
 * `W` specifies the width of input data
 * `P` specifies the pruning ratio, it means how much computation is reduced. It is optional depending on whether the model is pruned.
 * `C` specifies the computation of the model: how many Gops per image
+* `V` specifies the version of Vitis AI
 
 
-For example, `cf_refinedet_coco_480_360_0.8_25G_1.0` is a `RefineDet` model trained with `Caffe` using `COCO` dataset, input data size is `480*360`, `80%` pruned, and the computation per image is `25Gops`.
+For example, `cf_refinedet_coco_480_360_0.8_25G_1.1` is a `RefineDet` model trained with `Caffe` using `COCO` dataset, input data size is `480*360`, `80%` pruned, the computation per image is `25Gops` and Vitis AI version is 1.1.
 
 
 ### caffe-xilinx 
