@@ -290,7 +290,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on ZCU102 (0432055-05)
-Measured with Vitis AI 1.1, Vitis AI Library 1.1 and Vitis DPU 1.1 in MAR 2020  
+Measured with Vitis AI 1.1, Vitis AI Library 1.1 and DPUv2 in MAR 2020  
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -355,7 +355,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on ZCU104
-Measured with Vitis AI 1.1, Vitis AI Library 1.1 and Vitis DPU 1.1 in MAR 2020 
+Measured with Vitis AI 1.1, Vitis AI Library 1.1 and DPUv2 in MAR 2020 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -420,7 +420,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U50
-Measured with Vitis AI 1.1, Vitis AI Library 1.1 and Vitis DPU 1.1 in MAR 2020 
+Measured with Vitis AI 1.1, Vitis AI Library 1.1 and DPUv3e in MAR 2020 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -476,7 +476,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U200
-Measured with Vitis AI 1.1, Vitis AI Library 1.1 and Vitis DPU 1.1 in MAR 2020 
+Measured with Vitis AI 1.1, Vitis AI Library 1.1 and DPUv1 in MAR 2020 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -498,6 +498,31 @@ The following table lists the performance number including end-to-end throughput
 | 10   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 19.90                           | 50.3                                   | 82.1                                |
 
 </details>
+
+### Performance on U250
+Measured with Vitis AI 1.1, Vitis AI Library 1.1 and DPUv1 in MAR 2020 
+
+<details>
+ <summary><b>Click here to view details</b></summary>
+
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with DPUv1 running at 250Mhz in Gen3x16:
+  
+
+| No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
+| ---- | :------------------------- | :------------------------------------------- | -------------------------------- | ------------------------------------- | ------------------------------------ |
+| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G            | 1.68                            | 595.5                                 | 987.7                                 |
+| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G           | 1.67                             | 600.5                                 | 1855.5                               |
+| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G        | 1.93                            | 517.1                                 | 2202.6                                 |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G           | 1.65                            | 607.8                                 | 1827.8                               |
+| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G        | 6.18                            | 161.8                                   | 686.4                               |
+| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G        | 5.77                           | 173.4                                   | 426.4                                |
+| 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 5.44                            | 183.7                                 | 1205.5                                 |
+| 8    | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 7.43                            | 134.7                                 | 424.6                               |
+| 9    | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 46.95                           | 14.3                                   | 70.1                                  |
+| 10   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 79.84                           | 9.5                                   | 105.7                                |
+
+</details>
+
 
 ### Performance on Ultra96  
 The performance number shown below was measured with the previous AI SDK v2.0.4 on Ultra96 v1.
