@@ -21,4 +21,19 @@ DATE="$(date)"
 # Final Build Image Tag
 GPU_IMAGE_TAG=${DOCKER_REPO}$BRAND:tools-${VERSION}-gpu
 
+more PROMPT.txt
+
+confirm() {
+  echo -n "Do you agree to the terms and wish to proceed [y/n]? "
+  read REPLY
+  case $REPLY in
+    [Yy]) break ;;
+    [Nn]) exit 0 ;;
+    *) confirm ;;
+  esac
+    REPLY=''
+}
+
+confirm
+
 docker build --network=host --build-arg VERSION=1.0.0 --build-arg DATE="$(date)" -f Dockerfile.gpu -t $GPU_IMAGE_TAG ./
