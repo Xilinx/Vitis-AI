@@ -85,7 +85,7 @@ Model name: `F_M_D_H_W_(P)_C_V`
 * `V` specifies the version of Vitis AI
 
 
-For example, `cf_refinedet_coco_480_360_0.8_25G_1.1` is a `RefineDet` model trained with `Caffe` using `COCO` dataset, input data size is `480*360`, `80%` pruned, the computation per image is `25Gops` and Vitis AI version is 1.1.
+For example, `cf_refinedet_coco_480_360_0.8_25G_1.1` is a `RefineDet` model trained with `Caffe` using `COCO` dataset, input data size is `480*360`, `80%` pruned, the computation per image is `25Gops` and Vitis AI version is `1.1`.
 
 
 ### caffe-xilinx 
