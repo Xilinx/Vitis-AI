@@ -321,7 +321,7 @@ The following table lists the performance number including end-to-end throughput
 | 19   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G  | 286.10                           | 3.5                                  | 15.3                                   |
 | 20   | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 2.57                             | 388.3                                | 1279                               |
 | 21   | densebox_640_360           | cf_densebox_wider_360_640_1.11G              | 5.13                             | 195.0                                | 627.8                                |
-| 22   | face_landmark              | cf_landmark_celeba_96_72_0.14G               | 1.18                             | 846.7                                | 1378                                 |
+| 22   | face_landmark              | cf_landmark_celeba_96_72_0.14G               | 1.18                             | 846.7                                | 1379.9                                 |
 | 23   | reid                       | cf_reid_market1501_160_80_0.95G              | 2.76                             | 361.9                                | 672.8                                |
 | 24   | multi_task                 | cf_multitask_bdd_288_512_14.8G               | 28.26                            | 35.4                                  | 133.0                                |
 | 25   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 77.12                            | 13.0                                  | 37.1                                 |
@@ -397,9 +397,9 @@ The following table lists the performance number including end-to-end throughput
 | 30   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G             | 16.02                            | 62.4                                   | 180.2                                |
 | 31   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G             | 14.17                            | 70.5                                   | 217.4                                |
 | 32   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G | 39.35                            | 25.4                                   | 46.1                                 |
-| 33   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G           | 5.10                             | 196.1                                 | 383.8                                |
-| 34   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G       | 16.57                            | 60.3                                   | 112.7                                |
-| 35   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G       | 33.13                            | 30.2                                   | 57.7                                 |
+| 33   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G           | 5.10                             | 196.1                                 | 401.7                                |
+| 34   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G       | 16.57                            | 60.3                                   | 116.4                                |
+| 35   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G       | 33.13                            | 30.2                                   | 58.6                                 |
 | 36   | Mobilenet_v1               | tf_mobilenetv1_0.25_imagenet_128_128_27.15M  | 0.79                             | 1263.6                                 | 3957.7                               |
 | 37   | Mobilenet_v1               | tf_mobilenetv1_0.5_imagenet_160_160_150.07M  | 1.31                             | 763.1                                 | 2038.1                               |
 | 38   | Mobilenet_v1               | tf_mobilenetv1_1.0_imagenet_224_224_1.14G    | 3.21                             | 311.8                                 | 731.1                                |
