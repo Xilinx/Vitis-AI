@@ -481,7 +481,7 @@ Measured with Vitis AI 1.1 and Vitis AI Library 1.1
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with DPUv1 running at 250Mhz in Gen3x16:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with DPUv1 running at 350Mhz with xilinx_u250_xdma_201830_2 shell:
   
 
 | No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
@@ -505,7 +505,7 @@ Measured with Vitis AI 1.1 and Vitis AI Library 1.1
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with DPUv1 running at 250Mhz in Gen3x16:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with DPUv1 running at 350Mhz with xilinx_u200_xdma_201830_1 shell:
   
 
 | No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
