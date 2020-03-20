@@ -13,8 +13,8 @@
 	- [5.1 Board Setup](#51-board-setup)
 	- [5.2 Build and Run TRD Flow](#52-build-and-run-trd-flow)
 		- [5.2.1 Build the Hardware Design](#521-build-the-hardware-design)
-   		- [5.2.2 Resnet50 Example](#522-resnet50-example)
-		- [5.2.3 Run Flow Tutorial](#523-run-flow-turorial)
+   		- [5.2.2 Get HWH File](#522-get-hwh-file)
+   		- [5.2.3 Run Resnet50 Example](#523-resnet50-example)
 	- [5.3 Configurate the DPU](#3-configurate-the-dpu)
 		- [5.3.1 Set the DPU Core Number](#531-set-dpu-core-number)
 		- [5.3.2 Modify the Parameters](#532-modify-the-parameters)
@@ -30,7 +30,7 @@ This wiki page complements the Vitis 2019.2 version of the DPU TRD.
 
 Change Log:
 
--  The first version of vitis DPU TRD
+-  The first version of Vitis DPU TRD
 
 ------
 
@@ -61,14 +61,16 @@ Required:
 ### 3.2 Software
 
   Required:
-  - install the Vitis 2019.2.[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis.html) 
+  - Vitis 2019.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis.html) 
   - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
-  - install [XRT 2019.2](https://github.com/Xilinx/XRT/tree/2019.2)
-  - install [zcu102 base platform](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=zcu102_base_2019.2.zip)
-  - install [Vitis AI 1.0](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
-  - install [Vitis AI Library 1.0](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
+  - [XRT 2019.2](https://github.com/Xilinx/XRT/tree/2019.2)
+  - [zcu102 dpu platform](https://www.xilinx.com/bin/public/openDownload?filename=zcu102_dpu_2019.2.zip)
+  - [Vitis AI 1.0](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
+  - [Vitis AI Library 1.0](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
+
+###### **Note:** The user can also refer the [zcu102 dpu platform](https://github.com/Xilinx/Vitis_Embedded_Platform_Source/tree/master/Xilinx_Official_Platforms/zcu102_dpu), The github page includes all the details, such as how to generage the zcu102 dpu platform, how to create the SD card after compiling the DPU project.
 ------
 
 ## 4 Design Files
@@ -86,8 +88,7 @@ DPU_TRD 
 │   └── Vitis
 │       ├── models
 │       ├── sample
-│       ├── dnndk                       # dnndk librarys
-│       └── setup.sh
+│       └── resnet50.tar.gz
 └── prj 
     └── Vitis
         │        
@@ -97,9 +98,10 @@ DPU_TRD 
         ├── Makefile
         ├── dpu_conf.vh
         ├── config_file                 # config file
-        │   ├── prj_config              
+        │   ├── prj_config              # integrate 2DPU 
         │   ├── prj_config_102_3dpu     # integrate 3DPU on zcu102
-        │   └── prj_config_104_2dpu     # integrate 2DPU on zcu104
+        │   ├── prj_config_104_2dpu     # integrate 2DPU on zcu104
+        │   └── prj_config_1dpu         # integrate 1DPU on zcu104
         ├── scripts
         └── README.md
 
@@ -147,7 +149,7 @@ The following tutorials assume that the $TRD_HOME environment variable is set as
 
 We need install the Vitis Core Development Environment.
 
-We prepare the zcu102_base platform in the vitis TRD project. The platform include all the libs that needed.
+We prepare the zcu102_dpu platform in the vitis TRD project. The platform include all the libs that needed.
 
 The following tutorials assume that the Vitis and XRT environment variable is set as given below.
 
@@ -166,34 +168,51 @@ Build the hardware design.
 ```
 % cd $TRD_HOME/prj/Vitis
 
-% export SDX_PLATFORM=<vitis install path>/2019.2/platform/zcu102_base/zcu102_base.xpfm
+% export SDX_PLATFORM=<vitis install path>/platform/zcu102_dpu/zcu102_dpu.xpfm
 
 % make KERNEL=DPU_SM DEVICE=zcu102
 ```
 
 Generated SD card files are in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card**.
 
+#### 5.2.2 Get HWH File 
+
+HWH file is a important file that need by the vai-c tool. The file is been created when compile by the Vitils tool. It works together with vai-c to support model compilation under various DPU configurations.
+
+the HWH file could be simply get from $TRD_HOME/prj/Vitis/binary_container_1/sd_card
+
+The user can also get the HWH file in the following path.
+
+$TRD_HOME/prj/Vitis/binary_container_1/link/vivado/vpl/.local/hw_platform/prj/sources_1/bd/zcu102_dpu/hw_handoff/zcu102_dpu.hwh
+
+Different Platform will get different name of HWH file.
  
-#### 5.2.2 Resnet50 Example 
+#### 5.2.3 Run Resnet50 Example 
+
+The TRD project has generated the matching model file in $TRD_HOME/prj/app/Vitis path as the default settings. If the user change the DPU settings. The model need to be created again.
 
 This part is about how to run the Resnet50 example from the source code.
 
-#### 5.2.3 Run Flow Tutorial
+The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in page 65 of [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2019_2/ug1144-petalinux-tools-reference-guide.pdf)for Petalinux 2019.2:
 
-Copy the whole files in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card** to SD Card. 
+Copy the whole files in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card** execpt the rootfs.tar.gz fiel to BOOT partition.
+
+Extract the rootfs.tar.gz the RootFs folder 
 
 Copy the whole files in **$TRD_HOME/app/Vitis** directory to SD Card.
 
 After the linux boot, Run:
 
 ```
-% cd /mnt
+% cd $HOME
 
-% source ./setup.sh
+% cp sd_card/dpu.xclbin /usr/lib
 
-% cd samples/resnet50
+% tar -xvf /mnt/app/Vitis/resnet50.tar.gz
 
-% ./resnet50 img/bellpeppe-994958.JPEG
+% cp /mnt/app/Vitis/models/resnet50.elf .
+
+% env LD_LIBRARY_PATH=samples/lib samples/bin/resnet50 img/bellpeppe-994958.JPEG
 ```
 
 
@@ -203,7 +222,7 @@ After the linux boot, Run:
 ### 5.3 Change the Configuration
 
 
-The DPU IP provides some user-configurable parameters to optimize resource utilization and customize different features. Different configuratons can be selected for DSP slices, LUT, block RAM(BRAM), and UltraRAM utilization based on the amount of available programmable logic resources. There are also options for addition functions, such as channel augmentation, average pooling, depthwise convolution.
+The DPU IP provides some user-configurable parameters to optimize resource utilization and customize different features. Different configurations can be selected for DSP slices, LUT, block RAM(BRAM), and UltraRAM utilization based on the amount of available programmable logic resources. There are also options for addition functions, such as channel augmentation, average pooling, depthwise convolution.
 
 The TRD also support the softmax function.
    
@@ -224,7 +243,7 @@ The project will integrate 2 DPU. The user can delete this property, Then the pr
 
 #### 5.3.2 Modify the Parameters
 
-The default setting is B4096 for zcu102. Read the dpu_conf.vh file to get the details of DPU 
+The default setting is B4096 for ZCU102. Read the dpu_conf.vh file to get the details of DPU 
 
 Modify the $TRD_HOME/prj/Vitis/dpu_conf.vh file to modify the configuration. 
 
@@ -243,7 +262,7 @@ The TRD supports to modify the following parameters.
 
 #### Architecture
 
-The dpu can configurate hardware architecture, including: **B512, B800, B1024, B1152, B1600, B2304, B3136, B4096**.
+The DPU can configurate hardware architecture, including: **B512, B800, B1024, B1152, B1600, B2304, B3136, B4096**.
 
 If you want to choose the B4096 DPU. Need to set like this.
 
@@ -393,10 +412,25 @@ If the platform doesn't have enough port to connect the port of DPU. The ports c
 Refer the UG1360 to create the vitis platform. Modify the **SDX_PLATFORM** to specify the user platform.
 
 ```
-SDX_PLATFORM = <user platform path>/user_platform/user_platform.xpfm
+% export SDX_PLATFORM=<user platform path>/user_platform.xpfm
 ```
 
-The other steps refer the 5.2.1 chapter. 
+If user just want to integrate the DPU IP in user platform. The related files need to be copied incuding the following path.
+
+$TRD_HOME/prj/Vitis
+$TRD_HOME/dpu_ip
+
+The $TRD/prj/Vitis/strip_interconects.tcl file is for reducing the resources and not necessary. It can be detelted. The relevant statement need to be deleted inthe makefile at the same time.
+
+Delete the following property.
+
+```
+--xp param:compiler.userPostSysLinkTcl=${DIR_PRJ}/strip_interconnects.tcl 
+```
+
+If the user changes the directroy structure, the relative paths in the script files need to be modified.
+
+The other steps refer the 5.2 chapter. 
 
 If you meet some timing issues. you can modify the [vivado] part of prj_config file (**prop=run.impl_1.strategy=Performance_Explore**) to change another implementation strategy and re-compile the project.
 
@@ -413,7 +447,7 @@ steps:
 
 1.Modify the Makefile file
 ```
---config ${TRD_HOME}/prj/Vitis//config_file/prj_config_102_3dpu
+--config ${TRD_HOME}/prj/Vitis/config_file/prj_config_102_3dpu
 ```
 2.
 ```
