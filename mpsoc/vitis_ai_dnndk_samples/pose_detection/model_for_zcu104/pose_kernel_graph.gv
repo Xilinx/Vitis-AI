@@ -1,0 +1,11 @@
+digraph G {
+ordering = out
+ranksep = 1
+node [shape = box3d, fontcolor = gray18, bgcolor = oldlace, style = filled];
+0[label = "kernel id: 0, type: DPUKernel", fillcolor = wheat]
+1[label = "kernel id: 1, type: CPUKernel", fillcolor = wheat]
+2[label = "kernel id: 2, type: DPUKernel", fillcolor = wheat]
+0->1[label = "(inception_5b_output, 0) -> (pool5_7x7_s1, 0)"]
+1->2[label = "(pool5_7x7_s1, 0) -> (fc_coordinate, 0)"]
+1->2[label = "(pool5_7x7_s1, 0) -> (fc_visible, 0)"]
+}
