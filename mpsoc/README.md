@@ -38,11 +38,11 @@ workspace
 
 ## Step3: Setup cross-compiler for Vitis AI DNNDK and make samples
 
-1. Download [petalinux_sdh.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk.sh)
+1. Download [sdk.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk.sh)
 
 2. Run the command below to install Arm GCC cross-compilation toolchain environment
 ```sh
-./petalinux_sdk.sh
+./sdk.sh
 ```
 
 3. Run the command below to setup environment
