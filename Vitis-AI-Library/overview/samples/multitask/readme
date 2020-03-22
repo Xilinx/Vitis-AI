@@ -1,0 +1,42 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_multitask, ./test_performance_multitask, ./test_video_multitask first param followed must be with model name.
+  Valid model name:
+    multi_task
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_multitask multi_task sample_multitask.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:21.390182  5099 process_result.hpp:89] 2 0.688731 0.557547 0.162904 0.176863 126.027
+I1108 22:41:21.390509  5099 process_result.hpp:89] 2 0.334149 0.501353 0.122619 0.234968 93.5763
+I1108 22:41:21.390583  5099 process_result.hpp:89] 2 0 0.510945 0.0782015 0.230493 180
+I1108 22:41:21.390650  5099 process_result.hpp:89] 2 0.274168 0.559145 0.0788227 0.0899649 -108.435
+I1108 22:41:21.390705  5099 process_result.hpp:89] 2 0.647203 0.559001 0.0722189 0.0755216 101.31
+I1108 22:41:21.390758  5099 process_result.hpp:89] 2 0.795847 0.329459 0.195745 0.649231 135
+I1108 22:41:21.390871  5099 process_result.hpp:89] 2 0.208173 0.573138 0.0530752 0.061687 -123.69
+   

@@ -1,0 +1,28 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+### How to use it ###
+compile:
+sh build.sh
+
+run: ./demo_yolov3 demo_yolov3.jpg
+
+result:
+0710 03:08:21.243755  3985 dpu_task_imp.cpp:191] rows 416 cols 416
+RESULT: 6       1       133.408 139.665 255.254 0.999673
+RESULT: 6       113.796 142.11  190.103 182.402 0.990521
+RESULT: 6       402.753 129.565 512     251.411 0.970362
+RESULT: 6       351.843 144.018 415.105 168.457 0.873677
+

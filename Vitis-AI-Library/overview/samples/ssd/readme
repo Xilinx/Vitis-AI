@@ -1,0 +1,102 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_ssd, ./test_performance_ssd, ./test_video_ssd first param followed must be with model name.
+  Valid model name:
+    ssd_pedestrain_pruned_0_97
+    ssd_traffic_pruned_0_9
+    ssd_adas_pruned_0_95
+    ssd_mobilenet_v2
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_ssd ssd_pedestrain_pruned_0_97 sample_ssd.jpg
+    output : 
+   
+    
+    sample : ./test_jpeg_ssd ssd_traffic_pruned_0_9 sample_ssd.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:25.741405  5201 process_result.hpp:77] RESULT: 1	460.372	319.02	518.265	360.097	0.964248
+I1108 22:41:25.741672  5201 process_result.hpp:77] RESULT: 1	549.768	330.249	649.877	383.833	0.953907
+I1108 22:41:25.741720  5201 process_result.hpp:77] RESULT: 1	629.81	303.884	795.222	542.914	0.953907
+I1108 22:41:25.741788  5201 process_result.hpp:77] RESULT: 1	499.885	330.743	562.287	368.852	0.951322
+I1108 22:41:25.741830  5201 process_result.hpp:77] RESULT: 1	5.78654	307.261	207.13	529.78	0.819481
+I1108 22:41:25.741889  5201 process_result.hpp:77] RESULT: 1	567.549	298.04	735.229	366.682	0.6773
+I1108 22:41:25.741937  5201 process_result.hpp:77] RESULT: 1	175.256	320.649	296.409	411.018	0.62172
+   
+    
+    sample : ./test_jpeg_ssd ssd_adas_pruned_0_95 sample_ssd.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:26.001765  5209 process_result.hpp:77] RESULT: 1	629.145	318.586	800	510.289	0.992684
+I1108 22:41:26.002030  5209 process_result.hpp:77] RESULT: 1	0	306.258	197.977	590.153	0.992684
+I1108 22:41:26.002104  5209 process_result.hpp:77] RESULT: 1	460.917	318.263	517.54	359.175	0.953907
+I1108 22:41:26.002149  5209 process_result.hpp:77] RESULT: 1	173.756	327.214	290.702	420.597	0.940982
+I1108 22:41:26.002197  5209 process_result.hpp:77] RESULT: 1	507.264	329.675	562.489	370.587	0.882215
+I1108 22:41:26.002238  5209 process_result.hpp:77] RESULT: 1	443.56	322.247	472.941	351.628	0.819481
+I1108 22:41:26.002277  5209 process_result.hpp:77] RESULT: 1	552.125	333.483	650.527	386.517	0.819481
+I1108 22:41:26.002341  5209 process_result.hpp:77] RESULT: 1	281.33	315.023	321.232	366.258	0.732122
+I1108 22:41:26.002383  5209 process_result.hpp:77] RESULT: 1	400.381	326.552	418.202	340.782	0.68199
+   
+    
+    sample : ./test_jpeg_ssd ssd_mobilenet_v2 sample_ssd.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:26.410655  5217 process_result.hpp:77] RESULT: 3	633.967	318.612	798.44	519.499	0.997873
+I1108 22:41:26.410941  5217 process_result.hpp:77] RESULT: 3	7.30849	310.962	199.49	595.705	0.996868
+I1108 22:41:26.411006  5217 process_result.hpp:77] RESULT: 3	556.595	333.722	640.829	383.551	0.980992
+I1108 22:41:26.411051  5217 process_result.hpp:77] RESULT: 3	178.524	329.161	291.309	423.839	0.967896
+I1108 22:41:26.411098  5217 process_result.hpp:77] RESULT: 3	462.885	317.232	515.448	360.268	0.956672
+I1108 22:41:26.411139  5217 process_result.hpp:77] RESULT: 3	506.737	331.145	559.121	370.219	0.954678
+I1108 22:41:26.411221  5217 process_result.hpp:77] RESULT: 3	446.871	322.352	471.254	351.398	0.841125
+I1108 22:41:26.411260  5217 process_result.hpp:77] RESULT: 3	261.011	319.306	308.572	365.694	0.832392
+I1108 22:41:26.411303  5217 process_result.hpp:77] RESULT: 3	420.204	325.391	444.587	345.859	0.78361
+I1108 22:41:26.411340  5217 process_result.hpp:77] RESULT: 3	319.663	326.99	333.045	345.51	0.702982
+I1108 22:41:26.411379  5217 process_result.hpp:77] RESULT: 3	388.842	326.636	400.95	337.322	0.664261
+I1108 22:41:26.411417  5217 process_result.hpp:77] RESULT: 3	303.829	320.532	321.954	357.7	0.611842
+I1108 22:41:26.411454  5217 process_result.hpp:77] RESULT: 3	400.057	326.079	416.401	339.13	0.609931
+I1108 22:41:26.411491  5217 process_result.hpp:77] RESULT: 3	440.057	325.531	456.401	347.594	0.466494
+I1108 22:41:26.411530  5217 process_result.hpp:77] RESULT: 3	326.011	324.829	336.697	337.88	0.432627
+I1108 22:41:26.411566  5217 process_result.hpp:77] RESULT: 3	331.535	326.143	340.965	336.565	0.41731
+I1108 22:41:26.411603  5217 process_result.hpp:77] RESULT: 3	364.332	328.119	374.001	335.839	0.373244
+I1108 22:41:26.411640  5217 process_result.hpp:77] RESULT: 3	379.792	328.214	387.708	335.744	0.344837
+I1108 22:41:26.411677  5217 process_result.hpp:77] RESULT: 3	413.789	326.621	429.336	343.379	0.306325
+   
+
+    sample : ./test_jpeg_ssd mlperf_ssd_resnet34_tf sample_ssd.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1110 19:23:01.570066 12929 process_result.hpp:77] RESULT: 1    145.72  322.74  184.34  370.17  0.530128
+I1110 19:23:01.576675 12929 process_result.hpp:77] RESULT: 1    299.289 320.465 320.751 365.02  0.424154
+I1110 19:23:01.576766 12929 process_result.hpp:77] RESULT: 3    506.93  331.559 565.07  369.091 0.992294
+I1110 19:23:01.576828 12929 process_result.hpp:77] RESULT: 3    552.292 334.046 648.732 385.657 0.985888
+I1110 19:23:01.576887 12929 process_result.hpp:77] RESULT: 3    464.55  318.86  520.55  358.315 0.953413
+I1110 19:23:01.576944 12929 process_result.hpp:77] RESULT: 3    0       296.893 207.536 587.607 0.926408
+I1110 19:23:01.577028 12929 process_result.hpp:77] RESULT: 3    181.576 326.633 296.833 419.753 0.886174
+I1110 19:23:01.577091 12929 process_result.hpp:77] RESULT: 3    624.573 325.673 797.761 519.33  0.750178
+I1110 19:23:01.577163 12929 process_result.hpp:77] RESULT: 3    251.944 320.473 311.556 361.952 0.726437
+I1110 19:23:01.577222 12929 process_result.hpp:77] RESULT: 3    445.667 324.114 470.293 351.478 0.494712
+

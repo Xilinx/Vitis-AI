@@ -1,0 +1,15 @@
+./include/xilinx/fp16_base.hpp
+./include/xilinx/softmax.hpp
+./include/xilinx/ssd_normalizer.hpp
+./include/xilinx/max_index.hpp
+./src/softmax_c.cpp
+./src/softmax_neon.cpp
+./src/ssd_normalizer_c.cpp
+./src/ssd_normalizer_neon.cpp
+./src/max_index.cpp
+./test/test_softmax.cpp
+./test/time.hpp
+./test/test_normalize.cpp
+./test/test_max_index.cpp
+./test/test_neon.cpp
+./cmake/showargs/showargs.cpp

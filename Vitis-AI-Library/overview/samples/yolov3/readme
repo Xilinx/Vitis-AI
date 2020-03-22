@@ -1,0 +1,76 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_yolov3, ./test_performance_yolov3, ./test_video_yolov3 first param followed must be with model name.
+  Valid model name:
+    yolov3_adas_pruned_0_9
+    yolov3_voc
+    yolov3_bdd
+    yolov3_voc_tf
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_yolov3 yolov3_adas_pruned_0_9 sample_yolov3.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:34.057044  5299 process_result.hpp:78] RESULT: 0	-1.49536	132.509	121.505	226.451	0.96233
+I1108 22:41:34.057271  5299 process_result.hpp:78] RESULT: 0	111.502	139.693	187.502	179.079	0.943011
+I1108 22:41:34.057314  5299 process_result.hpp:78] RESULT: 0	397.368	131.843	512	231.843	0.850293
+I1108 22:41:34.057358  5299 process_result.hpp:78] RESULT: 0	352.674	144.348	413.023	165.955	0.843594
+I1108 22:41:34.057396  5299 process_result.hpp:78] RESULT: 0	337.352	144.322	362.9	159.324	0.807779
+I1108 22:41:34.057433  5299 process_result.hpp:78] RESULT: 0	150.182	139.843	194.335	161.45	0.320707
+I1108 22:41:34.057471  5299 process_result.hpp:78] RESULT: 1	191.029	134.979	205.76	159.021	0.348052
+   
+    
+    sample : ./test_jpeg_yolov3 yolov3_bdd sample_yolov3.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:35.268661  5303 process_result.hpp:78] RESULT: 2	355.623	143.204	416.623	164.574	0.843508
+I1108 22:41:35.268913  5303 process_result.hpp:78] RESULT: 2	115.72	139.289	185.977	182.711	0.730628
+I1108 22:41:35.268957  5303 process_result.hpp:78] RESULT: 2	401.178	135.767	512	245.528	0.730601
+I1108 22:41:35.269003  5303 process_result.hpp:78] RESULT: 2	323.695	141.1	360.952	158.049	0.705315
+I1108 22:41:35.269042  5303 process_result.hpp:78] RESULT: 2	299.126	135.785	334.126	153.827	0.698933
+I1108 22:41:35.269080  5303 process_result.hpp:78] RESULT: 2	164.063	136.371	196.942	159.537	0.592455
+I1108 22:41:35.269119  5303 process_result.hpp:78] RESULT: 2	-0.840607	131.914	129.028	256	0.561093
+   
+    
+    sample : ./test_jpeg_yolov3 yolov3_voc sample_yolov3.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:36.492969  5310 process_result.hpp:78] RESULT: 6	-9.86494	133.408	139.665	255.254	0.999673
+I1108 22:41:36.493237  5310 process_result.hpp:78] RESULT: 6	113.796	142.11	190.103	182.402	0.990521
+I1108 22:41:36.493283  5310 process_result.hpp:78] RESULT: 6	402.753	129.565	512	251.411	0.970362
+I1108 22:41:36.493327  5310 process_result.hpp:78] RESULT: 6	351.843	144.018	415.105	168.457	0.873677
+   
+    
+    sample : ./test_jpeg_yolov3 yolov3_voc_tf sample_yolov3.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:37.711395  5317 process_result.hpp:78] RESULT: 6	8.90686	132.615	125.361	254.461	0.998955
+I1108 22:41:37.711652  5317 process_result.hpp:78] RESULT: 6	112.95	137.506	189.258	183.163	0.9239
+I1108 22:41:37.711697  5317 process_result.hpp:78] RESULT: 6	402.753	128.378	512	250.224	0.71791
+I1108 22:41:37.711743  5317 process_result.hpp:78] RESULT: 6	360.634	144.038	406.917	165.605	0.320683
+I1108 22:41:37.711783  5317 process_result.hpp:78] RESULT: 6	291.458	137.144	332.074	155.318	0.320529
+   

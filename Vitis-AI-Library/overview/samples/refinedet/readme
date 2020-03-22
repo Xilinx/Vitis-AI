@@ -1,0 +1,60 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_refinedet, ./test_performance_refinedet, ./test_video_refinedet, ./test_accuracy_refinedet first param followed must be with model name.
+  Valid model name:
+    refinedet_pruned_0_8
+    refinedet_pruned_0_92
+    refinedet_pruned_0_96
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_refinedet refinedet_pruned_0_8 sample_refinedet.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:23.309842  5134 process_result.hpp:67] RESULT2: 	101	171	424	632	0.980669
+I1108 22:41:23.310117  5134 process_result.hpp:67] RESULT2: 	10	214	183	489	0.954602
+I1108 22:41:23.310166  5134 process_result.hpp:67] RESULT2: 	399	136	422	391	0.915951
+I1108 22:41:23.310207  5134 process_result.hpp:67] RESULT2: 	0	196	47	370	0.915951
+   
+    
+    sample : ./test_jpeg_refinedet refinedet_pruned_0_92 sample_refinedet.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:23.574069  5142 process_result.hpp:67] RESULT2: 	75	182	417	626	1.00007
+I1108 22:41:23.574378  5142 process_result.hpp:67] RESULT2: 	0	193	43	408	0.949262
+I1108 22:41:23.574419  5142 process_result.hpp:67] RESULT2: 	21	197	177	400	0.949262
+I1108 22:41:23.574458  5142 process_result.hpp:67] RESULT2: 	34	190	233	578	0.745863
+I1108 22:41:23.574504  5142 process_result.hpp:67] RESULT2: 	397	144	421	351	0.694372
+   
+    
+    sample : ./test_jpeg_refinedet refinedet_pruned_0_96 sample_refinedet.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:23.822355  5150 process_result.hpp:67] RESULT2: 	102	156	424	617	0.980669
+I1108 22:41:23.822662  5150 process_result.hpp:67] RESULT2: 	0	197	45	387	0.870224
+I1108 22:41:23.822702  5150 process_result.hpp:67] RESULT2: 	8	208	187	405	0.853893
+I1108 22:41:23.822743  5150 process_result.hpp:67] RESULT2: 	400	135	424	246	0.648349
+   
