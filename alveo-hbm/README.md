@@ -1,6 +1,6 @@
 # DPUv3E for Alveo Accelerator Card with HBM
 
-DPUv3E is a member of Xilinx DPU IP family for convolution nerual network (CNN) inference application. It is designed for latest Xilinx Alveo U50/U280 adaptable accelerator cards with HBM support. DPU V3E is a high performance CNN inference IP optimized for throughput and data center workloads. DPUv3E runs with highly optimized instructions set and supports all mainstream convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, MobileNet, FPN, etc. 
+DPUv3E is a member of Xilinx DPU IP family for convolution nerual network (CNN) inference application. It is designed for latest Xilinx Alveo U50/U280 adaptable accelerator cards with HBM support. DPU V3E is a high performance CNN inference IP optimized for throughput and data center workloads. DPUv3E runs with highly optimized instructions set and supports all mainstream convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, FPN, etc. 
 
 DPUv3E is one of the fundamental IPs (Overlays) of Xilinx Vitis™ AI development environment, and the user can use Vitis AI toolchain to finish the full stack ML development with DPUv3E. The user can also use standard Vitis flow to finish the integration of DPUv3E with other customized acceleration kernal to realize powerful X+ML solution. DPUv3E is provided as encrypted RTL or XO file format for Vivado or Vitis based integration flow.
 
