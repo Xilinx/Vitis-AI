@@ -1,0 +1,5 @@
+{
+    "lib": "libvart-dpu-runner.so",
+    "filename": "./ssd_traffic_pruned_0_9.xmodel",
+    "kernel": [ "subgraph_mbox_conf(OptimizeDDRFlattenConcatStructure)(ModifyAsix)_generation_0_child_concat(StandardizeConcat)(fix)" ]
+}

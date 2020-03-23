@@ -1,6 +1,6 @@
 <table width="100%">
   <tr width="100%">
-    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Library v1.0</h1>
+    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Library v1.1</h1>
     </td>
  </tr>
  </table>
@@ -20,84 +20,301 @@ Vitis AI Library directory structure introduction
 
 ```
 vitis_ai_library
-├── demo                         # Application demo, including classification, yolov3,
-|   |                            # seg_and_pose_detect and segs_roadline_detect
-│   ├── classification
-│   ├── seg_and_pose_detect
-│   ├── segs_and_roadline_detect
-│   └── yolov3
-├── libsrc                       # AI library open source code
-│   ├── libdpbase                # dpbase library using Vitis unified APIs
-│   ├── libdpclassification
-│   ├── libdpfacedetect
-│   ├── libdpfacelandmark
-│   ├── libdpmultitask
-│   ├── libdpopenpose
-│   ├── libdpposedetect
-│   ├── libdprefinedet
-│   ├── libdpreid
-│   ├── libdproadline
-│   ├── libdpsegmentation
-│   ├── libdpssd
-│   ├── libdptfssd               # Tensorflow SSD library
-│   ├── libdpyolov2
-│   └── libdpyolov3
-├── LICENSE
-├── README.md                    # This README
-└── samples                      # Model test samples, including jpeg test, video test, performance test
-    ├── classification
-    ├── facedetect
-    ├── facelandmark
-    ├── multitask
-    ├── openpose
-    ├── posedetect
-    ├── refinedet
-    ├── reid
-    ├── roadline
-    ├── segmentation
-    ├── ssd
-    ├── tfssd
-    ├── yolov2
-    └── yolov3
+├── benchmark
+│   ├── CMakeLists.txt
+│   ├── include
+│   └── src
+├── classification
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── samples
+│   ├── src
+│   └── test
+├── cmake
+│   ├── FindUnilog.cmake
+│   ├── FindXir.cmake
+│   ├── XilinxCommon.cmake
+│   ├── XilinxDpu.cmake
+│   ├── xilinx_version.c.in
+│   └── XilinxVersion.cmake
+├── CMakeLists.txt
+├── cmake.sh
+├── Copyright.txt
+├── dpu_task
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── readme.md
+│   ├── README.md
+│   ├── src
+│   ├── test
+│   └── util
+├── facedetect
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── facelandmark
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── lanedetect
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── math
+│   ├── buildme
+│   ├── buildtest
+│   ├── CMakeLists.txt
+│   ├── cscope.files
+│   ├── include
+│   ├── src
+│   ├── submodule
+│   ├── test
+│   └── update_submodule.sh
+├── model_config
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── src
+│   └── test
+├── multitask
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── openpose
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── overview
+│   ├── cmake
+│   ├── CMakeLists.txt
+│   ├── demo						#AI Library demo
+│   │   ├── classification
+│   │   ├── seg_and_pose_detect
+│   │   ├── segs_and_roadline_detect
+│   │   └── yolov3
+│   └── samples						#AI Library samples
+│       ├── classification
+│       ├── facedetect
+│       ├── facelandmark
+│       ├── lanedetect
+│       ├── multitask
+│       ├── openpose
+│       ├── posedetect
+│       ├── refinedet
+│       ├── reid
+│       ├── segmentation
+│       ├── ssd
+│       ├── tfssd
+│       ├── yolov2
+│       └── yolov3
+├── posedetect
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── README.md
+├── refinedet
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── reid
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── segmentation
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── ssd
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── tfssd
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+├── tracker
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── src
+│   └── test
+├── usefultools
+│   ├── CMakeLists.txt
+│   ├── readme
+│   ├── settings.sh.in
+│   └── src
+├── xnnpp
+│   ├── CMakeLists.txt
+│   ├── CMakeLists.txt.bac
+│   ├── cscope.files
+│   ├── include
+│   └── src
+├── yolov2
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── README.md
+│   ├── src
+│   └── test
+└── yolov3
+    ├── CMakeLists.txt
+    ├── include
+    ├── README.md
+    ├── src
+    └── test
+
 ```
 
 ## Quick Start
-### Setting Up the Host
-1. Download the [vitis-ai-docker-runtime image](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.0.0.tar.gz)
+### Setting Up the Host For Edge
+1. Download the [sdk.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk.sh)
 
-2. Set up the docker runtime system according to the docker installation document.
+2. Install the cross-compilation system environment, follow the prompts to install. 
 ```
-   $sh docker_run.sh
+$./sdk.sh
 ```
-3. Copy or git clone the AI Library package to the `workspace` folder.
+Note that the `~/petalinux_sdk` path is recommended for the installation. Regardless of the path you choose for the installation, make sure the path has read-write permissions. 
+Here we install it under `~/petalinux_sdk`.
 
-4. Cross compile the demo in the AI Library, using yolov3 as example.
+3. When the installation is complete, follow the prompts and execute the following command.
 ```
-$cd /workspace/Vitis-AI/Vitis-AI-Library/demo/yolov3
-$sh -x build.sh
+$. ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
+```
+Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
+
+4. Download the [vitis_ai_2019.2-r1.1.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2019.2-r1.1.0.tar.gz) and install it to the petalinux system.
+```
+$tar -xzvf vitis_ai_2019.2-r1.1.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+```
+5. Update the glog to v0.4.0
+	* Download the glog package and untar it.
+		```
+		$cd ~
+		$curl -Lo glog-v0.4.0.tar.gz https://github.com/google/glog/archive/v0.4.0.tar.gz
+		$tar -zxvf glog-v0.4.0.tar.gz
+		$cd glog-0.4.0
+		```
+	* Build it and install it to the PetaLinux system.
+		```
+		$mkdir build_for_petalinux
+		$cd build_for_petalinux
+		$unset LD_LIBRARY_PATH; source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
+		$cmake -DCPACK_GENERATOR=TGZ -DBUILD_SHARED_LIBS=on -DCMAKE_INSTALL_PREFIX=$OECORE_TARGET_SYSROOT/usr ..
+		$make && make install
+		$make package
+		```
+6. Copy or git clone the AI Library package.
+```
+$cd ~
+$git clone https://github.com/xilinx/vitis-ai
+```
+7. Cross compile the demo in the AI Library, using yolov3 as example.
+```
+$cd ~/Vitis-AI/Vitis-AI-Library/overview/demo/yolov3
+$bash -x build.sh
 ```	
 
-5. To compile the library sample in the AI Library, take classification for example, execute the following command.
+8. To compile the library sample in the AI Library, take classification for example, execute the following command.
 ```
-$cd /workspace/Vitis-AI/Vitis-AI-Library/samples/classification
-$sh -x build.sh
+$cd ~/Vitis-AI/Vitis-AI-Library/overview/samples/classification
+$bash -x build.sh
 ```	
 
-6. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library/libsrc`.
-   If you want to recompile the library, take libdpclassification for example, execute the following command:
+9. To modify the library source code, view and modify them under `~/Vitis-AI/Vitis-AI-Library`.
+	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
+	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
+	Execute the following command to build the libraries all at once.
 ```
-$cd /workspace/Vitis-AI/Vitis-AI-Library/libsrc/libdpclassification
-$sh -x build.sh
+$cd ~/Vitis-AI/Vitis-AI-Library
+$./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
 ```
+
+### Setting Up the Host For Cloud
+1. Download the [vitis-ai-cpu](https://hub.docker.com/repository/docker/xilinx/vitis-ai) docker image.
+
+2. Set up the docker tools system according to the docker installation document. 
+```
+$./docker_run.sh -X Xilinx/vitis-ai-cpu:<x.y.z>
+#i.e.
+$./docker_run.sh -X Xilinx/vitis-ai-cpu:1.1.0
+```
+Note: A `workspace` folder will be created by the docker runtime system. And it will be mounted in `/workspace` of the docker system.
+
+3. Place the program, data and other files to be developed in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
+Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
+
+4. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.0.tar.gz) package.
+Untar it, find the `libvitis_ai_library-1.1.0-Linux-build<xx>.deb` packet and install it to the docker system.
+```
+$sudo dpkg -i libvitis_ai_library-1.1.0-Linux.deb
+```
+5. Download [U50 Model](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo-1.1.0-Linux.deb) packet and install it.
+```
+$sudo dpkg -i xilinx_model_zoo-1.1.0-Linux.deb
+```
+6. Download the [U50_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin.tar.gz) and install them.
+```
+$sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
+```
+7. Enable environment variable and export the library path.
+```
+$export INTERNAL_BUILD=1
+$export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/
+```
+8. Download the Vitis™ AI Development Kit.
+```
+$cd /workspace
+$git clone https://github.com/xilinx/vitis-ai/
+```
+9. To compile the demo in the AI Library, take `yolov3` as an example.
+```
+$cd /workspace/Vitis-AI/Vitis-AI-Library/overview/demo/yolov3
+$bash -x build.sh
+```	
+8. To compile the AL Library sample, take `classification` as an example, execute the following command.
+```
+$cd /workspace/Vitis-AI-Library/overview/samples/classification
+$bash -x build.sh
+```	
+
+9. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
+	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
+	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
+	Execute the following command to build the libraries all at once.
+```
+$cd /workspace/Vitis-AI-Library
+$./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
+```
+
 
 ### Setting Up the Target
 
 1. Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
-		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2019.2.img.gz)  
+		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2019.2-v2.img.gz)  
 	
-		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2019.2.img.gz)  
+		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2019.2-v2.img.gz)  
 	
       	Note: The version of the board image should be 2019.2 or above.
 	* Use Win32DiskImager (free opensource software) to burn the image file onto the SD card.
@@ -107,73 +324,148 @@ $sh -x build.sh
 	You can now operate on the board using SSH.
 
 2. Installing AI Model Package   
-	* Download [ZCU102 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_model_ZCU102_2019.2-r1.0.deb)  
+	* Download [ZCU102 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_model_ZCU102_2019.2-r1.1.0.deb)  
 	
-		You can also download [ZCU104 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_model_ZCU104_2019.2-r1.0.deb) if you use ZCU104 
+		You can also download [ZCU104 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_model_ZCU104_2019.2-r1.1.deb) if you use ZCU104 
 	
 	* Copy the downloaded file to the board using scp with the following command.
 	```
-	  $scp vitis_ai_model_ZCU102_2019.2-r1.0.deb root@IP_OF_BOARD:~/
+	  $scp vitis_ai_model_ZCU102_2019.2-r1.1.0.deb root@IP_OF_BOARD:~/
 	```
 	* Log in to the board (usong ssh or serial port) and install the model package.
 	* Run the following command.
 	```
-	  #dpkg -i vitis_ai_model_ZCU102_2019.2-r1.0.deb
+	  #dpkg -i vitis_ai_model_ZCU102_2019.2-r1.1.0.deb
 	```
 
 3. Installing AI Library Package
-	* Download the [Vitis AI Library 1.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_2019.2-r1.0.deb)  
-	* Download the [demo video files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.0_video.tar.gz) and untar into the corresponding directories.  
+	* Download the [Vitis AI Library 1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_2019.2-r1.1.deb)  
+	* Download the [demo video files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) and untar into the corresponding directories.  
 	
-	* Download the [demo image files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.0_images.tar.gz)  and untar into the corresponding directories.  
+	* Download the [demo image files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz)  and untar into the corresponding directories.  
 	
 	* Copy the downloaded file to the board using scp with the following command.
 	```
-	  $scp vitis_ai_library_2019.2-r1.0.deb root@IP_OF_BOARD:~/
+	  $scp libvitis_ai_library-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
+	```
+	* Copy the `glog-0.4.0-Linux.tar.gz` from host to board with the following command. 
+	```
+	$cd ~/glog-0.4.0/build_for_petalinux
+	$scp glog-0.4.0-Linux.tar.gz root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
+	* Update the glog to v0.4.0.
+	```
+	#tar -xzvf glog-0.4.0-Linux.tar.gz --strip-components=1 -C /usr
+	```
+	* For ZCU104, enable the power patch.
+	```
+	#irps5401
+	```
+	* For ZCU102, reduce the DPU frequency to 93%.
+	```
+	#dpu_clk 93
+	```
 	* Install the Vitis AI Library.
 	```
-	  #dpkg -i vitis_ai_library_2019.2-r1.0.deb
+	#dpkg -i libvitis_ai_library-1.1.0-Linux-build46.deb
 	```
+	 
 	  
-### Running Vitis AI Library Examples
+### Running Vitis AI Library Examples (For Edge)
 
-1. Enter the extracted directory of example in target board.
-	```
-	#cd /usr/share/vitis_ai_library/samples/facedetect
-	```
-
-2. Run the image example.
-	```
-	#./test_jpeg_facedetect densebox_640_360 sample_facedetect.jpg
-	```
-
-3. Run the video example.
+1. Copy the sample and demo from host to the target using scp with the following command.
 ```
-	#./test_video_facedetect densebox_640_360 video_input.mp4 -t 8
-	Video_input.mp4: The video file's name for input.The user needs to prepare the videofile.
-	-t: <num_of_threads>
+$scp -r ~/Vitis-AI/Vitis-AI-Library/overview root@IP_OF_BOARD:~/
 ```
-
-4. To test the program with a USB camera as input, run the following command:
+2. Copy the image and video packages from host to the target using scp with the following command.
 ```
-	#./test_video_facedetect densebox_640_360 0 -t 8
-	0: The first USB camera device node. If you have multiple USB camera, the value might be 1,2,3 etc.
-	-t: <num_of_threads>
+$scp vitis_ai_library_r1.1_images.tar.gz root@IP_OF_BOARD:~/
+$scp vitis_ai_library_r1.1_video.tar.gz root@IP_OF_BOARD:~/
+```
+3. Untar the image and video packages on the target.
+```
+#cd ~
+#tar -xzvf vitis_ai_library_r1.1_images.tar.gz -C overview
+#tar -xzvf vitis_ai_library_r1.1_video.tar.gz -C overview
+```
+4. Enter the directory of example in target board, take `facedetect` as an example.
+```
+#cd ~/overview/samples/facedetect
 ```
 
-5. To test the performance of model, run the following command:
+5. Run the image test example.
 ```
-	#./test_performance_facedetect densebox_640_360 test_performance_facedetect.list -t 8 -s 60
-	-t: <num_of_threads>
-	-s: <num_of_seconds>
+#./test_jpeg_facedetect densebox_640_360 sample_facedetect.jpg
 ```
 
-6. To check the version of Vitis AI Library, run the following command:
+6. Run the video test example.
 ```
-	#vitis_ai
+#./test_video_facedetect densebox_640_360 video_input.mp4 -t 8
+Video_input.mp4: The video file's name for input.The user needs to prepare the videofile.
+-t: <num_of_threads>
+```
+
+7. To test the program with a USB camera as input, run the following command:
+```
+#./test_video_facedetect densebox_640_360 0 -t 8
+0: The first USB camera device node. If you have multiple USB camera, the value might be 1,2,3 etc.
+-t: <num_of_threads>
+```
+
+8. To test the performance of model, run the following command:
+```
+#./test_performance_facedetect densebox_640_360 test_performance_facedetect.list -t 8 -s 60
+-t: <num_of_threads>
+-s: <num_of_seconds>
+```
+
+9. To check the version of Vitis AI Library, run the following command:
+```
+#vitis_ai
 ```	
 
-	
+### Running Vitis AI Library Examples (For Cloud)
+1. Download the [vitis_ai_library_r1.1_images](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz) and [vitis_ai_library_r1.1_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) packages.
+2. Untar the image and video packages.
+```
+#cd /workspace
+#tar -xzvf vitis_ai_library_r1.1_images.tar.gz -C Vitis-ai/Vitis-AI-Library/overview
+#tar -xzvf vitis_ai_library_r1.1_video.tar.gz -C Vitis-ai/Vitis-AI-Library/overview
+```
+3. Enter the directory of sample and then compile it. Take `facedetect` as an example.
+```
+$cd /workspace/vitis-ai/vitis_ai_library/overview/samples/facedetect
+$bash -x build.sh
+```
+4. Run the image test example.
+```
+$./test_jpeg_facedetect densebox_640_360 sample_facedetect.jpg
+```
+5. If you want to run the program in batch mode, which means that the DPU processes multiple
+images at once to prompt for processing performance, you have to compile the entire Vitis AI
+Library according to "Setting Up the Host For Cloud" section. Then the batch program will be generated
+under build_dir_default.Enter build_dir_default, take facedetect as an example,
+execute the following command.
+```
+$./test_facedetect_batch densebox_640_360 <img1_url> [<img2_url> ...]
+```
+6. Run the video test example.
+```
+#./test_video_facedetect densebox_640_360 video_input.mp4 -t 8
+Video_input.mp4: The video file's name for input.The user needs to prepare the videofile.
+-t: <num_of_threads>
+```
+7. To test the performance of model, run the following command:
+```
+#./test_performance_facedetect densebox_640_360 test_performance_facedetect.list -t 8 -s 60
+-t: <num_of_threads>
+-s: <num_of_seconds>
+```
+8. To check the version of Vitis AI Library, run the following command:
+```
+#vitis_ai
+```	
+## Reference
+For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/user_guides/ug1354-xilinx-ai-sdk.pdf) and [vitis-ai-library-programming-guide](https://www.xilinx.com/support/documentation/user_guides/ug1355-xilinx-ai-sdk-programming-guide.pdf).
 	

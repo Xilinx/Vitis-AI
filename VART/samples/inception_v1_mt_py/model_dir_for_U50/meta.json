@@ -1,0 +1,5 @@
+{
+  "lib": "libvart-dpu-runner.so",
+  "filename": "./inception_v1_tf.xmodel",
+  "kernel": [ "subgraph_InceptionV1/InceptionV1/Mixed_4b/Branch_3/Conv2d_0b_1x1/Conv2D(fix)" ]
+}

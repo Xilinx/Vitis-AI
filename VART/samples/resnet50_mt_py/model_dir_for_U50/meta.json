@@ -1,0 +1,5 @@
+{
+    "lib": "libvart-dpu-runner.so",
+    "filename": "resnet50.xmodel",
+    "kernel": [ "subgraph_res5b_branch2a_weights(fix)" ]
+}

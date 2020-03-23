@@ -17,7 +17,20 @@
 ## GPU tools docker
 
 ```shell
-# GPU Image must be built by user. Stay tuned for directions.
+# GPU Image must be built by user. 
+
+cd Vitis-AI/docker
+./docker_build.sh
+
+# After the GPU image is built, load it
+
+./docker_run.sh xilinx/vitis-ai:tools-<x.y.z>-gpu
+
+# i.e.
+
+cd Vitis-AI
+./docker_run.sh xilinx/vitis-ai:tools-1.0.0-gpu
+
 ```
 
 ## Runtime docker

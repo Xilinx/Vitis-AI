@@ -1,0 +1,6 @@
+digraph G {
+ordering = out
+ranksep = 1
+node [shape = box3d, fontcolor = gray18, bgcolor = oldlace, style = filled];
+0[label = "kernel id: 0, type: DPUKernel", fillcolor = wheat]
+}

@@ -1,0 +1,5 @@
+{
+  "lib": "libvart-dpu-runner.so",
+  "filename": "./sp_net.xmodel",
+  "kernel": [ "subgraph_inception_4d/pool(fix)" ]
+}

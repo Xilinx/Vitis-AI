@@ -1,4 +1,4 @@
-This directory containes examples for running DPU-v1 on Alveo platform. **DPU-v1**  is High Performance CNN processing engine designed for Xilinx Alveo U200 and U250 platforms. DPU-v1 was released as xDNNv3 as part of MLSuite. With Vitis-AI, Xilinx has integrated all the edge and cloud solutions under an unified API and toolset.
+This directory containes examples for running DPU-v1 on Alveo platform. **DPU-v1**  is High Performance CNN processing engine designed for Xilinx Alveo U200 and U250 platforms. DPU-v1 was released as xDNNv3 as part of *ml-suite*. With **Vitis-AI**, Xilinx has integrated all the edge and cloud solutions under an unified API and toolset.
 
 **Learn More:** [DPU-v1 Overview][]  
 
@@ -15,13 +15,13 @@ Targeting Alveo cards with Vitis-AI for AI workloads requires the installation o
  
 While it is possible to install all the software components individually, a script has been provided to automatically install them in one-shot. 
 
-```shell
-a.	cd Vitis-AI/alveo/packages
-b.	sudo su
-c.	./install.sh
+```sh
+cd Vitis-AI/alveo/packages
+# Run install script as root
+sudo su
+./install.sh
 ```
 Then power cycle the system.
-
   
 ## Examples
  - [Jupyter Notebook Tutorials](notebooks/README.md)
@@ -35,7 +35,6 @@ Then power cycle the system.
    - [Deployment Mode Examples](examples/deployment_modes/README.md)
  - [In-Browser GoogLeNet Demo](apps/perpetual_demo/README.md)
  - [REST Server Example](examples/caffe/REST/README.md)
- - [Container Pipeline Example](docs/container_pipeline.md)
  
 ## References 
 - [Performance Whitepaper][]

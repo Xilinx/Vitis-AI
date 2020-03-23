@@ -1,0 +1,5 @@
+{
+  "lib": "libvart-dpu-runner.so",
+  "filename": "./resnet50.elf",
+  "kernel": [ "resnet50_0" ]
+}

@@ -1,0 +1,231 @@
+NOTICE:  BY INVOKING THIS SCRIPT AND USING THE SOFTWARE INSTALLED BY THE
+SCRIPT, YOU AGREE ON BEHALF OF YOURSELF AND YOUR EMPLOYER (IF APPLICABLE)
+TO BE BOUND TO THE LICENSE AGREEMENTS APPLICABLE TO THE SOFTWARE THAT YOU
+INSTALL BY RUNNING THE SCRIPT.
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THIS SCRIPT FILE TO AUTOMATICALLY
+INSTALL A VARIETY OF SOFTWARE COPYRIGHTED
+BY XILINX AND THIRD PARTIES THAT IS SUBJECT TO VARIOUS LICENSE AGREEMENTS 
+THAT APPEAR UPON INSTALLATION, ACCEPTANCE AND/OR ACTIVATION OF THE
+SOFTWARE AND/OR ARE CONTAINED OR DESCRIBED IN THE CORRESPONDING RELEASE
+NOTES OR OTHER DOCUMENTATION OR HEADER OR SOURCE FILES. XILINX DOES NOT
+GRANT TO LICENSEE ANY RIGHTS OR LICENSES TO SUCH THIRD-PARTY SOFTWARE.
+LICENSEE AGREES TO CAREFULLY REVIEW AND ABIDE BY THE TERMS AND CONDITIONS
+OF SUCH LICENSE AGREEMENTS TO THE EXTENT THAT THEY GOVERN SUCH SOFTWARE.
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE TO BE DOWNLOADED
+AND INSTALLED ON YOUR SYSTEM. BY ELECTING TO CONTINUE, YOU UNDERSTAND THAT THE
+INSTALLATION OF THE SOFTWARE LISTED BELOW MAY ALSO RESULT IN THE INSTALLATION
+ON YOUR SYSTEM OF ADDITIONAL SOFTWARE NOT LISTED BELOW IN ORDER TO OPERATE
+(SUCH SOFTWARE IS HEREAFTER REFERRED TO AS ‘DEPENDENCIES’)
+XILINX DOES NOT GRANT TO LICENSEE ANY RIGHTS OR LICENSES TO SUCH DEPENDENCIES
+LICENSEE AGREES TO CAREFULLY REVIEW AND ABIDE BY THE TERMS AND CONDITIONS
+OF ANY LICENSE AGREEMENTS TO THE EXTENT THAT THEY GOVERN SUCH DEPENDENCIES
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
+(AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
+UBUNTU'S MAIN REPO AND INSTALLED ON YOUR SYSTEM:
+http://us.archive.ubuntu.com/ubuntu/dists/bionic/
+1.  sudo  
+2.  git  
+3.  zstd  
+4.  tree  
+5.  vim  
+6.  wget  
+7.  bzip2  
+8.  ca-certificates  
+9.  curl  
+10. unzip  
+11. python3-minimal  
+12. python3-opencv  
+13. python3-venv  
+14. python3-pip  
+15. python3-setuptools  
+16. g++  
+17. make  
+18. cmake  
+19. build-essential  
+20. autoconf  
+21. libgoogle-glog-dev  
+22. libgflags-dev  
+23. libunwind-dev  
+24. libtool  
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
+(AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
+ANACONDA REPO AND INSTALLED ON YOUR SYSTEM:
+https://anaconda.org”
+1.  _libgcc_mutex                     
+2.  attrs                             
+3.  backcall                          
+4.  blas                              
+5.  bleach                            
+6.  boost                             
+7.  bzip2                             
+8.  ca-certificates                   
+9.  caffe_decent              
+10. cairo                                                  
+11. certifi                                                
+12. ck                                      
+13. cloudpickle                                            
+14. cycler                                                 
+15. cytoolz                                                
+16. dask-core                                              
+17. dbus                                                   
+18. decorator                                              
+19. defusedxml                                             
+20. dill                                                   
+21. entrypoints                                            
+22. expat                                                  
+23. ffmpeg                                                 
+24. fontconfig                                             
+25. freeglut                                               
+26. freetype                                               
+27. fribidi                                                
+28. gflags                                                 
+29. glib                                                   
+30. glog                                                   
+31. gmp                                                    
+32. graphite2                                              
+33. graphviz                                               
+34. gst-plugins-base                                       
+35. gstreamer                                              
+36. h5py                                                   
+37. harfbuzz                                               
+38. hdf5                                                   
+39. icu                                                    
+40. imageio                                                
+41. importlib_metadata                                     
+42. intel-openmp                                           
+43. ipykernel                                              
+44. ipython                                                
+45. ipython_genutils                                       
+46. ipywidgets                                             
+47. jasper                                                 
+48. jedi                                                   
+49. jinja2                                                 
+50. joblib                                                 
+51. jpeg                                                   
+52. json-c                                                 
+53. jsonschema                                             
+54. jupyter                                                
+55. jupyter_client                                         
+56. jupyter_console                                        
+57. jupyter_core                                           
+58. kiwisolver                                             
+59. leveldb                                                
+60. libboost                                               
+61. libedit                                                
+62. libffi                                                 
+63. libgcc-ng                                              
+64. libgfortran-ng                                         
+65. libglu                                                 
+66. libopencv                                              
+67. libopus                                                
+68. libpng                                                 
+69. libprotobuf                                            
+70. libsodium                                              
+71. libstdcxx-ng                                           
+72. libtiff                                                
+73. libuuid                                                
+74. libvpx                                                 
+75. libxcb                                                 
+76. libxml2                                                
+77. lmdb                                                   
+78. markupsafe                                             
+79. matplotlib                                             
+80. mistune                                                
+81. mkl                                                    
+82. mkl-service                                            
+83. mkl_fft                                                
+84. mkl_random                                             
+85. more-itertools                                         
+86. nbconvert                                              
+87. nbformat                                               
+88. ncurses                                                
+89. networkx                                               
+90. notebook                                               
+91. numpy                                                  
+92. numpy-base                                             
+93. olefile                                                
+94. openblas                   
+95. opencv                                                 
+96. openssl                                                
+97. orderedset                             
+98. packaging                                              
+99. pandas                                                 
+100. pandoc                                                 
+101. pandocfilters                                          
+102. pango                                                  
+103. parso                                                  
+104. pcre                                                   
+105. pexpect                                                
+106. pickleshare                                            
+107. pillow                                                 
+108. pip                                                    
+109. pixman                                                 
+110. pluggy                                                 
+111. progressbar2                                           
+112. prometheus_client                                      
+113. prompt_toolkit                                         
+114. protobuf              
+115. ptyprocess            
+116. py                    
+117. py-boost              
+118. py-opencv             
+119. pybind11              
+120. pydot                 
+121. pygments              
+122. pyparsing             
+123. pyqt                  
+124. pyrsistent            
+125. pytest                
+126. pytest-runner         
+127. python                
+128. python-dateutil       
+129. python-gflags         
+130. python-leveldb        
+131. python-utils          
+132. pytz                  
+133. pywavelets            
+134. pyyaml                
+135. pyzmq                 
+136. qt                    
+137. qtconsole             
+138. readline              
+139. scikit-image          
+140. scikit-learn          
+141. scipy                 
+142. send2trash            
+143. setuptools            
+144. sip                   
+145. six                   
+146. snappy                
+147. sqlite                
+148. terminado             
+149. testpath              
+150. tk                    
+151. toolz                 
+152. tornado               
+153. traitlets             
+154. vitis-ai              
+155. wcwidth               
+156. webencodings          
+157. wheel                 
+158. widgetsnbextension    
+159. xip                   
+160. xz                    
+161. yaml                  
+162. yaml-cpp              
+163. zeromq                
+164. zipp                  
+165. zlib                  
+166. zstd                  
+
+BY ELECTING TO CONTINUE, YOU ACKNOWLEDGE AND AGREE, FOR YOURSELF AND ON BEHALF
+OF YOUR EMPLOYER (IF APPLICABLE), THAT XILINX IS NOT DISTRIBUTING TO YOU IN
+THIS FILE ANY OF THE AFORMENTIONED SOFTWARE OR DEPENDENCIES, AND THAT YOU ARE
+SOLELY RESPONSIBLE FOR THE INSTALLATION OF SUCH SOFTWARE AND DEPENDENCIES ON
+YOUR SYSTEM AND FOR CAREFULLY REVIEWING AND ABIDING BY THE TERMS AND CONDITIONS
+OF ANY LICENSE AGREEMENTS TO THE EXTENT THAT THEY GOVERN SUCH SOFTWARE AND DEPENDENCIES
+

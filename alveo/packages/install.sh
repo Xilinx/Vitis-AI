@@ -56,24 +56,40 @@ OVERLAYBINS_INSTALLER=""
 INSTALLER=""
 
 ##############################
-# Download XRT
+# Download XRT/DSA
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* ]]; then
   echo "Ubuntu 16.04"
   XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_201920.2.3.1301_16.04-xrt.deb"
   XRT_INSTALLER=/tmp/xrt.deb
+  U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015_16.04.deb"
+  U200_INSTALLER=/tmp/u200.deb
+  U250_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015_16.04.deb"
+  U250_INSTALLER=/tmp/u250.deb
 elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
   echo "Ubuntu 18.04"
   XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_201920.2.3.1301_18.04-xrt.deb"
   XRT_INSTALLER=/tmp/xrt.deb
+  U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015_18.04.deb"
+  U200_INSTALLER=/tmp/u200.deb
+  U250_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015_18.04.deb"
+  U250_INSTALLER=/tmp/u250.deb
 elif [[ $distroname == *"CentOS"* ]]; then
   echo "CentOS"
   XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_201920.2.3.1301_7.4.1708-xrt.rpm"
   XRT_INSTALLER=/tmp/xrt.rpm
+  U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015.x86_64.rpm"
+  U200_INSTALLER=/tmp/u200.rpm
+  U250_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015.x86_64.rpm"
+  U250_INSTALLER=/tmp/u250.rpm
 elif [[ $distroname == *"Red Hat"* ]]; then
   echo "RHEL"
   XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_201920.2.3.1301_7.4.1708-xrt.rpm"
   XRT_INSTALLER=/tmp/xrt.rpm
+  U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015.x86_64.rpm"
+  U200_INSTALLER=/tmp/u200.rpm
+  U250_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015.x86_64.rpm"
+  U250_INSTALLER=/tmp/u250.rpm
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
@@ -81,22 +97,14 @@ fi
 
 
 ##############################
-# Download DSA/Overlaybins
+# Download XRM/Overlaybins
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* ]]; then
-  U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015_16.04.deb"
-  U200_INSTALLER=/tmp/u200.deb
-  U250_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015_16.04.deb"
-  U250_INSTALLER=/tmp/u250.deb
   XRM_INSTALLER=./ubuntu/xbutler_2.0-6.deb
   OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-overlaybins.deb"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.deb
   INSTALLER="apt"
 elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
-  U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015.x86_64.rpm"
-  U200_INSTALLER=/tmp/u200.rpm
-  U250_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015.x86_64.rpm"
-  U250_INSTALLER=/tmp/u250.rpm
   XRM_INSTALLER=./centos/xbutler-2.0.6-1.el7.centos.x86_64.rpm
   OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-overlaybins.rpm"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.rpm

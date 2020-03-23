@@ -28,7 +28,7 @@ The format of calib.txt used in calibration phase of vai_q_caffe is as follow:
 
 ```
 # Get the necessary models
-python $VAI_ALVEO_ROOT/examples/caffe/getModels.py
+cd $VAI_ALVEO_ROOT/examples/caffe/ && python getModels.py && python replace_mluser.py --modelsdir models
 
 # Setup ml-suite Environment Variables
 source $VAI_ALVEO_ROOT/overlaybins/setup.sh
@@ -39,7 +39,7 @@ source $VAI_ALVEO_ROOT/overlaybins/setup.sh
 ** MUST BE DONE FIRST **
 To run a Caffe model on the FPGA, it needs to be quantized, compiled, and a new graph needs to be generated. The new graph is similar to the original, with the FPGA subgraph removed, and replaced with a custom Python layer.
 ```
-python run_ssd.py --prototxt /opt/models/caffe/inception_v2_ssd/inception_v2_ssd_train.prototxt --caffemodel /opt/models/caffe/inception_v2_ssd/inception_v2_ssd.caffemodel --prepare
+python run_ssd.py --prototxt $VAI_ALVEO_ROOT/examples/caffe/models/inception_v2_ssd/inception_v2_ssd_train.prototxt --caffemodel $VAI_ALVEO_ROOT/examples/caffe/models/inception_v2_ssd/inception_v2_ssd.caffemodel --prepare
 ```
   
 ### Run Inference on entire dataset and caluculate mAP

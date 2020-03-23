@@ -1,0 +1,5 @@
+{
+  "lib": "libvart-dpu-runner.so",
+  "filename": "./ssd_pedestrain_pruned_0_97.elf",
+  "kernel": [ "ssd_pedestrain_pruned_0_97" ]
+}
