@@ -158,7 +158,7 @@ Open a linux terminal. Set the linux as Bash mode.
 ```
 % source <vitis install path>/vitis/2019.2/settings64.sh
 
-% source opt/xilinx/xrt/setup.sh
+% source /opt/xilinx/xrt/setup.sh
 ```
 
 The default setting of DPU is **B4096** with RAM_USAGE_LOW, CHANNEL_AUGMENTATION_ENABLE, DWCV_ENABLE, POOL_AVG_ENABLE, RELU_LEAKYRELU_RELU6, Softmax. Modify the $TRD_HOME/prj/Vitis/dpu_conf.vh file can change the default settings.
