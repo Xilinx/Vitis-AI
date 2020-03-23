@@ -21,7 +21,24 @@ DATE="$(date)"
 # Final Build Image Tag
 GPU_IMAGE_TAG=${DOCKER_REPO}$BRAND:tools-${VERSION}-gpu
 
-more PROMPT.txt
+sed -n '1, 5p' PROMPT.txt
+read -r -p "Press any key to continue..." key
+
+sed -n '5, 15p' PROMPT.txt
+read -r -p "Press any key to continue..." key
+
+sed -n '15, 24p' PROMPT.txt
+read -r -p "Press any key to continue..." key
+
+sed -n '24, 53p' PROMPT.txt
+read -r -p "Press any key to continue..." key
+
+sed -n '53, 224p' PROMPT.txt
+read -r -p "Press any key to continue..." key
+
+sed -n '224, 231p' PROMPT.txt
+read -r -p "Press any key to continue..." key
+
 
 confirm() {
   echo -n "Do you agree to the terms and wish to proceed [y/n]? "
