@@ -116,22 +116,15 @@ $bash –x build.sh
 ```	
 If the compilation process does not report any error and the executable file `resnet50` is generated, the host environment is installed correctly.
 
-### Setting Up the Host For Cloud
-1. Download the [vitis-ai-docker](https://hub.docker.com/r/xilinx/vitis-ai/tags) docker image.
+### Setting Up the Host For Alveo
 
-2. Set up the docker tools system according to the docker installation document. 
-```
-$./docker_run.sh -X Xilinx/vitis-ai-cpu:<x.y.z>
-#i.e.
-$./docker_run.sh -X Xilinx/vitis-ai-cpu:1.1.0
-```
-After the docker image is loaded and running, the Vitis AI Runtime is automatically installed in the docker system and the environment is configured.
+Assume the docker image has been loaded and up running.
 
-3. Download the [U50_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin.tar.gz) and install them.
+1. Download the [U50_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin.tar.gz) and install them.
 ```
 $sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 ```
-4. Enable environment variable and export the library path.
+2. Enable environment variable and export the library path.
 ```
 $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/
 ```
