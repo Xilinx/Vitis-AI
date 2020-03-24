@@ -33,12 +33,3 @@ cd Vitis-AI
 
 ```
 
-## Runtime docker
-
-```shell
-./docker_run.sh xilinx/vitis-ai:runtime-<x.y.z>-cpu
-
-# i.e.
-
-./docker_run.sh xilinx/vitis-ai:runtime-1.0.0-cpu
-```
