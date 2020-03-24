@@ -47,7 +47,7 @@ def test_sface(request):
     client_id = response['message']
 
     post_data = {
-        'url': 'https://www.youtube.com/watch?v=mH9pDONwq3I',
+        'url': 'https://www.youtube.com/watch?v=f5NJQiY9AuY',
         'dtype': 'uint8',
         'callback_id': client_id
     }
@@ -60,7 +60,6 @@ def test_sface(request):
     # TODO should this response be checked?
 
     # collect some number of frames
-    foundBoxes = False
     for i in range(20):
         for j in range(10):
             response = json.loads(ws.recv())
@@ -74,15 +73,12 @@ def test_sface(request):
             assert 'boxes' in response
             assert response['callback_id'] == client_id
 
-            # in this video, there should be a face (i.e. boxes) in some frames
-            if response['boxes']:
-              foundBoxes = True
+            # in this video, there should be a face (i.e. boxes) in all frames
+            assert response['boxes']
 
         # issue keepalive request every so often
         r = requests.post('%s/serve/sface' % server_addr, post_data)
         assert r.status_code == 200, r.text
-
-    assert foundBoxes
 
     ws.close()
     service.stop()

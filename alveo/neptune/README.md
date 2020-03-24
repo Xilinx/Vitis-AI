@@ -81,8 +81,6 @@ cd $VAI_ALVEO_ROOT/apps/yolo/nms && make
  
 # for full testing, you'll need these
 pip install pytest coverage coverage-badge websocket-client
-
-# Note that the Vitis C++ libraries will have to be rebuilt after the Conda env changes above
 ```
 
 Python 3.6+ is recommended.

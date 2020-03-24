@@ -1,0 +1,2813 @@
+{
+    "arguments": {
+        "aggressivecpulayermustgo": false,
+        "anew": null,
+        "approximate": false,
+        "banditpre": null,
+        "barrier": false,
+        "bridges": null,
+        "bytesperpixels": 1,
+        "checktensorshapes": false,
+        "concatstrategy": null,
+        "conv_1x1_s2": false,
+        "cpulayermustgo": true,
+        "customreplication": null,
+        "customtiling": null,
+        "cut": null,
+        "darius": null,
+        "ddr": 1024,
+        "deconvinfpga": true,
+        "dedicateddsp": null,
+        "dsp": 96,
+        "eltnoreplacelayer": false,
+        "fancyreplication": true,
+        "fancyreplications": false,
+        "fcinfpga": true,
+        "fcreshape": false,
+        "finalnode": null,
+        "finalparam": null,
+        "forceweights": null,
+        "forceweightsfullyconnected": false,
+        "framework": "caffe",
+        "fromtensorflow": true,
+        "frontendonly": false,
+        "generatefile": "work/tmp",
+        "graph_savepath": null,
+        "inclusive": false,
+        "inputcut": null,
+        "laodschedule": null,
+        "lasttensorbyname": null,
+        "leavescalealone": false,
+        "loadmode": "binary",
+        "loadpickle": null,
+        "manasadebugmode": null,
+        "maximumasrelu": true,
+        "memory": 9,
+        "mixmemorystrategy": true,
+        "networkfile": "/tmp/tmp5yl9ps4l:new_dim_fpga.prototxt",
+        "noconvexity": false,
+        "nodynamicscaling": false,
+        "noreplication": false,
+        "notcaffeanew": false,
+        "outputdir": "work",
+        "outputz": null,
+        "parallelism": false,
+        "parallelismgraphalgorithm": "tfs",
+        "parallelismstrategy": [
+            "tops",
+            "bottom"
+        ],
+        "parallelread": [
+            "bottom",
+            "tops"
+        ],
+        "parallism": true,
+        "partitioning": false,
+        "phase": 1,
+        "pingpongsplit": true,
+        "pipelineconvmaxpool": true,
+        "placeholdershape": null,
+        "platform": "xfdnn3",
+        "pngfile": null,
+        "poolingaround": true,
+        "prediction": false,
+        "quant_cfgfile": "work/quantize_info.txt",
+        "quantz": "",
+        "rankdir": "BT",
+        "relu6": false,
+        "reluaround": true,
+        "savepickle": null,
+        "saveschedule": null,
+        "scalepipeline": false,
+        "schedulefile": null,
+        "splitonly": false,
+        "squeeze": true,
+        "startnode": null,
+        "strategy": "all",
+        "usedeephi": true,
+        "verbose": false,
+        "verbositylevel": 1,
+        "versionjson": null,
+        "weights": "work/deploy.caffemodel"
+    },
+    "batchSize": 1,
+    "cmd": "/proj/sdxapps/users/abidk/repos/MLsuite/vai/dpuv1/tools/compile/bin/vai_c_caffe.py --prototxt work/new_dim_fpga.prototxt --caffemodel work/deploy.caffemodel --arch arch.json --net_name tmp --output_dir work --options { 'ddr':1024, 'quant_cfgfile': 'work/quantize_info.txt',  'mixmemorystrategy': True, 'poolingaround': True,  'parallism':True, 'parallelread':['bottom','tops'], 'parallelismstrategy':['tops','bottom'],  'pipelineconvmaxpool':True, 'fancyreplication':True }",
+    "env": "environ({'CONDA_SHLVL': '2', 'LD_LIBRARY_PATH': '/opt/xilinx/xrt/lib:/opt/xilinx/xrt/lib:/proj/sdxapps/users/abidk/anaconda3/envs/mlsp32/lib:/vai/dpuv1/rt/xdnn_cpp/lib:/tools/batonroot/rodin/devkits/lnx64/gcc-7.1.0/lib64:/proj/sdxapps/users/abidk/repos/Caffe_Xilinx/distribute/lib', 'CONDA_EXE': '/proj/sdxapps/users/abidk/repos/anaconda3/bin/conda', 'HOSTTYPE': 'x86_64-linux', 'SSH_CONNECTION': '172.23.61.12 56700 10.140.6.73 22', 'LANG': 'en_US.UTF-8', 'MLSUITE_ROOT': '/proj/sdxapps/users/abidk/repos/MLsuite', 'OLDPWD': '/proj/sdxapps/users/abidk/repos/MLsuite/apps/AI_Kernel_Scheduler/src_new', 'LIBXDNN_PATH': '/proj/sdxapps/users/abidk/repos/MLsuite/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so', 'CONDA_PREFIX': '/proj/sdxapps/users/abidk/anaconda3/envs/mlsp32', 'VENDOR': 'unknown', 'MACHTYPE': 'x86_64', 'XILINX_XRT': '/opt/xilinx/xrt', '_CE_M': '', 'OSTYPE': 'linux', 'XDG_SESSION_ID': '29', 'DECENT_DEBUG': '1', 'USER': 'abidk', 'CONDA_PREFIX_1': '/proj/sdxapps/users/abidk/repos/anaconda3', 'GROUP': 'mlx', 'PWD': '/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo', 'HOME': '/home/abidk', 'CONDA_PYTHON_EXE': '/proj/sdxapps/users/abidk/repos/anaconda3/bin/python', 'HOST': 'xhdsumitn40', 'SSH_CLIENT': '172.23.61.12 56700 22', 'GLOG_minloglevel': '2', 'VMSS_TAG': 'abidk/vmss_20190425034037', '_CE_CONDA': '', 'MKL_NUM_THREADS': '4', 'XDNN_VERBOSE': '0', 'CONDA_PROMPT_MODIFIER': '(mlsp32) ', 'SSH_TTY': '/dev/pts/2', 'MAIL': '/var/mail/abidk', 'REMOTEHOST': '172.23.61.12', 'SHELL': '/bin/csh', 'TERM': 'xterm-256color', 'SHLVL': '3', 'VAI_ALVEO_ROOT': '/proj/sdxapps/users/abidk/repos/MLsuite', 'PYTHONPATH': '/opt/xilinx/xrt/python:/proj/sdxapps/users/abidk/repos/MLsuite:/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo:/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo/nms:/proj/sdxapps/users/abidk/repos/MLsuite/xfmlp/python:/opt/xilinx/xrt/python:/proj/sdxapps/users/abidk/repos/MLsuite:/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo:/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo/nms:/proj/sdxapps/users/abidk/repos/MLsuite/xfmlp/python::/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo', 'ARKDIR': '/proj/sdxapps/users/abidk', 'XBLAS_EMIT_PROFILING_INFO': '0', 'LOGNAME': 'abidk', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/17490/bus', 'XDG_RUNTIME_DIR': '/run/user/17490', 'XRT_INI_PATH': '/proj/sdxapps/users/abidk/repos/MLsuite/overlaybins/xrt.ini', 'PATH': '/opt/xilinx/xrt/bin:/opt/xilinx/xrt/bin:/proj/sdxapps/users/abidk/anaconda3/envs/mlsp32/bin:/proj/sdxapps/users/abidk/repos/anaconda3/condabin:/proj/sdxapps/users/vkjain/gitlfs:/tools/batonroot/rodin/devkits/lnx64/binutils-2.26/bin:/tools/batonroot/rodin/devkits/lnx64/make-4.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games', 'CONDA_DEFAULT_ENV': 'mlsp32', 'ARK': '/proj/sdxapps/users/abidk', 'XBLAS_NUM_PREP_THREADS': '4', 'OMP_NUM_THREADS': '4', '_': '/proj/sdxapps/users/abidk/repos/MLsuite/vai/dpuv1/tools/compile/bin/vai_c_caffe.py'})",
+    "first_layer": 0,
+    "inputddr": 11829248,
+    "inputs": [
+        {
+            "input_address": 0,
+            "input_name": "data",
+            "next_layers": [
+                "layer2-maxpool"
+            ]
+        }
+    ],
+    "last_layer": 24,
+    "moveops": 27724800.0,
+    "network": [
+        {
+            "active": 0,
+            "bottoms": [],
+            "deeppy": [
+                [],
+                [
+                    [
+                        8,
+                        6
+                    ]
+                ],
+                null,
+                null,
+                false
+            ],
+            "layer": "data: type=Input, sizes=None, shapes=None, sched 0 Kernel None Strides None Padding None MUTE CODE",
+            "memory_description": "am_to_am",
+            "merged": [
+                "data"
+            ],
+            "name": "data",
+            "ops": 11829248,
+            "outputshapes": [
+                1,
+                3,
+                608,
+                608
+            ],
+            "schedule": 1,
+            "type": "Input",
+            "xdnn_instr": "1 XNGather 0x0 0x0 608 608 3 0 1 1 0 607 1 0 1 3 32 1 # Input data",
+            "xdnn_kv": {
+                "XNOp": "XNGather",
+                "a0": "0",
+                "b1": "1",
+                "c1": "1",
+                "comment": "Input",
+                "ddr_src": "0x0",
+                "end_row": "607",
+                "full_sect_num": "0",
+                "id": "1",
+                "inchan": "3",
+                "insize_h": "608",
+                "insize_w": "608",
+                "repl_sect_num": "1",
+                "repl_unit_num": "3",
+                "repl_unit_width": "32",
+                "sep": "#",
+                "slice": "1",
+                "srcAddrReadFromImgQ": "1",
+                "start_row": "0",
+                "uram_dest": "0x0"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "data"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        6
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    8,
+                    2
+                ],
+                [
+                    8,
+                    3
+                ],
+                false
+            ],
+            "layer": "layer2-maxpool: type=Pooling, sizes=None, shapes=None, sched 1 Kernel [2] Strides [2] Padding [0]",
+            "memory_description": "ddr_to_ddr",
+            "merged": [
+                "layer1-conv",
+                "layer1-act",
+                "layer2-maxpool"
+            ],
+            "moveops": 22179840.0,
+            "name": "layer2-maxpool",
+            "ops": 224755712,
+            "outputshapes": [
+                1,
+                32,
+                304,
+                304
+            ],
+            "schedule": 2,
+            "tile_info": "Tile(tile=SizeType(batches=1, channels=32, height=106, width=112), overlap_info=Overlaps(overlap=5.5822102425876015, area=11872, height=106, width=112, space=4685280, mi=SpaceAndTime(space=4685280, time=8143, replication=Replication(full_sect_num=0, repl_sect_num=1, repl_unit_num=12, repl_unit_width=8, channels_division=[3])), mo=SpaceAndTime(space=1139712, time=8144, replication=Replication(full_sect_num=0, repl_sect_num=1, repl_unit_num=3, repl_unit_width=32, channels_division=[32])), i=MemoryAllocation(start=0, end=11829248, size=35487744, extra=[1], strategy=['tops'], layout=1, timestamp=136, slice=1, shapes=SizeType(batches=1, channels=3, height=215, width=227), replication=Replication(full_sect_num=0, repl_sect_num=1, repl_unit_num=12, repl_unit_width=8, channels_division=[3]), written=True, specifier='Input', IO=True), o=MemoryAllocation(start=0, end=2957312, size=2957312, extra=[1], strategy=['tops'], layout=1, timestamp=1, slice=1, shapes=SizeType(batches=1, channels=32, height=106, width=112), replication=Replication(full_sect_num=0, repl_sect_num=1, repl_unit_num=3, repl_unit_width=32, channels_division=[32]), written=True, specifier='DDR The_Master_of_the_brains', IO=False), n_tiles=9, estimate_time=(5.5822102425876015, -1139712)))",
+            "type": "Pooling",
+            "xdnn_instr": "XNMaxPoolPipelined layer2-maxpool 2 2 2 2 0 0 0x0 608 608 3 0x0 304 304 1 1 0 1 12 8 0 1 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 1 1 0 1 1 112 106 1 0 49152 -1 layer1-conv 3 3 1 1 1 1 1 1 1 1 1 608 608 32 304 # V3 SPLIT Code :)ddr_to_ddr",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "-1",
+                "HAT": "1",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "49152",
+                "XNOp": "XNMaxPoolPipelined",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "conv_bias": "1",
+                "conv_dilation_h": "1",
+                "conv_dilation_w": "1",
+                "conv_kernel_h": "3",
+                "conv_kernel_w": "3",
+                "conv_name": "layer1-conv",
+                "conv_outsize_w": "304",
+                "conv_padding_h": "1",
+                "conv_padding_w": "1",
+                "conv_prelu": "1",
+                "conv_relu": "1",
+                "conv_strides_h": "1",
+                "conv_strides_w": "1",
+                "destAddrReadFromImgQ": "0",
+                "dstAddDDR": "1",
+                "dst_full_sect_num": "0",
+                "dst_repl_sect_num": "1",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "1",
+                "en_pingpong_weight": "1",
+                "id": "2",
+                "inaddr": "0x0",
+                "inchan": "3",
+                "insize_h": "608",
+                "insize_w": "608",
+                "kernel_h": "2",
+                "kernel_w": "2",
+                "name": "layer2-maxpool",
+                "outaddr": "0x0",
+                "outsize_h": "304",
+                "outsize_w": "304",
+                "paddings_h": "0",
+                "paddings_w": "0",
+                "parallel_read": "0",
+                "pool_inchan": "32",
+                "pool_insize_h": "608",
+                "pool_insize_w": "608",
+                "prerelu": "0",
+                "slice": "1",
+                "srcAddDDR": "1",
+                "srcAddrReadFromImgQ": "1",
+                "src_full_sect_num": "0",
+                "src_repl_sect_num": "1",
+                "src_repl_unit_num": "12",
+                "src_repl_unit_width": "8",
+                "strides_h": "2",
+                "strides_w": "2",
+                "tile_height": "106",
+                "tile_width": "112",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer2-maxpool"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    4
+                ],
+                false
+            ],
+            "layer": "layer4-maxpool: type=Pooling, sizes=None, shapes=None, sched 2 Kernel [2] Strides [2] Padding [0]",
+            "memory_description": "ddr_to_am",
+            "merged": [
+                "layer3-conv",
+                "layer3-act",
+                "layer4-maxpool"
+            ],
+            "moveops": 5544960.0,
+            "name": "layer4-maxpool",
+            "ops": 112377856,
+            "outputshapes": [
+                1,
+                64,
+                152,
+                152
+            ],
+            "schedule": 4,
+            "tile_info": "Tile(tile=SizeType(batches=1, channels=64, height=61, width=64), overlap_info=Overlaps(overlap=4.866803278688525, area=3904, height=61, width=64, space=3144000, mi=SpaceAndTime(space=1572000, time=25386, replication=Replication(full_sect_num=0, repl_sect_num=1, repl_unit_num=3, repl_unit_width=32, channels_division=[32])), mo=SpaceAndTime(space=749568, time=25387, replication=Replication(full_sect_num=0, repl_sect_num=2, repl_unit_num=3, repl_unit_width=32, channels_division=[32, 64])), i=MemoryAllocation(start=0, end=2957312, size=8871936, extra=[1], strategy=['tops'], layout=1, timestamp=23091, slice=1, shapes=SizeType(batches=1, channels=32, height=125, width=131), replication=Replication(full_sect_num=0, repl_sect_num=1, repl_unit_num=3, repl_unit_width=32, channels_division=[32]), written=True, specifier='DDR The_Master_of_the_brains', IO=False), o=MemoryAllocation(start=5001216, end=9437184, size=4435968, extra=[1], strategy=['tops'], layout=0, timestamp=58, slice=1, shapes=SizeType(batches=1, channels=64, height=61, width=64), replication=Replication(full_sect_num=0, repl_sect_num=2, repl_unit_num=3, repl_unit_width=32, channels_division=[32, 64]), written=True, specifier='AM for big pinky', IO=False), n_tiles=9, estimate_time=(4.866803278688525, -749568)))",
+            "type": "Pooling",
+            "xdnn_instr": "XNMaxPoolPipelined layer4-maxpool 2 2 2 2 0 0 0x0 304 304 32 0xcb80 152 152 1 1 0 1 3 32 0 2 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 1 0 0 1 0 64 61 1 0 16384 65536 layer3-conv 3 3 1 1 1 1 1 1 1 1 1 304 304 64 152 # V3 SPLIT Code :)ddr_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "65536",
+                "HAT": "1",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "16384",
+                "XNOp": "XNMaxPoolPipelined",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "conv_bias": "1",
+                "conv_dilation_h": "1",
+                "conv_dilation_w": "1",
+                "conv_kernel_h": "3",
+                "conv_kernel_w": "3",
+                "conv_name": "layer3-conv",
+                "conv_outsize_w": "152",
+                "conv_padding_h": "1",
+                "conv_padding_w": "1",
+                "conv_prelu": "1",
+                "conv_relu": "1",
+                "conv_strides_h": "1",
+                "conv_strides_w": "1",
+                "destAddrReadFromImgQ": "0",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "0",
+                "dst_repl_sect_num": "2",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "1",
+                "en_pingpong_weight": "1",
+                "id": "4",
+                "inaddr": "0x0",
+                "inchan": "32",
+                "insize_h": "304",
+                "insize_w": "304",
+                "kernel_h": "2",
+                "kernel_w": "2",
+                "name": "layer4-maxpool",
+                "outaddr": "0xcb80",
+                "outsize_h": "152",
+                "outsize_w": "152",
+                "paddings_h": "0",
+                "paddings_w": "0",
+                "parallel_read": "0",
+                "pool_inchan": "64",
+                "pool_insize_h": "304",
+                "pool_insize_w": "304",
+                "prerelu": "0",
+                "slice": "1",
+                "srcAddDDR": "1",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "0",
+                "src_repl_sect_num": "1",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "2",
+                "strides_w": "2",
+                "tile_height": "61",
+                "tile_width": "64",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer4-maxpool"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    8,
+                    8
+                ],
+                [
+                    8,
+                    3
+                ],
+                false
+            ],
+            "layer": "layer5-conv: type=Convolution, sizes=None, shapes=SizeType(batches=128, channels=64, height=3, width=3), sched 3 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer5-conv",
+                "layer5-act"
+            ],
+            "name": "layer5-conv",
+            "ops": 3406823424,
+            "outputshapes": [
+                1,
+                128,
+                152,
+                152
+            ],
+            "schedule": 6,
+            "type": "Convolution",
+            "xdnn_instr": "6 XNConv layer5-conv 3 3 1 1 1 1 1 1 0 26 15 1 1 1 0xcb80 152 152 64 0x0 152 152 128 1 1 0 2 3 32 2 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "2",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "6",
+                "inaddr": "0xcb80",
+                "inchan": "64",
+                "insize_h": "152",
+                "insize_w": "152",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer5-conv",
+                "outaddr": "0x0",
+                "outchan": "128",
+                "outsize_h": "152",
+                "outsize_w": "152",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "15",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "0",
+                "src_repl_sect_num": "2",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer5-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    8,
+                    6
+                ],
+                [
+                    8,
+                    4
+                ],
+                false
+            ],
+            "layer": "layer6-conv: type=Convolution, sizes=None, shapes=SizeType(batches=64, channels=128, height=1, width=1), sched 4 Kernel [1] Strides [1] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer6-conv",
+                "layer6-act"
+            ],
+            "name": "layer6-conv",
+            "ops": 378535936,
+            "outputshapes": [
+                1,
+                64,
+                152,
+                152
+            ],
+            "schedule": 7,
+            "type": "Convolution",
+            "xdnn_instr": "7 XNConv layer6-conv 1 1 1 1 0 0 1 1 0 26 13 1 1 1 0x0 152 152 128 0xb480 152 152 64 1 1 2 0 0 0 0 2 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "0",
+                "dst_repl_sect_num": "2",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "7",
+                "inaddr": "0x0",
+                "inchan": "128",
+                "insize_h": "152",
+                "insize_w": "152",
+                "kernel_h": "1",
+                "kernel_w": "1",
+                "name": "layer6-conv",
+                "outaddr": "0xb480",
+                "outchan": "64",
+                "outsize_h": "152",
+                "outsize_w": "152",
+                "padding_h": "0",
+                "padding_w": "0",
+                "parallel_read": "0",
+                "postshift": "13",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "2",
+                "src_repl_sect_num": "0",
+                "src_repl_unit_num": "0",
+                "src_repl_unit_width": "0",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer6-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    8,
+                    8
+                ],
+                [
+                    8,
+                    4
+                ],
+                false
+            ],
+            "layer": "layer8-maxpool: type=Pooling, sizes=None, shapes=None, sched 5 Kernel [2] Strides [2] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer7-conv",
+                "layer7-act",
+                "layer8-maxpool"
+            ],
+            "name": "layer8-maxpool",
+            "ops": 3409780736,
+            "outputshapes": [
+                1,
+                128,
+                76,
+                76
+            ],
+            "schedule": 8,
+            "type": "Pooling",
+            "xdnn_instr": "8 XNMaxPoolPipelined layer8-maxpool 2 2 2 2 0 0 0xb480 152 152 64 0x0 76 76 1 1 0 2 3 32 1 1 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 layer7-conv 3 3 1 1 1 1 1 1 1 1 1 152 152 128 76 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNMaxPoolPipelined",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "conv_bias": "1",
+                "conv_dilation_h": "1",
+                "conv_dilation_w": "1",
+                "conv_kernel_h": "3",
+                "conv_kernel_w": "3",
+                "conv_name": "layer7-conv",
+                "conv_outsize_w": "76",
+                "conv_padding_h": "1",
+                "conv_padding_w": "1",
+                "conv_prelu": "1",
+                "conv_relu": "1",
+                "conv_strides_h": "1",
+                "conv_strides_w": "1",
+                "destAddrReadFromImgQ": "0",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "1",
+                "dst_repl_sect_num": "1",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "1",
+                "en_pingpong_weight": "1",
+                "id": "8",
+                "inaddr": "0xb480",
+                "inchan": "64",
+                "insize_h": "152",
+                "insize_w": "152",
+                "kernel_h": "2",
+                "kernel_w": "2",
+                "name": "layer8-maxpool",
+                "outaddr": "0x0",
+                "outsize_h": "76",
+                "outsize_w": "76",
+                "paddings_h": "0",
+                "paddings_w": "0",
+                "parallel_read": "0",
+                "pool_inchan": "128",
+                "pool_insize_h": "152",
+                "pool_insize_w": "152",
+                "prerelu": "0",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "0",
+                "src_repl_sect_num": "2",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "2",
+                "strides_w": "2",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer8-maxpool"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    9
+                ],
+                [
+                    8,
+                    4
+                ],
+                false
+            ],
+            "layer": "layer9-conv: type=Convolution, sizes=None, shapes=SizeType(batches=256, channels=128, height=3, width=3), sched 6 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer9-conv",
+                "layer9-act"
+            ],
+            "name": "layer9-conv",
+            "ops": 3406823424,
+            "outputshapes": [
+                1,
+                256,
+                76,
+                76
+            ],
+            "schedule": 9,
+            "type": "Convolution",
+            "xdnn_instr": "9 XNConv layer9-conv 3 3 1 1 1 1 1 1 0 26 15 1 1 1 0x0 76 76 128 0x2d20 76 76 256 1 1 1 1 3 32 3 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "3",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "9",
+                "inaddr": "0x0",
+                "inchan": "128",
+                "insize_h": "76",
+                "insize_w": "76",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer9-conv",
+                "outaddr": "0x2d20",
+                "outchan": "256",
+                "outsize_h": "76",
+                "outsize_w": "76",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "15",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "1",
+                "src_repl_sect_num": "1",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer9-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    8,
+                    6
+                ],
+                [
+                    8,
+                    4
+                ],
+                false
+            ],
+            "layer": "layer10-conv: type=Convolution, sizes=None, shapes=SizeType(batches=128, channels=256, height=1, width=1), sched 7 Kernel [1] Strides [1] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer10-conv",
+                "layer10-act"
+            ],
+            "name": "layer10-conv",
+            "ops": 378535936,
+            "outputshapes": [
+                1,
+                128,
+                76,
+                76
+            ],
+            "schedule": 10,
+            "type": "Convolution",
+            "xdnn_instr": "10 XNConv layer10-conv 1 1 1 1 0 0 1 1 0 26 14 1 1 1 0x2d20 76 76 256 0x0 76 76 128 1 1 3 0 0 0 1 1 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "1",
+                "dst_repl_sect_num": "1",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "10",
+                "inaddr": "0x2d20",
+                "inchan": "256",
+                "insize_h": "76",
+                "insize_w": "76",
+                "kernel_h": "1",
+                "kernel_w": "1",
+                "name": "layer10-conv",
+                "outaddr": "0x0",
+                "outchan": "128",
+                "outsize_h": "76",
+                "outsize_w": "76",
+                "padding_h": "0",
+                "padding_w": "0",
+                "parallel_read": "0",
+                "postshift": "14",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "3",
+                "src_repl_sect_num": "0",
+                "src_repl_unit_num": "0",
+                "src_repl_unit_width": "0",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer10-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    9
+                ],
+                [
+                    8,
+                    4
+                ],
+                false
+            ],
+            "layer": "layer12-maxpool: type=Pooling, sizes=None, shapes=None, sched 8 Kernel [2] Strides [2] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer11-conv",
+                "layer11-act",
+                "layer12-maxpool"
+            ],
+            "name": "layer12-maxpool",
+            "ops": 3408302080,
+            "outputshapes": [
+                1,
+                256,
+                38,
+                38
+            ],
+            "schedule": 11,
+            "type": "Pooling",
+            "xdnn_instr": "11 XNMaxPoolPipelined layer12-maxpool 2 2 2 2 0 0 0x0 76 76 128 0x2d20 38 38 1 1 1 1 3 32 2 2 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 layer11-conv 3 3 1 1 1 1 1 1 1 1 1 76 76 256 38 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNMaxPoolPipelined",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "conv_bias": "1",
+                "conv_dilation_h": "1",
+                "conv_dilation_w": "1",
+                "conv_kernel_h": "3",
+                "conv_kernel_w": "3",
+                "conv_name": "layer11-conv",
+                "conv_outsize_w": "38",
+                "conv_padding_h": "1",
+                "conv_padding_w": "1",
+                "conv_prelu": "1",
+                "conv_relu": "1",
+                "conv_strides_h": "1",
+                "conv_strides_w": "1",
+                "destAddrReadFromImgQ": "0",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "2",
+                "dst_repl_sect_num": "2",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "1",
+                "en_pingpong_weight": "1",
+                "id": "11",
+                "inaddr": "0x0",
+                "inchan": "128",
+                "insize_h": "76",
+                "insize_w": "76",
+                "kernel_h": "2",
+                "kernel_w": "2",
+                "name": "layer12-maxpool",
+                "outaddr": "0x2d20",
+                "outsize_h": "38",
+                "outsize_w": "38",
+                "paddings_h": "0",
+                "paddings_w": "0",
+                "parallel_read": "0",
+                "pool_inchan": "256",
+                "pool_insize_h": "76",
+                "pool_insize_w": "76",
+                "prerelu": "0",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "1",
+                "src_repl_sect_num": "1",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "2",
+                "strides_w": "2",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer12-maxpool"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    9
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer13-conv: type=Convolution, sizes=None, shapes=SizeType(batches=512, channels=256, height=3, width=3), sched 9 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer13-conv",
+                "layer13-act"
+            ],
+            "name": "layer13-conv",
+            "ops": 3406823424,
+            "outputshapes": [
+                1,
+                512,
+                38,
+                38
+            ],
+            "schedule": 12,
+            "type": "Convolution",
+            "xdnn_instr": "12 XNConv layer13-conv 3 3 1 1 1 1 1 1 0 26 16 1 1 1 0x2d20 38 38 256 0x0 38 38 512 1 1 2 2 3 32 6 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "6",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "12",
+                "inaddr": "0x2d20",
+                "inchan": "256",
+                "insize_h": "38",
+                "insize_w": "38",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer13-conv",
+                "outaddr": "0x0",
+                "outchan": "512",
+                "outsize_h": "38",
+                "outsize_w": "38",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "16",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "2",
+                "src_repl_sect_num": "2",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer13-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer14-conv: type=Convolution, sizes=None, shapes=SizeType(batches=256, channels=512, height=1, width=1), sched 10 Kernel [1] Strides [1] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer14-conv",
+                "layer14-act"
+            ],
+            "name": "layer14-conv",
+            "ops": 378535936,
+            "outputshapes": [
+                1,
+                256,
+                38,
+                38
+            ],
+            "schedule": 13,
+            "type": "Convolution",
+            "xdnn_instr": "13 XNConv layer14-conv 1 1 1 1 0 0 1 1 0 26 15 1 1 1 0x0 38 38 512 0x21d8 38 38 256 1 1 6 0 0 0 2 2 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "2",
+                "dst_repl_sect_num": "2",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "13",
+                "inaddr": "0x0",
+                "inchan": "512",
+                "insize_h": "38",
+                "insize_w": "38",
+                "kernel_h": "1",
+                "kernel_w": "1",
+                "name": "layer14-conv",
+                "outaddr": "0x21d8",
+                "outchan": "256",
+                "outsize_h": "38",
+                "outsize_w": "38",
+                "padding_h": "0",
+                "padding_w": "0",
+                "parallel_read": "0",
+                "postshift": "15",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "6",
+                "src_repl_sect_num": "0",
+                "src_repl_unit_num": "0",
+                "src_repl_unit_width": "0",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer14-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    9
+                ],
+                [
+                    8,
+                    4
+                ],
+                false
+            ],
+            "layer": "layer15-conv: type=Convolution, sizes=None, shapes=SizeType(batches=512, channels=256, height=3, width=3), sched 11 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer15-conv",
+                "layer15-act"
+            ],
+            "name": "layer15-conv",
+            "ops": 3406823424,
+            "outputshapes": [
+                1,
+                512,
+                38,
+                38
+            ],
+            "schedule": 14,
+            "type": "Convolution",
+            "xdnn_instr": "14 XNConv layer15-conv 3 3 1 1 1 1 1 1 0 26 15 1 1 1 0x21d8 38 38 256 0x0 38 38 512 1 1 2 2 3 32 6 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "6",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "14",
+                "inaddr": "0x21d8",
+                "inchan": "256",
+                "insize_h": "38",
+                "insize_w": "38",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer15-conv",
+                "outaddr": "0x0",
+                "outchan": "512",
+                "outsize_h": "38",
+                "outsize_w": "38",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "15",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "2",
+                "src_repl_sect_num": "2",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer15-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    4
+                ],
+                false
+            ],
+            "layer": "layer16-conv: type=Convolution, sizes=None, shapes=SizeType(batches=256, channels=512, height=1, width=1), sched 12 Kernel [1] Strides [1] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer16-conv",
+                "layer16-act"
+            ],
+            "name": "layer16-conv",
+            "ops": 378535936,
+            "outputshapes": [
+                1,
+                256,
+                38,
+                38
+            ],
+            "schedule": 15,
+            "type": "Convolution",
+            "xdnn_instr": "15 XNConv layer16-conv 1 1 1 1 0 0 1 1 0 26 14 1 1 1 0x0 38 38 512 0x21d8 38 38 256 1 1 6 0 0 0 2 2 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "2",
+                "dst_repl_sect_num": "2",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "15",
+                "inaddr": "0x0",
+                "inchan": "512",
+                "insize_h": "38",
+                "insize_w": "38",
+                "kernel_h": "1",
+                "kernel_w": "1",
+                "name": "layer16-conv",
+                "outaddr": "0x21d8",
+                "outchan": "256",
+                "outsize_h": "38",
+                "outsize_w": "38",
+                "padding_h": "0",
+                "padding_w": "0",
+                "parallel_read": "0",
+                "postshift": "14",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "6",
+                "src_repl_sect_num": "0",
+                "src_repl_unit_num": "0",
+                "src_repl_unit_width": "0",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer16-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    9
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer17-conv: type=Convolution, sizes=None, shapes=SizeType(batches=512, channels=256, height=3, width=3), sched 13 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer17-conv",
+                "layer17-act"
+            ],
+            "name": "layer17-conv",
+            "ops": 3406823424,
+            "outputshapes": [
+                1,
+                512,
+                38,
+                38
+            ],
+            "schedule": 16,
+            "type": "Convolution",
+            "xdnn_instr": "16 XNConv layer17-conv 3 3 1 1 1 1 1 1 0 26 16 1 1 1 0x21d8 38 38 256 0x0 38 38 512 1 1 2 2 3 32 6 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "6",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "16",
+                "inaddr": "0x21d8",
+                "inchan": "256",
+                "insize_h": "38",
+                "insize_w": "38",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer17-conv",
+                "outaddr": "0x0",
+                "outchan": "512",
+                "outsize_h": "38",
+                "outsize_w": "38",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "16",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "2",
+                "src_repl_sect_num": "2",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer17-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                null,
+                null,
+                false
+            ],
+            "layer": "layer18-maxpool: type=Pooling, sizes=None, shapes=None, sched 14 Kernel [2] Strides [2] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer18-maxpool"
+            ],
+            "name": "layer18-maxpool",
+            "ops": 739328,
+            "outputshapes": [
+                1,
+                512,
+                19,
+                19
+            ],
+            "schedule": 17,
+            "type": "Pooling",
+            "xdnn_instr": "17 XNMaxPool layer18-maxpool 2 2 2 2 0 0 0x0 38 38 512 0x21d8 19 19 1 1 6 0 0 0 6 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNMaxPool",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "6",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "17",
+                "inaddr": "0x0",
+                "inchan": "512",
+                "insize_h": "38",
+                "insize_w": "38",
+                "kernel_h": "2",
+                "kernel_w": "2",
+                "name": "layer18-maxpool",
+                "outaddr": "0x21d8",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "paddings_h": "0",
+                "paddings_w": "0",
+                "parallel_read": "0",
+                "prerelu": "0",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "6",
+                "src_repl_sect_num": "0",
+                "src_repl_unit_num": "0",
+                "src_repl_unit_width": "0",
+                "strides_h": "2",
+                "strides_w": "2",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer18-maxpool"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    9
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer19-conv: type=Convolution, sizes=None, shapes=SizeType(batches=1024, channels=512, height=3, width=3), sched 15 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer19-conv",
+                "layer19-act"
+            ],
+            "name": "layer19-conv",
+            "ops": 3406823424,
+            "outputshapes": [
+                1,
+                1024,
+                19,
+                19
+            ],
+            "schedule": 18,
+            "type": "Convolution",
+            "xdnn_instr": "18 XNConv layer19-conv 3 3 1 1 1 1 1 1 0 26 16 1 1 1 0x21d8 19 19 512 0x2a4e 19 19 1024 1 1 6 0 0 0 11 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "11",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "0",
+                "id": "18",
+                "inaddr": "0x21d8",
+                "inchan": "512",
+                "insize_h": "19",
+                "insize_w": "19",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer19-conv",
+                "outaddr": "0x2a4e",
+                "outchan": "1024",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "16",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "6",
+                "src_repl_sect_num": "0",
+                "src_repl_unit_num": "0",
+                "src_repl_unit_width": "0",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer19-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer20-conv: type=Convolution, sizes=None, shapes=SizeType(batches=512, channels=1024, height=1, width=1), sched 16 Kernel [1] Strides [1] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer20-conv",
+                "layer20-act"
+            ],
+            "name": "layer20-conv",
+            "ops": 378535936,
+            "outputshapes": [
+                1,
+                512,
+                19,
+                19
+            ],
+            "schedule": 19,
+            "type": "Convolution",
+            "xdnn_instr": "19 XNConv layer20-conv 1 1 1 1 0 0 1 1 0 26 14 1 1 1 0x2a4e 19 19 1024 0x21d8 19 19 512 1 1 11 0 0 0 5 1 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "5",
+                "dst_repl_sect_num": "1",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "19",
+                "inaddr": "0x2a4e",
+                "inchan": "1024",
+                "insize_h": "19",
+                "insize_w": "19",
+                "kernel_h": "1",
+                "kernel_w": "1",
+                "name": "layer20-conv",
+                "outaddr": "0x21d8",
+                "outchan": "512",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "padding_h": "0",
+                "padding_w": "0",
+                "parallel_read": "0",
+                "postshift": "14",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "11",
+                "src_repl_sect_num": "0",
+                "src_repl_unit_num": "0",
+                "src_repl_unit_width": "0",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer20-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    10
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer21-conv: type=Convolution, sizes=None, shapes=SizeType(batches=1024, channels=512, height=3, width=3), sched 17 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer21-conv",
+                "layer21-act"
+            ],
+            "name": "layer21-conv",
+            "ops": 3406823424,
+            "outputshapes": [
+                1,
+                1024,
+                19,
+                19
+            ],
+            "schedule": 20,
+            "type": "Convolution",
+            "xdnn_instr": "20 XNConv layer21-conv 3 3 1 1 1 1 1 1 0 26 17 1 1 1 0x21d8 19 19 512 0x2a4e 19 19 1024 1 1 5 1 3 32 11 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "11",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "0",
+                "id": "20",
+                "inaddr": "0x21d8",
+                "inchan": "512",
+                "insize_h": "19",
+                "insize_w": "19",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer21-conv",
+                "outaddr": "0x2a4e",
+                "outchan": "1024",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "17",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "5",
+                "src_repl_sect_num": "1",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer21-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer22-conv: type=Convolution, sizes=None, shapes=SizeType(batches=512, channels=1024, height=1, width=1), sched 18 Kernel [1] Strides [1] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer22-conv",
+                "layer22-act"
+            ],
+            "name": "layer22-conv",
+            "ops": 378535936,
+            "outputshapes": [
+                1,
+                512,
+                19,
+                19
+            ],
+            "schedule": 21,
+            "type": "Convolution",
+            "xdnn_instr": "21 XNConv layer22-conv 1 1 1 1 0 0 1 1 0 26 14 1 1 1 0x2a4e 19 19 1024 0x21d8 19 19 512 1 1 11 0 0 0 5 1 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "5",
+                "dst_repl_sect_num": "1",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "21",
+                "inaddr": "0x2a4e",
+                "inchan": "1024",
+                "insize_h": "19",
+                "insize_w": "19",
+                "kernel_h": "1",
+                "kernel_w": "1",
+                "name": "layer22-conv",
+                "outaddr": "0x21d8",
+                "outchan": "512",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "padding_h": "0",
+                "padding_w": "0",
+                "parallel_read": "0",
+                "postshift": "14",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "11",
+                "src_repl_sect_num": "0",
+                "src_repl_unit_num": "0",
+                "src_repl_unit_width": "0",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer22-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        2
+                    ]
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    4
+                ],
+                false
+            ],
+            "layer": "layer23-conv: type=Convolution, sizes=None, shapes=SizeType(batches=1024, channels=512, height=3, width=3), sched 19 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer23-conv",
+                "layer23-act"
+            ],
+            "name": "layer23-conv",
+            "ops": 3406823424,
+            "outputshapes": [
+                1,
+                1024,
+                19,
+                19
+            ],
+            "schedule": 22,
+            "type": "Convolution",
+            "xdnn_instr": "22 XNConv layer23-conv 3 3 1 1 1 1 1 1 0 26 16 1 1 1 0x21d8 19 19 512 0x2a4e 19 19 1024 1 1 5 1 3 32 10 2 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "10",
+                "dst_repl_sect_num": "2",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "0",
+                "id": "22",
+                "inaddr": "0x21d8",
+                "inchan": "512",
+                "insize_h": "19",
+                "insize_w": "19",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer23-conv",
+                "outaddr": "0x2a4e",
+                "outchan": "1024",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "16",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "5",
+                "src_repl_sect_num": "1",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer23-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    12
+                ],
+                [
+                    8,
+                    7
+                ],
+                false
+            ],
+            "layer": "layer24-conv: type=Convolution, sizes=None, shapes=SizeType(batches=1024, channels=1024, height=3, width=3), sched 20 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer24-conv",
+                "layer24-act"
+            ],
+            "name": "layer24-conv",
+            "ops": 6813646848,
+            "outputshapes": [
+                1,
+                1024,
+                19,
+                19
+            ],
+            "schedule": 23,
+            "type": "Convolution",
+            "xdnn_instr": "23 XNConv layer24-conv 3 3 1 1 1 1 1 1 0 26 17 1 1 1 0x2a4e 19 19 1024 0x3b3a 19 19 1024 1 1 10 2 3 32 10 2 3 32 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "10",
+                "dst_repl_sect_num": "2",
+                "dst_repl_unit_num": "3",
+                "dst_repl_unit_width": "32",
+                "en_halfrate_mode": "1",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "0",
+                "id": "23",
+                "inaddr": "0x2a4e",
+                "inchan": "1024",
+                "insize_h": "19",
+                "insize_w": "19",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer24-conv",
+                "outaddr": "0x3b3a",
+                "outchan": "1024",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "17",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "10",
+                "src_repl_sect_num": "2",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer24-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    10
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer25-conv: type=Convolution, sizes=None, shapes=SizeType(batches=1024, channels=1024, height=3, width=3), sched 21 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer25-conv",
+                "layer25-act"
+            ],
+            "name": "layer25-conv",
+            "ops": 6813646848,
+            "outputshapes": [
+                1,
+                1024,
+                19,
+                19
+            ],
+            "schedule": 24,
+            "type": "Convolution",
+            "xdnn_instr": "24 XNConv layer25-conv 3 3 1 1 1 1 1 1 0 26 17 1 1 1 0x3b3a 19 19 1024 0x21d8 19 19 1024 1 1 10 2 3 32 11 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "11",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "1",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "0",
+                "id": "24",
+                "inaddr": "0x3b3a",
+                "inchan": "1024",
+                "insize_h": "19",
+                "insize_w": "19",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer25-conv",
+                "outaddr": "0x21d8",
+                "outchan": "1024",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "17",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "10",
+                "src_repl_sect_num": "2",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer25-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    10
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer25-conv_output: type=Output, sizes=None, shapes=SizeType(batches=1024, channels=1024, height=3, width=3), sched 22 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "am_to_ddr",
+            "merged": [
+                "layer25-conv_output"
+            ],
+            "name": "layer25-conv_output",
+            "ops": 1556480,
+            "outputshapes": [
+                1,
+                1024,
+                19,
+                19
+            ],
+            "schedule": 25,
+            "type": "Output",
+            "xdnn_instr": "25 XNScatter 0x21d8 0x0 19 19 1024 0 1 1 0 18 1 11 0 0 0 1 # Output layer25-conv_output",
+            "xdnn_kv": {
+                "XNOp": "XNScatter",
+                "a0": "0",
+                "b1": "1",
+                "c1": "1",
+                "ddr_dest": "0x0",
+                "destAddrReadFromImgQ": "1",
+                "end_row": "18",
+                "full_sect_num": "11",
+                "id": "25",
+                "outchan": "1024",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "repl_sect_num": "0",
+                "repl_unit_num": "0",
+                "repl_unit_width": "0",
+                "slice": "1",
+                "start_row": "0",
+                "uram_src": "0x21d8"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer17-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    7
+                ],
+                false
+            ],
+            "layer": "layer27-conv: type=Convolution, sizes=None, shapes=SizeType(batches=64, channels=512, height=1, width=1), sched 23 Kernel [1] Strides [1] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer27-conv",
+                "layer27-act"
+            ],
+            "name": "layer27-conv",
+            "ops": 94633984,
+            "outputshapes": [
+                1,
+                64,
+                38,
+                38
+            ],
+            "schedule": 26,
+            "type": "Convolution",
+            "xdnn_instr": "26 XNConv layer27-conv 1 1 1 1 0 0 1 1 0 26 14 1 1 1 0x0 38 38 512 0x21d8 38 38 64 1 1 6 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "1",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "26",
+                "inaddr": "0x0",
+                "inchan": "512",
+                "insize_h": "38",
+                "insize_w": "38",
+                "kernel_h": "1",
+                "kernel_w": "1",
+                "name": "layer27-conv",
+                "outaddr": "0x21d8",
+                "outchan": "64",
+                "outsize_h": "38",
+                "outsize_w": "38",
+                "padding_h": "0",
+                "padding_w": "0",
+                "parallel_read": "0",
+                "postshift": "14",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "6",
+                "src_repl_sect_num": "0",
+                "src_repl_unit_num": "0",
+                "src_repl_unit_width": "0",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer27-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    7
+                ],
+                false
+            ],
+            "layer": "layer27-conv_output: type=Output, sizes=None, shapes=SizeType(batches=64, channels=512, height=1, width=1), sched 24 Kernel [1] Strides [1] Padding [0]",
+            "memory_description": "am_to_ddr",
+            "merged": [
+                "layer27-conv_output"
+            ],
+            "name": "layer27-conv_output",
+            "ops": 389120,
+            "outputshapes": [
+                1,
+                64,
+                38,
+                38
+            ],
+            "schedule": 27,
+            "type": "Output",
+            "xdnn_instr": "27 XNScatter 0x21d8 0x17c000 38 38 64 0 1 1 0 37 1 1 0 0 0 1 # Output layer27-conv_output",
+            "xdnn_kv": {
+                "XNOp": "XNScatter",
+                "a0": "0",
+                "b1": "1",
+                "c1": "1",
+                "ddr_dest": "0x17c000",
+                "destAddrReadFromImgQ": "1",
+                "end_row": "37",
+                "full_sect_num": "1",
+                "id": "27",
+                "outchan": "64",
+                "outsize_h": "38",
+                "outsize_w": "38",
+                "repl_sect_num": "0",
+                "repl_unit_num": "0",
+                "repl_unit_width": "0",
+                "slice": "1",
+                "start_row": "0",
+                "uram_src": "0x21d8"
+            },
+            "xdnn_list": null
+        }
+    ],
+    "ops": 50417461248,
+    "outputddr": 1945600,
+    "outputs": [
+        {
+            "output_address": 0,
+            "output_name": "layer25-conv_output",
+            "output_name_2": "layer25-conv_output",
+            "previous_layers": [
+                "layer25-conv"
+            ],
+            "previous_tensors": [
+                "layer25-conv"
+            ]
+        },
+        {
+            "output_address": 1556480,
+            "output_name": "layer27-conv_output",
+            "output_name_2": "layer27-conv_output",
+            "previous_layers": [
+                "layer27-conv"
+            ],
+            "previous_tensors": [
+                "layer27-conv"
+            ]
+        }
+    ],
+    "unsupported": {
+        "count": 0,
+        "list": {}
+    },
+    "version": "2.2.1"
+}

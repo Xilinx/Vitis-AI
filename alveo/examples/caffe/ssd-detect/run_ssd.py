@@ -18,7 +18,7 @@ import cv2
 import os
 import sys
 
-#from vai.dpuv1.tools.compile.bin.xfdnn_compiler_caffe  import CaffeFrontend as xfdnnCompiler
+
 #from decent import CaffeFrontend as xfdnnQuantizer
 import subprocess
 from vai.dpuv1.rt.scripts.framework.caffe.xfdnn_subgraph import CaffeCutter as xfdnnCutter

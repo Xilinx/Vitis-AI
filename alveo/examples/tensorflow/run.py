@@ -63,7 +63,7 @@ if __name__ == "__main__":
   parser.add_argument('--output_dir', default="work", help='Optionally, save all generated outputs in specified folder')
   parser.add_argument('--pre_process', default="", help='pre-process function for quantization calibration')
   parser.add_argument('--label_offset', default=LABEL_OFFSET, help='Optionally, label offset of the dataset')
-  parser.add_argument('--batch_size', default=BATCH_SIZE, help='batch sizes to run')
+  parser.add_argument('--batch_size', type=int, default=BATCH_SIZE, help='batch sizes to run')
   parser.add_argument('--quantize', action="store_true", default=False, help='In quantize mode, model will be Quantize')
   parser.add_argument('--validate_cpu', action="store_true", help='If validation_cpu is enabled, the model will be validated on cpu')
   parser.add_argument('--validate', action="store_true", help='If validation is enabled, the model will be partitioned, compiled, and ran on the FPGA, and the validation set examined')
@@ -98,10 +98,10 @@ if __name__ == "__main__":
     input_shapes = make_list(args.input_shapes)
     input_shapes = [input_shapes] if list_depth(input_shapes) == 1 else input_shapes
 
-    if 'VAI_ALVEO_ROOT' in os.environ and os.path.isdir(os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1')):
-      arch_json = os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1/tools/compile/bin/arch.json')
-    elif 'VAI_ROOT' in os.environ:
+    if 'VAI_ROOT' in os.environ:
       arch_json = os.path.join(os.environ['VAI_ROOT'], 'compiler/arch/dpuv1/ALVEO/ALVEO.json')
+    elif 'VAI_ALVEO_ROOT' in os.environ and os.path.isdir(os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1/tools')):
+      arch_json = os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1/tools/compile/bin/arch.json')
     else:
       arch_json = '/opt/vitis-ai/compiler/arch/dpuv1/ALVEO/ALVEO.json'
     input_fn = get_input_fn(args.pre_process, args.input_nodes)
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         input_shapes = input_shapes,
         output_dir = args.output_dir,
         method= 1,
-        calib_iter = 500 // args.batch_size)
+        calib_iter = 10 // args.batch_size)
     decent_q.quantize_frozen(input_graph_def, input_fn, q_config)
 
     #subprocess.call(['vai_q_tensorflow', 'inspect',
@@ -160,7 +160,7 @@ if __name__ == "__main__":
                 finalnode=args.c_output_nodes,
                 xclbin=XCLBIN,
                 device='FPGA',
-                placeholdershape="{\'%s\': [%d,%d,%d,%d]}" % (args.input_nodes, args.batch_size, args.input_shapes[1], args.input_shapes[2], args.input_shapes[3]),
+                placeholdershape="{%s: [%s,%s,%s,%s]}" % (args.input_nodes, args.batch_size, args.input_shapes[1], args.input_shapes[2], args.input_shapes[3]),
                 savePyfunc=True,
                 **get_default_compiler_args()
                )

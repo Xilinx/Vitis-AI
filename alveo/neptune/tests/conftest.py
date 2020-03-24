@@ -72,10 +72,6 @@ def _timeout(signum, frame):
 def pytest_sessionstart(session):
     global neptune_command
     global server_addr
-    proxyEnvs = ['HTTP_PROXY', 'http_proxy', 'HTTPS_PROXY', 'https_proxy']
-    for p in proxyEnvs:
-      if p in os.environ:
-        del os.environ[p]
 
     print("\nStarting Neptune")
     mode = session.config.getoption("--neptune_mode")

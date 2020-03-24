@@ -1,4 +1,4 @@
-# Compiler Optimization(s) for DPU-v1
+# Compiler Optimization(s)
 
 Would you like to understand the meaning of the compiler flags? I
 would, especially if compilation fails, for any reason, you would like

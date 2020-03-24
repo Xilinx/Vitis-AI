@@ -124,14 +124,14 @@ class YoloPostProcess(mp_classify.UserPostProcess):
           draw_boxes(imgList[i], boxes[i], self.labels, self.colors, out_file_png)
 
   def finish(self):
-    print("[XDNN] Total Images Processed : {}".format(self.numProcessed)); sys.stdout.flush()
+    print("Total Images Processed : {}".format(self.numProcessed)); sys.stdout.flush()
 
     # mAP calculation
     if(args['golden']):
       print()
       print("Computing mAP score  : ")
       print("Class names are  : {} ".format(self.labels))
-      mAP = calc_detector_mAP(args['results_dir'], args['golden'], len(self.labels), self.labels, self.args['prob_threshold'], self.args['iouthresh'])
+      mAP = calc_detector_mAP(args['results_dir'], args['golden'], len(self.labels), self.labels, self.args['prob_threshold'], args['mapiouthresh'], args['points'])
       sys.stdout.flush()
 
 mp_classify.register_pre(YoloPreProcess)
@@ -161,8 +161,8 @@ if __name__ == '__main__':
   out_w = output_shapes[0][2]
   out_h = output_shapes[0][3]
 
-  args['net_w'] = int(input_shapes[0][2])
-  args['net_h'] = int(input_shapes[0][3])
+  args['net_h'] = int(input_shapes[0][2])
+  args['net_w'] = int(input_shapes[0][3])
   args['out_w'] = int(out_w)
   args['out_h'] = int(out_h)
   args['coords'] = 4

@@ -35,6 +35,7 @@ ACCELERATOR="0"
 BATCHSIZE=4
 VERBOSE=0
 PERPETUAL=0
+PROFILING_ENABLE=0
 IMG_INPUT_SCALE=1.0
 # These variables are used in case there multiple FPGAs running in parallel
 NUMDEVICES=1
@@ -43,31 +44,33 @@ DEVICEID=0
 NUMPREPPROC=4
 COMPILEROPT="autoAllOpt"
 # Parse Options
-OPTS=`getopt -o t:m:d:s:a:n:ns:i:c:y:gvxh --long test:,model:,directory:,numdevices:,numstreams:,deviceid:,batchsize:,compilerOpt:,numprepproc,checkaccuracy,verbose,perpetual,help -n "$0" -- "$@"`
+OPTS=`getopt -o t:m:d:s:a:n:ns:i:c:is:y:gvxph --long test:,model:,directory:,numdevices:,numstreams:,deviceid:,batchsize:,compilerOpt:,imagescale:,numprepproc,checkaccuracy,verbose,perpetual,profile,help -n "$0" -- "$@"`
 
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; usage; exit 1 ; fi
 
 while true
 do
   case "$1" in
-    -t |--test          ) TEST="$2"             ; shift 2 ;;
-    -m |--model         ) MODEL="$2"            ; shift 2 ;;
-    -d |--directory     ) DIRECTORY="$2"        ; shift 2 ;;
-    -r |--vitisrundir   ) VITIS_RUNDIR="$2"     ; shift 2 ;;
-    -s |--batchsize     ) BATCHSIZE="$2"        ; shift 2 ;;
-    -a |--accelerator   ) ACCELERATOR="$2"      ; shift 2 ;;
-    -n |--numdevices    ) NUMDEVICES="$2"       ; shift 2 ;;
-    -ns|--numstreams    ) NUMSTREAMS="$2"       ; shift 2 ;;
-    -i |--deviceid      ) DEVICEID="$2"         ; shift 2 ;;
-    -c |--compilerOpt   ) COMPILEROPT="$2"      ; shift 2 ;;
-    -y |--numprepproc   ) NUMPREPPROC="$2"      ; shift 2 ;;
-    -g |--checkaccuracy ) GOLDEN=gold.txt       ; shift 1 ;;
-    -v |--verbose       ) VERBOSE=1             ; shift 1 ;;
-    -x |--perpetual     ) PERPETUAL=1           ; shift 1 ;;
-    -cn|--customnet     ) CUSTOM_NETCFG="$2"    ; shift 2 ;;
-    -cq|--customquant   ) CUSTOM_QUANTCFG="$2"  ; shift 2 ;;
-    -cw|--customwts     ) CUSTOM_WEIGHTS="$2"   ; shift 2 ;;
-    -h |--help          ) usage                 ; exit  1 ;;
+    -t |--test          ) TEST="$2"                                                       ; shift 2 ;;
+    -m |--model         ) MODEL="$2"                                                      ; shift 2 ;;
+    -d |--directory     ) DIRECTORY="$2"                                                  ; shift 2 ;;
+    -r |--vitisrundir   ) VITIS_RUNDIR="$2"                                               ; shift 2 ;;
+    -s |--batchsize     ) BATCHSIZE="$2"                                                  ; shift 2 ;;
+    -a |--accelerator   ) ACCELERATOR="$2"                                                ; shift 2 ;;
+    -n |--numdevices    ) NUMDEVICES="$2"                                                 ; shift 2 ;;
+    -ns|--numstreams    ) NUMSTREAMS="$2"                                                 ; shift 2 ;;
+    -i |--deviceid      ) DEVICEID="$2"                                                   ; shift 2 ;;
+    -c |--compilerOpt   ) COMPILEROPT="$2"                                                ; shift 2 ;;
+    -is|--imagescale    ) IMG_INPUT_SCALE="$2"                                            ; shift 2 ;;
+    -y |--numprepproc   ) NUMPREPPROC="$2"                                                ; shift 2 ;;
+    -g |--checkaccuracy ) GOLDEN=$VAI_ALVEO_ROOT/examples/deployment_modes/gold.txt       ; shift 1 ;;
+    -v |--verbose       ) VERBOSE=1                                                       ; shift 1 ;;
+    -x |--perpetual     ) PERPETUAL=1                                                     ; shift 1 ;;
+    -cn|--customnet     ) CUSTOM_NETCFG="$2"                                              ; shift 2 ;;
+    -cq|--customquant   ) CUSTOM_QUANTCFG="$2"                                            ; shift 2 ;;
+    -cw|--customwts     ) CUSTOM_WEIGHTS="$2"                                             ; shift 2 ;;
+    -p |--profile       ) PROFILING_ENABLE=1                                              ; shift 1 ;;
+    -h |--help          ) usage                                                           ; exit  1 ;;
      *) break ;;
   esac
 done
@@ -87,12 +90,12 @@ if [ "$MODEL" == "mobilenet" ]; then
 fi
 
 # Determine XCLBIN
-XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
+XCLBIN=/opt/xilinx/overlaybins/xdnnv3
 if [ -d $XCLBIN ]; then
-  echo "--- Using Local XCLBIN ---"
-else
   echo "--- Using System XCLBIN ---"
-  XCLBIN=/opt/xilinx/overlaybins/xdnnv3
+else
+  echo "--- Using Local XCLBIN ---"
+  XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
 fi
 WEIGHTS=./data/${MODEL}_data.h5
 DSP_WIDTH=96
@@ -115,7 +118,7 @@ echo -e "Running:\n Test: $TEST\n Model: $MODEL\n Xclbin: $XCLBIN\n Accelerator:
 BASEOPT="--xclbin $XCLBIN
          --netcfg $NETCFG
          --weights $WEIGHTS
-         --labels ./synset_words.txt
+         --labels $VAI_ALVEO_ROOT/examples/deployment_modes/synset_words.txt
          --quantizecfg $QUANTCFG
          --img_input_scale $IMG_INPUT_SCALE
          --batch_sz $BATCHSIZE"
@@ -206,7 +209,10 @@ elif [[ "$TEST" == "streaming_classify"*  || "$TEST" == "test_mp_classify"* ]] ;
   if [ "$PERPETUAL" == 1 ]; then
     BASEOPT+=" --zmqpub --perpetual --deviceID $DEVICEID"
   fi
-
+  
+  if [ "$PROFILING_ENABLE" == 1 ]; then
+    BASEOPT+=" --profile"
+  fi
   TEST=mp_classify.py
 
 ############################
@@ -284,10 +290,9 @@ else
   exit 1
 fi
 
-
 if [ "$TEST" == "classify_cpp" ]; then
   ./classify.exe $BASEOPT_CPP
 else
   echo python $TEST $BASEOPT
-  python $TEST $BASEOPT
+  python $VAI_ALVEO_ROOT/examples/deployment_modes/$TEST $BASEOPT
 fi

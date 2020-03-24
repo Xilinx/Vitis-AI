@@ -1,0 +1,18 @@
+{
+  "kernel_name": "caffe",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libCaffeKernel.so",
+  "kernel_queue_size": 1,
+
+  "param_list" : {
+    "network":      {"type": "string"},
+    "weights":      {"type": "string"},
+    "input_blobs":  {"type": "string_array"},
+    "output_blobs": {"type": "string_array"},
+    "start_layer":  {"type": "string"},
+    "end_layer":    {"type": "string"},
+    "device":       {"type": "string"}
+  }
+}
+

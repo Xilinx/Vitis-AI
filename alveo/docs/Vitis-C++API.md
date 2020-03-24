@@ -1,9 +1,10 @@
 # Vitis-AI C++ APIs to run inference on a single image
 
-The C++ APIs provide users an easy way to deploy Deep CNNs on FPGA. The APIs have been unified for the edge and the cloud platforms.
+The C++ APIs provide users an easy way to deploy Deep CNNs on FPGA.
+
 ## Prerequisites
 
-**vai_c compiler outputs**
+**VAI-C compiler outputs**
   - `compiler.json` : File containing low level hardware instructions.
   - `weights.h5` : File containing preprocessed floating point data (weights/biases).
   - `quantizer.json` : File containing scaling factors for each layer in the corresponding network.

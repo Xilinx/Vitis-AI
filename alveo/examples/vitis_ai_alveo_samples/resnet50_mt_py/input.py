@@ -1,9 +1,9 @@
 # Copyright 2019 Xilinx Inc.
-#
+# 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-#
+# 
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
@@ -63,4 +63,5 @@ def preprocess_fn(image, crop_height, crop_width):
     image = resize_shortest_edge(image, 256)
     image = central_crop(image, crop_height, crop_width)
     image = normalize(image)
-    return image
+    return image  
+

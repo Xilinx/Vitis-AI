@@ -1,0 +1,50 @@
+{
+  "graph_name": "googlenet", 
+  
+  "node_list": [
+    {
+      "node_name": "preproc", 
+      "node_params" : {
+        "classificationImreadPre": {
+          "net_w" : 224, 
+          "net_h" : 224, 
+          "net_c": 3,
+          "mean": [ 104.007, 116.669, 122.679]
+        }
+      },
+      "next_node": ["googlenet_v1_fpga"]
+    },
+    
+    {
+      "node_name": "googlenet_v1_fpga",
+      "node_params": {
+        "DPUv1_Runner": {
+          "vitis_rundir": "graph_zoo/meta_googlenet"
+        }
+      },
+      "next_node": [  "googlenet_v1_post" ]
+    },
+
+    {
+      "node_name": "googlenet_v1_post",
+      "node_params": {
+        "classificationFCSoftMaxTopK": {
+          "weights" : "graph_zoo/meta_googlenet/weights.h5"
+        }
+      },
+      "next_node": ["googlenet_v1_accuracy"]
+    },
+
+    {
+      "node_name": "googlenet_v1_accuracy",
+      "node_params": {
+        "classificationAccuracy": {
+          "ground_truth": "../../examples/deployment_modes/gold.txt"
+        }
+      },
+      "next_node": []
+    }
+  ],
+  
+  "version": "0.1"
+}

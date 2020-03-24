@@ -11,6 +11,5 @@ RUN:
 Input: It takes input as video file from video folder in current path
 
 Output: Detection results saved as jpg images inside output folder in current path
-***Note: Currently this example is not working, working models will be updated soon
-**Note: Application assumes `vitis-ai-caffe` conda has already activated  
+**Note: Application assumes `vitis-ai-caffe` conda is already activated  
 

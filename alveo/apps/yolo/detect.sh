@@ -43,6 +43,9 @@ usage() {
   echo "  --netw WIDTH                  Network input width. (Default : as provided in the prototxt)."
   echo "  -iou NUM, --iouthresh NUM     IOU threshold for NMS overlap. (Default : 0.45)"
   echo "  -st NUM, --scorethresh NUM    Score threshold for the boxes. (Default : 0.24 in normal case, 0.005 if -g provided)"
+  echo "  -mapiou NUM, --mapiouthresh NUM     IOU threshold for mAP calculation. (Default : 0.5)"
+  echo "  -pts NUM, --points NUM     mAP calculation points 0 for custom data 11 for voc and 101 for coco. (Default : 0)"
+
 
   echo -e ""
   echo "YOLO Config Arguments for Custom network"
@@ -55,10 +58,15 @@ usage() {
 
   echo -e ""
   echo "Arguments to skip Quantizer/Compiler"
+  echo "  -cd DIR, --customcompdir DIR  Output directory to store compiler outputs."
+  echo "  -qd DIR, --customquantdir DIR Output directory to store quantizer outputs."
   echo "  -cn JSON, --customnet JSON    Use pre-compiled compiler.json file."
   echo "  -cq JSON, --customquant JSON  Use pre-compiled quantizer.json file."
   echo "  -cw H5, --customwts H5        Use pre-compiled weights.h5 file."
   echo "  -sq, --skip_quantizer         Skip quantization. If -cn, -cq and -cw, quantizer is automatically skipped."
+
+  echo "  --imglist Path to image list file"
+  echo "  --calibdata Directory containing calibration dataset."
 
   echo -e ""
   echo "Config params for asynchronous execution. Valid only for '--test streaming_detect'"
@@ -89,11 +97,15 @@ DEVICEID=0
 NUMPREPPROC=4
 COMPILEROPT="latency"
 RUN_QUANTIZER=1
+COMP_DIR="work"
+QUANT_DIR="work"
 
 # YOLO configs
 NUM_CLASSES=80
 LABELS='./coco.names'
 IOU_THRESHOLD=0.45
+MAP_IOU_THRESHOLD=0.5
+POINTS=0
 SCORE_THRESHOLD=0.24
 ANCHOR_COUNT=5
 YOLO_VERSION='v3'
@@ -122,6 +134,8 @@ do
     -v |--verbose       ) VERBOSE=1             ; shift 1 ;;
     -z |--zelda         ) ZELDA=1               ; shift 1 ;;
     -x |--perpetual     ) PERPETUAL=1           ; shift 1 ;;
+    -cd|--customcompdir ) COMP_DIR="$2"         ; shift 2 ;;
+    -qd|--customquantdir) QUANT_DIR="$2"        ; shift 2 ;;
     -cn|--customnet     ) CUSTOM_NETCFG="$2"    ; shift 2 ;;
     -cq|--customquant   ) CUSTOM_QUANTCFG="$2"  ; shift 2 ;;
     -cw|--customwts     ) CUSTOM_WEIGHTS="$2"   ; shift 2 ;;
@@ -132,11 +146,15 @@ do
     -yv|--yoloversion   ) YOLO_VERSION="$2"     ; shift 2 ;;
     -nc|--nclasses      ) NUM_CLASSES="$2"      ; shift 2 ;;
     -iou|--iouthresh    ) QIOU_THRESHOLD="$2"   ; shift 2 ;;
+    -mapiou|--mapiouthresh    ) MAP_IOU_THRESHOLD="$2"   ; shift 2 ;;
     -st|--scorethresh   ) QSCORE_THRESHOLD="$2" ; shift 2 ;;
+    -pts|--points       ) POINTS="$2"           ; shift 2 ;;
     -l|--labels         ) LABELS="$2"           ; shift 2 ;;
     -sq|--skip_quantizer) RUN_QUANTIZER=0       ; shift 1 ;;
     --neth              ) NETWORK_HEIGHT="$2"   ; shift 2 ;;
     --netw              ) NETWORK_WIDTH="$2"    ; shift 2 ;;
+    --imglist           ) IMGLIST="$2"          ; shift 2 ;;
+    --calibdata         ) CALIB_DATASET="$2"    ; shift 2 ;;
     -np|--numprepproc   ) NUMPREPPROC="$2"      ; shift 2 ;;
     -nw|--numworkers    ) NUMWORKERS="$2"       ; shift 2 ;;
     -ns|--numstreams    ) NUMSTREAMS="$2"       ; shift 2 ;;
@@ -154,7 +172,8 @@ done
 
 # Supported Modes & Models
 SUPPORTED_MODES="cpu_detect | test_detect | streaming_detect | xtreaming_detect"
-SUPPORTED_MODELS="yolo_v2 | yolo_v2_prelu | standard_yolo_v3 | yolo_v3_spp | tiny_yolo_v3 | custom"
+SUPPORTED_MODELS="yolo_v2 | yolo_v2_prelu | standard_yolo_v2 | tiny_yolo_v2_voc \
+    standard_yolo_v3 | yolo_v3_spp | tiny_yolo_v3 | custom"
 
 if [[ "$SUPPORTED_MODES" != *"$TEST"* ]]; then
   echo "$TEST is not a supported test mode."
@@ -179,6 +198,20 @@ if [ -f /workspace/alveo/overlaybins/setup.sh ]; then
 else
   . ../../overlaybins/setup.sh
 fi
+
+# Calibration dataset and image list
+
+if [ -z $IMGLIST ]; then
+    IMGLIST="$VAI_ALVEO_ROOT/"apps/yolo/images.txt
+fi
+
+if [ -z $CALIB_DATASET ]; then
+    CALIB_DATASET="$VAI_ALVEO_ROOT/"apps/yolo/test_image_set/
+fi
+
+
+# Add YOLO utils to PYTHONPATH
+export PYTHONPATH=$PYTHONPATH:${VAI_ALVEO_ROOT}/apps/yolo
 
 # Determine XCLBIN
 XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
@@ -310,15 +343,15 @@ fi
 ## Modify the prototxt for new dimension
 if [[ ( -v NETWORK_HEIGHT ) && ( -v NETWORK_WIDTH ) ]]; then
   echo "Changing input dimensions in the $NET_DEF ..."
-  echo "python modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file work/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH"
-  python modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file work/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
+  echo "python modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file $QUANT_DIR/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH"
+  python $VAI_ALVEO_ROOT/apps/yolo/modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file $QUANT_DIR/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
   if [[ $? != 0 ]]; then echo "Network modification failed. Exiting ..."; exit 1; fi;
-  NET_DEF=work/new_dim.prototxt
+  NET_DEF=$QUANT_DIR/new_dim.prototxt
 
-  echo "python modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file work/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH"
-  python modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file work/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
+  echo "python modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file $QUANT_DIR/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH"
+  python $VAI_ALVEO_ROOT/apps/yolo/modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file $QUANT_DIR/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
   if [[ $? != 0 ]]; then echo "Network modification failed. Exiting ..."; exit 1; fi;
-  NET_DEF_FPGA=work/new_dim_fpga.prototxt
+  NET_DEF_FPGA=$QUANT_DIR/new_dim_fpga.prototxt
 fi
 
 ## Run Quantizer
@@ -329,17 +362,15 @@ fi
 
 if [[ $RUN_QUANTIZER == 1 ]]; then
   export DECENT_DEBUG=1
-  DUMMY_PTXT=work/dummy.prototxt
-  IMGLIST="$VAI_ALVEO_ROOT/"apps/yolo/images.txt
-  CALIB_DATASET="$VAI_ALVEO_ROOT/"apps/yolo/test_image_set/
-  python get_decent_q_prototxt.py $(pwd) $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
+  DUMMY_PTXT=$QUANT_DIR/dummy.prototxt
+  python $VAI_ALVEO_ROOT/apps/yolo/get_decent_q_prototxt.py $(pwd) $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
   if [[ $? != 0 ]]; then echo "Network generation failed. Exiting ..."; exit 1; fi
 
-  echo -e "quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir work/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH"
-  $QUANTIZER quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir work/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH
+  echo -e "quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir $QUANT_DIR/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH"
+  $QUANTIZER quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir $QUANT_DIR/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH
   if [[ $? != 0 ]]; then echo "Quantization failed. Exiting ..."; exit 1; fi
 else
-  cp $NET_WEIGHTS work/deploy.caffemodel
+  cp $NET_WEIGHTS $QUANT_DIR/deploy.caffemodel
 fi
 
 
@@ -358,7 +389,7 @@ if [[ ( -z $CUSTOM_NETCFG ) && ( -z $CUSTOM_WEIGHTS ) && ( -z $CUSTOM_QUANTCFG )
   RUN_COMPILER=1
   echo "Running Compiler ..."
   echo -n "To skip compilation, please provide precompiled files to "
-  echo -n "-cn, -cq and -cw arguments".
+  echo "-cn, -cq and -cw arguments".
 fi
 
 if [[ ( $TEST == "cpu_detect") ]]; then
@@ -370,13 +401,13 @@ then
   export GLOG_minloglevel=2 # Supress Caffe prints
 
   COMPILER_BASE_OPT=" --prototxt $NET_DEF_FPGA \
-      --caffemodel work/deploy.caffemodel \
+      --caffemodel $QUANT_DIR/deploy.caffemodel \
       --arch arch.json \
       --net_name tmp \
-      --output_dir work"
+      --output_dir $COMP_DIR"
 
   COMPILER_OTHER_OPT="{"
-  COMPILER_OTHER_OPT+=" 'ddr':1024, 'quant_cfgfile': 'work/quantize_info.txt', "
+  COMPILER_OTHER_OPT+=" 'ddr':1024, 'quant_cfgfile': '$QUANT_DIR/quantize_info.txt', "
 
   if [ "$KCFG" == "v3" ] ; then
     if [ $COMPILEROPT == "latency" ] || [ $COMPILEROPT == "throughput" ]; then
@@ -389,13 +420,13 @@ then
 
   ${COMPILER} $COMPILER_BASE_OPT --options "$COMPILER_OTHER_OPT"
   if [[ $? != 0 ]]; then echo "Compilation failed. Exiting ..."; exit 1; fi
-  NETCFG=work/compiler.json
-  WEIGHTS=work/weights.h5
-  QUANTCFG=work/quantizer.json
+  NETCFG=$COMP_DIR/compiler.json
+  WEIGHTS=$COMP_DIR/weights.h5
+  QUANTCFG=$COMP_DIR/quantizer.json
 
   if [ $COMPILEROPT == "throughput" ] && [ "$KCFG" == "v3" ]; then
-     python $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/scripts/xfdnn_gen_throughput_json.py --i work/compiler.json --o work/compiler_tput.json
-     NETCFG=work/compiler_tput.json
+     python $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/scripts/xfdnn_gen_throughput_json.py --i $NETCFG --o $COMP_DIR/compiler_tput.json
+     NETCFG=$COMP_DIR/compiler_tput.json
   fi
 fi
 
@@ -421,6 +452,8 @@ if [ ! -z $GOLDEN ];  then
   echo -e "   The corresponding groud truth label .txt files with same name as images should be provided in one folder and specified by --checkaccuracy option"
   echo -e "   The script will generate the corresponding labels in ./out_labels folder "
   BASEOPT+=" --golden $GOLDEN --results_dir $RESULTS_DIR"
+  BASEOPT+=" --mapiouthresh $MAP_IOU_THRESHOLD"
+  BASEOPT+=" --points $POINTS"
   echo "Image Directory : $DIRECTORY"
   echo "for mAP score calculation class score threshold is set to low value of 0.005"
   if [[ -z $QSCORE_THRESHOLD ]]; then
@@ -519,10 +552,17 @@ else
   exit 1
 fi
 
+if [[ "$TEST" != "cpu_detect.py" ]]; then
+    if [[ "$MODEL" == *"standard_yolo_v2"* ]]; then
+        TEST=$MODEL/graph_detect.py
+        BASEOPT+=" --deploymodel $NET_DEF --caffemodel $NET_WEIGHTS"
+    fi
+fi
+
 
 if [ $ZELDA -eq "0" ]; then
   echo -e "python $TEST $BASEOPT" | sed 's/--/\n  --/g' -
-  python $TEST $BASEOPT 2>&1 | tee single_img_out.txt
+  python $VAI_ALVEO_ROOT/apps/yolo/$TEST $BASEOPT 2>&1 | tee single_img_out.txt
   if [[ $? != 0 ]]; then echo "Execution failed. Exiting ..."; exit 1; fi
 else
   gdb --args python $TEST $BASEOPT

@@ -7,6 +7,7 @@ Download VOC2007 dataset.
 
 ```
 # Download the data.
+cd $VAI_ALVEO_ROOT/examples/caffe/ssd-detect
 wget http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtest_06-Nov-2007.tar
 # Extract the data.
 tar -xvf VOCtest_06-Nov-2007.tar
@@ -39,6 +40,7 @@ source $VAI_ALVEO_ROOT/overlaybins/setup.sh
 ** MUST BE DONE FIRST **
 To run a Caffe model on the FPGA, it needs to be quantized, compiled, and a new graph needs to be generated. The new graph is similar to the original, with the FPGA subgraph removed, and replaced with a custom Python layer.
 ```
+cd cd $VAI_ALVEO_ROOT/examples/caffe/ssd-detect
 python run_ssd.py --prototxt $VAI_ALVEO_ROOT/examples/caffe/models/inception_v2_ssd/inception_v2_ssd_train.prototxt --caffemodel $VAI_ALVEO_ROOT/examples/caffe/models/inception_v2_ssd/inception_v2_ssd.caffemodel --prepare
 ```
   

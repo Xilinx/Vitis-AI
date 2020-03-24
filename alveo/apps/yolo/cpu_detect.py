@@ -193,7 +193,7 @@ def main():
         print()
         print("Computing mAP score  : ")
         print("Class names are  : {} ".format(labels))
-        mAP = calc_detector_mAP(args['results_dir'], args['golden'], len(labels), labels, args['prob_threshold'], args['iouthresh'])
+        mAP = calc_detector_mAP(args['results_dir'], args['golden'], len(labels), labels, args['prob_threshold'], args['mapiouthresh'], args['points'])
         sys.stdout.flush()
 
 if __name__ == '__main__':

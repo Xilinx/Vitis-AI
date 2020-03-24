@@ -1,0 +1,151 @@
+0 data 8 -1
+1 conv1/7x7_s2 8 -1 8 3 8 13 8 5
+2 conv1/relu_7x7 8 3 8 3
+3 pool1/3x3_s2 8 3 8 3
+4 conv2/3x3_reduce 8 3 8 4 8 7 8 6
+5 conv2/relu_3x3_reduce 8 4 8 4
+6 conv2/3x3 8 4 8 4 8 7 8 4
+7 conv2/relu_3x3 8 4 8 4
+8 pool2/3x3_s2 8 4 8 4
+9 inception_3a/1x1 8 4 8 4 8 8 8 5
+10 inception_3a/relu_1x1 8 4 8 4
+11 inception_3a/3x3_reduce 8 4 8 4 8 8 8 5
+12 inception_3a/relu_3x3_reduce 8 4 8 4
+13 inception_3a/3x3 8 4 8 4 8 9 8 5
+14 inception_3a/relu_3x3 8 4 8 4
+15 inception_3a/5x5_reduce 8 4 8 4 8 8 8 6
+16 inception_3a/relu_5x5_reduce 8 4 8 4
+17 inception_3a/5x5 8 4 8 4 8 8 8 5
+18 inception_3a/relu_5x5 8 4 8 4
+19 inception_3a/pool 8 4 8 4
+20 inception_3a/pool_proj 8 4 8 4 8 9 8 5
+21 inception_3a/relu_pool_proj 8 4 8 4
+22 inception_3a/output 8 4 8 4 8 4 8 4 8 4
+23 inception_3b/1x1 8 4 8 4 8 8 8 6
+24 inception_3b/relu_1x1 8 4 8 4
+25 inception_3b/3x3_reduce 8 4 8 4 8 8 8 5
+26 inception_3b/relu_3x3_reduce 8 4 8 4
+27 inception_3b/3x3 8 4 8 4 8 9 8 5
+28 inception_3b/relu_3x3 8 4 8 4
+29 inception_3b/5x5_reduce 8 4 8 4 8 8 8 6
+30 inception_3b/relu_5x5_reduce 8 4 8 4
+31 inception_3b/5x5 8 4 8 4 8 9 8 5
+32 inception_3b/relu_5x5 8 4 8 4
+33 inception_3b/pool 8 4 8 4
+34 inception_3b/pool_proj 8 4 8 4 8 9 8 5
+35 inception_3b/relu_pool_proj 8 4 8 4
+36 inception_3b/output 8 4 8 4 8 4 8 4 8 4
+37 pool3/3x3_s2 8 4 8 4
+38 inception_4a/1x1 8 4 8 4 8 9 8 4
+39 inception_4a/relu_1x1 8 4 8 4
+40 inception_4a/3x3_reduce 8 4 8 4 8 9 8 5
+41 inception_4a/relu_3x3_reduce 8 4 8 4
+42 inception_4a/3x3 8 4 8 4 8 9 8 5
+43 inception_4a/relu_3x3 8 4 8 4
+44 inception_4a/5x5_reduce 8 4 8 4 8 9 8 5
+45 inception_4a/relu_5x5_reduce 8 4 8 4
+46 inception_4a/5x5 8 4 8 4 8 8 8 6
+47 inception_4a/relu_5x5 8 4 8 4
+48 inception_4a/pool 8 4 8 4
+49 inception_4a/pool_proj 8 4 8 4 8 9 8 4
+50 inception_4a/relu_pool_proj 8 4 8 4
+51 inception_4a/output 8 4 8 4 8 4 8 4 8 4
+52 inception_4b/1x1 8 4 8 4 8 9 8 6
+53 inception_4b/relu_1x1 8 4 8 4
+54 inception_4b/3x3_reduce 8 4 8 4 8 9 8 6
+55 inception_4b/relu_3x3_reduce 8 4 8 4
+56 inception_4b/3x3 8 4 8 4 8 9 8 5
+57 inception_4b/relu_3x3 8 4 8 4
+58 inception_4b/5x5_reduce 8 4 8 4 8 8 8 7
+59 inception_4b/relu_5x5_reduce 8 4 8 4
+60 inception_4b/5x5 8 4 8 4 8 9 8 6
+61 inception_4b/relu_5x5 8 4 8 4
+62 inception_4b/pool 8 4 8 4
+63 inception_4b/pool_proj 8 4 8 4 8 9 8 5
+64 inception_4b/relu_pool_proj 8 4 8 4
+65 inception_4b/output 8 4 8 4 8 4 8 4 8 4
+66 inception_4c/1x1 8 4 8 4 8 9 8 6
+67 inception_4c/relu_1x1 8 4 8 4
+68 inception_4c/3x3_reduce 8 4 8 4 8 9 8 6
+69 inception_4c/relu_3x3_reduce 8 4 8 4
+70 inception_4c/3x3 8 4 8 4 8 10 8 5
+71 inception_4c/relu_3x3 8 4 8 4
+72 inception_4c/5x5_reduce 8 4 8 4 8 8 8 6
+73 inception_4c/relu_5x5_reduce 8 4 8 4
+74 inception_4c/5x5 8 4 8 4 8 8 8 6
+75 inception_4c/relu_5x5 8 4 8 4
+76 inception_4c/pool 8 4 8 4
+77 inception_4c/pool_proj 8 4 8 4 8 10 8 5
+78 inception_4c/relu_pool_proj 8 4 8 4
+79 inception_4c/output 8 4 8 4 8 4 8 4 8 4
+80 inception_4d/1x1 8 4 8 4 8 9 8 6
+81 inception_4d/relu_1x1 8 4 8 4
+82 inception_4d/3x3_reduce 8 4 8 4 8 9 8 4
+83 inception_4d/relu_3x3_reduce 8 4 8 4
+84 inception_4d/3x3 8 4 8 4 8 10 8 5
+85 inception_4d/relu_3x3 8 4 8 4
+86 inception_4d/5x5_reduce 8 4 8 4 8 9 8 6
+87 inception_4d/relu_5x5_reduce 8 4 8 4
+88 inception_4d/5x5 8 4 8 4 8 8 8 6
+89 inception_4d/relu_5x5 8 4 8 4
+90 inception_4d/pool 8 4 8 4
+91 inception_4d/pool_proj 8 4 8 4 8 9 8 5
+92 inception_4d/relu_pool_proj 8 4 8 4
+93 inception_4d/output 8 4 8 4 8 4 8 4 8 4
+94 inception_4e/1x1 8 4 8 4 8 9 8 5
+95 inception_4e/relu_1x1 8 4 8 4
+96 inception_4e/3x3_reduce 8 4 8 4 8 9 8 4
+97 inception_4e/relu_3x3_reduce 8 4 8 4
+98 inception_4e/3x3 8 4 8 4 8 10 8 4
+99 inception_4e/relu_3x3 8 4 8 4
+100 inception_4e/5x5_reduce 8 4 8 4 8 9 8 5
+101 inception_4e/relu_5x5_reduce 8 4 8 4
+102 inception_4e/5x5 8 4 8 4 8 8 8 6
+103 inception_4e/relu_5x5 8 4 8 4
+104 inception_4e/pool 8 4 8 4
+105 inception_4e/pool_proj 8 4 8 4 8 9 8 5
+106 inception_4e/relu_pool_proj 8 4 8 4
+107 inception_4e/output 8 4 8 4 8 4 8 4 8 4
+108 pool4/3x3_s2 8 4 8 4
+109 inception_5a/1x1 8 4 8 4 8 10 8 5
+110 inception_5a/relu_1x1 8 4 8 4
+111 inception_5a/3x3_reduce 8 4 8 4 8 10 8 5
+112 inception_5a/relu_3x3_reduce 8 4 8 4
+113 inception_5a/3x3 8 4 8 4 8 10 8 5
+114 inception_5a/relu_3x3 8 4 8 4
+115 inception_5a/5x5_reduce 8 4 8 4 8 10 8 6
+116 inception_5a/relu_5x5_reduce 8 4 8 4
+117 inception_5a/5x5 8 4 8 4 8 9 8 5
+118 inception_5a/relu_5x5 8 4 8 4
+119 inception_5a/pool 8 4 8 4
+120 inception_5a/pool_proj 8 4 8 4 8 10 8 4
+121 inception_5a/relu_pool_proj 8 4 8 4
+122 inception_5a/output 8 4 8 4 8 4 8 4 8 4
+123 inception_5b/1x1 8 4 8 4 8 9 8 5
+124 inception_5b/relu_1x1 8 4 8 4
+125 inception_5b/3x3_reduce 8 4 8 5 8 9 8 5
+126 inception_5b/relu_3x3_reduce 8 5 8 5
+127 inception_5b/3x3 8 5 8 4 8 10 8 6
+128 inception_5b/relu_3x3 8 4 8 4
+129 inception_5b/5x5_reduce 8 4 8 5 8 9 8 6
+130 inception_5b/relu_5x5_reduce 8 5 8 5
+131 inception_5b/5x5 8 5 8 4 8 8 8 6
+132 inception_5b/relu_5x5 8 4 8 4
+133 inception_5b/pool 8 4 8 4
+134 inception_5b/pool_proj 8 4 8 4 8 10 8 5
+135 inception_5b/relu_pool_proj 8 4 8 4
+136 inception_5b/output 8 4 8 4 8 4 8 4 8 4
+137 p5 8 4 8 2 8 11 8 12
+138 latlayer_4f 8 4 8 4 8 11 8 13
+139 upsample_p5 8 2 8 3 8 10 8 0
+140 add_p4 8 3 8 4 8 3
+141 toplayer_p4 8 3 8 2 8 9 8 14
+142 latlayer_3d 8 4 8 5 8 10 8 12
+143 upsample_p4 8 2 8 3 8 10 8 0
+144 add_p3 8 3 8 5 8 3
+145 toplayer_p3 8 3 8 2 8 9 8 12
+146 latlayer_2c 8 4 8 5 8 9 8 10
+147 upsample_p3 8 2 8 2 8 10 8 0
+148 add_p2 8 2 8 5 8 2
+149 toplayer_p2 8 2 8 1 8 9 8 9
+150 score 8 1

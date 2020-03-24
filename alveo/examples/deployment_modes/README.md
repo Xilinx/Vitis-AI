@@ -7,13 +7,19 @@ All examples provided within this directory exercise precompiled versions of Goo
 
 A "compiled model" consists of low level HW instructions, and quantization parameters. 
 
-**Compiler Outputs**:  JSON FILE (HW Instructions *_56.json or *_28.json), model_data directory with preprocessed floating point weights.  
-**Quantizer Outputs**: JSON FILE containing scaling factors for each layer in the corresponding network. (*_8b.json or *_16b.json)  
+**Compiler Outputs**:  JSON FILE, model_data directory with preprocessed floating point weights.  
+**Quantizer Outputs**: JSON FILE containing scaling factors for each layer in the corresponding network. (*_8b.json)  
 
 Important Notes:
  - The final layers of the network (Fully connected, Softmax) are ran on the CPU, as those layers are not supported by the FPGA
- - The streaming_classify example will require you to download the imagnet validation set. Once you download it, you can provide the path to the directory using the flag `-d <DIRECTORY>`
- - Amazon AWS EC2 F1 requires root privileges to load the FPGA, use the documented workaround
+ - The streaming_classify example will require you to download the imagnet validation set.  
+   - Once you download it, you can provide the path to the directory using the flag `-d <DIRECTORY>`
+   - To download do:
+   ```
+   $ conda activate vitis-ai-tensorflow  or conda activate vitis-ai-caffe
+   $ python -m ck pull repo:ck-env
+   $ python -m ck install package:imagenet-2012-val-min 
+   ```
 
 The following three examples of applications using the Python xfDNN API are provided:
 
@@ -33,8 +39,6 @@ To run any of the three examples, use the provided bash run.sh script.
 2. Familiarize yourself with the script usage by:  
   `./run.sh -h`  
   The key parameters are:
-    - -p **platform** Valid values are `alveo-u200`, `alveo-u250`, `aws`, `nimbix`, `1525`, `1525-ml`
-      - Note: Generally this switch is no longer needed, because we auto-detect the platform
     - -t **test** - Valid values are `test_classify` or `streaming_classify` or `multinet`
     - -m **model** - Valid values are `googlenet_v1` or `resnet50`, default is `googlenet_v1`
     - -c **compiler optimized** - This flag runs the network with a compiler optimization for max throughput or min latency
@@ -61,12 +65,7 @@ To run any of the three examples, use the provided bash run.sh script.
     ```sh
     ./run.sh -t streaming_classify_fpgaonly -c throughput -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
-6. Streaming Image Classification FPGA-only mode with live pipeline performance report:
-    ```sh
-    ./run.sh -t streaming_classify_fpgaonly -c throughput -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min -x -v | python $VAI_ALVEO_ROOT/vai/dpuv1/rt/scripts/speedometer.py
-    ```
-   To exit the streaming report view, press `CTRL-Z` and type `kill -9 %%`.
-7. Multinet Image Classification on alveo
+6. Multinet Image Classification on alveo
     ```sh
     ./run.sh -t multinet
     ```

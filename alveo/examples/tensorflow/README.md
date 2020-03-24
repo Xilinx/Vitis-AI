@@ -64,41 +64,26 @@ After the setup, run through a sample end to end tensorflow classification examp
   ```
 
 
-
-4. **Benchmark FPGA performance** - evaluate network throughput and/or latency in a streaming deployment scenario (FPGA only)
-
-  ```
-  cd $VAI_ALVEO_ROOT/examples/deployment_modes && \
-  ./run.sh -ns 1 \
-    -t streaming_classify_fpgaonly -v -x \
-    -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min \
-    -cw $VAI_ALVEO_ROOT/examples/caffe/work/deploy.caffemodel_data.h5 \
-    -cn $VAI_ALVEO_ROOT/examples/caffe/work/compiler.json \
-    -cq $VAI_ALVEO_ROOT/examples/caffe/work/quantizer.json \
-    | python $VAI_ALVEO_ROOT/vai/dpuv1/rt/scripts/speedometer.py
-  ```
-
- `-ns 1` tells the script to use 1 stream, which sends 1 image to each PE. This will achieve minimum latency.
- To maximize throughput, try increasing the number of streams with `-ns` (e.g., `-ns 4`) until `FPGA utilization` reaches 100%. After `FPGA utilization` reaches 100%, increasing the number of streams no longer improves throughput and only hurts latency.
-
- To exit the streaming demo, press `CTRL-Z` and type `kill -9 %%`.
-
- 6. **Benchmark end-to-end performance** - evaluate end-to-end network throughput and/or latency in a streaming deployment scenario.
-
- This demo includes pre-processing and post-processing, which run on CPU. In some cases, CPU code may need additional optimizations in order to maximize the utilization of FPGA.
+ 4. **Other Models** - scripts for running compilation, partitioning and inference with other models provided by getModels.py
 
   ```
-  cd $VAI_ALVEO_ROOT/examples/deployment_modes && \
-  ./run.sh -ns 1 \
-    -t streaming_classify -v -x \
-    -d $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min \
-    -cw $VAI_ALVEO_ROOT/examples/caffe/work/deploy.caffemodel_data.h5 \
-    -cn $VAI_ALVEO_ROOT/examples/caffe/work/compiler.json \
-    -cq $VAI_ALVEO_ROOT/examples/caffe/work/quantizer.json \
-    | python $VAI_ALVEO_ROOT/vai/dpuv1/rt/scripts/speedometer.py
+  # resnet_50
+  $ python run.py --quantize --model models/resnet50_baseline.pb --output_dir work --input_nodes data --output_nodes prob --input_shapes 1,224,224,3 --pre_process resnet50
+  $ python run.py --validate --model models/resnet50_baseline.pb --output_dir work --input_nodes data --output_nodes prob --c_input_nodes data --c_output_nodes prob --input_shapes ?,224,224,3 --pre_process resnet50
+
+  # resnet_101
+  $ python run.py --quantize --model models/resnet_v1_101.pb --output_dir work --input_nodes input --output_nodes resnet_v1_101/predictions/Softmax --input_shapes 1,224,224,3 --pre_process resnet_v1_101
+  $ python run.py --validate --model models/resnet_v1_101.pb --output_dir work --input_nodes input --output_nodes resnet_v1_101/predictions/Softmax --c_input_nodes input --c_output_nodes resnet_v1_101/logits/BiasAdd --input_shapes ?,224,224,3 --pre_process resnet_v1_101
+
+  # resnet_152
+  $ python run.py --quantize --model models/resnet_v1_152.pb --output_dir work --input_nodes input --output_nodes resnet_v1_152/predictions/Softmax --input_shapes 1,224,224,3 --pre_process resnet_v1_152
+  $ python run.py --validate --model models/resnet_v1_152.pb --output_dir work --input_nodes input --output_nodes resnet_v1_152/predictions/Softmax --c_input_nodes input --c_output_nodes resnet_v1_152/logits/BiasAdd --input_shapes ?,224,224,3 --pre_process resnet_v1_152
+
+  # squeezenet
+  $ python run.py --quantize --model models/squeezenet.pb --output_dir work --input_nodes data --output_nodes Prediction/softmax/Softmax --input_shapes 1,227,227,3 --pre_process squeezenet
+  $ python run.py --validate --model models/squeezenet.pb --output_dir work --input_nodes data --output_nodes Prediction/softmax/Softmax --c_input_nodes data --c_output_nodes avg_pool/AvgPool --input_shapes ?,227,227,3 --pre_process squeezenet
+
+  # inception_v4
+  $ python run.py --validate --model models/inception_v4.pb --output_dir work --input_nodes input --output_nodes InceptionV4/Logits/Predictions --c_input_nodes input --c_output_nodes InceptionV4/Logits/Predictions --input_shapes ?,299,299,3 --label_offset 1 --pre_process inception_v4
+  $ python run.py --validate --model models/inception_v4.pb --output_dir work --input_nodes input --output_nodes InceptionV4/Logits/Predictions --c_input_nodes input --c_output_nodes InceptionV4/Logits/Predictions --input_shapes ?,299,299,3 --label_offset 1 --pre_process inception_v4
   ```
-
- To exit the streaming demo, press `CTRL-Z` and type `kill -9 %%`.
-
-
- Note: The above instruction assumes that the --output_dir switch was not used, and artifacts were generated in ./work

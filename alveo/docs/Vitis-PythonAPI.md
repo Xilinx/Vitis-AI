@@ -1,10 +1,10 @@
 # Vitis-AI Python APIs to run inference on a single image
 
-The python APIs provide users an easy way to deploy Deep CNNs on FPGA. The APIs have been unified for the edge and the cloud platforms.
+The python APIs provide users an easy way to deploy Deep CNNs on FPGA. 
 
 ## Prerequisites
 
-**A. vai_c compiler output**
+**A. VAI-C compiler output**
 
 The compiler output directory which contains below files.
 

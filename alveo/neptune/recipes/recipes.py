@@ -60,7 +60,7 @@ def add_coco(graph, previous_node):
         'preprocseq': [
             ('resize2maxdim',(224,224)),
             ('pxlscale',(1.0/255.0)),
-            ('crop_letterbox',(0.5)),
+            ('crop_letterbox',(0.5,224,224)),
             ('chtranspose',(2,0,1)),
             ('chswap',(2,1,0))
         ],

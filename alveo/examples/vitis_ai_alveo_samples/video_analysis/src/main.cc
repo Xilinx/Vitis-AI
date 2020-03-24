@@ -365,6 +365,7 @@ vector<vector<float>> Detect(float *loc, float loc_scale, float *conf_softmax,
                              float conf_threshold) {
     vector<vector<float>> results;
     vector<vector<vector<float>>> detections(4);
+    //size_t max_top_k = top_k;
 
     for (size_t i = 0; i < priors.size(); ++i) {
         vector<float> box(6);
@@ -394,6 +395,7 @@ vector<vector<float>> Detect(float *loc, float loc_scale, float *conf_softmax,
 
     // Apply NMS and get top_k boxes for each class individually
     for (size_t i = 1; i < detections.size(); ++i) {
+        //top_k = max_top_k;
         vector<vector<float>> one_class_nms = NMS(detections[i], nms_threshold);
         if (top_k > one_class_nms.size()) {
             top_k = one_class_nms.size();
@@ -412,6 +414,29 @@ vector<vector<float>> Detect(float *loc, float loc_scale, float *conf_softmax,
 
     return results;
 }
+
+void PermFlatConcat(vector<float *> &outdata, float * loc, float * conf, vector<vitis::ai::Tensor*> &outputTensors) {
+    float * ploc = loc;
+    float * pconf = conf;
+
+    for (int i = 0; i < outputTensors.size(); i++) {
+        int c = outputTensors[i]->get_dim_size(1);
+        int h = outputTensors[i]->get_dim_size(2);
+        int w = outputTensors[i]->get_dim_size(3);
+        for (int hh=0;hh<h;hh++)
+            for (int ww=0;ww<w;ww++)
+                for (int cc=0;cc<c;cc++) {
+                    if (i % 2 ==0) {
+                        *ploc = outdata[i][cc*h*w+hh*w+ww];
+                        ploc++;
+                    } else {
+                        *pconf = outdata[i][cc*h*w+hh*w+ww];
+                        pconf++;
+                    }
+                }
+    }
+}
+
 
 /**
  * @brief Run DPU and ARM Tasks for SSD, and put image into display queue
@@ -432,10 +457,13 @@ void RunSSD(vitis::ai::DpuRunner *runner, bool &is_running) {
 	int inChannel;
     int inSize = inputTensors[0]->get_element_num() 
       / inputTensors[0]->get_dim_size(0);
-	int size = outputTensors[0]->get_element_num() 
-      / outputTensors[0]->get_dim_size(0);
-    int size2 = outputTensors[1]->get_element_num() 
-      / outputTensors[1]->get_dim_size(0);
+    int *outSize = new int[outputTensors.size()];
+    int size[2];
+    for (int i = 0; i < outputTensors.size(); i++) {
+        outSize[i] = outputTensors[i]->get_element_num()
+            / outputTensors[i]->get_dim_size(0);
+        size[i%2] += outSize[i];
+    }
 	
 	if (runner->get_tensor_format() == DpuRunner::TensorFormat::NCHW) {
       inHeight = inputTensors[0]->get_dim_size(2);
@@ -447,14 +475,26 @@ void RunSSD(vitis::ai::DpuRunner *runner, bool &is_running) {
 	  inChannel=inputTensors[0]->get_dim_size(3);
     }
 	
-    float* loc = new float[size];
-    float* conf = new float[size2];
+    vector<float*> outdata;
+    for (int i = 0; i < outputTensors.size(); i++) {
+        outdata.push_back(new float[outSize[i]]);
+    }
     float *imageInputs = new float[inSize];
+
+    float * loc = 0;
+    float * conf = 0;
+    if (outputTensors.size() == 2) {
+        loc = outdata[0];
+        conf = outdata[1];
+    } else {
+        loc = new float[size[0]];
+        conf = new float[size[1]];
+    }
 
     vector<string> label = {"background", "car", "bicycle", "person"};
     vector<vector<float>> priors = CreatePriors();
 
-    float *conf_softmax = new float[size2];
+    float *conf_softmax = new float[size[1]];
 
     // Run detection for images in read queue
     while (is_running) {
@@ -494,19 +534,23 @@ void RunSSD(vitis::ai::DpuRunner *runner, bool &is_running) {
         // input/output prepare
         std::vector<vitis::ai::CpuFlatTensorBuffer>inputs, outputs;
         inputs.push_back(vitis::ai::CpuFlatTensorBuffer(imageInputs,inputTensors[0]));
-        outputs.push_back(vitis::ai::CpuFlatTensorBuffer(loc,outputTensors[0]));
-        outputs.push_back(vitis::ai::CpuFlatTensorBuffer(conf,outputTensors[1]));
+        for (int i = 0; i < outputTensors.size(); i++)
+            outputs.push_back(vitis::ai::CpuFlatTensorBuffer(outdata[i],outputTensors[i]));
+
         std::vector<vitis::ai::TensorBuffer*> inputsPtr, outputsPtr;
         inputsPtr.push_back(&inputs[0]);
-        outputsPtr.push_back(&outputs[0]);
-        outputsPtr.push_back(&outputs[1]);
+
+        for (int i = 0; i < outputTensors.size(); i++)
+            outputsPtr.push_back(&outputs[i]);
         // execute 
         auto job_id = runner->execute_async(inputsPtr,outputsPtr);
         runner->wait(job_id.first,-1);
-
+        if (outputTensors.size() > 2) {
+            PermFlatConcat(outdata, loc, conf, outputTensors);
+        }
 
         // Run Softmax 
-        for (int i = 0; i < size2/4; i++) {
+        for (int i = 0; i < size[1]/4; i++) {
         CPUCalcSoftmax(&conf[i*4], 4, &conf_softmax[i*4]);
 	}
         // Post-process

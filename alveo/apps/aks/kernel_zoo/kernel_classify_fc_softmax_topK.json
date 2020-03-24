@@ -1,0 +1,11 @@
+{
+  "kernel_name": "classificationFCSoftMaxTopK",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libClassificationFCSoftMaxTopK.so",
+
+  "param_list" : {
+    "weights": {"type": "string"}
+  }
+}
+  
