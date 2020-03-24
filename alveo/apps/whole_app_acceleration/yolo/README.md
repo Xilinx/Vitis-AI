@@ -3,11 +3,11 @@
 This application  demonstrates the acceleration of pre-processing of inference of object detection networks like yolo_v3 and tiny_yolo_v3. Below block diagrams show various steps involved in the pre-processing and the blocks which are accelerated on hardware.
 
 <div align="center">
-  <img width="75%" height="75%" src="./doc_images/block_dia_sw_pp.png">
+  <img width="75%" height="75%" src="./doc_images/block_dia_sw_pp.PNG">
 </div>
 
 <div align="center">
-  <img width="75%" height="75%" src="./doc_images/block_dia_hw_pp.png">
+  <img width="75%" height="75%" src="./doc_images/block_dia_hw_pp.PNG">
 </div>
 
 ## Running the Application

@@ -3,11 +3,11 @@
 This application  demonstrates the acceleration of pre-processing for classification networks. The input image is fed to JPEG decoder which will generate YUV data. YUV image is converted to RGB and then resized and channel wise mean subtraction is perfomed on the resized image. Below block diagrams show various steps involved in the pre-processing and the blocks which are accelerated on hardware.
 
 <div align="center">
-  <img width="75%" height="75%" src="./doc_images/block_dia_sw_pp.png">
+  <img width="75%" height="75%" src="./doc_images/block_dia_sw_pp.PNG">
 </div>
 
 <div align="center">
-  <img width="75%" height="75%" src="./doc_images/block_dia_hw_pp.png">
+  <img width="75%" height="75%" src="./doc_images/block_dia_hw_pp.PNG">
 </div>
 
 ## Running the Application
