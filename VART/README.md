@@ -108,12 +108,8 @@ $tar -xzvf vitis_ai_2019.2-r1.1.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xil
 		$make && make install
 		$make package
 		```
-6. Copy or git clone the AI Library package.
-```
-$cd ~
-$git clone https://github.com/xilinx/vitis-ai
-```
-7. Cross compile the sample, take resnet50 as an example.
+
+6. Cross compile the sample, take resnet50 as an example.
 ```
 $cd ~/vitis-ai/VART/samples/resnet50
 $bash –x build.sh
@@ -137,7 +133,6 @@ $sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 ```
 4. Enable environment variable and export the library path.
 ```
-$export INTERNAL_BUILD=1
 $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/
 ```
 
@@ -230,22 +225,16 @@ $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/
 </details>
 
 ### Running Vitis AI Examples (For Cloud)
-1. Download the Vitis™ AI Development Kit.
-	```
-	$cd /workspace
-	$git clone https://github.com/xilinx/vitis-ai/
-	```
-	Then you will find the Vitis AI Runtime samples under `/workspace/vitis_ai/VART/samples` in the docker system.
-2. Download the [vitis_ai_runtime_r1.1_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.1_image_video.tar.gz) package and unzip it.
+1. Download the [vitis_ai_runtime_r1.1_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.1_image_video.tar.gz) package and unzip it.
 	```
 	$tar -xzvf vitis_ai_runtime_r1.1_image_video.tar.gz -C vitis-ai/VART
 	```
-3. Compile the sample, take resnet50 as example.
+2. Compile the sample, take resnet50 as example.
 	```
 	$cd /workspace/vitis_ai/VART/samples/resnet50
 	$bash –x build.sh
 	```
-4. Run the example.
+3. Run the example.
 	```
 	#./resnet50 model_dir_for_U50
 	```
