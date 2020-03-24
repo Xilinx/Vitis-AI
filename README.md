@@ -85,14 +85,15 @@ For more information, please refer to [Vitis AI User Guide](https://www.xilinx.c
 - [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)
 - [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_1/zkj1576857115470.html)
 - [Vitis AI Model Zoo with Performance & Accuracy Data](https://github.com/Xilinx/Vitis-AI/tree/master/AI-Model-Zoo)
-- [Tutorials & Articles](https://developer.xilinx.com/en/get-started/ai.html)
+- [Vitis AI Tutorials](https://github.com/Xilinx/Vitis-AI-Tutorials)
+- [Developer Articles](https://developer.xilinx.com/en/get-started/ai.html)
 - [Performance Whitepaper][]
 
 ## [System Requirements](doc/system_requirements.md)
 
 ## Questions and Support
 - [FAQ](doc/faq.md)
-- [Vitis AI Forum](https://forums.xilinx.com/t5/Machine-Learning/bd-p/Deephi)
+- [Vitis AI Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
 
 [models]: docs/models.md
 [Amazon AWS EC2 F1]: https://aws.amazon.com/marketplace/pp/B077FM2JNS
@@ -103,7 +104,7 @@ For more information, please refer to [Vitis AI User Guide](https://www.xilinx.c
 [FAQ]: docs/faq.md
 [ML Suite Overview]: docs/ml-suite-overview.md
 [Webinar on Xilinx FPGA Accelerated Inference]: https://event.on24.com/wcc/r/1625401/2D3B69878E21E0A3DA63B4CDB5531C23?partnerref=Mlsuite
-[Vitis AI Forum]: https://forums.xilinx.com/t5/Machine-Learning/bd-p/Deephi
+[Vitis AI Forum]: https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI
 [ML Suite Lounge]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html
 [Models]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html#gettingStartedCloud
 [whitepaper here]: https://www.xilinx.com/support/documentation/white_papers/wp504-accel-dnns.pdf
