@@ -217,7 +217,7 @@ $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/
 
 </details>
 
-### Running Vitis AI Examples (For Cloud)
+### Running Vitis AI Examples (For Alveo)
 1. Download the [vitis_ai_runtime_r1.1_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.1_image_video.tar.gz) package and unzip it.
 	```
 	$tar -xzvf vitis_ai_runtime_r1.1_image_video.tar.gz -C vitis-ai/VART
