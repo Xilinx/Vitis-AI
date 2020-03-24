@@ -223,24 +223,20 @@ $tar -xzvf vitis_ai_2019.2-r1.1.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xil
 		$make && make install
 		$make package
 		```
-6. Copy or git clone the AI Library package.
-```
-$cd ~
-$git clone https://github.com/xilinx/vitis-ai
-```
-7. Cross compile the demo in the AI Library, using yolov3 as example.
+
+6. Cross compile the demo in the AI Library, using yolov3 as example.
 ```
 $cd ~/Vitis-AI/Vitis-AI-Library/overview/demo/yolov3
 $bash -x build.sh
 ```	
 
-8. To compile the library sample in the AI Library, take classification for example, execute the following command.
+7. To compile the library sample in the AI Library, take classification for example, execute the following command.
 ```
 $cd ~/Vitis-AI/Vitis-AI-Library/overview/samples/classification
 $bash -x build.sh
 ```	
 
-9. To modify the library source code, view and modify them under `~/Vitis-AI/Vitis-AI-Library`.
+8. To modify the library source code, view and modify them under `~/Vitis-AI/Vitis-AI-Library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
 	Execute the following command to build the libraries all at once.
@@ -278,26 +274,21 @@ $sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 ```
 7. Enable environment variable and export the library path.
 ```
-$export INTERNAL_BUILD=1
 $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/
 ```
-8. Download the Vitis™ AI Development Kit.
-```
-$cd /workspace
-$git clone https://github.com/xilinx/vitis-ai/
-```
-9. To compile the demo in the AI Library, take `yolov3` as an example.
+
+8. To compile the demo in the AI Library, take `yolov3` as an example.
 ```
 $cd /workspace/Vitis-AI/Vitis-AI-Library/overview/demo/yolov3
 $bash -x build.sh
 ```	
-8. To compile the AL Library sample, take `classification` as an example, execute the following command.
+9. To compile the AL Library sample, take `classification` as an example, execute the following command.
 ```
 $cd /workspace/Vitis-AI-Library/overview/samples/classification
 $bash -x build.sh
 ```	
 
-9. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
+10. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
 	Execute the following command to build the libraries all at once.
@@ -467,5 +458,5 @@ Video_input.mp4: The video file's name for input.The user needs to prepare the v
 #vitis_ai
 ```	
 ## Reference
-For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/user_guides/ug1354-xilinx-ai-sdk.pdf) and [vitis-ai-library-programming-guide](https://www.xilinx.com/support/documentation/user_guides/ug1355-xilinx-ai-sdk-programming-guide.pdf).
+For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_1/ug1354-xilinx-ai-sdk.pdf) and [vitis-ai-library-programming-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_1/ug1355-xilinx-ai-sdk-programming-guide.pdf).
 	
