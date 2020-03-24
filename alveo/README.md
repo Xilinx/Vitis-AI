@@ -38,7 +38,6 @@ Then power cycle the system.
  
 ## References 
 - [Performance Whitepaper][]
-- [Accuracy Benchmarks](examples/caffe/Benchmark_README.md)
 - **Watch:** [Webinar on Xilinx FPGA Accelerated Inference][] 
 
 
