@@ -245,21 +245,14 @@ $cd ~/Vitis-AI/Vitis-AI-Library
 $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
 ```
 
-### Setting Up the Host For Cloud
-1. Download the [vitis-ai-cpu](https://hub.docker.com/repository/docker/xilinx/vitis-ai) docker image.
+### Setting Up the Host For Alveo
 
-2. Set up the docker tools system according to the docker installation document. 
-```
-$./docker_run.sh -X Xilinx/vitis-ai-cpu:<x.y.z>
-#i.e.
-$./docker_run.sh -X Xilinx/vitis-ai-cpu:1.1.0
-```
-Note: A `workspace` folder will be created by the docker runtime system. And it will be mounted in `/workspace` of the docker system.
+Assume the docker image has been loaded and up running.
 
-3. Place the program, data and other files to be developed in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
+1. Place the program, data and other files in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
 Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
 
-4. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.0.tar.gz) package.
+2. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.0.tar.gz) package.
 Untar it, find the `libvitis_ai_library-1.1.0-Linux-build<xx>.deb` packet and install it to the docker system.
 ```
 $sudo dpkg -i libvitis_ai_library-1.1.0-Linux.deb
