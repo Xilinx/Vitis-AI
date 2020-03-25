@@ -53,6 +53,8 @@ XRM_INSTALLER=""
 OVERLAYBINS_URL=""
 OVERLAYBINS_INSTALLER=""
 
+XPLUSML_OVERLAYBINS_URL=""
+XPLUSML_OVERLAYBINS_INSTALLER=""
 INSTALLER=""
 
 ##############################
@@ -103,11 +105,15 @@ if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* ]]; the
   XRM_INSTALLER=./ubuntu/xbutler_3.0-1.deb
   OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-overlaybins.deb"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.deb
+  XPLUSML_OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.1-xplusml-bins-18.04.deb"
+  XPLUSML_OVERLAYBINS_INSTALLER=/tmp/vai-1.1-xplusml-bins-18.04.deb
   INSTALLER="apt"
 elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
   XRM_INSTALLER=./centos/xbutler-3.0.1-1.el7.centos.x86_64.rpm
   OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-overlaybins.rpm"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.rpm
+  XPLUSML_OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.1-xplusml-bins-1.0-0.x86_64.rpm"
+  XPLUSML_OVERLAYBINS_INSTALLER=/tmp/vai-1.1-xplusml-bins-1.0-0.x86_64.rpm
   INSTALLER="yum"
 else
   echo "Failed, couldn't detect os distribution"
@@ -149,6 +155,7 @@ echo "----------------------"
 wget $U200_URL -O $U200_INSTALLER && ${INSTALLER} install $U200_INSTALLER -y && rm $U200_INSTALLER
 wget $U250_URL -O $U250_INSTALLER && ${INSTALLER} install $U250_INSTALLER -y && rm $U250_INSTALLER
 wget $OVERLAYBINS_URL -O $OVERLAYBINS_INSTALLER && ${INSTALLER} install $OVERLAYBINS_INSTALLER -y && rm $OVERLAYBINS_INSTALLER
+wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && ${INSTALLER} install $XPLUSML_OVERLAYBINS_INSTALLER -y && rm $XPLUSML_OVERLAYBINS_INSTALLER
 
 ##############################
 #TODO: detect datacenters
