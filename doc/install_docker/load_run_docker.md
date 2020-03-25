@@ -14,7 +14,7 @@ cd Vitis-AI/docker
 # After the CPU image is built, load it
 
 cd Vitis-AI
-./docker_run.sh xilinx/vitis-ai:tools-1.1.48-cpu
+./docker_run.sh xilinx/vitis-ai-cpu:1.1.48
 
 ```
 
@@ -29,7 +29,7 @@ cd Vitis-AI/docker
 # After the GPU image is built, load it
 
 cd Vitis-AI
-./docker_run.sh xilinx/vitis-ai:tools-1.1.48-gpu
+./docker_run.sh xilinx/vitis-ai-gpu:1.1.48
 
 ```
 
