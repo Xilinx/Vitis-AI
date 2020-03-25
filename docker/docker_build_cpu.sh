@@ -13,13 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DOCKER_REPO="xilinx/"
-BRAND=vitis-ai
-VERSION=1.0.0
+DOCKER_REPO="${DOCKER_REPO:-xilinx/}"
+VERSION="${VERSION:-1.1.48}"
+DOCKERFILE="${DOCKERFILE:-DockerfileCPU/}"
+
+BRAND="${BRAND:-vitis-ai-cpu}"
 DATE="$(date)"
 
 # Final Build Image Tag
-GPU_IMAGE_TAG=${DOCKER_REPO}$BRAND:tools-${VERSION}-gpu
+IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}
 
 sed -n '1, 5p' PROMPT.txt
 read -r -p "Press any key to continue..." key
@@ -53,4 +55,4 @@ confirm() {
 
 confirm
 
-docker build --network=host --build-arg VERSION=1.0.0 --build-arg DATE="$(date)" -f Dockerfile.gpu -t $GPU_IMAGE_TAG ./
+docker build --network=host --build-arg VERSION=${VERSION} --build-arg DATE="$(date)" -f ${DOCKERFILE} -t $IMAGE_TAG ./

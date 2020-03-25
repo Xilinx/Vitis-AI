@@ -1,5 +1,7 @@
 xip
-vitis-ai
+dpuv1-rt
+vaic
+ddump
 pydot
 pyyaml
 jupyter
