@@ -7,11 +7,15 @@
 ## CPU tools docker
 
 ```shell
-./docker_run.sh xilinx/vitis-ai:tools-<x.y.z>-cpu
 
-# i.e.
+cd Vitis-AI/docker
+./docker_build_cpu.sh
 
-./docker_run.sh xilinx/vitis-ai:tools-1.0.0-cpu
+# After the CPU image is built, load it
+
+cd Vitis-AI
+./docker_run.sh xilinx/vitis-ai:tools-1.1.48-cpu
+
 ```
 
 ## GPU tools docker
@@ -20,16 +24,12 @@
 # GPU Image must be built by user. 
 
 cd Vitis-AI/docker
-./docker_build.sh
+./docker_build_gpu.sh
 
 # After the GPU image is built, load it
 
-./docker_run.sh xilinx/vitis-ai:tools-<x.y.z>-gpu
-
-# i.e.
-
 cd Vitis-AI
-./docker_run.sh xilinx/vitis-ai:tools-1.0.0-gpu
+./docker_run.sh xilinx/vitis-ai:tools-1.1.48-gpu
 
 ```
 
