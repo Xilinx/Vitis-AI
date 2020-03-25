@@ -5,38 +5,10 @@ With Vitis-AI, Xilinx has integrated all the edge and cloud solutions under a un
 
 **Learn More:** [DPU-v2 Overview](https://github.com/Xilinx/Vitis-AI/tree/master/DPU-TRD)  
 
-## Step1: Install Docker
 
-Install the Docker on the host, and add the user to the docker group. Link the user to docker installation instructions from the following docker's website:
+Assume you have run the docker and the current working directory is /workspace
 
-- [https://docs.docker.com/install/linux/docker-ce/ubuntu/](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
-- [https://docs.docker.com/install/linux/docker-ce/centos/](https://docs.docker.com/install/linux/docker-ce/centos/)
-- [https://docs.docker.com/install/linux/linux-postinstall/](https://docs.docker.com/install/linux/linux-postinstall/)
-
-## Step2: Setup Docker Image
-
-1. Clone the Vitis AI repository
-```sh
-git clone https://github.com/xilinx/vitis-ai
-```
-2. Start the Docker Container without GPU card
-```sh
-cd Vitis-AI/
-./docker_run.sh xilinx/vitis-ai:1.0.0-cpu
-```
-
-3. Or start the Docker Container with GPU card
-```sh
-cd Vitis-AI/docker
-./docker_build.sh
-cd Vitis-AI
-./docker_run.sh xilinx/vitis-ai:1.0.0-gpu
-```
-
-4. Upon starting the container your current working directory will be mounted to: /
-workspace
-
-## Step3: Setup cross-compiler for Vitis AI DNNDK and make samples
+## Step1: Setup cross-compiler for Vitis AI DNNDK and make samples
 
 1. Download [sdk.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk.sh)
 
@@ -66,7 +38,7 @@ cd Vitis-AI/mpsoc/vitis_ai_dnndk_samples/resnet50
 ./build.sh zcu104
 ```
 
-## Step4: Setup Evaluation Board and run Vitis AI DNNDK samples
+## Step2: Setup Evaluation Board and run Vitis AI DNNDK samples
 
 Download the prebuilt [ZCU102 board image](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2019.2-v2.img.gz) or [ZCU104 board image](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2019.2-v2.img.gz) and flash it to SD card (16GB recommanded) using Etcher or Win32DiskImager. Note that you may need to run command irps5401 first to trigger the power management patch for ZCU104 to avoid system hang or power off issue when running samples.
 
