@@ -146,7 +146,7 @@ $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/
 	You can now operate on the board using SSH.
 
 2. Installing Vitis AI Runtime Package   
-	* Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz)  
+	* Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2019.2-r1.1.0.tar.gz)  
 		
 	* Untar the package and copy the following files (aarch64) to the board using scp with the following command.
 	```
