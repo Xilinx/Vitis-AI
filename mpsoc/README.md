@@ -93,6 +93,6 @@ cd /home/root/vitis-ai_v1.1_dnndk_sample/resnet50
 
 ## References 
 - [Use Tool Docker](tool_docker.md)
-- [Vitis AI User Guide](https://www.xilinx.com/cgi-bin/docs/ndoc?t=user_guides;d=ug1414-vitis-ai.pdf)
+- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_1/zkj1576857115470.html)
 - [Vitis AI Model Zoo](https://github.com/Xilinx/Vitis-AI/tree/master/AI-Model-Zoo)
 
