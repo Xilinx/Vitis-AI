@@ -1,6 +1,6 @@
 #!/bin/sh
 
-EVAL_SCRIPT_PATH=tf_eval_script
+EVAL_SCRIPT_PATH=example_file
 EVAL_MODEL_PATH=vai_q_output
 
 python ${EVAL_SCRIPT_PATH}/resnet_eval.py \
