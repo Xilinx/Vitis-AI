@@ -1,0 +1,146 @@
+# docker build . --buildarg VERSION=1.0.1 -t
+FROM nvidia/cuda:10.0-cudnn7-runtime-ubuntu18.04
+env DEBIAN_FRONTEND=noninteractive
+SHELL ["/bin/bash", "-c"]
+# RUN apt-get install timezone
+ENV TZ=America/Denver
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ENV VAI_ROOT=/opt/vitis_ai
+ARG VERSION
+ENV VERSION=$VERSION
+ENV PYTHONPATH=/opt/vitis_ai/compiler
+ENV DATE=$(date)
+
+# 1_Dockerfile.apt
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+        sudo \
+        git \
+        zstd \
+        tree \
+        vim \
+        wget \
+        bzip2 \
+        ca-certificates \
+        curl \
+        unzip \
+        python3-minimal \
+        python3-opencv \
+        python3-venv \
+        python3-pip \
+        python3-setuptools \
+        g++ \
+        make \
+        cmake \
+        automake \
+        build-essential \
+        autoconf \
+        libgoogle-glog-dev \
+        libgflags-dev \
+        libunwind-dev \
+        libtool\
+        openssh-client \
+        libjson-c-dev
+
+# add libgest-dev and libjson-c-dev per request from chunye to facilicate build vitis-ai-lib in the docker container
+RUN apt-get -y install libgtest-dev; cd /usr/src/gtest;mkdir build;cd build && cmake .. &&make && make install
+
+# 2_Dockerfile.pip3
+RUN pip3 install \
+        Flask \
+        setuptools \
+        wheel
+
+#install XRT
+RUN cd /tmp/ && wget -O xrt.deb https://www.xilinx.com/bin/public/openDownload?filename=xrt_201920.2.5.309_18.04-amd64-xrt.deb && ls -lhd /tmp/xrt.deb && \
+       apt-get install -y --no-install-recommends /tmp/xrt.deb
+#RUN cd /tmp/ && sudo apt-get install -y /tmp/*.deb && rm -fr /tmp/*
+
+RUN cd /tmp/ && wget -O glog.0.4.0.tar.gz https://codeload.github.com/google/glog/tar.gz/v0.4.0 && \
+    tar -xvf  glog.0.4.0.tar.gz && cd /tmp/glog-0.4.0 &&  ./autogen.sh && \
+    mkdir build  && cd build && cmake -DBUILD_SHARED_LIBS=ON ..&& make -j 12&& make install && rm -fr /tmp/*
+RUN cd /tmp ; wget https://codeload.github.com/google/protobuf/zip/v3.4.0 && \
+    unzip v3.4.0 && cd protobuf-3.4.0 && ./autogen.sh && ./configure && make -j 12 &&  make install && ldconfig && rm -fr /tmp/*
+
+RUN cd /tmp && wget http://launchpadlibrarian.net/436533799/libjson-c4_0.13.1+dfsg-4_amd64.deb &&\
+     dpkg -i libjson-c4_0.13.1+dfsg-4_amd64.deb && rm -fr /tmp/*
+
+
+#install opencv
+RUN for i in `sudo apt-cache search  opencv|grep 3.2|grep dev|awk '{print $1}'`; do echo $i;sudo apt-get install -y $i; done
+# 6_Dockerfile.xrt
+
+# 3_Dockerfile.deephi
+#RUN mkdir -p $VAI_ROOT/compression && \
+#       ln -s $VAI_ROOT/conda/envs/vitis-ai-caffe/bin/decent_q $VAI_ROOT/compression/vai_q_caffe && \
+#       ln -s $VAI_ROOT/conda/envs/vitis-ai-tensorflow/bin/decent_q $VAI_ROOT/compression/vai_q_tensorflow
+
+#RUN mkdir -p $VAI_ROOT/compiler && \
+#       ln -s $VAI_ROOT/conda/envs/vitis-ai-caffe/lib/python3.6/site-packages/vai/dpuv1/tools/compile/bin/vai_c_caffe.py $VAI_ROOT/compiler/vai_c_caffe && \
+#       ln -s $VAI_ROOT/conda/envs/vitis-ai-tensorflow/lib/python3.6/site-packages/vai/dpuv1/tools/compile/bin/vai_c_tensorflow.py $VAI_ROOT/compiler/vai_c_tensorflow
+
+
+# 3_Dockerfile.deephi.compiler
+ENV PATH="${VAI_ROOT}/utility:${PATH}"
+
+#  4_Dockerfile.conda
+ENV MY_CONDA_CHANNEL="file:///scratch/conda-channel/X86_64"
+
+RUN mkdir -p /scratch && wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /scratch/miniconda.sh && \
+        /bin/bash /scratch/miniconda.sh -b -p $VAI_ROOT/conda && \
+        ln -s $VAI_ROOT/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+        echo ". $VAI_ROOT/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+        echo "conda activate base" >> ~/.bashrc
+
+# 5_Dockerfile.conda.create.cpu
+# Nasser copy these from gitlab
+ADD ./conda_requirements.txt /scratch/
+ADD ./conda_requirements_neptune.txt /scratch/
+ADD ./pip_requirements.txt /scratch/
+ADD ./pip_requirements_neptune.txt /scratch/
+
+#hack to re-do the layer
+ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
+
+
+RUN mkdir -p /scratch/conda-channel && cd /scratch/conda-channel && \
+    wget -O conda-channel.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=conda-channel-vai1.1.build48.tar.gz && \
+    tar -xzvf conda-channel.tar.gz && \
+    source $VAI_ROOT/conda/etc/profile.d/conda.sh && \
+     conda create -n vitis-ai-caffe \
+     python=3.6 caffe_decent_gpu \
+     --file /scratch/conda_requirements.txt \
+    -c $MY_CONDA_CHANNEL -c defaults -c conda-forge/label/gcc7 && \
+     conda activate vitis-ai-caffe && pip install -r /scratch/pip_requirements.txt && \
+     conda create -n vitis-ai-tensorflow \
+     python=3.6 vai_q_tensorflow_gpu \
+     --file /scratch/conda_requirements.txt \
+     -c $MY_CONDA_CHANNEL -c defaults -c conda-forge/label/gcc7 && \
+     conda activate vitis-ai-tensorflow && pip install -r /scratch/pip_requirements.txt && \
+     conda create -n vitis-ai-neptune \
+     python=3.6 \
+     --file /scratch/conda_requirements_neptune.txt \
+     -c $MY_CONDA_CHANNEL -c defaults -c conda-forge/label/gcc7 -c conda-forge && \
+      conda activate vitis-ai-neptune && pip install -r /scratch/pip_requirements_neptune.txt && \
+      mkdir -p $VAI_ROOT/compiler &&    ln -s /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/python3.6/site-packages/vaic/arch /opt/vitis_ai/compiler/arch
+
+
+#hack to re-do the layer
+ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
+RUN cd /tmp/ && \
+	wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog-1.1.0-Linux-build48_amd64.deb && \
+	wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory-1.1.0-Linux-build48_amd64.deb && \
+	wget -O libxir.deb https://www.xilinx.com/bin/public/openDownload?filename=libxir-1.1.0-Linux-build48_amd64.deb && \
+	wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart-1.1.0-Linux-build48_amd64.deb && \
+	apt-get install -y --no-install-recommends /tmp/*.deb && \
+	rm /tmp/*.deb && \
+	sudo ldconfig
+
+
+# 7_Dockerfile.clean
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /scratch/*
+
+ADD ./login.sh /etc/
+ENTRYPOINT ["/etc/login.sh"]
+
+ADD ./banner.sh /etc/
