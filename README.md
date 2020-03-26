@@ -79,7 +79,7 @@ for Xilinx ZCU102 and ZCU104 evaluation boards, samples, and Arm GCC cross-compi
 
    # After build finished
    cd ..
-   ./docker_run.sh xilinx/vitis-ai-gpu:1.1.48
+   ./docker_run.sh xilinx/vitis-ai-gpu:latest
    ```
  - Get started with examples
     - [VART samples](VART/README.md)
