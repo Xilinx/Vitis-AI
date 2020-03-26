@@ -253,7 +253,7 @@ Assume the docker image has been loaded and up running.
 Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
 
 2. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.0.tar.gz) package.
-Untar it, find the `libvitis_ai_library-1.1.0-Linux-build<xx>.deb` packet and install it to the docker system.
+Untar it, find the `libvitis_ai_library-1.1.0-Linux-build<xx>.deb` package and install it to the docker system.
 ```
 $sudo dpkg -i libvitis_ai_library-1.1.0-Linux.deb
 ```
@@ -323,7 +323,9 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 	```
 
 3. Installing AI Library Package
-	* Download the [Vitis AI Library 1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_2019.2-r1.1.deb)  
+	* Download the [Vitis AI Runtime 1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.0.tar.gz). 
+Untar it and find the `libvitis_ai_library-1.1.0-Linux-build46.deb` package in /vitis-ai-runtime-1.1.0/Vitis-AI-Library/aarch64 directory. 
+
 	* Download the [demo video files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) and untar into the corresponding directories.  
 	
 	* Download the [demo image files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz)  and untar into the corresponding directories.  
