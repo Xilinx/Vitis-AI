@@ -63,7 +63,7 @@ for Xilinx ZCU102 and ZCU104 evaluation boards, samples, and Arm GCC cross-compi
    
    2) build the CPU image locally and run it
    ```
-   cd Vitis-AI/docker
+   cd docker
    ./docker_build_cpu.sh
    
    # After build finished
@@ -74,7 +74,7 @@ for Xilinx ZCU102 and ZCU104 evaluation boards, samples, and Arm GCC cross-compi
    
    3) build the GPU image locally and run it 
    ```
-   cd Vitis-AI/docker
+   cd docker
    ./docker_build_gpu.sh
 
    # After build finished
