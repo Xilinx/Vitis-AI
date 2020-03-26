@@ -43,18 +43,44 @@ The vitis-ai-docker-tools contains the Vitis AI quantizer, AI compiler and examp
 The vitis-ai-docker-runtime is the runtime docker image for DPU-v2 development, which holds Vitis AI installation package 
 for Xilinx ZCU102 and ZCU104 evaluation boards, samples, and Arm GCC cross-compilation toolchain.
 
+ - [Install Docker](doc/install_docker/README.md) - if Docker not installed on your machine yet
+ 
+ - [Ensure your linux user is in the group docker](https://docs.docker.com/install/linux/linux-postinstall/)
+
  - Clone the Vitis-AI repository to obtain the examples, reference code, and scripts. 
     ```
     git clone https://github.com/Xilinx/Vitis-AI  
     
     cd Vitis-AI
-    ```  
- - [Install Docker](doc/install_docker/README.md) - if Docker not installed on your machine yet
- 
- - [Ensure your linux user is in the group docker](https://docs.docker.com/install/linux/linux-postinstall/)
- 
- - [Load&Run Docker Container](doc/install_docker/load_run_docker.md)  
- 
+    ``` 
+ - [Run Docker Container](doc/install_docker/load_run_docker.md)  
+    
+   1) Run the CPU image from docker hub
+   ```
+   ./docker_run.sh xilinx/vitis-ai-cpu:latest
+   ```
+   or
+   
+   2) build the CPU image locally and run it
+   ```
+   cd Vitis-AI/docker
+   ./docker_build_cpu.sh
+   
+   # After build finished
+   cd ..
+   ./docker_run.sh xilinx/vitis-ai-cpu:latest
+   ```
+   or 
+   
+   3) build the GPU image locally and run it 
+   ```
+   cd Vitis-AI/docker
+   ./docker_build_gpu.sh
+
+   # After build finished
+   cd ..
+   ./docker_run.sh xilinx/vitis-ai-gpu:1.1.48
+   ```
  - Get started with examples
     - [VART samples](VART/README.md)
     - [Alveo](alveo/README.md)
