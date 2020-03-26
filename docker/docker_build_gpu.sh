@@ -14,7 +14,7 @@
 # limitations under the License.
 
 DOCKER_REPO="${DOCKER_REPO:-xilinx/}"
-VERSION="${VERSION:-1.1.48}"
+VERSION="${VERSION:-latest}"
 DOCKERFILE="${DOCKERFILE:-DockerfileGPU/}"
 
 BRAND="${BRAND:-vitis-ai-gpu}"
