@@ -122,6 +122,8 @@ Assume the docker image has been loaded and up running.
 
 1. Download the [U50_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin.tar.gz) and install them.
 ```
+$tar -xzvf U50_xclbin.tar.gz
+$cd U50_xclbin/6E250M
 $sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 ```
 2. Enable environment variable and export the library path.
@@ -147,10 +149,14 @@ $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/
 
 2. Installing Vitis AI Runtime Package   
 	* Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.0.tar.gz)  
-		
-	* Untar the package and copy the following files (aarch64) to the board using scp with the following command.
+	
+	* Connect to the board with SSH: $ssh root@IP_OF_BOARD. The password is `root`.
+	
+	* Untar the package and copy the following files to the board using scp.
 	```
-	$scp libunilog-1.1.0-Linux-build<xx>.deb libxir-1.1.0-Linux-build<xx>.deb libvart-1.1.0-Linux-build<xx>.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/unilog/aarch64/libunilog-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/XIR/aarch64/libxir-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/VART/aarch64/libvart-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
 	```
 	* Copy the `glog-0.4.0-Linux.tar.gz` from host to board with the following command. 
 	```
