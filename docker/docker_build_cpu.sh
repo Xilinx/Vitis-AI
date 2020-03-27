@@ -23,22 +23,22 @@ DATE="$(date)"
 # Final Build Image Tag
 IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}
 
-sed -n '1, 5p' ./docker/PROMPT.txt
+sed -n '1, 5p' ./PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '5, 15p' ./docker/PROMPT.txt
+sed -n '5, 15p' ./PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '15, 24p' ./docker/PROMPT.txt
+sed -n '15, 24p' ./PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '24, 53p' ./docker/PROMPT.txt
+sed -n '24, 53p' ./PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '53, 224p' ./docker/PROMPT.txt
+sed -n '53, 224p' ./PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '224, 231p' ./docker/PROMPT.txt
+sed -n '224, 231p' ./PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
 
