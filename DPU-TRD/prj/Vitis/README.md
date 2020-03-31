@@ -66,8 +66,8 @@ Required:
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [XRT 2019.2](https://github.com/Xilinx/XRT/tree/2019.2)
   - [zcu102 dpu platform](https://www.xilinx.com/bin/public/openDownload?filename=zcu102_dpu_2019.2.zip)
-  - [Vitis AI 1.1](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
-  - [Vitis AI Library 1.1](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
+  - [Vitis AI 1.0](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
+  - [Vitis AI Library 1.0](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
 
 ###### **Note:** The user can also refer the [zcu102 dpu platform](https://github.com/Xilinx/Vitis_Embedded_Platform_Source/tree/master/Xilinx_Official_Platforms/zcu102_dpu), The github page includes all the details, such as how to generage the zcu102 dpu platform, how to create the SD card after compiling the DPU project.
@@ -84,11 +84,24 @@ The top-level directory structure shows the the major design components. The TRD
 ```
 DPU_TRD       
 ├── dpu_ip                              # rtl kernel
+│   ├── dpu_eu_v3_2_0
+│   │   ├── bd
+│   │   ├── component.xml
+│   │   ├── doc
+│   │   ├── gui
+│   │   ├── hdl
+│   │   ├── inc
+│   │   ├── ttcl
+│   │   ├── xci
+│   │   └── xgui
+│   └── Vitis
+│       ├── dpu
+│       └── sfm
 ├── apps       
 │   └── Vitis
 │       ├── models
 │       ├── sample
-│       └── resnet50.tar.gz
+│       └── resnet50.tar.gz             # resnet50 application
 └── prj 
     └── Vitis
         │        
@@ -158,7 +171,7 @@ Open a linux terminal. Set the linux as Bash mode.
 ```
 % source <vitis install path>/vitis/2019.2/settings64.sh
 
-% source /opt/xilinx/xrt/setup.sh
+% source opt/xilinx/xrt/setup.sh
 ```
 
 The default setting of DPU is **B4096** with RAM_USAGE_LOW, CHANNEL_AUGMENTATION_ENABLE, DWCV_ENABLE, POOL_AVG_ENABLE, RELU_LEAKYRELU_RELU6, Softmax. Modify the $TRD_HOME/prj/Vitis/dpu_conf.vh file can change the default settings.
@@ -216,7 +229,7 @@ After the linux boot, Run:
 ```
 
 
-###### **Note:** If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_1/zkj1576857115470.html).
+###### **Note:** If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf).
 
 
 ### 5.3 Change the Configuration
@@ -226,7 +239,7 @@ The DPU IP provides some user-configurable parameters to optimize resource utili
 
 The TRD also support the softmax function.
    
-For more details about the DPU, please read [DPU IP Product Guide](https://www.xilinx.com/html_docs/vitis_ai/1_1/mgr1576863063269.html)
+For more details about the DPU, please read [DPU IP Product Guide](https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=latest;d=pg338-dpu.pdf)
 
  
 #### 5.3.1 Set the DPU Core Number
