@@ -18,7 +18,7 @@ import cv2
 import os
 import sys
 
-#from vai.dpuv1.tools.compile.bin.xfdnn_compiler_caffe  import CaffeFrontend as xfdnnCompiler
+
 #from decent import CaffeFrontend as xfdnnQuantizer
 import subprocess
 from vai.dpuv1.rt.scripts.framework.caffe.xfdnn_subgraph import CaffeCutter as xfdnnCutter
@@ -206,7 +206,7 @@ def compute_map_of_datset(net, transformer, lablemap, image_list_file, det_res_f
         image_path = test_image_root + image_name + '.jpg'
         detect_one_image(net, transformer, lablemap, image_path,image_resize_height, image_resize_width, mean, image_name=image_name, fp=f_res_record)
     f_res_record.close()
-    os.system("python2 " +  compute_map_script_path + " -mode detection " +  \
+    os.system("python " +  compute_map_script_path + " -mode detection " +  \
               " -gt_file " + gt_file  +  " -result_file " + det_res_file \
               + " -detection_use_07_metric True")
 

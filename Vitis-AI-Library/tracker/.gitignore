@@ -1,0 +1,6 @@
+*~
+cmake/
+gtest/
+3rd-party/
+deps/
+build_*

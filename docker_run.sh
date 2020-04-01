@@ -1,5 +1,38 @@
 #!/bin/bash
 
+sed -n '1, 5p' ./docker/PROMPT.txt
+read -n 1 -s -r -p "Press any key to continue..." key
+
+sed -n '5, 15p' ./docker/PROMPT.txt
+read -n 1 -s -r -p "Press any key to continue..." key
+
+sed -n '15, 24p' ./docker/PROMPT.txt
+read -n 1 -s -r -p "Press any key to continue..." key
+
+sed -n '24, 53p' ./docker/PROMPT.txt
+read -n 1 -s -r -p "Press any key to continue..." key
+
+sed -n '53, 224p' ./docker/PROMPT.txt
+read -n 1 -s -r -p "Press any key to continue..." key
+
+sed -n '224, 231p' ./docker/PROMPT.txt
+read -n 1 -s -r -p "Press any key to continue..." key
+
+
+confirm() {
+  echo -n "Do you agree to the terms and wish to proceed [y/n]? "
+  read REPLY
+  case $REPLY in
+    [Yy]) break ;;
+    [Nn]) exit 0 ;;
+    *) confirm ;;
+  esac
+    REPLY=''
+}
+
+confirm
+
+
 if [[ $# -ne 1 ]]; then
     echo "Usage: $0 <image>"
     exit 2
@@ -16,7 +49,7 @@ gid=`id -g`
 DOCKER_REPO="xilinx/"
 
 BRAND=vitis-ai
-VERSION=1.0.0
+VERSION=latest
 
 CPU_IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}-cpu
 GPU_IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}-gpu

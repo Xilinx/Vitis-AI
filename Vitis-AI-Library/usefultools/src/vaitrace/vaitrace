@@ -1,0 +1,883 @@
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
+
+""""
+Copyright 2020 Xilinx Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+"""
+
+import os,re,csv,sys,string,time,argparse,json,signal,platform,gzip
+import xapm, hwinfo
+from subprocess import Popen, PIPE
+
+VAITRACE_VER = "v1.1-20200216"
+TRACE_NAME_MASK = "__cln2_"
+fpsCountEvent = "xilinx::ai::DpuTaskImp::run".replace("::", TRACE_NAME_MASK)
+
+FTRACE_DIR = "/sys/kernel/debug/tracing/"
+
+pattFtrace = re.compile(
+        r"""
+        (?P<taskComm>.+)\-
+        (?P<taskPid>\d{1,})\s+\[
+        (?P<cpuID>\d{3})\].{4,}\s
+        (?P<timeStamp>\d+\.\d{6})\:\s+
+        (?P<func>\w+)\:
+        (?P<info>.*)
+        """,
+        re.X | re.M
+        )
+
+vaiLibPath = ["/usr/lib/"]
+vaiLibs = [
+    "libvart-buffer-object.so",
+    "libvart-dpu-controller.so",
+    "libvart-dpu-runner.so",
+    "libvart-elf-util.so",
+    "libvart-runner.so",
+    "libvart-util.so",
+    "libvart-xrt-device-handle.so",
+    "libvitis_ai_library-classification.so",
+    "libvitis_ai_library-dpu_task.so",
+    "libvitis_ai_library-facedetect.so",
+    "libvitis_ai_library-facelandmark.so",
+    "libvitis_ai_library-lanedetect.so",
+    "libvitis_ai_library-math.so",
+    "libvitis_ai_library-model_config.so",
+    "libvitis_ai_library-multitask.so",
+    "libvitis_ai_library-openpose.so",
+    "libvitis_ai_library-posedetect.so",
+    "libvitis_ai_library-refinedet.so",
+    "libvitis_ai_library-reid.so",
+    "libvitis_ai_library-segmentation.so",
+    "libvitis_ai_library-ssd.so",
+    "libvitis_ai_library-tfssd.so",
+    "libvitis_ai_library-yolov2.so",
+    "libvitis_ai_library-yolov3.so",
+    "libxir.so",
+    "libxnnpp-xnnpp.so"
+]
+
+defaultConf = \
+"""
+{
+        "trace_inference_run":[
+                "dpuRunTask",
+                "dpuRunSoftmax",
+                "dpuGetOutputTensorScale",
+                "dpuSetInputImage2",
+                "dpuCreateTask",
+                "dpuDestroyTask"
+        ],
+        "options":{
+                "trace_sched_switch":false,
+		"thread_view": true
+        }
+}
+"""
+profilingConf = \
+"""
+{
+        "trace_inference_run":[
+		"xilinx::ai::DpuTaskImp::run@libdpbase.so"
+        ],
+        "options":{
+                "APM":false,
+                "simple_profiling":true,
+                "trace_sched_switch":false
+        }
+}
+"""
+
+
+"""
+traceFuncTable--|--traceFunc--|--prop: top
+                |             |--func--|--symbol:  "_Z13run_resnet_50P8dpu_taskRKN2cv3MatENSt7__cxx1112basic_strngI"
+                |             |--name--|--name:    "run_resnet_50"
+                |                      |--offset:  0x448c
+                |                      |--libpath: "/root/lttng/resnet50/test_dnndk_resnet50"
+"""
+symbolFmt = "%-27s%-35s%-45s%9s\n" 
+
+class traceFunc:
+    def __init__(self, name, sym, path, offset, section="T"):
+        self.name = name
+        self.symbol = sym
+        self.libPath = path
+        self.offset = offset
+        self.section = section
+
+    def __str__(self):
+        return symbolFmt % \
+                (self.name[:25].replace(TRACE_NAME_MASK, '::'), self.symbol[:33], self.libPath, hex(self.offset))
+
+
+class traceSection:
+    def __init__(self, _name):
+        self.prop = _name
+        self.functions = []
+
+    def __str__(self):
+        str = "Section: [%s]\n" % self.prop
+        str += symbolFmt % ("Function", "SymbolName", "LibPath", "Offset")
+        
+        for fun in self.functions:
+            str += fun.__str__()
+
+        return str
+
+
+class symbolTable:
+    def __init__(self, _exe):
+        self.imgStartFlag = ""
+        self.imgEndFlag = ""
+        self.exe = os.path.abspath(_exe)
+        self.table = []
+        self.libs = []
+        self.libs.append(self.exe)
+        if os.path.exists(self.exe) == False:
+            raise RuntimeError("Executable file not exists")
+
+    def getSymbols(self, extLibs=""):
+        print("Analyzing symbol tables...")
+
+        for libPath in self.libs:
+
+            print("%d / %d" % (self.libs.index(libPath) + 1, len(self.libs)), end="\r")
+            if (self.libs.index(libPath) + 1 == len(self.libs)):
+                print("")
+
+            res = Popen("nm " + libPath + ' | egrep ".+ [T|t] .+"',
+                    shell=True, stderr=PIPE, stdout=PIPE).stdout.readlines()
+
+            symbols = []
+
+            if len(res) > 0:
+                """Get symbol tables from nm"""
+                for s in res:
+                    if len(s.split()) == 3:
+                        symbols.append(s.decode().strip('\n').split())
+            else:
+                """For stripped .so, try get symbols from objdump -T"""
+                res = Popen("objdump -T " + libPath,
+                        shell=True, stderr=PIPE, stdout=PIPE).stdout.readlines()
+
+                for s in res:
+                    if len(s.split()) == 7:
+                        deS = s.decode().strip('\n').split()
+
+                        if deS[3] != ".text":
+                            continue
+
+                        symbols.append([deS[0], "T", deS[6]])
+
+            self.table.append({"path":libPath, "symbols": symbols})
+
+    def getLibs(self, extExe=""):
+        if extExe == "":
+            lib = self.exe
+        else:
+            lib = extExe
+            extLibs = []
+
+        lddRes = Popen("ldd " + lib, shell=True, stderr=PIPE, stdout=PIPE).stdout.readlines()
+
+        for line in lddRes:
+            line = line.decode().strip('\n').strip('\t')
+            index = line.find(" => ")
+            if index < 0:
+                continue
+            libName = line[0:index]
+            libPath = line[index+4:]
+            libPath = libPath[0:libPath.find(" (")]
+
+            if extExe == "":
+                self.libs.append(libPath)
+            else:
+                extLibs.append(libPath)
+
+        for l1 in vaiLibs:
+            match = False
+            for l2 in self.libs:
+                if l2.find(l1) > 0:
+                    match = True
+                    break
+            if match == False:
+                for builtInLibPath in vaiLibPath:
+                    if os.path.exists(os.path.join(builtInLibPath, l1)):
+                        self.libs.append(os.path.join(builtInLibPath, l1))
+
+        if extExe != "":
+            return extLibs
+
+    def getSymbolTable(self):
+        self.getLibs()
+        self.getSymbols()
+
+        return [lib for lib in self.table if len(lib["symbols"]) > 0]
+
+
+class traceConf:
+    def __init__(self, _conf, _symbolTable=None, _debug=False, _simpleProfiling=False):
+#        if os.path.exists(_conf) == False:
+#            raise RuntimeError("conf file not exists")
+        self.conf = _conf
+        self.traceSections = []
+        self.symbolTable = _symbolTable
+        self.parsed = False
+        self.debug = _debug
+        self.opts = dict()
+        self.simpleProfiling = _simpleProfiling
+    
+    def __str__(self):
+        if not self.parsed:
+            return "un-parsed conf"
+
+        str =  "Conf %s: %d section(s)\n" % (self.conf,\
+                len(self.traceSections))
+        str += "===========================================================\n"
+
+        for s in self.traceSections:
+            str += s.__str__()
+
+        return str
+
+    def bindTable(self, table):
+        self.symbolTable = table
+
+    def matchSymbol(self, _funcName, _table=""):
+        if _table == "":
+            table = self.symbolTable
+        else:
+            table = _table
+
+        symbolList = list()
+        idx = 0
+        searchInLib = ""
+
+        if (_funcName.find("@") > 0):
+            searchInLib = _funcName.split('@')[1]
+            _funcName = _funcName.split('@')[0]
+
+        for lib in table:
+            if (searchInLib != ""):
+                if (lib["path"].find(searchInLib) < 0):
+                    continue
+
+            for item in lib["symbols"]:
+                symbol = item[2]
+    
+                """Match C++ function"""
+                if symbol.startswith("_Z"):
+                    """
+                    Match naming space
+                    cv::imread -> 2cv6imread
+                    """
+                    funcName = "".join(["%d%s" % (len(s), s) for s in _funcName.split('::')])
+                else:
+                    funcName = _funcName
+
+                if symbol.find(funcName) >= 0:
+                    offset = int(item[0], 16)
+                    sym = symbol
+                    path = lib["path"]
+
+                    if idx > 0:
+                        showName = _funcName.replace("::", TRACE_NAME_MASK) + "_%d" % idx
+                    else:
+                        showName = _funcName.replace("::", TRACE_NAME_MASK)
+
+                    idx += 1
+
+                    """Origin name for show"""
+                    #symbolList.append(traceFunc(_funcName.split("::")[-1], sym, path, offset))
+                    symbolList.append(traceFunc(showName, sym, path, offset))
+
+        return symbolList
+    
+    def parseTableJson(self):
+        if self.parsed == True:
+            return self.traceSections
+
+        try:
+            f = open(self.conf, 'r')
+            text = f.read()
+        except:
+            if self.simpleProfiling == True:
+                text = profilingConf
+            else:
+                """Seraching configuration file in the same dir with xaisdktrace"""
+                defcfg = os.path.join(os.path.dirname(sys.argv[0]), "vaitrace_defcfg.json")
+                print("Try using default configuration file %s" % defcfg)
+                if os.path.exists(defcfg):
+                    with open(defcfg, 'r') as f:
+                        text = f.read()
+                else:
+                    print("Configuration file [%s] and [%s] not found, Use built-in configuration" %
+                            (self.conf, defcfg))
+                    text = defaultConf
+
+        conf = json.loads(text)
+
+        self.opts = conf['options']
+
+        #if not hasattr(self.opts, "thread_view"):
+        #    self.opts['thread_view'] = True
+
+        """Add and match functions to be traced get keys that starts with 'trace'"""
+        for section in [s for s in conf.keys() if s.startswith('trace')]:
+            if conf[section] is None:
+                continue
+
+            """Remove duplicates"""
+            conf[section] = list(set(conf[section]))
+
+            sec = traceSection(section)
+            print("Analyzing symbols in [%s] relative libraries ..." % section.split('_', 2)[1])
+
+            for func in conf[section]:
+                print("%d / %d" % (conf[section].index(func) + 1, len(conf[section])), end="\r")
+
+                if conf[section].index(func) + 1 == len(conf[section]):
+                    print("")
+
+                match = self.matchSymbol(func, self.symbolTable)
+
+                if len(match) > 0:
+                    for s in match:
+                        sec.functions.append(s)
+                else:
+                    if self.debug:
+                        ask("Function [%s] not found in symbol table" % func)
+
+            self.traceSections.append(sec)
+
+        self.parsed = True
+        return self.traceSections
+
+
+    def getOpts(self):
+        if not self.opts:
+            print("Error no options found\n")
+        else:
+            return self.opts
+
+
+class Ftrace:
+    def __init__(self, _name, _path=FTRACE_DIR, _buffersize=8192, _debug=False):
+        self.cwd = os.getcwd()
+        self.instPath = ""
+        self.debug = _debug
+        self.path = _path
+        self.traceHandler = None
+
+        if self.checkFtrace() == False:
+            raise RuntimeError("Ftrace not Enable")
+
+        if self.checkKernelRelease()[0] < 4:
+            self.legacyKernel = True
+        else:
+            self.legacyKernel = False
+
+        self.buffersize = _buffersize
+        self.createInstance(_name, _path)
+        self.setBufferSize(_buffersize)
+
+    def __del__(self):
+        """Delete ftrace instance"""
+        if not self.legacyKernel:
+            os.system("rmdir %s" % self.instPath)
+
+        self.disableAllEvents()
+        self.clearUprobe()
+
+    def backCwd(self):
+        if self.cwd == "":
+            raise IOError()
+        os.chdir(self.cwd)
+
+    def createInstance(self, _name, path):
+        if self.legacyKernel == False:
+            try:
+                """Create ftrace instance"""
+                os.chdir(os.path.join(path, "instances"))
+                os.mkdir(_name)
+            except IOError:
+                if os.path.exists(_name) and os.path.isdir(_name):
+                    pass
+                else:
+                    raise IOError("Create instance failed")
+            finally:
+                os.chdir(_name)
+                self.name = _name
+                self.instPath = os.getcwd()
+                self.backCwd()
+        else:
+            """
+            For Linux Kernel-3.x, do not use [instance],
+            just create trace points in /sys/kernel/debug/tracing dir
+            """
+            self.name = _name
+            os.chdir(path)
+            self.instPath = os.getcwd()
+            self.backCwd()
+        
+    def checkFtrace(self):
+        # ftraceEna = os.popen("cat /proc/sys/kernel/ftrace_enabled").readline().strip('\n')
+        # return ftraceEna == "1"
+        return os.path.exists("/sys/kernel/debug/tracing/uprobe_events")
+
+    def checkKernelRelease(self):
+        kRelease = platform.uname().release.split('.')
+        return (int(kRelease[0]), int(kRelease[1]))
+
+    def _toTraceInstDir(func):
+        def wrapper(self, *args, **kw):
+            backInst = (os.getcwd() == self.instPath)
+
+            os.chdir(self.instPath)
+            ret = func(self, *args, **kw)
+            if not backInst:
+                self.backCwd()
+            return ret
+        return wrapper
+
+    def _toTraceDir(func):
+        def wrapper(self, *args, **kw):
+            os.chdir(self.path)
+            ret = func(self, *args, **kw)
+            self.backCwd()
+            return ret
+        return wrapper
+
+    @_toTraceInstDir
+    def setBufferSize(self, bufsize):
+        open("buffer_size_kb", 'w').write(str(bufsize))
+
+    @_toTraceInstDir
+    def enableTracing(self):
+        open("tracing_on", 'w').write("1")
+
+    @_toTraceInstDir
+    def disableTracing(self):
+        open("tracing_on", 'w').write("0")
+
+    @_toTraceInstDir
+    def enableEvent(self, system, event, filter=""):
+        """
+        For example, system might be [sched] and event [sched_switch]
+        Then we should write 1 to ./events/[sched]/[sched_switch]/enable
+        echo '(prev_comm == test_dnndk_resn) || (next_comm == test_dnndk_resn)' > ./events/sched/sched_switch/filter
+        echo 1 > ./events/sched/sched_switch/enable
+        """
+        if (filter != ""):
+            path = os.path.join("./", "events", system, event, "filter")
+            open(path, 'w').write(filter)
+
+        path = os.path.join("./", "events", system, event, "enable")
+        open(path, 'w').write("1")
+        
+    @_toTraceInstDir
+    def disableEvent(self, system, event):
+        """
+        For example, system might be [sched] and event [sched_switch]
+        Then we should write 0 to ./events/[sched]/[sched_switch]/enable
+        echo 0 > ./events/sched/sched_switch/enable
+        """
+        path = os.path.join("./", "events", system, event, "enable")
+        open(path, 'w').write("0")
+
+
+    @_toTraceDir
+    def addUprobe(self, func, lib, offset):
+        """
+        This func will add uprobe and uretprobe event at the same time
+        lib should be abspath
+        example:
+        echo 'p:runResnet50_entry /root/lttng/resnet50/test_dnndk_resnet50:0x448c' >> /t/uprobe_events
+        echo 'r:runResnet50_exit /root/lttng/resnet50/test_dnndk_resnet50:0x448c' >> /t/uprobe_events
+        """
+
+        os.chdir(self.path)
+        cmdU = "p:" + func + "_entry " + lib + ":" + offset
+        cmdUret = "r:" + func + "_exit " + lib + ":" + offset
+
+        if self.debug:
+            print("### uprobe %s" % cmdU)
+            print("### uretprobe %s" % cmdUret)
+
+        # open failed ?????
+        #open("./uprobe_events", "a+").writeline(cmdU)
+        #open("./uprobe_events", "a+").writeline(cmdUret)
+
+        os.system("echo %s >> ./uprobe_events" % cmdU)
+        os.system("echo %s >> ./uprobe_events" % cmdUret)
+
+        self.enableUprobe(func)
+        #print(open("./uprobe_events", "r").read())
+
+    @_toTraceDir
+    def addKprobe(self, name, mod, offset, fetchargs:[]):
+        """
+        This func will add kprobe event
+        lib should be abspath
+        example:
+        echo 'p:cu_start zocl:zocl_hls_start cu_idx=+0(%x0)' >> kprobe_events
+        echo 'p:cu_done zocl:zocl_hls_check+0x64 cu_idx=+0(%x21)' >> kprobe_events
+        """
+
+        os.chdir(self.path)
+        cmd = "p:%s %s:%s" % (name, mod, offset)
+        for arg in fetchargs:
+            cmd += " %s" % arg
+
+        if self.debug:
+            print("### kprobe %s" % cmd)
+
+        os.system("""echo '%s' >> ./kprobe_events""" % cmd)
+
+        self.enableKprobe(name)
+
+    @_toTraceDir
+    def clearUprobe(self):
+        if self.debug:
+            print("Clear all Uprobe & Uretprobe events")
+
+        # open failed ?????
+        #open("./uprobe_events", "a+").writeline(cmdU)
+        #open("./uprobe_events", "a+").writeline(cmdUret)
+
+        os.system("echo  > ./uprobe_events")
+
+    @_toTraceDir
+    def disableAllEvents(self):
+        if self.debug:
+            print("Disable all events")
+
+        # open failed ?????
+        #open("./uprobe_events", "a+").writeline(cmdU)
+        #open("./uprobe_events", "a+").writeline(cmdUret)
+
+        os.system("echo 0 > ./events/enable")
+
+    @_toTraceInstDir
+    def enableUprobe(self, func):
+        self.enableEvent("uprobes", func+"_entry")
+        self.enableEvent("uprobes", func+"_exit")
+
+    @_toTraceInstDir
+    def enableKprobe(self, probePoint):
+        self.enableEvent("kprobes", probePoint)
+
+    @_toTraceInstDir
+    def disableUprobe(self, func):
+        self.disableEvent("uprobes", func+"_entry")
+        self.disableEvent("uprobes", func+"_exit")
+
+    @_toTraceInstDir
+    def getTrace(self, saveTo=""):
+        trace = open("trace", "r").readlines()
+
+        if saveTo != "":
+            f = gzip.open(saveTo, "wt")
+            print("Trace file was saved to [%s]" % saveTo)
+            f.writelines(trace)
+            f.close()
+
+        return trace   
+
+    @_toTraceInstDir
+    def startTracePipe(self):
+        self.traceHandler = Popen(["cat", "trace_pipe"], stdout=PIPE, stderr=PIPE)
+
+    @_toTraceInstDir
+    def stopTracePipe(self, saveTo=""):
+        t = self.traceHandler
+        t.terminate()
+
+        trace = t.stdout.readlines()
+        
+        if saveTo != "":
+            f = gzip.open(saveTo, "wt")
+            f.writelines(trace)
+            f.close()
+
+        return trace
+
+    @_toTraceInstDir
+    def clearTracing(self, disable=True):
+        if disable:
+            self.disableTracing()
+        open("trace", 'w').write('')
+
+
+def doSimpleProfiling(source):
+    ret = dict()
+    eventList = list()
+    threadList = set()
+    cuEventList = dict()
+
+    def getCUidx(info:str):
+        return "CU_" + hex(int((info.split('cu_idx=')[1])))
+
+    for l in source:
+        if not re.match(pattFtrace, l.strip()):
+            continue
+
+        item = re.match(pattFtrace, l.strip()).groupdict()
+    
+        if item["func"].find(fpsCountEvent) >= 0:
+            eventList.append(item)
+            threadList.add(item["taskPid"])
+
+        if item["func"].find("cu_") >= 0:
+            idx = getCUidx(item['info'])
+            if idx not in cuEventList.keys():
+                cuEventList[idx] = list()
+            cuEventList[idx].append(item)
+
+    """FPS"""
+    fps = len(eventList) / 2 / (float(eventList[-1]["timeStamp"]) - float(eventList[0]["timeStamp"]))
+    ret["FPS"] = "%.2f" % fps
+
+    """Threads"""
+    ret["Threads"] = len(threadList)
+    
+    """CU latency"""
+    ret["cuLatency"] = []
+    ret["cuUtil"] = []
+    for cu in cuEventList.keys():
+        """in case of incomplete trace record"""
+        startT = 0
+        doneT = 0
+
+        for cuItem in cuEventList[cu]:
+            if cuItem['func'].endswith('start'):
+                startT += float(cuItem['timeStamp'])
+            elif cuItem['func'].endswith('done'):
+                doneT += float(cuItem['timeStamp'])
+            
+        gStart = float(cuEventList[cu][0]['timeStamp'])
+        gEnd = float(cuEventList[cu][-1]['timeStamp'])
+
+        totalTime = gEnd - gStart
+        #print("%f, %f, %f " % (gStart, gEnd, totalTime))
+
+        cuRunTimes = len(cuEventList[cu]) / 2
+        # durnation in seconds
+        durnation = doneT - startT
+        # latency in us
+        latency = (durnation * 1000 * 1000) / cuRunTimes
+        util = durnation / totalTime * 100
+        ret["cuLatency"].append({cu: round(latency, 2)})
+        ret["cuUtil"].append({cu: round(util, 2)})
+    
+    return ret
+
+
+def parseCmdLine():
+    """
+    -o: trace file: save trace file [default: trace.txt]
+    -a: trace file: save trace file [default: trace.txt]
+    -b: buffer: buffer size in kb [default: 6144]
+    -c: conf: input config file
+    -d: enable debug
+    -t: time: tracing time in second(s)
+    -r: dry run, try parse config file, but not run application
+    -v: show version
+    -p: performance test mode
+    -s: print result to stdout
+    """
+
+    default_conf_json = "/usr/bin/xlnx/tracecfg.json"
+    cmd_parser = argparse.ArgumentParser(prog="Xilinx Vitis AI Trace")
+    cmd_parser.add_argument("cmd", nargs=argparse.REMAINDER)
+    cmd_parser.add_argument("-a", dest="traceSaveTo", nargs='?', help="The same with -o")
+    cmd_parser.add_argument("-b", dest='buffersize', nargs='?', type=int, default=8192, help="Buffer size in kb for ftrace")
+    cmd_parser.add_argument("-c", dest="config", nargs='?', default=default_conf_json, help="Specify the config file")
+    cmd_parser.add_argument("-d", dest='debug', action='store_true', help="Enable debug")
+    cmd_parser.add_argument("-o", dest="traceSaveTo", nargs='?', help="Save trace file to")
+    cmd_parser.add_argument("-p", dest='performance_test', action='store_true', help="Testing performance, enable a base benchmark for AI programs")
+    cmd_parser.add_argument("-r", dest='dryrun', action='store_true', help="Dryrun, just try parsing and checking config file")
+    cmd_parser.add_argument("-t", dest='timeout', nargs='?', type=int, default=3, help="Tracing time limitation")
+    cmd_parser.add_argument("-v", dest='showversion', action='store_true', help="Show version")
+
+    args = cmd_parser.parse_args()
+
+    if args.showversion:
+        print("Xilinx Vitis AI Profiler Tracer Ver %s" % VAITRACE_VER)
+        exit(0)
+
+    if not args.config:
+        args.config = default_conf_json
+
+    try:
+        if len(args.cmd[0].split()) > 1:
+            cmd = args.cmd[0].split()
+            args.cmd = cmd
+    except:
+        cmd_parser.print_help()
+        exit(1)
+
+    if args.debug:
+        print(args)
+
+    return args
+
+
+def ask(str):
+    key = input(str + ", Press 'c' to continue, any key else will exit\n")
+    if key.lower()  == 'c':
+        return
+    else:
+        exit(0)
+    
+stop = False
+
+def handler(signum, frame):
+    global stop
+
+    if stop == True:
+        exit(0)
+    stop = True
+    print("Killing process...")
+
+def main(args):
+
+    """Checking Permission"""
+    if os.getgid() != 0:
+        print("This tool need run as 'root'")
+        exit(-1)
+
+    comm = None
+
+    #"""Check root permission"""
+    table = symbolTable(args.cmd[0]).getSymbolTable()
+
+    confJson = traceConf(args.config, table, args.debug, _simpleProfiling=args.performance_test)
+    confJson.parseTableJson()
+    options = confJson.getOpts()
+
+    if args.performance_test:
+        """test without timeout"""
+        args.timeout = -1
+        """disable APM"""
+        """"""
+
+    if args.debug or args.dryrun:
+        print(confJson)
+        print("Options get from config file")
+        print(options)
+
+    if args.dryrun:
+        return
+
+    dpu = Ftrace("dpu", _buffersize = args.buffersize)
+    dpu.clearTracing()
+
+    for section in confJson.parseTableJson():
+        """For now, we handle 'trace_inference_run' only"""
+        if not section.prop.startswith("trace_"):
+            continue
+        for func in section.functions:
+            dpu.addUprobe(func.name, func.libPath, "0x%x" % func.offset)
+
+    """Enable kernel ftrace events"""
+    comm = args.cmd[0].split('/')[-1][:15]
+
+    if options.get("trace_sched_switch", True):
+        dpu.enableEvent("sched", "sched_switch",\
+            """(prev_comm == "%s") || (next_comm == "%s")""" % (comm, comm))
+
+    """sched_process enents should be enabled by default"""
+    dpu.enableEvent("sched", "sched_process_exec")
+    dpu.enableEvent("sched", "sched_process_fork", """(comm == "%s")""" % comm)
+    dpu.enableEvent("sched", "sched_process_exit", """(comm == "%s")""" % comm)
+
+    try:
+        dpu.addKprobe("cu_start", "zocl", "zocl_hls_start", ["cu_idx=+0(%x0):u32"])
+        dpu.addKprobe("cu_done",  "zocl", "zocl_hls_check+0x64", ["cu_idx=+0(%x21):u32"])
+    except:
+        print("zocl cu trace is not supported")
+        pass
+
+    dpu.enableTracing()
+    #dpu.startTracePipe()
+
+    if args.debug:
+        ask("Run in debug mode")
+
+    signal.signal(signal.SIGINT, handler)
+    signal.signal(signal.SIGTERM, handler)
+
+    apm = xapm.APM(enable = options.get("APM", True))
+    apm.start(options.get("APM_interval", 0.04))
+
+    if options.get("redir_out", False) == False:
+        proc = Popen(args.cmd)
+    else:
+        with open(options.get("redir_out")) as out:
+            proc = Popen(args.cmd, stdout=out, stderr=out)
+
+    if args.timeout <= 0:
+        proc.wait()
+    else:
+        while args.timeout > 0:
+            time.sleep(1)
+            args.timeout -= 1
+            p = proc.poll()
+            if p is not None:
+                break
+
+        dpu.disableTracing()
+        apm.stop()
+        print("Stop tracing")
+        proc.wait()
+
+    if options.get('simple_profiling', False):
+        saveTo = ""
+    elif args.traceSaveTo:
+        saveTo = os.path.abspath(args.traceSaveTo)
+    else:
+        """Create default xat file"""
+        comm = args.cmd[0].split('/')[-1][:15]
+        saveTo = os.path.join(os.path.abspath(os.curdir), "%s.xat" % comm)
+
+    source = dpu.getTrace(saveTo)
+    #source = dpu.stopTracePipe(saveTo)
+
+    if args.debug:
+        ask("Tracing finished")
+ 
+    if options.get('simple_profiling', False):
+        """Start profiling"""
+        print(json.dumps(doSimpleProfiling(source), sort_keys=True))
+
+    else:
+        """Save APM data then exit"""
+        with gzip.open(saveTo, "at") as f:
+            if options.get('APM', True):
+                apm.transTimebase()
+                for d in apm.data:
+                    f.writelines(d.output())
+    
+            """Save Hardware Information"""
+            f.write("#HWINFO " + json.dumps(hwinfo.getHwInfo()) + '\n')
+            """Save Command Line"""
+            f.write("#CMD " + json.dumps(args.cmd) + '\n')
+
+if __name__ == '__main__':
+
+    main(parseCmdLine())

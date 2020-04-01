@@ -1,0 +1,5 @@
+{
+  "lib": "libvart-dpu-runner.so",
+  "filename": "./ssd_pedestrain_pruned_0_97.xmodel",
+  "kernel": [ "subgraph_mbox_conf(OptimizeDDRFlattenConcatStructure)(ModifyAsix)_generation_0_child_concat(StandardizeConcat)(fix)" ]
+}

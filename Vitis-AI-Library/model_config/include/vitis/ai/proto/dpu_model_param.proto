@@ -1,0 +1,303 @@
+syntax = "proto2";
+package vitis.ai.proto;
+
+message YoloV3Param{
+   optional int32 num_classes = 1;
+   optional int32 anchorCnt = 2;
+   optional float conf_threshold = 3;
+   optional float nms_threshold = 4;
+   repeated float biases = 5;
+   optional bool test_mAP = 6;
+   repeated string layer_name = 7;
+}
+
+message PriorBoxParam {
+    optional int32 layer_width = 1;
+    optional int32 layer_height = 2;
+    repeated float variances = 4;
+    repeated float min_sizes = 5;
+    repeated float max_sizes = 6;
+    repeated float aspect_ratios = 7;
+    optional float offset = 8;
+    optional float step_width = 9;
+    optional float step_height = 10;
+    optional bool flip = 11;
+    optional bool clip = 12;
+}
+
+message SSDParam{
+    enum OutputType {
+	USELESS =0;
+        CONF = 1; 
+        BBOX = 2;
+    }
+    message OutputInfo {
+        optional OutputType type = 1;
+        optional int32 order = 2;
+        optional string name = 3; 
+    }
+    repeated PriorBoxParam prior_box_param = 1;
+    optional int32 num_classes = 2;
+    optional float nms_threshold = 3;
+    repeated float conf_threshold = 4;
+    optional int32 keep_top_k = 5;
+    optional int32 top_k = 6;
+    optional bool is_mlperf = 7;
+    repeated int32 bbox_layer_index = 8;
+    repeated OutputInfo output_info = 9;
+}
+
+message RefineDetParam {
+   repeated PriorBoxParam prior_box_param = 1;
+   optional int32 num_classes = 2;
+   optional float nms_threshold = 3;
+   repeated float conf_threshold = 4;
+   optional int32 keep_top_k = 5;
+   optional int32 top_k = 6;
+   repeated string layer_name = 7;
+}
+
+message ClassificationParam {
+   optional int32 top_k = 1;
+   optional bool test_accuracy =2;
+   enum PreprocessType {
+     UNKNOWN_TYPE = 0;
+     CAFFE = 1;
+     VGG_PREPROCESS = 2;
+     INCEPTION_PREPROCESS = 3;
+   }
+   optional PreprocessType preprocess_type = 3;
+   optional string layer_name = 4;
+}
+
+message DenseBoxParam {
+   optional int32 num_of_classes = 1;
+   optional float nms_threshold = 2;
+   optional float det_threshold = 3;
+}
+
+message MultiTaskParam {
+   repeated float th_conf = 1;
+   optional int32 num_of_detection_classes = 2;
+   optional int32 num_of_segmentation_classes = 3;
+   optional int32 keep_top_k = 4;
+   optional int32 top_k = 5;
+   optional float nms_threshold = 6;
+   repeated PriorBoxParam prior_box_param = 7;
+   optional string loc_name = 8;
+   optional string conf_name = 9;
+   optional string seg_name = 10;
+}
+
+message RoadlineParam {
+   optional int32 ratio = 1;
+   optional   float ipm_width = 2;
+   optional   float ipm_height = 3;
+   optional   float ipm_left = 4;
+   optional   float ipm_right = 5;
+   optional   float ipm_top = 6;
+   optional   float ipm_bottom = 7;
+   optional   float ipm_interpolation = 8;
+   optional   float ipm_vp_portion = 9;
+   optional   float focal_length_x = 10;
+   optional   float focal_length_y = 11;
+   optional   float optical_center_x = 12;
+   optional   float optical_center_y = 13;
+   optional   float camera_height = 14;
+   optional   float pitch = 15;
+   optional   float yaw = 16;
+   repeated string layer_name = 17;
+}
+
+message RoadlineDeephiParam {
+  optional  int32 resize_w = 1;
+  optional  int32 resize_h = 2;
+  optional  int32 crop_x = 3;
+  optional  int32 crop_y = 4;
+  optional  int32 crop_w = 5;
+  optional  int32 crop_h = 6;
+  optional  int32 area_threshold = 7;
+  optional  int32 epow = 8;
+}
+
+message SegmentationParam{
+ optional  string color1 = 1;
+ optional  string color2 = 2;
+ optional  string color3 = 3;
+}
+
+message LaneParam{
+ optional  int32 roi_x = 1;
+ optional  int32 roi_y = 2;
+ optional  int32 expect_height = 3;
+}
+
+message BlinkerParam{
+ repeated PriorBoxParam prior_box_param = 1;
+ optional  int32 num_classes = 2;
+ optional  float nms_threshold = 3;
+ repeated float conf_threshold = 4;
+ optional  int32 keep_top_k = 5;
+ optional  int32 top_k = 6;
+}
+
+message SegdetParam{
+   repeated PriorBoxParam prior_box_param = 1;
+   optional  int32 num_classes = 2;
+   optional  float nms_threshold = 3;
+   repeated float conf_threshold = 4;
+   optional  int32 keep_top_k = 5;
+   optional  int32 top_k = 6;
+}
+
+message FaceQuality5ptParam {
+  optional bool use_day_night_mode = 1;
+}
+
+message DpuKernelParam {
+   optional string name = 1;
+   repeated float mean = 2;
+   repeated float scale = 3;
+}
+
+message TfssdParam{
+    enum OutputType {
+	USELESS =0;
+        CONF = 1; 
+        BBOX = 2;
+    }
+    message OutputInfo {
+        optional OutputType type = 1;
+        optional int32 order = 2;
+        optional string name = 3; 
+    }
+   repeated OutputInfo output_info = 1;
+   repeated int32 feature_map_list = 2;
+   // optional object_detection.protos.TrainEvalPipelineConfig modeltf = 3;
+   optional string official_cfg = 3;
+}
+
+message DpuModelParam {
+   optional string name = 1;
+   repeated DpuKernelParam kernel = 2;
+   enum ModelType {
+     UNKNOWN_TYPE = 0;
+     REFINEDET = 1;
+     SSD = 2;
+     YOLOv3 = 3;
+     CLASSIFICATION = 4;
+     DENSE_BOX = 5;
+     MULTI_TASK = 6;
+     OPENPOSE = 7;
+     ROADLINE = 8;
+     SEGMENTATION = 9;
+     POSEDETECT = 10;
+     LANE = 11;
+     BLINKER = 12;
+     SEGDET = 13;
+     ROADLINE_DEEPHI = 14;
+     FACEQUALITY5PT = 15; 
+     REID = 16; 
+   }
+   optional  ModelType model_type = 3;
+   optional  RefineDetParam refine_det_param = 4;
+   optional  YoloV3Param yolo_v3_param = 5;
+   optional  SSDParam ssd_param = 6;
+   optional  ClassificationParam classification_param = 7;
+   optional  DenseBoxParam dense_box_param = 8;
+   optional  MultiTaskParam multi_task_param = 9;
+   optional  RoadlineParam roadline_param = 10;
+   optional  SegmentationParam segmentation_param = 11;
+   optional  LaneParam lane_param = 12;
+   optional  BlinkerParam blinker_param = 13;
+   optional  SegdetParam segdet_param = 14;
+  optional  RoadlineDeephiParam roadline_dp_param = 15;
+
+   optional  bool is_tf = 16;
+   optional  FaceQuality5ptParam face_quality5pt_param = 17;
+
+   optional TfssdParam tfssd_param = 18;
+}
+
+
+message DpuModelParamList{
+  repeated DpuModelParam model = 1;
+}
+
+// results definitions
+message FaceFixFeature{
+  repeated int32 feature = 1;
+}
+
+message FaceFloatFeature{
+  repeated float feature = 1;
+}
+
+message Attribute{
+  optional  string label = 1;
+  optional  uint32 value = 2;
+  optional  float score = 3;
+}
+
+message Point{
+ optional  float x = 1;
+ optional  float y = 2;
+}
+
+message BoundingBox{
+ optional   uint32 label = 1;
+ optional   float score = 2;
+ optional   float x = 3;
+ optional   float y = 4;
+ optional   float width = 5;
+ optional   float height = 6;
+}
+
+message AttributeResult{
+  repeated Attribute attribute = 1;
+}
+
+message LandmarkResult{
+  optional     float score = 1;
+    repeated Point point = 2;
+   optional    uint32 gender =  3;
+  optional     uint32 age = 4;
+}   
+    
+message DetectResult{
+  repeated BoundingBox bounding_box = 1;
+}
+
+message RefineDetResult {
+  repeated BoundingBox bounding_box = 1;
+}
+
+message LineAtt{
+  optional   uint32 type = 1;
+  repeated Point point = 2;
+}
+
+message RoadlineResult{
+  repeated LineAtt line_att = 1;
+}
+
+message Score{
+  optional    int32 index = 1;
+  optional    float score = 2;
+}
+
+message ClassificationResult{
+  repeated Score score = 1;
+}
+
+message DpuModelResult {
+  oneof dpu_model_result{
+    LandmarkResult landmark_result = 1;
+    DetectResult detect_result = 2;
+    AttributeResult attribute_result = 3;
+    RefineDetResult refine_det_result = 4;
+    ClassificationResult classification_result = 5;
+    RoadlineResult roadline_result = 6;
+  }
+
+}

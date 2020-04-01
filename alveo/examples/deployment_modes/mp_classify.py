@@ -86,7 +86,7 @@ class UserPostProcess():
     self._shared_output_arrs = shared_output_arrs
 
     self.numProcessed = 0
-    self.startTime = timeit.default_timer()
+    self.startTime = 0
     self.cpuOp = xdnn.XDNNCPUOp(self.args['weights']);
 
   #
@@ -114,7 +114,10 @@ class UserPostProcess():
     self.numProcessed += len(imgList)
 
     npout_view = fpgaOutput
-    self.cpuOp.computeFC(npout_view, self.fcOutput)
+    if self.cpuOp._weight is not None:
+        self.cpuOp.computeFC(npout_view, self.fcOutput)
+    else:
+        self.fcOutput=npout_view
     smaxOutput = self.cpuOp.computeSoftmax(self.fcOutput)
 
     if self.args['golden']:
@@ -169,7 +172,8 @@ class UserPostProcess():
     self.finish()
 
   def finish(self):
-    print( "%g images/s" % ( float(self.numProcessed) / (timeit.default_timer() - self.startTime )  ))
+    print( "Total Images: %g " % ( float(self.numProcessed) ))
+    print( "Performance: %g images/s" % ( float(self.numProcessed) / (timeit.default_timer() - self.startTime )  ))
     if self.args['golden'] and self.numProcessed:
       print("\nAverage accuracy (n=%d) Top-1: %.1f%%, Top-5: %.1f%%\n" \
         % (self.numProcessed,
@@ -267,8 +271,6 @@ def fpga_process(args, num_img,  compJson, shared_trans_arrs,shared_output_arrs)
 
     qWait.put((None, None, None))
     t.join()
-    elapsedTime = ( time.time() - startTime )
-    print( "FPGA_process: ", float(numProcessed)/elapsedTime, "img/s")
 
 # Current version does copies...
 # Assumes all types are np.float32/ctypes.c_float
@@ -427,8 +429,8 @@ def run(args=None):
   t2 = timeit.default_timer()
   total_t = t2 - t1
   if(args['profile']):
-    print("Total time taken: {} s\n Total images: {}\nAverage FPS: {}".format(total_t, \
-            len(img_paths), len(img_paths)/total_t))
+      print("Total Wall Time : {:.2f} seconds\nTotal Images / Wall Time: {:.2f}".format(total_t, \
+            len(img_paths)/total_t))
 
 if __name__ == '__main__':
   run()

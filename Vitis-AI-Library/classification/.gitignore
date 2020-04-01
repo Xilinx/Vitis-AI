@@ -1,0 +1,8 @@
+*~
+cmake/
+scripts/
+gtest/
+3rd-party/
+deps/
+build_*
+libdpbase_build_*

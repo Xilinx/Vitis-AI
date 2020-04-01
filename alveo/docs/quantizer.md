@@ -60,7 +60,7 @@ For more information about usage of vai_q_caffe, run ‘vai_q_caffe –help’ c
 ### Running DECENT_Q with python <br /> 
 ```
 source $VAI_ALVEO_ROOT/overlaybins/setup.sh alveo-u200
-# Bring in ml-suite Quantizer
+# Bring in Quantizer
 from decent import CaffeFrontend as xfdnnQuantizer
 def Quantize(prototxt, caffemodel, calib_iter=1, test_iter=1):
     quantizer = xfdnnQuantizer(

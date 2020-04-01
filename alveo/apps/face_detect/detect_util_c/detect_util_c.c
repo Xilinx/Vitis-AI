@@ -21,7 +21,7 @@ void GSTilingLayer_forward_c(const void *top_np,
                              const int input_width,
                              const int stride) {
   int stride_sq = stride * stride;
-
+  
   const float *bottom = (float *)bottom_np;
   float *top = (float *)top_np;
 

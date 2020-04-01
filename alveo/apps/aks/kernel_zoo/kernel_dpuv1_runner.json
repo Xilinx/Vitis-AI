@@ -1,0 +1,12 @@
+{
+  "kernel_name": "DPUv1_Runner",
+  "kernel_type": "cpp",
+  "device_type": "fpga",
+  "xclbin": "/opt/xilinx/overlaybins/xdnnv3",
+  "kernel_lib" : "libs/libDPUv1RunnerKernel.so",
+  "kernel_queue_size": 512,
+
+  "param_list": {
+    "vitis_rundir": { "type":"string" }
+  }
+}

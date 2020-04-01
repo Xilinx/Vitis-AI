@@ -1,0 +1,263 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_classification, ./test_performance_classification, ./test_video_classification, ./test_accuracy_classification first param followed must be with model name.
+  Valid model name:
+    resnet50
+    resnet18
+    inception_v1
+    inception_v2
+    inception_v3
+    inception_v4
+    mobilenet_v2
+    squeezenet
+    inception_resnet_v2_tf
+    inception_v1_tf
+    inception_v3_tf
+    inception_v4_2016_09_09_tf
+    mobilenet_v1_0_25_128_tf
+    mobilenet_v1_0_5_160_tf
+    mobilenet_v1_1_0_224_tf
+    mobilenet_v2_1_0_224_tf
+    mobilenet_v2_1_4_224_tf
+    resnet_v1_101_tf
+    resnet_v1_152_tf
+    resnet_v1_50_tf
+    vgg_16_tf
+    vgg_19_tf
+
+    
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_classification resnet50 sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:04.889346  4974 process_result.hpp:57] r.index 109 brain coral, r.score 0.982666 
+I1108 22:41:04.889662  4974 process_result.hpp:57] r.index 973 coral reef, r.score 0.00850172 
+I1108 22:41:04.889776  4974 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.00662115 
+I1108 22:41:04.889900  4974 process_result.hpp:57] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 0.000543497 
+I1108 22:41:04.890080  4974 process_result.hpp:57] r.index 390 eel, r.score 0.000329648 
+   
+    
+    sample : ./test_jpeg_classification resnet18 sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:05.235118  4978 process_result.hpp:57] r.index 109 brain coral, r.score 0.992095 
+I1108 22:41:05.235446  4978 process_result.hpp:57] r.index 973 coral reef, r.score 0.00315762 
+I1108 22:41:05.235556  4978 process_result.hpp:57] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.00102513 
+I1108 22:41:05.235750  4978 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.000904673 
+I1108 22:41:05.235877  4978 process_result.hpp:57] r.index 997 bolete, r.score 0.000228737 
+   
+    
+    sample : ./test_jpeg_classification inception_v1 sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:05.547936  4982 process_result.hpp:57] r.index 109 brain coral, r.score 0.987186 
+I1108 22:41:05.548245  4982 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.0066516 
+I1108 22:41:05.548398  4982 process_result.hpp:57] r.index 973 coral reef, r.score 0.003142 
+I1108 22:41:05.548499  4982 process_result.hpp:57] r.index 390 eel, r.score 0.000900197 
+I1108 22:41:05.548590  4982 process_result.hpp:57] r.index 951 lemon, r.score 0.000545997 
+   
+    
+    sample : ./test_jpeg_classification inception_v2 sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:05.903772  4986 process_result.hpp:57] r.index 109 brain coral, r.score 0.985695 
+I1108 22:41:05.904089  4986 process_result.hpp:57] r.index 973 coral reef, r.score 0.00664156 
+I1108 22:41:05.904201  4986 process_result.hpp:57] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 0.000898838 
+I1108 22:41:05.904392  4986 process_result.hpp:57] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.000424581 
+I1108 22:41:05.904583  4986 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.000330664 
+   
+    
+    sample : ./test_jpeg_classification inception_v3 sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:06.454129  4990 process_result.hpp:57] r.index 109 brain coral, r.score 0.998274 
+I1108 22:41:06.454433  4990 process_result.hpp:57] r.index 973 coral reef, r.score 0.000429999 
+I1108 22:41:06.454541  4990 process_result.hpp:57] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 9.59457e-05 
+I1108 22:41:06.454746  4990 process_result.hpp:57] r.index 996 hen-of-the-woods, hen of the woods, Polyporus frondosus, Grifola frondosa, r.score 2.14084e-05 
+I1108 22:41:06.455029  4990 process_result.hpp:57] r.index 244 Tibetan mastiff, r.score 2.14084e-05 
+   
+    
+    sample : ./test_jpeg_classification inception_v4 sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:07.405144  4994 process_result.hpp:57] r.index 109 brain coral, r.score 0.920927 
+I1108 22:41:07.405457  4994 process_result.hpp:57] r.index 973 coral reef, r.score 0.000839776 
+I1108 22:41:07.405570  4994 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.000577169 
+I1108 22:41:07.405689  4994 process_result.hpp:57] r.index 894 wardrobe, closet, press, r.score 0.00050935 
+I1108 22:41:07.405839  4994 process_result.hpp:57] r.index 891 waffle iron, r.score 0.0004495 
+   
+    
+    sample : ./test_jpeg_classification mobilenet_v2 sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:07.653834  4998 process_result.hpp:57] r.index 109 brain coral, r.score 0.99959 
+I1108 22:41:07.654142  4998 process_result.hpp:57] r.index 973 coral reef, r.score 0.000261151 
+I1108 22:41:07.654251  4998 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 7.48212e-05 
+I1108 22:41:07.654373  4998 process_result.hpp:57] r.index 390 eel, r.score 2.14366e-05 
+I1108 22:41:07.654459  4998 process_result.hpp:57] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 2.14366e-05 
+   
+    
+    sample : ./test_jpeg_classification inception_resnet_v2_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:08.844625  5002 process_result.hpp:57] r.index 109 brain coral, r.score 0.891995 
+I1108 22:41:08.844954  5002 process_result.hpp:57] r.index 973 coral reef, r.score 0.00364538 
+I1108 22:41:08.845063  5002 process_result.hpp:57] r.index 458 brass, memorial tablet, plaque, r.score 0.000717818 
+I1108 22:41:08.845228  5002 process_result.hpp:57] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000559037 
+I1108 22:41:08.845398  5002 process_result.hpp:57] r.index 649 megalith, megalithic structure, r.score 0.000493349 
+   
+    
+    sample : ./test_jpeg_classification inception_v1_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:09.161875  5006 process_result.hpp:57] r.index 109 brain coral, r.score 0.98696 
+I1108 22:41:09.162206  5006 process_result.hpp:57] r.index 973 coral reef, r.score 0.00277217 
+I1108 22:41:09.162330  5006 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.00148383 
+I1108 22:41:09.162451  5006 process_result.hpp:57] r.index 997 bolete, r.score 0.000700914 
+I1108 22:41:09.162545  5006 process_result.hpp:57] r.index 390 eel, r.score 0.000481731 
+   
+    
+    sample : ./test_jpeg_classification inception_v3_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:09.711418  5010 process_result.hpp:57] r.index 109 brain coral, r.score 0.917925 
+I1108 22:41:09.711732  5010 process_result.hpp:57] r.index 973 coral reef, r.score 0.000837039 
+I1108 22:41:09.711843  5010 process_result.hpp:57] r.index 149 dugong, Dugong dugon, r.score 0.000738684 
+I1108 22:41:09.711992  5010 process_result.hpp:57] r.index 949 strawberry, r.score 0.00050769 
+I1108 22:41:09.712103  5010 process_result.hpp:57] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.00050769 
+   
+    
+    sample : ./test_jpeg_classification inception_v4_2016_09_09_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:10.637675  5014 process_result.hpp:57] r.index 109 brain coral, r.score 0.929038 
+I1108 22:41:10.638022  5014 process_result.hpp:57] r.index 973 coral reef, r.score 0.000659779 
+I1108 22:41:10.638139  5014 process_result.hpp:57] r.index 715 pickelhaube, r.score 0.000513836 
+I1108 22:41:10.638245  5014 process_result.hpp:57] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000453459 
+I1108 22:41:10.638411  5014 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.000400176 
+   
+    
+    sample : ./test_jpeg_classification mobilenet_v1_0_25_128_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:10.826803  5018 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.97515 
+I1108 22:41:10.827114  5018 process_result.hpp:57] r.index 109 brain coral, r.score 0.0178605 
+I1108 22:41:10.827256  5018 process_result.hpp:57] r.index 390 eel, r.score 0.00310369 
+I1108 22:41:10.827342  5018 process_result.hpp:57] r.index 393 anemone fish, r.score 0.00114178 
+I1108 22:41:10.827448  5018 process_result.hpp:57] r.index 55 green snake, grass snake, r.score 0.000420039 
+   
+    
+    sample : ./test_jpeg_classification mobilenet_v1_0_5_160_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:11.016564  5023 process_result.hpp:57] r.index 109 brain coral, r.score 0.897886 
+I1108 22:41:11.016901  5023 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.0946364 
+I1108 22:41:11.017031  5023 process_result.hpp:57] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 0.00471167 
+I1108 22:41:11.017204  5023 process_result.hpp:57] r.index 304 leaf beetle, chrysomelid, r.score 0.000637655 
+I1108 22:41:11.017355  5023 process_result.hpp:57] r.index 973 coral reef, r.score 0.000301207 
+   
+    
+    sample : ./test_jpeg_classification mobilenet_v1_1_0_224_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:11.244118  5027 process_result.hpp:57] r.index 109 brain coral, r.score 0.996709 
+I1108 22:41:11.244457  5027 process_result.hpp:57] r.index 973 coral reef, r.score 0.00247059 
+I1108 22:41:11.244558  5027 process_result.hpp:57] r.index 990 buckeye, horse chestnut, conker, r.score 0.000202799 
+I1108 22:41:11.244726  5027 process_result.hpp:57] r.index 328 sea urchin, r.score 0.000202799 
+I1108 22:41:11.244832  5027 process_result.hpp:57] r.index 997 bolete, r.score 5.81028e-05 
+   
+    
+    sample : ./test_jpeg_classification mobilenet_v2_1_0_224_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:11.471606  5031 process_result.hpp:57] r.index 109 brain coral, r.score 0.995663 
+I1108 22:41:11.471928  5031 process_result.hpp:57] r.index 973 coral reef, r.score 0.000624009 
+I1108 22:41:11.472057  5031 process_result.hpp:57] r.index 390 eel, r.score 0.000550686 
+I1108 22:41:11.472143  5031 process_result.hpp:57] r.index 997 bolete, r.score 0.00022956 
+I1108 22:41:11.472242  5031 process_result.hpp:57] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.000139235 
+   
+    
+    sample : ./test_jpeg_classification mobilenet_v2_1_4_224_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:11.734709  5035 process_result.hpp:57] r.index 109 brain coral, r.score 0.998395 
+I1108 22:41:11.735023  5035 process_result.hpp:57] r.index 973 coral reef, r.score 0.000430051 
+I1108 22:41:11.735131  5035 process_result.hpp:57] r.index 390 eel, r.score 7.47317e-05 
+I1108 22:41:11.735234  5035 process_result.hpp:57] r.index 392 rock beauty, Holocanthus tricolor, r.score 5.82011e-05 
+I1108 22:41:11.735405  5035 process_result.hpp:57] r.index 328 sea urchin, r.score 3.53007e-05 
+   
+    
+    sample : ./test_jpeg_classification resnet_v1_101_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:12.628726  5039 process_result.hpp:57] r.index 109 brain coral, r.score 0.999104 
+I1108 22:41:12.629040  5039 process_result.hpp:57] r.index 973 coral reef, r.score 0.000552589 
+I1108 22:41:12.629149  5039 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.000203286 
+I1108 22:41:12.629273  5039 process_result.hpp:57] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 3.53258e-05 
+I1108 22:41:12.629456  5039 process_result.hpp:57] r.index 997 bolete, r.score 2.75118e-05 
+   
+    
+    sample : ./test_jpeg_classification resnet_v1_152_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:13.780951  5043 process_result.hpp:57] r.index 109 brain coral, r.score 0.966475 
+I1108 22:41:13.781261  5043 process_result.hpp:57] r.index 973 coral reef, r.score 0.0227293 
+I1108 22:41:13.781369  5043 process_result.hpp:57] r.index 994 stinkhorn, carrion fungus, r.score 0.00186574 
+I1108 22:41:13.781518  5043 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.00186574 
+I1108 22:41:13.781648  5043 process_result.hpp:57] r.index 115 sea slug, nudibranch, r.score 0.00113163 
+   
+    
+    sample : ./test_jpeg_classification resnet_v1_50_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:14.351622  5047 process_result.hpp:57] r.index 109 brain coral, r.score 0.978879 
+I1108 22:41:14.351938  5047 process_result.hpp:57] r.index 973 coral reef, r.score 0.0108744 
+I1108 22:41:14.352041  5047 process_result.hpp:57] r.index 955 jackfruit, jak, jack, r.score 0.00513669 
+I1108 22:41:14.352160  5047 process_result.hpp:57] r.index 115 sea slug, nudibranch, r.score 0.00188968 
+I1108 22:41:14.352296  5047 process_result.hpp:57] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 0.000541403 
+   
+    
+    sample : ./test_jpeg_classification vgg_16_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:16.597766  5051 process_result.hpp:57] r.index 109 brain coral, r.score 0.999056 
+I1108 22:41:16.598088  5051 process_result.hpp:57] r.index 973 coral reef, r.score 0.000911021 
+I1108 22:41:16.598193  5051 process_result.hpp:57] r.index 997 bolete, r.score 2.75104e-05 
+I1108 22:41:16.598297  5051 process_result.hpp:57] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 3.72313e-06 
+I1108 22:41:16.598477  5051 process_result.hpp:57] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 1.36966e-06 
+   
+    
+    sample : ./test_jpeg_classification vgg_19_tf sample_classification.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:18.973170  5055 process_result.hpp:57] r.index 109 brain coral, r.score 0.999016 
+I1108 22:41:18.973489  5055 process_result.hpp:57] r.index 973 coral reef, r.score 0.000910985 
+I1108 22:41:18.973630  5055 process_result.hpp:57] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 4.53552e-05 
+I1108 22:41:18.973826  5055 process_result.hpp:57] r.index 997 bolete, r.score 1.01201e-05 
+I1108 22:41:18.973922  5055 process_result.hpp:57] r.index 328 sea urchin, r.score 4.78041e-06 
+   
+    

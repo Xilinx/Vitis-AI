@@ -1,7 +1,7 @@
 {
    "target": "xdnn",
    "kernel": "xdnn",
-   "lib": "$LIBXDNN_PATH",
+   "lib": "/opt/vitis_ai/conda/envs/vitis-ai-caffe/lib/libxfdnn.so",
    "xclbin": "/opt/xilinx/overlaybins/xdnnv3",
    "weights": "weights.h5",
    "compiler": "compiler.json",

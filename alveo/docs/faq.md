@@ -1,6 +1,6 @@
 # Frequently Asked Questions
 
-- [What kinds of networks can be accelerated using the Xilinx Alveo Boards](#what-kinds-of-networks-can-be-accelerated-using-the-Xilinx-ml-suite)
+- [What kinds of networks can be accelerated using the Xilinx ml suite](#what-kinds-of-networks-can-be-accelerated-using-the-Xilinx-ml-suite)
 - [What layers are supported for hardware acceleration](#what-layers-are-supported-for-hardware-acceleration)
 - [What frameworks are supported](#what-frameworks-are-supported)
 - [What batch sizes are supported](#what-batch-sizes-are-supported)
@@ -10,7 +10,7 @@
 - [What is quantization why needed does it impact accuracy](#what-is-quantization-why-needed-does-it-impact-accuracy)
 - [Why is the compiler and quantizer not needed in deployment examples](#why-is-the-compiler-and-quantizer-not-needed-in-deployment-examples)
 
-## What kinds of networks can be accelerated using the Xilinx Alveo Boards
+## What kinds of networks can be accelerated using the Xilinx ml-suite
 
  Generally: Classification, Detection, and Semantic Segmentation networks.  
  More generally: Any network that contains convolutional and pooling layers.  
@@ -38,7 +38,7 @@ Note: Layers not supported for hardware acceleration typically are not a perform
 
 ## What frameworks are supported
   
-The Xilinx Vitis-AI compiler will need to compile the dataflow graph from a framework.  
+The Xilinx ml-suite will need to compile the dataflow graph from a framework.  
 Currently supported frameworks are:
 - [Caffe](https://caffe.berkeleyvision.org/)
 - [Tensorflow](https://www.tensorflow.org/api_docs/)
@@ -48,14 +48,14 @@ Support for other frameworks is acheived via framework conversion utilities
 ## What batch sizes are supported
 
 Since FPGA hardware accelerators can be designed for EXACTLY the task at hand, there is no need to follow the GPU convention of batching or equivalently sharing weights across images and computing inference on many images in parallel.  
-The FPGA hardware acclerator from Xilinx ("DPU-v1") will process 1 image at a time.  
+The FPGA hardware acclerator from Xilinx ("XDNN") will process 1 image at a time.  
 Different FPGA configurations can have a different number of accelerators.  
 Typically, we will compute inference on 1,2,4, or 8 images simultaneously.  
 This vastly improves the application level latency incurred by waiting to accumulate a large batch of images.  
 
 ## How does FPGA compare to CPU and GPU acceleration
 
-FPGA accelerated networks can run upto 90x faster as compared to CPU.  
+FPGA accelerated networks can run up to 90x faster as compared to CPU.  
 FPGA accelerated networks are on par with GPU accelerated networks for throughput critical applications, yet provide support for more custom applications.  
 FPGA accelerated networks are far superior to GPU accelerated networks for latency critical applications such as autonomous driving.
 
@@ -64,8 +64,8 @@ FPGA accelerated networks are far superior to GPU accelerated networks for laten
 ## I have a new trained model, where do I begin
 1. Ensure the model is defined in a framework that is digestible by Xilinx ml-suite (Caffe, Tensorflow, Keras, MXNet, Darknet)
 2. Check for existing examples of how to run that network  
-  a./workspace/alveo/examples/deployment_modes  
-  b. /workspace/alveo/notebooks
+  a. ml-suite/examples/deployment_modes  
+  b. ml-suite/notebooks
 3. Ensure your software environment is set up appropriately  
   a. [docker setup](./container.md) (
 4. Ensure your hardware environment is set up appropriately (Before you attempt to deploy on hardware)  
@@ -83,9 +83,9 @@ Should you hit errors at step 5, it is possible that your network needs some mod
 Ensure that you aren't dealing with unsupported layers.  
 Leverage the community for debug help, by accessing the [ml-suite forum](https://www.xilinx.com)
 
-## Why does Vitis-AI need to compile a graph from my framework
+## Why does ml suite need to compile a graph from my framework
 
-The Xilinx "DPU-v1" hardware accelerator implements a command queue, which holds instructions used to execute an inference.  
+The Xilinx "XDNN" hardware accelerator implements a command queue, which holds instructions used to execute an inference.  
 This allows the accelerator to run an entire inference instead of running layer by layer.  
 This implementation minimizes data movement between the host CPU, and the FPGA.
 
@@ -110,7 +110,7 @@ Xilinx has actually seen some networks perform better with fixed-point quantizat
 
 ## Why is the compiler and quantizer not needed in deployment examples
 
-The provided examples in ml-suite/examples/deployment_modes demonstrate how to execute an inference on an FPGA. The compiler, and quantizer steps have previously been ran by us! There is a /workspace/alveo/examples/deployment_modes/data directory that holds important files:
+The provided examples in ml-suite/examples/deployment_modes demonstrate how to execute an inference on an FPGA. The compiler, and quantizer steps have previously been ran by us! There is a ml-suite/examples/deployment_modes/data directory that holds important files:
 
 ```
 bryanloz@xsjprodvda8-162% ls -lart data

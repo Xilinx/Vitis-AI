@@ -1,0 +1,11 @@
+{
+   "target": "xdnn",
+   "kernel": "xdnn",
+   "lib": "$LIBXDNN_PATH",
+   "xclbin": "/opt/xilinx/overlaybins/xdnnv3",
+   "weights": "weights.h5",
+   "compiler": "compiler.json",
+   "quantizer": "quantizer.json",
+   "filename": "",
+   "config_file": ""
+}

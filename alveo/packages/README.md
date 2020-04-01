@@ -11,4 +11,4 @@ Ubuntu:
 CentOS:
 
                 % cd ${VAI_ALVEO_ROOT}/packages/centos/
-                % sudo yum install ./xbutler-2.0.6-1.el7.centos.x86_64.rpm
+                % sudo yum install ./xbutler-2.0.6-1.el7.centos.x86_64.rpms

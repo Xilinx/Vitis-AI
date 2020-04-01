@@ -1,9 +1,12 @@
 xip
-neptune
+dpuv1-rt-neptune
+vaic
+ddump
 pydot
-dill
 pyyaml
 jupyter
 ipywidgets
-pytest-html
-pytest-xdist
+dill
+progressbar2
+pytest
+scikit-learn

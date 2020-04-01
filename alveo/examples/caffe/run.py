@@ -15,8 +15,7 @@
 from __future__ import print_function
 
 import os, sys, argparse
-
-from vai.dpuv1.tools.compile.bin.xfdnn_compiler_caffe  import CaffeFrontend as xfdnnCompiler
+import subprocess
 from decent import CaffeFrontend as xfdnnQuantizer
 from vai.dpuv1.rt.scripts.framework.caffe.xfdnn_subgraph import CaffeCutter as xfdnnCutter
 
@@ -53,17 +52,14 @@ def Getopts():
 
 # Generate hardware instructions for runtime -> compiler.json
 def Compile(output_dir="work"):
-
-  compiler = xfdnnCompiler(
-    networkfile = output_dir+"/deploy.prototxt",
-    weights = output_dir+"/deploy.caffemodel",
-    quant_cfgfile = output_dir+"/quantize_info.txt",
-    generatefile = output_dir+"/compiler",
-    quantz = output_dir+"/quantizer",
-    **Getopts()
-  )
-  compiler.compile()
-
+  subprocess.call(["vai_c_caffe",
+      "--prototxt",output_dir+"/deploy.prototxt",
+      "--caffemodel",output_dir+"/deploy.caffemodel",
+      "--net_name","model_name",
+      "--output_dir",output_dir,
+      "--arch","/opt/vitis_ai/compiler/arch/dpuv1/ALVEO/ALVEO.json",
+      "--options", "{\"quant_cfgfile\":\"%s\"}" %(output_dir+"/quantize_info.txt")])
+    
 # Generate a new prototxt with custom python layer in place of FPGA subgraph
 def Cut(prototxt,output_dir="work"):
 
@@ -76,7 +72,7 @@ def Cut(prototxt,output_dir="work"):
     xclbin = "/opt/xilinx/overlaybins/xdnnv3",
     netcfg = output_dir+"/compiler.json",
     quantizecfg = output_dir+"/quantizer.json",
-    weights = output_dir+"/deploy.caffemodel_data.h5"
+    weights = output_dir+"/weights.h5"
   )
   cutter.cut()
 
@@ -140,7 +136,6 @@ if __name__ == "__main__":
   parser.add_argument('--qcalib_iter', type=int, default=1, help='User can provide the number of iterations to run the quantization')
   parser.add_argument('--prepare', action="store_true", help='In prepare mode, model preperation will be perfomred = Quantize + Compile')
   parser.add_argument('--validate', action="store_true", help='If validation is enabled, the model will be ran on the FPGA, and the validation set examined')
-  parser.add_argument('--validate_gpu', action="store_true", help='If validation is enabled, the model will be ran on the FPGA, and the validation set examined')
   parser.add_argument('--image', default=None, help='User can provide an image to run')
   args = vars(parser.parse_args())
 
@@ -164,5 +159,3 @@ if __name__ == "__main__":
   if args["image"]:
     Classify(args["output_dir"]+"/xfdnn_auto_cut_deploy.prototxt",args["output_dir"]+"/deploy.caffemodel",args["image"],"../deployment_modes/synset_words.txt")
 
-  if args["validate_gpu"]:
-    Infer(args["prototxt"],args["caffemodel"],args["numBatches"])

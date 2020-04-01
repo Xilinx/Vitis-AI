@@ -1,0 +1,11 @@
+{
+  "kernel_name": "classificationAccuracy",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libClassificationAccuracy.so",
+
+  "param_list" : {
+    "ground_truth": {"type" : "string"}
+  }
+}
+  

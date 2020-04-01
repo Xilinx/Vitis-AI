@@ -1,0 +1,53 @@
+{
+    "graph_name": "resnet50_no_runner", 
+    
+    "node_list": [
+      {
+        "node_name": "preproc", 
+        "node_params" : {
+          "classificationImreadPre": {
+            "net_w" : 224, 
+            "net_h" : 224, 
+            "net_c": 3,
+            "mean": [ 104.007, 116.669, 122.679]
+          }
+        },
+        "next_node": ["resnet50_fpga"]
+      },
+      
+      {
+        "node_name": "resnet50_fpga",
+        "node_params": {
+          "DPUv1_NoRunner": {
+            "netcfg": "graph_zoo/meta_resnet50/compiler.json",
+            "quantcfg": "graph_zoo/meta_resnet50/quantizer.json",
+            "weights": "graph_zoo/meta_resnet50/weights.h5"
+          }
+        },
+        "next_node": [  "resnet50_post" ]
+      },
+  
+      {
+        "node_name": "resnet50_post",
+        "node_params": {
+          "classificationFCSoftMaxTopK": {
+            "weights" : "graph_zoo/meta_resnet50/weights.h5"
+          }
+        },
+        "next_node": ["resnet50_accuracy"]
+      },
+  
+      {
+        "node_name": "resnet50_accuracy",
+        "node_params": {
+          "classificationAccuracy": {
+            "ground_truth": "../../examples/deployment_modes/gold.txt"
+          }
+        },
+        "next_node": []
+      }
+    ],
+    
+    "version": "0.1"
+  }
+  

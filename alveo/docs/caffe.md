@@ -4,7 +4,7 @@ user@localhost:/workspace$ conda activate vitis-ai-caffe
 
 vai_q_caffe: command line brew
 
-usage: vai_q_caffe <command> <args>
+usage: decent_q <command> <args>
 
 commands:
 
@@ -17,14 +17,14 @@ commands:
      test            score a model
 
 example:
-  1. quantize:                           vai_q_caffe quantize -model float.prototxt -weights float.caffemodel -gpu 0
-  2. quantize with auto test:            vai_q_caffe quantize -model float.prototxt -weights float.caffemodel -gpu 0 -auto_test -test_iter 50
-  3. quantize with Non-Overflow method:  vai_q_caffe quantize -model float.prototxt -weights float.caffemodel -gpu 0 -method 0
-  4. finetune quantized model:           vai_q_caffe finetune -solver solver.prototxt -weights quantize_results/float_train_test.caffemodel -gpu 0
-  5. deploy quantized model:             vai_q_caffe depoly -model quantize_results/quantize_train_test.prototxt -weights quantize_results/float_train_test.caffemodel -gpu 0
+  1. quantize:                           ./decent_q quantize -model float.prototxt -weights float.caffemodel -gpu 0
+  2. quantize with auto test:            ./decent_q quantize -model float.prototxt -weights float.caffemodel -gpu 0 -auto_test -test_iter 50
+  3. quantize with Non-Overflow method:  ./decent_q quantize -model float.prototxt -weights float.caffemodel -gpu 0 -method 0
+  4. finetune quantized model:           ./decent_q finetune -solver solver.prototxt -weights quantize_results/float_train_test.caffemodel -gpu 0
+  5. deploy quantized model:             ./decent_q depoly -model quantize_results/quantize_train_test.prototxt -weights quantize_results/float_train_test.caffemodel -gpu 0
 
 
-  Available options:
+  Flags from /scratch/jenkins/anaconda2/conda-bld/caffe_decent_1574295333812/work/tools/decent_q.cpp:
   
     -ap_style (Optional: AP computing styles for detection net, including:
       11point, MaxIntegral, Integral) type: string default: "11point"

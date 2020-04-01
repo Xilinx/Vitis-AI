@@ -5,3 +5,4 @@ pafy
 wget
 requests
 pyarrow
+websocket-client

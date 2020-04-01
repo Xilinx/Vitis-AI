@@ -1,0 +1,86 @@
+{
+  "graph_name": "std_yolov2_608", 
+  
+  "node_list": [
+    {
+      "node_name": "yolov2_preproc", 
+      "exec_kernel": ["detectionImreadPre"],
+      "node_params" : {
+        "detectionImreadPre": {
+          "net_w" : 608, 
+          "net_h" : 608, 
+          "net_c": 3
+        }
+      },
+      "next_node": ["yolov2_fpga"]
+    },
+    
+    {
+      "node_name": "yolov2_fpga",
+      "exec_kernel": ["DPUv1_Runner"],
+      "node_params": {
+        "DPUv1_Runner": {
+          "vitis_rundir": "graph_zoo/meta_stdyolov2"
+        }
+      },
+      "next_node": [  "yolov2_reorg" ]
+    },
+
+    {
+      "node_name": "yolov2_reorg",
+      "exec_kernel": ["caffe"],
+      "node_params": {
+        "caffe": {
+          "network":      "../../models/caffe/yolov2/fp32/yolo_v2_standard_608.prototxt",
+          "weights":      "../../models/caffe/yolov2/fp32/yolo_v2_standard.caffemodel",
+          "input_blobs":  ["layer25-conv", "layer27-conv"],
+          "output_blobs": ["layer31-conv"],
+          "start_layer":  "layer28-reorg",
+          "end_layer":    "",
+          "device":       "CPU"
+        }
+      },
+      "next_node": ["yolov2_post"]
+    },
+
+    {
+      "node_name": "yolov2_post",
+      "exec_kernel": ["YoloPostProcess"],
+      "node_params": {
+        "YoloPostProcess": {
+          "yolo_version": 2,
+          "net_h":        608,
+          "net_w":        608,
+          "num_classes":  80,
+          "anchor_cnt":   5,
+          "conf_thresh":  0.24,
+          "iou_thresh":   0.45,
+          "biases":       [ 0.572730004787445068359375,
+                            0.677384972572326660156250,
+                            1.874459981918334960937500,
+                            2.062530040740966796875000,
+                            3.338429927825927734375000,
+                            5.474339962005615234375000,
+                            7.882820129394531250000000,
+                            3.527780055999755859375000,
+                            9.770520210266113281250000,
+                            9.168279647827148437500000]
+        }
+      },
+      "next_node": ["writeDarknetFormat"]
+    },
+  
+    {
+      "node_name": "writeDarknetFormat",
+      "exec_kernel": ["SaveBoxesDarknetFormat"],
+      "node_params": {
+        "SaveBoxesDarknetFormat": {
+          "output_dir": "out_labels"
+        }
+      },
+      "next_node": []
+    }
+  ],
+  
+  "version": "0.1"
+}

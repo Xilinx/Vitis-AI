@@ -4,16 +4,16 @@ user@localhost:/workspace$ conda activate vitis-ai-tensorflow
 
 usage: 
 
-    usage: vai_q_tensorflow command [Options]
+    usage: decent_q command [Options]
     
     examples:
-      show help       : vai_q_tensorflow --help
-      quantize a model: vai_q_tensorflow quantize --input_frozen_graph frozen_graph.pb --input_nodes xxx --output_nodes yyy --input_shapes zzz --input_fn module.calib_input
-      inspect a model : vai_q_tensorflow inspect --input_frozen_graph frozen_graph.pb
-      dump quantized model : vai_q_tensorflow dump --input_frozen_graph quantize_results/quantize_eval_model.pb --input_fn module.dump_input
+      show help       : decent_q --help
+      quantize a model: decent_q quantize --input_frozen_graph frozen_graph.pb --input_nodes xxx --output_nodes yyy --input_shapes zzz --input_fn module.calib_input
+      inspect a model : decent_q inspect --input_frozen_graph frozen_graph.pb
+      dump quantized model : decent_q dump --input_frozen_graph quantize_results/quantize_eval_model.pb --input_fn module.dump_input
   
 
-Xilinx's Quantization Tools vai_q_tensorflow v0.3.1 build for tensorflow 1.12.0
+Xilinx's Quantization Tools decent_q v0.3.1 build for tensorflow 1.12.0
 
 positional arguments:
   {quantize,deploy,inspect,dump}

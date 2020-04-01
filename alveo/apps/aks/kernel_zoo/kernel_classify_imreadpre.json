@@ -1,0 +1,17 @@
+{
+  "kernel_name": "classificationImreadPre",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libClassificationImreadPre.so",
+  "num_cu": 4,
+
+  "param_list" : {
+    "net_w": {"type": "int"},
+    "net_h": {"type": "int"},
+    "net_c": {"type": "int"},
+    "th1":{"type": "int"},
+    "th2": {"type": "float"},
+    "mean": {"type": "float_array"}
+  }
+}
+  

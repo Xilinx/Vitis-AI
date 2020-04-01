@@ -1,0 +1,10 @@
+{
+  "kernel_name": "SaveBoxesDarknetFormat",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libSaveBoxesDarknetFormat.so",
+
+  "param_list" : {
+    "output_dir": {"type": "string"}
+  }
+}

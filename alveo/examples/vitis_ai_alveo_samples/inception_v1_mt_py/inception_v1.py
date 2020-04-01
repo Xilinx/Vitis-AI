@@ -50,7 +50,7 @@ Get topk results according to its probability
 datain: data result of softmax
 filePath: filePath in witch that records the infotmation of kinds
 '''
-def TopK(datain, size, filePath):
+def TopK(datain, size, filePath, labels_offset=0):
 
     cnt  = [i for i in range(size) ]
     pair = zip(datain, cnt)
@@ -61,7 +61,7 @@ def TopK(datain, size, filePath):
     fp.close()
     print ("")
     for i in range(5):
-        flag = 0
+        flag = labels_offset
         for line in data1:
             if flag == cnt_new[i]:
                 print("Top[%d] %f %s" % (i, (softmax_new[i]), (line.strip)("\n")))
@@ -132,9 +132,10 @@ def runInceptionV1(dpu, img, cnt):
         dpu.wait(job_id)
 
         """softmax calculate with batch """
+        label_offset = 1 # For imagenet tensorflow slim
         for j in range(runSize):
             softmax = CPUCalcSoftmax(outputData[0][j], outputSize)
-            TopK (softmax, outputSize, label_file)
+            TopK (softmax, outputSize, label_file, label_offset)
         l.acquire()
         count = count + threadnum*runSize
         l.release()

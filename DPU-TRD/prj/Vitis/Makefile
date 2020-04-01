@@ -9,8 +9,7 @@ MPSOC_CXX:=aarch64-linux-gnu-g++
 
 TARGET := hw
 
-#SDX_PLATFORM =/proj/xcdhdstaff2/yey/zcu102_2019.2/zcu102_dpu/zcu102_dpu.xpfm
-#SDX_PLATFORM =/proj/rdi/staff/jiaz/scout/release/zcu102_base/zcu102_base.xpfm
+#SDX_PLATFORM = /proj/rdi/staff/jiaz/scout/platform_trd32/zcu102_0205/zcu102_dpu.xpfm
 XOCC_OPTS = -t ${TARGET} --platform ${SDX_PLATFORM} --save-temps --config ${DIR_PRJ}/config_file/prj_config --xp param:compiler.userPostSysLinkTcl=${DIR_PRJ}/strip_interconnects.tcl 
 dpu_HDLSRCS=kernel_xml/dpu/kernel.xml\
 	     scripts/package_dpu_kernel.tcl\

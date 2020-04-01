@@ -1,0 +1,56 @@
+{
+  "graph_name": "tinyyolov3", 
+  
+  "node_list": [
+    {
+      "node_name": "tinyyolov3_preproc", 
+      "node_params" : {
+        "detectionImreadPre": {
+          "net_w" : 608, 
+          "net_h" : 608, 
+          "net_c": 3
+        }
+      },
+      "next_node": ["tinyyolov3_fpga"]
+    },
+    
+    {
+      "node_name": "tinyyolov3_fpga",
+      "node_params": {
+        "DPUv1_Runner": {
+          "vitis_rundir": "graph_zoo/meta_tinyyolov3"
+        }
+      },
+      "next_node": [  "tinyyolov3_post" ]
+    },
+
+    {
+      "node_name": "tinyyolov3_post",
+      "node_params": {
+        "YoloPostProcess": {
+          "yolo_version": 3,
+          "net_h":        608,
+          "net_w":        608,
+          "num_classes":  80,
+          "anchor_cnt":   3,
+          "conf_thresh":  0.005,
+          "iou_thresh":   0.45,
+          "biases":    [23,27,  37,58,  81,82,  81,82, 135,169, 344,319]
+        }
+      },
+      "next_node": ["tinyyolov3_save_labels"]
+    },
+
+    {
+      "node_name": "tinyyolov3_save_labels",
+      "node_params": {
+        "SaveBoxesDarknetFormat": {
+          "output_dir": "out_labels"
+        }
+      },
+      "next_node": []
+    }
+  ],
+  
+  "version": "0.1"
+}

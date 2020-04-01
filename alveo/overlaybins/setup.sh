@@ -21,6 +21,22 @@ echo "------------------"
 echo $VAI_ALVEO_ROOT
 echo ""
 
+##############################
+# Enable XILINX_XRM
+##############################
+echo "---------------------"
+echo "Verifying XILINX_XRM"
+echo "---------------------"
+
+#if [ -d "/opt/xilinx/xrm" ]; then
+#    export XILINX_XRM=/opt/xilinx/xrm
+#    export PATH=$XILINX_XRM/bin:$PATH
+#    export LD_LIBRARY_PATH=$XILINX_XRM/lib:$LD_LIBRARY_PATH
+#    echo "Xilinx XRM found, using XRM"
+#else
+#	echo "Xilinx XRM not found on machine, default to Butler"
+#fi 
+
 echo "---------------------"
 echo "Using LD_LIBRARY_PATH"
 echo "---------------------"

@@ -11,8 +11,7 @@
 ## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
-
-# uuid_copy@UUID_1.0 undifne issue due to conflict between the docker and conda libs
+## uuid_copy@UUID_1.0 undifne issue due to conflict between the docker and conda libs
 TMP_LD_PATH=${LD_LIBRARY_PATH}
 LD_LIBRARY_PATH :=
 
