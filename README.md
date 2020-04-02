@@ -36,13 +36,13 @@ Vitis AI is composed of the following key components:
   
 ## Getting Started
 
-To facilitate the setup of Vitis AI environment, the docker container is used for Vitis AI package distribution. 
-Vitis AI consists of three docker container images: two vitis-ai-docker-tools images and one vitis-ai-docker-runtime image. 
-The two vitis-ai-docker-tools images are for GPU and CPU environments respectively. 
-The vitis-ai-docker-tools contains the Vitis AI quantizer, AI compiler and examples. 
-The vitis-ai-docker-runtime is the runtime docker image for DPU-v2 development, which holds Vitis AI installation package 
-for Xilinx ZCU102 and ZCU104 evaluation boards, samples, and Arm GCC cross-compilation toolchain.
+Two options are available for installing the containers with the Vitis AI tools and resources. 
 
+ - Pre-built containers on Docker Hub: [/xilinx/vitis-ai](https://hub.docker.com/r/xilinx/vitis-ai/tags)
+ - Build containers locally with Docker recipes: [Docker Recipes](docker/README.MD)
+ 
+ 
+### Installation 
  - [Install Docker](doc/install_docker/README.md) - if Docker not installed on your machine yet
  
  - [Ensure your linux user is in the group docker](https://docs.docker.com/install/linux/linux-postinstall/)
@@ -57,7 +57,7 @@ for Xilinx ZCU102 and ZCU104 evaluation boards, samples, and Arm GCC cross-compi
     
    1) Run the CPU image from docker hub
    ```
-   ./docker_run.sh xilinx/vitis-ai-cpu:latest
+   ./docker_run.sh xilinx/vitis-ai
    ```
    or
    
