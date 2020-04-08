@@ -206,6 +206,7 @@ Post PetaLinux installation $PETALINUX environment variable should be set.
 
 ```
 % cd $TRD_HOME/prj/Vivado/dpu_petalinux_bsp
+% ./download_bsp.sh
 % petalinux-create -t project -s xilinx-zcu102-v2019.2-final-4dpu-1.4.1.bsp
 % cd xilinx-zcu102-v2019.2-final-4dpu-1.4.1
 % petalinux-config --get-hw-description=$TRD_HOME/prj/Vivado/prj/ --silentconfig
