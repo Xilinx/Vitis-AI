@@ -84,6 +84,6 @@ After the setup, run through a sample end to end tensorflow classification examp
   $ python run.py --validate --model models/squeezenet.pb --output_dir work --input_nodes data --output_nodes Prediction/softmax/Softmax --c_input_nodes data --c_output_nodes avg_pool/AvgPool --input_shapes ?,227,227,3 --pre_process squeezenet
 
   # inception_v4
-  $ python run.py --validate --model models/inception_v4.pb --output_dir work --input_nodes input --output_nodes InceptionV4/Logits/Predictions --c_input_nodes input --c_output_nodes InceptionV4/Logits/Predictions --input_shapes ?,299,299,3 --label_offset 1 --pre_process inception_v4
+  $ python run.py --quantize --model models/inception_v4.pb --output_dir work --input_nodes input --output_nodes InceptionV4/Logits/Predictions --input_shapes 1,299,299,3 --pre_process inception_v4
   $ python run.py --validate --model models/inception_v4.pb --output_dir work --input_nodes input --output_nodes InceptionV4/Logits/Predictions --c_input_nodes input --c_output_nodes InceptionV4/Logits/Predictions --input_shapes ?,299,299,3 --label_offset 1 --pre_process inception_v4
   ```
