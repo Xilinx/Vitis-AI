@@ -97,19 +97,18 @@ DPU_TRD 
 │   └── Vitis
 │       ├── dpu
 │       └── sfm
-├── apps       
-│   └── Vitis
-│       ├── models
-│       ├── sample
-│       └── resnet50.tar.gz             # resnet50 application
+├── app       
+│   ├── models
+│   ├── img 
+│   └── resnet50.tar.gz             # resnet50 application
 └── prj 
     └── Vitis
         │        
-        ├── kernel_xml                  # pre-build SD card image                      
+        ├── kernel_xml                                        
         │   ├── dpu
         │   └── sfm 
         ├── Makefile
-        ├── dpu_conf.vh
+        ├── dpu_conf.vh                 # dpu configuration file
         ├── config_file                 # config file
         │   ├── prj_config              # integrate 2DPU 
         │   ├── prj_config_102_3dpu     # integrate 3DPU on zcu102
@@ -190,19 +189,19 @@ Generated SD card files are in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card*
 
 #### 5.2.2 Get HWH File 
 
-HWH file is a important file that need by the vai-c tool. The file is been created when compile by the Vitils tool. It works together with vai-c to support model compilation under various DPU configurations.
+HWH file is a important file that need by the vai-c tool. The file has been created when compile by the Vitils tool. It works together with vai-c to support model compilation under various DPU configurations.
 
-the HWH file could be simply get from $TRD_HOME/prj/Vitis/binary_container_1/sd_card
+The HWH file could be simply get from $TRD_HOME/prj/Vitis/binary_container_1/sd_card
 
 The user can also get the HWH file in the following path.
 
-$TRD_HOME/prj/Vitis/binary_container_1/link/vivado/vpl/.local/hw_platform/prj/sources_1/bd/zcu102_dpu/hw_handoff/zcu102_dpu.hwh
+$TRD_HOME/prj/Vitis/binary_container_1/link/vivado/vpl/prj/prj.srcs/sources_1/bd/zcu102_dpu/hw_handoff/zcu102_dpu.hwh
 
 Different Platform will get different name of HWH file.
  
 #### 5.2.3 Run Resnet50 Example 
 
-The TRD project has generated the matching model file in $TRD_HOME/prj/app/Vitis path as the default settings. If the user change the DPU settings. The model need to be created again.
+The TRD project has generated the matching model file in $TRD_HOME/prj/app/ path as the default settings. If the user change the DPU settings. The model need to be created again.
 
 This part is about how to run the Resnet50 example from the source code.
 
@@ -210,26 +209,27 @@ The user must create the SD card. Refer section "Configuring SD Card ext File Sy
 
 Copy the whole files in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card** execpt the rootfs.tar.gz fiel to BOOT partition.
 
-Extract the rootfs.tar.gz the RootFs folder 
+Extract the rootfs.tar.gz in the RootFs folder 
 
-Copy the whole files in **$TRD_HOME/app/Vitis** directory to SD Card.
+Copy the whole files in **$TRD_HOME/app/** directory to SD Card.
 
-After the linux boot, Run:
+After the linux boot, run:
 
 ```
-% cd $HOME
 
 % cp sd_card/dpu.xclbin /usr/lib
 
-% tar -xvf /mnt/app/Vitis/resnet50.tar.gz
+% tar -xvf /mnt/app/resnet50.tar.gz -C ~
 
-% cp /mnt/app/Vitis/models/resnet50.elf .
+% cp /mnt/app/models/resnet50.elf ~
+
+% cd ~
 
 % env LD_LIBRARY_PATH=samples/lib samples/bin/resnet50 img/bellpeppe-994958.JPEG
 ```
 
 
-###### **Note:** If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf).
+###### **Note:** The $TRD_HOME/prj/app resenet50 test case can support both Vitis and Vivado flow . If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf).
 
 
 ### 5.3 Change the Configuration
