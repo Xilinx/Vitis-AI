@@ -406,13 +406,10 @@ Video_input.mp4: The video file's name for input.The user needs to prepare the v
 -s: <num_of_seconds>
 ```
 
-9. To check the version of Vitis AI Library, run the following command:
-```
-#vitis_ai
-```	
+
 
 ### Running Vitis AI Library Examples (For Cloud)
-1. Download the [vitis_ai_library_r1.1_images](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz) and [vitis_ai_library_r1.1_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) packages.
+1. Download the [vitis_ai_library_r1.1_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz) and [vitis_ai_library_r1.1_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) packages.
 2. Untar the image and video packages.
 ```
 #cd /workspace
@@ -448,10 +445,7 @@ Video_input.mp4: The video file's name for input.The user needs to prepare the v
 -t: <num_of_threads>
 -s: <num_of_seconds>
 ```
-8. To check the version of Vitis AI Library, run the following command:
-```
-#vitis_ai
-```	
+
 ## Reference
 For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_1/ug1354-xilinx-ai-sdk.pdf) and [vitis-ai-library-programming-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_1/ug1355-xilinx-ai-sdk-programming-guide.pdf).
 	
