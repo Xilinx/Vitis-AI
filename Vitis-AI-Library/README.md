@@ -323,16 +323,18 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 	```
 
 3. Installing AI Library Package
-	* Download the [Vitis AI Runtime 1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.0.tar.gz). 
-Untar it and find the `libvitis_ai_library-1.1.0-Linux-build46.deb` package in /vitis-ai-runtime-1.1.0/Vitis-AI-Library/aarch64 directory. 
+	* Download the [Vitis AI Runtime 1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.0.tar.gz).  
 
 	* Download the [demo video files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) and untar into the corresponding directories.  
 	
 	* Download the [demo image files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz)  and untar into the corresponding directories.  
 	
-	* Copy the downloaded file to the board using scp with the following command.
+	* Untar the packet and copy the following files to the board using scp.
 	```
-	  $scp libvitis_ai_library-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/unilog/aarch64/libunilog-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/XIR/aarch64/libxir-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/VART/aarch64/libvart-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/Vitis-AI-Library/aarch64/libvitis_ai_library-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
 	```
 	* Copy the `glog-0.4.0-Linux.tar.gz` from host to board with the following command. 
 	```
@@ -354,6 +356,9 @@ Untar it and find the `libvitis_ai_library-1.1.0-Linux-build46.deb` package in /
 	```
 	* Install the Vitis AI Library.
 	```
+	#dpkg –i --force-all libunilog-1.1.0-Linux-build46.deb
+	#dpkg –i libxir-1.1.0-Linux-build46.deb
+	#dpkg –i libvart-1.1.0-Linux-build46.deb
 	#dpkg -i libvitis_ai_library-1.1.0-Linux-build46.deb
 	```
 	 
