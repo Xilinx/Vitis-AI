@@ -152,7 +152,7 @@ To run the pre-built SD card image , follow the instructions on [5.2.3](#523-run
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =<Vitis AI path>/DPU_TRD
+%export TRD_HOME =<Vitis AI path>/DPU-TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
