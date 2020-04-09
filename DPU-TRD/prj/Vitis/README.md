@@ -168,7 +168,7 @@ The following tutorials assume that the Vitis and XRT environment variable is se
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <vitis install path>/vitis/2019.2/settings64.sh
+% source <vitis install path>/Vitis/2019.2/settings64.sh
 
 % source opt/xilinx/xrt/setup.sh
 ```
