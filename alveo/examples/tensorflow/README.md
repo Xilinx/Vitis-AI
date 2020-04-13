@@ -34,8 +34,15 @@ After the setup, run through a sample end to end tensorflow classification examp
   ```
   $ cd $VAI_ALVEO_ROOT/examples/tensorflow
   ```
+2. **Inspect TensorFlow model
 
-2. **Quantize for inference**
+   Inspect the tensorflow model to get input and output node(s), and input nodes' shape. 
+   
+   ```
+   $ ./inspect_tf_model.sh models/inception_v1_baseline.pb
+   ```
+   
+3. **Quantize for inference**
 
   To run a tensorflow model on the FPGA, it needs to be quantized.
 
@@ -47,7 +54,7 @@ After the setup, run through a sample end to end tensorflow classification examp
   $ python run.py --quantize --model models/inception_v1_baseline.pb --pre_process inception_v1 --output_dir work --input_nodes data --output_nodes loss3_loss3 --input_shapes 1,224,224,3 --batch_size 16
   ```
 
-3. **Partition, Compile, and Run Inference**
+4. **Partition, Compile, and Run Inference**
   This performs compilation and subgraph partitioning in a single step. To run a tensorflow model on the FPGA, it needs to be compiled and a new graph needs to be generated. The new graph is similar to the original, with the FPGA subgraph removed, and replaced with a custom Python layer.
 
   Compile the Model - In this step, the network Graph (frozen pb file) are compiled.
@@ -64,7 +71,7 @@ After the setup, run through a sample end to end tensorflow classification examp
   ```
 
 
- 4. **Other Models** - scripts for running compilation, partitioning and inference with other models provided by getModels.py
+ 5. **Other Models** - scripts for running compilation, partitioning and inference with other models provided by getModels.py
 
   ```
   # resnet_50
