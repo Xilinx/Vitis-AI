@@ -36,7 +36,7 @@ After the setup, run through a sample end to end tensorflow classification examp
   ```
 2. **Inspect TensorFlow model**
 
-   Inspect the tensorflow model to get input and output node(s), and input nodes' shape. 
+   Inspect the tensorflow model to get input and output node(s), and input nodes shape. 
    
    ```
    $ ./inspect_tf_model.sh models/inception_v1_baseline.pb
