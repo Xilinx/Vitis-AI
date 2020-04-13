@@ -24,7 +24,7 @@ install_prefix_default=$HOME/.local/${target_info}
 
 name=$(basename $PWD)
 if [[ "$CXX"  == *"sysroot"* ]];then
-$CXX -ggdb -O0 -fno-inline -I. \
+$CXX -ggdb -O2 -fno-inline -I. \
      -I=/install/Debug/include \
      -I=/install/Release/include \
      -L=/install/Debug/lib \
@@ -43,7 +43,7 @@ $CXX -ggdb -O0 -fno-inline -I. \
      -lopencv_core \
      -lpthread
 else
-$CXX -ggdb -O0 -fno-inline -I. \
+$CXX -ggdb -O2 -fno-inline -I. \
      -I${install_prefix_default}.Debug/include \
      -I${install_prefix_default}.Release/include \
      -L${install_prefix_default}.Debug/lib \

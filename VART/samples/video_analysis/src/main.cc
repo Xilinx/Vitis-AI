@@ -641,6 +641,11 @@ int main(int argc, char** argv) {
 
   // create runner
   auto runners = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
+  auto runner1 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
+  auto runner2 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
+  auto runner3 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
+  auto runner4 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
+  auto runner5 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
   auto runner = runners[0].get();
 
   // get input/output tensor shapes
@@ -657,9 +662,12 @@ int main(int argc, char** argv) {
   // Run tasks for SSD
   vector<thread> threads(TNUM);
   is_running.fill(true);
-  for (int i = 0; i < TNUM; ++i) {
-    threads[i] = thread(RunSSD, ref(runner), ref(is_running[i]));
-  }
+  threads[0] = thread(RunSSD, runner, ref(is_running[0]));
+  threads[1] = thread(RunSSD, runner1[0].get(), ref(is_running[1]));
+  threads[2] = thread(RunSSD, runner2[0].get(), ref(is_running[2]));
+  threads[3] = thread(RunSSD, runner3[0].get(), ref(is_running[3]));
+  threads[4] = thread(RunSSD, runner4[0].get(), ref(is_running[4]));
+  threads[5] = thread(RunSSD, runner5[0].get(), ref(is_running[5]));
   threads.push_back(thread(Read, ref(is_reading)));
   threads.push_back(thread(Display, ref(is_displaying)));
 
