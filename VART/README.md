@@ -153,7 +153,7 @@ $sudo dpkg –i libvart-1.1.0-Linux-build<xx>.deb
 	You can now operate on the board using SSH.
 
 2. Installing Vitis AI Runtime Package   
-	* Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.0.tar.gz)  
+	* Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.1.tar.gz)  
 	
 	* Connect to the board with SSH: $ssh root@IP_OF_BOARD. The password is `root`.
 	
