@@ -34,7 +34,7 @@ After the setup, run through a sample end to end tensorflow classification examp
   ```
   $ cd $VAI_ALVEO_ROOT/examples/tensorflow
   ```
-2. **Inspect TensorFlow model
+2. **Inspect TensorFlow model**
 
    Inspect the tensorflow model to get input and output node(s), and input nodes' shape. 
    
