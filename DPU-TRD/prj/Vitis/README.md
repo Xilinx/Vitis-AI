@@ -211,13 +211,13 @@ Copy the whole files in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card** execp
 
 Extract the rootfs.tar.gz in the RootFs folder 
 
-Copy the whole files in **$TRD_HOME/app/** directory to SD Card.
+Copy the directory **$TRD_HOME/app** to the BOOT partition of the SD Card.
 
 After the linux boot, run:
 
 ```
 
-% cp sd_card/dpu.xclbin /usr/lib
+% cp /mnt/dpu.xclbin /usr/lib
 
 % tar -xvf /mnt/app/resnet50.tar.gz -C ~
 
