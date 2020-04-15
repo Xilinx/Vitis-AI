@@ -66,7 +66,7 @@ def TopK(datain,size,filePath):
                 print("Top[%d] %f %s" %(i, (softmax_new[i]),(line.strip)("\n")))
             flag=flag+1
 
-l = threading.Lock()
+
 SCRIPT_DIR = get_script_directory()
 calib_image_dir  = SCRIPT_DIR + "/../images/"
 IMAGE_WIDTH = 224
@@ -74,8 +74,7 @@ IMAGE_HEIGHT = 224
 
 global threadnum
 threadnum = 0
-global runTotall
-runRotal = 0
+
 
 '''
 run resnt50 with batch
@@ -84,7 +83,6 @@ img: imagelist to be run
 cnt: threadnum
 '''
 def runResnet50(dpu,img,cnt):
-
     """get tensor"""
     inputTensors = dpu.get_input_tensors()
     outputTensors = dpu.get_output_tensors()
@@ -102,19 +100,11 @@ def runResnet50(dpu,img,cnt):
     outputSize = outputHeight*outputWidth*outputChannel
     softmax = np.empty(outputSize)
 
-    global runTotall
-
-    count = cnt
-
-    batchSize = inputTensors[0].dims[1]
-
-    while count < runTotall:
-        l.acquire()
-        if (runTotall < (count+batchSize)):
-            runSize = runTotall - count
-        else:
-            runSize = batchSize
-        l.release()
+    batchSize = inputTensors[0].dims[0]
+    n_of_images = len(img)
+    count = 0
+    while count < cnt:
+        runSize = batchSize
         shapeIn = (runSize,) + tuple([inputTensors[0].dims[i] for i in range(inputTensors[0].ndims)][1:])
 
         """prepare batch input/output """
@@ -126,7 +116,7 @@ def runResnet50(dpu,img,cnt):
         """init input image to input buffer """
         for j in range(runSize):
             imageRun = inputData[0]
-            imageRun[j,...] = img[count+j].reshape(inputTensors[0].dims[1],inputTensors[0].dims[2],inputTensors[0].dims[3])
+            imageRun[j,...] = img[(count+j)% n_of_images].reshape(inputTensors[0].dims[1],inputTensors[0].dims[2],inputTensors[0].dims[3])
 
         """run with batch """
         job_id = dpu.execute_async(inputData,outputData)
@@ -138,15 +128,11 @@ def runResnet50(dpu,img,cnt):
         """softmax calculate with batch """
         for j in range(runSize):
             softmax = CPUCalcSoftmax(outputData[0][j], outputSize)
-        l.acquire()
-        count = count + threadnum*runSize
-        l.release()
+        count = count + runSize
+
 
 def main(argv):
     global threadnum
-
-    """create runner """
-    dpu = runner.Runner(argv[2])[0]
 
     listimage=os.listdir(calib_image_dir)
     threadAll = []
@@ -154,19 +140,20 @@ def main(argv):
     i = 0
     global runTotall
     runTotall = len(listimage)
-
+    all_dpu_runners = [];
+    for i in range(int(threadnum)):
+        all_dpu_runners.append(runner.Runner(argv[2])[0])
     """image list to be run """
     img = []
     for i in range(runTotall):
         path = os.path.join(calib_image_dir,listimage[i])
         img.append(input_fn.preprocess_fn(path))
 
-    batchSize = dpu.get_input_tensors()[0].dims[0];
-
+    cnt = 360 ;
     """run with batch """
     time1 = time.time()
     for i in range(int(threadnum)):
-        t1 = threading.Thread(target=runResnet50, args=(dpu, img, i*batchSize))
+        t1 = threading.Thread(target=runResnet50, args=(all_dpu_runners[i], img, cnt))
         threadAll.append(t1)
     for x in threadAll:
         x.start()
@@ -174,12 +161,10 @@ def main(argv):
         x.join()
 
     time2 = time.time()
-
     timetotal = time2 - time1
-    fps = float(runTotall / timetotal)
-    print("%.2f FPS" %fps)
-
-    del dpu
+    total_frames =  cnt*int(threadnum)
+    fps = float(total_frames / timetotal)
+    print("FPS=%.2f, total frames = %.2f , time=%.6f seconds" %(fps,total_frames, timetotal))
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:

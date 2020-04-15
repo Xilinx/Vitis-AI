@@ -182,7 +182,7 @@ void displayFrame() {
             buffer << fixed << setprecision(1)
                    << (float)queueShow.top().first / (dura / 1000000.f);
             string a = buffer.str() + " FPS";
-            cv::putText(frame, a, cv::Point(10, 15), 1, 1, cv::Scalar{240, 240, 240},1);
+            cv::putText(frame, a, cv::Point(10, 15), 1, 1, cv::Scalar{0, 0, 240},1);
             cv::imshow("ADAS Detection@Xilinx DPU", frame);
 
             idxShowImage++;
@@ -362,8 +362,17 @@ int main(const int argc, const char** argv) {
     - 4 identical threads for running YOLO-v3 network model
     - 1 thread for displaying frame in monitor
     */
-    auto runners = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
-    auto runner = runners[0].get();
+    //auto runners = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
+    string kernel_name = argv[2];
+    auto runner0 =
+      vitis::ai::DpuRunner::create_dpu_runner(kernel_name);
+    auto runner1 =
+      vitis::ai::DpuRunner::create_dpu_runner(kernel_name);
+    auto runner2 =
+      vitis::ai::DpuRunner::create_dpu_runner(kernel_name);
+    auto runner3 =
+      vitis::ai::DpuRunner::create_dpu_runner(kernel_name);
+    auto runner = runner0[0].get();
     // get in/out tenosrs
     auto  inputTensors = runner->get_input_tensors();
     auto  outputTensors = runner->get_output_tensors();
@@ -379,11 +388,13 @@ int main(const int argc, const char** argv) {
         {"layer81", "layer93", "layer105", "layer117"});
 
     array<thread, 6> threadsList = {
-        thread(readFrame, argv[1]), thread(displayFrame),
-        thread(runYOLO, runner),
-        //   thread(runYOLO, runner),
-        //     thread(runYOLO, runner),
-        //  thread(runYOLO, runner)
+        thread(readFrame, argv[1]),
+        thread(displayFrame),
+        //thread(runYOLO, runner),
+        thread(runYOLO, runner0[0].get()),
+        thread(runYOLO, runner1[0].get()),
+        thread(runYOLO, runner2[0].get()),
+        thread(runYOLO, runner3[0].get())
     };
 
     for (int i = 0; i < 6; i++) {

@@ -50,7 +50,7 @@ set_multicycle_path 2 -setup -end   -from $clk_1x   -to $clk_2x_<=: $i :>
 #############################
 
 set clk_1x_period     [get_property PERIOD $clk_1x]
-set clk_2x_max_delay  [expr $clk_1x_period+0.4]
+set clk_2x_max_delay  [expr $clk_1x_period * 2]
 set_max_delay $clk_2x_max_delay -through [get_ports dpu*_2x_clk_ce  ]
 <: } :>
 <: if { $enable_clk_indpd == {1} } { :>

@@ -259,7 +259,9 @@ int main(int argc, char** argv) {
   }
   // create runner
   auto runners = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
+  auto runners2 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
   auto runner = runners[0].get();
+  auto runner2 = runners2[0].get();
   // in/out tensors
   auto inputTensors = runner->get_input_tensors();
   auto outputTensors = runner->get_output_tensors();
@@ -277,7 +279,7 @@ int main(int argc, char** argv) {
   array<thread, 4> threads = {
       thread(Read, ref(is_reading)),
       thread(runSegmentation, runner, ref(is_running_1)),
-      thread(runSegmentation, runner, ref(is_running_2)),
+      thread(runSegmentation, runner2, ref(is_running_2)),
       thread(Display, ref(is_displaying))};
 
   for (int i = 0; i < 4; ++i) {
