@@ -223,9 +223,19 @@ After the linux boot, run:
 
 % cp /mnt/app/models/resnet50.elf ~
 
+% cp -r /mnt/app/img ~
+
 % cd ~
 
 % env LD_LIBRARY_PATH=samples/lib samples/bin/resnet50 img/bellpeppe-994958.JPEG
+
+Expect: 
+score[945]  =  0.992235     text: bell pepper,
+score[941]  =  0.00315807   text: acorn squash,
+score[943]  =  0.00191546   text: cucumber, cuke,
+score[939]  =  0.000904801  text: zucchini, courgette,
+score[949]  =  0.00054879   text: strawberry,
+
 ```
 
 
