@@ -11,7 +11,7 @@ This application  demonstrates the acceleration of pre-processing of inference o
 </div>
 
 ## Running the Application
-1. `cd $VAI_ALVEO_ROOT/apps/xplusml/yolo`
+1. `cd $VAI_ALVEO_ROOT/apps/whole_app_acceleration/yolo`
 2. Use `run.sh` file to run the application. Familiarize yourself with the script usage by `./detect.sh -h`
 
 ### Examples:
