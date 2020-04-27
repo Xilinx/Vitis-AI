@@ -252,7 +252,7 @@ Assume the docker image has been loaded and up running.
 1. Place the program, data and other files in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
 Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
 
-2. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.1.tar.gz) package.
+2. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.2.tar.gz) package.
 Untar it, find the `libvitis_ai_library-1.1.0-Linux-build<xx>.deb` package and install it to the docker system.
 ```
 $sudo dpkg -i libvitis_ai_library-1.1.0-Linux.deb
@@ -323,7 +323,7 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 	```
 
 3. Installing AI Library Package
-	* Download the [Vitis AI Runtime 1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.1.tar.gz).  
+	* Download the [Vitis AI Runtime 1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.2.tar.gz).  
 
 	* Download the [demo video files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) and untar into the corresponding directories.  
 	
@@ -331,10 +331,10 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 	
 	* Untar the packet and copy the following files to the board using scp.
 	```
-	$scp <path_to_untar'd_runtime_library>/unilog/aarch64/libunilog-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
-	$scp <path_to_untar'd_runtime_library>/XIR/aarch64/libxir-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
-	$scp <path_to_untar'd_runtime_library>/VART/aarch64/libvart-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
-	$scp <path_to_untar'd_runtime_library>/Vitis-AI-Library/aarch64/libvitis_ai_library-1.1.0-Linux-build46.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/unilog/aarch64/libunilog-1.1.0-Linux-build<xx>.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/XIR/aarch64/libxir-1.1.0-Linux-build<xx>.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/VART/aarch64/libvart-1.1.0-Linux-build<xx>.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/Vitis-AI-Library/aarch64/libvitis_ai_library-1.1.0-Linux-build<xx>.deb root@IP_OF_BOARD:~/
 	```
 	* Copy the `glog-0.4.0-Linux.tar.gz` from host to board with the following command. 
 	```
@@ -356,10 +356,10 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 	```
 	* Install the Vitis AI Library.
 	```
-	#dpkg –i --force-all libunilog-1.1.0-Linux-build46.deb
-	#dpkg –i libxir-1.1.0-Linux-build46.deb
-	#dpkg –i libvart-1.1.0-Linux-build46.deb
-	#dpkg -i libvitis_ai_library-1.1.0-Linux-build46.deb
+	#dpkg –i --force-all libunilog-1.1.0-Linux-build<xx>.deb
+	#dpkg –i libxir-1.1.0-Linux-build<xx>.deb
+	#dpkg –i libvart-1.1.0-Linux-build<xx>.deb
+	#dpkg -i libvitis_ai_library-1.1.0-Linux-build<xx>.deb
 	```
 	 
 	  
