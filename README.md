@@ -39,7 +39,7 @@ Vitis AI is composed of the following key components:
 Two options are available for installing the containers with the Vitis AI tools and resources.
 
  - Pre-built containers on Docker Hub: [/xilinx/vitis-ai](https://hub.docker.com/r/xilinx/vitis-ai/tags)
- - Build containers locally with Docker recipes: [Docker Recipes](docker/README.MD)
+ - Build containers locally with Docker recipes: [Docker Recipes](https://github.com/Xilinx/Vitis-AI/tree/master/docker)
 
 
 ### Installation
