@@ -39,7 +39,7 @@ Vitis AI is composed of the following key components:
 Two options are available for installing the containers with the Vitis AI tools and resources.
 
  - Pre-built containers on Docker Hub: [/xilinx/vitis-ai](https://hub.docker.com/r/xilinx/vitis-ai/tags)
- - Build containers locally with Docker recipes: [Docker Recipes](https://github.com/Xilinx/Vitis-AI/tree/master/docker)
+ - Build containers locally with Docker recipes: [Docker Recipes](docker/)
 
 
 ### Installation
@@ -55,13 +55,13 @@ Two options are available for installing the containers with the Vitis AI tools 
     ```
  - [Run Docker Container](doc/install_docker/load_run_docker.md)  
 
-   1) Run the CPU image from docker hub
+   Run the CPU image from docker hub
    ```
    ./docker_run.sh xilinx/vitis-ai
    ```
    or
 
-   2) build the CPU image locally and run it
+   Build the CPU image locally and run it
    ```
    cd docker
    ./docker_build_cpu.sh
@@ -72,7 +72,7 @@ Two options are available for installing the containers with the Vitis AI tools 
    ```
    or
 
-   3) build the GPU image locally and run it
+   Build the GPU image locally and run it
    ```
    cd docker
    ./docker_build_gpu.sh
