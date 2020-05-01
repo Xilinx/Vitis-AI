@@ -53,6 +53,12 @@ Two options are available for installing the containers with the Vitis AI tools 
 
     cd Vitis-AI
     ```
+ - Clone the Vitis-AI repository with submodules.
+    ```
+    git clone --recurse-submodules https://github.com/Xilinx/Vitis-AI.git
+
+    cd Vitis-AI
+    ```
  - [Run Docker Container](doc/install_docker/load_run_docker.md)  
 
    Run the CPU image from docker hub
