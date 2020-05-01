@@ -272,7 +272,7 @@ $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/
 
 8. To compile the demo in the AI Library, take `yolov3` as an example.
 ```
-$cd /workspace/Vitis-AI/Vitis-AI-Library/overview/demo/yolov3
+$cd /workspace/Vitis-AI-Library/overview/demo/yolov3
 $bash -x build.sh
 ```	
 9. To compile the AL Library sample, take `classification` as an example, execute the following command.
