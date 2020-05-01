@@ -19,7 +19,11 @@
 	- [5.3 Configurate the DPU](#53-configurate-the-dpu)
 		- [5.3.1 Modify the Frequency](#531-modify-the-frequency)
 		- [5.3.2 Modify the Parameters](#532-modify-the-parameters)
-
+- [6 Run with Vitis AI Library](#6-run-with-vitis-ai-library)
+	- [6.1 Host Setup](#61-host-setup)
+	- [6.2 Board Setup](#62-board-setup)
+	- [6.3 Run Vitis AI Library Examples](#63-run-vitis-ai-library-examples)
+  
 ## 1 Revision History
 
 This wiki page complements the Vivado 2019.2 version of the DPU TRD.
@@ -56,8 +60,8 @@ Required:
   Required:
   - Vivado 2019.2 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html) 
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
-  - [Vitis AI 1.0](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
-  - [Vitis AI Library 1.0](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library
+  - [Vitis AI 1.1](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
+  - [Vitis AI Library 1.1](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library
   
 ------
 
@@ -413,3 +417,139 @@ An example of block RAM and UltraRAM utilization is shown in the Summary tab sec
 dict set dict_prj dict_param  DPU_URAM_PER_DPU {0}
 ```
 
+## 6 Run with Vitis AI Library
+### 6.1 Host Setup
+1. Download the [sdk.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk.sh)
+
+2. Install the cross-compilation system environment, follow the prompts to install. 
+```
+$./sdk.sh
+```
+Note that the `~/petalinux_sdk` path is recommended for the installation. Regardless of the path you choose for the installation, make sure the path has read-write permissions. 
+Here we install it under `~/petalinux_sdk`.
+
+3. When the installation is complete, follow the prompts and execute the following command.
+```
+$. ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
+```
+Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
+
+4. Download the [vitis_ai_2019.2-r1.1.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2019.2-r1.1.0.tar.gz) and install it to the petalinux system.
+```
+$tar -xzvf vitis_ai_2019.2-r1.1.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+```
+5. Update the glog to v0.4.0
+	* Download the glog package and untar it.
+		```
+		$cd ~
+		$curl -Lo glog-v0.4.0.tar.gz https://github.com/google/glog/archive/v0.4.0.tar.gz
+		$tar -zxvf glog-v0.4.0.tar.gz
+		$cd glog-0.4.0
+		```
+	* Build it and install it to the PetaLinux system.
+		```
+		$mkdir build_for_petalinux
+		$cd build_for_petalinux
+		$unset LD_LIBRARY_PATH; source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
+		$cmake -DCPACK_GENERATOR=TGZ -DBUILD_SHARED_LIBS=on -DCMAKE_INSTALL_PREFIX=$OECORE_TARGET_SYSROOT/usr ..
+		$make && make install
+		$make package
+		```
+6. Cross compile the demo in the AI Library, using yolov3 as example.
+```
+$cd ~/Vitis-AI/Vitis-AI-Library/overview/demo/yolov3
+$bash -x build.sh
+```	
+
+7. To compile the library sample in the AI Library, take facedetect for example, execute the following command.
+```
+$cd ~/Vitis-AI/Vitis-AI-Library/overview/samples/facedetect
+$bash -x build.sh
+```	
+### 6.2 Board Setup
+1. Install AI Model Package   
+	* Download [ZCU102 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_model_ZCU102_2019.2-r1.1.0.deb).  
+	
+	* Copy the downloaded file to the board using scp with the following command.
+	```
+	  $scp vitis_ai_model_ZCU102_2019.2-r1.1.0.deb root@IP_OF_BOARD:~/
+	```
+	* Log in to the board (usong ssh or serial port) and install the model package.
+	* Run the following command.
+	```
+	  #dpkg -i vitis_ai_model_ZCU102_2019.2-r1.1.0.deb
+	```
+2. Install AI Library Package
+	* Download the [Vitis AI Runtime 1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.1-vivado.tar.gz).  
+	
+	* Untar the packet and copy the files to the board using scp.
+	```
+	$scp <path_to_untar'd_runtime_library>/libunilog-1.1.0-Linux.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/libxir-1.1.0-Linux.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/libvart-1.1.0-Linux.deb root@IP_OF_BOARD:~/
+	$scp <path_to_untar'd_runtime_library>/aarch64/libvitis_ai_library-1.1.1-Linux.deb root@IP_OF_BOARD:~/
+	```	
+  * Install the Vitis AI Library on the board.
+	```
+	#dpkg –i --force-all libunilog-1.1.0-Linux.deb
+	#dpkg –i libxir-1.1.0-Linux.deb
+	#dpkg –i libvart-1.1.0-Linux.deb
+	#dpkg -i libvitis_ai_library-1.1.1-Linux.deb
+	```
+	* Reduce the DPU frequency to 93%.
+	```
+	#dpu_clk 93
+	```
+### 6.3 Run Vitis AI Library Examples
+
+1. Copy the sample and demo from host to the target using scp with the following command.
+```
+$scp -r ~/Vitis-AI/Vitis-AI-Library/overview root@IP_OF_BOARD:~/
+```
+2. Download and copy the image and video packages from host to the target using scp with the following command.
+	* Download the [demo video files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) 
+	
+	* Download the [demo image files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz) 
+```
+$scp vitis_ai_library_r1.1_images.tar.gz root@IP_OF_BOARD:~/
+$scp vitis_ai_library_r1.1_video.tar.gz root@IP_OF_BOARD:~/
+```
+3. Untar the image and video packages on the target.
+```
+#cd ~
+#tar -xzvf vitis_ai_library_r1.1_images.tar.gz -C overview
+#tar -xzvf vitis_ai_library_r1.1_video.tar.gz -C overview
+```
+4. Enter the directory of example in target board, take facedetect as an example.
+```
+#cd ~/overview/samples/facedetect
+```
+
+5. Run the image test example.
+```
+#./test_jpeg_facedetect densebox_640_360 sample_facedetect.jpg
+```
+Compare the results with the readme file in the current directory.
+
+6. Run the video test example.
+```
+#./test_video_facedetect densebox_640_360 video_input.mp4 -t 8
+Video_input.mp4: The video file's name for input.The user needs to prepare the videofile.
+-t: <num_of_threads>
+```
+
+7. To test the program with a USB camera as input, run the following command:
+```
+#./test_video_facedetect densebox_640_360 0 -t 8
+0: The first USB camera device node. If you have multiple USB camera, the value might be 1,2,3 etc.
+-t: <num_of_threads>
+```
+
+8. To test the performance of model, run the following command:
+```
+#./test_performance_facedetect densebox_640_360 test_performance_facedetect.list -t 8 -s 60
+-t: <num_of_threads>
+-s: <num_of_seconds>
+```
+## Reference
+For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_1/ug1354-xilinx-ai-sdk.pdf) and [vitis-ai-library-programming-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_1/ug1355-xilinx-ai-sdk-programming-guide.pdf).
