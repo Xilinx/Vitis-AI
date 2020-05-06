@@ -120,9 +120,9 @@ If the compilation process does not report any error and the executable file `re
 
 Assume the docker image has been loaded and up running.
 
-1. Download the [U50_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin.tar.gz) and install them.
+1. Download the [U50_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin-v2.tar.gz) and install them.
 ```
-$tar -xzvf U50_xclbin.tar.gz
+$tar -xzvf U50_xclbin-v2.tar.gz
 $cd U50_xclbin/6E250M
 $sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 ```
