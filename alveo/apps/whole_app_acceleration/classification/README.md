@@ -11,7 +11,7 @@ This application  demonstrates the acceleration of pre-processing for classifica
 </div>
 
 ## Running the Application
-1. `cd $VAI_ALVEO_ROOT/apps/xplusml/classification`
+1. `cd $VAI_ALVEO_ROOT/apps/whole_app_acceleration/classification`
 2. Use `run.sh` file to run the application. Familiarize yourself with the script usage by `./run.sh -h`
 
 ### Examples:

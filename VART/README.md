@@ -130,7 +130,7 @@ $sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 ```
 $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/
 ```
-3. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.1.tar.gz) , untar the packet and install the VART runtime.
+3. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.2.tar.gz) , untar the packet and install the VART runtime.
 ```
 $cd <path_to_untar'd_runtime_library>/VART/X86_64
 $sudo dpkg –i libvart-1.1.0-Linux-build<xx>.deb
@@ -153,7 +153,7 @@ $sudo dpkg –i libvart-1.1.0-Linux-build<xx>.deb
 	You can now operate on the board using SSH.
 
 2. Installing Vitis AI Runtime Package   
-	* Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.1.tar.gz)  
+	* Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.2.tar.gz)  
 	
 	* Connect to the board with SSH: $ssh root@IP_OF_BOARD. The password is `root`.
 	
