@@ -261,7 +261,7 @@ $sudo dpkg -i libvitis_ai_library-1.1.0-Linux.deb
 ```
 $sudo dpkg -i xilinx_model_zoo-1.1.0-Linux.deb
 ```
-6. Download the [U50_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin.tar.gz) and install them.
+6. Download the [U50_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin-v2.tar.gz) and install them.
 ```
 $sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 ```
