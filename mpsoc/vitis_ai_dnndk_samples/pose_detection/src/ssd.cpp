@@ -442,22 +442,22 @@ void PriorBoxes::Create(vector<shared_ptr<vector<float>>> & vec_priors, SSD_TYPE
 
     } else if (type == SSD_TYPE::PERSON) {
         prior_boxes.emplace_back(PriorBoxes{
-            480, 360, 60, 45, variances, {18.0, 33, 50}, {40.0, 60, 80}, {2}, 0.5, 8.0, 8.0});
+            640, 360, 80, 45, variances, {18.0, 33, 50}, {40.0, 60, 80}, {2}, 0.5, 8.0, 8.0});
         // fc7_mbox_priorbox
         prior_boxes.emplace_back(
-            PriorBoxes{480, 360, 30, 23, variances, {72.0}, {160.0}, {2, 3}, 0.5, 16, 16});
+            PriorBoxes{640, 360, 40, 23, variances, {72.0}, {160.0}, {2, 3}, 0.5, 16, 16});
         // conv6_2_mbox_priorbox
         prior_boxes.emplace_back(
-            PriorBoxes{480, 360, 15, 12, variances, {160.0}, {240.0}, {2, 3}, 0.5, 32, 32});
+            PriorBoxes{640, 360, 20, 12, variances, {160.0}, {240.0}, {2, 3}, 0.5, 32, 32});
         // conv7_2_mbox_priorbox
         prior_boxes.emplace_back(
-            PriorBoxes{480, 360, 8, 6, variances, {240.0}, {320.0}, {2, 3}, 0.5, 64, 64});
+            PriorBoxes{640, 360, 10, 6, variances, {240.0}, {320.0}, {2, 3}, 0.5, 64, 64});
         // conv8_2_mbox_priorbox
         prior_boxes.emplace_back(
-            PriorBoxes{480, 360, 6, 4, variances, {320.0}, {400.0}, {2}, 0.5, 100, 100});
+            PriorBoxes{640, 360, 8, 4, variances, {320.0}, {400.0}, {2}, 0.5, 100, 100});
         // conv9_2_mbox_priorbox
         prior_boxes.emplace_back(
-            PriorBoxes{480, 360, 4, 2, variances, {350.0}, {480.0}, {2}, 0.5, 300, 300});
+            PriorBoxes{640, 360, 6, 2, variances, {350.0}, {480.0}, {2}, 0.5, 300, 300});
     }
 
     int num_priors = 0;
