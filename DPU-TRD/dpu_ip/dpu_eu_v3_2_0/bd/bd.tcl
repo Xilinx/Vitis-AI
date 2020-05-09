@@ -103,8 +103,8 @@ proc bip_set_time_stamp {ip} {
 proc bip_set_base_addr { ip } {
   set seg_slv     [get_bd_addr_segs -addressable -of_objects [get_bd_intf_pins $ip/S_AXI]]
   set seg_as      [get_bd_addr_segs -of_objects $seg_slv]
-  set seg_offset  [get_property offset  $seg_as]
-  set seg_range   [get_property range   $seg_as]
+  set seg_offset  [format "0x%x" [expr [lindex [get_property offset  $seg_as] 0] % (2**32)]]
+  set seg_range   [format "0x%x" [expr [lindex [get_property range   $seg_as] 0] % (2**32)]]
 
   set_property    "CONFIG.S_AXI_SLAVES_BASE_ADDR" $seg_offset $ip
   if { [expr $seg_range] != [expr int(pow(2,24))] } {

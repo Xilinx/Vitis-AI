@@ -66,8 +66,7 @@ Required:
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [XRT 2019.2](https://github.com/Xilinx/XRT/tree/2019.2)
   - [zcu102 dpu platform](https://www.xilinx.com/bin/public/openDownload?filename=zcu102_dpu_2019.2.zip)
-  - [Vitis AI 1.0](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
-  - [Vitis AI Library 1.0](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
+  - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
 
 ###### **Note:** The user can also refer the [zcu102 dpu platform](https://github.com/Xilinx/Vitis_Embedded_Platform_Source/tree/master/Xilinx_Official_Platforms/zcu102_dpu), The github page includes all the details, such as how to generage the zcu102 dpu platform, how to create the SD card after compiling the DPU project.
@@ -211,21 +210,31 @@ Copy the whole files in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card** execp
 
 Extract the rootfs.tar.gz in the RootFs folder 
 
-Copy the whole files in **$TRD_HOME/app/** directory to SD Card.
+Copy the directory **$TRD_HOME/app** to the BOOT partition of the SD Card.
 
 After the linux boot, run:
 
 ```
 
-% cp sd_card/dpu.xclbin /usr/lib
+% cp /mnt/dpu.xclbin /usr/lib
 
 % tar -xvf /mnt/app/resnet50.tar.gz -C ~
 
 % cp /mnt/app/models/resnet50.elf ~
 
+% cp -r /mnt/app/img ~
+
 % cd ~
 
 % env LD_LIBRARY_PATH=samples/lib samples/bin/resnet50 img/bellpeppe-994958.JPEG
+
+Expect: 
+score[945]  =  0.992235     text: bell pepper,
+score[941]  =  0.00315807   text: acorn squash,
+score[943]  =  0.00191546   text: cucumber, cuke,
+score[939]  =  0.000904801  text: zucchini, courgette,
+score[949]  =  0.00054879   text: strawberry,
+
 ```
 
 
