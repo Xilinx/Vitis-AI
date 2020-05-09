@@ -321,6 +321,13 @@ Detailed command used in the script are as below:
 ```
 ./inspect_tf_model.sh  ${TF_NETWORK_PATH}/float/resnet_v1_50_inference.pb
 ```
+Input node, output node and layers details are as below:
+```
+Op types used: 273 Const, 267 Identity, 54 Conv2D, 53 FusedBatchNorm, 49 Relu, 16 Add, 4 MaxPool, 4 Pad, 2 Reshape, 1 BiasAdd, 1 Mean, 1 Placeholder, 1 Shape, 1 Softmax, 1 Squeeze
+
+Found 1 possible inputs: (name=input, type=float(1), shape=[?,224,224,3]) 
+Found 1 possible outputs: (name=resnet_v1_50/predictions/Reshape_1, op=Reshape) 
+```
 
 - ### Float model evaluation 
 
