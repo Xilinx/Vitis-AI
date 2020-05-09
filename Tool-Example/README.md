@@ -320,7 +320,6 @@ Detailed command used in the script are as below:
 
 ```
 ./inspect_tf_model.sh  ${TF_NETWORK_PATH}/float/resnet_v1_50_inference.pb
-
 ```
 
 - ### Float model evaluation 
