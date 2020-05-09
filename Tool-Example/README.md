@@ -17,11 +17,12 @@ Tool-Example/
 ├── 1_caffe_quantize_for_v3.sh
 ├── 2_caffe_compile_for_v2.sh
 ├── 2_caffe_compile_for_v3.sh
-├── 3_tf_eval_frozen_graph.sh
-├── 4_tf_quantize.sh
-├── 5_tf_eval_quantize_graph.sh
-├── 6_tf_compile_for_v2.sh
-├── 6_tf_compile_for_v3.sh
+├── 3_tf_inspect_model.sh
+├── 4_tf_eval_frozen_graph.sh
+├── 5_tf_quantize.sh
+├── 6_tf_eval_quantize_graph.sh
+├── 7_tf_compile_for_v2.sh
+├── 7_tf_compile_for_v3.sh
 ├── example_file
 │   ├── input_fn.py
 │   ├── resnet_eval.py
@@ -309,11 +310,24 @@ In order to use TensorFlow and tools, please use following command to activate T
 
 `conda activate vitis-ai-tensorflow`
 
+- ### Inspect Tensorflow Model
+
+Run script **3_tf_inspect_model.sh** to inspect the tensorflow model to get input and output node(s), and input nodes shape.
+
+`sh 3_tf_inspect_model.sh`
+
+Detailed command used in the script are as below:
+
+```
+./inspect_tf_model.sh  ${TF_NETWORK_PATH}/float/resnet_v1_50_inference.pb
+
+```
+
 - ### Float model evaluation 
 
-Run script **3_tf_eval_frozen_graph.sh** to evaluate Resnet50 float model. 
+Run script **4_tf_eval_frozen_graph.sh** to evaluate Resnet50 float model. 
 
-`sh 3_tf_eval_frozen_graph.sh`
+`sh 4_tf_eval_frozen_graph.sh`
 
 Detailed commands used in the script are as below:
 ```
@@ -345,9 +359,9 @@ Accuracy: 0.7
 
 - ### Quantization
 
-Run script **4_tf_quantize.sh** to calibrate and quantize Resnet50. 
+Run script **5_tf_quantize.sh** to calibrate and quantize Resnet50. 
 
-`sh 4_tf_quantize.sh`
+`sh 5_tf_quantize.sh`
 
 Detailed commands used in the script are as below:
 
@@ -386,9 +400,9 @@ The **quantize_eval_model.pb** can be used for INT8 evaluation, DPU result emula
 
 - ### Quantized model evaluation 
 
-Run script **5_tf_eval_quantize_graph.sh** to evaluate Resnet50 quantized model. 
+Run script **6_tf_eval_quantize_graph.sh** to evaluate Resnet50 quantized model. 
 
-`sh 5_tf_eval_quantize_graph.sh`
+`sh 6_tf_eval_quantize_graph.sh`
 
 Detailed command used in the script are as below:
 ```
@@ -419,9 +433,9 @@ Accuracy: 0.79
 ```
 
 - ### Compilation for DPU edge overlay (DPUv2)
-Run script **6_tf_compile_for_v2.sh** to compile Resnet50 deploy model for Vitis AI ZCU102 pre-built image. If other configuration is perferred, please refer to [UG1414 Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_1/zkj1576857115470.html) about how to generate corresponding arch file and compile the model.
+Run script **7_tf_compile_for_v2.sh** to compile Resnet50 deploy model for Vitis AI ZCU102 pre-built image. If other configuration is perferred, please refer to [UG1414 Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_1/zkj1576857115470.html) about how to generate corresponding arch file and compile the model.
 
-`sh 6_tf_compile_for_v2.sh`
+`sh 7_tf_compile_for_v2.sh`
 
 Detailed commands used in the script are as below:
 
@@ -494,9 +508,9 @@ kernel list info for network "resnet50"
 Important items (e.g. Kernel Name, Input Node(s) and Output Node(s)) will be used in programming. Generated elf file will be used in cross-compilation.
 
 - ### Compilation for DPU Alveo overlay (DPUv3)
-Run script **6_tf_compile_for_v3.sh** to compile Resnet50 deploy model for Vitis AI U50 DPUv3.
+Run script **7_tf_compile_for_v3.sh** to compile Resnet50 deploy model for Vitis AI U50 DPUv3.
 
-`sh 6_tf_compile_for_v3.sh`
+`sh 7_tf_compile_for_v3.sh`
 
 Detailed commands used in the script are as below:
 
