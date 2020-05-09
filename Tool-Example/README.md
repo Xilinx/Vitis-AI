@@ -319,7 +319,7 @@ Run script **3_tf_inspect_model.sh** to inspect the tensorflow model to get inpu
 Detailed command used in the script are as below:
 
 ```
-./inspect_tf_model.sh  ${TF_NETWORK_PATH}/float/resnet_v1_50_inference.pb
+vai_q_tensorflow inspect --input_frozen_graph ${TF_NETWORK_PATH}/float/resnet_v1_50_inference.pb
 ```
 Input node, output node and layers details are as below:
 ```
