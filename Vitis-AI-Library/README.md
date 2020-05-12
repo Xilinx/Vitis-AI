@@ -15,6 +15,12 @@ The Vitis AI Library provides an easy-to-use and unified interface by encapsulat
   <img src="ai_library_diagram.png" >
 </p>
 
+For edge users, click 
+[Quick Start For Edge](#quick-start-for-edge) to get started quickly. 
+
+For cloud users, click 
+[Quick Start For Alveo](#quick-start-for-alveo) to get started quickly.
+
 Vitis AI Library directory structure introduction
 --------------------------------------------------
 
@@ -185,8 +191,8 @@ vitis_ai_library
 
 ```
 
-## Quick Start
-### Setting Up the Host For Edge
+## Quick Start For Edge
+### Setting Up the Host
 1. Download the [sdk.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk.sh)
 
 2. Install the cross-compilation system environment, follow the prompts to install. 
@@ -230,9 +236,9 @@ $cd ~/Vitis-AI/Vitis-AI-Library/overview/demo/yolov3
 $bash -x build.sh
 ```	
 
-7. To compile the library sample in the AI Library, take classification for example, execute the following command.
+7. To compile the library sample in the AI Library, take `facedetect` as an example, execute the following command.
 ```
-$cd ~/Vitis-AI/Vitis-AI-Library/overview/samples/classification
+$cd ~/Vitis-AI/Vitis-AI-Library/overview/samples/facedetect
 $bash -x build.sh
 ```	
 
@@ -244,52 +250,6 @@ $bash -x build.sh
 $cd ~/Vitis-AI/Vitis-AI-Library
 $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
 ```
-
-### Setting Up the Host For Alveo
-
-Assume the docker image has been loaded and up running.
-
-1. Place the program, data and other files in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
-Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
-
-2. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.2.tar.gz) package.
-Untar it, find the `libvitis_ai_library-1.1.0-Linux-build<xx>.deb` package and install it to the docker system.
-```
-$sudo dpkg -i libvitis_ai_library-1.1.0-Linux.deb
-```
-5. Download [U50 Model](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo-1.1.0-Linux.deb) packet and install it.
-```
-$sudo dpkg -i xilinx_model_zoo-1.1.0-Linux.deb
-```
-6. Download the [U50_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin-v2.tar.gz) and install them.
-```
-$sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
-```
-7. Enable environment variable and export the library path.
-```
-$export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/
-```
-
-8. To compile the demo in the AI Library, take `yolov3` as an example.
-```
-$cd /workspace/Vitis-AI-Library/overview/demo/yolov3
-$bash -x build.sh
-```	
-9. To compile the AL Library sample, take `classification` as an example, execute the following command.
-```
-$cd /workspace/Vitis-AI-Library/overview/samples/classification
-$bash -x build.sh
-```	
-
-10. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
-	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
-	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
-	Execute the following command to build the libraries all at once.
-```
-$cd /workspace/Vitis-AI-Library
-$./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
-```
-
 
 ### Setting Up the Target
 
@@ -361,18 +321,17 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 	#dpkg –i libvart-1.1.0-Linux-build<xx>.deb
 	#dpkg -i libvitis_ai_library-1.1.0-Linux-build<xx>.deb
 	```
-	 
-	  
-### Running Vitis AI Library Examples (For Edge)
+	 	  
+### Running Vitis AI Library Examples
 
 1. Copy the sample and demo from host to the target using scp with the following command.
 ```
-$scp -r ~/Vitis-AI/Vitis-AI-Library/overview root@IP_OF_BOARD:~/
+[Host]$scp -r ~/Vitis-AI/Vitis-AI-Library/overview root@IP_OF_BOARD:~/
 ```
 2. Copy the image and video packages from host to the target using scp with the following command.
 ```
-$scp vitis_ai_library_r1.1_images.tar.gz root@IP_OF_BOARD:~/
-$scp vitis_ai_library_r1.1_video.tar.gz root@IP_OF_BOARD:~/
+[Host]$scp vitis_ai_library_r1.1_images.tar.gz root@IP_OF_BOARD:~/
+[Host]$scp vitis_ai_library_r1.1_video.tar.gz root@IP_OF_BOARD:~/
 ```
 3. Untar the image and video packages on the target.
 ```
@@ -411,26 +370,78 @@ Video_input.mp4: The video file's name for input.The user needs to prepare the v
 -s: <num_of_seconds>
 ```
 
+## Quick Start For Alveo
+### Setting Up the Host
 
+Assume the docker image has been loaded and up running.
 
-### Running Vitis AI Library Examples (For Cloud)
-1. Download the [vitis_ai_library_r1.1_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz) and [vitis_ai_library_r1.1_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) packages.
-2. Untar the image and video packages.
+1. Place the program, data and other files in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
+Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
+
+2. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.2.tar.gz) package.
+Untar it, find the `libvitis_ai_library-1.1.0-Linux-build<xx>.deb` package and install it to the docker system.
 ```
-#cd /workspace
-#tar -xzvf vitis_ai_library_r1.1_images.tar.gz -C Vitis-ai/Vitis-AI-Library/overview
-#tar -xzvf vitis_ai_library_r1.1_video.tar.gz -C Vitis-ai/Vitis-AI-Library/overview
+$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.2.tar.gz -O vitis-ai-runtime-1.1.2.tar.gz
+$tar -xzvf vitis-ai-runtime-1.1.2.tar.gz
+$cd vitis-ai-runtime-1.1.2/Vitis-AI-Library/X86_64/
+$sudo dpkg -i libvitis_ai_library-1.1.0-Linux-build<xx>.deb
 ```
-3. Enter the directory of sample and then compile it. Take `facedetect` as an example.
+5. Download [U50 Model](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo-1.1.0-Linux.deb) packet and install it.
+```
+$wget https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo-1.1.0-Linux.deb -O xilinx_model_zoo-1.1.0-Linux.deb
+$sudo dpkg -i xilinx_model_zoo-1.1.0-Linux.deb
+```
+6. Download the [U50_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin-v2.tar.gz) and install them.
+```
+$wget https://www.xilinx.com/bin/public/openDownload?filename=U50_xclbin-v2.tar.gz -O U50_xclbin-v2.tar.gz
+$tar -xzvf U50_xclbin-v2.tar.gz
+$cd U50_xclbin/6E250M
+$sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
+```
+7. Enable environment variable and export the library path.
+```
+$export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/
+```
+
+8. To compile the demo in the AI Library, take `yolov3` as an example.
+```
+$cd /workspace/Vitis-AI-Library/overview/demo/yolov3
+$bash -x build.sh
+```	
+9. To compile the AI Library sample, take `classification` as an example, execute the following command.
+```
+$cd /workspace/Vitis-AI-Library/overview/samples/classification
+$bash -x build.sh
+```	
+
+10. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
+	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
+	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
+	Execute the following command to build the libraries all at once.
+```
+$cd /workspace/Vitis-AI-Library
+$./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
+```
+
+### Running Vitis AI Library Examples
+1. Download the [vitis_ai_library_r1.1_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz) and [vitis_ai_library_r1.1_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) packages and untar them.
+```
+$cd /workspace
+$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz -O vitis_ai_library_r1.1_images.tar.gz
+$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz -O vitis_ai_library_r1.1_video.tar.gz
+$tar -xzvf vitis_ai_library_r1.1_images.tar.gz -C Vitis-ai/Vitis-AI-Library/overview
+$tar -xzvf vitis_ai_library_r1.1_video.tar.gz -C Vitis-ai/Vitis-AI-Library/overview
+```
+2. Enter the directory of sample and then compile it. Take `facedetect` as an example.
 ```
 $cd /workspace/vitis-ai/vitis_ai_library/overview/samples/facedetect
 $bash -x build.sh
 ```
-4. Run the image test example.
+3. Run the image test example.
 ```
 $./test_jpeg_facedetect densebox_640_360 sample_facedetect.jpg
 ```
-5. If you want to run the program in batch mode, which means that the DPU processes multiple
+4. If you want to run the program in batch mode, which means that the DPU processes multiple
 images at once to prompt for processing performance, you have to compile the entire Vitis AI
 Library according to "Setting Up the Host For Cloud" section. Then the batch program will be generated
 under build_dir_default.Enter build_dir_default, take facedetect as an example,
@@ -438,13 +449,13 @@ execute the following command.
 ```
 $./test_facedetect_batch densebox_640_360 <img1_url> [<img2_url> ...]
 ```
-6. Run the video test example.
+5. Run the video test example.
 ```
 #./test_video_facedetect densebox_640_360 video_input.mp4 -t 8
 Video_input.mp4: The video file's name for input.The user needs to prepare the videofile.
 -t: <num_of_threads>
 ```
-7. To test the performance of model, run the following command:
+6. To test the performance of model, run the following command:
 ```
 #./test_performance_facedetect densebox_640_360 test_performance_facedetect.list -t 8 -s 60
 -t: <num_of_threads>

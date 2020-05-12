@@ -431,7 +431,7 @@ If the platform doesn't have enough port to connect the port of DPU. The ports c
 
 ### 5.4 Integrate the DPU in customer platform
 
-Refer the UG1360 to create the vitis platform. Modify the **SDX_PLATFORM** to specify the user platform.
+Refer the UG1146 or [Vitis_Embedded_Platform_Source](https://github.com/Xilinx/Vitis_Embedded_Platform_Source) to create the vitis platform. Modify the **SDX_PLATFORM** to specify the user platform.
 
 ```
 % export SDX_PLATFORM=<user platform path>/user_platform.xpfm
