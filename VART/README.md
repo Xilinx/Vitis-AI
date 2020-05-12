@@ -232,7 +232,9 @@ $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/
 ```
 3. Download [vitis_ai_runtime_library_r1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.2.tar.gz) , untar the packet and install the VART runtime.
 ```
-$cd <path_to_untar'd_runtime_library>/VART/X86_64
+$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.2.tar.gz -O vitis-ai-runtime-1.1.2.tar.gz
+$tar -xzvf vitis-ai-runtime-1.1.2.tar.gz
+$cd vitis-ai-runtime-1.1.2/VART/X86_64/
 $sudo dpkg –i libvart-1.1.0-Linux-build<xx>.deb
 ```
 
