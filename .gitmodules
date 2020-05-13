@@ -1,8 +1,5 @@
 [submodule "AI-Model-Zoo"]
 	path = AI-Model-Zoo
-	url = https://github.com/Xilinx/AI-Model-Zoo.git
+	url = https://github.com/Xilinx/AI-Model-Zoo
 	branch = master
-[submodule "Vitis-AI-Tutorials"]
-	path = Vitis-AI-Tutorials
-	url = https://github.com/Xilinx/Vitis-AI-Tutorials.git
-	branch = master
+
