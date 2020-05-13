@@ -1,8 +1,9 @@
 # DPUv3E on U50 with Gen3x4 Platform Usage Guide
 DPUv3E on U50 with Gen3x4 Platform is in Early-Access stage now, you could follow the instruction below to try it. It will bring 14% higher performance than the default Gen3x16 Platform version. 
-### Redhat/Centos 7.4-7.6 is supported for this version in Early-Access stage.
 
 ## 1. Card preparation
+This step will flash the Alveo U50 card with gen3x4 Deployment Platform. Now **Redhat/Centos7.4-7.6** is supported for this step. Ubuntu 16.04/18.04 support is coming soon.
+
 Firstly please ensure latest version XRT has been installed correctly. Then use following command to check the version of Depolyment shell installed on host and card:
 ~~~
 /opt/xilinx/xrt/bin/xbutil scan
@@ -41,12 +42,12 @@ If the last line of platform information is not **xilinx_u50_gen3x4_xdma_201920_
 After the scripts execution finished, please cold reboot the machine (power off and power on the machine again) and go on to next step.
 
 ## 2. Using DPUv3E gen3x4 version in VART and Vitis AI Library
-Now you can follow the instruction in [Vitis-AI-Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) or [VART](https://github.com/Xilinx/Vitis-AI/tree/master/VART) to use DPUv3E. Before that, please note you should use following script to replace the relevant steps for U50_xclbin download and installation.
+Now you can follow the instruction in [Vitis-AI-Library](../Vitis-AI-Library/README.md) or [VART](../VART/README.md) to use DPUv3E. Before that, please note you should use following script to replace the relevant steps for U50_xclbin download and installation.
 ~~~
 ./xclbin_setup.sh
 ~~~
 ### For Vitis-AI-Library
-The step 6 in [Setting Up the Host For Alveo](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library#setting-up-the-host-for-alveo) should be replaced.
+The step 1 in [Quick Start For Alveo](../Vitis-AI-Library/README.md#quick-start-for-alveo) should be replaced.
 ### For VART
-The step 1 in [Setting Up the Host For Alveo](https://github.com/Xilinx/Vitis-AI/tree/master/VART#setting-up-the-host-for-alveo) should be replaced.
+The step 1 in [Quick Start For Alveo](../VART/README.md#quick-start-for-alveo) should be replaced.
 
