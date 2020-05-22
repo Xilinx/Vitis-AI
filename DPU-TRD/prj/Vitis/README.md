@@ -265,7 +265,7 @@ The project will integrate 2 DPU. The user can delete this property, Then the pr
 
 #### 5.3.2 Modify the Parameters
 
-The default setting is B4096 for ZCU102. Read the dpu_conf.vh file to get the details of DPU 
+The default setting is B4096 for ZCU102. Read the dpu_conf.vh file to get the details of DPU. You can get all the configurations form [PG338](https://www.xilinx.com/support/documentation/ip_documentation/dpu/v3_2/pg338-dpu.pdf) 
 
 Modify the $TRD_HOME/prj/Vitis/dpu_conf.vh file to modify the configuration. 
 
@@ -483,7 +483,7 @@ steps:
 
 1.Modify the Makefile file
 ```
-line13: --config ${TRD_HOME}/prj/Vitis//config_file/prj_config_104_2dpu
+line13: --config ${TRD_HOME}/prj/Vitis/config_file/prj_config_104_2dpu
 ```
 2.Enable the URAM and modify the RAM USAGE
 
