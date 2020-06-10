@@ -1,0 +1,51 @@
+name: Multi-task_test_env
+channels:
+- https://xcdengvm244030/defaults
+- https://xcdengvm244030/conda-forge
+- https://xcdconda/pytorch/
+- https://xcdengvm244030/conda-forge/
+- https://xcdengvm244030/bioconda/
+- https://xcdengvm244030/defaults/
+dependencies:
+- ca-certificates=2019.9.11=hecc5488_0
+- certifi=2019.9.11=py36_0
+- cffi=1.13.2=py36h8022711_0
+- freetype=2.10.0=he983fc9_1
+- jpeg=9c=h14c3975_1001
+- libblas=3.8.0=14_openblas
+- libcblas=3.8.0=14_openblas
+- libffi=3.2.1=he1b5a44_1006
+- libgfortran-ng=7.3.0=hdf63c60_2
+- liblapack=3.8.0=14_openblas
+- libopenblas=0.3.7=h6e990d7_3
+- libpng=1.6.37=hed695b0_0
+- libtiff=4.1.0=hfc65ed5_0
+- lz4-c=1.8.3=hf484d3e_1001
+- ncurses=6.1=hf484d3e_1002
+- ninja=1.9.0=hc9558a2_1
+- numpy=1.17.3=py36h95a1406_0
+- olefile=0.45.1=py36_0
+- openssl=1.1.1d=h516909a_0
+- parallel=20190922=1
+- perl=5.26.2=h516909a_1006
+- pillow=6.2.1=py36h6b7be26_0
+- pip=19.3.1=py36_0
+- pycparser=2.19=py36_1
+- python=3.6.7=h357f687_1006
+- readline=8.0=hf8c457e_0
+- setuptools=41.6.0=py36_1
+- six=1.13.0=py36_0
+- sqlite=3.30.1=hcee41ef_0
+- tk=8.6.9=hed695b0_1003
+- wheel=0.33.6=py36_0
+- xz=5.2.4=h14c3975_1001
+- zlib=1.2.11=h516909a_1006
+- zstd=1.4.3=h3b9ef0a_0
+- _libgcc_mutex=0.1=main
+- cudatoolkit=9.2=0
+- intel-openmp=2019.4=243
+- libgcc-ng=9.1.0=hdf63c60_0
+- libstdcxx-ng=9.1.0=hdf63c60_0
+- mkl=2019.4=243
+prefix:
+

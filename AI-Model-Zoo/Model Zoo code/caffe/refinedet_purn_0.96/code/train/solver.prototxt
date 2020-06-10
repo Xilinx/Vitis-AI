@@ -1,0 +1,21 @@
+test_iter: 10000
+test_interval: 2000
+base_lr: 0.000001
+display: 500
+max_iter: 64000
+lr_policy: "multistep"
+gamma: 0.1
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 10000
+snapshot_prefix: "./snapshot/refinedet"
+solver_mode: GPU
+net: "../../float/trainval.prototxt"
+test_initialization: false
+stepvalue: 32000
+stepvalue: 48000
+type: "SGD"
+eval_type: "detection"  
+ap_version: "11point"
+
+

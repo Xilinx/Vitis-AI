@@ -1,0 +1,40 @@
+name: tensorflow_1.9_conda_v16
+channels:
+
+dependencies:
+  - ca-certificates=2017.08.26=h1d4fec5_0
+  - libedit=3.1=heed3624_0
+  - libffi=3.2.1=hd88cf55_4
+  - libgcc-ng=7.2.0=h7cc24e2_2
+  - libstdcxx-ng=7.2.0=h7a57d05_2
+  - ncurses=6.0=h9df7e31_2
+  - openssl=1.0.2n=hb7f436b_0
+  - python=3.6.4=hc3d631a_1
+  - readline=7.0=ha6073c6_4
+  - sqlite=3.22.0=h1bed415_0
+  - tk=8.6.7=hc745277_3
+  - xz=5.2.3=h55aa19d_2
+  - zlib=1.2.11=ha838bed_2
+  - pip:
+    - absl-py==0.7.1
+    - astor==0.8.0
+    - certifi==2019.3.9
+    - cssutils==1.0.2
+    - gast==0.2.2
+    - grpcio==1.21.1
+    - h5py==2.8.0
+    - ll-xist==5.56
+    - Markdown==3.1.1
+    - numpy==1.16.3
+    - opencv-python==4.1.0.25
+    - protobuf==3.7.1
+    - pycoco==0.7.2
+    - six==1.12.0
+    - slim==0.1
+    - tensorboard==1.9.0
+    - tensorflow-gpu==1.9.0
+    - termcolor==1.1.0
+    - Werkzeug==0.15.4
+
+prefix: 
+
