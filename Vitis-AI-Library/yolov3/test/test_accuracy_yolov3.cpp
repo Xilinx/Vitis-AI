@@ -17,13 +17,7 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <string>
-#include <vitis/ai/proto/dpu_model_param.pb.h>
 #include <vitis/ai/yolov3.hpp>
-namespace vitis {
-namespace ai {
-extern "C" proto::DpuModelParam *find(const std::string &model_name);
-}
-} // namespace vitis
 using namespace std;
 using namespace cv;
 
@@ -111,12 +105,7 @@ int main(int argc, char *argv[]) {
   vector<string> names;
   LoadImageNames(argv[1], names);
   ofstream out(argv[2]);
-  auto model1 = vitis::ai::find(namemap[g_model_name]);
-  model1->mutable_yolo_v3_param()->set_test_map(true);
-  model1->mutable_yolo_v3_param()->set_conf_threshold(0.005);
-  auto model_name = namemap[g_model_name];
-  std::cout << "======model_name " << model_name << " " //
-            << std::endl;
+  auto model_name = namemap[g_model_name] + string("_acc");
   auto yolo = vitis::ai::YOLOv3::create(model_name, true);
   for (auto name : names) {
     cv::Mat img = cv::imread(name);

@@ -18,6 +18,9 @@ from ctypes import *
 import cv2
 import numpy as np
 import runner
+import xir.graph
+import pathlib
+import xir.subgraph
 import os
 import input_fn
 import math
@@ -86,26 +89,17 @@ def runResnet50(dpu,img,cnt):
     """get tensor"""
     inputTensors = dpu.get_input_tensors()
     outputTensors = dpu.get_output_tensors()
-    tensorformat = dpu.get_tensor_format()
-    if tensorformat == dpu.TensorFormat.NCHW:
-        outputHeight = outputTensors[0].dims[2]
-        outputWidth = outputTensors[0].dims[3]
-        outputChannel = outputTensors[0].dims[1]
-    elif tensorformat == dpu.TensorFormat.NHWC:
-        outputHeight = outputTensors[0].dims[1]
-        outputWidth = outputTensors[0].dims[2]
-        outputChannel = outputTensors[0].dims[3]
-    else:
-        exit("Format error")
+    outputHeight = outputTensors[0].dims[1]
+    outputWidth = outputTensors[0].dims[2]
+    outputChannel = outputTensors[0].dims[3]
     outputSize = outputHeight*outputWidth*outputChannel
     softmax = np.empty(outputSize)
-
     batchSize = inputTensors[0].dims[0]
     n_of_images = len(img)
     count = 0
     while count < cnt:
         runSize = batchSize
-        shapeIn = (runSize,) + tuple([inputTensors[0].dims[i] for i in range(inputTensors[0].ndims)][1:])
+        shapeIn = (runSize,) + tuple([inputTensors[0].dims[i] for i in range(inputTensors[0].ndim)][1:])
 
         """prepare batch input/output """
         outputData = []
@@ -130,7 +124,12 @@ def runResnet50(dpu,img,cnt):
             softmax = CPUCalcSoftmax(outputData[0][j], outputSize)
         count = count + runSize
 
-
+def get_subgraph (g):
+    sub = []
+    root = g.get_root_subgraph()
+    sub = [ s for s in root.children
+            if s.metadata.get_attr_str ("device") == "DPU"]
+    return sub
 def main(argv):
     global threadnum
 
@@ -140,9 +139,12 @@ def main(argv):
     i = 0
     global runTotall
     runTotall = len(listimage)
+    g = xir.graph.Graph.deserialize(pathlib.Path(argv[2]))
+    subgraphs = get_subgraph (g)
+    assert len(subgraphs) == 1 # only one DPU kernel
     all_dpu_runners = [];
     for i in range(int(threadnum)):
-        all_dpu_runners.append(runner.Runner(argv[2])[0])
+        all_dpu_runners.append(runner.Runner(subgraphs[0], "run"));
     """image list to be run """
     img = []
     for i in range(runTotall):

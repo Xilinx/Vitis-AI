@@ -15,14 +15,12 @@
 #
 cmake_minimum_required(VERSION 3.5)
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
-find_package(vart REQUIRED COMPONENTS util xrt-device-handle dpu-controller)
-set(OpenCV_LIBS glog opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
 if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
   ## TODO: fix hard coded directory
   link_directories(/home/administrator/workspace/qtbase/lib/)
-  list(APPEND OpenCV_LIBS Qt5Widgets Qt5Test Qt5Concurrent Qt5Gui Qt5Core)
+  list(APPEND Other_LIBS Qt5Widgets Qt5Test Qt5Concurrent Qt5Gui Qt5Core)
 else()
-  list(APPEND OpenCV_LIBS pthread)
+  list(APPEND Other_LIBS pthread)
 endif()
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
@@ -72,7 +70,16 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
   SOVERSION "${PROJECT_VERSION_MAJOR}"
   LIBRARY_OUTPUT_NAME  ${PROJECT_NAME}-${COMPONENT_NAME}
   )
-target_link_libraries(${COMPONENT_NAME} glog vart::util vart::dpu-controller)
+target_link_libraries(${COMPONENT_NAME} glog::glog vart::util vart::dpu-controller)
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include>
+)
+
 install(FILES
   include/vitis/ai/math.hpp
 #  include/vitis/fp16_base.hpp
@@ -84,6 +91,12 @@ install(FILES
   include/vitis/ai/image_util.hpp
   include/vitis/ai/preprocess.hpp
   DESTINATION include/vitis/ai)
+
+
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
 install(
   TARGETS ${COMPONENT_NAME}
@@ -114,16 +127,16 @@ if(HAVE_NEON)
   target_link_libraries(test_max_index ${COMPONENT_NAME} ${GTEST_DEPS})
 
   add_executable(test_softmax_my test/test_softmax_my.cpp)
-  target_link_libraries(test_softmax_my ${COMPONENT_NAME} ${OpenCV_LIBS} glog)
+  target_link_libraries(test_softmax_my ${COMPONENT_NAME} ${OpenCV_LIBS} ${Other_LIBS} glog::glog)
 
   add_executable(bgr_to_yuv420 test/bgr_to_yuv420.cpp)
-  target_link_libraries(bgr_to_yuv420 ${OpenCV_LIBS} glog)
+  target_link_libraries(bgr_to_yuv420 ${OpenCV_LIBS} ${Other_LIBS} glog::glog)
 
   add_executable(test_softmax_table test/test_softmax_table.cpp)
-  target_link_libraries(test_softmax_table ${COMPONENT_NAME} ${OpenCV_LIBS} glog)
+  target_link_libraries(test_softmax_table ${COMPONENT_NAME} ${OpenCV_LIBS} ${Other_LIBS} glog::glog)
 
 
 endif(HAVE_NEON)
 
 add_executable(test_softmax_1 test/test_softmax_1.cpp)
-target_link_libraries(test_softmax_1 ${COMPONENT_NAME} ${OpenCV_LIBS} glog)
+target_link_libraries(test_softmax_1 ${COMPONENT_NAME} ${OpenCV_LIBS} ${Other_LIBS} glog::glog)

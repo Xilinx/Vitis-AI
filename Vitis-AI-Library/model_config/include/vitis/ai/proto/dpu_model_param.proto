@@ -57,6 +57,10 @@ message RefineDetParam {
    repeated string layer_name = 7;
 }
 
+message OpenPoseParam {
+   repeated string layer_name = 1;
+}
+
 message ClassificationParam {
    optional int32 top_k = 1;
    optional bool test_accuracy =2;
@@ -65,6 +69,7 @@ message ClassificationParam {
      CAFFE = 1;
      VGG_PREPROCESS = 2;
      INCEPTION_PREPROCESS = 3;
+     INCEPTION_PT = 4;
    }
    optional PreprocessType preprocess_type = 3;
    optional string layer_name = 4;
@@ -217,6 +222,8 @@ message DpuModelParam {
    optional  FaceQuality5ptParam face_quality5pt_param = 17;
 
    optional TfssdParam tfssd_param = 18;
+   optional  OpenPoseParam open_pose_param = 19;
+ 
 }
 
 

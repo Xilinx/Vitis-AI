@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "dpu_task_imp.hpp"
 #include <glog/logging.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -20,21 +21,76 @@
 #include <cassert>
 #include <chrono>
 #include <iostream>
-
-using namespace std;
-#include <vart/dpu/tensor.hpp>         // for vitis
-#include <vart/dpu/tensor_buffer.hpp>  // for vitis
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <vart/tensor_buffer.hpp>  // for vitis
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/image_util.hpp>
+#include <vitis/ai/time_measure.hpp>
 #include <vitis/ai/weak.hpp>
-#include "./dpu_task_imp.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "vitis/ai/time_measure.hpp"
-DEF_ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME, "0");
-DEF_ENV_PARAM(DEBUG_DPBASE, "0");
+#include <xir/tensor/tensor.hpp>  // for xir
+
 using namespace vitis::ai;
 using namespace std;
+
+DEF_ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME, "0");
+DEF_ENV_PARAM(DEBUG_DPBASE, "0");
+
+//# Disable for DPUV1, as DPUV1 dont have xmodel
+#ifndef ENABLE_DPUV1_RUNNER
+static std::string get_full_filename(const std::string& filename) {
+  if (filename[0] == '/') {
+    return filename;
+  }
+  std::string current_p(getcwd(NULL, 0));
+  return current_p + "/" + filename;
+}
+
+static std::string get_parent_path(const std::string& path) {
+  return path.substr(0, path.find_last_of("/"));
+}
+
+static std::shared_ptr<GraphHolder> create_graph_holder(
+    const std::string& filename) {
+  auto ret = vitis::ai::WeakStore<std::string, GraphHolder>::create(filename,
+                                                                    filename);
+  auto graph = ret->get_graph();
+  auto full_filename = get_full_filename(filename);
+  const_cast<xir::Graph*>(graph)->set_attr<string>("filename", full_filename);
+  auto dirname = get_parent_path(full_filename);
+  const_cast<xir::Graph*>(graph)->set_attr<string>("dirname", dirname);
+
+  LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
+      << "filename " << filename << " "            //
+      << "full_filename " << full_filename << " "  //
+      << "dirname " << dirname << " "              //
+      << "ret.get() " << (void*)ret.get() << " "   //
+      << std::endl;
+  return ret;
+}
+
+static std::vector<std::unique_ptr<vart::Runner>> create_runners(
+    std::shared_ptr<GraphHolder> graph_holder) {
+  auto subgraphs = (graph_holder.get())->get_subgraphs();
+  CHECK_GT(subgraphs.size(), 0);
+  auto runners = std::vector<std::unique_ptr<vart::Runner>>();
+  runners.reserve(subgraphs.size());
+  for (auto subgraph : subgraphs) {
+    runners.emplace_back(vart::Runner::create_runner(subgraph, "run"));
+  }
+  return runners;
+}
+
+DpuTaskImp::DpuTaskImp(const std::string& model_name)
+    : model_name_{model_name},
+      graph_holder_{create_graph_holder(model_name)},
+      runners_{create_runners(graph_holder_)},
+      mean_{std::vector<float>(3, 0.f)},   //
+      scale_{std::vector<float>(3, 1.f)},  //
+      do_mean_scale_{false} {}
+
+#else
+//# Enable for DPUV1 Runner and it need meta json file
 static vector<string> fine_module_search_path() {
   auto ret = vector<string>{};
   ret.push_back(".");
@@ -42,6 +98,8 @@ static vector<string> fine_module_search_path() {
   ret.push_back("/usr/share/vitis_ai_library/.models");
   return ret;
 }
+
+//# Utility functions for DPUV1
 static size_t filesize(const string& filename) {
   size_t ret = 0;
   struct stat statbuf;
@@ -51,7 +109,11 @@ static size_t filesize(const string& filename) {
   }
   return ret;
 }
+
 static string find_module_dir_name(const string& name) {
+  if (filesize(name + "/" + "meta.json") > 0) {
+    return name;
+  }
   auto ret = std::string();
   for (const auto& p : fine_module_search_path()) {
     ret = p + "/" + name;
@@ -71,13 +133,15 @@ static string find_module_dir_name(const string& name) {
   return string{""};
 }
 
+//# call create_runner with directory name for DPUV1
 DpuTaskImp::DpuTaskImp(const std::string& model_name)
     : model_name_{model_name},
       dirname_{find_module_dir_name(model_name)},
-      runners_{vitis::ai::DpuRunner::create_dpu_runner(dirname_)},
+      runners_{vart::Runner::create_runner(dirname_)},
       mean_{std::vector<float>(3, 0.f)},   //
       scale_{std::vector<float>(3, 1.f)},  //
       do_mean_scale_{false} {}
+#endif
 
 DpuTaskImp::~DpuTaskImp() {  //
 }
@@ -121,7 +185,10 @@ void DpuTaskImp::setImageBGR(const cv::Mat& img) {
 void DpuTaskImp::setImageRGB(const cv::Mat& img) {
   setImageRGB(img.data, img.step);
 }
-static void copy_line_by_line(int8_t* data, int rows, int cols, int channels,
+
+//# Templatized the input data type
+template <typename T>
+static void copy_line_by_line(T* data, int rows, int cols, int channels,
                               int stride, const uint8_t* input) {
   for (int row = 0; row < rows; ++row) {
     memcpy(data + row * cols * channels, input + row * stride, cols * channels);
@@ -129,6 +196,7 @@ static void copy_line_by_line(int8_t* data, int rows, int cols, int channels,
 }
 
 void DpuTaskImp::setImageBGR(const uint8_t* input, int stride) {
+  set_num_of_inputs(1u);
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
   // assuming the first input
@@ -140,7 +208,13 @@ void DpuTaskImp::setImageBGR(const uint8_t* input, int stride) {
   auto rows = layer_data.height;
   auto cols = layer_data.width;
   auto channels = layer_data.channel;
+
+//# For DPUV1 the datatype is float
+#ifdef ENABLE_DPUV1_RUNNER
+  auto data = (float*)layer_data.get_data(0);
+#else
   auto data = (int8_t*)layer_data.get_data(0);
+#endif
 
   if (do_mean_scale_) {
     NormalizeInputData(input, rows, cols, channels, stride, mean_, real_scale,
@@ -151,6 +225,7 @@ void DpuTaskImp::setImageBGR(const uint8_t* input, int stride) {
 }
 
 void DpuTaskImp::setImageRGB(const uint8_t* input, int stride) {
+  set_num_of_inputs(1u);
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
   const auto& layer_data = inputs[0];
@@ -161,11 +236,16 @@ void DpuTaskImp::setImageRGB(const uint8_t* input, int stride) {
   auto rows = layer_data.height;
   auto cols = layer_data.width;
   auto channels = layer_data.channel;
+
+  //# For DPUV1 the datatype is float
+#ifdef ENABLE_DPUV1_RUNNER
+  auto data = (float*)layer_data.get_data(0);
+#else
   auto data = (int8_t*)layer_data.get_data(0);
-  LOG_IF(INFO, false) << "rows " << rows << " "  //
-                      << "cols " << cols << " "  //
-      ;
+#endif
   if (ENV_PARAM(DEBUG_DPBASE)) {
+    LOG(INFO) << "rows " << rows << " "  //
+              << "cols " << cols;
     LOG(INFO) << "write before_setinput_image.bmp from " << (void*)input;
     auto img = cv::Mat((int)rows, (int)cols, CV_8UC3, (void*)input);
     cv::imwrite(std::string("before_setinput_image.bmp"), img);
@@ -184,12 +264,13 @@ void DpuTaskImp::setImageRGB(const uint8_t* input, int stride) {
 }
 
 void DpuTaskImp::setImageBGR(const std::vector<cv::Mat>& imgs) {
-  // setImageBGR(img.data, img.step);
+  set_num_of_inputs(imgs.size());
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
   // assuming the first input
   const auto& layer_data = inputs[0];
-  // CHECK_EQ(inputs.size(), layer_data.batch);
+  CHECK_EQ(imgs.size(), layer_data.batch);
+  CHECK_LE(imgs.size(), get_input_batch(0, 0));
   float input_fixed_scale = tensor_scale(inputs[0]);
   vector<float> real_scale{scale_[0] * input_fixed_scale,
                            scale_[1] * input_fixed_scale,
@@ -200,7 +281,13 @@ void DpuTaskImp::setImageBGR(const std::vector<cv::Mat>& imgs) {
   // auto data = (int8_t*)layer_data.data;
 
   for (auto i = 0; i < (signed)imgs.size(); i++) {
+//# For DPUV1 the datatype is float
+#ifdef ENABLE_DPUV1_RUNNER
+    auto data = (float*)layer_data.get_data(i);
+#else
     auto data = (int8_t*)layer_data.get_data(i);
+#endif
+
     if (do_mean_scale_) {
       NormalizeInputData(imgs[i].data, rows, cols, channels, imgs[i].step,
                          mean_, real_scale, data);
@@ -210,11 +297,18 @@ void DpuTaskImp::setImageBGR(const std::vector<cv::Mat>& imgs) {
     // data += rows * cols * channels;
   }
 }
+
 void DpuTaskImp::setImageRGB(const std::vector<cv::Mat>& imgs) {
-  // setImageRGB(img.data, img.step);
+  set_num_of_inputs(imgs.size());
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
   const auto& layer_data = inputs[0];
+  // set num of inputs before getInputTensor, so that the size should
+  // be same.
+  CHECK_EQ(imgs.size(), layer_data.batch);
+  // the num of inputs must be less than the batch size which is the
+  // hardware limitation.
+  CHECK_LE(imgs.size(), get_input_batch(0, 0));
   float input_fixed_scale = tensor_scale(inputs[0]);
   vector<float> real_scale{scale_[0] * input_fixed_scale,
                            scale_[1] * input_fixed_scale,
@@ -222,13 +316,18 @@ void DpuTaskImp::setImageRGB(const std::vector<cv::Mat>& imgs) {
   auto rows = layer_data.height;
   auto cols = layer_data.width;
   auto channels = layer_data.channel;
-  // auto data = (int8_t*)layer_data.data;
-  LOG_IF(INFO, false) << "rows " << rows << " "  //
-                      << "cols " << cols << " "  //
-      ;
+
+  LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))  //
+      << "rows " << rows << " "          //
+      << "cols " << cols;
 
   for (auto i = 0; i < (signed)imgs.size(); i++) {
+//# For DPUV1 the datatype is float
+#ifdef ENABLE_DPUV1_RUNNER
+    auto data = (float*)layer_data.get_data(i);
+#else
     auto data = (int8_t*)layer_data.get_data(i);
+#endif
     if (do_mean_scale_) {
       NormalizeInputDataRGB(imgs[i].data, rows, cols, channels, imgs[i].step,
                             mean_, real_scale, data);
@@ -243,51 +342,103 @@ std::vector<float> DpuTaskImp::getMean() { return mean_; }
 
 std::vector<float> DpuTaskImp::getScale() { return scale_; }
 
+//# Add tensor format argument (NHWC / NCHW)
 static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
-    vitis::ai::TensorBuffer* tb, float scale) {
+    vart::TensorBuffer* tb, float scale, int num_of_input,
+    vart::Runner::TensorFormat fmt) {
   auto ret = vitis::ai::library::InputTensor{};
   auto tensor = tb->get_tensor();
   auto dim_num = tensor->get_dim_num();
   ret.size =
-      tensor->get_element_num() * vitis::ai::size_of(tensor->get_data_type());
+      tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 8.f);
   ret.batch = dim_num <= 0 ? 1 : tensor->get_dim_size(0);
-  ret.height = dim_num <= 1 ? 1 : tensor->get_dim_size(1);
-  ret.width = dim_num <= 2 ? 1 : tensor->get_dim_size(2);
-  ret.channel = dim_num <= 3 ? 1 : tensor->get_dim_size(3);
-  ret.fixpos = (int8_t)log2f(scale);
-  ret.dtype = library::DT_INT8;
+  if (num_of_input != -1) {
+    ret.batch = (unsigned)num_of_input;
+  }
+  //# Store the params as per format
+  if (fmt == vart::Runner::TensorFormat::NHWC) {
+    ret.height = dim_num <= 1 ? 1 : tensor->get_dim_size(1);
+    ret.width = dim_num <= 2 ? 1 : tensor->get_dim_size(2);
+    ret.channel = dim_num <= 3 ? 1 : tensor->get_dim_size(3);
+    ret.fixpos = (int8_t)log2f(scale);
+    ret.dtype = library::DT_INT8;
+  } else {
+#ifdef ENABLE_DPUV1_RUNNER
+	//# DPUV1 has datatype float
+	ret.size =
+      tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 32.f);
+#endif
+    ret.height = dim_num <= 2 ? 1 : tensor->get_dim_size(2);
+    ret.width = dim_num <= 3 ? 1 : tensor->get_dim_size(3);
+    ret.channel = dim_num <= 1 ? 1 : tensor->get_dim_size(1);
+    ret.fixpos = (int8_t)log2f(scale);
+    ret.dtype = library::DT_FLOAT;
+  }
   ret.name = tensor->get_name();
   auto dims = tensor->get_dims();
   auto index = dims;
   auto size = 0ul;
   // CHECK_LT(dims[0], ret.data.size());
   for (auto batch_idx = 0; batch_idx < dims[0]; ++batch_idx) {
-    std::tie(ret.get_data(batch_idx), size) = tb->data({batch_idx, 0, 0, 0});
+    auto data = tb->data({batch_idx, 0, 0, 0});
+    ret.get_data(batch_idx) = (void*)data.first;
+    size = data.second;
+    //    std::tie(ret.get_data(batch_idx), size) = tb->data({batch_idx, 0,
+    //    0, 0});
     CHECK_GE(size, ret.height * ret.width * ret.channel);
   }
 
   return ret;
 }
 
+//# Add tensor format argument (NHWC / NCHW)
 static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
-    vitis::ai::TensorBuffer* tb, float scale) {
+    vart::TensorBuffer* tb, float scale, int num_of_input,
+    vart::Runner::TensorFormat fmt) {
   auto ret = vitis::ai::library::OutputTensor{};
   auto tensor = tb->get_tensor();
   auto dim_num = tensor->get_dim_num();
   ret.size =
-      tensor->get_element_num() * vitis::ai::size_of(tensor->get_data_type());
+      tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 8.f);
   ret.batch = dim_num <= 0 ? 1 : tensor->get_dim_size(0);
-  ret.height = dim_num <= 1 ? 1 : tensor->get_dim_size(1);
-  ret.width = dim_num <= 2 ? 1 : tensor->get_dim_size(2);
-  ret.channel = dim_num <= 3 ? 1 : tensor->get_dim_size(3);
-  ret.fixpos = -(int8_t)log2f(scale);
-  ret.dtype = library::DT_INT8;
+  if (num_of_input != -1) {
+    ret.batch = (unsigned)num_of_input;
+  }
+  //# Store the params as per format
+  if (fmt == vart::Runner::TensorFormat::NHWC) {
+    if (dim_num == 2) {
+      ret.height = 1;
+      ret.width = 1;
+      ret.channel = tensor->get_dim_size(1);
+    } else {
+      ret.height = dim_num <= 1 ? 1 : tensor->get_dim_size(1);
+      ret.width = dim_num <= 2 ? 1 : tensor->get_dim_size(2);
+      ret.channel = dim_num <= 3 ? 1 : tensor->get_dim_size(3);
+    }
+    ret.fixpos = -(int8_t)log2f(scale);
+    ret.dtype = library::DT_INT8;
+  } else {
+#ifdef ENABLE_DPUV1_RUNNER
+	//# DPUV1 has datatype float
+	ret.size =
+      tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 32.f);
+#endif
+    ret.height = dim_num <= 2 ? 1 : tensor->get_dim_size(2);
+    ret.width = dim_num <= 3 ? 1 : tensor->get_dim_size(3);
+    ret.channel = dim_num <= 1 ? 1 : tensor->get_dim_size(1);
+    ret.fixpos = -(int8_t)log2f(scale);
+    ret.dtype = library::DT_FLOAT;
+  }
   ret.name = tensor->get_name();
   auto dims = tensor->get_dims();
   auto size = 0ul;
   // CHECK_LT(dims[0], ret.data.size());
   for (auto batch_idx = 0; batch_idx < dims[0]; ++batch_idx) {
-    std::tie(ret.get_data(batch_idx), size) = tb->data({batch_idx, 0, 0, 0});
+    auto idx = std::vector<int32_t>(dims.size());
+    idx[0] = batch_idx;
+    auto data = tb->data(idx);
+    ret.get_data(batch_idx) = (void*)data.first;
+    size = data.second;
     CHECK_GE(size, ret.height * ret.width * ret.channel);
   }
 
@@ -296,15 +447,18 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
 
 std::vector<vitis::ai::library::InputTensor> DpuTaskImp::getInputTensor(
     size_t idx) {
-  auto inputs =
-      dynamic_cast<vart::dpu::DpuRunnerExt*>(runners_[idx].get())->get_inputs();
-  auto scales = dynamic_cast<vart::dpu::DpuRunnerExt*>(runners_[idx].get())
-                    ->get_input_scale();
+  auto dpu_runner_ext =
+      dynamic_cast<vart::dpu::DpuRunnerExt*>(runners_[idx].get());
+  auto inputs = dpu_runner_ext->get_inputs();
+  //# Get the current format
+  auto fmt = runners_[idx]->get_tensor_format();
+  auto scales = dpu_runner_ext->get_input_scale();
   auto ret = std::vector<vitis::ai::library::InputTensor>{};
   ret.reserve(inputs.size());
   int c = 0;
   for (auto& t : inputs) {
-    ret.emplace_back(convert_tensor_buffer_to_input_tensor(t, scales[c]));
+    ret.emplace_back(convert_tensor_buffer_to_input_tensor(
+        t, scales[c], num_of_inputs_, fmt));
     LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
         << "input tensor[" << c << "]: " << ret.back();
     c++;
@@ -316,6 +470,8 @@ std::vector<vitis::ai::library::OutputTensor> DpuTaskImp::getOutputTensor(
     size_t idx) {
   auto outputs = dynamic_cast<vart::dpu::DpuRunnerExt*>(runners_[idx].get())
                      ->get_outputs();
+  //# Get the current format
+  auto fmt = runners_[idx]->get_tensor_format();
   auto scales = dynamic_cast<vart::dpu::DpuRunnerExt*>(runners_[idx].get())
                     ->get_output_scale();
 
@@ -323,7 +479,8 @@ std::vector<vitis::ai::library::OutputTensor> DpuTaskImp::getOutputTensor(
   ret.reserve(outputs.size());
   int c = 0;
   for (auto& t : outputs) {
-    ret.emplace_back(convert_tensor_buffer_to_output_tensor(t, scales[c]));
+    ret.emplace_back(convert_tensor_buffer_to_output_tensor(
+        t, scales[c], num_of_inputs_, fmt));
     LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
         << "output tensor[" << c << "]: " << ret.back();
     c++;
@@ -338,10 +495,20 @@ size_t DpuTaskImp::get_input_batch(size_t kernel_idx, size_t node_idx) const {
       ->get_dim_size(0);
 }
 
-size_t DpuTaskImp::get_num_of_kernels() const { return runners_.size(); }
+size_t DpuTaskImp::get_num_of_kernels() const {  //
+  return runners_.size();
+}
 
-const vitis::ai::DpuMeta& DpuTaskImp::get_dpu_meta_info() const {
-  return dynamic_cast<vart::dpu::DpuRunnerExt*>(runners_[0].get())->get_meta();
+const xir::Graph* DpuTaskImp::get_graph() const {
+  return graph_holder_->get_graph();
+}
+void DpuTaskImp::set_num_of_inputs(size_t n) {
+  // TODO it is too much to call clear_num_of_inputs
+  // CHECK_EQ(num_of_inputs_, -1)
+  //     << "LOGICAL ERROR. you cannot set num input twices";
+  CHECK_LT(n, 100) << "with current DPU design, it is not possible for very "
+                      "large batch size.";
+  num_of_inputs_ = (int)n;
 }
 
 // Local Variables:

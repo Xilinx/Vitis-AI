@@ -25,13 +25,16 @@ namespace vitis {
 namespace ai {
 
 struct SSDOutputInfo {
-  uint32_t channel; // index of output layers
-  int8_t *base_ptr;
-  int8_t *ptr; 
+  int8_t output_tensor_index; // output tensor index
+  int8_t type; // conf = 1; bbox = 2;
+  uint32_t order; // order of bbox layer or conf layer 
+  int8_t *base_ptr; // original ptr
+  int8_t *ptr;    // ptr for batch
   uint32_t index_begin; // index for prior boxes
   uint32_t index_size;
   float scale;
   uint32_t size;
+  uint32_t bbox_single_size; // usualy 4, but sometimes 6 and last 2 number not valid
 };
 
 using ai::SSDResult;

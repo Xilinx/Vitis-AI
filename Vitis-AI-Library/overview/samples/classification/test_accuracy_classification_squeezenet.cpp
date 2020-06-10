@@ -28,32 +28,40 @@
 
 #include <vitis/ai/dpu_task.hpp>
 #include <vitis/ai/globalavepool.hpp>
+#include "./find_model.hpp"
 
 using namespace std;
-
 // Only kernel_h/kernel_w with 2*2 to 8*8 is supported when pool type
 // is average pooling. The squeezenet needs to calculate the data of
 // the ave pool is 14*14, we have to calculate by ARM.
 
 int main(int argc, char* argv[]) {
-  if (argc < 3) {
-    cout << "Please input your image path as the first param!" << endl;
-    cout << "The second param is a txt to store results!" << endl;
+  if (argc < 4) {
+    cout << "First param is the model name." << endl
+         << "Second param is your image path." << endl
+         << "Third param is a txt to store results!" << endl;
   }
-
-  auto kernel_name = "squeezenet"+string("_acc");
-  std::string path = argv[1];
-  std::ofstream out_fs(argv[2], std::ofstream::out);
+  string model = string(argv[1]);
+  auto kernel_name = model + string("_acc");
+  std::string path = argv[2];
+  std::ofstream out_fs(argv[3], std::ofstream::out);
   vector<cv::String> files;
   cv::glob(path, files);
   int length = path.size();
-  auto task = vitis::ai::DpuTask::create(kernel_name);
-  task->setMeanScaleBGR({104.0f, 107.0f, 123.0f}, {1.0f, 1.0f, 1.0f});
+
+  auto task = vitis::ai::DpuTask::create(find_model(kernel_name));
+  if(model.compare("squeezenet_pt"))
+    task->setMeanScaleBGR({103.53f, 116.28f, 123.675f}, {0.017429f, 0.017507f, 0.01712475f});
+  else if(model.compare("squeezenet"))
+    task->setMeanScaleBGR({104.0f, 107.0f, 123.0f}, {1.0f, 1.0f, 1.0f});
+  else
+    cout << "Model name should be squeezenet or squeezenet_pt" << endl;
   auto input_tensor = task->getInputTensor(0u);
   auto width = input_tensor[0].width;
   auto height = input_tensor[0].height;
   auto size = cv::Size(width, height);
   auto scale = vitis::ai::library::tensor_scale(task->getOutputTensor(0u)[0]);
+  cout << "output scale is : " << scale << endl;
   int count = files.size();
   auto cls = task->getOutputTensor(0u)[0].channel;
   auto ot_w = task->getOutputTensor(0u)[0].width;

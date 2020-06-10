@@ -17,15 +17,15 @@
 compile: 
 sh build.sh
 
-run: ./demo_classification demo_classification.jpg
+run: ./demo_classification /usr/share/vitis_ai_library/models/resnet50/resnet50.elf \
+    resnet50_0 demo_classification.jpg
 
 result:
+score[109] = 0.983166
+score[973] = 0.00850606
+score[955] = 0.00515918
+score[397] = 0.00069822
+score[390] = 0.000543774
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1107 17:52:56.866034  2770 dpu_runner.cpp:86] lib = libvart_dpu.so
-score[109] = 0.895467
-score[973] = 0.0445827
-score[955] = 0.034721
-score[390] = 0.00994774
-score[115] = 0.00469898
-I1107 17:52:57.849061  2770 classification1.cpp:136] bye
+I0609 08:16:44.825453  5272 demo_classification.cpp:90] bye
 

@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "xilinx/ai/nnpp/facefeature.hpp"
+#include "vitis/ai/nnpp/facefeature.hpp"
 
 using namespace std;
-namespace xilinx {
+namespace vitis {
 namespace ai {
 
 FaceFeatureFixedResult face_feature_post_process_fixed(
-    const std::vector<std::vector<xilinx::ai::library::InputTensor>>&
+    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
         input_tensors,
-    const std::vector<std::vector<xilinx::ai::library::OutputTensor>>&
+    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
-    const xilinx::ai::proto::DpuModelParam& config) {
-  auto scale = xilinx::ai::tensor_scale(output_tensors[0][0]);
+    const vitis::ai::proto::DpuModelParam& config,
+    size_t batch_idx) {
+
+  auto scale = vitis::ai::library::tensor_scale(output_tensors[0][0]);
   auto feature =
       std::unique_ptr<std::array<int8_t, 512>>(new std::array<int8_t, 512>());
   for (auto i = 0u; i < feature->size(); ++i) {
-    (*feature)[i] = ((int8_t*)output_tensors[0][0].data)[i];
+    (*feature)[i] = ((int8_t*)output_tensors[0][0].get_data(batch_idx))[i];
   }
 
   const int input_width = input_tensors[0][0].width;
@@ -39,16 +41,17 @@ FaceFeatureFixedResult face_feature_post_process_fixed(
 }
 
 FaceFeatureFloatResult face_feature_post_process_float(
-    const std::vector<std::vector<xilinx::ai::library::InputTensor>>&
+    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
         input_tensors,
-    const std::vector<std::vector<xilinx::ai::library::OutputTensor>>&
+    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
-    const xilinx::ai::proto::DpuModelParam& config) {
-  auto scale = xilinx::ai::tensor_scale(output_tensors[0][0]);
+    const vitis::ai::proto::DpuModelParam& config,
+    size_t batch_idx) {
+  auto scale = vitis::ai::library::tensor_scale(output_tensors[0][0]);
   auto feature =
       std::unique_ptr<std::array<float, 512>>(new std::array<float, 512>());
   for (auto i = 0u; i < feature->size(); ++i) {
-    (*feature)[i] = ((int8_t*)output_tensors[0][0].data)[i] * scale;
+    (*feature)[i] = ((int8_t*)output_tensors[0][0].get_data(batch_idx))[i] * scale;
   }
 
   const int input_width = input_tensors[0][0].width;
@@ -56,5 +59,37 @@ FaceFeatureFloatResult face_feature_post_process_float(
   return FaceFeatureFloatResult{input_width, input_height, std::move(feature)};
 }
 
+std::vector<FaceFeatureFixedResult> face_feature_post_process_fixed(
+    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
+        input_tensors,
+    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
+        output_tensors,
+    const vitis::ai::proto::DpuModelParam& config){
+
+  auto batch_size =  input_tensors[0][0].batch;
+  auto ret = std::vector<FaceFeatureFixedResult>{}; 
+  ret.reserve(batch_size);
+  for (auto i = 0u; i < batch_size; i++) {
+      ret.emplace_back(face_feature_post_process_fixed(input_tensors, output_tensors, config, i));
+  }
+  return ret;
+}
+
+std::vector<FaceFeatureFloatResult> face_feature_post_process_float(
+    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
+        input_tensors,
+    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
+        output_tensors,
+    const vitis::ai::proto::DpuModelParam& config) {
+  auto batch_size =  input_tensors[0][0].batch;
+  auto ret = std::vector<FaceFeatureFloatResult>{}; 
+  ret.reserve(batch_size);
+  for (auto i = 0u; i < batch_size; i++) {
+      ret.emplace_back(face_feature_post_process_float(input_tensors, output_tensors, config, i));
+  }
+  return ret;
+
+}
+
 }  // namespace ai
-}  // namespace xilinx
+}  // namespace vitis

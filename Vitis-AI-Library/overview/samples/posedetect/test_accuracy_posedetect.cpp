@@ -68,29 +68,29 @@ void LoadImageNames(std::string const &filename,
 }
 
 int main(int argc, char *argv[]) {
-  if (argc != 2) {
-    std::cerr << "usage: " << argv[0] << " image_list_file" << std::endl;
+  if (argc != 3) {
+    std::cerr << "usage: " << argv[0] << " image_list_file output_result_path" << std::endl;
     return -1;
   }
   auto det = vitis::ai::PoseDetect::create("sp_net");
   vector<string> names;
   LoadImageNames(argv[1], names);
+  std::string result_path(argv[2]);
+  std::string run_cmd = "mkdir -p " + result_path;
+  auto ret = system(run_cmd.c_str());
+  if ( ret != 0) {
+        cerr << "Can not create result directory!" << endl;
+  }
 
   for (auto name : names) {
     cout << name << endl;
     cv::Mat image = cv::imread(name);
 
     auto result = det->run(image);
-    auto ret = system("mkdir -p ./result/");
-    if ( ret != 0) {
-        cerr << "Can not create result directory!" << endl;
-    }
 
-
-    auto result_path = "./result/";
     auto namesp = split(name, "/");
     auto truename = split(namesp[namesp.size() - 1], ".")[0];
-    ofstream fo(result_path + truename + ".txt");
+    ofstream fo(result_path + "/" + truename + ".txt");
     vector<float> pose14pt_arry((float *)&result.pose14pt,
                                 (float *)&result.pose14pt + 28);
     for (size_t i = 0; i < pose14pt_arry.size(); i = i + 2) {
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
     DrawLines(image, result.pose14pt);
     // return 0;
 
-    imwrite("res.jpg", image);
+    //imwrite("res.jpg", image);
   }
   return 0;
 }

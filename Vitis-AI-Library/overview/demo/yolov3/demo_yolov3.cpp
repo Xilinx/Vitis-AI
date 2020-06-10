@@ -62,10 +62,11 @@ const string yolov3_config = {
     "   } \n"};
 
 int main(int argc, char* argv[]) {
-  // A kernel name, it should be samed as the dnnc result.
-  auto kernel_name = "yolov3_voc";
+  // A kernel name, it should be samed as the dnnc result. e.g.
+  // /usr/share/vitis_ai_library/models/yolov3_voc/yolov3_voc.elf
+  auto kernel_name = argv[1];
   // A image file.
-  auto image_file_name = argv[1];
+  auto image_file_name = argv[2];
   // Create a dpu task object.
   auto task = vitis::ai::DpuTask::create(kernel_name);
 

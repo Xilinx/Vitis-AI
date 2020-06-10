@@ -13,39 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <fstream>
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vector>
 #include <vitis/ai/classification.hpp>
-#include <vitis/ai/proto/dpu_model_param.pb.h>
 
 using namespace std;
 using namespace cv;
 
-namespace vitis {
-namespace ai {
-
-extern "C" vitis::ai::proto::DpuModelParam *
-find(const std::string &model_name);
-
-}  // namespace ai
-}  // namespace vitis
 
 int main(int argc, char *argv[]) {
-  if (argc < 3)
+  if (argc != 4) {
     cout << "Please input the model name as the first param!" << endl
-	 << "And input your image path as the second param!" << endl;
+	 << "And input your image path as the second param!" << endl
+     << "The third param is a txt to store results!" << endl;
+  }
 
   cv::String path = argv[2];
+  std::ofstream out_fs(argv[3], std::ofstream::out);
   int length = path.size();
 
-  auto g_model_name = argv[1];
-  auto model1 = vitis::ai::find(g_model_name);
-  model1->mutable_classification_param()->set_test_accuracy(true);
-
+  auto g_model_name = argv[1]+string("_acc");
   auto det = vitis::ai::Classification::create(g_model_name);
 
   vector<cv::String> files;
@@ -59,6 +50,8 @@ int main(int argc, char *argv[]) {
       int index = res.scores[j].index;
       cout << String(files[i]).substr(length) << " " << index << " "
            << res.scores[j].score << " " << endl;
+      out_fs << cv::String(files[i]).substr(length) << " " << index << endl;
     }
   }
+  out_fs.close();
 }

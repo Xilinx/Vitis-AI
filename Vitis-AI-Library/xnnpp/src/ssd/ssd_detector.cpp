@@ -147,7 +147,7 @@ void SSDdetector::apply_one_class_nms(
            it != bbox_layer_infos.end(); ++it) {
         if (idx >= it->second.index_begin &&
             idx < it->second.index_begin + it->second.index_size) {
-          decode_bbox(it->second.ptr + (idx - it->second.index_begin) * 4,
+          decode_bbox(it->second.ptr + (idx - it->second.index_begin) * it->second.bbox_single_size,
                      idx, it->second.scale, true);
           break;
         }
@@ -158,7 +158,7 @@ void SSDdetector::apply_one_class_nms(
     scores.push_back(score_index_vec[i].first);
     resultmap[i]=idx;
 		++i;
-	}
+  }
 
   applyNMS(boxes, scores, nms_threshold_, confidence_threshold_[label], results);
   for (auto &r:results){

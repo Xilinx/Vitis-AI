@@ -68,9 +68,9 @@ struct OpenPoseResult {
  *@return The struct of OpenPoseResult.
  */
 OpenPoseResult open_pose_post_process(
-    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
+    const std::vector<vitis::ai::library::InputTensor>&
         input_tensors,
-    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
+    const std::vector<vitis::ai::library::OutputTensor>&
         output_tensors,
     const vitis::ai::proto::DpuModelParam& config,
     const int w, const int h, size_t batch_idx);
@@ -86,9 +86,9 @@ OpenPoseResult open_pose_post_process(
  *@return The vector of struct of OpenPoseResult.
  */
 std::vector<OpenPoseResult> open_pose_post_process(
-    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
+    const std::vector<vitis::ai::library::InputTensor>&
         input_tensors,
-    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
+    const std::vector<vitis::ai::library::OutputTensor>&
         output_tensors,
     const vitis::ai::proto::DpuModelParam& config, const std::vector<int> &ws, const std::vector<int> &hs);
 

@@ -25,10 +25,9 @@ TFSSDPostProcess::~TFSSDPostProcess(){};
 std::unique_ptr<TFSSDPostProcess> TFSSDPostProcess::create(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-    const vitis::ai::proto::DpuModelParam& config,
-    const vitis::ai::DpuMeta& dpumeta) {
+    const vitis::ai::proto::DpuModelParam& config, const std::string& dirname) {
   return std::unique_ptr<TFSSDPostProcess>(
-      new TFSSDPost(input_tensors, output_tensors, config, dpumeta));
+      new TFSSDPost(input_tensors, output_tensors, config, dirname));
 }
 
 }  // namespace ai

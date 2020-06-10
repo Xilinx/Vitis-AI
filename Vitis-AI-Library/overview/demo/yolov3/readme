@@ -17,7 +17,7 @@
 compile:
 sh build.sh
 
-run: ./demo_yolov3 demo_yolov3.jpg
+run: ./demo_yolov3 /usr/share/vitis_ai_library/models/yolov3_voc/yolov3_voc.elf demo_yolov3.jpg
 
 result:
 0710 03:08:21.243755  3985 dpu_task_imp.cpp:191] rows 416 cols 416

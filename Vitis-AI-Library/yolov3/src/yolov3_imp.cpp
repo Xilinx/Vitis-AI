@@ -45,8 +45,15 @@ YOLOv3Result YOLOv3Imp::run(const cv::Mat &input_images) {
       int channel = configurable_dpu_task_->getInputTensor()[0][0].channel;
       float scale = library::tensor_scale(
           configurable_dpu_task_->getInputTensor()[0][0]);
+//# DPUV1 needs float input data
+#ifdef ENABLE_DPUV1_RUNNER
+      float *data =
+          (float *)configurable_dpu_task_->getInputTensor()[0][0].get_data(0);
+#else
       int8_t *data =
           (int8_t *)configurable_dpu_task_->getInputTensor()[0][0].get_data(0);
+#endif
+
       LOG_IF(INFO, false) << "scale " << scale << " "     //
                           << "sWidth " << sWidth << " "   //
                           << "sHeight " << sHeight << " " //
@@ -96,8 +103,14 @@ vector<YOLOv3Result> YOLOv3Imp::run(const vector<cv::Mat> &input_images) {
       float scale = library::tensor_scale(
           configurable_dpu_task_->getInputTensor()[0][0]);
       for (size_t i = 0; i < input_images.size(); i++){
-        int8_t *data =
-          (int8_t *)configurable_dpu_task_->getInputTensor()[0][0].get_data(0);
+//# DPUV1 needs float input data
+#ifdef ENABLE_DPUV1_RUNNER
+      float *data =
+          (float *)configurable_dpu_task_->getInputTensor()[0][0].get_data(i);
+#else
+      int8_t *data =
+          (int8_t *)configurable_dpu_task_->getInputTensor()[0][0].get_data(i);
+#endif
         LOG_IF(INFO, false) << "scale " << scale << " "     //
           << "sWidth " << sWidth << " "   //
           << "sHeight " << sHeight << " " //

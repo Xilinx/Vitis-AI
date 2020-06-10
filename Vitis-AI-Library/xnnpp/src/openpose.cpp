@@ -278,31 +278,44 @@ std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
 }
 
 OpenPoseResult open_pose_post_process(
-    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
+    const std::vector<vitis::ai::library::InputTensor>&
         input_tensors,
-    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
+    const std::vector<vitis::ai::library::OutputTensor>&
         output_tensors,
     const vitis::ai::proto::DpuModelParam& config,
     const int w, const int h, size_t batch_idx) {
-  int sWidth = input_tensors[0][0].width;
-  int sHeight = input_tensors[0][0].height;
+  int sWidth = input_tensors[0].width;
+  int sHeight = input_tensors[0].height;
 
   std::vector<std::vector<OpenPoseResult::PosePoint>> poses;
+  std::vector<vitis::ai::library::OutputTensor> output_tensors_;
   /* Get channel count of the output Tensor for FC Task  */
+  auto layername =
+    std::vector<std::string>(config.open_pose_param().layer_name().begin(),
+                               config.open_pose_param().layer_name().end());
+  for (auto i = 0u; i < layername.size(); i++){
+    for (auto j = 0u; j < output_tensors.size(); j++){
+      if (output_tensors[j].name.find(layername[i]) != std::string::npos){
+        output_tensors_.emplace_back(output_tensors[j]);
+        break;
+      }
+    }
+  }
 
-  int8_t* dataL1 = (int8_t*)output_tensors[0][0].get_data(batch_idx);
-  float outscaleL1 = vitis::ai::library::tensor_scale(output_tensors[0][0]);
-  int channelL1 = output_tensors[0][0].channel;
-  int wL1 = output_tensors[0][0].width;
-  int hL1 = output_tensors[0][0].height;
-  int sizeL1 = output_tensors[0][0].size;
 
-  int8_t* dataL2 = (int8_t*)output_tensors[0][1].get_data(batch_idx);
-  float outscaleL2 = vitis::ai::library::tensor_scale(output_tensors[0][1]);
-  int channelL2 = output_tensors[0][1].channel;
-  int wL2 = output_tensors[0][1].width;
-  int hL2 = output_tensors[0][1].height;
-  int sizeL2 = output_tensors[0][1].size;
+  int8_t* dataL1 = (int8_t*)output_tensors_[0].get_data(batch_idx);
+  float outscaleL1 = vitis::ai::library::tensor_scale(output_tensors_[0]);
+  int channelL1 = output_tensors_[0].channel;
+  int wL1 = output_tensors_[0].width;
+  int hL1 = output_tensors_[0].height;
+  int sizeL1 = output_tensors_[0].size;
+
+  int8_t* dataL2 = (int8_t*)output_tensors_[1].get_data(batch_idx);
+  float outscaleL2 = vitis::ai::library::tensor_scale(output_tensors_[1]);
+  int channelL2 = output_tensors_[1].channel;
+  int wL2 = output_tensors_[1].width;
+  int hL2 = output_tensors_[1].height;
+  int sizeL2 = output_tensors_[1].size;
 
   vector<float> chwdataL2;
   chwdataL2.reserve(sizeL2);
@@ -362,11 +375,11 @@ OpenPoseResult open_pose_post_process(
 }
 
 std::vector<OpenPoseResult> open_pose_post_process(
-    const std::vector<std::vector<vitis::ai::library::InputTensor>>& input_tensors,
-    const std::vector<std::vector<vitis::ai::library::OutputTensor>>& output_tensors,
+    const std::vector<vitis::ai::library::InputTensor>& input_tensors,
+    const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
     const vitis::ai::proto::DpuModelParam& config, 
     const std::vector<int> &ws, const std::vector<int> &hs) {
-    auto batch = input_tensors[0][0].batch;  
+    auto batch = input_tensors[0].batch;  
     auto ret = std::vector<OpenPoseResult>{};
     ret.reserve(batch);  
     for (auto i = 0u; i < batch; i++) {    

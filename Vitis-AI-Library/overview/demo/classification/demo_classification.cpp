@@ -23,13 +23,14 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vart/dpu/dpu_runner_ext.hpp>
-#include <vart/dpu/dpu_runner.hpp>
+#include <vart/dpu/vitis_dpu_runner_factory.hpp>
+#include <xir/tensor/tensor.hpp>
 
 static cv::Mat read_image(const std::string& image_file_name);
 static cv::Mat preprocess_image(cv::Mat input_image, cv::Size size);
 
 static std::vector<float> convert_fixpoint_to_float(
-    vitis::ai::TensorBuffer* tensor, float scale);
+    vart::TensorBuffer* tensor, float scale);
 
 static std::vector<float> softmax(const std::vector<float>& input);
 
@@ -37,51 +38,51 @@ static std::vector<std::pair<int, float>> topk(const std::vector<float>& score,
                                                int K);
 
 static std::vector<std::pair<int, float>> post_process(
-    vitis::ai::TensorBuffer* tensor_buffer, float scale);
+    vart::TensorBuffer* tensor_buffer, float scale);
 
 static void print_topk(const std::vector<std::pair<int, float>>& topk);
 
-static void setImageBGR(const cv::Mat& image, void* data1,
+static void setImageBGR(const cv::Mat& image, int8_t * data1,
                         float scale_fix2float);
 
 int main(int argc, char* argv[]) {
   {
-    // a model dir name, e.g. inception_v1
-    const auto model_dir_name = std::string("/usr/share/vitis_ai_library/models/resnet50");
+    // a model name, e.g. /usr/share/vitis_ai_library/models/resnet50/resnet50.elf
+    string model_path = argv[1];
+    // a kernel name, e.g. resnet50_0
+    string kernel_name = argv[2];
+    // a image file, e.g.
+    // /usr/share/vitis_ai_library/demo/classification/demo_classification.jpg
+    string image_file_name = argv[3];
+
     // create runner , input/output tensor buffer ;
-    auto runners = vitis::ai::DpuRunner::create_dpu_runner(model_dir_name);
-    auto runner = dynamic_cast<vart::dpu::DpuRunnerExt*>(runners[0].get());
+    auto runner_base = 
+      vart::dpu::DpuRunnerFactory::create_dpu_runner(model_path, kernel_name);
+    auto runner = dynamic_cast<vart::dpu::DpuRunnerExt*>(runner_base.get());
     auto input_scale = runner->get_input_scale();
     auto output_scale = runner->get_output_scale();
 
-    // a image file, e.g.
-    // /usr/share/vitis_ai_library/demo/classification/demo_classification.jpg
-    auto image_file_name = std::string(argv[1]);
     // load the image
     cv::Mat input_image = read_image(image_file_name);
     // get input tensor buffer
     auto input_tensors = runner->get_input_tensors();
-    CHECK_EQ(input_tensors.size(), 1) << "only support classification model";
+    CHECK_EQ(input_tensors.size(), 1u) << "only support classification model";
     auto input_tensor = input_tensors[0];
     auto height = input_tensor->get_dim_size(1);
     auto width = input_tensor->get_dim_size(2);
     auto input_size = cv::Size(width, height);
-    auto input_tensor_buffer = runner->get_inputs()[0];
-    auto output_tensor_buffer = runner->get_outputs()[0];
+    auto inputs = runner->get_inputs();
+    auto outputs = runner->get_outputs();
     // preprocess, i.e. resize if necessary
     cv::Mat image = preprocess_image(input_image, input_size);
     // set the input image and preprocessing
-    void* data_in = nullptr;
-    size_t size_in = 0u;
-    std::tie(data_in, size_in) =
-        input_tensor_buffer->data(std::vector<int>{0, 0, 0, 0});
+    int8_t * data_in = (int8_t *)inputs[0]->data({0, 0, 0, 0}).first;
     setImageBGR(image, data_in, input_scale[0]);
-    auto v =
-        runner->execute_async({input_tensor_buffer}, {output_tensor_buffer});
+    auto v = runner->execute_async(inputs, outputs);
     auto status = runner->wait((int)v.first, -1);
     CHECK_EQ(status, 0) << "failed to run dpu";
     // post process
-    auto topk = post_process(output_tensor_buffer, output_scale[0]);
+    auto topk = post_process(outputs[0], output_scale[0]);
     // print the result
     print_topk(topk);
   }
@@ -108,7 +109,7 @@ static cv::Mat preprocess_image(cv::Mat input_image, cv::Size size) {
 }
 
 static std::vector<std::pair<int, float>> post_process(
-    vitis::ai::TensorBuffer* tensor_buffer, float scale) {
+    vart::TensorBuffer* tensor_buffer, float scale) {
   // run softmax
   auto softmax_input = convert_fixpoint_to_float(tensor_buffer, scale);
   auto softmax_output = softmax(softmax_input);
@@ -117,12 +118,12 @@ static std::vector<std::pair<int, float>> post_process(
 }
 
 static std::vector<float> convert_fixpoint_to_float(
-    vitis::ai::TensorBuffer* tensor_buffer, float scale) {
+    vart::TensorBuffer* tensor_buffer, float scale) {
   //convert fixpoint to float 
-  void* data = nullptr;
+  uint64_t data = 0u;
   size_t size = 0u;
-  std::tie(data, size) = tensor_buffer->data(std::vector<int>{0, 0, 0, 0});
-  signed char* data_c = (signed char*)data;
+  std::tie(data, size) = tensor_buffer->data({0, 0, 0, 0});
+  int8_t * data_c = (int8_t *)data;
   auto ret = std::vector<float>(size);
   transform(data_c, data_c + size, ret.begin(),
             [scale](signed char v) { return ((float)v) * scale; });
@@ -160,10 +161,9 @@ static void print_topk(const std::vector<std::pair<int, float>>& topk) {
   }
 }
 
-static void setImageBGR(const cv::Mat& image, void* data1,
+static void setImageBGR(const cv::Mat& image, int8_t * data,
                         float scale_fix2float) {
   //preprocess and set the input image 
-  signed char* data = (signed char*)data1;
   int c = 0;
   for (auto row = 0; row < image.rows; row++) {
     for (auto col = 0; col < image.cols; col++) {

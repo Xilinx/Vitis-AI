@@ -25,7 +25,6 @@
 #pragma once
 #include <vitis/ai/proto/dpu_model_param.pb.h>
 #include <memory>
-#include <vart/dpu/dpu_runner.hpp>
 #include <vector>
 #include <vitis/ai/library/tensor.hpp>
 
@@ -86,7 +85,7 @@ class TFSSDPostProcess {
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
       const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
       const vitis::ai::proto::DpuModelParam& config,
-      const vitis::ai::DpuMeta& dpumeta);
+      const std::string& dirname);
 
   /**
    * @brief The post-processing function of the ssd network.
@@ -99,7 +98,7 @@ class TFSSDPostProcess {
    */
   virtual std::vector<TFSSDResult> ssd_post_process() = 0;
 
-    /**
+  /**
    * @cond NOCOMMENTS
    */
   virtual ~TFSSDPostProcess();
@@ -108,7 +107,7 @@ class TFSSDPostProcess {
   explicit TFSSDPostProcess();
   TFSSDPostProcess(const TFSSDPostProcess&) = delete;
   TFSSDPostProcess& operator=(const TFSSDPostProcess&) = delete;
-    /**
+  /**
    * @endcond
    */
 };

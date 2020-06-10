@@ -17,12 +17,8 @@ cmake_minimum_required(VERSION 3.5)
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
 include(XilinxCommon)
 include(XilinxVersion)
-
-
-include_directories(${Protobuf_INCLUDE_DIRS})
 
 add_custom_command(
     OUTPUT
@@ -42,12 +38,22 @@ add_library(${COMPONENT_NAME} SHARED
     src/config.cpp
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
-target_link_libraries(${COMPONENT_NAME} glog protobuf::libprotobuf)
+target_link_libraries(${COMPONENT_NAME}
+ PUBLIC protobuf::libprotobuf glog::glog)
+
 set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}"
   LIBRARY_OUTPUT_NAME  ${PROJECT_NAME}-${COMPONENT_NAME})
 
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include>
+)
 
 install(FILES
   include/vitis/ai/proto/config.hpp

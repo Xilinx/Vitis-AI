@@ -141,7 +141,7 @@ class Segmentation {
   /**
    * @brief Function to get running result of the segmentation network.
    *
-   * @note The type of CV_8UC1 of the Reuslt's segmentation.
+   * @note The type of CV_8UC1 of the Result's segmentation.
    *
    * @param image Input data of input image (cv::Mat).
    *
@@ -153,7 +153,7 @@ class Segmentation {
    * @brief Function to get running results of the segmentation neuron network in
    * batch mode.
    *
-   * @note The type of CV_8UC1 of the Reuslt's segmentation.
+   * @note The type of CV_8UC1 of the Result's segmentation.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch.
@@ -165,7 +165,7 @@ class Segmentation {
   /**
    * @brief Function to get running result of the segmentation network.
    *
-   * @note The type of CV_8UC3 of the Reuslt's segmentation.
+   * @note The type of CV_8UC3 of the Result's segmentation.
    *
    * @param image Input data of input image (cv::Mat).
    *
@@ -177,7 +177,7 @@ class Segmentation {
    * @brief Function to get running results of the segmentation neuron network in
    * batch mode.
    *
-   * @note The type of CV_8UC3 of the Reuslt's segmentation.
+   * @note The type of CV_8UC3 of the Result's segmentation.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch.
@@ -273,7 +273,7 @@ class Segmentation8UC1 {
    * @brief Function to get running results of the segmentation neuron network in
    * batch mode.
    *
-   * @note The type of CV_8UC1 of the Reuslt's segmentation.
+   * @note The type of CV_8UC1 of the Result's segmentation.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch.
@@ -374,7 +374,7 @@ class Segmentation8UC3 {
    * @brief Function to get running results of the segmentation neuron network in
    * batch mode.
    *
-   * @note The type of CV_8UC3 of the Reuslt's segmentation.
+   * @note The type of CV_8UC3 of the Result's segmentation.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch.

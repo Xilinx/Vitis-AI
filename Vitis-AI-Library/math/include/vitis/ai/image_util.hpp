@@ -26,6 +26,12 @@ namespace vitis {
 namespace ai {
 
 /// All the normalize input API only support channels = 3
+
+//# Method for float data type and NCHW format
+void NormalizeInputData(const uint8_t *input, int rows, int cols, int channels,
+                        int stride, const std::vector<float> &mean,
+                        const std::vector<float> &scale, float *data);
+
 void NormalizeInputData(const uint8_t *input, int rows, int cols, int channels,
                         int stride, const std::vector<float> &mean,
                         const std::vector<float> &scale, int8_t *data);
@@ -36,10 +42,20 @@ void NormalizeInputData(const cv::Mat &img, const std::vector<float> &mean,
 void NormalizeInputDataRGB(const cv::Mat &img, const std::vector<float> &mean,
                            const std::vector<float> &scale, int8_t *data);
 
+//# Method for float data type and NCHW format
+void NormalizeInputDataRGB(const cv::Mat &img, const std::vector<float> &mean,
+                           const std::vector<float> &scale, float *data);
+
 void NormalizeInputDataRGB(const uint8_t *input, int rows, int cols,
                            int channels, int stride,
                            const std::vector<float> &mean,
                            const std::vector<float> &scale, int8_t *data);
+
+//# Method for float data type and NCHW format                           
+void NormalizeInputDataRGB(const uint8_t *input, int rows, int cols,
+                           int channels, int stride,
+                           const std::vector<float> &mean,
+                           const std::vector<float> &scale, float *data);
 } // namespace ai
 } // namespace vitis
 

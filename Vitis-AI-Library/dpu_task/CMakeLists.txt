@@ -18,18 +18,15 @@ get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/math/include) # for image_util
-set(OpenCV_LIBS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
+set(Other_LIBS "")
 if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
   ## TODO: fix hard coded directory
   link_directories(/home/administrator/workspace/qtbase/lib/)
-  list(APPEND OpenCV_LIBS Qt5Widgets Qt5Test Qt5Concurrent Qt5Gui Qt5Core)
-else()
-  list(APPEND OpenCV_LIBS pthread)
+  list(APPEND Other_LIBS Qt5Widgets Qt5Test Qt5Concurrent Qt5Gui Qt5Core)
 endif()
 include(XilinxCommon)
 include(XilinxVersion)
-
-# include_directories(${CMAKE_BINARY_DIR})
+#find_package(xir REQUIRED)
 add_library(${COMPONENT_NAME} SHARED
   include/vitis/ai/dpu_task.hpp
   include/vitis/ai/configurable_dpu_task.hpp
@@ -41,15 +38,19 @@ add_library(${COMPONENT_NAME} SHARED
   src/configurable_dpu_task.cpp
   src/configurable_dpu_task_imp.hpp
   src/configurable_dpu_task_imp.cpp
+  src/graph_holder.hpp
+  src/graph_holder.cpp
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
-find_package(vart REQUIRED COMPONENTS util runner xrt-device-handle dpu-controller dpu-runner)
-find_package(xir REQUIRED)
-find_package(unilog REQUIRED)
+
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
 target_link_libraries(${COMPONENT_NAME}
-  PUBLIC model_config ${OpenCV_LIBS}
-  PRIVATE vart::util glog vart::dpu-runner math
+  PUBLIC model_config ${OpenCV_LIBS} ${Other_LIBS} vart::util # for Meta definitions
+  PRIVATE vart::dpu-runner  glog::glog math
   )
 set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"
@@ -79,7 +80,7 @@ install(FILES
 
 
 add_executable(test_it test/test_it.cpp)
-target_link_libraries(test_it ${COMPONENT_NAME})
+target_link_libraries(test_it ${COMPONENT_NAME} vart::dpu-runner)
 
 add_executable(test_base test/test_base.cpp)
 target_link_libraries(test_base ${COMPONENT_NAME})
