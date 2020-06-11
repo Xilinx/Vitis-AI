@@ -1,4 +1,4 @@
-# Zynq UltraScale＋ MPSoC DPU TRD Vitis 2019.2
+# Zynq UltraScale＋ MPSoC DPU TRD Vitis 2020.1
 
 ## Table of Contents
 
@@ -43,7 +43,7 @@ This tutorial contains information about:
 
 - How to set up the ZCU102 evaluation board and run the TRD.
 - How to change the Configuration of DPU.
-- How to integrate the DPU in the customer platform in vitis 2019.2 environment.
+- How to integrate the DPU in the customer platform in vitis 2020.1 environment.
 
 ------
 
@@ -65,7 +65,7 @@ Required:
   - Vitis 2020.1[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-1.html) 
   - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
-  - [XRT 2019.2](https://github.com/Xilinx/XRT/tree/2019.2)
+  - [XRT 2020.1](https://github.com/Xilinx/XRT/tree/2020.1)
   - [zcu102 dpu platform](https://www.xilinx.com/bin/public/openDownload?filename=zcu102_dpu_2019.2.zip)
   - [mpsoc common system](https://www.xilinx.com/member/forms/download/xef.html?filename=xilinx-zynqmp-common-v2020.1.tar.gz)
   - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
@@ -170,7 +170,7 @@ The following tutorials assume that the Vitis and XRT environment variable is se
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <vitis install path>/Vitis/2019.2/settings64.sh
+% source <vitis install path>/Vitis/2020.1/settings64.sh
 
 % source opt/xilinx/xrt/setup.sh
 ```
