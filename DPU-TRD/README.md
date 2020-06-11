@@ -54,9 +54,9 @@ There are three dimensions of parallelism in the DPU convolution architecture - 
 
 ****
 
-[DPU TRD Vitis 2020.1 Flow ](./prj/Vitis/README.md)
+[DPU TRD Vitis Flow ](./prj/Vitis/README.md)
 
-[DPU TRD Vivado 2019.2 Flow](./prj/Vivado/README.md)
+[DPU TRD Vivado Flow](./prj/Vivado/README.md)
 
 ****
 
