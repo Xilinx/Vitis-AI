@@ -208,7 +208,7 @@ int main(int argc, char **argv) {
     // Initializations
     string file_name = argv[1];
     cout << "Detect video: " << file_name << endl;
-    video.open(file_name);
+    video.open(file_name, cv::CAP_FFMPEG);
     if (!video.isOpened()) {
         cout << "Failed to open video: " << file_name;
         return -1;

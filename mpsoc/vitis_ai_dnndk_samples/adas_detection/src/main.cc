@@ -123,7 +123,7 @@ void readFrame(const char *fileName) {
 
     while (loop>0) {
         loop--;
-        if (!video.open(videoFile)) {
+        if (!video.open(videoFile, cv::CAP_FFMPEG)) {
             cout<<"Fail to open specified video file:" << videoFile << endl;
             exit(-1);
         }
