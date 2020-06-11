@@ -40,7 +40,8 @@ nk=dpu_xrt_top:3
 
 [advanced]
 misc=:solution_name=link
-param=compiler.addOutputTypes=sd_card
+
+#param=compiler.addOutputTypes=sd_card
 #param=compiler.skipTimingCheckAndFrequencyScaling=1
 
 [vivado]

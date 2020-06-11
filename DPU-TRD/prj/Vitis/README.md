@@ -26,11 +26,12 @@
 
 ## 1 Revision History
 
-This wiki page complements the Vitis 2019.2 version of the DPU TRD.
+This wiki page complements the Vitis 2020.1 version of the DPU TRD.
 
 Change Log:
 
--  The first version of Vitis DPU TRD
+-  support low power mode
+-  support ZYNQ device
 
 ------
 
@@ -61,11 +62,12 @@ Required:
 ### 3.2 Software
 
   Required:
-  - Vitis 2019.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis.html) 
+  - Vitis 2020.1[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-1.html) 
   - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [XRT 2019.2](https://github.com/Xilinx/XRT/tree/2019.2)
   - [zcu102 dpu platform](https://www.xilinx.com/bin/public/openDownload?filename=zcu102_dpu_2019.2.zip)
+  - [mpsoc common system](https://www.xilinx.com/member/forms/download/xef.html?filename=xilinx-zynqmp-common-v2020.1.tar.gz)
   - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
 
@@ -99,7 +101,7 @@ DPU_TRD 
 ├── app       
 │   ├── models
 │   ├── img 
-│   └── resnet50.tar.gz             # resnet50 application
+│   └── resnet50.tar.gz                 # resnet50 application
 └── prj 
     └── Vitis
         │        
@@ -107,6 +109,7 @@ DPU_TRD 
         │   ├── dpu
         │   └── sfm 
         ├── Makefile
+        ├── syslink                     # postlink tcl file
         ├── dpu_conf.vh                 # dpu configuration file
         ├── config_file                 # config file
         │   ├── prj_config              # integrate 2DPU 
@@ -179,7 +182,9 @@ Build the hardware design.
 ```
 % cd $TRD_HOME/prj/Vitis
 
-% export SDX_PLATFORM=<vitis install path>/platform/zcu102_dpu/zcu102_dpu.xpfm
+% export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2020.1
+
+% export SDX_PLATFORM=<zcu102 base platform path>/xilinx_zcu102_base_202010_1/xilinx_zcu102_base_202010_1.xpfm
 
 % make KERNEL=DPU_SM DEVICE=zcu102
 ```
@@ -204,29 +209,24 @@ The TRD project has generated the matching model file in $TRD_HOME/prj/app/ path
 
 This part is about how to run the Resnet50 example from the source code.
 
-The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in page 65 of [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2019_2/ug1144-petalinux-tools-reference-guide.pdf)for Petalinux 2019.2:
+All the related files have been packaged in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card.img** by Vitis tools. the user can use the balenaEtcher tool to generate the SD card.
 
-Copy the whole files in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card** execpt the rootfs.tar.gz fiel to BOOT partition.
-
-Extract the rootfs.tar.gz in the RootFs folder 
+The all needed files are in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card**.
 
 Copy the directory **$TRD_HOME/app** to the BOOT partition of the SD Card.
 
 After the linux boot, run:
 
 ```
+% tar -xvf /mnt/app/sd-mmcblk0p1/resnet50.tar.gz -C ~
 
-% cp /mnt/dpu.xclbin /usr/lib
+% cp /mnt/app/sd-mmcblk0p1/models/resnet50.elf ~
 
-% tar -xvf /mnt/app/resnet50.tar.gz -C ~
-
-% cp /mnt/app/models/resnet50.elf ~
-
-% cp -r /mnt/app/img ~
+% cp -r /mnt/sd-mmcblk0p1/app/img ~
 
 % cd ~
 
-% env LD_LIBRARY_PATH=samples/lib samples/bin/resnet50 img/bellpeppe-994958.JPEG
+% env LD_LIBRARY_PATH=samples/lib XLNX_VART_FIRMWARE=/media/sd-mmcblk0p1/dpu.xclbin samples/bin/resnet50 img/bellpeppe-994958.JPEG
 
 Expect: 
 score[945]  =  0.992235     text: bell pepper,
@@ -378,13 +378,63 @@ There are two  options of RELU Type, including: RELU_RELU6,RELU_LEAKRELU_RELU6. 
 ```
 
 #### DSP Usage
-Setting High will cost more DSP rescources than LOW.
+Setting High will cost more DSP rescources than LOW and save the LUTs.
 ```
 `define DSP48_USAGE_HIGH
 ```
 LOW
 ```
 `define DSP48_USAGE_LOW
+```
+
+#### Low Power Mode
+The dpu support low power mode and doesn't impact the performance.
+```
+`define LOWPOWER_ENABLE
+```
+Disable
+```
+`define LOWPOWER_DISABLE
+```
+We test the two mode in zcu102 board using same threads,dpu config(3DPU+softmax) and frequency(300Mhz).
+
+| |LOWPOWER_DISABLE|LOWPOWER_ENABLE|
+|:---|:---|:---|
+|static_after_boot(w)|9.621|5.894|
+|dynamic_running(w)|16.421|12.302|
+|static_after_run(w)|9.735|5.929|
+
+Need set the following steps.
+1. Modify the dpu_conf.vh file
+```
+% line116: LOWPOWER_ENABLE
+```
+2. Modify the Makefile, Update the **$XOCC_OPTS** parameters
+```
+--xp param:compiler.userPostSysLinkOverlayTcl=${DIR_PRJ}/syslink/zcu102_lowpower.tcl 
+```
+3. Modify the **config_file/prj_config_102_3dpu_LPD **.
+```
+#prop=run.impl_1.strategy=Performance_NetDelay_low
+prop=run.impl_1.strategy=Power_DefaultOpt 
+```
+
+The main function of the tcl file:
+
+1.update the clock wizard parameters.
+
+2.re-connect the wires between the clock wizard and DPU.
+
+The user can get more details in the chapter 5 in UG338. The zcu102_lowpower.tcl file is only for 3 DPU. The user need modify the tcl for other numbers of DPU.
+
+#### Device Configuration
+support MPSOC
+```
+`define MPSOC
+```
+support ZYNQ
+```
+`define ZYNQ70000
 ```
 
 #### Softmax
@@ -405,7 +455,7 @@ make KERNEL=DPU_SM
 Need to specify connectivity to the various ports in the system for the DPU. Open the file **prj_config** in a text editor. Refer the vitis document. Using the following comment to check the ports of platform.
 
 ```
-% platforminfo -p <platform path>/zcu104_revmin/zcu104_revmin.xpfm
+% platforminfo -p <platform path>/zcu102_base/zcu102_base.xpfm
 ```
 
 The information of platform is shown in the below figure.
@@ -467,9 +517,9 @@ This chapter introduces how to configue the project for [Vitis AI Library](https
 
 steps:
 
-1.Modify the Makefile file
+1.Modify the Makefile file, Update the **$XOCC_OPTS** parameters
 ```
-line13: --config ${TRD_HOME}/prj/Vitis/config_file/prj_config_102_3dpu
+--config ${TRD_HOME}/prj/Vitis/config_file/prj_config_102_3dpu
 ```
 2.
 ```
@@ -481,9 +531,9 @@ line13: --config ${TRD_HOME}/prj/Vitis/config_file/prj_config_102_3dpu
 
 steps:
 
-1.Modify the Makefile file
+1.Modify the Makefile file, Update the **$XOCC_OPTS** parameters 
 ```
-line13: --config ${TRD_HOME}/prj/Vitis/config_file/prj_config_104_2dpu
+--config ${TRD_HOME}/prj/Vitis/config_file/prj_config_104_2dpu
 ```
 2.Enable the URAM and modify the RAM USAGE
 

@@ -1,20 +1,3 @@
-/*
- * * Copyright 2019 Xilinx Inc.
- * *
- * * Licensed under the Apache License, Version 2.0 (the "License");
- * * you may not use this file except in compliance with the License.
- * * You may obtain a copy of the License at
- * *
- * *    http://www.apache.org/licenses/LICENSE-2.0
- * *
- * * Unless required by applicable law or agreed to in writing, software
- * * distributed under the License is distributed on an "AS IS" BASIS,
- * * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * * See the License for the specific language governing permissions and
- * * limitations under the License.
- * */
-
-
 //Setting the arch of DPU, For more details, Please read the PG338 
 
 
@@ -24,19 +7,19 @@
 // +------------------------------------------------------+
 // | `define B512               
 // +------------------------------------------------------+
-// | `define B800                 
+// | `deifne B800                 
 // +------------------------------------------------------+
-// | `define B1024                 
+// | `deifne B1024                 
 // +------------------------------------------------------+
-// | `define B1152                 
+// | `deifne B1152                 
 // +------------------------------------------------------+
-// | `define B1600                 
+// | `deifne B1600                 
 // +------------------------------------------------------+
-// | `define B2304                 
+// | `deifne B2304                 
 // +------------------------------------------------------+
-// | `define B3136                 
+// | `deifne B3136                 
 // +------------------------------------------------------+
-// | `define B4096                 
+// | `deifne B4096                 
 // |------------------------------------------------------|
 
 `define B4096 
@@ -70,7 +53,7 @@
 // | RAM Usage Low  : `define RAM_USAGE_LOW                 
 // |------------------------------------------------------|
 
-`define RAM_USAGE_LOW
+`define RAM_USAGE_HIGH
 
 // |------------------------------------------------------|
 // | Channel Augmentation Configuration
@@ -120,8 +103,28 @@
 // | `define DSP48_USAGE_LOW                
 // |------------------------------------------------------|
 
-`define DSP48_USAGE_LOW  
+`define DSP48_USAGE_HIGH 
 
+// |------------------------------------------------------|
+// | Power Configuration
+// +------------------------------------------------------+
+// | `define LOWPOWER_ENABLE              
+// +------------------------------------------------------+
+// | `define LOWPOWER_DISABLE               
+// |------------------------------------------------------|
+
+`define LOWPOWER_DISABLE
+
+// |------------------------------------------------------|
+// | DEVICE Configuration
+// +------------------------------------------------------+
+// | `define MPSOC              
+// +------------------------------------------------------+
+// | `define ZYNQ7000               
+// |------------------------------------------------------|
+
+`define MPSOC
+  
 
 
 
