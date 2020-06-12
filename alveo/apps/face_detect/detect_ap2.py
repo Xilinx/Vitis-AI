@@ -23,54 +23,39 @@ import detect_util
 # simple HWC->CHW and mean subtraction/scaling
 # returns tensor ready for fpga execute
 def det_preprocess(image, dest):
-    input_mean_value_=128.0
     input_scale_=1.0
 
     # transpose HWC (0,1,2) to CHW (2,0,1)
     dest[:] = np.transpose(image,(2,0,1))
-    dest -= input_mean_value_
     dest *= input_scale_
     dest = np.expand_dims(dest,0)
     
 
 # takes dict of two outputs from XDNN, pixel-conv and bb-output
 # returns bounding boxes
-def det_postprocess(pixel_conv, bb, sz):    
+def det_postprocess(pixel_conv, bb, sz, szs):    
     res_stride_=4
     det_threshold_=0.7
     nms_threshold_=0.3
     expand_scale_=0.0
-
-#    sz=image.shape
-
-#    start_time = time.time()
-    
-    # Put CPU layers into postprocess    
     pixel_conv_tiled = detect_util.GSTilingLayer_forward(pixel_conv, 8)
     prob = detect_util.SoftmaxLayer_forward(pixel_conv_tiled)
-    prob = prob[0,1,...]
-    
     bb = detect_util.GSTilingLayer_forward(bb, 8)
+    prob = prob[0,1,...]
     bb = bb[0, ...]
-
-#    end_time = time.time()
-#    print('detect post-processing time: {0} seconds'.format(end_time - start_time))
-    
-    if sz[0]%32 == 0 :
-        add_v = 0
-    else:
-        # Hardcoded for size 360x640 need to be changed
-        add_v = 24
-
-    gy = np.arange(0, sz[0]+ add_v , res_stride_)
-    gx = np.arange(0, sz[1], res_stride_)
-    gy = gy[0 : bb.shape[1]]
-    gx = gx[0 : bb.shape[2]]
+    gx_shape = bb.shape[2]*res_stride_
+    gy_shape = bb.shape[1]*res_stride_
+    gy = np.arange(0, gy_shape, res_stride_)
+    gx = np.arange(0, gx_shape, res_stride_)
     [x, y] = np.meshgrid(gx, gy)
-    bb[0, :, :] += x
-    bb[2, :, :] += x
-    bb[1, :, :] += y
-    bb[3, :, :] += y
+    bb[0, :, :] = bb[0, :, :] + x
+    bb[0, :, :] = bb[0, :, :] * szs[1]
+    bb[1, :, :] = bb[1, :, :] + y
+    bb[1, :, :] = bb[1, :, :] * szs[0]
+    bb[2, :, :] = bb[2, :, :] + x
+    bb[2, :, :] = bb[2, :, :] * szs[1]
+    bb[3, :, :] = bb[3, :, :] + y
+    bb[3, :, :] = bb[3, :, :] * szs[0]
     bb = np.reshape(bb, (4, -1)).T
     prob = np.reshape(prob, (-1, 1))
     bb = bb[prob.ravel() > det_threshold_, :]
@@ -78,18 +63,5 @@ def det_postprocess(pixel_conv, bb, sz):
     rects = np.hstack((bb, prob))
     keep = nms.nms(rects, nms_threshold_)	
     rects = rects[keep, :]
-    rects_expand=[]
-    for rect in rects:
-      rect_expand=[]
-      rect_w=rect[2]-rect[0]
-      rect_h=rect[3]-rect[1]
-      rect_expand.append(int(max(0,rect[0]-rect_w*expand_scale_)))
-      rect_expand.append(int(max(0,rect[1]-rect_h*expand_scale_)))
-      rect_expand.append(int(min(sz[1],rect[2]+rect_w*expand_scale_)))
-      rect_expand.append(int(min(sz[0],rect[3]+rect_h*expand_scale_)))
-      rects_expand.append(rect_expand)
-      rect_expand.append(rect[4])
-
-
-    return rects_expand 
+    return rects
 

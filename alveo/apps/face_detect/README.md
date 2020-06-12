@@ -37,3 +37,22 @@ This is a demo application showing how face detection model can be ran on the FP
 $ cd $VAI_ALVEO_ROOT/apps/face_detect/
 $ ./test_video.sh face_detection
 ```
+
+## Check Precision from an existing detections
+If you have already saved all detections to a text file (say `FDDB_results.txt`) and you want to measure its precision, you can use following method:
+
+``` sh
+$ cd $VAI_ALVEO_ROOT/apps/face_detect/
+$ evaluation/evaluate             \
+    -a FDDB/FDDB_annotations.txt  \
+    -d FDDB_results.txt           \
+    -i FDDB/                      \
+    -l FDDB/FDDB_list.txt         
+
+$ python roc.py
+```
+
+**Note** : If it throws error regarding missing opencv libs, please extend `LD_LIBRARY_PATH` with `$CONDA_PREFIX/lib`
+```sh
+$ export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+```

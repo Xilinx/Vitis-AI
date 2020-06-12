@@ -37,6 +37,8 @@ LIBS += -lboost_thread -lboost_system -lboost_filesystem
 LIBS += -lglog -ljson-c -lhdf5_cpp -lhdf5 -lpthread -lpng16 -lprotobuf -lcaffe-nv
 # Opencv
 LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
+# Opencv video
+LIBS += -lopencv_videoio -lopencv_video
 
 ###
 # Compiler

@@ -15,9 +15,6 @@ import time
 import timeit
 from six import itervalues, next
 
-import nms
-if not hasattr(nms, "do_baseline_nms"): # in release, nms exists in site-packages
-  from nms import nms
 import numpy as np
 import zmq
 import os, sys

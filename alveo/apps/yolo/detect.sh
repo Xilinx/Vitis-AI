@@ -214,12 +214,12 @@ fi
 export PYTHONPATH=$PYTHONPATH:${VAI_ALVEO_ROOT}/apps/yolo
 
 # Determine XCLBIN
-XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
+XCLBIN=/opt/xilinx/overlaybins/xdnnv3
 if [ -d $XCLBIN ]; then
-  echo "--- Using Local XCLBIN ---"
-else
   echo "--- Using System XCLBIN ---"
-  XCLBIN=/opt/xilinx/overlaybins/xdnnv3
+else
+  echo "--- Using Local XCLBIN ---"
+  XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
 fi
 
 # Determine Quantizer
@@ -400,7 +400,7 @@ if [[ $RUN_COMPILER == 1 ]]
 then
   export GLOG_minloglevel=2 # Supress Caffe prints
 
-  COMPILER_BASE_OPT=" --prototxt $NET_DEF_FPGA \
+  COMPILER_BASE_OPT=" --prototxt $QUANT_DIR/deploy.prototxt \
       --caffemodel $QUANT_DIR/deploy.caffemodel \
       --arch arch.json \
       --net_name tmp \

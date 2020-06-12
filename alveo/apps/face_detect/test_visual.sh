@@ -15,6 +15,10 @@
 
 
 Model_Name=$1
+IMGLIST=$2
+CALIB_DATASET=$3
+IMAGE_FOLDER=$4
+OUTPUT=$5
 
 if [ -z $Model_Name ];then
     Model_Name=face_detection
@@ -22,7 +26,20 @@ if [ -z $Model_Name ];then
     echo -e "Please provide network name"
 fi
 
-# Set Platform Environment Variables
+if [ -z $IMGLIST ];then
+    IMGLIST="FDDB/FDDB_list_dummy.txt"
+fi
+
+if [ -z $CALIB_DATASET ];then
+    CALIB_DATASET="FDDB/"
+fi
+
+if [ -z $IMAGE_FOLDER ];then
+    IMAGE_FOLDER="FDDB/2002/09/22/big"
+fi
+if [ -z $OUTPUT ];then
+    export OUTPUT="$(pwd)/output/"
+fi
 if [ -z $VAI_ALVEO_ROOT ]; then
   echo "Please set VAI_ALVEO_ROOT, see you next time!"
   exit 1
@@ -52,14 +69,10 @@ mkdir $QUANT_DIR
 
 NET_DEF=$PROTOTXT
 DUMMY_PTXT=$COMP_DIR/${Model_Name}_decent.prototxt
-IMGLIST=FDDB/FDDB_list_dummy.txt
-CALIB_DATASET=FDDB/2002/07/19/big/
 python get_decent_q_prototxt.py ${CAFFE_ROOT}/python/ $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
 ## Run Quantizer
 export DECENT_DEBUG=1
-#
 vai_q_caffe quantize -model $DUMMY_PTXT -weights $CAFFMODEL  -calib_iter 5 -output_dir $QUANT_DIR
-##decent_q quantize -model $DUMMY_PTXT -weights $CAFFMODEL  -calib_iter 5 -output_dir $QUANT_DIR 
 
 if [[ -f $(which vai_c_caffe) ]]; then
   COMPILER=vai_c_caffe
@@ -87,12 +100,11 @@ ${COMPILER} $COMPILER_BASE_OPT --options "$COMPILER_OTHER_OPT"
 ## Run on FPGA
 VITIS_RUN_DIR=$COMP_DIR
 
-IMAGE_FOLDER=FDDB/2002/09/22/big
 
 
 python3 detect_visual.py \
 	--vitisrundir ${VITIS_RUN_DIR} \
     --images ${IMAGE_FOLDER} \
     --resize_h $NET_H \
-    --resize_w $NET_W 
-
+    --resize_w $NET_W \
+    --output ${OUTPUT}

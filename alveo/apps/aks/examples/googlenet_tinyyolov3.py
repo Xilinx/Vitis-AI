@@ -16,7 +16,7 @@
 import sys
 import glob
 import time
-import multiprocessing as mp
+import threading
 
 from apps.aks.libs import aks
 
@@ -25,31 +25,58 @@ def usage(exe):
   print("[INFO] ---------------------- ")
   print("[INFO] ", exe, " <img-dir-googlenet> <img-dir-tinyyolov3>")
 
-def main(imageDirectory, graphName, graphJson):
+
+def enqJobThread (name, graph, images):
+  # Get AKS Sys Manager
+  sysMan = aks.SysManager()
+  print ("[INFO] Starting Enqueue:", name)
+  for img in images:
+    sysMan.enqueueJob(graph, img)
+
+def main(imageDirectory, graphs):
   
   fileExtension = ('*.jpg', '*.JPEG', '*.png')
-  images = []
-  for ext in fileExtension:
-    images.extend(glob.glob(imageDirectory + '/' + ext))
+  images = {}
+  nImages = 0
+  for g in graphs.keys():
+    images[g] = list()
+    for ext in fileExtension:
+      images[g].extend(glob.glob(imageDirectory[g] + '/' + ext))
+    nImages = nImages + len(images[g])
 
   kernelDir = "kernel_zoo"
 
   sysMan = aks.SysManager()
   sysMan.loadKernels(kernelDir)
-  sysMan.loadGraphs(graphJson)
-  graph = sysMan.getGraph(graphName)
 
-  print("[INFO] Starting enqueue... ")
-  print("[INFO] Running", len(images), "images")
+  lgraphs = {}
+  # Load graphs
+  for graphName, graphJson in graphs.items():
+    sysMan.loadGraphs(graphJson)
+    lgraphs[graphName] = sysMan.getGraph(graphName)
+
+  pushThreads = []
+  sysMan.resetTimer()
   t0 = time.time()
-  for i, img in enumerate(images):
-    sysMan.enqueueJob(graph, img)
+  for name, gr in lgraphs.items():
+    th = threading.Thread(target=enqJobThread, args=(name, gr, images[name],))
+    th.start()
+    pushThreads.append(th)
+
+  for th in pushThreads:
+    th.join()
 
   sysMan.waitForAllResults()
   t1 = time.time()
-  print("[INFO] Overall FPS : ", len(images)/(t1-t0))
+  print("\n[INFO] Overall FPS:", nImages / (t1-t0))
 
-  sysMan.report(graph)
+  for name, gr in lgraphs.items():
+    print("\n[INFO] Graph: ", name)
+    sysMan.report(gr)
+
+  print ("")
+  # Destroy SysMan
+  sysMan.clear()
 
 if __name__ == "__main__":
   if (len(sys.argv) != 3):
@@ -57,23 +84,15 @@ if __name__ == "__main__":
     usage(sys.argv[0])
     exit(1)
 
-  imageDirectory = [] 
-  imageDirectory.append(sys.argv[1])
-  imageDirectory.append(sys.argv[2])
+  imageDirectory = {}
+  imageDirectory['googlenet_no_runner'] = sys.argv[1]
+  imageDirectory['tinyyolov3_no_runner'] = sys.argv[2]
 
+  # GoogleNet and TinyYolo-v3 graphs
   graphs = {}
   graphs['googlenet_no_runner'] = 'graph_zoo/graph_googlenet_no_runner.json'
   graphs['tinyyolov3_no_runner'] = 'graph_zoo/graph_tinyyolov3_no_runner.json'
 
-  procs = []
-  idx = 0
-  for name, json in graphs.items():
-    print(name, json)
-    p = mp.Process(target=main, args=(imageDirectory[idx], name, json,))
-    idx += 1
-    p.start()
-    procs.append(p)
-
-  for proc in procs:
-    proc.join()
+  # Process graphs
+  main(imageDirectory, graphs)
 

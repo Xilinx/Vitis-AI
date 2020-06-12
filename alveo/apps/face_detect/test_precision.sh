@@ -15,11 +15,25 @@
 
 
 Model_Name=$1
+IMGLIST=$2
+CALIB_DATASET=$3
+FDDB_PATH=$4
 
 if [ -z $Model_Name ];then
     Model_Name=face_detection
     echo -e "Running default model "face_detection_320_320_0.49G".. "
     echo -e "Please provide network name"
+fi
+if [ -z $IMGLIST ];then
+    IMGLIST="FDDB/FDDB_list_dummy.txt"
+fi
+
+if [ -z $CALIB_DATASET ];then
+    CALIB_DATASET="FDDB/"
+fi
+
+if [ -z $FDDB_PATH ];then
+    FDDB_PATH="FDDB"
 fi
 
 # Set Platform Environment Variables
@@ -51,13 +65,10 @@ mkdir $QUANT_DIR
 
 NET_DEF=$PROTOTXT
 DUMMY_PTXT=$COMP_DIR/${Model_Name}_decent.prototxt
-IMGLIST=FDDB/FDDB_list_dummy.txt
-CALIB_DATASET=FDDB/2002/07/19/big/
 
 python get_decent_q_prototxt.py ${CAFFE_ROOT}/python/ $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
 ## Run Quantizer
 export DECENT_DEBUG=1
-#
 vai_q_caffe quantize -model $DUMMY_PTXT -weights $CAFFMODEL  -calib_iter 5 -output_dir $QUANT_DIR
 
 if [[ -f $(which vai_c_caffe) ]]; then
@@ -91,7 +102,7 @@ python3 detect_precision.py \
 	--vitisrundir ${VITIS_RUN_DIR} \
     --resize_h $NET_H \
     --resize_w $NET_W \
-	--fddbList FDDB/FDDB_list.txt \
-    --fddbPath FDDB/ \
-    --fddbAnno FDDB/FDDB_annotations.txt 
+	--fddbList ${FDDB_PATH}/FDDB_list.txt \
+    --fddbPath ${FDDB_PATH}/ \
+    --fddbAnno ${FDDB_PATH}/FDDB_annotations.txt 
 

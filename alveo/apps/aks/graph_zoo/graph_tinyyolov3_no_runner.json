@@ -18,9 +18,10 @@
       "node_name": "tinyyolov3_fpga",
       "node_params": {
         "DPUv1_NoRunner": {
-          "netcfg": "graph_zoo/meta_tinyyolov3/compiler.json",
+          "xclbin":   "/opt/xilinx/overlaybins/xdnnv3",
+          "netcfg":   "graph_zoo/meta_tinyyolov3/compiler.json",
           "quantcfg": "graph_zoo/meta_tinyyolov3/quantizer.json",
-          "weights": "graph_zoo/meta_tinyyolov3/weights.h5"
+          "weights":  "graph_zoo/meta_tinyyolov3/weights.h5"
         }
       },
       "next_node": [  "tinyyolov3_post" ]

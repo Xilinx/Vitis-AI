@@ -19,6 +19,9 @@
       "node_name": "googlenet_v1_fpga",
       "node_params": {
         "DPUv1_Runner": {
+          "acquire_cu": 0,
+          "num_fpga": 1,
+          "xclbin":   "/opt/xilinx/overlaybins/xdnnv3",
           "vitis_rundir": "graph_zoo/meta_googlenet"
         }
       },

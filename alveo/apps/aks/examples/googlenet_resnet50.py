@@ -16,16 +16,24 @@
 import sys
 import glob
 import time
-import multiprocessing as mp
+import threading
 
 from apps.aks.libs import aks
 
 def usage(exe):
   print("[INFO] Usage: ")
   print("[INFO] ---------------------- ")
-  print("[INFO] ", exe, " <Image Directory Path>")
+  print("[INFO] ", exe, " <img-dir> ")
 
-def main(imageDirectory, graphName, graphJson):
+
+def enqJobThread (name, graph, images):
+  # Get AKS Sys Manager
+  sysMan = aks.SysManager()
+  print ("[INFO] Starting Enqueue:", name)
+  for img in images:
+    sysMan.enqueueJob(graph, img)
+
+def main(imageDirectory, graphs):
   
   fileExtension = ('*.jpg', '*.JPEG', '*.png')
   images = []
@@ -36,20 +44,35 @@ def main(imageDirectory, graphName, graphJson):
 
   sysMan = aks.SysManager()
   sysMan.loadKernels(kernelDir)
-  sysMan.loadGraphs(graphJson)
-  graph = sysMan.getGraph(graphName)
 
-  print("[INFO] Starting enqueue... ")
-  print("[INFO] Running", len(images), "images")
+  lgraphs = {}
+  # Load graphs
+  for graphName, graphJson in graphs.items():
+    sysMan.loadGraphs(graphJson)
+    lgraphs[graphName] = sysMan.getGraph(graphName)
+
+  pushThreads = []
+  sysMan.resetTimer()
   t0 = time.time()
-  for i, img in enumerate(images):
-    sysMan.enqueueJob(graph, img)
+  for name, gr in lgraphs.items():
+    th = threading.Thread(target=enqJobThread, args=(name, gr, images,))
+    th.start()
+    pushThreads.append(th)
+
+  for th in pushThreads:
+    th.join()
 
   sysMan.waitForAllResults()
   t1 = time.time()
-  print("[INFO] Overall FPS : ", len(images)/(t1-t0))
+  print("\n[INFO] Overall FPS:", len(images) * 2 / (t1-t0))
 
-  sysMan.report(graph)
+  for name, gr in lgraphs.items():
+    print("\n[INFO] Graph:", name)
+    sysMan.report(gr)
+
+  print("")
+  # Destroy SysMan
+  sysMan.clear()
 
 if __name__ == "__main__":
   if (len(sys.argv) != 2):
@@ -57,19 +80,14 @@ if __name__ == "__main__":
     usage(sys.argv[0])
     exit(1)
 
+  # Get images
   imageDirectory = sys.argv[1]
 
+  # GoogleNet and TinyYolo-v3 graphs
   graphs = {}
   graphs['googlenet_no_runner'] = 'graph_zoo/graph_googlenet_no_runner.json'
   graphs['resnet50_no_runner'] = 'graph_zoo/graph_resnet50_no_runner.json'
 
-  procs = []
-  for name, json in graphs.items():
-    print(name, json)
-    p = mp.Process(target=main, args=(imageDirectory, name, json,))
-    p.start()
-    procs.append(p)
-
-  for proc in procs:
-    proc.join()
+  # Process graphs
+  main(imageDirectory, graphs)
 

@@ -1,9 +1,10 @@
 {
   "kernel_name": "classificationImreadPre",
+  "description": "Reads an image and preprocess it for classification network",
   "kernel_type": "cpp",
   "device_type": "cpu",
   "kernel_lib" : "libs/libClassificationImreadPre.so",
-  "num_cu": 4,
+  "num_cu": 8,
 
   "param_list" : {
     "net_w": {"type": "int"},
@@ -14,4 +15,3 @@
     "mean": {"type": "float_array"}
   }
 }
-  

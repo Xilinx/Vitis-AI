@@ -21,7 +21,7 @@
 using namespace std;
 
 #include "ext/AksSysManagerExt.h"
-#include "ext/AksParamValues.h"
+#include "ext/AksNodeParams.h"
 
 using namespace AKS;
 
@@ -51,6 +51,7 @@ int executeGraph(
 
   int nImages = images.size();
 
+  sysMan->resetTimer();
   auto t1 = std::chrono::steady_clock::now();
 
   /// Enqueue the images to graph for execution
@@ -59,7 +60,7 @@ int executeGraph(
     std::vector<AKS::DataDescriptor> v; v.reserve(3);
     sysMan->enqueueJob (graph, imagePath , std::move(v), nullptr);
   }
- 
+
   /// Wait for results 
   sysMan->waitForAllResults();
 

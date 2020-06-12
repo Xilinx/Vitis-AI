@@ -1,9 +1,9 @@
 {
   "kernel_name": "caffe",
+  "description": "Execute a network using Caffe framework",
   "kernel_type": "cpp",
   "device_type": "cpu",
   "kernel_lib" : "libs/libCaffeKernel.so",
-  "kernel_queue_size": 1,
 
   "param_list" : {
     "network":      {"type": "string"},

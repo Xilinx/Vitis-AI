@@ -1,0 +1,478 @@
+{
+    "arguments": {
+        "aggressivecpulayermustgo": false,
+        "anew": null,
+        "approximate": false,
+        "banditpre": null,
+        "barrier": false,
+        "bridges": null,
+        "bytesperpixels": 1,
+        "checktensorshapes": false,
+        "concatstrategy": null,
+        "conv_1x1_s2": false,
+        "cpulayermustgo": true,
+        "customreplication": null,
+        "customtiling": null,
+        "cut": null,
+        "darius": null,
+        "ddr": 1024,
+        "deconvinfpga": true,
+        "dedicateddsp": null,
+        "dsp": 96,
+        "eltnoreplacelayer": false,
+        "eltwiseoutputs": false,
+        "fancyreplication": true,
+        "fancyreplications": false,
+        "fcinfpga": true,
+        "fcreshape": false,
+        "finalnode": null,
+        "finalparam": null,
+        "forceweights": null,
+        "forceweightsfullyconnected": false,
+        "framework": "caffe",
+        "fromtensorflow": true,
+        "frontendonly": false,
+        "generatefile": ".//tmp",
+        "graph_savepath": null,
+        "inclusive": false,
+        "inputcut": null,
+        "laodschedule": null,
+        "lasttensorbyname": null,
+        "leavescalealone": false,
+        "loadmode": "binary",
+        "loadpickle": null,
+        "manasadebugmode": null,
+        "maximumasrelu": true,
+        "memory": 9,
+        "mixmemorystrategy": true,
+        "networkfile": "/tmp/tmpywj0i_jn:deploy.prototxt",
+        "noconvexity": false,
+        "nodynamicscaling": false,
+        "noreplication": false,
+        "notcaffeanew": false,
+        "outputdir": "./",
+        "outputz": null,
+        "parallelism": false,
+        "parallelismgraphalgorithm": "tfs",
+        "parallelismstrategy": [
+            "tops",
+            "bottom"
+        ],
+        "parallelread": [
+            "bottom",
+            "tops"
+        ],
+        "parallism": true,
+        "partitioning": false,
+        "phase": 1,
+        "pingpongsplit": true,
+        "pipelineconvmaxpool": true,
+        "placeholdershape": null,
+        "platform": "xfdnn3",
+        "pngfile": null,
+        "poolingaround": true,
+        "prediction": false,
+        "quant_cfgfile": "quantize_info.txt",
+        "quantz": "",
+        "rankdir": "BT",
+        "relu6": false,
+        "reluaround": true,
+        "savepickle": null,
+        "saveschedule": null,
+        "scalepipeline": false,
+        "schedulefile": null,
+        "splitonly": false,
+        "squeeze": true,
+        "startnode": null,
+        "strategy": "all",
+        "usedeephi": true,
+        "verbose": false,
+        "verbositylevel": 1,
+        "versionjson": null,
+        "weights": "deploy.caffemodel"
+    },
+    "batchSize": 1,
+    "cmd": "/proj/sdxapps/users/abidk/repos/MLsuite/vai/dpuv1/tools/compile/bin/vai_c_caffe.py --prototxt deploy.prototxt --caffemodel deploy.caffemodel --arch ../arch.json --net_name tmp --output_dir ./ --options { 'ddr':1024, 'quant_cfgfile': 'quantize_info.txt',  'mixmemorystrategy': True, 'poolingaround': True,  'parallism':True, 'parallelread':['bottom','tops'], 'parallelismstrategy':['tops','bottom'],  'pipelineconvmaxpool':True, 'fancyreplication':True }",
+    "env": "environ({'CONDA_SHLVL': '1', 'LC_ALL': 'en_US.UTF-8', 'LD_LIBRARY_PATH': '/opt/xilinx/xrt/lib:/opt/xilinx/xrt/lib:/opt/xilinx/xrt/lib::/usr/local/cuda-10.0/lib64', 'CONDA_EXE': '/proj/sdxapps/users/abidk/repos/anaconda3/bin/conda', 'HOSTTYPE': 'x86_64-linux', 'SSH_CONNECTION': '172.23.61.12 42890 10.140.6.73 22', 'LC_MONETARY': 'en_US.UTF-8', 'LANG': 'en_US.UTF-8', 'MLSUITE_ROOT': '/proj/sdxapps/users/abidk/repos/MLsuite', 'OLDPWD': '/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo/work', 'LIBXDNN_PATH': '/proj/sdxapps/users/abidk/repos/MLsuite/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so', 'CONDA_PREFIX': '/proj/sdxapps/users/abidk/repos/anaconda3/envs/ml-suite-py3', 'VENDOR': 'unknown', 'MACHTYPE': 'x86_64', 'XILINX_XRT': '/opt/xilinx/xrt', '_CE_M': '', 'OSTYPE': 'linux', 'XDG_SESSION_ID': '15', 'USER': 'abidk', 'LC_COLLATE': 'en_US.UTF-8', 'GROUP': 'mlx', 'PWD': '/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo/stdyv2', 'HOME': '/home/abidk', 'CONDA_PYTHON_EXE': '/proj/sdxapps/users/abidk/repos/anaconda3/bin/python', 'LC_CTYPE': 'en_US.UTF-8', 'HOST': 'xhdsumitn40', 'SSH_CLIENT': '172.23.61.12 42890 22', 'VMSS_TAG': 'abidk/vmss_20190425034037', '_CE_CONDA': '', 'MKL_NUM_THREADS': '4', 'LC_NUMERIC': 'en_US.UTF-8', 'CONDA_PROMPT_MODIFIER': '(ml-suite-py3) ', 'SSH_TTY': '/dev/pts/6', 'MAIL': '/var/mail/abidk', 'GIT_EXEC_PATH': '/tools/batonroot/rodin/devkits/lnx64/git-2.16.2/libexec/git-core', 'REMOTEHOST': '172.23.61.12', 'TERM': 'xterm-256color', 'SHELL': '/bin/csh', 'LC_MESSAGES': 'en_US.UTF-8', 'VAI_ALVEO_ROOT': '/proj/sdxapps/users/abidk/repos/MLsuite', 'SHLVL': '2', 'PYTHONPATH': '/opt/xilinx/xrt/python:/proj/sdxapps/users/abidk/repos/MLsuite:/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo:/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo/nms:/proj/sdxapps/users/abidk/repos/MLsuite/xfmlp/python:/opt/xilinx/xrt/python:/proj/sdxapps/users/abidk/repos/MLsuite:/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo:/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo/nms:/proj/sdxapps/users/abidk/repos/MLsuite/xfmlp/python:/opt/xilinx/xrt/python:/proj/sdxapps/users/abidk/repos/MLsuite:/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo:/proj/sdxapps/users/abidk/repos/MLsuite/apps/yolo/nms:/proj/sdxapps/users/abidk/repos/MLsuite/xfmlp/python:', 'ARKDIR': '/proj/sdxapps/users/abidk', 'LOGNAME': 'abidk', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/17490/bus', 'XDG_RUNTIME_DIR': '/run/user/17490', 'XRT_INI_PATH': '/proj/sdxapps/users/abidk/repos/MLsuite/overlaybins/xrt.ini', 'PATH': '/opt/xilinx/xrt/bin:/proj/sdxapps/users/abidk/repos/anaconda3/envs/ml-suite-py3/bin:/proj/sdxapps/users/abidk/repos/anaconda3/bin:/opt/xilinx/xrt/bin:/opt/xilinx/xrt/bin:/proj/sdxapps/users/abidk/repos/anaconda3/condabin:/tools/batonroot/rodin/devkits/lnx64/git-2.16.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/cuda-10.0/bin', 'PS1': '(ml-suite-py3) [\\\\t \\\\u @ \\\\[\\\\e[1;36m\\\\]\\\\h\\\\[\\\\e[0m\\\\] \\\\w]$ ', 'CONDA_DEFAULT_ENV': 'ml-suite-py3', 'ARK': '/proj/sdxapps/users/abidk', 'XBLAS_NUM_PREP_THREADS': '4', 'OMP_NUM_THREADS': '4', 'LC_TIME': 'en_US.UTF-8', '_': '/proj/sdxapps/users/abidk/repos/MLsuite/vai/dpuv1/tools/compile/bin/vai_c_caffe.py'})",
+    "first_layer": 0,
+    "inputddr": 1945600,
+    "inputs": [
+        {
+            "input_address": 0,
+            "input_name": "data",
+            "next_layers": [
+                "layer30-conv"
+            ]
+        }
+    ],
+    "last_layer": 3,
+    "moveops": 433200.0,
+    "network": [
+        {
+            "active": 0,
+            "bottoms": [],
+            "deeppy": [
+                [],
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                null,
+                null,
+                false
+            ],
+            "layer": "data: type=Input, sizes=None, shapes=None, sched 0 Kernel None Strides None Padding None MUTE CODE",
+            "memory_description": "am_to_am",
+            "merged": [
+                "data"
+            ],
+            "name": "data",
+            "ops": 1945600,
+            "outputshapes": [
+                1,
+                1280,
+                19,
+                19
+            ],
+            "schedule": 1,
+            "type": "Input",
+            "xdnn_instr": "1 XNGather 0x0 0x0 19 19 1280 0 1 1 0 18 1 13 1 3 32 1 # Input data",
+            "xdnn_kv": {
+                "XNOp": "XNGather",
+                "a0": "0",
+                "b1": "1",
+                "c1": "1",
+                "comment": "Input",
+                "ddr_src": "0x0",
+                "end_row": "18",
+                "full_sect_num": "13",
+                "id": "1",
+                "inchan": "1280",
+                "insize_h": "19",
+                "insize_w": "19",
+                "repl_sect_num": "1",
+                "repl_unit_num": "3",
+                "repl_unit_width": "32",
+                "sep": "#",
+                "slice": "1",
+                "srcAddrReadFromImgQ": "1",
+                "start_row": "0",
+                "uram_dest": "0x0"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "data"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        4
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        5
+                    ]
+                ],
+                [
+                    8,
+                    11
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer30-conv: type=Convolution, sizes=None, shapes=SizeType(batches=1024, channels=1280, height=3, width=3), sched 1 Kernel [3] Strides [1] Padding [1]",
+            "memory_description": "ddr_to_am",
+            "merged": [
+                "layer30-conv",
+                "layer30-act"
+            ],
+            "moveops": 433200.0,
+            "name": "layer30-conv",
+            "ops": 8517058560,
+            "outputshapes": [
+                1,
+                1024,
+                19,
+                19
+            ],
+            "schedule": 2,
+            "tile_info": "Tile(tile=SizeType(batches=1, channels=1024, height=17, width=16), overlap_info=Overlaps(overlap=4.610294117647059, area=272, height=17, width=16, space=1021440, mi=SpaceAndTime(space=510720, time=79, replication=Replication(full_sect_num=13, repl_sect_num=1, repl_unit_num=3, repl_unit_width=32, channels_division=[1248, 1280])), mo=SpaceAndTime(space=287232, time=80, replication=None), i=MemoryAllocation(start=0, end=1945600, size=485184, extra=[1], strategy=[], layout=1, timestamp=12, slice=1, shapes=SizeType(batches=1, channels=1280, height=20, width=19), replication=Replication(full_sect_num=13, repl_sect_num=1, repl_unit_num=3, repl_unit_width=32, channels_division=[1248, 1280]), written=True, specifier='Input', IO=True), o=MemoryAllocation(start=9055968, end=9437184, size=381216, extra=[1], strategy=['tops'], layout=0, timestamp=10, slice=1, shapes=SizeType(batches=1, channels=1024, height=17, width=16), replication=Replication(full_sect_num=11, repl_sect_num=0, repl_unit_num=0, repl_unit_width=0, channels_division=0), written=True, specifier='AM for big pinky', IO=False), n_tiles=4, estimate_time=(4.610294117647059, -287232)))",
+            "type": "Convolution",
+            "xdnn_instr": "XNConv layer30-conv 3 3 1 1 1 1 1 1 0 26 17 1 1 1 0x0 19 19 1280 0x1707d 19 19 1024 1 1 13 1 3 32 11 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 0 1 0 1 0 1 0 16 17 1 0 16384 94333 # V3 SPLIT Code :)ddr_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "94333",
+                "HAT": "1",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "16384",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "11",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "1",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "0",
+                "id": "2",
+                "inaddr": "0x0",
+                "inchan": "1280",
+                "insize_h": "19",
+                "insize_w": "19",
+                "kernel_h": "3",
+                "kernel_w": "3",
+                "name": "layer30-conv",
+                "outaddr": "0x1707d",
+                "outchan": "1024",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "padding_h": "1",
+                "padding_w": "1",
+                "parallel_read": "0",
+                "postshift": "17",
+                "prelu": "1",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "1",
+                "scale": "26",
+                "slice": "1",
+                "srcAddDDR": "1",
+                "srcAddrReadFromImgQ": "1",
+                "src_full_sect_num": "13",
+                "src_repl_sect_num": "1",
+                "src_repl_unit_num": "3",
+                "src_repl_unit_width": "32",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "17",
+                "tile_width": "16",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer30-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        2
+                    ]
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer31-conv: type=Convolution, sizes=None, shapes=SizeType(batches=425, channels=1024, height=1, width=1), sched 2 Kernel [1] Strides [1] Padding [0]",
+            "memory_description": "am_to_am",
+            "merged": [
+                "layer31-conv"
+            ],
+            "name": "layer31-conv",
+            "ops": 314214400,
+            "outputshapes": [
+                1,
+                425,
+                19,
+                19
+            ],
+            "schedule": 4,
+            "type": "Convolution",
+            "xdnn_instr": "4 XNConv layer31-conv 1 1 1 1 0 0 1 1 0 32768 25 0 0 1 0x1707d 19 19 1024 0x16970 19 19 425 1 1 11 0 0 0 5 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 # am_to_am",
+            "xdnn_kv": {
+                "DEST_AM-Buffer_Offset": "0",
+                "HAT": "0",
+                "SRCAM-Buffer_0": "0",
+                "SRCAM-Buffer_1": "0",
+                "XNOp": "XNConv",
+                "bias": "1",
+                "concat_channels": "0",
+                "concat_full_sect_num": "0",
+                "concat_i_am_your_father": "0",
+                "concat_repl_sect_num": "0",
+                "concat_repl_unit_num": "0",
+                "concat_repl_unit_width": "0",
+                "concat_starting_ch": "0",
+                "destAddrReadFromImgQ": "0",
+                "dilation_h": "1",
+                "dilation_w": "1",
+                "dstAddDDR": "0",
+                "dst_full_sect_num": "5",
+                "dst_repl_sect_num": "0",
+                "dst_repl_unit_num": "0",
+                "dst_repl_unit_width": "0",
+                "en_halfrate_mode": "0",
+                "en_inlinemaxpool": "0",
+                "en_pingpong_weight": "1",
+                "id": "4",
+                "inaddr": "0x1707d",
+                "inchan": "1024",
+                "insize_h": "19",
+                "insize_w": "19",
+                "kernel_h": "1",
+                "kernel_w": "1",
+                "name": "layer31-conv",
+                "outaddr": "0x16970",
+                "outchan": "425",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "padding_h": "0",
+                "padding_w": "0",
+                "parallel_read": "0",
+                "postshift": "25",
+                "prelu": "0",
+                "prerelu": "0",
+                "preshift": "0",
+                "relu": "0",
+                "scale": "32768",
+                "slice": "1",
+                "srcAddDDR": "0",
+                "srcAddrReadFromImgQ": "0",
+                "src_full_sect_num": "11",
+                "src_repl_sect_num": "0",
+                "src_repl_unit_num": "0",
+                "src_repl_unit_width": "0",
+                "strides_h": "1",
+                "strides_w": "1",
+                "tile_height": "0",
+                "tile_width": "0",
+                "wait_conv": "1",
+                "wait_download": "1",
+                "wait_ew": "1",
+                "wait_pool": "1",
+                "wait_upload": "1",
+                "wait_upsmpl": "1",
+                "weights_bit": "1"
+            },
+            "xdnn_list": null
+        },
+        {
+            "active": 1,
+            "bottoms": [
+                "layer31-conv"
+            ],
+            "deeppy": [
+                [
+                    [
+                        8,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        8,
+                        2
+                    ]
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    5
+                ],
+                false
+            ],
+            "layer": "layer31-conv_output: type=Output, sizes=None, shapes=SizeType(batches=425, channels=1024, height=1, width=1), sched 3 Kernel [1] Strides [1] Padding [0]",
+            "memory_description": "am_to_ddr",
+            "merged": [
+                "layer31-conv_output"
+            ],
+            "name": "layer31-conv_output",
+            "ops": 656640,
+            "outputshapes": [
+                1,
+                425,
+                19,
+                19
+            ],
+            "schedule": 5,
+            "type": "Output",
+            "xdnn_instr": "5 XNScatter 0x16970 0x0 19 19 425 0 1 1 0 18 1 5 0 0 0 1 # Output layer31-conv_output",
+            "xdnn_kv": {
+                "XNOp": "XNScatter",
+                "a0": "0",
+                "b1": "1",
+                "c1": "1",
+                "ddr_dest": "0x0",
+                "destAddrReadFromImgQ": "1",
+                "end_row": "18",
+                "full_sect_num": "5",
+                "id": "5",
+                "outchan": "425",
+                "outsize_h": "19",
+                "outsize_w": "19",
+                "repl_sect_num": "0",
+                "repl_unit_num": "0",
+                "repl_unit_width": "0",
+                "slice": "1",
+                "start_row": "0",
+                "uram_src": "0x16970"
+            },
+            "xdnn_list": null
+        }
+    ],
+    "ops": 8833875200,
+    "outputddr": 656640,
+    "outputs": [
+        {
+            "output_address": 0,
+            "output_name": "layer31-conv_output",
+            "output_name_2": "layer31-conv_output",
+            "previous_layers": [
+                "layer31-conv"
+            ],
+            "previous_tensors": [
+                "layer31-conv"
+            ]
+        }
+    ],
+    "unsupported": {
+        "count": 0,
+        "list": {}
+    },
+    "version": "2.2.1"
+}
