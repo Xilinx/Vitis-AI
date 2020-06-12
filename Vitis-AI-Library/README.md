@@ -6,7 +6,7 @@
  </table>
 
 # Introduction
-The Vitis AI Library is a set of high-level libraries and APIs built for efficient AI inference with Deep-Learning Processor Unit (DPU). It is built based on the Vitis AI Runtime with Unified APIs, and it fully supports XRT 2019.2.
+The Vitis AI Library is a set of high-level libraries and APIs built for efficient AI inference with Deep-Learning Processor Unit (DPU). It is built based on the Vitis AI Runtime with Unified APIs, and it fully supports XRT 2020.1.
 
 The Vitis AI Library provides an easy-to-use and unified interface by encapsulating many efficient and high-quality neural networks. This simplifies the use of deep-learning neural networks, even for users without knowledge of deep-learning or FPGAs. The Vitis AI Library allows users to focus more on the development of their applications, rather than the underlying hardware.
 
@@ -366,7 +366,7 @@ If you want to support video data in other formats, you need to install the rele
 ```
 
 ## Quick Start For Alveo
-### Setting Up the Host
+### Setting Up the Host for U50/U50lv/U280
 
 Assume the docker image has been loaded and up running.
 
@@ -433,7 +433,7 @@ $cd /workspace/Vitis-AI-Library
 $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
 ```
 
-### Running Vitis AI Library Examples
+### Running Vitis AI Library Examples for U50/U50lv/U280
 1. Download the [vitis_ai_library_r1.2_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_images.tar.gz) and [vitis_ai_library_r1.2_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz) packages and untar them.
 ```
 $cd /workspace
@@ -470,6 +470,48 @@ Video_input.mp4: The video file's name for input.The user needs to prepare the v
 #./test_performance_facedetect densebox_640_360 test_performance_facedetect.list -t 8 -s 60
 -t: <num_of_threads>
 -s: <num_of_seconds>
+```
+
+### Setting Up the Host for U200/U250
+
+Assume the docker image has been loaded and up running.
+
+1. Place the program, data and other files in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
+Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
+
+2. Activate conda environment.
+```
+conda activate vitis-ai-caffe
+```
+3. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
+	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
+	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh.
+	Execute the following command to build the libraries all at once.
+4. To build the DPUV1 supported examples in the AI Library, run as below.
+```
+$cd /workspace/Vitis-AI-Library/
+$./cmake.sh --clean --cmake-options=-DCMAKE_PREFIX_PATH=$CONDA_PREFIX --cmake-options=-DENABLE_DPUV1_RUNNER=ON
+```
+This will generate the executable files to output path as per step 3.
+
+### Running Vitis AI Library Examples for U200/U250
+1. Download and untar the model directory [vai_lib_u2xx_models.tar.gz](vai_lib_u2xx_models.tar.gz) package. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../alveo/examples/caffe/README.md).
+```
+$cd /workspace
+todo:: link to download
+```
+Currently supported networks are classification, facedetect, facelandmark, reid and yolov3.
+2. Setup the environment.
+```
+$source /workspace/alveo/overlaybins/setup.sh
+```
+3. Run the classification image test example.
+```
+$HOME/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification <model_dir> <img_path>
+```
+4. Run the classification accuracy test example.
+```
+$HOME/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification <model_dir> <img_dir_path> <output_file>
 ```
 
 ## Reference
