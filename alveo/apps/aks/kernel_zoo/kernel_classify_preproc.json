@@ -1,5 +1,6 @@
 {
   "kernel_name": "classificationPreProcess",
+  "description": "Preprocess an image for a classification network",
   "kernel_type": "cpp",
   "device_type": "cpu",
   "kernel_lib" : "libs/libClassificationPreProc.so",
@@ -14,4 +15,3 @@
     "mean": {"type": "float_array"}
   }
 }
-  

@@ -18,21 +18,32 @@ import cv2
 import math
 import sys
 import os
-import subprocess
-
+import glob
 from vai.dpuv1.rt.vitis.python.dpu.runner import Runner
 from detect_ap2 import det_preprocess, det_postprocess
+import subprocess
+import caffe
 
+def padProcess(image, in_w, in_h):
+    oriSize = image.shape
+    sz_ratio = in_w/float(in_h)
+    if oriSize[1] / float(oriSize[0]) >= sz_ratio:
+        newHeight = int(math.ceil(oriSize[1]/sz_ratio))
+        imagePad = np.zeros((newHeight, oriSize[1], 3), np.uint8)
+    else:
+        newWidth = int(math.ceil(oriSize[0]*sz_ratio))
+        imagePad = np.zeros((oriSize[0], newWidth, 3), np.uint8)
 
+    imagePad[0:oriSize[0], 0:oriSize[1], :] = image
+    return imagePad
 
-def detect(runner, fpgaBlobs, image):
+def detect(runner, fpgaBlobs, image, szs):
     fpgaInput = fpgaBlobs[0][0]
+    c,h,w = fpgaInput[0].shape
     img = det_preprocess(image, fpgaInput[0])
-    c, h, w= fpgaInput[0].shape
-    #np.copyto(fpgaInput[0], img)
     jid = runner.execute_async(fpgaBlobs[0], fpgaBlobs[1])
     runner.wait(jid)
-    rects = det_postprocess(fpgaBlobs[1][1], fpgaBlobs[1][0], [h, w, c])
+    rects = det_postprocess(fpgaBlobs[1][1], fpgaBlobs[1][0], [h,w,c], szs)
     return rects
 
 # Main function
@@ -49,34 +60,27 @@ def faceDetection(args, FDDB_list, FDDB_results_file):
             shape = (batch_sz,) + tuple([t.dims[i] for i in range(t.ndims)][1:])
             blobs.append(np.empty((shape), dtype=np.float32, order='C'))
         fpgaBlobs.append(blobs)
-
-    rsz_h = args.resize_h
-    rsz_w = args.resize_w
-
+    
     for i, line in enumerate(FDDB_list):
         FDDB_results_file.write('%s\n' % line.strip())
         image_name =  args.fddbPath  + line.strip() + '.jpg'
-        src_img=cv2.imread(image_name)
-        h, w, ch = src_img.shape
-        input_img=cv2.resize(src_img,(rsz_w, rsz_h))
-        rects=detect(runner, fpgaBlobs, input_img)
+        image_ori = cv2.imread(image_name, cv2.IMREAD_COLOR)
+        imagePad = padProcess(image_ori, args.resize_w, args.resize_h) 
+        image = cv2.resize(imagePad,(args.resize_w, args.resize_h), interpolation = cv2.INTER_CUBIC)
+        image = image.astype(np.float)
+        image = image - 128
+        szs = (float(imagePad.shape[0])/float(image.shape[0]), float(imagePad.shape[1])/float(image.shape[1]))
+        sz = image.shape
+        #print("image name, orig image, resize img  shape : ", image_name, image_ori.shape, image.shape)
+        rects=detect(runner, fpgaBlobs, image, szs)
         FDDB_results_file.write('%d\n' % len(rects))
+
         for rect in rects:
-	    #print (rect)
-            # scale to actual image size for evaluation purpose
-            # topx, topy
-            sc_topx = int(rect[0]*w/rsz_w)
-            sc_topy = int(rect[1]*h/rsz_h)
-            # bottomx, bottomy
-            sc_bttmx = int(rect[2]*w/rsz_w)
-            sc_bttmy = int(rect[3]*h/rsz_h)
-
-            #print ("{} {} {} {} {}".format(rect[0],rect[1],rect[2],rect[3],rect[4]))
-            FDDB_results_file.write('%d %d %d %d %f\n' % (sc_topx, sc_topy, sc_bttmx - sc_topx, sc_bttmy - sc_topy, rect[4]))
+            FDDB_results_file.write('%d %d %d %d %f\n' % (rect[0], rect[1],
+                                                    rect[2] - rect[0], rect[3] - rect[1],
+                                                    rect[4]))
     FDDB_results_file.close()
-            
 
-    
 
 # Face Detection 
 if __name__ == "__main__":
@@ -88,7 +92,6 @@ if __name__ == "__main__":
     parser.add_argument('--resize_h', help = 'resize height', type = int)
     parser.add_argument('--profile', help = 'Provides performance related metrics', type = bool, default=False)
     parser.add_argument('--resize_w', help = 'resize width', type = int)
-    
 
     args = parser.parse_args()
     FDDB_list_file = open(args.fddbList, 'r')
@@ -111,5 +114,5 @@ if __name__ == "__main__":
         index = np.where(DiscROC[:, 1] == i)[0]
         if index :
             break
-    print (np.mean(DiscROC[index], axis = 0)) 
+    print ( "Recall :" + str(np.mean(DiscROC[index], axis = 0)) )
 

@@ -23,16 +23,27 @@ from vai.dpuv1.rt.vitis.python.dpu.runner import Runner
 from detect_ap2 import det_preprocess, det_postprocess
 import subprocess
 
+def padProcess(image, in_w, in_h):
+    oriSize = image.shape
+    sz_ratio = in_w/float(in_h)
+    if oriSize[1] / float(oriSize[0]) >= sz_ratio:
+        newHeight = int(math.ceil(oriSize[1]/sz_ratio))
+        imagePad = np.zeros((newHeight, oriSize[1], 3), np.uint8)
+    else:
+        newWidth = int(math.ceil(oriSize[0]*sz_ratio))
+        imagePad = np.zeros((oriSize[0], newWidth, 3), np.uint8)
+
+    imagePad[0:oriSize[0], 0:oriSize[1], :] = image
+    return imagePad
 
 
-def detect(runner, fpgaBlobs, image):
+def detect(runner, fpgaBlobs, image, szs):
     fpgaInput = fpgaBlobs[0][0]
     c,h,w = fpgaInput[0].shape
     img = det_preprocess(image, fpgaInput[0])
-    #np.copyto(fpgaInput[0], img)
     jid = runner.execute_async(fpgaBlobs[0], fpgaBlobs[1])
     runner.wait(jid)
-    rects = det_postprocess(fpgaBlobs[1][1], fpgaBlobs[1][0], [h,w,c])
+    rects = det_postprocess(fpgaBlobs[1][1], fpgaBlobs[1][0], [h,w,c], szs)
     return rects
 
 # Main function
@@ -56,22 +67,30 @@ def faceDetection(vitis_rundir,outpath, rsz_h, rsz_w, path):
     
     output_Img_path = dirName
     #os.chdir(path)
-    res=[] 
+    fp = open( output_Img_path + "/output.txt" , 'w')
     for fn in sorted(glob.glob(path+ '/*.jpg'), key=os.path.getsize):
         filename = fn[fn.rfind('/')+1:]
-        src_img=cv2.imread(fn)
-        input_img=cv2.resize(src_img,(rsz_w, rsz_h))
-        face_rects=detect(runner, fpgaBlobs, input_img)
-        dst_img=input_img.copy()
+        image_ori = cv2.imread(fn, cv2.IMREAD_COLOR)
+        imagePad = padProcess(image_ori, args.resize_w, args.resize_h) 
+        image = cv2.resize(imagePad,(args.resize_w, args.resize_h), interpolation = cv2.INTER_CUBIC)
+        image = image.astype(np.float)
+        image = image - 128
+        szs = (float(imagePad.shape[0])/float(image.shape[0]), float(imagePad.shape[1])/float(image.shape[1]))
+        sz = image.shape
+        #print("image name, orig image, resize img  shape : ", image_name, image_ori.shape, image.shape)
+        face_rects=detect(runner, fpgaBlobs, image, szs)
+        res = []
         if len(face_rects) != 0:
             for face_rect in face_rects:
-                res.append("{} {} {} {} {}".format(fn, face_rect[0],face_rect[1],face_rect[2],face_rect[3]))
+                res.append("{} {} {} {} {}".format(filename, face_rect[0],face_rect[1],face_rect[2],face_rect[3]))
                 print ("{} {} {} {} {}".format(fn, face_rect[0],face_rect[1],face_rect[2],face_rect[3]))
-                cv2.rectangle(dst_img,(face_rect[0],face_rect[1]),(face_rect[2],face_rect[3]),(0,255,0),2)
-                cv2.imwrite(output_Img_path+filename,dst_img)
+                cv2.rectangle(image_ori,(face_rect[0],face_rect[1]),(face_rect[2],face_rect[3]),(0,255,0),2)
+                cv2.imwrite(output_Img_path+filename,image_ori)
+        for faces in res:
+            fp.write(faces + '\n')
 #        else:
             #res.append("{} {} {} {} {}".format(fn, 0,0,0,0))
-    
+    fp.close()
 
 # Face Detection 
 if __name__ == "__main__":
@@ -80,10 +99,11 @@ if __name__ == "__main__":
     parser.add_argument('--images', help = 'path to image folder',type = str, default='test_pic/' )
     parser.add_argument('--resize_h', help = 'resize height', type = int)
     parser.add_argument('--resize_w', help = 'resize width', type = int)
+    parser.add_argument('--output', help = 'output folder', type = str)
 
     args = parser.parse_args()
     
-    work_dir = os.getcwd() + '/output/'
+    work_dir = args.output
     if not os.path.exists(work_dir):
         os.mkdir(work_dir)
 

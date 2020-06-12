@@ -16,7 +16,6 @@ from __future__ import print_function
 
 import os, sys, argparse
 import subprocess
-from decent import CaffeFrontend as xfdnnQuantizer
 from vai.dpuv1.rt.scripts.framework.caffe.xfdnn_subgraph import CaffeCutter as xfdnnCutter
 
 import numpy as np
@@ -25,17 +24,17 @@ import caffe
 VAI_ALVEO_ROOT = os.getenv("VAI_ALVEO_ROOT", "../../")
 
 # Generate scaling parameters for fixed point conversion
-def Quantize(prototxt, caffemodel, test_iter=1, calib_iter=1, output_dir="work"):
-  quantizer = xfdnnQuantizer(
-    model = prototxt,
-    weights = caffemodel,
-    test_iter = test_iter,
-    calib_iter = calib_iter,
-    auto_test = True,
-    output_dir = output_dir,
-  )
-  quantizer.quantize()
 
+def Quantize(prototxt,caffemodel,test_iter=1,calib_iter=1,output_dir="work"):
+    os.environ["DECENT_DEBUG"] = "1"
+    subprocess.call([
+    'vai_q_caffe',
+    'quantize',
+    '-model', prototxt,
+    '-weights', caffemodel,
+    '-test_iter', str(test_iter),
+    '-calib_iter', str(calib_iter),
+    '-output_dir', output_dir])
 # Standard compiler arguments for XDNNv3
 def Getopts():
   return {

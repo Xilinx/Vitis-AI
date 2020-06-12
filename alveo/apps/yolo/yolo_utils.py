@@ -20,7 +20,10 @@ import random
 import cv2
 import numpy as np
 import os
-from PIL import Image, ImageDraw, ImageFont
+try:
+  from PIL import Image, ImageDraw, ImageFont
+except ImportError:
+  print("WARNING : PIL is not installed in the environment, so drawing functions are not available")
 
 from vai.dpuv1.rt import xdnn, xdnn_io
 from vai.dpuv1.utils.postproc import yolo

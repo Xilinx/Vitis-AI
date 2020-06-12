@@ -1,5 +1,6 @@
 {
   "kernel_name": "classificationAccuracy",
+  "description": "Measure accuracy of a classification network",
   "kernel_type": "cpp",
   "device_type": "cpu",
   "kernel_lib" : "libs/libClassificationAccuracy.so",
@@ -8,4 +9,3 @@
     "ground_truth": {"type" : "string"}
   }
 }
-  

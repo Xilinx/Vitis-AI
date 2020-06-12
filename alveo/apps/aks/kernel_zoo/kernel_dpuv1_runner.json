@@ -1,12 +1,14 @@
 {
   "kernel_name": "DPUv1_Runner",
+  "description": "Run inference on DPUv1 with new VAI Interface",
   "kernel_type": "cpp",
   "device_type": "fpga",
-  "xclbin": "/opt/xilinx/overlaybins/xdnnv3",
   "kernel_lib" : "libs/libDPUv1RunnerKernel.so",
-  "kernel_queue_size": 512,
 
   "param_list": {
+    "num_fpga":     { "type" : "int" },
+    "acquire_cu":   { "type" : "int" },
+    "xclbin":       { "type" : "string" },
     "vitis_rundir": { "type":"string" }
   }
 }

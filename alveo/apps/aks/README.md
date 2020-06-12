@@ -94,6 +94,19 @@ All of them come with prebuilt executables. Use following commands to run these 
     ./aks.sh  -i py -m googlenet_tinyyolov3
     ```
 
+1. GoogleNet (with FPGA accelerated pre-processing)
+
+    ```sh
+    ###
+    # Currently supported on Alveo-u200
+    ###
+
+    # C++
+    ./aks.sh -m googlenet_pp_accel
+    # Python
+    ./aks.sh  -i py -m googlenet_pp_accel
+    ```
+
 ## Integrating AI Kernel Scheduler in Your Application
 
 Users can create their own pipelines by defining custom graphs and use AI Kernel Scheduler in their applications through the C++ or Python APIs. Code of the C++ and Python examples mentioned in previous section is available in corresponding directories. This code can be referred to integrate AKS in any application.
@@ -274,13 +287,13 @@ We will go in detail with a reference kernel, `Add Kernel`, which simply adds a 
 
 All kernels should inherit from an abstract class, **`KernelBase`** (*Please see the [header](ext/AksKernelBase.h) for detailed documentation*). Check the [implementation](./examples/kernels/add/add_kernel.cpp) of `Add Kernel` for reference.
 
-There should be a generator function named, **`getKernel()`**, which returns a pointer to Kernel instance. This function should be wrapped in `extern "C"`. If kernel generation requires any specific parameters, it can be passed to `getKernel()` through [**OpParamValues**](ext/AksParamValues.h). This is a generic dict structure filled by AKS with the data provided in the graph json.
+There should be a generator function named, **`getKernel()`**, which returns a pointer to Kernel instance. This function should be wrapped in `extern "C"`. If kernel generation requires any specific parameters, it can be passed to `getKernel()` through [**NodeParams**](ext/AksNodeParams.h). This is a generic dict structure filled by AKS with the data provided in the graph json.
 
 **`KernelBase::exec_async()`** is the only pure virtual method. It takes four arguments. 
 
 First two are input and output. They are of type `vector<DataDescriptor*>`. [DataDescriptor](ext/AksDataDescriptor.h) is a N-dimensional array structure to store input/output of each node. Inputs to a node are automatically filled by previous nodes' outputs. `exec_async()` of custom kernel should create as many outputs it wants and keep them in output. AKS will take care of the memory management.
 
-Third argument is `OpParamValues* params`. It is populated by AKS with all the node parameters from the graph json. This parameter is unique per node. If graph contains two nodes of same kernel, each of them will have their own `params`.
+Third argument is `NodeParams* params`. It is populated by AKS with all the node parameters from the graph json. This parameter is unique per node. If graph contains two nodes of same kernel, each of them will have their own `params`.
 
 Fourth argument is `DynamicParamValues* dynParams`. It is passed by the user as an argument to `enqueueJob()`. This includes any input params that is common to all nodes in a graph, but different with each input. For eg: ground truth file for each input image in an object detection task.
 

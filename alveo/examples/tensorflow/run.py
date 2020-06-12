@@ -28,11 +28,11 @@ from utils import get_input_fn, top5_accuracy, LABEL_OFFSET, BATCH_SIZE
 from shutil import rmtree
 
 
-# Environment Variables (obtained by running "source overlaybins/setup.sh")
-if 'VAI_ALVEO_ROOT' in os.environ and os.path.isdir(os.path.join(os.environ['VAI_ALVEO_ROOT'], 'overlaybins/xdnnv3')):
+XCLBIN = '/opt/xilinx/overlaybins/xdnnv3/'
+if (not os.path.exists(XCLBIN) and 'VAI_ALVEO_ROOT' in os.environ and
+        os.path.isdir(os.path.join(os.environ['VAI_ALVEO_ROOT'], 'overlaybins/xdnnv3'))):
+    # Environment Variables (obtained by running "source overlaybins/setup.sh")
     XCLBIN = os.path.join(os.environ['VAI_ALVEO_ROOT'], 'overlaybins/xdnnv3')
-else:
-    XCLBIN = '/opt/xilinx/overlaybins/xdnnv3/'
 
 def get_default_compiler_args():
     return {
@@ -64,6 +64,7 @@ if __name__ == "__main__":
   parser.add_argument('--pre_process', default="", help='pre-process function for quantization calibration')
   parser.add_argument('--label_offset', default=LABEL_OFFSET, help='Optionally, label offset of the dataset')
   parser.add_argument('--batch_size', type=int, default=BATCH_SIZE, help='batch sizes to run')
+  parser.add_argument('--calib_iter', type=int, default=10, help='calibration iterations for quantization')
   parser.add_argument('--quantize', action="store_true", default=False, help='In quantize mode, model will be Quantize')
   parser.add_argument('--validate_cpu', action="store_true", help='If validation_cpu is enabled, the model will be validated on cpu')
   parser.add_argument('--validate', action="store_true", help='If validation is enabled, the model will be partitioned, compiled, and ran on the FPGA, and the validation set examined')
@@ -110,7 +111,7 @@ if __name__ == "__main__":
         input_shapes = input_shapes,
         output_dir = args.output_dir,
         method= 1,
-        calib_iter = 10 // args.batch_size)
+        calib_iter = args.calib_iter)
     decent_q.quantize_frozen(input_graph_def, input_fn, q_config)
 
     #subprocess.call(['vai_q_tensorflow', 'inspect',

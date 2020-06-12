@@ -1,15 +1,15 @@
 {
   "kernel_name": "DPUv1_NoRunner",
+  "description": "Run inference on DPUv1 with pre-VAI Interface",
   "kernel_type": "cpp",
   "device_type": "fpga",
-  "xclbin": "/opt/xilinx/overlaybins/xdnnv3",
   "kernel_lib" : "libs/libDPUv1NoRunnerKernel.so",
-  "kernel_queue_size": 256,
 
   "param_list": {
-    "netcfg": { "type":"string" },
+    "xclbin":   { "type":"string" },
+    "netcfg":   { "type":"string" },
     "quantcfg": { "type":"string" },
-    "weights": { "type":"string" }
+    "weights":  { "type":"string" }
   }
 }
 

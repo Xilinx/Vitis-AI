@@ -22,7 +22,7 @@
 namespace AKS
 {
   class DataDescriptor;
-  struct OpParamValues;
+  struct NodeParams;
   struct DynamicParamValues;
 
   /// Base interface for an AKS kernel
@@ -53,26 +53,26 @@ namespace AKS
       virtual int exec_async (
         std::vector<AKS::DataDescriptor *> &in,
         std::vector<AKS::DataDescriptor *> &out, 
-        OpParamValues* params, 
+        NodeParams* params, 
         DynamicParamValues* dynParams) = 0;
       
       /// Wait operation for asynchronous kernel execution
       /// Required only if isExecAsync() is true.
       /// @param execID An ID returned by exec_async call in async call.
       /// @params Node parameters. Unique to a particular node.
-      virtual void wait (int, OpParamValues*) {}
+      virtual void wait (int, NodeParams*) {}
 
       /// Initialize a Node
       /// AKS performs this operation for each node in a graph as soon as graph is loaded.
       /// Any setup operations w.r.t a node could be implemented here
       /// @param params Node parameters. Unique to a particular node.
-      virtual void nodeInit(OpParamValues*) {}
+      virtual void nodeInit(NodeParams*) {}
 
       /// Report any info by each node
       /// If any kernel wants to print any info after all jobs, it could be added here.
       /// Eg: Accuracy kernel wants to report final accuracy over a full dataset.
       /// It is invoked for every node by SysManagerExt::report() method.
-      virtual void report(AKS::OpParamValues* nodeParams) {}
+      virtual void report(AKS::NodeParams* nodeParams) {}
   };
 }
 #endif

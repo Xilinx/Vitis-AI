@@ -21,7 +21,7 @@
 using namespace std;
 
 #include "ext/AksSysManagerExt.h"
-#include "ext/AksParamValues.h"
+#include "ext/AksNodeParams.h"
 
 using namespace AKS;
 
@@ -75,6 +75,7 @@ int main(int argc, char **argv)
   int nImages = images.size();
   std::cout << "[INFO] Running " << nImages << " Images" << std::endl; 
 
+  sysMan->resetTimer();
   auto t1 = std::chrono::steady_clock::now();
 
   /// User input
