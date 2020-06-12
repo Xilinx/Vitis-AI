@@ -62,6 +62,8 @@ int display_index = 0;    // frame index to display
 // string pathBase;
 string pose_model_path;
 string ssd_model_path;
+mutex mtx_create_runner;
+
 /**
  * @brief entry routine of segmentation, and put image into display queue
  *
@@ -72,9 +74,12 @@ string ssd_model_path;
 void runGestureDetect(bool& is_running) {
   SSD ssd;
   GestureDetect gesture;
-  ssd.Init(ssd_model_path);
-  gesture.Init(pose_model_path);
-
+  {
+    mtx_create_runner.lock();
+    ssd.Init(ssd_model_path);
+    gesture.Init(pose_model_path);
+    mtx_create_runner.unlock();
+  }
   // Run detection for images in read queue
   while (is_running) {
     // Get an image from read queue
@@ -212,7 +217,6 @@ int main(int argc, char** argv) {
     cout << "Failed to open video: " << file_name;
     return -1;
   }
-
   // Run tasks
   array<thread, 4> threads = {thread(Read, ref(is_reading)),
                               thread(runGestureDetect, ref(is_running_1)),

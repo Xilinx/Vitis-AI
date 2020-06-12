@@ -1,6 +1,6 @@
 <table width="100%">
   <tr width="100%">
-    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Runtime v1.1</h1>
+    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Runtime v1.2</h1>
     </td>
  </tr>
  </table>
@@ -140,6 +140,10 @@ If the compilation process does not report any error and the executable file `re
 	#rpm -ivh libtarget-factory-1.2.0-x.aarch64.rpm
 	#rpm -ivh libvart-1.2.0-x.aarch64.rpm
 	```
+	* Run the `board_set_up.sh` script. You can also download the `board_set_up.sh` from [here](http://10.176.178.31/mtf/board_set_up.sh).
+	```
+	#board_set_up.sh
+	```	
 	* For ZCU104, enable the power patch.
 	```
 	#irps5401
@@ -174,6 +178,8 @@ If the compilation process does not report any error and the executable file `re
 	```
 	#bash –x build.sh
 	```
+	For examples with video input, only `webm` and `raw` format are supported by default with the official system image. 
+	If you want to support video data in other formats, you need to install the relevant packages on the system. 
 <details>
  <summary><b>Click here to view Launching Commands for Vitis AI Samples on ZCU102 </b></summary>
  
@@ -182,10 +188,10 @@ If the compilation process does not report any error and the executable file `re
 | 1    | resnet50                 | ./resnet50 model_dir_for_zcu102/resnet50.elf                              |
 | 2    | resnet50_mt_py           | python3 resnet50.py 1 model_dir_for_zcu102/resnet50.elf                    |
 | 3    | inception_v1_mt_py       | python3 inception_v1.py 1 model_dir_for_zcu102/inception_v1_tf.elf               |
-| 4    | pose_detection           | ./pose_detection video/pose.mp4 model_dir_for_zcu102/pose_0/sp_net.elf model_dir_for_zcu102/ssd/ssd_pedestrain_pruned_0_97.elf         |
-| 5    | video_analysis           | ./video_analysis video/structure.mp4 model_dir_for_zcu102/ssd_traffic_pruned_0_9.elf    |
-| 6    | adas_detection           | ./adas_detection video/adas.avi model_dir_for_zcu102/yolov3_adas_pruned_0_9.elf         |
-| 7    | segmentation             | ./segmentation video/traffic.mp4 model_dir_for_zcu102/fpn.elf        |
+| 4    | pose_detection           | ./pose_detection video/pose.webm model_dir_for_zcu102/pose_0/sp_net.elf model_dir_for_zcu102/ssd/ssd_pedestrain_pruned_0_97.elf         |
+| 5    | video_analysis           | ./video_analysis video/structure.webm model_dir_for_zcu102/ssd_traffic_pruned_0_9.elf    |
+| 6    | adas_detection           | ./adas_detection video/adas.webm model_dir_for_zcu102/yolov3_adas_pruned_0_9.elf         |
+| 7    | segmentation             | ./segmentation video/traffic.webm model_dir_for_zcu102/fpn.elf        |
 
 </details>
 

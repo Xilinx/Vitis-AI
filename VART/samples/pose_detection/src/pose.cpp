@@ -97,6 +97,11 @@ GestureDetect::GestureDetect() {}
  */
 GestureDetect::~GestureDetect() {}
 
+static int get_batch_size_of_runner(vart::Runner* r) {
+  CHECK(!r->get_input_tensors().empty());
+  return r->get_input_tensors()[0]->get_dim_size(0);
+}
+
 /**
  * @brief Init - initialize the 14pt model
  */
@@ -113,7 +118,18 @@ void GestureDetect::Init(string& path) {
   graph = xir::Graph::deserialize(path);
   auto subgraph = get_dpu_subgraph(graph.get());
   pt_runner = vart::Runner::create_runner(subgraph[0], "run");
-  fc_pt_runner = vart::Runner::create_runner(subgraph[2], "run");
+  auto pt_batch_size = get_batch_size_of_runner(pt_runner.get());
+  // fc_pt_runner = vart::Runner::create_runner(subgraph[1], "run");
+  auto is_same = false;
+  int num_of_tries = 0;
+  do {
+    fc_pt_runner = vart::Runner::create_runner(subgraph[1], "run");
+    auto fc_batch_size = get_batch_size_of_runner(fc_pt_runner.get());
+    is_same = fc_batch_size == pt_batch_size;
+    num_of_tries++;
+  } while (!is_same && num_of_tries < 10);
+  CHECK_LT(num_of_tries, 10) << "too many tries...";
+
   GraphInfo shapes;
   GraphInfo fc_shapes;
   shapes.inTensorList = inshapes;

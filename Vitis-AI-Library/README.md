@@ -1,6 +1,6 @@
 <table width="100%">
   <tr width="100%">
-    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Library v1.1</h1>
+    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Library v1.2</h1>
     </td>
  </tr>
  </table>
@@ -344,10 +344,12 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 
 6. Run the video test example.
 ```
-#./test_video_facedetect densebox_640_360 video_input.mp4 -t 8
+#./test_video_facedetect densebox_640_360 video_input.webm -t 8
 Video_input.mp4: The video file's name for input.The user needs to prepare the videofile.
 -t: <num_of_threads>
 ```
+Note that, for examples with video input, only `webm` and `raw` format are supported by default with the official system image. 
+If you want to support video data in other formats, you need to install the relevant packages on the system. 
 
 7. To test the program with a USB camera as input, run the following command:
 ```
@@ -371,8 +373,10 @@ Assume the docker image has been loaded and up running.
 1. Place the program, data and other files in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
 Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
 
-2. Run the `alveo_setting.sh` to automatically set up the host for U50, or manully perform the following steps from 3 to 6. If you run the `alveo_setting.sh` successfully, then skip to step 7.
-
+2. Run the `alveo_u50_setup.sh` to automatically set up the host for U50, or manully perform the following steps from 3 to 6. If you run the `alveo_u50_setup.sh` successfully, then skip to step 7.
+```
+$bash -x alveo_u50_setup.sh
+```
 3. Download [vitis_ai_runtime_library_r1.2](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.0.tar.gz) package.
 Untar it, find the `libvitis_ai_library_1.2.0-rx_amd64.deb` package and install it to the docker system.
 ```
@@ -381,11 +385,23 @@ $tar -xzvf vitis-ai-runtime-1.2.0.tar.gz
 $cd vitis-ai-runtime-1.2.0/X86_64/ubuntu
 $sudo dpkg -i libvitis_ai_library_1.2.0-r4_amd64.deb
 ```
-4. Download [Alveo Model](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_alveo-1.2.0-Linux.deb) packet and install it.
+4. Select the model for your platform, download the model packet and install it. Take `U50` as an example. 
 ```
-$wget https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_alveo-1.2.0-Linux.deb -O xilinx_model_zoo_alveo-1.2.0-Linux.deb
-$sudo dpkg -i xilinx_model_zoo_alveo-1.2.0-Linux.deb
+$wget https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50_1.2.0_amd64.deb -O xilinx_model_zoo_u50_1.2.0_amd64.deb
+$sudo dpkg -i xilinx_model_zoo_u50_1.2.0_amd64.deb
 ```
+<details>
+ <summary><b>Click here to download models for different alveo cards </b></summary>
+ 
+| No\. | Alveo              | Download Link                                                      |
+| :--- | :----------------------- | :----------------------------------------------------------- |
+| 1    | U50             | [xilinx_model_zoo_u50_6e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50_1.2.0_amd64.deb)                              |
+| 2    | U50lv           | [xilinx_model_zoo_u50lv_9e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u280_u50lv9e_1.2.0_amd64.deb)                       |
+| 3    | U50lv           | [xilinx_model_zoo_u50lv_10e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50lv10e_1.2.0_amd64.deb)                  |
+| 4    | U280            | [xilinx_model_zoo_u280_14e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u280_u50lv9e_1.2.0_amd64.deb)            |
+
+</details>
+
 5. Download the [Alveo_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.2.0.tar.gz). Untar it, choose the alveo card and install it. Take `U50` as an example.
 ```
 $wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.2.0.tar.gz -O alveo_xclbin-1.2.0.tar.gz

@@ -24,7 +24,7 @@ install_prefix_default=$HOME/.local/${target_info}
 $CXX --version
 name=$(basename $PWD)
 if [[ "$CXX"  == *"sysroot"* ]];then
-$CXX -ggdb -O0 -fno-inline -I. \
+$CXX -O2 -fno-inline -I. \
      -I=/install/Debug/include \
      -I=/install/Release/include \
      -L=/install/Debug/lib \
@@ -44,7 +44,7 @@ $CXX -ggdb -O0 -fno-inline -I. \
      -lunilog \
      -lpthread
 else
-$CXX -ggdb -O0 -fno-inline -I. \
+$CXX -O2 -fno-inline -I. \
      -I${install_prefix_default}.Debug/include \
      -I${install_prefix_default}.Release/include \
      -L${install_prefix_default}.Debug/lib \
