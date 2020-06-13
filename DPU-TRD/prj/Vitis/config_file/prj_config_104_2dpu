@@ -45,6 +45,8 @@ misc=:solution_name=link
 #param=compiler.skipTimingCheckAndFrequencyScaling=1
 
 [vivado]
-prop=run.impl_1.strategy=Performance_Explore
+prop=run.impl_1.strategy=Performance_ExploreWithRemap
+#prop=run.impl_1.strategy=Congestion_SpreadLogic_low
+#prop=run.impl_1.strategy=Performance_Explore
 
 #param=place.runPartPlacer=0
