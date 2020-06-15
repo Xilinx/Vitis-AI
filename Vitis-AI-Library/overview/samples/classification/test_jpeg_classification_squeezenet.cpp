@@ -66,10 +66,10 @@ int main(int argc, char* argv[]) {
     image = input_image;
   }
   // Set the input image
-  if(kernel_name.compare("squeezenet_pt")) {
+  if(kernel_name.compare("squeezenet_pt") == 0) {
     task->setMeanScaleBGR({103.53f, 116.28f, 123.675f}, {0.017429f, 0.017507f, 0.01712475f});
     task->setImageRGB(image);
-  } else if(kernel_name.compare("squeezenet")) {
+  } else if(kernel_name.compare("squeezenet") == 0) {
     task->setMeanScaleBGR({104.0f, 107.0f, 123.0f}, {1.0f, 1.0f, 1.0f});
     task->setImageBGR(image);
   } else

@@ -1,0 +1,18 @@
+model {
+   name : "resnet_50"
+   kernel {
+     name: "resnet_50_0"
+     mean: 104.0
+     mean: 107.0
+     mean: 123.0
+     scale: 1.0
+     scale: 1.0
+     scale: 1.0
+   }
+   model_type : CLASSIFICATION
+   classification_param {
+      top_k : 5
+      test_accuracy : false
+      preprocess_type : CAFFE
+   }
+}

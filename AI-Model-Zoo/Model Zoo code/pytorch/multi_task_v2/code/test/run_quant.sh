@@ -47,7 +47,7 @@
 #DATASET and WEIGHTS softlink will be created automatically
 
 #echo "Creating environment..."
-#conda env create -f ./code/conda_config/environment.yaml
+#conda env create -f ./code/configs/environment.yaml
 #source activate Multi-task_test_env
 
 echo "Preparing dataset..."
