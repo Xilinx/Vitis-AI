@@ -1,11 +1,5 @@
 name: torch_seg
 channels:
-- https://xcdconda/pytorch
-- https://xcdengvm244030/defaults
-- https://xcdconda/pytorch/
-- https://xcdengvm244030/defaults/
-- https://xcdengvm244030/conda-forge/
-- https://xcdengvm244030/bioconda/
 dependencies:
 - pytorch=1.0.1=py3.7_cuda9.0.176_cudnn7.4.2_2
 - torchvision=0.2.1=py37_1

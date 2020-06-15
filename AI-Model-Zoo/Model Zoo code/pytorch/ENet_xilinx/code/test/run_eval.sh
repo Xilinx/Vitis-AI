@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-
+export PYTHONPATH=${PWD}:${PYTHONPATH}
 CUDA_VISIBLE_DEVICES=0 python code/test/test.py --eval --val_batch_size 4 --data_root ./data/cityscapes/ --input_size 1024 512 --weight ./float/final_best.pth
 
 

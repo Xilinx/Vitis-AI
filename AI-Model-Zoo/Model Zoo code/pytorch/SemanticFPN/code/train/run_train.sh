@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+export PYTHONPATH=${PWD}:${PYTHONPATH}
 
 GPU_ID=0
 echo "====> perform SemanticFPN(ResNet18) with input_size = 256x512..."

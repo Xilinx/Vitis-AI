@@ -14,7 +14,7 @@ easydict, opencv-python, pyyml, ipdb, scipy
 ```
 2. Quick installation:
 ```
-conda env create code/test/configs/environment.yaml
+conda env create code/configs/environment.yaml
 source activate test
 ```
 

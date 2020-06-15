@@ -1,11 +1,6 @@
 name: Multi-task_test_env
 channels:
-- https://xcdengvm244030/defaults
-- https://xcdengvm244030/conda-forge
-- https://xcdconda/pytorch/
-- https://xcdengvm244030/conda-forge/
-- https://xcdengvm244030/bioconda/
-- https://xcdengvm244030/defaults/
+- https://repo.anaconda.com/pkgs/main
 dependencies:
 - ca-certificates=2019.9.11=hecc5488_0
 - certifi=2019.9.11=py36_0
@@ -48,4 +43,3 @@ dependencies:
 - libstdcxx-ng=9.1.0=hdf63c60_0
 - mkl=2019.4=243
 prefix:
-

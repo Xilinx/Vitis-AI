@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-
+export PYTHONPATH=${PWD}:${PYTHONPATH}
 CUDA_VISIBLE_DEVICES=0 python code/train/train.py --train_batch_size 8 --lr 0.01 --total_epoch 200 --data_root ./data/cityscapes --input_size 1024 512 
 
 
