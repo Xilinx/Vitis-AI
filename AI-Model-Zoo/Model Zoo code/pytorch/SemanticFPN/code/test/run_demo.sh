@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+export PYTHONPATH=${PWD}:${PYTHONPATH}
 
 CUDA_VISIBLE_DEVICES=0 python code/test/test.py \
                        --dataset citys \

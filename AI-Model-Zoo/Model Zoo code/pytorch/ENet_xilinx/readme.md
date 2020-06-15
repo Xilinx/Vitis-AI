@@ -9,12 +9,12 @@
 
 1. Environment requirement
     - pytorch
-    - opencv, tqdm etc. (Refer to [code/conda_config/environment.yaml](code/conda_config/environment.yaml) for more details.)
+    - opencv, tqdm etc. (Refer to [code/configs/environment.yaml](code/configs/environment.yaml) for more details.)
 
 2. Quick installation
    ```shell
-   conda env create -f code/conda_config/environment.yaml
-   ```
+   conda env create -f code/configs/environment.yaml
+   
 
 ### Preparation
 
@@ -39,6 +39,7 @@
 ### Train/Eval
 1. Visulization
     ```shell
+    # make sure you have download cityscapes whole dataset, and select the image 'frankfurt_000000_000294_leftImg8bit.png' and put it under 'dat/demo/' for demo visulization
     bash code/test/run_demo.sh
     ```
 2. Evaluation

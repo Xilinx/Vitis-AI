@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-
+export PYTHONPATH=${PWD}:${PYTHONPATH}
 CUDA_VISIBLE_DEVICES=0 python code/test/test.py --demo-data-dir ./data/demo/ --input_size 1024 512 --weight ./float/final_best.pth --savedir ./data/demo/
 
 

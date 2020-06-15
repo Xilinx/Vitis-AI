@@ -1,10 +1,6 @@
 name: test_facereid
 channels:
-  - https://xcdconda/conda-forge
-  - https://xcdconda/pytorch/
-  - https://xcdconda/conda-forge/
-  - https://xcdconda/bioconda/
-  - https://xcdconda/defaults/
+  
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=0_gnu

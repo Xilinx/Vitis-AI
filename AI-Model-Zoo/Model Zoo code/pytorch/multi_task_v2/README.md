@@ -28,7 +28,7 @@
 3.  Quick installation 
 
    ```shell
-   conda env create /code/conda_config/environment.yaml
+   conda env create -f ./code/configs/environment.yaml
    ```
 
 ### Preparation
