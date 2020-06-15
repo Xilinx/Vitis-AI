@@ -1,0 +1,16 @@
+model {
+  name: "posedetect"
+  kernel {
+     name: "pose2_0"
+     mean: 104.0
+     mean: 117.0
+     mean: 123.0
+     scale: 1.0
+     scale: 1.0
+     scale: 1.0
+  }
+  kernel {
+     name: "pose2_2"
+  }
+  model_type : POSEDETECT
+}

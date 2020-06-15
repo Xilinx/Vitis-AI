@@ -1,0 +1,18 @@
+model {
+  name : "fpn_deconv"
+  kernel {
+     name: "fpn_deconv"
+     mean: 104.0
+     mean: 117.0
+     mean: 123.0
+     scale: 1.0
+     scale: 1.0
+     scale: 1.0
+  }
+  model_type : SEGMENTATION
+  segmentation_param : {
+     color1:  "128  232  70  156  153  153  30   0    35   152  180  60   0   142 70 100 100 230 32  178"
+     color2:  "64   35   70  102  153  153  170  220  142  251  130  20   0   0   0  60  80  0   11  43"
+     color3:  "128  244  70  102  190  153  250  220  107  152  70   220  255 0   0  0   0   0   119 255"
+   }
+}
