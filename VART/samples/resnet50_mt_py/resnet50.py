@@ -120,8 +120,11 @@ def runResnet50(dpu,img,cnt):
             outputData[j] = outputData[j].reshape(runSize, outputSize)
 
         """softmax calculate with batch """
-        for j in range(runSize):
-            softmax = CPUCalcSoftmax(outputData[0][j], outputSize)
+        """Benchmark DPU FPS performance over Vitis AI APIs execute_async() and wait() """
+        """Uncomment the following code snippet to include softmax calculation for model’s end-to-end FPS evaluation """
+        #for j in range(runSize):
+        #    softmax = CPUCalcSoftmax(outputData[0][j], outputSize)
+
         count = count + runSize
 
 def get_subgraph (g):
@@ -153,7 +156,7 @@ def main(argv):
 
     cnt = 360 ;
     """run with batch """
-    time1 = time.time()
+    time_start = time.time()
     for i in range(int(threadnum)):
         t1 = threading.Thread(target=runResnet50, args=(all_dpu_runners[i], img, cnt))
         threadAll.append(t1)
@@ -162,8 +165,8 @@ def main(argv):
     for x in threadAll:
         x.join()
 
-    time2 = time.time()
-    timetotal = time2 - time1
+    time_end = time.time()
+    timetotal = time_end - time_start
     total_frames =  cnt*int(threadnum)
     fps = float(total_frames / timetotal)
     print("FPS=%.2f, total frames = %.2f , time=%.6f seconds" %(fps,total_frames, timetotal))

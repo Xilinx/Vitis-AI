@@ -123,8 +123,11 @@ def runInceptionV1(dpu,img,cnt):
             outputData[j] = outputData[j].reshape(runSize, outputSize)
 
         """softmax calculate with batch """
-        for j in range(runSize):
-            softmax = CPUCalcSoftmax(outputData[0][j], outputSize)
+        """Benchmark DPU FPS performance over Vitis AI APIs execute_async() and wait() """
+        """Uncomment the following code snippet to include softmax calculation for model’s end-to-end FPS evaluation """
+        #for j in range(runSize):
+        #    softmax = CPUCalcSoftmax(outputData[0][j], outputSize)
+
         count = count + runSize
 
 def get_subgraph (g):
@@ -160,7 +163,7 @@ def main(argv):
         img.append(input_fn.preprocess_fn(image))
     cnt = 1200
     """run with batch """
-    time1 = time.time()
+    time_start = time.time()
     for i in range(int(threadnum)):
         t1 = threading.Thread(target=runInceptionV1, args=(all_dpu_runners[i], img, cnt))
         threadAll.append(t1)
@@ -169,9 +172,9 @@ def main(argv):
     for x in threadAll:
         x.join()
 
-    time2 = time.time()
+    time_end = time.time()
     total = cnt * int(threadnum)
-    timetotal = time2 - time1
+    timetotal = time_end - time_start
     fps = float(total / timetotal)
     print("%.2f FPS" %fps)
 
