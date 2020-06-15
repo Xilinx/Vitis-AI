@@ -1,6 +1,72 @@
 # DPUv3E for Alveo Accelerator Card with HBM
 
-DPUv3E is a member of Xilinx DPU IP family for convolution nerual network (CNN) inference application. It is designed for latest Xilinx Alveo U50/U280 adaptable accelerator cards with HBM support. DPU V3E is a high performance CNN inference IP optimized for throughput and data center workloads. DPUv3E runs with highly optimized instructions set and supports all mainstream convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, FPN, etc. 
+DPUv3E is a member of Xilinx DPU IP family for convolution nerual network (CNN) inference application. It is designed for latest Xilinx Alveo U50/U50LV/U280 adaptable accelerator cards with HBM support. The U50 version has two DPUv3E kernels, totally six engines; the U50LV version has two DPUv3E kernels, totally nine or ten engines; the U280 version has three DPUv3E kernels, totally fourteen engines.
+
+DPUv3E is released with Vitis AI. Please refer to the relevant parts for usages of DPUv3E on U50 with [VART](../VART/README.md) and [Vitis-AI-Library](../Vitis-AI-Library/README.md) (you could search the keyword "for Cloud").
+
+## Alveo Card Setup
+For U280 card, DPUv3E use the standard target platform released in the Xilinx website, please follow the instruction in the [U280 page](https://www.xilinx.com/products/boards-and-kits/alveo/u280) to get the required files. 
+
+For U50 and U50LV card, DPUv3E use the gen3x4 version target platform, instead of the standard gen3x16 platform. Please download required gen3x4 target platform files from below URL:
+
+### For Redhat/CentOS 7.4-7.7 Host
+Common Files
+* xilinx-cmc-u50-1.0.20-2853996.noarch.rpm
+* xilinx-sc-fw-u50-5.0.27-2.e289be9.noarch.rpm
+
+Alveo U50
+* xilinx-u50-gen3x4-xdma-validate-2-2889074.noarch.rpm
+* xilinx-u50-gen3x4-xdma-base-2-2895184.noarch.rpm
+
+Alveo U50LV
+* xilinx-u50lv-gen3x4-xdma-validate-2-2900293.noarch
+* xilinx-u50lv-gen3x4-xdma-base-2-2895310.noarch
+
+### For Ubuntu 16.04 Host
+Common Files
+* xilinx-cmc-u50_1.0.20-2853996_all_16.04
+* xilinx-sc-fw-u50-5.0.27-2.e289be9_16.04
+
+Alveo U50
+* xilinx-u50-gen3x4-xdma-validate_2-2889074_all_16.04.deb
+* xilinx-u50-gen3x4-xdma-base_2-2895184_all_16.04.deb
+
+Alveo U50LV
+* xilinx-u50lv-gen3x4-xdma-validate_2-2900293_all_16.04.deb
+* xilinx-u50lv-gen3x4-xdma-base_2-2895310_all_16.04.deb
+
+
+### for Ubuntu 18.04 host
+Common Files
+* xilinx-cmc-u50_1.0.20-2853996_all_18.04.deb
+* xilinx-sc-fw-u50-5.0.27-2.e289be9_18.04.deb
+
+Alveo U50
+* xilinx-u50-gen3x4-xdma-validate_2-2889074_all_18.04.deb
+* xilinx-u50-gen3x4-xdma-base_2-2895184_all_18.04.deb
+
+Alveo U50LV
+* xilinx-u50lv-gen3x4-xdma-validate_2-2900293_all_18.04.deb
+* xilinx-u50lv-gen3x4-xdma-base_2-2895310_all_18.04.deb
+
+### Update the card flash
+After you have downloaded and installed the platform files above, use following commands and cold reboot your machine to finished the setup.
+
+For Alveo U50:
+~~~
+sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50_gen3x4_xdma_base_2
+~~~
+
+For Alveo U50LV:
+~~~
+sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_base_2
+~~~
+
+---
+
+## Introduction to DPUv3E
+
+DPU V3E is a high performance CNN inference IP optimized for throughput and data center workloads. DPUv3E runs with highly optimized instructions set and supports all mainstream convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, FPN, etc. 
 
 DPUv3E is one of the fundamental IPs (Overlays) of Xilinx Vitis™ AI development environment, and the user can use Vitis AI toolchain to finish the full stack ML development with DPUv3E. The user can also use standard Vitis flow to finish the integration of DPUv3E with other customized acceleration kernal to realize powerful X+ML solution. DPUv3E is provided as encrypted RTL or XO file format for Vivado or Vitis based integration flow.
 
@@ -32,6 +98,3 @@ Shared Weight Buffer includes complex strategy and control logic to manage the l
 
 ### Control Register Bank
 Control Register Bank is the control interface between DPUv3E kernel and host CPU. It implements a set of controler register compliant to Vitis development flow. Control Register Bank has a AXI slave interface.
-
----
-The off-the-shell DPUv3E solution for U50 includes two DPUv3E kernels, which can be used with Vitis AI VART or Vitis AI Library easily. Please refer to the relevant parts for usages of DPUv3E on U50 with [VART](../VART/README.md) and [Vitis-AI-Library](../Vitis-AI-Library/README.md) (you could search the keyword "for Cloud").
