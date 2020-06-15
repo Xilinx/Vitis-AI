@@ -26,8 +26,14 @@
 #include <vitis/ai/classification.hpp>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/facedetect.hpp>
+#include <vitis/ai/facelandmark.hpp>
+#include <vitis/ai/lanedetect.hpp>
 #include <vitis/ai/refinedet.hpp>
+#include <vitis/ai/ssd.hpp>
+#include <vitis/ai/tfssd.hpp>
+#include <vitis/ai/yolov2.hpp>
 #include <vitis/ai/yolov3.hpp>
+
 using namespace std;
 DEF_ENV_PARAM(DEBUG_GENERAL, "0");
 #include "./general_adapter.hpp"
@@ -163,10 +169,16 @@ std::unique_ptr<General> SupportedModels_create(
 using ListOfSupportedModels = SupportedModels<
     /* list of supported models begin */
     ModelDef<vitis::ai::proto::DpuModelParam::DENSE_BOX, vitis::ai::FaceDetect>,
+    ModelDef<vitis::ai::proto::DpuModelParam::YOLOv2, vitis::ai::YOLOv2>,
     ModelDef<vitis::ai::proto::DpuModelParam::YOLOv3, vitis::ai::YOLOv3>,
+    ModelDef<vitis::ai::proto::DpuModelParam::FACELANDMARK,
+             vitis::ai::FaceLandmark>,
+    ModelDef<vitis::ai::proto::DpuModelParam::ROADLINE, vitis::ai::RoadLine>,
     ModelDef<vitis::ai::proto::DpuModelParam::REFINEDET, vitis::ai::RefineDet>,
     ModelDef<vitis::ai::proto::DpuModelParam::CLASSIFICATION,
-             vitis::ai::Classification>
+             vitis::ai::Classification>,
+    ModelDef<vitis::ai::proto::DpuModelParam::SSD, vitis::ai::SSD>,
+    ModelDef<vitis::ai::proto::DpuModelParam::TFSSD, vitis::ai::TFSSD>
     /* list of supported models end */
     >;
 
@@ -175,6 +187,82 @@ std::unique_ptr<General> General::create(const std::string &model_name,
   auto model = get_config(model_name);
   auto model_type = model.model_type();
   return ListOfSupportedModels::create(model_type, model_name);
+}
+
+template <>
+vitis::ai::proto::DpuModelResult process_result<vitis::ai::FaceLandmarkResult>(
+    const vitis::ai::FaceLandmarkResult &result) {
+  vitis::ai::proto::DpuModelResult dpu_model_result;
+
+  auto &facelandmark_result = *dpu_model_result.mutable_facelandmark_result();
+  for (auto &r : result.points) {
+    auto point = facelandmark_result.add_point();
+    point->set_x(r.first);
+    point->set_y(r.second);
+  }
+  LOG(INFO) << "facelandmark_result.point().size() "
+            << facelandmark_result.point().size() << " ";
+  return dpu_model_result;
+}
+
+template <>
+vitis::ai::proto::DpuModelResult process_result<vitis::ai::RoadLineResult>(
+    const vitis::ai::RoadLineResult &result) {
+  vitis::ai::proto::DpuModelResult dpu_model_result;
+
+  auto &roadline_result = *dpu_model_result.mutable_roadline_result();
+  for (auto &r : result.lines) {
+    auto line = roadline_result.add_line_att();
+    line->set_type(r.type);
+    for (auto &p : r.points_cluster) {
+      auto point = line->add_point();
+      point->set_x(p.x);
+      point->set_y(p.y);
+    }
+  }
+  LOG(INFO) << "detect_result.line_att().size() "
+            << roadline_result.line_att().size() << " ";
+  return dpu_model_result;
+}
+
+template <>
+vitis::ai::proto::DpuModelResult process_result<vitis::ai::SSDResult>(
+    const vitis::ai::SSDResult &result) {
+  vitis::ai::proto::DpuModelResult dpu_model_result;
+
+  auto &detect_result = *dpu_model_result.mutable_detect_result();
+  for (auto &r : result.bboxes) {
+    auto box = detect_result.add_bounding_box();
+    box->set_label(r.label);
+    box->set_x(r.x);
+    box->set_y(r.y);
+    box->set_width(r.width);
+    box->set_height(r.height);
+    box->set_score(r.score);
+  }
+  LOG(INFO) << "detect_result.bounding_box().size() "
+            << detect_result.bounding_box().size() << " ";
+  return dpu_model_result;
+}
+
+template <>
+vitis::ai::proto::DpuModelResult process_result<vitis::ai::TFSSDResult>(
+    const vitis::ai::TFSSDResult &result) {
+  vitis::ai::proto::DpuModelResult dpu_model_result;
+
+  auto &detect_result = *dpu_model_result.mutable_detect_result();
+  for (auto &r : result.bboxes) {
+    auto box = detect_result.add_bounding_box();
+    box->set_label(r.label);
+    box->set_x(r.x);
+    box->set_y(r.y);
+    box->set_width(r.width);
+    box->set_height(r.height);
+    box->set_score(r.score);
+  }
+  LOG(INFO) << "detect_result.bounding_box().size() "
+            << detect_result.bounding_box().size() << " ";
+  return dpu_model_result;
 }
 
 template <>
@@ -191,6 +279,25 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::RefineDetResult>(
     box->set_height(r.height);
     box->set_score(r.score);
   }
+  return dpu_model_result;
+}
+
+template <>
+vitis::ai::proto::DpuModelResult process_result<vitis::ai::YOLOv2Result>(
+    const vitis::ai::YOLOv2Result &result) {
+  vitis::ai::proto::DpuModelResult dpu_model_result;
+  auto &detect_result = *dpu_model_result.mutable_detect_result();
+  for (auto &r : result.bboxes) {
+    auto box = detect_result.add_bounding_box();
+    box->set_label(r.label);
+    box->set_x(r.x);
+    box->set_y(r.y);
+    box->set_width(r.width);
+    box->set_height(r.height);
+    box->set_score(r.score);
+  }
+  LOG(INFO) << "detect_result.bounding_box().size() "
+            << detect_result.bounding_box().size() << " ";
   return dpu_model_result;
 }
 

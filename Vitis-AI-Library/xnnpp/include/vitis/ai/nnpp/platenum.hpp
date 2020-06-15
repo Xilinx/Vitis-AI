@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 #pragma once
-#include <vitis/ai/proto/dpu_model_param.pb.h>
 #include <vector>
 #include <vitis/ai/library/tensor.hpp>
-#include <vitis/softmax.hpp>
-#include <vitis/ai/image_util.hpp>
+#include <tuple>
+
 namespace vitis {
 namespace ai {
 /**

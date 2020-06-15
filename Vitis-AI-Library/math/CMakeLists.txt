@@ -135,6 +135,9 @@ if(HAVE_NEON)
   add_executable(test_softmax_table test/test_softmax_table.cpp)
   target_link_libraries(test_softmax_table ${COMPONENT_NAME} ${OpenCV_LIBS} ${Other_LIBS} glog::glog)
 
+  add_executable(prototype_8bit_to_4bit test/prototype_8bit_to_4bit.cpp)
+  target_link_libraries(prototype_8bit_to_4bit glog::glog vart::util)
+
 
 endif(HAVE_NEON)
 

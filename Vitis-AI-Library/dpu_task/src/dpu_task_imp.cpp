@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 #include "dpu_task_imp.hpp"
+
 #include <glog/logging.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+
 #include <cassert>
 #include <chrono>
 #include <iostream>
@@ -69,15 +71,45 @@ static std::shared_ptr<GraphHolder> create_graph_holder(
   return ret;
 }
 
+static int get_batch_size_of_runner(vart::Runner* r) {
+  CHECK(!r->get_input_tensors().empty());
+  return r->get_input_tensors()[0]->get_dim_size(0);
+}
 static std::vector<std::unique_ptr<vart::Runner>> create_runners(
     std::shared_ptr<GraphHolder> graph_holder) {
   auto subgraphs = (graph_holder.get())->get_subgraphs();
   CHECK_GT(subgraphs.size(), 0);
   auto runners = std::vector<std::unique_ptr<vart::Runner>>();
   runners.reserve(subgraphs.size());
+  auto batch_size = 0;
   for (auto subgraph : subgraphs) {
-    runners.emplace_back(vart::Runner::create_runner(subgraph, "run"));
+    LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
+        << "create runner for " << subgraph->get_name();
+    if (batch_size == 0) {
+      // create the very first runner
+      auto r = vart::Runner::create_runner(subgraph, "run");
+      batch_size = get_batch_size_of_runner(r.get());
+      runners.emplace_back(std::move(r));
+    } else {
+      // the following runners must have the batch size as same as the
+      // first runner's.
+      auto is_same = false;
+      int num_of_tries = 0;
+      do {
+        auto r = vart::Runner::create_runner(subgraph, "run");
+        is_same = get_batch_size_of_runner(r.get()) == batch_size;
+        if (is_same) {
+          runners.emplace_back(std::move(r));
+        }
+        num_of_tries++;
+      } while (!is_same && num_of_tries < 100);
+      CHECK_LT(num_of_tries, 100) << "too many tries...";
+    }
+    LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
+        << "create runner for " << subgraph->get_name()
+        << " done. batch_size=" << batch_size;
   }
+  CHECK_EQ(runners.size(), subgraphs.size());
   return runners;
 }
 
@@ -364,9 +396,9 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
     ret.dtype = library::DT_INT8;
   } else {
 #ifdef ENABLE_DPUV1_RUNNER
-	//# DPUV1 has datatype float
-	ret.size =
-      tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 32.f);
+    //# DPUV1 has datatype float
+    ret.size =
+        tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 32.f);
 #endif
     ret.height = dim_num <= 2 ? 1 : tensor->get_dim_size(2);
     ret.width = dim_num <= 3 ? 1 : tensor->get_dim_size(3);
@@ -393,8 +425,9 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
 
 //# Add tensor format argument (NHWC / NCHW)
 static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
-    vart::TensorBuffer* tb, float scale, int num_of_input,
-    vart::Runner::TensorFormat fmt) {
+    vart::TensorBuffer* tb, float scale,
+    /* num of real input images, it might be less than or equal to batch size */
+    int num_of_input, vart::Runner::TensorFormat fmt) {
   auto ret = vitis::ai::library::OutputTensor{};
   auto tensor = tb->get_tensor();
   auto dim_num = tensor->get_dim_num();
@@ -402,6 +435,7 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
       tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 8.f);
   ret.batch = dim_num <= 0 ? 1 : tensor->get_dim_size(0);
   if (num_of_input != -1) {
+    CHECK_LE((unsigned)num_of_input, ret.batch) << "logical error";
     ret.batch = (unsigned)num_of_input;
   }
   //# Store the params as per format
@@ -419,9 +453,9 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
     ret.dtype = library::DT_INT8;
   } else {
 #ifdef ENABLE_DPUV1_RUNNER
-	//# DPUV1 has datatype float
-	ret.size =
-      tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 32.f);
+    //# DPUV1 has datatype float
+    ret.size =
+        tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 32.f);
 #endif
     ret.height = dim_num <= 2 ? 1 : tensor->get_dim_size(2);
     ret.width = dim_num <= 3 ? 1 : tensor->get_dim_size(3);

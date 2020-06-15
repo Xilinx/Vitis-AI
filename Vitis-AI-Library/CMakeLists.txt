@@ -73,7 +73,10 @@ find_package(xir)
 find_package(unilog)
 find_package(vart COMPONENTS util xrt-device-handle buffer-object dpu-controller runner dpu-runner elf-util REQUIRED)
 find_package(Protobuf 3.4.0 REQUIRED)
-find_package(OpenCV REQUIRED opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
+find_package(OpenCV COMPONENTS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
+if(NOT OpenCV_FOUND)
+  find_package(OpenCV_LIBS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
+endif(NOT OpenCV_FOUND)
 find_package(vart REQUIRED)
 
 set(PACKAGE_COMPONENTS
@@ -153,7 +156,7 @@ endif()
 
 if(ENABLE_PLATERECOG OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS platerecog)
-endif() 
+endif()
 
 if(ENABLE_GENERAL OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS general)

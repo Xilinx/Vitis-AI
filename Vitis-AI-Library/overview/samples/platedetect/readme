@@ -29,7 +29,7 @@ Important:
    run the executable file.
     
     sample : 
-    ./test_jpeg_platedetect plate_detect car.jpg
+    ./test_jpeg_platedetect plate_detect sample_platedetect.jpg
     WARNING: Logging before InitGoogleLogging() is written to STDERR
     I0602 00:10:03.097848  5301 process_result.hpp:24] result.box.score 0.987568 result.box.x 0.515625 toint 165 result.box.y 0.84375 toint 270 result.box.width 0.2125 toint 68 result.box.height 0.078125 toint 25
     The real coordinate is: xx: result.top_left :(0.515625 , 0.865625) result.top_right :(0.725 , 0.84375) result.bottom_left :(0.51875 , 0.921875) result.bottom_right :(0.728125 , 0.9)

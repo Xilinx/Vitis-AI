@@ -20,7 +20,8 @@
 #include <vector>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/profiling.hpp>
-#include "vitis/ai/env_config.hpp"
+#include <vitis/ai/math.hpp>
+#include <vitis/ai/image_util.hpp>
 DEF_ENV_PARAM(DEBUG_XNNPP, "0")
 using namespace std;
 int enable_platenum_acc = 0;

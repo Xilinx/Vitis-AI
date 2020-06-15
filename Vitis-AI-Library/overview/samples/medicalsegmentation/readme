@@ -27,6 +27,6 @@ Important:
 
    run the executable file.
     
-    sample : ./test_jpeg_medicalsegmentation fpn sample_medicalsegmentation.jpg
+    sample : ./test_jpeg_medicalsegmentation FPN_Res18_Medical_segmentation sample_medicalsegmentation.jpg
     output : 
    

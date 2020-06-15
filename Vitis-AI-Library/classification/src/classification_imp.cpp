@@ -150,7 +150,7 @@ vitis::ai::ClassificationResult ClassificationImp::run(
   }
   //__TIC__(CLASSIFY_E2E_TIME)
   __TIC__(CLASSIFY_SET_IMG)
-  if (preprocess_type == 2 || preprocess_type == 3) {
+  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4) {
     configurable_dpu_task_->setInputImageRGB(image);
   } else {
     configurable_dpu_task_->setInputImageBGR(image);
@@ -207,6 +207,9 @@ std::vector<ClassificationResult> ClassificationImp::run(
         case 3:
           inception_preprocess(input_images[i], height, width, image);
           break;
+        case 4:
+          inception_pt(input_images[i], height, width, image);
+          break;
         default:
           break;
       }
@@ -215,7 +218,7 @@ std::vector<ClassificationResult> ClassificationImp::run(
   }
 
   __TIC__(CLASSIFY_SET_IMG)
-  if (preprocess_type == 2 || preprocess_type == 3) {
+  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4) {
     configurable_dpu_task_->setInputImageRGB(images);
   } else {
     configurable_dpu_task_->setInputImageBGR(images);
