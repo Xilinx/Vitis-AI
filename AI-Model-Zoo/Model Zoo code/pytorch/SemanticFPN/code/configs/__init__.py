@@ -11,16 +11,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
-export PYTHONPATH=${PWD}:${PYTHONPATH}
-
-CUDA_VISIBLE_DEVICES=0 python code/test/test.py \
-                       --dataset citys \
-                       --model fpn \
-                       --backbone mobilenetv2 \
-                       --test-folder ./data/demo/ \
-                       --weight ./float/fpn_mbv2/final_best_256x512.pth.tar \
-                       --crop-size 256 \
-                       --save-dir results 
-

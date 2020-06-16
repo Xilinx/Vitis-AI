@@ -40,7 +40,7 @@
 
 1. Visulization
     ```shell
-    # make sure you have download cityscapes whole dataset, and select the image 'frankfurt_000000_000294_leftImg8bit.png' and put it under 'dat/demo/' for demo visulization
+    # pick some images from cityscapes validation set and put them under 'data/demo/' for visulization
     bash code/test/run_demo.sh
     ```
 
