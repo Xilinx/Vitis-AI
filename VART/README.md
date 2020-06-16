@@ -140,9 +140,11 @@ If the compilation process does not report any error and the executable file `re
 	#rpm -ivh libtarget-factory-1.2.0-x.aarch64.rpm
 	#rpm -ivh libvart-1.2.0-x.aarch64.rpm
 	```
-	* Run the `board_set_up.sh` script. You can also download the `board_set_up.sh` from [here](http://10.176.178.31/mtf/board_set_up.sh).
+	* Unzip the `dpu_sw_config.tgz` and run the `zynqmp_dpu_config.sh` script. You can also download the `dpu_sw_config.tgz` from [here](http://xcdl190260/zhengjia/xdpu/blob/vitis20.1/app/dpu_sw_config.tgz).
 	```
-	#board_set_up.sh
+	#tar -xzvf dpu_sw_config.tgz
+	#cd dpu_sw_config/zynqmp/
+	#./zynqmp_dpu_config.sh
 	```	
 	* For ZCU104, enable the power patch.
 	```
@@ -162,7 +164,7 @@ If the compilation process does not report any error and the executable file `re
 3. Unzip the `vitis_ai_runtime_r1.2_image_video.tar.gz` package on the target.
 	```
 	#cd ~
-	#tar -xzvf vitis_ai_runtime_r1.2_image_video.tar.gz -C VART
+	#tar -xzvf vitis_ai_runtime_r*1.2*_image_video.tar.gz -C VART
 	```
 4. Enter the directory of samples in the target board. Take resnet50 as an example.
 	```
@@ -217,7 +219,7 @@ $export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/
 	```
 	$cd /workspace
 	$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.2_image_video.tar.gz -O vitis_ai_runtime_r1.2_image_video.tar.gz
-	$tar -xzvf vitis_ai_runtime_r1.2_image_video.tar.gz -C VART
+	$tar -xzvf vitis_ai_runtime_r*1.2*_image_video.tar.gz -C VART
 	```
 2. Compile the sample, take `resnet50` as example.
 	```
