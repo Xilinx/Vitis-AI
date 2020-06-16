@@ -112,7 +112,7 @@ sudo cp alveo_xclbin-1.2.0//U280/14E300M/* /usr/lib
 ### Overlays Frequency Scaling Down
 You could use XRT xbutil tools to scale down the running frequency of the DPUv3E overlay before you run any VART/Library examples. 
 
-**Higher overlay frequencies then the recommendation in ug1354 could cause system reboot or other harm to your system because of the power consumption of Alveo card exceed the PCIe power supply limitation.**
+**Higher overlay frequencies then the recommendation in ug1354 could cause system reboot or other damage to your system because of the power consumption exceeding of Alveo card over the PCIe power supply limitation.**
 
 To scale down the overlay frequency:
 ~~~
