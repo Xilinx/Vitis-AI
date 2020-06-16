@@ -64,6 +64,67 @@ sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_
 
 ---
 
+## DPUv3E Overlays Setup
+
+Four kinds of DPUv3E overlays are provided for Alveo HBM card:
+* U50-6E300M: two kernels, six engines, run at maximal 300MHz
+* U50LV-9E275M: two kernels, nine engines, run at maximal 275MHz
+* U50LV-10E275M: two kernels, ten engines, run at maximal 275MHz
+* U280-14E300M: three kernels, fourteen engines, run at maximal 300MHz
+
+Please the maximal running frequency is the timing sign-off frequency of each overlays. Because of the power limitation of the card, all CNN models on each Alveo card cannot run at all the frequencies listed above. Sometimes frequency scaling-down operation is needed. For the safe working frequency on each card for the CNN models and corresponding performance, please refer to Chapter 7 of *Vitis AI Library User Guide* (ug1354).
+
+### Get and Decompress Overlays Tarball
+In the host or docker, get to the shared Vitis AI git repository directory and use following commands to download and decompress the overlays tarball. (the download link is not available yet for BASH stage)
+~~~
+cd ./Vitis-AI/alveo-hbm
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.2.0.tar.gz -O alveo_xclbin-1.2.0.tar.gz
+tar xfz alveo_xclbin-1.2.0.tar.gz
+~~~
+
+### Settle Down the Overlays
+Start the docker, get into the shared Vitis AI git repository directory and use following command to settle down the overlay files for different Alveo card. Please note everytime you start a new docker container, you should do this step.
+
+For Alveo U50, use U50-6E300M overlay:
+~~~
+cd ./Vitis-AI/alveo-hbm
+sudo cp alveo_xclbin-1.2.0/U50/6E300M/* /usr/lib
+~~~
+
+For Alveo U50LV, use U50LV-9E275M overlay:
+~~~
+cd ./Vitis-AI/alveo-hbm
+sudo cp alveo_xclbin-1.2.0//U50lv/9E275M/* /usr/lib
+~~~
+
+For Alveo U50LV, use U50LV-10E275M overlay:
+~~~
+cd ./Vitis-AI/alveo-hbm
+sudo cp alveo_xclbin-1.2.0//U50lv/10E275M/* /usr/lib
+~~~
+
+For Alveo U280, use U280-14E300M overlay:
+~~~
+cd ./Vitis-AI/alveo-hbm
+sudo cp alveo_xclbin-1.2.0//U280/14E300M/* /usr/lib
+~~~
+
+### Overlays Frequency Scaling Down
+You could use XRT xbutil tools to scale down the running frequency of the DPUv3E overlay before you run any VART/Library examples. 
+
+**Higher overlay frequencies then the recommendation in ug1354 could cause system reboot or other harm to your system because of the power consumption of Alveo card exceed the PCIe power supply limitation.**
+
+To scale down the overlay frequency:
+~~~
+/opt/xilinx/xrt/bin/xbutil clock -dx -g XXX
+~~~
+dx is the Alveo card number if more than one Alveo card exist in your system. If only one card is installed, you should use *d0*. XXX is the target frequency value, such as 220. For example, following command will set the default U50 card DPUv3E overlay frequency to 200MHz:
+~~~
+/opt/xilinx/xrt/bin/xbutil clock -d0 -g 200
+~~~
+
+---
+
 ## Introduction to DPUv3E
 
 DPU V3E is a high performance CNN inference IP optimized for throughput and data center workloads. DPUv3E runs with highly optimized instructions set and supports all mainstream convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, FPN, etc. 
