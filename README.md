@@ -33,6 +33,8 @@ Vitis AI is composed of the following key components:
  - VART (Vitis AI Runtime) with unified API and samples for Zynq, ZU+ and Alveo
  - Vitis AI library fully open source
  - Whole Application Acceleration example on Alveo
+ - Apache TVM support for DPUv1 and DPUv2
+ - Microsoft ONNXRuntime supported on DPUv1 and DPUv2
 
 ## Getting Started
 
