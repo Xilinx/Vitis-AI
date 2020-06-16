@@ -1,12 +1,10 @@
-# TVM-VAI
+# Apache TVM with Vitis-AI
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
-
-The TVM-Vitis is a versatile flow that integrates the high-performance computing power of Xilinx’s vitis AI engine with the flexibility of the TVM framework to accelerate models from any given framework supported by the TVM in a matter that is seamless to the end-user. 
+Apache TVM is a versatile framework that integrates the high-performance computing power of Xilinx Vitis-AI DPUs with the flexibility of the TVM framework to accelerate models from many different training frameworks supported by TVM in a matter that is seamless to the end-user. 
 
 ### Tech
 
-TVM-Vitis uses a number of projects as follows: 
+Apache TVM with Vitis-AI uses a number of projects as follows: 
 * [Apache TVM] - An end-to-end deep learning compiler stack
 * [Xilinx Vitis AI] - Xilinx development platform for AI inference
 * [DPU] :  Xilinx Deep Learning Processor Unit (DPU)
@@ -14,37 +12,35 @@ TVM-Vitis uses a number of projects as follows:
 
 
 ### Installation
-The TVM-Vitis provides an easy installation using Docker.
-The repository provides scripts to build and run a docker image pre-setup for TVM-VAI. 
+Apache TVM with Vitis-AI is provided through a docker image. The provided scripts and Dockerfile build compile TVM and Vitis-AI into a single image. 
 
-Simply clone the repositroy and use the build script to build an image. This step may take several moments.
+The following command will create the TVM with Vitis-AI image
 
 ```sh
-$ cd tvm_release
 $ bash ./build.sh ci_vai_11 bash
 ```
-This creates an image based on Vitis-AI, pulls necessary dependencies, and builds the latest TVM-VAI compatible version of the Apache TVM.
+This download Apache TVM, install the necessary dependencies, and build with Vitis-AI support.
 
-### Development
+### Running TVM
 
 Once finished builiding the image, run the docker image using the run script.
 ```sh
 $ bash ./bash.sh tvm.ci_vai_11
-```
-
-##### Environment Setup
-TVM-VAI docker image uses conda package management system. Use conda to setup your docker environment at login prior to running any examples.
-
-```sh
+# Now inside docker...
 $ conda activate vitis-ai-tensorflow
 ```
 
-Verify the setup by importing the TVM-VAI packages in python3
+The installation may be verified inside the docker image by importing the TVM-VAI packages in python3
 ```sh
 $ python3
 $ import tvm
 $ import pyxir
 ```
+
+Examples of Apache TVM usage for different frameworks is provided in the tutorials/frontend directories.
+
+Vitis-AI examples using TVM are provided in the tutorials/accelerators directory.
+
 
 License
 ----
