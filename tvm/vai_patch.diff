@@ -1,0 +1,4124 @@
+diff --git .gitmodules .gitmodules
+index a1367c9..fa6cb55 100644
+--- .gitmodules
++++ .gitmodules
+@@ -10,3 +10,9 @@
+ [submodule "3rdparty/vta-hw"]
+ 	path = 3rdparty/vta-hw
+ 	url = https://github.com/apache/incubator-tvm-vta
++[submodule "tutorials/accelerators/device/runtime/lib/cvx"]
++	path = tutorials/accelerators/device/runtime/lib/cvx
++	url = https://github.com/jtuyls/cvx.git
++[submodule "tutorials/accelerators/device/runtime/models"]
++	path = tutorials/accelerators/device/runtime/models
++	url = https://gitenterprise.xilinx.com/jornt/models.git
+diff --git docker/Dockerfile.ci_cpu.18.04 docker/Dockerfile.ci_cpu.18.04
+new file mode 100644
+index 0000000..7374c65
+--- /dev/null
++++ docker/Dockerfile.ci_cpu.18.04
+@@ -0,0 +1,68 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++# CI docker CPU env
++# tag: v0.55
++FROM ubuntu:18.04
++
++RUN apt-get update --fix-missing
++
++COPY install/ubuntu_install_core.sh /install/ubuntu_install_core.sh
++RUN bash /install/ubuntu_install_core.sh
++
++RUN apt-get install -y python3-dev python3-pip
++RUN pip3 install setuptools numpy pytest cython decorator scipy tornado psutil xgboost
++
++
++COPY install/ubuntu_install_llvm.sh /install/ubuntu_install_llvm.sh
++RUN bash /install/ubuntu_install_llvm.sh
++
++# SGX deps (build early; changes infrequently)
++##COPY install/ubuntu_install_sgx.sh /install/ubuntu_install_sgx.sh
++##RUN bash /install/ubuntu_install_sgx.sh
++##ENV LD_LIBRARY_PATH /opt/sgxsdk/lib64:${LD_LIBRARY_PATH}
++
++# Rust env (build early; takes a while)
++COPY install/ubuntu_install_rust.sh /install/ubuntu_install_rust.sh
++RUN bash /install/ubuntu_install_rust.sh
++ENV RUSTUP_HOME /opt/rust
++ENV CARGO_HOME /opt/rust
++
++# AutoTVM deps
++#COPY install/ubuntu_install_redis.sh /install/ubuntu_install_redis.sh
++#RUN bash /install/ubuntu_install_redis.sh
++
++# Golang environment
++COPY install/ubuntu_install_golang.sh /install/ubuntu_install_golang.sh
++RUN bash /install/ubuntu_install_golang.sh
++
++# NNPACK deps
++COPY install/ubuntu_install_nnpack.sh /install/ubuntu_install_nnpack.sh
++RUN bash /install/ubuntu_install_nnpack.sh
++
++ENV PATH $PATH:$CARGO_HOME/bin:/usr/lib/go-1.10/bin
++
++# ANTLR deps
++COPY install/ubuntu_install_java.sh /install/ubuntu_install_java.sh
++RUN bash /install/ubuntu_install_java.sh
++
++COPY install/ubuntu_install_antlr.sh /install/ubuntu_install_antlr.sh
++RUN bash /install/ubuntu_install_antlr.sh
++
++# Chisel deps for TSIM
++COPY install/ubuntu_install_chisel.sh /install/ubuntu_install_chisel.sh
++RUN bash /install/ubuntu_install_chisel.sh
+diff --git docker/Dockerfile.ci_vai docker/Dockerfile.ci_vai
+new file mode 100644
+index 0000000..60536d2
+--- /dev/null
++++ docker/Dockerfile.ci_vai
+@@ -0,0 +1,77 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++# CI docker VAI env
++FROM xilinx/vitis-ai:tools-1.0.0-cpu
++
++RUN apt-get update --fix-missing
++
++COPY install/ubuntu_install_core.sh /install/ubuntu_install_core.sh
++RUN bash /install/ubuntu_install_core.sh
++
++COPY install/ubuntu_install_python.sh /install/ubuntu_install_python.sh
++RUN bash /install/ubuntu_install_python.sh
++
++COPY install/ubuntu_install_python_package.sh /install/ubuntu_install_python_package.sh
++RUN bash /install/ubuntu_install_python_package.sh
++
++COPY install/ubuntu_install_llvm.sh /install/ubuntu_install_llvm.sh
++RUN bash /install/ubuntu_install_llvm.sh
++
++# SGX deps (build early; changes infrequently)
++# COPY install/ubuntu_install_sgx.sh /install/ubuntu_install_sgx.sh
++# RUN bash /install/ubuntu_install_sgx.sh
++# ENV LD_LIBRARY_PATH /opt/sgxsdk/lib64:${LD_LIBRARY_PATH}
++
++# Rust env (build early; takes a while)
++# COPY install/ubuntu_install_rust.sh /install/ubuntu_install_rust.sh
++# RUN bash /install/ubuntu_install_rust.sh
++# ENV RUSTUP_HOME /opt/rust
++# ENV CARGO_HOME /opt/rust
++# ENV RUSTC_WRAPPER sccache
++
++# AutoTVM deps
++COPY install/ubuntu_install_redis.sh /install/ubuntu_install_redis.sh
++RUN bash /install/ubuntu_install_redis.sh
++
++# Golang environment
++COPY install/ubuntu_install_golang.sh /install/ubuntu_install_golang.sh
++RUN bash /install/ubuntu_install_golang.sh
++
++# NNPACK deps
++COPY install/ubuntu_install_nnpack.sh /install/ubuntu_install_nnpack.sh
++RUN bash /install/ubuntu_install_nnpack.sh
++
++ENV PATH $PATH:$CARGO_HOME/bin:/usr/lib/go-1.10/bin
++
++# ANTLR deps
++COPY install/ubuntu_install_java.sh /install/ubuntu_install_java.sh
++RUN bash /install/ubuntu_install_java.sh
++
++COPY install/ubuntu_install_antlr.sh /install/ubuntu_install_antlr.sh
++RUN bash /install/ubuntu_install_antlr.sh
++
++# Install Vitis-AI ubuntu dependencies
++COPY install/ubuntu_install_vai_core.sh /install/ubuntu_install_vai_core.sh
++RUN bash /install/ubuntu_install_vai_core.sh
++
++# Install dependencies inside vitis-ai-tensorflow conda
++RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
++    conda activate vitis-ai-tensorflow && \
++    pip install --no-cache-dir antlr4-python3-runtime
++
++ENV PATH="/opt/vitis_ai/compiler/dnnc/dpuv2:${PATH}"
+diff --git docker/Dockerfile.ci_vai_11 docker/Dockerfile.ci_vai_11
+new file mode 100644
+index 0000000..e9b5c49
+--- /dev/null
++++ docker/Dockerfile.ci_vai_11
+@@ -0,0 +1,80 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++# CI docker VAI env
++FROM xilinx/vitis-ai:latest
++
++RUN apt-get update --fix-missing
++
++COPY install/ubuntu_install_core.sh /install/ubuntu_install_core.sh
++RUN bash /install/ubuntu_install_core.sh
++
++COPY install/ubuntu_install_python.sh /install/ubuntu_install_python.sh
++RUN bash /install/ubuntu_install_python.sh
++
++COPY install/ubuntu_install_python_package.sh /install/ubuntu_install_python_package.sh
++RUN bash /install/ubuntu_install_python_package.sh
++
++COPY install/ubuntu_install_llvm.sh /install/ubuntu_install_llvm.sh
++RUN bash /install/ubuntu_install_llvm.sh
++
++# SGX deps (build early; changes infrequently)
++# COPY install/ubuntu_install_sgx.sh /install/ubuntu_install_sgx.sh
++# RUN bash /install/ubuntu_install_sgx.sh
++# ENV LD_LIBRARY_PATH /opt/sgxsdk/lib64:${LD_LIBRARY_PATH}
++
++# Rust env (build early; takes a while)
++# COPY install/ubuntu_install_rust.sh /install/ubuntu_install_rust.sh
++# RUN bash /install/ubuntu_install_rust.sh
++# ENV RUSTUP_HOME /opt/rust
++# ENV CARGO_HOME /opt/rust
++# ENV RUSTC_WRAPPER sccache
++
++# AutoTVM deps
++COPY install/ubuntu_install_redis.sh /install/ubuntu_install_redis.sh
++RUN bash /install/ubuntu_install_redis.sh
++
++# Golang environment
++COPY install/ubuntu_install_golang.sh /install/ubuntu_install_golang.sh
++RUN bash /install/ubuntu_install_golang.sh
++
++# NNPACK deps
++COPY install/ubuntu_install_nnpack.sh /install/ubuntu_install_nnpack.sh
++RUN bash /install/ubuntu_install_nnpack.sh
++
++ENV PATH $PATH:$CARGO_HOME/bin:/usr/lib/go-1.10/bin
++
++# ANTLR deps
++COPY install/ubuntu_install_java.sh /install/ubuntu_install_java.sh
++RUN bash /install/ubuntu_install_java.sh
++
++COPY install/ubuntu_install_antlr.sh /install/ubuntu_install_antlr.sh
++RUN bash /install/ubuntu_install_antlr.sh
++
++# Install Vitis-AI ubuntu dependencies
++COPY install/ubuntu_install_vai_core.sh /install/ubuntu_install_vai_core.sh
++RUN bash /install/ubuntu_install_vai_core.sh
++
++# Install dependencies inside vitis-ai-tensorflow conda
++RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
++    conda activate vitis-ai-tensorflow && \
++    pip install --no-cache-dir antlr4-python3-runtime
++
++ENV PATH="/opt/vitis_ai/compiler/dnnc/dpuv2:${PATH}"
++
++ENV USER="root"
++
+diff --git docker/bash.sh docker/bash.sh
+index 008aa6a..f3a273d 100755
+--- docker/bash.sh
++++ docker/bash.sh
+@@ -69,6 +69,26 @@ else
+     DOCKER_BINARY="docker"
+ fi
+ 
++if [[ "${DOCKER_IMAGE_NAME}" == *"ci_vai"* && -d "/dev/shm" && -d "/opt/xilinx/dsa" && -d "/opt/xilinx/overlaybins" ]]; then
++    WORKSPACE_VOLUMES="-v /dev/shm:/dev/shm -v /opt/xilinx/dsa:/opt/xilinx/dsa -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins"
++    XCLMGMT_DRIVER="$(find /dev -name xclmgmt\*)"
++    DOCKER_DEVICES=""
++    for i in ${XCLMGMT_DRIVER} ;
++    do
++       DOCKER_DEVICES+="--device=$i "
++    done
++
++    RENDER_DRIVER="$(find /dev/dri -name renderD\*)"
++    for i in ${RENDER_DRIVER} ;
++    do
++        DOCKER_DEVICES+="--device=$i "
++    done
++
++else
++    DOCKER_DEVICES=""
++    WORKSPACE_VOLUMES=""
++fi
++
+ # Print arguments.
+ echo "WORKSPACE: ${WORKSPACE}"
+ echo "DOCKER CONTAINER NAME: ${DOCKER_IMAGE_NAME}"
+@@ -80,6 +100,8 @@ echo "Running '${COMMAND[@]}' inside ${DOCKER_IMAGE_NAME}..."
+ # and share the PID namespace (--pid=host) so the process inside does not have
+ # pid 1 and SIGKILL is propagated to the process inside (jenkins can kill it).
+ ${DOCKER_BINARY} run --rm --pid=host\
++    ${DOCKER_DEVICES}\
++    ${WORKSPACE_VOLUMES}\
+     -v ${WORKSPACE}:/workspace \
+     -v ${SCRIPT_DIR}:/docker \
+     -w /workspace \
+@@ -90,6 +112,8 @@ ${DOCKER_BINARY} run --rm --pid=host\
+     -e "CI_BUILD_GID=$(id -g)" \
+     -e "PYTHONPATH=/workspace/python:/workspace/topi/python"\
+     -e "CI_PYTEST_ADD_OPTIONS=$CI_PYTEST_ADD_OPTIONS" \
++    --cap-add=SYS_PTRACE \
++    --security-opt seccomp=unconfined \
+     ${CUDA_ENV}\
+     ${CI_DOCKER_EXTRA_PARAMS[@]} \
+     ${DOCKER_IMAGE_NAME}\
+diff --git docker/install/ubuntu_install_python.sh docker/install/ubuntu_install_python.sh
+index c1f9d50..58d72f3 100755
+--- docker/install/ubuntu_install_python.sh
++++ docker/install/ubuntu_install_python.sh
+@@ -27,7 +27,7 @@ apt-get install -y python-dev
+ # python 3.6
+ apt-get install -y software-properties-common
+ 
+-add-apt-repository ppa:deadsnakes/ppa
++add-apt-repository -y ppa:deadsnakes/ppa
+ apt-get update
+ apt-get install -y python-pip python-dev python3.6 python3.6-dev
+ 
+diff --git docker/install/ubuntu_install_vai_core.sh docker/install/ubuntu_install_vai_core.sh
+new file mode 100644
+index 0000000..a046e80
+--- /dev/null
++++ docker/install/ubuntu_install_vai_core.sh
+@@ -0,0 +1,36 @@
++#!/bin/bash
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++# 
++#   http://www.apache.org/licenses/LICENSE-2.0
++# 
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++set -e
++set -u
++set -o pipefail
++
++# install libraries for building c++ core on ubuntu
++apt-get update && apt-get install -y --no-install-recommends \
++    build-essential\
++    ca-certificates\
++    cmake\
++    sudo\
++    wget\
++    git\
++    vim\
++    graphviz\
++    python-dev\
++    gnupg2
++
++apt-get update && apt-get install -y gcc-aarch64-linux-gnu
+diff --git docker/install/ubuntu_install_vai_python_package.sh docker/install/ubuntu_install_vai_python_package.sh
+new file mode 100644
+index 0000000..07c6e66
+--- /dev/null
++++ docker/install/ubuntu_install_vai_python_package.sh
+@@ -0,0 +1,41 @@
++#!/bin/bash
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++. $VAI_ROOT/conda/etc/profile.d/conda.sh && \
++    conda activate vitis-ai-tensorflow && \
++    pip install --no-cache-dir antlr4-python3-runtime
++
++# set -e
++# set -u
++# set -o pipefail
++# 
++# install libraries for python package on ubuntu
++# pip install --upgrade pip
++# pip3 install --no-cache-dir \
++#     onnx==1.5.0 \
++#     numpy \
++#     pydot==1.4.1 \
++#     h5py==2.8.0 \
++#     opencv-python \
++#     matplotlib \
++#     jupyter \
++#     psutil \
++#     sklearn \
++#     scipy \
++#     progressbar2 \
++#     dill
+diff --git include/tvm/relay/attrs/nn.h include/tvm/relay/attrs/nn.h
+index a9c3059..81f8e72 100644
+--- include/tvm/relay/attrs/nn.h
++++ include/tvm/relay/attrs/nn.h
+@@ -1203,6 +1203,26 @@ struct SubPixelAttrs : public tvm::AttrsNode<SubPixelAttrs> {
+   }
+ };  // struct SubPixelAttrs
+ 
++// TOOD: CHANGE NAME OF ATTRS AND JSON_PATH
++ struct ACCELAttrs : public tvm::AttrsNode<ACCELAttrs> {
++   Array <Array<IndexExpr>> output_shape;
++   std::string input_name;
++   std::string output_name;
++   std::string kernel_name;
++   
++   TVM_DECLARE_ATTRS(ACCELAttrs, "relay.attrs.ACCELAttrs") {
++       TVM_ATTR_FIELD(output_shape)
++      .describe("Shape of the output node");
++       TVM_ATTR_FIELD(kernel_name)
++	 .describe("Kernel name");
++       TVM_ATTR_FIELD(input_name)
++	 .describe("Input name");
++       TVM_ATTR_FIELD(output_name)
++	 .describe("Output_name");
++  
++   }
++};
++ 
+ }  // namespace relay
+ }  // namespace tvm
+ #endif  // TVM_RELAY_ATTRS_NN_H_
+diff --git python/tvm/contrib/vai/__init__.py python/tvm/contrib/vai/__init__.py
+new file mode 100644
+index 0000000..cb39280
+--- /dev/null
++++ python/tvm/contrib/vai/__init__.py
+@@ -0,0 +1,18 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++""" Contrib API for Xilinx Vitis-AI CNN accelerators """
+diff --git python/tvm/contrib/vai/base.py python/tvm/contrib/vai/base.py
+new file mode 100644
+index 0000000..ef8f59d
+--- /dev/null
++++ python/tvm/contrib/vai/base.py
+@@ -0,0 +1,60 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++"""
++Registration of Vitis-AI Relay 'accel' operations
++"""
++
++import tvm
++from tvm import te
++from tvm import tir
++from tvm.target import generic_func
++from tvm.relay.op import op
++
++@op.register_compute("nn.accel", level=15)
++def compute_nn_accel(attrs, inputs, out_dtype):
++    """Compute definition of accel operation for Relay"""
++    name = 'accel0'
++    
++    if isinstance(out_dtype, tvm.ir.TensorType):
++        oshapes = out_dtype.shape
++    else:
++        oshapes = [tuple(e.shape) for e in list(out_dtype.fields)]
++    
++    def extern_vai_func(ins, outs):
++        tensors = ins + outs
++        return tir.call_packed('tvm.accel.accel_fused', attrs.kernel_name,
++                               attrs.input_name, attrs.output_name,
++                               *tensors)
++
++    out = te.extern(oshapes, inputs, extern_vai_func, name=name)
++
++    if isinstance(out, list):
++        return out
++    else:
++        return [out]
++
++# @op.register_schedule("nn.accel", level=15)
++@generic_func
++def schedule_nn_accel(_, outputs, target):
++    del target
++    return te.create_schedule([x.op for x in outputs])
++
++op.register_schedule('nn.accel', schedule_nn_accel)
++
++
++
+diff --git python/tvm/contrib/vai/extern_accel.py python/tvm/contrib/vai/extern_accel.py
+new file mode 100644
+index 0000000..23bbeee
+--- /dev/null
++++ python/tvm/contrib/vai/extern_accel.py
+@@ -0,0 +1,132 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++'''
++Registration of Xilinx Vitis-AI fused acceleration operation for aceleration of 
++convolutional neural networks
++
++This Vitis-AI acceleration exploits DPU hardware accelerator built for 
++following evaluation boards:
++- Ultra96: https://www.xilinx.com/products/boards-and-kits/1-vad4rl.html
++- ZCU104: https://www.xilinx.com/products/boards-and-kits/zcu104.html
++- ZCU102: https://www.xilinx.com/products/boards-and-kits/ek-u1-zcu102-g.html
++
++More information about Xilinx DPU and DNNDK can be found in the user guides:
++TODO
++'''
++
++import os
++import tvm
++import warnings
++import numpy as np
++import time
++
++from .vai_runner import Runner
++
++RUNNER_CACHE = None
++DPU_RUNDIR = None
++
++def setDpuRunDir(dpu_rundir):
++    global DPU_RUNDIR
++
++    if not os.path.exists(dpu_rundir):
++        raise ValueError("Provided nonexisting run directory: {}".format(dpu_rundir))
++  
++    DPU_RUNDIR = dpu_rundir
++
++class RunnerCache(object):
++
++    """
++    Wrapper around Runner for connection handling and caching
++    """
++    
++    def __init__(self):
++        self.runner_cache = {}
++
++    def createRunner(self, fdir):
++        # type: (str) -> Runner
++        """ 
++        Return the Runner for the given file dir
++        """
++        if fdir in self.runner_cache:
++            return self.runner_cache[fdir]
++
++        # Create Runner
++        runner = Runner(fdir)
++
++        self.runner_cache[fdir] = runner
++
++        return runner
++
++    def __del__(self):
++        """ Cleanup """
++        for fdir in list(self.runner_cache.keys()):
++            del self.runner_cache[fdir]
++
++
++
++RUNNER_CACHE = RunnerCache()
++
++
++@tvm.register_func("tvm.accel.accel_fused")
++def accel_fused(kernel_name, input_name, output_name, *tensors):
++    """
++    Registration of external accel.accel_fused operation
++    Arguments
++    ---------
++    kernel_name: str
++        the name of the DPU kernel
++    input_name: str
++        the input_name of the DPU Kernel
++    output_name: str
++        the output_name of the DPU kernel
++    tensors: List[tvm.nd.NDArray]
++        the operation inputs and outputs as List
++    """
++    input_names = input_name.split('*')
++    output_names = output_name.split('*')
++
++    num_inputs = len(tensors) - len(output_names)
++
++    # Fetch the inputs and outputs
++    ins = tensors[:num_inputs]
++    outs = tensors[num_inputs:]
++
++    runner = RUNNER_CACHE.createRunner(DPU_RUNDIR)
++    
++    in_tensor_names = [str(it.name.decode('utf-8')) for it in runner.get_input_tensors()]
++    out_tensor_names = [str(ot.name.decode('utf-8')) for ot in runner.get_output_tensors()]
++    out_tensor_shapes = [tuple([t.dims[i] for i in range(t.ndims)]) for t in runner.get_output_tensors()]
++
++    print(input_names, output_names)
++
++    print(in_tensor_names, out_tensor_names)
++
++    in_map = {in_name: i.asnumpy() for in_name, i in zip(input_names, ins)}
++    out_map = {out_name: np.empty(out_shape, dtype=np.float32, order='C')
++               for out_name, out_shape in zip(output_names, out_tensor_shapes)}
++
++    in_data = [in_map[it_name] for it_name in in_tensor_names]
++    out_data = [out_map[ot_name] for ot_name in output_names]
++
++
++    jid = runner.execute_async(in_data, out_data)
++    runner.wait(jid)
++
++    for idx, out_name in enumerate(output_names):
++        out_data_idx = output_names.index(out_name)
++        tvm.nd.array(out_data[out_data_idx]).copyto(outs[idx])
+diff --git python/tvm/contrib/vai/relay_transform.py python/tvm/contrib/vai/relay_transform.py
+new file mode 100644
+index 0000000..30027e5
+--- /dev/null
++++ python/tvm/contrib/vai/relay_transform.py
+@@ -0,0 +1,105 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++"""
++Vitis-AI Relay pass to partition Relay graph for Xilinx FPGA acceleration
++
++"""
++
++import os
++import json
++import pyxir
++import tvm
++from tvm import relay
++
++from pyxir.frontend.tvm import from_relay
++from pyxir.graph.io.xgraph_io import XGraphIO
++from pyxir.target_registry import TargetRegistry
++from pyxir.contrib.dpuv1 import dpuv1
++from pyxir.contrib.dpuv2 import dpuv2
++from .xgraph_to_relay_transform import XgraphRelayTransform
++
++@tvm.transform.module_pass(opt_level=4)
++class PartitioningPass:
++
++    """
++    The Vitis-AI partitioning pass
++
++    Arguments
++    ---------
++    target: str
++        the target accelerator, only 'dpu' is supported at the moment
++
++    params: dict from str to array
++        the relay model parameters
++
++    inputs_func: function
++        a python function which takes an iterator number and a layout and
++        provides a numpy array of inputs to be used for quantization
++        calibration
++
++    layout: str
++        the layout of the Relay model, only 'NCHW' and 'NHWC' supported
++        at the moment
++
++    """
++
++    def __init__(self, target, params, inputs_func, postprocessing):
++
++        # check if target is supported
++        TargetRegistry().check_target(target)
++        
++      
++
++        self.target         = target
++        self.params         = params
++        self.inputs_func    = inputs_func
++        self.postprocessing = postprocessing
++        
++        self.work_dir = '/tmp/vai'
++        os.makedirs(self.work_dir, exist_ok=True)
++
++    def transform_module(self, mod, _):
++        """
++        Transformation module method which is called from parent __call__
++        """
++
++        xgraph = from_relay(mod, 
++                            params         = self.params, 
++                            postprocessing = self.postprocessing)
++        # print(xgraph.get_layer_names())
++        # last_layer = input("Last partitioning layer: ")        
++        # XGRAPH PARTITIONING
++        xgraph = pyxir.partition(xgraph, targets=[self.target]) #, last_layer=last_layer)
++        xgraph = pyxir.optimize(xgraph, self.target)
++        
++        dpu_xgraph = pyxir.schedule(xgraph, target=self.target)        
++        XGraphIO.save(dpu_xgraph, os.path.join(self.work_dir, 'dpu_xgraph'))
++
++        # QUANTIZE XGRAPH
++        xgraph = pyxir.quantize(xgraph, target=self.target, inputs_func=self.inputs_func, work_dir=self.work_dir)
++
++        # COMPILE XGRAPH
++        xgraph = pyxir.compile(xgraph, target=self.target, work_dir=self.work_dir)
++        
++        # RELAY PARTITIONING
++        xrt = XgraphRelayTransform(self.target)
++        mod = xrt.transform(xgraph, mod, self.work_dir)
++        
++        return mod
++
++ 
+diff --git python/tvm/contrib/vai/tvmruntime_util.py python/tvm/contrib/vai/tvmruntime_util.py
+new file mode 100644
+index 0000000..0b5d308
+--- /dev/null
++++ python/tvm/contrib/vai/tvmruntime_util.py
+@@ -0,0 +1,56 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++"""
++Small wrapper around TVM runtime which create a runtime module based on
++the TVM runtime files in a given directory
++"""
++
++
++import os
++import tvm
++from tvm.contrib import graph_runtime
++
++class TVMRuntimeUtil:
++
++    def __init__(self, fdir):
++
++        lib_path   = os.path.join(fdir,'tvm_dpu_cpu.so')
++        json_path  = os.path.join(fdir,'tvm_dpu_cpu.json')
++        param_path = os.path.join(fdir,'tvm_dpu_cpu.params')
++        
++        assert os.path.isfile(lib_path)\
++        and os.path.isfile(lib_path)\
++        and os.path.isfile(param_path),\
++            print("Error: compiled files do not exist in path: {}".format(fdir))
++        
++        self.fdir          = fdir
++        self.loaded_lib    = tvm.runtime.module.load_module(lib_path)
++        self.loaded_json   = open(json_path).read()
++        self.loaded_params = bytearray(open(param_path, 'rb').read())
++
++        target = tvm.cpu(0)
++        self.module = graph_runtime.create(self.loaded_json, self.loaded_lib, tvm.cpu(0))
++
++    def run(self, inputs):
++
++        self.module.load_params(self.loaded_params)
++        self.module.run(**inputs)
++        outs = [self.module.get_output(idx).asnumpy()
++                for idx in range(self.module.get_num_outputs())]
++
++        return outs
+diff --git python/tvm/contrib/vai/vai_runner.py python/tvm/contrib/vai/vai_runner.py
+new file mode 100644
+index 0000000..c43c1d1
+--- /dev/null
++++ python/tvm/contrib/vai/vai_runner.py
+@@ -0,0 +1,155 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++''' Python Vitis-AI runtime API '''
++
++from ctypes import *
++import numpy as np
++import json
++import os
++import re
++
++
++class Tensor(Structure):
++    _fields_ = [
++        ('name', c_char_p),
++        ('dims', POINTER(c_int32)),
++        ('ndims', c_int32),
++        ('dtype', c_int32)
++    ]
++
++
++class Runner:
++    # tensor format enum
++    TensorFormat = type('', (), {})()
++    TensorFormat.NCHW = 0
++    TensorFormat.NHWC = 1
++
++    def __init__(self, path):
++        metaFile = os.path.join(path, "meta.json")
++        if not os.path.isfile(metaFile):
++            raise AssertionError("meta.json file %s not found" % metaFile)
++
++        # select .so file based on path/meta.json
++        with open(metaFile) as f:
++            meta = json.load(f)
++            libFile = self._parse_path(meta['lib'])
++
++        if not libFile or not os.path.isfile(libFile):
++            raise AssertionError("C++ library .so file %s not found" % libFile)
++
++        self._libFile = os.path.abspath(libFile)
++        self._lib = cdll.LoadLibrary(self._libFile)
++
++        self._lib.DpuPyRunnerCreate.argtypes = [c_char_p]
++        self._lib.DpuPyRunnerCreate.restype = c_void_p
++        self._lib.DpuPyRunnerGetInputTensors.argtypes = \
++            [c_void_p, POINTER(c_void_p), POINTER(c_int)]
++        self._lib.DpuPyRunnerGetOutputTensors.argtypes = \
++            [c_void_p, POINTER(c_void_p), POINTER(c_int)]
++        self._lib.DpuPyRunnerGetTensorFormat.argtypes = [c_void_p]
++        self._lib.DpuPyRunnerGetTensorFormat.restype = c_int
++        self._lib.DpuPyRunnerExecuteAsync.argtypes = \
++            [c_void_p,
++             POINTER(np.ctypeslib.ndpointer(c_float, flags="C_CONTIGUOUS")),
++             POINTER(np.ctypeslib.ndpointer(c_float, flags="C_CONTIGUOUS")),
++             c_int,
++             POINTER(c_int)]
++        self._lib.DpuPyRunnerExecuteAsync.restype = c_int
++        self._lib.DpuPyRunnerWait.argtypes = [c_void_p, c_int]
++        self._lib.DpuPyRunnerWait.restype = c_int
++        self._lib.DpuPyRunnerDestroy.argtypes = [c_void_p]
++
++        self._runner = self._lib.DpuPyRunnerCreate(path.encode('utf-8'))
++
++    def get_input_tensors(self):
++        ptr = c_void_p()
++        n = c_int(0)
++        self._lib.DpuPyRunnerGetInputTensors(self._runner, byref(ptr),
++                                             byref(n))
++        tensors = []
++        for i in range(n.value):
++            tensors.append(Tensor.from_address(ptr.value + (i*sizeof(Tensor))))
++        return tensors
++
++    def get_output_tensors(self):
++        ptr = c_void_p()
++        n = c_int(0)
++        self._lib.DpuPyRunnerGetOutputTensors(self._runner, byref(ptr),
++                                              byref(n))
++        tensors = []
++        for i in range(n.value):
++            tensors.append(Tensor.from_address(ptr.value + (i*sizeof(Tensor))))
++        return tensors
++
++    def get_tensor_format(self):
++        return(self._lib.DpuPyRunnerGetTensorFormat(self._runner))
++
++    def execute_async(self, inputs, outputs):
++        """
++        Args:
++            inputs: list of numpy arrays
++            outputs: list of numpy arrays
++            order of numpy arrays in inputs/outputs must match
++            the order in get_input_tensors() and get_output_tensors()
++        """
++        status = c_int(0)
++        ret = self._lib.DpuPyRunnerExecuteAsync(
++            self._runner,
++            self._numpy_list_2_cptr_list(inputs),
++            self._numpy_list_2_cptr_list(outputs),
++            inputs[0].shape[0], byref(status)
++        )
++
++        if status.value != 0:
++            raise RuntimeError("Runner.execute_async could not enqueue new"
++                               " DPU job")
++
++        return ret
++
++    def _numpy_list_2_cptr_list(self, nplist):
++        ptrList = (np.ctypeslib.ndpointer(c_float, flags="C_CONTIGUOUS") *
++                   len(nplist))()
++
++        for i, tensor in enumerate(nplist):
++            ptrList[i] = tensor.ctypes.data_as(
++                np.ctypeslib.ndpointer(c_float, flags="C_CONTIGUOUS"))
++
++        return ptrList
++
++    def _parse_path(self, path):
++        """
++        Translate any {STRING} in 'path' to os.environ["STRING"]
++        E.g., {XILINX_ROOT}/path/to/file to /opt/xilinx/path/to/file
++        """
++        retpath = path
++        regex = r"\{(.*?)\}"
++        matches = re.finditer(regex, path, re.MULTILINE | re.DOTALL)
++        for matchNum, match in enumerate(matches):
++            word = match.group(1)
++            retpath = retpath.replace("{"+word+"}", os.environ[word])
++
++        return retpath
++
++    def wait(self, job_id):
++        return self._lib.DpuPyRunnerWait(self._runner, job_id)
++
++    def __del__(self):
++        if hasattr(self, '_lib') and self._lib and\
++                hasattr(self, '_runner') and self._runner:
++            self._lib.DpuPyRunnerDestroy(self._runner)
++
+diff --git python/tvm/contrib/vai/xgraph_to_relay_transform.py python/tvm/contrib/vai/xgraph_to_relay_transform.py
+new file mode 100644
+index 0000000..0fad604
+--- /dev/null
++++ python/tvm/contrib/vai/xgraph_to_relay_transform.py
+@@ -0,0 +1,323 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++"""
++Utility module for XGraph to Relay transformation
++"""
++
++
++import numpy as np
++import os
++import tvm
++import pyxir
++
++from tvm import relay
++
++
++
++class XgraphRelayTransform:
++
++    def __init__(self, target):
++        self.target = target
++        self.mod    = None   
++        
++    # HIGH LEVEL OBJECT FUNCTION THAT GETS CALLED TO TRANSFORM THE XGRAPH
++    def transform(self, xgraph, mod,work_dir):
++
++        xgraph_schedule = pyxir.schedule(xgraph, self.target)
++        sch_layers = xgraph_schedule.get_layers()
++                
++        start_idx, relay_map = self.relay_hash_transform(mod)
++        map_keys = list(relay_map.keys())
++        
++        assert (all(map_keys.count(x) == 1 for x in map_keys)),\
++            print("Error: Duplicate found in the Relay hash map")
++
++        c_output = xgraph.get_compiler_output()
++        for c_key in c_output.keys():
++            in_map = c_output.get_in_map(c_key)
++            out_map = c_output.get_out_map(c_key)
++
++        # PARSE THE SCHEDULED LAYERS
++        # CREATE A LIST OF SUBGRAPHS, AND POST_PROCESSING
++        subgraph_list   = []
++        postproc_list   = []
++        for layer in sch_layers:
++            try:
++                relay_id = layer.attrs['relay_id']
++            except KeyError:
++                relay_id  = -1
++         
++            if 'DPU' in layer.type[0] :
++                in_keys  = list(layer.attrs['input_layers'].keys())
++                out_keys = list(layer.attrs['output_layers'].keys())
++                kernel_name = layer.name
++
++                ins = []
++                ins_xgraph = []
++                for input_name in layer.attrs['input_names']:
++                    ins.append(layer.attrs['orig_bottom_tensors'][input_name][0])
++                    ins_xgraph.append(layer.attrs['__bottom_tensors'][input_name][0])
++
++                outs = [on for on in layer.attrs['output_names']]
++             
++                    
++                ins_xlayers   = map(lambda i: xgraph_schedule.get(i), ins)
++                outs_xlayers  = map(lambda o: xgraph.get(o), outs)
++                
++                
++                ins_rid   = []
++                ins_shape = [xgraph_schedule.get(i).shapes for i in ins_xgraph]
++                for xlayer in list(ins_xlayers):
++                    rid = xlayer.attrs['relay_id'][0]
++                    ins_rid.append(rid)
++              
++                        
++                outs_rid   = []
++                outs_shape = layer.shapes
++                for xlayer in list(outs_xlayers):
++                    outs_rid.append(xlayer.attrs['relay_id'][-1])###
++                    #outs_shape.append(xlayer.shapes)
++                                          
++                subgraph_list.append({ 'ins'  : dict(zip(ins_rid,ins_shape)),
++                                       'outs' : dict(zip(outs_rid,outs_shape)),
++                                       'attrs': {'in_map'     : in_map,
++                                                 'out_map'    : out_map,
++                                                 'kernel_name': kernel_name}
++                })
++                                                  
++            elif 'Softmax' in layer.type[0] and relay_id == -1 :
++                postproc_list += ['Softmax']
++
++        # PROCESS EACH SUBGRAPH AND MODIFY THE RELAY_MAP
++        for sg in subgraph_list:
++            ins_rid  = list(sg['ins'].keys())
++            input_shapes        = [tuple([1] + sg['ins'][rid][1:])
++                                    for rid in ins_rid]
++            relay_input_shapes = [tuple(self.get_shape(relay_map[rid]['expr']))
++                                  for rid in ins_rid]
++
++            outs_rid = list(sg['outs'].keys())
++            output_shapes        = [tuple([1] + sg['outs'][rid][1:])
++                                  for rid in outs_rid]
++            relay_output_shapes = [tuple(self.get_shape(relay_map[rid]['expr']))
++                                   for rid in outs_rid]
++            accel_input_names   = list(in_map.values())[0]
++            accel_output_names  = list(out_map.values()) #[out_map[on] for on in output_names]
++            accel_output_names  = '*'.join(accel_output_names)
++           
++
++            # ADD TRANSPOSE TO THE INPUT NODE
++            for rid,xs,rs in  zip(ins_rid,input_shapes,relay_input_shapes) :
++                
++                rs = tuple(map(lambda idx:int(idx), rs))
++
++                if xs != rs:
++                    if xs == (rs[0], rs[2], rs[3], rs[1]):
++                        axes = (0, 2, 3, 1)
++                    else:
++                        axes = (0, 3, 1, 2)
++
++                    expr          = relay_map[rid]['expr']
++                    new_expr      = tvm.relay.transpose(expr, axes=axes)
++                else:
++                    expr          = relay_map[rid]['expr']
++                    new_expr = expr
++                    
++                relay_map[rid]['expr']    = new_expr
++                relay_map[rid]['updated'] = True
++       
++            # CREATE THE SUBGRAPH NODE
++            ins_expr           = [relay_map[rid]['expr'] for rid in ins_rid]
++            accel_expr = relay.nn.accel(ins_expr,
++                                  output_shape = output_shapes,
++                                  input_name   = accel_input_names,
++                                  output_name  = accel_output_names,
++                                  kernel_name  = sg['attrs']['kernel_name'])
++                            
++
++                        
++            # UPDATE RELAY OUTPUT NODES
++            if len(outs_rid) > 1:
++                for idx,rid in enumerate(outs_rid):
++                    new_expr = tvm.relay.expr.TupleGetItem(accel_expr,idx)
++                    relay_map[rid]['expr']    = new_expr
++                    relay_map[rid]['updated'] = True
++            else:
++                relay_map[outs_rid[0]]['expr']    = accel_expr
++                relay_map[outs_rid[0]]['updated'] = True
++
++    
++            for rid,xs,rs in  zip(outs_rid,output_shapes,relay_output_shapes) :
++                
++                rs = tuple(map(lambda idx:int(idx),rs))
++
++                if xs != rs:
++                    if rs == (xs[0], xs[2], xs[3], xs[1]):
++                        axes = (0, 2, 3, 1)
++                    else:
++                        axes = (0, 3, 1, 2)
++
++                    expr          = relay_map[rid]['expr']
++                    new_expr      = tvm.relay.transpose(expr, axes=axes)
++                    
++                    relay_map[rid]['expr']    = new_expr
++                    relay_map[rid]['updated'] = True
++
++        # UPDATE THE RELAY GRAPH BASE ON THE RELAY_MAP
++        graph = self.update(relay_map[start_idx]['expr'], relay_map)
++
++        # ADD POST-PROCESSING LAYER
++        for op in postproc_list:
++            if op == 'Softmax':
++                graph = relay.nn.softmax(graph)
++
++      
++        mod = tvm.IRModule.from_expr(graph)
++            
++        return mod
++
++    def extract_hash(self, name, key=None):
++        """
++        Extract Relay expression hash from xgraph layer names
++        """
++        val = name.split('-')
++        if key == 'in_map':
++            val = name.split('_')
++            return int(val[2])
++        try:
++            return int(val[1])
++        except (IndexError,ValueError):
++            if len(val) == 1:
++                return val[0]
++            return int(val[1])
++        
++    def relay_hash_transform(self, mod):
++        hash_map = {}
++        expr = mod.functions[mod.get_global_var('main')]
++        expr = expr.body
++        relay_hash_map = self.recurse(expr,hash_map)
++        return (hash(expr),relay_hash_map)
++
++    def get_shape(self,expr):
++        if isinstance(expr, tvm.relay.expr.Var):
++            return expr.type_annotation.shape
++        elif isinstance(expr, tvm.relay.expr.Call):
++            return expr.checked_type.shape
++        else:
++            return None 
++        
++    def recurse(self, expr, hash_map):
++        """
++        Recursively to create a hash map of nodes
++        """
++
++        expr_hash = hash(expr)
++        if expr_hash in hash_map:
++            return hash_map
++        else:
++            if isinstance(expr, tvm.relay.function.Function):
++                children = []
++                hash_map[expr_hash] = {'expr':expr,'children': children, 'updated': False}
++                self.recurse(expr.body, hash_map)
++                return hash_map
++            
++            elif isinstance(expr, tvm.relay.expr.Call):
++                children = [hash(child) for child in expr.args]
++                hash_map[expr_hash] = {'expr':expr,'children': children, 'updated': False}
++                for node in expr.args:
++                    self.recurse(node, hash_map)
++                return hash_map
++                
++            elif isinstance(expr, tvm.relay.expr.TupleGetItem):
++                children = []
++                hash_map[expr_hash] = {'expr':expr,'children': children, 'updated': False}
++                self.recurse(expr.tuple_value, hash_map)
++                return hash_map
++            
++            elif isinstance(expr, tvm.relay.expr.Var):
++                children = []
++                hash_map[expr_hash] = {'expr':expr,'children': children, 'updated': False}
++                return hash_map
++            
++            elif isinstance(expr, tvm.relay.expr.Tuple):
++                children = [hash(child) for child in expr.fields]
++                hash_map[expr_hash] = {'expr':expr,'children': children, 'updated': False}
++                for node in expr.fields:
++                    self.recurse(node, hash_map)
++                return hash_map
++            elif isinstance(expr, tvm.relay.expr.Constant):
++                children = []
++                hash_map[expr_hash] = {'expr':expr,'children': children, 'updated': False}
++                return hash_map
++            
++            else:
++                raise NotImplementedError("Condition to create hash map for node type {}"\
++                                          " has not been implemented"\
++                                                  .format(type(expr)))
++            
++    def update(self, expr, hash_map):
++        """
++        Recursively to create a hash map of nodes
++        """
++
++        expr_hash = hash(expr)
++        if expr_hash not in hash_map:
++            # Happens when accel is the last layer in the expr
++            # Return this expression
++            return expr
++        elif hash_map[expr_hash]['updated'] == True:
++            return  hash_map[expr_hash]['expr']
++        else:
++            hash_map[expr_hash]['updated'] = True
++            
++            if isinstance(expr, tvm.relay.function.Function):
++                new_body = self.update(expr.body, hash_map)
++                new_expr = relay.function.Function(expr.params,new_body,expr.ret_type,expr.type_params)
++            
++            elif isinstance(expr, tvm.relay.expr.Call):
++                new_args = [self.update(child, hash_map) for child in expr.args]
++                new_expr = relay.Call(expr.op, new_args, expr.attrs, expr.type_args)
++                
++            elif isinstance(expr, tvm.relay.expr.TupleGetItem):
++                tuple_value = self.update(expr.tuple_value, hash_map)
++                new_expr    = relay.TupleGetItem(tuple_value,expr.index)
++            
++            elif isinstance(expr, tvm.relay.expr.Var):
++                return expr
++            
++            elif isinstance(expr, tvm.relay.expr.Tuple):
++                new_fields = [self.update(child, hash_map) for child in expr.fields]
++                new_expr = relay.Tuple(new_fields)
++                
++            elif isinstance(expr,tvm.relay.expr.If):
++                true_branch  = self.update(expr.true_branch, hash_map)
++                false_branch = self.update(expr.false_branch, hash_map)
++                new_expr     = relay.If(expr.cond,true_branch,false_branch)
++
++            elif isinstance(expr,tvm.relay.GlobalVar):
++                return expr
++
++            elif isinstance(expr, tvm.relay.expr.Constant):
++                return expr
++                                       
++            else:
++                raise NotImplementedError("Condition to recurse relay graph for node type {}"\
++                                          " has not been implemented"\
++                                                  .format(type(expr)))
++            hash_map[expr_hash]['expr'] = new_expr
++            return new_expr
+diff --git python/tvm/contrib/vai/xilinx_vai.py python/tvm/contrib/vai/xilinx_vai.py
+new file mode 100644
+index 0000000..ed93906
+--- /dev/null
++++ python/tvm/contrib/vai/xilinx_vai.py
+@@ -0,0 +1,138 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++"""
++Registration of Xilinx Vitis-AI fused acceleration operation for aceleration of 
++convolutional neural networks
++
++
++This Vitis-AI acceleration exploits DPU hardware accelerator built for 
++following evaluation boards:
++- Ultra96: https://www.xilinx.com/products/boards-and-kits/1-vad4rl.html
++- ZCU104: https://www.xilinx.com/products/boards-and-kits/zcu104.html
++- ZCU102: https://www.xilinx.com/products/boards-and-kits/ek-u1-zcu102-g.html
++- Zedboard: https://www.xilinx.com/products/boards-and-kits/1-8dyf-11.html
++
++More information about Xilinx DPU and DNNDK can be found in the user guides:
++https://www.xilinx.com/support/documentation/ip_documentation/dpu/v3_0/pg338-dpu.pdf
++https://www.xilinx.com/support/documentation/sw_manuals/ai_inference/v1_6/ug1327-dnndk-user-guide.pdf
++"""
++
++import os
++import tvm
++import warnings
++import numpy as np
++import time
++
++from .vai_runner import Runner
++
++RUNNER_CACHE = None
++DPU_RUNDIR = None
++
++def setDpuRunDir(dpu_rundir):
++    global DPU_RUNDIR
++
++    if not os.path.exists(dpu_rundir):
++        raise ValueError("Provided nonexisting run directory: {}".format(dpu_rundir))
++  
++    DPU_RUNDIR = dpu_rundir
++
++class RunnerCache(object):
++
++    """
++    Wrapper around Runner for connection handling and caching
++    """
++    
++    def __init__(self):
++        self.runner_cache = {}
++
++    def createRunner(self, fdir):
++        # type: (str) -> Runner
++        """ 
++        Return the Runner for the given file dir
++        """
++        if fdir in self.runner_cache:
++            return self.runner_cache[fdir]
++
++        # Create Runner
++        runner = Runner(fdir)
++
++        self.runner_cache[fdir] = runner
++
++        return runner
++
++    def __del__(self):
++        """ Cleanup """
++        for fdir in list(self.runner_cache.keys()):
++            del self.runner_cache[fdir]
++
++
++RUNNER_CACHE = RunnerCache()
++
++
++@tvm.register_func("tvm.accel.accel_fused")
++def accel_fused(kernel_name, input_name, output_name, *tensors):
++    """
++    Registration of external accel.accel_fused operation
++
++    Arguments
++    ---------
++    kernel_name: str
++        the name of the DPU kernel
++
++    input_name: str
++        the input_name of the DPU Kernel
++
++    output_name: str
++        the output_name of the DPU kernel
++
++    tensors: List[tvm.ndarray.NDArray]
++        the operation inputs and outputs as List
++    """
++    input_names = input_name.split('*')
++    output_names = output_name.split('*')
++
++    num_inputs = len(tensors) - len(output_names)
++
++    # Fetch the inputs and outputs
++    ins = tensors[:num_inputs]
++    outs = tensors[num_inputs:]
++
++    runner = RUNNER_CACHE.createRunner(DPU_RUNDIR)
++    
++    in_tensor_names = [str(it.name.decode('utf-8')) for it in runner.get_input_tensors()]
++    out_tensor_names = [str(ot.name.decode('utf-8')) for ot in runner.get_output_tensors()]
++    out_tensor_shapes = [tuple([t.dims[i] for i in range(t.ndims)]) for t in runner.get_output_tensors()]
++
++    print(input_names, output_names)
++
++    print(in_tensor_names, out_tensor_names)
++
++    in_map = {in_name: i.asnumpy() for in_name, i in zip(input_names, ins)}
++    out_map = {out_name: np.empty(out_shape, dtype=np.float32, order='C')
++               for out_name, out_shape in zip(out_tensor_names, out_tensor_shapes)}
++
++    in_data = [in_map[it_name] for it_name in in_tensor_names]
++    out_data = [out_map[ot_name] for ot_name in out_tensor_names]
++
++
++    jid = runner.execute_async(in_data, out_data)
++    runner.wait(jid)
++
++    for idx, out_name in enumerate(output_names):
++        out_data_idx = out_tensor_names.index(out_name)
++        tvm.nd.array(out_data[out_data_idx]).copyto(outs[idx])
+diff --git python/tvm/relay/frontend/tensorflow.py python/tvm/relay/frontend/tensorflow.py
+index ab9e9e6..46eee4a 100644
+--- python/tvm/relay/frontend/tensorflow.py
++++ python/tvm/relay/frontend/tensorflow.py
+@@ -265,7 +265,8 @@ def _conv(opname):
+                 attr['strides'][3], attr['strides'][1], attr['strides'][2]
+             attr['data_format'] = 'NCHW'
+ 
+-            if opname == 'conv_transpose' and len(attr['_output_shapes']) > 0:
++            if opname == 'conv_transpose' and len(attr['_output_shapes']) > 0\
++                    and attr['_output_shapes'][0] is not None:
+                 tmp_shape = attr['_output_shapes'][0]
+                 tmp_shape = [tmp_shape[ii] for ii in (0, 3, 1, 2)]
+                 attr['_output_shapes'][0] = tmp_shape
+@@ -350,7 +351,8 @@ def _conv(opname):
+             kernel_h, kernel_w = attr['kernel_shape']
+ 
+             pdata_shape = input_shape
+-            if opname == 'conv_transpose' and len(attr['_output_shapes']) > 0:
++            if opname == 'conv_transpose' and len(attr['_output_shapes']) > 0\
++                    and attr['_output_shapes'][0] is not None:
+                 pdata_shape = attr['_output_shapes'][0]
+ 
+             if attr['data_format'] == 'NHWC':
+@@ -374,8 +376,10 @@ def _conv(opname):
+             raise tvm.error.OpAttributeInvalid(msg.format(attr['padding']))
+ 
+         if 'kernel_layout' not in attr:
+-            if opname in ['conv', 'conv_transpose']:
++            if opname == 'conv':
+                 attr['kernel_layout'] = 'HWIO' if attr['data_format'] == 'NHWC' else 'OIHW'
++            elif opname == 'conv_transpose':
++                attr['kernel_layout'] = 'HWOI' if attr['data_format'] == 'NHWC' else 'IOHW'
+             else:
+                 attr['kernel_layout'] = 'HWOI' if attr['data_format'] == 'NHWC' else 'OIHW'
+ 
+diff --git python/tvm/relay/op/nn/nn.py python/tvm/relay/op/nn/nn.py
+index 96708c9..e902bdc 100644
+--- python/tvm/relay/op/nn/nn.py
++++ python/tvm/relay/op/nn/nn.py
+@@ -991,6 +991,88 @@ def avg_pool2d_grad(out_grad,
+     return _make.avg_pool2d_grad(out_grad, data, pool_size, strides, padding,
+                                  layout, ceil_mode, count_include_pad)
+ 
++def max_pool2d_grad(out_grad,
++                    data,
++                    pool_size=(1, 1),
++                    strides=(1, 1),
++                    padding=(0, 0),
++                    layout="NCHW",
++                    ceil_mode=False):
++    r"""Gradient of 2D maximum pooling operator.
++
++    This operator takes out_grad and data as input and calculates gradient of max_pool2d.
++
++    Parameters
++    ----------
++    out_grad : tvm.relay.Expr
++        The output gradient
++
++    data : tvm.relay.Expr
++        The input data to the operator.
++
++    strides : tuple of int, optional
++        The strides of pooling.
++
++    padding : tuple of int, optional
++        The padding for pooling.
++
++    layout : str, optional
++        Layout of the input.
++
++    ceil_mode : bool, optional
++        To enable or disable ceil while pooling.
++
++    Returns
++    -------
++    result : tvm.relay.Expr
++        The computed result.
++    """
++    return _make.max_pool2d_grad(out_grad, data, pool_size, strides, padding,
++                                 layout, ceil_mode)
++
++def avg_pool2d_grad(out_grad,
++                    data,
++                    pool_size=(1, 1),
++                    strides=(1, 1),
++                    padding=(0, 0),
++                    layout="NCHW",
++                    ceil_mode=False,
++                    count_include_pad=False):
++    r"""Gradient of 2D average pooling operator.
++
++    This operator takes out_grad and data as input and calculates gradient of avg_pool2d.
++
++    Parameters
++    ----------
++    out_grad : tvm.relay.Expr
++        The output gradient
++
++    data : tvm.relay.Expr
++        The input data to the operator.
++
++    strides : tuple of int, optional
++        The strides of pooling.
++
++    padding : tuple of int, optional
++        The padding for pooling.
++
++    layout : str, optional
++        Layout of the input.
++
++    ceil_mode : bool, optional
++        To enable or disable ceil while pooling.
++
++    count_include_pad : bool, optional
++        To include padding to compute the average.
++
++    Returns
++    -------
++    result : tvm.relay.Expr
++        The computed result.
++    """
++    return _make.avg_pool2d_grad(out_grad, data, pool_size, strides, padding,
++                                 layout, ceil_mode, count_include_pad)
++
+ def global_max_pool2d(data,
+                       layout="NCHW"):
+     r"""2D global maximum pooling operator.
+@@ -1720,7 +1802,7 @@ def layer_norm(data,
+     Parameters
+     ----------
+     data : tvm.relay.Expr
+-        Input to which layer_norm will be applied.
++        Input to which batch_norm will be applied.
+ 
+     gamma : tvm.relay.Expr
+         The gamma scale factor.
+@@ -1904,6 +1986,7 @@ def sparse_transpose(x):
+     return expr.TupleWrapper(
+         _make.sparse_transpose(x.data, x.indices, x.indptr), 3)
+ 
++
+ def contrib_conv2d_winograd_without_weight_transform(data,
+                                                      weight,
+                                                      tile_size,
+@@ -2632,7 +2715,6 @@ def adaptive_max_pool3d(data,
+     ----------
+     data : tvm.relay.Expr
+         The input data to the operator.
+-
+     output_size : tuple of int. optional
+         Output height and width.
+ 
+@@ -2761,3 +2843,37 @@ def global_avg_pool3d(data,
+     """
+     output_size = [1, 1, 1]
+     return _make.adaptive_avg_pool3d(data, output_size, layout)
++
++
++def accel(data,
++          output_shape,
++          input_name,
++          output_name,
++          kernel_name):
++
++    """ Accelerator operator.
++    Provides hook to insert generic TVM accelerator calls
++    output_shape : tvm.relay.Expr
++        The expected output shape.
++
++    input_name : str
++        Tensor input name.
++
++    output_name : str
++        Tensor output name.
++
++    kernel_name : str
++        Identifier of the subgraph to be executed.
++
++    Returns
++    -------
++    result : tvm.relay.Expr
++        The computed result.
++    """
++    
++    data = list(data)
++    return _make.accel(expr.Tuple(data),
++                       output_shape,
++                       input_name,  
++                       output_name, 
++                       kernel_name)
+diff --git python/tvm/relay/testing/tf.py python/tvm/relay/testing/tf.py
+index dc7937c..93632b2 100644
+--- python/tvm/relay/testing/tf.py
++++ python/tvm/relay/testing/tf.py
+@@ -32,7 +32,7 @@ from tvm.contrib.download import download_testdata
+ 
+ try:
+     tf_compat_v1 = tf.compat.v1
+-except ImportError:
++except (ImportError, AttributeError):
+     tf_compat_v1 = tf
+ 
+ ######################################################################
+diff --git src/relay/op/nn/nn.cc src/relay/op/nn/nn.cc
+index d65fc27..9189a55 100644
+--- src/relay/op/nn/nn.cc
++++ src/relay/op/nn/nn.cc
+@@ -1114,5 +1114,76 @@ RELAY_REGISTER_OP("nn.space_to_depth")
+     .set_support_level(5)
+     .add_type_rel("SpaceToDepth", SpaceToDepthRel);
+ 
++// Generic Accelerator 
++TVM_REGISTER_NODE_TYPE(ACCELAttrs);
++  
++// relay.nn.accel
++bool ACCELRel(const Array<Type>& types,
++                    int num_inputs,
++                    const Attrs& attrs,
++                    const TypeReporter& reporter) {
++
++  const auto* data = types[0].as<TupleTypeNode>();
++  const auto& first = Downcast<TensorType>(data->fields[0]);
++
++  if (data == nullptr) {
++    CHECK(types[0].as<IncompleteTypeNode>())
++      << "cast: expect input type to be TupleType but get "
++      << types[0];
++    return false;
++  }
++  
++  const auto* param = attrs.as<ACCELAttrs>();
++  CHECK(param != nullptr);
++
++  std::vector<Type> fields;
++
++  for (const auto& os : param->output_shape){
++    auto ret_type = TensorType(os, first->dtype);
++    fields.push_back(ret_type);
++  }
++
++  if (fields.size() == 1)
++    reporter->Assign(types[1], fields.front());
++  else
++    reporter->Assign(types[1], TupleType(Array<Type>(fields)));
++
++  return true;
++}
++
++
++Expr MakeACCEL(Expr data,
++	       Array<Array<IndexExpr>> output_shape,
++	       std::string      input_name,
++	       std::string      output_name,
++	       std::string      kernel_name
++	       ) {
++  auto attrs = make_object<ACCELAttrs>();
++    
++  attrs->output_shape = std::move(output_shape);
++  attrs->input_name	= std::move(input_name	);
++  attrs->output_name	= std::move(output_name );
++  attrs->kernel_name	= std::move(kernel_name );
++    
++  static const Op& op = Op::Get("nn.accel");
++
++
++  return Call(op, {data}, Attrs(attrs), {});
++
++}
++
++
++TVM_REGISTER_GLOBAL("relay.op.nn._make.accel").set_body_typed(MakeACCEL);
++
++RELAY_REGISTER_OP("nn.accel")
++.describe(R"code(acceleration OP that runs fused operation using the accelration runtime)code" TVM_ADD_FILELINE)
++.set_attrs_type<ACCELAttrs>()
++.set_num_inputs(1)
++.add_argument("data","Tensor", "List of Input Tensors")
++.set_support_level(15)
++.add_type_rel("ACCEL",ACCELRel)
++.set_attr<TOpPattern>("TOpPattern",kOutEWiseFusable);
++
+ }  // namespace relay
+ }  // namespace tvm
++
+diff --git tutorials/accelerators/device/images/dog.jpg tutorials/accelerators/device/images/dog.jpg
+new file mode 100755
+index 0000000..30d17b2
+Binary files /dev/null and tutorials/accelerators/device/images/dog.jpg differ
+diff --git tutorials/accelerators/device/images/jiang.jpg tutorials/accelerators/device/images/jiang.jpg
+new file mode 100755
+index 0000000..70bc52e
+Binary files /dev/null and tutorials/accelerators/device/images/jiang.jpg differ
+diff --git tutorials/accelerators/device/images/pedestrians.jpg tutorials/accelerators/device/images/pedestrians.jpg
+new file mode 100644
+index 0000000..082d048
+Binary files /dev/null and tutorials/accelerators/device/images/pedestrians.jpg differ
+diff --git tutorials/accelerators/device/run_darknet_yolo3.py tutorials/accelerators/device/run_darknet_yolo3.py
+new file mode 100644
+index 0000000..f6ec71a
+--- /dev/null
++++ tutorials/accelerators/device/run_darknet_yolo3.py
+@@ -0,0 +1,120 @@
++import os
++import sys
++import argparse
++import numpy as np
++import signal
++import shutil
++import sys
++import time
++import matplotlib as mpl
++# TODO broken cairo installation
++mpl.use('agg')
++import matplotlib.pyplot as plt
++import cv2
++
++from tvm.contrib.vai import extern_accel
++from tvm.contrib.vai.tvmruntime_util import TVMRuntimeUtil
++
++from tvm.contrib.download import download_testdata
++from tvm.relay.testing.darknet import __darknetffi__
++import tvm.relay.testing.yolo_detection
++import tvm.relay.testing.darknet
++
++FILE_DIR = os.path.dirname(os.path.abspath(__file__))
++REPO_URL='https://github.com/dmlc/web-data/blob/master/darknet/'
++
++def run(fdir, dpu_rundir, data_inputs, data_shapes, iterations):
++    assert len(data_inputs) == 1
++    assert len(data_shapes) == 1
++
++    
++    coco_name = 'coco.names'
++    coco_url = REPO_URL + 'data/' + coco_name + '?raw=true'
++    font_name = 'arial.ttf'
++    font_url = REPO_URL + 'data/' + font_name + '?raw=true'
++    coco_path = download_testdata(coco_url, coco_name, module='data')
++    font_path = download_testdata(font_url, font_name, module='data')
++
++
++    # Load a test image
++    test_image = 'dog.jpg'
++    print("Loading the test image...")
++    img_url = REPO_URL + 'data/' + test_image + '?raw=true'
++    img_path = download_testdata(img_url, test_image, "data")
++
++    [neth, netw] = 608, 608 
++    data = tvm.relay.testing.darknet.load_image(img_path, netw, neth)
++
++    #size = data_shapes[list(data_shapes.keys())[0]][2:]
++    #data = np.array([img]).astype(np.float32)
++    
++    inputs = {}
++    inputs[list(data_shapes.keys())[0]] = np.expand_dims(data, axis=0)
++
++    # VAI FLOW SETUP
++    extern_accel.setDpuRunDir(dpu_rundir)
++    tru = TVMRuntimeUtil(fdir)
++    
++    for i in range(iterations):
++        start = time.time()
++        res = tru.run(inputs)
++        stop = time.time()
++        
++        print("VAI iteration: {}/{}, run time: {}".format(i+1, iterations, stop - start))
++
++        
++        # detection
++        # thresholds
++        thresh = 0.5
++        nms_thresh = 0.45
++        classes = 80
++        
++        # PREDICTIONS #
++        out=[]
++        for i in range(3):
++            layer_out = {}
++            layer_out['type'] = 'Yolo'
++            # Get the yolo layer attributes (n, out_c, out_h, out_w, classes, total
++            layer_attr = res[i*4+3]
++            layer_out['biases'] = res[i*4+2]
++            layer_out['mask'] = res[i*4+1]
++            out_shape = (layer_attr[0], layer_attr[1]//layer_attr[0],
++                     layer_attr[2], layer_attr[3])
++            layer_out['output'] = res[i*4].reshape(out_shape)
++            layer_out['classes'] = layer_attr[4]
++            out.append(layer_out)
++
++        
++        # do the detection and bring up the bounding boxes
++        img = tvm.relay.testing.darknet.load_image_color(img_path)
++        _, im_h, im_w = img.shape
++        dets = tvm.relay.testing.yolo_detection.fill_network_boxes((netw, neth), (im_w, im_h), thresh, 1, out)
++        tvm.relay.testing.yolo_detection.do_nms_sort(dets, classes, nms_thresh)
++
++        with open(coco_path) as f:
++            content = f.readlines()
++            
++        names = [x.strip() for x in content]
++        tvm.relay.testing.yolo_detection.draw_detections(font_path, img, dets, thresh, names, classes)
++        plt.imshow(img.transpose(1, 2, 0))
++        plt.savefig("output.png")
++        
++    del extern_accel.RUNNER_CACHE
++
++if __name__ == "__main__":
++    parser = argparse.ArgumentParser()
++    parser.add_argument("-f", help="Path to directory containing TVM compilation files", default=FILE_DIR)
++    parser.add_argument("-d", help="Path to directory containing DPU model lib and meta.json", required=True)
++    parser.add_argument("--iterations", help="The number of iterations to run.", default=1, type=int)
++    args = parser.parse_args()
++
++    fdir = args.f if os.path.isabs(args.f) else os.path.join(os.getcwd(), args.f)
++    dpu_rundir = args.d if  os.path.isabs(args.d) else os.path.join(os.getcwd(), args.d)
++    iterations = args.iterations
++
++
++    input_shapes = {'data': [1, 3, 608, 608]}
++    input_names  = list(input_shapes.keys())
++    
++    
++    run(fdir, dpu_rundir, input_names,  input_shapes, iterations)
+diff --git tutorials/accelerators/device/run_resnet_18.py tutorials/accelerators/device/run_resnet_18.py
+new file mode 100644
+index 0000000..db53db5
+--- /dev/null
++++ tutorials/accelerators/device/run_resnet_18.py
+@@ -0,0 +1,111 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++
++"""
++Run TVM model for Xilinx Vitis-AI acceleration
++==================================================
++
++This example shows how to run MxNet Resent_18 model
++ built with TVM for Vitis-AI acceleration
++
++"""
++
++import os
++import argparse
++import numpy as np
++import time
++
++
++from PIL import Image
++from tvm.contrib.download import download_testdata
++from tvm.contrib.vai import extern_accel
++from tvm.contrib.vai.tvmruntime_util import TVMRuntimeUtil
++
++FILE_DIR = os.path.dirname(os.path.abspath(__file__))
++
++img_url = 'https://github.com/dmlc/mxnet.js/blob/master/data/cat.png?raw=true'
++img_name = 'cat.png'
++synset_url = ''.join(['https://gist.githubusercontent.com/zhreshold/',
++                      '4d0b62f3d01426887599d4f7ede23ee5/raw/',
++                      '596b27d23537e5a1b5751d2b0481ef172f58b539/',
++                      'imagenet1000_clsid_to_human.txt'])
++synset_name = 'imagenet1000_clsid_to_human.txt'
++img_path = download_testdata(img_url, 'cat.png', module='data')
++synset_path = download_testdata(synset_url, synset_name, module='data')
++with open(synset_path) as f:
++    synset = eval(f.read())
++
++def transform_image(image):
++    image = np.array(image) - np.array([123., 117., 104.])
++    image /= np.array([58.395, 57.12, 57.375])
++    image = image.transpose((2, 0, 1))
++    image = image[np.newaxis, :]
++    return image
++
++
++
++def run(fdir, dpu_rundir,shape_dict, iterations):
++
++    # SETUP
++    extern_accel.setDpuRunDir(dpu_rundir)
++
++    
++    # DOWNLOAD IMAGE FOR TEST
++    img_shape=img_shape[list(shape_dict.keys())[0]][2:]
++    image = Image.open(img_path).resize(img_shape)
++    
++    # IMAGE PRE-PROCESSING
++    image = transform_image(image)
++    
++    # RUN #
++    inputs = {}
++    inputs[list(shape_dict.keys())[0]] = image
++
++    
++    # VAI FLOW
++    tru = TVMRuntimeUtil(fdir)
++    for i in range(iterations):
++        start = time.time()
++        res = tru.run(inputs)
++        stop = time.time()
++        
++        print("VAI iteration: {}/{}, run time: {}".format(i+1, iterations, stop - start))
++        
++        # PREDICTIONS #
++        for idx, prediction in enumerate(res[0]):
++            print('-----------------------')
++            top_k = prediction.argsort()[-1:-(5+1):-1]
++            print('TVM-VAI prediction top-5:')
++            for pred in top_k:
++                print (pred,synset[pred])
++        
++    del extern_accel.RUNNER_CACHE
++
++    
++if __name__ == "__main__":
++    parser = argparse.ArgumentParser()
++    parser.add_argument("-f", help="Path to directory containing TVM compilation files", default=FILE_DIR)
++    parser.add_argument("-d", help="Path to directory containing DPU model lib and meta.json", required=True)
++    parser.add_argument("--iterations", help="The number of iterations to run.", default=1, type=int)
++    args = parser.parse_args()
++    fdir = args.f if os.path.isabs(args.f) else os.path.join(os.getcwd(), args.f)
++    dpu_rundir = args.d if  os.path.isabs(args.d) else os.path.join(os.getcwd(), args.d)
++    iterations = args.iterations
++    shape_dict = {'data': [1, 3, 224, 224]}
++
++    
++    run(fdir, dpu_rundir, shape_dict, iterations)
+diff --git tutorials/accelerators/device/run_xilinx_vai.py tutorials/accelerators/device/run_xilinx_vai.py
+new file mode 100644
+index 0000000..2b298d9
+--- /dev/null
++++ tutorials/accelerators/device/run_xilinx_vai.py
+@@ -0,0 +1,142 @@
++
++import os
++import sys
++import argparse
++import numpy as np
++import signal
++import shutil
++import sys
++import time
++import matplotlib as mpl
++# TODO broken cairo installation
++mpl.use('agg')
++import matplotlib.pyplot as plt
++
++
++
++from runtime.lib.cvx.cvx.img_loader import ImgLoader
++from runtime.lib.cvx.cvx.img_processor import ImgProcessor
++from runtime.lib.tools import model_tools
++from runtime.lib.tools import darknet
++from runtime.lib.tools import classification
++from runtime.lib.tools import face_detection, segmentation
++
++FILE_DIR = os.path.dirname(os.path.abspath(__file__))
++
++#from tvm.contrib import vai
++from tvm.contrib.vai import extern_accel
++from tvm.contrib.vai.tvmruntime_util import TVMRuntimeUtil
++#from tvm.contrib.vai 
++#from tvm.contrib.vai import extern_accel
++#from tvm.contrib.vai.tvmruntime_util import TVMRuntimeUtil
++
++
++def softmax(x):
++    x_exp = np.exp(x - np.max(x))
++    return x_exp / x_exp.sum()
++
++
++def run(fdir, dpu_rundir, input_path, data_inputs, input_layouts, data_shapes, preprocessing, postprocessing, iterations):
++    assert len(data_inputs) == 1
++    assert len(input_layouts) == 1
++    assert len(data_shapes) == 1
++    assert len(preprocessing) == 1
++    assert os.path.exists(input_path)
++
++    # SETUP
++    extern_accel.setDpuRunDir(dpu_rundir)
++    
++    proc_key = preprocessing[data_inputs[0]]
++
++    img_paths = [input_path]
++
++    if proc_key == "darknet_yolo":
++        data = darknet.yolo_preprocessing(img_paths)
++    else:
++        # # LOADING & PREPROCESSING #
++        img_loader = ImgLoader(
++            layout = 'NHWC',
++            color_format = 'RGB'
++        )
++        data_preprocessor = ImgProcessor(
++            proc_key = preprocessing[data_inputs[0]]
++        )
++        
++        data = img_loader.load(img_paths)
++        data = data_preprocessor.execute(data)
++   
++    #print(data)
++    # RUN #
++    
++    inputs = {}
++    inputs[list(data_shapes.keys())[0]] = data
++
++    # DLR flow
++    tru = TVMRuntimeUtil(fdir)
++    for i in range(iterations):
++        start = time.time()
++        res = tru.run(inputs)
++        stop = time.time()
++        
++        print("DLR iteration: {}/{}, run time: {}".format(i+1, iterations, stop - start))
++        
++        # PREDICTIONS #
++    
++        for p in postprocessing:
++                
++            # if p == 'Softmax':
++            #     res = [softmax(e) for e in res]
++
++            if p == 'darknet_yolov3':
++                # Save for testing
++                np.savez('yolov3.npz', *res)
++                coco_path = os.path.join(FILE_DIR, "runtime/models/data/coco_objects/coco.names")
++                font_path = os.path.join(FILE_DIR, "runtime/models/data/coco_objects/arial.ttf")
++                img = darknet.yolov3_postprocessing(res, img_paths, coco_path, font_path)
++                plt.imshow(img)
++                plt.savefig("output.png")
++            
++            if p == 'Classification':
++                synset_words = os.path.join(FILE_DIR, 'runtime/models/data/imagenet/synset_words.txt')
++                classification.get_predictions(res[0], synset_words, 5)
++            
++            if p == 'FaceDetection':
++    
++                if input_layouts[0] == 'NCHW':
++                    # NCHW --> NHWC
++                    res = tuple([np.transpose(res[0] (0,2,3,1)), np.transpose(res[1] (0,2,3,1))])
++                    
++                # NOTE: reversed
++                face_detection.face_detection(reversed(res), image_list=img_paths, idx=0, write=True)
++
++            if p == 'XlnxFpnCityScapes':
++                segmentation.fpn_cityscapes_postp(res, image_list=img_paths, idx=0)
++
++    del extern_accel.RUNNER_CACHE
++
++if __name__ == "__main__":
++    parser = argparse.ArgumentParser()
++    parser.add_argument("-f", help="Path to directory containing TVM compilation files", default=FILE_DIR)
++    parser.add_argument("-d", help="Path to directory containing DPU model lib and meta.json", required=True)
++    parser.add_argument("-n", help="Model name", required=True)
++    parser.add_argument("-i", help="Input file path", required=True)
++    parser.add_argument("--iterations", help="The number of iterations to run.", default=1, type=int)
++    args = parser.parse_args()
++
++    model_name = args.n
++    input_path = args.i if os.path.isabs(args.i) else os.path.join(os.getcwd(), args.i)
++    fdir = args.f if os.path.isabs(args.f) else os.path.join(os.getcwd(), args.f)
++    dpu_rundir = args.d if  os.path.isabs(args.d) else os.path.join(os.getcwd(), args.d)
++    iterations = args.iterations
++    
++    #model = model_tools.get_models_dict(os.path.join(FILE_DIR, "../../../models"))[model_name]
++    model = model_tools.get_models_dict()[model_name]
++    data_inputs = model['inputs']
++    input_layouts = model['input_layouts']
++    data_shapes = {in_name: in_shape for in_name, in_shape in \
++        zip(model['inputs'], model['input_shapes'])}
++    preprocessing = {in_name: prep_key for in_name, prep_key in \
++        zip(model['inputs'], model['preprocessing']) }
++    postprocessing = model['postprocessing']
++
++    run(fdir, dpu_rundir, input_path, data_inputs, input_layouts, data_shapes, preprocessing, postprocessing, iterations)
+diff --git tutorials/accelerators/device/runtime/lib/cvx tutorials/accelerators/device/runtime/lib/cvx
+new file mode 160000
+index 0000000..4aff9d1
+--- /dev/null
++++ tutorials/accelerators/device/runtime/lib/cvx
+@@ -0,0 +1 @@
++Subproject commit 4aff9d1b2e116a71a1b15ba059a2e11b74528833
+diff --git tutorials/accelerators/device/runtime/lib/tools/classification.py tutorials/accelerators/device/runtime/lib/tools/classification.py
+new file mode 100644
+index 0000000..8a6c4ea
+--- /dev/null
++++ tutorials/accelerators/device/runtime/lib/tools/classification.py
+@@ -0,0 +1,71 @@
++#!/usr/bin/env python
++#
++# // SPDX-License-Identifier: BSD-3-CLAUSE
++#
++# (C) Copyright 2019, Xilinx, Inc.
++#
++
++"""
++Module for classification functions
++
++Authors: Jorn Tuyls (jornt@xilinx.com)
++"""
++
++import numpy as np
++
++def get_predictions(raw_predictions, synset, k, label_lst=None):
++    # type: (numpy.ndarray, str, str, int) -> List[dict]
++    """
++    Retrieve the predicted and correct labels for the given network 
++    raw_predictions probabilities array
++    """
++    labels = np.loadtxt(synset, str, delimiter='\n')
++    
++    if not len(labels) == raw_predictions.shape[1]:
++        raise ValueError("Incompatible labels and predictions shape."\
++            " The network makes predictions for {} categories but there are"\
++            " {} categories in the labels list".format(raw_predictions.shape[1],
++            len(labels)))
++    if label_lst is not None:
++        assert(len(label_lst) == raw_predictions.shape[0])
++    
++    predictions = []
++    for idx, prediction in enumerate(raw_predictions):
++        print("-----------------")
++
++        preds = {
++            'predictions': [],
++            'correct': None
++        }
++        top_k = prediction.argsort()[-1:-(k+1):-1]
++        for l, p, label_idx in zip(labels[top_k],prediction[top_k], top_k):
++            print (l," : ",p)
++            preds['predictions'].append((label_idx, l, p))
++            
++        if label_lst:
++            correct_label_idx = int(label_lst[idx])
++            correct_label = labels[correct_label_idx]
++            preds['correct'] = (correct_label_idx, correct_label)
++            print("Correct label: {}".format(correct_label))
++
++        predictions.append(preds)
++
++    return predictions
++
++def get_top_k_accuracy(raw_predictions, synset, k, label_lst):
++    # type: (numpy.ndarray, str, str, int) -> float
++    """
++    Return the top_k accuracy for the given raw_predictions with correct labels
++    in label_lst
++    """
++
++    predictions = get_predictions(raw_predictions, synset, k, label_lst)
++
++    top_k = 0
++    for example in predictions:
++        for pred_idx, _, _ in example['predictions']:
++            if pred_idx == example['correct'][0]:
++                top_k += 1
++
++    return float(top_k) / len(label_lst)
++
+diff --git tutorials/accelerators/device/runtime/lib/tools/darknet.py tutorials/accelerators/device/runtime/lib/tools/darknet.py
+new file mode 100644
+index 0000000..600c48e
+--- /dev/null
++++ tutorials/accelerators/device/runtime/lib/tools/darknet.py
+@@ -0,0 +1,145 @@
++# FROM tvm.relay.testing
++
++from __future__ import division
++import math
++import numpy as np
++import cv2
++import matplotlib.pyplot as plt
++
++from collections import namedtuple
++from functools import cmp_to_key
++
++from . import yolo_detection
++
++def _resize_image(img, w_in, h_in):
++    """Resize the image to the given height and width."""
++    imc, imh, imw = img.shape
++    h_in = int(h_in)
++    w_in = int(w_in)
++    part = np.zeros((imc, imh, w_in))
++    resized = np.zeros((imc, h_in, w_in))
++    w_scale = (imw - 1) / (w_in - 1)
++    h_scale = (imh - 1) / (h_in - 1)
++    for k in range(imc):
++        for j in range(imh):
++            for c in range(w_in):
++                if c == w_in - 1 or imw == 1:
++                    part[k][j][c] = img[k][j][imw - 1]
++                else:
++                    fdx, idx = math.modf(c * w_scale)
++                    part[k][j][c] = (1 - fdx) * img[k][j][int(idx)] + \
++                                            fdx * img[k][j][int(idx) + 1]
++    for k in range(imc):
++        for j in range(h_in):
++            fdy, idy = math.modf(j * h_scale)
++            for c in range(w_in):
++                resized[k][j][c] = (1 - fdy)*part[k][int(idy)][c]
++            if (j == h_in - 1) or (imh == 1):
++                continue
++            for c in range(w_in):
++                resized[k][j][c] += fdy * part[k][int(idy) + 1][c]
++    return resized
++
++def load_image_color(test_image):
++    """To load the image using opencv api and do preprocessing."""
++    imagex = cv2.imread(test_image)
++    imagex = np.array(imagex)
++    imagex = imagex.transpose((2, 0, 1))
++    imagex = np.divide(imagex, 255.0)
++    imagex = np.flip(imagex, 0)
++    return imagex
++
++def _letterbox_image(img, w_in, h_in):
++    """To get the image in boxed format."""
++    imc, imh, imw = img.shape
++    if (w_in / imw) < (h_in / imh):
++        new_w = w_in
++        new_h = imh * w_in // imw
++    else:
++        new_h = h_in
++        new_w = imw * h_in // imh
++    resized = _resize_image(img, new_w, new_h)
++    boxed = np.full((imc, h_in, w_in), 0.5, dtype=float)
++    _, resizedh, resizedw = resized.shape
++    boxed[:, int((h_in - new_h) / 2)
++          :int((h_in - new_h) / 2) + resizedh, int((w_in - new_w) / 2)
++          :int((w_in - new_w) / 2) + resizedw] = resized
++    return boxed
++
++def load_image(image, resize_width, resize_height):
++    """Load the image and convert to the darknet model format.
++    The image processing of darknet is different from normal.
++    Parameters
++    ----------
++    image : string
++        The image file name with path
++
++    resize_width : integer
++        The width to which the image needs to be resized
++
++    resize_height : integer
++        The height to which the image needs to be resized
++
++    Returns
++    -------
++    img : Float array
++        Array of processed image
++    """
++
++    img = load_image_color(image)
++    return _letterbox_image(img, resize_width, resize_height)
++
++
++def yolo_preprocessing(img_files):
++    data = []
++    for img_path in img_files:
++        data.append(load_image(img_path, 608, 608))
++
++    return np.array(data)
++
++def yolov3_postprocessing(res, img_files, coco_path, font_path):
++
++    netw, neth = 608, 608
++    thresh = 0.5
++    nms_thresh = 0.45
++    num_classes = 80
++    assert len(img_files) == 1
++
++    img_path = img_files[0]
++
++    res_i = res
++    print(type(res_i), len(res_i), type(res_i[0]))
++    print(res_i)
++
++    tvm_out = []
++    for i in range(3):
++        layer_out = {}
++        layer_out['type'] = 'Yolo'
++        # Get the yolo layer attributes (n, out_c, out_h, out_w, classes, total)
++        layer_attr = res_i[i*4+3]
++        print(layer_attr)
++        layer_out['biases'] = res_i[i*4+2]
++        layer_out['mask'] = res_i[i*4+1].astype(np.int32)
++        out_shape = (int(layer_attr[0]), int(layer_attr[1]//layer_attr[0]),
++                     int(layer_attr[2]), int(layer_attr[3]))
++        layer_out['output'] = res_i[i*4].reshape(out_shape)
++        layer_out['classes'] = int(layer_attr[4])
++        tvm_out.append(layer_out)
++            
++    # do the detection and bring up the bounding boxes
++    img = load_image_color(img_path)
++    _, im_h, im_w = img.shape
++    dets = yolo_detection.fill_network_boxes((netw, neth), (im_w, im_h), thresh,
++                                                 1, tvm_out)
++        
++    yolo_detection.do_nms_sort(dets, num_classes, nms_thresh)
++        
++    with open(coco_path) as f:
++        content = f.readlines()
++        
++    names = [x.strip() for x in content]
++        
++    yolo_detection.draw_detections(font_path, img, dets, thresh, names, num_classes)
++       
++    plt.imshow(img.transpose(1,2,0))
++    plt.savefig("output.png")
+diff --git tutorials/accelerators/device/runtime/lib/tools/face_detection.py tutorials/accelerators/device/runtime/lib/tools/face_detection.py
+new file mode 100644
+index 0000000..e711bc6
+--- /dev/null
++++ tutorials/accelerators/device/runtime/lib/tools/face_detection.py
+@@ -0,0 +1,121 @@
++"""
++Face detection postprocessing functions
++"""
++
++import os
++import cv2
++import numpy as np
++
++# FACE DETECTION
++
++def softmax_cpu(x, dim=-1):
++    x = np.exp(x)
++    s = np.expand_dims(np.sum(x, axis=dim), dim)
++    return x/s
++
++def gstiling(data, stride, reverse = True):
++    n, h, w, c = data.shape
++    ss = stride * stride
++    assert c % ss == 0
++    assert reverse # Only support reverse=True for densebox
++
++    out_c = c // ss
++    out_h = h * stride
++    out_w = w * stride
++    output = data.reshape((n, h, w, stride, stride, out_c))\
++        .transpose([0,1,3,2,4,5])\
++        .reshape((n,out_h,out_w,out_c))
++    return output
++
++def nms(dets, thresh):
++    """Pure Python NMS baseline."""
++    x1 = dets[:, 0]
++    y1 = dets[:, 1]
++    x2 = dets[:, 2]
++    y2 = dets[:, 3]
++    scores = dets[:, 4]
++
++    areas = (x2 - x1 + 1) * (y2 - y1 + 1)
++    order = scores.argsort()[::-1]
++
++    keep = []
++    while order.size > 0:
++        i = order[0]
++        keep.append(i)
++        xx1 = np.maximum(x1[i], x1[order[1:]])
++        yy1 = np.maximum(y1[i], y1[order[1:]])
++        xx2 = np.minimum(x2[i], x2[order[1:]])
++        yy2 = np.minimum(y2[i], y2[order[1:]])
++
++        w = np.maximum(0.0, xx2 - xx1 + 1)
++        h = np.maximum(0.0, yy2 - yy1 + 1)
++        inter = w * h
++        ovr = inter / (areas[i] + areas[order[1:]] - inter)
++
++        inds = np.where(ovr <= thresh)[0]
++        order = order[inds + 1]
++
++    return keep
++
++def face_detection(predictions, **kwargs):
++    expand_scale_=0.0
++    res_stride_=4
++    det_threshold_=0.7
++    nms_threshold_=0.3
++    input_channels_=3
++
++    ################
++    pixel_output, bb_output = predictions
++    assert pixel_output.shape[0] == 1 #Only support batch 1
++
++    prob = softmax_cpu(gstiling(pixel_output, 8))
++    bb = gstiling(bb_output, 8)
++
++    sz = prob.shape[2]*res_stride_, prob.shape[1]*res_stride_ # w, h
++    
++    if 'image_list' in kwargs:
++        image_path = kwargs['image_list'][kwargs['idx']]
++        image = cv2.imread(image_path)
++    elif 'image' in kwargs:
++        image = kwargs['image']
++    
++    image_resize = cv2.resize(image, sz)
++    gy = np.arange(0, sz[0], res_stride_)
++    gx = np.arange(0, sz[1], res_stride_)
++    gy = gy[0 : bb.shape[1]]
++    gx = gx[0 : bb.shape[2]]
++    [x, y] = np.meshgrid(gx, gy)
++
++    bb[:, :, :, 0] += x
++    bb[:, :, :, 2] += x
++    bb[:, :, :, 1] += y
++    bb[:, :, :, 3] += y
++    bb = np.reshape(bb, (-1, 4))
++    prob = np.reshape(prob[:,:,:,1], (-1, 1))
++    bb = bb[prob.ravel() > det_threshold_, :]
++    prob = prob[prob.ravel() > det_threshold_, :]
++    rects = np.hstack((bb, prob))
++    keep = nms(rects, nms_threshold_)
++    rects = rects[keep, :]
++    rects_expand=[]
++    for rect in rects:
++        rect_expand=[]
++        rect_w=rect[2]-rect[0]
++        rect_h=rect[3]-rect[1]
++        rect_expand.append(int(max(0,rect[0]-rect_w*expand_scale_)))
++        rect_expand.append(int(max(0,rect[1]-rect_h*expand_scale_)))
++        rect_expand.append(int(min(sz[1],rect[2]+rect_w*expand_scale_)))
++        rect_expand.append(int(min(sz[0],rect[3]+rect_h*expand_scale_)))
++        rects_expand.append(rect_expand)
++    for face_rect in rects_expand:
++        cv2.rectangle(image_resize,(face_rect[0],face_rect[1]),(face_rect[2],face_rect[3]),(0,255,0),2)
++    
++    if not 'write' in kwargs or kwargs['write'] is True:
++        if not os.path.exists('result_img'):
++            os.makedirs('result_img')
++        if 'frame_idx' in kwargs:
++            cv2.imwrite('result_img/result_{}'.format(str(kwargs['frame_idx']) + '.jpg'), image_resize)
++        elif 'image_list' in kwargs:
++            cv2.imwrite('result_img/result_{}'.format(os.path.basename(image_path)), image_resize)
++        
++    return rects_expand
+diff --git tutorials/accelerators/device/runtime/lib/tools/model_tools.py tutorials/accelerators/device/runtime/lib/tools/model_tools.py
+new file mode 100644
+index 0000000..ba25935
+--- /dev/null
++++ tutorials/accelerators/device/runtime/lib/tools/model_tools.py
+@@ -0,0 +1,26 @@
++#!/usr/bin/env python
++#
++# // SPDX-License-Identifier: BSD-3-CLAUSE
++#
++# (C) Copyright 2019, Xilinx, Inc.
++#
++
++"""
++Module for loading model paths from different frameworks and returning them 
++as a dictionary
++
++Authors: Jorn Tuyls (jornt@xilinx.com)
++"""
++
++import os
++import json
++
++def get_models_dict():
++    # (None) -> dict
++
++    file_dir = os.path.dirname(os.path.abspath(__file__))
++    with open(os.path.join(file_dir, '../../models/models.json')) as f:
++        models = json.load(f)
++
++    return models
++
+diff --git tutorials/accelerators/device/runtime/lib/tools/segmentation.py tutorials/accelerators/device/runtime/lib/tools/segmentation.py
+new file mode 100644
+index 0000000..d9eecc2
+--- /dev/null
++++ tutorials/accelerators/device/runtime/lib/tools/segmentation.py
+@@ -0,0 +1,49 @@
++#!/usr/bin/env python
++#
++# // SPDX-License-Identifier: BSD-3-CLAUSE
++#
++# (C) Copyright 2019, Xilinx, Inc.
++#
++
++"""
++Module for segmentation utility functions
++"""
++
++import os
++import cv2
++import numpy as np
++
++def fpn_cityscapes_postp(predictions, **kwargs):
++    label_to_color = np.array([
++        [128, 64,128],
++        [244, 35,232],
++        [ 70, 70, 70],
++        [102,102,156],
++        [190,153,153],
++        [153,153,153],
++        [250,170, 30],
++        [220,220,  0],
++        [107,142, 35],
++        [152,251,152],
++        [ 70,130,180],
++        [220, 20, 60],
++        [255,  0,  0],
++        [  0,  0,142],
++        [  0,  0, 70],
++        [  0, 60,100],
++        [  0, 80,100],
++        [  0,  0,230],
++        [119, 11, 32],
++        ])
++    image_path = kwargs['image_list'][kwargs['idx']]
++    image = cv2.imread(image_path)
++    height, width, _ = image.shape
++    pred = predictions[0]
++    pred = pred.argmax(axis=-1)[0]
++    gray = cv2.resize(pred, dsize=(width,height), interpolation=cv2.INTER_NEAREST)
++    #pred_color = label_img_to_color(pred)
++    pred_color = label_to_color[gray].astype('uint8')
++    if not os.path.exists('result_img'):
++        os.makedirs('result_img')
++    cv2.imwrite('result_img/result_{}'.format(os.path.basename(image_path)), pred_color)
++    return ''
+diff --git tutorials/accelerators/device/runtime/lib/tools/yolo_detection.py tutorials/accelerators/device/runtime/lib/tools/yolo_detection.py
+new file mode 100644
+index 0000000..fb7ca91
+--- /dev/null
++++ tutorials/accelerators/device/runtime/lib/tools/yolo_detection.py
+@@ -0,0 +1,291 @@
++# FROM tvm.relay.testing.yolo_detection
++
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++# pylint: disable=invalid-name, unused-variable, unused-argument, no-init
++"""
++Yolo detection boxes helper functions
++====================
++DarkNet helper functions for yolo and image loading.
++This functions will not be loaded by default.
++These are utility functions used for testing and tutorial file.
++"""
++from __future__ import division
++import math
++from collections import namedtuple
++from functools import cmp_to_key
++import numpy as np
++
++Box = namedtuple('Box', ['x', 'y', 'w', 'h'])
++
++def nms_comparator(a, b):
++    if 'sort_class' in b and b['sort_class'] >= 0:
++        diff = a['prob'][b['sort_class']] - b['prob'][b['sort_class']]
++    else:
++        diff = a['objectness'] - b['objectness']
++    return diff
++
++def _correct_boxes(dets, w, h, netw, neth, relative):
++    new_w, new_h = (netw, (h*netw)//w) if (netw/w < neth/h) else ((w*neth//h), neth)
++    for det in dets:
++        b = det['bbox']
++        b = b._replace(x=(b.x - (netw - new_w)/2/netw) / (new_w/netw))
++        b = b._replace(y=(b.y - (neth - new_h)/2/neth) / (new_h/neth))
++        b = b._replace(w=b.w * netw/new_w)
++        b = b._replace(h=b.h * neth/new_h)
++        if not relative:
++            b = b._replace(x=b.x * w)
++            b = b._replace(w=b.w * w)
++            b = b._replace(y=b.y * h)
++            b = b._replace(h=b.h * h)
++        det['bbox'] = b
++    return dets
++
++def _overlap(x1, w1, x2, w2):
++    l1 = x1 - w1/2
++    l2 = x2 - w2/2
++    left = l1 if l1 > l2 else l2
++    r1 = x1 + w1/2
++    r2 = x2 + w2/2
++    right = r1 if r1 < r2 else r2
++    return right - left
++
++def _box_intersection(a, b):
++    w = _overlap(a.x, a.w, b.x, b.w)
++    h = _overlap(a.y, a.h, b.y, b.h)
++    if w < 0 or h < 0:
++        return 0
++    return w*h
++
++def _box_union(a, b):
++    i = _box_intersection(a, b)
++    u = a.w*a.h + b.w*b.h - i
++    return u
++
++def _box_iou(a, b):
++    return _box_intersection(a, b)/_box_union(a, b)
++
++def _get_box(data, biases, n, location, lw, lh, w, h):
++    bx = (location[2] + data[location[0]][0][location[1]][location[2]]) / lw
++    by = (location[1] + data[location[0]][1][location[1]][location[2]]) / lh
++    bw = np.exp(data[location[0]][2][location[1]][location[2]]) * biases[2*n] / w
++    bh = np.exp(data[location[0]][3][location[1]][location[2]]) * biases[2*n+1] / h
++    return Box(bx, by, bw, bh)
++
++def _get_yolo_detections(l, im_shape, net_shape, thresh, relative, dets):
++    data = l['output']
++    active_data_loc = np.asarray(np.where(data[:, 4, :, :] > thresh))
++    before_correct_dets = []
++    for i in range(active_data_loc.shape[1]):
++        location = [active_data_loc[0][i], active_data_loc[1][i], active_data_loc[2][i]]
++        box_b = _get_box(data, l['biases'], np.asarray(l['mask'])[location[0]], location,
++                         data.shape[2], data.shape[3], net_shape[0], net_shape[1])
++        objectness = data[location[0]][4][location[1]][location[2]]
++        classes = l['classes']
++        prob = objectness*data[location[0], 5:5 + 1 + classes, location[1], location[2]]
++        prob[prob < thresh] = 0
++        detection = {}
++        detection['bbox'] = box_b
++        detection['classes'] = classes
++        detection['prob'] = prob
++        detection['objectness'] = objectness
++        before_correct_dets.append(detection)
++    dets.extend(_correct_boxes(before_correct_dets, im_shape[0], im_shape[1],
++                               net_shape[0], net_shape[1], relative))
++
++def _get_region_detections(l, im_shape, net_shape, thresh, relative, dets):
++    data = l['output']
++    before_correct_dets = []
++    for row in range(data.shape[2]):
++        for col in range(data.shape[3]):
++            for n in range(data.shape[0]):
++                prob = [0]*l['classes']
++                scale = data[n, l['coords'], row, col] if not l['background'] else 1
++                location = [n, row, col]
++                box_b = _get_box(data, l['biases'], n, location,
++                                 data.shape[2], data.shape[3], data.shape[2], data.shape[3])
++                objectness = scale if scale > thresh else 0
++                if objectness:
++                    prob = scale * data[n, l['coords']+1: l['coords']+1+l['classes'],
++                                        row, col]
++                    prob[prob < thresh] = 0
++                detection = {}
++                detection['bbox'] = box_b
++                detection['prob'] = prob
++                detection['objectness'] = objectness
++                before_correct_dets.append(detection)
++    _correct_boxes(before_correct_dets, im_shape[0], im_shape[1],
++                   net_shape[0], net_shape[1], relative)
++    dets.extend(before_correct_dets)
++
++def fill_network_boxes(net_shape, im_shape,
++                       thresh, relative, tvm_out):
++    dets = []
++    for layer in tvm_out:
++        if layer['type'] == 'Yolo':
++            _get_yolo_detections(layer, im_shape, net_shape, thresh, relative, dets)
++        elif layer['type'] == 'Region':
++            _get_region_detections(layer, im_shape, net_shape, thresh, relative, dets)
++    return dets
++
++def do_nms_sort(dets, classes, thresh):
++    "Does the sorting based on the threshold values"
++    k = len(dets)-1
++    cnt = 0
++    while cnt < k:
++        if dets[cnt]['objectness'] == 0:
++            dets[k], dets[cnt] = dets[cnt], dets[k]
++            k = k - 1
++        else:
++            cnt = cnt + 1
++    total = k+1
++    for k in range(classes):
++        for i in range(total):
++            dets[i]['sort_class'] = k
++        dets[0:total] = sorted(dets[0:total],
++                               key=cmp_to_key(nms_comparator), reverse=True)
++        for i in range(total):
++            if dets[i]['prob'][k] == 0:
++                continue
++            a = dets[i]['bbox']
++            for j in range(i+1, total):
++                b = dets[j]['bbox']
++                if _box_iou(a, b) > thresh:
++                    dets[j]['prob'][k] = 0
++
++def draw_detections(font_path, im, dets, thresh, names, classes):
++    "Draw the markings around the detected region"
++    for det in dets:
++        labelstr = []
++        category = -1
++        for j in range(classes):
++            if det['prob'][j] > thresh:
++                if category == -1:
++                    category = j
++                labelstr.append(names[j] + " " + str(round(det['prob'][j], 4)))
++        if category > -1:
++            imc, imh, imw = im.shape
++            width = int(imh * 0.006)
++            offset = category*123457 % classes
++            red = _get_color(2, offset, classes)
++            green = _get_color(1, offset, classes)
++            blue = _get_color(0, offset, classes)
++            rgb = [red, green, blue]
++            b = det['bbox']
++            left = int((b.x-b.w/2.)*imw)
++            right = int((b.x+b.w/2.)*imw)
++            top = int((b.y-b.h/2.)*imh)
++            bot = int((b.y+b.h/2.)*imh)
++
++            if left < 0:
++                left = 0
++            if right > imw-1:
++                right = imw-1
++            if top < 0:
++                top = 0
++            if bot > imh-1:
++                bot = imh-1
++            _draw_box_width(im, left, top, right, bot, width, red, green, blue)
++            label = _get_label(font_path, ''.join(labelstr), rgb)
++            _draw_label(im, top + width, left, label, rgb)
++
++def _get_pixel(im, x, y, c):
++    return im[c][y][x]
++
++def _set_pixel(im, x, y, c, val):
++    if x < 0 or y < 0 or c < 0 or x >= im.shape[2] or y >= im.shape[1] or c >= im.shape[0]:
++        return
++    im[c][y][x] = val
++
++def _draw_label(im, r, c, label, rgb):
++    w = label.shape[2]
++    h = label.shape[1]
++    if (r - h) >= 0:
++        r = r - h
++
++    for j in range(h):
++        if j < h and (j + r) < im.shape[1]:
++            for i in range(w):
++                if i < w and (i + c) < im.shape[2]:
++                    for k in range(label.shape[0]):
++                        val = _get_pixel(label, i, j, k)
++                        _set_pixel(im, i+c, j+r, k, val)#rgb[k] * val)
++
++def _get_label(font_path, labelstr, rgb):
++    from PIL import Image
++    from PIL import ImageDraw
++    from PIL import ImageFont
++
++    text = labelstr
++    colorText = "black"
++    testDraw = ImageDraw.Draw(Image.new('RGB', (1, 1)))
++    font = ImageFont.truetype(font_path, 25)
++    width, height = testDraw.textsize(labelstr, font=font)
++    img = Image.new('RGB', (width, height), color=(int(rgb[0]*255), int(rgb[1]*255),
++                                                   int(rgb[2]*255)))
++    d = ImageDraw.Draw(img)
++    d.text((0, 0), text, fill=colorText, font=font)
++    opencvImage = np.divide(np.asarray(img), 255)
++    return opencvImage.transpose(2, 0, 1)
++
++def _get_color(c, x, max_value):
++    c = int(c)
++    colors = [[1, 0, 1], [0, 0, 1], [0, 1, 1], [0, 1, 0], [1, 1, 0], [1, 0, 0]]
++    ratio = (float(x)/float(max_value)) * 5
++    i = int(math.floor(ratio))
++    j = int(math.ceil(ratio))
++    ratio -= i
++    r = (1-ratio) * colors[i][c] + ratio*colors[j][c]
++    return r
++
++def _draw_box(im, x1, y1, x2, y2, r, g, b):
++    y1 = int(y1)
++    y2 = int(y2)
++    x1 = int(x1)
++    x2 = int(x2)
++    ac, ah, aw = im.shape
++    if x1 < 0:
++        x1 = 0
++    if x1 >= aw:
++        y1 = 0
++    if y1 >= ah:
++        y1 = ah - 1
++    if y2 < 0:
++        y2 = 0
++    if y2 >= ah:
++        y2 = ah - 1
++
++    for i in range(x1, x2):
++        im[0][y1][i] = r
++        im[0][y2][i] = r
++        im[1][y1][i] = g
++        im[1][y2][i] = g
++        im[2][y1][i] = b
++        im[2][y2][i] = b
++
++    for i in range(y1, y2):
++        im[0][i][x1] = r
++        im[0][i][x2] = r
++        im[1][i][x1] = g
++        im[1][i][x2] = g
++        im[2][i][x1] = b
++        im[2][i][x2] = b
++
++def _draw_box_width(im, x1, y1, x2, y2, w, r, g, b):
++    for i in range(int(w)):
++        _draw_box(im, x1+i, y1+i, x2-i, y2-i, r, g, b)
++
+diff --git tutorials/accelerators/device/runtime/models tutorials/accelerators/device/runtime/models
+new file mode 160000
+index 0000000..1bd45cf
+--- /dev/null
++++ tutorials/accelerators/device/runtime/models
+@@ -0,0 +1 @@
++Subproject commit 1bd45cf1fa9a7bcca533a611342f7cc1af205c60
+diff --git tutorials/accelerators/device/runtime/setup.sh tutorials/accelerators/device/runtime/setup.sh
+new file mode 100644
+index 0000000..3c9ed82
+--- /dev/null
++++ tutorials/accelerators/device/runtime/setup.sh
+@@ -0,0 +1,3 @@
++export LD_LIBRARY_PATH=/home/xilinx/tvm/build:$LD_LIBRARY_PATH
++export PYTHONPATH=/home/xilinx/tvm/python:$PYTHONPATH
++
+diff --git tutorials/accelerators/host/mxnet_resnet_18.py tutorials/accelerators/host/mxnet_resnet_18.py
+new file mode 100644
+index 0000000..50200d5
+--- /dev/null
++++ tutorials/accelerators/host/mxnet_resnet_18.py
+@@ -0,0 +1,221 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++"""
++Compile TVM model for Xilinx Vitis-AI acceleration
++==================================================
++
++This example shows how to build a TVM convolutional neural network 
++model with Relay for Vitis-AI acceleration
++
++Setup: 
++    - Add imagenet validation subset for calibration in imagenet/val-small
++
++"""
++
++import os
++import numpy as np
++
++import logging
++logging.basicConfig()
++logger = logging.getLogger('pyxir')
++logger.setLevel(logging.INFO)
++
++import pyxir
++
++import tvm
++from tvm import contrib
++import tvm.relay as relay
++from tvm.contrib.vai import base
++from tvm.contrib.vai.relay_transform import PartitioningPass
++from tvm.contrib.vai import extern_accel
++from tvm.contrib.vai.tvmruntime_util import TVMRuntimeUtil
++
++import time
++import cv2
++
++FILE_DIR   = os.path.dirname(os.path.abspath(__file__))
++DPU_RUNDIR ='/tmp/vai/'
++HOME_DIR = os.getenv('HOME')
++######################################################################
++# Download Resnet18 model from Gluon Model Zoo
++# ---------------------------------------------
++# In this section, we download a pretrained imagenet model and classify an image.
++###############################################################################
++from tvm.contrib.download import download_testdata
++from mxnet.gluon.model_zoo.vision import get_model
++from PIL import Image
++#from matplotlib import pyplot as plt
++block = get_model('resnet18_v1', pretrained=True)
++img_url = 'https://github.com/dmlc/mxnet.js/blob/master/data/cat.png?raw=true'
++img_name = 'cat.png'
++synset_url = ''.join(['https://gist.githubusercontent.com/zhreshold/',
++                      '4d0b62f3d01426887599d4f7ede23ee5/raw/',
++                      '596b27d23537e5a1b5751d2b0481ef172f58b539/',
++                      'imagenet1000_clsid_to_human.txt'])
++synset_name = 'imagenet1000_clsid_to_human.txt'
++img_path = download_testdata(img_url, 'cat.png', module='data')
++synset_path = download_testdata(synset_url, synset_name, module='data')
++with open(synset_path) as f:
++    synset = eval(f.read())
++
++def transform_image(image):
++    image = np.array(image) - np.array([123., 117., 104.])
++    image /= np.array([58.395, 57.12, 57.375])
++    image = image.transpose((2, 0, 1))
++    image = image[np.newaxis, :]
++    return image
++
++# DOWNLOAD IMAGE FOR TEST
++image = Image.open(img_path).resize((224, 224))
++image = transform_image(image)
++
++###############################################################################
++# MODEL SETTINGS
++#
++# Parameter settings for compiling a model using tvm-vai flow
++# quant_dir      : path to images for quantization
++# shape_dict     : dictionary of input names as keys and input shapes as values
++#                  dict{input_name:input_shape}
++# postprocessing : 'Softmax' if necessary
++# target         : hardware accelerator to run the compiled model
++#                      options: 'dpuv1', 'dpuv2-zcu104', 'dpuv2-zcu102'
++
++###############################################################################
++
++quant_dir      = os.path.join(HOME_DIR,'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min')
++shape_dict     = {'data': image.shape}
++postprocessing = ['Softmax']
++target         = 'dpuv1'
++
++###############################################################################
++# INPUTS FUNC
++#
++# Define and inputs function which takes in an iterator value and returns a
++# dictionary mapping from input name to array containing dataset inputs. Note 
++# that the input function should always return image data in NCHW layout as 
++# all models are converted to NCHW layout internally for Vitis-AI compilation.
++# 
++# This is necessary for quantizating the model for acceleration using Vitis-AI.
++###############################################################################
++
++def inputs_func(iter):
++    import os
++
++    img_files = [os.path.join(quant_dir, f) for f in os.listdir(quant_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:4]
++    size=shape_dict[list(shape_dict.keys())[0]][2:]
++
++    imgs = []
++    for path in img_files:
++        img = cv2.imread(path)
++        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
++        imgs.append(img.astype(np.float32))
++        
++    out = []
++    for img in imgs:
++
++        img = cv2.resize(img, tuple(size), interpolation=1)
++        img = transform_image(img)
++        img = img.reshape(img.shape[1:])
++        out.append(img)
++
++        
++    res = np.array(out).astype(np.float32)
++    print (res.shape)
++    input_name = list(shape_dict.keys())[0]
++    return {input_name: res}
++
++
++###############################################################################
++# PARTITION & BUILD
++# 
++# Module pass to partition Relay for Vitis-AI acceleration. Targets can be 
++# dpuv1, dpuv2-zcu104 and dpuv2-zcu102
++# Afterwards build graph, lib and params using standard TVM flow.
++##############################################################################
++
++if target.startswith('dpuv2'):
++    tvm_target = tvm.target.arm_cpu('ultra96')
++    lib_kwargs = {
++        'fcompile': contrib.cc.create_shared,
++        'cc': "/usr/aarch64-linux-gnu/bin/ld"
++    }
++else:
++    tvm_target = 'llvm'
++    lib_kwargs = {}
++
++mod, params = relay.frontend.from_mxnet(block, shape_dict)
++
++# CUSTOM VAI MODULE PASS
++
++mod = PartitioningPass(target=target, params=params,
++                       inputs_func=inputs_func, postprocessing= postprocessing)(mod)
++
++print("Mod", mod)
++graph, lib, params = relay.build(
++    mod, tvm_target, params=params)
++
++###############################################################################
++# SAVE OUTPUT
++# 
++# Save the output files for running on the board
++##############################################################################
++
++lib.export_library("tvm_dpu_cpu.so", **lib_kwargs)
++
++with open("tvm_dpu_cpu.json","w") as f:
++    f.write(graph)
++    
++with open("tvm_dpu_cpu.params", "wb") as f:
++    f.write(relay.save_param_dict(params))
++
++###############################################################################
++# MOVE FILES TO BOARD
++# 
++# Run on the board using TVM-VAI flow
++##############################################################################
++
++def vai_run(fdir, dpu_rundir, shape_dict, iterations):
++    assert len(shape_dict) == 1
++
++    # path
++    extern_accel.setDpuRunDir(dpu_rundir)
++       
++    # RUN #
++    inputs = {}
++    inputs[list(shape_dict.keys())[0]] = image
++    
++    # VAI FLOW
++    tru = TVMRuntimeUtil(fdir)
++    for i in range(iterations):
++        start = time.time()
++        res = tru.run(inputs)
++        stop = time.time()
++        
++        print("VAI iteration: {}/{}, run time: {}".format(i+1, iterations, stop - start))
++        
++        # PREDICTIONS #
++        for idx, prediction in enumerate(res[0]):
++            print('-----------------------')
++            top_k = prediction.argsort()[-1:-(5+1):-1]
++            print('TVM-VAI prediction top-5:')
++            for pred in top_k:
++                print (pred,synset[pred])
++                
++    del extern_accel.RUNNER_CACHE
++
++# RUN
++vai_run(FILE_DIR, DPU_RUNDIR, shape_dict, 2)
+diff --git tutorials/accelerators/host/relay_darknet_yolov2_dpuv1.py tutorials/accelerators/host/relay_darknet_yolov2_dpuv1.py
+new file mode 100755
+index 0000000..40958e6
+--- /dev/null
++++ tutorials/accelerators/host/relay_darknet_yolov2_dpuv1.py
+@@ -0,0 +1,276 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++"""
++Compile TVM model for Xilinx Vitis-AI acceleration
++==================================================
++
++This example shows how to build a TVM convolutional neural network 
++model with Relay for Vitis-AI acceleration
++
++Setup: 
++    - Add imagenet validation subset for calibration in imagenet/val-small
++
++"""
++
++import os
++import numpy as np
++import sys
++
++import logging
++logging.basicConfig()
++logger = logging.getLogger('pyxir')
++logger.setLevel(logging.INFO)
++#logger.setLevel(logging.DEBUG)
++import matplotlib as mpl
++
++# TODO broken cairo installation
++mpl.use('agg')
++
++import matplotlib.pyplot as plt
++#import pyxir
++
++import tvm
++from tvm import contrib
++import tvm.relay as relay
++from tvm.contrib.vai import base
++from tvm.contrib.vai.relay_transform import PartitioningPass
++from tvm.contrib.vai import extern_accel
++from tvm.contrib.vai.tvmruntime_util import TVMRuntimeUtil
++from tvm.contrib.download import download_testdata
++from tvm.relay.testing.darknet import __darknetffi__
++import tvm.relay.testing.yolo_detection
++import tvm.relay.testing.darknet
++
++import time
++import cv2
++
++FILE_DIR   = os.path.dirname(os.path.abspath(__file__))
++DPU_RUNDIR ='/tmp/vai/'
++HOME_DIR   = os.getenv('HOME')
++######################################################################
++# Choose the model
++# -----------------------
++# Models are: 'yolov2', 'yolov3' or 'yolov3-tiny'
++######################################################################
++
++# Model name
++MODEL_NAME = 'yolov2'
++
++######################################################################
++# Download required files
++# -----------------------
++# Download cfg and weights file if first time.
++######################################################################
++
++CFG_NAME = MODEL_NAME + '.cfg'
++WEIGHTS_NAME = MODEL_NAME + '.weights'
++REPO_URL = 'https://github.com/dmlc/web-data/blob/master/darknet/'
++CFG_URL = 'https://raw.githubusercontent.com/pjreddie/darknet/master/' + 'cfg/' + CFG_NAME + '?raw=true'
++WEIGHTS_URL = 'https://pjreddie.com/media/files/' + WEIGHTS_NAME
++
++cfg_path = download_testdata(CFG_URL, CFG_NAME, module="darknet")
++weights_path = download_testdata(WEIGHTS_URL, WEIGHTS_NAME, module="darknet")
++
++
++# Download and Load darknet library
++if sys.platform in ['linux', 'linux2']:
++    DARKNET_LIB = 'libdarknet2.0.so'
++    DARKNET_URL = REPO_URL + 'lib/' + DARKNET_LIB + '?raw=true'
++elif sys.platform == 'darwin':
++    DARKNET_LIB = 'libdarknet_mac2.0.so'
++    DARKNET_URL = REPO_URL + 'lib_osx/' + DARKNET_LIB + '?raw=true'
++else:
++    err = "Darknet lib is not supported on {} platform".format(sys.platform)
++    raise NotImplementedError(err)
++
++lib_path = download_testdata(DARKNET_URL, DARKNET_LIB, module="darknet")
++
++DARKNET_LIB = __darknetffi__.dlopen(lib_path)
++net = DARKNET_LIB.load_network(cfg_path.encode('utf-8'), weights_path.encode('utf-8'), 0)
++dtype = 'float32'
++batch_size = 1
++
++data = np.empty([batch_size, net.c, net.h, net.w], dtype)
++print("Converting darknet to relay functions...")
++
++###############################################################################
++# MODEL SETTINGS
++#
++# Parameter settings for compiling a model using tvm-vai flow
++# quant_dir      : path to images for quantization
++# shape_dict     : dictionary of input names as keys and input shapes as values
++#                  dict{input_name:input_shape}
++# postprocessing : 
++# target         : hardware accelerator to run the compiled model
++#                      options: 'dpuv1', 'dpuv2-zcu104', 'dpuv2-zcu102'
++
++###############################################################################
++
++quant_dir      = os.path.join(HOME_DIR,'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min')
++shape_dict     = {'data': data.shape}
++postprocessing = 'Softmax'
++target         = 'dpuv1'
++#target         = 'dpuv2-zcu104'
++
++
++###############################################################################
++# INPUTS FUNC
++#
++# Define and inputs function which takes in an iterator value and returns a
++# dictionary mapping from input name to array containing dataset inputs. Note 
++# that the input function should always return image data in NCHW layout as 
++# all models are converted to NCHW layout internally for Vitis-AI compilation.
++# 
++# This is necessary for quantizating the model for acceleration using Vitis-AI.
++###############################################################################
++
++def inputs_func(iter):
++    import os
++
++    img_files = [os.path.join(quant_dir, f) for f in os.listdir(quant_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:4]
++       
++    [neth, netw] = shape_dict['data'][2:]
++    out = []
++    for img_path in img_files:
++            out.append(tvm.relay.testing.darknet.load_image(img_path, netw, neth))
++
++    res = np.array(out)
++    print (res.shape)
++    input_name = list(shape_dict.keys())[0]
++    return {input_name: res}
++
++
++###############################################################################
++# PARTITION & BUILD
++# 
++# Module pass to partition Relay for Vitis-AI acceleration. Targets can be 
++# dpuv1, dpuv2-zcu104 and dpuv2-zcu102
++# Afterwards build graph, lib and params using standard TVM flow.
++##############################################################################
++
++from pyxir.frontend.tvm import load_model_from_file
++
++
++if target.startswith('dpuv2'):
++    tvm_target = tvm.target.arm_cpu('ultra96')
++    lib_kwargs = {
++        'fcompile': contrib.cc.create_shared,
++        'cc': "/usr/aarch64-linux-gnu/bin/ld"
++    }
++else:
++    tvm_target = 'llvm'
++    lib_kwargs = {}
++    
++
++mod, params = relay.frontend.from_darknet(net, dtype=dtype, shape=data.shape)
++
++# CUSTOM VAI MODULE PASS
++mod = PartitioningPass(target=target, params=params,
++                       inputs_func=inputs_func, postprocessing= postprocessing)(mod)
++
++print("Mod", mod)
++graph, lib, params = relay.build(
++    mod, tvm_target, params=params)
++
++###############################################################################
++# SAVE OUTPUT
++# 
++# Save the output files for running on the board
++##############################################################################
++
++lib.export_library("tvm_dpu_cpu.so", **lib_kwargs)
++
++with open("tvm_dpu_cpu.json","w") as f:
++    f.write(graph)
++    
++with open("tvm_dpu_cpu.params", "wb") as f:
++    f.write(relay.save_param_dict(params))
++
++def vai_run(fdir, dpu_rundir, shape_dict, iterations):
++    assert len(shape_dict) == 1
++
++    coco_name = 'coco.names'
++    coco_url = REPO_URL + 'data/' + coco_name + '?raw=true'
++    font_name = 'arial.ttf'
++    font_url = REPO_URL + 'data/' + font_name + '?raw=true'
++    coco_path = download_testdata(coco_url, coco_name, module='data')
++    font_path = download_testdata(font_url, font_name, module='data')
++    
++    extern_accel.setDpuRunDir(dpu_rundir)
++       
++    netw, neth = 608, 608
++    thresh = 0.5
++    nms_thresh = 0.45
++    num_classes = 80
++
++    # Load a test image
++    test_image = 'dog.jpg'
++    print("Loading the test image...")
++    img_url = REPO_URL + 'data/' + test_image + '?raw=true'
++    img_path = download_testdata(img_url, test_image, "data")
++
++    # RUN #
++    inputs = {}
++    image = tvm.relay.testing.darknet.load_image(img_path, 608, 608)
++    inputs[list(shape_dict.keys())[0]] = np.expand_dims(image,axis=0)
++    
++    # VAI FLOW
++    tru = TVMRuntimeUtil(fdir)
++    for i in range(iterations):
++        start = time.time()
++        res = tru.run(inputs)
++        stop = time.time()
++        
++        print("VAI iteration: {}/{}, run time: {}".format(i+1, iterations, stop - start))
++        
++        tvm_out = []                
++        layer_out = {}
++        layer_out['type'] = 'Region'
++        # Get the region layer attributes (n, out_c, out_h, out_w, classes, coords, background)
++        layer_attr = res[2]
++        layer_out['biases'] = res[1]
++        out_shape = (layer_attr[0], layer_attr[1]//layer_attr[0],
++                 layer_attr[2], layer_attr[3])
++        layer_out['output'] = res[0].reshape(out_shape)
++        layer_out['classes'] = layer_attr[4]
++        layer_out['coords'] = layer_attr[5]
++        layer_out['background'] = layer_attr[6]
++        tvm_out.append(layer_out)
++        # do the detection and bring up the bounding boxes
++        img = tvm.relay.testing.darknet.load_image_color(img_path)
++        _, im_h, im_w = img.shape
++        dets = tvm.relay.testing.yolo_detection.fill_network_boxes((netw, neth), (im_w, im_h), thresh,
++                                                     1, tvm_out)
++            
++        tvm.relay.testing.yolo_detection.do_nms_sort(dets, num_classes, nms_thresh)
++            
++        with open(coco_path) as f:
++            content = f.readlines()
++            
++        names = [x.strip() for x in content]
++            
++        tvm.relay.testing.yolo_detection.draw_detections(font_path, img, dets, thresh, names, num_classes)
++           
++        plt.imshow(img.transpose(1,2,0))
++        plt.savefig("output.png")
++    del extern_accel.RUNNER_CACHE
++
++# RUN
++vai_run(FILE_DIR, DPU_RUNDIR, shape_dict, 2)
++   
++   
++
+diff --git tutorials/accelerators/host/relay_darknet_yolov3.py tutorials/accelerators/host/relay_darknet_yolov3.py
+new file mode 100644
+index 0000000..103c16a
+--- /dev/null
++++ tutorials/accelerators/host/relay_darknet_yolov3.py
+@@ -0,0 +1,203 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++"""
++Compile TVM model for Xilinx Vitis-AI acceleration
++==================================================
++
++This example shows how to build a TVM convolutional neural network 
++model with Relay for Vitis-AI acceleration
++
++Setup: 
++    - Add imagenet validation subset for calibration in imagenet/val-small
++
++"""
++
++import os
++import numpy as np
++import sys
++
++import logging
++logging.basicConfig()
++logger = logging.getLogger('pyxir')
++logger.setLevel(logging.INFO)
++
++#import pyxir
++
++import tvm
++from tvm import contrib
++import tvm.relay as relay
++from tvm.contrib.vai import base
++from tvm.contrib.vai.relay_transform import PartitioningPass
++from tvm.contrib.download import download_testdata
++from tvm.relay.testing.darknet import __darknetffi__
++import tvm.relay.testing.yolo_detection
++import tvm.relay.testing.darknet
++
++import cv2
++
++HOME_DIR = os.getenv('HOME')
++######################################################################
++# Choose the model
++# -----------------------
++# Models are: 'yolov2', 'yolov3' or 'yolov3-tiny'
++######################################################################
++
++# Model name
++MODEL_NAME = 'yolov3'
++
++######################################################################
++# Download required files
++# -----------------------
++# Download cfg and weights file if first time.
++######################################################################
++
++CFG_NAME = MODEL_NAME + '.cfg'
++WEIGHTS_NAME = MODEL_NAME + '.weights'
++REPO_URL = 'https://github.com/dmlc/web-data/blob/master/darknet/'
++CFG_URL = REPO_URL + 'cfg/' + CFG_NAME + '?raw=true'
++WEIGHTS_URL = 'https://pjreddie.com/media/files/' + WEIGHTS_NAME
++
++cfg_path = download_testdata(CFG_URL, CFG_NAME, module="darknet")
++weights_path = download_testdata(WEIGHTS_URL, WEIGHTS_NAME, module="darknet")
++
++# Download and Load darknet library
++if sys.platform in ['linux', 'linux2']:
++    DARKNET_LIB = 'libdarknet2.0.so'
++    DARKNET_URL = REPO_URL + 'lib/' + DARKNET_LIB + '?raw=true'
++elif sys.platform == 'darwin':
++    DARKNET_LIB = 'libdarknet_mac2.0.so'
++    DARKNET_URL = REPO_URL + 'lib_osx/' + DARKNET_LIB + '?raw=true'
++else:
++    err = "Darknet lib is not supported on {} platform".format(sys.platform)
++    raise NotImplementedError(err)
++
++lib_path = download_testdata(DARKNET_URL, DARKNET_LIB, module="darknet")
++
++DARKNET_LIB = __darknetffi__.dlopen(lib_path)
++net = DARKNET_LIB.load_network(cfg_path.encode('utf-8'), weights_path.encode('utf-8'), 0)
++dtype = 'float32'
++batch_size = 1
++
++data = np.empty([batch_size, net.c, net.h, net.w], dtype)
++print("Converting darknet to relay functions...")
++
++
++###############################################################################
++# MODEL SETTINGS
++#
++# Parameter settings for compiling a model using tvm-vai flow
++# quant_dir      : path to images for quantization
++# shape_dict     : dictionary of input names as keys and input shapes as values
++#                  dict{input_name:input_shape}
++# postprocessing : 
++# target         : hardware accelerator to run the compiled model
++#                      options: 'dpuv1', 'dpuv2-zcu104', 'dpuv2-zcu102'
++
++###############################################################################
++
++quant_dir      = os.path.join(HOME_DIR,'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min')
++shape_dict     = {'data': data.shape}
++postprocessing = 'Softmax'
++target         = 'dpuv2-zcu104'
++
++
++###############################################################################
++# INPUTS FUNC
++#
++# Define and inputs function which takes in an iterator value and returns a
++# dictionary mapping from input name to array containing dataset inputs. Note 
++# that the input function should always return image data in NCHW layout as 
++# all models are converted to NCHW layout internally for Vitis-AI compilation.
++# 
++# This is necessary for quantizating the model for acceleration using Vitis-AI.
++###############################################################################
++
++def inputs_func(iter):
++    import os
++
++    img_files = [os.path.join(quant_dir, f) for f in os.listdir(quant_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:4]
++       
++    [neth, netw] = shape_dict['data'][2:]
++    out = []
++    for img_path in img_files:
++            out.append(tvm.relay.testing.darknet.load_image(img_path, netw, neth))
++
++    res = np.array(out)
++    print (res.shape)
++    input_name = list(shape_dict.keys())[0]
++    return {input_name: res}
++
++
++###############################################################################
++# PARTITION & BUILD
++# 
++# Module pass to partition Relay for Vitis-AI acceleration. Targets can be 
++# dpuv1, dpuv2-zcu104 and dpuv2-zcu102
++# Afterwards build graph, lib and params using standard TVM flow.
++##############################################################################
++
++from pyxir.frontend.tvm import load_model_from_file
++
++
++if target.startswith('dpuv2'):
++    tvm_target = tvm.target.arm_cpu('ultra96')
++    lib_kwargs = {
++        'fcompile': contrib.cc.create_shared,
++        'cc': "/usr/aarch64-linux-gnu/bin/ld"
++    }
++else:
++    tvm_target = 'llvm'
++    lib_kwargs = {}
++    
++
++mod, params = relay.frontend.from_darknet(net, dtype=dtype, shape=data.shape)
++
++# CUSTOM VAI MODULE PASS
++mod = PartitioningPass(target=target, params=params,
++                       inputs_func=inputs_func, postprocessing= postprocessing)(mod)
++
++print("Mod", mod)
++graph, lib, params = relay.build(
++    mod, tvm_target, params=params)
++
++###############################################################################
++# SAVE OUTPUT
++# 
++# Save the output files for running on the board
++##############################################################################
++
++lib.export_library("tvm_dpu_cpu.so", **lib_kwargs)
++
++with open("tvm_dpu_cpu.json","w") as f:
++    f.write(graph)
++    
++with open("tvm_dpu_cpu.params", "wb") as f:
++    f.write(relay.save_param_dict(params))
++
++###############################################################################
++# MOVE FILES TO BOARD
++# 
++# Move generated files to board:
++#   - tvm_dpu_cpu.json
++#   - tvm_dpu_cpu.params
++#   - tvm_dpu_cpu.so
++#   - libdpumodelxp0.so
++#   - meta.json
++##############################################################################
++
++   
++    
+diff --git tutorials/accelerators/host/relay_darknet_yolov3_dpuv1.py tutorials/accelerators/host/relay_darknet_yolov3_dpuv1.py
+new file mode 100644
+index 0000000..307608d
+--- /dev/null
++++ tutorials/accelerators/host/relay_darknet_yolov3_dpuv1.py
+@@ -0,0 +1,277 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++"""
++Compile TVM model for Xilinx Vitis-AI acceleration
++==================================================
++
++This example shows how to build a TVM convolutional neural network 
++model with Relay for Vitis-AI acceleration
++
++Setup: 
++    - Add imagenet validation subset for calibration in imagenet/val-small
++
++"""
++
++import os
++import numpy as np
++import sys
++
++import logging
++logging.basicConfig()
++logger = logging.getLogger('pyxir')
++logger.setLevel(logging.INFO)
++import matplotlib as mpl
++
++# TODO broken cairo installation
++mpl.use('agg')
++
++import matplotlib.pyplot as plt
++#import pyxir
++
++import tvm
++from tvm import contrib
++import tvm.relay as relay
++from tvm.contrib.vai import base
++from tvm.contrib.vai.relay_transform import PartitioningPass
++from tvm.contrib.vai import extern_accel
++from tvm.contrib.vai.tvmruntime_util import TVMRuntimeUtil
++from tvm.contrib.download import download_testdata
++from tvm.relay.testing.darknet import __darknetffi__
++import tvm.relay.testing.yolo_detection
++import tvm.relay.testing.darknet
++
++import time
++import cv2
++
++FILE_DIR   = os.path.dirname(os.path.abspath(__file__))
++DPU_RUNDIR ='/tmp/vai/'
++HOME_DIR   = os.getenv('HOME')
++######################################################################
++# Choose the model
++# -----------------------
++# Models are: 'yolov2', 'yolov3' or 'yolov3-tiny'
++######################################################################
++
++# Model name
++MODEL_NAME = 'yolov3'
++
++######################################################################
++# Download required files
++# -----------------------
++# Download cfg and weights file if first time.
++######################################################################
++
++CFG_NAME = MODEL_NAME + '.cfg'
++WEIGHTS_NAME = MODEL_NAME + '.weights'
++REPO_URL = 'https://github.com/dmlc/web-data/blob/master/darknet/'
++CFG_URL = 'https://raw.githubusercontent.com/pjreddie/darknet/master/' + 'cfg/' + CFG_NAME + '?raw=true'
++WEIGHTS_URL = 'https://pjreddie.com/media/files/' + WEIGHTS_NAME
++
++cfg_path = download_testdata(CFG_URL, CFG_NAME, module="darknet")
++weights_path = download_testdata(WEIGHTS_URL, WEIGHTS_NAME, module="darknet")
++
++# Download and Load darknet library
++if sys.platform in ['linux', 'linux2']:
++    DARKNET_LIB = 'libdarknet2.0.so'
++    DARKNET_URL = REPO_URL + 'lib/' + DARKNET_LIB + '?raw=true'
++elif sys.platform == 'darwin':
++    DARKNET_LIB = 'libdarknet_mac2.0.so'
++    DARKNET_URL = REPO_URL + 'lib_osx/' + DARKNET_LIB + '?raw=true'
++else:
++    err = "Darknet lib is not supported on {} platform".format(sys.platform)
++    raise NotImplementedError(err)
++
++lib_path = download_testdata(DARKNET_URL, DARKNET_LIB, module="darknet")
++
++DARKNET_LIB = __darknetffi__.dlopen(lib_path)
++net = DARKNET_LIB.load_network(cfg_path.encode('utf-8'), weights_path.encode('utf-8'), 0)
++dtype = 'float32'
++batch_size = 1
++
++data = np.empty([batch_size, net.c, net.h, net.w], dtype)
++print("Converting darknet to relay functions...")
++
++###############################################################################
++# MODEL SETTINGS
++#
++# Parameter settings for compiling a model using tvm-vai flow
++# quant_dir      : path to images for quantization
++# shape_dict     : dictionary of input names as keys and input shapes as values
++#                  dict{input_name:input_shape}
++# postprocessing : 
++# target         : hardware accelerator to run the compiled model
++#                      options: 'dpuv1', 'dpuv2-zcu104', 'dpuv2-zcu102'
++
++###############################################################################
++
++quant_dir      = os.path.join(HOME_DIR,'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min')
++shape_dict     = {'data': data.shape}
++postprocessing = 'Softmax'
++target         = 'dpuv1'
++#target         = 'dpuv2-zcu104'
++
++
++###############################################################################
++# INPUTS FUNC
++#
++# Define and inputs function which takes in an iterator value and returns a
++# dictionary mapping from input name to array containing dataset inputs. Note 
++# that the input function should always return image data in NCHW layout as 
++# all models are converted to NCHW layout internally for Vitis-AI compilation.
++# 
++# This is necessary for quantizating the model for acceleration using Vitis-AI.
++###############################################################################
++
++def inputs_func(iter):
++    import os
++
++    img_files = [os.path.join(quant_dir, f) for f in os.listdir(quant_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:4]
++       
++    [neth, netw] = shape_dict['data'][2:]
++    out = []
++    for img_path in img_files:
++            out.append(tvm.relay.testing.darknet.load_image(img_path, netw, neth))
++
++    res = np.array(out)
++    print (res.shape)
++    input_name = list(shape_dict.keys())[0]
++    return {input_name: res}
++
++
++###############################################################################
++# PARTITION & BUILD
++# 
++# Module pass to partition Relay for Vitis-AI acceleration. Targets can be 
++# dpuv1, dpuv2-zcu104 and dpuv2-zcu102
++# Afterwards build graph, lib and params using standard TVM flow.
++##############################################################################
++
++from pyxir.frontend.tvm import load_model_from_file
++
++
++if target.startswith('dpuv2'):
++    tvm_target = tvm.target.arm_cpu('ultra96')
++    lib_kwargs = {
++        'fcompile': contrib.cc.create_shared,
++        'cc': "/usr/aarch64-linux-gnu/bin/ld"
++    }
++else:
++    tvm_target = 'llvm'
++    lib_kwargs = {}
++    
++
++mod, params = relay.frontend.from_darknet(net, dtype=dtype, shape=data.shape)
++
++# CUSTOM VAI MODULE PASS
++mod = PartitioningPass(target=target, params=params,
++                       inputs_func=inputs_func, postprocessing= postprocessing)(mod)
++
++print("Mod", mod)
++graph, lib, params = relay.build(
++    mod, tvm_target, params=params)
++
++###############################################################################
++# SAVE OUTPUT
++# 
++# Save the output files for running on the board
++##############################################################################
++
++lib.export_library("tvm_dpu_cpu.so", **lib_kwargs)
++
++with open("tvm_dpu_cpu.json","w") as f:
++    f.write(graph)
++    
++with open("tvm_dpu_cpu.params", "wb") as f:
++    f.write(relay.save_param_dict(params))
++
++def vai_run(fdir, dpu_rundir, shape_dict, iterations):
++    assert len(shape_dict) == 1
++
++    coco_name = 'coco.names'
++    coco_url = REPO_URL + 'data/' + coco_name + '?raw=true'
++    font_name = 'arial.ttf'
++    font_url = REPO_URL + 'data/' + font_name + '?raw=true'
++    coco_path = download_testdata(coco_url, coco_name, module='data')
++    font_path = download_testdata(font_url, font_name, module='data')
++    
++    extern_accel.setDpuRunDir(dpu_rundir)
++       
++    netw, neth = 608, 608
++    thresh = 0.5
++    nms_thresh = 0.45
++    num_classes = 80
++
++    # Load a test image
++    test_image = 'dog.jpg'
++    print("Loading the test image...")
++    img_url = REPO_URL + 'data/' + test_image + '?raw=true'
++    img_path = download_testdata(img_url, test_image, "data")
++
++    # RUN #
++    inputs = {}
++    image = tvm.relay.testing.darknet.load_image(img_path, 608, 608)
++    inputs[list(shape_dict.keys())[0]] = np.expand_dims(image,axis=0)
++    
++    # VAI FLOW
++    tru = TVMRuntimeUtil(fdir)
++    for i in range(iterations):
++        start = time.time()
++        res = tru.run(inputs)
++        stop = time.time()
++        
++        print("VAI iteration: {}/{}, run time: {}".format(i+1, iterations, stop - start))
++        
++        # POST PROCESSING #
++        tvm_out = []
++        for i in range(3):
++            layer_out = {}
++            layer_out['type'] = 'Yolo'
++            # Get the yolo layer attributes (n, out_c, out_h, out_w, classes, total)
++            layer_attr = res[i*4+3]
++            #print(layer_attr)
++            layer_out['biases'] = res[i*4+2]
++            layer_out['mask'] = res[i*4+1].astype(np.int32)
++            out_shape = (int(layer_attr[0]), int(layer_attr[1]//layer_attr[0]),
++                         int(layer_attr[2]), int(layer_attr[3]))
++            layer_out['output'] = res[i*4].reshape(out_shape)
++            layer_out['classes'] = int(layer_attr[4])
++            tvm_out.append(layer_out)
++                
++        # do the detection and bring up the bounding boxes
++        img = tvm.relay.testing.darknet.load_image_color(img_path)
++        _, im_h, im_w = img.shape
++        dets = tvm.relay.testing.yolo_detection.fill_network_boxes((netw, neth), (im_w, im_h), thresh,
++                                                     1, tvm_out)
++            
++        tvm.relay.testing.yolo_detection.do_nms_sort(dets, num_classes, nms_thresh)
++            
++        with open(coco_path) as f:
++            content = f.readlines()
++            
++        names = [x.strip() for x in content]
++            
++        tvm.relay.testing.yolo_detection.draw_detections(font_path, img, dets, thresh, names, num_classes)
++           
++        plt.imshow(img.transpose(1,2,0))
++        plt.savefig("output.png")
++    del extern_accel.RUNNER_CACHE
++
++# RUN
++vai_run(FILE_DIR, DPU_RUNDIR, shape_dict, 2)
++   
++   
++
+diff --git tutorials/accelerators/xilinx_vai.py tutorials/accelerators/xilinx_vai.py
+new file mode 100644
+index 0000000..5d01613
+--- /dev/null
++++ tutorials/accelerators/xilinx_vai.py
+@@ -0,0 +1,192 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++"""
++Compile TVM model for Xilinx Vitis-AI acceleration
++==================================================
++
++This example shows how to build a TVM convolutional neural network 
++model with Relay for Vitis-AI acceleration
++
++Setup: 
++    - Add imagenet validation subset for calibration in imagenet/val-small
++
++"""
++
++import os
++import numpy as np
++
++import logging
++logging.basicConfig()
++logger = logging.getLogger('pyxir')
++logger.setLevel(logging.INFO)
++
++import pyxir
++
++import tvm
++from tvm import contrib
++import tvm.relay as relay
++from tvm.contrib.vai import base
++from tvm.contrib.vai.relay_transform import PartitioningPass
++
++###############################################################################
++# MODEL SETTINGS
++#
++# Utility models package should be added next to tvm package
++###############################################################################
++import pyxir.model_tools as model_tools
++models = model_tools.get_models_dict('../../../models')
++
++def select_model(MODEL):
++    global model, framework, model_path, opt_model_path, input_names, input_layouts, input_shapes, \
++        input_dir, preprocessing, outputs, postprocessing
++    model = MODEL
++    model_ctx = model_tools.get_model_context(models[MODEL])
++
++    framework = model_ctx.get_framework()
++    model_path = model_ctx.get_model_path()
++    opt_model_path = model_ctx.get_opt_model_path()
++    input_names = model_ctx.get_inputs()
++    input_layouts = model_ctx.get_input_layouts()
++    input_shapes = model_ctx.get_input_shapes()
++    input_dir = model_ctx.get_input_dir()
++    preprocessing = model_ctx.get_preprocessing()
++    postprocessing = model_ctx.get_postprocessing()
++    outputs = model_ctx.get_outputs()
++
++    
++    print("Framework: {}".format(framework))
++    print("Model path: {}".format(model_path))
++    print("Optional model path: {}".format(opt_model_path))
++    print("Data shapes: {}".format(input_shapes))
++    print("Preprocessing: {}".format(preprocessing))
++    print("Outputs: {}".format(outputs))
++    print("Postprocessing: {}".format(postprocessing))
++
++#select_model( "Tensorflow-SLIM-ResNet_V1_50")
++select_model( "MXNET-GLUON-ResNet_V1_18" )
++#select_model("MXNET-GLUON-MobileNet1_0")
++#select_model( "XLNX-ONNX-FaceDetection" )
++#select_model( "XLNX-TF-FaceDetection" )
++#select_model("Tensorflow-SLIM-MobileNet_V1_1.0_224")
++#select_model( "ONNX-PyTorch_ResNet18") 
++#select_model("PTH-PyTorch_ResNet18")
++#select_model("PTH-PyTorch_MobileNet_V2")
++#select_model("XLNX-TF-FPN_CityScapes")
++#select_model("Relay-DarkNet-YoloV3")
++#select_model("XLNX-TF-UNet_U373")
++#select_model("Relay-XLNX-FPN_CityScapes")
++
++###############################################################################
++# INPUTS FUNC
++#
++# Define and inputs function which takes in an iterator value and returns a
++# dictionary mapping from input name to array containing dataset inputs. Note 
++# that the input function should always return image data in NCHW layout as 
++# all models are converted to NCHW layout internally for Vitis-AI compilation.
++# 
++# This is necessary for quantizating the model for acceleration using Vitis-AI.
++###############################################################################
++
++def inputs_func(iter):
++    import os
++    from pyxir.io.cvx import ImgLoader, ImgProcessor
++
++    proc_key = preprocessing[input_names[0]]
++    file_dir = input_dir['validation']    
++   
++    img_files = [os.path.join(file_dir, f) for f in os.listdir(file_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:4]
++    
++    if proc_key == 'darknet_yolo': 
++        # YoloV3
++        from tvm.relay.testing.darknet import __darknetffi__
++
++        data = []
++        for img_path in img_files:
++            data.append(tvm.relay.testing.darknet.load_image(img_path, 608, 608))
++        data = np.array(data)
++    else:
++        img_loader = ImgLoader()
++        data_preprocessor = ImgProcessor(
++            proc_key = proc_key
++        )
++ 
++        # img loader and processor load in NHWC format
++        imgs = img_loader.load(img_files)
++        data = data_preprocessor.execute(imgs)
++    
++    print (data.shape)
++    return {input_names[0]: data}
++
++
++###############################################################################
++# PARTITION & BUILD
++# 
++# Partition Relay or NNVM graph for Vitis-AI acceleration. Targets can be 
++# dpuv1, dpuv2-zcu104 and dpuv2-zcu102
++# Afterwards build graph, lib and params using standard TVM flow.
++##############################################################################
++
++from pyxir.frontend.tvm import load_model_from_file
++
++#target = 'dpuv2-zcu104'
++target = 'dpuv1'
++
++if target.startswith('dpuv2'):
++    tvm_target = tvm.target.arm_cpu('ultra96')
++    lib_kwargs = {
++        'fcompile': contrib.cc.create_shared,
++        'cc': "/usr/aarch64-linux-gnu/bin/ld"
++    }
++else:
++    tvm_target = 'llvm'
++    lib_kwargs = {}
++    
++
++frontend = 'Relay'
++
++if frontend == 'Relay':
++    mod, params = \
++        load_model_from_file(frontend, framework)\
++            (model_path, input_shapes, outputs, opt_model_path)
++
++    mod = PartitioningPass(target=target, params=params,
++                               inputs_func=inputs_func, postprocessing= postprocessing)(mod)
++    
++    print("Mod", mod)
++    graph, lib, params = relay.build(
++        mod, tvm_target, params=params)
++
++    lib.export_library("tvm_dpu_cpu.so", **lib_kwargs)
++
++    with open("tvm_dpu_cpu.json","w") as f:
++        f.write(graph)
++
++    with open("tvm_dpu_cpu.params", "wb") as f:
++        f.write(relay.save_param_dict(params))
++
++###############################################################################
++# MOVE FILES TO BOARD
++# 
++# Move generated files to board:
++#   - tvm_dpu_cpu.json
++#   - tvm_dpu_cpu.params
++#   - tvm_dpu_cpu.so
++#   - libdpumodelxp0.so
++##############################################################################
++
++   
++    
