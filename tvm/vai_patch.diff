@@ -1763,12 +1763,12 @@ index 0000000..47d18c4
 +# Run the compiled model on the board using  /tvm/tutorials/accelerators/run/mxnet_resnet_18.py
 +##############################################################################
 + 
-diff --git tutorials/accelerators/compile/relay_darknet_yolov3.py tutorials/accelerators/compile/relay_darknet_yolov3.py
-new file mode 100644
-index 0000000..f63db8d
+diff --git tutorials/accelerators/compile/relay_darknet_yolov2.py tutorials/accelerators/compile/relay_darknet_yolov2.py
+new file mode 100755
+index 0000000..2e36fa1
 --- /dev/null
-+++ tutorials/accelerators/compile/relay_darknet_yolov3.py
-@@ -0,0 +1,223 @@
++++ tutorials/accelerators/compile/relay_darknet_yolov2.py
+@@ -0,0 +1,227 @@
 +# Licensed to the Apache Software Foundation (ASF) under one
 +# or more contributor license agreements.  See the NOTICE file
 +# distributed with this work for additional information
@@ -1805,6 +1805,7 @@ index 0000000..f63db8d
 +logging.basicConfig()
 +logger = logging.getLogger('pyxir')
 +logger.setLevel(logging.INFO)
++#logger.setLevel(logging.DEBUG)
 +
 +import pyxir
 +
@@ -1813,6 +1814,8 @@ index 0000000..f63db8d
 +import tvm.relay as relay
 +from tvm.contrib.vai import base
 +from tvm.contrib.vai.relay_transform import PartitioningPass
++from tvm.contrib.vai import extern_accel
++from tvm.contrib.vai.tvmruntime_util import TVMRuntimeUtil
 +from tvm.contrib.download import download_testdata
 +from tvm.relay.testing.darknet import __darknetffi__
 +import tvm.relay.testing.yolo_detection
@@ -1820,7 +1823,7 @@ index 0000000..f63db8d
 +
 +
 +FILE_DIR   = os.path.dirname(os.path.abspath(__file__))
-+HOME_DIR = os.getenv('HOME')
++HOME_DIR   = os.getenv('HOME')
 +######################################################################
 +# Choose the model
 +# -----------------------
@@ -1828,7 +1831,7 @@ index 0000000..f63db8d
 +######################################################################
 +
 +# Model name
-+MODEL_NAME = 'yolov3'
++MODEL_NAME = 'yolov2'
 +
 +######################################################################
 +# Download required files
@@ -1839,11 +1842,12 @@ index 0000000..f63db8d
 +CFG_NAME = MODEL_NAME + '.cfg'
 +WEIGHTS_NAME = MODEL_NAME + '.weights'
 +REPO_URL = 'https://github.com/dmlc/web-data/blob/master/darknet/'
-+CFG_URL = REPO_URL + 'cfg/' + CFG_NAME + '?raw=true'
++CFG_URL = 'https://raw.githubusercontent.com/pjreddie/darknet/master/' + 'cfg/' + CFG_NAME + '?raw=true'
 +WEIGHTS_URL = 'https://pjreddie.com/media/files/' + WEIGHTS_NAME
 +
 +cfg_path = download_testdata(CFG_URL, CFG_NAME, module="darknet")
 +weights_path = download_testdata(WEIGHTS_URL, WEIGHTS_NAME, module="darknet")
++
 +
 +# Download and Load darknet library
 +if sys.platform in ['linux', 'linux2']:
@@ -1865,7 +1869,6 @@ index 0000000..f63db8d
 +
 +data = np.empty([batch_size, net.c, net.h, net.w], dtype)
 +print("Converting darknet to relay functions...")
-+
 +
 +###############################################################################
 +# MODEL SETTINGS
@@ -1951,8 +1954,9 @@ index 0000000..f63db8d
 +# 
 +# Save the output files for running on the board
 +##############################################################################
-+TVM_OUTPUT_DIR = os.path.join(FILE_DIR, "relay_darknet_yolov3")
-+DPU_OUTPUT_DIR = os.path.join(FILE_DIR, "relay_darknet_yolov3/libdpu")
++
++TVM_OUTPUT_DIR = os.path.join(FILE_DIR, "relay_darknet_yolov2")
++DPU_OUTPUT_DIR = os.path.join(FILE_DIR, "relay_darknet_yolov2/libdpu")
 +os.makedirs(DPU_OUTPUT_DIR, exist_ok = True)
 +
 +lib.export_library(os.path.join(TVM_OUTPUT_DIR,"tvm_dpu_cpu.so"), **lib_kwargs)
@@ -1974,27 +1978,27 @@ index 0000000..f63db8d
 +        copy2(os.path.join(DPU_LIBDIR,"weights.h5"), DPU_OUTPUT_DIR)
 +        copy2(os.path.join(DPU_LIBDIR,"quantizer.json"), DPU_OUTPUT_DIR)
 +    except IOError as e:
-+        print("Compiled files were not found in directory: ", DPU_LIBDIR)
++        print("Compiled files were not found in {} directory".format(DPU_LIBDIR))
 +else:
 +    DPU_LIBDIR = FILE_DIR
 +    try:
 +        copy2(os.path.join(DPU_LIBDIR,"meta.json"), DPU_OUTPUT_DIR)
 +        copy2(os.path.join(DPU_LIBDIR,glob.glob("libdpu*.so")[0]), DPU_OUTPUT_DIR)
 +    except IOError as e:
-+        print("Compiled files were not found in directory: " , DPU_LIBDIR)
++        print("Compiled files were not found in {} directory".format(DPU_LIBDIR))    
 +
++
++        
 +###############################################################################
 +# MOVE FILES TO BOARD
 +# 
-+# Copy the relay_darknet_yolov3 output directory to the board
-+# Run the compiled model on the board using /tvm/tutorials/accelerators/run/relay_darknet_yolov3.py
++# Copy the relay_darknet_yolov2 output directory to the board
++# Run the compiled model on the board using  /tvm/tutorials/accelerators/run/relay_darknet_yolov2.py
 +##############################################################################
 + 
-+   
-+    
 diff --git tutorials/accelerators/run/mxnet_resnet_18.py tutorials/accelerators/run/mxnet_resnet_18.py
 new file mode 100644
-index 0000000..d092331
+index 0000000..cb29284
 --- /dev/null
 +++ tutorials/accelerators/run/mxnet_resnet_18.py
 @@ -0,0 +1,130 @@
@@ -2097,11 +2101,11 @@ index 0000000..d092331
 +    del extern_accel.RUNNER_CACHE
 +
 +###############################################################################
-+# RUN MXNET_RESENT_18
++# RUN MXNET_RESNET_18
 +# 
 +# Before running the mxnet_resnet_18 model, you have to compile the model
-+# using the script provided at /tvm/tutorials/accelerators/compile/mxnet_resent_18.py
-+# The compile script generates an output file name "mxnet_resent_18"
++# using the script provided at /tvm/tutorials/accelerators/compile/mxnet_resnet_18.py
++# The compile script generates an output file name "mxnet_resnet_18"
 +# Once you setup your device, you could run the model as follows:
 +#
 +# Parameter settings for the run script:
@@ -2110,7 +2114,7 @@ index 0000000..d092331
 +# --iterations : The number of iterations to run the model
 +#
 +# example:
-+# ./mxnet_resent_18.py -f /PATH_TO_DIR/mxnet_resent_18 -d /PATH_TO_DIR/mxnet_resent_18/libdpu --iterations 1
++# ./mxnet_resnet_18.py -f /PATH_TO_DIR/mxnet_resnet_18 -d /PATH_TO_DIR/mxnet_resnet_18/libdpu --iterations 1
 +
 +##############################################################################
 + 
@@ -2128,12 +2132,39 @@ index 0000000..d092331
 +
 +    
 +    run(fdir, dpu_rundir, shape_dict, iterations)
-diff --git tutorials/accelerators/run/relay_darknet_yolov3.py tutorials/accelerators/run/relay_darknet_yolov3.py
-new file mode 100644
-index 0000000..c619d23
+diff --git tutorials/accelerators/run/relay_darknet_yolov2.py tutorials/accelerators/run/relay_darknet_yolov2.py
+new file mode 100755
+index 0000000..07b108c
 --- /dev/null
-+++ tutorials/accelerators/run/relay_darknet_yolov3.py
-@@ -0,0 +1,131 @@
++++ tutorials/accelerators/run/relay_darknet_yolov2.py
+@@ -0,0 +1,164 @@
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#   http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++"""
++Compile TVM model for Xilinx Vitis-AI acceleration
++==================================================
++
++This example shows how to build a TVM convolutional neural network 
++model with Relay for Vitis-AI acceleration
++
++Setup: 
++    - Add imagenet validation subset for calibration in imagenet/val-small
++
++"""
 +import os
 +import sys
 +import argparse
@@ -2150,7 +2181,6 @@ index 0000000..c619d23
 +from tvm.contrib.download import download_testdata
 +import os, importlib, sys
 +import tvm
-+
 +# manually import yolo_detection and darkent to avoid libtvm.so dependency
 +tvm_dir = os.path.dirname(tvm.__file__)
 +detection_path= os.path.join(tvm_dir,"relay/testing/yolo_detection.py")
@@ -2165,21 +2195,24 @@ index 0000000..c619d23
 +darknet_spec.loader.exec_module(darknet)
 +
 +
-+FILE_DIR = os.path.dirname(os.path.abspath(__file__))
++FILE_DIR   = os.path.dirname(os.path.abspath(__file__))
 +REPO_URL='https://github.com/dmlc/web-data/blob/master/darknet/'
++def run(fdir, dpu_rundir, shape_dict, iterations):
++    assert len(shape_dict) == 1
 +
-+def run(fdir, dpu_rundir, data_inputs, data_shapes, iterations):
-+    assert len(data_inputs) == 1
-+    assert len(data_shapes) == 1
-+
-+    
 +    coco_name = 'coco.names'
 +    coco_url = REPO_URL + 'data/' + coco_name + '?raw=true'
 +    font_name = 'arial.ttf'
 +    font_url = REPO_URL + 'data/' + font_name + '?raw=true'
 +    coco_path = download_testdata(coco_url, coco_name, module='data')
 +    font_path = download_testdata(font_url, font_name, module='data')
-+
++    
++    extern_accel.setDpuRunDir(dpu_rundir)
++       
++    netw, neth = 608, 608
++    thresh = 0.5
++    nms_thresh = 0.45
++    num_classes = 80
 +
 +    # Load a test image
 +    test_image = 'dog.jpg'
@@ -2187,66 +2220,68 @@ index 0000000..c619d23
 +    img_url = REPO_URL + 'data/' + test_image + '?raw=true'
 +    img_path = download_testdata(img_url, test_image, "data")
 +
-+    [neth, netw] = 416, 416
-+    print(dir(darknet))
-+    print(dir(yolo_detection))
-+    data = darknet.load_image(img_path, netw, neth)
-+
-+    #size = data_shapes[list(data_shapes.keys())[0]][2:]
-+    #data = np.array([img]).astype(np.float32)
-+    
++    # RUN #
 +    inputs = {}
-+    inputs[list(data_shapes.keys())[0]] = np.expand_dims(data, axis=0)
-+
-+    # VAI FLOW SETUP
-+    extern_accel.setDpuRunDir(dpu_rundir)
++    image = darknet.load_image(img_path, 608, 608)
++    inputs[list(shape_dict.keys())[0]] = np.expand_dims(image,axis=0)
++    # VAI FLOW
 +    tru = TVMRuntimeUtil(fdir)
-+    
 +    for i in range(iterations):
 +        start = time.time()
 +        res = tru.run(inputs)
 +        stop = time.time()
 +        
 +        print("VAI iteration: {}/{}, run time: {}".format(i+1, iterations, stop - start))
-+
 +        
-+        # detection
-+        # thresholds
-+        thresh = 0.5
-+        nms_thresh = 0.45
-+        classes = 80
-+        
-+        # PREDICTIONS #
-+        out=[]
-+        for i in range(3):
-+            layer_out = {}
-+            layer_out['type'] = 'Yolo'
-+            # Get the yolo layer attributes (n, out_c, out_h, out_w, classes, total
-+            layer_attr = res[i*4+3]
-+            layer_out['biases'] = res[i*4+2]
-+            layer_out['mask'] = res[i*4+1]
-+            out_shape = (layer_attr[0], layer_attr[1]//layer_attr[0],
-+                     layer_attr[2], layer_attr[3])
-+            layer_out['output'] = res[i*4].reshape(out_shape)
-+            layer_out['classes'] = layer_attr[4]
-+            out.append(layer_out)
-+
-+        
++        tvm_out = []                
++        layer_out = {}
++        layer_out['type'] = 'Region'
++        # Get the region layer attributes (n, out_c, out_h, out_w, classes, coords, background)
++        layer_attr = res[2]
++        layer_out['biases'] = res[1]
++        out_shape = (layer_attr[0], layer_attr[1]//layer_attr[0],
++                 layer_attr[2], layer_attr[3])
++        layer_out['output'] = res[0].reshape(out_shape)
++        layer_out['classes'] = layer_attr[4]
++        layer_out['coords'] = layer_attr[5]
++        layer_out['background'] = layer_attr[6]
++        tvm_out.append(layer_out)
 +        # do the detection and bring up the bounding boxes
 +        img = darknet.load_image_color(img_path)
 +        _, im_h, im_w = img.shape
-+        dets = yolo_detection.fill_network_boxes((netw, neth), (im_w, im_h), thresh, 1, out)
-+        yolo_detection.do_nms_sort(dets, classes, nms_thresh)
-+
++        dets = yolo_detection.fill_network_boxes((netw, neth), (im_w, im_h), thresh,
++                                                     1, tvm_out)
++            
++        yolo_detection.do_nms_sort(dets, num_classes, nms_thresh)
++            
 +        with open(coco_path) as f:
 +            content = f.readlines()
 +            
 +        names = [x.strip() for x in content]
-+        yolo_detection.draw_detections(font_path, img, dets, thresh, names, classes)
-+
++            
++        yolo_detection.draw_detections(font_path, img, dets, thresh, names, num_classes)
++           
 +        cv2.imwrite("./output.png", (img.transpose(1, 2, 0)*256).astype(int))
-+        
 +    del extern_accel.RUNNER_CACHE
++
++# RUN
++###############################################################################
++# RUN RELAY_DARKNET_YOLOV2
++# 
++# Before running the relay_darknet_yolov2 model, you have to compile the model
++# using the script provided at /tvm/tutorials/accelerators/compile/mxnet_resent_18.py
++# The compile script generates an output file name "mxnet_resent_18"
++# Once you setup your device, you could run the model as follows:
++#
++# Parameter settings for the run script:
++# -f           : Path to directory containing TVM compilation files
++# -d           : Path to directory containing DPU model lib 
++# --iterations : The number of iterations to run the model
++#
++# example:
++# ./relay_darknet_yolov2.py -f /PATH_TO_DIR/relay_darknet_yolov2 -d /PATH_TO_DIR/relay_darknet_yolov2/libdpu --iterations 1
++
++##############################################################################
 +
 +if __name__ == "__main__":
 +    parser = argparse.ArgumentParser()
@@ -2260,8 +2295,10 @@ index 0000000..c619d23
 +    iterations = args.iterations
 +
 +
-+    input_shapes = {'data': [1, 3, 416, 416]}
++    input_shapes = {'data': [1, 3, 608, 608]}
 +    input_names  = list(input_shapes.keys())
 +    
 +    
-+    run(fdir, dpu_rundir, input_names,  input_shapes, iterations)
++    run(fdir, dpu_rundir,  input_shapes, iterations)
++
++

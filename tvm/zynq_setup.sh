@@ -18,6 +18,7 @@
 # under the License.
 
 # DOWNLOAD TVM REPO AND APPLY PATCH
+
 export TVM_VAI_HOME=$(pwd)
 export TVM_HOME="${TVM_VAI_HOME}"/tvm
 git clone https://github.com/apache/incubator-tvm.git "${TVM_HOME}"
@@ -26,16 +27,16 @@ git submodule update --init --recursive
 git checkout ec8f642c56d34cf7bb016803d3cab973b370e424
 patch -p0 -i "${TVM_VAI_HOME}"/vai_patch.diff
 
+# DOWNLOAD REQUIRED PYTHON PACKAGES
+
+pip3 install cffi cython
 
 # BUILD TVM
+
 mkdir "${TVM_HOME}"/build
 cp "${TVM_HOME}"/cmake/config.cmake "${TVM_HOME}"/build/
-echo set\(USE_LLVM ON\) >> "${TVM_HOME}"/build/config.cmake
 cd "${TVM_HOME}"/build && cmake .. && make tvm_runtime -j$(nproc)
-python3 "${tvm_home}"/python/setup.py --install --user
+python3 "${TVM_HOME}"/python/setup.py --install --user
 
-export PYTHONPATH="${tvm_home}"/topi/python:"${tvm_home}"/python:$PYTHONPATH
 
-# ACCESS DPU DRIVERS WITHOUT SUDO
-# ROOT PWD IS "xilinx"
-sudo chmod o+rw /dev/dri/renderD128
+
