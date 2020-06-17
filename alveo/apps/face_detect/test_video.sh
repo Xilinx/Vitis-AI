@@ -15,6 +15,7 @@
 
 
 Model_Name=$1
+Video_File=$2
 
 if [ -z $Model_Name ];then
     Model_Name=face_detection
@@ -52,7 +53,7 @@ mkdir $QUANT_DIR
 NET_DEF=$PROTOTXT
 DUMMY_PTXT=$COMP_DIR/${Model_Name}_decent.prototxt
 IMGLIST=FDDB/FDDB_list_dummy.txt
-CALIB_DATASET=FDDB/2002/07/19/big/
+CALIB_DATASET=FDDB/
 
 python get_decent_q_prototxt.py ${CAFFE_ROOT}/python/ $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
 ## Run Quantizer
@@ -88,4 +89,5 @@ VITIS_RUN_DIR=$COMP_DIR
 
 python3 mp_video.py \
 	--vitisrundir ${VITIS_RUN_DIR} \
+	--videofile ${Video_File}
 

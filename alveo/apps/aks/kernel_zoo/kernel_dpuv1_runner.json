@@ -1,9 +1,9 @@
 {
-  "kernel_name": "DPUv1_Runner",
+  "kernel_name": "DPUv1Runner",
   "description": "Run inference on DPUv1 with new VAI Interface",
   "kernel_type": "cpp",
   "device_type": "fpga",
-  "kernel_lib" : "libs/libDPUv1RunnerKernel.so",
+  "kernel_lib" : "libs/libDPUv1Runner.so",
 
   "param_list": {
     "num_fpga":     { "type" : "int" },

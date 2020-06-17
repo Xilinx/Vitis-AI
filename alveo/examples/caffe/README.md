@@ -1,8 +1,15 @@
 ## Getting Started to prepare and deploy a trained Caffe model for FPGA acceleration
-
-### Running Caffe Benchmark Models
 This directory provides scripts for running several well known models on the FPGA.
-For published results, and details on running a full accuracy evaluation, please see these [instructions](Benchmark_README.md).
+
+1. **Classification**
+1. **FPN Cityscapes**
+2. **Pix2pix**
+3. **SSD Detection**
+4. **RefineDet Detection**
+5. **Re-Identification Detection**
+
+
+### Running caffe classification Models
 
 1. **One time setup**
 
@@ -37,7 +44,7 @@ For published results, and details on running a full accuracy evaluation, please
 
 After the setup, run through a sample end to end caffe classification example using the following steps that demonstrates preparing and deploying a trained Caffe model for FPGA acceleration using Xilinx MLSuite**
 
-  The following example uses the googlenet example. You can try the flow with also the other models found in /opt/models/caffe/ directory.
+  The following example uses the googlenet example. You can try the flow with also the other models found in /workspace/alveo/examples/caffe/models directory.
 
   ```
   cd $VAI_ALVEO_ROOT/examples/caffe 
