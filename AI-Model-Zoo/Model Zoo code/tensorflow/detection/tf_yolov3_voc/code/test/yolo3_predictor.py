@@ -105,8 +105,10 @@ class yolo_predictor:
         grid_x = tf.tile(tf.reshape(tf.range(grid_size[1]), [1, -1, 1, 1]), [grid_size[0], 1, 1, 1])
         grid = tf.concat([grid_x, grid_y], axis = -1)
         grid = tf.cast(grid, tf.float32)
-        box_xy = (tf.sigmoid(predictions[..., :2]) + grid) / tf.cast(grid_size[::-1], tf.float32)
-        box_wh = tf.exp(predictions[..., 2:4]) * anchors_tensor / tf.cast(input_shape[::-1], tf.float32)
+        # box_xy = (tf.sigmoid(predictions[..., :2]) + grid) / tf.cast(grid_size[::-1], tf.float32)
+        # box_wh = tf.exp(predictions[..., 2:4]) * anchors_tensor / tf.cast(input_shape[::-1], tf.float32)
+        box_xy = (tf.sigmoid(predictions[..., :2]) + grid) / tf.cast(grid_size[..., ::-1], tf.float32)
+        box_wh = tf.exp(predictions[..., 2:4]) * anchors_tensor / tf.cast(input_shape[..., ::-1], tf.float32)
         box_confidence = tf.sigmoid(predictions[..., 4:5])
         box_class_probs = tf.sigmoid(predictions[..., 5:])
         return box_xy, box_wh, box_confidence, box_class_probs
