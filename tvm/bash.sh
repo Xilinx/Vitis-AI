@@ -47,8 +47,8 @@ else
     COMMAND=("$@")
 fi
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKSPACE="$(pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+WORKSPACE="$(pwd -P)"
 
 # Use nvidia-docker if the container is GPU.
 if [[ ! -z $CUDA_VISIBLE_DEVICES ]]; then

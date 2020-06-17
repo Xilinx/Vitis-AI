@@ -24,7 +24,6 @@ COPY vai_patch.diff /tmp
 ENV TVM_VAI_HOME /opt/tvm-vai/
 ENV TVM_HOME /opt/tvm-vai/tvm
 ENV PYXIR_HOME /opt/tvm-vai/pyxir
-ENV MODELS_HOME /opt/tvm-vai/models
 RUN mkdir /opt/tvm-vai
 RUN mkdir "${TVM_HOME}"
 RUN mkdir "${PYXIR_HOME}"
@@ -92,17 +91,11 @@ RUN cd "${TVM_HOME}"/build && echo set\(USE_LLVM ON\) >> config.cmake && cmake .
 
 # BUILD PYXIR
 RUN pip3 install --upgrade numpy
-RUN git clone --recursive https://gitenterprise.xilinx.com/jornt/pyxir.git "${PYXIR_HOME}"
+RUN git clone --recursive https://github.com/Xilinx/pyxir.git "${PYXIR_HOME}"
 RUN cd "${PYXIR_HOME}" && \
     git checkout master && \
     git submodule update --init --recursive && \
     python3 setup.py install
-
-# DOWNLOAD MODELS
-RUN git clone --recursive https://gitenterprise.xilinx.com/jornt/models.git "${MODELS_HOME}"
-RUN cd "${MODELS_HOME}" && \
-    bash ./setup_tf_slim.sh && \
-    bash ./setup_mxnet_models.sh
 
 # CK-TOOLS INSTALL 
 ENV HOME $TVM_VAI_HOME
