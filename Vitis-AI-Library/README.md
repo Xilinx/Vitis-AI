@@ -481,7 +481,7 @@ Do not put the files in any other path of the docker system. They will be lost a
 
 2. Activate conda environment.
 ```
-conda activate vitis-ai-caffe
+$conda activate vitis-ai-caffe
 ```
 3. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
@@ -489,10 +489,10 @@ conda activate vitis-ai-caffe
 	Execute the following command to build the libraries all at once.
 4. To build the DPUV1 supported examples in the AI Library, run as below.
 ```
-$cd /workspace/Vitis-AI-Library/
+$cd /workspace/Vitis-AI/Vitis-AI-Library/
 $./cmake.sh --clean --cmake-options=-DCMAKE_PREFIX_PATH=$CONDA_PREFIX --cmake-options=-DENABLE_DPUV1_RUNNER=ON
 ```
-This will generate the executable files to output path as per step 3.
+This will generate AI libraries and executable files to under `build_dir_default`.
 
 ### Running Vitis AI Library Examples for U200/U250
 1. Download and untar the model directory [vai_lib_u2xx_models.tar.gz](vai_lib_u2xx_models.tar.gz) package. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../alveo/examples/caffe/README.md).
@@ -507,11 +507,11 @@ $source /workspace/alveo/overlaybins/setup.sh
 ```
 3. Run the classification image test example.
 ```
-$HOME/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification <model_dir> <img_path>
+$HOME/build/build.${taget_info}/${project_name}/test_classification <model_dir> <img_path>
 ```
 4. Run the classification accuracy test example.
 ```
-$HOME/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification <model_dir> <img_dir_path> <output_file>
+$HOME/build/build.${taget_info}/${project_name}/test_classification_accuracy <model_dir> <img_dir_path> <output_file>
 ```
 
 ## Reference
