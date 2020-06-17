@@ -143,6 +143,7 @@ If the compilation process does not report any error and the executable file `re
 	You can now operate on the board using SSH.
 
 2. Installing Vitis AI Runtime
+	
 	The Vitis AI Runtime packages and vart samples have been built into the above board image. Execute the following to setup the target.
 	```
 	#cd ~
@@ -151,6 +152,7 @@ If the compilation process does not report any error and the executable file `re
 	#bash setup.sh
 	```
 3. Installing the board config
+	
 	Unzip the `dpu_sw_config.tgz` and run the `zynqmp_dpu_config.sh` script. You can also download the `dpu_sw_config.tgz` from [here](http://xcdl190260/zhengjia/xdpu/blob/vitis20.1/app/dpu_sw_config.tgz).
 	```
 	#cd ~

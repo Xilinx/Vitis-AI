@@ -6,7 +6,7 @@
  </table>
 
 # Introduction
-The Vitis AI Library is a set of high-level libraries and APIs built for efficient AI inference with Deep-Learning Processor Unit (DPU). It is built based on the Vitis AI Runtime with Unified APIs, and it fully supports XRT 2019.2.
+The Vitis AI Library is a set of high-level libraries and APIs built for efficient AI inference with Deep-Learning Processor Unit (DPU). It is built based on the Vitis AI Runtime with Unified APIs, and it fully supports XRT 2020.1.
 
 The Vitis AI Library provides an easy-to-use and unified interface by encapsulating many efficient and high-quality neural networks. This simplifies the use of deep-learning neural networks, even for users without knowledge of deep-learning or FPGAs. The Vitis AI Library allows users to focus more on the development of their applications, rather than the underlying hardware.
 
@@ -265,7 +265,28 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 	* Set up the IP information of the board using the serial port.
 	You can now operate on the board using SSH.
 
-2. Installing AI Model Package   
+2. Installing Vitis AI Runtime
+	
+	The Vitis AI Runtime packages, vitis-ai-library samples and models have been built into the above board image. Execute the following to setup the target.
+	```
+	#cd ~
+	#tar -xzvf Vitis-AI.tar.gz
+	#cd Vitis-AI
+	#bash setup.sh
+	```
+3. Installing the board config
+	
+	Unzip the `dpu_sw_config.tgz` and run the `zynqmp_dpu_config.sh` script. You can also download the `dpu_sw_config.tgz` from [here](http://xcdl190260/zhengjia/xdpu/blob/vitis20.1/app/dpu_sw_config.tgz).
+	```
+	#cd ~
+	#tar -xzvf dpu_sw_config.tgz
+	#cd dpu_sw_config/zynqmp/
+	#./zynqmp_dpu_config.sh
+	```	
+
+4. (Optical) How to update Vitis AI Model and install it separately. 	
+
+	If you want to update the Vitis AI Model or install it to your custom board image, follow these steps.
 	* Download [ZCU102 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_zcu102-1.2.0-1.aarch64.rpm)  
 	
 		You can also download [ZCU104 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_zcu104-1.2.0-1.aarch64.rpm) if you use ZCU104 
@@ -280,12 +301,10 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 	  #rpm -ivh xilinx_model_zoo_zcu102-1.2.0-1.aarch64.rpm
 	```
 
-3. Installing AI Library Package
-	* Download the [Vitis AI Runtime 1.2](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.0.tar.gz).  
+5. (Optical) How to update Vitis AI Runtime and install it separately. 
 
-	* Download the [demo video files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz) and untar into the corresponding directories.  
-	
-	* Download the [demo image files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_images.tar.gz) and untar into the corresponding directories.  
+	If you want to update the Vitis AI Runtime or install it to your custom board image, follow these steps.
+	* Download the [Vitis AI Runtime 1.2.x](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.0.tar.gz).  
 	
 	* Untar the runtime packet and copy the following folder to the board using scp.
 	```
@@ -293,14 +312,6 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 	$scp -r vitis-ai-runtime-1.2.0/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
-	* Run the `board_set_up.sh` script. You can also download the `board_set_up.sh` from [here](http://10.176.178.31/mtf/board_set_up.sh).
-	```
-	#board_set_up.sh
-	```
-	* For ZCU104, enable the power patch.
-	```
-	#irps5401
-	```
 	* For ZCU102, reduce the DPU frequency to 93%.
 	```
 	#dpu_clk 93
@@ -321,10 +332,11 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 ```
 [Host]$scp -r ~/Vitis-AI/Vitis-AI-Library/overview root@IP_OF_BOARD:~/
 ```
-2. Copy the image and video packages from host to the target using scp with the following command.
+2. Download the [vitis_ai_library_r1.2.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_images.tar.gz) and 
+the [vitis_ai_library_r1.2.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz). Copy them from host to the target using scp with the following command.
 ```
-[Host]$scp vitis_ai_library_r1.2_images.tar.gz root@IP_OF_BOARD:~/
-[Host]$scp vitis_ai_library_r1.2_video.tar.gz root@IP_OF_BOARD:~/
+[Host]$scp vitis_ai_library_r1.2.x_images.tar.gz root@IP_OF_BOARD:~/
+[Host]$scp vitis_ai_library_r1.2.x_video.tar.gz root@IP_OF_BOARD:~/
 ```
 3. Untar the image and video packages on the target.
 ```
@@ -368,24 +380,9 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Alveo
 ### Setting Up the Host for U50/U50lv/U280
 
-Assume the docker image has been loaded and up running.
+1. Click [DPUv3E for Alveo Accelerator Card with HBM](../alveo-hbm#dpuv3e-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
 
-1. Place the program, data and other files in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
-Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
-
-2. Run the `alveo_u50_setup.sh` to automatically set up the host for U50, or manully perform the following steps from 3 to 6. If you run the `alveo_u50_setup.sh` successfully, then skip to step 7.
-```
-$bash -x alveo_u50_setup.sh
-```
-3. Download [vitis_ai_runtime_library_r1.2](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.0.tar.gz) package.
-Untar it, find the `libvitis_ai_library_1.2.0-rx_amd64.deb` package and install it to the docker system.
-```
-$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.0.tar.gz -O vitis-ai-runtime-1.2.0.tar.gz
-$tar -xzvf vitis-ai-runtime-1.2.0.tar.gz
-$cd vitis-ai-runtime-1.2.0/X86_64/ubuntu
-$sudo dpkg -i libvitis_ai_library_1.2.0-r4_amd64.deb
-```
-4. Select the model for your platform, download the model packet and install it. Take `U50` as an example. 
+2. Select the model for your platform, download the model packet and install it. Take `U50` as an example. 
 ```
 $wget https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50_1.2.0_amd64.deb -O xilinx_model_zoo_u50_1.2.0_amd64.deb
 $sudo dpkg -i xilinx_model_zoo_u50_1.2.0_amd64.deb
@@ -402,29 +399,20 @@ $sudo dpkg -i xilinx_model_zoo_u50_1.2.0_amd64.deb
 
 </details>
 
-5. Download the [Alveo_xclbin](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.2.0.tar.gz). Untar it, choose the alveo card and install it. Take `U50` as an example.
-```
-$wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.2.0.tar.gz -O alveo_xclbin-1.2.0.tar.gz
-$tar -xzvf alveo_xclbin-1.2.0.tar.gz
-$cd alveo_xclbin-1.2.0/U50/6E300M
-$sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
-```
-6. Enable environment variable and export the library path.
-```
-$export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/
-```
-7. To compile the demo in the AI Library, take `yolov3` as an example.
+**Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
+
+3. To compile the demo in the AI Library, take `yolov3` as an example.
 ```
 $cd /workspace/Vitis-AI-Library/overview/demo/yolov3
 $bash -x build.sh
 ```	
-8. To compile the AI Library sample, take `classification` as an example, execute the following command.
+4. To compile the AI Library sample, take `classification` as an example, execute the following command.
 ```
 $cd /workspace/Vitis-AI-Library/overview/samples/classification
 $bash -x build.sh
 ```	
 
-9. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
+5. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
 	Execute the following command to build the libraries all at once.
