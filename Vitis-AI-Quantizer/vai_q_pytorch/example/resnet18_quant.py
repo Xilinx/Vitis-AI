@@ -17,13 +17,11 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument(
     '--data_dir',
-    #default="/path/to/imagenet/",
-    default="/proj/rdi/staff/niuxj/imagenet/",
+    default="/path/to/imagenet/",
     help='Data set directory, when quant_mode=1, it is for calibration, while quant_mode=2 it is for evaluation')
 parser.add_argument(
     '--model_dir',
-    #default="./thmodels/",
-    default="/proj/rdi/staff/wluo/UNIT_TEST/models",
+    default="/path/to/trained_model/",
     help='Trained model file path. Download pretrained model from the following url and put it in model_dir specified path: https://download.pytorch.org/models/resnet18-5c106cde.pth'
 )
 parser.add_argument('--quant_mode', default=1, type=int)

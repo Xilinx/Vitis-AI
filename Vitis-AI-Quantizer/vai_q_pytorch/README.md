@@ -70,7 +70,7 @@ For quantization, the original preprocess function, forward function and post-pr
 1.  Refine the float module which need to be quantized, the refined module should include the forward method only. All post process method defined in float module will be removed in converted module. <br>
 2.  Set the refined float module to evaluation status, then use “torch.jit.trace” function to test the float model. Make sure the float module can pass the trace test. <br>
 
-#### An example case is nndct/example/resnet18_quant.py. 
+#### An example case is example/resnet18_quant.py. 
 
 ###### Some preparation to run the model:
 1.  Install torch vision module <br>
