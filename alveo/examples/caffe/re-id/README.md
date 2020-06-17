@@ -1,0 +1,53 @@
+## Re-identification deploy
+This code employs a resnet-18 based model to generate feature maps of person image. In order to identify same person or distinguish different persons, it uses cosine distances of feature maps to measure the distance between different images. The images having small distance are more likely to have same id, those having large distance are more likely to have different ids. When one query image and a set of gallery images are given, the image having the smallest distance to the query image will be regarded as the same person in query image. 
+
+
+### Data Preparation
+Download [market1501](http://liangzheng.org/Project/project_reid.html) dataset. Extract the files to ./data/market1501. The data structure should look like:
+```
+data/
+    market1501/
+        query/
+            xxx.jpg   
+            xxx.jpg   
+            ...
+        bounding_box_train/
+            xxx.jpg   
+            xxx.jpg   
+            ...
+        bounding_box_test/
+            xxx.jpg   
+            xxx.jpg   
+            ...
+```
+
+### Setup ml-suite Environment Variables
+```
+source $VAI_ALVEO_ROOT/overlaybins/setup.sh
+```
+
+### Quantize, compile and generate subgraph prototxt
+To run a caffe model on the FPGA, it needs to be quantized.
+
+Quantize the model - The quantizer will generate scaling parameters for quantizing floats INT8. This is required, because FPGAs will take advantage of Fixed Point Precision, to achieve more parallelization at lower power
+
+Compile the Model - In this step, the network files are compiled.
+
+Subgraph Partitioning - In this step, the original graph is cut, and a custom FPGA accelerated python layer is inserted to be used for Inference.
+
+```
+python run.py --prototxt reid_model/trainval.prototxt --caffemodel reid_model/trainval.caffemodel --prepare
+```
+
+### Demo
+The demo.py provides a running sample. 
+```
+python demo.py --query_image <query img_path> --test_image <test image_path> 
+```
+
+
+### Test Accuracy
+```
+python test_accuracy.py --img_dir <image dir>
+```
+

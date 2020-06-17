@@ -27,7 +27,7 @@ from detect_ap2 import det_preprocess, det_postprocess
 from vai.dpuv1.rt import xdnn
 import numpy as np
 from vai.dpuv1.rt.vitis.python.dpu.runner import Runner
-
+import math
 
 
 #%% define classes and functions
@@ -123,15 +123,15 @@ import inspect
 def funcname():
     return inspect.stack()[1][0].f_code.co_name
 
-def cam_loop(shared_frame_arrs, ready_fpga):
-    cap = cv2.VideoCapture('Pedestrians.mp4')
+def cam_loop(shared_frame_arrs, ready_fpga, videofile, width, height):
+    cap = cv2.VideoCapture(videofile)
     # First read frames into a list
     frames = []
     while cap.isOpened():
 
         s, frame = cap.read()
         if s:
-            frame = cv2.resize(frame, (320, 320), interpolation = cv2.INTER_LINEAR)
+            frame = cv2.resize(frame, (width, height), interpolation = cv2.INTER_LINEAR)
             frames.append(frame)
         else:
             break
@@ -157,7 +157,7 @@ def cam_loop(shared_frame_arrs, ready_fpga):
     print('{0} cam loading time: {1} seconds'.format(funcname(),end_time - start_time))
 
 
-def detect_pre(shared_frame_arrs, shared_trans_arrs):
+def detect_pre(shared_frame_arrs, shared_trans_arrs, args, scale_q, width, height):
 
     start_time = None
     frame_id = 0
@@ -177,7 +177,8 @@ def detect_pre(shared_frame_arrs, shared_trans_arrs):
         write_arrs = shared_trans_arrs.accessNumpyBuffer(write_slot)
 
 
-        det_preprocess(read_arrs[0], write_arrs[1])
+        szs = det_preprocess(read_arrs[0], width, height, write_arrs[1])
+        scale_q.put(szs)
 
         shared_frame_arrs.closeReadId(read_slot)
         shared_trans_arrs.closeWriteId(write_slot)
@@ -244,7 +245,7 @@ def fpga_process(vitisrundir,shared_trans_arrs,shared_output_arrs ,ready_fpga ):
 
 
 
-def detect_post(shared_output_arrs, face_q):
+def detect_post(shared_output_arrs, face_q, scale_q, width, height, channels):
     start_time = None
     frame_cnt = 0
     while True:
@@ -258,7 +259,7 @@ def detect_post(shared_output_arrs, face_q):
 
         read_slot_arrs = shared_output_arrs.accessNumpyBuffer(read_slot)
 
-        face_rects = det_postprocess(read_slot_arrs[1], read_slot_arrs[0], [320,320,3])
+        face_rects = det_postprocess(read_slot_arrs[1], read_slot_arrs[0], [width,height,channels], scale_q.get())
 
         shared_output_arrs.closeReadId(read_slot)
         frame_cnt += 1
@@ -273,7 +274,7 @@ def detect_post(shared_output_arrs, face_q):
     print('Total run: {0} frames in {1} seconds ({2} fps)'.format(frame_cnt, total_time, frame_cnt/total_time))
 
             
-def show_loop(face_q):
+def show_loop(videofile, face_q, width, height):
 
     #cv2.namedWindow('face_detection')
     work_dir = os.getcwd() + '/output/'
@@ -281,14 +282,14 @@ def show_loop(face_q):
         os.mkdir(work_dir)
     frame_id = 0
 
-    cap = cv2.VideoCapture('Pedestrians.mp4')
+    cap = cv2.VideoCapture(videofile)
 
     start_time = None
     while cap.isOpened():
 
         s, frame = cap.read()
         if s:
-            frame = cv2.resize(frame, (320, 320), interpolation = cv2.INTER_LINEAR)
+            frame = cv2.resize(frame, (width, height), interpolation = cv2.INTER_LINEAR)
         else:
             break
 
@@ -321,13 +322,15 @@ if __name__ == '__main__':
  
     parser = argparse.ArgumentParser(description = 'FaceDetection Demo')
     parser.add_argument('--vitisrundir', help = 'path to dpuv1 run directory ', type=str)
+    parser.add_argument('--videofile', help = 'path to video source file ', type=str)
     args = parser.parse_args()
 
     frame_q = mp.Queue()
     resize_q = mp.Queue()
     trans_q = mp.Queue()
     output_q = mp.Queue()
-    face_q = mp.Queue()    
+    face_q = mp.Queue()
+    scale_q = mp.Queue()
     ready_fpga = mp.Queue()
     
     sharedInputArrs = []
@@ -337,26 +340,28 @@ if __name__ == '__main__':
     input_shapes = [v for k,v in compilerJSONObj.getInputs().items()]
     output_shapes = [v for k,v in compilerJSONObj.getOutputs().items()]
 
-    input_sizes = map(lambda x: np.prod(x), input_shapes)
+    input_sizes = list(map(lambda x: np.prod(x), input_shapes))
     output_sizes = map(lambda x: np.prod(x), output_shapes)
+    input_list = input_shapes[0]
+    N, C, H, W = input_list[0], input_list[1], input_list[2], input_list[3]
     
     # shared memory from video capture to preprocessing
-    shared_frame_arrs = SharedMemoryQueue("frame",num_shared_slots, [(320,320,3)])
+    shared_frame_arrs = SharedMemoryQueue("frame",num_shared_slots, [(H,W,C)])
     # shared memory from preprocessing to fpga forward
-    shared_trans_arrs = SharedMemoryQueue("trans",num_shared_slots,  [(320,320,3)]+input_shapes)
+    shared_trans_arrs = SharedMemoryQueue("trans",num_shared_slots,  [(H,W,C)]+input_shapes)
 
     # shared memory from fpga forward to postprocessing
     shared_output_arrs = SharedMemoryQueue("output",num_shared_slots, output_shapes)
 
     # shared memory from postprocessing to display
-    shared_display_arrs = SharedMemoryQueue("display",num_shared_slots, [320*320*3])
+    shared_display_arrs = SharedMemoryQueue("display",num_shared_slots, input_sizes)
 
-    cam_process = mp.Process(target=cam_loop,args=(shared_frame_arrs,ready_fpga, ))
-    detect_process1 = mp.Process(target=detect_pre,args=(shared_frame_arrs,shared_trans_arrs, ))
+    cam_process = mp.Process(target=cam_loop,args=(shared_frame_arrs,ready_fpga,args.videofile, W, H ))
+    detect_process1 = mp.Process(target=detect_pre,args=(shared_frame_arrs,shared_trans_arrs,args, scale_q,W,H ))
 
     detect_process2 = mp.Process(target=fpga_process,args=(args.vitisrundir, shared_trans_arrs, shared_output_arrs, ready_fpga))
-    detect_process3 = mp.Process(target=detect_post,args=(shared_output_arrs, face_q, ))
-    show_process = mp.Process(target=show_loop,args=(face_q, ))
+    detect_process3 = mp.Process(target=detect_post,args=(shared_output_arrs, face_q, scale_q, W, H, C))
+    show_process = mp.Process(target=show_loop,args=(args.videofile,face_q,W,H ))
 
 #    start_time = time.time()     
     cam_process.start()

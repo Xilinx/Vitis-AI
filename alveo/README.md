@@ -1,4 +1,4 @@
-This directory containes examples for running DPU-v1 on Alveo platform. **DPU-v1**  is High Performance CNN processing engine designed for Xilinx Alveo U200 and U250 platforms. DPU-v1 was released as xDNNv3 as part of *ml-suite*. With **Vitis-AI**, Xilinx has integrated all the edge and cloud solutions under an unified API and toolset.
+This directory containes examples for running Xilinx DPU-v1 on Alveo platform. **DPU-v1**  is High Performance CNN processing engine designed for Xilinx Alveo-u200 and Alveo-u250 platforms. DPU-v1 was released as xDNNv3 as part of *ml-suite*. With **Vitis-AI**, Xilinx has integrated all the edge and cloud solutions under an unified API and toolset.
 
 **Learn More:** [DPU-v1 Overview][]  
 
@@ -7,7 +7,7 @@ Targeting Alveo cards with Vitis-AI for AI workloads requires the installation o
 
 * [Xilinx Run time(XRT)](https://github.com/Xilinx/XRT)  
 
-* Alveo Deployment Shells (DSAs) - it  can be downloaded from Getting Started tab of Alveo board product page on xilinx.com  
+* Alveo Deployment Shells (DSAs) - it  can be downloaded from Getting Started tab of Alveo board product page on [xilinx.com](xilinx.com)  
  
 * Xilinx Resource Manager (XRM) (xbutler)  
  
@@ -24,6 +24,7 @@ sudo su
 Then power cycle the system.
   
 ## Examples
+
  - [Jupyter Notebook Tutorials](notebooks/README.md)
    - [TensorFlow Image Classification](notebooks/image_classification_tensorflow.ipynb)
    - [Caffe Image Classification](notebooks/image_classification_caffe.ipynb)
@@ -33,9 +34,14 @@ Then power cycle the system.
    - [Caffe ImageNet Benchmark Models](examples/caffe/README.md)
    - [Caffe VOC SSD Example](examples/caffe/ssd-detect/README.md)
    - [Deployment Mode Examples](examples/deployment_modes/README.md)
- - [In-Browser GoogLeNet Demo](apps/perpetual_demo/README.md)
- - [REST Server Example](examples/caffe/REST/README.md)
- 
+
+ ## Advanced Applications
+
+ - [AI Kernel Scheduler (AKS)](apps/aks/README.md)
+ - [Neptune](neptune/README.md)
+ - [Whole App Acceleration](apps/whole_app_acceleration/README.md)
+ - [Face Detect](apps/face_detect/README.md)
+
 ## References 
 - [Performance Whitepaper][]
 - **Watch:** [Webinar on Xilinx FPGA Accelerated Inference][] 

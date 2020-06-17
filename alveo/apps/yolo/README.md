@@ -1,21 +1,8 @@
-# YOLOv2 Object Detection Tutorial
+# Object Detection with YOLO
 
 ### Update (26/11/2019)
 * Currently 5 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_yolo_v3, yolo_v3_spp, tiny_yolo_v3`
 * All networks are trained on COCO 2014 dataset (80 classes)
-
-## Introduction
-You only look once (YOLO) is a state-of-the-art, real-time object detection algorithm. 
-The algorithm was published by Redmon et al. in 2016 via the following publications:
-[YOLOv1](https://arxiv.org/abs/1506.02640),
-[YOLOv2](https://arxiv.org/abs/1612.08242).
-
-This application requires more than just simple classification. The task here is to detect the presence of objects, and localize them within a frame. 
-Please refer to the papers for full algorithm details, and/or watch [this.](https://www.youtube.com/watch?v=9s_FpMpdYW8). 
-In this tutorial, the network was trained on the 80 class [COCO dataset.](http://cocodataset.org/#home)
-
-## Background
-The authors of the YOLO papers used their own programming framework called "Darknet" for research, and development. The framework is written in C, and was [open sourced.](https://github.com/pjreddie/darknet) Additionally, they host documentation, and pretrained weights [here.](https://pjreddie.com/darknet/yolov2/) Currently, the Darknet framework is not supported by Xilinx VAI. Additionally, there are some aspects of the YOLOv2 network that are not supported by the Hardware Accelerator, such as the reorg layer. For these reasons we are sharing original and modified versions of YOLOv2 network. The inference using original YOLOv2 version is acheived by running reorg layer in software. The modified version of the YOLOv2 network was obtained by  replacing unsuppored layers with supported layers, retraining this modified network on Darknet, and converting the model to caffe. 
 
 ## Running the Application
  To run:
@@ -74,44 +61,46 @@ The authors of the YOLO papers used their own programming framework called "Dark
 COCO validation set is large (>40K images and >6 GB in size), so each step below could be slow depending upon your network.
 
 ```sh
-$ python -m ck pull repo:ck-env
-$ python -m ck install package:dataset-coco-2014-val 
+python -m ck pull repo:ck-env
+python -m ck install package:dataset-coco-2014-val 
     # If asked for installation path, accept the default path
-$ wget -c https://pjreddie.com/media/files/coco/labels.tgz
-$ tar -xzf labels.tgz labels/val2014
+wget -c https://pjreddie.com/media/files/coco/labels.tgz
+tar -xzf labels.tgz labels/val2014
 ```
 
 Calculating mAP on >40K images could be taking a lot of time. So we can create a temporary val_set of 2000 images (or whatever you wish)
 
 ```sh
-$ mkdir val2k
-$ find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | head -2000 | xargs cp -t val2k/
+mkdir val2k
+find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | head -2000 | xargs cp -t val2k/
 ```
-      
+
+Also, copy a few images (~25 images) to `apps/yolo/test_image_set` for calibration.
+
 ## Examples
 1. Object detection on test_images using yolo_v3_spp on Caffe and save results in folder `cpu_results/`.
     ```sh
-    $ ./detect.sh -t cpu_detect -m yolo_v3_spp --dump_results --visualize --results_dir cpu_results
+    ./detect.sh -t cpu_detect -m yolo_v3_spp --dump_results --visualize --results_dir cpu_results
     ```
 2. Same as above, but this time on FPGA, and store results in `fpga_results/`:
     ```sh
-    $ ./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize --results_dir fpga_results
+    ./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize --results_dir fpga_results
     ```
 3. Measure mAP score for tiny_yolo_v3 on smaller COCO dataset for a resolution of `416x416`
     ```sh
-    $ ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k -g labels/val2014 --neth 416 --netw 416
+    ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k -g labels/val2014 --neth 416 --netw 416
     ```
 3. Measure mAP score for the above with a different thresholds (use precompiled files from above step)
     ```sh
-    $ ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k -g labels/val2014 --neth 416 --netw 416 -cn work/compiler.json -cq work/quantizer.json -cw work/weights.h5 -st 0.24 -iou 0.4
+    ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k -g labels/val2014 --neth 416 --netw 416 -cn work/compiler.json -cq work/quantizer.json -cw work/weights.h5 -st 0.24 -iou 0.4
     ```
 4. Get preprocessing & postprocessing latencies for tiny_yolo_v3. It helps to identify the bottlenecks.
     ```sh
-    $ ./detect.sh -t test_detect -m tiny_yolo_v3 -d val2k --profile
+    ./detect.sh -t test_detect -m tiny_yolo_v3 -d val2k --profile
     ```
 4. Get system throughput (it depends upon how fast you can do preprocess & postprocess). Use large dataset to hide system overheads.
     ```sh
-    $ ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k --profile
+    ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k --profile
     ```
 
 5. Run a custom network trained for different dataset and measure mAP. You need to save the anchor box bias to a txt file.
