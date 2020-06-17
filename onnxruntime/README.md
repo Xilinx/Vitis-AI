@@ -18,9 +18,9 @@ The current Vitis-AI execution provider inside ONNXRuntime enables acceleration 
    python3 -m ck pull repo:ck-env
    python3 -m ck install package:imagenet-2012-val-min
    ```
-3. Install Pillow package (step specific to this example)
+3. Install ONNX and Pillow packages
    ```
-   pip3 install --user pillow
+   pip3 install --user onnx pillow
    ```
 4. (Optional) set the number of inputs to be used for on-the-fly quantization to a lower number (e.g. 8) to decrease the quantization time (potentially at the cost of lower accuracy):
    ```
