@@ -26,6 +26,7 @@ Download a minimal validation set for [Imagenet2012](http://www.image-net.org/ch
 > **NOTE:** Skip, if you have already run the below steps.
 
 ```sh
+# Activate Conda Environment
 conda activate vitis-ai-caffe 
 ```
 ```sh
@@ -37,22 +38,21 @@ python -m ck pull repo:ck-env
 python -m ck install package:imagenet-2012-val-min
 python -m ck install package:imagenet-2012-aux
 
-head -n 500 $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-aux/val.txt > $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val_map.txt
+head -n 500 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-aux/val.txt > ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val_map.txt
 
-head -n 500 $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-aux/val.txt > $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val.txt
+head -n 500 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-aux/val.txt > ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val.txt
 
-python ${VAI_ALVEO_ROOT}/examples/caffe/resize.py $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
+python ${VAI_ALVEO_ROOT}/examples/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
 
 # To try out examples for detection models like Tiny-YOLO-v3 or Standard-YOLO-v2 
 # Download COCO dataset (This may take a while as COCO val dataset is more than 6 GB in size)
 python -m ck install package:dataset-coco-2014-val
 
 # To try out face-detect example, download FDDB dataset.
-cd $VAI_ALVEO_ROOT/apps/face_detect/FDDB
+cd ${VAI_ALVEO_ROOT}/apps/face_detect/FDDB
 wget http://tamaraberg.com/faceDataset/originalPics.tar.gz
 tar -xvf originalPics.tar.gz
 cd -
-
 ```
 
 Familiarize yourself with the script usage by running below command.
@@ -77,6 +77,7 @@ We have provided few examples in the [aks/examples](./examples) directory using 
 All of them come with prebuilt executables. Use following commands to run these examples. 
 
 #### Classification 
+
 - Resnet50
 
     ```sh
@@ -143,9 +144,9 @@ All of them come with prebuilt executables. Use following commands to run these 
     ./aks.sh -m facedetect -i py -d1 ../face_detect/FDDB
     ```
 
-    >**INFO** : This writes the annotated output images to `face_outputs` directory. A corresponding text file representation is written to `face_results.txt`. This result writing has huge impact on application throughput. If you want to turn-off writing results and improve the performance, please provide empty strings to `save_result_txt` and `save_result_imgdir` fields in `graph_zoo/graph_facedetect.json`.
+    >**INFO:** This writes the annotated output images to `face_outputs` directory. A corresponding text file representation is written to `face_results.txt`. This result writing has huge impact on application throughput. If you want to turn-off writing results and improve the performance, please provide empty strings to `save_result_txt` and `save_result_imgdir` fields in `graph_zoo/graph_facedetect.json`.
 
-#### Multi-Net 
+#### Multi-Net
 
 - Googlenet + Resnet50
 
@@ -165,8 +166,9 @@ All of them come with prebuilt executables. Use following commands to run these 
     ./aks.sh  -i py -m googlenet_tinyyolov3
     ```
 
-#### Tuning Performance in Examples
-AKS provides a report on various performance metrics of internal worker threads and various kernels. This info can be utilized to understand the bottlenecks in the pipeline and tune the  number of CPU workers for each kernel. 
+## Tuning Performance
+
+AKS provides a report on various performance metrics of internal worker threads and various kernels. This info can be utilized to understand the bottlenecks in the pipeline and tune the number of CPU workers for each kernel. 
 
 This report can be enabled by setting an AKS environment variable, `export AKS_VERBOSE=2`. In above examples, the same can be achieved via appending `-v 2` to every command.
 
@@ -179,9 +181,9 @@ This report can be enabled by setting an AKS environment variable, `export AKS_V
 
 Similarly, number of CPU threads for a kernel can be specified by a field, `num_cu : N`, in corresponding kernel JSON, where N is the number of CPU threads. For example, see [ClassificationImreadPreProcess Kernel JSON](kernel_zoo/kernel_classification_imread_preprocess.json).
 
-Please see a sample report for googlenet with 2 preprocessing threads (These numbers will vary depending upon your System configuration):
+Let's take a look at a sample report for googlenet with 2 preprocessing threads (These numbers will vary depending upon your System configuration)
 
-```
+```sh
 [INFO] Total Time (s): 55.3752
 
 [DEBUG] Worker: ClassificationAccuracy_0 - Total jobs : 50000
@@ -295,11 +297,11 @@ While users can create their own kernels, AKS provides some basic kernels typica
 | PythonKernel | Executes kernels written in Python |
 | SaveBoxesDarknetFormat | Saves results of detection network in Darknet format for mAP calculation |
 | YoloPostProcess | Postprocesses data for YOLO v2/v3 network |
-| PreProcAccel | Performs FPGA accelerated pre-processing for classification networks |
+| ClassificationPreProcessAccel | Performs FPGA accelerated pre-processing for classification networks |
 
 ## Additional Details
 
-- [Integrating AKS in Application](docs/API.md#Integrating-AI-Kernel-Scheduler-in-Your-Application)
+- [Integrating AKS in Applications](docs/API.md#Integrating-AI-Kernel-Scheduler-in-Your-Application)
 - [Build Custom Graphs](docs/API.md#Creating-Custom-Graphs-for-AI-Kernel-Scheduler)
 - [Build Custom Kernels](docs/API.md#Creating-Custom-AKS-Kernel)
 - [Build Python Kernels](docs/API.md#Creating-Python-Kernels)
