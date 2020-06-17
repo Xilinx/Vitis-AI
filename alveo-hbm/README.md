@@ -69,7 +69,7 @@ Ubuntu 18.04:
 ### Update the Alveo Card Flash
 After you have downloaded and installed the platform files above, use following commands and cold reboot your machine to finished the setup.
 
-For Alveo U280
+For Alveo U280:
 ~~~
 sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u280_xdma_201920_3 
 ~~~
@@ -134,7 +134,7 @@ sudo cp alveo_xclbin-1.2.0/U280/14E300M/* /usr/lib
 
 The maximal core clock frequency listed in this section is the timing sign-off frequency of each overlays, and the overlays run at their maximal core clock by default. However, because of the power limitation of the card, all CNN models on each Alveo card cannot run at all the maximal frequencies listed here. Sometimes frequency scaling-down operation is necessary. For the safe working frequency on each card for the CNN models and corresponding performance, please refer to Chapter 7 of *Vitis AI Library User Guide* (ug1354). **Higher overlay frequencies then the recommendation in ug1354 could cause system reboot or other damage to your system because of the power consumption exceeding of Alveo card over the PCIe power supply limitation.**
 
-The DPUv3E core clock is generated from an internal DCM module driven by the platform Clock_1 with the default value of 100MHz, and the core clock is always linearly proportional to Clock_1. For example, in U50LV-10E275M overlay, the 275MHz core clock is driven by 100MHz clock source. So to set the core clock of this overlay to 220MHz, we need to set the frequency of Clock_1 to (220/275*)100 = 80MHz.
+The DPUv3E core clock is generated from an internal DCM module driven by the platform Clock_1 with the default value of 100MHz, and the core clock is always linearly proportional to Clock_1. For example, in U50LV-10E275M overlay, the 275MHz core clock is driven by 100MHz clock source. So to set the core clock of this overlay to 220MHz, we need to set the frequency of Clock_1 to (220/275)*100 = 80MHz.
 
 You could use XRT xbutil tools to scale down the running frequency of the DPUv3E overlay before you run the VART/Library examples. Before the frequency scaling-down operation, the overlays should have been programmed into the FPGA first, please refer to the example commands below to program the FPGA and scale down the frequency. These commands will set the Clock_1 to 80MHz and could be run at host or in the docker.
 
