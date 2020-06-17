@@ -6,7 +6,7 @@ The old DPUv1/v2/v3 naming will be deprecated.
 Please refer to the following illustration for the new DPU naming. 
 
 <div align="center">
-  <img width="100%" height="100%" src="doc/img/dpu_naming.PNG">
+  <img width="100%" height="100%" src="img/dpu_naming.PNG">
 </div>
 
 <br />
@@ -20,7 +20,7 @@ To better understand how to map the old DPU names into this naming, please refer
 <br />
 
 <div align="center">
-  <img width="100%" height="100%" src="doc/img/dpu_naming_example.PNG">
+  <img width="100%" height="100%" src="img/dpu_naming_example.PNG">
 </div>
 
 <br />
