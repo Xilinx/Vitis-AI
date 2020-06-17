@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+export PYTHONPATH=${PWD}:${PYTHONPATH}
 CUDA_VISIBLE_DEVICES=0 python code/quantize/quant.py \
                       --quant_mode 1 \
                       --eval --dataset citys \

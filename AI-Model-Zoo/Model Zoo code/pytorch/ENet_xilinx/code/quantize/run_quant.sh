@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-
+export PYTHONPATH=${PWD}:${PYTHONPATH}
 CUDA_VISIBLE_DEVICES=0 python code/quantize/quant.py --quant_mode 1 --eval --val_batch_size 4 --data_root ./data/cityscapes/ --input_size 1024 512 --weight ./float/final_best.pth
 
 CUDA_VISIBLE_DEVICES=0 python code/quantize/quant.py --quant_mode 2 --eval --val_batch_size 4 --data_root ./data/cityscapes/ --input_size 1024 512 --weight ./float/final_best.pth
