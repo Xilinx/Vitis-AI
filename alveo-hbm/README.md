@@ -2,55 +2,77 @@
 
 DPUv3E is a member of Xilinx DPU IP family for convolution nerual network (CNN) inference application. It is designed for latest Xilinx Alveo U50/U50LV/U280 adaptable accelerator cards with HBM support. The U50 version has two DPUv3E kernels, totally six engines; the U50LV version has two DPUv3E kernels, totally nine or ten engines; the U280 version has three DPUv3E kernels, totally fourteen engines.
 
-DPUv3E is released with Vitis AI. Please refer to the relevant parts for usages of DPUv3E on U50 with [VART](../VART/README.md) and [Vitis-AI-Library](../Vitis-AI-Library/README.md) (you could search the keyword "for Cloud").
+The on-premise DPUv3E overlays are released with Vitis AI. Please refer to the relevant parts for usages of different overlays on U50/U50LV/U280 with [VART](../VART/README.md) and [Vitis-AI-Library](../Vitis-AI-Library/README.md) (you could search the keyword "for Cloud").
+
+Following page will guide you through the Alveo card and on-premise overlays setup flow for Vitis AI.
 
 ## Alveo Card Setup
-For U280 card, DPUv3E use the standard target platform released in the Xilinx website, please follow the instruction in the [U280 page](https://www.xilinx.com/products/boards-and-kits/alveo/u280) to get the required files. 
 
-For U50 and U50LV card, DPUv3E use the gen3x4 version target platform, instead of the standard gen3x16 platform. Please download required gen3x4 target platform files from below URL:
+### Get and Install the Alveo Card Target Platform
 
-### For Redhat/CentOS 7.4-7.7 Host
-Common Files
+#### XRT
+Before you go through the next steps, please ensure the latest Xilinx runtime (XRT) is installed on your host, you can get XRT from these links:
+
+CentOS/Redhat 7.4-7.7: [xrt_202010.2.6.655_7.4.1708-x86_64-xrt.rpm](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_7.4.1708-x86_64-xrt.rpm)
+
+Ubuntu 16.04: [xrt_202010.2.6.655_16.04-amd64-xrt.deb](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_16.04-amd64-xrt.deb)
+
+Ubuntu 18.04: [xrt_202010.2.6.655_18.04-amd64-xrt.deb](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_18.04-amd64-xrt.deb)
+
+#### Alveo U280 Card
+For U280 card, DPUv3E use the standard target platform released in the Xilinx website, please follow the instruction in the [U280 page](https://www.xilinx.com/products/boards-and-kits/alveo/u280) to get and install the required files. 
+
+#### Alveo U50 Card
+For U50 card, DPUv3E use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files.
+
+CentOS/Redhat 7.4-7.7:
 * xilinx-cmc-u50-1.0.20-2853996.noarch.rpm
 * xilinx-sc-fw-u50-5.0.27-2.e289be9.noarch.rpm
-
-Alveo U50
 * xilinx-u50-gen3x4-xdma-validate-2-2889074.noarch.rpm
 * xilinx-u50-gen3x4-xdma-base-2-2895184.noarch.rpm
 
-Alveo U50LV
-* xilinx-u50lv-gen3x4-xdma-validate-2-2900293.noarch
-* xilinx-u50lv-gen3x4-xdma-base-2-2895310.noarch
-
-### For Ubuntu 16.04 Host
-Common Files
+Ubuntu 16.04:
 * xilinx-cmc-u50_1.0.20-2853996_all_16.04
 * xilinx-sc-fw-u50-5.0.27-2.e289be9_16.04
-
-Alveo U50
 * xilinx-u50-gen3x4-xdma-validate_2-2889074_all_16.04.deb
 * xilinx-u50-gen3x4-xdma-base_2-2895184_all_16.04.deb
 
-Alveo U50LV
-* xilinx-u50lv-gen3x4-xdma-validate_2-2900293_all_16.04.deb
-* xilinx-u50lv-gen3x4-xdma-base_2-2895310_all_16.04.deb
-
-
-### for Ubuntu 18.04 host
-Common Files
+Ubuntu 18.04:
 * xilinx-cmc-u50_1.0.20-2853996_all_18.04.deb
 * xilinx-sc-fw-u50-5.0.27-2.e289be9_18.04.deb
-
-Alveo U50
 * xilinx-u50-gen3x4-xdma-validate_2-2889074_all_18.04.deb
 * xilinx-u50-gen3x4-xdma-base_2-2895184_all_18.04.deb
 
-Alveo U50LV
+#### Alveo U50LV Card
+
+For U50LV card, DPUv3E use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files.
+
+CentOS/Redhat 7.4-7.7:
+* xilinx-cmc-u50-1.0.20-2853996.noarch.rpm
+* xilinx-sc-fw-u50-5.0.27-2.e289be9.noarch.rpm
+* xilinx-u50lv-gen3x4-xdma-validate-2-2900293.noarch
+* xilinx-u50lv-gen3x4-xdma-base-2-2895310.noarch
+
+Ubuntu 16.04:
+* xilinx-cmc-u50_1.0.20-2853996_all_16.04
+* xilinx-sc-fw-u50-5.0.27-2.e289be9_16.04
+* xilinx-u50lv-gen3x4-xdma-validate_2-2900293_all_16.04.deb
+* xilinx-u50lv-gen3x4-xdma-base_2-2895310_all_16.04.deb
+
+Ubuntu 18.04:
+* xilinx-cmc-u50_1.0.20-2853996_all_18.04.deb
+* xilinx-sc-fw-u50-5.0.27-2.e289be9_18.04.deb
 * xilinx-u50lv-gen3x4-xdma-validate_2-2900293_all_18.04.deb
 * xilinx-u50lv-gen3x4-xdma-base_2-2895310_all_18.04.deb
 
-### Update the card flash
+
+### Update the Alveo Card Flash
 After you have downloaded and installed the platform files above, use following commands and cold reboot your machine to finished the setup.
+
+For Alveo U280
+~~~
+sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u280_xdma_201920_3 
+~~~
 
 For Alveo U50:
 ~~~
@@ -66,13 +88,11 @@ sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_
 
 ## DPUv3E Overlays Setup
 
-Four kinds of DPUv3E overlays are provided for Alveo HBM card:
-* U50-6E300M: two kernels, six engines, run at maximal 300MHz
-* U50LV-9E275M: two kernels, nine engines, run at maximal 275MHz
-* U50LV-10E275M: two kernels, ten engines, run at maximal 275MHz
-* U280-14E300M: three kernels, fourteen engines, run at maximal 300MHz
-
-Please the maximal running frequency is the timing sign-off frequency of each overlays. Because of the power limitation of the card, all CNN models on each Alveo card cannot run at all the frequencies listed above. Sometimes frequency scaling-down operation is needed. For the safe working frequency on each card for the CNN models and corresponding performance, please refer to Chapter 7 of *Vitis AI Library User Guide* (ug1354).
+Four kinds of DPUv3E overlays are provided for different Alveo HBM card:
+* U50-6E300M: two kernels, six engines, maximal core clock 300MHz
+* U50LV-9E275M: two kernels, nine engines, maximal core clock 275MHz
+* U50LV-10E275M: two kernels, ten engines, maximal core clock 275MHz
+* U280-14E300M: three kernels, fourteen engines, maximal core clock 300MHz
 
 ### Get and Decompress Overlays Tarball
 In the host or docker, get to the shared Vitis AI git repository directory and use following commands to download and decompress the overlays tarball. (the download link is not available yet for BASH stage)
@@ -106,26 +126,27 @@ sudo cp alveo_xclbin-1.2.0//U50lv/10E275M/* /usr/lib
 For Alveo U280, use U280-14E300M overlay:
 ~~~
 cd ./Vitis-AI/alveo-hbm
-sudo cp alveo_xclbin-1.2.0//U280/14E300M/* /usr/lib
-~~~
-
-### Overlays Frequency Scaling Down
-You could use XRT xbutil tools to scale down the running frequency of the DPUv3E overlay before you run any VART/Library examples. 
-
-**Higher overlay frequencies then the recommendation in ug1354 could cause system reboot or other damage to your system because of the power consumption exceeding of Alveo card over the PCIe power supply limitation.**
-
-To scale down the overlay frequency:
-~~~
-/opt/xilinx/xrt/bin/xbutil clock -dx -g XXX
-~~~
-dx is the Alveo card number if more than one Alveo card exist in your system. If only one card is installed, you should use *d0*. XXX is the target frequency value, such as 220. For example, following command will set the default U50 card DPUv3E overlay frequency to 200MHz:
-~~~
-/opt/xilinx/xrt/bin/xbutil clock -d0 -g 200
+sudo cp alveo_xclbin-1.2.0/U280/14E300M/* /usr/lib
 ~~~
 
 ---
+## DPUv3E Overlay Frequency Scaling Down
 
-## Introduction to DPUv3E
+The maximal core clock frequency listed in this section is the timing sign-off frequency of each overlays, and the overlays run at their maximal core clock by default. However, because of the power limitation of the card, all CNN models on each Alveo card cannot run at all the maximal frequencies listed here. Sometimes frequency scaling-down operation is necessary. For the safe working frequency on each card for the CNN models and corresponding performance, please refer to Chapter 7 of *Vitis AI Library User Guide* (ug1354). **Higher overlay frequencies then the recommendation in ug1354 could cause system reboot or other damage to your system because of the power consumption exceeding of Alveo card over the PCIe power supply limitation.**
+
+The DPUv3E core clock is generated from an internal DCM module driven by the platform Clock_1 with the default value of 100MHz, and the core clock is always linearly proportional to Clock_1. For example, in U50LV-10E275M overlay, the 275MHz core clock is driven by 100MHz clock source. So to set the core clock of this overlay to 220MHz, we need to set the frequency of Clock_1 to (220/275*)100 = 80MHz.
+
+You could use XRT xbutil tools to scale down the running frequency of the DPUv3E overlay before you run the VART/Library examples. Before the frequency scaling-down operation, the overlays should have been programmed into the FPGA first, please refer to the example commands below to program the FPGA and scale down the frequency. These commands will set the Clock_1 to 80MHz and could be run at host or in the docker.
+
+~~~
+/opt/xilint/xrt/bin/xbutil program -p /usr/lib/dpu.xclbin
+/opt/xilinx/xrt/bin/xbutil clock -d0 -g 80
+~~~
+d0 is the Alveo card device number. For more information about **xbutil** tool, please use refer to XRT documents.
+
+---
+
+## Brief Introduction to DPUv3E
 
 DPU V3E is a high performance CNN inference IP optimized for throughput and data center workloads. DPUv3E runs with highly optimized instructions set and supports all mainstream convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, FPN, etc. 
 
