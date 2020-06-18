@@ -22,12 +22,12 @@ The output images are stored in output folder.
 
 ```
 cd $VAI_ALVEO_ROOT/apps/face_detect/
-cd ../evaluation
+cd evaluation
 #build evalution tools
 make
 cd ..
 ./test_precision.sh face_detection 
-The output will be an array. [ 0.871205 100.  0.928409]. The recall is 87.12@fp=100.
+The output will be an array. [ 0.87894  96.  0.9284]. The recall is 87.89@fp=96.
 ```
 
 ## Run Inference on Video
