@@ -12,7 +12,7 @@
   cd caffe-xilinx
   ```
 
-2. Build the code. Please follow [caffe instruction](https://edd2020.grand-challenge.org/Home/) to install all necessary packages and build it.
+2. Build the code. Please follow [caffe instruction] to install all necessary packages and build it.
   ```shell
   # Modify Makefile.config according to your caffe installation.
   cp Makefile.config.example Makefile.config
@@ -24,6 +24,7 @@
 
 1. dataset describle.
   ```
+  download dataset (https://edd2020.grand-challenge.org/Home/)
   dataset includes image file, groundtruth file and a validation image list file.
   image file: put to data/images.
   groundtruth file: put to data/labels
