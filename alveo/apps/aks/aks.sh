@@ -52,6 +52,7 @@ usage() {
   echo "                                  Possible values: [googlenet_tinyyolov3]"
   echo "                                  Possible values: [googlenet_resnet50]"
   echo "                                  Possible values: [googlenet_pp_accel]"
+  echo "                                  Possible values: [tinyyolov3_video]"
   echo "  -i  IMPL    | --impl   IMPL     Implemetation"
   echo "                                  Possible values: [cpp, py]"
   echo "  -d1 IMAGES  | --dir1   IMAGES   Classification Network's Image Directory"
@@ -128,10 +129,10 @@ then
 fi
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/apps/aks/libs
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib/python3.6/site-packages/vai/dpuv1/utils
-LD_LIBRARY_PATH=${CONDA_PREFIX}/lib:${LD_LIBRARY_PATH}
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
-export PYTHONPATH=${VAI_ALVEO_ROOT}/apps/face_detect:${VAI_ALVEO_ROOT}/apps/aks/libs:${VAI_ALVEO_ROOT}/apps/aks/libs/pykernels:$PYTHONPATH
+export PYTHONPATH=${VAI_ALVEO_ROOT}/apps/face_detect:${VAI_ALVEO_ROOT}/apps/aks/libs:${VAI_ALVEO_ROOT}/apps/aks/libs/pykernels:${PYTHONPATH}
 
 CARDS_CONNECTED=`xbutil scan | grep "xilinx_u" | wc -l`
 if [ ! -z "${NUM_FPGA}" ]
@@ -153,14 +154,14 @@ fi
 
 CPP_EXE=""
 PY_EXE=""
-AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-aks-graphmeta.tar.gz"
+AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=aksMeta_vai1p2_16062020.zip"
 # Check if the model files exists
-for name in "meta_googlenet" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2"
+for name in "meta_googlenet" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
 do
     NAME="graph_zoo/$name"
     if [[ ! -d "${NAME}" ]]; then
       echo -e "$NAME doesn't exist"
-      wget $AKS_GRAPH_META_URL -O temp.tar.gz && tar -xzvf temp.tar.gz -C graph_zoo/ && rm -rf temp.tar.gz
+      wget $AKS_GRAPH_META_URL -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
       if [[ $? != 0 ]]; then echo "Network download failed. Exiting ..."; exit 1; fi;
       break;
     fi;

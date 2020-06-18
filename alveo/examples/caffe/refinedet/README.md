@@ -24,6 +24,9 @@
 ```
 
 ```
+# Get the necessary models
+cd $VAI_ALVEO_ROOT/examples/caffe/ && python getModels.py && python replace_mluser.py --modelsdir models
+
 # Setup ml-suite Environment Variables
 source $VAI_ALVEO_ROOT/overlaybins/setup.sh
 
@@ -40,7 +43,6 @@ There are three versions of refinedet models are supported.
 
 ```
 cd $VAI_ALVEO_ROOT/examples/caffe/refinedet
-python $VAI_ALVEO_ROOT/examples/caffe/getModels.py
 
 //# Run the command below to generate compiled model for refinedet_pruned_0.8 
 python run_refinedet.py --prototxt $VAI_ALVEO_ROOT/examples/caffe/models/refinedet_pruned_0.8/trainval.prototxt --caffemodel $VAI_ALVEO_ROOT/examples/caffe/models/refinedet_pruned_0.8/trainval.caffemodel --prepare

@@ -45,6 +45,12 @@ models = [
    "https://www.xilinx.com/bin/public/openDownload?filename=models.container.caffe.inception_v2_ssd_2019-05-06_0765.zip",
 ]
 
+models_tar = [
+   "https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0.8.tar.gz",
+   "https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0.92.tar.gz",
+   "https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0.96.tar.gz"
+]
+
 # Where will we work
 workDir = os.path.dirname(os.path.realpath(__file__)) + "/TEMP"
 
@@ -79,5 +85,17 @@ for model in models:
       break
   subprocess.call(["mv",pathToParent,modelsDir])
   subprocess.call(["rm","-rf","temp.zip","models"])
+
+for model in models_tar:
+  subprocess.call(["wget",model,"-O","temp.tar.gz"])
+  subprocess.call(["tar","-xvf","temp.tar.gz"])
+  # Strip Unnecessary heirarchy
+  for Dir,SubDirs,Files in os.walk("models"):
+    if len(Files) > 0:
+      pathToParent = Dir
+      break
+  subprocess.call(["mv",pathToParent,modelsDir])
+  subprocess.call(["rm","-rf","temp.tar.gz","models"])
+
 
 shutil.rmtree(workDir)
