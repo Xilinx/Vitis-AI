@@ -102,14 +102,17 @@ echo "Running '${COMMAND[@]}' inside ${DOCKER_IMAGE_NAME}..."
 # pid 1 and SIGKILL is propagated to the process inside (jenkins can kill it).
 
 export TVM_VAI_HOME=/opt/tvm-vai
-
 ${DOCKER_BINARY} run --rm --pid=host\
     ${DOCKER_DEVICES}\
     ${WORKSPACE_VOLUMES}\
     -v ${SCRIPT_DIR}:/docker \
     -v ${WORKSPACE}:/workspace \
     -w /opt/tvm-vai \
-    -e "HOME=${TVM_VAI_HOME}"\
+    -e "CI_BUILD_USER=$(id -u -n)" \
+    -e "CI_BUILD_UID=$(id -u)"     \
+    -e "CI_BUILD_GROUP=$(id -g -n)" \
+    -e "CI_BUILD_GID=$(id -g)"     \
+    -e "CI_BUILD_HOME=/workspace"\
     -e "alias ls=ls --color=auto"\
     -e "TVM_HOME=${TVM_VAI_HOME}/tvm"\
     -e "PYXIR_HOME=${TVM_VAI_HOME}/pyxir"\
@@ -118,4 +121,5 @@ ${DOCKER_BINARY} run --rm --pid=host\
     -e "USER=root"\
     ${CI_DOCKER_EXTRA_PARAMS[@]} \
     ${DOCKER_IMAGE_NAME}\
+    bash --login /docker/user_setup.sh \
     ${COMMAND[@]}

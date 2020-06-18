@@ -46,12 +46,12 @@ Prior to running a model on the board, you need to compile the model for your ta
 
 The "tvm/tutorials/accelerators/run/" directory provides examples to run the example models in the "tvm/tutorials/accelerators/compile" directory.
 
-Once you transfer the output directory from the compilation on to the board, you could use the provided scripts to run the model on the board. Below we present an example of running the mxnet_resent_18 model using the mxnet_resnet_18.py script.
+Once you transfer the output directory from the compilation on to the board, you could use the provided scripts to run the model on the board. Below we present an example of running the mxnet_resnet_18 model using the mxnet_resnet_18.py script.
 
 
 ```sh
 $ cd ${TVM_HOME}/tutorials/accelerators/run/
-$ python3 -f "PATH_TO_COMPILED_MODEL"/mxnet_resent_18/ -d "PATH_TO_COMPILED_MODEL"/mxnet_resent_18/libdpu 
+$ python3 -f "PATH_TO_COMPILED_MODEL"/mxnet_resnet_18/ -d "PATH_TO_COMPILED_MODEL"/mxnet_resnet_18/libdpu 
 ```
 
 This script runs the model mxnet_resnet_18 model compiled using the TVM-Vitis flow on an image and produce the classification result.
