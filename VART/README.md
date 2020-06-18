@@ -219,7 +219,7 @@ If the compilation process does not report any error and the executable file `re
 | 1    | resnet50                 | ./resnet50 model_dir_for_zcu102/resnet50.elf                              |
 | 2    | resnet50_mt_py           | python3 resnet50.py 1 model_dir_for_zcu102/resnet50.elf                    |
 | 3    | inception_v1_mt_py       | python3 inception_v1.py 1 model_dir_for_zcu102/inception_v1_tf.elf               |
-| 4    | pose_detection           | ./pose_detection video/pose.webm model_dir_for_zcu102/pose_0/sp_net.elf model_dir_for_zcu102/ssd/ssd_pedestrain_pruned_0_97.elf         |
+| 4    | pose_detection           | ./pose_detection video/pose.webm model_dir_for_zcu102/sp_net.elf model_dir_for_zcu102/ssd_pedestrain_pruned_0_97.elf         |
 | 5    | video_analysis           | ./video_analysis video/structure.webm model_dir_for_zcu102/ssd_traffic_pruned_0_9.elf    |
 | 6    | adas_detection           | ./adas_detection video/adas.webm model_dir_for_zcu102/yolov3_adas_pruned_0_9.elf         |
 | 7    | segmentation             | ./segmentation video/traffic.webm model_dir_for_zcu102/fpn.elf        |
@@ -257,7 +257,7 @@ Click [DPUv3E for Alveo Accelerator Card with HBM](../alveo-hbm#dpuv3e-for-alveo
 | 1    | resnet50                 | ./resnet50 model_dir_for_U50/resnet50.xmodel                             |
 | 2    | resnet50_mt_py           | /usr/bin/python3 resnet50.py 1 model_dir_for_U50/resnet50.xmodel          |
 | 3    | inception_v1_mt_py       | /usr/bin/python3 inception_v1.py 1 model_dir_for_U50/inception_v1_tf.xmodel      |
-| 4    | pose_detection           | ./pose_detection video/pose.mp4 model_dir_for_U50/pose_0/sp_net.xmodel model_dir_for_U50/ssd/ssd_pedestrain_pruned_0_97.xmodel          |
+| 4    | pose_detection           | ./pose_detection video/pose.mp4 model_dir_for_U50/sp_net.xmodel model_dir_for_U50/ssd_pedestrain_pruned_0_97.xmodel          |
 | 5    | video_analysis           | ./video_analysis video/structure.mp4 model_dir_for_U50/ssd_traffic_pruned_0_9.xmodel    |
 | 6    | adas_detection           | ./adas_detection video/adas.avi model_dir_for_U50/yolov3_adas_pruned_0_9.xmodel         |
 | 7    | segmentation             | ./segmentation video/traffic.mp4 model_dir_for_U50/fpn.xmodel        |
