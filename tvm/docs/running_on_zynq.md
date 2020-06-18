@@ -2,21 +2,20 @@
 
 ## Overview
 
+ The TVM with Vitis AI flow contains two stages: Compilation and Execution. During the compilation a user can choose to compile a model for the target devices that are currently supported. Once a model is compiled, the generated files can be used to run the model on a target device during the Execution stage. Currently, the TVM with Vitis AI flow supports a selected number of Xilinx data center and edge devices.
+ 
+This document provides instruction to execute compiled models using the TVM with Vitis AI flow on supported Zynq devices. For more information on how to compile models please refer to the "compiling_a_model.md" document. 
 
-The TVM-Vitis flow occurs in two stages: Compilation and Execution. During the Compilation a user can choose to compile a model for the target devices that are currently supported by the flow. Subsequently, the generated files can be used to run models on a target device in the Execution. This document provides instruction to excute compiled models using the TVM-Vitis flow. For more information on how to compile models please refer to the "getting_start" document. 
 
-
-The Xilinx Deep Learning Processor Unit ([DPU]) is a configurable computation engine dedicated for convolutional neural networks. On edge devices, The TVM-Vitis flow exploits DPU hardware accelerator built for the following evaluation boards:
+The Xilinx Deep Learning Processor Unit (DPU) is a configurable computation engine dedicated for convolutional neural networks. On edge devices, The TVM with Vitis AI flow exploits [DPUv2] hardware accelerator built for the following evaluation boards:
 * [Ultra96]
 * [ZCU104]
 * [ZCU102]
 
 ## Resources
 You could find more information here:
-*
+* Board setup - Follow instruction in [Pynq-DPU] repository to download and install dpuv2 on one of the supported Zynq evaluation board.
 
-## Board Setup
-Follow instruction in [Pynq-DPU] repository to download and install DPU on one of the supported evaluation board.
 
 ### Test DPU on Pynq
 You could try testing your DPU setup on your evaluation board.
@@ -30,7 +29,7 @@ If installed properly, the output should provide information on the DPU version 
 
 ### Setup TVM Runtime
 
-The TVM-Vitis flow requires the TVM runtime to be installed on the board. Clone the tvm-release repository and run the setup script, as follows:
+The TVM with Vitis AI flow requires the TVM runtime to be installed on the board. Clone the tvm-release repository and run the setup script, as follows:
 
 ```sh
 $ cd tvm-release/
@@ -42,7 +41,7 @@ This script clones the latest compatible TVM repository and builds the TVM runti
 
 ## Executing a Compiled Model
 
-Prior to running a model on the board, you need to compile the model for your targeted evlauation board and trasfer the compiled model on to the board. Please refer to the "getting_start.md" guide for compiling a model using the TVM-Vitis flow. 
+Prior to running a model on the board, you need to compile the model for your targeted evaluation board and transfer the compiled model on to the board. Please refer to the "compiling_a_model.md" guide for compiling a model using the TVM with Vitis AI flow. 
 
 The "tvm/tutorials/accelerators/run/" directory provides examples to run the example models in the "tvm/tutorials/accelerators/compile" directory.
 
@@ -54,7 +53,7 @@ $ cd ${TVM_HOME}/tutorials/accelerators/run/
 $ python3 -f "PATH_TO_COMPILED_MODEL"/mxnet_resnet_18/ -d "PATH_TO_COMPILED_MODEL"/mxnet_resnet_18/libdpu 
 ```
 
-This script runs the model mxnet_resnet_18 model compiled using the TVM-Vitis flow on an image and produce the classification result.
+This script runs the model mxnet_resnet_18 model compiled using the TVM with Vitis AI flow on an image and produce the classification result.
 
 
 
@@ -63,7 +62,7 @@ This script runs the model mxnet_resnet_18 model compiled using the TVM-Vitis fl
 
    [Ultra96]:  https://www.xilinx.com/products/boards-and-kits/1-vad4rl.html
    [ZCU104]: https://www.xilinx.com/products/boards-and-kits/zcu104.html
-   [DPU]: https://www.xilinx.com/products/intellectual-property/dpu.html
+   [DPUv2]: https://www.xilinx.com/products/intellectual-property/dpu.html
    [Pynq-DPU]: https://github.com/Xilinx/DPU-PYNQ 
    [ZCU102]:  https://www.xilinx.com/products/boards-and-kits/ek-u1-zcu102-g.html
   
