@@ -43,6 +43,7 @@ models = [
    "https://www.xilinx.com/bin/public/openDownload?filename=models.container.caffe.squeezenet_2019-05-02_12_32.zip",
    "https://www.xilinx.com/bin/public/openDownload?filename=models.container.caffe.vgg16_2019-05-02_12_32.zip",
    "https://www.xilinx.com/bin/public/openDownload?filename=models.container.caffe.inception_v2_ssd_2019-05-06_0765.zip",
+   "https://www.xilinx.com/bin/public/openDownload?filename=U-Net.zip",
 ]
 
 models_tar = [
