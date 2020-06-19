@@ -20,7 +20,7 @@
 		- [5.3.2 Modify the Parameters](#532-modify-the-parameters)
 		- [5.3.3 Specify Connectivity for DPU Ports](#533-specify-connectivity-for-dpu-ports)
    	- [5.4 Integrate the DPU in customer platform](#54-integrate-the-dpu-in-customer-platform)
-	- [5.5 Integrate the DPU for zcu102 and zcu104 AI-SDK release](#55-integrate-the-dpu-for-zcu102-and-zcu104-ai-sdk-released)
+	- [5.5 Integrate the DPU for zcu102 and zcu104 VITIS-AI release](#55-integrate-the-dpu-for-zcu102-and-zcu104-vitis-ai-release)
 		- [5.5.1 Configue the zcu102 released project ](#551-configue-the-zcu102-released-project)
 		- [5.5.2 Configue the zcu104 released project ](#552-configue-the-zcu104-released-project)
 
@@ -85,7 +85,7 @@ The top-level directory structure shows the the major design components. The TRD
 ```
 DPU_TRD       
 ├── dpu_ip                              # rtl kernel
-│   ├── dpu_eu_v3_2_0
+│   ├── DPU 
 │   │   ├── bd
 │   │   ├── component.xml
 │   │   ├── doc
@@ -256,7 +256,7 @@ For more details about the DPU, please read [DPU IP Product Guide](https://www.x
 The DPU core number is set 2 as default setting. Modify the prj_config file in the [connectivity] part.
 
 ```
-nk=dpu_xrt_top:2
+nk=DPUCZDX8G:2
 ```
 The project will integrate 2 DPU. The user can delete this property, Then the project will integrate 1 DPU. Change the number 2 to others, The project will integrate DPU number as you want.
 
@@ -467,10 +467,10 @@ The default port connection is shown below.
 |IP|Port|Connection|
 |:---|:---|:---|
 | |M_AXI_GP0|HP0|
-|dpu_xrt_top_1|M_AXI_HP0|HP1|
+|DPUCZDX8G_1|M_AXI_HP0|HP1|
 | |M_AXI_HP2|HP2|
 | |M_AXI_GP0|HP0|
-|dpu_xrt_top_2|M_AXI_HP0|HPC0|
+|DPUCZDX8G_2|M_AXI_HP0|HPC0|
 | |M_AXI_HP2|HPC1|
 
 
@@ -519,7 +519,7 @@ steps:
 
 1.Modify the Makefile file, Update the **$XOCC_OPTS** parameters
 ```
---config ${TRD_HOME}/prj/Vitis/config_file/prj_config_102_3dpu
+--config ${TRD_HOME}/prj/Vitis/config_file/prj_config_102_3dpu_LPD
 ```
 2.
 ```
@@ -545,6 +545,38 @@ line73:`define RAM_USAGE_HIGH
 3.
 ```
 % make KERNEL=DPU DEVICE=zcu104
+```
+
+
+#### 5.5.3 Known issues
+
+1.HPC
+
+When HPC0 or HPC1 ports is used to connect DPU, we advise platform disable HPC hardware cache-coherency, which could reduce DPU latency on HPC port.
+
+label the HPC ports with the type S_AXI_HP, instead of S_AXI_HPC in xsa.tcl file
+
+```
+S_AXI_HPC0_FPD {memport "S_AXI_HP" sptag "HPC0" memory "ps_e HPC0_DDR_LOW"}
+S_AXI_HPC1_FPD {memport "S_AXI_HP" sptag "HPC1" memory "ps_e HPC1_DDR_LOW"}
+```
+
+2.DDR QOS
+
+When AXI HP0 port connects to DPU and use DisplayPort to show, if the QoS settings are not modified, the DisplayPort transmission may under-run, producing green or black frames or screen flicker intermittently during DPU running. On the other hand,increase the read and write issuing capability of the port connected to S_AXI_HP[X]_FPD may keep the ports busy with always some requests in the queue, which could improve DPU performance highly.
+
+3.ZCU104 PMIC
+
+As the default value of IOUT_OC_FAULT_LIMIT is too slow to afford dpu(multi-thread) running, thus, user could run irps5401 to adjust the fault limit of over current for running DPU models on Xilinx ZCU104 board. Otherwise, you'll see board hangs or reboot when runningsome models on ZCU104 board.
+
+User could execute **zynqmp_dpu_optimize.sh** to address issue2 and issue3
+
+```
+% tar -zxvf $TRD_HOME/app/dpu_sw_optimize.tar.gz
+
+% cd dpu_sw_optimize
+
+% ./zynqmp_dpu_optimize.sh
 ```
 
 
