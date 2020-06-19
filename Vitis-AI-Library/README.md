@@ -10,103 +10,60 @@ The Vitis AI Library is a set of high-level libraries and APIs built for efficie
 
 The Vitis AI Library provides an easy-to-use and unified interface by encapsulating many efficient and high-quality neural networks. This simplifies the use of deep-learning neural networks, even for users without knowledge of deep-learning or FPGAs. The Vitis AI Library allows users to focus more on the development of their applications, rather than the underlying hardware.
 
-
-<p align="center">
-  <img src="ai_library_diagram.png" >
-</p>
-
 For edge users, click 
 [Quick Start For Edge](#quick-start-for-edge) to get started quickly. 
 
 For cloud users, click 
 [Quick Start For Alveo](#quick-start-for-alveo) to get started quickly.
 
-Vitis AI Library directory structure introduction
---------------------------------------------------
+## Key Features And Enhancements in 1.2 Release
+1. New Alveo Boards Support:
+	* Alveo U50lv
+	* Alveo U280
+2. New Model Libraries:
+	* face recognition
+	* plate detection
+	* plate recognition
+	* medical segmentation
+3. Pytorch Model Support (for the cloud only):
+	* resnet50_pt
+	* squeezenet_pt
+	* inception_v3_pt
+4. Support for 6 new caffe models:
+	* facerec_resnet20
+	* facerec_resnet64
+	* plate_detect
+	* plate_num
+	* refinedet_baseline
+	* FPN_Res18_Medical_segmentation
+
+## Block Diagram
+
+<p align="center">
+  <img src="ai_library_diagram.png" >
+</p>
+
+## Directory Structure Introduction
 
 ```
-vitis_ai_library
+Vitis_AI_Library
 ├── benchmark
-│   ├── CMakeLists.txt
-│   ├── include
-│   └── src
 ├── classification
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── samples
-│   ├── src
-│   └── test
 ├── cmake
-│   ├── config.cmake.in
-│   ├── XilinxCommon.cmake
-│   ├── XilinxDpu.cmake
-│   ├── xilinx_version.c.in
-│   └── XilinxVersion.cmake
 ├── CMakeLists.txt
 ├── cmake.sh
 ├── Copyright.txt
 ├── dpu_task
-│   ├── CMakeLists.txt
-│   ├── Doxyfile
-│   ├── include
-│   ├── src
-│   ├── test
-│   └── util
 ├── facedetect
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── facefeature
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── facelandmark
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── general
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── lanedetect
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── math
-│   ├── buildme
-│   ├── buildtest
-│   ├── CMakeLists.txt
-│   ├── cscope.files
-│   ├── include
-│   ├── src
-│   ├── submodule
-│   ├── test
-│   └── update_submodule.sh
 ├── medicalsegmentation
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── model_config
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── multitask
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── openpose
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── overview
 │   ├── cmake
 │   ├── CMakeLists.txt
@@ -135,75 +92,19 @@ vitis_ai_library
 │       ├── yolov2
 │       └── yolov3
 ├── platedetect
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── platenum
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── platerecog
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── posedetect
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── refinedet
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── reid
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── segmentation
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── ssd
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── tfssd
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── tracker
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 ├── usefultools
-│   ├── CMakeLists.txt
-│   ├── readme
-│   ├── settings.sh.in
-│   └── src
 ├── xnnpp
-│   ├── CMakeLists.txt
-│   ├── cscope.files
-│   ├── include
-│   └── src
 ├── yolov2
-│   ├── CMakeLists.txt
-│   ├── include
-│   ├── src
-│   └── test
 └── yolov3
-    ├── CMakeLists.txt
-    ├── include
-    ├── src
-    └── test
 ```
 
 ## Quick Start For Edge
@@ -422,17 +323,24 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 ```
 
 ### Running Vitis AI Library Examples for U50/U50lv/U280
+Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
+Thus, `Vitis-AI-Libray` is located in the path of `/workspace/Vitis_AI_Library/` in the docker system. 
+
+**`/workspace/Vitis_AI_Library/` is the path for the following example.**
+ 
+If you encounter any path errors in running examples, check to see if you follow the steps above.
+
 1. Download the [vitis_ai_library_r1.2_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_images.tar.gz) and [vitis_ai_library_r1.2_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz) packages and untar them.
 ```
 $cd /workspace
 $wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_images.tar.gz -O vitis_ai_library_r1.2_images.tar.gz
 $wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz -O vitis_ai_library_r1.2_video.tar.gz
-$tar -xzvf vitis_ai_library_r1.2_images.tar.gz -C Vitis-ai/Vitis-AI-Library/overview
-$tar -xzvf vitis_ai_library_r1.2_video.tar.gz -C Vitis-ai/Vitis-AI-Library/overview
+$tar -xzvf vitis_ai_library_r1.2_images.tar.gz -C Vitis-AI-Library/overview
+$tar -xzvf vitis_ai_library_r1.2_video.tar.gz -C Vitis-AI-Library/overview
 ```
 2. Enter the directory of sample and then compile it. Take `facedetect` as an example.
 ```
-$cd /workspace/vitis-ai/vitis_ai_library/overview/samples/facedetect
+$cd /workspace/Vitis_AI_Library/overview/samples/facedetect
 $bash -x build.sh
 ```
 3. Run the image test example.

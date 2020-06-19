@@ -211,8 +211,8 @@ If the compilation process does not report any error and the executable file `re
 	```
 	For examples with video input, only `webm` and `raw` format are supported by default with the official system image. 
 	If you want to support video data in other formats, you need to install the relevant packages on the system. 
-<details>
- <summary><b>Click here to view Launching Commands for Vitis AI Samples on ZCU102 </b></summary>
+
+ <summary><b>Launching Commands for VART Samples on ZCU102 </b></summary>
  
 | No\. | Example Name             | Command                                                      |
 | :--- | :----------------------- | :----------------------------------------------------------- |
@@ -224,7 +224,7 @@ If the compilation process does not report any error and the executable file `re
 | 6    | adas_detection           | ./adas_detection video/adas.webm model_dir_for_zcu102/yolov3_adas_pruned_0_9.elf         |
 | 7    | segmentation             | ./segmentation video/traffic.webm model_dir_for_zcu102/fpn.elf        |
 
-</details>
+
 
 ## Quick Start For Alveo
 ### Setting Up the Host
@@ -232,6 +232,13 @@ If the compilation process does not report any error and the executable file `re
 Click [DPUv3E for Alveo Accelerator Card with HBM](../alveo-hbm#dpuv3e-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
 
 ### Running Vitis AI Examples
+Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
+Thus, `VART` is located in the path of `/workspace/VART/` in the docker system. 
+
+**`/workspace/VART/` is the path for the following example.**
+ 
+If you encounter any path errors in running examples, check to see if you follow the steps above.
+
 1. Download the [vitis_ai_runtime_r1.2.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.2_image_video.tar.gz) package and unzip it.
 	```
 	$cd /workspace
@@ -249,8 +256,8 @@ Click [DPUv3E for Alveo Accelerator Card with HBM](../alveo-hbm#dpuv3e-for-alveo
 	```
 	**Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
-<details>
- <summary><b>Click here to view Launching Commands for Vitis AI Samples on U50 </b></summary>
+
+ <summary><b>Launching Commands for VART Samples on U50 </b></summary>
  
 | No\. | Example Name             | Command                                                   |
 | :--- | :----------------------- | :-------------------------------------------------------- |
@@ -262,4 +269,4 @@ Click [DPUv3E for Alveo Accelerator Card with HBM](../alveo-hbm#dpuv3e-for-alveo
 | 6    | adas_detection           | ./adas_detection video/adas.avi model_dir_for_U50/yolov3_adas_pruned_0_9.xmodel         |
 | 7    | segmentation             | ./segmentation video/traffic.mp4 model_dir_for_U50/fpn.xmodel        |
 
-</details>
+
