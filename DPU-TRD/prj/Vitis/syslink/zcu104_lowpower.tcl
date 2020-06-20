@@ -68,10 +68,10 @@ set_property -dict [list \
 		   CONFIG.CLKOUT7_PHASE_ERROR {87.180}] [get_bd_cells clk_wiz_0]
 
 #re-connect the DPU's lowpower signale
-disconnect_bd_net /clk_wiz_0_clk_out8 [get_bd_pins dpu_xrt_top_1/ap_clk_2]
-disconnect_bd_net /proc_sys_reset_6_peripheral_aresetn [get_bd_pins dpu_xrt_top_1/ap_rst_n_2]
-connect_bd_net [get_bd_pins dpu_xrt_top_1/ap_clk_2] [get_bd_pins clk_wiz_0/clk_out6]
-connect_bd_net [get_bd_pins dpu_xrt_top_1/dpu_clk_dsp_ce] [get_bd_pins clk_wiz_0/clk_out6_ce]
-connect_bd_net [get_bd_pins dpu_xrt_top_2/dpu_clk_dsp_ce] [get_bd_pins clk_wiz_0/clk_out7_ce]
-connect_bd_net [get_bd_pins dpu_xrt_top_1/ap_rst_n_2] [get_bd_pins proc_sys_reset_5/peripheral_aresetn]
+disconnect_bd_net /clk_wiz_0_clk_out8 [get_bd_pins DPUCZDX8G_1/ap_clk_2]
+disconnect_bd_net /proc_sys_reset_6_peripheral_aresetn [get_bd_pins DPUCZDX8G_1/ap_rst_n_2]
+connect_bd_net [get_bd_pins DPUCZDX8G_1/ap_clk_2] [get_bd_pins clk_wiz_0/clk_out6]
+connect_bd_net [get_bd_pins DPUCZDX8G_1/dpu_clk_dsp_ce] [get_bd_pins clk_wiz_0/clk_out6_ce]
+connect_bd_net [get_bd_pins DPUCZDX8G_2/dpu_clk_dsp_ce] [get_bd_pins clk_wiz_0/clk_out7_ce]
+connect_bd_net [get_bd_pins DPUCZDX8G_1/ap_rst_n_2] [get_bd_pins proc_sys_reset_5/peripheral_aresetn]
 

@@ -53,7 +53,7 @@
 // | RAM Usage Low  : `define RAM_USAGE_LOW                 
 // |------------------------------------------------------|
 
-`define RAM_USAGE_HIGH
+`define RAM_USAGE_LOW
 
 // |------------------------------------------------------|
 // | Channel Augmentation Configuration

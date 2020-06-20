@@ -20,9 +20,10 @@
 		- [5.3.2 Modify the Parameters](#532-modify-the-parameters)
 		- [5.3.3 Specify Connectivity for DPU Ports](#533-specify-connectivity-for-dpu-ports)
    	- [5.4 Integrate the DPU in customer platform](#54-integrate-the-dpu-in-customer-platform)
-	- [5.5 Integrate the DPU for zcu102 and zcu104 AI-SDK release](#55-integrate-the-dpu-for-zcu102-and-zcu104-ai-sdk-released)
+	- [5.5 Integrate the DPU for zcu102 and zcu104 VITIS-AI release](#55-integrate-the-dpu-for-zcu102-and-zcu104-vitis-ai-release)
 		- [5.5.1 Configue the zcu102 released project ](#551-configue-the-zcu102-released-project)
 		- [5.5.2 Configue the zcu104 released project ](#552-configue-the-zcu104-released-project)
+		- [5.5.3 Known Issues ](#553-known-issues)
 
 ## 1 Revision History
 
@@ -66,7 +67,7 @@ Required:
   - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [XRT 2020.1](https://github.com/Xilinx/XRT/tree/2020.1)
-  - [zcu102 dpu platform](https://www.xilinx.com/bin/public/openDownload?filename=zcu102_dpu_2019.2.zip)
+  - [zcu102 base platform](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
   - [mpsoc common system](https://www.xilinx.com/member/forms/download/xef.html?filename=xilinx-zynqmp-common-v2020.1.tar.gz)
   - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
@@ -85,7 +86,7 @@ The top-level directory structure shows the the major design components. The TRD
 ```
 DPU_TRD       
 ├── dpu_ip                              # rtl kernel
-│   ├── dpu_eu_v3_2_0
+│   ├── DPU 
 │   │   ├── bd
 │   │   ├── component.xml
 │   │   ├── doc
@@ -101,6 +102,7 @@ DPU_TRD 
 ├── app       
 │   ├── models
 │   ├── img 
+│   ├── dpu_sw_optimize.tar.gz 
 │   └── resnet50.tar.gz                 # resnet50 application
 └── prj 
     └── Vitis
@@ -256,7 +258,7 @@ For more details about the DPU, please read [DPU IP Product Guide](https://www.x
 The DPU core number is set 2 as default setting. Modify the prj_config file in the [connectivity] part.
 
 ```
-nk=dpu_xrt_top:2
+nk=DPUCZDX8G:2
 ```
 The project will integrate 2 DPU. The user can delete this property, Then the project will integrate 1 DPU. Change the number 2 to others, The project will integrate DPU number as you want.
 
@@ -416,7 +418,8 @@ Need set the following steps.
 3. Modify the **config_file/prj_config_102_3dpu_LPD **.
 ```
 #prop=run.impl_1.strategy=Performance_NetDelay_low
-prop=run.impl_1.strategy=Power_DefaultOpt 
+prop=run.impl_1.strategy=Performance_Explore
+prop=run.impl_1.steps.power_opt_design.is_enabled=1
 ```
 
 The main function of the tcl file:
@@ -467,10 +470,10 @@ The default port connection is shown below.
 |IP|Port|Connection|
 |:---|:---|:---|
 | |M_AXI_GP0|HP0|
-|dpu_xrt_top_1|M_AXI_HP0|HP1|
+|DPUCZDX8G_1|M_AXI_HP0|HP1|
 | |M_AXI_HP2|HP2|
 | |M_AXI_GP0|HP0|
-|dpu_xrt_top_2|M_AXI_HP0|HPC0|
+|DPUCZDX8G_2|M_AXI_HP0|HPC0|
 | |M_AXI_HP2|HPC1|
 
 
@@ -519,7 +522,7 @@ steps:
 
 1.Modify the Makefile file, Update the **$XOCC_OPTS** parameters
 ```
---config ${TRD_HOME}/prj/Vitis/config_file/prj_config_102_3dpu
+--config ${TRD_HOME}/prj/Vitis/config_file/prj_config_102_3dpu_LPD
 ```
 2.
 ```
@@ -539,8 +542,8 @@ steps:
 
 Need to modify the dpu_conf.vh file
 ```
-line52:`define URAM_ENABLE
-line73:`define RAM_USAGE_HIGH
+line35:`define URAM_ENABLE
+line56:`define RAM_USAGE_HIGH
 ```
 3.
 ```
@@ -548,3 +551,38 @@ line73:`define RAM_USAGE_HIGH
 ```
 
 
+#### 5.5.3 Known issues
+
+1.HPC
+
+When HPC0 or HPC1 port is used to connect DPU, we advise platform disable HPC hardware cache-coherency, which could reduce DPU latency on HPC port.
+
+label the HPC ports with the type S_AXI_HP, instead of S_AXI_HPC in xsa.tcl file in your platform.
+
+```
+S_AXI_HPC0_FPD {memport "S_AXI_HP" sptag "HPC0" memory "ps_e HPC0_DDR_LOW"}
+S_AXI_HPC1_FPD {memport "S_AXI_HP" sptag "HPC1" memory "ps_e HPC1_DDR_LOW"}
+```
+
+2.DDR QOS
+
+When AXI HP0 port connects to DPU and use DisplayPort to display, if the QoS settings are not modified, the DisplayPort transmission may under-run, producing black frames or screen flicker intermittently during DPU running. Apart from QoS settings, increasing the read and write issuing capability (outstanding commands) of DPU connected AXI FIFO interface S_AXI_HPC{0, 1}_FPD or S_AXI_HP{0:3}_FPD or S_AXI_LPD may keep the ports busy with always some requests in the queue, which could improve DPU performance highly. [solution](#fine-tune)
+
+3.ZCU104 PMIC
+
+As the default value of IOUT_OC_FAULT_LIMIT on PMIC chip irps5401 is too low to afford dpu running, thus, user could adjust the fault limit of over current for running DPU models on Xilinx ZCU104 board. Otherwise, you'll see board hangs or reboot when running some models on ZCU104 board. [solution](#fine-tune)
+
+##### fine-tune 
+
+User could execute **zynqmp_dpu_optimize.sh** on target board to address issue2 and issue3
+
+Copy **$TRD_HOME/app/dpu_sw_optimize.tar.gz** to target board, after linux boot-up, run: 
+
+```shell
+% tar -zxvf dpu_sw_optimize.tar.gz
+
+% ./dpu_sw_optimize/zynqmp/zynqmp_dpu_optimize.sh
+
+(refer to dpu_sw_optimize/zynqmp/README.md get more info)
+
+```

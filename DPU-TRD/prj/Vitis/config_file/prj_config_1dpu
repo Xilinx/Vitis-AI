@@ -17,14 +17,14 @@
 
 [clock]
 
-freqHz=300000000:dpu_xrt_top_1.aclk
-freqHz=600000000:dpu_xrt_top_1.ap_clk_2
+freqHz=300000000:DPUCZDX8G_1.aclk
+freqHz=600000000:DPUCZDX8G_1.ap_clk_2
 
 [connectivity]
 
-sp=dpu_xrt_top_1.M_AXI_GP0:HPC0
-sp=dpu_xrt_top_1.M_AXI_HP0:HP0
-sp=dpu_xrt_top_1.M_AXI_HP2:HP1
+sp=DPUCZDX8G_1.M_AXI_GP0:HPC0
+sp=DPUCZDX8G_1.M_AXI_HP0:HP0
+sp=DPUCZDX8G_1.M_AXI_HP2:HP1
 
 
 [advanced]
