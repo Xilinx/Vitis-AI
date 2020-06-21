@@ -229,7 +229,7 @@ If the compilation process does not report any error and the executable file `re
 ## Quick Start For Alveo
 ### Setting Up the Host
 
-Click [DPU-CAHX8H for Alveo Accelerator Card with HBM](../alveo-hbm#dpuv3e-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
+Click [DPUCAHX8H for Alveo Accelerator Card with HBM](../alveo-hbm#dpuv3e-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
 
 ### Running Vitis AI Examples
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 

@@ -281,7 +281,7 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Alveo
 ### Setting Up the Host for U50/U50lv/U280
 
-1. Click [DPU-CAHX8H for Alveo Accelerator Card with HBM](../alveo-hbm#dpuv3e-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
+1. Click [DPUCAHX8H for Alveo Accelerator Card with HBM](../alveo-hbm#dpuv3e-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
 
 2. Select the model for your platform, download the model packet and install it. Take `U50` as an example. 
 ```
