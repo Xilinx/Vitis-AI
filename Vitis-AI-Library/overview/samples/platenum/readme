@@ -29,9 +29,9 @@ Important:
    run the executable file.
     
     sample : 
-  ./test_jpeg_platenum plate_num samples_platenum.jpg
-  WARNING: Logging before InitGoogleLogging() is written to STDERR
-  I0602 02:19:25.497160  6079 process_result.hpp:24] result.width 288 result.height 96 result.plate_color Yellow result.plate_number wanK42523
+    ./test_jpeg_platenum plate_num samples_platenum.jpg
 
+    WARNING: Logging before InitGoogleLogging() is written to STDERR
+    I0621 14:18:26.834309 16913 process_result.hpp:24] result.width 288 result.height 96 result.plate_color Blue result.plate_number zheDZ2211
 
    

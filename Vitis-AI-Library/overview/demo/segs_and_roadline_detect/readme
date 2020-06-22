@@ -15,6 +15,8 @@
  */
 compile:
   sh build.sh
+  or
+  sh builddrm.sh(board only)
 
 4 ways multitask(segmetation + detect) + roadline, running on board ZCU102.
   This sample include 4 ways multitask and 1 way roadline detection.Multitask windows are in the left of screen anf the roadline detection is in the right.

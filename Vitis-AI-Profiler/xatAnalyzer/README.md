@@ -4,5 +4,5 @@ vaiProfilerAnalyzer is a tool that could help analysizing .xat file from vaitrac
 
 run: input .xat file, output a json format file
 ```bash
-$ python3 vaiProfilerAnalyzer.py src.xat output.json
+$ python3 analyzer.py src.xat output.json
 ```
