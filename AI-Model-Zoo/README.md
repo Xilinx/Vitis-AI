@@ -274,7 +274,7 @@ For a Pytorch model, you should see the following directory structure:
     │                                                       
     ├── quantized                                                            
     │   ├── _int.xmodel                 # Deployed model.  
-    │   ├── _int.py                     # Converted NNDCT format model.
+    │   ├── _int.py                     # Converted vai_q_pytorch format model.
     │   └── quant_info.json             # Quantization steps of tensors got. Please keep it for evaluation of quantized model.
     │                                           
     └── float                           
