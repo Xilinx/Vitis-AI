@@ -17,7 +17,7 @@ Apache TVM with Vitis-AI is provided through a docker image. The provided script
 The following command will create the TVM with Vitis-AI image
 
 ```sh
-$ bash ./build.sh ci_vai_11 bash
+$ bash ./build.sh ci_vai_1x bash
 ```
 This downloads Apache TVM, installs the necessary dependencies, and builds with Vitis-AI support.
 
@@ -25,7 +25,7 @@ This downloads Apache TVM, installs the necessary dependencies, and builds with 
 
 Once finished builiding the image, run the docker image using the run script.
 ```sh
-$ bash ./bash.sh tvm.ci_vai_11
+$ bash ./bash.sh tvm.ci_vai_1x
 # ...
 # Now inside docker...
 $ conda activate vitis-ai-tensorflow
