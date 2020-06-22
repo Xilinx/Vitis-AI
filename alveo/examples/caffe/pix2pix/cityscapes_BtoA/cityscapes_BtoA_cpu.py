@@ -13,8 +13,9 @@
 # limitations under the License.
 
 
-## pix2pix caffe interference 
-# facades_BtoA (architectural labels --> photo)
+
+##pix2pix caffe interference
+# cityscapes B to A
 
 #%% import package
 
@@ -27,8 +28,8 @@ import matplotlib.pyplot as plt
 import skimage.io as io
 import argparse
 
-#%% define functions
 
+#%% define functions
 
 
 def norm_image(IMG):
@@ -39,8 +40,9 @@ def norm_image(IMG):
     # assure integer 8bit
     output1 = output1.astype('uint8')    
     return output1
+        
 
-
+        
 #%% main 
 if __name__ == "__main__":    
 
@@ -54,7 +56,7 @@ if __name__ == "__main__":
         os.mkdir(args["output_path"])  
         
     # model configuration
-    model_def = 'xfdnn_deploy.prototxt'
+    model_def = './quantize_results/deploy.prototxt'
     model_weights = './quantize_results/deploy.caffemodel'
     net = caffe.Net(model_def, model_weights, caffe.TEST) 
 
@@ -81,12 +83,10 @@ if __name__ == "__main__":
         # normalize output [0,255]
         fake_B1 = norm_image(np.transpose(fake_B[0,:,:,:],(1,2,0)))
         # save the output image as file
-        filename = fn+'_fpga.jpg'
+        filename = fn+'_cpu.jpg'
         io.imsave(args["output_path"]+filename,fake_B1)       
         print('output file is saved in '+args["output_path"])
     else:
         print('Please provide input image as "--image filename"' )
-             
-    
-    
+
 

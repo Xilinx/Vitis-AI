@@ -59,6 +59,6 @@ int AddKernelBase::exec_async (
     float* output = (float*)(out[0]->data());
 
     output[0] = input[0] + params->_intParams["adder"];
-    std::cout << "Node Output : " << output[0] << std::endl;
+    std::cout << "Node Output : " << params << " " << input[0] << " " << output[0] << std::endl;
     return -1;
 }
