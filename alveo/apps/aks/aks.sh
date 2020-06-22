@@ -221,7 +221,7 @@ elif [ "$MODEL" == "facedetect" ]; then
   echo ""
   CPP_EXE=examples/bin/facedetect.exe
   PY_EXE=examples/facedetect.py
-  exec_args="$C_DIRECTORY"
+  exec_args="$D_DIRECTORY"
 fi
 
 if [[ "$IMPL" == "cpp" ]]; then

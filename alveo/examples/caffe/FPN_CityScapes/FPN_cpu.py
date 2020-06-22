@@ -1,31 +1,17 @@
-# Copyright 2019 Xilinx Inc.
-# 
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-
-## semantic segmenation
+# semantic segmenation
+# caffe model from deephi
 
 
 #%% import packages
 import numpy as np
 from PIL import Image
-import argparse
 import os
 #import sys
 #import glob
 import cv2
+#import matplotlib.pyplot as plt
 #import time
-import matplotlib.pyplot as plt
+
 import caffe
 
 
@@ -64,7 +50,7 @@ def label_img_to_color(img):
             img_color[row, col] = np.array(label_to_color[label])
     return img_color
 
-def segment(net, img_file):
+def segment_output(net, img_file):
     IMG_MEAN = np.array((104,117,123))  # mean_values for B, G,R
     INPUT_W, INPUT_H = 512, 256 # W, H  512, 256
     TARGET_W, TARGET_H = 2048, 1024
@@ -80,45 +66,46 @@ def segment(net, img_file):
     net.blobs['data'].reshape(1, *in_.shape)
     net.blobs['data'].data[...] = in_
     
+#    t_s = time.time()  
 
     net.forward()
+#    t = time.time() - t_s
+#    print('it took {:.3f}s'.format(t))
     out = net.blobs['score'].data[0].argmax(axis=0)
 
     #save color_output
+#    gray_to_save = cv2.resize(out, dsize=(w,h), interpolation=cv2.INTER_NEAREST)
     pred_label_color = label_img_to_color(out)
     color_to_save = Image.fromarray(pred_label_color.astype(np.uint8))
     color_to_save = color_to_save.resize((w,h))
     return color_to_save
 
-    
+
+
 #%% main 
-if __name__ == "__main__":    
-   
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--output_path', default="./test_output/", help='Optionally, save all generated outputs in specified folder')
-    parser.add_argument('--image', default=None, help='User can provide an image to run')
-    args = vars(parser.parse_args())
     
-    VAI_ALVEO_ROOT=os.environ["VAI_ALVEO_ROOT"]
-    if not os.path.isdir(args["output_path"]):
-        os.mkdir(args["output_path"])
-
-    # model configuration
-    model_def = 'xfdnn_deploy.prototxt'
-    model_weights = VAI_ALVEO_ROOT+'/examples/caffe/models/FPN_CityScapes/deploy.caffemodel'
-    net = caffe.Net(model_def, model_weights, caffe.TEST) 
 
     
-    if args["image"]:
-        fn = args["image"]
-        # create segmentation image
-        semantic_seg = segment(net, fn)
-        # save output
-        filename = 'seg_'+fn
-        semantic_seg.save(args["output_path"]+filename)
-        print('output file is saved in '+args["output_path"])
-    else:
-        print('Please provide input image as "--image filename"' )
+# model configuration for cpu
+model_def = './quantize_results/deploy.prototxt'
+model_weights = './quantize_results/deploy.caffemodel'
+
+net = caffe.Net(model_def, model_weights, caffe.TEST) 
 
 
+# file path
+img_path = './cityscapes/frankfurt/'
+output_path = './cpu_output/'
 
+image_list = os.listdir(img_path)
+
+if not os.path.exists('cpu_output'):
+    os.mkdir('cpu_output')
+
+print('segmentation images will be stored in cpu_output folder.')    
+for img in image_list[:30]:   
+    print(img)
+    # create segmentation image
+    semantic_seg = segment_output(net, img_path+img)
+    # save output
+    semantic_seg.save(output_path+img)

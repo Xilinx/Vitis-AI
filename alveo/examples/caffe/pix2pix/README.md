@@ -1,31 +1,30 @@
-
-
-## pix2pix Caffe Models:
+## Pix2Pix Caffe Models
 
 ### Model list
 
-bw2color
+- bw2color
+- cityscapes_AtoB
+- cityscapes_BtoA
+- facades_BtoA
+- maps_AtoB
+- maps_BtoA
 
-cityscapes_AtoB
 
-cityscapes_BtoA
+## activate Caffe conda environment
 
-facades_BtoA
+Please activate Caffe conda environment using the following commands.
 
-maps_AtoB
+```
+$ conda activate vitis-ai-caffe
+$ source /workspace/alveo/overlaybins/setup.sh
+```
 
-maps_BtoA
-
- 
 
 ### Get the caffe models 
 
-download the caffe models. 
+Download the caffe models. 
+
 ```
-cd /workspace/alveo/examples/caffe 
-python getModels.py
+$ cd /workspace/alveo/examples/caffe 
+$ python getModels.py
 ```
-
-
-
-

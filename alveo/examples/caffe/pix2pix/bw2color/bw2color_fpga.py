@@ -21,6 +21,8 @@
 import numpy as np
 import os
 import caffe
+import matplotlib
+matplotlib.use('PS')
 import matplotlib.pyplot as plt
 import skimage.io as io
 import argparse
@@ -52,7 +54,7 @@ if __name__ == "__main__":
 
     # model configuration
     model_def = 'xfdnn_deploy.prototxt'
-    model_weights = VAI_ALVEO_ROOT+'/examples/caffe/models/bw2color/deploy.caffemodel'
+    model_weights = './quantize_results/deploy.caffemodel'
     net = caffe.Net(model_def, model_weights, caffe.TEST) 
 
     
@@ -78,7 +80,7 @@ if __name__ == "__main__":
         # normalize output [0,255]
         fake_B1 = norm_image(np.transpose(fake_B[0,:,:,:],(1,2,0)))
         # save the output image as file
-        filename = 'color_'+fn
+        filename = fn+'_fpga.jpg'
         io.imsave(args["output_path"]+filename,fake_B1)       
         print('output file is saved in '+args["output_path"])
     else:

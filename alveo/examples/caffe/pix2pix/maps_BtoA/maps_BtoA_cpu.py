@@ -14,11 +14,12 @@
 
 
 ## pix2pix caffe interference 
-# facades_BtoA (architectural labels --> photo)
+# maps B to A
 
 #%% import package
 
 import numpy as np
+import cv2
 import os
 import caffe
 import matplotlib
@@ -27,8 +28,28 @@ import matplotlib.pyplot as plt
 import skimage.io as io
 import argparse
 
+
 #%% define functions
 
+
+
+def load_images(fn):
+    # load image
+    img = cv2.imread(fn)
+    
+    # resize as 256 x 256
+    img_A256 = cv2.resize(img,(256,256) )
+      
+    # BGR to RGB
+    img_A1 = img_A256[...,::-1]    
+               
+    # normalize [-1,1]
+    img_A2 = (img_A1 / 127.5) - 1
+    
+    # channel transpose NHWC to NCHW
+    img_A3 = np.transpose(img_A2,(2,0,1))
+    
+    return img_A3
 
 
 def norm_image(IMG):
@@ -39,7 +60,7 @@ def norm_image(IMG):
     # assure integer 8bit
     output1 = output1.astype('uint8')    
     return output1
-
+        
 
 #%% main 
 if __name__ == "__main__":    
@@ -54,7 +75,7 @@ if __name__ == "__main__":
         os.mkdir(args["output_path"])  
         
     # model configuration
-    model_def = 'xfdnn_deploy.prototxt'
+    model_def = './quantize_results/deploy.prototxt'
     model_weights = './quantize_results/deploy.caffemodel'
     net = caffe.Net(model_def, model_weights, caffe.TEST) 
 
@@ -62,18 +83,14 @@ if __name__ == "__main__":
     if args["image"]:
         fn = args["image"]
         # load image
-        image = plt.imread(fn)
+        image = load_images(fn)
 
         ## preprocessing
         # add one dimension
         batch_A = np.expand_dims(image,0)
-        # normalize [0,255] --> [-1,1]
-        batch_A1 = (batch_A / 127.5) - 1  
-        # channel transpose NHWC to NCHW
-        batch_A2 = np.transpose(batch_A1,(0,3,1,2))
 
         ## net forward (feed into caffe network)
-        net.blobs['input_3'].data[...] = batch_A2
+        net.blobs['input_3'].data[...] = batch_A
         net.forward()
         fake_B = net.blobs['activation_10'].data
 
@@ -81,12 +98,8 @@ if __name__ == "__main__":
         # normalize output [0,255]
         fake_B1 = norm_image(np.transpose(fake_B[0,:,:,:],(1,2,0)))
         # save the output image as file
-        filename = fn+'_fpga.jpg'
+        filename = fn+'_cpu.jpg'
         io.imsave(args["output_path"]+filename,fake_B1)       
         print('output file is saved in '+args["output_path"])
     else:
         print('Please provide input image as "--image filename"' )
-             
-    
-    
-

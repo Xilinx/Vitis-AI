@@ -139,9 +139,9 @@ All of them come with prebuilt executables. Use following commands to run these 
 - Face Detect
     ```sh
     # C++
-    ./aks.sh -m facedetect -d1 ../face_detect/FDDB
+    ./aks.sh -m facedetect -d2 ../face_detect/FDDB
     # Python
-    ./aks.sh -m facedetect -i py -d1 ../face_detect/FDDB
+    ./aks.sh -m facedetect -i py -d2 ../face_detect/FDDB
     ```
 
     >**INFO:** This writes the annotated output images to `face_outputs` directory. A corresponding text file representation is written to `face_results.txt`. This result writing has huge impact on application throughput. If you want to turn-off writing results and improve the performance, please provide empty strings to `save_result_txt` and `save_result_imgdir` fields in `graph_zoo/graph_facedetect.json`.
@@ -219,6 +219,10 @@ The report shows details on how each worker thread spent its time.
     - High active time doesn't mean async kernel is running with maximum performance. It only means there are jobs queued up in the async kernel.
 
 In the above example, both the preprocessing threads (ClassificationImreadPreProcess_*) are running at 99.5% utilization. It gives an hint that allotting more worker threads to `ClassificationImreadPreProcess` kernel would give better performance in this case.
+
+Pushing jobs to AKS takes very less time. So to limit the memory usage, AKS limits the maximum number of active jobs in the system manager to **128**. This limit can be controlled with environment variable, **`AKS_MAX_CONCURRENT_JOBS`**. For example: **`export AKS_MAX_CONCURRENT_JOBS = 32`**. 
+
+Depending upon the situation, this limit will have to be varied. If a graph's nodes generate large temporary data, this may have to be reduced to a lower value to limit overall memory usage. If the graph has very less execution time and memory usage, then this limit has to be increased to push more jobs to the system to get better performance.
 
 ## Performance
 These results are collected using a local server with below specs.
