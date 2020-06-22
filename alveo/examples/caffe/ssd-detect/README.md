@@ -1,6 +1,20 @@
 
 ## Caffe Inception_v2 SSD Model
 
+### Setup
+> **Note:** Skip, If you have already run the below steps.
+
+  Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe 
+  ```
+
+  Setup the Environment
+
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
+
 ### Data Preparation
 
 Download VOC2007 dataset. 
@@ -31,9 +45,6 @@ The format of `calib.txt` used in calibration phase of `vai_q_caffe` is as follo
 ```sh
 # Get the necessary models
 cd ${VAI_ALVEO_ROOT}/examples/caffe/ && python getModels.py && python replace_mluser.py --modelsdir models
-
-# Setup ml-suite Environment Variables
-source ${VAI_ALVEO_ROOT}/overlaybins/setup.sh
 ```
 
 ### Prepare a model for inference

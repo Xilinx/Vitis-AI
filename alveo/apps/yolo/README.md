@@ -6,13 +6,13 @@ Currently 6 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_y
 
 ## Running the Application
  To run:
- 1. Connect to F1 or Local Hardware
- 
- 2. Setup the docker/container. Please refer to [Getting Started](https://github.com/Xilinx/Vitis-AI#getting-started) for details on setting up the container.
- 
- 4. `cd $VAI_ALVEO_ROOT/apps/yolo`
+ 1. `conda activate vitis-ai-caffe`
 
- 5. Run it : `./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize`
+ 2. `source /workspace/alveo/overlaybins/setup.sh`
+
+ 3. `cd $VAI_ALVEO_ROOT/apps/yolo`
+
+ 4. Run it : `./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize`
     - Output results will be saved as text files as well as images in the directory `out_labels/`
  
  5. Familiarize yourself with the script usage by: `./detect.sh -h`  
@@ -131,21 +131,21 @@ You may get a different number based on your system performance.
 
 |Network | Input Resolution | mAP on Caffe (FP32) | mAP on FPGA (int8) | HW latency (ms) | peak throughput / PE (fps) | preproc latency (ms) | postproc latency (ms) | 
 |:-----:|:-----:|:-----:|:------:|:-----:|:-----:|:-----:|:------:|
-|yolo_v2          | 224x224 | 28.03 | 27.86 | 5.67 |	176.37 | 7.83 | 0.51 |
-|                 |	416x416	|38.75	|38.36|	12.86 |	77.76	| 9.32 |	1.90 |
-|                 |	608x608	|42.23|	41.6|	24.51|	40.80|	11.89|	4.49|
-|yolo_v2_prelu    |	224x224	|27.5|	26.84|	5.86|	170.65|	8.00|	0.47|
-|                 |	416x416|	40.07|	38.71|	13.33|	75.02|	9.25|	1.93|
-|                 |	608x608	|45.38|	44.02|	25.26|	39.59|	11.81|	4.51|
-| yolo_v3_spp     |	224x224	|47.1|	45.91|	8.38|	119.33 |	7.77|	1.63|
-|                 |	416x416	|57.23|	56.12|	25.96|	38.52|	9.49|	5.67|
-|                 |	608x608|	60.61|	59.46|	58.49|	17.1|	11.88|	10.50|
-|standard_yolo_v3 |	224x224|	47.17|	45.93|	8.03|	124.53 |	7.60|	1.60|
-|                 |416x416|	55.92|	55.06|	24.82|	40.29|	9.42|	5.63|
-|                 |608x608	|57.78|	56.88|	56.46|	17.71|	11.89|	10.64|
-|tiny yolo v3     |	224x224	|24.36|	21.7|	1.30|	769.23|	7.59|	0.40|
-|                 |416x416	|32.59|	29.62|	3.17|	315.46|	9.55|	1.50|
-|                 |608x608|	31.53|	30.11|	6.05|	165.29|	12.01|	3.55|
-|tiny yolo v2 voc |224x224	| 42.96|	41.99|	1.97|	506.84|	7.85  |	0.26|
-|                 |416x416	| 55.77|	54.38|	4.55|	219.56|	9.23  |	0.63|
-|                 |608x608  |	55.35|	54.15|	8.49|	117.78|	11.95 |	1.82|
+|yolo_v2          | 224x224 | 28.03 | 27.86 | 5.67 |  176.37 | 7.83 | 0.51 |
+|                 | 416x416 |38.75  |38.36| 12.86 | 77.76 | 9.32 |  1.90 |
+|                 | 608x608 |42.23| 41.6| 24.51|  40.80|  11.89|  4.49|
+|yolo_v2_prelu    | 224x224 |27.5|  26.84|  5.86| 170.65| 8.00| 0.47|
+|                 | 416x416|  40.07|  38.71|  13.33|  75.02|  9.25| 1.93|
+|                 | 608x608 |45.38| 44.02|  25.26|  39.59|  11.81|  4.51|
+| yolo_v3_spp     | 224x224 |47.1|  45.91|  8.38| 119.33 |  7.77| 1.63|
+|                 | 416x416 |57.23| 56.12|  25.96|  38.52|  9.49| 5.67|
+|                 | 608x608|  60.61|  59.46|  58.49|  17.1| 11.88|  10.50|
+|standard_yolo_v3 | 224x224|  47.17|  45.93|  8.03| 124.53 |  7.60| 1.60|
+|                 |416x416| 55.92|  55.06|  24.82|  40.29|  9.42| 5.63|
+|                 |608x608  |57.78| 56.88|  56.46|  17.71|  11.89|  10.64|
+|tiny yolo v3     | 224x224 |24.36| 21.7| 1.30| 769.23| 7.59| 0.40|
+|                 |416x416  |32.59| 29.62|  3.17| 315.46| 9.55| 1.50|
+|                 |608x608| 31.53|  30.11|  6.05| 165.29| 12.01|  3.55|
+|tiny yolo v2 voc |224x224  | 42.96|  41.99|  1.97| 506.84| 7.85  | 0.26|
+|                 |416x416  | 55.77|  54.38|  4.55| 219.56| 9.23  | 0.63|
+|                 |608x608  | 55.35|  54.15|  8.49| 117.78| 11.95 | 1.82|

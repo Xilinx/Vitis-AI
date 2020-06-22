@@ -75,7 +75,7 @@ def faceDetection(vitis_rundir,outpath, rsz_h, rsz_w, path):
 # Face Detection 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'analysis densebox model')
-    parser.add_argument('--vitisrundir', help = 'path to dpuv1 run directory ', type=str)
+    parser.add_argument('--vitisrundir', help = 'path to run directory ', type=str)
     parser.add_argument('--images', help = 'path to image folder',type = str, default='test_pic/' )
     parser.add_argument('--resize_h', help = 'resize height', type = int)
     parser.add_argument('--resize_w', help = 'resize width', type = int)

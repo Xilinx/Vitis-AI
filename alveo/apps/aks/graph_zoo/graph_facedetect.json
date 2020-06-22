@@ -18,7 +18,7 @@
     {
       "node_name": "facedetect_fpga",
       "node_params": {
-        "DPUv1Runner": {
+        "DPUCADX8GRunner": {
           "acquire_cu": 0,
           "num_fpga": 1,
           "xclbin":   "/opt/xilinx/overlaybins/xdnnv3",

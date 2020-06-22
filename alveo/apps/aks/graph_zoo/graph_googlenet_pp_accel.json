@@ -31,7 +31,7 @@
     {
       "node_name": "googlenet_v1_fpga",
       "node_params": {
-        "DPUv1Runner": {
+        "DPUCADX8GRunner": {
           "acquire_cu": 0,
           "num_fpga": 1,
           "xclbin" : "/opt/xilinx/overlaybins/xdnnv3/xplusml/classification/wo_jpeg_decoder/xdnn_v3_96x16_2pe_8b_9mb_bank03.xclbin",

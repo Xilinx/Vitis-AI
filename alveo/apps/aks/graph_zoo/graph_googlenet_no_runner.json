@@ -18,7 +18,7 @@
       {
         "node_name": "googlenet_v1_fpga",
         "node_params": {
-          "DPUv1NoRunner": {
+          "DPUCADX8GNoRunner": {
             "xclbin":   "/opt/xilinx/overlaybins/xdnnv3",
             "netcfg": "graph_zoo/meta_googlenet_no_xbar/compiler.json",
             "quantcfg": "graph_zoo/meta_googlenet_no_xbar/quantizer.json",

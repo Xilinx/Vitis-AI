@@ -321,7 +321,7 @@ def show_loop(videofile, face_q, width, height):
 if __name__ == '__main__':
  
     parser = argparse.ArgumentParser(description = 'FaceDetection Demo')
-    parser.add_argument('--vitisrundir', help = 'path to dpuv1 run directory ', type=str)
+    parser.add_argument('--vitisrundir', help = 'path to run directory ', type=str)
     parser.add_argument('--videofile', help = 'path to video source file ', type=str)
     args = parser.parse_args()
 

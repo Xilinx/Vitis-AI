@@ -1,5 +1,19 @@
 ## Caffe refinedet Models
 
+### Setup
+> **Note:** Skip, If you have already run the below steps.
+
+  Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe 
+  ```
+
+  Setup the Environment
+
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
+
 ### Data Preparation
 
 - Download coco2014 datatset 
@@ -31,10 +45,6 @@
   cd ${VAI_ALVEO_ROOT}/examples/caffe/ && python getModels.py && python replace_mluser.py --modelsdir models
   ```
 
-- Setup ml-suite Environment Variables
-  ```sh
-  source ${VAI_ALVEO_ROOT}/overlaybins/setup.sh
-  ```
 ### Prepare a model for inference
 
 To run a Caffe model on the FPGA, it needs to be quantized, compiled, and a new graph needs to be generated. The new graph is similar to the original, with the FPGA subgraph removed, and replaced with a custom Python layer.

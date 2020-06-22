@@ -10,13 +10,13 @@
 - maps_BtoA
 
 
-## activate Caffe conda environment
+## Activate Caffe conda environment
 
 Please activate Caffe conda environment using the following commands.
 
 ```
-$ conda activate vitis-ai-caffe
-$ source /workspace/alveo/overlaybins/setup.sh
+conda activate vitis-ai-caffe
+source /workspace/alveo/overlaybins/setup.sh
 ```
 
 
@@ -25,6 +25,6 @@ $ source /workspace/alveo/overlaybins/setup.sh
 Download the caffe models. 
 
 ```
-$ cd /workspace/alveo/examples/caffe 
-$ python getModels.py
+cd /workspace/alveo/examples/caffe 
+python getModels.py
 ```
