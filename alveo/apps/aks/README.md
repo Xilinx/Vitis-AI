@@ -7,7 +7,7 @@ Real world deep learning applications involve multi-stage data processing pipeli
 
 ## Updates
 
-- Multi-FPGA Support in DPUv1 kernel
+- Multi-FPGA Support in DPUCADX8G kernel
 - New Graphs (Face Detect, Yolo-v2)
 - Python Kernel
 - Example with Video Stream Input
@@ -17,7 +17,7 @@ Real world deep learning applications involve multi-stage data processing pipeli
 
 ### Run Examples
 
-Try out the examples provided in `${VAI_ALVEO_ROOT}/apps/aks` directory. The shell script [aks.sh](./aks.sh) runs the corresponding **C++ / Python** executables. 
+Try out the examples provided in `/workspace/alveo/apps/aks` directory. The shell script [aks.sh](./aks.sh) runs the corresponding **C++ / Python** executables. 
 
 ### Prerequisites
 
@@ -28,6 +28,10 @@ Download a minimal validation set for [Imagenet2012](http://www.image-net.org/ch
 ```sh
 # Activate Conda Environment
 conda activate vitis-ai-caffe 
+```
+```sh
+# Setup
+source /workspace/alveo/overlaybins/setup.sh
 ```
 ```sh
 cd ${VAI_ALVEO_ROOT}/apps/aks
@@ -82,18 +86,18 @@ All of them come with prebuilt executables. Use following commands to run these 
 
     ```sh
     # C++
-    ./aks.sh -m resnet50
+    ./aks.sh -m resnet50 -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     # Python
-    ./aks.sh  -i py -m resnet50
+    ./aks.sh -i py -m resnet50 -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 
 - GoogleNet
 
     ```sh
     # C++
-    ./aks.sh -m googlenet
+    ./aks.sh -m googlenet -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     # Python
-    ./aks.sh  -i py -m googlenet
+    ./aks.sh -i py -m googlenet -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 
 - GoogleNet (with FPGA accelerated pre-processing)
@@ -104,9 +108,9 @@ All of them come with prebuilt executables. Use following commands to run these 
     ###
 
     # C++
-    ./aks.sh -m googlenet_pp_accel
+    ./aks.sh -m googlenet_pp_accel -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     # Python
-    ./aks.sh  -i py -m googlenet_pp_accel
+    ./aks.sh -i py -m googlenet_pp_accel -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 
 #### Detection
@@ -115,25 +119,25 @@ All of them come with prebuilt executables. Use following commands to run these 
 
     ```sh
     # C++
-    ./aks.sh -m tinyyolov3
+    ./aks.sh -m tinyyolov3 -d1 <image-dir>
     # Python
-    ./aks.sh  -i py -m tinyyolov3
+    ./aks.sh -i py -m tinyyolov3 -d1 <image-dir>
     ```
 
 - Tiny YOLOv3 (with video input)
 
     ```sh
     # C++
-    ./aks.sh -m tinyyolov3_video
+    ./aks.sh -m tinyyolov3_video -vf <video-file>
     ```
 
 - Standard YOLOv2
 
     ```sh
     # C++
-    ./aks.sh -m stdyolov2
+    ./aks.sh -m stdyolov2 -d1 <image-dir>
     # Python
-    ./aks.sh  -i py -m stdyolov2
+    ./aks.sh -i py -m stdyolov2 -d1 <image-dir>
     ```
 
 - Face Detect
@@ -152,18 +156,18 @@ All of them come with prebuilt executables. Use following commands to run these 
 
     ```sh
     # C++
-    ./aks.sh -m googlenet_resnet50
+    ./aks.sh -m googlenet_resnet50 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-resnet50>
     # Python
-    ./aks.sh  -i py -m googlenet_resnet50
+    ./aks.sh -i py -m googlenet_resnet50 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-resnet50>
     ```
 
 - Googlenet + TinyYolov3
 
     ```sh
     # C++
-    ./aks.sh -m googlenet_tinyyolov3
+    ./aks.sh -m googlenet_tinyyolov3 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-tinyyolov3>
     # Python
-    ./aks.sh  -i py -m googlenet_tinyyolov3
+    ./aks.sh  -i py -m googlenet_tinyyolov3 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-tinyyolov3>
     ```
 
 ## Tuning Performance
@@ -194,7 +198,7 @@ Let's take a look at a sample report for googlenet with 2 preprocessing threads 
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 11.30, Peak FPS possible: 4424.70, Utilization : 20.41%
 [DEBUG] Worker: ClassificationImreadPreProcess_0 - Total jobs : 25058
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 55.12, Peak FPS possible: 454.63, Utilization : 99.53%
-[DEBUG] Worker: DPUv1Runner_0 - Total jobs : 50000
+[DEBUG] Worker: DPUCADX8GRunner_0 - Total jobs : 50000
 [DEBUG] |--- Async Kernel : Submit time (s) : 1.70, Wait time (s) : 0.02, Kernel Active Time (s): 55.25
 ```
 
@@ -274,12 +278,12 @@ Below is the list of the sample graphs provided as part of AKS examples. User ca
 
 | Graph | Description |
 |:-----|:-----|
-| googlenet | Reads and Pre-Processes images, Runs inference on DPUv1, Post Processes data and Reports accuracy |
-| resnet50 | Reads and Pre-Processes images, Runs inference on DPUv1, Post Processes data and Reports accuracy |
-| googlenet_pp_accel | Reads images, Pre-Processes image data using FPGA accelerated pre-processing kernel, Runs inference on DPUv1, Post Processes data and Reports accuracy |
-| tinyyolov3     | Reads and Pre-Processes images, Runs inference on DPUv1, Post Processes data and Saves detection results in text files in DarkNet format |
-| std_yolov2_608 | Reads and Pre-Processes images, Runs inference on DPUv1, Post Processes data and Saves detection results in text files in DarkNet format |
-| facedetect | Performs face detection on FDDB Dataset images. It reads and pre-process the images, runs inference on DPUv1, applies post-processing and saves the results as annotated images as well as a text file |
+| googlenet | Reads and Pre-Processes images, Runs inference on DPUCADX8G, Post Processes data and Reports accuracy |
+| resnet50 | Reads and Pre-Processes images, Runs inference on DPUCADX8G, Post Processes data and Reports accuracy |
+| googlenet_pp_accel | Reads images, Pre-Processes image data using FPGA accelerated pre-processing kernel, Runs inference on DPUCADX8G, Post Processes data and Reports accuracy |
+| tinyyolov3     | Reads and Pre-Processes images, Runs inference on DPUCADX8G, Post Processes data and Saves detection results in text files in DarkNet format |
+| std_yolov2_608 | Reads and Pre-Processes images, Runs inference on DPUCADX8G, Post Processes data and Saves detection results in text files in DarkNet format |
+| facedetect | Performs face detection on FDDB Dataset images. It reads and pre-process the images, runs inference on DPUCADX8G, applies post-processing and saves the results as annotated images as well as a text file |
 
 ### Sample Kernels
 
@@ -287,8 +291,8 @@ While users can create their own kernels, AKS provides some basic kernels typica
 
 | Name | Description |
 |:-------|:-------|
-| DPUv1Runner | Runs inference on DPUv1 with new VAI interface |
-| DPUv1NoRunner | Runs inference on DPUv1 with pre-VAI interface |
+| DPUCADX8GRunner | Runs inference on DPUCADX8G with new VAI interface |
+| DPUCADX8GNoRunner | Runs inference on DPUCADX8G with pre-VAI interface |
 | CaffeKernel | Executes a network using Caffe framework |
 | ImageRead | Reads an image with provided path |
 | ClassificationAccuracy | Measures accuracy of a classification network (Top-1/Top-5) |

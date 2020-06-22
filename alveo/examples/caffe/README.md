@@ -14,6 +14,17 @@ This directory provides scripts for running several well known models (listed be
 
 > **Note:** Skip, If you have already run the below steps.
 
+Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe 
+  ```
+
+Setup the Environment
+
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
+
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning).
 
   ```sh
@@ -37,11 +48,6 @@ Resize all the images to a common dimension
   python replace_mluser.py --modelsdir models
   ```
 
-Setup the Environment
-
-  ```sh
-  source ${VAI_ALVEO_ROOT}/overlaybins/setup.sh
-  ```
 
 ### Running Caffe Classification Models
 

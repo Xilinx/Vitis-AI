@@ -5,6 +5,18 @@ This directory provides scripts for running several well known models on the FPG
 For published results, and details on running a full accuracy evaluation, please see these [instructions](Benchmark_README.md).
 
 ### Setup
+> **Note:** Skip, If you have already run the below steps.
+
+  Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe 
+  ```
+
+  Setup the Environment
+
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
 
    Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning).
 
@@ -20,12 +32,6 @@ For published results, and details on running a full accuracy evaluation, please
    ```sh
    cd ${VAI_ALVEO_ROOT}/examples/tensorflow
    python getModels.py
-   ```
-
-   Setup the Environment
-
-   ```sh
-   source ${VAI_ALVEO_ROOT}/overlaybins/setup.sh
    ```
 
 ### End-to-End Classification

@@ -1,5 +1,15 @@
 # Running the face detection model on FPGA 
 
+### Setup
+```sh
+# Activate Conda Environment
+conda activate vitis-ai-caffe 
+```
+```sh
+# Setup
+source /workspace/alveo/overlaybins/setup.sh
+```
+
 ### Data Preparation
 
 Download Face Detection Data Set and Benchmark (FDDB)dataset. 

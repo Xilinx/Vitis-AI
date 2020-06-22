@@ -23,10 +23,19 @@ data/
             ...
 ```
 
-### Setup Environment
-```sh
-source ${VAI_ALVEO_ROOT}/overlaybins/setup.sh
-```
+### Setup
+> **Note:** Skip, If you have already run the below steps.
+
+  Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe 
+  ```
+
+  Setup the Environment
+
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
 
 ### Quantize, compile and generate subgraph prototxt
 

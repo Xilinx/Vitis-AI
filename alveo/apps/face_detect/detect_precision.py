@@ -65,7 +65,7 @@ def faceDetection(args, FDDB_list, FDDB_results_file):
 # Face Detection 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'analysis densebox model')
-    parser.add_argument('--vitisrundir', help = 'path to dpuv1 run directory ', type=str)
+    parser.add_argument('--vitisrundir', help = 'path to run directory ', type=str)
     parser.add_argument('--fddbList', type = str, help = 'FDDB testset list', default='FDDB_list.txt')
     parser.add_argument('--fddbPath', type = str, help = 'FDDB testset path', default='/group/modelzoo/test_dataset/FDDB/FDDB_images/')
     parser.add_argument('--fddbAnno', type = str, help = 'FDDB testset annotations', default='FDDB_annotations.txt')

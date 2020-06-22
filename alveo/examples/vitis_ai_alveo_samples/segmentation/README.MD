@@ -1,12 +1,27 @@
 This is Segmentation example and it uses unified vitis-ai APIs to run on alveo platforms
 
-BUILD: 
+### Setup
 
-    $make
+> **Note:** Skip, If you have already run the below steps.
 
-RUN:
+Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe
+  ```
 
-    $source run.sh
+Setup the Environment
+
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
+
+### Build
+
+    make
+
+### Run
+
+    source run.sh
 
 Input: It takes input as video file from video folder in current path
 

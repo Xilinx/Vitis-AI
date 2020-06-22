@@ -1,14 +1,14 @@
 # Running FPN CityScapes segmentation model on FPGA 
 
 
-## activate Caffe conda environment
+## Activate Caffe conda environment
 
 Please activate Caffe conda environment using the following commands.
 
 ```
-$ conda activate vitis-ai-caffe
-$ source /workspace/alveo/overlaybins/setup.sh
-$ cd /workspace/alveo/examples/caffe/FPN_CityScapes
+conda activate vitis-ai-caffe
+source /workspace/alveo/overlaybins/setup.sh
+cd /workspace/alveo/examples/caffe/FPN_CityScapes
 ```
 
 
@@ -34,8 +34,8 @@ After training the model, we quantized the model to deploy on FPGA.
 To get the quantized Caffe model, run the following command lines. 
 
 ```
-$ cd /workspace/alveo/examples/caffe 
-$ python getModels.py
+cd /workspace/alveo/examples/caffe 
+python getModels.py
 ```
 
 The FPN CityScapes model files would be located in '/workspace/alveo/examples/caffe/models/FPN_CityScapes' folder.  
@@ -43,9 +43,9 @@ The FPN CityScapes model files would be located in '/workspace/alveo/examples/ca
 
 We need to copy the model files into 'FPN_CityScapes/quantize_results' sub-foloder using the following command lines.
 ```
-$ cd /workspace/alveo/examples/caffe/FPN_CityScapes
-$ mkdir quantize_results
-$ cp -R /workspace/alveo/examples/caffe/models/FPN_CityScapes/*.* ./quantize_results/*.*
+cd /workspace/alveo/examples/caffe/FPN_CityScapes
+mkdir quantize_results
+cp -R /workspace/alveo/examples/caffe/models/FPN_CityScapes/*.* ./quantize_results/*.*
 ```
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'FPN_CityScapes/quantize_results' sub-foloder.
 
@@ -57,7 +57,7 @@ You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'FPN_C
 
 The quantized caffemodel need to be compiled and partitioned at your local drive using the following command line.
 ```
-$ source run.sh deploy
+source run.sh deploy
 ```
 All compiler files will be generated in 'work' sub folder.
 
@@ -71,7 +71,7 @@ xfdnn_deploy.prototxt is to execute Caffe model on FPGA.
 
 To run the inference model on cpu with 'cityscapes/frankfurt' images, please use the following command line.
 ```
-$ python FPN_cpu.py 
+python FPN_cpu.py 
 ```
 The first 30 output images will be stored in cpu_output sub-folder.
 
@@ -84,7 +84,7 @@ To run the inference model on fpga with 'cityscapes/frankfurt' images,
 please use the following command line.
 
 ```
-$ python FPN_fpga.py 
+python FPN_fpga.py 
 ```
 The first 30 segmentation output images will be stored in 'fpga_output' folder. 
 

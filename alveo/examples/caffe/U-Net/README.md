@@ -1,14 +1,14 @@
 # Running U-Net segmentation model on FPGA 
 
 
-## activate Caffe conda environment
+## Activate Caffe conda environment
 
 Please activate Caffe conda environment using the following commands.
 
 ```
-$ conda activate vitis-ai-caffe
-$ source /workspace/alveo/overlaybins/setup.sh
-$ cd /workspace/alveo/examples/caffe/U-Net
+conda activate vitis-ai-caffe
+source /workspace/alveo/overlaybins/setup.sh
+cd /workspace/alveo/examples/caffe/U-Net
 ```
 
 
@@ -39,8 +39,8 @@ The folder is supposed to be as the following.
 For training/interference, we need to make two subfolders. 'Img' and 'Seg'. 
 
 ```
-$ cd /workspace/alveo/examples/caffe/U-Net
-$ python convert_dataset.py
+cd /workspace/alveo/examples/caffe/U-Net
+python convert_dataset.py
 ```
 
 All the microscopic images will be copied to 'Img' folder after converting to png format.
@@ -69,8 +69,8 @@ After training the model, we converted Keras model to Caffemodel.
 To get the pre-trained Caffe model, run the following command lines. 
 
 ```
-$ cd /workspace/alveo/examples/caffe 
-$ python getModels.py
+cd /workspace/alveo/examples/caffe 
+python getModels.py
 ```
 
 The U-Net model files would be located in '/workspace/alveo/examples/caffe/models/U-Net' folder.  
@@ -78,9 +78,9 @@ The U-Net model files would be located in '/workspace/alveo/examples/caffe/model
 
 We need to copy the model files into 'U-Net/float' sub-foloder using the following command lines.
 ```
-$ cd /workspace/alveo/examples/caffe/U-Net
-$ mkdir float
-$ cp -R /workspace/alveo/examples/caffe/models/U-Net/*.* ./float/*.*
+cd /workspace/alveo/examples/caffe/U-Net
+mkdir float
+cp -R /workspace/alveo/examples/caffe/models/U-Net/*.* ./float/*.*
 ```
 You can find unet_U373_256.prototxt and unet_U373_256.caffemodel in 'U-Net/float' sub-foloder.
 
@@ -91,8 +91,8 @@ You can find unet_U373_256.prototxt and unet_U373_256.caffemodel in 'U-Net/float
 To run the Caffe model on CPU with the test images, please use the following command line.
 
 ```
-$ cd /workspace/alveo/examples/caffe/U-Net
-$ python unet_caffe_cpu.py 
+cd /workspace/alveo/examples/caffe/U-Net
+python unet_caffe_cpu.py 
 ```
 
 This will provide mean IOU for the test dataset.
@@ -108,7 +108,7 @@ Also, it will generate sample output image in 'U-Net/test_output' sub-folder.
 To run the Caffemodel on FPGA, the Caffemodel need to be quantized using the following command. 
 
 ```
-$ DECENT_DEBUG=1 vai_q_caffe quantize -model ./float/dummy_256.prototxt -weights ./float/unet_U373_256.caffemodel -input_blob "input_1" -method 1 -calib_iter 100
+DECENT_DEBUG=1 vai_q_caffe quantize -model ./float/dummy_256.prototxt -weights ./float/unet_U373_256.caffemodel -input_blob "input_1" -method 1 -calib_iter 100
 ```
 
 ‘-method’ is the option for quantization, 0: Non-Overflow, 1: Min-Diff. The default is 1. 
@@ -150,7 +150,7 @@ layer {
 The quantized caffemodel need to be compiled and partitioned at your local drive using the following command line.
 
 ```
-$ source run.sh deploy
+source run.sh deploy
 ```
 
 All compiler files will be generated in 'work' sub folder.
@@ -166,7 +166,7 @@ xfdnn_deploy.prototxt is to execute Caffe model on FPGA.
 To run the inference model on FPGA with the test images, please use the following command line.
 
 ```
-$ python unet_caffe_fpga.py 
+python unet_caffe_fpga.py 
 ```
 
 This will provide mean IOU on FPGA for the test dataset.

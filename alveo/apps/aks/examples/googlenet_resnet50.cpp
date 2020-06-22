@@ -29,7 +29,7 @@ using namespace AKS;
 void usage (const char* exename) {
   std::cout << "[INFO] Usage: " << std::endl;
   std::cout << "[INFO] ---------------------- " << std::endl;
-  std::cout << "[INFO] " << exename << " <image-dir> " << std::endl;
+  std::cout << "[INFO] " << exename << " <image-dir-for-googlenet> <image-dir-for-resnet50>" << std::endl;
   std::cout << std::endl;
 }
 
@@ -69,7 +69,7 @@ void enqueueClassificationJobs(AKS::AIGraph* graph,
 int main(int argc, char **argv)
 {  
   int ret = 0;
-  if (argc != 2) {
+  if (argc != 3) {
     std::cout << "[ERROR] Usage invalid!" << std::endl;
     usage(argv[0]);
     return -1;
@@ -86,7 +86,8 @@ int main(int argc, char **argv)
   };
 
   /// Get image directory path
-  std::string imgDirPath (argv[1]);
+  std::string imgDirPathGoogleNet (argv[1]);
+  std::string imgDirPathResNet50 (argv[2]);
 
   /// Get System Manager
   AKS::SysManagerExt * sysMan = AKS::SysManagerExt::getGlobal();
@@ -113,18 +114,25 @@ int main(int argc, char **argv)
   }
 
   /// Load Dataset
-  std::vector<std::string> images;
-  for (boost::filesystem::directory_iterator it {imgDirPath}; 
+  std::vector<std::string> imagesGoogleNet;
+  for (boost::filesystem::directory_iterator it {imgDirPathGoogleNet}; 
       it != boost::filesystem::directory_iterator{}; it++) {
     std::string fileExtension = it->path().extension().string();
     if(fileExtension == ".jpg" || fileExtension == ".JPEG" || fileExtension == ".png")
-      images.push_back((*it).path().string());
+      imagesGoogleNet.push_back((*it).path().string());
+  }
+  std::vector<std::string> imagesResNet;
+  for (boost::filesystem::directory_iterator it {imgDirPathResNet50}; 
+      it != boost::filesystem::directory_iterator{}; it++) {
+    std::string fileExtension = it->path().extension().string();
+    if(fileExtension == ".jpg" || fileExtension == ".JPEG" || fileExtension == ".png")
+      imagesResNet.push_back((*it).path().string());
   }
   
   sysMan->resetTimer();
   /// Create threads to enqueue jobs
-  std::thread t_googlenet (enqueueClassificationJobs, graph_g, graphNames[0], std::ref(images));
-  std::thread t_resnet (enqueueClassificationJobs, graph_r, graphNames[1], std::ref(images));
+  std::thread t_googlenet (enqueueClassificationJobs, graph_g, graphNames[0], std::ref(imagesGoogleNet));
+  std::thread t_resnet (enqueueClassificationJobs, graph_r, graphNames[1], std::ref(imagesResNet));
 
   t_googlenet.join();
   t_resnet.join();
