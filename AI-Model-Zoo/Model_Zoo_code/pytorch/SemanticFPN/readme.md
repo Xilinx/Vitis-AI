@@ -10,11 +10,14 @@
 1. Environment requirement
     - pytorch 
     - opencv, tqdm etc. (Refer to [code/configs/environment.yaml](code/configs/environment.yaml) for more details.)
+    - vai_q_pytorch(Optional, required by quantization)
+    - XIR (Optional, required by quantization)
 
 2. Quick installation
    ```shell
    conda env create -f code/configs/environment.yaml
    ```
+   Install vai_q_pytorch and XIR  in the conda env if you need quantization.
 
 ### Preparation
 

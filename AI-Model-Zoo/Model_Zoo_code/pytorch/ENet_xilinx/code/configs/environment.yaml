@@ -1,8 +1,8 @@
 name: torch_seg
 channels:
 dependencies:
-- pytorch=1.0.1
-- torchvision=0.2.1
+- pytorch=1.1.0
+- torchvision=0.3.0
 - _libgcc_mutex=0.1=main
 - blas=1.0=mkl
 - ca-certificates=2020.1.1=0

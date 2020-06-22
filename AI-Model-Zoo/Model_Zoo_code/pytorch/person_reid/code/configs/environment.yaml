@@ -1,6 +1,5 @@
 name: test_personreid
 channels:
- 
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=0_gnu
@@ -40,7 +39,7 @@ dependencies:
     - parso==0.6.2
     - pexpect==4.8.0
     - pickleshare==0.7.5
-    - pillow==7.0.0
+    - pillow<7.0.0
     - prompt-toolkit==3.0.4
     - ptyprocess==0.6.0
     - pygments==2.6.1
@@ -52,8 +51,8 @@ dependencies:
     - scikit-image==0.16.2
     - scipy==1.4.1
     - six==1.14.0
-    - torch==1.0.1
-    - torchvision==0.2.0
+    - torch==1.1.0
+    - torchvision==0.3.0
     - traitlets==4.3.3
     - wcwidth==0.1.9
     - yml==0.0.1

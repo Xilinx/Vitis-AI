@@ -7,7 +7,6 @@ PRETRAIN_MODEL_PATH="../../float/points_quality_80x60_addqneg_nodrop_gray3_1.94_
 ORI_PRETRAIN_PATH="/group/modelzoo/internal-cooperation-models/pytorch/face_quality/float/points_quality_80x60_addqneg_nodrop_gray3_1.94_12.2.pth"
 ORI_IMG_DIR="/group/modelzoo/test_dataset/face_quality"
 
-cd code/quantize/
 
 ln -s $ORI_IMG_DIR $DATA_TRAIN_DIR
 

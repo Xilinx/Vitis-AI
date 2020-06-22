@@ -23,12 +23,12 @@ dependencies:
   - joblib==0.14.1
   - numpy==1.18.2
   - opencv-python==4.2.0.32
-  - pillow==7.0.0
+  - pillow<7.0.0
   - scikit-learn==0.22.2.post1
   - scipy==1.4.1
   - six==1.14.0
   - sklearn==0.0
-  - torch==1.0.0
-  - torchvision==0.2.0
+  - torch==1.1.0
+  - torchvision==0.3.0
 prefix:
 

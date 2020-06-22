@@ -8,13 +8,16 @@
 ### Installation
 
 1. Environment requirement
-    - pytorch 1.0
+    - pytorch 1.1
+    - vai_q_pytorch(Optional, required by quantization)
+    - XIR Python frontend(Optional, required by quantization)
 
 2. Quick installation
    ```shell
    conda env create -f code/configs/environment.yaml
    source activate facerec_env
    ```
+   Install vai_q_pytorch and XIR in the conda env if you need quantization.
 
 ### Preparation
 

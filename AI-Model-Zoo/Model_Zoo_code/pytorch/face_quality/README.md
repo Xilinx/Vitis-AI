@@ -10,6 +10,8 @@
 
 1. Environment requirement
     - pytorch 1.1
+    - vai_q_pytorch(Optional, required by quantization)
+    - XIR Python frontend(Optional, required by quantization)
 
 ### Preparation
 
@@ -52,14 +54,20 @@ Preprocess: The original image-->face detection-->crop face-->resize to H_96xW_7
    label_quality_score: You may get this label by pretrain model.
    ```
  
-
 ### demo
+
+1. prepare test images 
+   Preprocess: The original image-->face detection-->crop face
+
+2. run demo
 
    ```shell
    cd code/test
    python demo.py --pretrained $PATH_TO_MODEL
+   # Ouput will be found in test/results/{image name}_{normalized score}_{the original score}.jpg
+   # Reference threshold: 0.4
+   # if normalized score > 0.4, the face quality is OK. 
    ```
-
 
 ### Train/Eval
 

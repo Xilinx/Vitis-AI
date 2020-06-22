@@ -21,7 +21,7 @@
 
    ```shell
    source activate test
-   conda install pytorch
+   conda install pytorch (1.1<= ver.<=1.4)
    conda install torchvision
    conda install -c menpo opencv3
    ```
@@ -30,6 +30,7 @@
    ```shell
    conda env create -f ./code/configs/environment.yaml
    ```
+   Install vai_q_pytorch and XIR Python frontend in the conda env if you need quantization.
 
 ### Preparation
 

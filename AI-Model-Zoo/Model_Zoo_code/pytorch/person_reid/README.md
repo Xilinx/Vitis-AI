@@ -9,14 +9,15 @@
 #### Installation
 1. Environment requirements:
 ```
-torch==1.0.1, torchvision==0.2.0
-easydict, opencv-python, pyyml, ipdb, scipy, scikit-image
+torch==1.1.0, torchvision==0.3.0
+easydict, opencv-python, pyyml, ipdb, scipy, scikit-image, vai_q_pytorch(Optional, required by quantization), XIR Python frontend(Optional, required by quantization)
 ```
 2. Quick installation:
 ```
-conda env create code/configs/environment.yaml
-source activate test
+conda env create -f code/configs/environment.yaml
+source activate test_personreid
 ```
+Install vai_q_pytorch and XIR in the conda env if you need quantization.
 
 
 #### Preparation

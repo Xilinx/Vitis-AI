@@ -10,10 +10,14 @@
 1. Environment requirement
     - pytorch
     - opencv, tqdm etc. (Refer to [code/configs/environment.yaml](code/configs/environment.yaml) for more details.)
+    - vai_q_pytorch(Optional, required by quantization)
+    - XIR Python frontend (Optional, required by quantization)
 
 2. Quick installation
    ```shell
    conda env create -f code/configs/environment.yaml
+   ```
+   Install vai_q_pytorch and XIR in the conda env if you need quantization.
    
 
 ### Preparation
@@ -39,7 +43,7 @@
 ### Train/Eval
 1. Visulization
     ```shell
-    # make sure you have download cityscapes whole dataset, and select the image 'frankfurt_000000_000294_leftImg8bit.png' and put it under 'dat/demo/' for demo visulization
+    # pick some images from cityscapes validation set and put them under 'data/demo/' for visulization
     bash code/test/run_demo.sh
     ```
 2. Evaluation
