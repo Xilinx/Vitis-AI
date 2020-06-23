@@ -39,7 +39,7 @@ DEF_ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME, "0");
 DEF_ENV_PARAM(DEBUG_DPBASE, "0");
 
 //# Disable for DPUV1, as DPUV1 dont have xmodel
-#ifndef ENABLE_DPUV1_RUNNER
+#ifndef ENABLE_DPUCADX8G_RUNNER
 static std::string get_full_filename(const std::string& filename) {
   if (filename[0] == '/') {
     return filename;
@@ -242,7 +242,7 @@ void DpuTaskImp::setImageBGR(const uint8_t* input, int stride) {
   auto channels = layer_data.channel;
 
 //# For DPUV1 the datatype is float
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
   auto data = (float*)layer_data.get_data(0);
 #else
   auto data = (int8_t*)layer_data.get_data(0);
@@ -270,7 +270,7 @@ void DpuTaskImp::setImageRGB(const uint8_t* input, int stride) {
   auto channels = layer_data.channel;
 
   //# For DPUV1 the datatype is float
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
   auto data = (float*)layer_data.get_data(0);
 #else
   auto data = (int8_t*)layer_data.get_data(0);
@@ -314,7 +314,7 @@ void DpuTaskImp::setImageBGR(const std::vector<cv::Mat>& imgs) {
 
   for (auto i = 0; i < (signed)imgs.size(); i++) {
 //# For DPUV1 the datatype is float
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
     auto data = (float*)layer_data.get_data(i);
 #else
     auto data = (int8_t*)layer_data.get_data(i);
@@ -355,7 +355,7 @@ void DpuTaskImp::setImageRGB(const std::vector<cv::Mat>& imgs) {
 
   for (auto i = 0; i < (signed)imgs.size(); i++) {
 //# For DPUV1 the datatype is float
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
     auto data = (float*)layer_data.get_data(i);
 #else
     auto data = (int8_t*)layer_data.get_data(i);
@@ -395,7 +395,7 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
     ret.fixpos = (int8_t)log2f(scale);
     ret.dtype = library::DT_INT8;
   } else {
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
     //# DPUV1 has datatype float
     ret.size =
         tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 32.f);
@@ -452,7 +452,7 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
     ret.fixpos = -(int8_t)log2f(scale);
     ret.dtype = library::DT_INT8;
   } else {
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
     //# DPUV1 has datatype float
     ret.size =
         tensor->get_element_num() * std::ceil(tensor->get_bit_width() / 32.f);

@@ -54,7 +54,7 @@ static size_t filesize(const string& filename) {
 											  
 static string find_model(const string& name) {
 //# Disable the unused functions when DPUV1 Enable
-#ifndef ENABLE_DPUV1_RUNNER 
+#ifndef ENABLE_DPUCADX8G_RUNNER 
   if (filesize(name) > 4096u) {
     return name;
   }
@@ -128,7 +128,7 @@ static std::string slurp(const char* filename) {
 
 static vitis::ai::proto::DpuModelParam get_config(
     const std::string& model_name) {
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
   //# skip xmodel reading for DPUV1
   auto config_file = find_config_file(model_name);
 #else
@@ -155,7 +155,7 @@ static std::vector<float> get_scales(
   return std::vector<float>(c.scale().begin(), c.scale().end());
 }
 
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
 //# Skip xmodel reding for DPUV1
 static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name) {
   return DpuTask::create(model_name);

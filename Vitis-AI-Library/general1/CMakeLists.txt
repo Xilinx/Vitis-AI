@@ -1,3 +1,4 @@
+
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -13,23 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 cmake_minimum_required(VERSION 3.5)
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
+include(XilinxCommon)
 include(XilinxVersion)
+set (COMPONENT_NAME "general1")
 add_library(${COMPONENT_NAME} SHARED
-  include/vitis/ai/platerecog.hpp
-  src/platerecog.cpp
-  src/platerecog_imp.hpp
-  src/platerecog_imp.cpp
+  include/vitis/ai/general.hpp
+  src/general_adapter.hpp
+  src/general.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
-target_link_libraries(${COMPONENT_NAME}
-  ${PROJECT_NAME}::platedetect
-  ${PROJECT_NAME}::platenum
-  ${OpenCV_LIBS} # cv::resize
-  glog::glog
-  )
+
 target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -45,18 +43,27 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
   SOVERSION "${PROJECT_VERSION_MAJOR}"
   LIBRARY_OUTPUT_NAME  ${PROJECT_NAME}-${COMPONENT_NAME}
   )
+
+#configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
+target_link_libraries(${COMPONENT_NAME} ${PROJECT_NAME}::model_config ${PROJECT_NAME}::refinedet ${PROJECT_NAME}::posedetect ${PROJECT_NAME}::platenum ${PROJECT_NAME}::platedetect ${PROJECT_NAME}::facelandmark ${PROJECT_NAME}::lanedetect ${PROJECT_NAME}::ssd ${PROJECT_NAME}::tfssd ${PROJECT_NAME}::yolov2 ${PROJECT_NAME}::yolov3  ${PROJECT_NAME}::classification ${PROJECT_NAME}::facedetect glog::glog ${OpenCV_LIBS} protobuf::libprotobuf)
+
 install(
   TARGETS ${COMPONENT_NAME}
   EXPORT ${COMPONENT_NAME}-targets
   RUNTIME DESTINATION ${INSTALL_BIN_DIR}
   LIBRARY DESTINATION ${INSTALL_LIB_DIR})
-
 install(
   EXPORT ${COMPONENT_NAME}-targets
   NAMESPACE ${PROJECT_NAME}::
   DESTINATION ${INSTALL_CMAKE_DIR})
-install(FILES include/vitis/ai/platerecog.hpp
+install(FILES include/vitis/ai/general.hpp
   DESTINATION include/vitis/ai)
 
-add_executable(test_platerecog test/test_platerecog.cpp)
-target_link_libraries(test_platerecog ${COMPONENT_NAME})
+add_executable(test_general test/test_general.cpp)
+add_executable(generate_proto test/generate_proto.cpp)
+add_executable(compare_proto test/compare_proto.cpp)
+add_executable(show_proto test/show_proto.cpp)
+target_link_libraries(test_general ${COMPONENT_NAME} ${OpenCV_LIBS})
+target_link_libraries(generate_proto ${COMPONENT_NAME} ${OpenCV_LIBS})
+target_link_libraries(compare_proto ${COMPONENT_NAME})
+target_link_libraries(show_proto ${COMPONENT_NAME})

@@ -43,7 +43,7 @@ option(ENABLE_OVERVIEW "enable overview" OFF)
 option(ENABLE_GENERAL "enable general" OFF)
 option(ENABLE_MEDICALSEGMENTATION "enable medicalsegmentation" OFF)
 
-option(ENABLE_DPUV1_RUNNER "enable DPUV1 Runner" OFF)
+option(ENABLE_DPUCADX8G_RUNNER "enable DPUV1 Runner" OFF)
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/cmake")
 set(INSTALL_LIB_DIR lib)
@@ -51,7 +51,7 @@ set(INSTALL_BIN_DIR bin)
 set(INSTALL_INCLUDE_DIR include)
 set(INSTALL_CMAKE_DIR share/cmake/${PROJECT_NAME})
 
-if(ENABLE_DPUV1_RUNNER)
+if(ENABLE_DPUCADX8G_RUNNER)
     # Enble supported models for DPUV1
     unset(DISABLE_ALL CACHE)
     unset(ENABLE_CLASSIFICATION CACHE)
@@ -67,7 +67,7 @@ if(ENABLE_DPUV1_RUNNER)
     option(ENABLE_REID "enable reid" ON)
 
     # Enable DPUV1 flag
-    add_definitions(-DENABLE_DPUV1_RUNNER)
+    add_definitions(-DENABLE_DPUCADX8G_RUNNER)
 endif()
 find_package(xir)
 find_package(unilog)
@@ -84,8 +84,8 @@ set(PACKAGE_COMPONENTS
   math
   dpu_task
   xnnpp
-  usefultools
   )
+add_subdirectory(usefultools)
 if(ENABLE_CLASSIFICATION OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS classification)
 endif()
@@ -159,7 +159,9 @@ if(ENABLE_PLATERECOG OR (NOT DISABLE_ALL))
 endif()
 
 if(ENABLE_GENERAL OR (NOT DISABLE_ALL))
-  list(APPEND PACKAGE_COMPONENTS general)
+  ## use general1 instead of general because general is a special
+  ## target name in cmake
+  list(APPEND PACKAGE_COMPONENTS general1)
 endif()
 
 if(ENABLE_MEDICALSEGMENTATION OR (NOT DISABLE_ALL))
