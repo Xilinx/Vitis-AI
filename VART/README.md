@@ -128,43 +128,39 @@ If the compilation process does not report any error and the executable file `re
 
 ### Setting Up the Target
 
+**To improve the user experience, the Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples and
+models have been built into the board image. Therefore, user does not need to install Vitis AI
+Runtime packages and model package on the board separately. However, users can still install
+the model or Vitis AI Runtime on their own image or on the official image by following these
+steps.**
+
 1. Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
-		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.img.gz)  
+		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.2.2.img.gz)  
 	
-		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.1-v1.img.gz)  
+		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.1-v1.2.2.img.gz)  
 	
       	Note: The version of the board image should be 2020.1 or above.
-	* Use Win32DiskImager (free opensource software) to burn the image file onto the SD card.
+	* Use Etcher software to burn the image file onto the SD card.
 	* Insert the SD card with the image into the destination board.
 	* Plug in the power and boot the board using the serial port to operate on the system.
 	* Set up the IP information of the board using the serial port.
 	You can now operate on the board using SSH.
 
-2. Installing Vitis AI Runtime
+2. (Optical) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
 	
-	The Vitis AI Runtime packages and vart samples have been built into the above board image. Execute the following to setup the target.
+	The script runs automatically after the board boots up with the official image.
+	But you can also download the `dpu_sw_optimize.tgz` from [here](http://xcdl190260/zhengjia/xdpu/blob/vitis20.1/app/dpu_sw_optimize.tgz).
 	```
-	#cd ~
-	#tar -xzvf Vitis-AI.tar.gz
-	#cd Vitis-AI
-	#bash setup.sh
-	```
-3. Installing the board config
-	
-	Unzip the `dpu_sw_config.tgz` and run the `zynqmp_dpu_config.sh` script. You can also download the `dpu_sw_config.tgz` from [here](http://xcdl190260/zhengjia/xdpu/blob/vitis20.1/app/dpu_sw_config.tgz).
-	```
-	#cd ~
-	#tar -xzvf dpu_sw_config.tgz
-	#cd dpu_sw_config/zynqmp/
-	#./zynqmp_dpu_config.sh
+	#cd ~/dpu_sw_optimize/zynqmp/
+	#./zynqmp_dpu_optimize.sh
 	```	
 
-4. (Optical) How to update Vitis AI Runtime and install it separately. 
+3. (Optical) How to update Vitis AI Runtime and install them separately. 
 	
-	If you want to update the Vitis AI Runtime or install it to your custom board image, follow these steps.
-	* Download the [Vitis AI Runtime 1.2.x](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.0.tar.gz).  	
+	If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
+	* Download the [Vitis AI Runtime 1.2.x](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.5.tar.gz).  	
 	* Untar the runtime packet and copy the following folder to the board using scp.
 	```
 	$tar -xzvf vitis-ai-runtime-1.2.x.tar.gz
@@ -174,41 +170,38 @@ If the compilation process does not report any error and the executable file `re
 	* Install the Vitis AI Runtime. Execute the following command in order.
 	```
 	#cd ~/centos
-	#rpm -ivh libunilog-1.2.0-x.aarch64.rpm
-	#rpm -ivh libxir-1.2.0-x.aarch64.rpm
-	#rpm -ivh libtarget-factory-1.2.0-x.aarch64.rpm
-	#rpm -ivh libvart-1.2.0-x.aarch64.rpm
+	#rpm -ivh libunilog-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh libxir-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh libtarget-factory-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh libvart-1.2.0-r<x>.aarch64.rpm
 	```
 	  
 ### Running Vitis AI Examples
 
-1. Download the samples from host to the target using scp with the following command.
-	```
-	[Host]$scp -r ~/Vitis-AI/VART root@[IP_OF_BOARD]:~/
-	```
-2. Download the [vitis_ai_runtime_r1.2.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.2_image_video.tar.gz) from host to the target using scp with the following command.
+1. Download the [vitis_ai_runtime_r1.2.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.2_image_video.tar.gz) from host to the target using scp with the following command.
 	```
 	[Host]$scp vitis_ai_runtime_r1.2.x_image_video.tar.gz root@[IP_OF_BOARD]:~/
 	```
-3. Unzip the `vitis_ai_runtime_r1.2_image_video.tar.gz` package on the target.
+2. Unzip the `vitis_ai_runtime_r1.2.x_image_video.tar.gz` package on the target.
 	```
 	#cd ~
-	#tar -xzvf vitis_ai_runtime_r*1.2*_image_video.tar.gz -C VART
+	#tar -xzvf vitis_ai_runtime_r*1.2*_image_video.tar.gz -C Vitis-AI/VART
 	```
-4. Enter the directory of samples in the target board. Take resnet50 as an example.
+3. Enter the directory of samples in the target board. Take `resnet50` as an example.
 	```
-	#cd ~/VART/samples/resnet50
+	#cd ~/Vitis-AI/VART/samples/resnet50
 	```
 5. Run the example.
+
+	For ZCU102, execute the following command.
 	```
 	#./resnet50 model_dir_for_zcu102/resnet50.elf
-	# For ZCU104, execute the following command.
+	```
+	For ZCU104, execute the following command.
+	```
 	#./resnet50 model_dir_for_zcu104/resnet50.elf
 	```
-	Note that if the above executable program does not exist, run the following command to compile and generate the corresponding executable program.
-	```
-	#bash –x build.sh
-	```
+
 	For examples with video input, only `webm` and `raw` format are supported by default with the official system image. 
 	If you want to support video data in other formats, you need to install the relevant packages on the system. 
 

@@ -151,41 +151,36 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 ```
 
 ### Setting Up the Target
+**To improve the user experience, the Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples and
+models have been built into the board image. Therefore, user does not need to install Vitis AI
+Runtime packages and model package on the board separately. However, users can still install
+the model or Vitis AI Runtime on their own image or on the official image by following these
+steps.**
 
 1. Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
-		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.img.gz)  
+		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.2.2.img.gz)  
 	
-		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.1-v1.img.gz)  
+		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.1-v1.2.2.img.gz)  
 	
       	Note: The version of the board image should be 2020.1 or above.
-	* Use Win32DiskImager (free opensource software) to burn the image file onto the SD card.
+	* Use Etcher software to burn the image file onto the SD card.
 	* Insert the SD card with the image into the destination board.
 	* Plug in the power and boot the board using the serial port to operate on the system.
 	* Set up the IP information of the board using the serial port.
 	You can now operate on the board using SSH.
 
-2. Installing Vitis AI Runtime
+2. (Optical) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
 	
-	The Vitis AI Runtime packages, vitis-ai-library samples and models have been built into the above board image. Execute the following to setup the target.
+	The script runs automatically by default after the board boots up with the official image.
+	But you can also download the `dpu_sw_optimize.tgz` from [here](http://xcdl190260/zhengjia/xdpu/blob/vitis20.1/app/dpu_sw_optimize.tgz).
 	```
-	#cd ~
-	#tar -xzvf Vitis-AI.tar.gz
-	#cd Vitis-AI
-	#bash setup.sh
-	```
-3. Installing the board config
-	
-	Unzip the `dpu_sw_config.tgz` and run the `zynqmp_dpu_config.sh` script. You can also download the `dpu_sw_config.tgz` from [here](http://xcdl190260/zhengjia/xdpu/blob/vitis20.1/app/dpu_sw_config.tgz).
-	```
-	#cd ~
-	#tar -xzvf dpu_sw_config.tgz
-	#cd dpu_sw_config/zynqmp/
-	#./zynqmp_dpu_config.sh
+	#cd ~/dpu_sw_optimize/zynqmp/
+	#./zynqmp_dpu_optimize.sh
 	```	
 
-4. (Optical) How to update Vitis AI Model and install it separately. 	
+3. (Optical) How to update Vitis AI Model and install it separately. 	
 
 	If you want to update the Vitis AI Model or install it to your custom board image, follow these steps.
 	* Download [ZCU102 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_zcu102-1.2.0-1.aarch64.rpm)  
@@ -202,78 +197,72 @@ $./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on'
 	  #rpm -ivh xilinx_model_zoo_zcu102-1.2.0-1.aarch64.rpm
 	```
 
-5. (Optical) How to update Vitis AI Runtime and install it separately. 
+4. (Optical) How to update Vitis AI Runtime and install them separately. 
 
-	If you want to update the Vitis AI Runtime or install it to your custom board image, follow these steps.
-	* Download the [Vitis AI Runtime 1.2.x](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.0.tar.gz).  
+	If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
+	* Download the [Vitis AI Runtime 1.2.x](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.5.tar.gz).  
 	
 	* Untar the runtime packet and copy the following folder to the board using scp.
 	```
-	$tar -xzvf vitis-ai-runtime-1.2.0.tar.gz
-	$scp -r vitis-ai-runtime-1.2.0/aarch64/centos root@IP_OF_BOARD:~/
+	$tar -xzvf vitis-ai-runtime-1.2.x.tar.gz
+	$scp -r vitis-ai-runtime-1.2.x/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
-	* For ZCU102, reduce the DPU frequency to 93%.
-	```
-	#dpu_clk 93
-	```
-	* Install the Vitis AI Library.
+	* Install the Vitis AI Runtime. Execute the following command in order.
 	```
 	#cd centos
-	#rpm -ivh libunilog-1.2.0-x.aarch64.rpm
-	#rpm -ivh libxir-1.2.0-x.aarch64.rpm
-	#rpm -ivh libtarget-factory-1.2.0-x.aarch64.rpm
-	#rpm -ivh libvart-1.2.0-x.aarch64.rpm
-	#rpm -ivh libvitis_ai_library-1.2.0-x.aarch64.rpm
+	#rpm -ivh libunilog-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh libxir-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh libtarget-factory-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh libvart-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh libvitis_ai_library-1.2.0-r<x>.aarch64.rpm
 	```
 	 	  
 ### Running Vitis AI Library Examples
 
-1. Copy the sample and demo from host to the target using scp with the following command.
-```
-[Host]$scp -r ~/Vitis-AI/Vitis-AI-Library/overview root@IP_OF_BOARD:~/
-```
-2. Download the [vitis_ai_library_r1.2.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_images.tar.gz) and 
+1. Download the [vitis_ai_library_r1.2.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.3_images.tar.gz) and 
 the [vitis_ai_library_r1.2.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz). Copy them from host to the target using scp with the following command.
 ```
 [Host]$scp vitis_ai_library_r1.2.x_images.tar.gz root@IP_OF_BOARD:~/
 [Host]$scp vitis_ai_library_r1.2.x_video.tar.gz root@IP_OF_BOARD:~/
 ```
-3. Untar the image and video packages on the target.
+2. Untar the image and video packages on the target.
 ```
 #cd ~
-#tar -xzvf vitis_ai_library_r1.2_images.tar.gz -C overview
-#tar -xzvf vitis_ai_library_r1.2_video.tar.gz -C overview
+#tar -xzvf vitis_ai_library_r1.2_images.tar.gz -C Vitis-AI/vitis_ai_library
+#tar -xzvf vitis_ai_library_r1.2_video.tar.gz -C Vitis-AI/vitis_ai_library
 ```
-4. Enter the directory of example in target board, take `facedetect` as an example.
+3. Enter the directory of example in target board, take `facedetect` as an example.
 ```
-#cd ~/overview/samples/facedetect
+#cd ~/Vitis-AI/vitis_ai_library/samples/facedetect
+```
+4. Run the image test example.
+```
+#./test_jpeg_facedetect densebox_320_320 sample_facedetect.jpg
 ```
 
-5. Run the image test example.
+5. Run the video test example.
 ```
-#./test_jpeg_facedetect densebox_640_360 sample_facedetect.jpg
-```
+#./test_video_facedetect densebox_320_320 video_input.webm -t 8
 
-6. Run the video test example.
-```
-#./test_video_facedetect densebox_640_360 video_input.webm -t 8
-Video_input.mp4: The video file's name for input.The user needs to prepare the videofile.
+Video_input.mp4: The video file's name for the input. The user needs to prepare the video file by themselves.
 -t: <num_of_threads>
 ```
+
 Note that, for examples with video input, only `webm` and `raw` format are supported by default with the official system image. 
 If you want to support video data in other formats, you need to install the relevant packages on the system. 
 
-7. To test the program with a USB camera as input, run the following command:
+6. To test the program with a USB camera as input, run the following command:
 ```
-#./test_video_facedetect densebox_640_360 0 -t 8
+#./test_video_facedetect densebox_320_320 0 -t 8
+
 0: The first USB camera device node. If you have multiple USB camera, the value might be 1,2,3 etc.
 -t: <num_of_threads>
 ```
-
-8. To test the performance of model, run the following command:
+7. To test the performance of model, run the following command:
 ```
-#./test_performance_facedetect densebox_640_360 test_performance_facedetect.list -t 8 -s 60
+#./test_performance_facedetect densebox_320_320 test_performance_facedetect.list -t 8 -s 60
+
 -t: <num_of_threads>
 -s: <num_of_seconds>
 ```
@@ -345,7 +334,7 @@ $bash -x build.sh
 ```
 3. Run the image test example.
 ```
-$./test_jpeg_facedetect densebox_640_360 sample_facedetect.jpg
+$./test_jpeg_facedetect densebox_320_320 sample_facedetect.jpg
 ```
 4. If you want to run the program in batch mode, which means that the DPU processes multiple
 images at once to prompt for processing performance, you have to compile the entire Vitis AI
@@ -353,17 +342,20 @@ Library according to "Setting Up the Host For Cloud" section. Then the batch pro
 under build_dir_default.Enter build_dir_default, take facedetect as an example,
 execute the following command.
 ```
-$./test_facedetect_batch densebox_640_360 <img1_url> [<img2_url> ...]
+$./test_facedetect_batch densebox_320_320 <img1_url> [<img2_url> ...]
 ```
 5. Run the video test example.
 ```
-#./test_video_facedetect densebox_640_360 video_input.mp4 -t 8
-Video_input.mp4: The video file's name for input.The user needs to prepare the videofile.
+#./test_video_facedetect densebox_320_320 video_input.mp4 -t 8
+
+Video_input.mp4: The video file's name for input. The user needs to prepare the video file by themselves.
 -t: <num_of_threads>
 ```
+
 6. To test the performance of model, run the following command:
 ```
-#./test_performance_facedetect densebox_640_360 test_performance_facedetect.list -t 8 -s 60
+#./test_performance_facedetect densebox_320_320 test_performance_facedetect.list -t 8 -s 60
+
 -t: <num_of_threads>
 -s: <num_of_seconds>
 ```
