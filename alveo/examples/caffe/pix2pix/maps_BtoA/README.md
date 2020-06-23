@@ -16,7 +16,7 @@ The input image is supposed to be Google Maps.
 ```
 
 
-## Pix2Pix (maps_AtoB) model
+## Pix2Pix (maps_BtoA) model
 
 We trained Pix2Pix (maps_BtoA) model with input size as [256,256,3].
 
