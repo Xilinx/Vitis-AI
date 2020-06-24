@@ -302,7 +302,7 @@ ReidResult reid_post_process(
   int sWidth = input_tensors[0][0].width;
   int sHeight = input_tensors[0][0].height;
 //# DPUV1 needs input data as float
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
   float* data = (float*)output_tensors[0][0].get_data(batch_idx);
 #else
   int8_t* data = (int8_t*)output_tensors[0][0].get_data(batch_idx);

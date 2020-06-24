@@ -45,13 +45,20 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
   )
 
 #configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
-target_link_libraries(${COMPONENT_NAME} ${PROJECT_NAME}::model_config ${PROJECT_NAME}::refinedet ${PROJECT_NAME}::facelandmark ${PROJECT_NAME}::lanedetect ${PROJECT_NAME}::ssd ${PROJECT_NAME}::tfssd ${PROJECT_NAME}::yolov2 ${PROJECT_NAME}::yolov3  ${PROJECT_NAME}::classification ${PROJECT_NAME}::facedetect glog::glog ${OpenCV_LIBS} protobuf::libprotobuf)
+target_link_libraries(${COMPONENT_NAME} ${PROJECT_NAME}::model_config ${PROJECT_NAME}::refinedet ${PROJECT_NAME}::posedetect ${PROJECT_NAME}::platenum ${PROJECT_NAME}::platedetect ${PROJECT_NAME}::facelandmark ${PROJECT_NAME}::lanedetect ${PROJECT_NAME}::ssd ${PROJECT_NAME}::tfssd ${PROJECT_NAME}::yolov2 ${PROJECT_NAME}::yolov3  ${PROJECT_NAME}::classification ${PROJECT_NAME}::facedetect glog::glog ${OpenCV_LIBS} protobuf::libprotobuf)
 
+install(
+  TARGETS ${COMPONENT_NAME}
+  EXPORT ${COMPONENT_NAME}-targets
+  RUNTIME DESTINATION ${INSTALL_BIN_DIR}
+  LIBRARY DESTINATION ${INSTALL_LIB_DIR})
+install(
+  EXPORT ${COMPONENT_NAME}-targets
+  NAMESPACE ${PROJECT_NAME}::
+  DESTINATION ${INSTALL_CMAKE_DIR})
+install(FILES include/vitis/ai/general.hpp
+  DESTINATION include/vitis/ai)
 
-install(TARGETS ${COMPONENT_NAME} DESTINATION lib)
-#install(FILES include/xilinx/general/general.hpp DESTINATION include/deephi/general)
-
-#include_directories(${CMAKE_BINARY_DIR})
 add_executable(test_general test/test_general.cpp)
 add_executable(generate_proto test/generate_proto.cpp)
 add_executable(compare_proto test/compare_proto.cpp)

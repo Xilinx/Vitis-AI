@@ -102,7 +102,7 @@ static vector<vector<float>> applyNMS(vector<vector<float>>& boxes, int classes,
 }
 
 //# Disable when DPUV1 Runner is ON
-#ifndef ENABLE_DPUV1_RUNNER
+#ifndef ENABLE_DPUCADX8G_RUNNER
 static void detect(vector<vector<float>>& boxes, int8_t* result, int height,
                    int width, int num, int sHeight, int sWidth, float scale,
                    const vitis::ai::proto::DpuModelParam& config) {
@@ -146,7 +146,7 @@ static void detect(vector<vector<float>>& boxes, int8_t* result, int height,
 #endif
 
 //# Enable method for DPUV1
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
 static void detect(vector<vector<float>>& boxes, float* result, int height,
                    int width, int num, int sHeight, int sWidth, float scale,
                    const vitis::ai::proto::DpuModelParam& config) {
@@ -245,7 +245,7 @@ yolov3_post_process(const std::vector<vitis::ai::library::InputTensor>& input_te
       int height = output_tensors[i].height;
 
       int sizeOut = output_tensors[i].size;
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
       float* dpuOut = (float*)output_tensors[i].get_data(k);
 #else
       int8_t* dpuOut = (int8_t*)output_tensors[i].get_data(k);

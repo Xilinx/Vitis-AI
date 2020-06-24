@@ -28,11 +28,21 @@
 #include <vitis/ai/facedetect.hpp>
 #include <vitis/ai/facelandmark.hpp>
 #include <vitis/ai/lanedetect.hpp>
+#include <vitis/ai/platedetect.hpp>
+#include <vitis/ai/platenum.hpp>
+#include <vitis/ai/posedetect.hpp>
 #include <vitis/ai/refinedet.hpp>
 #include <vitis/ai/ssd.hpp>
 #include <vitis/ai/tfssd.hpp>
 #include <vitis/ai/yolov2.hpp>
 #include <vitis/ai/yolov3.hpp>
+
+// #include <vitis/ai/platerecog.hpp>
+// #include <vitis/ai/segmentation.hpp>
+// #include <vitis/ai/multitask.hpp>
+// #include <vitis/ai/medicalsegmentation.hpp>
+// #include <vitis/ai/reid.hpp>
+// #include <vitis/ai/facefeature.hpp>
 
 using namespace std;
 DEF_ENV_PARAM(DEBUG_GENERAL, "0");
@@ -178,7 +188,13 @@ using ListOfSupportedModels = SupportedModels<
     ModelDef<vitis::ai::proto::DpuModelParam::CLASSIFICATION,
              vitis::ai::Classification>,
     ModelDef<vitis::ai::proto::DpuModelParam::SSD, vitis::ai::SSD>,
-    ModelDef<vitis::ai::proto::DpuModelParam::TFSSD, vitis::ai::TFSSD>
+    ModelDef<vitis::ai::proto::DpuModelParam::TFSSD, vitis::ai::TFSSD>,
+    ModelDef<vitis::ai::proto::DpuModelParam::PLATEDETECT,
+             vitis::ai::PlateDetect>,
+    ModelDef<vitis::ai::proto::DpuModelParam::PLATENUM, vitis::ai::PlateNum>,
+    ModelDef<vitis::ai::proto::DpuModelParam::POSEDETECT, vitis::ai::PoseDetect>
+    // ModelDef<vitis::ai::proto::DpuModelParam::PLATERECOG,
+    // vitis::ai::PlateRecog>
     /* list of supported models end */
     >;
 
@@ -187,6 +203,95 @@ std::unique_ptr<General> General::create(const std::string &model_name,
   auto model = get_config(model_name);
   auto model_type = model.model_type();
   return ListOfSupportedModels::create(model_type, model_name);
+}
+
+template <>
+vitis::ai::proto::DpuModelResult process_result<vitis::ai::PoseDetectResult>(
+    const vitis::ai::PoseDetectResult &result) {
+  vitis::ai::proto::DpuModelResult dpu_model_result;
+
+  auto &pose_detect_result = *dpu_model_result.mutable_pose_detect_result();
+  auto &right_shoulder = *pose_detect_result.mutable_right_shoulder();
+  right_shoulder.set_x(result.pose14pt.right_shoulder.x);
+  right_shoulder.set_y(result.pose14pt.right_shoulder.y);
+  auto &right_elbow = *pose_detect_result.mutable_right_elbow();
+  right_elbow.set_x(result.pose14pt.right_elbow.x);
+  right_elbow.set_y(result.pose14pt.right_elbow.y);
+  auto &right_wrist = *pose_detect_result.mutable_right_wrist();
+  right_wrist.set_x(result.pose14pt.right_wrist.x);
+  right_wrist.set_y(result.pose14pt.right_wrist.y);
+  auto &left_shoulder = *pose_detect_result.mutable_left_shoulder();
+  left_shoulder.set_x(result.pose14pt.left_shoulder.x);
+  left_shoulder.set_y(result.pose14pt.left_shoulder.y);
+  auto &left_elbow = *pose_detect_result.mutable_left_elbow();
+  left_elbow.set_x(result.pose14pt.left_elbow.x);
+  left_elbow.set_y(result.pose14pt.left_elbow.y);
+  auto &left_wrist = *pose_detect_result.mutable_left_wrist();
+  left_wrist.set_x(result.pose14pt.left_wrist.x);
+  left_wrist.set_y(result.pose14pt.left_wrist.y);
+  auto &right_hip = *pose_detect_result.mutable_right_hip();
+  right_hip.set_x(result.pose14pt.right_hip.x);
+  right_hip.set_y(result.pose14pt.right_hip.y);
+  auto &right_knee = *pose_detect_result.mutable_right_knee();
+  right_knee.set_x(result.pose14pt.right_knee.x);
+  right_knee.set_y(result.pose14pt.right_knee.y);
+  auto &right_ankle = *pose_detect_result.mutable_right_ankle();
+  right_ankle.set_x(result.pose14pt.right_ankle.x);
+  right_ankle.set_y(result.pose14pt.right_ankle.y);
+  auto &left_hip = *pose_detect_result.mutable_left_hip();
+  left_hip.set_x(result.pose14pt.left_hip.x);
+  left_hip.set_y(result.pose14pt.left_hip.y);
+  auto &left_knee = *pose_detect_result.mutable_left_knee();
+  left_knee.set_x(result.pose14pt.left_knee.x);
+  left_knee.set_y(result.pose14pt.left_knee.y);
+  auto &left_ankle = *pose_detect_result.mutable_left_ankle();
+  left_ankle.set_x(result.pose14pt.left_ankle.x);
+  left_ankle.set_y(result.pose14pt.left_ankle.y);
+
+  return dpu_model_result;
+}
+
+// template <>
+// vitis::ai::proto::DpuModelResult process_result<vitis::ai::PlateRecogResult>(
+//     const vitis::ai::PlateRecogResult &result) {
+//   vitis::ai::proto::DpuModelResult dpu_model_result;
+
+//   auto &plate_recog_result = *dpu_model_result.mutable_plate_recog_result();
+//   plate_recog_result.set_plate_number(result.plate_number);
+//   plate_recog_result.set_plate_color(result.plate_color);
+//   auto &box = *plate_recog_result.mutable_bounding_box();
+//   box.set_score(result.box.score);
+//   box.set_x(result.box.x);
+//   box.set_y(result.box.y);
+//   box.set_height(result.box.height);
+//   box.set_width(result.box.width);
+//   return dpu_model_result;
+// }
+
+template <>
+vitis::ai::proto::DpuModelResult process_result<vitis::ai::PlateNumResult>(
+    const vitis::ai::PlateNumResult &result) {
+  vitis::ai::proto::DpuModelResult dpu_model_result;
+
+  auto &plate_num_result = *dpu_model_result.mutable_plate_num_result();
+  plate_num_result.set_plate_number(result.plate_number);
+  plate_num_result.set_plate_color(result.plate_color);
+  return dpu_model_result;
+}
+
+template <>
+vitis::ai::proto::DpuModelResult process_result<vitis::ai::PlateDetectResult>(
+    const vitis::ai::PlateDetectResult &result) {
+  vitis::ai::proto::DpuModelResult dpu_model_result;
+
+  auto &plate_detect_result = *dpu_model_result.mutable_plate_detect_result();
+  auto &box = *plate_detect_result.mutable_bounding_box();
+  box.set_score(result.box.score);
+  box.set_x(result.box.x);
+  box.set_y(result.box.y);
+  box.set_height(result.box.height);
+  box.set_width(result.box.width);
+  return dpu_model_result;
 }
 
 template <>

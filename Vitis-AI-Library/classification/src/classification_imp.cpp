@@ -127,7 +127,7 @@ vitis::ai::ClassificationResult ClassificationImp::run(
       case 1:
         if (test_accuracy) {
 //# DPUV1 directly uses the resized image dataset so no need of crop
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
           cv::resize(input_image, image, size);
 #else
           croppedImage(input_image, height, width, image);

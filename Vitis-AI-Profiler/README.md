@@ -83,13 +83,13 @@ Running on a PC or local server take responsibility for analyzation and visualiz
 - At the right half panel of the profiler window, there are two tabs which can be clicked on
     -	Hardware information about hardware platform, and if the target platform is zynq MPSoC DPU hardware information could be found here also
     -	A series of key performance indicator of CPUs and DPUs, including CPU/DPU utilization and DPU average latency for tasks
-    <p align="center"><img src="img/info_table.png"></p>
+    <p align="center"><img  width="300px" src="img/info_table.png"></p>
 
 ## Get Started with Vitis AI Profiler:
 -	System Requirements:
     - Hardware:
-        - Support MPSoC (DPU v2)
-        - Support Alveo (DPU v3e)
+        - Support MPSoC (DPUCZD series)
+        - Support Alveo (DPUCAH series)
     - Software:
         - Support VART v1.2+
         - Support Vitis AI Library v1.2+
@@ -133,6 +133,29 @@ Running on a PC or local server take responsibility for analyzation and visualiz
 
         3. Run _petalinux-build_ and update kernel and rootfs
 
+    - Preparing debug environment for docker  
+      If you are using Vitis AI with docker, please add this patch to docker_run.sh, because root permission is required for vaitrace
+      ```diff
+      --- a/docker_run.sh
+      +++ b/docker_run.sh
+      @@ -94,6 +94,7 @@ if [[ $IMAGE_NAME == *"gpu"* ]]; then
+           -e USER=$user -e UID=$uid -e GID=$gid \
+           -e VERSION=$VERSION \
+           -v $HERE:/workspace \
+      +    -v /sys/kernel/debug:/sys/kernel/debug  --privileged=true \
+           -w /workspace \
+           --rm \
+           --runtime=nvidia \
+      @@ -111,6 +112,7 @@ else
+           -e USER=$user -e UID=$uid -e GID=$gid \
+           -e VERSION=$VERSION \
+           -v $HERE:/workspace \
+      +    -v /sys/kernel/debug:/sys/kernel/debug  --privileged=true \
+           -w /workspace \
+           --rm \
+           --network=host \
+
+      ```
     -	Installing vaitrace
         1.	Install vitis-ai-runtime package, vaitrace will be installed into /usr/bin/xlnx/vaitrace
         2.	Create a symbolic link for vaitrace for ease of use
@@ -159,7 +182,7 @@ Here use the 'test_performance' program of Vitis AI Library’s yolo_v3 sample a
 - Uploading:
     - Open the Vitis AI Profiler with your browser by default URL is http://127.0.0.1:8008
     - Click 'Browse...' button to select the .xat file then click 'Upload'  
-       <p align="center"><img src="img/upload.png"></p>
+       <p align="center"><img width="500px" src="img/upload.png"></p>
 
     - After a while, it jumps to profiler page, there four parts on the profiler page
       1. Timeline  
@@ -224,7 +247,7 @@ Another way to launch a trace is to save all necessary information for vaitrace 
     |   | cmd | string | the same with command line argument cmd |
     |   | output | string | the same with command line argument -o |
     |   | timeout | integer | the same with command line argument -t |
-    |   | runmode | string | Xmodel run mode control, can be “debug” or “normal”, if runmode == “debug” VART will control xmodel run in a debug mode by using this, user can achieve **fine-grained profiling** for xmodel  |
+    |   | runmode | string | Xmodel run mode control, can be “debug” or “normal”, if runmode == “debug” VART will control xmodel run in a debug mode by using this, user can achieve **fine-grained profiling** for xmodel. For .elf type mode, only "normal" is valid |
     | trace  |  | object | |
     |  | enable_tracelist | list_of_string |enable_trace_list	list	Built-in trace function list to be enabled, available value **"vitis-ai-library", "vart", “opencv”, "custom"**, custom for function in trace_custom list|
     |  trace_custom | | list_of_string | trace_custom	list	The list of functions to be traced that are implemented by user. For the name of function, naming space are supported. You can see an example of using custom trace function later in this document|
@@ -237,7 +260,7 @@ Click on [Manage Uploaded Files] on front-page, that we can see a file managemen
   - Click on the ID number will jump to the report 
   - Click on the file name can download the uploaded .xat file
   - Click on the [x] will remove the file from server
-  <p align="center"><img src="img/manage_xat.png"></p>
+  <p align="center"><img width="800px" src="img/manage_xat.png"></p>
 
 
 ## Example of VART based program profiling:
@@ -246,10 +269,11 @@ Click on [Manage Uploaded Files] on front-page, that we can see a file managemen
   # cd path-to-vart-resnet50-samples
   ```
   - Setup environment
-  - Remove cv::imshow and cv::waitKey from main.cc so that this program could run quickly
+  - Remove cv::imshow and cv::waitKey from main.cc so that this program could run continuously
   - Build this sample
 
-  From the source code, we found that **TopK** and **softmax** task will be done by CPU, and we want to check the performance of these two functions, so write the name of these two function down to trace_custom list, and save it as trace_resnet50_vart.json like this: 
+  From the source code, we found that **TopK** and **softmax** task will be done by CPU, and we want to check the performance of these two functions, so write the name of these two functions to trace_custom list, and save this file as trace_resnet50_vart.json.  
+  For edge devices: 
   ```json
   {
       "options": {
@@ -265,11 +289,27 @@ Click on [Manage Uploaded Files] on front-page, that we can see a file managemen
   }
 
   ```
+  For alveo devices, this sample uses xmodel, so it will have a different launch command
+  ```json
+  {
+      "options": {
+          "runmode": "normal",
+          "cmd": "./resnet50 model_dir_for_U50/resnet50.xmodel",
+          "output": "./trace_vart_resnet50.xat",
+          "timeout": 3
+      },
+      "trace": {
+          "enable_trace_list": ["vart", "opencv", "custom"]
+      },
+      "trace_custom": [ "TopK", "CPUCalcSoftmax"]
+  }
+  ```
 
 - Start a trace:
   ```bash
   # vaitrace -c trace_resnet50_vart.json
   ```
+  note: vaitrace requires root permission
 
 - Upload trace_vart_resnet50.xat to Vitis Ai Profiler and check the report
 

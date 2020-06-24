@@ -30,7 +30,7 @@ namespace ai {
 static float my_div(float a, int b) { return a / static_cast<float>(b); };
 
 //# Post process for DPUV1
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
 //# GSTiling layer used for DPUV1
 static void GSTilingLayer_forward_c(
                              const void *top_np,
@@ -167,7 +167,7 @@ static void NMS(const float nms_threshold, const vector<vector<float>>& box,
 }
 
 //# Post process for DPUV1
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
 FaceDetectResult face_detect_post_process(
     const std::vector<std::vector<vitis::ai::library::InputTensor>>& input_tensors,
     const std::vector<std::vector<vitis::ai::library::OutputTensor>>& output_tensors,

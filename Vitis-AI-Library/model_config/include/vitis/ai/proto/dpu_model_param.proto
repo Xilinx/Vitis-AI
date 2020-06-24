@@ -205,6 +205,9 @@ message DpuModelParam {
     YOLOv2 = 17;
     TFSSD = 18;
     FACELANDMARK = 19;
+    PLATEDETECT = 20;
+    PLATENUM = 21;
+    PLATERECOG = 22;
   }
   optional ModelType model_type = 3;
   optional RefineDetParam refine_det_param = 4;
@@ -301,6 +304,38 @@ message FaceLandmarkResult {
   repeated Point point = 1;
 }
 
+message PlateDetectResult {
+  optional BoundingBox bounding_box = 1;
+}
+
+message PlateNumResult {
+  optional string plate_number = 1;
+  optional string plate_color = 2;
+}
+
+message PlateRecogResult {
+  optional BoundingBox bounding_box = 1;
+  optional string plate_number = 2;
+  optional string plate_color = 3;
+}
+
+message PoseDetectResult {
+  optional Point right_shoulder = 1;
+  optional Point right_elbow = 2;
+  optional Point right_wrist = 3;
+  optional Point left_shoulder = 4;
+  optional Point left_elbow = 5;
+  optional Point left_wrist = 6;
+  optional Point right_hip = 7;
+  optional Point right_knee = 8;
+  optional Point right_ankle = 9;
+  optional Point left_hip = 10;
+  optional Point left_knee = 11;
+  optional Point left_ankle = 12;
+  optional Point head = 13;
+  optional Point neck = 14;
+}
+
 message DpuModelResult {
   oneof dpu_model_result {
     LandmarkResult landmark_result = 1;
@@ -310,5 +345,9 @@ message DpuModelResult {
     ClassificationResult classification_result = 5;
     RoadlineResult roadline_result = 6;
     FaceLandmarkResult facelandmark_result = 7;
+    PlateDetectResult plate_detect_result = 8;
+    PlateNumResult plate_num_result = 9;
+    PlateRecogResult plate_recog_result = 10;
+    PoseDetectResult pose_detect_result = 11;
   }
 }

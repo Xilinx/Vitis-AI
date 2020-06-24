@@ -15,17 +15,6 @@
 #
 cmake_minimum_required(VERSION 3.5)
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
-set(OpenCV_LIBS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
-if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
-  ## TODO: fix hard coded directory
-  link_directories(/home/administrator/workspace/qtbase/lib/)
-  list(APPEND OpenCV_LIBS Qt5Widgets Qt5Test Qt5Concurrent Qt5Gui Qt5Core)
-else()
-endif()
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SYSROOT}/usr/share/cmake/")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
-
-include(XilinxCommon)
 include(XilinxVersion)
 add_library(${COMPONENT_NAME} SHARED
   include/vitis/ai/platerecog.hpp
@@ -36,14 +25,21 @@ add_library(${COMPONENT_NAME} SHARED
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 target_link_libraries(${COMPONENT_NAME}
-  dpu_task
-  platedetect
-  platenum
-  xnnpp
-  model_config
+  ${PROJECT_NAME}::platedetect
+  ${PROJECT_NAME}::platenum
   ${OpenCV_LIBS} # cv::resize
   glog::glog
   )
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include>
+)
+
 set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}"
@@ -57,7 +53,7 @@ install(
 
 install(
   EXPORT ${COMPONENT_NAME}-targets
-  NAMESPACE ${COMPONENT_NAME}::
+  NAMESPACE ${PROJECT_NAME}::
   DESTINATION ${INSTALL_CMAKE_DIR})
 install(FILES include/vitis/ai/platerecog.hpp
   DESTINATION include/vitis/ai)

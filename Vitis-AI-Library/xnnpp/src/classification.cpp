@@ -61,7 +61,7 @@ ClassificationResult classification_post_process(
     virtual_output.push_back(output_tensors[0]);
   }
   std::vector<float> softres(virtual_output[0].channel);
-#ifdef ENABLE_DPUV1_RUNNER
+#ifdef ENABLE_DPUCADX8G_RUNNER
   vitis::ai::softmax((float*)virtual_output[0].get_data(batch_idx),
                       vitis::ai::library::tensor_scale(virtual_output[0]),
                       virtual_output[0].channel, 1, &softres[0]);
