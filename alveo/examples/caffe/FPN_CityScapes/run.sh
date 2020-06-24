@@ -19,13 +19,19 @@ export MODELDIR="$( readlink -f "$( dirname "${BASH_SOURCE[0]}" )" )"
 # MODELDIR=$2
 OUTDIR=$MODELDIR/work
 
+# Choose the target
+ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+if [ ! -f $ARCH_JSON ]; then
+  ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
+fi
+
 
 vai_c_caffe \
   --net_name $MODEL.compiler \
   --prototxt $MODELDIR/quantize_results/$MODEL.prototxt \
   --caffemodel $MODELDIR/quantize_results/$MODEL.caffemodel \
   --options "{'quant_cfgfile': '$MODELDIR/quantize_results/quantize_info.txt', 'strategy' : 'bysize', 'ddr' : 220, 'deconvinfpga':True,'noreplication': True}" \
-  --arch /opt/vitis_ai/compiler/arch/dpuv1/ALVEO/ALVEO.json \
+  --arch $ARCH_JSON \
   -o $OUTDIR
 
 

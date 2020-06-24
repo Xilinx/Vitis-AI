@@ -1,4 +1,4 @@
-This is resnet50_v1 example and it uses unified vitis-ai APIs to run on alveo platforms
+This is resnet50_v1 tensorflow example and it uses unified vitis-ai APIs to run on alveo platforms
 
 ### Setup
 
