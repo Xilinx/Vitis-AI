@@ -14,7 +14,7 @@ This repository includes optimized deep learning models to speed up the deployme
 
 ## Vitis AI 1.2 Model Zoo New Features！
 1.Newly added 8 Pytorch models and provide test & training code for them.</br>
-2.The variety and quantity of Caffe models have been improved, newly added such as license plate recognition and medical segmentation models.</br>
+2.The variety and quantity of Caffe models have been improved, newly added such as vehicle license plate recognition and medical segmentation models.</br>
 3.Updated information about more supported edge and cloud hardware platforms and performance.
 
 ## Model Information
