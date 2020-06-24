@@ -1,5 +1,0 @@
-{
-  "lib": "libvart-dpu-runner.so",
-  "filename": "./inception_v1_tf.elf",
-  "kernel": [ "inception_v1_tf_0" ]
-}

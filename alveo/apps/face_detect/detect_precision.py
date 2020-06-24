@@ -24,23 +24,10 @@ from detect_ap2 import det_preprocess, det_postprocess
 import subprocess
 import caffe
 
-def padProcess(image, in_w, in_h):
-    oriSize = image.shape
-    sz_ratio = in_w/float(in_h)
-    if oriSize[1] / float(oriSize[0]) >= sz_ratio:
-        newHeight = int(math.ceil(oriSize[1]/sz_ratio))
-        imagePad = np.zeros((newHeight, oriSize[1], 3), np.uint8)
-    else:
-        newWidth = int(math.ceil(oriSize[0]*sz_ratio))
-        imagePad = np.zeros((oriSize[0], newWidth, 3), np.uint8)
-
-    imagePad[0:oriSize[0], 0:oriSize[1], :] = image
-    return imagePad
-
-def detect(runner, fpgaBlobs, image, szs):
+def detect(runner, fpgaBlobs, image):
     fpgaInput = fpgaBlobs[0][0]
     c,h,w = fpgaInput[0].shape
-    img = det_preprocess(image, fpgaInput[0])
+    szs = det_preprocess(image, w, h, fpgaInput[0])
     jid = runner.execute_async(fpgaBlobs[0], fpgaBlobs[1])
     runner.wait(jid)
     rects = det_postprocess(fpgaBlobs[1][1], fpgaBlobs[1][0], [h,w,c], szs)
@@ -65,14 +52,7 @@ def faceDetection(args, FDDB_list, FDDB_results_file):
         FDDB_results_file.write('%s\n' % line.strip())
         image_name =  args.fddbPath  + line.strip() + '.jpg'
         image_ori = cv2.imread(image_name, cv2.IMREAD_COLOR)
-        imagePad = padProcess(image_ori, args.resize_w, args.resize_h) 
-        image = cv2.resize(imagePad,(args.resize_w, args.resize_h), interpolation = cv2.INTER_CUBIC)
-        image = image.astype(np.float)
-        image = image - 128
-        szs = (float(imagePad.shape[0])/float(image.shape[0]), float(imagePad.shape[1])/float(image.shape[1]))
-        sz = image.shape
-        #print("image name, orig image, resize img  shape : ", image_name, image_ori.shape, image.shape)
-        rects=detect(runner, fpgaBlobs, image, szs)
+        rects=detect(runner, fpgaBlobs, image_ori)
         FDDB_results_file.write('%d\n' % len(rects))
 
         for rect in rects:
@@ -85,7 +65,7 @@ def faceDetection(args, FDDB_list, FDDB_results_file):
 # Face Detection 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'analysis densebox model')
-    parser.add_argument('--vitisrundir', help = 'path to dpuv1 run directory ', type=str)
+    parser.add_argument('--vitisrundir', help = 'path to run directory ', type=str)
     parser.add_argument('--fddbList', type = str, help = 'FDDB testset list', default='FDDB_list.txt')
     parser.add_argument('--fddbPath', type = str, help = 'FDDB testset path', default='/group/modelzoo/test_dataset/FDDB/FDDB_images/')
     parser.add_argument('--fddbAnno', type = str, help = 'FDDB testset annotations', default='FDDB_annotations.txt')

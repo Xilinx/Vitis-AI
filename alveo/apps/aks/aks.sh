@@ -20,27 +20,28 @@ usage() {
   echo "    ./aks.sh --nfpga <number-of-fpgas> --impl <py/cpp>" 
   echo "             --model <model-variant>"
   echo "             --dir1 <image-dir> --dir2 <image-dir>"
+  echo "             --video <video-file>"
   echo -e ""
   echo "Examples:"
   echo "------------------------------------------------"
   echo "Run GoogleNet with AKS C++: "
-  echo "    ./aks.sh --impl cpp --model googlenet --dir1 ~/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min"
+  echo "    ./aks.sh --impl cpp --model googlenet --dir1 <image-dir>"
   echo -e ""
-  echo "Run tinyyolov3 on video with AKS C++: "
-  echo "    ./aks.sh --impl cpp --model tinyyolov3_video -vf ../../examples/vitis_ai_alveo_samples/video_analysis/video/structure.mp4"
+  echo "Run TinyYolov3 on video with AKS C++: "
+  echo "    ./aks.sh --impl cpp --model tinyyolov3_video --video <video-file>"
   echo -e ""
   echo "Run ResNet50 with AKS Python: "
-  echo "    ./aks.sh --impl py --model resnet50 --dir1 ~/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min"
+  echo "    ./aks.sh --impl py --model resnet50 --dir1 <image-dir>"
   echo -e ""
   echo "Run Multinet example:"
-  echo "    ./aks.sh --impl cpp --model googlenet_tinyyolov3"
-  echo "    ./aks.sh --impl cpp --model googlenet_resenet50"
+  echo "    ./aks.sh --impl cpp --model googlenet_tinyyolov3 --dir1 <image-dir-for-googlenet> --dir2 <image-dir-for-tinyyolov3>"
+  echo "    ./aks.sh --impl cpp --model googlenet_resenet50 --dir1 <image-dir-for-googlenet> --dir2 <image-dir-for-resnet50>"
   echo -e ""
   echo "Run AKS C++ (Multiple FPGAs): "
-  echo "    ./aks.sh --nfpga <N FPGAs on system> --impl cpp --model googlenet_resenet50"
+  echo "    ./aks.sh --nfpga <N FPGAs on system> --impl cpp --model googlenet --dir1 <image-dir>"
   echo -e ""
   echo "Run GoogleNet with FPGA accelerated Pre-Processing: "
-  echo "    ./aks.sh --impl cpp --model googlenet_pp_accel"
+  echo "    ./aks.sh --impl cpp --model googlenet_pp_accel --dir1 <image-dir>"
 
   echo -e ""
   echo "Arguments:"
@@ -52,11 +53,12 @@ usage() {
   echo "                                  Possible values: [googlenet_tinyyolov3]"
   echo "                                  Possible values: [googlenet_resnet50]"
   echo "                                  Possible values: [googlenet_pp_accel]"
+  echo "                                  Possible values: [tinyyolov3_video]"
   echo "  -i  IMPL    | --impl   IMPL     Implemetation"
   echo "                                  Possible values: [cpp, py]"
-  echo "  -d1 IMAGES  | --dir1   IMAGES   Classification Network's Image Directory"
-  echo "  -d2 IMAGES  | --dir2   IMAGES   Detection Network's Image Directory"
-  echo "  -vf VIDEO   | --video  VIDEO    Detection Network's Video File"
+  echo "  -d1 IMAGES  | --dir1   IMAGES   Image Directory"
+  echo "  -d2 IMAGES  | --dir2   IMAGES   Image Directory (To be used for Multi-Net)"
+  echo "  -vf VIDEO   | --video  VIDEO    Video File"
   echo "  -h          | --help            Print this message."
   echo "------------------------------------------------"
   echo -e ""
@@ -65,11 +67,11 @@ usage() {
 # Default
 NUM_FPGA=""
 MODEL="googlenet"
+DIRECTORY1=""
+DIRECTORY2=""
+VIDEO=""
 IMPL="cpp"
 VERBOSE=1
-C_DIRECTORY=~/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
-D_DIRECTORY=../yolo/test_image_set
-D_VIDEO="../../examples/vitis_ai_alveo_samples/video_analysis/video/structure.mp4"
 
 # Parse Options
 while true
@@ -78,9 +80,9 @@ do
   case "$1" in
     -n  |--nfpga         ) NUM_FPGA="$2"         ; shift 2 ;;
     -m  |--model         ) MODEL="$2"            ; shift 2 ;;
-    -d1 |--dir1          ) C_DIRECTORY="$2"      ; shift 2 ;;
-    -d2 |--dir2          ) D_DIRECTORY="$2"      ; shift 2 ;;
-    -vf |--video         ) D_VIDEO="$2"          ; shift 2 ;;
+    -d1 |--dir1          ) DIRECTORY1="$2"       ; shift 2 ;;
+    -d2 |--dir2          ) DIRECTORY2="$2"       ; shift 2 ;;
+    -vf |--video         ) VIDEO="$2"            ; shift 2 ;;
     -i  |--impl          ) IMPL="$2"             ; shift 2 ;;
     -v  |--verbose       ) VERBOSE="$2"          ; shift 2 ;;
     -h  |--help          ) usage                 ; exit  1 ;;
@@ -128,10 +130,10 @@ then
 fi
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/apps/aks/libs
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib/python3.6/site-packages/vai/dpuv1/utils
-LD_LIBRARY_PATH=${CONDA_PREFIX}/lib:${LD_LIBRARY_PATH}
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
-export PYTHONPATH=${VAI_ALVEO_ROOT}/apps/face_detect:${VAI_ALVEO_ROOT}/apps/aks/libs:${VAI_ALVEO_ROOT}/apps/aks/libs/pykernels:$PYTHONPATH
+export PYTHONPATH=${VAI_ALVEO_ROOT}/apps/face_detect:${VAI_ALVEO_ROOT}/apps/aks/libs:${VAI_ALVEO_ROOT}/apps/aks/libs/pykernels:${PYTHONPATH}
 
 CARDS_CONNECTED=`xbutil scan | grep "xilinx_u" | wc -l`
 if [ ! -z "${NUM_FPGA}" ]
@@ -153,14 +155,14 @@ fi
 
 CPP_EXE=""
 PY_EXE=""
-AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-aks-graphmeta.tar.gz"
+AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=aksMeta_vai1p2_16062020.zip"
 # Check if the model files exists
-for name in "meta_googlenet" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2"
+for name in "meta_googlenet" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
 do
     NAME="graph_zoo/$name"
     if [[ ! -d "${NAME}" ]]; then
       echo -e "$NAME doesn't exist"
-      wget $AKS_GRAPH_META_URL -O temp.tar.gz && tar -xzvf temp.tar.gz -C graph_zoo/ && rm -rf temp.tar.gz
+      wget $AKS_GRAPH_META_URL -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
       if [[ $? != 0 ]]; then echo "Network download failed. Exiting ..."; exit 1; fi;
       break;
     fi;
@@ -170,22 +172,22 @@ done
 if [ "$MODEL" == "googlenet" ]; then
   CPP_EXE=examples/bin/googlenet.exe
   PY_EXE=examples/googlenet.py
-  exec_args="$C_DIRECTORY"
+  exec_args="$DIRECTORY1"
 
 elif [ "$MODEL" == "googlenet_pp_accel" ]; then
   CPP_EXE=examples/bin/googlenet_pp_accel.exe
   PY_EXE=examples/googlenet_pp_accel.py
-  exec_args="$C_DIRECTORY"
+  exec_args="$DIRECTORY1"
 
 elif [ "$MODEL" == "resnet50" ]; then
   CPP_EXE=examples/bin/resnet50.exe
   PY_EXE=examples/resnet50.py
-  exec_args="$C_DIRECTORY"
+  exec_args="$DIRECTORY1"
 
 elif [ "$MODEL" == "tinyyolov3" ]; then
   CPP_EXE=examples/bin/tinyyolov3.exe
   PY_EXE=examples/tinyyolov3.py
-  exec_args="$D_DIRECTORY"
+  exec_args="$DIRECTORY1"
 
 elif [ "$MODEL" == "tinyyolov3_video" ]; then
   if [[ "$IMPL" == "py" ]]; then
@@ -195,22 +197,22 @@ elif [ "$MODEL" == "tinyyolov3_video" ]; then
     exit 1
   fi
   CPP_EXE=examples/bin/tinyyolov3_video.exe
-  exec_args="$D_VIDEO"
+  exec_args="$VIDEO"
 
 elif [ "$MODEL" == "stdyolov2" ]; then
   CPP_EXE=examples/bin/stdyolov2.exe
   PY_EXE=examples/stdyolov2.py
-  exec_args="$D_DIRECTORY"
+  exec_args="$DIRECTORY1"
 
 elif [ "$MODEL" == "googlenet_resnet50" ]; then
   CPP_EXE=examples/bin/googlenet_resnet50.exe
   PY_EXE=examples/googlenet_resnet50.py
-  exec_args="$C_DIRECTORY"
+  exec_args="$DIRECTORY1 $DIRECTORY2"
 
 elif [ "$MODEL" == "googlenet_tinyyolov3" ]; then
   CPP_EXE=examples/bin/googlenet_tinyyolov3.exe
   PY_EXE=examples/googlenet_tinyyolov3.py
-  exec_args="$C_DIRECTORY $D_DIRECTORY"
+  exec_args="$DIRECTORY1 $DIRECTORY2"
 
 elif [ "$MODEL" == "facedetect" ]; then
   echo "[INFO] Visit $VAI_ALVEO_ROOT/apps/face_detect to prepare FDDB dataset."
@@ -220,7 +222,7 @@ elif [ "$MODEL" == "facedetect" ]; then
   echo ""
   CPP_EXE=examples/bin/facedetect.exe
   PY_EXE=examples/facedetect.py
-  exec_args="$C_DIRECTORY"
+  exec_args="$DIRECTORY1"
 fi
 
 if [[ "$IMPL" == "cpp" ]]; then

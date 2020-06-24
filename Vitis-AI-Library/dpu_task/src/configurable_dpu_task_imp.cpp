@@ -33,8 +33,6 @@ DEF_ENV_PARAM(DEBUG_DPBASE, "0");
 namespace vitis {
 namespace ai {
 
-//# Disable the unused functions when DPUV1 Enable
-#ifndef ENABLE_DPUV1_RUNNER 
 static vector<string> find_model_search_path() {
   auto ret = vector<string>{};
   ret.push_back(".");
@@ -42,7 +40,6 @@ static vector<string> find_model_search_path() {
   ret.push_back("/usr/share/vitis_ai_library/.models");
   return ret;
 }
-#endif
 
 static size_t filesize(const string& filename) {
   size_t ret = 0;
@@ -54,9 +51,10 @@ static size_t filesize(const string& filename) {
   return ret;
 }
 
+											  
+static string find_model(const string& name) {
 //# Disable the unused functions when DPUV1 Enable
 #ifndef ENABLE_DPUV1_RUNNER 
-static string find_model(const string& name) {
   if (filesize(name) > 4096u) {
     return name;
   }
@@ -73,6 +71,29 @@ static string find_model(const string& name) {
       return elf_name;
     }
   }
+#else
+  //# Get the config prototxt from dir path
+  std::string tmp_name = name;
+  while(tmp_name.back() == '/') {
+	  tmp_name.pop_back();
+  }
+  std::string last_element(tmp_name.substr(tmp_name.rfind("/") + 1));
+  auto config_file = name + "/" + last_element + ".prototxt";  
+  
+  if (filesize(config_file) > 0u) {
+    return config_file;
+  }
+  
+  //# Get model path from standard path
+  auto ret = std::string();
+  for (const auto& p : find_model_search_path()) {
+    ret = p + "/" + name + "/" + name;
+    const auto config_file = ret + ".prototxt";
+    if (filesize(config_file) > 0u) {
+      return config_file;
+    }
+  }
+#endif
 
   stringstream str;
   str << "cannot find model <" << name << "> after checking following dir:";
@@ -82,22 +103,12 @@ static string find_model(const string& name) {
   LOG(FATAL) << str.str();
   return string{""};
 }
-#endif
+
 
 static string find_config_file(const string& name) {
-#ifdef ENABLE_DPUV1_RUNNER
-  //# Get the config prototxt from dir path
-  std::string tmp_name = name;
-  while(tmp_name.back() == '/') {
-	  tmp_name.pop_back();
-  }
-  std::string last_element(tmp_name.substr(tmp_name.rfind("/") + 1));
-  auto config_file = name + "/" + last_element + ".prototxt";   
-#else
   auto model = find_model(name);
   std::string pre_name = model.substr(0, model.rfind("."));
   auto config_file = pre_name + ".prototxt";
-#endif
   if (filesize(config_file) > 0u) {
     return config_file;
   }

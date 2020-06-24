@@ -166,10 +166,10 @@ if(ENABLE_MEDICALSEGMENTATION OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS medicalsegmentation)
 endif()
 
+add_subdirectory(benchmark)
+include_directories(benchmark/include)
 
 if(ENABLE_OVERVIEW AND (NOT DISABLE_ALL))
-  add_subdirectory(benchmark)
-  include_directories(benchmark/include)
   add_subdirectory(overview)
 endif()
 

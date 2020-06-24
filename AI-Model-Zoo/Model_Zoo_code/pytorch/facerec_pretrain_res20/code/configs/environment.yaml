@@ -1,0 +1,34 @@
+name: facerec_env
+channels:
+dependencies:
+- _libgcc_mutex=0.1=main
+- ca-certificates=2019.11.28=hecc5488_0
+- certifi=2019.11.28=py36_0
+- ld_impl_linux-64=2.33.1=h53a641e_8
+- libffi=3.2.1=he1b5a44_1006
+- libgcc-ng=9.2.0=hdf63c60_0
+- libstdcxx-ng=9.2.0=hdf63c60_2
+- ncurses=6.1=hf484d3e_1002
+- openssl=1.1.1d=h516909a_0
+- pip=9.0.1=py36_1
+- python=3.6.10=h9d8adfe_1009_cpython
+- readline=8.0=hf8c457e_0
+- setuptools=45.2.0=py36_0
+- sqlite=3.30.1=hcee41ef_0
+- tk=8.6.10=hed695b0_0
+- wheel=0.34.2=py36_0
+- xz=5.2.4=h14c3975_1001
+- zlib=1.2.11=h516909a_1006
+- pip:
+  - joblib==0.14.1
+  - numpy==1.18.2
+  - opencv-python==4.2.0.32
+  - pillow<7.0.0
+  - scikit-learn==0.22.2.post1
+  - scipy==1.4.1
+  - six==1.14.0
+  - sklearn==0.0
+  - torch==1.1.0
+  - torchvision==0.3.0
+prefix:
+

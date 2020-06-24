@@ -1,5 +1,0 @@
-{
-  "lib": "libvart-dpu-runner.so",
-  "filename": "./sp_net.elf",
-  "kernel": [ "sp_net_0" ]
-}

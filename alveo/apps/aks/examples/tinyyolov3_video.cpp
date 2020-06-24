@@ -163,7 +163,7 @@ int main(int argc, char **argv) {
         return 0;
     }
     const std::string videoFile = argv[1];
-    const std::string output_video = "detection_output.avi";
+    const std::string output_video = "./detection_output.avi";
     std::string labelsFile = std::string(getenv("VAI_ALVEO_ROOT")) + \
         "/apps/yolo/coco.names";
     std::vector<std::string> vecOfLabels;
@@ -214,7 +214,7 @@ int main(int argc, char **argv) {
     videoCaptureObj->release();
     processThread.join();
 
-    std::cout << "Video saved at " << output_video << std::endl;
+    std::cout << "[INFO] Video Saved at: " << output_video << std::endl;
     AKS::SysManagerExt::deleteGlobal();
     return 0;
 }

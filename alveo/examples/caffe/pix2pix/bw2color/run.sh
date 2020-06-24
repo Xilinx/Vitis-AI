@@ -17,22 +17,20 @@ MODEL=$1
 export MODELDIR="$( readlink -f "$( dirname "${BASH_SOURCE[0]}" )" )"
 OUTDIR=$MODELDIR/work
 
-
-/opt/vitis_ai/compiler/vai_c_caffe \
+vai_c_caffe \
   --net_name $MODEL.compiler \
-  --prototxt $VAI_ALVEO_ROOT/examples/caffe/models/bw2color/$MODEL.prototxt \
-  --caffemodel $VAI_ALVEO_ROOT/examples/caffe/models/bw2color/$MODEL.caffemodel \
-  --options "{'quant_cfgfile': 'fix_info.txt', 'parallelism': True, 'parallelismgraphalgorithm': 'tfs', 'parallelismstrategy': ['tops', 'bottom'], 'parallelread' : ['bottom', 'tops'],'saveschedule': 'upconv.sched','laodschedule':'upconv.sched'}" \
+  --prototxt $MODELDIR/quantize_results/$MODEL.prototxt \
+  --caffemodel $MODELDIR/quantize_results/$MODEL.caffemodel \
+  --options "{'quant_cfgfile': '$MODELDIR/quantize_results/quantize_info.txt', 'parallelism': True}" \
   --arch /opt/vitis_ai/compiler/arch/dpuv1/ALVEO/ALVEO.json \
   -o $OUTDIR
-
-
   
-
-python /opt/vitis_ai/conda/envs/vitis-ai-caffe/lib/python3.6/site-packages/vai/dpuv1/rt/scripts/framework/caffe/xfdnn_subgraph.py \
-  --inproto $VAI_ALVEO_ROOT/examples/caffe/models/bw2color/$MODEL.prototxt \
-  --outproto xfdnn_$MODEL.prototxt \
-  --cutAfter data \
+  
+  
+python -m vai.dpuv1.rt.scripts.framework.caffe.xfdnn_subgraph \
+  --inproto $MODELDIR/quantize_results/$MODEL.prototxt \
+  --outproto $MODELDIR/xfdnn_$MODEL.prototxt \
+  --cutAfter input_3 \
   --xclbin /opt/xilinx/overlaybins/xdnnv3 \
   --netcfg $OUTDIR/compiler.json \
   --quantizecfg $OUTDIR/quantizer.json \

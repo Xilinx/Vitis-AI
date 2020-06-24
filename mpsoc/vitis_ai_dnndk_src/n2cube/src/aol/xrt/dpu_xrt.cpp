@@ -300,11 +300,21 @@ static int _init_xrt(const char *bit) {
       cu_addr_map[cu_base_addr] = 1;
 
       SYSCONF->dpu_conf[dpu_core_num].base_addr = cu_base_addr;
-      // SYSCONF->dpu_conf[dpu_core_num].version =
-      //     read32_dpu_reg(cu_base_addr + DPUREG_SUB_VERSION) & 0xFFF;
-      // uint32_t arch = read32_dpu_reg(cu_base_addr + DPUREG_ARCH);
-      // SYSCONF->dpu_conf[dpu_core_num].arch =
-      //     2 * ((arch >> 16) & 0xF) * ((arch >> 8) & 0xFF) * ((arch >> 8) & 0xFF);
+
+      log_info("Kernel:%s , BaseAddr: 0x%x\n", layout->m_ip_data[i].m_name,
+               layout->m_ip_data[i].m_base_address);
+      log_info("ver :%x\n", SYSCONF->dpu_conf[dpu_core_num].version);
+      log_info("arch:%x\n", SYSCONF->dpu_conf[dpu_core_num].arch);
+
+      xclRead(mdev_handle, XCL_ADDR_KERNEL_CTRL, cu_base_addr + DPUREG_GIT_COMMIT_ID,
+              (void *)(&SYSCONF->dpu_conf[dpu_core_num].feature), sizeof(dpu_feature_t));
+
+      dpu_core_num++;
+    } else if (strncmp((const char *)(layout->m_ip_data[i].m_name), "DPUCZDX8G",
+                strlen("DPUCZDX8G")) == 0) {
+      cu_addr_map[cu_base_addr] = 1;
+
+      SYSCONF->dpu_conf[dpu_core_num].base_addr = cu_base_addr;
 
       log_info("Kernel:%s , BaseAddr: 0x%x\n", layout->m_ip_data[i].m_name,
                layout->m_ip_data[i].m_base_address);
@@ -316,7 +326,7 @@ static int _init_xrt(const char *bit) {
 
       dpu_core_num++;
     } else if (strncmp((const char *)(layout->m_ip_data[i].m_name), "sfm_xrt_top",
-                       strlen("sm_xrt_top")) == 0) {
+                       strlen("sfm_xrt_top")) == 0) {
       cu_addr_map[cu_base_addr] = 2;
       SYSCONF->sm_conf[sm_core_num].base_addr = cu_base_addr;
       log_info("Kernel:%s , BaseAddr: 0x%x\n", layout->m_ip_data[i].m_name,

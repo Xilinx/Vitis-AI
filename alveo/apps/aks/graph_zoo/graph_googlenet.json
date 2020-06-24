@@ -5,7 +5,7 @@
     {
       "node_name": "preproc", 
       "node_params" : {
-        "classificationImreadPre": {
+        "ClassificationImreadPreProcess": {
           "net_w" : 224, 
           "net_h" : 224, 
           "net_c": 3,
@@ -18,7 +18,7 @@
     {
       "node_name": "googlenet_v1_fpga",
       "node_params": {
-        "DPUv1_Runner": {
+        "DPUCADX8GRunner": {
           "acquire_cu": 0,
           "num_fpga": 1,
           "xclbin":   "/opt/xilinx/overlaybins/xdnnv3",
@@ -31,7 +31,7 @@
     {
       "node_name": "googlenet_v1_post",
       "node_params": {
-        "classificationFCSoftMaxTopK": {
+        "ClassificationFCSoftMaxTopK": {
           "weights" : "graph_zoo/meta_googlenet/weights.h5"
         }
       },
@@ -41,7 +41,7 @@
     {
       "node_name": "googlenet_v1_accuracy",
       "node_params": {
-        "classificationAccuracy": {
+        "ClassificationAccuracy": {
           "ground_truth": "../../examples/deployment_modes/gold.txt"
         }
       },

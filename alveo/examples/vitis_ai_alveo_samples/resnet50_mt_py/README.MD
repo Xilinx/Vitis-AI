@@ -11,7 +11,22 @@ This example uses unified Vitis-AI Python APIs to run `resnet50` on alveo platfo
   - `meta.json` : File containing library path, xclbin paths.
 - Image directory
   - Containing `.jpg` images
-  
+
+### Setup
+
+> **Note:** Skip, If you have already run the below steps.
+
+Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe (or) conda activate vitis-ai-tensorflow
+  ```
+
+Setup the Environment
+
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
+
 ## Run Inference
 
 The script takes the compiler output directory and an image directory (fixed to `image` in currect path, can be changed) and run classification.

@@ -1,6 +1,6 @@
 {
-  "kernel_name": "caffe",
-  "description": "Execute a network using Caffe framework",
+  "kernel_name": "CaffeKernel",
+  "description": "Run Inference using Caffe framework",
   "kernel_type": "cpp",
   "device_type": "cpu",
   "kernel_lib" : "libs/libCaffeKernel.so",

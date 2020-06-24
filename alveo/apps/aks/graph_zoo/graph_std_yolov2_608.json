@@ -5,7 +5,7 @@
     {
       "node_name": "yolov2_preproc",
       "node_params" : {
-        "detectionImreadPre": {
+        "DetectionImreadPreProcess": {
           "net_w" : 608,
           "net_h" : 608,
           "net_c": 3
@@ -17,7 +17,7 @@
     {
       "node_name": "yolov2_fpga",
       "node_params": {
-        "DPUv1_NoRunner": {
+        "DPUCADX8GNoRunner": {
           "xclbin": "/opt/xilinx/overlaybins/xdnnv3",
           "netcfg": "graph_zoo/meta_stdyolov2/meta_stdyolov2_head/compiler.json",
           "quantcfg": "graph_zoo/meta_stdyolov2/meta_stdyolov2_head/quantizer.json",
@@ -30,7 +30,7 @@
     {
       "node_name": "yolov2_reorg",
       "node_params": {
-        "caffe": {
+        "CaffeKernel": {
           "network":      "graph_zoo/meta_stdyolov2/yolo_v2_standard_608.prototxt",
           "weights":      "",
           "input_blobs":  ["layer25-conv", "layer27-conv"],
@@ -46,7 +46,7 @@
     {
       "node_name": "yolov2_tail",
       "node_params": {
-        "DPUv1_NoRunner": {
+        "DPUCADX8GNoRunner": {
           "xclbin": "/opt/xilinx/overlaybins/xdnnv3",
           "netcfg": "graph_zoo/meta_stdyolov2/meta_stdyolov2_tail/compiler.json",
           "quantcfg": "graph_zoo/meta_stdyolov2/meta_stdyolov2_tail/quantizer.json",
