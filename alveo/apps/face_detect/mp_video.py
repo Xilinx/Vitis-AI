@@ -311,7 +311,8 @@ def show_loop(videofile, face_q, width, height):
 
         frame_id += 1
     end_time = time.time()
-    print('drawing boxes time: {0} seconds'.format(end_time - start_time))
+    if start_time:
+        print('drawing boxes time: {0} seconds'.format(end_time - start_time))
     
     
     
