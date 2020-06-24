@@ -314,7 +314,7 @@ new file mode 100644
 index 0000000..23bbeee
 --- /dev/null
 +++ python/tvm/contrib/vai/extern_accel.py
-@@ -0,0 +1,132 @@
+@@ -0,0 +1,128 @@
 +# Licensed to the Apache Software Foundation (ASF) under one
 +# or more contributor license agreements.  See the NOTICE file
 +# distributed with this work for additional information
@@ -429,23 +429,19 @@ index 0000000..23bbeee
 +    out_tensor_names = [str(ot.name.decode('utf-8')) for ot in runner.get_output_tensors()]
 +    out_tensor_shapes = [tuple([t.dims[i] for i in range(t.ndims)]) for t in runner.get_output_tensors()]
 +
-+    print(input_names, output_names)
-+
-+    print(in_tensor_names, out_tensor_names)
-+
 +    in_map = {in_name: i.asnumpy() for in_name, i in zip(input_names, ins)}
 +    out_map = {out_name: np.empty(out_shape, dtype=np.float32, order='C')
-+               for out_name, out_shape in zip(output_names, out_tensor_shapes)}
++               for out_name, out_shape in zip(out_tensor_names, out_tensor_shapes)}
 +
 +    in_data = [in_map[it_name] for it_name in in_tensor_names]
-+    out_data = [out_map[ot_name] for ot_name in output_names]
++    out_data = [out_map[ot_name] for ot_name in out_tensor_names]
 +
 +
 +    jid = runner.execute_async(in_data, out_data)
 +    runner.wait(jid)
 +
 +    for idx, out_name in enumerate(output_names):
-+        out_data_idx = output_names.index(out_name)
++        out_data_idx = out_tensor_names.index(out_name)
 +        tvm.nd.array(out_data[out_data_idx]).copyto(outs[idx])
 diff --git python/tvm/contrib/vai/relay_transform.py python/tvm/contrib/vai/relay_transform.py
 new file mode 100644
@@ -1110,150 +1106,6 @@ index 0000000..0fad604
 +                                                  .format(type(expr)))
 +            hash_map[expr_hash]['expr'] = new_expr
 +            return new_expr
-diff --git python/tvm/contrib/vai/xilinx_vai.py python/tvm/contrib/vai/xilinx_vai.py
-new file mode 100644
-index 0000000..ed93906
---- /dev/null
-+++ python/tvm/contrib/vai/xilinx_vai.py
-@@ -0,0 +1,138 @@
-+# Licensed to the Apache Software Foundation (ASF) under one
-+# or more contributor license agreements.  See the NOTICE file
-+# distributed with this work for additional information
-+# regarding copyright ownership.  The ASF licenses this file
-+# to you under the Apache License, Version 2.0 (the
-+# "License"); you may not use this file except in compliance
-+# with the License.  You may obtain a copy of the License at
-+#
-+#   http://www.apache.org/licenses/LICENSE-2.0
-+#
-+# Unless required by applicable law or agreed to in writing,
-+# software distributed under the License is distributed on an
-+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-+# KIND, either express or implied.  See the License for the
-+# specific language governing permissions and limitations
-+# under the License.
-+
-+"""
-+Registration of Xilinx Vitis-AI fused acceleration operation for aceleration of 
-+convolutional neural networks
-+
-+
-+This Vitis-AI acceleration exploits DPU hardware accelerator built for 
-+following evaluation boards:
-+- Ultra96: https://www.xilinx.com/products/boards-and-kits/1-vad4rl.html
-+- ZCU104: https://www.xilinx.com/products/boards-and-kits/zcu104.html
-+- ZCU102: https://www.xilinx.com/products/boards-and-kits/ek-u1-zcu102-g.html
-+- Zedboard: https://www.xilinx.com/products/boards-and-kits/1-8dyf-11.html
-+
-+More information about Xilinx DPU and DNNDK can be found in the user guides:
-+https://www.xilinx.com/support/documentation/ip_documentation/dpu/v3_0/pg338-dpu.pdf
-+https://www.xilinx.com/support/documentation/sw_manuals/ai_inference/v1_6/ug1327-dnndk-user-guide.pdf
-+"""
-+
-+import os
-+import tvm
-+import warnings
-+import numpy as np
-+import time
-+
-+from .vai_runner import Runner
-+
-+RUNNER_CACHE = None
-+DPU_RUNDIR = None
-+
-+def setDpuRunDir(dpu_rundir):
-+    global DPU_RUNDIR
-+
-+    if not os.path.exists(dpu_rundir):
-+        raise ValueError("Provided nonexisting run directory: {}".format(dpu_rundir))
-+  
-+    DPU_RUNDIR = dpu_rundir
-+
-+class RunnerCache(object):
-+
-+    """
-+    Wrapper around Runner for connection handling and caching
-+    """
-+    
-+    def __init__(self):
-+        self.runner_cache = {}
-+
-+    def createRunner(self, fdir):
-+        # type: (str) -> Runner
-+        """ 
-+        Return the Runner for the given file dir
-+        """
-+        if fdir in self.runner_cache:
-+            return self.runner_cache[fdir]
-+
-+        # Create Runner
-+        runner = Runner(fdir)
-+
-+        self.runner_cache[fdir] = runner
-+
-+        return runner
-+
-+    def __del__(self):
-+        """ Cleanup """
-+        for fdir in list(self.runner_cache.keys()):
-+            del self.runner_cache[fdir]
-+
-+
-+RUNNER_CACHE = RunnerCache()
-+
-+
-+@tvm.register_func("tvm.accel.accel_fused")
-+def accel_fused(kernel_name, input_name, output_name, *tensors):
-+    """
-+    Registration of external accel.accel_fused operation
-+
-+    Arguments
-+    ---------
-+    kernel_name: str
-+        the name of the DPU kernel
-+
-+    input_name: str
-+        the input_name of the DPU Kernel
-+
-+    output_name: str
-+        the output_name of the DPU kernel
-+
-+    tensors: List[tvm.ndarray.NDArray]
-+        the operation inputs and outputs as List
-+    """
-+    input_names = input_name.split('*')
-+    output_names = output_name.split('*')
-+
-+    num_inputs = len(tensors) - len(output_names)
-+
-+    # Fetch the inputs and outputs
-+    ins = tensors[:num_inputs]
-+    outs = tensors[num_inputs:]
-+
-+    runner = RUNNER_CACHE.createRunner(DPU_RUNDIR)
-+    
-+    in_tensor_names = [str(it.name.decode('utf-8')) for it in runner.get_input_tensors()]
-+    out_tensor_names = [str(ot.name.decode('utf-8')) for ot in runner.get_output_tensors()]
-+    out_tensor_shapes = [tuple([t.dims[i] for i in range(t.ndims)]) for t in runner.get_output_tensors()]
-+
-+    print(input_names, output_names)
-+
-+    print(in_tensor_names, out_tensor_names)
-+
-+    in_map = {in_name: i.asnumpy() for in_name, i in zip(input_names, ins)}
-+    out_map = {out_name: np.empty(out_shape, dtype=np.float32, order='C')
-+               for out_name, out_shape in zip(out_tensor_names, out_tensor_shapes)}
-+
-+    in_data = [in_map[it_name] for it_name in in_tensor_names]
-+    out_data = [out_map[ot_name] for ot_name in out_tensor_names]
-+
-+
-+    jid = runner.execute_async(in_data, out_data)
-+    runner.wait(jid)
-+
-+    for idx, out_name in enumerate(output_names):
-+        out_data_idx = out_tensor_names.index(out_name)
-+        tvm.nd.array(out_data[out_data_idx]).copyto(outs[idx])
 diff --git python/tvm/relay/frontend/tensorflow.py python/tvm/relay/frontend/tensorflow.py
 index ab9e9e6..46eee4a 100644
 --- python/tvm/relay/frontend/tensorflow.py
@@ -1662,7 +1514,7 @@ index 0000000..47d18c4
 +def inputs_func(iter):
 +    import os
 +
-+    img_files = [os.path.join(quant_dir, f) for f in os.listdir(quant_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:4]
++    img_files = [os.path.join(quant_dir, f) for f in os.listdir(quant_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:10]
 +    size=shape_dict[list(shape_dict.keys())[0]][2:]
 +
 +    imgs = []
@@ -1903,7 +1755,7 @@ index 0000000..2e36fa1
 +def inputs_func(iter):
 +    import os
 +
-+    img_files = [os.path.join(quant_dir, f) for f in os.listdir(quant_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:4]
++    img_files = [os.path.join(quant_dir, f) for f in os.listdir(quant_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:10]
 +       
 +    [neth, netw] = shape_dict['data'][2:]
 +    out = []
