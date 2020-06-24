@@ -81,10 +81,16 @@ else
 fi
 
 XCLBIN=/opt/xilinx/overlaybins/xdnnv3
-echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"publish_id\": \"${BASHPID}\" }" > arch.json
+if [ -d $XCLBIN ]; then
+  echo "--- Using System XCLBIN ---"
+else
+  echo "--- Using Local XCLBIN ---"
+  XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
+fi
+
 COMPILER_BASE_OPT=" --prototxt $QUANT_DIR/deploy.prototxt \
       --caffemodel $QUANT_DIR/deploy.caffemodel \
-      --arch arch.json \
+      --arch /opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json \
       --net_name face_detect \
       --output_dir $COMP_DIR"
 COMPILER_OTHER_OPT="{"
