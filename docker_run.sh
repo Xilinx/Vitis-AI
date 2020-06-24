@@ -20,10 +20,10 @@ read -n 1 -s -r -p "Press any key to continue..." key
 
 
 confirm() {
-  echo -n "Do you agree to the terms and wish to proceed [y/n]? "
+  echo -en "\n\nDo you agree to the terms and wish to proceed [y/n]? "
   read REPLY
   case $REPLY in
-    [Yy]) break ;;
+    [Yy]) ;;
     [Nn]) exit 0 ;;
     *) confirm ;;
   esac
