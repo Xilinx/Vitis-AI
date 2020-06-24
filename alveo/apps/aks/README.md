@@ -72,7 +72,7 @@ Familiarize yourself with the script usage by running below command.
 |-d1, --dir1 | Image Directory for Classification Graphs | Path to directory |
 |-d2, --dir2 | Image Directory for Detection Graphs | Path to directory |
 |-vf, --video| Video File | Path to video file |
-|-v, --verbose| Defines verbosity of log messages | Default value is 1. Increase to get more verbose |
+|-v, --verbose| Defines verbosity of log messages | 0 - Only Warnings & Errors, 1 - Important Information, warnings & errors, 2 - All debug, performance metrics, warnings & errors |
 |-h, --help  | Print Usage | - |
 
 

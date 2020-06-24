@@ -1,0 +1,10 @@
+item {
+  name: "none_of_the_above"
+  label: 0
+  display_name: "background"
+}
+item {
+  name: "person"
+  label: 1
+  display_name: "person"
+}
