@@ -91,8 +91,8 @@ Two options are available for installing the containers with the Vitis AI tools 
 
 ## Programming with Vitis AI
 
-Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPUv1 and DPUv3 for Alveo,  
-and DPUv2 for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa.
+Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo,  
+and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa.
 7 samples in [VART Samples](VART/samples) are available to help you get familiar with the unfied programming APIs.
 
 
