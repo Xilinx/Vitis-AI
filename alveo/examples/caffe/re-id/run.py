@@ -53,12 +53,18 @@ name = "inception_v2_ssd"
 def Compile(prototxt="quantize_results/deploy.prototxt",\
             caffemodel="quantize_results/deploy.caffemodel",\
             quantize_info="quantize_results/quantize_info.txt"):
+    
+    VAI_ROOT = os.environ['VAI_ALVEO_ROOT']
+    arch_json = "/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+    if(not os.path.exists(arch_json)):
+        arch_json = os.path.join(VAI_ROOT, "arch.json")
+ 
     subprocess.call(["vai_c_caffe",
                     "--prototxt", prototxt,
                     "--caffemodel", caffemodel,
                     "--net_name", name,
                     "--output_dir", "work",
-                    "--arch", "/opt/vitis_ai/compiler/arch/dpuv1/ALVEO/ALVEO.json",
+                    "--arch", arch_json,
                     "--options", "{\"quant_cfgfile\":\"%s\", \
                     \"pipelineconvmaxpool\":False, \
                     }" %(quantize_info)])
