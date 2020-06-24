@@ -41,6 +41,7 @@ $ import pyxir
 Examples of Apache TVM usage for different frameworks is provided in the tutorials/frontend directories.
 
 Vitis-AI examples using TVM are provided in the tutorials/accelerators directory.
+You could find more documentation on how to compile and run models using the TVM with Vitis AI support in the docs directory.
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 

@@ -137,4 +137,4 @@ if [[ $? != "0" ]]; then
 fi
 
 # Run the command inside the container.
-echo "Running '${COMMAND[@]}' inside ${DOCKER_IMG_NAME}..."
+echo "Successfully built ${DOCKER_IMG_NAME}..."
