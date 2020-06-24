@@ -9,7 +9,7 @@ For published results, and details on running a full accuracy evaluation, please
 
   Activate Conda Environment
   ```sh
-  conda activate vitis-ai-caffe 
+  conda activate vitis-ai-tensorflow
   ```
 
   Setup the Environment
