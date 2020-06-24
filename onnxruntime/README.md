@@ -8,7 +8,7 @@ https://github.com/microsoft/onnxruntime
 
 Vitis-AI documentation for ONNXRuntime is available [here](https://github.com/microsoft/onnxruntime/blob/master/docs/execution_providers/Vitis-AI-ExecutionProvider.md).
 
-The current Vitis-AI execution provider inside ONNXRuntime enables acceleration of Neural Network model inference using DPUv1. DPUv1 is a hardware accelerator for Convolutional Neural Networks (CNN) on top of the Xilinx Alveo platform and targets U200 and U250 accelerator cards.
+The current Vitis-AI execution provider inside ONNXRuntime enables acceleration of Neural Network model inference using DPUCADX8G. DPUCADX8G is a hardware accelerator for Convolutional Neural Networks (CNN) on top of the Xilinx Alveo platform and targets U200 and U250 accelerator cards.
 
 ## Setup
 
@@ -32,7 +32,7 @@ The current Vitis-AI execution provider inside ONNXRuntime enables acceleration 
 After you have followed the above setup steps, you can copy the python image classification example and the 'images' directory containing the 'dog.jpg' test image inside the ONNXRuntime - Vitis-AI docker to run the script (for example clone this repo inside the docker container to get the script and test image). Then execute the script with:
 
 ```
-python3 image_classification_dpuv1.py
+python3 image_classification_DPUCADX8G.py
 ```
 
-After the model has been quantized and compiled using the first N inputs you should see accelerated execution of the 'images/dog.jpg' image with the DPUv1 accelerator.
+After the model has been quantized and compiled using the first N inputs you should see accelerated execution of the 'images/dog.jpg' image with the DPUCADX8G accelerator.
