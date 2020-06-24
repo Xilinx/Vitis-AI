@@ -158,7 +158,7 @@ wget $OVERLAYBINS_URL -O $OVERLAYBINS_INSTALLER && ${INSTALLER} install $OVERLAY
 if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* ]]; then
   wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && ${INSTALLER} install $XPLUSML_OVERLAYBINS_INSTALLER -y && rm $XPLUSML_OVERLAYBINS_INSTALLER
 elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
-  wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && rpm -ivh --force  $XPLUSML_OVERLAYBINS_INSTALLER -y && rm $XPLUSML_OVERLAYBINS_INSTALLER
+  wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && rpm -ivh --force  $XPLUSML_OVERLAYBINS_INSTALLER && rm $XPLUSML_OVERLAYBINS_INSTALLER
 else
   echo "Couldn't install WAA overlaybins. Unsupported operating system"
 fi
