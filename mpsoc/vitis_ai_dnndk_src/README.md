@@ -1,4 +1,4 @@
-This is the source code package of Vitis AI DNNDK, usually it will be compiled and output package vitis-ai_v1.2_dnndk.tar.gz. The structure of the output package is as follows.
+This is the source code package of Vitis AI DNNDK runtime, usually it will be compiled and output package vitis-ai_v1.2_dnndk.tar.gz. The structure of the output package is as follows.
 
 <br />
 <div align="center">
