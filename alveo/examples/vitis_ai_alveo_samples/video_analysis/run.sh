@@ -17,4 +17,9 @@
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 
-./build/ssd_video_analysis.exe video/structure.mp4 model
+if [[ -z $1 ]]; then
+ echo -e " Usage : ./run.sh <video path> "
+ exit 0
+fi
+
+./build/ssd_video_analysis.exe $1 model

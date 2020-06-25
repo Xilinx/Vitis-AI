@@ -43,7 +43,7 @@ if [ -f $LIBXDNN_PATH ]; then
   echo "--------------------"
   echo "Vitis-AI Flow"
   echo "---------------------"
-
+  LD_LIBRARY_PATH=${CONDA_PREFIX}/lib:$LD_LIBRARY_PATH
 else
   echo "---------------------"
   echo "Developer Flow"
@@ -54,7 +54,6 @@ else
   MLSUITE_ROOT=$VAI_ALVEO_ROOT
   export MLSUITE_ROOT
   LIBXDNN_PATH=${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so
-  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${CONDA_PREFIX}/lib
 fi
 
 export LIBXDNN_PATH

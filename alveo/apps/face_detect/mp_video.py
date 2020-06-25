@@ -325,6 +325,9 @@ if __name__ == '__main__':
     parser.add_argument('--vitisrundir', help = 'path to run directory ', type=str)
     parser.add_argument('--videofile', help = 'path to video source file ', type=str)
     args = parser.parse_args()
+    cap = cv2.VideoCapture(args.videofile)
+    if not cap.isOpened():
+        raise ValueError("Couldn't read the video file {}".format(args.videofile))
 
     frame_q = mp.Queue()
     resize_q = mp.Queue()

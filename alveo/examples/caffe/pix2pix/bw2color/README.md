@@ -1,6 +1,13 @@
 # Running Caffe pix2pix (b/w to color) Model
 
+### Setup
 
+> **Note:** Skip, If you have already run the below steps.
+
+Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe 
+  ```
 
 ## Data Preparation
 
@@ -18,22 +25,23 @@ We trained Pix2Pix (b/w to color) model with input size as [256,256,3].
 
 After training the model, we quantized the model to deploy on FPGA.
 
-To get the quantized Caffe model, run the following command lines. 
+To get the quantized Caffe model, run the following commands.
+
+> **Note:** Skip, If you have already run the below steps.
+```
+cd /workspace/alveo/examples/caffe 
+python getModels.py
+```
+
+The Pix2Pix (b/w to color) model files would be located in '/workspace/alveo/examples/caffe/models/bw2color' folder.
+
+
+We need to copy the model files into 'pix2pix/bw2color/quantize_results' sub-foloder using the following commands.
 
 ```
-$ cd /workspace/alveo/examples/caffe 
-$ python getModels.py
-```
-
-The Pix2Pix (b/w to color) model files would be located in '/workspace/alveo/examples/caffe/models/bw2color' folder.  
-
-
-We need to copy the model files into 'pix2pix/bw2color/quantize_results' sub-foloder using the following command lines.
-
-```
-$ cd /workspace/alveo/examples/caffe/pix2pix/bw2color
-$ mkdir quantize_results
-$ cp -R /workspace/alveo/examples/caffe/models/bw2color/*.* ./quantize_results/*.*
+cd /workspace/alveo/examples/caffe/pix2pix/bw2color
+mkdir quantize_results
+cp -R /workspace/alveo/examples/caffe/models/bw2color/*.* ./quantize_results
 ```
 
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'bw2color/quantize_results' sub-foloder.
@@ -42,11 +50,11 @@ You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'bw2co
 ## Compilation and Partitioning
 
 
-The quantized caffemodel need to be compiled and partitioned at your local drive using the following command line.
+The quantized caffemodel need to be compiled and partitioned at your local drive using the following commands.
 
 ```
-$ cd /workspace/alveo/examples/caffe/pix2pix/bw2color
-$ source run.sh deploy
+cd /workspace/alveo/examples/caffe/pix2pix/bw2color
+source run.sh deploy
 ```
 
 All compiler files will be generated in 'work' sub folder.
@@ -58,23 +66,19 @@ xfdnn_deploy.prototxt is to execute Caffe model on FPGA.
 
 ## Run Inference model on CPU
 
-To run the inference model on cpu with b/w images, please use the following command line.
+To run the inference model on cpu with b/w images, please use the following commands.
 
 ```
-$ cd /workspace/alveo/examples/caffe/pix2pix/bw2color
-$ python bw2color_cpu.py --image imagefilename
+cd /workspace/alveo/examples/caffe/pix2pix/bw2color
+python bw2color_cpu.py --image <image-file>
 ```
 
 
 ## Run Inference model on FPGA 
 
-To run the inference model on fpga with b/w images, please use the following command line.
+To run the inference model on fpga with b/w images, please use the following commands.
 
 ```
-$ cd /workspace/alveo/examples/caffe/pix2pix/bw2color
-$ python bw2color_fpga.py --image imagefilename
+cd /workspace/alveo/examples/caffe/pix2pix/bw2color
+python bw2color_fpga.py --image <image-file>
 ```
-
-
-
-

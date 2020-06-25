@@ -61,9 +61,10 @@ Currently 6 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_y
 COCO validation set is large (>40K images and >6 GB in size), so each step below could be slow depending upon your network.
 
 ```sh
+cd $VAI_ALVEO_ROOT/apps/yolo
 python -m ck pull repo:ck-env
 python -m ck install package:dataset-coco-2014-val 
-    # If asked for installation path, accept the default path
+# If asked for installation path, accept the default path
 wget -c https://pjreddie.com/media/files/coco/labels.tgz
 tar -xzf labels.tgz labels/val2014
 ```
@@ -76,6 +77,9 @@ find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | head -2000 | 
 ```
 
 Also, copy a few images (~25 images) to `apps/yolo/test_image_set` for calibration.
+```
+find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xargs cp -t test_image_set/
+```
 
 ## Examples
 1. Object detection on test_images using yolo_v3_spp on Caffe and save results in folder `cpu_results/`.

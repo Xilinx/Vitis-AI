@@ -63,3 +63,11 @@ python demo.py --query_image <query img_path> --test_image <test image_path>
 ```sh
 python test_accuracy.py --img_dir <image dir>
 ```
+
+```sh
+usage: test_accuracy.py [-h] [--img_dir IMG_DIR]
+
+optional arguments:
+  -h, --help         show this help message and exit
+  --img_dir IMG_DIR  Path to market1501 directory | default value: './data'
+```

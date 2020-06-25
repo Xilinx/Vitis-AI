@@ -17,15 +17,19 @@ Setup the Environment
 
 ### Build
 
-    make
+  ```sh
+  make
+  ```
 
 ### Run
+ 
+  ```sh
+  ./run.sh <video path>
+  ```
 
-    source run.sh
-
-Input: It takes input as video file from video folder in current path
+Input: mp4 video path
 
 Output: Detection results saved as jpg images inside output folder in current path
 
-**Note: Application assumes `vitis-ai-caffe` conda has already activated  
+> **Note:** Application assumes `vitis-ai-caffe` conda is already activated  
 

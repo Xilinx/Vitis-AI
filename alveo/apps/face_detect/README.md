@@ -25,28 +25,57 @@ cd ..
 ## Run Inference on sample images
 ```
 cd $VAI_ALVEO_ROOT/apps/face_detect/
-./test_visual.sh face_detection 
-The output images are stored in output folder.
 ```
+Face detection on test_images using face_detection_320_320 model on FPGA and save results in folder output/.
+```
+./test_visual.sh face_detection
+```
+Face detection on test_images using face_detection_360_640 model on FPGA and save results in folder output/.
+```
+./test_visual.sh face_detection_360_640
+```
+
 ## Run Inference on entire dataset and calculate precision
 
+Build evalution tools
 ```
 cd $VAI_ALVEO_ROOT/apps/face_detect/
-cd evaluation
-#build evalution tools
+wget http://vis-www.cs.umass.edu/fddb/evaluation.tgz
+tar -xvf evaluation.tgz 
+#ignore the warnings
+cp Makefile evaluation/
+cd evaluation 
 make
 cd ..
-./test_precision.sh face_detection 
-The output will be an array. [ 0.87894  96.  0.9284]. The recall is 87.89@fp=96.
 ```
+
+Calculate the precsion of face_detection_320_320 model
+```
+./test_precision.sh face_detection
+```
+The output will be an array. [ 0.87894  96.  0.9284]. The recall is 87.89@fp=96.
+
+Calculate the precsion of face_detection_360_640 model 
+```
+./test_precision.sh face_detection_360_640
+```
+The output will be an array. [ 0.883775 99.   0.957]. The recall is 88.37@fp=99.
 
 ## Run Inference on Video
 This is a demo application showing how face detection model can be ran on the FPGA. Frames from a video are streamed into our hardware accelerator. Some post processing is performed in the CPU, such as NMS.   
 
 ```
 cd $VAI_ALVEO_ROOT/apps/face_detect/
+```
+Face detection on video using face_detection_320_320 model on FPGA and save results in folder output/.
+```
 ./test_video.sh face_detection example.mp4
 ```
+Face detection on video using face_detection_360_640 model on FPGA and save results in folder output/.
+```
+./test_video.sh face_detection_360_640 example.mp4
+```
+
 **Note** : User needs to provide the full path of example.mp4
 
 

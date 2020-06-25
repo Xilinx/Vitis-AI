@@ -327,7 +327,7 @@ def generate_colors(classes):
 
     return colors
 
-def draw_boxes(iimage,bboxes,names,colors=[],outpath="out",fontpath="font",display=False):
+def draw_boxes(iimage,bboxes,names,colors=[],outpath="out",fontpath="",display=False):
 
     if os.path.isdir('./out') is False:
         os.makedirs('./out')
@@ -335,9 +335,6 @@ def draw_boxes(iimage,bboxes,names,colors=[],outpath="out",fontpath="font",displ
     image = Image.open(iimage)
     draw = ImageDraw.Draw(image)
     thickness = (image.size[0] + image.size[1]) // 300
-    font = ImageFont.truetype(fontpath + '/FiraMono-Medium.otf',15)
-    #font = ImageFont.truetype('font/FiraMono-Medium.otf',15)
-
 
 #    classidset = set()
 #    for j in range(len(bboxes)):
@@ -348,7 +345,7 @@ def draw_boxes(iimage,bboxes,names,colors=[],outpath="out",fontpath="font",displ
     for j in range(0, len(bboxes)):
         classid = bboxes[j]['classid']
         label   = '{} {:.2f}'.format(names[bboxes[j]['classid']],bboxes[j]['prob'])
-        labelsize = draw.textsize(label,font=font)
+        labelsize = draw.textsize(label,font=None)
         for k in range(thickness):
             draw.rectangle([bboxes[j]['ll']['x']+k, bboxes[j]['ll']['y']+k, bboxes[j]['ur']['x']+k, bboxes[j]['ur']['y']+k],outline=colors[classid])
         draw.rectangle([bboxes[j]['ll']['x'], bboxes[j]['ur']['y'], bboxes[j]['ll']['x']+2*thickness+labelsize[0], bboxes[j]['ur']['y']+thickness+labelsize[1]],fill=colors[classid],outline=colors[classid])
@@ -357,7 +354,7 @@ def draw_boxes(iimage,bboxes,names,colors=[],outpath="out",fontpath="font",displ
         classid = bboxes[j]['classid']
         label   = '{} {:.2f}'.format(names[bboxes[j]['classid']],bboxes[j]['prob'])
         labelsize = draw.textsize(label)
-        draw.text([bboxes[j]['ll']['x']+2*thickness, bboxes[j]['ur']['y']+thickness], label, font=font)
+        draw.text([bboxes[j]['ll']['x']+2*thickness, bboxes[j]['ur']['y']+thickness], label, font=None)
 
     del draw
 

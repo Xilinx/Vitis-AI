@@ -21,11 +21,13 @@ Setup the Environment
 
 ### Run
 
-    source run.sh
+  ```sh
+  source run.sh
+  ```
 
 Input: It takes input as jpg image from image folder in current path
 
 Output: classification results display on console window
 
-**Note: Application assumes `vitis-ai-caffe` conda has already activated  
+> **Note:** Application assumes `vitis-ai-caffe` conda is already activated  
 
