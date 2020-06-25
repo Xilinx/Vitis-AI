@@ -124,9 +124,9 @@ $source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.1-r1.2.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.1-r1.2.0.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2020.1-r1.2.2.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.1-r1.2.2.tar.gz) and install it to the petalinux system.
 ```
-$tar -xzvf vitis_ai_2020.1-r1.2.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+$tar -xzvf vitis_ai_2020.1-r1.2.2.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
 5. Cross compile the demo in the AI Library, take `yolov3` as example.
@@ -174,7 +174,7 @@ steps.**
 2. (Optical) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
 	
 	The script runs automatically by default after the board boots up with the official image.
-	But you can also download the `dpu_sw_optimize.tgz` from [here](http://xcdl190260/zhengjia/xdpu/blob/vitis20.1/app/dpu_sw_optimize.tgz).
+	But you can also download the `dpu_sw_optimize.tgz` from [here](../DPU-TRD/app/dpu_sw_optimize.tgz).
 	```
 	#cd ~/dpu_sw_optimize/zynqmp/
 	#./zynqmp_dpu_optimize.sh
@@ -229,8 +229,8 @@ the [vitis_ai_library_r1.2.x_video.tar.gz](https://www.xilinx.com/bin/public/ope
 2. Untar the image and video packages on the target.
 ```
 #cd ~
-#tar -xzvf vitis_ai_library_r1.2_images.tar.gz -C Vitis-AI/vitis_ai_library
-#tar -xzvf vitis_ai_library_r1.2_video.tar.gz -C Vitis-AI/vitis_ai_library
+#tar -xzvf vitis_ai_library_r1.2.x_images.tar.gz -C Vitis-AI/vitis_ai_library
+#tar -xzvf vitis_ai_library_r1.2.x_video.tar.gz -C Vitis-AI/vitis_ai_library
 ```
 3. Enter the directory of example in target board, take `facedetect` as an example.
 ```
@@ -277,17 +277,26 @@ If you want to support video data in other formats, you need to install the rele
 $wget https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50_1.2.0_amd64.deb -O xilinx_model_zoo_u50_1.2.0_amd64.deb
 $sudo dpkg -i xilinx_model_zoo_u50_1.2.0_amd64.deb
 ```
-<details>
- <summary><b>Click here to download models for different alveo cards </b></summary>
+For Pytorch model of `U50`, run the following command:
+```
+$wget https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50_pytorch_1.2.0_amd64.deb -O xilinx_model_zoo_u50_pytorch_1.2.0_amd64.deb
+$sudo dpkg -i xilinx_model_zoo_u50_pytorch_1.2.0_amd64.deb
+```
+
+ <summary><b>Download the models for different alveo cards </b></summary>
  
 | No\. | Alveo              | Download Link                                                      |
 | :--- | :----------------------- | :----------------------------------------------------------- |
 | 1    | U50             | [xilinx_model_zoo_u50_6e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50_1.2.0_amd64.deb)                              |
-| 2    | U50lv           | [xilinx_model_zoo_u50lv_9e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u280_u50lv9e_1.2.0_amd64.deb)                       |
-| 3    | U50lv           | [xilinx_model_zoo_u50lv_10e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50lv10e_1.2.0_amd64.deb)                  |
-| 4    | U280            | [xilinx_model_zoo_u280_14e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u280_u50lv9e_1.2.0_amd64.deb)            |
+| 2    | U50             | [xilinx_model_zoo_u50_6e_pytorch](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50_pytorch_1.2.0_amd64.deb)                              |
+| 3    | U50lv           | [xilinx_model_zoo_u50lv_9e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u280_u50lv9e_1.2.0_amd64.deb)                       |
+| 4    | U50lv           | [xilinx_model_zoo_u50lv_9e_pytorch](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u280_u50lv9e_pytorch_1.2.0_amd64.deb)                       |
+| 5    | U50lv           | [xilinx_model_zoo_u50lv_10e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50lv10e_1.2.0_amd64.deb)                  |
+| 6    | U50lv           | [xilinx_model_zoo_u50lv_10e_pytorch](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50lv10e_pytorch_1.2.0_amd64.deb)                  |
+| 7    | U280            | [xilinx_model_zoo_u280_14e](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u280_u50lv9e_1.2.0_amd64.deb)            |
+| 8    | U280            | [xilinx_model_zoo_u280_14e_pytorch](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u280_u50lv9e_pytorch_1.2.0_amd64.deb)            |
 
-</details>
+
 
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
@@ -319,12 +328,12 @@ Thus, `Vitis-AI-Libray` is located in the path of `/workspace/Vitis_AI_Library/`
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
-1. Download the [vitis_ai_library_r1.2_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_images.tar.gz) and [vitis_ai_library_r1.2_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz) packages and untar them.
+1. Download the [vitis_ai_library_r1.2.3_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.3_images.tar.gz) and [vitis_ai_library_r1.2_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz) packages and untar them.
 ```
 $cd /workspace
-$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_images.tar.gz -O vitis_ai_library_r1.2_images.tar.gz
+$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.3_images.tar.gz -O vitis_ai_library_r1.2.3_images.tar.gz
 $wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz -O vitis_ai_library_r1.2_video.tar.gz
-$tar -xzvf vitis_ai_library_r1.2_images.tar.gz -C Vitis-AI-Library/overview
+$tar -xzvf vitis_ai_library_r1.2.3_images.tar.gz -C Vitis-AI-Library/overview
 $tar -xzvf vitis_ai_library_r1.2_video.tar.gz -C Vitis-AI-Library/overview
 ```
 2. Enter the directory of sample and then compile it. Take `facedetect` as an example.
