@@ -17,4 +17,9 @@
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 
-./build/adas_detection.exe model video/adas.avi
+if [[ -z $1 ]]; then
+ echo -e " Usage : ./run.sh <video path> "
+ exit 0
+fi
+
+./build/adas_detection.exe model $1

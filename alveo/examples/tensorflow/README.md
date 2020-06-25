@@ -2,7 +2,6 @@
 
 ### Running tensorflow Benchmark Models
 This directory provides scripts for running several well known models on the FPGA.
-For published results, and details on running a full accuracy evaluation, please see these [instructions](Benchmark_README.md).
 
 ### Setup
 > **Note:** Skip, If you have already run the below steps.

@@ -86,7 +86,7 @@ class UserPostProcess():
     self._shared_output_arrs = shared_output_arrs
 
     self.numProcessed = 0
-    self.startTime = 0
+    self.startTime = None
     self.cpuOp = xdnn.XDNNCPUOp(self.args['weights']);
 
   #
@@ -162,6 +162,8 @@ class UserPostProcess():
 
 
       if self.args["benchmarkmode"]:
+        if (self.numProcessed == 0):
+          self.startTime = timeit.default_timer()
         self.numProcessed += len(imgList)
         self._shared_output_arrs.closeReadId(read_slot)
         continue

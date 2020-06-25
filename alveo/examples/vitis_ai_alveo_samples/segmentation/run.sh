@@ -17,4 +17,9 @@
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 
-./build/segmentation.exe video/traffic.mp4 model
+if [[ -z $1 ]]; then
+ echo -e " Usage : ./run.sh <video path> "
+ exit 0
+fi
+
+./build/segmentation.exe $1 model

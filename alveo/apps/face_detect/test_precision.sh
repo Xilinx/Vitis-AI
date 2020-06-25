@@ -19,6 +19,15 @@ IMGLIST=$2
 CALIB_DATASET=$3
 FDDB_PATH=$4
 
+SUPPORTED_MODELS="face_detection |face_detection_360_640"
+
+if [[ "$SUPPORTED_MODELS" != *"$Model_Name"* ]]; then
+  echo "$Model_Name is an invalid model."
+  echo "Valid Models : $SUPPORTED_MODELS."
+  echo "Exiting ..."
+  exit 1;
+fi
+
 if [ -z $Model_Name ];then
     Model_Name=face_detection
     echo -e "Running default model "face_detection_320_320_0.49G".. "

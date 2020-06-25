@@ -46,11 +46,11 @@ python resnet50.py 1 ./model
 ## Classification results display on console window
 
 ```sh
-Top[0] 0.999950 golf ball
-Top[1] 0.000017 tennis ball
-Top[2] 0.000013 baseball
-Top[3] 0.000010 croquet ball
-Top[4] 0.000003 soccer ball
+Top[0] 0.674899 Cardigan, Cardigan Welsh corgi
+Top[1] 0.193362 Pembroke, Pembroke Welsh corgi
+Top[2] 0.071134 Border collie
+Top[3] 0.020380 collie
+Top[4] 0.015872 Shetland sheepdog, Shetland sheep dog, Shetland
 ```
 
 >**:pushpin: NOTE:** `vitis-ai-caffe` or `vitis-ai-tensorflow` conda environment must be activated to run this example.

@@ -55,5 +55,7 @@ def generate_gt_file(anno_root, image_list, gt_file):
 
 
 if __name__ == "__main__":
+    print("Generating ground-truth file `{}` for {} with annotations in {}"
+              .format(args.gt_file, args.image_list, args.anno_root))
     generate_gt_file(args.anno_root, args.image_list, args.gt_file)
-    
+

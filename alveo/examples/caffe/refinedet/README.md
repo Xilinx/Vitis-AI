@@ -40,31 +40,41 @@
   python generate_gt.py
   ```
 
-- Get the necessary models
-  ```sh
-  cd ${VAI_ALVEO_ROOT}/examples/caffe/ && python getModels.py && python replace_mluser.py --modelsdir models
-  ```
 
-### Prepare a model for inference
+### Prepare models for inference
 
 To run a Caffe model on the FPGA, it needs to be quantized, compiled, and a new graph needs to be generated. The new graph is similar to the original, with the FPGA subgraph removed, and replaced with a custom Python layer.
 
-There are three versions of refinedet models are supported.
+Three versions of refinedet models are supported.
 1. refinedet_pruned_0.8
 2. refinedet_pruned_0.92
 3. refinedet_pruned_0.96
 
-```sh
-cd ${VAI_ALVEO_ROOT}/examples/caffe/refinedet
-python ${VAI_ALVEO_ROOT}/examples/caffe/getModels.py
+Get the necessary models
+  ```sh
+  cd ${VAI_ALVEO_ROOT}/examples/caffe
+  python getModels.py
+  python replace_mluser.py --modelsdir models
+  cd ${VAI_ALVEO_ROOT}/examples/caffe/refinedet
+  ```
 
+```sh
 # Run the command below to generate compiled model for refinedet_pruned_0.8 
+
 python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.8/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.8/trainval.caffemodel --prepare
 
+```
+
+```sh
 # Run the command below to generate compiled model for refinedet_pruned_0.92 
+
 python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.92/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.92/trainval.caffemodel --prepare
 
+```
+
+```sh
 # Run the command below to generate compiled model for refinedet_pruned_0.96
+
 python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.96/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.96/trainval.caffemodel --prepare
 ```
 
