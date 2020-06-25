@@ -731,7 +731,7 @@ The following table lists the performance number including end-to-end throughput
 
 | No\. | Model                          | Name                                         | Frequency \(MHz\) | E2E throughput \-fps\(Multi Thread\) |
 | ---- | :----------------------------- | :------------------------------------------- | ----------------- | ------------------------------------ |
-| 1    | resnet50                       | cf_resnet50_imagenet_224_224_7.7G            | 150               | 660.41                               |
+| 1    | resnet50                       | cf_resnet50_imagenet_224_224_7.7G            | 210               | 918.07                               |
 | 2    | resnet18                       | cf_resnet18_imagenet_224_224_3.65G           | 150               | 1634.40                               |
 | 3    | Inception_v1                   | cf_inceptionv1_imagenet_224_224_3.16G        | 150               | 1169.53                               |
 | 4    | Inception_v2                   | cf_inceptionv2_imagenet_224_224_4G           | 150               | 937.03                               |
@@ -750,9 +750,9 @@ The following table lists the performance number including end-to-end throughput
 | 17   | face_landmark                  | cf_landmark_celeba_96_72_0.14G               | 150               | 11302.40                             |
 | 18   | reid                           | cf_reid_market1501_160_80_0.95G              | 150               | 4608.02                               |
 | 19   | multi_task                     | cf_multitask_bdd_288_512_14.8G               | 150               | 128.32                               |
-| 20   | yolov3_bdd                     | dk_yolov3_bdd_288_512_53.7G                  | 150               | 90.15                                 |
-| 21   | yolov3_adas_pruned_0_9         | dk_yolov3_cityscapes_256_512_0.9_5.46G       | 150               | 773.15                               |
-| 22   | yolov3_voc                     | dk_yolov3_voc_416_416_65.42G                 | 150               | 94.61                                 |
+| 20   | yolov3_bdd                     | dk_yolov3_bdd_288_512_53.7G                  | 180               | 108.62                               |
+| 21   | yolov3_adas_pruned_0_9         | dk_yolov3_cityscapes_256_512_0.9_5.46G       | 180               | 893.08                               |
+| 22   | yolov3_voc                     | dk_yolov3_voc_416_416_65.42G                 | 180               | 113.56                               |
 | 23   | yolov2_voc_pruned_0_66         | dk_yolov2_voc_448_448_0.66_11.56G            | 150               | 490.34                               |
 | 24   | yolov2_voc_pruned_0_71         | dk_yolov2_voc_448_448_0.71_9.86G             | 150               | 570.32                               |
 | 25   | yolov2_voc_pruned_0_77         | dk_yolov2_voc_448_448_0.77_7.82G             | 150               | 679.56                               |
@@ -764,14 +764,14 @@ The following table lists the performance number including end-to-end throughput
 | 31   | Inception_v1                   | tf_inceptionv1_imagenet_224_224_3G           | 150               | 1117.86                               |
 | 32   | Inception_v3                   | tf_inceptionv3_imagenet_299_299_11.45G       | 150               | 371.75                               |
 | 33   | Inception_v4                   | tf_inceptionv4_imagenet_299_299_24.55G       | 150               | 167.97                               |
-| 34   | resnet_v1_50                   | tf_resnetv1_50_imagenet_224_224_6.97G        | 150               | 742.82                               |
+| 34   | resnet_v1_50                   | tf_resnetv1_50_imagenet_224_224_6.97G        | 180               | 890.26                               |
 | 35   | resnet_v1_101                  | tf_resnetv1_101_imagenet_224_224_14.4G       | 150               | 387.53                               |
 | 36   | resnet_v1_152                  | tf_resnetv1_152_imagenet_224_224_21.83G      | 150               | 258.93                               |
 | 37   | vgg_16                         | tf_vgg16_imagenet_224_224_30.96G             | 150               | 182.70                               |
 | 38   | vgg_19                         | tf_vgg19_imagenet_224_224_39.28G             | 150               | 153.15                               |
 | 39   | ssd_resnet_50_v1_fpn           | tf_ssdresnet50v1_fpn_coco_640_640_178.4G     | 150               | 28.81                                 |
-| 40   | yolov3_voc                     | tf_yolov3_voc_416_416_65.63G                 | 150               | 94.06                                 |
-| 41   | torchvision                    | resnet50                                     | 150               | 630.37                               |
+| 40   | yolov3_voc                     | tf_yolov3_voc_416_416_65.63G                 | 180               | 112.37                               |
+| 41   | torchvision                    | resnet50                                     | 210               | 878.38                               |
 | 42   | torchvision                    | inception_v3                                 | 150               | 371.01                               |
 | 43   | torchvision                    | squeezenet                                   | 150               | 1655.73                               |
 
