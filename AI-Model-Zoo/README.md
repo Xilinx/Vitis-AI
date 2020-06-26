@@ -127,73 +127,73 @@ If you are a:
  - Linux user, use the [`get_model.sh`](reference-files/get_model.sh) script to download all the models.   
  - Windows user, use the download link listed in the following table to download a model.
 
-| No\. | Model                                            | Size | Download link | Checksum |
-| ---- | ------------------------------------------------ | ---- | ------------- | -------- |
-| 1    | cf_resnet50_imagenet_224_224_7.7G_1.2            |      |               |          |
-| 2    | cf_inceptionv1_imagenet_224_224_3.16G_1.2        |      |               |          |
-| 3    | cf_inceptionv2_imagenet_224_224_4G_1.2           |      |               |          |
-| 4    | cf_inceptionv3_imagenet_299_299_11.4G_1.2        |      |               |          |
-| 5    | cf_inceptionv4_imagenet_299_299_24.5G_1.2        |      |               |          |
-| 6    | cf_mobilenetv2_imagenet_224_224_0.59G_1.2        |      |               |          |
-| 7    | cf_squeeze_imagenet_227_227_0.76G_1.2            |      |               |          |
-| 8    | cf_resnet18_imagenet_224_224_3.65G_1.2           |      |               |          |
-| 9    | cf_ssdpedestrian_coco_360_640_0.97_5.9G_1.2      |      |               |          |
-| 10   | cf_refinedet_coco_480_360_123G_1.2               |      |               |          |
-| 11   | cf_refinedet_coco_360_480_0.8_25G_1.2            |      |               |          |
-| 12   | cf_refinedet_coco_360_480_0.92_10.10G_1.2        |      |               |          |
-| 13   | cf_refinedet_coco_360_480_0.96_5.08G_1.2         |      |               |          |
-| 14   | cf_ssdadas_bdd_360_480_0.95_6.3G_1.2             |      |               |          |
-| 15   | cf_ssdtraffic_360_480_0.9_11.6G_1.2              |      |               |          |
-| 16   | cf_VPGnet_caltechlane_480_640_0.99_2.5G_1.2      |      |               |          |
-| 17   | cf_ssdmobilenetv2_bdd_360_480_6.57G_1.2          |      |               |          |
-| 18   | cf_fpn_cityscapes_256_512_8.9G_1.2               |      |               |          |
-| 19   | cf_SPnet_aichallenger_224_128_0.54G_1.2          |      |               |          |
-| 20   | cf_openpose_aichallenger_368_368_0.3_189.7G_1.2  |      |               |          |
-| 21   | cf_densebox_wider_320_320_0.49G_1.2              |      |               |          |
-| 22   | cf_densebox_wider_360_640_1.11G_1.2              |      |               |          |
-| 23   | cf_landmark_celeba_96_72_0.14G_1.2               |      |               |          |
-| 24   | cf_reid_market1501_160_80_0.95G_1.2              |      |               |          |
-| 25   | cf_multitask_bdd_288_512_14.8G_1.2               |      |               |          |
-| 26   | dk_yolov3_bdd_288_512_53.7G_1.2                  |      |               |          |
-| 27   | dk_yolov3_cityscapes_256_512_0.9_5.46G_1.2       |      |               |          |
-| 28   | dk_yolov3_voc_416_416_65.42G_1.2                 |      |               |          |
-| 29   | dk_yolov2_voc_448_448_34G_1.2                    |      |               |          |
-| 30   | dk_yolov2_voc_448_448_0.66_11.56G_1.2            |      |               |          |
-| 31   | dk_yolov2_voc_448_448_0.71_9.86G_1.2             |      |               |          |
-| 32   | dk_yolov2_voc_448_448_0.77_7.82G_1.2             |      |               |          |
-| 33   | cf_facerec-resnet20_112_96_3.5G_1.2              |      |               |          |
-| 34   | cf_facerec-resnet64_112_96_11G_1.2               |      |               |          |
-| 35   | cf_FPN-resnet18_EDD_320_320_45.3G_1.2            |      |               |          |
-| 36   | cf_plate-detection_320_320_0.49G_1.2             |      |               |          |
-| 37   | cf_plate-recognition_96_288_1.75G_1.2            |      |               |          |
-| 38   | tf_inceptionresnetv2_imagenet_299_299_26.35G_1.2 |      |               |          |
-| 39   | tf_inceptionv1_imagenet_224_224_3G_1.2           |      |               |          |
-| 40   | tf_inceptionv3_imagenet_299_299_11.45G_1.2       |      |               |          |
-| 41   | tf_inceptionv4_imagenet_299_299_24.55G_1.2       |      |               |          |
-| 42   | tf_mobilenetv1_0.25_imagenet_128_128_27.15M_1.2  |      |               |          |
-| 43   | tf_mobilenetv1_0.5_imagenet_160_160_150.07M_1.2  |      |               |          |
-| 44   | tf_mobilenetv1_1.0_imagenet_224_224_1.14G_1.2    |      |               |          |
-| 45   | tf_mobilenetv2_1.0_imagenet_224_224_0.59G_1.2    |      |               |          |
-| 46   | tf_mobilenetv2_1.4_imagenet_224_224_1.16G_1.2    |      |               |          |
-| 47   | tf_resnetv1_50_imagenet_224_224_6.97G_1.2        |      |               |          |
-| 48   | tf_resnetv1_101_imagenet_224_224_14.4G_1.2       |      |               |          |
-| 49   | tf_resnetv1_152_imagenet_224_224_21.83G_1.2      |      |               |          |
-| 50   | tf_vgg16_imagenet_224_224_30.96G_1.2             |      |               |          |
-| 51   | tf_vgg19_imagenet_224_224_39.28G_1.2             |      |               |          |
-| 52   | tf_ssdmobilenetv1_coco_300_300_2.47G_1.2         |      |               |          |
-| 53   | tf_ssdmobilenetv2_coco_300_300_3.75G_1.2         |      |               |          |
-| 54   | tf_ssdresnet50v1_fpn_coco_640_640_178.4G_1.2     |      |               |          |
-| 55   | tf_yolov3_voc_416_416_65.63G_1.2                 |      |               |          |
-| 56   | tf_mlperf_resnet34_coco_1200_1200_433G_1.2       |      |               |          |
-| 57   | pt_ENet_cityscapes_512_1024_8.6G_1.2             |      |               |          |
-| 58   | pt_SemanticFPN_cityscapes_256_512_10G_1.2        |      |               |          |
-| 59   | pt_facerec-resnet20_mixed_112_96_3.5G_1.2        |      |               |          |
-| 60   | pt_face-quality_80_60_61.68M_1.2                 |      |               |          |
-| 61   | pt_MT-resnet18_mixed_320_512_13.65G_1.2          |      |               |          |
-| 62   | pt_facereid-large_96_96_515M_1.2                 |      |               |          |
-| 63   | pt_facereid-small_80_80_90M_1.2                  |      |               |          |
-| 64   | pt_personreid_market1501_256_128_4.2G_1.2        |      |               |          |
-| all  | all_models_1.2                                   |      |               |          |
+| No\. | Model                                            | Size   | MD5                              | Download link |
+| ---- | ------------------------------------------------ | ------ | -------------------------------- | ------------- |
+| 1    | cf_resnet50_imagenet_224_224_7.7G_1.2            | 232MB  | a8c5880724319a46ab494e4b78cd8440 |               |
+| 2    | cf_inceptionv1_imagenet_224_224_3.16G_1.2        | 88MB   | f997fa8dfd3a4b50078a96c0c385582f |               |
+| 3    | cf_inceptionv2_imagenet_224_224_4G_1.2           | 147MB  | 3dcd60cff65d8ef4c71943b5be818c33 |               |
+| 4    | cf_inceptionv3_imagenet_299_299_11.4G_1.2        | 218MB  | 9ad9e3d30974ed38d5fbb9cb05991100 |               |
+| 5    | cf_inceptionv4_imagenet_299_299_24.5G_1.2        | 390MB  | f5e98bedc38a223be255b6c9f7cadeb8 |               |
+| 6    | cf_mobilenetv2_imagenet_224_224_0.59G_1.2        | 24.4MB | 1766c88335548f5a5777a9a658551727 |               |
+| 7    | cf_squeeze_imagenet_227_227_0.76G_1.2            | 11.5MB | 2b1dc4fdc41a084319cfabcf11ba5814 |               |
+| 8    | cf_resnet18_imagenet_224_224_3.65G_1.2           | 107MB  | 3f8a689b18de48eb6c959850776e20f0 |               |
+| 9    | cf_ssdpedestrian_coco_360_640_0.97_5.9G_1.2      | 4.60MB | 380d1998d294f8127cd6762ca444553d |               |
+| 10   | cf_refinedet_coco_480_360_123G_1.2               | 274MB  | 0441a332c62add57fd0f53f965c0d93b |               |
+| 11   | cf_refinedet_coco_360_480_0.8_25G_1.2            | 23.3MB | b59cc0d5b7206e36257eca0ddca93ade |               |
+| 12   | cf_refinedet_coco_360_480_0.92_10.10G_1.2        | 6.45MB | 1573a7eea90de244d044182b2acf9281 |               |
+| 13   | cf_refinedet_coco_360_480_0.96_5.08G_1.2         | 3.23MB | be21077f3eb75cc362894e35acd292a5 |               |
+| 14   | cf_ssdadas_bdd_360_480_0.95_6.3G_1.2             | 7.10MB | bb56a43d8f11e51af946ca6c98bca9d3 |               |
+| 15   | cf_ssdtraffic_360_480_0.9_11.6G_1.2              | 13.4MB | 6b704425288d612c037abc6f90d5ea2d |               |
+| 16   | cf_VPGnet_caltechlane_480_640_0.99_2.5G_1.2      | 3.09MB | 96263ac15e378fa8c620509f97ee5144 |               |
+| 17   | cf_ssdmobilenetv2_bdd_360_480_6.57G_1.2          | 67.4MB | 1886aa1a977ed7395c73db4c0854f979 |               |
+| 18   | cf_fpn_cityscapes_256_512_8.9G_1.2               | 73.9MB | 10cbbb37ec8dcb6d980cdbfa8f0fad00 |               |
+| 19   | cf_SPnet_aichallenger_224_128_0.54G_1.2          | 10.4MB | af0d1706ba8aa2a24281fb534ce0ce7c |               |
+| 20   | cf_openpose_aichallenger_368_368_0.3_189.7G_1.2  | 334MB  | 1c8a8aa1734251f31e4e6c3e9815fac4 |               |
+| 21   | cf_densebox_wider_320_320_0.49G_1.2              | 4.77MB | 584eb9f6be9439fcd6c0d5eb1be26da3 |               |
+| 22   | cf_densebox_wider_360_640_1.11G_1.2              | 4.77MB | 37076a64065b4c0769835c47407f76c1 |               |
+| 23   | cf_landmark_celeba_96_72_0.14G_1.2               | 51.7MB | d77f0f729eff3f366b08b0df32d25502 |               |
+| 24   | cf_reid_market1501_160_80_0.95G_1.2              | 101MB  | b6c3fd73b00e2402e24aa8bcf7a537ed |               |
+| 25   | cf_multitask_bdd_288_512_14.8G_1.2               | 125MB  | 70f3e9331295461f946e8cec0c80a5d4 |               |
+| 26   | dk_yolov3_bdd_288_512_53.7G_1.2                  | 585MB  | 452587d385dede38b9f13414fbd6f903 |               |
+| 27   | dk_yolov3_cityscapes_256_512_0.9_5.46G_1.2       | 22.5MB | 6421288c4c917b66d90481d27819bb63 |               |
+| 28   | dk_yolov3_voc_416_416_65.42G_1.2                 | 579MB  | b21107628cf29f16eccd990ac6c2790d |               |
+| 29   | dk_yolov2_voc_448_448_34G_1.2                    | 426MB  | 1e29052a274627f7cbe8348e2500b73d |               |
+| 30   | dk_yolov2_voc_448_448_0.66_11.56G_1.2            | 141MB  | 4964e80f08999ad8737b47e2100dc638 |               |
+| 31   | dk_yolov2_voc_448_448_0.71_9.86G_1.2             | 125MB  | 5b80a104ca9a14d809ebcf48240babb0 |               |
+| 32   | dk_yolov2_voc_448_448_0.77_7.82G_1.2             | 91.3MB | 04f489c94d351c6d71faa0d031e2b2f6 |               |
+| 33   | cf_facerec-resnet20_112_96_3.5G_1.2              | 208MB  | fe008dcb1d6ca751fa6cd5909f575ec5 |               |
+| 34   | cf_facerec-resnet64_112_96_11G_1.2               | 280MB  | 1831cdb446cece092035a444f683a654 |               |
+| 35   | cf_FPN-resnet18_EDD_320_320_45.3G_1.2            | 107MB  | 6a4eb8b3da9f29c56f711ea1373a334e |               |
+| 36   | cf_plate-detection_320_320_0.49G_1.2             | 5.13MB | 3996b18f5855aaf57d19cfd3829b25e7 |               |
+| 37   | cf_plate-recognition_96_288_1.75G_1.2            | 57.4MB | 36eba4cb4d4dde5661ccc43e5ccc1dad |               |
+| 38   | tf_inceptionresnetv2_imagenet_299_299_26.35G_1.2 | 453MB  | c9f0d01087c4842aeef9521c5a6f3bbc |               |
+| 39   | tf_inceptionv1_imagenet_224_224_3G_1.2           | 54.2MB | ccc4de0d21947f83644ea68c7e0da2f6 |               |
+| 40   | tf_inceptionv3_imagenet_299_299_11.45G_1.2       | 194MB  | 35fd3e8296d23f87ca817279bd5a0c65 |               |
+| 41   | tf_inceptionv4_imagenet_299_299_24.55G_1.2       | 347MB  | bc3e85dfe9d4b69e3300e0408f3e86e8 |               |
+| 42   | tf_mobilenetv1_0.25_imagenet_128_128_27.15M_1.2  | 3.89MB | 620bf6a0ee6ac762c05b90ce8346a1fd |               |
+| 43   | tf_mobilenetv1_0.5_imagenet_160_160_150.07M_1.2  | 10.8MB | 309a10176ee11e15d13cc4057b0dacd7 |               |
+| 44   | tf_mobilenetv1_1.0_imagenet_224_224_1.14G_1.2    | 33.9MB | 07d7ca9a88b61fc7a83a43fcaeefd044 |               |
+| 45   | tf_mobilenetv2_1.0_imagenet_224_224_0.59G_1.2    | 28.7MB | 918883dbc92315a73b760c9d04311a7d |               |
+| 46   | tf_mobilenetv2_1.4_imagenet_224_224_1.16G_1.2    | 49.7MB | d2e857cc35301c269047a95536e9428e |               |
+| 47   | tf_resnetv1_50_imagenet_224_224_6.97G_1.2        | 207MB  | 55576ff6afdc700ee00664642e19a6fa |               |
+| 48   | tf_resnetv1_101_imagenet_224_224_14.4G_1.2       | 361MB  | 361abf998d29f8849f5a5889226df4ff |               |
+| 49   | tf_resnetv1_152_imagenet_224_224_21.83G_1.2      | 489MB  | 851abf9a7e9656a049ebedb8de96d550 |               |
+| 50   | tf_vgg16_imagenet_224_224_30.96G_1.2             | 1.11GB | a05649569e62d516877a574184f6a1a0 |               |
+| 51   | tf_vgg19_imagenet_224_224_39.28G_1.2             | 1.15GB | 6d526ca6ac73cc37155272b9434f0c55 |               |
+| 52   | tf_ssdmobilenetv1_coco_300_300_2.47G_1.2         | 55.8MB | 5394d18fe791484bcc6388767e64b77b |               |
+| 53   | tf_ssdmobilenetv2_coco_300_300_3.75G_1.2         | 134MB  | 979e324b0f809aa82f3c86a3417865e1 |               |
+| 54   | tf_ssdresnet50v1_fpn_coco_640_640_178.4G_1.2     | 380MB  | 320b6c8303505960ff9178c030c5a5f1 |               |
+| 55   | tf_yolov3_voc_416_416_65.63G_1.2                 | 507MB  | 0e72e4380b581077481dc370edfda986 |               |
+| 56   | tf_mlperf_resnet34_coco_1200_1200_433G_1.2       | 239MB  | e338922d736cc60f5feee2a3783514ce |               |
+| 57   | pt_ENet_cityscapes_512_1024_8.6G_1.2             | 3.74MB | b562f491cb8b848354d28230615eb18a |               |
+| 58   | pt_SemanticFPN_cityscapes_256_512_10G_1.2        | 118MB  | 04f2ee1e43bea7ecd3d570e94cd03903 |               |
+| 59   | pt_facerec-resnet20_mixed_112_96_3.5G_1.2        | 439MB  | 8accf60dc93e0018985c0ab8f02406b4 |               |
+| 60   | pt_face-quality_80_60_61.68M_1.2                 | 5.81MB | b1e8ea14e8c77ab18724b95c7751ae51 |               |
+| 61   | pt_MT-resnet18_mixed_320_512_13.65G_1.2          | 67.8MB | 8a77805945daf4dea8a3c80059c6610b |               |
+| 62   | pt_facereid-large_96_96_515M_1.2                 | 36.8MB | 94038fcd56521b1f6d7430889ef2db2e |               |
+| 63   | pt_facereid-small_80_80_90M_1.2                  | 10.0MB | 01ec7ddc8ee374e2488dff0a33082d44 |               |
+| 64   | pt_personreid_market1501_256_128_4.2G_1.2        | 109MB  | 7a578c089b50dae0a4900877289c8929 |               |
+| all  | all_models_1.2                                   | 11.3GB | de59e947911757b9beee5ec00a5a6822 |               |
 
 </details>
 
