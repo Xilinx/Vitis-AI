@@ -22,7 +22,8 @@ source /workspace/alveo/overlaybins/setup.sh
 
 ## Running the Application
 -  `cd ${VAI_ALVEO_ROOT}/apps/whole_app_acceleration/yolo`
-- Use `run.sh` file to run the application. 
+- Use `detect.sh` file to run the application.
+- Make sure that follow the steps [here](../../yolo/README.md) to get COCO validation set and labels/ 
 
 ### Examples
 
@@ -30,11 +31,6 @@ source /workspace/alveo/overlaybins/setup.sh
 ```sh
 ./detect.sh -h
 ```
-Copy a few images (~25 images) to `apps/yolo/test_image_set` for calibration.
-```
-find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xargs cp -t test_image_set/
-```
-
 - To run yolo inference without JPEG decoder accelerator
 ```sh
  ./detect.sh

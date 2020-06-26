@@ -29,7 +29,13 @@ from caffe.proto import caffe_pb2
 import time
 import argparse
 
-
+# Need to create derived class to clean up properly
+class Net(caffe.Net):
+  def __del__(self):
+    for layer in self.layer_dict:
+      if hasattr(self.layer_dict[layer],"fpgaRT"):
+        del self.layer_dict[layer].fpgaRT
+        
 def Quantize(prototxt,caffemodel,test_iter=1,calib_iter=1):
     os.environ["DECENT_DEBUG"] = "1"
     subprocess.call(["vai_q_caffe", "quantize",
@@ -128,7 +134,7 @@ def declare_network(model_def, model_weights, labelmap_file, args):
     file = open(labelmap_file, 'r')
     labelmap = caffe_pb2.LabelMap()
     text_format.Merge(str(file.read()), labelmap)
-    net = caffe.Net(model_def, model_weights, caffe.TEST)
+    net = Net(model_def, model_weights, caffe.TEST)
     transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
     transformer.set_transpose('data', (2, 0, 1))
     transformer.set_mean('data', np.array(args["img_mean"]))
@@ -154,6 +160,7 @@ def detect_one_image(net,transformer,labelmap,image_path,image_resize_height, im
     net.blobs['data'].data[...] = transformed_image
     start = time.time()
     detections = net.forward()['detection_out']
+    
     end = time.time()
     print ("Foward time: ", end - start )
     det_label = detections[0, 0, :, 1]
