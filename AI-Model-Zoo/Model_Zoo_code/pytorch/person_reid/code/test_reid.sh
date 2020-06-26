@@ -14,7 +14,7 @@
 
 #!/usr/bin/env bash
 checkpoint_dir=path_to_personreid_model
-dataset_dir=../../data
+dataset_dir=../data
 
 python3 code/test/test.py --config_file='code/test/configs/personreid_market.yml' \
 --dataset='market1501' \

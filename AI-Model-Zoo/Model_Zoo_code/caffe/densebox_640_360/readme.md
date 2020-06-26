@@ -56,10 +56,19 @@
 
 #### demo
 
-1. run demo
+1. Prepare test images
+   
+  You can randomly select several images from existing test dataset or use your own testset directly.
   ```shell
-  cd code/test/visualTest/
+  cd code/test/visualTest
+  mkdir testImages
+  cp ../../../../data/test/images/2002/08/26/big/img_265.jpg ./testImages/
+  find testImages/ -name "*.jpg" > image_list_test.txt  
+  ```
+2. run demo
+  ```shell
   sh demo.sh
+  # You can see visualization output results from ./output. 
   ```
 
 ### Train/Eval
@@ -71,12 +80,17 @@
 
 2. Evaluate your model.
   
-  FDDB testing requires the third-party evaluation tools, please download and compile it.
-  You can refer to [evaluation tool](http://vis-www.cs.umass.edu/fddb/results.html)
+  FDDB testing requires the third-party evaluation tools, please download [evaluation tool](http://vis-www.cs.umass.edu/fddb/evaluation.tgz) to code/test/precisionTest/, unzip and compile it.
+
+  If you have problems compiling it, you can refer to [FAQ](http://vis-www.cs.umass.edu/fddb/faq.html)
+
   ```shell
   cd code/test/precisionTest/
-  sh test.sh
-  #if recall rate is 0.8931 for float model, test sucessfully.
+  sh test.sh # generate face detection result file FDDB_results.txt
+  #use the evaluation tool to generate ROC files. You can try to run the following command.
+  evaluation/evaluate -a $Path/data/test/FDDB_annotation.txt -d $Path/FDDB_results.txt -i $Path/data/test/images/ -l $Path/data/test/FDDB_list.txt -r $PATH_WORK_DIR 
+  #Path is absolute path. 
+  #if recall rate is 0.8931 @fp=100 for float model, test sucessfully.
   ```
  
 ### Performance

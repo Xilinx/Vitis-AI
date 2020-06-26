@@ -81,7 +81,7 @@
   ```
   Modify datalayer of test.prototxt for model quantization:
   a. Replace the "Input" data layer of test.prototxt with the "ImageData" data layer.
-  b. Modify the "ImageData" layer parameters according to the date preprocess information.
+  b. Modify the "ImageData" layer parameters according to the data preprocess information.
   c. Provide a "quant.txt" file, including image path and label information with fake value(like 1).
   d. Give examples of data layer and "quant.txt":
 

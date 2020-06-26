@@ -178,6 +178,7 @@ if __name__ == "__main__":
     detect(args, FDDB_list, resolution, threshold, nms_threshold, FDDB_results_file)
 
     # evaluate
+    '''
     commands.getstatusoutput('rm -f DiscROC.txt')
     commands.getstatusoutput('rm -f ContROC.txt')
     cmd = '%sevaluation/evaluate -a %s -d %sFDDB_results.txt -i %s -l %s -r %s' % (work_dir, 
@@ -192,3 +193,4 @@ if __name__ == "__main__":
         print("Recall rate is:%s(@fp=100)"%(recall))
     else:
         print("Please make sure the evaluation tool compiles successfully before evaluation")
+    '''
