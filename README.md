@@ -122,6 +122,7 @@ For more information, please refer to [Vitis AI User Guide](https://www.xilinx.c
 ## Questions and Support
 - [FAQ](doc/faq.md)
 - [Vitis AI Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
+- [Third Party Source](docs/Thirdpartysource.md)
 
 [models]: docs/models.md
 [Amazon AWS EC2 F1]: https://aws.amazon.com/marketplace/pp/B077FM2JNS
