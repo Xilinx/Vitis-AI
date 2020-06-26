@@ -94,7 +94,8 @@ net = caffe.Net(model_def, model_weights, caffe.TEST)
 
 
 # file path
-img_path = './cityscapes/frankfurt/'
+#img_path = './leftImg8bit/val/frankfurt/'
+img_path = './cityscapes/val/photo/'
 output_path = './cpu_output/'
 
 image_list = os.listdir(img_path)

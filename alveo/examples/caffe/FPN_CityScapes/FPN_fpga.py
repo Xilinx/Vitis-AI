@@ -77,10 +77,10 @@ def segment_output(net, img_file):
 def segment(net, img_file):
     IMG_MEAN = np.array((104,117,123))  # mean_values for B, G,R
     INPUT_W, INPUT_H = 512, 256 # W, H  512, 256
-    TARGET_W, TARGET_H = 2048, 1024
+#    TARGET_W, TARGET_H = 2048, 1024
     
     im_ = cv2.imread(img_file)
-    w, h = TARGET_W, TARGET_H
+#    w, h = TARGET_W, TARGET_H
     in_ = cv2.resize(im_, (INPUT_W, INPUT_H))
     in_ = in_ * 1.0
     in_ -= IMG_MEAN
@@ -121,7 +121,8 @@ net_fpga = Net(model_def, model_weights, caffe.TEST)
 
 
 # file path
-img_path = './cityscapes/frankfurt/'
+#img_path = './leftImg8bit/val/frankfurt/'
+img_path = './cityscapes/val/photo/'
 output_path = './fpga_output/'
 
 if not os.path.exists('fpga_output'):
@@ -150,7 +151,7 @@ FP = np.zeros((n_classes,1))
 FN = np.zeros((n_classes,1))
 
 print('calculate mIoU between cpu output and fpga output')
-for img in image_list[:30] :  
+for img in image_list[:100] :  
     print(img)
     # segmentation output from fpga model
     out = segment(net_fpga, img_path+img)

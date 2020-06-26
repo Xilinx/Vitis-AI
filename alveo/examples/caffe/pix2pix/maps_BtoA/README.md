@@ -26,7 +26,40 @@ tar -xvf maps.tar.gz
 rm maps.tar.gz
 ```
 
+The folder is supposed to be as the following.  
+
+```
+/workspace/alveo/examples/caffe/pix2pix/maps_BtoA/maps/train
+/workspace/alveo/examples/caffe/pix2pix/maps_BtoA/maps/val
+```
+
+The downloaded images have the combination of Cityscapes Semantic photo and label. 
+To split Semantic photo and label, please run the following command lines.
+
+```
+$ cd /workspace/alveo/examples/caffe/pix2pix/maps_BtoA/
+$ python extract_label_aerial.py
+```
+
+This will generate two subfolders in val folder. 'photo' and 'label'. 
+```
+/workspace/alveo/examples/caffe/pix2pix/maps_BtoA/maps/val/photo
+/workspace/alveo/examples/caffe/pix2pix/maps_BtoA/maps/val/label
+```  
+
+
+
 ## Pix2Pix (maps_BtoA) model
+
+Pix2pix is image to image translastion using GAN [1]
+
+
+[1]	Phillip Isola Jun-Yan Zhu Tinghui Zhou Alexei A. Efros: Image-to-Image Translation with Conditional Adversarial Networks (2016), arXiv:1611.07004
+
+
+
+maps_BtoA model translates maps to aerial photo. 
+
 
 We trained Pix2Pix (maps_BtoA) model with input size as [256,256,3].
 
@@ -45,8 +78,7 @@ The Pix2Pix (maps_BtoA) model files would be located in '/workspace/alveo/exampl
 Copy the model files to 'pix2pix/maps_BtoA/quantize_results' with the following commands.
 ```
 cd /workspace/alveo/examples/caffe/pix2pix/maps_BtoA
-mkdir quantize_results
-cp -R /workspace/alveo/examples/caffe/models/maps_BtoA/*.* ./quantize_results
+cp -R /workspace/alveo/examples/caffe/models/maps_BtoA ./quantize_results
 ```
 
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'maps_BtoA/quantize_results' sub-folder.
@@ -70,18 +102,22 @@ xfdnn_deploy.prototxt (used to execute Caffe model on FPGA) will be generated at
 
 ## Run Inference model on CPU
 
-To run the inference model on cpu with cityscape photo images, run the following commands.
+To run the inference model on cpu for translating map to aerial photo, run the following commands.
 ```
 cd /workspace/alveo/examples/caffe/pix2pix/maps_BtoA
 python maps_BtoA_cpu.py --image <image-file>
+For example, 
+$ python maps_BtoA_cpu.py --image ./maps/val/label/1.jpg
 ```
 
 
 ## Run Inference model on FPGA 
 
-To run the inference model on fpga with cityscape photo images, run the following commands.
+To run the inference model on fpga for translating map to aerial photo, run the following commands.
 
 ```
 cd /workspace/alveo/examples/caffe/pix2pix/maps_BtoA
 python maps_BtoA_fpga.py --image <image-file>
+For example, 
+$ python maps_BtoA_fpga.py --image ./maps/val/label/1.jpg
 ```

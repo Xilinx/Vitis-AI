@@ -1,28 +1,66 @@
 # Running FPN CityScapes segmentation model on FPGA 
 
 
-## Activate Caffe conda environment
+### Setup
 
-Please activate Caffe conda environment using the following commands.
+> **Note:** Skip, If you have already run the below steps.
 
-```
-conda activate vitis-ai-caffe
-source /workspace/alveo/overlaybins/setup.sh
-cd /workspace/alveo/examples/caffe/FPN_CityScapes
-```
+Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe 
+  ```
+
+Setup the Environment
+
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
 
 
 ## Data Preparation
 
-Download cityscapes-dataset from https://www.cityscapes-dataset.com/downloads/
+Download cityscapes-dataset (leftImg8bit_trainvaltest.zip) from https://www.cityscapes-dataset.com/downloads/
 
 You need to register for the website to download the dataset.
 
-Please download 'cityscapes/frankfurt' folder.
+
+The unpacked image files are supposed to be at the following location.
 
 ```
-/workspace/alveo/examples/caffe/FPN_CityScapes/cityscapes/frankfurt
+/workspace/alveo/examples/caffe/FPN_CityScapes/leftImg8bit/val/frankfurt
 ```
+
+
+Alternatively you can download cityscapes-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz as follows
+
+```
+cd /workspace/alveo/examples/caffe/FPN_CityScapes/
+wget https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz
+tar -xvf cityscapes.tar.gz
+rm cityscapes.tar.gz
+```
+
+The folder is supposed to be as the following.  
+
+```
+/workspace/alveo/examples/caffe/pix2pix/FPN_CityScapes/cityscapes/train
+/workspace/alveo/examples/caffe/pix2pix/FPN_CityScapes/cityscapes/val
+```
+
+The downloaded images have the combination of Cityscapes Semantic photo and label. 
+To split Semantic photo and label, please run the following command lines.
+
+```
+$ cd /workspace/alveo/examples/caffe/pix2pix/cityscapes_AtoB/
+$ python extract_label_semantic.py
+```
+
+This will generate two subfolders in val folder. 'photo' and 'label'. 
+```
+/workspace/alveo/examples/caffe/FPN_CityScapes/cityscapes/val/photo
+/workspace/alveo/examples/caffe/FPN_CityScapes/cityscapes/val/label
+```  
+
 
 
 ## FPN CityScapes segmentation model
@@ -44,11 +82,18 @@ The FPN CityScapes model files would be located in '/workspace/alveo/examples/ca
 We need to copy the model files into 'FPN_CityScapes/quantize_results' sub-foloder using the following command lines.
 ```
 cd /workspace/alveo/examples/caffe/FPN_CityScapes
-mkdir quantize_results
-cp -R /workspace/alveo/examples/caffe/models/FPN_CityScapes/*.* ./quantize_results/*.*
+cp -R /workspace/alveo/examples/caffe/models/FPN_CityScapes ./quantize_results
 ```
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'FPN_CityScapes/quantize_results' sub-foloder.
 
+
+## Run Inference model on cpu
+
+To run the inference model on cpu with 'cityscapes/frankfurt' images, please use the following command line.
+```
+python FPN_cpu.py 
+```
+The first 30 output images will be stored in 'cpu_output' sub-folder.
 
 
 
@@ -67,14 +112,6 @@ xfdnn_deploy.prototxt is to execute Caffe model on FPGA.
 
 
 
-## Run Inference model on cpu
-
-To run the inference model on cpu with 'cityscapes/frankfurt' images, please use the following command line.
-```
-python FPN_cpu.py 
-```
-The first 30 output images will be stored in cpu_output sub-folder.
-
 
 
 ## Run Inference model on FPGA 
@@ -88,5 +125,5 @@ python FPN_fpga.py
 ```
 The first 30 segmentation output images will be stored in 'fpga_output' folder. 
 
-This will also provide mean IOU between cpu output and fpga output for the first 30 images.
+This will also provide mean IOU between cpu output and fpga output for the first 100 images.
 
