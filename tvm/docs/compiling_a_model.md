@@ -19,7 +19,7 @@ If you are not familiar with Apache TVM, the following materials are provided as
 
 ### Compilation Examples
 
-The "tvm/tutorials/accelerators/compile/" directory incorporates example python  scripts for compiling MXNet_resnet_18 and Darknet_yolov2 models. These tutorials demonstrate the compilation step using the TVM with Vitis AI flow. While in the docker, run any of the provided tutorials after setting the conda environment to the "vitis-ai-tensorflow".
+While inside the docker, the "/opt/tvm-vai/tvm/tutorials/accelerators/compile/" directory incorporates example python  scripts for compiling MXNet_resnet_18 and Darknet_yolov2 models. These tutorials demonstrate the compilation step using the TVM with Vitis AI flow. While in the docker, run any of the provided tutorials after setting the conda environment to the "vitis-ai-tensorflow".
 
 ```sh
 # In docker
@@ -27,9 +27,11 @@ $ conda activate vitis-ai-tensorflow
 $ python3 mxnet_resnet_18.py
 ```
 
+The compilation output is saved on disk in a directory that includes the compiled model as well as runtime libraries to run the model on a target device during the Execution stage. For edge devices, the output directory needs to be copied over to the target device.
+
 ### Compiling MXNet Resenet_18
 
-In this section we go over the mxnet_resent_18.py tutorial script to further demonstrate the Compilation stage of the TVM with Vitis AI support. The compilation stage consists of importing, quantizing, partitioning, and compiling the model without much user intervention.
+In this section we walk through the mxnet_resent_18.py tutorial script to further demonstrate the Compilation stage of the TVM with Vitis AI support. The Compilation stage consists of importing, quantizing, partitioning, and compiling the model without much user intervention.
 
 #### Import the Model
 
@@ -41,7 +43,7 @@ mod, params = relay.frontend.from_mxnet(block, shape_dict)
 
 #### Quantize the Model
 
-As part of its compilation process, The TVM with Vitis AI support automatically performs quantization for the target hardware. We need a set of images for quantization and an input_function() needs to perform the model preprocessing on the quantization images and to return a dictionary mapping from input name to array containing dataset inputs. 
+As part of its compilation process, The TVM with Vitis AI support automatically performs quantization for the target hardware. We need a set of images for quantization and an input_function() needs to perform the model preprocessing on the quantization images and to return a dictionary mapping from input name to array containing dataset inputs. In this example we currently use the imagenet dataset images for quantization, but the user can choose a different dataset of their choice.
 
 ```python
 quant_dir = os.path.join(HOME_DIR,'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min')
@@ -49,7 +51,8 @@ quant_dir = os.path.join(HOME_DIR,'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min'
 def inputs_func(iter):
     import os
 
-    img_files = [os.path.join(quant_dir, f) for f in os.listdir(quant_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:4]
+    # specify the number of images used for quantization. Currently set to 10 images
+    img_files = [os.path.join(quant_dir, f) for f in os.listdir(quant_dir) if f.endswith(('JPEG', 'jpg', 'png'))][:10]
     size=shape_dict[list(shape_dict.keys())[0]][2:]
     
     # LOAD IMAGES
@@ -73,7 +76,7 @@ def inputs_func(iter):
     input_name = list(shape_dict.keys())[0]
     return {input_name: res}
 ```
-
+The number of images used for quantization is set to 10. you could change the number of images by modifying the "img_files" variable in the above code snippet. .
 
 #### Specify Target Hardware
 
@@ -103,6 +106,7 @@ graph, lib, params = relay.build(mod, tvm_target, params=params)
 
 Lastly, we store the graph, lib and params output from the TVM compiler on disk for running the model on the target device.
 
+This concludes the tutorial to compilation a model using the TVM with Vitis support. For instruction to run a compiled model please refer to the "running_on_zynq.md" and "running_on_alveo" documents
 
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job.)

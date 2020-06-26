@@ -38,11 +38,11 @@ $ import tvm
 $ import pyxir
 ```
 
-Examples of Apache TVM usage for different frameworks is provided in the tutorials/frontend directories.
+While inside the docker, example of Apache TVM usage for different frameworks is provided in the "/opt/tvm-vai/tvm/tutorials/frontend" directories. Similarly, Vitis-AI examples using TVM are provided in the "/opt/tvm-vai/tvm/tutorials/accelerators" directory.
 
-Vitis-AI examples using TVM are provided in the tutorials/accelerators directory.
+For more information on how to compile and run the Vitis-AI tutorials, refer to the "docs" directory in this folder.
 
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job.)
 
    [Apache TVM]: https://tvm.apache.org/
    [Xilinx Vitis AI]: https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html
