@@ -79,8 +79,7 @@ The U-Net model files would be located in '/workspace/alveo/examples/caffe/model
 We need to copy the model files into 'U-Net/float' sub-foloder using the following command lines.
 ```
 cd /workspace/alveo/examples/caffe/U-Net
-mkdir float
-cp -R /workspace/alveo/examples/caffe/models/U-Net/*.* ./float/*.*
+cp -R /workspace/alveo/examples/caffe/models/U-Net ./float
 ```
 You can find unet_U373_256.prototxt and unet_U373_256.caffemodel in 'U-Net/float' sub-foloder.
 
@@ -122,7 +121,7 @@ quantize_train_test.prototxt and quantize_train_test.caffemodel would be also ge
 The quantize_train_test files are a kind of simulation version of quantization which can be exectued on CPU. 
 
 
-The input block of the deploy.prototxt should be updated as the following.
+Using any text editor, the input block of the deploy.prototxt should be updated as the following.
 
 ```
 layer {
@@ -144,10 +143,74 @@ layer {
 }
 ```
 
+## Run Caffe model of quantization on CPU
+
+You can check the output of deploy.prototxt and deploy.caffemodel using unet_caffe_cpu.py.
+Using any text editor, open unet_caffe_cpu.py and modify as following.
+
+```
+#model_def = './float/unet_U373_256.prototxt'
+#model_weights = './float/unet_U373_256.caffemodel'
+
+model_def = './quantize_results/deploy.prototxt'
+model_weights = './quantize_results/deploy.caffemodel'
+```
+Then, run the following command to get the sample output image and mean IOU for the test dataset.
+```
+python unet_caffe_cpu.py 
+```
+
+In addition, You can check the output of quantize_train_test.prototxt and quantize_train_test.caffemodel using unet_caffe_cpu.py.
+Using any text editor, the input block of the quantize_train_test.prototxt should be updated as the following.
+```
+#layer {
+#  name: "input_1"
+#  type: "ImageData"
+#  top: "input_1"
+#  top: "label"
+#  include {
+#    phase: TRAIN
+#  }
+#  transform_param {
+#    scale: 0.0078431
+#    crop_size: 256
+#  }
+#  image_data_param {
+#    source: "/workspace/alveo/examples/caffe/U-Net/U373_list.txt"
+#    batch_size: 1
+#    shuffle: false
+#    root_folder: "/workspace/alveo/examples/caffe/U-Net/PhC-C2DH-U373/Img/"
+#  }
+#}
+layer {
+  name: "input_1"
+  type: "Input"
+  top: "input_1"
+  input_param {
+    shape {
+      dim: 1
+      dim: 3
+      dim: 256
+      dim: 256
+    }
+  }
+}
+```
+Then, open unet_caffe_cpu.py and modify as following.
+
+```
+#model_def = './float/unet_U373_256.prototxt'
+#model_weights = './float/unet_U373_256.caffemodel'
+
+model_def = './quantize_results/quantize_train_test.prototxt'
+model_weights = './quantize_results/quantize_train_test.caffemodel'
+```
+
+
 
 ## Compilation and Partitioning
 
-The quantized caffemodel need to be compiled and partitioned at your local drive using the following command line.
+The quantized caffemodel need to be compiled and partitioned at your local drive using the following command line after updating the input block of deploy.prototxt as instructed as above.
 
 ```
 source run.sh deploy

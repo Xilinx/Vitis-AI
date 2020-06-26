@@ -17,8 +17,8 @@ In Throughput mode, the throughput of the XDNN processor is determined by the ma
 Example:
 ```
 examples/deployment_modes/test_classify.py
-./run.sh -t test_classify -k v3 -c latency 
-./run.sh -t test_classify -k v3 -c throughput
+./run.sh -t test_classify -c latency 
+./run.sh -t test_classify -c throughput
 ```
 
 
@@ -31,14 +31,14 @@ The runtime engine allows the user application to submit concurrent inference ta
 
 We use the following scheme for enqueuing execution asynchronously and collecting results:
 ```
-  fpgaRT.exec_async()
-  fpgaRT.get_result()
+  runner.execute_async()
+  runner.wait()
 ```
 
 Example:
 ```
 examples/deployment_modes/test_classify_async_multinet.py
-./run.sh -t multinet -k v3 
+./run.sh -t multinet 
 ```
 
 
@@ -57,7 +57,7 @@ It is not necessary to wait for one image to finish all steps before proceeding 
 The following example shows how to achieve maximum end-to-end inference throughput using the API: 
 ```
 examples/deployment_modes/mp_classify.py
-./run.sh -t streaming_classify -k v3 
+./run.sh -t streaming_classify
 ```
 
 ## Multiple PE and same model / Multiple PE and different models
@@ -70,11 +70,11 @@ Examples:
 ```
 # Multiple PEs running the same model (default)
 examples/deployment_modes/test_classify.py
-./run.sh -t test_classify -k v3 
+./run.sh -t test_classify 
 
 # Multiple PEs, each running a different model
 examples/deployment_modes/test_classify_async_multinet.py
-./run.sh -t multinet -k v3 
+./run.sh -t multinet 
 ```
 
 
@@ -93,5 +93,3 @@ To optimize for lower latency, the application may apply tensorization technique
 ## Multiple FPGA execution
 
 The runtime engine allows the application to select which FPGA to run a compiled model on. To take advantage of multiple FPGAs on a single host machine, the application may open one process per FPGA with an optional master process orchestrating the overall execution.
-
-See apps/perpetual_demo/README.md

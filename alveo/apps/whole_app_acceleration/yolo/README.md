@@ -30,6 +30,11 @@ source /workspace/alveo/overlaybins/setup.sh
 ```sh
 ./detect.sh -h
 ```
+Copy a few images (~25 images) to `apps/yolo/test_image_set` for calibration.
+```
+find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xargs cp -t test_image_set/
+```
+
 - To run yolo inference without JPEG decoder accelerator
 ```sh
  ./detect.sh

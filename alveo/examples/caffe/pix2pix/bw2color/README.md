@@ -1,4 +1,4 @@
-# Running Caffe pix2pix (b/w to color) Model
+# Running Caffe pix2pix (B/W to color) Model
 
 ### Setup
 
@@ -17,11 +17,18 @@ However, we need the format of the input image as 3d array with 3 channels.
 
 You can put same value for the 3 channels. 
 
+Here we providied example script to convert RGB image to B/W image.
+
+```
+cd /workspace/alveo/examples/caffe 
+python convert_rgb_bw.py --image <image-file>
+```
+
 
 
 ## Pix2Pix (b/w to color) model
 
-We trained Pix2Pix (b/w to color) model with input size as [256,256,3].
+We trained Pix2Pix (B/W to color) model with input size as [256,256,3].
 
 After training the model, we quantized the model to deploy on FPGA.
 
@@ -33,15 +40,14 @@ cd /workspace/alveo/examples/caffe
 python getModels.py
 ```
 
-The Pix2Pix (b/w to color) model files would be located in '/workspace/alveo/examples/caffe/models/bw2color' folder.
+The Pix2Pix (B/W to color) model files would be located in '/workspace/alveo/examples/caffe/models/bw2color' folder.
 
 
 We need to copy the model files into 'pix2pix/bw2color/quantize_results' sub-foloder using the following commands.
 
 ```
 cd /workspace/alveo/examples/caffe/pix2pix/bw2color
-mkdir quantize_results
-cp -R /workspace/alveo/examples/caffe/models/bw2color/*.* ./quantize_results
+cp -R /workspace/alveo/examples/caffe/models/bw2color ./quantize_results
 ```
 
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'bw2color/quantize_results' sub-foloder.
@@ -66,7 +72,7 @@ xfdnn_deploy.prototxt is to execute Caffe model on FPGA.
 
 ## Run Inference model on CPU
 
-To run the inference model on cpu with b/w images, please use the following commands.
+To run the inference model on cpu to convert B/W image to color (RGB) image, please use the following commands.
 
 ```
 cd /workspace/alveo/examples/caffe/pix2pix/bw2color
@@ -76,7 +82,7 @@ python bw2color_cpu.py --image <image-file>
 
 ## Run Inference model on FPGA 
 
-To run the inference model on fpga with b/w images, please use the following commands.
+To run the inference model on fpga to convert B/W image to color (RGB) image, please use the following commands.
 
 ```
 cd /workspace/alveo/examples/caffe/pix2pix/bw2color
