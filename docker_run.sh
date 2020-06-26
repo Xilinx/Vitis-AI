@@ -74,6 +74,7 @@ if [[ $IMAGE_NAME == *"sdk"* ]]; then
   docker run \
     -e USER=$user -e UID=$uid -e GID=$gid \
     -v $HERE:/workspace \
+    -v /dev/shm:/dev/shm \
     -w /workspace \
     -it \
     --rm \
@@ -87,6 +88,7 @@ elif [[ $IMAGE_NAME == *"gpu"* ]]; then
     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
     -e USER=$user -e UID=$uid -e GID=$gid \
     -v $HERE:/workspace \
+    -v /dev/shm:/dev/shm \
     -w /workspace \
     -it \
     --rm \
@@ -100,6 +102,7 @@ else
     -v /opt/xilinx/dsa:/opt/xilinx/dsa \
     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
     -e USER=$user -e UID=$uid -e GID=$gid \
+    -v /dev/shm:/dev/shm \
     -v $HERE:/workspace \
     -w /workspace \
     -it \
