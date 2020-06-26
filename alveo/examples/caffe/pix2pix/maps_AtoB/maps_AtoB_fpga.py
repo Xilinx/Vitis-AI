@@ -24,6 +24,13 @@ import cv2
 import numpy as np
 import os
 
+import matplotlib
+matplotlib.use('PS')
+import matplotlib.pyplot as plt
+
+import skimage.io as io
+
+
 #%% define functions
 
 def norm_image(IMG):
@@ -57,7 +64,7 @@ if __name__ == "__main__":
 
     image_path = args["image"]
     # load image
-    image = cv2.imread(image_path)
+    image = plt.imread(image_path)
     if image.shape[:2] != input_shape:
         print("[INFO] Resizing the input image to {}".format(input_shape))
         image = cv2.resize(image, input_shape)
@@ -82,5 +89,5 @@ if __name__ == "__main__":
     name, ext = os.path.splitext(image_name)
     out_name = name + '_fpga.jpg'
     out_path = os.path.join(args['output_path'], out_name)
-    cv2.imwrite(out_path, fake_B1)       
+    io.imsave(out_path, fake_B1)       
     print('[INFO] output file is saved in ' + args["output_path"])
