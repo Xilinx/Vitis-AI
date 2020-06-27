@@ -22,7 +22,7 @@ include(XilinxCommon)
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
   set(TOOL_NAME "xilinx_test_camera")
   add_executable(${TOOL_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/test_camera.cpp)
-  target_link_libraries(${TOOL_NAME} ${OpenCV_LIBS} glog::glog)
+  target_link_libraries(${TOOL_NAME} ${OpenCV_LIBS} vart::util glog::glog)
   install(TARGETS ${TOOL_NAME} DESTINATION bin/xlnx)
 
   set(TOOL_NAME "xilinx_read_version")
@@ -44,7 +44,7 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
   add_executable(${TOOL_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/mem_read.cpp)
   target_link_libraries(${TOOL_NAME} glog::glog)
   install(TARGETS ${TOOL_NAME} DESTINATION bin/xlnx)
-  
+
   set(TOOL_NAME "xilinx_mem_write")
   add_executable(${TOOL_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/mem_write.cpp)
   target_link_libraries(${TOOL_NAME} glog::glog)
@@ -66,19 +66,18 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
   #   target_link_libraries(xrt_mem_read glog::glog xrt_core)
   #   target_link_libraries(xrt_mem_write glog::glog xrt_core)
   #   install(TARGETS xrt_mem_read xrt_mem_write DESTINATION bin)
-  
+
   #   add_executable(xrt_mem_pic ${CMAKE_CURRENT_SOURCE_DIR}/src/xrt_mem_pic.cpp)
   #   target_link_libraries(xrt_mem_pic glog::glog xrt_core  ${OpenCV_LIBS})
   #   install(TARGETS xrt_mem_pic DESTINATION bin)
   # endif(HAVE_XRT)
-  
+
   #add_executable(xir2elf ${CMAKE_CURRENT_SOURCE_DIR}/src/xir2elf.cpp)
   #target_link_libraries(xir2elf xir::xir vart::util vart::elf-util glog::glog)
   #install(TARGETS xir2elf DESTINATION bin)
-  
+
   add_executable(tf_wb_conv ${CMAKE_CURRENT_SOURCE_DIR}/src/tf_wb_conv.cpp)
   target_link_libraries(tf_wb_conv glog::glog)
   install(TARGETS tf_wb_conv DESTINATION bin)
 
 endif()
-

@@ -380,13 +380,13 @@ Do not put the files in any other path of the docker system. They will be lost a
 ```
 $conda activate vitis-ai-caffe
 ```
-3. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
+3. To modify the library source code, view and modify them under `/workspace/Vitis-AI-Library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh.
 	Execute the following command to build the libraries all at once.
 4. To build the `DPUCADX8G` supported examples in the AI Library, run as below.
 ```
-$cd /workspace/Vitis-AI/Vitis-AI-Library/
+$cd /workspace/Vitis-AI-Library/
 $./cmake.sh --clean --type=release --cmake-options=-DCMAKE_PREFIX_PATH=$CONDA_PREFIX --cmake-options=-DENABLE_DPUCADX8G_RUNNER=ON
 ```
 This will generate AI libraries and executable files to under `build_dir_default`.
@@ -394,7 +394,7 @@ This will generate AI libraries and executable files to under `build_dir_default
 ### Running Vitis AI Library Examples for U200/U250
 1. Download and untar the model directory [vai_lib_u2xx_models.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vai_lib_u200_u250_models.tar.gz) package. 
 ```
-$cd /workspace/Vitis-AI/Vitis-AI-Library/
+$cd /workspace/Vitis-AI-Library/
 $wget -O vai_lib_u200_u250_models.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vai_lib_u200_u250_models.tar.gz
 $sudo tar -xvf vai_lib_u200_u250_models.tar.gz --absolute-names
 ```
@@ -403,6 +403,7 @@ Note: All models will download to `/usr/share/vitis_ai_library/models` directory
 3. Setup the environment.
 ```
 $source /workspace/alveo/overlaybins/setup.sh
+$export LD_LIBRARY_PATH=$HOME/.local/${taget_info}/lib/:$LD_LIBRARY_PATH
 ```
 4. Run the classification image test example.
 ```

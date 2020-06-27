@@ -45,6 +45,10 @@ int main(int argc, char *argv[]) {
   cerr << "The image count = " << count << endl;
   for (int i = 0; i < count; i++) {
     auto image = imread(files[i]);
+    if (image.empty()) {
+      cerr << "cannot load " << files[i] << endl;
+      abort();
+    }
     auto res = det->run(image);
     for (size_t j = 0; j < res.scores.size(); ++j) {
       int index = res.scores[j].index;

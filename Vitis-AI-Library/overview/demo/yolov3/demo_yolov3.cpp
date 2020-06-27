@@ -65,44 +65,36 @@ int main(int argc, char* argv[]) {
   // A kernel name, it should be samed as the dnnc result. e.g.
   // /usr/share/vitis_ai_library/models/yolov3_voc/yolov3_voc.elf
   auto kernel_name = argv[1];
-  // A image file.
-  auto image_file_name = argv[2];
-  // Create a dpu task object.
-  auto task = vitis::ai::DpuTask::create(kernel_name);
 
-  /* Pre-process Part */
   // Read image from a path.
-  auto input_image = cv::imread(image_file_name);
-  if (input_image.empty()) {
-    cerr << "cannot load " << image_file_name << endl;
+  vector<Mat> imgs;
+  vector<string> imgs_names;
+  for (int i = 2; i < argc; i++) {
+    // image file names.
+    auto img = cv::imread(argv[i]);
+    if (img.empty()) {
+      std::cout << "Cannot load " << argv[i] << std::endl;
+      continue;
+    }
+    imgs.push_back(img);
+    imgs_names.push_back(argv[i]);
+  }
+  if (imgs.empty()) {
+    std::cerr << "No image load success!" << std::endl;
     abort();
   }
-  // Resize it if its size is not match.
-  cv::Mat image;
+  // Create a dpu task object.
+  auto task = vitis::ai::DpuTask::create(kernel_name);
+  auto batch = task->get_input_batch(0,0);
+  // Set the mean values and scale values.
+  task->setMeanScaleBGR({0.0f, 0.0f, 0.0f},
+                        {0.00390625f, 0.00390625f, 0.00390625f});
   auto input_tensor = task->getInputTensor(0u);
   CHECK_EQ((int)input_tensor.size(), 1)
       << " the dpu model must have only one input";
   auto width = input_tensor[0].width;
   auto height = input_tensor[0].height;
   auto size = cv::Size(width, height);
-  if (size != input_image.size()) {
-    cv::resize(input_image, image, size);
-  } else {
-    image = input_image;
-  }
-  // Set the mean values and scale values.
-  task->setMeanScaleBGR({0.0f, 0.0f, 0.0f},
-                        {0.00390625f, 0.00390625f, 0.00390625f});
-  // Set the input image into dpu.
-  task->setImageRGB(image);
-
-  /* DPU Runtime */
-  // Run the dpu.
-  task->run(0u);
-
-  /* Post-process part */
-  // Get output.
-  auto output_tensor = task->getOutputTensor(0u);
   // Create a config and set the correlating data to control post-process.
   vitis::ai::proto::DpuModelParam config;
   // Fill all the parameters.
@@ -112,31 +104,69 @@ int main(int argc, char* argv[]) {
     cerr << "Set parameters failed!" << endl;
     abort();
   }
-  // Execute the yolov3 post-processing.
-  auto results = vitis::ai::yolov3_post_process(
-      input_tensor, output_tensor, config, input_image.cols, input_image.rows);
 
-  /* Print the results */
-  // Convert coordinate and draw boxes at origin image.
-  for (auto& box : results.bboxes) {
-    int label = box.label;
-    float xmin = box.x * input_image.cols + 1;
-    float ymin = box.y * input_image.rows + 1;
-    float xmax = xmin + box.width * input_image.cols;
-    float ymax = ymin + box.height * input_image.rows;
-    if (xmin < 0.) xmin = 1.;
-    if (ymin < 0.) ymin = 1.;
-    if (xmax > input_image.cols) xmax = input_image.cols;
-    if (ymax > input_image.rows) ymax = input_image.rows;
-    float confidence = box.score;
+  vector<Mat> inputs;
+  vector<int> input_cols,input_rows;
+  for (long unsigned int i = 0, j = -1; i < imgs.size(); i++) {
 
-    cout << "RESULT: " << label << "\t" << xmin << "\t" << ymin << "\t" << xmax
-         << "\t" << ymax << "\t" << confidence << "\n";
-    rectangle(input_image, Point(xmin, ymin), Point(xmax, ymax),
-              Scalar(0, 255, 0), 1, 1, 0);
+    /* Pre-process Part */
+    // Resize it if its size is not match.
+    cv::Mat image;
+    input_cols.push_back(imgs[i].cols);
+    input_rows.push_back(imgs[i].rows);
+    if (size != imgs[i].size()) {
+      cv::resize(imgs[i], image, size);
+    } else {
+      image = imgs[i];
+    }
+    inputs.push_back(image);
+    j++;
+    if (j < batch - 1 && i < imgs.size() - 1) {
+      continue;
+    }
+
+    // Set the input images into dpu.
+    task->setImageRGB(inputs);
+
+    /* DPU Runtime */
+    // Run the dpu.
+    task->run(0u);
+
+    /* Post-process part */
+    // Get output.
+    auto output_tensor = task->getOutputTensor(0u);
+    // Execute the yolov3 post-processing.
+    auto results = vitis::ai::yolov3_post_process(
+      input_tensor, output_tensor, config, input_cols, input_rows);
+
+    /* Print the results */
+    // Convert coordinate and draw boxes at origin image.
+    for (int k = 0; k < static_cast<int>(inputs.size()); k++) {
+      cout << "batch_index " << k << " "                    //
+        << "image_name " << imgs_names[i - j + k] << endl;
+      for (auto& box : results[k].bboxes) {
+        int label = box.label;
+        float xmin = box.x * input_cols[k] + 1;
+        float ymin = box.y * input_rows[k] + 1;
+        float xmax = xmin + box.width * input_cols[k];
+        float ymax = ymin + box.height * input_rows[k];
+        if (xmin < 0.) xmin = 1.;
+        if (ymin < 0.) ymin = 1.;
+        if (xmax > input_cols[k]) xmax = input_cols[k];
+        if (ymax > input_rows[k]) ymax = input_rows[k];
+        float confidence = box.score;
+
+        cout << "RESULT: " << label << "\t" << xmin << "\t" << ymin << "\t" << xmax
+          << "\t" << ymax << "\t" << confidence << "\n";
+        rectangle(imgs[i - j + k], Point(xmin, ymin), Point(xmax, ymax),
+                  Scalar(0, 255, 0), 1, 1, 0);
+      }
+      imwrite(imgs_names[i - j + k] + "_result.jpg", imgs[i - j + k]);
+    }
+    inputs.clear();
+    input_cols.clear();
+    input_rows.clear();
+    j = -1;
   }
-  imshow("", input_image);
-  waitKey(0);
-
   return 0;
 }
