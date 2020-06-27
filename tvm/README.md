@@ -17,7 +17,7 @@ Apache TVM with Vitis-AI is provided through a docker image. The provided script
 The following command will create the TVM with Vitis-AI image
 
 ```sh
-$ bash ./build.sh ci_vai_11 bash
+$ bash ./build.sh ci_vai_1x bash
 ```
 This downloads Apache TVM, installs the necessary dependencies, and builds with Vitis-AI support.
 
@@ -25,7 +25,7 @@ This downloads Apache TVM, installs the necessary dependencies, and builds with 
 
 Once finished builiding the image, run the docker image using the run script.
 ```sh
-$ bash ./bash.sh tvm.ci_vai_11
+$ bash ./bash.sh tvm.ci_vai_1x
 # ...
 # Now inside docker...
 $ conda activate vitis-ai-tensorflow
@@ -38,11 +38,11 @@ $ import tvm
 $ import pyxir
 ```
 
-Examples of Apache TVM usage for different frameworks is provided in the tutorials/frontend directories.
+While inside the docker, example of Apache TVM usage for different frameworks is provided in the "/opt/tvm-vai/tvm/tutorials/frontend" directories. Similarly, Vitis-AI examples using TVM are provided in the "/opt/tvm-vai/tvm/tutorials/accelerators" directory.
 
-Vitis-AI examples using TVM are provided in the tutorials/accelerators directory.
+For more information on how to compile and run the Vitis-AI tutorials, refer to the "docs" directory in this folder.
 
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job.)
 
    [Apache TVM]: https://tvm.apache.org/
    [Xilinx Vitis AI]: https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html
