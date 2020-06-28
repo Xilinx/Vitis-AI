@@ -137,7 +137,7 @@ The DPUCAHX8H core clock is generated from an internal DCM module driven by the 
 You could use XRT xbutil tools to scale down the running frequency of the DPUCAHX8H overlay before you run the VART/Library examples. Before the frequency scaling-down operation, the overlays should have been programmed into the FPGA first, please refer to the example commands below to program the FPGA and scale down the frequency. These commands will set the Clock_1 to 80MHz and could be run at host or in the docker.
 
 ~~~
-/opt/xilint/xrt/bin/xbutil program -p /usr/lib/dpu.xclbin
+/opt/xilinx/xrt/bin/xbutil program -p /usr/lib/dpu.xclbin
 /opt/xilinx/xrt/bin/xbutil clock -d0 -g 80
 ~~~
 d0 is the Alveo card device number. For more information about **xbutil** tool, please use refer to XRT documents.
