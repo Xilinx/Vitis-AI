@@ -21,6 +21,7 @@ Vitis AI is composed of the following key components:
 * **AI Profiler** - Perform an in-depth analysis of the efficiency and utilization of AI inference implementation.
 * **AI Library** - Offers high-level yet optimized C++ APIs for AI applications from edge to cloud.
 * **DPU** - Efficient and scalable IP cores can be customized to meet the needs for many different applications
+  * For more details on the different DPUs available, please [click here](doc/dpu_naming.md)
 
 
 **Learn More:** [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)  
