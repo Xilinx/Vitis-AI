@@ -1,6 +1,6 @@
 ## DPU Naming
 
-Vitis AI 1.2 introduces a new DPU naming naming scheme. This new naming scheme will help users select the right DPU for their application or platform, by highlighting each DPUs characteristics.
+Vitis AI 1.2 introduces a new DPU naming scheme. This new naming scheme will help users select the right DPU for their application or platform, by highlighting each DPUs characteristics.
 
 The old DPUv1/v2/v3 naming will be deprecated.  
 
