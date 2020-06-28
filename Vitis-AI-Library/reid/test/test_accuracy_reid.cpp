@@ -27,19 +27,17 @@
 using namespace std;
 using namespace cv;
 
-double dismat[3368][19732];
-
 double cosine_distance(Mat feat1, Mat feat2){
     return 1 - feat1.dot(feat2);
 }
 
 int main(int argc, char *argv[]) {
-  auto det = vitis::ai::Reid::create("reid");
+  auto det = vitis::ai::Reid::create(argv[1]);
   size_t batch = det->get_input_batch();
   vector<Mat> featx;
   vector<Mat> featy;
-  ifstream imagex(argv[1]);
-  ifstream imagey(argv[2]);
+  ifstream imagex(argv[2]);
+  ifstream imagey(argv[3]);
   vector<Mat> images;
   string line;
   while(getline(imagex, line)) {
@@ -85,9 +83,13 @@ int main(int argc, char *argv[]) {
     inputs.clear();
   }
 
-  int x = featx.size();                                                                            
-  int y = featy.size();                                                                            
-  FILE* out_fs = fopen(argv[3], "w");
+  const int x = featx.size();
+  const int y = featy.size();
+  FILE* out_fs = fopen(argv[4], "w");
+  double **dismat = new double*[y];
+  for(int i = 0; i < x; ++i){
+    dismat[i] = new double[y];
+  }
   for(int i = 0; i < x; ++i){                                                                      
       for(int j = 0; j < y; ++j){                                                                  
           dismat[i][j] = cosine_distance(featx[i], featy[j]);                                      
@@ -95,5 +97,6 @@ int main(int argc, char *argv[]) {
       }                                                                                            
       fprintf(out_fs, "\n");                                                          
   }     
+  fclose(out_fs);
   return 0;
 }

@@ -16,23 +16,16 @@
 
 cd /workspace
 
-#Download the vitis_ai_runtime_library package and install it.
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.1.tar.gz -O vitis-ai-runtime-1.2.1.tar.gz
-tar -xzvf vitis-ai-runtime-1.2.1.tar.gz
-cd vitis-ai-runtime-1.2.1/X86_64/ubuntu
-sudo dpkg -i libvitis_ai_library_1.2.0-r1_amd64.deb
-
-#Download the Model packet and install it.
+#Download the Model packetes and install them.
 wget https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50_1.2.0_amd64.deb -O xilinx_model_zoo_u50_1.2.0_amd64.deb
 sudo dpkg -i xilinx_model_zoo_u50_1.2.0_amd64.deb
+wget https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_u50_pytorch_1.2.0_amd64.deb -O xilinx_model_zoo_u50_pytorch_1.2.0_amd64.deb
+sudo dpkg -i xilinx_model_zoo_u50_pytorch_1.2.0_amd64.deb
 
 #Download the xclbin package and install it.
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.2.0.tar.gz -O alveo_xclbin-1.2.0.tar.gz
 tar -xzvf alveo_xclbin-1.2.0.tar.gz
 cd alveo_xclbin-1.2.0/U50/6E300M
 sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
-
-#Enable environment variable and export the library path.
-export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/
 
 echo "Finish setting up the host for U50."

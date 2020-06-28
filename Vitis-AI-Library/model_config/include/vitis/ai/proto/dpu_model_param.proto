@@ -56,6 +56,12 @@ message RefineDetParam {
   repeated string layer_name = 7;
 }
 
+message ReidParam {
+  repeated float bn_means = 1;
+  repeated float bn_weights = 2;
+  repeated float bn_vars = 3;
+}
+
 message OpenPoseParam {
   repeated string layer_name = 1;
 }
@@ -208,6 +214,12 @@ message DpuModelParam {
     PLATEDETECT = 20;
     PLATENUM = 21;
     PLATERECOG = 22;
+    FACEFEATURE = 23;
+    SEGMENTATION8UC1 = 24;
+    SEGMENTATION8UC3 = 25;
+    MEDICALSEGMENTATION = 26;
+    MULTITASK8UC1 = 27;
+    MULTITASK8UC3 = 28;
   }
   optional ModelType model_type = 3;
   optional RefineDetParam refine_det_param = 4;
@@ -228,6 +240,7 @@ message DpuModelParam {
 
   optional TfssdParam tfssd_param = 18;
   optional OpenPoseParam open_pose_param = 19;
+  optional ReidParam reid_param = 20;
 }
 
 message DpuModelParamList {
@@ -336,6 +349,37 @@ message PoseDetectResult {
   optional Point neck = 14;
 }
 
+message FaceFeatureFloatResult {
+  repeated float feature = 1;
+}
+
+message SegmetationResult {
+  repeated uint32 data = 1;
+}
+
+message MedicalSegmetationResult {
+  repeated SegmetationResult segmentation = 1;
+}
+
+message VehicleResult {
+  optional int32 label = 1;
+  optional float score = 2;
+  optional float x = 3;
+  optional float y = 4;
+  optional float width = 5;
+  optional float height = 6;
+  optional float angle = 7;
+}
+
+message MultiTaskResult {
+  optional SegmetationResult segmentation = 1;
+  repeated VehicleResult vehicle_reuslt = 2;
+}
+
+message ReidResult {
+  repeated uint32 data = 1;
+}
+
 message DpuModelResult {
   oneof dpu_model_result {
     LandmarkResult landmark_result = 1;
@@ -349,5 +393,10 @@ message DpuModelResult {
     PlateNumResult plate_num_result = 9;
     PlateRecogResult plate_recog_result = 10;
     PoseDetectResult pose_detect_result = 11;
+    FaceFeatureFloatResult face_feature_float_result = 12;
+    SegmetationResult segmentation_result = 13;
+    MedicalSegmetationResult medical_segmentation_result = 14;
+    MultiTaskResult multitask_result = 15;
+    ReidResult reid_result = 16;
   }
 }
