@@ -83,6 +83,24 @@ cp -R /workspace/alveo/examples/caffe/models/maps_BtoA ./quantize_results
 
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'maps_BtoA/quantize_results' sub-folder.
 
+> **Note:** There is an updated quantize_info file. It will provide a better quality of output. 
+```
+cd /workspace/alveo/examples/caffe/pix2pix/maps_BtoA
+cp quantize_info.txt ./quantize_results/
+```
+
+
+## Run Inference model on CPU
+
+To run the inference model on cpu for translating map to aerial photo, run the following commands.
+```
+cd /workspace/alveo/examples/caffe/pix2pix/maps_BtoA
+python maps_BtoA_cpu.py --image <image-file>
+For example, 
+$ python maps_BtoA_cpu.py --image ./maps/val/label/1.jpg
+```
+The generated semantic label image will be stored in 'test_output' sub-folder.
+
 
 
 ## Compilation and Partitioning
@@ -100,15 +118,7 @@ All compiler files will be generated in 'work' sub folder.
 xfdnn_deploy.prototxt (used to execute Caffe model on FPGA) will be generated at root folder.
 
 
-## Run Inference model on CPU
 
-To run the inference model on cpu for translating map to aerial photo, run the following commands.
-```
-cd /workspace/alveo/examples/caffe/pix2pix/maps_BtoA
-python maps_BtoA_cpu.py --image <image-file>
-For example, 
-$ python maps_BtoA_cpu.py --image ./maps/val/label/1.jpg
-```
 
 
 ## Run Inference model on FPGA 
@@ -121,3 +131,4 @@ python maps_BtoA_fpga.py --image <image-file>
 For example, 
 $ python maps_BtoA_fpga.py --image ./maps/val/label/1.jpg
 ```
+The generated semantic label image will be stored in 'test_output' sub-folder.
