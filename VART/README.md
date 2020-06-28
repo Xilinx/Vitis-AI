@@ -114,9 +114,9 @@ $. ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.1-r1.2.x.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.1-r1.2.0.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2020.1-r1.2.2.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.1-r1.2.2.tar.gz) and install it to the petalinux system.
 ```
-$tar -xzvf vitis_ai_2020.1-r1.2.x.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+$tar -xzvf vitis_ai_2020.1-r1.2.2.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
 5. Cross compile the sample, take resnet50 as an example.
@@ -151,7 +151,7 @@ steps.**
 2. (Optical) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
 	
 	The script runs automatically after the board boots up with the official image.
-	But you can also download the `dpu_sw_optimize.tgz` from [here](http://xcdl190260/zhengjia/xdpu/blob/vitis20.1/app/dpu_sw_optimize.tgz).
+	But you can also download the `dpu_sw_optimize.tgz` from [here](../DPU-TRD/app/dpu_sw_optimize.tgz).
 	```
 	#cd ~/dpu_sw_optimize/zynqmp/
 	#./zynqmp_dpu_optimize.sh
@@ -178,7 +178,7 @@ steps.**
 	  
 ### Running Vitis AI Examples
 
-1. Download the [vitis_ai_runtime_r1.2.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.2_image_video.tar.gz) from host to the target using scp with the following command.
+1. Download the [vitis_ai_runtime_r1.2.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.2.4_image_video.tar.gz) from host to the target using scp with the following command.
 	```
 	[Host]$scp vitis_ai_runtime_r1.2.x_image_video.tar.gz root@[IP_OF_BOARD]:~/
 	```
@@ -232,7 +232,7 @@ Thus, `VART` is located in the path of `/workspace/VART/` in the docker system.
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
-1. Download the [vitis_ai_runtime_r1.2.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.2_image_video.tar.gz) package and unzip it.
+1. Download the [vitis_ai_runtime_r1.2.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.2.4_image_video.tar.gz) package and unzip it.
 	```
 	$cd /workspace
 	$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.2_image_video.tar.gz -O vitis_ai_runtime_r1.2_image_video.tar.gz
