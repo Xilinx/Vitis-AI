@@ -124,9 +124,9 @@ $source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.1-r1.2.2.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.1-r1.2.2.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2020.1-r1.2.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.1-r1.2.0.tar.gz) and install it to the petalinux system.
 ```
-$tar -xzvf vitis_ai_2020.1-r1.2.2.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+$tar -xzvf vitis_ai_2020.1-r1.2.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
 5. Cross compile the demo in the AI Library, take `yolov3` as example.
@@ -160,9 +160,9 @@ steps.**
 1. Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
-		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.2.2.img.gz)  
+		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.2.0.img.gz)  
 	
-		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.1-v1.2.2.img.gz)  
+		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.1-v1.2.0.img.gz)  
 	
       	Note: The version of the board image should be 2020.1 or above.
 	* Use Etcher software to burn the image file onto the SD card.
@@ -171,7 +171,7 @@ steps.**
 	* Set up the IP information of the board using the serial port.
 	You can now operate on the board using SSH.
 
-2. (Optical) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
+2. (Optional) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
 	
 	The script runs automatically by default after the board boots up with the official image.
 	But you can also download the `dpu_sw_optimize.tgz` from [here](../DPU-TRD/app/dpu_sw_optimize.tgz).
@@ -180,7 +180,7 @@ steps.**
 	#./zynqmp_dpu_optimize.sh
 	```	
 
-3. (Optical) How to update Vitis AI Model and install it separately. 	
+3. (Optional) How to update Vitis AI Model and install it separately. 	
 
 	If you want to update the Vitis AI Model or install it to your custom board image, follow these steps.
 	* Download [ZCU102 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=xilinx_model_zoo_zcu102-1.2.0-1.aarch64.rpm)  
@@ -197,15 +197,15 @@ steps.**
 	  #rpm -ivh xilinx_model_zoo_zcu102-1.2.0-1.aarch64.rpm
 	```
 
-4. (Optical) How to update Vitis AI Runtime and install them separately. 
+4. (Optional) How to update Vitis AI Runtime and install them separately. 
 
 	If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
-	* Download the [Vitis AI Runtime 1.2.x](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.5.tar.gz).  
+	* Download the [Vitis AI Runtime 1.2.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.0.tar.gz).  
 	
 	* Untar the runtime packet and copy the following folder to the board using scp.
 	```
-	$tar -xzvf vitis-ai-runtime-1.2.x.tar.gz
-	$scp -r vitis-ai-runtime-1.2.x/aarch64/centos root@IP_OF_BOARD:~/
+	$tar -xzvf vitis-ai-runtime-1.2.0.tar.gz
+	$scp -r vitis-ai-runtime-1.2.0/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
 	* Install the Vitis AI Runtime. Execute the following command in order.
@@ -220,8 +220,8 @@ steps.**
 	 	  
 ### Running Vitis AI Library Examples
 
-1. Download the [vitis_ai_library_r1.2.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.3_images.tar.gz) and 
-the [vitis_ai_library_r1.2.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz). Copy them from host to the target using scp with the following command.
+1. Download the [vitis_ai_library_r1.2.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.0_images.tar.gz) and 
+the [vitis_ai_library_r1.2.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.0_video.tar.gz). Copy them from host to the target using scp with the following command.
 ```
 [Host]$scp vitis_ai_library_r1.2.x_images.tar.gz root@IP_OF_BOARD:~/
 [Host]$scp vitis_ai_library_r1.2.x_video.tar.gz root@IP_OF_BOARD:~/
@@ -270,7 +270,7 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Alveo
 ### Setting Up the Host for U50/U50lv/U280
 
-1. Click [DPUCAHX8H for Alveo Accelerator Card with HBM](../alveo-hbm#dpuv3e-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
+1. Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../alveo-hbm#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
 
 2. Select the model for your platform, download the model packet and install it. Take `U50` as an example. 
 ```
@@ -328,13 +328,13 @@ Thus, `Vitis-AI-Libray` is located in the path of `/workspace/Vitis_AI_Library/`
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
-1. Download the [vitis_ai_library_r1.2.3_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.3_images.tar.gz) and [vitis_ai_library_r1.2_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz) packages and untar them.
+1. Download the [vitis_ai_library_r1.2.0_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.0_images.tar.gz) and [vitis_ai_library_r1.2.0_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.0_video.tar.gz) packages and untar them.
 ```
 $cd /workspace
-$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.3_images.tar.gz -O vitis_ai_library_r1.2.3_images.tar.gz
-$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2_video.tar.gz -O vitis_ai_library_r1.2_video.tar.gz
-$tar -xzvf vitis_ai_library_r1.2.3_images.tar.gz -C Vitis-AI-Library/overview
-$tar -xzvf vitis_ai_library_r1.2_video.tar.gz -C Vitis-AI-Library/overview
+$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.0_images.tar.gz -O vitis_ai_library_r1.2.0_images.tar.gz
+$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.2.0_video.tar.gz -O vitis_ai_library_r1.2.0_video.tar.gz
+$tar -xzvf vitis_ai_library_r1.2.0_images.tar.gz -C Vitis-AI-Library/overview
+$tar -xzvf vitis_ai_library_r1.2.0_video.tar.gz -C Vitis-AI-Library/overview
 ```
 2. Enter the directory of sample and then compile it. Take `facedetect` as an example.
 ```
