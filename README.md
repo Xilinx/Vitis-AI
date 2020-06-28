@@ -55,9 +55,36 @@ Two options are available for installing the containers with the Vitis AI tools 
 
     cd Vitis-AI
     ```
+ 
+ - Prepare for the Vitis AI docker image.
+
+    There are two types of docker image provided - CPU docker and GPU docker. If you have a compatible nVidia graphics card with CUDA support, you could use GPU docker; otherwise you could use DPU docker.
+
+   1) CPU Docker
+
+   Use below command to get the pre-built CPU docker image from docker hub:
+   ```
+   docker pull xilinx/vitis-ai-cpu:latest  
+   ```
+   or use below commands to build the CPU docker image locally:
+   ```
+   cd ./docker
+   ./docker_build_cpu.sh
+   ```
+
+   2) GPU Docker
+
+   You have to build the GPU docker image locally with below commands:
+   ```
+   cd ./docker
+   ./docker_build_gpu.sh
+   ```
+
  - [Run Docker Container](doc/install_docker/load_run_docker.md)  
 
-   1) Run the CPU image from docker hub
+   Please use the file **./docker_run.sh** as a reference for the docker launching scripts.
+   
+   To run the CPU docker, use:
    ```
    ./docker_run.sh xilinx/vitis-ai
    ```
