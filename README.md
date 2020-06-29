@@ -135,11 +135,12 @@ Two options are available for installing the containers with the Vitis AI tools 
      bash
    ```
   
-    Before run this script, please make sure either you have local X11 server running if you are using Windows based ssh terminal to connect to remote server, or you have run **xhost +** command at a command terminal if you are using Linux with Desktop. Also if you are using ssh to connect to the remote server, remember to enable *X11 Forwarding* option either with Windows ssh tools setting or with *-X* options in ssh command line.
+  Before run this script, please make sure either you have local X11 server running if you are using Windows based ssh terminal to connect to remote server, or you have run **xhost +** command at a command terminal if you are using Linux with Desktop. Also if you are using ssh to connect to the remote server, remember to enable *X11 Forwarding* option either with Windows ssh tools setting or with *-X* options in ssh command line.
 
- ### Get started with examples
-    - [VART samples](VART/README.md)
-    - [Alveo](alveo/README.md)
+ ### Get Started with Examples
+    - [VART](VART/README.md)
+    - [Vitis AI Library](Vitis-AI-Library/README.md)
+    - [Alveo U200/U250](alveo/README.md)
     - [Vitis AI DNNDK samples](mpsoc/README.md)
 
 
