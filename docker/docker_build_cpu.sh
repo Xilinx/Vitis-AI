@@ -55,4 +55,4 @@ confirm() {
 
 confirm
 
-docker build --network=host --build-arg VERSION=${VERSION} --build-arg DATE="$(date)" -f ${DOCKERFILE} -t $IMAGE_TAG ./
+docker build --network=host --build-arg VERSION=${VERSION} --build-arg CACHEBUST="$(date +%s)" --build-arg DATE="$(date)" -f ${DOCKERFILE} -t $IMAGE_TAG ./

@@ -6,16 +6,16 @@ read -n 1 -s -r -p "Press any key to continue..." key
 sed -n '5, 15p' ./docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '15, 24p' ./docker/PROMPT.txt
+sed -n '15, 28p' ./docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '24, 53p' ./docker/PROMPT.txt
+sed -n '28, 61p' ./docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '53, 224p' ./docker/PROMPT.txt
+sed -n '62, 224p' ./docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '224, 231p' ./docker/PROMPT.txt
+sed -n '224, 308p' ./docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
 
