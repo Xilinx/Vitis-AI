@@ -5,7 +5,7 @@ This code employs a resnet-18 based model to generate feature maps of person ima
 
 ### Data Preparation
 
-Download [market1501](http://liangzheng.org/Project/project_reid.html) dataset. Extract the files to `./data/market1501`. The data structure should look like:
+Download market1501 dataset. Extract the files to `./data/market1501`. The data structure should look like:
 ```sh
 data/
     market1501/
