@@ -60,7 +60,7 @@ Two options are available for installing the containers with the Vitis AI tools 
 
     There are two types of docker image provided - CPU docker and GPU docker. If you have a compatible nVidia graphics card with CUDA support, you could use GPU docker; otherwise you could use DPU docker.
 
-   1) CPU Docker
+   **CPU Docker**
 
    Use below command to get the pre-built CPU docker image from docker hub:
    ```
@@ -72,7 +72,7 @@ Two options are available for installing the containers with the Vitis AI tools 
    ./docker_build_cpu.sh
    ```
 
-   2) GPU Docker
+   **GPU Docker**
 
    You have to build the GPU docker image locally with below commands:
    ```
@@ -82,34 +82,61 @@ Two options are available for installing the containers with the Vitis AI tools 
 
  - [Run Docker Container](doc/install_docker/load_run_docker.md)  
 
-   Please use the file **./docker_run.sh** as a reference for the docker launching scripts.
+   Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
    
-   To run the CPU docker, use:
+   To run the CPU docker, use command:
    ```
-   ./docker_run.sh xilinx/vitis-ai
-   ```
-   or
-
-   2) build the CPU image locally and run it
-   ```
-   cd docker
-   ./docker_build_cpu.sh
-
-   # After build finished
-   cd ..
    ./docker_run.sh xilinx/vitis-ai-cpu:latest
    ```
-   or
-
-   3) build the GPU image locally and run it
+   To run the GPU docker, use command:
    ```
-   cd docker
-   ./docker_build_gpu.sh
-
-   # After build finished
-   cd ..
    ./docker_run.sh xilinx/vitis-ai-gpu:latest
    ```
+   
+   Some examples in VART and Vitis-AI-Library for Alveo card need X11 support to display images, this requires you have X11 server support at your terminal and you need to make some modifications to **./docker_run.sh** file to enable the image display. For example, you could use following script to start the Vitis-AI CPU docker for Alveo with X11 support.
+   ```
+   #!/bin/bash
+   HERE=$(pwd) # Absolute path of current directory
+   user=`whoami`
+   uid=`id -u`
+   gid=`id -g`
+
+   xclmgmt_driver="$(find /dev -name xclmgmt\*)"
+   docker_devices=""
+   for i in ${xclmgmt_driver} ;
+   do
+     docker_devices+="--device=$i "
+   done
+
+   render_driver="$(find /dev/dri -name renderD\*)"
+   for i in ${render_driver} ;
+   do
+     docker_devices+="--device=$i "
+   done
+
+   rm -Rf /tmp/.Xauthority
+   cp $HOME/.Xauthority /tmp/
+   chmod -R a+rw /tmp/.Xauthority
+
+   docker run \
+     $docker_devices \
+     -v /opt/xilinx/dsa:/opt/xilinx/dsa \
+     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
+     -e USER=$user -e UID=$uid -e GID=$gid \
+     -v $HERE:/workspace \
+     -v /tmp/.X11-unix:/tmp/.X11-unix \
+     -v /tmp/.Xauthority:/tmp/.Xauthority \
+     -e DISPLAY=$DISPLAY \
+     -w /workspace \
+     -it \
+     --rm \
+     --network=host \
+     xilinx/vitis-ai-cpu:latest \
+     bash
+   ```
+  
+    Before run this script, please make sure either you have local X11 server running if you are using Windows based ssh terminal to connect to remote server, or you have run **xhost +** command at a command terminal if you are using Linux with Desktop. Also if you are using ssh to connect to the remote server, remember to enable *X11 Forwarding* option either with Windows ssh tools setting or with *-X* options in ssh command line.
+
  - Get started with examples
     - [VART samples](VART/README.md)
     - [Alveo](alveo/README.md)
