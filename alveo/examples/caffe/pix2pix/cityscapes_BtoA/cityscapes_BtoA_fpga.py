@@ -33,6 +33,14 @@ import skimage.io as io
 
 #%% define functions
 
+# Need to create derived class to clean up properly
+class Net(caffe.Net):
+  def __del__(self):
+    for layer in self.layer_dict:
+      if hasattr(self.layer_dict[layer],"fpgaRT"):
+        del self.layer_dict[layer].fpgaRT
+        
+        
 def norm_image(IMG):
     # output scale: [0,1]
     output = (IMG - np.min(IMG))/(np.max(IMG)-np.min(IMG)) 
@@ -59,7 +67,7 @@ if __name__ == "__main__":
     # model configuration
     model_def = 'xfdnn_deploy.prototxt'
     model_weights = './quantize_results/deploy.caffemodel'
-    net = caffe.Net(model_def, model_weights, caffe.TEST) 
+    net = Net(model_def, model_weights, caffe.TEST) 
     input_shape = (256, 256)
 
     image_path = args["image"]
@@ -89,5 +97,7 @@ if __name__ == "__main__":
     name, ext = os.path.splitext(image_name)
     out_name = name + '_fpga.jpg'
     out_path = os.path.join(args['output_path'], out_name)
-    io.imsave(out_path, fake_B1)       
+    io.imsave(out_path, fake_B1)
+    # delete the net object
+    del net
     print('[INFO] output file is saved in ' + args["output_path"])
