@@ -42,6 +42,7 @@ using namespace std::chrono;
 int idxInputImage = 0;  // frame index of input video
 int idxShowImage = 0;   // next frame index to be displayed
 bool bReading = true;   // flag of reding input frame
+bool bExiting = false;
 chrono::system_clock::time_point start_time;
 
 typedef pair<int, Mat> imagePair;
@@ -140,8 +141,7 @@ void readFrame(const char* fileName) {
 
     video.release();
   }
-
-  exit(0);
+  bExiting = true;
 }
 
 /**
@@ -155,6 +155,7 @@ void displayFrame() {
   Mat frame;
 
   while (true) {
+    if(bExiting) break;
     mtxQueueShow.lock();
 
     if (queueShow.empty()) {
@@ -164,6 +165,10 @@ void displayFrame() {
       auto show_time = chrono::system_clock::now();
       stringstream buffer;
       frame = queueShow.top().second;
+      if(frame.rows <=0 || frame.cols <=0){
+           mtxQueueShow.unlock();
+           continue;
+      }
       auto dura = (duration_cast<microseconds>(show_time - start_time)).count();
       buffer << fixed << setprecision(1)
              << (float)queueShow.top().first / (dura / 1000000.f);
@@ -293,6 +298,7 @@ void runYOLO(vart::Runner* runner) {
     mtxQueueInput.lock();
     if (queueInput.empty()) {
       mtxQueueInput.unlock();
+      if(bExiting) break;
       if (bReading) {
         continue;
       } else {
@@ -353,7 +359,8 @@ void runYOLO(vart::Runner* runner) {
  */
 int main(const int argc, const char** argv) {
   if (argc != 3) {
-    cout << "Usage of ADAS detection: ./adas video-file path(for json file)"
+    cout << "Usage of ADAS detection: ./adas_detection [video_file] "
+            "[model_file] "
          << endl;
     return -1;
   }
