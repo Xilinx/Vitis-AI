@@ -230,7 +230,7 @@ If the prebuilt design is wanted, please use the path for **--get-hw-description
  
 #### 5.2.4 Run Resnet50 Example 
 
-The TRD project has generated the matching model file in $TRD_HOME/app path as the default settings. If the user change the DPU settings. The model need to be created again.
+**The TRD project has generated the matching model file in $TRD_HOME/app path as the default settings. If the user change the DPU settings. The model need to be created again.**
 
 This part is about how to run the Resnet50 example from the source code.
 
@@ -322,6 +322,8 @@ The architectures for the DPU IP include B512, B800, B1024, B1152, B1600, B2304,
 ```
 dict set dict_prj dict_param  DPU_ARCH {4096}
 ```
+###### **Note:** It relates to models. If change, must update models.
+
 #### DPU_RAM_USAGE
 
 RAM Usage: The RAM Usage option determines the total amount of on-chip memory used in different DPU architectures, and the setting is for all the DPU cores in the DPU IP. 
@@ -348,6 +350,7 @@ Disable
 ```
 dict set dict_prj dict_param  DPU_CHN_AUG_ENA {0}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_DWCV_ENA
 
@@ -361,6 +364,7 @@ Disable
 ```
 dict set dict_prj dict_param  DPU_DWCV_ENA {0}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_AVG_POOL_ENA
 
@@ -374,6 +378,7 @@ Disable
 ```
 dict set dict_prj dict_param  DPU_AVG_POOL_ENA {0}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_CONV_RELU_TYPE
 
@@ -387,6 +392,7 @@ RELU_LEAKRELU_RELU6
 ```
 dict set dict_prj dict_param  DPU_CONV_RELU_TYPE {3}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_SFM_NUM
 
