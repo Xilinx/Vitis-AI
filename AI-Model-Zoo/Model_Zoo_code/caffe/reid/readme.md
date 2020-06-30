@@ -37,7 +37,7 @@ sh demo.sh
 
 
 ### Evaluation
-We provide the evalution code on dataset market1501. Download the dataset and put it into **data**, the data structure should look like:
+We provide the evalution code on dataset market1501. [Download the dataset](http://www.diaochapai.com/survey/a61751ca-4210-4df1-a5bb-1e7a71b5262b) and put it into **data**, the data structure should look like:
   ```
 data/
     market1501/
