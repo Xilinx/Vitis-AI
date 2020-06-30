@@ -101,6 +101,7 @@ DPU_TRD 
 ├── app       
 │   ├── models
 │   ├── img 
+│   ├── dpu_sw_optimize.tar.gz 
 │   └── resnet50.tar.gz                 # resnet50 application
 └── prj 
     └── Vitis
