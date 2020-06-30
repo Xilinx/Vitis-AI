@@ -20,10 +20,8 @@
 		- [5.3.1 Modify the Frequency](#531-modify-the-frequency)
 		- [5.3.2 Modify the Parameters](#532-modify-the-parameters)
 - [6 Run with Vitis AI Library](#6-run-with-vitis-ai-library)
-	- [6.1 Host Setup](#61-host-setup)
-	- [6.2 Board Setup](#62-board-setup)
-	- [6.3 Run Vitis AI Library Examples](#63-run-vitis-ai-library-examples)
-  
+- [7 Known issues](#7-known-issues)
+
 ## 1 Revision History
 
 This wiki page complements the Vivado 2020.1 version of the DPU TRD.
@@ -232,7 +230,7 @@ If the prebuilt design is wanted, please use the path for **--get-hw-description
  
 #### 5.2.4 Run Resnet50 Example 
 
-The TRD project has generated the matching model file in $TRD_HOME/app path as the default settings. If the user change the DPU settings. The model need to be created again.
+**The TRD project has generated the matching model file in $TRD_HOME/app path as the default settings. If the user change the DPU settings. The model need to be created again.**
 
 This part is about how to run the Resnet50 example from the source code.
 
@@ -324,6 +322,8 @@ The architectures for the DPU IP include B512, B800, B1024, B1152, B1600, B2304,
 ```
 dict set dict_prj dict_param  DPU_ARCH {4096}
 ```
+###### **Note:** It relates to models. If change, must update models.
+
 #### DPU_RAM_USAGE
 
 RAM Usage: The RAM Usage option determines the total amount of on-chip memory used in different DPU architectures, and the setting is for all the DPU cores in the DPU IP. 
@@ -350,6 +350,7 @@ Disable
 ```
 dict set dict_prj dict_param  DPU_CHN_AUG_ENA {0}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_DWCV_ENA
 
@@ -363,6 +364,7 @@ Disable
 ```
 dict set dict_prj dict_param  DPU_DWCV_ENA {0}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_AVG_POOL_ENA
 
@@ -376,6 +378,7 @@ Disable
 ```
 dict set dict_prj dict_param  DPU_AVG_POOL_ENA {0}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_CONV_RELU_TYPE
 
@@ -389,6 +392,7 @@ RELU_LEAKRELU_RELU6
 ```
 dict set dict_prj dict_param  DPU_CONV_RELU_TYPE {3}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_SFM_NUM
 
@@ -429,3 +433,24 @@ dict set dict_prj dict_param  DPU_URAM_PER_DPU {0}
 ## 6 Run with Vitis AI Library
 
 For the instroduction of Vitis AI Library, please refer to **Quick Start For Edge** of this page https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library
+
+## 7 Known issues
+
+1.DDR QOS
+
+When AXI HP0 port connects to DPU and use DisplayPort to display, if the QoS settings are not modified, the DisplayPort transmission may under-run, producing black frames or screen flicker intermittently during DPU running. Apart from QoS settings, increasing the read and write issuing capability (outstanding commands) of DPU connected AXI FIFO interface S_AXI_HPC{0, 1}_FPD or S_AXI_HP{0:3}_FPD or S_AXI_LPD may keep the ports busy with always some requests in the queue, which could improve DPU performance highly. [solution](#solution)
+
+##### Solution
+
+User could execute **zynqmp_dpu_optimize.sh** on target board to address the issue.
+
+Copy **$TRD_HOME/app/dpu_sw_optimize.tar.gz** to target board, after linux boot-up, run:
+
+```shell
+% tar -zxvf dpu_sw_optimize.tar.gz
+
+% ./dpu_sw_optimize/zynqmp/zynqmp_dpu_optimize.sh
+
+(refer to dpu_sw_optimize/zynqmp/README.md get more info)
+
+```
