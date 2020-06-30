@@ -42,7 +42,9 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo ". $VAI_ROOT/conda/etc/profile.d/conda.sh" >> /etc/bash.bashrc
 export PYTHONPATH=$PYTHONPATH:/opt/vitis_ai/compiler/
 
-source /opt/xilinx/xrt/setup.sh
+if [[ -d "/opt/xilinx/xrt" ]]; then
+    source /opt/xilinx/xrt/setup.sh
+fi
 
 getent group "${CI_BUILD_GID}" || addgroup --gid "${CI_BUILD_GID}" "${CI_BUILD_GROUP}"
 getent passwd "${CI_BUILD_UID}" || adduser --gid "${CI_BUILD_GID}" --uid "${CI_BUILD_UID}" \

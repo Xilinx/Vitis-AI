@@ -314,7 +314,7 @@ new file mode 100644
 index 0000000..23bbeee
 --- /dev/null
 +++ python/tvm/contrib/vai/extern_accel.py
-@@ -0,0 +1,128 @@
+@@ -0,0 +1,130 @@
 +# Licensed to the Apache Software Foundation (ASF) under one
 +# or more contributor license agreements.  See the NOTICE file
 +# distributed with this work for additional information
@@ -338,12 +338,14 @@ index 0000000..23bbeee
 +
 +This Vitis-AI acceleration exploits DPU hardware accelerator built for 
 +following evaluation boards:
-+- Ultra96: https://www.xilinx.com/products/boards-and-kits/1-vad4rl.html
-+- ZCU104: https://www.xilinx.com/products/boards-and-kits/zcu104.html
-+- ZCU102: https://www.xilinx.com/products/boards-and-kits/ek-u1-zcu102-g.html
++- Alveo u200: https://www.xilinx.com/products/boards-and-kits/alveo/u200.html
++- Alveo u250: https://www.xilinx.com/products/boards-and-kits/alveo/u250.html
++- Zynq Ultra96: https://www.xilinx.com/products/boards-and-kits/1-vad4rl.html
++- Zynq ZCU104: https://www.xilinx.com/products/boards-and-kits/zcu104.html
++- Zynq ZCU102: https://www.xilinx.com/products/boards-and-kits/ek-u1-zcu102-g.html
 +
-+More information about Xilinx DPU and DNNDK can be found in the user guides:
-+TODO
++More information about Xilinx DPU and Vitis-AI can be found here:
++https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html
 +'''
 +
 +import os
@@ -448,7 +450,7 @@ new file mode 100644
 index 0000000..30027e5
 --- /dev/null
 +++ python/tvm/contrib/vai/relay_transform.py
-@@ -0,0 +1,105 @@
+@@ -0,0 +1,107 @@
 +# Licensed to the Apache Software Foundation (ASF) under one
 +# or more contributor license agreements.  See the NOTICE file
 +# distributed with this work for additional information
@@ -482,6 +484,8 @@ index 0000000..30027e5
 +from pyxir.target_registry import TargetRegistry
 +from pyxir.contrib.dpuv1 import dpuv1
 +from pyxir.contrib.dpuv2 import dpuv2
++import pyxir.contrib.target.DPUCADX8G
++import pyxir.contrib.target.DPUCZDX8G
 +from .xgraph_to_relay_transform import XgraphRelayTransform
 +
 +@tvm.transform.module_pass(opt_level=4)
@@ -1397,7 +1401,7 @@ new file mode 100644
 index 0000000..47d18c4
 --- /dev/null
 +++ tutorials/accelerators/compile/mxnet_resnet_18.py
-@@ -0,0 +1,217 @@
+@@ -0,0 +1,218 @@
 +# Licensed to the Apache Software Foundation (ASF) under one
 +# or more contributor license agreements.  See the NOTICE file
 +# distributed with this work for additional information
@@ -1491,14 +1495,15 @@ index 0000000..47d18c4
 +#                  dict{input_name:input_shape}
 +# postprocessing : 'Softmax' if necessary
 +# target         : hardware accelerator to run the compiled model
-+#                      options: 'dpuv1', 'dpuv2-zcu104', 'dpuv2-zcu102'
++#                      options: 'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
++#                      options(deprecated): 'dpuv1', 'dpuv2-zcu104', 'dpuv2-zcu102'
 +
 +###############################################################################
 +
 +quant_dir      = os.path.join(HOME_DIR,'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min')
 +shape_dict     = {'data': image.shape}
 +postprocessing = ['Softmax']
-+target         = 'dpuv1'
++target         = 'DPUCADX8G'
 +
 +###############################################################################
 +# INPUTS FUNC
@@ -1541,12 +1546,12 @@ index 0000000..47d18c4
 +###############################################################################
 +# PARTITION & BUILD
 +# 
-+# Module pass to partition Relay for Vitis-AI acceleration. Targets can be 
-+# dpuv1, dpuv2-zcu104 and dpuv2-zcu102
++# Module pass to partition Relay for Vitis-AI acceleration. Targets can be
++#  'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
 +# Afterwards build graph, lib and params using standard TVM flow.
 +##############################################################################
 +
-+if target.startswith('dpuv2'):
++if  target.startswith('DPUCZ') or target.startswith('dpuv2'):
 +    tvm_target = tvm.target.arm_cpu('ultra96')
 +    lib_kwargs = {
 +        'fcompile': contrib.cc.create_shared,
@@ -1588,7 +1593,7 @@ index 0000000..47d18c4
 +import glob
 +from shutil import copy2
 +
-+if target == 'dpuv1':
++if target == 'DPUCADX8G' or target == 'dpuv1':
 +    DPU_LIBDIR = '/tmp/vai/'
 +    try:
 +        copy2(os.path.join(DPU_LIBDIR,"meta.json"), DPU_OUTPUT_DIR)
@@ -1617,7 +1622,7 @@ index 0000000..47d18c4
 + 
 diff --git tutorials/accelerators/compile/relay_darknet_yolov2.py tutorials/accelerators/compile/relay_darknet_yolov2.py
 new file mode 100755
-index 0000000..2e36fa1
+index 0000000..b59bcfa
 --- /dev/null
 +++ tutorials/accelerators/compile/relay_darknet_yolov2.py
 @@ -0,0 +1,227 @@
@@ -1731,6 +1736,7 @@ index 0000000..2e36fa1
 +#                  dict{input_name:input_shape}
 +# postprocessing : 
 +# target         : hardware accelerator to run the compiled model
++#                      options: 'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
 +#                      options: 'dpuv1', 'dpuv2-zcu104', 'dpuv2-zcu102'
 +
 +###############################################################################
@@ -1738,8 +1744,7 @@ index 0000000..2e36fa1
 +quant_dir      = os.path.join(HOME_DIR,'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min')
 +shape_dict     = {'data': data.shape}
 +postprocessing = 'Softmax'
-+target         = 'dpuv1'
-+
++target         = 'DPUCADX8G'
 +
 +###############################################################################
 +# INPUTS FUNC
@@ -1771,15 +1776,15 @@ index 0000000..2e36fa1
 +###############################################################################
 +# PARTITION & BUILD
 +# 
-+# Module pass to partition Relay for Vitis-AI acceleration. Targets can be 
-+# dpuv1, dpuv2-zcu104 and dpuv2-zcu102
++# Module pass to partition Relay for Vitis-AI acceleration. Targets can be
++#  'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
 +# Afterwards build graph, lib and params using standard TVM flow.
 +##############################################################################
 +
 +from pyxir.frontend.tvm import load_model_from_file
 +
 +
-+if target.startswith('dpuv2'):
++if  target.startswith('DPUCZ') or target.startswith('dpuv2'):
 +    tvm_target = tvm.target.arm_cpu('ultra96')
 +    lib_kwargs = {
 +        'fcompile': contrib.cc.create_shared,
@@ -1822,7 +1827,7 @@ index 0000000..2e36fa1
 +import glob
 +from shutil import copy2
 +
-+if target == 'dpuv1':
++if target == 'DPUCADX8G' or target == 'dpuv1':
 +    DPU_LIBDIR = '/tmp/vai/'
 +    try:
 +        copy2(os.path.join(DPU_LIBDIR,"meta.json"), DPU_OUTPUT_DIR)

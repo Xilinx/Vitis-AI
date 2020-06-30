@@ -7,14 +7,14 @@
 This document provides instruction to execute compiled models using the TVM with Vitis AI flow on supported Zynq devices. For more information on how to compile models please refer to the "compiling_a_model.md" document. 
 
 
-The Xilinx Deep Learning Processor Unit (DPU) is a configurable computation engine dedicated for convolutional neural networks. On edge devices, The TVM with Vitis AI flow exploits [DPUv2] hardware accelerator built for the following evaluation boards:
+The Xilinx Deep Learning Processor Unit (DPU) is a configurable computation engine dedicated for convolutional neural networks. On edge devices, The TVM with Vitis AI flow exploits [DPUCZDX8G] hardware accelerator built for the following evaluation boards:
 * [Ultra96]
 * [ZCU104]
 * [ZCU102]
 
 ## Resources
 You could find more information here:
-* Board setup - Follow instruction in [Pynq-DPU] repository to download and install dpuv2 on one of the supported Zynq evaluation board.
+* Board setup - Follow instruction in [Pynq-DPU] repository to download and install DPUCZDX8G on one of the supported Zynq evaluation board.
 
 
 ### Test DPU on Pynq
@@ -64,7 +64,7 @@ This script runs the model mxnet_resnet_18 model compiled using the TVM with Vit
 
    [Ultra96]:  https://www.xilinx.com/products/boards-and-kits/1-vad4rl.html
    [ZCU104]: https://www.xilinx.com/products/boards-and-kits/zcu104.html
-   [DPUv2]: https://www.xilinx.com/products/intellectual-property/dpu.html
+   [DPUCZDX8G]: https://www.xilinx.com/products/intellectual-property/dpu.html
    [Pynq-DPU]: https://github.com/Xilinx/DPU-PYNQ 
    [ZCU102]:  https://www.xilinx.com/products/boards-and-kits/ek-u1-zcu102-g.html
   
