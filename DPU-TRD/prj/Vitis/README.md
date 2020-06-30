@@ -207,7 +207,7 @@ Different Platform will get different name of HWH file.
  
 #### 5.2.3 Run Resnet50 Example 
 
-The TRD project has generated the matching model file in $TRD_HOME/prj/app/ path as the default settings. If the user change the DPU settings. The model need to be created again.
+**The TRD project has generated the matching model file in $TRD_HOME/prj/app/ path as the default settings. If the user change the DPU settings. The model need to be created again.**
 
 This part is about how to run the Resnet50 example from the source code.
 
@@ -409,7 +409,7 @@ We test the two mode in zcu102 board using same threads,dpu config(3DPU+softmax)
 Need set the following steps.
 1. Modify the dpu_conf.vh file
 ```
-% line116: LOWPOWER_ENABLE
+% line125: LOWPOWER_ENABLE
 ```
 2. Modify the Makefile, Update the **$XOCC_OPTS** parameters
 ```
@@ -542,8 +542,8 @@ steps:
 
 Need to modify the dpu_conf.vh file
 ```
-line35:`define URAM_ENABLE
-line56:`define RAM_USAGE_HIGH
+line37:`define URAM_ENABLE
+line59:`define RAM_USAGE_HIGH
 ```
 3.
 ```
