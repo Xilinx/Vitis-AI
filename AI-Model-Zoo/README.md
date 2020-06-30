@@ -111,7 +111,7 @@ For example, `cf_refinedet_coco_480_360_0.8_25G_1.2` is a `RefineDet` model trai
 ### caffe-xilinx 
 This is a custom distribution of caffe. Please use caffe-xilinx to test/finetune the caffe models listed in this page.
 
-**Note:** To download caffe-xilinx, visit [caffe-xilinx-1.2.zip](https://www.xilinx.com/bin/public/openDownload?filename=caffe-xilinx-1.1.zip)
+**Note:** To download caffe-xilinx, visit [caffe-xilinx-1.2.zip](https://www.xilinx.com/bin/public/openDownload?filename=caffe-xilinx-1.2.zip)
 
 
 
@@ -364,7 +364,7 @@ The following table lists the performance number including end-to-end throughput
 | 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G        | 35.45                            | 28.2                                  | 66.2                                 |
 | 7    | Mobilenet_v2               | cf_mobilenetv2_imagenet_224_224_0.59G        | 4.79                             | 208.6                                | 550.9                                |
 | 8    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 3.76                             | 265.8                                | 1013.7                               |
-| 9    | ssd_pedestrain_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 13.10                            | 76.3                                  | 282.6                                |
+| 9    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 13.10                            | 76.3                                  | 282.6                                |
 | 10   | refinedet\_baseline        | cf_refinedet_coco_480_360_123G_1.2           | 120.96                           | 8.3                                  | 24.4                                 |
 | 11   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G            | 31.58                            | 31.7                                  | 101.3                                |
 | 12   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G        | 16.68                            | 59.9                                  | 196.8                                |
@@ -435,7 +435,7 @@ The following table lists the performance number including end-to-end throughput
 | 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G        | 33.01                            | 30.3                                   | 58.3                                 |
 | 7    | Mobilenet_v2               | cf_mobilenetv2_imagenet_224_224_0.59G        | 4.12                             | 242.8                                 | 520.8                                |
 | 8    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 3.69                             | 271.0                                 | 943.6                                |
-| 9    | ssd_pedestrain_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 12.73                            | 78.5                                   | 220.5                                |
+| 9    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 12.73                            | 78.5                                   | 220.5                                |
 | 10   | refinedet\_baseline        | cf_refinedet_coco_480_360_123G               | 115.49                           | 8.7                                   | 18.2                                 |
 | 11   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G            | 30.69                            | 32.6                                   | 75.9                                 |
 | 12   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G        | 16.31                            | 61.3                                   | 154.1                                |
@@ -505,7 +505,7 @@ The following table lists the performance number including end-to-end throughput
 | 5    | Inception_v3                   | cf_inceptionv3_imagenet_299_299_11.4G        | 300               | 405.39                               |
 | 6    | Inception_v4                   | cf_inceptionv4_imagenet_299_299_24.5G        | 300               | 187.72                               |
 | 7    | SqueezeNet                     | cf_squeeze_imagenet_227_227_0.76G            | 300               | 3016.11                               |
-| 8    | ssd_pedestrain_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 300               | 621.52                               |
+| 8    | ssd_pedestrian_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 300               | 621.52                               |
 | 9    | refinedet_baseline             | cf_refinedet_coco_480_360_123G               | 270               | 49.99                                 |
 | 10   | refinedet_pruned_0_8           | cf_refinedet_coco_360_480_0.8_25G            | 270               | 193.63                               |
 | 11   | refinedet_pruned_0_92          | cf_refinedet_coco_360_480_0.92_10.10G        | 270               | 420.59                               |
@@ -569,7 +569,7 @@ The following table lists the performance number including end-to-end throughput
 | 5    | Inception_v3                   | cf_inceptionv3_imagenet_299_299_11.4G        | 275               | 552.39                               |
 | 6    | Inception_v4                   | cf_inceptionv4_imagenet_299_299_24.5G        | 275               | 256.21                               |
 | 7    | SqueezeNet                     | cf_squeeze_imagenet_227_227_0.76G            | 275               | 3767.09                               |
-| 8    | ssd_pedestrain_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 275               | 664.20                               |
+| 8    | ssd_pedestrian_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 275               | 664.20                               |
 | 9    | refinedet_baseline             | cf_refinedet_coco_480_360_123G               | 275               | 70.47                                 |
 | 10   | refinedet_pruned_0_8           | cf_refinedet_coco_360_480_0.8_25G            | 275               | 235.60                               |
 | 11   | refinedet_pruned_0_92          | cf_refinedet_coco_360_480_0.92_10.10G        | 275               | 514.70                               |
@@ -631,7 +631,7 @@ The following table lists the performance number including end-to-end throughput
 | 3    | Inception_v1                   | cf_inceptionv1_imagenet_224_224_3.16G       | 247.5             | 1536.64                              |
 | 4    | Inception_v2                   | cf_inceptionv2_imagenet_224_224_4G          | 247.5             | 1313.99                              |
 | 5    | SqueezeNet                     | cf_squeeze_imagenet_227_227_0.76G           | 247.5             | 3451.05                              |
-| 6    | ssd_pedestrain_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G     | 247.5             | 755.24                                |
+| 6    | ssd_pedestrian_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G     | 247.5             | 755.24                                |
 | 7    | refinedet_pruned_0_8           | cf_refinedet_coco_360_480_0.8_25G           | 247.5             | 273.79                                |
 | 8    | refinedet_pruned_0_92          | cf_refinedet_coco_360_480_0.92_10.10G       | 247.5             | 574.76                                |
 | 9    | refinedet_pruned_0_96          | cf_refinedet_coco_360_480_0.96_5.08G        | 247.5             | 795.12                                |
@@ -738,7 +738,7 @@ The following table lists the performance number including end-to-end throughput
 | 5    | Inception_v3                   | cf_inceptionv3_imagenet_299_299_11.4G        | 150               | 371.96                               |
 | 6    | Inception_v4                   | cf_inceptionv4_imagenet_299_299_24.5G        | 150               | 167.02                               |
 | 7    | SqueezeNet                     | cf_squeeze_imagenet_227_227_0.76G            | 150               | 2821.66                               |
-| 8    | ssd_pedestrain_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 150               | 423.29                               |
+| 8    | ssd_pedestrian_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 150               | 423.29                               |
 | 9    | ssd_adas_pruned_0_95           | cf_ssdadas_bdd_360_480_0.95_6.3G             | 150               | 476.11                               |
 | 10   | ssd_traffic_pruned_0_9         | cf_ssdtraffic_360_480_0.9_11.6G              | 150               | 306.03                               |
 | 11   | VPGnet_pruned_0_99             | cf_VPGnet_caltechlane_480_640_0.99_2.5G      | 150               | 567.75                               |
@@ -800,7 +800,7 @@ The following table lists the performance number including end-to-end throughput
 | 7    | tf\_inception\_v1              | tf\_inceptionv1\_imagenet\_224\_224\_3G             | 16\.96                          | 58\.9667                                | 61\.2833                               |
 | 8    | tf\_mobilenet\_v2              | tf\_mobilenetv2\_imagenet\_224\_224\_1\.17G         | 10\.17                          | 98\.3                                   | 104\.25                                |
 | 9    | ssd\_adas\_pruned\_0\.95       | cf\_ssdadas\_bdd\_360\_480\_0\.95\_6\.3G            | 24\.3                           | 41\.15                                  | 46\.2                                  |
-| 10   | ssd\_pedestrain\_pruned\_0\.97 | cf\_ssdpedestrian\_coco\_360\_640\_0\.97\_5\.9G     | 23\.29                          | 42\.9333                                | 50\.8                                  |
+| 10   | ssd\_pedestrian\_pruned\_0\.97 | cf\_ssdpedestrian\_coco\_360\_640\_0\.97\_5\.9G     | 23\.29                          | 42\.9333                                | 50\.8                                  |
 | 11   | ssd\_traffic\_pruned\_0\.9     | cf\_ssdtraffic\_360\_480\_0\.9\_11\.6G              | 35\.5                           | 28\.1667                                | 31\.8                                  |
 | 12   | ssd\_mobilnet\_v2              | cf\_ssdmobilenetv2\_bdd\_360\_480\_6\.57G           | 60\.79                          | 16\.45                                  | 27\.8167                               |
 | 13   | tf\_ssd\_voc                   | tf\_ssd\_voc\_300\_300\_64\.81G                     | 186\.92                         | 5\.35                                   | 5\.81667                               |
