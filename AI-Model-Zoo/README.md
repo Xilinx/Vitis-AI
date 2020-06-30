@@ -258,7 +258,8 @@ For a Tensorflow model, you should see the following directory structure:
     │
     └── float                             
         └── float.pb                    # Float-point frozen model, the input to the `vai_q_tensorflow`.The pb name of different models 
-                                          may be different. Test scripts could be modified according to actual situation.
+                                          may be different. Path and name in test scripts could be modified according to actual
+                                          situation.                               
 
 
 #### Pytorch Model Directory Structure
@@ -279,9 +280,10 @@ For a Pytorch model, you should see the following directory structure:
     │   └── quant_info.json             # Quantization steps of tensors got. Please keep it for evaluation of quantized model.
     │                                           
     └── float                           
-        └── _int.pth                    # Trained float-point model.
-        
+        └── _int.pth                    # Trained float-point model. The pth name of different models may be different.
+                                          Path and name in test scripts could be modified according to actual situation.
                                           
+                                         
                                           
 **Note:** For more information on `vai_q_caffe` , `vai_q_tensorflow`and`vai_q_pytorch`, see the [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf).
 
