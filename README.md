@@ -58,7 +58,7 @@ Two options are available for installing the containers with the Vitis AI tools 
  
  - Prepare for the Vitis AI docker image.
 
-    There are two types of docker image provided - CPU docker and GPU docker. If you have a compatible nVidia graphics card with CUDA support, you could use GPU docker; otherwise you could use DPU docker.
+    There are two types of docker image provided - CPU docker and GPU docker. If you have a compatible nVidia graphics card with CUDA support, you could use GPU docker; otherwise you could use CPU docker.
 
    **CPU Docker**
 
