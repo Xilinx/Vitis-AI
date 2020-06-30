@@ -257,7 +257,8 @@ For a Tensorflow model, you should see the following directory structure:
     │   └── quantize_eval_model.pb      # Quantized model for evaluation.
     │
     └── float                             
-        └── float.pb                    # Float-point frozen model, the input to the `vai_q_tensorflow`.The pb name of different models                                           may be different. Test scripts could be modified according to actual situation.
+        └── float.pb                    # Float-point frozen model, the input to the `vai_q_tensorflow`.The pb name of different models 
+                                          may be different. Test scripts could be modified according to actual situation.
 
 
 #### Pytorch Model Directory Structure
