@@ -194,7 +194,7 @@ steps.**
 	* Log in to the board (usong ssh or serial port) and install the model package.
 	* Run the following command.
 	```
-	  #rpm -ivh xilinx_model_zoo_zcu102-1.2.0-1.aarch64.rpm
+	  #rpm -ivh --force xilinx_model_zoo_zcu102-1.2.0-1.aarch64.rpm
 	```
 
 4. (Optional) How to update Vitis AI Runtime and install them separately. 
@@ -211,11 +211,11 @@ steps.**
 	* Install the Vitis AI Runtime. Execute the following command in order.
 	```
 	#cd centos
-	#rpm -ivh libunilog-1.2.0-r<x>.aarch64.rpm
-	#rpm -ivh libxir-1.2.0-r<x>.aarch64.rpm
-	#rpm -ivh libtarget-factory-1.2.0-r<x>.aarch64.rpm
-	#rpm -ivh libvart-1.2.0-r<x>.aarch64.rpm
-	#rpm -ivh libvitis_ai_library-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh --force libunilog-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh --force libxir-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh --force libtarget-factory-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh --force libvart-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh --force libvitis_ai_library-1.2.0-r<x>.aarch64.rpm
 	```
 	 	  
 ### Running Vitis AI Library Examples
@@ -422,5 +422,4 @@ $~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_
 ```
 
 ## Reference
-For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_1/ug1354-xilinx-ai-sdk.pdf) and [vitis-ai-library-programming-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_1/ug1355-xilinx-ai-sdk-programming-guide.pdf).
-	
+For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_2/ug1354-xilinx-ai-sdk.pdf).
