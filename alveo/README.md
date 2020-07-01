@@ -1,6 +1,6 @@
-This directory containes examples for running Xilinx DPU-v1 on Alveo platform. **DPU-v1**  is High Performance CNN processing engine designed for Xilinx Alveo-u200 and Alveo-u250 platforms. DPU-v1 was released as xDNNv3 as part of *ml-suite*. With **Vitis-AI**, Xilinx has integrated all the edge and cloud solutions under an unified API and toolset.
+This directory containes examples for running Xilinx DPUCADX8G on Alveo platform. **DPUCADX8G**  is High Performance CNN processing engine designed for Xilinx Alveo-u200 and Alveo-u250 platforms. It was released as xDNNv3 as part of *ml-suite*. With **Vitis-AI**, Xilinx has integrated all the edge and cloud solutions under an unified API and toolset.
 
-**Learn More:** [DPU-v1 Overview][]  
+**Learn More:** [DPUCADX8G Overview][]  
 
 ## Setup for Alveo
 Targeting Alveo cards with Vitis-AI for AI workloads requires the installation of the following software components:  
@@ -59,7 +59,7 @@ Then power cycle the system.
 [Release Notes]: docs/release-notes/1.x.md
 [UG1023]: https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_4/ug1023-sdaccel-user-guide.pdf
 [FAQ]: docs/faq.md
-[DPU-v1 Overview]: docs/ml-suite-overview.md
+[DPUCADX8G Overview]: docs/ml-suite-overview.md
 [Webinar on Xilinx FPGA Accelerated Inference]: https://event.on24.com/wcc/r/1625401/2D3B69878E21E0A3DA63B4CDB5531C23?partnerref=Mlsuite
 [ML Suite Forum]: https://forums.xilinx.com/t5/Xilinx-ML-Suite/bd-p/ML 
 [ML Suite Lounge]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html

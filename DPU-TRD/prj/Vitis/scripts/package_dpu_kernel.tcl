@@ -20,7 +20,7 @@ set path_to_packaged "./packaged_kernel_${suffix}"
 set path_to_tmp_project "./tmp_kernel_pack_${suffix}"
 
 create_project -force kernel_pack $path_to_tmp_project 
-add_files -norecurse [glob $path_to_hdl/Vitis/dpu/hdl/*.v $path_to_hdl/Vitis/dpu/inc/*.vh $path_to_hdl/dpu_eu_*/hdl/dpu_eu_*_dpu.sv $path_to_hdl/dpu_eu_*/inc/arch_para.vh $path_to_hdl/dpu_eu_*/inc/function.vh ./dpu_conf.vh]
+add_files -norecurse [glob $path_to_hdl/Vitis/dpu/hdl/*.v $path_to_hdl/Vitis/dpu/inc/*.vh $path_to_hdl/DPUCZDX8G_*/hdl/DPUCZDX8G_*_dpu.sv $path_to_hdl/DPUCZDX8G_*/inc/arch_para.vh $path_to_hdl/DPUCZDX8G_*/inc/function.vh ./dpu_conf.vh]
 add_files -norecurse [glob $path_to_hdl/Vitis/dpu/xdc/*.xdc] -fileset constrs_1
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1

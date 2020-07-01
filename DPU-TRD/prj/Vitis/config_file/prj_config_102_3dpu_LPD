@@ -16,26 +16,26 @@
 
 
 [clock]
-id=1:dpu_xrt_top_1.aclk
-id=6:dpu_xrt_top_1.ap_clk_2
-id=1:dpu_xrt_top_2.aclk
-id=6:dpu_xrt_top_2.ap_clk_2
-id=1:dpu_xrt_top_3.aclk
-id=6:dpu_xrt_top_3.ap_clk_2
+id=1:DPUCZDX8G_1.aclk
+id=6:DPUCZDX8G_1.ap_clk_2
+id=1:DPUCZDX8G_2.aclk
+id=6:DPUCZDX8G_2.ap_clk_2
+id=1:DPUCZDX8G_3.aclk
+id=6:DPUCZDX8G_3.ap_clk_2
 id=1:sfm_xrt_top_1.aclk
 [connectivity]
 
-sp=dpu_xrt_top_1.M_AXI_GP0:LPD
-sp=dpu_xrt_top_1.M_AXI_HP0:HP0
-sp=dpu_xrt_top_1.M_AXI_HP2:HP1
-sp=dpu_xrt_top_2.M_AXI_GP0:LPD
-sp=dpu_xrt_top_2.M_AXI_HP0:HP2
-sp=dpu_xrt_top_2.M_AXI_HP2:HP3
-sp=dpu_xrt_top_3.M_AXI_GP0:LPD
-sp=dpu_xrt_top_3.M_AXI_HP0:HPC0
-sp=dpu_xrt_top_3.M_AXI_HP2:HPC1
+sp=DPUCZDX8G_1.M_AXI_GP0:LPD
+sp=DPUCZDX8G_1.M_AXI_HP0:HP0
+sp=DPUCZDX8G_1.M_AXI_HP2:HP1
+sp=DPUCZDX8G_2.M_AXI_GP0:LPD
+sp=DPUCZDX8G_2.M_AXI_HP0:HP2
+sp=DPUCZDX8G_2.M_AXI_HP2:HP3
+sp=DPUCZDX8G_3.M_AXI_GP0:LPD
+sp=DPUCZDX8G_3.M_AXI_HP0:HPC0
+sp=DPUCZDX8G_3.M_AXI_HP2:HPC1
 sp=sfm_xrt_top_1.M_AXI:HPC1
-nk=dpu_xrt_top:3
+nk=DPUCZDX8G:3
 
 [advanced]
 misc=:solution_name=link
@@ -50,10 +50,11 @@ prop=run.impl_1.strategy=Performance_NetDelay_low
 #prop=run.impl_1.strategy=Performance_Explore
 
 #for low power mode
-#prop=run.impl_1.strategy=Power_DefaultOpt
-#prop=run.impl_1.strategy=Power_ExploreArea
+#prop=run.impl_1.strategy=Performance_Explore
 #prop=run.impl_1.steps.power_opt_design.is_enabled=1
 
+#prop=run.impl_1.strategy=Power_DefaultOpt
+#prop=run.impl_1.strategy=Power_ExploreArea
 ####
 #prop=run.impl_1.strategy=Congestion_SpreadLogic_low
 #prop=run.impl_1.strategy=Congestion_SpreadLogic_medium

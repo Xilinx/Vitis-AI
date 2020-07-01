@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root versionMajor="1" versionMinor="0">
-  <kernel name="dpu_xrt_top" language="ip" vlnv="xilinx.com:RTLKernel:dpu_xrt_top:1.0" attributes="" preferredWorkGroupSizeMultiple="0" workGroupSize="1" debug="true" compileOptions=" -g" profileType="none">
+  <kernel name="DPUCZDX8G" language="ip" vlnv="xilinx.com:RTLKernel:DPUCZDX8G:1.0" attributes="" preferredWorkGroupSizeMultiple="0" workGroupSize="1" debug="true" compileOptions=" -g" profileType="none">
     <ports>
       <port name="S_AXI_CONTROL" mode="slave" range="0x00004000" dataWidth="32" portType="addressable" base="0x0"/>
       <port name="M_AXI_GP0" mode="master" range="0xFFFFFFFF" dataWidth="32" portType="addressable" base="0x0"/>

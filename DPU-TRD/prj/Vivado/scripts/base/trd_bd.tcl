@@ -23,7 +23,7 @@
 #****************************************************************
 dict set dict_prj dict_sys pwd_dir            [pwd]
 dict set dict_prj dict_sys srcs_dir           [file dirname [file dirname [file dirname [dict get $dict_prj dict_sys work_dir]]]]/dpu_ip
-dict set dict_prj dict_sys ip_dir             [dict get $dict_prj dict_sys srcs_dir]/dpu_eu_v3_3_0
+dict set dict_prj dict_sys ip_dir             [dict get $dict_prj dict_sys srcs_dir]/DPUCZDX8G_v3_3_0
 dict set dict_prj dict_sys xdc_dir            [file dirname [dict get $dict_prj dict_sys work_dir]]/constrs
 dict set dict_prj dict_sys prj_dir            [file dirname [dict get $dict_prj dict_sys work_dir]]/prj
 dict set dict_prj dict_sys bd_dir             [file dirname [dict get $dict_prj dict_sys work_dir]]/srcs
@@ -2580,7 +2580,7 @@ dict set dict_prj dict_verreg                           \
     ]
 dict set dict_prj dict_verreg info_ip         \
   dpu           [dict create                  \
-    NAME        "dpu_eu"                      \
+    NAME        "DPUCZDX8G"                   \
     PROP        [dict create                  \
                 "VER_DPU_NUM"           [lib_param DPU_NUM]               \
                 "ARCH"                  [lib_param DPU_ARCH]              \
