@@ -170,10 +170,10 @@ steps.**
 	* Install the Vitis AI Runtime. Execute the following command in order.
 	```
 	#cd ~/centos
-	#rpm -ivh libunilog-1.2.0-r<x>.aarch64.rpm
-	#rpm -ivh libxir-1.2.0-r<x>.aarch64.rpm
-	#rpm -ivh libtarget-factory-1.2.0-r<x>.aarch64.rpm
-	#rpm -ivh libvart-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh --force libunilog-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh --force libxir-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh --force libtarget-factory-1.2.0-r<x>.aarch64.rpm
+	#rpm -ivh --force libvart-1.2.0-r<x>.aarch64.rpm
 	```
 	  
 ### Running Vitis AI Examples
