@@ -151,7 +151,7 @@ steps.**
 2. (Optional) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
 	
 	The script runs automatically after the board boots up with the official image.
-	But you can also download the `dpu_sw_optimize.tgz` from [here](../DPU-TRD/app/dpu_sw_optimize.tgz).
+	But you can also download the `dpu_sw_optimize.tar.gz` from [here](../DPU-TRD/app/dpu_sw_optimize.tar.gz).
 	```
 	#cd ~/dpu_sw_optimize/zynqmp/
 	#./zynqmp_dpu_optimize.sh
