@@ -1,9 +1,10 @@
 ## DPU Naming
 
-Starting from Vitis AI 1.2, a new DPU naming will be used to better differetiate various DPUs served for different purposes. 
-The old DPUv1/v2/v3 naming will be deprecated. 
+Vitis AI 1.2 introduces a new DPU naming scheme. This new naming scheme will help users select the right DPU for their application or platform, by highlighting each DPUs characteristics.
 
-Please refer to the following illustration for the new DPU naming. 
+The old DPUv1/v2/v3 naming will be deprecated.  
+
+Please refer to the guide below to understand the availble DPU options. 
 
 <div align="center">
   <img width="100%" height="100%" src="img/dpu_naming.PNG">

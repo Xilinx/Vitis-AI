@@ -64,7 +64,7 @@ sysMan.loadGraphs("path-to-graph-zoo-dir")
 ```
 
 
-### Get a Handle to the Graph To Run
+### Get a Handle to the Graph
 Each loaded graph can be identified by an unique name provided in the graph JSON. Provide this graph name to `getGraph()` method to get a handle to the loaded graph. This handle can be used to enqueue jobs to this graph.
 
 ```cpp
@@ -84,7 +84,7 @@ In C++ API, `enqueueJob()` takes 4 arguments:
 1. **Graph Handle** : It specifies to which graph the job is being pushed.
 2. **Image Path** : A string representing the image path. Typically, first node in an computer vision pipeline loads an image. If it is not the case, pass an empty string.
 3. **Buffers**  : (*Optional*) This is a `vector<AKS::DataDescriptor>`. This lets the user to directly pass any number of input buffers like decoded video frames. By default, an empty vector is passed.
-4. **userArgs** : (*Optional*) This is a reference to `AKS::NodeParams` object. This lets user to pass any job-specific information and this information will be accessible to every node in the pipeline. By default, a `nullptr` is passed.
+4. **User Args** : (*Optional*) This is a reference to `AKS::NodeParams` object. This lets user to pass any job-specific information and this information will be accessible to every node in the pipeline. By default, a `nullptr` is passed.
 
 It returns a `C++ future` object which can be used to wait for the results asynchronously.
 
@@ -118,41 +118,41 @@ AKS supports waiting for results at three levels.
 
     Eg : `apps/aks/examples/resnet50.cpp` uses this to calculate the accuracy of Resnet50 model on a test dataset.
 
-```cpp
-// C++
-sysMan->waitForAllResults();
-```
-```python
-# Python
-sysMan.waitForAllResults()
-```
+    ```cpp
+    // C++
+    sysMan->waitForAllResults();
+    ```
+    ```python
+    # Python
+    sysMan.waitForAllResults()
+    ```
 
 2. **Graph level** : Provide a graph handle to wait for all the jobs enqueued for that particular graph to finish without interrupting the execution of other graphs.
 
     Eg : `apps/aks/examples/googlenet_resnet50.cpp` uses this to get the accuracy of both Googlenet and Resnet50 in one shot.
 
-```cpp
-// C++
-sysMan->waitForAllResults(graph);
-```
-```python
-# Python
-sysMan.waitForAllResults(graph)
-```
+    ```cpp
+    // C++
+    sysMan->waitForAllResults(graph);
+    ```
+    ```python
+    # Python
+    sysMan.waitForAllResults(graph)
+    ```
 
 3. **Job level** : This let's the user to get the output of a particular job without other jobs are still running. This is done by calling `.get()` method of `std::future` object returned for every `enqueueJob()` call.
 
     Eg : `apps/aks/examples/tinyyolov3_video.cpp` uses this feature to get the boxes detected in every video frame sent to tiny-yolo-v3 network and draw boxes on the input image.
 
-```cpp
-// C++
-auto fut = sysMan->enqueueJob (graph, imagePath, std::move(v), nullptr);
-vector<AKS::DataDescriptor> outDD = fut.get();
-```
+    ```cpp
+    // C++
+    auto fut = sysMan->enqueueJob (graph, imagePath, std::move(v), nullptr);
+    vector<AKS::DataDescriptor> outDD = fut.get();
+    ```
 
->**NOTE** : AKS doesn't guarantee any sequential consistency. It means, there is a possibility that second job might finish before the first job. So wherever sequentiality is very important, it is recommended to use Job-level waiting. And for performance consideration, waiting may have to be done in a separate thread. Please refer to `apps/aks/examples/tinyyolov3_video.cpp` to see how these techniques are used to do object detection on a video input.
+    >**NOTE** : AKS doesn't guarantee any sequential consistency. It means, there is a possibility that second job might finish before the first job. So wherever sequentiality is very important, it is recommended to use Job-level waiting. And for performance consideration, waiting may have to be done in a separate thread. Please refer to `apps/aks/examples/tinyyolov3_video.cpp` to see how these techniques are used to do object detection on a video input.
 
->**WARNING** : Job level waiting is not exposed to Python API.
+    >**NOTE** : Job level waiting is not exposed to Python API.
 
 ### Report Results (Optional)
 
@@ -214,9 +214,9 @@ There should be a generator function named, **`getKernel()`**, which returns a p
 
 > **INFO** : All DataDescriptors registered as inputs/outputs inside kernels are automatically managed by AKS.
 
-3. **`NodeParams* params`* : It is populated by AKS with all the node parameters from the graph json. This parameter is unique per node. If graph contains two nodes of same kernel, each of them will have their own `params` so that kernel can identify each node based on its param.
+3. **`NodeParams* params`** : It is populated by AKS with all the node parameters from the graph json. This parameter is unique per node. If graph contains two nodes of same kernel, each of them will have their own `params` so that kernel can identify each node based on its param.
 
-4. `DynamicParamValues* dynParams` : It is passed by the user as an argument to `enqueueJob()`. This includes any job specific input params and it is common to all the nodes in a graph. For eg: ground truth file for each input image in an object detection task.
+4. **`DynamicParamValues* dynParams`** : It is passed by the user as an argument to `enqueueJob()`. This includes any job specific input params and it is common to all the nodes in a graph. For eg: ground truth file for each input image in an object detection task.
 
 Once the implementation is ready, it should be compiled to a shared library and keep it in [libs](../libs) directory. Please refer the [Makefile](../examples/kernels/add/Makefile) for `Add Kernel`.
 
@@ -233,7 +233,7 @@ Kernel JSON should have following fields :
 1. **kernel_type** : Possible values - **"cpp"**
 1. **device_type** : Possible values - **"cpu"**, **"fpga"**
 
-There are some optional fields :
+There are some optional fields:
 
 1. **num_cu** : Number of CPU threads to be used for a kernel. They are shared among multiple nodes of same kernel, if present, in the graph.
 

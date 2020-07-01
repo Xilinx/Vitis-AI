@@ -199,6 +199,12 @@ else
   . ../../overlaybins/setup.sh
 fi
 
+# Chose the target
+ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+if [ ! -f $ARCH_JSON ]; then
+  ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
+fi
+
 # Calibration dataset and image list
 if [ -z $CALIB_DATASET ]; then
     CALIB_DATASET="$VAI_ALVEO_ROOT/"apps/yolo/test_image_set/
@@ -410,7 +416,7 @@ then
 
   COMPILER_BASE_OPT=" --prototxt $QUANT_DIR/deploy.prototxt \
       --caffemodel $QUANT_DIR/deploy.caffemodel \
-      --arch arch.json \
+      --arch $ARCH_JSON \
       --net_name tmp \
       --output_dir $COMP_DIR"
 

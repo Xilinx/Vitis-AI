@@ -104,7 +104,7 @@ if __name__ == "__main__":
     elif 'VAI_ALVEO_ROOT' in os.environ and os.path.isdir(os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1/tools')):
       arch_json = os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1/tools/compile/bin/arch.json')
     else:
-      arch_json = '/opt/vitis-ai/compiler/arch/dpuv1/ALVEO/ALVEO.json'
+      arch_json = '/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json'
     input_fn = get_input_fn(args.pre_process, args.input_nodes)
     q_config = decent_q.QuantizeConfig(input_nodes = input_node_names,
         output_nodes = output_node_names,

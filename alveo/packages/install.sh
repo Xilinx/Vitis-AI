@@ -62,7 +62,7 @@ INSTALLER=""
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* ]]; then
   echo "Ubuntu 16.04"
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_201920.2.5.309_16.04-amd64-xrt.deb"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_16.04-amd64-xrt.deb"
   XRT_INSTALLER=/tmp/xrt.deb
   U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015_16.04.deb"
   U200_INSTALLER=/tmp/u200.deb
@@ -70,7 +70,7 @@ if [[ $distroname == *"Ubuntu 16.04"* ]]; then
   U250_INSTALLER=/tmp/u250.deb
 elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
   echo "Ubuntu 18.04"
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_201920.2.5.309_18.04-amd64-xrt.deb"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_18.04-amd64-xrt.deb"
   XRT_INSTALLER=/tmp/xrt.deb
   U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015_18.04.deb"
   U200_INSTALLER=/tmp/u200.deb
@@ -78,7 +78,7 @@ elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
   U250_INSTALLER=/tmp/u250.deb
 elif [[ $distroname == *"CentOS"* ]]; then
   echo "CentOS"
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_201920.2.5.309_7.4.1708-x86_64-xrt.rpm"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_7.4.1708-x86_64-xrt.rpm"
   XRT_INSTALLER=/tmp/xrt.rpm
   U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015.x86_64.rpm"
   U200_INSTALLER=/tmp/u200.rpm
@@ -86,7 +86,7 @@ elif [[ $distroname == *"CentOS"* ]]; then
   U250_INSTALLER=/tmp/u250.rpm
 elif [[ $distroname == *"Red Hat"* ]]; then
   echo "RHEL"
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_201920.2.5.309_7.4.1708-x86_64-xrt.rpm"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_7.4.1708-x86_64-xrt.rpm"
   XRT_INSTALLER=/tmp/xrt.rpm
   U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015.x86_64.rpm"
   U200_INSTALLER=/tmp/u200.rpm
@@ -102,14 +102,14 @@ fi
 # Download XRM/Overlaybins
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* ]]; then
-  XRM_INSTALLER=./ubuntu/xbutler_3.0-1.deb
+  XRM_INSTALLER=./ubuntu/xbutler_3.0-2.deb
   OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-overlaybins.deb"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.deb
   XPLUSML_OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.1-xplusml-bins-18.04.deb"
   XPLUSML_OVERLAYBINS_INSTALLER=/tmp/vai-1.1-xplusml-bins-18.04.deb
   INSTALLER="apt"
 elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
-  XRM_INSTALLER=./centos/xbutler-3.0.1-1.el7.centos.x86_64.rpm
+  XRM_INSTALLER=./centos/xbutler-3.0.2-1.el7.centos.x86_64.rpm
   OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-overlaybins.rpm"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.rpm
   XPLUSML_OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.1-xplusml-bins-1.0-0.x86_64.rpm"
@@ -158,7 +158,7 @@ wget $OVERLAYBINS_URL -O $OVERLAYBINS_INSTALLER && ${INSTALLER} install $OVERLAY
 if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* ]]; then
   wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && ${INSTALLER} install $XPLUSML_OVERLAYBINS_INSTALLER -y && rm $XPLUSML_OVERLAYBINS_INSTALLER
 elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
-  wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && rpm -ivh --force  $XPLUSML_OVERLAYBINS_INSTALLER -y && rm $XPLUSML_OVERLAYBINS_INSTALLER
+  wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && rpm -ivh --force  $XPLUSML_OVERLAYBINS_INSTALLER && rm $XPLUSML_OVERLAYBINS_INSTALLER
 else
   echo "Couldn't install WAA overlaybins. Unsupported operating system"
 fi

@@ -51,12 +51,18 @@ def Getopts():
 
 # Generate hardware instructions for runtime -> compiler.json
 def Compile(output_dir="work"):
+    
+  VAI_ROOT = os.environ['VAI_ALVEO_ROOT']
+  arch_json = "/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+  if(not os.path.exists(arch_json)):
+     arch_json = os.path.join(VAI_ROOT, "arch.json")
+ 
   subprocess.call(["vai_c_caffe",
       "--prototxt",output_dir+"/deploy.prototxt",
       "--caffemodel",output_dir+"/deploy.caffemodel",
       "--net_name","model_name",
       "--output_dir",output_dir,
-      "--arch","/opt/vitis_ai/compiler/arch/dpuv1/ALVEO/ALVEO.json",
+      "--arch", arch_json,
       "--options", "{\"quant_cfgfile\":\"%s\"}" %(output_dir+"/quantize_info.txt")])
     
 # Generate a new prototxt with custom python layer in place of FPGA subgraph

@@ -10,9 +10,20 @@ This application  demonstrates the acceleration of pre-processing of inference o
   <img width="75%" height="75%" src="./doc_images/block_dia_hw_pp.PNG">
 </div>
 
+## Setup
+```sh
+# Activate Conda Environment
+conda activate vitis-ai-caffe 
+```
+```sh
+# Setup
+source /workspace/alveo/overlaybins/setup.sh
+```
+
 ## Running the Application
 -  `cd ${VAI_ALVEO_ROOT}/apps/whole_app_acceleration/yolo`
-- Use `run.sh` file to run the application. 
+- Use `detect.sh` file to run the application.
+- Make sure that follow the steps [here](../../yolo/README.md) to get COCO validation set and labels/ 
 
 ### Examples
 

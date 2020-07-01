@@ -53,12 +53,18 @@ name = "inception_v2_ssd"
 def Compile(prototxt="quantize_results/deploy.prototxt",\
             caffemodel="quantize_results/deploy.caffemodel",\
             quantize_info="quantize_results/quantize_info.txt"):
+    
+    VAI_ROOT = os.environ['VAI_ALVEO_ROOT']
+    arch_json = "/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+    if(not os.path.exists(arch_json)):
+        arch_json = os.path.join(VAI_ROOT, "arch.json")
+    
     subprocess.call(["vai_c_caffe",
                     "--prototxt", prototxt,
                     "--caffemodel", caffemodel,
                     "--net_name", name,
                     "--output_dir", "work",
-                    "--arch", "/opt/vitis_ai/compiler/arch/dpuv1/ALVEO/ALVEO.json",
+                    "--arch", arch_json,
                     "--options", "{\"quant_cfgfile\":\"%s\", \
                     \"pipelineconvmaxpool\":False, \
                     }" %(quantize_info)])
@@ -80,7 +86,13 @@ def Cut(prototxt):
   cutter.cut()
 
 
-
+# Need to create derived class to clean up properly
+class Net(caffe.Net):
+  def __del__(self):
+    for layer in self.layer_dict:
+      if hasattr(self.layer_dict[layer],"fpgaRT"):
+        del self.layer_dict[layer].fpgaRT
+        
 ##################### Mean and threshold configure #####################
 
 view_theshold = 0.3
@@ -122,7 +134,7 @@ def declare_network(model_def, model_weights, labelmap_file, args):
     file = open(labelmap_file, 'r')
     labelmap = caffe_pb2.LabelMap()
     text_format.Merge(str(file.read()), labelmap)
-    net = caffe.Net(model_def, model_weights, caffe.TEST)
+    net = Net(model_def, model_weights, caffe.TEST)
     transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
     transformer.set_transpose('data', (2, 0, 1))
     transformer.set_mean('data', np.array(args["img_mean"]))
@@ -215,12 +227,14 @@ def Detect(deploy_file, caffemodel, image,labelmap_file, args):
     net, transformer, labelmap = declare_network(deploy_file, caffemodel, labelmap_file, args)
     N, C, H, W = net.blobs['data'].data.shape
     detect_one_image(net, transformer, labelmap, image, H, W, np.array(args["img_mean"]), is_view=True)
+    del net
 
 
 def Infer(prototxt, caffemodel, args):
     net, transformer, labelmap = declare_network(prototxt, caffemodel, args["labelmap_file"], args)
     N, C, H, W = net.blobs['data'].data.shape
     compute_map_of_datset(net, transformer, labelmap, args["image_list_file"], args["det_res_file"], args["gt_file"], args["test_image_root"], H, W, np.array(args["img_mean"]), args["compute_map_script_path"])
+    del net
 
 
 

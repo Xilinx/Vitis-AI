@@ -26,7 +26,6 @@ namespace AKS
 {
   class NodeParams;
   class AIGraph;
-  template<typename T> class Queue;
 
   /// Top-level System Manager responsible for managing graphs and jobs.
   class SysManagerExt

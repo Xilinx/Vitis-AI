@@ -24,7 +24,13 @@ parser.add_argument(
     default="/path/to/trained_model/",
     help='Trained model file path. Download pretrained model from the following url and put it in model_dir specified path: https://download.pytorch.org/models/resnet18-5c106cde.pth'
 )
-parser.add_argument('--quant_mode', default=1, type=int)
+parser.add_argument(
+    '--subset_len',
+    default=None,
+    type=int,
+    help='subset_len to evaluate model, using the whole validation dataset if it is not set'
+)
+parser.add_argument('--quant_mode', default=1, type=int, help='quantization mode. 0: no quantization, evaluate float model, 1: quantize, 2: evaluate quantized model')
 args, _ = parser.parse_known_args()
 
 def load_data(train=True,
@@ -180,7 +186,8 @@ def quantization(title='optimize', model_name='', file_path='', quant_mode=1):
 
   val_loader, _ = load_data(
       #subset_len=100,
-      subset_len=None,
+      #subset_len=None,
+      subset_len=args.subset_len,
       train=False,
       batch_size=batch_size,
       sample_method='random',

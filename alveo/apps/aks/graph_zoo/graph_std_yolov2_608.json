@@ -17,7 +17,7 @@
     {
       "node_name": "yolov2_fpga",
       "node_params": {
-        "DPUv1NoRunner": {
+        "DPUCADX8GNoRunner": {
           "xclbin": "/opt/xilinx/overlaybins/xdnnv3",
           "netcfg": "graph_zoo/meta_stdyolov2/meta_stdyolov2_head/compiler.json",
           "quantcfg": "graph_zoo/meta_stdyolov2/meta_stdyolov2_head/quantizer.json",
@@ -46,7 +46,7 @@
     {
       "node_name": "yolov2_tail",
       "node_params": {
-        "DPUv1NoRunner": {
+        "DPUCADX8GNoRunner": {
           "xclbin": "/opt/xilinx/overlaybins/xdnnv3",
           "netcfg": "graph_zoo/meta_stdyolov2/meta_stdyolov2_tail/compiler.json",
           "quantcfg": "graph_zoo/meta_stdyolov2/meta_stdyolov2_tail/quantizer.json",
