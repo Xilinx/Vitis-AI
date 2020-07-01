@@ -165,7 +165,7 @@ If you are a:
 | 34   | cf_facerec-resnet64_112_96_11G_1.2               | 280MB  | 1831cdb446cece092035a444f683a654 | https://www.xilinx.com/bin/public/openDownload?filename=cf_facerec-resnet64_112_96_11G_1.2.zip                     |
 | 35   | cf_FPN-resnet18_EDD_320_320_45.3G_1.2            | 107MB  | 6a4eb8b3da9f29c56f711ea1373a334e | https://www.xilinx.com/bin/public/openDownload?filename=cf_FPN-resnet18_EDD_320_320_45.3G_1.2.zip                  |
 | 36   | cf_plate-detection_320_320_0.49G_1.2             | 5.13MB | 42c4b7c676f6d61135c1a419c323ed08 | https://www.xilinx.com/bin/public/openDownload?filename=cf_plate-detection_320_320_0.49G_1.2.zip                   |
-| 37   | cf_plate-recognition_96_288_1.75G_1.2            | 57.4MB | 07a7ed1f5a406779b5fba2cb6e4b4a01 | https://www.xilinx.com/bin/public/openDownload?filename=cf_plate-recognition_96_288_1.75G_1.2.zip                  |
+| 37   | cf_plate-recognition_96_288_1.75G_1.2            | 57.4MB | 8c5a98efaa4c8146dd601635007fcd9b | https://www.xilinx.com/bin/public/openDownload?filename=cf_plate-recognition_96_288_1.75G_1.2.zip                  |
 | 38   | tf_inceptionresnetv2_imagenet_299_299_26.35G_1.2 | 453MB  | c9f0d01087c4842aeef9521c5a6f3bbc | https://www.xilinx.com/bin/public/openDownload?filename=tf_inception_resnet_v2_imagenet_299_299_26.35G_1.2.zip     |
 | 39   | tf_inceptionv1_imagenet_224_224_3G_1.2           | 54.2MB | ccc4de0d21947f83644ea68c7e0da2f6 | https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv1_imagenet_224_224_3G_1.2.zip                 |
 | 40   | tf_inceptionv3_imagenet_299_299_11.45G_1.2       | 194MB  | 35fd3e8296d23f87ca817279bd5a0c65 | https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv3_imagenet_299_299_11.45G_1.2.zip             |
@@ -193,7 +193,7 @@ If you are a:
 | 62   | pt_facereid-large_96_96_515M_1.2                 | 36.8MB | 94038fcd56521b1f6d7430889ef2db2e | https://www.xilinx.com/bin/public/openDownload?filename=pt_facereid-large_96_96_515M_1.2.zip                       |
 | 63   | pt_facereid-small_80_80_90M_1.2                  | 10.0MB | 01ec7ddc8ee374e2488dff0a33082d44 | https://www.xilinx.com/bin/public/openDownload?filename=pt_facereid-small_80_80_90M_1.2.zip                        |
 | 64   | pt_personreid_market1501_256_128_4.2G_1.2        | 109MB  | 7a578c089b50dae0a4900877289c8929 | https://www.xilinx.com/bin/public/openDownload?filename=pt_personreid_market1501_256_128_4.2G_1.2.zip              |
-| all  | all_models_1.2                                   | 11.3GB | 6653ae6ee8912a1512bdf0f23d7765ca | https://www.xilinx.com/bin/public/openDownload?filename=all_models_1.2.zip                                         |
+| all  | all_models_1.2                                   | 11.3GB | 6766149c79e762a97d8d9c004a216ffe | https://www.xilinx.com/bin/public/openDownload?filename=all_models_1.2.zip                                         |
 
 </details>
 
