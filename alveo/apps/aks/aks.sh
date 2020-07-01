@@ -99,7 +99,7 @@ done
 
 # Supported Modes & Models
 declare -A SUPPORTED_MODELS
-for name in "googlenet" "resnet50" "googlenet_resnet50" "tinyyolov3" "tinyyolov3_video" "googlenet_tinyyolov3" "stdyolov2" "facedetect" "googlenet_pp_accel"
+for name in "googlenet" "resnet50" "inception_v1_tf" "googlenet_resnet50" "tinyyolov3" "tinyyolov3_video" "googlenet_tinyyolov3" "stdyolov2" "facedetect" "googlenet_pp_accel"
 do
     SUPPORTED_MODELS[$name]=1
 done
@@ -162,7 +162,7 @@ CPP_EXE=""
 PY_EXE=""
 AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=aksMeta_vai1p2_16062020.zip"
 # Check if the model files exists
-for name in "meta_googlenet" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
+for name in "meta_googlenet" "meta_inception_v1_tf" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
 do
     NAME="graph_zoo/$name"
     if [[ ! -d "${NAME}" ]]; then
@@ -177,6 +177,11 @@ done
 if [ "$MODEL" == "googlenet" ]; then
   CPP_EXE=examples/bin/googlenet.exe
   PY_EXE=examples/googlenet.py
+  exec_args="$DIRECTORY1"
+
+elif [ "$MODEL" == "inception_v1_tf" ]; then
+  CPP_EXE=examples/bin/inception_v1_tf.exe
+  PY_EXE=examples/inception_v1_tf.py
   exec_args="$DIRECTORY1"
 
 elif [ "$MODEL" == "googlenet_pp_accel" ]; then
