@@ -80,10 +80,10 @@ The number of images used for quantization is set to 10. you could change the nu
 
 #### Specify Target Hardware
 
-The "target" parameter in the script changes the target hardware for compiling the model. By default, the models are compiled for the "dpuv1" computation engine, targeting Alveo Board. The TVM with Vitis AI flow currently supports 'dpuv1', 'dpuv2-zcu104', 'dpuv2-zcu102'.
+The "target" parameter in the script changes the target hardware for compiling the model. By default, the models are compiled for the "DPUCADX8G" computation engine, targeting Alveo Board. The TVM with Vitis AI flow currently supports 'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'.
 
 ```python
-target  = 'dpuv1' # options: 'dpuv1', 'dpuv2-zcu104', 'dpuv2-zcu102'
+target  = 'DPUCADX8G' # options: 'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
 ```
 
 #### Partition the Model

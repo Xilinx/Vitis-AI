@@ -116,7 +116,7 @@ ${DOCKER_BINARY} run --rm --pid=host\
     -e "alias ls=ls --color=auto"\
     -e "TVM_HOME=${TVM_VAI_HOME}/tvm"\
     -e "PYXIR_HOME=${TVM_VAI_HOME}/pyxir"\
-    -e "PYTHONPATH=${TVM_VAI_HOME}/pyxir/python:${TVM_VAI_HOME}/tvm/python:${TVM_VAI_HOME}/tvm/topi/python:${TVM_VAI_HOME}/tvm/nnvm/python:${TVM_VAI_HOME}/tvm/vta/python:${TVM_VAI_HOME}/tvm/xdnn/python:/opt/vitis_ai/compiler"\
+    -e "PYTHONPATH=/opt/vitis_ai/compiler"\
     -e "CI_PYTEST_ADD_OPTIONS=$CI_PYTEST_ADD_OPTIONS" \
     -e "USER=root"\
     ${CI_DOCKER_EXTRA_PARAMS[@]} \

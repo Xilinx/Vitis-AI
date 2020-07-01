@@ -7,11 +7,11 @@
 This document provides instruction to execute compiled models using the TVM with Vitis AI flow on supported Alveo devices. For more information on how to compile models please refer to the "compiling_a_model.md" document. 
 
 
-The Xilinx Deep Learning Processor Unit (DPU) is a configurable computation engine dedicated for convolutional neural networks. On data-center, The TVM with Vitis AI flow exploits [DPUv1] hardware accelerator built for the Alveo device.
+The Xilinx Deep Learning Processor Unit (DPU) is a configurable computation engine dedicated for convolutional neural networks. On data-center, The TVM with Vitis AI flow exploits [DPUCADX8G] hardware accelerator built for the Alveo device.
 
 ## Resources
 You could find more information here:
-* Board Setup - Follow instruction in [Alveo Setup] repository to download and install dpuv1 on one of the supported Alveo board.
+* Board Setup - Follow instruction in [Alveo Setup] repository to download and install DPUCADX8G on one of the supported Alveo board.
 
 
 ## Executing a Compiled Model
@@ -38,4 +38,4 @@ This script runs the model mxnet_resnet_18 model compiled using the TVM with Vit
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. )
 
    [Alveo Setup]: https://github.com/Xilinx/Vitis-AI/tree/master/alveo
-   [DPUv1]: https://github.com/Xilinx/Vitis-AI/blob/master/alveo/docs/ml-suite-overview.md  
+   [DPUCADX8G]: https://github.com/Xilinx/Vitis-AI/blob/master/alveo/docs/ml-suite-overview.md  
