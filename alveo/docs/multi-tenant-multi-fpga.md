@@ -4,7 +4,7 @@
 
 In the cloud, Vitis-AI uses an FPGA resource manager nicknamed `Butler`. This automatically manages the FPGAs available on a single system. It also enables easy sharing of FPGAs on the system over multiple simultaneous users. The following is a description of common user modes enabled by our FPGA resource manager.
 
-## 1 FPGA, 1 Vitis-AI Runner, Multiple Users
+## Single FPGA, Single Vitis-AI Runner
 
 The Vitis-AI Runner provides a simple software API to submit jobs to Vitis-AI DPU accelerators and collect results. This is a universal API that works for both Cloud and Edge, for any Vitis-AI accelerator.
 
@@ -16,7 +16,7 @@ runner.wait(job_id);
 
 After a Vitis-AI runner object is created, an application may share the runner object to service multiple users. E.g., each user may make an independent call to `runner.execute_async()`, which returns a `job_id`. Each user can independently wait for their job to finish by calling `runner.wait(job_id)`.
 
-## 1 FPGA, Multiple Vitis-AI Runners
+## Single FPGA, Multiple Vitis-AI Runners
 
 Multiple Vitis-AI Runners may timeshare the same FPGA. The FPGA resource manager coordinates access to ensure each user gets a turn. If the FPGA is busy, the process is made to wait until the FPGA is free.
 
@@ -54,7 +54,7 @@ cd examples/deployment_modes
 
 The FPGA resource manager also provides an API for advanced users to provide User-defined Functions to control how FPGAs are selected.
 
-## 1 FPGA, Multiple Models
+## Single FPGA, Multiple Models
 
 In the previous examples, we assume that each Vitis runner acquires the entire FPGA and uses the whole FPGA for one ML model. 
 
@@ -68,6 +68,17 @@ cd examples/deployment_modes
 ./run.sh -t multinet
 ```
 This example deploys Resnet50 on one SLR and Inception_v1 on another SLR. Two Vitis Runners are created (one for each ML model). The Vitis Runners can be used concurrently (E.g. different threads, different processes or different users), as the CU in each SLR is independent.
+
+## Single User, Multiple FPGAs
+
+User can acquire multiple FPGAs using Single Vitis-AI runner. [AI Kernel Scheduler](../apps/aks/README.md) provides command line options to input number of FPGAs in a system. 
+
+Example:
+```sh
+## Run ResNet50 on multiple FPGAs
+cd apps/aks
+./aks.sh -m resnet50 -d1 <image-dir> -n <num-of-fpgas>
+```
 
 ## Additional Examples
 
