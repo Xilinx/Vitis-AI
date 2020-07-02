@@ -118,11 +118,13 @@ def calc_detector_mAP(labels_fpga_basepath, labels_gt_basepath, num_classes, cla
     for file_num in range(len(name_list)):
         gt_exists = os.path.exists(gt_box_files[file_num])
         dt_exists = os.path.exists(detect_box_files[file_num])
-        
-        if(gt_exists == False or dt_exists== False):
-            continue
-        
-        
+
+        if not gt_exists :
+            raise ValueError("Couldn't read the ground truth file {}".format(gt_box_files[file_num]))
+
+        if not dt_exists :
+            raise ValueError("Couldn't read detected output file {}".format(detect_box_files[file_num]))
+
         list_detections_gt = list_lines(gt_box_files[file_num])
         list_detections = list_lines(detect_box_files[file_num])
 #        print("file:",name_list[file_num], " has ", len(list_detections_gt), " gt lines and ",  len(list_detections), " detections")
