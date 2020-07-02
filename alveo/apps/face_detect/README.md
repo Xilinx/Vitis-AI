@@ -45,7 +45,6 @@ tar -xvf evaluation.tgz
 #ignore the warnings
 cp Makefile evaluation/
 cd evaluation 
-# In common.hpp, enable line 13 (#define __IMAGE_FORMAT__ ".jpg") and disable line 14
 make
 cd ..
 ```
@@ -85,13 +84,7 @@ If you have already saved all detections to a text file (say `FDDB_results.txt`)
 
 ``` sh
 cd $VAI_ALVEO_ROOT/apps/face_detect/
-evaluation/evaluate             \
-    -a FDDB/FDDB_annotations.txt  \
-    -d FDDB_results.txt           \
-    -i FDDB/                      \
-    -l FDDB/FDDB_list.txt         
-
-python roc.py
+python roc.py --results <path to result file>
 ```
 
 **Note** : If it throws error regarding missing opencv libs, please extend `LD_LIBRARY_PATH` with `$CONDA_PREFIX/lib`
