@@ -177,6 +177,11 @@ if [ -f /workspace/alveo/overlaybins/setup.sh ]; then
 else
   . ../../../overlaybins/setup.sh
 fi
+# Chose the target
+ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+if [ ! -f $ARCH_JSON ]; then
+  ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
+fi
 if [ -z ${DIRECTORY+x} ]; then
     DIRECTORY=${VAI_ALVEO_ROOT}/apps/yolo/test_image_set/
 fi
@@ -332,7 +337,7 @@ then
 
   COMPILER_BASE_OPT=" --prototxt $NET_DEF_FPGA \
       --caffemodel work/deploy.caffemodel \
-      --arch arch.json \
+      --arch $ARCH_JSON \
       --net_name tmp \
       --output_dir work"
 
