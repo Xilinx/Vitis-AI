@@ -60,6 +60,8 @@ Currently 6 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_y
 ## Getting COCO 2014 validation set and labels
 COCO validation set is large (>40K images and >6 GB in size), so each step below could be slow depending upon your network.
 
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+
 ```sh
 cd $VAI_ALVEO_ROOT/apps/yolo
 python -m ck pull repo:ck-env

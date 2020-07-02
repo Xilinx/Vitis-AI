@@ -19,6 +19,7 @@ Setup the Environment
 ## Data Preparation
 
 Download cityscapes-dataset from https://www.cityscapes-dataset.com/downloads/
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 The unpacked image files are supposed to be at the following location.
 
@@ -27,7 +28,7 @@ The unpacked image files are supposed to be at the following location.
 ```
 
 Alternatively you can download cityscapes-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz as follows
-
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 ```
 cd /workspace/alveo/examples/caffe/pix2pix/cityscapes_AtoB/
 wget https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz

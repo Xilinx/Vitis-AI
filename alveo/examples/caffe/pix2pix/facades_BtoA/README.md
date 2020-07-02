@@ -21,7 +21,7 @@ Setup the Environment
 ## Data Preparation
 
 Download facades-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/facades.tar.gz as follows
-
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 ```
 cd /workspace/alveo/examples/caffe/pix2pix/facades_BtoA/
 wget https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/facades.tar.gz

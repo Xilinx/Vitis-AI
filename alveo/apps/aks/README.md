@@ -23,7 +23,9 @@ Try out the examples provided in `/workspace/alveo/apps/aks` directory. The shel
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning). 
 
-> **NOTE:** Skip, if you have already run the below steps.
+> **Note:** Skip, if you have already run the below steps.
+
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```sh
 # Activate Conda Environment
@@ -239,7 +241,7 @@ These results are collected using a local server with below specs.
 
 You may get a different resuls based on your system performance.
 
-> **NOTE:** The performance numbers are in Images / second.
+> **Note:** The performance numbers are in Images / second.
 
 #### Classification 
 | Model | Images/Sec | # Pre-Proc Threads | # Post-Proc Threads | 
