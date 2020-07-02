@@ -62,6 +62,9 @@ if __name__ == "__main__":
   parser.add_argument('--input_shapes', default="", help='User must provide the network input shapes [comma seperated with no spacing]')
   parser.add_argument('--output_dir', default="work", help='Optionally, save all generated outputs in specified folder')
   parser.add_argument('--pre_process', default="", help='pre-process function for quantization calibration')
+  parser.add_argument('--imagedir', default= os.environ["HOME"] + "/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/", help='directory of input images')
+  parser.add_argument('--imagelist', default= os.environ["HOME"] + "/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val.txt", help='list of input images')
+  parser.add_argument('--labelslist', default= os.environ["HOME"] + "/CK-TOOLS/dataset-imagenet-ilsvrc2012-aux/synset_words.txt", help='list of labels')
   parser.add_argument('--label_offset', default=LABEL_OFFSET, help='Optionally, label offset of the dataset')
   parser.add_argument('--batch_size', type=int, default=BATCH_SIZE, help='batch sizes to run')
   parser.add_argument('--calib_iter', type=int, default=10, help='calibration iterations for quantization')
@@ -105,7 +108,7 @@ if __name__ == "__main__":
       arch_json = os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1/tools/compile/bin/arch.json')
     else:
       arch_json = '/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json'
-    input_fn = get_input_fn(args.pre_process, args.input_nodes)
+    input_fn = get_input_fn(args.pre_process, args.input_nodes, imagedir = args.imagedir, imagelist = args.imagelist)
     q_config = decent_q.QuantizeConfig(input_nodes = input_node_names,
         output_nodes = output_node_names,
         input_shapes = input_shapes,
@@ -147,7 +150,7 @@ if __name__ == "__main__":
       tf.import_graph_def(graph_def, name='')
 
     graph = tf.get_default_graph()
-    top5_accuracy(graph, args.input_nodes, args.output_nodes, iter_cnt, args.batch_size, args.pre_process, args.label_offset)
+    top5_accuracy(graph, args.input_nodes, args.output_nodes, iter_cnt, args.batch_size, args.pre_process, args.label_offset, imagedir = args.imagedir, imagelist = args.imagelist)
 
   if args.validate:
     iter_cnt = 500 // args.batch_size
@@ -170,4 +173,4 @@ if __name__ == "__main__":
     ## load the accelerated graph
     graph = rt.load_partitioned_graph()
 
-    top5_accuracy(graph, args.input_nodes, args.output_nodes, iter_cnt, args.batch_size, args.pre_process, args.label_offset)
+    top5_accuracy(graph, args.input_nodes, args.output_nodes, iter_cnt, args.batch_size, args.pre_process, args.label_offset, imagedir = args.imagedir, imagelist = args.imagelist)

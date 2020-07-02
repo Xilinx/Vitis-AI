@@ -45,6 +45,7 @@ tar -xvf evaluation.tgz
 #ignore the warnings
 cp Makefile evaluation/
 cd evaluation 
+# In common.hpp, enable line 13 (#define __IMAGE_FORMAT__ ".jpg") and disable line 14
 make
 cd ..
 ```

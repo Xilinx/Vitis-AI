@@ -78,6 +78,7 @@ find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | head -2000 | 
 
 Also, copy a few images (~25 images) to `apps/yolo/test_image_set` for calibration.
 ```
+mkdir -p test_image_set
 find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xargs cp -t test_image_set/
 ```
 
