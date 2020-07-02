@@ -20,6 +20,7 @@ Setup the Environment
 ## Data Preparation
 
 Download cityscapes-dataset (leftImg8bit_trainvaltest.zip) from https://www.cityscapes-dataset.com/downloads/
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 You need to register for the website to download the dataset.
 
@@ -33,7 +34,7 @@ The unpacked image files are supposed to be at the following location.
 > **Note:** This model was trained using cityscapes/frankfurt dataset. The alternative dataset might not provide correct output.
 
 Alternatively you can download cityscapes-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz as follows
-
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 ```
 cd /workspace/alveo/examples/caffe/FPN_CityScapes/
 wget https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz

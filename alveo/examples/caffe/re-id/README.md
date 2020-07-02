@@ -6,6 +6,7 @@ This code employs a resnet-18 based model to generate feature maps of person ima
 ### Data Preparation
 
 Download [market1501](http://www.diaochapai.com/survey/a61751ca-4210-4df1-a5bb-1e7a71b5262b) dataset. Extract the files to `./data/market1501`. The data structure should look like:
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 ```sh
 data/
     market1501/

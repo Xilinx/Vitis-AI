@@ -19,6 +19,7 @@ Setup the Environment
 ## Data Preparation
 
 Download maps-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/maps.tar.gz as follows
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```
 cd /workspace/alveo/examples/caffe/pix2pix/maps_AtoB/

@@ -16,6 +16,7 @@ cd /workspace/alveo/examples/caffe/U-Net
 ## Data Preparation
 
 Download PhC-U373 dataset from http://celltrackingchallenge.net/2d-datasets/ 
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 The dataset has two subsets: '01' and '02'. 
 

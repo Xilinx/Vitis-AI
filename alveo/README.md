@@ -1,7 +1,5 @@
 This directory containes examples for running Xilinx DPUCADX8G on Alveo platform. **DPUCADX8G**  is High Performance CNN processing engine designed for Xilinx Alveo-u200 and Alveo-u250 platforms. It was released as xDNNv3 as part of *ml-suite*. With **Vitis-AI**, Xilinx has integrated all the edge and cloud solutions under an unified API and toolset.
 
-**Learn More:** [DPUCADX8G Overview][]  
-
 ## Setup for Alveo
 Targeting Alveo cards with Vitis-AI for AI workloads requires the installation of the following software components:  
 

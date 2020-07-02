@@ -17,6 +17,7 @@
 ### Data Preparation
 
 - Download coco2014 datatset (https://cocodataset.org/#download) 
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 - Reorg coco as below:
   ```sh
   coco2014/

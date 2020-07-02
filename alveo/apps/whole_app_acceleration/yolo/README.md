@@ -25,6 +25,8 @@ source /workspace/alveo/overlaybins/setup.sh
 - Use `detect.sh` file to run the application.
 - Make sure to follow the steps [here](../../yolo/README.md#getting-coco-2014-validation-set-and-labels) to get COCO validation set and labels/ 
 
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+
 ### Examples
 
 - Familiarize yourself with the script usage by 

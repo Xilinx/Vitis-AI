@@ -17,7 +17,8 @@
 
 ### Data Preparation
 
-Download VOC2007 dataset. 
+Download VOC2007 dataset.
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses. 
 
 ```sh
 # Download the data.
