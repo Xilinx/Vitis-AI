@@ -14,6 +14,12 @@ import cv2
 
 import caffe
 
+# Need to create derived class to clean up properly
+class Net(caffe.Net):
+  def __del__(self):
+    for layer in self.layer_dict:
+      if hasattr(self.layer_dict[layer],"fpgaRT"):
+        del self.layer_dict[layer].fpgaRT
 
 #%% define functions
 
@@ -95,16 +101,6 @@ def segment(net, img_file):
 
     return out
 
-class Net(caffe.Net):
-    def __del__(self):
-        print("destructor called",flush=True)
-        for layer in self.layer_dict:
-            if hasattr(self.layer_dict[layer],"fpgaRT"):
-                del self.layer_dict[layer].fpgaRT
-
-   
-    
-
 #%% main 
     
 # model configuration for cpu
@@ -170,5 +166,6 @@ for c in range(n_classes):
     print("class {:02.0f}: #TP={:6.0f}, #FP={:6.0f}, #FN={:5.0f}, IoU={:4.3f}".format(c,int(TP[c]),int(FP[c]),int(FN[c]),float(IoU)))
     IoUs.append(float(IoU))
 mIoU = np.mean(IoUs)
+del net_fpga
 print("_________________")
 print("mean IoU: {:4.3f}".format(mIoU))

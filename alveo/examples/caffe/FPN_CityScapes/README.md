@@ -30,6 +30,7 @@ The unpacked image files are supposed to be at the following location.
 /workspace/alveo/examples/caffe/FPN_CityScapes/leftImg8bit/val/frankfurt
 ```
 
+> **Note:** This model was trained using cityscapes/frankfurt dataset. The alternative dataset might not provide correct output.
 
 Alternatively you can download cityscapes-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz as follows
 
@@ -43,15 +44,15 @@ rm cityscapes.tar.gz
 The folder is supposed to be as the following.  
 
 ```
-/workspace/alveo/examples/caffe/pix2pix/FPN_CityScapes/cityscapes/train
-/workspace/alveo/examples/caffe/pix2pix/FPN_CityScapes/cityscapes/val
+/workspace/alveo/examples/caffe/FPN_CityScapes/cityscapes/train
+/workspace/alveo/examples/caffe/FPN_CityScapes/cityscapes/val
 ```
 
 The downloaded images have the combination of Cityscapes Semantic photo and label. 
 To split Semantic photo and label, please run the following command lines.
 
 ```
-$ cd /workspace/alveo/examples/caffe/pix2pix/cityscapes_AtoB/
+$ cd /workspace/alveo/examples/caffe/FPN_CityScapes/
 $ python extract_label_semantic.py
 ```
 
@@ -68,6 +69,8 @@ This will generate two subfolders in val folder. 'photo' and 'label'.
 We trained FPN CityScapes model with input size as [256,512,3].
 
 After training the model, we quantized the model to deploy on FPGA.
+
+> **Note:** Skip, If you have already run the below steps.
 
 To get the quantized Caffe model, run the following command lines. 
 
@@ -87,12 +90,28 @@ cp -R /workspace/alveo/examples/caffe/models/FPN_CityScapes ./quantize_results
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'FPN_CityScapes/quantize_results' sub-foloder.
 
 
-## Run Inference model on cpu
+## Run Inference model on CPU
 
-To run the inference model on cpu with 'cityscapes/frankfurt' images, please use the following command line.
+
+To run the inference model on cpu with 'cityscapes/frankfurt' images, please update FPN_cpu.py using any text editor as following.
+
+```
+line97, img_path = './leftImg8bit/val/frankfurt/'
+ling98, #img_path = './cityscapes/val/photo/'
+```
+
+Then, use the following command line.
 ```
 python FPN_cpu.py 
 ```
+
+
+To run the inference model on cpu with 'cityscapes/val/photo' images, please use the following command line.
+```
+python FPN_cpu.py 
+```
+
+
 The first 30 output images will be stored in 'cpu_output' sub-folder.
 
 
@@ -116,9 +135,19 @@ xfdnn_deploy.prototxt is to execute Caffe model on FPGA.
 
 ## Run Inference model on FPGA 
 
-To run the inference model on fpga with 'cityscapes/frankfurt' images, 
+To run the inference model on fpga with 'cityscapes/frankfurt' images, please update FPN_fpga.py using any text editor as following.
 
-please use the following command line.
+```
+line124, img_path = './leftImg8bit/val/frankfurt/'
+ling125, #img_path = './cityscapes/val/photo/'
+```
+
+Then, use the following command line.
+```
+python FPN_fpga.py 
+```
+
+To run the inference model on fpga with 'cityscapes/val/photo' images, please use the following command line.
 
 ```
 python FPN_fpga.py 
