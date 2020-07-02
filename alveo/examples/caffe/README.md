@@ -26,6 +26,8 @@ Setup the Environment
   ```
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning).
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses. 
+
 
   ```sh
   cd  ${VAI_ALVEO_ROOT}/examples/caffe
