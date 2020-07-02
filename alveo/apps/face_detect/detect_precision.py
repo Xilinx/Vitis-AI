@@ -84,7 +84,7 @@ if __name__ == "__main__":
         os.mkdir(work_dir)
 
     faceDetection(args,FDDB_list, FDDB_results_file) 
-    cmd = '%sevaluation/evaluate -a %s -d %sFDDB_results.txt -i %s -l %s -r %s' % (work_dir, 
+    cmd = '%sevaluation/evaluate -a %s -d %sFDDB_results.txt -i %s -l %s -r %s -z .jpg' % (work_dir, 
                                         args.fddbAnno, work_dir, args.fddbPath, args.fddbList, work_dir)
     print (cmd)
     [status, _] = subprocess.getstatusoutput(cmd)

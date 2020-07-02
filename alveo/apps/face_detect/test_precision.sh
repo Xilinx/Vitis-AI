@@ -71,6 +71,8 @@ rm -rf $COMP_DIR
 mkdir $COMP_DIR
 rm -rf $QUANT_DIR
 mkdir $QUANT_DIR
+rm -f ContROC.txt
+rm -f DiscROC.txt
 
 NET_DEF=$PROTOTXT
 DUMMY_PTXT=$COMP_DIR/${Model_Name}_decent.prototxt

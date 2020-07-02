@@ -72,8 +72,8 @@ usage() {
 # Default
 NUM_FPGA=""
 MODEL="googlenet"
-DIRECTORY1=""
-DIRECTORY2=""
+DIRECTORY1=
+DIRECTORY2=
 VIDEO=""
 IMPL="cpp"
 VERBOSE=1
@@ -81,7 +81,17 @@ VERBOSE=1
 # Parse Options
 while true
 do
-  if [[ -z "$1" ]]; then break; fi
+  if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    usage;
+    exit 0;
+  fi
+  if [ -z "$1" ]; then 
+    break; 
+  fi
+  if [ -z "$2" ]; then 
+    echo -e "\n[ERROR] Missing argument value for $1 \n";
+    exit 1; 
+  fi
   case "$1" in
     -n  |--nfpga         ) NUM_FPGA="$2"         ; shift 2 ;;
     -m  |--model         ) MODEL="$2"            ; shift 2 ;;
@@ -90,7 +100,6 @@ do
     -vf |--video         ) VIDEO="$2"            ; shift 2 ;;
     -i  |--impl          ) IMPL="$2"             ; shift 2 ;;
     -v  |--verbose       ) VERBOSE="$2"          ; shift 2 ;;
-    -h  |--help          ) usage                 ; exit  1 ;;
      *) echo "Unknown argument : $1";
         echo "Try ./aks.sh -h to get correct usage. Exiting ...";
         exit 1 ;;
@@ -173,6 +182,22 @@ do
     fi;
 done
 
+
+if [ "$MODEL" == "tinyyolov3_video" ]; then
+  if [[ "${VIDEO}" == "" ]]; then
+    echo -e "[ERROR] No input video: \"-vf\" required\n";
+    exit 1;
+  fi
+else
+  if [[ "${DIRECTORY1}" == "" ]]; then
+    echo -e "[ERROR] No input image directory: \"-d1\" required\n";
+    exit 1;
+  fi
+  if [[ ! -d "${DIRECTORY1}" ]]; then
+    echo -e "[ERROR] ${DIRECTORY1} doesn't exist\n"
+    exit 1;
+  fi
+fi
 # Model Selection
 if [ "$MODEL" == "googlenet" ]; then
   CPP_EXE=examples/bin/googlenet.exe
@@ -218,11 +243,27 @@ elif [ "$MODEL" == "googlenet_resnet50" ]; then
   CPP_EXE=examples/bin/googlenet_resnet50.exe
   PY_EXE=examples/googlenet_resnet50.py
   exec_args="$DIRECTORY1 $DIRECTORY2"
+  if [[ "${DIRECTORY2}" == "" ]]; then
+    echo -e "[ERROR] No input image directory: \"-d2\" required\n";
+    exit 1;
+  fi
+  if [[ ! -d "${DIRECTORY2}" ]]; then
+    echo -e "[ERROR] ${DIRECTORY2} doesn't exist\n"
+    exit 1;
+  fi;
 
 elif [ "$MODEL" == "googlenet_tinyyolov3" ]; then
   CPP_EXE=examples/bin/googlenet_tinyyolov3.exe
   PY_EXE=examples/googlenet_tinyyolov3.py
   exec_args="$DIRECTORY1 $DIRECTORY2"
+  if [[ "${DIRECTORY2}" == "" ]]; then
+    echo -e "[ERROR] No input image directory: \"-d2\" required\n";
+    exit 1;
+  fi
+  if [[ ! -d "${DIRECTORY2}" ]]; then
+    echo -e "[ERROR] ${DIRECTORY2} doesn't exist\n"
+    exit 1;
+  fi;
 
 elif [ "$MODEL" == "facedetect" ]; then
   echo "[INFO] Visit $VAI_ALVEO_ROOT/apps/face_detect to prepare FDDB dataset."
