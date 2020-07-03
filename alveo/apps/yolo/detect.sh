@@ -249,8 +249,8 @@ fi
 
 # Misc environment
 mkdir -p work
+rm -rf $RESULTS_DIR
 mkdir -p $RESULTS_DIR
-
 
 # Model Selection
 if [ "$MODEL" == "yolo_v2" ]; then
