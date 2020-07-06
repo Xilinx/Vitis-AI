@@ -30,7 +30,7 @@ Vitis AI is composed of the following key components:
 ## [See What's New](doc/release-notes/1.x.md)
 - [Release Notes](doc/release-notes/1.x.md)
 - Vitis AI Quantizer and DNNDK runtime all open source
-- 16 new Reference Models  AI Model Zoo (Pytorch, Caffe, Tensorflow)
+- 14 new Reference Models  AI Model Zoo (Pytorch, Caffe, Tensorflow)
 - VAI Quantizer supports optimized models (prunned) 
 - DPU naming scheme has been updated to be consistant across all configurations
 - Introducing Vitis AI profiler for edge and cloud
