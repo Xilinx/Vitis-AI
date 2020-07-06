@@ -107,7 +107,7 @@ RUN cd /scratch/ && \
         --file /scratch/conda_requirements_neptune.txt \
         -c $MY_CONDA_CHANNEL -c defaults -c conda-forge/label/gcc7 -c conda-forge && \
         conda activate vitis-ai-neptune && pip install -r /scratch/pip_requirements_neptune.txt &&\
-        mkdir -p $VAI_ROOT/compiler &&    ln -s /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/python3.6/site-packages/vaic/arch /opt/vitis_ai/compiler/arch
+        mkdir -p $VAI_ROOT/compiler &&    ln -s /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/python3.6/site-packages/vaic/arch /opt/vitis_ai/compiler/arch && rm -fr /scratch/*
 
 
 
