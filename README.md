@@ -34,8 +34,9 @@ Vitis AI is composed of the following key components:
 - VAI Quantizer supports optimized models (prunned) 
 - DPU naming scheme has been updated to be consistant across all configurations
 - Introducing Vitis AI profiler for edge and cloud
-- Added  Alveo U50/U50LV support
-- Added  Alveo U280 support
+- VAI DPUs supported in ONNXRuntime and TVM
+- Added Alveo U50/U50LV support
+- Added Alveo U280 support
 - Alveo U50/U50LV DPU DPUCAHX8H micro-architecture improvement 
 - DPU TRD upgraded to support Vitis 2020.1 and Vivado 2020.1
 - Vitis AI for Pytorch CNN general access (Beta version)
@@ -44,7 +45,7 @@ Vitis AI is composed of the following key components:
 
 Two options are available for installing the containers with the Vitis AI tools and resources.
 
- - Pre-built containers on Docker Hub: [/xilinx/vitis-ai](https://hub.docker.com/r/xilinx/vitis-ai/tags)
+ - Pre-built containers on Docker Hub: [xilinx/vitis-ai](https://hub.docker.com/r/xilinx/vitis-ai/tags)
  - Build containers locally with Docker recipes: [Docker Recipes](docker)
 
 
