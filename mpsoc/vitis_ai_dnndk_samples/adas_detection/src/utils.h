@@ -99,8 +99,8 @@ void detect(vector<vector<float>> &boxes, vector<float> result,
 
                 box.push_back((w + sigmoid(swap[h * width + w][c][0])) / width);
                 box.push_back((h + sigmoid(swap[h * width + w][c][1])) / height);
-                box.push_back(exp(swap[h * width + w][c][2]) * biases[2 * c + 10 * num] / float(sWidth));
-                box.push_back(exp(swap[h * width + w][c][3]) * biases[2 * c + 10 * num + 1] / float(sHeight));
+                box.push_back(exp(swap[h * width + w][c][2]) * biases[2 * c + (2 * anchorCnt) * num] / float(sWidth));
+                box.push_back(exp(swap[h * width + w][c][3]) * biases[2 * c + (2 * anchorCnt) * num + 1] / float(sHeight));
                 box.push_back(-1);
                 box.push_back(obj_score);
                 for (int p = 0; p < classificationCnt; p++) {
