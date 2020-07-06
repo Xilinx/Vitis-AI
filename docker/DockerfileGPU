@@ -54,7 +54,7 @@ RUN pip3 install \
         wheel
 
 #install XRT
-RUN cd /tmp/ &&  wget -O xrt_202010.2.6.655_18.04-amd64-xrt.deb  https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_18.04-amd64-xrt.deb && sudo apt-get update && apt-get install -y --no-install-recommends /tmp/*.deb && apt-get clean  && rm -fr /tmp/*
+RUN cd /tmp/ &&  wget -O xrt_202010.2.6.655_18.04-amd64-xrt.deb  https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_18.04-amd64-xrt.deb && sudo apt-get update && apt-get install -y  /tmp/*.deb && apt-get clean  && rm -fr /tmp/*
 
 RUN cd /tmp/ && wget -O glog.0.4.0.tar.gz https://codeload.github.com/google/glog/tar.gz/v0.4.0 && \
     tar -xvf  glog.0.4.0.tar.gz && cd /tmp/glog-0.4.0 &&  ./autogen.sh && \
