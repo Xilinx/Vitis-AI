@@ -672,7 +672,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U200
-Measured with Vitis AI 1.1 and Vitis AI Library 1.1 
+Measured with Vitis AI 1.2 and Vitis AI Library 1.2 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -696,7 +696,7 @@ The following table lists the performance number including end-to-end throughput
 </details>
 
 ### Performance on U250
-Measured with Vitis AI 1.1 and Vitis AI Library 1.1 
+Measured with Vitis AI 1.2 and Vitis AI Library 1.2 
 
 <details>
  <summary><b>Click here to view details</b></summary>
