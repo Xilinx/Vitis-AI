@@ -109,11 +109,7 @@ For example, `cf_refinedet_coco_480_360_0.8_25G_1.2` is a `RefineDet` model trai
 
 
 ### caffe-xilinx 
-This is a custom distribution of caffe. Please use caffe-xilinx to test/finetune the caffe models listed in this page.
-
-**Note:** To download caffe-xilinx, visit [caffe-xilinx-1.2.zip](https://www.xilinx.com/bin/public/openDownload?filename=caffe-xilinx-1.2.zip)
-
-
+This is a custom distribution of caffe. Please use **caffe-xilinx** to test/finetune the caffe models listed in this page.
 
 ## Model Download
 The following table lists various models, download link and MD5 checksum for the zip file of each model.
