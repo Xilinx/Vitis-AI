@@ -117,7 +117,7 @@ RUN cd /tmp/ && \
          wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog_1.2.0-r10_amd64.deb && \
         wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory_1.2.0-r10_amd64.deb && \
         wget -O libxir.deb  https://www.xilinx.com/bin/public/openDownload?filename=libxir_1.2.0-r12_amd64.deb && \
-        wget -O libvart.deb lhttps://www.xilinx.com/bin/public/openDownload?filename=ibvart_1.2.0-r16_amd64.deb && \
+        wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_1.2.0-r16_amd64.deb && \
         wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis_ai_library_1.2.0-r15_amd64.deb && \
 	apt-get install -y --no-install-recommends /tmp/*.deb && \
 	rm /tmp/*.deb && \
