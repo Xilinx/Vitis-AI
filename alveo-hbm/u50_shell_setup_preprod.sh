@@ -41,7 +41,7 @@ else
   distroname="$(uname -s) $(uname -r)"
 fi
 
-$DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=dpuv3e_u50_platform_vai1.2.tgz"
+DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=dpuv3e_u50_platform_vai1.2.tgz"
 wget $DEPLOY_PLFM_URL -O shell.tgz
 
 ##############################
@@ -51,15 +51,15 @@ tar xfz shell.tgz
 cd ./dpuv3e_u50_platform_vai1.2
 
 if [[ $distroname == *"Ubuntu 16.04"* ]]; then
-  sudo apt install ./*cmc*16.04.deb -y
-  sudo apt install ./*sc-fw*16.04.deb -y
-  sudo apt install ./*-u50-*validate*16.04.deb -y
-  sudo apt install ./*-u50-*base*16.04.deb -y
+  sudo apt install ./*cmc*16.04.deb -y --allow-downgrades
+  sudo apt install ./*sc-fw*16.04.deb -y --allow-downgrades
+  sudo apt install ./*-u50-*validate*16.04.deb -y --allow-downgrades
+  sudo apt install ./*-u50-*base*16.04.deb -y --allow-downgrades
 elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
-  sudo apt install ./*cmc*18.04.deb -y
-  sudo apt install ./*sc-fw*18.04.deb -y
-  sudo apt install ./*-u50-*validate*18.04.deb -y
-  sudo apt install ./*-u50-*base*18.04.deb -y
+  sudo apt install ./*cmc*18.04.deb -y --allow-downgrades
+  sudo apt install ./*sc-fw*18.04.deb -y --allow-downgrades
+  sudo apt install ./*-u50-*validate*18.04.deb -y --allow-downgrades
+  sudo apt install ./*-u50-*base*18.04.deb -y --allow-downgrades
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"RHEL"* ]]; then
   sudo yum install ./*cmc*.rpm -y
   sudo apt install ./*sc-fw*.rpm -y
