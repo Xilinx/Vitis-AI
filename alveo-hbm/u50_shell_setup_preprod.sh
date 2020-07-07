@@ -41,52 +41,30 @@ else
   distroname="$(uname -s) $(uname -r)"
 fi
 
-
-##############################
-# Download Gen3x4 Platform
-##############################
-if [[ $distroname == *"Ubuntu 16.04"* ]]; then
-  echo "Ubuntu 16.04"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz"
-elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
-  echo "Ubuntu 18.04"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-18.04_deb.tar.gz"
-elif [[ $distroname == *"CentOS"* ]]; then
-  echo "CentOS"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz"
-elif [[ $distroname == *"Red Hat"* ]]; then
-  echo "RHEL"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz"
-else
-  echo "Failed, couldn't detect os distribution"
-  exit 1
-fi
+$DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=dpuv3e_u50_platform_vai1.2.tgz"
+wget $DEPLOY_PLFM_URL -O shell.tgz
 
 ##############################
 # Install Gen3x4 Platform
 ##############################
-mkdir ./temp
-cd ./temp
-wget $DEPLOY_PLFM_URL -O shell.tgz
 tar xfz shell.tgz
-if [[ $distroname == *"Ubuntu 16.04"* ]] || [[ $distroname == *"Ubuntu 18.04"* ]]; then
-  sudo apt install ./*cmc* -y
-  sudo apt install ./*sc-fw* -y
-  sudo apt install ./*validate* -y
-  sudo apt install ./*base* -y
+cd ./dpuv3e_u50_platform_vai1.2
+
+if [[ $distroname == *"Ubuntu 16.04"* ]]; then
+  sudo apt install ./*cmc*16.04.deb -y
+  sudo apt install ./*sc-fw*16.04.deb -y
+  sudo apt install ./*-u50-*validate*16.04.deb -y
+  sudo apt install ./*-u50-*base*16.04.deb -y
+elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
+  sudo apt install ./*cmc*18.04.deb -y
+  sudo apt install ./*sc-fw*18.04.deb -y
+  sudo apt install ./*-u50-*validate*18.04.deb -y
+  sudo apt install ./*-u50-*base*18.04.deb -y
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"RHEL"* ]]; then
-  sudo yum install ./*cmc* -y
-  sudo yum install ./*sc-fw* -y
-  sudo yum install ./*validate* -y
-  sudo yum install ./*base* -y
-else
-  echo "Failed, couldn't detect os distribution"
-  exit 1
+  sudo yum install ./*cmc*.rpm -y
+  sudo apt install ./*sc-fw*.rpm -y
+  sudo apt install ./*-u50-*validate*.rpm -y
+  sudo apt install ./*-u50-*base*.rpm -y
 fi
 
-cd ..
-
-##############################
-# Flash alveo
-##############################
-sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_base_2
+sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50_gen3x4_xdma_base_2
