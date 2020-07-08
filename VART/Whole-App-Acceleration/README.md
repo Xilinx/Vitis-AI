@@ -60,6 +60,7 @@ Runtime packages on the board separately.**
 	tar -xzvf waa_system_v1.2.0.tar.gz
 	cp waa_system_v1.2.0/sd_card/* /mnt/sd-mmcblk0p1/
 	cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
+	ln -s /usr/lib/dpu.xclbin /mnt/dpu.xclbin
 	cp waa_system_v1.2.0/lib/* /usr/lib/
 	reboot
 	```
@@ -111,9 +112,9 @@ FPGA: ZCU102
 
   <tr>
     <td>Resnet-50</td>
-    <td>53.6</td>
-    <td>65.4</td>
-    <td>22%</td>
+    <td>52.60</td>
+    <td>62.94</td>
+    <td>19.66%</td>
   </tr>
   
   <tr>
