@@ -71,13 +71,13 @@ Before running the examples on the target, please copy the examples and images t
 
 1. Copy the examples to the board using scp.
 ```
-scp -r Vitis-AI/Whole-Application-Acceleration root@IP_OF_BOARD:~/
+scp -r Vitis-AI/VART/Whole-App-Acceleration root@IP_OF_BOARD:~/
 ```
 2. Prepare the images for the test
 
-For resnet50_mt_py_waa example, download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/Whole-Application-Acceleration/resnet50_mt_py_waa/images` 
+For resnet50_mt_py_waa example, download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/VART/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
 
-For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/Whole-Application-Acceleration/adas_detection_waa/data`
+For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/VART/Whole-App-Acceleration/adas_detection_waa/data`
 
 3. Compile and run the program on the target
 
