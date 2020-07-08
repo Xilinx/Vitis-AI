@@ -14,5 +14,6 @@
 # * limitations under the License.
 # */
 
+
 # compress bitstream
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
