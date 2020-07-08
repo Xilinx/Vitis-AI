@@ -28,36 +28,37 @@ echo "---------------------"
 echo "Verifying XILINX_XRM"
 echo "---------------------"
 
-#if [ -d "/opt/xilinx/xrm" ]; then
-#    export XILINX_XRM=/opt/xilinx/xrm
-#    export PATH=$XILINX_XRM/bin:$PATH
-#    export LD_LIBRARY_PATH=$XILINX_XRM/lib:$LD_LIBRARY_PATH
-#    echo "Xilinx XRM found, using XRM"
-#else
-#	echo "Xilinx XRM not found on machine, default to Butler"
-#fi 
+if [[ "$XDNN_XRM" -eq 1 ]]; then
+    export LD_LIBRARY_PATH=/opt/xilinx/xrm/lib:$LD_LIBRARY_PATH
+    echo "Using Xilinx XRM"
+fi 
 
 echo "---------------------"
 echo "Using LD_LIBRARY_PATH"
 echo "---------------------"
 echo $LD_LIBRARY_PATH
 
-
-LIBXDNN_PATH=${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so
+LIBXDNN_PATH=${CONDA_PREFIX}/lib/libxfdnn.so
 if [ -f $LIBXDNN_PATH ]; then
+  echo "--------------------"
+  echo "Vitis-AI Flow"
+  echo "---------------------"
+  LD_LIBRARY_PATH=${CONDA_PREFIX}/lib:$LD_LIBRARY_PATH
+else
   echo "---------------------"
   echo "Developer Flow"
   echo "---------------------"
-  PYTHONPATH=${VAI_ALVEO_ROOT}:${VAI_ALVEO_ROOT}/apps/yolo:${VAI_ALVEO_ROOT}/apps/yolo/nms:${VAI_ALVEO_ROOT}/xfmlp/python:${PYTHONPATH}
+  PYTHONPATH=${VAI_ALVEO_ROOT}:${VAI_ALVEO_ROOT}/apps/yolo:${VAI_ALVEO_ROOT}/apps/yolo:${VAI_ALVEO_ROOT}/xfmlp/python:${PYTHONPATH}
   ln -s $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/bin/vai_c_tensorflow.py $CONDA_PREFIX/bin/vai_c_tensorflow
   ln -s $CONDA_PREFIX/bin/decent_q $CONDA_PREFIX/bin/vai_q_tensorflow
   MLSUITE_ROOT=$VAI_ALVEO_ROOT
   export MLSUITE_ROOT
-else
-  LIBXDNN_PATH=${CONDA_PREFIX}/lib/libxfdnn.so
+  LIBXDNN_PATH=${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so
 fi
+
 export LIBXDNN_PATH
 export PYTHONPATH
+export LD_LIBRARY_PATH
 
 echo "-------------------"
 echo "Using LIBXDNN_PATH"

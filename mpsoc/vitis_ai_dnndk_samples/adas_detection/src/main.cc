@@ -96,7 +96,7 @@ void setInputImageForYOLO(DPUTask* task, const Mat& frame, float* mean) {
         }
     }
 
-    float scale = pow(2, 7);
+    float scale = dpuGetInputTensorScale(task, INPUT_NODE);
 
     for(int i = 0; i < size; ++i) {
         data[i] = int(bb.data()[i]*scale);

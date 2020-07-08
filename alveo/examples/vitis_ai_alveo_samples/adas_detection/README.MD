@@ -1,16 +1,35 @@
 This is adas_detection example and it uses unified vitis-ai APIs to run on alveo platforms
 
-BUILD: 
+### Setup
 
-    $make
+> **Note:** Skip, If you have already run the below steps.
 
-RUN:
+Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe 
+  ```
 
-    $source run.sh
+Setup the Environment
 
-Input: It takes input as video file from video folder in current path
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
+
+### Build
+
+  ```sh
+  make
+  ```
+
+### Run
+ 
+  ```sh
+  ./run.sh <video path>
+  ```
+
+Input: avi video path
 
 Output: Detection results saved as jpg images inside output folder in current path
 
-**Note: Application assumes `vitis-ai-caffe` conda has already activated  
+> **Note:** Application assumes `vitis-ai-caffe` conda is already activated  
 

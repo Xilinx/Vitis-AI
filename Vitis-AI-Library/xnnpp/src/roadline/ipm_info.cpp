@@ -230,7 +230,7 @@ vector<vector<T>> IpmInfo::dot(const vector<vector<T>>& iv1, T i2) {
       ov[i][j] = iv1[i][j] * i2;
     }
   }
-  return std::move(ov);
+  return ov;
 }
 
 template <typename T>
@@ -246,7 +246,7 @@ vector<vector<T>> IpmInfo::dot(const vector<vector<T>>& iv1,
       }
     }
   }
-  return std::move(ov);
+  return ov;
 }
 
 }  // namespace roadline

@@ -83,6 +83,11 @@ CMD_SEQ = {
                    ('crop_center', [227, 227]),
                    ('meansub', [104.006, 116.669, 122.679]),
                   ],
+                'vgg': [
+                   ('resize2mindim', [256, 256]),
+                   ('crop_center', [224, 224]),
+                   ('meansub', [123.68, 116.78, 103.94]),
+                  ],
 }
 ########################################################################
 
@@ -118,21 +123,21 @@ def load_image(iter, image_list = None, pre_process_function = None, input_nodes
     else:
         return input_dict
 
-def get_input_fn(pre_processing_function_name, input_nodes, include_labels = False, batch_size = 1):
+def get_input_fn(pre_processing_function_name, input_nodes, include_labels = False, batch_size = 1, imagedir = IMAGEDIR, imagelist = IMAGELIST):
     cmd_seq = CMD_SEQ[pre_processing_function_name]
-    with open(IMAGELIST) as fin:
+    with open(imagelist) as fin:
         lines = fin.readlines()
-        image_list = list(map(lambda x:os.path.join(IMAGEDIR, x.strip()), lines))
+        image_list = list(map(lambda x:os.path.join(imagedir, x.strip()), lines))
     return partial(load_image, image_list = image_list, pre_process_function = cmd_seq, input_nodes = input_nodes, include_labels = include_labels, batch_size = batch_size)
 
-def top5_accuracy(graph, input_nodes, output_nodes, iter_cnt, batch_size, pre_processing_function_name, label_offset=0):
+def top5_accuracy(graph, input_nodes, output_nodes, iter_cnt, batch_size, pre_processing_function_name, label_offset=0, imagedir = IMAGEDIR, imagelist=IMAGELIST):
   global BATCH_SIZE, INPUT_NODES, INCLUDE_LABELS, LABEL_OFFSET
 
   INPUT_NODES    = input_nodes
   INCLUDE_LABELS = True
   LABEL_OFFSET   = label_offset
   BATCH_SIZE     = batch_size
-  input_fn = get_input_fn(pre_processing_function_name, input_nodes, include_labels = True, batch_size = BATCH_SIZE)
+  input_fn = get_input_fn(pre_processing_function_name, input_nodes, include_labels = True, batch_size = BATCH_SIZE, imagedir = imagedir, imagelist = imagelist)
 
   with tf.Session(graph=graph) as sess:
     input_tensors = {node: sess.graph.get_operation_by_name(node).outputs[0] for node in make_list(input_nodes)}
@@ -141,7 +146,7 @@ def top5_accuracy(graph, input_nodes, output_nodes, iter_cnt, batch_size, pre_pr
     top1_acc = 0
     top5_acc = 0
     progress = ProgressBar()
-    line = open(IMAGELIST).readlines()
+    line = open(imagelist).readlines()
     for iter in progress(range(iter_cnt)):
       inputs = input_fn(iter)
       correct_labels = inputs['labels']

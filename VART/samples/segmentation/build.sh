@@ -24,12 +24,12 @@ install_prefix_default=$HOME/.local/${target_info}
 
 name=$(basename $PWD)
 if [[ "$CXX"  == *"sysroot"* ]];then
-$CXX -ggdb -O2 -fno-inline -I. \
+$CXX -O2 -fno-inline -I. \
      -I=/install/Debug/include \
      -I=/install/Release/include \
      -L=/install/Debug/lib \
      -L=/install/Release/lib \
-     -I$PWD/../common  -o $name -std=c++11 \
+     -I$PWD/../common  -o $name -std=c++17 \
      $PWD/src/main.cc \
      $PWD/../common/common.cpp  \
      -Wl,-rpath=$PWD/lib \
@@ -39,16 +39,19 @@ $CXX -ggdb -O2 -fno-inline -I. \
      -lopencv_highgui \
      -lopencv_imgproc \
      -lopencv_core \
+     -lglog \
+     -lxir \
+     -lunilog \
      -lpthread
 else
-$CXX -ggdb -O2 -fno-inline -I. \
+$CXX -O2 -fno-inline -I. \
      -I${install_prefix_default}.Debug/include \
      -I${install_prefix_default}.Release/include \
      -L${install_prefix_default}.Debug/lib \
      -L${install_prefix_default}.Release/lib \
      -Wl,-rpath=${install_prefix_default}.Debug/lib \
      -Wl,-rpath=${install_prefix_default}.Release/lib \
-     -I$PWD/../common  -o $name -std=c++11 \
+     -I$PWD/../common  -o $name -std=c++17 \
      $PWD/src/main.cc \
      $PWD/../common/common.cpp  \
      -Wl,-rpath=$PWD/lib \
@@ -58,5 +61,8 @@ $CXX -ggdb -O2 -fno-inline -I. \
      -lopencv_highgui \
      -lopencv_imgproc \
      -lopencv_core \
+     -lglog \
+     -lxir \
+     -lunilog \
      -lpthread
 fi

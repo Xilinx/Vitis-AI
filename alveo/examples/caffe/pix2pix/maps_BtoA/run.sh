@@ -16,20 +16,27 @@ MODEL=$1
 export MODELDIR="$( readlink -f "$( dirname "${BASH_SOURCE[0]}" )" )"
 OUTDIR=$MODELDIR/work
 
-/opt/vitis_ai/compiler/vai_c_caffe \
+# Choose the target
+ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+if [ ! -f $ARCH_JSON ]; then
+  ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
+fi
+
+
+vai_c_caffe \
   --net_name $MODEL.compiler \
-  --prototxt $VAI_ALVEO_ROOT/examples/caffe/models/maps_BtoA/$MODEL.prototxt \
-  --caffemodel $VAI_ALVEO_ROOT/examples/caffe/models/maps_BtoA/$MODEL.caffemodel \
-  --options "{'quant_cfgfile': 'fix_info.txt', 'parallelism': True}" \
-  --arch /opt/vitis_ai/compiler/arch/dpuv1/ALVEO/ALVEO.json \
+  --prototxt $MODELDIR/quantize_results/$MODEL.prototxt \
+  --caffemodel $MODELDIR/quantize_results/$MODEL.caffemodel \
+  --options "{'quant_cfgfile': '$MODELDIR/quantize_results/quantize_info.txt', 'parallelism': True}" \
+  --arch $ARCH_JSON \
   -o $OUTDIR
 
 
 
-python /opt/vitis_ai/conda/envs/vitis-ai-caffe/lib/python3.6/site-packages/vai/dpuv1/rt/scripts/framework/caffe/xfdnn_subgraph.py \
-  --inproto $VAI_ALVEO_ROOT/examples/caffe/models/maps_BtoA/$MODEL.prototxt \
+python -m vai.dpuv1.rt.scripts.framework.caffe.xfdnn_subgraph \
+  --inproto $MODELDIR/quantize_results/$MODEL.prototxt \
   --outproto xfdnn_$MODEL.prototxt \
-  --cutAfter data \
+  --cutAfter input_3 \
   --xclbin /opt/xilinx/overlaybins/xdnnv3 \
   --netcfg $OUTDIR/compiler.json \
   --quantizecfg $OUTDIR/quantizer.json \

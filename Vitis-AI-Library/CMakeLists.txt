@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.5)
-project(vitis_ai_library VERSION 1.1.0 LANGUAGES C CXX)
+project(vitis_ai_library VERSION 1.2.0 LANGUAGES C CXX)
 include(${CMAKE_SOURCE_DIR}/cmake/XilinxCommon.cmake)
 
 ## ugly solution for search XRT library, xrt is built without proper rpath setting
@@ -23,7 +23,9 @@ link_directories("/opt/xilinx/xrt/lib")
 option(DISABLE_ALL "disable all libraries" OFF)
 option(ENABLE_CLASSIFICATION "enable classification" OFF)
 option(ENABLE_TFSSD "enable tfssd" OFF)
+option(ENABLE_SSD "enable ssd" OFF)
 option(ENABLE_FACEDETECT "enable face detection" OFF)
+option(ENABLE_FACEFEATURE "enable face feature" OFF)
 option(ENABLE_LANEDETECT "enable lane detection" OFF)
 option(ENABLE_YOLOV2 "enable Yolov2" OFF)
 option(ENABLE_YOLOV3 "enable Yolov3" OFF)
@@ -34,7 +36,14 @@ option(ENABLE_OPENPOSE "enable openpose" OFF)
 option(ENABLE_POSEDETECT "enable pose detect" OFF)
 option(ENABLE_REID "enable reid" OFF)
 option(ENABLE_MULTITASK "enable multitask" OFF)
+option(ENABLE_PLATEDETECT "enable platedetect" OFF)
+option(ENABLE_PLATENUM "enable platenum" OFF)
+option(ENABLE_PLATERECOG "enable platerecog" OFF)
 option(ENABLE_OVERVIEW "enable overview" OFF)
+option(ENABLE_GENERAL "enable general" OFF)
+option(ENABLE_MEDICALSEGMENTATION "enable medicalsegmentation" OFF)
+
+option(ENABLE_DPUCADX8G_RUNNER "enable DPUV1 Runner" OFF)
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/cmake")
 set(INSTALL_LIB_DIR lib)
@@ -42,98 +51,151 @@ set(INSTALL_BIN_DIR bin)
 set(INSTALL_INCLUDE_DIR include)
 set(INSTALL_CMAKE_DIR share/cmake/${PROJECT_NAME})
 
-include_directories(${CMAKE_BINARY_DIR}/model_config)
-include_directories("${CMAKE_INSTALL_PREFIX}/include")
-link_directories("${CMAKE_INSTALL_PREFIX}/lib")
+if(ENABLE_DPUCADX8G_RUNNER)
+    # Enble supported models for DPUV1
+    unset(DISABLE_ALL CACHE)
+    unset(ENABLE_CLASSIFICATION CACHE)
+    unset(ENABLE_FACEDETECT CACHE)
+    unset(ENABLE_YOLOV3 CACHE)
+    unset(ENABLE_LANDMARK CACHE)
+    unset(ENABLE_REID CACHE)
+    option(DISABLE_ALL "disable all libraries" ON)
+    option(ENABLE_CLASSIFICATION "enable classification" ON)
+    option(ENABLE_FACEDETECT "enable face detection" ON)
+    option(ENABLE_YOLOV3 "enable Yolov3" ON)
+    option(ENABLE_LANDMARK "enable landmark face-5pt" ON)
+    option(ENABLE_REID "enable reid" ON)
 
-find_package(vart COMPONENTS util REQUIRED)
+    # Enable DPUV1 flag
+    add_definitions(-DENABLE_DPUCADX8G_RUNNER)
+endif()
+find_package(xir)
+find_package(unilog)
+find_package(vart COMPONENTS util xrt-device-handle buffer-object dpu-controller runner dpu-runner elf-util REQUIRED)
 find_package(Protobuf 3.4.0 REQUIRED)
+find_package(OpenCV COMPONENTS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
+if(NOT OpenCV_FOUND)
+  find_package(OpenCV_LIBS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
+endif(NOT OpenCV_FOUND)
+find_package(vart REQUIRED)
 
-add_subdirectory(model_config)
-
-add_subdirectory(math)
-include_directories(math/include)
-link_directories(${CMAKE_BINARY_DIR}/math)
-
-add_subdirectory(dpu_task)
-include_directories(dpu_task/include)
-
+set(PACKAGE_COMPONENTS
+  model_config
+  math
+  dpu_task
+  xnnpp
+  )
 add_subdirectory(usefultools)
-
-add_subdirectory(xnnpp)
-include_directories(xnnpp/include)
-
 if(ENABLE_CLASSIFICATION OR (NOT DISABLE_ALL))
-  add_subdirectory(classification)
-  include_directories(classification/include)
+  list(APPEND PACKAGE_COMPONENTS classification)
 endif()
 
 if(ENABLE_TFSSD OR (NOT DISABLE_ALL))
-  add_subdirectory(tfssd)
-  include_directories(tfssd/include)
+  list(APPEND PACKAGE_COMPONENTS tfssd)
 endif()
+
 if(ENABLE_FACEDETECT OR (NOT DISABLE_ALL))
-  add_subdirectory(facedetect)
-  include_directories(facedetect/include)
+  list(APPEND PACKAGE_COMPONENTS facedetect)
 endif()
+
+if(ENABLE_FACEFEATURE OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS facefeature)
+endif()
+
 if(ENABLE_LANEDETECT OR (NOT DISABLE_ALL))
-  add_subdirectory(lanedetect)
-  include_directories(lanedetect/include)
+  list(APPEND PACKAGE_COMPONENTS lanedetect)
 endif()
 
 if(ENABLE_YOLOV2 OR (NOT DISABLE_ALL))
-  add_subdirectory(yolov2)
-  include_directories(yolov2/include)
+  list(APPEND PACKAGE_COMPONENTS yolov2)
 endif()
 
 if(ENABLE_YOLOV3 OR (NOT DISABLE_ALL))
-  add_subdirectory(yolov3)
-  include_directories(yolov3/include)
+  list(APPEND PACKAGE_COMPONENTS yolov3)
 endif()
+
 if(ENABLE_LANDMARK OR (NOT DISABLE_ALL))
-  add_subdirectory(facelandmark)
-  include_directories(facelandmark/include)
+  list(APPEND PACKAGE_COMPONENTS facelandmark)
 endif()
+
 if(ENABLE_SSD OR (NOT DISABLE_ALL))
-  add_subdirectory(ssd)
-  include_directories(ssd/include)
+  list(APPEND PACKAGE_COMPONENTS ssd)
 endif()
+
 if(ENABLE_SEGMENTATION OR (NOT DISABLE_ALL))
-  add_subdirectory(segmentation)
-  include_directories(segmentation/include)
+  list(APPEND PACKAGE_COMPONENTS segmentation)
 endif()
 
 if(ENABLE_REFINEDET OR (NOT DISABLE_ALL))
-  add_subdirectory(refinedet)
-  include_directories(refinedet/include)
+  list(APPEND PACKAGE_COMPONENTS refinedet)
 endif()
 
 if(ENABLE_OPENPOSE OR (NOT DISABLE_ALL))
-  add_subdirectory(openpose)
-  include_directories(openpose/include)
+  list(APPEND PACKAGE_COMPONENTS openpose)
 endif()
 
 if(ENABLE_POSEDETECT OR (NOT DISABLE_ALL))
-  add_subdirectory(posedetect)
-  include_directories(posedetect/include)
+  list(APPEND PACKAGE_COMPONENTS posedetect)
 endif()
 
 if(ENABLE_REID OR (NOT DISABLE_ALL))
-  add_subdirectory(reid)
-  include_directories(reid/include)
+  list(APPEND PACKAGE_COMPONENTS reid)
 endif()
 
 if(ENABLE_MULTITASK OR (NOT DISABLE_ALL))
-  add_subdirectory(multitask)
-  include_directories(multitask/include)
+  list(APPEND PACKAGE_COMPONENTS multitask)
+endif()
+
+if(ENABLE_PLATEDETECT OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS platedetect)
+endif()
+
+if(ENABLE_PLATENUM OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS platenum)
+endif()
+
+if(ENABLE_PLATERECOG OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS platerecog)
+endif()
+
+if(ENABLE_GENERAL OR (NOT DISABLE_ALL))
+  ## use general1 instead of general because general is a special
+  ## target name in cmake
+  list(APPEND PACKAGE_COMPONENTS general1)
+endif()
+
+if(ENABLE_MEDICALSEGMENTATION OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS medicalsegmentation)
 endif()
 
 add_subdirectory(benchmark)
 include_directories(benchmark/include)
 
-if(ENABLE_OVERVIEW)
+if(ENABLE_OVERVIEW AND (NOT DISABLE_ALL))
   add_subdirectory(overview)
 endif()
+
+foreach(COMPONENT ${PACKAGE_COMPONENTS})
+  add_subdirectory(${COMPONENT})
+endforeach()
+
+file(RELATIVE_PATH REL_INCLUDE_DIR
+  ${CMAKE_INSTALL_PREFIX}/share/cmake/${PROJECT_NAME}
+  ${CMAKE_INSTALL_PREFIX}/include)
+set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME}_CMAKE_DIR}/${REL_INCLUDE_DIR}")
+configure_file(cmake/config.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+  @ONLY)
+
+write_basic_package_version_file(
+  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY AnyNewerVersion)
+
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
+  DESTINATION share/cmake/${PROJECT_NAME})
 
 set(CPACK_PACKAGE_NAME "libvitis_ai_library")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A runtime runner for vitis")
@@ -146,10 +208,6 @@ set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${CMAKE_PROJECT_VERSION_PATCH})
 set(CPACK_PACKAGE_CONTACT "Hui Zhang<huizhang@xilinx.com>")
 set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
-set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH}")
-if(DEFINED ENV{BUILD_NUMBER})
-  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CMAKE_SYSTEM_NAME}-build$ENV{BUILD_NUMBER}")
-endif()
 
 set(CPACK_DEB_COMPONENT_INSTALL False)
 set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
@@ -157,11 +215,27 @@ set(CPACK_DEBIAN_ARCHIVE_TYPE "gnutar")
 set(CPACK_DEBIAN_COMPRESSION_TYPE "gzip")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libvart (>=0.0.1)")
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+if(DEFINED ENV{BUILD_NUMBER})
+  set(CPACK_DEBIAN_PACKAGE_RELEASE "r$ENV{BUILD_NUMBER}")
+endif()
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "arm64")
+elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+else()
+  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+endif()
 
 set(CPACK_RPM_COMPONENT_INSTALL False)
 set(CPACK_RPM_PACKAGE_LICENSE "Apache")
 set(CPACK_RPM_PACKAGE_GROUP "Development/Tools")
 set(CPACK_RPM_COMPRESSION_TYPE "xz")
 set(CPACK_RPM_PACKAGE_REQUIRES "libvart >= 0.0.1")
+set(CPACK_RPM_FILE_NAME RPM-DEFAULT)
+if(DEFINED ENV{BUILD_NUMBER})
+  set(CPACK_RPM_PACKAGE_RELEASE "r$ENV{BUILD_NUMBER}")
+endif()
+set(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
 include(CPack)

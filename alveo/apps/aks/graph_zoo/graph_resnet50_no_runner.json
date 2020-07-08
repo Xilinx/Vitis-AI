@@ -5,7 +5,7 @@
       {
         "node_name": "preproc", 
         "node_params" : {
-          "classificationImreadPre": {
+          "ClassificationImreadPreProcess": {
             "net_w" : 224, 
             "net_h" : 224, 
             "net_c": 3,
@@ -18,7 +18,8 @@
       {
         "node_name": "resnet50_fpga",
         "node_params": {
-          "DPUv1_NoRunner": {
+          "DPUCADX8GNoRunner": {
+            "xclbin":   "/opt/xilinx/overlaybins/xdnnv3",
             "netcfg": "graph_zoo/meta_resnet50/compiler.json",
             "quantcfg": "graph_zoo/meta_resnet50/quantizer.json",
             "weights": "graph_zoo/meta_resnet50/weights.h5"
@@ -30,7 +31,7 @@
       {
         "node_name": "resnet50_post",
         "node_params": {
-          "classificationFCSoftMaxTopK": {
+          "ClassificationFCSoftMaxTopK": {
             "weights" : "graph_zoo/meta_resnet50/weights.h5"
           }
         },
@@ -40,7 +41,7 @@
       {
         "node_name": "resnet50_accuracy",
         "node_params": {
-          "classificationAccuracy": {
+          "ClassificationAccuracy": {
             "ground_truth": "../../examples/deployment_modes/gold.txt"
           }
         },

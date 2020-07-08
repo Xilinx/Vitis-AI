@@ -15,12 +15,12 @@
  */
 #pragma once
 #include <glog/logging.h>
+
 #include <opencv2/opencv.hpp>
 #include <vitis/ai/posedetect.hpp>
-#include <vitis/ai/ssd.hpp>
 
 using namespace cv;
-static inline void DrawLine(Mat &img, Point2f point1, Point2f point2,
+static inline void DrawLine(Mat& img, Point2f point1, Point2f point2,
                             Scalar colour, int thickness, float scale_w,
                             float scale_h) {
   if ((point1.x * img.cols > scale_w || point1.y * img.rows > scale_h) &&
@@ -30,8 +30,8 @@ static inline void DrawLine(Mat &img, Point2f point1, Point2f point2,
              thickness);
 }
 
-static void DrawLines(Mat &img,
-                      const vitis::ai::PoseDetectResult::Pose14Pt &results) {
+static void DrawLines(Mat& img,
+                      const vitis::ai::PoseDetectResult::Pose14Pt& results) {
   float scale_w = 1;
   float scale_h = 1;
 
@@ -40,10 +40,10 @@ static void DrawLines(Mat &img,
   float mark_h = mark * scale_h;
   std::vector<Point2f> pois(14);
   for (size_t i = 0; i < pois.size(); ++i) {
-    pois[i].x = ((float *)&results)[i * 2] * img.cols;
+    pois[i].x = ((float*)&results)[i * 2] * img.cols;
     // std::cout << ((float*)&results)[i * 2] << " " << ((float*)&results)[i * 2
     // + 1] << std::endl;
-    pois[i].y = ((float *)&results)[i * 2 + 1] * img.rows;
+    pois[i].y = ((float*)&results)[i * 2 + 1] * img.rows;
   }
   for (size_t i = 0; i < pois.size(); ++i) {
     circle(img, pois[i], 3, Scalar::all(255));
@@ -78,11 +78,11 @@ static void DrawLines(Mat &img,
            mark_w, mark_h);
 }
 
-cv::Mat process_result(cv::Mat &image,
-                       const vitis::ai::PoseDetectResult &results,
+cv::Mat process_result(cv::Mat& image,
+                       const vitis::ai::PoseDetectResult& results,
                        bool is_jpeg) {
-  std::vector<float> pose14pt_arry((float *)&results.pose14pt,
-                                   (float *)&results.pose14pt + 28);
+  std::vector<float> pose14pt_arry((float*)&results.pose14pt,
+                                   (float*)&results.pose14pt + 28);
   for (size_t i = 0; i < pose14pt_arry.size(); i = i + 2) {
     LOG_IF(INFO, is_jpeg) << "(" << pose14pt_arry[i] << ","
                           << pose14pt_arry[i + 1] << ")";

@@ -34,22 +34,6 @@ include(XilinxCommon)
 include(XilinxTest)
 include(CheckIncludeFileCXX)
 include(CheckIncludeFile)
-if(BUILD_DOXYGEN_DOC)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile @ONLY)
-  find_package(Doxygen REQUIRED)
-  add_custom_target(doc ALL
-    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
-    COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/Logo.png ${CMAKE_BINARY_DIR}/
-    COMMAND cp -av ${CMAKE_CURRENT_SOURCE_DIR}/images ${CMAKE_BINARY_DIR}/c-doc/latex
-    COMMAND make -C ${CMAKE_BINARY_DIR}/c-doc/latex
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Generating API documentation with Doxygen" VERBATIM
-    )
-
-#  install(FILES ${CMAKE_BINARY_DIR}/c-doc/latex/refman.pdf DESTINATION share/XILINX_AI_SDK/doc
-#    RENAME ug1355-xilinx-ai-sdk-programming-guide.pdf)
-
-endif(BUILD_DOXYGEN_DOC)
 
 find_path(DRM_PATH drm)
 if(NOT ${DRM_PATH} EQUAL "DRM_PATH-NOTFOUND")
@@ -72,7 +56,10 @@ XILINX_AI_SDK_TEST_BY_NAME(ssd SSD)
 XILINX_AI_SDK_TEST_BY_NAME(yolov3 YOLOv3)
 XILINX_AI_SDK_TEST_BY_NAME(yolov2 YOLOv2)
 XILINX_AI_SDK_TEST_BY_NAME(facedetect FaceDetect)
+XILINX_AI_SDK_TEST_BY_NAME(platedetect PlateDetect)
+XILINX_AI_SDK_TEST_BY_NAME(platenum PlateNum)
 XILINX_AI_SDK_TEST_BY_NAME(facelandmark FaceLandmark NO_VIDEO)
+XILINX_AI_SDK_TEST_BY_NAME(facefeature FaceFeature NO_VIDEO)
 XILINX_AI_SDK_TEST_BY_NAME(lanedetect RoadLine)
 
 XILINX_AI_SDK_TEST_BY_NAME(classification Classification)
@@ -87,13 +74,13 @@ XILINX_AI_SDK_TEST_BY_NAME(posedetect PoseDetect)
 
 
 add_executable(test_jpeg_reid  ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/test_jpeg_reid.cpp)
-target_link_libraries(test_jpeg_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util glog ${Pthread_LIB})
+target_link_libraries(test_jpeg_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util glog::glog ${Pthread_LIB})
 
 add_executable(test_accuracy_reid  ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/test_accuracy_reid.cpp)
-target_link_libraries(test_accuracy_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util glog ${Pthread_LIB})
+target_link_libraries(test_accuracy_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util glog::glog ${Pthread_LIB})
 
 add_executable(test_performance_reid  ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/test_performance_reid.cpp)
-target_link_libraries(test_performance_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util glog ${Pthread_LIB})
+target_link_libraries(test_performance_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util glog::glog ${Pthread_LIB})
 install(TARGETS test_jpeg_reid test_accuracy_reid test_performance_reid DESTINATION ${SAMPLE_INATLL_PATH}/reid/)
 
 #install(DIRECTORY
@@ -111,13 +98,13 @@ install(FILES
   DESTINATION ${SAMPLE_INATLL_PATH}/reid/)
 
 add_executable(test_jpeg_posedetect_with_ssd  ${CMAKE_CURRENT_SOURCE_DIR}/samples/posedetect/test_jpeg_posedetect_with_ssd.cpp)
-target_link_libraries(test_jpeg_posedetect_with_ssd  ${OpenCV_LIBS} ${PROJECT_NAME}::ssd ${PROJECT_NAME}::posedetect glog ${Pthread_LIB})
+target_link_libraries(test_jpeg_posedetect_with_ssd  ${OpenCV_LIBS} ${PROJECT_NAME}::ssd ${PROJECT_NAME}::posedetect glog::glog ${Pthread_LIB})
 if(HAVE_DRM)
   target_link_libraries(test_jpeg_posedetect_with_ssd drm)
 endif(HAVE_DRM)
 
 add_executable(test_video_posedetect_with_ssd  ${CMAKE_CURRENT_SOURCE_DIR}/samples/posedetect/test_video_posedetect_with_ssd.cpp)
-target_link_libraries(test_video_posedetect_with_ssd  ${OpenCV_LIBS} ${PROJECT_NAME}::ssd ${PROJECT_NAME}::posedetect glog ${Pthread_LIB})
+target_link_libraries(test_video_posedetect_with_ssd  ${OpenCV_LIBS} ${PROJECT_NAME}::ssd ${PROJECT_NAME}::posedetect glog::glog ${Pthread_LIB})
 if(HAVE_DRM)
   target_link_libraries(test_video_posedetect_with_ssd drm)
 endif(HAVE_DRM)
@@ -136,6 +123,8 @@ XILINX_AI_SDK_TEST_BY_NAME(openpose OpenPose)
 XILINX_AI_SDK_TEST_BY_NAME(tfssd TFSSD)
 
 XILINX_AI_SDK_add_accuracy(tfssd tfssd)
+XILINX_AI_SDK_TEST_BY_NAME(medicalsegmentation MedicalSegmentation NO_VIDEO)
+XILINX_AI_SDK_add_accuracy( medicalsegmentation medicalsegmentation )
 
 #ssd accuracy
 foreach(TMPMODEL ssd_pedestrain_pruned_0_97 ssd_traffic_pruned_0_9 ssd_adas_pruned_0_95 ssd_mobilenet_v2 mlperf_ssd_resnet34_tf)
@@ -159,20 +148,23 @@ endforeach(TMPMODEL)
 #refinedet accuracy
 XILINX_AI_SDK_add_accuracy(refinedet refinedet)
 XILINX_AI_SDK_add_accuracy(facedetect facedetect)
+XILINX_AI_SDK_add_accuracy(platedetect platedetect)
+XILINX_AI_SDK_add_accuracy(platenum platenum)
+XILINX_AI_SDK_add_accuracy(facefeature facefeature)
 XILINX_AI_SDK_add_accuracy(posedetect posedetect)
 XILINX_AI_SDK_add_accuracy(segmentation segmentation)
 XILINX_AI_SDK_add_accuracy(lanedetect lanedetect)
 XILINX_AI_SDK_add_accuracy(facelandmark facelandmark)
 
 add_executable(seg_and_pose_detect ${CMAKE_CURRENT_SOURCE_DIR}/demo/seg_and_pose_detect/seg_and_pose_detect.cpp)
-target_link_libraries(seg_and_pose_detect ${OpenCV_LIBS} ${PROJECT_NAME}::multitask ${PROJECT_NAME}::posedetect ${PROJECT_NAME}::ssd glog ${Pthread_LIB})
+target_link_libraries(seg_and_pose_detect ${OpenCV_LIBS} ${PROJECT_NAME}::multitask ${PROJECT_NAME}::posedetect ${PROJECT_NAME}::ssd glog::glog ${Pthread_LIB})
 if(HAVE_DRM)
   target_link_libraries(seg_and_pose_detect drm)
 endif(HAVE_DRM)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/demo/seg_and_pose_detect/ DESTINATION ${DEMO_INATLL_PATH}/seg_and_pose_detect/)
 
 add_executable(segs_and_roadline_detect ${CMAKE_CURRENT_SOURCE_DIR}/demo/segs_and_roadline_detect/segs_and_roadline_detect.cpp)
-target_link_libraries(segs_and_roadline_detect ${OpenCV_LIBS} ${PROJECT_NAME}::multitask ${PROJECT_NAME}::lanedetect ${PROJECT_NAME}::ssd glog ${Pthread_LIB})
+target_link_libraries(segs_and_roadline_detect ${OpenCV_LIBS} ${PROJECT_NAME}::multitask ${PROJECT_NAME}::lanedetect ${PROJECT_NAME}::ssd glog::glog ${Pthread_LIB})
 if(HAVE_DRM)
   target_link_libraries(segs_and_roadline_detect drm)
 endif(HAVE_DRM)
@@ -185,22 +177,21 @@ endif(HAVE_DRM)
 
 # demos
 #compile failed
-find_package(xir REQUIRED)
-find_package(unilog REQUIRED)
-find_package(vart REQUIRED COMPONENTS util runner xrt-device-handle dpu-controller dpu-runner)
+##find_package(xir REQUIRED)
+##find_package(unilog REQUIRED)
+##find_package(vart REQUIRED COMPONENTS util runner xrt-device-handle dpu-controller dpu-runner)
 add_executable(demo_classification ${CMAKE_CURRENT_SOURCE_DIR}/demo/classification/demo_classification.cpp)
-target_link_libraries(demo_classification ${OpenCV_LIBS} glog ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task vart::dpu-runner)
+target_link_libraries(demo_classification ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task vart::dpu-runner)
 
-###install(TARGETS demo_classification DESTINATION ${DEMO_INATLL_PATH}/classification/)
-###install(FILES
-###  demo/classification/build.sh
-###  demo/classification/demo_classification.cpp
-###  demo/classification/readme
-###  demo/classification/demo_classification.jpg
-###  DESTINATION ${DEMO_INATLL_PATH}/classification/)
+install(TARGETS demo_classification DESTINATION ${DEMO_INATLL_PATH}/classification/)
+install(FILES
+  demo/classification/build.sh
+  demo/classification/demo_classification.cpp
+  demo/classification/readme
+  DESTINATION ${DEMO_INATLL_PATH}/classification/)
 
 add_executable(demo_yolov3 ${CMAKE_CURRENT_SOURCE_DIR}/demo/yolov3/demo_yolov3.cpp)
-target_link_libraries(demo_yolov3 ${OpenCV_LIBS} glog protobuf::libprotobuf ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task xnnpp)
+target_link_libraries(demo_yolov3 ${OpenCV_LIBS} glog::glog protobuf::libprotobuf ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task xnnpp)
 install(TARGETS demo_yolov3 DESTINATION ${DEMO_INATLL_PATH}/yolov3/)
 install(FILES
   demo/yolov3/build.sh
@@ -213,13 +204,14 @@ install(FILES
 add_executable(test_jpeg_classification_squeezenet ${CMAKE_CURRENT_SOURCE_DIR}/samples/classification/test_jpeg_classification_squeezenet.cpp)
 add_executable(test_performance_classification_squeezenet ${CMAKE_CURRENT_SOURCE_DIR}/samples/classification/test_performance_classification_squeezenet.cpp)
 add_executable(test_accuracy_classification_squeezenet ${CMAKE_CURRENT_SOURCE_DIR}/samples/classification/test_accuracy_classification_squeezenet.cpp)
-target_link_libraries(test_jpeg_classification_squeezenet ${OpenCV_LIBS} glog ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task ${PROJECT_NAME}::math)
-target_link_libraries(test_performance_classification_squeezenet ${OpenCV_LIBS} glog ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task ${PROJECT_NAME}::math vart::util ${Pthread_LIB})
-target_link_libraries(test_accuracy_classification_squeezenet ${OpenCV_LIBS} glog ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task ${PROJECT_NAME}::math)
+target_link_libraries(test_jpeg_classification_squeezenet ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::classification)
+target_link_libraries(test_performance_classification_squeezenet ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::classification vart::util ${Pthread_LIB})
+target_link_libraries(test_accuracy_classification_squeezenet ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::model_config ${PROJECT_NAME}::classification)
 install(TARGETS test_jpeg_classification_squeezenet DESTINATION ${SAMPLE_INATLL_PATH}/classification/)
 install(TARGETS test_performance_classification_squeezenet DESTINATION ${SAMPLE_INATLL_PATH}/classification/)
 install(TARGETS test_accuracy_classification_squeezenet DESTINATION ${SAMPLE_INATLL_PATH}/classification/)
 install(FILES
+  samples/classification/find_model.hpp
   samples/classification/test_jpeg_classification_squeezenet.cpp
   samples/classification/test_performance_classification_squeezenet.cpp
   samples/classification/test_accuracy_classification_squeezenet.cpp

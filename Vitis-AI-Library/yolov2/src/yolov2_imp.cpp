@@ -43,12 +43,14 @@ YOLOv2Result YOLOv2Imp::run(const cv::Mat &input_image) {
         (int8_t *)configurable_dpu_task_->getInputTensor()[0][0].get_data(0);
     yolov2::convertInputImage(input_image, sWidth, sHeight, channel, scale, data);
   } else {
+    __TIC__(YOLOV2_RESIZE_IMG)
     auto size = cv::Size(sWidth, sHeight);
     if (size != input_image.size()) {
       cv::resize(input_image, image, size, 0, 0, cv::INTER_LINEAR);
     } else {
       image = input_image;
     }
+    __TOC__(YOLOV2_RESIZE_IMG)
     __TIC__(YOLOV2_SET_IMG)
     configurable_dpu_task_->setInputImageRGB(image);
     __TOC__(YOLOV2_SET_IMG)

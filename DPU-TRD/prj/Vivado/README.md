@@ -1,4 +1,4 @@
-# Zynq UltraScale＋ MPSoC DPU TRD Vivado 2019.2
+# Zynq UltraScale＋ MPSoC DPU TRD Vivado 2020.1
 
 ## Table of Contents
 
@@ -20,13 +20,11 @@
 		- [5.3.1 Modify the Frequency](#531-modify-the-frequency)
 		- [5.3.2 Modify the Parameters](#532-modify-the-parameters)
 - [6 Run with Vitis AI Library](#6-run-with-vitis-ai-library)
-	- [6.1 Host Setup](#61-host-setup)
-	- [6.2 Board Setup](#62-board-setup)
-	- [6.3 Run Vitis AI Library Examples](#63-run-vitis-ai-library-examples)
-  
+- [7 Known issues](#7-known-issues)
+
 ## 1 Revision History
 
-This wiki page complements the Vivado 2019.2 version of the DPU TRD.
+This wiki page complements the Vivado 2020.1 version of the DPU TRD.
 
 Change Log:
 
@@ -58,7 +56,7 @@ Required:
 ### 3.2 Software
 
   Required:
-  - Vivado 2019.2 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html) 
+  - Vivado 2020.1 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [Vitis AI 1.1](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
   - [Vitis AI Library 1.1](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library
@@ -145,7 +143,7 @@ The following tutorials assume that the Vivado environment variable is set as gi
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <Vivado install path>/Vivado/2019.2/settings64.sh
+% source <Vivado install path>/Vivado/2020.1/settings64.sh
 
 ```
 
@@ -196,7 +194,7 @@ $TRD_HOME/prj/Vivado/srcs/top/hw_handoff/top.hwh
 
 This tutorial shows how to build the Linux image and boot image using the PetaLinux build tool.
 
-**PetaLinux Installation**: Refer to the [PetaLinux Tools Documentation ](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2019_2/ug1144-petalinux-tools-reference-guide.pdf)(UG1144) for installation.
+**PetaLinux Installation**: Refer to the [PetaLinux Tools Documentation ](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_1/ug1144-petalinux-tools-reference-guide.pdf)(UG1144) for installation.
 
 ```
 % source <path/to/petalinux-installer>/settings.sh
@@ -211,8 +209,8 @@ Post PetaLinux installation $PETALINUX environment variable should be set.
 ```
 % cd $TRD_HOME/prj/Vivado/dpu_petalinux_bsp
 % ./download_bsp.sh
-% petalinux-create -t project -s xilinx-zcu102-v2019.2-final-4dpu-1.4.1.bsp
-% cd xilinx-zcu102-v2019.2-final-4dpu-1.4.1
+% petalinux-create -t project -s xilinx-zcu102-trd.bsp
+% cd xilinx-zcu102-trd
 % petalinux-config --get-hw-description=$TRD_HOME/prj/Vivado/prj/ --silentconfig
 % petalinux-build
 ```
@@ -232,15 +230,15 @@ If the prebuilt design is wanted, please use the path for **--get-hw-description
  
 #### 5.2.4 Run Resnet50 Example 
 
-The TRD project has generated the matching model file in $TRD_HOME/app path as the default settings. If the user change the DPU settings. The model need to be created again.
+**The TRD project has generated the matching model file in $TRD_HOME/app path as the default settings. If the user change the DPU settings. The model need to be created again.**
 
 This part is about how to run the Resnet50 example from the source code.
 
-The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in page 65 of [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2019_2/ug1144-petalinux-tools-reference-guide.pdf)for Petalinux 2019.2:
+The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in page 65 of [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_1/ug1144-petalinux-tools-reference-guide.pdf)for Petalinux 2020.1:
 
-Copy the image.ub and BOOT.BIN files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-v2019.2-final-4dpu-1.4.1/images/linux** to BOOT partition.
+Copy the image.ub and BOOT.BIN files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to BOOT partition.
 
-Extract the rootfs.tar.gz files in **TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-v2019.2-final-4dpu-1.4.1/images/linux** to RootFs partition.
+Extract the rootfs.tar.gz files in **TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to RootFs partition.
 
 Copy the folder **$TRD_HOME/app/** to RootFs partition
 
@@ -257,6 +255,15 @@ Reboot, after the linux boot, run in the RootFs partition:
 % cp ../../model/resnet50.elf .
 
 % env LD_LIBRARY_PATH=../lib ./resnet50 ../../img/bellpeppe-994958.JPEG
+```
+
+Expect:
+```
+score[945]  =  0.992235     text: bell pepper,
+score[941]  =  0.00315807   text: acorn squash,
+score[943]  =  0.00191546   text: cucumber, cuke,
+score[939]  =  0.000904801  text: zucchini, courgette,
+score[949]  =  0.00054879   text: strawberry,
 ```
 
 ###### **Note:** The resenet50 test case can support both Vitis and Vivado flow. If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/Vitis_ai/1_0/ug1414-Vitis-ai.pdf).
@@ -315,6 +322,8 @@ The architectures for the DPU IP include B512, B800, B1024, B1152, B1600, B2304,
 ```
 dict set dict_prj dict_param  DPU_ARCH {4096}
 ```
+###### **Note:** It relates to models. If change, must update models.
+
 #### DPU_RAM_USAGE
 
 RAM Usage: The RAM Usage option determines the total amount of on-chip memory used in different DPU architectures, and the setting is for all the DPU cores in the DPU IP. 
@@ -341,6 +350,7 @@ Disable
 ```
 dict set dict_prj dict_param  DPU_CHN_AUG_ENA {0}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_DWCV_ENA
 
@@ -354,6 +364,7 @@ Disable
 ```
 dict set dict_prj dict_param  DPU_DWCV_ENA {0}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_AVG_POOL_ENA
 
@@ -367,6 +378,7 @@ Disable
 ```
 dict set dict_prj dict_param  DPU_AVG_POOL_ENA {0}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_CONV_RELU_TYPE
 
@@ -380,6 +392,7 @@ RELU_LEAKRELU_RELU6
 ```
 dict set dict_prj dict_param  DPU_CONV_RELU_TYPE {3}
 ```
+###### **Note:** It relates to models. If change, must update models.
 
 #### DPU_SFM_NUM
 
@@ -418,138 +431,26 @@ dict set dict_prj dict_param  DPU_URAM_PER_DPU {0}
 ```
 
 ## 6 Run with Vitis AI Library
-### 6.1 Host Setup
-1. Download the [sdk.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk.sh)
 
-2. Install the cross-compilation system environment, follow the prompts to install. 
-```
-$./sdk.sh
-```
-Note that the `~/petalinux_sdk` path is recommended for the installation. Regardless of the path you choose for the installation, make sure the path has read-write permissions. 
-Here we install it under `~/petalinux_sdk`.
+For the instroduction of Vitis AI Library, please refer to **Quick Start For Edge** of this page https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library
 
-3. When the installation is complete, follow the prompts and execute the following command.
-```
-$. ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
-```
-Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
+## 7 Known issues
 
-4. Download the [vitis_ai_2019.2-r1.1.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2019.2-r1.1.0.tar.gz) and install it to the petalinux system.
-```
-$tar -xzvf vitis_ai_2019.2-r1.1.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
-```
-5. Update the glog to v0.4.0
-	* Download the glog package and untar it.
-		```
-		$cd ~
-		$curl -Lo glog-v0.4.0.tar.gz https://github.com/google/glog/archive/v0.4.0.tar.gz
-		$tar -zxvf glog-v0.4.0.tar.gz
-		$cd glog-0.4.0
-		```
-	* Build it and install it to the PetaLinux system.
-		```
-		$mkdir build_for_petalinux
-		$cd build_for_petalinux
-		$unset LD_LIBRARY_PATH; source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
-		$cmake -DCPACK_GENERATOR=TGZ -DBUILD_SHARED_LIBS=on -DCMAKE_INSTALL_PREFIX=$OECORE_TARGET_SYSROOT/usr ..
-		$make && make install
-		$make package
-		```
-6. Cross compile the demo in the AI Library, using yolov3 as example.
-```
-$cd ~/Vitis-AI/Vitis-AI-Library/overview/demo/yolov3
-$bash -x build.sh
-```	
+1.DDR QOS
 
-7. To compile the library sample in the AI Library, take facedetect for example, execute the following command.
-```
-$cd ~/Vitis-AI/Vitis-AI-Library/overview/samples/facedetect
-$bash -x build.sh
-```	
-### 6.2 Board Setup
-1. Install AI Model Package   
-	* Download [ZCU102 AI Model](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_model_ZCU102_2019.2-r1.1.0.deb).  
-	
-	* Copy the downloaded file to the board using scp with the following command.
-	```
-	  $scp vitis_ai_model_ZCU102_2019.2-r1.1.0.deb root@IP_OF_BOARD:~/
-	```
-	* Log in to the board (usong ssh or serial port) and install the model package.
-	* Run the following command.
-	```
-	  #dpkg -i vitis_ai_model_ZCU102_2019.2-r1.1.0.deb
-	```
-2. Install AI Library Package
-	* Download the [Vitis AI Runtime 1.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.1.1-vivado.tar.gz).  
-	
-	* Untar the packet and copy the files to the board using scp.
-	```
-	$scp <path_to_untar'd_runtime_library>/libunilog-1.1.0-Linux.deb root@IP_OF_BOARD:~/
-	$scp <path_to_untar'd_runtime_library>/libxir-1.1.0-Linux.deb root@IP_OF_BOARD:~/
-	$scp <path_to_untar'd_runtime_library>/libvart-1.1.0-Linux.deb root@IP_OF_BOARD:~/
-	$scp <path_to_untar'd_runtime_library>/aarch64/libvitis_ai_library-1.1.1-Linux.deb root@IP_OF_BOARD:~/
-	```	
-  * Install the Vitis AI Library on the board.
-	```
-	#dpkg –i --force-all libunilog-1.1.0-Linux.deb
-	#dpkg –i libxir-1.1.0-Linux.deb
-	#dpkg –i libvart-1.1.0-Linux.deb
-	#dpkg -i libvitis_ai_library-1.1.1-Linux.deb
-	```
-	* Reduce the DPU frequency to 93%.
-	```
-	#dpu_clk 93
-	```
-### 6.3 Run Vitis AI Library Examples
+When AXI HP0 port connects to DPU and use DisplayPort to display, if the QoS settings are not modified, the DisplayPort transmission may under-run, producing black frames or screen flicker intermittently during DPU running. Apart from QoS settings, increasing the read and write issuing capability (outstanding commands) of DPU connected AXI FIFO interface S_AXI_HPC{0, 1}_FPD or S_AXI_HP{0:3}_FPD or S_AXI_LPD may keep the ports busy with always some requests in the queue, which could improve DPU performance highly. [solution](#solution)
 
-1. Copy the sample and demo from host to the target using scp with the following command.
-```
-$scp -r ~/Vitis-AI/Vitis-AI-Library/overview root@IP_OF_BOARD:~/
-```
-2. Download and copy the image and video packages from host to the target using scp with the following command.
-	* Download the [demo video files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_video.tar.gz) 
-	
-	* Download the [demo image files](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.1_images.tar.gz) 
-```
-$scp vitis_ai_library_r1.1_images.tar.gz root@IP_OF_BOARD:~/
-$scp vitis_ai_library_r1.1_video.tar.gz root@IP_OF_BOARD:~/
-```
-3. Untar the image and video packages on the target.
-```
-#cd ~
-#tar -xzvf vitis_ai_library_r1.1_images.tar.gz -C overview
-#tar -xzvf vitis_ai_library_r1.1_video.tar.gz -C overview
-```
-4. Enter the directory of example in target board, take facedetect as an example.
-```
-#cd ~/overview/samples/facedetect
-```
+##### Solution
 
-5. Run the image test example.
-```
-#./test_jpeg_facedetect densebox_640_360 sample_facedetect.jpg
-```
-Compare the results with the readme file in the current directory.
+User could execute **zynqmp_dpu_optimize.sh** on target board to address the issue.
 
-6. Run the video test example.
-```
-#./test_video_facedetect densebox_640_360 video_input.mp4 -t 8
-Video_input.mp4: The video file's name for input.The user needs to prepare the videofile.
--t: <num_of_threads>
-```
+Copy **$TRD_HOME/app/dpu_sw_optimize.tar.gz** to target board, after linux boot-up, run:
 
-7. To test the program with a USB camera as input, run the following command:
-```
-#./test_video_facedetect densebox_640_360 0 -t 8
-0: The first USB camera device node. If you have multiple USB camera, the value might be 1,2,3 etc.
--t: <num_of_threads>
-```
+```shell
+% tar -zxvf dpu_sw_optimize.tar.gz
 
-8. To test the performance of model, run the following command:
+% ./dpu_sw_optimize/zynqmp/zynqmp_dpu_optimize.sh
+
+(refer to dpu_sw_optimize/zynqmp/README.md get more info)
+
 ```
-#./test_performance_facedetect densebox_640_360 test_performance_facedetect.list -t 8 -s 60
--t: <num_of_threads>
--s: <num_of_seconds>
-```
-## Reference
-For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_1/ug1354-xilinx-ai-sdk.pdf) and [vitis-ai-library-programming-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_1/ug1355-xilinx-ai-sdk-programming-guide.pdf).

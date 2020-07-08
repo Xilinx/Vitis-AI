@@ -16,9 +16,9 @@ Important Notes:
    - Once you download it, you can provide the path to the directory using the flag `-d <DIRECTORY>`
    - To download do:
    ```
-   $ conda activate vitis-ai-tensorflow  or conda activate vitis-ai-caffe
-   $ python -m ck pull repo:ck-env
-   $ python -m ck install package:imagenet-2012-val-min 
+   conda activate vitis-ai-tensorflow  or conda activate vitis-ai-caffe
+   python -m ck pull repo:ck-env
+   python -m ck install package:imagenet-2012-val-min 
    ```
 
 The following three examples of applications using the Python xfDNN API are provided:
@@ -26,7 +26,22 @@ The following three examples of applications using the Python xfDNN API are prov
 1. A **Test Classification** example that demonstrates how to run inference on a single image "dog.jpg"
 2. A **Streaming Classifcation** example that streams images from disk through the FPGA for classification.
 3. A **Multi-Network** example that shows different DNNs running independently on multiple processing elements on the FPGA.   
-   
+
+### Setup
+
+> **Note:** Skip, If you have already run the below steps.
+
+Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe 
+  ```
+
+Setup the Environment
+
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
+
 ## Running the Examples  
 
 To run any of the three examples, use the provided bash run.sh script. 

@@ -22,6 +22,11 @@ namespace ai {
  */
 void softmax(const int8_t *input, float scale, unsigned int cls,
              unsigned int group, float *output);
+/** @Method for float input data
+ * Used for DPUV1 
+ */
+void softmax(const float *input, float scale, unsigned int cls,
+             unsigned int group, float *output);
 /** @brief `yuv2bgr` converts a raw image from YUV422 to BGR, include
  * cropping.
  */

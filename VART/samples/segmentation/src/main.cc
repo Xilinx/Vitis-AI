@@ -15,6 +15,7 @@
  */
 
 #include <unistd.h>
+
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -26,14 +27,13 @@
 #include <string>
 #include <thread>
 #include <vector>
+
 #include "common.h"
 
 GraphInfo shapes;
 using namespace std;
 using namespace std::chrono;
 using namespace cv;
-using namespace vitis;
-using namespace ai;
 
 uint8_t colorB[] = {128, 232, 70, 156, 153, 153, 30,  0,   35, 152,
                     180, 60,  0,  142, 70,  100, 100, 230, 32};
@@ -75,11 +75,11 @@ int display_index = 0;    // frame index to display
  *
  * @return none
  */
-void runSegmentation(vitis::ai::DpuRunner* runner, bool& is_running) {
+void runSegmentation(vart::Runner* runner, bool& is_running) {
   // init out data
   float mean[3] = {104, 117, 123};
-  std::vector<vitis::ai::CpuFlatTensorBuffer> inputs, outputs;
-  std::vector<vitis::ai::TensorBuffer*> inputsPtr, outputsPtr;
+  std::vector<std::unique_ptr<vart::TensorBuffer>> inputs, outputs;
+  std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
   auto inputTensors = cloneTensorBuffer(runner->get_input_tensors());
   int batch = inputTensors[0]->get_dim_size(0);
   float* result = new float[shapes.outTensorList[0].size * batch];
@@ -116,25 +116,24 @@ void runSegmentation(vitis::ai::DpuRunner* runner, bool& is_running) {
     // image pre-process
     Mat image2 = cv::Mat(inHeight, inWidth, CV_8SC3);
     resize(img, image2, Size(inWidth, inHeight), 0, 0, INTER_LINEAR);
-    if (runner->get_tensor_format() == DpuRunner::TensorFormat::NHWC) {
-      for (int h = 0; h < inHeight; h++)
-        for (int w = 0; w < inWidth; w++)
-          for (int c = 0; c < 3; c++)
-            imageInputs[h * inWidth * 3 + w * 3 + c] =
-                img.at<Vec3b>(h, w)[c] - mean[c];
-    } else {
-      for (int c = 0; c < 3; c++)
-        for (int h = 0; h < inHeight; h++)
-          for (int w = 0; w < inWidth; w++)
-            imageInputs[c * inWidth * inHeight + h * inWidth + w] =
-                img.at<Vec3b>(h, w)[c] - mean[c];
+
+    for (int h = 0; h < inHeight; h++) {
+      for (int w = 0; w < inWidth; w++) {
+        for (int c = 0; c < 3; c++) {
+          imageInputs[h * inWidth * 3 + w * 3 + c] =
+              img.at<Vec3b>(h, w)[c] - mean[c];
+        }
+      }
     }
+
     // tensor buffer prepare
-    inputs.push_back(
-        ai::CpuFlatTensorBuffer(imageInputs, inputTensors[0].get()));
-    outputs.push_back(ai::CpuFlatTensorBuffer(result, outputTensors[0].get()));
-    inputsPtr.push_back(&inputs[0]);
-    outputsPtr.push_back(&outputs[0]);
+    inputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
+        imageInputs, inputTensors[0].get()));
+    outputs.push_back(
+        std::make_unique<CpuFlatTensorBuffer>(result, outputTensors[0].get()));
+
+    inputsPtr.push_back(inputs[0].get());
+    outputsPtr.push_back(outputs[0].get());
 
     // run
     auto job_id = runner->execute_async(inputsPtr, outputsPtr);
@@ -257,11 +256,16 @@ int main(int argc, char** argv) {
     cout << "Failed to open video: " << file_name;
     return -1;
   }
+
+  auto graph = xir::Graph::deserialize(argv[2]);
+  auto subgraph = get_dpu_subgraph(graph.get());
+  CHECK_EQ(subgraph.size(), 1u)
+      << "segmentation should have one and only one dpu subgraph.";
+  LOG(INFO) << "create running for subgraph: " << subgraph[0]->get_name();
+
   // create runner
-  auto runners = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
-  auto runners2 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
-  auto runner = runners[0].get();
-  auto runner2 = runners2[0].get();
+  auto runner = vart::Runner::create_runner(subgraph[0], "run");
+  auto runner2 = vart::Runner::create_runner(subgraph[0], "run");
   // in/out tensors
   auto inputTensors = runner->get_input_tensors();
   auto outputTensors = runner->get_output_tensors();
@@ -273,13 +277,13 @@ int main(int argc, char** argv) {
   TensorShape outshapes[outputCnt];
   shapes.inTensorList = inshapes;
   shapes.outTensorList = outshapes;
-  getTensorShape(runner, &shapes, inputCnt, outputCnt);
+  getTensorShape(runner.get(), &shapes, inputCnt, outputCnt);
 
   // Run tasks
   array<thread, 4> threads = {
       thread(Read, ref(is_reading)),
-      thread(runSegmentation, runner, ref(is_running_1)),
-      thread(runSegmentation, runner2, ref(is_running_2)),
+      thread(runSegmentation, runner.get(), ref(is_running_1)),
+      thread(runSegmentation, runner2.get(), ref(is_running_2)),
       thread(Display, ref(is_displaying))};
 
   for (int i = 0; i < 4; ++i) {

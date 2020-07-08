@@ -16,6 +16,7 @@
 
 #include "./classification_imp.hpp"
 #include <iostream>
+#include <fstream>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <queue>
@@ -28,6 +29,8 @@ namespace vitis{
 namespace ai {
 
 DEF_ENV_PARAM(ENABLE_CLASSIFICATION_DEBUG, "0");
+DEF_ENV_PARAM(CLASSIFICATION_SET_INPUT, "0");
+
 ClassificationImp::ClassificationImp(const std::string& model_name,
                                      bool need_preprocess)
     : TConfigurableDpuTask<Classification>(model_name, need_preprocess),
@@ -80,6 +83,34 @@ static void vgg_preprocess(const cv::Mat& image, int height, int width,
   croppedImage(resized_image, height, width, pro_res);
 }
 
+static void inception_pt(const cv::Mat& image, int height, int width,
+                           cv::Mat& pro_res) {
+  float smallest_side = 299;
+  float scale =
+      smallest_side / ((image.rows > image.cols) ? image.cols : image.rows);
+  LOG_IF(INFO, ENV_PARAM(ENABLE_CLASSIFICATION_DEBUG))
+     << "resize: Width = " << image.cols*scale 
+     << " Height = " << image.rows*scale;
+  cv::Mat resized_image;
+  cv::resize(image, resized_image,
+             cv::Size(ceil(image.cols * scale), ceil(image.rows * scale)));
+  LOG_IF(INFO, ENV_PARAM(ENABLE_CLASSIFICATION_DEBUG))
+     << "after resize: " << resized_image.size;
+  croppedImage(resized_image, height, width, pro_res);
+  if(ENV_PARAM(CLASSIFICATION_SET_INPUT)) {
+    std::ifstream input_bin("input_fix.bin", std::ios::binary);
+    if(input_bin.is_open()) {
+      input_bin.seekg(0, input_bin.end);
+      int fsize = input_bin.tellg();
+      input_bin.seekg(0, input_bin.beg);
+      input_bin.read((char*)pro_res.data, fsize);
+      input_bin.close();
+    } else {
+      LOG(INFO) << "Pleasae rename your input file as input_fix.bin!";
+    }
+  }
+}
+
 vitis::ai::ClassificationResult ClassificationImp::run(
     const cv::Mat& input_image) {
   cv::Mat image;
@@ -95,7 +126,12 @@ vitis::ai::ClassificationResult ClassificationImp::run(
         break;
       case 1:
         if (test_accuracy) {
+//# DPUV1 directly uses the resized image dataset so no need of crop
+#ifdef ENABLE_DPUCADX8G_RUNNER
+          cv::resize(input_image, image, size);
+#else
           croppedImage(input_image, height, width, image);
+#endif
         } else {
           cv::resize(input_image, image, size);
         }
@@ -105,6 +141,8 @@ vitis::ai::ClassificationResult ClassificationImp::run(
         break;
       case 3:
         inception_preprocess(input_image, height, width, image);
+      case 4:
+        inception_pt(input_image, height, width, image);
         break;
       default:
         break;
@@ -112,7 +150,7 @@ vitis::ai::ClassificationResult ClassificationImp::run(
   }
   //__TIC__(CLASSIFY_E2E_TIME)
   __TIC__(CLASSIFY_SET_IMG)
-  if (preprocess_type == 2 || preprocess_type == 3) {
+  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4) {
     configurable_dpu_task_->setInputImageRGB(image);
   } else {
     configurable_dpu_task_->setInputImageBGR(image);
@@ -169,6 +207,9 @@ std::vector<ClassificationResult> ClassificationImp::run(
         case 3:
           inception_preprocess(input_images[i], height, width, image);
           break;
+        case 4:
+          inception_pt(input_images[i], height, width, image);
+          break;
         default:
           break;
       }
@@ -177,7 +218,7 @@ std::vector<ClassificationResult> ClassificationImp::run(
   }
 
   __TIC__(CLASSIFY_SET_IMG)
-  if (preprocess_type == 2 || preprocess_type == 3) {
+  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4) {
     configurable_dpu_task_->setInputImageRGB(images);
   } else {
     configurable_dpu_task_->setInputImageBGR(images);

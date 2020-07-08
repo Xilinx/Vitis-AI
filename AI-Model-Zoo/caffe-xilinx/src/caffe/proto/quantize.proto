@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+package deephi;
+
+message QuantizeParameter {
+  repeated string ignore_layer = 1;
+}

@@ -23,7 +23,7 @@
 #****************************************************************
 dict set dict_prj dict_sys pwd_dir            [pwd]
 dict set dict_prj dict_sys srcs_dir           [file dirname [file dirname [file dirname [dict get $dict_prj dict_sys work_dir]]]]/dpu_ip
-dict set dict_prj dict_sys ip_dir             [dict get $dict_prj dict_sys srcs_dir]/dpu_eu_v3_2_0
+dict set dict_prj dict_sys ip_dir             [dict get $dict_prj dict_sys srcs_dir]/DPUCZDX8G_v3_3_0
 dict set dict_prj dict_sys xdc_dir            [file dirname [dict get $dict_prj dict_sys work_dir]]/constrs
 dict set dict_prj dict_sys prj_dir            [file dirname [dict get $dict_prj dict_sys work_dir]]/prj
 dict set dict_prj dict_sys bd_dir             [file dirname [dict get $dict_prj dict_sys work_dir]]/srcs
@@ -2580,17 +2580,17 @@ dict set dict_prj dict_verreg                           \
     ]
 dict set dict_prj dict_verreg info_ip         \
   dpu           [dict create                  \
-    NAME        "dpu_eu"                      \
+    NAME        "DPUCZDX8G"                   \
     PROP        [dict create                  \
                 "VER_DPU_NUM"           [lib_param DPU_NUM]               \
                 "ARCH"                  [lib_param DPU_ARCH]              \
-				            "ARCH_IMG_BKGRP"        [expr {([string tolower [dict get $dict_prj dict_param  DPU_RAM_USAGE]]=={low})?{2}:{3}}]\
+                "ARCH_IMG_BKGRP"        [expr {([string tolower [dict get $dict_prj dict_param  DPU_RAM_USAGE]]=={low})?{2}:{3}}]\
                 "LOAD_AUGM"             [lib_param DPU_CHN_AUG_ENA]       \
                 "DWCV_ENA"              [lib_param DPU_DWCV_ENA]          \
                 "POOL_AVERAGE"          [lib_param DPU_AVG_POOL_ENA]      \
                 "CONV_RELU_ADDON"       [lib_param DPU_CONV_RELU_TYPE]    \
                 "CONV_WR_PARALLEL"      [lib_param DPU_CONV_WP]           \
-																"SFM_ENA"               [lib_param DPU_SFM_NUM]           \
+                "SFM_ENA"               [lib_param DPU_SFM_NUM]           \
                 "S_AXI_CLK_INDEPENDENT" [lib_param DPU_SAXICLK_INDPD]     \
                 "CLK_GATING_ENA"        [lib_param DPU_CLK_GATING_ENA]    \
                 "CONV_DSP_CASC_MAX"     [lib_param DPU_DSP48_MAX_CASC_LEN]\
@@ -2732,4 +2732,3 @@ dict set dict_prj dict_addr [dict create \
   ad_gp0 [dict create "REG" [lib_cell d_ip_dpu]/S_AXI/reg0      "RANGE" {16M}  "OFFSET" {0x8f000000} ]  \
   ]
 
-#41d051e7f991c9dacbe8d368b85f57380b272bd2d7dc26e6c472a2d06e70908e

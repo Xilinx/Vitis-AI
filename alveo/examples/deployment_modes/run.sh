@@ -43,8 +43,9 @@ NUMSTREAMS=8
 DEVICEID=0
 NUMPREPPROC=4
 COMPILEROPT="autoAllOpt"
+ACQUIRECU="false"
 # Parse Options
-OPTS=`getopt -o t:m:d:s:a:n:ns:i:c:is:y:gvxph --long test:,model:,directory:,numdevices:,numstreams:,deviceid:,batchsize:,compilerOpt:,imagescale:,numprepproc,checkaccuracy,verbose,perpetual,profile,help -n "$0" -- "$@"`
+OPTS=`getopt -o t:m:d:s:a:n:ns:i:c:is:y:acu:gvxph --long test:,model:,directory:,numdevices:,numstreams:,deviceid:,batchsize:,compilerOpt:,imagescale:,numprepproc,acquirecu,checkaccuracy,verbose,perpetual,profile,help -n "$0" -- "$@"`
 
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; usage; exit 1 ; fi
 
@@ -63,6 +64,7 @@ do
     -c |--compilerOpt   ) COMPILEROPT="$2"                                                ; shift 2 ;;
     -is|--imagescale    ) IMG_INPUT_SCALE="$2"                                            ; shift 2 ;;
     -y |--numprepproc   ) NUMPREPPROC="$2"                                                ; shift 2 ;;
+    -acu|--acquirecu    ) ACQUIRECU="$2"                                                  ; shift 2 ;;
     -g |--checkaccuracy ) GOLDEN=$VAI_ALVEO_ROOT/examples/deployment_modes/gold.txt       ; shift 1 ;;
     -v |--verbose       ) VERBOSE=1                                                       ; shift 1 ;;
     -x |--perpetual     ) PERPETUAL=1                                                     ; shift 1 ;;
@@ -142,11 +144,11 @@ if [ -z $VITIS_RUNDIR ]; then
   ln -s $(get_abs_filename $NETCFG) ${VITIS_RUNDIR}/compiler.json
   ln -s $(get_abs_filename $QUANTCFG) ${VITIS_RUNDIR}/quantizer.json
   ln -s $(get_abs_filename $WEIGHTS) ${VITIS_RUNDIR}/weights.h5
-  echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"publish_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}/meta.json
+  echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"acquire_cu\": \"$ACQUIRECU\", \"publish_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}/meta.json
   # meta.json accepts {env_variables} in paths as well, e.g.:
   #echo "{ \"lib\": \"{VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_ALVEO_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
   cp -fr $VITIS_RUNDIR ${VITIS_RUNDIR}_worker
-  echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"subscribe_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}_worker/meta.json
+  echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"acquire_cu\": \"$ACQUIRECU\", \"subscribe_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}_worker/meta.json
   BASEOPT+=" --vitis_rundir ${VITIS_RUNDIR}"
 fi
 

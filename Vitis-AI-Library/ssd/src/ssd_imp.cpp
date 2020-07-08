@@ -57,7 +57,7 @@ SSDResult SSDImp::run(const cv::Mat &input_img) {
   __TOC__(SSD_dpu)
 
   __TIC__(SSD_post)
-  auto results = processor_->ssd_post_process();
+  auto results = processor_->ssd_post_process(1u);
   __TOC__(SSD_post)
 
   __TOC__(SSD_total)
@@ -65,13 +65,13 @@ SSDResult SSDImp::run(const cv::Mat &input_img) {
 }
 
 std::vector<SSDResult> SSDImp::run(const std::vector<cv::Mat> &input_img) {
-
   auto size = cv::Size(getInputWidth(), getInputHeight());
-  auto batch_size = get_input_batch();
+  // auto batch_size = get_input_batch();
+  auto batch_size = input_img.size();
 
   std::vector<cv::Mat> vimg(batch_size);
 
-  for (auto i= 0ul; i < batch_size; i++) {
+  for (auto i = 0ul; i < batch_size; i++) {
     if (size != input_img[i].size()) {
       cv::resize(input_img[i], vimg[i], size, 0, 0, cv::INTER_LINEAR);
     } else {
@@ -93,13 +93,12 @@ std::vector<SSDResult> SSDImp::run(const std::vector<cv::Mat> &input_img) {
   __TOC__(SSD_dpu)
 
   __TIC__(SSD_post)
-  auto results = processor_->ssd_post_process();
+  auto results = processor_->ssd_post_process(input_img.size());
   __TOC__(SSD_post)
 
   __TOC__(SSD_total)
   return results;
 }
 
-
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

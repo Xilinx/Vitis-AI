@@ -58,18 +58,27 @@ namespace AKS
       DataDescriptor(std::initializer_list<int> shape, AKS::DataType dtype);
       DataDescriptor(std::vector<int> shape, AKS::DataType dtype);
 
-      DataDescriptor(DataDescriptor& src) = delete;
+      DataDescriptor(const DataDescriptor& src);
       DataDescriptor(DataDescriptor&& src);
-      DataDescriptor& operator=(const DataDescriptor& src) = delete;
+      DataDescriptor& operator=(const DataDescriptor& src);
       DataDescriptor& operator=(DataDescriptor&& src);
       ~DataDescriptor();
 
       /// Get the shape of data
-      const std::vector<int>& getShape() { return _shape; }
+      const std::vector<int>& getShape() const { return _shape; }
+      std::vector<int> getStride() const {
+        auto dsize  = static_cast<int>(_dtype);
+        std::vector<int> strides(_shape.begin()+1, _shape.end());
+        strides.push_back(dsize);
+        for(int i=_shape.size()-2; i>=0; --i) strides[i] *= strides[i+1];
+        return strides;
+      }
+
+      const DataType dtype() { return _dtype; }
 
       /// Get the shape as a string
-      const std::string getStringShape() { 
-        std::string s = "";
+      const std::string getStringShape() {
+        std::string s = "Shape : ";
         for(auto val: _shape) {
           s += std::to_string(val);
           s += "x";
@@ -82,8 +91,15 @@ namespace AKS
       template<typename T=void>
       T* data() { return static_cast<T*>(_data); }
 
+      /// Get an immutable handle to underlying data
+      template<typename T=void>
+      const T* const_data() const { return static_cast<T*>(_data); }
+
       /// Get nelems from shape
       size_t getNumberOfElements();
+
+      /// Get CRC checksum of all the underlying data. Useful for debugging
+      int getCRC();
 
     private:
       // Data and Shape

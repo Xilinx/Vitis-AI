@@ -32,13 +32,13 @@ read -n 1 -s -r -p "Press any key to continue..." key
 sed -n '15, 24p' ./PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '24, 53p' ./PROMPT.txt
+sed -n '24, 61p' ./PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '53, 224p' ./PROMPT.txt
+sed -n '61, 300p' ./PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '224, 231p' ./PROMPT.txt
+sed -n '300, 308p' ./PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
 
@@ -55,4 +55,4 @@ confirm() {
 
 confirm
 
-docker build --network=host --build-arg VERSION=${VERSION} --build-arg DATE="$(date)" -f ${DOCKERFILE} -t $IMAGE_TAG ./
+docker build --network=host --build-arg VERSION=${VERSION} --build-arg CACHEBUST="$(date +%s)" --build-arg DATE="$(date)" -f ${DOCKERFILE} -t $IMAGE_TAG ./

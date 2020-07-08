@@ -1,5 +1,0 @@
-{
-  "lib": "libvart-dpu-runner.so",
-  "filename": "./fpn.xmodel",
-  "kernel": [ "subgraph_inception_4e/pool(fix)" ]
-}

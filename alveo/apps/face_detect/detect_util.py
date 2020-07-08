@@ -13,6 +13,7 @@
 # limitations under the License.
 import numpy as np
 import ctypes
+import os
 
 def GSTilingLayer_forward_py(bottom, stride):
   stride_sq = stride**2;
@@ -51,7 +52,8 @@ def GSTilingLayer_forward_c(bottom, stride):
   global top_dim
   global top
   
-  clib = ctypes.cdll.LoadLibrary('./detect_util_c/detect_util_c.so')
+  moddir = os.path.dirname(os.path.abspath(__file__))
+  clib = ctypes.cdll.LoadLibrary('{}/detect_util_c/detect_util_c.so'.format(moddir))
 
   stride_sq = stride**2;
 

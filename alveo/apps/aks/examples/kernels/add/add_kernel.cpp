@@ -19,7 +19,7 @@
 #include <vector>
 #include <iostream>
 
-#include "ext/AksParamValues.h"
+#include "ext/AksNodeParams.h"
 #include "ext/AksKernelBase.h"
 #include "ext/AksDataDescriptor.h"
 
@@ -30,13 +30,13 @@ class AddKernelBase: public AKS::KernelBase {
     int exec_async (
         std::vector<AKS::DataDescriptor *> &in,
         std::vector<AKS::DataDescriptor *> &out,
-        AKS::OpParamValues* params,
+        AKS::NodeParams* params,
         AKS::DynamicParamValues* dynParams);
     int getNumCUs(void);
 };
 
 extern "C" {
-AKS::KernelBase* getKernel (AKS::OpParamValues* params) {
+AKS::KernelBase* getKernel (AKS::NodeParams* params) {
   AddKernelBase* base = new AddKernelBase();
   return base;
 }
@@ -49,7 +49,7 @@ int AddKernelBase::getNumCUs(void)
 
 int AddKernelBase::exec_async (
   vector<AKS::DataDescriptor *>& in, vector<AKS::DataDescriptor *>& out,
-  AKS::OpParamValues* params, AKS::DynamicParamValues* dynParams)
+  AKS::NodeParams* params, AKS::DynamicParamValues* dynParams)
 {
     AddKernelBase* kbase = this;
     float* input = (float*)(in[0]->data());
@@ -59,6 +59,6 @@ int AddKernelBase::exec_async (
     float* output = (float*)(out[0]->data());
 
     output[0] = input[0] + params->_intParams["adder"];
-    std::cout << "Node Output : " << output[0] << std::endl;
+    std::cout << "Node Output : " << params << " " << input[0] << " " << output[0] << std::endl;
     return -1;
 }

@@ -1,16 +1,33 @@
-This is resnet50_v1 example and it uses unified vitis-ai APIs to run on alveo platforms
+This is resnet50_v1 tensorflow example and it uses unified vitis-ai APIs to run on alveo platforms
 
-BUILD: 
+### Setup
 
-    $make
+> **Note:** Skip, If you have already run the below steps.
 
-RUN:
+Activate Conda Environment
+  ```sh
+  conda activate vitis-ai-caffe
+  ```
 
-    $source run.sh
+Setup the Environment
+
+  ```sh
+  source /workspace/alveo/overlaybins/setup.sh
+  ```
+
+### Build
+
+    make
+
+### Run
+
+  ```sh
+  source run.sh
+  ```
 
 Input: It takes input as jpg image from image folder in current path
 
 Output: classification results display on console window
 
-**Note: Application assumes `vitis-ai-caffe` conda has already activated  
+> **Note:** Application assumes `vitis-ai-caffe` conda is already activated  
 

@@ -44,31 +44,35 @@ int main(int argc, char* argv[]) {
     std::cerr << "No image load success!" << std::endl;
     abort();
   }
-
-  std::vector<cv::Mat> batch_images;
-  std::vector<std::string> batch_images_names;
-  auto batch = det->get_input_batch();
-  for (auto batch_idx = 0u; batch_idx < batch; batch_idx++) {
-    batch_images.push_back(
-        arg_input_images[batch_idx % arg_input_images.size()]);
-    batch_images_names.push_back(
-        arg_input_images_names[batch_idx % arg_input_images.size()]);
+  auto total_images = 5u;
+  for (auto count = 0u; count < 2u; ++count) {
+    std::cout << "test number: " << count << std::endl;
+    auto img_idx = 0u;
+    do {
+      std::vector<cv::Mat> batch_images;
+      std::vector<std::string> batch_images_names;
+      auto batch = det->get_input_batch();
+      for (auto batch_idx = 0u; batch_idx < batch && img_idx < total_images;
+           batch_idx++, img_idx++) {
+        batch_images.push_back(
+            arg_input_images[img_idx % arg_input_images.size()]);
+        batch_images_names.push_back(
+            arg_input_images_names[img_idx % arg_input_images.size()]);
+      }
+      auto results = det->run(batch_images);
+      for (auto batch_idx = 0u; batch_idx < results.size(); batch_idx++) {
+        std::cout << "batch_index " << batch_idx << " "                     //
+                  << "image_name " << batch_images_names[batch_idx] << " "  //
+                  << std::endl;
+        for (const auto& r : results[batch_idx].scores) {
+          std::cout << "index " << r.index << " "              //
+                    << "score " << r.score << " "              //
+                    << "text " << det->lookup(r.index) << " "  //
+                    << std::endl;
+        }
+        std::cout << std::endl;
+      }
+    } while (img_idx < total_images);
   }
-
-  auto results = det->run(batch_images);
-
-  for (auto batch_idx = 0u; batch_idx < results.size(); batch_idx++) {
-    std::cout << "batch_index " << batch_idx << " "                     //
-              << "image_name " << batch_images_names[batch_idx] << " "  //
-              << std::endl;
-    for (const auto& r : results[batch_idx].scores) {
-      std::cout << "index " << r.index << " "              //
-                << "score " << r.score << " "              //
-                << "text " << det->lookup(r.index) << " "  //
-                << std::endl;
-    }
-    std::cout << std::endl;
-  }
-
   return 0;
 }

@@ -190,11 +190,10 @@ static std::string slurp(const char* filename) {
 TFSSDPost::TFSSDPost(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-    const vitis::ai::proto::DpuModelParam& config,
-    const vitis::ai::DpuMeta& dpumeta)
+    const vitis::ai::proto::DpuModelParam& config, const std::string& dirname)
     : input_tensors_(input_tensors), output_tensors_(output_tensors) {
   // read official tensorflow ssd configure file
-  auto path = dpumeta.dirname + "/" + config.tfssd_param().official_cfg();
+  auto path = dirname + "/" + config.tfssd_param().official_cfg();
   auto text = slurp(path.c_str());
   google::protobuf::LogSilencer* s1 = new google::protobuf::LogSilencer;
   if (0) {
@@ -211,20 +210,19 @@ TFSSDPost::TFSSDPost(
   score_converter_ =
       SCORE_CONVERTER(tfcfg.model().ssd().post_processing().score_converter());
 
-  for(auto it  = config.tfssd_param().output_info().begin();
-           it != config.tfssd_param().output_info().end();
-           it++) {
-      for (auto i = 0u; i < output_tensors.size(); i++) {
-          if (output_tensors[i].name.find(it->name()) !=  std::string::npos) {
-             if (it->type() == 1) {
-                CONF_IDX = i;
-                break;
-             }  else if (it->type() == 2) {
-                LOC_IDX = i;
-                break;
-             } 
-          }   
+  for (auto it = config.tfssd_param().output_info().begin();
+       it != config.tfssd_param().output_info().end(); it++) {
+    for (auto i = 0u; i < output_tensors.size(); i++) {
+      if (output_tensors[i].name.find(it->name()) != std::string::npos) {
+        if (it->type() == 1) {
+          CONF_IDX = i;
+          break;
+        } else if (it->type() == 2) {
+          LOC_IDX = i;
+          break;
+        }
       }
+    }
   }
 
   scale_conf_ = vitis::ai::library::tensor_scale(output_tensors_[CONF_IDX]);

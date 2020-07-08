@@ -40,12 +40,14 @@ class ConfigurableDpuTaskImp : public ConfigurableDpuTask {
 
   virtual int getInputWidth() const override;
   virtual int getInputHeight() const override;
-  virtual const vitis::ai::DpuMeta& get_dpu_meta_info() const override;
+
   virtual size_t get_input_batch() const override;
+  virtual const xir::Graph* get_graph() const override;
 
  private:
   std::unique_ptr<DpuTask> tasks_;
   vitis::ai::proto::DpuModelParam model_;
 };
+
 }  // namespace ai
 }  // namespace vitis

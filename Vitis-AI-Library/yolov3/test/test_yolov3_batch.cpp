@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 
   vector<Mat> imgs;
   vector<string> imgs_names;
-  for (int i = 2; i < argc; i++){
+  for (int i = 2; i < argc; i++) {
     auto img = cv::imread(argv[i]);
     if (img.empty()) {
       std::cout << "Cannot load " << argv[i] << std::endl;
@@ -50,17 +50,17 @@ int main(int argc, char *argv[]) {
   auto batch = static_cast<int>(model->get_input_batch());
   int imgs_size = static_cast<int>(imgs.size());
   vector<Mat> inputs;
-  for (int i = 0,j = -1; i < imgs_size; i++){
+  for (int i = 0, j = -1; i < imgs_size; i++) {
     inputs.push_back(imgs[i]);
     j++;
-    if (j < batch - 1 && i < imgs_size - 1){
+    if (j < batch - 1 && i < imgs_size - 1) {
       continue;
     }
 
     auto result_vec = model->run(inputs);
-    for (int k = 0; k < static_cast<int>(inputs.size()); k++){
+    for (int k = 0; k < static_cast<int>(inputs.size()); k++) {
       cout << "batch_index " << k << " "                    //
-           << "image_name " << imgs_names[i-j+k] << " "  //
+           << "image_name " << imgs_names[i - j + k] << " " //
            << std::endl;
       for (const auto &bbox : result_vec[k].bboxes) {
         int label = bbox.label;
@@ -78,13 +78,12 @@ int main(int argc, char *argv[]) {
           ymax = inputs[k].rows;
         float confidence = bbox.score;
 
-        cout << "RESULT: " << label << "\t" << xmin << "\t" 
-          << ymin << "\t" << xmax << "\t" << ymax << "\t" 
-          << confidence << "\n";
-        rectangle(inputs[k], Point(xmin, ymin), Point(xmax, ymax), 
+        cout << "RESULT: " << label << "\t" << xmin << "\t" << ymin << "\t"
+             << xmax << "\t" << ymax << "\t" << confidence << "\n";
+        rectangle(inputs[k], Point(xmin, ymin), Point(xmax, ymax),
                   Scalar(0, 255, 0), 1, 1, 0);
       }
-      imwrite(imgs_names[i-j+k] + "_result.jpg", inputs[k]);
+      imwrite(imgs_names[i - j + k] + "_result.jpg", inputs[k]);
     }
     inputs.clear();
     j = -1;

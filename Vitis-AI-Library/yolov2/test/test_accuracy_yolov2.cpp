@@ -18,12 +18,6 @@
 #include <opencv2/opencv.hpp>
 #include <fstream>
 #include <string>
-#include <vitis/ai/proto/dpu_model_param.pb.h>
-namespace vitis {
-namespace ai {
-extern "C" proto::DpuModelParam *find(const std::string &model_name);
-}
-} // namespace vitis
 using namespace std;
 using namespace cv;
 
@@ -64,10 +58,7 @@ int main(int argc, char *argv[]) {
     vector<cv::String> files;
     cv::glob(path, files);
 
-    auto model1 = vitis::ai::find(namemap[g_model_name]);
-    model1->mutable_yolo_v3_param()->set_test_map(true);
-    model1->mutable_yolo_v3_param()->set_conf_threshold(0.005);
-    auto yolo = vitis::ai::YOLOv2::create(namemap[g_model_name], true);
+    auto yolo = vitis::ai::YOLOv2::create(namemap[g_model_name]+string("_acc"), true);
 
     int count = files.size();
     cerr << "The image count = " << count << endl;

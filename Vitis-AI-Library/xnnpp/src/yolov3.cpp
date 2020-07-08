@@ -101,6 +101,8 @@ static vector<vector<float>> applyNMS(vector<vector<float>>& boxes, int classes,
   return result;
 }
 
+//# Disable when DPUV1 Runner is ON
+#ifndef ENABLE_DPUCADX8G_RUNNER
 static void detect(vector<vector<float>>& boxes, int8_t* result, int height,
                    int width, int num, int sHeight, int sWidth, float scale,
                    const vitis::ai::proto::DpuModelParam& config) {
@@ -141,6 +143,61 @@ static void detect(vector<vector<float>>& boxes, int8_t* result, int height,
     }
   }
 }
+#endif
+
+//# Enable method for DPUV1
+#ifdef ENABLE_DPUCADX8G_RUNNER
+static void detect(vector<vector<float>>& boxes, float* result, int height,
+                   int width, int num, int sHeight, int sWidth, float scale,
+                   const vitis::ai::proto::DpuModelParam& config) {
+  auto& yolo_params = config.yolo_v3_param();
+
+  auto num_classes = yolo_params.num_classes();
+  auto anchor_cnt = yolo_params.anchorcnt();
+  auto conf_thresh = yolo_params.conf_threshold();
+  auto biases = std::vector<float>(yolo_params.biases().begin(),
+                                   yolo_params.biases().end());
+  auto conf_desigmoid = -logf(1.0f / conf_thresh - 1.0f);
+  int conf_box = 5 + num_classes;
+  auto channels = anchor_cnt * (5+num_classes);
+  int index = 0;
+  float* swap_data = new float [channels * height * width];
+  for (int h = 0; h < height; ++h)
+      for (int w = 0; w < width; ++w)
+          for (int c = 0; c < channels; ++c)
+              swap_data[index++] = result[c*height*width+h*width+w];
+              
+  for (int h = 0; h < height; ++h) {
+    for (int w = 0; w < width; ++w) {
+      for (int c = 0; c < anchor_cnt; ++c) {
+        int idx = ((h * width + w) * anchor_cnt + c) * conf_box;
+        // float obj_score = sigmoid(swap[h * width + w][c][4]);
+        // if (obj_score < CONF)
+        if (swap_data[idx + 4] * scale < conf_desigmoid)
+          continue;
+        vector<float> box;
+
+        float obj_score = sigmoid(swap_data[idx + 4] * scale);
+        box.push_back((w + sigmoid(swap_data[idx] * scale)) / width);
+        box.push_back((h + sigmoid(swap_data[idx + 1] * scale)) / height);
+        box.push_back(exp(swap_data[idx + 2] * scale) *
+                      biases[2 * c + 2 * anchor_cnt * num] /
+                      float(sWidth));
+        box.push_back(exp(swap_data[idx + 3] * scale) *
+                      biases[2 * c + 2 * anchor_cnt * num + 1] /
+                      float(sHeight));
+        box.push_back(-1);
+        box.push_back(obj_score);
+        for (int p = 0; p < num_classes; p++) {
+          box.push_back(obj_score * sigmoid(swap_data[idx + 5 + p] * scale));
+        }
+        boxes.push_back(box);
+      }
+    }
+  }
+  delete[] swap_data;
+}
+#endif
 
 YOLOv3Result yolov3_post_process(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
@@ -188,7 +245,11 @@ yolov3_post_process(const std::vector<vitis::ai::library::InputTensor>& input_te
       int height = output_tensors[i].height;
 
       int sizeOut = output_tensors[i].size;
+#ifdef ENABLE_DPUCADX8G_RUNNER
+      float* dpuOut = (float*)output_tensors[i].get_data(k);
+#else
       int8_t* dpuOut = (int8_t*)output_tensors[i].get_data(k);
+#endif
       float scale = vitis::ai::library::tensor_scale(output_tensors[i]);
       boxes.reserve(sizeOut);
 

@@ -15,11 +15,34 @@
 
 
 Model_Name=$1
+IMGLIST=$2
+CALIB_DATASET=$3
+FDDB_PATH=$4
+
+SUPPORTED_MODELS="face_detection |face_detection_360_640"
+
+if [[ "$SUPPORTED_MODELS" != *"$Model_Name"* ]]; then
+  echo "$Model_Name is an invalid model."
+  echo "Valid Models : $SUPPORTED_MODELS."
+  echo "Exiting ..."
+  exit 1;
+fi
 
 if [ -z $Model_Name ];then
     Model_Name=face_detection
     echo -e "Running default model "face_detection_320_320_0.49G".. "
     echo -e "Please provide network name"
+fi
+if [ -z $IMGLIST ];then
+    IMGLIST="FDDB/FDDB_list_dummy.txt"
+fi
+
+if [ -z $CALIB_DATASET ];then
+    CALIB_DATASET="FDDB/"
+fi
+
+if [ -z $FDDB_PATH ];then
+    FDDB_PATH="FDDB"
 fi
 
 # Set Platform Environment Variables
@@ -48,16 +71,15 @@ rm -rf $COMP_DIR
 mkdir $COMP_DIR
 rm -rf $QUANT_DIR
 mkdir $QUANT_DIR
+rm -f ContROC.txt
+rm -f DiscROC.txt
 
 NET_DEF=$PROTOTXT
 DUMMY_PTXT=$COMP_DIR/${Model_Name}_decent.prototxt
-IMGLIST=FDDB/FDDB_list_dummy.txt
-CALIB_DATASET=FDDB/2002/07/19/big/
 
 python get_decent_q_prototxt.py ${CAFFE_ROOT}/python/ $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
 ## Run Quantizer
 export DECENT_DEBUG=1
-#
 vai_q_caffe quantize -model $DUMMY_PTXT -weights $CAFFMODEL  -calib_iter 5 -output_dir $QUANT_DIR
 
 if [[ -f $(which vai_c_caffe) ]]; then
@@ -70,10 +92,16 @@ else
 fi
 
 XCLBIN=/opt/xilinx/overlaybins/xdnnv3
-echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"publish_id\": \"${BASHPID}\" }" > arch.json
+if [ -d $XCLBIN ]; then
+  echo "--- Using System XCLBIN ---"
+else
+  echo "--- Using Local XCLBIN ---"
+  XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
+fi
+
 COMPILER_BASE_OPT=" --prototxt $QUANT_DIR/deploy.prototxt \
       --caffemodel $QUANT_DIR/deploy.caffemodel \
-      --arch arch.json \
+      --arch /opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json \
       --net_name face_detect \
       --output_dir $COMP_DIR"
 COMPILER_OTHER_OPT="{"
@@ -91,7 +119,7 @@ python3 detect_precision.py \
 	--vitisrundir ${VITIS_RUN_DIR} \
     --resize_h $NET_H \
     --resize_w $NET_W \
-	--fddbList FDDB/FDDB_list.txt \
-    --fddbPath FDDB/ \
-    --fddbAnno FDDB/FDDB_annotations.txt 
+	--fddbList ${FDDB_PATH}/FDDB_list.txt \
+    --fddbPath ${FDDB_PATH}/ \
+    --fddbAnno ${FDDB_PATH}/FDDB_annotations.txt 
 

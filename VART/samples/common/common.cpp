@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2019 Xilinx Inc.
  *
@@ -15,9 +16,10 @@
  */
 
 #include "common.h"
+
 #include <cassert>
 #include <numeric>
-int getTensorShape(DpuRunner* runner, GraphInfo* shapes, int cntin,
+int getTensorShape(vart::Runner* runner, GraphInfo* shapes, int cntin,
                    int cntout) {
   auto outputTensors = runner->get_output_tensors();
   auto inputTensors = runner->get_input_tensors();
@@ -26,38 +28,24 @@ int getTensorShape(DpuRunner* runner, GraphInfo* shapes, int cntin,
     std::iota(shapes->output_mapping.begin(), shapes->output_mapping.end(), 0);
   }
   for (int i = 0; i < cntin; i++) {
-    auto in_dims = inputTensors[i]->get_dims();
-    if (runner->get_tensor_format() == ai::DpuRunner::TensorFormat::NCHW) {
-      shapes->inTensorList[i].channel = inputTensors[i]->get_dim_size(1);
-      shapes->inTensorList[i].width = inputTensors[i]->get_dim_size(3);
-      shapes->inTensorList[i].height = inputTensors[i]->get_dim_size(2);
-      shapes->inTensorList[i].size =
-          inputTensors[i]->get_element_num() / inputTensors[0]->get_dim_size(0);
-    } else if (runner->get_tensor_format() ==
-               ai::DpuRunner::TensorFormat::NHWC) {
+    auto dim_num = inputTensors[i]->get_dim_num();
+    if (dim_num == 4) {
       shapes->inTensorList[i].channel = inputTensors[i]->get_dim_size(3);
       shapes->inTensorList[i].width = inputTensors[i]->get_dim_size(2);
       shapes->inTensorList[i].height = inputTensors[i]->get_dim_size(1);
       shapes->inTensorList[i].size =
           inputTensors[i]->get_element_num() / inputTensors[0]->get_dim_size(0);
-    } else {
-      return -1;
+    } else if (dim_num == 2) {
+      shapes->inTensorList[i].channel = inputTensors[i]->get_dim_size(1);
+      shapes->inTensorList[i].width = 1;
+      shapes->inTensorList[i].height = 1;
+      shapes->inTensorList[i].size =
+          inputTensors[i]->get_element_num() / inputTensors[0]->get_dim_size(0);
     }
   }
   for (int i = 0; i < cntout; i++) {
-    auto in_dims = outputTensors[shapes->output_mapping[i]]->get_dims();
-    if (runner->get_tensor_format() == ai::DpuRunner::TensorFormat::NCHW) {
-      shapes->outTensorList[i].channel =
-          outputTensors[shapes->output_mapping[i]]->get_dim_size(1);
-      shapes->outTensorList[i].width =
-          outputTensors[shapes->output_mapping[i]]->get_dim_size(3);
-      shapes->outTensorList[i].height =
-          outputTensors[shapes->output_mapping[i]]->get_dim_size(2);
-      shapes->outTensorList[i].size =
-          outputTensors[shapes->output_mapping[i]]->get_element_num() /
-          outputTensors[shapes->output_mapping[0]]->get_dim_size(0);
-    } else if (runner->get_tensor_format() ==
-               ai::DpuRunner::TensorFormat::NHWC) {
+    auto dim_num = outputTensors[shapes->output_mapping[i]]->get_dim_num();
+    if (dim_num == 4) {
       shapes->outTensorList[i].channel =
           outputTensors[shapes->output_mapping[i]]->get_dim_size(3);
       shapes->outTensorList[i].width =
@@ -67,14 +55,20 @@ int getTensorShape(DpuRunner* runner, GraphInfo* shapes, int cntin,
       shapes->outTensorList[i].size =
           outputTensors[shapes->output_mapping[i]]->get_element_num() /
           outputTensors[shapes->output_mapping[0]]->get_dim_size(0);
-    } else {
-      return -1;
+    } else if (dim_num == 2) {
+      shapes->outTensorList[i].channel =
+          outputTensors[shapes->output_mapping[i]]->get_dim_size(1);
+      shapes->outTensorList[i].width = 1;
+      shapes->outTensorList[i].height = 1;
+      shapes->outTensorList[i].size =
+          outputTensors[shapes->output_mapping[i]]->get_element_num() /
+          outputTensors[shapes->output_mapping[0]]->get_dim_size(0);
     }
   }
   return 0;
 }
 
-static int find_tensor(std::vector<ai::Tensor*> tensors,
+static int find_tensor(std::vector<const xir::Tensor*> tensors,
                        const std::string& name) {
   int ret = -1;
   for (auto i = 0u; i < tensors.size(); ++i) {
@@ -86,7 +80,7 @@ static int find_tensor(std::vector<ai::Tensor*> tensors,
   assert(ret != -1);
   return ret;
 }
-int getTensorShape(DpuRunner* runner, GraphInfo* shapes, int cntin,
+int getTensorShape(vart::Runner* runner, GraphInfo* shapes, int cntin,
                    std::vector<std::string> output_names) {
   for (auto i = 0u; i < output_names.size(); ++i) {
     auto idx = find_tensor(runner->get_output_tensors(), output_names[i]);

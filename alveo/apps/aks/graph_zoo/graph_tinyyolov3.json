@@ -5,7 +5,7 @@
     {
       "node_name": "tinyyolov3_preproc", 
       "node_params" : {
-        "detectionImreadPre": {
+        "DetectionImreadPreProcess": {
           "net_w" : 608, 
           "net_h" : 608, 
           "net_c": 3
@@ -17,7 +17,10 @@
     {
       "node_name": "tinyyolov3_fpga",
       "node_params": {
-        "DPUv1_Runner": {
+        "DPUCADX8GRunner": {
+          "acquire_cu": 0,
+          "num_fpga": 1,
+          "xclbin":   "/opt/xilinx/overlaybins/xdnnv3",
           "vitis_rundir": "graph_zoo/meta_tinyyolov3"
         }
       },

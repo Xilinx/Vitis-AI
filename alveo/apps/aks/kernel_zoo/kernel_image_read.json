@@ -1,5 +1,6 @@
 {
-  "kernel_name": "image_read",
+  "kernel_name": "ImageRead",
+  "description": "Reads an image from the image_path provided",
   "kernel_type": "cpp",
   "device_type": "cpu",
   "kernel_lib" : "libs/libImageRead.so",

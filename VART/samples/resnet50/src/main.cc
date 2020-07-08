@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
 #include <cassert>
 #include <cmath>
 #include <cstdio>
@@ -29,14 +30,13 @@
 #include <queue>
 #include <string>
 #include <vector>
+
 #include "common.h"
 /* header file OpenCV for image processing */
 #include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace cv;
-using namespace vitis;
-using namespace ai;
 
 GraphInfo shapes;
 
@@ -161,7 +161,7 @@ void TopK(const float* d, int size, int k, vector<string>& vkinds) {
  *
  * @return none
  */
-void runResnet50(ai::DpuRunner* runner) {
+void runResnet50(vart::Runner* runner) {
   /* Mean value for ResNet50 specified in Caffe prototxt */
   vector<string> kinds, images;
 
@@ -194,15 +194,15 @@ void runResnet50(ai::DpuRunner* runner) {
 
   int batchSize = in_dims[0];
 
-  std::vector<vitis::ai::CpuFlatTensorBuffer> inputs, outputs;
+  std::vector<std::unique_ptr<vart::TensorBuffer>> inputs, outputs;
 
   vector<Mat> imageList;
   float* imageInputs = new float[inSize * batchSize];
 
   float* softmax = new float[outSize];
   float* FCResult = new float[batchSize * outSize];
-  std::vector<vitis::ai::TensorBuffer*> inputsPtr, outputsPtr;
-  std::vector<std::shared_ptr<ai::Tensor>> batchTensors;
+  std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
+  std::vector<std::shared_ptr<xir::Tensor>> batchTensors;
   /*run with batch*/
   for (unsigned int n = 0; n < images.size(); n += batchSize) {
     unsigned int runSize =
@@ -215,39 +215,35 @@ void runResnet50(ai::DpuRunner* runner) {
       /*image pre-process*/
       Mat image2 = cv::Mat(inHeight, inWidth, CV_8SC3);
       resize(image, image2, Size(inHeight, inWidth), 0, 0, INTER_NEAREST);
-      if (runner->get_tensor_format() == DpuRunner::TensorFormat::NHWC) {
-        for (int h = 0; h < inHeight; h++)
-          for (int w = 0; w < inWidth; w++)
-            for (int c = 0; c < 3; c++)
-              imageInputs[i * inSize + h * inWidth * 3 + w * 3 + c] =
-                  image2.at<Vec3b>(h, w)[c] - mean[c];
-      } else {
-        for (int c = 0; c < 3; c++)
-          for (int h = 0; h < inHeight; h++)
-            for (int w = 0; w < inWidth; w++)
-              imageInputs[i * inSize + (c * inHeight * inWidth) +
-                          (h * inWidth) + w] =
-                  image2.at<Vec3b>(h, w)[c] - mean[c];
+      for (int h = 0; h < inHeight; h++) {
+        for (int w = 0; w < inWidth; w++) {
+          for (int c = 0; c < 3; c++) {
+            imageInputs[i * inSize + h * inWidth * 3 + w * 3 + c] =
+                image2.at<Vec3b>(h, w)[c] - mean[c];
+          }
+        }
       }
       imageList.push_back(image);
     }
 
     /* in/out tensor refactory for batch inout/output */
-    batchTensors.push_back(std::shared_ptr<ai::Tensor>(new ai::Tensor(
-        inputTensors[0]->get_name(), in_dims, ai::Tensor::DataType::FLOAT)));
+    batchTensors.push_back(std::shared_ptr<xir::Tensor>(
+        xir::Tensor::create(inputTensors[0]->get_name(), in_dims,
+                            xir::DataType::FLOAT, sizeof(float) * 8u)));
 
-    inputs.push_back(
-        ai::CpuFlatTensorBuffer(imageInputs, batchTensors.back().get()));
-    batchTensors.push_back(std::shared_ptr<ai::Tensor>(new ai::Tensor(
-        outputTensors[0]->get_name(), out_dims, ai::Tensor::DataType::FLOAT)));
-    outputs.push_back(
-        ai::CpuFlatTensorBuffer(FCResult, batchTensors.back().get()));
+    inputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
+        imageInputs, batchTensors.back().get()));
+    batchTensors.push_back(std::shared_ptr<xir::Tensor>(
+        xir::Tensor::create(outputTensors[0]->get_name(), out_dims,
+                            xir::DataType::FLOAT, sizeof(float) * 8u)));
+    outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
+        FCResult, batchTensors.back().get()));
 
     /*tensor buffer input/output */
     inputsPtr.clear();
     outputsPtr.clear();
-    inputsPtr.push_back(&inputs[0]);
-    outputsPtr.push_back(&outputs[0]);
+    inputsPtr.push_back(inputs[0].get());
+    outputsPtr.push_back(outputs[0].get());
 
     /*run*/
     auto job_id = runner->execute_async(inputsPtr, outputsPtr);
@@ -285,10 +281,13 @@ int main(int argc, char* argv[]) {
     cout << "\tfile_name: path to your file for detection" << endl;
     return -1;
   }
-
+  auto graph = xir::Graph::deserialize(argv[1]);
+  auto subgraph = get_dpu_subgraph(graph.get());
+  CHECK_EQ(subgraph.size(), 1u)
+      << "resnet50 should have one and only one dpu subgraph.";
+  LOG(INFO) << "create running for subgraph: " << subgraph[0]->get_name();
   /*create runner*/
-  auto runners = vitis::ai::DpuRunner::create_dpu_runner(argv[1]);
-  auto runner = runners[0].get();
+  auto runner = vart::Runner::create_runner(subgraph[0], "run");
   // ai::XdpuRunner* runner = new ai::XdpuRunner("./");
   /*get in/out tensor*/
   auto inputTensors = runner->get_input_tensors();
@@ -301,9 +300,9 @@ int main(int argc, char* argv[]) {
   TensorShape outshapes[outputCnt];
   shapes.inTensorList = inshapes;
   shapes.outTensorList = outshapes;
-  getTensorShape(runner, &shapes, inputCnt, outputCnt);
+  getTensorShape(runner.get(), &shapes, inputCnt, outputCnt);
 
   /*run with batch*/
-  runResnet50(runner);
+  runResnet50(runner.get());
   return 0;
 }

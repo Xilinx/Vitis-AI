@@ -1,13 +1,10 @@
 {
-  "kernel_name": "add",
+  "kernel_name": "Add",
+  "description": "Adds constant value to input",
   "kernel_type": "cpp",
   "device_type": "cpu",
-  "xclbin": "",
   "kernel_lib" : "libs/libAddKernel.so",
-  "kernel_queue_size": 1,
 
-  "init" : "init",
-  
   "param_list": {
     "adder": { "type":"int" }
   }

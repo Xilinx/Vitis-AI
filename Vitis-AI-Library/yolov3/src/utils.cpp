@@ -37,6 +37,33 @@ void add_pixel(image m, int x, int y, int c, float val) ;
 image ipl_to_image(IplImage *src);
 void ipl_into_image(IplImage *src, image im);
 
+//# Overload method with float input data for DPUV1
+void convertInputImage(const cv::Mat &frame, int width, int height, int channel,
+                       float scale, float *data) {
+  int size = width * height * channel;
+  image img_new = load_image_cv(frame);
+  image img_yolo = letterbox_image(img_new, width, height);
+
+  vector<float> bb(size);
+
+  for(int a = 0; a < channel; ++a) {
+            for(int b = 0; b < height; ++b) {
+                for(int c = 0; c < width; ++c) {
+                    bb[a*width*height + b*width + c] = 
+                    img_yolo.data[a*height*width + b*width + c];
+                }
+            }
+        }
+
+    for(int i = 0; i < size; ++i) {
+        data[i] = bb.data()[i];
+        if(data[i] < 0) data[i] = (float)scale;
+    }
+  
+  free_image(img_new);
+  free_image(img_yolo);
+}
+
 void convertInputImage(const cv::Mat &frame, int width, int height, int channel,
                        float scale, int8_t *data) {
   int size = width * height * channel;

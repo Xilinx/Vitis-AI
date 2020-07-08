@@ -50,10 +50,14 @@ struct req_softmax_t {
   uint32_t offset; /* offset value for input Tensor */
 };
 
-static void softmax_c(const int8_t* input, float scale, unsigned int cls,
+//# Templatized input datatype
+template<typename T>
+static void softmax_c(T* input, float scale, unsigned int cls,
                       unsigned int group, float* output);
 
-static void softmax_c(const int8_t* input, float scale, unsigned int cls,
+//# Templatized softmax_c
+template<typename T>
+static void softmax_c(T* input, float scale, unsigned int cls,
                       float* output);
 #ifdef ENABLE_NEON
 static void softmax2_neon(const int8_t* input, float scale, unsigned int group,
@@ -73,6 +77,13 @@ void softmax(const int8_t *input, float scale, unsigned int cls,
     softmax_my(input, scale, cls, group, output);
   }
   }*/
+
+//# Softmax method with float input data, used for DPUV1 
+void softmax(const float* input, float scale, unsigned int cls,
+             unsigned int group, float* output) {
+  softmax_c(input, scale, cls, group, output);
+}
+
 void softmax(const int8_t* input, float scale, unsigned int cls,
              unsigned int group, float* output) {
   static auto hw_smfc = xir::SfmController::get_instance();
@@ -109,7 +120,8 @@ void softmax(const int8_t* input, float scale, unsigned int cls,
 #endif
 }
 
-static void softmax_c(const int8_t* input, float scale, unsigned int cls,
+template<typename T>
+static void softmax_c(T* input, float scale, unsigned int cls,
                       unsigned int group, float* output) {
   for (unsigned int i = 0; i < group; ++i) {
     softmax_c(input, scale, cls, output);
@@ -117,7 +129,8 @@ static void softmax_c(const int8_t* input, float scale, unsigned int cls,
     output += cls;
   }
 }
-static void softmax_c(const int8_t* input, float scale, unsigned int cls,
+template<typename T>
+static void softmax_c(T* input, float scale, unsigned int cls,
                       float* output) {
   float sum = 0.f;
   for (unsigned int i = 0; i < cls; ++i) {

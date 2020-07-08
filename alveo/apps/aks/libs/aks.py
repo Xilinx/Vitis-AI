@@ -15,60 +15,80 @@ import numpy as np
 import ctypes
 import os
 import sys
-moddir = os.path.dirname(os.path.abspath(__file__))
-# _lib = ctypes.cdll.LoadLibrary('%s/libAks.so' % moddir)
-_lib = ctypes.CDLL('%s/libAks.so' % moddir)
-
-# AKS::SysManager* createSysManager();
-_lib.createSysManagerExt.restype  = ctypes.c_void_p
-_lib.createSysManagerExt.argtypes = []
-
-# void loadKernel(AKS::SysManager* sysMan, const char* kernelDir);
-_lib.loadKernels.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
-
-# void loadGraphs(AKS::SysManager* sysMan, const char* graphPath);
-_lib.loadGraphs.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
-
-# AKS::AIGraph* getGraph(AKS::SysManager* sysMan, const char* graphName);
-_lib.getGraph.restype  = ctypes.c_void_p
-_lib.getGraph.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
-
-# void enqueueJob(AKS::SysManager* sysMan, AKS::AIGraph* graph,
-#    const char* imagePath, AKS::UserParams* params);
-_lib.enqueueJob.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_char_p, ctypes.c_void_p]
-
-# void waitForAllResults(AKS::SysManager* sysMan);
-_lib.waitForAllResults.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
-
-# void report(AKS::SysManager* sysMan, AKS::AIGraph* graph);
-_lib.report.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
-
-# void deleteSysManager(AKS::SysManager* sysMan);
-_lib.deleteSysManagerExt.argtypes = []
 
 
-class SysManager:
+# Legacy Python Extensions
+class SysManagerLegacy:
   def __init__(self):
-    self._csysmgr = _lib.createSysManagerExt()
+    moddir = os.path.dirname(os.path.abspath(__file__))
+    # self._lib = ctypes.cdll.LoadLibrary('%s/libAks.so' % moddir)
+    self._lib = ctypes.PyDLL('%s/libAks.so' % moddir)
+
+    # AKS::SysManager* createSysManager();
+    self._lib.createSysManagerExt.restype  = ctypes.c_void_p
+    self._lib.createSysManagerExt.argtypes = []
+
+    # void loadKernel(AKS::SysManager* sysMan, const char* kernelDir);
+    self._lib.loadKernels.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+
+    # void loadGraphs(AKS::SysManager* sysMan, const char* graphPath);
+    self._lib.loadGraphs.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+
+    # AKS::AIGraph* getGraph(AKS::SysManager* sysMan, const char* graphName);
+    self._lib.getGraph.restype  = ctypes.c_void_p
+    self._lib.getGraph.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+
+    # void enqueueJob(AKS::SysManager* sysMan, AKS::AIGraph* graph,
+    #    const char* imagePath, AKS::NodeParams* params);
+    self._lib.enqueueJob.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_char_p, ctypes.c_void_p]
+
+    # void waitForAllResults(AKS::SysManager* sysMan);
+    self._lib.waitForAllResults.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+
+    # void resetTimer(AKS::SysManager* sysMan);
+    self._lib.resetTimer.argtypes = [ctypes.c_void_p]
+
+    # void report(AKS::SysManager* sysMan, AKS::AIGraph* graph);
+    self._lib.report.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+
+    # void deleteSysManager(AKS::SysManager* sysMan);
+    self._lib.deleteSysManagerExt.argtypes = []
+
+    self._csysmgr = self._lib.createSysManagerExt()
 
   def loadKernels(self, kernelDir):
-    _lib.loadKernels(self._csysmgr, kernelDir.encode('ascii'))
+    self._lib.loadKernels(self._csysmgr, kernelDir.encode('ascii'))
 
   def loadGraphs(self, graphDir):
-    _lib.loadGraphs(self._csysmgr, graphDir.encode('ascii'))
+    self._lib.loadGraphs(self._csysmgr, graphDir.encode('ascii'))
 
   def getGraph(self, graphName):
-    return _lib.getGraph(self._csysmgr, graphName.encode('ascii'))
+    return self._lib.getGraph(self._csysmgr, graphName.encode('ascii'))
 
   def enqueueJob(self, graph, imagePath):
-    _lib.enqueueJob(self._csysmgr, graph, imagePath.encode('ascii'), ctypes.c_void_p())
+    self._lib.enqueueJob(self._csysmgr, graph, imagePath.encode('ascii'), ctypes.c_void_p())
 
   def waitForAllResults(self, graph = ctypes.c_void_p()):
-    _lib.waitForAllResults(self._csysmgr, graph)
+    self._lib.waitForAllResults(self._csysmgr, graph)
+
+  def resetTimer(self):
+    self._lib.resetTimer(self._csysmgr)
 
   def report(self, graph):
-    _lib.report(self._csysmgr, graph)
+    self._lib.report(self._csysmgr, graph)
+
+  def clear(self):
+    pass
 
   def __del__(self):
-    _lib.deleteSysManagerExt()
+    self._lib.deleteSysManagerExt()
 
+
+# New Python Extensions
+default_flags = sys.getdlopenflags()
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
+import _aks
+SysManager         = _aks.SysManager
+NodeParams         = _aks.NodeParams
+DynamicParamValues = _aks.DynamicParamValues
+sys.setdlopenflags(default_flags)
