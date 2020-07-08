@@ -69,7 +69,7 @@ Two options are available for installing the containers with the Vitis AI tools 
 
    Use below command to get the pre-built CPU docker image from docker hub:
    ```
-   docker pull xilinx/vitis-ai-cpu:latest  
+   docker pull xilinx/vitis-ai:latest 
    ```
    or use below commands to build the CPU docker image locally:
    ```
