@@ -19,9 +19,9 @@ mkdir -p images
 Download 1000 images at http://image-net.org/download-images and copy it to ./images
 
   2. Run resnet50
-  sample : python3 resnet50.py resnet_v1_50_tf.elf
-  output : Performance : 53.60 FPS
+  sample : python3 resnet50.py 4 resnet_v1_50_tf.elf
+  output : Performance : 52.60 FPS
 
   3. Run resnet50 with waa
-  sample : env XILINX_XRT=/usr python3 resnet50_with_pipeline.py 4 resnet_v1_50_tf.elf
-  output : Performance : 65.4 FPS
+  sample : env XILINX_XRT=/usr python3 resnet50_waa.py 4 resnet_v1_50_tf.elf
+  output : Performance : 62.94 FPS

@@ -119,8 +119,8 @@ FPGA: ZCU102
   
   <tr>
    <td>YOLO v3</td>
-    <td>8.0</td>
-    <td>15.8</td>
-        <td>97.5%</td>
+    <td>7.6</td>
+    <td>14.9</td>
+        <td>96.05%</td>
   </tr>
 </table>

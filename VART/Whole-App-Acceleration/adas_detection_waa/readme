@@ -25,7 +25,7 @@ mkdir output #Will be written to the picture after processing
 
   sample : ./adas_detection_waa yolov3_adas_pruned_0_9.elf 0
   output :
-Performance:8.0 FPS
+Performance:7.6 FPS
 
   sample : ./adas_detection_waa yolov3_adas_pruned_0_9.elf 1
   output :
@@ -33,5 +33,5 @@ Found Platform
 Platform Name: Xilinx
 INFO: Reading /usr/lib/dpu.xclbin
 Loading: '/usr/lib/dpu.xclbin'
-Performance:15.8 FPS
+Performance:14.9 FPS
 
