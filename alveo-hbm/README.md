@@ -12,6 +12,9 @@ We provide some scripts to help to automatically finish the setup process. You c
 source ./install.sh
 ~~~
 
+<details>
+ <summary><b>Advanced - Step by Step Install</b></summary>
+
 ### Install XRT
 
 Before you go through the next steps, please ensure the latest Xilinx runtime (XRT) is installed on your host, you can get XRT from these links:
@@ -68,7 +71,7 @@ After you have downloaded and installed the platform files above, use following 
 
 For Alveo U280:
 ~~~
-sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u280_xdma_201920_3 
+sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u280_xdma_201920_3
 ~~~
 
 For Alveo U50:
@@ -125,6 +128,8 @@ For Alveo U280, use U280-14E300M overlay:
 cd ./Vitis-AI/alveo-hbm
 sudo cp alveo_xclbin-1.2.0/U280/14E300M/* /usr/lib
 ~~~
+
+</details>
 
 ---
 ## DPUCAHX8H Overlay Frequency Scaling Down
