@@ -20,15 +20,40 @@ Ubuntu 18.04: [xrt_202010.2.6.655_18.04-amd64-xrt.deb](https://www.xilinx.com/bi
 #### Alveo U280 Card
 For U280 card, DPUCAHX8H use the standard target platform released in the Xilinx website, please follow the instruction in the [U280 page](https://www.xilinx.com/products/boards-and-kits/alveo/u280) to get and install the required files. 
 
-After the installation, please use the command below to update the dard flash, followed by a cold reboot.
+#### Alveo U50 Card
+For U50 card, DPUCAHX8H use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files.
 
+CentOS/Redhat 7.4-7.7:
+[Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz)
+
+Ubuntu 16.04:
+[Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz)
+
+Ubuntu 18.04:
+[Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-18.04_deb.tar.gz)
+
+
+#### Alveo U50LV Card
+
+For U50LV card, DPUCAHX8H use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files.
+
+CentOS/Redhat 7.4-7.7:
+[Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz)
+
+Ubuntu 16.04:
+[Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz)
+
+Ubuntu 18.04:
+[Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-18.04_deb.tar.gz)
+
+
+### Update the Alveo Card Flash
+After you have downloaded and installed the platform files above, use following commands and cold reboot your machine to finished the setup.
+
+For Alveo U280:
 ~~~
 sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u280_xdma_201920_3 
 ~~~
-
-#### Alveo U50 and U50LV Card
-For U50/U50LV card, DPUCAHX8H use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files from [dpuv3e_u50_platform_vai1.2.tgz](https://www.xilinx.com/bin/public/openDownload?filename=dpuv3e_u50_platform_vai1.2.tgz). 
-After the installation, please use the commands below to update the card flash, followed by a cold reboot.
 
 For Alveo U50:
 ~~~
@@ -40,17 +65,7 @@ For Alveo U50LV:
 sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_base_2
 ~~~
 
-You could use the BASH script u50_shell_setup_preprod.sh to finish the download and installation of the U50 card platform. For example:
-
-~~~
-source ./u50_shell_setup_preprod.sh
-~~~
-
-You could use the BASH script u50lv_shell_setup_preprod.sh to finish the download and installation of the U50LV card platform. For example:
-
-~~~
-source ./u50lv_shell_setup_preprod.sh
-~~~
+You can use the scripts **u50_shell_setup.sh** and **u50lv_shell_setup.sh** to download the platform files and update the card flash for U50/U50LV.
 
 ---
 
