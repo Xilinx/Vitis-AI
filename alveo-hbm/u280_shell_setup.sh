@@ -43,17 +43,17 @@ fi
 
 
 ##############################
-# Get Gen3x4 Platform Link
+# Download Gen3x4 Platform
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* ]]; then
   echo "Ubuntu 16.04"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_16.04_deb.tar.gz"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u280-xdma-201920.3-2789161_16.04.deb"
 elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
   echo "Ubuntu 18.04"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_18.04_deb.tar.gz"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u280-xdma-201920.3-2789161_18.04.deb"
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"Red Hat"* ]]; then
   echo "CentOS/RHEL"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u280-xdma-201920.3-2789161.x86_64.rpm"
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
@@ -64,18 +64,12 @@ fi
 ##############################
 mkdir ./temp
 cd ./temp
-wget $DEPLOY_PLFM_URL -O shell.tgz
-tar xfz shell.tgz
 if [[ $distroname == *"Ubuntu 16.04"* ]] || [[ $distroname == *"Ubuntu 18.04"* ]]; then
-  sudo apt install ./*cmc* -y
-  sudo apt install ./*sc-fw* -y
-  sudo apt install ./*validate* -y
-  sudo apt install ./*base* -y
+  wget $DEPLOY_PLFM_URL -O shell.deb
+  sudo apt install ./shell.deb -y
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"RHEL"* ]]; then
-  sudo yum install ./*cmc* -y
-  sudo yum install ./*sc-fw* -y
-  sudo yum install ./*validate* -y
-  sudo yum install ./*base* -y
+  wget $DEPLOY_PLFM_URL -O shell.rpm
+  sudo yum install ./shell.rpm -y
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
@@ -86,4 +80,4 @@ cd ..
 ##############################
 # Flash alveo
 ##############################
-sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50_gen3x4_xdma_base_2
+sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u280_xdma_201920_3

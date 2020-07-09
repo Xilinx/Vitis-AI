@@ -43,39 +43,35 @@ fi
 
 
 ##############################
-# Get Gen3x4 Platform Link
+# Get XRT pack link
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* ]]; then
   echo "Ubuntu 16.04"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_16.04_deb.tar.gz"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_16.04-amd64-xrt.deb"
 elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
   echo "Ubuntu 18.04"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_18.04_deb.tar.gz"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_18.04-amd64-xrt.deb"
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"Red Hat"* ]]; then
   echo "CentOS/RHEL"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_7.4.1708-x86_64-xrt.rpm"
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
 fi
 
 ##############################
-# Install Gen3x4 Platform
+# Install XRT Platform
 ##############################
 mkdir ./temp
 cd ./temp
-wget $DEPLOY_PLFM_URL -O shell.tgz
-tar xfz shell.tgz
 if [[ $distroname == *"Ubuntu 16.04"* ]] || [[ $distroname == *"Ubuntu 18.04"* ]]; then
-  sudo apt install ./*cmc* -y
-  sudo apt install ./*sc-fw* -y
-  sudo apt install ./*validate* -y
-  sudo apt install ./*base* -y
+  wget $XRT_URL -O xrt.deb
+  sudo apt install ./xrt*.deb -y
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"RHEL"* ]]; then
-  sudo yum install ./*cmc* -y
-  sudo yum install ./*sc-fw* -y
-  sudo yum install ./*validate* -y
-  sudo yum install ./*base* -y
+  sudo yum-config-manager --enable rhel-7-server-optional-rpms
+  sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  wget $XRT_URL -O xrt.rpm
+  sudo yum install ./xrt*.rpm -y
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
@@ -84,6 +80,22 @@ fi
 cd ..
 
 ##############################
-# Flash alveo
+# Call platform install scripts
 ##############################
-sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50_gen3x4_xdma_base_2
+/opt/xilinx/xrt/bin/xbutil scan | grep xilinx_u50_
+if [ $? -eq 0 ]; then
+  echo "U50 card detected, now install platform"
+  source ./u50_shell_setup.sh
+fi
+
+/opt/xilinx/xrt/bin/xbutil scan | grep xilinx_u50lv_
+if [ $? -eq 0 ]; then
+  echo "U50LV card detected, now install platform"
+  source ./u50lv_shell_setup.sh
+fi
+
+/opt/xilinx/xrt/bin/xbutil scan | grep xilinx_u280_
+if [ $? -eq 0 ]; then
+  echo "U50LV card detected, now install platform"
+  source ./u280_shell_setup.sh
+fi

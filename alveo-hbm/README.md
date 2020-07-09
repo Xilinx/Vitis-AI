@@ -2,13 +2,18 @@
 
 Xilinx DPU IP family for convolution nerual network (CNN) inference application supports Alveo accelerator cards with HBM now, including Alveo U50, U50LV and U280 cards. According to the latest Xilinx DPU naming rule, the DPU for Alveo-HBM card is named ***DPUCAHX8H***. The on-premise DPUCAHX8H overlays are released along with Vitis AI. A few variants of DPUCAHX8H are provided, which will be explained in later section. Please refer to the relevant parts for usages of different DPUCAHX8H overlays with [VART](../VART/README.md) and [Vitis-AI-Library](../Vitis-AI-Library/README.md) (you could search the keyword "for Cloud").
 
-Following page will guide you through the Alveo card and on-premise overlays setup flow for Vitis AI.
+Following section will guide you through the Alveo-HBM card preparation steps and on-premise overlays setup flow for Vitis AI.
 
 ## Alveo Card Setup
 
-### Get and Install the Alveo Card Target Platform
+We provide some scripts to help to automatically finish the setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will determine the cards (U50, U50LV or U280) and Operating System you are using, download and install the appropriate packages.
 
-#### XRT
+~~~
+source ./install.sh
+~~~
+
+### Install XRT
+
 Before you go through the next steps, please ensure the latest Xilinx runtime (XRT) is installed on your host, you can get XRT from these links:
 
 CentOS/Redhat 7.4-7.7: [xrt_202010.2.6.655_7.4.1708-x86_64-xrt.rpm](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_7.4.1708-x86_64-xrt.rpm)
@@ -17,8 +22,19 @@ Ubuntu 16.04: [xrt_202010.2.6.655_16.04-amd64-xrt.deb](https://www.xilinx.com/bi
 
 Ubuntu 18.04: [xrt_202010.2.6.655_18.04-amd64-xrt.deb](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_18.04-amd64-xrt.deb)
 
+### Install the Alveo Card Target Platform
+
 #### Alveo U280 Card
-For U280 card, DPUCAHX8H use the standard target platform released in the Xilinx website, please follow the instruction in the [U280 page](https://www.xilinx.com/products/boards-and-kits/alveo/u280) to get and install the required files. 
+For U280 card, DPUCAHX8H use the standard gen3x16 target platform released in the Xilinx website [U280 page](https://www.xilinx.com/products/boards-and-kits/alveo/u280). Please download and install the required gen3x4 target platform files.
+
+CentOS/Redhat 7.4-7.7:
+[xilinx-u280-xdma-201920.3-2789161.x86_64.rpm](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u280-xdma-201920.3-2789161.x86_64.rpm)
+
+Ubuntu 16.04:
+[xilinx-u280-xdma-201920.3-2789161_16.04.deb](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u280-xdma-201920.3-2789161_16.04.deb)
+
+Ubuntu 18.04:
+[xilinx-u280-xdma-201920.3-2789161_18.04.deb](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u280-xdma-201920.3-2789161_18.04.deb)
 
 #### Alveo U50 Card
 For U50 card, DPUCAHX8H use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files.
@@ -64,8 +80,6 @@ For Alveo U50LV:
 ~~~
 sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_base_2
 ~~~
-
-You can use the scripts **u50_shell_setup.sh** and **u50lv_shell_setup.sh** to download the platform files and update the card flash for U50/U50LV.
 
 ---
 
