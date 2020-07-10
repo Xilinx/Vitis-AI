@@ -106,8 +106,24 @@ tar xfz alveo_xclbin-1.2.1.tar.gz
 ---
 ## DPUCAHX8H Overlay Usage
 
+Four versions of DPUCAHX8H overlays are provided for the different Alveo HBM cards:
+* U50-6E300M: two kernels, six engines, maximal core clock 300MHz
+* U50LV-9E275M: two kernels, nine engines, maximal core clock 275MHz
+* U50LV-10E275M: two kernels, ten engines, maximal core clock 275MHz
+* U280-14E300M: three kernels, fourteen engines, maximal core clock 300MHz
+
 The DPUCAHX8H overlays should be used in the **docker contaniner** environment.
 
+Run the script below to automatically copy the overlays into the correct location. The script will automatically detect the card type and finish the overlay file copy. By default the 10E275M version is used for U50LV card, and you could modify the script to use 9E275M version.
+
+~~~
+cd ./Vitis-AI/alveo-hbm
+source ./overlay_settle.sh
+~~~
+
+
+<details>
+ <summary><b>Advanced - Overlay Selection</b></summary>
 ###  Copy Overlay Files
 Start the CPU or GPU docker, get into the shared Vitis AI git repository directory and use following command to copy the overlay files for different Alveo card. Please note everytime you start a new docker container, you should do this step.
 
@@ -135,12 +151,7 @@ cd ./Vitis-AI/alveo-hbm
 sudo cp alveo_xclbin-1.2.0/U280/14E300M/* /usr/lib
 ~~~
 
-You could use the script *overlay_settle.sh* to automatically finish the overly copying steps above. The script will automatically detect the card type and finish the overlay file copy. By default the 10E275M version is used for U50LV card, and you could modify the script to use 9E275M version.
-
-~~~
-cd ./Vitis-AI/alveo-hbm
-source ./overlay_settle.sh
-~~~
+</details>
 
 **Note:** once you finish copying the overlay files, if you don't need to switch to other overlays in future, you could use below command in **host** to freeze the change you have made to docker container, then you don't need to copy the overlay files again. Please refer to the docker documents of command help for more information.
 
