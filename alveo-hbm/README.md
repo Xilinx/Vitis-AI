@@ -124,6 +124,7 @@ source ./overlay_settle.sh
 
 <details>
  <summary><b>Advanced - Overlay Selection</b></summary>
+ 
 ###  Copy Overlay Files
 Start the CPU or GPU docker, get into the shared Vitis AI git repository directory and use following command to copy the overlay files for different Alveo card. Please note everytime you start a new docker container, you should do this step.
 
