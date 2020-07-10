@@ -276,9 +276,7 @@ void runResnet50(vart::Runner* runner) {
 int main(int argc, char* argv[]) {
   // Check args
   if (argc != 2) {
-    cout << "Usage of video analysis demo: ./resnet50 path(for json file)"
-         << endl;
-    cout << "\tfile_name: path to your file for detection" << endl;
+    cout << "Usage of resnet50 demo: ./resnet50 [model_file]" << endl;
     return -1;
   }
   auto graph = xir::Graph::deserialize(argv[1]);
