@@ -117,7 +117,7 @@ The DPUCAHX8H overlays should be used in the **docker contaniner** environment.
 Firstly start the CPU or GPU docker, then run the script below to automatically copy the overlays into the correct location. The script will automatically detect the card type and finish the overlay file copy. By default the 10E275M version is used for U50LV card, and you could modify the script to use 9E275M version.
 
 ~~~
-cd ./Vitis-AI/alveo-hbm
+cd /workspace/alveo-hbm
 source ./overlay_settle.sh
 ~~~
 
@@ -130,25 +130,25 @@ Start the CPU or GPU docker, get into the shared Vitis AI git repository directo
 
 For Alveo U50, use U50-6E300M overlay:
 ~~~
-cd ./Vitis-AI/alveo-hbm
+cd /workspace/alveo-hbm
 sudo cp alveo_xclbin-1.2.0/U50/6E300M/* /usr/lib
 ~~~
 
 For Alveo U50LV, use U50LV-9E275M overlay:
 ~~~
-cd ./Vitis-AI/alveo-hbm
+cd /workspace/alveo-hbm
 sudo cp alveo_xclbin-1.2.0//U50lv/9E275M/* /usr/lib
 ~~~
 
 For Alveo U50LV, use U50LV-10E275M overlay:
 ~~~
-cd ./Vitis-AI/alveo-hbm
+cd /workspace/alveo-hbm
 sudo cp alveo_xclbin-1.2.0//U50lv/10E275M/* /usr/lib
 ~~~
 
 For Alveo U280, use U280-14E300M overlay:
 ~~~
-cd ./Vitis-AI/alveo-hbm
+cd /workspace/alveo-hbm
 sudo cp alveo_xclbin-1.2.0/U280/14E300M/* /usr/lib
 ~~~
 
