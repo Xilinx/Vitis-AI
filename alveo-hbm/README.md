@@ -4,9 +4,9 @@ Xilinx DPU IP family for convolution nerual network (CNN) inference application 
 
 Following section will guide you through the Alveo-HBM card preparation steps and on-premise overlays setup flow for Vitis AI.
 
-## Alveo Card Setup
+## Alveo Card and Overlays Setup
 
-We provide some scripts to help to automatically finish the setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will determine the cards (U50, U50LV or U280) and Operating System you are using, download and install the appropriate packages.
+We provide some scripts to help to automatically finish the Alveo card and overlay files setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect the cards type (U50, U50LV or U280) and Operating System you are using, then download and install the appropriate packages. Please note you should run this script in **host** environment.
 
 ~~~
 source ./install.sh
@@ -84,9 +84,7 @@ For Alveo U50LV:
 sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_base_2
 ~~~
 
----
-
-### DPUCAHX8H Overlays Setup
+### DPUCAHX8H Overlays Installation
 
 Four kinds of DPUCAHX8H overlays are provided for different Alveo HBM card:
 * U50-6E300M: two kernels, six engines, maximal core clock 300MHz
@@ -94,16 +92,24 @@ Four kinds of DPUCAHX8H overlays are provided for different Alveo HBM card:
 * U50LV-10E275M: two kernels, ten engines, maximal core clock 275MHz
 * U280-14E300M: three kernels, fourteen engines, maximal core clock 300MHz
 
-### Get and Decompress Overlays Tarball
-In the host or docker, get to the shared Vitis AI git repository directory and use following commands to download and decompress the overlays tarball. (the download link is not available yet for BASH stage)
+#### Get and Decompress Overlays Tarball
+In the host or docker, get to the shared Vitis AI git repository directory and use following commands to download and decompress the overlays tarball.
+
 ~~~
 cd ./Vitis-AI/alveo-hbm
-wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.2.0.tar.gz -O alveo_xclbin-1.2.0.tar.gz
-tar xfz alveo_xclbin-1.2.0.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.2.1.tar.gz -O alveo_xclbin-1.2.1.tar.gz
+tar xfz alveo_xclbin-1.2.1.tar.gz
 ~~~
 
+</details>
+
+---
+## DPUCAHX8H Overlay Usage
+
+The DPUCAHX8H overlays should be used in the **docker contaniner** environment.
+
 ### Settle Down the Overlays
-Start the docker, get into the shared Vitis AI git repository directory and use following command to settle down the overlay files for different Alveo card. Please note everytime you start a new docker container, you should do this step.
+Start the CPU or GPU docker, get into the shared Vitis AI git repository directory and use following command to settle down the overlay files for different Alveo card. Please note everytime you start a new docker container, you should do this step.
 
 For Alveo U50, use U50-6E300M overlay:
 ~~~
@@ -129,11 +135,16 @@ cd ./Vitis-AI/alveo-hbm
 sudo cp alveo_xclbin-1.2.0/U280/14E300M/* /usr/lib
 ~~~
 
-</details>
+You could use the script *overlay_settle.sh* to automatically finish the overly settle steps above. The script will automatically detect the card type and finish the overlay file copy. By default the 10E275M version is used for U50LV card, and you could modify the script to use 9E275M version.
 
----
-## DPUCAHX8H Overlay Frequency Scaling Down
+~~~
+cd ./Vitis-AI/alveo-hbm
+source ./overlay_settle.sh
+~~~
 
+
+
+### DPUCAHX8H Overlay Frequency Scaling Down
 The maximal core clock frequency listed in this section is the timing sign-off frequency of each overlays, and the overlays run at their maximal core clock by default. However, because of the power limitation of the card, all CNN models on each Alveo card cannot run at all the maximal frequencies listed here. Sometimes frequency scaling-down operation is necessary. For the safe working frequency on each card for the CNN models and corresponding performance, please refer to Chapter 7 of *Vitis AI Library User Guide* (ug1354). **Higher overlay frequencies then the recommendation in ug1354 could cause system reboot or other damage to your system because of the power consumption exceeding of Alveo card over the PCIe power supply limitation.**
 
 The DPUCAHX8H core clock is generated from an internal DCM module driven by the platform Clock_1 with the default value of 100MHz, and the core clock is always linearly proportional to Clock_1. For example, in U50LV-10E275M overlay, the 275MHz core clock is driven by 100MHz clock source. So to set the core clock of this overlay to 220MHz, we need to set the frequency of Clock_1 to (220/275)*100 = 80MHz.

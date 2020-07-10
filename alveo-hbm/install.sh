@@ -86,3 +86,13 @@ if [ $? -eq 0 ]; then
   echo "U50LV card detected, now install platform"
   source ./u280_shell_setup.sh
 fi
+
+##############################
+# Downloads Overlays
+##############################
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.2.1.tar.gz -O alveo_xclbin-1.2.1.tar.gz
+tar xfz alveo_xclbin-1.2.1.tar.gz
+rm alveo_xclbin-1.2.1.tar.gz
+
+
+echo "You may need to cold reboot the machine, please refer to the prompt above."
