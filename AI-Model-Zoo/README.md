@@ -634,12 +634,12 @@ The following table lists the performance number including end-to-end throughput
 | 7    | refinedet_pruned_0_8           | cf_refinedet_coco_360_480_0.8_25G           | 247.5             | 273.79                                |
 | 8    | refinedet_pruned_0_92          | cf_refinedet_coco_360_480_0.92_10.10G       | 247.5             | 574.76                                |
 | 9    | refinedet_pruned_0_96          | cf_refinedet_coco_360_480_0.96_5.08G        | 247.5             | 795.12                                |
-| 10   | ssd_adas_pruned_0_95           | cf_ssdadas_bdd_360_480_0.95_6.3G            | 275               | 882.39                                |
-| 11   | ssd_traffic_pruned_0_9         | cf_ssdtraffic_360_480_0.9_11.6G             | 275               | 626.36                                |
+| 10   | ssd_adas_pruned_0_95           | cf_ssdadas_bdd_360_480_0.95_6.3G            | 247.5             | 818.22                                |
+| 11   | ssd_traffic_pruned_0_9         | cf_ssdtraffic_360_480_0.9_11.6G             | 247.5             | 570.84                                |
 | 12   | VPGnet_pruned_0_99             | cf_VPGnet_caltechlane_480_640_0.99_2.5G     | 275               | 658.99                                |
 | 13   | FPN                            | cf_fpn_cityscapes_256_512_8.9G              | 247.5             | 552.17                                |
 | 14   | SP_net                         | cf_SPnet_aichallenger_224_128_0.54G         | 275               | 1706.95                              |
-| 15   | Openpose_pruned_0_3            | cf_openpose_aichallenger_368_368_0.3_189.7G | 247.5             | 44.37                                |
+| 15   | Openpose_pruned_0_3            | cf_openpose_aichallenger_368_368_0.3_189.7G | 220               | 39.68                                |
 | 16   | densebox_320_320               | cf_densebox_wider_320_320_0.49G             | 275               | 2572.69                              |
 | 17   | densebox_640_360               | cf_densebox_wider_360_640_1.11G             | 275               | 1125.09                              |
 | 18   | face_landmark                  | cf_landmark_celeba_96_72_0.14G              | 275               | 12917.20                              |
