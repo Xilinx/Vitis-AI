@@ -31,13 +31,13 @@ Vitis AI is composed of the following key components:
 - [Release Notes](doc/release-notes/1.x.md)
 - Vitis AI Quantizer and DNNDK runtime all open source
 - 14 new Reference Models  AI Model Zoo (Pytorch, Caffe, Tensorflow)
-- VAI Quantizer supports optimized models (prunned) 
-- DPU naming scheme has been updated to be consistant across all configurations
+- VAI Quantizer supports optimized models (pruned)
+- DPU naming scheme has been updated to be consistent across all configurations
 - Introducing Vitis AI profiler for edge and cloud
 - VAI DPUs supported in ONNXRuntime and TVM
 - Added Alveo U50/U50LV support
 - Added Alveo U280 support
-- Alveo U50/U50LV DPU DPUCAHX8H micro-architecture improvement 
+- Alveo U50/U50LV DPU DPUCAHX8H micro-architecture improvement
 - DPU TRD upgraded to support Vitis 2020.1 and Vivado 2020.1
 - Vitis AI for Pytorch CNN general access (Beta version)
 
@@ -55,92 +55,99 @@ Two options are available for installing the containers with the Vitis AI tools 
  - [Ensure your linux user is in the group docker](https://docs.docker.com/install/linux/linux-postinstall/)
 
  - Clone the Vitis-AI repository to obtain the examples, reference code, and scripts.
-    ```
+    ```bash
     git clone --recurse-submodules https://github.com/Xilinx/Vitis-AI  
 
     cd Vitis-AI
     ```
- 
- - Prepare for the Vitis AI docker image.
 
-    There are two types of docker image provided - CPU docker and GPU docker. If you have a compatible nVidia graphics card with CUDA support, you could use GPU docker; otherwise you could use CPU docker.
+#### Using Pre-build Docker
 
-   **CPU Docker**
+Download the latest Vitis AI Docker with the following command. This container runs on CPU.  
+```
+docker pull xilinx/vitis-ai:latest  
+```
 
-   Use below command to get the pre-built CPU docker image from docker hub:
-   ```
-   docker pull xilinx/vitis-ai-cpu:latest  
-   ```
-   or use below commands to build the CPU docker image locally:
-   ```
-   cd ./docker
-   ./docker_build_cpu.sh
-   ```
+To run the docker, use command:
+```
+./docker_run.sh xilinx/vitis-ai:latest
+```
+#### Building Docker from Recipe
 
-   **GPU Docker**
+There are two types of docker recipes provided - CPU recipe and GPU recipe. If you have a compatible nVidia graphics card with CUDA support, you could use GPU recipe; otherwise you could use CPU recipe.
 
-   You have to build the GPU docker image locally with below commands:
-   ```
-   cd ./docker
-   ./docker_build_gpu.sh
-   ```
+**CPU Docker**
 
- ### [Run Docker Container](doc/install_docker/load_run_docker.md)  
+Use below commands to build the CPU docker:
+```
+cd ./docker
+./docker_build_cpu.sh
+```
+To run the CPU docker, use command:
+```
+./docker_run.sh xilinx/vitis-ai-cpu:latest
+```
+**GPU Docker**
 
-   Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
-   
-   To run the CPU docker, use command:
-   ```
-   ./docker_run.sh xilinx/vitis-ai-cpu:latest
-   ```
-   To run the GPU docker, use command:
-   ```
-   ./docker_run.sh xilinx/vitis-ai-gpu:latest
-   ```
-   
+Use below commands to build the GPU docker:
+```
+cd ./docker
+./docker_build_gpu.sh
+```
+To run the GPU docker, use command:
+```
+./docker_run.sh xilinx/vitis-ai-gpu:latest
+```
+Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
+More Detail can be found here: [Run Docker Container](doc/install_docker/load_run_docker.md)
+
+<details>
+ <summary><b>Advanced - X11 Support for Examples on Avleo</b></summary>
    Some examples in VART and Vitis-AI-Library for Alveo card need X11 support to display images, this requires you have X11 server support at your terminal and you need to make some modifications to **./docker_run.sh** file to enable the image display. For example, you could use following script to start the Vitis-AI CPU docker for Alveo with X11 support.
-   ```
-   #!/bin/bash
-   HERE=$(pwd) # Absolute path of current directory
-   user=`whoami`
-   uid=`id -u`
-   gid=`id -g`
 
-   xclmgmt_driver="$(find /dev -name xclmgmt\*)"
-   docker_devices=""
-   for i in ${xclmgmt_driver} ;
-   do
-     docker_devices+="--device=$i "
-   done
+ ```
+ #!/bin/bash
+ HERE=$(pwd) # Absolute path of current directory
+ user=`whoami`
+ uid=`id -u`
+ gid=`id -g`
+ xclmgmt_driver="$(find /dev -name xclmgmt\*)"
+ docker_devices=""
+ for i in ${xclmgmt_driver} ;
+ do
+   docker_devices+="--device=$i "
+ done
 
-   render_driver="$(find /dev/dri -name renderD\*)"
-   for i in ${render_driver} ;
-   do
-     docker_devices+="--device=$i "
-   done
+ render_driver="$(find /dev/dri -name renderD\*)"
+ for i in ${render_driver} ;
+ do
+   docker_devices+="--device=$i "
+ done
 
-   rm -Rf /tmp/.Xauthority
-   cp $HOME/.Xauthority /tmp/
-   chmod -R a+rw /tmp/.Xauthority
+ rm -Rf /tmp/.Xauthority
+ cp $HOME/.Xauthority /tmp/
+ chmod -R a+rw /tmp/.Xauthority
 
-   docker run \
-     $docker_devices \
-     -v /opt/xilinx/dsa:/opt/xilinx/dsa \
-     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
-     -e USER=$user -e UID=$uid -e GID=$gid \
-     -v $HERE:/workspace \
-     -v /tmp/.X11-unix:/tmp/.X11-unix \
-     -v /tmp/.Xauthority:/tmp/.Xauthority \
-     -e DISPLAY=$DISPLAY \
-     -w /workspace \
-     -it \
-     --rm \
-     --network=host \
-     xilinx/vitis-ai-cpu:latest \
-     bash
-   ```
-  
+ docker run \
+   $docker_devices \
+   -v /opt/xilinx/dsa:/opt/xilinx/dsa \
+   -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
+   -e USER=$user -e UID=$uid -e GID=$gid \
+   -v $HERE:/workspace \
+   -v /tmp/.X11-unix:/tmp/.X11-unix \
+   -v /tmp/.Xauthority:/tmp/.Xauthority \
+   -e DISPLAY=$DISPLAY \
+   -w /workspace \
+   -it \
+   --rm \
+   --network=host \
+   xilinx/vitis-ai-cpu:latest \
+   bash
+ ```
+
   Before run this script, please make sure either you have local X11 server running if you are using Windows based ssh terminal to connect to remote server, or you have run **xhost +** command at a command terminal if you are using Linux with Desktop. Also if you are using ssh to connect to the remote server, remember to enable *X11 Forwarding* option either with Windows ssh tools setting or with *-X* options in ssh command line.
+
+</details>
 
  ### Get Started with Examples
   - [VART](VART/README.md)
@@ -196,3 +203,5 @@ For more information, please refer to [Vitis AI User Guide](https://www.xilinx.c
 [Models]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html#gettingStartedCloud
 [whitepaper here]: https://www.xilinx.com/support/documentation/white_papers/wp504-accel-dnns.pdf
 [Performance Whitepaper]: https://www.xilinx.com/support/documentation/white_papers/wp504-accel-dnns.pdf
+
+   ```
