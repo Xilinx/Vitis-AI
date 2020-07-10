@@ -135,7 +135,7 @@ cd ./Vitis-AI/alveo-hbm
 sudo cp alveo_xclbin-1.2.0/U280/14E300M/* /usr/lib
 ~~~
 
-You could use the script *overlay_settle.sh* to automatically finish the overly settle steps above. The script will automatically detect the card type and finish the overlay file copy. By default the 10E275M version is used for U50LV card, and you could modify the script to use 9E275M version.
+You could use the script *overlay_settle.sh* to automatically finish the overly copying steps above. The script will automatically detect the card type and finish the overlay file copy. By default the 10E275M version is used for U50LV card, and you could modify the script to use 9E275M version.
 
 ~~~
 cd ./Vitis-AI/alveo-hbm
