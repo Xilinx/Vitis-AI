@@ -108,8 +108,8 @@ tar xfz alveo_xclbin-1.2.1.tar.gz
 
 The DPUCAHX8H overlays should be used in the **docker contaniner** environment.
 
-### Settle Down the Overlays
-Start the CPU or GPU docker, get into the shared Vitis AI git repository directory and use following command to settle down the overlay files for different Alveo card. Please note everytime you start a new docker container, you should do this step.
+###  Copy Overlay Files
+Start the CPU or GPU docker, get into the shared Vitis AI git repository directory and use following command to copy the overlay files for different Alveo card. Please note everytime you start a new docker container, you should do this step.
 
 For Alveo U50, use U50-6E300M overlay:
 ~~~
@@ -142,6 +142,11 @@ cd ./Vitis-AI/alveo-hbm
 source ./overlay_settle.sh
 ~~~
 
+**Note:** once you finish copying the overlay files, if you don't need to switch to other overlays in future, you could use below command in **host** to freeze the change you have made to docker container, then you don't need to copy the overlay files again. Please refer to the docker documents of command help for more information.
+
+~~~
+docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
+~~~
 
 
 ### DPUCAHX8H Overlay Frequency Scaling Down
