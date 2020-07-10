@@ -102,7 +102,7 @@ Please use the file **./docker_run.sh** as a reference for the docker launching 
 More Detail can be found here: [Run Docker Container](doc/install_docker/load_run_docker.md)
 
 <details>
- <summary><b>Advanced - X11 Support for Examples on Avleo</b></summary>
+ <summary><b>Advanced - X11 Support for Examples on Alveo</b></summary>
    Some examples in VART and Vitis-AI-Library for Alveo card need X11 support to display images, this requires you have X11 server support at your terminal and you need to make some modifications to **./docker_run.sh** file to enable the image display. For example, you could use following script to start the Vitis-AI CPU docker for Alveo with X11 support.
 
  ```
