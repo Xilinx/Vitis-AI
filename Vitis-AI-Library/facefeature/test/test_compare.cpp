@@ -36,16 +36,13 @@ static float feature_dot(const int8_t *f1, const int8_t *f2) {
   return (float)dot;
 }
 
-float feature_compare(const int8_t *feature, const int8_t *feature_lib,
-                      float fuck = 0) {
+float feature_compare(const int8_t *feature, const int8_t *feature_lib) {
   float norm = feature_norm(feature);
   float feature_norm_lib = feature_norm(feature_lib);
   return feature_dot(feature, feature_lib) * norm * feature_norm_lib;
 }
 
 float score_map(float score) { return 1.0 / (1 + exp(-12.4 * score + 3.763)); }
-
-
 
 int main(int argc,char* argv[]){
     if(argc < 4){
