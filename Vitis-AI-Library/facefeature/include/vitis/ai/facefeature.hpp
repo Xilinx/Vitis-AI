@@ -44,14 +44,14 @@ namespace ai {
  * Float sample code :
  * @code
    cv:Mat image = cv::imread("test_face.jpg");
-   auto network  = xilinx::ai::FaceFeature::create("facerec_resnet20", true);
+   auto network  = vitis::ai::FaceFeature::create("facerec_resnet20", true);
    auto result = network->run(image);
    @endcode
  *
  * Fixed sample code :
  * @code
    cv:Mat image = cv::imread("test_face.jpg");
-   auto network  = xilinx::ai::FaceFeature::create("facerec_resnet20", true);
+   auto network  = vitis::ai::FaceFeature::create("facerec_resnet20", true);
    auto result = network->run_fixed(image);
    @endcode
  *
@@ -80,8 +80,7 @@ namespace ai {
      return (float)dot;
   }
 
-  float feature_compare(const int8_t *feature, const int8_t *feature_lib,
-                      float fuck = 0) {
+  float feature_compare(const int8_t *feature, const int8_t *feature_lib) {
      float norm = feature_norm(feature);
      float feature_norm_lib = feature_norm(feature_lib);
      return feature_dot(feature, feature_lib) * norm * feature_norm_lib;
