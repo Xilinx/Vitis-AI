@@ -184,6 +184,8 @@ Build the hardware design.
 ```
 % cd $TRD_HOME/prj/Vitis
 
+% gunzip <mpsoc common system>/xilinx-zynqmp-common-v2020.1/rootfs.ext4.gz
+
 % export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2020.1
 
 % export SDX_PLATFORM=<zcu102 base platform path>/xilinx_zcu102_base_202010_1/xilinx_zcu102_base_202010_1.xpfm
