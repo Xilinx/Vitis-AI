@@ -131,25 +131,25 @@ Start the CPU or GPU docker, get into the shared Vitis AI git repository directo
 For Alveo U50, use U50-6E300M overlay:
 ~~~
 cd /workspace/alveo-hbm
-sudo cp alveo_xclbin-1.2.0/U50/6E300M/* /usr/lib
+sudo cp alveo_xclbin-1.2.1/U50/6E300M/* /usr/lib
 ~~~
 
 For Alveo U50LV, use U50LV-9E275M overlay:
 ~~~
 cd /workspace/alveo-hbm
-sudo cp alveo_xclbin-1.2.0//U50lv/9E275M/* /usr/lib
+sudo cp alveo_xclbin-1.2.1//U50lv/9E275M/* /usr/lib
 ~~~
 
 For Alveo U50LV, use U50LV-10E275M overlay:
 ~~~
 cd /workspace/alveo-hbm
-sudo cp alveo_xclbin-1.2.0//U50lv/10E275M/* /usr/lib
+sudo cp alveo_xclbin-1.2.1//U50lv/10E275M/* /usr/lib
 ~~~
 
 For Alveo U280, use U280-14E300M overlay:
 ~~~
 cd /workspace/alveo-hbm
-sudo cp alveo_xclbin-1.2.0/U280/14E300M/* /usr/lib
+sudo cp alveo_xclbin-1.2.1/U280/14E300M/* /usr/lib
 ~~~
 
 </details>
