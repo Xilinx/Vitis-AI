@@ -34,6 +34,8 @@
 extern "C" float32x4_t exp_ps(float32x4_t);
 #endif
 DEF_ENV_PARAM(DEBUG_DPMATH, "0");
+DEF_ENV_PARAM(XLNX_ENABLE_C_SOFTMAX, "0");
+
 using std::exp;
 
 int GLOBAL_ENABLE_C_SOFTMAX = 0;
@@ -87,6 +89,9 @@ void softmax(const float* input, float scale, unsigned int cls,
 void softmax(const int8_t* input, float scale, unsigned int cls,
              unsigned int group, float* output) {
   static auto hw_smfc = xir::SfmController::get_instance();
+  if (ENV_PARAM(XLNX_ENABLE_C_SOFTMAX)) {
+    GLOBAL_ENABLE_C_SOFTMAX = 2;
+  }
 #ifdef ENABLE_NEON
   if (GLOBAL_ENABLE_C_SOFTMAX == 1) {
     if (cls == 2) {
@@ -116,7 +121,15 @@ void softmax(const int8_t* input, float scale, unsigned int cls,
     softmax_c(input, scale, cls, group, output);
   }
 #else
-  softmax_c(input, scale, cls, group, output);
+  if (GLOBAL_ENABLE_C_SOFTMAX == 0) {
+    if (hw_smfc && hw_smfc->supported(scale, cls, group)) {
+      hw_smfc->run(input, scale, cls, group, output);
+    } else {
+      softmax_c(input, scale, cls, group, output);
+    }
+  } else {
+    softmax_c(input, scale, cls, group, output);
+  }
 #endif
 }
 
