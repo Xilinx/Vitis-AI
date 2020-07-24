@@ -26,13 +26,12 @@ Change the Ubuntu apt sources.list to use servers in China.
 
 In Dockerfile, change the 1st instance of:
 ```
-  RUN apt-get update && \
+  RUN apt-get update -y && apt-get install -y --no-install-recommends \
 ```
 
 To the line below, so that the Ubuntu sources will be replaced with China Ubuntu servers
 ```      
-  RUN sed --in-place --regexp-extended "s/(\/\/)(archive\.ubuntu)/\1cn.\2/" /etc/apt/sources.list && \
-  apt-get update && apt-get upgrade --yes
+  RUN sed --in-place --regexp-extended "s/(\/\/)(archive\.ubuntu)/\1cn.\2/" /etc/apt/sources.list && apt-get update && apt-get install -y --no-install-recommends \
 ```
 
 The following Tsinghua University (Beijing) sources can also be used:
