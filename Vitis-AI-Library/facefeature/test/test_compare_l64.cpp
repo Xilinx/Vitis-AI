@@ -36,6 +36,7 @@ static float feature_dot(const int8_t *f1, const int8_t *f2) {
   return (float)dot;
 }
 
+
 float feature_compare(const int8_t *feature, const int8_t *feature_lib) {
   float norm = feature_norm(feature);
   float feature_norm_lib = feature_norm(feature_lib);

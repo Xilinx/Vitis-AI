@@ -31,8 +31,8 @@ Vitis AI is composed of the following key components:
 - [Release Notes](doc/release-notes/1.x.md)
 - Vitis AI Quantizer and DNNDK runtime all open source
 - 14 new Reference Models  AI Model Zoo (Pytorch, Caffe, Tensorflow)
-- VAI Quantizer supports optimized models (pruned)
-- DPU naming scheme has been updated to be consistent across all configurations
+- VAI Quantizer supports optimized models (prunned) 
+- DPU naming scheme has been updated to be consistant across all configurations
 - Introducing Vitis AI profiler for edge and cloud
 - VAI DPUs supported in ONNXRuntime and TVM
 - Added Alveo U50/U50LV support
@@ -148,6 +148,7 @@ More Detail can be found here: [Run Docker Container](doc/install_docker/load_ru
   Before run this script, please make sure either you have local X11 server running if you are using Windows based ssh terminal to connect to remote server, or you have run **xhost +** command at a command terminal if you are using Linux with Desktop. Also if you are using ssh to connect to the remote server, remember to enable *X11 Forwarding* option either with Windows ssh tools setting or with *-X* options in ssh command line.
 
 </details>
+
 
  ### Get Started with Examples
   - [VART](VART/README.md)
