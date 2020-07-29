@@ -60,49 +60,44 @@ Two options are available for installing the containers with the Vitis AI tools 
 
     cd Vitis-AI
     ```
+ 
+ - Prepare for the Vitis AI docker image.
 
-#### Using Pre-build Docker
+    There are two types of docker image provided - CPU docker and GPU docker. If you have a compatible nVidia graphics card with CUDA support, you could use GPU docker; otherwise you could use CPU docker.
 
-Download the latest Vitis AI Docker with the following command. This container runs on CPU.  
-```
-docker pull xilinx/vitis-ai:latest  
-```
+   **CPU Docker**
 
-To run the docker, use command:
-```
-./docker_run.sh xilinx/vitis-ai:latest
-```
-#### Building Docker from Recipe
+   Use below command to get the pre-built CPU docker image from docker hub:
+   ```
+   docker pull xilinx/vitis-ai:latest 
+   ```
+   or use below commands to build the CPU docker image locally:
+   ```
+   cd ./docker
+   ./docker_build_cpu.sh
+   ```
 
-There are two types of docker recipes provided - CPU recipe and GPU recipe. If you have a compatible nVidia graphics card with CUDA support, you could use GPU recipe; otherwise you could use CPU recipe.
+   **GPU Docker**
 
-**CPU Docker**
+   You have to build the GPU docker image locally with below commands:
+   ```
+   cd ./docker
+   ./docker_build_gpu.sh
+   ```
 
-Use below commands to build the CPU docker:
-```
-cd ./docker
-./docker_build_cpu.sh
-```
-To run the CPU docker, use command:
-```
-./docker_run.sh xilinx/vitis-ai-cpu:latest
-```
-**GPU Docker**
+ ### [Run Docker Container](doc/install_docker/load_run_docker.md)  
 
-Use below commands to build the GPU docker:
-```
-cd ./docker
-./docker_build_gpu.sh
-```
-To run the GPU docker, use command:
-```
-./docker_run.sh xilinx/vitis-ai-gpu:latest
-```
-Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
-More Detail can be found here: [Run Docker Container](doc/install_docker/load_run_docker.md)
-
-<details>
- <summary><b>Advanced - X11 Support for Examples on Alveo</b></summary>
+   Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
+   
+   To run the CPU docker, use command:
+   ```
+   ./docker_run.sh xilinx/vitis-ai-cpu:latest
+   ```
+   To run the GPU docker, use command:
+   ```
+   ./docker_run.sh xilinx/vitis-ai-gpu:latest
+   ```
+   
    Some examples in VART and Vitis-AI-Library for Alveo card need X11 support to display images, this requires you have X11 server support at your terminal and you need to make some modifications to **./docker_run.sh** file to enable the image display. For example, you could use following script to start the Vitis-AI CPU docker for Alveo with X11 support.
 
  ```
