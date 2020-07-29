@@ -144,6 +144,9 @@ vitis::ai::ClassificationResult ClassificationImp::run(
       case 4:
         inception_pt(input_image, height, width, image);
         break;
+      case 4:
+        inception_pt(input_image, height, width, image);
+        break;
       default:
         break;
     }

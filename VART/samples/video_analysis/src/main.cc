@@ -618,10 +618,9 @@ void Display(bool& is_displaying) {
 int main(int argc, char** argv) {
   // Check args
   if (argc != 3) {
-    cout << "Usage of video analysis demo: ./videoAnalysis file_name[string] "
-            "path(for json file)"
+    cout << "Usage of video analysis demo: ./video_analysis [video_file] "
+            "[model_file]"
          << endl;
-    cout << "\tfile_name: path to your file for detection" << endl;
     return -1;
   }
 

@@ -6,15 +6,15 @@
 
 ## Overview
 
-The Vitis AI profiler tools is a set of tools that helps profile and visualize AI applications based on the Vitis AI Library:
+Vitis-AI Profiler is an application level tool that could help to optimize the whole AI application. The main purpose of Vitis-AI profiler is to help detect bottleneck of the whole AI application.With Vitis-AI Profiler, you can profile the pre-processing functions and the post-processing functions together with DPU kernels' running status. If the profiling result shows that one pre-processing function takes very long time, it leads to a high CPU utilization and DPU cores wait a long time for CPUs to finish processing. In this situation, we find that the pre-processing and CPU is the bottleneck. if user want to improve performance, try to rewrite this pre-processing function with HLS or OpenCL to reduce CPU's workload.
 - It’s easy to use, this tool requires neither any change in user’s code nor re-compilation of the program
 - Figuring out hot spots or bottlenecks of preference at a glance
 - Illustrating the running state of difference computing units(CPU/DPU/might be AIE in the future)
 
-There are two components of this tool named VAITracer and VAIProfiler
-- VAITracer:
+There are two components of this tool named vaitrace and vaiprofiler
+- vaitrace:
 Running on devices, take the responsibility for data collection
-- VAIProfiler
+- vaiprofiler
 Running on a PC or local server take responsibility for analyzation and visualization
 
 ## Vitis AI Profiler Architecture
@@ -22,8 +22,8 @@ Running on a PC or local server take responsibility for analyzation and visualiz
 <table border="1">
     <tbody style="text-align: center;">
     <tr>
-        <th>VAITracer</th>
-        <th>VAIProfiler</th>
+        <th>vaitrace</th>
+        <th>vaiprofiler</th>
     </tr>
     <tr>
         <td>Simple to use, the same interface with the classical Linux profiling tools (strace and ltrace)</td>
@@ -49,7 +49,7 @@ Running on a PC or local server take responsibility for analyzation and visualiz
 
 ## Why Vitis AI Profiler
 ### What's the benefit of this tool
-- A all-in-one soution for Vitis-AI
+- An all-in-one profiling soution for Vitis-AI
 - Light-weight, software and hardware mixed profiling
 - Vitis-AI is a heterogeneous system, it's complicated, so that we need a more powerful and customized tool for profiling. The Vitis AI Profiler could be used for a application level profiling. For a AI application, there will be some parts running on hardward, for example, neural network computation usually runs on DPU, and also, there are some parts of the AI application running on CPU as a function that was implemented by c/c++ code like image pre-processing. This tool could help put the running status of all parts together. So that, we get a all-in-one profilling tool for Vitis-AI applications. 
 
@@ -85,17 +85,17 @@ Running on a PC or local server take responsibility for analyzation and visualiz
     -	A series of key performance indicator of CPUs and DPUs, including CPU/DPU utilization and DPU average latency for tasks
     <p align="center"><img  width="300px" src="img/info_table.png"></p>
 
-## Get Started with Vitis AI Profiler:
+## Get Started with Vitis AI Profiler
 -	System Requirements:
     - Hardware:
-        - Support MPSoC (DPUCZD series)
+        - Support Zynq MPSoC (DPUCZD series)
         - Support Alveo (DPUCAH series)
     - Software:
         - Support VART v1.2+
         - Support Vitis AI Library v1.2+
 
 - Installing:
-    - Deploy the web server (Vitis AI Profiler) on PC or local server 
+    - Deploy the web server (Vitis AI Profiler) on PC or local server, setting up this web server doesn't depend on Vitis AI docker image. It's recommend to deploy this out the docker container.
         1. Clone the Vitis AI project from github repo 
            ```bash
            # cd /path-to-vitis-ai/Vitis-AI-Profiler
@@ -108,11 +108,19 @@ Running on a PC or local server take responsibility for analyzation and visualiz
               ```
         3. Start the web Server on PC or Local Network Server 
             ```bash
-            # python3 vaiProfilerServer.py [–ip [0.0.0.0]] [--port [8008]]
+            # python3 vaiProfiler.py
             ```
-            By default (run with no argument) the IP address is 0.0.0.0 and port number is 8008, so user can access the web page by http://localhost:8008 
+           By default (run with no argument) the IP address is 127.0.0.1(localhost) and port number is 8008, user can access the web page by http://localhost:8008.  
+           To change the port number or IP address, these options could be use:  
+	         ```
+	         --ip ip_address
+	         --port port_number  
+	         ```
+	         For example: __python3 vaiProfiler.py --port 8009__ will deploy this web server to http://localhost:8009
 
-    -	Preparing debug environment for vaitrace in MPSoC platform
+    -	Preparing debug environment for vaitrace in MPSoC platform  
+        These steps are _not_ required for Vitis AI prebuilt board images for ZCU102 & ZCU104 https://github.com/Xilinx/Vitis-AI/tree/master/VART#setting-up-the-target   
+
         1.	Configure and Build Petalinux:  
         Run _petalinux-config -c kernel_ and Enable these for Linux kernel:
 
@@ -184,7 +192,7 @@ Here use the 'test_performance' program of Vitis AI Library’s yolo_v3 sample a
     - Click 'Browse...' button to select the .xat file then click 'Upload'  
        <p align="center"><img width="500px" src="img/upload.png"></p>
 
-    - After a while, it jumps to profiler page, there four parts on the profiler page
+    - After a while, it jumps to profiler page, there are four parts on the profiler page
       1. Timeline  
       The timeline is categorized by hardware components users can tell hardware utilization with just a single glance. All Vitis AI relative tasks are high-lighted, and the other progress are filtered out.  
       For CPU tasks in timeline, different color indicates different thread, click on color block in the timeline it shows the details in the tree-grid table below
