@@ -241,10 +241,9 @@ void Display(bool& is_displaying) {
 int main(int argc, char** argv) {
   // Check args
   if (argc != 3) {
-    cout << "Usage of segmentation demo: ./segmentaion file_name[string] "
-            "path(for json file)"
+    cout << "Usage of segmentation demo: ./segmentation [video_file] "
+            "[model_file]"
          << endl;
-    cout << "\tfile_name: path to your video file" << endl;
     return -1;
   }
 

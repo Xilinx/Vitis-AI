@@ -40,7 +40,6 @@ ReidResult reid_post_process(
     const vitis::ai::proto::DpuModelParam& config,  size_t batch_idx) {
   int sWidth = input_tensors[0][0].width;
   int sHeight = input_tensors[0][0].height;
-
 //# DPUV1 needs input data as float
 #ifdef ENABLE_DPUCADX8G_RUNNER
   float* data = (float*)output_tensors[0][0].get_data(batch_idx);
