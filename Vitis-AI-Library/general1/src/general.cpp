@@ -20,37 +20,37 @@
 #include <google/protobuf/text_format.h>
 #include <sys/stat.h>
 
-#include <cstdint>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <vitis/ai/classification.hpp>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/facedetect.hpp>
-#include <vitis/ai/facefeature.hpp>
 #include <vitis/ai/facelandmark.hpp>
 #include <vitis/ai/lanedetect.hpp>
-#include <vitis/ai/medicalsegmentation.hpp>
-#include <vitis/ai/multitask.hpp>
 #include <vitis/ai/platedetect.hpp>
 #include <vitis/ai/platenum.hpp>
 #include <vitis/ai/posedetect.hpp>
 #include <vitis/ai/refinedet.hpp>
-#include <vitis/ai/reid.hpp>
-#include <vitis/ai/segmentation.hpp>
+
 #include <vitis/ai/ssd.hpp>
 #include <vitis/ai/tfssd.hpp>
 #include <vitis/ai/yolov2.hpp>
 #include <vitis/ai/yolov3.hpp>
+
 // #include <vitis/ai/platerecog.hpp>
-#include "./general_adapter.hpp"
+// #include <vitis/ai/segmentation.hpp>
+// #include <vitis/ai/multitask.hpp>
+// #include <vitis/ai/medicalsegmentation.hpp>
+// #include <vitis/ai/reid.hpp>
+// #include <vitis/ai/facefeature.hpp>
 
 using namespace std;
 DEF_ENV_PARAM(DEBUG_GENERAL, "0");
-
+#include "./general_adapter.hpp"
 namespace vitis {
 namespace ai {
-
 extern "C" vitis::ai::proto::DpuModelParam *find(const std::string &model_name);
 
 General::General() {}
@@ -194,21 +194,7 @@ using ListOfSupportedModels = SupportedModels<
     ModelDef<vitis::ai::proto::DpuModelParam::PLATEDETECT,
              vitis::ai::PlateDetect>,
     ModelDef<vitis::ai::proto::DpuModelParam::PLATENUM, vitis::ai::PlateNum>,
-    ModelDef<vitis::ai::proto::DpuModelParam::POSEDETECT,
-             vitis::ai::PoseDetect>,
-    ModelDef<vitis::ai::proto::DpuModelParam::FACEFEATURE,
-             vitis::ai::FaceFeature>,  // only test float now
-    ModelDef<vitis::ai::proto::DpuModelParam::SEGMENTATION8UC1,
-             vitis::ai::Segmentation8UC1>,
-    ModelDef<vitis::ai::proto::DpuModelParam::SEGMENTATION8UC3,
-             vitis::ai::Segmentation8UC3>,
-    ModelDef<vitis::ai::proto::DpuModelParam::MEDICALSEGMENTATION,
-             vitis::ai::MedicalSegmentation>,
-    ModelDef<vitis::ai::proto::DpuModelParam::MULTITASK8UC1,
-             vitis::ai::MultiTask8UC1>,
-    ModelDef<vitis::ai::proto::DpuModelParam::MULTITASK8UC3,
-             vitis::ai::MultiTask8UC3>,
-    ModelDef<vitis::ai::proto::DpuModelParam::REID, vitis::ai::Reid>
+    ModelDef<vitis::ai::proto::DpuModelParam::POSEDETECT, vitis::ai::PoseDetect>
     // ModelDef<vitis::ai::proto::DpuModelParam::PLATERECOG,
     // vitis::ai::PlateRecog>
     /* list of supported models end */
@@ -219,78 +205,6 @@ std::unique_ptr<General> General::create(const std::string &model_name,
   auto model = get_config(model_name);
   auto model_type = model.model_type();
   return ListOfSupportedModels::create(model_type, model_name);
-}
-
-template <>
-vitis::ai::proto::DpuModelResult process_result<vitis::ai::ReidResult>(
-    const vitis::ai::ReidResult &result) {
-  vitis::ai::proto::DpuModelResult dpu_model_result;
-
-  auto &reid_result = *dpu_model_result.mutable_reid_result();
-  auto p_data = (uint32_t *)result.feat.data;
-  while (p_data) {
-    reid_result.add_data(*p_data++);
-  }
-  return dpu_model_result;
-}
-
-template <>
-vitis::ai::proto::DpuModelResult process_result<vitis::ai::MultiTaskResult>(
-    const vitis::ai::MultiTaskResult &result) {
-  vitis::ai::proto::DpuModelResult dpu_model_result;
-
-  auto &multitask_result = *dpu_model_result.mutable_multitask_result();
-  auto segmentation = multitask_result.mutable_segmentation();
-  auto p_data = (uint32_t *)result.segmentation.data;
-  while (p_data) {
-    segmentation->add_data(*p_data++);
-  }
-  return dpu_model_result;
-}
-
-template <>
-vitis::ai::proto::DpuModelResult
-process_result<vitis::ai::MedicalSegmentationResult>(
-    const vitis::ai::MedicalSegmentationResult &result) {
-  vitis::ai::proto::DpuModelResult dpu_model_result;
-
-  auto &medical_segmentation_result =
-      *dpu_model_result.mutable_medical_segmentation_result();
-  for (auto &r : result.segmentation) {
-    auto segmentation = medical_segmentation_result.add_segmentation();
-    auto p_data = (uint32_t *)r.data;
-    while (p_data) {
-      segmentation->add_data(*p_data++);
-    }
-  }
-  return dpu_model_result;
-}
-
-template <>
-vitis::ai::proto::DpuModelResult process_result<vitis::ai::SegmentationResult>(
-    const vitis::ai::SegmentationResult &result) {
-  vitis::ai::proto::DpuModelResult dpu_model_result;
-
-  auto &segmentation_result = *dpu_model_result.mutable_segmentation_result();
-  auto p_data = (uint32_t *)result.segmentation.data;
-  while (p_data) {
-    segmentation_result.add_data(*p_data++);
-  }
-  return dpu_model_result;
-}
-
-template <>
-vitis::ai::proto::DpuModelResult
-process_result<vitis::ai::FaceFeatureFloatResult>(
-    const vitis::ai::FaceFeatureFloatResult &result) {
-  vitis::ai::proto::DpuModelResult dpu_model_result;
-
-  auto &face_feature_float_result =
-      *dpu_model_result.mutable_face_feature_float_result();
-  for (auto &r : *result.feature.get()) {
-    face_feature_float_result.add_feature(r);
-  }
-  return dpu_model_result;
 }
 
 template <>
