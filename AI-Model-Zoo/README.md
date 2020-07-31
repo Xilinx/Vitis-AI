@@ -120,7 +120,7 @@ The following table lists various models, download link and MD5 checksum for the
  <summary><b>Click here to view details</b></summary>
 
 If you are a:
- - Linux user, use the [`get_model.sh`](reference-files/get_model.sh) script to download all the models.   
+ - Linux user, use the [`get_model.sh`](get_model.sh) script to download all the models.   
  - Windows user, use the download link listed in the following table to download a model.
 
 | No\. | Model                                            | Size   | MD5                              | Download link |
