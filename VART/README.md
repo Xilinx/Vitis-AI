@@ -102,6 +102,8 @@ VART
 1. Download the [sdk-2020.1.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2020.1.0.0.sh)
 
 2. Install the cross-compilation system environment, follow the prompts to install. 
+
+**Please install it on your local host linux system, not in the docker system.**
 ```
 $./sdk-2020.1.0.0.sh
 ```
@@ -110,7 +112,7 @@ Here we install it under `~/petalinux_sdk`.
 
 3. When the installation is complete, follow the prompts and execute the following command.
 ```
-$. ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
+$source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
@@ -122,7 +124,7 @@ $tar -xzvf vitis_ai_2020.1-r1.2.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xil
 5. Cross compile the sample, take resnet50 as an example.
 ```
 $cd ~/Vitis-AI/VART/samples/resnet50
-$bash –x build.sh
+$bash -x build.sh
 ```	
 If the compilation process does not report any error and the executable file `resnet50` is generated, the host environment is installed correctly.
 
@@ -160,11 +162,11 @@ steps.**
 3. (Optional) How to update Vitis AI Runtime and install them separately. 
 	
 	If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
-	* Download the [Vitis AI Runtime 1.2.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.0.tar.gz).  	
+	* Download the [Vitis AI Runtime 1.2.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.1.tar.gz).  	
 	* Untar the runtime packet and copy the following folder to the board using scp.
 	```
-	$tar -xzvf vitis-ai-runtime-1.2.0.tar.gz
-	$scp -r vitis-ai-runtime-1.2.0/aarch64/centos root@IP_OF_BOARD:~/
+	$tar -xzvf vitis-ai-runtime-1.2.1.tar.gz
+	$scp -r vitis-ai-runtime-1.2.1/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
 	* Install the Vitis AI Runtime. Execute the following command in order.
@@ -241,7 +243,7 @@ If you encounter any path errors in running examples, check to see if you follow
 2. Compile the sample, take `resnet50` as an example.
 	```
 	$cd /workspace/VART/samples/resnet50
-	$bash –x build.sh
+	$bash -x build.sh
 	```
 3. Run the example, take `U50` platform as an example.
 	```

@@ -112,6 +112,8 @@ Vitis_AI_Library
 1. Download the [sdk-2020.1.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2020.1.0.0.sh)
 
 2. Install the cross-compilation system environment, follow the prompts to install. 
+
+**Please install it on your local host linux system, not in the docker system.**
 ```
 $./sdk-2020.1.0.0.sh
 ```
@@ -200,12 +202,12 @@ steps.**
 4. (Optional) How to update Vitis AI Runtime and install them separately. 
 
 	If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
-	* Download the [Vitis AI Runtime 1.2.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.0.tar.gz).  
+	* Download the [Vitis AI Runtime 1.2.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.2.1.tar.gz).  
 	
 	* Untar the runtime packet and copy the following folder to the board using scp.
 	```
-	$tar -xzvf vitis-ai-runtime-1.2.0.tar.gz
-	$scp -r vitis-ai-runtime-1.2.0/aarch64/centos root@IP_OF_BOARD:~/
+	$tar -xzvf vitis-ai-runtime-1.2.1.tar.gz
+	$scp -r vitis-ai-runtime-1.2.1/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
 	* Install the Vitis AI Runtime. Execute the following command in order.
