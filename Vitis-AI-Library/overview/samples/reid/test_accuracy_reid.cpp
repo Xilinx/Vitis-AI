@@ -27,69 +27,40 @@
 using namespace std;
 using namespace cv;
 
+double dismat[3368][19732];
+
 double cosine_distance(Mat feat1, Mat feat2){
     return 1 - feat1.dot(feat2);
 }
 
 int main(int argc, char *argv[]) {
-  auto det = vitis::ai::Reid::create(argv[1]);
-  size_t batch = det->get_input_batch();
+  auto det = vitis::ai::Reid::create("reid");
   vector<Mat> featx;
   vector<Mat> featy;
-  ifstream imagex(argv[2]);
-  ifstream imagey(argv[3]);
-  vector<Mat> images;
+  ifstream imagex(argv[1]);
+  ifstream imagey(argv[2]);
   string line;
   while(getline(imagex, line)) {
-    auto image = cv::imread(line);
-    if (image.empty()) {
-      cerr << "cannot read image: " << line;
-      continue;
-    }
-    images.push_back(image);
+      Mat img = imread(line);
+      if(img.empty()){
+          cerr<<"can't load image! "<<line<<endl;
+          continue;
+      }
+      Mat feat = det->run(img).feat;
+      featx.emplace_back(feat);
   }
-  imagex.close();
-  vector<Mat> inputs;
-  for (size_t i = 0; i < images.size(); i++){
-    inputs.push_back(images[i]);
-    if (inputs.size() < batch && i < images.size() - 1){
-      continue;
-    }
-    auto rets = det->run(inputs);
-    for( auto ret : rets){
-      featx.push_back(ret.feat);
-    }
-    inputs.clear();
-  }
-  images.clear();
   while(getline(imagey, line)) {
-    auto image = cv::imread(line);
-    if (image.empty()) {
-      cerr << "cannot read image: " << line;
-      continue;
-    }
-    images.push_back(image);
-  }
-  imagey.close();
-  for (size_t i = 0; i < images.size(); i++){
-    inputs.push_back(images[i]);
-    if (inputs.size() < batch && i < images.size() - 1){
-      continue;
-    }
-    auto rets = det->run(inputs);
-    for(auto ret : rets){
-      featy.push_back(ret.feat);
-    }
-    inputs.clear();
-  }
-
-  const int x = featx.size();
-  const int y = featy.size();
-  FILE* out_fs = fopen(argv[4], "w");
-  double **dismat = new double*[y];
-  for(int i = 0; i < x; ++i){
-    dismat[i] = new double[y];
-  }
+      Mat img = imread(line);
+      if(img.empty()){
+          cerr<<"can't load image! "<<line<<endl;
+          continue;
+      }
+      Mat feat = det->run(img).feat;
+      featy.emplace_back(feat);
+  }                                                                                                
+  int x = featx.size();                                                                            
+  int y = featy.size();                                                                            
+  FILE* out_fs = fopen(argv[3], "w");
   for(int i = 0; i < x; ++i){                                                                      
       for(int j = 0; j < y; ++j){                                                                  
           dismat[i][j] = cosine_distance(featx[i], featy[j]);                                      
@@ -97,6 +68,5 @@ int main(int argc, char *argv[]) {
       }                                                                                            
       fprintf(out_fs, "\n");                                                          
   }     
-  fclose(out_fs);
   return 0;
 }

@@ -44,6 +44,8 @@ float feature_compare(const int8_t *feature, const int8_t *feature_lib){
 
 float score_map(float score) { return 1.0 / (1 + exp(-12.4 * score + 3.763)); }
 
+
+
 int main(int argc,char* argv[]){
     if(argc < 4){
         std::cout << "usage : " << argv[0] << "<model_name>"

@@ -45,7 +45,6 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
   )
 
 #configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
-
 target_link_libraries(${COMPONENT_NAME} ${PROJECT_NAME}::model_config ${PROJECT_NAME}::refinedet ${PROJECT_NAME}::posedetect ${PROJECT_NAME}::platenum ${PROJECT_NAME}::platedetect ${PROJECT_NAME}::facelandmark ${PROJECT_NAME}::lanedetect ${PROJECT_NAME}::ssd ${PROJECT_NAME}::tfssd ${PROJECT_NAME}::yolov2 ${PROJECT_NAME}::yolov3  ${PROJECT_NAME}::classification ${PROJECT_NAME}::facedetect glog::glog ${OpenCV_LIBS} protobuf::libprotobuf)
 
 install(

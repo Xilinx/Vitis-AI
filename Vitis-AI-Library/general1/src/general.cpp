@@ -20,7 +20,6 @@
 #include <google/protobuf/text_format.h>
 #include <sys/stat.h>
 
-
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -33,7 +32,6 @@
 #include <vitis/ai/platenum.hpp>
 #include <vitis/ai/posedetect.hpp>
 #include <vitis/ai/refinedet.hpp>
-
 #include <vitis/ai/ssd.hpp>
 #include <vitis/ai/tfssd.hpp>
 #include <vitis/ai/yolov2.hpp>

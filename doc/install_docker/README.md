@@ -50,4 +50,3 @@ deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restri
 Other alternate sources:
 
 https://momane.com/change-ubuntu-18-04-source-to-china-mirror
-
