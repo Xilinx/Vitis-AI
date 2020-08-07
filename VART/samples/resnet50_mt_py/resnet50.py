@@ -173,6 +173,6 @@ def main(argv):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("please input thread number and json file path.")
+        print("please input thread number and model file.")
     else :
         main(sys.argv)

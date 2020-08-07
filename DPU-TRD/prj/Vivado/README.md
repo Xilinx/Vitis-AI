@@ -58,8 +58,8 @@ Required:
   Required:
   - Vivado 2020.1 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
-  - [Vitis AI 1.1](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
-  - [Vitis AI Library 1.1](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library
+  - [Vitis AI 1.2](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional
+  - [Vitis AI Library 1.2](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library
   
 ------
 
