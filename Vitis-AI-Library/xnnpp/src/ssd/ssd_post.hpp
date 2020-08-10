@@ -23,20 +23,19 @@ namespace vitis {
 namespace ai {
 
 class SSDPost : public vitis::ai::SSDPostProcess {
-public:
-  SSDPost(const std::vector<vitis::ai::library::InputTensor> &input_tensors,
-          const std::vector<vitis::ai::library::OutputTensor> &output_tensors,
-          const vitis::ai::proto::DpuModelParam &config);
+ public:
+  SSDPost(const std::vector<vitis::ai::library::InputTensor>& input_tensors,
+          const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
+          const vitis::ai::proto::DpuModelParam& config);
   virtual ~SSDPost();
 
-  virtual SSDResult ssd_post_process(unsigned int idx) override;
-  virtual std::vector<SSDResult> ssd_post_process() override;
-  SSDResult ssd_post_process_internal_uniform( unsigned int idx);
-  //SSDResult ssd_post_process_internal();
-  //SSDResult ssd_mlperf_post_process();
+  virtual std::vector<SSDResult> ssd_post_process(size_t batch_size) override;
+  SSDResult ssd_post_process_internal_uniform(unsigned int idx);
+  // SSDResult ssd_post_process_internal();
+  // SSDResult ssd_mlperf_post_process();
   // std::vector<SSDResult> post_processing_arm(const cv::Mat &input_img);
 
-private:
+ private:
   int num_classes_;
   bool is_tf_;
   bool is_mlperf_;
@@ -54,5 +53,5 @@ private:
   const std::vector<vitis::ai::library::OutputTensor> output_tensors_;
 };
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

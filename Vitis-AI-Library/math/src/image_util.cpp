@@ -72,6 +72,21 @@ void NormalizeInputData(const uint8_t *input, int rows, int cols, int channels,
 #endif
 }
 
+//# Method for float input data used for DPUV1 and NCHW format
+void NormalizeInputData(const uint8_t *input, int rows, int cols, int channels,
+                        int stride, const std::vector<float> &mean,
+                        const std::vector<float> &scale, float *data) {
+  for (auto c = 0; c < channels; c++) {
+      for (auto h = 0; h < rows; h++) {
+        for (auto w = 0; w < cols; w++) {
+          float value =  (float)((input[h * cols* channels + w * channels + c] * 1.0f - mean[c]) *
+                  scale[c]);
+            data[(c * rows * cols) + (h * cols) + w] = (float)value;
+        }
+      }
+    }
+}
+
 #ifdef ENABLE_NEON
 // caculate:
 // b = (b-shiftB)*scaleB
@@ -179,6 +194,29 @@ void NormalizeInputDataRGB(const cv::Mat &img, const std::vector<float> &mean,
                            const std::vector<float> &scale, int8_t *data) {
   NormalizeInputDataRGB(img.data, img.rows, img.cols, img.channels(), img.step,
                         mean, scale, data);
+}
+
+void NormalizeInputDataRGB(const cv::Mat &img, const std::vector<float> &mean,
+                           const std::vector<float> &scale, float *data) {
+  NormalizeInputDataRGB(img.data, img.rows, img.cols, img.channels(), img.step,
+                        mean, scale, data);
+}
+
+//# Method for float input data used for DPUV1 and NCHW format
+void NormalizeInputDataRGB(const uint8_t *input, int rows, int cols,
+                           int channels, int stride,
+                           const std::vector<float> &mean,
+                           const std::vector<float> &scale, float *data) {
+  
+  for (auto c = 0; c < channels; c++) {
+      for (auto h = 0; h < rows; h++) {
+        for (auto w = 0; w < cols; w++) {
+          float value =  (float)((input[h * cols* channels + w * channels + c] * 1.0f - mean[c]) *
+                  scale[c]);
+            data[(abs(c - 2) * rows * cols) + (h * cols) + w] = (float)value;
+        }
+      }
+    }
 }
 
 void NormalizeInputDataRGB(const uint8_t *input, int rows, int cols,

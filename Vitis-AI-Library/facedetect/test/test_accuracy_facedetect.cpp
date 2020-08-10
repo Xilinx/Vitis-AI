@@ -71,14 +71,14 @@ void LoadImageNames(std::string const &filename,
 int main(int argc, char *argv[]) {
   GLOBAL_ENABLE_C_SOFTMAX = 2;
 
-  if (argc < 3) {
-    std::cerr << "usage ：" << argv[0] << " image_list_file output_file"
+  if (argc < 4) {
+    std::cerr << "usage ：" << argv[0] << " image_list_file output_file model_directory"
               << std::endl;
     abort();
   }
   bool preprocess = !(getenv("PRE") != nullptr);
   auto v = vitis::ai::FaceDetect::create(
-      "densebox_320_320", preprocess);
+      argv[3], preprocess);
   std::cerr << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__
             << "]" //
                    //<< "width " << width << " " //

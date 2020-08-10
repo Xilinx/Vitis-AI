@@ -1,0 +1,120 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# CI docker VAI env
+FROM xilinx/vitis-ai:latest
+
+# CLONE TVM REPO AND ADD VAI PATCH
+COPY vai_patch.diff /tmp
+
+ENV TVM_VAI_HOME /opt/tvm-vai/
+ENV TVM_HOME /opt/tvm-vai/tvm
+ENV PYXIR_HOME /opt/tvm-vai/pyxir
+RUN mkdir /opt/tvm-vai
+RUN mkdir "${TVM_HOME}"
+RUN mkdir "${PYXIR_HOME}"
+RUN git clone https://github.com/apache/incubator-tvm.git "${TVM_HOME}"
+RUN cd "${TVM_HOME}" && \
+    git submodule update --init --recursive && \
+    git checkout ec8f642c56d34cf7bb016803d3cab973b370e424 && \
+    patch -p0 -i /tmp/vai_patch.diff
+
+
+RUN apt-get update --fix-missing
+ 
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_core.sh
+ 
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_python.sh
+ 
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_python_package.sh
+ 
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_llvm.sh
+ 
+# SGX deps (build early; changes infrequently)
+# COPY install/ubuntu_install_sgx.sh "${TVM_HOME}"/docker/install/ubuntu_install_sgx.sh
+# RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_sgx.sh
+# ENV LD_LIBRARY_PATH /opt/sgxsdk/lib64:${LD_LIBRARY_PATH}
+ 
+# Rust env (build early; takes a while)
+# COPY install/ubuntu_install_rust.sh "${TVM_HOME}"/docker/install/ubuntu_install_rust.sh
+# RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_rust.sh
+# ENV RUSTUP_HOME /opt/rust
+# ENV CARGO_HOME /opt/rust
+# ENV RUSTC_WRAPPER sccache
+ 
+# AutoTVM deps
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_redis.sh
+ 
+# Golang environment
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_golang.sh
+ 
+# NNPACK deps
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_nnpack.sh
+ 
+ENV PATH $PATH:$CARGO_HOME/bin:/usr/lib/go-1.10/bin
+ 
+# ANTLR deps
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_java.sh
+ 
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_antlr.sh
+ 
+# Install Vitis-AI ubuntu dependencies
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_vai_core.sh
+ 
+# Install dependencies inside vitis-ai-tensorflow conda
+RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
+    conda activate vitis-ai-tensorflow && \
+    pip install --no-cache-dir antlr4-python3-runtime &&\
+    pip install mxnet image cffi
+ 
+ 
+# BUILD TVM
+RUN mkdir "${TVM_HOME}"/build
+RUN cp "${TVM_HOME}"/cmake/config.cmake "${TVM_HOME}"/build/
+RUN cd "${TVM_HOME}"/build && \
+    echo set\(USE_LLVM ON\) >> config.cmake && cmake .. && \
+    make -j$(nproc)
+RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
+    conda activate vitis-ai-tensorflow && \
+    cd  "${TVM_HOME}"/python && \
+    python3 ./setup.py install && \
+    cd  "${TVM_HOME}"/topi/python &&\
+    python3 ./setup.py install 
+
+# BUILD PYXIR
+RUN pip3 install --upgrade numpy
+RUN git clone --recursive https://github.com/Xilinx/pyxir.git "${PYXIR_HOME}"
+RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
+    conda activate vitis-ai-tensorflow && \
+    cd "${PYXIR_HOME}" && \
+    git checkout master && \
+    git submodule update --init --recursive && \
+    python3 setup.py install
+
+# CK-TOOLS INSTALL 
+ENV HOME $TVM_VAI_HOME
+RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
+    conda activate vitis-ai-tensorflow && \
+    cd $TVM_VAI_HOME/ &&\
+    python -m ck pull repo:ck-env && \
+    python -m ck install package:imagenet-2012-val-min
+
+
+ENV PATH="/opt/vitis_ai/compiler/dnnc/dpuv2:${PATH}"
+ 
+ENV USER="root"
+

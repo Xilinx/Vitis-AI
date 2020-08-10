@@ -65,7 +65,7 @@ usage() {
   echo "  -cw H5, --customwts H5        Use pre-compiled weights.h5 file."
   echo "  -sq, --skip_quantizer         Skip quantization. If -cn, -cq and -cw, quantizer is automatically skipped."
 
-  echo "  --imglist Path to image list file"
+  echo "  --imglist Path to image list file containing image names and labels from calibration dataset"
   echo "  --calibdata Directory containing calibration dataset."
 
   echo -e ""
@@ -173,7 +173,7 @@ done
 # Supported Modes & Models
 SUPPORTED_MODES="cpu_detect | test_detect | streaming_detect | xtreaming_detect"
 SUPPORTED_MODELS="yolo_v2 | yolo_v2_prelu | standard_yolo_v2 | tiny_yolo_v2_voc \
-    standard_yolo_v3 | yolo_v3_spp | tiny_yolo_v3 | custom"
+  | standard_yolo_v3 | yolo_v3_spp | tiny_yolo_v3 | custom"
 
 if [[ "$SUPPORTED_MODES" != *"$TEST"* ]]; then
   echo "$TEST is not a supported test mode."
@@ -199,27 +199,35 @@ else
   . ../../overlaybins/setup.sh
 fi
 
+# Chose the target
+ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+if [ ! -f $ARCH_JSON ]; then
+  ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
+fi
+
 # Calibration dataset and image list
+if [ -z $CALIB_DATASET ]; then
+    CALIB_DATASET="$VAI_ALVEO_ROOT/"apps/yolo/test_image_set/
+    echo -e "\n[WARNING] --calibdata not provided. Taking default calibration dataset : $CALIB_DATASET"
+fi
 
 if [ -z $IMGLIST ]; then
     IMGLIST="$VAI_ALVEO_ROOT/"apps/yolo/images.txt
+    echo -e "\n[WARNING] --imglist not provided. Generating from calibration dataset directory : $CALIB_DATASET"
+    echo -e "[WARNING] Please make sure there are images in $CALIB_DATASET\n"
+    ls $CALIB_DATASET | awk '{print $1 " " 0}' > $IMGLIST
 fi
-
-if [ -z $CALIB_DATASET ]; then
-    CALIB_DATASET="$VAI_ALVEO_ROOT/"apps/yolo/test_image_set/
-fi
-
 
 # Add YOLO utils to PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:${VAI_ALVEO_ROOT}/apps/yolo
 
 # Determine XCLBIN
-XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
+XCLBIN=/opt/xilinx/overlaybins/xdnnv3
 if [ -d $XCLBIN ]; then
-  echo "--- Using Local XCLBIN ---"
-else
   echo "--- Using System XCLBIN ---"
-  XCLBIN=/opt/xilinx/overlaybins/xdnnv3
+else
+  echo "--- Using Local XCLBIN ---"
+  XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
 fi
 
 # Determine Quantizer
@@ -241,8 +249,8 @@ fi
 
 # Misc environment
 mkdir -p work
+rm -rf $RESULTS_DIR
 mkdir -p $RESULTS_DIR
-
 
 # Model Selection
 if [ "$MODEL" == "yolo_v2" ]; then
@@ -361,6 +369,12 @@ if [[ ( ! -z $CUSTOM_NETCFG ) && ( ! -z $CUSTOM_WEIGHTS ) && ( ! -z $CUSTOM_QUAN
 fi
 
 if [[ $RUN_QUANTIZER == 1 ]]; then
+  numcalibimages=`cat images.txt | wc -l`
+  if [[ $numcalibimages == 0 ]]; then
+    echo -e "\n[ERROR] No calibration images found in $CALIB_DATASET. Exiting..."
+    exit 1
+  fi
+
   export DECENT_DEBUG=1
   DUMMY_PTXT=$QUANT_DIR/dummy.prototxt
   python $VAI_ALVEO_ROOT/apps/yolo/get_decent_q_prototxt.py $(pwd) $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
@@ -400,9 +414,9 @@ if [[ $RUN_COMPILER == 1 ]]
 then
   export GLOG_minloglevel=2 # Supress Caffe prints
 
-  COMPILER_BASE_OPT=" --prototxt $NET_DEF_FPGA \
+  COMPILER_BASE_OPT=" --prototxt $QUANT_DIR/deploy.prototxt \
       --caffemodel $QUANT_DIR/deploy.caffemodel \
-      --arch arch.json \
+      --arch $ARCH_JSON \
       --net_name tmp \
       --output_dir $COMP_DIR"
 

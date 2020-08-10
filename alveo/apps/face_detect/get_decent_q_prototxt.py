@@ -32,7 +32,7 @@ def get_train_prototxt_deephi(caffe_path, src_prototxt, train_prototxt, image_li
     n = caffe.NetSpec()
     print(type(n))
     n.data = L.ImageData(top='label', include=dict(phase=caffe_pb2.Phase.Value('TRAIN')), transform_param=dict(mirror=False,mean_value=128.0),
-                                      image_data_param=dict(source=image_list,batch_size=1, new_height=net_shape[2],new_width=net_shape[3],shuffle=False,root_folder=directory_path))
+                                      image_data_param=dict(source=image_list,batch_size=50, new_height=net_shape[2],new_width=net_shape[3],shuffle=False,root_folder=directory_path))
     with open(train_prototxt, 'w') as f:
         f.write(str(n.to_proto()))
         print(n.to_proto())

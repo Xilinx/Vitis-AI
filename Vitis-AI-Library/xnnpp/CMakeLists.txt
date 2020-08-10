@@ -36,21 +36,13 @@ foreach(PBF ${PBF_NAME})
   list(APPEND LIST_PROTO_DST include/object_detection/protos/${PBF}.proto)
 endforeach()
 
-
-
-set(OpenCV_LIBS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui protobuf::libprotobuf)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SYSROOT}/usr/share/cmake/")
 if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
   ## TODO: fix hard coded directory
   link_directories(/home/administrator/workspace/qtbase/lib/)
-  list(APPEND OpenCV_LIBS Qt5Widgets Qt5Test Qt5Concurrent Qt5Gui Qt5Core)
-else()
-  list(APPEND OpenCV_LIBS pthread)
+  list(APPEND Other_LIBS Qt5Widgets Qt5Test Qt5Concurrent Qt5Gui Qt5Core)
 endif()
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 include(XilinxCommon)
 include(XilinxVersion)
-include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 include(CheckIncludeFileCXX)
 check_include_file_cxx(arm_neon.h HAVE_NEON)
 if(HAVE_NEON)
@@ -62,8 +54,14 @@ add_library(${COMPONENT_NAME} SHARED
   src/segmentation.cpp
   include/vitis/ai/nnpp/apply_nms.hpp
   src/apply_nms.cpp
+  include/vitis/ai/nnpp/platedetect.hpp
+  src/platedetect.cpp
+  include/vitis/ai/nnpp/platenum.hpp
+  src/platenum.cpp
   include/vitis/ai/nnpp/facedetect.hpp
   src/facedetect.cpp
+  include/vitis/ai/nnpp/facefeature.hpp
+  src/facefeature.cpp
   include/vitis/ai/nnpp/classification.hpp
   src/classification.cpp
   include/vitis/ai/nnpp/openpose.hpp
@@ -74,8 +72,6 @@ add_library(${COMPONENT_NAME} SHARED
   #  src/facequality5pt.cpp
   include/vitis/ai/nnpp/facelandmark.hpp
   src/facelandmark.cpp
-  #  include/vitis/ai/nnpp/facefeature.hpp
-  #  src/facefeature.cpp
   #  include/vitis/ai/nnpp/multitask.hpp
 
   src/multitask/multitask_imp.cpp
@@ -116,10 +112,31 @@ add_library(${COMPONENT_NAME} SHARED
   src/ssd/ssd_post.cpp
   src/ssd/ssd_detector.cpp
   src/ssd/prior_boxes.cpp
+  include/vitis/ai/nnpp/medicalsegmentation.hpp
+  src/medicalsegmentation/medicalsegmentation.cpp
+  src/medicalsegmentation/medicalsegmentation_post.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
-target_link_libraries(${COMPONENT_NAME} vart::util math model_config glog ${OpenCV_LIBS})
+
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(${COMPONENT_NAME} vart::util
+  ${PROJECT_NAME}::math
+  ${PROJECT_NAME}::model_config glog::glog
+  ${OpenCV_LIBS})
 set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}"
@@ -133,18 +150,20 @@ install(
 
 install(
   EXPORT ${COMPONENT_NAME}-targets
-  NAMESPACE ${COMPONENT_NAME}::
+  NAMESPACE ${PROJECT_NAME}::
   DESTINATION ${INSTALL_CMAKE_DIR})
 
 install(FILES
   include/vitis/ai/nnpp/classification.hpp
   include/vitis/ai/nnpp/openpose.hpp
   include/vitis/ai/nnpp/multitask.hpp
+  include/vitis/ai/nnpp/platedetect.hpp
+  include/vitis/ai/nnpp/platenum.hpp
   include/vitis/ai/nnpp/facedetect.hpp
+  include/vitis/ai/nnpp/facefeature.hpp
   #include/vitis/ai/nnpp/facequality.hpp
   #include/vitis/ai/nnpp/facequality5pt.hpp
   include/vitis/ai/nnpp/facelandmark.hpp
-  #include/vitis/ai/nnpp/facefeature.hpp
   include/vitis/ai/nnpp/segmentation.hpp
   include/vitis/ai/nnpp/yolov2.hpp
   include/vitis/ai/nnpp/yolov3.hpp
@@ -154,6 +173,7 @@ install(FILES
   include/vitis/ai/nnpp/ssd.hpp
   include/vitis/ai/nnpp/tfssd.hpp
   include/vitis/ai/nnpp/reid.hpp
+  include/vitis/ai/nnpp/medicalsegmentation.hpp
   DESTINATION include/vitis/ai/nnpp)
 
 

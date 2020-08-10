@@ -16,6 +16,9 @@
 #pragma once
 #include <memory>
 #include <opencv2/core.hpp>
+namespace xir {
+class Graph;
+};
 #include "./dpu_task.hpp"
 #include "./vitis/ai/proto/dpu_model_param.pb.h"
 namespace vitis {
@@ -57,11 +60,9 @@ class ConfigurableDpuTask {
    *@return InputHeight of the neural network.
    */
   virtual int getInputHeight() const = 0;
-  /**
-   * @brief get meta info a model
-   * */
-  virtual const vitis::ai::DpuMeta& get_dpu_meta_info() const = 0;
+
   virtual size_t get_input_batch() const = 0;
+  virtual const xir::Graph* get_graph() const = 0;
 };
 
 template <typename Interface>

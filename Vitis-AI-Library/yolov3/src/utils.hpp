@@ -43,6 +43,10 @@ typedef struct {
 
 void convertInputImage(const cv::Mat &frame, int width, int height, int channel,
                        float scale, int8_t *data);
+//# Overload method with float input data for DPUV1
+void convertInputImage(const cv::Mat &frame, int width, int height, int channel,
+                       float scale, float *data);
+                       
 cv::Mat letterbox_tf(const cv::Mat &im, int w, int h);
 
 } // namespace yolov3

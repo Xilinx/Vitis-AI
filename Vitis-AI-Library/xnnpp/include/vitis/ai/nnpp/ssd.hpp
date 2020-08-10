@@ -86,16 +86,11 @@ class SSDPostProcess {
       const vitis::ai::proto::DpuModelParam& config);
 
   /**
-   * @brief The post-processing function of the ssd network.
-   * @return The struct of SSDResult.
-   */
-  virtual SSDResult ssd_post_process(unsigned int idx) = 0;
-  /**
    * @brief The batch mode post-processing function of the ssd network.
    * @return The vector of struct of SSDResult.
    */
-  virtual std::vector<SSDResult> ssd_post_process() = 0;
-    /**
+  virtual std::vector<SSDResult> ssd_post_process(size_t batch_size) = 0;
+  /**
    * @cond NOCOMMENTS
    */
   virtual ~SSDPostProcess();
@@ -104,7 +99,7 @@ class SSDPostProcess {
   explicit SSDPostProcess();
   SSDPostProcess(const SSDPostProcess&) = delete;
   SSDPostProcess& operator=(const SSDPostProcess&) = delete;
-    /**
+  /**
    * @endcond
    */
 };

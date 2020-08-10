@@ -20,9 +20,10 @@
 #include <vitis/ai/classification.hpp>
 #include <vitis/ai/dpu_task.hpp>
 #include <vitis/ai/globalavepool.hpp>
+#include <vitis/ai/library/tensor.hpp>
 #include <vitis/ai/math.hpp>
 #include <vitis/ai/nnpp/classification.hpp>
-#include <vitis/ai/library/tensor.hpp>
+#include "./find_model.hpp"
 
 namespace vitis {
 namespace ai {
@@ -48,20 +49,21 @@ static ClassificationResult topk(const float* softres, int channel, int k,
 
 class ClassificationSqueezenet {
  public:
-  ClassificationSqueezenet()
-      : kernel_name("squeezenet"), task(DpuTask::create(kernel_name)) {}
+  ClassificationSqueezenet(std::string model)
+      : kernel_name(model),
+        task(DpuTask::create(find_model(kernel_name))) {}
   int getInputWidth() { return task->getInputTensor(0u)[0].width; }
   int getInputHeight() { return task->getInputTensor(0u)[0].height; }
-  size_t get_input_batch() const {return task->get_input_batch(0, 0);}
+  size_t get_input_batch() const { return task->get_input_batch(0, 0); }
   ClassificationResult classification_post_process1(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
       const std::vector<vitis::ai::library::OutputTensor>& output_tensors) {
     auto top_k = 5;
 
     std::vector<int8_t> data(output_tensors[0].channel);
-    globalAvePool((int8_t*)output_tensors[0].get_data(0), output_tensors[0].channel,
-                  output_tensors[0].width, output_tensors[0].height,
-                  data.data());
+    globalAvePool((int8_t*)output_tensors[0].get_data(0),
+                  output_tensors[0].channel, output_tensors[0].width,
+                  output_tensors[0].height, data.data());
 
     std::vector<float> softres(output_tensors[0].channel);
     softmax(data.data(), tensor_scale(output_tensors[0]),
@@ -71,24 +73,23 @@ class ClassificationSqueezenet {
                 input_tensors[0].width, input_tensors[0].height);
   }
 
-  std::vector<ClassificationResult> 
-    classification_post_process2(
+  std::vector<ClassificationResult> classification_post_process2(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
       const std::vector<vitis::ai::library::OutputTensor>& output_tensors) {
     auto top_k = 5;
     std::vector<ClassificationResult> res;
     std::vector<int8_t> data(output_tensors[0].channel);
-    for (size_t i = 0; i < output_tensors[0].batch; i++){
-      globalAvePool((int8_t*)output_tensors[0].get_data(i), output_tensors[0].channel,
-                    output_tensors[0].width, output_tensors[0].height,
-                    data.data());
+    for (size_t i = 0; i < output_tensors[0].batch; i++) {
+      globalAvePool((int8_t*)output_tensors[0].get_data(i),
+                    output_tensors[0].channel, output_tensors[0].width,
+                    output_tensors[0].height, data.data());
 
       std::vector<float> softres(output_tensors[0].channel);
       softmax(data.data(), tensor_scale(output_tensors[0]),
               output_tensors[0].channel, 1, &softres[0]);
       // std::cout << std::endl;
-      res.push_back( topk(&softres[0], output_tensors[0].channel, top_k,
-                          input_tensors[0].width, input_tensors[0].height));
+      res.push_back(topk(&softres[0], output_tensors[0].channel, top_k,
+                         input_tensors[0].width, input_tensors[0].height));
     }
     return res;
   }
@@ -101,10 +102,11 @@ class ClassificationSqueezenet {
     cropped_img = image(box).clone();
   }
 
-  std::vector<ClassificationResult> run(const std::vector<cv::Mat> & input_image) {
+  std::vector<ClassificationResult> run(
+      const std::vector<cv::Mat>& input_image) {
     std::vector<cv::Mat> images;
-    
-    for (const auto & i:input_image){
+
+    for (const auto& i : input_image) {
       cv::Mat image;
       int width = getInputWidth();
       int height = getInputHeight();
@@ -125,7 +127,6 @@ class ClassificationSqueezenet {
                                             task->getOutputTensor(0u));
     return ret;
   }
-
 
   ClassificationResult run(const cv::Mat& input_image) {
     cv::Mat image;
@@ -154,8 +155,9 @@ class ClassificationSqueezenet {
 }  // namespace vitis
 
 int main(int argc, char* argv[]) {
-  return vitis::ai::main_for_performance(argc, argv, [] {
+  std::string model = argv[1];
+  return vitis::ai::main_for_performance(argc, argv, [model] {
     return std::unique_ptr<vitis::ai::ClassificationSqueezenet>(
-        new vitis::ai::ClassificationSqueezenet);
+        new vitis::ai::ClassificationSqueezenet(model));
   });
 }

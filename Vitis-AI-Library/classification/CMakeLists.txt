@@ -15,25 +15,14 @@
 #
 cmake_minimum_required(VERSION 3.5)
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
-set(OpenCV_LIBS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
-if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
-  ## TODO: fix hard coded directory
-  link_directories(/home/administrator/workspace/qtbase/lib/)
-  list(APPEND OpenCV_LIBS Qt5Widgets Qt5Test Qt5Concurrent Qt5Gui Qt5Core)
-else()
-  list(APPEND OpenCV_LIBS pthread)
-endif()
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SYSROOT}/usr/share/cmake/")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 include(XilinxCommon)
 include(XilinxVersion)
-#include(XilinxDpu)
+
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/word_list.inc
   COMMAND bash -ex ${CMAKE_CURRENT_SOURCE_DIR}/src/convert_word_list.sh ${CMAKE_CURRENT_SOURCE_DIR}/src/word_list.txt ${CMAKE_CURRENT_BINARY_DIR}/word_list.inc
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/convert_word_list.sh ${CMAKE_CURRENT_SOURCE_DIR}/src/word_list.txt
   )
-include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 add_library(${COMPONENT_NAME} SHARED
   include/vitis/ai/classification.hpp
@@ -44,13 +33,25 @@ add_library(${COMPONENT_NAME} SHARED
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
-target_link_libraries(${COMPONENT_NAME} xnnpp dpu_task model_config glog ${OpenCV_LIBS})
+
+target_link_libraries(${COMPONENT_NAME} ${PROJECT_NAME}::xnnpp ${PROJECT_NAME}::dpu_task ${PROJECT_NAME}::model_config ${OpenCV_LIBS})
+
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(${COMPONENT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include>
+)
 
 set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}"
   LIBRARY_OUTPUT_NAME  ${PROJECT_NAME}-${COMPONENT_NAME}
   )
+
 install(
   TARGETS ${COMPONENT_NAME}
   EXPORT ${COMPONENT_NAME}-targets
@@ -62,13 +63,13 @@ install(
   NAMESPACE ${PROJECT_NAME}::
   DESTINATION ${INSTALL_CMAKE_DIR})
 
-
-
 install(FILES include/vitis/ai/classification.hpp DESTINATION include/vitis/ai)
 
 add_executable(test_classification test/test_classification.cpp)
 add_executable(test_classification_batch test/test_classification_batch.cpp)
 add_executable(test_classification_accuracy test/test_accuracy_classification.cpp)
+add_executable(test_classification_speed test/test_classification_speed.cpp)
 target_link_libraries(test_classification ${COMPONENT_NAME} ${OpenCV_LIBS})
 target_link_libraries(test_classification_batch ${COMPONENT_NAME} ${OpenCV_LIBS})
 target_link_libraries(test_classification_accuracy ${COMPONENT_NAME} ${OpenCV_LIBS} protobuf::libprotobuf)
+target_link_libraries(test_classification_speed ${COMPONENT_NAME} ${OpenCV_LIBS})

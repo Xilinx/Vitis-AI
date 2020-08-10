@@ -45,8 +45,8 @@ OpenPoseResult OpenPoseImp::run(const cv::Mat &input_image) {
   __TOC__(OPENPOSE_DPU)
   __TIC__(OPENPOSE_POST_PROCESS)
   auto ret = vitis::ai::open_pose_post_process(
-      configurable_dpu_task_->getInputTensor(),
-      configurable_dpu_task_->getOutputTensor(),
+      configurable_dpu_task_->getInputTensor()[0],
+      configurable_dpu_task_->getOutputTensor()[0],
       configurable_dpu_task_->getConfig(), input_image.cols, input_image.rows, 0);
   __TOC__(OPENPOSE_POST_PROCESS)
   return ret;
@@ -76,8 +76,8 @@ vector<OpenPoseResult> OpenPoseImp::run(const vector<cv::Mat> &input_images) {
   __TOC__(OPENPOSE_DPU)
   __TIC__(OPENPOSE_POST_PROCESS)
   auto ret = vitis::ai::open_pose_post_process(
-      configurable_dpu_task_->getInputTensor(),
-      configurable_dpu_task_->getOutputTensor(),
+      configurable_dpu_task_->getInputTensor()[0],
+      configurable_dpu_task_->getOutputTensor()[0],
       configurable_dpu_task_->getConfig(), ws, hs);
   __TOC__(OPENPOSE_POST_PROCESS)
   return ret;

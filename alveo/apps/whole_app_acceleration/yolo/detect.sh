@@ -177,6 +177,11 @@ if [ -f /workspace/alveo/overlaybins/setup.sh ]; then
 else
   . ../../../overlaybins/setup.sh
 fi
+# Chose the target
+ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+if [ ! -f $ARCH_JSON ]; then
+  ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
+fi
 if [ -z ${DIRECTORY+x} ]; then
     DIRECTORY=${VAI_ALVEO_ROOT}/apps/yolo/test_image_set/
 fi
@@ -262,6 +267,21 @@ if [[ ( -v NETWORK_HEIGHT ) && ( -v NETWORK_WIDTH ) ]]; then
   NET_DEF_FPGA=work/new_dim_fpga.prototxt
 fi
 
+# Calibration dataset and image list
+if [ -z $CALIB_DATASET ]; then
+    CALIB_DATASET="$VAI_ALVEO_ROOT/"apps/yolo/test_image_set/
+    echo -e "\n[WARNING] --calibdata not provided. Taking default calibration dataset : $CALIB_DATASET"
+fi
+
+if [ -z $IMGLIST ]; then
+    IMGLIST="$VAI_ALVEO_ROOT/"apps/yolo/images.txt
+    echo -e "\n[WARNING] --imglist not provided. Generating from calibration dataset directory : $CALIB_DATASET"
+    echo -e "[WARNING] Please make sure there are images in $CALIB_DATASET\n"
+    ls $CALIB_DATASET | awk '{print $1 " " 0}' > $IMGLIST
+fi
+
+QUANT_DIR="work"
+
 ## Run Quantizer
 if [[ ( ! -z $CUSTOM_NETCFG ) && ( ! -z $CUSTOM_WEIGHTS ) && ( ! -z $CUSTOM_QUANTCFG ) ||
       ( RUN_QUANTIZER == 0 ) || ( $TEST == "cpu_detect" ) ]]; then
@@ -269,19 +289,24 @@ if [[ ( ! -z $CUSTOM_NETCFG ) && ( ! -z $CUSTOM_WEIGHTS ) && ( ! -z $CUSTOM_QUAN
 fi
 
 if [[ $RUN_QUANTIZER == 1 ]]; then
+  numcalibimages=`cat $VAI_ALVEO_ROOT/apps/yolo/images.txt | wc -l`
+  if [[ $numcalibimages == 0 ]]; then
+    echo -e "\n[ERROR] No calibration images found in $CALIB_DATASET. Exiting..."
+    exit 1
+  fi
+
   export DECENT_DEBUG=1
-  DUMMY_PTXT=work/dummy.prototxt
-  IMGLIST="$VAI_ALVEO_ROOT/"apps/yolo/images.txt
-  CALIB_DATASET="$VAI_ALVEO_ROOT/"apps/yolo/test_image_set/
-  python ${VAI_ALVEO_ROOT}/apps/yolo/get_decent_q_prototxt.py $(pwd) $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
+  DUMMY_PTXT=$QUANT_DIR/dummy.prototxt
+  python $VAI_ALVEO_ROOT/apps/yolo/get_decent_q_prototxt.py $(pwd) $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
   if [[ $? != 0 ]]; then echo "Network generation failed. Exiting ..."; exit 1; fi
 
-  echo -e "quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir work/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH"
-  $QUANTIZER quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir work/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH
+  echo -e "quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir $QUANT_DIR/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH"
+  $QUANTIZER quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir $QUANT_DIR/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH
   if [[ $? != 0 ]]; then echo "Quantization failed. Exiting ..."; exit 1; fi
 else
-  cp $NET_WEIGHTS work/deploy.caffemodel
+  cp $NET_WEIGHTS $QUANT_DIR/deploy.caffemodel
 fi
+
 
 
 ## Run Compiler
@@ -312,7 +337,7 @@ then
 
   COMPILER_BASE_OPT=" --prototxt $NET_DEF_FPGA \
       --caffemodel work/deploy.caffemodel \
-      --arch arch.json \
+      --arch $ARCH_JSON \
       --net_name tmp \
       --output_dir work"
 

@@ -95,7 +95,7 @@ def list_lines(file_path):
     content = [x.strip() for x in content]
     return content
         
-def calc_detector_mAP(labels_fpga_basepath, labels_gt_basepath, num_classes, class_names, thresh_calc_avg_iou, iou_thresh, map_points):
+def calc_detector_mAP(labels_fpga_basepath, labels_gt_basepath, num_classes, class_names, thresh_calc_avg_iou, iou_thresh, map_points=0):
     
     name_list = os.listdir(labels_fpga_basepath)
     detect_box_files = sorted([os.path.join(labels_fpga_basepath,name) for name in name_list])

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 #pragma once
-#include <xilinx/ai/proto/dpu_model_param.pb.h>
+#include <vitis/ai/proto/dpu_model_param.pb.h>
 #include <array>
 #include <cstdint>
 #include <utility>
-#include <xilinx/ai/tensor.hpp>
-namespace xilinx {
+#include <vitis/ai/library/tensor.hpp>
+
+namespace vitis {
 namespace ai {
 
 /**
@@ -59,14 +60,14 @@ struct FaceFeatureFixedResult {
  *@param output_tensors A vector of all output-tensors in the network.
  *Usage: output_tensors[output_index].
  *@param config The dpu model configuration information.
- *@return The struct of face_feature in float mode.
+ *@return The result of face_feature in float mode.
  */
-FaceFeatureFloatResult face_feature_post_process_float(
-    const std::vector<std::vector<xilinx::ai::library::InputTensor>>&
+std::vector<FaceFeatureFloatResult> face_feature_post_process_float(
+    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
         input_tensors,
-    const std::vector<std::vector<xilinx::ai::library::OutputTensor>>&
+    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
-    const xilinx::ai::proto::DpuModelParam& config);
+    const vitis::ai::proto::DpuModelParam& config);
 
 /**
  *@brief The post-processing function of the face_feature.
@@ -75,14 +76,14 @@ FaceFeatureFloatResult face_feature_post_process_float(
  *@param output_tensors A vector of all output-tensors in the network.
  *Usage: output_tensors[output_index].
  *@param config The dpu model configuration information.
- *@return The struct of face_feature in fixed mode.
+ *@return The result of face_feature in fixed mode.
  */
-FaceFeatureFixedResult face_feature_post_process_fixed(
-    const std::vector<std::vector<xilinx::ai::library::InputTensor>>&
+std::vector<FaceFeatureFixedResult> face_feature_post_process_fixed(
+    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
         input_tensors,
-    const std::vector<std::vector<xilinx::ai::library::OutputTensor>>&
+    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
-    const xilinx::ai::proto::DpuModelParam& config);
+    const vitis::ai::proto::DpuModelParam& config);
 
 }  // namespace ai
-}  // namespace xilinx
+}  // namespace vitis

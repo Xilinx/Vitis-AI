@@ -1,49 +1,18 @@
-# (c) Copyright 2018-2018 Xilinx, Inc. All rights reserved.
-#
-# This file contains confidential and proprietary information
-# of Xilinx, Inc. and is protected under U.S. and
-# international copyright and other intellectual property
-# laws.
-#
-# DISCLAIMER
-# This disclaimer is not a license and does not grant any
-# rights to the materials distributed herewith. Except as
-# otherwise provided in a valid license issued to you by
-# Xilinx, and to the maximum extent permitted by applicable
-# law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
-# WITH ALL FAULTS, AND XILINX HEREBY DISCLAIMS ALL WARRANTIES
-# AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
-# BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
-# INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
-# (2) Xilinx shall not be liable (whether in contract or tort,
-# including negligence, or under any other theory of
-# liability) for any loss or damage of any kind or nature
-# related to, arising under or in connection with these
-# materials, including for any direct, or any indirect,
-# special, incidental, or consequential loss or damage
-# (including loss of data, profits, goodwill, or any type of
-# loss or damage suffered as a result of any action brought
-# by a third party) even if such damage or loss was
-# reasonably foreseeable or Xilinx had been advised of the
-# possibility of the same.
-#
-# CRITICAL APPLICATIONS
-# Xilinx products are not designed or intended to be fail-
-# safe, or for use in any application requiring fail-safe
-# performance, such as life-support or safety devices or
-# systems, Class III medical devices, nuclear facilities,
-# applications related to the deployment of airbags, or any
-# other applications that could lead to death, personal
-# injury, or severe property or environmental damage
-# (individually and collectively, "Critical
-# Applications"). Customer assumes the sole risk and
-# liability of any use of Xilinx products in Critical
-# Applications, subject only to applicable laws and
-# regulations governing limitations on product liability.
-#
-# THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
-# PART OF THIS FILE AT ALL TIMES.
-#
+# /*
+# * Copyright 2019 Xilinx Inc.
+# *
+# * Licensed under the Apache License, Version 2.0 (the "License");
+# * you may not use this file except in compliance with the License.
+# * You may obtain a copy of the License at
+# *
+# *    http://www.apache.org/licenses/LICENSE-2.0
+# *
+# * Unless required by applicable law or agreed to in writing, software
+# * distributed under the License is distributed on an "AS IS" BASIS,
+# * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# * See the License for the specific language governing permissions and
+# * limitations under the License.
+# */
 
 #****************************************************************
 # set global dict_prj
@@ -54,7 +23,7 @@
 #****************************************************************
 dict set dict_prj dict_sys pwd_dir            [pwd]
 dict set dict_prj dict_sys srcs_dir           [file dirname [file dirname [file dirname [dict get $dict_prj dict_sys work_dir]]]]/dpu_ip
-dict set dict_prj dict_sys ip_dir             [dict get $dict_prj dict_sys srcs_dir]/dpu_eu_v3_2_0
+dict set dict_prj dict_sys ip_dir             [dict get $dict_prj dict_sys srcs_dir]/DPUCZDX8G_v3_3_0
 dict set dict_prj dict_sys xdc_dir            [file dirname [dict get $dict_prj dict_sys work_dir]]/constrs
 dict set dict_prj dict_sys prj_dir            [file dirname [dict get $dict_prj dict_sys work_dir]]/prj
 dict set dict_prj dict_sys bd_dir             [file dirname [dict get $dict_prj dict_sys work_dir]]/srcs
@@ -2611,17 +2580,17 @@ dict set dict_prj dict_verreg                           \
     ]
 dict set dict_prj dict_verreg info_ip         \
   dpu           [dict create                  \
-    NAME        "dpu_eu"                      \
+    NAME        "DPUCZDX8G"                   \
     PROP        [dict create                  \
                 "VER_DPU_NUM"           [lib_param DPU_NUM]               \
                 "ARCH"                  [lib_param DPU_ARCH]              \
-				            "ARCH_IMG_BKGRP"        [expr {([string tolower [dict get $dict_prj dict_param  DPU_RAM_USAGE]]=={low})?{2}:{3}}]\
+                "ARCH_IMG_BKGRP"        [expr {([string tolower [dict get $dict_prj dict_param  DPU_RAM_USAGE]]=={low})?{2}:{3}}]\
                 "LOAD_AUGM"             [lib_param DPU_CHN_AUG_ENA]       \
                 "DWCV_ENA"              [lib_param DPU_DWCV_ENA]          \
                 "POOL_AVERAGE"          [lib_param DPU_AVG_POOL_ENA]      \
                 "CONV_RELU_ADDON"       [lib_param DPU_CONV_RELU_TYPE]    \
                 "CONV_WR_PARALLEL"      [lib_param DPU_CONV_WP]           \
-																"SFM_ENA"               [lib_param DPU_SFM_NUM]           \
+                "SFM_ENA"               [lib_param DPU_SFM_NUM]           \
                 "S_AXI_CLK_INDEPENDENT" [lib_param DPU_SAXICLK_INDPD]     \
                 "CLK_GATING_ENA"        [lib_param DPU_CLK_GATING_ENA]    \
                 "CONV_DSP_CASC_MAX"     [lib_param DPU_DSP48_MAX_CASC_LEN]\
@@ -2763,4 +2732,3 @@ dict set dict_prj dict_addr [dict create \
   ad_gp0 [dict create "REG" [lib_cell d_ip_dpu]/S_AXI/reg0      "RANGE" {16M}  "OFFSET" {0x8f000000} ]  \
   ]
 
-#41d051e7f991c9dacbe8d368b85f57380b272bd2d7dc26e6c472a2d06e70908e

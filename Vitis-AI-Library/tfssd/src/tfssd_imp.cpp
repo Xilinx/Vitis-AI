@@ -15,31 +15,31 @@
  */
 #include "./tfssd_imp.hpp"
 
+#include <fstream>
+#include <iostream>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/profiling.hpp>
-
-#include <iostream>
-#include <fstream>
+#include <xir/graph/graph.hpp>
 
 using namespace std;
 namespace vitis {
 namespace ai {
 DEF_ENV_PARAM(ENABLE_SSD_DEBUG, "0");
 
-TFSSDImp::TFSSDImp(const std::string &model_name, bool need_preprocess)
+TFSSDImp::TFSSDImp(const std::string& model_name, bool need_preprocess)
     : vitis::ai::TConfigurableDpuTask<TFSSD>(model_name, need_preprocess),
       processor_{vitis::ai::TFSSDPostProcess::create(
           configurable_dpu_task_->getInputTensor()[0],
           configurable_dpu_task_->getOutputTensor()[0],
           configurable_dpu_task_->getConfig(),
-	  configurable_dpu_task_->get_dpu_meta_info()
-	  )} {}
+          (configurable_dpu_task_->get_graph())
+              ->get_attr<std::string>("dirname"))} {}
 
 TFSSDImp::~TFSSDImp() {}
 
-TFSSDResult TFSSDImp::run(const cv::Mat &input_img) {
+TFSSDResult TFSSDImp::run(const cv::Mat& input_img) {
   cv::Mat img;
   auto size = cv::Size(getInputWidth(), getInputHeight());
 
@@ -66,14 +66,13 @@ TFSSDResult TFSSDImp::run(const cv::Mat &input_img) {
   return results[0];
 }
 
-std::vector<TFSSDResult> TFSSDImp::run(const std::vector<cv::Mat> &input_img) {
-
+std::vector<TFSSDResult> TFSSDImp::run(const std::vector<cv::Mat>& input_img) {
   auto size = cv::Size(getInputWidth(), getInputHeight());
   auto batch_size = get_input_batch();
 
   std::vector<cv::Mat> vimg(batch_size);
 
-  for (auto i= 0ul; i < batch_size; i++) {
+  for (auto i = 0ul; i < batch_size; i++) {
     if (size != input_img[i].size()) {
       cv::resize(input_img[i], vimg[i], size, 0, 0, cv::INTER_LINEAR);
     } else {
@@ -98,5 +97,5 @@ std::vector<TFSSDResult> TFSSDImp::run(const std::vector<cv::Mat> &input_img) {
   return results;
 }
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

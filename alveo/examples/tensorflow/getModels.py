@@ -21,6 +21,8 @@ models = [
   "https://www.xilinx.com/bin/public/openDownload?filename=models.container.tensorflow.resnet50_baseline.pb_2019-07-18.zip",
   "https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101.zip",
   "https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152.zip",
+  "https://www.xilinx.com/bin/public/openDownload?filename=vgg_16.zip",
+  "https://www.xilinx.com/bin/public/openDownload?filename=vgg_19.zip",
 ]
 
 # Where will we work

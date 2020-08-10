@@ -27,6 +27,7 @@
 
 #include <vitis/ai/dpu_task.hpp>
 #include <vitis/ai/globalavepool.hpp>
+#include "./find_model.hpp"
 
 using namespace std;
 
@@ -36,16 +37,15 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
   // A kernel name, it must be samed as the dnnc result.
-  auto kernel_name = argv[1];
+  string kernel_name = argv[1];
   // A image file, e.g.
   // /usr/share/XILINX_AI_SDK/samples/classification/images/001.JPEG
   auto image_file_name = argv[2];
   // Create a dpu task object.
-  auto task = vitis::ai::DpuTask::create(kernel_name);
+  auto task = vitis::ai::DpuTask::create(find_model(kernel_name));
   // Preprocessing, please check
   // /etc/dpu_model_param_.conf.d/inception_v1.prototxt or your caffe
   // model, e.g. deploy.prototxt
-  task->setMeanScaleBGR({104.0f, 107.0f, 123.0f}, {1.0f, 1.0f, 1.0f});
   // Read image from a file
   auto input_image = cv::imread(image_file_name);
   if (input_image.empty()) {
@@ -66,7 +66,14 @@ int main(int argc, char* argv[]) {
     image = input_image;
   }
   // Set the input image
-  task->setImageBGR(image);
+  if(kernel_name.compare("squeezenet_pt") == 0) {
+    task->setMeanScaleBGR({103.53f, 116.28f, 123.675f}, {0.017429f, 0.017507f, 0.01712475f});
+    task->setImageRGB(image);
+  } else if(kernel_name.compare("squeezenet") == 0) {
+    task->setMeanScaleBGR({104.0f, 107.0f, 123.0f}, {1.0f, 1.0f, 1.0f});
+    task->setImageBGR(image);
+  } else
+    cout << "Model name should be squeezenet or squeezenet_pt" << endl;
   // Start the dpu
   task->run(0u);
   // Get output.

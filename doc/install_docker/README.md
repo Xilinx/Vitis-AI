@@ -1,49 +1,53 @@
-**Internet access is required.**
+# Installing Docker
+Please refer to official Docker Documentation
 
-## Reference: https://docs.docker.com/install/linux/docker-ce/ubuntu/
+- https://docs.docker.com/engine/install/
 
-The following instructions have been tested on Ubuntu 18.04.
+# Installing NVIDIA Docker Runtime
+(Only applicable for model training or model quantization use cases)  
+If you are building the Vitis AI Docker Image with GPU acceleration
+You will need to install NVIDIA Container Runtime
+Please refer to the offical NVIDIA Documentation
 
-## Add the Docker repository into your Ubuntu host
+- https://nvidia.github.io/nvidia-container-runtime/
 
-```shell
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"  
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -  
-sudo apt-get update && sudo apt install docker-ce docker-ce-cli containerd.io 
+
+# Slow Connection To Ubuntu Servers Outside China
+Vitis AI Docker images is based on Ubuntu Bonic 18.04. The software packages sources **/etc/apt/sources.list** looks like this:
+
+```   
+  deb http://us.archive.ubuntu.com/ubuntu/ bionic universe   
+```
+ 
+These hostname "archive.ubuntu.com" by default resolve to servers in the United States. Any customers building the Vitis AI GPU image https://github.com/Xilinx/Vitis-AI/blob/master/docker/DockerfileGPU will pull from these servers. Users accessing from China, might experience slow download speeds using these servers. 
+
+### Workaround
+Change the Ubuntu apt sources.list to use servers in China. 
+
+In Dockerfile, change the 1st instance of:
+```
+  RUN apt-get update -y && apt-get install -y --no-install-recommends \
 ```
 
-## Install NVIDIA Docker Runtime
-
-Instructions from https://nvidia.github.io/nvidia-container-runtime/
-
-```shell
-curl -s -L https://nvidia.github.io/nvidia-container-runtime/gpgkey | \  
-  sudo apt-key add -
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-curl -s -L https://nvidia.github.io/nvidia-container-runtime/$distribution/nvidia-container-runtime.list | \
-  sudo tee /etc/apt/sources.list.d/nvidia-container-runtime.list
-sudo apt-get update
-sudo apt-get install nvidia-container-runtime
+To the line below, so that the Ubuntu sources will be replaced with China Ubuntu servers
+```      
+  RUN sed --in-place --regexp-extended "s/(\/\/)(archive\.ubuntu)/\1cn.\2/" /etc/apt/sources.list && apt-get update && apt-get install -y --no-install-recommends \
 ```
 
+The following Tsinghua University (Beijing) sources can also be used:
 
-The edit the docker config to limit / allow users in docker group membership to run Docker containers
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
 
-```shell
-sudo systemctl edit docker
-```
+Other alternate sources:
 
-This is the content
-```shell
-[Service]
-ExecStart=
-ExecStart=/usr/bin/dockerd --group docker -H unix:///var/run/docker.sock --add-runtime=nvidia=/usr/bin/nvidia-container-runtime
-```
-
-Then restart the InitD daemon and restart Docker
-```shell
-sudo systemctl daemon-reload
-sudo systemctl restart docker
-```
-
+https://momane.com/change-ubuntu-18-04-source-to-china-mirror
 

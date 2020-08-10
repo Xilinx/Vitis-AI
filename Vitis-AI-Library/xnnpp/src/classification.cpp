@@ -18,8 +18,9 @@
 #include <iostream>
 #include <queue>
 #include <vector>
-#include "vitis/ai/math.hpp"
+#include <vitis/ai/env_config.hpp>
 
+#include "vitis/ai/math.hpp"
 using namespace std;
 
 namespace vitis {
@@ -62,9 +63,15 @@ ClassificationResult classification_post_process(
   }
   std::vector<float> softres(virtual_output[0].channel);
 
+#ifdef ENABLE_DPUCADX8G_RUNNER
+  vitis::ai::softmax((float*)virtual_output[0].get_data(batch_idx),
+                      vitis::ai::library::tensor_scale(virtual_output[0]),
+                      virtual_output[0].channel, 1, &softres[0]);
+#else
   vitis::ai::softmax((int8_t*)virtual_output[0].get_data(batch_idx),
                       vitis::ai::library::tensor_scale(virtual_output[0]),
                       virtual_output[0].channel, 1, &softres[0]);
+#endif
   // std::cout << std::endl;
   return topk(&softres[0], virtual_output[0].channel, top_k,
               input_tensors[0].width, input_tensors[0].height);

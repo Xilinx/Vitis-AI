@@ -24,11 +24,10 @@ using namespace dptfssd;
 
 class TFSSDPost : public vitis::ai::TFSSDPostProcess {
  public:
-  TFSSDPost(
-      const std::vector<vitis::ai::library::InputTensor>& input_tensors,
-      const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-      const vitis::ai::proto::DpuModelParam& config,
-      const vitis::ai::DpuMeta& dpumeta);
+  TFSSDPost(const std::vector<vitis::ai::library::InputTensor>& input_tensors,
+            const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
+            const vitis::ai::proto::DpuModelParam& config,
+            const std::string& dirname);
   virtual ~TFSSDPost();
 
   virtual TFSSDResult ssd_post_process(unsigned int idx) override;

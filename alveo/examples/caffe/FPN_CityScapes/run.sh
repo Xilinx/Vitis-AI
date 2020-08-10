@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -x
+set -x
 
 # Set Platform Environment Variables
 if [ -z $VAI_ALVEO_ROOT ]; then
@@ -13,26 +13,33 @@ if [ -z $1 ]; then
 fi
 
 
+
 MODEL=$1
 export MODELDIR="$( readlink -f "$( dirname "${BASH_SOURCE[0]}" )" )"
+# MODELDIR=$2
 OUTDIR=$MODELDIR/work
 
+# Choose the target
+ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+if [ ! -f $ARCH_JSON ]; then
+  ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
+fi
 
-/opt/vitis_ai/compiler/vai_c_caffe \
+
+vai_c_caffe \
   --net_name $MODEL.compiler \
-  --prototxt $VAI_ALVEO_ROOT/examples/caffe/models/FPN_CityScapes/$MODEL.prototxt \
-  --caffemodel $VAI_ALVEO_ROOT/examples/caffe/models/FPN_CityScapes/$MODEL.caffemodel \
-  --options "{'quant_cfgfile': 'fix_info.txt', 'parallelism': True, 'parallelismgraphalgorithm': 'tfs', 'parallelismstrategy': ['tops', 'bottom'], 'parallelread' : ['bottom', 'tops'],'saveschedule': 'upconv.sched','laodschedule':'upconv.sched'}" \
-  --arch /opt/vitis_ai/compiler/arch/dpuv1/ALVEO/ALVEO.json \
+  --prototxt $MODELDIR/quantize_results/$MODEL.prototxt \
+  --caffemodel $MODELDIR/quantize_results/$MODEL.caffemodel \
+  --options "{'quant_cfgfile': '$MODELDIR/quantize_results/quantize_info.txt', 'strategy' : 'bysize', 'ddr' : 220, 'deconvinfpga':True,'noreplication': True}" \
+  --arch $ARCH_JSON \
   -o $OUTDIR
 
 
-  
 
-python /opt/vitis_ai/conda/envs/vitis-ai-caffe/lib/python3.6/site-packages/vai/dpuv1/rt/scripts/framework/caffe/xfdnn_subgraph.py \
-  --inproto $VAI_ALVEO_ROOT/examples/caffe/models/FPN_CityScapes/$MODEL.prototxt \
-  --outproto xfdnn_$MODEL.prototxt \
-  --cutAfter data \
+python -m vai.dpuv1.rt.scripts.framework.caffe.xfdnn_subgraph \
+  --inproto $MODELDIR/quantize_results/$MODEL.prototxt \
+  --outproto $MODELDIR/xfdnn_$MODEL.prototxt \
+  --cutAfter input_1 \
   --xclbin /opt/xilinx/overlaybins/xdnnv3 \
   --netcfg $OUTDIR/compiler.json \
   --quantizecfg $OUTDIR/quantizer.json \

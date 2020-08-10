@@ -18,17 +18,7 @@
 #include <iostream>
 #include <string>
 #include <opencv2/opencv.hpp>
-#include <vitis/ai/proto/dpu_model_param.pb.h>
 #include <vitis/ai/multitask.hpp>
-
-namespace vitis {
-namespace ai {
-
-extern "C" proto::DpuModelParam *find(const std::string& model_name);
-
-}  // namespace ai
-}  // namespace vitis
-
 using namespace std;
 using namespace cv;
 
@@ -87,11 +77,8 @@ int main(int argc, char *argv[]) {
   }
   LoadImageNames(argv[1], names);
   ofstream out(argv[2]);
-  string g_model_name = "multi_task";
+  string g_model_name = "multi_task_acc";
   string out_img_path = string(argv[3]);
-  auto model1 = vitis::ai::find(g_model_name);
-  for (int i = 0; i < 8; ++i)
-    model1->mutable_multi_task_param()->set_th_conf(i, 0.01);
   auto model = vitis::ai::MultiTask::create(g_model_name);
   for (auto name : names) {
     cv::Mat img = cv::imread(name);
@@ -102,7 +89,7 @@ int main(int argc, char *argv[]) {
     for (auto &box : results.vehicle) {
 
       std::string label_name = "none";
-      if (g_model_name == "multitask") {
+      if (g_model_name == "multi_task_acc") {
         label_name = label_map[box.label];
       } else {
         cout << "^_^" << endl;

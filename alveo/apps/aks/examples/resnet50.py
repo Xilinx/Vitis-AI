@@ -42,6 +42,7 @@ def main(imageDirectory):
 
   print("[INFO] Starting enqueue... ")
   print("[INFO] Running", len(images), "images")
+  sysMan.resetTimer()
   t0 = time.time()
   for i, img in enumerate(images):
     sysMan.enqueueJob(graph, img)
@@ -51,6 +52,9 @@ def main(imageDirectory):
   print("[INFO] Overall FPS : ", len(images)/(t1-t0))
 
   sysMan.report(graph)
+
+  # Destroy SysMan
+  sysMan.clear()
 
 if __name__ == "__main__":
   if (len(sys.argv) != 2):

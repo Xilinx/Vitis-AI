@@ -1,5 +1,6 @@
 xip
 dpuv1-rt
+dpuv1-rt-ext
 vaic
 ddump
 pydot
@@ -10,3 +11,6 @@ dill
 progressbar2
 pytest
 scikit-learn
+pandas
+matplotlib
+pillow 

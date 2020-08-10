@@ -111,11 +111,13 @@ static void detect(vector<vector<float>>& boxes, int8_t* result, int height,
   auto conf_thresh = yolo_params.conf_threshold();
   auto biases = std::vector<float>(yolo_params.biases().begin(),
                                    yolo_params.biases().end());
+  auto conf_desigmoid = -logf(1.0f / conf_thresh - 1.0f);
   int conf_box = 5 + num_classes;
   for (int h = 0; h < height; ++h) {
     for (int w = 0; w < width; ++w) {
       for (int c = 0; c < anchor_cnt; ++c) {
         int idx = ((h * width + w) * anchor_cnt + c) * conf_box;
+        if (result[idx + 4] * scale <= conf_desigmoid) continue;
         float obj_score = sigmoid(result[idx + 4] * scale);
         vector<float> cls;
         float s = 0.0;
@@ -129,7 +131,6 @@ static void detect(vector<vector<float>>& boxes, int8_t* result, int height,
         vector<float>::iterator biggest = max_element(cls.begin(), cls.end());
         large = *biggest;
         for (size_t i = 0; i < cls.size(); ++i) cls[i] = cls[i] * 1.0 / s;
-        if (obj_score * large <= conf_thresh) continue;
         vector<float> box;
 
         box.push_back((w + sigmoid(result[idx] * scale)) / float(width));

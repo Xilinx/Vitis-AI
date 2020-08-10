@@ -15,15 +15,17 @@
  */
 compile:
   sh build.sh
+  or
+  sh builddrm.sh(board only)
 
-multitask and posedetect, running on board ZCU102. Drm mode stop weston, X mode start weston.
+multitask and posedetect, running on board ZCU102. 
   1. This sample include 1 way multitask and 1 way posedetect
      It's neccesary to follow the instruction to run this sample
-     drm mode: /etc/init.d/weston stop; ./seg_and_pose_detect_drm seg_960_540.avi  pose_960_540.avi  -t 3 -t 3 > /dev/null 2>&1
+     drm mode: ./seg_and_pose_detect_drm seg_960_540.avi  pose_960_540.avi  -t 3 -t 3 > /dev/null 2>&1
      X mode: ./seg_and_pose_detect_x seg_960_540.avi  pose_960_540.avi  -t 3 -t 3 > /dev/null 2>&1
   2. The first 2 parameters are each video input and last 2 parameters are thread number.
      You can also set video input as camera by '0', such as:
-     drm mode: /etc/init.d/weston stop; ./seg_and_pose_detect_drm seg_960_540.avi  0  -t 3 -t 3 > /dev/null 2>&1
+     drm mode: ./seg_and_pose_detect_drm seg_960_540.avi  0  -t 3 -t 3 > /dev/null 2>&1
      X mode: ./seg_and_pose_detect_x seg_960_540.avi  0  -t 3 -t 3 > /dev/null 2>&1
 
   

@@ -16,7 +16,6 @@ from __future__ import print_function
 
 import os, sys, argparse
 import subprocess
-from decent import CaffeFrontend as xfdnnQuantizer
 from vai.dpuv1.rt.scripts.framework.caffe.xfdnn_subgraph import CaffeCutter as xfdnnCutter
 
 import numpy as np
@@ -25,17 +24,17 @@ import caffe
 VAI_ALVEO_ROOT = os.getenv("VAI_ALVEO_ROOT", "../../")
 
 # Generate scaling parameters for fixed point conversion
-def Quantize(prototxt, caffemodel, test_iter=1, calib_iter=1, output_dir="work"):
-  quantizer = xfdnnQuantizer(
-    model = prototxt,
-    weights = caffemodel,
-    test_iter = test_iter,
-    calib_iter = calib_iter,
-    auto_test = True,
-    output_dir = output_dir,
-  )
-  quantizer.quantize()
 
+def Quantize(prototxt,caffemodel,test_iter=1,calib_iter=1,output_dir="work"):
+    os.environ["DECENT_DEBUG"] = "1"
+    subprocess.call([
+    'vai_q_caffe',
+    'quantize',
+    '-model', prototxt,
+    '-weights', caffemodel,
+    '-test_iter', str(test_iter),
+    '-calib_iter', str(calib_iter),
+    '-output_dir', output_dir])
 # Standard compiler arguments for XDNNv3
 def Getopts():
   return {
@@ -52,12 +51,18 @@ def Getopts():
 
 # Generate hardware instructions for runtime -> compiler.json
 def Compile(output_dir="work"):
+    
+  VAI_ROOT = os.environ['VAI_ALVEO_ROOT']
+  arch_json = "/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
+  if(not os.path.exists(arch_json)):
+     arch_json = os.path.join(VAI_ROOT, "arch.json")
+ 
   subprocess.call(["vai_c_caffe",
       "--prototxt",output_dir+"/deploy.prototxt",
       "--caffemodel",output_dir+"/deploy.caffemodel",
       "--net_name","model_name",
       "--output_dir",output_dir,
-      "--arch","/opt/vitis_ai/compiler/arch/dpuv1/ALVEO/ALVEO.json",
+      "--arch", arch_json,
       "--options", "{\"quant_cfgfile\":\"%s\"}" %(output_dir+"/quantize_info.txt")])
     
 # Generate a new prototxt with custom python layer in place of FPGA subgraph

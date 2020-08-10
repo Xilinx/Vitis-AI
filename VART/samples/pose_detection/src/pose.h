@@ -23,34 +23,32 @@
 #include <string>
 #include <thread>
 #include <vector>
+
 #include "common.h"
 
 using namespace std;
 using namespace cv;
-using namespace vitis;
-using namespace ai;
 // JointPoint
 
 namespace detect {
 
 class GestureDetect {
-   public:
-    void Init(string& path);
-    void Finalize();
-    void Run(cv::Mat&);
-    GestureDetect();
-    ~GestureDetect();
+ public:
+  void Init(string& path);
+  void Finalize();
+  void Run(cv::Mat&);
+  GestureDetect();
+  ~GestureDetect();
 
-   private:
-   TensorShape inshapes[1];
-   TensorShape outshapes[1];
-   TensorShape fc_inshapes[1];
-   TensorShape fc_outshapes[2];
-   std::vector<std::unique_ptr<vitis::ai::DpuRunner>> pt_runners;
-   std::vector<std::unique_ptr<vitis::ai::DpuRunner>> fc_pt_runners;
-   ai::DpuRunner* pt_runner;
-   ai::DpuRunner* fc_pt_runner;
+ private:
+  TensorShape inshapes[1];
+  TensorShape outshapes[1];
+  TensorShape fc_inshapes[1];
+  TensorShape fc_outshapes[2];
+  std::unique_ptr<xir::Graph> graph;
+  std::unique_ptr<vart::Runner> pt_runner;
+  std::unique_ptr<vart::Runner> fc_pt_runner;
 };
-}
+}  // namespace detect
 
 #endif

@@ -1,26 +1,10 @@
-/*
- * * Copyright 2019 Xilinx Inc.
- * *
- * * Licensed under the Apache License, Version 2.0 (the "License");
- * * you may not use this file except in compliance with the License.
- * * You may obtain a copy of the License at
- * *
- * *    http://www.apache.org/licenses/LICENSE-2.0
- * *
- * * Unless required by applicable law or agreed to in writing, software
- * * distributed under the License is distributed on an "AS IS" BASIS,
- * * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * * See the License for the specific language governing permissions and
- * * limitations under the License.
- * */
-
-
 //Setting the arch of DPU, For more details, Please read the PG338 
 
 
 /*====== Architecture Options ======*/
 // |------------------------------------------------------|
 // | Support 8 DPU size
+// | It relates to model. if change, must update model
 // +------------------------------------------------------+
 // | `define B512               
 // +------------------------------------------------------+
@@ -42,7 +26,8 @@
 `define B4096 
 
 // |------------------------------------------------------|
-// |If the FPGA has Uram. You can define URAM_EN parameter               
+// | If the FPGA has Uram. You can define URAM_EN parameter               
+// | if change, Don't need update model
 // +------------------------------------------------------+
 // | for zcu104 : `define URAM_ENABLE               
 // +------------------------------------------------------+
@@ -64,6 +49,7 @@
 
 // |------------------------------------------------------|
 // | RAM Usage Configuration              
+// | It relates to model. if change, must update model
 // +------------------------------------------------------+
 // | RAM Usage High : `define RAM_USAGE_HIGH               
 // +------------------------------------------------------+
@@ -74,6 +60,7 @@
 
 // |------------------------------------------------------|
 // | Channel Augmentation Configuration
+// | It relates to model. if change, must update model
 // +------------------------------------------------------+
 // | Enable  : `define CHANNEL_AUGMENTATION_ENABLE              
 // +------------------------------------------------------+
@@ -84,6 +71,7 @@
 
 // |------------------------------------------------------|
 // | DepthWiseConv Configuration
+// | It relates to model. if change, must update model
 // +------------------------------------------------------+
 // | Enable  : `define DWCV_ENABLE              
 // +------------------------------------------------------+
@@ -94,6 +82,7 @@
 
 // |------------------------------------------------------|
 // | Pool Average Configuration
+// | It relates to model. if change, must update model
 // +------------------------------------------------------+
 // | Enable  : `define POOL_AVG_ENABLE              
 // +------------------------------------------------------+
@@ -104,6 +93,7 @@
 
 // |------------------------------------------------------|
 // | RELU Type Configuration
+// | It relates to model. if change, must update model
 // +------------------------------------------------------+
 // | `define RELU_RELU6
 // +------------------------------------------------------+
@@ -114,14 +104,37 @@
 
 // |------------------------------------------------------|
 // | DSP48 Usage Configuration
+// | if change, Don't need update model
 // +------------------------------------------------------+
 // | `define DSP48_USAGE_HIGH              
 // +------------------------------------------------------+
 // | `define DSP48_USAGE_LOW                
 // |------------------------------------------------------|
 
-`define DSP48_USAGE_LOW  
+`define DSP48_USAGE_HIGH 
 
+// |------------------------------------------------------|
+// | Power Configuration
+// | if change, Don't need update model
+// +------------------------------------------------------+
+// | `define LOWPOWER_ENABLE              
+// +------------------------------------------------------+
+// | `define LOWPOWER_DISABLE               
+// |------------------------------------------------------|
+
+`define LOWPOWER_DISABLE
+
+// |------------------------------------------------------|
+// | DEVICE Configuration
+// | if change, Don't need update model
+// +------------------------------------------------------+
+// | `define MPSOC              
+// +------------------------------------------------------+
+// | `define ZYNQ7000               
+// |------------------------------------------------------|
+
+`define MPSOC
+  
 
 
 

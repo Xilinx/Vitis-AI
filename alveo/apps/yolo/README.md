@@ -1,31 +1,18 @@
-# YOLOv2 Object Detection Tutorial
+# Object Detection with YOLO
 
-### Update (26/11/2019)
-* Currently 5 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_yolo_v3, yolo_v3_spp, tiny_yolo_v3`
-* All networks are trained on COCO 2014 dataset (80 classes)
+Currently 6 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_yolo_v3, yolo_v3_spp, tiny_yolo_v3, tiny_yolo_v2_voc`
 
-## Introduction
-You only look once (YOLO) is a state-of-the-art, real-time object detection algorithm. 
-The algorithm was published by Redmon et al. in 2016 via the following publications:
-[YOLOv1](https://arxiv.org/abs/1506.02640),
-[YOLOv2](https://arxiv.org/abs/1612.08242).
-
-This application requires more than just simple classification. The task here is to detect the presence of objects, and localize them within a frame. 
-Please refer to the papers for full algorithm details, and/or watch [this.](https://www.youtube.com/watch?v=9s_FpMpdYW8). 
-In this tutorial, the network was trained on the 80 class [COCO dataset.](http://cocodataset.org/#home)
-
-## Background
-The authors of the YOLO papers used their own programming framework called "Darknet" for research, and development. The framework is written in C, and was [open sourced.](https://github.com/pjreddie/darknet) Additionally, they host documentation, and pretrained weights [here.](https://pjreddie.com/darknet/yolov2/) Currently, the Darknet framework is not supported by Xilinx VAI. Additionally, there are some aspects of the YOLOv2 network that are not supported by the Hardware Accelerator, such as the reorg layer. For these reasons we are sharing original and modified versions of YOLOv2 network. The inference using original YOLOv2 version is acheived by running reorg layer in software. The modified version of the YOLOv2 network was obtained by  replacing unsuppored layers with supported layers, retraining this modified network on Darknet, and converting the model to caffe. 
+`tiny_yolo_v2_voc` is trained on VOC 2007 Dataset (20 classes). All other networks are trained on COCO 2014 dataset (80 classes)
 
 ## Running the Application
  To run:
- 1. Connect to F1 or Local Hardware
- 
- 2. Setup the docker/container. Please refer to [Getting Started](https://github.com/Xilinx/Vitis-AI#getting-started) for details on setting up the container.
- 
- 4. `cd $VAI_ALVEO_ROOT/apps/yolo`
+ 1. `conda activate vitis-ai-caffe`
 
- 5. Run it : `./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize`
+ 2. `source /workspace/alveo/overlaybins/setup.sh`
+
+ 3. `cd $VAI_ALVEO_ROOT/apps/yolo`
+
+ 4. Run it : `./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize`
     - Output results will be saved as text files as well as images in the directory `out_labels/`
  
  5. Familiarize yourself with the script usage by: `./detect.sh -h`  
@@ -73,45 +60,54 @@ The authors of the YOLO papers used their own programming framework called "Dark
 ## Getting COCO 2014 validation set and labels
 COCO validation set is large (>40K images and >6 GB in size), so each step below could be slow depending upon your network.
 
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+
 ```sh
-$ python -m ck pull repo:ck-env
-$ python -m ck install package:dataset-coco-2014-val 
-    # If asked for installation path, accept the default path
-$ wget -c https://pjreddie.com/media/files/coco/labels.tgz
-$ tar -xzf labels.tgz labels/val2014
+cd $VAI_ALVEO_ROOT/apps/yolo
+python -m ck pull repo:ck-env
+python -m ck install package:dataset-coco-2014-val 
+# If asked for installation path, accept the default path
+wget -c https://pjreddie.com/media/files/coco/labels.tgz
+tar -xzf labels.tgz labels/val2014
 ```
 
 Calculating mAP on >40K images could be taking a lot of time. So we can create a temporary val_set of 2000 images (or whatever you wish)
 
 ```sh
-$ mkdir val2k
-$ find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | head -2000 | xargs cp -t val2k/
+mkdir val2k
+find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | head -2000 | xargs cp -t val2k/
 ```
-      
+
+Also, copy a few images (~25 images) to `apps/yolo/test_image_set` for calibration.
+```
+mkdir -p test_image_set
+find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xargs cp -t test_image_set/
+```
+
 ## Examples
 1. Object detection on test_images using yolo_v3_spp on Caffe and save results in folder `cpu_results/`.
     ```sh
-    $ ./detect.sh -t cpu_detect -m yolo_v3_spp --dump_results --visualize --results_dir cpu_results
+    ./detect.sh -t cpu_detect -m yolo_v3_spp --dump_results --visualize --results_dir cpu_results
     ```
 2. Same as above, but this time on FPGA, and store results in `fpga_results/`:
     ```sh
-    $ ./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize --results_dir fpga_results
+    ./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize --results_dir fpga_results
     ```
 3. Measure mAP score for tiny_yolo_v3 on smaller COCO dataset for a resolution of `416x416`
     ```sh
-    $ ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k -g labels/val2014 --neth 416 --netw 416
+    ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k -g labels/val2014 --neth 416 --netw 416
     ```
 3. Measure mAP score for the above with a different thresholds (use precompiled files from above step)
     ```sh
-    $ ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k -g labels/val2014 --neth 416 --netw 416 -cn work/compiler.json -cq work/quantizer.json -cw work/weights.h5 -st 0.24 -iou 0.4
+    ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k -g labels/val2014 --neth 416 --netw 416 -cn work/compiler.json -cq work/quantizer.json -cw work/weights.h5 -st 0.24 -iou 0.4
     ```
 4. Get preprocessing & postprocessing latencies for tiny_yolo_v3. It helps to identify the bottlenecks.
     ```sh
-    $ ./detect.sh -t test_detect -m tiny_yolo_v3 -d val2k --profile
+    ./detect.sh -t test_detect -m tiny_yolo_v3 -d val2k --profile
     ```
 4. Get system throughput (it depends upon how fast you can do preprocess & postprocess). Use large dataset to hide system overheads.
     ```sh
-    $ ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k --profile
+    ./detect.sh -t streaming_detect -m tiny_yolo_v3 -d val2k --profile
     ```
 
 5. Run a custom network trained for different dataset and measure mAP. You need to save the anchor box bias to a txt file.
@@ -142,18 +138,21 @@ You may get a different number based on your system performance.
 
 |Network | Input Resolution | mAP on Caffe (FP32) | mAP on FPGA (int8) | HW latency (ms) | peak throughput / PE (fps) | preproc latency (ms) | postproc latency (ms) | 
 |:-----:|:-----:|:-----:|:------:|:-----:|:-----:|:-----:|:------:|
-|yolo_v2 | 224x224 | 28.03 | 27.86 | 5.67 |	176.37 | 7.83 | 0.51 |
-| |	416x416	|38.75	|38.36|	12.86 |	77.76	| 9.32 |	1.90 |
-| |	608x608	|42.23|	41.6|	24.51|	40.80|	11.89|	4.49|
-|yolo_v2_prelu |	224x224	|27.5|	26.84|	5.86|	170.65|	8.00|	0.47|
-| |	416x416|	40.07|	38.71|	13.33|	75.02|	9.25|	1.93|
-| |	608x608	|45.38|	44.02|	25.26|	39.59|	11.81|	4.51|
-| yolo_v3_spp|	224x224	|47.1|	45.91|	8.38|	119.33 |	7.77|	1.63|
-| |	416x416	|57.23|	56.12|	25.96|	38.52|	9.49|	5.67|
-| |	608x608|	60.61|	59.46|	58.49|	17.1|	11.88|	10.50|
-|standard_yolo_v3 |	224x224|	47.17|	45.93|	8.03|	124.53 |	7.60|	1.60|
-| |416x416|	55.92|	55.06|	24.82|	40.29|	9.42|	5.63|
-| |608x608	|57.78|	56.88|	56.46|	17.71|	11.89|	10.64|
-|tiny yolo v3|	224x224	|24.36|	21.7|	1.30|	769.23|	7.59|	0.40|
-| |416x416	|32.59|	29.62|	3.17|	315.46|	9.55|	1.50|
-| |608x608|	31.53|	30.11|	6.05|	165.29|	12.01|	3.55|
+|yolo_v2          | 224x224 | 28.03 | 27.86 | 5.67 |  176.37 | 7.83 | 0.51 |
+|                 | 416x416 |38.75  |38.36| 12.86 | 77.76 | 9.32 |  1.90 |
+|                 | 608x608 |42.23| 41.6| 24.51|  40.80|  11.89|  4.49|
+|yolo_v2_prelu    | 224x224 |27.5|  26.84|  5.86| 170.65| 8.00| 0.47|
+|                 | 416x416|  40.07|  38.71|  13.33|  75.02|  9.25| 1.93|
+|                 | 608x608 |45.38| 44.02|  25.26|  39.59|  11.81|  4.51|
+| yolo_v3_spp     | 224x224 |47.1|  45.91|  8.38| 119.33 |  7.77| 1.63|
+|                 | 416x416 |57.23| 56.12|  25.96|  38.52|  9.49| 5.67|
+|                 | 608x608|  60.61|  59.46|  58.49|  17.1| 11.88|  10.50|
+|standard_yolo_v3 | 224x224|  47.17|  45.93|  8.03| 124.53 |  7.60| 1.60|
+|                 |416x416| 55.92|  55.06|  24.82|  40.29|  9.42| 5.63|
+|                 |608x608  |57.78| 56.88|  56.46|  17.71|  11.89|  10.64|
+|tiny yolo v3     | 224x224 |24.36| 21.7| 1.30| 769.23| 7.59| 0.40|
+|                 |416x416  |32.59| 29.62|  3.17| 315.46| 9.55| 1.50|
+|                 |608x608| 31.53|  30.11|  6.05| 165.29| 12.01|  3.55|
+|tiny yolo v2 voc |224x224  | 42.96|  41.99|  1.97| 506.84| 7.85  | 0.26|
+|                 |416x416  | 55.77|  54.38|  4.55| 219.56| 9.23  | 0.63|
+|                 |608x608  | 55.35|  54.15|  8.49| 117.78| 11.95 | 1.82|

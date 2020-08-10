@@ -15,6 +15,7 @@
  */
 
 #include <unistd.h>
+
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -33,8 +34,6 @@
 
 using namespace std;
 using namespace cv;
-using namespace vitis;
-using namespace ai;
 
 // 5.5GOP computation for SSD Convolution layers
 const float SSD_WORKLOAD_CONV = 5.5f;
@@ -425,7 +424,7 @@ vector<vector<float>> Detect(float* loc, float loc_scale, float* conf_softmax,
  *
  * @return none
  */
-void RunSSD(vitis::ai::DpuRunner* runner, bool& is_running) {
+void RunSSD(vart::Runner* runner, bool& is_running) {
   float loc_scale = 1.0;
   // get out tensors and shapes
   auto outputTensors = cloneTensorBuffer(runner->get_output_tensors());
@@ -444,8 +443,8 @@ void RunSSD(vitis::ai::DpuRunner* runner, bool& is_running) {
   vector<vector<float>> priors = CreatePriors();
 
   float* conf_softmax = new float[size2];
-  std::vector<vitis::ai::CpuFlatTensorBuffer> inputs, outputs;
-  std::vector<vitis::ai::TensorBuffer*> inputsPtr, outputsPtr;
+  std::vector<std::unique_ptr<vart::TensorBuffer>> inputs, outputs;
+  std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
 
   // Run detection for images in read queue
   while (is_running) {
@@ -471,30 +470,26 @@ void RunSSD(vitis::ai::DpuRunner* runner, bool& is_running) {
     float mean[3] = {104, 117, 123};
     Mat image2 = cv::Mat(inHeight, inWidth, CV_8SC3);
     resize(img, image2, Size(inWidth, inHeight), 0, 0, INTER_LINEAR);
-    if (runner->get_tensor_format() ==
-        vitis::ai::DpuRunner::TensorFormat::NHWC) {
-      for (int h = 0; h < inHeight; h++)
-        for (int w = 0; w < inWidth; w++)
-          for (int c = 0; c < 3; c++)
-            imageInputs[h * inWidth * 3 + w * 3 + c] =
-                image2.at<Vec3b>(h, w)[c] - mean[c];
-    } else {
-      for (int c = 0; c < 3; c++)
-        for (int h = 0; h < inHeight; h++)
-          for (int w = 0; w < inWidth; w++)
-            imageInputs[c * inWidth * inHeight + h * inWidth + w] =
-                image2.at<Vec3b>(h, w)[c] - mean[c];
+
+    for (int h = 0; h < inHeight; h++) {
+      for (int w = 0; w < inWidth; w++) {
+        for (int c = 0; c < 3; c++) {
+          imageInputs[h * inWidth * 3 + w * 3 + c] =
+              image2.at<Vec3b>(h, w)[c] - mean[c];
+        }
+      }
     }
     // input/output prepare
-    inputs.push_back(
-        vitis::ai::CpuFlatTensorBuffer(imageInputs, inputTensors[0].get()));
-    outputs.push_back(vitis::ai::CpuFlatTensorBuffer(
+    inputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
+        imageInputs, inputTensors[0].get()));
+    outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
         loc, outputTensors[shapes.output_mapping[0]].get()));
-    outputs.push_back(vitis::ai::CpuFlatTensorBuffer(
+    outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
         conf, outputTensors[shapes.output_mapping[1]].get()));
-    inputsPtr.push_back(&inputs[0]);
-    outputsPtr.push_back(&outputs[0]);
-    outputsPtr.push_back(&outputs[1]);
+
+    inputsPtr.push_back(inputs[0].get());
+    outputsPtr.push_back(outputs[0].get());
+    outputsPtr.push_back(outputs[1].get());
     // execute
     auto job_id = runner->execute_async(inputsPtr, outputsPtr);
     runner->wait(job_id.first, -1);
@@ -623,10 +618,9 @@ void Display(bool& is_displaying) {
 int main(int argc, char** argv) {
   // Check args
   if (argc != 3) {
-    cout << "Usage of video analysis demo: ./videoAnalysis file_name[string] "
-            "path(for json file)"
+    cout << "Usage of video analysis demo: ./video_analysis [video_file] "
+            "[model_file]"
          << endl;
-    cout << "\tfile_name: path to your file for detection" << endl;
     return -1;
   }
 
@@ -639,14 +633,18 @@ int main(int argc, char** argv) {
     return -1;
   }
 
+  auto graph = xir::Graph::deserialize(argv[2]);
+  auto subgraph = get_dpu_subgraph(graph.get());
+  CHECK_EQ(subgraph.size(), 1u)
+      << "ssd should have one and only one dpu subgraph.";
+  LOG(INFO) << "create running for subgraph: " << subgraph[0]->get_name();
   // create runner
-  auto runners = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
-  auto runner1 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
-  auto runner2 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
-  auto runner3 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
-  auto runner4 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
-  auto runner5 = vitis::ai::DpuRunner::create_dpu_runner(argv[2]);
-  auto runner = runners[0].get();
+  auto runner = vart::Runner::create_runner(subgraph[0], "run");
+  auto runner1 = vart::Runner::create_runner(subgraph[0], "run");
+  auto runner2 = vart::Runner::create_runner(subgraph[0], "run");
+  auto runner3 = vart::Runner::create_runner(subgraph[0], "run");
+  auto runner4 = vart::Runner::create_runner(subgraph[0], "run");
+  auto runner5 = vart::Runner::create_runner(subgraph[0], "run");
 
   // get input/output tensor shapes
   auto inputTensors = runner->get_input_tensors();
@@ -657,17 +655,17 @@ int main(int argc, char** argv) {
   TensorShape outshapes[outputCnt];
   shapes.inTensorList = inshapes;
   shapes.outTensorList = outshapes;
-  getTensorShape(runner, &shapes, inputCnt, {"mbox_loc", "mbox_conf"});
+  getTensorShape(runner.get(), &shapes, inputCnt, {"mbox_loc", "mbox_conf"});
 
   // Run tasks for SSD
   vector<thread> threads(TNUM);
   is_running.fill(true);
-  threads[0] = thread(RunSSD, runner, ref(is_running[0]));
-  threads[1] = thread(RunSSD, runner1[0].get(), ref(is_running[1]));
-  threads[2] = thread(RunSSD, runner2[0].get(), ref(is_running[2]));
-  threads[3] = thread(RunSSD, runner3[0].get(), ref(is_running[3]));
-  threads[4] = thread(RunSSD, runner4[0].get(), ref(is_running[4]));
-  threads[5] = thread(RunSSD, runner5[0].get(), ref(is_running[5]));
+  threads[0] = thread(RunSSD, runner.get(), ref(is_running[0]));
+  threads[1] = thread(RunSSD, runner1.get(), ref(is_running[1]));
+  threads[2] = thread(RunSSD, runner2.get(), ref(is_running[2]));
+  threads[3] = thread(RunSSD, runner3.get(), ref(is_running[3]));
+  threads[4] = thread(RunSSD, runner4.get(), ref(is_running[4]));
+  threads[5] = thread(RunSSD, runner5.get(), ref(is_running[5]));
   threads.push_back(thread(Read, ref(is_reading)));
   threads.push_back(thread(Display, ref(is_displaying)));
 

@@ -17,11 +17,15 @@
 #include <cmath>
 #include <memory>
 #include <opencv2/core.hpp>
-#include <vart/dpu/dpu_runner.hpp>
 #include <vector>
 #include <vitis/ai/library/tensor.hpp>
+namespace xir {
+class Graph;
+}
+
 namespace vitis {
 namespace ai {
+
 /**
  * @brief Base class for run a DPU task.
  */
@@ -118,20 +122,19 @@ class DpuTask {
   /**
    * @brief get the number of tasks
    * */
-
   virtual size_t get_num_of_kernels() const = 0;
-  /**
-   * @brief get meta info a model
-   * */
-  virtual const vitis::ai::DpuMeta& get_dpu_meta_info() const = 0;
+
   /**
    * @cond NOCOMMENTS
    */
   virtual size_t get_input_batch(size_t kernel_idx, size_t node_idx) const = 0;
-    /**
+  /**
    * @endcond
    */
+
+  virtual const xir::Graph* get_graph() const = 0;
 };
+
 }  // namespace ai
 }  // namespace vitis
 

@@ -24,15 +24,13 @@ from detect_ap2 import det_preprocess, det_postprocess
 import subprocess
 
 
-
 def detect(runner, fpgaBlobs, image):
     fpgaInput = fpgaBlobs[0][0]
     c,h,w = fpgaInput[0].shape
-    img = det_preprocess(image, fpgaInput[0])
-    #np.copyto(fpgaInput[0], img)
+    szs = det_preprocess(image, w, h, fpgaInput[0])
     jid = runner.execute_async(fpgaBlobs[0], fpgaBlobs[1])
     runner.wait(jid)
-    rects = det_postprocess(fpgaBlobs[1][1], fpgaBlobs[1][0], [h,w,c])
+    rects = det_postprocess(fpgaBlobs[1][1], fpgaBlobs[1][0], [h,w,c], szs)
     return rects
 
 # Main function
@@ -56,34 +54,36 @@ def faceDetection(vitis_rundir,outpath, rsz_h, rsz_w, path):
     
     output_Img_path = dirName
     #os.chdir(path)
-    res=[] 
+    fp = open( output_Img_path + "/output.txt" , 'w')
     for fn in sorted(glob.glob(path+ '/*.jpg'), key=os.path.getsize):
         filename = fn[fn.rfind('/')+1:]
-        src_img=cv2.imread(fn)
-        input_img=cv2.resize(src_img,(rsz_w, rsz_h))
-        face_rects=detect(runner, fpgaBlobs, input_img)
-        dst_img=input_img.copy()
+        image_ori = cv2.imread(fn, cv2.IMREAD_COLOR)
+        face_rects = detect(runner, fpgaBlobs, image_ori)
+        res = []
         if len(face_rects) != 0:
             for face_rect in face_rects:
-                res.append("{} {} {} {} {}".format(fn, face_rect[0],face_rect[1],face_rect[2],face_rect[3]))
+                res.append("{} {} {} {} {}".format(filename, face_rect[0],face_rect[1],face_rect[2],face_rect[3]))
                 print ("{} {} {} {} {}".format(fn, face_rect[0],face_rect[1],face_rect[2],face_rect[3]))
-                cv2.rectangle(dst_img,(face_rect[0],face_rect[1]),(face_rect[2],face_rect[3]),(0,255,0),2)
-                cv2.imwrite(output_Img_path+filename,dst_img)
+                cv2.rectangle(image_ori,(face_rect[0],face_rect[1]),(face_rect[2],face_rect[3]),(0,255,0),2)
+                cv2.imwrite(output_Img_path+filename,image_ori)
+        for faces in res:
+            fp.write(faces + '\n')
 #        else:
             #res.append("{} {} {} {} {}".format(fn, 0,0,0,0))
-    
+    fp.close()
 
 # Face Detection 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'analysis densebox model')
-    parser.add_argument('--vitisrundir', help = 'path to dpuv1 run directory ', type=str)
-    parser.add_argument('--images', help = 'path to image folder',type = str, default='test_pic/' )
+    parser.add_argument('--vitisrundir', help = 'path to run directory ', type=str)
+    parser.add_argument('--images', help = 'path to image folder',type = str)
     parser.add_argument('--resize_h', help = 'resize height', type = int)
     parser.add_argument('--resize_w', help = 'resize width', type = int)
+    parser.add_argument('--output', help = 'output folder', type = str)
 
     args = parser.parse_args()
     
-    work_dir = os.getcwd() + '/output/'
+    work_dir = args.output
     if not os.path.exists(work_dir):
         os.mkdir(work_dir)
 

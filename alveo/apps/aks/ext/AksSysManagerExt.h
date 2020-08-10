@@ -16,6 +16,7 @@
 #ifndef __AKS_SYS_MANAGER_EXT_H_
 #define __AKS_SYS_MANAGER_EXT_H__
 
+#include <iostream>
 #include <string>
 #include <future>
 #include <vector>
@@ -23,9 +24,8 @@
 
 namespace AKS
 {
-  class UserParams;
+  class NodeParams;
   class AIGraph;
-  template<typename T> class Queue;
 
   /// Top-level System Manager responsible for managing graphs and jobs.
   class SysManagerExt
@@ -56,9 +56,9 @@ namespace AKS
       /// @param userArgs Any other arguments (optional)
       /// @return future Output buffers of last node is returned by this future object.
       std::future<std::vector<DataDescriptor>> enqueueJob(
-          AIGraph* graph, const std::string& filePath, 
+          AIGraph* graph, const std::string& filePath,
           std::vector<DataDescriptor> inputs = std::vector<DataDescriptor>(),
-          AKS::UserParams* userArgs = nullptr);
+          AKS::NodeParams* userArgs = nullptr);
 
       /// Wait for all the jobs enqueued to SysManager to be finished
       /// This is a blocking call
@@ -73,13 +73,22 @@ namespace AKS
       /// @param graph Handle to a loaded graph. Use getGraph() to get the handle.
       void report(AIGraph* graph);
 
+      /// Reset the internal timers in the SysManagerExt.
+      /// This is useful to remove any initialization overhead
+      /// while calculating the performance statistics
+      /// Since SysManagerExt is singleton, Use this once just before your enqueueJob
+      void resetTimer();
+
       /// Print the average performance statistics of a graph execution
       /// Available only in TRACE mode
       void printPerfStats();
 
+      /// wrapper for exposing python bindings
+      void pyEnqueueJob(AIGraph* graph, const std::string& filePath);
+
     private:
       static SysManagerExt *_global;
-      SysManagerExt(); 
+      SysManagerExt();
       ~SysManagerExt();
   };
 }

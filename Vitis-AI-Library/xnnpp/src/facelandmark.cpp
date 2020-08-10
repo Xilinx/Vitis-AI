@@ -33,10 +33,18 @@ FaceLandmarkResult face_landmark_post_process(
   auto points = std::unique_ptr<std::array<std::pair<float, float>, 5>>(
       new std::array<std::pair<float, float>, 5>());
   for (auto i = 0u; i < points->size(); i++) {
+//# DPUV1 needs float input data
+#ifdef ENABLE_DPUCADX8G_RUNNER
+    auto x = (float)(((float*)output_tensors[0][0].get_data(batch_idx))[i]) *
+             vitis::ai::library::tensor_scale(output_tensors[0][0]);
+    auto y = (float)(((float*)output_tensors[0][0].get_data(batch_idx))[i + 5]) *
+             vitis::ai::library::tensor_scale(output_tensors[0][0]);
+#else
     auto x = (float)(((int8_t*)output_tensors[0][0].get_data(batch_idx))[i]) *
              vitis::ai::library::tensor_scale(output_tensors[0][0]);
     auto y = (float)(((int8_t*)output_tensors[0][0].get_data(batch_idx))[i + 5]) *
              vitis::ai::library::tensor_scale(output_tensors[0][0]);
+#endif
     (*points)[i] = std::make_pair(x, y);
   }
 
