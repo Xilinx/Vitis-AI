@@ -6,7 +6,9 @@ Following section will guide you through the Alveo-HBM card preparation steps an
 
 ## Alveo Card and Overlays Setup
 
-We provide some scripts to help to automatically finish the Alveo card and overlay files setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect the cards type (U50, U50LV or U280) and Operating System you are using, then download and install the appropriate packages. Please note you should run this script in **host** environment.
+We provide some scripts to help to automatically finish the Alveo card and overlay files setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect the cards type (U50, U50LV or U280) and Operating System you are using, then download and install the appropriate packages.
+
+**Please note you should use this script in host environment, namely out of the Docker container.** 
 
 ~~~
 source ./install.sh
@@ -14,6 +16,10 @@ source ./install.sh
 
 <details>
  <summary><b>Advanced - Step by Step Install</b></summary>
+
+If you don't use the script above, you could follow following steps to finish the Alveo card and overlays setup.
+
+**Please note you should use this script in host environment, namely out of the Docker container.** 
 
 ### Install XRT
 
@@ -43,13 +49,13 @@ Ubuntu 18.04:
 For U50 card, DPUCAHX8H use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files.
 
 CentOS/Redhat 7.4-7.7:
-[Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz)
+[Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz)
 
 Ubuntu 16.04:
-[Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz)
+[Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_16.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_16.04_deb.tar.gz)
 
 Ubuntu 18.04:
-[Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1-2902115-18.04_deb.tar.gz)
+[Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_18.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_18.04_deb.tar.gz)
 
 
 #### Alveo U50LV Card
