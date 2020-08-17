@@ -186,14 +186,14 @@ Build the hardware design.
 
 % gunzip <mpsoc common system>/xilinx-zynqmp-common-v2020.1/rootfs.ext4.gz
 
-% export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2020.1
+% export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2020.1 
 
 % export SDX_PLATFORM=<zcu102 base platform path>/xilinx_zcu102_base_202010_1/xilinx_zcu102_base_202010_1.xpfm
 
 % make KERNEL=DPU_SM DEVICE=zcu102
 ```
 
-Generated SD card files are in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card**.
+**<mpsoc common system>** has been downloaded in the 3.2 chapter. Generated SD card files are in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card**.
 
 #### 5.2.2 Get HWH File 
 
