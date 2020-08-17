@@ -193,7 +193,7 @@ Build the hardware design.
 % make KERNEL=DPU_SM DEVICE=zcu102
 ```
 
-**<mpsoc common system>** has been downloaded in the 3.2 chapter. Generated SD card files are in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card**.
+Note that **mpsoc common system** should be downloaded in the 3.2 chapter. Generated SD card files are in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card**.
 
 #### 5.2.2 Get HWH File 
 
