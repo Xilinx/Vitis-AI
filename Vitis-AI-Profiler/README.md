@@ -141,8 +141,9 @@ Running on a PC or local server take responsibility for analyzation and visualiz
 
         3. Run _petalinux-build_ and update kernel and rootfs
 
-    - Preparing debug environment for docker  
-      If you are using Vitis AI with docker, please add this patch to docker_run.sh, because root permission is required for vaitrace
+    - Preparing debug environment for docker
+      If you are using Vitis AI with docker, please add this patch to docker_run.sh to get root permission for vaitrace  
+      **This step is only required for Vitis-AI Docker**
       ```diff
       --- a/docker_run.sh
       +++ b/docker_run.sh
@@ -166,7 +167,7 @@ Running on a PC or local server take responsibility for analyzation and visualiz
       ```
     -	Installing vaitrace
         1.	Install vitis-ai-runtime package, vaitrace will be installed into /usr/bin/xlnx/vaitrace
-        2.	Create a symbolic link for vaitrace for ease of use
+        2.	Create a symbolic link of vaitrace.py for ease of use
         ```bash
             # ln -s /usr/bin/xlnx/vaitrace/vaitrace.py /usr/bin/vaitrace
         ```
@@ -174,13 +175,19 @@ Running on a PC or local server take responsibility for analyzation and visualiz
 
 - Starting trace with vaitrace  
 Here use the 'test_performance' program of Vitis AI Library’s yolo_v3 sample as an example
-    - Entry sample directory  
+    - Setup Vitis_AI_Library and prepare test images, see [here](https://github.com/Xilinx/Vitis-AI/blob/master/Vitis-AI-Library/README.md) 
+    - Vaitrace requires root permission
     ```bash
-        # cd /usr/share/vitis_ai_library/samples/yolov3/
+        # sudo bash
     ```
-    - See readme file in sample directory and the test command is
+    - Entry Vitis-AI-Library yolov3 sample directory
+    ```bash
+        # cd /workspace/Vitis-AI-Library/overview/samples/yolov3 # for Alveo docker
+        # cd ~/Vitis-AI-Library/overview/samples/yolov3 # for edge boards
+    ```  
+    - See readme in sample directory and the test command is
       ```bash
-      # vaitrace –t 10 –o ~/trace_yolo_v3.xat ./test_performance_yolov3 yolov3_voc ./test_performance_yolov3.list
+      # vaitrace -t 10 -o ~/trace_yolo_v3.xat ./test_performance_yolov3 yolov3_voc ./test_performance_yolov3.list
       ```
       1. The first argument [-t 5] stands for vaitrace tracing for 5 seconds
       2. The second argument [-o ~/trace_yolo_v3.xat] stands for saving trace data to home directory and named as trace_yolo_v3.xat, if no specified, the tracing data file(.xat) will be saved to the same directory with the executable file
@@ -239,9 +246,9 @@ Another way to launch a trace is to save all necessary information for vaitrace 
     {
       "options": {
           "runmode": "normal",
-          "cmd": "/usr/share/vitis-ai-library/sample/classification/test_jpeg_classification resnet50 sample.jpg",
+          "cmd": "/workspace/Vitis-AI-Library/overview/samples/classification/test_jpeg_classification resnet50 /workspace/Vitis-AI-Library/overview/samples/classification/images/001.JPEG",
           "output": "./trace_resnet50.xat",
-          "timeout": 3
+          "timeout": 5
       },
       "trace": {
           "enable_trace_list": ["vitis-ai-library", "opencv", "vart", "custom"]
