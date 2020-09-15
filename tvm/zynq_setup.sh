@@ -26,17 +26,19 @@ cd "${TVM_HOME}"
 git submodule update --init --recursive
 git checkout ec8f642c56d34cf7bb016803d3cab973b370e424
 patch -p0 -i "${TVM_VAI_HOME}"/vai_patch.diff
-
+ 
 # DOWNLOAD REQUIRED PYTHON PACKAGES
-
+ 
 pip3 install cffi cython
-
+ 
 # BUILD TVM
-
 mkdir "${TVM_HOME}"/build
 cp "${TVM_HOME}"/cmake/config.cmake "${TVM_HOME}"/build/
 cd "${TVM_HOME}"/build && cmake .. && make tvm_runtime -j$(nproc)
-python3 "${TVM_HOME}"/python/setup.py --install --user
+cd "${TVM_HOME}"/python && sudo python3 ./setup.py install
 
-
+DISTRIBUTION=`lsb_release -i -s`
+if ! [[ "$DISTRIBUTION" == "pynqlinux" ]]; then
+    echo " WARNING: You are using the Petalinux distribution that needs modification to the "${TVM_HOME}"/python/setup.py. Please refer to the \"running_on_zynq.md\" document for more instruction." 
+fi
 
