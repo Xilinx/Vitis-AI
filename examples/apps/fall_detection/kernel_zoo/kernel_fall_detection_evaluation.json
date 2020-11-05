@@ -1,0 +1,15 @@
+{
+  "kernel_name": "FallDetectionEvaluation",
+  "description": "Calculate evaluation of the fall detection model",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libFallDetectionEvaluation.so",
+  "num_cu": 1,
+
+  "param_list" : {
+    "ground_truth": {"type": "string", "optional": false},
+    "threshold": {"type": "float", "optional": false},
+    "default_label": {"type": "int", "optional": false},
+    "visualize": {"type": "string", "optional": true}
+  }
+}
