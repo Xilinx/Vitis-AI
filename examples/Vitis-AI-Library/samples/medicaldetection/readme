@@ -1,0 +1,52 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_medicaldetection
+  ./test_performance_medicaldetection
+  ./test_accuracy_medicaldetection
+  ./test_video_medicaldetection
+  
+  Valid model name:
+    RefineDet-Medical_EDD_tf
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_medicaldetection RefineDet-Medical_EDD_tf sample_medicaldetection.jpg
+    output : 
+I0707 03:35:03.130751 197156 process_result.hpp:39] RESULT: BE   0.999982   9.54234 237.319 39.1286 310.09
+I0707 03:35:03.131114 197156 process_result.hpp:39] RESULT: BE   0.999975   1.85087 77.1468 222.948 296.734
+I0707 03:35:03.131263 197156 process_result.hpp:39] RESULT: suspicious   0.999893   27.3788 146.802 107.754 227.177
+I0707 03:35:03.131328 197156 process_result.hpp:39] RESULT: BE   0.999891   238.95 223.803 300.001 318.36
+I0707 03:35:03.131433 197156 process_result.hpp:39] RESULT: BE   0.999444   289.945 89.4758 318.719 140.932
+I0707 03:35:03.131480 197156 process_result.hpp:39] RESULT: BE   0.0229714   281.602 133.199 291.833 150.162
+I0707 03:35:03.131530 197156 process_result.hpp:39] RESULT: BE   0.0085744   224.567 118.707 235.322 143.235
+I0707 03:35:03.131575 197156 process_result.hpp:39] RESULT: suspicious   0.00676348   16.957 84.8549 176.256 269.933
+   
+    sample : ./test_performance_medicaldetection RefineDet-Medical_EDD_tf   -t 1 -s 20   test_performance_medicaldetection.list
+    sample : ./test_performance_medicaldetection RefineDet-Medical_EDD_tf   -t 2 -s 20   test_performance_medicaldetection.list
+    sample : ./test_performance_medicaldetection RefineDet-Medical_EDD_tf   -t 4 -s 20   test_performance_medicaldetection.list
+
+    sample : ./test_video_medicaldetection RefineDet-Medical_EDD_tf sample_medicaldetection.avi
+    output : 
+
