@@ -50,16 +50,12 @@ class PreProcess:
 		self.col = cols
 		self.arr = np.empty([3,224,224],dtype=np.float32)
 		self.lib.preprocess.argtypes = [c_void_p,
-							   np.ctypeslib.ndpointer(c_uint8, flags="C_CONTIGUOUS"),
-                                                           c_int,
-                                                           c_int,
+							   c_char_p,
 							   c_void_p,
 							   c_void_p,
 							   np.ctypeslib.ndpointer(c_float, flags="C_CONTIGUOUS")]
 		self.lib.preprocess(pointer(self.handle),
-		img, 
-                self.row, 
-                self.col, 
+		img,
                 byref(act_ht), byref(act_wt), self.arr)
 		np.ascontiguousarray(self.arr, dtype=np.float32)
 
