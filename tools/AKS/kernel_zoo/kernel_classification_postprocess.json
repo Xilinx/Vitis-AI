@@ -1,0 +1,12 @@
+{
+  "kernel_name": "classificationPostProcess",
+  "description": "Perform Softmax+TopK for a classification network",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libClassificationPostProcess.so",
+
+  "param_list" : {
+    "in_width": {"type": "int"},
+    "in_height": {"type": "int"}
+  }
+}
