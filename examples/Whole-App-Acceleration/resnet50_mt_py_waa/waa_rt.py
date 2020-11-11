@@ -39,15 +39,11 @@ class PreProcess:
 			sys.exit()
 
 
-	def preprocess_input(self, img, rows, cols):
+	def preprocess_input(self, img):
 
 		act_ht = c_int()
 		act_wt = c_int()
                 
-		self.row = c_int()
-		self.col = c_int()
-		self.row = rows
-		self.col = cols
 		self.arr = np.empty([3,224,224],dtype=np.float32)
 		self.lib.preprocess.argtypes = [c_void_p,
 							   c_char_p,

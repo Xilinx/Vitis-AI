@@ -159,9 +159,7 @@ def main(argv):
     img = []
     for i in range(runTotall):
         path = os.path.join(calib_image_dir,listimage[i])
-        image = cv2.imread(path)
-        rows, cols, channels = image.shape
-        image = fpga_pp.preprocess_input(image, rows, cols)
+        image = fpga_pp.preprocess_input(path)
         img.append(image)
 
     time_pre = int(round(time.time() * 1000))
