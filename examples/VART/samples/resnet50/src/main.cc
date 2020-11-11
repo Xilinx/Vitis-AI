@@ -183,8 +183,8 @@ void runResnet50(vart::Runner* runner) {
   /* get in/out tensors and dims*/
   auto outputTensors = runner->get_output_tensors();
   auto inputTensors = runner->get_input_tensors();
-  auto out_dims = outputTensors[0]->get_dims();
-  auto in_dims = inputTensors[0]->get_dims();
+  auto out_dims = outputTensors[0]->get_shape();
+  auto in_dims = inputTensors[0]->get_shape();
 
   /*get shape info*/
   int outSize = shapes.outTensorList[0].size;
@@ -227,15 +227,14 @@ void runResnet50(vart::Runner* runner) {
     }
 
     /* in/out tensor refactory for batch inout/output */
-    batchTensors.push_back(std::shared_ptr<xir::Tensor>(
-        xir::Tensor::create(inputTensors[0]->get_name(), in_dims,
-                            xir::DataType::FLOAT, sizeof(float) * 8u)));
-
+    batchTensors.push_back(std::shared_ptr<xir::Tensor>(xir::Tensor::create(
+        inputTensors[0]->get_name(), in_dims,
+        xir::DataType{xir::DataType::FLOAT, sizeof(float) * 8u})));
     inputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
         imageInputs, batchTensors.back().get()));
-    batchTensors.push_back(std::shared_ptr<xir::Tensor>(
-        xir::Tensor::create(outputTensors[0]->get_name(), out_dims,
-                            xir::DataType::FLOAT, sizeof(float) * 8u)));
+    batchTensors.push_back(std::shared_ptr<xir::Tensor>(xir::Tensor::create(
+        outputTensors[0]->get_name(), out_dims,
+        xir::DataType{xir::DataType::FLOAT, sizeof(float) * 8u})));
     outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
         FCResult, batchTensors.back().get()));
 

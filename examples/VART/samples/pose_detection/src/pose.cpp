@@ -99,7 +99,7 @@ GestureDetect::~GestureDetect() {}
 
 static int get_batch_size_of_runner(vart::Runner* r) {
   CHECK(!r->get_input_tensors().empty());
-  return r->get_input_tensors()[0]->get_dim_size(0);
+  return r->get_input_tensors()[0]->get_shape().at(0);
 }
 
 /**
@@ -152,7 +152,7 @@ void GestureDetect::Run(cv::Mat& img) {
   float mean[3] = {104, 117, 123};
   auto inTensors = cloneTensorBuffer(pt_runner->get_input_tensors());
   auto outTensors = cloneTensorBuffer(pt_runner->get_output_tensors());
-  int batchSize = inTensors[0]->get_dim_size(0);
+  int batchSize = inTensors[0]->get_shape().at(0);
   int width = inshapes[0].width;
   int height = inshapes[0].height;
   int inSize = inshapes[0].size;

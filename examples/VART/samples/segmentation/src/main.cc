@@ -81,7 +81,7 @@ void runSegmentation(vart::Runner* runner, bool& is_running) {
   std::vector<std::unique_ptr<vart::TensorBuffer>> inputs, outputs;
   std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
   auto inputTensors = cloneTensorBuffer(runner->get_input_tensors());
-  int batch = inputTensors[0]->get_dim_size(0);
+  int batch = inputTensors[0]->get_shape().at(0);
   float* result = new float[shapes.outTensorList[0].size * batch];
   float* imageInputs = new float[shapes.inTensorList[0].size * batch];
   while (is_running) {

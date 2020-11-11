@@ -272,19 +272,19 @@ void runYOLO(vart::Runner* runner) {
   auto outputTensors = cloneTensorBuffer(runner->get_output_tensors());
   // input/output data define
   float* data =
-      new float[shapes.inTensorList[0].size * inputTensors[0]->get_dim_size(0)];
+      new float[shapes.inTensorList[0].size * inputTensors[0]->get_shape().at(0)];
   float* result0 =
       new float[shapes.outTensorList[0].size *
-                outputTensors[shapes.output_mapping[0]]->get_dim_size(0)];
+                outputTensors[shapes.output_mapping[0]]->get_shape().at(0)];
   float* result1 =
       new float[shapes.outTensorList[1].size *
-                outputTensors[shapes.output_mapping[1]]->get_dim_size(0)];
+                outputTensors[shapes.output_mapping[1]]->get_shape().at(0)];
   float* result2 =
       new float[shapes.outTensorList[2].size *
-                outputTensors[shapes.output_mapping[2]]->get_dim_size(0)];
+                outputTensors[shapes.output_mapping[2]]->get_shape().at(0)];
   float* result3 =
       new float[shapes.outTensorList[3].size *
-                outputTensors[shapes.output_mapping[3]]->get_dim_size(0)];
+                outputTensors[shapes.output_mapping[3]]->get_shape().at(0)];
   vector<float*> result;
   result.push_back(result0);
   result.push_back(result1);

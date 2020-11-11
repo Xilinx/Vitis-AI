@@ -551,7 +551,7 @@ void SSD::Init(const string& path, const string& input_node,
   PriorBoxes::Create(priors_, type_);
 
   softmax_data_ = new float[priors_.size() * num_classes_];
-  int batch = ssd_runner->get_input_tensors()[0]->get_dim_size(0);
+  int batch = ssd_runner->get_input_tensors()[0]->get_shape().at(0);
   conf_size = shapes.outTensorList[1].size;
   loc_size = shapes.outTensorList[0].size;
   loc = new float[loc_size * batch];
@@ -594,7 +594,7 @@ void CPUCalcSoftmax(const float* data, size_t size, float* result) {
 void SSD::Run(Mat& img, MultiDetObjects* results) {
   auto inputTensors = cloneTensorBuffer(ssd_runner->get_input_tensors());
   auto outputTensors = cloneTensorBuffer(ssd_runner->get_output_tensors());
-  int batchSize = ssd_runner->get_input_tensors()[0]->get_dim_size(0);
+  int batchSize = ssd_runner->get_input_tensors()[0]->get_shape().at(0);
   int inSize = inshapes[0].size;
   int inHeight = inshapes[0].height;
   int inWidth = inshapes[0].width;

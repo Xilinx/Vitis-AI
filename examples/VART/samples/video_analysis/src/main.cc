@@ -434,7 +434,7 @@ void RunSSD(vart::Runner* runner, bool& is_running) {
   int inSize = shapes.inTensorList[0].size;
   int size = shapes.outTensorList[0].size;
   int size2 = shapes.outTensorList[1].size;
-  int batch = inputTensors[0]->get_dim_size(0);
+  int batch = inputTensors[0]->get_shape().at(0);
   float* loc = new float[size * batch];
   float* conf = new float[size2 * batch];
   float* imageInputs = new float[inSize * batch];
