@@ -248,20 +248,20 @@ If you encounter any path errors in running examples, check to see if you follow
 
 1. Download the [vitis_ai_library_r1.3.0_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) and [vitis_ai_library_r1.3.0_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz) packages and untar them.
 ```
-$cd /workspace
-$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz -O vitis_ai_library_r1.3.0_images.tar.gz
-$wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz -O vitis_ai_library_r1.3.0_video.tar.gz
-$tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz -C Vitis-AI-Library/overview
-$tar -xzvf vitis_ai_library_r1.3.0_video.tar.gz -C Vitis-AI-Library/overview
+cd /workspace
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz -O vitis_ai_library_r1.3.0_images.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz -O vitis_ai_library_r1.3.0_video.tar.gz
+tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz -C examples/Vitis-AI-Library/
+tar -xzvf vitis_ai_library_r1.3.0_video.tar.gz -C examples/Vitis-AI-Library/
 ```
 2. Enter the directory of sample and then compile it. Take `facedetect` as an example.
 ```
-$cd /workspace/Vitis_AI_Library/overview/samples/facedetect
-$bash -x build.sh
+cd /workspace/examples/Vitis_AI_Library/samples/facedetect
+bash -x build.sh
 ```
 3. Run the image test example.
 ```
-$./test_jpeg_facedetect densebox_320_320 sample_facedetect.jpg
+./test_jpeg_facedetect densebox_320_320 sample_facedetect.jpg
 ```
 4. If you want to run the program in batch mode, which means that the DPU processes multiple
 images at once to prompt for processing performance, you have to compile the entire Vitis AI
@@ -269,11 +269,11 @@ Library according to "Setting Up the Host For Cloud" section. Then the batch pro
 under build_dir_default.Enter build_dir_default, take facedetect as an example,
 execute the following command.
 ```
-$./test_facedetect_batch densebox_320_320 <img1_url> [<img2_url> ...]
+./test_facedetect_batch densebox_320_320 <img1_url> [<img2_url> ...]
 ```
 5. Run the video test example.
 ```
-#./test_video_facedetect densebox_320_320 video_input.mp4 -t 8
+./test_video_facedetect densebox_320_320 video_input.mp4 -t 8
 
 Video_input.mp4: The video file's name for input. The user needs to prepare the video file by themselves.
 -t: <num_of_threads>
@@ -281,7 +281,7 @@ Video_input.mp4: The video file's name for input. The user needs to prepare the 
 
 6. To test the performance of model, run the following command:
 ```
-#./test_performance_facedetect densebox_320_320 test_performance_facedetect.list -t 8 -s 60
+./test_performance_facedetect densebox_320_320 test_performance_facedetect.list -t 8 -s 60
 
 -t: <num_of_threads>
 -s: <num_of_seconds>
