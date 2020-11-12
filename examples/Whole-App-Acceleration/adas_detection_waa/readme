@@ -16,22 +16,18 @@
 
   1. build & run adas_detection_waa
 ./build.sh
-export XILINX_XRT=/usr 
 mkdir output #Will be written to the picture after processing
 
-# ./adas_detection yolov3_adas_pruned_0_9.elf \
+# ./adas_detection <model file> \
 #   0(Use software preprocessing, 1-use hardware preprocessing) 
 # e.g.
 
-  sample : ./adas_detection_waa yolov3_adas_pruned_0_9.elf 0
-  output :
-Performance:7.6 FPS
+  To run the model on U50
+ ./adas_detection_waa ../../samples/VART/adas_detection/model_dir_for_U50/yolov3_adas_pruned_0_9.xmodel 0
+ ./adas_detection_waa ../../samples/VART/adas_detection/model_dir_for_U50/yolov3_adas_pruned_0_9.xmodel 1
 
-  sample : ./adas_detection_waa yolov3_adas_pruned_0_9.elf 1
-  output :
-Found Platform
-Platform Name: Xilinx
-INFO: Reading /usr/lib/dpu.xclbin
-Loading: '/usr/lib/dpu.xclbin'
-Performance:14.9 FPS
+  To run the model on zcu102
+  export XILINX_XRT=/usr 
+  sample : ./adas_detection_waa ../../samples/VART/adas_detection/model_dir_for_zcu102/yolov3_adas_pruned_0_9.elf 0
+  sample : ./adas_detection_waa ../../samples/VART/adas_detection/model_dir_for_zcu102/yolov3_adas_pruned_0_9.elf 1
 
