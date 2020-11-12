@@ -1,0 +1,3 @@
+cmake -DCMAKE_INSTALL_PREFIX=$PREFIX $SRC_DIR
+make VERBOSE=1
+make VERBOSE=1 install

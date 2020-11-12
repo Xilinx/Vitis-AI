@@ -1,0 +1,23 @@
+package:
+    name: unilog
+    version: 0.0.1
+
+source:
+    git_rev: dev
+    git_url: gits@xcdl190260:aisw/unilog
+
+requirements:
+    build:
+        - cmake >=3.14
+        - gxx_linux-64 >=7.2
+        - glog
+test:
+  imports:
+    - sys
+  commands:
+    - echo ok
+
+about:
+  home: http://xilinx.com/
+  license: Apache 2.0
+  summary: log utilies
