@@ -1,0 +1,20 @@
+# configuration for training market1501
+
+dataset:
+    name: market1501
+
+aug:
+    resize_size: [256, 128]
+    random_mirror: True
+    pad: 10
+    random_crop: True
+
+test:
+    batch_size: 128
+
+network:
+    name: 'Baseline'
+    backbone: 'resnet50'
+    last_stride: 2
+    gpus: '0'
+

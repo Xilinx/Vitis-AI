@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package second.protos;
+import "second/protos/preprocess.proto";
+
+message Group{
+    map<string, uint32> name_to_max_num = 1;
+}
+
+message Sampler{
+    string database_info_path = 1;
+    repeated Group sample_groups = 2;
+    repeated DatabasePreprocessingStep database_prep_steps = 3;
+    repeated float global_random_rotation_range_per_object = 4;
+    float rate = 5;
+}

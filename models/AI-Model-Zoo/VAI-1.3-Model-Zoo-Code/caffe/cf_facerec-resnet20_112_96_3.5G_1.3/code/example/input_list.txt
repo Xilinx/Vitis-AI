@@ -1,0 +1,7 @@
+testimgs/George_HW_Bush_0002.jpg
+testimgs/George_HW_Bush_0003.jpg
+testimgs/Jose_Theodore_0002.jpg
+testimgs/Drew_Barrymore_0002.jpg
+testimgs/Don_Siegelman_0002.jpg
+testimgs/Don_Siegelman_0003.jpg
+testimgs/Don_Siegelman_0004.jpg

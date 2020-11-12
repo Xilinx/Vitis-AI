@@ -1,0 +1,3 @@
+testimgs/George_HW_Bush_0001.jpg
+testimgs/George_HW_Bush_0002.jpg
+testimgs/George_HW_Bush_0003.jpg

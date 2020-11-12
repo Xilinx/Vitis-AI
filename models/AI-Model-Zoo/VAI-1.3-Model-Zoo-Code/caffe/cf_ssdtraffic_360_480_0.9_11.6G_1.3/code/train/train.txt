@@ -1,0 +1,2 @@
+images/ch01_00000000008009900.jpg label_txt/ch01_00000000008009900.txt
+images/tianxiulukou_3_18_15210.jpg label_txt/tianxiulukou_3_18_15210.txt

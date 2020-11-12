@@ -1,0 +1,72 @@
+.btn {
+    /*height: 100%;*/
+    text-align: center;
+    position: absolute;
+    top: 90%;
+    left: 40%;
+    z-index: 2;
+    font-size: 40pt;
+    color:#bbb;
+}
+
+.prev {
+    left: 38%;
+    /*transform: scale(3, 1);*/
+}
+.imgidx {
+    background: transparent;
+    width: 120px;
+    height: 40px;
+    font-size: 12pt;
+    left: 47%;
+    
+    border: 2px solid blue;
+    border-radius: 5px;
+  
+}
+
+.next {
+    left: 58%;
+    /*transform: scale(3, 1);*/
+}
+
+
+.toasts {
+    position: fixed;
+    max-width: 100%;
+    width: 250px;
+    right: 0;
+    bottom: 0;
+    padding: 0 10px;
+    box-sizing: border-box;
+    transition: height 1s;
+    z-index: 100;
+}
+
+.toasts li {
+    width: 100%;
+    list-style-type: none;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    padding: 15px 20px;
+    background: #222;
+    color: white;
+    border-radius: 2px;
+    margin: 10px 0;
+}
+
+.toasts li.message {
+    background: #358;
+}
+
+.toasts li.error {
+    background: brown;
+}
+
+.toasts li.warning {
+    background: chocolate;
+}
+
+.toasts li.success {
+    background: seagreen;
+}

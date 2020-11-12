@@ -1,0 +1,197 @@
+model: {
+  second: {
+    voxel_generator {
+      point_cloud_range : [0, -19.68, -2.5, 48, 19.68, 0.5]
+      voxel_size : [0.24, 0.24, 3]
+      max_number_of_points_per_voxel : 100
+    }
+    num_class: 2
+    voxel_feature_extractor: {
+      module_class_name: "PillarFeatureNet"
+      num_filters: [64]
+      with_distance: false
+    }
+    middle_feature_extractor: {
+      module_class_name: "PointPillarsScatter"
+    }
+    rpn: {
+      module_class_name: "RPN"
+      layer_nums: [3, 5, 5]
+      layer_strides: [1, 2, 2]
+      num_filters: [64, 128, 256]
+      upsample_strides: [1, 2, 4]
+      num_upsample_filters: [128, 128, 128]
+      use_groupnorm: false
+      num_groups: 32
+    }
+    loss: {
+      classification_loss: {
+        weighted_sigmoid_focal: {
+          alpha: 0.25
+          gamma: 2.0
+          anchorwise_output: true
+        }
+      }
+      localization_loss: {
+        weighted_smooth_l1: {
+          sigma: 3.0
+          code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        }
+      }
+      classification_weight: 1.0
+      localization_weight: 2.0
+    }
+    # Outputs
+    use_sigmoid_score: true
+    encode_background_as_zeros: true
+    encode_rad_error_by_sin: true
+
+    use_direction_classifier: true
+    direction_loss_weight: 0.2
+    use_aux_classifier: false
+    # Loss
+    pos_class_weight: 1.0
+    neg_class_weight: 1.0
+
+    loss_norm_type: NormByNumPositives
+    # Postprocess
+    post_center_limit_range: [0, -19.68, -2.5, 48, 19.68, 0.5]
+    use_rotate_nms: false
+    use_multi_class_nms: false
+    nms_pre_max_size: 1000
+    nms_post_max_size: 300
+    nms_score_threshold: 0.05
+    nms_iou_threshold: 0.5
+
+    use_bev: false
+    num_point_features: 4
+    without_reflectivity: false
+    box_coder: {
+      ground_box3d_coder: {
+        linear_dim: false
+        encode_angle_vector: false
+      }
+    }
+    target_assigner: {
+      anchor_generators: {
+        anchor_generator_stride: {
+          sizes: [0.6, 1.76, 1.73] # wlh
+          strides: [0.24, 0.24, 0.0] # if generate only 1 z_center, z_stride will be ignored
+          offsets: [0.12, -19.56, -1.465] # origin_offset + strides / 2
+          rotations: [0, 1.57] # 0, pi/2
+          matched_threshold : 0.5
+          unmatched_threshold : 0.35
+        }
+      }
+      anchor_generators: {
+        anchor_generator_stride: {
+          sizes: [0.6, 0.8, 1.73] # wlh
+          strides: [0.24, 0.24, 0.0] # if generate only 1 z_center, z_stride will be ignored
+          offsets: [0.12, -19.56, -1.465] # origin_offset + strides / 2
+          rotations: [0, 1.57] # 0, pi/2
+          matched_threshold : 0.5
+          unmatched_threshold : 0.35
+        }
+      }
+
+      sample_positive_fraction : -1
+      sample_size : 512
+      region_similarity_calculator: {
+        nearest_iou_similarity: {
+        }
+      }
+    }
+  }
+}
+
+
+train_input_reader: {
+  record_file_path: "/data/sets/kitti_second/kitti_train.tfrecord"
+  class_names: ["Cyclist", "Pedestrian"]
+  max_num_epochs : 160
+  batch_size: 2
+  prefetch_size : 25
+  max_number_of_voxels: 12000
+  shuffle_points: true
+  num_workers: 2
+  groundtruth_localization_noise_std: [0.25, 0.25, 0.25]
+  groundtruth_rotation_uniform_noise: [-0.15707963267, 0.15707963267]
+  global_rotation_uniform_noise: [-0.78539816, 0.78539816]
+  global_scaling_uniform_noise: [0.95, 1.05]
+  global_random_rotation_range_per_object: [0, 0]
+  anchor_area_threshold: 1
+  remove_points_after_sample: false
+  groundtruth_points_drop_percentage: 0.0
+  groundtruth_drop_max_keep_points: 15
+  database_sampler {
+    database_info_path: "/data/sets/kitti_second/kitti_dbinfos_train.pkl"
+    sample_groups {
+      name_to_max_num {
+        key: "Cyclist"
+        value: 8
+      }
+    }
+    database_prep_steps {
+      filter_by_min_num_points {
+        min_num_point_pairs {
+          key: "Cyclist"
+          value: 5
+        }
+      }
+    }
+    database_prep_steps {
+      filter_by_difficulty {
+        removed_difficulties: [-1]
+      }
+    }
+    global_random_rotation_range_per_object: [0, 0]
+    rate: 1.0
+  }
+
+  remove_unknown_examples: false
+  remove_environment: false
+  kitti_info_path: "/data/sets/kitti_second/kitti_infos_train.pkl"
+  kitti_root_path: "/data/sets/kitti_second"
+}
+
+train_config: {
+  optimizer: {
+    adam_optimizer: {
+      learning_rate: {
+        exponential_decay_learning_rate: {
+          initial_learning_rate: 0.0002
+          decay_steps: 27840 # 1856 steps per epoch * 15 epochs
+          decay_factor: 0.8
+          staircase: true
+        }
+      }
+      weight_decay: 0.0001
+    }
+    use_moving_average: false
+
+  }
+  inter_op_parallelism_threads: 4
+  intra_op_parallelism_threads: 4
+  steps: 296960 # 1856 steps per epoch * 160 epochs
+  steps_per_eval: 9280 # 1856 steps per epoch * 5 epochs
+  save_checkpoints_secs : 1800 # half hour
+  save_summary_steps : 10
+  enable_mixed_precision: false
+  loss_scale_factor : 512.0
+  clear_metrics_every_epoch: false
+}
+
+eval_input_reader: {
+  record_file_path: "/data/sets/kitti_second/kitti_val.tfrecord"
+  class_names: ["Cyclist", "Pedestrian"]
+  batch_size: 2
+  max_num_epochs : 160
+  prefetch_size : 25
+  max_number_of_voxels: 12000
+  shuffle_points: false
+  num_workers: 3
+  anchor_area_threshold: 1
+  remove_environment: false
+  kitti_info_path: "/data/sets/kitti_second/kitti_infos_val.pkl"
+  kitti_root_path: "/data/sets/kitti_second"
+}

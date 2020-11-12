@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package second.protos;
+
+// Configuration proto for region similarity calculators. See
+// core/region_similarity_calculator.py for details.
+message RegionSimilarityCalculator {
+  oneof region_similarity {
+    RotateIouSimilarity rotate_iou_similarity = 1;
+    NearestIouSimilarity nearest_iou_similarity = 2;
+    DistanceSimilarity distance_similarity = 3;
+  }
+}
+
+// Configuration for intersection-over-union (IOU) similarity calculator.
+message RotateIouSimilarity {
+}
+
+// Configuration for intersection-over-union (IOU) similarity calculator.
+message NearestIouSimilarity {
+}
+
+// Configuration for intersection-over-union (IOU) similarity calculator.
+message DistanceSimilarity {
+    float distance_norm = 1;
+    bool with_rotation = 2;
+    float rotation_alpha = 3;
+}
