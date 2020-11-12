@@ -240,7 +240,7 @@ bash -x build.sh
 
 ### Running Vitis AI Library Examples for U50/U50lv/U280
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
-Thus, `Vitis-AI-Libray` is located in the path of `/workspace/Vitis_AI_Library/` in the docker system. 
+Thus, `Vitis-AI-Libray` is located in the path of `/workspace/tools/Vitis_AI_Library/` in the docker system. 
 
 **`/workspace/Vitis_AI_Library/` is the path for the following example.**
  
