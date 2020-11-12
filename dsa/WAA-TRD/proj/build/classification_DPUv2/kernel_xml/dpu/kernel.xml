@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root versionMajor="1" versionMinor="0">
+  <kernel name="DPUCZDX8G" language="ip" vlnv="xilinx.com:RTLKernel:DPUCZDX8G:1.0" attributes="" preferredWorkGroupSizeMultiple="0" workGroupSize="1" debug="true" compileOptions=" -g" profileType="none">
+    <ports>
+      <port name="S_AXI_CONTROL" mode="slave" range="0x00004000" dataWidth="32" portType="addressable" base="0x0"/>
+      <port name="M_AXI_GP0" mode="master" range="0xFFFFFFFF" dataWidth="32" portType="addressable" base="0x0"/>
+      <port name="M_AXI_HP0" mode="master" range="0xFFFFFFFF" dataWidth="128" portType="addressable" base="0x0"/>
+      <port name="M_AXI_HP2" mode="master" range="0xFFFFFFFF" dataWidth="128" portType="addressable" base="0x0"/>    
+    </ports>
+    <args>            
+	<arg name="dpu_doneclr"     addressQualifier="0" id="0"  port="S_AXI_CONTROL" size="0x4" offset="0x40"  hostOffset="0x0" hostSize="0x4" type="int*"/> 	
+	<arg name="dpu_prof_en"     addressQualifier="0" id="1"  port="S_AXI_CONTROL" size="0x4" offset="0x44"  hostOffset="0x0" hostSize="0x4" type="int*"/> 
+	<arg name="dpu_cmd"         addressQualifier="0" id="2"  port="S_AXI_CONTROL" size="0x4" offset="0x48" hostOffset="0x0" hostSize="0x4" type="int*"/>
+	<arg name="dpu_instr_addr"  addressQualifier="1" id="3"  port="M_AXI_GP0"     size="0x8" offset="0x50" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	<arg name="dpu_prof_addr"   addressQualifier="1" id="4"  port="M_AXI_GP0"     size="0x8" offset="0x58" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	<arg name="dpu_base0_addr"  addressQualifier="1" id="5"  port="M_AXI_HP0"     size="0x8" offset="0x60" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	<arg name="dpu_base1_addr"  addressQualifier="1" id="6"  port="M_AXI_HP0"     size="0x8" offset="0x68" hostOffset="0x0" hostSize="0x8" type="int*"/>	
+	<arg name="dpu_base2_addr"  addressQualifier="1" id="7"  port="M_AXI_HP0"     size="0x8" offset="0x70" hostOffset="0x0" hostSize="0x8" type="int*"/>	
+	<arg name="dpu_base3_addr"  addressQualifier="1" id="8"  port="M_AXI_HP0"     size="0x8" offset="0x78" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	<arg name="dpu_base4_addr"  addressQualifier="1" id="9"  port="M_AXI_HP2"     size="0x8" offset="0x80" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	<arg name="dpu_base5_addr"  addressQualifier="1" id="10" port="M_AXI_HP2"     size="0x8" offset="0x88" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	<arg name="dpu_base6_addr"  addressQualifier="1" id="11" port="M_AXI_HP2"     size="0x8" offset="0x90" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	<arg name="dpu_base7_addr"  addressQualifier="1" id="12" port="M_AXI_HP2"     size="0x8" offset="0x98" hostOffset="0x0" hostSize="0x8" type="int*"/>		
+    </args>
+  </kernel>
+</root>
