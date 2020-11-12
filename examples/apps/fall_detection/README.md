@@ -4,13 +4,19 @@ conda activate vitis-ai-caffe
 source /workspace/alveo/overlaybins/setup.sh
 ```
 
-Note: Optical flow xclbin is to be placed under `/opt/xilinx/overlaybins`
-> [sudo] mv xclbin /opt/xilinx/overlaybins
+# **Build**
 
-# **Make**
+## **Build common kernels**
 ```sh
-cd /workspace/alveo/algorithms/fall_detection
-make all
+cd /workspace/tools/AKS
+./cmake-kernels.sh --clean
+```
+
+## **Build fall-detection kernels**
+```sh
+cd /workspace/examples/Whole-App-Acceleration/fall_detection
+./cmake-kernels.sh --clean
+./cmake-src.sh --clean
 ```
 
 # **Variables**

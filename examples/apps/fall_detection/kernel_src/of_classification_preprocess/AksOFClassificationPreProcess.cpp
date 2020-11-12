@@ -1,13 +1,13 @@
 #include <iostream>
 #include <vector>
 
-#include "opencv2/opencv.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
+#include <opencv2/opencv.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
-#include "ext/AksKernelBase.h"
-#include "ext/AksDataDescriptor.h"
-#include "ext/AksNodeParams.h"
+#include <aks/AksKernelBase.h>
+#include <aks/AksDataDescriptor.h>
+#include <aks/AksNodeParams.h>
 
 class OFClassificationPreProcess : public AKS::KernelBase
 {

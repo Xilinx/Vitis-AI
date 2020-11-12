@@ -22,13 +22,13 @@
 #include <boost/algorithm/string.hpp>
 #include <chrono>
 
-#include "opencv2/opencv.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
+#include <opencv2/opencv.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
-#include "ext/AksKernelBase.h"
-#include "ext/AksDataDescriptor.h"
-#include "ext/AksNodeParams.h"
+#include <aks/AksKernelBase.h>
+#include <aks/AksDataDescriptor.h>
+#include <aks/AksNodeParams.h>
 
 struct EvaluationData
 {
@@ -182,14 +182,14 @@ int FallDetectionEvaluation::exec_async (
   float probability = static_cast<float*>(in[0]->data())[0];
 
   /// Update Evaluation
-  // std::cout << "[DBG] FallDetectionEvaluation Node: Image: " << dynParams->imagePath << "| " << probability << std::endl;
-  int label = updateEvaluation(nodeParams, dynParams->imagePath, probability);
+  // std::cout << "[DBG] FallDetectionEvaluation Node: Image: " << dynParams->imagePaths.front() << "| " << probability << std::endl;
+  int label = updateEvaluation(nodeParams, dynParams->imagePaths.front(), probability);
 
   std::string output_folder = \
       nodeParams->_stringParams.find("visualize") == nodeParams->_stringParams.end() ?
         "" : nodeParams->_stringParams["visualize"];
     if (!output_folder.empty()) {
-        boost::filesystem::path p(dynParams->imagePath);
+        boost::filesystem::path p(dynParams->imagePaths.front());
         std::string filename = p.filename().string();
         std::string folder = p.parent_path().filename().string();
         boost::filesystem::create_directories(output_folder);
