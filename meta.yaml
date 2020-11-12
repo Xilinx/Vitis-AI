@@ -1,0 +1,31 @@
+package:
+    name: xir
+    version: 0.0.1
+
+source:
+    git_rev: dev
+    git_url: gits@xcdl190260:aisw/xir
+
+requirements:
+    build:
+        - cmake >=3.14
+        - gxx_linux-64 >=7.2
+        - glog
+        - unilog
+        - python >=3.5
+        - numpy >=1.18
+        - protobuf >=3.4.0
+        - libprotobuf >=3.4.0
+        - boost >=1.65.1
+        - libboost >=1.65.1
+        - pybind11 >=2.4.3
+test:
+  imports:
+    - sys
+  commands:
+    - echo ok
+
+about:
+  home: http://xilinx.com/
+  license: Apache 2.0
+  summary: Xilinx Intermediate Representation
