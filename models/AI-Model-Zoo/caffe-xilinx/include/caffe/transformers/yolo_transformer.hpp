@@ -47,11 +47,16 @@ image ipl_to_image(IplImage* src);
 image resize_image(image im, int w, int h);
 image letterbox_image(image im, int w, int h);
 image load_image_cv(const char *filename, int channels);
+image load_image_cv2(const char *filename, int channels);
 image load_image_yolo(const char* file, int w, int h, int c);
+image load_image_yolov4(const char* file, int w, int h, int c, int letterbox);
 
 template<typename Dtype>
 void yolo_transform(cv::Mat cv_img, Blob<Dtype>* blob);
 //#endif  // USE_OPENCV
+
+template<typename Dtype>
+void yolo_transform(cv::Mat cv_img, Blob<Dtype>* blob, int letterbox);
 
 } // namespace
 

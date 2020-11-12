@@ -2018,8 +2018,13 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
 //#ifdef USE_OPENCV
   const int yolo_height = param_.yolo_height();
   const int yolo_width = param_.yolo_width();
+  const int letterbox = int(param_.use_letterbox_resize());
   if (yolo_height>0 && yolo_width>0) {
-    yolo_transform(cv_img, transformed_blob);
+    if (letterbox) {
+      yolo_transform(cv_img, transformed_blob);
+    } else {
+      yolo_transform(cv_img, transformed_blob, 0);
+    }
     return;
   }
 //#endif

@@ -772,6 +772,7 @@ message TransformationParameter {
   optional bool rotate = 16 [default = false];
   optional uint32 yolo_height = 19 [default = 0];
   optional uint32 yolo_width = 20 [default = 0];
+  optional bool use_letterbox_resize = 21 [default = true];
 }
 
 // Message that stores parameters used to create gridbox ground truth

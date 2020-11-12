@@ -104,6 +104,8 @@ void TransformFix2FloatWithFixInfo(NetParameter &net_in, NetParameter &net_out,
                                    FIX_INFO &weight_infos, FIX_INFO &bias_infos,
                                    FIX_INFO &data_infos,
                                    bool keep_fixed_neuron);
+void AdjustShiftcutAndShiftbias(NetParameter &net_in, FIX_INFO &weight_infos, 
+                                   FIX_INFO &bias_infos, FIX_INFO &data_infos);
 
 vector<int> GetLayerFixInfo(const string &layer_name, FIX_INFO &fix_infos);
 

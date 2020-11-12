@@ -4,10 +4,8 @@ import os
 import shutil
 import subprocess
 import sys
-
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format
-
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description="Create AnnotatedDatum database")
   parser.add_argument("root",
@@ -48,13 +46,11 @@ if __name__ == "__main__":
       help="Randomly shuffle the order of images and their labels.")
   parser.add_argument("--check-label", default = False, action = "store_true",
       help="Check that there is no duplicated name/label.")
-
   args = parser.parse_args()
   root_dir = args.root
   list_file = args.listfile
   out_dir = args.outdir
   example_dir = args.exampledir
-
   redo = args.redo
   anno_type = args.anno_type
   label_type = args.label_type
@@ -70,10 +66,8 @@ if __name__ == "__main__":
   resize_width = args.resize_width
   shuffle = args.shuffle
   check_label = args.check_label
-
   # check if root directory exists
   print(root_dir)
-  
   if not os.path.exists(root_dir):
     print("root directory: {} does not exist".format(root_dir))
     sys.exit()
@@ -130,11 +124,14 @@ if __name__ == "__main__":
     sys.exit()
   if os.path.exists(out_dir):
     shutil.rmtree(out_dir)
-
   # get caffe root directory
   caffe_root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+  convert_annoset_path = os.path.join(caffe_root, 'build/tools/convert_annoset')
+  if not os.path.isfile(convert_annoset_path):
+      # convert_annoset_path does not exist, maybe it's a pre-build docker env
+      convert_annoset_path = os.path.join(caffe_root, 'bin/convert_annoset')
   if anno_type in {"detection", "seg_detection", "lane_seg_detection"}:
-    cmd = "{}/build/tools/convert_annoset" \
+    cmd = "{}" \
         " --anno_type={}" \
         " --label_type={}" \
         " --label_map_file={}" \
@@ -150,11 +147,11 @@ if __name__ == "__main__":
         " --encoded={}" \
         " --gray={}" \
         " {} {} {}" \
-        .format(caffe_root, anno_type, label_type, label_map_file, check_label,
+        .format(convert_annoset_path, anno_type, label_type, label_map_file, check_label,
             min_dim, max_dim, resize_height, resize_width, backend, shuffle,
             check_size, encode_type, encoded, gray, root_dir, list_file, out_dir)
   elif anno_type == "classification":
-    cmd = "{}/build/tools/convert_annoset" \
+    cmd = "{}" \
         " --anno_type={}" \
         " --min_dim={}" \
         " --max_dim={}" \
@@ -167,13 +164,12 @@ if __name__ == "__main__":
         " --encoded={}" \
         " --gray={}" \
         " {} {} {}" \
-        .format(caffe_root, anno_type, min_dim, max_dim, resize_height,
+        .format(convert_annoset_path, anno_type, min_dim, max_dim, resize_height,
             resize_width, backend, shuffle, check_size, encode_type, encoded,
             gray, root_dir, list_file, out_dir)
   print(cmd)
   process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
   output = process.communicate()[0]
-
   if not os.path.exists(example_dir):
     os.makedirs(example_dir)
   link_dir = os.path.join(example_dir, os.path.basename(out_dir))

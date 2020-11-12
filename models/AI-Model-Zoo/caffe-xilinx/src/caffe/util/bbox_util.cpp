@@ -1606,7 +1606,7 @@ void GetGroundTruth(const Dtype* gt_data, const int num_gt,
         << "Found background label in the dataset.";
     bool difficult;
     if(bbox.label_with_ori()) difficult = static_cast<bool>(gt_data[start_idx + 9]);
-    else difficult = static_cast<bool>(gt_data[start_idx] + 7);
+    else difficult = static_cast<bool>(gt_data[start_idx + 7]);
     if (!use_difficult_gt && difficult) {
       // Skip reading difficult ground truth.
       continue;
@@ -1648,7 +1648,7 @@ void GetGroundTruth(const Dtype* gt_data, const int num_gt,
         << "Found background label in the dataset.";
     bool difficult;
     if(bbox.label_with_ori()) difficult = static_cast<bool>(gt_data[start_idx + 9]);
-    else difficult = static_cast<bool>(gt_data[start_idx] + 7);
+    else difficult = static_cast<bool>(gt_data[start_idx + 7]);
     if (!use_difficult_gt && difficult) {
       // Skip reading difficult ground truth.
       continue;

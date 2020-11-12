@@ -255,6 +255,7 @@ bool CheckModelAndSave(const NetParameter &net_param, const string filename) {
   wl.emplace("Eltwise", make_tuple(1, ""));
   wl.emplace("Pooling", make_tuple(1, ""));
   wl.emplace("ReLU", make_tuple(1, ""));
+  wl.emplace("ReLU6", make_tuple(1, ""));
   wl.emplace("PReLU", make_tuple(1, ""));
   wl.emplace("Concat", make_tuple(1, ""));
   // Will be processed by toolchain
@@ -689,8 +690,8 @@ typedef map<string, vector<int>> FIX_INFO;
 typedef pair<string, vector<int>> FIX_INFO_ITEM;
 
 bool IsFixSkipLayer(LayerParameter layer) {
-  vector<string> fix_skip_types = {"ReLU",    "Pooling", "Permute", "Reshape",
-                                   "Flatten", "Concat",  "Split"};
+  vector<string> fix_skip_types = {"ReLU",    "ReLU6",   "Pooling", "Permute",
+                                   "Reshape", "Flatten", "Concat",  "Split"};
   if (find(fix_skip_types.begin(), fix_skip_types.end(), layer.type()) !=
       fix_skip_types.end()) {
     if (layer.type() == "Pooling" && (layer.pooling_param().pool() !=
@@ -1348,47 +1349,72 @@ void TransformFix2FloatWithFixInfo(NetParameter &net_in, NetParameter &net_out,
   }
 
   UpdateDataFixInfo(net_in, data_infos);
-  for (auto it : data_infos) {
-    DLOG(INFO) << "data: " << it.first << " " << it.second[0] << " "
-               << it.second[1];
-    if (it.second[1] == SHRT_MAX) {
-      LOG(WARNING) << "[DEPLOY WARNING] Layer " << it.first
-                   << "'s output blob is all zero, this may cause error for "
-                      "DNNC compiler. Please check the float model.";
-    } else if (it.second[1] == SHRT_MIN) {
-      LOG(WARNING) << "[DEPLOY WARNING] Layer " << it.first
-                   << "'s output blob is Nan, this may cause error for "
-                      "DNNC compiler. Please check the float model.";
-    }
-  }
-  for (auto it : weight_infos) {
-    DLOG(INFO) << "weight: " << it.first << " " << it.second[0] << " "
-               << it.second[1];
-    if (it.second[1] == SHRT_MAX) {
-      weight_infos[it.first][1] = 0;
-      LOG(WARNING) << "[DEPLOY WARNING] Layer " << it.first
-                   << "'s weight blob is all zero, this may cause error for "
-                      "the following step of deployment. Please check the float model. "
-                      "Change quantization step to 1 for going through.";
-    } else if (it.second[1] == SHRT_MIN) {
-      LOG(FATAL) << "[DEPLOY ERROR] Layer " << it.first
-                 << "'s weight blob is Nan, this may cause error for "
-                    "DNNC compiler. Please check the float model.";
-    }
-  }
-  for (auto it : bias_infos) {
-    DLOG(INFO) << "bias: " << it.first << " " << it.second[0] << " "
-               << it.second[1];
-    if (it.second[1] == SHRT_MAX) {
-      bias_infos[it.first][1] = 0;
-      LOG(WARNING) << "[DEPLOY WARNING] Layer " << it.first
-                   << "'s bias blob is all zero, this may cause error for "
-                      "the following step of deployment. Please check the float model. "
-                      "Change quantization step to 1 for going through.";
-    } else if (it.second[1] == SHRT_MIN) {
-      LOG(FATAL) << "[DEPLOY ERROR] Layer " << it.first
-                   << "'s bias blob is Nan, this means some error happen. "
-                      "Please check the float model.";
+
+  // to adjust shift_cut and shift_bias while they are invalid
+  AdjustShiftcutAndShiftbias(net_in, weight_infos, bias_infos, data_infos);
+}
+
+void AdjustShiftcutAndShiftbias(NetParameter &net_in, FIX_INFO &weight_infos,
+                                FIX_INFO &bias_infos, FIX_INFO &data_infos) {
+  for (size_t i = 0; i < net_in.layer_size(); i++) {
+    const LayerParameter *cur_layer = &net_in.layer(i);
+    DLOG(INFO) << "traversing: " << cur_layer->name();
+    if (cur_layer->type() == "ConvolutionFixed" ||
+        cur_layer->type() == "ConvolutionFixedData" ||
+        cur_layer->type() == "ConvolutionBNFixed" ||
+        cur_layer->type() == "ConvolutionBNFixedData" ||
+        cur_layer->type() == "DeconvolutionFixed" ) {
+      auto fix_pos_i = data_infos.at(cur_layer->bottom(0))[1];
+      auto fix_pos_o = data_infos.at(cur_layer->top(0))[1];
+      auto fix_pos_w = weight_infos.at(cur_layer->name())[1];
+      auto fix_pos_b = bias_infos.at(cur_layer->name())[1];
+      DLOG(INFO) << "name: " << cur_layer->name()
+                 << ", type: " << cur_layer->type()
+                 << ", bottom: " << cur_layer->bottom(0)
+                 << ", top: " << cur_layer->top(0) << ", fix_info(iowb): ["
+                 << fix_pos_i << ", " << fix_pos_o << ", " << fix_pos_w << ", "
+                 << fix_pos_b << "]";
+
+       // handle shift_cut
+       auto shift_cut = fix_pos_w + fix_pos_i - fix_pos_o;
+       auto shift_cut_min = 0;
+       auto shift_cut_max = 16;
+
+       if (shift_cut < shift_cut_min) {
+         LOG(WARNING)
+             << cur_layer->name()
+             << "'s output value is too small! so adjust the fix position from "
+             << fix_pos_o << " to " << fix_pos_o + shift_cut - shift_cut_min;
+         fix_pos_o = fix_pos_o + shift_cut - shift_cut_min;
+         data_infos.at(cur_layer->top(0))[1] = fix_pos_o;
+       } else if (shift_cut > shift_cut_max) {
+         LOG(WARNING)
+             << cur_layer->name()
+             << "'s weight value is too small! so adjust the fix position from "
+             << fix_pos_w << " to " << fix_pos_w - shift_cut + shift_cut_max;
+         fix_pos_w = fix_pos_w - shift_cut + shift_cut_max;
+         weight_infos.at(cur_layer->name())[1] = fix_pos_w;
+       }
+
+       // handle shift_bias
+       auto shift_bias = fix_pos_w + fix_pos_i - fix_pos_b;
+       auto shift_bias_min = std::min(0, -(24 - (8 + shift_cut)));
+       auto shift_bias_max = 16;
+       if (shift_bias < shift_bias_min) {
+         LOG(WARNING)
+             << cur_layer->name()
+             << "'s bias value is too small, so adjust the fix position from "
+             << fix_pos_b << " to " << fix_pos_b + shift_bias - shift_bias_min;
+         fix_pos_b = fix_pos_b + shift_bias - shift_bias_min;
+         bias_infos.at(cur_layer->name())[1] = fix_pos_b;
+       } else if (shift_bias > shift_bias_max) {
+         LOG(WARNING)
+             << cur_layer->name()
+             << "'s weight value is too small, so adjust the fix position from "
+             << fix_pos_w << " to " << fix_pos_w - shift_bias - shift_bias_max;
+         fix_pos_w = fix_pos_w - shift_bias - shift_bias_max;
+         weight_infos.at(cur_layer->name())[1] = fix_pos_w;
+       }
     }
   }
 }
@@ -2252,6 +2278,8 @@ void SearchInsertNeuronLayer(const NetParameter &net_in, NetParameter &net_out,
     }
   } else {
     int relu_index = GetNextLayer(net_in, index, "ReLU", connect);
+    if (relu_index == -1)
+      relu_index = GetNextLayer(net_in, index, "ReLU6", connect);
     if (relu_index != -1) {
       concat_index = GetNextLayer(net_in, relu_index, "Concat", connect);
       if (!isSingleOutputLayer(net_in, relu_index, connect)){
@@ -2618,8 +2646,10 @@ NetParameter MergePostBatchNormInNet(const NetParameter &net_in, bool binary,
     if (cur_layer->type() == "Convolution") {
       int bn_index = GetNextLayer(net_in, i, "BatchNorm", connect);
       int relu_index = GetNextLayer(net_in, i, "ReLU", connect);
+      int relu6_index = GetNextLayer(net_in, i, "ReLU6", connect);
       // stop merge for Convolution + Relu + Batchnorm
-      if (bn_index != -1 && (relu_index == -1 || relu_index > bn_index)) {
+      if (bn_index != -1 && (relu_index == -1 || relu_index > bn_index) &&
+          (relu6_index == -1 || relu6_index > bn_index)) {
         if (!keep_convbn) {
           // Merge Conv + BatchNorm -> Conv
           DLOG(INFO) << " Merge ConvBatchNorm -> Conv: "
@@ -2643,8 +2673,10 @@ NetParameter MergePostBatchNormInNet(const NetParameter &net_in, bool binary,
     } else if (cur_layer->type() == "Deconvolution") {
       int bn_index = GetNextLayer(net_in, i, "BatchNorm", connect);
       int relu_index = GetNextLayer(net_in, i, "ReLU", connect);
+      int relu6_index = GetNextLayer(net_in, i, "ReLU6", connect);
       // stop merge for Convolution + Relu + Batchnorm
-      if (bn_index != -1 && (relu_index == -1 || relu_index > bn_index)) {
+      if (bn_index != -1 && (relu_index == -1 || relu_index > bn_index) &&
+          (relu6_index == -1 || relu6_index > bn_index)) {
         // Merge Deconv + BatchNorm -> Deconv
         DLOG(INFO) << " Merge DeconvBatchNorm -> Deconv: "
                    << net_in.layer(i).name() << " + "
@@ -2693,9 +2725,12 @@ NetParameter MergePreBatchNormInNet(const NetParameter &net_in, bool binary,
       bool need_merge = false;
       int conv_index = GetNextLayer(net_in, i, "Convolution", connect);
       int relu_index = GetNextLayer(net_in, i, "ReLU", connect);
+      int relu6_index = GetNextLayer(net_in, i, "ReLU6", connect);
       // stop merge for batchnorm + relu + convolution
+      // stop merge for batchnorm + relu6 + convolution
       // stop merge for batchnorm + convolution_with_pad
-      if (conv_index != -1 && (relu_index == -1 || relu_index > conv_index)) {
+      if (conv_index != -1 && (relu_index == -1 || relu_index > conv_index) &&
+          (relu6_index == -1 || relu6_index > conv_index)) {
         auto &conv_param = net_in.layer(conv_index).convolution_param();
         if (conv_param.pad_size()) {
           for (int j = 0; j < conv_param.pad_size(); j++) {
@@ -2887,8 +2922,10 @@ int ConvertFloat2Fix(const NetParameter &net_in, NetParameter &net_out,
 
     } else if (cur_layer->type() == "ReLU6") {
       *(net_out.add_layer()) = *cur_layer;
-      InsertFixedNeuron(fixed_blobs, cur_layer->top(0), net_out, method,
-                        data_bit);
+      if (need_insert_fix[i]) {
+        InsertFixedNeuron(fixed_blobs, cur_layer->top(0), net_out, method,
+                          data_bit);
+      }
       processed[i] = true;
 
     } else if (cur_layer->type() == "Slice") {
