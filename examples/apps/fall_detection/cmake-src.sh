@@ -34,8 +34,8 @@ RST="${reset}"
 declare -a args
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \
-		 -l help,clean,clean-only,aks-install-prefix: \
-		 -- "$0" "$@")
+     -l help,clean,clean-only,aks-install-prefix: \
+     -- "$0" "$@")
 [ $? -eq 0 ] || {
     echo "Failed to parse arguments! try --help"
     exit 1
@@ -43,11 +43,11 @@ options=$(getopt -a -n 'parse-options' -o h \
 eval set -- "$options"
 while true; do
   case "$1" in
-	-h | --help                ) show_help=true; break;;
-	     --clean               ) clean=true;;
-	     --clean-only          ) clean_only=true;;
-	     --aks-install-prefix  ) shift; install_prefix=$1;;
-	     --) shift; break;;
+  -h | --help                ) show_help=true; break;;
+       --clean               ) clean=true;;
+       --clean-only          ) clean_only=true;;
+       --aks-install-prefix  ) shift; install_prefix=$1;;
+       --) shift; break;;
   esac
   shift
 done
@@ -66,85 +66,57 @@ fi
 
 args=(-DAKS_INSTALL_PREFIX="${install_prefix}")
 
-# Get all Kernels
-KERNELS=$(ls -d -1 kernel_src/*)
+SRC=${ROOT}/src
 
-declare -a skipped_kernels
-declare -a failed_kernels
-
-# Build all kernels
-for kernel in ${KERNELS}; do
-  echo -e
-  cd ${ROOT}
-  # Check if kernel has CMakeLists
-  echo -e "-------------------------------------------------------------------"
-  echo -e "${bold}${MSG} Kernel Path: ${kernel} ${RST}"
-  echo -e "-------------------------------------------------------------------"
-  if [ -f "${kernel}/CMakeLists.txt" ]; then
-    echo -e "${MSG} ${kernel}/CMakeLists.txt Found. ${RST}"
-    echo -e "${MSG} Create Build Dir: ${kernel}/build ${RST}"
-  else
-    echo -e "${WAR} ${kernel}/CMakeLists.txt Not-Found, Skip Build ${RST}"
-    skipped_kernels+=(${kernel})
-    continue
-  fi
-
-  # Create build directory
-  mkdir -p ${kernel}/build && cd ${kernel}/build
-  if [ ${clean_only:=false} == true ]; then
-    echo -e "${SUC} Clean existing configs ${RST}"
-    rm -rf *
-    continue
-  fi
-
-  if [ ${clean:=false} == true ]; then
-    echo -e "${WAR} Clean existing configs ${RST}"
-    rm -rf *
-  fi
-
-  # Configure and Build Kernel
-  echo -e "${MSG} Configure Kernel ... ${RST}"
-  cmake "${args[@]}" ..
-  if [ $? -eq 0 ]; then
-    echo -e "${SUC} Configure Successful ${RST}"
-  else
-    echo -e
-    echo -e "${ERR} Configure Failed for ${kernel} ${RST}"
-    failed_kernels+=(${kernel})
-    continue
-  fi
-
-  echo -e "${MSG} Build Kernel ${RST}"
-  cmake --build .
-
-  if [ $? -eq 0 ]; then
-    echo -e "${SUC} Build Successful ${RST}"
-  else
-    echo -e
-    echo -e "${ERR} Build Failed for ${kernel} ${RST}"
-    failed_kernels+=(${kernel})
-    continue
-  fi
-
-  # Copy generated libs to root dir
-  # echo -e "${MSG} Copy generated libs to ${ROOT}/libs ${RST}"
-  cp -P lib*.so* ${ROOT}/libs
-done
+# Check if src has CMakeLists
 echo -e "-------------------------------------------------------------------"
-
-if [ ! -z "${skipped_kernels}" ]; then
+echo -e "${bold}${MSG} Path: ${SRC} ${RST}"
+echo -e "-------------------------------------------------------------------"
+if [ -f "${SRC}/CMakeLists.txt" ]; then
+  echo -e "${MSG} ${SRC}/CMakeLists.txt Found! ${RST}"
+  echo -e "${MSG} Create Build Dir: ${SRC}/build ${RST}"
+else
+  echo -e "${ERR} ${SRC}/CMakeLists.txt Not-Found, Stopping! ${RST}"
   echo -e
-  echo -e "${WAR} Skipped Kernels ${RST}"
-  for sk in ${skipped_kernels[@]}; do
-    echo -e "------ ${sk}"
-  done
+  exit 1
 fi
 
-if [ ! -z "${failed_kernels}" ]; then
+# Create build directory
+mkdir -p ${SRC}/build && cd ${SRC}/build
+if [ ${clean_only:=false} == true ]; then
+  echo -e "${SUC} Clean existing configs ${RST}"
+  rm -rf *
+  rm -rf ../bin
   echo -e
-  echo -e "${ERR} Failed Kernels ${RST}"
-  for fk in ${failed_kernels[@]}; do
-    echo -e "------ ${fk}"
-  done
+  exit 0
+elif [ ${clean:=false} == true ]; then
+  echo -e "${WAR} Clean existing configs ${RST}"
+  rm -rf *
+  rm -rf ../bin
+fi
+
+# Configure and Build
+echo -e "${MSG} Configure Source ... ${RST}"
+cmake "${args[@]}" ..
+
+if [ $? -eq 0 ]; then
+  echo -e "${SUC} Configure Successful! ${RST}"
+else
+  echo -e
+  echo -e "${ERR} Configure Failed! ${RST}"
+  echo -e
+  exit 1
+fi
+
+echo -e "${MSG} Build Source ... ${RST}"
+cmake --build .
+
+if [ $? -eq 0 ]; then
+  echo -e "${SUC} Build Successful! ${RST}"
+else
+  echo -e
+  echo -e "${ERR} Build Failed! ${RST}"
+  echo -e
+  exit 1
 fi
 echo -e
