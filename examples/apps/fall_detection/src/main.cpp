@@ -28,8 +28,9 @@
 #include <condition_variable>
 #include <chrono>
 
-#include "ext/AksSysManagerExt.h"
-#include "ext/AksNodeParams.h"
+#include <aks/AksSysManagerExt.h>
+#include <aks/AksNodeParams.h>
+
 using namespace std::chrono;
 
 AKS::AIGraph *OFGraph;
@@ -282,6 +283,7 @@ int main(int argc, char **argv) {
     loadKernels(kernelPaths);
 
     std::string OFGraphJson = "graph_zoo/graph_optical_flow.json";
+    // std::string OFGraphJson = "graph_zoo/graph_optical_flow_opencv.json";
     std::string OFGraphName = "optical_flow";
     loadGraph(OFGraphJson, OFGraphName, &OFGraph);
 

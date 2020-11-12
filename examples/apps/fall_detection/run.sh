@@ -35,6 +35,7 @@ do
   esac
 done
 
+export AKS_ROOT=$VAI_ALVEO_ROOT/../tools/AKS
 # Add verbose level
 export AKS_VERBOSE=$VERBOSE
 
@@ -62,6 +63,15 @@ then
   exit 1;
 fi
 
+AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=meta_vgg_fall_detection.zip"
+NAME="graph_zoo/meta_vgg_fall_detection"
+if [[ ! -d "${NAME}" ]]; then
+    echo -e "$NAME doesn't exist"
+    wget $AKS_GRAPH_META_URL -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
+    if [[ $? != 0 ]]; then echo "Network download failed. Exiting ..."; exit 1; fi;
+    break;
+fi;
+
 # Add Library Paths
 if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib" ]
 then
@@ -72,12 +82,10 @@ then
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/utils
 fi
 
-# Add libs under current folder
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:libs
-# Add libs under apps/aks/
-LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/apps/aks/libs:${VAI_ALVEO_ROOT}/apps/aks/
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${AKS_ROOT}/libs
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 
-./build/fall_detection.exe $DIRECTORY
+./src/bin/main.exe $DIRECTORY
