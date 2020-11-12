@@ -3,13 +3,13 @@
 #include <vector>
 
 #include <boost/filesystem.hpp>
-#include "opencv2/opencv.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
+#include <opencv2/opencv.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
-#include "ext/AksKernelBase.h"
-#include "ext/AksDataDescriptor.h"
-#include "ext/AksNodeParams.h"
+#include <aks/AksKernelBase.h>
+#include <aks/AksDataDescriptor.h>
+#include <aks/AksNodeParams.h>
 
 class OpticalFlowPostProcess : public AKS::KernelBase
 {
@@ -100,7 +100,7 @@ int OpticalFlowPostProcess::exec_async (
       nodeParams->_stringParams.find("visualize") == nodeParams->_stringParams.end() ?
         "" : nodeParams->_stringParams["visualize"];
     if (!output_folder.empty()) {
-        boost::filesystem::path p(dynParams->imagePath);
+        boost::filesystem::path p(dynParams->imagePaths.front());
         std::string filename = p.filename().string();
         std::string folder = p.parent_path().filename().string();
         std::string output_path = output_folder + "/" + folder;
