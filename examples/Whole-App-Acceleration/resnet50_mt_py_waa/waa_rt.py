@@ -39,27 +39,19 @@ class PreProcess:
 			sys.exit()
 
 
-	def preprocess_input(self, img, rows, cols):
+	def preprocess_input(self, img):
 
 		act_ht = c_int()
 		act_wt = c_int()
                 
-		self.row = c_int()
-		self.col = c_int()
-		self.row = rows
-		self.col = cols
 		self.arr = np.empty([3,224,224],dtype=np.float32)
 		self.lib.preprocess.argtypes = [c_void_p,
-							   np.ctypeslib.ndpointer(c_uint8, flags="C_CONTIGUOUS"),
-                                                           c_int,
-                                                           c_int,
+							   c_char_p,
 							   c_void_p,
 							   c_void_p,
 							   np.ctypeslib.ndpointer(c_float, flags="C_CONTIGUOUS")]
 		self.lib.preprocess(pointer(self.handle),
-		img, 
-                self.row, 
-                self.col, 
+		img,
                 byref(act_ht), byref(act_wt), self.arr)
 		np.ascontiguousarray(self.arr, dtype=np.float32)
 

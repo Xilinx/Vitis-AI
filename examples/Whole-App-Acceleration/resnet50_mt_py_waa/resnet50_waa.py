@@ -151,7 +151,7 @@ def main(argv):
     for i in range(int(threadnum)):
         all_dpu_runners.append(runner.Runner(subgraphs[0], "run"));
     """image list to be run """
-    xclbin_p=str("/mnt/dpu.xclbin")
+    xclbin_p=str("/usr/lib/dpu.xclbin")
     kernelName_p="pp_pipeline_accel"
     deviceIdx_p=0
     fpga_pp = waa_rt.PreProcess(xclbin_p,kernelName_p,deviceIdx_p)
@@ -159,9 +159,7 @@ def main(argv):
     img = []
     for i in range(runTotall):
         path = os.path.join(calib_image_dir,listimage[i])
-        image = cv2.imread(path)
-        rows, cols, channels = image.shape
-        image = fpga_pp.preprocess_input(image, rows, cols)
+        image = fpga_pp.preprocess_input(path)
         img.append(image)
 
     time_pre = int(round(time.time() * 1000))
