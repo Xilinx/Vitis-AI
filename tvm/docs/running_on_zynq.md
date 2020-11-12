@@ -13,11 +13,12 @@ The Xilinx Deep Learning Processor Unit (DPU) is a configurable computation engi
 * [ZCU102]
 
 ## Resources
-You could find more information here:
-* Board setup - Follow instruction in [Pynq-DPU] repository to download and install DPUCZDX8G on one of the supported Zynq evaluation board.
+You could find more information on how to setup your target device below:
+* Pynq board setup - Follow instruction in [Pynq-DPU] repository to download and install the Pynq image targetting DPUCZDX8G on the supported Zynq evaluation boards. 
+* Petalinux board setup - Alternatively, you could follow the "Setting Up the Target" section of the [Vitis-AI User Guide] to install the Petalinux image on the supported Zynq boards.
 
 
-### Test DPU on Pynq
+### Test DPU on Target
 You could try testing your DPU setup on your evaluation board.
 
 
@@ -39,6 +40,11 @@ $ bash zynq_setup.sh
 
 This script clones the latest compatible TVM repository and builds the TVM runtime. 
 
+Note: The Petalinux image does not support "Scipy" package and hence, the zynq_setup.sh will fail during the TVM installation. To circumvent this problem, you need to edit the "$TVM_HOME/python/setup.py" script, to remove 'scipy' from the required installation packages in line 159 and re-run the setup.py script, as follows: 
+
+```sh
+$ cd "${TVM_HOME}"/python && sudo python3 ./setup.py install
+```
 
 ## Executing a Compiled Model
 
@@ -66,6 +72,7 @@ This script runs the model mxnet_resnet_18 model compiled using the TVM with Vit
    [ZCU104]: https://www.xilinx.com/products/boards-and-kits/zcu104.html
    [DPUCZDX8G]: https://www.xilinx.com/products/intellectual-property/dpu.html
    [Pynq-DPU]: https://github.com/Xilinx/DPU-PYNQ 
+   [Vitis-AI User Guide]: https://www.xilinx.com/cgi-bin/docs/rdoc?t=vitis_ai;v=latest;d=zkj1576857115470.html
    [ZCU102]:  https://www.xilinx.com/products/boards-and-kits/ek-u1-zcu102-g.html
   
   

@@ -11,7 +11,7 @@ TARGET := hw
 #EDGE_COMMON_SW:= /proj/rdi/staff/jiaz/scout/platfrom201/xilinx_zcu102_base_202010_1/sw/xilinx_zcu102_base_202010_1/xrt/image
 #SDX_PLATFORM = /proj/xcdhdstaff2/tianfang/2020.1/0518/102/platform_repo/xilinx_zcu102_base_202010_1/export/xilinx_zcu102_base_202010_1/xilinx_zcu102_base_202010_1.xpfm
 
-XOCC_OPTS = -t ${TARGET} --platform ${SDX_PLATFORM} --save-temps --config ${DIR_PRJ}/config_file/prj_config_102_3dpu_LPD --xp param:compiler.userPostSysLinkOverlayTcl=${DIR_PRJ}/syslink/strip_interconnects.tcl 
+XOCC_OPTS = -t ${TARGET} --platform ${SDX_PLATFORM} --save-temps --config ${DIR_PRJ}/config_file/prj_config --xp param:compiler.userPostSysLinkOverlayTcl=${DIR_PRJ}/syslink/strip_interconnects.tcl 
 dpu_HDLSRCS=kernel_xml/dpu/kernel.xml\
 	     scripts/package_dpu_kernel.tcl\
 	     scripts/gen_dpu_xo.tcl\
