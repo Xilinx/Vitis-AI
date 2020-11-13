@@ -213,10 +213,6 @@ If the prebuilt design is wanted, please use the path for **--get-hw-description
 % cd images/linux
 % petalinux-package --boot --fsbl zynqmp_fsbl.elf --u-boot u-boot.elf --pmufw pmufw.elf --fpga system.bit
 ```
-
-**Warnning:
-   Due to the PetaLinux 2020.2 is developing and haven't released yet, the xilinx-zcu102-trd.bsp above is based on the latest version(petalinux-v2020.2_1028_1),and it only can be built in XCD server.
-   In summary, xilinx-zcu102-trd.bsp is a internal development version for xilinx engineer.**
  
 #### 5.2.4 Run Resnet50 Example 
 
