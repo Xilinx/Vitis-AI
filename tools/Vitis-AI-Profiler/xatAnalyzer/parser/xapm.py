@@ -41,6 +41,7 @@ class xapmParser(parser.parserBase.Parser):
     def parse(self, data, options):
         apmData = []
 
+        time_adjuest_offset = options.get("timesync_offset", 0)
         for l in data:
             apmRec = pattAPM.match(l.strip())
             if apmRec is not None:
@@ -48,6 +49,10 @@ class xapmParser(parser.parserBase.Parser):
                 if False:
                     apmData.append([apm.time, apm.total])
                 else:
+                    if apm.time > time_adjuest_offset:
+                        apm.time = apm.time - time_adjuest_offset
+                    else:
+                        continue
                     apmData.append([apm.time, apm.data[0] + apm.data[1],
                                     apm.data[2] + apm.data[3],
                                     apm.data[4] + apm.data[5],

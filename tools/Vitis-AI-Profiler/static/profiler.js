@@ -20,6 +20,7 @@ var cg_data = [];
 var task_data = [];
 var data = [];
 var dataCG = [];
+var statTable = { "DPUSUBGRAPHS": [], "CPPFUNC": [], "PYFUNC": [] }
 var startTime
 var endTime
 var categories = [];
@@ -58,7 +59,7 @@ xhr.onload = function() {
         console.log("Data load finished");
 
         //if (XIR_TGT.length <= 1) {
-	if (true) {
+        if (true) {
             document.getElementById("timelineViewSelect").style.display = "none";
             document.getElementById("graphViewSelect").style.display = "none";
         } else if (XIR_LINKS.length == 0 || XIR_NODES.length == 0) {
@@ -91,7 +92,7 @@ function loadData(type, subType, value) {
                 endTime = value
             }
             break;
-	case "TIMELINE":
+        case "TIMELINE":
             if (categories.indexOf(subType) == -1) {
                 categories.push(subType)
             }
@@ -119,13 +120,22 @@ function loadData(type, subType, value) {
         case "APM":
             axiTraffic.push(value);
             break;
+        case "STAT":
+            switch (subType) {
+                case "DPUSUBGRAPHS":
+                case "CPPFUNC":
+                case "PYFUNC":
+                    statTable[subType].push(value)
+                default:
+            }
+            break
         case "CG":
             cg_data.push(value)
             break
         case "FPS":
             FPS.push(value)
             break;
-	case "INFO":
+        case "INFO":
             title = "<strong>" + value['type'] + "</strong>";
             hwInfoData.push({ id: title })
             for (let item of Object.keys(value['info'])) {
@@ -149,8 +159,8 @@ function loadData(type, subType, value) {
                 )
             }
             break;
-	case "ENV":
-	    break;
+        case "ENV":
+            break;
         default:
             console.log("data type error")
     }
@@ -500,15 +510,16 @@ optionXir = {
 
 function showTreeGridTable(id) {
     cg = document.getElementById("cgTreeTable");
-    xir = document.getElementById("xirTreeTable");
+    cg.style.display = "";
+    //xir = document.getElementById("xirTreeTable");
 
-    if (id == "cg") {
-        cg.style.display = "";
-        xir.style.display = "none";
-    } else if (id == "xir") {
-        cg.style.display = "none";
-        xir.style.display = "";
-    }
+    //if (id == "cg") {
+    //    cg.style.display = "";
+    //    xir.style.display = "none";
+    //} else if (id == "xir") {
+    //    cg.style.display = "none";
+    //    xir.style.display = "";
+    //}
 }
 
 $(window).on('resize', function() {
@@ -535,6 +546,7 @@ function fancytreeSetFocus(treeid, key) {
 
 
 function prepareChart(id) {
+    /*
     vaiProfilerChart.on('click', function(params) {
         if (params.componentSubType == 'graph') {
             var key = params.data.title;
@@ -572,6 +584,7 @@ function prepareChart(id) {
             }
         }
     });
+    */
 
     //Set start point and end point
     for (let xaxis of optionTimeline.xAxis) {
@@ -635,7 +648,40 @@ function prepareChart(id) {
 function prepareTGTable(id) {
     console.log("Tree-Grid-Table preparing: " + id)
 
-    //if (id == 'timeline') {
+    for (let t of Object.keys(statTable)) {
+        var items = statTable[t]
+        if (t == "DPUSUBGRAPHS") {
+            title = "DPU SubGraphs"
+        } else if (t == "CPPFUNC") {
+            title = "C/C++ Functions"
+        } else if (t == "PYFUNC") {
+            title = "Python Functions"
+        } else {
+            title = t
+        }
+        var cg_item = {
+            "title": title,
+            "children": [],
+            "icon": false,
+            "min_t": -1,
+            "ave_t": -1,
+            "max_t": -1,
+            "runs": -1,
+            "folder": false
+        }
+        for (let item of items) {
+            cg_item['children'].push({
+                "icon": false,
+                "title": item[0],
+                "runs": item[1],
+                "min_t": item[2],
+                "ave_t": item[3],
+                "max_t": item[4]
+            })
+        }
+        cg_data.push(cg_item)
+    }
+
     if (cg_data.length > 0) {
         $("#cgTreeTable").fancytree({
             extensions: ["grid"],
@@ -656,16 +702,22 @@ function prepareTGTable(id) {
                 var node = data.node,
                     $tdList = $(node.tr).find(">td");
 
-                // (index #0 is rendered by fancytree by adding the checkbox)
-                if (node.data.isHw) {
-                    $tdList.eq(1).text("DPU");
-                } else {
-                    $tdList.eq(1).text(" ");
+                $tdList.eq(1).text("");
+                $tdList.eq(2).text("");
+                $tdList.eq(3).text("");
+                $tdList.eq(4).text("");
+                if (node.data.runs >= 0) {
+                    $tdList.eq(1).text(node.data.runs);
                 }
-                //$tdList.eq(1).text(node.getIndexHier());
-                $tdList.eq(2).text(node.data.startTime.toFixed(6));
-                $tdList.eq(3).text(node.data.endTime.toFixed(6));
-                $tdList.eq(4).text(node.data.durnation);
+                if (node.data.min_t >= 0) {
+                    $tdList.eq(2).text(node.data.min_t.toFixed(3));
+                }
+                if (node.data.max_t >= 0) {
+                    $tdList.eq(3).text(node.data.max_t.toFixed(3));
+                }
+                if (node.data.ave_t >= 0) {
+                    $tdList.eq(4).text(node.data.ave_t.toFixed(3));
+                }
             },
             updateViewport: function(event, data) {
                 var tree = data.tree,

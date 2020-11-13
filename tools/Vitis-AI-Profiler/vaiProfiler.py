@@ -297,11 +297,33 @@ def getRawFile():
 def index():
     return flask.redirect(flask.url_for('upload'))
 
+@app.route('/dashboard')
+def dashboard():
+    return flask.Response(open("./dashboard/dashboard.html").read())
+
+mock_data = {
+  "status": 0,
+  "msg": "",
+  "data": {
+    "items": [
+        {
+          "id": 1,
+          "model": "dpuv1"
+        }, {
+          "id": 4,
+          "model": "dpuv3"
+        }
+    ]
+  }
+}
+
+@app.route('/dashboard_data_api')
+def dashboard_data_api():
+    return flask.Response(json.dumps(mock_data))
 
 @app.route('/examples/<name>')
 def getExampleFile(name):
     if name == 'pkg':
-        #latestPKG = os.popen("cd vaitrace;make update").read().strip()
         latestPKG = "./static/examples/vaitrace.deb"
         return flask.make_response(flask.send_file(latestPKG, as_attachment=True, mimetype="application/x-compress"))
 

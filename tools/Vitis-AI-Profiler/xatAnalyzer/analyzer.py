@@ -35,6 +35,7 @@ xat.close()
 print(raw.keys())
 
 globalOption = raw.get('cmd', {})
+globalOption['timesync_offset'] = raw.get('timesync', {}).get("DPUController")
 out = parser.parse(raw, globalOption)
 ts, te = parser.timelineUtil.timelineAdj(out, globalOption)
 out.update({'TIME-start': [ts], 'TIME-end': [te]})

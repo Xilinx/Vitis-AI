@@ -17,6 +17,7 @@ import parser.parserBase
 import parser.tracepointUtil
 
 from parser.timelineUtil import *
+from parser.statUtil import *
 
 DPUs = []
 """
@@ -113,11 +114,21 @@ def FPSProfiling():
             timePoint += interval
 
     print("Overall FPS %.2f" % overAllFPS)
-    return {'FPS-0': dataFPS}
+    infoFPS =  [{
+        "info": {
+            "Overall FPS": overAllFPS
+            },
+        "type": "FPS"
+        }
+    ]
+
+    return {'FPS-0': dataFPS, 'INFO-FPS' : infoFPS}
 
 
 def fineGranularityProfiling():
     global DPUs
+    dpu_subgraphs = statTable("DPU SubGraphs")
+
     for dpu in DPUs:
         if dpu.len() == 0:
             continue
@@ -132,6 +143,12 @@ def fineGranularityProfiling():
             if title == 'subgraph':
                 subGraphName = info.strip()
                 subGraphStatAdd(subGraphName, run.coreId, run.duration)
+
+                title = "%s@DPU_%02d" % (subGraphName, run.coreId)
+                dpu_subgraphs.add(title, run.duration)
+
+    return dpu_subgraphs.output(fmt="list")
+    
 
 
 class DPUControllerParser(parser.parserBase.Parser):
@@ -196,6 +213,7 @@ class DPUControllerParser(parser.parserBase.Parser):
 
         for l in data:
             event = parser.tracepointUtil.tracepointEvent(l).toTimelineEvent()
+            timeout = options.get("timeout")
             if event is None:
                 continue
 
@@ -214,7 +232,7 @@ class DPUControllerParser(parser.parserBase.Parser):
                 cuRetData["TIMELINE-%s_%s" % (dpu.coreType, dpu.coreId)] = dpu.toJson()
                 dpu.getUtil()
 
-        fineGranularityProfiling()
+        cuRetData.update({"STAT-DPUSUBGRAPHS":fineGranularityProfiling()})
         cuRetData.update(FPSProfiling())
         cuRetData.update(DPULatencyProfiling())
 

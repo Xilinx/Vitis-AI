@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import re
+from parser.timelineUtil import *
 
 hwCUPatt = re.compile(
     r"""
@@ -29,7 +30,7 @@ pattFtrace = re.compile(
         (?P<taskPid>\d{1,})\s+\[
         (?P<cpuID>\d{3})\].{4,}\s
         (?P<timeStamp>\d+\.\d{6})\:\s+
-        (?P<func>\w+)\:
+        (?P<func>[\w:]+)\:\s+
         (?P<info>.*)
         """,
     re.X | re.M
@@ -42,12 +43,25 @@ pattFtraceTSC = re.compile(
         (?P<taskPid>\d{1,})\s+\[
         (?P<cpuID>\d{3})\].{4,}\s
         (?P<timeStamp>\d+)\:\s+
-        (?P<func>\w+)\:
+        (?P<func>[\w:]+)\:\s+
         (?P<info>.*)
         """,
     re.X | re.M
 )
 
+#"""for x86, trace_clock = x86-tsc"""
+#pattFtraceTSC = re.compile(
+#    r"""
+#        (?P<taskComm>.+)\-
+#        (?P<taskPid>\d{1,})\s+\[
+#        (?P<cpuID>\d{3})\].{4,}\s
+#        (?P<timeStamp>\d+)\:\s+
+#        (?P<func>\w+)\:
+#        (?P<info>.*)
+#        """,
+#    re.X | re.M
+#)
+#
 pattSchedSwitch = re.compile(
     r"""
         prev_comm\=(?P<prev_comm>.+)
@@ -100,6 +114,20 @@ class ftraceEvent:
     def __str__(self):
         return "%.6f:%17s-%4d@[%02d]:%18s: %s" %\
                (self.timeStamp, self.taskComm, self.taskPid, self.cpuId, self.func, self.info)
+
+    def toTimelineEvent(self):
+        if self.func.endswith("_entry"):
+            et = "start"
+        elif self.func.endswith("_exit"):
+            et = "done"
+        else:
+            et = "marker"
+
+        ct = "CPU"
+        cid = self.cpuId
+
+        func = self.func.replace("_entry", "").replace("_exit", "")
+        return vaiTimelineEvent(self.timeStamp, self.taskPid, et, ct, cid, func)
 
     def isSched(self):
         return self.func.startswith('sched_switch')

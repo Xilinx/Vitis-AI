@@ -50,7 +50,7 @@ class vaiTimelineEvent:
         self.duration = 0
         self.info = _info
 
-        if self.type == 'start':
+        if self.type == 'start' or self.type == 'done':
             self.code = _info
 
     def paired(self, end):
@@ -77,9 +77,6 @@ class vaiTimeline:
         if options.get('traceClock', "") == 'x86-tsc':
             tsc_hz = int(options.get('x86_tsc_khz') * 1000)
             self.transTs = lambda x: round((float(x) / tsc_hz), 6)
-
-    def tracsTs_x86_tsc():
-        pass
 
     def getUtil(self, _filter=None):
         """Drop all marker events"""
@@ -153,7 +150,7 @@ def createTimelines(coreType, id, options: dict, timeout=0):
         for i in range(0, id):
             timelines.append(vaiTimeline(coreType, i, options, timeout))
 
-    if len(timelines) is 0:
+    if len(timelines) == 0:
         assert()
 
     return timelines

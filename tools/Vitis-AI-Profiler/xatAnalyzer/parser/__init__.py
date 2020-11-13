@@ -20,7 +20,9 @@ import parser.xapm
 import parser.hwInfo
 #import parser.cuEdge
 import parser.sched
-import parser.function
+#import parser.function
+import parser.pyfunc
+import parser.cppfunc
 import parser.DPUController
 import parser.xir
 import parser.misc

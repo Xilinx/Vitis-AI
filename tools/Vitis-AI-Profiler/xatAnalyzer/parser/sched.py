@@ -106,10 +106,16 @@ class schedParser(parser.parserBase.Parser):
 
     def parse(self, data, options):
         retData = {}
+        if options.get("launcher", "unknow") == "python":
+            python_mode = True
+        else:
+            python_mode = False
 
         """Support at most 16 cores"""
         global CPUs
         CPUs = createTimelines('CPU', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], options)
+
+        time_adjuest_offset = options.get("timesync_offset", 0)
 
         for l in data:
             fevent = parser.ftraceUtil.parse(l, options)
@@ -118,8 +124,17 @@ class schedParser(parser.parserBase.Parser):
             if fevent.func != "sched_switch":
                 self.schedProcess.append(fevent)
                 continue
+            if fevent.timeStamp > time_adjuest_offset:
+                fevent.timeStamp -= time_adjuest_offset
+            else:
+                # print(fevent)
+                continue
             if self.targetComm is None:
-                comm, pid = self.findTarget()
+                if python_mode == True:
+                    comm = "vaitrace"
+                    self.targetComm = comm
+                else:
+                    comm, pid = self.findTarget()
                 options.setdefault("targetComm", comm)
             else:
                 timelineEvent = self.formater(fevent)
