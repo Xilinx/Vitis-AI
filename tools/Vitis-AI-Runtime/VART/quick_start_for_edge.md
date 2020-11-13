@@ -33,22 +33,22 @@ To modify the VART source code, view and modify them under `Vitis-AI/tools/Vitis
 
 * unilog
 ```
-cd Vitis-AI/VART/unilog
+cd Vitis-AI/tools/Vitis-AI-Runtime/VART/unilog
 ./cmake.sh
 ```
 * xir
 ```
-cd Vitis-AI/VART/xir
+cd Vitis-AI/tools/Vitis-AI-Runtime/VART/xir
 ./cmake.sh
 ```
 * target_factory
 ```
-cd Vitis-AI/VART/target_factory
+cd Vitis-AI/tools/Vitis-AI-Runtime/VART/target_factory
 ./cmake.sh
 ```
 * vart
 ```
-cd Vitis-AI/VART/vart
+cd Vitis-AI/tools/Vitis-AI-Runtime/VART/vart
 ./cmake.sh --cmake-options='-DENABLE_DPU_RUNNER=ON -DENABLE_CPU_RUNNER=OFF -DENABLE_SIM_RUNNER=OFF'
 ```
 After you compile each module of VART, the libraries and test programs will be generated under `~/build/build.linux.2020.1.aarch64.Debug/`.  

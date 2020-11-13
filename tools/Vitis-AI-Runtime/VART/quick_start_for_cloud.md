@@ -13,22 +13,22 @@ Before you compile the VART for cloud, please load and run the docker container 
 * Compile the VART and install the VART. Execute the following command in order.
 	* unilog
 	```
-	cd /workstation/VART/unilog
+	cd /workspace/tools/Vitis-AI-Runtime/VART/unilog
 	sudo bash cmake.sh --install-prefix=/usr
 	```
 	* xir
 	```
-	cd /workstation/VART/xir
+	cd /workspace/tools/Vitis-AI-Runtime/VART/xir
 	sudo bash cmake.sh --install-prefix=/usr
 	```
 	* target_factory
 	```
-	cd /workstation/VART/target_factory
+	cd /workspace/tools/Vitis-AI-Runtime/VART/target_factory
 	sudo bash cmake.sh --install-prefix=/usr
 	```
 	* vart
 	```
-	cd /workstation/VART/vart
+	cd /workspace/tools/Vitis-AI-Runtime/VART/vart
 	sudo bash cmake.sh --install-prefix=/usr --cmake-options='-DENABLE_DPU_RUNNER=ON -DENABLE_CPU_RUNNER=OFF -DENABLE_SIM_RUNNER=OFF'
 	```
 
