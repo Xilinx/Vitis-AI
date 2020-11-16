@@ -38,7 +38,7 @@
 
   # please download Chaos-CT dataset (https://chaos.grand-challenge.org/Download/).
   # put the grundtruth folder and image folder in  `data` directory.
-
+  
   * `data` directory structure like:
     + data
         +Chaos_CT_processed
@@ -52,7 +52,7 @@
                       ▪ CT Test Sets: [3,4,7,9,11,12,13,15,17,20,31,32,33,34,35,36,37,38,39,40]
 
   ```
-
+  Note：please registere before download dataset. More dataset information [ChaosCT document](https://www.dropbox.com/sh/7rospm65dmr8osd/AAB8imtFkTK37msLlSWxfwwya?dl=0&preview=CHAOS_Submission_Manual_new.pdf)
 ### Eval
 
 1. Evaluation
@@ -76,13 +76,13 @@
   
 ### Performance
 
-| Model | Input | FLOPs | Performance on Validation| 
+| Model | Input | FLOPs | Performance on CHAOS_Test_Sets| 
 |---- |----|----|----------------------------------|
 | 2D-UNet-LightWeight|512x512|23.3G|Dice = 97.58%|
 
-| Model | INT8 Performance on Validation| 
-|-------|----------------------------------|
-| 2D-UNet-LightWeight|Dice = 97.71%|
+| Model | Input | FLOPs | INT8 Performance on CHAOS_Test_Sets| 
+|---- |----|----|----------------------------------|
+| 2D-UNet-LightWeight| 512x512 | 23.3G |Dice = 97.47%|
 
 ### Model_info
 

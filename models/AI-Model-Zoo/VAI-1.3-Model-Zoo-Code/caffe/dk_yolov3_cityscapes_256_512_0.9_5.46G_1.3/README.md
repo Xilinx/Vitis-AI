@@ -24,6 +24,8 @@
   # python version(python2)
   make py
   ```
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Preparation
    Download trainval and test dataset. you can run below the command get dataset. By default, we assume the data is stored in `data/`
   ```Shell
@@ -62,7 +64,8 @@
     Test images: private data 500
     Model: yolov3(modify)
     Classes: 3
-    mAP: 55.2%
+    Float mAP: 55.2%
+    Quantized mAP: 53%
    ```
 ### Model info
 1. data info

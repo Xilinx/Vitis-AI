@@ -65,7 +65,7 @@
    ```
 3. Training Dataset Directory Structure like:
    ```markdown
-   + data
+   + data/multi_task_det5_seg16
      + detection
        + Waymo_bdd_txt
          + train
@@ -77,13 +77,14 @@
              + images_id1.jpg
              + images_id2.jpg
      + segmentation
-       + train.txt
-       + seg
-         + images_id1.png
-         + images_id2.png
-       + images
-         + images_id1.jpg
-         + images_id2.jpg
+       + train
+         + train.txt
+         + seg
+           + images_id1.png
+           + images_id2.png
+         + images
+           + images_id1.jpg
+           + images_id2.jpg
     train.txt: image list
     labels/seg: according label
     images: original images

@@ -4,6 +4,7 @@
 3. [Train/Eval](#traineval)
 4. [Performance](#performance)
 5. [Model_info](#model_info)
+6. [Quantize](#quantize)
 
 ### Installation
 
@@ -72,3 +73,9 @@
   output nodes: 'conv2d_59/BiasAdd:0', 'conv2d_67/BiasAdd:0', 'conv2d_75/BiasAdd:0'
   ```
 
+### Quantize
+1- Quantize tool installation
+  See [vai_q_tensorflow](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Quantizer/vai_q_tensorflow)
+
+2- Quantize workspace
+  See [quantize](./code/quantize/)

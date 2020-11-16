@@ -80,7 +80,14 @@
 
 ### performance
 
-| Method | Input size | FLOPs |Val. mIoU | 
+Note：the performance is evaluated on Nuclei Cell validation set
+
+| Method | Input size | FLOPs |mIoU on Val.| 
+|--------|------------|-------|----------|
+| UNet | 128x128 | 5.31G | 39.68% |
+
+
+| Method | Input size | FLOPs |INT8 mIoU on Val.| 
 |--------|------------|-----------|----------|
 | UNet | 128x128 | 5.31G | 39.68% |
 

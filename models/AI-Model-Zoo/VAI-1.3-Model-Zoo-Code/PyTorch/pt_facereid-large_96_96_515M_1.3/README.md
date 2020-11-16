@@ -30,9 +30,8 @@
 
 #### Preparation
 
-Face_reid is a private dataset, not a public dataset. So you need to prepare your dataset. 
+Face_reid is a private dataset. The dataset collects the face images in several videos, which includes 2761ids/34323images for training and 2761ids/33640images for testing.
 The dataset structure is like:
-
 ```
 data/
     face_reid/
@@ -91,13 +90,13 @@ sh scripts/run_quant.sh
 ```
 #### Performance
 
-| Model name | Network backbone | Dataset  | Input size | Flops | Accuracy  |
-| --- | --- | --- | --- | --- | --- |
-| Facereid_large | Resnet18 | Private Face_reid | 96x96 | 515M | Rank1:95.5%, mAP:79.4% |
+| Model name | Network backbone | Dataset  | Input size | Flops | Accuracy  | 
+| --- | --- | --- | --- | --- | --- | 
+| Facereid_large | Resnet18 | Private Face_reid | 96x96 | 515M | Rank1:95.5%, mAP:79.4% | 
 
 | Model name | INT8 Accuracy |
 | --- | --- |
-|Facereid_large | Rank1:95.3%, mAP:78.8%|
+|Facereid_large | Rank1:95.3%, mAP:79.0%|
 
 
 #### Model_info

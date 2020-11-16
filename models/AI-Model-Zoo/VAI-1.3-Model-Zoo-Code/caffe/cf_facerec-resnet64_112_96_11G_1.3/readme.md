@@ -83,6 +83,8 @@ python code/test/test_resnet64.py \
 
 ## Performance
 
+The performance is tested on the private dataset.
+
 * float model
 
 FPR | TPR | Thr

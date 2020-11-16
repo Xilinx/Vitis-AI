@@ -23,6 +23,8 @@
   make pycaffe
   ```
 
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Preparation
 
 1. dataset describle.
@@ -82,6 +84,14 @@ in the `keypoint_annotation` there are 14 key points, which represents: 1: R_sho
   python code/test/test.py --gpus 0,1,2,3 --data your_image_data_path --caffe $CAFFE_ROOT --weights your_caffemodel_file --model your_prototxt_file --anno your_annotation_file --input data
   ```
 
+### Performance
+  ```shell
+   Test images: private images
+   Model: Openpose float
+   OKs: 0.45067
+   Model: Openpose INT8
+   OKs: 0.44287
+   ```
 
 ### Model info
    data preprocess information

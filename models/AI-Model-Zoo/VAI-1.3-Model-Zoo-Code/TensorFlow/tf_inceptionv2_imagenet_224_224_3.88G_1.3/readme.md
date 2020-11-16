@@ -4,6 +4,7 @@
 3. [Train/Eval](#traineval)
 4. [Performance](#performance)
 5. [Model_info](#model_info)
+6. [Quantize](#quantize)
 
 ### Installation
 1. Environment requirement 
@@ -72,10 +73,10 @@
 
 ### performance
 
-|Acc |Claimed on Imagenet| Ckpt on Imagenet| Pb on Imagenet|
-|----|----|---|---|
-|Recall_1(%)|73.9|73.994|73.994|
-|Recall_5(%)|91.8|91.756|91.756|
+|Acc |Pb on Imagenet|
+|----|---|
+|Recall_1(%)|73.994|
+|Recall_5(%)|91.756|
 
 ### Model_info
 
@@ -93,3 +94,10 @@
   The name of input node: 'input:0'
   The name of output node: 'InceptionV2/Logits/Predictions/Reshape_1:0'
   ```
+
+### Quantize
+1. Quantize tool installation
+  See [vai_q_tensorflow](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Quantizer/vai_q_tensorflow)
+
+2. Quantize workspace
+  See [quantize](./code/quantize/)

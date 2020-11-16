@@ -27,6 +27,7 @@
   #You may need to make sure all of the requirements are installed
   pip install -r requirements.txt
   ```
+Note: If you are in the released Docker env, there is no need to build Caffe.
 
 ### Preparation
 
@@ -121,15 +122,16 @@
 
 ### Performance
 
-|precision |Eval on FDDB| 
-|----|----|
-|Recall(%)|91.4@fp=100|
+|model|precision |Eval on FDDB| 
+|----|----|----|
+|float|Recall(%)|91.4@fp=100|
+|quantized|Recall(%)|89.4@fp=100|
 
-|Eval on WiderFace |Average Precision |
-|----|----|
-|easy|0.941|
-|medium|0.919|
-|hard|0.848|
+|Eval on WiderFace |Average Precision(float)|Average Precision(quantized)|
+|----|----|----|
+|easy|0.941|0.921|
+|medium|0.919|0.893|
+|hard|0.848|0.812|
 
 
 ### Model_info

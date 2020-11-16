@@ -23,6 +23,8 @@
   # python version(python2)
   make py
   ```
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Preparation
 1. Dataset Diretory Structure like:
    ```shell
@@ -60,13 +62,11 @@
 ### Performance
   ```shell
   images: Caltech
-  model: vpg-vgg-pruned
-  F1-score:88.639
+  model: vpg
+  Float F1-score:88.639%
+  Quantized F1-score:88.82%
   ```
 ### Model info
-
-```
-```
 
 
 1. data preprocess

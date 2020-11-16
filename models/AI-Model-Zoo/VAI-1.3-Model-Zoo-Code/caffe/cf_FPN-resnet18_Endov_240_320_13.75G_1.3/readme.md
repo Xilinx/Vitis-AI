@@ -24,6 +24,7 @@
   # python version(python2)
   make py
   ```
+  Note: If you are in the released Docker env, there is no need to build Caffe.
 
 ### Preparation
 
@@ -35,8 +36,8 @@
 
   ```shell
 
-  # please download Endov dataset (http://opencas.webarchiv.kit.edu/?q=node/30).
-  # put the grundtruth folder and image folder in  `data` directory.
+  # please download EndoVis'15 dataset (Rigid Instruments Segmentation Traing/Testing zip files) (http://opencas.webarchiv.kit.edu/?q=node/30).
+  # unzip and put the download dataset in  `data` directory.
 
   * `data` directory structure like:
      + data/Endov
@@ -55,7 +56,7 @@
          + OP5
          + OP6
   ```
-
+  Note: We call the test set as validation set.
 ### Eval
 
 1. Evaluate caffemodel.
@@ -76,9 +77,13 @@
   ```  
 ### Performance
 
-|Input | FLOPs | Performance on Endov validation | 
+|Input | FLOPs | Performance on EndoVis'15 Test Set | 
 |---- |----|----|
 |240x320|13.75G|Dice = 80.5%, Jaccard = 72.7%|
+
+|Input | FLOPs | INT8 Performance on EndoVis'15 Test Set | 
+|---- |----|----|
+|240x320|13.75G|Dice = 80.1%, Jaccard = 72.3%|
 
 ### Model_info
 

@@ -7,6 +7,7 @@
 3. [Eval](#Eval)
 4. [Performance](#Performance)
 5. [Model information](#Model information)
+6. [Quantize](#quantize)
 
 ## Environment
 1. Environment requirement
@@ -60,4 +61,9 @@ python demo.py
 * name of input node: 'image:0'
 * name of output node: 'arm_cls:0', 'arm_loc:0', 'odm_cls:0', 'odm_loc:0'.
 
+### Quantize
+1. Quantize tool installation
+  See [vai_q_tensorflow](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Quantizer/vai_q_tensorflow)
 
+2. Quantize workspace
+  See [quantize](./code/quantize/)

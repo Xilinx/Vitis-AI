@@ -25,6 +25,9 @@
   # python version(python2)
   make py
   ```
+
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Demo
  run demo
   ```shell
@@ -88,8 +91,8 @@
    Model: ssd-resnet18
    Classes-detection: 8
    Classes-segmentation: 16  
-   mAP: 22.28% 
-   mIou: 40.88%
+   Float model: mAP: 22.28% &  mIou: 40.88%
+   Quantized model: mAP: 21.4% &  mIou: 40.58%
    ```
 ### Model info
 1. data preprocess

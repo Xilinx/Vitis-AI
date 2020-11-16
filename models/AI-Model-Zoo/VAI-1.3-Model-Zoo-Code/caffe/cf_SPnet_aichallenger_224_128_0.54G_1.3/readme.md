@@ -21,6 +21,7 @@
   make -j8
   make pycaffe
   ```
+Note: If you are in the released Docker env, there is no need to build Caffe.
 
 ### Preparation
 
@@ -82,7 +83,14 @@ in the `keypoint_annotation` there are 14 key points, which represents: 1: R_sho
     --model your_prototxt_file.prototxt --anno data/validation/label_size_w128_h224.txt \
     --input data --output result/ --width 128 --height 224
   ```
-
+### Performance
+  ```shell
+   Test images: private images
+   Model: SPNet float
+   PCK@0.5: 90%
+   Model: SPNet INT8
+   PCK@0.5: 89.64%
+   ```
 
 ### Model_info
 

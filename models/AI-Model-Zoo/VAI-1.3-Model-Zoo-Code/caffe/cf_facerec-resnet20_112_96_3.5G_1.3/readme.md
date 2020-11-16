@@ -26,6 +26,8 @@
   pip install opencv-python
   ```
 
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Preparation
 
 1. dataset describle.
@@ -77,6 +79,8 @@
 
 * float model
 
+The performance is tested on the private dataset.
+
 FPR | TPR | Thr
 -- | -- | --
 1e-07  |  92.8%  |  0.476
@@ -84,14 +88,14 @@ FPR | TPR | Thr
 1e-05  |  97.9%  |  0.398
 1e-04  |  99.0%  |  0.350
 
-* quantized model
+* quantized(INT8) model
 
 FPR | TPR | Thr
 -- | -- | --
-1e-07 | 92.2% | 0.475
+1e-07 | 92.3% | 0.475
 1e-06 | 94.8% | 0.445
 1e-05 | 97.6% | 0.404
-1e-04 | 98.7% | 0.353
+1e-04 | 98.7% | 0.354
 
 ### Model_info
 

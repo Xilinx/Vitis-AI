@@ -24,6 +24,8 @@
   # python version(python2)
   make py
   ```
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Preparation
 1. Dataset Diretory Structure like:
    ```shell
@@ -80,7 +82,8 @@
    Test images: bdd100 val 10000
    Model: ssd-mobilenetv2
    Classes: 11
-   mAP: 30.5% 
+   Float mAP: 30.5% 
+   Quantized mAP: 27.5% 
    ```
 ### Model info
 1. data preprocess

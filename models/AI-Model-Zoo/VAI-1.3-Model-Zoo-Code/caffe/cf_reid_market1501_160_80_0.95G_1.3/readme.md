@@ -64,12 +64,10 @@ data/
 
 ### Performance
 
-| Accuracy | Eval on Market1501 |
-| --------- | ------------------ |
-| mAP     | 56.6% |
-| Rank-1  | 78.0% |
-|Rank-5   | 89.9% |
-|Rank-10 | 93.3% |
+| Eval on Market1501 | Float accuracy | Quantized accuracy|
+| --------- | ------------------ | -------------|
+| mAP     | 56.6% |55.9% |
+| Rank-1  | 78.0% |77.6% |
 
 ### Model info
 ##### 1. Data preprocess

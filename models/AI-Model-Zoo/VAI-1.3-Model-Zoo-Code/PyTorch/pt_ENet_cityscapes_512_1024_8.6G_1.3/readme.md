@@ -68,14 +68,14 @@
 
 ### Performance
 
-| Model | Input size | Mean IoU (Validation)| FLOPs |
+| Model | Input size | FLOPs | mIoU on Cityscapes Validation|
 |-------|------------|--------------|-------|
-| ENet_xilinx| 512x1024 | 64.4% | 8.6G |
+| ENet_xilinx| 512x1024 | 8.6G | 64.4% |
 
 
-| model | INT8 Mean IoU (Validation) |
-|-------|---------------|
-| ENet_xilinx | 63.27% |
+| model | Input size | FLOPs | INT8 mIoU on Cityscapes Validation |
+|-------|------------|--------------|-------|
+| ENet_xilinx | 512x1024 | 8.6G | 63.15% |
 
 
 ### Model_info

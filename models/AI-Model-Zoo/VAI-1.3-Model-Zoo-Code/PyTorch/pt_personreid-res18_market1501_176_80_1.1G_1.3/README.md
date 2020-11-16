@@ -95,7 +95,7 @@ sh run_quant.sh
 
 | Model name | INT8 Accuracy(Market1501)|
 | --- | --- |
-|Personreid_resnet18 | Rank1:89.5% mAP:74.4% |
+|Personreid_resnet18 | Rank1:89.3% mAP:74.6% |
 
 #### Model_info
 

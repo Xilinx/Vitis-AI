@@ -26,6 +26,8 @@
   pip install opencv-python
   ```
 
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Preparation
 
 You should ensure that all datasets used have been face detected.
@@ -88,7 +90,7 @@ Preprocess: The original image-->face detection-->crop face-->save processed ima
 |model|l1-loss|
 |-|-|
 |float|12.5481|
-|quantized|12.6863|
+|quantized(INT8)|12.6863|
 
 
 ### Model_info

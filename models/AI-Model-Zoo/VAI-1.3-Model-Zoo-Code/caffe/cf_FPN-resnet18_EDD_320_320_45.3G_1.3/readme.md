@@ -1,3 +1,4 @@
+# Endoscopy Diseases Segmentation with FPN-ResNet18
 ### Contents
 1. [Installation](#installation)
 2. [Preparation](#preparation)
@@ -12,19 +13,20 @@
   cd caffe-xilinx
   ```
 
-2. Build the code. Please follow [caffe instruction] to install all necessary packages and build it.
+2. 2. Build the code. Please follow [Caffe instruction](http://caffe.berkeleyvision.org/installation.html) to install all necessary packages and build it.
   ```shell
   # Modify Makefile.config according to your caffe installation.
   cp Makefile.config.example Makefile.config
   make -j
   make pycaffe
   ```
+  Note: If you are in the released Docker env, there is no need to build Caffe.
 
 ### Preparation
 
 1. dataset describle.
   ```
-  download dataset (https://edd2020.grand-challenge.org/Home/)
+  download EDD2020 dataset.
   dataset includes image file, groundtruth file and a validation image list file.
   image file: put to data/images.
   groundtruth file: put to data/labels
@@ -34,9 +36,9 @@
   ```shell
   cd code/
 
-  # please download EDD dataset (http://opencas.webarchiv.kit.edu/?q=node/30).
+  # please download EDD2020 dataset (https://edd2020.grand-challenge.org/Home/).
   # put the grundtruth folder and image folder in  `data` directory.
-
+  # We split the annotated dataset into training/validation sets.
   * `data` directory structure like:
      + EDD
        + images
@@ -62,8 +64,11 @@
 
 |Input | FLOPs | Performance on EDD2020 | 
 |---- |----|----|
-|320x320|45.3G| mean dice=0.820260500492; mean jaccard=0.792522700292; F2-score=0.807520448361|
+|320x320|45.3G| mean dice=0.8203; mean jaccard=0.7925; F2-score=0.8075|
 
+|Input | FLOPs | INT8 Performance on EDD2020 | 
+|---- |----|----|
+|320x320|45.3G| mean dice=0.8055; mean jaccard= 0.7772; F2-score=0.7925|
 
 ### Model_info
 

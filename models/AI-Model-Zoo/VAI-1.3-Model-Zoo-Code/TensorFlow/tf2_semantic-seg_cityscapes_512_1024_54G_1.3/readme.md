@@ -99,10 +99,13 @@
 
 ### performance
 
-| Method | Input size | FLOPs | Val. mIoU |
+| Method | Input size | FLOPs | mIoU on Cityscapes validation|
 |--------|------------|-----------|-------|
 | ERFNet | 512x1024 | 54G | 52.98% |
 
+| Method | Input size | FLOPs | INT8 mIoU on Cityscapes validation|
+|--------|------------|-----------|-------|
+| ERFNet | 512x1024 | 54G | 51.67% |
 ### Model_info
 
 1.  data preprocess

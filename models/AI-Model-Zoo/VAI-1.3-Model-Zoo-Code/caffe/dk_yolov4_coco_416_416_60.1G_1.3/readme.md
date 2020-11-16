@@ -72,9 +72,13 @@
  
 ### Performance
 
-|metric |Eval on coco2014-5k val| 
+|metric |Float model performance on coco2014-5k val| 
 |----|----|
 |mmap(%)|39.5|
+
+|metric |Quantized(int8) model performance on coco2014-5k val| 
+|----|----|
+|mmap(%)|37.3|
 
 ### Model_info
 

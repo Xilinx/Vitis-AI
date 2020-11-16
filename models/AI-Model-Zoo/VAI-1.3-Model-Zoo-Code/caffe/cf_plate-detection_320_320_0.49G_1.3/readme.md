@@ -19,6 +19,7 @@
   # python2
   make pycaffe
   ```
+  Note: If you are in the released Docker env, there is no need to build Caffe.
 
 ### Preparation
 
@@ -86,9 +87,16 @@
 
 ### Performance
 
-|Acc@iou0.5 |Eval on dataset| 
+Evaluate on private dataset with 4054 images.  
+
+|Acc@iou0.5 |Float model performance on dataset| 
 |----|----|
-|Recall_1(%)|97.2|
+|Recall_1(%)|96.60|
+
+
+|Acc@iou0.5 |Quantized(int8) model performance on dataset| 
+|----|----|
+|Recall_1(%)|96.50|
 
 
 ### Model_info

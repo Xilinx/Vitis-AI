@@ -24,6 +24,8 @@
   pip install lmdb==1.0.0  ## lmdb is needed in code/gen_data/createLableLMDB.py
   ```
 
+  Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Preparation
 
 1. Prepare dataset.
@@ -96,12 +98,18 @@
   ```
 
 ### Performance
+ 
+Evaluate on private dataset with 6777 images.  
 
-|Acc |Eval on dataset| 
+|Acc |Float model performance on dataset| 
 |----|----|
 |plate number(%)|99.51|
 |plate color(%)|100|
 
+|Acc |Quantized(int8) model performance on dataset| 
+|----|----|
+|plate number(%)|99.51|
+|plate color(%)|100|
 
 ### Model_info
 

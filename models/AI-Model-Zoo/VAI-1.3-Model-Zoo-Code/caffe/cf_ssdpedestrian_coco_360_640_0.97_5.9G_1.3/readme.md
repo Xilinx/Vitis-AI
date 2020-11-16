@@ -21,6 +21,8 @@
   # python2
   make pycaffe
   ```
+  Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### demo
   ```shell
   cd code/test
@@ -92,9 +94,13 @@
   ```
 ### Performance
 
-|metric |Eval on coco2014 val| 
+|metric |Float model performance on coco2014_person val| 
 |----|----|
-|11 point map(%)|59.0264|
+|11 point map(%)|59.03|
+
+|metric |Quantized(int8) model performance on coco2014_person val| 
+|----|----|
+|11 point map(%)|58.57|
 
 ### Model_info
 

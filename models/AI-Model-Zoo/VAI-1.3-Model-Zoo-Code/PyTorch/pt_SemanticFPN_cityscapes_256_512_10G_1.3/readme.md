@@ -71,13 +71,13 @@
     ```
 ### Performance
 
-| model | input size | Val. mIoU (%)| FLops |
+| model | input size | FLOPs | mIoU on Cityscapes Validation|
 |-------|------------|--------------|-------|
-| SemanticFPN(ResNet18)| 256x512 | 62.9 | 10G |
+| SemanticFPN(ResNet18)| 256x512 | 10G | 62.9% |
 
-| model | input size | INT8 mIoU (%)|
-|-------|------------|---------------|
-| SemanticFPN(ResNet18)| 256x512 | 62.3 |
+| model | input size | FLOPs | INT8 mIoU on Cityscapes Validation|
+|-------|------------|---------------|--------------|
+| SemanticFPN(ResNet18)| 256x512 | 10G | 62.3% |
 
 ### Model_info
 

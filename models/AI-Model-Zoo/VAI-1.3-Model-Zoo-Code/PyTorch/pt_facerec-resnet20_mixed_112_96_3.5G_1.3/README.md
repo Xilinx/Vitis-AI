@@ -90,6 +90,8 @@
     ```
 ### Performance
 
+Test dataset:[LFW](http://vis-www.cs.umass.edu/lfw/lfw.tgz) 
+
 |model|Accuracy|
 |-|-|
 |float|99.55%|

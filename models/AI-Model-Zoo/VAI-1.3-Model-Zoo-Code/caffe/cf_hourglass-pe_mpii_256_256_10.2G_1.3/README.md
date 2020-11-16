@@ -24,6 +24,9 @@
   # python version(python2)
   make py
   ```
+
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Demo
  run demo
   ```shell

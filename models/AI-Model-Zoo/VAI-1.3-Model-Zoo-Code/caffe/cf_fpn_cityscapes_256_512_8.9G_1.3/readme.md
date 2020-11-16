@@ -25,6 +25,7 @@
   # python version(python2)
   make py
   ```
+  Note: If you are in the released Docker env, there is no need to build Caffe.
 
 ### Preparation
 
@@ -96,6 +97,9 @@
 |---- |----|
 |256x512|56.69%|
 
+|mIoU | INT8 mIoU on Cityscapes validation | 
+|---- |----|
+|256x512|56.07%|
 
 ### Model_info
 

@@ -72,10 +72,10 @@
     ```
 
 ### performance
-|Acc |Claimed on Imagenet| Ckpt on Imagenet| Pb on Imagenet|
-|----|----|---|---|
-|Recall_1(%)|69.8|69.762|69.764|
-|Recall_5(%)|89.6|89.626|89.626|
+|Acc |Pb on Imagenet|
+|----|---|
+|Recall_1(%)|69.764|
+|Recall_5(%)|89.626|
 
 
 ### Model_info

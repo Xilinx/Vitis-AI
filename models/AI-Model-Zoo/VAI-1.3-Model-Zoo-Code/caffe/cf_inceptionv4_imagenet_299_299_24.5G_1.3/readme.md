@@ -20,6 +20,7 @@
   # use python2
   make pycaffe
   ```
+  Note: If you are in the released Docker env, there is no need to build Caffe.
 
 ### Preparation
 
@@ -96,10 +97,15 @@
 
 ### Performance
 
-|Acc |Eval on Imagenet| 
+|Acc |Float model performance on Imagenet| 
 |----|----|
 |Recall_1(%)|79.5824|
 |Recall_5(%)|94.6972|
+
+|Acc |Quantized(int8) model performance on Imagenet| 
+|----|----|
+|Recall_1(%)|78.99|
+|Recall_5(%)|94.44|
 
 ### Model_info
 
@@ -140,13 +146,13 @@
 
     image_data_param {
       root_folder:"/path/to/images"
-      source: "quant.txt"
+      source: "/path/to/quant.txt"
       #new_width: 299, Note: images should be resized firstly with short side reiszing to 320 and keeping the aspect ratio. 
       #new_height: 299
       batch_size: 16
     }
   }
-  # quant.txt: image path label
+  # quant.txt: image path label, if use relative image path here, please comment out above root_folder code
     000001.jpg 1
     000002.jpg 1
     000003.jpg 1

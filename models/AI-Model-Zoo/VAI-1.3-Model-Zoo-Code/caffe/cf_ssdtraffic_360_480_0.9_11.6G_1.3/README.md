@@ -24,6 +24,8 @@
   # python version(python2)
   make py
   ```
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Demo
  run demo
   ```shell
@@ -84,7 +86,8 @@
    Test images: private data  2229
    Model: ssd-vgg-pruned
    Classes: 4
-   mAP: 59.8% 
+   Float mAP: 59.8% 
+   Quantized mAP: 59.2% 
    ```
 ### Model info
 1. data preprocess

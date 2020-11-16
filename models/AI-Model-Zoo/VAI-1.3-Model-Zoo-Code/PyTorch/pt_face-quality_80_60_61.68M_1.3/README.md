@@ -62,7 +62,7 @@ Preprocess: The original image-->face detection-->crop face-->resize to H_96xW_7
    (five points, left-eye, right-eye, nose, left-mouth-corner, right-mouth-corner)
    label_quality_score: You may get this label by pretrain model.
    ```
-
+ 
 ### demo
 
 1. prepare test images 
@@ -121,4 +121,4 @@ Preprocess: The original image-->face detection-->crop face-->resize to H_96xW_7
   Image hegiht and width: h * w = 80* 60
   mean: 0.5
   std: 0.5
-  ```
+  ``` 

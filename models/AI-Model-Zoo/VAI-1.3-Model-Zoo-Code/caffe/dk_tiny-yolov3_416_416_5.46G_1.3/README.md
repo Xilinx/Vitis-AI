@@ -23,6 +23,7 @@
   # python version(python2)
   make py
   ```
+Note: If you are in the released Docker env, there is no need to build Caffe.
 
 ### Demo
  run demo
@@ -54,7 +55,8 @@
    Test images: vmss 10026
    Model: tiny_yolov3
    Classes: 10
-   float_mAP: 97.391% 
+   float mAP: 97.391% 
+   Quantized mAP: 96.5% 
    ```
 ### Model info
 ```

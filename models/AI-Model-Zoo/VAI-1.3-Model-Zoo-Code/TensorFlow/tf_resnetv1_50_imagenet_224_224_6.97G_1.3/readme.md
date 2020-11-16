@@ -73,10 +73,10 @@
 
 ### performance
 
-|Acc |Claimed on Imagenet| Ckpt on Imagenet| Pb on Imagenet|
-|----|----|---|---|
-|Recall_1(%)|75.2|75.202|75.202|
-|Recall_5(%)|92.2|92.194|92.194|
+|Acc |Pb on Imagenet|
+|----|---|
+|Recall_1(%)|75.202|
+|Recall_5(%)|92.194|
 
 ### Model_info
 
@@ -95,8 +95,8 @@
   ```
 
 ### Quantize
-1- Quantize tool installation
+1. Quantize tool installation
   See [vai_q_tensorflow](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Quantizer/vai_q_tensorflow)
 
-2- Quantize workspace
+2. Quantize workspace
   See [quantize](./code/quantize/)

@@ -26,6 +26,8 @@
   pip install opencv-python
   ```
 
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Preparation
 
 1. prepare train dataset.
@@ -102,10 +104,10 @@
  
 ### Performance
 
-|model |precision |Eval on FDDB| 
+|model |precision |Eval on [FDDB](http://vis-www.cs.umass.edu/fddb/index.html)| 
 |----|----|----|
 |float|Recall(%)|88.33@fp=100|
-|quantized|Recall(%)|87.8@fp=100|
+|quantized(INT8)|Recall(%)|87.83@fp=100|
 
 ### Model_info
 

@@ -93,10 +93,15 @@
 
 ### performance
 
-|Acc |h5 on Imagenet|
+|Acc |Float h5 model performance on Imagenet|
 |----|---|
 |Recall_1(%)|75.13|
 |Recall_5(%)|92.20|
+
+|Acc |Quantized(int8) h5 model performance on Imagenet|
+|----|---|
+|Recall_1(%)|74.23|
+|Recall_5(%)|92.14|
 
 ### Model_info
 

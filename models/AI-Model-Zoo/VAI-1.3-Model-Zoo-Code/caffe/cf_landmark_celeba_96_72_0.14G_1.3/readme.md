@@ -32,6 +32,8 @@
  Because the Python layer is used in the code,  protobuf needs to be installed and consistent with the version used when compiling caffe-xilinx.
  ```
 
+Note: If you are in the released Docker env, there is no need to build Caffe.
+
 ### Preparation
 
 1. dataset describle.
@@ -129,12 +131,12 @@
   # Ouput will be found in test/output.
   ```
 
-### Performance
+### Performance(private dataset)
 
 ```
 float: points-l1-loss:0.1162
 float: weighted points-l1_loss: 19.52
-quantized: weighted points-l1_loss: 19.71
+quantized(INT8): weighted points-l1_loss: 19.71
 ```
 
 ### Model_info
