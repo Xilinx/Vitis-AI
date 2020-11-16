@@ -35,7 +35,7 @@ do
   esac
 done
 
-export AKS_ROOT=$VAI_ALVEO_ROOT/../tools/AKS
+export AKS_ROOT=$VAI_ALVEO_ROOT/../../../tools/AKS
 # Add verbose level
 export AKS_VERBOSE=$VERBOSE
 
@@ -69,7 +69,6 @@ if [[ ! -d "${NAME}" ]]; then
     echo -e "$NAME doesn't exist"
     wget $AKS_GRAPH_META_URL -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
     if [[ $? != 0 ]]; then echo "Network download failed. Exiting ..."; exit 1; fi;
-    break;
 fi;
 
 # Add Library Paths

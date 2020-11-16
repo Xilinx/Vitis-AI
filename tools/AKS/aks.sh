@@ -132,7 +132,7 @@ export AKS_ROOT=${PWD}
 export AKS_VERBOSE=$VERBOSE
 
 # Add AKS utils to PYTHONPATH
-export PYTHONPATH=$PYTHONPATH:${VAI_ALVEO_ROOT}
+export PYTHONPATH=$PYTHONPATH:${VAI_ALVEO_ROOT}:/usr/lib
 
 # Add Library Paths
 if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib" ]
