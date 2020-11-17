@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <vector>
 
-#include <boost/filesystem.hpp>
+// #include <boost/filesystem.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -99,16 +99,16 @@ int OpticalFlowPostProcess::exec_async (
     std::string output_folder = \
       nodeParams->_stringParams.find("visualize") == nodeParams->_stringParams.end() ?
         "" : nodeParams->_stringParams["visualize"];
-    if (!output_folder.empty()) {
-        boost::filesystem::path p(dynParams->imagePaths.front());
-        std::string filename = p.filename().string();
-        std::string folder = p.parent_path().filename().string();
-        std::string output_path = output_folder + "/" + folder;
-        boost::filesystem::create_directories(output_path);
-        std::string tmp = "_" + filename;
-        cv::imwrite(output_path + "/flow_x" + tmp, boundedFlowX);
-        cv::imwrite(output_path + "/flow_y" + tmp, boundedFlowY);
-    }
+    // if (!output_folder.empty()) {
+    //     boost::filesystem::path p(dynParams->imagePaths.front());
+    //     std::string filename = p.filename().string();
+    //     std::string folder = p.parent_path().filename().string();
+    //     std::string output_path = output_folder + "/" + folder;
+    //     boost::filesystem::create_directories(output_path);
+    //     std::string tmp = "_" + filename;
+    //     cv::imwrite(output_path + "/flow_x" + tmp, boundedFlowX);
+    //     cv::imwrite(output_path + "/flow_y" + tmp, boundedFlowY);
+    // }
 
     // std::cout << "[DBG] OpticalFlowPostProcess: Done!" << std::endl << std::endl;
     return -1; // No wait

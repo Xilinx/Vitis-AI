@@ -35,7 +35,7 @@ do
   esac
 done
 
-export AKS_ROOT=$VAI_ALVEO_ROOT/../../../tools/AKS
+export AKS_ROOT=/workspace/tools/AKS
 # Add verbose level
 export AKS_VERBOSE=$VERBOSE
 
@@ -82,7 +82,7 @@ then
 fi
 
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:libs
-LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${AKS_ROOT}/libs
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${AKS_ROOT}
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}

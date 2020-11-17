@@ -23,10 +23,11 @@
 #include <vector>
 #include <iterator>     // std::back_inserter
 #include <algorithm>
-#include <boost/filesystem.hpp>
-#include <opencv2/opencv.hpp>
 #include <condition_variable>
 #include <chrono>
+
+#include <boost/filesystem.hpp>
+#include <opencv2/opencv.hpp>
 
 #include <aks/AksSysManagerExt.h>
 #include <aks/AksNodeParams.h>
@@ -278,8 +279,7 @@ int main(int argc, char **argv) {
     auto sysMan = AKS::SysManagerExt::getGlobal();
     std::vector<std::string> kernelPaths;
     kernelPaths.push_back("kernel_zoo");
-    kernelPaths.push_back(
-        std::string(std::getenv("VAI_ALVEO_ROOT")) + "/apps/aks/kernel_zoo");
+    kernelPaths.push_back("/workspace/tools/AKS/kernel_zoo");
     loadKernels(kernelPaths);
 
     std::string OFGraphJson = "graph_zoo/graph_optical_flow.json";

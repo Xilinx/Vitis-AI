@@ -14,7 +14,6 @@ else()
 endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
 
-find_package(OpenCV REQUIRED)
 find_package (Boost 1.65 REQUIRED)
 
 add_library (${PROJECT_NAME} SHARED
@@ -28,10 +27,8 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 
 target_include_directories (${PROJECT_NAME}
   PRIVATE ${aks_INCLUDE_DIRS}
-  PRIVATE ${OpenCV_INCLUDES}
 )
 
 target_link_libraries (${PROJECT_NAME}
- PRIVATE ${OpenCV_LIBS}
  PRIVATE ${Boost_LIBRARY}
 )
