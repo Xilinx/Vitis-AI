@@ -27,7 +27,7 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 
 target_include_directories (${PROJECT_NAME}
   PRIVATE ${aks_INCLUDE_DIRS}
-  PRIVATE ${OpenCV_INCLUDES}
+  PRIVATE ${OpenCV_INCLUDE_DIRS}
 )
 
 target_link_libraries (${PROJECT_NAME}

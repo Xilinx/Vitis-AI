@@ -29,8 +29,8 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 
 target_include_directories (${PROJECT_NAME}
   PRIVATE ${aks_INCLUDE_DIRS}
-  PRIVATE ${OpenCV_INCLUDES}
-  PRIVATE ${OpenCL_INCLUDES}
+  PRIVATE ${OpenCV_INCLUDE_DIRS}
+  PRIVATE ${OpenCL_INCLUDE_DIRS}
   PRIVATE "$ENV{XILINX_XRT}/include"
   PRIVATE "$ENV{VAI_ALVEO_ROOT}/apps/whole_app_acceleration/classification/src/"
 )
