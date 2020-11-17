@@ -13,7 +13,6 @@ else()
   )
 endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
-find_package(OpenCV REQUIRED)
 
 add_library (${PROJECT_NAME} SHARED
   AksOFClassificationPreProcess.cpp
@@ -26,9 +25,4 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 
 target_include_directories (${PROJECT_NAME}
   PRIVATE ${aks_INCLUDE_DIRS}
-  PRIVATE ${OpenCV_INCLUDES}
-)
-
-target_link_libraries (${PROJECT_NAME}
- PRIVATE ${OpenCV_LIBS}
 )

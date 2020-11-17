@@ -22,10 +22,6 @@
 #include <boost/algorithm/string.hpp>
 #include <chrono>
 
-#include <opencv2/opencv.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
 #include <aks/AksKernelBase.h>
 #include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
