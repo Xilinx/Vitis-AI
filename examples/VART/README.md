@@ -82,7 +82,7 @@ Note that if you close the current terminal, you need to re-execute the above in
 tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
-5. Cross compile the sample, take resnet50 as an example.
+5. Cross compile the sample, take `resnet50` as an example.
 ```
 cd ~/Vitis-AI/examples/VART/samples/resnet50
 bash -x build.sh
@@ -179,13 +179,13 @@ steps.**
 ## Quick Start For Alveo
 ### Setting Up the Host
 
-Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../../setup/alveo-hbm#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
+Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../../setup/alveo/u50_u50lv_u280/README.md#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
 
 ### Running Vitis AI Examples
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
 Thus, `VART` is located in the path of `/workspace/examples/VART/` in the docker system. 
 
-**`/workspace/VART/` is the path for the following example.**
+**`/workspace/examples/VART/` is the path for the following example.**
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
@@ -214,7 +214,7 @@ If you encounter any path errors in running examples, check to see if you follow
 | 1    | resnet50                 | ./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel                            |
 | 2    | resnet50_mt_py           | /usr/bin/python3 resnet50.py 1 m/usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel          |
 | 3    | inception_v1_mt_py       | /usr/bin/python3 inception_v1.py 1 /usr/share/vitis_ai_library/models/inception_v1_tf/inception_v1_tf.xmodel      |
-| 4    | pose_detection           | ./pose_detection video/pose.webm /usr/share/vitis_ai_library/models/sp_net/sp_net.xmodel /usr/share/vitis_ai_library/models/ssd_pedestrain_pruned_0_97/ssd_pedestrain_pruned_0_97.xmodel         |
+| 4    | pose_detection           | ./pose_detection video/pose.webm /usr/share/vitis_ai_library/models/sp_net/sp_net.xmodel /usr/share/vitis_ai_library/models/ssd_pedestrian_pruned_0_97/ssd_pedestrian_pruned_0_97.xmodel         |
 | 5    | video_analysis           | ./video_analysis video/structure.webm /usr/share/vitis_ai_library/models/ssd_traffic_pruned_0_9/ssd_traffic_pruned_0_9.xmodel    |
 | 6    | adas_detection           | ./adas_detection video/adas.webm /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel         |
 | 7    | segmentation             | ./segmentation video/traffic.webm /usr/share/vitis_ai_library/models/fpn/fpn.xmodel        |
