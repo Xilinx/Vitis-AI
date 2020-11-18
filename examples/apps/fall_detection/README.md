@@ -9,14 +9,18 @@ source /workspace/setup/alveo/dpuv1/overlaybins/setup.sh
 ## **Build common kernels**
 ```sh
 cd /workspace/tools/AKS
-./cmake-kernels.sh --clean
+./cmake-kernels.sh
 ```
 
 ## **Build fall-detection kernels**
 ```sh
 cd /workspace/examples/apps/fall_detection
-./cmake-kernels.sh --clean
-./cmake-src.sh --clean
+./cmake-kernels.sh
+```
+## **Compile main file**
+```sh
+cd /workspace/examples/apps/fall_detection
+make
 ```
 
 # **Variables**
