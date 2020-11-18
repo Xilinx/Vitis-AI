@@ -62,7 +62,8 @@ int main(int argc, char *argv[]) {
   }
 
   // auto det = vitis::ai::MedicalDetection::create("RefineDet_Medical");
-  auto det = vitis::ai::MedicalDetection::create(argv[1]);
+  std::string model = argv[1] + std::string("_acc");
+  auto det = vitis::ai::MedicalDetection::create(model);
 
   std::string name(argv[2]);
   std::string fpath = name.substr(0, name.find_last_of('/')+1 );

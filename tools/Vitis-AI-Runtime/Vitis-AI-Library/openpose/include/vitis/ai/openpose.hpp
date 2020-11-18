@@ -108,6 +108,16 @@ class OpenPose {
    *
    */
   virtual OpenPoseResult run(const cv::Mat &image) = 0;
+  /**
+   * @brief Function to get running results of the openpose neuron
+   * network in batch mode.
+   *
+   * @param images Input data of batch input images (vector<cv::Mat>). The size
+   * of input images equals batch size obtained by get_input_batch.
+   *
+   * @return The vector of OpenPoseResult.
+   *
+   */
   virtual std::vector<OpenPoseResult> run(
       const std::vector<cv::Mat> &images) = 0;
   /**

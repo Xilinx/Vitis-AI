@@ -73,5 +73,5 @@ target_link_libraries(test_medicalsegcell ${COMPONENT_NAME} glog::glog  ${OpenCV
 add_executable(test_medicalsegcell_batch test/test_medicalsegcell_batch.cpp)
 target_link_libraries(test_medicalsegcell_batch ${COMPONENT_NAME} glog::glog  ${OpenCV_LIBS})
 
-#add_executable(test_medicalsegcell_accuracy test/test_accuracy_medicalsegcell.cpp)
-#target_link_libraries(test_medicalsegcell_accuracy ${COMPONENT_NAME} math glog::glog json-c ${OpenCV_LIBS})
+add_executable(test_medicalsegcell_accuracy test/test_accuracy_medicalsegcell.cpp)
+target_link_libraries(test_medicalsegcell_accuracy ${COMPONENT_NAME} math glog::glog ${OpenCV_LIBS})

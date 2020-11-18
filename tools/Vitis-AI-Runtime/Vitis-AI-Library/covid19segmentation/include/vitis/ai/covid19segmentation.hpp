@@ -17,7 +17,7 @@
  * Filename:segmentation.hpp
  *
  * Description:
- * Covid19Segmentation for ADAS
+ * Covid19Segmentation
  *
  * Please refer to document "Xilinx_AI_SDK_User_Guide.pdf" for more
  *details of these APIs.

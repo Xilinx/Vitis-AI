@@ -25,16 +25,17 @@ namespace vitis {
 namespace ai {
 
 /**
- * @brief Base class for detecting position of plate in a vehicle image
- (cv::Mat).
+ * @brief Base class for segmentation 3D object data in vector<float> mode.
  *
    @endcode
  *
  */
-
 struct Segmentation3DResult {
+  /// width of the network model
   int width;
+  /// height of the network model
   int height;
+  /// input 3D object data
   std::vector<int> array;
 };
 
@@ -50,8 +51,10 @@ class Segmentation3D {
    * @returen A instance of the PlaterDatect class.
    */
   static std::unique_ptr<Segmentation3D> create(const std::string &model_name,
-                                             bool need_preprocess = false);
-
+                                             bool need_mean_scale_process = false);
+  /**
+   * @cond NOCOMMENTS
+   */
  protected:
   explicit Segmentation3D();
   Segmentation3D(const Segmentation3D &) = delete;
@@ -59,21 +62,22 @@ class Segmentation3D {
 
  public:
   virtual ~Segmentation3D();
+  /**
+   * @endcond
+   */
 
  public:
   /**
-   * @brief Function to get InputWidth of the platedetect network (input image
-   * cols).
+   * @brief Function to get InputWidth of the 3D segmentation network 
    *
-   * @return InputWidth of the platedetect network.
+   * @return InputWidth of the 3D segmentation network
    */
   virtual int getInputWidth() const = 0;
 
   /**
-   *@brief Function to get InputHeigth of the platedetect network (input image
-   *rows).
+   *@brief Function to get InputHeight of the 3D segmentation network
    *
-   *@return InputHeight of the platedetect network.
+   *@return InputHeight of the 3D segmentation network
    */
   virtual int getInputHeight() const = 0;
 
@@ -88,14 +92,20 @@ class Segmentation3D {
   virtual size_t get_input_batch() const = 0;
 
   /**
-   * @brief Function of get running result of the platedetect network.
+   * @brief Function of get running result of the 3D segmentation network
    *
-   * @param img Input data of input image (cv::Mat) of detected counterpart
-   * and resized as inputwidth an outputheight.
+   * @param array Input data of 3D object data in vector<float> mode
    *
-   * @return plate position and plate score.
+   * @return Segmentation3DResult
    */
   virtual Segmentation3DResult run(std::vector<std::vector<float>>& array) = 0;
+  /**
+   * @brief Function of get running result of the 3D segmentation network in batch mode
+   *
+   * @param arrays  vector of Input data of 3D object data in vector<float> mode
+   *
+   * @return vector of Segmentation3DResult
+   */
   virtual std::vector<Segmentation3DResult> run(std::vector<std::vector<std::vector<float>>>& arrays) = 0;
 };
 }  // namespace ai

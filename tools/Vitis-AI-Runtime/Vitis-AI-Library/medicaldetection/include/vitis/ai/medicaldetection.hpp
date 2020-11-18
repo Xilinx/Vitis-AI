@@ -101,13 +101,13 @@ public:
    * @brief Function to get running results of the MedicalDetection neuron network in
    * batch mode.
    *
-   * @param images Input data of input images (vector<cv::Mat>).The size of
+   * @param imgs Input data of input images (vector<cv::Mat>).The size of
    * input images equals batch size obtained by get_input_batch.
    *
    * @return The vector of MedicalDetectionResult.
    *
    */
-  virtual std::vector<vitis::ai::MedicalDetectionResult> run(const std::vector<cv::Mat> &img) = 0;
+  virtual std::vector<vitis::ai::MedicalDetectionResult> run(const std::vector<cv::Mat> &imgs) = 0;
 
   /**
    * @brief Function to get InputWidth of the MedicalDetection network (input image cols).

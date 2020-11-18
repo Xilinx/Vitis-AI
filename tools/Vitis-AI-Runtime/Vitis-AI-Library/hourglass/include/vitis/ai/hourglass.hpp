@@ -80,8 +80,7 @@ class Hourglass {
    * Hourglass.
    *
    * @param model_name Model name
-   * @param need_preprocess Normalize with mean/scale or not, default
-   * value is true.
+   * @param need_preprocess Normalize with mean/scale or not, default value is true.
    * @return An instance of Hourglass class.
    *
    */
@@ -107,20 +106,30 @@ class Hourglass {
    *
    */
   virtual HourglassResult run(const cv::Mat &image) = 0;
+  /**
+   * @brief Function to get running results of the hourglass neuron
+   * network in batch mode.
+   *
+   * @param images Input data of batch input images (vector<cv::Mat>). The size of
+   * input images equals batch size obtained by get_input_batch.
+   *
+   * @return The vector of HourglassResult.
+   *
+   */
   virtual std::vector<HourglassResult> run(
       const std::vector<cv::Mat> &images) = 0;
   /**
    * @brief Function to get InputWidth of the hourglass network (input image
-   *cols).
+   * cols).
    *
    * @return InputWidth of the hourglass network
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the hourglass network (input image
-   *rows).
+   * @brief Function to get InputHeigth of the hourglass network (input image
+   * rows).
    *
-   *@return InputHeight of the hourglass network.
+   * @return InputHeight of the hourglass network.
    */
   virtual int getInputHeight() const = 0;
   virtual size_t get_input_batch() const = 0;

@@ -40,7 +40,7 @@ struct MedicalSegcellResult {
   int width;
   /// Height of input image.
   int height;
-
+  /// segmentation result in cv::Mat mode
   cv::Mat segmentation;
 };
 
@@ -104,14 +104,14 @@ class MedicalSegcell {
    * @brief Function to get running results of the MedicalSegcell neuron network in
    * batch mode.
    *
-   * @param images Input data of input images (vector<cv::Mat>).The size of
+   * @param imgs Input data of input images (vector<cv::Mat>).The size of
    * input images equals batch size obtained by get_input_batch.
    *
    * @return The vector of MedicalSegcellResult.
    *
    */
   virtual std::vector<vitis::ai::MedicalSegcellResult> run(
-      const std::vector<cv::Mat> &img) = 0;
+      const std::vector<cv::Mat> &imgs) = 0;
 
   /**
    * @brief Function to get InputWidth of the MedicalSegcell network (input image cols).

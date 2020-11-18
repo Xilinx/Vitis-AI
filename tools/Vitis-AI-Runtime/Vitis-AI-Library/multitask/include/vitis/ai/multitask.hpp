@@ -101,7 +101,7 @@ class MultiTask {
    */
   virtual int getInputWidth() const = 0;
   /**
-   * @brief Function to get InputHight of the multitask network (input image
+   * @brief Function to get InputHeight of the multitask network (input image
    *rows).
    *
    * @return InputHeight of the multitask network.
@@ -216,7 +216,7 @@ class MultiTask8UC1 {
    */
   virtual int getInputWidth() const { return multitask_->getInputWidth(); }
   /**
-   * @brief Function to get InputHight of the multitask network (input image
+   * @brief Function to get InputHeight of the multitask network (input image
    *rows).
    *
    * @return InputHeight of the multitask network.
@@ -325,7 +325,7 @@ class MultiTask8UC3 {
    */
   virtual int getInputWidth() const { return multitask_->getInputWidth(); }
   /**
-   * @brief Function to get InputHight of the multitask network (input image
+   * @brief Function to get InputHeight of the multitask network (input image
    *rows).
    *
    * @return InputHeight of the multitask network.

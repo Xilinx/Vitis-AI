@@ -101,7 +101,7 @@ namespace ai {
   @endcode
  *
  * Display of the compare result with a set of images:
- * @image latex images/sample_facecompare_result "facecompare result image" width=300px
+ * @image latex images/sample_facecompare_result.jpg "facecompare result image" width=\textwidth
  *
  *
  */
@@ -183,7 +183,7 @@ class FaceFeature {
    * @brief Function of get running result of the feature network
    * in batch mode.
    *
-   * @param images Input data of batch input images (vector<cv::Mat>) detected
+   * @param imgs Input data of batch input images (vector<cv::Mat>) detected
    * by the facedetect network and then retated and aligned. The size of input
    * images equals batch size obtained by get_input_batch.
    *
@@ -191,20 +191,20 @@ class FaceFeature {
    */
 
   virtual std::vector<FaceFeatureFloatResult> run(
-      const std::vector<cv::Mat> &img) = 0;
+      const std::vector<cv::Mat> &imgs) = 0;
 
   /**
    * @brief Function of get running result of the feature network
    * in batch mode.
    *
-   * @param images Input data of batch input images (vector<cv::Mat>) detected
+   * @param imgs Input data of batch input images (vector<cv::Mat>) detected
    * by the facedetect network and then retated and aligned. The size of input
    * images equals batch size obtained by get_input_batch.
    *
    * @return The vector of FaceFeatureFixedResult.
    */
   virtual std::vector<FaceFeatureFixedResult> run_fixed(
-      const std::vector<cv::Mat> &img) = 0;
+      const std::vector<cv::Mat> &imgs) = 0;
 };
 /*!@} */
 }  // namespace ai

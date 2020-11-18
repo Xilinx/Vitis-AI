@@ -98,11 +98,14 @@ install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/test_jpeg_reid.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/test_accuracy_reid.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/test_performance_reid.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/build.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/readme
   #${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/sample_reid_001.jpg
   #${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/sample_reid_002.jpg
   #${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/test_performance_reid.list
+  DESTINATION ${SAMPLE_INATLL_PATH}/reid/)
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/build.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
   DESTINATION ${SAMPLE_INATLL_PATH}/reid/)
 
 add_executable(test_jpeg_posedetect_with_ssd  ${CMAKE_CURRENT_SOURCE_DIR}/samples/posedetect/test_jpeg_posedetect_with_ssd.cpp)
@@ -185,6 +188,10 @@ add_executable(test_accuracy_yolov3_mt ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov
 target_link_libraries(test_accuracy_yolov3_mt ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lpthread -lglog protobuf::libprotobuf)
 install(TARGETS test_accuracy_yolov3_mt DESTINATION ${SAMPLE_INATLL_PATH}/yolov3/)
 
+add_executable(test_accuracy_tiny_yolov3_vmss ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov3/test_accuracy_tiny_yolov3_vmss.cpp)
+target_link_libraries(test_accuracy_tiny_yolov3_vmss ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lpthread -lglog protobuf::libprotobuf)
+install(TARGETS test_accuracy_tiny_yolov3_vmss DESTINATION ${SAMPLE_INATLL_PATH}/yolov3/)
+
 add_executable(test_jpeg_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov3/test_jpeg_yolov4.cpp)
 target_link_libraries(test_jpeg_yolov4 ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lglog protobuf::libprotobuf)
 add_executable(test_accuracy_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov3/test_accuracy_yolov4_mt.cpp)
@@ -258,14 +265,32 @@ target_link_libraries(seg_and_pose_detect ${OpenCV_LIBS} ${PROJECT_NAME}::multit
 if(HAVE_DRM)
   target_link_libraries(seg_and_pose_detect drm)
 endif(HAVE_DRM)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/demo/seg_and_pose_detect/ DESTINATION ${DEMO_INATLL_PATH}/seg_and_pose_detect/)
+# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/demo/seg_and_pose_detect/ DESTINATION ${DEMO_INATLL_PATH}/seg_and_pose_detect/)
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/demo/seg_and_pose_detect/readme
+  ${CMAKE_CURRENT_SOURCE_DIR}/demo/seg_and_pose_detect/seg_and_pose_detect.cpp
+  DESTINATION ${DEMO_INATLL_PATH}/seg_and_pose_detect/)
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/demo/seg_and_pose_detect/build.sh
+  ${CMAKE_CURRENT_SOURCE_DIR}/demo/seg_and_pose_detect/builddrm.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
+  DESTINATION ${DEMO_INATLL_PATH}/seg_and_pose_detect/)
 
 add_executable(segs_and_roadline_detect ${CMAKE_CURRENT_SOURCE_DIR}/demo/segs_and_roadline_detect/segs_and_roadline_detect.cpp)
 target_link_libraries(segs_and_roadline_detect ${OpenCV_LIBS} ${PROJECT_NAME}::multitask ${PROJECT_NAME}::lanedetect ${PROJECT_NAME}::ssd glog::glog ${Pthread_LIB})
 if(HAVE_DRM)
   target_link_libraries(segs_and_roadline_detect drm)
 endif(HAVE_DRM)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/demo/segs_and_roadline_detect/ DESTINATION ${DEMO_INATLL_PATH}/segs_and_roadline_detect/)
+#install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/demo/segs_and_roadline_detect/ DESTINATION ${DEMO_INATLL_PATH}/segs_and_roadline_detect/)
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/demo/segs_and_roadline_detect/readme
+  ${CMAKE_CURRENT_SOURCE_DIR}/demo/segs_and_roadline_detect/segs_and_roadline_detect.cpp
+  DESTINATION  ${DEMO_INATLL_PATH}/segs_and_roadline_detect/)
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/demo/segs_and_roadline_detect/build.sh
+  ${CMAKE_CURRENT_SOURCE_DIR}/demo/segs_and_roadline_detect/builddrm.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
+  DESTINATION ${DEMO_INATLL_PATH}/segs_and_roadline_detect/)
 
 
 if(HAVE_DRM)
@@ -282,19 +307,25 @@ target_link_libraries(demo_classification ${OpenCV_LIBS} glog::glog ${PROJECT_NA
 
 install(TARGETS demo_classification DESTINATION ${DEMO_INATLL_PATH}/classification/)
 install(FILES
-  demo/classification/build.sh
   demo/classification/demo_classification.cpp
   demo/classification/readme
+  DESTINATION ${DEMO_INATLL_PATH}/classification/)
+install(FILES
+  demo/classification/build.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
   DESTINATION ${DEMO_INATLL_PATH}/classification/)
 
 add_executable(demo_yolov3 ${CMAKE_CURRENT_SOURCE_DIR}/demo/yolov3/demo_yolov3.cpp)
 target_link_libraries(demo_yolov3 ${OpenCV_LIBS} glog::glog protobuf::libprotobuf ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task xnnpp)
 install(TARGETS demo_yolov3 DESTINATION ${DEMO_INATLL_PATH}/yolov3/)
 install(FILES
-  demo/yolov3/build.sh
   demo/yolov3/readme
   #demo/yolov3/demo_yolov3.jpg
   demo/yolov3/demo_yolov3.cpp
+  DESTINATION ${DEMO_INATLL_PATH}/yolov3/)
+install(FILES
+  demo/yolov3/build.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
   DESTINATION ${DEMO_INATLL_PATH}/yolov3/)
 
 add_executable(test_jpeg_covid19segmentation ${CMAKE_CURRENT_SOURCE_DIR}/samples/covid19segmentation/test_jpeg_covid19segmentation.cpp)
@@ -305,22 +336,28 @@ target_link_libraries(test_performance_covid19segmentation ${OpenCV_LIBS} glog::
 install(TARGETS test_performance_covid19segmentation DESTINATION ${SAMPLE_INATLL_PATH}/covid19segmentation/)
 install(FILES
   samples/covid19segmentation/readme
-  samples/covid19segmentation/build.sh
   samples/covid19segmentation/test_jpeg_covid19segmentation.cpp
   samples/covid19segmentation/test_performance_covid19segmentation.cpp
+  DESTINATION ${SAMPLE_INATLL_PATH}/covid19segmentation/)
+install(FILES
+  samples/covid19segmentation/build.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
   DESTINATION ${SAMPLE_INATLL_PATH}/covid19segmentation/)
 
 add_executable(test_jpeg_3Dsegmentation ${CMAKE_CURRENT_SOURCE_DIR}/samples/3Dsegmentation/test_jpeg_3Dsegmentation.cpp)
 target_link_libraries(test_jpeg_3Dsegmentation ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::3Dsegmentation)
 install(TARGETS test_jpeg_3Dsegmentation DESTINATION ${SAMPLE_INATLL_PATH}/3Dsegmentation/)
-#aDD_EXecutable(test_performance_3Dsegmentation ${CMAKE_CURRENT_SOURCE_DIR}/samples/3Dsegmentation/test_performance_3Dsegmentation.cpp)
-#target_link_libraries(test_performance_3Dsegmentation ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::3Dsegmentation)
-#install(TARGETS test_performance_3Dsegmentation DESTINATION ${SAMPLE_INATLL_PATH}/3Dsegmentation/)
+add_EXecutable(test_performance_3Dsegmentation ${CMAKE_CURRENT_SOURCE_DIR}/samples/3Dsegmentation/test_performance_3Dsegmentation.cpp)
+target_link_libraries(test_performance_3Dsegmentation ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::3Dsegmentation)
+install(TARGETS test_performance_3Dsegmentation DESTINATION ${SAMPLE_INATLL_PATH}/3Dsegmentation/)
 install(FILES
   samples/3Dsegmentation/readme
-  samples/3Dsegmentation/build.sh
   samples/3Dsegmentation/test_jpeg_3Dsegmentation.cpp
-  #samples/3Dsegmentation/test_performance_3Dsegmentation.cpp
+  samples/3Dsegmentation/test_performance_3Dsegmentation.cpp
+  DESTINATION ${SAMPLE_INATLL_PATH}/3Dsegmentation/)
+install(FILES
+  samples/3Dsegmentation/build.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
   DESTINATION ${SAMPLE_INATLL_PATH}/3Dsegmentation/)
 
 add_executable(test_jpeg_classification_squeezenet ${CMAKE_CURRENT_SOURCE_DIR}/samples/classification/test_jpeg_classification_squeezenet.cpp)
@@ -363,10 +400,13 @@ install(TARGETS test_performance_pointpillars DESTINATION ${SAMPLE_INATLL_PATH}/
 install(TARGETS test_accuracy_pointpillars DESTINATION ${SAMPLE_INATLL_PATH}/pointpillars/)
 install(FILES
   samples/pointpillars/readme
-  samples/pointpillars/build.sh
   samples/pointpillars/test_bin_pointpillars.cpp
   samples/pointpillars/test_performance_pointpillars.cpp
   samples/pointpillars/test_accuracy_pointpillars.cpp
+  DESTINATION ${SAMPLE_INATLL_PATH}/pointpillars/)
+install(FILES
+  samples/pointpillars/build.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
   DESTINATION ${SAMPLE_INATLL_PATH}/pointpillars/)
 
 #cifar10classification
@@ -378,10 +418,13 @@ install(TARGETS test_jpeg_cifar10classification DESTINATION ${SAMPLE_INATLL_PATH
 install(TARGETS test_performance_cifar10classification DESTINATION ${SAMPLE_INATLL_PATH}/cifar10classification/)
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/cifar10classification/readme
-  ${CMAKE_CURRENT_SOURCE_DIR}/samples/cifar10classification/build.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/cifar10classification/process_result.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/cifar10classification/test_jpeg_cifar10classification.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/cifar10classification/test_performance_cifar10classification.cpp
+  DESTINATION ${SAMPLE_INATLL_PATH}/cifar10classification/)
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/cifar10classification/build.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
   DESTINATION ${SAMPLE_INATLL_PATH}/cifar10classification/)
 
 #mnistclassification
@@ -393,27 +436,37 @@ install(TARGETS test_jpeg_mnistclassification DESTINATION ${SAMPLE_INATLL_PATH}/
 install(TARGETS test_performance_mnistclassification DESTINATION ${SAMPLE_INATLL_PATH}/mnistclassification/)
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/mnistclassification/readme
-  ${CMAKE_CURRENT_SOURCE_DIR}/samples/mnistclassification/build.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/mnistclassification/test_jpeg_mnistclassification.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/mnistclassification/test_performance_mnistclassification.cpp
+  DESTINATION ${SAMPLE_INATLL_PATH}/mnistclassification/)
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/mnistclassification/build.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
   DESTINATION ${SAMPLE_INATLL_PATH}/mnistclassification/)
 
 #medicalsegcell
 add_executable(test_jpeg_medicalsegcell  ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_jpeg_medicalsegcell.cpp)
 add_executable(test_video_medicalsegcell ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_video_medicalsegcell.cpp)
 add_executable(test_performance_medicalsegcell ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_performance_medicalsegcell.cpp)
+add_executable(test_accuracy_medicalsegcell ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_accuracy_medicalsegcell.cpp)
 target_link_libraries(test_jpeg_medicalsegcell ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::medicalsegcell)
 target_link_libraries(test_video_medicalsegcell ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::medicalsegcell)
 target_link_libraries(test_performance_medicalsegcell ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::medicalsegcell vart::util ${Pthread_LIB})
+target_link_libraries(test_accuracy_medicalsegcell ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::medicalsegcell vart::util ${Pthread_LIB})
 install(TARGETS test_jpeg_medicalsegcell DESTINATION ${SAMPLE_INATLL_PATH}/medicalsegcell/)
 install(TARGETS test_video_medicalsegcell DESTINATION ${SAMPLE_INATLL_PATH}/medicalsegcell/)
 install(TARGETS test_performance_medicalsegcell DESTINATION ${SAMPLE_INATLL_PATH}/medicalsegcell/)
+install(TARGETS test_accuracy_medicalsegcell DESTINATION ${SAMPLE_INATLL_PATH}/medicalsegcell/)
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/readme
-  ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/build.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/process_result.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_jpeg_medicalsegcell.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_video_medicalsegcell.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_performance_medicalsegcell.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_accuracy_medicalsegcell.cpp
+  DESTINATION ${SAMPLE_INATLL_PATH}/medicalsegcell/)
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/build.sh
+  PERMISSIONS OWNER_READ  OWNER_WRITE  OWNER_EXECUTE  GROUP_READ  GROUP_EXECUTE  WORLD_READ  WORLD_EXECUTE 
   DESTINATION ${SAMPLE_INATLL_PATH}/medicalsegcell/)
 

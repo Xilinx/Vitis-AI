@@ -145,7 +145,7 @@ class RoadLine {
    * @return The vector of RoadLineResult
    */
   virtual std::vector<RoadLineResult> run(
-      const std::vector<cv::Mat> &image) = 0;
+      const std::vector<cv::Mat> &images) = 0;
 };
 }  // namespace ai
 }  // namespace vitis

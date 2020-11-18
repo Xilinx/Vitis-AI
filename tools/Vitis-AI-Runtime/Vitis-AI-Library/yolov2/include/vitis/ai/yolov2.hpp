@@ -69,14 +69,14 @@ class YOLOv2 {
    * @return An instance of YOLOv2 class.
    *
    */
-  static std::unique_ptr<YOLOv2> create(const std::string &model_name,
+  static std::unique_ptr<YOLOv2> create(const std::string& model_name,
                                         bool need_preprocess = true);
   /**
    * @cond NOCOMMENTS
    */
  public:
   explicit YOLOv2();
-  YOLOv2(const YOLOv2 &) = delete;
+  YOLOv2(const YOLOv2&) = delete;
   virtual ~YOLOv2();
   /**
    * @endcond
@@ -90,7 +90,7 @@ class YOLOv2 {
    * @return A Struct of YOLOv2Result.
    *
    */
-  virtual YOLOv2Result run(const cv::Mat &image) = 0;
+  virtual YOLOv2Result run(const cv::Mat& image) = 0;
   /**
    * @brief Function to get running result of the YOLOv2 neuron network
    * in batch mode.
@@ -101,7 +101,7 @@ class YOLOv2 {
    * @return The vector of YOLOv2Result.
    *
    */
-  virtual std::vector<YOLOv2Result> run(const std::vector<cv::Mat> &image) = 0;
+  virtual std::vector<YOLOv2Result> run(const std::vector<cv::Mat>& images) = 0;
   /**
    * @brief Function to get InputWidth of the YOLOv2 network (input image cols).
    *

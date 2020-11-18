@@ -135,7 +135,7 @@ class FaceLandmark {
    * @brief Function to get running results of the face landmark neuron network
    * in batch mode.
    *
-   * @param images Input data of input images (std:vector<cv::Mat>). The size of
+   * @param input_images Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch. The input
    * images need to be resized to InputWidth and InputHeight required by the
    * network.
@@ -144,7 +144,7 @@ class FaceLandmark {
    *
    */
   virtual std::vector<FaceLandmarkResult> run(
-      const std::vector<cv::Mat> &input_image) = 0;
+      const std::vector<cv::Mat> &input_images) = 0;
 };
 /*!@} */
 }  // namespace ai

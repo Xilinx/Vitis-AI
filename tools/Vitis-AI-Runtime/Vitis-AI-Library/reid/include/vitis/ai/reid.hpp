@@ -101,7 +101,7 @@ class Reid {
    * @brief Function to get running result of the reid neuron network in batch
    * mode.
    *
-   * @param image Input data of input image (cv::Mat).
+   * @param images Input data of input images (vector<cv::Mat>).
    *
    * @return vector of ReidResult.
    *

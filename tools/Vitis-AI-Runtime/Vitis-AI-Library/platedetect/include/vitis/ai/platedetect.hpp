@@ -64,10 +64,10 @@ class PlateDetect {
    * @returen A instance of the PlaterDatect class.
    */
   static std::unique_ptr<PlateDetect> create(const std::string &model_name,
-                                             bool need_preprocess = true);
+                                             bool need_mean_scale_process = true);
   static std::unique_ptr<PlateDetect> create(const std::string &model_name,
                                              xir::Attrs *attrs,
-                                             bool need_preprocess = true);
+                                             bool need_mean_scale_process = true);
 
  protected:
   explicit PlateDetect();
@@ -107,7 +107,7 @@ class PlateDetect {
   /**
    * @brief Function of get running result of the platedetect network.
    *
-   * @param img Input data of input image (cv::Mat) of detected counterpart
+   * @param image Input data of input image (cv::Mat) of detected counterpart
    * and resized as inputwidth an outputheight.
    *
    * @return plate position and plate score.
@@ -126,7 +126,7 @@ class PlateDetect {
    *
    */
   virtual std::vector<PlateDetectResult> run(
-      const std::vector<cv::Mat> &img) = 0;
+      const std::vector<cv::Mat> &images) = 0;
 };
 }  // namespace ai
 }  // namespace vitis

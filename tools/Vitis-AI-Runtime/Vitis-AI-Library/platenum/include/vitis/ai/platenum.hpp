@@ -66,10 +66,10 @@ class PlateNum {
    * @returen An instance of PlateNum class.
    */
   static std::unique_ptr<PlateNum> create(const std::string &model_name,
-                                          bool need_preprocess = true);
+                                          bool need_mean_scale_process = true);
   static std::unique_ptr<PlateNum> create(const std::string &model_name,
                                           xir::Attrs *attrs,
-                                          bool need_preprocess = true);
+                                          bool need_mean_scale_process = true);
 
  protected:
   explicit PlateNum();
@@ -114,12 +114,12 @@ class PlateNum {
    *
    * @return The plate number and plate color.
    */
-  virtual PlateNumResult run(const cv::Mat &image) = 0;
+  virtual PlateNumResult run(const cv::Mat &img) = 0;
   /**
    * @brief Function to get running results of the platenum neuron network in
    * batch mode.
    *
-   * @param images Input data of input images (std:vector<cv::Mat>). The size of
+   * @param imgs Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch. The input
    * images need to be resized to InputWidth and InputHeight required by the
    * network.

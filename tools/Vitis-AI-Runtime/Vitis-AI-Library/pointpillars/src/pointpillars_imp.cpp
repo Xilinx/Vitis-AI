@@ -53,7 +53,11 @@ PointPillarsImp::PointPillarsImp(const std::string &model_name, const std::strin
   mtx_init.lock();
   if (binit == false) {
     binit = true;
-    std::string cfgpath = std::string(m0_.configurable_dpu_task_->get_graph()->get_attr<std::string>("dirname")) + "/" + model_name + "_officialcfg.prototxt";
+    std::string model_namex(model_name);
+    if (model_namex.substr( model_namex.size()-4)=="_acc") {
+       model_namex = model_namex.substr(0,  model_namex.size()-4);
+    }
+    std::string cfgpath = std::string(m0_.configurable_dpu_task_->get_graph()->get_attr<std::string>("dirname")) + "/" + model_namex + "_officialcfg.prototxt";
   
     get_cfg( cfgpath);
     get_grid_size();

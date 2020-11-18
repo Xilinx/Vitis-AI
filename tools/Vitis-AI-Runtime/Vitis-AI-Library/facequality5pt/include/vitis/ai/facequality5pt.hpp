@@ -41,10 +41,8 @@ namespace ai {
  * Output is the quality and five key points coordinate of a face in the input
  image.
  *
- * @note Usually the input image contains only one face, when contains multiple
- faces will return the highest quality.
  *
- * sample code :
+ * Sample code :
  * @code
    cv:Mat image = cv::imread("sample_facequality5pt.jpg");
    auto network =
@@ -63,8 +61,8 @@ namespace ai {
  * @endcode
  *
  * Display of the FaceQuality5pt model results:
- * @image latex images/sample_facequality5pt_result.jpg "result
- image" width=100px
+ * @image latex images/sample_facedetect_result.jpg "result image" width=\textwidth
+ *
  */
 class FaceQuality5pt {
 public:

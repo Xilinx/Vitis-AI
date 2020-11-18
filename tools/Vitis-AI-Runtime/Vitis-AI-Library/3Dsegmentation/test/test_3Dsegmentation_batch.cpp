@@ -47,29 +47,32 @@ using namespace vitis::ai;
 int main(int argc, char *argv[]) {
   // bool preprocess = !(getenv("PRE") != nullptr);
   auto det = vitis::ai::Segmentation3D::create(argv[1], false);
-  int width = det->getInputWidth();
-  int height = det->getInputHeight();
   size_t batch_size = det->get_input_batch();
-  std::cout << "width " << width << " "    //
-            << "height " << height << " "  //
-            << std::endl;
-  vector<vector<float>> arrays(4);
-  string scan_x = argv[2];
-  string scan_y = argv[3];
-  string scan_z = argv[4];
-  string remission = argv[5];
-  readfile(scan_x, arrays[0]);
-  readfile(scan_y, arrays[1]);
-  readfile(scan_z, arrays[2]);
-  readfile(remission, arrays[3]);
-  
   vector<vector<vector<float>>> all_arrays(batch_size);
-  for(size_t i = 0;  i < batch_size; i++) {
-    all_arrays[i] =  arrays;
+  vector<string> all_path;
+  for(int i = 2; i < argc; i++) {
+    string name = argv[i];
+    all_path.push_back(name + "/");
   }
+  for (size_t i = 0; i < batch_size; i++) {
+    string path = all_path[i % all_path.size()];
+    vector<vector<float>> arrays(4);
+    string scan_x = path + "scan_x.txt";
+    string scan_y = path + "scan_y.txt";
+    string scan_z = path + "scan_z.txt";
+    string remission = path + "scan_remission.txt";
+    readfile(scan_x, arrays[0]);
+    readfile(scan_y, arrays[1]);
+    readfile(scan_z, arrays[2]);
+    readfile(remission, arrays[3]);
+    all_arrays[i] = arrays;
+  }
+  
   std::vector<vitis::ai::Segmentation3DResult> res = det->run(all_arrays);
-  string result_name = "result.txt";
-  writefile(result_name, res[0].array);
+  for(size_t i = 0; i < res.size(); i++) {
+    string result_name = "batch_result_" + to_string(i) + ".txt";
+    writefile(result_name, res[i].array);
+  }
 
   return 0;
 }

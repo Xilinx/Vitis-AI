@@ -42,26 +42,54 @@ enum e_flag{
   E_BEV=0x02
 };
 
+/**
+ * @struct DISPLAY_PARAM
+ * @brief  4 data structure get from calib information. 
+ *  mainly used for accuracy test or bev image drawing.
+ *  please see detail in readme in overview
+ */
 struct DISPLAY_PARAM{
+ /// P2 information: 
  V2F P2;
+ /// rect information
  V2F rect;
+ /// Trv2c information
  V2F Trv2c;
+ /// p2rect information
  V2F p2rect;
 };
 
+/**
+ * @struct ANNORET 
+ * @brief Struct of the result returned by the pointpillars neuron network in annotation mode.
+ *  mainly used for accuracy test or bev image drawing
+ */
 struct ANNORET{
+  /// name of detected result in vector: such as Car Cylist Pedestrian
   std::vector<std::string> name;
+  /// label of detected result
   V1I label;
+  /// truncated information
   V1F truncated;
+  /// occluded information
   V1I occluded;
+  /// alpha information 
   V1F alpha;
+  /// bbox information
   V2I bbox;
+  /// dimensions information
   V2F dimensions;
+  /// location information
   V2F location;
+  /// rotation_y information
   V1F rotation_y;
+  /// score information
   V1F score;
+  /// box3d_camera information
   V2F box3d_camera;
+  /// box3d_lidar information
   V2F box3d_lidar;
+  /// inner function to clear all fields
   void clear() {
       name.clear();
       label.clear();
@@ -78,15 +106,30 @@ struct ANNORET{
   }
 };
 
+/**
+ * @struct PPResult
+ * @brief Struct of the final result returned by the pointpillars neuron network
+ */
 struct PPResult{
+  /// final box predictated
   V2F final_box_preds;
+  /// final scores predicated
   V1F final_scores;
+  /// final label predicated
   V1I label_preds;
 };
 
+/**
+ * @struct PointPillarsResult
+ * @brief Struct of the final result returned by the pointpillars 
+ *  neuron network encapsulated with width/height information
+ */
 struct PointPillarsResult {
+  /// width of network input
   int width=0;
+  /// height of network input
   int height=0;
+  /// final result returned by the pointpillars neuron network
   PPResult ppresult;
 };
 

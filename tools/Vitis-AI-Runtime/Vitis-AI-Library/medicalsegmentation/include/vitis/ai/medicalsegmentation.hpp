@@ -93,14 +93,14 @@ class MedicalSegmentation {
    * @brief Function to get running results of the MedicalSegmentation neuron network in
    * batch mode.
    *
-   * @param images Input data of input images (vector<cv::Mat>).The size of
+   * @param imgs Input data of input images (vector<cv::Mat>).The size of
    * input images equals batch size obtained by get_input_batch.
    *
    * @return The vector of MedicalSegmentationResult.
    *
    */
   virtual std::vector<vitis::ai::MedicalSegmentationResult> run(
-      const std::vector<cv::Mat> &img) = 0;
+      const std::vector<cv::Mat> &imgs) = 0;
 
   /**
    * @brief Function to get InputWidth of the MedicalSegmentation network (input image cols).

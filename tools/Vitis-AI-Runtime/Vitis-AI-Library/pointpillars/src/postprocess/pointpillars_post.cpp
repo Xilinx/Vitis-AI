@@ -418,7 +418,7 @@ void PointPillarsPost::get_dpu_data()
 
   int BOX_IDX=2, CLS_IDX=1, DIR_IDX=0;
   // box cls dir : size 7 1 2 
-  std::cout << "ouput size:" << output_tensors_[0].size << " " << output_tensors_[1].size << " " << output_tensors_[2].size << "\n"; 
+  // std::cout << "ouput size:" << output_tensors_[0].size << " " << output_tensors_[1].size << " " << output_tensors_[2].size << "\n"; 
   // :  214272   107136   749952   ( single class) ( 2   1   7 )
   // :2*321408 3*321408 7*321408   ( 3  class)     ( 2*3 3*3 7*3 )
 

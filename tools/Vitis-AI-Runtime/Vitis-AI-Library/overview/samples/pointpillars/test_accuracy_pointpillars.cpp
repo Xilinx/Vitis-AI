@@ -22,6 +22,7 @@
 #include <csignal>
 #include <execinfo.h>
 #include <iostream>
+#include <iterator>
 
 // #define PREP_DEMO_DATA 1    // only for demo program
 
@@ -29,7 +30,11 @@ using namespace std;
 using namespace cv;
 using namespace vitis::ai;
 
-void get_display_data(DISPLAY_PARAM&);
+std::vector<std::string> bins;
+std::vector<std::string> rgbs;
+std::vector<std::string> calibs;
+
+void get_display_data(int k, DISPLAY_PARAM&);
 
 template<typename T>
 void myreadfile(T* dest, int size1, std::string filename)
@@ -78,29 +83,26 @@ std::string getrealname(std::string& name) {
 
 int main( int argc, char *argv[])
 {
-  if (argc != 6) {
-    std::cout << "usage: " << argv[0] << " <model_0> <modle_1> <bin_list> <rgb_list> <result_dir> \n"
+  if (argc != 7) {
+    std::cout << "usage: " << argv[0] << " <model_0> <modle_1> <bin_list> <rgb_list> <calib_list> <result_dir> \n"
               << "      model_0 is: pointpillars_kitti_12000_0_pt\n"
               << "      model_1 is: pointpillars_kitti_12000_1_pt\n";
     abort();
   }
-  auto net = vitis::ai::PointPillars::create(argv[1], argv[2] );  
+  std::string model = argv[1] + string("_acc");
+  auto net = vitis::ai::PointPillars::create(model, argv[2] );  
 
-  std::vector<std::string> bins;
-  std::vector<std::string> rgbs;
   LoadListNames( std::string(argv[3]), bins);
   LoadListNames( std::string(argv[4]), rgbs);
-  if (bins.size() > rgbs.size() ) {
-     std::cout <<"Bin list is longer than rgb list. please check. \n";
+  LoadListNames( std::string(argv[5]), calibs);
+  if (bins.size() != rgbs.size() || bins.size() !=calibs.size()) {
+     std::cout <<"list not same. please check. \n";
      abort();
   }
 
-  DISPLAY_PARAM g_test;
-  get_display_data(g_test);
-
-  auto ret = mkdir(argv[5], 0777);
+  auto ret = mkdir(argv[6], 0777);
   if (!(ret == 0 || (ret == -1 && EEXIST == errno))) {
-    std::cout << "error occured when mkdir " << argv[4] << std::endl;
+    std::cout << "error occured when mkdir " << argv[6] << std::endl;
     return -1;
   }
 
@@ -117,8 +119,11 @@ int main( int argc, char *argv[])
      cv::Mat rgbmat = cv::imread( rgbs[k] );
      auto res = net->run(PointCloud);
      annoret.clear();
+     DISPLAY_PARAM g_test;
+     get_display_data(k, g_test);
+
      net->do_pointpillar_display(res, 0, g_test, rgbmat, bevmat, rgbmat.cols, rgbmat.rows, annoret );
-     std::string txtname(argv[5]); 
+     std::string txtname(argv[6]); 
      txtname = txtname + "/" +  getrealname(b) + ".txt" ;
      Tout.open(txtname, ios_base::out);
      if(!Tout) {
@@ -148,22 +153,54 @@ int main( int argc, char *argv[])
   return 0;	  
 }
 
-void get_display_data(DISPLAY_PARAM& g_v)
+V2F get_vec(std::string& ins, int itype) 
 {
-  g_v.P2.emplace_back(std::vector<float>{ 721.54, 0, 609.56, 44.857   });
-  g_v.P2.emplace_back(std::vector<float>{ 0, 721.54, 172.854,  0.21638   });
-  g_v.P2.emplace_back(std::vector<float>{ 0, 0,  1, 0.002746   });
-  g_v.P2.emplace_back(std::vector<float>{ 0, 0, 0, 1   });
+  V2F ret(4, V1F(4, 0));
+  ret[3] = std::vector<float>{0, 0, 0, 1}; 
+  std::istringstream iss(ins);
 
-  g_v.rect.emplace_back(std::vector<float>{ 0.999924, 0.009838, -0.007445,   0 });
-  g_v.rect.emplace_back(std::vector<float>{ -0.00987, 0.99994, -0.00427846,  0 });
-  g_v.rect.emplace_back(std::vector<float>{ 0.007403, 0.004351614, 0.999963,  0 });
-  g_v.rect.emplace_back(std::vector<float>{ 0, 0, 0, 1  });
+  vector<string> subs;
+  std::copy(istream_iterator<string>(iss),
+          istream_iterator<string>(),
+          back_inserter(subs));
+  if (itype==12) {
+    ret[0][0] = std::stof(subs[1]);
+    ret[0][1] = std::stof(subs[2]);
+    ret[0][2] = std::stof(subs[3]);
+    ret[0][3] = std::stof(subs[4]);
+  
+    ret[1][0] = std::stof(subs[5]);
+    ret[1][1] = std::stof(subs[6]);
+    ret[1][2] = std::stof(subs[7]);
+    ret[1][3] = std::stof(subs[8]);
+  
+    ret[2][0] = std::stof(subs[9]);
+    ret[2][1] = std::stof(subs[10]);
+    ret[2][2] = std::stof(subs[11]);
+    ret[2][3] = std::stof(subs[12]);
+  } else {
+    ret[0][0] = std::stof(subs[1]);
+    ret[0][1] = std::stof(subs[2]);
+    ret[0][2] = std::stof(subs[3]);
+  
+    ret[1][0] = std::stof(subs[4]);
+    ret[1][1] = std::stof(subs[5]);
+    ret[1][2] = std::stof(subs[6]);
+  
+    ret[2][0] = std::stof(subs[7]);
+    ret[2][1] = std::stof(subs[8]);
+    ret[2][2] = std::stof(subs[9]);
+  }
+  return ret;
+}
 
-  g_v.Trv2c.emplace_back(std::vector<float>{0.007534,  -0.99997 ,  -0.0006166,  -0.00407 });
-  g_v.Trv2c.emplace_back(std::vector<float>{ 0.0148,  0.000728,  -0.99989,  -0.07632  });
-  g_v.Trv2c.emplace_back(std::vector<float>{  0.99986,  0.0075238,  0.0148,  -0.27178 });
-  g_v.Trv2c.emplace_back(std::vector<float>{ 0, 0, 0, 1 });
+void get_display_data(int k, DISPLAY_PARAM& g_v)
+{
+  std::vector<std::string> lines;
+  LoadListNames( calibs[k], lines);
+  g_v.P2    = get_vec(lines[2], 12);
+  g_v.rect  = get_vec(lines[4], 9 );
+  g_v.Trv2c = get_vec(lines[5], 12);
 
   g_v.p2rect.resize(4);
   for(int i=0; i<4; i++) {
@@ -176,4 +213,5 @@ void get_display_data(DISPLAY_PARAM& g_v)
   }
   return;
 }
+
 

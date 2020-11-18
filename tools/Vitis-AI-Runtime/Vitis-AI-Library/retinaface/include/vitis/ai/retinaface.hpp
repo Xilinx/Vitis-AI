@@ -137,7 +137,7 @@ class RetinaFace {
    * @brief Function to get running results of the retinaface neuron network in
    * batch mode.
    *
-   * @param images Input data of input images (std:vector<cv::Mat>). The size of
+   * @param imgs Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch. The input
    * images need to be resized to InputWidth and InputHeight required by the
    * network.
@@ -146,7 +146,7 @@ class RetinaFace {
    *
    */
   virtual std::vector<RetinaFaceResult> run(
-      const std::vector<cv::Mat> &img) = 0;
+      const std::vector<cv::Mat> &imgs) = 0;
 };
 
 }  // namespace ai

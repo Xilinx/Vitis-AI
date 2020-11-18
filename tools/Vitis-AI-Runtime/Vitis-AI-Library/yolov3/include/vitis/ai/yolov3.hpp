@@ -96,14 +96,14 @@ class YOLOv3 {
    * @return An instance of YOLOv3 class.
    *
    */
-  static std::unique_ptr<YOLOv3> create(const std::string &model_name,
+  static std::unique_ptr<YOLOv3> create(const std::string& model_name,
                                         bool need_preprocess = true);
   /**
    * @cond NOCOMMENTS
    */
  protected:
   explicit YOLOv3();
-  YOLOv3(const YOLOv3 &) = delete;
+  YOLOv3(const YOLOv3&) = delete;
 
  public:
   virtual ~YOLOv3();
@@ -131,7 +131,7 @@ class YOLOv3 {
    * @return YOLOv3Result.
    *
    */
-  virtual YOLOv3Result run(const cv::Mat &image) = 0;
+  virtual YOLOv3Result run(const cv::Mat& image) = 0;
   /**
    * @brief Function to get running result of the YOLOv3 neuron network
    * in batch mode.
@@ -142,7 +142,7 @@ class YOLOv3 {
    * @return The vector of YOLOv3Result.
    *
    */
-  virtual std::vector<YOLOv3Result> run(const std::vector<cv::Mat> &image) = 0;
+  virtual std::vector<YOLOv3Result> run(const std::vector<cv::Mat>& images) = 0;
   /**
    * @brief Function to get the number of images processed by the DPU at one
    * time.
