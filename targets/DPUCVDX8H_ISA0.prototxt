@@ -15,7 +15,7 @@
 name: "DPUCVDX8H_ISA0"
 type: "DPUCVDX8H"
 isa_version: 0x00
-feature_code: 0x00000000002e
+feature_code: 0x7ee
 bank_group {
   name: "VB0"
   type: "Virtual"
@@ -107,7 +107,7 @@ pool_engine {
     stride: "1-8"
   }
   max_limit {
-    kernel_size: "1-8"
+    kernel_size: "1-3,7"
     stride: "1-8"
   }
 }

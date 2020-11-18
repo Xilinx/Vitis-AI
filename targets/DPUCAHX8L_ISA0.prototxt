@@ -15,7 +15,7 @@
 name: "DPUCAHX8L_ISA0"
 type: "DPUCAHX8L"
 isa_version: 0x00
-feature_code: 0x000000020000
+feature_code: 0x1d
 bank_group {
   name: "VB0"
   type: "Virtual"
