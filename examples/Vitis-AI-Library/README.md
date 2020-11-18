@@ -121,9 +121,10 @@ steps.**
 
 3. (Optional) How to update Vitis AI Model and install it separately. 	
 
-	For each model, there will be a ymal file which is used for describe all the details about the model. 
-	In the ymal, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
-	* Download the model according to the model's ymal file. Take `resnet_v1_50_tf` of ZCU102 as an example.
+	For each model, there will be a yaml file which is used for describe all the details about the model. 
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.  
+	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
+	* Download the model according to the model's yaml file. Take `resnet_v1_50_tf` of ZCU102 as an example.
 	```
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz -O resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz
 	```	
@@ -210,13 +211,24 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Alveo
 ### Setting Up the Host for U50/U50lv/U280
 
-1. Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../alveo-hbm#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
+1. Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../../setup/alveo/u50_u50lv_u280/README.md#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
 
-2. Select the model for your platform.  
-	For each model, there will be a ymal file which is used for describe all the details about the model. 
-	In the ymal, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
+2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
+as an example.
+```
+cd /workspace
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
+tar -xzvf alveo_xclbin-1.3.0.tar.gz
+cd alveo_xclbin-1.3.0/U50/6E300M
+sudo 
+```
 
-	* Download the model according to the model's ymal file. Take `resnet_v1_50_tf` of U50 as an example.
+3. Select the model for your platform.  
+	For each model, there will be a yaml file which is used for describe all the details about the model. 
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.  
+	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
+
+	* Download the model according to the model's yaml file. Take `resnet_v1_50_tf` of U50 as an example.
 	```
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50-r1.3.0.tar.gz -O resnet_v1_50_tf-u50-r1.3.0.tar.gz
 	```
@@ -227,12 +239,12 @@ If you want to support video data in other formats, you need to install the rele
 	```
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
-3. To compile the demo in the AI Library, take `yolov3` as an example.
+4. To compile the demo in the AI Library, take `yolov3` as an example.
 ```
 cd /workspace/examples/Vitis-AI-Library/demo/yolov3
 bash -x build.sh
 ```	
-4. To compile the AI Library sample, take `classification` as an example, execute the following command.
+5. To compile the AI Library sample, take `classification` as an example, execute the following command.
 ```
 cd /workspace/examples/Vitis-AI-Library/samples/classification
 bash -x build.sh
@@ -240,9 +252,9 @@ bash -x build.sh
 
 ### Running Vitis AI Library Examples for U50/U50lv/U280
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
-Thus, `Vitis-AI-Libray` is located in the path of `/workspace/tools/Vitis_AI_Library/` in the docker system. 
+Thus, `Vitis-AI-Libray` is located in the path of `/workspace/examples/Vitis_AI_Library/` in the docker system. 
 
-**`/workspace/Vitis_AI_Library/` is the path for the following example.**
+**`/workspace/examples/Vitis_AI_Library/` is the path for the following example.**
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
