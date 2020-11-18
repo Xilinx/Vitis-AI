@@ -56,6 +56,11 @@ class OptimizeCommander(object):
         self._graph.remove_node(bn_node)
   
   def equalize_weights_cross_conv_layers(self):
+    r""" 
+    This function re-implements the weight equalization technique proposed in the following paper.
+    "Markus Nagel et al., Data-Free Quantization through Weight Equalization and Bias Correction",
+    arXiv:1906.04721, 2019."
+    """
     conv_layer_groups = []
     node = self._graph.get_node_by_idx(0)
     # build conv_layer_groups

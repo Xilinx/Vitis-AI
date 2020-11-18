@@ -282,6 +282,11 @@ def _calc_scale(head_weights,
 
 
 def _cross_layer_equalize(head_conv, tail_conv):
+  """Cross Layer Equalization.
+
+  This function re-implements the weight equalization technique proposed in the following paper.
+  "Markus Nagel et al., Data-Free Quantization through Weight Equalization and Bias Correction", arXiv:1906.04721, 2019."
+  """
   head_weights, tail_weights = [], []
   # Get head conv weights and bias
   if head_conv.layer['class_name'] == 'Conv2D':

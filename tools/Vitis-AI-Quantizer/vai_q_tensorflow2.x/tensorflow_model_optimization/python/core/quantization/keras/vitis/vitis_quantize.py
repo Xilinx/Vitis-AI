@@ -306,10 +306,11 @@ class VitisQuantizer(object):
         dataset, batch_size=50, verbose=1, steps=None, callbacks=[collector])
     return collector
 
-  def _create_optimized_model(self, fold_conv_bn, fold_bn, replace_relu6,
-                              include_cle, cle_steps):
+  def _create_optimized_model(self, remove_dropout, fold_conv_bn, fold_bn,
+                              replace_relu6, include_cle, cle_steps):
     """Create optimized model."""
     self._optimized_model, _ = create_optimize_model(self._float_model, {},
+                                                     remove_dropout,
                                                      fold_conv_bn, fold_bn,
                                                      replace_relu6, include_cle,
                                                      cle_steps)
@@ -592,6 +593,7 @@ class VitisQuantizer(object):
     self._freeze_quantize_info(best_quantize_info)
 
   def optimize_model(self,
+                     remove_dropout=True,
                      fold_conv_bn=True,
                      fold_bn=True,
                      replace_relu6=True,
@@ -599,8 +601,8 @@ class VitisQuantizer(object):
                      cle_steps=10):
     """Get optimized model."""
     if not self._optimized_model:
-      self._create_optimized_model(fold_conv_bn, fold_bn, replace_relu6,
-                                   include_cle, cle_steps)
+      self._create_optimized_model(remove_dropout, fold_conv_bn, fold_bn,
+                                   replace_relu6, include_cle, cle_steps)
     return self._optimized_model
 
   def get_analysed_model(self, dataset):
@@ -610,14 +612,15 @@ class VitisQuantizer(object):
     return self._analysed_model, model_info
 
   def get_qat_model(self,
+                    remove_dropout=True,
                     fold_conv_bn=True,
                     fold_bn=True,
                     replace_relu6=True,
                     include_cle=True,
                     cle_steps=10):
     """Get quantize-aware training model."""
-    self.optimize_model(fold_conv_bn, fold_bn, replace_relu6, include_cle,
-                        cle_steps)
+    self.optimize_model(remove_dropout, fold_conv_bn, fold_bn, replace_relu6,
+                        include_cle, cle_steps)
     if not self._qat_model:
       self._create_qat_model()
     return self._qat_model
@@ -629,6 +632,7 @@ class VitisQuantizer(object):
       calib_dataset=None,
       eval_dataset=None,
       verbose=0,
+      remove_dropout=True,
       fold_conv_bn=True,
       fold_bn=True,
       replace_relu6=True,
@@ -645,8 +649,8 @@ class VitisQuantizer(object):
           'Need to assign `eval_dataset` for when calling quantize_model(loss=loss_fn).'
       )
 
-    self.optimize_model(fold_conv_bn, fold_bn, replace_relu6, include_cle,
-                        cle_steps)
+    self.optimize_model(remove_dropout, fold_conv_bn, fold_bn, replace_relu6,
+                        include_cle, cle_steps)
 
     if not self._qcb_model or not self._qcbev_model:
       if loss:
@@ -674,14 +678,15 @@ class VitisQuantizer(object):
       dump_model_activations(model, output_dir, dataset)
 
 
-def create_optimize_model(model, layer_quantize_map, fold_conv_bn, fold_bn,
-                          replace_relu6, include_cle, cle_steps):
+def create_optimize_model(model, layer_quantize_map, remove_dropout,
+                          fold_conv_bn, fold_bn, replace_relu6, include_cle,
+                          cle_steps):
   """Optimize a `tf.keras` model before quantization, such as bn folding, activation folding."""
   optimize_transform = \
     vitis_8bit_quantize_layout_transform.Vitis8BitOptimizeLayoutTransform()
   optimized_model, layer_quantize_map = optimize_transform.apply(
-      model, layer_quantize_map, fold_conv_bn, fold_bn, replace_relu6,
-      include_cle, cle_steps)
+      model, layer_quantize_map, remove_dropout, fold_conv_bn, fold_bn,
+      replace_relu6, include_cle, cle_steps)
   #  optimized_model.save('optimized.h5')
   return optimized_model, layer_quantize_map
 

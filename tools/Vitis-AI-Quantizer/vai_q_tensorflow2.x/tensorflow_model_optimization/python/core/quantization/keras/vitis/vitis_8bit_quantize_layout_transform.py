@@ -32,8 +32,8 @@ class Vitis8BitOptimizeLayoutTransform(
     quantize_layout_transform.QuantizeLayoutTransform):
   """Vitis 8Bit model pre-quantization optimize transformations."""
 
-  def apply(self, model, layer_quantize_map, fold_conv_bn, fold_bn, replace_relu6,
-            include_cle, cle_steps):
+  def apply(self, model, layer_quantize_map, remove_dropout, fold_conv_bn,
+            fold_bn, replace_relu6, include_cle, cle_steps):
     """Implement vitis 8-bit transforms.
 
     All the transforms should not break the float model structure, and
@@ -41,9 +41,9 @@ class Vitis8BitOptimizeLayoutTransform(
     model.
     """
 
-    transforms = [
-        vitis_optimize_transforms.RemoveDropout()
-    ]
+    transforms = []
+    if remove_dropout:
+      transforms.append(vitis_optimize_transforms.RemoveDropout())
 
     if fold_conv_bn:
       transforms.append(vitis_optimize_transforms.Conv2DBatchNormFold())

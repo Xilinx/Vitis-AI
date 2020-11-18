@@ -82,6 +82,11 @@ class AverageMeter(object):
 
 
 class AdvancedQuantProcessor(torch.nn.Module):
+  r""" 
+  This class re-implements the Adaquant technique proposed in the following paper.
+  "Itay Hubara et al., Improving Post Training Neural Quantization: Layer-wise Calibration and Integer Programming, 
+  arXiv:2006.10518, 2020."
+  """
   def __init__(self, quantizer):
     super().__init__()
     self._quantizer = quantizer
