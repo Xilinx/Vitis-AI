@@ -1,11 +1,11 @@
 #include <iostream>
 #include <stdint.h>
+#include <fstream>
 #include <vector>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <fstream>
+#include <opencv2/video.hpp>
 
 #include <aks/AksKernelBase.h>
 #include <aks/AksDataDescriptor.h>
@@ -16,8 +16,8 @@ class OpticalFlowOpenCV : public AKS::KernelBase
   public:
     void nodeInit (AKS::NodeParams*);
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
+           std::vector<AKS::DataDescriptor*> &in,
+           std::vector<AKS::DataDescriptor*> &out,
            AKS::NodeParams* nodeParams,
            AKS::DynamicParamValues* dynParams);
     void perform_preprocess(

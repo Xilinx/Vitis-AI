@@ -14,7 +14,7 @@ cd /workspace/tools/AKS
 
 ## **Build fall-detection kernels**
 ```sh
-cd /workspace/examples/Whole-App-Acceleration/fall_detection
+cd /workspace/examples/apps/fall_detection
 ./cmake-kernels.sh --clean
 ./cmake-src.sh --clean
 ```

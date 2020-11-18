@@ -27,7 +27,10 @@
 #include <chrono>
 
 #include <boost/filesystem.hpp>
-#include <opencv2/opencv.hpp>
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/videoio.hpp>
 
 #include <aks/AksSysManagerExt.h>
 #include <aks/AksNodeParams.h>
@@ -283,7 +286,6 @@ int main(int argc, char **argv) {
     loadKernels(kernelPaths);
 
     std::string OFGraphJson = "graph_zoo/graph_optical_flow.json";
-    // std::string OFGraphJson = "graph_zoo/graph_optical_flow_opencv.json";
     std::string OFGraphName = "optical_flow";
     loadGraph(OFGraphJson, OFGraphName, &OFGraph);
 
