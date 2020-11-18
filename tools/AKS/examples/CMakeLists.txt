@@ -29,8 +29,13 @@ else()
 endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
 
+execute_process(COMMAND uname -m OUTPUT_VARIABLE arch)
 find_package(Threads REQUIRED)
-find_package(Boost 1.65.1 EXACT REQUIRED COMPONENTS system filesystem)
+if(${arch} MATCHES ".*x86.*")
+  find_package(Boost 1.65.1 EXACT REQUIRED COMPONENTS system filesystem)
+else()
+  find_package(Boost 1.65.1 REQUIRED COMPONENTS system filesystem)
+endif()
 find_package(OpenCV REQUIRED COMPONENTS core imgproc video videoio)
 
 # Set output directories for executables
@@ -45,6 +50,7 @@ set (EXAMPLES_IMAGE
   googlenet_tinyyolov3.cpp
   inception_v1_tf.cpp
   resnet50.cpp
+  resnet50_edge.cpp
   stdyolov2.cpp
   tinyyolov3.cpp
 )

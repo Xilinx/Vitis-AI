@@ -69,6 +69,39 @@ args=(-DAKS_INSTALL_PREFIX="${install_prefix}")
 # Get all Kernels
 KERNELS=$(ls -d -1 kernel_src/*)
 
+ARM_INCOMPATIBLE="kernel_src/caffe_kernel \
+	kernel_src/dpuv1_norunner \
+	kernel_src/dpuv1_runner \
+	kernel_src/classification_preprocess_accel \
+	kernel_src/classification_fc_softmax_top_k \
+	kernel_src/fully_connected_relu \
+	kernel_src/fully_connected_sigmoid \
+	kernel_src/optical_flow_fpga \
+	kernel_src/yolo_postprocess"
+x86_INCOMPATIBLE="kernel_src/dpuv2_runner"
+arch=$(uname -m)
+
+# Filter out architecture incompatible kernels
+if [[ ${arch} == "x86_64" ]]
+then
+	INCOMPATIBLE=${x86_INCOMPATIBLE}
+elif [[ ${arch} == "aarch64" ]]
+then
+	INCOMPATIBLE=${ARM_INCOMPATIBLE}
+else
+	echo "[ERROR] Unknown architecture - ${arch}"
+	echo "[ERROR] Supported architectures - x86_64/aarch64"
+	exit
+fi
+
+a=$(echo ${KERNELS} | tr [:space:] "\n" | sort -u)
+b=$(echo ${INCOMPATIBLE} | tr [:space:] "\n" | sort -u)
+for i in ${b}
+do
+	a=${a/$i/}
+done
+KERNELS=$a
+
 declare -a skipped_kernels
 declare -a failed_kernels
 
