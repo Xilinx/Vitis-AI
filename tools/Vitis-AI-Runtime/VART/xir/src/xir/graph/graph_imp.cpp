@@ -239,16 +239,16 @@ std::vector<std::map<OpTemplate*, Op*>> GraphImp::isomorphism(
   return this->get_root_subgraph()->isomorphism(graph_template);
 }
 
-void GraphImp::save_to_dot(const std::string& file_name) const {
-  this->get_root_subgraph()->save_to_dot(file_name);
+void GraphImp::save_to_dot(const std::string& file_path) const {
+  this->get_root_subgraph()->save_to_dot(file_path);
 }
 
-void GraphImp::visualize(const std::string& filename,
+void GraphImp::visualize(const std::string& file_path,
                          const std::string& format) const {
-  auto file_name_dot = filename + ".dot";
+  auto file_name_dot = file_path + ".dot";
   save_to_dot(file_name_dot);
   auto create_fig_from_dot =
-      "dot -T" + format + " " + file_name_dot + " -o " + filename;
+      "dot -T" + format + " " + file_name_dot + " -o " + file_path;
   auto result = std::system(create_fig_from_dot.c_str());
   UNI_LOG_CHECK(result == 0, XIR_OPERATION_FAILED) << create_fig_from_dot;
   auto rm_dot = "rm " + file_name_dot;
@@ -256,9 +256,9 @@ void GraphImp::visualize(const std::string& filename,
   UNI_LOG_CHECK(result == 0, XIR_OPERATION_FAILED) << rm_dot;
 }
 
-void GraphImp::serialize(const std::string& pb_fname) const {
+void GraphImp::serialize(const std::string& file_path) const {
   v2::Serialize s{};
-  s.write(this, pb_fname);
+  s.write(this, file_path);
 }
 
 void GraphImp::serialize_to_string(std::string* str) const {
@@ -301,7 +301,7 @@ const Subgraph* GraphImp::get_leaf_subgraph(const Op* op) const {
 
 Subgraph* GraphImp::get_subgraph(const std::string& name) {
   return const_cast<Subgraph*>(
-    static_cast<const GraphImp&>(*this).get_subgraph(name));
+      static_cast<const GraphImp&>(*this).get_subgraph(name));
 }
 
 const Subgraph* GraphImp::get_subgraph(const std::string& name) const {

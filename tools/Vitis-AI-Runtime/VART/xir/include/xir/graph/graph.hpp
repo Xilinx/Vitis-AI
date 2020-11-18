@@ -312,27 +312,29 @@ class Graph {
   /**
    * @brief Save graph to dot format which could be visualized by graphviz.
    *
-   * @param filename Name of dot file.
+   * @param file_path The path of dot file.
    *
    */
-  virtual void save_to_dot(const std::string& file_name) const = 0;
+  virtual void save_to_dot(const std::string& file_path) const = 0;
 
   /**
    * @brief Save graph to other format.
    *
-   * @param filename Name of the file.
+   * @param file_path The path of the output picture.
    *
-   * @param format, such as "png", "svg".
+   * @param format such as "png", "svg".
    */
-  virtual void visualize(const std::string& filename,
+  virtual void visualize(const std::string& file_path,
                          const std::string& format) const = 0;
 
   /**
    * @brief Serialize the graph.
    *
+   * @param file_path The path of output xmodel.
+   *
    * @return A string storing the graph.
    */
-  virtual void serialize(const std::string& pb_fname) const = 0;
+  virtual void serialize(const std::string& file_path) const = 0;
 
   /**
    * @brief Serialize the graph.
@@ -344,11 +346,11 @@ class Graph {
   /**
    * @brief Deserializa a graph from a pb file.
    *
-   * @param pb_fname The path of the pb file.
+   * @param file_path The path of the xmodel.
    *
    * @return A unique pointer to the graph object.
    */
-  static std::unique_ptr<Graph> deserialize(const std::string& pb_fname);
+  static std::unique_ptr<Graph> deserialize(const std::string& file_path);
 
   /**
    * @brief Deserializa a graph from a string.

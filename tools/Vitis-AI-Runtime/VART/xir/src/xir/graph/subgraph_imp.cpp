@@ -563,7 +563,7 @@ static void create_subgraphs(boost::subgraph<BOOSTSubGraph>& main,
   });
 }
 
-void SubgraphImp::save_to_dot(const std::string& file_name) const {
+void SubgraphImp::save_to_dot(const std::string& file_path) const {
   auto ori = this;
   auto node_size = ori->get_op_num();
   boost::subgraph<BOOSTSubGraph> main(node_size);
@@ -598,7 +598,7 @@ void SubgraphImp::save_to_dot(const std::string& file_name) const {
   boost::get_property(main, boost::graph_vertex_attribute)["shape"] = "box";
   idx = 0;
   create_subgraphs(main, ori->get_children(), op_idx, idx);
-  auto dir = file_name;
+  auto dir = file_path;
   boost::write_graphviz(dir, main);
 }
 

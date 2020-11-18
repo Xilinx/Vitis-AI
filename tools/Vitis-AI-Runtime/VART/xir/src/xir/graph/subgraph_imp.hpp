@@ -163,7 +163,7 @@ class SubgraphImp : public Subgraph {
   std::vector<std::map<OpTemplate*, Op*>> isomorphism(
       GraphTemplate* graph_template) override;
 
-  void save_to_dot(const std::string& file_name) const override;
+  void save_to_dot(const std::string& file_path) const override;
 
   const std::string to_string(const std::string& delimiter,     //
                               const std::string& left_bracket,  //
