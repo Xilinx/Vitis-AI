@@ -138,6 +138,25 @@ steps.**
 	rpm -ivh --force libtarget-factory-1.3.0-r<x>.aarch64.rpm
 	rpm -ivh --force libvart-1.3.0-r<x>.aarch64.rpm
 	```
+4. (Optional) Download the model.  	
+	For each model, there will be a yaml file which is used for describe all the details about the model. 
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
+	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model list) to view all the models.
+	
+	* Take `resnet50` of ZCU102 as an example.
+	```
+	  cd /workspace
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu104-r1.3.0.tar.gz -O resnet50-zcu102-zcu104-r1.3.0.tar.gz
+	```	
+	* Copy the downloaded file to the board using scp with the following command. 
+	```
+	  scp resnet50-zcu102-zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
+	```
+	* Log in to the board (usong ssh or serial port) and install the model package.
+	```
+	  tar -xzvf resnet50-zcu102-zcu104-r1.3.0.tar.gz
+	  cp resnet50 /usr/share/vitis_ai_library/models -r
+	```
 	  
 ### Running Vitis AI Examples
 
@@ -154,7 +173,7 @@ steps.**
 	```
 	cd ~/Vitis-AI/examples/VART/samples/resnet50
 	```
-5. Run the example.
+4. Run the example.
 	```
 	./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
 	```
@@ -195,12 +214,27 @@ If you encounter any path errors in running examples, check to see if you follow
 	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz -O vitis_ai_runtime_r1.3.0_image_video.tar.gz
 	tar -xzvf vitis_ai_runtime_r*1.3*_image_video.tar.gz -C VART
 	```
-2. Compile the sample, take `resnet50` as an example.
+2. Download the model.  	
+	For each model, there will be a yaml file which is used for describe all the details about the model. 
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
+	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model list) to view all the models.
+	
+	* Take `resnet50` of U50 as an example.
+	```
+	  cd /workspace
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
+	```	
+	* Install the model package.
+	```
+	  tar -xzvf resnet50-u50-r1.3.0.tar.gz
+	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+	```
+3. Compile the sample, take `resnet50` as an example.
 	```
 	cd /workspace/examples/VART/samples/resnet50
 	bash -x build.sh
 	```
-3. Run the example, take `U50` platform as an example.
+4. Run the example, take `U50` platform as an example.
 	```
 	./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
 	```
