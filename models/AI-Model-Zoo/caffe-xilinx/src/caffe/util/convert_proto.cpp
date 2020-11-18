@@ -1354,6 +1354,7 @@ void TransformFix2FloatWithFixInfo(NetParameter &net_in, NetParameter &net_out,
   AdjustShiftcutAndShiftbias(net_in, weight_infos, bias_infos, data_infos);
 }
 
+// NOTE: adjust fix position to make shift_cut/bias be valid, wyushun add
 void AdjustShiftcutAndShiftbias(NetParameter &net_in, FIX_INFO &weight_infos,
                                 FIX_INFO &bias_infos, FIX_INFO &data_infos) {
   for (size_t i = 0; i < net_in.layer_size(); i++) {
@@ -1363,7 +1364,9 @@ void AdjustShiftcutAndShiftbias(NetParameter &net_in, FIX_INFO &weight_infos,
         cur_layer->type() == "ConvolutionFixedData" ||
         cur_layer->type() == "ConvolutionBNFixed" ||
         cur_layer->type() == "ConvolutionBNFixedData" ||
-        cur_layer->type() == "DeconvolutionFixed" ) {
+        cur_layer->type() == "InnerProductFixed" ||
+        cur_layer->type() == "InnerProductFixedData" ||
+        cur_layer->type() == "DeconvolutionFixed") {
       auto fix_pos_i = data_infos.at(cur_layer->bottom(0))[1];
       auto fix_pos_o = data_infos.at(cur_layer->top(0))[1];
       auto fix_pos_w = weight_infos.at(cur_layer->name())[1];
@@ -1645,6 +1648,18 @@ void WriteFixInfoToModel(NetParameter &model, vector<vector<int>> fix_infos) {
     auto layer_param = model.mutable_layer((*it)[0]);
     for (int i = 1; i < it->size(); i++) {
       layer_param->mutable_fixed_param()->add_fix_info((*it)[i]);
+    }
+
+    // wyushun NOTE+TODO: to be removed after xnnc do the right action
+    if (layer_param->type() == "FixedNeuron") {
+      if (layer_param->blobs_size()) {
+        auto *fix_pos_blob = layer_param->mutable_blobs(0);
+        if (fix_pos_blob->data_size()) {
+          fix_pos_blob->set_data(0, (*it)[4]);
+          DLOG(INFO) << "find FixedNeuron data blob, change data0 to "
+                     << fix_pos_blob->data(0);
+        }
+      }
     }
   }
   return;
