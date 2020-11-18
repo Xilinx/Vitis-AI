@@ -5,8 +5,10 @@
 \usepackage{fixltx2e}
 \usepackage{calc}
 \usepackage{doxygen}
-\usepackage[export]{adjustbox} % also loads graphicx
+%\usepackage[export]{adjustbox} % also loads graphicx
+\PassOptionsToPackage{export}{adjustbox}
 \usepackage{graphicx}
+\usepackage{ifthen}
 \usepackage[utf8]{inputenc}
 \usepackage{makeidx}
 \usepackage{multicol}
@@ -83,7 +85,7 @@
 \lhead{\includegraphics[scale=0.6]{../../Logo.png}}
 \chead{}
 \rhead{\leftmark}
-\lfoot{\textbf {XIR Reference Manual} \\ {\small UGxxxx(v0.0.1) June 01,2019}}
+\lfoot{\textbf {XIR Reference Manual} \\ {\small UGxxxx(v0.0.1) \today}}
 \cfoot{www.xilinx.com}
 \rfoot{\thepage}
 
@@ -139,7 +141,7 @@
            \textbf{\Huge XIR Rerefence Manual }\\
           \vspace*{7cm}
 
-          {\large UGxxxx(v0.0.1) June 01,2019}\\
+          {\large UGxxxx(v0.0.1) \today}\\
           \vspace*{9cm}
           \begin{flushright}%
             \includegraphics{../../Logo.png}

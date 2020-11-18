@@ -1,8 +1,10 @@
 INPUT = @CMAKE_SOURCE_DIR@/README.md \
-        @CMAKE_SOURCE_DIR@/src/core/op/op_def.hpp \
-        @CMAKE_SOURCE_DIR@/src/core/op/op.hpp \
-        @CMAKE_SOURCE_DIR@/src/core/graph/graph.hpp \
-        @CMAKE_SOURCE_DIR@/src/core/util/attrs.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/op/op_def.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/op/op.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/tensor/tensor.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/graph/graph.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/graph/subgraph.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/attrs/attrs.hpp \
 
 
 ENABLE_PREPROCESSING = YES

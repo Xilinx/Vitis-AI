@@ -28,9 +28,5 @@ foreach(FIL ${SRC_FILS})
   target_link_libraries(${BIN} protobuf::libprotobuf unilog::unilog glog::glog crypto ${PROJECT_NAME})
 endforeach()
 
-add_subdirectory(serial)
-add_subdirectory(tensor)
-
-
 add_executable (test_c_api test_c_api.c)
 target_link_libraries (test_c_api ${PROJECT_NAME})

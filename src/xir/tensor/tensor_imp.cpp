@@ -59,9 +59,6 @@ const std::vector<std::int32_t> TensorImp::get_dims() const {
 }
 
 const std::int32_t TensorImp::get_dim_num() const {
-  UNI_LOG_WARNING
-      << "Tensor::get_dim_num() will be removed in the future "
-         "version. Please use the Tensor::get_dims().size() instead.";
   return this->shape_.size();
 }
 const std::int32_t TensorImp::get_dim_size(std::int32_t idx) const {

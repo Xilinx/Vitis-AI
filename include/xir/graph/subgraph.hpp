@@ -31,9 +31,9 @@ namespace xir {
 class Graph;
 
 /**
- * @class      Subgraph
+ * @class Subgraph
  *
- * @brief      A class for subgraph
+ * @brief A class for subgraph
  */
 class Subgraph {
  public:
@@ -47,9 +47,9 @@ class Subgraph {
   /**
    * @brief Set the name of subgraph.
    *
-   * @param name The name of the subgraph.
+   * @param subgraph_name The name of the subgraph.
    */
-  virtual Subgraph* set_name(const std::string& sbgraph_name) = 0;
+  virtual Subgraph* set_name(const std::string& subgraph_name) = 0;
 
   /**
    * @brief Get the number of ops which belong to this subgraph.
@@ -313,7 +313,8 @@ class Subgraph {
   virtual const Graph* get_graph() const = 0;
 
   /**
-   * @brief Get the children subgraph with corresponding name from this subgraph.
+   * @brief Get the children subgraph with corresponding name from this
+   * subgraph.
    *
    * @param name Name of the children subgraph.
    *
@@ -322,7 +323,8 @@ class Subgraph {
   virtual Subgraph* get_subgraph(const std::string& name) = 0;
 
   /**
-   * @brief Get the children subgraph with corresponding name from this subgraph.
+   * @brief Get the children subgraph with corresponding name from this
+   * subgraph.
    *
    * @param name Name of the children subgraph.
    *
@@ -452,9 +454,9 @@ class Subgraph {
   /**
    * @brief Save the subgraph into a dot file.
    *
-   * @param file_name The file path of the file.
+   * @param file_path The path of the dot file.
    */
-  virtual void save_to_dot(const std::string& file_name) const = 0;
+  virtual void save_to_dot(const std::string& file_path) const = 0;
 
   /**
    * @brief Return the brief info of subgraph in std::string format.

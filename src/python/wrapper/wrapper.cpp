@@ -707,6 +707,8 @@ PYBIND11_MODULE(xir, m) {
                     &Tensor::get_name,                                     //
                     &Tensor::rename)                                       //
       .def_property_readonly("ndim",                                       //
+                             &Tensor::get_dim_num)                         //
+      .def_property_readonly("dims",                                       //
                              &Tensor::get_shape)                           //
       .def_property_readonly(                                              //
           "dtype",                                                         //
