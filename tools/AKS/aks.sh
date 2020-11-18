@@ -55,6 +55,7 @@ usage() {
   echo "                                  Possible values: [googlenet_pp_accel]"
   echo "                                  Possible values: [tinyyolov3_video]"
   echo "                                  Possible values: [facedetect]"
+  echo "                                  Possible values: [resnet50_edge] - only on edge devices"
   echo "  -i  IMPL    | --impl    IMPL    Implemetation"
   echo "                                  Possible values: [cpp, py]"
   echo "  -d1 IMAGES  | --dir1    IMAGES  Image Directory"
@@ -108,7 +109,7 @@ done
 
 # Supported Modes & Models
 declare -A SUPPORTED_MODELS
-for name in "googlenet" "resnet50" "inception_v1_tf" "googlenet_resnet50" "tinyyolov3" "tinyyolov3_video" "googlenet_tinyyolov3" "stdyolov2" "facedetect" "googlenet_pp_accel"
+for name in "googlenet" "resnet50" "inception_v1_tf" "googlenet_resnet50" "tinyyolov3" "tinyyolov3_video" "googlenet_tinyyolov3" "stdyolov2" "facedetect" "googlenet_pp_accel" "resnet50_edge"
 do
     SUPPORTED_MODELS[$name]=1
 done
@@ -276,10 +277,18 @@ elif [ "$MODEL" == "facedetect" ]; then
   CPP_EXE=examples/bin/facedetect.exe
   PY_EXE=examples/facedetect.py
   exec_args="$DIRECTORY1"
+
+elif [ "$MODEL" == "resnet50_edge" ]; then
+  CPP_EXE=examples/bin/resnet50_edge.exe
+  PY_EXE=examples/resnet50_edge.py
+  exec_args="$DIRECTORY1"
+	if [[ `uname -m` != "aarch64" ]]; then
+	  echo "[ERROR] resnet50_edge will work only on edge devices with Aarch64 Processor and DPUCZDX8G IP."
+	fi
 fi
 
 if [[ "$IMPL" == "cpp" ]]; then
   ${CPP_EXE} $exec_args
 elif [[ "$IMPL" == "py" ]]; then
-  python ${PY_EXE} $exec_args
+  python3 ${PY_EXE} $exec_args
 fi

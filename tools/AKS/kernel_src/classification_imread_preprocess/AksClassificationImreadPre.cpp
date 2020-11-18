@@ -52,6 +52,9 @@ int ClassificationImreadPreKernel::exec_async (
   int outHeight = nodeParams->_intParams["net_h"];
   int outWidth  = nodeParams->_intParams["net_w"];
   int batchSize = dynParams->imagePaths.size();
+  string outputLayout = nodeParams->hasKey<string>("output_layout") ?
+                        nodeParams->getValue<string>("output_layout"):
+                        "NCHW";
 
   /// Get mean values
   auto meanIter = nodeParams->_floatVectorParams.find("mean");
@@ -62,7 +65,9 @@ int ClassificationImreadPreKernel::exec_async (
 
 
   /// Create output data buffer for a batch data
-  std::vector<int> shape = { batchSize, 3, outHeight, outWidth };
+  auto shape = (outputLayout == "NCHW") ?
+                std::vector<int>{ batchSize, 3, outHeight, outWidth }:
+                std::vector<int>{ batchSize, outHeight, outWidth, 3 };
   AKS::DataDescriptor * outDD = new AKS::DataDescriptor(shape, AKS::DataType::FLOAT32);
   float * outData = (float*) outDD->data();
   const uint32_t nelemsPerImg = 3 * outHeight * outWidth;
@@ -82,7 +87,7 @@ int ClassificationImreadPreKernel::exec_async (
     //FILE * fp = fopen ("input.txt", "w");
     /// Pre-Processing loop
     float* batchData = outData + i * nelemsPerImg;
-    if (1 /* TODO: Insert correct condition */ ) {
+    if (outputLayout == "NCHW") {
       for (int c = 0; c < 3; c++)
         for (int h = 0; h < outHeight; h++)
           for (int w = 0; w < outWidth; w++) {
@@ -91,7 +96,7 @@ int ClassificationImreadPreKernel::exec_async (
               = resizedImage.at<cv::Vec3b>(h,w)[c]-mean[c];
             //fprintf(fp, "%f\n", outData[ (c*outHeight*outWidth) + (h*outWidth) + w] );
           }
-    } else {
+    } else if (outputLayout == "NHWC"){
       for (int h = 0; h < outHeight; h++)
         for (int w = 0; w < outWidth; w++)
           for (int c = 0; c < 3; c++)
