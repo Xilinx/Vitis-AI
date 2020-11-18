@@ -191,7 +191,7 @@ If you encounter any path errors in running examples, check to see if you follow
 
 1. Download the [vitis_ai_runtime_r1.3.0_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz) package and unzip it.
 	```
-	cd /workspace
+	cd /workspace/examples
 	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz -O vitis_ai_runtime_r1.3.0_image_video.tar.gz
 	tar -xzvf vitis_ai_runtime_r*1.3*_image_video.tar.gz -C VART
 	```
