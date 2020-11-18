@@ -220,7 +220,7 @@ cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
 tar -xzvf alveo_xclbin-1.3.0.tar.gz
 cd alveo_xclbin-1.3.0/U50/6E300M
-sudo 
+sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 ```
 
 3. Select the model for your platform.  
@@ -252,7 +252,7 @@ bash -x build.sh
 
 ### Running Vitis AI Library Examples for U50/U50lv/U280
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
-Thus, `Vitis-AI-Libray` is located in the path of `/workspace/examples/Vitis_AI_Library/` in the docker system. 
+Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/examples/Vitis_AI_Library/` in the docker system. 
 
 **`/workspace/examples/Vitis_AI_Library/` is the path for the following example.**
  
