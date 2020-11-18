@@ -12,17 +12,12 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-## uuid_copy@UUID_1.0 undifne issue due to conflict between the docker and conda libs
 TMP_LD_PATH=${LD_LIBRARY_PATH}
 LD_LIBRARY_PATH :=
 
-BUILD := $(VAI_ALVEO_ROOT)/algorithms/fall_detection/build
-$(shell mkdir -p $(BUILD))
-
 ###
-INCLUDE += -I$(CONDA_PREFIX)/include
 # AKS
-INCLUDE += -I $(VAI_ALVEO_ROOT)/apps/aks
+INCLUDE += -I /usr/include/aks/
 
 CXX := g++ #$(GXX)
 # Flags
@@ -33,50 +28,39 @@ CCOPTS :=-D __USE_XOPEN2K8 -std=c++11 -fPIC -static-libgcc -static-libstdc++
 #        Linker
 #####################
 # common
-LIB_PATHS := -L $(CONDA_PREFIX)/lib
+LIB_PATHS := -L /usr/lib
+LIB_PATHS += -L /usr/lib/x86_64-linux-gnu
+LIB_PATHS += -L $(CONDA_PREFIX)/lib
 # Add libs under current directory
 LIB_PATHS += -L libs
 # Add libs unders aks
-LIB_PATHS += -L $(VAI_ALVEO_ROOT)/apps/aks/libs
+LIB_PATHS += -L /workspace/tools/AKS/libs
 
 # Common
 LIBS := -lpthread -ldl -lz
 # Boost
 LIBS += -lboost_thread -lboost_system -lboost_filesystem
-# Others
-LIBS += -lglog -ljson-c -lhdf5_cpp -lhdf5 -lpthread -lpng16 -lprotobuf -lcaffe-nv
 # Opencv
-LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
+LIBS += -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
 # Opencv video
 LIBS += -lopencv_videoio -lopencv_video
-# Custom
-LIBS += -lAks
+# AKS
+LIBS += -laks
 
 #####################
 #      Rules/Targets
 #####################
-
-AKS_KERNELS := $(wildcard kernel_src/*/)
-SRC := ./src/main.cc
-
-TARGET := $(BUILD)/fall_detection.exe
+SRC := ./src/main.cpp
+BIN := ./src/bin
+$(shell mkdir -p $(BIN))
+TARGET := $(BIN)/main.exe
 
 $(TARGET): $(SRC)
-	@echo -e "\n[BUILD] Building $@ \n\n"
+	@echo -e "\n[BUILD] Building $@ \n"
 	$(CXX) $(CXXOPT) $(CCOPTS) -std=c++11 $(SRC) $(INCLUDE) $(LIB_PATHS) $(LIBS) -o $@
-	@echo -e "\n[BUILD] Done\n\n"
-
-all: $(TARGET) $(AKS_KERNELS)
-
-$(AKS_KERNELS):
-	@echo -e 	
-	@echo -e "make: $@"
-	@$(MAKE) --no-print-directory -C $@
-
-.PHONY: all $(AKS_KERNELS) clean
+	@echo -e "\n[BUILD] Done\n"
 
 LD_LIBRARY_PATH :=${TMP_LD_PATH}	
 
-clean :
-	rm -rf build/*exe
-	rm -rf libs/*
+clean:
+	rm -rf src/bin/*.exe

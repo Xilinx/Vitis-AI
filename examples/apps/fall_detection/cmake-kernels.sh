@@ -128,6 +128,7 @@ for kernel in ${KERNELS}; do
 
   # Copy generated libs to root dir
   # echo -e "${MSG} Copy generated libs to ${ROOT}/libs ${RST}"
+  mkdir -p ${ROOT}/libs
   cp -P lib*.so* ${ROOT}/libs
 done
 echo -e "-------------------------------------------------------------------"
