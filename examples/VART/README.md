@@ -141,7 +141,7 @@ steps.**
 4. (Optional) Download the model.  	
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
 	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
-	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model list) to view all the models.
+	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
 	
 	* Take `resnet50` of ZCU102 as an example.
 	```
@@ -198,8 +198,17 @@ steps.**
 ## Quick Start For Alveo
 ### Setting Up the Host
 
-Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../../setup/alveo/u50_u50lv_u280/README.md#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
+1. Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../../setup/alveo/u50_u50lv_u280/README.md#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
 
+2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
+as an example.
+```
+cd /workspace
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
+tar -xzvf alveo_xclbin-1.3.0.tar.gz
+cd alveo_xclbin-1.3.0/U50/6E300M
+sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
+```
 ### Running Vitis AI Examples
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
 Thus, `VART` is located in the path of `/workspace/examples/VART/` in the docker system. 
@@ -217,7 +226,7 @@ If you encounter any path errors in running examples, check to see if you follow
 2. Download the model.  	
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
 	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
-	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model list) to view all the models.
+	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
 	
 	* Take `resnet50` of U50 as an example.
 	```
