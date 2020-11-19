@@ -189,7 +189,7 @@ void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
   //------------------------------------------------------------------------------
     // xclbin
     //------------------------------------------------------------------------------
-    std::string xclBinary = params->_stringParams["xclbin"] + std::string("/my_system.xclbin");
+    std::string xclBinary = params->_stringParams["xclbin"];
     printf("INFO: loading xclbin %s\n", xclBinary.c_str());
     cl_uint n_i0 = load_file_to_memory(xclBinary.c_str(), (char **) &kernelbinary);
     if (n_i0 < 0) {
