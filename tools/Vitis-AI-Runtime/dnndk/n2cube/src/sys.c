@@ -179,6 +179,12 @@ EXPORT int dpu_config()
                         case DPU_ARCH_B288F:
                             (p_dpu_info+idx)->base.peak_perf = (p_dpu_info+idx)->base.dpu_freq*288/1000.0f;
                             break;
+                        case DPU_ARCH_B144F:
+                            (p_dpu_info+idx)->base.peak_perf = (p_dpu_info+idx)->base.dpu_freq*144/1000.0f;
+                            break;
+                        case DPU_ARCH_B5184F:
+                            (p_dpu_info+idx)->base.peak_perf = (p_dpu_info+idx)->base.dpu_freq*5184/1000.0f;
+                            break;
                         default:
                             DPU_FAIL_ON_MSG("Unknown arch number %d found in DPU IP.", (p_dpu_info+idx)->base.dpu_arch);
                     }

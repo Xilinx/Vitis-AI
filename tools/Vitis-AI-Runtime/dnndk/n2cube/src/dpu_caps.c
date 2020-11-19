@@ -162,6 +162,8 @@ int get_dpu_info_v1(dpu_aol_dev_handle_t *p_signature, dpu_configurable_t *p_inf
 		case 10: dpu_arch = 8192; break;
 		case 11: dpu_arch = 3136; break;
 		case 12: dpu_arch = 288; break;
+		case 13: dpu_arch = 144; break;
+		case 14: dpu_arch = 5184; break;
 		default:
 			DPU_LOG_MSG("Unknown DPU arch type '%d' found in DPU signature.\n", dpu_arch);
 			DPU_LOG_MSG("Try to update DPU driver to the latest version to resolve this issue.\n");
