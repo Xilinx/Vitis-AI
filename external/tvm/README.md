@@ -88,7 +88,7 @@ The provided docker image can be used to compile models for the cloud and for th
 
 Examples and documentations of compiling and running models using Apache TVM with Vitis AI support are provided in the "examples" and "docs" directories.
 
-For more detailed on how to compile and run models using TVM with the Vitis-AI, you could refer to [Vitis-AI Integration].
+For more details on how to compile and run models using TVM with the Vitis-AI, you could refer to [Vitis-AI Integration].
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job.)
 
