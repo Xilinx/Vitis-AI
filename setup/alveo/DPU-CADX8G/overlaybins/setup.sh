@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export VAI_ALVEO_ROOT="$( readlink -f "$( dirname "${BASH_SOURCE[0]}" )/.." )"
+export VAI_ALVEO_ROOT="$( readlink -f "$( dirname "${BASH_SOURCE[0]}" )/../../../../examples" )"
 
 echo "------------------"
 echo "Using VAI_ALVEO_ROOT"
@@ -76,7 +76,7 @@ export OMP_NUM_THREADS=4
 export MKL_NUM_THREADS=4
 export XBLAS_NUM_PREP_THREADS=4
 
-export XRT_INI_PATH=${VAI_ALVEO_ROOT}/overlaybins/xrt.ini
+export XRT_INI_PATH=${VAI_ALVEO_ROOT}/../setup/alveo/DPU-CADX8G/overlaybins/xrt.ini
 
 ##############################
 # Enable XILINX_XRT
