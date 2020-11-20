@@ -112,7 +112,7 @@ Required:
 #### 4.2.2 Software
 
   Required:
-  - Vitis 2020.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-2.html) 
+  - Vitis 2020.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-1.html) 
   - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.2)
@@ -196,7 +196,7 @@ Download [bin.tar](https://www.xilinx.com/). Untar the packet and copy `bin` fol
 - For detection example, please refer to [WAA-TRD/proj/pre-built/detection-pre_DPUv2/README](./proj/pre-built/detection-pre_DPUv2/README.md) file
 
 ### 4.5 Build with new Pre-processing Accelerator
-In this section, example is provided for integrating new Pre-procsssing accelerator with DPU.
+In this section, example is provided for integrating new Pre-processing accelerator with DPU.
 
 Provided Resnet50 classification examples uses caffe resnet50 model `WAA-TRD/app/resnet50_waa/resnet50.xmodel`. In this model, pre-processing components are image resize and mean sub operation. Here Bilinear Interpolation is used in the resize. User can changes interpolation type to Nearest Neighbor by modifying line no 61 of accel file `WAA-TRD/accel/classification-pre/xf_pp_pipeline_accel.cpp` as below. After modifying accel file please follow the section 4.4 to integrate new Pre-processing accelerator with DPU and run classification example.  
 
