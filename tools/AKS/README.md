@@ -33,10 +33,10 @@ conda activate vitis-ai-caffe
 ```
 ```sh
 # Setup
-source /workspace/alveo/overlaybins/setup.sh
+source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 ```sh
-cd ${VAI_ALVEO_ROOT}/apps/aks
+cd ${VAI_ALVEO_ROOT}/../tools/AKS
 
 python -m ck pull repo:ck-env
 

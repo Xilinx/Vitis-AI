@@ -39,16 +39,16 @@ Activate Conda Environment
 Setup the Environment
 
   ```sh
-  source /workspace/alveo/overlaybins/setup.sh
+  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 ## Running the Examples  
 
 To run any of the three examples, use the provided bash run.sh script. 
 
-1. Navigate to the `$VAI_ALVEO_ROOT/examples/deployment_modes` dir.
+1. Navigate to the `$VAI_ALVEO_ROOT/DPU-CADX8G/deployment_modes` dir.
     ```sh
-    cd $VAI_ALVEO_ROOT/examples/deployment_modes
+    cd $VAI_ALVEO_ROOT/DPU-CADX8G/deployment_modes
     ```
 
 2. Familiarize yourself with the script usage by:  
