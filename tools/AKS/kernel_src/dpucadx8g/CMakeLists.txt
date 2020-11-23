@@ -14,7 +14,9 @@
 
 cmake_minimum_required(VERSION 3.12)
 
-project(ClassificationPreProcessAccel VERSION 1.3.0)
+project(DPUCADX8GRunner VERSION 1.3.0)
+
+add_library(xfdnn SHARED IMPORTED)
 
 if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
   message(STATUS "AKS Install Prefix: ${AKS_INSTALL_PREFIX}")
@@ -22,18 +24,22 @@ if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
     PATHS ${AKS_INSTALL_PREFIX}
     NO_DEFAULT_PATH
   )
+  set_target_properties(xfdnn PROPERTIES
+    IMPORTED_LOCATION "$ENV{VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so"
+    INTERFACE_INCLUDE_DIRECTORIES "$ENV{VAI_ALVEO_ROOT}/vai/dpuv1/rt/vitis/include"
+  )
 else()
   find_package(aks REQUIRED
+  )
+  set_target_properties(xfdnn PROPERTIES
+    IMPORTED_LOCATION "$ENV{CONDA_PREFIX}/lib/libxfdnn.so"
+    INTERFACE_INCLUDE_DIRECTORIES "$ENV{CONDA_PREFIX}/lib/python3.6/site-packages/vai/dpuv1/rt/vitis/include"
   )
 endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
 
-find_package(OpenCV REQUIRED COMPONENTS core)
-find_package(OpenCL REQUIRED)
-
 add_library (${PROJECT_NAME} SHARED
-  AksPreProcKernel.cpp
-  xcl2.cpp
+  AksDPUCADX8GRunner.cpp
 )
 
 set_target_properties (${PROJECT_NAME} PROPERTIES
@@ -42,14 +48,9 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 )
 
 target_include_directories (${PROJECT_NAME}
-  PRIVATE ${CMAKE_SOURCE_DIR}
   PRIVATE ${aks_INCLUDE_DIRS}
-  PRIVATE ${OpenCV_INCLUDE_DIRS}
-  PRIVATE ${OpenCL_INCLUDE_DIRS}
-  PRIVATE "$ENV{XILINX_XRT}/include"
 )
 
 target_link_libraries (${PROJECT_NAME}
- PRIVATE opencv_core
- PRIVATE ${OpenCL_LIBRARIES}
+ PRIVATE xfdnn
 )

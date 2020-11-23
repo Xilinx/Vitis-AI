@@ -53,6 +53,7 @@ set (EXAMPLES_IMAGE
   resnet50_edge.cpp
   stdyolov2.cpp
   tinyyolov3.cpp
+  resnet50_u50.cpp
 )
 
 # Compile Sources
@@ -95,14 +96,12 @@ foreach( sourcefile ${EXAMPLES_VIDEO} )
   # Set include dirs
   target_include_directories (${exename}
     PRIVATE ${aks_INCLUDE_DIRS}
-    PRIVATE ${Boost_INCLUDE_DIRS}
     PRIVATE ${OpenCV_INCLUDE_DIRS}
   )
 
   # Set libraries to be linked
   target_link_libraries (${exename}
     PRIVATE ${aks_LIBRARIES}
-    PRIVATE ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY}
     PRIVATE ${CMAKE_DL_LIBS}
     PRIVATE ${CMAKE_THREAD_LIBS_INIT}
     PRIVATE opencv_core opencv_imgproc opencv_video opencv_videoio

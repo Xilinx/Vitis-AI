@@ -27,32 +27,33 @@ class ImageRead : public AKS::KernelBase
 {
   public:
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in, 
+        std::vector<AKS::DataDescriptor*> &out, 
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
 };
 
 extern "C" { /// Add this to make this available for python bindings
 
-AKS::KernelBase* getKernel (AKS::NodeParams *params)
-{
-  return new ImageRead();
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams *params)
+  {
+    return new ImageRead();
+  }
+
 }//extern "C"
 
 int ImageRead::exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams)
+    std::vector<AKS::DataDescriptor*> &in, 
+    std::vector<AKS::DataDescriptor*> &out, 
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
 {
   /// Get the image path
-  //std::cout << "[AKS] Image Path: " << dynParams->imagePaths[0]<< std::endl;
   int batchSize = dynParams->imagePaths.size();
   out.push_back(new AKS::DataDescriptor({batchSize,}, AKS::DataType::AKSDD));
   auto outData = out[0]->data<AKS::DataDescriptor>();
-  for(int b=0; b<dynParams->imagePaths.size(); ++b) {
+  for(int b = 0; b < dynParams->imagePaths.size(); ++b) {
+
     cv::Mat inImage = cv::imread (dynParams->imagePaths[b].c_str());
     if (!inImage.data) {
       std::cerr << "[ERR] Unable to read image: " << dynParams->imagePaths[b] << std::endl;
@@ -65,17 +66,7 @@ int ImageRead::exec_async (
     unsigned long imgSize = inImage.channels() * inImage.rows * inImage.cols;
     memcpy(dd.data(), inImage.data, imgSize);
     outData[b] = std::move(dd);
-
-    /*
-       FILE * fp = fopen ("imread.txt", "w");
-       for (int h = 0; h < inImage.rows; h++)
-       for (int w = 0; w < inImage.cols; w++)
-       for (int c = 0; c < inImage.channels(); c++) {
-       fprintf (fp, "%u\n", inImage.at<cv::Vec3b>(h, w)[c]);
-       }
-       fclose(fp);
-       */
   }
-  return -1; /// No wait
+  return 0;
 }
 

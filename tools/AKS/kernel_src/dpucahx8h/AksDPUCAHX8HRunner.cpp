@@ -20,6 +20,7 @@
 #include <map>
 #include <atomic>
 #include <tuple>
+#include <cassert>
 
 #include <aks/AksKernelBase.h>
 #include <aks/AksDataDescriptor.h>
@@ -40,110 +41,90 @@ struct DPUNodeObject {
   unsigned int core_count;
 };
 
-class DPUCZDX8GRunner: public AKS::KernelBase {
+class DPUCAHX8HRunner: public AKS::KernelBase {
   public:
     // For each node, there are multiple runners as defined in the graph
     map<AKS::NodeParams*, DPUNodeObject> nodes;
     bool isExecAsync() { return false; }
     void nodeInit(AKS::NodeParams*);
     int exec_async (
-      std::vector<AKS::DataDescriptor *> &in,
-      std::vector<AKS::DataDescriptor *> &out,
-      AKS::NodeParams* params,
-      AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor *> &in,
+        std::vector<AKS::DataDescriptor *> &out,
+        AKS::NodeParams* params,
+        AKS::DynamicParamValues* dynParams);
   private:
     std::map<std::string, xir::Tensor*> _ioTensors;
 };
 
 extern "C" {
 
-AKS::KernelBase* getKernel (AKS::NodeParams* params) {
-  /// Create kernel object
-  DPUCZDX8GRunner * kbase = new DPUCZDX8GRunner();
-  return kbase;
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams* params) {
+    /// Create kernel object
+    DPUCAHX8HRunner * kbase = new DPUCAHX8HRunner();
+    return kbase;
+  }
 
 } // extern C
 
-void DPUCZDX8GRunner::nodeInit(AKS::NodeParams* params) {
+void DPUCAHX8HRunner::nodeInit(AKS::NodeParams* params) {
   nodes.emplace(std::piecewise_construct,
-                std::forward_as_tuple(params),
-                std::forward_as_tuple());
+      std::forward_as_tuple(params),
+      std::forward_as_tuple());
 
   auto modelFile = params->getValue<string>("model_file");
   auto num_runners = params->hasKey<int>("num_runners") ? params->getValue<int>("num_runners") : 1;
 
   nodes[params].graph = std::move(xir::Graph::deserialize(modelFile));
   nodes[params].subgraphs = std::move(get_dpu_subgraph(nodes[params].graph.get()));
-  for(int i=0; i<num_runners; ++i) {
+  for(int i = 0; i < num_runners; ++i) {
     std::unique_ptr<vart::Runner> runner_ = vart::Runner::create_runner(nodes[params].subgraphs.back(), "run");
     nodes[params].runners.push_back(std::move(runner_));
   }
   nodes[params].core_count = num_runners;
 }
 
-int DPUCZDX8GRunner::exec_async (
-  vector<AKS::DataDescriptor *>& in, vector<AKS::DataDescriptor *>& out,
-  AKS::NodeParams* params, AKS::DynamicParamValues* dynParams)
+int DPUCAHX8HRunner::exec_async (
+    vector<AKS::DataDescriptor *>& in, vector<AKS::DataDescriptor *>& out,
+    AKS::NodeParams* params, AKS::DynamicParamValues* dynParams)
 {
   auto& curNode = nodes[params];
   const auto& curRunners = curNode.runners;
   unsigned int tmpID = curNode.core_id++;
   unsigned int runnerID = tmpID % curNode.core_count;
 
-	auto runner = curRunners[runnerID].get();
-	auto inputTensors = runner->get_input_tensors();
-	auto outputTensors = runner->get_output_tensors();
+  auto runner = curRunners[runnerID].get();
+  auto inputTensors = runner->get_input_tensors();
+  auto outputTensors = runner->get_output_tensors();
 
-	/*get in/out tensor shape*/
-	// int inputCnt = inputTensors.size();
-	// int outputCnt = outputTensors.size();
-	// TensorShape inshapes[inputCnt];
-	// TensorShape outshapes[outputCnt];
-	// shapes.inTensorList = inshapes;
-	// shapes.outTensorList = outshapes;
-	// getTensorShape(runner, &shapes, inputCnt, outputCnt);
-
-	// outputTensors = runner->get_output_tensors();
-	// inputTensors = runner->get_input_tensors();
-	// auto out_dims = outputTensors[0]->get_dims();
-	// auto in_dims = inputTensors[0]->get_dims();
-  //
-	// [>get shape info<]
-	// int outSize   = shapes.outTensorList[0].size;
-	// int inSize    = shapes.inTensorList[0].size;
-	// int inHeight  = shapes.inTensorList[0].height;
-	// int inWidth   = shapes.inTensorList[0].width;
-	// int batchSize = in_dims[0];
-
-	std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
+  std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
   std::vector<std::unique_ptr<xir::Tensor>> xirTensors;
 
-	int in_idx = 0;
-	for(const auto& iTensor: inputTensors) {
-		const auto& in_dims = iTensor->get_shape();
+  int in_idx = 0;
+  for(const auto& iTensor: inputTensors) {
+    const auto& in_dims = iTensor->get_shape();
+    std::vector<int> iddShape = in[in_idx]->getShape();
+    assert ((iddShape[0] == in_dims[0]) && "[ERROR] Input batch size does not match DPU batch size!");
     xirTensors.push_back(xir::Tensor::create(iTensor->get_name(), in_dims, xir::DataType::FLOAT, sizeof(float) * 8u));
-		inputsPtr.push_back(new CpuFlatTensorBuffer(in[in_idx]->data(), xirTensors.back().get()));
-		in_idx++;
-	}
+    inputsPtr.push_back(new CpuFlatTensorBuffer(in[in_idx]->data(), xirTensors.back().get()));
+    in_idx++;
+  }
 
-	for(const auto& oTensor: outputTensors) {
-		const auto& out_dims = oTensor->get_shape();
-		out.push_back(new AKS::DataDescriptor(out_dims, AKS::DataType::FLOAT32));
-		// out.back()->setDataOrg(AKS::DataOrg::NHWC);
+  for(const auto& oTensor: outputTensors) {
+    const auto& out_dims = oTensor->get_shape();
+    out.push_back(new AKS::DataDescriptor(out_dims, AKS::DataType::FLOAT32));
     xirTensors.push_back(xir::Tensor::create(oTensor->get_name(), out_dims, xir::DataType::FLOAT, sizeof(float) * 8u));
-		outputsPtr.push_back(new CpuFlatTensorBuffer(out.back()->data(), xirTensors.back().get()));
-	}
+    outputsPtr.push_back(new CpuFlatTensorBuffer(out.back()->data(), xirTensors.back().get()));
+  }
 
-	auto job_id = runner->execute_async(inputsPtr, outputsPtr);
-	runner->wait(job_id.first, -1);
+  auto job_id = runner->execute_async(inputsPtr, outputsPtr);
+  runner->wait(job_id.first, -1);
 
-  for(int i=0; i<inputsPtr.size(); ++i) {
+  for(int i = 0; i<inputsPtr.size(); ++i) {
     delete inputsPtr[i];
   }
 
-  for(int i=0; i<outputsPtr.size(); ++i) {
+  for(int i = 0; i<outputsPtr.size(); ++i) {
     delete outputsPtr[i];
   }
-	return -1;
+  return 0;
 }

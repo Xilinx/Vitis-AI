@@ -19,9 +19,9 @@
 #include <vector>
 #include <iostream>
 
-#include "aks/AksNodeParams.h"
-#include "aks/AksKernelBase.h"
-#include "aks/AksDataDescriptor.h"
+#include <aks/AksNodeParams.h>
+#include <aks/AksKernelBase.h>
+#include <aks/AksDataDescriptor.h>
 
 using namespace AKS;
 
@@ -36,10 +36,10 @@ class AddKernelBase: public AKS::KernelBase {
 };
 
 extern "C" {
-AKS::KernelBase* getKernel (AKS::NodeParams* params) {
-  AddKernelBase* base = new AddKernelBase();
-  return base;
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams* params) {
+    AddKernelBase* base = new AddKernelBase();
+    return base;
+  }
 } // extern C
 
 int AddKernelBase::getNumCUs(void)
@@ -48,17 +48,17 @@ int AddKernelBase::getNumCUs(void)
 }
 
 int AddKernelBase::exec_async (
-  vector<AKS::DataDescriptor *>& in, vector<AKS::DataDescriptor *>& out,
-  AKS::NodeParams* params, AKS::DynamicParamValues* dynParams)
+    vector<AKS::DataDescriptor *>& in, vector<AKS::DataDescriptor *>& out,
+    AKS::NodeParams* params, AKS::DynamicParamValues* dynParams)
 {
-    AddKernelBase* kbase = this;
-    float* input = (float*)(in[0]->data());
+  AddKernelBase* kbase = this;
+  float* input = (float*)(in[0]->data());
 
-    // Create one output buffer and resize buffer to required size
-    out.push_back(new AKS::DataDescriptor({1}, AKS::DataType::FLOAT32));
-    float* output = (float*)(out[0]->data());
+  // Create one output buffer and resize buffer to required size
+  out.push_back(new AKS::DataDescriptor({1}, AKS::DataType::FLOAT32));
+  float* output = (float*)(out[0]->data());
 
-    output[0] = input[0] + params->_intParams["adder"];
-    std::cout << "Node Output : " << params << " " << input[0] << " " << output[0] << std::endl;
-    return -1;
+  output[0] = input[0] + params->_intParams["adder"];
+  std::cout << "Node Output : " << params << " " << input[0] << " " << output[0] << std::endl;
+  return 0;
 }

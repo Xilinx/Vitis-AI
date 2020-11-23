@@ -25,18 +25,18 @@
 
 #include <dpu/dpu_runner.hpp>
 
-class XDNNKernelBase: public AKS::KernelBase {
+class DPUCADX8GBase: public AKS::KernelBase {
   public:
     std::unique_ptr<vitis::ai::DpuRunner> runner;
     bool isExecAsync() { return true; }
     void nodeInit(AKS::NodeParams*);
     int exec_async (
-      std::vector<AKS::DataDescriptor *> &in, 
-      std::vector<AKS::DataDescriptor *> &out, 
-      AKS::NodeParams* params, 
-      AKS::DynamicParamValues* dynParams);
-  int getNumCUs(void);
-  void wait (int, AKS::NodeParams*);
+        std::vector<AKS::DataDescriptor *> &in, 
+        std::vector<AKS::DataDescriptor *> &out, 
+        AKS::NodeParams* params, 
+        AKS::DynamicParamValues* dynParams);
+    int getNumCUs(void);
+    void wait (int, AKS::NodeParams*);
   private:
     // Filled at node init
     std::map<std::string, vitis::ai::Tensor*> _ioTensors;
@@ -46,23 +46,22 @@ class XDNNKernelBase: public AKS::KernelBase {
 
 extern "C" {
 
-AKS::KernelBase* getKernel (AKS::NodeParams* params) {
-  /// Create kernel object
-  XDNNKernelBase * kbase = new XDNNKernelBase();
-  return kbase;
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams* params) {
+    /// Create kernel object
+    DPUCADX8GBase * kbase = new DPUCADX8GBase();
+    return kbase;
+  }
 
 } // extern C
 
-void XDNNKernelBase::nodeInit(AKS::NodeParams* params)
+void DPUCADX8GBase::nodeInit(AKS::NodeParams* params)
 {
-
   auto rundir = params->_stringParams["vitis_rundir"];
   auto xclbin = params->_stringParams["xclbin"];
   int batch_size = params->_intParams.find("batch_size") == params->_intParams.end() ?
-            1 : params->_intParams["batch_size"];
+    1 : params->_intParams["batch_size"];
   const char* libpath = std::getenv("LIBXDNN_PATH");
- 
+
   /// Number of FPGAs/CUs
   bool acquireCU;
   if (params->_intParams.find("acquire_cu") != params->_intParams.end()) {
@@ -128,70 +127,69 @@ void XDNNKernelBase::nodeInit(AKS::NodeParams* params)
     auto inTensor = new vitis::ai::Tensor(iTensor->get_name(), in_dims, iTensor->get_data_type());
     _ioTensors[iTensor->get_name()] = inTensor;
   }
-  
+
   this->runner = std::move(runners[0]);
 }
 
-int XDNNKernelBase::getNumCUs(void)
+int DPUCADX8GBase::getNumCUs(void)
 {
   return 1;
 }
 
-int XDNNKernelBase::exec_async (
-  vector<AKS::DataDescriptor *>& in, vector<AKS::DataDescriptor *>& out, 
-  AKS::NodeParams* params, AKS::DynamicParamValues* dynParams) 
+int DPUCADX8GBase::exec_async (
+    vector<AKS::DataDescriptor *>& in, vector<AKS::DataDescriptor *>& out, 
+    AKS::NodeParams* params, AKS::DynamicParamValues* dynParams) 
 { 
-    XDNNKernelBase* kbase = this;
-    vitis::ai::DpuRunner* runner = kbase->runner.get();
+  DPUCADX8GBase* kbase = this;
+  vitis::ai::DpuRunner* runner = kbase->runner.get();
 
-    std::vector<vitis::ai::CpuFlatTensorBuffer*> ftb;
-    std::vector<vitis::ai::TensorBuffer*> inputsPtr, outputsPtr;
+  std::vector<vitis::ai::CpuFlatTensorBuffer*> ftb;
+  std::vector<vitis::ai::TensorBuffer*> inputsPtr, outputsPtr;
 
-    auto outputTensors = runner->get_output_tensors();
-    int outDataIdx = 0;
-    for (auto & oTensor: outputTensors) {
-      /// Create output tensors for runner
-      auto outTensor = _ioTensors[oTensor->get_name()];
-      /// Get output dims
-      auto out_dims = outTensor->get_dims();
-      /// Create output descriptors
-      out.push_back(new AKS::DataDescriptor(out_dims, AKS::DataType::FLOAT32));
-      auto cpuTenBuff = new vitis::ai::CpuFlatTensorBuffer(out[outDataIdx]->data(), outTensor); 
-      outputsPtr.push_back(cpuTenBuff); 
-      ftb.push_back(cpuTenBuff);
-      outDataIdx++;
+  auto outputTensors = runner->get_output_tensors();
+  int outDataIdx = 0;
+  for (auto & oTensor: outputTensors) {
+    /// Create output tensors for runner
+    auto outTensor = _ioTensors[oTensor->get_name()];
+    /// Get output dims
+    auto out_dims = outTensor->get_dims();
+    /// Create output descriptors
+    out.push_back(new AKS::DataDescriptor(out_dims, AKS::DataType::FLOAT32));
+    auto cpuTenBuff = new vitis::ai::CpuFlatTensorBuffer(out[outDataIdx]->data(), outTensor); 
+    outputsPtr.push_back(cpuTenBuff); 
+    ftb.push_back(cpuTenBuff);
+    outDataIdx++;
+  }
+
+  auto inputTensors = runner->get_input_tensors();
+  int inDataIdx = 0;
+  for (auto & iTensor: inputTensors) {
+    /// Create input tensors for runner
+    auto inTensor = _ioTensors[iTensor->get_name()];
+    auto cpuTenBuff = new vitis::ai::CpuFlatTensorBuffer(in[inDataIdx]->data(), inTensor);
+    inputsPtr.push_back(cpuTenBuff); 
+    ftb.push_back(cpuTenBuff);
+    inDataIdx++;
+  }
+
+  auto job_id = runner->execute_async(inputsPtr, outputsPtr);
+
+  /// Delete previously saved flatTensorbuffers
+  auto t = _ftbs.find(job_id.first);
+  if (t != _ftbs.end()){
+    for(int i = 0; i < t->second.size(); ++i){
+      delete t->second[i];
     }
+  }
 
-    auto inputTensors = runner->get_input_tensors();
-    int inDataIdx = 0;
-    for (auto & iTensor: inputTensors) {
-      /// Create input tensors for runner
-      auto inTensor = _ioTensors[iTensor->get_name()];
-      auto cpuTenBuff = new vitis::ai::CpuFlatTensorBuffer(in[inDataIdx]->data(), inTensor);
-      inputsPtr.push_back(cpuTenBuff); 
-      ftb.push_back(cpuTenBuff);
-      inDataIdx++;
-    }
-
-    auto job_id = runner->execute_async(inputsPtr, outputsPtr);
-
-    /// Delete previously saved flatTensorbuffers
-    auto t = _ftbs.find(job_id.first);
-    if (t != _ftbs.end()){
-      for(int i = 0; i < t->second.size(); ++i){
-        delete t->second[i];
-      }
-    }
-
-    /// Save current flatTensorbuffers
-    _ftbs[job_id.first] = std::move(ftb);
-    return job_id.first;
+  /// Save current flatTensorbuffers
+  _ftbs[job_id.first] = std::move(ftb);
+  return job_id.first;
 }
 
-void XDNNKernelBase::wait (int jobId, AKS::NodeParams* params) 
+void DPUCADX8GBase::wait (int jobId, AKS::NodeParams* params) 
 {
-  XDNNKernelBase* kbase = this;
+  DPUCADX8GBase* kbase = this;
   auto runner = kbase->runner.get();
   runner->wait(jobId, -1);
 }
-

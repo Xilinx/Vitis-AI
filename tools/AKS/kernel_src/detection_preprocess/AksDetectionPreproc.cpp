@@ -27,18 +27,18 @@ class DetectionImreadPre : public AKS::KernelBase
 {
   public:
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in,
-           std::vector<AKS::DataDescriptor*> &out,
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in,
+        std::vector<AKS::DataDescriptor*> &out,
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
 };
 
 extern "C" { /// Add this to make this available for python bindings
 
-AKS::KernelBase* getKernel (AKS::NodeParams *params)
-{
-  return new DetectionImreadPre();
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams *params)
+  {
+    return new DetectionImreadPre();
+  }
 
 }//externC
 
@@ -101,15 +101,14 @@ void letterBoxImage(cv::Mat &inImage, int resizeH, int resizeW, cv::Mat& outImag
     fprintf (fp1, "%f\n", tmp[h]);
   fclose(fp1);
 #endif
-
 }
 
 
 int DetectionImreadPre::exec_async (
-           std::vector<AKS::DataDescriptor*> &in,
-           std::vector<AKS::DataDescriptor*> &out,
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams)
+    std::vector<AKS::DataDescriptor*> &in,
+    std::vector<AKS::DataDescriptor*> &out,
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
 {
   /// Get input and output data shapes
   /// Input could be batch array or batch of images
@@ -184,5 +183,5 @@ int DetectionImreadPre::exec_async (
 
   /// Push back output
   out.push_back(outDD);
-  return -1; /// No wait
+  return 0;
 }

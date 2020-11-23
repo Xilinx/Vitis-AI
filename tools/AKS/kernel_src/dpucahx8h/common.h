@@ -22,6 +22,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <cmath>
 
 /* header file for Vitis AI unified API */
 #include <vart/mm/host_flat_tensor_buffer.hpp>
