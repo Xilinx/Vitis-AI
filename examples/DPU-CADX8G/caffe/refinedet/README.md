@@ -11,7 +11,7 @@
   Setup the Environment
 
   ```sh
-  source /workspace/alveo/overlaybins/setup.sh
+  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 ### Data Preparation

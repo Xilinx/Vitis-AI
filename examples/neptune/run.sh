@@ -56,11 +56,11 @@ else
 fi
 
 if [[ $QUIET == 1 ]]; then
-    . ../overlaybins/setup.sh &> /dev/null
+    . /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh &> /dev/null
     export PYTHONPATH=${PYTHONPATH}:$VAI_ALVEO_ROOT:$VAI_ALVEO_ROOT/apps/yolo
     $cmd server.py --port=$PORT --wsport=$WSPORT &> /dev/null
 else
-    . ../overlaybins/setup.sh
+    . /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
     export PYTHONPATH=${PYTHONPATH}:$VAI_ALVEO_ROOT:$VAI_ALVEO_ROOT/apps/yolo
     $cmd server.py --port=$PORT --wsport=$WSPORT
 fi

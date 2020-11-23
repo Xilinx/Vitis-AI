@@ -17,7 +17,7 @@ conda activate vitis-ai-caffe
 ```
 ```sh
 # Setup
-source /workspace/alveo/overlaybins/setup.sh
+source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 ## Running the Application

@@ -9,7 +9,7 @@ Follow these instructions from inside a running container.
 
 1. Setup the environment
   ```sh
-  . /workspace/alveo/overlaybins/setup.sh
+  . /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 2. Install the necessary dataset (Proceed to next step, if already done)

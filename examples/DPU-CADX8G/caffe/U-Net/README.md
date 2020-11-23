@@ -7,7 +7,7 @@ Please activate Caffe conda environment using the following commands.
 
 ```
 conda activate vitis-ai-caffe
-source /workspace/alveo/overlaybins/setup.sh
+source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 cd /workspace/alveo/examples/caffe/U-Net
 ```
 

@@ -14,7 +14,7 @@ This directory provides scripts for running several well known models on the FPG
   Setup the Environment
 
   ```sh
-  source /workspace/alveo/overlaybins/setup.sh
+  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
    Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning).
