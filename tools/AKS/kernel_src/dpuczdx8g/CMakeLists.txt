@@ -17,7 +17,7 @@ endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
 
 add_library (${PROJECT_NAME} SHARED
-  AksDPUv2Runner.cpp
+  AksDPUCZDX8GRunner.cpp
   common.cpp
 )
 

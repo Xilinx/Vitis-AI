@@ -109,7 +109,7 @@ done
 
 # Supported Modes & Models
 declare -A SUPPORTED_MODELS
-for name in "googlenet" "resnet50" "inception_v1_tf" "googlenet_resnet50" "tinyyolov3" "tinyyolov3_video" "googlenet_tinyyolov3" "stdyolov2" "facedetect" "googlenet_pp_accel" "resnet50_edge"
+for name in "googlenet" "resnet50" "inception_v1_tf" "googlenet_resnet50" "tinyyolov3" "tinyyolov3_video" "googlenet_tinyyolov3" "stdyolov2" "facedetect" "googlenet_pp_accel" "resnet50_edge" "resnet50_u50"
 do
     SUPPORTED_MODELS[$name]=1
 done
@@ -152,7 +152,7 @@ LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 export PYTHONPATH=${VAI_ALVEO_ROOT}/apps/face_detect:${AKS_ROOT}/libs:${AKS_ROOT}/libs/pykernels:${PYTHONPATH}
 
-CARDS_CONNECTED=`xbutil scan | grep "xilinx_u" | wc -l`
+CARDS_CONNECTED=`/opt/xilinx/xrt/bin/xbutil scan | grep "xilinx_u" | wc -l`
 if [ ! -z "${NUM_FPGA}" ]
 then
   if [ ${NUM_FPGA} -gt ${CARDS_CONNECTED} ]
@@ -205,6 +205,16 @@ fi
 if [ "$MODEL" == "googlenet" ]; then
   CPP_EXE=examples/bin/googlenet.exe
   PY_EXE=examples/googlenet.py
+  exec_args="$DIRECTORY1"
+
+elif [ "$MODEL" == "resnet50_u50" ]; then
+  if [[ "$IMPL" == "py" ]]; then
+    echo ""
+    echo "[INFO] Model: resnet50_u50 only has C++ implementation."
+    echo ""
+    exit 1
+  fi
+  CPP_EXE=examples/bin/resnet50_u50.exe
   exec_args="$DIRECTORY1"
 
 elif [ "$MODEL" == "inception_v1_tf" ]; then
