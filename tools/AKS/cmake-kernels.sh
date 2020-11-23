@@ -34,7 +34,7 @@ RST="${reset}"
 declare -a args
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \
-		 -l help,clean,clean-only,aks-install-prefix: \
+		 -l help,clean,clean-only,dpu:,aks-install-prefix: \
 		 -- "$0" "$@")
 [ $? -eq 0 ] || {
     echo "Failed to parse arguments! try --help"
@@ -46,6 +46,7 @@ while true; do
 	-h | --help                ) show_help=true; break;;
 	     --clean               ) clean=true;;
 	     --clean-only          ) clean_only=true;;
+	     --dpu                 ) shift; dpu=$1;;
 	     --aks-install-prefix  ) shift; install_prefix=$1;;
 	     --) shift; break;;
   esac
@@ -59,6 +60,7 @@ if [ ${show_help:=false} == true ]; then
   echo -e "    --help                 show help"
   echo -e "    --clean                discard previous configs/builds before build"
   echo -e "    --clean-only           discard previous configs/builds"
+  echo -e "    --dpu                  set DPU target"
   echo -e "    --aks-install-prefix   set customized aks install prefix"
   echo -e
   exit 0
@@ -66,47 +68,63 @@ fi
 
 args=(-DAKS_INSTALL_PREFIX="${install_prefix}")
 
-# Get all Kernels
-KERNELS=$(ls -d -1 kernel_src/*)
+# Common kernels (Arch & DPU independent)
+declare -a COMMON_KER
+COMMON_KER=("kernel_src/add"
+            "kernel_src/classification_accuracy"
+            "kernel_src/classification_imread_preprocess"
+            "kernel_src/classification_postprocess"
+            "kernel_src/classification_preprocess"
+            "kernel_src/detection_imread_preprocess"
+            "kernel_src/detection_preprocess"
+            "kernel_src/image_read"
+            "kernel_src/python_kernel"
+            "kernel_src/save_boxes_darknet_format"
+            )
 
-ARM_INCOMPATIBLE="kernel_src/caffe_kernel \
-	kernel_src/dpuv1_norunner \
-	kernel_src/dpuv1_runner \
-	kernel_src/classification_preprocess_accel \
-	kernel_src/classification_fc_softmax_top_k \
-	kernel_src/fully_connected_relu \
-	kernel_src/fully_connected_sigmoid \
-	kernel_src/optical_flow_fpga \
-	kernel_src/yolo_postprocess"
-x86_INCOMPATIBLE="kernel_src/dpuv2_runner"
-arch=$(uname -m)
+# DPUCADX8G (Alveo-u200/u250) specific
+declare -a DPU_CADX8G
+DPU_CADX8G=("kernel_src/dpucadx8g"
+            "kernel_src/classification_preprocess_accel"
+            "kernel_src/classification_fc_softmax_top_k"
+            "kernel_src/fully_connected_relu"
+            "kernel_src/fully_connected_sigmoid"
+            "kernel_src/optical_flow_fpga"
+            "kernel_src/optical_flow_preprocess"
+            "kernel_src/optical_flow_opencv"
+            "kernel_src/optical_flow_opencv_postprocess"
+            "kernel_src/yolo_postprocess"
+           )
 
-# Filter out architecture incompatible kernels
-if [[ ${arch} == "x86_64" ]]
-then
-	INCOMPATIBLE=${x86_INCOMPATIBLE}
-elif [[ ${arch} == "aarch64" ]]
-then
-	INCOMPATIBLE=${ARM_INCOMPATIBLE}
+# DPUCAHX8H (Alveo-u50) specific
+declare -a DPU_CAHX8H
+DPU_CAHX8H=("kernel_src/dpucahx8h")
+
+# DPUCZDX8G (Zync-Ultrascale/Edge) specific
+declare -a DPU_CZDX8G
+DPU_CZDX8G=("kernel_src/dpuczdx8g")
+
+# Get all Kernels based on DPU
+declare -a KERNELS
+if   [ ${dpu:="common"} == "dpucadx8g" ]; then
+  KERNELS=(${COMMON_KER[@]} ${DPU_CADX8G[@]})
+elif [ ${dpu:="common"} == "dpucahx8h" ]; then
+  KERNELS=(${COMMON_KER[@]} ${DPU_CAHX8H[@]})
+elif [ ${dpu:="common"} == "dpuczdx8g" ]; then
+  KERNELS=(${COMMON_KER[@]} ${DPU_CZDX8G[@]})
 else
-	echo "[ERROR] Unknown architecture - ${arch}"
-	echo "[ERROR] Supported architectures - x86_64/aarch64"
-	exit
+  echo -e
+  echo -e "${MSG} Building Only Common Kernels!"
+  echo -e "${MSG} Use \"--dpu\" option to build DPU specific kernels"
+  KERNELS=(${COMMON_KER[@]})
+  echo -e
 fi
-
-a=$(echo ${KERNELS} | tr [:space:] "\n" | sort -u)
-b=$(echo ${INCOMPATIBLE} | tr [:space:] "\n" | sort -u)
-for i in ${b}
-do
-	a=${a/$i/}
-done
-KERNELS=$a
 
 declare -a skipped_kernels
 declare -a failed_kernels
 
 # Build all kernels
-for kernel in ${KERNELS}; do
+for kernel in ${KERNELS[@]}; do
   echo -e
   cd ${ROOT}
   # Check if kernel has CMakeLists

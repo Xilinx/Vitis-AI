@@ -37,38 +37,38 @@ class YoloPostProc : public AKS::KernelBase
   public:
     void nodeInit(AKS::NodeParams*);
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in,
-           std::vector<AKS::DataDescriptor*> &out,
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in,
+        std::vector<AKS::DataDescriptor*> &out,
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
 };
 
 extern "C" { /// Add this to make this available for python bindings and
 
-AKS::KernelBase* getKernel (AKS::NodeParams *params)
-{
-  return new YoloPostProc();
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams *params)
+  {
+    return new YoloPostProc();
+  }
 
 }//externC
 
 void YoloPostProc::nodeInit(AKS::NodeParams* nodeParams) {
-    _yolo_version = nodeParams->_intParams["yolo_version"];
-    _net_h        = nodeParams->_intParams["net_h"];
-    _net_w        = nodeParams->_intParams["net_w"];
-    _num_classes  = nodeParams->_intParams["num_classes"];
-    _anchor_cnt   = nodeParams->_intParams["anchor_cnt"];
-    _conf_thresh  = nodeParams->_floatParams["conf_thresh"];
-    _iou_thresh   = nodeParams->_floatParams["iou_thresh"];
-    _biases       = nodeParams->_floatVectorParams["biases"];
-    assert(_yolo_version == 2 || _yolo_version == 3);
+  _yolo_version = nodeParams->_intParams["yolo_version"];
+  _net_h        = nodeParams->_intParams["net_h"];
+  _net_w        = nodeParams->_intParams["net_w"];
+  _num_classes  = nodeParams->_intParams["num_classes"];
+  _anchor_cnt   = nodeParams->_intParams["anchor_cnt"];
+  _conf_thresh  = nodeParams->_floatParams["conf_thresh"];
+  _iou_thresh   = nodeParams->_floatParams["iou_thresh"];
+  _biases       = nodeParams->_floatVectorParams["biases"];
+  assert(_yolo_version == 2 || _yolo_version == 3);
 }
 
 int YoloPostProc::exec_async (
-           std::vector<AKS::DataDescriptor*> &in,
-           std::vector<AKS::DataDescriptor*> &out,
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams)
+    std::vector<AKS::DataDescriptor*> &in,
+    std::vector<AKS::DataDescriptor*> &out,
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
 {
   int batchSize = in[0]->getShape()[0];
   int imgDims = 3;
@@ -104,13 +104,6 @@ int YoloPostProc::exec_async (
     clearBuffer(boxes);
     out[0]->data<AKS::DataDescriptor>()[b] = std::move(dd);
   }
-
-  // std::cout << "number of boxes: " << nboxes << std::endl;
-  // for(int i=0; i<nboxes*6; ++i) {
-  //   if(i%6 == 0) std::cout << std::endl;
-  //   std::cout << out[0]->data<float>()[i] << " ";
-  // }
-  // std::cout << std::endl;
-  return -1;
+  return 0;
 }
 

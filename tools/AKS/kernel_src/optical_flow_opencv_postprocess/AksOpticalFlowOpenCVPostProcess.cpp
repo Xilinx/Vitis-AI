@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include <iostream>
 #include <stdint.h>
 #include <vector>
@@ -17,10 +32,10 @@ class OpticalFlowOpenCVPostProcess : public AKS::KernelBase
   public:
     int id =0;
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in, 
+        std::vector<AKS::DataDescriptor*> &out, 
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
 };
 
 
@@ -65,55 +80,53 @@ void dd2Mat(AKS::DataDescriptor* src, cv::Mat &dst) {
 }
 
 
-extern "C" { // Add this to make this available for python bindings and 
+extern "C" { // Add this to make this available for python bindings
 
-AKS::KernelBase* getKernel (AKS::NodeParams *params)
-{
-  return new OpticalFlowOpenCVPostProcess();
-}
-
-
-int OpticalFlowOpenCVPostProcess::exec_async (
-                      std::vector<AKS::DataDescriptor*> &in, 
-                      std::vector<AKS::DataDescriptor*> &out, 
-                      AKS::NodeParams* nodeParams,
-                      AKS::DynamicParamValues* dynParams)
-{
-
-    // std::cout << "[DBG] OpticalFlowOpenCVPostProcess: running now ... " << std::endl;
-    auto shape = in[0]->getShape();
-    int rows = shape[0];
-    int cols = shape[1];
-    int channels = shape[2]; // should be 2
-
-    int bound = nodeParams->getValue<int>("bound");
-
-    AKS::DataDescriptor *flowDD = new AKS::DataDescriptor(
-        { 1, 2, rows, cols }, AKS::DataType::INT8);
-    int8_t* flowData = static_cast<int8_t*>(flowDD->data());
-    boundAndFormat(in[0], bound, flowData);
-    out.push_back(flowDD);
-
-    std::string output_folder = \
-      nodeParams->_stringParams.find("visualize") == nodeParams->_stringParams.end() ?
-        "" : nodeParams->_stringParams["visualize"];
-    if (!output_folder.empty()) {
-        boost::filesystem::path p(dynParams->imagePaths[0]);
-        std::string filename = p.filename().string();
-        std::string folder = p.parent_path().filename().string();
-        std::string output_path = output_folder + "/" + folder;
-        boost::filesystem::create_directories(output_path);
-        std::string tmp = "_" + filename;
-        cv::Mat image(rows, cols, CV_8UC(2));
-        cv::Mat split[2];
-        dd2Mat(out[0], image);
-        cv::split(image, split);
-        cv::imwrite(output_path + "/flow_x" + tmp, split[0]);
-        cv::imwrite(output_path + "/flow_y" + tmp, split[1]);
-    }
-
-    // std::cout << "[DBG] OpticalFlowOpenCVPostProcess: Done!" << std::endl << std::endl;
-    return -1; // No wait
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams *params)
+  {
+    return new OpticalFlowOpenCVPostProcess();
+  }
 
 } //extern "C"
+
+int OpticalFlowOpenCVPostProcess::exec_async (
+    std::vector<AKS::DataDescriptor*> &in, 
+    std::vector<AKS::DataDescriptor*> &out, 
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
+{
+
+  auto shape = in[0]->getShape();
+  int rows = shape[0];
+  int cols = shape[1];
+  int channels = shape[2]; // should be 2
+
+  int bound = nodeParams->getValue<int>("bound");
+
+  AKS::DataDescriptor *flowDD = new AKS::DataDescriptor(
+      { 1, 2, rows, cols }, AKS::DataType::INT8);
+  int8_t* flowData = static_cast<int8_t*>(flowDD->data());
+  boundAndFormat(in[0], bound, flowData);
+  out.push_back(flowDD);
+
+  std::string output_folder = \
+                              nodeParams->_stringParams.find("visualize") == nodeParams->_stringParams.end() ?
+                              "" : nodeParams->_stringParams["visualize"];
+  if (!output_folder.empty()) {
+    boost::filesystem::path p(dynParams->imagePaths[0]);
+    std::string filename = p.filename().string();
+    std::string folder = p.parent_path().filename().string();
+    std::string output_path = output_folder + "/" + folder;
+    boost::filesystem::create_directories(output_path);
+    std::string tmp = "_" + filename;
+    cv::Mat image(rows, cols, CV_8UC(2));
+    cv::Mat split[2];
+    dd2Mat(out[0], image);
+    cv::split(image, split);
+    cv::imwrite(output_path + "/flow_x" + tmp, split[0]);
+    cv::imwrite(output_path + "/flow_y" + tmp, split[1]);
+  }
+
+  return 0;
+}
+

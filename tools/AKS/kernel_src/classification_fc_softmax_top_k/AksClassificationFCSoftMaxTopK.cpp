@@ -47,10 +47,10 @@ class ClassificationFCSoftMaxTopK : public AKS::KernelBase
     ClassificationFCSoftMaxTopK () {}
     void nodeInit (AKS::NodeParams*);
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in, 
+        std::vector<AKS::DataDescriptor*> &out, 
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
 
     std::map<AKS::NodeParams*, weightsDescriptor> _wbParams;
   private:
@@ -59,42 +59,41 @@ class ClassificationFCSoftMaxTopK : public AKS::KernelBase
     std::string _weigthsFile;
 };
 
-extern "C" { /// Add this to make this available for python bindings and 
+extern "C" { /// Add this to make this available for python bindings
 
-// weight - NxK
-// data - KxM
-// output - weight x data + bias = NxM
-void computeFC(float *weight, float *bias, float *data,
-    int M, int N, int K, float *output)
-{
-  int lda = K;
-  int ldb = K;
-  for (int batch=0; batch<M; batch++) {
-    float* to_fill = output + (batch*N);
-    cblas_sgemv(CblasRowMajor,
-        (CBLAS_TRANSPOSE)CblasNoTrans,
-        N, K, 1.,
-        weight, K, data + batch*K, 1, 0., to_fill, 1);
+  // weight - NxK
+  // data   - KxM
+  // output - weight x data + bias = NxM
+  void computeFC(float *weight, float *bias, float *data,
+      int M, int N, int K, float *output)
+  {
+    int lda = K;
+    int ldb = K;
+    for (int batch=0; batch<M; batch++) {
+      float* to_fill = output + (batch*N);
+      cblas_sgemv(CblasRowMajor,
+          (CBLAS_TRANSPOSE)CblasNoTrans,
+          N, K, 1.,
+          weight, K, data + batch*K, 1, 0., to_fill, 1);
+    }
+
+    lda = 1;
+    ldb = N;
+    std::vector<float> bias_multiplier(M, 1.);
+    for (int batch=0; batch<M; batch++) {
+      float* to_fill = output + (batch*N);
+      cblas_sgemv(
+          CblasRowMajor,
+          (CBLAS_TRANSPOSE)CblasNoTrans,
+          N, 1, 1., bias, 1,
+          &(bias_multiplier[0]), 1, 1., to_fill, 1);
+    }
   }
 
-  lda = 1;
-  ldb = N;
-  std::vector<float> bias_multiplier(M, 1.);
-  for (int batch=0; batch<M; batch++) {
-    float* to_fill = output + (batch*N);
-    cblas_sgemv(
-        CblasRowMajor,
-        (CBLAS_TRANSPOSE)CblasNoTrans,
-        N, 1, 1., bias, 1,
-        &(bias_multiplier[0]), 1, 1., to_fill, 1);
+  AKS::KernelBase* getKernel (AKS::NodeParams *params)
+  {
+    return new ClassificationFCSoftMaxTopK();
   }
-}
-
-AKS::KernelBase* getKernel (AKS::NodeParams *params)
-{
-  //std::string weightsFile = params->_stringParams["vitis_rundir"] + "/weights.h5";
-  return new ClassificationFCSoftMaxTopK();
-}
 
 }//extern "C"
 
@@ -103,37 +102,37 @@ void ClassificationFCSoftMaxTopK::nodeInit (AKS::NodeParams* params)
   struct weightsDescriptor wbDesc;
   wbDesc._weigthsFile = params->_stringParams["weights"];
 
-	H5::Exception::dontPrint(); // Don't print H5 exceptions, we will handle
+  H5::Exception::dontPrint(); // Don't print H5 exceptions
 
-	const H5std_string FILE_NAME(wbDesc._weigthsFile);  // Open up weights
-	H5::H5File file(FILE_NAME, H5F_ACC_RDONLY);  //   as hdf5 file
+  const H5std_string FILE_NAME(wbDesc._weigthsFile); // Open up weights
+  H5::H5File file(FILE_NAME, H5F_ACC_RDONLY);        // as hdf5 file
 
-	// Load up all weights
+  // Load up all weights
   int fi;
-	for ( fi=0; ; fi++)
-	{
-	  try
-	  {
+  for ( fi=0; ; fi++)
+  {
+    try
+    {
 
       // Open the HDF5 Dataset for given layer
       std::string dsname = "fwbqb_" + std::to_string(fi);
       const H5std_string DATASET_NAME(dsname);
       H5::DataSet dataset = file.openDataSet(DATASET_NAME);
       /// Don't load these weights: Not required
-	  }
-	  catch( H5::FileIException error )
-	  {
+    }
+    catch( H5::FileIException error )
+    {
       if (1)
         LOG(DEBUG) << "No more weights in HDF5" << std::endl;
       break;
-	  }
-	}
+    }
+  }
   /// Load FC Weights
   fi = 0;
   for ( ; ; fi++)
-	{
-	  try
-	  {
+  {
+    try
+    {
       // Open the HDF5 Dataset for given layer
       std::string dsname = "fc_" + std::to_string(fi);
       const H5std_string DATASET_NAME(dsname);
@@ -175,47 +174,40 @@ void ClassificationFCSoftMaxTopK::nodeInit (AKS::NodeParams* params)
       weights.resize(space);
       dataset.read(&weights[0],H5::PredType::NATIVE_FLOAT,dataspace,dataspace);
 
-      // Uncomment below if you don't trust hdf5 weights, and you need to see them
-      //std::ofstream outfile;
-      //outfile.open("outfile.txt." + std::to_string(fi));
-      //for (int i=0;i<space;i++)
-      //  outfile << std::fixed << weights[i] << " ";
-
-      //wbDesc._weights[layerName] = weights;
       wbDesc._weights[dsname] = weights;
-	  }
-	  catch( H5::FileIException error )
-	  {
+    }
+    catch( H5::FileIException error )
+    {
       if (1)
         LOG(DEBUG) << "No more weights in HDF5" << std::endl;
       break;
-	  }
-	}
+    }
+  }
 
-	// Load up all bias
-	for (fi = 0; ; fi++)
-	{
-	  try
-	  {
+  // Load up all bias
+  for (fi = 0; ; fi++)
+  {
+    try
+    {
       // Open the HDF5 Dataset for given layer
       std::string dsname = "fwbqb_bias_" + std::to_string(fi);
       const H5std_string DATASET_NAME(dsname);
       H5::DataSet dataset = file.openDataSet(DATASET_NAME);
       /// Don't load these bias: Not required
-	  }
-	  catch( H5::FileIException error )
-	  {
+    }
+    catch( H5::FileIException error )
+    {
       if (1)
         LOG(DEBUG) << "No more bias in HDF5" << std::endl;
       break;
-	  }
-	}
+    }
+  }
   /// Load FC Bias
   fi = 0;
   for ( ; ; fi++)
-	{
-	  try
-	  {
+  {
+    try
+    {
       // Open the HDF5 Dataset for given layer
       std::string dsname = "fc_bias_" + std::to_string(fi);
       const H5std_string DATASET_NAME(dsname);
@@ -242,10 +234,10 @@ void ClassificationFCSoftMaxTopK::nodeInit (AKS::NodeParams* params)
       {
         SLOG(LogLevel::DEBUG, 
             _DEBUG << "Loading HDF5 dataset: " << DATASET_NAME << ", from file: " 
-                << FILE_NAME << ",layerName: " << layerName << ", having dataspace:" << std::endl;
+            << FILE_NAME << ",layerName: " << layerName << ", having dataspace:" << std::endl;
             _DEBUG << "rank: " << rank << ", dimensions: ";
             for (int i=0;i<dims.size();i++)
-                std::cout << (unsigned long)(dims[i]) << " x ";
+            std::cout << (unsigned long)(dims[i]) << " x ";
             std::cout << std::endl;)
       }
 
@@ -257,16 +249,15 @@ void ClassificationFCSoftMaxTopK::nodeInit (AKS::NodeParams* params)
       bias.resize(space);
       dataset.read(&bias[0],H5::PredType::NATIVE_FLOAT,dataspace,dataspace);
 
-      //wbDesc._bias[layerName] = bias;
       wbDesc._bias[dsname] = bias;
-	  }
-	  catch( H5::FileIException error )
-	  {
+    }
+    catch( H5::FileIException error )
+    {
       if (1)
         LOG(DEBUG) << "No more bias in HDF5" << std::endl;
       break;
-	  }
-	}
+    }
+  }
   for (auto& w: _weights) {
     LOG(DEBUG) << "FC Weights Size: " << w.second.size() << std::endl;
   }
@@ -274,13 +265,6 @@ void ClassificationFCSoftMaxTopK::nodeInit (AKS::NodeParams* params)
     LOG(DEBUG) << "FC Bias Size: " << b.second.size() << std::endl;
   }
   _wbParams[params] = std::move(wbDesc);
-  /// DEBUG
-  /*
-  for (const auto& w: _wbParams[params]._weights)
-    std::cout << w.first << std::endl;
-  for (const auto& b: _wbParams[params]._bias)
-    std::cout << b.first << std::endl;
-  */
 }
 
 /**
@@ -293,17 +277,17 @@ void ClassificationFCSoftMaxTopK::nodeInit (AKS::NodeParams* params)
  * @return none
  */
 void CPUCalcSoftmax(const float *data, size_t size, float *result) {
-    assert(data && result);
-    double sum = 0.0f;
+  assert(data && result);
+  double sum = 0.0f;
 
-    for (size_t i = 0; i < size; i++) {
-        result[i] = exp(data[i]);
-        sum += result[i];
+  for (size_t i = 0; i < size; i++) {
+    result[i] = exp(data[i]);
+    sum += result[i];
 
-    }
-    for (size_t i = 0; i < size; i++) {
-        result[i] /= sum;
-    }
+  }
+  for (size_t i = 0; i < size; i++) {
+    result[i] /= sum;
+  }
 }
 
 /**
@@ -316,55 +300,49 @@ void CPUCalcSoftmax(const float *data, size_t size, float *result) {
  * @return vector of top 'k' pairs of <index, probability>
  */
 std::vector<std::pair<int, float>> TopK(const float *d, int size, int k) {
-    assert(d && size > 0 && k > 0);
-    priority_queue<pair<float, int>> q;
+  assert(d && size > 0 && k > 0);
+  priority_queue<pair<float, int>> q;
 
-    for (auto i = 0; i < size; ++i) {
-        q.push(pair<float, int>(d[i], i));
-    }
-    std::vector<std::pair<int, float>> topKIndex;
-    for (auto i = 0; i < k; ++i) {
-        std::pair<float, int> ki = q.top();
-        // printf("top[%d] index = %d prob = %-8f  \n", i, ki.second, d[ki.second]);
-        q.pop();
-        topKIndex.push_back(make_pair(ki.second, ki.first));
-    }
-    return topKIndex;
+  for (auto i = 0; i < size; ++i) {
+    q.push(pair<float, int>(d[i], i));
+  }
+  std::vector<std::pair<int, float>> topKIndex;
+  for (auto i = 0; i < k; ++i) {
+    std::pair<float, int> ki = q.top();
+    // printf("top[%d] index = %d prob = %-8f  \n", i, ki.second, d[ki.second]);
+    q.pop();
+    topKIndex.push_back(make_pair(ki.second, ki.first));
+  }
+  return topKIndex;
 }
 
 int ClassificationFCSoftMaxTopK::exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams)
+    std::vector<AKS::DataDescriptor*> &in, 
+    std::vector<AKS::DataDescriptor*> &out, 
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
 {
-
   /// Get input and output data shapes
   std::vector <int> inShape  = in[0]->getShape();
 
   int inBatch  = inShape[0];
   int inSize   = inShape[1];
-  for(int i=2; i<inShape.size(); ++i) inSize *= inShape[i];
+  for(int i = 2; i < inShape.size(); ++i) inSize *= inShape[i];
 
   int outSize  = _wbParams[nodeParams]._bias["fc_bias_0"].size();
   int k = nodeParams->_intParams.find("top_k") == nodeParams->_intParams.end() ?
-                  5 : nodeParams->_intParams["top_k"];
-  /*
-  std::cout << "[DBG] ClassificationFCSoftMaxTopK: inHeight x inWidth  : " << inHeight << " x " << inWidth << std::endl;
-  std::cout << "[DBG] ClassificationFCSoftMaxTopK: inBatch x inchannel : " << inBatch << " x " << inSize << std::endl;
-  std::cout << "[DBG] ClassificationFCSoftMaxTopK: biasSize : " << outSize << std::endl;
-  */
-
+    5 : nodeParams->_intParams["top_k"];
+  
   /// Get input data 
   float * inData  = (float*) in[0]->data();
-  
+
   /// Create output buffer for FC layer
   AKS::DataDescriptor * fcOut = new AKS::DataDescriptor ({inBatch, outSize, 1, 1}, AKS::DataType::FLOAT32);
   float * fcOutPtr = static_cast<float*>(fcOut->data());
   /// Compute FC layer
   computeFC((float*)(&_wbParams[nodeParams]._weights["fc_0"][0]), 
-            (float*)(&_wbParams[nodeParams]._bias["fc_bias_0"][0]), 
-            inData, inBatch, outSize, inSize, fcOutPtr);
+      (float*)(&_wbParams[nodeParams]._bias["fc_bias_0"][0]), 
+      inData, inBatch, outSize, inSize, fcOutPtr);
 
   AKS::DataDescriptor *labels = new AKS::DataDescriptor ({inBatch, k, 1, 1}, AKS::DataType::INT32);
   AKS::DataDescriptor *probs = new AKS::DataDescriptor ({inBatch, k, 1, 1}, AKS::DataType::FLOAT32);
@@ -394,6 +372,6 @@ int ClassificationFCSoftMaxTopK::exec_async (
 
   delete fcOut;
   delete[] softmaxOut;
-  return -1; /// No wait
+  return 0;
 }
 
