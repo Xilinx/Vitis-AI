@@ -295,7 +295,7 @@ sudo cp dpu.xclbin /usr/lib
 	```
 	  For `DPUCAHX8L`, take `U50lv` as an example.  
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50lv-v3me-r1.3.0.tar.gz -O resnet_v1_50_tf-u50lv-v3me-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz -O resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
 	```	  
 	* Install the model package.
 	```
@@ -304,7 +304,7 @@ sudo cp dpu.xclbin /usr/lib
 	```
 	  For `DPUCAHX8L`, execute the following commands to install the model package.
 	```
-	  tar -xzvf resnet_v1_50_tf-u50lv-v3me-r1.3.0.tar.gz
+	  tar -xzvf resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
 	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
 	```	
 	
