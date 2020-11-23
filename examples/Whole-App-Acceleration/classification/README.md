@@ -21,7 +21,7 @@ source /workspace/alveo/overlaybins/setup.sh
 ```
 
 ## Running the Application
--  `cd ${VAI_ALVEO_ROOT}/apps/whole_app_acceleration/classification`
+- `cd ${VAI_ALVEO_ROOT}/Whole-App-Acceleration/classification`
 -  Use `run.sh` file to run the application. 
 
 ### Examples

@@ -21,7 +21,7 @@ source /workspace/alveo/overlaybins/setup.sh
 ```
 
 ## Running the Application
--  `cd ${VAI_ALVEO_ROOT}/apps/whole_app_acceleration/yolo`
+-  `cd ${VAI_ALVEO_ROOT}/Whole-App-Acceleration/yolo`
 - Use `detect.sh` file to run the application.
 - Make sure to follow the steps [here](../../yolo/README.md#getting-coco-2014-validation-set-and-labels) to get COCO validation set and labels/ 
 
