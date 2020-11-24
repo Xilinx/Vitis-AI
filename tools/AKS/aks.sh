@@ -56,6 +56,7 @@ usage() {
   echo "                                  Possible values: [tinyyolov3_video]"
   echo "                                  Possible values: [facedetect]"
   echo "                                  Possible values: [resnet50_edge] - only on edge devices"
+  echo "                                  Possible values: [resnet50_u50] - only on U50 devices"
   echo "  -i  IMPL    | --impl    IMPL    Implemetation"
   echo "                                  Possible values: [cpp, py]"
   echo "  -d1 IMAGES  | --dir1    IMAGES  Image Directory"
