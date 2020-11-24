@@ -55,7 +55,7 @@
       "node_name": "googlenet_v1_accuracy",
       "node_params": {
         "ClassificationAccuracy": {
-          "ground_truth": "../../examples/deployment_modes/gold.txt"
+          "ground_truth": "graph_zoo/gold.txt"
         }
       },
       "next_node": []
