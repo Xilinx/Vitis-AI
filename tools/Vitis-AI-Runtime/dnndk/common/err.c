@@ -52,7 +52,9 @@ const char* g_dpu_arch_name[] = {
     "B2304F",
     "B8192F",
     "B3136F",
-    "B288F"
+    "B288F",
+    "B144F",
+    "B5184F"
 };
 
 const char N2CUBE_NO_MSG[] = "";

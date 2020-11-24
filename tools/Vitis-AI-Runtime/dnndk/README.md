@@ -1,10 +1,39 @@
-This is the source code package of Vitis AI DNNDK runtime, usually it will be compiled and output package vitis-ai_v1.2_dnndk.tar.gz. The structure of the output package is as follows.
+This is the source code package of Vitis AI DNNDK runtime, usually it will be compiled and output package vitis-ai_v1.3_dnndk.tar.gz. The structure of the output package is as follows.
 
-<br />
-<div align="center">
-  <img width="45%" height="45%" src="common/vitis-ai_v1.2_dnndk.png">
-</div>
-<br />
+```
+vitis-ai_v1.3_dnndk
+├── install.sh
+└── pkgs
+    ├── python
+    │   └── Edge_Vitis_AI-1.3-py2.py3-none-any.whl
+    └── usr
+        ├── bin
+        │   ├── ddump
+        │   ├── dexplorer
+        │   └── dsight
+        ├── include
+        │   ├── dnndk
+        │   │   ├── dnndk.h
+        │   │   └── n2cube.h
+        │   └── vai
+        │       ├── dpu_runner.hpp
+        │       ├── runner.hpp
+        │       ├── tensor_buffer.hpp
+        │       ├── tensor.hpp
+        │       └── xdpurunner.h
+        └── lib
+            ├── echarts.js
+            ├── libdpuaol.so
+            ├── libdpuaol.so.1
+            ├── libdpuaol.so.1.1.0
+            ├── libdsight.pyc
+            ├── libhineon.so
+            ├── libhineon.so.1
+            ├── libhineon.so.1.3.0
+            ├── libn2cube.so
+            ├── libn2cube.so.4
+            └── libn2cube.so.4.3.0
+```
 
 You have multi ways to compile this source code. Please choose from the following items to find the steps that suit your situation.
 * sdk.sh corss compile exported by Petalinux
@@ -35,7 +64,7 @@ You have multi ways to compile this source code. Please choose from the followin
    ```
    make python
    ```
- - Generate vitis-ai_v1.2_dnndk.tar.gz
+ - Generate vitis-ai_v1.3_dnndk.tar.gz
    ```
    make package
    ```
@@ -64,11 +93,11 @@ You have multi ways to compile this source code. Please choose from the followin
    ```
  - Install package for python on target board
    ```
-   pip install Edge_Vitis_AI-1.2-py2.py3-none-any.whl
+   pip install Edge_Vitis_AI-1.3-py2.py3-none-any.whl
    ```
  - Install package for python3 on target board
    ```
-   pip3 install  Edge_Vitis_AI-1.2-py2.py3-none-any.whl
+   pip3 install  Edge_Vitis_AI-1.3-py2.py3-none-any.whl
    ```
 
 ## Cross compilation with GNU Toolchain
@@ -80,11 +109,11 @@ You have multi ways to compile this source code. Please choose from the followin
    ```
    vim Makefile.cfg
    ```
- - Use gcc-aarch64-linux-gnu to generate vitis-ai_v1.2_dnndk.tar.gz 
+ - Use gcc-aarch64-linux-gnu to generate vitis-ai_v1.3_dnndk.tar.gz 
    ```
    make SYSROOT=<the sysroot path of target board> CROSS_COMPILE=aarch64-linux-gnu-
    ```
- - Use gcc-arm-linux-gnueabihf to generate vitis-ai_v1.2_dnndk.tar.gz
+ - Use gcc-arm-linux-gnueabihf to generate vitis-ai_v1.3_dnndk.tar.gz
    ```
    make SYSROOT=<the sysroot path of target board> CROSS_COMPILE=arm-linux-gnueabihf-
    ```

@@ -14,6 +14,9 @@
 
 cmake_minimum_required(VERSION 3.12)
 
+set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -O0 -fno-inline")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+
 project(ClassificationPreProcessAccel VERSION 1.3.0)
 
 if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
@@ -33,7 +36,7 @@ find_package(OpenCL REQUIRED)
 
 add_library (${PROJECT_NAME} SHARED
   AksPreProcKernel.cpp
-  $ENV{VAI_ALVEO_ROOT}/apps/whole_app_acceleration/classification/src/xcl2.cpp
+  xcl2.cpp
 )
 
 set_target_properties (${PROJECT_NAME} PROPERTIES
@@ -42,11 +45,11 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 )
 
 target_include_directories (${PROJECT_NAME}
+  PRIVATE ${CMAKE_SOURCE_DIR}
   PRIVATE ${aks_INCLUDE_DIRS}
   PRIVATE ${OpenCV_INCLUDE_DIRS}
   PRIVATE ${OpenCL_INCLUDE_DIRS}
   PRIVATE "$ENV{XILINX_XRT}/include"
-  PRIVATE "$ENV{VAI_ALVEO_ROOT}/apps/whole_app_acceleration/classification/src/"
 )
 
 target_link_libraries (${PROJECT_NAME}

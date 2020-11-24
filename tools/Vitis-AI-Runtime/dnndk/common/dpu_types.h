@@ -420,7 +420,9 @@ typedef enum {
     DPU_ARCH_B8192F   = 10,       /* value for dpu arch B8192F in dpu elf and bit signature */
     DPU_ARCH_B3136F   = 11,       /* value for dpu arch B3136F in dpu elf and bit signature */
     DPU_ARCH_B288F    = 12,       /* value for dpu arch B288F in dpu elf and bit signature */
-    DPU_ARCH_RESERVE  = 13
+    DPU_ARCH_B144F    = 13,       /* value for dpu arch B144F in dpu elf and bit signature */
+    DPU_ARCH_B5184F   = 14,       /* value for dpu arch B5184F in dpu elf and bit signature */
+    DPU_ARCH_RESERVE  = 15
 } dpu_arch_t;
 
 typedef enum {

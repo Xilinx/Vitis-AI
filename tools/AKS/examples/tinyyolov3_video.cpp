@@ -54,7 +54,7 @@ int outWidth;
 // Utility function to convert Mat object to DataDescriptor
 AKS::DataDescriptor mat2DD(const cv::Mat& src) {
     assert(src.depth() == CV_8U);
-    AKS::DataDescriptor dst({1, src.channels(), src.rows, src.cols}, AKS::DataType::UINT8);
+    AKS::DataDescriptor dst({1, src.rows, src.cols, src.channels()}, AKS::DataType::UINT8);
     uint8_t* dstptr = dst.data<uint8_t>();
     uint8_t* srcptr = src.data;
     std::memcpy(dstptr, srcptr, src.rows * src.cols * src.channels());

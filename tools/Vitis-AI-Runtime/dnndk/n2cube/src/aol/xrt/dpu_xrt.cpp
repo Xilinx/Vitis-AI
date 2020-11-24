@@ -33,9 +33,9 @@
 #include <map>
 #include <thread>
 
-#include <ert.h>
-#include <xclbin.h>
-#include <xclhal2.h>
+#include <xrt/ert.h>
+#include <xrt/xclbin.h>
+#include <xrt/xclhal2.h>
 
 #include "../dpu_aol.h"
 #include "dpu_xrt.h"
@@ -65,6 +65,8 @@ using namespace std;
 int card_index = 0;
 int timeout = 2;  // (s)
 
+static xuid_t read_reg_uuid;
+
 xclDeviceHandle mdev_handle = nullptr;
 unsigned int user_core_mask = 0xFFFFFFFF;
 char xclbin_path[200];
@@ -80,14 +82,6 @@ inline void _check_dev_handle(xclDeviceHandle &handle) {
       exit(-1);
     }
   }
-}
-
-uint32_t read32_dpu_reg(uint64_t offset) {
-  _check_dev_handle(mdev_handle);
-
-  uint32_t val;
-  xclRead(mdev_handle, XCL_ADDR_KERNEL_CTRL, offset, (void *)(&val), 4);
-  return val;
 }
 
 /**
@@ -250,10 +244,6 @@ static int _init_xrt(const char *bit) {
   }
   _check_dev_handle(mdev_handle);
 
-  if (xclLockDevice(mdev_handle)) {
-    log_err("xclLockDevice failed! \n");
-    exit(-1);
-  }
   if (!bit || !strlen(bit)) {
     log_err("Invalid bitstream file namen");
     exit(-1);
@@ -290,6 +280,8 @@ static int _init_xrt(const char *bit) {
   auto ip = xclbin::get_axlf_section(top, IP_LAYOUT);
   struct ip_layout *layout = (ip_layout *)(header + ip->m_sectionOffset);
 
+  memcpy(read_reg_uuid, top->m_header.uuid, sizeof(xuid_t));
+
   int dpu_core_num = 0, sm_core_num = 0;
   map<uint64_t, int> cu_addr_map;
   for (int i = 0; i < layout->m_count; ++i) {
@@ -306,9 +298,6 @@ static int _init_xrt(const char *bit) {
       log_info("ver :%x\n", SYSCONF->dpu_conf[dpu_core_num].version);
       log_info("arch:%x\n", SYSCONF->dpu_conf[dpu_core_num].arch);
 
-      xclRead(mdev_handle, XCL_ADDR_KERNEL_CTRL, cu_base_addr + DPUREG_GIT_COMMIT_ID,
-              (void *)(&SYSCONF->dpu_conf[dpu_core_num].feature), sizeof(dpu_feature_t));
-
       dpu_core_num++;
     } else if (strncmp((const char *)(layout->m_ip_data[i].m_name), "DPUCZDX8G",
                 strlen("DPUCZDX8G")) == 0) {
@@ -320,9 +309,6 @@ static int _init_xrt(const char *bit) {
                layout->m_ip_data[i].m_base_address);
       log_info("ver :%x\n", SYSCONF->dpu_conf[dpu_core_num].version);
       log_info("arch:%x\n", SYSCONF->dpu_conf[dpu_core_num].arch);
-
-      xclRead(mdev_handle, XCL_ADDR_KERNEL_CTRL, cu_base_addr + DPUREG_GIT_COMMIT_ID,
-              (void *)(&SYSCONF->dpu_conf[dpu_core_num].feature), sizeof(dpu_feature_t));
 
       dpu_core_num++;
     } else if (strncmp((const char *)(layout->m_ip_data[i].m_name), "sfm_xrt_top",
@@ -442,6 +428,7 @@ dpu_aol_dev_handle_t *dpu_aol_attach(uint32_t mode) {  // todo
     log_err("malloc dpu_aol_dev_handle_t memory space failed!\n");
     return nullptr;
   }
+  memset(dev, 0, sizeof(dpu_aol_dev_handle_t));
 
   _init_config_shm();
 
@@ -455,11 +442,11 @@ dpu_aol_dev_handle_t *dpu_aol_attach(uint32_t mode) {  // todo
   int cu_index = 0;
   dev->core_count[IP_ID_DPU] = SYSCONF->dpu_core_num;
   for (int i = 0; i < SYSCONF->dpu_core_num; i++) {
-    dev->core_phy_addr[cu_index++] = SYSCONF->dpu_conf[i].base_addr;
+    dev->core_phy_addr[cu_index++] = (((uint64_t)SYSCONF->dpu_conf[i].cu_index) << 32);
   }
   dev->core_count[IP_ID_SOFTMAX] = SYSCONF->sm_core_num;
   for (int i = 0; i < SYSCONF->sm_core_num; i++) {
-    dev->core_phy_addr[cu_index++] = SYSCONF->sm_conf[i].base_addr;
+    dev->core_phy_addr[cu_index++] = (((uint64_t)SYSCONF->sm_conf[i].cu_index) << 32);
   }
   return dev;
 }
@@ -488,18 +475,17 @@ int dpu_aol_detach(dpu_aol_dev_handle_t *dev) {
  * Return:
  *     DPU_AOL_OK for success, DPU_AOL_ERROR for failure.
  */
-int dpu_aol_read_regs(dpu_aol_dev_handle_t *dev, uint64_t phy_address, uint32_t *buf,
-                      uint32_t count) {
-  _check_dev_handle(mdev_handle);
-  size_t ret = xclRead(mdev_handle, XCL_ADDR_KERNEL_CTRL, phy_address, (void *)buf, count);
-  if (ret == count) {
-    log_dbg("[Read Regs Succesful] phy_addr:0x%.16lx, count: %d\n", phy_address, count);
+int dpu_aol_read_regs(dpu_aol_dev_handle_t *dev, uint64_t phy_address, uint32_t *buf, uint32_t count) {
+    uint32_t cu_index = phy_address >> 32;
+    _check_dev_handle(mdev_handle);
+
+    xclOpenContext(mdev_handle, read_reg_uuid, cu_index, false);
+    for (int i = 0; i < (count >> 2); i++) {
+        xclRegRead(mdev_handle, cu_index, ((phy_address & 0xFFFFFFFF) + (i << 2)), &buf[i]);
+    }
+    xclCloseContext(mdev_handle, read_reg_uuid, cu_index);
+
     return DPU_AOL_OK;
-  } else {
-    log_err("Error when reading regs, phy_addr:0x%.16lx, count: %d, return bytes: %d\n",
-            phy_address, count, ret);
-    return DPU_AOL_ERROR;
-  }
 }
 
 /* Initialize DPU or other IPs. It may be called when the IP first starts or times out.
@@ -567,8 +553,14 @@ dpu_aol_dev_mem_t *dpu_aol_alloc_dev_mem(dpu_aol_dev_handle_t *dev, uint64_t siz
     return nullptr;
   }
   mem->aol_mem.addr_virt = (unsigned long)xclMapBO(mdev_handle, mem->bo, true);
-  mem->aol_mem.addr_phy = xclGetDeviceAddr(mdev_handle, mem->bo);
   mem->aol_mem.size = size_align;
+
+  // Get Device address
+  struct xclBOProperties p;
+  if (xclGetBOProperties(mdev_handle, mem->bo, &p) != 0) {
+    return nullptr;
+  }
+  mem->aol_mem.addr_phy = p.paddr;
 
   log_dbg("[Alloc BO]size: 0x%x, BO_ID:%d vaddr: %p, paddr:%p \n", size_align, mem->bo,
           mem->aol_mem.addr_virt, mem->aol_mem.addr_phy);
@@ -586,6 +578,7 @@ int dpu_aol_free_dev_mem(dpu_aol_dev_handle_t *dev, dpu_aol_dev_mem_t *mem) {
   xrt_mem_t *mem_free = reinterpret_cast<xrt_mem_t *>(mem);
   _check_dev_handle(mdev_handle);
 
+  xclUnmapBO(mdev_handle, mem_free->bo, (void *)mem_free->aol_mem.addr_virt);
   xclFreeBO(mdev_handle, mem_free->bo);
 
   log_dbg("[Free BO]size:  BO_ID:%d\n", mem_free->bo);

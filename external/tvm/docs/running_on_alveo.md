@@ -7,7 +7,7 @@
 This document provides instruction to execute compiled models using the TVM with Vitis AI flow on supported Alveo devices. For more information on how to compile models please refer to the "compiling_a_model.md" document. 
 
 
-The Xilinx Deep Learning Processor Unit (DPU) is a configurable computation engine dedicated for convolutional neural networks. On data-center, The TVM with Vitis AI flow exploits [DPUCADX8G] hardware accelerator built for the Alveo device.
+The Xilinx Deep Learning Processor Unit (DPU) is a configurable computation engine dedicated for convolutional neural networks. The TVM with Vitis AI flow exploits [DPUCADX8G] hardware accelerator built for the Alveo device that is used for cloud applications.
 
 ## Resources
 You could find more information here:
@@ -18,16 +18,15 @@ You could find more information here:
 
 Prior to running a model on the board, you need to compile the model for your targeted evaluation board and transfer the compiled model on to the board. Please refer to the "compiling_a_model.md" guide for compiling a model using the TVM with Vitis AI flow. 
 
-While inside the docker the "/opt/tvm-vai/tvm/tutorials/accelerators/run" directory provides examples to run the example models in the "/opt/tvm-vai/tvm/tutorials/accelerators/compile" directory.
+The examples directory provides scripts for compiling and running models. 
 
-Once you transfer the output directory from the compilation on to the board, you could use the provided scripts to run the model on the board. If the TVM with Vitis AI support docker is setup on a machine that includes an Alveo board, the compiled model can be executed directly in the docker. Below we present an example of running the mxnet_resnet_18 model using the mxnet_resnet_18.py script. Ensure to source the proper XRT runtime path before running on the board.
+Once you transfer the compile model, you could use the provided scripts to run the model on the board. If the TVM with Vitis AI support docker is setup on a machine that includes an Alveo board, the compiled model can be executed directly in the docker. Below we present an example of running the mxnet_resnet_18 model using the run_mxnet_resnet_18.py script. Ensure to source the proper XRT runtime path before running on the board.
 
 
 ```sh
 # Inside docker
 $ conda activate vitis-ai-tensorflow
-$ cd ${TVM_HOME}/tutorials/accelerators/run/
-$ python3 mxnet_resent_18.py -f /opt/tvm-vai/tvm/tutorials/accelerators/compile/mxnet_resnet_18/ -d /opt/tvm-vai/tvm/tutorials/accelerators/compile/mxnet_resnet_18/libdpu 
+$ python3 run_mxnet_resent_18.py -f PATH_TO_COMPILED_MODEL
 ```
 
 This script runs the model mxnet_resnet_18 model compiled using the TVM with Vitis AI flow on an image and produce the classification result.

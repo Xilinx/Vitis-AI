@@ -97,106 +97,6 @@ void _set_dpu_config(int index, uint32_t val);
 
 #define DPU_CORE_MAX (16)
 
-// dpu features structure
-typedef struct {
-  union {
-    uint32_t git_id : 28;
-    uint32_t rsv0 : 4;
-  };
-  uint32_t git_time;
-  union {
-    uint32_t version;
-    struct {
-      uint32_t ver_target : 12;
-      uint32_t ver_ip : 8;
-      uint32_t rsv1 : 12;
-    };
-  };
-  union {
-    uint32_t timer;
-    struct {
-      uint32_t timer_val : 12;  // hour * freq / 10
-      uint32_t timer_enable : 1;
-      uint32_t rsv2 : 19;
-    };
-  };
-  union {
-    uint32_t arch;
-    struct {
-      uint32_t arch_icp : 8;
-      uint32_t arch_ocp : 8;
-      uint32_t arch_pp : 4;
-      uint32_t arch_img_bg : 4;
-      uint32_t arch_data_width : 4;
-      uint32_t arch_hp_width : 4;
-    };
-  };
-  union {
-    uint32_t ram;
-    struct {
-      uint32_t ram_depth_bias : 4;
-      uint32_t ram_depth_weight : 4;
-      uint32_t ram_depth_img : 4;
-      uint32_t ram_depth_mean : 4;
-      uint32_t rsv3 : 16;
-    };
-  };
-  union {
-    uint32_t load;
-    struct {
-      uint32_t load_parallel : 4;
-      uint32_t load_mean_en : 4;
-      uint32_t load_augm_en : 4;
-      uint32_t rsv4 : 20;
-    };
-  };
-  union {
-    uint32_t conv;
-    struct {
-      uint32_t conv_wr_parallel : 4;
-      uint32_t conv_relu6_en : 4;
-      uint32_t conv_leakyrelu_en : 4;
-      uint32_t rsv5 : 20;
-    };
-  };
-  union {
-    struct {
-      uint32_t save_parallel : 4;
-      uint32_t rsv6 : 28;
-    };
-  };
-  union {
-    uint32_t pool;
-    struct {
-      uint32_t pool_avg_en : 1;
-      uint32_t rsv7 : 31;
-    };
-  };
-  union {
-    uint32_t elew;
-    struct {
-      uint32_t elew_parallel : 4;
-      uint32_t rsv8 : 28;
-    };
-  };
-  union {
-    uint32_t dwcv;
-    struct {
-      uint32_t dwcv_parallel : 4;
-      uint32_t dwcv_relu6_en : 4;
-      uint32_t dwcv_alu_en : 4;
-      uint32_t rsv9 : 20;
-    };
-  };
-  union {
-    uint32_t misc;
-    struct {
-      uint32_t misc_wr_parallel : 4;
-      uint32_t rsv10 : 28;
-    };
-  };
-} dpu_feature_t;
-
 // dpu configuration
 typedef struct _dpu_config {
   uint64_t base_addr;
@@ -204,7 +104,6 @@ typedef struct _dpu_config {
   uint32_t arch;
   uint32_t freq;
   uint32_t cu_index;
-  dpu_feature_t feature;
 } dpu_conf_t;
 
 // softmax configuration

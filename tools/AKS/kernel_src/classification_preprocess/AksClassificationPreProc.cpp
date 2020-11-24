@@ -27,26 +27,26 @@ class ClassificationPreProc : public AKS::KernelBase
 {
   public:
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in, 
+        std::vector<AKS::DataDescriptor*> &out, 
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
 };
 
 extern "C" {
 
-AKS::KernelBase* getKernel (AKS::NodeParams *params)
-{
-  return new ClassificationPreProc();
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams *params)
+  {
+    return new ClassificationPreProc();
+  }
 
 } //extern "C"
 
 int ClassificationPreProc::exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams)
+    std::vector<AKS::DataDescriptor*> &in, 
+    std::vector<AKS::DataDescriptor*> &out, 
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
 {
   /// Get input and output data shapes
   /// Input could be batch array or batch of images
@@ -67,9 +67,9 @@ int ClassificationPreProc::exec_async (
   /// Get mean values
   auto meanIter = nodeParams->_floatVectorParams.find("mean");
   float mean [3];
-  mean[0] = meanIter->second[0]; //104.007f;
-  mean[1] = meanIter->second[1]; //116.669f;
-  mean[2] = meanIter->second[2]; //122.679f;
+  mean[0] = meanIter->second[0];
+  mean[1] = meanIter->second[1];
+  mean[2] = meanIter->second[2];
 
   /// Get input dims incase batch array
   int inChannel = 3;
@@ -87,29 +87,17 @@ int ClassificationPreProc::exec_async (
     else {
       inHeight = inShape[1];
       inWidth  = inShape[2];
-      int nInElemsPerImg  = inChannel * inHeight * inWidth;
+      int nInElemsPerImg  = b * inChannel * inHeight * inWidth;
       inData   = in[0]->data<uint8_t>() + nInElemsPerImg;
     }
 
     /// Create a cv::Mat with input data
     cv::Mat inImage(inHeight, inWidth, CV_8UC3, inData);
 
-    /*
-    FILE * fp1 = fopen ("preproc-input.txt", "w");
-    for (int h = 0; h < inImage.rows; h++)
-      for (int w = 0; w < inImage.cols; w++)
-        for (int c = 0; c < inImage.channels(); c++) {
-         fprintf (fp1, "%u\n", inImage.at<cv::Vec3b>(h, w)[c]);
-      }
-    fclose(fp1);
-    */
-
     /// Resize the image to Network Shape
     cv::Mat resizedImage = cv::Mat(outHeight, outWidth, CV_8SC3);
-    //cv::resize(inImage, resizedImage, cv::Size(outHeight, outWidth), 0, 0, cv::INTER_NEAREST);
     cv::resize(inImage, resizedImage, cv::Size(outHeight, outWidth));
 
-    //FILE * fp = fopen ("input.txt", "w");
     /// Pre-Processing loop
     float* out = outData + b * nOutElemsPerImg;
     if (1 /* TODO: Insert correct condition */ ) {
@@ -117,23 +105,20 @@ int ClassificationPreProc::exec_async (
         for (int h = 0; h < outHeight; h++)
           for (int w = 0; w < outWidth; w++) {
             out[(c*outHeight*outWidth)
-                   + (h*outWidth) + w]
-                   = resizedImage.at<cv::Vec3b>(h,w)[c]-mean[c];
-            //fprintf(fp, "%f\n", outData[ (c*outHeight*outWidth) + (h*outWidth) + w] );
+              + (h*outWidth) + w]
+              = resizedImage.at<cv::Vec3b>(h,w)[c]-mean[c];
           }
     } else {
       for (int h = 0; h < outHeight; h++)
-          for (int w = 0; w < outWidth; w++)
-              for (int c = 0; c < 3; c++)
-                  out[h*outWidth*3 + w*3 + c]
-                    = resizedImage.at<cv::Vec3b>(h,w)[c]-mean[c];
+        for (int w = 0; w < outWidth; w++)
+          for (int c = 0; c < 3; c++)
+            out[h*outWidth*3 + w*3 + c]
+              = resizedImage.at<cv::Vec3b>(h,w)[c]-mean[c];
     }
   }
 
-  //fclose(fp);
   /// Push back output
   out.push_back(outDD);
-  //std::cout << "[DBG] ClassificationPreProc: Done!" << std::endl << std::endl;
-  return -1; /// No wait
+  return 0;
 }
 

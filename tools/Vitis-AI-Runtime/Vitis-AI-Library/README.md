@@ -266,33 +266,62 @@ If you want to support video data in other formats, you need to install the rele
 
 1. Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../alveo-hbm#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
 
-2. Select the model for your platform.  
+2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
+as an example.
+```
+cd /workspace
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
+tar -xzvf alveo_xclbin-1.3.0.tar.gz
+cd alveo_xclbin-1.3.0/U50/6E300M
+sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
+```  
+For `DPUCAHX8L`, take `U50lv` as an example.
+```
+cd /workspace
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
+tar -xzvf alveo_xclbin-1.3.0.tar.gz
+cd alveo_xclbin-1.3.0/U50lv-V3ME/1E300M
+sudo cp dpu.xclbin /usr/lib
+```
+
+3. Select the model for your platform.  
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
-	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.   
+	Click [Xilinx AI Model Zoo](../../../models/AI-Model-Zoo/model-list) to view all the models.
 
 	* Download the model according to the model's yaml file. Take `resnet_v1_50_tf` of U50 as an example.
 	```
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50-r1.3.0.tar.gz -O resnet_v1_50_tf-u50-r1.3.0.tar.gz
 	```
+	  For `DPUCAHX8L`, take `U50lv` as an example.  
+	```
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz -O resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
+	```	  
 	* Install the model package.
 	```
 	  tar -xzvf resnet_v1_50_tf-u50-r1.3.0.tar.gz
 	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
 	```
+	  For `DPUCAHX8L`, execute the following commands to install the model package.
+	```
+	  tar -xzvf resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
+	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
+	```	
+	
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
-3. To compile the demo in the AI Library, take `yolov3` as an example.
+4. To compile the demo in the AI Library, take `yolov3` as an example.
 ```
 cd /workspace/examples/Vitis-AI-Library/demo/yolov3
 bash -x build.sh
 ```	
-4. To compile the AI Library sample, take `classification` as an example, execute the following command.
+5. To compile the AI Library sample, take `classification` as an example, execute the following command.
 ```
 cd /workspace/examples/Vitis-AI-Library/samples/classification
 bash -x build.sh
 ```		
 
-5. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
+6. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
 	Execute the following command to build the libraries all at once.
@@ -383,7 +412,7 @@ Note: All models will download to `/usr/share/vitis_ai_library/models` directory
 2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../alveo/examples/caffe/README.md).
 3. Setup the environment.
 ```
-$source /workspace/alveo/overlaybins/setup.sh
+$source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 $export LD_LIBRARY_PATH=$HOME/.local/${taget_info}/lib/:$LD_LIBRARY_PATH
 ```
 4. Run the classification image test example.

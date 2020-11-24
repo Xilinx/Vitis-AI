@@ -1,7 +1,7 @@
 # **Setup**
 ```sh
 conda activate vitis-ai-caffe
-source /workspace/setup/alveo/dpuv1/overlaybins/setup.sh
+source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 # **Build**

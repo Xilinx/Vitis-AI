@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-#include "./softmax_runner.hpp"
+#include "vart/softmax_runner.hpp"
 
 #include <cmath>
 #include <cstdint>
 
 #include "../src/runner_helper.hpp"
-#include "vart/mm/host_flat_tensor_buffer.hpp"
-#include "vart/runner.hpp"
+#include "vart/runner_ext.hpp"
 #include "vart/tensor_buffer.hpp"
 #include "vart/tensor_buffer_allocator.hpp"
 #include "vitis/ai/env_config.hpp"
@@ -29,11 +28,6 @@
 #include "xir/sfm_controller.hpp"
 #include "xir/tensor/tensor.hpp"
 DEF_ENV_PARAM(DEBUG_SOFTMAX_RUNNER, "0")
-DEF_ENV_PARAM(DEBUG_SOFTMAX_RUNNER_TB, "0")
-
-DEF_ENV_PARAM(NUM_OF_GROUP, "1")
-DEF_ENV_PARAM(NUM_OF_CLASS, "10")
-DEF_ENV_PARAM(SFM_FIX_POS, "4")
 DEF_ENV_PARAM(DEBUG_TEST, "0");
 
 namespace vart {
@@ -51,26 +45,15 @@ SoftmaxRunner::SoftmaxRunner(const xir::Subgraph* subgraph, xir::Attrs* attrs)
   CHECK_EQ(input_set.size(), 1u);
   auto output_set = subgraph->get_output_tensors();
   CHECK_EQ(output_set.size(), 1u);
-  // need real softmax subgraph to test
-  // auto allocator = vart::TensorBufferAllocator::create(attrs);
-  // auto tensor_buffers = allocator->allocate(
-  // subgraph, std::vector<const xir::Tensor*>{&*input_set.begin(),
-  // &*output_set.begin()});
-  // input_ = std::move(tensor_buffers[0]);
-  // output_ = std::move(tensor_buffers[1]);
 
-  // create tensor buffers by hand to check the code
-  auto input_tensor = xir::Tensor::create(
-      "input", {1, ENV_PARAM(NUM_OF_GROUP), ENV_PARAM(NUM_OF_CLASS)},
-      xir::DataType{"XINT8"});
-  auto output_tensor = xir::Tensor::create(
-      "output", {1, ENV_PARAM(NUM_OF_GROUP), ENV_PARAM(NUM_OF_CLASS)},
-      xir::DataType{"FLOAT32"});
-  auto input_shape = input_tensor->get_shape();
+  attrs->set_attr<size_t>("__device_id__", 0u);
+  attrs->set_attr<size_t>("__batch__", 1);
+  attrs->set_attr<int>(subgraph->get_name() + ":__tensor_buffer_location__", 1);
+
   auto allocator = vart::TensorBufferAllocator::create(attrs);
   auto tensor_buffers = allocator->allocate(
-      subgraph, std::vector<const xir::Tensor*>{input_tensor.get()},
-      std::vector<const xir::Tensor*>{output_tensor.get()});
+      subgraph, std::vector<const xir::Tensor*>{*input_set.begin()},
+      std::vector<const xir::Tensor*>{*output_set.begin()});
   input_ = std::move((tensor_buffers.first)[0]);
   output_ = std::move((tensor_buffers.second)[0]);
 }
@@ -84,19 +67,20 @@ std::pair<uint32_t, int> SoftmaxRunner::execute_async(
   CHECK_EQ(output.size(), 1u) << "only support single output";
   auto input_phy = prepare_input(input[0]);
   auto output_phy = prepare_output(output[0]);
-  start_controller(input_phy, output_phy);
-  finalize_output(output_phy, output[0]);
   LOG_IF(INFO, ENV_PARAM(DEBUG_SOFTMAX_RUNNER))
       << "@" << (void*)this << " start to run: "
       << " inputs= " << to_string(input) << " "  //
       << " outputs= " << to_string(output);
+  start_controller(input_phy, output_phy);
+  finalize_output(output_phy, output[0]);
   return std::make_pair(0u, 0);
 }
 
 static void debug_tensorbuffer(vart::TensorBuffer* tb) {
   uint64_t tb_addr = 0u;
   size_t tb_size = 0u;
-  std::tie(tb_addr, tb_size) = tb->data({0, 0, 0});
+  auto dim_idx = vart::get_index_zeros(tb->get_tensor());
+  std::tie(tb_addr, tb_size) = tb->data(dim_idx);
   LOG_IF(INFO, ENV_PARAM(DEBUG_SOFTMAX_RUNNER))
       << "addr: " << (void*)tb_addr << ", "
       << "size: " << tb_size;
@@ -108,16 +92,32 @@ static void debug_tensorbuffer(vart::TensorBuffer* tb) {
   }
 }
 
+static void debug_tensorbuffer_float(vart::TensorBuffer* tb) {
+  uint64_t tb_addr = 0u;
+  size_t tb_size = 0u;
+  auto dim_idx = vart::get_index_zeros(tb->get_tensor());
+  std::tie(tb_addr, tb_size) = tb->data(dim_idx);
+  LOG_IF(INFO, ENV_PARAM(DEBUG_SOFTMAX_RUNNER))
+      << "addr: " << (void*)tb_addr << ", "
+      << "size: " << tb_size;
+
+  auto tb_tensor = tb->get_tensor();
+  for (auto i = 0; i < tb_tensor->get_element_num(); ++i) {
+    LOG(INFO) << "index: " << i << ", "
+              << "value: " << *((float*)tb_addr + i);
+  }
+}
+
 vart::TensorBuffer* SoftmaxRunner::prepare_input(vart::TensorBuffer* user) {
   auto ret = input_.get();
   if (user->get_location() == TensorBuffer::location_t::HOST_VIRT) {
-    if (ENV_PARAM(DEBUG_SOFTMAX_RUNNER_TB)) {
+    if (ENV_PARAM(DEBUG_SOFTMAX_RUNNER) >= 2) {
       LOG(INFO) << "user input virt tensor buffer info:";
       debug_tensorbuffer(user);
     }
     vart::TensorBuffer::copy_tensor_buffer(user /* from user */,
                                            ret /* to internal*/);
-    if (ENV_PARAM(DEBUG_SOFTMAX_RUNNER_TB)) {
+    if (ENV_PARAM(DEBUG_SOFTMAX_RUNNER) >= 2) {
       LOG(INFO) << "internal input  phy tensor buffer info:";
       debug_tensorbuffer(ret);
     }
@@ -144,23 +144,30 @@ void SoftmaxRunner::finalize_output(vart::TensorBuffer* internal,
   } else {
     if (ENV_PARAM(DEBUG_SOFTMAX_RUNNER) >= 2) {
       LOG(INFO) << "internal output phy tensor buffer info:";
-      debug_tensorbuffer(internal);
+      debug_tensorbuffer_float(internal);
     }
-
     vart::TensorBuffer::copy_tensor_buffer(output_.get() /*from internal */,
                                            output /*to user*/);
     if (ENV_PARAM(DEBUG_SOFTMAX_RUNNER) >= 2) {
       LOG(INFO) << "user output virt tensor buffer info:";
-      debug_tensorbuffer(internal);
+      debug_tensorbuffer_float(output);
     }
   }
 }
 
 static int get_fix_pos(const xir::Tensor* tensor) {
-  return ENV_PARAM(SFM_FIX_POS);
   CHECK(tensor->has_attr("fix_point")) << "tensor = " << tensor->to_string();
   int fixpos = tensor->template get_attr<int>("fix_point");
   return fixpos;
+}
+static std::vector<std::int32_t> reshape_tensor_to_three_dim(
+    std::vector<std::int32_t> in) {
+  CHECK_GE(in.size(), 2) << "input dimension is less than 2";
+  std::int32_t mid = 1;
+  for (unsigned int i = 1; i < in.size() - 1; i++) {
+    mid *= in[i];
+  }
+  return std::vector<std::int32_t>{in.front(), mid, in.back()};
 }
 
 void SoftmaxRunner::start_controller(vart::TensorBuffer* input,
@@ -170,8 +177,10 @@ void SoftmaxRunner::start_controller(vart::TensorBuffer* input,
   CHECK(output->get_location() != TensorBuffer::location_t::HOST_VIRT)
       << "output=" << output->to_string();
   // a
-  auto input_shape = input->get_tensor()->get_shape();
-  auto output_shape = output->get_tensor()->get_shape();
+  auto input_shape =
+      reshape_tensor_to_three_dim(input->get_tensor()->get_shape());
+  auto output_shape =
+      reshape_tensor_to_three_dim(output->get_tensor()->get_shape());
   auto input_batch_size = input_shape[0];
   auto output_batch_size = output_shape[0];
   CHECK(output->get_tensor()->get_data_type().type == xir::DataType::FLOAT)
@@ -199,11 +208,12 @@ void SoftmaxRunner::start_controller(vart::TensorBuffer* input,
     std::tie(input_addr, input_size) = input->data_phy(input_dim_idx);
     std::tie(output_addr, output_size) = output->data_phy(output_dim_idx);
     LOG_IF(INFO, ENV_PARAM(DEBUG_SOFTMAX_RUNNER))
-        << "group: " << group << ";  cls: " << cls << "; offset: " << offset
-        << "; fixpos: " << fixpos;
+        << "batch_size: " << batch_size << "; group: " << group
+        << "; cls: " << cls << "; offset: " << offset << "; fixpos: " << fixpos;
     controller_->run_xrt_cu(device_core_id_, input_addr, cls, group, fixpos,
                             output_addr, offset);
   }
+
   return;
 }
 
@@ -215,6 +225,14 @@ std::vector<const xir::Tensor*> SoftmaxRunner::get_input_tensors() {
 
 std::vector<const xir::Tensor*> SoftmaxRunner::get_output_tensors() {
   return {output_->get_tensor()};
+}
+
+std::vector<vart::TensorBuffer*> SoftmaxRunner::get_inputs() {
+  return {input_.get()};
+}
+
+std::vector<vart::TensorBuffer*> SoftmaxRunner::get_outputs() {
+  return {output_.get()};
 }
 
 }  // namespace vart

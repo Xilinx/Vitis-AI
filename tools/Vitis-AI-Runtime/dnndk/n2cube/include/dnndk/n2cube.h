@@ -58,8 +58,8 @@ extern "C" {
 
 #include <stdint.h>
 
-#define VITIS_AI_VERSION    "1.2"
-#define N2Cube_VERSION   "4.2"
+#define VITIS_AI_VERSION    "1.3"
+#define N2Cube_VERSION   "4.3"
 
 /* DPU Task runtime mode definitions */
 

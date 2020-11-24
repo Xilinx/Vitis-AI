@@ -21,8 +21,8 @@ project_name=$(basename ${script_path})
 
 # cmake args
 declare -a args
-args=(-DBUILD_TEST=ON)
-args=(-DENABLE_DPU_RUNNER=ON)
+args+=(-DBUILD_TEST=ON)
+args+=(-DENABLE_DPU_RUNNER=ON)
 
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \

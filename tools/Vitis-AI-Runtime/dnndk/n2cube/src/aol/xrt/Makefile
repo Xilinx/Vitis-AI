@@ -19,7 +19,7 @@ OBJ  := $(patsubst %.cpp, %.o, $(notdir $(SRC)))
 flavor := release
 
 AOL_MAJOR_VERSION=1
-AOL_MINOR_VERSION=0
+AOL_MINOR_VERSION=1
 AOL_REVISION_VERSION=0
 
 ifeq ($(flavor), debug) 
@@ -37,8 +37,8 @@ ifneq ($(SYSROOT), )
     CXXFLAGS  +=   --sysroot=$(SYSROOT) -isystem$(SYSROOT)/usr/include/xrt -fPIC
     LDFLAGS   +=   --sysroot=$(SYSROOT) -lxrt_core -Wl,-no-undefined
 else
-    CXXFLAGS  += -std=c++11 -fPIC -isystem=/usr/include/xrt  
-    LDFLAGS   += -pthread -lxrt_core #-Wl,-no-undefined
+    CXXFLAGS  += -std=c++11 -fPIC
+    LDFLAGS   += -pthread -lxrt_core -Wl,-no-undefined
 endif
 
 include ../../../../Makefile.cfg

@@ -56,6 +56,7 @@ usage() {
   echo "                                  Possible values: [tinyyolov3_video]"
   echo "                                  Possible values: [facedetect]"
   echo "                                  Possible values: [resnet50_edge] - only on edge devices"
+  echo "                                  Possible values: [resnet50_u50] - only on U50 devices"
   echo "  -i  IMPL    | --impl    IMPL    Implemetation"
   echo "                                  Possible values: [cpp, py]"
   echo "  -d1 IMAGES  | --dir1    IMAGES  Image Directory"
@@ -109,7 +110,7 @@ done
 
 # Supported Modes & Models
 declare -A SUPPORTED_MODELS
-for name in "googlenet" "resnet50" "inception_v1_tf" "googlenet_resnet50" "tinyyolov3" "tinyyolov3_video" "googlenet_tinyyolov3" "stdyolov2" "facedetect" "googlenet_pp_accel" "resnet50_edge"
+for name in "googlenet" "resnet50" "inception_v1_tf" "googlenet_resnet50" "tinyyolov3" "tinyyolov3_video" "googlenet_tinyyolov3" "stdyolov2" "facedetect" "googlenet_pp_accel" "resnet50_edge" "resnet50_u50"
 do
     SUPPORTED_MODELS[$name]=1
 done
@@ -152,7 +153,7 @@ LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 export PYTHONPATH=${VAI_ALVEO_ROOT}/apps/face_detect:${AKS_ROOT}/libs:${AKS_ROOT}/libs/pykernels:${PYTHONPATH}
 
-CARDS_CONNECTED=`xbutil scan | grep "xilinx_u" | wc -l`
+CARDS_CONNECTED=`/opt/xilinx/xrt/bin/xbutil scan | grep "xilinx_u" | wc -l`
 if [ ! -z "${NUM_FPGA}" ]
 then
   if [ ${NUM_FPGA} -gt ${CARDS_CONNECTED} ]
@@ -172,7 +173,7 @@ fi
 
 CPP_EXE=""
 PY_EXE=""
-AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=aksMeta_vai1p2_16062020.zip"
+AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=aksMeta_vai1p2_30062020.zip"
 # Check if the model files exists
 for name in "meta_googlenet" "meta_inception_v1_tf" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
 do
@@ -205,6 +206,16 @@ fi
 if [ "$MODEL" == "googlenet" ]; then
   CPP_EXE=examples/bin/googlenet.exe
   PY_EXE=examples/googlenet.py
+  exec_args="$DIRECTORY1"
+
+elif [ "$MODEL" == "resnet50_u50" ]; then
+  if [[ "$IMPL" == "py" ]]; then
+    echo ""
+    echo "[INFO] Model: resnet50_u50 only has C++ implementation."
+    echo ""
+    exit 1
+  fi
+  CPP_EXE=examples/bin/resnet50_u50.exe
   exec_args="$DIRECTORY1"
 
 elif [ "$MODEL" == "inception_v1_tf" ]; then
