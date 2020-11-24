@@ -53,7 +53,7 @@ There are two tools in directory './examples', one for LSTM compiler, another fo
 
 1. For LSTM compiler:
 
-```py
+```
 cd examples
 python lstm_compiler_test.py --model_path [xmodel_path] --device [device_name]
 ```
@@ -66,13 +66,13 @@ Computation graphs are stored in the generated directory ./CompileData, and gene
 LSTM simulator must be run after LSTM compiler.<br>
 
 Firstly, copy the compiler computation graphs data to the directory which contains quantizer dump data and xmodel files, as follows:
-```py
+```
 cd examples
 cp -ar CompilerData/* $quantizer_data_path
 ```
 
 Secondly, run script as follows:
-```py
+```
 python lstm_simulator_test.py --data_path [data_path] [--data_check] 
 ```
 data_path: directory which contains quantizer dump data, compiler dump data and xmodel.<br>
