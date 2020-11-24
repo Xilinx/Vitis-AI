@@ -1,4 +1,4 @@
-# WAA-TRD: Whole Appilcation Acceleration - Target Reference Design
+# WAA-TRD: Whole Application Acceleration - Target Reference Design
 
 ## Table of Contents
 
