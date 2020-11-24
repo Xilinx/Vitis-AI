@@ -9,7 +9,7 @@
 * [Run examples on Edge Devices](#run-examples-on-edge-devices) 
 * [Tuning Performance](#tuning-performance)
 * [Performance](#performance)
-* [Graphs & Kernels](#graphs-kernels)
+* [Graphs & Kernels](#graphs--kernels)
 * [Additional Details](#additional-details)
 
 ## Introduction
@@ -44,7 +44,7 @@ Vitis-AI/tools/AKS provides a shell script [aks.sh](./aks.sh) to run various exa
 ```
 |Option | Description | Possible Values |
 |:-----|:-----|:-----|
-|-m, --model | Model Graphs | googlenet, resnet50, googlenet_resnet50, tinyyolov3, tinyyolov3_video, googlenet_tinyyolov3, stdyolov2, facedetect, googlenet_pp_accel |
+|-m, --model | Model Graphs | googlenet, resnet50, googlenet_resnet50, tinyyolov3, tinyyolov3_video, googlenet_tinyyolov3, stdyolov2, facedetect, googlenet_pp_accel, resnet50_edge, resnet50_u50 |
 |-n, --nfpga | Number of FPGAs | Max number of FPGAs connected to System supported |
 |-i, --impl  | API Implementation | cpp, py |
 |-d1, --dir1 | Image Directory for Classification Graphs | Path to directory |
@@ -254,7 +254,7 @@ Use following commands to build these kernels and examples.
     ./aks.sh -i py -m resnet50_u50 -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 
-## Run examples on Edge Devices (ZCU102/ZCU104)
+## Run examples on Edge Devices
 
 Below example uses **DPUCZDX8G** IP for CNN Inference Acceleration on edge devices like ZCU102/ZCU104.
 
@@ -264,13 +264,6 @@ Following packages are required to run AKS examples on target device:
 
 #### 1. SD card system image file
 Please follow the instructions here to setup your target device with correct image : [link](../../examples/VART/README.md#setting-up-the-target)
-
-#### 2. AKS library (RPM package)
-You can directly download it from your device if connected to network or download it on host machine and copy it to SD-card.
-
-```sh
-wget http://xcogpuvai01:8000/vitis-ai_1.3_pkg/aarch64/centos/aks-1.3.0-r11.aarch64.rpm
-```
 
 #### 3. Get Image Dataset
 > **Note:** Please make sure you are already inside Vitis-AI docker
@@ -289,15 +282,27 @@ python ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-ima
 conda deactivate
 ```
 
-#### 4. Get kernels and examples
+#### 4. Get AKS library, kernels and examples
 Copy the Vitis-AI/tools/AKS directory to SD-card.
+
+### Install the AKS library
+> **Note:** Following instructions assume that files are copied to SD-card are located at `<path-to-copied-files>` once you boot into the board 
+
+Install the AKS library from RPM package.
+
+```sh
+cd <path-to-copied-files>/AKS
+```
+
+```sh
+dnf install aks-1.3.0-r11.aarch64.rpm
+```
 
 ### Build Kernels and Examples on the target device
 We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and example for ResNet-50 in the [aks/examples](./examples) directory using both C++ and Python AKS APIs. 
 Use following commands to build these kernels and examples.
 
   ```sh
-  cd AKS
   # Buld kernels
   ./cmake-kernels.sh --dpu=dpuczdx8g --clean
   # Build examples
@@ -423,7 +428,7 @@ Below is the list of the sample graphs provided as part of AKS examples. User ca
 | Graph | Description |
 |:-----|:-----|
 | googlenet | Reads and Pre-Processes images, Runs inference on DPUCADX8G, Post Processes data and Reports accuracy |
-| resnet50 | Reads and Pre-Processes images, Runs inference on DPUCADX8G, Post Processes data and Reports accuracy |
+| resnet50 | Reads and Pre-Processes images, Runs inference on DPUCADX8G/DPUCZDX8G/DPUCAHX8H, Post Processes data and Reports accuracy |
 | googlenet_pp_accel | Reads images, Pre-Processes image data using FPGA accelerated pre-processing kernel, Runs inference on DPUCADX8G, Post Processes data and Reports accuracy |
 | tinyyolov3     | Reads and Pre-Processes images, Runs inference on DPUCADX8G, Post Processes data and Saves detection results in text files in DarkNet format |
 | std_yolov2_608 | Reads and Pre-Processes images, Runs inference on DPUCADX8G, Post Processes data and Saves detection results in text files in DarkNet format |
