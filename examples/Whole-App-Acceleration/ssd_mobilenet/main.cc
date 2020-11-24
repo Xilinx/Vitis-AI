@@ -84,7 +84,6 @@ int num_channels_ = 3;
 int is_server = 0;
 int image_height_ = 300;
 int image_width_ = 300;
-std::thread   postThread;
 string model = "ssd_mobilenet";
 std::string dpuDir, imgDir;
 
@@ -151,7 +150,7 @@ void load(float scale, int width, int height, int8_t *data)
       image_height_ =image_width_ = 300;
     }
    
-    string filename = "/root/imgdir//val2017/000000252219.jpg";        
+    string filename = "images/000000252219.jpg";        
      
     Mat orig = imread(filename);
     
@@ -165,27 +164,33 @@ void runSSD(vart::Runner* runner)
 	auto outTBuffs_ = dynamic_cast<vart::RunnerExt*>(runner)->get_outputs();
 	auto inTBuffs_ = dynamic_cast<vart::RunnerExt*>(runner)->get_inputs();
 	
-	int8_t* output1 = (int8_t*)outTBuffs_[0]->data().first;
-	int8_t* output2 = (int8_t*)outTBuffs_[1]->data().first;
-	
 	int8_t* input = (int8_t*)inTBuffs_[0]->data().first;
-	
+	auto ip_scales = vart::get_input_scale(dynamic_cast<vart::RunnerExt*>(runner)->get_input_tensors());
+	auto out_scales = vart::get_output_scale(dynamic_cast<vart::RunnerExt*>(runner)->get_output_tensors());
+
 	vector<std::unique_ptr<vitis::ai::TFSSDPostProcess>> processor_;
 	
 	vitis::ai::proto::DpuModelParam config_ = get_config();
     
 	processor_.push_back( vitis::ai::TFSSDPostProcess::create(
-          image_width_, image_height_, 0.5, 0.125, config_));
+          image_width_, image_height_, out_scales[0], out_scales[1], config_));
+
+	const short* fx_priors_ = processor_[0]->fixed_priors_;
+	hw_sort_init(pphandle, "/usr/lib/dpu.xclbin", fx_priors_);
 		  
-	float ip_scale = 64;
 	int width_ = 300;
 	int height_ = 300;
-	load(ip_scale, width_, height_, input);
-	
+	load(ip_scales[0], width_, height_, input);
+
+	std::cout << "DPU exec ..\n";	
 	auto ret = (runner)->execute_async(inTBuffs_, outTBuffs_);
    	(runner)->wait(uint32_t(ret.first), -1);
+	std::cout << "exec success\n";	
 
-	auto results = processor_[0]->ssd_post_process(output1, output2);
+	int8_t* conf = (int8_t*)outTBuffs_[0]->data().first;
+	int8_t* loc_ptr = (int8_t*)outTBuffs_[1]->data().first;
+	
+	auto results = processor_[0]->ssd_post_process(conf, loc_ptr);
      
 	vector<float> resout;
 	for (auto &box :  results[0].bboxes) {
