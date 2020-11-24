@@ -143,7 +143,7 @@ int DetectionImreadPre::exec_async (
     else {
       inHeight = inShape[1];
       inWidth  = inShape[2];
-      int nInElemsPerImg  = inChannel * inHeight * inWidth;
+      int nInElemsPerImg  = b * inChannel * inHeight * inWidth;
       inData   = in[0]->const_data<uint8_t>() + nInElemsPerImg;
     }
 
