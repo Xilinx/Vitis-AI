@@ -61,9 +61,9 @@ void enqueueClassificationJobs(AKS::AIGraph* graph,
 
   auto time_taken = std::chrono::duration<double>(t2-t1).count();
   auto throughput = static_cast<double>(nImages)/time_taken;
-  std::cout << "[INFO] Total Images : " << nImages << std::endl;
+  std::cout << "[INFO] Total Images: " << nImages << std::endl;
   std::cout << "[INFO] Total Time (s): " << time_taken << std::endl;
-  std::cout << "[INFO] Overall FPS : " << throughput << std::endl;
+  std::cout << "[INFO] Graph FPS: " << throughput << std::endl;
 }
 
 int main(int argc, char **argv)
