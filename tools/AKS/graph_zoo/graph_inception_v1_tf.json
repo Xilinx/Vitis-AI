@@ -43,7 +43,7 @@
       "node_name": "inception_v1_tf_accuracy",
       "node_params": {
         "ClassificationAccuracy": {
-          "ground_truth": "../../examples/deployment_modes/gold.txt"
+          "ground_truth": "graph_zoo/gold.txt"
         }
       },
       "next_node": []
