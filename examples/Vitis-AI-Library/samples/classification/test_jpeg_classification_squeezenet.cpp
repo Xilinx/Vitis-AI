@@ -54,8 +54,8 @@ int main(int argc, char* argv[]) {
   // Resize it if size is not match
   cv::Mat image;
   auto input_tensor = task->getInputTensor(0u);
-  CHECK_EQ((int)input_tensor.size(), 1)
-      << " the dpu model must have only one input";
+  //CHECK_EQ((int)input_tensor.size(), 1)
+  //    << " the dpu model must have only one input";
   auto width = input_tensor[0].width;
   auto height = input_tensor[0].height;
   auto size = cv::Size(width, height);

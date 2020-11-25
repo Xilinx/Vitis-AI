@@ -34,5 +34,14 @@ cv::Mat process_result(cv::Mat &m1, const vitis::ai::RetinaFaceResult &result,
                   0xff);
   }
 
+  for (const auto &l : result.landmarks) {
+    for (auto j = 0; j < 5; ++j) {
+      auto px = l[j].first * image.cols;
+      auto py = l[j].second * image.rows;
+      LOG_IF(INFO, is_jpeg) << "p[" << j << "]: " << px << " " << py; //
+      cv::circle(image, cv::Point(px, py), 1, cv::Scalar(0, 255, 0), 1);
+    }
+  }
+
   return image;
 }
