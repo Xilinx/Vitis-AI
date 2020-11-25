@@ -140,7 +140,7 @@ bash -x build.sh
 	Execute the following command to build the libraries all at once.
 ```
 cd ~/Vitis-AI/tools/Vitis-AI-Library
-./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
+./cmake.sh --clean
 ```
 
 ### Setting Up the Target
@@ -327,7 +327,7 @@ bash -x build.sh
 	Execute the following command to build the libraries all at once.
 ```
 cd /workspace/tools/Vitis-AI-Library
-./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
+./cmake.sh --clean
 ```
 
 ### Running Vitis AI Library Examples for U50/U50lv/U280
