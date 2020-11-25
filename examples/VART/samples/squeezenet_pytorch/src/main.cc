@@ -292,15 +292,13 @@ void runSqueezenet(vart::Runner* runner) {
 int main(int argc, char* argv[]) {
   // Check args
   if (argc != 2) {
-    cout << "Usage of video analysis demo: ./resnet50 path(for json file)"
-         << endl;
-    cout << "\tfile_name: path to your file for detection" << endl;
+    cout << "Usage: " << argv[0] << " <model_name>" << endl;
     return -1;
   }
   auto graph = xir::Graph::deserialize(argv[1]);
   auto subgraph = get_dpu_subgraph(graph.get());
   CHECK_EQ(subgraph.size(), 1u)
-      << "resnet50 should have one and only one dpu subgraph.";
+      <<  argv[0] << " should have one and only one dpu subgraph.";
   LOG(INFO) << "create running for subgraph: " << subgraph[0]->get_name();
   /*create runner*/
   auto runner = vart::Runner::create_runner(subgraph[0], "run");

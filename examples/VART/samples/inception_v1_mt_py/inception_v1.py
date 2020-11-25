@@ -113,8 +113,8 @@ def runInceptionV1(dpu: "Runner", img, cnt):
     """get tensor"""
     inputTensors = dpu.get_input_tensors()
     outputTensors = dpu.get_output_tensors()
-    shapeIn = tuple(inputTensors[0].ndim)
-    shapeOut = tuple(outputTensors[0].ndim)
+    shapeIn = tuple(inputTensors[0].dims)
+    shapeOut = tuple(outputTensors[0].dims)
     pre_output_size = int(outputTensors[0].get_data_size() / shapeIn[0])
     count = 0
     n_of_images = len(img)
@@ -131,7 +131,7 @@ def runInceptionV1(dpu: "Runner", img, cnt):
             imageRun[j, ...] = img[(count + j) % n_of_images].reshape(shapeIn[1:])
         """run with batch """
         job_id = dpu.execute_async(inputData, outputData)
-        dpu.wait(job_id[0], -1)
+        dpu.wait(job_id)
 
 
         """softmax calculate with batch """
