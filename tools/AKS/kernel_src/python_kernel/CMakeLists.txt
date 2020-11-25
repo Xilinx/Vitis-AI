@@ -31,10 +31,16 @@ else()
 endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
 
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+execute_process(COMMAND uname -m OUTPUT_VARIABLE arch)
+if(${arch} MATCHES ".*x86.*")
+  find_package(Python3 3.6 EXACT COMPONENTS Interpreter Development REQUIRED)
+else()
+  find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+endif()
 find_package(pybind11 REQUIRED)
 
 message(STATUS "Python3  Includes: ${Python3_INCLUDE_DIRS}")
+message(STATUS "Python3  Libraries: ${Python3_LIBRARIES}")
 message(STATUS "Pybind11 Includes: ${pybind11_INCLUDE_DIR}")
 
 add_library (${PROJECT_NAME} SHARED
@@ -54,5 +60,5 @@ target_include_directories (${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  PRIVATE ${PYTHON_LIBRARIES}
+  PRIVATE ${Python3_LIBRARIES}
 )

@@ -110,11 +110,11 @@ def runResnet50(runner: "Runner", img, cnt):
     """get tensor"""
     inputTensors = runner.get_input_tensors()
     outputTensors = runner.get_output_tensors()
-    input_ndim = tuple(inputTensors[0].ndim)
+    input_ndim = tuple(inputTensors[0].dims)
     pre_output_size = int(outputTensors[0].get_data_size() / input_ndim[0])
 
 
-    output_ndim = tuple(outputTensors[0].ndim)
+    output_ndim = tuple(outputTensors[0].dims)
     n_of_images = len(img)
     count = 0
     while count < cnt:
@@ -130,7 +130,7 @@ def runResnet50(runner: "Runner", img, cnt):
 
         """run with batch """
         job_id = runner.execute_async(inputData, outputData)
-        runner.wait(job_id[0], -1)
+        runner.wait(job_id)
 
 
         """softmax&TopK calculate with batch """

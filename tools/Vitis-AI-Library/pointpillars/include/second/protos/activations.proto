@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package second.protos;
+
+message ReLU {}
+
+message LeakyReLU { float leakness = 1; }
+
+message Swish {}
+message ELU { float alpha = 1; }
+message Softplus {
+  float beta = 1;
+  float threshold = 2;
+}
+message Softsign {}
+message ReLU6 {}
+message SELU {}
+
+message Activation {
+  oneof activation {
+    ReLU relu = 1;
+    LeakyReLU leaky_relu = 2;
+    Swish swish = 3;
+    ELU elu = 4;
+    Softplus softplus = 5;
+    Softsign softsign = 6;
+    ReLU6 relu6 = 7;
+    SELU selu = 8;
+  }
+}

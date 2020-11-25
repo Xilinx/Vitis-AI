@@ -50,10 +50,12 @@ def main(imageDirectory, graphs):
     lgraphs[graphName] = sysMan.getGraph(graphName)
 
   images = {}
+  total_images = 0
   for graphName in lgraphs.keys():
     images[graphName] = []
     for ext in fileExtension:
       images[graphName].extend(glob.glob(imageDirectory[graphName] + '/' + ext))
+    total_images += len(images[graphName])
 
   pushThreads = []
   sysMan.resetTimer()
@@ -68,7 +70,7 @@ def main(imageDirectory, graphs):
 
   sysMan.waitForAllResults()
   t1 = time.time()
-  print("\n[INFO] Overall FPS:", len(images) * 2 / (t1-t0))
+  print("\n[INFO] Overall FPS:", total_images / (t1-t0))
 
   for name, gr in lgraphs.items():
     print("\n[INFO] Graph:", name)
