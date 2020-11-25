@@ -56,6 +56,7 @@ usage() {
   echo "                                  Possible values: [tinyyolov3_video]"
   echo "                                  Possible values: [facedetect]"
   echo "                                  Possible values: [resnet50_edge] - only on edge devices"
+  echo "                                  Possible values: [resnet50_u50] - only on U50 devices"
   echo "  -i  IMPL    | --impl    IMPL    Implemetation"
   echo "                                  Possible values: [cpp, py]"
   echo "  -d1 IMAGES  | --dir1    IMAGES  Image Directory"
@@ -78,6 +79,7 @@ DIRECTORY2=
 VIDEO=""
 IMPL="cpp"
 VERBOSE=1
+PYTHON=python3
 
 # Parse Options
 while true
@@ -208,13 +210,9 @@ if [ "$MODEL" == "googlenet" ]; then
   exec_args="$DIRECTORY1"
 
 elif [ "$MODEL" == "resnet50_u50" ]; then
-  if [[ "$IMPL" == "py" ]]; then
-    echo ""
-    echo "[INFO] Model: resnet50_u50 only has C++ implementation."
-    echo ""
-    exit 1
-  fi
   CPP_EXE=examples/bin/resnet50_u50.exe
+  PY_EXE=examples/resnet50_u50.py
+  PYTHON=/usr/bin/python3
   exec_args="$DIRECTORY1"
 
 elif [ "$MODEL" == "inception_v1_tf" ]; then
@@ -300,5 +298,5 @@ fi
 if [[ "$IMPL" == "cpp" ]]; then
   ${CPP_EXE} $exec_args
 elif [[ "$IMPL" == "py" ]]; then
-  python3 ${PY_EXE} $exec_args
+  ${PYTHON} ${PY_EXE} $exec_args
 fi
