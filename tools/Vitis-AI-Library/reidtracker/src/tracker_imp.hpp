@@ -15,11 +15,6 @@
  */
 
 #pragma once
-#include "../include/vitis/ai/reidtracker.hpp"
-#include "common.hpp"
-#include "ftd/ftd_structure.hpp"
-#include "ring_queue.hpp"
-#include "state_map.hpp"
 #include <array>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -27,12 +22,17 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#include "../include/vitis/ai/reidtracker.hpp"
+#include "common.hpp"
+#include "ftd/ftd_structure.hpp"
+#include "ring_queue.hpp"
+#include "state_map.hpp"
 
 namespace vitis {
 namespace ai {
 
 class ReidTrackerImp : public ReidTracker {
-public:
+ public:
   ReidTrackerImp(uint64_t, const SpecifiedCfg &);
   ReidTrackerImp(const ReidTrackerImp &) = delete;
   ReidTrackerImp &operator=(const ReidTrackerImp &) = delete;
@@ -55,12 +55,13 @@ public:
    * @parama frame_id the frame_id of the missing frame.
    *
    */
-  virtual std::vector<OutputCharact>
-  patchFrame(const uint64_t frame_id) override;
+  virtual std::vector<OutputCharact> patchFrame(
+      const uint64_t frame_id) override;
 
-  virtual std::vector<OutputCharact>
-  track(const cv::Mat &image, const uint64_t frame_id, std::vector<InputCharact> &input_characts,
-        const bool is_detection, const bool is_normalized) override;
+  virtual std::vector<OutputCharact> track(
+      const cv::Mat &image, const uint64_t frame_id,
+      std::vector<InputCharact> &input_characts, const bool is_detection,
+      const bool is_normalized) override;
 
   virtual bool addDetStart(int frame_id) override;
   virtual bool setDetEnd(int frame_id) override;
@@ -74,12 +75,12 @@ public:
   virtual std::vector<OutputCharact> trackWithLock(
       const uint64_t frame_id, std::vector<InputCharact> &input_characts,
       const bool is_detection = true, const bool is_normalized = true);
-  virtual std::vector<OutputCharact>
-  outputUndetTracks(uint64_t frame_id) override;
+  virtual std::vector<OutputCharact> outputUndetTracks(
+      uint64_t frame_id) override;
   virtual void printState() override;
   virtual void printUndetTracks() override;
 
-private:
+ private:
   FTD_Structure *ftd_ = NULL;
   StateMap *sm_ = NULL;
   uint64_t mode_ = 0;
@@ -88,5 +89,5 @@ private:
       NULL;
 };
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

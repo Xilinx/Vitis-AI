@@ -231,6 +231,18 @@ add_executable(test_accuracy_segmentation_mt ${CMAKE_CURRENT_SOURCE_DIR}/samples
 target_link_libraries(test_accuracy_segmentation_mt ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::segmentation -lpthread -lglog protobuf::libprotobuf)
 install(TARGETS test_accuracy_segmentation_mt DESTINATION ${SAMPLE_INATLL_PATH}/segmentation/)
 
+add_executable(test_accuracy_covid19segmentation ${CMAKE_CURRENT_SOURCE_DIR}/samples/covid19segmentation/test_accuracy_covid19segmentation.cpp)
+target_link_libraries(test_accuracy_covid19segmentation ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::covid19segmentation -lpthread -lglog protobuf::libprotobuf)
+install(TARGETS test_accuracy_covid19segmentation DESTINATION ${SAMPLE_INATLL_PATH}/covid19segmentation/)
+
+add_executable(test_accuracy_endov ${CMAKE_CURRENT_SOURCE_DIR}/samples/segmentation/test_accuracy_endov.cpp)
+target_link_libraries(test_accuracy_endov ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::segmentation -lpthread -lglog protobuf::libprotobuf)
+install(TARGETS test_accuracy_endov DESTINATION ${SAMPLE_INATLL_PATH}/segmentation/)
+
+add_executable(test_accuracy_unet ${CMAKE_CURRENT_SOURCE_DIR}/samples/segmentation/test_accuracy_unet.cpp)
+target_link_libraries(test_accuracy_unet ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::segmentation -lpthread -lglog protobuf::libprotobuf)
+install(TARGETS test_accuracy_unet DESTINATION ${SAMPLE_INATLL_PATH}/segmentation/)
+
 #posedetect accuracy
 XILINX_AI_SDK_add_accuracy(posedetect posedetect)
 

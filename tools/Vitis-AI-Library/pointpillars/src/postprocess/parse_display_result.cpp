@@ -64,7 +64,7 @@ V3F matmul_3x2f(const V3F& in1, const V2F& in2);
 V2F box_lidar_to_camera(const V2F& data, const V2F& r_rect, const V2F& velo2cam);
 V2F dim_transpose(const V2F& in);
 V3F corners_nd_3d(const V2F& dims);
-V2I unravel_index_3d(const V1I& index, const V1I& dims );
+V2F unravel_index_3d(const V1I& index, const V1I& dims );
 
 // below is from another file;
 V3F einsum(const V3F& points, const V3F& rot_mat_T);
@@ -513,7 +513,7 @@ V3F corners_nd_3d(const V2F& dims)
     return V3F{};
   }
 
-  static V2I corners_norm;
+  static V2F corners_norm;
   if (corners_norm.empty()) {
       V1F origin{0.5, 1.0, 0.5};
       V1I var1{0,1,2,3,4,5,6,7};
@@ -544,9 +544,9 @@ V3F corners_nd_3d(const V2F& dims)
 }
 
 // dims has 3 elements
-V2I unravel_index_3d(const V1I& index, const V1I& dims )
+V2F unravel_index_3d(const V1I& index, const V1I& dims )
 {
-  V2I ret(index.size(), V1I(3,0) );
+  V2F ret(index.size(), V1F(3,0) );
   for(unsigned int i=0; i<index.size(); i++ ) {
     auto x = index[i]/(dims[1]*dims[2]);
     auto mid = index[i] - x*(dims[1]*dims[2]);

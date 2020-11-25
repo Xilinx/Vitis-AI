@@ -15,8 +15,8 @@
  */
 
 #include "ftd_filter_linear.hpp"
-#include <iostream>
 #include <glog/logging.h>
+#include <iostream>
 #include <tuple>
 using namespace std;
 namespace vitis {
@@ -47,7 +47,8 @@ cv::Rect_<float> ConvertZToBboxL(const cv::Rect_<float> &z) {
 void FTD_Filter_Linear::LeastSquare(std::vector<std::array<float, 2>> &coord,
                                     std::array<float, 8> &para, float x,
                                     int region) {
-  //if(!coord.empty()) std::cout<<"frameid: "<<frame_id<<" coords: "<<coord.back()[0]<<std::endl;
+  // if(!coord.empty()) std::cout<<"frameid: "<<frame_id<<" coords:
+  // "<<coord.back()[0]<<std::endl;
   CHECK(coord.empty() || float(frame_id) > coord.back()[0])
       << "coord must be ascending";
   CHECK(region >= 1) << "error region";
@@ -143,18 +144,18 @@ void FTD_Filter_Linear::ClearMean(std::vector<std::array<float, 2>> &coord,
 void FTD_Filter_Linear::Init(const cv::Rect_<float> &bbox, int mode,
                              const SpecifiedCfg &specified_cfg) {
   switch (mode) {
-  case 0: {
-    LOG(FATAL) << "FTD_Filter_Linear Only support mode 1!";
-  }; break;
-  case 1: {
-    frame_start = 0.0f;
-    frame_max = 0.05f;
-  }; break;
-  default:
-    break;
+    case 0: {
+      LOG(FATAL) << "FTD_Filter_Linear Only support mode 1!";
+    }; break;
+    case 1: {
+      frame_start = 0.0f;
+      frame_max = 0.05f;
+    }; break;
+    default:
+      break;
   }
   frame_id = frame_start;
-  //allregion = std::get<0>(specified_cfg);
+  // allregion = std::get<0>(specified_cfg);
   allregion = std::array<int, 4>({3, 3, 1, 1});
   parax = std::array<float, 8>{0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
   paray = std::array<float, 8>{0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
@@ -176,11 +177,11 @@ void FTD_Filter_Linear::UpdateDetect(const cv::Rect_<float> &bbox) {
 }
 
 void FTD_Filter_Linear::UpdateReidTracker(const cv::Rect_<float> &bbox) {
-  //cv::Rect_<float> z = ConvertBboxToZL(bbox);
-  //LeastSquare(coordx, parax, z.x, allregion[0]);
-  //LeastSquare(coordy, paray, z.y, allregion[1]);
-  //LeastSquare(coords, paras, z.width, allregion[2]);
-  //LeastMean(coordr, parar, z.height, allregion[3]);
+  // cv::Rect_<float> z = ConvertBboxToZL(bbox);
+  // LeastSquare(coordx, parax, z.x, allregion[0]);
+  // LeastSquare(coordy, paray, z.y, allregion[1]);
+  // LeastSquare(coords, paras, z.width, allregion[2]);
+  // LeastMean(coordr, parar, z.height, allregion[3]);
 }
 
 void FTD_Filter_Linear::UpdateFilter() {}
@@ -189,7 +190,7 @@ cv::Rect_<float> FTD_Filter_Linear::GetPre() {
   cv::Rect_<float> z;
   frame_id += 0.001f;
   // change it when frame_id max
-  if (frame_id >= frame_max ) {
+  if (frame_id >= frame_max) {
     frame_id -= (frame_max - frame_start);
     ClearSquare(coordx, parax, (frame_max - frame_start));
     ClearSquare(coordy, paray, (frame_max - frame_start));
@@ -212,5 +213,5 @@ cv::Rect_<float> FTD_Filter_Linear::GetPost() {
   return ConvertZToBboxL(z);
 }
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

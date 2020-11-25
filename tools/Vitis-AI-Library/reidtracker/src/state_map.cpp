@@ -1,28 +1,30 @@
 /*
-* Copyright 2019 Xilinx Inc.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include "state_map.hpp"
-#include "common.hpp"
 #include <algorithm>
+#include "common.hpp"
 
 namespace vitis {
 namespace ai {
 
 StateMap::StateMap()
-    : m_data_(new map<int, State>), cur_id_(-1), last_tracked_id_(-1),
+    : m_data_(new map<int, State>),
+      cur_id_(-1),
+      last_tracked_id_(-1),
       cur_state_(State(0)) {}
 
 StateMap::~StateMap() { delete m_data_; }
@@ -151,5 +153,5 @@ void StateMap::print() {
   LOG(INFO) << std::string(50, '-');
 }
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

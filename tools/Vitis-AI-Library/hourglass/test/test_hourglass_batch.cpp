@@ -56,9 +56,9 @@ int main(int argc, char *argv[]) {
     abort();
   }
 
-  vector<vector<int>> limbSeq = {{0, 1},  {1, 2},   {2, 3},  {3, 4}, {1, 5},
-                                 {5, 6},  {6, 7},   {1, 8},  {8, 9}, {9, 10},
-                                 {1, 11}, {11, 12}, {12, 13}};
+  vector<vector<int>> limbSeq = {{0, 1},  {1, 2},   {2, 6},  {3, 6},  {3, 4}, {4, 5},
+                                 {6, 7},   {7, 8},  {8, 9}, {7, 12},
+                                 {12, 11}, {11, 10}, {7, 13}, {13, 14}, {14, 15}};
 
   // run model
   auto results = det->run(batch_images);

@@ -22,11 +22,14 @@
 namespace vitis {
 namespace ai {
 
-template <typename T> class RingQueue {
-
-public:
+template <typename T>
+class RingQueue {
+ public:
   explicit RingQueue(std::size_t capacity)
-      : capacity_(capacity), buffer_(capacity), size_(0U), front_(0U),
+      : capacity_(capacity),
+        buffer_(capacity),
+        size_(0U),
+        front_(0U),
         rear_(0U) {}
 
   std::size_t capacity() const { return capacity_; }
@@ -84,7 +87,7 @@ public:
     return true;
   }
 
-private:
+ private:
   std::size_t capacity_;
   std::vector<T> buffer_;
   std::size_t size_;
@@ -94,5 +97,5 @@ private:
   mutable std::mutex mtx_;
 };
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis
