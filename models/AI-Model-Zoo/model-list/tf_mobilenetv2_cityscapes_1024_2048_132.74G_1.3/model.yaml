@@ -13,42 +13,22 @@
 # limitations under the License.
 
 
-description: face detection model.
-input size: 320*320
-float ops: 0.49G
-task: face detection
-framework: caffe
+description: Deeplabv3+(Mobilenetv2) segmentation on Cityscapes.
+input size: 1024*2048
+float ops: 132.74G
+task: segmentation
+framework: tensorflow
 prune: 'no'
-version: 1.3
+version: 1.2
 files:
-- name: cf_densebox_wider_320_320_0.49G_1.3
+- name: tf_mobilenetv2_cityscapes_1024_2048_132.74G_1.3
   type: float & quantized
   board: GPU
   download link: download link
   checksum: md5sum value
-- name: densebox_320_320
+- name: mobilenet_v2_cityscapes_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
-- name: densebox_320_320
-  type: xmodel
-  board: vck190
-  download link: download link
-  checksum: md5sum value
-- name: densebox_320_320
-  type: xmodel
-  board: u50
-  download link: download link
-  checksum: md5sum value
-- name: densebox_320_320
-  type: xmodel
-  board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
-- name: densebox_320_320
-  type: xmodel
-  board: u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
 license: license link

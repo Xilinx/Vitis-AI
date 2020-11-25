@@ -13,40 +13,40 @@
 # limitations under the License.
 
 
-description: face detection model.
-input size: 320*320
-float ops: 0.49G
-task: face detection
+description: resnet50 classifier on ImageNet.
+input size: 224*224
+float ops: 7.7G
+task: classification
 framework: caffe
 prune: 'no'
 version: 1.3
 files:
-- name: cf_densebox_wider_320_320_0.49G_1.3
+- name: cf_resnet50_imagenet_224_224_7.7G_1.3
   type: float & quantized
   board: GPU
   download link: download link
   checksum: md5sum value
-- name: densebox_320_320
+- name: resnet50
   type: xmodel
   board: zcu102 & zcu104
   download link: download link
   checksum: md5sum value
-- name: densebox_320_320
+- name: resnet50
   type: xmodel
   board: vck190
   download link: download link
   checksum: md5sum value
-- name: densebox_320_320
+- name: resnet50
   type: xmodel
   board: u50
   download link: download link
   checksum: md5sum value
-- name: densebox_320_320
+- name: resnet50
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: download link
   checksum: md5sum value
-- name: densebox_320_320
+- name: resnet50
   type: xmodel
   board: u50lv-v3me & u280-v3me
   download link: download link
