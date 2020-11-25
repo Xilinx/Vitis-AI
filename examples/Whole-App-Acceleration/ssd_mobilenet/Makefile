@@ -8,7 +8,7 @@ LDFLAGS   +=     -luuid -lxilinxopencl -lxrt_core  -lpthread -lopencv_imgcodecs 
 
 
 CUR_DIR =   $(shell pwd)
-BUILD   =   $(CUR_DIR)/build
+BUILD   =   build
 SRC     =   $(CUR_DIR)
 SRC     +=   $(CUR_DIR)/tfssd
 SRC     +=   $(CUR_DIR)/tfssd/anchor
@@ -30,9 +30,9 @@ CFLAGS +=   -I$(CUR_DIR)/model_config/include -I$(CUR_DIR)/include -I$(CONDA_PRE
 
 CFLAG += -DTGT_DEVICE=${TARGET} 
 
-.PHONY: $(BUILD) $(PROJECT) clean
+.PHONY: all clean
 
-#all: $(BUILD) $(PROJECT)
+all: $(BUILD) $(PROJECT)
 
 $(PROJECT) : $(OBJ)
 	$(CXX) $(CFLAGS) $(addprefix $(BUILD)/, $^) $(MODEL) -o $@ $(LDFLAGS)
@@ -47,7 +47,9 @@ clean:
 	$(RM) $(PROJECT)
 
 $(BUILD) :
-	-mkdir -p $@
+	-mkdir -p build
 	cd include; ./build.sh
 	cd model_config/include/vitis/ai/proto; protoc  --cpp_out=./ --proto_path=./ dpu_model_param.proto
+
+
 

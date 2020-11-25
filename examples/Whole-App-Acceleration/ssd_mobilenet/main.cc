@@ -76,23 +76,8 @@ std::vector<const xir::Subgraph*> get_dpu_subgraph(
     return ret;
 }
 
-
-
-int batchSize;
-int modeScenario;
-int num_channels_ = 3;
-int is_server = 0;
-int image_height_ = 300;
-int image_width_ = 300;
-string model = "ssd_mobilenet";
-std::string dpuDir, imgDir;
-
 std::string slurp(const char* filename);
-vitis::ai::proto::DpuModelParam get_config() {
-  
-  string config_file;//
-  if (model == "ssd_mobilenet")
-    config_file = dpuDir+"/ssd_mobilenet_v1_coco_tf.prototxt";
+vitis::ai::proto::DpuModelParam get_config(std::string config_file) {
   vitis::ai::proto::DpuModelParamList mlist;
   auto text = slurp(config_file.c_str());
   auto ok = google::protobuf::TextFormat::ParseFromString(text, &mlist);
@@ -121,16 +106,16 @@ void central_crop (const Mat& image, int height, int width, Mat& img) {
       img = image(box);
 }
 
-void preProcessSsdmobilenet(Mat &orig, float scale, int width, int height, int8_t *data) {
+void preProcessSsdmobilenet(Mat &image, float scale, int width, int height, int num_channels_, int8_t *data) {
         cv::Mat img, float_image;
         if (num_channels_ < 3) {
-            cv::cvtColor(orig, float_image,  cv::COLOR_GRAY2RGB);
+            cv::cvtColor(image, float_image,  cv::COLOR_GRAY2RGB);
         } else {
-            cv::cvtColor(orig, float_image,  cv::COLOR_BGR2RGB);
+            cv::cvtColor(image, float_image,  cv::COLOR_BGR2RGB);
         }
  
         cv::resize((float_image), (img),
-                cv::Size(image_width_, image_height_), cv::INTER_LINEAR);
+                cv::Size(width, height), cv::INTER_LINEAR);
         int i = 0;
         for (int c=0; c < 3; c++) {
           for (int h=0; h < height; h++) {
@@ -143,24 +128,10 @@ void preProcessSsdmobilenet(Mat &orig, float scale, int width, int height, int8_
         i++;
     }
 
-void load(float scale, int width, int height, int8_t *data)
+void runSSD(vart::Runner* runner, string config_file, string img_path)
 {
-    const int inSize = width * height * 3;
-    if (model == "ssd_mobilenet") {
-      image_height_ =image_width_ = 300;
-    }
-   
-    string filename = "images/000000252219.jpg";        
-     
-    Mat orig = imread(filename);
-    
-    preProcessSsdmobilenet(orig, scale, width, height, data);
+    	Mat image = imread(img_path);
 
-    std::cout << "Loaded samples success\n";
-}
-
-void runSSD(vart::Runner* runner)
-{
 	auto outTBuffs_ = dynamic_cast<vart::RunnerExt*>(runner)->get_outputs();
 	auto inTBuffs_ = dynamic_cast<vart::RunnerExt*>(runner)->get_inputs();
 	
@@ -168,40 +139,46 @@ void runSSD(vart::Runner* runner)
 	auto ip_scales = vart::get_input_scale(dynamic_cast<vart::RunnerExt*>(runner)->get_input_tensors());
 	auto out_scales = vart::get_output_scale(dynamic_cast<vart::RunnerExt*>(runner)->get_output_tensors());
 
+	auto tensor = inTBuffs_[0]->get_tensor();
+	auto in_dims = tensor->get_shape();
+	int height = in_dims[1];
+	int width = in_dims[2];
+	int channels = in_dims[3];
+        
+	//# Pre-process
+	preProcessSsdmobilenet(image, ip_scales[0], width, height, channels, input);
+
 	vector<std::unique_ptr<vitis::ai::TFSSDPostProcess>> processor_;
 	
-	vitis::ai::proto::DpuModelParam config_ = get_config();
+	vitis::ai::proto::DpuModelParam config_ = get_config(config_file);
     
 	processor_.push_back( vitis::ai::TFSSDPostProcess::create(
-          image_width_, image_height_, out_scales[0], out_scales[1], config_));
+          width, height, out_scales[0], out_scales[1], config_));
 
 	const short* fx_priors_ = processor_[0]->fixed_priors_;
 	hw_sort_init(pphandle, "/usr/lib/dpu.xclbin", fx_priors_);
-		  
-	int width_ = 300;
-	int height_ = 300;
-	load(ip_scales[0], width_, height_, input);
 
-	std::cout << "DPU exec ..\n";	
 	auto ret = (runner)->execute_async(inTBuffs_, outTBuffs_);
    	(runner)->wait(uint32_t(ret.first), -1);
-	std::cout << "exec success\n";	
 
 	int8_t* conf = (int8_t*)outTBuffs_[0]->data().first;
 	int8_t* loc_ptr = (int8_t*)outTBuffs_[1]->data().first;
 	
 	auto results = processor_[0]->ssd_post_process(conf, loc_ptr);
-     
-	vector<float> resout;
-	for (auto &box :  results[0].bboxes) {
-        resout.push_back(float(box.y));
-        resout.push_back(float(box.x));
-        resout.push_back(float(box.y+box.height));
-        resout.push_back(float(box.x+box.width));
-        resout.push_back(float(box.score));
-        resout.push_back(int(box.label));
+    
+        //# Print results
+	for (auto &bbox :  results[0].bboxes) {
+		int label = bbox.label;
+		float xmin = bbox.x * image.cols;
+		float ymin = bbox.y * image.rows;
+		float xmax = xmin + bbox.width * image.cols;
+		float ymax = ymin + bbox.height * image.rows;
+		float confidence = bbox.score;
+		if (xmax > image.cols) xmax = image.cols;
+		if (ymax > image.rows) ymax = image.rows;
+		std::cout << "RESULT: " << label << "\t" << xmin << "\t" << ymin
+			<< "\t" << xmax << "\t" << ymax << "\t" << confidence << "\n";
 	}
-		
 	return;
 }
 
@@ -210,16 +187,13 @@ void runSSD(vart::Runner* runner)
  * app.exe <options>
  */
 int main(int argc, char **argv) {
-  if(argc != 3){
-   std::cerr << "invalid options <exe> <mode dir> <xmodel>\n";
+  if(argc != 4){
+   std::cerr << "invalid options <exe> <config proto> <xmodel> <image>\n";
    return -1; 
   }
-  batchSize = 1;
-  modeScenario = 0;
-  int numSamples = -1;
-  image_height_ =image_width_ = 300;
-  dpuDir = argv[1]; 
+  std::string config_proto = argv[1];
   std::string xmodel_filename = argv[2]; 
+  std::string img_path = argv[3]; 
  
   // runner
   std::unique_ptr<xir::Graph> graph0 = xir::Graph::deserialize(xmodel_filename);
@@ -236,8 +210,7 @@ int main(int argc, char **argv) {
   auto r = vart::Runner::create_runner(subgraph[0], "run");
   auto runner_ = std::move(r.get());
   
-  runSSD(runner_);
+  runSSD(runner_, config_proto, img_path);
   
-  std::cout << "main return success\n"; 
   return 0;
 }
