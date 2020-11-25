@@ -134,12 +134,12 @@ cd ~/Vitis-AI/examples/Vitis-AI-Library/samples/facedetect
 bash -x build.sh
 ```	
 
-7. To modify the library source code, view and modify them under `~/Vitis-AI/Vitis-AI-Library`.
+7. To modify the library source code, view and modify them under `~/Vitis-AI/tools/Vitis-AI-Library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
 	Execute the following command to build the libraries all at once.
 ```
-cd ~/Vitis-AI/tools/Vitis-AI-Runtime/Vitis-AI-Library
+cd ~/Vitis-AI/tools/Vitis-AI-Library
 ./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
 ```
 
@@ -321,12 +321,12 @@ cd /workspace/examples/Vitis-AI-Library/samples/classification
 bash -x build.sh
 ```		
 
-6. To modify the library source code, view and modify them under `/workspace/Vitis-AI/Vitis-AI-Library`.
+6. To modify the library source code, view and modify them under `/workspace/Vitis-AI/tools/Vitis-AI-Library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
 	Execute the following command to build the libraries all at once.
 ```
-cd /workspace/Vitis-AI-Library
+cd /workspace/tools/Vitis-AI-Library
 ./cmake.sh --clean --cmake-options='-DCMAKE_NO_SYSTEM_FROM_IMPORTED=on' 
 ```
 
@@ -412,7 +412,7 @@ Note: All models will download to `/usr/share/vitis_ai_library/models` directory
 2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../alveo/examples/caffe/README.md).
 3. Setup the environment.
 ```
-$source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+$source /workspace/alveo/overlaybins/setup.sh
 $export LD_LIBRARY_PATH=$HOME/.local/${taget_info}/lib/:$LD_LIBRARY_PATH
 ```
 4. Run the classification image test example.
