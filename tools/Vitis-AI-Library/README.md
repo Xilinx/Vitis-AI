@@ -167,7 +167,7 @@ steps.**
 2. (Optional) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
 	
 	The script runs automatically by default after the board boots up with the official image.
-	But you can also download the `dpu_sw_optimize.tar.gz` from [here](../DPU-TRD/app/dpu_sw_optimize.tar.gz).
+	But you can also download the `dpu_sw_optimize.tar.gz` from [here](../../dsa/DPU-TRD/app/dpu_sw_optimize.tar.gz).
 	```
 	cd ~/dpu_sw_optimize/zynqmp/
 	./zynqmp_dpu_optimize.sh
@@ -223,12 +223,12 @@ the [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/ope
 2. Untar the image and video packages on the target.
 ```
 cd ~
-tar -xzvf vitis_ai_library_r1.3.x_images.tar.gz -C Vitis-AI/vitis_ai_library
-tar -xzvf vitis_ai_library_r1.3.x_video.tar.gz -C Vitis-AI/vitis_ai_library
+tar -xzvf vitis_ai_library_r1.3.x_images.tar.gz -C Vitis-AI/examples/Vitis_AI_Library
+tar -xzvf vitis_ai_library_r1.3.x_video.tar.gz -C Vitis-AI/examples/Vitis_AI_Library
 ```
 3. Enter the directory of example in target board, take `facedetect` as an example.
 ```
-cd ~/Vitis-AI/vitis_ai_library/samples/facedetect
+cd ~/Vitis-AI/examples/Vitis_AI_Library/samples/facedetect
 ```
 4. Run the image test example.
 ```
@@ -432,4 +432,4 @@ $~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_
 ```
 
 ## Reference
-For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_2/ug1354-xilinx-ai-sdk.pdf).
+For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_3/ug1354-xilinx-ai-sdk.pdf).
