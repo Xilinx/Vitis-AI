@@ -136,9 +136,9 @@ def runResnet50(runner: "Runner", img, cnt):
         """softmax&TopK calculate with batch """
         """Benchmark DPU FPS performance over Vitis AI APIs execute_async() and wait() """
         """Uncomment the following code snippet to include softmax calculation for model’s end-to-end FPS evaluation """
-        for j in range(runSize):
-            softmax = CPUCalcSoftmax(outputData[0][j], pre_output_size)
-            TopK(softmax, pre_output_size, "./words.txt")
+        #for j in range(runSize):
+        #    softmax = CPUCalcSoftmax(outputData[0][j], pre_output_size)
+        #    TopK(softmax, pre_output_size, "./words.txt")
 
         count = count + runSize
 """
