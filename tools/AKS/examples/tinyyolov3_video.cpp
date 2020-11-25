@@ -28,8 +28,8 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "aks/AksSysManagerExt.h"
-#include "aks/AksNodeParams.h"
+#include <aks/AksSysManagerExt.h>
+#include <aks/AksNodeParams.h>
 
 using namespace std;
 using namespace cv;

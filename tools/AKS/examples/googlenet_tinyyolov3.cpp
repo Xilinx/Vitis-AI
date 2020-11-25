@@ -21,8 +21,8 @@
 
 using namespace std;
 
-#include "aks/AksSysManagerExt.h"
-#include "aks/AksNodeParams.h"
+#include <aks/AksSysManagerExt.h>
+#include <aks/AksNodeParams.h>
 
 using namespace AKS;
 
