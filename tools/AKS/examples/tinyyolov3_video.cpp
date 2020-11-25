@@ -26,7 +26,9 @@
 #include <thread>
 #include <vector>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/videoio.hpp>
 
 #include <aks/AksSysManagerExt.h>
 #include <aks/AksNodeParams.h>
@@ -40,15 +42,15 @@ struct futures_queue_element {
     std::future<std::vector<AKS::DataDescriptor>> futureObj;
 };
 
-std::queue<futures_queue_element> futures_queue;
-std::mutex mtx_futures_queue;                        // mutex of futures_queue
-std::atomic<bool> done_reading_video(false);         // Done pushing frames to read_queue
+static std::queue<futures_queue_element> futures_queue;
+static std::mutex mtx_futures_queue;                        // mutex of futures_queue
+static std::atomic<bool> done_reading_video(false);         // Done pushing frames to read_queue
 
-VideoWriter video;
-bool doResize;
+static VideoWriter video;
+static bool doResize;
 // if doResize is set, output frame is resized to (outHeight, outWidth)
-int outHeight;
-int outWidth;
+static int outHeight;
+static int outWidth;
 
 
 // Utility function to convert Mat object to DataDescriptor
@@ -80,10 +82,10 @@ bool getFileContent(std::string fileName, std::vector<std::string> &vecOfLabels)
 
 void writeBboxVideo(cv::Mat &frame, AKS::DataDescriptor &dd,
                     std::vector<std::string> &vecOfLabels) {
-    int nboxes = dd.getShape()[0];
     int coords = 6;
-    float* outData = (float*) dd.data();
-
+    AKS::DataDescriptor* boxes = dd.data<AKS::DataDescriptor>();
+    int nboxes = boxes->getShape()[0];
+    float* outData = (float*) boxes->data();
     float resizeHeightFactor;
     float resizeWidthFactor;
     cv::Mat image;
@@ -120,7 +122,7 @@ void writeBboxVideo(cv::Mat &frame, AKS::DataDescriptor &dd,
 }
 
 
-void processAndWrite(AKS::AIGraph *graph, std::vector<std::string>& vecOfLabels) {
+void processAndWrite(std::vector<std::string>& vecOfLabels) {
     while (1) {
         std::unique_lock<std::mutex> locker(mtx_futures_queue);
         if (done_reading_video.load() && futures_queue.empty())
@@ -199,9 +201,9 @@ int main(int argc, char **argv) {
     }
 
     double fps = videoCaptureObj->get(CAP_PROP_FPS);
-    video = VideoWriter(output_video, CV_FOURCC('M','J','P','G'), fps, Size(outWidth, outHeight));
+    video = VideoWriter(output_video, cv::VideoWriter::fourcc('M','J','P','G'), fps, Size(outWidth, outHeight));
 
-    auto processThread = std::thread(processAndWrite, graph, std::ref(vecOfLabels));
+    auto processThread = std::thread(processAndWrite, std::ref(vecOfLabels));
     std::cout << "[INFO] Processing video: " << videoFile << std::endl;
     Mat frame;
     while (videoCaptureObj->read(frame)) {

@@ -36,7 +36,7 @@
           "net_w":        608,
           "num_classes":  80,
           "anchor_cnt":   3,
-          "conf_thresh":  0.2,
+          "conf_thresh":  0.5,
           "iou_thresh":   0.45,
           "biases":    [23,27,  37,58,  81,82,  81,82, 135,169, 344,319]
         }
