@@ -15,6 +15,6 @@ conda activate vitis-ai-caffe
 
 ### Running the Application
 - `cd /workspace/examples/Whole-App-Acceleration/ssd_mobilenet/`
-- `make build && make`
+- `make build && make -j`
 - `./run.sh <config file> <xmodel> <image path>`
 
