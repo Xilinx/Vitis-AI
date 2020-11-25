@@ -119,7 +119,7 @@ static int initXRT( const char*bit,
             continue;
         if(cur_index++ == cu_index) {
             cu_base_addr = layout->m_ip_data[i].m_base_address;
-            std::cout << "base_address " << std::hex << cu_base_addr << std::dec << std::endl;
+            //std::cout << "base_address " << std::hex << cu_base_addr << std::dec << std::endl;
         }
     }
 

@@ -133,10 +133,10 @@ static std::unique_ptr<vitis::ai::dptfssd::TFSSDdetector> createSSD(
 		const object_detection::protos::TrainEvalPipelineConfig& tfcfg) {
 	const int num_classes = tfcfg.model().ssd().num_classes() + 1;
 	const float NMS_THRESHOLD = tfcfg.model()
-                                		  .ssd()
-										  .post_processing()
-										  .batch_non_max_suppression()
-										  .iou_threshold();
+					.ssd()
+					.post_processing()
+					.batch_non_max_suppression()
+					.iou_threshold();
 	vector<float> th_conf(num_classes, tfcfg.model()
 			.ssd()
 			.post_processing()
@@ -145,14 +145,14 @@ static std::unique_ptr<vitis::ai::dptfssd::TFSSDdetector> createSSD(
 	th_conf[0] = 0.0;
 	const int KEEP_TOP_K = tfcfg.model()
                             		 .ssd()
-									 .post_processing()
-									 .batch_non_max_suppression()
-									 .max_total_detections();
+					 .post_processing()
+					 .batch_non_max_suppression()
+					 .max_total_detections();
 	const int TOP_K = tfcfg.model()
                         		.ssd()
-								.post_processing()
-								.batch_non_max_suppression()
-								.max_detections_per_class();
+				 	.post_processing()
+				 	.batch_non_max_suppression()
+				 	.max_detections_per_class();
 	float y_scale =
 			tfcfg.model().ssd().box_coder().faster_rcnn_box_coder().y_scale();
 	float x_scale =
@@ -221,30 +221,6 @@ TFSSDPost::TFSSDPost(int inWidth, int inHeight, float conf_scale, float loc_scal
 	num_classes_ = (tfcfg.model().ssd().num_classes() + 1);
 	score_converter_ =
 			SCORE_CONVERTER(tfcfg.model().ssd().post_processing().score_converter());
-	/*
-  for(auto it  = config.tfssd_param().output_info().begin();
-           it != config.tfssd_param().output_info().end();
-           it++) {
-      for (auto i = 0u; i < output_tensors.size(); i++) {
-          if (output_tensors[i].name.find(it->name()) !=  std::string::npos) {
-             if (it->type() == 1) {
-                CONF_IDX = i;
-                break;
-             }  else if (it->type() == 2) {
-                LOC_IDX = i;
-                break;
-             } 
-          }   
-      }
-  }
-	 */
-	//  CONF_IDX=1;
-	//  LOC_IDX=0;
-	//  scale_conf_ = vitis::ai::library::tensor_scale(output_tensors_[CONF_IDX]);
-	//  scale_loc_ = vitis::ai::library::tensor_scale(output_tensors_[LOC_IDX]);
-	//TODO
-	//  scale_conf_ = 1;
-	//  scale_loc_ = 1;
 	__TIC__(PRIORBOX)
 
 	priors_ = vitis::ai::CreatePriors(tfcfg, config, inWidth, inHeight);
