@@ -1,0 +1,49 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_posedetect, ./test_performance_posedetect, ./test_video_posedetect first param followed must be with model name.
+  Valid model name:
+    sp_net
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_posedetect sp_net sample_posedetect.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:22.960857  5125 process_result.hpp:119] (0.6875,0.142857)
+I1108 22:41:22.961032  5125 process_result.hpp:119] (0.65625,0.285714)
+I1108 22:41:22.961058  5125 process_result.hpp:119] (0.75,0.410714)
+I1108 22:41:22.961082  5125 process_result.hpp:119] (0.3125,0.160714)
+I1108 22:41:22.961105  5125 process_result.hpp:119] (0.1875,0.321429)
+I1108 22:41:22.961128  5125 process_result.hpp:119] (0.25,0.428571)
+I1108 22:41:22.961151  5125 process_result.hpp:119] (0.53125,0.464286)
+I1108 22:41:22.961174  5125 process_result.hpp:119] (0.5,0.660714)
+I1108 22:41:22.961196  5125 process_result.hpp:119] (0.25,0.875)
+I1108 22:41:22.961220  5125 process_result.hpp:119] (0.46875,0.464286)
+I1108 22:41:22.961242  5125 process_result.hpp:119] (0.6875,0.642857)
+I1108 22:41:22.961264  5125 process_result.hpp:119] (0.71875,0.875)
+I1108 22:41:22.961287  5125 process_result.hpp:119] (0.5,0.0178571)
+I1108 22:41:22.961310  5125 process_result.hpp:119] (0.53125,0.0892857)
+   

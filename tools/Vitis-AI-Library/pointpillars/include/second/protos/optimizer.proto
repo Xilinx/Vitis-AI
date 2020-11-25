@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package second.protos;
+
+// Messages for configuring the optimizing strategy for training object
+// detection models.
+
+// Top level optimizer message.
+message Optimizer {
+  oneof optimizer {
+    RMSPropOptimizer rms_prop_optimizer = 1;
+    MomentumOptimizer momentum_optimizer = 2;
+    AdamOptimizer adam_optimizer = 3;
+  }
+  bool use_moving_average = 4;
+  float moving_average_decay = 5;
+}
+
+// Configuration message for the RMSPropOptimizer
+// See: https://www.tensorflow.org/api_docs/python/tf/train/RMSPropOptimizer
+message RMSPropOptimizer {
+  LearningRate learning_rate = 1;
+  float momentum_optimizer_value = 2;
+  float decay = 3;
+  float epsilon = 4;
+  float weight_decay = 5;
+}
+
+// Configuration message for the MomentumOptimizer
+// See: https://www.tensorflow.org/api_docs/python/tf/train/MomentumOptimizer
+message MomentumOptimizer {
+  LearningRate learning_rate = 1;
+  float momentum_optimizer_value = 2;
+  float weight_decay = 3;
+}
+
+// Configuration message for the AdamOptimizer
+// See: https://www.tensorflow.org/api_docs/python/tf/train/AdamOptimizer
+message AdamOptimizer {
+  LearningRate learning_rate = 1;
+  float weight_decay = 2;
+}
+
+// Configuration message for optimizer learning rate.
+message LearningRate {
+  oneof learning_rate {
+    ConstantLearningRate constant_learning_rate = 1;
+    ExponentialDecayLearningRate exponential_decay_learning_rate = 2;
+    ManualStepLearningRate manual_step_learning_rate = 3;
+    CosineDecayLearningRate cosine_decay_learning_rate = 4;
+  }
+}
+
+// Configuration message for a constant learning rate.
+message ConstantLearningRate {
+  float learning_rate = 1;
+}
+
+// Configuration message for an exponentially decaying learning rate.
+// See https://www.tensorflow.org/versions/master/api_docs/python/train/ \
+//     decaying_the_learning_rate#exponential_decay
+message ExponentialDecayLearningRate {
+  float initial_learning_rate = 1;
+  uint32 decay_steps = 2;
+  float decay_factor = 3;
+  bool staircase = 4;
+}
+
+// Configuration message for a manually defined learning rate schedule.
+message ManualStepLearningRate {
+  float initial_learning_rate = 1;
+  message LearningRateSchedule {
+    uint32 step = 1;
+    float learning_rate = 2;
+  }
+  repeated LearningRateSchedule schedule = 2;
+}
+
+// Configuration message for a cosine decaying learning rate as defined in
+// object_detection/utils/learning_schedules.py
+message CosineDecayLearningRate {
+  float learning_rate_base = 1;
+  uint32 total_steps = 2;
+  float warmup_learning_rate = 3;
+  uint32 warmup_steps = 4;
+}

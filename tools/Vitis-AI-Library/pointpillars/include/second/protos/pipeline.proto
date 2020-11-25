@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package second.protos;
+
+import "second/protos/input_reader.proto";
+import "second/protos/model.proto";
+import "second/protos/train.proto";
+// Convenience message for configuring a training and eval pipeline. Allows all
+// of the pipeline parameters to be configured from one file.
+message TrainEvalPipelineConfig {
+  DetectionModel model = 1;
+  InputReader train_input_reader = 2;
+  TrainConfig train_config = 3;
+  InputReader eval_input_reader = 4;
+}
+

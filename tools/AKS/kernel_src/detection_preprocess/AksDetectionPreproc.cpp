@@ -23,7 +23,7 @@
 #include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
 
-class DetectionImreadPre : public AKS::KernelBase
+class DetectionPreproc : public AKS::KernelBase
 {
   public:
     int exec_async (
@@ -37,7 +37,7 @@ extern "C" { /// Add this to make this available for python bindings
 
   AKS::KernelBase* getKernel (AKS::NodeParams *params)
   {
-    return new DetectionImreadPre();
+    return new DetectionPreproc();
   }
 
 }//externC
@@ -104,7 +104,7 @@ void letterBoxImage(cv::Mat &inImage, int resizeH, int resizeW, cv::Mat& outImag
 }
 
 
-int DetectionImreadPre::exec_async (
+int DetectionPreproc::exec_async (
     std::vector<AKS::DataDescriptor*> &in,
     std::vector<AKS::DataDescriptor*> &out,
     AKS::NodeParams* nodeParams,

@@ -128,100 +128,100 @@ static vector<shared_ptr<vector<float>>> CreatePriors(
 }
 
 static std::unique_ptr<vitis::ai::dptfssd::TFSSDdetector> createSSD(
-    const vector<shared_ptr<vector<float>>>& priors, const short* &fx_priors, const short* &lut_ptr, float scale_score,
-    float scale_loc, SCORE_CONVERTER score_converter,
-    const object_detection::protos::TrainEvalPipelineConfig& tfcfg) {
-  const int num_classes = tfcfg.model().ssd().num_classes() + 1;
-  const float NMS_THRESHOLD = tfcfg.model()
-                                  .ssd()
-                                  .post_processing()
-                                  .batch_non_max_suppression()
-                                  .iou_threshold();
-  vector<float> th_conf(num_classes, tfcfg.model()
-                                         .ssd()
-                                         .post_processing()
-                                         .batch_non_max_suppression()
-                                         .score_threshold());
-  th_conf[0] = 0.0;
-  const int KEEP_TOP_K = tfcfg.model()
-                             .ssd()
-                             .post_processing()
-                             .batch_non_max_suppression()
-                             .max_total_detections();
-  const int TOP_K = tfcfg.model()
-                        .ssd()
-                        .post_processing()
-                        .batch_non_max_suppression()
-                        .max_detections_per_class();
-  float y_scale =
-      tfcfg.model().ssd().box_coder().faster_rcnn_box_coder().y_scale();
-  float x_scale =
-      tfcfg.model().ssd().box_coder().faster_rcnn_box_coder().x_scale();
-  float height_scale =
-      tfcfg.model().ssd().box_coder().faster_rcnn_box_coder().height_scale();
-  float width_scale =
-      tfcfg.model().ssd().box_coder().faster_rcnn_box_coder().width_scale();
+		const vector<shared_ptr<vector<float>>>& priors, const short* &fx_priors, float scale_score,
+		float scale_loc, SCORE_CONVERTER score_converter,
+		const object_detection::protos::TrainEvalPipelineConfig& tfcfg) {
+	const int num_classes = tfcfg.model().ssd().num_classes() + 1;
+	const float NMS_THRESHOLD = tfcfg.model()
+                                		  .ssd()
+										  .post_processing()
+										  .batch_non_max_suppression()
+										  .iou_threshold();
+	vector<float> th_conf(num_classes, tfcfg.model()
+			.ssd()
+			.post_processing()
+			.batch_non_max_suppression()
+			.score_threshold());
+	th_conf[0] = 0.0;
+	const int KEEP_TOP_K = tfcfg.model()
+                            		 .ssd()
+									 .post_processing()
+									 .batch_non_max_suppression()
+									 .max_total_detections();
+	const int TOP_K = tfcfg.model()
+                        		.ssd()
+								.post_processing()
+								.batch_non_max_suppression()
+								.max_detections_per_class();
+	float y_scale =
+			tfcfg.model().ssd().box_coder().faster_rcnn_box_coder().y_scale();
+	float x_scale =
+			tfcfg.model().ssd().box_coder().faster_rcnn_box_coder().x_scale();
+	float height_scale =
+			tfcfg.model().ssd().box_coder().faster_rcnn_box_coder().height_scale();
+	float width_scale =
+			tfcfg.model().ssd().box_coder().faster_rcnn_box_coder().width_scale();
 
-  // std::cout <<"createSSD:" << num_classes << " " << NMS_THRESHOLD << " " <<
-  // th_conf.size() << " " << KEEP_TOP_K << " "
-  //        << TOP_K << " " << y_scale << " " << x_scale << " " << height_scale
-  //        << " " << width_scale << std::endl;
+	// std::cout <<"createSSD:" << num_classes << " " << NMS_THRESHOLD << " " <<
+			// th_conf.size() << " " << KEEP_TOP_K << " "
+			//        << TOP_K << " " << y_scale << " " << x_scale << " " << height_scale
+			//        << " " << width_scale << std::endl;
 
-  return std::unique_ptr<vitis::ai::dptfssd::TFSSDdetector>(
-      new vitis::ai::dptfssd::TFSSDdetector(
-          num_classes, vitis::ai::dptfssd::TFSSDdetector::CodeType::CENTER_SIZE,
-          false, KEEP_TOP_K, th_conf, TOP_K, NMS_THRESHOLD, 1.0, priors, fx_priors, lut_ptr,
-          y_scale, x_scale, height_scale, width_scale, score_converter,
-          scale_score, scale_loc));
+	return std::unique_ptr<vitis::ai::dptfssd::TFSSDdetector>(
+			new vitis::ai::dptfssd::TFSSDdetector(
+					num_classes, vitis::ai::dptfssd::TFSSDdetector::CodeType::CENTER_SIZE,
+					false, KEEP_TOP_K, th_conf, TOP_K, NMS_THRESHOLD, 1.0, priors, fx_priors,
+					y_scale, x_scale, height_scale, width_scale, score_converter,
+					scale_score, scale_loc));
 }
 
 TFSSDPost::~TFSSDPost() {}
 
 static std::string slurp(const char* filename) {
-  std::ifstream in;
-  in.open(filename, std::ifstream::in);
-  std::stringstream sstr;
-  sstr << in.rdbuf();
-  in.close();
-  return sstr.str();
+	std::ifstream in;
+	in.open(filename, std::ifstream::in);
+	std::stringstream sstr;
+	sstr << in.rdbuf();
+	in.close();
+	return sstr.str();
 }
 //int inWidth=300;
 //int idHeight = 300;
 int inBatch = 1;
 TFSSDPost::TFSSDPost(int inWidth, int inHeight, float conf_scale, float loc_scale,
-   const vitis::ai::proto::DpuModelParam& config)//,
-: inWidth_(inWidth), inHeight_(inHeight),scale_conf_(conf_scale), scale_loc_(loc_scale)
-//    : input_tensors_(input_tensors), output_tensors_(output_tensors) {
+		const vitis::ai::proto::DpuModelParam& config)//,
+				: inWidth_(inWidth), inHeight_(inHeight),scale_conf_(conf_scale), scale_loc_(loc_scale)
+				  //    : input_tensors_(input_tensors), output_tensors_(output_tensors) {
 {
-  // read official tensorflow ssd configure file
-  //auto path = dpumeta.dirname + "/" + config.tfssd_param().official_cfg();
-  //string path = "/scratch/gaoyue/mlperf_cc/model/" + config.tfssd_param().official_cfg();
-  string path = "./model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf_officialcfg.prototxt";
-//  auto text = slurp(path.c_str());
+	// read official tensorflow ssd configure file
+	//auto path = dpumeta.dirname + "/" + config.tfssd_param().official_cfg();
+	//string path = "/scratch/gaoyue/mlperf_cc/model/" + config.tfssd_param().official_cfg();
+	string path = "./model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf_officialcfg.prototxt";
+	//  auto text = slurp(path.c_str());
 
 
-  std::ifstream in;
-  in.open(path.c_str(), std::ifstream::in);
-  std::stringstream sstr;
-  sstr << in.rdbuf();
-  in.close();
-  auto text = sstr.str();
+	std::ifstream in;
+	in.open(path.c_str(), std::ifstream::in);
+	std::stringstream sstr;
+	sstr << in.rdbuf();
+	in.close();
+	auto text = sstr.str();
 
-  google::protobuf::LogSilencer* s1 = new google::protobuf::LogSilencer;
-  if (0) {
-    std::cerr << "suppress warning of unused variable " << s1 << std::endl;
-  }
+	google::protobuf::LogSilencer* s1 = new google::protobuf::LogSilencer;
+	if (0) {
+		std::cerr << "suppress warning of unused variable " << s1 << std::endl;
+	}
 
-  object_detection::protos::TrainEvalPipelineConfig tfcfg;
-  auto ok = google::protobuf::TextFormat::ParseFromString(text, &tfcfg);
-  if (!ok) {
-    LOG(FATAL) << "parse error for tensorflow offical config file: " << path;
-  }
+	object_detection::protos::TrainEvalPipelineConfig tfcfg;
+	auto ok = google::protobuf::TextFormat::ParseFromString(text, &tfcfg);
+	if (!ok) {
+		LOG(FATAL) << "parse error for tensorflow offical config file: " << path;
+	}
 
-  num_classes_ = (tfcfg.model().ssd().num_classes() + 1);
-  score_converter_ =
-      SCORE_CONVERTER(tfcfg.model().ssd().post_processing().score_converter());
-/*
+	num_classes_ = (tfcfg.model().ssd().num_classes() + 1);
+	score_converter_ =
+			SCORE_CONVERTER(tfcfg.model().ssd().post_processing().score_converter());
+	/*
   for(auto it  = config.tfssd_param().output_info().begin();
            it != config.tfssd_param().output_info().end();
            it++) {
@@ -237,73 +237,64 @@ TFSSDPost::TFSSDPost(int inWidth, int inHeight, float conf_scale, float loc_scal
           }   
       }
   }
-*/
-//  CONF_IDX=1;
-//  LOC_IDX=0;
-//  scale_conf_ = vitis::ai::library::tensor_scale(output_tensors_[CONF_IDX]);
-//  scale_loc_ = vitis::ai::library::tensor_scale(output_tensors_[LOC_IDX]);
-//TODO
-//  scale_conf_ = 1;
-//  scale_loc_ = 1;
-  __TIC__(PRIORBOX)
+	 */
+	//  CONF_IDX=1;
+	//  LOC_IDX=0;
+	//  scale_conf_ = vitis::ai::library::tensor_scale(output_tensors_[CONF_IDX]);
+	//  scale_loc_ = vitis::ai::library::tensor_scale(output_tensors_[LOC_IDX]);
+	//TODO
+	//  scale_conf_ = 1;
+	//  scale_loc_ = 1;
+	__TIC__(PRIORBOX)
 
-  priors_ = vitis::ai::CreatePriors(tfcfg, config, inWidth, inHeight);
-  std::cout << "w, h: " << inWidth << ", " << inHeight << "\n"; 
-    short *nfx_priors_ = new short[1917*4];
-    const int PRIOR_BW_VAL = 4096.0;
-    const int PRIOR_FBITS =  12;
-    short idx = 0;
- for (auto pr : priors_) {
-//      std::cout << "priors size: " << (int)priors_.size() << "\n";
-	auto& prior_bbox = *pr;
-    	for (int it = 0; it < 4; it++) {
-        	nfx_priors_[idx++] = floor((short)(prior_bbox[it] * (1 << PRIOR_FBITS)) + 0.5);
-    	}
-  }
+	priors_ = vitis::ai::CreatePriors(tfcfg, config, inWidth, inHeight);
+	short *nfx_priors_ = new short[1917*4];
+	const int PRIOR_BW_VAL = 4096.0;
+	const int PRIOR_FBITS =  12;
+	short idx = 0;
+	for (auto pr : priors_) {
+		//      std::cout << "priors size: " << (int)priors_.size() << "\n";
+		auto& prior_bbox = *pr;
+		for (int it = 0; it < 4; it++) {
+			nfx_priors_[idx++] = floor((short)(prior_bbox[it] * (1 << PRIOR_FBITS)) + 0.5);
+		}
+	}
+	fixed_priors_ = &nfx_priors_[0];
 
-    //const short *fx_priors_ = &nfx_priors_[0];
-//    std::cout << "priors convert fx done\n"; //, fx val: " << fx_priors_[0] << "\n";
- 
- fixed_priors_ = &nfx_priors_[0];
+	__TOC__(PRIORBOX)
+	__TIC__(CREATESSD)
+	detector_ =
+			createSSD(priors_, fx_priors_, scale_conf_, scale_loc_, score_converter_, tfcfg);
 
-//  std::cout << "fxpr : " << fixed_priors_[0] << ",act: " << nfx_priors_[0] << "\n";
-  short int *lut_ptr;
-  const short *con_lut_ptr = &lut_ptr[0];
-  
-  __TOC__(PRIORBOX)
-  __TIC__(CREATESSD)
-  detector_ =
-      createSSD(priors_, fx_priors_, con_lut_ptr, scale_conf_, scale_loc_, score_converter_, tfcfg);
-
-  __TOC__(CREATESSD)
+	__TOC__(CREATESSD)
 }
 
 std::vector<vitis::ai::TFSSDResult> TFSSDPost::ssd_post_process(int8_t* conf, int8_t* loc) {
-  auto batch_size = inBatch;
-  auto ret = std::vector<vitis::ai::TFSSDResult>{};
-  ret.reserve(batch_size);
-  for (auto i = 0u; i < batch_size; ++i) {
-    ret.emplace_back(ssd_post_process(conf,loc,i));
-  }
-  return ret;
+	auto batch_size = inBatch;
+	auto ret = std::vector<vitis::ai::TFSSDResult>{};
+	ret.reserve(batch_size);
+	for (auto i = 0u; i < batch_size; ++i) {
+		ret.emplace_back(ssd_post_process(conf,loc,i));
+	}
+	return ret;
 }
 
 vitis::ai::TFSSDResult TFSSDPost::ssd_post_process(int8_t* conf,int8_t* box_c,unsigned int idx) {
-  __TIC__(SSD_total)
+	__TIC__(SSD_total)
 
-//  std::cout <<  "########### Post Proc Start ########################" << std::endl;
-  
- (void)box_c;
+		//  std::cout <<  "########### Post Proc Start ########################" << std::endl;
 
-  std::vector<TFSSDResult::BoundingBox> bboxes;
+		 (void)box_c;
 
-  TFSSDResult results{inWidth_,
-                      inHeight_, bboxes};
+	std::vector<TFSSDResult::BoundingBox> bboxes;
 
-  detector_->Detect<int8_t>(&results);
+	TFSSDResult results{inWidth_,
+		inHeight_, bboxes};
 
-  __TOC__(SSD_total)
-  return results;
+	detector_->Detect<int8_t>(&results, box_c);
+
+	__TOC__(SSD_total)
+	return results;
 }
 
 }  // namespace ai

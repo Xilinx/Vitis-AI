@@ -13,7 +13,7 @@ Input images are preprocessed  before being fed for inference of different deep 
 
 ## Resnet50
 
-Currently, applications accelerating pre-processing for classification networks (Resnet-50) is provided and  can only run on ZCU102 board (device part  xczu9eg-ffvb1156-2-e). In this application, software JPEG decoder is used for loading input image. Three processes are created one for image loading , one for running pre-processing kernel and one for running the ML accelerator. JPEG decoder transfer input image data to pre-processing kernel over queue and the pre-processed data is transferred to the ML accelerator over a queue. Below image shows the inference pipeline.
+Currently, applications accelerating pre-processing for classification networks (Resnet-50) is provided and  can only run on ZCU102 board (device part  xczu9eg-ffvb1156-2-e) and Alveo U50 card (device part xcu50-fsvh2104-2-e). In this application, software JPEG decoder is used for loading input image. Three processes are created one for image loading , one for running pre-processing kernel and one for running the ML accelerator. JPEG decoder transfer input image data to pre-processing kernel over queue and the pre-processed data is transferred to the ML accelerator over a queue. Below image shows the inference pipeline.
 
 
 <div align="center">
@@ -24,14 +24,14 @@ Currently, applications accelerating pre-processing for classification networks 
 
 ADAS (Advanced Driver Assistance Systems) application
 using YOLO-v3 network model is an example for object detection.
-Accelerating pre-processing for YOLO-v3 is provided and can only run on ZCU102 board (device part xczu9eg-ffvb1156-2-e). In this application, software JPEG decoder is used for loading input image. Three processes are created one for image loading , one for running pre-processing kernel and one for running the ML accelerator. JPEG decoder transfer input image data to pre-processing kernel over queue and the pre-processed data is transferred to the ML accelerator over a queue. Below image shows the inference pipeline.
+Accelerating pre-processing for YOLO-v3 is provided and can only run on ZCU102 board (device part xczu9eg-ffvb1156-2-e) and Alveo U50 card (device part xcu50-fsvh2104-2-e). In this application, software JPEG decoder is used for loading input image. Three processes are created one for image loading , one for running pre-processing kernel and one for running the ML accelerator. JPEG decoder transfer input image data to pre-processing kernel over queue and the pre-processed data is transferred to the ML accelerator over a queue. Below image shows the inference pipeline.
 
 <div align="center">
   <img width="75%" height="75%" src="./doc_images/block_dia_adasdetection.PNG">
 </div>
 
 
-## Running the Application
+## Running the Application on ZCU102
 ### Setting Up the Target
 **To improve the user experience, the Vitis AI Runtime packages have been built into the board image. Therefore, user does not need to install Vitis AI
 Runtime packages on the board separately.**
@@ -65,16 +65,47 @@ Runtime packages on the board separately.**
 	reboot
 	```
 	**Note that `waa_system_v1.2.0.tar.gz` can only be used for ZCU102.**
+
+
+## Running the Application on Alveo U50
+### Setting Up the Target
+
+* Follow the steps mentioned [here](../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
+
+* Download [waa_system_u50_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_u50_v1.3.0.tar.gz) and update the xclbin file.
+
+```
+	tar -xzvf waa_system_u50_v1.3.0.tar.gz
+	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
+```	
 	
 ### Running The Examples
-Before running the examples on the target, please copy the examples and images to the target.
+Before running the examples the model files need to be downloaded.
 
-1. Copy the examples to the board using scp.
-```
-scp -r Vitis-AI/VART/Whole-App-Acceleration root@IP_OF_BOARD:~/
-```
-2. Prepare the images for the test
+wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu104-r1.3.0.tar.gz -O resnet50-zcu102-zcu104-r1.3.0.tar.gz
 
+* To download and install `resnet50` model:
+	```
+	  cd /workspace
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
+	```	
+	* Install the model package.
+	```
+	  tar -xzvf resnet50-u50-r1.3.0.tar.gz
+	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+	```
+
+* To download and install `adas detection` model:
+	```
+	  cd /workspace
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz -O yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
+	```	
+	* Install the model package.
+	```
+	  tar -xzvf yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
+	  sudo cp yolov3_adas_pruned_0_9 /usr/share/vitis_ai_library/models -r
+	```
+	
 For resnet50_mt_py_waa example, download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/VART/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
 
 For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/VART/Whole-App-Acceleration/adas_detection_waa/data`

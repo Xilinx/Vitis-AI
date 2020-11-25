@@ -113,7 +113,7 @@ steps.**
 2. (Optional) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
 	
 	The script runs automatically by default after the board boots up with the official image.
-	But you can also download the `dpu_sw_optimize.tar.gz` from [here](../../DPU-TRD/app/dpu_sw_optimize.tar.gz).
+	But you can also download the `dpu_sw_optimize.tar.gz` from [here](../../dsa/DPU-TRD/app/dpu_sw_optimize.tar.gz).
 	```
 	#cd ~/dpu_sw_optimize/zynqmp/
 	#./zynqmp_dpu_optimize.sh
@@ -349,7 +349,7 @@ Note: All models will download to `/usr/share/vitis_ai_library/models` directory
 2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../alveo/examples/caffe/README.md).
 3. Setup the environment.
 ```
-$source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+$source /workspace/alveo/overlaybins/setup.sh
 $export LD_LIBRARY_PATH=$HOME/.local/${taget_info}/lib/:$LD_LIBRARY_PATH
 ```
 4. Run the classification image test example.
