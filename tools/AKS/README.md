@@ -97,7 +97,7 @@ python -m ck install package:dataset-coco-2014-val
 
 # To try out face-detect example, download FDDB dataset.
 cd ${VAI_ALVEO_ROOT}/apps/face_detect/FDDB
-wget http://tamaraberg.com/faceDataset/originalPics.tar.gz
+wget http://vis-www.cs.umass.edu/fddb/originalPics.tar.gz
 tar -xvf originalPics.tar.gz
 cd -
 ```
@@ -147,6 +147,15 @@ Use following commands to build these kernels and examples.
     ./aks.sh -m googlenet_pp_accel -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     # Python
     ./aks.sh -i py -m googlenet_pp_accel -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
+    ```
+
+- InceptionV1_TF
+
+    ```sh
+    # C++
+    ./aks.sh -m inception_v1_tf -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
+    # Python
+    ./aks.sh -i py -m inception_v1_tf -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 
 #### Detection
@@ -227,7 +236,7 @@ conda activate vitis-ai-caffe
 python -m ck pull repo:ck-env
 python -m ck install package:imagenet-2012-val-min
 
-python ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
+python /workspace/examples/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
 
 conda deactivate
 ```
