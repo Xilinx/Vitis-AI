@@ -147,9 +147,10 @@ Use following commands to build these kernels and examples.
     ./aks.sh -m googlenet_pp_accel -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     # Python
     ./aks.sh -i py -m googlenet_pp_accel -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
+
     ```
 
-- InceptionV1_TF
+- Inception_v1 TensorFlow
 
     ```sh
     # C++
@@ -164,9 +165,9 @@ Use following commands to build these kernels and examples.
 
     ```sh
     # C++
-    ./aks.sh -m tinyyolov3 -d1 <image-dir>
+    ./aks.sh -m tinyyolov3 -d1 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     # Python
-    ./aks.sh -i py -m tinyyolov3 -d1 <image-dir>
+    ./aks.sh -i py -m tinyyolov3 -d1 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     ```
 
 - Tiny YOLOv3 (with video input)
@@ -180,9 +181,9 @@ Use following commands to build these kernels and examples.
 
     ```sh
     # C++
-    ./aks.sh -m stdyolov2 -d1 <image-dir>
+    ./aks.sh -m stdyolov2 -d1 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     # Python
-    ./aks.sh -i py -m stdyolov2 -d1 <image-dir>
+    ./aks.sh -i py -m stdyolov2 -d1 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     ```
 
 - Face Detect
@@ -201,18 +202,26 @@ Use following commands to build these kernels and examples.
 
     ```sh
     # C++
-    ./aks.sh -m googlenet_resnet50 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-resnet50>
+    ./aks.sh -m googlenet_resnet50 \
+        -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min \
+        -d2 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     # Python
-    ./aks.sh -i py -m googlenet_resnet50 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-resnet50>
+    ./aks.sh -i py -m googlenet_resnet50 \
+        -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min \
+        -d2 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 
 - Googlenet + TinyYolov3
 
     ```sh
     # C++
-    ./aks.sh -m googlenet_tinyyolov3 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-tinyyolov3>
+    ./aks.sh -m googlenet_tinyyolov3 \
+        -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min \
+        -d2 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     # Python
-    ./aks.sh  -i py -m googlenet_tinyyolov3 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-tinyyolov3>
+    ./aks.sh  -i py -m googlenet_tinyyolov3 \
+        -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min \
+        -d2 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     ```
 
 ## Run examples on Alveo-U50
