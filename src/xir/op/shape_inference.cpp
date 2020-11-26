@@ -1511,7 +1511,7 @@ void shape_infer_priorbox(xir::Op* cur) {
   }
   auto n = 1;
   auto c = 2;
-  auto tmp = input_shape[2] * input_shape[3] * num_priors_ * 4;
+  auto tmp = input_shape[1] * input_shape[2] * num_priors_ * 4;
   auto new_tensor = xir::Tensor::create(output_tensor->get_name(), {n, c, tmp},
                                         output_tensor->get_data_type());
   new_tensor->set_attrs(output_tensor->get_attrs());
