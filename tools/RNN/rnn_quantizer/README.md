@@ -1,7 +1,7 @@
-# XRNN Quantizer
+# RNN Quantizer
 
 ### Introduction
-XRNN quantizer is designed to quantize recurrent neural network(RNN) models. Currently XRNN quantizer only supports standard LSTM.
+RNN quantizer is designed to quantize recurrent neural network(RNN) models. Currently RNN quantizer only supports standard LSTM.
 
 ### Supported and Limitaion
 
@@ -20,9 +20,8 @@ XRNN quantizer is designed to quantize recurrent neural network(RNN) models. Cur
     
 ### Quick Start in Docker environment
 
-If you work in Vitis-AI 1.3 docker, there is a conda environment "vitis-ai-lstm", in which XRNN quantizer is already installed. 
+If you work in Vitis-AI 1.3 docker, there is a conda environment "vitis-ai-lstm", in which RNN quantizer is already installed. 
 In this conda environment, python version is 3.6, pytorch version is 1.4 and tensorflow version is 2.0. You can directly start lstm example without installation steps.
-If you want a different “python/pytorch/torchvision” version, install XRNN quantizer from source code.
 - Copy example/lstm_quant_pytorch to docker environment
 - Quantize, using a subset(1000 sequences) of validation data for calibration. Because we are in quantize calibration process, the displayed loss and accuracy are meaningless.
   ```shell
@@ -36,9 +35,9 @@ If you want a different “python/pytorch/torchvision” version, install XRNN q
   
 ### Install from source code
 
-Installation with Anaconda is suggested. And if there is an old version of XRNN quantizer in the conda enviorment, suggest you remove all of its related files before install the new version. 
+Installation with Anaconda is suggested. And if there is an old version of RNN quantizer in the conda enviorment, suggest you remove all of its related files before install the new version. 
 
-To install pytorch tools of XRNN quantizer, do as follows:
+To install pytorch tools of RNN quantizer, do as follows:
 
 ##### Pre step 1 : CUDA_HOME environment variable in .bashrc
 For GPU version, if CUDA library is installed in /usr/local/cuda, add the following line into .bashrc. If CUDA is in other directory, change the line accordingly.
@@ -63,7 +62,7 @@ If the following command line does not report error, the installation is done.
 
     python -c "import pytorch_nndct"
 
-To install tensorflow tools of XRNN quantizer, do as follows:
+To install tensorflow tools of RNN quantizer, do as follows:
 
 ##### Pre step 1 : install tensorflow 2.0 gpu version
 
@@ -96,11 +95,11 @@ import pytorch_nndct
 import torch
 ```
 
-### XRNN quantizer Tool Usage
+### RNN quantizer Tool Usage
 
 We provide simplest APIs to introduce our FPAG-friendly quantization feature. For a well-defined model, user only need to add 2-3 lines to get a quantize model object.
 
-##### Add XRNN quantizer APIs to float scripts
+##### Add RNN quantizer APIs to float scripts
 Before quantization, suppose there is a trained float model and some python scripts to evaluate model's accuracy/mAP. 
 Quantizer API will replace float module with quantized module and normal evaluate function will encourage quantized module forwarding. 
 Quantize calibration determines "quantize" op parameters in evaluation process if we set flag quant_mode to "calib". 
@@ -184,10 +183,10 @@ The accuracy displayed after the command has executed successfully is the right 
 ```
     Lstm_StandardLstmCell_layer_0_forward_int.xmodel: deployed model
 ```
-In conda env vitis-ai-lstm in Vitis-AI docker, XIR is ready. But if XRNN quantizer is installed by source code, it needs to install XIR in advance.<br>
+In conda env vitis-ai-lstm in Vitis-AI docker, XIR is ready. But if RNN quantizer is installed by source code, it needs to install XIR in advance.<br>
 If XIR is not installed, xmodel file can't be generated, this command will raise error in the end.
 
-## XRNN quantizer main APIs
+## RNN quantizer main APIs
 
 #### Pytorch
 The APIs are in module [pytorch_binding/pytorch_nndct/apis.py](pytorch_binding/pytorch_nndct/apis.py):

@@ -1,8 +1,8 @@
-## XRNN Compiler
-XRNN compiler compiles quantized RNN models and generate instructions for hardware. Currently XRNN compiler only support standard LSTM models. 
-XRNN compiler contains two parts as follows:
-1. XRNN compiler: compile LSTM models to hardward instructions.<br>
-2. XRNN simulator: simulate the process of LSTM models using computation graph and input data, get all the intermediate and final results of the model.<br>
+## RNN Compiler
+RNN compiler compiles quantized RNN models and generate instructions for hardware. Currently RNN compiler only supports standard LSTM models. 
+RNN compiler contains two parts as follows:
+1. RNN compiler: compile LSTM models to hardward instructions.<br>
+2. RNN simulator: simulate the process of LSTM models using computation graph and input data, get all the intermediate and final results of the model.<br>
 
 ## Supported
 
@@ -12,7 +12,7 @@ XIR library
 
 ## Install
 
-To install XRNN compiler as follows:
+To install RNN compiler as follows:
 
 ```py
 pip install -r requirements.txt
@@ -21,7 +21,7 @@ python setup.py install
 
 ## Tool Usage
 
-XRNN compiler provides LSTM compiler and LSTM simulator APIs, which are in file lstm_compiler/modules.py and lstm_simulator/module_simulator.py, respectively.
+RNN compiler provides LSTM compiler and LSTM simulator APIs, which are in file [lstm_compiler/modules.py](lstm_compiler/modules.py) and [lstm_simulator/module_simulator.py](lstm_simulator/module_simulator.py), respectively.
 
 1. Class LstmModuleCompiler for LSTM compiler
 
@@ -53,7 +53,7 @@ There are two tools in directory './examples', one for LSTM compiler, another fo
 
 1. For LSTM compiler:
 
-```
+```py
 cd examples
 python lstm_compiler_test.py --model_path [xmodel_path] --device [device_name]
 ```
@@ -66,14 +66,14 @@ Computation graphs are stored in the generated directory ./CompileData, and gene
 LSTM simulator must be run after LSTM compiler.<br>
 
 Firstly, copy the compiler computation graphs data to the directory which contains quantizer dump data and xmodel files, as follows:
-```
+```py
 cd examples
 cp -ar CompilerData/* $quantizer_data_path
 ```
 
 Secondly, run script as follows:
-```
-python lstm_simulator_test.py --data_path [data_path] [--data_check] 
+```py
+python lstm_simulator_test.py --data_path [data_path] [--data_check]
 ```
 data_path: directory which contains quantizer dump data, compiler dump data and xmodel.<br>
 data_check: flag to control whether to do data check after simulation. Default is false.
