@@ -127,6 +127,9 @@ conv_engine {
   output_bank_group {
     output_bank: "CB"
   }
+  channel_augmentation {
+    channel_num : 32
+  }
   nonlinear {
     nonlinear_type: relu
     nonlinear_type: relu_six
