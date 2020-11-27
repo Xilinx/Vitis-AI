@@ -60,14 +60,10 @@ Vitis-AI/tools/AKS provides a shell script [aks.sh](./aks.sh) to run various exa
 
 These examples utilize **DPUCADX8G** IP for CNN Inference Acceleration on Alveo-U200/Alveo-U250 devices.
 
-### Get Image Dataset
 
-Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning). 
+### Setup
 
 > **Note:** Skip, if you have already run the below steps.
-
-> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
-
 ```sh
 # Activate Conda Environment
 conda activate vitis-ai-caffe 
@@ -76,6 +72,15 @@ conda activate vitis-ai-caffe
 # Setup
 source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
+
+### Get Image Dataset
+
+Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning).
+
+> **Note:** Skip, if you have already run the below steps.
+
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+
 ```sh
 cd /workspace/tools/AKS
 
@@ -100,6 +105,18 @@ cd ${VAI_ALVEO_ROOT}/apps/face_detect/FDDB
 wget http://vis-www.cs.umass.edu/fddb/originalPics.tar.gz
 tar -xvf originalPics.tar.gz
 cd -
+```
+
+### Get Video Dataset
+
+> **Note:** The link below doesn't exist yet, please copy the tar file from /proj/xsjhdstaff3/vkjain/gitlab/fork/vitis-ai-staging/vitis_ai_runtime_r1.3.0_image_video.tar.gz to /workspace/tools/AKS
+
+```sh
+cd /workspace/tools/AKS
+
+# To try out tinyyolov3_video example, download sample images and videos
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz -O vitis_ai_runtime_r1.3.0_image_video.tar.gz
+tar -xzvf vitis_ai_runtime_r1.3.0_image_video.tar.gz
 ```
 
 ### Build Kernels and Examples
@@ -174,7 +191,7 @@ Use following commands to build these kernels and examples.
 
     ```sh
     # C++
-    ./aks.sh -m tinyyolov3_video -vf <video-file>
+    ./aks.sh -m tinyyolov3_video -vf ./samples/video_analysis/video/structure.mp4
     ```
 
 - Standard YOLOv2
@@ -232,7 +249,17 @@ Below example uses **DPUCAHX8H** IP for CNN Inference Acceleration on Alveo-U50 
 
 ### Get Image Dataset
 
-Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning). 
+Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning).
+
+> **Note:** Follow these steps for bash [to be removed once aksMeta_vai1p2_30062020.zip and docker are fixed]
+```sh
+copy xsj:/wrk/acceleration/modelzoo_1.3/compiled_model_zoo_1.3.0-r179/resnet50-u50-r1.3.0.tar.gz to <path-to-AKS>
+tar -xzvf resnet50-u50-r1.3.0.tar.gz && mv resnet50 graph_zoo/meta_resnet50_u50
+
+copy xhd:/proj/xsjhdstaff3/vkjain/gitlab/fork/alveo_xclbin-1.3.0.tar.gz to <path-to-AKS>
+tar -xzvf alveo_xclbin-1.3.0.tar.gz
+sudo cp alveo_xclbin-1.3.0/U50/6E300M/* /usr/lib
+```
 
 > **Note:** Skip, if you have already run the below steps.
 
@@ -288,7 +315,7 @@ Please follow the instructions here to setup your target device with correct ima
 
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
-Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning) on host with Vitis-AI docker and copy it to SD-card. 
+Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning) on host with Vitis-AI docker and copy it to SD-card.
 
 ```sh
 conda activate vitis-ai-caffe 
