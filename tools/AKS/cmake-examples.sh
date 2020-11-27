@@ -34,7 +34,7 @@ RST="${reset}"
 declare -a args
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \
-		 -l help,clean,clean-only,aks-install-prefix: \
+		 -l help,clean,clean-only,dpu:,aks-install-prefix:,type: \
 		 -- "$0" "$@")
 [ $? -eq 0 ] || {
     echo "Failed to parse arguments! try --help"
@@ -43,11 +43,19 @@ options=$(getopt -a -n 'parse-options' -o h \
 eval set -- "$options"
 while true; do
   case "$1" in
-	-h | --help                ) show_help=true; break;;
-	     --clean               ) clean=true;;
-	     --clean-only          ) clean_only=true;;
-	     --aks-install-prefix  ) shift; install_prefix=$1;;
-	     --) shift; break;;
+    --help | -h           ) show_help=true; break;;
+    --clean               ) clean=true;;
+    --clean-only          ) clean_only=true;;
+    --dpu                 ) shift; dpu=$1;;
+    --aks-install-prefix  ) shift; install_prefix=$1;;
+    --type)
+      shift
+      case "$1" in
+        release           ) build_type=Release;;
+        debug             ) build_type=Debug;;
+        *) echo "Invalid build type \"$1\"! try --help"; exit 1;;
+      esac;;
+    --) shift; break;;
   esac
   shift
 done
@@ -55,16 +63,30 @@ done
 # Usage
 if [ ${show_help:=false} == true ]; then
   echo -e
-  echo -e "$0 [options]"
+  echo -e "$0 "
   echo -e "    --help                 show help"
   echo -e "    --clean                discard previous configs/builds before build"
   echo -e "    --clean-only           discard previous configs/builds"
+  echo -e "    --dpu                  set DPU target [dpucadx8g, dpucahx8h, dpuczdx8g]"
+  echo -e "    --type                 set build type [release (Default), debug]"
   echo -e "    --aks-install-prefix   set customized aks install prefix"
   echo -e
   exit 0
 fi
 
+if [ "${dpu}" == "" ]; then
+  echo -e
+  echo -e "${ERR} No Target specified. Use --dpu option to specify DPU target! ${RST}"
+  echo -e
+  exit 1
+fi
+
 args=(-DAKS_INSTALL_PREFIX="${install_prefix}")
+# set build type
+args+=(-DCMAKE_BUILD_TYPE=${build_type:="Release"})
+args+=(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
+# target dpu
+args+=(-DDPU="${dpu}")
 
 EXAMPLES=${ROOT}/examples
 
