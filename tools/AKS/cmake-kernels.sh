@@ -43,19 +43,19 @@ options=$(getopt -a -n 'parse-options' -o h \
 eval set -- "$options"
 while true; do
   case "$1" in
-	-h | --help                ) show_help=true; break;;
-	     --clean               ) clean=true;;
-	     --clean-only          ) clean_only=true;;
-	     --dpu                 ) shift; dpu=$1;;
-	     --aks-install-prefix  ) shift; install_prefix=$1;;
-       --type)
-           shift
-           case "$1" in
-             release         ) build_type=Release;;
-             debug           ) build_type=Debug;;
-             *) echo "Invalid build type \"$1\"! try --help"; exit 1;;
-           esac ;;
-	     --) shift; break;;
+    --help | -h           ) show_help=true; break;;
+    --clean               ) clean=true;;
+    --clean-only          ) clean_only=true;;
+    --dpu                 ) shift; dpu=$1;;
+    --aks-install-prefix  ) shift; install_prefix=$1;;
+    --type)
+      shift
+      case "$1" in
+        release           ) build_type=Release;;
+        debug             ) build_type=Debug;;
+        *) echo "Invalid build type \"$1\"! try --help"; exit 1;;
+      esac ;;
+    --) shift; break;;
   esac
   shift
 done
