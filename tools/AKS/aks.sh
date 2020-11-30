@@ -54,13 +54,14 @@ usage() {
   echo "------------------------------------------------"
   echo "Run ResNet50 on Alveo-U50: "
   echo "    ./aks.sh -m resnet50_u50 --dir1 <image-dir>"
+  echo -e ""
 
   echo "Examples (DPUCZDX8G):"
   echo "------------------------------------------------"
   echo "Run ResNet50 on Edge Platforms: "
   echo "    ./aks.sh -m resnet50_edge --dir1 <image-dir>"
-
   echo -e ""
+
   echo "Arguments:"
   echo "------------------------------------------------"
   echo "  -n  nFPGA   | --nfpga   nFPGA   Number of FPGAs (Connected on System)"
