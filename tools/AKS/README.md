@@ -94,29 +94,19 @@ The shell script [aks.sh](./aks.sh) is provided to run the AKS examples.
 
 ## **Run Examples on Alveo-U200/Alveo-U250**
 
-> **Note:** Please make sure you are already inside Vitis-AI docker
-
 These examples use **DPUCADX8G** IP for CNN Inference Acceleration on Alveo-U200/Alveo-U250 devices.
 
 ### Setup
 
 Follow [Setup Alveo-U200/U250](setup/alveo/DPU-CADX8G/README.md) cards page to setup your cards on the host system (skip if already done).
 
-> **Note:** Skip, if you have already run the below steps.
-```sh
-# Activate Conda Environment
-conda activate vitis-ai-caffe 
-```
-```sh
-# Setup
-source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
-```
-
 ### Get Image Dataset
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning).
 
 > **Note:** Skip, if you have already run the below steps.
+
+> **Note:** Please make sure you are already inside Vitis-AI docker
 
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
@@ -163,6 +153,16 @@ tar -xzvf vitis_ai_runtime_r1.3.0_image_video.tar.gz
 We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and examples in the [aks/examples](./examples) directory.
 
 Use following commands to build these kernels and examples.
+
+```sh
+# Activate Conda Environment (skip if already done)
+conda activate vitis-ai-caffe 
+```
+
+```sh
+# Setup env
+source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+```
 
 ```sh
 cd /workspace/tools/AKS
@@ -286,17 +286,19 @@ cd /workspace/tools/AKS
 
 ## **Run examples on Alveo-U50**
 
-> **Note:** Please make sure you are already inside Vitis-AI docker
+Below example uses **DPUCAHX8H** IP for CNN Inference Acceleration on Alveo-U50 devices.
+
+### Setup 
 
 Follow [Setup Alveo-U50](setup/alveo/u50_u50lv_u280/README.md) page to setup your host system with Alveo-U50 cards (Skip if already done).
-
-Below example uses **DPUCAHX8H** IP for CNN Inference Acceleration on Alveo-U50 devices.
 
 ### Get Image Dataset
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning).
 
 > **Note:** Skip, if you have already run the below steps.
+
+> **Note:** Please make sure you are already inside Vitis-AI docker
 
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
@@ -545,26 +547,93 @@ Below is the list of the sample graphs provided as part of AKS examples. User ca
 
 While users can create their own kernels, AKS provides some basic kernels typically used for classification and detection. Users can quickly use these kernels in their graph or build their own kernels as documented [here](docs/API.md#Creating-Custom-AKS-Kernel). Below is the complete list of kernels used in the examples.
 
-| Name | Description |
-|:-------|:-------|
-| DPUCADX8GRunner | Runs inference on DPUCADX8G with new VAI interface |
-| DPUCADX8GNoRunner | Runs inference on DPUCADX8G with pre-VAI interface |
-| CaffeKernel | Executes a network using Caffe framework |
-| ImageRead | Reads an image with provided path |
-| ClassificationAccuracy | Measures accuracy of a classification network (Top-1/Top-5) |
-| ClassificationFCSoftMaxTopK | Performs FC+Softmax+TopK for a classification network |
-| ClassificationImreadPreProcess | Reads an image and preprocess it for classification network |
-| ClassificationPreProcess | Preprocesses an image for a classification network |
-| ClassificationPostProcess | Performs Softmax+TopK for a classification network |
-| DetectionImreadPreProcess | Reads and Preprocesses an image for YOLO network |
-| DetectionPreProcess | Preprocesses an image for YOLO network |
-| PythonKernel | Executes kernels written in Python |
-| SaveBoxesDarknetFormat | Saves results of detection network in Darknet format for mAP calculation |
-| YoloPostProcess | Postprocesses data for YOLO v2/v3 network |
-| ClassificationPreProcessAccel | Performs FPGA accelerated pre-processing for classification networks |
-| DPUCAHX8HRunner | Run inference on DPUCAHX8H |
-| DPUCZDX8GRunner | Run inference on DPUCZDX8G with new VAI Interface |
-| OpticalFlowDenseNonPyrLK | Run non-pyramidal LK Optical Flow |
+<table>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=4>DPU (Inference Kernels)</td>
+            <td>DPUCADX8GRunner</td>
+            <td>Runs inference on DPUCADX8G on Alveo-U200/Alveo-U250 Cards</td>
+        </tr>
+        <tr>
+            <td>DPUCADX8GNoRunner</td>
+            <td>Runs inference on DPUCADX8G on Alveo-U200/Alveo-U250 Cards (Pre-VAI interface)</td>
+        </tr>
+        <tr>
+            <td>DPUCAHX8HRunner</td>
+            <td>Run inference on DPUCAHX8H on Alveo-U50 HBM Cards</td>
+        </tr>
+        <tr>
+            <td>DPUCZDX8GRunner</td>
+            <td>Run inference on DPUCZDX8G on Edge devices</td>
+        </tr>
+        <tr>
+            <td rowspan=6>Pre/Post-process for Classification networks </td>
+            <td>ClassificationAccuracy</td>
+            <td>Measures & reports accuracy of a classification network (Top-1/Top-5)</td>
+        </tr>
+        <tr>
+            <td>ClassificationFCSoftMaxTopK</td>
+            <td>Performs FC+Softmax+TopK for a classification network</td>
+        </tr>
+        <tr>
+            <td>ClassificationImreadPreProcess</td>
+            <td>Reads an image and preprocess it for classification network</td>
+        </tr>
+        <tr>
+            <td>ClassificationPreProcess</td>
+            <td>Preprocesses an image for a classification network</td>
+        </tr>
+        <tr>
+            <td>ClassificationPostProcess</td>
+            <td>Performs Softmax+TopK for a classification network</td>
+        </tr>
+        <tr>
+            <td>ClassificationPreProcessAccel</td>
+            <td>Performs FPGA accelerated pre-processing for classification networks (Available only with DPUCADX8G on Alveo-U200)</td>
+        </tr>
+        <tr>
+            <td rowspan=4>Pre/Post-process for Detection networks</td>
+            <td>DetectionImreadPreProcess</td>
+            <td>Reads and Preprocesses an image for YOLO network </td>
+        </tr>
+        <tr>
+            <td>DetectionPreProcess</td>
+            <td>Preprocesses an image for YOLO network </td>
+        </tr>
+        <tr>
+            <td>SaveBoxesDarknetFormat</td>
+            <td>Saves results of detection network in Darknet format for mAP calculation</td>
+        </tr>
+        <tr>
+            <td>YoloPostProcess</td>
+            <td>Postprocesses data for YOLO v2/v3 network</td>
+        </tr>
+        <tr>
+            <td rowspan=4>Misc.</td>
+            <td>CaffeKernel</td>
+            <td>Runs inference on a network using Caffe framework</td>
+        </tr>
+        <tr>
+            <td>ImageRead</td>
+            <td>Reads an image with provided path</td>
+        </tr>
+        <tr>
+            <td>PythonKernel</td>
+            <td>Executes kernels written in Python</td>
+        </tr>
+        <tr>
+            <td>OpticalFlowDenseNonPyrLK</td>
+            <td>Run non-pyramidal LK Optical Flow (Available only with DPUCADX8G on Alveo-U200</td>
+        </tr>
+    </tbody>
+</table>
 
 ## Additional Details
 
