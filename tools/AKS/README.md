@@ -5,8 +5,8 @@
 * [What's New](#whats-new)
 * [Getting Started](#getting-started)
 * [Run Examples on Alveo-U200/Alveo-U250](#run-examples-on-alveo-u200alveo-u250)
-* [Run examples on Alveo-U50](#run-examples-on-alveo-u50)
-* [Run examples on Edge Devices](#run-examples-on-edge-devices) 
+* [Run Examples on Alveo-U50](#run-examples-on-alveo-u50)
+* [Run Examples on Edge Devices](#run-examples-on-edge-devices) 
 * [Tuning Performance](#tuning-performance)
 * [Performance](#performance)
 * [Graphs & Kernels](#graphs--kernels)
@@ -52,25 +52,25 @@ The shell script [cmake-kernels.sh](./cmake-kernels.sh) is provided to build AKS
 | --dpu  | Set DPU target. If none mentioned, only common kernels will be built | dpucadx8g, dpucahx8h, dpuczdx8g |
 | --type | Set Build Type | release (Default), debug |
 | --clean| Discard previous builds and rebuild | - |
-| --clean-only | Descard/Clean build | - |
+| --clean-only | Discard/Clean build | - |
 | --help | Show help | - |
 
 ### Build Examples
 
 The shell script [cmake-examples.sh](./cmake-examples.sh) is provided to build AKS examples. 
 
+```sh
+# Check Usage
+./cmake-examples.sh --help
+```
+
 | Option | Description | Possible Values |
 |:-------|:------------|:----------------|
 | --dpu  | Set DPU target (Mandatory) | dpucadx8g, dpucahx8h, dpuczdx8g |
 | --type | Set Build Type | release (Default), debug |
 | --clean| Discard previous builds and rebuild | - |
-| --clean-only | Descard/Clean build | - |
+| --clean-only | Discard/Clean build | - |
 | --help | Show help | - |
-
-```sh
-# Check Usage
-./cmake-examples.sh --help
-```
 
 ### Run Examples
 
@@ -92,7 +92,7 @@ The shell script [aks.sh](./aks.sh) is provided to run the AKS examples.
 |-h, --help  | Print Usage | - |
 
 
-## **Build & Run Examples on Alveo-U200/Alveo-U250**
+## **Run Examples on Alveo-U200/Alveo-U250**
 
 > **Note:** Please make sure you are already inside Vitis-AI docker
 
