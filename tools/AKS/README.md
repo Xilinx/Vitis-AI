@@ -98,7 +98,7 @@ These examples use **DPUCADX8G** IP for CNN Inference Acceleration on Alveo-U200
 
 ### Setup
 
-Follow [Setup Alveo-U200/U250](setup/alveo/DPU-CADX8G/README.md) cards page to setup your cards on the host system (skip if already done).
+Follow [Setup Alveo-U200/U250](../../setup/alveo/DPU-CADX8G/README.md) cards page to setup your cards on the host system (skip if already done).
 
 ### Get Image Dataset
 
@@ -290,7 +290,7 @@ Below example uses **DPUCAHX8H** IP for CNN Inference Acceleration on Alveo-U50 
 
 ### Setup
 
-Follow [Setup Alveo-U50](setup/alveo/u50_u50lv_u280/README.md) page to setup your host system with Alveo-U50 cards (Skip if already done).
+Follow [Setup Alveo-U50](../../setup/alveo/u50_u50lv_u280/README.md) page to setup your host system with Alveo-U50 cards (Skip if already done).
 
 ### Get Image Dataset
 
@@ -449,12 +449,16 @@ Let's take a look at a sample report for googlenet with 2 preprocessing threads 
 
 [DEBUG] Worker: ClassificationAccuracy_0 - Total jobs : 50000
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 0.46, Peak FPS possible: 108902.12, Utilization : 0.83%
+
 [DEBUG] Worker: ClassificationImreadPreProcess_1 - Total jobs : 24942
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 55.11, Peak FPS possible: 452.57, Utilization : 99.52%
+
 [DEBUG] Worker: ClassificationFCSoftMaxTopK_0 - Total jobs : 50000
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 11.30, Peak FPS possible: 4424.70, Utilization : 20.41%
+
 [DEBUG] Worker: ClassificationImreadPreProcess_0 - Total jobs : 25058
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 55.12, Peak FPS possible: 454.63, Utilization : 99.53%
+
 [DEBUG] Worker: DPUCADX8GRunner_0 - Total jobs : 50000
 [DEBUG] |--- Async Kernel : Submit time (s) : 1.70, Wait time (s) : 0.02, Kernel Active Time (s): 55.25
 ```
