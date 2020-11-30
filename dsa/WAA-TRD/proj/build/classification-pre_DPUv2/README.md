@@ -20,7 +20,7 @@ Required:
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.2)
   - [zcu102 base platform](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
-  - [mpsoc common system](https://www.xilinx.com/member/forms/download/xef.html?filename=xilinx-zynqmp-common-v2020.1.tar.gz)
+  - [mpsoc common system](https://www.xilinx.com/member/forms/download/xef.html?filename=xilinx-zynqmp-common-v2020.2.tar.gz)
 
 
 ###### **Note:** The user can also refer the [zcu102 dpu platform](https://github.com/Xilinx/Vitis_Embedded_Platform_Source/tree/master/Xilinx_Official_Platforms/zcu102_dpu), The github page includes all the details, such as how to generage the zcu102 dpu platform, how to create the SD card after compiling the DPU project.
@@ -97,7 +97,14 @@ Note that
 
 ## 2.3 Installing Vitis AI Runtime on the Evaluation Board
 
-- Download the [Vitis AI Runtime 1.3.0](IN_XCD_SERVER_/group/dphi_software/vitis_ai_library/r1.3/vitis-ai-runtime-1.3.0.tar.gz)  
+- Download the [Vitis AI Runtime 1.3.0](https::/www.xilinx.com). 
+
+For bash, Vitis AI Runtime 1.3.0 can be obtanined from here
+
+```
+#XCD_SERVER
+/group/dphi_software/vitis_ai_library/r1.3/vitis-ai-runtime-1.3.0.tar.gz
+```
 	
 - Untar the runtime packet and copy the following folder to the board using scp.
 ```
@@ -108,14 +115,29 @@ Note that
 - Install the Vitis AI Runtime. Execute the following command in order.
 ```
 	cd ~/centos
-    rpm2cpio libvart-1.3.0-r<x>.aarch64 | cpio -idmv
+	rpm2cpio libvart-1.3.0-r<x>.aarch64 | cpio -idmv
 	rpm -ivh --force libunilog-1.3.0-r<x>.aarch64.rpm
 	rpm -ivh --force libxir-1.3.0-r<x>.aarch64.rpm
 	rpm -ivh --force libtarget-factory-1.3.0-r<x>.aarch64.rpm
 	rpm -ivh --force libvart-1.3.0-r<x>.aarch64.rpm
 	rpm -ivh --force libvitis_ai_library-1.3.0-r<x>.aarch64.rpm
 ```
-## 2.4 Run Resnet50 Example
+
+## 2.4 Download Model files for Resnet50
+
+```
+%	cd /Vitis-AI/dsa/WAA-TRD/app/resnet50_waa
+%	mkdir model_zcu102
+%	cd model_zcu102
+%	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.0.tar.gz -O resnet50-zcu102_zcu104-r1.3.0.tar.gz
+%	tar -xzvf resnet50-zcu102_zcu104-r1.3.0.tar.gz
+```
+For bash, model files can be obtained from here
+```
+#XCD server
+/group/dphi_software/vitis_ai_library/r1.3/xilinx_model_zoo_1.3.0-r186/resnet50-zcu102_zcu104-r1.3.0.tar.gz
+```
+## 2.5 Run Resnet50 Example
 This part is about how to run the Resnet50 example on zcu102 board.
 
 Copy any image from `Vitis-AI/dsa/DPU-TRD/app/img/` and copy to `Vitis-AI/dsa/WAA-TRD/app/resnet50_waa/img` 
@@ -128,14 +150,14 @@ Please insert SD_CARD on the ZCU102 board. After the linux boot, run:
 % cd /mnt/sd-mmcblk0p1/resnet50_waa
 % cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
 % export XILINX_XRT=/usr
-% ./resnet50_waa model/resnet50.xmodel
+% ./resnet50_waa model_zcu102/resnet50/resnet50.xmodel
 
 Expect: 
 Image : ./img/bellpeppe-994958.JPEG
-top[0] prob = 0.990457  name = bell pepper
-top[1] prob = 0.004048  name = acorn squash
-top[2] prob = 0.002455  name = cucumber, cuke
-top[3] prob = 0.000903  name = zucchini, courgette
-top[4] prob = 0.000703  name = strawberry
+top[0] prob = 0.986903  name = bell pepper
+top[1] prob = 0.010964  name = acorn squash
+top[2] prob = 0.001484  name = cucumber, cuke
+top[3] prob = 0.000258  name = zucchini, courgette
+top[4] prob = 0.000058  name = necklace
 
 ```
