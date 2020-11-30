@@ -106,9 +106,9 @@ Source  files location for DPU & Pre-processor IP is as below
 
 Download [bin.tar.gz](IN_XHD_SERVER_/wrk/acceleration/users/maheshm/publicDownloadrepo/bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
 
-For bash, bin.tar.gz can be obtained from here
+For bash, same bin.tar.gz file can be obtained from here
 ```
-/wrk/acceleration/users/maheshm/vai_1_3/bin.tar.gz
+XHD/XSJ/XCO: /wrk/acceleration/users/maheshm/vai_1_3/bin.tar.gz
 ```
 
 - For classification example, please refer to [WAA-TRD/proj/pre-built/classification-pre_DPUv2/README](./proj/pre-built/classification-pre_DPUv2/README.md) file
