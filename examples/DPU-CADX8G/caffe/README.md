@@ -57,7 +57,7 @@ Run through a sample end to end caffe classification example using the following
 The following example uses the *googlenet* model. You can try the flow with also the other models found in `${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models` directory.
 
   ```sh
-  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe 
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
   ``` 
 
 #### Prepare the model for inference

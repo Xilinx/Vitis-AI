@@ -65,7 +65,7 @@ do
     -is|--imagescale    ) IMG_INPUT_SCALE="$2"                                            ; shift 2 ;;
     -y |--numprepproc   ) NUMPREPPROC="$2"                                                ; shift 2 ;;
     -acu|--acquirecu    ) ACQUIRECU="$2"                                                  ; shift 2 ;;
-    -g |--checkaccuracy ) GOLDEN=$VAI_ALVEO_ROOT/examples/deployment_modes/gold.txt       ; shift 1 ;;
+    -g |--checkaccuracy ) GOLDEN=$VAI_ALVEO_ROOT/DPU-CADX8G/deployment_modes/gold.txt     ; shift 1 ;;
     -v |--verbose       ) VERBOSE=1                                                       ; shift 1 ;;
     -x |--perpetual     ) PERPETUAL=1                                                     ; shift 1 ;;
     -cn|--customnet     ) CUSTOM_NETCFG="$2"                                              ; shift 2 ;;
@@ -120,7 +120,7 @@ echo -e "Running:\n Test: $TEST\n Model: $MODEL\n Xclbin: $XCLBIN\n Accelerator:
 BASEOPT="--xclbin $XCLBIN
          --netcfg $NETCFG
          --weights $WEIGHTS
-         --labels $VAI_ALVEO_ROOT/examples/deployment_modes/synset_words.txt
+         --labels $VAI_ALVEO_ROOT/DPU-CADX8G/deployment_modes/synset_words.txt
          --quantizecfg $QUANTCFG
          --img_input_scale $IMG_INPUT_SCALE
          --batch_sz $BATCHSIZE"
@@ -268,7 +268,7 @@ elif [ "$TEST" == "classify_cpp" ]; then
   cp ./classify.exe ../classify.exe
   cd -
   BATCHSIZE=1
-  DIRECTORY=$VAI_ALVEO_ROOT/examples/deployment_modes/dog.jpg
+  DIRECTORY=$VAI_ALVEO_ROOT/DPU-CADX8G/deployment_modes/dog.jpg
   BASEOPT_CPP="--xclbin $XCLBIN --netcfg $NETCFG --datadir $WEIGHTS --labels ./synset_words.txt --quantizecfg $QUANTCFG --img_input_scale $IMG_INPUT_SCALE --batch_sz $BATCHSIZE"
   BASEOPT_CPP+=" --image $DIRECTORY"
   OPENCV_LIB=/usr/lib/x86_64-linux-gnu
@@ -296,5 +296,5 @@ if [ "$TEST" == "classify_cpp" ]; then
   ./classify.exe $BASEOPT_CPP
 else
   echo python $TEST $BASEOPT
-  python $VAI_ALVEO_ROOT/examples/deployment_modes/$TEST $BASEOPT
+  python $VAI_ALVEO_ROOT/DPU-CADX8G/deployment_modes/$TEST $BASEOPT
 fi

@@ -117,12 +117,18 @@ For Multinet deployments, the different models/networks are set in the `--jsoncf
 ------------------
 Using VAI_ALVEO_ROOT
 ------------------
-/workspace/alveo
+/workspace/examples
 
+---------------------
+Verifying XILINX_XRM
+---------------------
 ---------------------
 Using LD_LIBRARY_PATH
 ---------------------
-/opt/xilinx/xrt/lib:
+/opt/xilinx/xrt/lib:/opt/vitis_ai/conda/envs/vitis-ai-caffe/lib:/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/usr/local/lib:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib
+--------------------
+Vitis-AI Flow
+---------------------
 -------------------
 Using LIBXDNN_PATH
 -------------------
@@ -131,15 +137,15 @@ Using LIBXDNN_PATH
 -------------------
 PYTHONPATH
 -------------------
-/opt/xilinx/xrt/python:/opt/vitis_ai/compiler
+/opt/xilinx/xrt/python:
 
 ---------------------
 Verifying XILINX_XRT
 ---------------------
-XILINX_XRT      : /opt/xilinx/xrt
-PATH            : /opt/xilinx/xrt/bin:/opt/vitis_ai/conda/envs/vitis-ai-caffe/bin:/opt/vitis_ai/conda/condabin:/opt/xilinx/xrt/bin:/opt/vitis_ai/conda/bin:/opt/vitis_ai/utility:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-LD_LIBRARY_PATH : /opt/xilinx/xrt/lib:/opt/xilinx/xrt/lib:
-PYTHONPATH     : /opt/xilinx/xrt/python:/opt/xilinx/xrt/python:/opt/vitis_ai/compiler
+XILINX_XRT        : /opt/xilinx/xrt
+PATH              : /opt/xilinx/xrt/bin:/opt/xilinx/xrt/bin:/opt/vitis_ai/conda/envs/vitis-ai-caffe/bin:/opt/vitis_ai/conda/condabin:/opt/vitis_ai/conda/bin:/opt/vitis_ai/utility:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+LD_LIBRARY_PATH   : /opt/xilinx/xrt/lib:/opt/vitis_ai/conda/envs/vitis-ai-caffe/lib:/opt/xilinx/xrt/lib:/opt/vitis_ai/conda/envs/vitis-ai-caffe/lib:/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/usr/local/lib:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib
+PYTHONPATH        : /opt/xilinx/xrt/python
 --- Using System XCLBIN ---
 Running:
  Test: test_classify
@@ -152,6 +158,8 @@ Running:
 
 Loading weights/bias/quant_params to FPGA...
 
+[XRT]    git hash                   : 7c93966ead2dec777b92bdc379893f22b5bd561e
+[XDNN]   git hash                   : 108fbe330fd7c1682526ff720cd9accb6ff3f6c0
 [XDNN] kernel configuration
 [XDNN]   num cores                  : 2
 [XDNN]   dsp array width            : 96
@@ -161,13 +169,11 @@ Loading weights/bias/quant_params to FPGA...
 [XDNN]   max xbar entries           : 4096
 [XDNN]   version                    : 3.2
 [XDNN]   8-bit mode                 : 1
-
----------- Prediction 1/4 for /workspace/alveo/examples/deployment_modes/dog.jpg ----------
-0.6316 "n02112018 Pomeranian"
-0.1798 "n02123394 Persian cat"
-0.0359 "n02492035 capuchin, ringtail, Cebus capucinus"
-0.0246 "n02085620 Chihuahua"
-0.0185 "n02123597 Siamese cat, Siamese"
+---------- Prediction 1/4 for /workspace/examples/DPU-CADX8G/deployment_modes/dog.jpg ----------
+0.9851 "n02099601 golden retriever"
+0.0017 "n02102318 cocker spaniel, English cocker spaniel, cocker"
+0.0016 "n02100877 Irish setter, red setter"
+0.0015 "n02106030 collie"
+0.0014 "n02088094 Afghan hound, Afghan"
 
   ```
-
