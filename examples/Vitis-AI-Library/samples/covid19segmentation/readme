@@ -29,5 +29,5 @@ Important:
 
    run the executable file.
     
-    sample : ./test_covid19segmentation FPN-resnet18_covid19-seg_pt samples_covid19segmentation.jpg 
+    sample : ./test_jpeg_covid19segmentation FPN-resnet18_covid19-seg_pt samples_covid19segmentation.jpg 
     output : Run and get a visualization result
