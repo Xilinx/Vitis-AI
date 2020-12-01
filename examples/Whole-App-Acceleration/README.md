@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This application demonstrates how Xilinx® [Vitis Vision library](https://github.com/Xilinx/Vitis_Libraries/tree/master/vision) functions can be integrated with deep neural network (DNN) accelerator to achieve complete application acceleration. This application focuses on accelerating the pre-processing involved in inference of object detection networks.
+This application demonstrates how Xilinx® [Vitis Vision library](https://github.com/Xilinx/Vitis_Libraries/tree/master/vision) functions can be integrated with deep neural network (DNN) accelerator to achieve complete application acceleration. This application focuses on accelerating the pre-processing involved in inference of object detection & classification networks.
 
 ## Background
 
@@ -13,7 +13,7 @@ Input images are preprocessed  before being fed for inference of different deep 
 
 ## Resnet50
 
-Currently, applications accelerating pre-processing for classification networks (Resnet-50) is provided and  can only run on ZCU102 board (device part  xczu9eg-ffvb1156-2-e) and Alveo U50 card (device part xcu50-fsvh2104-2-e). In this application, software JPEG decoder is used for loading input image. Three processes are created one for image loading , one for running pre-processing kernel and one for running the ML accelerator. JPEG decoder transfer input image data to pre-processing kernel over queue and the pre-processed data is transferred to the ML accelerator over a queue. Below image shows the inference pipeline.
+Currently, applications accelerating pre-processing for classification networks (Resnet-50) is provided and  can only run on ZCU102 board (device part  xczu9eg-ffvb1156-2-e) and Alveo U50 card (device part xcu50-fsvh2104-2-e). In this application, software JPEG decoder is used for loading input image. JPEG decoder transfer input image data to pre-processing kernel and the pre-processed data is transferred to the ML accelerator. Below image shows the inference pipeline.
 
 
 <div align="center">
@@ -24,7 +24,7 @@ Currently, applications accelerating pre-processing for classification networks 
 
 ADAS (Advanced Driver Assistance Systems) application
 using YOLO-v3 network model is an example for object detection.
-Accelerating pre-processing for YOLO-v3 is provided and can only run on ZCU102 board (device part xczu9eg-ffvb1156-2-e) and Alveo U50 card (device part xcu50-fsvh2104-2-e). In this application, software JPEG decoder is used for loading input image. Three processes are created one for image loading , one for running pre-processing kernel and one for running the ML accelerator. JPEG decoder transfer input image data to pre-processing kernel over queue and the pre-processed data is transferred to the ML accelerator over a queue. Below image shows the inference pipeline.
+Accelerating pre-processing for YOLO-v3 is provided and can only run on ZCU102 board (device part xczu9eg-ffvb1156-2-e) and Alveo U50 card (device part xcu50-fsvh2104-2-e). In this application, software JPEG decoder is used for loading input image. Three processes are created one for image loading and running pre-processing kernel ,one for running the ML accelerator and one for generating output image. JPEG decoder transfer input image data to pre-processing kernel and the pre-processed data is transferred to the ML accelerator over a queue. ML accelerator output will be transferd over queue to create output image. Below image shows the inference pipeline.
 
 <div align="center">
   <img width="75%" height="75%" src="./doc_images/block_dia_adasdetection.PNG">
