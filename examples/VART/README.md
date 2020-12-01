@@ -236,8 +236,8 @@ If you encounter any path errors in running examples, check to see if you follow
 	* Install the model package.  
 	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
 	```
-	  mkdir /usr/share/vitis_ai_library/models
-	```
+	  sudo mkdir /usr/share/vitis_ai_library/models
+	```  
 	Then install the model package.
 	```
 	  tar -xzvf resnet50-u50-r1.3.0.tar.gz
