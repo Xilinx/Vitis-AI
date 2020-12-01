@@ -3,18 +3,15 @@ import re
 import sys
 import argparse
 import time
-import pdb
 import random
 from pytorch_nndct.apis import torch_quantizer, dump_xmodel
 import torch
 import torchvision
 import torchvision.transforms as transforms
-from torchvision.models.resnet import resnet18
+from torchvision.models.mobilenet import mobilenet_v2
 
 from tqdm import tqdm
 
-#device = torch.device("cuda")
-#device = torch.device("cpu")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 parser = argparse.ArgumentParser()
@@ -26,7 +23,7 @@ parser.add_argument(
 parser.add_argument(
     '--model_dir',
     default="/path/to/trained_model/",
-    help='Trained model file path. Download pretrained model from the following url and put it in model_dir specified path: https://download.pytorch.org/models/resnet18-5c106cde.pth'
+    help='Trained model file path. Download pretrained model from the following url and put it in model_dir specified path: https://download.pytorch.org/models/mobilenet_v2-b0353104.pth'
 )
 parser.add_argument(
     '--subset_len',
@@ -42,10 +39,6 @@ parser.add_argument('--quant_mode',
     default='calib', 
     choices=['float', 'calib', 'test'], 
     help='quantization mode. 0: no quantization, evaluate float model, calib: quantize, test: evaluate quantized model')
-parser.add_argument('--fast_finetune', 
-    dest='fast_finetune',
-    action='store_true',
-    help='fast finetune model before calibration')
 parser.add_argument('--deploy', 
     dest='deploy',
     action='store_true',
@@ -58,7 +51,7 @@ def load_data(train=True,
               subset_len=None,
               sample_method='random',
               distributed=False,
-              model_name='resnet18',
+              model_name='mobilenet_v2',
               **kwargs):
 
   #prepare data
@@ -171,7 +164,6 @@ def evaluate(model, val_loader, loss_fn):
       enumerate(val_loader), total=len(val_loader)):
     images = images.to(device)
     labels = labels.to(device)
-    #pdb.set_trace()
     outputs = model(images)
     loss = loss_fn(outputs, labels)
     Loss += loss.item()
@@ -187,7 +179,7 @@ def quantization(title='optimize',
 
   data_dir = args.data_dir
   quant_mode = args.quant_mode
-  finetune = args.fast_finetune
+  finetune = True
   deploy = args.deploy
   batch_size = args.batch_size
   subset_len = args.subset_len
@@ -199,7 +191,7 @@ def quantization(title='optimize',
     batch_size = 1
     subset_len = 1
 
-  model = resnet18().cpu()
+  model = mobilenet_v2().cpu()
   model.load_state_dict(torch.load(file_path))
 
   input = torch.randn([batch_size, 3, 224, 224])
@@ -261,7 +253,7 @@ def quantization(title='optimize',
 
 if __name__ == '__main__':
 
-  model_name = 'resnet18'
+  model_name = 'mobilenet_v2'
   file_path = os.path.join(args.model_dir, model_name + '.pth')
 
   feature_test = ' float model evaluation'

@@ -1,23 +1,48 @@
+import argparse
 import os
-import pytorch_nndct.nn as nndct_nn
 import shutil
 import time
-import warnings
 
-from pytorch_nndct.nn.modules import functional
-from pytorch_nndct.apis import torch_quantizer
-from pytorch_nndct.quantization import quant_aware_training as qat
-from pytorch_nndct.quantization.quant_aware_training import InputSpec
 import torch
 import torch.nn as nn
 import torch.optim
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 
-model_urls = {
-    'resnet18': '/proj/rdi/staff/wluo/UNIT_TEST/models/resnet18.pth',
-    'resnet50': '/proj/rdi/staff/wluo/UNIT_TEST/models/resnet50.pth'
-}
+from pytorch_nndct import nn as nndct_nn
+from pytorch_nndct.nn.modules import functional
+from pytorch_nndct.apis import torch_quantizer
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--data_dir',
+    default='/scratch/workspace/dataset/imagenet/pytorch',
+    help='Data set directory.')
+parser.add_argument(
+    '--pretrained',
+    default='/scratch/workspace/models/resnet18.pth',
+    help='Pre-trained model file path.')
+parser.add_argument(
+    '--workers',
+    default=4,
+    type=int,
+    help='Number of data loading workers to be used.')
+parser.add_argument(
+    '--lr',
+    default=1e-5,
+    type=float,
+    help='Initial learning rate.')
+parser.add_argument(
+    '--batch_size',
+    default=128,
+    type=int,
+    help='Batch size.')
+parser.add_argument(
+    '--weight_decay',
+    default=1e-4,
+    type=float,
+    help='Weight decay.')
+args, _ = parser.parse_known_args()
 
 def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
   """3x3 convolution with padding"""
@@ -255,9 +280,7 @@ class ResNet(nn.Module):
 def _resnet(arch, block, layers, pretrained, progress, **kwargs):
   model = ResNet(block, layers, **kwargs)
   if pretrained:
-    #state_dict = load_state_dict_from_url(model_urls[arch], progress=progress)
-    state_dict = torch.load(model_urls[arch])
-    model.load_state_dict(state_dict)
+    model.load_state_dict(torch.load(args.pretrained))
   return model
 
 def resnet18(pretrained=False, progress=True, **kwargs):
@@ -269,17 +292,6 @@ def resnet18(pretrained=False, progress=True, **kwargs):
         progress (bool): If True, displays a progress bar of the download to stderr
     """
   return _resnet('resnet18', BasicBlock, [2, 2, 2, 2], pretrained, progress,
-                 **kwargs)
-
-def resnet50(pretrained=False, progress=True, **kwargs):
-  r"""ResNet-50 model from
-    `"Deep Residual Learning for Image Recognition" <https://arxiv.org/pdf/1512.03385.pdf>'_
-
-    Args:
-        pretrained (bool): If True, returns a model pre-trained on ImageNet
-        progress (bool): If True, displays a progress bar of the download to stderr
-    """
-  return _resnet('resnet50', Bottleneck, [3, 4, 6, 3], pretrained, progress,
                  **kwargs)
 
 def train(train_loader, model, criterion, optimizer, epoch, gpu=None):
@@ -448,27 +460,11 @@ def accuracy(output, target, topk=(1,)):
       res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
-def printgradnorm(self, grad_input, grad_output):
-  print('backward:', self)
-
-def register_backward_hook(module):
-  module.register_backward_hook(printgradnorm)
-
 def main():
-  torch.set_printoptions(precision=8)
-  data='/proj/rdi/staff/niuxj/imagenet'
-  workers = 4
   gpu = 0
 
-  batch_size = 128
-  lr = 1e-5
-  momentum = 0.9
-  weight_decay = 1e-4
-
-  #traindir = os.path.join(data, 'train')
-  #valdir = os.path.join(data, 'validation')
-  traindir = os.path.join(data, 'val')
-  valdir = os.path.join(data, 'val')
+  traindir = os.path.join(args.data_dir, 'train')
+  valdir = os.path.join(args.data_dir, 'validation')
   normalize = transforms.Normalize(
       mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
@@ -481,12 +477,11 @@ def main():
           normalize,
       ]))
 
-  #train_dataset = torch.utils.data.Subset(train_dataset, list(range(128)))
   train_loader = torch.utils.data.DataLoader(
       train_dataset,
-      batch_size=batch_size,
+      batch_size=args.batch_size,
       shuffle=True,
-      num_workers=workers,
+      num_workers=args.workers,
       pin_memory=True)
 
   val_dataset = datasets.ImageFolder(
@@ -497,12 +492,12 @@ def main():
           transforms.ToTensor(),
           normalize,
       ]))
-  #val_dataset = torch.utils.data.Subset(val_dataset, list(range(10)))
+
   val_loader = torch.utils.data.DataLoader(
       val_dataset,
-      batch_size=batch_size,
+      batch_size=args.batch_size,
       shuffle=False,
-      num_workers=workers,
+      num_workers=args.workers,
       pin_memory=True)
 
   model = resnet18(pretrained=True)
@@ -511,21 +506,21 @@ def main():
   criterion = nn.CrossEntropyLoss().cuda(gpu)
 
   # vai_q_pytorch interface function: create quantizer can do QAT
-  input = torch.randn([batch_size, 3, 224, 224], dtype=torch.float32)
-  quantizer = torch_quantizer(quant_mode = 'calib',
-                              module = model, 
-                              input_args = input,
-                              bitwidth = 8,
-                              qat_proc = True)
+  input = torch.randn([args.batch_size, 3, 224, 224], dtype=torch.float32)
+  quantizer = torch_quantizer(quant_mode='calib',
+                              module=model,
+                              input_args=input,
+                              bitwidth=8,
+                              qat_proc=True)
   quantized_model = quantizer.quant_model
 
   optimizer = torch.optim.Adam(
-    quantized_model.parameters(), lr, weight_decay=weight_decay)
+    quantized_model.parameters(), args.lr, weight_decay=args.weight_decay)
 
   best_acc1 = 0
   epochs = 2
   for epoch in range(epochs):
-    adjust_learning_rate(optimizer, epoch, lr)
+    adjust_learning_rate(optimizer, epoch, args.lr)
 
     # train for one epoch
     train(train_loader, quantized_model, criterion, optimizer, epoch, gpu)
@@ -544,27 +539,18 @@ def main():
     print('Saving ckpt with best_acc1:', best_acc1)
 
   # vai_q_pytorch interface function: deploy the trained model and convert xmodel
-  # need at least 1 iteration of inference with batch_size=1 
-  quantizer.deploy(quantized_model)
-  deployable_model = quantizer.deploy_model
-  val_dataset2 = torch.utils.data.Subset(val_dataset, list(range(1)))
-  val_loader2 = torch.utils.data.DataLoader(
-      val_dataset2,
+  # need at least 1 iteration of inference with batch_size=1
+  val_subset = torch.utils.data.Subset(val_dataset, list(range(1)))
+  subset_loader = torch.utils.data.DataLoader(
+      val_subset,
       batch_size=1,
       shuffle=False,
-      num_workers=workers,
+      num_workers=args.workers,
       pin_memory=True)
-  validate(val_loader2, deployable_model, criterion, gpu)
+  quantizer.deploy(quantized_model)
+  deployable_model = quantizer.deploy_model
+  validate(subset_loader, deployable_model, criterion, gpu)
   quantizer.export_xmodel()
-  '''
-  deployed_acc1 = validate(val_loader, deployable_model, criterion, gpu)
-  quantized_model.freeze_bn()
-  quantized_acc1 = validate(val_loader, quantized_model, criterion, gpu)
-  if quantized_acc1 != deployed_acc1:
-    warnings.warn(
-        'The accuracy of deployed model is not equal to the accuracy of quantized model.')
-  '''
-
 
 if __name__ == '__main__':
   main()
