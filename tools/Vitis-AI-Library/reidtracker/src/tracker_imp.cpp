@@ -15,9 +15,9 @@
  */
 
 #include "tracker_imp.hpp"
+#include <thread>
 #include "ftd/ftd_structure.hpp"
 #include "state_map.hpp"
-#include <thread>
 
 namespace vitis {
 namespace ai {
@@ -67,11 +67,10 @@ std::vector<OutputCharact> ReidTrackerImp::patchFrame(const uint64_t frame_id) {
   return det_track;
 }
 
-std::vector<OutputCharact>
-ReidTrackerImp::track(const cv::Mat &image, const uint64_t frame_id,
-                  std::vector<InputCharact> &input_characts,
-                  const bool is_detection, const bool is_normalized)
- {
+std::vector<OutputCharact> ReidTrackerImp::track(
+    const cv::Mat &image, const uint64_t frame_id,
+    std::vector<InputCharact> &input_characts, const bool is_detection,
+    const bool is_normalized) {
   std::vector<OutputCharact> det_track;
   if (mode_ & MODE_MULTIDETS) {
     return det_track;
@@ -79,14 +78,14 @@ ReidTrackerImp::track(const cv::Mat &image, const uint64_t frame_id,
 
   if (lastframe_id && (frame_id > lastframe_id + 1) &&
       (mode_ & MODE_AUTOPATCH)) {
-      exit(1);
+    exit(1);
     for (uint64_t i = 1; i < frame_id - lastframe_id; i++) {
       patchFrame(lastframe_id + i);
     }
   }
   g_img = image;
-  det_track =
-      ftd_->Update(image, frame_id, is_detection, is_normalized, input_characts);
+  det_track = ftd_->Update(image, frame_id, is_detection, is_normalized,
+                           input_characts);
 
   lastframe_id = frame_id;
   return det_track;
@@ -153,8 +152,8 @@ std::vector<OutputCharact> ReidTrackerImp::trackWithoutLock(
     if (mode_ & MODE_AUTOPATCH) {
       while (last_tracked_id != -1 && (int)frame_id > ++last_tracked_id) {
         std::vector<InputCharact> empty_charact;
-        auto undet_track =
-            ftd_->Update(g_img, last_tracked_id, false, is_normalized, empty_charact);
+        auto undet_track = ftd_->Update(g_img, last_tracked_id, false,
+                                        is_normalized, empty_charact);
         DLOG(INFO) << "do undet_track for " << last_tracked_id
                    << " frame_id: " << frame_id;
         undet_tracks_->push(
@@ -162,15 +161,15 @@ std::vector<OutputCharact> ReidTrackerImp::trackWithoutLock(
                 last_tracked_id, std::move(undet_track)));
       }
     }
-    return ftd_->Update(g_img, frame_id, is_detection, is_normalized, input_characts);
+    return ftd_->Update(g_img, frame_id, is_detection, is_normalized,
+                        input_characts);
   }
   return std::vector<OutputCharact>();
 };
 
-std::vector<OutputCharact>
-ReidTrackerImp::trackWithLock(const uint64_t frame_id,
-                          std::vector<InputCharact> &input_characts,
-                          const bool is_detection, const bool is_normalized) {
+std::vector<OutputCharact> ReidTrackerImp::trackWithLock(
+    const uint64_t frame_id, std::vector<InputCharact> &input_characts,
+    const bool is_detection, const bool is_normalized) {
   std::vector<OutputCharact> det_track;
   if (mode_ & MODE_MULTIDETS) {
     setTrackLock(frame_id);
@@ -181,7 +180,8 @@ ReidTrackerImp::trackWithLock(const uint64_t frame_id,
   return det_track;
 };
 
-std::vector<OutputCharact> ReidTrackerImp::outputUndetTracks(uint64_t frame_id) {
+std::vector<OutputCharact> ReidTrackerImp::outputUndetTracks(
+    uint64_t frame_id) {
   if (mode_ & MODE_MULTIDETS) {
     if (undet_tracks_->size() != 0) {
       while (undet_tracks_->front()->first <= frame_id) {
@@ -216,5 +216,5 @@ void ReidTrackerImp::printState() {
   }
 }
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

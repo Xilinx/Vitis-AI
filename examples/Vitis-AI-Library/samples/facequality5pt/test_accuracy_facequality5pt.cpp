@@ -52,11 +52,12 @@ int main(int argc, char *argv[]) {
               << std::endl;
     return -1;
   }
+  string model = argv[1] + string("_acc");
   string image_list_name = argv[2];
   string output_name = argv[3];
 
   bool preprocess = !(getenv("PRE") != nullptr);
-  auto facequality5pt= vitis::ai::FaceQuality5pt::create(argv[1], preprocess);
+  auto facequality5pt= vitis::ai::FaceQuality5pt::create(model, preprocess);
   int width = facequality5pt->getInputWidth();
   int height = facequality5pt->getInputHeight();
 

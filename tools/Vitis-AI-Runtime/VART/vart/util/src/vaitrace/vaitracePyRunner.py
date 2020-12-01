@@ -17,30 +17,23 @@
 
 
 import os
-import re
-import csv
 import sys
-import string
 import time
-import argparse
-import json
 import signal
-from subprocess import Popen, PIPE
+from multiprocessing import Process
 
 import collector
 import tracer
-import writer
-import vaitraceCfgManager
-import vaitraceSetting
 import logging
 
+pyProc = None
 
 def pyRunCtx(pyCmd):
     sys.argv[:] = pyCmd
     progname = pyCmd[0]
     sys.path.insert(0, os.path.dirname(progname))
 
-    print("Vaitrace compile python code: %s" % progname)
+    logging.info("Vaitrace compile python code: %s" % progname)
 
     with open(progname, 'rb') as fp:
         code = compile(fp.read(), progname, 'exec')
@@ -52,12 +45,26 @@ def pyRunCtx(pyCmd):
         '__cached__': None,
     }
 
-    print("Vaitrace exec poython code: %s" % progname)
+    logging.info("Vaitrace exec poython code: %s" % progname)
 
     exec(code, globs, None)
 
+def handler(signum, frame):
+    global pyProc
+
+    if pyProc.is_alive():
+        pyProc.kill()
+        logging.info("Killing process...")
+        logging.info("Processing trace data, please wait...")
+    else:
+        logging.info("Processing trace data, please wait...")
 
 def run(globalOptions: dict):
+    global pyProc
+
+    signal.signal(signal.SIGINT, handler)
+    signal.signal(signal.SIGTERM, handler)
+
     options = globalOptions
 
     if options.get('cmdline_args').get('bypass', False):
@@ -79,28 +86,28 @@ def run(globalOptions: dict):
     """Start Running"""
     pyCmd = options.get('control').get('cmd')
     timeout = options.get('control').get('timeout')
-    pyRunCtx(pyCmd)
-    #proc = Popen(cmd)
-    #
-    #options['control']['pid'] = proc.pid
-    #options['control']['time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+    #pyRunCtx(pyCmd)
+    pyProc = Process(target=pyRunCtx, args=(pyCmd,))
+    pyProc.start()
+
     options['control']['launcher'] = "python"
-    options['control']['pid'] = os.getpid()
+    options['control']['pid'] = pyProc.pid
     options['control']['time'] = time.strftime(
         "%Y-%m-%d %H:%M:%S", time.localtime())
-    #
-    # if timeout <= 0:
-    #    proc.wait()
-    # else:
-    #    while timeout > 0:
-    #        time.sleep(1)
-    #        timeout -= 1
-    #        p = proc.poll()
-    #        if p is not None:
-    #            break
-    #
+    
+    if timeout <= 0:
+        pyProc.join()
+    else:
+       while timeout > 0:
+           time.sleep(1)
+           timeout -= 1
+           p = pyProc.is_alive()
+           if p == False:
+               break
+    
     collector.stop()
     tracer.stop()
-    # proc.wait()
+    # pyProc.join()
 
     tracer.process(collector.getData())

@@ -26,7 +26,7 @@ namespace vitis {
 namespace ai {
 
 class StateMap {
-public:
+ public:
   enum State {
     INIT = 0,
     DET_ST = 1,
@@ -59,7 +59,7 @@ public:
   bool updateLastTrackedId(int id);
   int getLastTrackedId();
 
-private:
+ private:
   void updateCur();
 
   map<int, State> *m_data_;
@@ -71,5 +71,5 @@ private:
   mutable std::mutex mtx_;
 };
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

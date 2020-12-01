@@ -229,6 +229,24 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.
 tar -xzvf alveo_xclbin-1.3.0.tar.gz
 cd alveo_xclbin-1.3.0/U50lv-V3ME/1E300M
 sudo cp dpu.xclbin /usr/lib
+export XLNX_VART_FIRMWARE=/usr/lib/dpu.xclbin
+```
+Note that for `DPUCAHX8L`, please refer to [XBulter Installation](../../setup/alveo/DPU-CADX8G/packages) to install `XBulter`. And then add the following U50 and U50lv configurations into `/etc/xbutler/xbutler.config`.
+```
+{
+	"DSA_Board_Name": "u50lv",
+	"Name": "alveo-u50",
+	"SLRCount": 2
+},
+{
+	"DSA_Board_Name": "u50",
+	"Name": "alveo-u50",
+	"SLRCount": 2
+},
+```
+After the installation of `XBulter`, reboot xbulter service.
+```
+sudo service xbutler restart
 ```
 
 3. Select the model for your platform.  
@@ -244,7 +262,12 @@ sudo cp dpu.xclbin /usr/lib
 	```
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz -O resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
 	```	  
-	* Install the model package.
+	* Install the model package.  
+	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
+	```
+	  sudo mkdir /usr/share/vitis_ai_library/models
+	```	
+	Then install the model package.
 	```
 	  tar -xzvf resnet_v1_50_tf-u50-r1.3.0.tar.gz
 	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
@@ -253,7 +276,8 @@ sudo cp dpu.xclbin /usr/lib
 	```
 	  tar -xzvf resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
 	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
-	```	  
+	```
+	  
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
 4. To compile the demo in the AI Library, take `yolov3` as an example.

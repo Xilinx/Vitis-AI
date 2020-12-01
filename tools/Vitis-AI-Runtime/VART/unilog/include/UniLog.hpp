@@ -42,8 +42,7 @@ using namespace std;
              << "[" << GEN_ERROR(ERRID).getErrID() << "]"                      \
              << "[" << GEN_ERROR(ERRID).getErrDsp() << "] "
 #define UNI_LOG_FATAL(ERRID)                                                   \
-  LOG(FATAL) << "[" << UniLog::UniLogPrefix << "][FATAL][" << __FILE__ << ":"  \
-             << __LINE__ << "]"                                                \
+  LOG(FATAL) << "[" << UniLog::UniLogPrefix << "][FATAL]"                      \
              << "[" << GEN_ERROR(ERRID).getErrID() << "]"                      \
              << "[" << GEN_ERROR(ERRID).getErrDsp() << "] "
 #else

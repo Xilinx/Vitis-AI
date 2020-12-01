@@ -25,8 +25,8 @@ using namespace std;
 using namespace std;
 
 int main(int argc, char *argv[]) {
-  if (argc < 2) {
-    std::cerr << "usage :" << argv[0] << "<image_url>" << std::endl;
+  if (argc < 3) {
+    std::cerr << "usage :" << argv[0] << " <model_name> <image_url>" << std::endl;
     abort();
   }
 

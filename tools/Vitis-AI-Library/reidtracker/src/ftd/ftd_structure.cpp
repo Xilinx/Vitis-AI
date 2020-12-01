@@ -47,17 +47,15 @@ void FTD_Structure::clear() {
   id_record.push_back(1);
 }
 
-double cosine_distance(Mat feat1, Mat feat2){
-    return 1 - feat1.dot(feat2);
-}
+double cosine_distance(Mat feat1, Mat feat2) { return 1 - feat1.dot(feat2); }
 
-double get_euro_dis(Mat feat1, Mat feat2){
+double get_euro_dis(Mat feat1, Mat feat2) {
   CHECK(feat1.cols == feat2.cols)
-      << "error happen in get_euro_dis"<<feat1.cols <<" vs. "<<feat2.cols ;
+      << "error happen in get_euro_dis" << feat1.cols << " vs. " << feat2.cols;
   double sumvalue = 0;
-  for (int i = 0; i < feat1.cols; i++){
-    sumvalue += (feat1.at<float>(0, i) - feat2.at<float>(0, i))    \
-        * (feat1.at<float>(0, i) - feat2.at<float>(0, i));
+  for (int i = 0; i < feat1.cols; i++) {
+    sumvalue += (feat1.at<float>(0, i) - feat2.at<float>(0, i)) *
+                (feat1.at<float>(0, i) - feat2.at<float>(0, i));
   }
   return sqrt(sumvalue);
 }
@@ -79,13 +77,15 @@ float GetIou(const cv::Rect_<float> &rect1, const cv::Rect_<float> &rect2) {
   float univer = rect1.area() + rect2.area() - inner;
   return (inner / univer);
 }
-float GetCenterDis(const cv::Rect_<float> &rect1, const cv::Rect_<float> &rect2) {
+float GetCenterDis(const cv::Rect_<float> &rect1,
+                   const cv::Rect_<float> &rect2) {
   float cx = rect1.x + rect1.width * 0.5;
   float cy = rect1.y + rect1.height * 0.5;
-  if(cx >= rect2.x && cx <= rect2.x + rect2.width && cy >= rect2.y && cy <= rect2.y + rect2.height) {
-    return 1; 
-  }
-  else return 0;
+  if (cx >= rect2.x && cx <= rect2.x + rect2.width && cy >= rect2.y &&
+      cy <= rect2.y + rect2.height) {
+    return 1;
+  } else
+    return 0;
 }
 float GetCoverRatio(const cv::Rect_<float> &rect1,
                     const cv::Rect_<float> &rect2) {
@@ -96,58 +96,59 @@ float GetCoverRatio(const cv::Rect_<float> &rect1,
 void FTD_Structure::GetOut(std::vector<OutputCharact> &output_characts) {
   CHECK(output_characts.size() == 0) << "error output_characts size";
   for (auto ti = tracks.end() - 1; ti >= tracks.begin();) {
-    if((((*ti)->time_since_update) < 1) && (((*ti)->hit_streak >= min_hits) || frame_count <= min_hits )) {
+    if ((((*ti)->time_since_update) < 1) &&
+        (((*ti)->hit_streak >= min_hits) || frame_count <= min_hits)) {
       auto oout = (*ti)->GetOut();
       std::get<1>(oout) = (std::get<1>(oout) & roi_range);
       output_characts.push_back(oout);
     }
-    if((*ti)->time_since_update > max_age){
+    if ((*ti)->time_since_update > max_age) {
       ti = tracks.erase(ti);
     }
     ti--;
   }
 }
 
-struct ThreadArgs{
+struct ThreadArgs {
   std::unique_ptr<mutex> mtxQueueInput;
   std::unique_ptr<mutex> mtxQueueFeats;
   std::unique_ptr<queue<imagePair>> queueInput;
-  std::unique_ptr<priority_queue<imagePair, vector<imagePair>, paircomp>> queueFeats;
+  std::unique_ptr<priority_queue<imagePair, vector<imagePair>, paircomp>>
+      queueFeats;
 };
-struct ReidArgs{
+struct ReidArgs {
   std::shared_ptr<Reid> reid;
   shared_ptr<ThreadArgs> targs;
 };
 
-void doreid(std::shared_ptr<ReidArgs> rg){
+void doreid(std::shared_ptr<ReidArgs> rg) {
   __TIC__(create);
   std::shared_ptr<Reid> reid = rg->reid;
   std::shared_ptr<ThreadArgs> args = rg->targs;
   __TOC__(create);
-  while(1){
+  while (1) {
     pair<int, Mat> pairIndexImage;
     args->mtxQueueInput->lock();
     if (args->queueInput->size() != 0) {
       pairIndexImage = args->queueInput->front();
       args->queueInput->pop();
       args->mtxQueueInput->unlock();
-    }
-    else {
+    } else {
       args->mtxQueueInput->unlock();
       break;
     }
     Mat img = pairIndexImage.second;
     Mat feat = reid->run(img).feat;
-    pairIndexImage.second = feat; 
+    pairIndexImage.second = feat;
     args->mtxQueueFeats->lock();
     args->queueFeats->push(pairIndexImage);
     args->mtxQueueFeats->unlock();
-  } 
+  }
 }
 
-std::vector<OutputCharact>
-FTD_Structure::Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag, int mode,
-                      std::vector<InputCharact> &input_characts) {
+std::vector<OutputCharact> FTD_Structure::Update(
+    const cv::Mat &image, uint64_t frame_id, bool detect_flag, int mode,
+    std::vector<InputCharact> &input_characts) {
   remove_id_this_frame.clear();
   frame_count += 1;
 #ifdef _FTD_DEBUG_
@@ -181,8 +182,7 @@ FTD_Structure::Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag,
     }
   }
   if (detect_flag == false) {
-    for (auto ti : tracks)
-      ti->UpdateWithoutDetect();
+    for (auto ti : tracks) ti->UpdateWithoutDetect();
     GetOut(output_characts);
     return output_characts;
   }
@@ -190,7 +190,7 @@ FTD_Structure::Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag,
 #ifdef _FTD_DEBUG_
   LOG(INFO) << "there are " << input_characts.size()
             << " new detections(bbox):";
-  LOG(INFO)<<"size: "<<tracks.size();
+  LOG(INFO) << "size: " << tracks.size();
 #endif
   for (auto ici = input_characts.begin(); ici != input_characts.end();) {
     auto rect = std::get<0>(*ici);
@@ -209,26 +209,29 @@ FTD_Structure::Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag,
   }
   __TIC__(get_feats);
   auto roi_img = cv::Rect_<int>(0, 0, image.cols, image.rows);
-  std::unique_ptr<queue<imagePair>> queueInput = make_unique<queue<imagePair>>();
+  std::unique_ptr<queue<imagePair>> queueInput =
+      make_unique<queue<imagePair>>();
   for (auto &ic : input_characts) {
     auto rect_i = std::get<0>(ic);
     rect_i.x *= image.cols;
     rect_i.y *= image.rows;
     rect_i.width *= image.cols;
     rect_i.height *= image.rows;
-    Rect rect_in = Rect(Point(round(rect_i.x), round(rect_i.y)), 
-        Point(round(rect_i.x + rect_i.width),round(rect_i.y + rect_i.height)));
+    Rect rect_in = Rect(
+        Point(round(rect_i.x), round(rect_i.y)),
+        Point(round(rect_i.x + rect_i.width), round(rect_i.y + rect_i.height)));
     rect_in = rect_in & roi_img;
     Mat img = image(rect_in);
 #ifdef _FTD_DEBUG_
-    LOG(INFO)<<rect_in;
+    LOG(INFO) << rect_in;
 #endif
     queueInput->push(make_pair(get<3>(ic), img));
   }
   std::unique_ptr<mutex> mtxQueueInput = make_unique<mutex>();
   std::unique_ptr<mutex> mtxQueueFeats = make_unique<mutex>();
-  std::unique_ptr<priority_queue<imagePair, vector<imagePair>, paircomp>>  
-    queueFeats = make_unique<priority_queue<imagePair, vector<imagePair>, paircomp>>();
+  std::unique_ptr<priority_queue<imagePair, vector<imagePair>, paircomp>>
+      queueFeats =
+          make_unique<priority_queue<imagePair, vector<imagePair>, paircomp>>();
   std::shared_ptr<ThreadArgs> args = make_shared<ThreadArgs>();
   args->mtxQueueInput = move(mtxQueueInput);
   args->mtxQueueFeats = move(mtxQueueFeats);
@@ -244,34 +247,33 @@ FTD_Structure::Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag,
   rg2->targs = args;
   rg2->reid = reid2;
   __TIC__(thread);
-  array<thread, 3> threads{
-                           thread(doreid, rg0),
-                           thread(doreid, rg1),
-                           thread(doreid, rg2)
-			  };
-  for(int i = 0; i < 3; ++i){
+  array<thread, 3> threads{thread(doreid, rg0), thread(doreid, rg1),
+                           thread(doreid, rg2)};
+  for (int i = 0; i < 3; ++i) {
     threads[i].join();
   }
   __TOC__(thread);
-  vector<Mat> feats; 
-  while(!args->queueFeats->empty()){
+  vector<Mat> feats;
+  while (!args->queueFeats->empty()) {
     feats.emplace_back(args->queueFeats->top().second);
     args->queueFeats->pop();
   }
   __TOC__(get_feats);
   __TIC__(get_dis);
-  //double dismat[features.size()][feats.size()];
-  vector<vector<double>> feat_dists(tracks.size(), vector<double>(feats.size(), 0));;
+  // double dismat[features.size()][feats.size()];
+  vector<vector<double>> feat_dists(tracks.size(),
+                                    vector<double>(feats.size(), 0));
+  ;
   for (size_t i = 0; i < tracks.size(); ++i) {
-    for(size_t j = 0; j < feats.size(); ++j){
+    for (size_t j = 0; j < feats.size(); ++j) {
       double min_dis = 2.0;
-      for(size_t h = 0; h < tracks[i]->GetFeatures().size(); ++h){
-	double cdis = get_euro_dis(tracks[i]->GetFeatures()[h], feats[j]);
-	//double cdis = cosine_distance(tracks[i]->GetFeatures()[h], feats[j]);
-        min_dis = cdis < min_dis ? cdis : min_dis; 
+      for (size_t h = 0; h < tracks[i]->GetFeatures().size(); ++h) {
+        double cdis = get_euro_dis(tracks[i]->GetFeatures()[h], feats[j]);
+        // double cdis = cosine_distance(tracks[i]->GetFeatures()[h], feats[j]);
+        min_dis = cdis < min_dis ? cdis : min_dis;
       }
       feat_dists[i][j] = min_dis;
-    } 
+    }
   }
   __TOC__(get_dis);
 
@@ -287,8 +289,10 @@ FTD_Structure::Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag,
       auto label_t = std::get<2>(t->GetCharact());
       auto rect_i = std::get<0>(ic);
       auto label_i = std::get<2>(ic);
-      neg_iou_score.push_back(label_t == label_i ? (1.0f - GetIou(rect_t, rect_i)) : 1.0f);
-      center_dis.push_back(label_t == label_i ? GetCenterDis(rect_i, rect_t) : 0.0f);
+      neg_iou_score.push_back(
+          label_t == label_i ? (1.0f - GetIou(rect_t, rect_i)) : 1.0f);
+      center_dis.push_back(label_t == label_i ? GetCenterDis(rect_i, rect_t)
+                                              : 0.0f);
     }
     neg_iou_scores.emplace_back(neg_iou_score);
     center_dists.emplace_back(center_dis);
@@ -303,27 +307,30 @@ FTD_Structure::Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag,
   vector<int> assignment;
   HungAlgo.Solve(neg_iou_scores, assignment);
 #ifdef _FTD_DEBUG_
-  LOG(INFO)<<"assign size: "<<assignment.size();
-  LOG(INFO)<<"iou: ";
+  LOG(INFO) << "assign size: " << assignment.size();
+  LOG(INFO) << "iou: ";
   for (unsigned int x = 0; x < assignment.size(); x++)
-    std::LOG(INFO) << x << " " << assignment[x]; 
+    std::LOG(INFO) << x << " " << assignment[x];
 #endif
-   //greedy find match track and detect number
+  // greedy find match track and detect number
   std::vector<int> match_track;
   std::vector<int> match_detect;
-  for(size_t iii = 0; iii < assignment.size(); iii++){
-    if( assignment[iii] == -1) continue;
-    if( ( (1.0f-neg_iou_scores[iii][assignment[iii]]) >= iou_threshold) && (feat_dists[iii][assignment[iii]] < feat_distance_low-0.1) && assignment[iii] != -1 ){
+  for (size_t iii = 0; iii < assignment.size(); iii++) {
+    if (assignment[iii] == -1) continue;
+    if (((1.0f - neg_iou_scores[iii][assignment[iii]]) >= iou_threshold) &&
+        (feat_dists[iii][assignment[iii]] < feat_distance_low - 0.1) &&
+        assignment[iii] != -1) {
       match_track.push_back(iii);
       match_detect.push_back(assignment[iii]);
-      for (int i = 0; i < divide1; i++){
+      for (int i = 0; i < divide1; i++) {
         feat_dists[i][match_detect.back()] = feat_distance_high + 1.0f;
       }
-      for (int i = 0; i < divide2; i++){
+      for (int i = 0; i < divide2; i++) {
         feat_dists[match_track.back()][i] = feat_distance_high + 1.0f;
       }
     }
-    if( (1.0f-neg_iou_scores[iii][assignment[iii]] >= iou_threshold) && (feat_dists[iii][assignment[iii]] > feat_distance_high) ){
+    if ((1.0f - neg_iou_scores[iii][assignment[iii]] >= iou_threshold) &&
+        (feat_dists[iii][assignment[iii]] > feat_distance_high)) {
       feat_dists[iii][assignment[iii]] = feat_distance_high + 1.0f;
     }
   }
@@ -336,47 +343,46 @@ FTD_Structure::Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag,
   vector<int> unmatch_detect;
   FindRemain(match_detect, unmatch_detect, divide2);
 #ifdef _FTD_DEBUG_
-  LOG(INFO)<<"unmatchdet1 size: "<<unmatch_detect.size();
+  LOG(INFO) << "unmatchdet1 size: " << unmatch_detect.size();
 #endif
 
   vector<int> feats_assign;
   HungAlgo.Solve(feat_dists, feats_assign);
 #ifdef _FTD_DEBUG_
-  LOG(INFO)<<"feats: ";
+  LOG(INFO) << "feats: ";
   for (unsigned int x = 0; x < feats_assign.size(); x++)
-    std::LOG(INFO) << x << " " << feats_assign[x]; 
+    std::LOG(INFO) << x << " " << feats_assign[x];
 #endif
   for (size_t iii = 0; iii < feats_assign.size(); iii++) {
-    if( feats_assign[iii] == -1) continue;
-    if(feat_dists[iii][feats_assign[iii]] < feat_distance_low ){
+    if (feats_assign[iii] == -1) continue;
+    if (feat_dists[iii][feats_assign[iii]] < feat_distance_low) {
       match_track.push_back(iii);
       match_detect.push_back(feats_assign[iii]);
-      for (int i = 0; i < divide1; i++){
+      for (int i = 0; i < divide1; i++) {
         feat_dists[i][match_detect.back()] = feat_distance_high + 1.0f;
       }
-      for (int i = 0; i < divide2; i++){
+      for (int i = 0; i < divide2; i++) {
         feat_dists[match_track.back()][i] = feat_distance_high + 1.0f;
       }
     }
   }
 
-  if( !unmatch_track.empty() && !unmatch_detect.empty() ){
-    for(size_t i = 0; i < feat_dists.size(); ++i){
-      for(size_t j = 0; j < feat_dists[i].size(); ++j){
-        if(!center_dists[i][j])
-          feat_dists[i][j] = feat_distance_high + 1.0f;
+  if (!unmatch_track.empty() && !unmatch_detect.empty()) {
+    for (size_t i = 0; i < feat_dists.size(); ++i) {
+      for (size_t j = 0; j < feat_dists[i].size(); ++j) {
+        if (!center_dists[i][j]) feat_dists[i][j] = feat_distance_high + 1.0f;
       }
     }
     feats_assign.clear();
     HungAlgo.Solve(feat_dists, feats_assign);
 #ifdef _FTD_DEBUG_
-    LOG(INFO)<<"feats2: ";
+    LOG(INFO) << "feats2: ";
     for (unsigned int x = 0; x < feats_assign.size(); x++)
-      std::LOG(INFO) << x << " " << feats_assign[x]; 
+      std::LOG(INFO) << x << " " << feats_assign[x];
 #endif
     for (size_t iii = 0; iii < feats_assign.size(); iii++) {
-      if( feats_assign[iii] == -1) continue;
-      if(feat_dists[iii][feats_assign[iii]] < feat_distance_high ){
+      if (feats_assign[iii] == -1) continue;
+      if (feat_dists[iii][feats_assign[iii]] < feat_distance_high) {
         match_track.push_back(iii);
         match_detect.push_back(feats_assign[iii]);
       }
@@ -387,11 +393,10 @@ FTD_Structure::Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag,
     unmatch_detect.clear();
     FindRemain(match_detect, unmatch_detect, divide2);
 #ifdef _FTD_DEBUG_
-    LOG(INFO)<<"untrack size: "<<unmatch_track.size();
-    LOG(INFO)<<"unmatchdet2 size: "<<unmatch_detect.size();
+    LOG(INFO) << "untrack size: " << unmatch_track.size();
+    LOG(INFO) << "unmatchdet2 size: " << unmatch_detect.size();
 #endif
-  }  
-
+  }
 
   /*new detection with new id*/
   for (unsigned int i = 0; i < unmatch_detect.size(); i++) {
@@ -413,5 +418,5 @@ FTD_Structure::Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag,
 
 std::vector<int> FTD_Structure::GetRemoveID() { return remove_id_this_frame; }
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

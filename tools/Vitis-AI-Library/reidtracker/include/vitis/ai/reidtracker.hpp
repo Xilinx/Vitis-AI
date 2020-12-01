@@ -1,57 +1,19 @@
 /*
--- (c) Copyright 2018 Xilinx, Inc. All rights reserved.
---
--- This file contains confidential and proprietary information
--- of Xilinx, Inc. and is protected under U.S. and
--- international copyright and other intellectual property
--- laws.
---
--- DISCLAIMER
--- This disclaimer is not a license and does not grant any
--- rights to the materials distributed herewith. Except as
--- otherwise provided in a valid license issued to you by
--- Xilinx, and to the maximum extent permitted by applicable
--- law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
--- WITH ALL FAULTS, AND XILINX HEREBY DISCLAIMS ALL WARRANTIES
--- AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
--- BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
--- INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
--- (2) Xilinx shall not be liable (whether in contract or tort,
--- including negligence, or under any other theory of
--- liability) for any loss or damage of any kind or nature
--- related to, arising under or in connection with these
--- materials, including for any direct, or any indirect,
--- special, incidental, or consequential loss or damage
--- (including loss of data, profits, goodwill, or any type of
--- loss or damage suffered as a result of any action brought
--- by a third party) even if such damage or loss was
--- reasonably foreseeable or Xilinx had been advised of the
--- possibility of the same.
---
--- CRITICAL APPLICATIONS
--- Xilinx products are not designed or intended to be fail-
--- safe, or for use in any application requiring fail-safe
--- performance, such as life-support or safety devices or
--- systems, Class III medical devices, nuclear facilities,
--- applications related to the deployment of airbags, or any
--- other applications that could lead to death, personal
--- injury, or severe property or environmental damage
--- (individually and collectively, "Critical
--- Applications"). Customer assumes the sole risk and
--- liability of any use of Xilinx products in Critical
--- Applications, subject only to applicable laws and
--- regulations governing limitations on product liability.
---
--- THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
--- PART OF THIS FILE AT ALL TIMES.
-*/
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /*
- * Copyright (c) 2016-2018 DeePhi Tech, Inc.
- *
- * All Rights Reserved. No part of this source code may be reproduced
- * or transmitted in any form or by any means without the prior written
- * permission of DeePhi Tech, Inc.
- *
  * Filename: reidtracker.hpp
  *
  * Description:
@@ -76,13 +38,12 @@ namespace ai {
  */
 
 class ReidTracker {
-public:
+ public:
   /// InputCharact: bbox, score, label, local_id
   typedef std::tuple<cv::Rect_<float>, float, int, int> InputCharact;
   /// OutputCharact: gid, bbox, score, label, local_id
   typedef std::tuple<uint64_t, cv::Rect_<float>, float, int, int> OutputCharact;
   typedef std::tuple<std::array<int, 4>, std::array<int, 3>> SpecifiedCfg;
-
 
   /**
    *@enum TRACKER mode
@@ -142,9 +103,10 @@ public:
    * id(local_id) if local_id is <0, it means this id is not detected and
    * patched by ReidTracker.
    */
-  virtual std::vector<OutputCharact>
-  track(const cv::Mat & image, const uint64_t frame_id, std::vector<InputCharact> &input_characts,
-        const bool is_detection, const bool is_normalized) = 0;
+  virtual std::vector<OutputCharact> track(
+      const cv::Mat &image, const uint64_t frame_id,
+      std::vector<InputCharact> &input_characts, const bool is_detection,
+      const bool is_normalized) = 0;
 
   /**
    * @brief Function : only use in MODE_MULTIDETS mode.
@@ -250,5 +212,5 @@ public:
   virtual void printUndetTracks() = 0;
 };
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

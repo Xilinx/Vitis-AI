@@ -17,8 +17,8 @@
 #ifndef _FTD_TRAJECTORY_HPP_
 #define _FTD_TRAJECTORY_HPP_
 
-#include "ftd_filter_linear.hpp"
 #include <tuple>
+#include "ftd_filter_linear.hpp"
 
 using namespace cv;
 
@@ -31,7 +31,7 @@ typedef std::tuple<cv::Rect_<float>, float, int, int> InputCharact;
 typedef std::tuple<uint64_t, cv::Rect_<float>, float, int, int> OutputCharact;
 
 class FTD_Trajectory {
-public:
+ public:
   FTD_Trajectory(SpecifiedCfg &specified_cfg);
   ~FTD_Trajectory(){};
   void Predict();
@@ -42,7 +42,7 @@ public:
   void UpdateTrack();
   void UpdateDetect(const InputCharact &input_charact);
   void UpdateWithoutDetect();
-  void UpdateFeature(const cv::Mat& feat);
+  void UpdateFeature(const cv::Mat &feat);
   int GetStatus();
   bool GetShown();
   OutputCharact GetOut();
@@ -55,7 +55,7 @@ public:
   int age = 0;
   int time_since_update = 0;
 
-private:
+ private:
   int id;
   InputCharact charact;
   // FTD_Filter filter;
@@ -69,6 +69,6 @@ private:
   bool have_been_shown;
 };
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis
 #endif

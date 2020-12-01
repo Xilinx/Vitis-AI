@@ -17,33 +17,51 @@ usage() {
   echo -e ""
   echo "Usage:"
   echo "------------------------------------------------"
-  echo "    ./aks.sh --nfpga <number-of-fpgas> --impl <py/cpp>"
-  echo "             --model <model-variant>"
-  echo "             --dir1 <image-dir> --dir2 <image-dir>"
-  echo "             --video <video-file>"
+  echo "  ./aks.sh --nfpga | -n  <number-of-fpgas>"
+  echo "           --impl  | -i  <py/cpp>"
+  echo "           --model | -m  <model-variant>"
+  echo "           --dir1  | -d1 <image-dir>"
+  echo "           --dir2  | -d2 <image-dir>"
+  echo "           --video | -vf <video-file>"
   echo -e ""
-  echo "Examples:"
+  echo "Examples (DPUCADX8G):"
   echo "------------------------------------------------"
   echo "Run GoogleNet with AKS C++: "
-  echo "    ./aks.sh --impl cpp --model googlenet --dir1 <image-dir>"
+  echo "    ./aks.sh -i cpp -m googlenet -d1 <image-dir>"
   echo -e ""
   echo "Run TinyYolov3 on video with AKS C++: "
-  echo "    ./aks.sh --impl cpp --model tinyyolov3_video --video <video-file>"
+  echo "    ./aks.sh -i cpp -m tinyyolov3_video -vf <video-file>"
   echo -e ""
   echo "Run ResNet50 with AKS Python: "
-  echo "    ./aks.sh --impl py --model resnet50 --dir1 <image-dir>"
+  echo "    ./aks.sh -i py -m resnet50 -d1 <image-dir>"
   echo -e ""
   echo "Run Multinet example:"
-  echo "    ./aks.sh --impl cpp --model googlenet_tinyyolov3 --dir1 <image-dir-for-googlenet> --dir2 <image-dir-for-tinyyolov3>"
-  echo "    ./aks.sh --impl cpp --model googlenet_resenet50 --dir1 <image-dir-for-googlenet> --dir2 <image-dir-for-resnet50>"
+  echo "    ./aks.sh -i cpp --model googlenet_tinyyolov3 \\"
+  echo "             -d1 <image-dir-for-googlenet> \\"
+  echo "             -d2 <image-dir-for-tinyyolov3>"
+  echo "    ./aks.sh -i cpp --model googlenet_resenet50 \\"
+  echo "             -d1 <image-dir-for-googlenet> \\"
+  echo "             -d2 <image-dir-for-resnet50>"
   echo -e ""
   echo "Run AKS C++ (Multiple FPGAs): "
-  echo "    ./aks.sh --nfpga <N FPGAs on system> --impl cpp --model googlenet --dir1 <image-dir>"
+  echo "    ./aks.sh -n <#FPGAs> -i cpp -m googlenet -d1 <image-dir>"
   echo -e ""
   echo "Run GoogleNet with FPGA accelerated Pre-Processing: "
-  echo "    ./aks.sh --impl cpp --model googlenet_pp_accel --dir1 <image-dir>"
-
+  echo "    ./aks.sh -i cpp -m googlenet_pp_accel -d1 <image-dir>"
   echo -e ""
+
+  echo "Examples (DPUCAHX8H):"
+  echo "------------------------------------------------"
+  echo "Run ResNet50 on Alveo-U50: "
+  echo "    ./aks.sh -m resnet50_u50 --dir1 <image-dir>"
+  echo -e ""
+
+  echo "Examples (DPUCZDX8G):"
+  echo "------------------------------------------------"
+  echo "Run ResNet50 on Edge Platforms: "
+  echo "    ./aks.sh -m resnet50_edge --dir1 <image-dir>"
+  echo -e ""
+
   echo "Arguments:"
   echo "------------------------------------------------"
   echo "  -n  nFPGA   | --nfpga   nFPGA   Number of FPGAs (Connected on System)"
@@ -71,7 +89,7 @@ usage() {
   echo -e ""
 }
 
-# Default
+# Defaults
 NUM_FPGA=""
 MODEL="googlenet"
 DIRECTORY1=
@@ -120,40 +138,45 @@ if [[ ${SUPPORTED_MODELS["$MODEL"]} ]]; then
   # Start Execution
   echo -e ""
   echo -e "[INFO] Running"
-  echo -e "[INFO] Model: $MODEL with $IMPL"
+  echo -e "[INFO] Model: ${MODEL} with $IMPL"
   echo -e ""
 else
   echo -e ""
-  echo -e "[ERROR] $MODEL is an invalid model !"
+  echo -e "[ERROR] ${MODEL} is an invalid model !"
   echo -e "[ERROR] Check Usage with: ./aks.sh -h "
   echo -e ""
   exit 1
 fi
 
-export AKS_ROOT=${PWD}
+# AKS Root Dir
+export AKS_ROOT=$(pwd)
 # Add verbose level
-export AKS_VERBOSE=$VERBOSE
+export AKS_VERBOSE=${VERBOSE}
 
-# Add AKS utils to PYTHONPATH
-export PYTHONPATH=$PYTHONPATH:${VAI_ALVEO_ROOT}:/usr/lib
+# Update lib paths
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${AKS_ROOT}/libs
+PYTHONPATH=${PYTHONPATH}:${AKS_ROOT}/libs:${AKS_ROOT}/libs/pykernels:/usr/lib
 
-# Add Library Paths
+# Add Library Paths (DPUCADX8G)
 if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib" ]
 then
-    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib
+  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib
 fi
 if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/utils" ]
 then
-    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/utils
+  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/utils
+fi
+PYTHONPATH=${PYTHONPATH}:${VAI_ALVEO_ROOT}:${VAI_ALVEO_ROOT}/apps/face_detect
+
+if [ ! -z "${CONDA_PREFIX}" ]; then
+  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib/python3.6/site-packages/vai/dpuv1/utils
+  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 fi
 
-LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${AKS_ROOT}/libs
-LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib/python3.6/site-packages/vai/dpuv1/utils
-LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
-
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
-export PYTHONPATH=${VAI_ALVEO_ROOT}/apps/face_detect:${AKS_ROOT}/libs:${AKS_ROOT}/libs/pykernels:${PYTHONPATH}
+export PYTHONPATH=${PYTHONPATH}
 
+# Check for number of FPGA Devices
 CARDS_CONNECTED=`/opt/xilinx/xrt/bin/xbutil scan | grep "xilinx_u" | wc -l`
 if [ ! -z "${NUM_FPGA}" ]
 then
@@ -166,7 +189,7 @@ then
     exit 1
   else
     # Number of FPGAs to be used
-    export NUM_FPGA=$NUM_FPGA
+    export NUM_FPGA=${NUM_FPGA}
   fi
 else
   unset NUM_FPGA
@@ -178,17 +201,17 @@ AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=aksM
 # Check if the model files exists
 for name in "meta_googlenet" "meta_inception_v1_tf" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
 do
-    NAME="graph_zoo/$name"
-    if [[ ! -d "${NAME}" ]]; then
-      echo -e "$NAME doesn't exist"
-      wget $AKS_GRAPH_META_URL -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
-      if [[ $? != 0 ]]; then echo "Network download failed. Exiting ..."; exit 1; fi;
-      break;
-    fi;
+  NAME="graph_zoo/$name"
+  if [[ ! -d "${NAME}" ]]; then
+    echo -e "${NAME} doesn't exist"
+    wget ${AKS_GRAPH_META_URL} -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
+    if [[ $? != 0 ]]; then echo "Network download failed. Exiting ..."; exit 1; fi;
+    break;
+  fi;
 done
 
-
-if [ "$MODEL" == "tinyyolov3_video" ]; then
+# Check input image/video args
+if [ "${MODEL}" == "tinyyolov3_video" ]; then
   if [[ "${VIDEO}" == "" ]]; then
     echo -e "[ERROR] No input video: \"-vf\" required\n";
     exit 1;
@@ -203,39 +226,40 @@ else
     exit 1;
   fi
 fi
+
 # Model Selection
-if [ "$MODEL" == "googlenet" ]; then
+if [ "${MODEL}" == "googlenet" ]; then
   CPP_EXE=examples/bin/googlenet.exe
   PY_EXE=examples/googlenet.py
   exec_args="$DIRECTORY1"
 
-elif [ "$MODEL" == "resnet50_u50" ]; then
+elif [ "${MODEL}" == "resnet50_u50" ]; then
   CPP_EXE=examples/bin/resnet50_u50.exe
   PY_EXE=examples/resnet50_u50.py
   PYTHON=/usr/bin/python3
   exec_args="$DIRECTORY1"
 
-elif [ "$MODEL" == "inception_v1_tf" ]; then
+elif [ "${MODEL}" == "inception_v1_tf" ]; then
   CPP_EXE=examples/bin/inception_v1_tf.exe
   PY_EXE=examples/inception_v1_tf.py
   exec_args="$DIRECTORY1"
 
-elif [ "$MODEL" == "googlenet_pp_accel" ]; then
+elif [ "${MODEL}" == "googlenet_pp_accel" ]; then
   CPP_EXE=examples/bin/googlenet_pp_accel.exe
   PY_EXE=examples/googlenet_pp_accel.py
   exec_args="$DIRECTORY1"
 
-elif [ "$MODEL" == "resnet50" ]; then
+elif [ "${MODEL}" == "resnet50" ]; then
   CPP_EXE=examples/bin/resnet50.exe
   PY_EXE=examples/resnet50.py
   exec_args="$DIRECTORY1"
 
-elif [ "$MODEL" == "tinyyolov3" ]; then
+elif [ "${MODEL}" == "tinyyolov3" ]; then
   CPP_EXE=examples/bin/tinyyolov3.exe
   PY_EXE=examples/tinyyolov3.py
   exec_args="$DIRECTORY1"
 
-elif [ "$MODEL" == "tinyyolov3_video" ]; then
+elif [ "${MODEL}" == "tinyyolov3_video" ]; then
   if [[ "$IMPL" == "py" ]]; then
     echo ""
     echo "[INFO] Model: tinyyolov3_video only has C++ implementation."
@@ -245,12 +269,12 @@ elif [ "$MODEL" == "tinyyolov3_video" ]; then
   CPP_EXE=examples/bin/tinyyolov3_video.exe
   exec_args="$VIDEO"
 
-elif [ "$MODEL" == "stdyolov2" ]; then
+elif [ "${MODEL}" == "stdyolov2" ]; then
   CPP_EXE=examples/bin/stdyolov2.exe
   PY_EXE=examples/stdyolov2.py
   exec_args="$DIRECTORY1"
 
-elif [ "$MODEL" == "googlenet_resnet50" ]; then
+elif [ "${MODEL}" == "googlenet_resnet50" ]; then
   CPP_EXE=examples/bin/googlenet_resnet50.exe
   PY_EXE=examples/googlenet_resnet50.py
   exec_args="$DIRECTORY1 $DIRECTORY2"
@@ -263,7 +287,7 @@ elif [ "$MODEL" == "googlenet_resnet50" ]; then
     exit 1;
   fi;
 
-elif [ "$MODEL" == "googlenet_tinyyolov3" ]; then
+elif [ "${MODEL}" == "googlenet_tinyyolov3" ]; then
   CPP_EXE=examples/bin/googlenet_tinyyolov3.exe
   PY_EXE=examples/googlenet_tinyyolov3.py
   exec_args="$DIRECTORY1 $DIRECTORY2"
@@ -276,7 +300,7 @@ elif [ "$MODEL" == "googlenet_tinyyolov3" ]; then
     exit 1;
   fi;
 
-elif [ "$MODEL" == "facedetect" ]; then
+elif [ "${MODEL}" == "facedetect" ]; then
   echo "[INFO] Visit $VAI_ALVEO_ROOT/apps/face_detect to prepare FDDB dataset."
   echo -n "[INFO] To save results to a text file for accuracy measurement, "
   echo "provide a text file path to 'save_result_txt' argument in the graph_zoo/graph_facedetect.json"
@@ -286,7 +310,7 @@ elif [ "$MODEL" == "facedetect" ]; then
   PY_EXE=examples/facedetect.py
   exec_args="$DIRECTORY1"
 
-elif [ "$MODEL" == "resnet50_edge" ]; then
+elif [ "${MODEL}" == "resnet50_edge" ]; then
   CPP_EXE=examples/bin/resnet50_edge.exe
   PY_EXE=examples/resnet50_edge.py
   exec_args="$DIRECTORY1"
@@ -296,7 +320,7 @@ elif [ "$MODEL" == "resnet50_edge" ]; then
 fi
 
 if [[ "$IMPL" == "cpp" ]]; then
-  ${CPP_EXE} $exec_args
+  ${CPP_EXE} ${exec_args}
 elif [[ "$IMPL" == "py" ]]; then
-  ${PYTHON} ${PY_EXE} $exec_args
+  ${PYTHON} ${PY_EXE} ${exec_args}
 fi
