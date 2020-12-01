@@ -18,6 +18,7 @@
 
 import os
 import copy
+import math
 
 sub_matrix_w=32
 sub_matrix_h=32
@@ -198,7 +199,8 @@ def del_bank(ins, bank_id):
 
 #add_module(dpon, dpby, add_count, add_id, type_id, add_size, a_id, a_addr, b_id, b_addr, c_id, c_addr, d_id, d_addr, result_id, result_addr,fix)
 def add_ins(ins_temp):
-    add_loop = ins_temp['m']*ins_temp['n']//64  #mmul out 32*2
+    #add_loop = ins_temp['m']*ins_temp['n']//64  #mmul out 32*2
+    add_loop = math.ceil(ins_temp['m']*ins_temp['n']/64)
     dpon_by = ['none']*add_loop*4
     dpon_by[0] = ins_temp['dpon']
     dpon_by[-1] = ins_temp['dpby']

@@ -1,79 +1,82 @@
 ## RNN Compiler
-RNN compiler compiles quantized RNN models and generate instructions for hardware. Currently RNN compiler only supports standard LSTM models. 
-RNN compiler contains two parts as follows:
+RNN compiler compiles quantized RNN models and generate instructions for hardware. Currently RNN compiler only supports standard LSTM models.
+RNN compiler contains two parts as follows:<br>
 1. RNN compiler: compile LSTM models to hardward instructions.<br>
 2. RNN simulator: simulate the process of LSTM models using computation graph and input data, get all the intermediate and final results of the model.<br>
 
-## Supported
+## Supported and Limitation
 
-Python version 3.6 ~ 3.7
+Supports version 3.6 ~ 3.7.
 
-XIR library
+Only supports Standard LSTM Models.
 
-## Install
+XIR library is needed.
 
-To install RNN compiler as follows:
+## Quick Start in Docker environment
 
+If you work in Vitis-AI 1.3 docker, there is a conda environment "vitis-ai-lstm", in which RNN compiler is already installed.
+In this conda environment, python version is 3.6. You can directly start lstm example without installation steps.
+- Copy examples/lstm_compiler_test.py to docker environment.
+- Do the Compilation process, using the generated xmodel files.
+  ```shell
+  python lstm_compiler_test.py --model_path quantize_result/xmodel --device u50
+  ```
+
+## Install from source code
+
+Installation with Anaconda is suggested. And if there is an old version of RNN compiler in the conda enviorment, suggest you remove all of its related files before install the new version. 
+
+To install RNN compiler, do as follows:
+
+#### Install the dependencies:
+    pip install -r requirements.txt 
+
+#### Install the main component:
+    python setup.py install 
+
+#### Verify the installation:
+If the following command line does not report error, the installation is done.
+
+    python -c "import lstm_compiler"
+
+## RNN compiler Tool Usage
+
+We provide simplest APIs to introduce our FPAG-friendly compilation feature. For a well-defined model, user only need to add 2-3 lines to do compilation process. An example is available in example/lstm_compiler_test.py.
+
+#### Creating compilation script
+1. Import the RNN compiler module <br>
+   ```py
+    from lstm_compiler.module import LstmModuleCompiler
+   ```
+2. Generate a compier object with Xmodel files path (this path should be the directory which contains Xmodel files, not the file path) and device to deploy(support U25 and U50 by now). <br>
+   ```py
+    compiler = LstmModuleCompiler(xmodels=args.model_path, device=args.device)
+   ```
+3. Do the compilation process. <br>
+   ```py
+    compiler.compile()
+   ```
+
+#### Run and output results
+1. Run command to compiler model. <br>
+   ```py
+    python lstm_compiler_test.py --model_path quantize_result/xmodel --device u50
+   ```
+2. After running the commands, two subdirectories are generated. Computation graphs are stored in the subdirectory “CompileData", and instructions to deploy are stored in subdirectory “Instructions”. <br>
+
+## RNN compiler main APIs
+
+We provide RNN compiler APIs in file [lstm_compiler/modules.py](lstm_compiler/modules.py).
+
+#### Class LstmModuleCompiler will create a RNN compiler object.
 ```py
-pip install -r requirements.txt
-python setup.py install
+class LstmModuleCompiler():
+   def __init__(self, xmodels, device='u50')
 ```
+    xmodels: directory which contains Xmodel, or list which contains Xmodels of the RNN model.
+    device: device to deploy the RNN model. Default is 'u50'.
 
-## Tool Usage
-
-RNN compiler provides LSTM compiler and LSTM simulator APIs, which are in file [lstm_compiler/modules.py](lstm_compiler/modules.py) and [lstm_simulator/module_simulator.py](lstm_simulator/module_simulator.py), respectively.
-
-1. Class LstmModuleCompiler for LSTM compiler
-
-```py
-def __init__(self, xmodels)
-```
-Create one LstmModuleCompiler object. <br>
-Xmodels: directory which contains xmodel files of the LSTM model, or list which contains xmodels of the LSTM model.
+#### Class LstmModuleCompiler will create a RNN compiler object.
 ```py
 def compile(self)
 ```
-Compile LSTM xmodels to hardward instructions.
-
-2. Class LstmModuleSimulator for LSTM simulator
-
-```py
-def __init__(self, data_path)
-```
-Create one LstmModuleSimulator object. <br>
-data_path: directory for simulator data, which includes lstm quantizer dump data, compiler dump data and xmodel files.
-```py
-def run(self, data_check = False)
-```
-Run simulation process of the LSTM model.<br>
-data_check: flag to control whether to check simulator dump data and quantizer dump data. Default is false.
-
-## Tools
-There are two tools in directory './examples', one for LSTM compiler, another for LSTM simulator.
-
-1. For LSTM compiler:
-
-```py
-cd examples
-python lstm_compiler_test.py --model_path [xmodel_path] --device [device_name]
-```
-xmodel_path: directory which contains xmodel files of the LSTM model layers.<br>
-device_name: the device the generated instructions to load. Support U25 and U50 card by now.
-Computation graphs are stored in the generated directory ./CompileData, and generated instructions are stored in the generated directory ./Instructions.
-
-2. For LSTM simulator:
-
-LSTM simulator must be run after LSTM compiler.<br>
-
-Firstly, copy the compiler computation graphs data to the directory which contains quantizer dump data and xmodel files, as follows:
-```py
-cd examples
-cp -ar CompilerData/* $quantizer_data_path
-```
-
-Secondly, run script as follows:
-```py
-python lstm_simulator_test.py --data_path [data_path] [--data_check]
-```
-data_path: directory which contains quantizer dump data, compiler dump data and xmodel.<br>
-data_check: flag to control whether to do data check after simulation. Default is false.
