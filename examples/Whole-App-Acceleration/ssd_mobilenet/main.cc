@@ -196,17 +196,8 @@ int main(int argc, char **argv) {
   std::string img_path = argv[3]; 
  
   // runner
-  std::unique_ptr<xir::Graph> graph0 = xir::Graph::deserialize(xmodel_filename);
-  auto subgraph0 = graph0->get_root_subgraph();
-  std::map<std::string, std::string> runset;
-  runset.emplace("run","librt-engine.so");
-  subgraph0->children_topological_sort()[1]->set_attr<std::string>("kernel", "DPUCAHX8L");
-  subgraph0->children_topological_sort()[1]->set_attr("runner", runset);
-  graph0->serialize("./dpu.xmodel");
-
-  std::unique_ptr<xir::Graph> graph = xir::Graph::deserialize("./dpu.xmodel");
+  std::unique_ptr<xir::Graph> graph = xir::Graph::deserialize(xmodel_filename);
   auto subgraph = get_dpu_subgraph(graph.get());
- 
   auto r = vart::Runner::create_runner(subgraph[0], "run");
   auto runner_ = std::move(r.get());
   

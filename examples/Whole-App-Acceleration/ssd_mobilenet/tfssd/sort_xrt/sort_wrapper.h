@@ -51,14 +51,9 @@ public:
 	unsigned prboHandle2;
 	uint64_t prbo2devAddr;
 	short *prbo2;
-	unsigned locboHandle2;
-	uint64_t locbo2devAddr;
-	short *locbo2;
-	unsigned confboHandle2;
-	uint64_t confbo2devAddr;
-	short   *confbo2;
 	unsigned execHandle;
 	void *execData;
+	int out_size;
 };
 
 extern PPHandle* pphandle;
@@ -82,39 +77,10 @@ static int runHWSort(PPHandle * &pphandle, int8_t* loc_in, short *&nms_out)
 	uint64_t prbo2devAddr = pphandle->prbo2devAddr;
 	short *prbo2 = pphandle->prbo2;
 
-
-	unsigned confboHandle2 = pphandle->confboHandle2;
-	uint64_t confbo2devAddr = pphandle->confbo2devAddr;
-	short *  confbo2 = pphandle->confbo2;
-
 	unsigned execHandle = pphandle->execHandle;
 	void *execData =  pphandle->execData;
-
-	const int loc_sz = 1917*4;
-	//# prfx ptr
-	unsigned loc_boHandle2 = xclAllocBO(handle, loc_sz, XCL_BO_DEVICE_RAM, 9);   // output score
-
-	// Create the mapping to the host memory
-	short *loc_bo2 = (short*)xclMapBO(handle, loc_boHandle2, true);
-
-	if((loc_bo2 == NULL))
-		throw std::runtime_error("location ptr invalid\n");
-	
-	std::memcpy(loc_bo2, loc_in, loc_sz);
-
-	// Send the input data to the device memory
-	//std::cout << "Send the input data to the device memory.\n";
-	if(xclSyncBO(handle, loc_boHandle2, XCL_BO_SYNC_BO_TO_DEVICE , loc_sz, 0)) {
-		return 1;
-	}
-
-	// Get & check the device memory address
-	xclBOProperties p;
-	bool ret_checkDevMem=0;
-	uint64_t locbo2devAddr = !xclGetBOProperties(handle, loc_boHandle2, &p) ? p.paddr : -1;
-	if( (locbo2devAddr == (uint64_t)(-1)) ){
-		ret_checkDevMem=1;
-	}
+		
+	long int outSize_bytes = pphandle->out_size;
 
 	try {
 
@@ -140,9 +106,19 @@ static int runHWSort(PPHandle * &pphandle, int8_t* loc_in, short *&nms_out)
 
 		ecmd2->data[XSORT_CONTROL_ADDR_inConf_DATA/4] = bo1devAddr_conf & 0xFFFFFFFF; // input
 		ecmd2->data[XSORT_CONTROL_ADDR_inConf_DATA/4 + 1] = (bo1devAddr_conf >> 32) & 0xFFFFFFFF; // input
-		ecmd2->data[XSORT_CONTROL_ADDR_inBox_DATA/4] = locbo2devAddr & 0xFFFFFFFF; // input
-		ecmd2->data[XSORT_CONTROL_ADDR_inBox_DATA/4 + 1] = (locbo2devAddr >> 32) & 0xFFFFFFFF; // input
 
+		ecmd2->data[XSORT_CONTROL_ADDR_inBox_DATA/4] = bo1devAddr_box & 0xFFFFFFFF; // input
+		ecmd2->data[XSORT_CONTROL_ADDR_inBox_DATA/4 + 1] = (bo1devAddr_box >> 32) & 0xFFFFFFFF; // input
+
+		ecmd2->data[XSORT_CONTROL_ADDR_inBox1_DATA/4] = bo1devAddr_box & 0xFFFFFFFF; // input
+		ecmd2->data[XSORT_CONTROL_ADDR_inBox1_DATA/4 + 1] = (bo1devAddr_box >> 32) & 0xFFFFFFFF; // input
+		
+		ecmd2->data[XSORT_CONTROL_ADDR_inBox2_DATA/4] = bo1devAddr_box & 0xFFFFFFFF; // input
+		ecmd2->data[XSORT_CONTROL_ADDR_inBox2_DATA/4 + 1] = (bo1devAddr_box >> 32) & 0xFFFFFFFF; // input
+		
+		ecmd2->data[XSORT_CONTROL_ADDR_inBox3_DATA/4] = bo1devAddr_box & 0xFFFFFFFF; // input
+		ecmd2->data[XSORT_CONTROL_ADDR_inBox3_DATA/4 + 1] = (bo1devAddr_box >> 32) & 0xFFFFFFFF; // input
+		
 		ecmd2->data[XSORT_CONTROL_ADDR_priors_DATA/4] = prbo2devAddr & 0xFFFFFFFF; // input
 		ecmd2->data[XSORT_CONTROL_ADDR_priors_DATA/4 + 1] = (prbo2devAddr >> 32) & 0xFFFFFFFF; // input
 		//# output data
@@ -183,7 +159,6 @@ static int runHWSort(PPHandle * &pphandle, int8_t* loc_in, short *&nms_out)
 		auto start_k3= std::chrono::system_clock::now();
 #endif
 
-		long int outSize_bytes = (NUM_CLASS-1)*MAX_BOX_PER_CLASS*ELE_PER_BOX*sizeof(short);
 
 		//Get the output;
 		if(xclSyncBO(handle, boHandle2, XCL_BO_SYNC_BO_FROM_DEVICE, outSize_bytes, 0)) {
@@ -300,6 +275,7 @@ static int hw_sort_init(
 	my_handle->prbo2 = pr_bo2;
 	my_handle->execHandle = execHandle;
 	my_handle->execData = execData;
+	my_handle->out_size = outSize_bytes;
 
 	//std::cout << "sort nms inti done ......\n";
 	return 0;
