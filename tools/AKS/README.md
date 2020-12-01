@@ -6,14 +6,14 @@
 * [Getting Started](#getting-started)
 * [Run Examples on Alveo-U200/Alveo-U250](#run-examples-on-alveo-u200alveo-u250)
 * [Run Examples on Alveo-U50](#run-examples-on-alveo-u50)
-* [Run Examples on Edge Devices](#run-examples-on-edge-devices) 
+* [Run Examples on Edge Devices](#run-examples-on-edge-devices)
 * [Tuning Performance](#tuning-performance)
 * [Performance](#performance)
 * [Graphs & Kernels](#graphs--kernels)
 * [Additional Details](#additional-details)
 
 ## Introduction
-Real world deep learning applications involve multi-stage data processing pipelines which include many compute intensive pre-processing operations like data loading from disk, decoding, resizing, color space conversion, scaling, croping etc. and multiple ML networks of different kinds like CNN etc. and various post-processing operations like NMS etc. 
+Real world deep learning applications involve multi-stage data processing pipelines which include many compute intensive pre-processing operations like data loading from disk, decoding, resizing, color space conversion, scaling, croping etc. and multiple ML networks of different kinds like CNN etc. and various post-processing operations like NMS etc.
 
 **AI Kernel Scheduler** or **AKS** is an application to automatically and efficiently pipeline such **graphs** without much effort from the users. It provides various kinds of **kernels** for every stage of the complex graphs which are plug and play and are highly configurable. For example, pre-processing kernels like image decode and resize, CNN kernel like Vitis AI's DPU Kernel and post processing kernels like SoftMax & NMS. Users can create their graphs using kernels and execute their jobs seamlessly to get the maximum performance.
 
@@ -40,7 +40,7 @@ Vitis-AI AKS provides shell scripts to build and run various examples provided w
 
 ### Build Kernels
 
-The shell script [cmake-kernels.sh](./cmake-kernels.sh) is provided to build AKS kernels. 
+The shell script [cmake-kernels.sh](./cmake-kernels.sh) is provided to build AKS kernels.
 
 ```sh
 # Check Usage
@@ -57,7 +57,7 @@ The shell script [cmake-kernels.sh](./cmake-kernels.sh) is provided to build AKS
 
 ### Build Examples
 
-The shell script [cmake-examples.sh](./cmake-examples.sh) is provided to build AKS examples. 
+The shell script [cmake-examples.sh](./cmake-examples.sh) is provided to build AKS examples.
 
 ```sh
 # Check Usage
@@ -98,17 +98,17 @@ These examples use **DPUCADX8G** IP for CNN Inference Acceleration on Alveo-U200
 
 ### Setup
 
-Follow [Setup Alveo-U200/U250](setup/alveo/DPU-CADX8G/README.md) cards page to setup your cards on the host system (skip if already done).
+Follow [Setup Alveo-U200/U250](../../setup/alveo/DPU-CADX8G/README.md) cards page to setup your cards on the host system (skip if already done).
 
 ### Get Image Dataset
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning).
 
-> **Note:** Skip, if you have already run the below steps.
+:pushpin: **Note:** Skip, if you have already run the below steps.
 
-> **Note:** Please make sure you are already inside Vitis-AI docker
+:pushpin: **Note:** Please make sure you are already inside Vitis-AI docker
 
-> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+:pushpin: **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```sh
 cd /workspace/tools/AKS
@@ -125,7 +125,7 @@ head -n 500 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-aux/val.txt > ${HOME}/C
 
 python ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
 
-# To try out examples for detection models like Tiny-YOLO-v3 or Standard-YOLO-v2 
+# To try out examples for detection models like Tiny-YOLO-v3 or Standard-YOLO-v2
 # Download COCO dataset (This may take a while as COCO val dataset is more than 6 GB in size)
 python -m ck install package:dataset-coco-2014-val
 
@@ -138,7 +138,7 @@ cd -
 
 ### Get Video Dataset
 
-> **Note:** The link below doesn't exist yet, please copy the tar file from /proj/xsjhdstaff3/vkjain/gitlab/fork/vitis-ai-staging/vitis_ai_runtime_r1.3.0_image_video.tar.gz to /workspace/tools/AKS
+:pushpin: **Note:** The link below doesn't exist yet, please copy the tar file from /proj/xsjhdstaff3/vkjain/gitlab/fork/vitis-ai-staging/vitis_ai_runtime_r1.3.0_image_video.tar.gz to /workspace/tools/AKS
 
 ```sh
 cd /workspace/tools/AKS
@@ -156,7 +156,7 @@ Use following commands to build these kernels and examples.
 
 ```sh
 # Activate Conda Environment (skip if already done)
-conda activate vitis-ai-caffe 
+conda activate vitis-ai-caffe
 ```
 
 ```sh
@@ -176,7 +176,7 @@ cd /workspace/tools/AKS
 
 ### Run Examples
 
-#### Classification 
+#### Classification
 
 - Resnet50
 
@@ -288,24 +288,24 @@ cd /workspace/tools/AKS
 
 Below example uses **DPUCAHX8H** IP for CNN Inference Acceleration on Alveo-U50 devices.
 
-### Setup 
+### Setup
 
-Follow [Setup Alveo-U50](setup/alveo/u50_u50lv_u280/README.md) page to setup your host system with Alveo-U50 cards (Skip if already done).
+Follow [Setup Alveo-U50](../../setup/alveo/u50_u50lv_u280/README.md) page to setup your host system with Alveo-U50 cards (Skip if already done).
 
 ### Get Image Dataset
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning).
 
-> **Note:** Skip, if you have already run the below steps.
+:pushpin: **Note:** Skip, if you have already run the below steps.
 
-> **Note:** Please make sure you are already inside Vitis-AI docker
+:pushpin: **Note:** Please make sure you are already inside Vitis-AI docker
 
-> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+:pushpin: **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```sh
 cd /workspace/tools/AKS
-# Activate conda env 
-conda activate vitis-ai-caffe 
+# Activate conda env
+conda activate vitis-ai-caffe
 python -m ck pull repo:ck-env
 python -m ck install package:imagenet-2012-val-min
 
@@ -317,7 +317,7 @@ conda deactivate
 
 ### Build Kernels and Examples
 
-We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and examples in the [aks/examples](./examples) directory using both C++ and Python AKS APIs. 
+We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and examples in the [aks/examples](./examples) directory using both C++ and Python AKS APIs.
 Use following commands to build these kernels and examples.
 
 ```sh
@@ -332,7 +332,7 @@ cd /workspace/tools/AKS
 
 ### Run Examples
 
-> **Note:** Follow these steps for bash (to be replaced with weblinks once packages are uploaded to web)
+:pushpin: **Note:** Follow these steps for bash (to be replaced with weblinks once packages are uploaded to web)
 
 ```sh
 # Outside container
@@ -366,19 +366,19 @@ Please follow the instructions here to setup your target device with correct ima
 
 ### Get Image Dataset
 
-> **Note:** If you have active internet connectivity on the target board, you can download the dataset directly on the target. If not, copy the dataset to the SD-Card after downloading it on the host system. 
+:pushpin: **Note:** If you have active internet connectivity on the target board, you can download the dataset directly on the target. If not, copy the dataset to the SD-Card after downloading it on the host system.
 
 Below steps provide a way to download ImageNet dataset on host system using docker.
 
-> **Note:** Please make sure you are already inside Vitis-AI docker
+:pushpin: **Note:** Please make sure you are already inside Vitis-AI docker
 
-> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+:pushpin: **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning) on host with Vitis-AI docker and copy it to SD-card.
 
 ```sh
 # Activate conda env
-conda activate vitis-ai-caffe 
+conda activate vitis-ai-caffe
 python -m ck pull repo:ck-env
 python -m ck install package:imagenet-2012-val-min
 
@@ -393,7 +393,7 @@ Copy the `Vitis-AI/tools/AKS` directory to SD-card.
 
 ### Install the AKS library
 
-> **Note:** Following instructions assume that files are copied to SD-card are located at `<path-to-copied-files>` once you boot into the board 
+:pushpin: **Note:** Following instructions assume that files are copied to SD-card are located at `<path-to-copied-files>` once you boot into the board
 
 Install the AKS library from RPM package.
 
@@ -429,7 +429,7 @@ Use following commands to build these kernels and examples.
 
 ## Tuning Performance
 
-AKS provides a report on various performance metrics of internal worker threads and various kernels. This info can be utilized to understand the bottlenecks in the pipeline and tune the number of CPU workers for each kernel. 
+AKS provides a report on various performance metrics of internal worker threads and various kernels. This info can be utilized to understand the bottlenecks in the pipeline and tune the number of CPU workers for each kernel.
 
 This report can be enabled by setting an AKS environment variable, `export AKS_VERBOSE=2`. In above examples, the same can be achieved via appending `-v 2` to every command.
 
@@ -449,12 +449,16 @@ Let's take a look at a sample report for googlenet with 2 preprocessing threads 
 
 [DEBUG] Worker: ClassificationAccuracy_0 - Total jobs : 50000
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 0.46, Peak FPS possible: 108902.12, Utilization : 0.83%
+
 [DEBUG] Worker: ClassificationImreadPreProcess_1 - Total jobs : 24942
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 55.11, Peak FPS possible: 452.57, Utilization : 99.52%
+
 [DEBUG] Worker: ClassificationFCSoftMaxTopK_0 - Total jobs : 50000
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 11.30, Peak FPS possible: 4424.70, Utilization : 20.41%
+
 [DEBUG] Worker: ClassificationImreadPreProcess_0 - Total jobs : 25058
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 55.12, Peak FPS possible: 454.63, Utilization : 99.53%
+
 [DEBUG] Worker: DPUCADX8GRunner_0 - Total jobs : 50000
 [DEBUG] |--- Async Kernel : Submit time (s) : 1.70, Wait time (s) : 0.02, Kernel Active Time (s): 55.25
 ```
@@ -468,7 +472,7 @@ The report shows details on how each worker thread spent its time.
     - Blocking Kernel & Non-blocking kernel will have different types of performance metrics.
 - `Exec time` is the time spent by a worker thread doing the actual work, i.e. kernel execution.
 - `Peak FPS possible` is the theoretical Peak FPS you are supposed to get if this particular blocking kernel is the bottleneck in the pipeline.
-- `Utilization` of a blocking kernel is the percentage time it spent on doing the useful work. 
+- `Utilization` of a blocking kernel is the percentage time it spent on doing the useful work.
     - **Low utilization** denotes that the worker was either waiting for inputs from previous node or waiting to push the output to next node. So either previous/next node could be a bottleneck.
     - **High utilization** denotes that this kernel itself could be the bottleneck and needs more worker threads to distribute this kernel's jobs.
 - `Submit time` is the total time spent by the worker to submit a job to an async kernel. It should be ideally very low.
@@ -481,7 +485,7 @@ The report shows details on how each worker thread spent its time.
 
 In the above example, both the preprocessing threads (ClassificationImreadPreProcess_*) are running at 99.5% utilization. It gives an hint that allotting more worker threads to `ClassificationImreadPreProcess` kernel would give better performance in this case.
 
-Pushing jobs to AKS takes very less time. So to limit the memory usage, AKS limits the maximum number of active jobs in the system manager to **128**. This limit can be controlled with environment variable, **`AKS_MAX_CONCURRENT_JOBS`**. For example: **`export AKS_MAX_CONCURRENT_JOBS = 32`**. 
+Pushing jobs to AKS takes very less time. So to limit the memory usage, AKS limits the maximum number of active jobs in the system manager to **128**. This limit can be controlled with environment variable, **`AKS_MAX_CONCURRENT_JOBS`**. For example: **`export AKS_MAX_CONCURRENT_JOBS = 32`**.
 
 Depending upon the situation, this limit will have to be varied. If a graph's nodes generate large temporary data, this may have to be reduced to a lower value to limit overall memory usage. If the graph has very less execution time and memory usage, then this limit has to be increased to push more jobs to the system to get better performance.
 
@@ -497,10 +501,10 @@ These results are collected using a local server with below specs.
 
 You may get a different resuls based on your system performance.
 
-> **Note:** The performance numbers are in Images / second.
+:pushpin: **Note:** The performance numbers are in Images / second.
 
-#### Classification 
-| Model | Images/Sec | # Pre-Proc Threads | # Post-Proc Threads | 
+#### Classification
+| Model | Images/Sec | # Pre-Proc Threads | # Post-Proc Threads |
 |:------|:------:|:------:|:------:|
 |GoogleNet  | 719  | 1 | 1 |
 |           | 1458 | 2 | 1 |
@@ -516,7 +520,7 @@ You may get a different resuls based on your system performance.
 
 Input image resolution of the network is 608x608.
 
-| Model | Images/Sec | # Pre-Proc Threads | # Post-Proc Threads | 
+| Model | Images/Sec | # Pre-Proc Threads | # Post-Proc Threads |
 |:------|:------:|:------:|:------:|
 | Tiny Yolov3       | 259     | 4   | 1 |
 |                   | 412     | 8   | 2 |
