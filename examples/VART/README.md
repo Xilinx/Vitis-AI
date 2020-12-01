@@ -238,6 +238,10 @@ If you encounter any path errors in running examples, check to see if you follow
 	  tar -xzvf resnet50-u50-r1.3.0.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
+	Note that if the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
+	```
+	  mkdir /usr/share/vitis_ai_library/models
+	```
 3. Compile the sample, take `resnet50` as an example.
 	```
 	cd /workspace/examples/VART/samples/resnet50
@@ -255,7 +259,7 @@ If you encounter any path errors in running examples, check to see if you follow
 | No\. | Example Name             | Command                                                   |
 | :--- | :----------------------- | :-------------------------------------------------------- |
 | 1    | resnet50                 | ./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel                            |
-| 2    | resnet50_mt_py           | /usr/bin/python3 resnet50.py 1 m/usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel          |
+| 2    | resnet50_mt_py           | /usr/bin/python3 resnet50.py 1 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel          |
 | 3    | inception_v1_mt_py       | /usr/bin/python3 inception_v1.py 1 /usr/share/vitis_ai_library/models/inception_v1_tf/inception_v1_tf.xmodel      |
 | 4    | pose_detection           | ./pose_detection video/pose.webm /usr/share/vitis_ai_library/models/sp_net/sp_net.xmodel /usr/share/vitis_ai_library/models/ssd_pedestrian_pruned_0_97/ssd_pedestrian_pruned_0_97.xmodel         |
 | 5    | video_analysis           | ./video_analysis video/structure.webm /usr/share/vitis_ai_library/models/ssd_traffic_pruned_0_9/ssd_traffic_pruned_0_9.xmodel    |

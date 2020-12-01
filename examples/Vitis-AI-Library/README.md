@@ -234,14 +234,14 @@ export XLNX_VART_FIRMWARE=/usr/lib/dpu.xclbin
 Note that for `DPUCAHX8L`, please refer to [XBulter Installation](../../setup/alveo/DPU-CADX8G/packages) to install `XBulter`. And then add the following U50 and U50lv configurations into `/etc/xbutler/xbutler.config`.
 ```
 {
-		"DSA_Board_Name": "u50lv",
-		"Name": "alveo-u50",
-		"SLRCount": 2
+	"DSA_Board_Name": "u50lv",
+	"Name": "alveo-u50",
+	"SLRCount": 2
 },
 {
-		"DSA_Board_Name": "u50",
-		"Name": "alveo-u50",
-		"SLRCount": 2
+	"DSA_Board_Name": "u50",
+	"Name": "alveo-u50",
+	"SLRCount": 2
 },
 ```
 After the installation of `XBulter`, reboot xbulter service.
@@ -271,6 +271,10 @@ sudo service xbutler restart
 	```
 	  tar -xzvf resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
 	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
+	```
+	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
+	```
+	  mkdir /usr/share/vitis_ai_library/models
 	```	  
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
