@@ -500,14 +500,13 @@ PointPillarsResult PointPillarsPost::post_process( )
   res.ppresult.label_preds.swap(selected_labels);
   dir_labels.swap(selected_dir_labels);
 
-  V1I opp_labels(box_preds.size(), 0);
   auto size_0 = box_preds[0].size();
-
-  for(unsigned int i=0; i<opp_labels.size(); i++){
-    opp_labels[i] = int( bool(box_preds[i][ size_0 -1 ] >0) ^ bool(dir_labels[i])  ) ;
-    box_preds[i][ size_0 -1 ] += (opp_labels[i] ? 3.14159265 : 0.0);
+  for(unsigned int i=0; i<box_preds.size(); i++){
+    if ( bool(box_preds[i][ size_0 -1 ] >0) ^ bool(dir_labels[i]) ) {
+       box_preds[i][ size_0 -1 ] += 3.14159265 ;
+    }
   }
- 
+
   /*
   std::cout << "\n"; 
   for(unsigned int i=0; i<opp_labels.size(); i++) {

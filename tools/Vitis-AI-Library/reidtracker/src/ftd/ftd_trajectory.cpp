@@ -30,13 +30,11 @@ FTD_Trajectory::FTD_Trajectory(SpecifiedCfg &specified_cfg) {
   specified_cfg_ = specified_cfg;
 }
 
-void FTD_Trajectory::Predict() { 
+void FTD_Trajectory::Predict() {
   age += 1;
-  if(time_since_update > 0)
-    hit_streak = 0;
+  if (time_since_update > 0) hit_streak = 0;
   time_since_update += 1;
   std::get<0>(charact) = filter.GetPre();
-
 }
 
 int FTD_Trajectory::GetId() { return id; }
@@ -54,7 +52,7 @@ void FTD_Trajectory::Init(const InputCharact &input_charact,
     id = id_record[0];
     id_record.erase(id_record.begin());
   }
-  //std::cout<<"new id: "<<id<<endl;
+  // std::cout<<"new id: "<<id<<endl;
   charact = input_charact;
 #ifdef _FTD_DEBUG_
   LOG(INFO) << "Init a new trajectory(id " << id << ", bbox "
@@ -124,19 +122,16 @@ void FTD_Trajectory::UpdateTrack() {
   }
 }
 
-void FTD_Trajectory::UpdateFeature(const cv::Mat& feat) {
-  if(feature.size() == cv::Size(0,0))
+void FTD_Trajectory::UpdateFeature(const cv::Mat &feat) {
+  if (feature.size() == cv::Size(0, 0))
     feature = feat;
-  else 
+  else
     feature = feature * 0.9 + feat * 0.1;
-  if(features.size() > 9)
-    features.pop_back();
+  if (features.size() > 9) features.pop_back();
   features.emplace_back(feature);
 }
 
-std::vector<cv::Mat> FTD_Trajectory::GetFeatures() {
-  return features;
-}
+std::vector<cv::Mat> FTD_Trajectory::GetFeatures() { return features; }
 void FTD_Trajectory::UpdateWithoutDetect() {
   // update FTD_ReidTracker and Update FTD_Filter
   filter.UpdateFilter();
@@ -155,5 +150,5 @@ OutputCharact FTD_Trajectory::GetOut() {
                          std::get<2>(charact), std::get<3>(charact));
 }
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

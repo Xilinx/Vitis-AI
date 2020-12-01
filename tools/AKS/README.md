@@ -5,15 +5,15 @@
 * [What's New](#whats-new)
 * [Getting Started](#getting-started)
 * [Run Examples on Alveo-U200/Alveo-U250](#run-examples-on-alveo-u200alveo-u250)
-* [Run examples on Alveo-U50](#run-examples-on-alveo-u50)
-* [Run examples on Edge Devices](#run-examples-on-edge-devices) 
+* [Run Examples on Alveo-U50](#run-examples-on-alveo-u50)
+* [Run Examples on Edge Devices](#run-examples-on-edge-devices)
 * [Tuning Performance](#tuning-performance)
 * [Performance](#performance)
 * [Graphs & Kernels](#graphs--kernels)
 * [Additional Details](#additional-details)
 
 ## Introduction
-Real world deep learning applications involve multi-stage data processing pipelines which include many compute intensive pre-processing operations like data loading from disk, decoding, resizing, color space conversion, scaling, croping etc. and multiple ML networks of different kinds like CNN etc. and various post-processing operations like NMS etc. 
+Real world deep learning applications involve multi-stage data processing pipelines which include many compute intensive pre-processing operations like data loading from disk, decoding, resizing, color space conversion, scaling, croping etc. and multiple ML networks of different kinds like CNN etc. and various post-processing operations like NMS etc.
 
 **AI Kernel Scheduler** or **AKS** is an application to automatically and efficiently pipeline such **graphs** without much effort from the users. It provides various kinds of **kernels** for every stage of the complex graphs which are plug and play and are highly configurable. For example, pre-processing kernels like image decode and resize, CNN kernel like Vitis AI's DPU Kernel and post processing kernels like SoftMax & NMS. Users can create their graphs using kernels and execute their jobs seamlessly to get the maximum performance.
 
@@ -36,11 +36,49 @@ Real world deep learning applications involve multi-stage data processing pipeli
 
 ## Getting Started
 
-Vitis-AI/tools/AKS provides a shell script [aks.sh](./aks.sh) to run various examples provided with this package. Familiarize yourself with the script usage by running below command.
+Vitis-AI AKS provides shell scripts to build and run various examples provided with this package. Please go through below section to familiarize yourself with the scripts.
+
+### Build Kernels
+
+The shell script [cmake-kernels.sh](./cmake-kernels.sh) is provided to build AKS kernels.
 
 ```sh
 # Check Usage
-./aks.sh -h
+./cmake-kernels.sh --help
+```
+
+| Option | Description | Possible Values |
+|:-------|:------------|:----------------|
+| --dpu  | Set DPU target. If none mentioned, only common kernels will be built | dpucadx8g, dpucahx8h, dpuczdx8g |
+| --type | Set Build Type | release (Default), debug |
+| --clean| Discard previous builds and rebuild | - |
+| --clean-only | Discard/Clean build | - |
+| --help | Show help | - |
+
+### Build Examples
+
+The shell script [cmake-examples.sh](./cmake-examples.sh) is provided to build AKS examples.
+
+```sh
+# Check Usage
+./cmake-examples.sh --help
+```
+
+| Option | Description | Possible Values |
+|:-------|:------------|:----------------|
+| --dpu  | Set DPU target (Mandatory) | dpucadx8g, dpucahx8h, dpuczdx8g |
+| --type | Set Build Type | release (Default), debug |
+| --clean| Discard previous builds and rebuild | - |
+| --clean-only | Discard/Clean build | - |
+| --help | Show help | - |
+
+### Run Examples
+
+The shell script [aks.sh](./aks.sh) is provided to run the AKS examples.
+
+```sh
+# Check Usage
+./aks.sh --help
 ```
 |Option | Description | Possible Values |
 |:-----|:-----|:-----|
@@ -54,28 +92,24 @@ Vitis-AI/tools/AKS provides a shell script [aks.sh](./aks.sh) to run various exa
 |-h, --help  | Print Usage | - |
 
 
-## Run Examples on Alveo-U200/Alveo-U250
+## **Run Examples on Alveo-U200/Alveo-U250**
 
-> **Note:** Please make sure you are already inside Vitis-AI docker
+These examples use **DPUCADX8G** IP for CNN Inference Acceleration on Alveo-U200/Alveo-U250 devices.
 
-These examples utilize **DPUCADX8G** IP for CNN Inference Acceleration on Alveo-U200/Alveo-U250 devices.
+### Setup
+
+Follow [Setup Alveo-U200/U250](../../setup/alveo/DPU-CADX8G/README.md) cards page to setup your cards on the host system (skip if already done).
 
 ### Get Image Dataset
 
-Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning). 
+Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning).
 
-> **Note:** Skip, if you have already run the below steps.
+:pushpin: **Note:** Skip, if you have already run the below steps.
 
-> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+:pushpin: **Note:** Please make sure you are already inside Vitis-AI docker
 
-```sh
-# Activate Conda Environment
-conda activate vitis-ai-caffe 
-```
-```sh
-# Setup
-source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
-```
+:pushpin: **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+
 ```sh
 cd /workspace/tools/AKS
 
@@ -91,32 +125,58 @@ head -n 500 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-aux/val.txt > ${HOME}/C
 
 python ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
 
-# To try out examples for detection models like Tiny-YOLO-v3 or Standard-YOLO-v2 
+# To try out examples for detection models like Tiny-YOLO-v3 or Standard-YOLO-v2
 # Download COCO dataset (This may take a while as COCO val dataset is more than 6 GB in size)
 python -m ck install package:dataset-coco-2014-val
 
 # To try out face-detect example, download FDDB dataset.
 cd ${VAI_ALVEO_ROOT}/apps/face_detect/FDDB
-wget http://tamaraberg.com/faceDataset/originalPics.tar.gz
+wget http://vis-www.cs.umass.edu/fddb/originalPics.tar.gz
 tar -xvf originalPics.tar.gz
 cd -
 ```
 
+### Get Video Dataset
+
+:pushpin: **Note:** The link below doesn't exist yet, please copy the tar file from /proj/xsjhdstaff3/vkjain/gitlab/fork/vitis-ai-staging/vitis_ai_runtime_r1.3.0_image_video.tar.gz to /workspace/tools/AKS
+
+```sh
+cd /workspace/tools/AKS
+
+# To try out tinyyolov3_video example, download sample images and videos
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz -O vitis_ai_runtime_r1.3.0_image_video.tar.gz
+tar -xzvf vitis_ai_runtime_r1.3.0_image_video.tar.gz
+```
+
 ### Build Kernels and Examples
-We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and examples in the [aks/examples](./examples) directory using both C++ and Python AKS APIs. 
+
+We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and examples in the [aks/examples](./examples) directory.
+
 Use following commands to build these kernels and examples.
 
-  ```sh
-  cd /workspace/tools/AKS
-  # Buld kernels
-  ./cmake-kernels.sh --dpu=dpucadx8g --clean
-  # Build examples
-  ./cmake-examples.sh --clean
-  ```
+```sh
+# Activate Conda Environment (skip if already done)
+conda activate vitis-ai-caffe
+```
+
+```sh
+# Setup env
+source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+```
+
+```sh
+cd /workspace/tools/AKS
+
+# Build kernels (Builds Common and DPUCADX8G specific kernels)
+./cmake-kernels.sh --dpu=dpucadx8g --clean
+
+# Build examples (Builds DPUCADX8G specifix C++ examples)
+./cmake-examples.sh --dpu=dpucadx8g --clean
+```
 
 ### Run Examples
 
-#### Classification 
+#### Classification
 
 - Resnet50
 
@@ -147,6 +207,16 @@ Use following commands to build these kernels and examples.
     ./aks.sh -m googlenet_pp_accel -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     # Python
     ./aks.sh -i py -m googlenet_pp_accel -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
+
+    ```
+
+- Inception_v1 TensorFlow
+
+    ```sh
+    # C++
+    ./aks.sh -m inception_v1_tf -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
+    # Python
+    ./aks.sh -i py -m inception_v1_tf -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 
 #### Detection
@@ -155,25 +225,25 @@ Use following commands to build these kernels and examples.
 
     ```sh
     # C++
-    ./aks.sh -m tinyyolov3 -d1 <image-dir>
+    ./aks.sh -m tinyyolov3 -d1 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     # Python
-    ./aks.sh -i py -m tinyyolov3 -d1 <image-dir>
+    ./aks.sh -i py -m tinyyolov3 -d1 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     ```
 
 - Tiny YOLOv3 (with video input)
 
     ```sh
     # C++
-    ./aks.sh -m tinyyolov3_video -vf <video-file>
+    ./aks.sh -m tinyyolov3_video -vf ./samples/video_analysis/video/structure.mp4
     ```
 
 - Standard YOLOv2
 
     ```sh
     # C++
-    ./aks.sh -m stdyolov2 -d1 <image-dir>
+    ./aks.sh -m stdyolov2 -d1 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     # Python
-    ./aks.sh -i py -m stdyolov2 -d1 <image-dir>
+    ./aks.sh -i py -m stdyolov2 -d1 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     ```
 
 - Face Detect
@@ -192,59 +262,91 @@ Use following commands to build these kernels and examples.
 
     ```sh
     # C++
-    ./aks.sh -m googlenet_resnet50 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-resnet50>
+    ./aks.sh -m googlenet_resnet50 \
+        -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min \
+        -d2 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     # Python
-    ./aks.sh -i py -m googlenet_resnet50 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-resnet50>
+    ./aks.sh -i py -m googlenet_resnet50 \
+        -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min \
+        -d2 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 
 - Googlenet + TinyYolov3
 
     ```sh
     # C++
-    ./aks.sh -m googlenet_tinyyolov3 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-tinyyolov3>
+    ./aks.sh -m googlenet_tinyyolov3 \
+        -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min \
+        -d2 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     # Python
-    ./aks.sh  -i py -m googlenet_tinyyolov3 -d1 <image-dir-for-googlenet> -d2 <image-dir-for-tinyyolov3>
+    ./aks.sh  -i py -m googlenet_tinyyolov3 \
+        -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min \
+        -d2 ${HOME}/CK-TOOLS/dataset-coco-2014-val/val2014
     ```
 
-## Run examples on Alveo-U50
-
-> **Note:** Please make sure you are already inside Vitis-AI docker
+## **Run examples on Alveo-U50**
 
 Below example uses **DPUCAHX8H** IP for CNN Inference Acceleration on Alveo-U50 devices.
 
+### Setup
+
+Follow [Setup Alveo-U50](../../setup/alveo/u50_u50lv_u280/README.md) page to setup your host system with Alveo-U50 cards (Skip if already done).
+
 ### Get Image Dataset
 
-Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning). 
+Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning).
 
-> **Note:** Skip, if you have already run the below steps.
+:pushpin: **Note:** Skip, if you have already run the below steps.
 
-> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+:pushpin: **Note:** Please make sure you are already inside Vitis-AI docker
+
+:pushpin: **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```sh
 cd /workspace/tools/AKS
-
-conda activate vitis-ai-caffe 
+# Activate conda env
+conda activate vitis-ai-caffe
 python -m ck pull repo:ck-env
 python -m ck install package:imagenet-2012-val-min
 
-python ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
+python /workspace/examples/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
 
+# We don't need conda env for running examples on Alveo-U50
 conda deactivate
 ```
 
 ### Build Kernels and Examples
-We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and examples in the [aks/examples](./examples) directory using both C++ and Python AKS APIs. 
+
+We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and examples in the [aks/examples](./examples) directory using both C++ and Python AKS APIs.
 Use following commands to build these kernels and examples.
 
-  ```sh
-  cd /workspace/tools/AKS
-  # Buld kernels
-  ./cmake-kernels.sh --dpu=dpucahx8h --clean
-  # Build examples
-  ./cmake-examples.sh --clean
-  ```
+```sh
+cd /workspace/tools/AKS
+
+# Buld kernels (Builds Common and DPUCAHX8H specific kernels)
+./cmake-kernels.sh --dpu=dpucahx8h --clean
+
+# Build examples (Builds DPUCAHX8H specific examples)
+./cmake-examples.sh --dpu=dpucahx8h --clean
+```
 
 ### Run Examples
+
+:pushpin: **Note:** Follow these steps for bash (to be replaced with weblinks once packages are uploaded to web)
+
+```sh
+# Outside container
+copy xsj:/wrk/acceleration/modelzoo_1.3/compiled_model_zoo_1.3.0-r179/resnet50-u50-r1.3.0.tar.gz to <path-to-AKS>
+mkdir graph_zoo/meta_resnet50_u50
+tar -xzvf resnet50-u50-r1.3.0.tar.gz
+mv resnet50/resnet50.xmodel graph_zoo/meta_resnet50_u50
+
+copy xsj:/proj/xsjhdstaff3/vkjain/gitlab/fork/alveo_xclbin-1.3.0.tar.gz to <path-to-AKS>
+tar -xzvf alveo_xclbin-1.3.0.tar.gz
+# Inside container
+sudo cp alveo_xclbin-1.3.0/U50/6E300M/* /usr/lib
+```
+
 - Resnet50
 
     ```sh
@@ -254,26 +356,29 @@ Use following commands to build these kernels and examples.
     ./aks.sh -i py -m resnet50_u50 -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 
-## Run examples on Edge Devices
+## **Run examples on Edge Devices**
 
 Below example uses **DPUCZDX8G** IP for CNN Inference Acceleration on edge devices like ZCU102/ZCU104.
 
 ### Setup the Target Device
 
-Following packages are required to run AKS examples on target device:
+Please follow the instructions here to setup your target device with correct image: [link](../../examples/VART/README.md#setting-up-the-target)
 
-#### 1. SD card system image file
-Please follow the instructions here to setup your target device with correct image : [link](../../examples/VART/README.md#setting-up-the-target)
+### Get Image Dataset
 
-#### 3. Get Image Dataset
-> **Note:** Please make sure you are already inside Vitis-AI docker
+:pushpin: **Note:** If you have active internet connectivity on the target board, you can download the dataset directly on the target. If not, copy the dataset to the SD-Card after downloading it on the host system.
 
-> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+Below steps provide a way to download ImageNet dataset on host system using docker.
 
-Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning) on host with Vitis-AI docker and copy it to SD-card. 
+:pushpin: **Note:** Please make sure you are already inside Vitis-AI docker
+
+:pushpin: **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+
+Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning) on host with Vitis-AI docker and copy it to SD-card.
 
 ```sh
-conda activate vitis-ai-caffe 
+# Activate conda env
+conda activate vitis-ai-caffe
 python -m ck pull repo:ck-env
 python -m ck install package:imagenet-2012-val-min
 
@@ -282,11 +387,13 @@ python ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-ima
 conda deactivate
 ```
 
-#### 4. Get AKS library, kernels and examples
-Copy the Vitis-AI/tools/AKS directory to SD-card.
+### Get AKS library, kernels and examples
+
+Copy the `Vitis-AI/tools/AKS` directory to SD-card.
 
 ### Install the AKS library
-> **Note:** Following instructions assume that files are copied to SD-card are located at `<path-to-copied-files>` once you boot into the board 
+
+:pushpin: **Note:** Following instructions assume that files are copied to SD-card are located at `<path-to-copied-files>` once you boot into the board
 
 Install the AKS library from RPM package.
 
@@ -299,14 +406,15 @@ dnf install aks-1.3.0-r11.aarch64.rpm
 ```
 
 ### Build Kernels and Examples on the target device
-We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and example for ResNet-50 in the [aks/examples](./examples) directory using both C++ and Python AKS APIs. 
+
 Use following commands to build these kernels and examples.
 
   ```sh
-  # Buld kernels
+  # Buld kernels (Builds Common and DPUCZDX8G specific kernels)
   ./cmake-kernels.sh --dpu=dpuczdx8g --clean
-  # Build examples
-  ./cmake-examples.sh --clean
+
+  # Build examples (Builds DPUCZDX8G specific examples)
+  ./cmake-examples.sh --dpu=dpuczdx8g --clean
   ```
 
 ### Run Examples
@@ -321,7 +429,7 @@ Use following commands to build these kernels and examples.
 
 ## Tuning Performance
 
-AKS provides a report on various performance metrics of internal worker threads and various kernels. This info can be utilized to understand the bottlenecks in the pipeline and tune the number of CPU workers for each kernel. 
+AKS provides a report on various performance metrics of internal worker threads and various kernels. This info can be utilized to understand the bottlenecks in the pipeline and tune the number of CPU workers for each kernel.
 
 This report can be enabled by setting an AKS environment variable, `export AKS_VERBOSE=2`. In above examples, the same can be achieved via appending `-v 2` to every command.
 
@@ -341,12 +449,16 @@ Let's take a look at a sample report for googlenet with 2 preprocessing threads 
 
 [DEBUG] Worker: ClassificationAccuracy_0 - Total jobs : 50000
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 0.46, Peak FPS possible: 108902.12, Utilization : 0.83%
+
 [DEBUG] Worker: ClassificationImreadPreProcess_1 - Total jobs : 24942
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 55.11, Peak FPS possible: 452.57, Utilization : 99.52%
+
 [DEBUG] Worker: ClassificationFCSoftMaxTopK_0 - Total jobs : 50000
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 11.30, Peak FPS possible: 4424.70, Utilization : 20.41%
+
 [DEBUG] Worker: ClassificationImreadPreProcess_0 - Total jobs : 25058
 [DEBUG] |--- Blocking Kernel : Exec time (s) : 55.12, Peak FPS possible: 454.63, Utilization : 99.53%
+
 [DEBUG] Worker: DPUCADX8GRunner_0 - Total jobs : 50000
 [DEBUG] |--- Async Kernel : Submit time (s) : 1.70, Wait time (s) : 0.02, Kernel Active Time (s): 55.25
 ```
@@ -360,7 +472,7 @@ The report shows details on how each worker thread spent its time.
     - Blocking Kernel & Non-blocking kernel will have different types of performance metrics.
 - `Exec time` is the time spent by a worker thread doing the actual work, i.e. kernel execution.
 - `Peak FPS possible` is the theoretical Peak FPS you are supposed to get if this particular blocking kernel is the bottleneck in the pipeline.
-- `Utilization` of a blocking kernel is the percentage time it spent on doing the useful work. 
+- `Utilization` of a blocking kernel is the percentage time it spent on doing the useful work.
     - **Low utilization** denotes that the worker was either waiting for inputs from previous node or waiting to push the output to next node. So either previous/next node could be a bottleneck.
     - **High utilization** denotes that this kernel itself could be the bottleneck and needs more worker threads to distribute this kernel's jobs.
 - `Submit time` is the total time spent by the worker to submit a job to an async kernel. It should be ideally very low.
@@ -373,14 +485,15 @@ The report shows details on how each worker thread spent its time.
 
 In the above example, both the preprocessing threads (ClassificationImreadPreProcess_*) are running at 99.5% utilization. It gives an hint that allotting more worker threads to `ClassificationImreadPreProcess` kernel would give better performance in this case.
 
-Pushing jobs to AKS takes very less time. So to limit the memory usage, AKS limits the maximum number of active jobs in the system manager to **128**. This limit can be controlled with environment variable, **`AKS_MAX_CONCURRENT_JOBS`**. For example: **`export AKS_MAX_CONCURRENT_JOBS = 32`**. 
+Pushing jobs to AKS takes very less time. So to limit the memory usage, AKS limits the maximum number of active jobs in the system manager to **128**. This limit can be controlled with environment variable, **`AKS_MAX_CONCURRENT_JOBS`**. For example: **`export AKS_MAX_CONCURRENT_JOBS = 32`**.
 
 Depending upon the situation, this limit will have to be varied. If a graph's nodes generate large temporary data, this may have to be reduced to a lower value to limit overall memory usage. If the graph has very less execution time and memory usage, then this limit has to be increased to push more jobs to the system to get better performance.
 
 ## Performance
 These results are collected using a local server with below specs.
-- CPU : Intel(R) Xeon(R) CPU E5-2690 v4 @ 2.60GHz
 - Accelerator Card : Alveo-u250
+- DPU IP: DPUCADX8G
+- CPU : Intel(R) Xeon(R) CPU E5-2690 v4 @ 2.60GHz
 
 #### Datasets used
 - ImageNet2012 (50k images, resized to 224x224)
@@ -388,10 +501,10 @@ These results are collected using a local server with below specs.
 
 You may get a different resuls based on your system performance.
 
-> **Note:** The performance numbers are in Images / second.
+:pushpin: **Note:** The performance numbers are in Images / second.
 
-#### Classification 
-| Model | Images/Sec | # Pre-Proc Threads | # Post-Proc Threads | 
+#### Classification
+| Model | Images/Sec | # Pre-Proc Threads | # Post-Proc Threads |
 |:------|:------:|:------:|:------:|
 |GoogleNet  | 719  | 1 | 1 |
 |           | 1458 | 2 | 1 |
@@ -407,7 +520,7 @@ You may get a different resuls based on your system performance.
 
 Input image resolution of the network is 608x608.
 
-| Model | Images/Sec | # Pre-Proc Threads | # Post-Proc Threads | 
+| Model | Images/Sec | # Pre-Proc Threads | # Post-Proc Threads |
 |:------|:------:|:------:|:------:|
 | Tiny Yolov3       | 259     | 4   | 1 |
 |                   | 412     | 8   | 2 |
@@ -438,26 +551,93 @@ Below is the list of the sample graphs provided as part of AKS examples. User ca
 
 While users can create their own kernels, AKS provides some basic kernels typically used for classification and detection. Users can quickly use these kernels in their graph or build their own kernels as documented [here](docs/API.md#Creating-Custom-AKS-Kernel). Below is the complete list of kernels used in the examples.
 
-| Name | Description |
-|:-------|:-------|
-| DPUCADX8GRunner | Runs inference on DPUCADX8G with new VAI interface |
-| DPUCADX8GNoRunner | Runs inference on DPUCADX8G with pre-VAI interface |
-| CaffeKernel | Executes a network using Caffe framework |
-| ImageRead | Reads an image with provided path |
-| ClassificationAccuracy | Measures accuracy of a classification network (Top-1/Top-5) |
-| ClassificationFCSoftMaxTopK | Performs FC+Softmax+TopK for a classification network |
-| ClassificationImreadPreProcess | Reads an image and preprocess it for classification network |
-| ClassificationPreProcess | Preprocesses an image for a classification network |
-| ClassificationPostProcess | Performs Softmax+TopK for a classification network |
-| DetectionImreadPreProcess | Reads and Preprocesses an image for YOLO network |
-| DetectionPreProcess | Preprocesses an image for YOLO network |
-| PythonKernel | Executes kernels written in Python |
-| SaveBoxesDarknetFormat | Saves results of detection network in Darknet format for mAP calculation |
-| YoloPostProcess | Postprocesses data for YOLO v2/v3 network |
-| ClassificationPreProcessAccel | Performs FPGA accelerated pre-processing for classification networks |
-| DPUCAHX8HRunner | Run inference on DPUCAHX8H |
-| DPUCZDX8GRunner | Run inference on DPUCZDX8G with new VAI Interface |
-| OpticalFlowDenseNonPyrLK | Run non-pyramidal LK Optical Flow |
+<table>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=4>DPU (Inference Kernels)</td>
+            <td>DPUCADX8GRunner</td>
+            <td>Runs inference on DPUCADX8G on Alveo-U200/Alveo-U250 Cards</td>
+        </tr>
+        <tr>
+            <td>DPUCADX8GNoRunner</td>
+            <td>Runs inference on DPUCADX8G on Alveo-U200/Alveo-U250 Cards (Pre-VAI interface)</td>
+        </tr>
+        <tr>
+            <td>DPUCAHX8HRunner</td>
+            <td>Run inference on DPUCAHX8H on Alveo-U50 HBM Cards</td>
+        </tr>
+        <tr>
+            <td>DPUCZDX8GRunner</td>
+            <td>Run inference on DPUCZDX8G on Edge devices</td>
+        </tr>
+        <tr>
+            <td rowspan=6>Pre/Post-process for Classification networks </td>
+            <td>ClassificationAccuracy</td>
+            <td>Measures & reports accuracy of a classification network (Top-1/Top-5)</td>
+        </tr>
+        <tr>
+            <td>ClassificationFCSoftMaxTopK</td>
+            <td>Performs FC+Softmax+TopK for a classification network</td>
+        </tr>
+        <tr>
+            <td>ClassificationImreadPreProcess</td>
+            <td>Reads an image and preprocess it for classification network</td>
+        </tr>
+        <tr>
+            <td>ClassificationPreProcess</td>
+            <td>Preprocesses an image for a classification network</td>
+        </tr>
+        <tr>
+            <td>ClassificationPostProcess</td>
+            <td>Performs Softmax+TopK for a classification network</td>
+        </tr>
+        <tr>
+            <td>ClassificationPreProcessAccel</td>
+            <td>Performs FPGA accelerated pre-processing for classification networks (Available only with DPUCADX8G on Alveo-U200)</td>
+        </tr>
+        <tr>
+            <td rowspan=4>Pre/Post-process for Detection networks</td>
+            <td>DetectionImreadPreProcess</td>
+            <td>Reads and Preprocesses an image for YOLO network </td>
+        </tr>
+        <tr>
+            <td>DetectionPreProcess</td>
+            <td>Preprocesses an image for YOLO network </td>
+        </tr>
+        <tr>
+            <td>SaveBoxesDarknetFormat</td>
+            <td>Saves results of detection network in Darknet format for mAP calculation</td>
+        </tr>
+        <tr>
+            <td>YoloPostProcess</td>
+            <td>Postprocesses data for YOLO v2/v3 network</td>
+        </tr>
+        <tr>
+            <td rowspan=4>Misc.</td>
+            <td>CaffeKernel</td>
+            <td>Runs inference on a network using Caffe framework</td>
+        </tr>
+        <tr>
+            <td>ImageRead</td>
+            <td>Reads an image with provided path</td>
+        </tr>
+        <tr>
+            <td>PythonKernel</td>
+            <td>Executes kernels written in Python</td>
+        </tr>
+        <tr>
+            <td>OpticalFlowDenseNonPyrLK</td>
+            <td>Run non-pyramidal LK Optical Flow (Available only with DPUCADX8G on Alveo-U200</td>
+        </tr>
+    </tbody>
+</table>
 
 ## Additional Details
 

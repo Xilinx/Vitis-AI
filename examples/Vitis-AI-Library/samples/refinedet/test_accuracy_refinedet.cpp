@@ -31,7 +31,7 @@ std::string get_single_name(const std::string& line);
 extern int GLOBAL_ENABLE_C_SOFTMAX;
 static std::map<std::string, std::vector<std::string>> label_maps{
     {"caffe_model", {"", "person", ""}},
-    {"refinedet_tf",
+    {"refinedet_VOC_tf",
      {"none", "aeroplane", "bicycle",   "bird",   "boat",        "bottle",
       "bus",  "car",       "cat",       "chair",  "cow",         "diningtable",
       "dog",  "horse",     "motorbike", "person", "pottedplant", "sheep",

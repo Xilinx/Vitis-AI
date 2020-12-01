@@ -59,7 +59,7 @@ static void inception_preprocess(const cv::Mat& image, int height, int width,
                                  float central_fraction = 0.875,
                                  bool iscentral_crop = true) {
   LOG_IF(INFO, ENV_PARAM(ENABLE_CLASSIFICATION_DEBUG))
-        << "incepiton_preprocess";
+      << "incepiton_preprocess";
   cv::Mat res_crop = image;
   if (iscentral_crop) {
     float img_hd = image.rows;
@@ -149,6 +149,9 @@ vitis::ai::ClassificationResult ClassificationImp::run(
       case 4:
         inception_pt(input_image, height, width, image);
         break;
+      case 5:
+        vgg_preprocess(input_image, height, width, image);
+        break;
       default:
         break;
     }
@@ -163,20 +166,26 @@ vitis::ai::ClassificationResult ClassificationImp::run(
   __TOC__(CLASSIFY_SET_IMG)
 
   auto postprocess_index = 0;
-  if (configurable_dpu_task_->getConfig().classification_param().has_avg_pool_param()) {
+  if (configurable_dpu_task_->getConfig()
+          .classification_param()
+          .has_avg_pool_param()) {
     __TIC__(CLASSIFY_DPU_0)
     configurable_dpu_task_->run(0);
     __TOC__(CLASSIFY_DPU_0)
 
-    auto avg_scale = configurable_dpu_task_->getConfig().classification_param().avg_pool_param().scale();
+    auto avg_scale = configurable_dpu_task_->getConfig()
+                         .classification_param()
+                         .avg_pool_param()
+                         .scale();
     __TIC__(CLASSIFY_AVG_POOL)
     vitis::ai::globalAvePool(
-      (int8_t *)configurable_dpu_task_->getOutputTensor()[0][0].get_data(0),
-      //1024, 9, 3,
-      configurable_dpu_task_->getOutputTensor()[0][0].channel,
-      configurable_dpu_task_->getOutputTensor()[0][0].width,
-      configurable_dpu_task_->getOutputTensor()[0][0].height,
-      (int8_t *)configurable_dpu_task_->getInputTensor()[1][0].get_data(0), avg_scale);
+        (int8_t*)configurable_dpu_task_->getOutputTensor()[0][0].get_data(0),
+        // 1024, 9, 3,
+        configurable_dpu_task_->getOutputTensor()[0][0].channel,
+        configurable_dpu_task_->getOutputTensor()[0][0].width,
+        configurable_dpu_task_->getOutputTensor()[0][0].height,
+        (int8_t*)configurable_dpu_task_->getInputTensor()[1][0].get_data(0),
+        avg_scale);
     __TOC__(CLASSIFY_AVG_POOL)
 
     __TIC__(CLASSIFY_DPU_1)
@@ -187,15 +196,15 @@ vitis::ai::ClassificationResult ClassificationImp::run(
     __TIC__(CLASSIFY_DPU)
     configurable_dpu_task_->run(0);
     __TOC__(CLASSIFY_DPU)
-
   }
   __TIC__(CLASSIFY_POST_ARM)
-  auto ret =
-      classification_post_process(configurable_dpu_task_->getInputTensor()[postprocess_index],
-                                  configurable_dpu_task_->getOutputTensor()[postprocess_index],
-                                  configurable_dpu_task_->getConfig());
+  auto ret = classification_post_process(
+      configurable_dpu_task_->getInputTensor()[postprocess_index],
+      configurable_dpu_task_->getOutputTensor()[postprocess_index],
+      configurable_dpu_task_->getConfig());
 
-  if (configurable_dpu_task_->getOutputTensor()[postprocess_index][0].channel == 1001) {
+  if (configurable_dpu_task_->getOutputTensor()[postprocess_index][0].channel ==
+      1001) {
     for (auto& s : ret[0].scores) {
       s.index--;
     }
@@ -252,6 +261,9 @@ std::vector<ClassificationResult> ClassificationImp::run(
         case 4:
           inception_pt(input_images[i], height, width, image);
           break;
+        case 5:
+          vgg_preprocess(input_images[i], height, width, image);
+          break;
         default:
           break;
       }
@@ -268,23 +280,31 @@ std::vector<ClassificationResult> ClassificationImp::run(
   __TOC__(CLASSIFY_SET_IMG)
 
   auto postprocess_index = 0;
-  if (configurable_dpu_task_->getConfig().classification_param().has_avg_pool_param()) {
+  if (configurable_dpu_task_->getConfig()
+          .classification_param()
+          .has_avg_pool_param()) {
     __TIC__(CLASSIFY_DPU_0)
     configurable_dpu_task_->run(0);
     __TOC__(CLASSIFY_DPU_0)
 
-    auto avg_scale = configurable_dpu_task_->getConfig().classification_param().avg_pool_param().scale();
-    auto batch_size =configurable_dpu_task_->getInputTensor()[0][0].batch;
+    auto avg_scale = configurable_dpu_task_->getConfig()
+                         .classification_param()
+                         .avg_pool_param()
+                         .scale();
+    auto batch_size = configurable_dpu_task_->getInputTensor()[0][0].batch;
 
     __TIC__(CLASSIFY_AVG_POOL)
     for (auto batch_idx = 0u; batch_idx < batch_size; batch_idx++) {
       vitis::ai::globalAvePool(
-        (int8_t *)configurable_dpu_task_->getOutputTensor()[0][0].get_data(batch_idx),
-        //1024, 9, 3,
-        configurable_dpu_task_->getOutputTensor()[0][0].channel,
-        configurable_dpu_task_->getOutputTensor()[0][0].width,
-        configurable_dpu_task_->getOutputTensor()[0][0].height,
-        (int8_t *)configurable_dpu_task_->getInputTensor()[1][0].get_data(batch_idx), avg_scale);
+          (int8_t*)configurable_dpu_task_->getOutputTensor()[0][0].get_data(
+              batch_idx),
+          // 1024, 9, 3,
+          configurable_dpu_task_->getOutputTensor()[0][0].channel,
+          configurable_dpu_task_->getOutputTensor()[0][0].width,
+          configurable_dpu_task_->getOutputTensor()[0][0].height,
+          (int8_t*)configurable_dpu_task_->getInputTensor()[1][0].get_data(
+              batch_idx),
+          avg_scale);
     }
     __TOC__(CLASSIFY_AVG_POOL)
 
@@ -296,17 +316,17 @@ std::vector<ClassificationResult> ClassificationImp::run(
     __TIC__(CLASSIFY_DPU)
     configurable_dpu_task_->run(0);
     __TOC__(CLASSIFY_DPU)
-
   }
-  
+
   __TIC__(CLASSIFY_POST_ARM)
-  auto rets =
-      classification_post_process(configurable_dpu_task_->getInputTensor()[postprocess_index],
-                                  configurable_dpu_task_->getOutputTensor()[postprocess_index],
-                                  configurable_dpu_task_->getConfig());
+  auto rets = classification_post_process(
+      configurable_dpu_task_->getInputTensor()[postprocess_index],
+      configurable_dpu_task_->getOutputTensor()[postprocess_index],
+      configurable_dpu_task_->getConfig());
 
   for (auto& ret : rets) {
-    if (configurable_dpu_task_->getOutputTensor()[postprocess_index][0].channel == 1001) {
+    if (configurable_dpu_task_->getOutputTensor()[postprocess_index][0]
+            .channel == 1001) {
       for (auto& s : ret.scores) {
         s.index--;
       }

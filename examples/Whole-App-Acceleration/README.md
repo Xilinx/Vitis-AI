@@ -50,6 +50,8 @@ Runtime packages on the board separately.**
 	
 2. Update the system image files.
 	* Download the [waa_system_v1.2.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_v1.2.0.tar.gz).	
+
+	* For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/waa_system_v1.2.0.tar.gz`
 	* Copy the `waa_system_v1.2.0.tar.gz` to the board using scp.
 	```
 	scp waa_system_v1.2.0.tar.gz root@IP_OF_BOARD:~/
@@ -74,6 +76,8 @@ Runtime packages on the board separately.**
 
 * Download [waa_system_u50_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_u50_v1.3.0.tar.gz) and update the xclbin file.
 
+* For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/waa_system_u50_v1.3.0.tar.gz`
+
 ```
 	tar -xzvf waa_system_u50_v1.3.0.tar.gz
 	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
@@ -88,6 +92,8 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu
 	```
 	  cd /workspace
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
+	  For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet50-u50-r1.3.0.tar.gz`
+
 	```	
 	* Install the model package.
 	```
@@ -99,6 +105,7 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu
 	```
 	  cd /workspace
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz -O yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
+	  For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz`
 	```	
 	* Install the model package.
 	```
@@ -108,7 +115,11 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu
 	
 For resnet50_mt_py_waa example, download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/VART/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
 
+For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet_test_image.jpg`
+
 For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/VART/Whole-App-Acceleration/adas_detection_waa/data`
+
+For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/adas_detection_input.jpg`
 
 3. Compile and run the program on the target
 

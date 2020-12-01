@@ -28,7 +28,7 @@ namespace ai {
 typedef std::tuple<std::array<int, 4>, std::array<int, 3>> SpecifiedCfg;
 
 class FTD_Filter_Linear {
-public:
+ public:
   FTD_Filter_Linear(){};
   ~FTD_Filter_Linear(){};
   void Init(const cv::Rect_<float> &bbox, int mode,
@@ -39,7 +39,7 @@ public:
   cv::Rect_<float> GetPre();
   cv::Rect_<float> GetPost();
 
-private:
+ private:
   void LeastSquare(std::vector<std::array<float, 2>> &coord,
                    std::array<float, 8> &para, float x, int region);
   void ClearSquare(std::vector<std::array<float, 2>> &coord,
@@ -62,6 +62,6 @@ private:
   std::array<int, 4> allregion;
 };
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis
 #endif

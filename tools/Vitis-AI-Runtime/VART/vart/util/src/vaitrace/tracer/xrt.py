@@ -58,6 +58,18 @@ class xrtTracer(tracer.tracerBase.Tracer):
         return {}
 
     def process(self, data, t_range=[]):
+        """
+        Turn off all XRT profile and trace options
+        So that, we can prevent 'xbutil dump' generates another xclbin.ex.run_summary that would
+        over-write the prev one for vitis-ai process
+        """
+        os.environ["Debug.profile"] = "false"
+        os.environ["Debug.xrt_profile"] = "false"
+        os.environ["Debug.vitis_ai_profile"] = "false"
+        os.environ["Debug.lop_trace"] = "false"
+        os.environ["Debug.timeline_trace"] = "false"
+        os.environ["Debug.data_transfer_trace"] = "off"
+
         try:
             d = os.popen('xbutil dump').read()
         except:

@@ -86,12 +86,6 @@ TFSSDdetector::TFSSDdetector(unsigned int num_classes,
 template <typename T>
 void TFSSDdetector::Detect(TFSSDResult* result, int8_t *loc) {
 
-	decoded_bboxes_.clear();
-
-	unsigned int num_det = 0;
-	vector<vector<pair<float,int>>> indices(num_classes_);
-	vector<vector<pair<float, int>>> score_index_vec(num_classes_);
-
 	short *nms_out;
 
 	__TIC__(Sort)
@@ -100,14 +94,13 @@ void TFSSDdetector::Detect(TFSSDResult* result, int8_t *loc) {
 	//std::cout << "nms sort kernel done\n"; 
 	__TOC__(Sort)
 
-	//const int MAX_BOX_PER_CLASS = 40; 
 	const int MAX_BOX_PER_CLASS = 32;
 	const int out_scale = 16384.0;
 	int off = 0;
 	for (auto label = 1u; label < num_classes_; ++label) {
 
 		short *perclass_nms_out = nms_out+(MAX_BOX_PER_CLASS*(label-1)*8);
-		std::cout << "res of c: " << label << ", cnt: " << (int)perclass_nms_out[0] << "\n";
+		//std::cout << "res of c: " << label << ", cnt: " << (int)perclass_nms_out[0] << "\n";
 
 		int otid = 8;
 		for (auto idx = 0; idx < (int)perclass_nms_out[0]; idx++)
@@ -136,7 +129,7 @@ void TFSSDdetector::Detect(TFSSDResult* result, int8_t *loc) {
 			res.width = w;
 			res.height = h;
 			otid += 8;
-			std::cout << "----- res.x:" <<  res.x << " res.y" << res.y << " width: " << res.width << " height:" << res.height<< std::endl;
+			//std::cout << "----- res.x:" <<  res.x << " res.y" << res.y << " width: " << res.width << " height:" << res.height<< std::endl;
 
 			//std::cout <<"Detect(): Rect: bbox: " << x << " " << y << " " << w << " " << h 
 			//           << "----- res.x:" <<  res.x << " res.y" << res.y << " width: " << res.width << " height:" << res.height<< std::endl;

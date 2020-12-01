@@ -24,9 +24,9 @@ ReidTracker::ReidTracker() {}
 ReidTracker::~ReidTracker() {}
 
 std::shared_ptr<ReidTracker> ReidTracker::create(uint64_t mode,
-                                         const SpecifiedCfg &cfg) {
+                                                 const SpecifiedCfg &cfg) {
   return std::shared_ptr<ReidTracker>(new ReidTrackerImp(mode, cfg));
 }
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

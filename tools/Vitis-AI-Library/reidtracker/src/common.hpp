@@ -28,29 +28,29 @@ namespace ai {
 
 using Clock = std::chrono::high_resolution_clock;
 
-#define __TIC__(tag)                                                           \
-  auto __##tag##_start_time = Clock::now();                                    \
+#define __TIC__(tag)                        \
+  auto __##tag##_start_time = Clock::now(); \
   auto __##tag##_end_time = Clock::now();
 
-#define __TOC__(tag)                                                           \
-  __##tag##_end_time = Clock::now();                                           \
-  LOG_IF(INFO, getenv("PROF_INFO") && std::stoi(getenv("PROF_INFO")) == 1)     \
-      << #tag << " : "                                                         \
-      << std::chrono::duration_cast<std::chrono::microseconds>(                \
-             __##tag##_end_time - __##tag##_start_time)                        \
+#define __TOC__(tag)                                                       \
+  __##tag##_end_time = Clock::now();                                       \
+  LOG_IF(INFO, getenv("PROF_INFO") && std::stoi(getenv("PROF_INFO")) == 1) \
+      << #tag << " : "                                                     \
+      << std::chrono::duration_cast<std::chrono::microseconds>(            \
+             __##tag##_end_time - __##tag##_start_time)                    \
              .count();
 
-#define __TIC_SUM__(tag)                                                       \
-  static auto __##tag##_total_time = 0U;                                       \
+#define __TIC_SUM__(tag)                 \
+  static auto __##tag##_total_time = 0U; \
   auto __##tag##_start_time = Clock::now();
 
-#define __TOC_SUM__(tag)                                                       \
-  auto __##tag##_end_time = Clock::now();                                      \
-  __##tag##_total_time +=                                                      \
-      std::chrono::duration_cast<std::chrono::microseconds>(                   \
-          __##tag##_end_time - __##tag##_start_time)                           \
-          .count();                                                            \
+#define __TOC_SUM__(tag)                                     \
+  auto __##tag##_end_time = Clock::now();                    \
+  __##tag##_total_time +=                                    \
+      std::chrono::duration_cast<std::chrono::microseconds>( \
+          __##tag##_end_time - __##tag##_start_time)         \
+          .count();                                          \
   LOG(INFO) << #tag << " : " << __##tag##_total_time;
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

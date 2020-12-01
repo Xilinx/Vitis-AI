@@ -17,33 +17,33 @@
 #ifndef _FTD_STRUCTURE_HPP
 #define _FTD_STRUCTURE_HPP
 
-#include "ftd_trajectory.hpp"
-#include "ftd_hungarian.hpp"
-#include <vitis/ai/reid.hpp>
 #include <memory>
+#include <mutex>
 #include <queue>
 #include <thread>
-#include <mutex>
+#include <vitis/ai/reid.hpp>
+#include "ftd_hungarian.hpp"
+#include "ftd_trajectory.hpp"
 typedef pair<int, Mat> imagePair;
 class paircomp {
-public:
-    bool operator()(const imagePair &n1, const imagePair &n2) const {
-        if (n1.first == n2.first) return n1.first > n2.first;
-        return n1.first > n2.first;
-    }
+ public:
+  bool operator()(const imagePair &n1, const imagePair &n2) const {
+    if (n1.first == n2.first) return n1.first > n2.first;
+    return n1.first > n2.first;
+  }
 };
 
 namespace vitis {
 namespace ai {
 
 class FTD_Structure {
-public:
+ public:
   FTD_Structure(const SpecifiedCfg &specified_cfg);
   ~FTD_Structure();
   void clear();
 
-  std::vector<OutputCharact> Update(const cv::Mat &image, uint64_t frame_id, bool detect_flag,
-                                    int mode,
+  std::vector<OutputCharact> Update(const cv::Mat &image, uint64_t frame_id,
+                                    bool detect_flag, int mode,
                                     std::vector<InputCharact> &input_characts);
   std::vector<int> GetRemoveID();
 
@@ -51,7 +51,7 @@ public:
   int min_hits = 3;
   int frame_count = 0;
 
-private:
+ private:
   std::vector<uint64_t> id_record;
   float iou_threshold;
   float feat_distance_low;
@@ -68,6 +68,6 @@ private:
   SpecifiedCfg specified_cfg_;
 };
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis
 #endif
