@@ -146,7 +146,7 @@ This part is about how to run the Adas detection example on zcu102 board.
 
 Download the images at https://cocodataset.org/#download. Please select suitable images which has car, bicycle or pedestrian and copy these images to `Vitis-AI/dsa/WAA-TRD/app/adas_detection_waa/data`. For bash, test images can be obtained from here.
 ```
-/wrk/acceleration/users/maheshm/vai_1_3/adas_detection_image
+XHD/XSJ/XCO: /wrk/acceleration/users/maheshm/vai_1_3/adas_detection_image
 ```
 
 Copy the directory $TRD_HOME/app/adas_detection_waa to the BOOT partition of the SD Card.

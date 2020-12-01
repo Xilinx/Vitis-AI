@@ -3,6 +3,7 @@
   ```
   cd ~/adas_detection_waa
   ./build.sh
+  mkdir output #Will be written to the picture after processing
   ```
   #### Run adas_detection without waa
   ```
@@ -18,6 +19,7 @@
   ```
   cd ./adas_detection_waa
   ./build.sh
+  mkdir output #Will be written to the picture after processing
   ```
   #### Run adas_detection without waa
   ```
