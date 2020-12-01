@@ -52,7 +52,6 @@ FILE_DIR   = os.path.dirname(os.path.abspath(__file__))
 HOME_DIR   = os.getenv('HOME')
 QUANT_DIR = os.path.join(str(Path.home()),
                         'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/')
-#QUANT_DIR      = '/workspace/models/data/imagenet/val_small'
 
 if not os.path.exists(QUANT_DIR):
     raise ValueError("Could not find directory "
@@ -107,6 +106,7 @@ def transform_image(image):
 
 input_name  = 'data'
 input_shape = (1,3,224,224)
+shape_dict  = {input_name:input_shape}
 target      = 'DPUCADX8G'
 tvm_target  = 'llvm'
 lib_kwargs  = {}
@@ -141,7 +141,7 @@ def inputs_func(img_files: List[str]):
 
 
 
-mod, params = relay.frontend.from_mxnet(block, input_shape)
+mod, params = relay.frontend.from_mxnet(block, shape_dict)
 mod["main"] = bind_params_by_name(mod["main"], params)
 mod = annotation(mod, params, target)
 mod = relay.transform.MergeCompilerRegions()(mod)
