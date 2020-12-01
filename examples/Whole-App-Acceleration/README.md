@@ -150,9 +150,9 @@ For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1
 
 4. Compile and run the program on the target
 
-For resnet50_mt_py_waa example, please refer to [resnet50_mt_py_waa readme](./resnet50_mt_py_waa/readme) 
+For resnet50_mt_py_waa example, please refer to [resnet50_mt_py_waa readme](./resnet50_mt_py_waa/README.md) 
 
-For adas_detection_waa example, please refer to [adas_detection_waa readme](./adas_detection_waa/readme) 
+For adas_detection_waa example, please refer to [adas_detection_waa readme](./adas_detection_waa/README.md) 
 
 ### Performance:
 Below table shows the comparison of througput achieved by acclerating the pre-processing pipeline on FPGA. 
