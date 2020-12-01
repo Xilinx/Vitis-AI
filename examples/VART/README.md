@@ -233,15 +233,17 @@ If you encounter any path errors in running examples, check to see if you follow
 	  cd /workspace
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
 	```	
-	* Install the model package.
+	* Install the model package.  
+	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
+	```
+	  mkdir /usr/share/vitis_ai_library/models
+	```
+	Then install the model package.
 	```
 	  tar -xzvf resnet50-u50-r1.3.0.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
-	Note that if the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
-	```
-	  mkdir /usr/share/vitis_ai_library/models
-	```
+
 3. Compile the sample, take `resnet50` as an example.
 	```
 	cd /workspace/examples/VART/samples/resnet50
