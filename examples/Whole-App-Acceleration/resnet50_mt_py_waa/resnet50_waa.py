@@ -91,11 +91,12 @@ def preprocess_one_image_fn(image_path, width=224, height=224):
    B = (B - means[0]) * scales[0]
    G = (G - means[1]) * scales[1]
    R = (R - means[2]) * scales[2]
+   image = cv2.merge([B, G, R])
    return image
 
 
 SCRIPT_DIR = get_script_directory()
-calib_image_dir = SCRIPT_DIR + "/../images/"
+calib_image_dir = SCRIPT_DIR + "/images/"
 global threadnum
 threadnum = 0
 
@@ -183,13 +184,13 @@ def main(argv):
     fpga_pp = waa_rt.PreProcess(xclbin_p,kernelName_p,deviceIdx_p)
     time1 = int(round(time.time() * 1000))
     img = []
+    time_start = time.time()
     for i in range(runTotall):
         path = os.path.join(calib_image_dir,listimage[i])
         img.append(fpga_pp.preprocess_input(path))
 
-    cnt = 360
+    cnt = 1
     """run with batch """
-    time_start = time.time()
     for i in range(int(threadnum)):
         t1 = threading.Thread(target=runResnet50, args=(all_dpu_runners[i], img, cnt))
         threadAll.append(t1)
@@ -202,7 +203,7 @@ def main(argv):
     #print("Pre time: %d ms" %(time_pre - time1))
     time_end = time.time()
     timetotal = time_end - time_start
-    total_frames = cnt * int(threadnum)
+    total_frames = runTotall
     fps = float(total_frames / timetotal)
     print(
         "FPS=%.2f, total frames = %.2f , time=%.6f seconds"

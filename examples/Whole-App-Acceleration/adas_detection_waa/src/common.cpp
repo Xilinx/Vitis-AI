@@ -28,41 +28,41 @@ int getTensorShape(vart::Runner* runner, GraphInfo* shapes, int cntin,
     std::iota(shapes->output_mapping.begin(), shapes->output_mapping.end(), 0);
   }
   for (int i = 0; i < cntin; i++) {
-    auto dim_num = inputTensors[i]->get_dim_num();
+    auto dim_num = inputTensors[i]->get_shape().size();
     if (dim_num == 4) {
-      shapes->inTensorList[i].channel = inputTensors[i]->get_dim_size(3);
-      shapes->inTensorList[i].width = inputTensors[i]->get_dim_size(2);
-      shapes->inTensorList[i].height = inputTensors[i]->get_dim_size(1);
+      shapes->inTensorList[i].channel = inputTensors[i]->get_shape().at(3);
+      shapes->inTensorList[i].width = inputTensors[i]->get_shape().at(2);
+      shapes->inTensorList[i].height = inputTensors[i]->get_shape().at(1);
       shapes->inTensorList[i].size =
-          inputTensors[i]->get_element_num() / inputTensors[0]->get_dim_size(0);
+          inputTensors[i]->get_element_num() / inputTensors[0]->get_shape().at(0);
     } else if (dim_num == 2) {
-      shapes->inTensorList[i].channel = inputTensors[i]->get_dim_size(1);
+      shapes->inTensorList[i].channel = inputTensors[i]->get_shape().at(1);
       shapes->inTensorList[i].width = 1;
       shapes->inTensorList[i].height = 1;
       shapes->inTensorList[i].size =
-          inputTensors[i]->get_element_num() / inputTensors[0]->get_dim_size(0);
+          inputTensors[i]->get_element_num() / inputTensors[0]->get_shape().at(0);
     }
   }
   for (int i = 0; i < cntout; i++) {
-    auto dim_num = outputTensors[shapes->output_mapping[i]]->get_dim_num();
+    auto dim_num = outputTensors[shapes->output_mapping[i]]->get_shape().size();
     if (dim_num == 4) {
       shapes->outTensorList[i].channel =
-          outputTensors[shapes->output_mapping[i]]->get_dim_size(3);
+          outputTensors[shapes->output_mapping[i]]->get_shape().at(3);
       shapes->outTensorList[i].width =
-          outputTensors[shapes->output_mapping[i]]->get_dim_size(2);
+          outputTensors[shapes->output_mapping[i]]->get_shape().at(2);
       shapes->outTensorList[i].height =
-          outputTensors[shapes->output_mapping[i]]->get_dim_size(1);
+          outputTensors[shapes->output_mapping[i]]->get_shape().at(1);
       shapes->outTensorList[i].size =
           outputTensors[shapes->output_mapping[i]]->get_element_num() /
-          outputTensors[shapes->output_mapping[0]]->get_dim_size(0);
+          outputTensors[shapes->output_mapping[0]]->get_shape().at(0);
     } else if (dim_num == 2) {
       shapes->outTensorList[i].channel =
-          outputTensors[shapes->output_mapping[i]]->get_dim_size(1);
+          outputTensors[shapes->output_mapping[i]]->get_shape().at(1);
       shapes->outTensorList[i].width = 1;
       shapes->outTensorList[i].height = 1;
       shapes->outTensorList[i].size =
           outputTensors[shapes->output_mapping[i]]->get_element_num() /
-          outputTensors[shapes->output_mapping[0]]->get_dim_size(0);
+          outputTensors[shapes->output_mapping[0]]->get_shape().at(0);
     }
   }
   return 0;

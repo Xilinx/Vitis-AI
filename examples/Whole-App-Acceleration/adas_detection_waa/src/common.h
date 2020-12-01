@@ -31,6 +31,8 @@
 #include <vart/runner.hpp>
 #include <xir/graph/graph.hpp>
 #include <xir/tensor/tensor.hpp>
+#include <xir/util/data_type.hpp>
+
 struct TensorShape {
   unsigned int height;
   unsigned int width;
@@ -55,8 +57,9 @@ inline std::vector<std::unique_ptr<xir::Tensor>> cloneTensorBuffer(
   auto type = xir::DataType::FLOAT;
   ret.reserve(tensors.size());
   for (const auto& tensor : tensors) {
-    ret.push_back(std::unique_ptr<xir::Tensor>(xir::Tensor::create(
-        tensor->get_name(), tensor->get_dims(), type, sizeof(float) * 8u)));
+    ret.push_back(std::unique_ptr<xir::Tensor>(
+        xir::Tensor::create(tensor->get_name(), tensor->get_shape(),
+                            xir::DataType{type, sizeof(float) * 8u})));
   }
   return ret;
 }
@@ -85,16 +88,16 @@ class CpuFlatTensorBuffer : public vart::TensorBuffer {
  public:
   virtual std::pair<uint64_t, size_t> data(
       const std::vector<int> idx = {}) override {
-    uint32_t size = std::ceil(tensor_->get_bit_width() / 8.f);
+    uint32_t size = std::ceil(tensor_->get_data_type().bit_width / 8.f);
     if (idx.size() == 0) {
       return {reinterpret_cast<uint64_t>(data_),
               tensor_->get_element_num() * size};
     }
-    auto dims = tensor_->get_dims();
+    auto dims = tensor_->get_shape();
     auto offset = 0;
-    for (auto k = 0; k < tensor_->get_dim_num(); k++) {
+    for (auto k = 0; k < tensor_->get_shape().size(); k++) {
       auto stride = 1;
-      for (auto m = k + 1; m < tensor_->get_dim_num(); m++) {
+      for (auto m = k + 1; m < tensor_->get_shape().size(); m++) {
         stride *= dims[m];
       }
       offset += idx[k] * stride;
