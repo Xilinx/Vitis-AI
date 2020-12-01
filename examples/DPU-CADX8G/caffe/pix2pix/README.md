@@ -25,6 +25,6 @@ source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 Download the caffe models. 
 
 ```
-cd /workspace/alveo/examples/caffe 
+cd /workspace/examples/DPU-CADX8G/caffe 
 python getModels.py
 ```
