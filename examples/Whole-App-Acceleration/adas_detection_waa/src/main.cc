@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <dirent.h>
+#include <sys/stat.h>
+#include <zconf.h>
+
 #include <algorithm>
-#include <vector>
 #include <atomic>
 #include <queue>
-#include <string>
-#include <iostream>
+#include <chrono>
 #include <fstream>
 #include <iomanip>
-#include <chrono>
+#include <iostream>
 #include <mutex>
 #include <zconf.h>
+#include <opencv2/opencv.hpp>
+#include <queue>
+#include <string>
 #include <thread>
-#include <sys/stat.h>
-#include <dirent.h>
-#include "common.h"
+#include <vector>
 
+#include "common.h"
 #include "utils.h"
+
 #include <opencv2/opencv.hpp>
 
 #include <CL/cl.h>
@@ -55,18 +60,19 @@ bool usePPFlag = true;
 int idxInputImage = 0;  // frame index of input video
 int idxShowImage = 0;   // next frame index to be displayed
 bool bReading = true;   // flag of reding input frame
+bool bExiting = false;
 chrono::system_clock::time_point start_time;
 
 typedef pair<int, Mat> imagePair;
 class paircomp {
-    public:
-    bool operator()(const imagePair &n1, const imagePair &n2) const {
-        if (n1.first == n2.first) {
-            return (n1.first > n2.first);
-        }
-
-        return n1.first > n2.first;
+ public:
+  bool operator()(const imagePair& n1, const imagePair& n2) const {
+    if (n1.first == n2.first) {
+      return (n1.first > n2.first);
     }
+
+    return n1.first > n2.first;
+  }
 };
 
 const string baseImagePath = "./data/";
@@ -110,12 +116,14 @@ void ListImages(string const &path, vector<string> &images) {
   closedir(dir);
 }
 
+
 // mutex for protection of input frames queue
 mutex mtxQueueInput;
 // mutex for protection of display frmaes queue
 mutex mtxQueueShow;
 // input frames queue
 queue<pair<int, Mat>> queueInput;
+queue<float *> queueInput_2;
 // display frames queue
 priority_queue<imagePair, vector<imagePair>, paircomp> queueShow;
 GraphInfo shapes;
@@ -130,7 +138,9 @@ GraphInfo shapes;
  */
 int runTotal;
 PPHandle* handle;
-void setInputImageForYOLO(vart::Runner* runner, float *data, const Mat& frame, float* mean) {
+void setInputImageForYOLO(float *data, const Mat& frame) {
+  /* mean values for YOLO-v3 */
+  float mean[3] = {0.0f, 0.0f, 0.0f};
   int width = shapes.inTensorList[0].width;
   int height = shapes.inTensorList[0].height;
   int size = shapes.inTensorList[0].size;
@@ -142,31 +152,23 @@ void setInputImageForYOLO(vart::Runner* runner, float *data, const Mat& frame, f
       if(data[i] < 0) data[i] = (float)(127/scalei);
     }
   } else {
-    Mat img_copy;
     image img_new = load_image_cv(frame);
     image img_yolo = letterbox_image(img_new, width, height);
+
     vector<float> bb(size);
-    if (runner->get_tensor_format() == vart::Runner::TensorFormat::NHWC) {
-      for(int b = 0; b < height; ++b) {
-        for(int c = 0; c < width; ++c) {
-          for(int a = 0; a < 3; ++a) {
-            bb[b*width*3 + c*3 + a] = img_yolo.data[a*height*width + b*width + c];
-          }
-        }
-      }
-    } else {
-      for(int a = 0; a < 3; ++a) {
-        for(int b = 0; b < height; ++b) {
-          for(int c = 0; c < width; ++c) {
-            bb[a*width*height + b*width + c] = img_yolo.data[a*height*width + b*width + c];
-          }
+    for (int b = 0; b < height; ++b) {
+      for (int c = 0; c < width; ++c) {
+        for (int a = 0; a < 3; ++a) {
+          bb[b * width * 3 + c * 3 + a] =
+              img_yolo.data[a * height * width + b * width + c];
         }
       }
     }
+
     float scale = pow(2, 7);
-    for(int i = 0; i < size; ++i) {
+    for (int i = 0; i < size; ++i) {
       data[i] = bb.data()[i];
-      if(data[i] < 0) data[i] = (float)(127/scale);
+      if (data[i] < 0) data[i] = (float)(127 / scale);
     }
     free_image(img_new);
     free_image(img_yolo);
@@ -182,6 +184,7 @@ void setInputImageForYOLO(vart::Runner* runner, float *data, const Mat& frame, f
  */
 void readFrame(vector<string> images){
   start_time = chrono::system_clock::now();
+  float *data = new float[256*512*sizeof(float)];
 
   while(true){ 
     if(idxInputImage< images.size()) 
@@ -190,11 +193,16 @@ void readFrame(vector<string> images){
       img = imread(baseImagePath + images[idxInputImage]);
       mtxQueueInput.lock();
       queueInput.push(make_pair(idxInputImage++, img));
+	  
+	  /* feed input frame into DPU Task with mean value */
+      setInputImageForYOLO(data, img);
+      queueInput_2.push(data);
+	  
       mtxQueueInput.unlock();
     }
   }
 
-  exit(0);
+  bExiting = true;
 }
 
 /**
@@ -216,11 +224,15 @@ void displayFrame(vector<string> images) {
     else if (idxShowImage == queueShow.top().first) {
       frame = queueShow.top().second;
       cv::imwrite("./output/" + images[idxShowImage], frame);
+      //std::cout << "Input Image:" << "./data/" + images[idxShowImage] << std::endl;
+      //std::cout << "Output Image:" << "./output/" + images[idxShowImage] << std::endl;
+
       idxShowImage++;
       queueShow.pop();
       mtxQueueShow.unlock();
       if(idxShowImage==runTotal) {
         bReading = false;
+		
         auto show_time = chrono::system_clock::now();
         auto dura = (duration_cast<microseconds>(show_time - start_time)).count();
         stringstream buffer_str;
@@ -228,7 +240,7 @@ void displayFrame(vector<string> images) {
           << (float)runTotal / (dura / 1000000.f);
         string a = buffer_str.str() + " FPS";
         std::cout << "Performance:" << a << std::endl;
-
+	
         exit(0);
       }
     } else {
@@ -247,15 +259,16 @@ void displayFrame(vector<string> images) {
  *
  * @return none
  */
-void postProcess(vart::Runner* runner, Mat& frame,vector<float*> results, int sWidth, int sHeight){
+void postProcess(vart::Runner* runner, Mat& frame, vector<float*> results,
+                 int sWidth, int sHeight) {
   const string classes[3] = {"car", "person", "cycle"};
 
   /* four output nodes of YOLO-v3 */
   // const string outputs_node[4] = {"layer81_conv", "layer93_conv",
   //                                    "layer105_conv", "layer117_conv"};
   vector<vector<float>> boxes;
-  //auto  outputTensors = runner->get_output_tensors();
-  for(int ii = 0; ii < 4; ii++) {
+  // auto  outputTensors = runner->get_output_tensors();
+  for (int ii = 0; ii < 4; ii++) {
     int width = shapes.outTensorList[ii].width;
     int height = shapes.outTensorList[ii].height;
     int channel = shapes.outTensorList[ii].channel;
@@ -264,38 +277,40 @@ void postProcess(vart::Runner* runner, Mat& frame,vector<float*> results, int sW
     boxes.reserve(sizeOut);
 
     /* Store every output node results */
-    get_output(results[ii], sizeOut,  channel, height, width, result);
+    get_output(results[ii], sizeOut, channel, height, width, result);
 
     /* Store the object detection frames as coordinate information  */
     detect(boxes, result, channel, height, width, ii, sHeight, sWidth);
   }
 
   /* Restore the correct coordinate frame of the original image */
-  correct_region_boxes(boxes, boxes.size(), frame.cols, frame.rows, sWidth, sHeight);
+  correct_region_boxes(boxes, boxes.size(), frame.cols, frame.rows, sWidth,
+                       sHeight);
 
   /* Apply the computation for NMS */
   vector<vector<float>> res = applyNMS(boxes, classificationCnt, NMS_THRESHOLD);
 
   float h = frame.rows;
   float w = frame.cols;
-  for(size_t i = 0; i < res.size(); ++i) {
-    float xmin = (res[i][0] - res[i][2]/2.0) * w + 1.0;
-    float ymin = (res[i][1] - res[i][3]/2.0) * h + 1.0;
-    float xmax = (res[i][0] + res[i][2]/2.0) * w + 1.0;
-    float ymax = (res[i][1] + res[i][3]/2.0) * h + 1.0;
+  for (size_t i = 0; i < res.size(); ++i) {
+    float xmin = (res[i][0] - res[i][2] / 2.0) * w + 1.0;
+    float ymin = (res[i][1] - res[i][3] / 2.0) * h + 1.0;
+    float xmax = (res[i][0] + res[i][2] / 2.0) * w + 1.0;
+    float ymax = (res[i][1] + res[i][3] / 2.0) * h + 1.0;
 
-    if(res[i][res[i][4] + 6] > CONF ) {
+    if (res[i][res[i][4] + 6] > CONF) {
       int type = res[i][4];
       string classname = classes[type];
 
-      if (type==0) {
-        rectangle(frame, cvPoint(xmin, ymin), cvPoint(xmax, ymax), Scalar(0, 0, 255), 1, 1, 0);
-      }
-      else if (type==1) {
-        rectangle(frame, cvPoint(xmin, ymin), cvPoint(xmax, ymax), Scalar(255, 0, 0), 1, 1, 0);
-      }
-      else {
-        rectangle(frame, cvPoint(xmin, ymin), cvPoint(xmax, ymax), Scalar(0 ,255, 255), 1, 1, 0);
+      if (type == 0) {
+        rectangle(frame, cvPoint(xmin, ymin), cvPoint(xmax, ymax),
+                  Scalar(0, 0, 255), 1, 1, 0);
+      } else if (type == 1) {
+        rectangle(frame, cvPoint(xmin, ymin), cvPoint(xmax, ymax),
+                  Scalar(255, 0, 0), 1, 1, 0);
+      } else {
+        rectangle(frame, cvPoint(xmin, ymin), cvPoint(xmax, ymax),
+                  Scalar(0, 255, 255), 1, 1, 0);
       }
     }
   }
@@ -309,24 +324,30 @@ void postProcess(vart::Runner* runner, Mat& frame,vector<float*> results, int sW
  * @return none
  */
 void runYOLO(vart::Runner* runner) {
-  /* mean values for YOLO-v3 */
-  float mean[3] = {0.0f, 0.0f, 0.0f};
   auto  inputTensors = cloneTensorBuffer(runner->get_input_tensors());
   int width = shapes.inTensorList[0].width;
   int height = shapes.inTensorList[0].height;
   auto outputTensors = cloneTensorBuffer(runner->get_output_tensors());
   // input/output data define
-  float *data = new float[shapes.inTensorList[0].size * inputTensors[0]->get_dim_size(0)];
-  float *result0 = new float[shapes.outTensorList[0].size * outputTensors[shapes.output_mapping[0]]->get_dim_size(0)];
-  float *result1 = new float[shapes.outTensorList[1].size * outputTensors[shapes.output_mapping[1]]->get_dim_size(0)];
-  float *result2 = new float[shapes.outTensorList[2].size * outputTensors[shapes.output_mapping[2]]->get_dim_size(0)];
-  float *result3 = new float[shapes.outTensorList[3].size * outputTensors[shapes.output_mapping[3]]->get_dim_size(0)];
+  float* data = nullptr;
+  float* result0 =
+      new float[shapes.outTensorList[0].size *
+                outputTensors[shapes.output_mapping[0]]->get_shape().at(0)];
+  float* result1 =
+      new float[shapes.outTensorList[1].size *
+                outputTensors[shapes.output_mapping[1]]->get_shape().at(0)];
+  float* result2 =
+      new float[shapes.outTensorList[2].size *
+                outputTensors[shapes.output_mapping[2]]->get_shape().at(0)];
+  float* result3 =
+      new float[shapes.outTensorList[3].size *
+                outputTensors[shapes.output_mapping[3]]->get_shape().at(0)];
   vector<float*> result;
   result.push_back(result0);
   result.push_back(result1);
   result.push_back(result2);
   result.push_back(result3);
-  std::vector<std::unique_ptr<vart::TensorBuffer> > inputs, outputs;
+  std::vector<std::unique_ptr<vart::TensorBuffer>> inputs, outputs;
   std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
   while (true) {
     pair<int, Mat> pairIndexImage;
@@ -334,8 +355,8 @@ void runYOLO(vart::Runner* runner) {
     mtxQueueInput.lock();
     if (queueInput.empty()) {
       mtxQueueInput.unlock();
-      if (bReading)
-      {
+      if(bExiting) break;
+      if (bReading) {
         continue;
       } else {
         break;
@@ -344,21 +365,24 @@ void runYOLO(vart::Runner* runner) {
       /* get an input frame from input frames queue */
       pairIndexImage = queueInput.front();
       queueInput.pop();
+      data = queueInput_2.front();
+      queueInput_2.pop();
       mtxQueueInput.unlock();
     }
     /* feed input frame into DPU Task with mean value */
-    setInputImageForYOLO(runner, data, pairIndexImage.second, mean);
+    //setInputImageForYOLO(data, pairIndexImage.second);
     // input/output tensorbuffer prepare
     inputs.push_back(
-      std::make_unique<CpuFlatTensorBuffer>(data,inputTensors[0].get()));
-    outputs.push_back( std::make_unique<CpuFlatTensorBuffer>(
-      result0,outputTensors[shapes.output_mapping[0]].get()));
-    outputs.push_back( std::make_unique<CpuFlatTensorBuffer>(
-      result1,outputTensors[shapes.output_mapping[1]].get()));
-    outputs.push_back( std::make_unique<CpuFlatTensorBuffer>(
-      result2,outputTensors[shapes.output_mapping[2]].get()));
-    outputs.push_back( std::make_unique<CpuFlatTensorBuffer>(
-      result3,outputTensors[shapes.output_mapping[3]].get()));
+        std::make_unique<CpuFlatTensorBuffer>(data, inputTensors[0].get()));
+
+    outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
+        result0, outputTensors[shapes.output_mapping[0]].get()));
+    outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
+        result1, outputTensors[shapes.output_mapping[1]].get()));
+    outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
+        result2, outputTensors[shapes.output_mapping[2]].get()));
+    outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
+        result3, outputTensors[shapes.output_mapping[3]].get()));
     inputsPtr.push_back(inputs[0].get());
     outputsPtr.resize(4);
     outputsPtr[shapes.output_mapping[0]] = outputs[0].get();
@@ -366,8 +390,8 @@ void runYOLO(vart::Runner* runner) {
     outputsPtr[shapes.output_mapping[2]] = outputs[2].get();
     outputsPtr[shapes.output_mapping[3]] = outputs[3].get();
     /* invoke the running of DPU for YOLO-v3 */
-    auto job_id = runner->execute_async(inputsPtr,outputsPtr);
-    runner->wait(job_id.first,-1);
+    auto job_id = runner->execute_async(inputsPtr, outputsPtr);
+    runner->wait(job_id.first, -1);
 
     postProcess(runner, pairIndexImage.second, result, width, height);
     mtxQueueShow.lock();
@@ -407,24 +431,29 @@ int main(const int argc, const char** argv) {
   }
   runTotal = images.size();
   usePPFlag = stoi(argv[2])==1;
+
   /* Load xclbin for hardware pre-processor */
   if (usePPFlag){
     pp_kernel_init(handle,"/usr/lib/dpu.xclbin", "pp_pipeline_accel",0);
   }
+
   /* Create 1 DPU Tasks for YOLO-v3 network model */
   /* Spawn 3 threads:
-     - 1 thread for reading video frame
-     - 1 thread for running YOLO-v3 network model
-     - 1 thread for displaying frame in monitor
-     */
-  auto graph = xir::Graph::deserialize(argv[1]);  
+  - 1 thread for reading video frame
+  - 1 running YOLO-v3 network model
+  - 1 thread for displaying frame in monitor
+  */
+  // auto runners = vart::Runner::create_dpu_runner(argv[1]);
+  auto graph = xir::Graph::deserialize(argv[1]);
   auto subgraph = get_dpu_subgraph(graph.get());
+  CHECK_EQ(subgraph.size(), 1u)
+      << "yolov3 should have one and only one dpu subgraph.";
+  LOG(INFO) << "create running for subgraph: " << subgraph[0]->get_name();
 
-  auto runnerptr = vart::Runner::create_runner(subgraph[0], "run");
-  auto runner = runnerptr.get();
+  auto runner = vart::Runner::create_runner(subgraph[0], "run");
   // get in/out tenosrs
-  auto  inputTensors = runner->get_input_tensors();
-  auto  outputTensors = runner->get_output_tensors();
+  auto inputTensors = runner->get_input_tensors();
+  auto outputTensors = runner->get_output_tensors();
   int inputCnt = inputTensors.size();
   int outputCnt = outputTensors.size();
   // init the shape info
@@ -432,21 +461,18 @@ int main(const int argc, const char** argv) {
   TensorShape outshapes[outputCnt];
   shapes.inTensorList = inshapes;
   shapes.outTensorList = outshapes;
-  getTensorShape(
-                 runner, &shapes, inputCnt,
+  getTensorShape(runner.get(), &shapes, inputCnt,
                  {"layer81", "layer93", "layer105", "layer117"});
 
   array<thread, 3> threadsList = {
-    thread(readFrame, images),
-    thread(displayFrame, images),
-    thread(runYOLO, runner)
+      thread(readFrame, images), 
+      thread(displayFrame, images),
+      thread(runYOLO, runner.get())
   };
 
   for (int i = 0; i < 3; i++) {
     threadsList[i].join();
   }
-  delete runner;
 
   return 0;
 }
-

@@ -19,7 +19,6 @@ name=$(basename $PWD)
 $CXX -O2 -w\
   -fno-inline \
   -I. \
-  -L/opt/xilinx/xrt/lib \
   -o $name \
   -std=c++17 \
   src/main.cc \
@@ -36,3 +35,4 @@ $CXX -O2 -w\
   -lglog \
   -lunilog \
   -lxir 
+
