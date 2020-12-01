@@ -15,10 +15,9 @@
  */
 
   1. build & run adas_detection_waa
-./build.sh
-mkdir output #Will be written to the picture after processing
-
-For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/adas_detection_input.jpg`
+  sample :  cd ~/adas_detection_waa
+            ./build.sh
+            mkdir output #Will be written to the picture after processing
 
 # ./adas_detection <model file> \
 #   0(Use software preprocessing, 1-use hardware preprocessing) 

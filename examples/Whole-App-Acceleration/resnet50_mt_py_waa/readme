@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-  1. Prepare test data set
-mkdir -p images
-Download 1000 images at http://image-net.org/download-images and copy it to ./images
+  1. Run resnet50 on zcu102
+  sample :  cd ~/resnet50_waa
+            python3 resnet50.py 4 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
 
-For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet_test_image.jpg`
-
-  2. Run resnet50 on zcu102
-  sample : python3 resnet50.py 4 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
-
-  3. Run resnet50 on U50
+  2. Run resnet50 on U50
   sample : /usr/bin/python3 resnet50.py 4 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
   
   3. Run resnet50 with waa on zcu102
-  sample : env XILINX_XRT=/usr python3 resnet50_waa.py 4 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
+  sample :  cd ~/resnet50_waa
+            env XILINX_XRT=/usr python3 resnet50_waa.py 4 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
 
   4. Run resnet50 with waaa on U50
   sample : /usr/bin/python3 resnet50_waa.py 4 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel

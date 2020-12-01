@@ -39,9 +39,16 @@ Runtime packages on the board separately.**
 1. Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
-		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.2.0.img.gz)  
-	
-      	Note: The version of the board image should be 2020.1 or above.
+		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.3.0.img.gz) 
+
+		For bash, same sd_card system image can be obtained from here
+
+		```
+		#XCD server
+		/group/dphi_software/vitis_ai_library/r1.3/xilinx-zcu102-dpu-v2020.2-v1.3.0.img.gz
+		``` 
+	    
+      	Note: The version of the board image should be 2020.2 or above.
 	* Use Etcher software to burn the image file onto the SD card.
 	* Insert the SD card with the image into the destination board.
 	* Plug in the power and boot the board using the serial port to operate on the system.
@@ -49,24 +56,37 @@ Runtime packages on the board separately.**
 	You can now operate on the board using SSH.
 	
 2. Update the system image files.
-	* Download the [waa_system_v1.2.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_v1.2.0.tar.gz).	
+	* Download the [waa_system_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_v1.3.0.tar.gz).	
 
-	* For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/waa_system_v1.2.0.tar.gz`
-	* Copy the `waa_system_v1.2.0.tar.gz` to the board using scp.
+		For bash, same tar file can be obtained from `/wrk/acceleration/users/maheshm/vai_1_3/waa_system_v1.3.0.tar.gz`
+	* Copy the `waa_system_v1.3.0.tar.gz` to the board using scp.
 	```
-	scp waa_system_v1.2.0.tar.gz root@IP_OF_BOARD:~/
+	scp waa_system_v1.3.0.tar.gz root@IP_OF_BOARD:~/
 	```
 	* Update the system image files on the target side
+
+	**For Resnet50:**
+
 	```
 	cd ~
-	tar -xzvf waa_system_v1.2.0.tar.gz
-	cp waa_system_v1.2.0/sd_card/* /mnt/sd-mmcblk0p1/
+	tar -xzvf waa_system_v1.3.0.tar.gz
+	cp waa_system_v1.3.0/sd_card_resnet50/* /mnt/sd-mmcblk0p1/
 	cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
 	ln -s /usr/lib/dpu.xclbin /mnt/dpu.xclbin
-	cp waa_system_v1.2.0/lib/* /usr/lib/
+	cp waa_system_v1.3.0/lib/* /usr/lib/
 	reboot
 	```
-	**Note that `waa_system_v1.2.0.tar.gz` can only be used for ZCU102.**
+	**For Adas Detection:**
+
+	```
+	cd ~
+	tar -xzvf waa_system_v1.3.0.tar.gz
+	cp waa_system_v1.3.0/sd_card_adasdetection/* /mnt/sd-mmcblk0p1/
+	cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
+	ln -s /usr/lib/dpu.xclbin /mnt/dpu.xclbin
+	reboot
+	```
+	**Note that `waa_system_v1.3.0.tar.gz` can only be used for ZCU102.**
 
 
 ## Running the Application on Alveo U50
@@ -121,7 +141,14 @@ For adas_detection_waa example, download the images at https://cocodataset.org/#
 
 For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/adas_detection_input.jpg`
 
-3. Compile and run the program on the target
+3. Copy WAA examples to the board (only for ZCU102 run)
+
+```
+	scp -r Vitis-AI/VART/Whole-App-Acceleration/resnet50_mt_py_waa root@IP_OF_BOARD:~/
+	scp -r Vitis-AI/VART/Whole-App-Acceleration/adas_detection_waa root@IP_OF_BOARD:~/
+```
+
+4. Compile and run the program on the target
 
 For resnet50_mt_py_waa example, please refer to [resnet50_mt_py_waa readme](./resnet50_mt_py_waa/readme) 
 
@@ -130,7 +157,7 @@ For adas_detection_waa example, please refer to [adas_detection_waa readme](./ad
 ### Performance:
 Below table shows the comparison of througput achieved by acclerating the pre-processing pipeline on FPGA. 
 For `Resnet-50`, the performance numbers are achieved by running 1K images randomly picked from ImageNet dataset.
-For `YOLO v3`, the performance numbers are achieved by running 5K images randomly picked from COCO dataset. 
+For `Adas Detection`, the performance numbers are achieved by running 1K images randomly picked from COCO dataset. 
 
 FPGA: ZCU102
 
@@ -154,15 +181,17 @@ FPGA: ZCU102
 
   <tr>
     <td>Resnet-50</td>
-    <td>52.60</td>
-    <td>62.94</td>
-    <td>19.66%</td>
+    <td>47.6</td>
+    <td>64</td>
+    <td>34.4%</td>
   </tr>
   
   <tr>
-   <td>YOLO v3</td>
-    <td>7.6</td>
-    <td>14.9</td>
-        <td>96.05%</td>
+   <td>Adas Detection</td>
+    <td>10.1</td>
+    <td>15.1</td>
+        <td>49.5%</td>
   </tr>
 </table>
+
+**Note that Performance numbers are computed using end-to-end latency and it depends on input image resolution. So performance numbers can vary with different images**
