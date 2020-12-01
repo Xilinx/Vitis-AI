@@ -14,7 +14,7 @@ This directory provides scripts for running several well known models on the FPG
   Setup the Environment
 
   ```sh
-  source /workspace/alveo/overlaybins/setup.sh
+  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
    Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning).
@@ -30,7 +30,7 @@ This directory provides scripts for running several well known models on the FPG
    Download Samples Models (will be downloaded into `./models` directory).
 
    ```sh
-   cd ${VAI_ALVEO_ROOT}/examples/tensorflow
+   cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/tensorflow
    python getModels.py
    ```
 
@@ -38,10 +38,10 @@ This directory provides scripts for running several well known models on the FPG
 
   After the setup, run through a sample end-to-end tensorflow classification example using the following steps that demonstrates preparing and deploying a trained tensorflow model for FPGA acceleration using Xilinx Vitis-AI.
 
-  The following example uses the googlenet example. You can try the flow with the other models found in `${VAI_ALVEO_ROOT}/examples/tensorflow/models` directory.
+  The following example uses the googlenet example. You can try the flow with the other models found in `${VAI_ALVEO_ROOT}/DPU-CADX8G/tensorflow/models` directory.
 
   ```sh
-  cd ${VAI_ALVEO_ROOT}/examples/tensorflow
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/tensorflow
   ```
 #### Inspect TensorFlow model
 

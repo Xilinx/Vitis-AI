@@ -20,7 +20,7 @@ CUR_DIR   =   $(shell pwd)
 
 # Version number parameter
 major=1
-minor=2
+minor=3
 patch=0
 ifneq (${patch}, 0)
 patch_str=.${patch}

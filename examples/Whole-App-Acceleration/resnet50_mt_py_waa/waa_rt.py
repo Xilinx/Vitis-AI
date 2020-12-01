@@ -51,7 +51,7 @@ class PreProcess:
 							   c_void_p,
 							   np.ctypeslib.ndpointer(c_float, flags="C_CONTIGUOUS")]
 		self.lib.preprocess(pointer(self.handle),
-		img,
+		str(img).encode('ascii'),
                 byref(act_ht), byref(act_wt), self.arr)
 		np.ascontiguousarray(self.arr, dtype=np.float32)
 

@@ -104,3 +104,7 @@ WARNING: Logging before InitGoogleLogging() is written to STDERR
 I0610 02:16:11.508892 16192 process_result.hpp:44] RESULT: 6    8.90686 132.615 125.361 254.461 0.998955
 I0610 02:16:11.509046 16192 process_result.hpp:44] RESULT: 6    112.95  137.506 189.258 183.163 0.939598
 
+    sample : ./test_jpeg_yolov3 tiny_yolov3_vmss sample_yolov3_vmss.jpg
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1103 13:24:04.871470  5047 process_result.hpp:46] RESULT: 7    226.71  593.893 968.678 1032.64 0.988918
+

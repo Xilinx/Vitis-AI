@@ -45,7 +45,6 @@ class TFSSDdetector {
               unsigned int nms_top_k, float nms_threshold, float eta,
   	      const std::vector<std::shared_ptr<std::vector<float> > >& priors,
               const short* &fx_priors,
-              const short* &lut_ptr,
               float y_scale,
               float x_scale,
               float height_scale,
@@ -56,46 +55,13 @@ class TFSSDdetector {
               bool clip = false);
 
   template <typename T>
-  void Detect(TFSSDResult* result);
+  void Detect(TFSSDResult* result, int8_t *loc);
+  //void Detect(TFSSDResult* result);
 
   unsigned int num_classes() const { return num_classes_; }
   unsigned int num_priors() const { return priors_.size(); }
 
  protected:
-  template <typename T>
-/*  void ApplyOneClassNMS(
-      const T (*bboxes)[4], int label,
-      const std::vector<std::pair<float, int> >& score_index_vec,
-      std::vector<int>* indices);
-*/
-  void ApplyOneClassNMS(
-      const T (*bboxes)[4], int label,
-      int8_t *sort_score, short *sort_index, short sort_size,
-      const std::vector<std::pair<float, int> >& score_index_vec,
-      std::vector<std::pair<float,int>>* indices);
-
-  void GetOneClassMaxScoreIndex(
-      const int8_t* conf_data, int label,
-      std::vector<std::pair<float, int> >* score_index_vec);
-
-  void GetMultiClassMaxScoreIndex(
-      const int8_t* conf_data, int start_label, int num_classes,
-      std::vector<std::vector<std::pair<float, int> > >* score_index_vec);
-
-  void GetMultiClassMaxScoreIndexMT(
-      const int8_t* conf_data, int start_label, int num_classes,
-      std::vector<std::vector<std::pair<float, int> > >* score_index_vec,
-      int threads = 1);
-
-  template <typename T>
-  float JaccardOverlap(const T (*bboxes)[4], int idx, int kept_idx,
-                       bool normalized = true);
-
-  template <typename T>
-  void DecodeBBox(const T (*bboxes)[4], int idx, bool normalized);
-
-  std::map<int, std::vector<float> > decoded_bboxes_;
-
   const unsigned int num_classes_;
   CodeType code_type_;
   bool variance_encoded_in_target_;
@@ -108,7 +74,6 @@ class TFSSDdetector {
 
   const std::vector<std::shared_ptr<std::vector<float> > >& priors_;
   const short* &fx_priors_;
-  const short* &lut_ptr_;
   float y_scale_;
   float x_scale_;
   float height_scale_;

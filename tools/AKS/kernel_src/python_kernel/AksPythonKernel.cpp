@@ -143,7 +143,7 @@ PythonParams* PythonKernelBase::getData(AKS::NodeParams *nodeParams)
 }
 
 // Read the op params and load pymodule
-// TODO : abidk : Dynamically add path to sys.path
+// TODO : Dynamically add path to sys.path
 // py::module::import("sys").attr("path").cast<py::list>().append(".");
 void PythonKernelBase::nodeInit(AKS::NodeParams* params) {
   PythonParams* pyparams = getData(params);
@@ -151,7 +151,7 @@ void PythonKernelBase::nodeInit(AKS::NodeParams* params) {
     auto module_name = params->getValue<string>("module");
     auto kernel_name = params->getValue<string>("kernel");
     auto isExecAsync = 0; 
-    // TODO : abidk : Currently, async python kernels are not supported
+    // TODO : Currently, async python kernels are not supported
     // auto isExecAsync = params->_intParams.find("isExecAsync") != params->_intParams.end() ?
     //                    params->getValue<int>("isExecAsync") : 0;
 
@@ -160,7 +160,7 @@ void PythonKernelBase::nodeInit(AKS::NodeParams* params) {
     pyparams = new PythonParams;
 
     // convert pyargs string_array to pyargs dict
-    // TODO @abidk: Delete pyargs from _vectorString (optional)
+    // TODO : Delete pyargs from _vectorString (optional)
     auto pyargs = params->getValue<std::vector<std::string>>("pyargs");
     auto strDict = formatStrListToStrDict(pyargs);
     params->setValue<std::string>("pyargs", strDict);

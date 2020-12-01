@@ -11,7 +11,7 @@
   Setup the Environment
 
   ```sh
-  source /workspace/alveo/overlaybins/setup.sh
+  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 ### Data Preparation
@@ -53,30 +53,30 @@ Three versions of refinedet models are supported.
 
 Get the necessary models
   ```sh
-  cd ${VAI_ALVEO_ROOT}/examples/caffe
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
   python getModels.py
   python replace_mluser.py --modelsdir models
-  cd ${VAI_ALVEO_ROOT}/examples/caffe/refinedet
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/refinedet
   ```
 
 ```sh
 # Run the command below to generate compiled model for refinedet_pruned_0.8 
 
-python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.8/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.8/trainval.caffemodel --prepare
+python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/refinedet_pruned_0.8/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/refinedet_pruned_0.8/trainval.caffemodel --prepare
 
 ```
 
 ```sh
 # Run the command below to generate compiled model for refinedet_pruned_0.92 
 
-python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.92/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.92/trainval.caffemodel --prepare
+python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/refinedet_pruned_0.92/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/refinedet_pruned_0.92/trainval.caffemodel --prepare
 
 ```
 
 ```sh
 # Run the command below to generate compiled model for refinedet_pruned_0.96
 
-python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.96/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/examples/caffe/models/refinedet_pruned_0.96/trainval.caffemodel --prepare
+python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/refinedet_pruned_0.96/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/refinedet_pruned_0.96/trainval.caffemodel --prepare
 ```
 
 ### Run Inference for a single image

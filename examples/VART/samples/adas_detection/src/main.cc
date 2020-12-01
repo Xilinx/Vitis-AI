@@ -359,8 +359,7 @@ void runYOLO(vart::Runner* runner) {
  */
 int main(const int argc, const char** argv) {
   if (argc != 3) {
-    cout << "Usage of ADAS detection: ./adas_detection [video_file] "
-            "[model_file] "
+    cout << "Usage of ADAS detection: " << argv[0] << " <video_file> <model_file>"
          << endl;
     return -1;
   }

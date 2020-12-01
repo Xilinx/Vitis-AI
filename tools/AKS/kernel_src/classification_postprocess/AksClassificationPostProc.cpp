@@ -27,20 +27,19 @@
 class ClassificationPostProc : public AKS::KernelBase
 {
   public:
-    int getNumCUs (void) { return 1; }
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in, 
+        std::vector<AKS::DataDescriptor*> &out, 
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
 };
 
-extern "C" { /// Add this to make this available for python bindings and 
+extern "C" { /// Add this to make this available for python bindings
 
-AKS::KernelBase* getKernel (AKS::NodeParams *params)
-{
-  return new ClassificationPostProc();
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams *params)
+  {
+    return new ClassificationPostProc();
+  }
 
 }//extern "C"
 
@@ -54,17 +53,17 @@ AKS::KernelBase* getKernel (AKS::NodeParams *params)
  * @return none
  */
 void CPUCalcSoftmax(const float *data, size_t size, float *result) {
-    assert(data && result);
-    double sum = 0.0f;
+  assert(data && result);
+  double sum = 0.0f;
 
-    for (size_t i = 0; i < size; i++) {
-        result[i] = exp(data[i]);
-        sum += result[i];
+  for (size_t i = 0; i < size; i++) {
+    result[i] = exp(data[i]);
+    sum += result[i];
 
-    }
-    for (size_t i = 0; i < size; i++) {
-        result[i] /= sum;
-    }
+  }
+  for (size_t i = 0; i < size; i++) {
+    result[i] /= sum;
+  }
 }
 
 /**
@@ -77,27 +76,27 @@ void CPUCalcSoftmax(const float *data, size_t size, float *result) {
  * @return vector of top 'k' pairs of <index, probability>
  */
 std::vector<std::pair<int, float>> TopK(const float *d, int size, int k) {
-    assert(d && size > 0 && k > 0);
-    priority_queue<pair<float, int>> q;
+  assert(d && size > 0 && k > 0);
+  priority_queue<pair<float, int>> q;
 
-    for (auto i = 0; i < size; ++i) {
-        q.push(pair<float, int>(d[i], i));
-    }
-    std::vector<std::pair<int, float>> topKIndex;
-    for (auto i = 0; i < k; ++i) {
-        std::pair<float, int> ki = q.top();
-        // printf("top[%d] index = %d prob = %-8f  \n", i, ki.second, d[ki.second]);
-        q.pop();
-        topKIndex.push_back(make_pair(ki.second, ki.first));
-    }
-    return topKIndex;
+  for (auto i = 0; i < size; ++i) {
+    q.push(pair<float, int>(d[i], i));
+  }
+  std::vector<std::pair<int, float>> topKIndex;
+  for (auto i = 0; i < k; ++i) {
+    std::pair<float, int> ki = q.top();
+    // printf("top[%d] index = %d prob = %-8f  \n", i, ki.second, d[ki.second]);
+    q.pop();
+    topKIndex.push_back(make_pair(ki.second, ki.first));
+  }
+  return topKIndex;
 }
 
 int ClassificationPostProc::exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams)
+    std::vector<AKS::DataDescriptor*> &in, 
+    std::vector<AKS::DataDescriptor*> &out, 
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
 {
   /// Get input and output data shapes
   std::vector <int> inShape  = in[0]->getShape();
@@ -112,7 +111,7 @@ int ClassificationPostProc::exec_async (
 
   /// Get K value for top "K"
   int k = nodeParams->_intParams.find("top_k") == nodeParams->_intParams.end() ?
-                  5 : nodeParams->_intParams["top_k"];
+          5 : nodeParams->_intParams["top_k"];
 
   /// Create output data
   AKS::DataDescriptor *labels = new AKS::DataDescriptor ({inBatch, k, 1, 1}, AKS::DataType::INT32);
@@ -122,7 +121,7 @@ int ClassificationPostProc::exec_async (
   float *probsData = static_cast<float*>(probs->data());
 
   float * softmaxOut = new float[inChannels];
-  
+
   for (int i = 0; i < inBatch; ++i) {
 
     /// Compute SoftMax
@@ -137,11 +136,11 @@ int ClassificationPostProc::exec_async (
       idx++;
     }
   }
-  
+
   /// Push TopK indices to next node
   out.push_back(labels);
   out.push_back(probs);
 
   delete[] softmaxOut;
-  return -1; /// No wait
+  return 0;
 }

@@ -101,8 +101,11 @@ export XBLAS_EMIT_PROFILING_INFO=1
 export XBLAS_EMIT_PROFILING_INFO=$VERBOSE
 export XDNN_VERBOSE=$VERBOSE
 
-. ../../../overlaybins/setup.sh
-
+if [ -f /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh ]; then
+  . /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+else
+  . ../../../overlaybins/setup.sh
+fi
 
 if [  "$TEST" == "test_classify_jpeg"  ]; then 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../libs/libjfif	

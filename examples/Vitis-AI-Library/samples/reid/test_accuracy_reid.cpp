@@ -84,14 +84,10 @@ int main(int argc, char *argv[]) {
   const int x = featx.size();
   const int y = featy.size();
   FILE *out_fs = fopen(argv[4], "w");
-  double **dismat = new double *[y];
-  for (int i = 0; i < x; ++i) {
-    dismat[i] = new double[y];
-  }
   for (int i = 0; i < x; ++i) {
     for (int j = 0; j < y; ++j) {
-      dismat[i][j] = cosine_distance(featx[i], featy[j]);
-      fprintf(out_fs, "%.3lf ", dismat[i][j]);
+      auto con_dis = cosine_distance(featx[i], featy[j]);
+      fprintf(out_fs, "%.3lf ", con_dis);
     }
     fprintf(out_fs, "\n");
   }

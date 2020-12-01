@@ -1,7 +1,7 @@
 # **Setup**
 ```sh
 conda activate vitis-ai-caffe
-source /workspace/setup/alveo/dpuv1/overlaybins/setup.sh
+source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 # **Build**
@@ -60,7 +60,20 @@ make
 ## Prepare the groundtruth data
 
 * If the accuracy, recall and other metrics to be evaluated, we need to pass ground_truth file to calc_accuracy node of graph_of_inference.json.
-* Download the [fall-\*-cam0-rgb.zip and adl-\*-cam0-rgb.zip] dataset and urfall-cam0-falls.csv file from the official URFD dataset link: http://fenix.univ.rzeszow.pl/~mkepski/ds/uf.html and extract them to `urfd_dataset` folder.
+* Download the [fall-\*-cam0-rgb.zip and adl-\*-cam0-rgb.zip] dataset and extract them to `urfd_dataset` folder from the official URFD dataset link: http://fenix.univ.rzeszow.pl/~mkepski/ds/uf.html
+```sh
+mkdir urfd_dataset
+
+[sample]
+wget http://fenix.univ.rzeszow.pl/~mkepski/ds/data/fall-01-cam0-rgb.zip && unzip fall-01-cam0-rgb.zip -d urfd_dataset && rm fall-01-cam0-rgb.zip
+
+[sample]
+wget http://fenix.univ.rzeszow.pl/~mkepski/ds/data/adl-01-cam0-rgb.zip && unzip adl-01-cam0-rgb.zip -d urfd_dataset && rm adl-01-cam0-rgb.zip
+```
+* Download urfall-cam0-falls.csv file from the same website
+```sh
+wget http://fenix.univ.rzeszow.pl/~mkepski/ds/data/urfall-cam0-falls.csv
+```
 * Run convert_csv_to_gt_file.py to create gt.txt which contains the label by filename
 
 ```sh
@@ -71,6 +84,9 @@ python convert_csv_to_gt_file.py
 # **Run app**
 ```sh
 ./run.sh -d <directory>
+
+[sample]
+./run.sh -d urfd_dataset
 ```
 
 * Input passed to `run.sh` (`<directory>`) should contain either videos and/or directory of images

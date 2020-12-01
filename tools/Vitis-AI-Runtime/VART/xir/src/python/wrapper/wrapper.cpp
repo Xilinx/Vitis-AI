@@ -65,14 +65,9 @@ bool is_dict_type(py::handle value) {
 }
 
 std::vector<char> get_vec_char(py::bytes bytes) {
-  char* buffer;
-  ssize_t length;
-  UNI_LOG_CHECK(
-      PYBIND11_BYTES_AS_STRING_AND_SIZE(bytes.ptr(), &buffer, &length),
-      PYXIR_INVALID_DATA_TYPE)
-      << "Unable to extract bytes contents!";
-  auto chars = std::vector<char>(length);
-  std::memcpy(chars.data(), buffer, length);
+  std::string str = py::cast<std::string>(bytes);
+  std::vector<char> chars;
+  for (uint i = 0; i < str.size(); i++) chars.push_back(str[i]);
   return chars;
 }
 

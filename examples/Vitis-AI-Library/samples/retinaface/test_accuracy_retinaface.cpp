@@ -45,9 +45,9 @@ void LoadImageNames(std::string const &filename,
 
 
 int main(int argc, char *argv[]) {
-  if (argc < 4) {
-    std::cerr << "usage :" << argv[0] << " <model_name>"
-              << " <image_list> <output_file>" << std::endl;
+  if (argc < 5) {
+    std::cerr << "usage :" << argv[0] << " <model_name> "
+              << "<database_path> <image_list> <output_file>" << std::endl;
     abort();
   }
 
@@ -55,46 +55,49 @@ int main(int argc, char *argv[]) {
   vector<string> names;
 
   auto retinaface = vitis::ai::RetinaFace::create(kernel, true);
-  LoadImageNames(argv[2], names);
-  auto output_file = std::string(argv[3]);
+  auto database_path = std::string(argv[2]);
+
+  LoadImageNames(argv[3], names);
+  auto output_file = std::string(argv[4]);
 
   int width = retinaface->getInputWidth();
   int height = retinaface->getInputHeight();
 
-  std::cout << "input width " << width << " "    //
-            << "input height " << height << " "  //
-            << std::endl;
+  //std::cout << "input width " << width << " "    //
+  //          << "input height " << height << " "  //
+  //          << std::endl;
 
-  int valid_width = 640;
-  int valid_height = 360;
-  std::cout << "valid_width " << valid_width << " "    //
-            << "valid_height " << valid_height << " "  //
-            << std::endl;
+  //int valid_width = 640;
+  //int valid_height = 360;
+  //std::cout << "valid_width " << valid_width << " "    //
+  //          << "valid_height " << valid_height << " "  //
+  //          << std::endl;
 
   ofstream out(output_file);
   for (auto name : names) {
-    cv::Mat img = cv::imread(name);
+    auto load_name = database_path + "/" + name + ".jpg";
+    cv::Mat img = cv::imread(load_name);
     if (img.empty()) {
-      std::cout << "cannot load " << name << std::endl;
+      std::cout << "cannot load " << load_name << std::endl;
       continue;
     }
 
-    std::cout << "image width " << img.cols << " "
-              << "image height " << img.rows << " "
-              << std::endl;
+    //std::cout << "image width " << img.cols << " "
+    //          << "image height " << img.rows << " "
+    //          << std::endl;
 
 
     float scale = 360.0 / img.rows;
     if (img.cols * scale > 640) {
       scale = 640.0 / img.cols;
     }
-    cout << "scale :" << scale << endl;
+    //cout << "scale :" << scale << endl;
     out << name << endl;
     cv::Mat img_resize;
     cv::resize(img, img_resize, cv::Size(img.cols * scale, img.rows * scale),
                0, 0, cv::INTER_LINEAR);
-    std::cout << "resize width " << img_resize.cols<< " "    //
-            << " height " << img_resize.rows << std::endl;
+    //std::cout << "resize width " << img_resize.cols<< " "    //
+    //        << " height " << img_resize.rows << std::endl;
     cv::Mat input_image(384, 640, CV_8UC3, cv::Scalar(0, 0, 0));
     cv::Mat roi = input_image(cv::Range{0, img_resize.rows}, cv::Range{0, img_resize.cols});
     img_resize.copyTo(roi);
@@ -127,11 +130,10 @@ int main(int argc, char *argv[]) {
       w = std::min(std::max(w, 0), img.rows);
       h = std::min(std::max(h, 0), img.rows);
 
-      out << "RESULT: " << "\t" << xmin << "\t" << ymin << "\t" << w 
-           << "\t" << h << "\t" << confidence << "\n";
+      out << xmin << " " << ymin << " " 
+          << w << " " << h << " " << confidence << "\n";
       rectangle(img, Point(xmin, ymin), Point(xmax, ymax), Scalar(0, 255, 0), 1,
                   1, 0);
-      out << endl;
     }
   }
   out.close();

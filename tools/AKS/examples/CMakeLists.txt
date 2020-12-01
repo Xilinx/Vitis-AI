@@ -16,6 +16,48 @@ cmake_minimum_required(VERSION 3.12)
 
 project(examples VERSION 1.3.0)
 
+if (DPU STREQUAL "dpucadx8g")
+# Set source files of examples (non-video)
+set (EXAMPLES_IMAGE
+  facedetect.cpp
+  googlenet.cpp
+  googlenet_pp_accel.cpp
+  googlenet_resnet50.cpp
+  googlenet_tinyyolov3.cpp
+  inception_v1_tf.cpp
+  resnet50.cpp
+  stdyolov2.cpp
+  tinyyolov3.cpp
+)
+# Set source files of examples (video)
+set (EXAMPLES_VIDEO
+  tinyyolov3_video.cpp
+)
+elseif (DPU STREQUAL "dpucahx8h")
+# Set source files of examples (non-video)
+set (EXAMPLES_IMAGE
+  resnet50_u50.cpp
+)
+# Set source files of examples (video)
+set (EXAMPLES_VIDEO
+  ""
+)
+elseif (DPU STREQUAL "dpuczdx8g")
+# Set source files of examples (non-video)
+set (EXAMPLES_IMAGE
+  resnet50_edge.cpp
+  )
+# Set source files of examples (video)
+set (EXAMPLES_VIDEO
+  ""
+)
+else()
+message (FATAL_ERROR "
+  Nothing to build.
+  Make sure to specify target DPU with \'--dpu\' option."
+  )
+endif()
+
 # Find Packages
 if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
   message(STATUS "AKS Install Prefix: ${AKS_INSTALL_PREFIX}")
@@ -41,19 +83,6 @@ find_package(OpenCV REQUIRED COMPONENTS core imgproc video videoio)
 # Set output directories for executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-# Set source files of examples (non-video)
-set (EXAMPLES_IMAGE
-  facedetect.cpp
-  googlenet.cpp
-  googlenet_pp_accel.cpp
-  googlenet_resnet50.cpp
-  googlenet_tinyyolov3.cpp
-  inception_v1_tf.cpp
-  resnet50.cpp
-  resnet50_edge.cpp
-  stdyolov2.cpp
-  tinyyolov3.cpp
-)
 
 # Compile Sources
 foreach( sourcefile ${EXAMPLES_IMAGE} )
@@ -79,10 +108,6 @@ foreach( sourcefile ${EXAMPLES_IMAGE} )
   # set (CMAKE_DEBUG_TARGET_PROPERTIES INCLUDE_DIRECTORIES)
 endforeach()
 
-# Set source files of examples (video)
-set (EXAMPLES_VIDEO
-  tinyyolov3_video.cpp
-)
 
 # Compile Sources
 foreach( sourcefile ${EXAMPLES_VIDEO} )
@@ -95,14 +120,12 @@ foreach( sourcefile ${EXAMPLES_VIDEO} )
   # Set include dirs
   target_include_directories (${exename}
     PRIVATE ${aks_INCLUDE_DIRS}
-    PRIVATE ${Boost_INCLUDE_DIRS}
     PRIVATE ${OpenCV_INCLUDE_DIRS}
   )
 
   # Set libraries to be linked
   target_link_libraries (${exename}
     PRIVATE ${aks_LIBRARIES}
-    PRIVATE ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY}
     PRIVATE ${CMAKE_DL_LIBS}
     PRIVATE ${CMAKE_THREAD_LIBS_INIT}
     PRIVATE opencv_core opencv_imgproc opencv_video opencv_videoio

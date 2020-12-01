@@ -38,7 +38,7 @@ Important:
 1       21.309460 -2.400001 -1.749794 0.600000 1.963422 1.813025 4.711593     0.777300
 0       57.825863 -4.254135 -1.536627 1.550773 3.839536 1.512004 2.007500     0.679179
     
-    sample : ./test_accuracy_pointpillars pointpillars_kitti_12000_0_pt  pointpillars_kitti_12000_1_pt  test_accuracy_pointpillars_bin.list test_accuracy_pointpillars_rgb.list  result
+    sample : ./test_accuracy_pointpillars pointpillars_kitti_12000_0_pt  pointpillars_kitti_12000_1_pt  test_accuracy_pointpillars_bin.list test_accuracy_pointpillars_rgb.list test_accuracy_pointpillars_calib.list result
     output : 
     result dir holding the detect result files for each data in test_accuracy_pointpillars_bin.list
    

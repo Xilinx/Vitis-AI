@@ -1,3 +1,10 @@
+## Copyright (C) 2019 Xilinx, Inc.
+##
+## This software is licensed under the terms of the GNU General Public
+## License version 2, as published by the Free Software Foundation, and
+## may be copied, distributed, and modified under those terms.
+
+#---------------------------------------------------------------------------------------------
 # makefile for DPU driver outside the linux kernel tree, and generate dpu.ko file
 #
 # a typical command for build the driver for Zynq 7000:
@@ -5,7 +12,8 @@
 #
 # a typical command for build the driver for UltraScale+:
 #		make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KERNELDIR=/path/to/your/kernel
-#
+#---------------------------------------------------------------------------------------------
+
 modname:=dpu
 obj-m:=$(modname).o
 dpu-objs:=dpucore.o

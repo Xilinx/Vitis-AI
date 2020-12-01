@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include <iostream>
 #include <stdint.h>
 #include <vector>
@@ -13,10 +29,10 @@ class OpticalFlowPreProcess : public AKS::KernelBase
 {
   public:
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in, 
+        std::vector<AKS::DataDescriptor*> &out, 
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
     void perform_preprocess(
         AKS::DataDescriptor* &image, std::vector<AKS::DataDescriptor*> &out,
         int outHeight, int outWidth);
@@ -25,10 +41,12 @@ class OpticalFlowPreProcess : public AKS::KernelBase
 
 extern "C" { // Add this to make this available for python bindings and 
 
-AKS::KernelBase* getKernel (AKS::NodeParams *params)
-{
-  return new OpticalFlowPreProcess();
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams *params)
+  {
+    return new OpticalFlowPreProcess();
+  }
+
+} //extern "C"
 
 void embedImage(cv::Mat& source, cv::Mat& dest, int dx, int dy)
 {
@@ -77,8 +95,8 @@ void letterBoxImage(cv::Mat &inImage, int resizeH, int resizeW, cv::Mat& outImag
 
 
 void OpticalFlowPreProcess::perform_preprocess(
-        AKS::DataDescriptor* &image, std::vector<AKS::DataDescriptor*> &out,
-        int outHeight, int outWidth) {
+    AKS::DataDescriptor* &image, std::vector<AKS::DataDescriptor*> &out,
+    int outHeight, int outWidth) {
 
   auto inShape = image->getShape();
   int inChannel = inShape[1];
@@ -105,27 +123,24 @@ void OpticalFlowPreProcess::perform_preprocess(
 }
 
 int OpticalFlowPreProcess::exec_async (
-                      std::vector<AKS::DataDescriptor*> &in, 
-                      std::vector<AKS::DataDescriptor*> &out, 
-                      AKS::NodeParams* nodeParams,
-                      AKS::DynamicParamValues* dynParams)
+    std::vector<AKS::DataDescriptor*> &in, 
+    std::vector<AKS::DataDescriptor*> &out, 
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
 {
-    // in[0] contains current image data
-    // in[1] contains previous image data
+  // in[0] contains current image data
+  // in[1] contains previous image data
 
-    // out[0] contains preprocessed current image
-    // out[1] contains preprocessed previous image
+  // out[0] contains preprocessed current image
+  // out[1] contains preprocessed previous image
 
-    // std::cout << "[DBG] OpticalFlowPreProcess: running now ... " << std::endl;
-    int outHeight = nodeParams->_intParams["net_h"];
-    int outWidth  = nodeParams->_intParams["net_w"];
+  int outHeight = nodeParams->_intParams["net_h"];
+  int outWidth  = nodeParams->_intParams["net_w"];
 
-    out.reserve(2);
-    perform_preprocess(in[0], out, outHeight, outWidth);
-    perform_preprocess(in[1], out, outHeight, outWidth);
+  out.reserve(2);
+  perform_preprocess(in[0], out, outHeight, outWidth);
+  perform_preprocess(in[1], out, outHeight, outWidth);
 
-    // std::cout << "[DBG] OpticalFlowPreProcess: Done!" << std::endl << std::endl;
-    return -1; // No wait
+  return 0;
 }
 
-} //extern "C"

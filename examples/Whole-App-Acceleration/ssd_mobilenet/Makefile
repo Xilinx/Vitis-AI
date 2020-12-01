@@ -1,6 +1,6 @@
 PROJECT   =   app.exe
 
-CXX       :=   g++ -g -std=c++17
+CXX       :=   g++ -std=c++17
 
 LDFLAGS   :=     -L/opt/xilinx/xrt/lib -L/usr/local/lib64  -L$(CONDA_PREFIX)/lib
 LDFLAGS   +=     -luuid -lxilinxopencl -lxrt_core  -lpthread -lopencv_imgcodecs -lopencv_core -lopencv_highgui -lopencv_imgproc   -lpthread -lboost_system -lprotobuf -lglog -lxir -ltarget-factory -lvart-runner
@@ -8,13 +8,13 @@ LDFLAGS   +=     -luuid -lxilinxopencl -lxrt_core  -lpthread -lopencv_imgcodecs 
 
 
 CUR_DIR =   $(shell pwd)
+BUILD   =   build
 SRC     =   $(CUR_DIR)
 SRC     +=   $(CUR_DIR)/tfssd
 SRC     +=   $(CUR_DIR)/tfssd/anchor
 SRC     +=   $(CUR_DIR)/model_config/src
 SRC     +=   $(CUR_DIR)/include/object_detection/protos
 SRC     +=   $(CUR_DIR)/model_config/include/vitis/ai/proto
-BUILD   =   $(CUR_DIR)/build
 VPATH   =   $(SRC)
 C_DIR  :=   $(shell find $(SRC) -name *.c)
 OBJ     =   $(patsubst %.c, %.o, $(notdir $(C_DIR)))
@@ -27,7 +27,6 @@ OBJ    +=   $(patsubst %.pb.cc, %.pb.o, $(notdir $(PB_DIR)))
 
 CFLAGS :=  -D ENABLE_INT   -O3 
 CFLAGS +=   -I$(CUR_DIR)/model_config/include -I$(CUR_DIR)/include -I$(CONDA_PREFIX)/include/google/protobuf  -I$(CUR_DIR)/include/object_detection/protos/ -I$(CONDA_PREFIX)/include
-#CFLAGS +=   -I$(CUR_DIR)/model_config/include -I$(CUR_DIR)/include -I$(CONDA_PREFIX)/include/google/protobuf  -I$(CONDA_PREFIX)/include
 
 CFLAG += -DTGT_DEVICE=${TARGET} 
 
@@ -48,7 +47,9 @@ clean:
 	$(RM) $(PROJECT)
 
 $(BUILD) :
-	-mkdir -p $@
-#	cd include; ./build.sh
+	-mkdir -p build
+	cd include; ./build.sh
 	cd model_config/include/vitis/ai/proto; protoc  --cpp_out=./ --proto_path=./ dpu_model_param.proto
+
+
 

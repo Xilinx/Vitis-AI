@@ -172,8 +172,8 @@ export XBLAS_EMIT_PROFILING_INFO=$VERBOSE
 export XDNN_VERBOSE=$VERBOSE
 
 # Set Platform Environment Variables
-if [ -f /workspace/alveo/overlaybins/setup.sh ]; then
-  . /workspace/alveo/overlaybins/setup.sh
+if [ -f /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh ]; then
+  . /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 else
   . ../../../overlaybins/setup.sh
 fi
