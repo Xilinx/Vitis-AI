@@ -1,4 +1,4 @@
-# DPUCAHX8H/DPUCAHX8L -- the DPUs for Alveo Accelerator Card with HBM
+# Setup Alveo Accelerator Card with HBM for DPUCAHX8H/L
 
 Xilinx DPU IP family for convolution nerual network (CNN) inference application supports Alveo accelerator cards with HBM now, including Alveo U50, U50LV and U280 cards. The Xilinx DPUs for Alveo-HBM card include ***DPUCAHX8H*** and ***DPUCAHX8L***, the former is for optimized for high throughput and the latter is optimized for MobileNet model and ultra low latency. The on-premise DPUCAHX8H and DPUCAHX8L overlays are released along with Vitis AI, and a few of variants are provided.
 
@@ -15,7 +15,7 @@ source ./install.sh
 ~~~
 
 <details>
- <summary><b>Advanced - Step by Step Install</b></summary>
+ <summary><b>Advanced - Step by Step XRT/Platform Setup</b></summary>
 
 If you don't use the script above, you could follow following steps to finish the Alveo card and overlays setup.
 
@@ -38,9 +38,9 @@ Ubuntu 20.04: [xrt_202020.2.8.726_20.04-amd64-xrt.deb](https://www.xilinx.com/bi
 ### Install the Alveo Card Target Platform
 
 #### Alveo U280 Card
-For U280 card, DPUCAHX8H use the standard gen3x16 target platform released in the Xilinx website [U280 page](https://www.xilinx.com/products/boards-and-kits/alveo/u280). Please download and install the required gen3x4 target platform files.
+For U280 card, gen3x16 target platform released in the Xilinx website [U280 page](https://www.xilinx.com/products/boards-and-kits/alveo/u280) is used. Please download and install the required gen3x4 target platform files.
 
-CentOS/Redhat 7.4-7.7:
+CentOS/Redhat:
 [xilinx-u280-xdma-201920.3-2789161.x86_64.rpm](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u280-xdma-201920.3-2789161.x86_64.rpm)
 
 Ubuntu 16.04:
@@ -50,7 +50,7 @@ Ubuntu 18.04:
 [xilinx-u280-xdma-201920.3-2789161_18.04.deb](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u280-xdma-201920.3-2789161_18.04.deb)
 
 #### Alveo U50 Card
-For U50 card, DPUCAHX8H use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files.
+For U50 card, gen3x4 version target platform is used. Please download and install the required gen3x4 target platform files.
 
 CentOS/Redhat:
 [Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz)
@@ -64,7 +64,7 @@ Ubuntu 18.04:
 
 #### Alveo U50LV Card
 
-For U50LV card, DPUCAHX8H use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files.
+For U50LV card, gen3x4 version target platform is used. Please download and install the required gen3x4 target platform files.
 
 CentOS/Redhat:
 [Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz)
@@ -95,20 +95,6 @@ sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_
 ~~~
 
 ### DPUCAHX8H/L Overlays Installation
-
-Four kinds of DPUCAHX8H overlays are provided for different Alveo HBM card:
-* U50-6E300M: two kernels, six engines, maximal core clock 300MHz
-* U50LV-9E275M: two kernels, nine engines, maximal core clock 275MHz
-* U50LV-10E275M: two kernels, ten engines, maximal core clock 275MHz
-* U280-14E300M: three kernels, fourteen engines, maximal core clock 300MHz
-
-Four kinds of DPUCAHX8L overlays are provided for different Alveo HBM card:
-* U50-1C333M: one kernel, maximal core clock 333MHz
-* U50LV-1C250M: one kernel, maximal core clock 250MHz
-* U280-1C333M: one kernel, maximal core clock 333MHz
-* U280-2C300M: two kernels, maximal core clock 300MHz
-
-
 #### Get and Decompress Overlays Tarball
 In the host or docker, get to the shared Vitis AI git repository directory and use following commands to download and decompress the overlays tarball.
 
@@ -121,23 +107,21 @@ tar xfz alveo_xclbin-1.3.tar.gz
 </details>
 
 ---
-## DPUCAHX8H Overlay Usage
+## DPUCAHX8H/L Overlay Usage
 
-Four versions of DPUCAHX8H overlays are provided for the different Alveo HBM cards:
+Four kinds of DPUCAHX8H overlays are provided for different Alveo HBM card:
 * U50-6E300M: two kernels, six engines, maximal core clock 300MHz
 * U50LV-9E275M: two kernels, nine engines, maximal core clock 275MHz
 * U50LV-10E275M: two kernels, ten engines, maximal core clock 275MHz
 * U280-14E300M: three kernels, fourteen engines, maximal core clock 300MHz
 
-Four kinds of DPUCAHX8L overlays are provided for different Alveo HBM card:
-* U50-1C333M: one kernel, maximal core clock 333MHz
+Two kinds of DPUCAHX8L overlays are provided for different Alveo HBM card:
 * U50LV-1C250M: one kernel, maximal core clock 250MHz
-* U280-1C333M: one kernel, maximal core clock 333MHz
 * U280-2C300M: two kernels, maximal core clock 300MHz
 
 The DPUCAHX8H/L overlays should be used in the **docker contaniner** environment.
 
-Firstly start the CPU or GPU docker, then run the script below to automatically copy the overlays into the correct location. The script will automatically detect the card type and finish the overlay file copy. By default for DPUCAHX8H the 10E275M version is used for U50LV card; for DPUCAHX8L the 2C300M version is used for U280 card, and you could modify the script to use alternative version.
+Firstly start the CPU or GPU docker, then run the script below to automatically copy the overlays into the correct location. The script will automatically detect the card type and finish the overlay file copy. By default for DPUCAHX8H the 10E275M version is used for U50LV card and you could modify the script to use alternative version.
 
 ~~~
 cd /workspace/setup/alveo/u50_u50lv_u280
@@ -151,28 +135,40 @@ source ./overlay_settle.sh
 ###  Copy Overlay Files
 Start the CPU or GPU docker, get into the shared Vitis AI git repository directory and use following command to copy the overlay files for different Alveo card. Please note everytime you start a new docker container, you should do this step.
 
-For Alveo U50, use U50-6E300M overlay:
+For Alveo U50, use DPUCAHX8H overlay:
 ~~~
 cd /workspace/setup/alveo/u50_u50lv_u280
-sudo cp alveo_xclbin-1.2.1/U50/6E300M/* /usr/lib
+sudo cp alveo_xclbin-1.3/U50/6E300M/* /usr/lib
 ~~~
 
-For Alveo U50LV, use U50LV-9E275M overlay:
+For Alveo U50LV, use DPUCAHX8H U50LV-9E275M overlay:
 ~~~
 cd /workspace/setup/alveo/u50_u50lv_u280
-sudo cp alveo_xclbin-1.2.1//U50lv/9E275M/* /usr/lib
+sudo cp alveo_xclbin-1.3//U50lv/9E275M/* /usr/lib
 ~~~
 
-For Alveo U50LV, use U50LV-10E275M overlay:
+For Alveo U50LV, use DPUCAHX8H U50LV-10E275M overlay:
 ~~~
 cd /workspace/setup/alveo/u50_u50lv_u280
-sudo cp alveo_xclbin-1.2.1//U50lv/10E275M/* /usr/lib
+sudo cp alveo_xclbin-1.3//U50lv/10E275M/* /usr/lib
 ~~~
 
-For Alveo U280, use U280-14E300M overlay:
+For Alveo U280, use DPUCAHX8H overlay:
 ~~~ 
 cd /workspace/setup/alveo/u50_u50lv_u280
-sudo cp alveo_xclbin-1.2.1/U280/14E300M/* /usr/lib
+sudo cp alveo_xclbin-1.3/U280/14E300M/* /usr/lib
+~~~
+
+For Alveo U50LV, use DPUCAHX8L overlay:
+~~~ 
+cd /workspace/setup/alveo/u50_u50lv_u280
+sudo cp alveo_xclbin-1.3/U50lv-V3ME/1E300M/* /usr/lib
+~~~
+
+For Alveo U280, use DPUCAHX8L overlay:
+~~~ 
+cd /workspace/setup/alveo/u50_u50lv_u280
+sudo cp alveo_xclbin-1.3/U280-V3ME/2E300M/* /usr/lib
 ~~~
 
 </details>
