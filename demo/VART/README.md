@@ -25,36 +25,35 @@ Vitis AI Runtime directory structure introduction
 ```
 VART
 ├── README.md
-└── samples
-    ├── adas_detection
-    │   ├── build.sh
-    │   └── src
-    ├── common
-    │   ├── common.cpp
-    │   └── common.h
-    ├── inception_v1_mt_py
-    │   ├── inception_v1.py
-    │   └── words.txt
-    ├── pose_detection
-    │   ├── build.sh
-    │   └── src
-    ├── resnet50
-    │   ├── build.sh
-    │   ├── src
-    │   └── words.txt
-    ├── resnet50_mt_py
-    │   ├── resnet50.py
-    │   └── words.txt
-    ├── segmentation
-    │   ├── build.sh
-    │   └── src
-    ├── squeezenet_pytorch
-    │   ├── build.sh
-    │   ├── src
-    │   └── words.txt
-    └── video_analysis
-        ├── build.sh
-        └── src
+├── adas_detection
+│   ├── build.sh
+│   └── src
+├── common
+│   ├── common.cpp
+│   └── common.h
+├── inception_v1_mt_py
+│   ├── inception_v1.py
+│   └── words.txt
+├── pose_detection
+│   ├── build.sh
+│   └── src
+├── resnet50
+│   ├── build.sh
+│   ├── src
+│   └── words.txt
+├── resnet50_mt_py
+│   ├── resnet50.py
+│   └── words.txt
+├── segmentation
+│   ├── build.sh
+│   └── src
+├── squeezenet_pytorch
+│   ├── build.sh
+│   ├── src
+│   └── words.txt
+└── video_analysis
+	├── build.sh
+	└── src
 
 ```
 
@@ -84,7 +83,7 @@ tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xili
 
 5. Cross compile the sample, take `resnet50` as an example.
 ```
-cd ~/Vitis-AI/demo/VART/samples/resnet50
+cd ~/Vitis-AI/demo/VART/resnet50
 bash -x build.sh
 ```	
 If the compilation process does not report any error and the executable file `resnet50` is generated, the host environment is installed correctly.
@@ -149,7 +148,7 @@ steps.**
 	```
 	  scp resnet50-zcu102-zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
 	```
-	* Log in to the board (usong ssh or serial port) and install the model package.
+	* Log in to the board (using ssh or serial port) and install the model package.
 	```
 	  tar -xzvf resnet50-zcu102-zcu104-r1.3.0.tar.gz
 	  cp resnet50 /usr/share/vitis_ai_library/models -r
@@ -168,7 +167,7 @@ steps.**
 	```
 3. Enter the directory of samples in the target board. Take `resnet50` as an example.
 	```
-	cd ~/Vitis-AI/demo/VART/samples/resnet50
+	cd ~/Vitis-AI/demo/VART/resnet50
 	```
 4. Run the example.
 	```
@@ -243,7 +242,7 @@ If you encounter any path errors in running examples, check to see if you follow
 
 3. Compile the sample, take `resnet50` as an example.
 	```
-	cd /workspace/demo/VART/samples/resnet50
+	cd /workspace/demo/VART/resnet50
 	bash -x build.sh
 	```
 4. Run the example, take `U50` platform as an example.

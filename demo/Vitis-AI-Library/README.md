@@ -20,11 +20,9 @@ For cloud users, click
 
 ```
 Vitis_AI_Library
-├── demo
-│   ├── classification
+├── apps
 │   ├── seg_and_pose_detect
-│   ├── segs_and_roadline_detect
-│   └── yolov3
+│   └── segs_and_roadline_detect
 └── samples
     ├── 3Dsegmentation
     ├── classification
@@ -78,13 +76,7 @@ Note that if you close the current terminal, you need to re-execute the above in
 tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
-5. Cross compile the demo in the AI Library, take `yolov3` as example.
-```
-cd ~/Vitis-AI/demo/Vitis-AI-Library/demo/yolov3
-bash -x build.sh
-```	
-
-6. To compile the library sample in the AI Library, take `facedetect` as an example, execute the following command.
+5. To compile the library sample in the AI Library, take `facedetect` as an example, execute the following command.
 ```
 cd ~/Vitis-AI/demo/Vitis-AI-Library/samples/facedetect
 bash -x build.sh
@@ -132,7 +124,7 @@ steps.**
 	```
 	  scp resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
 	```
-	* Log in to the board (usong ssh or serial port) and install the model package.
+	* Log in to the board (using ssh or serial port) and install the model package.
 	```
 	  tar -xzvf resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz
 	  cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
@@ -276,12 +268,7 @@ sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 	  
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
-4. To compile the demo in the AI Library, take `yolov3` as an example.
-```
-cd /workspace/demo/Vitis-AI-Library/demo/yolov3
-bash -x build.sh
-```	
-5. To compile the AI Library sample, take `classification` as an example, execute the following command.
+4. To compile the AI Library sample, take `classification` as an example, execute the following command.
 ```
 cd /workspace/demo/Vitis-AI-Library/samples/classification
 bash -x build.sh
