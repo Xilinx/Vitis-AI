@@ -1,3 +1,0 @@
-ck
-orderedset
-opencv-contrib-python
