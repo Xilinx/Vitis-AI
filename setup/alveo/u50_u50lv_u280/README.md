@@ -121,11 +121,13 @@ Two kinds of DPUCAHX8L overlays are provided for different Alveo HBM card:
 
 The DPUCAHX8H/L overlays should be used in the **docker contaniner** environment.
 
-Firstly start the CPU or GPU docker, then run the script below to automatically copy the overlays into the correct location. The script will automatically detect the card type and finish the overlay file copy. By default for DPUCAHX8H the 10E275M version is used for U50LV card and you could modify the script to use alternative version.
+Firstly start the CPU or GPU docker, then run the script below to automatically copy the overlays into the correct location. The script will automatically detect the card type and finish the overlay file copy. By default for DPUCAHX8H the 10E275M version is used for U50LV card and you could modify the script to use alternative version. Please note in the script parameter V3E represents DPUCAHX8H and V3ME represents DPUCAHX8L.
 
 ~~~
 cd /workspace/setup/alveo/u50_u50lv_u280
-source ./overlay_settle.sh
+./overlay_settle.sh V3ME
+or
+./overlay_settle.sh V3E
 ~~~
 
 
