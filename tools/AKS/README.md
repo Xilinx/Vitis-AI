@@ -309,7 +309,7 @@ conda activate vitis-ai-caffe
 python -m ck pull repo:ck-env
 python -m ck install package:imagenet-2012-val-min
 
-python /workspace/examples/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
+python /workspace/demo/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
 
 # We don't need conda env for running examples on Alveo-U50
 conda deactivate
