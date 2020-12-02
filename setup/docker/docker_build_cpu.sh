@@ -14,45 +14,13 @@
 # limitations under the License.
 
 DOCKER_REPO="${DOCKER_REPO:-xilinx/}"
-VERSION="${VERSION:-latest}"
-DOCKERFILE="${DOCKERFILE:-DockerfileCPU/}"
+VERSION="${VERSION:-`cat docker/VERSION.txt`}"
+DOCKERFILE="${DOCKERFILE:-docker/DockerfileCPU}"
 
 BRAND="${BRAND:-vitis-ai-cpu}"
 DATE="$(date)"
 
 # Final Build Image Tag
 IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}
-
-sed -n '1, 5p' ./PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-sed -n '5, 15p' ./PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-sed -n '15, 24p' ./PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-sed -n '24, 61p' ./PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-sed -n '62, 300p' ./PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-sed -n '300, 308p' ./PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-
-confirm() {
-  echo -n "Do you agree to the terms and wish to proceed [y/n]? "
-  read REPLY
-  case $REPLY in
-    [Yy]) break ;;
-    [Nn]) exit 0 ;;
-    *) confirm ;;
-  esac
-    REPLY=''
-}
-
-confirm
 
 docker build --network=host --build-arg VERSION=${VERSION} --build-arg CACHEBUST="$(date +%s)" --build-arg DATE="$(date)" -f ${DOCKERFILE} -t $IMAGE_TAG ./
