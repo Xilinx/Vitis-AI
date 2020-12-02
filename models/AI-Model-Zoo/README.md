@@ -15,7 +15,9 @@ This repository includes optimized deep learning models to speed up the deployme
 ## Vitis AI 1.3 Model Zoo New Features！
 1.New added 28 models. Total 92 models from different deep learning frameworks, Caffe, TensorFlow, TensorFlow 2 and PyTorch supported in Vitis AI Model Zoo. </br>
 
-2.The variety of Model Zoo has been significantly improved for a wider range of applications. For medical applications, we added CT image segmentation, medical robot instrument segmentation, Covid-19 chest radiograph segmentation and other reference models. For autonomous driving and ADAS applications, we added 3D point cloud detection and point cloud segmentation models. </br>
+2.The variety of Model Zoo has been significantly improved for a wider range of applications. 
+For medical applications, we added CT image segmentation, medical robot instrument segmentation, Covid-19 chest radiograph segmentation and other reference models. 
+For autonomous driving and ADAS applications, we added 3D point cloud detection and point cloud segmentation models. </br>
 
 3.Provided accuracy evaluation and quantization scripts for all the released models.</br>
 
@@ -115,7 +117,7 @@ For example, `cf_refinedet_coco_360_480_0.8_25G_1.3` is a `RefineDet` model trai
 This is a custom distribution of caffe. Please use **caffe-xilinx** to test/finetune the caffe models listed in this page.
 
 ## Model Download
-Please visit our **model-list** in this page. You will get downloadlink and MD5 of all the released models, including pre-compiled models running on different platforms.                                 
+Please visit our **[model-list]** in this page. You will get downloadlink and MD5 of all the released models, including pre-compiled models running on different platforms.                                 
 
 </details>
 
