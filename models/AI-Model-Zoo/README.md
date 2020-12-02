@@ -6,24 +6,23 @@
  </table>
 
 # Introduction
-This repository includes optimized deep learning models to speed up the deployment of deep learning inference on Xilinx&trade; platforms. These models cover different applications, including but not limited to ADAS/AD, video surveillance, robotics, data center, etc. You can get started with these free pre-trained models to enjoy the benefits of deep learning acceleration.
+This repository includes optimized deep learning models to speed up the deployment of deep learning inference on Xilinx&trade; platforms. These models cover different applications, including but not limited to ADAS/AD, medical, video surveillance, robotics, data center, etc. You can get started with these free pre-trained models to enjoy the benefits of deep learning acceleration.
 
 <p align="left">
   <img width="1264" height="420" src="images/vitis_ai_model_zoo.png">
 </p>
 
 ## Vitis AI 1.3 Model Zoo New Features！
-1.New added 28 models. Total of 92 models built with different frameworks including caffe/TensorFlow/TensorFlow2/PyTorch.</br>
+1.New added 28 models. Total 92 models from different deep learning frameworks, Caffe, TensorFlow, TensorFlow 2 and PyTorch supported in Vitis AI Model Zoo. </br>
 
-2.The variety of model zoo has been significantly improved, covering a wider range of applications. Such as medical applications, we provide CT segmentation, medical robot instrument segmentation, Covid-19 chest radiograph segmentation and other reference models. In addition, we have strengthened support for autonomous driving and ADAS applications by more 3D detection and point cloud segmentation models.</br>
+2.The variety of Model Zoo has been significantly improved for a wider range of applications. For medical applications, we added CT image segmentation, medical robot instrument segmentation, Covid-19 chest radiograph segmentation and other reference models. For autonomous driving and ADAS applications, we added 3D point cloud detection and point cloud segmentation models. </br>
 
-3.Provide accuracy evaluation and quantization scripts for all released models.</br>
+3.Provided accuracy evaluation and quantization scripts for all the released models.</br>
 
-4.Updated information of more supported Xilinx hardware platforms and model performance.</br>
+4.Restructured model list show all model versions that run on all supported Xilinx platforms in more obvious form, and users can download the specific version they need for every model.</br>
 
 ## Model Information
-The following table includes comprehensive information about each model, including application, framework, training and validation dataset, backbone, input size, computation as well as float and quantized precision.<br>
-At present, most of the python scripts we provided are compatible with python2/3, except a few models(No.21~23 and 25)need python2 environment.
+The following table includes comprehensive information about each model, including application, framework, training and validation dataset, backbone, input size, computation as well as float and quantized precision.
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -99,24 +98,24 @@ At present, most of the python scripts we provided are compatible with python2/3
 
 ### Naming Rules
 Model name: `F_M_(D)_H_W_(P)_C_V`
-* `F` specifies training framework: `cf` is Caffe, `tf` is Tensorflow, `dk` is Darknet, `pt` is PyTorch.
-* `M` specifies the model feature.
-* `D` specifies the dataset. It is optional depending on whether the dataset is public or private. Mixed means a mixture of multiple           public datasets.
-* `H` specifies the height of input data.
-* `W` specifies the width of input data.
-* `P` specifies the pruning ratio, it means how much computation is reduced. It is optional depending on whether the model is pruned.
-* `C` specifies the computation of the model: how many Gops per image.
-* `V` specifies the version of Vitis AI.
+* `F` specifies training framework: `cf` is Caffe, `tf` is Tensorflow, `tf2` is Tensorflow 2, `dk` is Darknet, `pt` is PyTorch
+* `M` specifies the model
+* `D` specifies the dataset. It is optional depending on whether the dataset is public or private
+* `H` specifies the height of input data
+* `W` specifies the width of input data
+* `P` specifies the pruning ratio, it means how much computation is reduced. It is optional depending on whether the model is pruned or not
+* `C` specifies the computation of the model: how many Gops per image
+* `V` specifies the version of Vitis AI
 
 
-For example, `cf_refinedet_coco_480_360_0.8_25G_1.2` is a `RefineDet` model trained with `Caffe` using `COCO` dataset, input data size is `480*360`, `80%` pruned, the computation per image is `25Gops` and Vitis AI version is `1.2`.
+For example, `cf_refinedet_coco_360_480_0.8_25G_1.3` is a `RefineDet` model trained with `Caffe` using `COCO` dataset, input data size is `360*480`, `80%` pruned, the computation per image is `25Gops` and Vitis AI version is `1.3`.
 
 
 ### caffe-xilinx 
 This is a custom distribution of caffe. Please use **caffe-xilinx** to test/finetune the caffe models listed in this page.
 
 ## Model Download
-Please visit our model list. You will get downloadlink and MD5 of all the released models, including pre-compiled models.                                 
+Please visit our **model-list** in this page. You will get downloadlink and MD5 of all the released models, including pre-compiled models running on different platforms.                                 
 
 </details>
 
@@ -190,9 +189,17 @@ For a Pytorch model, you should see the following directory structure:
     │                                        
     ├── data                            # Contains the dataset that used for model test and training.
     │                                     When test or training scripts run successfully, dataset will be automatically placed in it.
-    │                                                       
+    │
+    ├── quantized                          
+    │   ├── bias_corr.pth               # Quantized model.
+    │   ├── quant_info.json             # Quantization steps of tensors got. Please keep it for evaluation of quantized model.
+    │   ├── _int.py                     # Converted vai_q_pytorch format model.
+    │   └── _int.xmodel                 # Deployed model. The name of different models may be different.
+    │
+    │
     └── float                           
-        └── _int.pth                    # Trained float-point model.
+        └── _int.pth                    # Trained float-point model. The pth name of different models may be different.
+                                           Path and name in test scripts could be modified according to actual situation.
         
                                           
                                           
