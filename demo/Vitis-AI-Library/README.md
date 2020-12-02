@@ -287,8 +287,8 @@ If you encounter any path errors in running examples, check to see if you follow
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz -O vitis_ai_library_r1.3.0_images.tar.gz
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz -O vitis_ai_library_r1.3.0_video.tar.gz
-tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz -C examples/Vitis-AI-Library/
-tar -xzvf vitis_ai_library_r1.3.0_video.tar.gz -C examples/Vitis-AI-Library/
+tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz -C demo/Vitis-AI-Library/
+tar -xzvf vitis_ai_library_r1.3.0_video.tar.gz -C demo/Vitis-AI-Library/
 ```
 2. Enter the directory of sample and then compile it. Take `facedetect` as an example.
 ```
