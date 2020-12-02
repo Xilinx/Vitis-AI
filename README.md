@@ -70,6 +70,7 @@ docker pull xilinx/vitis-ai:latest
 
 To run the docker, use command:
 ```
+cd setup/docker
 ./docker_run.sh xilinx/vitis-ai:latest
 ```
 #### Building Docker from Recipe
@@ -80,7 +81,7 @@ There are two types of docker recipes provided - CPU recipe and GPU recipe. If y
 
 Use below commands to build the CPU docker:
 ```
-cd ./docker
+cd setup/docker
 ./docker_build_cpu.sh
 ```
 To run the CPU docker, use command:
@@ -91,7 +92,7 @@ To run the CPU docker, use command:
 
 Use below commands to build the GPU docker:
 ```
-cd ./docker
+cd setup/docker
 ./docker_build_gpu.sh
 ```
 To run the GPU docker, use command:
