@@ -15,8 +15,8 @@ This repository includes optimized deep learning models to speed up the deployme
 ## Vitis AI 1.3 Model Zoo New Features！
 1.New added 28 models. Total 92 models from different deep learning frameworks, Caffe, TensorFlow, TensorFlow 2 and PyTorch supported in Vitis AI Model Zoo. </br>
 
-2.The variety of Model Zoo has been significantly improved for a wider range of applications. 
-For medical applications, we added CT image segmentation, medical robot instrument segmentation, Covid-19 chest radiograph segmentation and other reference models. 
+2.The variety of Model Zoo has been significantly improved for a wider range of applications.</br> 
+For medical applications, we added CT image segmentation, medical robot instrument segmentation, Covid-19 chest radiograph segmentation and other reference models.</br> 
 For autonomous driving and ADAS applications, we added 3D point cloud detection and point cloud segmentation models. </br>
 
 3.Provided accuracy evaluation and quantization scripts for all the released models.</br>
@@ -122,7 +122,7 @@ Please visit our **[model-list]** in this page. You will get downloadlink and MD
 </details>
 
 ### Model Directory Structure
-Download and extract the model archive to your working area on the local hard disk. For details on the various models, their download link and MD5 checksum for the zip file of each model, see [Model Download](#model-download).
+Download and extract the model archive to your working area on the local hard disk. For details on the various models, their download link and MD5 checksum for the zip file of each model, see  **[model-list]** .
 
 
 #### Caffe Model Directory Structure
