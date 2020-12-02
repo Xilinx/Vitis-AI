@@ -21,21 +21,21 @@ case "$1" in
         /opt/xilinx/xrt/bin/xbmgmt scan | grep xilinx_u50_
         if [ $? -eq 0 ]; then
           echo "U50 card detected."
-          sudo cp ./alveo_xclbin-1.3/U50/6E300M/* /usr/lib
+          sudo cp ./alveo_xclbin-1.3.0/U50/6E300M/* /usr/lib
           detected=1
         fi
 
         /opt/xilinx/xrt/bin/xbmgmt scan | grep xilinx_u50lv_
         if [ $? -eq 0 ]; then
           echo "U50LV card detected."
-          sudo cp ./alveo_xclbin-1.3//U50lv/10E275M/* /usr/lib
+          sudo cp ./alveo_xclbin-1.3.0/U50lv/10E275M/* /usr/lib
           detected=1
         fi
 
         /opt/xilinx/xrt/bin/xbmgmt scan | grep xilinx_u280_
         if [ $? -eq 0 ]; then
           echo "U280 card detected."
-          sudo cp alveo_xclbin-1.3/U280/14E300M/* /usr/lib
+          sudo cp alveo_xclbin-1.3.0/U280/14E300M/* /usr/lib
           detected=1
         fi
 
@@ -51,14 +51,14 @@ case "$1" in
         /opt/xilinx/xrt/bin/xbmgmt scan | grep xilinx_u50lv_
         if [ $? -eq 0 ]; then
           echo "U50LV card detected."
-          sudo cp ./alveo_xclbin-1.3/U50lv-V3ME/1E300M/* /usr/lib
+          sudo cp ./alveo_xclbin-1.3.0/U50lv-V3ME/1E300M/* /usr/lib
           detected=1
         fi
 
         /opt/xilinx/xrt/bin/xbmgmt scan | grep xilinx_u280_
         if [ $? -eq 0 ]; then
           echo "U280 card detected."
-          sudo cp alveo_xclbin-1.3/U280-V3ME/2E300M/* /usr/lib
+          sudo cp alveo_xclbin-1.3.0/U280-V3ME/2E300M/* /usr/lib
           detected=1
         fi
 

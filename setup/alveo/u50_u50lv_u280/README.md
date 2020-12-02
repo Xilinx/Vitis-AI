@@ -140,37 +140,37 @@ Start the CPU or GPU docker, get into the shared Vitis AI git repository directo
 For Alveo U50, use DPUCAHX8H overlay:
 ~~~
 cd /workspace/setup/alveo/u50_u50lv_u280
-sudo cp alveo_xclbin-1.3/U50/6E300M/* /usr/lib
+sudo cp alveo_xclbin-1.3.0/U50/6E300M/* /usr/lib
 ~~~
 
 For Alveo U50LV, use DPUCAHX8H U50LV-9E275M overlay:
 ~~~
 cd /workspace/setup/alveo/u50_u50lv_u280
-sudo cp alveo_xclbin-1.3//U50lv/9E275M/* /usr/lib
+sudo cp alveo_xclbin-1.3.0/U50lv/9E275M/* /usr/lib
 ~~~
 
 For Alveo U50LV, use DPUCAHX8H U50LV-10E275M overlay:
 ~~~
 cd /workspace/setup/alveo/u50_u50lv_u280
-sudo cp alveo_xclbin-1.3//U50lv/10E275M/* /usr/lib
+sudo cp alveo_xclbin-1.3.0/U50lv/10E275M/* /usr/lib
 ~~~
 
 For Alveo U280, use DPUCAHX8H overlay:
 ~~~ 
 cd /workspace/setup/alveo/u50_u50lv_u280
-sudo cp alveo_xclbin-1.3/U280/14E300M/* /usr/lib
+sudo cp alveo_xclbin-1.3.0/U280/14E300M/* /usr/lib
 ~~~
 
 For Alveo U50LV, use DPUCAHX8L overlay:
 ~~~ 
 cd /workspace/setup/alveo/u50_u50lv_u280
-sudo cp alveo_xclbin-1.3/U50lv-V3ME/1E300M/* /usr/lib
+sudo cp alveo_xclbin-1.3.0/U50lv-V3ME/1E300M/* /usr/lib
 ~~~
 
 For Alveo U280, use DPUCAHX8L overlay:
 ~~~ 
 cd /workspace/setup/alveo/u50_u50lv_u280
-sudo cp alveo_xclbin-1.3/U280-V3ME/2E300M/* /usr/lib
+sudo cp alveo_xclbin-1.3.0/U280-V3ME/2E300M/* /usr/lib
 ~~~
 
 </details>
