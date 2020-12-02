@@ -294,23 +294,14 @@ bash -x build.sh
 ```
 ./test_jpeg_facedetect densebox_320_320 sample_facedetect.jpg
 ```
-4. If you want to run the program in batch mode, which means that the DPU processes multiple
-images at once to prompt for processing performance, you have to compile the entire Vitis AI
-Library according to "Setting Up the Host For Cloud" section. Then the batch program will be generated
-under build_dir_default.Enter build_dir_default, take facedetect as an example,
-execute the following command.
-```
-./test_facedetect_batch densebox_320_320 <img1_url> [<img2_url> ...]
-```
-5. Run the video test example.
+4. Run the video test example.
 ```
 ./test_video_facedetect densebox_320_320 video_input.mp4 -t 8
 
 Video_input.mp4: The video file's name for input. The user needs to prepare the video file by themselves.
 -t: <num_of_threads>
 ```
-
-6. To test the performance of model, run the following command:
+5. To test the performance of model, run the following command:
 ```
 ./test_performance_facedetect densebox_320_320 test_performance_facedetect.list -t 8 -s 60
 
