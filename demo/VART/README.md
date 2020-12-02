@@ -25,36 +25,35 @@ Vitis AI Runtime directory structure introduction
 ```
 VART
 ├── README.md
-└── samples
-    ├── adas_detection
-    │   ├── build.sh
-    │   └── src
-    ├── common
-    │   ├── common.cpp
-    │   └── common.h
-    ├── inception_v1_mt_py
-    │   ├── inception_v1.py
-    │   └── words.txt
-    ├── pose_detection
-    │   ├── build.sh
-    │   └── src
-    ├── resnet50
-    │   ├── build.sh
-    │   ├── src
-    │   └── words.txt
-    ├── resnet50_mt_py
-    │   ├── resnet50.py
-    │   └── words.txt
-    ├── segmentation
-    │   ├── build.sh
-    │   └── src
-    ├── squeezenet_pytorch
-    │   ├── build.sh
-    │   ├── src
-    │   └── words.txt
-    └── video_analysis
-        ├── build.sh
-        └── src
+├── adas_detection
+│   ├── build.sh
+│   └── src
+├── common
+│   ├── common.cpp
+│   └── common.h
+├── inception_v1_mt_py
+│   ├── inception_v1.py
+│   └── words.txt
+├── pose_detection
+│   ├── build.sh
+│   └── src
+├── resnet50
+│   ├── build.sh
+│   ├── src
+│   └── words.txt
+├── resnet50_mt_py
+│   ├── resnet50.py
+│   └── words.txt
+├── segmentation
+│   ├── build.sh
+│   └── src
+├── squeezenet_pytorch
+│   ├── build.sh
+│   ├── src
+│   └── words.txt
+└── video_analysis
+	├── build.sh
+	└── src
 
 ```
 
@@ -84,7 +83,7 @@ tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xili
 
 5. Cross compile the sample, take `resnet50` as an example.
 ```
-cd ~/Vitis-AI/examples/VART/samples/resnet50
+cd ~/Vitis-AI/demo/VART/resnet50
 bash -x build.sh
 ```	
 If the compilation process does not report any error and the executable file `resnet50` is generated, the host environment is installed correctly.
@@ -114,7 +113,7 @@ steps.**
 2. (Optional) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
 	
 	The script runs automatically after the board boots up with the official image.
-	But you can also download the `dpu_sw_optimize.tar.gz` from [here](../../DPU-TRD/app/dpu_sw_optimize.tar.gz).
+	But you can also download the `dpu_sw_optimize.tar.gz` from [here](../../dsa/DPU-TRD/app/dpu_sw_optimize.tar.gz).
 	```
 	cd ~/dpu_sw_optimize/zynqmp/
 	./zynqmp_dpu_optimize.sh
@@ -130,13 +129,10 @@ steps.**
 	scp -r vitis-ai-runtime-1.3.0/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
-	* Install the Vitis AI Runtime. Execute the following command in order.
+	* Install the Vitis AI Runtime. Execute the following command.
 	```
 	cd ~/centos
-	rpm -ivh --force libunilog-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libxir-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libtarget-factory-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libvart-1.3.0-r<x>.aarch64.rpm
+	bash setup.sh
 	```
 4. (Optional) Download the model.  	
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
@@ -152,7 +148,7 @@ steps.**
 	```
 	  scp resnet50-zcu102-zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
 	```
-	* Log in to the board (usong ssh or serial port) and install the model package.
+	* Log in to the board (using ssh or serial port) and install the model package.
 	```
 	  tar -xzvf resnet50-zcu102-zcu104-r1.3.0.tar.gz
 	  cp resnet50 /usr/share/vitis_ai_library/models -r
@@ -167,11 +163,11 @@ steps.**
 2. Unzip the `vitis_ai_runtime_r1.3.x_image_video.tar.gz` package on the target.
 	```
 	cd ~
-	tar -xzvf vitis_ai_runtime_r*1.3*_image_video.tar.gz -C Vitis-AI/examples/VART
+	tar -xzvf vitis_ai_runtime_r*1.3*_image_video.tar.gz -C Vitis-AI/demo/VART
 	```
 3. Enter the directory of samples in the target board. Take `resnet50` as an example.
 	```
-	cd ~/Vitis-AI/examples/VART/samples/resnet50
+	cd ~/Vitis-AI/demo/VART/resnet50
 	```
 4. Run the example.
 	```
@@ -211,15 +207,15 @@ sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 ```
 ### Running Vitis AI Examples
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
-Thus, `VART` is located in the path of `/workspace/examples/VART/` in the docker system. 
+Thus, `VART` is located in the path of `/workspace/demo/VART/` in the docker system. 
 
-**`/workspace/examples/VART/` is the path for the following example.**
+**`/workspace/demo/VART/` is the path for the following example.**
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
 1. Download the [vitis_ai_runtime_r1.3.0_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz) package and unzip it.
 	```
-	cd /workspace/examples
+	cd /workspace/demo
 	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz -O vitis_ai_runtime_r1.3.0_image_video.tar.gz
 	tar -xzvf vitis_ai_runtime_r*1.3*_image_video.tar.gz -C VART
 	```
@@ -246,7 +242,7 @@ If you encounter any path errors in running examples, check to see if you follow
 
 3. Compile the sample, take `resnet50` as an example.
 	```
-	cd /workspace/examples/VART/samples/resnet50
+	cd /workspace/demo/VART/resnet50
 	bash -x build.sh
 	```
 4. Run the example, take `U50` platform as an example.

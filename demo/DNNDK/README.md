@@ -24,7 +24,7 @@ source /opt/petalinux/2020.2/environment-setup-aarch64-xilinx-linux
 
 4. Cross compile samples
 ```sh
-cd Vitis-AI/mpsoc/vitis_ai_dnndk_samples/resnet50
+cd Vitis-AI/demo/DNNDK/resnet50
 # For ZCU102 evaluation board,
 ./build.sh zcu102
 # or for ZCU104 evaluation board
@@ -42,11 +42,12 @@ cd vitis-ai_v1.3_dnndk
 ./install.sh
 ```
 
-2. Copy the Vitis-AI/examples/dnndk folder from host to the /home/root/Vitis_AI/examples directory of the evaluation board
+2. Copy the Vitis-AI/demo/DNNDK folder from host to the /home/root/ directory of the evaluation board
 
 3. Download [vitis-ai_v1.3_dnndk_sample_img.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai_v1.3_dnndk_sample_img.tar.gz) package to /home/root of the evaluation board and run command below
 ```sh
-tar -xzvf vitis-ai_v1.3_dnndk_sample_img.tar.gz -C Vitis-AI/examples
+cd /home/root
+tar -xzvf vitis-ai_v1.3_dnndk_sample_img.tar.gz
 ```
 
 4. If you use your own system image, or there is no dpu.xclbin in the /usr/lib path. you may need to copy dpu.xclbin to /usr/lib first. Such as
@@ -56,7 +57,7 @@ cp /media/sd-mmcblk0p1/dpu.xclbin /usr/lib/
 
 5. Run the samples on evaluation board
 ```sh
-cd /home/root/Vitis_AI/examples/dnndk/resnet50
+cd /home/root/DNNDK/resnet50
 ./resnet50
 
 ```
