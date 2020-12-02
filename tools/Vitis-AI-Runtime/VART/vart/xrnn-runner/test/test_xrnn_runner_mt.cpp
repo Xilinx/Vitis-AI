@@ -177,6 +177,7 @@ int main(int argc, char* argv[]) {
   rs->set_attr<std::string>("xclbin",  mp_ptr->get_xclbin_file());
   rs->set_attr<std::string>("model_type",  mp_ptr->get_model_type());
   rs->set_attr<std::string>("model_init",  mp_ptr->get_ddr_file());
+  rs->set_attr<std::string>("model_path",  mp_ptr->get_model_root());
 
   LOG_IF(INFO, ENV_PARAM(DEBUG)) << thread_num << " thread(s) will run!";
   array<thread, MAX_THREAD_SUPPORT>threads_list;

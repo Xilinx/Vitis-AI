@@ -19,6 +19,7 @@
 #include "xir/buffer_object.hpp"
 #include "xir/device_memory.hpp"
 
+#include "model_config.hpp"
 
 #include <string>
 #include <map>
@@ -48,16 +49,19 @@ public:
 
 public:
   void init(char *ddr, uint64_t size);
+  void update(int frame, ModelConfig *mc, uint32_t* p_ddr, size_t size);
   void run(char* in, uint64_t isize,
            char* out, uint64_t osize,
            int batch, int frame, int thread_index);
   std::string get_board_name();
+  int get_batch_size();
   
 private:
   MODEL_TYPE get_model_type(const std::string& model_name);
   std::string get_model_name(MODEL_TYPE model_type);
   std::vector<uint32_t> get_reg_data(int frame, int thread_index);
   size_t get_base_addr(unsigned batch_num);
+  std::string get_addr_name();
 
 private:
   const size_t idx_ = 0;
@@ -65,7 +69,7 @@ private:
   std::shared_ptr<xir::DeviceMemory> memory_;
 
   MODEL_TYPE model_type_;
-  unsigned batch_ = 1;
+  int batch_ = 1;
 
   static std::mutex mutex_;
 };
