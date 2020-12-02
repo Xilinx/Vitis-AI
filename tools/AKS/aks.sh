@@ -199,16 +199,21 @@ CPP_EXE=""
 PY_EXE=""
 AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=aksMeta_vai1p2_30062020.zip"
 # Check if the model files exists
-for name in "meta_googlenet" "meta_inception_v1_tf" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
-do
-  NAME="graph_zoo/$name"
-  if [[ ! -d "${NAME}" ]]; then
-    echo -e "${NAME} doesn't exist"
-    wget ${AKS_GRAPH_META_URL} -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
-    if [[ $? != 0 ]]; then echo "Network download failed. Exiting ..."; exit 1; fi;
-    break;
-  fi;
-done
+if [[ `uname -m` != "aarch64" ]]; then
+  for name in "meta_googlenet" "meta_inception_v1_tf" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
+  do
+    NAME="graph_zoo/$name"
+    if [[ ! -d "${NAME}" ]]; then
+      echo -e "${NAME} doesn't exist"
+      wget ${AKS_GRAPH_META_URL} -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
+      if [[ $? != 0 ]]; then
+        echo "Network download failed. Exiting ...";
+        exit 1
+      fi
+      break
+    fi
+  done
+fi
 
 # Check input image/video args
 if [ "${MODEL}" == "tinyyolov3_video" ]; then

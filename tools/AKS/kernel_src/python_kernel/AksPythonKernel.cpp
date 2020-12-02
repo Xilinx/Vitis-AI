@@ -184,6 +184,7 @@ int PythonKernelBase::exec_async (
   py::gil_scoped_acquire gil;
   auto res = pyparams->exec_async(in, params, dynParams);
   out = res.cast<std::vector<AKS::DataDescriptor*>>();
+  return 0;
 }
 
 void PythonKernelBase::report(AKS::NodeParams* nodeParams) {
