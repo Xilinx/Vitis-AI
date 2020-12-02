@@ -422,9 +422,9 @@ Use following commands to build these kernels and examples.
 
     ```sh
     # C++
-    ./aks.sh -m resnet50_edge -d1 ~/dataset-imagenet-ilsvrc2012-val-min
+    ./aks.sh -m resnet50_edge -d1 <path-to-copied-files>/dataset-imagenet-ilsvrc2012-val-min
     # Python
-    ./aks.sh -i py -m resnet50_edge -d1 ~/dataset-imagenet-ilsvrc2012-val-min
+    ./aks.sh -i py -m resnet50_edge -d1 <path-to-copied-files>/dataset-imagenet-ilsvrc2012-val-min
     ```
 
 ## Tuning Performance
