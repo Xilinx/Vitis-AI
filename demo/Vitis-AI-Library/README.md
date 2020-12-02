@@ -268,11 +268,6 @@ sudo service xbutler restart
 	  
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
-4. To compile the AI Library sample, take `classification` as an example, execute the following command.
-```
-cd /workspace/demo/Vitis-AI-Library/samples/classification
-bash -x build.sh
-```	
 
 ### Running Vitis AI Library Examples for U50/U50lv/U280
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
