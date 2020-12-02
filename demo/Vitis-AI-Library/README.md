@@ -80,13 +80,13 @@ tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xili
 
 5. Cross compile the demo in the AI Library, take `yolov3` as example.
 ```
-cd ~/Vitis-AI/examples/Vitis-AI-Library/demo/yolov3
+cd ~/Vitis-AI/demo/Vitis-AI-Library/demo/yolov3
 bash -x build.sh
 ```	
 
 6. To compile the library sample in the AI Library, take `facedetect` as an example, execute the following command.
 ```
-cd ~/Vitis-AI/examples/Vitis-AI-Library/samples/facedetect
+cd ~/Vitis-AI/demo/Vitis-AI-Library/samples/facedetect
 bash -x build.sh
 ```	
 ### Setting Up the Target
@@ -149,14 +149,10 @@ steps.**
 	scp -r vitis-ai-runtime-1.3.0/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
-	* Install the Vitis AI Runtime. Execute the following command in order.
+	* Install the Vitis AI Runtime. Execute the following command.
 	```
 	cd centos
-	rpm -ivh --force libunilog-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libxir-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libtarget-factory-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libvart-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libvitis_ai_library-1.3.0-r<x>.aarch64.rpm
+	bash setup.sh
 	```
 	 	  
 ### Running Vitis AI Library Examples
@@ -170,12 +166,12 @@ the [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/ope
 2. Untar the image and video packages on the target.
 ```
 cd ~
-tar -xzvf vitis_ai_library_r1.3.x_images.tar.gz -C Vitis-AI/examples/Vitis_AI_Library
-tar -xzvf vitis_ai_library_r1.3.x_video.tar.gz -C Vitis-AI/examples/Vitis_AI_Library
+tar -xzvf vitis_ai_library_r1.3.x_images.tar.gz -C Vitis-AI/demo/Vitis_AI_Library
+tar -xzvf vitis_ai_library_r1.3.x_video.tar.gz -C Vitis-AI/demo/Vitis_AI_Library
 ```
 3. Enter the directory of example in target board, take `facedetect` as an example.
 ```
-cd ~/Vitis-AI/examples/Vitis_AI_Library/samples/facedetect
+cd ~/Vitis-AI/demo/Vitis_AI_Library/samples/facedetect
 ```
 4. Run the image test example.
 ```
@@ -282,20 +278,20 @@ sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 
 4. To compile the demo in the AI Library, take `yolov3` as an example.
 ```
-cd /workspace/examples/Vitis-AI-Library/demo/yolov3
+cd /workspace/demo/Vitis-AI-Library/demo/yolov3
 bash -x build.sh
 ```	
 5. To compile the AI Library sample, take `classification` as an example, execute the following command.
 ```
-cd /workspace/examples/Vitis-AI-Library/samples/classification
+cd /workspace/demo/Vitis-AI-Library/samples/classification
 bash -x build.sh
 ```	
 
 ### Running Vitis AI Library Examples for U50/U50lv/U280
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
-Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/examples/Vitis-AI-Library/` in the docker system. 
+Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/demo/Vitis-AI-Library/` in the docker system. 
 
-**`/workspace/examples/Vitis-AI-Library/` is the path for the following example.**
+**`/workspace/demo/Vitis-AI-Library/` is the path for the following example.**
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
@@ -309,7 +305,7 @@ tar -xzvf vitis_ai_library_r1.3.0_video.tar.gz -C examples/Vitis-AI-Library/
 ```
 2. Enter the directory of sample and then compile it. Take `facedetect` as an example.
 ```
-cd /workspace/examples/Vitis-AI-Library/samples/facedetect
+cd /workspace/demo/Vitis-AI-Library/samples/facedetect
 bash -x build.sh
 ```
 3. Run the image test example.
