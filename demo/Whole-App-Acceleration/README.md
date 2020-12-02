@@ -133,19 +133,19 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu
 	  sudo cp yolov3_adas_pruned_0_9 /usr/share/vitis_ai_library/models -r
 	```
 	
-For resnet50_mt_py_waa example, download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/VART/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
+For resnet50_mt_py_waa example, download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
 
 For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet_test_image.jpg`
 
-For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/VART/Whole-App-Acceleration/adas_detection_waa/data`
+For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa/data`
 
 For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/adas_detection_input.jpg`
 
 3. Copy WAA examples to the board (only for ZCU102 run)
 
 ```
-	scp -r Vitis-AI/VART/Whole-App-Acceleration/resnet50_mt_py_waa root@IP_OF_BOARD:~/
-	scp -r Vitis-AI/VART/Whole-App-Acceleration/adas_detection_waa root@IP_OF_BOARD:~/
+	scp -r Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa root@IP_OF_BOARD:~/
+	scp -r Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa root@IP_OF_BOARD:~/
 ```
 
 4. Compile and run the program on the target
