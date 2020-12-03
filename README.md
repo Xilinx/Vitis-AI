@@ -155,7 +155,7 @@ More Detail can be found here: [Run Docker Container](doc/install_docker/load_ru
   - [VART](VART/README.md)
   - [Vitis AI Library](Vitis-AI-Library/README.md)
   - [Alveo U200/U250](alveo/README.md)
-  - [Vitis AI DNNDK samples](demo/DNNDK/README.md)
+  - [Vitis AI DNNDK samples](demo/DNNDK)
 
 
 ## Programming with Vitis AI
