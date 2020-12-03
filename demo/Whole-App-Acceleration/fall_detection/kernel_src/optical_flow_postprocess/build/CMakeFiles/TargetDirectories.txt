@@ -1,3 +1,0 @@
-/workspace/demo/Whole-App-Acceleration/fall_detection/kernel_src/optical_flow_postprocess/build/CMakeFiles/rebuild_cache.dir
-/workspace/demo/Whole-App-Acceleration/fall_detection/kernel_src/optical_flow_postprocess/build/CMakeFiles/OpticalFlowPostProcess.dir
-/workspace/demo/Whole-App-Acceleration/fall_detection/kernel_src/optical_flow_postprocess/build/CMakeFiles/edit_cache.dir
