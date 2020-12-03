@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import time
 
-core = 2
+core = 1
 
 filename = "model/car_rental_training_data.csv"
 
