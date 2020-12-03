@@ -541,7 +541,7 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
     //# DPUV1 has datatype float
     ret.size = tensor->get_element_num() *
                std::ceil(tensor->get_data_type().bit_width / 32.f);
-    ret.fixpos = 1;
+    ret.fixpos = 0;
 #else
     ret.fixpos = (int8_t)log2f(scale);
 #endif
@@ -600,7 +600,7 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
     //# DPUV1 has datatype float
     ret.size = tensor->get_element_num() *
                std::ceil(tensor->get_data_type().bit_width / 32.f);
-    ret.fixpos = -1;
+    ret.fixpos = 0;
 #else
     ret.fixpos = -(int8_t)log2f(scale);
 #endif
