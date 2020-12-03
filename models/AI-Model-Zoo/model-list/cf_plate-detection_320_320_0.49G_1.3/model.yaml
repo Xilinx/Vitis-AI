@@ -48,7 +48,7 @@ files:
   checksum: md5sum value
 - name: plate_detection
   type: xmodel
-  board: u50lv-v3me & u280-v3me
+  board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
 license: license link

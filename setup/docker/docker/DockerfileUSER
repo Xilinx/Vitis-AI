@@ -1,0 +1,3 @@
+FROM xdock.xilinx.com/vitis-ai-cpu:1.3-rc
+USER xbuild
+#ADD bashrc 

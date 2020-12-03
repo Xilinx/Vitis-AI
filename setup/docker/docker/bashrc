@@ -1,0 +1,37 @@
+  echo "Running as $USER"
+  usermod -aG sudo $USER && \
+  passwd -d $USER
+. /opt/vitis_ai/conda/etc/profile.d/conda.sh
+export PATH=/opt/vitis_ai/conda/bin:$PATH
+export VERSION=`cat /etc/VERSION.txt`
+export DATE="$DATE"
+export VAI_ROOT=$VAI_ROOT
+export PYTHONPATH=$PYTHONPATH
+export XILINX_XRT=/opt/xilinx/xrt
+export CUDA_HOME=/usr/local/cuda
+export INTERNAL_BUILD=1
+export LIBRARY_PATH=/usr/local/lib
+export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/usr/local/lib:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib
+  if [ -f /tmp/.Xauthority ]; then
+     cp /tmp/.Xauthority /home/$USER/
+     chmod -R 600 /home/$USER/.Xauthority
+     chown $UID:vitis-ai-users /home/$USER/.Xauthority
+  fi
+
+source banner.sh
+
+if [[ $EUID -eq 0 ]]; then
+  cat <<WARN
+    WARNING: You are running Vitis AI Docker container as root. For security reasons, consider running as a regular user:
+    $ sh docker_run.sh
+    
+    OR
+    
+    $ docker run -u \$(id -u):\$(id -g) args...
+WARN
+else
+  cat <<INFO
+    Running as user with ID $(id -u) and group $(id -g)
+INFO
+fi
+

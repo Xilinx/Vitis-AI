@@ -309,7 +309,7 @@ conda activate vitis-ai-caffe
 python -m ck pull repo:ck-env
 python -m ck install package:imagenet-2012-val-min
 
-python /workspace/examples/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
+python /workspace/demo/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
 
 # We don't need conda env for running examples on Alveo-U50
 conda deactivate
@@ -360,15 +360,20 @@ sudo cp alveo_xclbin-1.3.0/U50/6E300M/* /usr/lib
 
 Below example uses **DPUCZDX8G** IP for CNN Inference Acceleration on edge devices like ZCU102/ZCU104.
 
+Following packages are required to run example on edge device:
+1. SD card system image
+2. AKS repo
+3. Image Dataset
+
 ### Setup the Target Device
 
-Please follow the instructions here to setup your target device with correct image: [link](../../examples/VART/README.md#setting-up-the-target)
+Please follow the instructions here to setup your target device with correct SD-card image: [link](../../examples/VART/README.md#setting-up-the-target)
 
 ### Get Image Dataset
 
 :pushpin: **Note:** If you have active internet connectivity on the target board, you can download the dataset directly on the target. If not, copy the dataset to the SD-Card after downloading it on the host system.
 
-Below steps provide a way to download ImageNet dataset on host system using docker.
+Below steps provide a way to download a minimal version of ImageNet validation dataset on host system using docker.
 
 :pushpin: **Note:** Please make sure you are already inside Vitis-AI docker
 
@@ -391,15 +396,22 @@ conda deactivate
 
 Copy the `Vitis-AI/tools/AKS` directory to SD-card.
 
-### Install the AKS library
+Once all copying is finished, boot the device with the SD card.
 
-:pushpin: **Note:** Following instructions assume that files are copied to SD-card are located at `<path-to-copied-files>` once you boot into the board
+### Copy the AKS repo and Image Dataset to home directory
+:pushpin: **Note:** Following instructions assume that files which are copied to SD-card are located at `<path-to-copied-files>` after you boot into the board. For example, in our test device, the location is `/mnt/sd-mmcblk0p1/`.
 
-Install the AKS library from RPM package.
+Now copy the AKS repo and image dataset to home directory.
 
 ```sh
-cd <path-to-copied-files>/AKS
+cp <path-to-copied-files>/AKS ~/
+cp <path-to-copied-files>/dataset-imagenet-ilsvrc2012-val-min ~/
+cd ~/AKS
 ```
+
+### Install the AKS library
+
+Install the AKS library from RPM package.
 
 ```sh
 dnf install aks-1.3.0-r11.aarch64.rpm

@@ -18,7 +18,7 @@
 # CI docker VAI env
 FROM xilinx/vitis-ai:latest
 
-# CLONE TVM REPO AND INSTALL REQUIRED PACKAGES
+
 
 ENV TVM_VAI_HOME /opt/tvm-vai/
 ENV TVM_HOME /opt/tvm-vai/tvm
@@ -32,6 +32,7 @@ RUN cd "${TVM_HOME}" && \
 
 
 RUN apt-get update --fix-missing
+RUN apt-get -y install gpg-agent
  
 RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_core.sh
  
