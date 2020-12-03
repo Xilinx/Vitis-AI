@@ -70,7 +70,6 @@ docker pull xilinx/vitis-ai:latest
 
 To run the docker, use command:
 ```
-cd setup/docker
 ./docker_run.sh xilinx/vitis-ai:latest
 ```
 #### Building Docker from Recipe
