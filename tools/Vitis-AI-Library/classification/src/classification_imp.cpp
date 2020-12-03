@@ -251,7 +251,7 @@ std::vector<ClassificationResult> ClassificationImp::run(
 #ifdef ENABLE_DPUCADX8G_RUNNER
             cv::resize(input_images[i], image, size);
 #else
-            croppedImage(input_image[i], height, width, image);
+            croppedImage(input_images[i], height, width, image);
 #endif
           } else {
             cv::resize(input_images[i], image, size);
