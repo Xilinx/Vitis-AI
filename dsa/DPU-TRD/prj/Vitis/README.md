@@ -601,6 +601,11 @@ User could execute **zynqmp_dpu_optimize.sh** on target board to address issue2 
 Copy **$TRD_HOME/app/dpu_sw_optimize.tar.gz** to target board, after linux boot-up, run: 
 
 ```shell
+This zynqmp_dpu_optimize.sh would execute following functions on target board:
+  1) auto-resize ext4 partition to the max capacity
+  2) fine-tune QoS/Outstanding settings for DPU case to achieve a better performance
+  3) adjust pmic irps5401 current for ZCU104 board only
+
 % tar -zxvf dpu_sw_optimize.tar.gz
 
 % ./dpu_sw_optimize/zynqmp/zynqmp_dpu_optimize.sh
