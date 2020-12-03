@@ -17,7 +17,7 @@
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(DEPS_PUBLIC xir::xir unilog::unilog runner uuid util)
+set(DEPS_PUBLIC xir::xir unilog::unilog runner uuid util json-c)
 set(DEPS_PRIVATE XRT::XRT xrt-device-handle buffer-object)
 
 include_directories(/opt/xilinx/xrt/include)

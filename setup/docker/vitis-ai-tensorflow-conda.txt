@@ -1,0 +1,1377 @@
+ddump==1.3.0
+  ├─ ipython[2m 7.16.1 [required: any][0m
+  │  ├─ backcall[2m 0.2.0 [required: any][0m
+  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │     ├─ ld_impl_linux-64[2m 2.33.1 [required: any][0m
+  │  │     ├─ libffi[2m 3.2.1 [required: >=3.2.1,<3.3a0][0m
+  │  │     │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     │  │  └─ _libgcc_mutex[2m 0.1 [required: *, main][0m
+  │  │     │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │     ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     ├─ ncurses[2m 6.2 [required: >=6.2,<7.0a0][0m
+  │  │     │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │     │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     ├─ openssl[2m 1.1.1h [required: >=1.1.1e,<1.1.2a][0m
+  │  │     │  ├─ ca-certificates[2m 2020.10.14 [required: any][0m
+  │  │     │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │     ├─ readline[2m 8.0 [required: >=8.0,<9.0a0][0m
+  │  │     │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │     │  └─ ncurses[2m 6.2 [required: >=6.1,<7.0a0][0m
+  │  │     │     [2m└─ dependencies of ncurses displayed above[0m
+  │  │     ├─ sqlite[2m 3.33.0 [required: >=3.31.1,<4.0a0][0m
+  │  │     │  ├─ libedit[2m 3.1.20191231 [required: >=3.1.20191231,<3.2.0a0][0m
+  │  │     │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │     │  │  └─ ncurses[2m 6.2 [required: >=6.2,<7.0a0][0m
+  │  │     │  │     [2m└─ dependencies of ncurses displayed above[0m
+  │  │     │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │     │  ├─ ncurses[2m 6.2 [required: >=6.2,<7.0a0][0m
+  │  │     │  │  [2m└─ dependencies of ncurses displayed above[0m
+  │  │     │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │     │     └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     │        [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │     ├─ tk[2m 8.6.10 [required: >=8.6.8,<8.7.0a0][0m
+  │  │     │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │     │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │     │     [2m└─ dependencies of zlib displayed above[0m
+  │  │     ├─ xz[2m 5.2.5 [required: >=5.2.4,<6.0a0][0m
+  │  │     │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │     │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │     ├─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │     │  [2m└─ dependencies of zlib displayed above[0m
+  │  │     └─ pip[2m 20.2.4 [required: any][0m
+  │  │        ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │        │  [2m└─ dependencies of python displayed above[0m
+  │  │        ├─ setuptools[2m 50.3.1 [required: any][0m
+  │  │        │  ├─ certifi[2m 2020.11.8 [required: >=2016.9.26][0m
+  │  │        │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │        │  │     [2m└─ dependencies of python displayed above[0m
+  │  │        │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │        │     [2m└─ dependencies of python displayed above[0m
+  │  │        └─ wheel[2m 0.35.1 [required: any][0m
+  │  │           └─ python[2m 3.6.10 [required: any][0m
+  │  │              [2m└─ dependencies of python displayed above[0m
+  │  ├─ decorator[2m 4.4.2 [required: any][0m
+  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ jedi[2m 0.17.2 [required: >=0.10][0m
+  │  │  ├─ parso[2m 0.7.0 [required: >=0.7.0,<0.8.0][0m
+  │  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ pexpect[2m 4.8.0 [required: any][0m
+  │  │  ├─ ptyprocess[2m 0.6.0 [required: >=0.5][0m
+  │  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ pickleshare[2m 0.7.5 [required: any][0m
+  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ prompt-toolkit[2m 3.0.8 [required: !=3.0.0,!=3.0.1,<3.1.0,>=2.0.0][0m
+  │  │  ├─ pygments[2m 2.7.2 [required: any][0m
+  │  │  │  ├─ python[2m 3.6.10 [required: >=3.5][0m
+  │  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  │  └─ setuptools[2m 50.3.1 [required: any][0m
+  │  │  │     [2m└─ dependencies of setuptools displayed above[0m
+  │  │  ├─ python[2m 3.6.10 [required: >=3.6][0m
+  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  └─ wcwidth[2m 0.2.5 [required: any][0m
+  │  │     └─ python[2m 3.6.10 [required: any][0m
+  │  │        [2m└─ dependencies of python displayed above[0m
+  │  ├─ pygments[2m 2.7.2 [required: any][0m
+  │  │  [2m└─ dependencies of pygments displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ setuptools[2m 50.3.1 [required: >=18.5][0m
+  │  │  [2m└─ dependencies of setuptools displayed above[0m
+  │  └─ traitlets[2m 4.3.3 [required: >=4.2][0m
+  │     ├─ decorator[2m 4.4.2 [required: any][0m
+  │     │  [2m└─ dependencies of decorator displayed above[0m
+  │     ├─ ipython_genutils[2m 0.2.0 [required: any][0m
+  │     │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │     [2m└─ dependencies of python displayed above[0m
+  │     ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  [2m└─ dependencies of python displayed above[0m
+  │     └─ six[2m 1.15.0 [required: any][0m
+  │        └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │           [2m└─ dependencies of python displayed above[0m
+  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  ├─ numpy[2m 1.16.4 [required: any][0m
+  │  ├─ blas[2m 1.0 [required: 1.0, mkl][0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ libgfortran-ng[2m 7.3.0 [required: >=7,<8.0a0][0m
+  │  ├─ mkl[2m 2020.2 [required: >=2019.3,<2021.0a0][0m
+  │  │  └─ intel-openmp[2m 2020.2 [required: any][0m
+  │  ├─ mkl_fft[2m 1.2.0 [required: >=1.0.6,<2.0a0][0m
+  │  │  ├─ blas[2m 1.0 [required: 1.0, mkl][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  ├─ mkl[2m 2020.2 [required: >=2019.4,<2021.0a0][0m
+  │  │  │  [2m└─ dependencies of mkl displayed above[0m
+  │  │  ├─ mkl-service[2m 2.3.0 [required: >=2,<3.0a0][0m
+  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  ├─ mkl[2m 2020.2 [required: >=2019.4,<2021.0a0][0m
+  │  │  │  │  [2m└─ dependencies of mkl displayed above[0m
+  │  │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  │  └─ six[2m 1.15.0 [required: any][0m
+  │  │  │     [2m└─ dependencies of six displayed above[0m
+  │  │  ├─ numpy[2m 1.16.4 [required: >=1.14.6,<2.0a0][0m
+  │  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ mkl_random[2m 1.1.1 [required: >=1.0.2,<2.0a0][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  ├─ mkl[2m 2020.2 [required: >=2020.1,<2021.0a0][0m
+  │  │  │  [2m└─ dependencies of mkl displayed above[0m
+  │  │  ├─ numpy[2m 1.16.4 [required: >=1.14,<2.0a0][0m
+  │  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  └─ blas[2m 1.0 [required: *, mkl][0m
+  │  ├─ numpy-base[2m 1.16.4 [required: 1.16.4, py36hde5b4d6_0][0m
+  │  │  ├─ blas[2m 1.0 [required: 1.0, mkl][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ libgfortran-ng[2m 7.3.0 [required: >=7,<8.0a0][0m
+  │  │  ├─ mkl[2m 2020.2 [required: >=2019.3,<2021.0a0][0m
+  │  │  │  [2m└─ dependencies of mkl displayed above[0m
+  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     [2m└─ dependencies of python displayed above[0m
+  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     [2m└─ dependencies of python displayed above[0m
+scikit-learn==0.23.2
+  ├─ joblib[2m 0.17.0 [required: >=0.11][0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  └─ setuptools[2m 50.3.1 [required: any][0m
+  │     [2m└─ dependencies of setuptools displayed above[0m
+  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  ├─ numpy[2m 1.16.4 [required: >=1.14.6,<2.0a0][0m
+  │  [2m└─ dependencies of numpy displayed above[0m
+  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  [2m└─ dependencies of python displayed above[0m
+  ├─ scipy[2m 1.5.2 [required: any][0m
+  │  ├─ blas[2m 1.0 [required: 1.0, mkl][0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ libgfortran-ng[2m 7.3.0 [required: >=7,<8.0a0][0m
+  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  ├─ mkl[2m 2020.2 [required: >=2019.4,<2021.0a0][0m
+  │  │  [2m└─ dependencies of mkl displayed above[0m
+  │  ├─ mkl-service[2m 2.3.0 [required: >=2,<3.0a0][0m
+  │  │  [2m└─ dependencies of mkl-service displayed above[0m
+  │  ├─ numpy[2m 1.16.4 [required: >=1.14.6,<2.0a0][0m
+  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     [2m└─ dependencies of python displayed above[0m
+  └─ threadpoolctl[2m 2.1.0 [required: any][0m
+     └─ python[2m 3.6.10 [required: >=3.5][0m
+        [2m└─ dependencies of python displayed above[0m
+rt-engine==1.3.0
+  ├─ glog[2m 0.4.0 [required: >=0.4.0,<1.0a0][0m
+  │  ├─ gflags[2m 2.2.2 [required: >=2.2.2,<2.3.0a0][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  ├─ h5py[2m 2.8.0 [required: any][0m
+  │  ├─ hdf5[2m 1.10.2 [required: >=1.10.2,<1.10.3.0a0][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ libgfortran-ng[2m 7.3.0 [required: >=7,<8.0a0][0m
+  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │     [2m└─ dependencies of zlib displayed above[0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ numpy[2m 1.16.4 [required: >=1.11.3,<2.0a0][0m
+  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  └─ six[2m 1.15.0 [required: any][0m
+  │     [2m└─ dependencies of six displayed above[0m
+  ├─ hdf5[2m 1.10.2 [required: >=1.10.2,<1.10.3.0a0][0m
+  │  [2m└─ dependencies of hdf5 displayed above[0m
+  ├─ json-c[2m 0.13.1 [required: >=0.13.1,<0.14.0a0][0m
+  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  ├─ mkl[2m 2020.2 [required: any][0m
+  │  [2m└─ dependencies of mkl displayed above[0m
+  ├─ opencv[2m 3.4.2 [required: >=3.4.2,<3.4.3.0a0][0m
+  │  ├─ hdf5[2m 1.10.2 [required: >=1.10.2,<1.10.3.0a0][0m
+  │  │  [2m└─ dependencies of hdf5 displayed above[0m
+  │  ├─ py-opencv[2m 3.4.2 [required: 3.4.2, py36hb342d67_1][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ libopencv[2m 3.4.2 [required: 3.4.2, hb342d67_1][0m
+  │  │  │  ├─ ffmpeg[2m 4.0 [required: >=4.0,<4.1.0a0][0m
+  │  │  │  │  ├─ bzip2[2m 1.0.8 [required: >=1.0.6,<2.0a0][0m
+  │  │  │  │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  ├─ freetype[2m 2.10.4 [required: >=2.9.1,<3.0a0][0m
+  │  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  ├─ libpng[2m 1.6.37 [required: >=1.6.37,<1.7.0a0][0m
+  │  │  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │  │  │  │  │     [2m└─ dependencies of zlib displayed above[0m
+  │  │  │  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │  │  │  │     [2m└─ dependencies of zlib displayed above[0m
+  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  ├─ libopus[2m 1.3.1 [required: >=1.2.1,<2.0a0][0m
+  │  │  │  │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  ├─ libvpx[2m 1.7.0 [required: >=1.7.0,<1.8.0a0][0m
+  │  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │  │  │     [2m└─ dependencies of zlib displayed above[0m
+  │  │  │  ├─ freetype[2m 2.10.4 [required: >=2.9.1,<3.0a0][0m
+  │  │  │  │  [2m└─ dependencies of freetype displayed above[0m
+  │  │  │  ├─ harfbuzz[2m 1.9.0 [required: >=1.7.6,<2.0a0][0m
+  │  │  │  │  ├─ cairo[2m 1.14.12 [required: >=1.14.12,<1.15.0a0][0m
+  │  │  │  │  │  ├─ fontconfig[2m 2.13.1 [required: >=2.13.0,<3.0a0][0m
+  │  │  │  │  │  │  ├─ freetype[2m 2.10.4 [required: >=2.9.1,<3.0a0][0m
+  │  │  │  │  │  │  │  [2m└─ dependencies of freetype displayed above[0m
+  │  │  │  │  │  │  ├─ icu[2m 58.2 [required: >=58.2,<59.0a0][0m
+  │  │  │  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  │  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  │  ├─ libpng[2m 1.6.37 [required: >=1.6.34,<1.7.0a0][0m
+  │  │  │  │  │  │  │  [2m└─ dependencies of libpng displayed above[0m
+  │  │  │  │  │  │  ├─ libuuid[2m 2.32.1 [required: >=2.32.1,<3.0a0][0m
+  │  │  │  │  │  │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  │  └─ libxml2[2m 2.9.10 [required: >=2.9.8,<2.10.0a0][0m
+  │  │  │  │  │  │     ├─ icu[2m 58.2 [required: >=58.2,<59.0a0][0m
+  │  │  │  │  │  │     │  [2m└─ dependencies of icu displayed above[0m
+  │  │  │  │  │  │     ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │     │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  │     ├─ xz[2m 5.2.5 [required: >=5.2.5,<6.0a0][0m
+  │  │  │  │  │  │     │  [2m└─ dependencies of xz displayed above[0m
+  │  │  │  │  │  │     └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │  │  │  │  │        [2m└─ dependencies of zlib displayed above[0m
+  │  │  │  │  │  ├─ freetype[2m 2.10.4 [required: >=2.9.1,<3.0a0][0m
+  │  │  │  │  │  │  [2m└─ dependencies of freetype displayed above[0m
+  │  │  │  │  │  ├─ glib[2m 2.56.2 [required: >=2.56.1,<3.0a0][0m
+  │  │  │  │  │  │  ├─ libffi[2m 3.2.1 [required: >=3.2.1,<3.3a0][0m
+  │  │  │  │  │  │  │  [2m└─ dependencies of libffi displayed above[0m
+  │  │  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  ├─ pcre[2m 8.44 [required: >=8.42,<9.0a0][0m
+  │  │  │  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  │  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │  │  │  │  │     [2m└─ dependencies of zlib displayed above[0m
+  │  │  │  │  │  ├─ icu[2m 58.2 [required: >=58.2,<59.0a0][0m
+  │  │  │  │  │  │  [2m└─ dependencies of icu displayed above[0m
+  │  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  ├─ libpng[2m 1.6.37 [required: >=1.6.34,<1.7.0a0][0m
+  │  │  │  │  │  │  [2m└─ dependencies of libpng displayed above[0m
+  │  │  │  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  │  ├─ libxcb[2m 1.14 [required: >=1.13,<2.0a0][0m
+  │  │  │  │  │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  ├─ pixman[2m 0.40.0 [required: >=0.34.0,<1.0a0][0m
+  │  │  │  │  │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  ├─ xz[2m 5.2.5 [required: >=5.2.4,<6.0a0][0m
+  │  │  │  │  │  │  [2m└─ dependencies of xz displayed above[0m
+  │  │  │  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │  │  │  │     [2m└─ dependencies of zlib displayed above[0m
+  │  │  │  │  ├─ freetype[2m 2.10.4 [required: >=2.9.1,<3.0a0][0m
+  │  │  │  │  │  [2m└─ dependencies of freetype displayed above[0m
+  │  │  │  │  ├─ glib[2m 2.56.2 [required: >=2.56.2,<2.57.0a0][0m
+  │  │  │  │  │  [2m└─ dependencies of glib displayed above[0m
+  │  │  │  │  ├─ graphite2[2m 1.3.14 [required: any][0m
+  │  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  ├─ icu[2m 58.2 [required: >=58.2,<59.0a0][0m
+  │  │  │  │  │  [2m└─ dependencies of icu displayed above[0m
+  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  ├─ hdf5[2m 1.10.2 [required: >=1.10.2,<1.10.3.0a0][0m
+  │  │  │  │  [2m└─ dependencies of hdf5 displayed above[0m
+  │  │  │  ├─ jasper[2m 2.0.14 [required: >=2.0.14,<3.0a0][0m
+  │  │  │  │  ├─ freeglut[2m 3.0.0 [required: >=3.0.0,<4.0a0][0m
+  │  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  ├─ jpeg[2m 9c [required: >=9b,<10a][0m
+  │  │  │  │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  └─ libglu[2m 9.0.0 [required: >=9.0.0,<10.0a0][0m
+  │  │  │  │     ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │     │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │     └─ libstdcxx-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  ├─ jpeg[2m 9c [required: >=9b,<10a][0m
+  │  │  │  │  [2m└─ dependencies of jpeg displayed above[0m
+  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  ├─ libpng[2m 1.6.37 [required: >=1.6.34,<1.7.0a0][0m
+  │  │  │  │  [2m└─ dependencies of libpng displayed above[0m
+  │  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  ├─ libtiff[2m 4.1.0 [required: >=4.0.9,<5.0a0][0m
+  │  │  │  │  ├─ jpeg[2m 9c [required: >=9b,<10a][0m
+  │  │  │  │  │  [2m└─ dependencies of jpeg displayed above[0m
+  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  ├─ xz[2m 5.2.5 [required: >=5.2.5,<6.0a0][0m
+  │  │  │  │  │  [2m└─ dependencies of xz displayed above[0m
+  │  │  │  │  ├─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │  │  │  │  [2m└─ dependencies of zlib displayed above[0m
+  │  │  │  │  └─ zstd[2m 1.4.5 [required: >=1.4.4,<1.5.0a0][0m
+  │  │  │  │     ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │     │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │     ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │     ├─ lz4-c[2m 1.9.2 [required: >=1.9.2,<1.10.0a0][0m
+  │  │  │  │     │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │     │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │     │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │     ├─ xz[2m 5.2.5 [required: >=5.2.5,<6.0a0][0m
+  │  │  │  │     │  [2m└─ dependencies of xz displayed above[0m
+  │  │  │  │     └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │  │  │        [2m└─ dependencies of zlib displayed above[0m
+  │  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │  │     [2m└─ dependencies of zlib displayed above[0m
+  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  ├─ numpy[2m 1.16.4 [required: >=1.11.3,<2.0a0][0m
+  │  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     [2m└─ dependencies of python displayed above[0m
+  ├─ protobuf[2m 3.11.4 [required: 3.11.*][0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ libprotobuf[2m 3.11.4 [required: >=3.11.4,<3.12.0a0][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │     [2m└─ dependencies of zlib displayed above[0m
+  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ setuptools[2m 50.3.1 [required: any][0m
+  │  │  [2m└─ dependencies of setuptools displayed above[0m
+  │  └─ six[2m 1.15.0 [required: any][0m
+  │     [2m└─ dependencies of six displayed above[0m
+  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  [2m└─ dependencies of python displayed above[0m
+  ├─ pyzmq[2m 19.0.2 [required: any][0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  └─ zeromq[2m 4.3.3 [required: >=4.3.2,<4.4.0a0][0m
+  │     ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     ├─ libsodium[2m 1.0.18 [required: >=1.0.18,<1.0.19.0a0][0m
+  │     │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  ├─ unilog[2m 1.3.0 [required: 1.3.0][0m
+  │  ├─ boost[2m 1.65.1 [required: >=1.65,<1.66.0a0][0m
+  │  │  ├─ libboost[2m 1.65.1 [required: 1.65.1, habcd387_4][0m
+  │  │  │  ├─ bzip2[2m 1.0.8 [required: >=1.0.6,<2.0a0][0m
+  │  │  │  │  [2m└─ dependencies of bzip2 displayed above[0m
+  │  │  │  ├─ icu[2m 58.2 [required: >=58.2,<59.0a0][0m
+  │  │  │  │  [2m└─ dependencies of icu displayed above[0m
+  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │  │     [2m└─ dependencies of zlib displayed above[0m
+  │  │  ├─ py-boost[2m 1.65.1 [required: any][0m
+  │  │  │  ├─ libboost[2m 1.65.1 [required: >=1.65.1,<1.66.0a0][0m
+  │  │  │  │  [2m└─ dependencies of libboost displayed above[0m
+  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │  │  │  ├─ numpy[2m 1.16.4 [required: >=1.9.3,<2.0a0][0m
+  │  │  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ glog[2m 0.4.0 [required: >=0.4.0,<1.0a0][0m
+  │  │  [2m└─ dependencies of glog displayed above[0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  ├─ vart[2m 1.3.0 [required: 1.3.0][0m
+  │  ├─ json-c[2m 0.13.1 [required: >=0.13.1,<0.14.0a0][0m
+  │  │  [2m└─ dependencies of json-c displayed above[0m
+  │  ├─ libprotobuf[2m 3.11.4 [required: >=3.11.4,<3.12.0a0][0m
+  │  │  [2m└─ dependencies of libprotobuf displayed above[0m
+  │  ├─ libuuid[2m 2.32.1 [required: >=2.32.1,<3.0a0][0m
+  │  │  [2m└─ dependencies of libuuid displayed above[0m
+  │  ├─ opencv[2m 3.4.2 [required: >=3.4.2,<3.4.3.0a0][0m
+  │  │  [2m└─ dependencies of opencv displayed above[0m
+  │  ├─ pybind11[2m 2.5.0 [required: any][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ target_factory[2m 1.3.0 [required: 1.3.0][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ libprotobuf[2m 3.11.4 [required: >=3.11.4,<3.12.0a0][0m
+  │  │  │  [2m└─ dependencies of libprotobuf displayed above[0m
+  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  └─ unilog[2m 1.3.0 [required: 1.3.0][0m
+  │  │     [2m└─ dependencies of unilog displayed above[0m
+  │  ├─ xip[2m 1.3.0 [required: 1.3.0][0m
+  │  │  ├─ glog[2m 0.4.0 [required: >=0.4.0,<1.0a0][0m
+  │  │  │  [2m└─ dependencies of glog displayed above[0m
+  │  │  ├─ jsoncpp[2m 1.8.4 [required: any][0m
+  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  ├─ libuuid[2m 2.32.1 [required: >=2.32.1,<3.0a0][0m
+  │  │  │  [2m└─ dependencies of libuuid displayed above[0m
+  │  │  ├─ protobuf[2m 3.11.4 [required: 3.11.*][0m
+  │  │  │  [2m└─ dependencies of protobuf displayed above[0m
+  │  │  ├─ pybind11[2m 2.5.0 [required: any][0m
+  │  │  │  [2m└─ dependencies of pybind11 displayed above[0m
+  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  └─ xir[2m 1.3.0 [required: 1.3.0][0m
+  │     ├─ graphviz[2m 2.38.0 [required: any][0m
+  │     │  ├─ cairo[2m 1.14.12 [required: >=1.14.12,<1.15.0a0][0m
+  │     │  │  [2m└─ dependencies of cairo displayed above[0m
+  │     │  ├─ expat[2m 2.2.10 [required: >=2.2.5,<2.3.0a0][0m
+  │     │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  └─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  ├─ freetype[2m 2.10.4 [required: >=2.9.1,<3.0a0][0m
+  │     │  │  [2m└─ dependencies of freetype displayed above[0m
+  │     │  ├─ jpeg[2m 9c [required: >=9c,<10a][0m
+  │     │  │  [2m└─ dependencies of jpeg displayed above[0m
+  │     │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  ├─ libpng[2m 1.6.37 [required: >=1.6.34,<1.7.0a0][0m
+  │     │  │  [2m└─ dependencies of libpng displayed above[0m
+  │     │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  ├─ libtiff[2m 4.1.0 [required: >=4.0.9,<5.0a0][0m
+  │     │  │  [2m└─ dependencies of libtiff displayed above[0m
+  │     │  ├─ libtool[2m 2.4.6 [required: any][0m
+  │     │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  ├─ libxcb[2m 1.14 [required: any][0m
+  │     │  │  [2m└─ dependencies of libxcb displayed above[0m
+  │     │  ├─ pango[2m 1.40.14 [required: >=1.40.14,<1.41.0a0][0m
+  │     │  │  ├─ fontconfig[2m 2.13.1 [required: >=2.13.1,<3.0a0][0m
+  │     │  │  │  [2m└─ dependencies of fontconfig displayed above[0m
+  │     │  │  ├─ freetype[2m 2.10.4 [required: >=2.9.1,<3.0a0][0m
+  │     │  │  │  [2m└─ dependencies of freetype displayed above[0m
+  │     │  │  ├─ harfbuzz[2m 1.9.0 [required: >=1.9.0,<2.0a0][0m
+  │     │  │  │  [2m└─ dependencies of harfbuzz displayed above[0m
+  │     │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  └─ libpng[2m 1.6.37 [required: >=1.6.35,<1.7.0a0][0m
+  │     │  │     [2m└─ dependencies of libpng displayed above[0m
+  │     │  ├─ xorg-libxpm[2m 3.5.12 [required: any][0m
+  │     │  │  ├─ gettext[2m 0.19.8.1 [required: >=0.19.8.1,<1.0a0][0m
+  │     │  │  │  ├─ libffi[2m 3.2.1 [required: >=3.2.1,<3.3a0][0m
+  │     │  │  │  │  [2m└─ dependencies of libffi displayed above[0m
+  │     │  │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+  │     │  │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  ├─ xorg-libx11[2m 1.6.6 [required: 1.6.*][0m
+  │     │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  │  ├─ libxcb[2m 1.14 [required: 1.*][0m
+  │     │  │  │  │  [2m└─ dependencies of libxcb displayed above[0m
+  │     │  │  │  ├─ xorg-kbproto[2m 1.0.7 [required: any][0m
+  │     │  │  │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  │  └─ xorg-xproto[2m 7.0.31 [required: any][0m
+  │     │  │  │     └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │        [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  ├─ xorg-libxext[2m 1.3.3 [required: 1.3.*][0m
+  │     │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  │  ├─ xorg-libx11[2m 1.6.6 [required: 1.6.*][0m
+  │     │  │  │  │  [2m└─ dependencies of xorg-libx11 displayed above[0m
+  │     │  │  │  └─ xorg-xextproto[2m 7.3.0 [required: any][0m
+  │     │  │  │     └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │        [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  ├─ xorg-libxt[2m 1.1.5 [required: 1.1.*][0m
+  │     │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  │  ├─ xorg-kbproto[2m 1.0.7 [required: any][0m
+  │     │  │  │  │  [2m└─ dependencies of xorg-kbproto displayed above[0m
+  │     │  │  │  ├─ xorg-libice[2m 1.0.9 [required: 1.0.*][0m
+  │     │  │  │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  │  ├─ xorg-libsm[2m 1.2.3 [required: 1.2.*][0m
+  │     │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  │  │  ├─ libuuid[2m 2.32.1 [required: >=2.32.1,<3.0a0][0m
+  │     │  │  │  │  │  [2m└─ dependencies of libuuid displayed above[0m
+  │     │  │  │  │  └─ xorg-libice[2m 1.0.9 [required: 1.0.*][0m
+  │     │  │  │  │     [2m└─ dependencies of xorg-libice displayed above[0m
+  │     │  │  │  ├─ xorg-libx11[2m 1.6.6 [required: 1.6.*][0m
+  │     │  │  │  │  [2m└─ dependencies of xorg-libx11 displayed above[0m
+  │     │  │  │  └─ xorg-xproto[2m 7.0.31 [required: any][0m
+  │     │  │  │     [2m└─ dependencies of xorg-xproto displayed above[0m
+  │     │  │  ├─ xorg-xextproto[2m 7.3.0 [required: any][0m
+  │     │  │  │  [2m└─ dependencies of xorg-xextproto displayed above[0m
+  │     │  │  └─ xorg-xproto[2m 7.0.31 [required: any][0m
+  │     │  │     [2m└─ dependencies of xorg-xproto displayed above[0m
+  │     │  ├─ xorg-libxrender[2m 0.9.10 [required: any][0m
+  │     │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  ├─ xorg-libx11[2m 1.6.6 [required: 1.6.*][0m
+  │     │  │  │  [2m└─ dependencies of xorg-libx11 displayed above[0m
+  │     │  │  └─ xorg-renderproto[2m 0.11.1 [required: any][0m
+  │     │  │     └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │        [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │     │     [2m└─ dependencies of zlib displayed above[0m
+  │     ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     ├─ libprotobuf[2m 3.11.4 [required: >=3.11.4,<3.12.0a0][0m
+  │     │  [2m└─ dependencies of libprotobuf displayed above[0m
+  │     ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     ├─ numpy[2m 1.16.4 [required: >=1.12][0m
+  │     │  [2m└─ dependencies of numpy displayed above[0m
+  │     ├─ openssl[2m 1.1.1h [required: >=1.1.1h,<1.1.2a][0m
+  │     │  [2m└─ dependencies of openssl displayed above[0m
+  │     ├─ pybind11[2m 2.5.0 [required: any][0m
+  │     │  [2m└─ dependencies of pybind11 displayed above[0m
+  │     ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  [2m└─ dependencies of python displayed above[0m
+  │     └─ unilog[2m 1.3.0 [required: 1.3.0][0m
+  │        [2m└─ dependencies of unilog displayed above[0m
+  └─ xip[2m 1.3.0 [required: 1.3.0][0m
+     [2m└─ dependencies of xip displayed above[0m
+pydot==1.4.1
+  ├─ graphviz[2m 2.38.0 [required: any][0m
+  │  [2m└─ dependencies of graphviz displayed above[0m
+  ├─ pyparsing[2m 2.4.7 [required: >=2.1.4][0m
+  │  └─ python[2m 3.6.10 [required: any][0m
+  │     [2m└─ dependencies of python displayed above[0m
+  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     [2m└─ dependencies of python displayed above[0m
+keras==2.3.1
+  ├─ keras-base[2m 2.3.1 [required: 2.3.1.*][0m
+  │  ├─ h5py[2m 2.8.0 [required: any][0m
+  │  │  [2m└─ dependencies of h5py displayed above[0m
+  │  ├─ keras-applications[2m 1.0.8 [required: >=1.0.6][0m
+  │  │  ├─ h5py[2m 2.8.0 [required: any][0m
+  │  │  │  [2m└─ dependencies of h5py displayed above[0m
+  │  │  ├─ numpy[2m 1.16.4 [required: >=1.9.1][0m
+  │  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ keras-preprocessing[2m 1.1.0 [required: >=1.0.5][0m
+  │  │  ├─ numpy[2m 1.16.4 [required: >=1.9.1][0m
+  │  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  │  ├─ python[2m 3.6.10 [required: any][0m
+  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  ├─ scipy[2m 1.5.2 [required: >=0.14][0m
+  │  │  │  [2m└─ dependencies of scipy displayed above[0m
+  │  │  └─ six[2m 1.15.0 [required: >=1.9.0][0m
+  │  │     [2m└─ dependencies of six displayed above[0m
+  │  ├─ numpy[2m 1.16.4 [required: >=1.9.1][0m
+  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ pyyaml[2m 5.3.1 [required: any][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  └─ yaml[2m 0.2.5 [required: >=0.2.5,<0.3.0a0][0m
+  │  │     └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │        [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ scipy[2m 1.5.2 [required: >=0.14][0m
+  │  │  [2m└─ dependencies of scipy displayed above[0m
+  │  └─ six[2m 1.15.0 [required: >=1.9.0][0m
+  │     [2m└─ dependencies of six displayed above[0m
+  └─ tensorflow[2m 1.15.0 [required: any][0m
+     ├─ _tflow_select[2m 2.3.0 [required: 2.3.0, mkl][0m
+     ├─ python[2m 3.6.10 [required: 3.6.*][0m
+     │  [2m└─ dependencies of python displayed above[0m
+     ├─ tensorboard[2m 1.15.0 [required: 1.15.*][0m
+     │  ├─ absl-py[2m 0.11.0 [required: >=0.7][0m
+     │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │  │  │  [2m└─ dependencies of python displayed above[0m
+     │  │  └─ six[2m 1.15.0 [required: any][0m
+     │  │     [2m└─ dependencies of six displayed above[0m
+     │  ├─ grpcio[2m 1.31.0 [required: >=1.14][0m
+     │  │  ├─ c-ares[2m 1.17.1 [required: >=1.15.0,<2.0a0][0m
+     │  │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+     │  │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+     │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+     │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+     │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+     │  │  ├─ openssl[2m 1.1.1h [required: >=1.1.1g,<1.1.2a][0m
+     │  │  │  [2m└─ dependencies of openssl displayed above[0m
+     │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │  │  │  [2m└─ dependencies of python displayed above[0m
+     │  │  ├─ setuptools[2m 50.3.1 [required: any][0m
+     │  │  │  [2m└─ dependencies of setuptools displayed above[0m
+     │  │  ├─ six[2m 1.15.0 [required: >=1.5.2][0m
+     │  │  │  [2m└─ dependencies of six displayed above[0m
+     │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+     │  │     [2m└─ dependencies of zlib displayed above[0m
+     │  ├─ markdown[2m 3.3.3 [required: >=2.6.11][0m
+     │  │  ├─ importlib-metadata[2m 2.0.0 [required: any][0m
+     │  │  │  ├─ python[2m 3.6.10 [required: >=3][0m
+     │  │  │  │  [2m└─ dependencies of python displayed above[0m
+     │  │  │  └─ zipp[2m 3.4.0 [required: >=0.5][0m
+     │  │  │     └─ python[2m 3.6.10 [required: >=3.6][0m
+     │  │  │        [2m└─ dependencies of python displayed above[0m
+     │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │  │     [2m└─ dependencies of python displayed above[0m
+     │  ├─ numpy[2m 1.16.4 [required: >=1.16][0m
+     │  │  [2m└─ dependencies of numpy displayed above[0m
+     │  ├─ protobuf[2m 3.11.4 [required: >=3.6.1][0m
+     │  │  [2m└─ dependencies of protobuf displayed above[0m
+     │  ├─ python[2m 3.6.10 [required: >=3.5][0m
+     │  │  [2m└─ dependencies of python displayed above[0m
+     │  ├─ six[2m 1.15.0 [required: >=1.12][0m
+     │  │  [2m└─ dependencies of six displayed above[0m
+     │  ├─ webencodings[2m 0.5.1 [required: any][0m
+     │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │  │     [2m└─ dependencies of python displayed above[0m
+     │  ├─ werkzeug[2m 0.16.1 [required: >=0.14][0m
+     │  │  └─ python[2m 3.6.10 [required: any][0m
+     │  │     [2m└─ dependencies of python displayed above[0m
+     │  └─ wheel[2m 0.35.1 [required: any][0m
+     │     [2m└─ dependencies of wheel displayed above[0m
+     ├─ tensorflow-base[2m 1.15.0 [required: 1.15.0, mkl_py36he1670d9_0][0m
+     │  ├─ absl-py[2m 0.11.0 [required: >=0.7.1,<1.0a0][0m
+     │  │  [2m└─ dependencies of absl-py displayed above[0m
+     │  ├─ astor[2m 0.8.1 [required: >=0.6.2,<1.0a0][0m
+     │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │  │     [2m└─ dependencies of python displayed above[0m
+     │  ├─ gast[2m 0.2.2 [required: >=0.2.2,<0.2.3.0a0][0m
+     │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │  │     [2m└─ dependencies of python displayed above[0m
+     │  ├─ google-pasta[2m 0.2.0 [required: >=0.1.7,<1.0a0][0m
+     │  │  ├─ python[2m 3.6.10 [required: any][0m
+     │  │  │  [2m└─ dependencies of python displayed above[0m
+     │  │  └─ six[2m 1.15.0 [required: any][0m
+     │  │     [2m└─ dependencies of six displayed above[0m
+     │  ├─ grpcio[2m 1.31.0 [required: >=1.14.1,<2.0a0][0m
+     │  │  [2m└─ dependencies of grpcio displayed above[0m
+     │  ├─ keras-applications[2m 1.0.8 [required: >=1.0.8,<2.0a0][0m
+     │  │  [2m└─ dependencies of keras-applications displayed above[0m
+     │  ├─ keras-preprocessing[2m 1.1.0 [required: >=1.0.5,<2.0a0][0m
+     │  │  [2m└─ dependencies of keras-preprocessing displayed above[0m
+     │  ├─ libgcc-ng[2m 9.1.0 [required: >=5.4.0][0m
+     │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+     │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=5.4.0][0m
+     │  ├─ markdown[2m 3.3.3 [required: >=2.6.11][0m
+     │  │  [2m└─ dependencies of markdown displayed above[0m
+     │  ├─ opt_einsum[2m 3.1.0 [required: >=3.1.0,<4.0a0][0m
+     │  │  ├─ numpy[2m 1.16.4 [required: any][0m
+     │  │  │  [2m└─ dependencies of numpy displayed above[0m
+     │  │  └─ python[2m 3.6.10 [required: >=3.5][0m
+     │  │     [2m└─ dependencies of python displayed above[0m
+     │  ├─ protobuf[2m 3.11.4 [required: >=3.6.1,<4.0a0][0m
+     │  │  [2m└─ dependencies of protobuf displayed above[0m
+     │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │  │  [2m└─ dependencies of python displayed above[0m
+     │  ├─ six[2m 1.15.0 [required: >=1.12.0,<2.0a0][0m
+     │  │  [2m└─ dependencies of six displayed above[0m
+     │  ├─ termcolor[2m 1.1.0 [required: >=1.1.0,<2.0a0][0m
+     │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │  │     [2m└─ dependencies of python displayed above[0m
+     │  ├─ werkzeug[2m 0.16.1 [required: >=0.14.1,<1.0a0][0m
+     │  │  [2m└─ dependencies of werkzeug displayed above[0m
+     │  └─ wrapt[2m 1.12.1 [required: >=1.11.2,<2.0a0][0m
+     │     ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+     │     │  [2m└─ dependencies of libgcc-ng displayed above[0m
+     │     └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │        [2m└─ dependencies of python displayed above[0m
+     └─ tensorflow-estimator[2m 1.15.1 [required: 1.15.*][0m
+        ├─ python[2m 3.6.10 [required: any][0m
+        │  [2m└─ dependencies of python displayed above[0m
+        └─ tensorflow-base[2m 1.15.0 [required: >=1.15.0,<1.16.0a0][0m
+           [2m└─ dependencies of tensorflow-base displayed above[0m
+vai_q_tensorflow_gpu==1.15
+  ├─ absl-py[2m 0.11.0 [required: >=0.7.0][0m
+  │  [2m└─ dependencies of absl-py displayed above[0m
+  ├─ astor[2m 0.8.1 [required: >=0.6.0][0m
+  │  [2m└─ dependencies of astor displayed above[0m
+  ├─ backports.weakref[2m 1.0.post1 [required: >=1.0rc1][0m
+  │  ├─ backports[2m 1.0 [required: any][0m
+  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  └─ python[2m 3.6.10 [required: any][0m
+  │     [2m└─ dependencies of python displayed above[0m
+  ├─ cudatoolkit[2m 10.0.130 [required: >=10.0.130,<10.1.0a0][0m
+  ├─ cudnn[2m 7.6.5 [required: >=7.6.5,<8.0a0][0m
+  │  └─ cudatoolkit[2m 10.0.130 [required: >=10.0,<10.1][0m
+  ├─ gast[2m 0.2.2 [required: 0.2.2][0m
+  │  [2m└─ dependencies of gast displayed above[0m
+  ├─ grpcio[2m 1.31.0 [required: >=1.8.6][0m
+  │  [2m└─ dependencies of grpcio displayed above[0m
+  ├─ keras-applications[2m 1.0.8 [required: >=1.0.8][0m
+  │  [2m└─ dependencies of keras-applications displayed above[0m
+  ├─ keras-preprocessing[2m 1.1.0 [required: >=1.0.5][0m
+  │  [2m└─ dependencies of keras-preprocessing displayed above[0m
+  ├─ libcurl[2m 7.71.1 [required: >=7.71.1,<8.0a0][0m
+  │  ├─ krb5[2m 1.18.2 [required: >=1.18.2,<1.19.0a0][0m
+  │  │  ├─ libedit[2m 3.1.20191231 [required: >=3.1.20191231,<4.0a0][0m
+  │  │  │  [2m└─ dependencies of libedit displayed above[0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  └─ openssl[2m 1.1.1h [required: >=1.1.1g,<1.1.2a][0m
+  │  │     [2m└─ dependencies of openssl displayed above[0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ libssh2[2m 1.9.0 [required: >=1.9.0,<2.0a0][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  └─ openssl[2m 1.1.1h [required: >=1.1.1d,<1.1.2a][0m
+  │  │     [2m└─ dependencies of openssl displayed above[0m
+  │  ├─ openssl[2m 1.1.1h [required: >=1.1.1g,<1.1.2a][0m
+  │  │  [2m└─ dependencies of openssl displayed above[0m
+  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │     [2m└─ dependencies of zlib displayed above[0m
+  ├─ libgcc-ng[2m 9.1.0 [required: >=5.4.0][0m
+  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  ├─ libpng[2m 1.6.37 [required: >=1.6.37,<1.7.0a0][0m
+  │  [2m└─ dependencies of libpng displayed above[0m
+  ├─ libstdcxx-ng[2m 9.1.0 [required: >=5.4.0][0m
+  ├─ numpy[2m 1.16.4 [required: 1.16.4][0m
+  │  [2m└─ dependencies of numpy displayed above[0m
+  ├─ opt_einsum[2m 3.1.0 [required: >=2.3.2][0m
+  │  [2m└─ dependencies of opt_einsum displayed above[0m
+  ├─ progressbar2[2m 3.37.1 [required: any][0m
+  │  ├─ pytest-runner[2m 5.2 [required: >=2.8][0m
+  │  │  ├─ pytest[2m 6.1.1 [required: any][0m
+  │  │  │  ├─ attrs[2m 20.3.0 [required: >=17.4.0][0m
+  │  │  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  │  ├─ importlib-metadata[2m 2.0.0 [required: >=0.12][0m
+  │  │  │  │  [2m└─ dependencies of importlib-metadata displayed above[0m
+  │  │  │  ├─ iniconfig[2m 1.1.1 [required: any][0m
+  │  │  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  │  ├─ more-itertools[2m 8.6.0 [required: >=4.0.0][0m
+  │  │  │  │  └─ python[2m 3.6.10 [required: >=3.4][0m
+  │  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  │  ├─ packaging[2m 20.4 [required: any][0m
+  │  │  │  │  ├─ pyparsing[2m 2.4.7 [required: >=2.0.2][0m
+  │  │  │  │  │  [2m└─ dependencies of pyparsing displayed above[0m
+  │  │  │  │  ├─ python[2m 3.6.10 [required: any][0m
+  │  │  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  │  │  └─ six[2m 1.15.0 [required: any][0m
+  │  │  │  │     [2m└─ dependencies of six displayed above[0m
+  │  │  │  ├─ pluggy[2m 0.13.1 [required: >=0.12,<1.0][0m
+  │  │  │  │  ├─ importlib_metadata[2m 2.0.0 [required: >=0.12][0m
+  │  │  │  │  │  └─ importlib-metadata[2m 2.0.0 [required: >=2.0.0,<2.0.1.0a0][0m
+  │  │  │  │  │     [2m└─ dependencies of importlib-metadata displayed above[0m
+  │  │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  │  ├─ py[2m 1.9.0 [required: >=1.8.2][0m
+  │  │  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  │  └─ toml[2m 0.10.1 [required: any][0m
+  │  │  │     └─ python[2m 3.6.10 [required: any][0m
+  │  │  │        [2m└─ dependencies of python displayed above[0m
+  │  │  ├─ python[2m 3.6.10 [required: any][0m
+  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  └─ setuptools[2m 50.3.1 [required: any][0m
+  │  │     [2m└─ dependencies of setuptools displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ python-utils[2m 2.4.0 [required: any][0m
+  │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  └─ six[2m 1.15.0 [required: any][0m
+  │  │     [2m└─ dependencies of six displayed above[0m
+  │  └─ six[2m 1.15.0 [required: any][0m
+  │     [2m└─ dependencies of six displayed above[0m
+  ├─ protobuf[2m 3.11.4 [required: 3.11.*][0m
+  │  [2m└─ dependencies of protobuf displayed above[0m
+  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  [2m└─ dependencies of python displayed above[0m
+  ├─ scipy[2m 1.5.2 [required: >=0.15.1][0m
+  │  [2m└─ dependencies of scipy displayed above[0m
+  ├─ six[2m 1.15.0 [required: >=1.10.0][0m
+  │  [2m└─ dependencies of six displayed above[0m
+  ├─ tensorboard[2m 1.15.0 [required: >=1.15.0,<1.16.0][0m
+  │  [2m└─ dependencies of tensorboard displayed above[0m
+  ├─ tensorflow-estimator[2m 1.15.1 [required: 1.15.1][0m
+  │  [2m└─ dependencies of tensorflow-estimator displayed above[0m
+  ├─ termcolor[2m 1.1.0 [required: >=1.1.0][0m
+  │  [2m└─ dependencies of termcolor displayed above[0m
+  ├─ wrapt[2m 1.12.1 [required: >=1.11.1][0m
+  │  [2m└─ dependencies of wrapt displayed above[0m
+  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+     [2m└─ dependencies of zlib displayed above[0m
+jupyter==1.0.0
+  ├─ ipykernel[2m 5.3.4 [required: any][0m
+  │  ├─ ipython[2m 7.16.1 [required: >=5.0][0m
+  │  │  [2m└─ dependencies of ipython displayed above[0m
+  │  ├─ jupyter_client[2m 6.1.7 [required: any][0m
+  │  │  ├─ jupyter_core[2m 4.7.0 [required: >=4.6.0][0m
+  │  │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  │  └─ traitlets[2m 4.3.3 [required: any][0m
+  │  │  │     [2m└─ dependencies of traitlets displayed above[0m
+  │  │  ├─ python[2m 3.6.10 [required: >=3.5][0m
+  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  ├─ python-dateutil[2m 2.8.1 [required: >=2.1][0m
+  │  │  │  ├─ python[2m 3.6.10 [required: any][0m
+  │  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  │  └─ six[2m 1.15.0 [required: >=1.5][0m
+  │  │  │     [2m└─ dependencies of six displayed above[0m
+  │  │  ├─ pyzmq[2m 19.0.2 [required: >=13][0m
+  │  │  │  [2m└─ dependencies of pyzmq displayed above[0m
+  │  │  ├─ tornado[2m 6.0.4 [required: >=4.1][0m
+  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  └─ traitlets[2m 4.3.3 [required: any][0m
+  │  │     [2m└─ dependencies of traitlets displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ tornado[2m 6.0.4 [required: >=4.2][0m
+  │  │  [2m└─ dependencies of tornado displayed above[0m
+  │  └─ traitlets[2m 4.3.3 [required: >=4.1][0m
+  │     [2m└─ dependencies of traitlets displayed above[0m
+  ├─ ipywidgets[2m 7.5.1 [required: any][0m
+  │  ├─ ipykernel[2m 5.3.4 [required: >=4.5.1][0m
+  │  │  [2m└─ dependencies of ipykernel displayed above[0m
+  │  ├─ ipython[2m 7.16.1 [required: >=4.0.0][0m
+  │  │  [2m└─ dependencies of ipython displayed above[0m
+  │  ├─ nbformat[2m 5.0.8 [required: >=4.2.0][0m
+  │  │  ├─ ipython_genutils[2m 0.2.0 [required: any][0m
+  │  │  │  [2m└─ dependencies of ipython_genutils displayed above[0m
+  │  │  ├─ jsonschema[2m 3.2.0 [required: >=2.4,!=2.5.0][0m
+  │  │  │  ├─ attrs[2m 20.3.0 [required: >=17.4.0][0m
+  │  │  │  │  [2m└─ dependencies of attrs displayed above[0m
+  │  │  │  ├─ importlib_metadata[2m 2.0.0 [required: any][0m
+  │  │  │  │  [2m└─ dependencies of importlib_metadata displayed above[0m
+  │  │  │  ├─ pyrsistent[2m 0.17.3 [required: >=0.14.0][0m
+  │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  │  ├─ python[2m 3.6.10 [required: >=3.6][0m
+  │  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  │  ├─ setuptools[2m 50.3.1 [required: any][0m
+  │  │  │  │  [2m└─ dependencies of setuptools displayed above[0m
+  │  │  │  └─ six[2m 1.15.0 [required: >=1.11.0][0m
+  │  │  │     [2m└─ dependencies of six displayed above[0m
+  │  │  ├─ jupyter_core[2m 4.7.0 [required: any][0m
+  │  │  │  [2m└─ dependencies of jupyter_core displayed above[0m
+  │  │  ├─ python[2m 3.6.10 [required: >=3.5][0m
+  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  └─ traitlets[2m 4.3.3 [required: >=4.1][0m
+  │  │     [2m└─ dependencies of traitlets displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: any][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ traitlets[2m 4.3.3 [required: >=4.3.1,<6.0.0][0m
+  │  │  [2m└─ dependencies of traitlets displayed above[0m
+  │  └─ widgetsnbextension[2m 3.5.1 [required: >=3.5.0,<3.6.0][0m
+  │     ├─ notebook[2m 6.1.4 [required: >=4.4.1][0m
+  │     │  ├─ argon2-cffi[2m 20.1.0 [required: any][0m
+  │     │  │  ├─ cffi[2m 1.14.0 [required: >=1.0.0][0m
+  │     │  │  │  ├─ libffi[2m 3.2.1 [required: >=3.2.1,<3.3a0][0m
+  │     │  │  │  │  [2m└─ dependencies of libffi displayed above[0m
+  │     │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  │  ├─ pycparser[2m 2.20 [required: any][0m
+  │     │  │  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │     │  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │  │  [2m└─ dependencies of python displayed above[0m
+  │     │  │  └─ six[2m 1.15.0 [required: any][0m
+  │     │  │     [2m└─ dependencies of six displayed above[0m
+  │     │  ├─ ipykernel[2m 5.3.4 [required: any][0m
+  │     │  │  [2m└─ dependencies of ipykernel displayed above[0m
+  │     │  ├─ ipython_genutils[2m 0.2.0 [required: any][0m
+  │     │  │  [2m└─ dependencies of ipython_genutils displayed above[0m
+  │     │  ├─ jinja2[2m 2.11.2 [required: any][0m
+  │     │  │  ├─ markupsafe[2m 1.1.1 [required: >=0.23][0m
+  │     │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  ├─ python[2m 3.6.10 [required: any][0m
+  │     │  │  │  [2m└─ dependencies of python displayed above[0m
+  │     │  │  └─ setuptools[2m 50.3.1 [required: any][0m
+  │     │  │     [2m└─ dependencies of setuptools displayed above[0m
+  │     │  ├─ jupyter_client[2m 6.1.7 [required: >=5.3.4][0m
+  │     │  │  [2m└─ dependencies of jupyter_client displayed above[0m
+  │     │  ├─ jupyter_core[2m 4.7.0 [required: >=4.6.1][0m
+  │     │  │  [2m└─ dependencies of jupyter_core displayed above[0m
+  │     │  ├─ nbconvert[2m 6.0.7 [required: any][0m
+  │     │  │  ├─ bleach[2m 3.2.1 [required: any][0m
+  │     │  │  │  ├─ packaging[2m 20.4 [required: any][0m
+  │     │  │  │  │  [2m└─ dependencies of packaging displayed above[0m
+  │     │  │  │  ├─ python[2m 3.6.10 [required: any][0m
+  │     │  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │     │  │  │  ├─ setuptools[2m 50.3.1 [required: any][0m
+  │     │  │  │  │  [2m└─ dependencies of setuptools displayed above[0m
+  │     │  │  │  ├─ six[2m 1.15.0 [required: any][0m
+  │     │  │  │  │  [2m└─ dependencies of six displayed above[0m
+  │     │  │  │  └─ webencodings[2m 0.5.1 [required: any][0m
+  │     │  │  │     [2m└─ dependencies of webencodings displayed above[0m
+  │     │  │  ├─ defusedxml[2m 0.6.0 [required: any][0m
+  │     │  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │     │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  ├─ entrypoints[2m 0.3 [required: >=0.2.2][0m
+  │     │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  ├─ jinja2[2m 2.11.2 [required: >=2.4][0m
+  │     │  │  │  [2m└─ dependencies of jinja2 displayed above[0m
+  │     │  │  ├─ jupyter_core[2m 4.7.0 [required: any][0m
+  │     │  │  │  [2m└─ dependencies of jupyter_core displayed above[0m
+  │     │  │  ├─ jupyterlab_pygments[2m 0.1.2 [required: any][0m
+  │     │  │  │  ├─ pygments[2m 2.7.2 [required: >=2.4.1,<3][0m
+  │     │  │  │  │  [2m└─ dependencies of pygments displayed above[0m
+  │     │  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │     │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  ├─ mistune[2m 0.8.4 [required: >=0.8.1][0m
+  │     │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │     │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │     │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  ├─ nbclient[2m 0.5.1 [required: >=0.5.0,<0.6.0][0m
+  │     │  │  │  ├─ async_generator[2m 1.10 [required: any][0m
+  │     │  │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  │  ├─ jupyter_client[2m 6.1.7 [required: >=6.1.5][0m
+  │     │  │  │  │  [2m└─ dependencies of jupyter_client displayed above[0m
+  │     │  │  │  ├─ nbformat[2m 5.0.8 [required: >=5.0][0m
+  │     │  │  │  │  [2m└─ dependencies of nbformat displayed above[0m
+  │     │  │  │  ├─ nest-asyncio[2m 1.4.3 [required: any][0m
+  │     │  │  │  │  └─ python[2m 3.6.10 [required: >=3.5][0m
+  │     │  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  │  ├─ python[2m 3.6.10 [required: >=3.6][0m
+  │     │  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │     │  │  │  └─ traitlets[2m 4.3.3 [required: >=4.2][0m
+  │     │  │  │     [2m└─ dependencies of traitlets displayed above[0m
+  │     │  │  ├─ nbformat[2m 5.0.8 [required: >=4.4][0m
+  │     │  │  │  [2m└─ dependencies of nbformat displayed above[0m
+  │     │  │  ├─ pandoc[2m 2.11 [required: >=1.12.1][0m
+  │     │  │  ├─ pandocfilters[2m 1.4.3 [required: >=1.4.1][0m
+  │     │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  ├─ pygments[2m 2.7.2 [required: >=2.4.1][0m
+  │     │  │  │  [2m└─ dependencies of pygments displayed above[0m
+  │     │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │  │  [2m└─ dependencies of python displayed above[0m
+  │     │  │  ├─ testpath[2m 0.4.4 [required: any][0m
+  │     │  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │     │  │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  │  └─ traitlets[2m 4.3.3 [required: >=4.2][0m
+  │     │  │     [2m└─ dependencies of traitlets displayed above[0m
+  │     │  ├─ nbformat[2m 5.0.8 [required: any][0m
+  │     │  │  [2m└─ dependencies of nbformat displayed above[0m
+  │     │  ├─ prometheus_client[2m 0.8.0 [required: any][0m
+  │     │  │  └─ python[2m 3.6.10 [required: any][0m
+  │     │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │  [2m└─ dependencies of python displayed above[0m
+  │     │  ├─ pyzmq[2m 19.0.2 [required: >=17][0m
+  │     │  │  [2m└─ dependencies of pyzmq displayed above[0m
+  │     │  ├─ send2trash[2m 1.5.0 [required: any][0m
+  │     │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │     [2m└─ dependencies of python displayed above[0m
+  │     │  ├─ terminado[2m 0.9.1 [required: >=0.8.1][0m
+  │     │  │  ├─ ptyprocess[2m 0.6.0 [required: any][0m
+  │     │  │  │  [2m└─ dependencies of ptyprocess displayed above[0m
+  │     │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │     │  │  │  [2m└─ dependencies of python displayed above[0m
+  │     │  │  └─ tornado[2m 6.0.4 [required: >=4][0m
+  │     │  │     [2m└─ dependencies of tornado displayed above[0m
+  │     │  ├─ tornado[2m 6.0.4 [required: >=5.0][0m
+  │     │  │  [2m└─ dependencies of tornado displayed above[0m
+  │     │  └─ traitlets[2m 4.3.3 [required: >=4.2.1][0m
+  │     │     [2m└─ dependencies of traitlets displayed above[0m
+  │     └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │        [2m└─ dependencies of python displayed above[0m
+  ├─ jupyter_console[2m 6.2.0 [required: any][0m
+  │  ├─ ipykernel[2m 5.3.4 [required: any][0m
+  │  │  [2m└─ dependencies of ipykernel displayed above[0m
+  │  ├─ ipython[2m 7.16.1 [required: any][0m
+  │  │  [2m└─ dependencies of ipython displayed above[0m
+  │  ├─ jupyter_client[2m 6.1.7 [required: any][0m
+  │  │  [2m└─ dependencies of jupyter_client displayed above[0m
+  │  ├─ prompt_toolkit[2m 3.0.8 [required: >=2.0.0,<3.1.0,!=3.0.0,!=3.0.1][0m
+  │  │  └─ prompt-toolkit[2m 3.0.8 [required: >=3.0.8,<3.0.9.0a0][0m
+  │  │     [2m└─ dependencies of prompt-toolkit displayed above[0m
+  │  ├─ pygments[2m 2.7.2 [required: any][0m
+  │  │  [2m└─ dependencies of pygments displayed above[0m
+  │  └─ python[2m 3.6.10 [required: >=3.6][0m
+  │     [2m└─ dependencies of python displayed above[0m
+  ├─ nbconvert[2m 6.0.7 [required: any][0m
+  │  [2m└─ dependencies of nbconvert displayed above[0m
+  ├─ notebook[2m 6.1.4 [required: any][0m
+  │  [2m└─ dependencies of notebook displayed above[0m
+  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  [2m└─ dependencies of python displayed above[0m
+  └─ qtconsole[2m 4.7.7 [required: any][0m
+     ├─ ipykernel[2m 5.3.4 [required: >=4.1][0m
+     │  [2m└─ dependencies of ipykernel displayed above[0m
+     ├─ ipython_genutils[2m 0.2.0 [required: any][0m
+     │  [2m└─ dependencies of ipython_genutils displayed above[0m
+     ├─ jupyter_client[2m 6.1.7 [required: >=4.1][0m
+     │  [2m└─ dependencies of jupyter_client displayed above[0m
+     ├─ jupyter_core[2m 4.7.0 [required: any][0m
+     │  [2m└─ dependencies of jupyter_core displayed above[0m
+     ├─ pygments[2m 2.7.2 [required: any][0m
+     │  [2m└─ dependencies of pygments displayed above[0m
+     ├─ pyqt[2m 5.9.2 [required: any][0m
+     │  ├─ dbus[2m 1.13.18 [required: >=1.13.2,<2.0a0][0m
+     │  │  ├─ expat[2m 2.2.10 [required: >=2.2.10,<3.0a0][0m
+     │  │  │  [2m└─ dependencies of expat displayed above[0m
+     │  │  ├─ glib[2m 2.56.2 [required: any][0m
+     │  │  │  [2m└─ dependencies of glib displayed above[0m
+     │  │  └─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+     │  │     [2m└─ dependencies of libgcc-ng displayed above[0m
+     │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+     │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+     │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+     │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │  │  [2m└─ dependencies of python displayed above[0m
+     │  ├─ qt[2m 5.9.7 [required: >=5.9.6,<5.10.0a0][0m
+     │  │  ├─ dbus[2m 1.13.18 [required: >=1.13.2,<2.0a0][0m
+     │  │  │  [2m└─ dependencies of dbus displayed above[0m
+     │  │  ├─ expat[2m 2.2.10 [required: >=2.2.6,<3.0a0][0m
+     │  │  │  [2m└─ dependencies of expat displayed above[0m
+     │  │  ├─ fontconfig[2m 2.13.1 [required: >=2.13.0,<3.0a0][0m
+     │  │  │  [2m└─ dependencies of fontconfig displayed above[0m
+     │  │  ├─ freetype[2m 2.10.4 [required: >=2.9.1,<3.0a0][0m
+     │  │  │  [2m└─ dependencies of freetype displayed above[0m
+     │  │  ├─ glib[2m 2.56.2 [required: >=2.56.2,<3.0a0][0m
+     │  │  │  [2m└─ dependencies of glib displayed above[0m
+     │  │  ├─ gst-plugins-base[2m 1.14.0 [required: >=1.14.0,<1.15.0a0][0m
+     │  │  │  ├─ glib[2m 2.56.2 [required: >=2.56.1,<3.0a0][0m
+     │  │  │  │  [2m└─ dependencies of glib displayed above[0m
+     │  │  │  ├─ gstreamer[2m 1.14.0 [required: >=1.14.0,<2.0a0][0m
+     │  │  │  │  ├─ glib[2m 2.56.2 [required: >=2.56.1,<3.0a0][0m
+     │  │  │  │  │  [2m└─ dependencies of glib displayed above[0m
+     │  │  │  │  ├─ libffi[2m 3.2.1 [required: >=3.2.1,<3.3a0][0m
+     │  │  │  │  │  [2m└─ dependencies of libffi displayed above[0m
+     │  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+     │  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+     │  │  │  │  ├─ pcre[2m 8.44 [required: >=8.42,<9.0a0][0m
+     │  │  │  │  │  [2m└─ dependencies of pcre displayed above[0m
+     │  │  │  │  └─ xz[2m 5.2.5 [required: >=5.2.3,<6.0a0][0m
+     │  │  │  │     [2m└─ dependencies of xz displayed above[0m
+     │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+     │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+     │  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.2.0][0m
+     │  │  │  ├─ libxcb[2m 1.14 [required: >=1.13,<2.0a0][0m
+     │  │  │  │  [2m└─ dependencies of libxcb displayed above[0m
+     │  │  │  ├─ xz[2m 5.2.5 [required: >=5.2.3,<6.0a0][0m
+     │  │  │  │  [2m└─ dependencies of xz displayed above[0m
+     │  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+     │  │  │     [2m└─ dependencies of zlib displayed above[0m
+     │  │  ├─ gstreamer[2m 1.14.0 [required: >=1.14.0,<1.15.0a0][0m
+     │  │  │  [2m└─ dependencies of gstreamer displayed above[0m
+     │  │  ├─ icu[2m 58.2 [required: >=58.2,<59.0a0][0m
+     │  │  │  [2m└─ dependencies of icu displayed above[0m
+     │  │  ├─ jpeg[2m 9c [required: >=9b,<10a][0m
+     │  │  │  [2m└─ dependencies of jpeg displayed above[0m
+     │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+     │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+     │  │  ├─ libpng[2m 1.6.37 [required: >=1.6.35,<1.7.0a0][0m
+     │  │  │  [2m└─ dependencies of libpng displayed above[0m
+     │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+     │  │  ├─ libxcb[2m 1.14 [required: >=1.13,<2.0a0][0m
+     │  │  │  [2m└─ dependencies of libxcb displayed above[0m
+     │  │  ├─ libxml2[2m 2.9.10 [required: >=2.9.8,<2.10.0a0][0m
+     │  │  │  [2m└─ dependencies of libxml2 displayed above[0m
+     │  │  ├─ openssl[2m 1.1.1h [required: 1.1.*][0m
+     │  │  │  [2m└─ dependencies of openssl displayed above[0m
+     │  │  ├─ sqlite[2m 3.33.0 [required: >=3.25.3,<4.0a0][0m
+     │  │  │  [2m└─ dependencies of sqlite displayed above[0m
+     │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+     │  │     [2m└─ dependencies of zlib displayed above[0m
+     │  └─ sip[2m 4.19.8 [required: >=4.19.4,<=4.19.8][0m
+     │     ├─ libgcc-ng[2m 9.1.0 [required: >=7.2.0][0m
+     │     │  [2m└─ dependencies of libgcc-ng displayed above[0m
+     │     ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.2.0][0m
+     │     └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │        [2m└─ dependencies of python displayed above[0m
+     ├─ python[2m 3.6.10 [required: any][0m
+     │  [2m└─ dependencies of python displayed above[0m
+     ├─ qtpy[2m 1.9.0 [required: any][0m
+     │  └─ python[2m 3.6.10 [required: any][0m
+     │     [2m└─ dependencies of python displayed above[0m
+     └─ traitlets[2m 4.3.3 [required: any][0m
+        [2m└─ dependencies of traitlets displayed above[0m
+pandas==1.1.3
+  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  ├─ numpy[2m 1.16.4 [required: >=1.15.4,<2.0a0][0m
+  │  [2m└─ dependencies of numpy displayed above[0m
+  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  [2m└─ dependencies of python displayed above[0m
+  ├─ python-dateutil[2m 2.8.1 [required: >=2.7.3][0m
+  │  [2m└─ dependencies of python-dateutil displayed above[0m
+  └─ pytz[2m 2020.1 [required: >=2017.2][0m
+     └─ python[2m 3.6.10 [required: any][0m
+        [2m└─ dependencies of python displayed above[0m
+dpuv1-rt-ext==1.3.0
+  ├─ dpuv1-rt[2m 1.3.0 [required: any][0m
+  │  ├─ glog[2m 0.4.0 [required: >=0.4.0,<1.0a0][0m
+  │  │  [2m└─ dependencies of glog displayed above[0m
+  │  ├─ h5py[2m 2.8.0 [required: any][0m
+  │  │  [2m└─ dependencies of h5py displayed above[0m
+  │  ├─ hdf5[2m 1.10.2 [required: >=1.10.2,<1.10.3.0a0][0m
+  │  │  [2m└─ dependencies of hdf5 displayed above[0m
+  │  ├─ json-c[2m 0.13.1 [required: >=0.13.1,<0.14.0a0][0m
+  │  │  [2m└─ dependencies of json-c displayed above[0m
+  │  ├─ mkl[2m 2020.2 [required: any][0m
+  │  │  [2m└─ dependencies of mkl displayed above[0m
+  │  ├─ opencv[2m 3.4.2 [required: >=3.4.2,<3.4.3.0a0][0m
+  │  │  [2m└─ dependencies of opencv displayed above[0m
+  │  ├─ protobuf[2m 3.11.4 [required: 3.11.*][0m
+  │  │  [2m└─ dependencies of protobuf displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ pyzmq[2m 19.0.2 [required: any][0m
+  │  │  [2m└─ dependencies of pyzmq displayed above[0m
+  │  └─ xip[2m 1.3.0 [required: any][0m
+  │     [2m└─ dependencies of xip displayed above[0m
+  ├─ glog[2m 0.4.0 [required: >=0.4.0,<1.0a0][0m
+  │  [2m└─ dependencies of glog displayed above[0m
+  ├─ h5py[2m 2.8.0 [required: any][0m
+  │  [2m└─ dependencies of h5py displayed above[0m
+  ├─ hdf5[2m 1.10.2 [required: >=1.10.2,<1.10.3.0a0][0m
+  │  [2m└─ dependencies of hdf5 displayed above[0m
+  ├─ json-c[2m 0.13.1 [required: >=0.13.1,<0.14.0a0][0m
+  │  [2m└─ dependencies of json-c displayed above[0m
+  ├─ mkl[2m 2020.2 [required: any][0m
+  │  [2m└─ dependencies of mkl displayed above[0m
+  ├─ opencv[2m 3.4.2 [required: >=3.4.2,<3.4.3.0a0][0m
+  │  [2m└─ dependencies of opencv displayed above[0m
+  ├─ protobuf[2m 3.11.4 [required: any][0m
+  │  [2m└─ dependencies of protobuf displayed above[0m
+  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  [2m└─ dependencies of python displayed above[0m
+  ├─ pyzmq[2m 19.0.2 [required: any][0m
+  │  [2m└─ dependencies of pyzmq displayed above[0m
+  ├─ vart[2m 1.3.0 [required: any][0m
+  │  [2m└─ dependencies of vart displayed above[0m
+  └─ xip[2m 1.3.0 [required: any][0m
+     [2m└─ dependencies of xip displayed above[0m
+dill==0.3.3
+  └─ python[2m 3.6.10 [required: >=3.5][0m
+     [2m└─ dependencies of python displayed above[0m
+vaic==1.3.0
+  ├─ dnnc[2m 1.3.0 [required: 1.3.0][0m
+  │  ├─ gflags[2m 2.2.2 [required: >=2.2.2,<2.3.0a0][0m
+  │  │  [2m└─ dependencies of gflags displayed above[0m
+  │  ├─ glog[2m 0.4.0 [required: >=0.4.0,<1.0a0][0m
+  │  │  [2m└─ dependencies of glog displayed above[0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ libprotobuf[2m 3.11.4 [required: >=3.11.4,<3.12.0a0][0m
+  │  │  [2m└─ dependencies of libprotobuf displayed above[0m
+  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  ├─ openssl[2m 1.1.1h [required: >=1.1.1h,<1.1.2a][0m
+  │  │  [2m└─ dependencies of openssl displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │     [2m└─ dependencies of zlib displayed above[0m
+  ├─ dpuv1_compiler[2m 1.3.0 [required: 1.3.0][0m
+  │  ├─ glog[2m 0.4.0 [required: >=0.4.0,<1.0a0][0m
+  │  │  [2m└─ dependencies of glog displayed above[0m
+  │  ├─ graphviz[2m 2.38.0 [required: any][0m
+  │  │  [2m└─ dependencies of graphviz displayed above[0m
+  │  ├─ marshmallow[2m 3.9.1 [required: any][0m
+  │  │  └─ python[2m 3.6.10 [required: >=3.5][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ numpy[2m 1.16.4 [required: any][0m
+  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  ├─ openssl[2m 1.1.1h [required: >=1.1.1h,<1.1.2a][0m
+  │  │  [2m└─ dependencies of openssl displayed above[0m
+  │  ├─ protobuf[2m 3.11.4 [required: 3.11.*][0m
+  │  │  [2m└─ dependencies of protobuf displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ python-graphviz[2m 0.14.2 [required: any][0m
+  │  │  ├─ graphviz[2m 2.38.0 [required: any][0m
+  │  │  │  [2m└─ dependencies of graphviz displayed above[0m
+  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ tqdm[2m 4.51.0 [required: any][0m
+  │  │  └─ python[2m 3.6.10 [required: any][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │     [2m└─ dependencies of zlib displayed above[0m
+  ├─ dpuv3-pycompiler[2m 1.3.0 [required: 1.3.0][0m
+  │  ├─ graphviz[2m 2.38.0 [required: any][0m
+  │  │  [2m└─ dependencies of graphviz displayed above[0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  ├─ numpy[2m 1.16.4 [required: >=1.12][0m
+  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  ├─ pybind11[2m 2.5.0 [required: any][0m
+  │  │  [2m└─ dependencies of pybind11 displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ python-graphviz[2m 0.14.2 [required: any][0m
+  │  │  [2m└─ dependencies of python-graphviz displayed above[0m
+  │  ├─ toml[2m 0.10.1 [required: any][0m
+  │  │  [2m└─ dependencies of toml displayed above[0m
+  │  ├─ tqdm[2m 4.51.0 [required: any][0m
+  │  │  [2m└─ dependencies of tqdm displayed above[0m
+  │  └─ xir[2m 1.3.0 [required: 1.3.0][0m
+  │     [2m└─ dependencies of xir displayed above[0m
+  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  [2m└─ dependencies of python displayed above[0m
+  ├─ xcompiler[2m 1.3.0 [required: 1.3.0][0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ target_factory[2m 1.3.0 [required: 1.3.0][0m
+  │  │  [2m└─ dependencies of target_factory displayed above[0m
+  │  ├─ unilog[2m 1.3.0 [required: 1.3.0][0m
+  │  │  [2m└─ dependencies of unilog displayed above[0m
+  │  └─ xir[2m 1.3.0 [required: 1.3.0][0m
+  │     [2m└─ dependencies of xir displayed above[0m
+  └─ xnnc[2m 1.3.0 [required: 1.3.0][0m
+     ├─ graphviz[2m 2.38.0 [required: any][0m
+     │  [2m└─ dependencies of graphviz displayed above[0m
+     ├─ marshmallow[2m 3.9.1 [required: any][0m
+     │  [2m└─ dependencies of marshmallow displayed above[0m
+     ├─ numpy[2m 1.16.4 [required: any][0m
+     │  [2m└─ dependencies of numpy displayed above[0m
+     ├─ protobuf[2m 3.11.4 [required: any][0m
+     │  [2m└─ dependencies of protobuf displayed above[0m
+     ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+     │  [2m└─ dependencies of python displayed above[0m
+     ├─ python-graphviz[2m 0.14.2 [required: any][0m
+     │  [2m└─ dependencies of python-graphviz displayed above[0m
+     ├─ tqdm[2m 4.51.0 [required: any][0m
+     │  [2m└─ dependencies of tqdm displayed above[0m
+     └─ xir[2m 1.3.0 [required: any][0m
+        [2m└─ dependencies of xir displayed above[0m
+matplotlib==3.3.2
+  ├─ matplotlib-base[2m 3.3.2 [required: >=3.3.2,<3.3.3.0a0][0m
+  │  ├─ certifi[2m 2020.11.8 [required: >=2020.06.20][0m
+  │  │  [2m└─ dependencies of certifi displayed above[0m
+  │  ├─ cycler[2m 0.10.0 [required: >=0.10][0m
+  │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  └─ six[2m 1.15.0 [required: any][0m
+  │  │     [2m└─ dependencies of six displayed above[0m
+  │  ├─ freetype[2m 2.10.4 [required: >=2.10.4,<3.0a0][0m
+  │  │  [2m└─ dependencies of freetype displayed above[0m
+  │  ├─ kiwisolver[2m 1.3.0 [required: >=1.0.1][0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │     [2m└─ dependencies of python displayed above[0m
+  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  ├─ libstdcxx-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  ├─ numpy[2m 1.16.4 [required: >=1.15.4,<2.0a0][0m
+  │  │  [2m└─ dependencies of numpy displayed above[0m
+  │  ├─ pillow[2m 8.0.1 [required: >=6.2.0][0m
+  │  │  ├─ freetype[2m 2.10.4 [required: >=2.10.4,<3.0a0][0m
+  │  │  │  [2m└─ dependencies of freetype displayed above[0m
+  │  │  ├─ jpeg[2m 9c [required: any][0m
+  │  │  │  [2m└─ dependencies of jpeg displayed above[0m
+  │  │  ├─ lcms2[2m 2.11 [required: >=2.11,<3.0a0][0m
+  │  │  │  ├─ jpeg[2m 9c [required: >=9b,<10a][0m
+  │  │  │  │  [2m└─ dependencies of jpeg displayed above[0m
+  │  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  │  └─ libtiff[2m 4.1.0 [required: >=4.1.0,<5.0a0][0m
+  │  │  │     [2m└─ dependencies of libtiff displayed above[0m
+  │  │  ├─ libgcc-ng[2m 9.1.0 [required: >=7.3.0][0m
+  │  │  │  [2m└─ dependencies of libgcc-ng displayed above[0m
+  │  │  ├─ libtiff[2m 4.1.0 [required: >=4.1.0,<5.0a0][0m
+  │  │  │  [2m└─ dependencies of libtiff displayed above[0m
+  │  │  ├─ olefile[2m 0.46 [required: any][0m
+  │  │  │  └─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │     [2m└─ dependencies of python displayed above[0m
+  │  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  │  [2m└─ dependencies of python displayed above[0m
+  │  │  ├─ tk[2m 8.6.10 [required: any][0m
+  │  │  │  [2m└─ dependencies of tk displayed above[0m
+  │  │  └─ zlib[2m 1.2.11 [required: >=1.2.11,<1.3.0a0][0m
+  │  │     [2m└─ dependencies of zlib displayed above[0m
+  │  ├─ pyparsing[2m 2.4.7 [required: >=2.0.3,!=2.0.4,!=2.1.2,!=2.1.6][0m
+  │  │  [2m└─ dependencies of pyparsing displayed above[0m
+  │  ├─ python[2m 3.6.10 [required: >=3.6,<3.7.0a0][0m
+  │  │  [2m└─ dependencies of python displayed above[0m
+  │  ├─ python-dateutil[2m 2.8.1 [required: >=2.1][0m
+  │  │  [2m└─ dependencies of python-dateutil displayed above[0m
+  │  ├─ setuptools[2m 50.3.1 [required: any][0m
+  │  │  [2m└─ dependencies of setuptools displayed above[0m
+  │  ├─ tk[2m 8.6.10 [required: any][0m
+  │  │  [2m└─ dependencies of tk displayed above[0m
+  │  └─ tornado[2m 6.0.4 [required: any][0m
+  │     [2m└─ dependencies of tornado displayed above[0m
+  └─ pyqt[2m 5.9.2 [required: any][0m
+     [2m└─ dependencies of pyqt displayed above[0m
+
+[2mFor the sake of clarity, some redundancies have been hidden.
+Please use the '--full' option to display them anyway.[0m
+
+[2mIf you are tired of seeing 'conda' and 'python' everywhere,
+you can use the '--small' option to hide their dependencies completely.[0m

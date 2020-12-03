@@ -72,6 +72,10 @@ public:
     return model_dir_+"data/"+model_name_+str_frame_+"/";
   };
   
+  std::string get_model_root(){
+    return model_dir_+"data/"+model_name_+"/";
+  };
+
   void update_vector_name(std::string vector_name){
     vector_file_ = model_dir_+"data/"+model_name_+str_frame_+"/"+vector_name;
   };
@@ -79,7 +83,7 @@ public:
     bench_file_ = model_dir_+"data/"+model_name_+str_frame_+"/"+bench_name;
   };
   void update_ddr_name(std::string ddr_name){
-    ddr_file_ = model_dir_+"data/"+model_name_+str_frame_+"/"+ddr_name;
+    ddr_file_ = model_dir_+"data/"+model_name_+"/"+ddr_name;
   };
 
 private:
@@ -100,11 +104,11 @@ class ModelTestData{
 public:
 
   explicit ModelTestData(ModelParameters *mp){
-    //LOG(INFO) << mp->get_vector_file();
+    LOG(INFO) << mp->get_vector_file();
     std::tie(vector_data_, vector_size_) = read_binary_file(mp->get_vector_file());
-    //LOG(INFO) << mp->get_bench_file();
+    LOG(INFO) << mp->get_bench_file();
     std::tie(bench_data_, bench_size_) = read_binary_file(mp->get_bench_file());
-    //LOG(INFO) << mp->get_ddr_file();
+    LOG(INFO) << mp->get_ddr_file();
     std::tie(model_data_, model_size_) = read_binary_file(mp->get_ddr_file());
   }
   virtual ~ModelTestData(){

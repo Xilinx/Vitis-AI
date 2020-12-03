@@ -32,7 +32,13 @@ endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
 
 find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs)
-find_package(Boost 1.65.1 EXACT REQUIRED COMPONENTS system filesystem)
+
+execute_process(COMMAND uname -m OUTPUT_VARIABLE arch)
+if(${arch} MATCHES ".*x86.*")
+  find_package(Boost 1.65.1 EXACT REQUIRED COMPONENTS system filesystem)
+else()
+  find_package(Boost 1.65.1 REQUIRED COMPONENTS system filesystem)
+endif()
 
 add_library (${PROJECT_NAME} SHARED
   AksOpticalFlowOpenCVPostProcess.cpp

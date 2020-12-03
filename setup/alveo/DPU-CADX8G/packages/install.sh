@@ -103,17 +103,17 @@ fi
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* ]]; then
   XRM_INSTALLER=./ubuntu/xbutler_3.0-2.deb
-  OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-overlaybins.deb"
+  OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.3-xilinx-overlaybins.deb"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.deb
-  XPLUSML_OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.1-xplusml-bins-18.04.deb"
-  XPLUSML_OVERLAYBINS_INSTALLER=/tmp/vai-1.1-xplusml-bins-18.04.deb
+  XPLUSML_OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.3-xplusml-bins-18.04.deb"
+  XPLUSML_OVERLAYBINS_INSTALLER=/tmp/vai-1.3-xplusml-bins-18.04.deb
   INSTALLER="apt"
 elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
   XRM_INSTALLER=./centos/xbutler-3.0.2-1.el7.centos.x86_64.rpm
-  OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-overlaybins.rpm"
+  OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.3-xilinx-overlaybins.rpm"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.rpm
-  XPLUSML_OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.1-xplusml-bins-1.0-0.x86_64.rpm"
-  XPLUSML_OVERLAYBINS_INSTALLER=/tmp/vai-1.1-xplusml-bins-1.0-0.x86_64.rpm
+  XPLUSML_OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.3-xplusml-bins-1-0.x86_64.rpm"
+  XPLUSML_OVERLAYBINS_INSTALLER=/tmp/vai-1.3-xplusml-bins-1.0-0.x86_64.rpm
   INSTALLER="yum"
 else
   echo "Failed, couldn't detect os distribution"
