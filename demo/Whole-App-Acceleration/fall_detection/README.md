@@ -8,18 +8,18 @@ source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 
 ## **Build common kernels**
 ```sh
-cd /workspace/tools/AKS
+cd ${VAI_ALVEO_ROOT}/../tools/AKS
 ./cmake-kernels.sh --clean
 ```
 
 ## **Build fall-detection kernels**
 ```sh
-cd /workspace/demo/Whole-App-Acceleration/fall_detection
+cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/fall_detection
 ./cmake-kernels.sh --clean
 ```
 ## **Compile main file**
 ```sh
-cd /workspace/demo/Whole-App-Acceleration/fall_detection
+cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/fall_detection
 make
 ```
 

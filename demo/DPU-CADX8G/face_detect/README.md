@@ -44,10 +44,12 @@ Build evalution tools
 ```sh
 cd $VAI_ALVEO_ROOT/DPU-CADX8G/face_detect/
 wget http://vis-www.cs.umass.edu/fddb/evaluation.tgz
-tar -xvf evaluation.tgz 
+tar -xvf evaluation.tgz
 #ignore the warnings
 cp Makefile evaluation/
-cd evaluation 
+cd evaluation
+
+# Add opencv's imgproc header as `#include <opencv2/imgproc.hpp>` to EllipsesSingleImage.hpp and RectanglesSingleImage.hpp before you run make
 make
 cd ..
 ```

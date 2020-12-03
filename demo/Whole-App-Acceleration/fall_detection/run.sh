@@ -8,9 +8,14 @@ usage() {
   echo -e ""
   echo "Arguments:"
   echo "-----------------------------------------------------------------------------"
-  echo "  -n  nFPGA      | --nfpga   nFPGA      Number of FPGAs (Connected on System)"
-  echo "  -d  DIRECTORY  | --dir     DIRECTORY  Images/videos directory"
-  echo "  -h             | --help               Print this message."
+  echo "  -n  nFPGA      | --nfpga        nFPGA      Number of FPGAs (Connected on System)"
+  echo "  -d  DIRECTORY  | --dir          DIRECTORY  Images/videos directory"
+  echo "  -a  AKS_ROOT   | --aks-root     AKS_ROOT   Path to AKS root directory"
+  echo "  -v  VERBOSE    | --verbose      VERBOSE Verbosity level"
+  echo "                                       Possible values: [0 - Only Warnings & Errors]"
+  echo "                                       Possible values: [1 - Important Information, warnings & errors]"
+  echo "                                       Possible values: [2 - All debug, performance metrics, warnings & errors]"
+  echo "  -h             | --help         Print this message."
   echo "-----------------------------------------------------------------------------"
   echo -e ""
 }
@@ -19,6 +24,7 @@ usage() {
 NUM_FPGA=""
 DIRECTORY=""
 VERBOSE=1
+AKS_ROOT=${VAI_ALVEO_ROOT}/../tools/AKS
 
 # Parse Options
 while true
@@ -27,6 +33,7 @@ do
   case "$1" in
     -n  |--nfpga         ) NUM_FPGA="$2"         ; shift 2 ;;
     -d  |--dir           ) DIRECTORY="$2"        ; shift 2 ;;
+    -a  |--aks-root      ) AKS_ROOT="$2"         ; shift 2 ;;
     -v  |--verbose       ) VERBOSE="$2"          ; shift 2 ;;
     -h  |--help          ) usage                 ; exit  1 ;;
      *) echo "Unknown argument : $1";
@@ -35,7 +42,13 @@ do
   esac
 done
 
-export AKS_ROOT=/workspace/tools/AKS
+if [ ! -d "${AKS_ROOT}" ]
+then
+  echo -e "Path '${AKS_ROOT}' doesn't exist. Please specify a valid path to AKS."
+  exit 1
+fi
+
+export AKS_ROOT
 # Add verbose level
 export AKS_VERBOSE=$VERBOSE
 
