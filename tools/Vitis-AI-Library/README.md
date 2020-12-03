@@ -412,7 +412,7 @@ Note: All models will download to `/usr/share/vitis_ai_library/models` directory
 2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../alveo/examples/caffe/README.md).
 3. Setup the environment.
 ```
-$source /workspace/alveo/overlaybins/setup.sh
+$source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 $export LD_LIBRARY_PATH=$HOME/.local/${taget_info}/lib/:$LD_LIBRARY_PATH
 ```
 4. Run the classification image test example.
