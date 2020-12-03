@@ -541,11 +541,13 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
     //# DPUV1 has datatype float
     ret.size = tensor->get_element_num() *
                std::ceil(tensor->get_data_type().bit_width / 32.f);
+    ret.fixpos = 0;
+#else
+    ret.fixpos = (int8_t)log2f(scale);
 #endif
     ret.height = dim_num <= 2 ? 1 : tensor->get_shape().at(2);
     ret.width = dim_num <= 3 ? 1 : tensor->get_shape().at(3);
     ret.channel = dim_num <= 1 ? 1 : tensor->get_shape().at(1);
-    ret.fixpos = (int8_t)log2f(scale);
     ret.dtype = library::DT_FLOAT;
   }
   ret.name = tensor->get_name();
@@ -598,11 +600,13 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
     //# DPUV1 has datatype float
     ret.size = tensor->get_element_num() *
                std::ceil(tensor->get_data_type().bit_width / 32.f);
+    ret.fixpos = 0;
+#else
+    ret.fixpos = -(int8_t)log2f(scale);
 #endif
     ret.height = dim_num <= 2 ? 1 : tensor->get_shape().at(2);
     ret.width = dim_num <= 3 ? 1 : tensor->get_shape().at(3);
     ret.channel = dim_num <= 1 ? 1 : tensor->get_shape().at(1);
-    ret.fixpos = -(int8_t)log2f(scale);
     ret.dtype = library::DT_FLOAT;
   }
   ret.name = tensor->get_name();

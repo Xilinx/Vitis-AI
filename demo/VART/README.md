@@ -188,6 +188,7 @@ steps.**
 | 5    | video_analysis           | ./video_analysis video/structure.webm /usr/share/vitis_ai_library/models/ssd_traffic_pruned_0_9/ssd_traffic_pruned_0_9.xmodel    |
 | 6    | adas_detection           | ./adas_detection video/adas.webm /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel         |
 | 7    | segmentation             | ./segmentation video/traffic.webm /usr/share/vitis_ai_library/models/fpn/fpn.xmodel        |
+| 8    | squeezenet_pytorch       | ./squeezenet_pytorch /usr/share/vitis_ai_library/models/squeezenet_pt/squeezenet_pt.xmodel        |
 
 
 
@@ -252,7 +253,7 @@ If you encounter any path errors in running examples, check to see if you follow
 	**Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
 
- <summary><b>Launching Commands for VART Samples on U50 </b></summary>
+ <summary><b>Launching Commands for VART Samples on U50/U50lv/U280 </b></summary>
  
 | No\. | Example Name             | Command                                                   |
 | :--- | :----------------------- | :-------------------------------------------------------- |
@@ -263,5 +264,6 @@ If you encounter any path errors in running examples, check to see if you follow
 | 5    | video_analysis           | ./video_analysis video/structure.webm /usr/share/vitis_ai_library/models/ssd_traffic_pruned_0_9/ssd_traffic_pruned_0_9.xmodel    |
 | 6    | adas_detection           | ./adas_detection video/adas.webm /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel         |
 | 7    | segmentation             | ./segmentation video/traffic.webm /usr/share/vitis_ai_library/models/fpn/fpn.xmodel        |
+| 8    | squeezenet_pytorch       | ./squeezenet_pytorch /usr/share/vitis_ai_library/models/squeezenet_pt/squeezenet_pt.xmodel        |
 
 

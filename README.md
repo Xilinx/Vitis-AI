@@ -70,7 +70,6 @@ docker pull xilinx/vitis-ai:latest
 
 To run the docker, use command:
 ```
-cd setup/docker
 ./docker_run.sh xilinx/vitis-ai:latest
 ```
 #### Building Docker from Recipe
@@ -155,12 +154,12 @@ More Detail can be found here: [Run Docker Container](doc/install_docker/load_ru
   - [VART](VART/README.md)
   - [Vitis AI Library](Vitis-AI-Library/README.md)
   - [Alveo U200/U250](alveo/README.md)
-  - [Vitis AI DNNDK samples](mpsoc/README.md)
+  - [Vitis AI DNNDK samples](demo/DNNDK)
 
 
 ## Programming with Vitis AI
 
-Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo, and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa. 7 samples in [VART Samples](VART/samples) are available to help you get familiar with the unfied programming APIs.
+Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo, and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa. 7 samples in [VART Samples](demo/VART) are available to help you get familiar with the unfied programming APIs.
 
 
 | ID | Example Name          | Models              | Framework  | Notes                                                                     |
@@ -172,6 +171,7 @@ Vitis AI offers a unified set of high-level C++/Python programming APIs to run A
 | 5  | video\_analysis       | SSD                 | Caffe      | Traffic detection with VART C\+\+ APIs\.                      |
 | 6  | adas\_detection       | YOLO\-v3            | Caffe      | ADAS detection with VART C\+\+ APIs\.                         |
 | 7  | segmentation          | FPN                 | Caffe      | Semantic segmentation with VART C\+\+ APIs\.                  |
+| 8  | squeezenet\_pytorch   | Squeezenet          | Pytorch    | Image classification with VART C\+\+ APIs\.                   |
 
 For more information, please refer to [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_2/zkj1576857115470.html)
 

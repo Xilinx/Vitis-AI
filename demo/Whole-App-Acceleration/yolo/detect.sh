@@ -171,12 +171,6 @@ fi
 export XBLAS_EMIT_PROFILING_INFO=$VERBOSE
 export XDNN_VERBOSE=$VERBOSE
 
-# Set Platform Environment Variables
-if [ -f /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh ]; then
-  . /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
-else
-  . ../../../overlaybins/setup.sh
-fi
 # Chose the target
 ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
 if [ ! -f $ARCH_JSON ]; then

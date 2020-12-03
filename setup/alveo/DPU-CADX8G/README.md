@@ -14,7 +14,7 @@ Targeting Alveo cards with Vitis-AI for AI workloads requires the installation o
 While it is possible to install all the software components individually, a script has been provided to automatically install them in one-shot. 
 
 ```sh
-cd Vitis-AI/alveo/packages
+cd <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/packages
 # Run install script as root
 sudo su
 ./install.sh
@@ -23,22 +23,22 @@ Then power cycle the system.
   
 ## Examples
 
- - [Jupyter Notebook Tutorials](notebooks/README.md)
-   - [TensorFlow Image Classification](notebooks/image_classification_tensorflow.ipynb)
-   - [Caffe Image Classification](notebooks/image_classification_caffe.ipynb)
-   - [Caffe Object Detection w/ YOLOv2](notebooks/object_detection_yolov2.ipynb)
+ - [Jupyter Notebook Tutorials](../../../examples/DPU-CADX8G/notebooks/README.md)
+   - [TensorFlow Image Classification](../../../examples/DPU-CADX8G/notebooks/image_classification_tensorflow.ipynb)
+   - [Caffe Image Classification](../../../examples/DPU-CADX8G/notebooks/image_classification_caffe.ipynb)
+   - [Caffe Object Detection w/ YOLOv2](../../../examples/DPU-CADX8G/notebooks/object_detection_yolov2.ipynb)
  - Command Line Examples
-   - [TensorFlow ImageNet Benchmark Models](examples/tensorflow/README.md)
-   - [Caffe ImageNet Benchmark Models](examples/caffe/README.md)
-   - [Caffe VOC SSD Example](examples/caffe/ssd-detect/README.md)
-   - [Deployment Mode Examples](examples/deployment_modes/README.md)
+   - [TensorFlow ImageNet Benchmark Models](../../../examples/DPU-CADX8G/tensorflow/README.md)
+   - [Caffe ImageNet Benchmark Models](../../../examples/DPU-CADX8G/caffe/README.md)
+   - [Caffe VOC SSD Example](../../../examples/DPU-CADX8G/caffe/ssd-detect/README.md)
+   - [Deployment Mode Examples](../../../examples/DPU-CADX8G/deployment_modes/README.md)
 
  ## Advanced Applications
 
- - [AI Kernel Scheduler (AKS)](apps/aks/README.md)
- - [Neptune](neptune/README.md)
+ - [AI Kernel Scheduler (AKS)](../../../tools/AKS/README.md)
+ - [Neptune](../../../demo/neptune/README.md)
  - [Whole App Acceleration](apps/whole_app_acceleration/README.md)
- - [Face Detect](apps/face_detect/README.md)
+ - [Face Detect](../../../examples/DPU-CADX8G/face_detect/README.md)
 
 ## References 
 - [Performance Whitepaper][]
