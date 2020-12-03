@@ -100,6 +100,18 @@ These examples use **DPUCADX8G** IP for CNN Inference Acceleration on Alveo-U200
 
 Follow [Setup Alveo-U200/U250](../../setup/alveo/DPU-CADX8G/README.md) cards page to setup your cards on the host system (skip if already done).
 
+:pushpin: **Note:** Skip, if you have already run the below steps.
+
+```sh
+# Activate Conda Environment (skip if already done)
+conda activate vitis-ai-caffe
+```
+
+```sh
+# Setup env
+source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+```
+
 ### Get Image Dataset
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning).
@@ -150,19 +162,9 @@ tar -xzvf vitis_ai_runtime_r1.3.0_image_video.tar.gz
 
 ### Build Kernels and Examples
 
-We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and examples in the [aks/examples](./examples) directory.
+We have provided a few kernels in the [kernel_src](./kernel_src) directory and examples in the [examples](./examples) directory.
 
 Use following commands to build these kernels and examples.
-
-```sh
-# Activate Conda Environment (skip if already done)
-conda activate vitis-ai-caffe
-```
-
-```sh
-# Setup env
-source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
-```
 
 ```sh
 cd ${VAI_ALVEO_ROOT}/../tools/AKS
@@ -367,7 +369,7 @@ Following packages are required to run example on edge device:
 
 ### Setup the Target Device
 
-Please follow the instructions here to setup your target device with correct SD-card image: [link](../../examples/VART/README.md#setting-up-the-target)
+Please follow the instructions here to setup your target device with correct SD-card image: [link](../../demo/VART/README.md#setting-up-the-target)
 
 ### Get Image Dataset
 

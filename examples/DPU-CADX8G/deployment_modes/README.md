@@ -27,7 +27,7 @@ The following three examples of applications using the Python xfDNN API are prov
 2. A **Streaming Classifcation** example that streams images from disk through the FPGA for classification.
 3. A **Multi-Network** example that shows different DNNs running independently on multiple processing elements on the FPGA.   
 
-### Setup
+## Setup
 
 > **Note:** Skip, If you have already run the below steps.
 

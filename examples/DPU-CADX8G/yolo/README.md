@@ -120,7 +120,7 @@ find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xa
         --network $HOME/yolov3_tiny_without_bn.prototxt \
         --weights $HOME/yolov3_tiny_without_bn.caffemodel \
         --bias $HOME/biases.txt \
-        --anchorcnt 3 \ 
+        --anchorcnt 3 \
         --yoloversion v3 \
         --nclasses 10 \
         --iouthresh 0.45 \

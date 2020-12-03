@@ -39,7 +39,7 @@ python inception_v1.py <number of threads> <compiler output directory>
 **Example**
 
 ```Python
-cd ${VAI_ALVEO_ROOT}/vitis_ai_alveo_samples/inception_v1_mt_py
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/vitis_ai_alveo_samples/inception_v1_mt_py
 python inception_v1.py 1 ./model
 ```
 

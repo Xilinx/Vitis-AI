@@ -32,7 +32,7 @@ from vai.dpuv1.rt import xdnn, xdnn_io
 
 sys.path.insert(0, os.environ["VAI_ALVEO_ROOT"] + '/DPU-CADX8G/deployment_modes')
 import mp_classify as mp_classify
-sys.path.insert(0, os.environ["VAI_ALVEO_ROOT"] + '/yolo')
+sys.path.insert(0, os.environ["VAI_ALVEO_ROOT"] + '/DPU-CADX8G/yolo')
 
 class YoloPreProcess(mp_classify.UserPreProcess):
   def run(self, inum_chunk):

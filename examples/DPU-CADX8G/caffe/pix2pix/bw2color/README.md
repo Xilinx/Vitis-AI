@@ -20,7 +20,7 @@ You can put same value for the 3 channels.
 Here we providied example script to convert RGB image to B/W image.
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/bw2color
 python convert_rgb_bw.py --image <image-file>
 ```
 

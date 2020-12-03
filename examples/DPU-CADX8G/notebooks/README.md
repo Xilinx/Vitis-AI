@@ -15,7 +15,7 @@ Follow these instructions from inside a running container.
 2. Install the necessary dataset (Proceed to next step, if already done)
   ```sh
   # For Caffe Notebooks
-  cd ${VAI_ALVEO_ROOT}/caffe
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
   conda activate vitis-ai-caffe
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
@@ -29,7 +29,7 @@ Follow these instructions from inside a running container.
   python replace_mluser.py --modelsdir models
   
   # For Tensorflow Notebooks
-  cd ${VAI_ALVEO_ROOT}/tensorflow
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/tensorflow
   conda activate vitis-ai-tensorflow
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
