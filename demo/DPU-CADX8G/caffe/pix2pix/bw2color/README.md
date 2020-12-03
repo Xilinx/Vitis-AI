@@ -20,7 +20,7 @@ You can put same value for the 3 channels.
 Here we providied example script to convert RGB image to B/W image.
 
 ```
-cd /workspace/demo/DPU-CADX8G/caffe
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
 python convert_rgb_bw.py --image <image-file>
 ```
 
@@ -36,18 +36,18 @@ To get the quantized Caffe model, run the following commands.
 
 > **Note:** Skip, If you have already run the below steps.
 ```
-cd /workspace/demo/DPU-CADX8G/caffe
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
 python getModels.py
 ```
 
-The Pix2Pix (B/W to color) model files would be located in '/workspace/demo/DPU-CADX8G/caffe/models/bw2color' folder.
+The Pix2Pix (B/W to color) model files would be located in '${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/bw2color' folder.
 
 
 We need to copy the model files into 'pix2pix/bw2color/quantize_results' sub-foloder using the following commands.
 
 ```
-cd /workspace/demo/DPU-CADX8G/caffe/pix2pix/bw2color
-cp -R /workspace/demo/DPU-CADX8G/caffe/models/bw2color ./quantize_results
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/bw2color
+cp -R ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/bw2color ./quantize_results
 ```
 
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'bw2color/quantize_results' sub-foloder.
@@ -59,7 +59,7 @@ You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'bw2co
 The quantized caffemodel need to be compiled and partitioned at your local drive using the following commands.
 
 ```
-cd /workspace/demo/DPU-CADX8G/caffe/pix2pix/bw2color
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/bw2color
 source run.sh deploy
 ```
 
@@ -75,7 +75,7 @@ xfdnn_deploy.prototxt is to execute Caffe model on FPGA.
 To run the inference model on cpu to convert B/W image to color (RGB) image, please use the following commands.
 
 ```
-cd /workspace/demo/DPU-CADX8G/caffe/pix2pix/bw2color
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/bw2color
 python bw2color_cpu.py --image <image-file>
 ```
 
@@ -85,6 +85,6 @@ python bw2color_cpu.py --image <image-file>
 To run the inference model on fpga to convert B/W image to color (RGB) image, please use the following commands.
 
 ```
-cd /workspace/demo/DPU-CADX8G/caffe/pix2pix/bw2color
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/bw2color
 python bw2color_fpga.py --image <image-file>
 ```

@@ -85,7 +85,7 @@ export XBLAS_EMIT_PROFILING_INFO=1
 export XBLAS_EMIT_PROFILING_INFO=$VERBOSE
 export XDNN_VERBOSE=$VERBOSE
 
-. /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+. <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 
 if [ "$MODEL" == "mobilenet" ]; then
   IMG_INPUT_SCALE=0.017

@@ -8,7 +8,7 @@ Currently 6 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_y
  To run:
  1. `conda activate vitis-ai-caffe`
 
- 2. `source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh`
+ 2. `source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh`
 
  3. `cd $VAI_ALVEO_ROOT/DPU-CADX8G/yolo`
 

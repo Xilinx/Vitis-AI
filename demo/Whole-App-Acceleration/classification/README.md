@@ -17,11 +17,11 @@ conda activate vitis-ai-caffe
 ```
 ```sh
 # Setup
-source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 ## Running the Application
-- `cd /workspace/demo/Whole-App-Acceleration/classification`
+- `cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/classification`
 -  Use `run.sh` file to run the application. 
 
 ### Examples

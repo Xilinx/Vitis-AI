@@ -24,7 +24,7 @@ Activate Conda Environment
 Setup the Environment
 
   ```sh
-  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 ## Run Inference
@@ -39,7 +39,7 @@ python inception_v1.py <number of threads> <compiler output directory>
 **Example**
 
 ```Python
-cd /workspace/alveo/examples/vitis_ai_alveo_samples/inception_v1_mt_py
+cd ${VAI_ALVEO_ROOT}/vitis_ai_alveo_samples/inception_v1_mt_py
 python inception_v1.py 1 ./model
 ```
 

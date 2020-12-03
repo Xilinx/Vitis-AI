@@ -39,7 +39,7 @@ Activate Conda Environment
 Setup the Environment
 
   ```sh
-  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 ## Running the Examples  
@@ -117,7 +117,7 @@ For Multinet deployments, the different models/networks are set in the `--jsoncf
 ------------------
 Using VAI_ALVEO_ROOT
 ------------------
-/workspace/demo
+/workspace/examples
 
 ---------------------
 Verifying XILINX_XRM
@@ -169,7 +169,7 @@ Loading weights/bias/quant_params to FPGA...
 [XDNN]   max xbar entries           : 4096
 [XDNN]   version                    : 3.2
 [XDNN]   8-bit mode                 : 1
----------- Prediction 1/4 for /workspace/demo/DPU-CADX8G/deployment_modes/dog.jpg ----------
+---------- Prediction 1/4 for ${VAI_ALVEO_ROOT}/DPU-CADX8G/deployment_modes/dog.jpg ----------
 0.9851 "n02099601 golden retriever"
 0.0017 "n02102318 cocker spaniel, English cocker spaniel, cocker"
 0.0016 "n02100877 Irish setter, red setter"

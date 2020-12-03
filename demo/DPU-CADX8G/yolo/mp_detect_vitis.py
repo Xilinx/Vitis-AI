@@ -30,9 +30,9 @@ from get_mAP_darknet import calc_detector_mAP
 from vai.dpuv1.utils.postproc import yolo
 from vai.dpuv1.rt import xdnn, xdnn_io
 
-sys.path.insert(0, os.environ["VAI_ALVEO_ROOT"] + '/examples/deployment_modes')
+sys.path.insert(0, os.environ["VAI_ALVEO_ROOT"] + '/DPU-CADX8G/deployment_modes')
 import mp_classify as mp_classify
-sys.path.insert(0, os.environ["VAI_ALVEO_ROOT"] + '/apps/yolo')
+sys.path.insert(0, os.environ["VAI_ALVEO_ROOT"] + '/yolo')
 
 class YoloPreProcess(mp_classify.UserPreProcess):
   def run(self, inum_chunk):

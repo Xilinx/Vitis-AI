@@ -5,7 +5,7 @@ conda activate vitis-ai-caffe
 ```
 ```sh
 # Setup
-source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 ## Tool to convert darknet model to caffe

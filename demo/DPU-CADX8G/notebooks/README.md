@@ -9,13 +9,13 @@ Follow these instructions from inside a running container.
 
 1. Setup the environment
   ```sh
-  . /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 2. Install the necessary dataset (Proceed to next step, if already done)
   ```sh
   # For Caffe Notebooks
-  cd /workspace/alveo/examples/caffe
+  cd ${VAI_ALVEO_ROOT}/caffe
   conda activate vitis-ai-caffe
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
@@ -29,7 +29,7 @@ Follow these instructions from inside a running container.
   python replace_mluser.py --modelsdir models
   
   # For Tensorflow Notebooks
-  cd /workspace/alveo/examples/tensorflow
+  cd ${VAI_ALVEO_ROOT}/tensorflow
   conda activate vitis-ai-tensorflow
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
@@ -42,7 +42,7 @@ Follow these instructions from inside a running container.
   
 3. Launch Jupyter notebook server
   ```sh
-  cd /workspace/alveo/notebooks
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/notebooks
   jupyter notebook --no-browser --ip=0.0.0.0 --NotebookApp.token='' --NotebookApp.password=''
   ```
   

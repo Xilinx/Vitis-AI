@@ -16,7 +16,7 @@ Please activate Caffe conda environment using the following commands.
 
 ```
 conda activate vitis-ai-caffe
-source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 
@@ -25,6 +25,6 @@ source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 Download the caffe models. 
 
 ```
-cd /workspace/demo/DPU-CADX8G/caffe
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
 python getModels.py
 ```

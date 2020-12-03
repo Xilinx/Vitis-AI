@@ -30,7 +30,7 @@ from yolo_utils import bias_selector, saveDetectionDarknetStyle, yolo_parser_arg
 from yolo_utils import draw_boxes, generate_colors
 from get_mAP_darknet import calc_detector_mAP
 
-sys.path.insert(0, os.environ["VAI_ALVEO_ROOT"] + '/examples/deployment_modes')
+sys.path.insert(0, os.environ["VAI_ALVEO_ROOT"] + '/DPU-CADX8G/deployment_modes')
 from mp_classify_vitis import *
 
 logging.basicConfig(filename='xs_detect_vitis.log', filemode='w', level=logging.DEBUG)
