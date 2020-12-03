@@ -17,7 +17,7 @@ conda activate vitis-ai-caffe
 - `sudo tar -xf waa_system_u280_v1.3.0.tar.gz -C /usr/lib/`
 
 ### Running the Application
-- `cd /workspace/demo/Whole-App-Acceleration/ssd_mobilenet/`
+- `cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/ssd_mobilenet/`
 - `make build && make -j`
 - Copy xmodel and config file from `/proj/sdxapps/users/anup/public_downlaod/model_ssd_mobilenet` or `/wrk/acceleration/users/anup/public_download/model_ssd_mobilenet`.
 - `./run.sh model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.prototxt model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.xmodel <image path>`

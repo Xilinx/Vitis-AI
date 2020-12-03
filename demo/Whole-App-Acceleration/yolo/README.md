@@ -17,13 +17,13 @@ conda activate vitis-ai-caffe
 ```
 ```sh
 # Setup
-source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 ## Running the Application
--  `cd ${VAI_ALVEO_ROOT}/Whole-App-Acceleration/yolo`
+-  `cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/yolo`
 - Use `detect.sh` file to run the application.
-- Make sure to follow the steps [here](../../DPU-CADX8G/yolo/README.md#getting-coco-2014-validation-set-and-labels) to get COCO validation set and labels/
+- Make sure to follow the steps [here](../../../examples/DPU-CADX8G/yolo/README.md#getting-coco-2014-validation-set-and-labels) to get COCO validation set and labels/
 
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
