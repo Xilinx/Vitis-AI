@@ -74,9 +74,9 @@ Required:
   - Vitis 2020.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-1.html) 
   - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
-  - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.1)
-  - [zcu102 base platform](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
-  - [mpsoc common system](https://www.xilinx.com/member/forms/download/xef.html?filename=xilinx-zynqmp-common-v2020.1.tar.gz)
+  - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.2)
+  - [zcu102 base platform 2020.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
+  - [ZYNQMP common image 2020.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
   - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
 
@@ -658,7 +658,8 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
 
   ![PROJECT_NAME](./doc/6.6.png) 
 
-	c. Enter the Sysroot, Root FS, Kernel Image paths and click Next. Find them in the common system.
+	c. Enter the Sysroot, Root FS, Kernel Image paths and click Next. Find them in the common system. The user can get the related in the ZYNQMP common image 2020.2. 
+[ZYNQMP common image 2020.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
 
   ![SYSROOT](./doc/sysroot.png) 
  
