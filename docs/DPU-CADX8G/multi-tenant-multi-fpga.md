@@ -22,26 +22,26 @@ Multiple Vitis-AI Runners may timeshare the same FPGA. The FPGA resource manager
 
 Example (on a system with 1 FPGA):
 ```sh
-cd examples/deployment_modes
+cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes
 
 ## On terminal 1:
 ./run.sh -t test_classify
 # (process runs immediately because FPGA is free)
 
-## On terminal 2: 
+## On terminal 2:
 ./run.sh -t test_classify
 # (process waits because terminal 1 is using FPGA, then runs as soon as FPGA is free)
 ```
 
 ## Multiple Users, Multiple FPGAs
 
-A system may have multiple FPGA boards installed on the system. E.g., a combination of Alveo U250s and U200s. 
+A system may have multiple FPGA boards installed on the system. E.g., a combination of Alveo U250s and U200s.
 
-An application process requests for an FPGA by passing a directory of available ML xclbins (E.g., DPU_u250.xclbin, DPU_u200.xclbin). The FPGA resource manager then automatically finds an available FPGA matching one of the provided ML xclbins. 
+An application process requests for an FPGA by passing a directory of available ML xclbins (E.g., DPU_u250.xclbin, DPU_u200.xclbin). The FPGA resource manager then automatically finds an available FPGA matching one of the provided ML xclbins.
 
 Example (on a system with 1 U250 and 1 U200):
 ```sh
-cd examples/deployment_modes
+cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes
 
 ## In terminal 1:
 ./run.sh -t test_classify
@@ -56,22 +56,22 @@ The FPGA resource manager also provides an API for advanced users to provide Use
 
 ## Single FPGA, Multiple Models
 
-In the previous examples, we assume that each Vitis runner acquires the entire FPGA and uses the whole FPGA for one ML model. 
+In the previous examples, we assume that each Vitis runner acquires the entire FPGA and uses the whole FPGA for one ML model.
 
-However, the FPGA resource manager also supports CU-level (or SLR-level) allocation. I.e., instead of deploying the same ML model to the entire FPGA, the user may request a single CU, and deploy a different ML model to different SLRs in the FPGA. 
+However, the FPGA resource manager also supports CU-level (or SLR-level) allocation. I.e., instead of deploying the same ML model to the entire FPGA, the user may request a single CU, and deploy a different ML model to different SLRs in the FPGA.
 
 E.g., there are 4 SLRs on an Alveo U250. This allows up to 4 different ML models to be deployed. E.g., Resnet50 on SLR0, Inception_v3 on SLR1, Yolo_v2 on SL2 and SSD on SLR3.
 
 Example:
 ```sh
-cd examples/deployment_modes
+cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes
 ./run.sh -t multinet
 ```
 This example deploys Resnet50 on one SLR and Inception_v1 on another SLR. Two Vitis Runners are created (one for each ML model). The Vitis Runners can be used concurrently (E.g. different threads, different processes or different users), as the CU in each SLR is independent.
 
 ## Single User, Multiple FPGAs
 
-User can acquire multiple FPGAs using Single Vitis-AI runner. [AI Kernel Scheduler](../apps/aks/README.md) provides command line options to input number of FPGAs in a system. 
+User can acquire multiple FPGAs using Single Vitis-AI runner. [AI Kernel Scheduler](../../tools/AKS/README.md) provides command line options to input number of FPGAs in a system.
 
 Example:
 ```sh
@@ -82,6 +82,6 @@ cd apps/aks
 
 ## Additional Examples
 
-See [Neptune](../neptune/README.md) for an FPGA microservice server. This deploys a different ML model on different SLRs on one FPGA .
+See [Neptune](../../demo/neptune/README.md) for an FPGA microservice server. This deploys a different ML model on different SLRs on one FPGA .
 
-See [AI Kernel Scheduler](../apps/aks/README.md) for an Multi-Graph, Multi-FPGA end-to-end C++ executor.
+See [AI Kernel Scheduler](../../tools/AKS/README.md) for an Multi-Graph, Multi-FPGA end-to-end C++ executor.
