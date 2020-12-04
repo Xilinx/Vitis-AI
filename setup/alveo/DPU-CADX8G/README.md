@@ -5,7 +5,7 @@ Targeting Alveo cards with Vitis-AI for AI workloads requires the installation o
 
 * [Xilinx Run time(XRT)](https://github.com/Xilinx/XRT)
 
-* Alveo Deployment Shells (DSAs) - it  can be downloaded from Getting Started tab of Alveo board product page on [xilinx.com](xilinx.com)
+* Alveo Deployment Shells (DSAs) - it  can be downloaded from Getting Started tab of Alveo board product page on [xilinx.com](https://www.xilinx.com/products/boards-and-kits/alveo/u200.html#gettingStarted)
 
 * Xilinx Resource Manager (XRM) (xbutler)
 
