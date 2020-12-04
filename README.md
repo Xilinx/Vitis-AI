@@ -184,7 +184,7 @@ For more information, please refer to [Vitis AI User Guide](https://www.xilinx.c
 - [Developer Articles](https://developer.xilinx.com/en/get-started/ai.html)
 - [Performance Whitepaper][]
 
-## [System Requirements](doc/system_requirements.md)
+## [System Requirements](docs/system_requirements.md)
 
 ## Questions and Support
 - [FAQ](doc/faq.md)
