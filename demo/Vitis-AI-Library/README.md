@@ -199,10 +199,9 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Alveo
 ### Setting Up the Host for U50/U50lv/U280
 
-1. Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../../setup/alveo/u50_u50lv_u280/README.md#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
+1. Follow [Setup Alveo Accelerator Card with HBM for DPUCAHX8H/L](../../setup/alveo/u50_u50lv_u280/README.md) to set up the Alveo Card.
 
-2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
-as an example.
+2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50` as an example.
 ```
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
@@ -248,7 +247,7 @@ sudo service xbutler restart
 	```
 	  For `DPUCAHX8L`, take `U50lv` as an example.  
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz -O resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz -O resnet_v1_50_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
 	```	  
 	* Install the model package.  
 	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
@@ -262,7 +261,7 @@ sudo service xbutler restart
 	```
 	  For `DPUCAHX8L`, execute the following commands to install the model package.
 	```
-	  tar -xzvf resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
+	  tar -xzvf resnet_v1_50_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
 	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
 	```
 	  

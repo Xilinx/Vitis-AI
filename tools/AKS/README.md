@@ -100,6 +100,18 @@ These examples use **DPUCADX8G** IP for CNN Inference Acceleration on Alveo-U200
 
 Follow [Setup Alveo-U200/U250](../../setup/alveo/DPU-CADX8G/README.md) cards page to setup your cards on the host system (skip if already done).
 
+:pushpin: **Note:** Skip, if you have already run the below steps.
+
+```sh
+# Activate Conda Environment (skip if already done)
+conda activate vitis-ai-caffe
+```
+
+```sh
+# Setup env
+source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+```
+
 ### Get Image Dataset
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012/) and [COCO](http://cocodataset.org/#home) using [Collective Knowledge (CK)](https://github.com/ctuning).
@@ -111,7 +123,7 @@ Download a minimal validation set for [Imagenet2012](http://www.image-net.org/ch
 :pushpin: **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```sh
-cd /workspace/tools/AKS
+cd ${VAI_ALVEO_ROOT}/../tools/AKS
 
 python -m ck pull repo:ck-env
 
@@ -130,7 +142,7 @@ python ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-ima
 python -m ck install package:dataset-coco-2014-val
 
 # To try out face-detect example, download FDDB dataset.
-cd ${VAI_ALVEO_ROOT}/apps/face_detect/FDDB
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/face_detect/FDDB
 wget http://vis-www.cs.umass.edu/fddb/originalPics.tar.gz
 tar -xvf originalPics.tar.gz
 cd -
@@ -138,10 +150,10 @@ cd -
 
 ### Get Video Dataset
 
-:pushpin: **Note:** The link below doesn't exist yet, please copy the tar file from /proj/xsjhdstaff3/vkjain/gitlab/fork/vitis-ai-staging/vitis_ai_runtime_r1.3.0_image_video.tar.gz to /workspace/tools/AKS
+:pushpin: **Note:** The link below doesn't exist yet, please copy the tar file from /proj/xsjhdstaff3/vkjain/gitlab/fork/vitis-ai-staging/vitis_ai_runtime_r1.3.0_image_video.tar.gz to ${VAI_ALVEO_ROOT}/../tools/AKS
 
 ```sh
-cd /workspace/tools/AKS
+cd ${VAI_ALVEO_ROOT}/../tools/AKS
 
 # To try out tinyyolov3_video example, download sample images and videos
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz -O vitis_ai_runtime_r1.3.0_image_video.tar.gz
@@ -150,22 +162,12 @@ tar -xzvf vitis_ai_runtime_r1.3.0_image_video.tar.gz
 
 ### Build Kernels and Examples
 
-We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory and examples in the [aks/examples](./examples) directory.
+We have provided a few kernels in the [kernel_src](./kernel_src) directory and examples in the [examples](./examples) directory.
 
 Use following commands to build these kernels and examples.
 
 ```sh
-# Activate Conda Environment (skip if already done)
-conda activate vitis-ai-caffe
-```
-
-```sh
-# Setup env
-source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
-```
-
-```sh
-cd /workspace/tools/AKS
+cd ${VAI_ALVEO_ROOT}/../tools/AKS
 
 # Build kernels (Builds Common and DPUCADX8G specific kernels)
 ./cmake-kernels.sh --dpu=dpucadx8g --clean
@@ -249,9 +251,9 @@ cd /workspace/tools/AKS
 - Face Detect
     ```sh
     # C++
-    ./aks.sh -m facedetect -d1 ${VAI_ALVEO_ROOT}/apps/face_detect/FDDB
+    ./aks.sh -m facedetect -d1 ${VAI_ALVEO_ROOT}/DPU-CADX8G/face_detect/FDDB
     # Python
-    ./aks.sh -m facedetect -i py -d1 ${VAI_ALVEO_ROOT}/apps/face_detect/FDDB
+    ./aks.sh -m facedetect -i py -d1 ${VAI_ALVEO_ROOT}/DPU-CADX8G/face_detect/FDDB
     ```
 
     >**INFO:** This writes the annotated output images to `face_outputs` directory. A corresponding text file representation is written to `face_results.txt`. This result writing has huge impact on application throughput. If you want to turn-off writing results and improve the performance, please provide empty strings to `save_result_txt` and `save_result_imgdir` fields in `graph_zoo/graph_facedetect.json`.
@@ -303,13 +305,13 @@ Download a minimal validation set for [Imagenet2012](http://www.image-net.org/ch
 :pushpin: **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```sh
-cd /workspace/tools/AKS
+cd ${VAI_ALVEO_ROOT}/../tools/AKS
 # Activate conda env
 conda activate vitis-ai-caffe
 python -m ck pull repo:ck-env
 python -m ck install package:imagenet-2012-val-min
 
-python /workspace/demo/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
+python ${VAI_ALVEO_ROOT}/../demo/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
 
 # We don't need conda env for running examples on Alveo-U50
 conda deactivate
@@ -321,7 +323,7 @@ We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory a
 Use following commands to build these kernels and examples.
 
 ```sh
-cd /workspace/tools/AKS
+cd ${VAI_ALVEO_ROOT}/../tools/AKS
 
 # Buld kernels (Builds Common and DPUCAHX8H specific kernels)
 ./cmake-kernels.sh --dpu=dpucahx8h --clean
@@ -367,7 +369,7 @@ Following packages are required to run example on edge device:
 
 ### Setup the Target Device
 
-Please follow the instructions here to setup your target device with correct SD-card image: [link](../../examples/VART/README.md#setting-up-the-target)
+Please follow the instructions here to setup your target device with correct SD-card image: [link](../../demo/VART/README.md#setting-up-the-target)
 
 ### Get Image Dataset
 

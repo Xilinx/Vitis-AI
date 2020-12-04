@@ -99,7 +99,7 @@ Runtime packages on the board separately.**
 * For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/waa_system_u50_v1.3.0.tar.gz`
 
 ```
-	tar -xzvf waa_system_u50_v1.3.0.tar.gz
+	tar -xvf waa_system_u50_v1.3.0.tar.gz
 	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
 ```	
 	
@@ -110,7 +110,7 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu
 
 * To download and install `resnet50` model:
 	```
-	  cd /workspace
+	  cd ${VAI_ALVEO_ROOT}/..
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
 	  For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet50-u50-r1.3.0.tar.gz`
 
@@ -123,7 +123,7 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu
 
 * To download and install `adas detection` model:
 	```
-	  cd /workspace
+	  cd ${VAI_ALVEO_ROOT}/..
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz -O yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
 	  For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz`
 	```	

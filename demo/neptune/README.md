@@ -89,7 +89,7 @@ Python 3.6+ is recommended.
 Neptune comes with a simple _ping_ service that can be used to demonstrate basic functionality  
 1. Start Neptune on the server 
 ```sh
-cd $VAI_ALVEO_ROOT/neptune && ./run.sh
+cd $VAI_ALVEO_ROOT/../demo/neptune && ./run.sh
 ```
 
 The Neptune server will begin running (listening by default on port 8998)

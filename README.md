@@ -38,7 +38,7 @@ Vitis AI is composed of the following key components:
 - Added Alveo U50/U50LV support
 - Added Alveo U280 support
 - Alveo U50/U50LV DPU DPUCAHX8H micro-architecture improvement
-- DPU TRD upgraded to support Vitis 2020.1 and Vivado 2020.1
+- DPU TRD upgraded to support Vitis 2020.2 and Vivado 2020.2
 - Vitis AI for Pytorch CNN general access (Beta version)
 
 ## Getting Started
@@ -151,15 +151,15 @@ More Detail can be found here: [Run Docker Container](doc/install_docker/load_ru
   
 
  ### Get Started with Examples
-  - [VART](VART/README.md)
-  - [Vitis AI Library](Vitis-AI-Library/README.md)
+  - [VART](demo/VART/README.md)
+  - [Vitis AI Library](demo/Vitis-AI-Library/README.md)
   - [Alveo U200/U250](alveo/README.md)
   - [Vitis AI DNNDK samples](demo/DNNDK)
 
 
 ## Programming with Vitis AI
 
-Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo, and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa. 7 samples in [VART Samples](demo/VART) are available to help you get familiar with the unfied programming APIs.
+Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo, and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa. 8 samples in [VART Samples](demo/VART) are available to help you get familiar with the unfied programming APIs.
 
 
 | ID | Example Name          | Models              | Framework  | Notes                                                                     |
