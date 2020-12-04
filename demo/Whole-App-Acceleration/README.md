@@ -99,7 +99,7 @@ Runtime packages on the board separately.**
 * For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/waa_system_u50_v1.3.0.tar.gz`
 
 ```
-	tar -xzvf waa_system_u50_v1.3.0.tar.gz
+	tar -xvf waa_system_u50_v1.3.0.tar.gz
 	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
 ```	
 	
