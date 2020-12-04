@@ -200,8 +200,8 @@ void Display(bool& is_displaying) {
 int main(int argc, char** argv) {
   // Check args
   if (argc != 4) {
-    cout << "Usage of pose detection demo: ./pose_detection [video_file] "
-            "[pose_model_file] [ssd_model_file]"
+    cout << "Usage of pose detection demo: " << argv[0] 
+         << " <video_file> <pose_model_file> <ssd_model_file>"
          << endl;
     return -1;
   }

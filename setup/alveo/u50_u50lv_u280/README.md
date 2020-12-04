@@ -1,6 +1,6 @@
-# DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM
+# DPUCAHX8H/DPUCAHX8L -- the DPUs for Alveo Accelerator Card with HBM
 
-Xilinx DPU IP family for convolution nerual network (CNN) inference application supports Alveo accelerator cards with HBM now, including Alveo U50, U50LV and U280 cards. According to the latest Xilinx DPU naming rule, the DPU for Alveo-HBM card is named ***DPUCAHX8H***. The on-premise DPUCAHX8H overlays are released along with Vitis AI. A few variants of DPUCAHX8H are provided, which will be explained in later section. Please refer to the relevant parts for usages of different DPUCAHX8H overlays with [VART](../VART/README.md) and [Vitis-AI-Library](../Vitis-AI-Library/README.md) (you could search the keyword "for Cloud").
+Xilinx DPU IP family for convolution nerual network (CNN) inference application supports Alveo accelerator cards with HBM now, including Alveo U50, U50LV and U280 cards. The Xilinx DPUs for Alveo-HBM card include ***DPUCAHX8H*** and ***DPUCAHX8L***, the former is for optimized for high throughput and the latter is optimized for MobileNet model and ultra low latency. The on-premise DPUCAHX8H and DPUCAHX8L overlays are released along with Vitis AI, and a few of variants are provided.
 
 Following section will guide you through the Alveo-HBM card preparation steps and on-premise overlays setup flow for Vitis AI.
 
@@ -25,11 +25,15 @@ If you don't use the script above, you could follow following steps to finish th
 
 Before you go through the next steps, please ensure the latest Xilinx runtime (XRT) is installed on your host, you can get XRT from these links:
 
-CentOS/Redhat 7.4-7.7: [xrt_202010.2.6.655_7.4.1708-x86_64-xrt.rpm](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_7.4.1708-x86_64-xrt.rpm)
+CentOS/Redhat 7.x: [xrt_202020.2.8.726_7.4.1708-x86_64-xrt.rpm](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_7.4.1708-x86_64-xrt.rpm)
 
-Ubuntu 16.04: [xrt_202010.2.6.655_16.04-amd64-xrt.deb](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_16.04-amd64-xrt.deb)
+CentOS/Redhat 8.x: [xrt_202020.2.8.726_8.1.1911-x86_64-xrt.rpm](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_8.1.1911-x86_64-xrt.rpm)
 
-Ubuntu 18.04: [xrt_202010.2.6.655_18.04-amd64-xrt.deb](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_18.04-amd64-xrt.deb)
+Ubuntu 16.04: [xrt_202020.2.8.726_16.04-amd64-xrt.deb](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_16.04-amd64-xrt.deb)
+
+Ubuntu 18.04: [xrt_202020.2.8.726_18.04-amd64-xrt.deb](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_18.04-amd64-xrt.deb)
+
+Ubuntu 20.04: [xrt_202020.2.8.726_20.04-amd64-xrt.deb](https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_20.04-amd64-xrt.deb)
 
 ### Install the Alveo Card Target Platform
 
@@ -48,7 +52,7 @@ Ubuntu 18.04:
 #### Alveo U50 Card
 For U50 card, DPUCAHX8H use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files.
 
-CentOS/Redhat 7.4-7.7:
+CentOS/Redhat:
 [Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz)
 
 Ubuntu 16.04:
@@ -62,7 +66,7 @@ Ubuntu 18.04:
 
 For U50LV card, DPUCAHX8H use the gen3x4 version target platform instead of the standard gen3x16 platform. Please download and install the required gen3x4 target platform files.
 
-CentOS/Redhat 7.4-7.7:
+CentOS/Redhat:
 [Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz)
 
 Ubuntu 16.04:
@@ -90,7 +94,7 @@ For Alveo U50LV:
 sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_base_2
 ~~~
 
-### DPUCAHX8H Overlays Installation
+### DPUCAHX8H/L Overlays Installation
 
 Four kinds of DPUCAHX8H overlays are provided for different Alveo HBM card:
 * U50-6E300M: two kernels, six engines, maximal core clock 300MHz
@@ -98,13 +102,20 @@ Four kinds of DPUCAHX8H overlays are provided for different Alveo HBM card:
 * U50LV-10E275M: two kernels, ten engines, maximal core clock 275MHz
 * U280-14E300M: three kernels, fourteen engines, maximal core clock 300MHz
 
+Four kinds of DPUCAHX8L overlays are provided for different Alveo HBM card:
+* U50-1C333M: one kernel, maximal core clock 333MHz
+* U50LV-1C250M: one kernel, maximal core clock 250MHz
+* U280-1C333M: one kernel, maximal core clock 333MHz
+* U280-2C300M: two kernels, maximal core clock 300MHz
+
+
 #### Get and Decompress Overlays Tarball
 In the host or docker, get to the shared Vitis AI git repository directory and use following commands to download and decompress the overlays tarball.
 
 ~~~
-cd ./Vitis-AI/alveo-hbm
-wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.2.1.tar.gz -O alveo_xclbin-1.2.1.tar.gz
-tar xfz alveo_xclbin-1.2.1.tar.gz
+cd ./Vitis-AI/setup/alveo/u50_u50lv_u280
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.tar.gz -O alveo_xclbin-1.3.tar.gz
+tar xfz alveo_xclbin-1.3.tar.gz
 ~~~
 
 </details>
@@ -118,12 +129,18 @@ Four versions of DPUCAHX8H overlays are provided for the different Alveo HBM car
 * U50LV-10E275M: two kernels, ten engines, maximal core clock 275MHz
 * U280-14E300M: three kernels, fourteen engines, maximal core clock 300MHz
 
-The DPUCAHX8H overlays should be used in the **docker contaniner** environment.
+Four kinds of DPUCAHX8L overlays are provided for different Alveo HBM card:
+* U50-1C333M: one kernel, maximal core clock 333MHz
+* U50LV-1C250M: one kernel, maximal core clock 250MHz
+* U280-1C333M: one kernel, maximal core clock 333MHz
+* U280-2C300M: two kernels, maximal core clock 300MHz
 
-Firstly start the CPU or GPU docker, then run the script below to automatically copy the overlays into the correct location. The script will automatically detect the card type and finish the overlay file copy. By default the 10E275M version is used for U50LV card, and you could modify the script to use 9E275M version.
+The DPUCAHX8H/L overlays should be used in the **docker contaniner** environment.
+
+Firstly start the CPU or GPU docker, then run the script below to automatically copy the overlays into the correct location. The script will automatically detect the card type and finish the overlay file copy. By default for DPUCAHX8H the 10E275M version is used for U50LV card; for DPUCAHX8L the 2C300M version is used for U280 card, and you could modify the script to use alternative version.
 
 ~~~
-cd /workspace/alveo-hbm
+cd /workspace/setup/alveo/u50_u50lv_u280
 source ./overlay_settle.sh
 ~~~
 
@@ -136,25 +153,25 @@ Start the CPU or GPU docker, get into the shared Vitis AI git repository directo
 
 For Alveo U50, use U50-6E300M overlay:
 ~~~
-cd /workspace/alveo-hbm
+cd /workspace/setup/alveo/u50_u50lv_u280
 sudo cp alveo_xclbin-1.2.1/U50/6E300M/* /usr/lib
 ~~~
 
 For Alveo U50LV, use U50LV-9E275M overlay:
 ~~~
-cd /workspace/alveo-hbm
+cd /workspace/setup/alveo/u50_u50lv_u280
 sudo cp alveo_xclbin-1.2.1//U50lv/9E275M/* /usr/lib
 ~~~
 
 For Alveo U50LV, use U50LV-10E275M overlay:
 ~~~
-cd /workspace/alveo-hbm
+cd /workspace/setup/alveo/u50_u50lv_u280
 sudo cp alveo_xclbin-1.2.1//U50lv/10E275M/* /usr/lib
 ~~~
 
 For Alveo U280, use U280-14E300M overlay:
 ~~~ 
-cd /workspace/alveo-hbm
+cd /workspace/setup/alveo/u50_u50lv_u280
 sudo cp alveo_xclbin-1.2.1/U280/14E300M/* /usr/lib
 ~~~
 
@@ -180,40 +197,3 @@ You could use XRT xbutil tools to scale down the running frequency of the DPUCAH
 /opt/xilinx/xrt/bin/xbutil clock -d0 -g 80
 ~~~
 d0 is the Alveo card device number. For more information about **xbutil** tool, please use refer to XRT documents.
-
----
-
-## Brief Introduction to DPUCAHX8H
-
-DPUCAHX8H is a high performance CNN inference IP optimized for throughput and data center workloads. DPUCAHX8H runs with highly optimized instructions set and supports all mainstream convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, FPN, etc. 
-
-DPUCAHX8H is one of the fundamental IPs (Overlays) of Xilinx Vitis™ AI development environment, and the user can use Vitis AI toolchain to finish the full stack ML development with DPUCAHX8H. The user can also use standard Vitis flow to finish the integration of DPUCAHX8H with other customized acceleration kernal to realize powerful X+ML solution. DPUCAHX8H is provided as encrypted RTL or XO file format for Vivado or Vitis based integration flow.
-
-The major supported Neural Network operators include:
-
-- Convolution / Deconvolution
-- Max pooling / Average pooling
-- ReLU, ReLU6, and Leaky ReLU
-- Concat
-- Elementwise-sum
-- Dilation
-- Reorg
-- Fully connected layer
-- Batch Normalization
-- Split
-
-DPUCAHX8H is highly configurable, a DPUCAHX8H kernel consists of several Batch Engines, a Instruction Scheduler, a Shared Weights Buffer,  and a Control Register Bank. Following is the block diagram of a DPUCAHX8H kernel including 5 Batch Engines.
-
-<img src = "./images/DPU Kernel Diagram.png" align = "center">
-
-### Batch Engine
-Batch Engine is the core computation unit of DPUCAHX8H. A Batch Engine can handle an input image at a time, so multiple Batch Engines in a DPUCAHX8H kenel can process sevel input images simultaneously. The number of Batah Engine in a DPUCAHX8H kernel can be configured based on FPGA resource condition and customer's  performance requirement. For example, in Alveo U280 card, SLR0 (with direct HBM connection) can contain a DPUCAHX8H kernel with maximal four Batch Engines while SLR1 or 2 can contain a DPUCAHX8H kernel with five Batch Engines. In Batch Engine, there is a convolution engine to handle regular convolution/deconvolution compution, and a MISC engine to handle pooling, ReLu, and other miscellaneous operations. MISC engine is also configurable for optional function according specific nerual network requirement. Each Batch Engine use a AXI read/write master interfaces for feature map data exchange between device memory (HBM).
-
-### Instruction Scheduler
-Similar to general purpose processor in concept, Instruction Scheduler carries out instruction fetch, decode and dispatch jobs. Since all the Batch Engines in a DPUCAHX8H kernel will run the same nerual network, so Instruction Shceduler serves all the Batch Engines with the same instruction steam. The instruction stream is loaded by host CPU to device memory (HBM) via PCIe interface, and Instruction Scheduler use a AXI read master interface to fetch DPU instruction for Batch Engine.
-
-### Shared Weight Buffer
-Shared Weight Buffer includes complex strategy and control logic to manage the loading of nerual network weight from Alveo device memory and transfering them to Batch Engines effeciently. Since all the Batch Engines in a DPUCAHX8H kernel will run the same nerual network, so the weights data are wisely loaded into on-chip buffer and shared by all the Batch Engines to eleminate unnecessary memory access to save bandwidth. Shared Weight Buffer use two AXI read master interfaces to load Weight data from device memory (HBM).
-
-### Control Register Bank
-Control Register Bank is the control interface between DPUCAHX8H kernel and host CPU. It implements a set of controler register compliant to Vitis development flow. Control Register Bank has a AXI slave interface.

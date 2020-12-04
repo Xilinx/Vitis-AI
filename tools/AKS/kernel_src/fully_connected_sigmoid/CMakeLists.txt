@@ -14,6 +14,9 @@
 
 cmake_minimum_required(VERSION 3.12)
 
+set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -O0 -fno-inline")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+
 project(FullyConnectedSigmoid VERSION 1.3.0)
 
 if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")

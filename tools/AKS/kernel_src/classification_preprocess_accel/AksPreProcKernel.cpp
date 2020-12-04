@@ -42,10 +42,10 @@ class PreProcKernel: public AKS::KernelBase
     int getNumCUs(void);
     void nodeInit(AKS::NodeParams* params);
     int exec_async (
-      std::vector<AKS::DataDescriptor*> &in,
-      std::vector<AKS::DataDescriptor*> &out, 
-      AKS::NodeParams* nodeParams,
-      AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in,
+        std::vector<AKS::DataDescriptor*> &out, 
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
 };
 
 int PreProcKernel::getNumCUs(void)
@@ -54,35 +54,35 @@ int PreProcKernel::getNumCUs(void)
 }
 
 extern "C" { /// Add this to make this available for python bindings and dlsym
-/**
-* @brief This function sets up the pre-processing kernel using OpenCL runtime APIs.
-* 
-* @param  params structure which contains all the parameters required
-* @returns Returns KernelBase class pointer
-*/
-AKS::KernelBase* getKernel (AKS::NodeParams* params)
-{
-  /// Update KernelBase and return
-  PreProcKernel * handle = new PreProcKernel();
-  return handle;
+  /**
+   * @brief This function sets up the pre-processing kernel using OpenCL runtime APIs.
+   * 
+   * @param  params structure which contains all the parameters required
+   * @returns Returns KernelBase class pointer
+   */
+  AKS::KernelBase* getKernel (AKS::NodeParams* params)
+  {
+    /// Update KernelBase and return
+    PreProcKernel * handle = new PreProcKernel();
+    return handle;
 
-} //init
+  } //init
 }// extern "C"
 
 /**
-* @brief This function execute the Pre-Processing Kernel on the device using OpenCL
-* runtime APIs.
-* 
-* @param  handle KernelBase class pointer 
-* @param  in Vector of input Data Descriptor
-* @param  out Vector of output Data Descriptor
-* @param  params NodeParams structure which contains all the parameter required
-* @returns Integer
-*/
+ * @brief This function execute the Pre-Processing Kernel on the device using OpenCL
+ * runtime APIs.
+ * 
+ * @param  handle KernelBase class pointer 
+ * @param  in Vector of input Data Descriptor
+ * @param  out Vector of output Data Descriptor
+ * @param  params NodeParams structure which contains all the parameter required
+ * @returns Integer
+ */
 int PreProcKernel::exec_async (std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams)
+    std::vector<AKS::DataDescriptor*> &out, 
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
 {
   /// Get input and output data shapes
   /// Input could be batch array or batch of images
@@ -101,20 +101,20 @@ int PreProcKernel::exec_async (std::vector<AKS::DataDescriptor*> &in,
   float * outData = (float*) outDD->data();
 
   /// CV Mat to store output data from device memory
-	cv::Mat result;
+  cv::Mat result;
   result.create(cv::Size(outHeight, outWidth), CV_16SC3);
 
-	/// Params for quantization kernel
-	float kernelParams[9];
-	kernelParams[3] = kernelParams[4] = kernelParams[5] = 0.0;
-	/// Mean values
+  /// Params for quantization kernel
+  float kernelParams[9];
+  kernelParams[3] = kernelParams[4] = kernelParams[5] = 0.0;
+  /// Mean values
   auto meanIter = nodeParams->_floatVectorParams.find("mean");
-	kernelParams[0] = meanIter->second[0];//104.007f;
-	kernelParams[1] = meanIter->second[1];//116.669f;
-	kernelParams[2] = meanIter->second[2];//122.679f;
-	int th1 = nodeParams->_intParams.find("th1")->second;//255,
-  int th2 = nodeParams->_intParams.find("th2")->second;//255;
-	int act_img_h, act_img_w;
+  kernelParams[0] = meanIter->second[0];
+  kernelParams[1] = meanIter->second[1];
+  kernelParams[2] = meanIter->second[2];
+  int th1 = nodeParams->_intParams.find("th1")->second;
+  int th2 = nodeParams->_intParams.find("th2")->second;
+  int act_img_h, act_img_w;
 
   /////////////////////////// CL ///////////////////////////////
 
@@ -178,7 +178,6 @@ int PreProcKernel::exec_async (std::vector<AKS::DataDescriptor*> &in,
         kernelParams
         );
 
-
     cl::Event execEvent;
 
     /// Launch the kernel
@@ -228,12 +227,11 @@ int PreProcKernel::exec_async (std::vector<AKS::DataDescriptor*> &in,
     } //l_rows
   } //batch_size
   out.push_back(outDD);
-  return -1; /// No wait required
+  return 0;
 }
 
 void PreProcKernel::nodeInit(AKS::NodeParams* params)
 {
-  std::cout << "\n[AKS] Setting up Classification X-Pre-Processing Kernel ... " << std::endl;
   /// Enable Multi-process mode
   char mps_env[] = "XCL_MULTIPROCESS_MODE=1";
   if (putenv(mps_env) != 0) {
@@ -258,11 +256,11 @@ void PreProcKernel::nodeInit(AKS::NodeParams* params)
   }
 
   /// Check for device name
-	std::string dev_name ("xilinx_u200_xdma_201830_2");
-	if(dev_name.compare(devices[0].getInfo<CL_DEVICE_NAME>()) != 0) {
-		std::cout << "[ERR] Device Not Supported: " << dev_name << std::endl;
-		return ;
-	}
+  std::string dev_name ("xilinx_u200_xdma_201830_2");
+  if(dev_name.compare(devices[0].getInfo<CL_DEVICE_NAME>()) != 0) {
+    std::cout << "[ERR] Device Not Supported: " << dev_name << std::endl;
+    return ;
+  }
 
   /// Create clKernel and clProgram
   cl_device_info devInfo;
@@ -273,21 +271,19 @@ void PreProcKernel::nodeInit(AKS::NodeParams* params)
     std::cerr << "[ERR] CL Program Creation Failed !"  << std::endl;
     return ;
   }
-  
+
   cl::Kernel kernel(program, "pp_pipeline_accel", &err);
   if (err != CL_SUCCESS) {
     std::cerr << "[ERR] CL Kernel Creation Failed !"  << std::endl;
     return ;
   }
 
-	/// Command Queue 
-	cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE);
+  /// Command Queue 
+  cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE);
 
   _preProcHandle.kernel  = kernel;
   _preProcHandle.context = context;
   _preProcHandle.device  = device;
   _preProcHandle.program = program;
   _preProcHandle.commandQueue = q;
-
-  std::cout << "[AKS] Setting up Classification X-Pre-Processing Kernel complete.\n" << std::endl;
 }

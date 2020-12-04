@@ -53,6 +53,7 @@ HOME_DIR   = os.getenv('HOME')
 QUANT_DIR = os.path.join(str(Path.home()),
                         'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/')
 
+
 if not os.path.exists(QUANT_DIR):
     raise ValueError("Could not find directory "
                      "~/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/."

@@ -37,18 +37,18 @@ class SaveBoxesDarknetFormat : public AKS::KernelBase
   public:
     void nodeInit(AKS::NodeParams*);
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in, 
+        std::vector<AKS::DataDescriptor*> &out, 
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
 };
 
 extern "C" { /// Add this to make this available for python bindings and 
 
-AKS::KernelBase* getKernel (AKS::NodeParams *params)
-{
-  return new SaveBoxesDarknetFormat();
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams *params)
+  {
+    return new SaveBoxesDarknetFormat();
+  }
 
 }//externC
 
@@ -61,10 +61,10 @@ void SaveBoxesDarknetFormat::nodeInit(AKS::NodeParams* nodeParams) {
 }
 
 int SaveBoxesDarknetFormat::exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams)
+    std::vector<AKS::DataDescriptor*> &in, 
+    std::vector<AKS::DataDescriptor*> &out, 
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
 {
   // Get imgFile name from the full path
   const auto& imagePaths = dynParams->imagePaths;

@@ -36,7 +36,7 @@
           "kernel" : "FDDBFaceDetectPostProc",
           "pyargs" : [
             "'network_input_dims' : [320, 320, 3]",
-            "'img_list' : '../face_detect/FDDB/FDDB_list.txt'",
+            "'img_list' : '../../examples/apps/face_detect/FDDB/FDDB_list.txt'",
             "'save_result_txt' : 'face_results.txt'",
             "'save_result_imgdir' : 'face_outputs'"
             ]

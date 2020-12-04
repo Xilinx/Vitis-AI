@@ -22,14 +22,14 @@ Activate Conda Environment
 Setup the Environment
 
   ```sh
-  source /workspace/alveo/overlaybins/setup.sh
+  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning).
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
   ```sh
-  cd  ${VAI_ALVEO_ROOT}/examples/caffe
+  cd  ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
   python -m ck install package:imagenet-2012-aux
@@ -54,10 +54,10 @@ Resize all the images to a common dimension
 
 Run through a sample end to end caffe classification example using the following steps that demonstrates preparing and deploying a trained Caffe model for FPGA acceleration using Xilinx Vitis-AI.
 
-The following example uses the *googlenet* model. You can try the flow with also the other models found in `${VAI_ALVEO_ROOT}/examples/caffe/models` directory.
+The following example uses the *googlenet* model. You can try the flow with also the other models found in `${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models` directory.
 
   ```sh
-  cd ${VAI_ALVEO_ROOT}/examples/caffe 
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe 
   ``` 
 
 #### Prepare the model for inference

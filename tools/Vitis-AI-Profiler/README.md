@@ -17,73 +17,39 @@ Running on devices, take the responsibility for data collection
 - vaiprofiler
 Running on a PC or local server take responsibility for analyzation and visualization
 
+## What's New
+### v1.3 
+- Use Vitis Analyzer 2020.2 as default GUI
+- Support profiling for Vitis-AI python applications
+- Fix various vaitrace bugs
+
 ## Vitis AI Profiler Architecture
 <div align="center">
-<table border="1">
-    <tbody style="text-align: center;">
-    <tr>
-        <th>vaitrace</th>
-        <th>vaiprofiler</th>
-    </tr>
-    <tr>
-        <td>Simple to use, the same interface with the classical Linux profiling tools (strace and ltrace)</td>
-        <td>A web application that could be easily deployed(need python as a run-time)</td>
-    </tr>
-    <tr>
-        <td>Based on Linux trace infrastructures (Ftrace/Kprobe/Uprobe)</td>
-        <td>Compatible with Windows(need WSL2)/Linux</td>
-    </tr>
-    <tr>
-        <td>Collecting data of Vitis AI library and recording to a .xat format file</td>
-        <td>Upload the .xat file</td>
-    </tr>
-    <tr>
-        <td>Rich and flexible features that can be configured</td>
-        <td>Auto analyze and show the report</td>
-    </tr>
-    </tbody>
-</table>
 <br></br>
-<img width="800px" src="img/arch.png"/>
+<img width="800px" src="img/arch_v1.3.png"/>
 </div>  
 
 ## Why Vitis AI Profiler
 ### What's the benefit of this tool
 - An all-in-one profiling soution for Vitis-AI
-- Light-weight, software and hardware mixed profiling
 - Vitis-AI is a heterogeneous system, it's complicated, so that we need a more powerful and customized tool for profiling. The Vitis AI Profiler could be used for a application level profiling. For a AI application, there will be some parts running on hardward, for example, neural network computation usually runs on DPU, and also, there are some parts of the AI application running on CPU as a function that was implemented by c/c++ code like image pre-processing. This tool could help put the running status of all parts together. So that, we get a all-in-one profilling tool for Vitis-AI applications. 
 
 ### What Information Can Be Obtained from This Tool
 
-<p align="center"> Vitis AI Profiler GUI Overview<img src="img/timeline.png"></p>
+<p align="center"> Vitis AI Profiler GUI Overview<img src="img/vitis_analyzer_timeline1.PNG"></p>
 
-- A union timeline that shows running status of different compute units in FPGA
+From Vitia-AI v1.3, [Vitis Analyzer](https://www.xilinx.com/html_docs/xilinx2020_2/vitis_doc/jfn1567005096685.html) is the default GUI for vaitrace
 
-  - CPU: Function call stack graph and CPU busy/idle state, all AI Library relevant function calls will be highlighted on the timeline 
-  - For CPU tasks, different color indicates different thread, on the screenshot below, we can find five different colors that stand for five different threads
-    - All of these five threads are forked by the Vitis AI Library
-    - The first pink one that is in charge of loading and resizing picture from disk to memory
-    - The other four threads that are in charge of processing AI tasks, including per-processing post-processing and scheduling tasks for DPUs
-    <p align="center"><img src="img/cpu_view.png"></p>
-
-    - DPUs' Every task running will be show on the timeline
-    - DPU and other PL compute units can be supported(e.g. softmax or resize IP if exists)
-    - Mouse move over the block will highlight it and show the run time of this task
-  - For DPU tasks, the utilization of DPUs (in time dimension) could be see very clearly from this graph
-    <p align="center"><img src="img/cu_view.png"></p>
-
+- DPU Summary
+    <p align="center"><img src="img/vitis-analyzer-dpu-summary.PNG"></p>
 
 - Information about hardware on running
   - Memory Bandwidth: real-time AXI port traffic only available for edge devices now)
     - User can see details about the traffic(including read and write) of each AXI port
 - Real-time throughput for AI inference throughput(FPS)
     - More details will be shown while mouse moving over
-      <p align="center"><img src="img/fps_ddr_view.png"></p>
+      <p align="center"><img src="img/vitis-analyzer-fps.PNG"></p>
 
-- At the right half panel of the profiler window, there are two tabs which can be clicked on
-    -	Hardware information about hardware platform, and if the target platform is zynq MPSoC DPU hardware information could be found here also
-    -	A series of key performance indicator of CPUs and DPUs, including CPU/DPU utilization and DPU average latency for tasks
-    <p align="center"><img  width="300px" src="img/info_table.png"></p>
 
 ## Get Started with Vitis AI Profiler
 -	System Requirements:
@@ -91,33 +57,10 @@ Running on a PC or local server take responsibility for analyzation and visualiz
         - Support Zynq MPSoC (DPUCZD series)
         - Support Alveo (DPUCAH series)
     - Software:
-        - Support VART v1.2+
-        - Support Vitis AI Library v1.2+
+        - Support VART v1.3+
+        - Support Vitis AI Library v1.3+
 
 - Installing:
-    - Deploy the web server (Vitis AI Profiler) on PC or local server, setting up this web server doesn't depend on Vitis AI docker image. It's recommend to deploy this out the docker container.
-        1. Clone the Vitis AI project from github repo 
-           ```bash
-           # cd /path-to-vitis-ai/Vitis-AI-Profiler
-           ```
-        2. Requirements: 
-            - Python 3.6+
-            - Flask which you can get from 
-              ```bash
-              # pip3 install --user flask
-              ```
-        3. Start the web Server on PC or Local Network Server 
-            ```bash
-            # python3 vaiProfiler.py
-            ```
-           By default (run with no argument) the IP address is 127.0.0.1(localhost) and port number is 8008, user can access the web page by http://localhost:8008.  
-           To change the port number or IP address, these options could be use:  
-	         ```
-	         --ip ip_address
-	         --port port_number  
-	         ```
-	         For example: __python3 vaiProfiler.py --port 8009__ will deploy this web server to http://localhost:8009
-
     -	Preparing debug environment for vaitrace in MPSoC platform  
         These steps are _not_ required for Vitis AI prebuilt board images for ZCU102 & ZCU104 https://github.com/Xilinx/Vitis-AI/tree/master/VART#setting-up-the-target   
 
@@ -165,50 +108,8 @@ Running on a PC or local server take responsibility for analyzation and visualiz
            --network=host \
 
       ```
-    -	Installing vaitrace
-        1.	Install vitis-ai-runtime package, vaitrace will be installed into /usr/bin/xlnx/vaitrace
-        2.	Create a symbolic link of vaitrace.py for ease of use
-        ```bash
-            # ln -s /usr/bin/xlnx/vaitrace/vaitrace.py /usr/bin/vaitrace
-        ```
+      Due to an issue of overlay-fs, to support all the features of Vitis-AI Profiler in docker environment, it requires a linux kernel release v4.8 or higher on your host machine, see [here](https://lore.kernel.org/patchwork/patch/890633/)
 
-
-- Starting trace with vaitrace  
-Here use the 'test_performance' program of Vitis AI Library’s yolo_v3 sample as an example
-    - Setup Vitis_AI_Library and prepare test images, see [here](https://github.com/Xilinx/Vitis-AI/blob/master/Vitis-AI-Library/README.md) 
-    - Vaitrace requires root permission
-    ```bash
-        # sudo bash
-    ```
-    - Entry Vitis-AI-Library yolov3 sample directory
-    ```bash
-        # cd /workspace/Vitis-AI-Library/overview/samples/yolov3 # for Alveo docker
-        # cd ~/Vitis-AI-Library/overview/samples/yolov3 # for edge boards
-    ```  
-    - See readme in sample directory and the test command is
-      ```bash
-      # vaitrace -t 10 -o ~/trace_yolo_v3.xat ./test_performance_yolov3 yolov3_voc ./test_performance_yolov3.list
-      ```
-      1. The first argument [-t 5] stands for vaitrace tracing for 5 seconds
-      2. The second argument [-o ~/trace_yolo_v3.xat] stands for saving trace data to home directory and named as trace_yolo_v3.xat, if no specified, the tracing data file(.xat) will be saved to the same directory with the executable file
-      3. The rest parts of above command is the target command to run
-      4. Copy .xat from home directory to your PC (via scp or nfs)
-
-- Uploading:
-    - Open the Vitis AI Profiler with your browser by default URL is http://127.0.0.1:8008
-    - Click 'Browse...' button to select the .xat file then click 'Upload'  
-       <p align="center"><img width="500px" src="img/upload.png"></p>
-
-    - After a while, it jumps to profiler page, there are four parts on the profiler page
-      1. Timeline  
-      The timeline is categorized by hardware components users can tell hardware utilization with just a single glance. All Vitis AI relative tasks are high-lighted, and the other progress are filtered out.  
-      For CPU tasks in timeline, different color indicates different thread, click on color block in the timeline it shows the details in the tree-grid table below
-      2. Throughtput  
-      Show real-time Vitis AI Library inference FPS
-      3. DDR memory controller traffic, available for Zynq MPSoC only  
-      Total AXI read and write traffic via DDR controller port S1-S5, S0 will not be connect to DPU, so S0 be ignored
-      4. Information Table  
-      Show CPU/Memory/DPU relative information
 
 
 ## Vaitrace Usage
@@ -222,9 +123,33 @@ usage: Xilinx Vitis AI Trace [-h] [-c [CONFIG]] [-d] [-o [TRACESAVETO]] [-t [TIM
   -c [CONFIG]       Specify the configuration file
   -o [TRACESAVETO]  Save trace file to
   -t [TIMEOUT]      Tracing time limitation
-  -v                Show version
+  --va              Generate trace data for Vitis Analyzer(Default format)
+  --xat             Generate trace data in .xat(Only available for Zynq devices)
+
 ```
-#### Frequently-used arguments
+### Get Start with vaitrace  
+Here use the 'test_performance' program of Vitis AI Library’s yolo_v3 sample as an example:
+  - Setup Vitis_AI_Library and prepare test images, see [here](https://github.com/Xilinx/Vitis-AI/blob/master/Vitis-AI-Library/README.md) 
+  - Vaitrace requires root permission
+  ```bash
+      # sudo bash
+  ```
+  - Entry Vitis-AI-Library yolov3 sample directory
+  ```bash
+      # cd /workspace/Vitis-AI-Library/overview/samples/yolov3 # for Alveo docker
+      # cd ~/Vitis-AI-Library/overview/samples/yolov3 # for edge boards
+  ```  
+  - See readme in sample directory and the test command is
+    ```bash
+    # vaitrace -t 20 ./test_performance_yolov3 yolov3_voc ./test_performance_yolov3.list
+    ```
+    1. The first argument [-t 20] stands for vaitrace tracing for 20 seconds
+    2. The rest parts of above command is the target command to run
+    3. Several .csv files(vart_trace.csv/profile_summary.csv ...) and xclbin.ex.run_summary will be generated
+    4. Copy all .csv files and xclbin.ex.run_summary from working directory to your PC (via scp or nfs)
+    5. Open the xclbin.ex.run_summary by Vitis Analyzer: File -> Open Summary
+
+### Frequently-used arguments
   - cmd: cmd is your executable program of vitis-ai that want to be traced  
 
   -	-t  control the tracing time(in seconds) starting from the [cmd] being launched, default value is 3, if no -t is specified, the tracing will stop after [cmd] running for 3 seconds, [cmd] will continue to run as normal, but tracing data collecting will be stop  
@@ -234,9 +159,11 @@ usage: Xilinx Vitis AI Trace [-h] [-c [CONFIG]] [-d] [-o [TRACESAVETO]] [-t [TIM
     
   -	-o  where to save trace file (.xat), by default, the .xat file will be saved to current working directory, and be named as the same as executable program plus .xat as suffix
   -	-c  users can start a trace with more custom options by writing these a json  format configuration file and specify the configuration by -c, details of configuration file will be explained in the next section
+  - --va generate trace data for Vitis Analyzer, this option is enabled by default
+  - --xat generate trace data in .xat, the .xat can be opened by the leagcy web-based Vitis-AI Profiler, this option is disabled by default
   -	Others arguments are used for debug
 
-#### Configuration
+### Configuration
 Another way to launch a trace is to save all necessary information for vaitrace into a configuration file then use vaitrace -c [cfg_name.json]
 
 - Configuration priority: Configuration File > Command Line > Default
@@ -268,17 +195,7 @@ Another way to launch a trace is to save all necessary information for vaitrace 
     |  trace_custom | | list_of_string | trace_custom	list	The list of functions to be traced that are implemented by user. For the name of function, naming space are supported. You can see an example of using custom trace function later in this document|
 		
 
-## Vitis AI Profiler Usage
-### Manage uploaded .xat files:
-Click on [Manage Uploaded Files] on front-page, that we can see a file management page, that we can find uploaded .xat files:
-  - All items are ranked by uploaded time, so that files could find easily
-  - Click on the ID number will jump to the report 
-  - Click on the file name can download the uploaded .xat file
-  - Click on the [x] will remove the file from server
-  <p align="center"><img width="800px" src="img/manage_xat.png"></p>
-
-
-## Example of VART based program profiling:
+### Example of VART based program profiling:
 - Preparing 
   ```bash
   # cd path-to-vart-resnet50-samples
@@ -326,6 +243,65 @@ Click on [Manage Uploaded Files] on front-page, that we can see a file managemen
   ```
   note: vaitrace requires root permission
 
-- Upload trace_vart_resnet50.xat to Vitis Ai Profiler and check the report
+- Upload csv files and xclbin.ex.run_summary and open the xclbin.ex.run_summary in Vitis Analyzer 2020.2
 
-  <p align="center"><img src="img/performance_resnet50_vart.png"></p>
+### Example of profiling VART based python application
+- Preparing 
+  ```bash
+  # cd path-to-vart-resnet50_mt_py sample
+  ```
+- Modifing code: we are about to profile Vitis-AI and some code of resnet50.py need to be changed
+  1. Improt vai_tracepoint from vaitrace_py
+  2. Add @vai_tracepoint as decorator to functions that we want to trace
+  3. Uncomment CPUCalcSoftmax and TopK
+  
+  ```diff
+  --- a/examples/VART/samples/resnet50_mt_py/resnet50.py
+  +++ b/examples/VART/samples/resnet50_mt_py/resnet50.py
+  @@ -25,6 +25,7 @@ import math
+   import threading
+   import time
+   import sys
+  +from vaitrace_py import vai_tracepoint
+
+   """
+   Calculate softmax
+  @@ -33,7 +34,7 @@ size: data size
+   return: softamx result
+   """
+
+  +@vai_tracepoint
+   def CPUCalcSoftmax(data, size):
+       sum = 0.0
+       result = [0 for i in range(size)]
+  @@ -56,7 +57,7 @@ datain: data result of softmax
+   filePath: filePath in witch that records the infotmation of kinds
+   """
+
+  +@vai_tracepoint
+   def TopK(datain, size, filePath):
+
+       cnt = [i for i in range(size)]
+  @@ -136,9 +137,9 @@ def runResnet50(runner: "Runner", img, cnt):
+           """softmax&TopK calculate with batch """
+           """Benchmark DPU FPS performance over Vitis AI APIs execute_async() and wait() """
+           """Uncomment the following code snippet to include softmax calculation for model<E2><80><99>s end-to-end FPS evaluation """
+  -        #for j in range(runSize):
+  -        #    softmax = CPUCalcSoftmax(outputData[0][j], pre_output_size)
+  -        #    TopK(softmax, pre_output_size, "./words.txt")
+  +        for j in range(runSize):
+  +            softmax = CPUCalcSoftmax(outputData[0][j], pre_output_size)
+  +            TopK(softmax, pre_output_size, "./words.txt")
+
+           count = count + runSize
+   """
+   ```
+  - Use __python3 -m vaitrace_py__ to start the trace
+   ```bash
+   # python3 -m vaitrace_py ./resnet50.py 2 resnet50.xmodel
+   ```
+  - Copy all .csv files and xclbin.ex.run_summary from working directory to you PC or Server
+  - Use Vitis Analyzer 2020.2 to open xclbin.ex.run_summary
+
+### Example of Profiling DPU together with HLS/OpenCL Kernels:
+tbd

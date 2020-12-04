@@ -17,17 +17,9 @@
 
 
 import os
-import re
-import csv
 import sys
-import string
 import time
-import argparse
-import json
 import signal
-import platform
-import gzip
-import pickle
 import time
 import logging
 from subprocess import Popen, PIPE
@@ -38,7 +30,14 @@ import vaitraceCfgManager
 import vaitraceSetting
 
 
+def handler(signum, frame):
+    logging.info("Killing process...")
+    logging.info("Processing trace data, please wait...")
+
+
 def run(globalOptions: dict):
+    signal.signal(signal.SIGINT, handler)
+    signal.signal(signal.SIGTERM, handler)
     options = globalOptions
 
     if options.get('cmdline_args').get('bypass', False):
@@ -78,6 +77,6 @@ def run(globalOptions: dict):
 
     collector.stop()
     tracer.stop()
-    proc.wait()
+    # proc.wait()
 
     tracer.process(collector.getData())

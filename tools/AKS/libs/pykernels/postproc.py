@@ -28,6 +28,7 @@ class FDDBFaceDetectPostProc:
     self.results_txt    = self.params.get('save_result_txt', '')
     self.results_imgdir = self.params.get('save_result_imgdir', '')
 
+    assert os.path.exists(self.imglistfile), "{0} doesn't exist".format(self.imglistfile)
     self.all_outputs = {}
 
   # inputs are in the order [bb, pixel_conv]

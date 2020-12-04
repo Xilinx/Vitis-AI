@@ -23,22 +23,22 @@
 #include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
 
-class DetectionImreadPre : public AKS::KernelBase
+class DetectionPreproc : public AKS::KernelBase
 {
   public:
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in,
-           std::vector<AKS::DataDescriptor*> &out,
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams);
+        std::vector<AKS::DataDescriptor*> &in,
+        std::vector<AKS::DataDescriptor*> &out,
+        AKS::NodeParams* nodeParams,
+        AKS::DynamicParamValues* dynParams);
 };
 
 extern "C" { /// Add this to make this available for python bindings
 
-AKS::KernelBase* getKernel (AKS::NodeParams *params)
-{
-  return new DetectionImreadPre();
-}
+  AKS::KernelBase* getKernel (AKS::NodeParams *params)
+  {
+    return new DetectionPreproc();
+  }
 
 }//externC
 
@@ -101,15 +101,14 @@ void letterBoxImage(cv::Mat &inImage, int resizeH, int resizeW, cv::Mat& outImag
     fprintf (fp1, "%f\n", tmp[h]);
   fclose(fp1);
 #endif
-
 }
 
 
-int DetectionImreadPre::exec_async (
-           std::vector<AKS::DataDescriptor*> &in,
-           std::vector<AKS::DataDescriptor*> &out,
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams)
+int DetectionPreproc::exec_async (
+    std::vector<AKS::DataDescriptor*> &in,
+    std::vector<AKS::DataDescriptor*> &out,
+    AKS::NodeParams* nodeParams,
+    AKS::DynamicParamValues* dynParams)
 {
   /// Get input and output data shapes
   /// Input could be batch array or batch of images
@@ -144,7 +143,7 @@ int DetectionImreadPre::exec_async (
     else {
       inHeight = inShape[1];
       inWidth  = inShape[2];
-      int nInElemsPerImg  = inChannel * inHeight * inWidth;
+      int nInElemsPerImg  = b * inChannel * inHeight * inWidth;
       inData   = in[0]->const_data<uint8_t>() + nInElemsPerImg;
     }
 
@@ -184,5 +183,5 @@ int DetectionImreadPre::exec_async (
 
   /// Push back output
   out.push_back(outDD);
-  return -1; /// No wait
+  return 0;
 }

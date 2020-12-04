@@ -25,11 +25,8 @@ using namespace dptfssd;
 class TFSSDPost : public vitis::ai::TFSSDPostProcess {
  public:
   TFSSDPost(
-//      const std::vector<vitis::ai::library::InputTensor>& input_tensors,
-//      const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
       int inWidth, int inHeight,float conf_scale, float loc_scale,
       const vitis::ai::proto::DpuModelParam& config);//,
-//      const vitis::ai::DpuMeta& dpumeta);
   virtual ~TFSSDPost();
 
   virtual TFSSDResult ssd_post_process(int8_t* conf, int8_t* loc,unsigned int idx) override;

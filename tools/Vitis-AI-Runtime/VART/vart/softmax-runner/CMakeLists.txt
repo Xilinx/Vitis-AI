@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
-add_library(${COMPONENT_NAME} SHARED src/softmax_runner.cpp src/softmax_runner.hpp)
+add_library(${COMPONENT_NAME} SHARED src/softmax_runner.cpp include/vart/softmax_runner.hpp)
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 target_link_libraries(${COMPONENT_NAME} ${PROJECT_NAME}::runner ${PROJECT_NAME}::mem-manager dpu-controller)
 target_include_directories(${COMPONENT_NAME} PUBLIC
@@ -31,6 +31,13 @@ install(
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   )
+foreach(PUBLIC_HEADER
+    vart/softmax_runner.hpp)
+  get_filename_component(HEADER_PATH ${PUBLIC_HEADER} DIRECTORY)
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/${PUBLIC_HEADER}
+    COMPONENT base
+    DESTINATION include/${HEADER_PATH})
+endforeach()
 
 add_executable (test_softmax_runner test/test_softmax_runner.cpp)
 target_link_libraries (test_softmax_runner runner ${COMPONENT_NAME} ${PROJECT_NAME}::util)
