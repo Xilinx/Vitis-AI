@@ -78,11 +78,12 @@ $ bash ./bash.sh tvm.ci_vai_1x
 # Now inside docker...
 $ conda activate vitis-ai-tensorflow
 ```
-The installation may be verified inside the docker image by importing the following packages in python3
+The installation may be verified inside the docker image by importing the following packages in python3. Be sure to import pyxir before importing the TVM package.
+
 ```sh
 $ python3
-$ import tvm
 $ import pyxir
+$ import tvm
 ```
 The provided docker image can be used to compile models for the cloud and for the edge targets. 
 
