@@ -119,8 +119,8 @@ Use ctrl+C to exit the Neptune server.
 
 ### Other
 
-* **xstream.py (located at vai/dpuv1/rt/xstream.py)**: Defines the xstream communication for Neptune nodes ([documentation](../../docs/xstream.md))
-* **xsnodes (located at vai/dpuv1/rt/xsnodes/)**: Contains nodes for services in Neptune (documentation located at vai/dpuv1/rt/xsnodes/README.md)
+* **xstream.py (located at /opt/vitis_ai/conda/envs/vitis-ai-neptune/lib/python3.6/site-packages/vai/dpuv1/rt/xstream.py)**: Defines the xstream communication for Neptune nodes ([documentation](../../docs/xstream.md))
+* **xsnodes (located at /opt/vitis_ai/conda/envs/vitis-ai-neptune/lib/python3.6/site-packages/vai/dpuv1/rt/xsnodes/)**: Contains nodes for services in Neptune (documentation located at /opt/vitis_ai/conda/envs/vitis-ai-neptune/lib/python3.6/site-packages/vai/dpuv1/rt/xsnodes/README.md)
 
 ## Testing
 
