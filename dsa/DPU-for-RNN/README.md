@@ -97,10 +97,9 @@ The DPU for RNN features are:
     |     |     |---- dpu4rnn_imp.hpp
 
 ##### Quick Start from examples
-1. Download dependent files from XCD machine: models and packages.
+1. Download dependent model files from XCD machine.
     ```
-    $cp -r /group/dphi_edge/vai-1.3/dpu-for-rnn/models <Your_Path>/dsa/DPU-for-RNN/
-    $cp -r /group/dphi_edge/vai-1.3/dpu-for-rnn/package <Your_Path>/dsa/DPU-for-RNN/
+    $scp -r xcdl190074:/group/dphi_edge/vai-1.3/dpu-for-rnn/models <Your_Path>/dsa/DPU-for-RNN/
     ```
 2. Build rnn docker based on vitis-ai and Launch the docker image.
     ```    
@@ -110,21 +109,18 @@ The DPU for RNN features are:
     $cd ../..; docker build --build-arg BASE_IMAGE=<Vitis AI Docker Image> -f dsa/DPU-for-RNN/Dockerfile.rnn -t <YOUR RNN Docker Image>  .
 
     e.g.:
-    $cd ../..; docker build --build-arg BASE_IMAGE="xdock:5000/vitis-ai-gpu:1.3.343" -f dsa/DPU-for-RNN/DockerfileCPU.rnn -t xdock:5000/vitis-ai-gpu-rnn:1.3.343 . 
+    $cd ../..; docker build --build-arg BASE_IMAGE="xdock:5000/vitis-ai-gpu:1.3.343" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xdock:5000/vitis-ai-gpu-rnn:1.3.343 . 
 
     $cd <Your_Path>/dsa/DPU-for-RNN/;bash docker_run.sh <YOUR RNN Docker Image>
     ```
-3. Install dependent packages.
     ```
-    $cd scripts
-    $source install.sh
-    ```
-4. Setup the Alveo U25 (or U50LV)
+3. Setup the Alveo U25 (or U50LV)
     ``` 
+    $cd scripts
     $source setup_u25.sh # Alveo U25
     $source setup_u50lv.sh # Alveo U50LV
     ```
-5. Execute commands as described in application README files. It indicates that your runs get correct output if it reports the same accurcy number as provided in readme file. 
+4. Execute commands as described in application README files. It indicates that your runs get correct output if it reports the same accurcy number as provided in readme file. 
     - [README: Customer Satisfaction](app/customer_satisfaction/README.md)
     - [README: Imdb Sentiment Detection](app/imdb_sentiment_detection/README.md)
     - [README: Open Information Extraction](app/open_information_extraction/README.md)
