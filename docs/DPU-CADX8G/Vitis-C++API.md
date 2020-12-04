@@ -62,7 +62,7 @@ auto out_dims = outputTensors[0]->get_dims();
  - `inputTensors` : Onput tensor object
  - `outputTensors` : Output tensor object
  - `in_dims` : Input Dimensions
- - `out_dims` : Output Dimensions 
+ - `out_dims` : Output Dimensions
 
 ## Create Input and Output Tensor Buffers
 
@@ -101,7 +101,7 @@ float *imageInputs = new float [inSize * batchSize];
 // Create Output buffer for FPGA output
 float *FCResult = new float [outSize * batchSize];
 
-// Create Pointers to Inputs and Outputs 
+// Create Pointers to Inputs and Outputs
 std::vector<vitis::ai::TensorBuffer*> inputsPtr, outputsPtr;
 // Create Batch Tensor
 std::vector<std::shared_ptr<ai::Tensor>> batchTensors;
@@ -112,22 +112,22 @@ std::vector<std::shared_ptr<ai::Tensor>> batchTensors;
 
 // In/Out tensor refactory for batch input/output
 batchTensors.push_back (
-                std::shared_ptr<ai::Tensor> ( 
+                std::shared_ptr<ai::Tensor> (
                   new ai::Tensor (
                     inputTensors[0]->get_name(),
-                    in_dims, 
+                    in_dims,
                     inputTensors[0]->get_data_type()
                   )
                 )
               );
-                
+
 inputs.push_back (
-          ai::CpuFlatTensorBuffer ( 
+          ai::CpuFlatTensorBuffer (
             imageInputs,
             batchTensors.back().get()
           )
         );
-        
+
 batchTensors.push_back (
                 std::shared_ptr<ai::Tensor> (
                   new ai::Tensor (
@@ -140,7 +140,7 @@ batchTensors.push_back (
 
 outputs.push_back (
           ai::CpuFlatTensorBuffer (
-            FCResult, 
+            FCResult,
             batchTensors.back().get()
           )
         );
@@ -163,7 +163,7 @@ Vitis-AI provides `execute_aync()` & `wait()` methods which supports asynchronou
 **Syntax**
 ```c++
 auto job_id = runner->execute_async (
-                          inputsPtr, 
+                          inputsPtr,
                           outputsPtr
                         );
 ```
@@ -183,14 +183,14 @@ auto job_id = runner->execute_async (
 **Syntax**
 ```c++
 runner->wait (
-        job_id.first, 
+        job_id.first,
         ign
       );
 ```
 
-***Inputs*** 
- - `job_id.first` : 
- - `ign` : Reserved (Ignore)  
+***Inputs***
+ - `job_id.first` :
+ - `ign` : Reserved (Ignore)
 
 ## Clear Tensors
 
@@ -203,4 +203,4 @@ outputs.clear();
 
 ## Reference
 
-- Refer to <a href="../examples/vitis_ai_alveo_samples/resnet50/src/main.cc">ResNet50 Classification Example</a> for use case of the C++ APIs. 
+- Refer to <a href="../../examples/DPU-CADX8G/vitis_ai_alveo_samples/resnet50/src/main.cc">ResNet50 Classification Example</a> for use case of the C++ APIs.

@@ -13,9 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Usage : 
-# source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
-# python graph_detect.py --xclbin /proj/sdxapps/users/abidk/repos/MLsuite/overlaybins/xdnnv3 --netcfg work.std_yolo_v2/compiler.json --weights work/weights.h5 --quantizecfg work/quantizer.json --images ../../tmp/val100/
 
 import os, signal, time, timeit, sys
 import logging
