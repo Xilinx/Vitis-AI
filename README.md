@@ -61,7 +61,7 @@ Two options are available for installing the containers with the Vitis AI tools 
     cd Vitis-AI
     ```
 
-#### Using Pre-build Docker
+#### Using Pre-built Docker
 
 Download the latest Vitis AI Docker with the following command. This container runs on CPU.  
 ```
