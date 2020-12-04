@@ -697,7 +697,7 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
   
 		ii. For zcu104, dpu_conf.vh modifications
 
-			1. Enable URAM
+			Enable URAM
 
 			//`define URAM_DISABLE
 			`define URAM_ENABLE
@@ -731,7 +731,7 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
   
   ![LIBRARY](./doc/6.14.png)
   
-8. prj_config file-Default set to support single configuration.
+8. prj_config file-Default set to support single configuration. The gui flow only support default configuration. if want to other configuration, please use command flow.
   
   ![prj_conf](./doc/prj_conf.png)
 
