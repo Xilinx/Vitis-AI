@@ -201,8 +201,7 @@ If you want to support video data in other formats, you need to install the rele
 
 1. Follow [Setup Alveo Accelerator Card with HBM for DPUCAHX8H/L](../../setup/alveo/u50_u50lv_u280/README.md) to set up the Alveo Card.
 
-2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
-as an example.
+2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50` as an example.
 ```
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
