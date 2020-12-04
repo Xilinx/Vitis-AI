@@ -100,8 +100,8 @@ In the host or docker, get to the shared Vitis AI git repository directory and u
 
 ~~~
 cd ./Vitis-AI/setup/alveo/u50_u50lv_u280
-wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.tar.gz -O alveo_xclbin-1.3.tar.gz
-tar xfz alveo_xclbin-1.3.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
+tar xfz alveo_xclbin-1.3.0.tar.gz
 ~~~
 
 </details>
