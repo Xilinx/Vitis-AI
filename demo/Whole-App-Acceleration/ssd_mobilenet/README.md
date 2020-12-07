@@ -29,4 +29,3 @@ conda activate vitis-ai-caffe
 - `make build && make -j`
 - Copy xmodel and config file from `/proj/sdxapps/users/anup/public_downlaod/model_ssd_mobilenet` or `/wrk/acceleration/users/anup/public_download/model_ssd_mobilenet`.
 - `./run.sh model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.prototxt model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.xmodel <image path>`
-
