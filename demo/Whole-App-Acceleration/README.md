@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Whole Application Acceleration: Accelerating ML Pre/Post-processing for Classification and Detection networks
 
 ## Introduction
