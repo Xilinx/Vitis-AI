@@ -109,6 +109,7 @@ conda activate vitis-ai-caffe
 
 ```sh
 # Setup env
+# Typically, <path-to-vitis-ai> is `/workspace`
 source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
@@ -305,6 +306,7 @@ Download a minimal validation set for [Imagenet2012](http://www.image-net.org/ch
 :pushpin: **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
 cd <path-to-vitis-ai>/tools/AKS
 # Activate conda env
 conda activate vitis-ai-caffe
@@ -323,6 +325,7 @@ We have provided a few kernels in the [aks/kernel_src](./kernel_src) directory a
 Use following commands to build these kernels and examples.
 
 ```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
 cd <path-to-vitis-ai>/tools/AKS
 
 # Buld kernels (Builds Common and DPUCAHX8H specific kernels)
@@ -389,6 +392,7 @@ conda activate vitis-ai-caffe
 python -m ck pull repo:ck-env
 python -m ck install package:imagenet-2012-val-min
 
+# Typically, <path-to-vitis-ai> is `/workspace`
 python <path-to-vitis-ai>/examples/DPU-CADX8G/caffe/resize.py ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min 224 224
 
 conda deactivate

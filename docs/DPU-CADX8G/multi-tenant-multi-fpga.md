@@ -22,6 +22,7 @@ Multiple Vitis-AI Runners may timeshare the same FPGA. The FPGA resource manager
 
 Example (on a system with 1 FPGA):
 ```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
 cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes
 
 ## On terminal 1:
@@ -41,6 +42,7 @@ An application process requests for an FPGA by passing a directory of available 
 
 Example (on a system with 1 U250 and 1 U200):
 ```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
 cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes
 
 ## In terminal 1:
@@ -64,6 +66,7 @@ E.g., there are 4 SLRs on an Alveo U250. This allows up to 4 different ML models
 
 Example:
 ```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
 cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes
 ./run.sh -t multinet
 ```

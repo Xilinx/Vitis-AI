@@ -1,6 +1,6 @@
 # Jupyter Notebooks
 
-The Jupyter Notebooks provide tutorials on how to run ML inference with Xilinx Vitis-AI.  
+The Jupyter Notebooks provide tutorials on how to run ML inference with Xilinx Vitis-AI.
 Jupyter is preinstalled in the Xilinx Vitis-AI Docker image.
 
 ## Notebook Setup
@@ -9,6 +9,7 @@ Follow these instructions from inside a running container.
 
 1. Setup the environment
   ```sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
   source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
@@ -27,7 +28,7 @@ Follow these instructions from inside a running container.
   # Get the necessary models
   python getModels.py
   python replace_mluser.py --modelsdir models
-  
+
   # For Tensorflow Notebooks
   cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/tensorflow
   conda activate vitis-ai-tensorflow
@@ -39,13 +40,13 @@ Follow these instructions from inside a running container.
   # Get the necessary models
   python getModels.py
   ```
-  
+
 3. Launch Jupyter notebook server
   ```sh
   cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/notebooks
   jupyter notebook --no-browser --ip=0.0.0.0 --NotebookApp.token='' --NotebookApp.password=''
   ```
-  
+
 4. Open a broswer, and navigate to one of:
   - `<yourpublicipaddress>:8888`
   - `<yourdns>:8888`

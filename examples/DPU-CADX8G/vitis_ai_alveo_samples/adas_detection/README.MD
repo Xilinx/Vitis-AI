@@ -6,12 +6,13 @@ This is adas_detection example and it uses unified vitis-ai APIs to run on alveo
 
 Activate Conda Environment
   ```sh
-  conda activate vitis-ai-caffe 
+  conda activate vitis-ai-caffe
   ```
 
 Setup the Environment
 
   ```sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
   source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
@@ -22,7 +23,7 @@ Setup the Environment
   ```
 
 ### Run
- 
+
   ```sh
   ./run.sh <video path>
   ```
@@ -31,5 +32,5 @@ Input: avi video path
 
 Output: Detection results saved as jpg images inside output folder in current path
 
-> **Note:** Application assumes `vitis-ai-caffe` conda is already activated  
+> **Note:** Application assumes `vitis-ai-caffe` conda is already activated
 

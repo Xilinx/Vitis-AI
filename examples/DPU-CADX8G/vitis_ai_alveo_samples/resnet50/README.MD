@@ -12,6 +12,7 @@ Activate Conda Environment
 Setup the Environment
 
   ```sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
   source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
@@ -29,5 +30,5 @@ Input: It takes input as jpg image from image folder in current path
 
 Output: classification results display on console window
 
-> **Note:** Application assumes `vitis-ai-caffe` conda is already activated  
+> **Note:** Application assumes `vitis-ai-caffe` conda is already activated
 
