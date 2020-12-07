@@ -237,6 +237,7 @@ vector<vector<float>> Detector::Detectv4(string file, int classes, vector<float>
 
   input_layer->set_cpu_data(img.data);
   net_->Forward();
+  free_image(img);
   /* Copy the output layer to a std::vector */
   vector<vector<float>> boxes;
   vector<int> scale_feature;
@@ -380,6 +381,7 @@ int main(int argc, char** argv) {
     if (file_type == "image") {
       // CHECK(img) << "Unable to decode image " << file;
       cv::Mat img = cv::imread(image_root + "/" + file, -1);
+      LOG(INFO) << "inference " << file << endl;
       int w = img.cols;
       int h = img.rows;
       vector<vector<float>> results;
@@ -421,13 +423,14 @@ int main(int argc, char** argv) {
           else {
             LOG(FATAL) << "Unknown mode: " << mode;
           }  
-          LOG(INFO) << file << " " << labels[results[i][4]] << " " << results[i][6 + results[i][4]]
-                    << " " << xmin << " " << ymin << " " << xmax << " " << ymax << endl;
+          // LOG(INFO) << file << " " << labels[results[i][4]] << " " << results[i][6 + results[i][4]]
+          //          << " " << xmin << " " << ymin << " " << xmax << " " << ymax << endl;
         }
       }
       if (mode == "demo") {        
         cv::imwrite("demo/" + file, img);
       }
+      results.clear();
 
     } else {
       LOG(FATAL) << "Unknown file_type: " << file_type;
