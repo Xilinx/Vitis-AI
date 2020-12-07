@@ -39,3 +39,5 @@ if __name__ == "__main__":
     for Dir, subDirs, files in os.walk(args.modelsdir):
         success = [substitute(os.path.join(Dir, f), "/home/mluser", args.rootdir) for f in files if f.endswith(".prototxt")]
         success = [substitute(os.path.join(Dir, f), "/opt/ml-suite/examples/", vai_alveo_root+"/DPU-CADX8G/") for f in files if f.endswith(".prototxt")]
+        success = [substitute(os.path.join(Dir, f), "/workspace/alveo/examples/", vai_alveo_root+"/DPU-CADX8G/") for f in files if f.endswith(".prototxt")]
+
