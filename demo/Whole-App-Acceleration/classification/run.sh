@@ -101,18 +101,18 @@ export XBLAS_EMIT_PROFILING_INFO=1
 export XBLAS_EMIT_PROFILING_INFO=$VERBOSE
 export XDNN_VERBOSE=$VERBOSE
 
-if [  "$TEST" == "test_classify_jpeg"  ]; then 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../libs/libjfif	
+if [  "$TEST" == "test_classify_jpeg"  ]; then
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../libs/libjfif
   if [ -z ${DIRECTORY+x} ]; then
-    DIRECTORY=dog.jpg  
-  elif [ "$CONVERT_IMAGES" -eq 1 ] ; then  
+    DIRECTORY=dog.jpg
+  elif [ "$CONVERT_IMAGES" -eq 1 ] ; then
     ls $DIRECTORY | xargs -n1 -i ../utils/convert.sh $DIRECTORY {} 50
-    DIRECTORY=$DIRECTORY/converted_images 
+    DIRECTORY=$DIRECTORY/converted_images
   else
 	DIRECTORY=$DIRECTORY/converted_images
-  fi	
+  fi
   XCLBIN=/opt/xilinx/overlaybins/xdnnv3/xplusml/classification/with_jpeg_decoder
-else      	
+else
   XCLBIN=/opt/xilinx/overlaybins/xdnnv3/xplusml/classification/wo_jpeg_decoder
 fi
 if [ -d $XCLBIN ]; then
@@ -122,11 +122,11 @@ else
   exit 1
 fi
 /opt/xilinx/xrt/bin/xbutil program -p $XCLBIN/xdnn_v3_96x16_2pe_8b_9mb_bank03.xclbin
-WEIGHTS=../../../demo/DPU-CADX8G/deployment_modes/data/${MODEL}_data.h5
+WEIGHTS=../../../examples/DPU-CADX8G/deployment_modes/data/${MODEL}_data.h5
 DSP_WIDTH=96
 
-NETCFG=../../../demo/DPU-CADX8G/deployment_modes/data/${MODEL}_8b_${COMPILEROPT}.json
-QUANTCFG=../../../demo/DPU-CADX8G/deployment_modes/data/${MODEL}_8b_xdnnv3.json
+NETCFG=../../../examples/DPU-CADX8G/deployment_modes/data/${MODEL}_8b_${COMPILEROPT}.json
+QUANTCFG=../../../examples/DPU-CADX8G/deployment_modes/data/${MODEL}_8b_xdnnv3.json
 
 if [ ! -z $CUSTOM_NETCFG ]; then
   NETCFG=$CUSTOM_NETCFG
@@ -181,8 +181,8 @@ fi
 if [ "$TEST" == "test_classify" ]; then
     TEST=test_classify_pp.py
 else
-    TEST=test_classify.py	
-fi  
+    TEST=test_classify.py
+fi
   if [ -z ${DIRECTORY+x} ]; then
     DIRECTORY=dog.jpg
   fi
