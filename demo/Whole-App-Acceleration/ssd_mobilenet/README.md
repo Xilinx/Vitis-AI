@@ -1,8 +1,16 @@
 ## Tensorflow SSD-Mobilenet Model
+* This application can be run only on Alveo-U280 platform.
 
+## Table of Contents
+
+- [Introduction](#Introduction)
+- [Set Up the target platform](#Setup)
+- [Running the Application](#Running-the-Application)
+
+## Introduction
 The mobilenet-ssd model is a Single-Shot multibox Detection (SSD) network intended to perform object detection. Accelerated post-processing(Sort and NMS) for ssd-mobilenet is provided and can only run on U280 board. In this application, software pre-process is used for loading input image, resize and mean subtraction.
 
-### Setup
+## Setup
 ```sh
 # Activate Conda Environment
 conda activate vitis-ai-caffe
@@ -16,7 +24,7 @@ conda activate vitis-ai-caffe
 - Download and extract xclbin tar. (XHD : `/proj/sdxapps/users/anup/public_downlaod/waa_system_u280_v1.3.0.tar.gz` or XSJ: `/wrk/acceleration/users/anup/public_download/waa_system_u280_v1.3.0.tar.gz`)
 - `sudo tar -xf waa_system_u280_v1.3.0.tar.gz -C /usr/lib/`
 
-### Running the Application
+## Running the Application
 - `cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/ssd_mobilenet/`
 - `make build && make -j`
 - Copy xmodel and config file from `/proj/sdxapps/users/anup/public_downlaod/model_ssd_mobilenet` or `/wrk/acceleration/users/anup/public_download/model_ssd_mobilenet`.
