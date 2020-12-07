@@ -80,12 +80,12 @@ Runtime packages on the board separately.**
   ## Running the application on ZCU102 board
  ### Run resnet50 without waa
   ```
-  cd ~/resnet50_waa
+  cd ~/resnet50_mt_py_waa
   python3 resnet50.py 4 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
   ```
  ### Run resnet50 with waa
  ```
-  cd ~/resnet50_waa
+  cd ~/resnet50_mt_py_waa
   env XILINX_XRT=/usr python3 resnet50_waa.py 4 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
 ```  
 
@@ -124,12 +124,12 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu
   ## 2. Commands to run on U50
  ### Run resnet50 without waa
   ```
-  cd ./resnet50_waa
+  cd ./resnet50_mt_py_waa
   /usr/bin/python3 resnet50.py 4 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
   ```
   ### Run resnet50 with waa
   ```
-  cd ./resnet50_waa
+  cd ./resnet50__mt_py_waa
   /usr/bin/python3 resnet50_waa.py 4 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel  
   ```
 
