@@ -1,8 +1,16 @@
 ## Tensorflow SSD-Mobilenet Model
+* This application can be run only on Alveo-U280 platform.
 
+## Table of Contents
+
+- [Introduction](#Introduction)
+- [Set Up the target platform](#Setup)
+- [Running the Application](#Running-the-Application)
+
+## Introduction
 The mobilenet-ssd model is a Single-Shot multibox Detection (SSD) network intended to perform object detection. Accelerated post-processing(Sort and NMS) for ssd-mobilenet is provided and can only run on U280 board. In this application, software pre-process is used for loading input image, resize and mean subtraction.
 
-### Setup
+## Setup
 ```sh
 # Activate Conda Environment
 conda activate vitis-ai-caffe
