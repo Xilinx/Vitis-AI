@@ -74,7 +74,7 @@ cd $VAI_ALVEO_ROOT/DPU-CADX8G/face_detect/
 ```
 Face detection on video using face_detection_320_320 model on FPGA and save results in folder output/.
 ```sh
-./test_video.sh face_detection example.mp4
+./test_video.sh face_detection <Path to video file>
 ```
 Face detection on video using face_detection_360_640 model on FPGA and save results in folder output/.
 ```sh
