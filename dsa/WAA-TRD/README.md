@@ -180,4 +180,4 @@ Note that first template parameter is resize INTERPOLATION type.
 
 // 2 - AREA Interpolation
 
- After modifying accel file please follow the section 4.3 to integrate new Pre-processing accelerator with DPU and run classification example.  
+ After modifying accel file please follow the section 4.4 to integrate new Pre-processing accelerator with DPU and run classification example.  

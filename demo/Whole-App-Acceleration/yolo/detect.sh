@@ -179,12 +179,12 @@ fi
 if [ -z ${DIRECTORY+x} ]; then
     DIRECTORY=${VAI_ALVEO_ROOT}/DPU-CADX8G/yolo/test_image_set/
 fi
-if [  "$TEST" == "test_detect_jpeg"  ]; then   
+if [  "$TEST" == "test_detect_jpeg"  ]; then
   ls $DIRECTORY | xargs -n1 -i ../utils/convert.sh $DIRECTORY {} 50
-  DIRECTORY=$DIRECTORY/converted_images 
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../libs/libjfif 
+  DIRECTORY=$DIRECTORY/converted_images
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../libs/libjfif
   XCLBIN=/opt/xilinx/overlaybins/xdnnv3/xplusml/yolo/with_jpeg_decoder
-else	
+else
   XCLBIN=/opt/xilinx/overlaybins/xdnnv3/xplusml/yolo/wo_jpeg_decoder
 fi
 if [ -d $XCLBIN ]; then

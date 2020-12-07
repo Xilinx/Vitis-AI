@@ -72,7 +72,8 @@ To get the pre-trained Caffe model, run the following command lines.
 
 ```
 cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
-python getModels.py
+python getModels.py && python replace_mluser.py --modelsdir models
+
 ```
 
 The U-Net model files would be located in '${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/U-Net' folder.
@@ -109,7 +110,9 @@ Also, it will generate sample output image in 'U-Net/test_output' sub-folder.
 To run the Caffemodel on FPGA, the Caffemodel need to be quantized using the following command.
 
 ```
-DECENT_DEBUG=1 vai_q_caffe quantize -model ./float/dummy_256.prototxt -weights ./float/unet_U373_256.caffemodel -input_blob "input_1" -method 1 -calib_iter 100
+DECENT_DEBUG=1
+vai_q_caffe quantize -model ./float/dummy_256.prototxt -weights ./float/unet_U373_256.caffemodel -input_blob "input_1" -method 1 -calib_iter 100
+
 ```
 
 ‘-method’ is the option for quantization, 0: Non-Overflow, 1: Min-Diff. The default is 1.
