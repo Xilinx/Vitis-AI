@@ -66,5 +66,5 @@ python run_ssd.py --prototxt xfdnn_auto_cut_deploy.prototxt --caffemodel quantiz
 
 ### Run Inference for a single image
 ```sh
-python run_ssd.py --prototxt xfdnn_auto_cut_deploy.prototxt --caffemodel quantize_results/deploy.caffemodel --labelmap_file labelmap_voc_19c.prototxt --image ./test_pic/000022.jpg
+python run_ssd.py --prototxt xfdnn_auto_cut_deploy.prototxt --caffemodel quantize_results/deploy.caffemodel --labelmap_file labelmap_voc_19c.prototxt --image Yogi.jpeg
 ```
