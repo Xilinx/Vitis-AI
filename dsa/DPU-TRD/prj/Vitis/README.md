@@ -732,7 +732,7 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
   
   ![LIBRARY](./doc/6.14.png)
   
-8. prj_config file-Default set to support single configuration. The gui flow only support default configuration. if want to other configuration, please use command flow.
+8. prj_config file-Default set to support single configuration. The gui flow only support default configuration. if want to other configuration, please use commandline flow.
   
   ![prj_conf](./doc/prj_conf.png)
 
