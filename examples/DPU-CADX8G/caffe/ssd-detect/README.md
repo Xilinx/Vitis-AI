@@ -24,7 +24,7 @@ Download VOC2007 dataset.
 ```sh
 # Download the data.
 cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/ssd-detect
-wget http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtest_06-Nov-2007.tar
+wget http://pjreddie.com/media/files/VOCtest_06-Nov-2007.tar
 # Extract the data.
 tar -xvf VOCtest_06-Nov-2007.tar
 #Generate ground truth file
