@@ -71,7 +71,7 @@ source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.1-r1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.0.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2020.2-r1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.0.tar.gz) and install it to the petalinux system.
 ```
 tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
@@ -201,7 +201,8 @@ If you want to support video data in other formats, you need to install the rele
 
 1. Follow [Setup Alveo Accelerator Card with HBM for DPUCAHX8H/L](../../setup/alveo/u50_u50lv_u280/README.md) to set up the Alveo Card.
 
-2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50` as an example.
+2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
+as an example.
 ```
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
@@ -215,8 +216,8 @@ cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
 tar -xzvf alveo_xclbin-1.3.0.tar.gz
 cd alveo_xclbin-1.3.0/U50lv-V3ME/1E300M
-sudo cp dpu.xclbin /usr/lib
-export XLNX_VART_FIRMWARE=/usr/lib/dpu.xclbin
+sudo cp dpu.xclbin /opt/xilinx/overlaybins/
+export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpu.xclbin
 ```
 Note that for `DPUCAHX8L`, please refer to [XBulter Installation](../../setup/alveo/DPU-CADX8G/packages) to install `XBulter`. And then add the following U50 and U50lv configurations into `/etc/xbutler/xbutler.config`.
 ```
