@@ -4,6 +4,34 @@ Currently 6 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_y
 
 `tiny_yolo_v2_voc` is trained on VOC 2007 Dataset (20 classes). All other networks are trained on COCO 2014 dataset (80 classes)
 
+
+## Getting COCO 2014 validation set and labels
+COCO validation set is large (>40K images and >6 GB in size), so each step below could be slow depending upon your network.
+
+> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+
+```sh
+cd $VAI_ALVEO_ROOT/DPU-CADX8G/yolo
+python -m ck pull repo:ck-env
+python -m ck install package:dataset-coco-2014-val
+# If asked for installation path, accept the default path
+wget -c https://pjreddie.com/media/files/coco/labels.tgz
+tar -xzf labels.tgz labels/val2014
+```
+
+Calculating mAP on >40K images could be taking a lot of time. So we can create a temporary val_set of 2000 images (or whatever you wish)
+
+```sh
+mkdir val2k
+find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | head -2000 | xargs cp -t val2k/
+```
+
+Also, copy a few images (~25 images) to `DPU-CADX8G/yolo/test_image_set` for calibration.
+```
+mkdir -p test_image_set
+find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xargs cp -t test_image_set/
+```
+
 ## Running the Application
  To run:
  1. `conda activate vitis-ai-caffe`
@@ -14,9 +42,9 @@ Currently 6 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_y
 
  4. Run it : `./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize`
     - Output results will be saved as text files as well as images in the directory `out_labels/`
- 
- 5. Familiarize yourself with the script usage by: `./detect.sh -h`  
-  
+
+ 5. Familiarize yourself with the script usage by: `./detect.sh -h`
+
   The key parameters are:
   - `-t TEST, --test TEST`  : Mode of execution. Valid options are :
     - `cpu_detect` : Run inference on Caffe with original FP32 model. You can use it to generate reference result.
@@ -57,32 +85,6 @@ Currently 6 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_y
   - `--profile  `   : Provides performance related metrics.
   - `-h, --help `   : Print this message
 
-## Getting COCO 2014 validation set and labels
-COCO validation set is large (>40K images and >6 GB in size), so each step below could be slow depending upon your network.
-
-> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
-
-```sh
-cd $VAI_ALVEO_ROOT/DPU-CADX8G/yolo
-python -m ck pull repo:ck-env
-python -m ck install package:dataset-coco-2014-val 
-# If asked for installation path, accept the default path
-wget -c https://pjreddie.com/media/files/coco/labels.tgz
-tar -xzf labels.tgz labels/val2014
-```
-
-Calculating mAP on >40K images could be taking a lot of time. So we can create a temporary val_set of 2000 images (or whatever you wish)
-
-```sh
-mkdir val2k
-find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | head -2000 | xargs cp -t val2k/
-```
-
-Also, copy a few images (~25 images) to `DPU-CADX8G/yolo/test_image_set` for calibration.
-```
-mkdir -p test_image_set
-find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xargs cp -t test_image_set/
-```
 
 ## Examples
 1. Object detection on test_images using yolo_v3_spp on Caffe and save results in folder `cpu_results/`.
@@ -136,7 +138,7 @@ These results are based on a random set of 5K images from COCO 2014 validation s
 
 You may get a different number based on your system performance.
 
-|Network | Input Resolution | mAP on Caffe (FP32) | mAP on FPGA (int8) | HW latency (ms) | peak throughput / PE (fps) | preproc latency (ms) | postproc latency (ms) | 
+|Network | Input Resolution | mAP on Caffe (FP32) | mAP on FPGA (int8) | HW latency (ms) | peak throughput / PE (fps) | preproc latency (ms) | postproc latency (ms) |
 |:-----:|:-----:|:-----:|:------:|:-----:|:-----:|:-----:|:------:|
 |yolo_v2          | 224x224 | 28.03 | 27.86 | 5.67 |  176.37 | 7.83 | 0.51 |
 |                 | 416x416 |38.75  |38.36| 12.86 | 77.76 | 9.32 |  1.90 |

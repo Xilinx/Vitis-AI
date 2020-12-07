@@ -1,17 +1,17 @@
-This directory containes examples for running Xilinx DPUCADX8G on Alveo platform. **DPUCADX8G**  is High Performance CNN processing engine designed for Xilinx Alveo-u200 and Alveo-u250 platforms. It was released as xDNNv3 as part of *ml-suite*. With **Vitis-AI**, Xilinx has integrated all the edge and cloud solutions under an unified API and toolset.
+This directory containes examples for running Xilinx DPUCADX8G on Alveo platform. **DPUCADX8G**  is High Performance CNN processing engine designed for Xilinx Alveo-u200 and Alveo-u250 platforms. With **Vitis-AI**, Xilinx has integrated all the edge and cloud solutions under an unified API and toolset.
 
 ## Setup for Alveo
-Targeting Alveo cards with Vitis-AI for AI workloads requires the installation of the following software components:  
+Targeting Alveo cards with Vitis-AI for AI workloads requires the installation of the following software components:
 
-* [Xilinx Run time(XRT)](https://github.com/Xilinx/XRT)  
+* [Xilinx Run time(XRT)](https://github.com/Xilinx/XRT)
 
-* Alveo Deployment Shells (DSAs) - it  can be downloaded from Getting Started tab of Alveo board product page on [xilinx.com](xilinx.com)  
- 
-* Xilinx Resource Manager (XRM) (xbutler)  
- 
-* Xilinx Overlaybins (Accelerators to Dynamically Load – binary programming files) 
- 
-While it is possible to install all the software components individually, a script has been provided to automatically install them in one-shot. 
+* Alveo Deployment Shells (DSAs) - it  can be downloaded from Getting Started tab of Alveo board product page on [xilinx.com](https://www.xilinx.com/products/boards-and-kits/alveo/u200.html#gettingStarted)
+
+* Xilinx Resource Manager (XRM) (xbutler)
+
+* Xilinx Overlaybins (Accelerators to Dynamically Load – binary programming files)
+
+While it is possible to install all the software components individually, a script has been provided to automatically install them in one-shot.
 
 ```sh
 cd <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/packages
@@ -20,7 +20,7 @@ sudo su
 ./install.sh
 ```
 Then power cycle the system.
-  
+
 ## Examples
 
  - [Jupyter Notebook Tutorials](../../../examples/DPU-CADX8G/notebooks/README.md)
@@ -32,34 +32,34 @@ Then power cycle the system.
    - [Caffe ImageNet Benchmark Models](../../../examples/DPU-CADX8G/caffe/README.md)
    - [Caffe VOC SSD Example](../../../examples/DPU-CADX8G/caffe/ssd-detect/README.md)
    - [Deployment Mode Examples](../../../examples/DPU-CADX8G/deployment_modes/README.md)
+   - [Face Detect](../../../examples/DPU-CADX8G/face_detect/README.md)
+   - [YOLO](../../../examples/DPU-CADX8G/yolo/README.md)
+   - [Other Examples](../../../examples/vitis_ai_alveo_samples)
 
  ## Advanced Applications
 
  - [AI Kernel Scheduler (AKS)](../../../tools/AKS/README.md)
  - [Neptune](../../../demo/neptune/README.md)
- - [Whole App Acceleration](apps/whole_app_acceleration/README.md)
- - [Face Detect](../../../examples/DPU-CADX8G/face_detect/README.md)
+ - [Whole App Acceleration](../../../demo/Whole-App-Acceleration/README.md)
 
-## References 
+## References
 - [Performance Whitepaper][]
-- **Watch:** [Webinar on Xilinx FPGA Accelerated Inference][] 
+- **Watch:** [Webinar on Xilinx FPGA Accelerated Inference][]
 
 
 ## Questions and Support
 - [FAQ][]
 
 
-[models]: docs/models.md
 [Amazon AWS EC2 F1]: https://aws.amazon.com/marketplace/pp/B077FM2JNS
 [Xilinx Virtex UltraScale+ FPGA VCU1525 Acceleration Development Kit]: https://www.xilinx.com/products/boards-and-kits/vcu1525-a.html
 [AWS F1 Application Execution on Xilinx Virtex UltraScale Devices]: https://github.com/aws/aws-fpga/blob/master/SDAccel/README.md
 [SDAccel Forums]: https://forums.xilinx.com/t5/SDAccel/bd-p/SDx
-[Release Notes]: docs/release-notes/1.x.md
+[Release Notes]: ../../../docs/release-notes/1.x.md
 [UG1023]: https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_4/ug1023-sdaccel-user-guide.pdf
-[FAQ]: docs/faq.md
-[DPUCADX8G Overview]: docs/ml-suite-overview.md
+[FAQ]: ../../../docs/faq.md
 [Webinar on Xilinx FPGA Accelerated Inference]: https://event.on24.com/wcc/r/1625401/2D3B69878E21E0A3DA63B4CDB5531C23?partnerref=Mlsuite
-[ML Suite Forum]: https://forums.xilinx.com/t5/Xilinx-ML-Suite/bd-p/ML 
+[ML Suite Forum]: https://forums.xilinx.com/t5/Xilinx-ML-Suite/bd-p/ML
 [ML Suite Lounge]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html
 [Models]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html#gettingStartedCloud
 [whitepaper here]: https://www.xilinx.com/support/documentation/white_papers/wp504-accel-dnns.pdf

@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="100%" height="100%" src="doc/img/Vitis-AI.png">
+  <img width="100%" height="100%" src="docs/img/Vitis-AI.png">
 </div>
 
 <br />
@@ -8,7 +8,7 @@ Vitis AI is Xilinx’s development stack for AI inference on Xilinx hardware pla
 <br />
 
 <div align="center">
-  <img width="45%" height="45%" src="doc/img/Vitis-AI-arch.png">
+  <img width="45%" height="45%" src="docs/img/Vitis-AI-arch.png">
 </div>
 
 <br />
@@ -61,7 +61,7 @@ Two options are available for installing the containers with the Vitis AI tools 
     cd Vitis-AI
     ```
 
-#### Using Pre-build Docker
+#### Using Pre-built Docker
 
 Download the latest Vitis AI Docker with the following command. This container runs on CPU.  
 ```
@@ -184,7 +184,7 @@ For more information, please refer to [Vitis AI User Guide](https://www.xilinx.c
 - [Developer Articles](https://developer.xilinx.com/en/get-started/ai.html)
 - [Performance Whitepaper][]
 
-## [System Requirements](doc/system_requirements.md)
+## [System Requirements](docs/system_requirements.md)
 
 ## Questions and Support
 - [FAQ](doc/faq.md)
