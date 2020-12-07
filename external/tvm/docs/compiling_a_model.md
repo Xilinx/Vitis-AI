@@ -5,7 +5,7 @@
 
  The TVM with Vitis AI flow contains two stages: Compilation and Execution. During the compilation a user can choose a model to compile for the cloud or edge target devices that are currently supported. Once a model is compiled, the generated files can be used to run the model on a the specified target device during the Execution stage. Currently, the TVM with Vitis AI flow supported a selected number of Xilinx data center and edge devices.
 
-This document provides instructions to compile deep learning models using the TVM with Vitis AI support. We further walk through one of the example tutorials provided in 'tutorials/accelerators/" directory.
+This document provides instructions to compile deep learning models using the TVM with Vitis AI support. We further walk through one of the tutorial scripts provided in the examples directory.
 
 Before continuing with this document, please ensure you have properly installed and setup your environment the TVM with Vitis AI, as described in README.md document.
 
@@ -19,12 +19,15 @@ If you are not familiar with Apache TVM, the following materials are provided as
 
 ### Compilation Examples
 
-The examples directory incorporates example python scripts for compiling models using the TVM with Vitis flow. Copy the examples directory to the doker container and run any of the provided example scripts after setting the conda environment to the "vitis-ai-tensorflow".
+The examples directory incorporates example python scripts for compiling models using the TVM with Vitis flow. Copy the examples directory to the docker container and run any of the compile script after setting the conda environment to the "vitis-ai-tensorflow".
 
 ```sh
 # In docker
 $ conda activate vitis-ai-tensorflow
-$ python3 mxnet_resnet_18.py
+# copy example directory from /workspace/examples to the current directory
+$ cp /workspace/examples .
+$ cd examples
+$ python3 compile_mxnet_resnet_18.py
 ```
 
 The compilation output is saved on disk to run the model on a target device during the Execution stage. For edge devices, the compilation output needs to be transfered over to the target device.
