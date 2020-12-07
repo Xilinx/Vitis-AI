@@ -13,10 +13,11 @@ This application  demonstrates the acceleration of pre-processing of inference o
 ## Setup
 ```sh
 # Activate Conda Environment
-conda activate vitis-ai-caffe 
+conda activate vitis-ai-caffe
 ```
 ```sh
 # Setup
+# Typically, <path-to-vitis-ai> is `/workspace`
 source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
@@ -29,7 +30,7 @@ source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 
 ### Examples
 
-- Familiarize yourself with the script usage by 
+- Familiarize yourself with the script usage by
 ```sh
 ./detect.sh -h
 ```
@@ -47,7 +48,7 @@ source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 
 ### Performance
 
-Below table shows the comparison of pre-processing execution times on CPU and FPGA and also the througput achieved by acclerating the pre-processing pipeline on FPGA. The performance numbers are achieved by running 5K images randomly picked from COCO dataset. The performance results may vary based on your system performance. 
+Below table shows the comparison of pre-processing execution times on CPU and FPGA and also the througput achieved by acclerating the pre-processing pipeline on FPGA. The performance numbers are achieved by running 5K images randomly picked from COCO dataset. The performance results may vary based on your system performance.
 
 CPU:  Intel(R) Core(TM) i7-4770 CPU @ 3.40GHz
 
