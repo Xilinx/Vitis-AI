@@ -12,6 +12,7 @@ Activate Conda Environment
 Setup the Environment
 
   ```sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
   source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
@@ -22,7 +23,7 @@ Setup the Environment
   ```
 
 ### Run
- 
+
   ```sh
   ./run.sh <video path>
   ```
@@ -31,5 +32,5 @@ Input: mp4 video path
 
 Output: Detection results saved as jpg images inside output folder in current path
 
-> **Note:** Application assumes `vitis-ai-caffe` conda is already activated  
+> **Note:** Application assumes `vitis-ai-caffe` conda is already activated
 

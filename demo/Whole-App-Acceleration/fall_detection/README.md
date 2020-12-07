@@ -4,6 +4,7 @@
 # **Setup**
 ```sh
 conda activate vitis-ai-caffe
+# Typically, <path-to-vitis-ai> is `/workspace`
 source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 

@@ -13,23 +13,25 @@ This application  demonstrates the acceleration of pre-processing of inference o
 ## Setup
 ```sh
 # Activate Conda Environment
-conda activate vitis-ai-caffe 
+conda activate vitis-ai-caffe
 ```
 ```sh
 # Setup
+# Typically, <path-to-vitis-ai> is `/workspace`
 source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 ## Running the Application
 -  `cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/yolo`
 - Use `detect.sh` file to run the application.
-- Make sure to follow the steps [here](../../../examples/DPU-CADX8G/yolo/README.md#getting-coco-2014-validation-set-and-labels) to get COCO validation set and labels/
 
-> **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
+>**:pushpin: NOTE:** Make sure to follow the steps [here](../../../examples/DPU-CADX8G/yolo/README.md#getting-coco-2014-validation-set-and-labels) to get COCO validation set and labels/
+
+>**:pushpin: NOTE:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ### Examples
 
-- Familiarize yourself with the script usage by 
+- Familiarize yourself with the script usage by
 ```sh
 ./detect.sh -h
 ```
@@ -47,7 +49,7 @@ source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 
 ### Performance
 
-Below table shows the comparison of pre-processing execution times on CPU and FPGA and also the througput achieved by acclerating the pre-processing pipeline on FPGA. The performance numbers are achieved by running 5K images randomly picked from COCO dataset. The performance results may vary based on your system performance. 
+Below table shows the comparison of pre-processing execution times on CPU and FPGA and also the througput achieved by acclerating the pre-processing pipeline on FPGA. The performance numbers are achieved by running 5K images randomly picked from COCO dataset. The performance results may vary based on your system performance.
 
 CPU:  Intel(R) Core(TM) i7-4770 CPU @ 3.40GHz
 

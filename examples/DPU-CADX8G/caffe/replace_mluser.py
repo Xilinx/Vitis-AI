@@ -1,9 +1,9 @@
 # Copyright 2019 Xilinx Inc.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
@@ -30,12 +30,12 @@ def substitute(filepath, replacee, replacement):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Replace CK-TOOLS Root paths in prototxt(s)')
-    parser.add_argument('--rootdir', type=str, default=os.environ['HOME'], 
+    parser.add_argument('--rootdir', type=str, default=os.environ['HOME'],
             help='Root path to CK-TOOLS directory. if not provided, "/home/mluser" gets replaced by "/home/username"')
-    parser.add_argument('--modelsdir', type=str, default=vai_alveo_root+"/models/container/caffe", 
+    parser.add_argument('--modelsdir', type=str, default=vai_alveo_root+"/models/container/caffe",
             help='Root path to MODELS directory.')
     args = parser.parse_args()
 
     for Dir, subDirs, files in os.walk(args.modelsdir):
         success = [substitute(os.path.join(Dir, f), "/home/mluser", args.rootdir) for f in files if f.endswith(".prototxt")]
-        success = [substitute(os.path.join(Dir, f), "/opt/ml-suite", vai_alveo_root) for f in files if f.endswith(".prototxt")]
+        success = [substitute(os.path.join(Dir, f), "/opt/ml-suite/examples/", vai_alveo_root+"/DPU-CADX8G/") for f in files if f.endswith(".prototxt")]

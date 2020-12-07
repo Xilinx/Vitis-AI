@@ -7,12 +7,13 @@
 
 Activate Conda Environment
   ```sh
-  conda activate vitis-ai-caffe 
+  conda activate vitis-ai-caffe
   ```
 
 Setup the Environment
 
   ```sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
   source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
@@ -36,14 +37,14 @@ tar -xvf cityscapes.tar.gz
 rm cityscapes.tar.gz
 ```
 
-The folder is supposed to be as the following.  
+The folder is supposed to be as the following.
 
 ```
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_AtoB/cityscapes/train
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_AtoB/cityscapes/val
 ```
 
-The downloaded images have the combination of Cityscapes Semantic photo and label. 
+The downloaded images have the combination of Cityscapes Semantic photo and label.
 To split Semantic photo and label, please run the following command lines.
 
 ```
@@ -51,11 +52,11 @@ cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_AtoB/
 python extract_label_semantic.py
 ```
 
-This will generate two subfolders in val folder. 'photo' and 'label'. 
+This will generate two subfolders in val folder. 'photo' and 'label'.
 ```
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_AtoB/cityscapes/val/photo
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_AtoB/cityscapes/val/label
-```  
+```
 
 
 ## Pix2Pix (cityscapes_AtoB) model
@@ -67,7 +68,7 @@ Pix2pix is image to image translastion using GAN [1]
 
 
 
-Cityscapes_AtoB model translates photo to semantic label. 
+Cityscapes_AtoB model translates photo to semantic label.
 
 
 
@@ -75,7 +76,7 @@ We trained Pix2Pix (cityscapes_AtoB) model with input size as [256,256,3].
 
 After training the model, we quantized the model to deploy on FPGA.
 
-To get the quantized Caffe model, run the following command lines. 
+To get the quantized Caffe model, run the following command lines.
 
 > **Note:** Skip, If you have already run the below steps.
 ```
@@ -129,7 +130,7 @@ xfdnn_deploy.prototxt (used to execute Caffe model on FPGA) will be generated at
 
 
 
-## Run Inference model on FPGA 
+## Run Inference model on FPGA
 
 To run the inference model on fpga for translating photo to semantic label, run the following commands.
 

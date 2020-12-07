@@ -1,4 +1,4 @@
-# Running FPN CityScapes segmentation model on FPGA 
+# Running FPN CityScapes segmentation model on FPGA
 
 
 ### Setup
@@ -7,12 +7,13 @@
 
 Activate Conda Environment
   ```sh
-  conda activate vitis-ai-caffe 
+  conda activate vitis-ai-caffe
   ```
 
 Setup the Environment
 
   ```sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
   source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
@@ -42,14 +43,14 @@ tar -xvf cityscapes.tar.gz
 rm cityscapes.tar.gz
 ```
 
-The folder is supposed to be as the following.  
+The folder is supposed to be as the following.
 
 ```
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/FPN_CityScapes/cityscapes/train
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/FPN_CityScapes/cityscapes/val
 ```
 
-The downloaded images have the combination of Cityscapes Semantic photo and label. 
+The downloaded images have the combination of Cityscapes Semantic photo and label.
 To split Semantic photo and label, please run the following command lines.
 
 ```
@@ -57,11 +58,11 @@ $ cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/FPN_CityScapes/
 $ python extract_label_semantic.py
 ```
 
-This will generate two subfolders in val folder. 'photo' and 'label'. 
+This will generate two subfolders in val folder. 'photo' and 'label'.
 ```
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/FPN_CityScapes/cityscapes/val/photo
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/FPN_CityScapes/cityscapes/val/label
-```  
+```
 
 
 
@@ -73,7 +74,7 @@ After training the model, we quantized the model to deploy on FPGA.
 
 > **Note:** Skip, If you have already run the below steps.
 
-To get the quantized Caffe model, run the following command lines. 
+To get the quantized Caffe model, run the following command lines.
 
 ```
 cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
@@ -103,13 +104,13 @@ ling98, #img_path = './cityscapes/val/photo/'
 
 Then, use the following command line.
 ```
-python FPN_cpu.py 
+python FPN_cpu.py
 ```
 
 
 To run the inference model on cpu with 'cityscapes/val/photo' images, please use the following command line.
 ```
-python FPN_cpu.py 
+python FPN_cpu.py
 ```
 
 
@@ -134,7 +135,7 @@ xfdnn_deploy.prototxt is to execute Caffe model on FPGA.
 
 
 
-## Run Inference model on FPGA 
+## Run Inference model on FPGA
 
 To run the inference model on fpga with 'cityscapes/frankfurt' images, please update FPN_fpga.py using any text editor as following.
 
@@ -145,15 +146,15 @@ ling125, #img_path = './cityscapes/val/photo/'
 
 Then, use the following command line.
 ```
-python FPN_fpga.py 
+python FPN_fpga.py
 ```
 
 To run the inference model on fpga with 'cityscapes/val/photo' images, please use the following command line.
 
 ```
-python FPN_fpga.py 
+python FPN_fpga.py
 ```
-The first 30 segmentation output images will be stored in 'fpga_output' folder. 
+The first 30 segmentation output images will be stored in 'fpga_output' folder.
 
 This will also provide mean IOU between cpu output and fpga output for the first 100 images.
 

@@ -1,21 +1,22 @@
 ### Setup
 ```sh
 # Activate Conda Environment
-conda activate vitis-ai-caffe 
+conda activate vitis-ai-caffe
 ```
 ```sh
 # Setup
+# Typically, <path-to-vitis-ai> is `/workspace`
 source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 ## Tool to convert darknet model to caffe
-The convert.py script supports yolov2 and yolov3 models. This tool does not support tiny-yolov3 model due to fractional stride in maxpool. For conversion, run the below command. 
+The convert.py script supports yolov2 and yolov3 models. This tool does not support tiny-yolov3 model due to fractional stride in maxpool. For conversion, run the below command.
 
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```sh
 cd $VAI_ALVEO_ROOT/DPU-CADX8G/yolo/darknet_to_caffe
-#Download yolov3.weights and yolov3.cfg 
+#Download yolov3.weights and yolov3.cfg
 wget https://pjreddie.com/media/files/yolov3.weights
 wget https://raw.githubusercontent.com/pjreddie/darknet/master/cfg/yolov3.cfg
 python convert.py yolov3.cfg yolov3.weights yolov3.prototxt yolov3.caffemodel
@@ -44,7 +45,7 @@ cd $VAI_ALVEO_ROOT/DPU-CADX8G/yolo
         --visualize \
         --results_dir cpu_results
 ```
-The output images are stored in cpu_results folder. 
+The output images are stored in cpu_results folder.
 
 ## Calculate accuracy (mAP) on CPU with val_set of 2000 images.
 
