@@ -37,4 +37,4 @@ This example demonstrates acceleration of post-processing of ssd-mobilenet netwo
 
 ## Fall detection on Alveo-U200:
 
-This example demonstrates acceleration of Lucas_kanade optical flow on Alveo-U200. Refer [README](./fall_detection/README.md)
+This example demonstrates acceleration of Lucas_kanade optical flow on Alveo-U200. Refer [README](./fall_detection/README.md) for further details and steps to run.
