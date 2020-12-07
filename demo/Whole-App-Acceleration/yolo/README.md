@@ -1,5 +1,7 @@
 # Accelerating Pre-processing for YOLO inference
 
+:pushpin: **Note:** This application can be run only on Alveo-U200 platform.
+
 This application  demonstrates the acceleration of pre-processing of inference of object detection networks like Yolo-v3 and Tiny Yolo-v3. Below block diagrams show various steps involved in the pre-processing and the blocks which are accelerated on hardware.
 
 <div align="center">
