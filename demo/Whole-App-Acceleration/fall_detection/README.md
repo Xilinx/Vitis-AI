@@ -1,6 +1,10 @@
+
+:pushpin: **Note:** This application is only available on Alveo-U200 card with DPU-CADX8G.
+
 # **Setup**
 ```sh
 conda activate vitis-ai-caffe
+# Typically, <path-to-vitis-ai> is `/workspace`
 source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
@@ -9,7 +13,7 @@ source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ## **Build common kernels**
 ```sh
 cd ${VAI_ALVEO_ROOT}/../tools/AKS
-./cmake-kernels.sh --clean
+./cmake-kernels.sh --clean --dpu=dpucadx8g
 ```
 
 ## **Build fall-detection kernels**

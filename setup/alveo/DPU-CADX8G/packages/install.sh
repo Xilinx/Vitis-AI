@@ -42,6 +42,7 @@ else
 fi
 
 XRT_URL=""
+XRM_URL=""
 U200_URL=""
 U250_URL=""
 XRT_INSTALLER=""
@@ -57,12 +58,15 @@ XPLUSML_OVERLAYBINS_URL=""
 XPLUSML_OVERLAYBINS_INSTALLER=""
 INSTALLER=""
 
+# Note: Ubuntu 20.04 and CentOS/RHEL 8 are not supported by this script
+#       However, they likely work with Vitis-AI
+
 ##############################
 # Download XRT/DSA
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* ]]; then
   echo "Ubuntu 16.04"
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_16.04-amd64-xrt.deb"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_16.04-amd64-xrt.deb"
   XRT_INSTALLER=/tmp/xrt.deb
   U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015_16.04.deb"
   U200_INSTALLER=/tmp/u200.deb
@@ -70,7 +74,7 @@ if [[ $distroname == *"Ubuntu 16.04"* ]]; then
   U250_INSTALLER=/tmp/u250.deb
 elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
   echo "Ubuntu 18.04"
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_18.04-amd64-xrt.deb"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_18.04-amd64-xrt.deb"
   XRT_INSTALLER=/tmp/xrt.deb
   U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015_18.04.deb"
   U200_INSTALLER=/tmp/u200.deb
@@ -86,7 +90,7 @@ elif [[ $distroname == *"CentOS"* ]]; then
   U250_INSTALLER=/tmp/u250.rpm
 elif [[ $distroname == *"Red Hat"* ]]; then
   echo "RHEL"
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202010.2.6.655_7.4.1708-x86_64-xrt.rpm"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_7.4.1708-x86_64-xrt.rpm"
   XRT_INSTALLER=/tmp/xrt.rpm
   U200_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015.x86_64.rpm"
   U200_INSTALLER=/tmp/u200.rpm
@@ -102,13 +106,15 @@ fi
 # Download XRM/Overlaybins
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* ]]; then
-  XRM_INSTALLER=./ubuntu/xbutler_3.0-2.deb
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xbutler_4.0-0.deb"
+  XRM_INSTALLER=/tmp/xbutler_4.0-0.deb
   OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.3-xilinx-overlaybins.deb"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.deb
   XPLUSML_OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.3-xplusml-bins-18.04.deb"
   XPLUSML_OVERLAYBINS_INSTALLER=/tmp/vai-1.3-xplusml-bins-18.04.deb
   INSTALLER="apt"
 elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xbutler-4.0.0-1.x86_64.rpm"
   XRM_INSTALLER=./centos/xbutler-3.0.2-1.el7.centos.x86_64.rpm
   OVERLAYBINS_URL="https://www.xilinx.com/bin/public/openDownload?filename=vai-1.3-xilinx-overlaybins.rpm"
   OVERLAYBINS_INSTALLER=/tmp/xilinx-overlaybins.rpm
@@ -180,7 +186,7 @@ modprobe xclmgmt
 echo "----------------------"
 echo "Install XRM"
 echo "----------------------"
-${INSTALLER} install $XRM_INSTALLER -y 
+wget $XRM_URL -O $XRM_INSTALLER && ${INSTALLER} install $XRM_INSTALLER -y && rm $XRM_INSTALLER
 
 ################
 # Dead Code

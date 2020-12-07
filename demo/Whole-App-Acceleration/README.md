@@ -33,10 +33,4 @@ This example demonstartes acceleration of pre-processing of tiny_yolo_v3 network
 ## SSD-Mobilenet post-process acceleration on Alveo-U280:
 The mobilenet-ssd model is a Single-Shot multibox Detection (SSD) network intended to perform object detection. Accelerated post-processing(Sort and NMS) for ssd-mobilenet is provided and can only run on U280 board. In this application, software pre-process is used for loading input image, resize and mean subtraction.
 
-Refere [README](ssd_mobilenet/README.md) for further details on steps to run the example.
-
-
-
-
-
-
+Refer [README](ssd_mobilenet/README.md) for further details on steps to run the example.

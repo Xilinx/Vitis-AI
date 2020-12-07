@@ -9,12 +9,13 @@
 
 Activate Conda Environment
   ```sh
-  conda activate vitis-ai-caffe 
+  conda activate vitis-ai-caffe
   ```
 
 Setup the Environment
 
   ```sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
   source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
@@ -29,7 +30,7 @@ tar -xvf facades.tar.gz
 rm facades.tar.gz
 ```
 
-The folder is supposed to be as the following.  
+The folder is supposed to be as the following.
 
 ```
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/facades_BtoA/facades/test
@@ -37,7 +38,7 @@ ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/facades_BtoA/facades/train
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/facades_BtoA/facades/val
 ```
 
-The downloaded images have the combination of Architectural photo and label. 
+The downloaded images have the combination of Architectural photo and label.
 To split Architectural photo and label, please run the following command lines.
 
 ```
@@ -45,11 +46,11 @@ cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/facades_BtoA/
 python extract_label_facades.py
 ```
 
-This will generate two subfolders in val folder. 'photo' and 'label'. 
+This will generate two subfolders in val folder. 'photo' and 'label'.
 ```
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/facades_BtoA/facades/val/photo
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/facades_BtoA/facades/val/label
-```  
+```
 
 
 ## Pix2Pix (facades_BtoA) model
@@ -61,13 +62,13 @@ Pix2pix is image to image translastion using GAN [1]
 
 
 
-Facades_BtoA model translates Architectural labels to photo. 
+Facades_BtoA model translates Architectural labels to photo.
 
 We trained Pix2Pix (facades_BtoA) model with input size as [256,256,3].
 
 After training the model, we quantized the model to deploy on FPGA.
 
-To get the quantized Caffe model, run the following command lines. 
+To get the quantized Caffe model, run the following command lines.
 
 > **Note:** Skip, If you have already run the below steps.
 ```
@@ -117,7 +118,7 @@ xfdnn_deploy.prototxt (used to execute Caffe model on FPGA) will be generated at
 
 
 
-## Run Inference model on FPGA 
+## Run Inference model on FPGA
 
 To run the inference model on fpga to translate Architectural label to photo image, run the following commands.
 

@@ -71,7 +71,7 @@ source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.1-r1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.0.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2020.2-r1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.0.tar.gz) and install it to the petalinux system.
 ```
 tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
@@ -116,18 +116,18 @@ steps.**
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
 	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.  
 	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
-	* Download the model according to the model's yaml file. Take `resnet_v1_50_tf` of ZCU102 as an example.
+	* Download the model according to the model's yaml file. Take `densebox_320_320` of ZCU102 as an example.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz -O resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz -O densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz
 	```	
 	* Copy the downloaded file to the board using scp with the following command. 
 	```
-	  scp resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
+	  scp densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
 	```
 	* Log in to the board (using ssh or serial port) and install the model package.
 	```
-	  tar -xzvf resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz
-	  cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
+	  tar -xzvf densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz
+	  cp densebox_320_320 /usr/share/vitis_ai_library/models -r
 	```
 
 4. (Optional) How to update Vitis AI Runtime and install them separately. 
@@ -199,7 +199,7 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Alveo
 ### Setting Up the Host for U50/U50lv/U280
 
-1. Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../../setup/alveo/u50_u50lv_u280/README.md#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
+1. Follow [Setup Alveo Accelerator Card with HBM for DPUCAHX8H/L](../../setup/alveo/u50_u50lv_u280/README.md) to set up the Alveo Card.
 
 2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
 as an example.
@@ -216,8 +216,8 @@ cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
 tar -xzvf alveo_xclbin-1.3.0.tar.gz
 cd alveo_xclbin-1.3.0/U50lv-V3ME/1E300M
-sudo cp dpu.xclbin /usr/lib
-export XLNX_VART_FIRMWARE=/usr/lib/dpu.xclbin
+sudo cp dpu.xclbin /opt/xilinx/overlaybins/
+export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpu.xclbin
 ```
 Note that for `DPUCAHX8L`, please refer to [XBulter Installation](../../setup/alveo/DPU-CADX8G/packages) to install `XBulter`. And then add the following U50 and U50lv configurations into `/etc/xbutler/xbutler.config`.
 ```
@@ -242,13 +242,13 @@ sudo service xbutler restart
 	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.  
 	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
 
-	* Download the model according to the model's yaml file. Take `resnet_v1_50_tf` of U50 as an example.
+	* Download the model according to the model's yaml file. Take `densebox_320_320` of U50 as an example.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50-r1.3.0.tar.gz -O resnet_v1_50_tf-u50-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.0.tar.gz -O densebox_320_320-u50-r1.3.0.tar.gz
 	```
 	  For `DPUCAHX8L`, take `U50lv` as an example.  
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz -O resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-u50lv-u280-v3me-r1.3.0.tar.gz -O densebox_320_320-u50-u50lv-u280-v3me-r1.3.0.tar.gz
 	```	  
 	* Install the model package.  
 	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
@@ -257,13 +257,13 @@ sudo service xbutler restart
 	```	
 	Then install the model package.
 	```
-	  tar -xzvf resnet_v1_50_tf-u50-r1.3.0.tar.gz
-	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
+	  tar -xzvf densebox_320_320-u50-r1.3.0.tar.gz
+	  sudo cp densebox_320_320 /usr/share/vitis_ai_library/models -r
 	```
 	  For `DPUCAHX8L`, execute the following commands to install the model package.
 	```
-	  tar -xzvf resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
-	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
+	  tar -xzvf densebox_320_320-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+	  sudo cp densebox_320_320 /usr/share/vitis_ai_library/models -r
 	```
 	  
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 

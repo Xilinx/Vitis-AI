@@ -1,35 +1,36 @@
-This is adas_detection example and it uses unified vitis-ai APIs to run on alveo platforms
+# ADAS Detection
 
-### Setup
+This is adas detection example using unified Vitis-AI APIs to run on ALVEO-CADX8G platforms (Alveo-U200/Alveo-U250).
 
-> **Note:** Skip, If you have already run the below steps.
+## Setup
+
+:pushpin: **Note:** Skip, If you have already run the below steps.
 
 Activate Conda Environment
-  ```sh
-  conda activate vitis-ai-caffe 
-  ```
+
+```sh
+conda activate vitis-ai-caffe
+```
 
 Setup the Environment
 
-  ```sh
-  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
-  ```
+```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
+source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+```
 
-### Build
+## Build
 
-  ```sh
-  make
-  ```
+```sh
+make
+```
 
-### Run
- 
-  ```sh
-  ./run.sh <video path>
-  ```
+## Run
 
-Input: avi video path
+```sh
+./run.sh <video path>
+```
 
-Output: Detection results saved as jpg images inside output folder in current path
+:pushpin: **Note:** User needs to provide the video path or sample video can be downloaded from [here](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz).
 
-> **Note:** Application assumes `vitis-ai-caffe` conda is already activated  
-
+The output detection results are saved as `.jpg` images inside output folder in current path.

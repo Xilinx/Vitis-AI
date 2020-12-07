@@ -1,18 +1,19 @@
-# Running the face detection model on FPGA 
+# Running the face detection model on FPGA
 
 ### Setup
 ```sh
 # Activate Conda Environment
-conda activate vitis-ai-caffe 
+conda activate vitis-ai-caffe
 ```
 ```sh
 # Setup
+# Typically, <path-to-vitis-ai> is `/workspace`
 source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 ### Data Preparation
 
-Download Face Detection Data Set and Benchmark (FDDB)dataset. 
+Download Face Detection Data Set and Benchmark (FDDB)dataset.
 
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
@@ -60,28 +61,28 @@ Calculate the precsion of face_detection_320_320 model
 ```
 The output will be an array. [ 0.87894  96.  0.9284]. The recall is 87.89@fp=96.
 
-Calculate the precsion of face_detection_360_640 model 
+Calculate the precsion of face_detection_360_640 model
 ```sh
 ./test_precision.sh face_detection_360_640
 ```
 The output will be an array. [ 0.883775 99.   0.957]. The recall is 88.37@fp=99.
 
 ## Run Inference on Video
-This is a demo application showing how face detection model can be ran on the FPGA. Frames from a video are streamed into our hardware accelerator. Some post processing is performed in the CPU, such as NMS.   
+This is a demo application showing how face detection model can be ran on the FPGA. Frames from a video are streamed into our hardware accelerator. Some post processing is performed in the CPU, such as NMS.
 
 ```sh
 cd $VAI_ALVEO_ROOT/DPU-CADX8G/face_detect/
 ```
 Face detection on video using face_detection_320_320 model on FPGA and save results in folder output/.
 ```sh
-./test_video.sh face_detection example.mp4
+./test_video.sh face_detection <Path to video file>
 ```
 Face detection on video using face_detection_360_640 model on FPGA and save results in folder output/.
 ```sh
-./test_video.sh face_detection_360_640 example.mp4
+./test_video.sh face_detection_360_640 <Path to video file>
 ```
 
-**Note** : User needs to provide the full path of example.mp4
+**Note** : User needs to provide their own video file path.
 
 
 ## Check Precision from an existing detections

@@ -68,17 +68,17 @@ conda activate vitis-ai-neptune
 # the new environment after setting it up.
 
 # first setup the default Vitis-AI conda env for Caffe, then in that env run:
- 
+
 # there's a dependency conflict with updating opencv (3.4.2 by default in
 # MLsuite) and other packages. This command removes py-opencv and caffe_decent
 conda remove -y -q py-opencv
- 
+
 conda install -y -q -c conda-forge "opencv>=4.1.1" ffmpeg
 pip install youtube-dl pafy wget requests pyarrow orderedset
- 
+
 # libnms.so is also needed for some services. Make sure it's in the PYTHONPATH/site-packages!
 cd $VAI_ALVEO_ROOT/DPU-CADX8G/yolo/nms && make
- 
+
 # for full testing, you'll need these
 pip install pytest coverage coverage-badge websocket-client
 ```
@@ -86,8 +86,8 @@ pip install pytest coverage coverage-badge websocket-client
 Python 3.6+ is recommended.
 
 ### Running a Basic Service
-Neptune comes with a simple _ping_ service that can be used to demonstrate basic functionality  
-1. Start Neptune on the server 
+Neptune comes with a simple _ping_ service that can be used to demonstrate basic functionality
+1. Start Neptune on the server
 ```sh
 cd $VAI_ALVEO_ROOT/../demo/neptune && ./run.sh
 ```
@@ -103,7 +103,7 @@ From a web browser on the client machine
     - The _ping_ service should send a reply with the current time every time the page is refreshed
 3. The ping service can be stopped by clicking on the same button again
 
-Use ctrl+C to exit the Neptune server. 
+Use ctrl+C to exit the Neptune server.
 
 ## Directory Structure
 
@@ -119,8 +119,8 @@ Use ctrl+C to exit the Neptune server.
 
 ### Other
 
-* **xstream.py (located at vai/dpuv1/rt/xstream.py)**: Defines the xstream communication for Neptune nodes ([documentation](../docs/xstream.md))
-* **xsnodes (located at vai/dpuv1/rt/xsnodes/)**: Contains nodes for services in Neptune (documentation located at vai/dpuv1/rt/xsnodes/README.md)
+* **xstream.py (located at /opt/vitis_ai/conda/envs/vitis-ai-neptune/lib/python3.6/site-packages/vai/dpuv1/rt/xstream.py)**: Defines the xstream communication for Neptune nodes ([documentation](../../docs/xstream.md))
+* **xsnodes (located at /opt/vitis_ai/conda/envs/vitis-ai-neptune/lib/python3.6/site-packages/vai/dpuv1/rt/xsnodes/)**: Contains nodes for services in Neptune (documentation located at /opt/vitis_ai/conda/envs/vitis-ai-neptune/lib/python3.6/site-packages/vai/dpuv1/rt/xsnodes/README.md)
 
 ## Testing
 
@@ -132,7 +132,7 @@ For complete testing, you will need the following:
 pip install pytest coverage coverage-badge websocket-client
 ```
 
-Tests are available in [tests/](./tests/). 
+Tests are available in [tests/](./tests/).
 They also serve as documentation for how to write client applications that talk to Neptune.
 
 ## Further Reading
@@ -163,6 +163,6 @@ Try using `run.sh --clean` as a sanity check
 
 If you're getting wget errors when trying to construct recipes, double check the artifact_server variable in recipes.py.
 When services are constructed, they may require fetching the models associated with them.
-If the artifacts can't be found, then the service will fail to be added. 
+If the artifacts can't be found, then the service will fail to be added.
 
 Always check the logs!

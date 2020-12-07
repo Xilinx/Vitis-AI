@@ -195,17 +195,19 @@ steps.**
 ## Quick Start For Alveo
 ### Setting Up the Host
 
-1. Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../../setup/alveo/u50_u50lv_u280/README.md#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
+1. Click [Setup Alveo Accelerator Card with HBM for DPUCAHX8H/L](../../setup/alveo/u50_u50lv_u280/README.md) to set up the Alveo Card.
 
-2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
-as an example.
+2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50` as an example.
 ```
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
 tar -xzvf alveo_xclbin-1.3.0.tar.gz
 cd alveo_xclbin-1.3.0/U50/6E300M
-sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
+sudo cp dpu.xclbin hbm_address_assignment.txt 
+
 ```
+This step is also described in [DPUCAHX8H/L Overlay Usage](../../setup/alveo/u50_u50lv_u280/README.md#DPUCAHX8H/L-Overlay-Usage).
+
 ### Running Vitis AI Examples
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
 Thus, `VART` is located in the path of `/workspace/demo/VART/` in the docker system. 

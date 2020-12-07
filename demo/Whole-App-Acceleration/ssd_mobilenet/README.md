@@ -21,11 +21,12 @@ conda activate vitis-ai-caffe
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ### Download xclbin
-- Download and extract xclbin tar. (XHD : `/proj/sdxapps/users/anup/public_downlaod/waa_system_u280_v1.3.0.tar.gz` or XSJ: `/wrk/acceleration/users/anup/public_download/waa_system_u280_v1.3.0.tar.gz`)
-- `sudo tar -xf waa_system_u280_v1.3.0.tar.gz -C /usr/lib/`
+- Download and extract xclbin tar. 
+- `wget -O waa_system_u280_v1.3.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=waa_system_u280_v1.3.0.tar.gz`
+- `tar -xf waa_system_u280_v1.3.0.tar.gz && sudo cp dpu_ssdpost_u280.xclbin /usr/lib/dpu.xclbin`
 
-## Running the Application
-- `cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/ssd_mobilenet/`
+
+### Running the Application
+- `cd /workspace/demo/Whole-App-Acceleration/ssd_mobilenet/`
 - `make build && make -j`
-- Copy xmodel and config file from `/proj/sdxapps/users/anup/public_downlaod/model_ssd_mobilenet` or `/wrk/acceleration/users/anup/public_download/model_ssd_mobilenet`.
 - `./run.sh model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.prototxt model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.xmodel <image path>`

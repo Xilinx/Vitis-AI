@@ -7,12 +7,13 @@
 
 Activate Conda Environment
   ```sh
-  conda activate vitis-ai-caffe 
+  conda activate vitis-ai-caffe
   ```
 
 Setup the Environment
 
   ```sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
   source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
@@ -28,14 +29,14 @@ tar -xvf maps.tar.gz
 rm maps.tar.gz
 ```
 
-The folder is supposed to be as the following.  
+The folder is supposed to be as the following.
 
 ```
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/maps_AtoB/maps/train
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/maps_AtoB/maps/val
 ```
 
-The downloaded images have the combination of Cityscapes Semantic photo and label. 
+The downloaded images have the combination of Cityscapes Semantic photo and label.
 To split Semantic photo and label, please run the following command lines.
 
 ```
@@ -43,11 +44,11 @@ cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/maps_AtoB/
 python extract_label_aerial.py
 ```
 
-This will generate two subfolders in val folder. 'photo' and 'label'. 
+This will generate two subfolders in val folder. 'photo' and 'label'.
 ```
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/maps_AtoB/maps/val/photo
 ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/maps_AtoB/maps/val/label
-```  
+```
 
 
 ## Pix2Pix (maps_AtoB) model
@@ -59,14 +60,14 @@ Pix2pix is image to image translastion using GAN [1]
 
 
 
-maps_AtoB model translates aerial photo to map. 
+maps_AtoB model translates aerial photo to map.
 
 
 We trained Pix2Pix (maps_AtoB) model with input size as [256,256,3].
 
 After training the model, we quantized the model to deploy on FPGA.
 
-To get the quantized Caffe model, run the following command lines. 
+To get the quantized Caffe model, run the following command lines.
 
 > **Note:** Skip, If you have already run the below steps.
 ```
@@ -115,7 +116,7 @@ xfdnn_deploy.prototxt (used to execute Caffe model on FPGA) will be generated at
 
 
 
-## Run Inference model on FPGA 
+## Run Inference model on FPGA
 
 To run the inference model on fpga with cityscape photo images, run the following commands.
 

@@ -8,8 +8,8 @@
 using namespace AKS;
 
 // type caster: DD* <-> NumPy-array
-// TODO : abidk : Does it really have to be DD*, or just DD is sufficient?
-// TODO : abidk : Better expose DataDescriptor so that explicit data copy could be avoided
+// TODO : Does it really have to be DD*, or just DD is sufficient?
+// TODO : Better expose DataDescriptor so that explicit data copy could be avoided
 namespace pybind11 { namespace detail {
   template <> struct type_caster<DataDescriptor> : public type_caster_base<DataDescriptor> {
     using base = type_caster_base<DataDescriptor>;

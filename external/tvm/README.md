@@ -78,11 +78,12 @@ $ bash ./bash.sh tvm.ci_vai_1x
 # Now inside docker...
 $ conda activate vitis-ai-tensorflow
 ```
-The installation may be verified inside the docker image by importing the following packages in python3
+The installation may be verified inside the docker image by importing the following packages in python3. Be sure to import pyxir before importing the TVM package.
+
 ```sh
 $ python3
-$ import tvm
 $ import pyxir
+$ import tvm
 ```
 The provided docker image can be used to compile models for the cloud and for the edge targets. 
 
@@ -105,8 +106,3 @@ For more details on how to compile and run models using TVM with the Vitis-AI, y
    [Alveo Setup]: https://github.com/Xilinx/Vitis-AI/tree/master/alveo
    [Vitis-AI Integration]: https://github.com/apache/incubator-tvm/blob/main/docs/deploy/vitis_ai.rst
    [Zyq Ultrascale+ MPSoc]: https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html
-
-   
-  
-  
- 

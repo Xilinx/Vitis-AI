@@ -46,9 +46,6 @@ def get_train_prototxt_deephi(caffe_path, src_prototxt, train_prototxt, image_li
         print(net_parameter.layer[0])
         print(net_parameter.layer[0].input_param.shape[0].dim)
 
-        #L.ImageData(include=dict(phase=caffe_pb2.Phase.Value('TRAIN')), transform_param=dict(mirror=False, yolo_height=608, yolo_width=608),
-        #                                  image_data_param=dict(source="/home/arunkuma/deephi/Image1.txt",batch_size=1, shuffle=False,root_folder="/wrk/acceleration/shareData/COCO_Dataset/val2014_dummy/"))
-
         del net_parameter.layer[0]
         print("after\n", (net_parameter))
         g.write(tfmt.MessageToString(net_parameter))

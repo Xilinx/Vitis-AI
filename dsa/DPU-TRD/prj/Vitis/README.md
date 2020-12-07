@@ -74,9 +74,9 @@ Required:
   - Vitis 2020.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-1.html) 
   - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
-  - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.1)
-  - [zcu102 base platform](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
-  - [mpsoc common system](https://www.xilinx.com/member/forms/download/xef.html?filename=xilinx-zynqmp-common-v2020.1.tar.gz)
+  - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.2)
+  - [zcu102 base platform 2020.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
+  - [ZYNQMP common image 2020.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
   - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
 
@@ -617,59 +617,103 @@ This zynqmp_dpu_optimize.sh would execute following functions on target board:
 
 The DPU TRD can run in gui flow. Please refer to the following steps.
 
-###### **Note:** The gui flow is for zcu102 board default. if user change the platform, need update related settings of DPU. if change to zcu104 platform. Need enable the URAM in dpu_conf.vh and delete the softmax kernel in GUI. The gui flow integrate 2 DPU and 1 softmax kernel default. The user can modify the description.json file to replace the prj_config_gui file to change the kernel connections and numbers.
+###### **Note:** The gui flow is for zcu102 board default. if user change the platform, need update related settings of DPU. 
 
-### Run steps
 
-- Create "dpu_trd" folder as the same lever with the Vitis-AI git.
+1. open the Vitis tool.
 
-  ![DPU_TRD](./doc/6.1.png)
+2. select or create the dpu_trd as the workspace and click launch.
 
-- open the Vitis tool.
+  ![WORKSPACE](./doc/6.2.png)   
 
-- select the dpu_trd as the workspace.
+3. Add DPU-TRD link to library Repositories
 
-  ![WORKSPACE](./doc/6.3.png)   
+	a. Once the dpu_trd workspace is created and open
 
-- Windows->Preference->Library Repositories->Add(add the Vitis-AI/DPU_TRD link in Location)->Apply and Close
-
-  The user can download the dpu trd git in advance and type the location in the Add->Location. Or type the Git URL and branch in the GUI. If use the first method, don't need type the git URL and branch. 
+	b. Navigate to Windows -> Preference -> Library Repositories
+    
+		i. Using already DPU-TRD clone location(skip 4.d step). Recommend this way.
 
   ![WORKSPACE](./doc/6.4.png)   
+    
+		ii. Link Git Location
+      
+			1. Location - Location to which the DPU TRD to be downloaded
 
-- File->New->Application Project->Next->Choose the zcu102_base platform->Next
+			2. Git URL - DPU TRD URL - https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging.git
+  
+			3. Branch - ML-2605-folder-structure
+  
+			4. click Apply and Close
+
+  ![URL](./doc/URL.png)   
+ 
+4. Creation Application Project
+
+	a. File->New->Application Project->Next->Choose the zcu102_base platform->Next
 
   ![PLATFORM](./doc/6.5.png)  
 
-- Enter the Application project name: dpu_trd -> Next 
+	b. Enter the Application project name: dpu_trd -> Next 
 
   ![PROJECT_NAME](./doc/6.6.png) 
 
-- Enter the Sysroot path and Kernel Image. Find it in the common system.
+	c. Enter the Sysroot, Root FS, Kernel Image paths and click Next. Find them in the common system. The user can get the related in the ZYNQMP common image 2020.2. 
+[ZYNQMP common image 2020.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
 
-  ![SYSROOT](./doc/6.7.png) 
+  ![SYSROOT](./doc/sysroot.png) 
  
-- Choose the DPU Kernel(RTL Kernel)
+	d. Template selection - You have to download the DPU TRD from git and seletct the DPU kernel
+  
+		i.Click Vitis IDE Libraries(highlighted)
+
+  ![ide](./doc/ide.png) 
+
+		ii.Select the DPU and click on Download
+
+  ![download](./doc/download.png) 
+
+		iii.Once the download is complete you see DPU as installed, click OK
+
+  ![install](./doc/install.png) 
+
+	e. Choose the DPU Kernel(RTL Kernel)
 
   ![DPU_KERNEL](./doc/6.8.png) 
 
-- Choose the Hardware in Active Build configuration
+	f. dpu_trd application project is created.
+
+
+5. Choose the Hardware in Active Build configuration, Only Hardware Configuration is supported.
 
   ![HARDWARE](./doc/6.9.png) 
 
-- Modify the dpu_conf.vh file to change DPU parmeters. You can use the default setting.
+6. Modify the dpu_conf.vh file to change DPU parmeters. You can use the default setting.
+    
+	a. User can edit dpu_conf.vh inside the kernel project[ex: dpu_trd_system->dpu_trd_kernel->src->prj->Vitis->dpu_conf.vh]
+    
+		i. Default configuration are set to zcu102 base platform.
 
   ![CONFIG](./doc/6.10.png) 
+  
+		ii. For zcu104, dpu_conf.vh modifications
 
-- Right click the dpu_trd ->C/C++ Build Settings->C/C++ Build->Settings
+			Enable URAM
+
+			//`define URAM_DISABLE
+			`define URAM_ENABLE
+
+7. C/C++ property settings
+
+	a. Right click the dpu_trd ->C/C++ Build Settings->C/C++ Build->Settings
 
   ![BUILD_SETTINGS](./doc/6.12.png)
 
-- Enter "-std=c++17" in Miscellaneous->Other flags, This step has supported by the Json. The user can skip it.
+	b. Enter "-std=c++17" in Miscellaneous->Other flags, This step has supported by the Json. The user can skip it.
 
   ![C_BUILD](./doc/6.13.png)
 
-- Add the following libraries in libraries window, This step has supported by the Json. The user can skip it.
+	c. Add the following libraries in libraries window, This step has supported by the Json. The user can skip it.
   - glog 
   - vart-mem-manager 
   - xir 
@@ -684,20 +728,28 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
   - vart-dpu-runner
   - vart-dpu-controller
 
-- Add <Vitis AI path>/DPU-TRD/src/app/samples/lib in GCC Host Link-> Libraries->Library search path
+   d. Add <Vitis AI path>/DPU-TRD/src/app/samples/lib in GCC Host Link-> Libraries->Library search path
   
   ![LIBRARY](./doc/6.14.png)
   
-- Right click dpu_trd_system ->Build Project 
+8. prj_config file-Default set to support single configuration. The gui flow only support default configuration. if want to other configuration, please use commandline flow.
+  
+  ![prj_conf](./doc/prj_conf.png)
+
+9. For zcu104, double click "dpu_trd_system_hw_link.prj" and remove/delete sfm_xrt_top function.
+
+  ![softmax](./doc/softmax.png)
+
+10. Add/Move Application specific "img" and "model" into sd_card using package option as shown in the snapshot
+
+  ![app](./doc/app.png)
+
+11. Right click dpu_trd_system ->Build Project 
 
   ![BUILD_PROJECT](./doc/6.15.png)
 
 The arch.json file can be found in the following path.
 
-dpu_trd_system__hw_link->Hardware->dpu.build->link->vivado->vpl->prj->prj.gen->source_1->bd->zcu102_base->ip->zcu102_base_DPUCZDX8G_1_0->arch.json
+**dpu_trd_system__hw_link->Hardware->dpu.build->link->vivado->vpl->prj->prj.gen->source_1->bd->zcu102_base->ip->zcu102_base_DPUCZDX8G_1_0->arch.json**
 
-###### **Note:** Build process will create DPU kernel.xo, xclbin, host executable and also create the sd card img file. The app will not include in the sd_card.img generated by gui flow. The user should copy the DPU_TRD/app to the sd card to run the resnet50 case.
-
-
-
-
+###### **Note:** Build process will create DPU kernel.xo, xclbin, host executable and also create the sd card img file. 

@@ -286,6 +286,7 @@ image load_image_yolov4(const char* file, int w, int h, int c, int letterbox) {
   } else {
     img_yolo = resize_image(img, w, h);
   } 
+  free_image(img);
   return img_yolo;
 }
 
@@ -327,6 +328,7 @@ image yolov4_transform_image(cv::Mat cv_img, int w ,int h, int letterbox){
   // some processing
   // image img_yolo = letterbox_image(img_yolo, w, h);
   // free_image(img_out);
+  free_image(img);
   return img_yolo;
 
 }
