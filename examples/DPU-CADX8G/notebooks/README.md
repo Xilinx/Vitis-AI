@@ -8,16 +8,30 @@ Jupyter is preinstalled in the Xilinx Vitis-AI Docker image.
 Follow these instructions from inside a running container.
 
 1. Setup the environment
+
+> **Note:** Skip, If you have already run the below steps.
+
+Activate Conda Environment
+  ```sh
+  # For Caffe Notebooks
+  conda activate vitis-ai-caffe
+
+  # For Tensorflow Notebooks
+  conda activate vitis-ai-tensorflow
+  ```
+Setup the Environment
   ```sh
   # Typically, <path-to-vitis-ai> is `/workspace`
   source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 2. Install the necessary dataset (Proceed to next step, if already done)
+
+  > **Note:** Skip, If you have already run the below steps.
+
   ```sh
   # For Caffe Notebooks
   cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
-  conda activate vitis-ai-caffe
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
   python -m ck install package:imagenet-2012-aux
@@ -31,7 +45,6 @@ Follow these instructions from inside a running container.
 
   # For Tensorflow Notebooks
   cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/tensorflow
-  conda activate vitis-ai-tensorflow
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
   python -m ck install package:imagenet-2012-aux
@@ -39,6 +52,7 @@ Follow these instructions from inside a running container.
   $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val.txt
   # Get the necessary models
   python getModels.py
+  python replace_mluser.py --modelsdir models
   ```
 
 3. Launch Jupyter notebook server
