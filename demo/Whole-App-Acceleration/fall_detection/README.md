@@ -6,15 +6,15 @@
 ## Table of Contents
 
 - [Introduction](#Introduction)
-- [Setup](#Setup)
-- [Prepare the data](#Prepare-the-data)
+- [Setup and Build the Kernels](#Setup-and-Build-the-Kernels)
+- [Prepare the Data](#Prepare-the-data)
 - [Running the Application](#Running-the-Application)
 - [Performance](#Performance)
 
 ## Introduction
 This application demonstrates the acceleration of Lucas-Kanade Dense Non-Pyramidal Optical Flow algorithm and modified VGG16 network which takes 20 channel input. Every consecutive pair of frames are resized and fed to Optical Flow kernel which generates a 2 dimensional Optical Flow vector. 10 of such consecutive vectors are stacked together and passed to the inference model, which is trained to classify fall from no-fall.
 
-## Setup
+## Setup and Build the Kernels
 ```sh
 conda activate vitis-ai-caffe
 # Typically, <path-to-vitis-ai> is `/workspace`
@@ -103,9 +103,10 @@ python convert_csv_to_gt_file.py
 ./run.sh -d urfd_dataset
 ```
 
-* Input passed to `run.sh` (`<directory>`) should contain either videos and/or directory of images
+Input passed to `run.sh` (`<directory>`) should contain either videos and/or directories of images. The filename of the images in the images directory should be chronological.
 
-```
+```sh
+[sample structure]
 .
 └── directory
     ├── video1.mp4
@@ -115,11 +116,11 @@ python convert_csv_to_gt_file.py
     |   ├── img2.jpeg
     |   ├── img3.jpeg
     |   └── img4.jpeg
-    └── img_dir2
-        ├── img_1.jpeg
-        ├── img_2.jpeg
-        ├── img_3.jpeg
-        └── img_4.jpeg
+    └── dir2
+        ├── xxx_001.jpg
+        ├── xxx_002.jpg
+        ├── xxx_003.jpg
+        └── xxx_004.jpg
 ```
 
 ## Performance
