@@ -48,14 +48,9 @@ Important:
     resnet50_tf2
     inception_v3_tf2
     mobilenet_1_0_224_tf2
-    DenseNetX_DPUv2
-    Keras-GoogleNet-ResNet-cifar10-LeNet
-    Keras-GoogleNet-ResNet-cifar10-miniGoogleNet
-    Keras-GoogleNet-ResNet-cifar10-miniVggNet
-    Keras-GoogleNet-ResNet-fmnist-LeNet
-    Keras-GoogleNet-ResNet-fmnist-miniGoogleNet
-    Keras-GoogleNet-ResNet-fmnist-miniVggNet
-
+    squeezenet_pt
+    resnet50_pt
+    inception_v3_pt
     
 
 1, compile
@@ -374,66 +369,31 @@ I1105 01:25:01.007745  1691 process_result.hpp:24] r.index 955 jackfruit, jak, j
 I1105 01:25:01.007875  1691 process_result.hpp:24] r.index 997 bolete, r.score 5.81218e-05
 I1105 01:25:01.008002  1691 process_result.hpp:24] r.index 973 coral reef, r.score 5.81218e-05
 
-    
-    sample : ./test_jpeg_classification_cifar DenseNetX_DPUv2 sample_classification_cifar.jpg
-    output : 
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1028 18:43:22.738476 401748 test_jpeg_classification_cifar.cpp:45] index: 2 score 1 text: bird
-I1028 18:43:22.738824 401748 test_jpeg_classification_cifar.cpp:45] index: 6 score 6.8256e-08 text: frog
-I1028 18:43:22.738893 401748 test_jpeg_classification_cifar.cpp:45] index: 3 score 2.511e-08 text: cat
-I1028 18:43:22.738948 401748 test_jpeg_classification_cifar.cpp:45] index: 7 score 3.39827e-09 text: horse
-I1028 18:43:22.739012 401748 test_jpeg_classification_cifar.cpp:45] index: 4 score 3.39827e-09 text: deer
 
-    sample : ./test_jpeg_classification Keras-GoogleNet-ResNet-cifar10-LeNet sample_cifar10.png
+    sample : ./test_jpeg_classification resnet50_pt sample_classification.jpg
     output :
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1030 13:17:54.963284 107052 process_result.hpp:24] r.index 7 horse, r.score 0.999204
-I1030 13:17:54.963546 107052 process_result.hpp:24] r.index 4 deer, r.score 0.000552644
-I1030 13:17:54.963582 107052 process_result.hpp:24] r.index 5 dog, r.score 0.00013973
-I1030 13:17:54.963730 107052 process_result.hpp:24] r.index 3 cat, r.score 7.47923e-05
-I1030 13:17:54.963773 107052 process_result.hpp:24] r.index 2 bird, r.score 2.14283e-05
+I1204 09:40:33.697002 22572 process_result.hpp:24] r.index 109 brain coral, r.score 0.942083
+I1204 09:40:33.697258 22572 process_result.hpp:24] r.index 973 coral reef, r.score 0.0469035
+I1204 09:40:33.697368 22572 process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 0.0049436
+I1204 09:40:33.697489 22572 process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.000973452
+I1204 09:40:33.697683 22572 process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000859068
 
-    sample : ./test_jpeg_classification Keras-GoogleNet-ResNet-cifar10-miniGoogleNet sample_cifar10.png
+
+    sample : ./test_jpeg_classification inception_v3_pt sample_classification.jpg
     output :
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1030 13:18:21.915678 107096 process_result.hpp:24] r.index 7 horse, r.score 0.999995
-I1030 13:18:21.916115 107096 process_result.hpp:24] r.index 4 deer, r.score 2.90231e-06
-I1030 13:18:21.916150 107096 process_result.hpp:24] r.index 5 dog, r.score 1.37095e-06
-I1030 13:18:21.916179 107096 process_result.hpp:24] r.index 0 airplane, r.score 3.92785e-07
-I1030 13:18:21.916312 107096 process_result.hpp:24] r.index 9 truck r.score 8.76421e-08
+I1204 09:41:50.505159 22574 process_result.hpp:24] r.index 109 brain coral, r.score 0.701128
+I1204 09:41:50.505427 22574 process_result.hpp:24] r.index 973 coral reef, r.score 0.00305015
+I1204 09:41:50.505542 22574 process_result.hpp:24] r.index 149 dugong, Dugong dugon, r.score 0.00223154
+I1204 09:41:50.505692 22574 process_result.hpp:24] r.index 89 sulphur-crested cockatoo, Kakatoe galerita, Cacatua galerita, r.score 0.00196932
+I1204 09:41:50.505949 22574 process_result.hpp:24] r.index 949 strawberry, r.score 0.00185001
 
-    sample : ./test_jpeg_classification Keras-GoogleNet-ResNet-cifar10-miniVggNet sample_cifar10.png
-    output :
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1030 13:18:37.153889 107118 process_result.hpp:24] r.index 7 horse, r.score 0.999524
-I1030 13:18:37.154207 107118 process_result.hpp:24] r.index 5 dog, r.score 0.000335303
-I1030 13:18:37.154242 107118 process_result.hpp:24] r.index 4 deer, r.score 0.000123351
-I1030 13:18:37.154273 107118 process_result.hpp:24] r.index 3 cat, r.score 1.30011e-05
-I1030 13:18:37.154405 107118 process_result.hpp:24] r.index 9 truck r.score 2.25925e-06
 
-    sample : ./test_jpeg_classification Keras-GoogleNet-ResNet-fmnist-LeNet sample_fmnist.png
+    sample : ./test_jpeg_classification_squeezenet  squeezenet_pt sample_classification.jpg
     output :
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1030 13:19:00.089524 107160 process_result.hpp:24] r.index 8 bag, r.score 0.999974
-I1030 13:19:00.089987 107160 process_result.hpp:24] r.index 0 top, r.score 1.67013e-05
-I1030 13:19:00.090059 107160 process_result.hpp:24] r.index 6 shirt, r.score 7.88912e-06
-I1030 13:19:00.090135 107160 process_result.hpp:24] r.index 2 pullover, r.score 3.92776e-07
-I1030 13:19:00.090188 107160 process_result.hpp:24] r.index 9 ankleBoot r.score 3.05895e-07
-
-    sample : ./test_jpeg_classification Keras-GoogleNet-ResNet-fmnist-miniGoogleNet sample_fmnist.png
-    output :
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1030 13:19:20.447621 107192 process_result.hpp:24] r.index 8 bag, r.score 0.969589
-I1030 13:19:20.447909 107192 process_result.hpp:24] r.index 6 shirt, r.score 0.0228026
-I1030 13:19:20.447952 107192 process_result.hpp:24] r.index 0 top, r.score 0.00308599
-I1030 13:19:20.448046 107192 process_result.hpp:24] r.index 2 pullover, r.score 0.00272338
-I1030 13:19:20.448081 107192 process_result.hpp:24] r.index 5 sandal, r.score 0.000688577
-
-    sample : ./test_jpeg_classification Keras-GoogleNet-ResNet-fmnist-miniVggNet sample_fmnist.png
-    output :
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1030 13:19:39.584873 107219 process_result.hpp:24] r.index 8 bag, r.score 0.999999
-I1030 13:19:39.585227 107219 process_result.hpp:24] r.index 6 shirt, r.score 1.0677e-06
-I1030 13:19:39.585264 107219 process_result.hpp:24] r.index 9 ankleBoot r.score 2.511e-08
-I1030 13:19:39.585299 107219 process_result.hpp:24] r.index 0 top, r.score 1.523e-08
-I1030 13:19:39.585327 107219 process_result.hpp:24] r.index 7 sneaker, r.score 1.18611e-08
+squeezenet_pt 109 0.995593
+squeezenet_pt 5 0.00246783
+squeezenet_pt 973 0.000333984
+squeezenet_pt 397 0.000333984
+squeezenet_pt 392 0.000333984

@@ -32,10 +32,10 @@ Important:
     sample : ./test_jpeg_lanedetect vpgnet_pruned_0_99 sample_lanedetect.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I0304 06:30:56.183323 31967 process_result.hpp:27] lines.size 5
-I0304 06:30:56.183476 31967 process_result.hpp:29] line.points_cluster.size() 137
-I0304 06:30:56.184705 31967 process_result.hpp:29] line.points_cluster.size() 89
-I0304 06:30:56.185477 31967 process_result.hpp:29] line.points_cluster.size() 169
-I0304 06:30:56.186900 31967 process_result.hpp:29] line.points_cluster.size() 41
-I0304 06:30:56.187288 31967 process_result.hpp:29] line.points_cluster.size() 41
+I1201 06:58:41.372287  4916 process_result.hpp:26] lines.size 5
+I1201 06:58:41.372402  4916 process_result.hpp:28] line.points_cluster.size() 137
+I1201 06:58:41.373663  4916 process_result.hpp:28] line.points_cluster.size() 89
+I1201 06:58:41.374481  4916 process_result.hpp:28] line.points_cluster.size() 169
+I1201 06:58:41.375944  4916 process_result.hpp:28] line.points_cluster.size() 33
+I1201 06:58:41.376255  4916 process_result.hpp:28] line.points_cluster.size() 41
 

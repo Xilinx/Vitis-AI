@@ -33,7 +33,7 @@ struct ClassificationResult {
    *@brief The struct of index and confidence for an object.
    */
   struct Score {
-    ///  Result's index in ImageNet.
+    ///  The index of the result in the ImageNet.
     int index;
     ///  Confidence of this category.
     float score;
@@ -44,15 +44,15 @@ struct ClassificationResult {
   int height;
   /**
    *A vector of objects width confidence in the first k, k defaults to 5 and
-   *can be modified through the model configutation file.
+   *can be modified through the model configuration file.
    */
   std::vector<Score> scores;
-  /// Classification label type
+  /// Classification label type.
   int type;
   /**
-   * @Get the classification corresponding by index
-   * @param index The network result
-   * @return Classification description, if index < 0, return empty string
+   * @brief  The classification corresponding by index.
+   * @param index The network result.
+   * @return The classification description, if index < 0, return empty string.
    */
   const char* lookup(int index);
 };
@@ -62,7 +62,7 @@ struct ClassificationResult {
  *@param input_tensors A vector of all input-tensors in the network.
  * Usage: input_tensors[input_tensor_index].
  *@param output_tensors A vector of all output-tensors in the network.
- *Usage: output_tensors[output_index].
+ *Usage: output_tensors[output_tensor_index].
  *@param config The dpu model configuration information.
  *@return The struct of ClassificationResult.
  */

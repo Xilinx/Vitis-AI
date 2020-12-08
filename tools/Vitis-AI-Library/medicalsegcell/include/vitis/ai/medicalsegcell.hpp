@@ -45,7 +45,7 @@ struct MedicalSegcellResult {
 };
 
 /**
- * @brief Base class for segment of nuclei from images of Cells.
+ * @brief Base class for segmenting nuclei from images of cells.
  *
  * Input is an image (cv:Mat).
  *
@@ -114,13 +114,13 @@ class MedicalSegcell {
       const std::vector<cv::Mat> &imgs) = 0;
 
   /**
-   * @brief Function to get InputWidth of the MedicalSegcell network (input image cols).
+   * @brief Function to get InputWidth of the MedicalSegcell network (input image columns).
    *
    * @return InputWidth of the MedicalSegcell network.
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the MedicalSegcell network (input image rows).
+   *@brief Function to get InputHeight of the MedicalSegcell network (input image rows).
    *
    *@return InputHeight of the MedicalSegcell network.
    */
@@ -130,7 +130,7 @@ class MedicalSegcell {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    *@return Batch size.

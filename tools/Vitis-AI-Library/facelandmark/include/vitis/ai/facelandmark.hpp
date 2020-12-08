@@ -38,15 +38,15 @@ namespace vitis {
 namespace ai {
 
 /**
- * @brief Base class for detecting five key points,and score from a
+ * @brief Base class for detecting five key points, and the score from a
  face image (cv::Mat).
  *
  * Input a face image (cv::Mat).
  *
  * Output score, five key points of the face.
  *
- * @note Usually the input image contains only one face, when contains multiple
- faces will return the highest score.
+ * @note Usually the input image contains only one face. When it contains multiple
+ faces, the functions returns the highest score.
  *
  * Sample code:
  * @code
@@ -95,14 +95,14 @@ class FaceLandmark {
  public:
   /**
    * @brief Function to get InputWidth of the landmark network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the face landmark network.
    */
   virtual int getInputWidth() const = 0;
 
   /**
-   *@brief Function to get InputHeigth of the landmark network (input image
+   *@brief Function to get InputHeight of the landmark network (input image
    *rows).
    *
    *@return InputHeight of the face landmark network.
@@ -112,7 +112,7 @@ class FaceLandmark {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -122,7 +122,7 @@ class FaceLandmark {
   /**
    * @brief Function to get running result of the face landmark network.
    *
-   * Set data of a face(e.g data of cv::Mat) and get the five key points.
+   * Set data of a face(e.g. data of cv::Mat) and get the five key points.
    *
    * @param input_image Input data of input image (cv::Mat) of detected by the
    *facedetect network and resized as inputwidth and inputheight.

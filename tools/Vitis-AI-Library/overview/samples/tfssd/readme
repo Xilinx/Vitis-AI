@@ -20,6 +20,7 @@ Important:
     ssd_mobilenet_v2_coco_tf
     ssd_resnet_50_fpn_coco_tf
     ssd_inception_v2_coco_tf
+    ssdlite_mobilenet_v2_coco_tf
     
     
 
@@ -58,3 +59,10 @@ I1122 00:09:31.598419 15709 process_result.hpp:77] RESULT: 18   112.851 41.9628 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
 I0826 15:11:04.683904 16311 process_result.hpp:43] RESULT: 18   113.689 28.8428 293.484 283.984 0.974043
 I0826 15:11:04.684190 16311 process_result.hpp:43] RESULT: 18   0.718068        9.99001 91.7563 251.037 0.835484
+
+    sample : ./test_jpeg_tfssd ssd_mobilenet_v1_coco_tf sample_tfssd.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1204 09:06:55.441154 22379 process_result.hpp:43] RESULT: 19   118.174 32.8396 295.293 277.977 0.731059
+I1204 09:06:55.441392 22379 process_result.hpp:43] RESULT: 19   1.76009 7.73934 95.363  260.441 0.562177
+I1204 09:06:55.441465 22379 process_result.hpp:43] RESULT: 20   118.046 29.9955 293.402 278.837 0.320821

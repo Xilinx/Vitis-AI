@@ -28,11 +28,11 @@ struct PoseDetectResult {
   int width;
   /// Height of input image.
   int height;
-  /// A coordinate point.
+  /// A coordinate points.
   using Point = cv::Point2f;
   /**
    * @struct Pose14Pt
-   * @brief A pose , represented by 14 coordinate points.
+   * @brief A pose, represented by 14 coordinate points.
    */
   struct Pose14Pt {
     /// R_shoulder coordinate
@@ -59,9 +59,9 @@ struct PoseDetectResult {
     Point left_knee;
     /// L_ankle coordinate
     Point left_ankle;
-    /// head coordinate
+    /// Head coordinate
     Point head;
-    /// neck coordinate
+    /// Neck coordinate
     Point neck;
   };
   /// The pose of input image.

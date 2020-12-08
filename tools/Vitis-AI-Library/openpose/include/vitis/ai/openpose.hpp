@@ -122,18 +122,26 @@ class OpenPose {
       const std::vector<cv::Mat> &images) = 0;
   /**
    * @brief Function to get InputWidth of the openpose network (input image
-   *cols).
+   *columns).
    *
    * @return InputWidth of the openpose network
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the openpose network (input image
+   *@brief Function to get InputHeight of the openpose network (input image
    *rows).
    *
    *@return InputHeight of the openpose network.
    */
   virtual int getInputHeight() const = 0;
+  /**
+   * @brief Function to get the number of images processed by the DPU at one
+   *time.
+   * @note Different DPU core the batch size may be different. This depends on
+   *the IP used.
+   *
+   * @return Batch size.
+   */
   virtual size_t get_input_batch() const = 0;
 };
 }  // namespace ai

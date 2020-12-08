@@ -25,7 +25,7 @@ namespace ai {
 
 /**
  *@struct VehicleResult
- *@brief A struct to define detection result of MultiTask
+ *@brief A struct to define detection result of MultiTask.
  */
 struct VehicleResult {
   /// number of classes
@@ -38,21 +38,21 @@ struct VehicleResult {
   /// \li \c  6 : "sign"
   /// \li \c  7 : "light"
   int label;
-  /// confidence of this target
+  /// Confidence of this target.
   float score;
-  /// x-coordinate, x is normalized relative to the input image cols ,the value
-  /// range from 0 to 1.
+  /// x-coordinate, x is normalized relative to the input image columns, the value
+  /// ranges from 0 to 1.
   float x;
-  /// y-coordinate ,y is normalized relative to the input image rows ,the value
-  /// range from 0 to 1.
+  /// y-coordinate, y is normalized relative to the input image rows, the value
+  /// ranges from 0 to 1.
   float y;
-  /// width, width is normalized relative to the input image cols ,the value
-  /// range from 0 to 1.
+  /// Width, width is normalized relative to the input image columns, the value
+  /// ranges from 0 to 1.
   float width;
-  /// height, height is normalized relative to the input image rows ,the value
-  /// range from 0 to 1.
+  /// Height, height is normalized relative to the input image rows, the value
+  /// ranges from 0 to 1.
   float height;
-  /// the angle between the target vehicle and ourself.
+  /// The angle between the target vehicle and ourself.
   float angle;
 };
 
@@ -68,7 +68,7 @@ struct MultiTaskResult {
   int height;
   /// Detection result of SSD task
   std::vector<VehicleResult> vehicle;
-  /// Segmentation  result to visualize , cv::Mat type is CV_8UC1 or CV_8UC3.
+  /// Segmentation result to visualize, cv::Mat type is CV_8UC1 or CV_8UC3.
   cv::Mat segmentation;
 };
 

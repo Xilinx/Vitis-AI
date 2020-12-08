@@ -26,45 +26,45 @@ namespace ai {
  * @brief Struct of the result returned by the platedetect network.
  */
 struct PlateDetectResult {
-  /// width of input image.
+  /// Width of input image.
   int width;
-  /// height of input image.
+  /// Height of input image.
   int height;
   struct BoundingBox {
-    /// Plate confidence, the value range from 0 to 1.
+    /// Plate confidence, the value ranges from 0 to 1.
     float score;
-    /// x-coordinate of the plate, x is normalized relative to input image cols,
-    /// the value range from 0 to 1.
+    /// x-coordinate of the plate, x is normalized relative to input image columns,
+    /// the value ranges from 0 to 1.
     float x;
     /// y-coordinate of the plate, y is normalized relative to input image rows,
-    /// the value range from 0 to 1.
+    /// the value ranges from 0 to 1.
     float y;
-    /// plate width , width is normalized relative to input image cols , the,
-    /// the value range from 0 to 1.
+    /// Plate width, width is normalized relative to input image columns,
+    /// the value ranges from 0 to 1.
     float width;
-    /// plate heigt , heigth is normalized relative to input image rows , the,
-    /// the value range from 0 to 1.
+    /// Plate height, height is normalized relative to input image rows, 
+    /// the value ranges from 0 to 1.
     float height;
   };
-  /// the position of plate
+  /// The position of plate.
   BoundingBox box;
   /**
    * @struct Point
-   * @brief plate coordinate point
+   * @brief Plate coordinate point.
    */
   struct Point {
-    /// x-coordinate , the value range from 0 to 1.
+    /// x-coordinate, the value ranges from 0 to 1.
     float x;
-    /// y-coordinate , the value range from 0 to 1.
+    /// y-coordinate, the value ranges from 0 to 1.
     float y;
   };
-  /// the top_left point.
+  /// The top_left point.
   Point top_left;
-  /// the top_right point.
+  /// The top_right point.
   Point top_right;
-  /// the bottom_left point.
+  /// The bottom_left point.
   Point bottom_left;
-  /// the bottom_right point.
+  /// The bottom_right point.
   Point bottom_right;
 
   /// below 2 arrays present the 4 coordinates, xx means the x coordinate, yy

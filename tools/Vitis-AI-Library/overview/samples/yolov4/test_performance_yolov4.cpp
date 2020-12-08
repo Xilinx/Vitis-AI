@@ -13,26 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <glog/logging.h>
-
-#include <iostream>
-#include <memory>
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
-#include <vitis/ai/retinaface.hpp>
-#include <vitis/ai/demo.hpp>
-#include <vitis/ai/nnpp/retinaface.hpp>
-
-#include "./process_result.hpp"
-using namespace std;
-int main(int argc, char* argv[]) {
-  string model = argv[1];
-  return vitis::ai::main_for_jpeg_demo(
-      argc, argv,
-      [model] {
-        return vitis::ai::RetinaFace::create(model);
-      },
-      process_result, 2);
+#include <string>
+#include <vitis/ai/benchmark.hpp>
+#include <vitis/ai/nnpp/yolov3.hpp>
+#include <vitis/ai/yolov3.hpp>
+int main(int argc, char *argv[]) {
+  std::string model = argv[1];
+  return vitis::ai::main_for_performance(argc, argv, [model] {
+    { return vitis::ai::YOLOv3::create(model); }
+  });
 }
-

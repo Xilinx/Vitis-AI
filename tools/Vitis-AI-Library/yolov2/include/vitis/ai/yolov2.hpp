@@ -32,7 +32,7 @@ namespace ai {
 /**
  *@brief Base class for detecting objects in the input image(cv::Mat).
  *Input is an image(cv::Mat).
- *Output is position of the objects in the input image.
+ *Output is the position of the objects in the input image.
  *Sample code:
  *@code
    auto img = cv::imread("sample_yolov2.jpg");
@@ -103,13 +103,13 @@ class YOLOv2 {
    */
   virtual std::vector<YOLOv2Result> run(const std::vector<cv::Mat>& images) = 0;
   /**
-   * @brief Function to get InputWidth of the YOLOv2 network (input image cols).
+   * @brief Function to get InputWidth of the YOLOv2 network (input image columns).
    *
    * @return InputWidth of the YOLOv2 network
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the YOLOv2 network (input image rows).
+   *@brief Function to get InputHeight of the YOLOv2 network (input image rows).
    *
    *@return InputHeight of the YOLOv2 network.
    */
@@ -117,7 +117,7 @@ class YOLOv2 {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    * time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    * the IP used.
    *
    * @return Batch size.

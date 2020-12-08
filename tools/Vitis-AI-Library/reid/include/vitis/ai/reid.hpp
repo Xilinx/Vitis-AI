@@ -88,7 +88,7 @@ class Reid {
    */
  public:
   /**
-   * @brief Function to get running result of the reid neuron network.
+   * @brief Function to get running result of the ReID neuron network.
    *
    * @param image Input data of input image (cv::Mat).
    *
@@ -98,7 +98,7 @@ class Reid {
   virtual ReidResult run(const cv::Mat &image) = 0;
 
   /**
-   * @brief Function to get running result of the reid neuron network in batch
+   * @brief Function to get running result of the ReID neuron network in batch
    * mode.
    *
    * @param images Input data of input images (vector<cv::Mat>).
@@ -108,24 +108,24 @@ class Reid {
    */
   virtual std::vector<ReidResult> run(const std::vector<cv::Mat> &images) = 0;
   /**
-   * @brief Function to get InputWidth of the reid network (input image
-   *cols).
+   * @brief Function to get InputWidth of the ReID network (input image
+   *columns).
    *
-   * @return InputWidth of the reid network
+   * @return InputWidth of the ReID network
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the reid network (input image
+   *@brief Function to get InputHeight of the ReID network (input image
    *rows).
    *
-   *@return InputHeight of the reid network.
+   *@return InputHeight of the ReID network.
    */
   virtual int getInputHeight() const = 0;
 
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    *@return Batch size.

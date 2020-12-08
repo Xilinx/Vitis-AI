@@ -28,6 +28,6 @@ Important:
 
    run the executable file.
     
-    sample : ./test_jpeg_hourglass hourglass-pe_mpii sample_hourglass.jpg
+    sample : ./test_jpeg_hourglass hourglass-pe_mpii sample_hourglass.png
     output : 
    
