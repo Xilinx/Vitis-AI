@@ -204,6 +204,9 @@ print("Finished OTF Qunatization")
 #########################################################
 
 if target.startswith('dpuv2') or target.startswith('DPUCZDX8G'):
+    # Export runtime module
+    temp = utils.tempdir()
+    lib.export_library(temp.relpath("tvm_lib.so"))
 
     # Build and export lib for aarch64 target
     tvm_target = tvm.target.arm_cpu('ultra96')
