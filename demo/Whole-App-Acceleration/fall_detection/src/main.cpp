@@ -40,6 +40,7 @@ using namespace std::chrono;
 AKS::AIGraph *OFGraph;
 AKS::AIGraph *OFInferenceGraph;
 
+std::atomic<long> frameCount(0);
 std::once_flag reset_timer_flag;
 high_resolution_clock::time_point start_timer;
 
@@ -132,6 +133,7 @@ void runOFInference(std::vector<AKS::DataDescriptor>& stack,
         stack.erase(stack.begin(), stack.begin()+stride);
         ulock.unlock();
         cond_var.notify_all();
+        frameCount++;
         auto inferenceFut = sysMan->enqueueJob(OFInferenceGraph, title, std::move(st));
         auto outDD = inferenceFut.get()[0];
         float* outData = outDD.data<float>();
@@ -321,8 +323,9 @@ int main(int argc, char **argv) {
     }
     auto stop_timer = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop_timer - start_timer);
-    cout << "Total timetaken: " << (float)duration.count()/1000000 << " seconds.." << endl;
+    std::cout << "Total timetaken: " << (float)duration.count()/1000000 << " seconds.." << std::endl;
     sysMan->report(OFInferenceGraph);
+    std::cout << "Throughput (fps): " << frameCount*1000000/(float)duration.count() << std::endl;
     AKS::SysManagerExt::deleteGlobal();
     return 0;
 }
