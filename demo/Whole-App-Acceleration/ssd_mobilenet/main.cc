@@ -209,7 +209,7 @@ void runSSD(vart::Runner* runner, string config_file, string img_dir, bool profi
 	if(profile) {
 		std::cout << "Pre-Process Execution time: " << pre_time/count << " us\n";
 		std::cout << "DPU Execution time: " << exec_time/count << " us\n";
-		std::cout << "Post-Proc Execution time: " << post_time/count << " us\n";
+		std::cout << "FPGA Accelerated Post-Processing time: " << post_time/count << " us\n";
 	}
 
 	return;
