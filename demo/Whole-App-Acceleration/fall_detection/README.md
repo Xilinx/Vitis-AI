@@ -131,7 +131,7 @@ Performance metrics observed on urfd_dataset:
 * Specificity: 0.959103
 * FAR/FPR: 0.0408972
 * MDR/FNR: 0.00671893
-* Throughput (fps): 117 frames
+* Throughput (fps): 117
 
 
 ## Write prediction probabilities to video
