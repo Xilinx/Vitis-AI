@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 8be46fb3fbc9812344fffd60fb751d53
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-vck190-r1.3.0.tar.gz
+  checksum: 10e7d0e2f80789707788292d6d97cd48
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-r1.3.0.tar.gz
+  checksum: 3d3844c3bcf6091360b99d6c4ac59775
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50lv-u280-r1.3.0.tar.gz
+  checksum: 9fc9303cc6372bbe289e3503cee507fc
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

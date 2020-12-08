@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: facereid-large_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: e97938afdeca3e2536f1863d1d009052
 - name: facereid-large_pt
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-vck190-r1.3.0.tar.gz
+  checksum: f6daedc42e7c4e57fe93817bee4ca524
 - name: facereid-large_pt
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50-r1.3.0.tar.gz
+  checksum: e7ce9b078dce24c7678e479ff864106e
 - name: facereid-large_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50lv-u280-r1.3.0.tar.gz
+  checksum: 935ba1e1e7ea519472d61e6440320920
 - name: facereid-large_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: ENet_cityscapes_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: e4ae0b80a3e528758c0c70c7c47042ac
 - name: ENet_cityscapes_pt
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck190-r1.3.0.tar.gz
+  checksum: 9f4bad581954ced4312099be23327463
 - name: ENet_cityscapes_pt
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-u50-r1.3.0.tar.gz
+  checksum: f811a3adde8d80270d5f4ead7b70d862
 - name: ENet_cityscapes_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-u50lv-u280-r1.3.0.tar.gz
+  checksum: 9fa96343292ca486fd01f751ddec6154
 - name: ENet_cityscapes_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

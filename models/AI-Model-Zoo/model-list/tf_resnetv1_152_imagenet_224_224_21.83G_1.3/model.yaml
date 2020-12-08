@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: resnet_v1_152_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 9f69944f661f9a9ef63d18cb065b4c73
 - name: resnet_v1_152_tf
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-vck190-r1.3.0.tar.gz
+  checksum: 61f101a436d848f45696a9febab28749
 - name: resnet_v1_152_tf
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50-r1.3.0.tar.gz
+  checksum: cd1f9a9e77a8bebf05ed76a054325294
 - name: resnet_v1_152_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50lv-u280-r1.3.0.tar.gz
+  checksum: f0ab9c0010eb8b9f311204054ee247b8
 - name: resnet_v1_152_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

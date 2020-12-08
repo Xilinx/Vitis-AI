@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 22e4b12352461eaad097d90fd1ac8e93
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-vck190-r1.3.0.tar.gz
+  checksum: 5a77400600ad30f0eb34e0938ab47aa6
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50-r1.3.0.tar.gz
+  checksum: 8aa8e3e7048cea56eaaf0bbe874c69f1
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50lv-u280-r1.3.0.tar.gz
+  checksum: b0c5c1a52fb1c9dde85438640ff15c32
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

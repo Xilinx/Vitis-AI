@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,21 +30,21 @@ files:
 - name: yolov3_bdd
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 5c8fcfd62c5b8939754e7ff83eb9adc3
 - name: yolov3_bdd
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-vck190-r1.3.0.tar.gz
+  checksum: a109e310e9670dc6f39ba26e2f90537d
 - name: yolov3_bdd
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u50-r1.3.0.tar.gz
+  checksum: 099a2850f842f44877911ceeb3299ebc
 - name: yolov3_bdd
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u50lv-u280-r1.3.0.tar.gz
+  checksum: 2c72683ef3362f2fafafc93098abcd52
 license: license link

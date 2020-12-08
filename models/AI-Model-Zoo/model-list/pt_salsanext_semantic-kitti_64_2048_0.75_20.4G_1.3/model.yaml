@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: salsanext_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 9313b90861cda3c51a67bf97567b1000
 - name: salsanext_pt
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck190-r1.3.0.tar.gz
+  checksum: e99482ab45314e4c083debb6f5fcfb6d
 - name: salsanext_pt
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-r1.3.0.tar.gz
+  checksum: 77074ccfa0dae240eeea1e4a8877d6f7
 - name: salsanext_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50lv-u280-r1.3.0.tar.gz
+  checksum: a0029f508aa1a345ca412c5fa0d755bc
 - name: salsanext_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 43f26968ccf02a7b8571b9486b95f4f8
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck190-r1.3.0.tar.gz
+  checksum: 3c26439aa628eed606f541590b1aa415
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-r1.3.0.tar.gz
+  checksum: 23b0be4288d9bbc58e93a477d793a6c3
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50lv-u280-r1.3.0.tar.gz
+  checksum: 3b6b0f3a2b2bcd03d4ab0877089072cb
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

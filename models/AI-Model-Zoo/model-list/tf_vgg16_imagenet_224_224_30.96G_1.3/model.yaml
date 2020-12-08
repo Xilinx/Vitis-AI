@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: vgg_16_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 5697062c1108791108b55cb5aadac764
 - name: vgg_16_tf
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-vck190-r1.3.0.tar.gz
+  checksum: aee106f7404699e543d3ca78f5ad399a
 - name: vgg_16_tf
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-r1.3.0.tar.gz
+  checksum: 4ad37490167787636604139ada91a510
 - name: vgg_16_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50lv-u280-r1.3.0.tar.gz
+  checksum: b5f1ba1e34d0a013af2909e03052e43f
 - name: vgg_16_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

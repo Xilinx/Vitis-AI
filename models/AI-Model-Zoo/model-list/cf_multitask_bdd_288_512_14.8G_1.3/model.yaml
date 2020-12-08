@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: multi_task
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 5306db3eb4f28dd00fb6bf5601caac8e
 - name: multi_task
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck190-r1.3.0.tar.gz
+  checksum: 287619ef0d9429651d7fdaad453d4385
 - name: multi_task
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-r1.3.0.tar.gz
+  checksum: 38b49cbc2e4c70ea4e56412103eb1f3a
 - name: multi_task
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50lv-u280-r1.3.0.tar.gz
+  checksum: 61a16e088b74dff6f0a217dbfe05c1b5
 - name: multi_task
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

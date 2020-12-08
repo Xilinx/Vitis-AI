@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,23 +31,23 @@ files:
 - name: face_landmark
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: d901d53b94b5712b85d9f6d3dbd5f179
 - name: face_landmark
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck190-r1.3.0.tar.gz
+  checksum: 740a50709cdf563b00686dec85cfe7d6
 - name: face_landmark
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-r1.3.0.tar.gz
+  checksum: f66249dc8761f54ecc816da3435d9add
 - name: face_landmark
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50lv-u280-r1.3.0.tar.gz
+  checksum: 0f373e0185daa8646ea5ddcb2813bd97
 - name: face_landmark
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: densebox_640_360
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 951d135bd294ba464522990e2c99fa7c
 - name: densebox_640_360
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-vck190-r1.3.0.tar.gz
+  checksum: 72a4a2eee3f5fa2e608fbe1e55a4f951
 - name: densebox_640_360
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50-r1.3.0.tar.gz
+  checksum: ef977d07f7a630f5cb63210308d40f10
 - name: densebox_640_360
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50lv-u280-r1.3.0.tar.gz
+  checksum: adedb2af6ea5b94d8d14f3656bb90e5e
 - name: densebox_640_360
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
