@@ -15,7 +15,8 @@ Both the Dedicated and Main Blocks are configured to work in a pipelined manner,
 In Throughput mode, the throughput of the XDNN processor is determined by the maximum latency of the Main Block or Dedicated Block.
 
 Example:
-```
+```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
 cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes/test_classify.py
 ./run.sh -t test_classify -c latency
 ./run.sh -t test_classify -c throughput
@@ -30,13 +31,14 @@ The runtime engine allows the user application to submit concurrent inference ta
 - the user application is free to do other things and decide when to block and collect results from the FPGA
 
 We use the following scheme for enqueuing execution asynchronously and collecting results:
-```
+```sh
   runner.execute_async()
   runner.wait()
 ```
 
 Example:
-```
+```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
 cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes/test_classify_async_multinet.py
 ./run.sh -t multinet
 ```
@@ -55,7 +57,8 @@ For maximum throughput, it is recommended to take advantage of the XDNN processo
 It is not necessary to wait for one image to finish all steps before proceeding to the next image. As soon as image 1 is done with step A, image 2 can be submitted to step A while image 1 moves through the next steps in the pipeline.
 
 The following example shows how to achieve maximum end-to-end inference throughput using the API:
-```
+```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
 cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes/mp_classify.py
 ./run.sh -t streaming_classify
 ```
@@ -67,8 +70,9 @@ XDNN supports implementing multiple Processing Elements (PE) on one FPGA. Each P
 Or, the application may load different models to different PEs for maximum throughput for multiple models. The throughput will be determined by the latency of the slowest model.
 
 Examples:
-```
+```sh
 # Multiple PEs running the same model (default)
+# Typically, <path-to-vitis-ai> is `/workspace`
 cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes/test_classify.py
 ./run.sh -t test_classify
 

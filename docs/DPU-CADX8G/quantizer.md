@@ -7,7 +7,7 @@ VAI_Q_CAFFE is a tool to convert the 32-bit floating-point weights and activatio
 
 ## Steps for running VAI_Q_CAFFE
 
-```
+```sh
 user@localhost:/workspace$ conda activate vitis-ai-caffe
 (vitis-ai-caffe) user@localhost:/workspace$ vai_q_caffe --help
 
@@ -51,7 +51,7 @@ layer {
 
 ### Running VAI_Q_CAFFE <br />
 Run the following command to generate a fixed-point model
-```
+```sh
 vai_q_caffe quantize -model float.prototxt -weights float.caffemodel [other options]
 
 ```
@@ -64,8 +64,10 @@ The 3 commonly used ‘other options’ are shown below:<br />
 For more information about usage of vai_q_caffe, run ‘vai_q_caffe –help’ command.
 
 ### Running DECENT_Q with python <br />
-```
+```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
 source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh alveo-u200
+
 # Bring in Quantizer
 from decent import CaffeFrontend as xfdnnQuantizer
 def Quantize(prototxt, caffemodel, calib_iter=1, test_iter=1):
@@ -78,9 +80,9 @@ def Quantize(prototxt, caffemodel, calib_iter=1, test_iter=1):
     )
     quantizer.quantize()
 ```
-```
-Quantize(prototxt='float.prototxt', caffemodel='float.caffemdodel')
 
+```sh
+Quantize(prototxt='float.prototxt', caffemodel='float.caffemdodel')
 ```
 
 ### Outputs
@@ -98,7 +100,7 @@ There are two ways to get the quantize accuracy. <br />
 1.	While running vai_q_caffe, user can pass “auto_test” option to enable accuracy calculation.<br />
 2.	After running vai_q_caffe, user can use following command to calculate accuracy of the quantized model. <br />
 
-```
+```sh
 vai_q_caffe test -model quantize_results/quantize_train_test.prototxt -weights quantize_results/quantize_train_test.caffemodel  -test_iter 100
 ```
 

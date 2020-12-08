@@ -1,42 +1,53 @@
 
-:pushpin: **Note:** This application is only available on Alveo-U200 card with DPU-CADX8G.
+# Fall detection using Accelerated Optical Flow
 
-# **Setup**
+:pushpin: **Note:** This application can be run only on Alveo-U200 platform.
+
+## Table of Contents
+
+- [Introduction](#Introduction)
+- [Setup](#Setup)
+- [Prepare the data](#Prepare-the-data)
+- [Running the Application](#Running-the-Application)
+- [Performance](#Performance)
+
+## Introduction
+This application demonstrates the acceleration of Lucas-Kanade Dense Non-Pyramidal Optical Flow algorithm and modified VGG16 network which takes 20 channel input. Every consecutive pair of frames are resized and fed to Optical Flow kernel which generates a 2 dimensional Optical Flow vector. 10 of such consecutive vectors are stacked together and passed to the inference model, which is trained to classify fall from no-fall.
+
+## Setup
 ```sh
 conda activate vitis-ai-caffe
 # Typically, <path-to-vitis-ai> is `/workspace`
 source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
-# **Build**
-
-## **Build common kernels**
+#### Build common kernels
 ```sh
 cd ${VAI_ALVEO_ROOT}/../tools/AKS
 ./cmake-kernels.sh --clean --dpu=dpucadx8g
 ```
 
-## **Build fall-detection kernels**
+#### Build fall-detection kernels
 ```sh
 cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/fall_detection
 ./cmake-kernels.sh --clean
 ```
-## **Compile main file**
+#### Compile main file
 ```sh
 cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/fall_detection
 make
 ```
 
-# **Variables**
+### Variables
 
-> These are found in src/main.cc
+> These are found in src/main.cpp
 
 * `OFStackSize`: Determines number of Optical Flow (pair) vectors to be stacked together to create a blob
 * `OFGraph`: AKS Graph that is used to run Optical Flow on given pair of previous and current frames
 * `OFInferenceGraph`: AKS Graph that is used to run classification inference on stacked Optical Flow (flowx & flowy) vectors
 
 
-# **Workflow**
+### Workflow
 
 * Each `video` and `images directory` will be processed in a separate thread.
 * thread x: One for each stream (either video or image-directory).
@@ -44,9 +55,7 @@ make
 * Once the stack is full (size=OFStackSize), Copy the elements to a container and pass it to OFinfernece.
 
 
-# **graph_zoo**
-
-## Temporal Classification
+### Graph Zoo
 
 #### `graph_optical_flow_fpga.json` contains the dense non-pyramidal Lucas–Kanade OpticalFlow graph that runs on FPGA.
 * **optical_flow_preproc**: Apply letterbox resizing and convert BGR image to Grayscale
@@ -61,9 +70,9 @@ make
 * **calc_accuracy**: Calculate the accuracy of the network given gt.txt and write the probability of no-fall and save it in the directory mentioned in visualize parameter.
 
 
-## Prepare the groundtruth data
+## Prepare the data
+> :pushpin: **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
-* If the accuracy, recall and other metrics to be evaluated, we need to pass ground_truth file to calc_accuracy node of graph_of_inference.json.
 * Download the [fall-\*-cam0-rgb.zip and adl-\*-cam0-rgb.zip] dataset and extract them to `urfd_dataset` folder from the official URFD dataset link: http://fenix.univ.rzeszow.pl/~mkepski/ds/uf.html
 ```sh
 mkdir urfd_dataset
@@ -74,18 +83,19 @@ wget http://fenix.univ.rzeszow.pl/~mkepski/ds/data/fall-01-cam0-rgb.zip && unzip
 [sample]
 wget http://fenix.univ.rzeszow.pl/~mkepski/ds/data/adl-01-cam0-rgb.zip && unzip adl-01-cam0-rgb.zip -d urfd_dataset && rm adl-01-cam0-rgb.zip
 ```
+
+* If the accuracy, recall and other metrics are to be evaluated, we need to pass ground_truth file to calc_accuracy node of graph_of_inference.json.
 * Download urfall-cam0-falls.csv file from the same website
 ```sh
 wget http://fenix.univ.rzeszow.pl/~mkepski/ds/data/urfall-cam0-falls.csv
 ```
 * Run convert_csv_to_gt_file.py to create gt.txt which contains the label by filename
-
 ```sh
 python convert_csv_to_gt_file.py
 ```
 
 
-# **Run app**
+## Running the Application
 ```sh
 ./run.sh -d <directory>
 
@@ -112,8 +122,9 @@ python convert_csv_to_gt_file.py
         └── img_4.jpeg
 ```
 
-### Performance metrics observed on urfd_dataset
+## Performance
 
+Performance metrics observed on urfd_dataset:
 * Accuracy: 0.961819
 * Sensitivity/Recall: 0.993281
 * Specificity: 0.959103
@@ -124,7 +135,7 @@ python convert_csv_to_gt_file.py
 
 ## Write prediction probabilities to video
 
-Reads the probabilities written by the accuracy kernel of graph_of_inference and writes them on the images and saves as videos.
+Reads the probabilities written by the accuracy kernel of graph_of_inference, writes them on the images and saves as videos.
 
 ```
 usage: write_to_video.py [-h] -id INPUT_DIR -im IMAGES_DIR [-o OUTPUT_DIR]
