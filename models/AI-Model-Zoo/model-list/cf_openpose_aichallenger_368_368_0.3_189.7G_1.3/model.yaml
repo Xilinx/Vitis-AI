@@ -16,7 +16,7 @@
 
 description: Openpose - Multiple person Pose Estimation
 input size: 368*368
-float ops: 49.88G
+float ops: 189.7G
 task: pose estimation
 framework: caffe
 prune: 'no'
