@@ -147,7 +147,7 @@ void runSSD(vart::Runner* runner, string config_file, string img_dir, bool profi
 		
 	vector<std::unique_ptr<vitis::ai::TFSSDPostProcess>> processor_;
 	processor_.push_back( vitis::ai::TFSSDPostProcess::create(
-	width, height, out_scales[0], out_scales[1], config_));
+	    width, height, out_scales[0], out_scales[1], config_));
 	
 	const short* fx_priors_ = processor_[0]->fixed_priors_;
 	//# Hardware post proc kernel init
@@ -221,7 +221,7 @@ void runSSD(vart::Runner* runner, string config_file, string img_dir, bool profi
  */
 int main(int argc, char **argv) {
   if(argc != 5){
-   std::cerr << "invalid options <exe> <config proto> <xmodel> <image> <enable profile>\n";
+   std::cerr << "invalid options <exe> <config proto> <xmodel> <image dir> <enable profile>\n";
    return -1; 
   }
   std::string config_proto = argv[1];

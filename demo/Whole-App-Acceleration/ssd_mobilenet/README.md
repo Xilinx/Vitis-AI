@@ -32,7 +32,7 @@ conda activate vitis-ai-caffe
 ## Running the Application
 - `cd /workspace/demo/Whole-App-Acceleration/ssd_mobilenet/`
 - `make build && make -j`
-- `./run.sh model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.prototxt model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.xmodel <image path>`
+- `./run.sh model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.prototxt model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.xmodel <image directory>`
 
 ## Detection Output
 Detection outputs contains the lable, coordinates and confidence values for given input image.
