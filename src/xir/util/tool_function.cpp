@@ -55,7 +55,7 @@ const std::string get_md5_of_file(const std::string& filepath) {
        << static_cast<std::uint32_t>(md5sum[idx]);
   }
   const std::string ret = ss.str();
-  delete buffer;
+  delete[] buffer;
   file.close();
   UNI_LOG_DEBUG_INFO << "md5sum(" << filepath << ") = " << ret << ".";
   return ret;
