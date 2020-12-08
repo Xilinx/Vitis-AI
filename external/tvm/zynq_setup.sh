@@ -40,8 +40,9 @@ cd "${TVM_HOME}"
 mkdir "${TVM_HOME}"/build
 cp "${TVM_HOME}"/cmake/config.cmake "${TVM_HOME}"/build/
 cd "${TVM_HOME}"/build && echo set\(USE_VITIS_AI ON\) >> config.cmake && cmake .. && make -j$(nproc)
-#cd "${TVM_HOME}"/python && sudo python3 ./setup.py install
-cd "${TVM_HOME}"/python && pip3 install -e . --user 
+#cd "${TVM_HOME}"/python && pip3 install -e . --user 
+cd "${TVM_HOME}"/python && sudo python3 ./setup.py install
+
 
 DISTRIBUTION=`lsb_release -i -s`
 if ! [[ "$DISTRIBUTION" == "pynqlinux" ]]; then

@@ -219,7 +219,7 @@ if target.startswith('dpuv2') or target.startswith('DPUCZDX8G'):
                                    config={'relay.ext.vitis_ai.options.load_runtime_module': export_rt_mod_file}):
         lib_dpuv2 = relay.build(mod, tvm_target, params=params)
 
-    lib_dpuv2.export_library('tvm_dpuv2_cpu.so', **lib_kwargs)
+    lib_dpuv2.export_library('tvm_dpu_cpu.so', **lib_kwargs)
 
 else:
     lib.export_library('tvm_dpu_cpu.so')
