@@ -33,29 +33,29 @@ namespace ai {
 
 /**
  * @struct YOLOv2Result
- * @brie Struct of the result returned by the yolov2 network.
+ * @brie Struct of the result returned by the YOLOv2 network.
  */
 struct YOLOv2Result {
   /**
    * @struct BoundingBox
-   * @brief  Struct of an object coordinate ,confidence and classification.
+   * @brief  Struct of an object coordinate, confidence, and classification.
    */
   struct BoundingBox {
-    /// classification.
+    /// Classification.
     int label;
-    /// confidence, the range from 0 to 1.
+    /// Confidence, the value ranges from 0 to 1.
     float score;
-    /// x-coordinate, x is normalized relative to the input image cols, its
-    /// value range from 0 to 1.
+    /// x-coordinate, x is normalized relative to the input image columns, the
+    /// value ranges from 0 to 1.
     float x;
-    /// y-coordinate, y is normalized relative to the input image rows, its
-    /// value range from 0 to 1.
+    /// y-coordinate, y is normalized relative to the input image rows, the 
+    /// value ranges from 0 to 1.
     float y;
-    /// width, width is normalized relative to the input image cols, its value
-    /// from 0 to 1.
+    /// Width, width is normalized relative to the input image columns, the 
+    /// value ranges from 0 to 1.
     float width;
-    /// height, height is normalized relative to the input image rows, its value
-    /// range from 0 to 1.
+    /// Height, height is normalized relative to the input image rows, the value
+    /// ranges from 0 to 1.
     float height;
   };
   /// Width of input image.
@@ -67,7 +67,7 @@ struct YOLOv2Result {
 };
 
 /**
- * @brief The post-processing function of the yolov2 network.
+ * @brief The post-processing function of the YOLOv2 network.
  * @param input_tensors A vector of all input-tensors in the network.
  *   Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.
@@ -75,14 +75,14 @@ struct YOLOv2Result {
  * @param config The dpu model configuration information.
  * @param w The width of origin image.
  * @param h The height of origin image.
- * @return the result of the yolov2 network.
+ * @return the result of the YOLOv2 network.
  */
 YOLOv2Result yolov2_post_process(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
     const vitis::ai::proto::DpuModelParam& config, const int w, const int h);
 /**
- * @brief The post-processing function of the yolov2 network in batch mode.
+ * @brief The post-processing function of the YOLOv2 network in batch mode.
  * @param input_tensors A vector of all input-tensors in the network.
  *   Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.
@@ -90,7 +90,7 @@ YOLOv2Result yolov2_post_process(
  * @param config The dpu model configuration information.
  * @param w The vector of width of origin image.
  * @param h The vector of height of origin image.
- * @return the vector of result of the yolov2 network.
+ * @return the vector of result of the YOLOv2 network.
  */
 std::vector<YOLOv2Result> yolov2_post_process(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,

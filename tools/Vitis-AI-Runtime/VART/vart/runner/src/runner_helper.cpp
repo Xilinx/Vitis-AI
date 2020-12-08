@@ -149,28 +149,6 @@ std::vector<std::int32_t> get_index_zeros(const xir::Tensor* tensor) {
   return ret;
 }
 
-class CpuFlatTensorBuffer : public TensorBuffer {
- public:
-  explicit CpuFlatTensorBuffer(void* data, const xir::Tensor* tensor);
-  virtual ~CpuFlatTensorBuffer() = default;
-
- public:
-  virtual std::pair<uint64_t, size_t> data(
-      const std::vector<int> idx = {}) override;
-
- protected:
-  void* data_;
-};
-
-class CpuFlatTensorBufferOwned : public CpuFlatTensorBuffer {
- public:
-  explicit CpuFlatTensorBufferOwned(const xir::Tensor* tensor);
-  virtual ~CpuFlatTensorBufferOwned() = default;
-
- private:
-  std::vector<char> buffer_;
-};
-
 CpuFlatTensorBuffer::CpuFlatTensorBuffer(void* data, const xir::Tensor* tensor)
     : TensorBuffer{tensor}, data_{data} {}
 

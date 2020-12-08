@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: unet_chaos-CT_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 370fdcc4d8e78d473f0227c718f35c15
 - name: unet_chaos-CT_pt
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-vck190-r1.3.0.tar.gz
+  checksum: d5505e79ca6d3c0fbd9989715d0ed76d
 - name: unet_chaos-CT_pt
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-u50-r1.3.0.tar.gz
+  checksum: 73d4733129f0339e52c8035ad7f1dcd8
 - name: unet_chaos-CT_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-u50lv-u280-r1.3.0.tar.gz
+  checksum: b2f53d4067d22d3befd322fadca32cbd
 - name: unet_chaos-CT_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

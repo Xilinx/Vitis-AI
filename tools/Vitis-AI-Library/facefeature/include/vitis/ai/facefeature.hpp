@@ -43,13 +43,14 @@ namespace ai {
  * Output is the features of a face in the input image.
  *
  * @note Two interfaces are provided to get the float features or fixed
- features.  features is a vector has 512 elements.
+ features. They return FaceFeatureFloatResult or FaceFeatureFixedResult. 
  *
  * Float sample code :
  * @code
    cv:Mat image = cv::imread("test_face.jpg");
    auto network  = vitis::ai::FaceFeature::create("facerec_resnet20", true);
    auto result = network->run(image);
+   auto features = result.feature;
    @endcode
  *
  * Fixed sample code :
@@ -57,14 +58,23 @@ namespace ai {
    cv:Mat image = cv::imread("test_face.jpg");
    auto network  = vitis::ai::FaceFeature::create("facerec_resnet20", true);
    auto result = network->run_fixed(image);
+   auto features = result.feature;
    @endcode
  *
  * Similarity calculation formula :
  *
  * \f$\rho = \frac{\vec{a} \cdot \vec{b}}{\sqrt{\sum_{i=1}^{n} {a_i}^2}
   \cdot \sqrt{\sum_{i=1}^{n} {b_i}^2}}\f$
- *
- *
+ * 
+ * Calaculate the similarity of two images:
+ * @code
+ *  auto result_fixed = network->run_fixed(image);
+ *  auto result_fixed2 = network->run_fixed(image2);
+ *  auto similarity_original = feature_compare(result_fixed.feature->data(),
+ *                                   result_fixed2.feature->data());
+ *  float similarity_mapped = score_map(similarity_original);
+ * @endcode
+
  * Fixed compare code :
  * @code
    float feature_norm(const int8_t *feature) {
@@ -125,23 +135,35 @@ class FaceFeature {
                                              xir::Attrs *attrs,
                                              bool need_preprocess = true);
  protected:
+  /**
+   * @cond NOCOMMENTS
+   */
   explicit FaceFeature();
   FaceFeature(const FaceFeature &) = delete;
   FaceFeature &operator=(const FaceFeature &) = delete;
+  /**
+   * @endcond
+   */
 
  public:
+  /**
+   * @cond NOCOMMENTS
+   */
   virtual ~FaceFeature();
+  /**
+   * @endcond
+   */
 
   /**
    * @brief Function to get InputWidth of the feature network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the feature network.
    */
   virtual int getInputWidth() const = 0;
 
   /**
-   *@brief Function to get InputHeigth of the feature network (input image
+   *@brief Function to get InputHeight of the feature network (input image
    *rows).
    *
    *@return InputHeight of the feature network.
@@ -151,7 +173,7 @@ class FaceFeature {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -162,7 +184,7 @@ class FaceFeature {
    * @brief Function of get running result of the feature network.
    *
    * @param img Input data for image (cv::Mat) detected by the facedetect
-   * network and then retated and aligned.
+   * network and then rotated and aligned.
    *
    *
    * @return FaceFeatureFloatResult
@@ -172,8 +194,8 @@ class FaceFeature {
   /**
    * @brief Function of get running result of the feature network.
    *
-   * @param img Input Data of input image (cv::Mat) of detected counterpart
-   * and resized as InputWidth and InputHeight.
+   * @param img Input data for image (cv::Mat) detected by the facedetect
+   * network and then rotated and aligned.
    *
    * @return FaceFeatureFixedResult
    */
@@ -184,7 +206,7 @@ class FaceFeature {
    * in batch mode.
    *
    * @param imgs Input data of batch input images (vector<cv::Mat>) detected
-   * by the facedetect network and then retated and aligned. The size of input
+   * by the facedetect network and then rotated and aligned. The size of input
    * images equals batch size obtained by get_input_batch.
    *
    * @return The vector of FaceFeatureFloatResult.
@@ -198,7 +220,7 @@ class FaceFeature {
    * in batch mode.
    *
    * @param imgs Input data of batch input images (vector<cv::Mat>) detected
-   * by the facedetect network and then retated and aligned. The size of input
+   * by the facedetect network and then rotated and aligned. The size of input
    * images equals batch size obtained by get_input_batch.
    *
    * @return The vector of FaceFeatureFixedResult.

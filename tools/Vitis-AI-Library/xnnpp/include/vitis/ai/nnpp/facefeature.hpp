@@ -26,31 +26,33 @@ namespace ai {
 
 /**
  * @struct FaceFeatureFloatResult
- * @brief The result of FaceFeature ,its a 512 dimentions vector, float value.
+ * @brief The result of FaceFeature. It is a 512 dimensions vector, float value.
  * */
 struct FaceFeatureFloatResult {
-  /// width of a input image
+  /// Width of an input image
   int width;
-  /// height of a input image
+  /// Height of an input image
   int height;
-  /// the 512 dimention vector
+  /// The 512 dimensions vector
   using vector_t = std::array<float, 512>;
+  // A vector of 512 float values.
   std::unique_ptr<vector_t> feature;
 };
 
 /**
- * @brief result of FaceFeature
- * it is a 512 dimentions vector, fix point values
+ * @struct FaceFeatureFixedResult
+ * @brief The result of FaceFeature. It is a 512 dimensions vector, fix point values.
  * */
 struct FaceFeatureFixedResult {
-  /// width of a input image
+  /// Width of an input image
   int width;
-  /// height of a input image
+  /// Height of an input image
   int height;
-  /// the fix point
+  /// The fix point
   float scale;
-  /// the 512 dimention vector, in fix point format
+  /// The 512 dimensions vector, in fix point format
   using vector_t = std::array<int8_t, 512>;
+  // A vector of 512 fixed values.
   std::unique_ptr<vector_t> feature;
 };
 

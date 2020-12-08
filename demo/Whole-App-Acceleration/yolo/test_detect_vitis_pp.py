@@ -5,23 +5,26 @@
 # (C) Copyright 2019, Xilinx, Inc.
 #
 
-from __future__ import print_function 
-import os, sys
-from six import itervalues, iteritems
-from ctypes import *
+from __future__ import print_function
+import cv2
+import multiprocessing as mp
 import numpy as np
+import os
+import sys
 import timeit
 import waa_rt
-import cv2
 
-sys.path.append("../../yolo")
+from ctypes import *
+from six import itervalues, iteritems
 from vai.dpuv1.rt import xdnn, xdnn_io
 from vai.dpuv1.rt.vitis.python.dpu.runner import Runner
 from vai.dpuv1.utils.postproc import yolo
+
+sys.path.append("../../../examples/DPU-CADX8G/yolo")
+from get_mAP_darknet import calc_detector_mAP
 from yolo_utils import bias_selector, saveDetectionDarknetStyle, yolo_parser_args
 from yolo_utils import draw_boxes, generate_colors
-from get_mAP_darknet import calc_detector_mAP
-import multiprocessing as mp
+
 
 def pre_process(q_img, q_shape,args):
 
@@ -40,6 +43,7 @@ def pre_process(q_img, q_shape,args):
       arr, shape = handle_p.preprocess_input(p)
       q_img.put(arr)
       q_shape.put(shape)
+
 
 def process_xdnn(q_img, q_shape,args):
 
@@ -61,7 +65,7 @@ def process_xdnn(q_img, q_shape,args):
   outTensors = runner.get_output_tensors()
   batch_sz = args['batch_sz']
   if batch_sz == -1:
-    batch_sz = inTensors[0].dims[0] 
+    batch_sz = inTensors[0].dims[0]
 
   fpgaBlobs = []
   for io in [inTensors, outTensors]:
@@ -90,7 +94,7 @@ def process_xdnn(q_img, q_shape,args):
     # Prep images
     t1 = timeit.default_timer()
     for j, p in enumerate(img_paths[i:i + batch_sz]):
-      fpgaInput[j, ...], img_shape = q_img.get(),q_shape.get()	  
+      fpgaInput[j, ...], img_shape = q_img.get(),q_shape.get()
       pl.append(p)
       img_shapes.append(img_shape)
     t2 = timeit.default_timer()
@@ -139,10 +143,11 @@ def process_xdnn(q_img, q_shape,args):
     mAP = calc_detector_mAP(args['results_dir'], args['golden'], len(labels), labels, args['prob_threshold'], args['iouthresh'])
     sys.stdout.flush()
 
+
 if __name__ == '__main__':
   #main()
   parser = xdnn_io.default_parser_args()
-  
+
   parser = yolo_parser_args(parser)
   args = parser.parse_args()
   args = xdnn_io.make_dict_args(args)

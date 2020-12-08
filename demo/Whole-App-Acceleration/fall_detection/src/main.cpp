@@ -282,7 +282,7 @@ int main(int argc, char **argv) {
     auto sysMan = AKS::SysManagerExt::getGlobal();
     std::vector<std::string> kernelPaths;
     kernelPaths.push_back("kernel_zoo");
-    kernelPaths.push_back("/workspace/tools/AKS/kernel_zoo");
+    kernelPaths.push_back(std::string(std::getenv("AKS_ROOT"))+"/kernel_zoo");
     loadKernels(kernelPaths);
 
     std::string OFGraphJson = "graph_zoo/graph_optical_flow.json";

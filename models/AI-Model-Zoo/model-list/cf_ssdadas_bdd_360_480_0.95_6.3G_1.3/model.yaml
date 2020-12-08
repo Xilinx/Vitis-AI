@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: d8ecfebb823b91bd64328d83d1b3108c
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck190-r1.3.0.tar.gz
+  checksum: 55b71af045355940906e906fcbcd21d5
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-r1.3.0.tar.gz
+  checksum: b09c6950e4502bd5cf7c813c023b5660
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50lv-u280-r1.3.0.tar.gz
+  checksum: 0ec53d88a7971383309df2f92e430e69
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

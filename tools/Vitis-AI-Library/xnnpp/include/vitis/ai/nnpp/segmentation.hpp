@@ -25,7 +25,7 @@ namespace ai {
 
 /**
  *@struct SegmentationResult
- *@brief Struct of the result returned by the segementation network.
+ *@brief Struct of the result returned by the segmentation network.
  */
 /// FPN
 /// Num of segmentation classes
@@ -49,21 +49,22 @@ namespace ai {
 /// \li \c  17 : "pole"
 /// \li \c  18 : "polegroup"
 struct SegmentationResult {
-  // Width of input image.
+  /// Width of input image.
   int width;
-  // Height of input image.
+  /// Height of input image.
   int height;
-  // Segmentation result. The cv::Mat type is CV_8UC1 or CV_8UC3.
+  /// Segmentation result. The cv::Mat type is CV_8UC1 or CV_8UC3.
   cv::Mat segmentation;
 };
 
 struct Covid19SegmentationResult {
-  // Width of input image.
+  /// Width of input image.
   int width;
-  // Height of input image.
+  /// Height of input image.
   int height;
-  // Segmentation result. The cv::Mat type is CV_8UC1 or CV_8UC3.
+  /// Positive detection result. The cv::Mat type is CV_8UC1 or CV_8UC3.
   cv::Mat positive_classification;
+  /// Infected area detection result. The cv::Mat type is CV_8UC1 or CV_8UC3.
   cv::Mat infected_area_classification;
 };
 

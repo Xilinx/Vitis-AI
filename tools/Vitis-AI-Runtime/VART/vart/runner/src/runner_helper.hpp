@@ -46,4 +46,26 @@ std::vector<std::unique_ptr<vart::TensorBuffer>> alloc_cpu_flat_tensor_buffers(
     const std::vector<const xir::Tensor*>& tensors);
 std::unique_ptr<vart::TensorBuffer> alloc_cpu_flat_tensor_buffer(
     const xir::Tensor* tensor);
+
+class CpuFlatTensorBuffer : public TensorBuffer {
+ public:
+  explicit CpuFlatTensorBuffer(void* data, const xir::Tensor* tensor);
+  virtual ~CpuFlatTensorBuffer() = default;
+
+ public:
+  virtual std::pair<uint64_t, size_t> data(
+      const std::vector<int> idx = {}) override;
+
+ protected:
+  void* data_;
+};
+
+class CpuFlatTensorBufferOwned : public CpuFlatTensorBuffer {
+ public:
+  explicit CpuFlatTensorBufferOwned(const xir::Tensor* tensor);
+  virtual ~CpuFlatTensorBufferOwned() = default;
+
+ private:
+  std::vector<char> buffer_;
+};
 }  // namespace vart

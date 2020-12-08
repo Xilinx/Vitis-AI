@@ -81,7 +81,7 @@ public:
    *FaceQuality5pt.
    *
    * @param model_name Model name 
-   * @param need_preprocess  normalize with mean/scale or not, default
+   * @param need_preprocess  Normalize with mean/scale or not, default
    *value is true.
    *
    * @return An instance of FaceQuality5pt class.
@@ -91,31 +91,41 @@ public:
   create(const std::string &model_name, bool need_preprocess = true);
 
 protected:
+  /**
+   * @cond NOCOMMENTS
+   */
   explicit FaceQuality5pt();
   FaceQuality5pt(const FaceQuality5pt &other) = delete;
   FaceQuality5pt &operator=(const FaceQuality5pt &) = delete;
-
-public:
-  virtual ~FaceQuality5pt();
-
   /**
-   * @brief Function to get InputWidth of the quality5pt network (input image cols).
+   * @endcond
+   */
+public:
+  /**
+   * @cond NOCOMMENTS
+   */
+  virtual ~FaceQuality5pt();
+  /**
+   * @endcond
+   */
+  /**
+   * @brief Function to get InputWidth of the facequality5pt network (input image columns).
    *
-   * @return InputWidth of the quality5pt network.
+   * @return InputWidth of the facequality5pt network.
    */
   virtual int getInputWidth() const = 0;
 
   /**
-   *@brief Function to get InputHeigth of the quality5pt network (input image rows).
+   *@brief Function to get InputHeight of the facequality5pt network (input image rows).
    *
-   *@return InputHeight of quality5pt network.
+   *@return InputHeight of facequality5pt network.
    */
   virtual int getInputHeight() const = 0;
 
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.

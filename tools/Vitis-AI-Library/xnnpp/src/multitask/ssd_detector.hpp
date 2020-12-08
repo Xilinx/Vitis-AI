@@ -26,6 +26,20 @@
 #include "vitis/ai/nnpp/multitask.hpp"
 namespace vitis {
 namespace ai {
+
+struct SSDOutputInfo {
+  uint32_t order;        // order of bbox layer or conf layer
+  int8_t* base_ptr;      // original ptr
+  int8_t* ptr;           // ptr for batch
+  uint32_t index_begin;  // index for prior boxes
+  uint32_t index_size;
+  float scale;
+  uint32_t size;
+  uint32_t bbox_single_size;  // usualy 4, but sometimes 6 and last 2 number not
+                              // valid
+};
+using ai::VehicleResult;
+
 namespace multitask {
 
 class SSDdetector {
@@ -40,17 +54,16 @@ class SSDdetector {
               const std::vector<std::shared_ptr<std::vector<float>>>& priors,
               float scale = 1.f, bool clip = false);
 
-  template <typename T>
-  void Detect(const T* loc_data, const float* conf_data,
-              std::vector<VehicleResult>& result);
+  void Detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
+              const float* conf_data, std::vector<VehicleResult>& result);
 
   unsigned int num_classes() const { return num_classes_; }
   unsigned int num_priors() const { return priors_.size(); }
 
  protected:
-  template <typename T>
   void ApplyOneClassNMS(
-      const T (*bboxes)[6], const float* conf_data, int label,
+      const std::map<uint32_t, SSDOutputInfo>& bbox_layer_infos,
+      const float* conf_data, int label,
       const std::vector<std::pair<float, int>>& score_index_vec,
       std::vector<int>* indices);
 
@@ -66,9 +79,8 @@ class SSDdetector {
       const float* conf_data, int start_label, int num_classes,
       std::vector<std::vector<std::pair<float, int>>>* score_index_vec,
       int threads = 2);
-
-  template <typename T>
-  void DecodeBBox(const T (*bboxes)[6], int idx, bool normalized);
+  void DecodeBBox(const int8_t* bbox_ptr, int idx, float scale,
+                  bool normalized);
 
   std::map<int, std::vector<float>> decoded_bboxes_;
 

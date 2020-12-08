@@ -32,14 +32,14 @@ namespace vitis {
 namespace ai {
 
 /**
- * @brief Base class for detecting position of plate in a vehicle image
+ * @brief Base class for detecting the position of plate in a vehicle image
  (cv::Mat).
  *
  * Input is a vehicle image (cv::Mat).
  *
  * Output is position and score of plate in the input image.
  *
- * smaple code:
+ * Sample code:
  * @code
    cv::Mat image = cv::imread("car.jpg");
    auto network = vitis::ai::PlateDetect::create(true);
@@ -55,13 +55,13 @@ namespace ai {
 class PlateDetect {
  public:
   /**
-   * @brief Factory function to get a instance of derived classes of class
+   * @brief Factory function to get an instance of derived classes of class
    * platedetect.
    *
    * @param need_mean_scale_process Normalize with mean/scale or not, true by
    * default.
    *
-   * @returen A instance of the PlaterDatect class.
+   * @return An instance of the PlateDetect class.
    */
   static std::unique_ptr<PlateDetect> create(const std::string &model_name,
                                              bool need_mean_scale_process = true);
@@ -80,14 +80,14 @@ class PlateDetect {
  public:
   /**
    * @brief Function to get InputWidth of the platedetect network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the platedetect network.
    */
   virtual int getInputWidth() const = 0;
 
   /**
-   *@brief Function to get InputHeigth of the platedetect network (input image
+   *@brief Function to get InputHeight of the platedetect network (input image
    *rows).
    *
    *@return InputHeight of the platedetect network.
@@ -97,7 +97,7 @@ class PlateDetect {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -110,7 +110,7 @@ class PlateDetect {
    * @param image Input data of input image (cv::Mat) of detected counterpart
    * and resized as inputwidth an outputheight.
    *
-   * @return plate position and plate score.
+   * @return Plate position and plate score.
    */
   virtual PlateDetectResult run(const cv::Mat &image) = 0;
   /**

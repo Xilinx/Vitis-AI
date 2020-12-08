@@ -1,5 +1,8 @@
 sudo cp /workspace/xclbin/u25/dpu.xclbin /usr/lib/dpu.xclbin
 
+mkdir -p /workspace/app/imdb_sentiment_detection/model
+mkdir -p /workspace/app/customer_satisfaction/model
+mkdir -p /workspace/app/open_information_extraction/model
 cp /workspace/models/u25/imdb_sentiment_detection/*  /workspace/app/imdb_sentiment_detection/model 
 cp /workspace/models/u25/customer_satisfaction/*  /workspace/app/customer_satisfaction/model 
 cp /workspace/models/u25/open_information_extraction/*  /workspace/app/open_information_extraction/model 

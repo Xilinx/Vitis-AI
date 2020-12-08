@@ -1,0 +1,54 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_yolov4, ./test_performance_yolov4, ./test_video_yolov4 first param followed must be with model name.
+  Valid model name:
+    yolov4_leaky_spp_m
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_jpeg_yolov4 yolov4_leaky_spp_m sample_yolov4.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1127 11:10:16.274610 19352 process_result.hpp:44] RESULT: 0    88.443  131.744 99.2484 149.025 0.435236
+I1127 11:10:16.274816 19352 process_result.hpp:44] RESULT: 2    354.027 143.581 414.588 164.061 0.993462
+I1127 11:10:16.274864 19352 process_result.hpp:44] RESULT: 2    2.66805 130.098 122.785 256     0.982919
+I1127 11:10:16.274926 19352 process_result.hpp:44] RESULT: 2    115.5   139.702 184.125 180.433 0.979607
+I1127 11:10:16.274969 19352 process_result.hpp:44] RESULT: 2    403.571 136.063 509.574 247.668 0.944256
+I1127 11:10:16.275035 19352 process_result.hpp:44] RESULT: 2    324.955 142.011 358.98  157.237 0.915131
+I1127 11:10:16.275077 19352 process_result.hpp:44] RESULT: 2    255.167 138.174 269.936 145.377 0.808019
+I1127 11:10:16.275115 19352 process_result.hpp:44] RESULT: 2    298.174 136.298 328.2   153.551 0.804298
+I1127 11:10:16.275166 19352 process_result.hpp:44] RESULT: 2    183.797 136.27  203.184 155.82  0.796352
+I1127 11:10:16.275207 19352 process_result.hpp:44] RESULT: 2    271.403 139.977 285.278 147.181 0.759301
+I1127 11:10:16.275244 19352 process_result.hpp:44] RESULT: 2    152.384 138.158 191.485 166.152 0.740953
+I1127 11:10:16.275293 19352 process_result.hpp:44] RESULT: 2    284.365 138.978 300.087 150.135 0.695229
+I1127 11:10:16.275332 19352 process_result.hpp:44] RESULT: 2    203.411 138.573 216.445 149.054 0.66769
+I1127 11:10:16.275431 19352 process_result.hpp:44] RESULT: 2    168.204 135.639 196.411 156.451 0.603596
+I1127 11:10:16.275481 19352 process_result.hpp:44] RESULT: 2    291.026 138.528 305.796 151.171 0.505759
+I1127 11:10:16.275561 19352 process_result.hpp:44] RESULT: 2    244.192 138.931 256.436 143.582 0.404771
+I1127 11:10:16.275600 19352 process_result.hpp:44] RESULT: 2    193.303 136.848 206.337 155.243 0.393966
+I1127 11:10:16.275650 19352 process_result.hpp:44] RESULT: 2    233.618 138.585 245.863 143.236 0.34526
+
+

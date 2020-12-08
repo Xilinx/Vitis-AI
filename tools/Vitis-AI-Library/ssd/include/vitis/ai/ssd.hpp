@@ -35,7 +35,7 @@ namespace vitis {
 namespace ai {
 
 /**
- * @brief Base class for detecting position of vehicle,pedestrian and so on.
+ * @brief Base class for detecting position of vehicle, pedestrian, and so on.
  *
  * Input is an image (cv:Mat).
  *
@@ -116,13 +116,13 @@ class SSD {
       const std::vector<cv::Mat> &images) = 0;
 
   /**
-   * @brief Function to get InputWidth of the SSD network (input image cols).
+   * @brief Function to get InputWidth of the SSD network (input image columns).
    *
    * @return InputWidth of the SSD network.
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the SSD network (input image rows).
+   *@brief Function to get InputHeight of the SSD network (input image rows).
    *
    *@return InputHeight of the SSD network.
    */
@@ -130,7 +130,7 @@ class SSD {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    *@return Batch size.

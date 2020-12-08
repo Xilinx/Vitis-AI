@@ -182,7 +182,16 @@ def main(argv):
         path = os.path.join(calib_image_dir, listimage[i])
         img.append(preprocess_one_image_fn(path))
 
-    cnt = 360 # The cnt variable is used to control the number of DPU runs when testing performance data to obtain the average time consumption of the DPU. This variable can be modified but it is not recommended to use a too small number, otherwise the performance data may be inaccurate.
+    """
+      The cnt variable is used to control the number of times a single-thread DPU runs.
+      Users can modify the value according to actual needs. It is not recommended to use
+      too small number when there are few input images, for example:
+      1. If users can only provide very few images, e.g. only 1 image, they should set
+         a relatively large number such as 360 to measure the average performance;
+      2. If users provide a huge dataset, e.g. 50000 images in the directory, they can
+         use the variable to control the test time, and no need to run the whole dataset.
+    """
+    cnt = 360
     """run with batch """
     time_start = time.time()
     for i in range(int(threadnum)):

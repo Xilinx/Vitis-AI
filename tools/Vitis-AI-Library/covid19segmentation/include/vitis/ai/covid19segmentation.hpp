@@ -74,13 +74,13 @@ class Covid19Segmentation {
  public:
   /**
    * @brief Function to get InputWidth of the covid19segmentation network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the covid19segmentation network.
    */
   virtual int getInputWidth() const = 0;
   /**
-   * @brief Function to get InputHight of the covid19segmentation network (input image
+   * @brief Function to get InputHeight of the covid19segmentation network (input image
    * rows).
    *
    * @return InputHeight of the covid19segmentation network.
@@ -89,7 +89,7 @@ class Covid19Segmentation {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -99,11 +99,11 @@ class Covid19Segmentation {
   /**
    * @brief Function to get running result of the covid19segmentation network.
    *
-   * @note The type of CV_8UC1 of the Result's covid19segmentation.
+   * @note The type of CV_8UC1 of the covid19segmentation result.
    *
    * @param image Input data of input image (cv::Mat).
    *
-   * @return a result include covid19segmentation output data.
+   * @return Covid19segmentation output data.
    *
    */
   virtual Covid19SegmentationResult run_8UC1(const cv::Mat& image) = 0;
@@ -111,12 +111,12 @@ class Covid19Segmentation {
    * @brief Function to get running results of the covid19segmentation neuron network
    * in batch mode.
    *
-   * @note The type of CV_8UC1 of the Result's covid19segmentation.
+   * @note The type of CV_8UC1 of the covid19segmentation result.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch.
    *
-   * @return The vector of Covid19SegmentationResult.
+   * @return The vector of Covid19segmentationResult.
    *
    */
   virtual std::vector<Covid19SegmentationResult> run_8UC1(
@@ -124,11 +124,11 @@ class Covid19Segmentation {
   /**
    * @brief Function to get running result of the covid19segmentation network.
    *
-   * @note The type of CV_8UC3 of the Result's covid19segmentation.
+   * @note The type of CV_8UC3 of the covid19segmentation result.
    *
    * @param image Input data of input image (cv::Mat).
    *
-   * @return a result include covid19segmentation image and shape;.
+   * @return Covid19segmentation image and shape.
    *
    */
   virtual Covid19SegmentationResult run_8UC3(const cv::Mat& image) = 0;
@@ -182,14 +182,14 @@ class Covid19Segmentation8UC1 {
  public:
   /**
    * @brief Function to get InputWidth of the covid19segmentation network (input image
-   *cols).
+   *columns).
    *
    * @return InputWidth of the covid19segmentation network.
    */
   int getInputWidth() const;
   /**
-   * @brief Function to get InputHight of the covid19segmentation network (input image
-   *cols).
+   * @brief Function to get InputHeight of the covid19segmentation network (input image
+   *rows).
    *
    * @return InputHeight of the covid19segmentation network.
    */
@@ -208,7 +208,7 @@ class Covid19Segmentation8UC1 {
    *@brief Function to get running result of the covid19segmentation network.
    *@note The result cv::Mat of the type is CV_8UC1.
    *@param image  Input data of the image (cv::Mat)
-   *@return A Struct of Covid19SegmentationResult ,the result of covid19segmentation network.
+   *@return The result of covid19segmentation network.
    */
   Covid19SegmentationResult run(const cv::Mat& image);
   /**
@@ -268,7 +268,7 @@ class Covid19Segmentation8UC3 {
  public:
   /**
    * @brief Function to get InputWidth of the covid19segmentation network (input image
-   *cols).
+   *columns).
    *
    * @return InputWidth of the covid19segmentation network.
    */
@@ -276,7 +276,7 @@ class Covid19Segmentation8UC3 {
   /**
    * @brief Function to get InputWidth of the covid19segmentation network (input
    *image
-   *cols).
+   *rows).
    *
    * @return InputWidth of the covid19segmentation network.
    */
@@ -284,7 +284,7 @@ class Covid19Segmentation8UC3 {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.

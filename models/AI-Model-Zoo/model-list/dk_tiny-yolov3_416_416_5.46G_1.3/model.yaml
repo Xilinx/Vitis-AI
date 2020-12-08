@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,21 +30,21 @@ files:
 - name: tiny_yolov3_vmss
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: dcd189c47837ee7c56b5542f085c08ca
 - name: tiny_yolov3_vmss
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-vck190-r1.3.0.tar.gz
+  checksum: 74b84c263adf22c68168b2e6430dd29a
 - name: tiny_yolov3_vmss
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-u50-r1.3.0.tar.gz
+  checksum: 9dbc2a916eb34263f6673c302a2a684d
 - name: tiny_yolov3_vmss
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-u50lv-u280-r1.3.0.tar.gz
+  checksum: 521f03cfe4740759b755e4b2fb87f47e
 license: license link

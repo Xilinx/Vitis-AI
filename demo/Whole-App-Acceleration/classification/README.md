@@ -1,5 +1,16 @@
 # Accelerating Pre-processing for classification networks
 
+* This application can be run only on Alveo-U200 platform.
+
+## Table of Contents
+
+- [Introduction](#Introduction)
+- [Set Up the target platform](#Setup)
+- [Running the Application](#Running-the-Application)
+- [Performance](#Performance)
+
+## Introduction
+
 This application  demonstrates the acceleration of pre-processing for classification networks. The input image is fed to JPEG decoder which will generate YUV data. YUV image is converted to RGB and then resized and channel wise mean subtraction is perfomed on the resized image. Below block diagrams show various steps involved in the pre-processing and the blocks which are accelerated on hardware.
 
 <div align="center">
@@ -13,16 +24,17 @@ This application  demonstrates the acceleration of pre-processing for classifica
 ## Setup
 ```sh
 # Activate Conda Environment
-conda activate vitis-ai-caffe 
+conda activate vitis-ai-caffe
 ```
 ```sh
 # Setup
-source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+# Typically, <path-to-vitis-ai> is `/workspace`
+source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 ```
 
 ## Running the Application
-- `cd /workspace/demo/Whole-App-Acceleration/classification`
--  Use `run.sh` file to run the application. 
+- `cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/classification`
+-  Use `run.sh` file to run the application.
 
 ### Examples
 - Familiarize yourself with the script usage by running
@@ -42,9 +54,9 @@ source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 
 > **Note:** Currently, JPEG decode accelerator doesn't support certain JPEG image types so a conversion script is run to convert the input images to supported format.
 
-### Performance
+## Performance
 
-Below table shows the comparison of pre-processing execution times on CPU and FPGA and also the througput achieved by acclerating the pre-processing pipeline on FPGA. The performance numbers are achieved by running 5K images randomly picked from imagenet dataset. The performance results may vary based on your system performance. 
+Below table shows the comparison of pre-processing execution times on CPU and FPGA and also the througput achieved by acclerating the pre-processing pipeline on FPGA. The performance numbers are achieved by running 5K images randomly picked from imagenet dataset. The performance results may vary based on your system performance.
 
 
 CPU:  Intel(R) Core(TM) i7-4770 CPU @ 3.40GHz

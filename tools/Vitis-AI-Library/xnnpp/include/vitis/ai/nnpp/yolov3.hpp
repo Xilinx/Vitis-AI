@@ -33,7 +33,7 @@ namespace ai {
 
 /**
  *@struct YOLOv3Result
- *@brief Struct of the result returned by the yolov3 neuron network.
+ *@brief Struct of the result returned by the YOLOv3 neuron network.
  *@note VOC dataset category:string label[20] = {"aeroplane", "bicycle", "bird",
  *"boat", "bottle", "bus","car", "cat", "chair", "cow", "diningtable", "dog",
  *"horse", "motorbike","person", "pottedplant", "sheep", "sofa", "train",
@@ -47,32 +47,32 @@ struct YOLOv3Result {
   int height;
   /**
    *@struct BoundingBox
-   *@Brief Struct of detection result with a object
+   *@Brief Struct of detection result with an object.
    */
   struct BoundingBox {
-    /// classification.
+    /// Classification.
     int label;
-    /// confidence, the range from 0 to 1.
+    /// Confidence, the value ranges from 0 to 1.
     float score;
-    /// x-coordinate, x is normalized relative to the input image cols, its
-    /// value range from 0 to 1.
+    /// x-coordinate, x is normalized relative to the input image columns, the 
+    /// value ranges from 0 to 1.
     float x;
-    /// y-coordinate, y is normalized relative to the input image rows, its
-    /// value range from 0 to 1.
+    /// y-coordinate, y is normalized relative to the input image rows, the 
+    /// value ranges from 0 to 1.
     float y;
-    /// width, width is normalized relative to the input image cols, its value
-    /// from 0 to 1.
+    /// Width, width is normalized relative to the input image columns, the 
+    /// value ranges from 0 to 1.
     float width;
-    /// height, height is normalized relative to the input image rows, its value
-    /// range from 0 to 1.
+    /// Height, height is normalized relative to the input image rows, the value
+    /// ranges from 0 to 1.
     float height;
   };
-  /// All objects, The vector of BoundingBox .
+  /// All objects, The vector of BoundingBox.
   std::vector<BoundingBox> bboxes;
 };
 
 /**
- *@brief Post-process of the yolov3 neuron network.
+ *@brief Post-process of the YOLOv3 neuron network.
  *@param input_tensors A vector of all input-tensors in the network.
  * Usage: input_tensors[input_tensor_index].
  *@param output_tensors A vector of all output-tensors in the network.
@@ -88,7 +88,7 @@ YOLOv3Result yolov3_post_process(
     const vitis::ai::proto::DpuModelParam& config, const int w, const int h);
 
 /**
- *@brief Post-process of the yolov3 neuron network in batch mode.
+ *@brief Post-process of the YOLOv3 neuron network in batch mode.
  *@param input_tensors A vector of all input-tensors in the network.
  * Usage: input_tensors[input_tensor_index].
  *@param output_tensors A vector of all output-tensors in the network.

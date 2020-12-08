@@ -192,15 +192,21 @@ add_executable(test_accuracy_tiny_yolov3_vmss ${CMAKE_CURRENT_SOURCE_DIR}/sample
 target_link_libraries(test_accuracy_tiny_yolov3_vmss ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lpthread -lglog protobuf::libprotobuf)
 install(TARGETS test_accuracy_tiny_yolov3_vmss DESTINATION ${SAMPLE_INATLL_PATH}/yolov3/)
 
-add_executable(test_jpeg_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov3/test_jpeg_yolov4.cpp)
+add_executable(test_jpeg_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_jpeg_yolov4.cpp)
+add_executable(test_performance_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_performance_yolov4.cpp)
+add_executable(test_video_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_video_yolov4.cpp)
 target_link_libraries(test_jpeg_yolov4 ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lglog protobuf::libprotobuf)
-add_executable(test_accuracy_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov3/test_accuracy_yolov4_mt.cpp)
+target_link_libraries(test_performance_yolov4  ${OpenCV_LIBS} ${PROJECT_NAME}::yolov3 vart::util glog::glog ${Pthread_LIB})
+target_link_libraries(test_video_yolov4 ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lglog protobuf::libprotobuf)
+add_executable(test_accuracy_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_accuracy_yolov4_mt.cpp)
 target_link_libraries(test_accuracy_yolov4 ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lpthread -lglog protobuf::libprotobuf)
-install(TARGETS test_jpeg_yolov4 test_accuracy_yolov4 DESTINATION ${SAMPLE_INATLL_PATH}/yolov3/)
+install(TARGETS test_jpeg_yolov4 test_accuracy_yolov4 DESTINATION ${SAMPLE_INATLL_PATH}/yolov4/)
 install(FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov3/test_jpeg_yolov4.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov3/test_accuracy_yolov4_mt.cpp
-  DESTINATION ${SAMPLE_INATLL_PATH}/yolov3/)
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_jpeg_yolov4.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_performance_yolov4.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_video_yolov4.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_accuracy_yolov4_mt.cpp
+  DESTINATION ${SAMPLE_INATLL_PATH}/yolov4/)
 
 
 #refinedet accuracy

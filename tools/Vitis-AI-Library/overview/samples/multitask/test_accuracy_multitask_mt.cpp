@@ -26,12 +26,16 @@
 extern int g_last_frame_id;
 
 std::string out_img_path;
-
+std::string model_name;
+extern int GLOBAL_ENABLE_C_SOFTMAX;
+using namespace std;
 namespace vitis {
 namespace ai {
 
-static std::vector<std::string> label_map{
+static std::vector<std::string> label_map_v1{
     "background", "person", "car", "truck", "bus", "bike", "sign", "light"};
+static std::vector<std::string> label_map_v2{"background", "car", "sign",
+                                             "person"};
 
 static std::vector<std::string> split(const std::string& s,
                                       const std::string& delim) {
@@ -75,17 +79,23 @@ struct MultiTaskAcc : public AccThread {
   void process_result(DpuResultInfo dpu_result) {
     auto result = (MultiTaskResult*)dpu_result.result_ptr.get();
     auto single_name = split(dpu_result.single_name, ".")[0];
+    auto label_map = label_map_v1;
+    if (model_name == "MT-resnet18_mixed_pt_acc") label_map = label_map_v2;
+    else{
+      single_name += ".png";
+    }
     for (auto& box : result->vehicle) {
-      std::string label_name = label_map[box.label];
+      std::string label_name = label_map_v2[box.label];
       float xmin = box.x * dpu_result.w;
       float ymin = box.y * dpu_result.h;
       float xmax = (box.x + box.width) * dpu_result.w;
       float ymax = (box.y + box.height) * dpu_result.h;
       float confidence = box.score;
-      of << single_name + ".png"
-         << " " << label_name << " " << confidence << " " << xmin << " " << ymin
-         << " " << xmax << " " << ymax << std::endl;
+      // of << single_name + ".png"
+      of << single_name << " " << label_name << " " << confidence << " " << xmin
+         << " " << ymin << " " << xmax << " " << ymax << std::endl;
     }
+    single_name = split(single_name, ".")[0];
     imwrite(out_img_path + "/" + single_name + ".png", result->segmentation);
   }
 
@@ -96,6 +106,9 @@ struct MultiTaskAcc : public AccThread {
           << "[" << name() << "] process result id :" << dpu_result.frame_id
           << ", dpu queue size " << getQueue()->size();
       process_result(dpu_result);
+      if (is_stopped()) {
+        return -1;
+      }
     }
     return 0;
   }
@@ -108,9 +121,20 @@ struct MultiTaskAcc : public AccThread {
 }  // namespace vitis
 
 int main(int argc, char* argv[]) {
-  out_img_path = argv[3];
+  if (argc < 5) {
+    cout << "Please input a model name as the first param!" << endl;
+    cout << "Please input your image path list as the second param!" << endl;
+    cout << "The third param is a txt to store det results!" << endl;
+    cout << "The fourth param is a path to store seg results!" << endl;
+    cout << "The fourth param is thread nums, eg: '-t 4', default single "
+            "thread if not filled "
+         << endl;
+  }
+  GLOBAL_ENABLE_C_SOFTMAX = 2;
+  model_name = argv[1];
+  model_name += "_acc";
+  out_img_path = argv[4];
   return vitis::ai::main_for_accuracy_demo(
-      argc, argv,
-      [&] { return vitis::ai::MultiTask8UC1::create("multi_task_acc"); },
-      vitis::ai::MultiTaskAcc::instance(argv[2]), 1);
+      argc, argv, [&] { return vitis::ai::MultiTask8UC1::create(model_name); },
+      vitis::ai::MultiTaskAcc::instance(argv[3]), 2);
 }

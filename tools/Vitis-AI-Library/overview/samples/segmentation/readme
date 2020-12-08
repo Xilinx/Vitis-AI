@@ -20,6 +20,9 @@ Important:
     semantic_seg_citys_tf2
     unet_chaos-CT_pt
     FPN-resnet18_Endov
+    SemanticFPN_cityscapes_pt
+    ENet_cityscapes_pt
+    mobilenet_v2_cityscapes_tf
 
 
 1, compile
@@ -35,7 +38,7 @@ Important:
     sample : ./test_jpeg_segmentation fpn sample_segmentation.jpg
     output : 
    
-    sample : ./test_jpeg_segmentation semantic_seg_citys_tf2 sample_semantic_seg_citys_tf2.jpg
+    sample : ./test_jpeg_segmentation semantic_seg_citys_tf2 sample_semantic_seg_citys_tf2.png
     output : 
 
     sample : ./test_jpeg_segmentation unet_chaos-CT_pt sample_segmentation_chaos.jpg
@@ -43,3 +46,12 @@ Important:
 
     sample : ./test_jpeg_segmentation FPN-resnet18_Endov sample_segmentation_robot.jpg
     output : 
+
+    sample : ./test_jpeg_segmentation SemanticFPN_cityscapes_pt sample_segmentation.jpg
+    output :
+
+    sample : ./test_jpeg_segmentation ENet_cityscapes_pt sample_segmentation.jpg
+    output :
+
+    sample : ./test_jpeg_segmentation mobilenet_v2_cityscapes_tf sample_segmentation.jpg
+    output :

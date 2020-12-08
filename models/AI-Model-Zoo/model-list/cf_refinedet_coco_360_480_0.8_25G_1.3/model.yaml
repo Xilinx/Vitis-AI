@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: refinedet_pruned_0_8
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: e933136c6967a49ebfbf4ab3b2a9e360
 - name: refinedet_pruned_0_8
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-vck190-r1.3.0.tar.gz
+  checksum: 2b96975e95a87c48d52aad08ba8d3946
 - name: refinedet_pruned_0_8
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-u50-r1.3.0.tar.gz
+  checksum: f12a330fc56b51d20187c84839f26939
 - name: refinedet_pruned_0_8
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-u50lv-u280-r1.3.0.tar.gz
+  checksum: ddd7fb9078959a7719b001ccdb009ae2
 - name: refinedet_pruned_0_8
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

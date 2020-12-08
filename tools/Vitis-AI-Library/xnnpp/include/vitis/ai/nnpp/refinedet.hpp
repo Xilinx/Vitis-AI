@@ -50,24 +50,24 @@ struct RefineDetResult {
   int height;
   /**
    *@struct BoundingBox
-   *@brief Struct of a object coordinate and confidence.
+   *@brief Struct of an object coordinates and confidence.
    */
   struct BoundingBox {
-    /// x-coordinate , x is normalized relative to the input image cols ,the
-    /// value range from 0 to 1.
+    /// x-coordinate , x is normalized relative to the input image columns ,the
+    /// value ranges from 0 to 1.
     float x;
     /// y-coordinate , y is normalized relative to the input image rows ,the
-    /// value range from 0 to 1.
+    /// value ranges from 0 to 1.
     float y;
-    /// body width , width is normalized relative to the input image cols , the
-    /// value range from 0 to 1.
+    /// Body width , width is normalized relative to the input image columns , the
+    /// value ranges from 0 to 1.
     float width;
-    /// body height , heigth is normalized relative to the input image rows ,
-    /// the value range from 0 to 1.
+    /// Body height , height is normalized relative to the input image rows ,
+    /// the value ranges from 0 to 1.
     float height;
-    /// body detection label, the value range from 0 to 21.
+    /// Body detection label, the value ranges from 0 to 21.
     int label;
-    /// body detection confidence, the value range from 0 to 1.
+    /// Body detection confidence, the value ranges from 0 to 1.
     float score;
   };
   /// The vector of BoundingBox.
@@ -76,8 +76,8 @@ struct RefineDetResult {
 
 /**
  * @class RefineDetPostProcess
- * @brief Class of the refinedet post-process, it will initialize the parameters
- * once instead of compute them every time when the program execute.
+ * @brief Class of the refinedet post-process. It initializes the parameters
+ * once instead of computing them each time the program executes.
  * */
 class RefineDetPostProcess {
  public:
@@ -87,8 +87,8 @@ class RefineDetPostProcess {
    *   Usage: input_tensors[input_tensor_index].
    * @param output_tensors A vector of all output-tensors in the network.
    *   Usage: output_tensors[output_index].
-   * @param config The dpu model configuration information.
-   * @return An unique printer of RefineDetPostProcess.
+   * @param config The DPU model configuration information.
+   * @return A unique printer of RefineDetPostProcess.
    */
   static std::unique_ptr<RefineDetPostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,

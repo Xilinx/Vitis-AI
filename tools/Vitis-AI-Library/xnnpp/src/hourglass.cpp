@@ -35,7 +35,7 @@ int find_point(cv::Mat ori_img, cv::Point2f& point) {
     for (int y = 1; y < ori_img.rows - 1; ++y) {
       {
         if (ori_img.at<float>(y, x) <= 0.001) continue;
-        if(ori_img.at<float>(y, x) > score){
+        if (ori_img.at<float>(y, x) > score) {
           ret = 1;
           score = ori_img.at<float>(y, x);
           point = cv::Point(x, y);
@@ -48,13 +48,12 @@ int find_point(cv::Mat ori_img, cv::Point2f& point) {
 HourglassResult hourglass_post_process(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-    const vitis::ai::proto::DpuModelParam& config, const int ori_w, const int ori_h,
-    size_t batch_idx) {
+    const vitis::ai::proto::DpuModelParam& config, const int ori_w,
+    const int ori_h, size_t batch_idx) {
   int sWidth = input_tensors[0].width;
   int sHeight = input_tensors[0].height;
   float scale_x = float(ori_w) / float(sWidth);
   float scale_y = float(ori_h) / float(sHeight);
-
   std::vector<vitis::ai::library::OutputTensor> output_tensors_;
   /* Get channel count of the output Tensor for FC Task  */
   output_tensors_.emplace_back(output_tensors[0]);
@@ -72,17 +71,17 @@ HourglassResult hourglass_post_process(
     for (int iw = 0; iw < w; ++iw)
       for (int ic = 0; ic < channel; ++ic) {
         int offset = ic * w * h + ih * w + iw;
-        chwdata[offset] =
-            data[ih * w * channel + iw * channel + ic] * outscale;
+        chwdata[offset] = data[ih * w * channel + iw * channel + ic] * outscale;
       }
   HourglassResult::PosePoint posePoint;
   vector<HourglassResult::PosePoint> pose(16, posePoint);
   for (int i = 0; i < channel; ++i) {
     cv::Mat um(h, w, CV_32F, chwdata.data() + i * w * h);
+    resize(um, um, cv::Size(0, 0), 4, 4, CV_INTER_CUBIC);
     cv::Point2f point;
-    if(find_point(um, point) < 1) continue;
-    point.x *= 4 * scale_x;
-    point.y *= 4 * scale_y;
+    if (find_point(um, point) < 1) continue;
+    point.x *= scale_x;
+    point.y *= scale_y;
     pose[i].type = 1;
     pose[i].point = point;
   }

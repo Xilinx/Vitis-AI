@@ -33,7 +33,7 @@ namespace vitis {
 namespace ai {
 
 /**
- * @brief Base class for detecting 5 objects of Endoscopy Disease Detection 
+ * @brief Base class for detecting five objects of Endoscopy Disease Detection 
  *        and Segmentation database (EDD2020) .
  *
  * Input is an image (cv:Mat).
@@ -50,7 +50,7 @@ namespace ai {
       auto x = r.x * img.cols;
       auto y = r.y * img.rows;
       auto width = r.width * img.cols;
-      auto heigth = r.height * img.rows;
+      auto height = r.height * img.rows;
       auto score = r.score;
       std::cout << "RESULT: " << label << "\t" << x << "\t" << y << "\t" << width
          << "\t" << height << "\t" << score << std::endl;
@@ -116,7 +116,7 @@ public:
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the MedicalDetection network (input image rows).
+   *@brief Function to get InputHeight of the MedicalDetection network (input image rows).
    *
    *@return InputHeight of the MedicalDetection network.
    */
@@ -126,7 +126,7 @@ public:
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    *@return Batch size.

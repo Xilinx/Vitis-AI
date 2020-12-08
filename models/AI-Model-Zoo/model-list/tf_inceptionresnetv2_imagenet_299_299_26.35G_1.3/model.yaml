@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: inception_resnet_v2_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 1a651cc20e974e7dc16b7a3342e8c3fa
 - name: inception_resnet_v2_tf
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-vck190-r1.3.0.tar.gz
+  checksum: 76f65b24b64d47332e5ce9aef3af589b
 - name: inception_resnet_v2_tf
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-u50-r1.3.0.tar.gz
+  checksum: a0770f2047e20966222b09d30bf68702
 - name: inception_resnet_v2_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-u50lv-u280-r1.3.0.tar.gz
+  checksum: 8bf59923f684b6daf26f841b322f85a9
 - name: inception_resnet_v2_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

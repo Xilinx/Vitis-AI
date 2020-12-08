@@ -45,7 +45,7 @@ class General {
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the network (input image
+   *@brief Function to get InputHeight of the network (input image
    *rows).
    *
    *@return InputHeight of the network.
@@ -55,7 +55,7 @@ class General {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.

@@ -23,14 +23,14 @@ namespace ai {
 
 /**
  * @struct FaceQualityResult
- * @brief the result of facequalit network. a single float value.
+ * @brief The result of the facequality network. It is a single float value.
  */
 struct FaceQualityResult {
-  /// width of a input image
+  /// Width of input image.
   int width;
-  /// height of a input image
+  /// Height of input image.
   int height;
-  /// quality value, range from 0.0 to 1.0
+  /// Quality value ranges from 0.0 to 1.0.
   float value;
 };
 

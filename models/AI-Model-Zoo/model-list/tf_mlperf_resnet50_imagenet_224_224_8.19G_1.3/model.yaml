@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 43c90bb60dab0a5b106cca5a9e234785
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-vck190-r1.3.0.tar.gz
+  checksum: e059631c3bdf34e729f8f9b6fee20059
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50-r1.3.0.tar.gz
+  checksum: d096c79a94151fc69cc1a83196492cf2
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50lv-u280-r1.3.0.tar.gz
+  checksum: 7a0f6a160b78c5458683e60174d678f9
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
