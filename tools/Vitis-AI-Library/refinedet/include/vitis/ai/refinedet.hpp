@@ -30,11 +30,11 @@ namespace vitis {
 namespace ai {
 
 /**
- * @brief Base class for detecting pedestrian in the input image (cv::Mat).
+ * @brief Base class for detecting pedestrians in the input image (cv::Mat).
  *
  * Input is an image (cv::Mat).
  *
- * Output is position and score of pedestrian in the input image.
+ * Output is the position and score of the pedestrians in the input image.
  *
  * Sample code:
  * @code
@@ -80,7 +80,7 @@ class RefineDet {
    * @brief Factory function to get an instance of derived classes of class
    * RefineDet.
    *
-   * @param model_name
+   * @param model_name Model name
    * @param need_preprocess Normalize with mean/scale or not,
    *default value is true.
    * @return An instance of RefineDet class.
@@ -122,13 +122,13 @@ class RefineDet {
       const std::vector<cv::Mat> &images) = 0;
   /**
    * @brief Function to get InputWidth of the refinedet network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the refinedet network
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the refinedet network (input image
+   *@brief Function to get InputHeight of the refinedet network (input image
    *rows).
    *
    *@return InputHeight of the refinedet network.
@@ -137,7 +137,7 @@ class RefineDet {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    *@return Batch size.

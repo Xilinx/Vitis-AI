@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
- * Filename: ssd.hpp
+ * Filename: medicaldetection.hpp
  *
  * Description:
  * This network is used to detecting objects from a input image.
@@ -50,13 +50,13 @@ struct MedicalDetectionResult {
     int label;
     /// Confidence
     float score;
-    /// x-coordinate, x is normalized relative to the input image cols ,the
+    /// x-coordinate, x is normalized relative to the input image columns ,the
     /// value range from 0 to 1.
     float x;
     /// y-coordinate ,y is normalized relative to the input image rows ,the
     /// value range from 0 to 1.
     float y;
-    /// width, width is normalized relative to the input image cols ,the value
+    /// width, width is normalized relative to the input image columns ,the value
     /// range from 0 to 1.
     float width;
     /// height, height is normalized relative to the input image rows ,the value
@@ -69,8 +69,8 @@ struct MedicalDetectionResult {
 
 /**
  * @class MedicalDetectionPostProcess
- * @brief Class of the ssd post-process, it will initialize the parameters once
- * instead of compute them every time when the program execute.
+ * @brief Class of the MedicalDetection post-process. It initializes the parameters once
+ * instead of computing them every time when the program execute.
  * */
 class MedicalDetectionPostProcess {
  public:
@@ -89,12 +89,12 @@ class MedicalDetectionPostProcess {
       const vitis::ai::proto::DpuModelParam& config);
 
   /**
-   * @brief The post-processing function of the ssd network.
+   * @brief The post-processing function of the MedicalDetection network.
    * @return The struct of MedicalDetectionResult.
    */
   virtual MedicalDetectionResult medicaldetection_post_process(unsigned int idx) = 0;
   /**
-   * @brief The batch mode post-processing function of the ssd network.
+   * @brief The batch mode post-processing function of the MedicalDetection network.
    * @return The vector of struct of MedicalDetectionResult.
    */
   virtual std::vector<MedicalDetectionResult> medicaldetection_post_process() = 0;

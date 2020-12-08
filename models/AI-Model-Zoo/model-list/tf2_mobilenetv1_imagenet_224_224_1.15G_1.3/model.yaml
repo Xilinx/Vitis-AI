@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,8 +30,8 @@ files:
 - name: mobilenet_1_0_224_tf2
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 73aa108789aeed169c953c43d8330804
 - name: mobilenet_1_0_224_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

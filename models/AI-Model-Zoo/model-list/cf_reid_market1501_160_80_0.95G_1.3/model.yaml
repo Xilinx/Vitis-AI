@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: reid
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: cb239144e0b7d5559720daef1ad5828d
 - name: reid
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-vck190-r1.3.0.tar.gz
+  checksum: fa8fed62f03211bd8611063f0daec43e
 - name: reid
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50-r1.3.0.tar.gz
+  checksum: 21af78a664c44124948daefc00c008f9
 - name: reid
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50lv-u280-r1.3.0.tar.gz
+  checksum: 2d92a0078cea23b2ce88c2401bc22583
 - name: reid
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

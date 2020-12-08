@@ -49,7 +49,7 @@ struct OpenPoseResult {
     /// Coordinate point.
     cv::Point2f point;
   };
-  /// A vector of pose, pose is represented by a vector of PosePoint.
+  /// A vector of pose. Pose is represented by a vector of PosePoint.
   /// Joint points are arranged in order
   ///  0: head, 1: neck, 2: L_shoulder, 3:L_elbow, 4: L_wrist, 5: R_shoulder,
   ///  6: R_elbow, 7: R_wrist, 8: L_hip, 9:L_knee, 10: L_ankle, 11: R_hip,

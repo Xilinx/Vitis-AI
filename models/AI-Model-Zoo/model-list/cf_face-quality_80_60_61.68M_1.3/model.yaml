@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,23 +32,23 @@ files:
 - name: face-quality
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 83f6178d02dc39a1b521c096ae0dd477
 - name: face-quality
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-vck190-r1.3.0.tar.gz
+  checksum: 2aa7f5c0907ae36f48eee25f7d55a52c
 - name: face-quality
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-u50-r1.3.0.tar.gz
+  checksum: 0e47c28a782db775b4b51b10e5e2dfa6
 - name: face-quality
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-u50lv-u280-r1.3.0.tar.gz
+  checksum: 94996c926b15f9333703e77c1ba4411d
 - name: face-quality
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

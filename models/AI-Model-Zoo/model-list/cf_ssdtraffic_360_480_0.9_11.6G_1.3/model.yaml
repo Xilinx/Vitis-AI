@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 865c6e3f6777804ca9b7c001de2b88ed
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-vck190-r1.3.0.tar.gz
+  checksum: 7c6045c82ee6a50bb57202ff0f6a5836
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-u50-r1.3.0.tar.gz
+  checksum: 171247a4722416eb25e828891833a661
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-u50lv-u280-r1.3.0.tar.gz
+  checksum: 01ff8d3bd260c745a0b2b868ade91383
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

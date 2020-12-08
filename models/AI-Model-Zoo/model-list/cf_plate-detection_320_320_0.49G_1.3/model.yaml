@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,27 +27,27 @@ files:
   board: GPU
   download link: download link
   checksum: md5sum value
-- name: plate_detection
+- name: plate_detect
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
-- name: plate_detection
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 7361553c7a62ec175f94699340568245
+- name: plate_detect
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
-- name: plate_detection
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-vck190-r1.3.0.tar.gz
+  checksum: 9b1954a423251cff7de34e43e5a6eb80
+- name: plate_detect
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
-- name: plate_detection
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50-r1.3.0.tar.gz
+  checksum: fc17acc347e7bcbdfdbf2094afee6b31
+- name: plate_detect
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
-- name: plate_detection
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50lv-u280-r1.3.0.tar.gz
+  checksum: d6058a0d25c11a83f6c009e26dd0991d
+- name: plate_detect
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link

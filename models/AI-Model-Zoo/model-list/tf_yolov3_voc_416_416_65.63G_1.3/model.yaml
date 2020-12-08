@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,21 +30,21 @@ files:
 - name: yolov3_voc_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 707cb7871c0916b1f533f84b12cf740b
 - name: yolov3_voc_tf
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.3.0.tar.gz
+  checksum: 6fbd70ca33b2c97f2f0aeba073c291cc
 - name: yolov3_voc_tf
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50-r1.3.0.tar.gz
+  checksum: 77b08ef84cc96f9161c3d4cfefffa479
 - name: yolov3_voc_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50lv-u280-r1.3.0.tar.gz
+  checksum: fc2ff009d3b22f73b27fc32d80f8e499
 license: license link

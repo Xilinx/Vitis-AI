@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,23 +22,23 @@ files:
 - name: squeezenet_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: c01f2b7a5ab99eb803895b839f4f1c62
 - name: squeezenet_pt
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck190-r1.3.0.tar.gz
+  checksum: c421139801a59d1ee2f36baa175c9268
 - name: squeezenet_pt
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-r1.3.0.tar.gz
+  checksum: b4b57a190d7c4ccd184a76ce41036e64
 - name: squeezenet_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50lv-u280-r1.3.0.tar.gz
+  checksum: 7a569498a69dcb5545d67d434cb56029
 - name: squeezenet_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

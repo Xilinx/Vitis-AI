@@ -26,15 +26,15 @@ namespace ai {
  * @brief The struct of result returned by the facequality5pt network.
  */
 struct FaceQuality5ptResult {
-  /// width of a input image
+  /// Width of a input image
   int width;
-  /// height of a input image
+  /// Height of a input image
   int height;
-  /// The quality of face, the value is mapped score and range from 0 to 1 in normal mode, 
-  /// If set original quality in prototxt, the value is original score and can larger than 1.
+  /// The quality of face. The value range is from 0 to 1 if the option "orginal_quality" in the model prototxt is false, it is a normal mode. 
+  /// If the option "original_quality" is true, the quality score can be larger than 1, this is a special mode only for accuracy test.
   float score;
-  /// Five key points coordinate, a array of <x,y> has 5 elements , x and y is
-  /// normalized relative to input image cols and rows, the value range from 0
+  /// Five key points coordinate. An array of <x,y> has five elements where x and y are
+  /// normalized relative to input image columns and rows. The value range is from 0
   /// to 1.
   std::array<std::pair<float, float>, 5> points;
 };

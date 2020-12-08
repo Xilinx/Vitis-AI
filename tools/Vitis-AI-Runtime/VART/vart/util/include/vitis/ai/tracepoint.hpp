@@ -128,6 +128,7 @@ class TracePoint
   void trace(TraceEventType t, const char *tag, int core_id, const std::string& info);
   void enable();
   void disable();
+  inline bool enabled() {return m_enabled;}
 
  private:
   TimestampType m_ts_type;
@@ -164,6 +165,11 @@ inline void tracepoint(TraceEventType t, const char* tag, int dev_id, const std:
 inline void tracepoint(TraceEventType t, const char* tag, int dev_id)
 {
   vitis::ai::tp_instance().trace(t, tag, int(dev_id), std::string());
+}
+
+inline bool tracepoint_is_enabled()
+{
+  return vitis::ai::tp_instance().enabled();
 }
 
 }  // namespace ai

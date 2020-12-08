@@ -134,8 +134,8 @@ message MultiTaskParam {
   optional int32 top_k = 5;
   optional float nms_threshold = 6;
   repeated PriorBoxParam prior_box_param = 7;
-  optional string loc_name = 8;
-  optional string conf_name = 9;
+  repeated string loc_name = 8;
+  repeated string conf_name = 9;
   optional string seg_name = 10;
 }
 

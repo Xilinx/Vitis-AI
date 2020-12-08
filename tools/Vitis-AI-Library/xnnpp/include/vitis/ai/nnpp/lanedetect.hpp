@@ -50,23 +50,23 @@ struct RoadLineResult {
    *@brief Struct of the result returned by the roadline network.
    */
   struct Line {
-    /// road line type, the value range from 0 to 3.
+    /// Road line type, the value range from 0 to 3.
     /// \li \c 0 : background
     /// \li \c 1 : white dotted line
     /// \li \c 2 : white solid line
     /// \li \c 3 : yollow line
     int type;
-    /// point clusters, make line from these.
+    /// Point clusters, make line from these.
     std::vector<cv::Point> points_cluster;
   };
-  /// the vector of line
+  /// The vector of line.
   std::vector<Line> lines;
 };
 
 /**
  * @class RoadLinePostProcess
- * @brief Class of the roadline post-process, it will initialize the parameters
- *once instead of compute them every time when the program execute.
+ * @brief Class of the roadline post-process. It will initializes the parameters
+ *once instead of computing them each time the program executes.
  * */
 class RoadLinePostProcess {
  public:
@@ -76,8 +76,8 @@ class RoadLinePostProcess {
    *   Usage: input_tensors[input_tensor_index].
    * @param output_tensors A vector of all output-tensors in the network.
    *  Usage: output_tensors[output_index].
-   * @param config The dpu model configuration information.
-   * @return An unique printer of RoadLinePostProcess.
+   * @param config The DPU model configuration information.
+   * @return A unique printer of RoadLinePostProcess.
    */
   static std::unique_ptr<RoadLinePostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,

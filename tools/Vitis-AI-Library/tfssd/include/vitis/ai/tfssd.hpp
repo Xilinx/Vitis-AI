@@ -33,7 +33,7 @@ namespace ai {
 
 // tensorflow ssd resnet50_fpn model, input size is 640x640.
 /**
- * @brief Base class for detecting 90 objects of COCO dataset .
+ * @brief Base class for detecting 90 objects of the COCO dataset.
  *
  * Input is an image (cv:Mat).
  *
@@ -49,7 +49,7 @@ namespace ai {
       auto x = r.x * img.cols;
       auto y = r.y * img.rows;
       auto width = r.width * img.cols;
-      auto heigth = r.height * img.rows;
+      auto height = r.height * img.rows;
       auto score = r.score;
       std::cout << "RESULT: " << label << "\t" << x << "\t" << y << "\t" <<
  width
@@ -69,7 +69,7 @@ class TFSSD {
    * @param model_name Model name
    * @param need_preprocess Normalize with mean/scale or not,
    * default value is true.
-   * @return An instance of SSD class.
+   * @return An instance of TFSSD class.
    *
    */
   static std::unique_ptr<TFSSD> create(const std::string &model_name,
@@ -112,15 +112,15 @@ class TFSSD {
       const std::vector<cv::Mat> &imgs) = 0;
 
   /**
-   * @brief Function to get InputWidth of the SSD network (input image cols).
+   * @brief Function to get InputWidth of the SSD network (input image columns).
    *
-   * @return InputWidth of the SSD network.
+   * @return InputWidth of the TFSSD network.
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the SSD network (input image rows).
+   *@brief Function to get InputHeight of the SSD network (input image rows).
    *
-   *@return InputHeight of the SSD network.
+   *@return InputHeight of the TFSSD network.
    */
 
   virtual int getInputHeight() const = 0;
@@ -128,7 +128,7 @@ class TFSSD {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    *@return Batch size.

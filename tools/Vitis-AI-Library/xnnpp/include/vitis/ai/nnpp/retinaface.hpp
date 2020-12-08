@@ -32,46 +32,46 @@ struct RetinaFaceResult {
    *@brief The coordinate and confidence of a face.
    */
   struct BoundingBox {
-    /// x-coordinate , x is normalized relative to the input image cols ,the
+    /// x-coordinate, x is normalized relative to the input image columns ,the
     /// value range from 0 to 1.
     float x;
-    /// y-coordinate , y is normalized relative to the input image rows ,the
+    /// y-coordinate, y is normalized relative to the input image rows ,the
     /// value range from 0 to 1.
     float y;
-    /// face width , width is normalized relative to the input image cols , the
+    /// Face width, width is normalized relative to the input image columns , the
     /// value range from 0 to 1.
     float width;
-    /// face height , heigth is normalized relative to the input image rows ,the
+    /// Face height, height is normalized relative to the input image rows ,the
     /// value range from 0 to 1.
     float height;
-    /// face confidence, the value range from 0 to 1.
+    /// Face confidence, the value ranges from 0 to 1.
     float score;
   };
-  /// Width of a input image.
+  /// Width of input image.
   int width;
-  /// Height of a input image.
+  /// Height of input image.
   int height;
   /// All faces, filtered by confidence >= detect threshold.
   std::vector<BoundingBox> bboxes;
-  /// landmarks
+  /// Landmarks
   std::vector<std::array<std::pair<float, float>, 5>> landmarks;
 };
 
 /**
  * @class RetinaFacePostProcess
- * @brief Class of the retinaface post-process, it will initialize the parameters once
- * instead of compute them every time when the program execute.
+ * @brief Class of the retinaface post-process. It initializes the parameters once
+ * instead of computing them each time the program executes.
  * */
 class RetinaFacePostProcess {
  public:
   /**
-   * @brief Create an RetinaFacePostProcess object.
+   * @brief Create a RetinaFacePostProcess object.
    * @param input_tensors A vector of all input-tensors in the network.
    * Usage: input_tensors[input_tensor_index].
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
-   * @param config The dpu model configuration information.
-   * @return An unique printer of RetinaFacePostProcess.
+   * @param config The DPU model configuration information.
+   * @return A unique pointer of RetinaFacePostProcess.
    */
   static std::unique_ptr<RetinaFacePostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,

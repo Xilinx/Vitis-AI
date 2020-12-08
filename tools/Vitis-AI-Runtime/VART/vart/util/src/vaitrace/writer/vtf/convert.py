@@ -49,7 +49,7 @@ DPU_RUN -> EventID, StartID, Timestamp, bucketID:uint32, DPU_RUN, kernelName:MID
 
 
 class VART_VTF:
-    def __init__(self, eid, sid, ts, bid, kn, tid, bs, it="", ot=""):
+    def __init__(self, eid, sid, ts, bid, kn, tid, bs, it="", ot="", wl=0, op_num=0, ef=0):
         self.eid = int(eid)
         self.sid = int(sid)
 
@@ -62,9 +62,9 @@ class VART_VTF:
         self.bs = int(bs)
         self.it = it
         self.ot = ot
-        self.wl = ""
-        self.ef = ""
-        self.opn = ""
+        self.wl = round(wl, 3)
+        self.ef = round(ef, 2)
+        self.opn = op_num
         self.rs = ""
 
     def __str__(self):
@@ -80,15 +80,25 @@ def toVTF(e):
 
     bid = e.coreId + 1
     subgraph_index = literal_pool.index(e.subgraph)
+
     it_index = literal_pool.index(e.it)
     ot_index = literal_pool.index(e.ot)
 
+    op_num = e.op_num
+
+    """Unit of workload: GOPS"""
+    workload = float(e.workload)
+
+    """Unit of efficiency: GOPS/s"""
+    time_dur = e.endTime - e.startTime
+    efficiency = round(workload / time_dur , 2)
+
     vtf_event_satat = VART_VTF(
-        event_id, 0, e.startTime, bid, subgraph_index, e.pid, e.batch, it_index, ot_index)
+        event_id, 0, e.startTime, bid, subgraph_index, e.pid, e.batch, it_index, ot_index, workload, op_num, efficiency)
     start_id = event_id
     event_id = event_id + 1
     vtf_event_end = VART_VTF(event_id, start_id, e.endTime,
-                             bid, subgraph_index, e.pid, e.batch, it_index, ot_index)
+                             bid, subgraph_index, e.pid, e.batch, it_index, ot_index, workload, op_num, efficiency)
     event_id = event_id + 1
 
     return (vtf_event_satat, vtf_event_end)

@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: facerec_resnet64
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: c5dd845899e57fb9be1bb350290b5fef
 - name: facerec_resnet64
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-vck190-r1.3.0.tar.gz
+  checksum: fd1e6eb03e727e8c2804fa3753fa2646
 - name: facerec_resnet64
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50-r1.3.0.tar.gz
+  checksum: 01a7ae6a5067c24e0eb8b550a11dacc2
 - name: facerec_resnet64
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50lv-u280-r1.3.0.tar.gz
+  checksum: 66de2d77ed54d1896e65813044d2d657
 - name: facerec_resnet64
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

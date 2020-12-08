@@ -186,6 +186,11 @@ class DPUEventParser():
                 subgraphName = runtimeEventList.get(key, "subgraph")
             elif key == 'batch':
                 batchSize = runtimeEventList.get(key, 1)
+            elif key == 'op_num':
+                op_num = runtimeEventList.get(key, 0)
+            elif key == 'workload':
+                workload = float(runtimeEventList.get(key, 0))
+                workload = round(workload / 1000.0/ 1000.0 / 1000.0, 2)
             elif key == 'hwconuter':
                 pass
             elif key == 'it':
@@ -201,6 +206,8 @@ class DPUEventParser():
 
         self.vartThreads[pid]["subgraph"] = subgraphName
         self.vartThreads[pid]["batch"] = batchSize
+        self.vartThreads[pid]["op_num"] = op_num
+        self.vartThreads[pid]["workload"] = workload
         self.vartThreads[pid]["it"] = it
         self.vartThreads[pid]["ot"] = ot
 
@@ -236,6 +243,8 @@ class DPUEventParser():
                                      self.getDpuRuntimeInfo(event, "subgraph"))
             event.batch = self.getDpuRuntimeInfo(event, "batch")
             event.subgraph = self.getDpuRuntimeInfo(event, "subgraph")
+            event.op_num = self.getDpuRuntimeInfo(event, "op_num")
+            event.workload = self.getDpuRuntimeInfo(event, "workload")
             event.it = self.getDpuRuntimeInfo(event, "it")
             event.ot = self.getDpuRuntimeInfo(event, "ot")
             if event.coreType == 'DPUC':

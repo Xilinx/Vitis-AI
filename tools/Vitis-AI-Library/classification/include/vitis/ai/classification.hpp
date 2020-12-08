@@ -43,8 +43,7 @@ namespace ai {
  * @code
    auto image = cv::imread("sample_classification.jpg");
    auto network = vitis::ai::Classification::create(
-                  "resnet_50",
-                  true);
+                  "resnet50");
    auto result = network->run(image);
    for (const auto &r : result.scores) {
       auto score = r.score;
@@ -63,6 +62,7 @@ class Classification {
    * @param model_name Model name.
    * @param need_preprocess Normalize with mean/scale or not,
    *default value is true.
+   *
    * @return An instance of Classification class.
    *
    */
@@ -104,23 +104,23 @@ class Classification {
       const std::vector<cv::Mat>& images) = 0;
   /**
    * @brief Function to get InputWidth of the classification network (input
-   *image cols).
+   *image columns).
    *
-   * @return InputWidth of the classification network
+   * @return Input width of the classification network
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the classification network (input
+   *@brief Function to get InputHeight of the classification network (input
    *image rows).
    *
-   *@return InputHeight of the classification network.
+   *@return Input height of the classification network.
    */
   virtual int getInputHeight() const = 0;
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
-   *the IP used.
+   * @note The batch size of different DPU core may be different. This depends
+   *on the IP used.
    *
    * @return Batch size.
    */

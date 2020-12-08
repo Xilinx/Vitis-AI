@@ -249,9 +249,9 @@ std::vector<ClassificationResult> ClassificationImp::run(
           if (test_accuracy) {
 //# DPUV1 directly uses the resized image dataset so no need of crop
 #ifdef ENABLE_DPUCADX8G_RUNNER
-            cv::resize(input_images[i], image, size);
+          cv::resize(input_images[i], image, size);
 #else
-            croppedImage(input_images[i], height, width, image);
+          croppedImage(input_images[i], height, width, image);
 #endif
           } else {
             cv::resize(input_images[i], image, size);

@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +30,23 @@ files:
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: b6c549beacd914d7e75c9f0aff63709d
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck190-r1.3.0.tar.gz
+  checksum: 7f6578ac8e8a791a9da2d92a06b445e1
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-r1.3.0.tar.gz
+  checksum: 3273e920bdc5e37f6f9fe7c18e9ba5fa
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50lv-u280-r1.3.0.tar.gz
+  checksum: 833634a0ba487b83d4649c75d4e3160a
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
