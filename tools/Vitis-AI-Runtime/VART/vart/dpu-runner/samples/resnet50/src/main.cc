@@ -214,7 +214,7 @@ void runResnet50(vart::Runner* runner) {
 
       /*image pre-process*/
       Mat image2 = cv::Mat(inHeight, inWidth, CV_8SC3);
-      resize(image, image2, Size(inHeight, inWidth), 0, 0, INTER_NEAREST);
+      resize(image, image2, Size(inHeight, inWidth), 0, 0);
       for (int h = 0; h < inHeight; h++) {
         for (int w = 0; w < inWidth; w++) {
           for (int c = 0; c < 3; c++) {

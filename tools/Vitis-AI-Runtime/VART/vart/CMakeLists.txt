@@ -34,12 +34,13 @@ find_package(target-factory REQUIRED)
 find_package(Xrt MODULE)
 
 set(PACKAGE_COMPONENTS util runner dummy-runner async-runner)
+list(APPEND PACKAGE_COMPONENTS mem-manager)
 if(ENABLE_DPU_RUNNER)
-  list(APPEND PACKAGE_COMPONENTS buffer-object dpu-controller dpu-runner softmax-runner)
   # append xrt-device-handle anyway, even if xrt is not found, because
   # softmax controller is part if and vitis-ai-library needs such
   # components.
   list(APPEND PACKAGE_COMPONENTS xrt-device-handle)
+  list(APPEND PACKAGE_COMPONENTS buffer-object dpu-controller dpu-runner softmax-runner)
 endif()
 if(ENABLE_SIM_RUNNER)
   list(APPEND PACKAGE_COMPONENTS sim-runner)
@@ -48,10 +49,9 @@ if(ENABLE_CPU_RUNNER)
   list(APPEND PACKAGE_COMPONENTS cpu-runner)
 endif()
 if(ENABLE_XRNN_RUNNER)
-  list(APPEND PACKAGE_COMPONENTS buffer-object xrnn-runner)
   list(APPEND PACKAGE_COMPONENTS xrt-device-handle)
+  list(APPEND PACKAGE_COMPONENTS buffer-object xrnn-runner)
 endif()
-list(APPEND PACKAGE_COMPONENTS mem-manager)
 
 list(REMOVE_DUPLICATES PACKAGE_COMPONENTS)
 foreach(COMPONENT ${PACKAGE_COMPONENTS})

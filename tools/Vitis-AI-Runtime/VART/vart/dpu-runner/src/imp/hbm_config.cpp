@@ -22,14 +22,14 @@
 #include <iostream>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/parse_value.hpp>
-#include "vitis/ai/simple_config.hpp"
 
 #include "./xclbin_info.hpp"
+#include "vitis/ai/simple_config.hpp"
 
 DEF_ENV_PARAM_2(XLNX_MAT_CONFIG, "/usr/lib/hbm_address_assignment.txt",
                 std::string)
 DEF_ENV_PARAM_2(XLNX_VART_FIRMWARE, "", std::string)
-DEF_ENV_PARAM(XLNX_ENABLE_HBM_TXT, "0")
+DEF_ENV_PARAM(XLNX_ENABLE_HBM_TXT, "1")
 DEF_ENV_PARAM(DEBUG_DPU_RUNNER, "0")
 
 namespace vart {

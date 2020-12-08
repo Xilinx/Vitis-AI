@@ -89,6 +89,13 @@ foreach(PUBLIC_HEADER
     DESTINATION include/${HEADER_PATH})
 endforeach()
 
+# ONEHACK TM
+# Expose runner_helper.hpp to the world as experimental
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/runner_helper.hpp
+  COMPONENT base
+  DESTINATION include/vart/experimental
+  )
+
 install(
   EXPORT ${COMPONENT_NAME}-targets
   NAMESPACE ${PROJECT_NAME}::

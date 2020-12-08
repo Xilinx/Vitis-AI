@@ -15,11 +15,12 @@
  */
 
 #include "vart/mm/host_flat_tensor_buffer.hpp"
-#include "vart/util_4bit.hpp"
 
 #include <algorithm>
 #include <cmath>
 #include <xir/util/tool_function.hpp>
+
+#include "vart/util_4bit.hpp"
 
 namespace vart {
 namespace mm {
@@ -105,6 +106,14 @@ HostFlatTensorBuffer::HostFlatTensorBuffer(const xir::Tensor* tensor,
 
 HostFlatTensorBuffer::~HostFlatTensorBuffer() { delete[] data_; }
 
+static size_t size_of_element_in_bytes(size_t num_of_element,
+                                       size_t bit_width) {
+  auto ceil = [](size_t a, size_t b) {
+    return a / b + ((a % b == 0) ? 0u : 1u);
+  };
+  return ceil(num_of_element * bit_width, 8u);
+}
+
 std::pair<uint64_t, size_t> HostFlatTensorBuffer::data(
     const std::vector<int> idx) {
   auto valid_size = 1U;
@@ -137,7 +146,8 @@ std::pair<uint64_t, size_t> HostFlatTensorBuffer::data(
     step *= shape[k];
   }
   return {reinterpret_cast<uint64_t>(data_ + offset / 8),
-          valid_size - element_offset};
+          size_of_element_in_bytes(valid_size - element_offset,
+                                   get_tensor()->get_data_type().bit_width)};
 }
 
 static int32_t max_common_divisor(int32_t a, int32_t b) {
