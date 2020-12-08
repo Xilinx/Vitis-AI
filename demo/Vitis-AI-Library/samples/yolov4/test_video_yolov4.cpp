@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-Important:
-  ./test_jpeg_covid19segmentation, ./test_performance_covid19segmentation, first param followed must be with model name.
-  Valid model name:
-    FPN-resnet18_covid19-seg_pt
-    
+#include <glog/logging.h>
 
-1, compile
+#include <iostream>
+#include <memory>
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#include <vitis/ai/demo.hpp>
+#include <vitis/ai/nnpp/yolov3.hpp>
+#include <vitis/ai/yolov3.hpp>
 
-    execute the following command:
-
-        sh build.sh
-
-2, copy the compiled executable file and test image to the development board.
-
-   run the executable file.
-    
-    sample : ./test_jpeg_covid19segmentation FPN-resnet18_covid19-seg_pt samples_covid19segmentation.jpg
-    output : Run and get a visualization result
+#include "./process_result.hpp"
+using namespace std;
+int main(int argc, char *argv[]) {
+  string model = argv[1];
+  return vitis::ai::main_for_video_demo(
+      argc, argv, [model] { return vitis::ai::YOLOv3::create(model); },
+      process_result, 2);
+}

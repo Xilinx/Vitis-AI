@@ -41,10 +41,11 @@ I1102 06:39:55.572721  3602 process_result.hpp:29] 0.75 0.75
     sample : ./test_jpeg_facequality5pt face-quality_pt sample_facequality5pt.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I0715 16:06:58.112608 11502 process_result.hpp:26] score : 0.73885 points
-I0715 16:06:58.112757 11502 process_result.hpp:29] 0.333333 0.35
-I0715 16:06:58.112846 11502 process_result.hpp:29] 0.8 0.3625
-I0715 16:06:58.112886 11502 process_result.hpp:29] 0.6 0.5
-I0715 16:06:58.112922 11502 process_result.hpp:29] 0.366667 0.7375
-I0715 16:06:58.112958 11502 process_result.hpp:29] 0.75 0.75
+I1126 03:48:03.879607  1636 process_result.hpp:26] score : 0.746494 points
+I1126 03:48:03.879714  1636 process_result.hpp:29] 0.333333 0.35
+I1126 03:48:03.879779  1636 process_result.hpp:29] 0.8 0.3625
+I1126 03:48:03.879807  1636 process_result.hpp:29] 0.6 0.5
+I1126 03:48:03.879833  1636 process_result.hpp:29] 0.366667 0.7375
+I1126 03:48:03.879858  1636 process_result.hpp:29] 0.75 0.75
+
 

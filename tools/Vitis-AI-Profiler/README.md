@@ -59,7 +59,7 @@ From Vitis-AI v1.3, [Vitis Analyzer](https://www.xilinx.com/html_docs/xilinx2020
 
 - Installing  
     - Preparing debug environment for vaitrace in MPSoC platform   
-      These steps are _not_ required for Vitis AI prebuilt images for ZCU102 & ZCU104 https://github.com/Xilinx/Vitis-AI/tree/master/VART#setting-up-the-target   
+      These steps are __not__ required for Vitis AI prebuilt images for ZCU102 & ZCU104 https://github.com/Xilinx/Vitis-AI/tree/master/VART#setting-up-the-target   
         1. Configure and Build Petalinux  
         Run _petalinux-config -c kernel_ and Enable these for Linux kernel  
         ```
@@ -79,7 +79,6 @@ From Vitis-AI v1.3, [Vitis Analyzer](https://www.xilinx.com/html_docs/xilinx2020
 
     - Preparing debug environment for docker
       If you are using Vitis AI with docker, please add this patch to docker_run.sh to get root permission for vaitrace  
-      **This step is only required for Alveo devices. For Zynq MPSoC devices, vaitrace does not interact with docker, so this setting is not required**
       ```diff
       --- a/docker_run.sh
       +++ b/docker_run.sh
@@ -101,7 +100,11 @@ From Vitis-AI v1.3, [Vitis Analyzer](https://www.xilinx.com/html_docs/xilinx2020
            --network=host \
 
       ```
-      Due to an issue of overlay-fs, to support all the features of Vitis-AI Profiler in docker environment, it requires a linux kernel release v4.8 or higher on your host machine, see [here](https://lore.kernel.org/patchwork/patch/890633/)
+      - This step is only required for Alveo devices working in docker environment   
+        - For Zynq MPSoC devices, vaitrace does not interact with docker, therefore modification for the docker_run.sh is __not required__    
+        - For Alveo devices running in docker environment, there are some limitations for an in-depth profiling. Because some tools require superuser permission that cannot work well with docker in default setting. So we need this modification to get more permissions
+
+      - Due to an issue of overlay-fs, to support all the features of Vitis-AI Profiler in docker environment, it's recommended to use Linux kernel 4.8 or above on your host machine, see [here](https://lore.kernel.org/patchwork/patch/890633/)
 
 
 ### Starting A Simple Trace with vaitrace  
