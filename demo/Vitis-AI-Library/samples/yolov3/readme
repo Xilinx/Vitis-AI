@@ -21,7 +21,6 @@ Important:
     yolov3_bdd
     yolov3_voc_tf
     yolov4_leaky_spp_m
-    ML-at-Edge-yolov3
 
 
 1, compile
@@ -97,12 +96,6 @@ I1027 12:59:49.308931 320691 test_jpeg_yolov4.cpp:52] RESULT: 2 168.204 135.639 
 I1027 12:59:49.308992 320691 test_jpeg_yolov4.cpp:52] RESULT: 2 291.026 138.528 305.796 151.171 0.505759
 I1027 12:59:49.309087 320691 test_jpeg_yolov4.cpp:52] RESULT: 2 244.192 138.931 256.436 143.582 0.404771
 
-
-    sample : ./test_jpeg_yolov3 ML-at-Edge-yolov3 sample_yolov3.jpg
-    output : 
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I0610 02:16:11.508892 16192 process_result.hpp:44] RESULT: 6    8.90686 132.615 125.361 254.461 0.998955
-I0610 02:16:11.509046 16192 process_result.hpp:44] RESULT: 6    112.95  137.506 189.258 183.163 0.939598
 
     sample : ./test_jpeg_yolov3 tiny_yolov3_vmss sample_yolov3_vmss.jpg
 WARNING: Logging before InitGoogleLogging() is written to STDERR
