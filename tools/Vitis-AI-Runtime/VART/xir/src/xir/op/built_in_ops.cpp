@@ -567,6 +567,8 @@ std::function<void(xir::OpDef&)> BroadcastOpDefGenerator(
         "    \"sub\": input[0] - input[1]\n"
         "    \"mul\": input[0] * input[1]\n"
         "    \"div\": input[0] / input[1]\n"
+        "    \"min\": min(input[0], input[1])\n"
+        "    \"max\": max(input[0], input[1])\n"
         "What is broadcasting?\n\n"
         "When operating on two arrays, we compare their shapes element-wise. \n"
         "It starts with the trailing dimensions, and works its way forward.\n\n"
@@ -613,10 +615,20 @@ auto div = xir::OpDef("div")
                .inherit_from(BroadcastOpDefGenerator(xir::DataType::FLOAT))
                .set_shape_infer(xir::shape_infer_div);
 
+auto min = xir::OpDef("min")
+               .inherit_from(BroadcastOpDefGenerator(xir::DataType::FLOAT))
+               .set_shape_infer(xir::shape_infer_min);
+
+auto max = xir::OpDef("max")
+               .inherit_from(BroadcastOpDefGenerator(xir::DataType::FLOAT))
+               .set_shape_infer(xir::shape_infer_max);
+
 XIR_REGISTER_BUILT_IN_OP(add);
 XIR_REGISTER_BUILT_IN_OP(sub);
 XIR_REGISTER_BUILT_IN_OP(mul);
 XIR_REGISTER_BUILT_IN_OP(div);
+XIR_REGISTER_BUILT_IN_OP(min);
+XIR_REGISTER_BUILT_IN_OP(max);
 
 std::function<void(xir::OpDef&)> ActivationOpDefGenerator(
     xir::DataType::Type T) {
@@ -703,10 +715,8 @@ std::function<void(xir::OpDef&)> FixOpDefGenerator(xir::DataType::Type T) {
         "           : std::round(x)\n"
         "For example, f(2.3) = 2, f(2.5) = 3, f(-2.5) = -2, f(-2.6) = -3.\n\n"
         "(3). If the round_mode = `PY3_ROUND`:\n\n"
-        "    f(x) = ((x - floor(x) == 0.5)\n"
-        "           ? x / abs(x) * std::floor(std::abs(x))\n"
-        "           : std::round(x)\n"
-        "For example, f(2.3) = 2, f(2.5) = 2, f(-2.5) = -2, f(-2.6) = -3.");
+        "Round to even."
+        "For example, f(2.3) = 2, f(2.5) = 2, f(-2.5) = -2, f(-2.6) = -3.\n\n");
     op_def.add_input_arg(input)
         .add_attr(fix_point)
         .add_attr(bit_width)
@@ -1471,7 +1481,6 @@ auto tile_fix =
                                      "4-dimension, N H W C"})
         .add_attr(xir::AttrDefBuilder<bool>::build("reverse", AttrDef::REQUIRED,
                                                    "`Datatype`: `bool`\n\n"
-
                                                    "if reverse"))
         .add_attr(xir::AttrDefBuilder<std::int32_t>::build(
             "stride", AttrDef::REQUIRED,
