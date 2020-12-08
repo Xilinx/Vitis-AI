@@ -128,57 +128,90 @@ void preProcessSsdmobilenet(Mat &image, float scale, int width, int height, int 
         i++;
     }
 
-void runSSD(vart::Runner* runner, string config_file, string img_path)
+void runSSD(vart::Runner* runner, string config_file, string img_dir, bool profile)
 {
-    	Mat image = imread(img_path);
-
 	auto outTBuffs_ = dynamic_cast<vart::RunnerExt*>(runner)->get_outputs();
 	auto inTBuffs_ = dynamic_cast<vart::RunnerExt*>(runner)->get_inputs();
 	
 	int8_t* input = (int8_t*)inTBuffs_[0]->data().first;
 	auto ip_scales = vart::get_input_scale(dynamic_cast<vart::RunnerExt*>(runner)->get_input_tensors());
 	auto out_scales = vart::get_output_scale(dynamic_cast<vart::RunnerExt*>(runner)->get_output_tensors());
-
+	
 	auto tensor = inTBuffs_[0]->get_tensor();
 	auto in_dims = tensor->get_shape();
 	int height = in_dims[1];
 	int width = in_dims[2];
 	int channels = in_dims[3];
-        
-	//# Pre-process
-	preProcessSsdmobilenet(image, ip_scales[0], width, height, channels, input);
-
-	vector<std::unique_ptr<vitis::ai::TFSSDPostProcess>> processor_;
 	
 	vitis::ai::proto::DpuModelParam config_ = get_config(config_file);
-    
+		
+	vector<std::unique_ptr<vitis::ai::TFSSDPostProcess>> processor_;
 	processor_.push_back( vitis::ai::TFSSDPostProcess::create(
-          width, height, out_scales[0], out_scales[1], config_));
-
-	const short* fx_priors_ = processor_[0]->fixed_priors_;
-	hw_sort_init(pphandle, "/usr/lib/dpu.xclbin", fx_priors_);
-
-	auto ret = (runner)->execute_async(inTBuffs_, outTBuffs_);
-   	(runner)->wait(uint32_t(ret.first), -1);
-
-	int8_t* conf = (int8_t*)outTBuffs_[0]->data().first;
-	int8_t* loc_ptr = (int8_t*)outTBuffs_[1]->data().first;
+	    width, height, out_scales[0], out_scales[1], config_));
 	
-	auto results = processor_[0]->ssd_post_process(conf, loc_ptr);
-    
-        //# Print results
-	for (auto &bbox :  results[0].bboxes) {
-		int label = bbox.label;
-		float xmin = bbox.x * image.cols;
-		float ymin = bbox.y * image.rows;
-		float xmax = xmin + bbox.width * image.cols;
-		float ymax = ymin + bbox.height * image.rows;
-		float confidence = bbox.score;
-		if (xmax > image.cols) xmax = image.cols;
-		if (ymax > image.rows) ymax = image.rows;
-		std::cout << "RESULT: " << label << "\t" << xmin << "\t" << ymin
-			<< "\t" << xmax << "\t" << ymax << "\t" << confidence << "\n";
+	const short* fx_priors_ = processor_[0]->fixed_priors_;
+	//# Hardware post proc kernel init
+	hw_sort_init(pphandle, "/usr/lib/dpu.xclbin", fx_priors_);
+		
+	long pre_time = 0, exec_time = 0, post_time = 0; 
+	vector<cv::String> files;
+	cv::glob(img_dir, files);
+	int count = files.size();
+	std::cerr << "The image count = " << count << endl;
+	//# Loop Over images
+	for (int i = 0; i < count; i++) {
+		auto image = imread(files[i]);
+		if (image.empty()) {
+			cerr << "cannot load " << files[i] << endl;
+			abort();
+		}
+		
+		auto t1 = std::chrono::system_clock::now();
+		//# Pre-process
+		preProcessSsdmobilenet(image, ip_scales[0], width, height, channels, input);
+		auto t2 = std::chrono::system_clock::now();
+		auto value_t1 = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1);
+		pre_time += value_t1.count();
+		
+		//# Execution on FPGA
+		auto ret = (runner)->execute_async(inTBuffs_, outTBuffs_);
+		(runner)->wait(uint32_t(ret.first), -1);
+		
+		auto t3 = std::chrono::system_clock::now();
+		auto value_t2 = std::chrono::duration_cast<std::chrono::microseconds>(t3-t2);
+		exec_time += value_t2.count();
+		
+		int8_t* conf = (int8_t*)outTBuffs_[0]->data().first;
+		int8_t* loc_ptr = (int8_t*)outTBuffs_[1]->data().first;
+		auto results = processor_[0]->ssd_post_process(conf, loc_ptr);
+		auto t4 = std::chrono::system_clock::now();
+		auto value_t3 = std::chrono::duration_cast<std::chrono::microseconds>(t4-t3);
+		post_time += value_t3.count();
+		
+		std::cout << "Detection Output of " << files[i] << " :\n";
+		
+		//# Print results
+		for (auto &bbox :  results[0].bboxes) {
+			int label = bbox.label;
+			float xmin = bbox.x * image.cols;
+			float ymin = bbox.y * image.rows;
+			float xmax = xmin + bbox.width * image.cols;
+			float ymax = ymin + bbox.height * image.rows;
+			float confidence = bbox.score;
+			if (xmax > image.cols) xmax = image.cols;
+			if (ymax > image.rows) ymax = image.rows;
+			std::cout << "label, xmin, ymin, xmax, ymax, confidence : ";
+			std::cout << label << "\t" << xmin << "\t" << ymin
+				<< "\t" << xmax << "\t" << ymax << "\t" << confidence << "\n";
+		}
 	}
+	
+	if(profile) {
+		std::cout << "Pre-Process Execution time: " << pre_time/count << " us\n";
+		std::cout << "DPU Execution time: " << exec_time/count << " us\n";
+		std::cout << "Post-Proc Execution time: " << post_time/count << " us\n";
+	}
+
 	return;
 }
 
@@ -187,13 +220,14 @@ void runSSD(vart::Runner* runner, string config_file, string img_path)
  * app.exe <options>
  */
 int main(int argc, char **argv) {
-  if(argc != 4){
-   std::cerr << "invalid options <exe> <config proto> <xmodel> <image>\n";
+  if(argc != 5){
+   std::cerr << "invalid options <exe> <config proto> <xmodel> <image dir> <enable profile>\n";
    return -1; 
   }
   std::string config_proto = argv[1];
   std::string xmodel_filename = argv[2]; 
-  std::string img_path = argv[3]; 
+  std::string img_dir = argv[3]; 
+  bool profile = atoi(argv[4]); 
  
   // runner
   std::unique_ptr<xir::Graph> graph = xir::Graph::deserialize(xmodel_filename);
@@ -201,7 +235,7 @@ int main(int argc, char **argv) {
   auto r = vart::Runner::create_runner(subgraph[0], "run");
   auto runner_ = std::move(r.get());
   
-  runSSD(runner_, config_proto, img_path);
+  runSSD(runner_, config_proto, img_dir, profile);
   
   return 0;
 }
