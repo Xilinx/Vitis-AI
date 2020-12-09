@@ -46,5 +46,7 @@ label, xmin, ymin, xmax, ymax, confidence : 1   316.699 164.823 392.676 374.565 
 
 ### Performance:
 Pre-Process Execution time: 3393 us
+
 DPU Execution time: 1265 us
+
 FPGA Accelerated Post-Processing time: 200 us
