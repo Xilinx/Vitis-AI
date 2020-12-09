@@ -9,7 +9,7 @@
     - [Building and running the application](#Building-and-running-the-application-on-ZCU102)
 - [Setting Up and Running on U50](#Setting-Up-and-Running-on-Alveo-U50)
     - [Setting Up the Target](#Setting-Up-the-Target-Alveo-U50)
-    - [Building and running the application](#Building-and-running-the-application-Alveo-U50)
+    - [Building and running the application](#Building-and-running-the-application-on-Alveo-U50)
 - [Performance](#Performance)    
 
 ## Introduction
@@ -53,20 +53,20 @@ Runtime packages on the board separately.**
 
 		For bash, same tar file can be obtained from `/wrk/acceleration/users/maheshm/vai_1_3/waa_system_v1.3.0.tar.gz`
 	* Copy the `waa_system_v1.3.0.tar.gz` to the board using scp.
-	```
+	  ```
 	  scp waa_system_v1.3.0.tar.gz root@IP_OF_BOARD:~/
-	```
+	  ```
     * Update the system image files on the target side
 
-  	```
+  	  ```
 	  cd ~
 	  tar -xzvf waa_system_v1.3.0.tar.gz
-	  cp waa_system_v1.3.0/sd_card_resnet50/* /media/sd-mmcblk0p1/
-	  cp /media/sd-mmcblk0p1/dpu.xclbin /usr/lib/
-	  ln -s /usr/lib/dpu.xclbin /media/dpu.xclbin
+	  cp waa_system_v1.3.0/sd_card_resnet50/* /mnt/sd-mmcblk0p1/
+	  cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
+	  ln -s /usr/lib/dpu.xclbin /mnt/dpu.xclbin
 	  cp waa_system_v1.3.0/lib/* /usr/lib/
 	  reboot
-  	```
+  	  ```
 
 * Download test images
 
@@ -99,7 +99,7 @@ Runtime packages on the board separately.**
     ```
 
 ## Setting Up and Running on Alveo U50
-  ### Setting Up the Target Alveo U50
+### Setting Up the Target Alveo U50
 
 * Follow the steps mentioned [here](../../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
 
@@ -107,10 +107,10 @@ Runtime packages on the board separately.**
 
 * For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/waa_system_u50_v1.3.0.tar.gz`
 
-```
+  ```
 	tar -xzvf waa_system_u50_v1.3.0.tar.gz
 	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
-```	
+  ```	
 
 
 * To download and install `adas detection` model:
@@ -124,14 +124,14 @@ Runtime packages on the board separately.**
 	  tar -xzvf yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
 	  sudo cp yolov3_adas_pruned_0_9 /usr/share/vitis_ai_library/models -r
 	```
-	
+* Download test images	
 
-For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa/data`
+  For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa/data`
 
-For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/adas_detection_input.jpg`
+  For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/adas_detection_input.jpg`
 
 
-  ### Building and running the application Alveo U50
+### Building and running the application on Alveo U50
  *  Build
     ```
     cd ./adas_detection_waa

@@ -1,6 +1,6 @@
 # Accelerating Pre-processing for classification networks
 
-* This application can be run only on Alveo-U200 platform.
+:pushpin: **Note:** This application can be run only on Alveo-U200 platform.
 
 ## Table of Contents
 
