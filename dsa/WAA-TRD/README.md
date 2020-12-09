@@ -152,12 +152,6 @@ Here we install it under `~/petalinux_sdk`.
 
 ### Pre-built flow- DPU is pre-built and only pre-processing accelerator is built from sources. 
 
-Download [bin.tar.gz](IN_XHD_SERVER_/wrk/acceleration/users/maheshm/publicDownloadrepo/bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
-
-For bash, same bin.tar.gz file can be obtained from here
-```
-XHD/XSJ/XCO: /wrk/acceleration/users/maheshm/vai_1_3/bin.tar.gz
-```
 
 - For classification example, please refer to [WAA-TRD/proj/pre-built/classification-pre_DPUv2/README](./proj/pre-built/classification-pre_DPUv2/README.md) file
 
