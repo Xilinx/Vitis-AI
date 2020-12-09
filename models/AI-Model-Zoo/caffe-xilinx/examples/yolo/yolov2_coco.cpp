@@ -137,7 +137,7 @@ vector<vector<float> > Detector::Detect(string file ,int classes ,int anchorCnt,
   image img = load_image_yolo(file.c_str(), input_layer->width(), input_layer->height(), input_layer->channels());
   input_layer->set_cpu_data(img.data);
   net_->Forward();
-
+  free_image(img);
   /* Copy the output layer to a std::vector */
   Blob<float>* result_blob = net_->output_blobs()[0];
   const float* result = result_blob->cpu_data();
@@ -272,6 +272,7 @@ int main(int argc, char** argv) {
          }
       }
       cv::imwrite("detection.jpg",img);
+      results.clear();
     } else {
       LOG(FATAL) << "Unknown file_type: " << file_type;
     }

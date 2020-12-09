@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,11 +30,11 @@ files:
 - name: pointpillars_kitti_12000_0_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 280c1f153a334d5d2ad6683a75fc3685
 - name: pointpillars_kitti_12000_1_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: f9cb1fe8868001c641aa76f60ae34c76
 license: license link

@@ -14,7 +14,8 @@ This directory provides scripts for running several well known models on the FPG
   Setup the Environment
 
   ```sh
-  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
    Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning).
@@ -45,21 +46,21 @@ This directory provides scripts for running several well known models on the FPG
   ```
 #### Inspect TensorFlow model
 
-   Inspect the tensorflow model to get input and output node(s), and input node shape. 
+   Inspect the tensorflow model to get input and output node(s), and input node shape.
    ```sh
    ./inspect_tf_model.sh <tensorflow_model>
    ```
-   
+
    ```sh
    ./inspect_tf_model.sh models/inception_v1_baseline.pb
    ```
-   
+
 #### Quantize Model
 
   To deploy a tensorflow model on the FPGA, it needs to be quantized.
 
-  *Quantize the model* 
-  
+  *Quantize the model*
+
   The quantizer will generate scaling parameters for quantizing `float` to `INT8`. FPGAs take advantage of Fixed Point Precision to achieve more parallelization at lower power.
 
   The above step is invoked by using the `--quantize` switch. If you plan to work on several models, you can use the `--output_dir` switch to generate and store model artifacts in seperate directories. By default, output_dir is `./work`
@@ -73,11 +74,11 @@ This directory provides scripts for running several well known models on the FPG
   This performs compilation and subgraph partitioning in a single step. To run a tensorflow model on the FPGA, it needs to be compiled and a new graph needs to be generated. The new graph is similar to the original, with the FPGA subgraph removed, and replaced with a custom Python layer.
 
   *Compile the Model*
-  
+
   In this step, the network graph (frozen `.pb` file) is compiled.
 
   *Subgraph Partitioning*
-  
+
   In this step, the original graph is cut, and a custom FPGA accelerated python layer is inserted to be used for Inference.
 
   The above two steps are invoked by using the `--validate` switch. If you plan to work on several models, you can use the `--output_dir` switch to generate and store model artifacts in seperate directories. By default, output_dir is `./work`.
@@ -89,7 +90,7 @@ This directory provides scripts for running several well known models on the FPG
   ```
 
  #### Other Models
- 
+
  Below are the commands for running compilation, partitioning and inference with other models downloaded by `getModels.py`.
 
   ```sh

@@ -33,7 +33,7 @@ target_include_directories(${COMPONENT_NAME} PUBLIC
 )
 target_link_libraries(${COMPONENT_NAME} PUBLIC unilog::unilog xir::xir util runner)
 
-if(TARGET ${PROJECT_NAME}::buffer-object)
+if(${ENABLE_DPU_RUNNER})
   target_sources(${COMPONENT_NAME}
     PRIVATE
     src/tensor_buffer_imp_host.cpp

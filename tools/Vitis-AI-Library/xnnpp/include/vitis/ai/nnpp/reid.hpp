@@ -32,7 +32,7 @@ namespace vitis {
 namespace ai {
 
 /**
- * @brief Result with the reid network.
+ * @brief Result with the ReID network.
  */
 struct ReidResult {
   /// Width of input image.
@@ -49,7 +49,7 @@ struct ReidResult {
  *   Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.
  *  Usage: output_tensors[output_index].
- * @param config The dpu model configuration information.
+ * @param config The DPU model configuration information.
  * @return The struct of ReidResult.
  */
 ReidResult reid_post_process(

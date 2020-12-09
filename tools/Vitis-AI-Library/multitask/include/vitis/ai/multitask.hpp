@@ -50,7 +50,7 @@ namespace ai {
  *
  * Input an image (cv::Mat).
  *
- * Output is a struct of MultiTaskResult include segmentation results, detection
+ * Output is a struct of MultiTaskResult include segmentation results, 
  detection results and vehicle towards;
  *
  * Sample code:
@@ -95,7 +95,7 @@ class MultiTask {
  public:
   /**
    * @brief Function to get InputWidth of the multitask network (input image
-   *cols).
+   *columns).
    *
    * @return InputWidth of the multitask network.
    */
@@ -110,7 +110,7 @@ class MultiTask {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -210,7 +210,7 @@ class MultiTask8UC1 {
  public:
   /**
    * @brief Function to get InputWidth of the multitask network (input image
-   *cols).
+   *columns).
    *
    * @return InputWidth of the multitask network.
    */
@@ -276,7 +276,7 @@ class MultiTask8UC1 {
  * Input is an image (cv::Mat).
  *
  * Output is struct MultiTaskResult include segmentation results, detection
- results and vehicle towards; The result cv::Mat type is CV_8UC3
+ results and vehicle orientation; The result cv::Mat type is CV_8UC3
  *
  * Sample code:
  * @code
@@ -319,7 +319,7 @@ class MultiTask8UC3 {
  public:
   /**
    * @brief Function to get InputWidth of the multitask network (input image
-   *cols).
+   *columns).
    *
    * @return InputWidth of the multitask network.
    */
@@ -334,7 +334,7 @@ class MultiTask8UC3 {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.

@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,26 +30,26 @@ files:
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 3caf653cc13517bae40226c42fa0aab2
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-vck190-r1.3.0.tar.gz
+  checksum: 81e6930841061d67d4000d345c41be32
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-u50-r1.3.0.tar.gz
+  checksum: be9c7532588e44f13189af82a322728f
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-u50lv-u280-r1.3.0.tar.gz
+  checksum: f3f478f6b5d4e8c0150e3b1886ed6b3e
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
-  board: u50lv-v3me & u280-v3me
+  board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
 license: license link

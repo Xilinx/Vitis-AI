@@ -33,7 +33,7 @@ namespace vitis {
 namespace ai {
 /**
  * @struct TFSSDResult
- * @brief Struct of the result returned by the ssd neuron network.
+ * @brief Struct of the result returned by the TFSSD neuron network.
  */
 struct TFSSDResult {
   /// Width of input image.
@@ -42,24 +42,24 @@ struct TFSSDResult {
   int height;
   /**
    * @struct BoundingBox
-   * @brief  Struct of an object coordinate ,confidence and classification.
+   * @brief Struct of an object coordinate, confidence and classification.
    */
   struct BoundingBox {
     /// Classification
     int label;
     /// Confidence
     float score;
-    /// x-coordinate, x is normalized relative to the input image cols ,the
-    /// value range from 0 to 1.
+    /// x-coordinate, x is normalized relative to the input image columns, the
+    /// value ranges from 0 to 1.
     float x;
-    /// y-coordinate ,y is normalized relative to the input image rows ,the
-    /// value range from 0 to 1.
+    /// y-coordinate ,y is normalized relative to the input image rows, the
+    /// value ranges from 0 to 1.
     float y;
-    /// width, width is normalized relative to the input image cols ,the value
-    /// range from 0 to 1.
+    /// Width, width is normalized relative to the input image columns, the value
+    /// ranges from 0 to 1.
     float width;
-    /// height, height is normalized relative to the input image rows ,the value
-    /// range from 0 to 1.
+    /// Height, height is normalized relative to the input image rows, the value
+    /// ranges from 0 to 1.
     float height;
   };
   /// All objects, a vector of BoundingBox
@@ -68,8 +68,8 @@ struct TFSSDResult {
 
 /**
  * @class TFSSDPostProcess
- * @brief Class of the ssd post-process, it will initialize the parameters once
- * instead of compute them every time when the program execute.
+ * @brief Class of the TFSSD post-process. It initializes the parameters once
+ * instead of computing them each time the program executes.
  * */
 class TFSSDPostProcess {
  public:
@@ -79,8 +79,8 @@ class TFSSDPostProcess {
    * Usage: input_tensors[input_tensor_index].
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
-   * @param config The dpu model configuration information.
-   * @return An unique printer of TFSSDPostProcess.
+   * @param config The DPU model configuration information.
+   * @return A unique printer of TFSSDPostProcess.
    */
   static std::unique_ptr<TFSSDPostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
@@ -89,12 +89,12 @@ class TFSSDPostProcess {
       const std::string& dirname);
 
   /**
-   * @brief The post-processing function of the ssd network.
+   * @brief The post-processing function of the TFSSD network.
    * @return The struct of TFSSDResult.
    */
   virtual TFSSDResult ssd_post_process(unsigned int idx) = 0;
   /**
-   * @brief The batch mode post-processing function of the ssd network.
+   * @brief The batch mode post-processing function of the TFSSD network.
    * @return The vector of struct of TFSSDResult.
    */
   virtual std::vector<TFSSDResult> ssd_post_process() = 0;

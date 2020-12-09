@@ -1,6 +1,6 @@
 # Classification using Unified Vitis-AI Python APIs
 
-This example uses unified Vitis-AI Python APIs to run `inception_v1` on alveo platforms. 
+This example uses unified Vitis-AI Python APIs to run `inception_v1` on alveo platforms.
 
 ## Prerequisite
 
@@ -24,7 +24,8 @@ Activate Conda Environment
 Setup the Environment
 
   ```sh
-  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 ## Run Inference
@@ -39,7 +40,7 @@ python inception_v1.py <number of threads> <compiler output directory>
 **Example**
 
 ```Python
-cd /workspace/alveo/examples/vitis_ai_alveo_samples/inception_v1_mt_py
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/vitis_ai_alveo_samples/inception_v1_mt_py
 python inception_v1.py 1 ./model
 ```
 

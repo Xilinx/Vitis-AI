@@ -33,7 +33,7 @@ namespace vitis {
 namespace ai {
 
 /**
- * @brief Base class for recognizing plate from a image (cv::Mat).
+ * @brief Base class for recognizing plate from an image (cv::Mat).
  *
  * Input is a plate image (cv::Mat).
  *
@@ -57,13 +57,13 @@ namespace ai {
 class PlateNum {
  public:
   /**
-   * @brief Factory function to get a instance of derived classes of class
+   * @brief Factory function to get an instance of derived classes of class
    * PlateNum.
    *
    * @param need_mean_scale_process normalize with mean/scale or not, true by
    * default.
    *
-   * @returen An instance of PlateNum class.
+   * @return An instance of PlateNum class.
    */
   static std::unique_ptr<PlateNum> create(const std::string &model_name,
                                           bool need_mean_scale_process = true);
@@ -82,14 +82,14 @@ class PlateNum {
  public:
   /**
    * @brief Function to get InputWidth of the platenum network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the platenum network.
    */
   virtual int getInputWidth() const = 0;
 
   /**
-   *@brief Function to get InputHeigth of the platenum network (input image
+   *@brief Function to get InputHeight of the platenum network (input image
    *rows).
    *
    *@return InputHeight of the platenum network.
@@ -99,7 +99,7 @@ class PlateNum {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.

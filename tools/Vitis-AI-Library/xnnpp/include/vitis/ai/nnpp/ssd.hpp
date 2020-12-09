@@ -32,7 +32,7 @@ namespace vitis {
 namespace ai {
 /**
  * @struct SSDResult
- * @brief Struct of the result returned by the ssd neuron network.
+ * @brief Struct of the result returned by the SSD neuron network.
  */
 struct SSDResult {
   /// Width of input image.
@@ -41,24 +41,24 @@ struct SSDResult {
   int height;
   /**
    * @struct BoundingBox
-   * @brief  Struct of an object coordinate ,confidence and classification.
+   * @brief  Struct of an object coordinate, confidence and classification.
    */
   struct BoundingBox {
     /// Classification
     int label;
     /// Confidence
     float score;
-    /// x-coordinate, x is normalized relative to the input image cols ,the
-    /// value range from 0 to 1.
+    /// x-coordinate, x is normalized relative to the input image columns, the
+    /// value ranges from 0 to 1.
     float x;
-    /// y-coordinate ,y is normalized relative to the input image rows ,the
-    /// value range from 0 to 1.
+    /// y-coordinate ,y is normalized relative to the input image rows, the
+    /// value ranges from 0 to 1.
     float y;
-    /// width, width is normalized relative to the input image cols ,the value
-    /// range from 0 to 1.
+    /// Width, width is normalized relative to the input image columns, the value
+    /// ranges from 0 to 1.
     float width;
-    /// height, height is normalized relative to the input image rows ,the value
-    /// range from 0 to 1.
+    /// Height, height is normalized relative to the input image rows, the value
+    /// ranges from 0 to 1.
     float height;
   };
   /// All objects, a vector of BoundingBox
@@ -67,8 +67,8 @@ struct SSDResult {
 
 /**
  * @class SSDPostProcess
- * @brief Class of the ssd post-process, it will initialize the parameters once
- * instead of compute them every time when the program execute.
+ * @brief Class of the SSD post-process. It initializes the parameters once
+ * instead of computing them each time the program executes.
  * */
 class SSDPostProcess {
  public:
@@ -78,7 +78,7 @@ class SSDPostProcess {
    * Usage: input_tensors[input_tensor_index].
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
-   * @param config The dpu model configuration information.
+   * @param config The DPU model configuration information.
    * @return An unique printer of SSDPostProcess.
    */
   static std::unique_ptr<SSDPostProcess> create(
@@ -87,7 +87,7 @@ class SSDPostProcess {
       const vitis::ai::proto::DpuModelParam& config);
 
   /**
-   * @brief The batch mode post-processing function of the ssd network.
+   * @brief The batch mode post-processing function of the SSD network.
    * @return The vector of struct of SSDResult.
    */
   virtual std::vector<SSDResult> ssd_post_process(size_t batch_size) = 0;

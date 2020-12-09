@@ -28,8 +28,8 @@ ErrorCode::ErrorCode(const ErrorCode &errCode) {
 const string &ErrorCode::getErrDebugInfo() const { return _errDebugInfo_; }
 
 string ErrorCode::extractErrMsg() {
-  auto errMsg = errMsg_;
-  errMsg_ = "";
+  string errMsg{};
+  this->errMsg_.swap(errMsg);
   return errMsg;
 }
 

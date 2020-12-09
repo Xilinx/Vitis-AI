@@ -41,8 +41,8 @@ namespace vitis {
 namespace ai {
 /**
  * @class TFRefineDetPostProcess
- * @brief Class of the tfrefinedet post-process, it will initialize the
- * parameters once instead of compute them every time when the program execute.
+ * @brief Class of the tfrefinedet post-process. It initializes the
+ * parameters once instead of computing them each time the program executes.
  * */
 class TFRefineDetPostProcess {
  public:
@@ -52,8 +52,8 @@ class TFRefineDetPostProcess {
    *   Usage: input_tensors[input_tensor_index].
    * @param output_tensors A vector of all output-tensors in the network.
    *   Usage: output_tensors[output_index].
-   * @param config The dpu model configuration information.
-   * @return An unique printer of TFRefineDetPostProcess.
+   * @param config The DPU model configuration information.
+   * @return A unique pointer of TFRefineDetPostProcess.
    */
   static std::unique_ptr<TFRefineDetPostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,

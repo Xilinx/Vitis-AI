@@ -32,8 +32,8 @@ namespace vitis {
 namespace ai {
 
 /**
- * @brief Base class for detecting a pose from a input image (cv::Mat).
- * @note Support detect a signle pose.
+ * @brief Base class for detecting a pose from an input image (cv::Mat).
+ * @note Support detect a single pose.
  *
  * Input an image (cv::Mat).
  *
@@ -81,14 +81,14 @@ class PoseDetect {
  public:
   /**
    * @brief Function to get InputWidth of the PoseDetect network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the PoseDetect network.
    */
   virtual int getInputWidth() const = 0;
 
   /**
-   *@brief Function to get InputHeigth of the PoseDetect network (input image
+   *@brief Function to get InputHeight of the PoseDetect network (input image
    *rows).
    *
    *@return InputHeight of the PoseDetect network.
@@ -98,7 +98,7 @@ class PoseDetect {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.

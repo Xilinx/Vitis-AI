@@ -32,7 +32,7 @@ namespace vitis {
 namespace ai {
 
 /// Declaration Segmentation Network
-/// num of segmentation classes
+/// number of segmentation classes
 /// label 0 name: "unlabeled"
 /// label 1 name: "ego vehicle"
 /// label 2 name: "rectification border"
@@ -83,7 +83,7 @@ namespace ai {
     cv::imwrite("sample_segmentation_result.jpg",resultshow.segmentation);
    @endcode
  *
- * @image latex images/sample_segmentation_result.jpg "segmentation visulization result image" width=\textwidth
+ * @image latex images/sample_segmentation_result.jpg "segmentation Visualization Result Image" width=\textwidth
  *
  */
 
@@ -116,13 +116,13 @@ class Segmentation {
  public:
   /**
    * @brief Function to get InputWidth of the segmentation network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the segmentation network.
    */
   virtual int getInputWidth() const = 0;
   /**
-   * @brief Function to get InputHight of the segmentation network (input image
+   * @brief Function to get InputHeight of the segmentation network (input image
    * rows).
    *
    * @return InputHeight of the segmentation network.
@@ -131,7 +131,7 @@ class Segmentation {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -141,11 +141,11 @@ class Segmentation {
   /**
    * @brief Function to get running result of the segmentation network.
    *
-   * @note The type of CV_8UC1 of the Result's segmentation.
+   * @note The type of CV_8UC1 of the segmentation result.
    *
    * @param image Input data of input image (cv::Mat).
    *
-   * @return a result include segmentation output data.
+   * @return A result that includes segmentation output data.
    *
    */
   virtual SegmentationResult run_8UC1(const cv::Mat& image) = 0;
@@ -153,7 +153,7 @@ class Segmentation {
    * @brief Function to get running results of the segmentation neuron network
    * in batch mode.
    *
-   * @note The type of CV_8UC1 of the Result's segmentation.
+   * @note The type of CV_8UC1 of the segmentation result.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch.
@@ -166,11 +166,11 @@ class Segmentation {
   /**
    * @brief Function to get running result of the segmentation network.
    *
-   * @note The type of CV_8UC3 of the Result's segmentation.
+   * @note The type of CV_8UC3 of the segmentation result.
    *
    * @param image Input data of input image (cv::Mat).
    *
-   * @return a result include segmentation image and shape;.
+   * @return A result that include segmentation image and shape;.
    *
    */
   virtual SegmentationResult run_8UC3(const cv::Mat& image) = 0;
@@ -178,7 +178,7 @@ class Segmentation {
    * @brief Function to get running results of the segmentation neuron network
    * in batch mode.
    *
-   * @note The type of CV_8UC3 of the Result's segmentation.
+   * @note The type of CV_8UC3 of the segmentation result.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch.
@@ -191,8 +191,8 @@ class Segmentation {
 };
 
 /**
- * @brief The Class of Segmentation8UC1, this class run function return a
- cv::Mat with the type is cv_8UC1
+ * @brief The Class of Segmentation8UC1. This class run function run(const cv::Mat& image) return a
+ cv::Mat with the type is cv_8UC1.
  *Sample code :
    @code
     auto det =
@@ -242,14 +242,14 @@ class Segmentation8UC1 {
  public:
   /**
    * @brief Function to get InputWidth of the segmentation network (input image
-   *cols).
+   *columns).
    *
    * @return InputWidth of the segmentation network.
    */
   int getInputWidth() const;
   /**
-   * @brief Function to get InputHight of the segmentation network (input image
-   *cols).
+   * @brief Function to get InputHeight of the segmentation network (input image
+   *rows).
    *
    * @return InputHeight of the segmentation network.
    */
@@ -257,7 +257,7 @@ class Segmentation8UC1 {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -295,7 +295,7 @@ class Segmentation8UC1 {
 };
 
 /**
- * @brief The Class of Segmentation8UC3, this class run function return a
+ * @brief The Class of Segmentation8UC3, this class run function run(const cv::Mat& image) return a
  cv::Mat with the type is cv_8UC3
  *  Sample code :
    @code
@@ -342,15 +342,14 @@ class Segmentation8UC3 {
  public:
   /**
    * @brief Function to get InputWidth of the segmentation network (input image
-   *cols).
+   *columns).
    *
    * @return InputWidth of the segmentation network.
    */
   int getInputWidth() const;
   /**
    * @brief Function to get InputWidth of the segmentation network (input
-   *image
-   *cols).
+   *image rows).
    *
    * @return InputWidth of the segmentation network.
    */
@@ -358,7 +357,7 @@ class Segmentation8UC3 {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -369,14 +368,14 @@ class Segmentation8UC3 {
    *@brief Function to get running result of the segmentation network.
    *@note The result cv::Mat of the type is CV_8UC3.
    *@param image  Input data of the image (cv::Mat)
-   *@return SegmentationResult The result of segmentation network.
+   *@return SegmentationResult, the result of the segmentation network.
    */
   SegmentationResult run(const cv::Mat& image);
   /**
    * @brief Function to get running results of the segmentation neuron network
    * in batch mode.
    *
-   * @note The type of CV_8UC3 of the Result's segmentation.
+   * @note The type of CV_8UC3 of the segmentation result.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch.

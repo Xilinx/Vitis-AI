@@ -125,7 +125,7 @@ void static permute(std::vector<std::vector<std::vector<T>>>& in_array, std::vec
   for(auto i = 0u; i < channels; i++) {
     for(auto j = 0u; j < height; j++) {
       for(auto k = 0u; k < width; k++ ) {
-        out_array[j * width * channels + k * channels + i] = (char)std::min(std::max((in_array[i][j][k] * in_scale), 127.f), -128.f);
+        out_array[j * width * channels + k * channels + i] = (char)std::max(std::min((in_array[i][j][k] * in_scale), 127.f), -128.f);
       }
     }
   }

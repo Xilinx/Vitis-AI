@@ -144,7 +144,7 @@ def build_config_setup():
     Extension = CppExtension
     
     if CUDA_AVAILABLE:
-      extra_compile_args['nvcc'] = ['-O2']
+      extra_compile_args['nvcc'] = ['-O2','-arch=sm_35']
       cuda_src_path = os.path.join(cwd, "../csrc/cuda")
       for name in os.listdir(cuda_src_path):
         if name.split(".")[-1] in ["cu", "cpp", "cc", "c"]:

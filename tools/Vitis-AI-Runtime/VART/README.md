@@ -87,3 +87,6 @@ For edge users, click
 
 For cloud users, click 
 [Quick Start For Alveo](./quick_start_for_cloud.md) to get started quickly.
+
+For rnn users, click 
+[Quick Start For RNN](./quick_start_for_rnn.md) to get started quickly.

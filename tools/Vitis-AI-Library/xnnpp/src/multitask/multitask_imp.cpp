@@ -84,20 +84,75 @@ MultiTaskPostProcessImp::MultiTaskPostProcessImp(
       scolor2_{config.segmentation_param().color2()},
       scolor3_{config.segmentation_param().color3()} {
   vector<string> output_names;
-  output_names.push_back(string(config.multi_task_param().loc_name()));
-  output_names.push_back(string(config.multi_task_param().conf_name()));
-  output_names.push_back(string(config.multi_task_param().seg_name()));
-  vector<vitis::ai::library::OutputTensor> temp_tensor;
-  for (auto i = 0u; i < output_names.size(); i++) {
-    for (auto j = 0u; j < output_tensors[0].size(); j++) {
-      if (output_tensors[0][j].name.find(output_names[i]) !=
-          std::string::npos) {
-        temp_tensor.push_back(output_tensors[0][j]);
-        break;
+  vector<string> loc_names =
+      vector<string>(config.multi_task_param().loc_name().begin(),
+                     config.multi_task_param().loc_name().end());
+  vector<string> conf_names =
+      vector<string>(config.multi_task_param().conf_name().begin(),
+                     config.multi_task_param().conf_name().end());
+  string seg_name = string(config.multi_task_param().seg_name());
+  CHECK(loc_names.size() != 0);
+  CHECK(conf_names.size() != 0);
+  vector<vitis::ai::library::OutputTensor> loc_tensor;
+  for (auto i = 0u; i < loc_names.size(); ++i) {
+    for (auto j = 0u; j < output_tensors[0].size(); ++j) {
+      if (output_tensors[0][j].name.find(loc_names[i]) != std::string::npos) {
+        loc_tensor.emplace_back(output_tensors[0][j]);
       }
     }
   }
-  output_tensors_.push_back(temp_tensor);
+  output_tensors_.push_back(loc_tensor);
+  vector<vitis::ai::library::OutputTensor> conf_tensor;
+  for (auto i = 0u; i < conf_names.size(); ++i) {
+    for (auto j = 0u; j < output_tensors[0].size(); ++j) {
+      if (output_tensors[0][j].name.find(conf_names[i]) != std::string::npos) {
+        conf_tensor.emplace_back(output_tensors[0][j]);
+      }
+    }
+  }
+  output_tensors_.push_back(conf_tensor);
+
+  vector<vitis::ai::library::OutputTensor> seg_tensor;
+  for (auto j = 0u; j < output_tensors[0].size(); j++) {
+    if (output_tensors[0][j].name.find(seg_name) != std::string::npos) {
+      seg_tensor.push_back(output_tensors[0][j]);
+      break;
+    }
+  }
+  auto batch_size = input_tensors_[0][0].batch;
+  output_tensors_.push_back(seg_tensor);
+  auto bbox_index = 0u;
+  loc_infos_.reserve(output_tensors_[0].size());
+  loc_infos_.assign(output_tensors_[0].size(), SSDOutputInfo{});
+  for (auto k = 0u; k < output_tensors_[0].size(); ++k) {
+    loc_infos_[k].base_ptr = (int8_t*)output_tensors_[0][k].get_data(0);
+    loc_infos_[k].ptr = loc_infos_[k].base_ptr;
+    loc_infos_[k].index_begin = bbox_index;
+    loc_infos_[k].bbox_single_size = 6;
+    loc_infos_[k].index_size = output_tensors_[0][k].size / batch_size /
+                               loc_infos_[k].bbox_single_size;
+    bbox_index += loc_infos_[k].index_size;
+    loc_infos_[k].scale =
+        vitis::ai::library::tensor_scale(output_tensors_[0][k]);
+    loc_infos_[k].size = output_tensors_[0][k].size / batch_size;
+  }
+  auto score_index = 0u;
+  conf_infos_.reserve(output_tensors_[1].size());
+  conf_infos_.assign(output_tensors_[1].size(), SSDOutputInfo{});
+  for (auto k = 0u; k < output_tensors_[1].size(); ++k) {
+    conf_infos_[k].base_ptr = (int8_t*)output_tensors_[1][k].get_data(0);
+    conf_infos_[k].ptr = conf_infos_[k].base_ptr;
+    conf_infos_[k].index_begin = score_index;
+    conf_infos_[k].index_size =
+        output_tensors_[1][k].size / batch_size / num_detection_classes_;
+    score_index += conf_infos_[k].index_size;
+    conf_infos_[k].scale =
+        vitis::ai::library::tensor_scale(output_tensors_[1][k]);
+    conf_infos_[k].size = output_tensors_[1][k].size / batch_size;
+  }
+  auto priors = CreatePriors((int)input_tensors[0][0].width,
+                             (int)input_tensors[0][0].height,
+                             config.multi_task_param().prior_box_param());
   detector_ = std::make_unique<vitis::ai::multitask::SSDdetector>(
       num_detection_classes_,
       vitis::ai::multitask::SSDdetector::CodeType::CENTER_SIZE,
@@ -107,13 +162,9 @@ MultiTaskPostProcessImp::MultiTaskPostProcessImp(
                          config.multi_task_param().th_conf().end()),  //
       config.multi_task_param().top_k(),                              //
       config.multi_task_param().nms_threshold(),                      //
-      1.0,
-      CreatePriors((int)input_tensors[0][0].width,
-                   (int)input_tensors[0][0].height,
-                   config.multi_task_param().prior_box_param()),
-      vitis::ai::library::tensor_scale(output_tensors_[0][0]));
+      1.0, priors, vitis::ai::library::tensor_scale(output_tensors_[0][0]));
 
-  softmax_result.resize(output_tensors_[0][1].size);
+  softmax_result.resize(priors.size() * num_detection_classes_);
   vector<uint8_t> color_c1;
   vector<uint8_t> color_c2;
   vector<uint8_t> color_c3;
@@ -306,15 +357,23 @@ std::vector<VehicleResult> MultiTaskPostProcessImp::process_det(
     const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
     size_t batch_idx) {
-  __TIC__(MULTITASK_DET)
-  vitis::ai::softmax(((int8_t*)output_tensors[0][1].get_data(batch_idx)),
-                     vitis::ai::library::tensor_scale(output_tensors[0][1]),
-                     num_detection_classes_,
-                     output_tensors[0][1].size / num_detection_classes_,
-                     softmax_result.data());
+  CHECK_EQ(loc_infos_.size(), conf_infos_.size());
+    __TIC__(MULTITASK_DET)
+  for (auto k = 0u; k < conf_infos_.size(); k++) {
+    auto offset = conf_infos_[k].index_begin * num_detection_classes_;
+    vitis::ai::softmax((int8_t*)conf_infos_[k].ptr, conf_infos_[k].scale,
+                       num_detection_classes_, conf_infos_[k].index_size,
+                       softmax_result.data() + offset);
+  }
+
   vector<VehicleResult> v_result;
-  detector_->Detect((int8_t*)(output_tensors[0][0].get_data(batch_idx)),
-                    softmax_result.data(), v_result);
+
+  std::map<uint32_t, SSDOutputInfo> bbox_layer_infos;
+  // for (auto i : bbox_layer_indexes_) {
+  for (auto i = 0u; i < loc_infos_.size(); ++i) {
+    bbox_layer_infos.emplace(std::make_pair(i, loc_infos_[i]));
+  }
+  detector_->Detect(bbox_layer_infos, softmax_result.data(), v_result);
   __TOC__(MULTITASK_DET)
   return v_result;
 }
@@ -324,13 +383,13 @@ cv::Mat MultiTaskPostProcessImp::process_seg(
         output_tensors,
     size_t batch_idx) {
   __TIC__(MULTITASK_SEG)
-  cv::Mat seg_results(output_tensors[0][2].height, output_tensors[0][2].width,
+  cv::Mat seg_results(output_tensors[2][0].height, output_tensors[2][0].width,
                       CV_8UC1);
   // vector<uint8_t> seg_results(task->getOutputTensor()[0][2].width *
   //                            task->getOutputTensor()[0][2].height);
-  vitis::ai::max_index_void((int8_t*)output_tensors[0][2].get_data(batch_idx),
-                            output_tensors[0][2].width,
-                            output_tensors[0][2].height,
+  vitis::ai::max_index_void((int8_t*)output_tensors[2][0].get_data(batch_idx),
+                            output_tensors[2][0].width,
+                            output_tensors[2][0].height,
                             num_segmention_classes_, seg_results.data);
   __TOC__(MULTITASK_SEG)
   return seg_results;
@@ -344,11 +403,11 @@ cv::Mat MultiTaskPostProcessImp::process_seg_visualization(
     LOG(FATAL) << "only support channel = 16";
   }
   __TIC__(MULTITASK_SEG_VISUALIZATION)
-  cv::Mat segmat(output_tensors[0][2].height, output_tensors[0][2].width,
+  cv::Mat segmat(output_tensors[2][0].height, output_tensors[2][0].width,
                  CV_8UC3);
   seg_color_c16(
-      color_map_.data(), (int8_t*)output_tensors[0][2].get_data(batch_idx),
-      output_tensors[0][2].width * output_tensors[0][2].height, segmat.data);
+      color_map_.data(), (int8_t*)output_tensors[2][0].get_data(batch_idx),
+      output_tensors[2][0].width * output_tensors[2][0].height, segmat.data);
   __TOC__(MULTITASK_SEG_VISUALIZATION)
   return segmat;
 }

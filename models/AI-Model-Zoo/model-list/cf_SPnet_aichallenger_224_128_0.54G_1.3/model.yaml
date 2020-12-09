@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,26 +30,26 @@ files:
 - name: sp_net
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: a2b6633c677c85e2f93a9728926dcb0b
 - name: sp_net
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.3.0.tar.gz
+  checksum: 972433fc120568c94169108a26f824aa
 - name: sp_net
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-r1.3.0.tar.gz
+  checksum: 5aba6bc61e6feadfcb3083385d0a455e
 - name: sp_net
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50lv-u280-r1.3.0.tar.gz
+  checksum: 255f59fa0ed088eab2baa8641f97b28b
 - name: sp_net
   type: xmodel
-  board: u50lv-v3me & u280-v3me
+  board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
 license: license link

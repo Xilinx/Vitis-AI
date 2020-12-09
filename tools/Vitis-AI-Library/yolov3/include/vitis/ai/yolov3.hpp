@@ -37,7 +37,7 @@ namespace ai {
  *
  * Input is an image (cv::Mat).
  *
- * Output is position of the pedestrians in the input image.
+ * Output is the position of the pedestrians in the input image.
  *
  * Sample code:
  * @code
@@ -112,13 +112,13 @@ class YOLOv3 {
    */
  public:
   /**
-   * @brief Function to get InputWidth of the YOLOv3 network (input image cols).
+   * @brief Function to get InputWidth of the YOLOv3 network (input image columns).
    *
    * @return InputWidth of the YOLOv3 network
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeigth of the YOLOv3 network (input image rows).
+   *@brief Function to get InputHeight of the YOLOv3 network (input image rows).
    *
    *@return InputHeight of the YOLOv3 network.
    */
@@ -146,7 +146,7 @@ class YOLOv3 {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    * time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    * the IP used.
    *
    * @return Batch size.

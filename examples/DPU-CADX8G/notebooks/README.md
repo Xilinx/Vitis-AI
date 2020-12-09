@@ -1,6 +1,6 @@
 # Jupyter Notebooks
 
-The Jupyter Notebooks provide tutorials on how to run ML inference with Xilinx Vitis-AI.  
+The Jupyter Notebooks provide tutorials on how to run ML inference with Xilinx Vitis-AI.
 Jupyter is preinstalled in the Xilinx Vitis-AI Docker image.
 
 ## Notebook Setup
@@ -8,15 +8,30 @@ Jupyter is preinstalled in the Xilinx Vitis-AI Docker image.
 Follow these instructions from inside a running container.
 
 1. Setup the environment
+
+> **Note:** Skip, If you have already run the below steps.
+
+Activate Conda Environment
   ```sh
-  . /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  # For Caffe Notebooks
+  conda activate vitis-ai-caffe
+
+  # For Tensorflow Notebooks
+  conda activate vitis-ai-tensorflow
+  ```
+Setup the Environment
+  ```sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 2. Install the necessary dataset (Proceed to next step, if already done)
+
+  > **Note:** Skip, If you have already run the below steps.
+
   ```sh
   # For Caffe Notebooks
-  cd /workspace/alveo/examples/caffe
-  conda activate vitis-ai-caffe
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
   python -m ck install package:imagenet-2012-aux
@@ -27,10 +42,9 @@ Follow these instructions from inside a running container.
   # Get the necessary models
   python getModels.py
   python replace_mluser.py --modelsdir models
-  
+
   # For Tensorflow Notebooks
-  cd /workspace/alveo/examples/tensorflow
-  conda activate vitis-ai-tensorflow
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/tensorflow
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
   python -m ck install package:imagenet-2012-aux
@@ -38,14 +52,15 @@ Follow these instructions from inside a running container.
   $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val.txt
   # Get the necessary models
   python getModels.py
+  python replace_mluser.py --modelsdir models
   ```
-  
+
 3. Launch Jupyter notebook server
   ```sh
-  cd /workspace/alveo/notebooks
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/notebooks
   jupyter notebook --no-browser --ip=0.0.0.0 --NotebookApp.token='' --NotebookApp.password=''
   ```
-  
+
 4. Open a broswer, and navigate to one of:
   - `<yourpublicipaddress>:8888`
   - `<yourdns>:8888`

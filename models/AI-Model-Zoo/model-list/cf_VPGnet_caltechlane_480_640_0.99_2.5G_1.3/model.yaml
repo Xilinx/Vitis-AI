@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,26 +30,26 @@ files:
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 71a07a7a824046e8e815f16ae5909a78
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-vck190-r1.3.0.tar.gz
+  checksum: aaa286808a9a0c69d9bd3a82058b6e9d
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50-r1.3.0.tar.gz
+  checksum: 2d4636e2f395e2509c801c30935e04b0
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50lv-u280-r1.3.0.tar.gz
+  checksum: c0886bec97945aaef0e40b143182c5f0
 - name: vpgnet_pruned_0_99
   type: xmodel
-  board: u50lv-v3me & u280-v3me
+  board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
 license: license link

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
- * Filename: ssd.hpp
+ * Filename: medicalsegmentation.hpp
  *
  * Description:
  * This network is used to detecting objects from a input image.
@@ -35,21 +35,21 @@ namespace vitis {
 namespace ai {
 /**
  * @struct MedicalSegmentationResult
- * @brief Struct of the result returned by the ssd neuron network.
+ * @brief Struct of the result returned by the MedicalSegmentation neuron network.
  */
 struct MedicalSegmentationResult {
   /// Width of input image.
   int width;
   /// Height of input image.
   int height;
-
+  /// A vector of cv::Mat (segmentation result).
   std::vector<cv::Mat> segmentation;
 };
 
 /**
  * @class MedicalSegmentationPostProcess
- * @brief Class of the ssd post-process, it will initialize the parameters once
- * instead of compute them every time when the program execute.
+ * @brief Class of the MedicalSegmentation post-process. It will initialize the parameters once
+ * instead of computing them every time when the program executes.
  * */
 class MedicalSegmentationPostProcess {
  public:
@@ -59,8 +59,8 @@ class MedicalSegmentationPostProcess {
    * Usage: input_tensors[input_tensor_index].
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
-   * @param config The dpu model configuration information.
-   * @return An unique printer of MedicalSegmentationPostProcess.
+   * @param config The DPU model configuration information.
+   * @return A unique printer of MedicalSegmentationPostProcess.
    */
   static std::unique_ptr<MedicalSegmentationPostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
@@ -68,13 +68,13 @@ class MedicalSegmentationPostProcess {
       const vitis::ai::proto::DpuModelParam& config);
 
   /**
-   * @brief The post-processing function of the ssd network.
+   * @brief The post-processing function of the MedicalSegmentation network.
    * @return The struct of MedicalSegmentationResult.
    */
   virtual MedicalSegmentationResult medicalsegmentation_post_process(
       unsigned int idx) = 0;
   /**
-   * @brief The batch mode post-processing function of the ssd network.
+   * @brief The batch mode post-processing function of the MedicalSegmentation network.
    * @return The vector of struct of MedicalSegmentationResult.
    */
   virtual std::vector<MedicalSegmentationResult>

@@ -51,9 +51,9 @@
 // | You can use DRAM if FPGA has extra LUTs               
 // | if change, Don't need update model
 // +------------------------------------------------------+
-// | Enable DRAM  : `define URAM_ENABLE               
+// | Enable DRAM  : `define DRAM_ENABLE               
 // +------------------------------------------------------+
-// | Disable DRAM : `define URAM_DISABLE                 
+// | Disable DRAM : `define DRAM_DISABLE                 
 // |------------------------------------------------------|
 
 `define DRAM_DISABLE 

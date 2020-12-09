@@ -15,9 +15,10 @@ Both the Dedicated and Main Blocks are configured to work in a pipelined manner,
 In Throughput mode, the throughput of the XDNN processor is determined by the maximum latency of the Main Block or Dedicated Block.
 
 Example:
-```
-examples/deployment_modes/test_classify.py
-./run.sh -t test_classify -c latency 
+```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
+cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes/test_classify.py
+./run.sh -t test_classify -c latency
 ./run.sh -t test_classify -c throughput
 ```
 
@@ -30,21 +31,22 @@ The runtime engine allows the user application to submit concurrent inference ta
 - the user application is free to do other things and decide when to block and collect results from the FPGA
 
 We use the following scheme for enqueuing execution asynchronously and collecting results:
-```
+```sh
   runner.execute_async()
   runner.wait()
 ```
 
 Example:
-```
-examples/deployment_modes/test_classify_async_multinet.py
-./run.sh -t multinet 
+```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
+cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes/test_classify_async_multinet.py
+./run.sh -t multinet
 ```
 
 
 ## Streaming mode
 
-For maximum throughput, it is recommended to take advantage of the XDNN processor's ability to run in a streaming manner.  A typical inference flow may include the following steps: 
+For maximum throughput, it is recommended to take advantage of the XDNN processor's ability to run in a streaming manner.  A typical inference flow may include the following steps:
 - A. Decode image
 - B. Pre-process image
 - C. Transfer image to FPGA
@@ -54,27 +56,29 @@ For maximum throughput, it is recommended to take advantage of the XDNN processo
 
 It is not necessary to wait for one image to finish all steps before proceeding to the next image. As soon as image 1 is done with step A, image 2 can be submitted to step A while image 1 moves through the next steps in the pipeline.
 
-The following example shows how to achieve maximum end-to-end inference throughput using the API: 
-```
-examples/deployment_modes/mp_classify.py
+The following example shows how to achieve maximum end-to-end inference throughput using the API:
+```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
+cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes/mp_classify.py
 ./run.sh -t streaming_classify
 ```
 
 ## Multiple PE and same model / Multiple PE and different models
 
-XDNN supports implementing multiple Processing Elements (PE) on one FPGA. Each PE can run independently -- PEs have their own DDR address space, on-chip memory address space and instruction memory. Because of this, the application has to flexibility mato run the same model on all PEs on an FPGA for maximum throughput for one model. 
+XDNN supports implementing multiple Processing Elements (PE) on one FPGA. Each PE can run independently -- PEs have their own DDR address space, on-chip memory address space and instruction memory. Because of this, the application has to flexibility mato run the same model on all PEs on an FPGA for maximum throughput for one model.
 
 Or, the application may load different models to different PEs for maximum throughput for multiple models. The throughput will be determined by the latency of the slowest model.
 
 Examples:
-```
+```sh
 # Multiple PEs running the same model (default)
-examples/deployment_modes/test_classify.py
-./run.sh -t test_classify 
+# Typically, <path-to-vitis-ai> is `/workspace`
+cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes/test_classify.py
+./run.sh -t test_classify
 
 # Multiple PEs, each running a different model
-examples/deployment_modes/test_classify_async_multinet.py
-./run.sh -t multinet 
+cd <path-to-vitis-ai>/examples/DPU-CADX8G/deployment_modes/test_classify_async_multinet.py
+./run.sh -t multinet
 ```
 
 
@@ -85,7 +89,7 @@ Our runtime engine supports loading multiple CNN models onto one PE. The runtime
 
 ## Single model multiple PE
 
-To further optimize for throughput, the application may partition a model so that subgraphs of one model are distributed over multiple XDNN PEs. 
+To further optimize for throughput, the application may partition a model so that subgraphs of one model are distributed over multiple XDNN PEs.
 
 To optimize for lower latency, the application may apply tensorization techniques to partition and distribute one layer/operation's computation across multiple XDNN PEs.
 

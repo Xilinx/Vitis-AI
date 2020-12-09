@@ -7,13 +7,14 @@
 
 Activate Conda Environment
   ```sh
-  conda activate vitis-ai-caffe 
+  conda activate vitis-ai-caffe
   ```
 
 Setup the Environment
 
   ```sh
-  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 ## Data Preparation
@@ -23,38 +24,38 @@ Download cityscapes-dataset from https://www.cityscapes-dataset.com/downloads/
 
 The unpacked image files are supposed to be at the following location.
 ```
-/workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA/
+${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA/
 ```
 
 Alternatively you can download cityscapes-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz as follows
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 ```
-cd /workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA/
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA/
 wget https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz
 tar -xvf cityscapes.tar.gz
 rm cityscapes.tar.gz
 ```
 
-The folder is supposed to be as the following.  
+The folder is supposed to be as the following.
 
 ```
-/workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA/cityscapes/train
-/workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA/cityscapes/val
+${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/train
+${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/val
 ```
 
-The downloaded images have the combination of Cityscapes Semantic photo and label. 
+The downloaded images have the combination of Cityscapes Semantic photo and label.
 To split Semantic photo and label, please run the following command lines.
 
 ```
-$ cd /workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA/
-$ python extract_label_semantic.py
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA/
+python extract_label_semantic.py
 ```
 
-This will generate two subfolders in val folder. 'photo' and 'label'. 
+This will generate two subfolders in val folder. 'photo' and 'label'.
 ```
-/workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA/cityscapes/val/photo
-/workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA/cityscapes/val/label
-```  
+${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/val/photo
+${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/val/label
+```
 
 
 
@@ -67,7 +68,7 @@ Pix2pix is image to image translastion using GAN [1]
 
 
 
-Cityscapes_BtoA model translates semantic label to photo. 
+Cityscapes_BtoA model translates semantic label to photo.
 
 
 
@@ -75,20 +76,20 @@ We trained Pix2Pix (cityscapes_BtoA) model with input size as [256,256,3].
 
 After training the model, we quantized the model to deploy on FPGA.
 
-To get the quantized Caffe model, run the following command lines. 
+To get the quantized Caffe model, run the following command lines.
 
 > **Note:** Skip, If you have already run the below steps.
 ```
-cd /workspace/alveo/examples/caffe
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
 python getModels.py
 ```
 
-The Pix2Pix (cityscapes_BtoA) model files would be located in '/workspace/alveo/examples/caffe/models/cityscapes_BtoA' folder.
+The Pix2Pix (cityscapes_BtoA) model files would be located in '${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/cityscapes_BtoA' folder.
 
 Copy the model files to 'pix2pix/cityscapes_BtoA/quantize_results' with the following commands.
 ```
-cd /workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA
-cp -R /workspace/alveo/examples/caffe/models/cityscapes_BtoA ./quantize_results
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA
+cp -R ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/cityscapes_BtoA ./quantize_results
 ```
 
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'cityscapes_BtoA/quantize_results' sub-folder.
@@ -97,11 +98,12 @@ You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'citys
 ## Run Inference model on CPU
 
 To run the inference model on cpu for translating semantic label to photo images, run the following commands.
-```
-cd /workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA
+```sh
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA
 python cityscapes_BtoA_cpu.py --image <image-file>
-For example, 
-$ python cityscapes_BtoA_cpu.py --image ./cityscapes/val/label/1.jpg
+
+[sample]
+python cityscapes_BtoA_cpu.py --image ./cityscapes/val/label/1.jpg
 ```
 
 The generated semantic label image will be stored in 'test_output' sub-folder.
@@ -113,7 +115,7 @@ The generated semantic label image will be stored in 'test_output' sub-folder.
 The quantized caffemodel need to be compiled and partitioned at your local drive using the following commands
 
 ```
-cd /workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA
 source run.sh deploy
 ```
 
@@ -124,14 +126,15 @@ xfdnn_deploy.prototxt (used to execute Caffe model on FPGA) will be generated at
 
 
 
-## Run Inference model on FPGA 
+## Run Inference model on FPGA
 
 To run the inference model on fpga for translating semantic label to photo images, run the following commands.
 
-```
-cd /workspace/alveo/examples/caffe/pix2pix/cityscapes_BtoA
+```sh
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/pix2pix/cityscapes_BtoA
 python cityscapes_BtoA_fpga.py --image <image-file>
-For example, 
-$ python cityscapes_BtoA_fpga.py --image ./cityscapes/val/label/1.jpg
+
+[sample]
+python cityscapes_BtoA_fpga.py --image ./cityscapes/val/label/1.jpg
 ```
 The generated semantic label image will be stored in 'test_output' sub-folder.

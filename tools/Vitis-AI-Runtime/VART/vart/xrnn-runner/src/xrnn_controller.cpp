@@ -50,7 +50,9 @@ static std::map<const std::string, std::vector<XRNN_REG_T>* > reg_init_map{
   {"u50_sentiment_cu0", &U50_SENTIMENT_REGS_CU0},
   {"u50_sentiment_cu1", &U50_SENTIMENT_REGS_CU1},
   {"u50_satisfaction_cu0", &U50_SATISFACTION_REGS_CU0},
+  {"u50_satisfaction_cu1", &U50_SATISFACTION_REGS_CU1},
   {"u50_openie_cu0", &U50_OPENIE_REGS_CU0},
+  {"u50_openie_cu1", &U50_OPENIE_REGS_CU1},
   {"u25_sentiment_cu0", &U25_SENTIMENT_REGS_CU0},
   {"u25_satisfaction_cu0", &U25_SATISFACTION_REGS_CU0},
   {"u25_openie_cu0", &U25_OPENIE_REGS_CU0}
@@ -104,15 +106,6 @@ std::vector<uint32_t> XrnnController::get_reg_data(int frame, int thread_index){
         reg_init_data[reg_init_data.size()-2].value+(thread_index*THREAD_STEP);
     regs_array[reg_init_data[reg_init_data.size()-1].addr/4] = \
         reg_init_data[reg_init_data.size()-1].value+(thread_index*THREAD_STEP);
-
-    if(model_type_ == OPENIE){
-      for(int i=0; i<16; i++){
-        if(i%2==0)
-          regs_array[reg_init_data[59+i].addr/4] = ADDR(RESL)+(frame-1)*reg_init_data[43].value;
-        else
-          regs_array[reg_init_data[59+i].addr/4] = ADDR(VECTOR)+(frame-1)*reg_init_data[43].value;
-      }
-    }
   }
   else if(board == "u25"){
     regs_array[reg_init_data[1].addr/4] = frame;
@@ -136,6 +129,8 @@ std::vector<uint32_t> XrnnController::get_reg_data(int frame, int thread_index){
         else
           regs_array[reg_init_data[start+i].addr/4] = ADDR(VECTOR)+(frame-1)*reg_init_data[43].value;
       }
+      regs_array[reg_init_data[start+7].addr/4] = ADDR(VECTOR);
+      regs_array[reg_init_data[start+15].addr/4] = ADDR(VECTOR);
     }
 
     unsigned i = model_type_==OPENIE?reg_init_data.size()-24:reg_init_data.size()-3;
@@ -148,13 +143,20 @@ std::vector<uint32_t> XrnnController::get_reg_data(int frame, int thread_index){
   return regs_array;
 }
 
+std::string XrnnController::get_board_name(){
+  auto kernel_name = xrt_cu_->get_kernel_name(idx_);
+  return kernel_name.find("slr")!=kernel_name.npos?"u50":"u25";
+}
+
+std::string XrnnController::get_addr_name(){
+  auto core_id = xrt_cu_->get_core_id(idx_);
+  std::string board = get_board_name();
+  return board+"_cu"+std::to_string(core_id); 
+}
 
 size_t XrnnController::get_base_addr(unsigned batch_num)
 {
-  auto core_id = xrt_cu_->get_core_id(idx_);
-
-  std::string board = get_board_name();
-  std::string addr_name = board+"_cu"+std::to_string(core_id); 
+  std::string addr_name = get_addr_name(); 
   CHECK(batch_addr_map.count(addr_name) == 1) << "Can Not Find Addr For " << addr_name;
   std::vector<size_t>& base_addrs = *batch_addr_map[addr_name];
   CHECK(batch_num < base_addrs.size()) << "Invalid batch_num: " << batch_num;
@@ -162,9 +164,8 @@ size_t XrnnController::get_base_addr(unsigned batch_num)
   return base_addrs[batch_num];
 }
 
-std::string XrnnController::get_board_name(){
-  auto kernel_name = xrt_cu_->get_kernel_name(idx_);
-  return kernel_name.find("slr")!=kernel_name.npos?"u50":"u25";
+int XrnnController::get_batch_size(){
+  return batch_;
 }
 
 XrnnController::XrnnController(size_t device_core_id,
@@ -192,7 +193,7 @@ void XrnnController::run(
           char* out, uint64_t osize,
           int batch, int frame, int thread_index) {
      
-  CHECK(batch <= batch) << "Invalid Batch Size";
+  CHECK(batch <= batch_) << "Invalid Batch Size";
 
   auto core_id = xrt_cu_->get_core_id(idx_);
   
@@ -227,6 +228,9 @@ void XrnnController::run(
     for(unsigned i=1; i < reg_data.size(); i++){
       ecmd->data[i] = reg_data[i];
     }
+
+    LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
+      << "reg size" << reg_data.size();
   };
 
   xrt_cu_->run(
@@ -280,17 +284,7 @@ XrnnController::~XrnnController() {
 
 void XrnnController::init(char *ddr, uint64_t size)
 {
-  auto core_id = xrt_cu_->get_core_id(idx_);
-  auto core_name = xrt_cu_->get_full_name(idx_);
-  auto kernel_name = xrt_cu_->get_kernel_name(idx_);
-  auto instance_name = xrt_cu_->get_instance_name(idx_);
-
-  //LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
-  //  << "core_id: " << core_id << "\nname: " << core_name
-  //  << "\nkernel_name: " << kernel_name << "\ninstance_name: " << instance_name;
-
-  std::string board = get_board_name();
-  std::string addr_name = board+"_cu"+std::to_string(core_id); 
+  std::string addr_name = get_addr_name(); 
   CHECK(init_addr_map.count(addr_name) == 1) << "Can Not Find DDR Init Addr For " << addr_name;
   std::vector<size_t>& init_addrs = *init_addr_map[addr_name];
 
@@ -299,6 +293,60 @@ void XrnnController::init(char *ddr, uint64_t size)
       << "ddr_init at: "<< std::hex << init_addrs[i];
     memory_->upload((void*)ddr, (size_t) init_addrs[i], (size_t) size);
   }
+  
+  //ModelConfig * mc = new ModelConfig("/scratch/yili/vart/xrnn-runner");
+}
+
+void XrnnController::update(int frame, ModelConfig *mc, 
+  uint32_t *p_ddr, size_t size){
+
+  int layers = mc->get_layer_num();
+  int reg_step = 0x30;
+  int reg_load0 = 0x30;
+  int reg_load1 = 0x34;
+  int reg_save0 = 0x50;
+
+  LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
+      << "layers: "<< layers;
+
+  int ddr_regs_ptr = 0;
+  for(int i=0; i<layers; i++){
+    ddr_regs_ptr += (i==0)?0:(mc->get_layer_instr_len(i-1, batch_));
+
+    int dir_val = (mc->get_reg_dir(i, CONFIG_NAME::LOAD0)==1)?0:1;
+    int offset_load0 = dir_val*(frame-1)*mc->get_reg_size(i, CONFIG_NAME::LOAD0)*2;
+
+    //LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
+    //  << "i:" << i << " layer_step: "<< layer_step;
+    for(int b=0; b<batch_; b++){
+      uint32_t  batch_base = get_base_addr(b)&0xFFFFFFFF;
+      //LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
+      //  <<  "b:" << b << "  batch_base:  "<< std::hex << batch_base;
+      if(i%2 == 0){
+        p_ddr[(ddr_regs_ptr+(reg_load0+reg_step*b))/4] = batch_base + ADDR(VECTOR) + offset_load0;
+        p_ddr[(ddr_regs_ptr+(reg_load1+reg_step*b))/4] = batch_base + ADDR(RESL);
+        p_ddr[(ddr_regs_ptr+(reg_save0+reg_step*b))/4] = batch_base + ADDR(RESL);
+      }
+      else{
+        p_ddr[(ddr_regs_ptr+(reg_load0+reg_step*b))/4] = batch_base + ADDR(RESL) + offset_load0;
+        p_ddr[(ddr_regs_ptr+(reg_load1+reg_step*b))/4] = batch_base + ADDR(VECTOR);
+        p_ddr[(ddr_regs_ptr+(reg_save0+reg_step*b))/4] = batch_base + ADDR(VECTOR);
+      }
+    }
+  }
+
+  LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
+    << "update ddr";
+  std::string addr_name = get_addr_name(); 
+  CHECK(init_addr_map.count(addr_name) == 1) << "Can Not Find DDR Init Addr For " << addr_name;
+  std::vector<size_t>& init_addrs = *init_addr_map[addr_name];
+
+  LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
+    << "instruction: " << std::hex <<init_addrs[0]+ADDR(INSTR);
+  LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
+    << "p_ddr @" << p_ddr << "size: " << size;
+
+  memory_->upload((void*)p_ddr, (size_t)(init_addrs[0]+ADDR(INSTR)), (size_t) size);
 }
 
 } // namespace xrnn

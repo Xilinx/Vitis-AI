@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,26 +30,26 @@ files:
 - name: refinedet_baseline
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: edbed75ec7feccf63d4b8b27fd81d61d
 - name: refinedet_baseline
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-vck190-r1.3.0.tar.gz
+  checksum: 0c92eae6b4ae1a8ded0a732ab3ee6981
 - name: refinedet_baseline
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50-r1.3.0.tar.gz
+  checksum: 9db2e2b6c9278d8cbfcc3969bad85ffa
 - name: refinedet_baseline
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50lv-u280-r1.3.0.tar.gz
+  checksum: 3f47a3b7f9c5178a181e07fbe36eb72f
 - name: refinedet_baseline
   type: xmodel
-  board: u50lv-v3me & u280-v3me
+  board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
 license: license link

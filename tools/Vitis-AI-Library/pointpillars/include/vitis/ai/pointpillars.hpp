@@ -44,9 +44,9 @@ enum e_flag{
 
 /**
  * @struct DISPLAY_PARAM
- * @brief  4 data structure get from calib information. 
- *  mainly used for accuracy test or bev image drawing.
- *  please see detail in readme in overview
+ * @brief  Four data structure get from the calibration information. 
+ *  It is mainly used for accuracy test or bev image drawing.
+ *  See detail in readme in the overview for more information.
  */
 struct DISPLAY_PARAM{
  /// P2 information: 
@@ -61,35 +61,35 @@ struct DISPLAY_PARAM{
 
 /**
  * @struct ANNORET 
- * @brief Struct of the result returned by the pointpillars neuron network in annotation mode.
- *  mainly used for accuracy test or bev image drawing
+ * @brief Struct of the result returned by the pointpillars neuron network in the annotation mode.
+ *  It is mainly used for accuracy test or bev image drawing
  */
 struct ANNORET{
-  /// name of detected result in vector: such as Car Cylist Pedestrian
+  /// Name of detected result in vector: such as Car Cylist Pedestrian.
   std::vector<std::string> name;
-  /// label of detected result
+  /// Label of detected result.
   V1I label;
-  /// truncated information
+  /// Truncated information.
   V1F truncated;
-  /// occluded information
+  /// Occluded information.
   V1I occluded;
-  /// alpha information 
+  /// Alpha information. 
   V1F alpha;
-  /// bbox information
+  /// bbox information.
   V2I bbox;
-  /// dimensions information
+  /// Dimensions information.
   V2F dimensions;
-  /// location information
+  /// Location information.
   V2F location;
-  /// rotation_y information
+  /// rotation_y information.
   V1F rotation_y;
-  /// score information
+  /// Score information.
   V1F score;
-  /// box3d_camera information
+  /// box3d_camera information.
   V2F box3d_camera;
-  /// box3d_lidar information
+  /// box3d_lidar information.
   V2F box3d_lidar;
-  /// inner function to clear all fields
+  /// Inner function to clear all fields.
   void clear() {
       name.clear();
       label.clear();
@@ -108,33 +108,33 @@ struct ANNORET{
 
 /**
  * @struct PPResult
- * @brief Struct of the final result returned by the pointpillars neuron network
+ * @brief Struct of the final result returned by the pointpillars neuron network.
  */
 struct PPResult{
-  /// final box predictated
+  /// Final box predicted.
   V2F final_box_preds;
-  /// final scores predicated
+  /// Final scores predicted.
   V1F final_scores;
-  /// final label predicated
+  /// Final label predicted.
   V1I label_preds;
 };
 
 /**
  * @struct PointPillarsResult
  * @brief Struct of the final result returned by the pointpillars 
- *  neuron network encapsulated with width/height information
+ *  neuron network encapsulated with width/height information.
  */
 struct PointPillarsResult {
-  /// width of network input
+  /// Width of network input.
   int width=0;
-  /// height of network input
+  /// Height of network input.
   int height=0;
-  /// final result returned by the pointpillars neuron network
+  /// Final result returned by the pointpillars neuron network.
   PPResult ppresult;
 };
 
 /**
- * @brief Base class for pointpillars 
+ * @brief Base class for pointpillars .
  *
  * Input is points data.
  *
@@ -191,31 +191,31 @@ class PointPillars {
    */
   virtual vitis::ai::PointPillarsResult run( const V1F& v1f) = 0;
   /**
-   * @brief Function to get input batch of the PointPillars network .
+   * @brief Function to get input batch of the PointPillars network.
    *
-   * @return input batch of the PointPillars network.
+   * @return Input batch of the PointPillars network.
    */
   virtual size_t get_input_batch() const = 0;
 
   /**
    * @brief Function to produce the visible result from PointPillarsResult after calling run().
-   *        This is a helper function which can be ignored if customer wants 
-   *        to process the PointPillarsResult in other method.
+   *        This is a helper function which can be ignored if you wants 
+   *        to process the PointPillarsResult using another method.
    *
-   * @param res: [in] PointPillarsResult from run();
-   * @param flag: [in] which visible result to produce. can be assigned to below values:
+   * @param res: [input] PointPillarsResult from run().
+   * @param flag: [input] which visible result to produce. can be assigned to below values:
    *              E_BEV        : only produce BEV picture
    *              E_RGB        : only produce RGB picture
    *              E_BEV|E_RGB  : produce both pictures 
-   * @param dispp: [in] display parameter for the Points data.
-   *               please refer to readme in overview for more detail.
-   * @param rgb_map: [in|out] : original rgb picture for drawing detect result. 
-   *               can be blank (cv::Mat{}) if only BEV required
-   * @param bev_map: [in|out] original bev picture for drawing detect result. 
-   *               can be blank (cv::Mat{}) if only RGB required
-   * @param width: [in] original rgb picture width;
-   * @param height: [in] original rgb picture height;
-   * @param annoret: [out]: return the annoret variable for accuracy calculation
+   * @param dispp: [input] display parameter for the Points data.
+   *               Refer to the readme in the overview for more detail.
+   * @param rgb_map: [input|output] : original rgb picture for drawing detect result. 
+   *               It can be blank (cv::Mat{}), if only BEV is required
+   * @param bev_map: [input|output] original bev picture for drawing detect result. 
+   *               It can be blank (cv::Mat{}), if only RGB required
+   * @param width: [input] original rgb picture width.
+   * @param height: [input] original rgb picture height.
+   * @param annoret: [output] return the annoret variable for accuracy calculation.
    */
   virtual void do_pointpillar_display(PointPillarsResult& res, int flag,  DISPLAY_PARAM& dispp,
             cv::Mat& rgb_map, cv::Mat& bev_map, int width, int height, ANNORET& annoret) = 0;
