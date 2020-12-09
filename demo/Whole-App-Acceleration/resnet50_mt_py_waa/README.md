@@ -1,5 +1,5 @@
 ## Resnet-50
-* ZCU102 and Alveo U50 are Supported targets for running this application
+Note: Only ZCU102 and Alveo U50 boards are supported for this application
 
 ## Table of Contents
 
