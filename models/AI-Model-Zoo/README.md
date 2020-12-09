@@ -206,6 +206,7 @@ For a Tensorflow model, you should see the following directory structure:
     │
     └── float                             
         └── frozen.pb                   # Float-point frozen model, the input to the `vai_q_tensorflow`.
+                                          The pb name of different models may be different.
 
 
 #### Pytorch Model Directory Structure
@@ -229,7 +230,7 @@ For a Pytorch model, you should see the following directory structure:
     │
     └── float                           
         └── _int.pth                    # Trained float-point model. The pth name of different models may be different.
-                                           Path and name in test scripts could be modified according to actual situation.
+                                          Path and name in test scripts could be modified according to actual situation.
         
                                           
                                           
