@@ -177,22 +177,24 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 export PYTHONPATH=${PYTHONPATH}
 
 # Check for number of FPGA Devices
-CARDS_CONNECTED=`/opt/xilinx/xrt/bin/xbutil scan | grep "xilinx_u" | wc -l`
-if [ ! -z "${NUM_FPGA}" ]
-then
-  if [ ${NUM_FPGA} -gt ${CARDS_CONNECTED} ]
+if [[ `uname -m` != "aarch64" ]]; then
+  CARDS_CONNECTED=`/opt/xilinx/xrt/bin/xbutil scan | grep "xilinx_u" | wc -l`
+  if [ ! -z "${NUM_FPGA}" ]
   then
-    echo -e "[ERROR] Number of FPGAs mentioned are more than installed on System."
-    echo -e "[ERROR] Cards Mentioned: ${NUM_FPGA}"
-    echo -e "[ERROR] Cards Connected: ${CARDS_CONNECTED}"
-    echo -e ""
-    exit 1
+    if [ ${NUM_FPGA} -gt ${CARDS_CONNECTED} ]
+    then
+      echo -e "[ERROR] Number of FPGAs mentioned are more than installed on System."
+      echo -e "[ERROR] Cards Mentioned: ${NUM_FPGA}"
+      echo -e "[ERROR] Cards Connected: ${CARDS_CONNECTED}"
+      echo -e ""
+      exit 1
+    else
+      # Number of FPGAs to be used
+      export NUM_FPGA=${NUM_FPGA}
+    fi
   else
-    # Number of FPGAs to be used
-    export NUM_FPGA=${NUM_FPGA}
+    unset NUM_FPGA
   fi
-else
-  unset NUM_FPGA
 fi
 
 CPP_EXE=""
