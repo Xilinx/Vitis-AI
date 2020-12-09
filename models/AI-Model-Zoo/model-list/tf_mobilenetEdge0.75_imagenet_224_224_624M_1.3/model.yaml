@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_0_75_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: ba08e1f195ac087a44b5961f155cb2b7
+  checksum: 75908e8ec89583c566671b3c750c3686
 license: license link

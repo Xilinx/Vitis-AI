@@ -31,20 +31,20 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 3177b3ac72469551548d8aabce5e510d
+  checksum: 935972ffe9783695feb0323a3caf363b
 - name: yolov4_leaky_spp_m
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-vck190-r1.3.0.tar.gz
-  checksum: 4fb10bfae08220a5b84e80e71c0ac345
+  checksum: 5cb43abac11e4e72952ef68ea576c44e
 - name: yolov4_leaky_spp_m
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-u50-r1.3.0.tar.gz
-  checksum: cf7c8cc05d847fd72e5b39b341f7d13e
+  checksum: 8176b17e98e2f9f19c90da4a74468f00
 - name: yolov4_leaky_spp_m
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-u50lv-u280-r1.3.0.tar.gz
-  checksum: 423dca6dc4fc05f23b50caafebc76db5
+  checksum: 32edda462c13e687189d06d530ccdf6c
 license: license link

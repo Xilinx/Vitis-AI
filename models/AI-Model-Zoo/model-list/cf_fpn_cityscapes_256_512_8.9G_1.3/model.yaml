@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 0fd316c1b5d8909d09ac6b8144bb57af
+  checksum: 41bdb819d9d6a1565cebc5de620358e0
 - name: fpn
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck190-r1.3.0.tar.gz
-  checksum: f19f2c91ea6b5e8b4f7e95e8c0bd5641
+  checksum: 6ee2d838ef5389fe4b90cdae16694720
 - name: fpn
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50-r1.3.0.tar.gz
-  checksum: 9b79631b9f7bb22cb5137780edb2497a
+  checksum: 46f37438e6bba2e1d3d55f405f5ff79d
 - name: fpn
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50lv-u280-r1.3.0.tar.gz
-  checksum: a7e76518617e82eeb33bae1ac0123d4a
+  checksum: a6c181f168af958344813685e5216c62
 - name: fpn
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

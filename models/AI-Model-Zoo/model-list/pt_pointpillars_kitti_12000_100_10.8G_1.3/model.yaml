@@ -31,10 +31,10 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 3060700beb387c95dbd3e011f5982e34
+  checksum: 280c1f153a334d5d2ad6683a75fc3685
 - name: pointpillars_kitti_12000_1_pt
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 3cef17a9e80ec3a271d2c7c137787a90
+  checksum: f9cb1fe8868001c641aa76f60ae34c76
 license: license link

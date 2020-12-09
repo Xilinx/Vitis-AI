@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_inception_v2_coco_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: b2ae4e2357045c7330b7664748cdd7a7
+  checksum: 94a51baa4a6b773d6ace7a8aeaaabe09
 license: license link

@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 29605efa97083fcd9317f5a29b917112
+  checksum: a2b6633c677c85e2f93a9728926dcb0b
 - name: sp_net
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.3.0.tar.gz
-  checksum: 9a7d0d0871d718550b7d50ff33b77636
+  checksum: 972433fc120568c94169108a26f824aa
 - name: sp_net
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-r1.3.0.tar.gz
-  checksum: be080aebc54b14312a53f83c84d1aa31
+  checksum: 5aba6bc61e6feadfcb3083385d0a455e
 - name: sp_net
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50lv-u280-r1.3.0.tar.gz
-  checksum: 6cb998cd364605b0d5cb71b68fc41dc8
+  checksum: 255f59fa0ed088eab2baa8641f97b28b
 - name: sp_net
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: e69d223803aa6f34e77f0864e7b01c78
+  checksum: 5ed8c8cc414b779a71d7d3618d84d7a0
 - name: medical_seg_cell_tf2
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck190-r1.3.0.tar.gz
-  checksum: 81d487440c4b4371c06422b678b66ba5
+  checksum: bf3c78d7eef1c265dd1520f1118ae831
 - name: medical_seg_cell_tf2
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50-r1.3.0.tar.gz
-  checksum: fc387f847c43feed70a8987177cadee1
+  checksum: 276dc3bcb0673c23749410f1b30a5386
 - name: medical_seg_cell_tf2
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50lv-u280-r1.3.0.tar.gz
-  checksum: 2d70403936b7aaa253ef2285f02eddd2
+  checksum: f5d8b42f63ddd6b2dbb5d57e4ca04890
 - name: medical_seg_cell_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 1c889cb3123da3a442e7f1b0ac90b46d
+  checksum: 2df5be4f24da19aa1dcc206cc44fbcbb
 - name: resnet_v1_101_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-vck190-r1.3.0.tar.gz
-  checksum: 8a0efd0ef954e8209d36184d128beaa3
+  checksum: c47bfce08360f9ec964668b23724a8f6
 - name: resnet_v1_101_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-u50-r1.3.0.tar.gz
-  checksum: f0ca5abc2874ab9b6eb1561f2137de81
+  checksum: 2ec1c7ede24030ad9cdc346dfacbf3f5
 - name: resnet_v1_101_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: 77f3c944582f23a8d3a1bf7ec9d4a0d8
+  checksum: 98ee87909530d761b474ddb87dcc4771
 - name: resnet_v1_101_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

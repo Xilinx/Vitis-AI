@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 43f26968ccf02a7b8571b9486b95f4f8
+  checksum: eda818f5cc963017300a997070e32d8b
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck190-r1.3.0.tar.gz
-  checksum: 3c26439aa628eed606f541590b1aa415
+  checksum: 71774f5a4d643e9e34982bf877325ba7
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-r1.3.0.tar.gz
-  checksum: 23b0be4288d9bbc58e93a477d793a6c3
+  checksum: 213e5bf67c148ee38e66c18689308c9b
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 3b6b0f3a2b2bcd03d4ab0877089072cb
+  checksum: 299e6d56beeb42aa9eaa609d7c45d8bb
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=hourglass-pe_mpii-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 8e7d81a5957fc39b7ef3f1b10c6064ee
+  checksum: a6d5457852e4efa047f924ea43a8bad8
 license: license link

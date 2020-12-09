@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: f857566d1f6cb83a9a5aad955885bbe7
+  checksum: c73f71d8a689182c50245f50b3c66dc4
 - name: plate_num
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-vck190-r1.3.0.tar.gz
-  checksum: d2afe4110d61316612e7356208c9a8f4
+  checksum: 8c81e733e751b5fe65ce111071d5568b
 - name: plate_num
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u50-r1.3.0.tar.gz
-  checksum: 8acb1df974532b69ad2df651ccbe762e
+  checksum: eac261a1b0e1703aeafdcc22fafedbfa
 - name: plate_num
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u50lv-u280-r1.3.0.tar.gz
-  checksum: 7be7b27c9aa6e3dc59fae6bb0d85f742
+  checksum: 5c9f47698a14dd031480c307e9719b52
 - name: plate_num
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

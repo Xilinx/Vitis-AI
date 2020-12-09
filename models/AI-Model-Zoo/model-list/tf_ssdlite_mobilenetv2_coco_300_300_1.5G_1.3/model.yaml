@@ -31,7 +31,7 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 0cb99aeb85e42ebc3d181eb9c3812bfe
+  checksum: 6eb8a34851c9c539baf88e8be448779a
 - name: ssdlite_mobilenet_v2_coco_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 5697062c1108791108b55cb5aadac764
+  checksum: e7833e160f0615a5123f84adda25cf0c
 - name: vgg_16_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-vck190-r1.3.0.tar.gz
-  checksum: aee106f7404699e543d3ca78f5ad399a
+  checksum: 33a1c419a14d009201da0c3b74afe81d
 - name: vgg_16_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-r1.3.0.tar.gz
-  checksum: 4ad37490167787636604139ada91a510
+  checksum: ae43d5ecf5c179dcc18bd16475f1c9af
 - name: vgg_16_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: b5f1ba1e34d0a013af2909e03052e43f
+  checksum: 9fdf721bd191c9478a1fa6768bc41b3c
 - name: vgg_16_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

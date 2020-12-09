@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_92-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 7139f3a348c6a93fb2c3d5f139fe45d6
+  checksum: bd06f36b775725e13b0345ea8b637c3f
 - name: refinedet_pruned_0_92
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_92-vck190-r1.3.0.tar.gz
-  checksum: 387e53858b36fa13ec6217934e4173e3
+  checksum: de13b6ceab6c1076cde9c62d5ca466b9
 - name: refinedet_pruned_0_92
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_92-u50-r1.3.0.tar.gz
-  checksum: 24efe8d36a8af81b7d90aa4c7933c05f
+  checksum: 998de858933d2a3c44f9b50584f3dd87
 - name: refinedet_pruned_0_92
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_92-u50lv-u280-r1.3.0.tar.gz
-  checksum: 5f5c5a32309318cdfdd9adaed70776b1
+  checksum: cecb542e062a4b4122c6a1c54df432a0
 - name: refinedet_pruned_0_92
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

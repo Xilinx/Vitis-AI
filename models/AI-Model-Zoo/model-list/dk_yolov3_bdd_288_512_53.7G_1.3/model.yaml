@@ -31,20 +31,20 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 5c8fcfd62c5b8939754e7ff83eb9adc3
+  checksum: fb04f7628118db896d2a065371895221
 - name: yolov3_bdd
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-vck190-r1.3.0.tar.gz
-  checksum: a109e310e9670dc6f39ba26e2f90537d
+  checksum: 57f79052e3fdda18ba7ad0c9fd59e129
 - name: yolov3_bdd
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u50-r1.3.0.tar.gz
-  checksum: 099a2850f842f44877911ceeb3299ebc
+  checksum: 9fd67701c45d23b8844de11efbbe7c90
 - name: yolov3_bdd
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u50lv-u280-r1.3.0.tar.gz
-  checksum: 2c72683ef3362f2fafafc93098abcd52
+  checksum: 6bfd0e324191a488c078f2796cbc0bd7
 license: license link

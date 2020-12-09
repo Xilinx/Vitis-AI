@@ -31,7 +31,7 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: c7c94557ff0b75b371bbc76e334b4a62
+  checksum: 5c87dfe9001a72e0aee6007015f37e09
 - name: ssd_mobilenet_v2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

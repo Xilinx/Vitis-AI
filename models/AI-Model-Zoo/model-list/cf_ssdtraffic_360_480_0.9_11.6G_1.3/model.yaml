@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 865c6e3f6777804ca9b7c001de2b88ed
+  checksum: fc3c8da6c960170783ab98f3b8ee34e8
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-vck190-r1.3.0.tar.gz
-  checksum: 7c6045c82ee6a50bb57202ff0f6a5836
+  checksum: fe823d28d3a98696f3ac85089cad42a6
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-u50-r1.3.0.tar.gz
-  checksum: 171247a4722416eb25e828891833a661
+  checksum: 43dca905298aee64f2e8a5c6eec77c0c
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-u50lv-u280-r1.3.0.tar.gz
-  checksum: 01ff8d3bd260c745a0b2b868ade91383
+  checksum: a8c5f71ebde41b27b1beb5742a03d4a1
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

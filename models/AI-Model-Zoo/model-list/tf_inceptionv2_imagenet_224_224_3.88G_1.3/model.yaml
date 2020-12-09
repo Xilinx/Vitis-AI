@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 753c5ad445b0dddd28d27841b8ea2a18
+  checksum: 9b53e5f53ae24b12386c644f87199568
 license: license link

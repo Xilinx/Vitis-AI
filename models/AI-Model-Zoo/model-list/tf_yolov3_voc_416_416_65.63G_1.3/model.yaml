@@ -31,20 +31,20 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 707cb7871c0916b1f533f84b12cf740b
+  checksum: a48299ade03b7e84549323f874f78ee2
 - name: yolov3_voc_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.3.0.tar.gz
-  checksum: 6fbd70ca33b2c97f2f0aeba073c291cc
+  checksum: ad525428d41a11c182fc32fa3545fb06
 - name: yolov3_voc_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50-r1.3.0.tar.gz
-  checksum: 77b08ef84cc96f9161c3d4cfefffa479
+  checksum: d382209f890cd152ff20fbedd1b61d54
 - name: yolov3_voc_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: fc2ff009d3b22f73b27fc32d80f8e499
+  checksum: c59499c8110b35dfea7401acc7b3c8de
 license: license link

@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_Endov-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 363540e282f361080eb3679d479d155b
+  checksum: 15e7663a5e5ffa4859316b8e9555fc48
 license: license link

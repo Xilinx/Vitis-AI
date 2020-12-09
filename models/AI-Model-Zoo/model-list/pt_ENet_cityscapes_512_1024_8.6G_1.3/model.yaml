@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: e4ae0b80a3e528758c0c70c7c47042ac
+  checksum: 6d6b78b20582d3441b08ae0cda2d0417
 - name: ENet_cityscapes_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck190-r1.3.0.tar.gz
-  checksum: 9f4bad581954ced4312099be23327463
+  checksum: abfea24bfc8abe00eeaff8d2c52af01a
 - name: ENet_cityscapes_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-u50-r1.3.0.tar.gz
-  checksum: f811a3adde8d80270d5f4ead7b70d862
+  checksum: 4b5ba2f9e59bd76ca3a50e6cc99b1c1b
 - name: ENet_cityscapes_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 9fa96343292ca486fd01f751ddec6154
+  checksum: 0a5df7827ff1a49f6c1b6bd3f2953712
 - name: ENet_cityscapes_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: cb239144e0b7d5559720daef1ad5828d
+  checksum: cfe5934f40344c79e8eb0f0504ac534d
 - name: reid
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-vck190-r1.3.0.tar.gz
-  checksum: fa8fed62f03211bd8611063f0daec43e
+  checksum: 659a01ceddd4af45055e563bdd9c2ae0
 - name: reid
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50-r1.3.0.tar.gz
-  checksum: 21af78a664c44124948daefc00c008f9
+  checksum: b88357db30a0135d4b054c8b4b154bd7
 - name: reid
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50lv-u280-r1.3.0.tar.gz
-  checksum: 2d92a0078cea23b2ce88c2401bc22583
+  checksum: 2efef4a0e2892de7620fe28869b8bf26
 - name: reid
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
