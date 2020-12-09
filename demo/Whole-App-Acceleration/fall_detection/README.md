@@ -107,6 +107,7 @@ Input passed to `run.sh` (`<directory>`) should contain either videos and/or dir
 
 ```sh
 [sample structure]
+
 .
 └── directory
     ├── video1.mp4
@@ -126,12 +127,14 @@ Input passed to `run.sh` (`<directory>`) should contain either videos and/or dir
 ## Performance
 
 Performance metrics observed on urfd_dataset:
+* Total timetaken: 97.0882 seconds..
+* Total images processed: 11236
 * Accuracy: 0.961819
 * Sensitivity/Recall: 0.993281
 * Specificity: 0.959103
 * FAR/FPR: 0.0408972
 * MDR/FNR: 0.00671893
-* Throughput (fps): 117
+* Throughput (fps): 115.73
 
 
 ## Write prediction probabilities to video
