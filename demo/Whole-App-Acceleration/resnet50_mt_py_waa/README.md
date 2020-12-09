@@ -1,5 +1,5 @@
 ## Resnet-50
-:pushpin: **Note:** This application can be run only on ZCU102 and Alveo-U50 platform.
+:pushpin: **Note:** This application can be run only on ZCU102 and Alveo-U50 platforms.
 
 ## Table of Contents
 
