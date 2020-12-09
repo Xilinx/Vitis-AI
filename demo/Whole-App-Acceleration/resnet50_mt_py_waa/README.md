@@ -102,7 +102,7 @@ Runtime packages on the board separately.**
 	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
 ```	
 	
-### Running The Examples
+## Running the application on U50 board
 Before running the examples the model files need to be downloaded.
 
 wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu104-r1.3.0.tar.gz -O resnet50-zcu102-zcu104-r1.3.0.tar.gz
@@ -121,7 +121,6 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102-zcu
 
 
 
-  ## 2. Commands to run on U50
  ### Run resnet50 without waa
   ```
   cd ./resnet50_mt_py_waa
