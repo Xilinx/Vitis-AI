@@ -1,12 +1,12 @@
 ## ADAS detection
-Note: Only ZCU102 and Alveo U50 boards are supported for this application
+:pushpin: **Note:** This application can be run only on ZCU102 and Alveo-U50 platform.
 
 ## Table of Contents
 
 - [Introduction](#Introduction)
 - [Setting Up and Running on ZCU102](#Setting-Up-and-Running-on-ZCU102)
     - [Setting Up the Target](#Setting-Up-the-Target-ZCU102)
-    - [Building and running the application](#Building-and-running-the-application-ZCU102)
+    - [Building and running the application](#Building-and-running-the-application-on-ZCU102)
 - [Setting Up and Running on U50](#Setting-Up-and-Running-on-Alveo-U50)
     - [Setting Up the Target](#Setting-Up-the-Target-Alveo-U50)
     - [Building and running the application](#Building-and-running-the-application-Alveo-U50)
@@ -29,7 +29,7 @@ Accelerating pre-processing for YOLO-v3 is provided and can only run on ZCU102 b
 **To improve the user experience, the Vitis AI Runtime packages have been built into the board image. Therefore, user does not need to install Vitis AI
 Runtime packages on the board separately.**
 
-1. Installing a Board Image.
+* Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
 		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.3.0.img.gz) 
@@ -48,54 +48,55 @@ Runtime packages on the board separately.**
 	* Set up the IP information of the board using the serial port.
 	You can now operate on the board using SSH.
 	
-2. Update the system image files.
+* Update the system image files.
 	* Download the [waa_system_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_v1.3.0.tar.gz).	
 
 		For bash, same tar file can be obtained from `/wrk/acceleration/users/maheshm/vai_1_3/waa_system_v1.3.0.tar.gz`
 	* Copy the `waa_system_v1.3.0.tar.gz` to the board using scp.
 	```
-	scp waa_system_v1.3.0.tar.gz root@IP_OF_BOARD:~/
+	  scp waa_system_v1.3.0.tar.gz root@IP_OF_BOARD:~/
 	```
     * Update the system image files on the target side
 
   	```
 	  cd ~
-  	tar -xzvf waa_system_v1.3.0.tar.gz
-  	cp waa_system_v1.3.0/sd_card_resnet50/* /mnt/sd-mmcblk0p1/
-	  cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
-	  ln -s /usr/lib/dpu.xclbin /mnt/dpu.xclbin
+	  tar -xzvf waa_system_v1.3.0.tar.gz
+	  cp waa_system_v1.3.0/sd_card_resnet50/* /media/sd-mmcblk0p1/
+	  cp /media/sd-mmcblk0p1/dpu.xclbin /usr/lib/
+	  ln -s /usr/lib/dpu.xclbin /media/dpu.xclbin
 	  cp waa_system_v1.3.0/lib/* /usr/lib/
-  	reboot
+	  reboot
   	```
 
-3. Download test images
+* Download test images
 
     Download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
 
     For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet_test_image.jpg`
 
-4. Copy application files to SD card
+* Copy application files to SD card
 
     ```
-	  scp -r Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa root@IP_OF_BOARD:~/
+	  scp -r Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa  
+	  root@IP_OF_BOARD:~/
     ```
 
 
-  ## Building and running the application on ZCU102 board
-  #### Build
-  ```
-  cd ~/adas_detection_waa
-  ./build.sh
-  mkdir output #Will be written to the picture after processing
-  ```
-  #### Run adas_detection without waa
-  ```
-  ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel 0
-  ```
-  #### Run adas_detection with waa
-  ```
-  env XILINX_XRT=/usr ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel 1
-   ```
+### Building and running the application on ZCU102
+* Build
+    ```
+      cd ~/adas_detection_waa
+      ./build.sh
+      mkdir output #Will be written to the picture after processing
+    ```
+* Run adas_detection without waa
+    ```
+    ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel 0
+    ```
+* Run adas_detection with waa
+    ```
+    env XILINX_XRT=/usr ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel 1
+    ```
 
 ## Setting Up and Running on Alveo U50
   ### Setting Up the Target Alveo U50
@@ -111,21 +112,6 @@ Runtime packages on the board separately.**
 	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
 ```	
 
-	**For Adas Detection:**
-
-	```
-	cd ~
-	tar -xzvf waa_system_v1.3.0.tar.gz
-	cp waa_system_v1.3.0/sd_card_adasdetection/* /mnt/sd-mmcblk0p1/
-	cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
-	ln -s /usr/lib/dpu.xclbin /mnt/dpu.xclbin
-	reboot
-	```
-	**Note that `waa_system_v1.3.0.tar.gz` can only be used for ZCU102.**
-
-
-
-	```
 
 * To download and install `adas detection` model:
 	```
@@ -133,7 +119,7 @@ Runtime packages on the board separately.**
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz -O yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
 	  For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz`
 	```	
-	* Install the model package.
+* Install the model package.
 	```
 	  tar -xzvf yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
 	  sudo cp yolov3_adas_pruned_0_9 /usr/share/vitis_ai_library/models -r
@@ -144,31 +130,24 @@ For adas_detection_waa example, download the images at https://cocodataset.org/#
 
 For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/adas_detection_input.jpg`
 
-3. Copy WAA examples to the board (only for ZCU102 run)
 
-```
-	scp -r Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa root@IP_OF_BOARD:~/
-	scp -r Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa root@IP_OF_BOARD:~/
-```
+  ### Building and running the application Alveo U50
+ *  Build
+    ```
+    cd ./adas_detection_waa
+    ./build.sh
+    mkdir output #Will be written to the picture after processing
+    ```
+  * Run adas_detection without waa
+    ```
+    ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel 0
+    ```
+  * Run adas_detection with waa
+    ```
+    ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel 1
+    ```
 
-
-## 2. Building and running the application Alveo U50
-  #### Build
-  ```
-  cd ./adas_detection_waa
-  ./build.sh
-  mkdir output #Will be written to the picture after processing
-  ```
-  #### Run adas_detection without waa
-  ```
-  ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel 0
-  ```
-  #### Run adas_detection with waa
-  ```
-./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel 1
-   ```
-
-### Performance:
+## Performance
 Below table shows the comparison of througput achieved by acclerating the pre-processing pipeline on FPGA. 
 For `Adas Detection`, the performance numbers are achieved by running 1K images randomly picked from COCO dataset. 
 
