@@ -243,7 +243,7 @@ All the models in the Model Zoo have been deployed on Xilinx hardware with [Viti
 For more information about DPU, see [DPU IP Product Guide](https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=latest;d=pg338-dpu.pdf).
 
 
-**Note:** The model performance number listed in the following sections is generated with Vitis AI v1.2 and Vitis AI Lirary v1.2. For each board, a different DPU configuration is used. Vitis AI and Vitis AI Library can be downloaded for free from [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library Github](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library).
+**Note:** The model performance number listed in the following sections is generated with Vitis AI v1.3 and Vitis AI Lirary v1.3. For different boards, different DPU configurations are used. Vitis AI and Vitis AI Library can be downloaded for free from [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library Github](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library).
 We will continue to improve the performance with Vitis AI. The performance number reported here is subject to change in the near future.
 
 ### Performance on ZCU102 (0432055-04)  
@@ -298,7 +298,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on ZCU102 (0432055-05)
-Measured with Vitis AI 1.2 and Vitis AI Library 1.2  
+Measured with Vitis AI 1.3 and Vitis AI Library 1.3  
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -369,7 +369,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on ZCU104
-Measured with Vitis AI 1.2 and Vitis AI Library 1.2 
+Measured with Vitis AI 1.3 and Vitis AI Library 1.3 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -440,7 +440,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U50
-Measured with Vitis AI 1.2 and Vitis AI Library 1.2 
+Measured with Vitis AI 1.3 and Vitis AI Library 1.3 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -504,7 +504,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U50 lv9e
-Measured with Vitis AI 1.2 and Vitis AI Library 1.2 
+Measured with Vitis AI 1.3 and Vitis AI Library 1.3 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -568,7 +568,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U50 lv10e
-Measured with Vitis AI 1.2 and Vitis AI Library 1.2 
+Measured with Vitis AI 1.3 and Vitis AI Library 1.3 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -625,7 +625,7 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U200
-Measured with Vitis AI 1.2 and Vitis AI Library 1.2 
+Measured with Vitis AI 1.3 and Vitis AI Library 1.3 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -649,7 +649,7 @@ The following table lists the performance number including end-to-end throughput
 </details>
 
 ### Performance on U250
-Measured with Vitis AI 1.2 and Vitis AI Library 1.2 
+Measured with Vitis AI 1.3 and Vitis AI Library 1.3 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -673,7 +673,7 @@ The following table lists the performance number including end-to-end throughput
 </details>
 
 ### Performance on U280
-Measured with Vitis AI 1.2 and Vitis AI Library 1.2 
+Measured with Vitis AI 1.3 and Vitis AI Library 1.3 
 
 <details>
  <summary><b>Click here to view details</b></summary>
