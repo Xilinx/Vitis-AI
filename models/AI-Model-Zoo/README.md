@@ -306,64 +306,103 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 The following table lists the performance number including end-to-end throughput and latency for each model on the `ZCU102 (0432055-05)` board with a `3 * B4096  @ 281MHz   V1.4.1` DPU configuration:
 
 
-| No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
-| ---- | :------------------------- | :------------------------------------------- | -------------------------------- | ------------------------------------- | ------------------------------------ |
-| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G            | 13.60                            | 73.5                                  | 152.7                                |
-| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G           | 5.35                             | 186.9                                 | 441.6                                |
-| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G        | 5.62                             | 178.0                                 | 411.7                                |
-| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G           | 6.92                             | 144.4                                 | 317.3                                |
-| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G        | 17.38                            | 57.5                                  | 128.1                                |
-| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G        | 35.06                            | 28.5                                  | 66.2                                 |
-| 7    | Mobilenet_v2               | cf_mobilenetv2_imagenet_224_224_0.59G        | 4.41                             | 226.8                                 | 548.0                                |
-| 8    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 3.76                             | 265.8                                 | 1012.3                               |
-| 9    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 13.10                            | 76.3                                  | 282.6                                |
-| 10   | refinedet\_baseline        | cf_refinedet_coco_480_360_123G_1.2           | 120.96                           | 8.3                                   | 24.4                                 |
-| 11   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G            | 31.58                            | 31.7                                  | 101.3                                |
-| 12   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G        | 16.68                            | 59.9                                  | 196.8                                |
-| 13   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G         | 12.07                            | 82.9                                  | 276.2                                |
-| 14   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G             | 12.05                            | 82.9                                  | 279.7                                |
-| 15   | ssd_traffic_pruned_0_9     | cf_ssdtraffic_360_480_0.9_11.6G              | 18.33                            | 54.5                                  | 201.5                                |
-| 16   | VPGnet_pruned_0_99         | cf_VPGnet_caltechlane_480_640_0.99_2.5G      | 9.56                             | 104.5                                 | 381.4                                |
-| 17   | ssd_mobilenet_v2           | cf_ssdmobilenetv2_bdd_360_480_6.57G          | 26.01                            | 38.4                                  | 114.4                                |
-| 18   | FPN                        | cf_fpn_cityscapes_256_512_8.9G               | 16.74                            | 59.7                                  | 175.5                                |
-| 19   | SP_net                     | cf_SPnet_aichallenger_224_128_0.54G          | 2.62                             | 381.6                                 | 1317.4                               |
-| 20   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G  | 285.58                           | 3.5                                   | 15.1                                 |
-| 21   | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 2.56                             | 390.0                                 | 1172.3                               |
-| 22   | densebox_640_360           | cf_densebox_wider_360_640_1.11G              | 4.99                             | 200.4                                 | 588.7                                |
-| 23   | face_landmark              | cf_landmark_celeba_96_72_0.14G               | 1.18                             | 849.4                                 | 1382.7                               |
-| 24   | reid                       | cf_reid_market1501_160_80_0.95G              | 2.74                             | 364.2                                 | 665.6                                |
-| 25   | multi_task                 | cf_multitask_bdd_288_512_14.8G               | 28.19                            | 35.5                                  | 127.7                                |
-| 26   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 77.10                            | 13.0                                  | 34.3                                 |
-| 27   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G       | 11.89                            | 84.1                                  | 229.7                                |
-| 28   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 73.76                            | 13.5                                  | 35.3                                 |
-| 29   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                    | 37.31                            | 26.8                                  | 71.0                                 |
-| 30   | yolov2_voc_pruned_0_66     | dk_yolov2_voc_448_448_0.66_11.56G            | 15.82                            | 63.2                                  | 185.9                                |
-| 31   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G             | 13.73                            | 72.8                                  | 214.8                                |
-| 32   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G             | 11.73                            | 85.2                                  | 258.7                                |
-| 33   | ResNet20-face              | cf_facerec-resnet20_112_96_3.5G              | 5.98                             | 167.1                                 | 320.6                                |
-| 34   | ResNet64-face              | cf_facerec-resnet64_112_96_11G               | 13.69                            | 73.0                                  | 173.0                                |
-| 35   | FPN_Res18_segmentation     | cf_FPN-resnet18_EDD_320_320_45.3G            | 81.86                            | 12.2                                  | 40.3                                 |
-| 36   | plate detection            | cf_plate-detection_320_320_0.49G             | 2.00                             | 500.0                                 | 1792.2                               |
-| 37   | plate recognition          | cf_plate-recognition_96_288_1.75G            | 8.82                             | 113.4                                 | 383.2                                |
-| 38   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G | 43.19                            | 23.1                                  | 48.7                                 |
-| 39   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G           | 5.43                             | 184.1                                 | 423.9                                |
-| 40   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G       | 17.44                            | 57.3                                  | 126.7                                |
-| 41   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G       | 35.08                            | 28.5                                  | 66.2                                 |
-| 42   | Mobilenet_v1               | tf_mobilenetv1_0.25_imagenet_128_128_27.15M  | 0.85                             | 1170.7                                | 4043.5                               |
-| 43   | Mobilenet_v1               | tf_mobilenetv1_0.5_imagenet_160_160_150.07M  | 1.41                             | 707.6                                 | 2007.1                               |
-| 44   | Mobilenet_v1               | tf_mobilenetv1_1.0_imagenet_224_224_1.14G    | 3.52                             | 284.3                                 | 754.9                                |
-| 45   | Mobilenet_v2               | tf_mobilenetv2_1.0_imagenet_224_224_0.59G    | 4.33                             | 230.8                                 | 568.4                                |
-| 46   | Mobilenet_v2               | tf_mobilenetv2_1.4_imagenet_224_224_1.16G    | 5.98                             | 167.3                                 | 393.1                                |
-| 47   | resnet_v1_50               | tf_resnetv1_50_imagenet_224_224_6.97G        | 12.63                            | 79.1                                  | 161.9                                |
-| 48   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G       | 23.16                            | 43.1                                  | 91.3                                 |
-| 49   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G      | 33.82                            | 29.6                                  | 63.7                                 |
-| 50   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G             | 49.78                            | 20.1                                  | 40.9                                 |
-| 51   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G             | 57.72                            | 17.3                                  | 36.5                                 |
-| 52   | ssd_mobilenet_v1           | tf_ssdmobilenetv1_coco_300_300_2.47G         | 11.09                            | 90.1                                  | 332.9                                |
-| 53   | ssd_mobilenet_v2           | tf_ssdmobilenetv2_coco_300_300_3.75G         | 15.64                            | 63.9                                  | 193.2                                |
-| 54   | ssd_resnet_50_v1_fpn       | tf_ssdresnet50v1_fpn_coco_640_640_178.4G     | 757.63                           | 1.3                                   | 5.1                                  |
-| 55   | yolov3_voc                 | tf_yolov3_voc_416_416_65.63G                 | 74.22                            | 13.5                                  | 35.0                                 |
-| 56   | mlperf_ssd_resnet34        | tf_mlperf_resnet34_coco_1200_1200_433G       | 502.41                           | 2.0                                   | 7.2                                  |
+| No\. | Model                      | Name                                          | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread) |
+| ---- | :------------------------- | :-------------------------------------------- | -------------------------------- | ------------------------------------- | ----------------------------------- |
+| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G             | 14.1                             | 70.8                                  | 164.7                               |
+| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G            | 5.55                             | 180.2                                 | 469.1                               |
+| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G         | 6.12                             | 163.2                                 | 428.1                               |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G            | 8.13                             | 122.9                                 | 286.7                               |
+| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G         | 17.47                            | 57.2                                  | 132.3                               |
+| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G         | 35.26                            | 28.3                                  | 68.1                                |
+| 7    | Mobilenet_v2               | cf_mobilenetv2_imagenet_224_224_0.59G         | 4.08                             | 245.1                                 | 712                                 |
+| 8    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G             | 3.9                              | 256.1                                 | 1035.4                              |
+| 9    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G       | 13.37                            | 74.7                                  | 275                                 |
+| 10   | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 118.09                           | 8.5                                   | 24.4                                |
+| 11   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G             | 31.15                            | 32.1                                  | 98.7                                |
+| 12   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G         | 16.27                            | 61.4                                  | 194                                 |
+| 13   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G          | 11.78                            | 84.9                                  | 272.4                               |
+| 14   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G              | 11.98                            | 83.4                                  | 285.5                               |
+| 15   | ssd_traffic_pruned_0_9     | cf_ssdtraffic_360_480_0.9_11.6G               | 18.76                            | 53.3                                  | 195                                 |
+| 16   | VPGnet_pruned_0_99         | cf_VPGnet_caltechlane_480_640_0.99_2.5G       | 11.75                            | 85                                    | 250.4                               |
+| 17   | ssd_mobilenet_v2           | cf_ssdmobilenetv2_bdd_360_480_6.57G           | 25.7                             | 38.9                                  | 109.2                               |
+| 18   | FPN                        | cf_fpn_cityscapes_256_512_8.9G                | 30.62                            | 32.6                                  | 144.7                               |
+| 19   | SP_net                     | cf_SPnet_aichallenger_224_128_0.54G           | 2.24                             | 445.4                                 | 1227.1                              |
+| 20   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G   | 287.88                           | 3.5                                   | 14.9                                |
+| 21   | densebox_320_320           | cf_densebox_wider_320_320_0.49G               | 2.73                             | 365.9                                 | 1126.9                              |
+| 22   | densebox_640_360           | cf_densebox_wider_360_640_1.11G               | 5.58                             | 179.2                                 | 503.9                               |
+| 23   | face_landmark              | cf_landmark_celeba_96_72_0.14G                | 1.21                             | 823.9                                 | 1553.6                              |
+| 24   | reid                       | cf_reid_market1501_160_80_0.95G               | 2.88                             | 346.6                                 | 690.1                               |
+| 25   | multi_task                 | cf_multitask_bdd_288_512_14.8G                | 28.93                            | 34.5                                  | 117.1                               |
+| 26   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                   | 82.2                             | 12.1                                  | 32.3                                |
+| 27   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G        | 11.73                            | 85.2                                  | 251.3                               |
+| 28   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                  | 80.13                            | 12.5                                  | 32.6                                |
+| 29   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                     | 38.94                            | 25.7                                  | 68                                  |
+| 30   | yolov2_voc_pruned_0_66     | dk_yolov2_voc_448_448_0.66_11.56G             | 16                               | 62.5                                  | 189                                 |
+| 31   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G              | 13.9                             | 71.9                                  | 221                                 |
+| 32   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G              | 11.92                            | 83.9                                  | 265.2                               |
+| 33   | ResNet20-face              | cf_facerec-resnet20_112_96_3.5G               | 6.11                             | 163.5                                 | 329.1                               |
+| 34   | ResNet64-face              | cf_facerec-resnet64_112_96_11G                | 14.19                            | 70.4                                  | 176.4                               |
+| 35   | FPN_Res18_segmentation     | cf_FPN-resnet18_EDD_320_320_45.3G             | 85.83                            | 11.6                                  | 42.1                                |
+| 36   | plate detection            | cf_plate-detection_320_320_0.49G              | 2.02                             | 493.8                                 | 1996                                |
+| 37   | plate recognition          | cf_plate-recognition_96_288_1.75G             | 8.14                             | 122.8                                 | 239.9                               |
+| 38   | retinaface                 | cf_retinaface_wider_360_640_1.11G             | 8.01                             | 124.8                                 | 569.2                               |
+| 39   | face_quality               | cf_face-quality_80_60_61.68M                  | 0.5                              | 2000.4                                | 6721.9                              |
+| 40   | FPN-R18(light-weight)      | cf_FPN-resnet18_Endov_240_320_13.75G          | 30.26                            | 33                                    | 152.4                               |
+| 41   | Hourglass                  | cf_hourglass-pe_mpii_256_256_10.2G            | 20.69                            | 48.3                                  | 113.4                               |
+| 42   | tiny-yolov3                | dk_tiny-yolov3_416_416_5.46G                  | 8.65                             | 115.5                                 | 383.6                               |
+| 43   | yolov4                     | dk_yolov4_coco_416_416_60.1G                  | 77.69                            | 12.8                                  | 32.8                                |
+| 44   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G  | 45.64                            | 21.9                                  | 49.2                                |
+| 45   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G            | 6                                | 166.7                                 | 428.6                               |
+| 46   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G        | 17.6                             | 56.8                                  | 130.8                               |
+| 47   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G        | 35.27                            | 28.3                                  | 68                                  |
+| 48   | Mobilenet_v1               | tf_mobilenetv1_0.25_imagenet_128_128_27.15M   | 0.94                             | 1062.6                                | 3991.2                              |
+| 49   | Mobilenet_v1               | tf_mobilenetv1_0.5_imagenet_160_160_150.07M   | 1.45                             | 689.5                                 | 2624.4                              |
+| 50   | Mobilenet_v1               | tf_mobilenetv1_1.0_imagenet_224_224_1.14G     | 3.48                             | 287.4                                 | 892.8                               |
+| 51   | Mobilenet_v2               | tf_mobilenetv2_1.0_imagenet_224_224_0.59G     | 4.15                             | 240.7                                 | 675.7                               |
+| 52   | Mobilenet_v2               | tf_mobilenetv2_1.4_imagenet_224_224_1.16G     | 5.67                             | 176.2                                 | 455.5                               |
+| 53   | resnet_v1_50               | tf_resnetv1_50_imagenet_224_224_6.97G         | 12.89                            | 77.5                                  | 178                                 |
+| 54   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G        | 23.95                            | 41.7                                  | 103.4                               |
+| 55   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G       | 34.89                            | 28.6                                  | 72.1                                |
+| 56   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G              | 50.06                            | 19.9                                  | 40.5                                |
+| 57   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G              | 58.01                            | 17.2                                  | 36                                  |
+| 58   | ssd_mobilenet_v1           | tf_ssdmobilenetv1_coco_300_300_2.47G          | 10.51                            | 95.1                                  | 305.5                               |
+| 59   | ssd_mobilenet_v2           | tf_ssdmobilenetv2_coco_300_300_3.75G          | 12.69                            | 78.7                                  | 206.2                               |
+| 60   | ssd_resnet_50_v1_fpn       | tf_ssdresnet50v1_fpn_coco_640_640_178.4G      | 351.33                           | 2.8                                   | 5                                   |
+| 61   | yolov3_voc                 | tf_yolov3_voc_416_416_65.63G                  | 77.44                            | 12.9                                  | 33.4                                |
+| 62   | mlperf_ssd_resnet34        | tf_mlperf_resnet34_coco_1200_1200_433G        | 530.72                           | 1.9                                   | 6.9                                 |
+| 63   | Inception_v2               | tf_inceptionv2_imagenet_224_224_3.88G         | 11.51                            | 86.8                                  | 220.8                               |
+| 64   | resnet\_v2\_50             | tf_resnetv2_50_imagenet_299_299_13.1G_1.3     | 29.38                            | 34                                    | 83.3                                |
+| 65   | resnet\_v2\_101            | tf_resnetv2_101_imagenet_299_299_26.78G       | 50.45                            | 19.8                                  | 48.5                                |
+| 66   | resnet\_v2\_152            | tf_resnetv2_152_imagenet_299_299_40.47G       | 71.38                            | 14                                    | 33.7                                |
+| 67   | ssdlite_mobilenetv2        | tf_ssdlite_mobilenetv2_coco_300_300_1.5G      | 10                               | 99.9                                  | 292.8                               |
+| 68   | ssd_inceptionv2            | tf_ssdinceptionv2_coco_300_300_9.62G_1.3      | 26.4                             | 37.8                                  | 97.5                                |
+| 69   | Mobilenet\_v2              | tf_mobilenetv2_cityscapes_1024_2048_132.74G   | 636.19                           | 1.6                                   | 4.4                                 |
+| 70   | mlperf_resnet50            | tf_mlperf_resnet50_imagenet_224_224_8.19G     | 14.34                            | 69.6                                  | 160.6                               |
+| 71   | refinedet                  | tf_refinedet_VOC_320_320_81.9G                | 90.67                            | 11                                    | 33.6                                |
+| 72   | mobilenet_edge_1.0         | tf_mobilenetEdge1.0_imagenet_224_224_990M_1.3 | 5.17                             | 193.4                                 | 525.2                               |
+| 73   | mobilenet_edge_0.75        | tf_mobilenetEdge0.75_imagenet_224_224_624M    | 4.31                             | 231.6                                 | 675.8                               |
+| 74   | refinedet_medical          | tf_RefineDet-Medical_EDD_320_320_9.83G        | 15.51                            | 64.4                                  | 220.3                               |
+| 75   | resnet50                   | tf2_resnet50_imagenet_224_224_7.76G           | 14.52                            | 68.8                                  | 165.2                               |
+| 76   | Mobilenet\_v1              | tf2_mobilenetv1_imagenet_224_224_1.15G        | 3.52                             | 284.1                                 | 879.6                               |
+| 77   | Inception_v3               | tf2_inceptionv3_imagenet_299_299_11.5G        | 17.94                            | 55.7                                  | 130.4                               |
+| 78   | 2d-unet                    | tf2_2d-unet_nuclei_128_128_5.31G              | 6.6                              | 151.4                                 | 381.2                               |
+| 79   | ERFNet                     | tf2_erfnet_cityscapes_512_1024_54G            | 149.67                           | 6.7                                   | 23                                  |
+| 80   | ENet                       | pt_ENet_cityscapes_512_1024_8.6G              | 113.44                           | 8.8                                   | 37.9                                |
+| 81   | SemanticFPN                | pt_SemanticFPN_cityscapes_256_512_10G         | 30.38                            | 32.9                                  | 160.1                               |
+| 82   | ResNet20-face              | pt_facerec-resnet20_mixed_112_96_3.5G         | 6.12                             | 163.2                                 | 328.2                               |
+| 83   | face quality               | pt_face-quality_80_60_61.68M                  | 0.47                             | 2140.1                                | 6887.7                              |
+| 84   | MT-resnet18                | pt_MT-resnet18_mixed_320_512_13.65G           | NA                               | NA                                    | NA                                  |
+| 85   | face_reid_large            | pt_facereid-large_96_96_515M                  | 1.19                             | 837.2                                 | 2164.7                              |
+| 86   | face_reid_small            | pt_facereid-small_80_80_90M                   | 0.54                             | 1833.4                                | 5948.5                              |
+| 87   | person_reid                | pt_personreid-res50_market1501_256_128_5.4G   | 10.36                            | 96.4                                  | 223.5                               |
+| 88   | person_reid                | pt_personreid-res18_market1501_176_80_1.1G    | 2.86                             | 349.2                                 | 681.6                               |
+| 89   | pointpillars               | pt_pointpillars_kitti_12000_100_10.8G         | 53.7                             | 18.6                                  | 49.8                                |
+| 90   | salsanext                  | pt_salsanext_semantic-kitti_64_2048_0.6_20.4G | 188.48                           | 5.3                                   | 19.7                                |
+| 91   | FPN-R18 (light-weight)     | pt_FPN-resnet18_covid19-seg_352_352_22.7G     | 28.32                            | 35.3                                  | 104.1                               |
+| 92   | 2d-unet                    | pt_unet_chaos-CT_512_512_23.3G                | 48.35                            | 20.7                                  | 64.8                                |
+| 93   | Inception_v3               | torchvision_inception_v3                      | 17.42                            | 57.4                                  | 132.6                               |
+| 94   | SqueezeNet                 | torchvision_squeezenet                        | 4.87                             | 205.2                                 | 766.9                               |
+| 95   | resnet50                   | torchvision_resnet50                          | 14.92                            | 67                                    | 158.6                               |
 
 </details>
 
@@ -377,64 +416,103 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 The following table lists the performance number including end-to-end throughput and latency for each model on the `ZCU104` board with a `2 * B4096  @ 300MHz   V1.4.1` DPU configuration:
 
 
-| No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
-| ---- | :------------------------- | :------------------------------------------- | -------------------------------- | ------------------------------------- | ------------------------------------ |
-| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G            | 12.70                            | 78.7                                   | 148.1                                |
-| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G           | 5.07                             | 197.4                                 | 411.1                                |
-| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G        | 5.24                             | 190.8                                 | 389.4                                |
-| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G           | 6.51                             | 153.5                                 | 302.1                                |
-| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G        | 16.43                            | 60.8                                   | 117.9                                |
-| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G        | 33.01                            | 30.3                                   | 58.3                                 |
-| 7    | Mobilenet_v2               | cf_mobilenetv2_imagenet_224_224_0.59G        | 4.12                             | 242.8                                 | 520.8                                |
-| 8    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G            | 3.69                             | 271.0                                 | 943.6                                |
-| 9    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 12.73                            | 78.5                                   | 220.5                                |
-| 10   | refinedet\_baseline        | cf_refinedet_coco_480_360_123G               | 115.49                           | 8.7                                   | 18.2                                 |
-| 11   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G            | 30.69                            | 32.6                                   | 75.9                                 |
-| 12   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G        | 16.31                            | 61.3                                   | 154.1                                |
-| 13   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G         | 11.95                            | 83.7                                   | 228.4                                |
-| 14   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G             | 11.77                            | 84.9                                   | 231.9                                |
-| 15   | ssd_traffic_pruned_0_9     | cf_ssdtraffic_360_480_0.9_11.6G              | 17.77                            | 56.2                                   | 152.9                                |
-| 16   | VPGnet_pruned_0_99         | cf_VPGnet_caltechlane_480_640_0.99_2.5G      | 9.31                             | 107.3                                 | 354.9                                |
-| 17   | ssd_mobilenet_v2           | cf_ssdmobilenetv2_bdd_360_480_6.57G          | 38.90                            | 25.7                                   | 101.4                                |
-| 18   | FPN                        | cf_fpn_cityscapes_256_512_8.9G               | 16.16                            | 61.9                                   | 169.4                                |
-| 19   | SP_net                     | cf_SPnet_aichallenger_224_128_0.54G          | 2.02                             | 494.4                                 | 1209.8                               |
-| 20   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G  | 273.83                           | 3.7                                   | 10.9                                 |
-| 21   | densebox_320_320           | cf_densebox_wider_320_320_0.49G              | 2.52                             | 397.3                                 | 1263.9                               |
-| 22   | densebox_640_360           | cf_densebox_wider_360_640_1.11G              | 4.90                             | 204.1                                 | 621.9                                |
-| 23   | face_landmark              | cf_landmark_celeba_96_72_0.14G               | 1.12                             | 891.4                                 | 1449.5                               |
-| 24   | reid                       | cf_reid_market1501_160_80_0.95G              | 2.58                             | 387.7                                 | 700.3                                |
-| 25   | multi_task                 | cf_multitask_bdd_288_512_14.8G               | 27.75                            | 36.0                                   | 109.1                                |
-| 26   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 73.57                            | 13.6                                   | 28.6                                 |
-| 27   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G       | 11.73                            | 85.2                                   | 221.5                                |
-| 28   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 70.19                            | 14.2                                   | 29.5                                 |
-| 29   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                    | 35.21                            | 28.4                                   | 58.7                                 |
-| 30   | yolov2_voc_pruned_0_66     | dk_yolov2_voc_448_448_0.66_11.56G            | 15.01                            | 66.6                                   | 152.9                                |
-| 31   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G             | 13.05                            | 76.6                                   | 179.5                                |
-| 32   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G             | 11.18                            | 89.4                                   | 216.1                                |
-| 33   | ResNet20-face              | cf_facerec-resnet20_112_96_3.5G              | 5.63                             | 177.6                                 | 309.0                                |
-| 34   | ResNet64-face              | cf_facerec-resnet64_112_96_11G               | 12.86                            | 77.7                                   | 147.5                                |
-| 35   | FPN_Res18_segmentation     | cf_FPN-resnet18_EDD_320_320_45.3G            | 78.71                            | 12.7                                   | 31.5                                 |
-| 36   | plate detection            | cf_plate-detection_320_320_0.49G             | 1.99                             | 501.8                                 | 1761.2                               |
-| 37   | plate recognition          | cf_plate-recognition_96_288_1.75G            | 4.44                             | 225.3                                 | 541.2                                |
-| 38   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G | 40.00                            | 25.0                                   | 46.2                                 |
-| 39   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G           | 5.06                             | 197.5                                 | 403.1                                |
-| 40   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G       | 16.49                            | 60.6                                   | 117.4                                |
-| 41   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G       | 33.03                            | 30.3                                   | 58.4                                 |
-| 42   | Mobilenet_v1               | tf_mobilenetv1_0.25_imagenet_128_128_27.15M  | 0.83                             | 1197.2                                 | 3744.2                               |
-| 43   | Mobilenet_v1               | tf_mobilenetv1_0.5_imagenet_160_160_150.07M  | 1.35                             | 737.6                                 | 1941.7                               |
-| 44   | Mobilenet_v1               | tf_mobilenetv1_1.0_imagenet_224_224_1.14G    | 3.23                             | 309.1                                 | 719.3                                |
-| 45   | Mobilenet_v2               | tf_mobilenetv2_1.0_imagenet_224_224_0.59G    | 4.08                             | 244.7                                 | 529.2                                |
-| 46   | Mobilenet_v2               | tf_mobilenetv2_1.4_imagenet_224_224_1.16G    | 5.56                             | 179.9                                 | 370.7                                |
-| 47   | resnet_v1_50               | tf_resnetv1_50_imagenet_224_224_6.97G        | 11.82                            | 84.6                                   | 158.3                                |
-| 48   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G       | 21.68                            | 46.1                                   | 86.2                                 |
-| 49   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G      | 31.58                            | 31.6                                   | 59.1                                 |
-| 50   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G             | 46.84                            | 21.3                                   | 37.0                                 |
-| 51   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G             | 54.24                            | 18.4                                   | 32.6                                 |
-| 52   | ssd_mobilenet_v1           | tf_ssdmobilenetv1_coco_300_300_2.47G         | 10.72                            | 93.2                                   | 294.6                                |
-| 53   | ssd_mobilenet_v2           | tf_ssdmobilenetv2_coco_300_300_3.75G         | 15.07                            | 66.3                                   | 185.4                                |
-| 54   | ssd_resnet_50_v1_fpn       | tf_ssdresnet50v1_fpn_coco_640_640_178.4G     | 728.24                           | 1.4                                   | 5.2                                  |
-| 55   | yolov3_voc                 | tf_yolov3_voc_416_416_65.63G                 | 70.63                            | 14.1                                   | 29.2                                 |
-| 56   | mlperf_ssd_resnet34        | tf_mlperf_resnet34_coco_1200_1200_433G       | 575.68                           | 1.7                                   | 5.4                                  |
+| No\. | Model                      | Name                                          | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread) |
+| ---- | :------------------------- | :-------------------------------------------- | -------------------------------- | ------------------------------------- | ----------------------------------- |
+| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G             | 13.29                            | 75.1                                  | 144.7                               |
+| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G            | 5.27                             | 189.7                                 | 409.7                               |
+| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G         | 5.81                             | 172                                   | 368                                 |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G            | 7.67                             | 130.2                                 | 260.7                               |
+| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G         | 16.46                            | 60.7                                  | 119                                 |
+| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G         | 33.09                            | 30.2                                  | 58.7                                |
+| 7    | Mobilenet_v2               | cf_mobilenetv2_imagenet_224_224_0.59G         | 3.92                             | 255.2                                 | 589.3                               |
+| 8    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G             | 3.84                             | 260.2                                 | 925.7                               |
+| 9    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G       | 12.87                            | 77.6                                  | 209.5                               |
+| 10   | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 110.92                           | 9                                     | 18.3                                |
+| 11   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G             | 29.46                            | 33.9                                  | 73.4                                |
+| 12   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G         | 15.5                             | 64.5                                  | 149.7                               |
+| 13   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G          | 11.26                            | 88.7                                  | 217.5                               |
+| 14   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G              | 11.49                            | 87                                    | 227.7                               |
+| 15   | ssd_traffic_pruned_0_9     | cf_ssdtraffic_360_480_0.9_11.6G               | 17.97                            | 55.6                                  | 145.3                               |
+| 16   | VPGnet_pruned_0_99         | cf_VPGnet_caltechlane_480_640_0.99_2.5G       | 11.36                            | 88                                    | 242.5                               |
+| 17   | ssd_mobilenet_v2           | cf_ssdmobilenetv2_bdd_360_480_6.57G           | 39.53                            | 25.3                                  | 96.3                                |
+| 18   | FPN                        | cf_fpn_cityscapes_256_512_8.9G                | 29.91                            | 33.4                                  | 126.8                               |
+| 19   | SP_net                     | cf_SPnet_aichallenger_224_128_0.54G           | 2.16                             | 462.8                                 | 708.4                               |
+| 20   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G   | 274.42                           | 3.6                                   | 10.9                                |
+| 21   | densebox_320_320           | cf_densebox_wider_320_320_0.49G               | 2.67                             | 374.4                                 | 1132.2                              |
+| 22   | densebox_640_360           | cf_densebox_wider_360_640_1.11G               | 5.4                              | 185                                   | 535.5                               |
+| 23   | face_landmark              | cf_landmark_celeba_96_72_0.14G                | 1.15                             | 866.6                                 | 1593.6                              |
+| 24   | reid                       | cf_reid_market1501_160_80_0.95G               | 2.72                             | 367.4                                 | 696.6                               |
+| 25   | multi_task                 | cf_multitask_bdd_288_512_14.8G                | 27.89                            | 35.8                                  | 104.7                               |
+| 26   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                   | 77.18                            | 12.9                                  | 26.3                                |
+| 27   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G        | 11.27                            | 88.7                                  | 224.8                               |
+| 28   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                  | 75.25                            | 13.3                                  | 26.6                                |
+| 29   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                     | 36.7                             | 27.2                                  | 56.1                                |
+| 30   | yolov2_voc_pruned_0_66     | dk_yolov2_voc_448_448_0.66_11.56G             | 15.2                             | 65.8                                  | 153.6                               |
+| 31   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G              | 13.23                            | 75.6                                  | 181.1                               |
+| 32   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G              | 11.4                             | 87.7                                  | 217.5                               |
+| 33   | ResNet20-face              | cf_facerec-resnet20_112_96_3.5G               | 5.74                             | 174.2                                 | 308.3                               |
+| 34   | ResNet64-face              | cf_facerec-resnet64_112_96_11G                | 13.32                            | 75                                    | 144.7                               |
+| 35   | FPN_Res18_segmentation     | cf_FPN-resnet18_EDD_320_320_45.3G             | 81.71                            | 12.2                                  | 31.5                                |
+| 36   | plate detection            | cf_plate-detection_320_320_0.49G              | 2                                | 500                                   | 1862.4                              |
+| 37   | plate recognition          | cf_plate-recognition_96_288_1.75G             | 7.73                             | 129.2                                 | 376.7                               |
+| 38   | retinaface                 | cf_retinaface_wider_360_640_1.11G             | 7.89                             | 126.7                                 | 474.8                               |
+| 39   | face_quality               | cf_face-quality_80_60_61.68M                  | 0.48                             | 2060                                  | 6608.3                              |
+| 40   | FPN-R18(light-weight)      | cf_FPN-resnet18_Endov_240_320_13.75G          | 29.38                            | 34                                    | 129.3                               |
+| 41   | Hourglass                  | cf_hourglass-pe_mpii_256_256_10.2G            | 19.59                            | 51                                    | 106                                 |
+| 42   | tiny-yolov3                | dk_tiny-yolov3_416_416_5.46G                  | 8.35                             | 119.7                                 | 324.9                               |
+| 43   | yolov4                     | dk_yolov4_coco_416_416_60.1G                  | 73.22                            | 13.6                                  | 28.1                                |
+| 44   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G  | 42.86                            | 23.3                                  | 43.7                                |
+| 45   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G            | 5.69                             | 175.8                                 | 374.6                               |
+| 46   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G        | 16.6                             | 60.2                                  | 117.9                               |
+| 47   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G        | 33.09                            | 30.2                                  | 58.6                                |
+| 48   | Mobilenet_v1               | tf_mobilenetv1_0.25_imagenet_128_128_27.15M   | 0.92                             | 1082.9                                | 3781                                |
+| 49   | Mobilenet_v1               | tf_mobilenetv1_0.5_imagenet_160_160_150.07M   | 1.41                             | 708.8                                 | 2135                                |
+| 50   | Mobilenet_v1               | tf_mobilenetv1_1.0_imagenet_224_224_1.14G     | 3.34                             | 299                                   | 724.4                               |
+| 51   | Mobilenet_v2               | tf_mobilenetv2_1.0_imagenet_224_224_0.59G     | 3.98                             | 251.1                                 | 573.5                               |
+| 52   | Mobilenet_v2               | tf_mobilenetv2_1.4_imagenet_224_224_1.16G     | 5.41                             | 184.7                                 | 392.7                               |
+| 53   | resnet_v1_50               | tf_resnetv1_50_imagenet_224_224_6.97G         | 12.15                            | 82.2                                  | 158.1                               |
+| 54   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G        | 22.56                            | 44.3                                  | 85.9                                |
+| 55   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G       | 32.84                            | 30.4                                  | 59                                  |
+| 56   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G              | 47                               | 21.2                                  | 36.8                                |
+| 57   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G              | 54.4                             | 18.3                                  | 32.4                                |
+| 58   | ssd_mobilenet_v1           | tf_ssdmobilenetv1_coco_300_300_2.47G          | 10.08                            | 99.1                                  | 258.1                               |
+| 59   | ssd_mobilenet_v2           | tf_ssdmobilenetv2_coco_300_300_3.75G          | 12.1                             | 82.6                                  | 186.9                               |
+| 60   | ssd_resnet_50_v1_fpn       | tf_ssdresnet50v1_fpn_coco_640_640_178.4G      | 353.32                           | 2.8                                   | 5.1                                 |
+| 61   | yolov3_voc                 | tf_yolov3_voc_416_416_65.63G                  | 72.74                            | 13.7                                  | 27.5                                |
+| 62   | mlperf_ssd_resnet34        | tf_mlperf_resnet34_coco_1200_1200_433G        | 561.31                           | 1.8                                   | 5.1                                 |
+| 63   | Inception_v2               | tf_inceptionv2_imagenet_224_224_3.88G         | 10.84                            | 92.2                                  | 187                                 |
+| 64   | resnet\_v2\_50             | tf_resnetv2_50_imagenet_299_299_13.1G_1.3     | 27.89                            | 35.8                                  | 46.4                                |
+| 65   | resnet\_v2\_101            | tf_resnetv2_101_imagenet_299_299_26.78G       | 47.67                            | 20.9                                  | 24.2                                |
+| 66   | resnet\_v2\_152            | tf_resnetv2_152_imagenet_299_299_40.47G       | 67.31                            | 14.8                                  | 16.4                                |
+| 67   | ssdlite_mobilenetv2        | tf_ssdlite_mobilenetv2_coco_300_300_1.5G      | 9.75                             | 102.5                                 | 258.9                               |
+| 68   | ssd_inceptionv2            | tf_ssdinceptionv2_coco_300_300_9.62G_1.3      | 28.91                            | 34.6                                  | 83.9                                |
+| 69   | Mobilenet\_v2              | tf_mobilenetv2_cityscapes_1024_2048_132.74G   | 615.68                           | 1.6                                   | 4.5                                 |
+| 70   | mlperf_resnet50            | tf_mlperf_resnet50_imagenet_224_224_8.19G     | 13.51                            | 73.9                                  | 142.1                               |
+| 71   | refinedet                  | tf_refinedet_VOC_320_320_81.9G                | 93.44                            | 10.7                                  | 25.4                                |
+| 72   | mobilenet_edge_1.0         | tf_mobilenetEdge1.0_imagenet_224_224_990M_1.3 | 4.94                             | 202.4                                 | 445.1                               |
+| 73   | mobilenet_edge_0.75        | tf_mobilenetEdge0.75_imagenet_224_224_624M    | 4.13                             | 242                                   | 556.5                               |
+| 74   | refinedet_medical          | tf_RefineDet-Medical_EDD_320_320_9.83G        | 14.77                            | 67.7                                  | 164.9                               |
+| 75   | resnet50                   | tf2_resnet50_imagenet_224_224_7.76G           | 13.68                            | 73.1                                  | 142.6                               |
+| 76   | Mobilenet\_v1              | tf2_mobilenetv1_imagenet_224_224_1.15G        | 3.36                             | 297.4                                 | 719.6                               |
+| 77   | Inception_v3               | tf2_inceptionv3_imagenet_299_299_11.5G        | 16.9                             | 59.1                                  | 116.4                               |
+| 78   | 2d-unet                    | tf2_2d-unet_nuclei_128_128_5.31G              | 6.24                             | 160.2                                 | 334.7                               |
+| 79   | ERFNet                     | tf2_erfnet_cityscapes_512_1024_54G            | 145.2                            | 6.9                                   | 23.4                                |
+| 80   | ENet                       | pt_ENet_cityscapes_512_1024_8.6G              | 110.99                           | 9                                     | 38.3                                |
+| 81   | SemanticFPN                | pt_SemanticFPN_cityscapes_256_512_10G         | 29.72                            | 33.6                                  | 131.9                               |
+| 82   | ResNet20-face              | pt_facerec-resnet20_mixed_112_96_3.5G         | 5.75                             | 173.7                                 | 306.8                               |
+| 83   | face quality               | pt_face-quality_80_60_61.68M                  | 0.45                             | 2202.5                                | 6861                                |
+| 84   | MT-resnet18                | pt_MT-resnet18_mixed_320_512_13.65G           | NA                               | NA                                    | NA                                  |
+| 85   | face_reid_large            | pt_facereid-large_96_96_515M                  | 1.14                             | 877.7                                 | 1966.5                              |
+| 86   | face_reid_small            | pt_facereid-small_80_80_90M                   | 0.53                             | 1882.8                                | 5511.7                              |
+| 87   | person_reid                | pt_personreid-res50_market1501_256_128_5.4G   | 9.78                             | 102.2                                 | 196.2                               |
+| 88   | person_reid                | pt_personreid-res18_market1501_176_80_1.1G    | 2.69                             | 370.9                                 | 682.9                               |
+| 89   | pointpillars               | pt_pointpillars_kitti_12000_100_10.8G         | 52.48                            | 19                                    | 47.9                                |
+| 90   | salsanext                  | pt_salsanext_semantic-kitti_64_2048_0.6_20.4G | 189.89                           | 5.3                                   | 19.9                                |
+| 91   | FPN-R18 (light-weight)     | pt_FPN-resnet18_covid19-seg_352_352_22.7G     | 26.72                            | 37.4                                  | 78.8                                |
+| 92   | 2d-unet                    | pt_unet_chaos-CT_512_512_23.3G                | 46.78                            | 21.4                                  | 57.4                                |
+| 93   | Inception_v3               | torchvision_inception_v3                      | 16.41                            | 60.9                                  | 119.4                               |
+| 94   | SqueezeNet                 | torchvision_squeezenet                        | 4.73                             | 211.4                                 | 669.9                               |
+| 95   | resnet50                   | torchvision_resnet50                          | 14.04                            | 71.2                                  | 138                                 |
 
 </details>
 
@@ -448,56 +526,79 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U50` board with 6 DPUv3E kernels running at 300Mhz in Gen3x4:
   
 
-| No\. | Model                          | Name                                         | Frequency \(MHz\) | E2E throughput \-fps\(Multi Thread\) |
-| ---- | :----------------------------- | :------------------------------------------- | ----------------- | ------------------------------------ |
-| 1    | resnet50                       | cf_resnet50_imagenet_224_224_7.7G            | 300               | 631.21                               |
-| 2    | resnet18                       | cf_resnet18_imagenet_224_224_3.65G           | 300               | 1430.05                               |
-| 3    | Inception_v1                   | cf_inceptionv1_imagenet_224_224_3.16G        | 300               | 1183.30                               |
-| 4    | Inception_v2                   | cf_inceptionv2_imagenet_224_224_4G           | 300               | 983.55                               |
-| 5    | Inception_v3                   | cf_inceptionv3_imagenet_299_299_11.4G        | 300               | 405.39                               |
-| 6    | Inception_v4                   | cf_inceptionv4_imagenet_299_299_24.5G        | 300               | 187.72                               |
-| 7    | SqueezeNet                     | cf_squeeze_imagenet_227_227_0.76G            | 300               | 3016.11                               |
-| 8    | ssd_pedestrian_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 300               | 621.52                               |
-| 9    | refinedet_baseline             | cf_refinedet_coco_480_360_123G               | 270               | 49.99                                 |
-| 10   | refinedet_pruned_0_8           | cf_refinedet_coco_360_480_0.8_25G            | 270               | 193.63                               |
-| 11   | refinedet_pruned_0_92          | cf_refinedet_coco_360_480_0.92_10.10G        | 270               | 420.59                               |
-| 12   | refinedet_pruned_0_96          | cf_refinedet_coco_360_480_0.96_5.08G         | 270               | 617.22                               |
-| 13   | ssd_adas_pruned_0_95           | cf_ssdadas_bdd_360_480_0.95_6.3G             | 300               | 628.96                               |
-| 14   | ssd_traffic_pruned_0_9         | cf_ssdtraffic_360_480_0.9_11.6G              | 300               | 432.99                               |
-| 15   | VPGnet_pruned_0_99             | cf_VPGnet_caltechlane_480_640_0.99_2.5G      | 300               | 478.81                               |
-| 16   | FPN                            | cf_fpn_cityscapes_256_512_8.9G               | 300               | 450.91                               |
-| 17   | SP_net                         | cf_SPnet_aichallenger_224_128_0.54G          | 300               | 1158.46                               |
-| 18   | Openpose_pruned_0_3            | cf_openpose_aichallenger_368_368_0.3_189.7G  | 270               | 29.15                                 |
-| 19   | densebox_320_320               | cf_densebox_wider_320_320_0.49G              | 300               | 1929.24                               |
-| 20   | densebox_640_360               | cf_densebox_wider_360_640_1.11G              | 300               | 877.25                               |
-| 21   | face_landmark                  | cf_landmark_celeba_96_72_0.14G               | 300               | 8513.72                               |
-| 22   | reid                           | cf_reid_market1501_160_80_0.95G              | 300               | 3612.90                               |
-| 23   | multi_task                     | cf_multitask_bdd_288_512_14.8G               | 300               | 237.28                               |
-| 24   | yolov3_bdd                     | dk_yolov3_bdd_288_512_53.7G                  | 270               | 77.22                                 |
-| 25   | yolov3_adas_pruned_0_9         | dk_yolov3_cityscapes_256_512_0.9_5.46G       | 270               | 642.92                               |
-| 26   | yolov3_voc                     | dk_yolov3_voc_416_416_65.42G                 | 270               | 78.96                                 |
-| 27   | yolov2_voc                     | dk_yolov2_voc_448_448_34G                    | 270               | 165.56                               |
-| 28   | yolov2_voc_pruned_0_66         | dk_yolov2_voc_448_448_0.66_11.56G            | 270               | 409.60                               |
-| 29   | yolov2_voc_pruned_0_71         | dk_yolov2_voc_448_448_0.71_9.86G             | 270               | 481.52                               |
-| 30   | yolov2_voc_pruned_0_77         | dk_yolov2_voc_448_448_0.77_7.82G             | 270               | 585.39                               |
-| 31   | ResNet20-face                  | cf_facerec-resnet20_112_96_3.5G              | 300               | 1278.33                               |
-| 32   | ResNet64-face                  | cf_facerec-resnet64_112_96_11G               | 300               | 495.71                               |
-| 33   | FPN_Res18_Medical_segmentation | cf_FPN-resnet18_EDD_320_320_45.3G            | 300               | 103.08                               |
-| 34   | plate detection                | cf_plate-detection_320_320_0.49G             | 300               | 5135.77                               |
-| 35   | Inception_resnet_v2            | tf_inceptionresnetv2_imagenet_299_299_26.35G | 300               | 172.92                               |
-| 36   | Inception_v1                   | tf_inceptionv1_imagenet_224_224_3G           | 300               | 1195.77                               |
-| 37   | Inception_v3                   | tf_inceptionv3_imagenet_299_299_11.45G       | 300               | 398.48                               |
-| 38   | Inception_v4                   | tf_inceptionv4_imagenet_299_299_24.55G       | 300               | 187.60                               |
-| 39   | resnet_v1_50                   | tf_resnetv1_50_imagenet_224_224_6.97G        | 300               | 703.82                               |
-| 40   | resnet_v1_101                  | tf_resnetv1_101_imagenet_224_224_14.4G       | 300               | 365.12                               |
-| 41   | resnet_v1_152                  | tf_resnetv1_152_imagenet_224_224_21.83G      | 300               | 244.71                               |
-| 42   | vgg_16                         | tf_vgg16_imagenet_224_224_30.96G             | 300               | 164.70                               |
-| 43   | vgg_19                         | tf_vgg19_imagenet_224_224_39.28G             | 300               | 136.96                               |
-| 44   | ssd_resnet_50_v1_fpn           | tf_ssdresnet50v1_fpn_coco_640_640_178.4G     | 270               | 32.68                                 |
-| 45   | yolov3_voc                     | tf_yolov3_voc_416_416_65.63G                 | 270               | 79.25                                 |
-| 46   | torchvision                    | resnet50                                     | 300               | 546.43                               |
-| 47   | torchvision                    | inception_v3                                 | 300               | 405.31                               |
-| 48   | torchvision                    | squeezenet                                   | 300               | 2024.36                               |
+| No\. | Model                      | Name                                          | Frequency(MHz) | E2E throughput \-fps\(Multi Thread) |
+| ---- | :------------------------- | :-------------------------------------------- | -------------- | ----------------------------------- |
+| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G             | 300            | 647.1                               |
+| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G            | 300            | 1484.2                              |
+| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G         | 300            | 1203.4                              |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G            | 300            | 976.2                               |
+| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G         | 300            | 413.2                               |
+| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G         | 300            | 189.5                               |
+| 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G             | 300            | 3092.7                              |
+| 8    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G       | 300            | 457.4                               |
+| 9    | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 300            | 47.2                                |
+| 10   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G             | 300            | 168.8                               |
+| 11   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G         | 300            | 405.2                               |
+| 12   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G          | 300            | 571.9                               |
+| 13   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G              | 300            | 579.7                               |
+| 14   | ssd_traffic_pruned_0_9     | cf_ssdtraffic_360_480_0.9_11.6G               | 300            | 354.5                               |
+| 15   | VPGnet_pruned_0_99         | cf_VPGnet_caltechlane_480_640_0.99_2.5G       | 300            | 395.8                               |
+| 16   | FPN                        | cf_fpn_cityscapes_256_512_8.9G                | 300            | 440.7                               |
+| 17   | SP_net                     | cf_SPnet_aichallenger_224_128_0.54G           | 300            | 1339.0                              |
+| 18   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G   | 300            | 28.4                                |
+| 19   | densebox_320_320           | cf_densebox_wider_320_320_0.49G               | 300            | 1874.1                              |
+| 20   | densebox_640_360           | cf_densebox_wider_360_640_1.11G               | 300            | 821.9                               |
+| 21   | face_landmark              | cf_landmark_celeba_96_72_0.14G                | 300            | 10057.4                             |
+| 22   | reid                       | cf_reid_market1501_160_80_0.95G               | 300            | 4010.7                              |
+| 23   | multi_task                 | cf_multitask_bdd_288_512_14.8G                | 300            | 321.1                               |
+| 24   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                   | 300            | 78.1                                |
+| 25   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G        | 300            | 675.8                               |
+| 26   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                  | 300            | 80.6                                |
+| 27   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                     | 300            | 163.9                               |
+| 28   | yolov2_voc_pruned_0_66     | dk_yolov2_voc_448_448_0.66_11.56G             | 300            | 413.1                               |
+| 29   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G              | 300            | 484.1                               |
+| 30   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G              | 300            | 589.7                               |
+| 31   | ResNet20-face              | cf_facerec-resnet20_112_96_3.5G               | 300            | 1356.2                              |
+| 32   | ResNet64-face              | cf_facerec-resnet64_112_96_11G                | 300            | 507.9                               |
+| 33   | FPN_Res18_segmentation     | cf_FPN-resnet18_EDD_320_320_45.3G             | 300            | 103.2                               |
+| 34   | plate detection            | cf_plate-detection_320_320_0.49G              | 300            | 4914.4                              |
+| 35   | plate recognition          | cf_plate-recognition_96_288_1.75G             | 300            | 834.0                               |
+| 36   | face_quality               | cf_face-quality_80_60_61.68M                  | 300            | 16238.6                             |
+| 37   | tiny-yolov3                | dk_tiny-yolov3_416_416_5.46G                  | 300            | 874.7                               |
+| 38   | yolov4                     | dk_yolov4_coco_416_416_60.1G                  | 300            | 84.1                                |
+| 39   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G  | 300            | 186.4                               |
+| 40   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G            | 300            | 1240.5                              |
+| 41   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G        | 300            | 413.9                               |
+| 42   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G        | 300            | 189.4                               |
+| 43   | resnet_v1_50               | tf_resnetv1_50_imagenet_224_224_6.97G         | 300            | 712.2                               |
+| 44   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G        | 300            | 367.6                               |
+| 45   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G       | 300            | 246.0                               |
+| 46   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G              | 300            | 161.5                               |
+| 47   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G              | 300            | 134.8                               |
+| 48   | ssd_resnet_50_v1_fpn       | tf_ssdresnet50v1_fpn_coco_640_640_178.4G      | 300            | 32.2                                |
+| 49   | yolov3_voc                 | tf_yolov3_voc_416_416_65.63G                  | 300            | 80.1                                |
+| 50   | mlperf_ssd_resnet34        | tf_mlperf_resnet34_coco_1200_1200_433G        | 300            | 13.5                                |
+| 51   | mlperf_resnet50            | tf_mlperf_resnet50_imagenet_224_224_8.19G     | 300            | 563.4                               |
+| 52   | refinedet                  | tf_refinedet_VOC_320_320_81.9G                | 300            | 69.5                                |
+| 53   | refinedet_medical          | tf_RefineDet-Medical_EDD_320_320_9.83G        | 300            | 422.0                               |
+| 54   | resnet50                   | tf2_resnet50_imagenet_224_224_7.76G           | 300            | 583.6                               |
+| 55   | Inception_v3               | tf2_inceptionv3_imagenet_299_299_11.5G        | 300            | 372.5                               |
+| 56   | 2d-unet                    | tf2_2d-unet_nuclei_128_128_5.31G              | 300            | 1064.7                              |
+| 57   | ERFNet                     | tf2_erfnet_cityscapes_512_1024_54G            | 300            | 49.3                                |
+| 58   | ENet                       | pt_ENet_cityscapes_512_1024_8.6G              | 300            | 74.9                                |
+| 59   | SemanticFPN                | pt_SemanticFPN_cityscapes_256_512_10G         | 300            | 456.0                               |
+| 60   | ResNet20-face              | pt_facerec-resnet20_mixed_112_96_3.5G         | 300            | 1235.9                              |
+| 61   | face quality               | pt_face-quality_80_60_61.68M                  | 300            | 16458.3                             |
+| 62   | face_reid_large            | pt_facereid-large_96_96_515M                  | 300            | 7468.9                              |
+| 63   | face_reid_small            | pt_facereid-small_80_80_90M                   | 300            | 17815.5                             |
+| 64   | person_reid                | pt_personreid-res50_market1501_256_128_5.4G   | 300            | 916.4                               |
+| 65   | person_reid                | pt_personreid-res18_market1501_176_80_1.1G    | 300            | 3541.5                              |
+| 66   | salsanext                  | pt_salsanext_semantic-kitti_64_2048_0.6_20.4G | 300            | 129.8                               |
+| 67   | FPN-R18 (light-weight)     | pt_FPN-resnet18_covid19-seg_352_352_22.7G     | 300            | 212.6                               |
+| 68   | 2d-unet                    | pt_unet_chaos-CT_512_512_23.3G                | 300            | 58.3                                |
+| 69   | Inception_v3               | torchvision_inception_v3                      | 300            | 411.3                               |
+| 70   | SqueezeNet                 | torchvision_squeezenet                        | 300            | 1987.7                              |
+| 71   | resnet50                   | torchvision_resnet50                          | 300            | 624.4                               |
 
 
 </details>
@@ -512,56 +613,79 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U50` board with 9 DPUv3E kernels running at 275Mhz in Gen3x4:
   
 
-| No\. | Model                          | Name                                         | Frequency \(MHz\) | E2E throughput \-fps\(Multi Thread\) |
-| ---- | :----------------------------- | :------------------------------------------- | ----------------- | ------------------------------------ |
-| 1    | resnet50                       | cf_resnet50_imagenet_224_224_7.7G            | 275               | 802.45                               |
-| 2    | resnet18                       | cf_resnet18_imagenet_224_224_3.65G           | 275               | 1927.42                               |
-| 3    | Inception_v1                   | cf_inceptionv1_imagenet_224_224_3.16G        | 275               | 1565.29                               |
-| 4    | Inception_v2                   | cf_inceptionv2_imagenet_224_224_4G           | 275               | 1289.06                               |
-| 5    | Inception_v3                   | cf_inceptionv3_imagenet_299_299_11.4G        | 275               | 552.39                               |
-| 6    | Inception_v4                   | cf_inceptionv4_imagenet_299_299_24.5G        | 275               | 256.21                               |
-| 7    | SqueezeNet                     | cf_squeeze_imagenet_227_227_0.76G            | 275               | 3767.09                               |
-| 8    | ssd_pedestrian_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 275               | 664.20                               |
-| 9    | refinedet_baseline             | cf_refinedet_coco_480_360_123G               | 275               | 70.47                                 |
-| 10   | refinedet_pruned_0_8           | cf_refinedet_coco_360_480_0.8_25G            | 275               | 235.60                               |
-| 11   | refinedet_pruned_0_92          | cf_refinedet_coco_360_480_0.92_10.10G        | 275               | 514.70                               |
-| 12   | refinedet_pruned_0_96          | cf_refinedet_coco_360_480_0.96_5.08G         | 275               | 725.78                               |
-| 13   | ssd_adas_pruned_0_95           | cf_ssdadas_bdd_360_480_0.95_6.3G             | 275               | 714.96                               |
-| 14   | ssd_traffic_pruned_0_9         | cf_ssdtraffic_360_480_0.9_11.6G              | 275               | 483.31                               |
-| 15   | VPGnet_pruned_0_99             | cf_VPGnet_caltechlane_480_640_0.99_2.5G      | 275               | 595.30                               |
-| 16   | FPN                            | cf_fpn_cityscapes_256_512_8.9G               | 247.5             | 530.88                               |
-| 17   | SP_net                         | cf_SPnet_aichallenger_224_128_0.54G          | 275               | 2687.68                               |
-| 18   | Openpose_pruned_0_3            | cf_openpose_aichallenger_368_368_0.3_189.7G  | 275               | 43.30                                 |
-| 19   | densebox_320_320               | cf_densebox_wider_320_320_0.49G              | 275               | 2431.22                               |
-| 20   | densebox_640_360               | cf_densebox_wider_360_640_1.11G              | 275               | 1074.43                               |
-| 21   | face_landmark                  | cf_landmark_celeba_96_72_0.14G               | 275               | 11759.40                             |
-| 22   | reid                           | cf_reid_market1501_160_80_0.95G              | 275               | 5013.91                               |
-| 23   | multi_task                     | cf_multitask_bdd_288_512_14.8G               | 275               | 192.22                               |
-| 24   | yolov3_bdd                     | dk_yolov3_bdd_288_512_53.7G                  | 247.5             | 102.96                               |
-| 25   | yolov3_adas_pruned_0_9         | dk_yolov3_cityscapes_256_512_0.9_5.46G       | 247.5             | 810.03                               |
-| 26   | yolov3_voc                     | dk_yolov3_voc_416_416_65.42G                 | 247.5             | 104.24                               |
-| 27   | yolov2_voc                     | dk_yolov2_voc_448_448_34G                    | 247.5             | 227.47                               |
-| 28   | yolov2_voc_pruned_0_66         | dk_yolov2_voc_448_448_0.66_11.56G            | 247.5             | 565.18                               |
-| 29   | yolov2_voc_pruned_0_71         | dk_yolov2_voc_448_448_0.71_9.86G             | 247.5             | 662.60                               |
-| 30   | yolov2_voc_pruned_0_77         | dk_yolov2_voc_448_448_0.77_7.82G             | 247.5             | 807.82                               |
-| 31   | ResNet20-face                  | cf_facerec-resnet20_112_96_3.5G              | 275               | 1760.85                               |
-| 32   | ResNet64-face                  | cf_facerec-resnet64_112_96_11G               | 275               | 663.68                               |
-| 33   | FPN_Res18_Medical_segmentation | cf_FPN-resnet18_EDD_320_320_45.3G            | 275               | 140.17                               |
-| 34   | plate detection                | cf_plate-detection_320_320_0.49G             | 275               | 5563.75                               |
-| 35   | Inception_resnet_v2            | tf_inceptionresnetv2_imagenet_299_299_26.35G | 275               | 224.08                               |
-| 36   | Inception_v1                   | tf_inceptionv1_imagenet_224_224_3G           | 275               | 1607.43                               |
-| 37   | Inception_v3                   | tf_inceptionv3_imagenet_299_299_11.45G       | 275               | 549.69                               |
-| 38   | Inception_v4                   | tf_inceptionv4_imagenet_299_299_24.55G       | 275               | 256.50                               |
-| 39   | resnet_v1_50                   | tf_resnetv1_50_imagenet_224_224_6.97G        | 275               | 880.59                               |
-| 40   | resnet_v1_101                  | tf_resnetv1_101_imagenet_224_224_14.4G       | 275               | 458.12                               |
-| 41   | resnet_v1_152                  | tf_resnetv1_152_imagenet_224_224_21.83G      | 275               | 305.93                               |
-| 42   | vgg_16                         | tf_vgg16_imagenet_224_224_30.96G             | 275               | 228.86                               |
-| 43   | vgg_19                         | tf_vgg19_imagenet_224_224_39.28G             | 275               | 189.88                               |
-| 44   | ssd_resnet_50_v1_fpn           | tf_ssdresnet50v1_fpn_coco_640_640_178.4G     | 247.5             | 42.59                                 |
-| 45   | yolov3_voc                     | tf_yolov3_voc_416_416_65.63G                 | 247.5             | 103.98                               |
-| 46   | torchvision                    | resnet50                                     | 275               | 768.14                               |
-| 47   | torchvision                    | inception_v3                                 | 275               | 551.55                               |
-| 48   | torchvision                    | squeezenet                                   | 275               | 2540.55                               |
+| No\. | Model                      | Name                                          | Frequency(MHz) | E2E throughput \-fps\(Multi Thread) |
+| ---- | :------------------------- | :-------------------------------------------- | -------------- | ----------------------------------- |
+| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G             | 275            | 789.1                               |
+| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G            | 275            | 1944.9                              |
+| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G         | 275            | 1643.2                              |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G            | 275            | 1337.0                              |
+| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G         | 275            | 565.0                               |
+| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G         | 275            | 259.6                               |
+| 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G             | 275            | 3926.6                              |
+| 8    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G       | 275            | 728.0                               |
+| 9    | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 275            | 75.8                                |
+| 10   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G             | 275            | 284.6                               |
+| 11   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G         | 275            | 606.9                               |
+| 12   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G          | 275            | 875.3                               |
+| 13   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G              | 275            | 896.1                               |
+| 14   | ssd_traffic_pruned_0_9     | cf_ssdtraffic_360_480_0.9_11.6G               | 275            | 587.3                               |
+| 15   | VPGnet_pruned_0_99         | cf_VPGnet_caltechlane_480_640_0.99_2.5G       | 275            | 582.5                               |
+| 16   | FPN                        | cf_fpn_cityscapes_256_512_8.9G                | 275            | 544.1                               |
+| 17   | SP_net                     | cf_SPnet_aichallenger_224_128_0.54G           | 275            | 2802.2                              |
+| 18   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G   | 275            | 44.0                                |
+| 19   | densebox_320_320           | cf_densebox_wider_320_320_0.49G               | 275            | 2317.5                              |
+| 20   | densebox_640_360           | cf_densebox_wider_360_640_1.11G               | 275            | 1020.0                              |
+| 21   | face_landmark              | cf_landmark_celeba_96_72_0.14G                | 275            | 13350.3                             |
+| 22   | reid                       | cf_reid_market1501_160_80_0.95G               | 275            | 5250.9                              |
+| 23   | multi_task                 | cf_multitask_bdd_288_512_14.8G                | 275            | 391.1                               |
+| 24   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                   | 275            | 104.2                               |
+| 25   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G        | 275            | 851.2                               |
+| 26   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                  | 275            | 106.3                               |
+| 27   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                     | 275            | 225.0                               |
+| 28   | yolov2_voc_pruned_0_66     | dk_yolov2_voc_448_448_0.66_11.56G             | 275            | 566.9                               |
+| 29   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G              | 275            | 664.3                               |
+| 30   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G              | 275            | 807.3                               |
+| 31   | ResNet20-face              | cf_facerec-resnet20_112_96_3.5G               | 275            | 1830.6                              |
+| 32   | ResNet64-face              | cf_facerec-resnet64_112_96_11G                | 275            | 676.4                               |
+| 33   | FPN_Res18_segmentation     | cf_FPN-resnet18_EDD_320_320_45.3G             | 275            | 140.0                               |
+| 34   | plate detection            | cf_plate-detection_320_320_0.49G              | 275            | 5225.8                              |
+| 35   | plate recognition          | cf_plate-recognition_96_288_1.75G             | 275            | 1281.5                              |
+| 36   | face_quality               | cf_face-quality_80_60_61.68M                  | 275            | 18211.6                             |
+| 37   | tiny-yolov3                | dk_tiny-yolov3_416_416_5.46G                  | 275            | 1193.5                              |
+| 38   | yolov4                     | dk_yolov4_coco_416_416_60.1G                  | 275            | 111.4                               |
+| 39   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G  | 275            | 238.0                               |
+| 40   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G            | 275            | 1705.9                              |
+| 41   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G        | 275            | 564.7                               |
+| 42   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G        | 275            | 259.7                               |
+| 43   | resnet_v1_50               | tf_resnetv1_50_imagenet_224_224_6.97G         | 275            | 885.8                               |
+| 44   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G        | 275            | 459.8                               |
+| 45   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G       | 275            | 306.6                               |
+| 46   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G              | 275            | 222.0                               |
+| 47   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G              | 275            | 185.3                               |
+| 48   | ssd_resnet_50_v1_fpn       | tf_ssdresnet50v1_fpn_coco_640_640_178.4G      | 275            | 43.1                                |
+| 49   | yolov3_voc                 | tf_yolov3_voc_416_416_65.63G                  | 275            | 106.4                               |
+| 50   | mlperf_ssd_resnet34        | tf_mlperf_resnet34_coco_1200_1200_433G        | 275            | 18.8                                |
+| 51   | mlperf_resnet50            | tf_mlperf_resnet50_imagenet_224_224_8.19G     | 275            | 689.5                               |
+| 52   | refinedet                  | tf_refinedet_VOC_320_320_81.9G                | 275            | 97.8                                |
+| 53   | refinedet_medical          | tf_RefineDet-Medical_EDD_320_320_9.83G        | 275            | 579.6                               |
+| 54   | resnet50                   | tf2_resnet50_imagenet_224_224_7.76G           | 275            | 711.6                               |
+| 55   | Inception_v3               | tf2_inceptionv3_imagenet_299_299_11.5G        | 275            | 510.1                               |
+| 56   | 2d-unet                    | tf2_2d-unet_nuclei_128_128_5.31G              | 275            | 1453.6                              |
+| 57   | ERFNet                     | tf2_erfnet_cityscapes_512_1024_54G            | 275            | 65.4                                |
+| 58   | ENet                       | pt_ENet_cityscapes_512_1024_8.6G              | 275            | 88.6                                |
+| 59   | SemanticFPN                | pt_SemanticFPN_cityscapes_256_512_10G         | 275            | 563.2                               |
+| 60   | ResNet20-face              | pt_facerec-resnet20_mixed_112_96_3.5G         | 275            | 1668.6                              |
+| 61   | face quality               | pt_face-quality_80_60_61.68M                  | 275            | 17832.6                             |
+| 62   | face_reid_large            | pt_facereid-large_96_96_515M                  | 275            | 9523.9                              |
+| 63   | face_reid_small            | pt_facereid-small_80_80_90M                   | 275            | 19805.9                             |
+| 64   | person_reid                | pt_personreid-res50_market1501_256_128_5.4G   | 275            | 1108.4                              |
+| 65   | person_reid                | pt_personreid-res18_market1501_176_80_1.1G    | 275            | 4645.1                              |
+| 66   | salsanext                  | pt_salsanext_semantic-kitti_64_2048_0.6_20.4G | 275            | 134.9                               |
+| 67   | FPN-R18 (light-weight)     | pt_FPN-resnet18_covid19-seg_352_352_22.7G     | 275            | 286.5                               |
+| 68   | 2d-unet                    | pt_unet_chaos-CT_512_512_23.3G                | 275            | 79.8                                |
+| 69   | Inception_v3               | torchvision_inception_v3                      | 275            | 564.4                               |
+| 70   | SqueezeNet                 | torchvision_squeezenet                        | 275            | 2543.0                              |
+| 71   | resnet50                   | torchvision_resnet50                          | 275            | 764.1                               |
 
 
 </details>
@@ -576,49 +700,79 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U50` board with 10 DPUv3E kernels running at 275Mhz in Gen3x4:
   
 
-| No\. | Model                          | Name                                        | Frequency \(MHz\) | E2E throughput \-fps\(Multi Thread\) |
-| ---- | :----------------------------- | :------------------------------------------ | ----------------- | ------------------------------------ |
-| 1    | resnet50                       | cf_resnet50_imagenet_224_224_7.7G           | 247.5             | 802.46                                |
-| 2    | resnet18                       | cf_resnet18_imagenet_224_224_3.65G          | 247.5             | 1934.48                               |
-| 3    | Inception_v1                   | cf_inceptionv1_imagenet_224_224_3.16G       | 247.5             | 1536.64                               |
-| 4    | Inception_v2                   | cf_inceptionv2_imagenet_224_224_4G          | 247.5             | 1313.99                               |
-| 5    | SqueezeNet                     | cf_squeeze_imagenet_227_227_0.76G           | 247.5             | 3451.05                               |
-| 6    | ssd_pedestrian_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G     | 247.5             | 755.24                                |
-| 7    | refinedet_pruned_0_8           | cf_refinedet_coco_360_480_0.8_25G           | 247.5             | 273.79                                |
-| 8    | refinedet_pruned_0_92          | cf_refinedet_coco_360_480_0.92_10.10G       | 247.5             | 574.76                                |
-| 9    | refinedet_pruned_0_96          | cf_refinedet_coco_360_480_0.96_5.08G        | 247.5             | 795.12                                |
-| 10   | ssd_adas_pruned_0_95           | cf_ssdadas_bdd_360_480_0.95_6.3G            | 247.5             | 818.22                                |
-| 11   | ssd_traffic_pruned_0_9         | cf_ssdtraffic_360_480_0.9_11.6G             | 247.5             | 570.84                                |
-| 12   | VPGnet_pruned_0_99             | cf_VPGnet_caltechlane_480_640_0.99_2.5G     | 275               | 658.99                                |
-| 13   | FPN                            | cf_fpn_cityscapes_256_512_8.9G              | 247.5             | 552.17                                |
-| 14   | SP_net                         | cf_SPnet_aichallenger_224_128_0.54G         | 275               | 1706.95                              |
-| 15   | Openpose_pruned_0_3            | cf_openpose_aichallenger_368_368_0.3_189.7G | 220               | 39.68                                |
-| 16   | densebox_320_320               | cf_densebox_wider_320_320_0.49G             | 275               | 2572.69                              |
-| 17   | densebox_640_360               | cf_densebox_wider_360_640_1.11G             | 275               | 1125.09                              |
-| 18   | face_landmark                  | cf_landmark_celeba_96_72_0.14G              | 275               | 12917.20                              |
-| 19   | reid                           | cf_reid_market1501_160_80_0.95G             | 275               | 5548.10                               |
-| 20   | multi_task                     | cf_multitask_bdd_288_512_14.8G              | 247.5             | 176.96                                |
-| 21   | yolov3_bdd                     | dk_yolov3_bdd_288_512_53.7G                 | 220               | 100.58                                |
-| 22   | yolov3_adas_pruned_0_9         | dk_yolov3_cityscapes_256_512_0.9_5.46G      | 220               | 771.32                                |
-| 23   | yolov3_voc                     | dk_yolov3_voc_416_416_65.42G                | 220               | 102.19                                |
-| 24   | yolov2_voc                     | dk_yolov2_voc_448_448_34G                   | 220               | 223.30                                |
-| 25   | yolov2_voc_pruned_0_66         | dk_yolov2_voc_448_448_0.66_11.56G           | 220               | 547.63                                |
-| 26   | yolov2_voc_pruned_0_71         | dk_yolov2_voc_448_448_0.71_9.86G            | 220               | 639.09                                |
-| 27   | yolov2_voc_pruned_0_77         | dk_yolov2_voc_448_448_0.77_7.82G            | 220               | 770.95                                |
-| 28   | ResNet20-face                  | cf_facerec-resnet20_112_96_3.5G             | 275               | 1943.44                               |
-| 29   | ResNet64-face                  | cf_facerec-resnet64_112_96_11G              | 275               | 736.43                                |
-| 30   | FPN_Res18_Medical_segmentation | cf_FPN-resnet18_EDD_320_320_45.3G           | 247.5             | 139.76                                |
-| 31   | plate detection                | cf_plate-detection_320_320_0.49G            | 275               | 5521.41                               |
-| 32   | Inception_v1                   | tf_inceptionv1_imagenet_224_224_3G          | 247.5             | 1552.49                               |
-| 33   | resnet_v1_50                   | tf_resnetv1_50_imagenet_224_224_6.97G       | 247.5             | 882.28                                |
-| 34   | resnet_v1_101                  | tf_resnetv1_101_imagenet_224_224_14.4G      | 247.5             | 458.93                                |
-| 35   | resnet_v1_152                  | tf_resnetv1_152_imagenet_224_224_21.83G     | 247.5             | 306.47                                |
-| 36   | vgg_16                         | tf_vgg16_imagenet_224_224_30.96G            | 247.5             | 229.26                                |
-| 37   | vgg_19                         | tf_vgg19_imagenet_224_224_39.28G            | 247.5             | 189.91                                |
-| 38   | ssd_resnet_50_v1_fpn           | tf_ssdresnet50v1_fpn_coco_640_640_178.4G    | 220               | 41.84                                 |
-| 39   | yolov3_voc                     | tf_yolov3_voc_416_416_65.63G                | 220               | 102.40                                |
-| 40   | torchvision                    | resnet50                                    | 247.5             | 764.57                                |
-| 41   | torchvision                    | squeezenet                                  | 247.5             | 2393.23                               |
+| No\. | Model                      | Name                                          | Frequency(MHz) | E2E throughput \-fps\(Multi Thread) |
+| ---- | :------------------------- | :-------------------------------------------- | -------------- | ----------------------------------- |
+| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G             | 275            | 790.3                               |
+| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G            | 275            | 1936.8                              |
+| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G         | 275            | 1579.3                              |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G            | 275            | 1277.6                              |
+| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G         | 275            | 488.3                               |
+| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G         | 275            | 223.3                               |
+| 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G             | 275            | 3501.0                              |
+| 8    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G       | 275            | 620.5                               |
+| 9    | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 275            | NA                                  |
+| 10   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G             | 275            | 249.4                               |
+| 11   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G         | 275            | 572.3                               |
+| 12   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G          | 275            | 783.0                               |
+| 13   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G              | 275            | 727.9                               |
+| 14   | ssd_traffic_pruned_0_9     | cf_ssdtraffic_360_480_0.9_11.6G               | 275            | 507.7                               |
+| 15   | VPGnet_pruned_0_99         | cf_VPGnet_caltechlane_480_640_0.99_2.5G       | 275            | 573.7                               |
+| 16   | FPN                        | cf_fpn_cityscapes_256_512_8.9G                | 275            | 567.9                               |
+| 17   | SP_net                     | cf_SPnet_aichallenger_224_128_0.54G           | 275            | 1929.1                              |
+| 18   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G   | 275            | 33.3                                |
+| 19   | densebox_320_320           | cf_densebox_wider_320_320_0.49G               | 275            | 2394.8                              |
+| 20   | densebox_640_360           | cf_densebox_wider_360_640_1.11G               | 275            | 1041.3                              |
+| 21   | face_landmark              | cf_landmark_celeba_96_72_0.14G                | 275            | 14694.9                             |
+| 22   | reid                       | cf_reid_market1501_160_80_0.95G               | 275            | 5797.1                              |
+| 23   | multi_task                 | cf_multitask_bdd_288_512_14.8G                | 275            | 368.1                               |
+| 24   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                   | 275            | 100.9                               |
+| 25   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G        | 275            | 787.1                               |
+| 26   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                  | 275            | 102.6                               |
+| 27   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                     | 275            | 220.8                               |
+| 28   | yolov2_voc_pruned_0_66     | dk_yolov2_voc_448_448_0.66_11.56G             | 275            | 555.2                               |
+| 29   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G              | 275            | 651.6                               |
+| 30   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G              | 275            | 790.6                               |
+| 31   | ResNet20-face              | cf_facerec-resnet20_112_96_3.5G               | 275            | 2030.8                              |
+| 32   | ResNet64-face              | cf_facerec-resnet64_112_96_11G                | 275            | 751.0                               |
+| 33   | FPN_Res18_segmentation     | cf_FPN-resnet18_EDD_320_320_45.3G             | 275            | 139.5                               |
+| 34   | plate detection            | cf_plate-detection_320_320_0.49G              | 275            | 5160.8                              |
+| 35   | plate recognition          | cf_plate-recognition_96_288_1.75G             | 275            | 1070.1                              |
+| 36   | face_quality               | cf_face-quality_80_60_61.68M                  | 275            | 19352.6                             |
+| 37   | tiny-yolov3                | dk_tiny-yolov3_416_416_5.46G                  | 275            | 1317.2                              |
+| 38   | yolov4                     | dk_yolov4_coco_416_416_60.1G                  | 275            | 119.8                               |
+| 39   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G  | 275            | 210.1                               |
+| 40   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G            | 275            | 1643.1                              |
+| 41   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G        | 275            | 488.5                               |
+| 42   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G        | 275            | 223.5                               |
+| 43   | resnet_v1_50               | tf_resnetv1_50_imagenet_224_224_6.97G         | 275            | 887.3                               |
+| 44   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G        | 275            | 460.6                               |
+| 45   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G       | 275            | 307.0                               |
+| 46   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G              | 275            | 225.1                               |
+| 47   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G              | 275            | 187.3                               |
+| 48   | ssd_resnet_50_v1_fpn       | tf_ssdresnet50v1_fpn_coco_640_640_178.4G      | 275            | 41.2                                |
+| 49   | yolov3_voc                 | tf_yolov3_voc_416_416_65.63G                  | 275            | 104.3                               |
+| 50   | mlperf_ssd_resnet34        | tf_mlperf_resnet34_coco_1200_1200_433G        | 275            | 18.5                                |
+| 51   | mlperf_resnet50            | tf_mlperf_resnet50_imagenet_224_224_8.19G     | 275            | 765.7                               |
+| 52   | refinedet                  | tf_refinedet_VOC_320_320_81.9G                | 275            | 105.1                               |
+| 53   | refinedet_medical          | tf_RefineDet-Medical_EDD_320_320_9.83G        | 275            | 630.8                               |
+| 54   | resnet50                   | tf2_resnet50_imagenet_224_224_7.76G           | 275            | 790.3                               |
+| 55   | Inception_v3               | tf2_inceptionv3_imagenet_299_299_11.5G        | 275            | 554.9                               |
+| 56   | 2d-unet                    | tf2_2d-unet_nuclei_128_128_5.31G              | 275            | 1577.9                              |
+| 57   | ERFNet                     | tf2_erfnet_cityscapes_512_1024_54G            | 275            | 64.5                                |
+| 58   | ENet                       | pt_ENet_cityscapes_512_1024_8.6G              | 275            | 85.5                                |
+| 59   | SemanticFPN                | pt_SemanticFPN_cityscapes_256_512_10G         | 275            | 591.9                               |
+| 60   | ResNet20-face              | pt_facerec-resnet20_mixed_112_96_3.5G         | 275            | 1850.8                              |
+| 61   | face quality               | pt_face-quality_80_60_61.68M                  | 275            | 19209.5                             |
+| 62   | face_reid_large            | pt_facereid-large_96_96_515M                  | 275            | 10486.7                             |
+| 63   | face_reid_small            | pt_facereid-small_80_80_90M                   | 275            | 20809.8                             |
+| 64   | person_reid                | pt_personreid-res50_market1501_256_128_5.4G   | 275            | 1230.2                              |
+| 65   | person_reid                | pt_personreid-res18_market1501_176_80_1.1G    | 275            | 5090.4                              |
+| 66   | salsanext                  | pt_salsanext_semantic-kitti_64_2048_0.6_20.4G | 275            | 137.6                               |
+| 67   | FPN-R18 (light-weight)     | pt_FPN-resnet18_covid19-seg_352_352_22.7G     | 275            | 313.2                               |
+| 68   | 2d-unet                    | pt_unet_chaos-CT_512_512_23.3G                | 275            | 70.6                                |
+| 69   | Inception_v3               | torchvision_inception_v3                      | 275            | 488.5                               |
+| 70   | SqueezeNet                 | torchvision_squeezenet                        | 275            | 2334.1                              |
+| 71   | resnet50                   | torchvision_resnet50                          | 275            | 765.6                               |
 
 
 </details>
