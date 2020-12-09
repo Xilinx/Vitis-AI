@@ -158,12 +158,12 @@ the [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/ope
 2. Untar the image and video packages on the target.
 ```
 cd ~
-tar -xzvf vitis_ai_library_r1.3.x_images.tar.gz -C Vitis-AI/demo/Vitis_AI_Library
-tar -xzvf vitis_ai_library_r1.3.x_video.tar.gz -C Vitis-AI/demo/Vitis_AI_Library
+tar -xzvf vitis_ai_library_r1.3.*_images.tar.gz -C Vitis-AI/demo/Vitis-AI-Library
+tar -xzvf vitis_ai_library_r1.3.*_video.tar.gz -C Vitis-AI/demo/Vitis-AI-Library
 ```
 3. Enter the directory of example in target board, take `facedetect` as an example.
 ```
-cd ~/Vitis-AI/demo/Vitis_AI_Library/samples/facedetect
+cd ~/Vitis-AI/demo/Vitis-AI-Library/samples/facedetect
 ```
 4. Run the image test example.
 ```
@@ -277,7 +277,7 @@ Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/demo/Vit
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
-1. Download the [vitis_ai_library_r1.3.0_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) and [vitis_ai_library_r1.3.0_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz) packages and untar them.
+1. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) and [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz) packages and untar them.
 ```
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz -O vitis_ai_library_r1.3.0_images.tar.gz
