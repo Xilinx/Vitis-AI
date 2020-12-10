@@ -142,15 +142,15 @@ For example, `cf_refinedet_coco_360_480_0.8_25G_1.3` is a `RefineDet` model trai
 
 
 ### caffe-xilinx 
-This is a custom distribution of caffe. Please use **caffe-xilinx** to test and finetune the caffe models listed in this page.
+This is a custom distribution of caffe. Please use [caffe-xilinx](https://github.com/Xilinx/Vitis-AI/tree/master/models/AI-Model-Zoo/caffe-xilinx) to test and finetune the caffe models listed in this page.
 
 ## Model Download
-Please visit our **[model-list]** in this page. You will get downloadlink and MD5 of all the released models, including pre-compiled models running on different platforms.                                 
+Please visit [model-list](https://github.com/Xilinx/Vitis-AI/tree/master/models/AI-Model-Zoo/model-list) in this page. You will get downloadlink and MD5 of all the released models, including pre-compiled models running on different platforms.                                 
 
 </details>
 
 ### Model Directory Structure
-Download and extract the model archive to your working area on the local hard disk. For details on the various models, their download link and MD5 checksum for the zip file of each model, see  **[model-list]** .
+Download and extract the model archive to your working area on the local hard disk. For details on the various models, their download link and MD5 checksum for the zip file of each model, see [model-list](https://github.com/Xilinx/Vitis-AI/tree/master/models/AI-Model-Zoo/model-list).
 
 
 #### Caffe Model Directory Structure
@@ -918,7 +918,7 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Versal VCK190` board running at 1333Mhz:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Versal VCK190` board with 96 AIEs running at 1333Mhz:
   
 
 | No\. | Model                      | Name                                          | Frequency(MHz) | E2E throughput \-fps\(Multi Thread) |
