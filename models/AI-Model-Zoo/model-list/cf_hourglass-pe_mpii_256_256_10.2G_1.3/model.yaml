@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +30,6 @@ files:
 - name: hourglass-pe_mpii
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=hourglass-pe_mpii-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: a6d5457852e4efa047f924ea43a8bad8
 license: license link

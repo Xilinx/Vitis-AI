@@ -27,7 +27,6 @@ $CMAKE_INSTALL_PREFIX/lib/libvart-runner.so*                  \
 $CMAKE_INSTALL_PREFIX/lib/libvart-xrt-device-handle.so*        \
 $CMAKE_INSTALL_PREFIX/lib/libvart-buffer-object.so*            \
 $CMAKE_INSTALL_PREFIX/lib/libvart-dpu-controller.so*           \
-$CMAKE_INSTALL_PREFIX/lib/libvart-elf-util.so*                 \
 $CMAKE_INSTALL_PREFIX/lib/libvart-dpu-runner.so*               \
 $CMAKE_INSTALL_PREFIX/lib/libvart-mem-manager.so*               \
 $CMAKE_INSTALL_PREFIX/lib/libxir.so*               \

@@ -60,6 +60,8 @@ class MultiTaskPostProcessImp : public vitis::ai::MultiTaskPostProcess {
  private:
   int num_detection_classes_;
   int num_segmention_classes_;
+  std::vector<SSDOutputInfo> loc_infos_;
+  std::vector<SSDOutputInfo> conf_infos_;
   std::vector<float> softmax_result;
   std::unique_ptr<vitis::ai::multitask::SSDdetector> detector_;
   const std::vector<std::vector<vitis::ai::library::InputTensor>>

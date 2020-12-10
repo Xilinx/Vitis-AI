@@ -31,16 +31,16 @@
 namespace vitis {
 namespace ai {
 
-/// hourglass model, input size is 256x256.
+/// Hourglass model, input size is 256x256.
 
 /**
  * @brief Base class for detecting poses of people.
  *
  * Input is an image (cv:Mat).
  *
- * Output is a HourglassResult.
+ * Output is HourglassResult.
  *
- * Sample code :
+ * Sample code:
    @code
   auto image = cv::imread(argv[2]);
   if (image.empty()) {
@@ -120,18 +120,26 @@ class Hourglass {
       const std::vector<cv::Mat> &images) = 0;
   /**
    * @brief Function to get InputWidth of the hourglass network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the hourglass network
    */
   virtual int getInputWidth() const = 0;
   /**
-   * @brief Function to get InputHeigth of the hourglass network (input image
+   * @brief Function to get InputHeight of the hourglass network (input image
    * rows).
    *
    * @return InputHeight of the hourglass network.
    */
   virtual int getInputHeight() const = 0;
+  /**
+   * @brief Function to get the number of images processed by the DPU at one
+   *time.
+   * @note Different DPU core the batch size may be different. This depends on
+   *the IP used.
+   *
+   * @return Batch size.
+   */
   virtual size_t get_input_batch() const = 0;
 };
 }  // namespace ai

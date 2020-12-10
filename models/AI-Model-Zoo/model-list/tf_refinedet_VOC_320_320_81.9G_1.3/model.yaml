@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,26 +30,26 @@ files:
 - name: refinedet_VOC_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 72500de1f8ab4a54d8871e4f06e2d9c7
 - name: refinedet_VOC_tf
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck190-r1.3.0.tar.gz
+  checksum: 66cd3def331fcf528f4080f891a80f59
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-r1.3.0.tar.gz
+  checksum: f11d4be393d686245b06ef18c6b1f6e3
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50lv-u280-r1.3.0.tar.gz
+  checksum: a5d555ae3e3510d58390458bcfa126fc
 - name: refinedet_VOC_tf
   type: xmodel
-  board: u50lv-v3me & u280-v3me
+  board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
 license: license link

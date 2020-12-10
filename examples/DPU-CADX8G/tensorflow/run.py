@@ -103,7 +103,7 @@ if __name__ == "__main__":
     input_shapes = [input_shapes] if list_depth(input_shapes) == 1 else input_shapes
 
     if 'VAI_ROOT' in os.environ:
-      arch_json = os.path.join(os.environ['VAI_ROOT'], 'compiler/arch/dpuv1/ALVEO/ALVEO.json')
+      arch_json = os.path.join(os.environ['VAI_ROOT'], 'compiler/arch/DPUCADX8G/ALVEO/arch.json')
     elif 'VAI_ALVEO_ROOT' in os.environ and os.path.isdir(os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1/tools')):
       arch_json = os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1/tools/compile/bin/arch.json')
     else:

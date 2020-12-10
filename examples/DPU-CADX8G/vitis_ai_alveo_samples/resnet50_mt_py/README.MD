@@ -24,7 +24,8 @@ Activate Conda Environment
 Setup the Environment
 
   ```sh
-  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 ## Run Inference
@@ -39,7 +40,7 @@ python resnet50.py <number of threads> <compiler output directory>
 **Example**
 
 ```Python
-cd /workspace/alveo/examples/vitis_ai_alveo_samples/resnet50_mt_py/
+cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/vitis_ai_alveo_samples/resnet50_mt_py/
 python resnet50.py 1 ./model
 ```
 

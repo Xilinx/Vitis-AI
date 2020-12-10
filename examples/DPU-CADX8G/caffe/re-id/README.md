@@ -1,6 +1,6 @@
 ## Re-identification
 
-This code employs a resnet-18 based model to generate feature maps of person image. In order to identify same person or distinguish different persons, it uses cosine distances of feature maps to measure the distance between different images. The images having small distance are more likely to have same id, those having large distance are more likely to have different ids. When one query image and a set of gallery images are given, the image having the smallest distance to the query image will be regarded as the same person in query image. 
+This code employs a resnet-18 based model to generate feature maps of person image. In order to identify same person or distinguish different persons, it uses cosine distances of feature maps to measure the distance between different images. The images having small distance are more likely to have same id, those having large distance are more likely to have different ids. When one query image and a set of gallery images are given, the image having the smallest distance to the query image will be regarded as the same person in query image.
 
 
 ### Data Preparation
@@ -11,16 +11,16 @@ Download [market1501](http://www.diaochapai.com/survey/a61751ca-4210-4df1-a5bb-1
 data/
     market1501/
         query/
-            xxx.jpg   
-            xxx.jpg   
+            xxx.jpg
+            xxx.jpg
             ...
         bounding_box_train/
-            xxx.jpg   
-            xxx.jpg   
+            xxx.jpg
+            xxx.jpg
             ...
         bounding_box_test/
-            xxx.jpg   
-            xxx.jpg   
+            xxx.jpg
+            xxx.jpg
             ...
 ```
 
@@ -29,13 +29,14 @@ data/
 
   Activate Conda Environment
   ```sh
-  conda activate vitis-ai-caffe 
+  conda activate vitis-ai-caffe
   ```
 
   Setup the Environment
 
   ```sh
-  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 ### Quantize, compile and generate subgraph prototxt
@@ -54,10 +55,10 @@ python run.py --prototxt reid_model/trainval.prototxt --caffemodel reid_model/tr
 
 ### Demo
 
-The demo.py provides a running sample. 
+The demo.py provides a running sample.
 
 ```sh
-python demo.py --query_image <query img_path> --test_image <test image_path> 
+python demo.py --query_image <query img_path> --test_image <test image_path>
 ```
 
 ### Test Accuracy

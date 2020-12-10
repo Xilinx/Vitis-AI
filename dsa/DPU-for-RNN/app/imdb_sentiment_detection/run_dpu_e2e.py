@@ -24,7 +24,7 @@ from tensorflow.python.keras import Model
 
 import time
 
-core = 2
+core = 1
 #from keras.utils import CustomObjectScope
 #from keras.initializers import glorot_uniform
 

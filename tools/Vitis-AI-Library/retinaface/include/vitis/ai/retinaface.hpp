@@ -69,7 +69,7 @@ namespace ai {
 class RetinaFace {
  public:
   /**
- * @brief Factory function to get instance of derived classes of class
+ * @brief Factory function to get an instance of derived classes of class
  RetinaFace
  *
  * @param model_name Model name
@@ -97,14 +97,14 @@ class RetinaFace {
    */
   /**
    * @brief Function to get InputWidth of the retinaface network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the retinaface network
    */
   virtual int getInputWidth() const = 0;
 
   /**
-   *@brief Function to get InputHeigth of the retinaface network (input image
+   *@brief Function to get InputHeight of the retinaface network (input image
    *rows).
    *
    *@return InputHeight of the retinaface network.
@@ -114,7 +114,7 @@ class RetinaFace {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -127,7 +127,7 @@ class RetinaFace {
    * @param img Input Data ,input image (cv::Mat) need to be resized to
    *InputWidth and InputHeight required by the network.
    *
-   * @return The detection result of the face detect network , filter by score
+   * @return The detection result of the face detect network , filtered by score
    *>= det_threshold
    *
    */

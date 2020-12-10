@@ -36,6 +36,8 @@ void shape_infer_add(xir::Op* cur);
 void shape_infer_sub(xir::Op* cur);
 void shape_infer_mul(xir::Op* cur);
 void shape_infer_div(xir::Op* cur);
+void shape_infer_min(xir::Op* cur);
+void shape_infer_max(xir::Op* cur);
 void shape_infer_relu(xir::Op* cur);
 void shape_infer_leaky_relu(xir::Op* cur);
 void shape_infer_prelu(xir::Op* cur);

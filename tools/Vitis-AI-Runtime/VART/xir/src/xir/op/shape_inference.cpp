@@ -985,6 +985,14 @@ void shape_infer_div(xir::Op* cur) {
   }
 }
 
+void shape_infer_min(xir::Op* cur) {
+  shape_infer_broadcast(cur);
+}
+
+void shape_infer_max(xir::Op* cur) {
+  shape_infer_broadcast(cur);
+}
+
 void shape_infer_threshold(xir::Op* cur) { shape_infer_remain(cur); }
 
 void forward_strided_slice(xir::Op* cur, std::vector<std::int32_t> begin,

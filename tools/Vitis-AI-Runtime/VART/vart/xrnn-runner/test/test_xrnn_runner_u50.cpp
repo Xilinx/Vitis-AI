@@ -168,16 +168,37 @@ int main(int argc, char* argv[]) {
   }
   else if(type==1){
     LOG(INFO) << "test satisfaction, frame is ignored, use 25 instead";
-    return 0;
+
     model_params[0] = new ModelParameters(model_dir, "satis", "");
-    model_params[0]->set(1, 25, 32, 128);
+    model_params[0]->update_vector_name("vector_bin_batch3");
+    model_params[0]->update_bench_name("bench_bin_batch3");
+    model_params[0]->update_ddr_name("ddr_bin_3k");
+    model_params[0]->set(3, 25, 32, 128);
+    model_test_data[0] = new ModelTestData(model_params[0]);
+
+    model_params[1] = new ModelParameters(model_dir, "satis", "");
+    model_params[1]->update_vector_name("vector_bin_batch4");
+    model_params[1]->update_bench_name("bench_bin_batch4");
+    model_params[1]->update_ddr_name("ddr_bin_4k");
+    model_params[1]->set(4, 25, 32, 128);
+    model_test_data[1] = new ModelTestData(model_params[1]);
   }
   else if(type==2){
     LOG(INFO) << "Test Openie, frame is " << frames
       << ", test data is in " << "/"+frame_str;
-    return 0;
     model_params[0] = new ModelParameters(model_dir, "oie", "/"+frame_str);
-    model_params[0]->set(1, frames, 224, 320);
+    model_params[0]->update_vector_name("vector_bin_batch3");
+    model_params[0]->update_bench_name("bench_bin_batch3");
+    model_params[0]->update_ddr_name("ddr_bin_3k");
+    model_params[0]->set(3, frames, 224, 320);
+    model_test_data[0] = new ModelTestData(model_params[0]);
+
+    model_params[1] = new ModelParameters(model_dir, "oie", "/"+frame_str);
+    model_params[1]->update_vector_name("vector_bin_batch4");
+    model_params[1]->update_bench_name("bench_bin_batch4");
+    model_params[1]->update_ddr_name("ddr_bin_4k");
+    model_params[1]->set(4, frames, 224, 320);
+    model_test_data[1] = new ModelTestData(model_params[1]);
   }
   
   std::vector<std::unique_ptr<vart::Runner>> runners(thread_num);
@@ -196,13 +217,14 @@ int main(int argc, char* argv[]) {
     rs->set_attr<std::string>("xclbin",  model_params[i%CORES]->get_xclbin_file());
     rs->set_attr<std::string>("model_type",  model_params[i%CORES]->get_model_type());
     rs->set_attr<std::string>("model_init",  model_params[i%CORES]->get_ddr_file());
+    rs->set_attr<std::string>("model_path",  model_params[i%CORES]->get_model_root());
     runners[i] = vart::Runner::create_runner(rs, "run");
   }
 
   auto start=chrono::high_resolution_clock::now();  
   array<thread, MAX_THREADS>threads_list;
   for (int i=0; i<thread_num ; i++){
-    threads_list[i] = thread(run, &runners, &model_params, &model_test_data, 100, i);
+    threads_list[i] = thread(run, &runners, &model_params, &model_test_data, 1, i);
   }
   for (int i=0; i<thread_num; i++){
     threads_list[i].join();
@@ -211,6 +233,11 @@ int main(int argc, char* argv[]) {
   
   LOG(INFO) << "chrono::duration [ns]: " 
     << chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+
+  for(int i=0; i<CORES; i++){
+    delete model_params[i];
+    delete model_test_data[i];
+  }
 
   return 0;
 }

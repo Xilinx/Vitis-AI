@@ -1,21 +1,21 @@
 #!/bin/bash
 
-sed -n '1, 5p' ./docker/PROMPT.txt
+sed -n '1, 5p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '5, 15p' ./docker/PROMPT.txt
+sed -n '5, 15p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '15, 28p' ./docker/PROMPT.txt
+sed -n '15, 28p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '28, 61p' ./docker/PROMPT.txt
+sed -n '28, 61p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '62, 224p' ./docker/PROMPT.txt
+sed -n '62, 224p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '224, 308p' ./docker/PROMPT.txt
+sed -n '224, 308p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
 

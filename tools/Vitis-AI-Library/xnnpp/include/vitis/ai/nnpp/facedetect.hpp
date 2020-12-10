@@ -32,13 +32,13 @@ struct FaceDetectResult {
    *@brief The coordinate and confidence of a face.
    */
   struct BoundingBox {
-    /// x-coordinate , x is normalized relative to the input image cols ,the
+    /// x-coordinate , x is normalized relative to the input image columns ,the
     /// value range from 0 to 1.
     float x;
     /// y-coordinate , y is normalized relative to the input image rows ,the
     /// value range from 0 to 1.
     float y;
-    /// face width , width is normalized relative to the input image cols , the
+    /// face width , width is normalized relative to the input image columns , the
     /// value range from 0 to 1.
     float width;
     /// face height , heigth is normalized relative to the input image rows ,the
@@ -47,9 +47,9 @@ struct FaceDetectResult {
     /// face confidence, the value range from 0 to 1.
     float score;
   };
-  /// Width of a input image.
+  /// Width of an input image.
   int width;
-  /// Height of a input image.
+  /// Height of an input image.
   int height;
   /// All faces, filtered by confidence >= detect threshold.
   std::vector<BoundingBox> rects;

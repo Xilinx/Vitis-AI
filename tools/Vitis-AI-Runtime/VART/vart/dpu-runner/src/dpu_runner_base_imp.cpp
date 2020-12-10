@@ -650,12 +650,17 @@ void DpuRunnerBaseImp::start_dpu2(size_t device_core_id) {
     LOG_IF(INFO, ENV_PARAM(XLNX_SHOW_DPU_COUNTER))
         << "subgraph name : "
         << layer_name(sg_and_code[idx].subgraph->get_name());
-
-    auto info =
-        std::string("subgraph:") +
-        layer_name(sg_and_code[idx].subgraph->get_name()) + ',' +
-        std::string("batch:" + std::to_string(session_->get_num_of_engines()));
-    vitis::ai::tracepoint(VAI_EVENT_INFO, "DPUR", device_core_id, info);
+    if (vitis::ai::tracepoint_is_enabled()) {
+        auto op_num = sg_and_code[idx].subgraph->get_op_num();
+        auto workload = sg_and_code[idx].subgraph->get_attr<std::uint64_t>("workload");
+        auto info =
+            std::string("subgraph:") +
+            layer_name(sg_and_code[idx].subgraph->get_name()) + ',' +
+            std::string("batch:" + std::to_string(session_->get_num_of_engines())) + ',' +
+            std::string("op_num:" + std::to_string(op_num)) + ',' +
+            std::string("workload:" + std::to_string(workload));
+        vitis::ai::tracepoint(VAI_EVENT_INFO, "DPUR", device_core_id, info);
+    }
     LOG_IF(FATAL, ENV_PARAM(XLNX_ENABLE_FINGERPRINT_CHECK) &&
                       !check_fingerprint(session_->get_device_core_id()))
         << "fingerprint check failure.";

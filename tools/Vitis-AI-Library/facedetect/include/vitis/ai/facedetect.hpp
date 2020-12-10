@@ -92,14 +92,14 @@ class FaceDetect {
    */
   /**
    * @brief Function to get InputWidth of the facedetect network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the facedetect network
    */
   virtual int getInputWidth() const = 0;
 
   /**
-   *@brief Function to get InputHeigth of the facedetect network (input image
+   *@brief Function to get InputHeight of the facedetect network (input image
    *rows).
    *
    *@return InputHeight of the facedetect network.
@@ -109,7 +109,7 @@ class FaceDetect {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -118,7 +118,7 @@ class FaceDetect {
 
   /**
    * @brief Function to get detect threshold.
-   * @return The detect threshold , the value range from 0 to 1.
+   * @return The detect threshold. The value ranges from 0 to 1.
    */
   virtual float getThreshold() const = 0;
 
@@ -126,7 +126,7 @@ class FaceDetect {
    * @brief Function of update detect threshold.
    * @note The detection results will filter by detect threshold (score >=
    * threshold).
-   * @param threshold The detect threshold,the value range from 0 to 1.
+   * @param threshold The detect threshold. The value ranges from 0 to 1.
    */
   virtual void setThreshold(float threshold) = 0;
 
@@ -136,7 +136,7 @@ class FaceDetect {
    * @param img Input Data ,input image (cv::Mat) need to be resized to
    *InputWidth and InputHeight required by the network.
    *
-   * @return The detection result of the face detect network , filter by score
+   * @return The detection result of the face detect network, filtered by score
    *>= det_threshold
    *
    */

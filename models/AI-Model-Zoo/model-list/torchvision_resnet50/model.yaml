@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,26 +22,26 @@ files:
 - name: resnet50_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 50f59d9a68cae9bef3721567072910f1
 - name: resnet50_pt
   type: xmodel
   board: vck190
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck190-r1.3.0.tar.gz
+  checksum: 4299615312be2c261d110ea3f4ad3f60
 - name: resnet50_pt
   type: xmodel
   board: u50
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-r1.3.0.tar.gz
+  checksum: fe0f443d2130558dfbe607e5789ac1a1
 - name: resnet50_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50lv-u280-r1.3.0.tar.gz
+  checksum: cfbf1b309c305f14cb9f35b31955f583
 - name: resnet50_pt
   type: xmodel
-  board: u50lv-v3me & u280-v3me
+  board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
 license: license link

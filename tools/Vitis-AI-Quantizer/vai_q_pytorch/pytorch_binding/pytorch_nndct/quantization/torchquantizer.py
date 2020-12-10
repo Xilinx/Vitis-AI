@@ -269,9 +269,7 @@ class TORCHQuantizer(BaseQuantizer):
           self.set_bnfp(in_name, bnfp)
       # zero padding output fix pos align with input
       if (node.in_quant_part and 
-          node.op.type == NNDCT_OP.PAD and 
-          node.op.attr['mode'] == 0 and  # constant padding
-          node.op.attr['constant_values'] == [0.0,0.0,0.0,0.0]): # padding value is 0
+          node.op.type == NNDCT_OP.PAD):
         in_name = self.configer.quant_output(node.in_nodes[0]).name
         out_name = self.configer.quant_output(node.name).name
         bnfp = self.get_bnfp(in_name, False)

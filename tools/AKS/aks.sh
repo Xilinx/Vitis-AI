@@ -54,13 +54,14 @@ usage() {
   echo "------------------------------------------------"
   echo "Run ResNet50 on Alveo-U50: "
   echo "    ./aks.sh -m resnet50_u50 --dir1 <image-dir>"
+  echo -e ""
 
   echo "Examples (DPUCZDX8G):"
   echo "------------------------------------------------"
   echo "Run ResNet50 on Edge Platforms: "
   echo "    ./aks.sh -m resnet50_edge --dir1 <image-dir>"
-
   echo -e ""
+
   echo "Arguments:"
   echo "------------------------------------------------"
   echo "  -n  nFPGA   | --nfpga   nFPGA   Number of FPGAs (Connected on System)"
@@ -165,7 +166,7 @@ if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/utils" ]
 then
   LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/utils
 fi
-PYTHONPATH=${PYTHONPATH}:${VAI_ALVEO_ROOT}:${VAI_ALVEO_ROOT}/apps/face_detect
+PYTHONPATH=${PYTHONPATH}:${VAI_ALVEO_ROOT}:${VAI_ALVEO_ROOT}/DPU-CADX8G/face_detect
 
 if [ ! -z "${CONDA_PREFIX}" ]; then
   LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib/python3.6/site-packages/vai/dpuv1/utils
@@ -176,38 +177,45 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 export PYTHONPATH=${PYTHONPATH}
 
 # Check for number of FPGA Devices
-CARDS_CONNECTED=`/opt/xilinx/xrt/bin/xbutil scan | grep "xilinx_u" | wc -l`
-if [ ! -z "${NUM_FPGA}" ]
-then
-  if [ ${NUM_FPGA} -gt ${CARDS_CONNECTED} ]
+if [[ `uname -m` != "aarch64" ]]; then
+  CARDS_CONNECTED=`/opt/xilinx/xrt/bin/xbutil scan | grep "xilinx_u" | wc -l`
+  if [ ! -z "${NUM_FPGA}" ]
   then
-    echo -e "[ERROR] Number of FPGAs mentioned are more than installed on System."
-    echo -e "[ERROR] Cards Mentioned: ${NUM_FPGA}"
-    echo -e "[ERROR] Cards Connected: ${CARDS_CONNECTED}"
-    echo -e ""
-    exit 1
+    if [ ${NUM_FPGA} -gt ${CARDS_CONNECTED} ]
+    then
+      echo -e "[ERROR] Number of FPGAs mentioned are more than installed on System."
+      echo -e "[ERROR] Cards Mentioned: ${NUM_FPGA}"
+      echo -e "[ERROR] Cards Connected: ${CARDS_CONNECTED}"
+      echo -e ""
+      exit 1
+    else
+      # Number of FPGAs to be used
+      export NUM_FPGA=${NUM_FPGA}
+    fi
   else
-    # Number of FPGAs to be used
-    export NUM_FPGA=${NUM_FPGA}
+    unset NUM_FPGA
   fi
-else
-  unset NUM_FPGA
 fi
 
 CPP_EXE=""
 PY_EXE=""
 AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=aksMeta_vai1p2_30062020.zip"
 # Check if the model files exists
-for name in "meta_googlenet" "meta_inception_v1_tf" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
-do
-  NAME="graph_zoo/$name"
-  if [[ ! -d "${NAME}" ]]; then
-    echo -e "${NAME} doesn't exist"
-    wget ${AKS_GRAPH_META_URL} -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
-    if [[ $? != 0 ]]; then echo "Network download failed. Exiting ..."; exit 1; fi;
-    break;
-  fi;
-done
+if [[ `uname -m` != "aarch64" ]]; then
+  for name in "meta_googlenet" "meta_inception_v1_tf" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
+  do
+    NAME="graph_zoo/$name"
+    if [[ ! -d "${NAME}" ]]; then
+      echo -e "${NAME} doesn't exist"
+      wget ${AKS_GRAPH_META_URL} -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
+      if [[ $? != 0 ]]; then
+        echo "Network download failed. Exiting ...";
+        exit 1
+      fi
+      break
+    fi
+  done
+fi
 
 # Check input image/video args
 if [ "${MODEL}" == "tinyyolov3_video" ]; then
@@ -300,10 +308,10 @@ elif [ "${MODEL}" == "googlenet_tinyyolov3" ]; then
   fi;
 
 elif [ "${MODEL}" == "facedetect" ]; then
-  echo "[INFO] Visit $VAI_ALVEO_ROOT/apps/face_detect to prepare FDDB dataset."
+  echo "[INFO] Visit $VAI_ALVEO_ROOT/DPU-CADX8G/face_detect to prepare FDDB dataset."
   echo -n "[INFO] To save results to a text file for accuracy measurement, "
   echo "provide a text file path to 'save_result_txt' argument in the graph_zoo/graph_facedetect.json"
-  echo "[INFO] Visit $VAI_ALVEO_ROOT/apps/face_detect to see how to measure accuracy from the text file"
+  echo "[INFO] Visit $VAI_ALVEO_ROOT/DPU-CADX8G/face_detect to see how to measure accuracy from the text file"
   echo ""
   CPP_EXE=examples/bin/facedetect.exe
   PY_EXE=examples/facedetect.py

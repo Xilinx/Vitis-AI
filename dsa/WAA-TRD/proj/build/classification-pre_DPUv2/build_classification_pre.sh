@@ -2,7 +2,7 @@
 export CUR_DIR=$PWD
 cd $CUR_DIR/../../../accel/classification-pre
 make cleanall
-make host xo TARGET=hw BOARD=Zynq ARCH=aarch64
+make xo TARGET=hw BOARD=Zynq ARCH=aarch64
 
 #Generate SD card files
 cd $CUR_DIR

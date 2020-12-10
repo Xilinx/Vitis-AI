@@ -13,19 +13,19 @@ from torchvision.models.resnet import resnet18
 
 from tqdm import tqdm
 
-device = torch.device("cuda")
+#device = torch.device("cuda")
 #device = torch.device("cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
     '--data_dir',
-    default="/proj/rdi/staff/niuxj/imagenet/",
-    #default="/path/to/imagenet/",
+    default="/path/to/imagenet/",
     help='Data set directory, when quant_mode=calib, it is for calibration, while quant_mode=test it is for evaluation')
 parser.add_argument(
     '--model_dir',
-    default="/proj/rdi/staff/wluo/UNIT_TEST/models",
-    #default="/path/to/trained_model/",
+    default="/path/to/trained_model/",
     help='Trained model file path. Download pretrained model from the following url and put it in model_dir specified path: https://download.pytorch.org/models/resnet18-5c106cde.pth'
 )
 parser.add_argument(

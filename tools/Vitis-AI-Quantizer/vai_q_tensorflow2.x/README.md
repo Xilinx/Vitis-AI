@@ -49,8 +49,8 @@ quantized_model.save('quantized_model.h5')
 * ### Evaluate the quantized model 
 
 ```python
-model.compile(loss=your_loss, metrics=your_metrics)
-model.evaluate(eval_dataset)
+quantized_model.compile(loss=your_loss, metrics=your_metrics)
+quantized_model.evaluate(eval_dataset)
 ```
 
 Note that the quantize_model() function removes the loss and optimizers information from the original model. So model.compile() is needed to evaluate the model.
@@ -69,7 +69,7 @@ with vitis_quantize.quantize_scope():
 
 ```python
 from tensorflow_model_optimization.quantization.keras import vitis_quantize
-quantizer = vitis_quantize.VitisQuantizer.dump_model(quantized_model, dump_dataset, dump_output_dir)
+vitis_quantize.VitisQuantizer.dump_model(quantized_model, dump_dataset)
 ```
 
 Note that the batch_size of the dump_dataset should be set to 1 for DPU debugging.

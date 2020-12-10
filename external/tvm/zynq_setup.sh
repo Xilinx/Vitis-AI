@@ -43,7 +43,6 @@ cd "${TVM_HOME}"/build && echo set\(USE_VITIS_AI ON\) >> config.cmake && cmake .
 cd "${TVM_HOME}"/python && pip3 install -e .
 
 
-
 DISTRIBUTION=`lsb_release -i -s`
 if ! [[ "$DISTRIBUTION" == "pynqlinux" ]]; then
     echo " WARNING: You are using the Petalinux distribution that need modification to the "${TVM_HOME}"/python/setup.py. Please refer to the \"running_on_zynq.md\" document for more instruction." 

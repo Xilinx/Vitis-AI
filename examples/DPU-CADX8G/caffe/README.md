@@ -16,13 +16,14 @@ This directory provides scripts for running several well known models (listed be
 
 Activate Conda Environment
   ```sh
-  conda activate vitis-ai-caffe 
+  conda activate vitis-ai-caffe
   ```
 
 Setup the Environment
 
   ```sh
-  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning).
@@ -57,25 +58,25 @@ Run through a sample end to end caffe classification example using the following
 The following example uses the *googlenet* model. You can try the flow with also the other models found in `${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models` directory.
 
   ```sh
-  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe 
-  ``` 
+  cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe
+  ```
 
 #### Prepare the model for inference
 
   This performs quantization, compilation and subgraph cutting in a single step. To run a Caffe model on the FPGA, it needs to be quantized, compiled, and a new graph needs to be generated. The new graph is similar to the original, with the FPGA subgraph removed, and replaced with a custom Python layer.
-  
+
   *Quantization*
-  
+
   The quantizer will generate scaling parameters for quantizing floats INT8. This is required, because FPGAs will take advantage of Fixed Point Precision, to achieve more parallelization at lower power
 
   *Compilation*
-  
+
   In this step, the network Graph (`prototxt`) and the Weights (`caffemodel`) are compiled.
- 
+
   *Subgraph Cut*
-  
+
   In this step, the original graph is cut, and a custom FPGA accelerated python layer is inserted to be used for Inference.
-  
+
   The above three steps are invoked by using the `--prepare` switch. If you plan to work on several models, you can use the `--output_dir` switch to generate and store model artifacts in seperate directories. By default, output_dir is `./work`.
 
   ```sh

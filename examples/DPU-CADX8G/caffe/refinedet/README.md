@@ -5,18 +5,19 @@
 
   Activate Conda Environment
   ```sh
-  conda activate vitis-ai-caffe 
+  conda activate vitis-ai-caffe
   ```
 
   Setup the Environment
 
   ```sh
-  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  # Typically, <path-to-vitis-ai> is `/workspace`
+  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
   ```
 
 ### Data Preparation
 
-- Download coco2014 datatset (https://cocodataset.org/#download) 
+- Download coco2014 datatset (https://cocodataset.org/#download)
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 - Reorg coco as below:
   ```sh
@@ -60,14 +61,14 @@ Get the necessary models
   ```
 
 ```sh
-# Run the command below to generate compiled model for refinedet_pruned_0.8 
+# Run the command below to generate compiled model for refinedet_pruned_0.8
 
 python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/refinedet_pruned_0.8/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/refinedet_pruned_0.8/trainval.caffemodel --prepare
 
 ```
 
 ```sh
-# Run the command below to generate compiled model for refinedet_pruned_0.92 
+# Run the command below to generate compiled model for refinedet_pruned_0.92
 
 python run_refinedet.py --prototxt ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/refinedet_pruned_0.92/trainval.prototxt --caffemodel ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/models/refinedet_pruned_0.92/trainval.caffemodel --prepare
 

@@ -59,11 +59,10 @@ SSDdetector::SSDdetector(unsigned int num_classes,  // int background_label_id,
                                       confidence_threshold_.end());
 }
 
-template <typename T>
-void SSDdetector::Detect(const T* loc_data, const float* conf_data,
+void SSDdetector::Detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
+                         const float* conf_data,
                          std::vector<VehicleResult>& result) {
   decoded_bboxes_.clear();
-  const T(*bboxes)[6] = (const T(*)[6])loc_data;
 
   //  __TIC__(Sort)
   unsigned int num_det = 0;
@@ -77,7 +76,8 @@ void SSDdetector::Detect(const T* loc_data, const float* conf_data,
   //  __TIC__(NMS)
   for (unsigned int c = 1; c < num_classes_; ++c) {
     // Perform NMS for one class
-    ApplyOneClassNMS(bboxes, conf_data, c, score_index_vec[c], &(indices[c]));
+    ApplyOneClassNMS(loc_infos, conf_data, c, score_index_vec[c],
+                     &(indices[c]));
 
     num_det += indices[c].size();
   }
@@ -132,44 +132,51 @@ void SSDdetector::Detect(const T* loc_data, const float* conf_data,
   //  __TOC__(Box)
 }
 
-template void SSDdetector::Detect(const int* loc_data, const float* conf_data,
-                                  std::vector<VehicleResult>& result);
-template void SSDdetector::Detect(const int8_t* loc_data,
-                                  const float* conf_data,
-                                  std::vector<VehicleResult>& result);
+// template void SSDdetector::Detect(const int* loc_data, const float*
+// conf_data,
+//                                  std::vector<VehicleResult>& result);
+// template void SSDdetector::Detect(const int8_t* loc_data,
+//                                  const float* conf_data,
+//                                  std::vector<VehicleResult>& result);
 
-template <typename T>
 void SSDdetector::ApplyOneClassNMS(
-    const T (*bboxes)[6], const float* conf_data, int label,
+    const std::map<uint32_t, SSDOutputInfo>& bbox_layer_infos,
+    const float* conf_data, int label,
     const vector<pair<float, int>>& score_index_vec, vector<int>* indices) {
   vector<size_t> results;
   vector<vector<float>> boxes;
   vector<float> scores;
   map<size_t, int> resultmap;
-  int i = 0;
-  for (auto sc : score_index_vec) {
-    const int idx = sc.second;
-
+  // float adaptive_threshold = nms_threshold_;
+  indices->clear();
+  unsigned int i = 0;
+  while (i < score_index_vec.size()) {
+    const uint32_t idx = score_index_vec[i].second;
     if (decoded_bboxes_.find(idx) == decoded_bboxes_.end()) {
-      DecodeBBox(bboxes, idx, true);
+      for (auto it = bbox_layer_infos.begin(); it != bbox_layer_infos.end();
+           ++it) {
+        if (idx >= it->second.index_begin &&
+            idx < it->second.index_begin + it->second.index_size) {
+          DecodeBBox(it->second.ptr + (idx - it->second.index_begin) *
+                                          it->second.bbox_single_size,
+                     idx, it->second.scale, true);
+          break;
+        }
+      }
     }
+
     boxes.push_back(decoded_bboxes_[idx]);
-    scores.push_back(sc.first);
-    resultmap[i++] = idx;
+    scores.push_back(score_index_vec[i].first);
+    resultmap[i] = idx;
+    ++i;
   }
+
   applyNMS(boxes, scores, nms_threshold_, confidence_threshold_[label],
            results);
   for (auto& r : results) {
     indices->push_back(resultmap[r]);
   }
 }
-template void SSDdetector::ApplyOneClassNMS(
-    const int (*bboxes)[6], const float* conf_data, int label,
-    const vector<pair<float, int>>& score_index_vec, vector<int>* indices);
-template void SSDdetector::ApplyOneClassNMS(
-    const int8_t (*bboxes)[6], const float* conf_data, int label,
-    const vector<pair<float, int>>& score_index_vec, vector<int>* indices);
-
 void SSDdetector::GetOneClassMaxScoreIndex(
     const float* conf_data, int label,
     vector<pair<float, int>>* score_index_vec) {
@@ -226,12 +233,12 @@ void SSDdetector::GetMultiClassMaxScoreIndexMT(
     if (worker.joinable()) worker.join();
 }
 
-template <typename T>
-void SSDdetector::DecodeBBox(const T (*bboxes)[6], int idx, bool normalized) {
+void SSDdetector::DecodeBBox(const int8_t* bbox_ptr, int idx, float scale,
+                             bool normalized) {
   vector<float> bbox(6, 0);
   // scale bboxes
-  transform(bboxes[idx], bboxes[idx] + 6, bbox.begin(),
-            std::bind2nd(multiplies<float>(), scale_));
+  transform(bbox_ptr, bbox_ptr + 6, bbox.begin(),
+            std::bind2nd(multiplies<float>(), scale));
   for (int i = 0; i < 1; i++) {
     // LOG(INFO) << "lalalal========" << bbox[0] << " " << bbox[1] << " " <<
     // bbox[2] << " " << bbox[3] << " " << bbox[4];
@@ -246,7 +253,7 @@ void SSDdetector::DecodeBBox(const T (*bboxes)[6], int idx, bool normalized) {
                 plus<float>());
     } else {
       // variance is encoded in bbox, we need to scale the offset accordingly.
-      transform(bbox.begin(), bbox.end(), prior_bbox->begin() + 4, bbox.begin(),
+      transform(bbox.begin(), bbox.end(), prior_bbox->begin() + 6, bbox.begin(),
                 multiplies<float>());
       transform(bbox.begin(), bbox.end(), prior_bbox->begin(), bbox.begin(),
                 plus<float>());
@@ -312,10 +319,6 @@ void SSDdetector::DecodeBBox(const T (*bboxes)[6], int idx, bool normalized) {
   decoded_bboxes_.emplace(idx, std::move(bbox));
 }
 
-template void SSDdetector::DecodeBBox(const int (*bboxes)[6], int idx,
-                                      bool normalized);
-template void SSDdetector::DecodeBBox(const int8_t (*bboxes)[6], int idx,
-                                      bool normalized);
 }  // namespace multitask
 }  // namespace ai
 }  // namespace vitis

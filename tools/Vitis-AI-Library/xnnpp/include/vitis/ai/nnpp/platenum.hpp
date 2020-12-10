@@ -25,13 +25,13 @@ namespace ai {
  *@brief Struct of the result of the platenum network.
  */
 struct PlateNumResult {
-  /// width of input image.
+  /// Width of input image.
   int width;
-  /// height of input image.
+  /// Height of input image.
   int height;
-  /// the plate number
+  /// The plate number
   std::string plate_number;
-  /// the plate color, Blue / Yellow
+  /// The plate color, Blue / Yellow
   std::string plate_color;
 };
 

@@ -37,7 +37,7 @@ namespace ai {
  *
  * Input is an image (cv::Mat).
  *
- * Output road line type and points maked road line.
+ * Output road line type and points marked road line.
  *
  * @note The input image size is 640x480
  *
@@ -105,13 +105,13 @@ class RoadLine {
  public:
   /**
    * @brief Function to get InputWidth of the lanedetect network (input image
-   * cols).
+   * columns).
    *
    * @return InputWidth of the lanedetect network.
    */
   virtual int getInputWidth() const = 0;
   /**
-   * @brief Function to get InputHight of the lanedetect network (input image
+   * @brief Function to get InputHeight of the lanedetect network (input image
    * rows).
    *
    * @return InputHeight of the lanedetect network.
@@ -120,7 +120,7 @@ class RoadLine {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    *@return Batch size.

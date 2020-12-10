@@ -25,30 +25,30 @@ namespace vitis {
 namespace ai {
 
 /**
- * @brief Base class for segmentation 3D object data in vector<float> mode.
+ * @brief Base class for segmentation 3D object data in the vector<float> mode.
  *
    @endcode
  *
  */
 struct Segmentation3DResult {
-  /// width of the network model
+  /// Width of the network model.
   int width;
-  /// height of the network model
+  /// Height of the network model.
   int height;
-  /// input 3D object data
+  /// Input 3D object data.
   std::vector<int> array;
 };
 
 class Segmentation3D {
  public:
   /**
-   * @brief Factory function to get a instance of derived classes of class
+   * @brief Factory function to get an instance of derived classes of class
    * 3Dsegmentation.
    *
    * @param need_mean_scale_process Normalize with mean/scale or not, true by
    * default.
    *
-   * @returen A instance of the PlaterDatect class.
+   * @return An instance of the 3Dsegmentation class.
    */
   static std::unique_ptr<Segmentation3D> create(const std::string &model_name,
                                              bool need_mean_scale_process = false);
@@ -68,23 +68,23 @@ class Segmentation3D {
 
  public:
   /**
-   * @brief Function to get InputWidth of the 3D segmentation network 
+   * @brief Function to get InputWidth of the 3D segmentation network. 
    *
-   * @return InputWidth of the 3D segmentation network
+   * @return InputWidth of the 3D segmentation network.
    */
   virtual int getInputWidth() const = 0;
 
   /**
-   *@brief Function to get InputHeight of the 3D segmentation network
+   *@brief Function to get InputHeight of the 3D segmentation network.
    *
-   *@return InputHeight of the 3D segmentation network
+   *@return InputHeight of the 3D segmentation network.
    */
   virtual int getInputHeight() const = 0;
 
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note Different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -92,19 +92,19 @@ class Segmentation3D {
   virtual size_t get_input_batch() const = 0;
 
   /**
-   * @brief Function of get running result of the 3D segmentation network
+   * @brief Function of get running result of the 3D segmentation network.
    *
-   * @param array Input data of 3D object data in vector<float> mode
+   * @param array Input data of 3D object data in vector<float> mode.
    *
-   * @return Segmentation3DResult
+   * @return Segmentation3DResult.
    */
   virtual Segmentation3DResult run(std::vector<std::vector<float>>& array) = 0;
   /**
-   * @brief Function of get running result of the 3D segmentation network in batch mode
+   * @brief Function of get running result of the 3D segmentation network in batch mode.
    *
-   * @param arrays  vector of Input data of 3D object data in vector<float> mode
+   * @param arrays  A vector of Input data of 3D object data in vector<float> mode.
    *
-   * @return vector of Segmentation3DResult
+   * @return A vector of Segmentation3DResult.
    */
   virtual std::vector<Segmentation3DResult> run(std::vector<std::vector<std::vector<float>>>& arrays) = 0;
 };

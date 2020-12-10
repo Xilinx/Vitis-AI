@@ -8,7 +8,8 @@
 - [4 WAA-TRD run](#4-WAA-TRD-run)
     - [4.1 Overview](#4.1-Overview)
     - [4.2 Design Files](#42-design-files)
-    - [4.3 Build and run the application](#43-build-and-run-the-application)
+    - [4.3 (Optional) Cross-compile WAA-TRD example](#43-(Optional)-Cross-compile-WAA-TRD-example)
+    - [4.4 Build and run the application](#44-build-and-run-the-application)
 - [5 Build with new Pre-processing Accelerator](#5-Build-with-new-Pre-processing-Accelerator)    
 
 
@@ -92,10 +93,57 @@ This tutorial contents information about:
 
 ### 4.2 Design files
 Source  files location for DPU & Pre-processor IP is as below
-- DPU IP: `Vitis-AI/dsa/DPU-TRD/dpu-ip`
-- Pre-processor IP: `Vitis-AI/dsa/WAA-TRD/accel/classification-pre` & `detection-pre`
+- DPU IP: `~/Vitis-AI/dsa/DPU-TRD/dpu-ip`
+- Pre-processor IP: `~/Vitis-AI/dsa/WAA-TRD/accel/classification-pre` & `detection-pre`
 
-### 4.3 Build and run the application
+### 4.3 (Optional) Cross-compile WAA-TRD example
+* Download the [sdk-2020.2.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2020.2.0.0.sh)
+
+    For bash, same sdk-2020.2.0.0.sh file can be obtaind from here.
+    ```
+    #XCD_SERVER 
+    /group/dphi_software/vitis_ai_library/r1.3/sdk-2020.2.0.0.sh
+    ```
+
+* Install the cross-compilation system environment, follow the prompts to install. 
+
+    **Please install it on your local host linux system, not in the docker system.**
+    ```
+    ./sdk-2020.2.0.0.sh
+    ```
+    Note that the `~/petalinux_sdk` path is recommended for the installation. Regardless of the path you choose for the installation, make sure the path has read-write permissions. 
+Here we install it under `~/petalinux_sdk`.
+
+* When the installation is complete, follow the prompts and execute the following command.
+    ```
+    source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
+    ```
+    Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
+
+* Download the [vitis_ai_2020.2-r1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.0.tar.gz) and install it to the petalinux system.
+    ```
+    tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+    ```
+    For bash, same vitis_ai_2020.2-r1.3.0.tar.gz tar file can be obtaind from here.
+    ```
+    #XCD_SERVER 
+    /group/dphi_software/vitis_ai_library/r1.3/vitis_ai_2020.2-r1.3.0.tar.gz
+    ```
+
+* Cross compile `resnet50_waa` example.
+    ```
+    cd  ~/Vitis-AI/dsa/WAA-TRD/app/resnet50_waa
+    bash -x build.sh
+    ```
+   Cross compile `adas_detection_waa` example.
+    ```
+    cd  ~/Vitis-AI/dsa/WAA-TRD/app/adas_detection_waa
+    bash -x build.sh
+    ``` 	
+    If the compilation process does not report any error and the executable file `resnet50_waa` & `adas_detection_waa` are generated in the respective example folder, then the host environment is installed correctly.
+
+
+### 4.4 Build and run the application
 
 ### Build flow- Build hardware design from sources and run the application.
 - For classification example, please refer to [WAA-TRD/proj/build/classification-pre_DPUv2/README](./proj/build/classification-pre_DPUv2/README.md) file
@@ -104,12 +152,6 @@ Source  files location for DPU & Pre-processor IP is as below
 
 ### Pre-built flow- DPU is pre-built and only pre-processing accelerator is built from sources. 
 
-Download [bin.tar.gz](IN_XHD_SERVER_/wrk/acceleration/users/maheshm/publicDownloadrepo/bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
-
-For bash, same bin.tar.gz file can be obtained from here
-```
-XHD/XSJ/XCO: /wrk/acceleration/users/maheshm/vai_1_3/bin.tar.gz
-```
 
 - For classification example, please refer to [WAA-TRD/proj/pre-built/classification-pre_DPUv2/README](./proj/pre-built/classification-pre_DPUv2/README.md) file
 
@@ -132,4 +174,4 @@ Note that first template parameter is resize INTERPOLATION type.
 
 // 2 - AREA Interpolation
 
- After modifying accel file please follow the section 4.3 to integrate new Pre-processing accelerator with DPU and run classification example.  
+ After modifying accel file please follow the section 4.4 to integrate new Pre-processing accelerator with DPU and run classification example.  

@@ -1,32 +1,35 @@
-This is ssd based video analysis example and it uses unified vitis-ai APIs to run on alveo platforms
+# Video Analysis
 
-### Setup
+This SSD based video analysis example uses unified Vitis-AI APIs to run on Alveo-U200/U250 platforms.
 
-> **Note:** Skip, If you have already run the below steps.
+## Setup
+
+:pushpin: **Note:** Skip, If you have already run the below steps.
 
 Activate Conda Environment
-  ```sh
-  conda activate vitis-ai-caffe
-  ```
 
+```sh
+conda activate vitis-ai-caffe
+```
 Setup the Environment
 
-  ```sh
-  source /workspace/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
-  ```
+```sh
+# Typically, <path-to-vitis-ai> is `/workspace`
+source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+```
 
-### Build
-  ```sh
-  make
-  ```
+## Build
 
-### Run
-  ```sh
-  ./run.sh <video path>
-  ```
+```sh
+make
+```
 
-Input: mp4 video path
+## Run
 
-Output: Detection results saved as jpg images inside output folder in current path
-> **Note:** Application assumes `vitis-ai-caffe` conda is already activated  
+```sh
+./run.sh <video path>
+```
 
+:pushpin: **Note:** User needs to provide the video path or sample video can be downloaded from [here](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz).
+
+The output detection results are saved as `.jpg` images inside output folder in current path.

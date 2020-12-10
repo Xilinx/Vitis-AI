@@ -1,8 +1,0 @@
-ck
-orderedset
-youtube-dl
-pafy
-wget
-requests
-pyarrow
-websocket-client
