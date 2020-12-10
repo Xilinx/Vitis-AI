@@ -31,14 +31,14 @@ If installed properly, the output should provide information on the DPU version 
 
 ### Setup TVM Runtime
 
-The TVM with Vitis AI flow requires the TVM runtime to be installed on the board. Clone the tvm-release repository and run the setup script, as follows:
+The TVM with Vitis AI flow requires the TVM runtime to be installed on the board. Clone the tvm directory from this repository and run the setup script, as follows:
 
 ```sh
-$ cd tvm-release/
+$ cd tvm/
 $ bash zynq_setup.sh
 ```
 
-This script clones the latest compatible TVM repository and builds the TVM runtime. 
+This script clones the latest TVM repository and builds the TVM runtime. 
 
 Note: The Petalinux image does not support "Scipy" package and hence, the zynq_setup.sh will fail during the TVM installation. To circumvent this problem, you need to edit the "$TVM_HOME/python/setup.py" script, to remove 'scipy' from the required installation packages in line 159 and re-run the setup.py script, as follows: 
 
@@ -50,12 +50,12 @@ $ cd "${TVM_HOME}"/python && sudo python3 ./setup.py install
 
 Prior to running a model on the board, you need to compile the model for your target evaluation board and transfer the compiled model on to the board. Please refer to the "compiling_a_model.md" guide for compiling a model using the TVM with Vitis AI flow. 
 
-the example directory includes script to compile and run the model. Once you transfer the compiled model on to the device, you could use the provided script from the examples directory to run the model. Below we present an example of running the mxnet_resnet_18 model using the run_mxnet_resnet_18.py script.
+The examples directory includes script to compile and run the model. Once you transfer the compiled model on to the device, you could use the provided script from the examples directory to run the model. Below we present an example of running the mxnet_resnet_18 model using the run_mxnet_resnet_18.py script.
 
 
 ```sh
 # need sudo to access dpu drivers
-$ sudo python3 mxnet_resent_18.py -f "PATH_TO_COMPILED_MODEL" 
+$ sudo python3 run_mxnet_resent_18.py -f "PATH_TO_COMPILED_MODEL" 
 ```
 
 This script runs the model mxnet_resnet_18 model compiled using the TVM with Vitis AI flow on an image and produce the classification result.
