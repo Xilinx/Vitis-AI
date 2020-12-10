@@ -102,17 +102,21 @@ The DPU for RNN features are:
     $scp -r xcdl190074:/group/dphi_edge/vai-1.3/dpu-for-rnn/models <Your_Path>/dsa/DPU-for-RNN/
     ```
 2. Build rnn docker based on vitis-ai and Launch the docker image.
-    ```    
-    For CPU version, you can use prebuild version in github. For GPU, please firstly build Vitis AI GPU docker.
+    
+    For CPU version, you can use prebuild version in github. For GPU, please firstly build Vitis AI GPU docker. 
     
     To build rnn docker:
-    $cd ../..; docker build --build-arg BASE_IMAGE=<Vitis AI Docker Image> -f dsa/DPU-for-RNN/Dockerfile.rnn -t <YOUR RNN Docker Image>  .
-
+    ```    
+    $cd ../.. 
+    $docker build --build-arg BASE_IMAGE=<Vitis AI Docker Image> -f dsa/DPU-for-RNN/Dockerfile.rnn -t <YOUR RNN Docker Image>  .
     e.g.:
-    $cd ../..; docker build --build-arg BASE_IMAGE="xdock:5000/vitis-ai-gpu:1.3.343" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xdock:5000/vitis-ai-gpu-rnn:1.3.343 . 
-
-    $cd <Your_Path>/dsa/DPU-for-RNN/;bash docker_run.sh <YOUR RNN Docker Image>
-    ```
+    $cd ../..
+    $docker build --build-arg BASE_IMAGE="xdock:5000/vitis-ai-gpu:1.3.343" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xdock:5000/vitis-ai-gpu-rnn:1.3.343 . 
+    ```    
+    To launch the docker image:
+    ```    
+    $cd <Your_Path>/dsa/DPU-for-RNN/
+    $bash docker_run.sh <YOUR RNN Docker Image>
     ```
 3. Setup the Alveo U25 (or U50LV)
     ``` 
