@@ -153,8 +153,9 @@ Please insert SD_CARD on the ZCU102 board.After the linux boot, run:
 
 ```
 % cd /media/sd-mmcblk0p1/adas_detection_waa
-% export XILINX_XRT=/usr
 % cp /media/sd-mmcblk0p1/dpu.xclbin /usr/lib/
+% export XILINX_XRT=/usr
+% echo 1 > /proc/sys/kernel/printk
 % mkdir output
 % ./adas_detection_waa model_zcu102/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel
 

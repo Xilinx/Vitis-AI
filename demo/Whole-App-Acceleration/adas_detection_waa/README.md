@@ -61,23 +61,22 @@ Runtime packages on the board separately.**
   	  ```
 	  cd ~
 	  tar -xzvf waa_system_v1.3.0.tar.gz
-	  cp waa_system_v1.3.0/sd_card_resnet50/* /mnt/sd-mmcblk0p1/
+	  cp waa_system_v1.3.0/sd_card_adasdetection/* /mnt/sd-mmcblk0p1/
 	  cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
 	  ln -s /usr/lib/dpu.xclbin /mnt/dpu.xclbin
-	  cp waa_system_v1.3.0/lib/* /usr/lib/
 	  reboot
   	  ```
 
-* Download test images
+* Download test images	
 
-    Download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
+  For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa/data`
 
-    For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet_test_image.jpg`
+  For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/adas_detection_input.jpg`
 
 * Copy application files to SD card
 
     ```
-	  scp -r Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa  
+	  scp -r Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa  
 	  root@IP_OF_BOARD:~/
     ```
 
