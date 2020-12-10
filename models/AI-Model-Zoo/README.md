@@ -23,7 +23,7 @@ For autonomous driving and ADAS applications, we added 3D point cloud detection 
 
 4.Restructured model list show all model versions that run on all supported Xilinx platforms in more obvious form, and users can download the specific version they need for every model.</br>
 
-## Model Information
+## Model Details
 The following table includes comprehensive information about each model, including application, framework, training and validation dataset, backbone, input size, computation as well as float and quantized precision.
 
 <details>
@@ -142,7 +142,7 @@ For example, `cf_refinedet_coco_360_480_0.8_25G_1.3` is a `RefineDet` model trai
 
 
 ### caffe-xilinx 
-This is a custom distribution of caffe. Please use **caffe-xilinx** to test/finetune the caffe models listed in this page.
+This is a custom distribution of caffe. Please use **caffe-xilinx** to test and finetune the caffe models listed in this page.
 
 ## Model Download
 Please visit our **[model-list]** in this page. You will get downloadlink and MD5 of all the released models, including pre-compiled models running on different platforms.                                 
