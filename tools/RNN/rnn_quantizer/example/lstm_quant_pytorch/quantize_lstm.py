@@ -17,9 +17,9 @@ parser.add_argument('--subset_len',
                     help='subset_len to evaluate model, using the whole validation dataset if it is not set')
 args = parser.parse_args()
 
-from keras.preprocessing import sequence
-from keras.datasets import imdb
-import keras
+from tensorflow.keras.preprocessing import sequence
+from tensorflow.keras.datasets import imdb
+import tensorflow.keras as keras
 from pytorch_nndct.apis import torch_quantizer
 
 #torch.set_default_dtype(torch.double)
