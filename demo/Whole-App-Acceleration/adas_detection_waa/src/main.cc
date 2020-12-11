@@ -182,9 +182,11 @@ void setInputImageForYOLO(float *data, const Mat& frame) {
  *
  * @return none
  */
-void readFrame(vector<string> images){
+void readFrame(vector<string> images, vart::Runner* runner){
+  auto inputTensors = cloneTensorBuffer(runner->get_input_tensors());
+  float* data =
+      new float[shapes.inTensorList[0].size * inputTensors[0]->get_shape().at(0)];
   start_time = chrono::system_clock::now();
-  float *data = new float[256*512*sizeof(float)];
 
   while(true){ 
     if(idxInputImage< images.size()) 
@@ -465,7 +467,7 @@ int main(const int argc, const char** argv) {
                  {"layer81", "layer93", "layer105", "layer117"});
 
   array<thread, 3> threadsList = {
-      thread(readFrame, images), 
+      thread(readFrame, images, runner.get()), 
       thread(displayFrame, images),
       thread(runYOLO, runner.get())
   };
