@@ -97,11 +97,26 @@ The DPU for RNN features are:
     |     |     |---- dpu4rnn_imp.hpp
 
 ##### Quick Start from examples
-1. Download dependent model files from XCD machine.
+1. Install Platform.
+    
+    Alveo U25 Platform:
+    ```
+    xilinx-cmc-u25 2.1.2-2955241
+    xilinx-u25-gen3x8-xdma-base 1-2953517
+    xilinx-u25-gen3x8-xdma-validate 1-2954712
+    ```
+    Alveo U50LV Platform:
+    ```
+    xilinx-cmc-u50-1.0.20-2853996.noarch
+    xilinx-u50lv-gen3x4-xdma-base-2-2902115.noarch
+    xilinx-u50lv-gen3x4-xdma-validate-2-2902115.noarch
+    xilinx-sc-fw-u50-5.0.27-2.e289be9.noarch
+    ```
+2. Download dependent model files from XCD machine.
     ```
     $scp -r xcdl190074:/group/dphi_edge/vai-1.3/dpu-for-rnn/models <Your_Path>/dsa/DPU-for-RNN/
     ```
-2. Build rnn docker based on vitis-ai and Launch the docker image.
+3. Build rnn docker based on vitis-ai and Launch the docker image.
     
     For CPU version, you can use prebuild version in github. For GPU, please firstly build Vitis AI GPU docker. 
     
@@ -118,13 +133,13 @@ The DPU for RNN features are:
     $cd <Your_Path>/dsa/DPU-for-RNN/
     $bash docker_run.sh <YOUR RNN Docker Image>
     ```
-3. Setup the Alveo U25 (or U50LV)
+4. Setup the Alveo U25 (or U50LV)
     ``` 
     $cd scripts
     $source setup_u25.sh # Alveo U25
     $source setup_u50lv.sh # Alveo U50LV
     ```
-4. Execute commands as described in application README files. It indicates that your runs get correct output if it reports the same accurcy number as provided in readme file. 
+5. Execute commands as described in application README files. It indicates that your runs get correct output if it reports the same accurcy number as provided in readme file. 
     - [README: Customer Satisfaction](app/customer_satisfaction/README.md)
     - [README: Imdb Sentiment Detection](app/imdb_sentiment_detection/README.md)
     - [README: Open Information Extraction](app/open_information_extraction/README.md)
