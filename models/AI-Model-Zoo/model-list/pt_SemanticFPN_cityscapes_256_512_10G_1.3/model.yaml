@@ -20,9 +20,9 @@ float ops: 10G
 task: segmentation
 framework: pytorch
 prune: 'no'
-version: 1.2
+version: 1.3
 files:
-- name: pt_fpn(res18)_cityscapes_256_512_10G_1.2
+- name: pt_SemanticFPN_cityscapes_256_512_10G_1.3
   type: float & quantized
   board: GPU
   download link: download link
