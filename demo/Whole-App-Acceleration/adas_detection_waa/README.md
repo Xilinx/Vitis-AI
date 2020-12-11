@@ -76,8 +76,7 @@ Runtime packages on the board separately.**
 * Copy application files to SD card
 
     ```
-	  scp -r Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa  
-	  root@IP_OF_BOARD:~/
+	  scp -r Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa root@IP_OF_BOARD:~/
     ```
 
 
