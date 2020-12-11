@@ -20,9 +20,9 @@ float ops: 45.3G
 task: segmentation
 framework: caffe
 prune: 'no'
-version: 1.2
+version: 1.3
 files:
-- name: cf_FPN-resnet18_EDD_320_320_45.3G_1.2
+- name: cf_FPN-resnet18_EDD_320_320_45.3G_1.3
   type: float & quantized
   board: GPU
   download link: download link
