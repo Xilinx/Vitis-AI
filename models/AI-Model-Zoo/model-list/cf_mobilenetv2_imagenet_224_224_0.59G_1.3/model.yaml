@@ -22,7 +22,7 @@ framework: caffe
 prune: 'no'
 version: 1.3
 files:
-- name: cf_mobilenetv2_imagenet_224_224_0.59G_13
+- name: cf_mobilenetv2_imagenet_224_224_0.59G_1.3
   type: float & quantized
   board: GPU
   download link: download link
