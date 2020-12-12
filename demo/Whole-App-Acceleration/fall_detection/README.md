@@ -24,7 +24,7 @@ source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
 #### Build common kernels
 ```sh
 cd ${VAI_ALVEO_ROOT}/../tools/AKS
-./cmake-kernels.sh --clean --dpu=dpucadx8g
+./cmake-kernels.sh --dpu=dpucadx8g --clean
 ```
 
 #### Build fall-detection kernels
@@ -126,7 +126,7 @@ Input passed to `run.sh` (`<directory>`) should contain either videos and/or dir
 
 ## Performance
 
-Performance metrics observed on urfd_dataset:
+Performance metrics observed on urfd_dataset (70 streams):
 * Total timetaken: 97.0882 seconds..
 * Total images processed: 11236
 * Accuracy: 0.961819
@@ -135,6 +135,18 @@ Performance metrics observed on urfd_dataset:
 * FAR/FPR: 0.0408972
 * MDR/FNR: 0.00671893
 * Throughput (fps): 115.73
+
+Following table shows the comparison of end-to-end application's throughput with **OpenCV's algorithms** on CPU against accelerated Dense Non-pyramidal Optical Flow on FPGA on `single stream`.
+
+**Note that Performance numbers are computed by processing each stream (image directory) asynchronously. The overall performance of the application depends on the available system resources.**
+
+| Fall detection | E2E Throughput (FPS) | Improvement in throughput with accelerated<br>Dense Non-Pyramidal Lucas Kanade |
+|:-:|:-:|:-:|
+| hardware accelerated<br>Dense Non-Pyramidal<br>Lucas-Kanade | 71.2248 | - |
+| OpenCV's Lucas-Kanade<br>(1 thread) | 63.4983 | 12.17 % |
+| OpenCV's Farneback<br>(1 thread) | 24.2314 | 193.93 % |
+| OpenCV's Farneback<br>(3 threads) | 64.2677 | 10.82 % |
+| OpenCV's DualTVL1<br>(1 thread) | 3.43664 | 1972.5 % |
 
 
 ## Write prediction probabilities to video
