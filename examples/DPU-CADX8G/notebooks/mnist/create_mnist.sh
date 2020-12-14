@@ -25,8 +25,8 @@ rm -rf ./mnist_test_${BACKEND}
 
 export LD_LIBRARY_PATH=/opt/caffe/build/lib:$LD_LIBRARY_PATH
 
-./convert_mnist_data.bin ./train-images-idx3-ubyte ./train-labels-idx1-ubyte ./mnist_train_${BACKEND} --backend=${BACKEND}
-./convert_mnist_data.bin ./t10k-images-idx3-ubyte ./t10k-labels-idx1-ubyte ./mnist_test_${BACKEND} --backend=${BACKEND}
+convert_mnist_data ./train-images-idx3-ubyte ./train-labels-idx1-ubyte ./mnist_train_${BACKEND} --backend=${BACKEND}
+convert_mnist_data ./t10k-images-idx3-ubyte ./t10k-labels-idx1-ubyte ./mnist_test_${BACKEND} --backend=${BACKEND}
 
 echo "Done."
 
