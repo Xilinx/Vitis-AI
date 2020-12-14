@@ -14,7 +14,7 @@ Targeting Alveo cards with Vitis-AI for AI workloads requires the installation o
 While it is possible to install all the software components individually, a script has been provided to automatically install them in one-shot.
 
 ```sh
-cd <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/packages
+cd <path-to-vitis-ai>/setup/alveo/u200_u250/packages
 # Run install script as root
 sudo su
 ./install.sh

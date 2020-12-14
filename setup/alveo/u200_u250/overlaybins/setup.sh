@@ -13,6 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if [[ "$CONDA_DEFAULT_ENV" = "base" ]]; then
+  echo "ERROR: Setup not complete. Please activate conda environment and rerun setup."
+  return
+fi
+
+
 export VAI_ALVEO_ROOT="$( readlink -f "$( dirname "${BASH_SOURCE[0]}" )/../../../../examples" )"
 
 echo "------------------"
@@ -76,8 +82,8 @@ export OMP_NUM_THREADS=4
 export MKL_NUM_THREADS=4
 export XBLAS_NUM_PREP_THREADS=4
 
-export XRT_INI_PATH=${VAI_ALVEO_ROOT}/../setup/alveo/DPU-CADX8G/overlaybins/xrt.ini
-
+export XRT_INI_PATH=${VAI_ALVEO_ROOT}/../setup/alveo/u200_u250/overlaybins/xrt.ini
+export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8
 ##############################
 # Enable XILINX_XRT
 ##############################

@@ -36,7 +36,7 @@ find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xa
  To run:
  1. `conda activate vitis-ai-caffe`
 
- 2. `source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh`
+ 2. `source <path-to-vitis-ai>/setup/alveo/u200_u250/overlaybins/setup.sh`
 
  3. `cd $VAI_ALVEO_ROOT/DPU-CADX8G/yolo`
 

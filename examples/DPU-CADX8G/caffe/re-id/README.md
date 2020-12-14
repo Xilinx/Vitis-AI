@@ -36,7 +36,7 @@ data/
 
   ```sh
   # Typically, <path-to-vitis-ai> is `/workspace`
-  source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+  source <path-to-vitis-ai>/setup/alveo/u200_u250/overlaybins/setup.sh
   ```
 
 ### Quantize, compile and generate subgraph prototxt

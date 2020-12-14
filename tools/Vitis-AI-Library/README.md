@@ -277,7 +277,7 @@ cd alveo_xclbin-1.3.0/U50lv-V3ME/1E300M
 sudo cp dpu.xclbin /opt/xilinx/overlaybins/
 export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpu.xclbin
 ```
-Note that for `DPUCAHX8L`, please refer to [XBulter Installation](../../setup/alveo/DPU-CADX8G/packages) to install `XBulter`. And then add the following U50 and U50lv configurations into `/etc/xbutler/xbutler.config`.
+Note that for `DPUCAHX8L`, please refer to [XBulter Installation](../../setup/alveo/u200_u250/packages) to install `XBulter`. And then add the following U50 and U50lv configurations into `/etc/xbutler/xbutler.config`.
 ```
 {
 	"DSA_Board_Name": "u50lv",

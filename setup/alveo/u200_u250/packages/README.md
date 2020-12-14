@@ -5,12 +5,12 @@ Requirements: XRT 2019.2+.
 
 Ubuntu:
 ```sh
-cd ${VAI_ALVEO_ROOT}/../setup/alveo/DPU-CADX8G/packages/ubuntu/
+cd ${VAI_ALVEO_ROOT}/../setup/alveo/u200_u250/packages/ubuntu/
 sudo apt install ./xbutler_2.0-6.deb
 ```
 
 CentOS:
 ```sh
-cd ${VAI_ALVEO_ROOT}/../setup/alveo/DPU-CADX8G/packages/centos/
+cd ${VAI_ALVEO_ROOT}/../setup/alveo/u200_u250/packages/centos/
 sudo yum install ./xbutler-2.0.6-1.el7.centos.x86_64.rpms
 ```

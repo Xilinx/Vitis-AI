@@ -59,7 +59,7 @@ if [[ $TESTS != "" ]]; then
     TESTS="-k $TESTS"
 fi
 
-. ../../setup/alveo/DPU-CADX8G/overlaybins/setup.sh > /dev/null # needed to add VAI_ALVEO_ROOT to env
+. ../../setup/alveo/u200_u250/overlaybins/setup.sh > /dev/null # needed to add VAI_ALVEO_ROOT to env
 export PYTHONPATH=${PYTHONPATH}$VAI_ALVEO_ROOT:
 pytest $CAPTURE -rA --hostname $HOSTNAME --port $PORT --wsport $WSPORT \
     --fpgas $FPGAS --benchmark $BENCHMARK --neptune_mode $MODE $TESTS $COV

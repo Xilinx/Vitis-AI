@@ -98,7 +98,7 @@ These examples use **DPUCADX8G** IP for CNN Inference Acceleration on Alveo-U200
 
 ### Setup
 
-Follow [Setup Alveo-U200/U250](../../setup/alveo/DPU-CADX8G/README.md) cards page to setup your cards on the host system (skip if already done).
+Follow [Setup Alveo-U200/U250](../../setup/alveo/u200_u250/README.md) cards page to setup your cards on the host system (skip if already done).
 
 :pushpin: **Note:** Skip, if you have already run the below steps.
 
@@ -110,7 +110,7 @@ conda activate vitis-ai-caffe
 ```sh
 # Setup env
 # Typically, <path-to-vitis-ai> is `/workspace`
-source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+source <path-to-vitis-ai>/setup/alveo/u200_u250/overlaybins/setup.sh
 ```
 
 ### Get Image Dataset

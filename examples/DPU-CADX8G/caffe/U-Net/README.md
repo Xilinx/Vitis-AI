@@ -8,7 +8,7 @@ Please activate Caffe conda environment using the following commands.
 ```
 conda activate vitis-ai-caffe
 # Typically, <path-to-vitis-ai> is `/workspace`
-source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+source <path-to-vitis-ai>/setup/alveo/u200_u250/overlaybins/setup.sh
 cd ${VAI_ALVEO_ROOT}/DPU-CADX8G/caffe/U-Net
 ```
 

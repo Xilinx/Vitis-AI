@@ -66,7 +66,7 @@ For more information about usage of vai_q_caffe, run ‘vai_q_caffe –help’ c
 ### Running DECENT_Q with python <br />
 ```sh
 # Typically, <path-to-vitis-ai> is `/workspace`
-source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh alveo-u200
+source <path-to-vitis-ai>/setup/alveo/u200_u250/overlaybins/setup.sh alveo-u200
 
 # Bring in Quantizer
 from decent import CaffeFrontend as xfdnnQuantizer

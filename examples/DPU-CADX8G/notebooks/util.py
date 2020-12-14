@@ -88,7 +88,7 @@ INPUT_NODES = {
 
 
 
-# Environment Variables (obtained by running "source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh")
+# Environment Variables (obtained by running "source <path-to-vitis-ai>/setup/alveo/u200_u250/overlaybins/setup.sh")
 import os
 IMAGEDIR   = os.environ["HOME"] + "/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/"
 IMAGELIST  = os.environ["HOME"] + "/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val.txt"

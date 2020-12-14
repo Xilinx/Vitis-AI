@@ -38,7 +38,7 @@ if [[ $# -ne 1 ]]; then
     exit 2
 fi
 
-HERE=$(pwd) # Absolute path of current directory
+HERE=$(pwd -P) # Absolute path of current directory
 
 user=`whoami`
 uid=`id -u`

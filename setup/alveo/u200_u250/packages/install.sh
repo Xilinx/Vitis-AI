@@ -160,14 +160,26 @@ echo "Download and Install DSA/Overlaybins"
 echo "----------------------"
 wget $U200_URL -O $U200_INSTALLER && ${INSTALLER} install $U200_INSTALLER -y && rm $U200_INSTALLER
 wget $U250_URL -O $U250_INSTALLER && ${INSTALLER} install $U250_INSTALLER -y && rm $U250_INSTALLER
-wget $OVERLAYBINS_URL -O $OVERLAYBINS_INSTALLER && ${INSTALLER} install $OVERLAYBINS_INSTALLER -y && rm $OVERLAYBINS_INSTALLER
-if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* ]]; then
-  wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && ${INSTALLER} install $XPLUSML_OVERLAYBINS_INSTALLER -y && rm $XPLUSML_OVERLAYBINS_INSTALLER
-elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
-  wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && rpm -ivh --force  $XPLUSML_OVERLAYBINS_INSTALLER && rm $XPLUSML_OVERLAYBINS_INSTALLER
-else
-  echo "Couldn't install WAA overlaybins. Unsupported operating system"
-fi
+#wget $OVERLAYBINS_URL -O $OVERLAYBINS_INSTALLER && ${INSTALLER} install $OVERLAYBINS_INSTALLER -y && rm $OVERLAYBINS_INSTALLER
+#if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* ]]; then
+#  wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && ${INSTALLER} install $XPLUSML_OVERLAYBINS_INSTALLER -y && rm $XPLUSML_OVERLAYBINS_INSTALLER
+#elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
+#  wget $XPLUSML_OVERLAYBINS_URL -O $XPLUSML_OVERLAYBINS_INSTALLER && rpm -ivh --force  $XPLUSML_OVERLAYBINS_INSTALLER && rm $XPLUSML_OVERLAYBINS_INSTALLER
+#else
+#  echo "Couldn't install WAA overlaybins. Unsupported operating system"
+#fi
+
+XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=xdnnv3_xclbins_1_3_0.tar.gz"
+XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
+
+wget $XCLBIN_URL -O $XCLBIN_INSTALLER && tar -xzf $XCLBIN_INSTALLER --directory / && rm $XCLBIN_INSTALLER
+
+XCLBIN_URL="https://web/~bryanloz/https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_3_0.tar.gz"
+XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
+
+wget $XCLBIN_URL -O $XCLBIN_INSTALLER && tar -xzf $XCLBIN_INSTALLER --directory / && rm $XCLBIN_INSTALLER
+
+
 ##############################
 #TODO: detect datacenters
 ##############################

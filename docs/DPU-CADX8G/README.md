@@ -15,7 +15,7 @@ While it is possible to install all the software components individually, a scri
 
 ```sh
 # Typically, <path-to-vitis-ai> is `/workspace`
-cd <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/packages
+cd <path-to-vitis-ai>/setup/alveo/u200_u250/packages
 # Run install script as root
 sudo su
 ./install.sh
