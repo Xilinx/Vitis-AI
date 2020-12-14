@@ -17,11 +17,12 @@ Please download dependent files as following descriptions. For files generated b
     ```
     $wget https://storage.googleapis.com/tensorflow/tf-keras-datasets/imdb.npz
     $wget https://storage.googleapis.com/tensorflow/tf-keras-datasets/imdb_word_index.json
-    $wget https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews
-    $cp ./IMDB.csv <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/IMDB.csv
     $cp ./imdb.npz <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/imdb.npz
     $cp ./imdb_word_index.json <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/imdb_word_index.json
 
+    # Log on to the kaggle web and download the .csv file from https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews.
+    $cp ./IMDB\ Dataset.csv <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/IMDB.csv
+    
     # From the Compiler
     $cd [your_compiler_path]
     $cp ./Instructions/u25_ddr_bin <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/sentiment_0.bin
@@ -57,11 +58,12 @@ Please download dependent files as following descriptions. For files generated b
     ```
     $wget https://storage.googleapis.com/tensorflow/tf-keras-datasets/imdb.npz
     $wget https://storage.googleapis.com/tensorflow/tf-keras-datasets/imdb_word_index.json
-    $wget https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews
-    $cp ./IMDB.csv <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/IMDB.csv
     $cp ./imdb.npz <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/imdb.npz
     $cp ./imdb_word_index.json <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/imdb_word_index.json
 
+    # Log on to the kaggle web and download the .csv file from https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews.
+    $cp ./IMDB\ Dataset.csv <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/IMDB.csv
+    
     # From the Compiler
     $cd [your_compiler_path]
     $cp ./Instructions/config.json <Your_Path>/dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/config.json

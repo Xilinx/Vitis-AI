@@ -145,3 +145,24 @@ The DPU for RNN features are:
     - [README: Customer Satisfaction](app/customer_satisfaction/README.md)
     - [README: Imdb Sentiment Detection](app/imdb_sentiment_detection/README.md)
     - [README: Open Information Extraction](app/open_information_extraction/README.md)
+
+##### Get Re-trained or New RNN Model Running on DPU
+1. Please check if the model is supported by current version RNN tools.
+2. Take the quantization and compilation process.
+3. Run it on DPU. The following table shows registers map for DPU on Alveo U50lv:
+    
+    | Register | Address (32-bit) | Description |
+    |----------|------------------|-------------|
+    | AP_CTRL  | 0x0              | AP_CTRL[0]: ap_start. 1-busy, 0-idle.|
+    |          |                  | AP_CTRL[1]: ap_done. 1-done, clear on first read.|
+    |          |                  | AP_CTRL[2]: ap_idle. 1-idle, 0-busy.|
+    |          |                  | AP_CTRL[3]: ap_ready. 1-ready, 0-busy. |
+    | SOFT_RESET | 0x14           | Reset the DPU, high level activate |
+    | FRAME_LEN | 0x18            | The sequence length of the input sample |
+    | INSTR_BASE_ADDR_H | 0x1C    | The higher 32bits of instructions address in DDR. Shared with model parameter address register |
+    | INSTR_BASE_ADDR_L | 0x20    | The lower 32bits of instructions address in DDR |
+    | MODEL_BASE_ADDR_L | 0x24    | The lower 32bits of model parameters address in DDR |
+    | INPUT_BASE_ADDR_H | 0x28    | The higher 32bits of input address in DDR. Shared with output address register |
+    | INPUT_BASE_ADDR_L | 0x2C    | The lower 32bits of input address in DDR |
+    | OUTPUT_BASE_ADDR_L | 0x30    | The lower 32bits of output address in DDR |
+
