@@ -174,7 +174,7 @@ XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
 
 wget $XCLBIN_URL -O $XCLBIN_INSTALLER && tar -xzf $XCLBIN_INSTALLER --directory / && rm $XCLBIN_INSTALLER
 
-XCLBIN_URL="https://web/~bryanloz/https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_3_0.tar.gz"
+XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_3_0.tar.gz"
 XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
 
 wget $XCLBIN_URL -O $XCLBIN_INSTALLER && tar -xzf $XCLBIN_INSTALLER --directory / && rm $XCLBIN_INSTALLER
