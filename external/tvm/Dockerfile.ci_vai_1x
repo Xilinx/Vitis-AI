@@ -77,10 +77,10 @@ RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
 
 # BUILD TVM
 RUN mkdir "${TVM_HOME}"/build
+ENV LD_LIBRARY_PATH /opt/xilinx/xrt/lib/:$LD_LIBRARY_PATH
 RUN cp "${TVM_HOME}"/cmake/config.cmake "${TVM_HOME}"/build/
 RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
-    #conda activate vitis-ai-tensorflow && \
-    #source /opt/xilinx/xrt/setup.sh && \
+    conda activate vitis-ai-tensorflow && \
     cd "${TVM_HOME}"/build && \
     echo set\(USE_LLVM ON\) >> config.cmake && \
     echo set\(USE_VITIS_AI ON\) >> config.cmake && \
