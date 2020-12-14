@@ -14,4 +14,4 @@
 # limitations under the License.
 set -e
 
-$CAFFE_ROOT/build/tools/caffe train --solver=./lenet_solver.prototxt $@
+caffe train --solver=./lenet_solver.prototxt $@
