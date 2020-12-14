@@ -396,22 +396,32 @@ $conda activate vitis-ai-caffe
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh.
 	Execute the following command to build the libraries all at once.
-4. To build the `DPUCADX8G` supported examples in the AI Library, run as below.
+4. To build the `DPUCADX8G` or `DPUCADF8H` supported examples in the AI Library, run as below.
 ```
 $cd /workspace/Vitis-AI-Library/
+```
+For `DPUCADX8G`:
+```
 $./cmake.sh --clean --type=release --cmake-options=-DCMAKE_PREFIX_PATH=$CONDA_PREFIX --cmake-options=-DENABLE_DPUCADX8G_RUNNER=ON
+```
+For `DPUCADF8H`:
+```
+$./cmake.sh --clean --type=release --cmake-options=-DCMAKE_PREFIX_PATH=$CONDA_PREFIX --cmake-options=-DENABLE_DPUCADF8H_RUNNER=ON
 ```
 This will generate AI libraries and executable files to under `build_dir_default`.
 
 ### Running Vitis AI Library Examples for U200/U250
-1. Download and untar the model directory [vai_lib_u2xx_models.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vai_lib_u200_u250_models.tar.gz) package. 
+1. Download and untar the model package.
 ```
 $cd /workspace/Vitis-AI-Library/
+```
+For `DPUCADX8G`:
+```
 $wget -O vai_lib_u200_u250_models.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vai_lib_u200_u250_models.tar.gz
 $sudo tar -xvf vai_lib_u200_u250_models.tar.gz --absolute-names
 ```
-Note: All models will download to `/usr/share/vitis_ai_library/models` directory. Currently supported networks are classification, facedetect, facelandmark, reid and yolov3.
-2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../alveo/examples/caffe/README.md).
+Note: All models will download to `/usr/share/vitis_ai_library/models` directory. Currently supported networks for `DPUCADX8G` are classification, facedetect, facelandmark, reid and yolov3. And currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.3` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.3`. 
+2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../../examples/DPU-CADX8G/caffe/README.md#setup).
 3. Setup the environment.
 ```
 $source /workspace/alveo/overlaybins/setup.sh
@@ -423,7 +433,6 @@ $HOME/build/build.${taget_info}/${project_name}/test_classification <model_dir> 
 
 Example:
 $~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification inception_v1 <img_path>
-
 ```
 5. Run the classification accuracy test example.
 ```
