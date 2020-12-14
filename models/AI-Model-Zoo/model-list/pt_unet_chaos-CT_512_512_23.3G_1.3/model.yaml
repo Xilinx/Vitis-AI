@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: ce0b3dbb6fa159d085a550454eb832cd
+  checksum: 405cd50cdf1f3312d75d5f41ebba9fc3
 - name: unet_chaos-CT_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-vck190-r1.3.0.tar.gz
-  checksum: 93bf5a8a050319d610564313d980e7d2
+  checksum: fd69fdc124b6b2d844f36c1f2d2684c6
 - name: unet_chaos-CT_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-u50-r1.3.0.tar.gz
-  checksum: 3f0239125dafe39c23a59e2d13f42dd6
+  checksum: 86ee26bf90acfa5762a66e9e53732412
 - name: unet_chaos-CT_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0c585e1724df14731be6044ab9c0fd3d
+  checksum: 9d93eaee414088638150932c62896c5e
 - name: unet_chaos-CT_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

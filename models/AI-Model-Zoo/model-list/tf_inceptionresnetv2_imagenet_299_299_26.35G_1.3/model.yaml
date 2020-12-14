@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: f744f12c4dedbb482b1681c05dc43308
+  checksum: cffcb3bfb6fbbe7423c3c413e8ab3a17
 - name: inception_resnet_v2_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-vck190-r1.3.0.tar.gz
-  checksum: eeb98760de5ebb2dcee6c5a24d18b9c1
+  checksum: 42934efe7e74de9794b6dd229f74a24a
 - name: inception_resnet_v2_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-u50-r1.3.0.tar.gz
-  checksum: 019b0a02904269cc187f8ea383655dd3
+  checksum: 422505ec1b602e2a7622b98013da9d16
 - name: inception_resnet_v2_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: e417c53f160a68b22716ea16d8fbd65a
+  checksum: 79712ed2d845e1e3bc63f6b872513f85
 - name: inception_resnet_v2_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

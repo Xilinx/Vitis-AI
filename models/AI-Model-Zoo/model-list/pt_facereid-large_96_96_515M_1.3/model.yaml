@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 5e14c316ec1503b90c1a2f28fe65f9ac
+  checksum: c7edc707eb982e79951acb38f3824746
 - name: facereid-large_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-vck190-r1.3.0.tar.gz
-  checksum: 8a6af731226be064a99731b9b19b87f7
+  checksum: 41ee454d177a314d6a7f33b606654512
 - name: facereid-large_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50-r1.3.0.tar.gz
-  checksum: db3ea638ad9b697ab33075d8bdc68e93
+  checksum: 187ee4e6917ce4e383b1f29383a73573
 - name: facereid-large_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 7f7a0a43e290d79a48dda11ad56ec98b
+  checksum: 3a28a71602b1dd29b580405baef54298
 - name: facereid-large_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

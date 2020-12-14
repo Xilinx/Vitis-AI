@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 72500de1f8ab4a54d8871e4f06e2d9c7
+  checksum: 51d487b955ae88b760cb03fc6ade0015
 - name: refinedet_VOC_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck190-r1.3.0.tar.gz
-  checksum: 66cd3def331fcf528f4080f891a80f59
+  checksum: 384699008b92cba30401bcb24efadeab
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-r1.3.0.tar.gz
-  checksum: f11d4be393d686245b06ef18c6b1f6e3
+  checksum: d0efd0533a68934e547e8f0c1b602bf8
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: a5d555ae3e3510d58390458bcfa126fc
+  checksum: f3752421fc4403981258ad7535d2f912
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

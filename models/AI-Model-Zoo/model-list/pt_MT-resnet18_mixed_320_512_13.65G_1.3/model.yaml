@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MT-resnet18_mixed_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: edce8ef7e88c0b8b887b71f73d807815
+  checksum: a516c69f32b9c222091d20dd0db89859
 license: license link

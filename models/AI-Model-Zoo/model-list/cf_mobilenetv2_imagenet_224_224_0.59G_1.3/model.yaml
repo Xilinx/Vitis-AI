@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 30b20b68f06363d7823792190d0f2eac
+  checksum: fec8084e502de9148051337c479488a0
 license: license link

@@ -31,20 +31,20 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 40bc8c8510e7a7f0407e8a8f5c3c8baa
+  checksum: 8497e4be2036325b43aef3cd00553849
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck190-r1.3.0.tar.gz
-  checksum: c67ed00614348a437d203ee0d4531ae7
+  checksum: bbf6b662ede3769183e4a9b52a9d2a59
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
-  checksum: ff66d2b5d85dadc4ec197e9ffce96f70
+  checksum: 7ca76ae0900432d639b53c544a0e465a
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50lv-u280-r1.3.0.tar.gz
-  checksum: 18472f3aca16ffb92cd43a86cda07c7b
+  checksum: 9051358ea2efd8a303675e06b42fb2df
 license: license link

@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 10c15e56f331b6c3920ba024b024c5f1
+  checksum: 106f9587ed645faea9b5ec51d68f03b9
 - name: densebox_320_320
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck190-r1.3.0.tar.gz
-  checksum: e89d5f8fa1b5dc1809ec0c9bbe273952
+  checksum: eeddf8db79ef7a03d62da1fa8cab2928
 - name: densebox_320_320
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.0.tar.gz
-  checksum: f1baf963bc4d32f9d796c128c372dfd3
+  checksum: a540e261937de8622a8b3492149e7e6e
 - name: densebox_320_320
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50lv-u280-r1.3.0.tar.gz
-  checksum: cc1df0ebd37a018c2823e457cfbe0392
+  checksum: 9945deefb8476dec49446184cddd191f
 - name: densebox_320_320
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

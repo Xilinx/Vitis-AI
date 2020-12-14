@@ -32,22 +32,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: ea62be63082d11c0bf84e814c231b6e9
+  checksum: df9aa57b2083de50940ece5edb35a017
 - name: face_landmark
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck190-r1.3.0.tar.gz
-  checksum: 52850429c29d436fd0ed8545c6c79b62
+  checksum: 1d407003b2d5f5634ac301094cbe9f7b
 - name: face_landmark
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-r1.3.0.tar.gz
-  checksum: aefea518bec7770d2233c3bc01a2cc08
+  checksum: d1f60b6ad4f4556e57236ab1603c3767
 - name: face_landmark
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0117d005dfab615e9908d43029c44a84
+  checksum: 166845699a04d3487088a5d1e96d00b1
 - name: face_landmark
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

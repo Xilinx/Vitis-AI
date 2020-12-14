@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 371c10a9caabaf306f6903591378bb40
+  checksum: 9dbf27aeef8f62644bc4feb371105ad4
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck190-r1.3.0.tar.gz
-  checksum: 4aeff83eaf1b07eed633e27764d5db40
+  checksum: 528b98d44ae80f53613c165e20bf81d7
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-r1.3.0.tar.gz
-  checksum: 3bee7af285a5bb517156971dfeac2d61
+  checksum: c7568ce39f9addf603b07bcbbaebed59
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: 4e663e4c4ab6c348ffbe9974a3b81ba0
+  checksum: a6638053790ec5ae93aa27e566f9e2f2
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

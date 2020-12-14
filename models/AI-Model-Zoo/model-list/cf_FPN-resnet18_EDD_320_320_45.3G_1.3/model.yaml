@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 6a5b009bca9a1e93747830ab78a813c0
+  checksum: 58834c37a9941c8bd1d106a11cc6ae87
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-vck190-r1.3.0.tar.gz
-  checksum: 7a578bf88bb9736342c702cf95d31119
+  checksum: 753ef8d15d5492993093fbfe846bf0ca
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-r1.3.0.tar.gz
-  checksum: de5a52edfb2780a569259a63f047f542
+  checksum: 076cf77641325a4ea461205851c4e5c7
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50lv-u280-r1.3.0.tar.gz
-  checksum: b9909ade75f8f3147aa3e1c9872b3bae
+  checksum: 5271d2d7712bf0de65dc875a2778640e
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

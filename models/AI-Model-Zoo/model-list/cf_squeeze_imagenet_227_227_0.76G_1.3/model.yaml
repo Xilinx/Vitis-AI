@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 76dcaf39923001e8177becda30db2e5b
+  checksum: 23eb5a1567c3df65effc063f4e0d88d8
 - name: squeezenet
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-vck190-r1.3.0.tar.gz
-  checksum: 54bf80f93fc238367ffb501e7b4fb5f6
+  checksum: a6a6c5bf21f7c25549c7b6f2999fad39
 - name: squeezenet
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-r1.3.0.tar.gz
-  checksum: 1bfdd068195e4203dbfb47330825476a
+  checksum: 4ca21e4d18e979bee7ba305aba05e396
 - name: squeezenet
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50lv-u280-r1.3.0.tar.gz
-  checksum: 3313ebc6acfd2ea0161d42734a08ced6
+  checksum: f4f75ccc77b8aa6a362bbea37dd53cd8
 - name: squeezenet
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

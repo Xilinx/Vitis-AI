@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 2ee58f7a2fe68e170f4c2750f4c5a2b5
+  checksum: dc77b6366a5368dfb5890c7d9b6b7d1d
 - name: personreid-res18_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-vck190-r1.3.0.tar.gz
-  checksum: a21ccb4550916abf9f8db5e77c920086
+  checksum: 421cdc8d1034b35b979d83815414b168
 - name: personreid-res18_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-u50-r1.3.0.tar.gz
-  checksum: 3069dbc7316cc071747126a908e7c9df
+  checksum: f8836543e91eef47bb2ff1d737191bab
 - name: personreid-res18_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: f22d90ad29dbe480c69274fbd1f276f3
+  checksum: 5175c1b0ae037d4ba534d9271d3c1190
 - name: personreid-res18_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

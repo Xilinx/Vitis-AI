@@ -31,20 +31,20 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: ff2fd6f7bd36f77ac1d2d2b4c66f8858
+  checksum: c2eeeb44dd5c5b01e5d6dff5a0dfaf3e
 - name: tiny_yolov3_vmss
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-vck190-r1.3.0.tar.gz
-  checksum: 17f09d2f7572040733c9ac1e59b983a2
+  checksum: be39e3d4fff387564face4d45346931c
 - name: tiny_yolov3_vmss
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-u50-r1.3.0.tar.gz
-  checksum: a8ca59f5ba80514c437259198ba7d058
+  checksum: d2c555a3dacfc2742e78a2a1e633cbbd
 - name: tiny_yolov3_vmss
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-u50lv-u280-r1.3.0.tar.gz
-  checksum: b110af0dc7e2835038730ef83dda638b
+  checksum: 058d81782d35d072fd6834bb070d92c6
 license: license link

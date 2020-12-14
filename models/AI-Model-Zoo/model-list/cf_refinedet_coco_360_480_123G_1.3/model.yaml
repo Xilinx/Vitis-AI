@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: edbed75ec7feccf63d4b8b27fd81d61d
+  checksum: 914ecc09464a0a9001cdf1ea5a71d1c3
 - name: refinedet_baseline
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-vck190-r1.3.0.tar.gz
-  checksum: 0c92eae6b4ae1a8ded0a732ab3ee6981
+  checksum: d96df84078877994a01b8193881bdafe
 - name: refinedet_baseline
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50-r1.3.0.tar.gz
-  checksum: 9db2e2b6c9278d8cbfcc3969bad85ffa
+  checksum: 93c845cb69ae19963d7e1d69fb3af27c
 - name: refinedet_baseline
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50lv-u280-r1.3.0.tar.gz
-  checksum: 3f47a3b7f9c5178a181e07fbe36eb72f
+  checksum: 30863b2bf3fa3cc2b5d344e401945ecd
 - name: refinedet_baseline
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

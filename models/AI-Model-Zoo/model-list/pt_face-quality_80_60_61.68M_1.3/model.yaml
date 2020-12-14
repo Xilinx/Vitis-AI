@@ -32,22 +32,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 976b748039c3801b8c8f772ee6428079
+  checksum: 3982dc2a04b799128d673353724214ba
 - name: face-quality_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck190-r1.3.0.tar.gz
-  checksum: cfd76cd88ffe88775d05b613b5a90a78
+  checksum: 97876f140af110d69792a51b44027274
 - name: face-quality_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-r1.3.0.tar.gz
-  checksum: e59c6ce18826f51324604d6c43f652a1
+  checksum: 85951585925aa008fe81dc80872a00b8
 - name: face-quality_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 5cfc4a642219e14114d244d404315005
+  checksum: 52c2268fdcda04e89ae416db8b7eaed6
 - name: face-quality_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 4916aa924ee1d95846cbdd1d66c07d68
+  checksum: 7a516929483c9cb2cda1be8eaeeed18a
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck190-r1.3.0.tar.gz
-  checksum: 67406167334d9c7d652fe29601089422
+  checksum: bb73f682b746b00aa4b749cb637e8b77
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-r1.3.0.tar.gz
-  checksum: 93c0e6baef01b2965d4cdad31bd648d5
+  checksum: 04ee315321919e1faebe13e448367a39
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0c2dacec63979253cf0d20f734c45fb4
+  checksum: 0669e11fad2e1b3c1b77661b87ece6a6
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

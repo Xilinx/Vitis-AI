@@ -31,7 +31,7 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: d469a34b035e01f669e4c8e95a0dfa81
+  checksum: 5c3ef4516ef9327c290ca34e6155fdd4
 - name: mobilenet_v1_0_5_160_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

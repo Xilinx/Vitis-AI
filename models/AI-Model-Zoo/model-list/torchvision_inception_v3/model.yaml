@@ -23,22 +23,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 9660961d37d0432157aab3b5c75ca937
+  checksum: 0419dd9cf17391fdc7c8ed4d1609382a
 - name: inception_v3_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-vck190-r1.3.0.tar.gz
-  checksum: 3e6354594b9f6ca47a6cbeb1c95fb9e0
+  checksum: 693616f03a9780f1748acaf7b5dffe0b
 - name: inception_v3_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-u50-r1.3.0.tar.gz
-  checksum: 9e88b42dc88e7cff866e7cd58ee53fcb
+  checksum: 6d048cc690597a018ac1093122a48158
 - name: inception_v3_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: e5c7138998cc0114cdd06593abbff4e6
+  checksum: 5cc9782ef8d221fd7f8b8f4b23c2564f
 - name: inception_v3_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

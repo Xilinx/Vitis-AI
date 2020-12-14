@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 1fb2a9861dbfd2ff6af499605f573483
+  checksum: c04716355c42cba8e4175c25fc19fb6d
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-vck190-r1.3.0.tar.gz
-  checksum: 8b5d72ce3b2f3c079ff0f0b892852498
+  checksum: f53577172a81bd5584bf1474f06686c3
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-r1.3.0.tar.gz
-  checksum: 7a0cc5fbb6da648192cd988f1207b15b
+  checksum: 1a351ba262fc78492fa0a015490ed17b
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50lv-u280-r1.3.0.tar.gz
-  checksum: 407b433ba03087fc21844c94f30343f8
+  checksum: 9b584081a75e44bd1453b365a3740c53
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

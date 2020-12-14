@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 1f3b78ef258cd09a1a6d63fb75cf5432
+  checksum: 39c18cbf7aedd87db25562a2b34d491e
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck190-r1.3.0.tar.gz
-  checksum: 5865bd58bc7745b44942077bc6e9c3e0
+  checksum: b10d69f761c7ea9b0ec087e6fde8d4eb
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-r1.3.0.tar.gz
-  checksum: 37aa73b39047c3c67bed98d07a081f78
+  checksum: 6444bd34fa15b14fb5e0fd746f4c2ad5
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50lv-u280-r1.3.0.tar.gz
-  checksum: 4d96b0f262c883f2601fe5169e6d0a6e
+  checksum: db3e6527d3b809954ba4d1352a572207
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

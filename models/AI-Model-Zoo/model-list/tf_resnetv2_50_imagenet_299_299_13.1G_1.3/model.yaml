@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_50_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: dfd6d0ad6b7bb7ca293dce127f2a23f6
+  checksum: e27d07d92dda287a2f2a2736e2602c6e
 license: license link

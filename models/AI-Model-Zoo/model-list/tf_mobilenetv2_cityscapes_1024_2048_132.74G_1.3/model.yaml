@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: c1ab5e411a365eb4245ac7873b81479f
+  checksum: d5740b007289cd8cd583f44de50f00a1
 license: license link

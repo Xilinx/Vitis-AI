@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: dcef35873a7424a9b18c2db5e924287c
+  checksum: 73a8c22500bc9778043e63f1216ab064
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-vck190-r1.3.0.tar.gz
-  checksum: 6a5035712ccbea1a0f5794f5a4e9a6da
+  checksum: 6828ca8863d56c8e5869068c67a18f8d
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50-r1.3.0.tar.gz
-  checksum: b493841dbcb41d645805bf498bc5ae7a
+  checksum: 8db37c1468ecc45d19ff2082da86c84d
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: e85928978d43c738cc7929bdb6b1d912
+  checksum: 0b024e7307178bf4b9d236e18efd46d3
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

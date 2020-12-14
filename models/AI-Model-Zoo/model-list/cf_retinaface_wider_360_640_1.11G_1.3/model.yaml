@@ -31,7 +31,7 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=retinaface-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 25f550327371bbd9118564702c63fded
+  checksum: fcbbdaed69f434e873bf601195f34f1a
 - name: retinaface
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
