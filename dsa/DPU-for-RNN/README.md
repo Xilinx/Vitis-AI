@@ -112,11 +112,13 @@ The DPU for RNN features are:
     xilinx-u50lv-gen3x4-xdma-validate-2-2902115.noarch
     xilinx-sc-fw-u50-5.0.27-2.e289be9.noarch
     ```
-2. Download dependent model files from XCD machine.
+2. Get dependent model files ready.
     ```
-    $scp -r xcdl190074:/group/dphi_edge/vai-1.3/dpu-for-rnn/models <Your_Path>/dsa/DPU-for-RNN/
+    $scp -r xcdl190074:/group/dphi_edge/vai-1.3/dpu-for-rnn/models/* <Your_Path>/dsa/DPU-for-RNN/models/
     ```
-3. Build rnn docker based on vitis-ai and Launch the docker image.
+    Then following [this guide](models/README.md) to get all dependent files ready.
+
+3. Build rnn docker based on vitis-ai and launch the docker image.
     
     For CPU version, you can use prebuild version in github. For GPU, please firstly build Vitis AI GPU docker. 
     
