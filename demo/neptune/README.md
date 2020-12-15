@@ -77,7 +77,7 @@ conda install -y -q -c conda-forge "opencv>=4.1.1" ffmpeg
 pip install youtube-dl pafy wget requests pyarrow orderedset
 
 # libnms.so is also needed for some services. Make sure it's in the PYTHONPATH/site-packages!
-cd $VAI_ALVEO_ROOT/DPU-CADX8G/yolo/nms && make
+cd $VAI_ALVEO_ROOT/DPUCADX8G/yolo/nms && make
 
 # for full testing, you'll need these
 pip install pytest coverage coverage-badge websocket-client
