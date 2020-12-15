@@ -17,8 +17,7 @@ This application demonstrates the acceleration of Lucas-Kanade Dense Non-Pyramid
 ## Setup and Build the Kernels
 ```sh
 conda activate vitis-ai-caffe
-# Typically, <path-to-vitis-ai> is `/workspace`
-source <path-to-vitis-ai>/setup/alveo/u200_u250/overlaybins/setup.sh
+source /vitis_ai_home/setup/alveo/u200_u250/overlaybins/setup.sh
 ```
 
 #### Build common kernels
@@ -136,17 +135,26 @@ Performance metrics observed on urfd_dataset (70 streams):
 * MDR/FNR: 0.00671893
 * Throughput (fps): 115.73
 
-Following table shows the comparison of end-to-end application's throughput with **OpenCV's algorithms** on CPU against accelerated Dense Non-pyramidal Optical Flow on FPGA on `single stream`.
+**Note that the overall performance of the application depends on the available system resources.**
 
-**Note that Performance numbers are computed by processing each stream (image directory) asynchronously. The overall performance of the application depends on the available system resources.**
+URFD dataset has 70 streams, each containing 170 frames on average.
+
+Following table shows the comparison of end-to-end application's throughput with OpenCV Farneback algorithm (dense) on CPU against accelerated Dense Non-pyramidal Optical Flow on FPGA on `70 streams`.
+
+| Fall detection | E2E Throughput (FPS) on 70 streams | Improvement in throughput with accelerated<br>Dense Non-Pyramidal Lucas Kanade |
+|:-:|:-:|:-:|
+| with hardware accelerated<br>Dense Non-Pyramidal<br>Lucas-Kanade | 115.73 | - |
+| with OpenCV's Farneback<br>(1 thread) | 24.0867 | 380.47 % |
+| with OpenCV's Farneback<br>(6 threads) | 112.651 | 2.73 % |
+
+Following table shows the comparison of end-to-end application's throughput with OpenCV Farneback algorithm (dense) on CPU against accelerated Dense Non-pyramidal Optical Flow on FPGA on `single stream`.
+
 
 | Fall detection | E2E Throughput (FPS) | Improvement in throughput with accelerated<br>Dense Non-Pyramidal Lucas Kanade |
 |:-:|:-:|:-:|
 | hardware accelerated<br>Dense Non-Pyramidal<br>Lucas-Kanade | 71.2248 | - |
-| OpenCV's Lucas-Kanade<br>(1 thread) | 63.4983 | 12.17 % |
-| OpenCV's Farneback<br>(1 thread) | 24.2314 | 193.93 % |
-| OpenCV's Farneback<br>(3 threads) | 64.2677 | 10.82 % |
-| OpenCV's DualTVL1<br>(1 thread) | 3.43664 | 1972.5 % |
+| OpenCV Farneback<br>(1 thread) | 24.2314 | 193.93 % |
+| OpenCV Farneback<br>(3 threads) | 64.2677 | 10.82 % |
 
 
 ## Write prediction probabilities to video
