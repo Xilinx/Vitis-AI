@@ -14,7 +14,7 @@
 	- [5.2 Build and Run TRD Flow](#52-build-and-run-trd-flow)
 		- [5.2.1 Build the Hardware Design](#521-build-the-hardware-design)
    		- [5.2.2 Get Json File](#522-get-json-file)
-   		- [5.2.3 Run Resnet50 Example](#523-resnet50-example)
+   		- [5.2.3 Run Resnet50 Example](#523-run-resnet50-example)
 	- [5.3 Configurate the DPU](#3-configurate-the-dpu)
 		- [5.3.1 Set the DPU Core Number](#531-set-dpu-core-number)
 		- [5.3.2 Modify the Parameters](#532-modify-the-parameters)
@@ -157,8 +157,6 @@ DPU_TRD 
     - Rev D2: SW6[4:1] - **on, off on, off**
 
 
-
-To run the pre-built SD card image , follow the instructions on [5.2.3](#523-run-flow-tutorial) in this page
 
 ### 5.2 Build and Run Flow
 
