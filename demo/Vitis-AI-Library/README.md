@@ -215,7 +215,7 @@ For `DPUCAHX8L`, take `U50lv` as an example.
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
 tar -xzvf alveo_xclbin-1.3.0.tar.gz
-cd alveo_xclbin-1.3.0/U50lv-V3ME/1E300M
+cd alveo_xclbin-1.3.0/U50lv-V3ME/1E250M
 sudo cp dpu.xclbin /opt/xilinx/overlaybins/
 export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpu.xclbin
 ```
