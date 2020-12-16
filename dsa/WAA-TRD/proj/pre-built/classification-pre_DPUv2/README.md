@@ -118,11 +118,7 @@ Note that
 %	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.0.tar.gz -O resnet50-zcu102_zcu104-r1.3.0.tar.gz
 %	tar -xzvf resnet50-zcu102_zcu104-r1.3.0.tar.gz
 ```
-For bash, same *resnet50-zcu102_zcu104-r1.3.0.tar.gz* model file can be obtained from here.
-```
-#XCD server
-/group/dphi_software/vitis_ai_library/r1.3/xilinx_model_zoo_1.3.0-r186/resnet50-zcu102_zcu104-r1.3.0.tar.gz
-```
+
 ## 2.5 Run Resnet50 Example
 This part is about how to run the Resnet50 example on zcu102 board.
 
