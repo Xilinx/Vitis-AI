@@ -21,14 +21,14 @@ Vitis AI is composed of the following key components:
 * **AI Profiler** - Perform an in-depth analysis of the efficiency and utilization of AI inference implementation.
 * **AI Library** - Offers high-level yet optimized C++ APIs for AI applications from edge to cloud.
 * **DPU** - Efficient and scalable IP cores can be customized to meet the needs for many different applications
-  * For more details on the different DPUs available, please [click here](doc/dpu_naming.md).
+  * For more details on the different DPUs available, please [click here](docs/dpu_naming.md).
 
 
 **Learn More:** [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)  
 
 
-## [See What's New](doc/release-notes/1.x.md)
-- [Release Notes](doc/release-notes/1.x.md)
+## [See What's New](docs/release-notes/1.x.md)
+- [Release Notes](docs/release-notes/1.x.md)
 - Vitis AI Quantizer and DNNDK runtime all open source
 - 14 new Reference Models  AI Model Zoo (Pytorch, Caffe, Tensorflow)
 - VAI Quantizer supports optimized models (pruned)
@@ -46,7 +46,7 @@ Vitis AI is composed of the following key components:
 Two options are available for installing the containers with the Vitis AI tools and resources.
 
  - Pre-built containers on Docker Hub: [xilinx/vitis-ai](https://hub.docker.com/r/xilinx/vitis-ai/tags)
- - Build containers locally with Docker recipes: [Docker Recipes](docker)
+ - Build containers locally with Docker recipes: [Docker Recipes](setup/docker)
 
 
 ### Installation
@@ -99,7 +99,7 @@ To run the GPU docker, use command:
 ./docker_run.sh xilinx/vitis-ai-gpu:latest
 ```
 Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
-More Detail can be found here: [Run Docker Container](doc/install_docker/load_run_docker.md)
+More Detail can be found here: [Run Docker Container](docs/install_docker/load_run_docker.md)
 
 <details>
  <summary><b>Advanced - X11 Support for Examples on Alveo</b></summary>
@@ -153,7 +153,7 @@ More Detail can be found here: [Run Docker Container](doc/install_docker/load_ru
  ### Get Started with Examples
   - [VART](demo/VART/README.md)
   - [Vitis AI Library](demo/Vitis-AI-Library/README.md)
-  - [Alveo U200/U250](alveo/README.md)
+  - [Alveo U200/U250](examples/README.md)
   - [Vitis AI DNNDK samples](demo/DNNDK)
 
 
