@@ -421,7 +421,7 @@ $wget -O vai_lib_u200_u250_models.tar.gz https://www.xilinx.com/bin/public/openD
 $sudo tar -xvf vai_lib_u200_u250_models.tar.gz --absolute-names
 ```
 Note: All models will download to `/usr/share/vitis_ai_library/models` directory. Currently supported networks for `DPUCADX8G` are classification, facedetect, facelandmark, reid and yolov3. And currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.3` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.3`. 
-2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../../examples/DPU-CADX8G/caffe/README.md#setup).
+2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../../examples/DPUCADX8G/caffe/README.md#setup).
 3. Setup the environment.
 ```
 $source /workspace/alveo/overlaybins/setup.sh

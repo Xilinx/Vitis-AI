@@ -14,7 +14,7 @@ Targeting Alveo cards with Vitis-AI for AI workloads requires the installation o
 While it is possible to install all the software components individually, a script has been provided to automatically install them in one-shot.
 
 ```sh
-cd <path-to-vitis-ai>/setup/alveo/u200_u250/packages
+cd /vitis_ai_home/setup/alveo/u200_u250/packages
 # Run install script as root
 sudo su
 ./install.sh
@@ -23,17 +23,17 @@ Then power cycle the system.
 
 ## Examples
 
- - [Jupyter Notebook Tutorials](../../../examples/DPU-CADX8G/notebooks/README.md)
-   - [TensorFlow Image Classification](../../../examples/DPU-CADX8G/notebooks/image_classification_tensorflow.ipynb)
-   - [Caffe Image Classification](../../../examples/DPU-CADX8G/notebooks/image_classification_caffe.ipynb)
-   - [Caffe Object Detection w/ YOLOv2](../../../examples/DPU-CADX8G/notebooks/object_detection_yolov2.ipynb)
+ - [Jupyter Notebook Tutorials](../../../examples/DPUCADX8G/notebooks/README.md)
+   - [TensorFlow Image Classification](../../../examples/DPUCADX8G/notebooks/image_classification_tensorflow.ipynb)
+   - [Caffe Image Classification](../../../examples/DPUCADX8G/notebooks/image_classification_caffe.ipynb)
+   - [Caffe Object Detection w/ YOLOv2](../../../examples/DPUCADX8G/notebooks/object_detection_yolov2.ipynb)
  - Command Line Examples
-   - [TensorFlow ImageNet Benchmark Models](../../../examples/DPU-CADX8G/tensorflow/README.md)
-   - [Caffe ImageNet Benchmark Models](../../../examples/DPU-CADX8G/caffe/README.md)
-   - [Caffe VOC SSD Example](../../../examples/DPU-CADX8G/caffe/ssd-detect/README.md)
-   - [Deployment Mode Examples](../../../examples/DPU-CADX8G/deployment_modes/README.md)
-   - [Face Detect](../../../examples/DPU-CADX8G/face_detect/README.md)
-   - [YOLO](../../../examples/DPU-CADX8G/yolo/README.md)
+   - [TensorFlow ImageNet Benchmark Models](../../../examples/DPUCADX8G/tensorflow/README.md)
+   - [Caffe ImageNet Benchmark Models](../../../examples/DPUCADX8G/caffe/README.md)
+   - [Caffe VOC SSD Example](../../../examples/DPUCADX8G/caffe/ssd-detect/README.md)
+   - [Deployment Mode Examples](../../../examples/DPUCADX8G/deployment_modes/README.md)
+   - [Face Detect](../../../examples/DPUCADX8G/face_detect/README.md)
+   - [YOLO](../../../examples/DPUCADX8G/yolo/README.md)
    - [Other Examples](../../../examples/vitis_ai_alveo_samples)
 
  ## Advanced Applications
