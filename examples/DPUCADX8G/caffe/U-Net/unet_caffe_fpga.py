@@ -31,6 +31,11 @@ matplotlib.use('PS')
 import matplotlib.pyplot as plt
 
 #%% define functions
+class Net(caffe.Net):
+  def __del__(self):
+    for layer in self.layer_dict:
+      if hasattr(self.layer_dict[layer],"fpgaRT"):
+        del self.layer_dict[layer].fpgaRT
 
 def getImageArr( path , width , height ):  
     # load image
@@ -61,8 +66,7 @@ def getSegmentationArr( path , nClasses,  width , height  ):
 model_def = 'xfdnn_deploy.prototxt'
 model_weights = './quantize_results/deploy.caffemodel'
 
-net = caffe.Net(model_def, model_weights, caffe.TEST) 
-
+net = Net(model_def, model_weights, caffe.TEST) 
 
 #%% dataset
 
@@ -159,3 +163,4 @@ plt.imshow(masked_imclass, alpha=0.5 )
 plt.title('masked image')
 # save file
 plt.savefig('./test_output/'+test_list[i]+'_fpga.png')
+del net
