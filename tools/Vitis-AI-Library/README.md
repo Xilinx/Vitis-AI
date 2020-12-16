@@ -381,24 +381,20 @@ Video_input.mp4: The video file's name for input. The user needs to prepare the 
 -s: <num_of_seconds>
 ```
 
-### Setting Up the Host for U200/U250
+### Setting Up the Host for Alveo-U200/Alveo-U250
 
-Assume the docker image has been loaded and up running.
+1. Follow [Setup Alveo-U200/U250](../../setup/alveo/u200_u250/README.md) cards page to setup your cards on the host system (skip if already done).
 
-1. Place the program, data and other files in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
-Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
+:pushpin: **Note:** Please make sure you are already inside Vitis-AI docker
 
-2. Activate conda environment.
+2. Activate conda environment. 
+```sh
+conda activate vitis-ai-caffe
 ```
-$conda activate vitis-ai-caffe
+
+3. To build the `DPUCADX8G` or `DPUCADF8H` supported examples in the AI Library, run as below.
 ```
-3. To modify the library source code, view and modify them under `/workspace/Vitis-AI-Library`.
-	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
-	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh.
-	Execute the following command to build the libraries all at once.
-4. To build the `DPUCADX8G` or `DPUCADF8H` supported examples in the AI Library, run as below.
-```
-$cd /workspace/Vitis-AI-Library/
+$cd /vitis_ai_home/tools/Vitis-AI-Library
 ```
 For `DPUCADX8G`:
 ```
@@ -410,23 +406,23 @@ $./cmake.sh --clean --type=release --cmake-options=-DCMAKE_PREFIX_PATH=$CONDA_PR
 ```
 This will generate AI libraries and executable files to under `build_dir_default`.
 
-### Running Vitis AI Library Examples for U200/U250
+:pushpin: **Note:** To modify the library source code, view and modify them under `/vitis_ai_home/tools/Vitis-AI-Library`. Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`. If you want to change the default output path, please modify the `build_dir_default` in cmake.sh.
+
+### Running Vitis AI Library Examples on Alveo-U200/Alveo-U250 with `DPUCADX8G`:
 1. Download and untar the model package.
-```
-$cd /workspace/Vitis-AI-Library/
-```
-For `DPUCADX8G`:
 ```
 $wget -O vai_lib_u200_u250_models.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vai_lib_u200_u250_models.tar.gz
 $sudo tar -xvf vai_lib_u200_u250_models.tar.gz --absolute-names
 ```
-Note: All models will download to `/usr/share/vitis_ai_library/models` directory. Currently supported networks for `DPUCADX8G` are classification, facedetect, facelandmark, reid and yolov3. And currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.3` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.3`. 
-2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../../examples/DPUCADX8G/caffe/README.md#setup).
+:pushpin: **Note:** All models will download to `/usr/share/vitis_ai_library/models` directory. Currently supported networks for `DPUCADX8G` are classification, facedetect, facelandmark, reid and yolov3. And currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.3` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.3`.
+
+2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../../examples/DPU-CADX8G/caffe/README.md#setup).
 3. Setup the environment.
 ```
-$source /workspace/alveo/overlaybins/setup.sh
-$export LD_LIBRARY_PATH=$HOME/.local/${taget_info}/lib/:$LD_LIBRARY_PATH
+$source ${VAI_HOME}/setup/alveo/u200_u250/overlaybins/setup.sh
+$export LD_LIBRARY_PATH=<vitis-ai-library lib path>:$LD_LIBRARY_PATH
 ```
+:pushpin: **Note:** The default library install path for vitis-ai-library is `$HOME/.local/<target>/lib`.
 4. Run the classification image test example.
 ```
 $HOME/build/build.${taget_info}/${project_name}/test_classification <model_dir> <img_path>
@@ -434,12 +430,29 @@ $HOME/build/build.${taget_info}/${project_name}/test_classification <model_dir> 
 Example:
 $~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification inception_v1 <img_path>
 ```
-5. Run the classification accuracy test example.
+### Running Vitis AI Library Examples on Alveo-U200/Alveo-U250 with `DPUCADF8H`:
+1. Download and untar the model package.
 ```
-$HOME/build/build.${taget_info}/${project_name}/test_classification_accuracy <model_dir> <img_dir_path> <output_file>
+$wget -O inception_v1_tf-u200-u250-r1.3.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-u200-u250-r1.3.0.tar.gz
+$wget -O resnet_v1_50_tf-u200-u250-r1.3.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u200-u250-r1.3.0.tar.gz
+$tar -xvf inception_v1_tf-u200-u250-r1.3.0.tar.gz
+$tar -xvf resnet_v1_50_tf-u200-u250-r1.3.0.tar.gz 
+```
+:pushpin: **Note:** Currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.3` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.3`.
+
+2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../../examples/DPU-CADX8G/caffe/README.md#setup).
+3. Setup the environment.
+```
+$source ${VAI_HOME}/setup/alveo/u200_u250/overlaybins/setup.sh
+$export LD_LIBRARY_PATH=<vitis-ai-library lib path>:$LD_LIBRARY_PATH
+```
+:pushpin: **Note:** The default library install path for vitis-ai-library is `$HOME/.local/<target>/lib`.
+4. Run the classification image test example.
+```
+$HOME/build/build.${taget_info}/${project_name}/test_classification <model_dir> <img_path>
 
 Example:
-$~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification_accuracy inception_v1 <img_dir_path> <output_file>
+$~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification inception_v1_tf <img_path>
 ```
 
 ## Reference
