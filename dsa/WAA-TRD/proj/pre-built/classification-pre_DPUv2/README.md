@@ -64,12 +64,7 @@ We need install the Vitis Core Development Environment.
 
 Download and unzip mpsoc common system & zcu102 base platform package from chapter 1.
 
-Download [bin.tar.gz](IN_XHD_SERVER_/wrk/acceleration/users/maheshm/publicDownloadrepo/bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
-
-For bash, same bin.tar.gz file can be obtained from here
-```
-XHD/XSJ/XCO: /wrk/acceleration/users/maheshm/vai_1_3/bin.tar.gz
-```
+Download [bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
 
 The following tutorials assume that the Vitis and XRT environment variable is set as given below.
 
@@ -101,14 +96,7 @@ Note that
 
 ## 2.3 Installing Vitis AI Runtime on the Evaluation Board
 
-- Download the [Vitis AI Runtime 1.3.0](https::/www.xilinx.com). 
-
-For bash, same Vitis AI Runtime 1.3.0 package can be obtanined from here
-
-```
-#XCD_SERVER
-/group/dphi_software/vitis_ai_library/r1.3/vitis-ai-runtime-1.3.0.tar.gz
-```  
+- Download the  [Vitis AI Runtime 1.3.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.0.tar.gz). 
 	
 - Untar the runtime packet and copy the following folder to the board using scp.
 ```

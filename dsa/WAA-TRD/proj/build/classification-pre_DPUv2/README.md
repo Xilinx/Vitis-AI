@@ -94,14 +94,8 @@ Note that
 
 ## 2.3 Installing Vitis AI Runtime on the Evaluation Board
 
-- Download the [Vitis AI Runtime 1.3.0](https::/www.xilinx.com). 
+- Download the [Vitis AI Runtime 1.3.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.0.tar.gz). 
 
-For bash, same Vitis AI Runtime 1.3.0 package can be obtanined from here
-
-```
-#XCD_SERVER
-/group/dphi_software/vitis_ai_library/r1.3/vitis-ai-runtime-1.3.0.tar.gz
-```
 	
 - Untar the runtime packet and copy the following folder to the board using scp.
 ```
@@ -123,11 +117,7 @@ For bash, same Vitis AI Runtime 1.3.0 package can be obtanined from here
 %	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.0.tar.gz -O resnet50-zcu102_zcu104-r1.3.0.tar.gz
 %	tar -xzvf resnet50-zcu102_zcu104-r1.3.0.tar.gz
 ```
-For bash, same *resnet50-zcu102_zcu104-r1.3.0.tar.gz* model file can be obtained from here.
-```
-#XCD server
-/group/dphi_software/vitis_ai_library/r1.3/xilinx_model_zoo_1.3.0-r186/resnet50-zcu102_zcu104-r1.3.0.tar.gz
-```
+
 ## 2.5 Run Resnet50 Example
 This part is about how to run the Resnet50 example on zcu102 board.
 
