@@ -25,8 +25,8 @@ files:
 - name: dk_yolov3_cityscapes_256_512_0.9_5.46G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov3_cityscapes_256_512_0.9_5.46G_1.3.zip
+  checksum: 926c4c15f6e350ea50ebc793397e91c6
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: zcu102 & zcu104

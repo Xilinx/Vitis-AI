@@ -22,7 +22,7 @@ arch=`uname -p`
 target_info=${os}.${os_version}.${arch}
 install_prefix_default=$HOME/.local/${target_info}
 $CXX --version
-name=resnet50_example
+name=resnet_example
 if [[ "$CXX"  == *"sysroot"* ]];then
 $CXX -O2 -fno-inline -I. \
      -I=${CONDA_PREFIX}/include \

@@ -173,12 +173,13 @@ XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=xdnnv3_xclbi
 XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
 
 wget $XCLBIN_URL -O $XCLBIN_INSTALLER && tar -xzf $XCLBIN_INSTALLER --directory / && rm $XCLBIN_INSTALLER
+sudo chmod -R a+r /opt/xilinx/overlaybins/xdnnv3
 
 XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_3_0.tar.gz"
 XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
 
 wget $XCLBIN_URL -O $XCLBIN_INSTALLER && tar -xzf $XCLBIN_INSTALLER --directory / && rm $XCLBIN_INSTALLER
-
+sudo chmod -R a+r /opt/xilinx/overlaybins/dpuv3int8
 
 ##############################
 #TODO: detect datacenters

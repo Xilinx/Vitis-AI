@@ -25,8 +25,8 @@ files:
 - name: tf_inceptionv3_imagenet_299_299_11.45G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv3_imagenet_299_299_11.45G_1.3.zip
+  checksum: 03027984c92594e5f2d0262a3364410a
 - name: inception_v3_tf
   type: xmodel
   board: zcu102 & zcu104
@@ -50,6 +50,11 @@ files:
 - name: inception_v3_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: bf80c2651e12d3a1c73ff40ef6f58cd2
+- name: inception_v3_tf
+  type: xmodel
+  board: u200 & u250
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u200-u250-r1.3.0.tar.gz
+  checksum: 5a79ee5f1f368f5a5e2c14301fc9cec9
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

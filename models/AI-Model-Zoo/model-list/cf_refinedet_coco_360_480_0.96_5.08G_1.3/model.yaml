@@ -50,6 +50,6 @@ files:
 - name: refinedet_pruned_0_96
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 8b5e940d73afd83eed859d104b7a9d62
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

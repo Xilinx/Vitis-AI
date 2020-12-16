@@ -30,14 +30,7 @@ Runtime packages on the board separately.**
 * Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
-		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.3.0.img.gz) 
-
-		For bash, same sd_card system image can be obtained from here
-
-		```
-		#XCD server
-		/group/dphi_software/vitis_ai_library/r1.3/xilinx-zcu102-dpu-v2020.2-v1.3.0.img.gz
-		``` 
+      [ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.3.0.img.gz)   
 	    
       	Note: The version of the board image should be 2020.2 or above.
 	* Use Etcher software to burn the image file onto the SD card.
@@ -49,7 +42,6 @@ Runtime packages on the board separately.**
 * Update the system image files.
 	* Download the [waa_system_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_v1.3.0.tar.gz).	
 
-		For bash, same tar file can be obtained from `/wrk/acceleration/users/maheshm/vai_1_3/waa_system_v1.3.0.tar.gz`
 	* Copy the `waa_system_v1.3.0.tar.gz` to the board using scp.
 		```
 		scp waa_system_v1.3.0.tar.gz root@IP_OF_BOARD:~/
@@ -69,8 +61,6 @@ Runtime packages on the board separately.**
 * Download test images
 
     Download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
-
-    For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet_test_image.jpg`
 
 * Copy application files to SD card
 
@@ -99,8 +89,6 @@ Runtime packages on the board separately.**
 
 * Download [waa_system_u50_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_u50_v1.3.0.tar.gz) and update the xclbin file.
 
-* For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/waa_system_u50_v1.3.0.tar.gz`
-
 	```
 	tar -xzvf waa_system_u50_v1.3.0.tar.gz
 	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
@@ -109,8 +97,6 @@ Runtime packages on the board separately.**
 	```
 	  cd ${VAI_ALVEO_ROOT}/..
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
-	  For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet50-u50-r1.3.0.tar.gz`
-
 	```	
 	* Install the model package.
 
@@ -122,8 +108,6 @@ Runtime packages on the board separately.**
 * Download test images
 
     Download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
-
-    For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet_test_image.jpg`
 	
 ### Running the application on Alveo U50
 

@@ -25,8 +25,8 @@ files:
 - name: tf_mobilenetEdge1.0_imagenet_224_224_990M_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetEdge1.0_imagenet_224_224_990M_1.3.zip
+  checksum: d3a1f9bc30fb1ca71bf724e740cb4445
 - name: mobilenet_edge_1_0_tf
   type: xmodel
   board: zcu102 & zcu104

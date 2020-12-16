@@ -50,6 +50,6 @@ files:
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 8c9b1bc70531a08833456ff96a1305b3
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

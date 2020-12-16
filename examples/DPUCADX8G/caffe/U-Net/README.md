@@ -109,7 +109,7 @@ Also, it will generate sample output image in 'U-Net/test_output' sub-folder.
 To run the Caffemodel on FPGA, the Caffemodel need to be quantized using the following command.
 
 ```
-DECENT_DEBUG=1
+export DECENT_DEBUG=1
 vai_q_caffe quantize -model ./float/dummy_256.prototxt -weights ./float/unet_U373_256.caffemodel -input_blob "input_1" -method 1 -calib_iter 100
 
 ```

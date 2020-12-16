@@ -25,8 +25,8 @@ files:
 - name: tf2_erfnet_cityscapes_512_1024_54G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_erfnet_cityscapes_512_1024_54G_1.3.zip
+  checksum: 3581c997dcfbb1a73e5562a613b541bc
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: zcu102 & zcu104
@@ -50,6 +50,6 @@ files:
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 79b598df49fb0c872fcc87cab3901b7b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
