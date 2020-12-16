@@ -58,7 +58,7 @@
 
 `define DRAM_DISABLE 
 
-//config URAM
+//config DRAM
 `ifdef DRAM_ENABLE
     `define def_DBANK_IMG_N          1 
     `define def_DBANK_WGT_N          1

@@ -31,10 +31,10 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 0cb99aeb85e42ebc3d181eb9c3812bfe
+  checksum: 178d3dbc7f45198d065c66e6ecd13707
 - name: ssdlite_mobilenet_v2_coco_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

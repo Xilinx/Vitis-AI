@@ -25,31 +25,31 @@ files:
 - name: cf_refinedet_coco_360_480_123G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_refinedet_coco_360_480_123G_1.3.zip
+  checksum: 6d5508e30b03236d758eb663cf67d8d1
 - name: refinedet_baseline
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 92cbfc9de5e4039d0a644e944d44a1b3
+  checksum: 914ecc09464a0a9001cdf1ea5a71d1c3
 - name: refinedet_baseline
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-vck190-r1.3.0.tar.gz
-  checksum: 409f5e060f51d228df1b08ff143a4d59
+  checksum: d96df84078877994a01b8193881bdafe
 - name: refinedet_baseline
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50-r1.3.0.tar.gz
-  checksum: 9e06c971e1be044b3d85340377ac620c
+  checksum: 93c845cb69ae19963d7e1d69fb3af27c
 - name: refinedet_baseline
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50lv-u280-r1.3.0.tar.gz
-  checksum: 54a6dc9d049b53c9db5790f6918989c2
+  checksum: 30863b2bf3fa3cc2b5d344e401945ecd
 - name: refinedet_baseline
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

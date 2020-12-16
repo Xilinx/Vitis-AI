@@ -25,31 +25,31 @@ files:
 - name: cf_facerec-resnet20_112_96_3.5G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_facerec-resnet20_112_96_3.5G_1.3.zip
+  checksum: 5e6a2007e3eba84ecdc5be7c6443524b
 - name: facerec_resnet20
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 39768e444f9bcd5958bd8a8f4fa968da
+  checksum: 25e0a186865b02b5524fac29d4cf3482
 - name: facerec_resnet20
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-vck190-r1.3.0.tar.gz
-  checksum: c03046b59f7e292e8ae83f34260982a9
+  checksum: 1a873a4dcff0644a3bdf7460dfd95105
 - name: facerec_resnet20
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50-r1.3.0.tar.gz
-  checksum: 2a2e1abbeb306bd68c48f33af8df6684
+  checksum: dbd8d8d3582e9919e5d6e56d61536738
 - name: facerec_resnet20
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50lv-u280-r1.3.0.tar.gz
-  checksum: 47c4da8cc7683826b60ca012e69751e6
+  checksum: ef5a203153c2ef9fad2643b37db438d8
 - name: facerec_resnet20
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

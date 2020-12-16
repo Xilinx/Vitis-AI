@@ -56,11 +56,15 @@ void CPUCalcSoftmax(const float *data, size_t size, float *result) {
   assert(data && result);
   double sum = 0.0f;
 
-  for (size_t i = 0; i < size; i++) {
-    result[i] = exp(data[i]);
-    sum += result[i];
+  float max = data[0];
+  for (size_t i = 1; i < size; i++)
+    if (data[i] > max) max = data[i];
 
+  for (size_t i = 0; i < size; i++) {
+    result[i] = exp(data[i] - max);
+    sum += result[i];
   }
+
   for (size_t i = 0; i < size; i++) {
     result[i] /= sum;
   }
@@ -101,10 +105,8 @@ int ClassificationPostProc::exec_async (
   /// Get input and output data shapes
   std::vector <int> inShape  = in[0]->getShape();
 
-  int inBatch    = inShape[0];
-  int inChannels = inShape[1];
-  int inHeight   = inShape[2];
-  int inWidth    = inShape[3];
+  int inBatch = inShape[0];
+  int inSize  = inShape[1] * inShape[2] * inShape[3];
 
   /// Get input data 
   float * inData  = (float*) in[0]->data();
@@ -120,13 +122,13 @@ int ClassificationPostProc::exec_async (
   int *labelsData  = static_cast<int*>(labels->data());
   float *probsData = static_cast<float*>(probs->data());
 
-  float * softmaxOut = new float[inChannels];
+  float * softmaxOut = new float[inSize];
 
   for (int i = 0; i < inBatch; ++i) {
 
     /// Compute SoftMax
-    CPUCalcSoftmax(inData + i * inChannels, inChannels, softmaxOut);
-    std::vector<std::pair<int, float>> topKIndex = TopK(softmaxOut, inChannels, k);
+    CPUCalcSoftmax(inData + i * inSize, inSize, softmaxOut);
+    std::vector<std::pair<int, float>> topKIndex = TopK(softmaxOut, inSize, k);
 
     /// Create TopK for next node
     int idx = 0;

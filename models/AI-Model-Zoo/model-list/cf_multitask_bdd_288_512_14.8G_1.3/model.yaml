@@ -25,31 +25,31 @@ files:
 - name: cf_multitask_bdd_288_512_14.8G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_multitask_bdd_288_512_14.8G_1.3.zip
+  checksum: a21fdc1a476d0c2775ba160b75f43123
 - name: multi_task
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 5306db3eb4f28dd00fb6bf5601caac8e
+  checksum: 2483357e7de454c74287b372827e9268
 - name: multi_task
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck190-r1.3.0.tar.gz
-  checksum: 287619ef0d9429651d7fdaad453d4385
+  checksum: a112d465bbcbe4d1860b78a0c43e9971
 - name: multi_task
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-r1.3.0.tar.gz
-  checksum: 38b49cbc2e4c70ea4e56412103eb1f3a
+  checksum: 6d60fbca917ed1bc45c05400c1d55237
 - name: multi_task
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50lv-u280-r1.3.0.tar.gz
-  checksum: 61a16e088b74dff6f0a217dbfe05c1b5
+  checksum: 6f2d7c304818337fa0bd4ac353a8daab
 - name: multi_task
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

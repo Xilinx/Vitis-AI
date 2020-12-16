@@ -31,20 +31,20 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: dcd189c47837ee7c56b5542f085c08ca
+  checksum: c2eeeb44dd5c5b01e5d6dff5a0dfaf3e
 - name: tiny_yolov3_vmss
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-vck190-r1.3.0.tar.gz
-  checksum: 74b84c263adf22c68168b2e6430dd29a
+  checksum: be39e3d4fff387564face4d45346931c
 - name: tiny_yolov3_vmss
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-u50-r1.3.0.tar.gz
-  checksum: 9dbc2a916eb34263f6673c302a2a684d
+  checksum: d2c555a3dacfc2742e78a2a1e633cbbd
 - name: tiny_yolov3_vmss
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-u50lv-u280-r1.3.0.tar.gz
-  checksum: 521f03cfe4740759b755e4b2fb87f47e
-license: license link
+  checksum: 058d81782d35d072fd6834bb070d92c6
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

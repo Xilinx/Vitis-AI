@@ -25,31 +25,31 @@ files:
 - name: cf_SPnet_aichallenger_224_128_0.54G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_SPnet_aichallenger_224_128_0.54G_1.3.zip
+  checksum: facf65953cd8b161211ccba88d2329e7
 - name: sp_net
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 29605efa97083fcd9317f5a29b917112
+  checksum: 2e85a1947f9647b569eb63a8cb8b37f0
 - name: sp_net
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.3.0.tar.gz
-  checksum: 9a7d0d0871d718550b7d50ff33b77636
+  checksum: 1d10af90d23fd6df172a97e20af8817e
 - name: sp_net
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-r1.3.0.tar.gz
-  checksum: be080aebc54b14312a53f83c84d1aa31
+  checksum: 1c188cb779c030e96683c249b717ab97
 - name: sp_net
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50lv-u280-r1.3.0.tar.gz
-  checksum: 6cb998cd364605b0d5cb71b68fc41dc8
+  checksum: 425b70d99f5c0718fbccc8987c8652c2
 - name: sp_net
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

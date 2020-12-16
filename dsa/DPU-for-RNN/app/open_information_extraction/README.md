@@ -3,18 +3,22 @@
 1. Download the allennlp.
     ```    
     $cd app/open_information_extraction
-    $git clone https://github.com/allenai/allennlp
-    $mv allennlp/* .
-    $git clone https://github.com/gabrielStanovsky/oie-benchmark
+    $git clone https://github.com/allenai/allennlp out_project
+    $cd out_project
+    $git checkout f3083c8fb9150f07e3ca98bb3ea9368a081df028
+    $cd ..
+    $mv out_project/allennlp .
     $git clone https://github.com/gabrielStanovsky/supervised_oie_wrapper
-    $mv supervised_oie_wrapper/* .
-    $mv supervised_oie_wrapper/src/* .
+    $mv supervised_oie_wrapper/src/format_oie.py .
+    $mv supervised_oie_wrapper/src/run_oie.py .
     ```
 2. Copy files for benchmarking.
     ```
-    $cp backup/moveConf.py oie-benchmark
-    $cp backup/benchmark.py oie-benchmark
-    $cp backup/tabReader.py oie-benchmark/oie_readers
+    $git clone https://github.com/gabrielStanovsky/oie-benchmark
+    $cp backup/moveConf.py  oie-benchmark/
+    $cp backup/benchmark.py oie-benchmark/
+    $cp backup/tabReader.py oie-benchmark/oie_readers/
+    $cp backup/test.oie     oie-benchmark/oie_corpus/
     ```
 3. Compile the dpu4rnn library.
     ```

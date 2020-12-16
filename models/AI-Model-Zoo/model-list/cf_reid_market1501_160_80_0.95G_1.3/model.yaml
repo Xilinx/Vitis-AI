@@ -25,31 +25,31 @@ files:
 - name: cf_reid_market1501_160_80_0.95G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_reid_market1501_160_80_0.95G_1.3.zip
+  checksum: 4681135e60df9a2b5d5d53a9c6d5a08b
 - name: reid
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: cb239144e0b7d5559720daef1ad5828d
+  checksum: 09b671d9c07144687b9c17cc9c1dd462
 - name: reid
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-vck190-r1.3.0.tar.gz
-  checksum: fa8fed62f03211bd8611063f0daec43e
+  checksum: 47ab27f9fe24bb34ea26b0b1a1bf6d4e
 - name: reid
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50-r1.3.0.tar.gz
-  checksum: 21af78a664c44124948daefc00c008f9
+  checksum: 2b33184065088f86a599b527381d2c8f
 - name: reid
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50lv-u280-r1.3.0.tar.gz
-  checksum: 2d92a0078cea23b2ce88c2401bc22583
+  checksum: c89dbc7a3f759aab0ab7ab3900ca4721
 - name: reid
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

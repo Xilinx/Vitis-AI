@@ -1,5 +1,5 @@
 ## Tensorflow SSD-Mobilenet Model
-* This application can be run only on Alveo-U280 platform.
+:pushpin: **Note:** This application can be run only on Alveo-U280 platform.
 
 ## Table of Contents
 
@@ -30,7 +30,7 @@ conda activate vitis-ai-caffe
 
 
 ## Running the Application
-- `cd /workspace/demo/Whole-App-Acceleration/ssd_mobilenet/`
+- `cd /vitis_ai_home/demo/Whole-App-Acceleration/ssd_mobilenet/`
 - `make build && make -j`
 - `./run.sh model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.prototxt model_ssd_mobilenet/ssd_mobilenet_v1_coco_tf.xmodel <image directory>`
 
@@ -46,5 +46,7 @@ label, xmin, ymin, xmax, ymax, confidence : 1   316.699 164.823 392.676 374.565 
 
 ### Performance:
 Pre-Process Execution time: 3393 us
+
 DPU Execution time: 1265 us
+
 FPGA Accelerated Post-Processing time: 200 us

@@ -31,20 +31,20 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 735ce5d76de047c1058a62c788d14556
+  checksum: 5d9eb5e3ff17d50cedf4469424fe10de
 - name: yolov2_voc_pruned_0_71
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-vck190-r1.3.0.tar.gz
-  checksum: 788266b89eae1fca88de728f4f38d6f3
+  checksum: c1f2e534230518ca805dfdfcc12d1ba6
 - name: yolov2_voc_pruned_0_71
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-u50-r1.3.0.tar.gz
-  checksum: 5e19471478aeb9909ad8569642a8f48f
+  checksum: afbe87d284a2c485752ea1f3e033c147
 - name: yolov2_voc_pruned_0_71
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-u50lv-u280-r1.3.0.tar.gz
-  checksum: 25be33dcfb9c17e0a91237c88ab3dd4e
-license: license link
+  checksum: baa2a447df6921b8793feccadfe004ec
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -20,7 +20,7 @@ For cloud users, click
 1. New Boards Support:
 	* Versal VCK190
 2. New Model Libraries:
-	* point pillar detection
+	* pointpillars detection
 	* covid19 segmentation
 	* medical detection
 	* medical cell segmentaton
@@ -32,8 +32,10 @@ For cloud users, click
 	* Added 13 new Pytorch models
 	* Added 17 new TensorFlow models, including 5 TensorfFow2 models
 	* Added 6 new Caffe models
-4. Xmodel is Supported for Edge
-5. Pytorch Framework is Supported for Edge
+4. New DPU Support:
+	* DPUCAHX8L
+5. Xmodel is Supported for Edge
+6. Pytorch Framework is Supported for Edge
 
 ## Block Diagram
 
@@ -122,19 +124,13 @@ Note that if you close the current terminal, you need to re-execute the above in
 tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
-5. Cross compile the demo in the AI Library, take `yolov3` as example.
+5. To compile the library sample in the AI Library, take `facedetect` as an example, execute the following command.
 ```
-cd ~/Vitis-AI/examples/Vitis-AI-Library/demo/yolov3
+cd ~/Vitis-AI/demo/Vitis-AI-Library/samples/facedetect
 bash -x build.sh
 ```	
 
-6. To compile the library sample in the AI Library, take `facedetect` as an example, execute the following command.
-```
-cd ~/Vitis-AI/examples/Vitis-AI-Library/samples/facedetect
-bash -x build.sh
-```	
-
-7. To modify the library source code, view and modify them under `~/Vitis-AI/tools/Vitis-AI-Library`.
+6. To modify the library source code, view and modify them under `~/Vitis-AI/tools/Vitis-AI-Library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
 	Execute the following command to build the libraries all at once.
@@ -176,19 +172,20 @@ steps.**
 3. (Optional) How to update Vitis AI Model and install it separately. 	
 
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
-	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
-	* Download the model according to the model's yaml file. Take `resnet_v1_50_tf` of ZCU102 as an example.
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.  
+	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
+	* Download the model according to the model's yaml file. Take `densebox_320_320` of ZCU102 as an example.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz -O resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz -O densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz
 	```	
 	* Copy the downloaded file to the board using scp with the following command. 
 	```
-	  scp resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
+	  scp densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
 	```
-	* Log in to the board (usong ssh or serial port) and install the model package.
+	* Log in to the board (using ssh or serial port) and install the model package.
 	```
-	  tar -xzvf resnet_v1_50_tf-zcu102-zcu104-r1.3.0.tar.gz
-	  cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
+	  tar -xzvf densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz
+	  cp densebox_320_320 /usr/share/vitis_ai_library/models -r
 	```
 
 4. (Optional) How to update Vitis AI Runtime and install them separately. 
@@ -202,14 +199,10 @@ steps.**
 	scp -r vitis-ai-runtime-1.3.0/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
-	* Install the Vitis AI Runtime. Execute the following command in order.
+	* Install the Vitis AI Runtime. Execute the following command.
 	```
 	cd centos
-	rpm -ivh --force libunilog-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libxir-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libtarget-factory-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libvart-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libvitis_ai_library-1.3.0-r<x>.aarch64.rpm
+	bash setup.sh
 	```
 	 	  
 ### Running Vitis AI Library Examples
@@ -223,12 +216,12 @@ the [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/ope
 2. Untar the image and video packages on the target.
 ```
 cd ~
-tar -xzvf vitis_ai_library_r1.3.x_images.tar.gz -C Vitis-AI/examples/Vitis_AI_Library
-tar -xzvf vitis_ai_library_r1.3.x_video.tar.gz -C Vitis-AI/examples/Vitis_AI_Library
+tar -xzvf vitis_ai_library_r1.3.*_images.tar.gz -C Vitis-AI/demo/Vitis-AI-Library
+tar -xzvf vitis_ai_library_r1.3.*_video.tar.gz -C Vitis-AI/demo/Vitis-AI-Library
 ```
 3. Enter the directory of example in target board, take `facedetect` as an example.
 ```
-cd ~/Vitis-AI/examples/Vitis_AI_Library/samples/facedetect
+cd ~/Vitis-AI/demo/Vitis-AI-Library/samples/facedetect
 ```
 4. Run the image test example.
 ```
@@ -264,7 +257,7 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Alveo
 ### Setting Up the Host for U50/U50lv/U280
 
-1. Click [DPUCAHX8H -- the DPU for Alveo Accelerator Card with HBM](../alveo-hbm#dpucahx8h----the-dpu-for-alveo-accelerator-card-with-hbm) to set up the Alveo Card.
+1. Follow [Setup Alveo Accelerator Card with HBM for DPUCAHX8H/L](../../setup/alveo/u50_u50lv_u280/README.md) to set up the Alveo Card.
 
 2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
 as an example.
@@ -280,48 +273,66 @@ For `DPUCAHX8L`, take `U50lv` as an example.
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
 tar -xzvf alveo_xclbin-1.3.0.tar.gz
-cd alveo_xclbin-1.3.0/U50lv-V3ME/1E300M
-sudo cp dpu.xclbin /usr/lib
+cd alveo_xclbin-1.3.0/U50lv-V3ME/1E250M
+sudo cp dpu.xclbin /opt/xilinx/overlaybins/
+export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpu.xclbin
+```
+Note that for `DPUCAHX8L`, please refer to [XBulter Installation](../../setup/alveo/u200_u250/packages) to install `XBulter`. And then add the following U50 and U50lv configurations into `/etc/xbutler/xbutler.config`.
+```
+{
+	"DSA_Board_Name": "u50lv",
+	"Name": "alveo-u50",
+	"SLRCount": 2
+},
+{
+	"DSA_Board_Name": "u50",
+	"Name": "alveo-u50",
+	"SLRCount": 2
+},
+```
+After the installation of `XBulter`, reboot xbulter service.
+```
+sudo service xbutler restart
 ```
 
 3. Select the model for your platform.  
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
-	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.   
-	Click [Xilinx AI Model Zoo](../../../models/AI-Model-Zoo/model-list) to view all the models.
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.  
+	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
 
-	* Download the model according to the model's yaml file. Take `resnet_v1_50_tf` of U50 as an example.
+	* Download the model according to the model's yaml file. Take `densebox_320_320` of U50 as an example.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50-r1.3.0.tar.gz -O resnet_v1_50_tf-u50-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.0.tar.gz -O densebox_320_320-u50-r1.3.0.tar.gz
 	```
 	  For `DPUCAHX8L`, take `U50lv` as an example.  
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz -O resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-u50lv-u280-v3me-r1.3.0.tar.gz -O densebox_320_320-u50-u50lv-u280-v3me-r1.3.0.tar.gz
 	```	  
-	* Install the model package.
+	* Install the model package.  
+	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
 	```
-	  tar -xzvf resnet_v1_50_tf-u50-r1.3.0.tar.gz
-	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
+	  sudo mkdir /usr/share/vitis_ai_library/models
+	```	
+	Then install the model package.
+	```
+	  tar -xzvf densebox_320_320-u50-r1.3.0.tar.gz
+	  sudo cp densebox_320_320 /usr/share/vitis_ai_library/models -r
 	```
 	  For `DPUCAHX8L`, execute the following commands to install the model package.
 	```
-	  tar -xzvf resnet_v1_50_tf-u50lv-u280-v3me-r1.3.0.tar.gz
-	  sudo cp resnet_v1_50_tf /usr/share/vitis_ai_library/models -r
-	```	
-	
+	  tar -xzvf densebox_320_320-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+	  sudo cp densebox_320_320 /usr/share/vitis_ai_library/models -r
+	```
+	  
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
-4. To compile the demo in the AI Library, take `yolov3` as an example.
+4. To compile the AI Library sample, take `classification` as an example, execute the following command.
 ```
-cd /workspace/examples/Vitis-AI-Library/demo/yolov3
-bash -x build.sh
-```	
-5. To compile the AI Library sample, take `classification` as an example, execute the following command.
-```
-cd /workspace/examples/Vitis-AI-Library/samples/classification
+cd /workspace/demo/Vitis-AI-Library/samples/classification
 bash -x build.sh
 ```		
 
-6. To modify the library source code, view and modify them under `/workspace/Vitis-AI/tools/Vitis-AI-Library`.
+5. To modify the library source code, view and modify them under `/workspace/Vitis-AI/tools/Vitis-AI-Library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
 	Execute the following command to build the libraries all at once.
@@ -332,46 +343,37 @@ cd /workspace/tools/Vitis-AI-Library
 
 ### Running Vitis AI Library Examples for U50/U50lv/U280
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
-Thus, `Vitis-AI-Libray` is located in the path of `/workspace/tools/Vitis_AI_Library/` in the docker system. 
+Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/demo/Vitis-AI-Library/` in the docker system. 
 
-**`/workspace/Vitis_AI_Library/` is the path for the following example.**
+**`/workspace/demo/Vitis-AI-Library/` is the path for the following example.**
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
-1. Download the [vitis_ai_library_r1.3.0_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) and [vitis_ai_library_r1.3.0_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz) packages and untar them.
+1. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) and [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz) packages and untar them.
 ```
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz -O vitis_ai_library_r1.3.0_images.tar.gz
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz -O vitis_ai_library_r1.3.0_video.tar.gz
-tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz -C examples/Vitis-AI-Library/
-tar -xzvf vitis_ai_library_r1.3.0_video.tar.gz -C examples/Vitis-AI-Library/
+tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz -C demo/Vitis-AI-Library/
+tar -xzvf vitis_ai_library_r1.3.0_video.tar.gz -C demo/Vitis-AI-Library/
 ```
 2. Enter the directory of sample and then compile it. Take `facedetect` as an example.
 ```
-cd /workspace/examples/Vitis_AI_Library/samples/facedetect
+cd /workspace/demo/Vitis-AI-Library/samples/facedetect
 bash -x build.sh
 ```
 3. Run the image test example.
 ```
 ./test_jpeg_facedetect densebox_320_320 sample_facedetect.jpg
 ```
-4. If you want to run the program in batch mode, which means that the DPU processes multiple
-images at once to prompt for processing performance, you have to compile the entire Vitis AI
-Library according to "Setting Up the Host For Cloud" section. Then the batch program will be generated
-under build_dir_default.Enter build_dir_default, take facedetect as an example,
-execute the following command.
-```
-./test_facedetect_batch densebox_320_320 <img1_url> [<img2_url> ...]
-```
-5. Run the video test example.
+4. Run the video test example.
 ```
 ./test_video_facedetect densebox_320_320 video_input.mp4 -t 8
 
 Video_input.mp4: The video file's name for input. The user needs to prepare the video file by themselves.
 -t: <num_of_threads>
 ```
-
-6. To test the performance of model, run the following command:
+5. To test the performance of model, run the following command:
 ```
 ./test_performance_facedetect densebox_320_320 test_performance_facedetect.list -t 8 -s 60
 
@@ -394,22 +396,32 @@ $conda activate vitis-ai-caffe
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh.
 	Execute the following command to build the libraries all at once.
-4. To build the `DPUCADX8G` supported examples in the AI Library, run as below.
+4. To build the `DPUCADX8G` or `DPUCADF8H` supported examples in the AI Library, run as below.
 ```
 $cd /workspace/Vitis-AI-Library/
+```
+For `DPUCADX8G`:
+```
 $./cmake.sh --clean --type=release --cmake-options=-DCMAKE_PREFIX_PATH=$CONDA_PREFIX --cmake-options=-DENABLE_DPUCADX8G_RUNNER=ON
+```
+For `DPUCADF8H`:
+```
+$./cmake.sh --clean --type=release --cmake-options=-DCMAKE_PREFIX_PATH=$CONDA_PREFIX --cmake-options=-DENABLE_DPUCADF8H_RUNNER=ON
 ```
 This will generate AI libraries and executable files to under `build_dir_default`.
 
 ### Running Vitis AI Library Examples for U200/U250
-1. Download and untar the model directory [vai_lib_u2xx_models.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vai_lib_u200_u250_models.tar.gz) package. 
+1. Download and untar the model package.
 ```
 $cd /workspace/Vitis-AI-Library/
+```
+For `DPUCADX8G`:
+```
 $wget -O vai_lib_u200_u250_models.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vai_lib_u200_u250_models.tar.gz
 $sudo tar -xvf vai_lib_u200_u250_models.tar.gz --absolute-names
 ```
-Note: All models will download to `/usr/share/vitis_ai_library/models` directory. Currently supported networks are classification, facedetect, facelandmark, reid and yolov3.
-2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../alveo/examples/caffe/README.md).
+Note: All models will download to `/usr/share/vitis_ai_library/models` directory. Currently supported networks for `DPUCADX8G` are classification, facedetect, facelandmark, reid and yolov3. And currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.3` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.3`. 
+2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../../examples/DPUCADX8G/caffe/README.md#setup).
 3. Setup the environment.
 ```
 $source /workspace/alveo/overlaybins/setup.sh
@@ -421,7 +433,6 @@ $HOME/build/build.${taget_info}/${project_name}/test_classification <model_dir> 
 
 Example:
 $~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification inception_v1 <img_path>
-
 ```
 5. Run the classification accuracy test example.
 ```

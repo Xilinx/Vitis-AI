@@ -25,31 +25,31 @@ files:
 - name: cf_densebox_wider_320_320_0.49G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_densebox_wider_320_320_0.49G_1.3.zip
+  checksum: 06fdead1f0e7662bc79fbdf76a25be00
 - name: densebox_320_320
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 65154528fb751a21bf00e1928eaee0d6
+  checksum: 106f9587ed645faea9b5ec51d68f03b9
 - name: densebox_320_320
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck190-r1.3.0.tar.gz
-  checksum: 36513d4bfb5728edd07e062b65a32432
+  checksum: eeddf8db79ef7a03d62da1fa8cab2928
 - name: densebox_320_320
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.0.tar.gz
-  checksum: 47bb39707461fab8f530b5c2816a775e
+  checksum: a540e261937de8622a8b3492149e7e6e
 - name: densebox_320_320
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50lv-u280-r1.3.0.tar.gz
-  checksum: dc282d092ab3f8a307e84a2c570a7a36
+  checksum: 9945deefb8476dec49446184cddd191f
 - name: densebox_320_320
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

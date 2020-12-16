@@ -31,25 +31,25 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 9f69944f661f9a9ef63d18cb065b4c73
+  checksum: c0b85b1e3e970ce09bd60822f8268941
 - name: resnet_v1_152_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-vck190-r1.3.0.tar.gz
-  checksum: 61f101a436d848f45696a9febab28749
+  checksum: 2c35c3b7b3f9effd970dd6a63533ac49
 - name: resnet_v1_152_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50-r1.3.0.tar.gz
-  checksum: cd1f9a9e77a8bebf05ed76a054325294
+  checksum: 4fa640f4f970f77f84281459d80d323b
 - name: resnet_v1_152_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: f0ab9c0010eb8b9f311204054ee247b8
+  checksum: 5eeccd4cad89da6363582f66d112f4b6
 - name: resnet_v1_152_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

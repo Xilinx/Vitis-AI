@@ -31,25 +31,25 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 43c90bb60dab0a5b106cca5a9e234785
+  checksum: 73a8c22500bc9778043e63f1216ab064
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-vck190-r1.3.0.tar.gz
-  checksum: e059631c3bdf34e729f8f9b6fee20059
+  checksum: 6828ca8863d56c8e5869068c67a18f8d
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50-r1.3.0.tar.gz
-  checksum: d096c79a94151fc69cc1a83196492cf2
+  checksum: 8db37c1468ecc45d19ff2082da86c84d
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: 7a0f6a160b78c5458683e60174d678f9
+  checksum: 0b024e7307178bf4b9d236e18efd46d3
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

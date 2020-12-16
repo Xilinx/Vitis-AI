@@ -37,4 +37,4 @@ This script runs the model mxnet_resnet_18 model compiled using the TVM with Vit
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. )
 
    [Alveo Setup]: ../../../setup/alveo/README.md
-   [DPUCADX8G]: ../../../setup/alveo/DPU-CADX8G/README.md
+   [DPUCADX8G]: ../../../setup/alveo/u200_u250/README.md

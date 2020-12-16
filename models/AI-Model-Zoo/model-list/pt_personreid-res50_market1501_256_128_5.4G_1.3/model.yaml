@@ -31,25 +31,25 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: aec0857a483ca1dce24bf0dec0d5edf8
+  checksum: 9bedd8b010c6d9224f26748e7c725a42
 - name: personreid-res50_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-vck190-r1.3.0.tar.gz
-  checksum: 1565679c0776aeb90d0818df53647d10
+  checksum: 7a1dcab03db80eaf6e11de440bb42fa9
 - name: personreid-res50_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-r1.3.0.tar.gz
-  checksum: 15ba9392f1888f86931fe5f2775e23e4
+  checksum: f99ca8aa1fb7abd3dcd7352e564866eb
 - name: personreid-res50_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: d365a4b38bc3c911379595cd03458c66
+  checksum: 84e8f533129c1b6aa50ddc8be2395bfa
 - name: personreid-res50_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

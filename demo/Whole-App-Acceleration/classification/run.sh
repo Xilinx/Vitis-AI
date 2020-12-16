@@ -122,11 +122,11 @@ else
   exit 1
 fi
 /opt/xilinx/xrt/bin/xbutil program -p $XCLBIN/xdnn_v3_96x16_2pe_8b_9mb_bank03.xclbin
-WEIGHTS=../../../examples/DPU-CADX8G/deployment_modes/data/${MODEL}_data.h5
+WEIGHTS=../../../examples/DPUCADX8G/deployment_modes/data/${MODEL}_data.h5
 DSP_WIDTH=96
 
-NETCFG=../../../examples/DPU-CADX8G/deployment_modes/data/${MODEL}_8b_${COMPILEROPT}.json
-QUANTCFG=../../../examples/DPU-CADX8G/deployment_modes/data/${MODEL}_8b_xdnnv3.json
+NETCFG=../../../examples/DPUCADX8G/deployment_modes/data/${MODEL}_8b_${COMPILEROPT}.json
+QUANTCFG=../../../examples/DPUCADX8G/deployment_modes/data/${MODEL}_8b_xdnnv3.json
 
 if [ ! -z $CUSTOM_NETCFG ]; then
   NETCFG=$CUSTOM_NETCFG

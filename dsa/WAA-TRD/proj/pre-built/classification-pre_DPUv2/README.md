@@ -19,11 +19,9 @@ Required:
   - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.2)
-  - [zcu102 base platform](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
+  - [zcu102 base platform](https://www.xilinx.com/member/forms/download/design-license-zcu102-base.html?filename=xilinx_zcu102_base_202020_1.zip)
   - [mpsoc common system](https://www.xilinx.com/member/forms/download/xef.html?filename=xilinx-zynqmp-common-v2020.2.tar.gz)
 
-
-###### **Note:** The user can also refer the [zcu102 dpu platform](https://github.com/Xilinx/Vitis_Embedded_Platform_Source/tree/master/Xilinx_Official_Platforms/zcu102_dpu), The github page includes all the details, such as how to generage the zcu102 dpu platform, how to create the SD card after compiling the DPU project.
 ------
 
 
@@ -57,31 +55,36 @@ Required:
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =<Vitis AI path>/WAA-TRD
+%export TRD_HOME =< Vitis-AI-path >/WAA-TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
 
 We need install the Vitis Core Development Environment.
 
+Download and unzip mpsoc common system & zcu102 base platform package from chapter 1.
+
+Download [bin.tar.gz](IN_XHD_SERVER_/wrk/acceleration/users/maheshm/publicDownloadrepo/bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
+
+For bash, same bin.tar.gz file can be obtained from here
+```
+XHD/XSJ/XCO: /wrk/acceleration/users/maheshm/vai_1_3/bin.tar.gz
+```
+
 The following tutorials assume that the Vitis and XRT environment variable is set as given below.
 
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <vitis install path>/Vitis/2020.2/settings64.sh
-% source opt/xilinx/xrt/setup.sh
-% cd $TRD_HOME/
-% gunzip <mpsoc common system>/xilinx-zynqmp-common-v2020.2/rootfs.ext4.gz
-% export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2020.2 
-% export SDX_PLATFORM=<zcu102 base platform path>/xilinx_zcu102_base_202020_1/xilinx_zcu102_base_202020_1.xpfm
-% export SYSROOT=<vitis install path>/internal_platforms/sw/zynqmp/xilinx-zynqmp/sysroots/aarch64-xilinx-linux/
+% source < vitis-install-directory >/Vitis/2020.2/settings64.sh
+% source < part-to-XRT-installation-directory >/setup.sh
+% gunzip < mpsoc-common-system >/xilinx-zynqmp-common-v2020.2/rootfs.tar.gz
+% export EDGE_COMMON_SW=< mpsoc-common-system >/xilinx-zynqmp-common-v2020.2 
+% export SDX_PLATFORM=< zcu102-base-platform-path >/xilinx_zcu102_base_202020_1/xilinx_zcu102_base_202020_1.xpfm
+
 ```
-Note that **mpsoc common system** should be downloaded in the 1 chapter. 
 
-
-
-#### Generate SD card image
+### Generate SD card image
 
 ```
 % cd $TRD_HOME/proj/pre-built/classification-pre_DPUv2
@@ -95,11 +98,12 @@ Note that
 ## 2.2 Installing board image
 - Use Etcher software to burn the sd card image file onto the SD card.
 
+
 ## 2.3 Installing Vitis AI Runtime on the Evaluation Board
 
 - Download the [Vitis AI Runtime 1.3.0](https::/www.xilinx.com). 
 
-For bash, Vitis AI Runtime 1.3.0 can be obtanined from here
+For bash, same Vitis AI Runtime 1.3.0 package can be obtanined from here
 
 ```
 #XCD_SERVER
@@ -111,16 +115,10 @@ For bash, Vitis AI Runtime 1.3.0 can be obtanined from here
 	tar -xzvf vitis-ai-runtime-1.3.0.tar.gz
 	scp -r vitis-ai-runtime-1.3.0/aarch64/centos root@IP_OF_BOARD:~/
 ```
-- Log in to the board using ssh. You can also use the serial port to login.
-- Install the Vitis AI Runtime. Execute the following command in order.
+- Install the Vitis AI Runtime on the evaluation board. Execute the following command.
 ```
 	cd ~/centos
-	rpm2cpio libvart-1.3.0-r<x>.aarch64 | cpio -idmv
-	rpm -ivh --force libunilog-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libxir-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libtarget-factory-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libvart-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libvitis_ai_library-1.3.0-r<x>.aarch64.rpm
+	bash setup.sh
 ```
 
 ## 2.4 Download Model files for Resnet50
@@ -132,33 +130,33 @@ For bash, Vitis AI Runtime 1.3.0 can be obtanined from here
 %	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.0.tar.gz -O resnet50-zcu102_zcu104-r1.3.0.tar.gz
 %	tar -xzvf resnet50-zcu102_zcu104-r1.3.0.tar.gz
 ```
-For bash, model files can be obtained from here
+For bash, same *resnet50-zcu102_zcu104-r1.3.0.tar.gz* model file can be obtained from here.
 ```
 #XCD server
 /group/dphi_software/vitis_ai_library/r1.3/xilinx_model_zoo_1.3.0-r186/resnet50-zcu102_zcu104-r1.3.0.tar.gz
 ```
-
 ## 2.5 Run Resnet50 Example
 This part is about how to run the Resnet50 example on zcu102 board.
 
-Copy any image from `Vitis-AI/dsa/DPU-TRD/app/img/` and copy to `Vitis-AI/dsa/WAA-TRD/app/resnet50_waa/img` 
+Copy any image from [Vitis-AI/dsa/DPU-TRD/app/img](../../../../DPU-TRD/app/img) and copy to `Vitis-AI/dsa/WAA-TRD/app/resnet50_waa/img` 
 
 Copy the directory $TRD_HOME/app/resnet50_waa to the BOOT partition of the SD Card.
 
 Please insert SD_CARD on the ZCU102 board. After the linux boot, run:
 
 ```
-% cd /mnt/sd-mmcblk0p1/resnet50_waa
-% cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
+% cd /media/sd-mmcblk0p1/resnet50_waa
+% cp /media/sd-mmcblk0p1/dpu.xclbin /usr/lib/
 % export XILINX_XRT=/usr
+% echo 1 > /proc/sys/kernel/printk
 % ./resnet50_waa model_zcu102/resnet50/resnet50.xmodel
 
 Expect: 
 Image : ./img/bellpeppe-994958.JPEG
-top[0] prob = 0.986903  name = bell pepper
-top[1] prob = 0.010964  name = acorn squash
-top[2] prob = 0.001484  name = cucumber, cuke
-top[3] prob = 0.000258  name = zucchini, courgette
-top[4] prob = 0.000058  name = necklace
+top[0] prob = 0.990457  name = bell pepper
+top[1] prob = 0.004048  name = acorn squash
+top[2] prob = 0.002455  name = cucumber, cuke
+top[3] prob = 0.000903  name = zucchini, courgette
+top[4] prob = 0.000703  name = strawberry
 
 ```

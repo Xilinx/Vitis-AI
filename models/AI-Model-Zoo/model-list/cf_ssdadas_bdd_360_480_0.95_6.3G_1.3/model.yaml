@@ -25,31 +25,31 @@ files:
 - name: cf_ssdadas_bdd_360_480_0.95_6.3G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdadas_bdd_360_480_0.95_6.3G_1.3.zip
+  checksum: 32b8dd09a80f34717f806cda03bdd991
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: d8ecfebb823b91bd64328d83d1b3108c
+  checksum: 7a516929483c9cb2cda1be8eaeeed18a
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck190-r1.3.0.tar.gz
-  checksum: 55b71af045355940906e906fcbcd21d5
+  checksum: bb73f682b746b00aa4b749cb637e8b77
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-r1.3.0.tar.gz
-  checksum: b09c6950e4502bd5cf7c813c023b5660
+  checksum: 04ee315321919e1faebe13e448367a39
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0ec53d88a7971383309df2f92e430e69
+  checksum: 0669e11fad2e1b3c1b77661b87ece6a6
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

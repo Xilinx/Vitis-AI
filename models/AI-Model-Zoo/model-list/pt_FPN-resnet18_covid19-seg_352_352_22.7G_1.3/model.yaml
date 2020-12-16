@@ -31,25 +31,25 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: edbf5017f8a0a2e46b1ab6a7c310ef62
+  checksum: 82ef3545fad204bfb4b58d73120db208
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-vck190-r1.3.0.tar.gz
-  checksum: 66c0b900f263a3e847a84d58add91b9a
+  checksum: 1a1e97377ccc6aa3512a25638af4ba21
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-r1.3.0.tar.gz
-  checksum: 521efd5aa65f881d5bc4eb467a7fa268
+  checksum: 1f32647b0b0c9996bbea50000ae11f54
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: d41ef4ee45affd39677f8bd5e2d80893
+  checksum: 6f230a5766ae5804f3012985bb7bef78
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

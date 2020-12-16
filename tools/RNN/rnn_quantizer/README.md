@@ -20,7 +20,7 @@ RNN quantizer is designed to quantize recurrent neural network(RNN) models. Curr
     
 ### Quick Start in Docker environment
 
-If you work in Vitis-AI 1.3 docker, there is a conda environment "vitis-ai-lstm", in which RNN quantizer is already installed. 
+RNN tools are only avilable in GPU docker. If you work in Vitis-AI 1.3 GPU docker, there is a conda environment "vitis-ai-lstm", in which RNN quantizer is already installed. 
 In this conda environment, python version is 3.6, pytorch version is 1.4 and tensorflow version is 2.0. You can directly start lstm example without installation steps.
 - Copy example/lstm_quant_pytorch to docker environment
 - Quantize, using a subset(1000 sequences) of validation data for calibration. Because we are in quantize calibration process, the displayed loss and accuracy are meaningless.

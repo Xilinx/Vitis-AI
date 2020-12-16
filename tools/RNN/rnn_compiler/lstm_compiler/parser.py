@@ -174,8 +174,8 @@ class XirParser():
         node_info = {'name':node.get_name(), 'fp':0, 'bn':16, 'signed':True}
         
         if node_type == 'const':           
-            #node_info['shape'] = node.get_output_tensor().ndim
-            node_ndim = len(node.get_output_tensor().ndim)
+            #node_info['shape'] = node.get_output_tensor().dims
+            node_ndim = node.get_output_tensor().ndim
             down_ops = get_down_ops(node, self.__graph)
             if node.get_name() in self.__fix_data:
                 const_data = self.__fix_data[node.get_name()]
@@ -187,26 +187,25 @@ class XirParser():
             if node_ndim == 2:
                 if (len(down_ops) > 0) and (any(op.get_type() in GLOBAL_VARIABLE.MATMUL_OPS for op in down_ops)):
                     node_info['type'] = 'group'
-                    #node_info['shape'] = node.get_output_tensor().ndim
+                    #node_info['shape'] = node.get_output_tensor().dims
                     #node_info['data'] = const_data.tolist()
                 else:
                     node_info['type'] = 'data'
-                    #node_info['shape'] = node.get_output_tensor().ndim[::-1]
+                    #node_info['shape'] = node.get_output_tensor().dims[::-1]
                     #node_info['data'] = const_data.transpose().tolist()
             elif node_ndim == 1:
                 node_info['type'] = 'data'
                 '''
-                node_info['shape'] = [node.get_output_tensor().ndim[0], 1]
+                node_info['shape'] = [node.get_output_tensor().dims[0], 1]
                 node_info['data'] = const_data[:,np.newaxis].tolist()
                 '''
-            #node_info['shape'] = node.get_output_tensor().ndim
-            node_info['shape'] = node.get_output_tensor().ndim
+            node_info['shape'] = node.get_output_tensor().dims
             node_info['data'] = const_data.tolist()
                 
         elif node_type == 'data':
-            #node_info['shape'] = node.get_output_tensor().ndim[::-1]
-            #node_info['shape'] = node.get_output_tensor().ndim
-            node_info['shape'] = node.get_output_tensor().ndim
+            #node_info['shape'] = node.get_output_tensor().dims[::-1]
+            #node_info['shape'] = node.get_output_tensor().dims
+            node_info['shape'] = node.get_output_tensor().dims
             node_info['data'] = np.zeros(node_info['shape'], dtype=np.int64).tolist()
             down_ops = get_down_ops(node, self.__graph)
             if (len(down_ops) > 0) and (any(op.get_type() in GLOBAL_VARIABLE.MATMUL_OPS for op in down_ops)):

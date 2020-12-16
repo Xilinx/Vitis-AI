@@ -31,25 +31,25 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 2d5cef537ad4db70e4a454adc35d1e67
+  checksum: 95c43bf958ee18b53adf5217ba2367c1
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-vck190-r1.3.0.tar.gz
-  checksum: 6b9b74981e25fbf45c312572019203d8
+  checksum: 99bb3ae1b0cee9a09dd940538877cff8
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-u50-r1.3.0.tar.gz
-  checksum: 1c2c20465332f6c954739e53070391b3
+  checksum: 6a704f4f13b5b18e4d6665a0ccaa885b
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: 032a47713bb266705c6565de95cb85c9
+  checksum: b3197feaec614d003c2c134248c47b9f
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -27,31 +27,31 @@ files:
 - name: cf_face-quality_80_60_61.68M_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_face-quality_80_60_61.68M_1.3.zip
+  checksum: a6eefaadda89f051d157cfe651d45c38
 - name: face-quality
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 83f6178d02dc39a1b521c096ae0dd477
+  checksum: 5b80cc0d7a83f85ad2f68367a930ac76
 - name: face-quality
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-vck190-r1.3.0.tar.gz
-  checksum: 2aa7f5c0907ae36f48eee25f7d55a52c
+  checksum: 7b3886f01e872bcb13f07eca55af0b08
 - name: face-quality
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-u50-r1.3.0.tar.gz
-  checksum: 0e47c28a782db775b4b51b10e5e2dfa6
+  checksum: 672bf4f5add9b247043e2568acd1a5d0
 - name: face-quality
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-u50lv-u280-r1.3.0.tar.gz
-  checksum: 94996c926b15f9333703e77c1ba4411d
+  checksum: 9533056a4fdf3fa104d3392cda707831
 - name: face-quality
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
