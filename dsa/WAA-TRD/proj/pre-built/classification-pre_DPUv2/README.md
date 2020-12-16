@@ -126,11 +126,11 @@ For bash, same *resnet50-zcu102_zcu104-r1.3.0.tar.gz* model file can be obtained
 ## 2.5 Run Resnet50 Example
 This part is about how to run the Resnet50 example on zcu102 board.
 
-Copy any image from [Vitis-AI/dsa/DPU-TRD/app/img](../../../../DPU-TRD/app/img) and copy to `Vitis-AI/dsa/WAA-TRD/app/resnet50_waa/img` 
+* Download the images at http://image-net.org/download-images and copy images to `Vitis-AI/dsa/WAA-TRD/app/resnet50_waa/img` 
 
-Copy the directory $TRD_HOME/app/resnet50_waa to the BOOT partition of the SD Card.
+* Copy the directory $TRD_HOME/app/resnet50_waa to the BOOT partition of the SD Card.
 
-Please insert SD_CARD on the ZCU102 board. After the linux boot, run:
+* Please insert SD_CARD on the ZCU102 board. After the linux boot, run:
 
 ```
 % cd /media/sd-mmcblk0p1/resnet50_waa
