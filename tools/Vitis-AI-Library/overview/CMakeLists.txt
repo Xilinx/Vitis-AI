@@ -200,12 +200,15 @@ target_link_libraries(test_performance_yolov4  ${OpenCV_LIBS} ${PROJECT_NAME}::y
 target_link_libraries(test_video_yolov4 ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lglog protobuf::libprotobuf)
 add_executable(test_accuracy_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_accuracy_yolov4_mt.cpp)
 target_link_libraries(test_accuracy_yolov4 ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lpthread -lglog protobuf::libprotobuf)
-install(TARGETS test_jpeg_yolov4 test_accuracy_yolov4 DESTINATION ${SAMPLE_INATLL_PATH}/yolov4/)
+install(TARGETS test_performance_yolov4 test_video_yolov4 test_jpeg_yolov4 test_accuracy_yolov4 DESTINATION ${SAMPLE_INATLL_PATH}/yolov4/)
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_jpeg_yolov4.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_performance_yolov4.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_video_yolov4.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_accuracy_yolov4_mt.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/process_result.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/readme
+  ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/build.sh
   DESTINATION ${SAMPLE_INATLL_PATH}/yolov4/)
 
 

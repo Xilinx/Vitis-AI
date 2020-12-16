@@ -26,31 +26,31 @@ files:
 - name: cf_landmark_celeba_96_72_0.14G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_landmark_celeba_96_72_0.14G_1.3.zip
+  checksum: 125b10f44b0b3b747cb13ac8f1c93161
 - name: face_landmark
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: d901d53b94b5712b85d9f6d3dbd5f179
+  checksum: df9aa57b2083de50940ece5edb35a017
 - name: face_landmark
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck190-r1.3.0.tar.gz
-  checksum: 740a50709cdf563b00686dec85cfe7d6
+  checksum: 1d407003b2d5f5634ac301094cbe9f7b
 - name: face_landmark
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-r1.3.0.tar.gz
-  checksum: f66249dc8761f54ecc816da3435d9add
+  checksum: d1f60b6ad4f4556e57236ab1603c3767
 - name: face_landmark
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0f373e0185daa8646ea5ddcb2813bd97
+  checksum: 166845699a04d3487088a5d1e96d00b1
 - name: face_landmark
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

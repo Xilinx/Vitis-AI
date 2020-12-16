@@ -31,10 +31,10 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 3060700beb387c95dbd3e011f5982e34
+  checksum: 470d8fd34631e0591fbc5b67daeed558
 - name: pointpillars_kitti_12000_1_pt
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 3cef17a9e80ec3a271d2c7c137787a90
-license: license link
+  checksum: 53c90cb22782d357c1ac4bbd8734649d
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

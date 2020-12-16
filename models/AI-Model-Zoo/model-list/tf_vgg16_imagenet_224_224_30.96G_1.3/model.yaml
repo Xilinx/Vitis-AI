@@ -31,25 +31,25 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 5697062c1108791108b55cb5aadac764
+  checksum: fde2a5c5fec4986d305487decf4b2e53
 - name: vgg_16_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-vck190-r1.3.0.tar.gz
-  checksum: aee106f7404699e543d3ca78f5ad399a
+  checksum: f9cab72947a020415a9bbc3fbfe0ea12
 - name: vgg_16_tf
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-r1.3.0.tar.gz
-  checksum: 4ad37490167787636604139ada91a510
+  checksum: bbe29ca6b2e999004e1413349939773a
 - name: vgg_16_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: b5f1ba1e34d0a013af2909e03052e43f
+  checksum: 59e43a8fc0ff2c0807debbfa0f53cd11
 - name: vgg_16_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

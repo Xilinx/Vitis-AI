@@ -59,6 +59,7 @@ option(ENABLE_MNISTCLASSIFICATION "enable mnistclassification" OFF)
 option(ENABLE_MEDICALSEGCELL "enable medicalsegcell" OFF)
 
 option(ENABLE_DPUCADX8G_RUNNER "enable DPUV1 Runner" OFF)
+option(ENABLE_DPUCADF8H_RUNNER "enable DPUV3INT8 Runner" OFF)
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/cmake")
 set(INSTALL_LIB_DIR lib)
@@ -89,6 +90,15 @@ if(ENABLE_DPUCADX8G_RUNNER)
     # Enable DPUV1 flag
     add_definitions(-DENABLE_DPUCADX8G_RUNNER)
 endif()
+
+if(ENABLE_DPUCADF8H_RUNNER)
+    # Enble supported models for DPUV1
+    unset(DISABLE_ALL CACHE)
+    unset(ENABLE_CLASSIFICATION CACHE)
+    option(DISABLE_ALL "disable all libraries" ON)
+    option(ENABLE_CLASSIFICATION "enable classification" ON)
+endif()
+
 find_package(xir)
 find_package(unilog)
 find_package(vart COMPONENTS util xrt-device-handle buffer-object dpu-controller runner dpu-runner  mem-manager REQUIRED)

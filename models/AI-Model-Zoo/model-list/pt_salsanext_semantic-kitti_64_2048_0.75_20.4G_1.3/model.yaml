@@ -31,25 +31,25 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 9313b90861cda3c51a67bf97567b1000
+  checksum: 768919e64a3024968f141f367f001452
 - name: salsanext_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck190-r1.3.0.tar.gz
-  checksum: e99482ab45314e4c083debb6f5fcfb6d
+  checksum: a08fee55c01e6fee1a3062d67c97f153
 - name: salsanext_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-r1.3.0.tar.gz
-  checksum: 77074ccfa0dae240eeea1e4a8877d6f7
+  checksum: fa67463e2ee6f59c31e401e9e494057a
 - name: salsanext_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: a0029f508aa1a345ca412c5fa0d755bc
+  checksum: 05396f3c17a5cbba69582980ddc720c8
 - name: salsanext_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

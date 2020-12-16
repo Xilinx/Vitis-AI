@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_1_0_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 491add3bfdf5a602973253f852846f49
-license: license link
+  checksum: 5a45cde402f165d2c1d96aae28022094
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

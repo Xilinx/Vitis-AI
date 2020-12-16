@@ -25,31 +25,31 @@ files:
 - name: cf_inceptionv2_imagenet_224_224_4G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv2_imagenet_224_224_4G_1.3.zip
+  checksum: d85fb6fbde3951307154f4f1181a8250
 - name: inception_v2
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 37df7932c73d58bad256a23bf0dcd890
+  checksum: 04dfbfb70122e51830bb132afa1e8dd5
 - name: inception_v2
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2-vck190-r1.3.0.tar.gz
-  checksum: 5db105537abd2705d4783c28174c2f38
+  checksum: 6303d3bb7c4a235785bc41bf81783d29
 - name: inception_v2
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2-u50-r1.3.0.tar.gz
-  checksum: d5032f5db0b412582345e16ddeb6621b
+  checksum: f46ad1cf33a322515a29ae2317d462e6
 - name: inception_v2
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2-u50lv-u280-r1.3.0.tar.gz
-  checksum: eca2f0076bcc5d568bf272f4ac039023
+  checksum: a9aea433031473d4f40a2f306266ffa3
 - name: inception_v2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

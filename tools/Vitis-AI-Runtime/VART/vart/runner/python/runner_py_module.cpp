@@ -19,6 +19,8 @@
 #include <pybind11/stl.h>
 
 #include <iostream>
+#include <chrono>
+#include <thread>
 using namespace std;
 
 #include <sstream>
@@ -35,7 +37,8 @@ namespace py = pybind11;
 namespace {
 class CpuFlatTensorBuffer : public vart::TensorBuffer {
  public:
-  explicit CpuFlatTensorBuffer(void* data, const xir::Tensor* tensor);
+  explicit CpuFlatTensorBuffer(py::buffer_info&& info,
+                               std::unique_ptr<xir::Tensor>&& tensor);
   virtual ~CpuFlatTensorBuffer();
 
  public:
@@ -61,14 +64,17 @@ class CpuFlatTensorBuffer : public vart::TensorBuffer {
   }
 
  private:
+  py::buffer_info info_;
   void* data_;
   std::unique_ptr<xir::Tensor> my_tensor_;
 };
 
-CpuFlatTensorBuffer::CpuFlatTensorBuffer(void* data, const xir::Tensor* tensor)
-    : TensorBuffer{xir::Tensor::clone(tensor).release()},
-      data_{data},
-      my_tensor_{const_cast<xir::Tensor*>(get_tensor())} {
+CpuFlatTensorBuffer::CpuFlatTensorBuffer(py::buffer_info&& info,
+                                         std::unique_ptr<xir::Tensor>&& tensor)
+    : TensorBuffer{tensor.get()},
+      info_{std::move(info)},
+      data_{info.ptr},
+      my_tensor_{std::move(tensor)} {
   LOG_IF(INFO, false) << "create CpuFlatTensorBuffer @" << (void*)this
                       << " data= " << data_ << " DEUBG "
                       << (int)((char*)data_)[0];
@@ -119,26 +125,17 @@ static xir::DataType from_py_buf_format(const std::string& format,
 static vart::TensorBuffer* array_to_tensor_buffer(py::buffer& a,
                                                   const xir::Tensor* tensor) {
   auto info = a.request(true);
-  // TODO TENSOR
-  void* data = info.ptr;
   LOG_IF(INFO, false) << "info = " << info.format;
-  /*  auto dims = std::vector<std::int32_t>();
-
-    dims.reserve(a.ndim());
-    for (auto i = 0; i < a.ndim(); ++i) {
-      dims.push_back(a.shape(i));
-    }
-    void* p = a.mutable_data();
-    auto name = tensor->get_name();
-    return new CpuFlatTensorBuffer(
-        p,
-        xir::Tensor::create(name, dims, xir::DataType::FLOAT, sizeof(float) *
-    8u) .release());*/
   auto dtype = from_py_buf_format(info.format, info.itemsize);
+  // here we have to clone a tensor buffer, because the input tensor
+  // buffer might be in different data type.
   auto new_tensor =
       xir::Tensor::create(tensor->get_name(), tensor->get_shape(), dtype);
-  new_tensor->set_attrs(tensor->get_attrs());
-  return new CpuFlatTensorBuffer(data, new_tensor.get());
+  // do not copy attrs, we should check vart::TensorBuffer::copy, if
+  // "fix_point" is get from the attr or not
+  //
+// new_tensor->set_attrs(tensor->get_attrs());
+  return new CpuFlatTensorBuffer(std::move(info), std::move(new_tensor));
 }
 
 static vector<vart::TensorBuffer*> array_to_tensor_buffer(
@@ -208,9 +205,10 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                  array_to_tensor_buffer(inputs, self->get_input_tensors());
              auto cpu_outputs =
                  array_to_tensor_buffer(outputs, self->get_output_tensors());
+             py::gil_scoped_release release;
              auto ret = make_pair(uint32_t(0), int32_t(0));
              if (1) {
-               py::gil_scoped_release release;
+//               py::gil_scoped_release release;
                ret = self->execute_async(cpu_inputs, cpu_outputs);
              }
              destroy(cpu_inputs);

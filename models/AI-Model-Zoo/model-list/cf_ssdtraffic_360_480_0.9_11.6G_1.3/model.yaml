@@ -25,31 +25,31 @@ files:
 - name: cf_ssdtraffic_360_480_11.6G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdtraffic_360_480_0.9_11.6G_1.3.zip
+  checksum: dafc7d30fa71ed5ce250d95e717fe11b
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 865c6e3f6777804ca9b7c001de2b88ed
+  checksum: ae3dec4695a6fbf879488934511111f0
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-vck190-r1.3.0.tar.gz
-  checksum: 7c6045c82ee6a50bb57202ff0f6a5836
+  checksum: 9fdc72dbaef39ea32f0344cd95cd90c5
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-u50-r1.3.0.tar.gz
-  checksum: 171247a4722416eb25e828891833a661
+  checksum: 0cd8aea11a5a1cdb05057c32ea1b09a8
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-u50lv-u280-r1.3.0.tar.gz
-  checksum: 01ff8d3bd260c745a0b2b868ade91383
+  checksum: c922b69f2f532f1f2faaad0c617f1cf2
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

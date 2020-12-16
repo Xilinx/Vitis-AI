@@ -20,7 +20,7 @@ float ops: 132.74G
 task: segmentation
 framework: tensorflow
 prune: 'no'
-version: 1.2
+version: 1.3
 files:
 - name: tf_mobilenetv2_cityscapes_1024_2048_132.74G_1.3
   type: float & quantized
@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 4a1a187c587f3129f8aeab3288399884
-license: license link
+  checksum: d5740b007289cd8cd583f44de50f00a1
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

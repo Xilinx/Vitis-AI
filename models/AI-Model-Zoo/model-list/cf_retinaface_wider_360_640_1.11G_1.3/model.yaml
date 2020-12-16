@@ -25,16 +25,16 @@ files:
 - name: cf_retinaface_wider_384_640_1.14G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_retinaface_wider_360_640_1.11G_1.3.zip
+  checksum: b4242d68573f0ddf656aa595e704073b
 - name: retinaface
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=retinaface-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 684f64078aa7d841a1c0e26927b98dd1
+  checksum: fcbbdaed69f434e873bf601195f34f1a
 - name: retinaface
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -203,7 +203,7 @@ cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
 tar -xzvf alveo_xclbin-1.3.0.tar.gz
 cd alveo_xclbin-1.3.0/U50/6E300M
-sudo cp dpu.xclbin hbm_address_assignment.txt 
+sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 
 ```
 This step is also described in [DPUCAHX8H/L Overlay Usage](../../setup/alveo/u50_u50lv_u280/README.md#DPUCAHX8H/L-Overlay-Usage).

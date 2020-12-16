@@ -25,31 +25,31 @@ files:
 - name: cf_densebox_wider_360_640_1.11G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_densebox_wider_360_640_1.11G_1.3.zip
+  checksum: dffbef979fe8c361c8eab3b76f07d236
 - name: densebox_640_360
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 951d135bd294ba464522990e2c99fa7c
+  checksum: 51a99ad9ac27fc7e37eb5c0f6c64cf3c
 - name: densebox_640_360
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-vck190-r1.3.0.tar.gz
-  checksum: 72a4a2eee3f5fa2e608fbe1e55a4f951
+  checksum: e97c68770594e242be9fd288a84aea9f
 - name: densebox_640_360
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50-r1.3.0.tar.gz
-  checksum: ef977d07f7a630f5cb63210308d40f10
+  checksum: bf66f757558f0619a24c5d17c3b5fbb0
 - name: densebox_640_360
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50lv-u280-r1.3.0.tar.gz
-  checksum: adedb2af6ea5b94d8d14f3656bb90e5e
+  checksum: f1e58bcf1a77e48f60e5fa4bede79f0d
 - name: densebox_640_360
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

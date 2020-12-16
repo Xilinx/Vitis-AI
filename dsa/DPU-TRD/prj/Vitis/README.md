@@ -14,7 +14,7 @@
 	- [5.2 Build and Run TRD Flow](#52-build-and-run-trd-flow)
 		- [5.2.1 Build the Hardware Design](#521-build-the-hardware-design)
    		- [5.2.2 Get Json File](#522-get-json-file)
-   		- [5.2.3 Run Resnet50 Example](#523-resnet50-example)
+   		- [5.2.3 Run Resnet50 Example](#523-run-resnet50-example)
 	- [5.3 Configurate the DPU](#3-configurate-the-dpu)
 		- [5.3.1 Set the DPU Core Number](#531-set-dpu-core-number)
 		- [5.3.2 Modify the Parameters](#532-modify-the-parameters)
@@ -71,7 +71,7 @@ Required:
 ### 3.2 Software
 
   Required:
-  - Vitis 2020.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-1.html) 
+  - Vitis 2020.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-2.html) 
   - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.2)
@@ -158,8 +158,6 @@ DPU_TRD 
 
 
 
-To run the pre-built SD card image , follow the instructions on [5.2.3](#523-run-flow-tutorial) in this page
-
 ### 5.2 Build and Run Flow
 
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
@@ -192,8 +190,6 @@ Build the hardware design.
 
 ```
 % cd $TRD_HOME/prj/Vitis
-
-% gunzip <mpsoc common system>/xilinx-zynqmp-common-v2020.2/rootfs.ext4.gz
 
 % export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2020.2 
 

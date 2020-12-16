@@ -20,36 +20,36 @@ float ops: 189.7G
 task: pose estimation
 framework: caffe
 prune: 'no'
-version: 1.2
+version: 1.3
 files:
 - name: cf_openpose_aichallenger_368_368_49.88G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_openpose_aichallenger_368_368_0.3_189.7G_1.3.zip
+  checksum: 92bfc0074dcf4586e77e74fa8a0c738a
 - name: openpose_pruned_0_3
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: b36bec053c67c2ebfe64d21045987f85
+  checksum: 6172c985e50d2f5439626b6831cc55d8
 - name: openpose_pruned_0_3
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-vck190-r1.3.0.tar.gz
-  checksum: d91c0b34d9207d610986b3f416804aef
+  checksum: 922481602ccd0d7e939df84f018321e0
 - name: openpose_pruned_0_3
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50-r1.3.0.tar.gz
-  checksum: 3f98891c9e39f8c946e3f35625d3a699
+  checksum: 5de5d46facf4aeb8029fd4426022caac
 - name: openpose_pruned_0_3
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50lv-u280-r1.3.0.tar.gz
-  checksum: 15c806f12142d04db73ec250db685144
+  checksum: f2283ec27c8dcaa95b0758f826d5c900
 - name: openpose_pruned_0_3
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

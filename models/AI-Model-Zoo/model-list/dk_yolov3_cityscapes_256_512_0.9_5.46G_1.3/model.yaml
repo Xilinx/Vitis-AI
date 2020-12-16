@@ -31,20 +31,20 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: b10edfe4b6fa96787ea729ff74337711
+  checksum: 8497e4be2036325b43aef3cd00553849
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck190-r1.3.0.tar.gz
-  checksum: 2e10a3dd5b3492b858fb0d67a8a9ac42
+  checksum: bbf6b662ede3769183e4a9b52a9d2a59
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
-  checksum: 56d4dad682f49408174d38cd21fe93a2
+  checksum: 7ca76ae0900432d639b53c544a0e465a
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0b794634a956967cf5f1031b966baa34
-license: license link
+  checksum: 9051358ea2efd8a303675e06b42fb2df
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -5,7 +5,6 @@
 *.pb
 *.ckpt
 *.meta
-*.h5
 
 *.pyc
 *_pb2.py

@@ -25,31 +25,31 @@ files:
 - name: cf_squeeze_imagenet_227_227_0.76G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_squeeze_imagenet_227_227_0.76G_1.3.zip
+  checksum: 1220cb1b2e823025837c9eead729af04
 - name: squeezenet
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: f121753b71ab6ac1db5e55b0dea91aa5
+  checksum: 23eb5a1567c3df65effc063f4e0d88d8
 - name: squeezenet
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-vck190-r1.3.0.tar.gz
-  checksum: 9539cf0ae053700b73dabf45adf52627
+  checksum: a6a6c5bf21f7c25549c7b6f2999fad39
 - name: squeezenet
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-r1.3.0.tar.gz
-  checksum: 5b9390f87e63f6e9aa0dcc026078eed0
+  checksum: 4ca21e4d18e979bee7ba305aba05e396
 - name: squeezenet
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50lv-u280-r1.3.0.tar.gz
-  checksum: a961245ccf397ec46bc137a40d0168f1
+  checksum: f4f75ccc77b8aa6a362bbea37dd53cd8
 - name: squeezenet
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

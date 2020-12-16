@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 753c5ad445b0dddd28d27841b8ea2a18
-license: license link
+  checksum: b69a3952ecad0e82bbc2c3d32b0b17cc
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -17,14 +17,13 @@ This application demonstrates the acceleration of Lucas-Kanade Dense Non-Pyramid
 ## Setup and Build the Kernels
 ```sh
 conda activate vitis-ai-caffe
-# Typically, <path-to-vitis-ai> is `/workspace`
-source <path-to-vitis-ai>/setup/alveo/DPU-CADX8G/overlaybins/setup.sh
+source /vitis_ai_home/setup/alveo/u200_u250/overlaybins/setup.sh
 ```
 
 #### Build common kernels
 ```sh
 cd ${VAI_ALVEO_ROOT}/../tools/AKS
-./cmake-kernels.sh --clean --dpu=dpucadx8g
+./cmake-kernels.sh --dpu=dpucadx8g --clean
 ```
 
 #### Build fall-detection kernels
@@ -107,6 +106,7 @@ Input passed to `run.sh` (`<directory>`) should contain either videos and/or dir
 
 ```sh
 [sample structure]
+
 .
 └── directory
     ├── video1.mp4
@@ -125,13 +125,36 @@ Input passed to `run.sh` (`<directory>`) should contain either videos and/or dir
 
 ## Performance
 
-Performance metrics observed on urfd_dataset:
+Performance metrics observed on urfd_dataset (70 streams):
+* Total timetaken: 97.0882 seconds..
+* Total images processed: 11236
 * Accuracy: 0.961819
 * Sensitivity/Recall: 0.993281
 * Specificity: 0.959103
 * FAR/FPR: 0.0408972
 * MDR/FNR: 0.00671893
-* Throughput (fps): 117
+* Throughput (fps): 115.73
+
+**Note that the overall performance of the application depends on the available system resources.**
+
+URFD dataset has 70 streams, each containing 170 frames on average.
+
+Following table shows the comparison of end-to-end application's throughput with OpenCV Farneback algorithm (dense) on CPU against accelerated Dense Non-pyramidal Optical Flow on FPGA on `70 streams`.
+
+| Fall detection | E2E Throughput (FPS) on 70 streams | Improvement in throughput with accelerated<br>Dense Non-Pyramidal Lucas Kanade |
+|:-:|:-:|:-:|
+| with hardware accelerated<br>Dense Non-Pyramidal<br>Lucas-Kanade | 115.73 | - |
+| with OpenCV's Farneback<br>(1 thread) | 24.0867 | 380.47 % |
+| with OpenCV's Farneback<br>(6 threads) | 112.651 | 2.73 % |
+
+Following table shows the comparison of end-to-end application's throughput with OpenCV Farneback algorithm (dense) on CPU against accelerated Dense Non-pyramidal Optical Flow on FPGA on `single stream`.
+
+
+| Fall detection | E2E Throughput (FPS) | Improvement in throughput with accelerated<br>Dense Non-Pyramidal Lucas Kanade |
+|:-:|:-:|:-:|
+| hardware accelerated<br>Dense Non-Pyramidal<br>Lucas-Kanade | 71.2248 | - |
+| OpenCV Farneback<br>(1 thread) | 24.2314 | 193.93 % |
+| OpenCV Farneback<br>(3 threads) | 64.2677 | 10.82 % |
 
 
 ## Write prediction probabilities to video

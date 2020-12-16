@@ -31,25 +31,25 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: c2d1740cb964de0abc27bfb33fc5ad3e
+  checksum: 0122b1218e43ce6eaf80577c4530f1e4
 - name: facereid-small_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-vck190-r1.3.0.tar.gz
-  checksum: b280afb9c21214945c78f7adbb0ddc96
+  checksum: 0debc0c0ce59c3a43bec9f2326116f88
 - name: facereid-small_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-r1.3.0.tar.gz
-  checksum: 1abca006262fb9de4e5d75e8a37d0fbe
+  checksum: 023045354e05ca9b0de290c31a999ba2
 - name: facereid-small_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 4907e3eb7579468c78292f4943c69c85
+  checksum: ad7db745eb048cad801cbac65029fdb7
 - name: facereid-small_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

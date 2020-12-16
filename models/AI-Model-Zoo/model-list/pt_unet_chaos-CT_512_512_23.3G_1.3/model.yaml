@@ -31,25 +31,25 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 370fdcc4d8e78d473f0227c718f35c15
+  checksum: 405cd50cdf1f3312d75d5f41ebba9fc3
 - name: unet_chaos-CT_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-vck190-r1.3.0.tar.gz
-  checksum: d5505e79ca6d3c0fbd9989715d0ed76d
+  checksum: fd69fdc124b6b2d844f36c1f2d2684c6
 - name: unet_chaos-CT_pt
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-u50-r1.3.0.tar.gz
-  checksum: 73d4733129f0339e52c8035ad7f1dcd8
+  checksum: 86ee26bf90acfa5762a66e9e53732412
 - name: unet_chaos-CT_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: b2f53d4067d22d3befd322fadca32cbd
+  checksum: 9d93eaee414088638150932c62896c5e
 - name: unet_chaos-CT_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

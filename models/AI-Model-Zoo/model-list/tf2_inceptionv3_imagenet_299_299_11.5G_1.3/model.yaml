@@ -31,25 +31,25 @@ files:
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 998a20126b171d8b2c32d6381cbb66af
+  checksum: 327d3ab608f13337b350d1c89542dc9c
 - name: inception_v3_tf2
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-vck190-r1.3.0.tar.gz
-  checksum: 342dc3a9aea493b8b576a361decfeaf1
+  checksum: 6be5b7d386e7137584b67fb0fe19a979
 - name: inception_v3_tf2
   type: xmodel
   board: u50
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-u50-r1.3.0.tar.gz
-  checksum: 5327a9b3d3b35f56fbb0ccd44e90469d
+  checksum: 7e5fec7039e14ead40717404f068b511
 - name: inception_v3_tf2
   type: xmodel
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-u50lv-u280-r1.3.0.tar.gz
-  checksum: 3d9f0934473f2b37012eeda7e78dfa41
+  checksum: fc65da155d9d8235b7c0f75248906383
 - name: inception_v3_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
