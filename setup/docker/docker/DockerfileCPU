@@ -226,7 +226,7 @@ RUN groupadd vitis-ai-group \
 
 # Set up Anaconda
 USER vitis-ai-user
-ENV MY_CONDA_CHANNEL=http://artifactory/artifactory/vitis-ai-release
+ENV MY_CONDA_CHANNEL="file:///scratch/conda-channel"
 
 RUN cd /tmp \
     && wget --progress=dot:mega https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh \
@@ -241,7 +241,10 @@ ADD docker/pip_requirements_neptune.txt /scratch/
 ARG CACHEBUST=1
 
 # Create conda envs
-RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh \
+RUN cd /tmp/ \
+    && wget -O conda-channel.tar.gz  https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.3.411-01.tar.gz && \
+    && tar -xzvf conda-channel.tar.gz \
+    && . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && conda env create -f /scratch/vitis-ai-pytorch.yml \
         && conda activate vitis-ai-pytorch \
         && pip install -r /scratch/pip_requirements.txt \
@@ -260,25 +263,23 @@ RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh \
         && pip install -r /scratch/pip_requirements_neptune.txt \
     && mkdir -p $VAI_ROOT/compiler \
         && conda activate vitis-ai-caffe \
-        && sudo cp -r $CONDA_PREFIX/lib/python3.6/site-packages/vaic/arch $VAI_ROOT/compiler/arch
+        && sudo cp -r $CONDA_PREFIX/lib/python3.6/site-packages/vaic/arch $VAI_ROOT/compiler/arch \
+    && rm -fr /tmp/*
 
 # Rebuild this layer every time
 USER root
 ARG CACHEBUST=1
-RUN mkdir -p /etc/apt/sources.list.d \
-    && echo "deb [trusted=yes] http://artifactory/artifactory/vitis-ai-deb-release bionic main" >> /etc/apt/sources.list.d/xlnx.list \
-    && cat /etc/apt/sources.list.d/xlnx.list \
-    && apt-get update -y \
-    && apt-get install -y \
-        libunilog \
-        libtarget-factory \
-        libxir \
-        libvart \
-        libvitis_ai_library \
-        libbutler-base \
-        librt-engine \
-        aks \
-    && rm -rf /etc/apt/sources.list.d/xlnx.list \
+RUN cd /tmp/ \
+    && wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog_1.3.0-r20_amd64.deb \
+    && wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory_1.3.0-r22_amd64.deb \
+    && wget -O libxir.deb https://www.xilinx.com/bin/public/openDownload?filename=libxir_1.3.0-r29_amd64.deb \
+    && wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_1.3.0-r53_amd64.deb \
+    && wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis%5fai%5flibrary_1.3.0-r45_amd64.deb \
+    && wget -O libbutler-base.deb https://www.xilinx.com/bin/public/openDownload?filename=libbutler-base_1.3.0_amd64.deb \
+    && wget -O librt-engine.deb https://www.xilinx.com/bin/public/openDownload?filename=librt-engine_1.3.0-r106_amd64.deb \
+    && wget -O aks.deb https://www.xilinx.com/bin/public/openDownload?filename=aks_1.3.0-r3020_amd64.deb \
+    && apt-get install -y --no-install-recommends /tmp/*.deb \
+    && rm -rf /tmp/* \
     && ldconfig
 
 RUN apt-get clean -y \
