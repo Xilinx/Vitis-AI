@@ -6,7 +6,7 @@
 * [Getting Started](#getting-started)
 * [Run Examples on Alveo-U200/Alveo-U250](#run-examples-on-alveo-u200alveo-u250)
 * [Run Examples on Alveo-U50](#run-examples-on-alveo-u50)
-* [Run Examples on Alveo-U200/Alveo-U250 with New Batch DPU](#)
+* [Run Examples on Alveo-U200/Alveo-U250 with New Batch DPU](#run-examples-on-alveo-u200alveo-u250-with-new-batch-dpu)
 * [Run Examples on Edge Devices](#run-examples-on-edge-devices)
 * [Tuning Performance](#tuning-performance)
 * [Graphs & Kernels](#graphs--kernels)
