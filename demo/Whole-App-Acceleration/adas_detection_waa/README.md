@@ -150,7 +150,7 @@ Runtime packages on the board separately.**
 Below table shows the comparison of througput achieved by acclerating the pre-processing pipeline on FPGA. 
 For `Adas Detection`, the performance numbers are achieved by running 1K images randomly picked from COCO dataset. 
 
-FPGA: ZCU102
+Network: YOLOv3 Adas Detection
 <table style="undefined;table-layout: fixed; width: 534px">
 <colgroup>
 <col style="width: 119px">
@@ -159,7 +159,7 @@ FPGA: ZCU102
 <col style="width: 134px">
 </colgroup>
   <tr>
-    <th rowspan="2">Network</th>
+    <th rowspan="2">FPGA</th>
     <th colspan="2">E2E Throughput (fps)</th>
     <th rowspan="2"><span style="font-weight:bold">Percentage improvement in throughput</span></th>
   </tr>
@@ -171,10 +171,17 @@ FPGA: ZCU102
 
   
   <tr>
-   <td>Adas Detection</td>
+   <td>ZCU102</td>
     <td>11.1</td>
     <td>18.2</td>
         <td>63.9%</td>
+  </tr>
+
+  <tr>
+   <td>U50</td>
+    <td>29.6</td>
+    <td>42.6</td>
+        <td>43.9%</td>
   </tr>
 </table>
 
