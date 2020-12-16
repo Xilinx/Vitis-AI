@@ -52,4 +52,9 @@ files:
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
+- name: inception_v1_tf
+  type: xmodel
+  board: u200 & u250
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-u200-u250-r1.3.0.tar.gz
+  checksum: 5a481c9fc27bc5d7a5d225dfdec098ec
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
