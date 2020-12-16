@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="100%" height="100%" src="doc/img/Vitis-AI.png">
+  <img width="100%" height="100%" src="docs/img/Vitis-AI.png">
 </div>
 
 <br />
@@ -8,7 +8,7 @@ Vitis AI is Xilinx’s development stack for AI inference on Xilinx hardware pla
 <br />
 
 <div align="center">
-  <img width="45%" height="45%" src="doc/img/Vitis-AI-arch.png">
+  <img width="45%" height="45%" src="docs/img/Vitis-AI-arch.png">
 </div>
 
 <br />
@@ -21,14 +21,14 @@ Vitis AI is composed of the following key components:
 * **AI Profiler** - Perform an in-depth analysis of the efficiency and utilization of AI inference implementation.
 * **AI Library** - Offers high-level yet optimized C++ APIs for AI applications from edge to cloud.
 * **DPU** - Efficient and scalable IP cores can be customized to meet the needs for many different applications
-  * For more details on the different DPUs available, please [click here](doc/dpu_naming.md).
+  * For more details on the different DPUs available, please [click here](docs/dpu_naming.md).
 
 
 **Learn More:** [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)  
 
 
-## [See What's New](doc/release-notes/1.x.md)
-- [Release Notes](doc/release-notes/1.x.md)
+## [See What's New](docs/release-notes/1.x.md)
+- [Release Notes](docs/release-notes/1.x.md)
 - Vitis AI Quantizer and DNNDK runtime all open source
 - 14 new Reference Models  AI Model Zoo (Pytorch, Caffe, Tensorflow)
 - VAI Quantizer supports optimized models (pruned)
@@ -38,7 +38,7 @@ Vitis AI is composed of the following key components:
 - Added Alveo U50/U50LV support
 - Added Alveo U280 support
 - Alveo U50/U50LV DPU DPUCAHX8H micro-architecture improvement
-- DPU TRD upgraded to support Vitis 2020.1 and Vivado 2020.1
+- DPU TRD upgraded to support Vitis 2020.2 and Vivado 2020.2
 - Vitis AI for Pytorch CNN general access (Beta version)
 
 ## Getting Started
@@ -46,7 +46,7 @@ Vitis AI is composed of the following key components:
 Two options are available for installing the containers with the Vitis AI tools and resources.
 
  - Pre-built containers on Docker Hub: [xilinx/vitis-ai](https://hub.docker.com/r/xilinx/vitis-ai/tags)
- - Build containers locally with Docker recipes: [Docker Recipes](docker)
+ - Build containers locally with Docker recipes: [Docker Recipes](setup/docker)
 
 
 ### Installation
@@ -61,7 +61,7 @@ Two options are available for installing the containers with the Vitis AI tools 
     cd Vitis-AI
     ```
 
-#### Using Pre-build Docker
+#### Using Pre-built Docker
 
 Download the latest Vitis AI Docker with the following command. This container runs on CPU.  
 ```
@@ -80,7 +80,7 @@ There are two types of docker recipes provided - CPU recipe and GPU recipe. If y
 
 Use below commands to build the CPU docker:
 ```
-cd ./docker
+cd setup/docker
 ./docker_build_cpu.sh
 ```
 To run the CPU docker, use command:
@@ -91,7 +91,7 @@ To run the CPU docker, use command:
 
 Use below commands to build the GPU docker:
 ```
-cd ./docker
+cd setup/docker
 ./docker_build_gpu.sh
 ```
 To run the GPU docker, use command:
@@ -99,7 +99,7 @@ To run the GPU docker, use command:
 ./docker_run.sh xilinx/vitis-ai-gpu:latest
 ```
 Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
-More Detail can be found here: [Run Docker Container](doc/install_docker/load_run_docker.md)
+More Detail can be found here: [Run Docker Container](docs/install_docker/load_run_docker.md)
 
 <details>
  <summary><b>Advanced - X11 Support for Examples on Alveo</b></summary>
@@ -151,15 +151,15 @@ More Detail can be found here: [Run Docker Container](doc/install_docker/load_ru
   
 
  ### Get Started with Examples
-  - [VART](VART/README.md)
-  - [Vitis AI Library](Vitis-AI-Library/README.md)
-  - [Alveo U200/U250](alveo/README.md)
-  - [Vitis AI DNNDK samples](mpsoc/README.md)
+  - [VART](demo/VART/README.md)
+  - [Vitis AI Library](demo/Vitis-AI-Library/README.md)
+  - [Alveo U200/U250](examples/README.md)
+  - [Vitis AI DNNDK samples](demo/DNNDK)
 
 
 ## Programming with Vitis AI
 
-Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo, and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa. 7 samples in [VART Samples](VART/samples) are available to help you get familiar with the unfied programming APIs.
+Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo, and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa. 8 samples in [VART Samples](demo/VART) are available to help you get familiar with the unfied programming APIs.
 
 
 | ID | Example Name          | Models              | Framework  | Notes                                                                     |
@@ -171,6 +171,7 @@ Vitis AI offers a unified set of high-level C++/Python programming APIs to run A
 | 5  | video\_analysis       | SSD                 | Caffe      | Traffic detection with VART C\+\+ APIs\.                      |
 | 6  | adas\_detection       | YOLO\-v3            | Caffe      | ADAS detection with VART C\+\+ APIs\.                         |
 | 7  | segmentation          | FPN                 | Caffe      | Semantic segmentation with VART C\+\+ APIs\.                  |
+| 8  | squeezenet\_pytorch   | Squeezenet          | Pytorch    | Image classification with VART C\+\+ APIs\.                   |
 
 For more information, please refer to [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_2/zkj1576857115470.html)
 
@@ -183,7 +184,7 @@ For more information, please refer to [Vitis AI User Guide](https://www.xilinx.c
 - [Developer Articles](https://developer.xilinx.com/en/get-started/ai.html)
 - [Performance Whitepaper][]
 
-## [System Requirements](doc/system_requirements.md)
+## [System Requirements](docs/system_requirements.md)
 
 ## Questions and Support
 - [FAQ](doc/faq.md)

@@ -1,0 +1,4 @@
+./data/Chaos_CT_processed/CHAOS_Train_Sets/Train_Sets/CT/23/image/Liver_image_084.png
+
+
+

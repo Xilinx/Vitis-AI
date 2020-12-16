@@ -1,0 +1,45 @@
+#
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+INPUT = @CMAKE_SOURCE_DIR@/README.md \
+        @CMAKE_SOURCE_DIR@/include/xir/op/op_def.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/op/op.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/tensor/tensor.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/graph/graph.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/graph/subgraph.hpp \
+        @CMAKE_SOURCE_DIR@/include/xir/attrs/attrs.hpp \
+
+
+ENABLE_PREPROCESSING = YES
+MACRO_EXPANSION = YES
+SHOW_USED_FILES = YES
+SORT_MEMBER_DOCS = NO
+#SORT_BRIEF_DOCS = NO
+#SORT_GROUP_NAMES = NO
+SORT_BY_SCOPE_NAME = YES
+PROJECT_NAME = XIR Reference Manual
+PROJECT_NUMBER = v0.0.1 Alpha
+OUTPUT_LANGUAGE = English
+HTML_OUTPUT = .
+OUTPUT_DIRECTORY = @CMAKE_BINARY_DIR@/c-doc
+GENERATE_LATEX = YES
+GENERATE_HTML = YES
+LATEX_HEADER = @CMAKE_SOURCE_DIR@/doc/doxygen/header.tex
+LATEX_FOOTER = @CMAKE_SOURCE_DIR@/doc/doxygen/footer.tex
+#ENABLED_SECTIONS = YES
+ALPHABETICAL_INDEX = NO
+#HTML_DYNAMIC_MENUS=NO
+
+USE_MDFILE_AS_MAINPAGE = @CMAKE_SOURCE_DIR@/README.md

@@ -1,0 +1,5 @@
+## ignore images
+*.png
+*.jpg
+*.JPEG
+quantize

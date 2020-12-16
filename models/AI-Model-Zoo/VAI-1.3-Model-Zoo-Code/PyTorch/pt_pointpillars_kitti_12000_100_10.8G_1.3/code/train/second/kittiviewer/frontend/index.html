@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="screen" />
+    <title>HTML Tutorial</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/98/three.js" integrity="sha384-BMOR44t8p+yL7NVevEC9pO2y26JB6lv1mKFhit2zvzWq5jZo6RpIcTdg6MUxKQRP"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.3/dat.gui.js" integrity="sha384-S7m8CpjFEEXwHzEDZ8XdeFSO0rLzdK8x1e7pLuc2hx5Xr23XnaWvb0p/kIez3mxy"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.3.0/math.js" integrity="sha384-YILGCrKtrx9ucVIp2iNy85HZcWysS6pXa+tAW+Jbgxoi3TJJSCrg0fJG5C0AJzJO"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r16/Stats.min.js" integrity="sha384-JIMCcCVEupQBEb9e6o4OAccqY004Vm2uYnOzOlJCyyy/Tl3fVxU/nq2gUimNdloP"
+        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/jspanel4@4.3.0/dist/jspanel.css" rel="stylesheet" />
+    <!-- jsPanel JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/jspanel4@4.3.0/dist/jspanel.js" integrity="sha384-2F3fGv9PeamJMmqDMSollVdfQqFsLLru6E0ed+AOHOq3tB2IyUDSyllqrQJqx2vp"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js" integrity="sha384-8kKqrPvADL3/ZYJGtcqeG+fveXaJxTaI7LF1/a9QGZpkRVZSurP858KKE6rtnLLs"
+        crossorigin="anonymous"></script>
+
+    <script src="js/MapControls.js"></script>
+    <script src="js/SimplePlot.js"></script>
+    <script src="js/Toast.js"></script>
+    <script src="js/KittiViewer.js"></script>
+    <script src="js/renderers/CSS2DRenderer.js"></script>
+    <script src="js/shaders/ConvolutionShader.js"></script>
+    <script src="js/shaders/CopyShader.js"></script>
+    <script src="js/shaders/FilmShader.js"></script>
+    <script src="js/shaders/FocusShader.js"></script>
+
+    <script src="js/postprocessing/EffectComposer.js"></script>
+    <script src="js/postprocessing/MaskPass.js"></script>
+    <script src="js/postprocessing/RenderPass.js"></script>
+    <script src="js/postprocessing/BloomPass.js"></script>
+    <script src="js/postprocessing/ShaderPass.js"></script>
+    <script src="js/postprocessing/FilmPass.js"></script>
+    <script src="js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="js/postprocessing/UnrealBloomPass.js"></script>
+</head>
+
+<body>
+    <div class="row" id="bottompanel">
+        <div class="btn prev">&lt;</div>
+        <input class="btn imgidx" type="text" pattern="[0-9]" placeholder="Image Index" value='1' />
+        <div class="btn next">&gt;</div>
+    </div>
+    <ul class="toasts"></ul>
+    <script type="text/javascript">
+        var CookiesKitti = Cookies.noConflict();
+        var scene2 = new THREE.Scene();
+        var toasts = $(".toasts")[0];
+        var logger = new Toast(toasts);
+        var scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.01);
+
+        var camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            300
+        );
+        camera.position.set(-10, 0, 5);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        camera.up.set(0, 0, 1);
+        var camhelper = new THREE.CameraHelper(camera);
+        scene.add(camhelper);
+
+
+        var renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        var axesHelper = new THREE.AxesHelper(2);
+        scene.add(axesHelper);
+        // var stats = new Stats();
+        // stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+        var panelCanvas = document.createElement("canvas");
+        var camerabev = new THREE.OrthographicCamera(80, -80, -50, 50, 1, 500);
+        camerabev.up.set(-1, 0, 1);
+        const wBev = 400;
+        const hBev = 700;
+        var panelBev = jsPanel.create({
+            id: "panelBev",
+            theme: "primary",
+            contentSize: {
+                width: function () {
+                    return Math.min(wBev, window.innerWidth * 0.5);
+                },
+                height: function () {
+                    return Math.min(hBev, window.innerHeight * 0.8);
+                }
+            },
+            position: "left-bottom 0 0",
+            animateIn: "jsPanelFadeIn",
+            headerTitle: "Bird's eye view",
+            content: function (panel) {
+                let container = $(this.content)[0];
+                panelCanvas.width = wBev;
+                panelCanvas.height = hBev;
+                camerabev.position.set(0, 0, 50);
+                camerabev.lookAt(0, 0, 0);
+                container.appendChild(panelCanvas);
+            },
+            onwindowresize: true
+        });
+        const wImage = 1242 / 3;
+        const hImage = 375 / 3;
+        var panelImageCanvas = document.createElement("canvas");
+        var panelImage = jsPanel.create({
+            id: "panelImage",
+            theme: "primary",
+            contentSize: {
+                width: function () {
+                    return Math.min(wImage, window.innerWidth * 0.8);
+                },
+                height: function () {
+                    return Math.min(hImage, window.innerHeight * 0.8);
+                }
+            },
+            position: "center-top 0 0",
+            animateIn: "jsPanelFadeIn",
+            headerTitle: "Image 2",
+            content: function (panel) {
+                let container = $(this.content)[0];
+                panelImageCanvas.width = wImage;
+                panelImageCanvas.height = hImage;
+                container.appendChild(panelImageCanvas);
+            },
+            onwindowresize: true
+        });
+
+        var rendererBev = new THREE.WebGLRenderer({
+            antialias: true
+        });
+        // renderer.setClearColor(0xeeeeee);
+        rendererBev.setPixelRatio(window.devicePixelRatio);
+        rendererBev.setSize(wBev, hBev);
+        var MAX_POINTS = 150000;
+        var vertices = new Float32Array(MAX_POINTS * 3);
+        var pointParicle = scatter(
+            vertices,
+            3.5,
+            0x9099ba,
+            "textures/sprites/disc.png"
+        );
+        pointParicle.geometry.setDrawRange(0, 0);
+        scene.add(pointParicle);
+        var viewer = new KittiViewer(pointParicle, logger, panelImageCanvas);
+        viewer.readCookies();
+        var panelResize = function (event) {
+            if (event.detail === 'panelBev') {
+                let container = $(panelBev.content)[0];
+                let w = container.clientWidth;
+                let h = container.clientHeight;
+                panelCanvas.width = w;
+                panelCanvas.height = h;
+                rendererBev.setSize(w, h);
+                let aspect = w / h;
+                camerabev.left = 0.5 * aspect * 100;
+                camerabev.right = -0.5 * aspect * 100;
+                camerabev.top = -0.5 * 100;
+                camerabev.bottom = 0.5 * 100;
+                camerabev.updateProjectionMatrix();
+
+            } else if (event.detail === 'panelImage') {
+                let container = $(panelImage.content)[0];
+                let w = container.clientWidth;
+                let h = container.clientHeight;
+                panelImageCanvas.width = w;
+                panelImageCanvas.height = h;
+                viewer.drawImage();
+            }
+        }
+        document.addEventListener("jspanelresize", function (event) {
+            return panelResize(event);
+        });
+        panelResize({
+            detail: 'panelBev'
+        });
+        labelRenderer = new THREE.CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = "absolute";
+        labelRenderer.domElement.style.top = 0;
+        document.body.appendChild(labelRenderer.domElement);
+        document.body.appendChild(renderer.domElement);
+
+        // document.addEventListener('mouseup', onDocumentMouseUp, false);
+        window.addEventListener("resize", onWindowResize, false);
+
+        var controls = new THREE.MapControls(camera, labelRenderer.domElement);
+        // controls = new THREE.MapControls(camera);
+        //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
+        controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+        controls.dampingFactor = 0.25;
+        controls.screenSpacePanning = false;
+        controls.minDistance = 1;
+        controls.maxDistance = 30;
+        controls.maxPolarAngle = Math.PI / 2;
+        controls.target = new THREE.Vector3(0, 0, 1);
+
+        var controlsBev = new THREE.MapControls(camerabev, panelCanvas);
+        controlsBev.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+        controlsBev.dampingFactor = 0.25;
+        controlsBev.screenSpacePanning = false;
+        controlsBev.minDistance = 1;
+        controlsBev.maxDistance = 30;
+        controlsBev.maxPolarAngle = Math.PI / 2;
+        // controlsBev.target = new THREE.Vector3(0, 0, 1);
+        controlsBev.enableRotate = false;
+        controlsBev.panSpeed = 0.5;
+
+        var renderModel = new THREE.RenderPass(scene, camera);
+        var effectBloom = new THREE.BloomPass(0.75);
+        var effectFilm = new THREE.FilmPass(0.5, 0.5, 1448, false);
+        var bloomPass = new THREE.UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            1.5,
+            0.4,
+            0.85
+        );
+
+        var postParams = {
+            exposure: 1,
+            bloomStrength: 1.5,
+            bloomThreshold: 0,
+            bloomRadius: 0
+        };
+        bloomPass.renderToScreen = true;
+        bloomPass.threshold = postParams.bloomThreshold;
+        bloomPass.strength = postParams.bloomStrength;
+        bloomPass.radius = postParams.bloomRadius;
+
+        effectFocus = new THREE.ShaderPass(THREE.FocusShader);
+        effectFocus.uniforms["screenWidth"].value = window.innerWidth;
+        effectFocus.uniforms["screenHeight"].value = window.innerHeight;
+        effectFocus.renderToScreen = true;
+        composer = new THREE.EffectComposer(renderer);
+        composer.addPass(renderModel);
+        // composer.addPass(effectBloom);
+        // composer.addPass(effectFilm);
+        // composer.addPass(effectFocus);
+        composer.addPass(bloomPass);
+        /*
+        var renderBevModel = new THREE.RenderPass(scene, camerabev);
+        composerbev = new THREE.EffectComposer(rendererBev);
+        composerbev.addPass(renderBevModel);
+        // composer.addPass(effectBloom);
+        // composerbev.addPass(effectFilm);
+        // composerbev.addPass(effectFocus);
+        composerbev.addPass(bloomPass);*/
+
+        // pointParicle.position.needsUpdate = true; // required after the first render
+        var gui = new dat.GUI();
+        var coreParams = {
+            backgroundcolor: "#000000"
+        };
+        var cameraGui = gui.addFolder("core");
+        cameraGui.add(camera, "fov");
+        cameraGui
+            .addColor(coreParams, "backgroundcolor")
+            .onChange(function (value) {
+                renderer.setClearColor(value, 1);
+            });
+        cameraGui.open();
+        var kittiGui = gui.addFolder("kitti controllers");
+        kittiGui.add(viewer, "backend").onChange(function (value) {
+            viewer.backend = value;
+            CookiesKitti.set('kittiviewer_backend', value);
+        });
+        kittiGui.add(viewer, "rootPath").onChange(function (value) {
+            viewer.rootPath = value;
+            CookiesKitti.set('kittiviewer_rootPath', value);
+        });
+        kittiGui.add(viewer, "infoPath").onChange(function (value) {
+            viewer.infoPath = value;
+            CookiesKitti.set('kittiviewer_infoPath', value);
+        });
+        kittiGui.add(viewer, "load");
+        kittiGui.add(viewer, "detPath").onChange(function (value) {
+            viewer.detPath = value;
+            CookiesKitti.set('kittiviewer_detPath', value);
+        });
+        kittiGui.add(viewer, "loadDet");
+        kittiGui.add(viewer, "drawDet");
+        kittiGui.add(viewer, "checkpointPath").onChange(function (value) {
+            viewer.checkpointPath = value;
+            CookiesKitti.set('kittiviewer_checkpointPath', value);
+        });
+        kittiGui.add(viewer, "configPath").onChange(function (value) {
+            viewer.configPath = value;
+            CookiesKitti.set('kittiviewer_configPath', value);
+        });
+
+        kittiGui.add(viewer, "buildNet");
+        /*
+        kittiGui.add(viewer, "imageIndex").listen();
+        var fixbugParam = {
+          changeImageIndex: viewer.imageIndex
+        };
+        kittiGui.add(fixbugParam, "changeImageIndex").onChange(function(val) {
+          viewer.imageIndex = val;
+        });
+        kittiGui.add(viewer, "plot");
+        kittiGui.add(viewer, "next");
+        kittiGui.add(viewer, "prev");
+        */
+        kittiGui.add(viewer, "inference");
+        kittiGui.open();
+        var postGui = gui.addFolder("effect");
+        postGui.add(postParams, "exposure", 0.1, 2).onChange(function (value) {
+            renderer.toneMappingExposure = Math.pow(value, 4.0);
+        });
+        postGui
+            .add(postParams, "bloomThreshold", 0.0, 1.0)
+            .onChange(function (value) {
+                bloomPass.threshold = Number(value);
+            });
+        postGui
+            .add(postParams, "bloomStrength", 0.0, 3.0)
+            .onChange(function (value) {
+                bloomPass.strength = Number(value);
+            });
+        postGui
+            .add(postParams, "bloomRadius", 0.0, 1.0)
+            .step(0.01)
+            .onChange(function (value) {
+                bloomPass.radius = Number(value);
+            });
+        // postGui.open();
+        var param = {
+            color: pointParicle.material.color.getHex()
+        };
+        var pointGui = gui.addFolder("points");
+        pointGui.add(pointParicle.material, "size", 1, 10);
+        pointGui.addColor(param, "color").onChange(function (val) {
+            pointParicle.material.color.setHex(val);
+        });
+        pointGui.open();
+        var boxesGui = gui.addFolder("boxes");
+        boxesGui.addColor(viewer, "gtBoxColor");
+        boxesGui.addColor(viewer, "dtBoxColor");
+        boxesGui.addColor(viewer, "gtLabelColor");
+        boxesGui.addColor(viewer, "dtLabelColor");
+        boxesGui.open();
+        // renderer.autoClear = false;
+        var animate = function () {
+            requestAnimationFrame(animate);
+            // renderer.clear();
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+            // renderer.render( scene, camera );
+            composer.render(0.01);
+            rendererBev.render(scene, camerabev);
+            // composerbev.render(0.01);
+            let context = panelCanvas.getContext("2d");
+            context.drawImage(rendererBev.domElement, 0, 0);
+            // stats.update();
+        };
+        animate();
+
+        function onDocumentMouseUp(event) {
+            event.preventDefault();
+            console.log(camera.position);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            camhelper.update();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        $(".imgidx")[0].onkeypress = function (e) {
+            if (!e) e = window.event;
+            var keyCode = e.keyCode || e.which;
+            if (keyCode == '13') {
+                // Enter pressed
+                viewer.imageIndex = parseInt($(".imgidx")[0].value, 10);
+                viewer.plot();
+                return true;
+            }
+        }
+        $(".prev")[0].onclick = function (e) {
+            viewer.prev();
+            $(".imgidx")[0].value = viewer.imageIndex.toString()
+            return true;
+        }
+        $(".next")[0].onclick = function (e) {
+            viewer.next();
+            $(".imgidx")[0].value = viewer.imageIndex.toString()
+            return true;
+        }
+    </script>
+</body>
+
+</html>

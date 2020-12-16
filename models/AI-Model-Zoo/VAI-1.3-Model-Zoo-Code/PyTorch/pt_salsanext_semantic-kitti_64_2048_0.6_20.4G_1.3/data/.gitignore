@@ -1,0 +1,3 @@
+## ignore pb model or ckpt model
+*.pb
+*.ckpt

@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: yolov2 detection on voc dataset.
+input size: 448*448
+float ops: 7.82G
+task: detection
+framework: darknet
+prune: '0.77'
+version: 1.3
+files:
+- name: dk_yolov2_voc_448_448_0.77_7.82G_1.3
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_0.77_7.82G_1.3.zip
+  checksum: 9d357702928d1b24e8c43f3b84d4eca0
+- name: yolov2_voc_pruned_0_77
+  type: xmodel
+  board: zcu102 & zcu104
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_77-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 2f86fd4b9132d08d654c6c3ff3351774
+- name: yolov2_voc_pruned_0_77
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_77-vck190-r1.3.0.tar.gz
+  checksum: 9a58943f7dc164a443d6499ffbc588b7
+- name: yolov2_voc_pruned_0_77
+  type: xmodel
+  board: u50
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_77-u50-r1.3.0.tar.gz
+  checksum: af941b04b8f69f9ee18c189a770ed0c6
+- name: yolov2_voc_pruned_0_77
+  type: xmodel
+  board: u50lv9e & u50lv10e & u280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_77-u50lv-u280-r1.3.0.tar.gz
+  checksum: 0b3e89f53ca0069f0874f54dc3b817f2
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,0 +1,5 @@
+opencv-python==4.2.0.32
+pillow==7.0.0
+protobuf==3.11.3
+tensorflow-gpu==1.15.0
+tqdm==4.43.0

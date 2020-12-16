@@ -1,0 +1,10 @@
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])  # Apache 2.0
+
+py_library(
+    name = "clustering",
+    srcs = ["__init__.py"],
+    srcs_version = "PY2AND3",
+    deps = ["//tensorflow_model_optimization/python/core/clustering/keras"],
+)

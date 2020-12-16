@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package second.protos;
+
+
+message Preprocess{
+    float random_global_rotation_min_rad = 1;
+    float random_global_rotation_max_rad = 2;
+    float random_global_scaling_min = 3;
+    float random_global_scaling_max = 4;
+    float random_noise_per_groundtruth_min_rad = 5;
+    float random_noise_per_groundtruth_max_rad = 6;
+    float random_noise_per_groundtruth_position_std = 7;
+}
+
+message DatabasePreprocessingStep {
+    oneof database_preprocessing_step {
+        DBFilterByDifficulty filter_by_difficulty = 1;
+        DBFilterByMinNumPointInGroundTruth filter_by_min_num_points = 2;
+    }
+}
+
+message DBFilterByDifficulty{
+    repeated int32 removed_difficulties = 1;
+}
+
+message DBFilterByMinNumPointInGroundTruth{
+    map<string, uint32> min_num_point_pairs = 1; 
+}
+
+message PreprocessingStep {
+    oneof preprocessing_step {
+        RandomGlobalScaling random_global_scaling = 1;
+        RandomGlobalRotation random_global_rotation = 2;
+    }
+}
+
+message RandomGlobalScaling{
+    float min_scale = 1;
+    float max_scale = 2;
+}
+
+message RandomGlobalRotation{
+    float min_rad = 1;
+    float max_rad = 2;
+}
+

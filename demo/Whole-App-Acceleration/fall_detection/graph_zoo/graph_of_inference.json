@@ -1,0 +1,55 @@
+{
+  "graph_name": "of_inference",
+
+  "node_list": [
+    {
+      "node_name": "of_infer_preprocess",
+      "node_params": {
+        "OFClassificationPreProcess": {
+        }
+      },
+      "next_node": [ "of_infer_runner" ]
+    },
+
+    {
+      "node_name": "of_infer_runner",
+      "node_params": {
+        "DPUCADX8GRunner": {
+          "acquire_cu": 0,
+          "num_fpga": 1,
+          "xclbin":   "/opt/xilinx/overlaybins/xdnnv3/xplusml/optical_flow/dpu_lk_dense_non_pyr_optical_flow_U200.xclbin",
+          "vitis_rundir": "graph_zoo/meta_vgg_fall_detection"
+        }
+      },
+      "next_node": ["fc_sigmoid"]
+    },
+
+    {
+      "node_name": "fc_sigmoid",
+      "node_params": {
+        "FullyConnectedSigmoid": {
+          "weights" : "graph_zoo/meta_vgg_fall_detection/weights.h5",
+          "fc_weights": "fc_0",
+          "fc_bias": "fc_bias_0",
+          "transpose_input": 0
+        }
+      },
+      "next_node": [ "calc_evaluation" ]
+    },
+
+    {
+      "node_name": "calc_evaluation",
+      "node_params": {
+        "FallDetectionEvaluation": {
+          "ground_truth" : "gt.txt",
+          "threshold": 0.5,
+          "default_label": 1,
+          "visualize": "output_infer_urfd"
+        }
+      },
+      "next_node": []
+    }
+  ],
+
+  "version": "0.1"
+}

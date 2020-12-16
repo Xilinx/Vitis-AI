@@ -1,0 +1,42 @@
+if [[ $EUID -eq 0 ]]; then
+  echo "Setting up $USER 's environment in the Docker container..."
+  if [[ -z "$1" ]]; then
+    set -- "bash"
+  fi
+  if [[ $UID -eq 0 ]]; then
+    echo -e "\e[1;91m WARNING: You are running Vitis AI Docker container as root. \e[m"
+    echo -e "For security reasons, consider running as a regular user:"
+    echo -e "\e[1;90m    $ sh docker_run.sh \e[m"
+    echo -e ""
+    echo -e "OR"
+    echo -e ""
+    echo -e '\e[1;90m    $ docker run -e UID=$(id -u) -e GID=$(id -g) args...\e[m'
+    echo -e ""
+    echo -e "You will be running as vitis-ai-user with non-root UID/GID in Vitis AI Docker container. \n"
+  else
+    usermod -u $UID vitis-ai-user
+    groupmod -g $GID vitis-ai-group
+    echo -e "Running as vitis-ai-user with ID $(id -u) and group $(id -g) \n"
+  fi
+  exec /usr/local/bin/gosu vitis-ai-user "$@"
+fi
+
+. /opt/vitis_ai/conda/etc/profile.d/conda.sh
+export PATH=/opt/vitis_ai/conda/bin:$PATH
+export VERSION=`cat /etc/VERSION.txt`
+export BUILD_DATE=`cat /etc/BUILD_DATE.txt`
+export VAI_ROOT=$VAI_ROOT
+export VAI_HOME=$VAI_HOME
+export PYTHONPATH=$PYTHONPATH
+export XILINX_XRT=/opt/xilinx/xrt
+export CUDA_HOME=/usr/local/cuda
+export INTERNAL_BUILD=1
+export LIBRARY_PATH=/usr/local/lib
+export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/usr/local/lib:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib
+if [ -f /tmp/.Xauthority ]; then
+    cp /tmp/.Xauthority /home/$USER/
+    chmod -R 600 /home/$USER/.Xauthority
+    chown $UID:vitis-ai-users /home/$USER/.Xauthority
+fi
+
+source /etc/banner.sh

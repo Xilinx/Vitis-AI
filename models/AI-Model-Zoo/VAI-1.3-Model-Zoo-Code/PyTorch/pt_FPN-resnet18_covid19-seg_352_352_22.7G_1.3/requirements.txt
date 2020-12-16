@@ -1,0 +1,11 @@
+Cython
+cffi
+opencv-python
+scipy==1.1.0
+msgpack
+easydict
+matplotlib
+pyyaml
+tensorboardX
+Pillow
+tqdm

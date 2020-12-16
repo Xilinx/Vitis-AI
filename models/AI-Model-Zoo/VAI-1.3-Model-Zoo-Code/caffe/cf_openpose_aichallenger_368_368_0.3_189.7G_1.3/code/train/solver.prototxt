@@ -1,0 +1,11 @@
+net: "float/trainval.prototxt"
+base_lr: 0.00004
+momentum: 0.9
+lr_policy: "step"
+gamma: 0.333
+stepsize: 136106
+display: 200
+max_iter: 600000
+snapshot: 10000
+snapshot_prefix: "openpose"
+solver_mode: GPU
