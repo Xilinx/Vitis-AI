@@ -47,4 +47,4 @@ files:
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-u50lv-u280-r1.3.0.tar.gz
   checksum: 540c223361915472294cb4cfe3069616
-license: license link
+https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

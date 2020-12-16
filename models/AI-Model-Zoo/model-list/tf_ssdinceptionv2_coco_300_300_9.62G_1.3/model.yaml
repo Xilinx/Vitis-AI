@@ -32,4 +32,4 @@ files:
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_inception_v2_coco_tf-zcu102_zcu104-r1.3.0.tar.gz
   checksum: f7797f8c9f6638c182850902a2c5b5c8
-license: license link
+https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

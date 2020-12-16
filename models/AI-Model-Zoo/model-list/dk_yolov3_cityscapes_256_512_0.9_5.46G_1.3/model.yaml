@@ -47,4 +47,4 @@ files:
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50lv-u280-r1.3.0.tar.gz
   checksum: 9051358ea2efd8a303675e06b42fb2df
-license: license link
+https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
