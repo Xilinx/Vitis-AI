@@ -47,4 +47,4 @@ files:
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_77-u50lv-u280-r1.3.0.tar.gz
   checksum: 0b3e89f53ca0069f0874f54dc3b817f2
-https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

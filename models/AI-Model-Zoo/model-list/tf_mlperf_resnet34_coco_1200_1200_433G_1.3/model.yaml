@@ -42,4 +42,4 @@ files:
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -32,4 +32,4 @@ files:
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_25_128_tf-zcu102_zcu104-r1.3.0.tar.gz
   checksum: 113ebe7367d5c8fd8d6747d7900e0329
-https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

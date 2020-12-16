@@ -47,4 +47,4 @@ files:
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-u50lv-u280-r1.3.0.tar.gz
   checksum: 058d81782d35d072fd6834bb070d92c6
-https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
