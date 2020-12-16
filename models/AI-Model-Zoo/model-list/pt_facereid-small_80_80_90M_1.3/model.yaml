@@ -25,8 +25,8 @@ files:
 - name: pt_facereid-small_80_80_90M_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_facereid-small_80_80_90M_1.3.zip
+  checksum: 137e8a6db8f864e5859983773d14d938
 - name: facereid-small_pt
   type: xmodel
   board: zcu102 & zcu104
@@ -50,6 +50,6 @@ files:
 - name: facereid-small_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 49330dcd73627d33229b83d84d18be51
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

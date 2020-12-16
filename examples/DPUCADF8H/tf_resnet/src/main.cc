@@ -117,10 +117,10 @@ void LoadWords(string const& path, vector<string>& kinds) {
 void CPUCalcSoftmax(const float* data, size_t size, float* result) {
   assert(data && result);
   double sum = 0.0f;
-  cout<<"data[0]: "<<data[0]<<endl;
+  float maxData = *std::max_element(data, data + size);
 
   for (size_t i = 0; i < size; i++) {
-    result[i] = exp(data[i]);
+    result[i] = exp(data[i] - maxData);
     sum += result[i];
   }
   for (size_t i = 0; i < size; i++) {
@@ -157,13 +157,11 @@ void TopK(const float* d, int size, int k, vector<string>& vkinds) {
 /**
  * @brief Run DPU Task for ResNet50
  *
- * @param taskResnet50 - pointer to ResNet50 Task
- *
  * @return none
  */
-void runResnet50(vart::Runner* runner, const string baseImagePath) {
-  /* Mean value for ResNet50 specified in Caffe prototxt */
+void runResnet50(vart::Runner* runner, const string imagePath) {
   vector<string> kinds, images;
+  string baseImagePath = imagePath.back() == '/' ? imagePath : imagePath + '/';
 
   /* Load all image names.*/
   ListImages(baseImagePath, images);
@@ -178,7 +176,7 @@ void runResnet50(vart::Runner* runner, const string baseImagePath) {
     cerr << "\nError: No words exist in file words.txt." << endl;
     return;
   }
-  float mean[3] = {104, 107, 123};
+  float mean[3] = {103.94, 106.78, 123.68};
   int resizeHeight = 256;
   int resizeWidth = 256;
 
@@ -220,11 +218,11 @@ void runResnet50(vart::Runner* runner, const string baseImagePath) {
       /*image pre-process*/
       Mat image2 = cv::Mat(inHeight, inWidth, CV_8SC3);
       resize(image, image2, Size(resizeHeight, resizeWidth), 0, 0, INTER_NEAREST);
-      for (int h = offsetHeight; h < offsetHeight + inHeight; h++) {
-        for (int w = offsetWidth; w < offsetWidth + inWidth; w++) {
+      for (int h = 0; h < inHeight; h++) {
+        for (int w = 0; w < inWidth; w++) {
           for (int c = 0; c < 3; c++) {
             imageInputs[i * inSize + h * inWidth * 3 + w * 3 + 2 - c] =
-                (image2.at<Vec3b>(h, w)[c] - mean[c]);
+                (image2.at<Vec3b>(h + offsetHeight, w + offsetWidth)[c] - mean[c]);
             //imageInputs[i * inSize + h * inWidth * 3 + w * 3 + c] = 0 ;
           }
         }

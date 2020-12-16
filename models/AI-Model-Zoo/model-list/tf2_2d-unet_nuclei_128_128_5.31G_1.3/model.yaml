@@ -25,8 +25,8 @@ files:
 - name: tf2_2d-unet_nuclei_128_128_5.31G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_2d-unet_nuclei_128_128_5.31G_1.3.zip
+  checksum: ff46b7934cd1ae10dcf84e4997e5ba80
 - name: medical_seg_cell_tf2
   type: xmodel
   board: zcu102 & zcu104
@@ -50,6 +50,6 @@ files:
 - name: medical_seg_cell_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: d142c5b0b0a4a06da01d450690f93f44
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -50,6 +50,11 @@ files:
 - name: resnet50
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 68c7a7ca3c144b187946d0ecfbb9784d
+- name: resnet50
+  type: xmodel
+  board: u200 & u250
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u200-u250-r1.3.0.tar.gz
+  checksum: bebaf93bd59531262b31bfbce422d4eb
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

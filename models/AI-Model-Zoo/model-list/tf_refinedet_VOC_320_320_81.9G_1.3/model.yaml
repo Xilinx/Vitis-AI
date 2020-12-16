@@ -25,8 +25,8 @@ files:
 - name: tf_refinedet_VOC_320_320_81.9G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_refinedet_VOC_320_320_81.9G_1.3.zip
+  checksum: 96eab2f40a633bae7dace116534eb490
 - name: refinedet_VOC_tf
   type: xmodel
   board: zcu102 & zcu104
@@ -50,6 +50,6 @@ files:
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 6c2b4fa6360ac113416838bbe931a0ad
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

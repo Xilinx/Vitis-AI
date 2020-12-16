@@ -50,6 +50,6 @@ files:
 - name: inception_v4
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 2975fcf1621ba9c890b2881f3f91991b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -25,8 +25,8 @@ files:
 - name: pt_unet_chaos-CT_512_512_23.3G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_unet_chaos-CT_512_512_23.3G_1.3.zip
+  checksum: 9e264708190fb8163b9a8f88678677b4
 - name: unet_chaos-CT_pt
   type: xmodel
   board: zcu102 & zcu104

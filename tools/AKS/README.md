@@ -152,8 +152,6 @@ cd -
 
 ### Get Video Dataset
 
-:pushpin: **Note:** The link below doesn't exist yet, please copy the tar file from /proj/xsjhdstaff3/vkjain/gitlab/fork/vitis-ai-staging/vitis_ai_runtime_r1.3.0_image_video.tar.gz to ${VAI_ALVEO_ROOT}/../tools/AKS
-
 ```sh
 cd ${VAI_HOME}/tools/AKS
 
@@ -339,21 +337,6 @@ Use following commands to build these kernels and examples.
 
 ### Run Examples
 
-:pushpin: **Note:** Follow these steps for bash (to be replaced with weblinks once packages are uploaded to web)
-
-```sh
-# Outside container
-copy xsj:/wrk/acceleration/modelzoo_1.3/compiled_model_zoo_1.3.0-r179/resnet50-u50-r1.3.0.tar.gz to <path-to-AKS>
-mkdir graph_zoo/meta_resnet50_u50
-tar -xzvf resnet50-u50-r1.3.0.tar.gz
-mv resnet50/resnet50.xmodel graph_zoo/meta_resnet50_u50
-
-copy xsj:/proj/xsjhdstaff3/vkjain/gitlab/fork/alveo_xclbin-1.3.0.tar.gz to <path-to-AKS>
-tar -xzvf alveo_xclbin-1.3.0.tar.gz
-# Inside container
-sudo cp alveo_xclbin-1.3.0/U50/6E300M/* /usr/lib
-```
-
 - Resnet50
     ```sh
     # Download ResNet50 Compiled Model from Vitis-AI Model Zoo
@@ -420,14 +403,16 @@ Use following commands to build these kernels and examples.
 ### Run Examples
 
 - Resnet50
+  
     ```sh
     # Download the compiled model from Vitis-AI Model Zoo (TODO)
-    wget link=???? -O ????
-    mkdir graph_zoo/meta_resnet50_cadf8h
+    wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u200-u250-r1.3.0.tar.gz -O resnet50-u200-u250-r1.3.0.tar.gz
+    
     # Untar Model Zip
-    # TODO
+    mkdir graph_zoo/meta_resnet50_cadf8h
+    tar -xzvf resnet50-u200-u250-r1.3.0.tar.gz
+    cp resnet50/resnet50.xmodel graph_zoo/meta_resnet50_cadf8h
     ```
-    :pushpin: **Note:** Links to be updated before release.
     
     ```sh
     # C++

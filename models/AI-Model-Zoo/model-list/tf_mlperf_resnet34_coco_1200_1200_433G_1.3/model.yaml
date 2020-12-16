@@ -25,8 +25,8 @@ files:
 - name: tf_mlperf_resnet34_coco_1200_1200_433G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mlperf_resnet34_coco_1200_1200_433G_1.3.zip
+  checksum: 4405922a55b1b6a5af3ba10448fbc247
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: zcu102 & zcu104
@@ -40,6 +40,6 @@ files:
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 54750dad14183084189e876c1db1b6a3
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

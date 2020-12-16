@@ -4,6 +4,19 @@ Currently 6 variants of YOLO are supported : `yolo_v2, yolo_v2_prelu, standard_y
 
 `tiny_yolo_v2_voc` is trained on VOC 2007 Dataset (20 classes). All other networks are trained on COCO 2014 dataset (80 classes)
 
+## Setup
+
+:pushpin: **Note:** Skip, if you have already run the below steps.
+
+```sh
+# Activate Conda Environment
+conda activate vitis-ai-caffe
+```
+
+```sh
+# Setup env
+source /vitis_ai_home/setup/alveo/u200_u250/overlaybins/setup.sh
+```
 
 ## Getting COCO 2014 validation set and labels
 COCO validation set is large (>40K images and >6 GB in size), so each step below could be slow depending upon your network.
@@ -11,7 +24,7 @@ COCO validation set is large (>40K images and >6 GB in size), so each step below
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```sh
-cd $VAI_ALVEO_ROOT/DPUCADX8G/yolo
+cd /vitis_ai_home/examples/DPUCADX8G/yolo
 python -m ck pull repo:ck-env
 python -m ck install package:dataset-coco-2014-val
 # If asked for installation path, accept the default path
@@ -34,16 +47,13 @@ find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xa
 
 ## Running the Application
  To run:
- 1. `conda activate vitis-ai-caffe`
 
- 2. `source /vitis_ai_home/setup/alveo/u200_u250/overlaybins/setup.sh`
+ 1. `cd $VAI_ALVEO_ROOT/DPUCADX8G/yolo`
 
- 3. `cd $VAI_ALVEO_ROOT/DPUCADX8G/yolo`
-
- 4. Run it : `./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize`
+ 2. Run it : `./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize`
     - Output results will be saved as text files as well as images in the directory `out_labels/`
 
- 5. Familiarize yourself with the script usage by: `./detect.sh -h`
+ 3. Familiarize yourself with the script usage by: `./detect.sh -h`
 
   The key parameters are:
   - `-t TEST, --test TEST`  : Mode of execution. Valid options are :

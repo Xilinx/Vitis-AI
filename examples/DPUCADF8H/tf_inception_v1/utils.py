@@ -41,6 +41,13 @@ CMD_SEQ        = {
         ('resize', [256, 256]),
         ('crop_center', [224, 224]),
         ],
+    'inception_v3_tf':[
+        ('pxlscale', 1/255.),
+        ('meansub', 0.5),
+        ('pxlscale', 2),
+        ('resize', [342, 342]),
+        ('crop_center', [299, 299]),
+        ],
     }
 
 def load_image(iter, image_list = None, pre_process_function = None, input_nodes = 'data', get_shapes = False, batch_size = 1):

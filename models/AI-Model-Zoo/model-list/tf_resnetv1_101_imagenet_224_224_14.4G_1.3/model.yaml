@@ -25,8 +25,8 @@ files:
 - name: tf_resnetv1_101_imagenet_224_224_14.4G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_101_imagenet_224_224_14.4G_1.3.zip
+  checksum: f7ad0c4090d0c1bd8731240b8b62cdb1
 - name: resnet_v1_101_tf
   type: xmodel
   board: zcu102 & zcu104
@@ -50,6 +50,11 @@ files:
 - name: resnet_v1_101_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 1a25b01f3f8f72300472bc73a7ded152
+- name: resnet_v1_101_tf
+  type: xmodel
+  board: u200 & u250
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-u200-u250-r1.3.0.tar.gz
+  checksum: 6dea04b976af9a59b68beafc3f1c2418
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

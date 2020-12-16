@@ -64,12 +64,7 @@ We need install the Vitis Core Development Environment.
 
 Download and unzip mpsoc common system & zcu102 base platform package from chapter 1.
 
-Download [bin.tar.gz](IN_XHD_SERVER_/wrk/acceleration/users/maheshm/publicDownloadrepo/bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
-
-For bash, same bin.tar.gz file can be obtained from here
-```
-XHD/XSJ/XCO: /wrk/acceleration/users/maheshm/vai_1_3/bin.tar.gz
-```
+Download [bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
 
 The following tutorials assume that the Vitis and XRT environment variable is set as given below.
 
@@ -101,14 +96,8 @@ Note that
 
 ## 2.3 Installing Vitis AI Runtime on the Evaluation Board
 
-- Download the [Vitis AI Runtime 1.3.0](https::/www.xilinx.com). 
+- Download the [Vitis AI Runtime 1.3.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.0.tar.gz). 
 
-For bash, same Vitis AI Runtime 1.3.0 package can be obtanined from here
-
-```
-#XCD_SERVER
-/group/dphi_software/vitis_ai_library/r1.3/vitis-ai-runtime-1.3.0.tar.gz
-``` 
 	
 - Untar the runtime packet and copy the following folder to the board using scp.
 ```
@@ -130,22 +119,12 @@ For bash, same Vitis AI Runtime 1.3.0 package can be obtanined from here
 %	wget https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz -O yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
 %	tar -xzvf yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
 ```
-For bash, same *yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz* model files can be obtained from here
-```
-#XCD server
-/group/dphi_software/vitis_ai_library/r1.3/xilinx_model_zoo_1.3.0-r186/yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
-```
 
 
 ## 2.5 Run Adas detection Example
 This part is about how to run the Adas detection example on zcu102 board.
 
 Download the images at https://cocodataset.org/#download. Please select suitable images which has car, bicycle or pedestrian and copy these images to `Vitis-AI/dsa/WAA-TRD/app/adas_detection_waa/data`. 
-
-For bash, test images can be obtained from here.
-```
-XHD/XSJ/XCO: /wrk/acceleration/users/maheshm/vai_1_3/adas_detection_image
-```
 
 Copy the directory $TRD_HOME/app/adas_detection_waa to the BOOT partition of the SD Card.
 
