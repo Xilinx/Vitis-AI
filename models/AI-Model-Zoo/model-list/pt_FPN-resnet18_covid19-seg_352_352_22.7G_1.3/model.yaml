@@ -25,8 +25,8 @@ files:
 - name: pt_FPN-resnet18_covid19-seg_352_352_22.7G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_FPN-resnet18_covid19-seg_352_352_22.7G_1.3.zip
+  checksum: 220b9eae6af5c7e39d08a02d9ed68992
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: zcu102 & zcu104

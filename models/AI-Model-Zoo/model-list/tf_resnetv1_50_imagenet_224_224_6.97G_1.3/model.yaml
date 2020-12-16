@@ -25,8 +25,8 @@ files:
 - name: tf_resnetv1_50_imagenet_224_224_6.97G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_6.97G_1.3.zip
+  checksum: a766ce47e318cd227fb046c677282da2
 - name: resnet_v1_50_tf
   type: xmodel
   board: zcu102 & zcu104

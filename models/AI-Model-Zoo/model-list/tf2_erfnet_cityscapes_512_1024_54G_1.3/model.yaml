@@ -25,8 +25,8 @@ files:
 - name: tf2_erfnet_cityscapes_512_1024_54G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_erfnet_cityscapes_512_1024_54G_1.3.zip
+  checksum: 3581c997dcfbb1a73e5562a613b541bc
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: zcu102 & zcu104

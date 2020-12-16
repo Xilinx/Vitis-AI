@@ -26,8 +26,8 @@ files:
 - name: py_face-quality_80_60_61.68M_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_face-quality_80_60_61.68M_1.3.zip
+  checksum: 9cff1dcf6c9a9029df9cc8b47a8bfb9e
 - name: face-quality_pt
   type: xmodel
   board: zcu102 & zcu104

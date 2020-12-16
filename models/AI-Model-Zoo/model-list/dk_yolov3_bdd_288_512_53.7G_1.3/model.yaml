@@ -25,8 +25,8 @@ files:
 - name: dk_yolov3_bdd_288_512_53.7G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov3_bdd_288_512_53.7G_1.3.zip
+  checksum: 2cd43fcafb0ab534467bb4a392c58c2b
 - name: yolov3_bdd
   type: xmodel
   board: zcu102 & zcu104

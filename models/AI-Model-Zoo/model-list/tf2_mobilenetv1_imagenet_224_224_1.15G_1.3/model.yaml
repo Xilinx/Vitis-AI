@@ -25,8 +25,8 @@ files:
 - name: tf2_mobilenetv1_imagenet_224_224_1.15G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_mobilenetv1_imagenet_224_224_1.15G_1.3.zip
+  checksum: 9b0b1795d08a4c19dfb00f6650a5caea
 - name: mobilenet_1_0_224_tf2
   type: xmodel
   board: zcu102 & zcu104

@@ -25,8 +25,8 @@ files:
 - name: tf_inceptionresnetv2_imagenet_299_299_26.35G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionresnetv2_imagenet_299_299_26.35G_1.3.zip
+  checksum: 0d000ad887ca53a733d6a005b05412eb
 - name: inception_resnet_v2_tf
   type: xmodel
   board: zcu102 & zcu104
