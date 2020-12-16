@@ -29,7 +29,7 @@ git clone --recursive https://github.com/apache/incubator-tvm.git "${TVM_HOME}"
 
  
 # DOWNLOAD REQUIRED PYTHON PACKAGES
-pip3 install cffi cython progressbar h5py==2.10.0
+pip3 install cffi cython progressbar h5py==2.8.0
  
 # BUILD PYXIR FOR EDGE
 cd "${PYXIR_HOME}"
