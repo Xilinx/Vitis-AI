@@ -67,7 +67,7 @@ if [ ${show_help:=false} == true ]; then
   echo -e "    --help                 show help"
   echo -e "    --clean                discard previous configs/builds before build"
   echo -e "    --clean-only           discard previous configs/builds"
-  echo -e "    --dpu                  set DPU target [dpucadx8g, dpucahx8h, dpuczdx8g]"
+  echo -e "    --dpu                  set DPU target [dpucadx8g, dpucadf8h, dpucahx8h, dpuczdx8g]"
   echo -e "    --type                 set build type [release (Default), debug]"
   echo -e "    --aks-install-prefix   set customized aks install prefix"
   echo -e
