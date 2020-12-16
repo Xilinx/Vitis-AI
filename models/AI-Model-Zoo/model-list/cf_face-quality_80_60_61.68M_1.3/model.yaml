@@ -27,8 +27,8 @@ files:
 - name: cf_face-quality_80_60_61.68M_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_face-quality_80_60_61.68M_1.3.zip
+  checksum: a6eefaadda89f051d157cfe651d45c38
 - name: face-quality
   type: xmodel
   board: zcu102 & zcu104

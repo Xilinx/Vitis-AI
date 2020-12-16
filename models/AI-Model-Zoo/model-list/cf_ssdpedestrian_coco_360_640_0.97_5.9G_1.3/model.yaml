@@ -25,8 +25,8 @@ files:
 - name: cf_ssdpedestrian_coco_360_640_0.97_5.9G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdpedestrian_coco_360_640_0.97_5.9G_1.3.zip
+  checksum: f73a70bf1e3c771f029e020c595ca42d
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: zcu102 & zcu104
