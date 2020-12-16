@@ -9,7 +9,7 @@
           "net_w" : 224,
           "net_h" : 224,
           "net_c": 3,
-          "mean": [ 104, 107, 123],
+          "mean": [ 123, 107, 104],
           "output_layout" : "NHWC"
         }
       },

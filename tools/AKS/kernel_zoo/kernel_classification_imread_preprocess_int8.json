@@ -10,7 +10,7 @@
     "net_w": {"type": "int"},
     "net_h": {"type": "int"},
     "net_c": {"type": "int"},
-    "mean": {"type": "float_array"},
+    "mean": {"type": "int_array"},
     "output_layout" : {"type": "string"}
   }
 }

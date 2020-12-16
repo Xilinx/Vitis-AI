@@ -49,7 +49,6 @@ int ClassificationImreadPreInt8::exec_async (
     AKS::NodeParams* nodeParams,
     AKS::DynamicParamValues* dynParams)
 {
-  //std::cout << "[DBG] ClassificationImreadPreInt8: running now ... " << std::endl ;
   int outHeight = nodeParams->_intParams["net_h"];
   int outWidth  = nodeParams->_intParams["net_w"];
   int batchSize = dynParams->imagePaths.size();
@@ -57,14 +56,11 @@ int ClassificationImreadPreInt8::exec_async (
                         nodeParams->getValue<string>("output_layout"): "NCHW";
 
   /// Get mean values
-  auto meanIter = nodeParams->_floatVectorParams.find("mean");
+  auto meanIter = nodeParams->_intVectorParams.find("mean");
   int mean [3];
-  mean[0] = 123;//meanIter->second[0]; 
-  mean[1] = 107;//meanIter->second[1]; 
-  mean[2] = 104;//meanIter->second[2]; 
-
-  float scale = nodeParams->hasKey<string>("scale") ?
-                nodeParams->getValue<float>("scale"): 1.0f;
+  mean[0] = meanIter->second[0]; 
+  mean[1] = meanIter->second[1]; 
+  mean[2] = meanIter->second[2]; 
 
   /// Create output data buffer for a batch data
   auto shape = (outputLayout == "NCHW") ?
