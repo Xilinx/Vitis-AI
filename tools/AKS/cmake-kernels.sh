@@ -113,6 +113,12 @@ DPU_CADX8G=("kernel_src/dpucadx8g"
 declare -a DPU_CAHX8H
 DPU_CAHX8H=("kernel_src/dpucahx8h")
 
+# DPUCADF8H (Alveo-u200/u250) specific (New DPU)
+declare -a DPU_CADF8H
+DPU_CADF8H=("kernel_src/dpucadf8h"
+            "kernel_src/classification_imread_preprocess_int8"
+           )
+
 # DPUCZDX8G (Zync-Ultrascale/Edge) specific
 declare -a DPU_CZDX8G
 DPU_CZDX8G=("kernel_src/dpuczdx8g")
@@ -125,6 +131,8 @@ elif [ ${dpu:="common"} == "dpucahx8h" ]; then
   KERNELS=(${COMMON_KER[@]} ${DPU_CAHX8H[@]})
 elif [ ${dpu:="common"} == "dpuczdx8g" ]; then
   KERNELS=(${COMMON_KER[@]} ${DPU_CZDX8G[@]})
+elif [ ${dpu:="common"} == "dpucadf8h" ]; then
+  KERNELS=(${COMMON_KER[@]} ${DPU_CADF8H[@]})
 else
   echo -e
   echo -e "${MSG} Building Only Common Kernels!"

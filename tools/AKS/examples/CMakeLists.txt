@@ -51,6 +51,15 @@ set (EXAMPLES_IMAGE
 set (EXAMPLES_VIDEO
   ""
 )
+elseif (DPU STREQUAL "dpucadf8h")
+# Set source files of examples (non-video)
+set (EXAMPLES_IMAGE
+  resnet50_dpucadf8h.cpp
+  )
+# Set source files of examples (video)
+set (EXAMPLES_VIDEO
+  ""
+)
 else()
 message (FATAL_ERROR "
   Nothing to build.
