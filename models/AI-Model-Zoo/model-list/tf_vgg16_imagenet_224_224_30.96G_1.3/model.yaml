@@ -50,6 +50,6 @@ files:
 - name: vgg_16_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: bda77b4c2ce7bf3557102dcce526ff78
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -51,6 +51,6 @@ files:
 - name: face-quality_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 11311c58f2eb24a071b61aa34a614107
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

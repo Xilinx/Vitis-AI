@@ -42,6 +42,6 @@ files:
 - name: squeezenet_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 5f2141fc1e81a559c0f493de9ac0bdf3
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

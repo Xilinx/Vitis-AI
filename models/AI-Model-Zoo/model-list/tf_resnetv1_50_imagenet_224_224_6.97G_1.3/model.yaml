@@ -50,8 +50,8 @@ files:
 - name: resnet_v1_50_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 8f10c74fb10251da138cf334c8eb7652
 - name: resnet_v1_50_tf
   type: xmodel
   board: u200 & u250
