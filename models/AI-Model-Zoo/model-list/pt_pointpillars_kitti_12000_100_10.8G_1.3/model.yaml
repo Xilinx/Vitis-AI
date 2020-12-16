@@ -37,4 +37,4 @@ files:
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-zcu102_zcu104-r1.3.0.tar.gz
   checksum: 53c90cb22782d357c1ac4bbd8734649d
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -32,4 +32,4 @@ files:
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_101_tf-zcu102_zcu104-r1.3.0.tar.gz
   checksum: df2e69991d0269d074daa1b35bdf9719
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

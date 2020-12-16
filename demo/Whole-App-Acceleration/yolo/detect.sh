@@ -177,7 +177,7 @@ if [ ! -f $ARCH_JSON ]; then
   ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
 fi
 if [ -z ${DIRECTORY+x} ]; then
-    DIRECTORY=${VAI_ALVEO_ROOT}/DPU-CADX8G/yolo/test_image_set/
+    DIRECTORY=${VAI_ALVEO_ROOT}/DPUCADX8G/yolo/test_image_set/
 fi
 if [  "$TEST" == "test_detect_jpeg"  ]; then
   ls $DIRECTORY | xargs -n1 -i ../utils/convert.sh $DIRECTORY {} 50
@@ -250,25 +250,25 @@ fi
 ## Modify the prototxt for new dimension
 if [[ ( -v NETWORK_HEIGHT ) && ( -v NETWORK_WIDTH ) ]]; then
   echo "Changing input dimensions in the $NET_DEF ..."
-  echo "python ${VAI_ALVEO_ROOT}/DPU-CADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file work/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH"
-  python ${VAI_ALVEO_ROOT}/DPU-CADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file work/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
+  echo "python ${VAI_ALVEO_ROOT}/DPUCADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file work/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH"
+  python ${VAI_ALVEO_ROOT}/DPUCADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file work/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
   if [[ $? != 0 ]]; then echo "Network modification failed. Exiting ..."; exit 1; fi;
   NET_DEF=work/new_dim.prototxt
 
-  echo "python ${VAI_ALVEO_ROOT}/DPU-CADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file work/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH"
-  python ${VAI_ALVEO_ROOT}/DPU-CADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file work/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
+  echo "python ${VAI_ALVEO_ROOT}/DPUCADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file work/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH"
+  python ${VAI_ALVEO_ROOT}/DPUCADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file work/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
   if [[ $? != 0 ]]; then echo "Network modification failed. Exiting ..."; exit 1; fi;
   NET_DEF_FPGA=work/new_dim_fpga.prototxt
 fi
 
 # Calibration dataset and image list
 if [ -z $CALIB_DATASET ]; then
-    CALIB_DATASET="$VAI_ALVEO_ROOT/"DPU-CADX8G/yolo/test_image_set/
+    CALIB_DATASET="$VAI_ALVEO_ROOT/"DPUCADX8G/yolo/test_image_set/
     echo -e "\n[WARNING] --calibdata not provided. Taking default calibration dataset : $CALIB_DATASET"
 fi
 
 if [ -z $IMGLIST ]; then
-    IMGLIST="$VAI_ALVEO_ROOT/"DPU-CADX8G/yolo/images.txt
+    IMGLIST="$VAI_ALVEO_ROOT/"DPUCADX8G/yolo/images.txt
     echo -e "\n[WARNING] --imglist not provided. Generating from calibration dataset directory : $CALIB_DATASET"
     echo -e "[WARNING] Please make sure there are images in $CALIB_DATASET\n"
     ls $CALIB_DATASET | awk '{print $1 " " 0}' > $IMGLIST
@@ -283,7 +283,7 @@ if [[ ( ! -z $CUSTOM_NETCFG ) && ( ! -z $CUSTOM_WEIGHTS ) && ( ! -z $CUSTOM_QUAN
 fi
 
 if [[ $RUN_QUANTIZER == 1 ]]; then
-  numcalibimages=`cat $VAI_ALVEO_ROOT/DPU-CADX8G/yolo/images.txt | wc -l`
+  numcalibimages=`cat $VAI_ALVEO_ROOT/DPUCADX8G/yolo/images.txt | wc -l`
   if [[ $numcalibimages == 0 ]]; then
     echo -e "\n[ERROR] No calibration images found in $CALIB_DATASET. Exiting..."
     exit 1
@@ -291,7 +291,7 @@ if [[ $RUN_QUANTIZER == 1 ]]; then
 
   export DECENT_DEBUG=1
   DUMMY_PTXT=$QUANT_DIR/dummy.prototxt
-  python $VAI_ALVEO_ROOT/DPU-CADX8G/yolo/get_decent_q_prototxt.py $(pwd) $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
+  python $VAI_ALVEO_ROOT/DPUCADX8G/yolo/get_decent_q_prototxt.py $(pwd) $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
   if [[ $? != 0 ]]; then echo "Network generation failed. Exiting ..."; exit 1; fi
 
   echo -e "quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir $QUANT_DIR/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH"
@@ -421,7 +421,7 @@ echo -e "Running:\n Test: $TEST\n Model: $MODEL\n Platform: $MLSUITE_PLATFORM\n 
   Xclbin: $XCLBIN\n Kernel Config: $KCFG\n Precision: $BITWIDTH\n Accelerator: $ACCELERATOR\n"
 
 if [ -z ${DIRECTORY+x} ]; then
-  DIRECTORY=${VAI_ALVEO_ROOT}/DPU-CADX8G/yolo/test_image_set/
+  DIRECTORY=${VAI_ALVEO_ROOT}/DPUCADX8G/yolo/test_image_set/
 fi
 
 if [[ ( $TEST != "cpu_detect" ) ]]; then

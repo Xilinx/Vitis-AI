@@ -111,38 +111,39 @@ And get the result as follows.
 ### Copy Data to RNN runtime docker
 1. To run the generated instructions in hardware, another runtime docker should be built. The docker can be built and launched as follows.
 ```
-docker build --build-arg BASE_IMAGE="xdock:5000/vitis-ai-gpu:1.3.343" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xdock:5000/vitis-ai-gpu-rnn:1.3.343 . 
-./docker_run.sh xdock:5000/vitis-ai-gpu-rnn:1.3.343
+docker build --build-arg BASE_IMAGE="xdock:5000/vitis-ai-gpu:1.3.343" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xdock:5000/vitis-ai-gpu-rnn:1.3.343 .
+cd dsa/DPU-for-RNN/
+bash docker_run.sh xdock:5000/vitis-ai-gpu-rnn:1.3.343
 ```
-2. In runtime docker environment, download the required data. Besides the data below, the imdb.csv should also be downloaded. You can register an account on this website (https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews) and download it.
+2. Download the required data. Besides the data below, the imdb.csv should also be downloaded. You can register an account on this website (https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews) and download it.
 ```
 wget https://storage.googleapis.com/tensorflow/tf-keras-datasets/imdb.npz
 wget https://storage.googleapis.com/tensorflow/tf-keras-datasets/imdb_word_index.json
 ```
-3. copy the required data, pretrained model and instructions to the hardware-deployed directory.
+3. Copy the required data, pretrained model and instructions to the hardware-deployed directory.
 
 For U25 card, use the following commands.
 ```
-mkdir -p /workspace/models/u25/customer_satisfaction/
-cp ./IMDB.csv /workspace/models/u25/imdb_sentiment_detection/IMDB.csv
-cp ./imdb.npz /workspace/models/u25/imdb_sentiment_detection/imdb.npz
-cp ./imdb_word_index.json /workspace/models/u25/imdb_sentiment_detection/imdb_word_index.json
-cp /workspace/rnn_workflow/sentiment_detection/quantizer/pretrained.h5 /workspace/models/u25/imdb_sentiment_detection/LSTM.h5
-cp /workspace/rnn_workflow/sentiment_detection/compiler/Instructions/u25_ddr_bin /workspace/models/u25/imdb_sentiment_detection/sentiment_0.bin
-cp /workspace/rnn_workflow/sentiment_detection/compiler/Instructions/fp.json /workspace/models/u25/imdb_sentiment_detection/sentiment.json
+mkdir -p dsa/DPU-for-RNN/models/u25/customer_satisfaction/
+cp ./IMDB.csv dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/IMDB.csv
+cp ./imdb.npz dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/imdb.npz
+cp ./imdb_word_index.json dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/imdb_word_index.json
+cp rnn_workflow/sentiment_detection/quantizer/pretrained.h5 dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/LSTM.h5
+cp rnn_workflow/sentiment_detection/compiler/Instructions/u25_ddr_bin dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/sentiment_0.bin
+cp rnn_workflow/sentiment_detection/compiler/Instructions/fp.json dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/sentiment.json
 ```
 For U50 card, use the following commands.
 ```
-mkdir -p /workspace/models/u50lv/customer_satisfaction/
-cp ./IMDB.csv /workspace/models/u50lv/imdb_sentiment_detection/IMDB.csv
-cp ./imdb.npz /workspace/models/u50lv/imdb_sentiment_detection/imdb.npz
-cp ./imdb_word_index.json /workspace/models/u50lv/imdb_sentiment_detection/imdb_word_index.json
-cp /workspace/rnn_workflow/sentiment_detection/quantizer/pretrained.h5 /workspace/models/u50lv/imdb_sentiment_detection/LSTM.h5
-cp /workspace/rnn_workflow/sentiment_detection/compiler/Instructions/config.json  /workspace/models/u50lv/imdb_sentiment_detection/config.json
-cp /workspace/rnn_workflow/sentiment_detection/compiler/Instructions/is_3 /workspace/models/u50lv/imdb_sentiment_detection/is_3
-cp /workspace/rnn_workflow/sentiment_detection/compiler/Instructions/is_4 /workspace/models/u50lv/imdb_sentiment_detection/is_4
-cp /workspace/rnn_workflow/sentiment_detection/compiler/Instructions/ddr_bin_3k /workspace/models/u50lv/imdb_sentiment_detection/sentiment_0.bin
-cp /workspace/rnn_workflow/sentiment_detection/compiler/Instructions/ddr_bin_4k /workspace/models/u50lv/imdb_sentiment_detection/sentiment_1.bin
-cp /workspace/rnn_workflow/sentiment_detection/compiler/Instructions/fp.json /workspace/models/u50lv/imdb_sentiment_detection/sentiment.json
+mkdir -p dsa/DPU-for-RNN/models/u50lv/customer_satisfaction/
+cp ./IMDB.csv dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/IMDB.csv
+cp ./imdb.npz dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/imdb.npz
+cp ./imdb_word_index.json dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/imdb_word_index.json
+cp rnn_workflow/sentiment_detection/quantizer/pretrained.h5 dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/LSTM.h5
+cp rnn_workflow/sentiment_detection/compiler/Instructions/config.json dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/config.json
+cp rnn_workflow/sentiment_detection/compiler/Instructions/is_3 dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/is_3
+cp rnn_workflow/sentiment_detection/compiler/Instructions/is_4 dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/is_4
+cp rnn_workflow/sentiment_detection/compiler/Instructions/ddr_bin_3k dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/sentiment_0.bin
+cp rnn_workflow/sentiment_detection/compiler/Instructions/ddr_bin_4k dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/sentiment_1.bin
+cp rnn_workflow/sentiment_detection/compiler/Instructions/fp.json dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/sentiment.json
 ```
 4. Follow [DPU-for-RNN instructions](../../dsa/DPU-for-RNN) to run model in FPGA 

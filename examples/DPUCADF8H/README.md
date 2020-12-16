@@ -14,8 +14,7 @@ This directory provides scripts for running several well known models on the FPG
   Setup the Environment
 
   ```sh
-  # Typically, <path-to-vitis-ai> is `/workspace`
-  source <path-to-vitis-ai>/setup/alveo/u200_u250/overlaybins/setup.sh
+  source /vitis_ai_home/setup/alveo/u200_u250/overlaybins/setup.sh
   ```
 
    Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning).

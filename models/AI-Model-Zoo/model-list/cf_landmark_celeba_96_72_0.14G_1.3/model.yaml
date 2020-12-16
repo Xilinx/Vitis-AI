@@ -26,8 +26,8 @@ files:
 - name: cf_landmark_celeba_96_72_0.14G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_landmark_celeba_96_72_0.14G_1.3.zip
+  checksum: 125b10f44b0b3b747cb13ac8f1c93161
 - name: face_landmark
   type: xmodel
   board: zcu102 & zcu104
@@ -53,4 +53,4 @@ files:
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: download link
   checksum: md5sum value
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

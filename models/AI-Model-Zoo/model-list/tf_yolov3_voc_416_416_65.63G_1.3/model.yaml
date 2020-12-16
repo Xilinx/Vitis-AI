@@ -25,8 +25,8 @@ files:
 - name: tf_yolov3_voc_416_416_65.63G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_yolov3_voc_416_416_65.63G_1.3.zip
+  checksum: e1024c8600305f7cbea105141b17f10c
 - name: yolov3_voc_tf
   type: xmodel
   board: zcu102 & zcu104
@@ -47,4 +47,4 @@ files:
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50lv-u280-r1.3.0.tar.gz
   checksum: 521b4c583c433bbcf917743100a3ccce
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

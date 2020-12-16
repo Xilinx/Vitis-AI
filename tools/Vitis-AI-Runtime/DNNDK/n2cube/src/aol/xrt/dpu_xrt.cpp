@@ -284,6 +284,8 @@ static int _init_xrt(const char *bit) {
 
   int dpu_core_num = 0, sm_core_num = 0;
   map<uint64_t, int> cu_addr_map;
+  SYSCONF->dpu_core_mask = 0;
+  SYSCONF->sm_core_mask = 0;
   for (int i = 0; i < layout->m_count; ++i) {
     if (layout->m_ip_data[i].m_type != IP_KERNEL) continue;
     uint64_t cu_base_addr = layout->m_ip_data[i].m_base_address;
@@ -292,6 +294,8 @@ static int _init_xrt(const char *bit) {
       cu_addr_map[cu_base_addr] = 1;
 
       SYSCONF->dpu_conf[dpu_core_num].base_addr = cu_base_addr;
+      SYSCONF->dpu_conf[dpu_core_num].cu_index = xclIPName2Index(mdev_handle, (const char *)(layout->m_ip_data[i].m_name));
+      SYSCONF->dpu_core_mask |= (1 << (SYSCONF->dpu_conf[dpu_core_num].cu_index));
 
       log_info("Kernel:%s , BaseAddr: 0x%x\n", layout->m_ip_data[i].m_name,
                layout->m_ip_data[i].m_base_address);
@@ -304,6 +308,8 @@ static int _init_xrt(const char *bit) {
       cu_addr_map[cu_base_addr] = 1;
 
       SYSCONF->dpu_conf[dpu_core_num].base_addr = cu_base_addr;
+      SYSCONF->dpu_conf[dpu_core_num].cu_index = xclIPName2Index(mdev_handle, (const char *)(layout->m_ip_data[i].m_name));
+      SYSCONF->dpu_core_mask |= (1 << (SYSCONF->dpu_conf[dpu_core_num].cu_index));
 
       log_info("Kernel:%s , BaseAddr: 0x%x\n", layout->m_ip_data[i].m_name,
                layout->m_ip_data[i].m_base_address);
@@ -315,25 +321,15 @@ static int _init_xrt(const char *bit) {
                        strlen("sfm_xrt_top")) == 0) {
       cu_addr_map[cu_base_addr] = 2;
       SYSCONF->sm_conf[sm_core_num].base_addr = cu_base_addr;
+      SYSCONF->sm_conf[sm_core_num].cu_index = xclIPName2Index(mdev_handle, (const char *)(layout->m_ip_data[i].m_name));
+      SYSCONF->sm_core_mask |= (1 << (SYSCONF->sm_conf[sm_core_num].cu_index));
+
       log_info("Kernel:%s , BaseAddr: 0x%x\n", layout->m_ip_data[i].m_name,
                layout->m_ip_data[i].m_base_address);
       sm_core_num++;
     }
   }
-  int cu_index = 0, dpucnt = 0, smcnt = 0;
-  SYSCONF->dpu_core_mask = 0;
-  SYSCONF->sm_core_mask = 0;
-  for (auto item = cu_addr_map.begin(); item != cu_addr_map.end(); item++) {
-    if (item->second == 1) {
-      SYSCONF->dpu_core_mask |= (1 << cu_index);
-      SYSCONF->dpu_conf[dpucnt++].cu_index = cu_index;
-    }
-    if (item->second == 2) {
-      SYSCONF->sm_core_mask |= (1 << cu_index);
-      SYSCONF->sm_conf[smcnt++].cu_index = cu_index;
-    }
-    cu_index++;
-  }
+
   SYSCONF->dpu_core_num = dpu_core_num;
   SYSCONF->sm_core_num = sm_core_num;
 

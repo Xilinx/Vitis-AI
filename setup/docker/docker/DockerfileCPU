@@ -4,9 +4,15 @@ SHELL ["/bin/bash", "-c"]
 ENV TZ=America/Denver
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV VAI_ROOT=/opt/vitis_ai
+ENV VAI_HOME=/vitis_ai_home
 ARG VERSION
 ENV VERSION=$VERSION
-ENV DATE=$(date)
+ARG DATE
+ENV DATE=$DATE
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
 
 RUN chmod 1777 /tmp \
     && mkdir /scratch \
@@ -23,6 +29,7 @@ RUN chmod 1777 /tmp \
         curl \
         g++ \
         git \
+        locales \
         libboost-all-dev \
         libgflags-dev \
         libgoogle-glog-dev \
@@ -50,6 +57,13 @@ RUN chmod 1777 /tmp \
         wget \
         yasm \
         zstd
+
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
+    && echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
+    && echo "LANG=en_US.UTF-8" > /etc/locale.conf \
+    && locale-gen en_US.UTF-8 \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+    && dpkg-reconfigure locales
 
 # Tools for building vitis-ai-library in the docker container
 RUN apt-get install -y \
@@ -187,18 +201,37 @@ RUN cd /tmp \
     && rm -fr /tmp/* \
     && chmod 777 /opt/petalinux/2020.2/sysroots/aarch64-xilinx-linux/
 
-ENV PATH="${VAI_ROOT}/utility:${PATH}"
+RUN echo $VERSION > /etc/VERSION.txt
+
+ENV GOSU_VERSION 1.12
+
+COPY docker/bashrc /etc/bash.bashrc
+RUN chmod a+rwx /etc/bash.bashrc
+RUN groupadd vitis-ai-group \
+    && useradd --shell /bin/bash -c '' -m -g vitis-ai-group vitis-ai-user \
+    && passwd -d vitis-ai-user \
+    && usermod -aG sudo vitis-ai-user \
+    && echo 'ALL ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+    && curl -sSkLo /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
+    && chmod +x /usr/local/bin/gosu \
+    && echo ". $VAI_ROOT/conda/etc/profile.d/conda.sh" >> ~vitis-ai-user/.bashrc \
+    && echo "conda activate base" >> ~vitis-ai-user/.bashrc \
+    && echo "export VERSION=${VERSION}" >> ~vitis-ai-user/.bashrc \
+    && echo "export BUILD_DATE=\"${DATE}\"" >> ~vitis-ai-user/.bashrc \
+    && echo $VERSION > /etc/VERSION.txt \
+    && echo $DATE > /etc/BUILD_DATE.txt \
+    && echo 'export PS1="\[\e[91m\]Vitis-AI\[\e[m\] \w > "' >> ~vitis-ai-user/.bashrc \
+    && mkdir -p ${VAI_ROOT} \
+    && chown -R vitis-ai-user:vitis-ai-group ${VAI_ROOT}
 
 # Set up Anaconda
+USER vitis-ai-user
 ENV MY_CONDA_CHANNEL=http://artifactory/artifactory/vitis-ai-release
 
 RUN cd /tmp \
     && wget --progress=dot:mega https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh \
     && /bin/bash ./miniconda.sh -b -p $VAI_ROOT/conda \
-    && ln -s $VAI_ROOT/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
-    && echo ". $VAI_ROOT/conda/etc/profile.d/conda.sh" >> ~/.bashrc \
-    && echo "conda activate base" >> ~/.bashrc \
-    && echo "VERSION=${VERSION}" >> ~/.bashrc
+    && sudo ln -s $VAI_ROOT/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
 
 ADD docker/cpu_conda/*.yml /scratch/
 ADD docker/pip_requirements.txt /scratch/
@@ -229,13 +262,14 @@ RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh \
         && conda activate vitis-ai-caffe \
         && sudo cp -r $CONDA_PREFIX/lib/python3.6/site-packages/vaic/arch $VAI_ROOT/compiler/arch
 
-# For rebuild this layer every time
+# Rebuild this layer every time
+USER root
 ARG CACHEBUST=1
 RUN mkdir -p /etc/apt/sources.list.d \
     && echo "deb [trusted=yes] http://artifactory/artifactory/vitis-ai-deb-release bionic main" >> /etc/apt/sources.list.d/xlnx.list \
-    && sudo cat /etc/apt/sources.list.d/xlnx.list \
-    && sudo apt-get update -y \
-    && sudo apt-get install -y \
+    && cat /etc/apt/sources.list.d/xlnx.list \
+    && apt-get update -y \
+    && apt-get install -y \
         libunilog \
         libtarget-factory \
         libxir \
@@ -245,15 +279,10 @@ RUN mkdir -p /etc/apt/sources.list.d \
         librt-engine \
         aks \
     && rm -rf /etc/apt/sources.list.d/xlnx.list \
-    && sudo ldconfig
+    && ldconfig
 
 RUN apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /scratch/*
-
-RUN echo $VERSION > /etc/VERSION.txt
-
-ADD docker/login.sh /etc/
-ENTRYPOINT ["/etc/login.sh"]
 
 ADD docker/banner.sh /etc/

@@ -173,7 +173,7 @@ if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/utils" ]
 then
   LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/utils
 fi
-PYTHONPATH=${PYTHONPATH}:${VAI_ALVEO_ROOT}:${VAI_ALVEO_ROOT}/DPU-CADX8G/face_detect
+PYTHONPATH=${PYTHONPATH}:${VAI_ALVEO_ROOT}:${VAI_ALVEO_ROOT}/DPUCADX8G/face_detect
 
 if [ ! -z "${CONDA_PREFIX}" ]; then
   LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib/python3.6/site-packages/vai/dpuv1/utils
@@ -334,10 +334,10 @@ elif [ "${MODEL}" == "googlenet_tinyyolov3" ]; then
   fi;
 
 elif [ "${MODEL}" == "facedetect" ]; then
-  echo "[INFO] Visit $VAI_ALVEO_ROOT/DPU-CADX8G/face_detect to prepare FDDB dataset."
+  echo "[INFO] Visit $VAI_ALVEO_ROOT/DPUCADX8G/face_detect to prepare FDDB dataset."
   echo -n "[INFO] To save results to a text file for accuracy measurement, "
   echo "provide a text file path to 'save_result_txt' argument in the graph_zoo/graph_facedetect.json"
-  echo "[INFO] Visit $VAI_ALVEO_ROOT/DPU-CADX8G/face_detect to see how to measure accuracy from the text file"
+  echo "[INFO] Visit $VAI_ALVEO_ROOT/DPUCADX8G/face_detect to see how to measure accuracy from the text file"
   echo ""
   get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/facedetect.exe

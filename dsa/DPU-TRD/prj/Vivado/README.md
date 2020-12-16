@@ -1,4 +1,4 @@
-# Zynq UltraScale＋ MPSoC DPU TRD Vivado 2020.2
+# Zynq UltraScale＋ MPSoC DPU TRD V3.3 Vivado 2020.2
 
 ## Table of Contents
 
@@ -24,9 +24,21 @@
 
 ## 1 Revision History
 
-This wiki page complements the Vivado 2020.2 version of the DPU TRD.
-
 Change Log:
+
+V3.3 Change log:
+
+-  Supported range of conv stride from 4 to 8
+-  Supported Pool MaxReduce
+-  Supported Elew Multiply
+
+V3.2 Change log:
+
+-  Updated IP Name
+-  Supported Bias-right-shift.
+-  Supported up-to 4 cores DPU
+
+V3.1 Change Log:
 
 -  The first version of Vivado DPU TRD
 
@@ -107,8 +119,8 @@ The top-level directory structure shows the the major design components. The TRD
 ###### Jumpers & Switches:
 
   - Set boot mode to SD card:
-    - Rev 1.0: SW6[4:1] - **off,off,off, on**
-    - Rev D2: SW6[4:1] - **on, off on, off**
+    - Rev 1.0: SW6[4:1] - **OFF,OFF,OFF,ON**
+    - Rev D2: SW6[4:1] - **ON,OFF,ON,OFF**
 
 ### 5.2 Build and Run TRD Flow
 

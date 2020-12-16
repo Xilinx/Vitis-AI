@@ -25,11 +25,11 @@ files:
 - name: cf_FPN-resnet18_Endov_240_320_13.75G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_FPN-resnet18_Endov_240_320_13.75G_1.3.zip
+  checksum: ed66a61fc9f28bab7b2495b8344779d8
 - name: FPN-resnet18_Endov
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_Endov-zcu102_zcu104-r1.3.0.tar.gz
   checksum: 167fc4b65518d6a83769cb0f69826640
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

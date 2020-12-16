@@ -25,11 +25,11 @@ files:
 - name: cf_hourglass-pe_mpii_256_256_10.2G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_hourglass-pe_mpii_256_256_10.2G_1.3.zip
+  checksum: 16fc5d62f29e359cb95a85caa0d3b8c0
 - name: hourglass-pe_mpii
   type: xmodel
   board: zcu102 & zcu104
   download link: https://www.xilinx.com/bin/public/openDownload?filename=hourglass-pe_mpii-zcu102_zcu104-r1.3.0.tar.gz
   checksum: 71e74eefe416eea10d64292fac2ce6d1
-license: license link
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
