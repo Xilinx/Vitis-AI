@@ -239,12 +239,12 @@ For a Pytorch model, you should see the following directory structure:
 
 
 ## Model Performance
-All the models in the Model Zoo have been deployed on Xilinx hardware with [Vitis AI](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library). The performance number including end-to-end throughput and latency for each model on various boards with different DPU configurations are listed in the following sections.
+All the models in the Model Zoo have been deployed on Xilinx hardware with [Vitis AI](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/tools/Vitis-AI-Library). The performance number including end-to-end throughput and latency for each model on various boards with different DPU configurations are listed in the following sections.
 
 For more information about DPU, see [DPU IP Product Guide](https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=latest;d=pg338-dpu.pdf).
 
 
-**Note:** The model performance number listed in the following sections is generated with Vitis AI v1.3 and Vitis AI Lirary v1.3. For different boards, different DPU configurations are used. Vitis AI and Vitis AI Library can be downloaded for free from [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library Github](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library).
+**Note:** The model performance number listed in the following sections is generated with Vitis AI v1.3 and Vitis AI Lirary v1.3. For different boards, different DPU configurations are used. Vitis AI and Vitis AI Library can be downloaded for free from [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library Github](https://github.com/Xilinx/Vitis-AI/tree/master/tools/Vitis-AI-Library).
 We will continue to improve the performance with Vitis AI. The performance number reported here is subject to change in the near future.
 
 ### Performance on ZCU102 (0432055-04)  
@@ -1053,8 +1053,8 @@ The following table lists the performance number including end-to-end throughput
 ## Contributing
 We welcome community contributions. When contributing to this repository, first discuss the change you wish to make via:
 
-* [GitHub Issues](https://github.com/Xilinx/TechDocs/issues)
-* [Forum](https://forums.xilinx.com/t5/Deephi-DNNDK/bd-p/Deephi)
+* [GitHub Issues](https://github.com/Xilinx/Vitis-AI/issues)
+* [Forum](https://forums.xilinx.com)
 * <a href="mailto:xilinx_ai_model_zoo@xilinx.com">Email</a>
 
 You can also submit a pull request with details on how to improve the product. Prior to submitting your pull request, ensure that you can build the product and run all the demos with your patch. In case of a larger feature, provide a relevant demo.
