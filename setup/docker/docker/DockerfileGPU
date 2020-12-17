@@ -216,7 +216,7 @@ ENV MY_CONDA_CHANNEL="file:///scratch/conda-channel"
 RUN cd /tmp \
     && wget --progress=dot:mega https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh \
     && /bin/bash ./miniconda.sh -b -p $VAI_ROOT/conda \
-    && ln -s $VAI_ROOT/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
+    && sudo ln -s $VAI_ROOT/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
 
 ADD docker/gpu_conda/*.yml /scratch/
 ADD docker/pip_requirements.txt /scratch/
