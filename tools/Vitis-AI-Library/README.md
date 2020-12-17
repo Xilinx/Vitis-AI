@@ -423,6 +423,7 @@ $source ${VAI_HOME}/setup/alveo/u200_u250/overlaybins/setup.sh
 $export LD_LIBRARY_PATH=<vitis-ai-library lib path>:$LD_LIBRARY_PATH
 ```
 :pushpin: **Note:** The default library install path for vitis-ai-library is `$HOME/.local/<target>/lib`.
+
 4. Run the classification image test example.
 ```
 $HOME/build/build.${taget_info}/${project_name}/test_classification <model_dir> <img_path>
@@ -442,11 +443,18 @@ $tar -xvf resnet_v1_50_tf-u200-u250-r1.3.0.tar.gz
 
 2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../../examples/DPU-CADX8G/caffe/README.md#setup).
 3. Setup the environment.
-```
+```sh
 $source ${VAI_HOME}/setup/alveo/u200_u250/overlaybins/setup.sh
 $export LD_LIBRARY_PATH=<vitis-ai-library lib path>:$LD_LIBRARY_PATH
+
+# Set below for Alveo-U250
+$export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8/dpdpuv3_wrapper.hw.xilinx_u250_xdma_201830_2.xclbin
+
+# Set below for Alveo-U200
+$export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8/dpdpuv3_wrapper.hw.xilinx_u200_xdma_201830_2.xclbin
 ```
 :pushpin: **Note:** The default library install path for vitis-ai-library is `$HOME/.local/<target>/lib`.
+
 4. Run the classification image test example.
 ```
 $HOME/build/build.${taget_info}/${project_name}/test_classification <model_dir> <img_path>
