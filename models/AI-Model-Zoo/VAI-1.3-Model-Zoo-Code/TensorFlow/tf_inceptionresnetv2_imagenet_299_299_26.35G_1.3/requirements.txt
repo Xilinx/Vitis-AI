@@ -17,7 +17,7 @@ protobuf==3.13.0
 six==1.15.0
 tensorboard==1.15.0
 tensorflow-estimator==1.15.1
-tensorflow-gpu==1.15.0
+tensorflow-gpu==2.4.0
 termcolor==1.1.0
 Werkzeug==1.0.1
 wrapt==1.12.1
