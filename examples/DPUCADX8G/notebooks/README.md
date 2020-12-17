@@ -51,7 +51,6 @@ Setup the Environment
   $HOME/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val.txt
   # Get the necessary models
   python getModels.py
-  python replace_mluser.py --modelsdir models
   ```
 
 3. Launch Jupyter notebook server
