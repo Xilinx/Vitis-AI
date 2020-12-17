@@ -227,7 +227,6 @@ ADD --chown=vitis-ai-user:vitis-ai-group docker/pip_requirements_neptune.txt /sc
 # Rebuild this layer every time
 ARG CACHEBUST=1
 
-# RUN cd /scratch/ && ls -ld /scratch/
 RUN cd /scratch/ \
     && wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.3.411-01.tar.gz \
     && tar -xzvf conda-channel.tar.gz \
