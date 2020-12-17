@@ -176,15 +176,15 @@ steps.**
 	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
 	* Download the model according to the model's yaml file. Take `densebox_320_320` of ZCU102 as an example.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz -O densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz -O densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz
 	```	
 	* Copy the downloaded file to the board using scp with the following command. 
 	```
-	  scp densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
+	  scp densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
 	```
 	* Log in to the board (using ssh or serial port) and install the model package.
 	```
-	  tar -xzvf densebox_320_320-zcu102-zcu104-r1.3.0.tar.gz
+	  tar -xzvf densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz
 	  cp densebox_320_320 /usr/share/vitis_ai_library/models -r
 	```
 
