@@ -14,6 +14,8 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 RUN chmod 1777 /tmp \
+    && mkdir /scratch \
+    && chmod 1777 /scratch \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         sudo \
@@ -218,15 +220,16 @@ RUN cd /tmp \
     && /bin/bash ./miniconda.sh -b -p $VAI_ROOT/conda \
     && sudo ln -s $VAI_ROOT/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
 
-ADD docker/gpu_conda/*.yml /scratch/
-ADD docker/pip_requirements.txt /scratch/
-ADD docker/pip_requirements_neptune.txt /scratch/
+ADD --chown=vitis-ai-user:vitis-ai-group docker/gpu_conda/*.yml /scratch/
+ADD --chown=vitis-ai-user:vitis-ai-group docker/pip_requirements.txt /scratch/
+ADD --chown=vitis-ai-user:vitis-ai-group docker/pip_requirements_neptune.txt /scratch/
 
 # Rebuild this layer every time
 ARG CACHEBUST=1
 
-RUN cd /tmp/ \
-    && wget -O conda-channel.tar.gz  https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.3.411-01.tar.gz && \
+# RUN cd /scratch/ && ls -ld /scratch/
+RUN cd /scratch/ \
+    && wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.3.411-01.tar.gz \
     && tar -xzvf conda-channel.tar.gz \
     && . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && conda env create -f /scratch/vitis-ai-optimizer_darknet.yml \
@@ -251,7 +254,7 @@ RUN cd /tmp/ \
     && mkdir -p $VAI_ROOT/compiler \
         && conda activate vitis-ai-caffe \
         && sudo cp -r $CONDA_PREFIX/lib/python3.6/site-packages/vaic/arch $VAI_ROOT/compiler/arch \
-    && rm -fr /tmp/*
+    && rm -fr /scratch/*
 
 
 # Rebuild this layer every time
