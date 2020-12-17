@@ -114,7 +114,11 @@ The DPU for RNN features are:
     ```
 2. Get dependent model files ready.
     ```
-    $scp -r xcdl190074:/group/dphi_edge/vai-1.3/dpu-for-rnn/models/* <Your_Path>/dsa/DPU-for-RNN/models/
+    $cd <Your_Path>/dsa/DPU-for-RNN/models/
+    $wget -O u50lv-2020-12-16.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=u50lv-2020-12-16.tar.gz
+    $tar -xvf  u50lv-2020-12-16.tar.gz
+    $wget -O u25-2020-12-16.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=u25-2020-12-16.tar.gz
+    $tar -xvf  u25-2020-12-16.tar.gz
     ```
     Then following [this guide](models/README.md) to get all dependent files ready.
 
@@ -124,10 +128,10 @@ The DPU for RNN features are:
     
     To build rnn docker:
     ```    
-    $cd ../.. 
+    $cd <Your_Path>/dsa/DPU-for-RNN/
     $docker build --build-arg BASE_IMAGE=<Vitis AI Docker Image> -f dsa/DPU-for-RNN/Dockerfile.rnn -t <YOUR RNN Docker Image>  .
     e.g.:
-    $cd ../..
+    $cd <Your_Path>/dsa/DPU-for-RNN/
     $docker build --build-arg BASE_IMAGE="xdock:5000/vitis-ai-gpu:1.3.343" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xdock:5000/vitis-ai-gpu-rnn:1.3.343 . 
     ```    
     To launch the docker image:
