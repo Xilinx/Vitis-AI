@@ -29,17 +29,13 @@ Vitis AI is composed of the following key components:
 
 ## [See What's New](docs/release-notes/1.x.md)
 - [Release Notes](docs/release-notes/1.x.md)
-- Vitis AI Quantizer and DNNDK runtime all open source
-- 14 new Reference Models  AI Model Zoo (Pytorch, Caffe, Tensorflow)
-- VAI Quantizer supports optimized models (pruned)
-- DPU naming scheme has been updated to be consistent across all configurations
-- Introducing Vitis AI profiler for edge and cloud
-- VAI DPUs supported in ONNXRuntime and TVM
-- Added Alveo U50/U50LV support
-- Added Alveo U280 support
-- Alveo U50/U50LV DPU DPUCAHX8H micro-architecture improvement
-- DPU TRD upgraded to support Vitis 2020.2 and Vivado 2020.2
-- Vitis AI for Pytorch CNN general access (Beta version)
+- Added support for Pytorch and Tensorflow 2.3 frameworks 
+- Added more ready-to-use AI models for a wider range of applications, including 3D point cloud detection and segmentation, COVID-19 chest image segmentation and other reference models
+- Unified XIR-based compilation flow from edge to cloud
+- Vitis AI Runtime (VART) fully open source
+- New RNN overlay for NLP applications 
+- New CNN DPUs for the low-latency and higher throughput applications on Alveo cards
+- EoU enhancement with Beta version model partitioning and custom layer/operators plug-in
 
 ## Getting Started
 
