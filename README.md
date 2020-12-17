@@ -65,12 +65,12 @@ Two options are available for installing the containers with the Vitis AI tools 
 
 Download the latest Vitis AI Docker with the following command. This container runs on CPU.  
 ```
-docker pull xilinx/vitis-ai:latest  
+docker pull xilinx/vitis-ai-cpu:latest  
 ```
 
 To run the docker, use command:
 ```
-./docker_run.sh xilinx/vitis-ai:latest
+./docker_run.sh xilinx/vitis-ai-cpu:latest
 ```
 #### Building Docker from Recipe
 

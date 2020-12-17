@@ -124,14 +124,12 @@ The DPU for RNN features are:
 
 3. Build rnn docker based on vitis-ai and launch the docker image.
     
-    For CPU version, you can use prebuild version in github. For GPU, please firstly build Vitis AI GPU docker. 
-    
     To build rnn docker:
     ```    
-    $cd <Your_Path>/dsa/DPU-for-RNN/
+    $cd <Your_Path>
     $docker build --build-arg BASE_IMAGE=<Vitis AI Docker Image> -f dsa/DPU-for-RNN/Dockerfile.rnn -t <YOUR RNN Docker Image>  .
     e.g.:
-    $cd <Your_Path>/dsa/DPU-for-RNN/
+    $cd <Your_Path>
     $docker build --build-arg BASE_IMAGE="xdock:5000/vitis-ai-gpu:1.3.343" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xdock:5000/vitis-ai-gpu-rnn:1.3.343 . 
     ```    
     To launch the docker image:
