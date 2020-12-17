@@ -152,7 +152,7 @@ For more information, please refer to [Vitis AI User Guide](https://www.xilinx.c
 ## [System Requirements](docs/system_requirements.md)
 
 ## Questions and Support
-- [FAQ](doc/faq.md)
+- [FAQ](docs/faq.md)
 - [Vitis AI Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
 - [Third Party Source](docs/Thirdpartysource.md)
 
