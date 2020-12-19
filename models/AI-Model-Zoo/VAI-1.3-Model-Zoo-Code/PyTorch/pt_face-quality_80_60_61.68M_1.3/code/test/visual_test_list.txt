@@ -1,9 +1,0 @@
-testImgs/002129.jpg
-testImgs/009094.jpg
-testImgs/018914.jpg
-testImgs/020713.jpg
-testImgs/020738.jpg
-testImgs/025915.jpg
-testImgs/037022.jpg
-testImgs/059174.jpg
-testImgs/075725.jpg

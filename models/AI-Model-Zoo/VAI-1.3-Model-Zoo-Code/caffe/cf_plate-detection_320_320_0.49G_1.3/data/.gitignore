@@ -1,5 +1,0 @@
-## ignore pb model or ckpt model
-*.png
-*.jpg
-*.JPEG
-quantize
