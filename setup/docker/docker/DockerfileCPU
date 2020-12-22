@@ -195,9 +195,9 @@ RUN cd /tmp; wget --progress=dot:mega http://launchpadlibrarian.net/436533799/li
     && rm -fr /tmp/*
 
 RUN cd /tmp \
-    && wget --progress=dot:mega http://xcogpuvai01:8000/sdk-1013.sh \
-    && chmod a+x /tmp/sdk-1013.sh \
-    && /tmp/sdk-1013.sh -y \
+    && wget --progress=dot:mega -O sdk.sh https://www.xilinx.com/bin/public/openDownload?filename=sdk-2020.2.0.0.sh  \
+    && chmod a+x /tmp/sdk.sh \
+    && /tmp/sdk.sh -y \
     && rm -fr /tmp/* \
     && chmod 777 /opt/petalinux/2020.2/sysroots/aarch64-xilinx-linux/
 
