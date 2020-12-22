@@ -36,7 +36,7 @@ tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xili
 
 5. Cross compile the sample, take resnet50 as an example.
 ```
-cd ~/Vitis-AI/examples/VART/samples/resnet50
+cd ~/Vitis-AI/demo/VART/resnet50
 bash -x build.sh
 ```	
 If the compilation process does not report any error and the executable file `resnet50` is generated, the host environment is installed correctly.
@@ -105,7 +105,7 @@ steps.**
 	```
 3. Enter the directory of samples in the target board. Take `resnet50` as an example.
 	```
-	cd ~/Vitis-AI/examples/VART/samples/resnet50
+	cd ~/Vitis-AI/demo/VART/resnet50
 	```
 5. Run the example.
 	```
