@@ -46,7 +46,7 @@ Two options are available for installing the containers with the Vitis AI tools 
 
 
 ### Installation
- - [Install Docker](doc/install_docker/README.md) - if Docker not installed on your machine yet
+ - [Install Docker](docs/install_docker/README.md) - if Docker not installed on your machine yet
 
  - [Ensure your linux user is in the group docker](https://docs.docker.com/install/linux/linux-postinstall/)
 
