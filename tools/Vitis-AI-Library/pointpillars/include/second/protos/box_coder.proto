@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package second.protos;
+
+// Configuration proto for the box coder to be used in the object detection
+// pipeline. See core/box_coder.py for details.
+message BoxCoder {
+  oneof box_coder {
+    GroundBox3dCoder ground_box3d_coder = 1;
+    BevBoxCoder bev_box_coder = 2;
+  }
+}
+
+message GroundBox3dCoder {
+  bool linear_dim = 1;
+  bool encode_angle_vector = 2;
+}
+
+message BevBoxCoder {
+  bool linear_dim = 1;
+  bool encode_angle_vector = 2;
+  float z_fixed = 3;
+  float h_fixed = 4;
+}

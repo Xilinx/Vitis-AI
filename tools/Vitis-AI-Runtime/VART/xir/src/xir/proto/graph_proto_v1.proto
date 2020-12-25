@@ -1,0 +1,232 @@
+//
+// Copyright 2019 Xilinx Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+syntax = "proto3";
+
+package serial_v1;
+
+message AttrValue {
+  string attr_name = 1;
+
+  message ListValue {
+    repeated bool bool_value = 1;
+    repeated sint64 int64_value = 3;
+    repeated float float_value = 4;
+    repeated string string_value = 5;
+    repeated bytes bytes_value = 6;
+  };
+
+  message kv_pair {
+    string key = 1;
+    bool bool_value = 2;
+    sint64 int64_value = 4;
+    float float_value = 5;
+    string string_value = 6;
+    bytes bytes_value = 7;
+  };
+
+  message kv_map {
+    repeated kv_pair pairs = 1;
+  };
+
+  oneof attr_value {
+    bool bool_value = 2;
+    sint64 int64_value = 4;
+    float float_value = 5;
+    string string_value = 6;
+    bytes bytes_value = 7;
+    ListValue list_value = 8;
+
+    kv_map kv = 10;
+  }
+};
+
+message ExpandAttrValue {
+  string attr_name = 100;
+
+  // vector
+  message BoolVec {
+    repeated bool value = 1;
+  };
+  message Int32Vec {
+    repeated sint32 value = 1;
+  };
+  message Int64Vec {
+    repeated sint64 value = 1;
+  };
+  message FloatVec {
+    repeated float value = 1;
+  };
+  message StringVec {
+    repeated string value = 1;
+  };
+  message BytesVec {
+    repeated bytes value = 1;
+  };
+
+  // map
+  message KeyBoolPair {
+    string key = 1;
+    bool value = 2;
+  };
+  message BoolMap {
+    repeated KeyBoolPair pairs = 1;
+  };
+
+  message KeyInt32Pair {
+    string key = 1;
+    sint32 value = 2;
+  };
+  message Int32Map {
+    repeated KeyInt32Pair pairs = 1;
+  };
+
+  message KeyInt64Pair {
+    string key = 1;
+    sint64 value = 2;
+  };
+  message Int64Map {
+    repeated KeyInt64Pair pairs = 1;
+  };
+
+  message KeyFloatPair {
+    string key = 1;
+    float value = 2;
+  };
+  message FloatMap {
+    repeated KeyFloatPair pairs = 1;
+  };
+
+  message KeyStringPair {
+    string key = 1;
+    string value = 2;
+  };
+  message StringMap {
+    repeated KeyStringPair pairs = 1;
+  };
+
+  message KeyBytesPair {
+    string key = 1;
+    bytes value = 2;
+  };
+  message BytesMap {
+    repeated KeyBytesPair pairs = 1;
+  };
+
+  oneof attr_value {
+    bool bool_value = 1;
+    sint32 int32_value = 2;
+    sint64 int64_value = 3;
+    float float_value = 4;
+    string string_value = 5;
+    bytes bytes_value = 6;
+
+    BoolVec bool_vec = 11;
+    Int32Vec int32_vec = 12;
+    Int64Vec int64_vec = 13;
+    FloatVec float_vec = 14;
+    StringVec string_vec = 15;
+
+    BoolMap bool_map = 21;
+    Int32Map int32_map = 22;
+    Int64Map int64_map = 23;
+    FloatMap float_map = 24;
+    StringMap string_map = 25;
+    BytesMap bytes_map = 26;
+  }
+};
+
+message OneKindOP {
+  string op_type = 1;
+  repeated string op_name = 2;
+};
+
+message Tensor {
+  string tensor_name = 1;
+  repeated uint32 tensor_dim = 2;
+
+  int32 data_type = 5;
+
+  repeated ExpandAttrValue tensor_attr = 10;
+};
+
+message OPNode {
+  string op_name = 1;
+  string op_type = 2;
+  repeated AttrValue op_attr = 3;
+  repeated ExpandAttrValue expand_op_attr = 8;
+
+  repeated OneKindOP input_op = 4;
+  Tensor output_tensor = 5;
+};
+
+message SubGraph {
+  string subgraph_name = 1;
+  repeated string op_name = 3;
+  repeated ExpandAttrValue subg_attr = 5;
+
+  repeated SubGraph subg_child = 10;
+};
+
+message Graph {
+  string graph_name = 1;
+
+  repeated OPNode op_node = 5;
+
+  SubGraph subg_root = 10;
+
+  repeated OpDef op_defs = 101;
+
+};
+
+message AttrDef {
+  string name = 1;
+  int32 data_type = 2;
+  enum OccurType {
+    REQUIRED = 0;
+    OPTIONAL = 1;
+  };
+  OccurType occur_type = 3;
+  AttrValue default_value = 4;
+  int32 list_length = 6;
+  string annotation = 7;
+};
+
+message OpDef {
+  string name = 1;
+  repeated OpArgDef input_args = 2;
+  repeated AttrDef attrs = 3;
+  string annotation = 4;
+};
+
+message OpArgDef  {
+  string name = 1;
+  enum OccurType {
+    REQUIRED = 0;
+    OPTIONAL = 1;
+    REPEATED = 2;
+    REQUIRED_AND_REPEATED = 3;
+  };
+  enum DataType {
+    ALL = 0;
+    FLOAT = 1;
+    INT = 2;
+    XINT = 3;
+  };
+  OccurType occur_type = 2;
+  DataType data_type = 3;
+  string annotation = 4;
+};

@@ -1,21 +1,22 @@
 #!/bin/bash
+# Copyright 2020 Xilinx Inc.
 
-sed -n '1, 5p' ./docker/PROMPT.txt
+sed -n '1, 5p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '5, 15p' ./docker/PROMPT.txt
+sed -n '5, 15p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '15, 28p' ./docker/PROMPT.txt
+sed -n '15, 28p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '28, 61p' ./docker/PROMPT.txt
+sed -n '28, 61p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '62, 224p' ./docker/PROMPT.txt
+sed -n '62, 224p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '224, 308p' ./docker/PROMPT.txt
+sed -n '224, 308p' ./setup/docker/docker/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
 
@@ -33,18 +34,15 @@ confirm() {
 confirm
 
 
-if [[ $# -ne 1 ]]; then
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     echo "Usage: $0 <image>"
     exit 2
 fi
 
-HERE=$(pwd) # Absolute path of current directory
-
+HERE=$(pwd -P) # Absolute path of current directory
 user=`whoami`
 uid=`id -u`
 gid=`id -g`
-
-#echo "$user $uid $gid"
 
 DOCKER_REPO="xilinx/"
 
@@ -54,6 +52,17 @@ VERSION=latest
 CPU_IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}-cpu
 GPU_IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}-gpu
 IMAGE_NAME="${1:-$CPU_IMAGE_TAG}"
+DEFAULT_COMMAND="bash"
+
+if [[ $# -gt 0 ]]; then
+  shift 1;
+  DEFAULT_COMMAND="$@"
+  if [[ -z "$1" ]]; then
+    DEFAULT_COMMAND="bash"
+  fi
+fi
+
+DETACHED="-it"
 
 xclmgmt_driver="$(find /dev -name xclmgmt\*)"
 docker_devices=""
@@ -68,47 +77,38 @@ do
   docker_devices+="--device=$i "
 done
 
-##############################
+DOCKER_RUN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+if [ "$PWD" != "$DOCKER_RUN_DIR" ]; then
+  echo "WARNING: Please start 'docker_run.sh' from the Vitis-AI/ source directory";
+fi
 
-if [[ $IMAGE_NAME == *"sdk"* ]]; then
-  docker run \
-    -e USER=$user -e UID=$uid -e GID=$gid \
-    -v $HERE:/workspace \
+docker_run_params=$(cat <<-END
     -v /dev/shm:/dev/shm \
-    -w /workspace \
-    -it \
-    --rm \
-    --network=host \
-    $IMAGE_NAME \
-    bash
-elif [[ $IMAGE_NAME == *"gpu"* ]]; then
-  docker run \
-    $docker_devices \
     -v /opt/xilinx/dsa:/opt/xilinx/dsa \
     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
     -e USER=$user -e UID=$uid -e GID=$gid \
+    -e VERSION=$VERSION \
+    -v $DOCKER_RUN_DIR:/vitis_ai_home \
     -v $HERE:/workspace \
-    -v /dev/shm:/dev/shm \
     -w /workspace \
-    -it \
     --rm \
-    --runtime=nvidia \
     --network=host \
+    ${DETACHED} \
+    ${RUN_MODE} \
     $IMAGE_NAME \
-    bash
+    $DEFAULT_COMMAND
+END
+)
+
+##############################
+
+if [[ $IMAGE_NAME == *"gpu"* ]]; then
+  docker run \
+    $docker_devices \
+    --gpus all \
+    $docker_run_params
 else
   docker run \
     $docker_devices \
-    -v /opt/xilinx/dsa:/opt/xilinx/dsa \
-    -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
-    -e USER=$user -e UID=$uid -e GID=$gid \
-    -v /dev/shm:/dev/shm \
-    -v $HERE:/workspace \
-    -w /workspace \
-    -it \
-    --rm \
-    --network=host \
-    $IMAGE_NAME \
-    bash
+    $docker_run_params
 fi
-

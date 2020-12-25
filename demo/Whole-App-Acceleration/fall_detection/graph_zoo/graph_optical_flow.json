@@ -1,0 +1,45 @@
+{
+  "graph_name": "optical_flow",
+
+  "node_list": [
+    {
+      "node_name": "optical_flow_preproc",
+      "exec_kernel": ["opticalFlowPreProcess"],
+      "node_params" : {
+        "opticalFlowPreProcess": {
+          "net_w" : 224,
+          "net_h" : 224
+        }
+      },
+      "next_node": ["dense_non_pyr_lk_of"]
+    },
+
+    {
+      "node_name": "dense_non_pyr_lk_of",
+      "exec_kernel": ["OpticalFlowDenseNonPyrLK"],
+      "node_params": {
+        "OpticalFlowDenseNonPyrLK": {
+          "xclbin":   "/opt/xilinx/overlaybins/xdnnv3/xplusml/optical_flow/dpu_lk_dense_non_pyr_optical_flow_U200.xclbin",
+          "lk_kName": "dense_non_pyr_of_accel",
+          "of_w": 224,
+          "of_h": 224
+        }
+      },
+      "next_node": [ "optical_flow_postproc" ]
+    },
+
+    {
+      "node_name": "optical_flow_postproc",
+      "exec_kernel": ["OpticalFlowPostProcess"],
+      "node_params" : {
+        "OpticalFlowPostProcess": {
+          "bound": 15,
+          "visualize": ""
+        }
+      },
+      "next_node": []
+    }
+  ],
+
+  "version": "0.1"
+}

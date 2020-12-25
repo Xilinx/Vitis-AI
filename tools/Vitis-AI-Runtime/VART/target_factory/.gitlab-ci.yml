@@ -1,0 +1,27 @@
+before_script:
+   - echo start testing $CI_PROJECT_NAME.
+   - git clone gits@xcdl190260:aisw/unilog
+
+build_on_host:
+   tags:
+       - aisw
+   script:
+       - source /opt/rh/devtoolset-9/enable
+       - (cd unilog; ./cmake.sh --clean)
+       - ./cmake.sh --clean
+
+build_for_microblaze:
+   tags:
+       - aisw
+   script:
+       - source /var/lib/docker/scratch/gitlab-runner/build/mb_sdk/environment-setup-microblazeel-v11.0-bs-cmp-re-mh-div-xilinx-linux
+       - (cd unilog; ./cmake.sh --clean)
+       - ./cmake.sh --clean
+
+build_for_petalinux:
+   tags:
+       - aisw
+   script:
+       - source /var/lib/docker/scratch/gitlab-runner/build/sdk-0618/environment-setup-aarch64-xilinx-linux
+       - (cd unilog; ./cmake.sh --clean)
+       - ./cmake.sh --clean

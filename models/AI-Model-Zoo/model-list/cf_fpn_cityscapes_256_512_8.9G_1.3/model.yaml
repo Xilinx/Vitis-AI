@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: FPN(Inception-v1) segmentation on Cityscapes.
+input size: 256*512
+float ops: 8.9G
+task: segmentation
+framework: caffe
+prune: 'no'
+version: 1.3
+files:
+- name: cf_fpn_cityscapes_256_512_8.9G_1.3
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_fpn_cityscapes_256_512_8.9G_1.3.zip
+  checksum: cb9086f1e7880c3c4771cc22ae732755
+- name: fpn
+  type: xmodel
+  board: zcu102 & zcu104
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 3b35d527547a1ece0e45959b908e3e50
+- name: fpn
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck190-r1.3.0.tar.gz
+  checksum: 9af80c90226d0445b0c1a64b18fdf59b
+- name: fpn
+  type: xmodel
+  board: u50
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50-r1.3.0.tar.gz
+  checksum: 18ef21b4d0206a21aeb0e94d3132ad99
+- name: fpn
+  type: xmodel
+  board: u50lv9e & u50lv10e & u280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50lv-u280-r1.3.0.tar.gz
+  checksum: 0cef87b1eac6c2ed4118c24225aee9e2
+- name: fpn
+  type: xmodel
+  board: u50-v3me & u50lv-v3me & u280-v3me
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: 9a460e41ec4ddfe59dda5c5dfa4d6013
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

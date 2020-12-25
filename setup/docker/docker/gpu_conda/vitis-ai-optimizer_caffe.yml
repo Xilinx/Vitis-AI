@@ -1,0 +1,12 @@
+name: vitis-ai-optimizer_caffe
+
+channels:
+  - file:///scratch/conda-channel
+  - pytorch
+  - defaults
+  - conda-forge/label/gcc7
+  - conda-forge
+
+dependencies:
+  - python=3.7
+  - vai_optimizer_caffe_gpu

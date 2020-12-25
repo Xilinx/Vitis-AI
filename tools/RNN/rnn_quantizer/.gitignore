@@ -1,0 +1,17 @@
+*.so
+*.o
+*.a
+
+*.pb
+*.ckpt
+*.meta
+
+*.pyc
+*_pb2.py
+*.bak
+*.log
+
+__pycache__
+lib/build
+remake.sh
+NndctGen*

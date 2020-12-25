@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: ssd adas detection on private dataset.
+input size: 360*480
+float ops: 6.3G
+task: detection
+framework: caffe
+prune: '0.95'
+version: 1.3
+files:
+- name: cf_ssdadas_bdd_360_480_0.95_6.3G_1.3
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdadas_bdd_360_480_0.95_6.3G_1.3.zip
+  checksum: 32b8dd09a80f34717f806cda03bdd991
+- name: ssd_adas_pruned_0_95
+  type: xmodel
+  board: zcu102 & zcu104
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-zcu102_zcu104-r1.3.0.tar.gz
+  checksum: 7a516929483c9cb2cda1be8eaeeed18a
+- name: ssd_adas_pruned_0_95
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck190-r1.3.0.tar.gz
+  checksum: bb73f682b746b00aa4b749cb637e8b77
+- name: ssd_adas_pruned_0_95
+  type: xmodel
+  board: u50
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-r1.3.0.tar.gz
+  checksum: 04ee315321919e1faebe13e448367a39
+- name: ssd_adas_pruned_0_95
+  type: xmodel
+  board: u50lv9e & u50lv10e & u280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50lv-u280-r1.3.0.tar.gz
+  checksum: 0669e11fad2e1b3c1b77661b87ece6a6
+- name: ssd_adas_pruned_0_95
+  type: xmodel
+  board: u50-v3me & u50lv-v3me & u280-v3me
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+  checksum: bdda822ac2eaeb27693a32e2b96e4bf0
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
