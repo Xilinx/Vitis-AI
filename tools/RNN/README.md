@@ -30,8 +30,8 @@ conda activate vitis-ai-lstm
 ### Quantization
 1. In docker environment, copy model and scripts to the quantizer working directory. The example is available in rnn_quantizer/example/lstm_quant_tensorflow.
 ```
-mkdir -p /workspace/rnn_workflow/sentiment_detection/compiler
-cp /workspace/tool/RNN/rnn_quantizer/example/lstm_quant_tensorflow/* /workspace/rnn_workflow/sentiment_detection/quantizer/
+mkdir -p /workspace/rnn_workflow/sentiment_detection/quantizer
+cp /workspace/tools/RNN/rnn_quantizer/example/lstm_quant_tensorflow/* /workspace/rnn_workflow/sentiment_detection/quantizer/
 ```
 The contents in the working directory are showed as follows.
 ```
@@ -47,7 +47,7 @@ sh run_quantizer.sh
 If this quantization command runs successfully, two important files and one import subdirectory are generated in the output directory "./quantize_result".
 ```
 rnn_cell_0.py: converted format model
-quant_info.json: quantization steps of tensors got
+quant_info.json: quantization steps of tensors
 xmodel: subdirectory that contain deployed model
 ```
 
@@ -55,7 +55,7 @@ xmodel: subdirectory that contain deployed model
 1. In docker environment, copy the compiler script to the compiler directory. The script is available in rnn_compiler/examples/lstm_compiler_test.py.
 ```
 mkdir -p /workspace/rnn_workflow/sentiment_detection/compiler
-cp /workspace/tool/RNN/rnn_compiler/examples/lstm_compiler_test.py /workspace/rnn_workflow/sentiment_detection/compiler/
+cp /workspace/tools/RNN/rnn_compiler/examples/lstm_compiler_test.py /workspace/rnn_workflow/sentiment_detection/compiler/
 ```
 2. In docker environment, run the compilation and get the result.
 
