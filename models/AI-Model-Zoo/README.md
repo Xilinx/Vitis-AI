@@ -175,8 +175,11 @@ For a caffe model, you should see the following directory structure:
     │    │                                      Pytorch (ReID) or there is no Caffe Test (Densebox). 
     │    │
     │    ├── quantize_train_test.caffemodel   # Quantized weights can be used for quantized-point training and evaluation.       
-    │    └── quantize_train_test.prototxt     # Used for quantized-point training and testing with           
-    │                                           quantize_train_test.caffemodel on GPU when datalayer modified to user's data path.
+    │    ├── quantize_train_test.prototxt     # Used for quantized-point training and testing with quantize_train_test.caffemodel 
+    │    │                                      on GPU when datalayer modified to user's data path.         
+    │    └── DNNC
+    │         └──deploy.prototxt              # Quantized prototxt for dnnc. 
+    │                                           
     │                                                 
     └── float                           
          ├── trainval.caffemodel              # Trained float-point weights.
@@ -184,8 +187,8 @@ For a caffe model, you should see the following directory structure:
          └── trainval.prorotxt                # Used for training and testing with caffe train/test command 
                                                 when datalayer modified to user's data path.Some models don't
                                                 have this file if they are converted from Darknet (Yolov2, Yolov3),
-                                                Pytorch (ReID) or there is no Caffe Test (Densebox).          
-
+                                                Pytorch (ReID) or there is no Caffe Test (Densebox).              
+          
 
 #### Tensorflow Model Directory Structure
 For a Tensorflow model, you should see the following directory structure:
