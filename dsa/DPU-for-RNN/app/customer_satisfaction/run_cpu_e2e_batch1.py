@@ -36,8 +36,6 @@ from tensorflow.python.keras.preprocessing.text import Tokenizer
 import tensorflow as tf
 
 import datetime
-import xrnn_py
-cxxlib = xrnn_py.xrnn("customer")
 
 max_features = 500
 hidden_size = 100

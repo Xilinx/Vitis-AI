@@ -32,7 +32,9 @@ Please download dependent files as following descriptions. For files generated b
     ```
     $wget https://allennlp.s3.amazonaws.com/models/openie-model.2018-08-20.tar.gz 
     $tar -xzvf openie-model.2018-08-20.tar.gz
-    $cp weights.th <Your_Path>/dsa/DPU-for-RNN/models/u25/open_information_extraction/weights.th
+    $cp weights.th <Your_Path>/dsa/DPU-for-RNN/models/u25/open_information_extraction/weights/
+    $cp config.json <Your_Path>/dsa/DPU-for-RNN/models/u25/open_information_extraction/weights/
+    $cp -r vocabulary <Your_Path>/dsa/DPU-for-RNN/models/u25/open_information_extraction/weights/
 
     # From the Compiler
     $cd [your_compiler_path]
@@ -43,7 +45,7 @@ Please download dependent files as following descriptions. For files generated b
 1. Application: Customer Satisfaction
     ```
     $wget https://github.com/IBM/watson-machine-learning-samples/blob/master/cloud/data/cars-4-you/car_rental_training_data.csv
-    $cp car_rental_training_data.csv <Your_Path>/dsa/DPU-for-RNN/models/u25/customer_satisfaction/car_rental_training_data.csv
+    $cp car_rental_training_data.csv <Your_Path>/dsa/DPU-for-RNN/models/u50lv/customer_satisfaction/car_rental_training_data.csv
 
     # From the Compiler
     $cd [your_compiler_path]
@@ -58,11 +60,11 @@ Please download dependent files as following descriptions. For files generated b
     ```
     $wget https://storage.googleapis.com/tensorflow/tf-keras-datasets/imdb.npz
     $wget https://storage.googleapis.com/tensorflow/tf-keras-datasets/imdb_word_index.json
-    $cp ./imdb.npz <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/imdb.npz
-    $cp ./imdb_word_index.json <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/imdb_word_index.json
+    $cp ./imdb.npz <Your_Path>/dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/imdb.npz
+    $cp ./imdb_word_index.json <Your_Path>/dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/imdb_word_index.json
 
     # Log on to the kaggle web and download the .csv file from https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews.
-    $cp ./IMDB\ Dataset.csv <Your_Path>/dsa/DPU-for-RNN/models/u25/imdb_sentiment_detection/IMDB.csv
+    $cp ./IMDB\ Dataset.csv <Your_Path>/dsa/DPU-for-RNN/models/u50lv/imdb_sentiment_detection/IMDB.csv
     
     # From the Compiler
     $cd [your_compiler_path]
@@ -77,7 +79,9 @@ Please download dependent files as following descriptions. For files generated b
     ```
     $wget https://allennlp.s3.amazonaws.com/models/openie-model.2018-08-20.tar.gz 
     $tar -xzvf openie-model.2018-08-20.tar.gz
-    $cp weights.th <Your_Path>/dsa/DPU-for-RNN/models/u25/open_information_extraction/weights.th
+    $cp weights.th <Your_Path>/dsa/DPU-for-RNN/models/u50lv/open_information_extraction/weights/
+    $cp config.json <Your_Path>/dsa/DPU-for-RNN/models/u50lv/open_information_extraction/weights/
+    $cp -r vocabulary <Your_Path>/dsa/DPU-for-RNN/models/u50lv/open_information_extraction/weights/
 
     # From the Compiler
     $cd [your_compiler_path]
@@ -88,3 +92,20 @@ Please download dependent files as following descriptions. For files generated b
     $cp ./Instructions/ddr_bin_4k <Your_Path>/dsa/DPU-for-RNN/models/u50lv/open_information_extraction/openie_1.bin
     $cp ./Instructions/fp.json <Your_Path>/dsa/DPU-for-RNN/models/u50lv/open_information_extraction/openie.json
     ```
+
+#### License
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
