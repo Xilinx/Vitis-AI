@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_34G_1.3.zip
-  checksum: 5d8fb9007646dcd80168dd2d41546a98
+  checksum: b729eee9ba03ab34c3d97137ce22a559
 - name: yolov2_voc
   type: xmodel
   board: zcu102 & zcu104

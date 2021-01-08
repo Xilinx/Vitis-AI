@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_fpn_cityscapes_256_512_8.9G_1.3.zip
-  checksum: cb9086f1e7880c3c4771cc22ae732755
+  checksum: 269e91066d76b116f45bfe6f9ba725d5
 - name: fpn
   type: xmodel
   board: zcu102 & zcu104

@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_plate-recognition_96_288_1.75G_1.3.zip
-  checksum: 4a0e0113eee9b2f5fcdba40d2f1753f7
+  checksum: 12e35733c050520e18fdb08b295877f6
 - name: plate_num
   type: xmodel
   board: zcu102 & zcu104

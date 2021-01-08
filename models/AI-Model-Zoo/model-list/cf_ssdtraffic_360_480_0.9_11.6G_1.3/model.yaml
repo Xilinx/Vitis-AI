@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdtraffic_360_480_0.9_11.6G_1.3.zip
-  checksum: dafc7d30fa71ed5ce250d95e717fe11b
+  checksum: 5322518efceb03a55ee283a6f839a93d
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: zcu102 & zcu104
