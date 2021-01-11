@@ -403,7 +403,13 @@ $sudo tar -xvf vai_lib_u200_u250_models.tar.gz --absolute-names
 ```
 :pushpin: **Note:** All models will download to `/usr/share/vitis_ai_library/models` directory. Currently supported networks for `DPUCADX8G` are classification, facedetect, facelandmark, reid and yolov3. And currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.3` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.3`.
 
-2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../../examples/DPU-CADX8G/caffe/README.md#setup).
+2. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) package and untar.
+```
+cd /workspace
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz -O vitis_ai_library_r1.3.0_images.tar.gz
+tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz
+```
+
 3. Setup the environment.
 ```
 $source ${VAI_HOME}/setup/alveo/u200_u250/overlaybins/setup.sh
@@ -428,7 +434,13 @@ $tar -xvf resnet_v1_50_tf-u200-u250-r1.3.0.tar.gz
 ```
 :pushpin: **Note:** Currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.3` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.3`.
 
-2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../../examples/DPU-CADX8G/caffe/README.md#setup).
+2. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) package and untar.
+```
+cd /workspace
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz -O vitis_ai_library_r1.3.0_images.tar.gz
+tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz
+```
+
 3. Setup the environment.
 ```sh
 $source ${VAI_HOME}/setup/alveo/u200_u250/overlaybins/setup.sh
@@ -444,11 +456,12 @@ $export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8/dpdpuv3_wrapper.hw.
 
 4. Run the classification image test example.
 ```
-$HOME/build/build.${taget_info}/${project_name}/test_classification <model_dir> <img_path>
+<vitis-ai-library build path>/Vitis-AI-Library/classification/test_classification <model_dir> <img_path>
 
 Example:
 $~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification inception_v1_tf <img_path>
 ```
+:pushpin: **Note:** The default build path for vitis-ai-library is `$HOME/build/<target>/Vitis-AI-Library/`.
 
 ## Reference
 For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_3/ug1354-xilinx-ai-sdk.pdf).
