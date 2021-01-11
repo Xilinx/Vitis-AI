@@ -349,4 +349,4 @@ $~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_
 ```
 
 ## Reference
-For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_2/ug1354-xilinx-ai-sdk.pdf).
+For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_3/ug1354-xilinx-ai-sdk.pdf).
