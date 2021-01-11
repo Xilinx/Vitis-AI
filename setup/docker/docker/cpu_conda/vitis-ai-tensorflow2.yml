@@ -1,0 +1,24 @@
+name: vitis-ai-tensorflow2
+
+channels:
+  - file:///scratch/conda-channel
+  - pytorch
+  - defaults
+  - conda-forge/label/gcc7
+  - conda-forge
+
+dependencies:
+  - python=3.7
+  - vai_q_tensorflow2
+  - pydot
+  - pyyaml
+  - jupyter
+  - ipywidgets
+  - dill
+  - progressbar2
+  - pytest
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - pillow
+  - vaic

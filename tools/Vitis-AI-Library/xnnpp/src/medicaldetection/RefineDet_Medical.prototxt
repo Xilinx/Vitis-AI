@@ -1,0 +1,58 @@
+model {
+  name : "RefineDet_Medical"
+  kernel {
+     name: "RefineDet_Medical"
+     mean: 103.94
+     mean: 116.78
+     mean: 123.68
+     scale: 1.0
+     scale: 1.0
+     scale: 1.0
+  }
+  model_type : MEDICALREFINEDET
+  medical_refine_det_param : {
+     num_classes: 5
+     scale_xy: 0.1
+     scale_wh: 0.2
+     nms_threshold : 0.45
+     conf_threshold : 0.6
+     keep_top_k : 200
+     top_k : 200
+
+     medical_prior_box_param: {
+        input_shape: 320
+        input_shape: 320
+        feature_shapes: 40
+        feature_shapes: 40
+        feature_shapes: 20
+        feature_shapes: 20
+        feature_shapes: 10
+        feature_shapes: 10
+        feature_shapes: 5
+        feature_shapes: 5
+        min_sizes: 32
+        min_sizes: 64
+        min_sizes: 128
+        min_sizes: 256
+        max_sizes: 64
+        max_sizes: 128
+        max_sizes: 256
+        max_sizes: 315
+        aspect_ratios: 2.0
+        aspect_ratios: 2.0
+        aspect_ratios: 2.0
+        aspect_ratios: 2.0
+        aspect_ratios: 2.0
+        steps: 8
+        steps: 8
+        steps: 16
+        steps: 16
+        steps: 32
+        steps: 32
+        steps: 64
+        steps: 64
+        offset: 0.5
+     }
+  }
+}
+

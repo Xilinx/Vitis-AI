@@ -1,0 +1,168 @@
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: "DPUCZDI4G_ISA0_B8192D8_DEMO_SSD"
+type: "DPUCZDI4G"
+isa_version: 0x00
+feature_code: 0x002003220207
+bank_group {
+  name: "CB0"
+  type: "Virtual"
+  base_id: 0
+  bank_num: 8
+  bank_width: 16
+  bank_depth: 2048
+  word_width: 4
+  cyclic: true
+  adjustable_word_width {
+    scale: 8
+    word_width_switch: DataBit_x_BankDepth
+  }
+}
+bank_group {
+  name: "CB1"
+  type: "Virtual"
+  base_id: 8
+  bank_num: 8
+  bank_width: 16
+  bank_depth: 2048
+  word_width: 4
+  cyclic: true
+  adjustable_word_width {
+    scale: 8
+    word_width_switch: DataBit_x_BankDepth
+  }
+}
+bank_group {
+  name: "CB2"
+  type: "Virtual"
+  base_id: 16
+  bank_num: 8
+  bank_width: 16
+  bank_depth: 2048
+  word_width: 4
+  cyclic: true
+  adjustable_word_width {
+    scale: 8
+    word_width_switch: DataBit_x_BankDepth
+  }
+}
+bank_group {
+  name: "CONVW"
+  type: "Param"
+  base_id: 24
+  bank_num: 16
+  bank_width: 32
+  bank_depth: 2048
+  word_width: 4
+  cyclic: true
+}
+bank_group {
+  name: "CONVB"
+  type: "Param"
+  base_id: 40
+  bank_num: 1
+  bank_width: 16
+  bank_depth: 2048
+  word_width: 8
+  cyclic: true
+}
+load_engine {
+  channel_parallel: 16
+  output_bank: "CB0"
+  output_bank: "CB1"
+  output_bank: "CB2"
+  output_bank: "CONVW"
+  output_bank: "CONVB"
+  fix_ifm_port_width {
+    port_width: 128
+  }
+  weight_split {
+    wgt_split: true
+  }
+}
+save_engine {
+  channel_parallel: 16
+  input_bank: "CB0"
+  input_bank: "CB1"
+  input_bank: "CB2"
+  fix_ifm_port_width {
+    port_width: 128
+  }
+}
+conv_engine {
+  input_channel_parallel: 32
+  output_channel_parallel: 16
+  pixel_parallel: 8
+  input_bank: "CB0"
+  input_bank: "CB1"
+  input_bank: "CB2"
+  output_bank: "CB0"
+  output_bank: "CB1"
+  output_bank: "CB2"
+  weight_bank: "CONVW"
+  bias_bank: "CONVB"
+  nonlinear {
+    nonlinear_type: relu
+  }
+  conv_limit {
+    kernel_size: "1-7"
+    stride: "1-4"
+  }
+}
+eltwise_engine {
+  channel_parallel: 16
+  pixel_parallel: 2
+  input_bank: "CB0"
+  input_bank: "CB1"
+  input_bank: "CB2"
+  output_bank: "CB0"
+  output_bank: "CB1"
+  output_bank: "CB2"
+  nonlinear {
+    nonlinear_type: relu
+  }
+  elew_type: add
+}
+pool_engine {
+  channel_parallel: 16
+  pixel_parallel: 2
+  input_bank: "CB0"
+  input_bank: "CB1"
+  input_bank: "CB2"
+  output_bank: "CB0"
+  output_bank: "CB1"
+  output_bank: "CB2"
+  nonlinear {
+    nonlinear_type: relu
+  }
+  pool_type: max
+  max_limit {
+    kernel_size: "2-8"
+    stride: "1-4"
+  }
+  pool_type: max_reduce
+}
+threshold_engine {
+  channel_parallel: 16
+  pixel_parallel: 2
+  input_bank: "CB0"
+  input_bank: "CB1"
+  input_bank: "CB2"
+  output_bank: "CB0"
+  output_bank: "CB1"
+  output_bank: "CB2"
+  param_bank: "CONVB"
+}
+batch: 1

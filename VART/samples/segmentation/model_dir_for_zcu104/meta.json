@@ -1,5 +1,0 @@
-{
-  "lib": "libvart-dpu-runner.so",
-  "filename": "./fpn.elf",
-  "kernel": [ "fpn" ]
-}

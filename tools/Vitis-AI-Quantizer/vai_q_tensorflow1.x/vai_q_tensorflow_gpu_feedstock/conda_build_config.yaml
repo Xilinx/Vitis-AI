@@ -1,0 +1,10 @@
+# Builds fail on linux with gcc 7.x, see
+# https://github.com/tensorflow/tensorflow/issues/25323
+c_compiler_version:    # [linux]
+  - 5.4.0                # [linux]
+cxx_compiler_version:  # [linux]
+  - 5.4.0                # [linux]
+cudatoolkit:
+  - 10.0
+cudnn:
+  - 7.6

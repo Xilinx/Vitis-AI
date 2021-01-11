@@ -1,0 +1,16 @@
+net: "./VGG_BN.prototxt"
+test_iter : 20
+test_interval:100
+test_compute_loss: true
+base_lr: 0.001
+lr_policy: "step"
+gamma: 0.5 # 0.1 vgg_tiling
+stepsize: 1000 # 2000 vgg_tiling
+display: 10
+max_iter: 5000
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 100
+snapshot_prefix: "./snapshot/split"
+solver_mode: GPU
+test_initialization: true

@@ -1,0 +1,2 @@
+# Import from tools location for backward compat with old bazel versions.
+import %workspace%/tools/bazel.rc

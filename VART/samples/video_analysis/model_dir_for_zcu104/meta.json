@@ -1,5 +1,0 @@
-{
-    "lib": "libvart-dpu-runner.so",
-    "filename": "./ssd_traffic_pruned_0_9.elf",
-    "kernel": [ "ssd_traffic_pruned_0_9" ]
-}

@@ -1,0 +1,50 @@
+upper_tabs:
+# Tabs left of dropdown menu
+- include: /_upper_tabs_left.yaml
+- include: /api_docs/_upper_tabs_api.yaml
+# Dropdown menu
+- name: Resources
+  path: /resources
+  is_default: true
+  menu:
+  - include: /resources/_menu_toc.yaml
+  lower_tabs:
+    # Subsite tabs
+    other:
+    - name: Guide
+      contents:
+      - title: Model optimization guide
+        path: /model_optimization/guide
+      - title: Get started
+        path: /model_optimization/guide/get_started
+      - title: Optimize further
+        path: /model_optimization/guide/optimize_further
+      - title: Install
+        path: /model_optimization/guide/install
+      - title: Roadmap
+        path: /model_optimization/guide/roadmap
+
+      - heading: Weight pruning
+      - title: Overview
+        path: /model_optimization/guide/pruning
+      - title: Pruning with Keras
+        path: /model_optimization/guide/pruning/pruning_with_keras
+      - title: Pruning comprehensive guide
+        path: /model_optimization/guide/pruning/comprehensive_guide
+
+      - heading: Quantization
+      - title: Quantization aware training overview
+        path: /model_optimization/guide/quantization/training
+      - title: Quantization aware training example
+        path: /model_optimization/guide/quantization/training_example
+      - title: Quantization aware training comprehensive guide
+        path: /model_optimization/guide/quantization/training_comprehensive_guide
+      - title: Post-training quantization
+        path: /model_optimization/guide/quantization/post_training
+
+    - name: API
+      skip_translation: true
+      contents:
+      - include: /model_optimization/api_docs/python/_toc.yaml
+
+- include: /_upper_tabs_right.yaml

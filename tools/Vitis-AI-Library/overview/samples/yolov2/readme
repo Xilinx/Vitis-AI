@@ -1,0 +1,57 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_yolov2, ./test_performance_yolov2, ./test_video_yolov2 first param followed must be with model name.
+  Valid model name:
+    yolov2_voc
+    yolov2_voc_pruned_0_66
+    yolov2_voc_pruned_0_71
+    yolov2_voc_pruned_0_77
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_yolov2 yolov2_voc sample_yolov2.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:32.618218  5266 process_result.hpp:77] RESULT: 18	143.267	205.602	206.603	304.018	0.88575
+   
+    
+    sample : ./test_jpeg_yolov2 yolov2_voc_pruned_0_66 sample_yolov2.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:33.040750  5273 process_result.hpp:77] RESULT: 18	137.978	186.895	214.376	305.607	0.837984
+   
+    
+    sample : ./test_jpeg_yolov2 yolov2_voc_pruned_0_71 sample_yolov2.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:33.429782  5280 process_result.hpp:77] RESULT: 18	139.689	192.022	216.087	303.542	0.85253
+   
+    
+    sample : ./test_jpeg_yolov2 yolov2_voc_pruned_0_77 sample_yolov2.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1108 22:41:33.762524  5287 process_result.hpp:77] RESULT: 18	143.833	189.319	215.602	315.687	0.887326
+   
