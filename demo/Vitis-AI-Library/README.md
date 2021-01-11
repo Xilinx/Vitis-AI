@@ -298,55 +298,11 @@ Video_input.mp4: The video file's name for input. The user needs to prepare the 
 
 ### Setting Up the Host for U200/U250
 
-Assume the docker image has been loaded and up running.
-
-1. Place the program, data and other files in the workspace folder. After the docker system starts, you will find them under `/workspace` in the docker system.
-Do not put the files in any other path of the docker system. They will be lost after you exit the docker system.
-
-2. Activate conda environment.
-```
-$conda activate vitis-ai-caffe
-```
-3. To modify the library source code, view and modify them under `/workspace/Vitis-AI-Library`.
-	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
-	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh.
-	Execute the following command to build the libraries all at once.
-4. To build the `DPUCADX8G` supported examples in the AI Library, run as below.
-```
-$cd /workspace/Vitis-AI-Library/
-$./cmake.sh --clean --type=release --cmake-options=-DCMAKE_PREFIX_PATH=$CONDA_PREFIX --cmake-options=-DENABLE_DPUCADX8G_RUNNER=ON
-```
-This will generate AI libraries and executable files to under `build_dir_default`.
+For setting up the host for U200/U250 refer to [README](../../tools/Vitis-AI-Library/README.md#setting-up-the-host-for-alveo-u200alveo-u250).
 
 ### Running Vitis AI Library Examples for U200/U250
-1. Download and untar the model directory [vai_lib_u2xx_models.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vai_lib_u200_u250_models.tar.gz) package. 
-```
-$cd /workspace/Vitis-AI-Library/
-$wget -O vai_lib_u200_u250_models.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vai_lib_u200_u250_models.tar.gz
-$sudo tar -xvf vai_lib_u200_u250_models.tar.gz --absolute-names
-```
-Note: All models will download to `/usr/share/vitis_ai_library/models` directory. Currently supported networks are classification, facedetect, facelandmark, reid and yolov3.
-2. To download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning) refer to alveo examples [README](../alveo/examples/caffe/README.md).
-3. Setup the environment.
-```
-$source /workspace/alveo/overlaybins/setup.sh
-$export LD_LIBRARY_PATH=$HOME/.local/${taget_info}/lib/:$LD_LIBRARY_PATH
-```
-4. Run the classification image test example.
-```
-$HOME/build/build.${taget_info}/${project_name}/test_classification <model_dir> <img_path>
 
-Example:
-$~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification inception_v1 <img_path>
-
-```
-5. Run the classification accuracy test example.
-```
-$HOME/build/build.${taget_info}/${project_name}/test_classification_accuracy <model_dir> <img_dir_path> <output_file>
-
-Example:
-$~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification_accuracy inception_v1 <img_dir_path> <output_file>
-```
+For running Vitis AI Library examples for U200/U250 refer to [README](../../tools/Vitis-AI-Library/README.md#running-vitis-ai-library-examples-on-alveo-u200alveo-u250-with-dpucadx8g).
 
 ## Reference
 For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_3/ug1354-xilinx-ai-sdk.pdf).
