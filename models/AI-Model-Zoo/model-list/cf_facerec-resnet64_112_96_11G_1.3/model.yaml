@@ -25,7 +25,7 @@ files:
 - name: cf_facerec-resnet64_112_96_11G_1.3
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=fcf_facerec-resnet64_112_96_11G_1.3.zip
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_facerec-resnet64_112_96_11G_1.3.zip
   checksum: c320ae3c7bef2302edfc8e29cb1a36a0
 - name: facerec_resnet64
   type: xmodel
