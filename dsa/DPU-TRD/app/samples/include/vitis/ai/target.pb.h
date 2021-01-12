@@ -75,24 +75,18 @@ extern Target_Conv_ChannelAugmentationDefaultTypeInternal _Target_Conv_ChannelAu
 class Target_Conv_ConvLimit;
 class Target_Conv_ConvLimitDefaultTypeInternal;
 extern Target_Conv_ConvLimitDefaultTypeInternal _Target_Conv_ConvLimit_default_instance_;
-class Target_Conv_Nonlinear;
-class Target_Conv_NonlinearDefaultTypeInternal;
-extern Target_Conv_NonlinearDefaultTypeInternal _Target_Conv_Nonlinear_default_instance_;
 class Target_Conv_OutputBankGroup;
 class Target_Conv_OutputBankGroupDefaultTypeInternal;
 extern Target_Conv_OutputBankGroupDefaultTypeInternal _Target_Conv_OutputBankGroup_default_instance_;
 class Target_Dwconv;
 class Target_DwconvDefaultTypeInternal;
 extern Target_DwconvDefaultTypeInternal _Target_Dwconv_default_instance_;
-class Target_Dwconv_Nonlinear;
-class Target_Dwconv_NonlinearDefaultTypeInternal;
-extern Target_Dwconv_NonlinearDefaultTypeInternal _Target_Dwconv_Nonlinear_default_instance_;
+class Target_Dwconv_DwconvLimit;
+class Target_Dwconv_DwconvLimitDefaultTypeInternal;
+extern Target_Dwconv_DwconvLimitDefaultTypeInternal _Target_Dwconv_DwconvLimit_default_instance_;
 class Target_Eltwise;
 class Target_EltwiseDefaultTypeInternal;
 extern Target_EltwiseDefaultTypeInternal _Target_Eltwise_default_instance_;
-class Target_Eltwise_Nonlinear;
-class Target_Eltwise_NonlinearDefaultTypeInternal;
-extern Target_Eltwise_NonlinearDefaultTypeInternal _Target_Eltwise_Nonlinear_default_instance_;
 class Target_Load;
 class Target_LoadDefaultTypeInternal;
 extern Target_LoadDefaultTypeInternal _Target_Load_default_instance_;
@@ -108,12 +102,18 @@ extern Target_Load_WeightSplitDefaultTypeInternal _Target_Load_WeightSplit_defau
 class Target_Move;
 class Target_MoveDefaultTypeInternal;
 extern Target_MoveDefaultTypeInternal _Target_Move_default_instance_;
+class Target_Nonlinear;
+class Target_NonlinearDefaultTypeInternal;
+extern Target_NonlinearDefaultTypeInternal _Target_Nonlinear_default_instance_;
 class Target_Pool;
 class Target_PoolDefaultTypeInternal;
 extern Target_PoolDefaultTypeInternal _Target_Pool_default_instance_;
 class Target_Pool_AvgLimit;
 class Target_Pool_AvgLimitDefaultTypeInternal;
 extern Target_Pool_AvgLimitDefaultTypeInternal _Target_Pool_AvgLimit_default_instance_;
+class Target_Pool_MaxLimit;
+class Target_Pool_MaxLimitDefaultTypeInternal;
+extern Target_Pool_MaxLimitDefaultTypeInternal _Target_Pool_MaxLimit_default_instance_;
 class Target_Save;
 class Target_SaveDefaultTypeInternal;
 extern Target_SaveDefaultTypeInternal _Target_Save_default_instance_;
@@ -132,19 +132,19 @@ template<> ::vitis::ai::Target_BankGroup_AdjustableWordWidth* Arena::CreateMaybe
 template<> ::vitis::ai::Target_Conv* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv>(Arena*);
 template<> ::vitis::ai::Target_Conv_ChannelAugmentation* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv_ChannelAugmentation>(Arena*);
 template<> ::vitis::ai::Target_Conv_ConvLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv_ConvLimit>(Arena*);
-template<> ::vitis::ai::Target_Conv_Nonlinear* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv_Nonlinear>(Arena*);
 template<> ::vitis::ai::Target_Conv_OutputBankGroup* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv_OutputBankGroup>(Arena*);
 template<> ::vitis::ai::Target_Dwconv* Arena::CreateMaybeMessage<::vitis::ai::Target_Dwconv>(Arena*);
-template<> ::vitis::ai::Target_Dwconv_Nonlinear* Arena::CreateMaybeMessage<::vitis::ai::Target_Dwconv_Nonlinear>(Arena*);
+template<> ::vitis::ai::Target_Dwconv_DwconvLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Dwconv_DwconvLimit>(Arena*);
 template<> ::vitis::ai::Target_Eltwise* Arena::CreateMaybeMessage<::vitis::ai::Target_Eltwise>(Arena*);
-template<> ::vitis::ai::Target_Eltwise_Nonlinear* Arena::CreateMaybeMessage<::vitis::ai::Target_Eltwise_Nonlinear>(Arena*);
 template<> ::vitis::ai::Target_Load* Arena::CreateMaybeMessage<::vitis::ai::Target_Load>(Arena*);
 template<> ::vitis::ai::Target_Load_FixIFMPortWidth* Arena::CreateMaybeMessage<::vitis::ai::Target_Load_FixIFMPortWidth>(Arena*);
 template<> ::vitis::ai::Target_Load_MeanvalueReduction* Arena::CreateMaybeMessage<::vitis::ai::Target_Load_MeanvalueReduction>(Arena*);
 template<> ::vitis::ai::Target_Load_WeightSplit* Arena::CreateMaybeMessage<::vitis::ai::Target_Load_WeightSplit>(Arena*);
 template<> ::vitis::ai::Target_Move* Arena::CreateMaybeMessage<::vitis::ai::Target_Move>(Arena*);
+template<> ::vitis::ai::Target_Nonlinear* Arena::CreateMaybeMessage<::vitis::ai::Target_Nonlinear>(Arena*);
 template<> ::vitis::ai::Target_Pool* Arena::CreateMaybeMessage<::vitis::ai::Target_Pool>(Arena*);
 template<> ::vitis::ai::Target_Pool_AvgLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Pool_AvgLimit>(Arena*);
+template<> ::vitis::ai::Target_Pool_MaxLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Pool_MaxLimit>(Arena*);
 template<> ::vitis::ai::Target_Save* Arena::CreateMaybeMessage<::vitis::ai::Target_Save>(Arena*);
 template<> ::vitis::ai::Target_Save_FixIFMPortWidth* Arena::CreateMaybeMessage<::vitis::ai::Target_Save_FixIFMPortWidth>(Arena*);
 template<> ::vitis::ai::Target_Threshold* Arena::CreateMaybeMessage<::vitis::ai::Target_Threshold>(Arena*);
@@ -177,59 +177,32 @@ inline bool Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Target_BankGroup_AdjustableWordWidth_WordWidthSwitch>(
     Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_descriptor(), name, value);
 }
-enum Target_Conv_Nonlinear_NonlinearType : int {
-  Target_Conv_Nonlinear_NonlinearType_relu = 0,
-  Target_Conv_Nonlinear_NonlinearType_prelu = 1,
-  Target_Conv_Nonlinear_NonlinearType_leaky_relu = 2,
-  Target_Conv_Nonlinear_NonlinearType_relu_six = 3,
-  Target_Conv_Nonlinear_NonlinearType_Target_Conv_Nonlinear_NonlinearType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
-  Target_Conv_Nonlinear_NonlinearType_Target_Conv_Nonlinear_NonlinearType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+enum Target_Nonlinear_NonlinearType : int {
+  Target_Nonlinear_NonlinearType_relu = 0,
+  Target_Nonlinear_NonlinearType_prelu = 1,
+  Target_Nonlinear_NonlinearType_leaky_relu = 2,
+  Target_Nonlinear_NonlinearType_relu_six = 3,
+  Target_Nonlinear_NonlinearType_Target_Nonlinear_NonlinearType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  Target_Nonlinear_NonlinearType_Target_Nonlinear_NonlinearType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
-bool Target_Conv_Nonlinear_NonlinearType_IsValid(int value);
-constexpr Target_Conv_Nonlinear_NonlinearType Target_Conv_Nonlinear_NonlinearType_NonlinearType_MIN = Target_Conv_Nonlinear_NonlinearType_relu;
-constexpr Target_Conv_Nonlinear_NonlinearType Target_Conv_Nonlinear_NonlinearType_NonlinearType_MAX = Target_Conv_Nonlinear_NonlinearType_relu_six;
-constexpr int Target_Conv_Nonlinear_NonlinearType_NonlinearType_ARRAYSIZE = Target_Conv_Nonlinear_NonlinearType_NonlinearType_MAX + 1;
+bool Target_Nonlinear_NonlinearType_IsValid(int value);
+constexpr Target_Nonlinear_NonlinearType Target_Nonlinear_NonlinearType_NonlinearType_MIN = Target_Nonlinear_NonlinearType_relu;
+constexpr Target_Nonlinear_NonlinearType Target_Nonlinear_NonlinearType_NonlinearType_MAX = Target_Nonlinear_NonlinearType_relu_six;
+constexpr int Target_Nonlinear_NonlinearType_NonlinearType_ARRAYSIZE = Target_Nonlinear_NonlinearType_NonlinearType_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Conv_Nonlinear_NonlinearType_descriptor();
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Nonlinear_NonlinearType_descriptor();
 template<typename T>
-inline const std::string& Target_Conv_Nonlinear_NonlinearType_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, Target_Conv_Nonlinear_NonlinearType>::value ||
+inline const std::string& Target_Nonlinear_NonlinearType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, Target_Nonlinear_NonlinearType>::value ||
     ::std::is_integral<T>::value,
-    "Incorrect type passed to function Target_Conv_Nonlinear_NonlinearType_Name.");
+    "Incorrect type passed to function Target_Nonlinear_NonlinearType_Name.");
   return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    Target_Conv_Nonlinear_NonlinearType_descriptor(), enum_t_value);
+    Target_Nonlinear_NonlinearType_descriptor(), enum_t_value);
 }
-inline bool Target_Conv_Nonlinear_NonlinearType_Parse(
-    const std::string& name, Target_Conv_Nonlinear_NonlinearType* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Target_Conv_Nonlinear_NonlinearType>(
-    Target_Conv_Nonlinear_NonlinearType_descriptor(), name, value);
-}
-enum Target_Eltwise_Nonlinear_NonlinearType : int {
-  Target_Eltwise_Nonlinear_NonlinearType_relu = 0,
-  Target_Eltwise_Nonlinear_NonlinearType_prelu = 1,
-  Target_Eltwise_Nonlinear_NonlinearType_leaky_relu = 2,
-  Target_Eltwise_Nonlinear_NonlinearType_relu_six = 3,
-  Target_Eltwise_Nonlinear_NonlinearType_Target_Eltwise_Nonlinear_NonlinearType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
-  Target_Eltwise_Nonlinear_NonlinearType_Target_Eltwise_Nonlinear_NonlinearType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
-};
-bool Target_Eltwise_Nonlinear_NonlinearType_IsValid(int value);
-constexpr Target_Eltwise_Nonlinear_NonlinearType Target_Eltwise_Nonlinear_NonlinearType_NonlinearType_MIN = Target_Eltwise_Nonlinear_NonlinearType_relu;
-constexpr Target_Eltwise_Nonlinear_NonlinearType Target_Eltwise_Nonlinear_NonlinearType_NonlinearType_MAX = Target_Eltwise_Nonlinear_NonlinearType_relu_six;
-constexpr int Target_Eltwise_Nonlinear_NonlinearType_NonlinearType_ARRAYSIZE = Target_Eltwise_Nonlinear_NonlinearType_NonlinearType_MAX + 1;
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Eltwise_Nonlinear_NonlinearType_descriptor();
-template<typename T>
-inline const std::string& Target_Eltwise_Nonlinear_NonlinearType_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, Target_Eltwise_Nonlinear_NonlinearType>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function Target_Eltwise_Nonlinear_NonlinearType_Name.");
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    Target_Eltwise_Nonlinear_NonlinearType_descriptor(), enum_t_value);
-}
-inline bool Target_Eltwise_Nonlinear_NonlinearType_Parse(
-    const std::string& name, Target_Eltwise_Nonlinear_NonlinearType* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Target_Eltwise_Nonlinear_NonlinearType>(
-    Target_Eltwise_Nonlinear_NonlinearType_descriptor(), name, value);
+inline bool Target_Nonlinear_NonlinearType_Parse(
+    const std::string& name, Target_Nonlinear_NonlinearType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Target_Nonlinear_NonlinearType>(
+    Target_Nonlinear_NonlinearType_descriptor(), name, value);
 }
 enum Target_Eltwise_ElewType : int {
   Target_Eltwise_ElewType_add = 0,
@@ -281,33 +254,6 @@ inline bool Target_Pool_PoolType_Parse(
     const std::string& name, Target_Pool_PoolType* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Target_Pool_PoolType>(
     Target_Pool_PoolType_descriptor(), name, value);
-}
-enum Target_Dwconv_Nonlinear_NonlinearType : int {
-  Target_Dwconv_Nonlinear_NonlinearType_relu = 0,
-  Target_Dwconv_Nonlinear_NonlinearType_prelu = 1,
-  Target_Dwconv_Nonlinear_NonlinearType_leaky_relu = 2,
-  Target_Dwconv_Nonlinear_NonlinearType_relu_six = 3,
-  Target_Dwconv_Nonlinear_NonlinearType_Target_Dwconv_Nonlinear_NonlinearType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
-  Target_Dwconv_Nonlinear_NonlinearType_Target_Dwconv_Nonlinear_NonlinearType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
-};
-bool Target_Dwconv_Nonlinear_NonlinearType_IsValid(int value);
-constexpr Target_Dwconv_Nonlinear_NonlinearType Target_Dwconv_Nonlinear_NonlinearType_NonlinearType_MIN = Target_Dwconv_Nonlinear_NonlinearType_relu;
-constexpr Target_Dwconv_Nonlinear_NonlinearType Target_Dwconv_Nonlinear_NonlinearType_NonlinearType_MAX = Target_Dwconv_Nonlinear_NonlinearType_relu_six;
-constexpr int Target_Dwconv_Nonlinear_NonlinearType_NonlinearType_ARRAYSIZE = Target_Dwconv_Nonlinear_NonlinearType_NonlinearType_MAX + 1;
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Dwconv_Nonlinear_NonlinearType_descriptor();
-template<typename T>
-inline const std::string& Target_Dwconv_Nonlinear_NonlinearType_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, Target_Dwconv_Nonlinear_NonlinearType>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function Target_Dwconv_Nonlinear_NonlinearType_Name.");
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    Target_Dwconv_Nonlinear_NonlinearType_descriptor(), enum_t_value);
-}
-inline bool Target_Dwconv_Nonlinear_NonlinearType_Parse(
-    const std::string& name, Target_Dwconv_Nonlinear_NonlinearType* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Target_Dwconv_Nonlinear_NonlinearType>(
-    Target_Dwconv_Nonlinear_NonlinearType_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -1559,6 +1505,176 @@ class Target_Save :
 };
 // -------------------------------------------------------------------
 
+class Target_Nonlinear :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Nonlinear) */ {
+ public:
+  Target_Nonlinear();
+  virtual ~Target_Nonlinear();
+
+  Target_Nonlinear(const Target_Nonlinear& from);
+  Target_Nonlinear(Target_Nonlinear&& from) noexcept
+    : Target_Nonlinear() {
+    *this = ::std::move(from);
+  }
+
+  inline Target_Nonlinear& operator=(const Target_Nonlinear& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Target_Nonlinear& operator=(Target_Nonlinear&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const Target_Nonlinear& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Target_Nonlinear* internal_default_instance() {
+    return reinterpret_cast<const Target_Nonlinear*>(
+               &_Target_Nonlinear_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  friend void swap(Target_Nonlinear& a, Target_Nonlinear& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Target_Nonlinear* other) {
+    if (other == this) return;
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Target_Nonlinear* New() const final {
+    return CreateMaybeMessage<Target_Nonlinear>(nullptr);
+  }
+
+  Target_Nonlinear* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<Target_Nonlinear>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const Target_Nonlinear& from);
+  void MergeFrom(const Target_Nonlinear& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  #else
+  bool MergePartialFromCodedStream(
+      ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) final;
+  #endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+  void SerializeWithCachedSizes(
+      ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Target_Nonlinear* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vitis.ai.Target.Nonlinear";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_target_2eproto);
+    return ::descriptor_table_target_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  typedef Target_Nonlinear_NonlinearType NonlinearType;
+  static constexpr NonlinearType relu =
+    Target_Nonlinear_NonlinearType_relu;
+  static constexpr NonlinearType prelu =
+    Target_Nonlinear_NonlinearType_prelu;
+  static constexpr NonlinearType leaky_relu =
+    Target_Nonlinear_NonlinearType_leaky_relu;
+  static constexpr NonlinearType relu_six =
+    Target_Nonlinear_NonlinearType_relu_six;
+  static inline bool NonlinearType_IsValid(int value) {
+    return Target_Nonlinear_NonlinearType_IsValid(value);
+  }
+  static constexpr NonlinearType NonlinearType_MIN =
+    Target_Nonlinear_NonlinearType_NonlinearType_MIN;
+  static constexpr NonlinearType NonlinearType_MAX =
+    Target_Nonlinear_NonlinearType_NonlinearType_MAX;
+  static constexpr int NonlinearType_ARRAYSIZE =
+    Target_Nonlinear_NonlinearType_NonlinearType_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  NonlinearType_descriptor() {
+    return Target_Nonlinear_NonlinearType_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& NonlinearType_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, NonlinearType>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function NonlinearType_Name.");
+    return Target_Nonlinear_NonlinearType_Name(enum_t_value);
+  }
+  static inline bool NonlinearType_Parse(const std::string& name,
+      NonlinearType* value) {
+    return Target_Nonlinear_NonlinearType_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNonlinearTypeFieldNumber = 1,
+  };
+  // repeated .vitis.ai.Target.Nonlinear.NonlinearType nonlinear_type = 1;
+  int nonlinear_type_size() const;
+  void clear_nonlinear_type();
+  ::vitis::ai::Target_Nonlinear_NonlinearType nonlinear_type(int index) const;
+  void set_nonlinear_type(int index, ::vitis::ai::Target_Nonlinear_NonlinearType value);
+  void add_nonlinear_type(::vitis::ai::Target_Nonlinear_NonlinearType value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& nonlinear_type() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_nonlinear_type();
+
+  // @@protoc_insertion_point(class_scope:vitis.ai.Target.Nonlinear)
+ private:
+  class _Internal;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> nonlinear_type_;
+  mutable std::atomic<int> _nonlinear_type_cached_byte_size_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_target_2eproto;
+};
+// -------------------------------------------------------------------
+
 class Target_Conv_OutputBankGroup :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Conv.OutputBankGroup) */ {
  public:
@@ -1601,7 +1717,7 @@ class Target_Conv_OutputBankGroup :
                &_Target_Conv_OutputBankGroup_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(Target_Conv_OutputBankGroup& a, Target_Conv_OutputBankGroup& b) {
     a.Swap(&b);
@@ -1744,7 +1860,7 @@ class Target_Conv_ChannelAugmentation :
                &_Target_Conv_ChannelAugmentation_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   friend void swap(Target_Conv_ChannelAugmentation& a, Target_Conv_ChannelAugmentation& b) {
     a.Swap(&b);
@@ -1828,176 +1944,6 @@ class Target_Conv_ChannelAugmentation :
 
   ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
   ::PROTOBUF_NAMESPACE_ID::uint32 channel_num_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  friend struct ::TableStruct_target_2eproto;
-};
-// -------------------------------------------------------------------
-
-class Target_Conv_Nonlinear :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Conv.Nonlinear) */ {
- public:
-  Target_Conv_Nonlinear();
-  virtual ~Target_Conv_Nonlinear();
-
-  Target_Conv_Nonlinear(const Target_Conv_Nonlinear& from);
-  Target_Conv_Nonlinear(Target_Conv_Nonlinear&& from) noexcept
-    : Target_Conv_Nonlinear() {
-    *this = ::std::move(from);
-  }
-
-  inline Target_Conv_Nonlinear& operator=(const Target_Conv_Nonlinear& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Target_Conv_Nonlinear& operator=(Target_Conv_Nonlinear&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return GetMetadataStatic().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return GetMetadataStatic().reflection;
-  }
-  static const Target_Conv_Nonlinear& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Target_Conv_Nonlinear* internal_default_instance() {
-    return reinterpret_cast<const Target_Conv_Nonlinear*>(
-               &_Target_Conv_Nonlinear_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    10;
-
-  friend void swap(Target_Conv_Nonlinear& a, Target_Conv_Nonlinear& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Target_Conv_Nonlinear* other) {
-    if (other == this) return;
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Target_Conv_Nonlinear* New() const final {
-    return CreateMaybeMessage<Target_Conv_Nonlinear>(nullptr);
-  }
-
-  Target_Conv_Nonlinear* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<Target_Conv_Nonlinear>(arena);
-  }
-  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const Target_Conv_Nonlinear& from);
-  void MergeFrom(const Target_Conv_Nonlinear& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  #else
-  bool MergePartialFromCodedStream(
-      ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) final;
-  #endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-  void SerializeWithCachedSizes(
-      ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  inline void SharedCtor();
-  inline void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Target_Conv_Nonlinear* other);
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vitis.ai.Target.Conv.Nonlinear";
-  }
-  private:
-  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
-    return nullptr;
-  }
-  inline void* MaybeArenaPtr() const {
-    return nullptr;
-  }
-  public:
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  private:
-  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
-    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_target_2eproto);
-    return ::descriptor_table_target_2eproto.file_level_metadata[kIndexInFileMessages];
-  }
-
-  public:
-
-  // nested types ----------------------------------------------------
-
-  typedef Target_Conv_Nonlinear_NonlinearType NonlinearType;
-  static constexpr NonlinearType relu =
-    Target_Conv_Nonlinear_NonlinearType_relu;
-  static constexpr NonlinearType prelu =
-    Target_Conv_Nonlinear_NonlinearType_prelu;
-  static constexpr NonlinearType leaky_relu =
-    Target_Conv_Nonlinear_NonlinearType_leaky_relu;
-  static constexpr NonlinearType relu_six =
-    Target_Conv_Nonlinear_NonlinearType_relu_six;
-  static inline bool NonlinearType_IsValid(int value) {
-    return Target_Conv_Nonlinear_NonlinearType_IsValid(value);
-  }
-  static constexpr NonlinearType NonlinearType_MIN =
-    Target_Conv_Nonlinear_NonlinearType_NonlinearType_MIN;
-  static constexpr NonlinearType NonlinearType_MAX =
-    Target_Conv_Nonlinear_NonlinearType_NonlinearType_MAX;
-  static constexpr int NonlinearType_ARRAYSIZE =
-    Target_Conv_Nonlinear_NonlinearType_NonlinearType_ARRAYSIZE;
-  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-  NonlinearType_descriptor() {
-    return Target_Conv_Nonlinear_NonlinearType_descriptor();
-  }
-  template<typename T>
-  static inline const std::string& NonlinearType_Name(T enum_t_value) {
-    static_assert(::std::is_same<T, NonlinearType>::value ||
-      ::std::is_integral<T>::value,
-      "Incorrect type passed to function NonlinearType_Name.");
-    return Target_Conv_Nonlinear_NonlinearType_Name(enum_t_value);
-  }
-  static inline bool NonlinearType_Parse(const std::string& name,
-      NonlinearType* value) {
-    return Target_Conv_Nonlinear_NonlinearType_Parse(name, value);
-  }
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kNonlinearTypeFieldNumber = 1,
-  };
-  // repeated .vitis.ai.Target.Conv.Nonlinear.NonlinearType nonlinear_type = 1;
-  int nonlinear_type_size() const;
-  void clear_nonlinear_type();
-  ::vitis::ai::Target_Conv_Nonlinear_NonlinearType nonlinear_type(int index) const;
-  void set_nonlinear_type(int index, ::vitis::ai::Target_Conv_Nonlinear_NonlinearType value);
-  void add_nonlinear_type(::vitis::ai::Target_Conv_Nonlinear_NonlinearType value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& nonlinear_type() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_nonlinear_type();
-
-  // @@protoc_insertion_point(class_scope:vitis.ai.Target.Conv.Nonlinear)
- private:
-  class _Internal;
-
-  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> nonlinear_type_;
-  mutable std::atomic<int> _nonlinear_type_cached_byte_size_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_target_2eproto;
 };
@@ -2265,7 +2211,6 @@ class Target_Conv :
 
   typedef Target_Conv_OutputBankGroup OutputBankGroup;
   typedef Target_Conv_ChannelAugmentation ChannelAugmentation;
-  typedef Target_Conv_Nonlinear Nonlinear;
   typedef Target_Conv_ConvLimit ConvLimit;
 
   // accessors -------------------------------------------------------
@@ -2358,13 +2303,13 @@ class Target_Conv :
   ::vitis::ai::Target_Conv_ChannelAugmentation* mutable_channel_augmentation();
   void set_allocated_channel_augmentation(::vitis::ai::Target_Conv_ChannelAugmentation* channel_augmentation);
 
-  // .vitis.ai.Target.Conv.Nonlinear nonlinear = 9;
+  // .vitis.ai.Target.Nonlinear nonlinear = 9;
   bool has_nonlinear() const;
   void clear_nonlinear();
-  const ::vitis::ai::Target_Conv_Nonlinear& nonlinear() const;
-  ::vitis::ai::Target_Conv_Nonlinear* release_nonlinear();
-  ::vitis::ai::Target_Conv_Nonlinear* mutable_nonlinear();
-  void set_allocated_nonlinear(::vitis::ai::Target_Conv_Nonlinear* nonlinear);
+  const ::vitis::ai::Target_Nonlinear& nonlinear() const;
+  ::vitis::ai::Target_Nonlinear* release_nonlinear();
+  ::vitis::ai::Target_Nonlinear* mutable_nonlinear();
+  void set_allocated_nonlinear(::vitis::ai::Target_Nonlinear* nonlinear);
 
   // .vitis.ai.Target.Conv.ConvLimit conv_limit = 11;
   bool has_conv_limit() const;
@@ -2400,181 +2345,11 @@ class Target_Conv :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr weight_bank_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr bias_bank_;
   ::vitis::ai::Target_Conv_ChannelAugmentation* channel_augmentation_;
-  ::vitis::ai::Target_Conv_Nonlinear* nonlinear_;
+  ::vitis::ai::Target_Nonlinear* nonlinear_;
   ::vitis::ai::Target_Conv_ConvLimit* conv_limit_;
   ::PROTOBUF_NAMESPACE_ID::uint32 input_channel_parallel_;
   ::PROTOBUF_NAMESPACE_ID::uint32 output_channel_parallel_;
   ::PROTOBUF_NAMESPACE_ID::uint32 pixel_parallel_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  friend struct ::TableStruct_target_2eproto;
-};
-// -------------------------------------------------------------------
-
-class Target_Eltwise_Nonlinear :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Eltwise.Nonlinear) */ {
- public:
-  Target_Eltwise_Nonlinear();
-  virtual ~Target_Eltwise_Nonlinear();
-
-  Target_Eltwise_Nonlinear(const Target_Eltwise_Nonlinear& from);
-  Target_Eltwise_Nonlinear(Target_Eltwise_Nonlinear&& from) noexcept
-    : Target_Eltwise_Nonlinear() {
-    *this = ::std::move(from);
-  }
-
-  inline Target_Eltwise_Nonlinear& operator=(const Target_Eltwise_Nonlinear& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Target_Eltwise_Nonlinear& operator=(Target_Eltwise_Nonlinear&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return GetMetadataStatic().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return GetMetadataStatic().reflection;
-  }
-  static const Target_Eltwise_Nonlinear& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Target_Eltwise_Nonlinear* internal_default_instance() {
-    return reinterpret_cast<const Target_Eltwise_Nonlinear*>(
-               &_Target_Eltwise_Nonlinear_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    13;
-
-  friend void swap(Target_Eltwise_Nonlinear& a, Target_Eltwise_Nonlinear& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Target_Eltwise_Nonlinear* other) {
-    if (other == this) return;
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Target_Eltwise_Nonlinear* New() const final {
-    return CreateMaybeMessage<Target_Eltwise_Nonlinear>(nullptr);
-  }
-
-  Target_Eltwise_Nonlinear* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<Target_Eltwise_Nonlinear>(arena);
-  }
-  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const Target_Eltwise_Nonlinear& from);
-  void MergeFrom(const Target_Eltwise_Nonlinear& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  #else
-  bool MergePartialFromCodedStream(
-      ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) final;
-  #endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-  void SerializeWithCachedSizes(
-      ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  inline void SharedCtor();
-  inline void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Target_Eltwise_Nonlinear* other);
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vitis.ai.Target.Eltwise.Nonlinear";
-  }
-  private:
-  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
-    return nullptr;
-  }
-  inline void* MaybeArenaPtr() const {
-    return nullptr;
-  }
-  public:
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  private:
-  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
-    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_target_2eproto);
-    return ::descriptor_table_target_2eproto.file_level_metadata[kIndexInFileMessages];
-  }
-
-  public:
-
-  // nested types ----------------------------------------------------
-
-  typedef Target_Eltwise_Nonlinear_NonlinearType NonlinearType;
-  static constexpr NonlinearType relu =
-    Target_Eltwise_Nonlinear_NonlinearType_relu;
-  static constexpr NonlinearType prelu =
-    Target_Eltwise_Nonlinear_NonlinearType_prelu;
-  static constexpr NonlinearType leaky_relu =
-    Target_Eltwise_Nonlinear_NonlinearType_leaky_relu;
-  static constexpr NonlinearType relu_six =
-    Target_Eltwise_Nonlinear_NonlinearType_relu_six;
-  static inline bool NonlinearType_IsValid(int value) {
-    return Target_Eltwise_Nonlinear_NonlinearType_IsValid(value);
-  }
-  static constexpr NonlinearType NonlinearType_MIN =
-    Target_Eltwise_Nonlinear_NonlinearType_NonlinearType_MIN;
-  static constexpr NonlinearType NonlinearType_MAX =
-    Target_Eltwise_Nonlinear_NonlinearType_NonlinearType_MAX;
-  static constexpr int NonlinearType_ARRAYSIZE =
-    Target_Eltwise_Nonlinear_NonlinearType_NonlinearType_ARRAYSIZE;
-  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-  NonlinearType_descriptor() {
-    return Target_Eltwise_Nonlinear_NonlinearType_descriptor();
-  }
-  template<typename T>
-  static inline const std::string& NonlinearType_Name(T enum_t_value) {
-    static_assert(::std::is_same<T, NonlinearType>::value ||
-      ::std::is_integral<T>::value,
-      "Incorrect type passed to function NonlinearType_Name.");
-    return Target_Eltwise_Nonlinear_NonlinearType_Name(enum_t_value);
-  }
-  static inline bool NonlinearType_Parse(const std::string& name,
-      NonlinearType* value) {
-    return Target_Eltwise_Nonlinear_NonlinearType_Parse(name, value);
-  }
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kNonlinearTypeFieldNumber = 1,
-  };
-  // repeated .vitis.ai.Target.Eltwise.Nonlinear.NonlinearType nonlinear_type = 1;
-  int nonlinear_type_size() const;
-  void clear_nonlinear_type();
-  ::vitis::ai::Target_Eltwise_Nonlinear_NonlinearType nonlinear_type(int index) const;
-  void set_nonlinear_type(int index, ::vitis::ai::Target_Eltwise_Nonlinear_NonlinearType value);
-  void add_nonlinear_type(::vitis::ai::Target_Eltwise_Nonlinear_NonlinearType value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& nonlinear_type() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_nonlinear_type();
-
-  // @@protoc_insertion_point(class_scope:vitis.ai.Target.Eltwise.Nonlinear)
- private:
-  class _Internal;
-
-  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> nonlinear_type_;
-  mutable std::atomic<int> _nonlinear_type_cached_byte_size_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_target_2eproto;
 };
@@ -2622,7 +2397,7 @@ class Target_Eltwise :
                &_Target_Eltwise_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    13;
 
   friend void swap(Target_Eltwise& a, Target_Eltwise& b) {
     a.Swap(&b);
@@ -2689,8 +2464,6 @@ class Target_Eltwise :
   public:
 
   // nested types ----------------------------------------------------
-
-  typedef Target_Eltwise_Nonlinear Nonlinear;
 
   typedef Target_Eltwise_ElewType ElewType;
   static constexpr ElewType add =
@@ -2775,13 +2548,13 @@ class Target_Eltwise :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& elew_type() const;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_elew_type();
 
-  // .vitis.ai.Target.Eltwise.Nonlinear nonlinear = 5;
+  // .vitis.ai.Target.Nonlinear nonlinear = 5;
   bool has_nonlinear() const;
   void clear_nonlinear();
-  const ::vitis::ai::Target_Eltwise_Nonlinear& nonlinear() const;
-  ::vitis::ai::Target_Eltwise_Nonlinear* release_nonlinear();
-  ::vitis::ai::Target_Eltwise_Nonlinear* mutable_nonlinear();
-  void set_allocated_nonlinear(::vitis::ai::Target_Eltwise_Nonlinear* nonlinear);
+  const ::vitis::ai::Target_Nonlinear& nonlinear() const;
+  ::vitis::ai::Target_Nonlinear* release_nonlinear();
+  ::vitis::ai::Target_Nonlinear* mutable_nonlinear();
+  void set_allocated_nonlinear(::vitis::ai::Target_Nonlinear* nonlinear);
 
   // uint32 channel_parallel = 1;
   void clear_channel_parallel();
@@ -2802,7 +2575,7 @@ class Target_Eltwise :
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> output_bank_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> elew_type_;
   mutable std::atomic<int> _elew_type_cached_byte_size_;
-  ::vitis::ai::Target_Eltwise_Nonlinear* nonlinear_;
+  ::vitis::ai::Target_Nonlinear* nonlinear_;
   ::PROTOBUF_NAMESPACE_ID::uint32 channel_parallel_;
   ::PROTOBUF_NAMESPACE_ID::uint32 pixel_parallel_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -2852,7 +2625,7 @@ class Target_Pool_AvgLimit :
                &_Target_Pool_AvgLimit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    14;
 
   friend void swap(Target_Pool_AvgLimit& a, Target_Pool_AvgLimit& b) {
     a.Swap(&b);
@@ -2949,6 +2722,156 @@ class Target_Pool_AvgLimit :
   void set_allocated_stride(std::string* stride);
 
   // @@protoc_insertion_point(class_scope:vitis.ai.Target.Pool.AvgLimit)
+ private:
+  class _Internal;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr kernel_size_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr stride_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_target_2eproto;
+};
+// -------------------------------------------------------------------
+
+class Target_Pool_MaxLimit :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Pool.MaxLimit) */ {
+ public:
+  Target_Pool_MaxLimit();
+  virtual ~Target_Pool_MaxLimit();
+
+  Target_Pool_MaxLimit(const Target_Pool_MaxLimit& from);
+  Target_Pool_MaxLimit(Target_Pool_MaxLimit&& from) noexcept
+    : Target_Pool_MaxLimit() {
+    *this = ::std::move(from);
+  }
+
+  inline Target_Pool_MaxLimit& operator=(const Target_Pool_MaxLimit& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Target_Pool_MaxLimit& operator=(Target_Pool_MaxLimit&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const Target_Pool_MaxLimit& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Target_Pool_MaxLimit* internal_default_instance() {
+    return reinterpret_cast<const Target_Pool_MaxLimit*>(
+               &_Target_Pool_MaxLimit_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    15;
+
+  friend void swap(Target_Pool_MaxLimit& a, Target_Pool_MaxLimit& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Target_Pool_MaxLimit* other) {
+    if (other == this) return;
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Target_Pool_MaxLimit* New() const final {
+    return CreateMaybeMessage<Target_Pool_MaxLimit>(nullptr);
+  }
+
+  Target_Pool_MaxLimit* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<Target_Pool_MaxLimit>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const Target_Pool_MaxLimit& from);
+  void MergeFrom(const Target_Pool_MaxLimit& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  #else
+  bool MergePartialFromCodedStream(
+      ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) final;
+  #endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+  void SerializeWithCachedSizes(
+      ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Target_Pool_MaxLimit* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vitis.ai.Target.Pool.MaxLimit";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_target_2eproto);
+    return ::descriptor_table_target_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kKernelSizeFieldNumber = 1,
+    kStrideFieldNumber = 2,
+  };
+  // string kernel_size = 1;
+  void clear_kernel_size();
+  const std::string& kernel_size() const;
+  void set_kernel_size(const std::string& value);
+  void set_kernel_size(std::string&& value);
+  void set_kernel_size(const char* value);
+  void set_kernel_size(const char* value, size_t size);
+  std::string* mutable_kernel_size();
+  std::string* release_kernel_size();
+  void set_allocated_kernel_size(std::string* kernel_size);
+
+  // string stride = 2;
+  void clear_stride();
+  const std::string& stride() const;
+  void set_stride(const std::string& value);
+  void set_stride(std::string&& value);
+  void set_stride(const char* value);
+  void set_stride(const char* value, size_t size);
+  std::string* mutable_stride();
+  std::string* release_stride();
+  void set_allocated_stride(std::string* stride);
+
+  // @@protoc_insertion_point(class_scope:vitis.ai.Target.Pool.MaxLimit)
  private:
   class _Internal;
 
@@ -3071,6 +2994,7 @@ class Target_Pool :
   // nested types ----------------------------------------------------
 
   typedef Target_Pool_AvgLimit AvgLimit;
+  typedef Target_Pool_MaxLimit MaxLimit;
 
   typedef Target_Pool_PoolType PoolType;
   static constexpr PoolType max =
@@ -3110,7 +3034,9 @@ class Target_Pool :
     kInputBankFieldNumber = 3,
     kOutputBankFieldNumber = 4,
     kPoolTypeFieldNumber = 5,
-    kAvgLimitFieldNumber = 6,
+    kNonlinearFieldNumber = 6,
+    kAvgLimitFieldNumber = 7,
+    kMaxLimitFieldNumber = 8,
     kChannelParallelFieldNumber = 1,
     kPixelParallelFieldNumber = 2,
   };
@@ -3157,13 +3083,29 @@ class Target_Pool :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& pool_type() const;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_pool_type();
 
-  // .vitis.ai.Target.Pool.AvgLimit avg_limit = 6;
+  // .vitis.ai.Target.Nonlinear nonlinear = 6;
+  bool has_nonlinear() const;
+  void clear_nonlinear();
+  const ::vitis::ai::Target_Nonlinear& nonlinear() const;
+  ::vitis::ai::Target_Nonlinear* release_nonlinear();
+  ::vitis::ai::Target_Nonlinear* mutable_nonlinear();
+  void set_allocated_nonlinear(::vitis::ai::Target_Nonlinear* nonlinear);
+
+  // .vitis.ai.Target.Pool.AvgLimit avg_limit = 7;
   bool has_avg_limit() const;
   void clear_avg_limit();
   const ::vitis::ai::Target_Pool_AvgLimit& avg_limit() const;
   ::vitis::ai::Target_Pool_AvgLimit* release_avg_limit();
   ::vitis::ai::Target_Pool_AvgLimit* mutable_avg_limit();
   void set_allocated_avg_limit(::vitis::ai::Target_Pool_AvgLimit* avg_limit);
+
+  // .vitis.ai.Target.Pool.MaxLimit max_limit = 8;
+  bool has_max_limit() const;
+  void clear_max_limit();
+  const ::vitis::ai::Target_Pool_MaxLimit& max_limit() const;
+  ::vitis::ai::Target_Pool_MaxLimit* release_max_limit();
+  ::vitis::ai::Target_Pool_MaxLimit* mutable_max_limit();
+  void set_allocated_max_limit(::vitis::ai::Target_Pool_MaxLimit* max_limit);
 
   // uint32 channel_parallel = 1;
   void clear_channel_parallel();
@@ -3184,7 +3126,9 @@ class Target_Pool :
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> output_bank_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> pool_type_;
   mutable std::atomic<int> _pool_type_cached_byte_size_;
+  ::vitis::ai::Target_Nonlinear* nonlinear_;
   ::vitis::ai::Target_Pool_AvgLimit* avg_limit_;
+  ::vitis::ai::Target_Pool_MaxLimit* max_limit_;
   ::PROTOBUF_NAMESPACE_ID::uint32 channel_parallel_;
   ::PROTOBUF_NAMESPACE_ID::uint32 pixel_parallel_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -3192,23 +3136,23 @@ class Target_Pool :
 };
 // -------------------------------------------------------------------
 
-class Target_Dwconv_Nonlinear :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Dwconv.Nonlinear) */ {
+class Target_Dwconv_DwconvLimit :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Dwconv.DwconvLimit) */ {
  public:
-  Target_Dwconv_Nonlinear();
-  virtual ~Target_Dwconv_Nonlinear();
+  Target_Dwconv_DwconvLimit();
+  virtual ~Target_Dwconv_DwconvLimit();
 
-  Target_Dwconv_Nonlinear(const Target_Dwconv_Nonlinear& from);
-  Target_Dwconv_Nonlinear(Target_Dwconv_Nonlinear&& from) noexcept
-    : Target_Dwconv_Nonlinear() {
+  Target_Dwconv_DwconvLimit(const Target_Dwconv_DwconvLimit& from);
+  Target_Dwconv_DwconvLimit(Target_Dwconv_DwconvLimit&& from) noexcept
+    : Target_Dwconv_DwconvLimit() {
     *this = ::std::move(from);
   }
 
-  inline Target_Dwconv_Nonlinear& operator=(const Target_Dwconv_Nonlinear& from) {
+  inline Target_Dwconv_DwconvLimit& operator=(const Target_Dwconv_DwconvLimit& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Target_Dwconv_Nonlinear& operator=(Target_Dwconv_Nonlinear&& from) noexcept {
+  inline Target_Dwconv_DwconvLimit& operator=(Target_Dwconv_DwconvLimit&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -3226,37 +3170,37 @@ class Target_Dwconv_Nonlinear :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return GetMetadataStatic().reflection;
   }
-  static const Target_Dwconv_Nonlinear& default_instance();
+  static const Target_Dwconv_DwconvLimit& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Target_Dwconv_Nonlinear* internal_default_instance() {
-    return reinterpret_cast<const Target_Dwconv_Nonlinear*>(
-               &_Target_Dwconv_Nonlinear_default_instance_);
+  static inline const Target_Dwconv_DwconvLimit* internal_default_instance() {
+    return reinterpret_cast<const Target_Dwconv_DwconvLimit*>(
+               &_Target_Dwconv_DwconvLimit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     17;
 
-  friend void swap(Target_Dwconv_Nonlinear& a, Target_Dwconv_Nonlinear& b) {
+  friend void swap(Target_Dwconv_DwconvLimit& a, Target_Dwconv_DwconvLimit& b) {
     a.Swap(&b);
   }
-  inline void Swap(Target_Dwconv_Nonlinear* other) {
+  inline void Swap(Target_Dwconv_DwconvLimit* other) {
     if (other == this) return;
     InternalSwap(other);
   }
 
   // implements Message ----------------------------------------------
 
-  inline Target_Dwconv_Nonlinear* New() const final {
-    return CreateMaybeMessage<Target_Dwconv_Nonlinear>(nullptr);
+  inline Target_Dwconv_DwconvLimit* New() const final {
+    return CreateMaybeMessage<Target_Dwconv_DwconvLimit>(nullptr);
   }
 
-  Target_Dwconv_Nonlinear* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<Target_Dwconv_Nonlinear>(arena);
+  Target_Dwconv_DwconvLimit* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<Target_Dwconv_DwconvLimit>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const Target_Dwconv_Nonlinear& from);
-  void MergeFrom(const Target_Dwconv_Nonlinear& from);
+  void CopyFrom(const Target_Dwconv_DwconvLimit& from);
+  void MergeFrom(const Target_Dwconv_DwconvLimit& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -3277,10 +3221,10 @@ class Target_Dwconv_Nonlinear :
   inline void SharedCtor();
   inline void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Target_Dwconv_Nonlinear* other);
+  void InternalSwap(Target_Dwconv_DwconvLimit* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vitis.ai.Target.Dwconv.Nonlinear";
+    return "vitis.ai.Target.Dwconv.DwconvLimit";
   }
   private:
   inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
@@ -3302,61 +3246,41 @@ class Target_Dwconv_Nonlinear :
 
   // nested types ----------------------------------------------------
 
-  typedef Target_Dwconv_Nonlinear_NonlinearType NonlinearType;
-  static constexpr NonlinearType relu =
-    Target_Dwconv_Nonlinear_NonlinearType_relu;
-  static constexpr NonlinearType prelu =
-    Target_Dwconv_Nonlinear_NonlinearType_prelu;
-  static constexpr NonlinearType leaky_relu =
-    Target_Dwconv_Nonlinear_NonlinearType_leaky_relu;
-  static constexpr NonlinearType relu_six =
-    Target_Dwconv_Nonlinear_NonlinearType_relu_six;
-  static inline bool NonlinearType_IsValid(int value) {
-    return Target_Dwconv_Nonlinear_NonlinearType_IsValid(value);
-  }
-  static constexpr NonlinearType NonlinearType_MIN =
-    Target_Dwconv_Nonlinear_NonlinearType_NonlinearType_MIN;
-  static constexpr NonlinearType NonlinearType_MAX =
-    Target_Dwconv_Nonlinear_NonlinearType_NonlinearType_MAX;
-  static constexpr int NonlinearType_ARRAYSIZE =
-    Target_Dwconv_Nonlinear_NonlinearType_NonlinearType_ARRAYSIZE;
-  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-  NonlinearType_descriptor() {
-    return Target_Dwconv_Nonlinear_NonlinearType_descriptor();
-  }
-  template<typename T>
-  static inline const std::string& NonlinearType_Name(T enum_t_value) {
-    static_assert(::std::is_same<T, NonlinearType>::value ||
-      ::std::is_integral<T>::value,
-      "Incorrect type passed to function NonlinearType_Name.");
-    return Target_Dwconv_Nonlinear_NonlinearType_Name(enum_t_value);
-  }
-  static inline bool NonlinearType_Parse(const std::string& name,
-      NonlinearType* value) {
-    return Target_Dwconv_Nonlinear_NonlinearType_Parse(name, value);
-  }
-
   // accessors -------------------------------------------------------
 
   enum : int {
-    kNonlinearTypeFieldNumber = 1,
+    kKernelSizeFieldNumber = 1,
+    kStrideFieldNumber = 2,
   };
-  // repeated .vitis.ai.Target.Dwconv.Nonlinear.NonlinearType nonlinear_type = 1;
-  int nonlinear_type_size() const;
-  void clear_nonlinear_type();
-  ::vitis::ai::Target_Dwconv_Nonlinear_NonlinearType nonlinear_type(int index) const;
-  void set_nonlinear_type(int index, ::vitis::ai::Target_Dwconv_Nonlinear_NonlinearType value);
-  void add_nonlinear_type(::vitis::ai::Target_Dwconv_Nonlinear_NonlinearType value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& nonlinear_type() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_nonlinear_type();
+  // string kernel_size = 1;
+  void clear_kernel_size();
+  const std::string& kernel_size() const;
+  void set_kernel_size(const std::string& value);
+  void set_kernel_size(std::string&& value);
+  void set_kernel_size(const char* value);
+  void set_kernel_size(const char* value, size_t size);
+  std::string* mutable_kernel_size();
+  std::string* release_kernel_size();
+  void set_allocated_kernel_size(std::string* kernel_size);
 
-  // @@protoc_insertion_point(class_scope:vitis.ai.Target.Dwconv.Nonlinear)
+  // string stride = 2;
+  void clear_stride();
+  const std::string& stride() const;
+  void set_stride(const std::string& value);
+  void set_stride(std::string&& value);
+  void set_stride(const char* value);
+  void set_stride(const char* value, size_t size);
+  std::string* mutable_stride();
+  std::string* release_stride();
+  void set_allocated_stride(std::string* stride);
+
+  // @@protoc_insertion_point(class_scope:vitis.ai.Target.Dwconv.DwconvLimit)
  private:
   class _Internal;
 
   ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> nonlinear_type_;
-  mutable std::atomic<int> _nonlinear_type_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr kernel_size_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr stride_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_target_2eproto;
 };
@@ -3472,7 +3396,7 @@ class Target_Dwconv :
 
   // nested types ----------------------------------------------------
 
-  typedef Target_Dwconv_Nonlinear Nonlinear;
+  typedef Target_Dwconv_DwconvLimit DwconvLimit;
 
   // accessors -------------------------------------------------------
 
@@ -3482,6 +3406,7 @@ class Target_Dwconv :
     kWeightBankFieldNumber = 5,
     kBiasBankFieldNumber = 6,
     kNonlinearFieldNumber = 7,
+    kDwconvLimitFieldNumber = 8,
     kChannelParallelFieldNumber = 1,
     kPixelParallelFieldNumber = 2,
   };
@@ -3541,13 +3466,21 @@ class Target_Dwconv :
   std::string* release_bias_bank();
   void set_allocated_bias_bank(std::string* bias_bank);
 
-  // .vitis.ai.Target.Dwconv.Nonlinear nonlinear = 7;
+  // .vitis.ai.Target.Nonlinear nonlinear = 7;
   bool has_nonlinear() const;
   void clear_nonlinear();
-  const ::vitis::ai::Target_Dwconv_Nonlinear& nonlinear() const;
-  ::vitis::ai::Target_Dwconv_Nonlinear* release_nonlinear();
-  ::vitis::ai::Target_Dwconv_Nonlinear* mutable_nonlinear();
-  void set_allocated_nonlinear(::vitis::ai::Target_Dwconv_Nonlinear* nonlinear);
+  const ::vitis::ai::Target_Nonlinear& nonlinear() const;
+  ::vitis::ai::Target_Nonlinear* release_nonlinear();
+  ::vitis::ai::Target_Nonlinear* mutable_nonlinear();
+  void set_allocated_nonlinear(::vitis::ai::Target_Nonlinear* nonlinear);
+
+  // .vitis.ai.Target.Dwconv.DwconvLimit dwconv_limit = 8;
+  bool has_dwconv_limit() const;
+  void clear_dwconv_limit();
+  const ::vitis::ai::Target_Dwconv_DwconvLimit& dwconv_limit() const;
+  ::vitis::ai::Target_Dwconv_DwconvLimit* release_dwconv_limit();
+  ::vitis::ai::Target_Dwconv_DwconvLimit* mutable_dwconv_limit();
+  void set_allocated_dwconv_limit(::vitis::ai::Target_Dwconv_DwconvLimit* dwconv_limit);
 
   // uint32 channel_parallel = 1;
   void clear_channel_parallel();
@@ -3568,7 +3501,8 @@ class Target_Dwconv :
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> output_bank_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr weight_bank_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr bias_bank_;
-  ::vitis::ai::Target_Dwconv_Nonlinear* nonlinear_;
+  ::vitis::ai::Target_Nonlinear* nonlinear_;
+  ::vitis::ai::Target_Dwconv_DwconvLimit* dwconv_limit_;
   ::PROTOBUF_NAMESPACE_ID::uint32 channel_parallel_;
   ::PROTOBUF_NAMESPACE_ID::uint32 pixel_parallel_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -4061,6 +3995,7 @@ class Target :
   typedef Target_BankGroup BankGroup;
   typedef Target_Load Load;
   typedef Target_Save Save;
+  typedef Target_Nonlinear Nonlinear;
   typedef Target_Conv Conv;
   typedef Target_Eltwise Eltwise;
   typedef Target_Pool Pool;
@@ -4981,6 +4916,40 @@ inline void Target_Save::set_allocated_fix_ifm_port_width(::vitis::ai::Target_Sa
 
 // -------------------------------------------------------------------
 
+// Target_Nonlinear
+
+// repeated .vitis.ai.Target.Nonlinear.NonlinearType nonlinear_type = 1;
+inline int Target_Nonlinear::nonlinear_type_size() const {
+  return nonlinear_type_.size();
+}
+inline void Target_Nonlinear::clear_nonlinear_type() {
+  nonlinear_type_.Clear();
+}
+inline ::vitis::ai::Target_Nonlinear_NonlinearType Target_Nonlinear::nonlinear_type(int index) const {
+  // @@protoc_insertion_point(field_get:vitis.ai.Target.Nonlinear.nonlinear_type)
+  return static_cast< ::vitis::ai::Target_Nonlinear_NonlinearType >(nonlinear_type_.Get(index));
+}
+inline void Target_Nonlinear::set_nonlinear_type(int index, ::vitis::ai::Target_Nonlinear_NonlinearType value) {
+  nonlinear_type_.Set(index, value);
+  // @@protoc_insertion_point(field_set:vitis.ai.Target.Nonlinear.nonlinear_type)
+}
+inline void Target_Nonlinear::add_nonlinear_type(::vitis::ai::Target_Nonlinear_NonlinearType value) {
+  nonlinear_type_.Add(value);
+  // @@protoc_insertion_point(field_add:vitis.ai.Target.Nonlinear.nonlinear_type)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
+Target_Nonlinear::nonlinear_type() const {
+  // @@protoc_insertion_point(field_list:vitis.ai.Target.Nonlinear.nonlinear_type)
+  return nonlinear_type_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
+Target_Nonlinear::mutable_nonlinear_type() {
+  // @@protoc_insertion_point(field_mutable_list:vitis.ai.Target.Nonlinear.nonlinear_type)
+  return &nonlinear_type_;
+}
+
+// -------------------------------------------------------------------
+
 // Target_Conv_OutputBankGroup
 
 // repeated string output_bank = 1;
@@ -5064,40 +5033,6 @@ inline void Target_Conv_ChannelAugmentation::set_channel_num(::PROTOBUF_NAMESPAC
   
   channel_num_ = value;
   // @@protoc_insertion_point(field_set:vitis.ai.Target.Conv.ChannelAugmentation.channel_num)
-}
-
-// -------------------------------------------------------------------
-
-// Target_Conv_Nonlinear
-
-// repeated .vitis.ai.Target.Conv.Nonlinear.NonlinearType nonlinear_type = 1;
-inline int Target_Conv_Nonlinear::nonlinear_type_size() const {
-  return nonlinear_type_.size();
-}
-inline void Target_Conv_Nonlinear::clear_nonlinear_type() {
-  nonlinear_type_.Clear();
-}
-inline ::vitis::ai::Target_Conv_Nonlinear_NonlinearType Target_Conv_Nonlinear::nonlinear_type(int index) const {
-  // @@protoc_insertion_point(field_get:vitis.ai.Target.Conv.Nonlinear.nonlinear_type)
-  return static_cast< ::vitis::ai::Target_Conv_Nonlinear_NonlinearType >(nonlinear_type_.Get(index));
-}
-inline void Target_Conv_Nonlinear::set_nonlinear_type(int index, ::vitis::ai::Target_Conv_Nonlinear_NonlinearType value) {
-  nonlinear_type_.Set(index, value);
-  // @@protoc_insertion_point(field_set:vitis.ai.Target.Conv.Nonlinear.nonlinear_type)
-}
-inline void Target_Conv_Nonlinear::add_nonlinear_type(::vitis::ai::Target_Conv_Nonlinear_NonlinearType value) {
-  nonlinear_type_.Add(value);
-  // @@protoc_insertion_point(field_add:vitis.ai.Target.Conv.Nonlinear.nonlinear_type)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
-Target_Conv_Nonlinear::nonlinear_type() const {
-  // @@protoc_insertion_point(field_list:vitis.ai.Target.Conv.Nonlinear.nonlinear_type)
-  return nonlinear_type_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
-Target_Conv_Nonlinear::mutable_nonlinear_type() {
-  // @@protoc_insertion_point(field_mutable_list:vitis.ai.Target.Conv.Nonlinear.nonlinear_type)
-  return &nonlinear_type_;
 }
 
 // -------------------------------------------------------------------
@@ -5565,7 +5500,7 @@ inline void Target_Conv::set_allocated_channel_augmentation(::vitis::ai::Target_
   // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Conv.channel_augmentation)
 }
 
-// .vitis.ai.Target.Conv.Nonlinear nonlinear = 9;
+// .vitis.ai.Target.Nonlinear nonlinear = 9;
 inline bool Target_Conv::has_nonlinear() const {
   return this != internal_default_instance() && nonlinear_ != nullptr;
 }
@@ -5575,29 +5510,29 @@ inline void Target_Conv::clear_nonlinear() {
   }
   nonlinear_ = nullptr;
 }
-inline const ::vitis::ai::Target_Conv_Nonlinear& Target_Conv::nonlinear() const {
-  const ::vitis::ai::Target_Conv_Nonlinear* p = nonlinear_;
+inline const ::vitis::ai::Target_Nonlinear& Target_Conv::nonlinear() const {
+  const ::vitis::ai::Target_Nonlinear* p = nonlinear_;
   // @@protoc_insertion_point(field_get:vitis.ai.Target.Conv.nonlinear)
-  return p != nullptr ? *p : *reinterpret_cast<const ::vitis::ai::Target_Conv_Nonlinear*>(
-      &::vitis::ai::_Target_Conv_Nonlinear_default_instance_);
+  return p != nullptr ? *p : *reinterpret_cast<const ::vitis::ai::Target_Nonlinear*>(
+      &::vitis::ai::_Target_Nonlinear_default_instance_);
 }
-inline ::vitis::ai::Target_Conv_Nonlinear* Target_Conv::release_nonlinear() {
+inline ::vitis::ai::Target_Nonlinear* Target_Conv::release_nonlinear() {
   // @@protoc_insertion_point(field_release:vitis.ai.Target.Conv.nonlinear)
   
-  ::vitis::ai::Target_Conv_Nonlinear* temp = nonlinear_;
+  ::vitis::ai::Target_Nonlinear* temp = nonlinear_;
   nonlinear_ = nullptr;
   return temp;
 }
-inline ::vitis::ai::Target_Conv_Nonlinear* Target_Conv::mutable_nonlinear() {
+inline ::vitis::ai::Target_Nonlinear* Target_Conv::mutable_nonlinear() {
   
   if (nonlinear_ == nullptr) {
-    auto* p = CreateMaybeMessage<::vitis::ai::Target_Conv_Nonlinear>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::vitis::ai::Target_Nonlinear>(GetArenaNoVirtual());
     nonlinear_ = p;
   }
   // @@protoc_insertion_point(field_mutable:vitis.ai.Target.Conv.nonlinear)
   return nonlinear_;
 }
-inline void Target_Conv::set_allocated_nonlinear(::vitis::ai::Target_Conv_Nonlinear* nonlinear) {
+inline void Target_Conv::set_allocated_nonlinear(::vitis::ai::Target_Nonlinear* nonlinear) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete nonlinear_;
@@ -5665,40 +5600,6 @@ inline void Target_Conv::set_allocated_conv_limit(::vitis::ai::Target_Conv_ConvL
   }
   conv_limit_ = conv_limit;
   // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Conv.conv_limit)
-}
-
-// -------------------------------------------------------------------
-
-// Target_Eltwise_Nonlinear
-
-// repeated .vitis.ai.Target.Eltwise.Nonlinear.NonlinearType nonlinear_type = 1;
-inline int Target_Eltwise_Nonlinear::nonlinear_type_size() const {
-  return nonlinear_type_.size();
-}
-inline void Target_Eltwise_Nonlinear::clear_nonlinear_type() {
-  nonlinear_type_.Clear();
-}
-inline ::vitis::ai::Target_Eltwise_Nonlinear_NonlinearType Target_Eltwise_Nonlinear::nonlinear_type(int index) const {
-  // @@protoc_insertion_point(field_get:vitis.ai.Target.Eltwise.Nonlinear.nonlinear_type)
-  return static_cast< ::vitis::ai::Target_Eltwise_Nonlinear_NonlinearType >(nonlinear_type_.Get(index));
-}
-inline void Target_Eltwise_Nonlinear::set_nonlinear_type(int index, ::vitis::ai::Target_Eltwise_Nonlinear_NonlinearType value) {
-  nonlinear_type_.Set(index, value);
-  // @@protoc_insertion_point(field_set:vitis.ai.Target.Eltwise.Nonlinear.nonlinear_type)
-}
-inline void Target_Eltwise_Nonlinear::add_nonlinear_type(::vitis::ai::Target_Eltwise_Nonlinear_NonlinearType value) {
-  nonlinear_type_.Add(value);
-  // @@protoc_insertion_point(field_add:vitis.ai.Target.Eltwise.Nonlinear.nonlinear_type)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
-Target_Eltwise_Nonlinear::nonlinear_type() const {
-  // @@protoc_insertion_point(field_list:vitis.ai.Target.Eltwise.Nonlinear.nonlinear_type)
-  return nonlinear_type_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
-Target_Eltwise_Nonlinear::mutable_nonlinear_type() {
-  // @@protoc_insertion_point(field_mutable_list:vitis.ai.Target.Eltwise.Nonlinear.nonlinear_type)
-  return &nonlinear_type_;
 }
 
 // -------------------------------------------------------------------
@@ -5863,7 +5764,7 @@ Target_Eltwise::mutable_output_bank() {
   return &output_bank_;
 }
 
-// .vitis.ai.Target.Eltwise.Nonlinear nonlinear = 5;
+// .vitis.ai.Target.Nonlinear nonlinear = 5;
 inline bool Target_Eltwise::has_nonlinear() const {
   return this != internal_default_instance() && nonlinear_ != nullptr;
 }
@@ -5873,29 +5774,29 @@ inline void Target_Eltwise::clear_nonlinear() {
   }
   nonlinear_ = nullptr;
 }
-inline const ::vitis::ai::Target_Eltwise_Nonlinear& Target_Eltwise::nonlinear() const {
-  const ::vitis::ai::Target_Eltwise_Nonlinear* p = nonlinear_;
+inline const ::vitis::ai::Target_Nonlinear& Target_Eltwise::nonlinear() const {
+  const ::vitis::ai::Target_Nonlinear* p = nonlinear_;
   // @@protoc_insertion_point(field_get:vitis.ai.Target.Eltwise.nonlinear)
-  return p != nullptr ? *p : *reinterpret_cast<const ::vitis::ai::Target_Eltwise_Nonlinear*>(
-      &::vitis::ai::_Target_Eltwise_Nonlinear_default_instance_);
+  return p != nullptr ? *p : *reinterpret_cast<const ::vitis::ai::Target_Nonlinear*>(
+      &::vitis::ai::_Target_Nonlinear_default_instance_);
 }
-inline ::vitis::ai::Target_Eltwise_Nonlinear* Target_Eltwise::release_nonlinear() {
+inline ::vitis::ai::Target_Nonlinear* Target_Eltwise::release_nonlinear() {
   // @@protoc_insertion_point(field_release:vitis.ai.Target.Eltwise.nonlinear)
   
-  ::vitis::ai::Target_Eltwise_Nonlinear* temp = nonlinear_;
+  ::vitis::ai::Target_Nonlinear* temp = nonlinear_;
   nonlinear_ = nullptr;
   return temp;
 }
-inline ::vitis::ai::Target_Eltwise_Nonlinear* Target_Eltwise::mutable_nonlinear() {
+inline ::vitis::ai::Target_Nonlinear* Target_Eltwise::mutable_nonlinear() {
   
   if (nonlinear_ == nullptr) {
-    auto* p = CreateMaybeMessage<::vitis::ai::Target_Eltwise_Nonlinear>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::vitis::ai::Target_Nonlinear>(GetArenaNoVirtual());
     nonlinear_ = p;
   }
   // @@protoc_insertion_point(field_mutable:vitis.ai.Target.Eltwise.nonlinear)
   return nonlinear_;
 }
-inline void Target_Eltwise::set_allocated_nonlinear(::vitis::ai::Target_Eltwise_Nonlinear* nonlinear) {
+inline void Target_Eltwise::set_allocated_nonlinear(::vitis::ai::Target_Nonlinear* nonlinear) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete nonlinear_;
@@ -6048,6 +5949,112 @@ inline void Target_Pool_AvgLimit::set_allocated_stride(std::string* stride) {
   }
   stride_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), stride);
   // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Pool.AvgLimit.stride)
+}
+
+// -------------------------------------------------------------------
+
+// Target_Pool_MaxLimit
+
+// string kernel_size = 1;
+inline void Target_Pool_MaxLimit::clear_kernel_size() {
+  kernel_size_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline const std::string& Target_Pool_MaxLimit::kernel_size() const {
+  // @@protoc_insertion_point(field_get:vitis.ai.Target.Pool.MaxLimit.kernel_size)
+  return kernel_size_.GetNoArena();
+}
+inline void Target_Pool_MaxLimit::set_kernel_size(const std::string& value) {
+  
+  kernel_size_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:vitis.ai.Target.Pool.MaxLimit.kernel_size)
+}
+inline void Target_Pool_MaxLimit::set_kernel_size(std::string&& value) {
+  
+  kernel_size_.SetNoArena(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:vitis.ai.Target.Pool.MaxLimit.kernel_size)
+}
+inline void Target_Pool_MaxLimit::set_kernel_size(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  kernel_size_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:vitis.ai.Target.Pool.MaxLimit.kernel_size)
+}
+inline void Target_Pool_MaxLimit::set_kernel_size(const char* value, size_t size) {
+  
+  kernel_size_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:vitis.ai.Target.Pool.MaxLimit.kernel_size)
+}
+inline std::string* Target_Pool_MaxLimit::mutable_kernel_size() {
+  
+  // @@protoc_insertion_point(field_mutable:vitis.ai.Target.Pool.MaxLimit.kernel_size)
+  return kernel_size_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline std::string* Target_Pool_MaxLimit::release_kernel_size() {
+  // @@protoc_insertion_point(field_release:vitis.ai.Target.Pool.MaxLimit.kernel_size)
+  
+  return kernel_size_.ReleaseNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline void Target_Pool_MaxLimit::set_allocated_kernel_size(std::string* kernel_size) {
+  if (kernel_size != nullptr) {
+    
+  } else {
+    
+  }
+  kernel_size_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), kernel_size);
+  // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Pool.MaxLimit.kernel_size)
+}
+
+// string stride = 2;
+inline void Target_Pool_MaxLimit::clear_stride() {
+  stride_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline const std::string& Target_Pool_MaxLimit::stride() const {
+  // @@protoc_insertion_point(field_get:vitis.ai.Target.Pool.MaxLimit.stride)
+  return stride_.GetNoArena();
+}
+inline void Target_Pool_MaxLimit::set_stride(const std::string& value) {
+  
+  stride_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:vitis.ai.Target.Pool.MaxLimit.stride)
+}
+inline void Target_Pool_MaxLimit::set_stride(std::string&& value) {
+  
+  stride_.SetNoArena(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:vitis.ai.Target.Pool.MaxLimit.stride)
+}
+inline void Target_Pool_MaxLimit::set_stride(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  stride_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:vitis.ai.Target.Pool.MaxLimit.stride)
+}
+inline void Target_Pool_MaxLimit::set_stride(const char* value, size_t size) {
+  
+  stride_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:vitis.ai.Target.Pool.MaxLimit.stride)
+}
+inline std::string* Target_Pool_MaxLimit::mutable_stride() {
+  
+  // @@protoc_insertion_point(field_mutable:vitis.ai.Target.Pool.MaxLimit.stride)
+  return stride_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline std::string* Target_Pool_MaxLimit::release_stride() {
+  // @@protoc_insertion_point(field_release:vitis.ai.Target.Pool.MaxLimit.stride)
+  
+  return stride_.ReleaseNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline void Target_Pool_MaxLimit::set_allocated_stride(std::string* stride) {
+  if (stride != nullptr) {
+    
+  } else {
+    
+  }
+  stride_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), stride);
+  // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Pool.MaxLimit.stride)
 }
 
 // -------------------------------------------------------------------
@@ -6242,7 +6249,58 @@ Target_Pool::mutable_pool_type() {
   return &pool_type_;
 }
 
-// .vitis.ai.Target.Pool.AvgLimit avg_limit = 6;
+// .vitis.ai.Target.Nonlinear nonlinear = 6;
+inline bool Target_Pool::has_nonlinear() const {
+  return this != internal_default_instance() && nonlinear_ != nullptr;
+}
+inline void Target_Pool::clear_nonlinear() {
+  if (GetArenaNoVirtual() == nullptr && nonlinear_ != nullptr) {
+    delete nonlinear_;
+  }
+  nonlinear_ = nullptr;
+}
+inline const ::vitis::ai::Target_Nonlinear& Target_Pool::nonlinear() const {
+  const ::vitis::ai::Target_Nonlinear* p = nonlinear_;
+  // @@protoc_insertion_point(field_get:vitis.ai.Target.Pool.nonlinear)
+  return p != nullptr ? *p : *reinterpret_cast<const ::vitis::ai::Target_Nonlinear*>(
+      &::vitis::ai::_Target_Nonlinear_default_instance_);
+}
+inline ::vitis::ai::Target_Nonlinear* Target_Pool::release_nonlinear() {
+  // @@protoc_insertion_point(field_release:vitis.ai.Target.Pool.nonlinear)
+  
+  ::vitis::ai::Target_Nonlinear* temp = nonlinear_;
+  nonlinear_ = nullptr;
+  return temp;
+}
+inline ::vitis::ai::Target_Nonlinear* Target_Pool::mutable_nonlinear() {
+  
+  if (nonlinear_ == nullptr) {
+    auto* p = CreateMaybeMessage<::vitis::ai::Target_Nonlinear>(GetArenaNoVirtual());
+    nonlinear_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:vitis.ai.Target.Pool.nonlinear)
+  return nonlinear_;
+}
+inline void Target_Pool::set_allocated_nonlinear(::vitis::ai::Target_Nonlinear* nonlinear) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == nullptr) {
+    delete nonlinear_;
+  }
+  if (nonlinear) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena = nullptr;
+    if (message_arena != submessage_arena) {
+      nonlinear = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, nonlinear, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  nonlinear_ = nonlinear;
+  // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Pool.nonlinear)
+}
+
+// .vitis.ai.Target.Pool.AvgLimit avg_limit = 7;
 inline bool Target_Pool::has_avg_limit() const {
   return this != internal_default_instance() && avg_limit_ != nullptr;
 }
@@ -6293,38 +6351,161 @@ inline void Target_Pool::set_allocated_avg_limit(::vitis::ai::Target_Pool_AvgLim
   // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Pool.avg_limit)
 }
 
+// .vitis.ai.Target.Pool.MaxLimit max_limit = 8;
+inline bool Target_Pool::has_max_limit() const {
+  return this != internal_default_instance() && max_limit_ != nullptr;
+}
+inline void Target_Pool::clear_max_limit() {
+  if (GetArenaNoVirtual() == nullptr && max_limit_ != nullptr) {
+    delete max_limit_;
+  }
+  max_limit_ = nullptr;
+}
+inline const ::vitis::ai::Target_Pool_MaxLimit& Target_Pool::max_limit() const {
+  const ::vitis::ai::Target_Pool_MaxLimit* p = max_limit_;
+  // @@protoc_insertion_point(field_get:vitis.ai.Target.Pool.max_limit)
+  return p != nullptr ? *p : *reinterpret_cast<const ::vitis::ai::Target_Pool_MaxLimit*>(
+      &::vitis::ai::_Target_Pool_MaxLimit_default_instance_);
+}
+inline ::vitis::ai::Target_Pool_MaxLimit* Target_Pool::release_max_limit() {
+  // @@protoc_insertion_point(field_release:vitis.ai.Target.Pool.max_limit)
+  
+  ::vitis::ai::Target_Pool_MaxLimit* temp = max_limit_;
+  max_limit_ = nullptr;
+  return temp;
+}
+inline ::vitis::ai::Target_Pool_MaxLimit* Target_Pool::mutable_max_limit() {
+  
+  if (max_limit_ == nullptr) {
+    auto* p = CreateMaybeMessage<::vitis::ai::Target_Pool_MaxLimit>(GetArenaNoVirtual());
+    max_limit_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:vitis.ai.Target.Pool.max_limit)
+  return max_limit_;
+}
+inline void Target_Pool::set_allocated_max_limit(::vitis::ai::Target_Pool_MaxLimit* max_limit) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == nullptr) {
+    delete max_limit_;
+  }
+  if (max_limit) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena = nullptr;
+    if (message_arena != submessage_arena) {
+      max_limit = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, max_limit, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  max_limit_ = max_limit;
+  // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Pool.max_limit)
+}
+
 // -------------------------------------------------------------------
 
-// Target_Dwconv_Nonlinear
+// Target_Dwconv_DwconvLimit
 
-// repeated .vitis.ai.Target.Dwconv.Nonlinear.NonlinearType nonlinear_type = 1;
-inline int Target_Dwconv_Nonlinear::nonlinear_type_size() const {
-  return nonlinear_type_.size();
+// string kernel_size = 1;
+inline void Target_Dwconv_DwconvLimit::clear_kernel_size() {
+  kernel_size_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
-inline void Target_Dwconv_Nonlinear::clear_nonlinear_type() {
-  nonlinear_type_.Clear();
+inline const std::string& Target_Dwconv_DwconvLimit::kernel_size() const {
+  // @@protoc_insertion_point(field_get:vitis.ai.Target.Dwconv.DwconvLimit.kernel_size)
+  return kernel_size_.GetNoArena();
 }
-inline ::vitis::ai::Target_Dwconv_Nonlinear_NonlinearType Target_Dwconv_Nonlinear::nonlinear_type(int index) const {
-  // @@protoc_insertion_point(field_get:vitis.ai.Target.Dwconv.Nonlinear.nonlinear_type)
-  return static_cast< ::vitis::ai::Target_Dwconv_Nonlinear_NonlinearType >(nonlinear_type_.Get(index));
+inline void Target_Dwconv_DwconvLimit::set_kernel_size(const std::string& value) {
+  
+  kernel_size_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:vitis.ai.Target.Dwconv.DwconvLimit.kernel_size)
 }
-inline void Target_Dwconv_Nonlinear::set_nonlinear_type(int index, ::vitis::ai::Target_Dwconv_Nonlinear_NonlinearType value) {
-  nonlinear_type_.Set(index, value);
-  // @@protoc_insertion_point(field_set:vitis.ai.Target.Dwconv.Nonlinear.nonlinear_type)
+inline void Target_Dwconv_DwconvLimit::set_kernel_size(std::string&& value) {
+  
+  kernel_size_.SetNoArena(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:vitis.ai.Target.Dwconv.DwconvLimit.kernel_size)
 }
-inline void Target_Dwconv_Nonlinear::add_nonlinear_type(::vitis::ai::Target_Dwconv_Nonlinear_NonlinearType value) {
-  nonlinear_type_.Add(value);
-  // @@protoc_insertion_point(field_add:vitis.ai.Target.Dwconv.Nonlinear.nonlinear_type)
+inline void Target_Dwconv_DwconvLimit::set_kernel_size(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  kernel_size_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:vitis.ai.Target.Dwconv.DwconvLimit.kernel_size)
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
-Target_Dwconv_Nonlinear::nonlinear_type() const {
-  // @@protoc_insertion_point(field_list:vitis.ai.Target.Dwconv.Nonlinear.nonlinear_type)
-  return nonlinear_type_;
+inline void Target_Dwconv_DwconvLimit::set_kernel_size(const char* value, size_t size) {
+  
+  kernel_size_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:vitis.ai.Target.Dwconv.DwconvLimit.kernel_size)
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
-Target_Dwconv_Nonlinear::mutable_nonlinear_type() {
-  // @@protoc_insertion_point(field_mutable_list:vitis.ai.Target.Dwconv.Nonlinear.nonlinear_type)
-  return &nonlinear_type_;
+inline std::string* Target_Dwconv_DwconvLimit::mutable_kernel_size() {
+  
+  // @@protoc_insertion_point(field_mutable:vitis.ai.Target.Dwconv.DwconvLimit.kernel_size)
+  return kernel_size_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline std::string* Target_Dwconv_DwconvLimit::release_kernel_size() {
+  // @@protoc_insertion_point(field_release:vitis.ai.Target.Dwconv.DwconvLimit.kernel_size)
+  
+  return kernel_size_.ReleaseNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline void Target_Dwconv_DwconvLimit::set_allocated_kernel_size(std::string* kernel_size) {
+  if (kernel_size != nullptr) {
+    
+  } else {
+    
+  }
+  kernel_size_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), kernel_size);
+  // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Dwconv.DwconvLimit.kernel_size)
+}
+
+// string stride = 2;
+inline void Target_Dwconv_DwconvLimit::clear_stride() {
+  stride_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline const std::string& Target_Dwconv_DwconvLimit::stride() const {
+  // @@protoc_insertion_point(field_get:vitis.ai.Target.Dwconv.DwconvLimit.stride)
+  return stride_.GetNoArena();
+}
+inline void Target_Dwconv_DwconvLimit::set_stride(const std::string& value) {
+  
+  stride_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:vitis.ai.Target.Dwconv.DwconvLimit.stride)
+}
+inline void Target_Dwconv_DwconvLimit::set_stride(std::string&& value) {
+  
+  stride_.SetNoArena(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:vitis.ai.Target.Dwconv.DwconvLimit.stride)
+}
+inline void Target_Dwconv_DwconvLimit::set_stride(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  stride_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:vitis.ai.Target.Dwconv.DwconvLimit.stride)
+}
+inline void Target_Dwconv_DwconvLimit::set_stride(const char* value, size_t size) {
+  
+  stride_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:vitis.ai.Target.Dwconv.DwconvLimit.stride)
+}
+inline std::string* Target_Dwconv_DwconvLimit::mutable_stride() {
+  
+  // @@protoc_insertion_point(field_mutable:vitis.ai.Target.Dwconv.DwconvLimit.stride)
+  return stride_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline std::string* Target_Dwconv_DwconvLimit::release_stride() {
+  // @@protoc_insertion_point(field_release:vitis.ai.Target.Dwconv.DwconvLimit.stride)
+  
+  return stride_.ReleaseNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline void Target_Dwconv_DwconvLimit::set_allocated_stride(std::string* stride) {
+  if (stride != nullptr) {
+    
+  } else {
+    
+  }
+  stride_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), stride);
+  // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Dwconv.DwconvLimit.stride)
 }
 
 // -------------------------------------------------------------------
@@ -6591,7 +6772,7 @@ inline void Target_Dwconv::set_allocated_bias_bank(std::string* bias_bank) {
   // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Dwconv.bias_bank)
 }
 
-// .vitis.ai.Target.Dwconv.Nonlinear nonlinear = 7;
+// .vitis.ai.Target.Nonlinear nonlinear = 7;
 inline bool Target_Dwconv::has_nonlinear() const {
   return this != internal_default_instance() && nonlinear_ != nullptr;
 }
@@ -6601,29 +6782,29 @@ inline void Target_Dwconv::clear_nonlinear() {
   }
   nonlinear_ = nullptr;
 }
-inline const ::vitis::ai::Target_Dwconv_Nonlinear& Target_Dwconv::nonlinear() const {
-  const ::vitis::ai::Target_Dwconv_Nonlinear* p = nonlinear_;
+inline const ::vitis::ai::Target_Nonlinear& Target_Dwconv::nonlinear() const {
+  const ::vitis::ai::Target_Nonlinear* p = nonlinear_;
   // @@protoc_insertion_point(field_get:vitis.ai.Target.Dwconv.nonlinear)
-  return p != nullptr ? *p : *reinterpret_cast<const ::vitis::ai::Target_Dwconv_Nonlinear*>(
-      &::vitis::ai::_Target_Dwconv_Nonlinear_default_instance_);
+  return p != nullptr ? *p : *reinterpret_cast<const ::vitis::ai::Target_Nonlinear*>(
+      &::vitis::ai::_Target_Nonlinear_default_instance_);
 }
-inline ::vitis::ai::Target_Dwconv_Nonlinear* Target_Dwconv::release_nonlinear() {
+inline ::vitis::ai::Target_Nonlinear* Target_Dwconv::release_nonlinear() {
   // @@protoc_insertion_point(field_release:vitis.ai.Target.Dwconv.nonlinear)
   
-  ::vitis::ai::Target_Dwconv_Nonlinear* temp = nonlinear_;
+  ::vitis::ai::Target_Nonlinear* temp = nonlinear_;
   nonlinear_ = nullptr;
   return temp;
 }
-inline ::vitis::ai::Target_Dwconv_Nonlinear* Target_Dwconv::mutable_nonlinear() {
+inline ::vitis::ai::Target_Nonlinear* Target_Dwconv::mutable_nonlinear() {
   
   if (nonlinear_ == nullptr) {
-    auto* p = CreateMaybeMessage<::vitis::ai::Target_Dwconv_Nonlinear>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::vitis::ai::Target_Nonlinear>(GetArenaNoVirtual());
     nonlinear_ = p;
   }
   // @@protoc_insertion_point(field_mutable:vitis.ai.Target.Dwconv.nonlinear)
   return nonlinear_;
 }
-inline void Target_Dwconv::set_allocated_nonlinear(::vitis::ai::Target_Dwconv_Nonlinear* nonlinear) {
+inline void Target_Dwconv::set_allocated_nonlinear(::vitis::ai::Target_Nonlinear* nonlinear) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete nonlinear_;
@@ -6640,6 +6821,57 @@ inline void Target_Dwconv::set_allocated_nonlinear(::vitis::ai::Target_Dwconv_No
   }
   nonlinear_ = nonlinear;
   // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Dwconv.nonlinear)
+}
+
+// .vitis.ai.Target.Dwconv.DwconvLimit dwconv_limit = 8;
+inline bool Target_Dwconv::has_dwconv_limit() const {
+  return this != internal_default_instance() && dwconv_limit_ != nullptr;
+}
+inline void Target_Dwconv::clear_dwconv_limit() {
+  if (GetArenaNoVirtual() == nullptr && dwconv_limit_ != nullptr) {
+    delete dwconv_limit_;
+  }
+  dwconv_limit_ = nullptr;
+}
+inline const ::vitis::ai::Target_Dwconv_DwconvLimit& Target_Dwconv::dwconv_limit() const {
+  const ::vitis::ai::Target_Dwconv_DwconvLimit* p = dwconv_limit_;
+  // @@protoc_insertion_point(field_get:vitis.ai.Target.Dwconv.dwconv_limit)
+  return p != nullptr ? *p : *reinterpret_cast<const ::vitis::ai::Target_Dwconv_DwconvLimit*>(
+      &::vitis::ai::_Target_Dwconv_DwconvLimit_default_instance_);
+}
+inline ::vitis::ai::Target_Dwconv_DwconvLimit* Target_Dwconv::release_dwconv_limit() {
+  // @@protoc_insertion_point(field_release:vitis.ai.Target.Dwconv.dwconv_limit)
+  
+  ::vitis::ai::Target_Dwconv_DwconvLimit* temp = dwconv_limit_;
+  dwconv_limit_ = nullptr;
+  return temp;
+}
+inline ::vitis::ai::Target_Dwconv_DwconvLimit* Target_Dwconv::mutable_dwconv_limit() {
+  
+  if (dwconv_limit_ == nullptr) {
+    auto* p = CreateMaybeMessage<::vitis::ai::Target_Dwconv_DwconvLimit>(GetArenaNoVirtual());
+    dwconv_limit_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:vitis.ai.Target.Dwconv.dwconv_limit)
+  return dwconv_limit_;
+}
+inline void Target_Dwconv::set_allocated_dwconv_limit(::vitis::ai::Target_Dwconv_DwconvLimit* dwconv_limit) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == nullptr) {
+    delete dwconv_limit_;
+  }
+  if (dwconv_limit) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena = nullptr;
+    if (message_arena != submessage_arena) {
+      dwconv_limit = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, dwconv_limit, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  dwconv_limit_ = dwconv_limit;
+  // @@protoc_insertion_point(field_set_allocated:vitis.ai.Target.Dwconv.dwconv_limit)
 }
 
 // -------------------------------------------------------------------
@@ -7675,15 +7907,10 @@ template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::vitis::ai::Target_BankGroup_AdjustableWordWidth_WordWidthSwitch>() {
   return ::vitis::ai::Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_descriptor();
 }
-template <> struct is_proto_enum< ::vitis::ai::Target_Conv_Nonlinear_NonlinearType> : ::std::true_type {};
+template <> struct is_proto_enum< ::vitis::ai::Target_Nonlinear_NonlinearType> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::vitis::ai::Target_Conv_Nonlinear_NonlinearType>() {
-  return ::vitis::ai::Target_Conv_Nonlinear_NonlinearType_descriptor();
-}
-template <> struct is_proto_enum< ::vitis::ai::Target_Eltwise_Nonlinear_NonlinearType> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::vitis::ai::Target_Eltwise_Nonlinear_NonlinearType>() {
-  return ::vitis::ai::Target_Eltwise_Nonlinear_NonlinearType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::vitis::ai::Target_Nonlinear_NonlinearType>() {
+  return ::vitis::ai::Target_Nonlinear_NonlinearType_descriptor();
 }
 template <> struct is_proto_enum< ::vitis::ai::Target_Eltwise_ElewType> : ::std::true_type {};
 template <>
@@ -7694,11 +7921,6 @@ template <> struct is_proto_enum< ::vitis::ai::Target_Pool_PoolType> : ::std::tr
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::vitis::ai::Target_Pool_PoolType>() {
   return ::vitis::ai::Target_Pool_PoolType_descriptor();
-}
-template <> struct is_proto_enum< ::vitis::ai::Target_Dwconv_Nonlinear_NonlinearType> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::vitis::ai::Target_Dwconv_Nonlinear_NonlinearType>() {
-  return ::vitis::ai::Target_Dwconv_Nonlinear_NonlinearType_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

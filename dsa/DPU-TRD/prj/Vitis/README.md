@@ -245,7 +245,7 @@ score[949]  =  0.00054879   text: strawberry,
 ```
 
 
-###### **Note:** The $TRD_HOME/prj/app resenet50 test case can support both Vitis and Vivado flow . If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf).
+###### **Note:** The $TRD_HOME/prj/app resenet50 test case can support both Vitis and Vivado flow. You can get the img folder form the v1.1 branch. If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf).
 
 
 ### 5.3 Change the Configuration
@@ -724,7 +724,7 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
   - vart-dpu-runner
   - vart-dpu-controller
 
-   d. Add <Vitis AI path>/DPU-TRD/src/app/samples/lib in GCC Host Link-> Libraries->Library search path
+   d. Add <Vitis AI path>/DPU-TRD/src/app/samples/lib in GCC Host Link-> Libraries->Library search path. make sure that new path is in front of the SYSROOT path.
   
   ![LIBRARY](./doc/6.14.png)
   

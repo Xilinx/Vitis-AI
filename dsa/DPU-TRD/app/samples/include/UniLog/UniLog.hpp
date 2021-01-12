@@ -42,8 +42,7 @@ using namespace std;
              << "[" << GEN_ERROR(ERRID).getErrID() << "]"                      \
              << "[" << GEN_ERROR(ERRID).getErrDsp() << "] "
 #define UNI_LOG_FATAL(ERRID)                                                   \
-  LOG(FATAL) << "[" << UniLog::UniLogPrefix << "][FATAL][" << __FILE__ << ":"  \
-             << __LINE__ << "]"                                                \
+  LOG(FATAL) << "[" << UniLog::UniLogPrefix << "][FATAL]"                      \
              << "[" << GEN_ERROR(ERRID).getErrID() << "]"                      \
              << "[" << GEN_ERROR(ERRID).getErrDsp() << "] "
 #else
@@ -102,9 +101,7 @@ using namespace std;
 #else
 #define UNI_LOG_IF(condition, ERRID)                                           \
   LOG_IF(FATAL, GOOGLE_PREDICT_BRANCH_NOT_TAKEN(!(condition)))                 \
-      << "[" << UniLog::UniLogPrefix << "]"                                    \
-      << "[Check Failed: " #condition "]"                                      \
-      << "[" << __FILE__ << ":" << __LINE__ << "]"                             \
+      << "[" << UniLog::UniLogPrefix << "][FATAL]"                             \
       << "[" << GEN_ERROR(ERRID).getErrID() << "]"                             \
       << "[" << GEN_ERROR(ERRID).getErrDsp() << "] "
 #endif
