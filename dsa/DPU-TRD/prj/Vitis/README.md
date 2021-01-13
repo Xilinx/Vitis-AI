@@ -208,7 +208,7 @@ The arch.json file can be found in $TRD_HOME/prj/Vitis/binary_container_1/sd_car
 
 It can also be found in the following path:
 
-$TRD_HOME/prj/Vitis/binary_container_1/link/vivado/vpl/prj/prj.gen/sources_1/bd/zcu102_base/ip/zcu102_base_DPUCZDX8G_1_0/arch.json
+$TRD_HOME/prj/Vitis/binary_container_1/link/vivado/vpl/prj/prj.gen/sources_1/bd/xilinx_zcu102_base/ip/xilinx_zcu102_base_DPUCZDX8G_1_0/arch.json
 
 #### 5.2.3 Run Resnet50 Example 
 
