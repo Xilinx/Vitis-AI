@@ -130,7 +130,7 @@ The DPU for RNN features are:
     $docker build --build-arg BASE_IMAGE=<Vitis AI Docker Image> -f dsa/DPU-for-RNN/Dockerfile.rnn -t <YOUR RNN Docker Image>  .
     e.g.:
     $cd <Your_Path>
-    $docker build --build-arg BASE_IMAGE="xdock:5000/vitis-ai-gpu:1.3.343" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xdock:5000/vitis-ai-gpu-rnn:1.3.343 . 
+    $docker build --build-arg BASE_IMAGE="xilinx/vitis-ai-cpu:latest" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xilinx/vitis-ai-cpu-rnn:latest . 
     ```    
     To launch the docker image:
     ```    
@@ -167,4 +167,20 @@ The DPU for RNN features are:
     | INPUT_BASE_ADDR_H | 0x28    | The higher 32bits of input address in DDR. Shared with output address register |
     | INPUT_BASE_ADDR_L | 0x2C    | The lower 32bits of input address in DDR |
     | OUTPUT_BASE_ADDR_L | 0x30    | The lower 32bits of output address in DDR |
+
+#### License
+ Copyright 2019 Xilinx Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
 

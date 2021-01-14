@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_retinaface_wider_360_640_1.11G_1.3.zip
-  checksum: b4242d68573f0ddf656aa595e704073b
+  checksum: f27103e99dea28aefd1049ff0da03d54
 - name: retinaface
   type: xmodel
   board: zcu102 & zcu104

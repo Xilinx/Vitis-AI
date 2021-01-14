@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_openpose_aichallenger_368_368_0.3_189.7G_1.3.zip
-  checksum: 92bfc0074dcf4586e77e74fa8a0c738a
+  checksum: b4af219b035454e6b6541963472c332e
 - name: openpose_pruned_0_3
   type: xmodel
   board: zcu102 & zcu104

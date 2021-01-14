@@ -52,53 +52,64 @@ const std::string get_lib_name();
  */
 const std::string get_lib_id();
 
+// template helper
+namespace th {
+
+template <typename T>
+struct is_std_vector : public std::false_type {};
+template <typename T>
+struct is_std_vector<std::vector<T>> : public std::true_type {};
+
+template <typename T>
+struct is_std_set : public std::false_type {};
+template <typename T>
+struct is_std_set<std::set<T>> : std::true_type {};
+
+template <bool head, bool... tail>
+struct var_and : public std::false_type {};
+template <bool... tail>
+struct var_and<true, tail...> {
+  static constexpr bool value = var_and<tail...>::value;
+};
+template <>
+struct var_and<true> : public std::true_type {};
+
+}  // namespace th
+
 // vector related
+// set related
 /**
- * @brief Convert a vector to a string for visualization.
+ * @brief Convert a vector/set to a string for visualization.
  *
- * @param content The input vector.
+ * @param content The input vector/set.
  *
- * @param delimiter The delimiter to seperate the elements of vector, default
- * value is ",".
+ * @param delimiter The delimiter to seperate the elements of vector/set,
+ * default value is ",".
  *
  * @param left_bracket The symbol as the left bracket, default value is "{".
  *
  * @param right_bracket The symbol as the right bracket, default value is "}".
  *
- * @return A string of the visualized vector.
+ * @return A string of the visualized vector/set.
  */
-template <class T>
-std::string to_string(const std::vector<T>& content,
-                      const std::string& delimiter = ",",
+template <typename T, typename std::enable_if<th::is_std_set<T>::value ||
+                                                  th::is_std_vector<T>::value,
+                                              bool>::type = true>
+std::string to_string(const T& content, const std::string& delimiter = ",",
                       const std::string& left_bracket = "{",
                       const std::string& right_bracket = "}") {
-  std::string ret;
   std::ostringstream outstring;
   outstring << left_bracket;
   if (!content.empty()) {
-    std::copy(content.begin(), content.end() - 1,
-              std::ostream_iterator<T>(outstring, (delimiter + " ").c_str()));
-    outstring << content.back() << right_bracket;
-    ret = outstring.str();
+    std::copy(content.begin(), std::prev(content.end()),
+              std::ostream_iterator<typename T::value_type>(
+                  outstring, (delimiter + " ").c_str()));
+    outstring << *(content.rbegin());
   }
+  outstring << right_bracket;
+  auto ret = outstring.str();
   return ret;
 }
-
-// helper structure
-template <bool head, bool... tail>
-struct var_and {
-  static constexpr bool value = false;
-};
-
-template <bool... tail>
-struct var_and<true, tail...> {
-  static constexpr bool value = var_and<tail...>::value;
-};
-
-template <>
-struct var_and<true> {
-  static constexpr bool value = true;
-};
 
 // name related
 /**
@@ -129,7 +140,7 @@ void add_suffix_helper(std::string& name, const std::string& suffix);
  * @return The name after adding all the prefixs.
  */
 template <typename... Args,
-          typename std::enable_if<var_and<std::is_constructible<
+          typename std::enable_if<th::var_and<std::is_constructible<
               std::string, Args>::value...>::value>::type* = nullptr>
 std::string add_prefix(const std::string& name, const Args&... prefixs) {
   std::vector<std::string> prefixs_vec{prefixs...};
@@ -151,7 +162,7 @@ std::string add_prefix(const std::string& name, const Args&... prefixs) {
  * @return The name after adding all the suffixs.
  */
 template <typename... Args,
-          typename std::enable_if<var_and<std::is_constructible<
+          typename std::enable_if<th::var_and<std::is_constructible<
               std::string, Args>::value...>::value>::type* = nullptr>
 std::string add_suffix(const std::string& name, const Args&... suffixs) {
   std::vector<std::string> suffixs_vec{suffixs...};

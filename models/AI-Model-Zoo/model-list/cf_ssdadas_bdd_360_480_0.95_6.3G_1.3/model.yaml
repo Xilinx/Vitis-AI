@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdadas_bdd_360_480_0.95_6.3G_1.3.zip
-  checksum: 32b8dd09a80f34717f806cda03bdd991
+  checksum: 20c3f934179f155f2a434ea976d7cabe
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: zcu102 & zcu104

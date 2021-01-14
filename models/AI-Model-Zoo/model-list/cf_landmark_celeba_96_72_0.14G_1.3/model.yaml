@@ -27,7 +27,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_landmark_celeba_96_72_0.14G_1.3.zip
-  checksum: 125b10f44b0b3b747cb13ac8f1c93161
+  checksum: 4ea69006fd8223039197d61aa3a73318
 - name: face_landmark
   type: xmodel
   board: zcu102 & zcu104

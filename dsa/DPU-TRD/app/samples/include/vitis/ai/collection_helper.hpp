@@ -46,11 +46,13 @@ std::vector<const T*> vector_unique_ptr_get_const(
   });
 };
 
+/*
 template <typename T>
 std::string to_string(const T& x) {
   std::ostringstream str;
   str << x;
   return str.str();
 }
+    */
 }  // namespace ai
 }  // namespace vitis

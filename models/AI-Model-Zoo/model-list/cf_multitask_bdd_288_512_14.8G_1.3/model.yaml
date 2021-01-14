@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_multitask_bdd_288_512_14.8G_1.3.zip
-  checksum: a21fdc1a476d0c2775ba160b75f43123
+  checksum: 792896071c8337ad936d4178f222c9f7
 - name: multi_task
   type: xmodel
   board: zcu102 & zcu104

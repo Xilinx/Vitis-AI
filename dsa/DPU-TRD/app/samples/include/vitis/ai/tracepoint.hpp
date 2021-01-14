@@ -20,8 +20,11 @@
 #include <cstring>
 #include <unistd.h>
 #include <assert.h>
+#include <stdlib.h>
 #include <mutex>
 #include <iomanip>
+#include <chrono>
+#include <sstream>
 
 #include <sys/types.h>
 #include <sys/syscall.h>
@@ -36,9 +39,13 @@ enum TraceEventType {
     VAI_EVENT_HOST_END,
     VAI_EVENT_INFO,
 
+    VAI_EVENT_PY_FUNC_START,
+    VAI_EVENT_PY_FUNC_END,
+
     VAI_EVENT_DEVICE_START,
     VAI_EVENT_DEVICE_END,
     VAI_EVENT_MARKER,
+    VAI_EVENT_TIME_SYNC,
     VAI_EVENT_COUNTER
 };
 
@@ -49,12 +56,18 @@ inline std::string event_type_str(TraceEventType __t)
     return std::string("EVENT_HOST_START");
   case VAI_EVENT_HOST_END:
     return std::string("EVENT_HOST_END");
+  case VAI_EVENT_PY_FUNC_START:
+    return std::string("EVENT_PY_FUNC_START");
+  case VAI_EVENT_PY_FUNC_END:
+    return std::string("EVENT_PY_FUNC_END");
   case VAI_EVENT_DEVICE_START:
     return std::string("EVENT_DEVICE_START");
   case VAI_EVENT_DEVICE_END:
     return std::string("EVENT_DEVICE_END");
   case VAI_EVENT_MARKER:
     return std::string("EVENT_MARKER");
+  case VAI_EVENT_TIME_SYNC:
+    return std::string("EVENT_TIME_SYNC");
   case VAI_EVENT_INFO:
     return std::string("EVENT_INFO");
   case VAI_EVENT_COUNTER:
@@ -64,13 +77,18 @@ inline std::string event_type_str(TraceEventType __t)
   return std::string("EVENT_UNKNOW");
 }
 
+#ifdef ENABLE_XRT_TIMESTAMP
+namespace xrt_core {
+  unsigned long time_ns();
+}
+#endif
 
 namespace vitis
 {
 namespace ai
 {
 
-enum TimestampType {BOOT, x86_TSC};
+enum TimestampType {BOOT, x86_TSC, XRT};
 struct vaiTraceEvent {
  public:
   char tag[VAI_TRACE_TAG_LEN];
@@ -89,7 +107,7 @@ struct vaiTraceEvent {
        e.tag <<" " << e.dev_id << " ";
 
     if (e.ts != 0)
-      os << std::setiosflags(std::ios::fixed) << std::setprecision(6) << e.ts      <<" " ;
+      os << std::setiosflags(std::ios::fixed) << std::setprecision(9) << e.ts <<" " ;
     if (e.tsc != 0)
       os << e.tsc <<" ";
 
@@ -108,6 +126,9 @@ class TracePoint
 
  public:
   void trace(TraceEventType t, const char *tag, int core_id, const std::string& info);
+  void enable();
+  void disable();
+  inline bool enabled() {return m_enabled;}
 
  private:
   TimestampType m_ts_type;
@@ -115,6 +136,7 @@ class TracePoint
   int m_pid;
   bool m_enabled;
   std::mutex m_trace_mutex;
+  void tracepoint_sync_time(enum TimestampType ts_type, const char* tag = "");
 };
 
 extern TracePoint tp_;
@@ -144,5 +166,11 @@ inline void tracepoint(TraceEventType t, const char* tag, int dev_id)
 {
   vitis::ai::tp_instance().trace(t, tag, int(dev_id), std::string());
 }
+
+inline bool tracepoint_is_enabled()
+{
+  return vitis::ai::tp_instance().enabled();
+}
+
 }  // namespace ai
 }  // namespace vitis

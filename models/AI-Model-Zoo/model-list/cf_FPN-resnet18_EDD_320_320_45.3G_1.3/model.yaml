@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_FPN-resnet18_EDD_320_320_45.3G_1.3.zip
-  checksum: 02bb41517b68dabeb7e58c1e4de7be93
+  checksum: 9147cfb2a8e09442988bf8cc21c2c305
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: zcu102 & zcu104

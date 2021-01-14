@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_refinedet_coco_360_480_0.8_25G_1.3.zip
-  checksum: 2781b8a394122d8fe5eb2a43bf701d36
+  checksum: e796733bd6f322b0584881aeb419cdb7
 - name: refinedet_pruned_0_8
   type: xmodel
   board: zcu102 & zcu104

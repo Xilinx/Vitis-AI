@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_FPN-resnet18_Endov_240_320_13.75G_1.3.zip
-  checksum: ed66a61fc9f28bab7b2495b8344779d8
+  checksum: d8e172e345e70e9c848787b08d2118a3
 - name: FPN-resnet18_Endov
   type: xmodel
   board: zcu102 & zcu104
