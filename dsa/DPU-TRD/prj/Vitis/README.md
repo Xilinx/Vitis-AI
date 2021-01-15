@@ -636,7 +636,7 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
       
 			1. Location - Location to which the DPU TRD to be downloaded
 
-			2. Git URL - DPU TRD URL - https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging.git
+			2. Git URL - DPU TRD URL - https://github.com/Xilinx/Vitis-AI.git 
   
 			3. Branch - ML-2605-folder-structure
   
