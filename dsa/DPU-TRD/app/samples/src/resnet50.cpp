@@ -28,9 +28,9 @@
 #include <vitis/ai/env_config.hpp>
 #include <xir/graph/graph.hpp>
 
-#include "vart/dpu/dpu_runner_ext.hpp"
 #include "vart/dpu/vitis_dpu_runner_factory.hpp"
 #include "vart/mm/host_flat_tensor_buffer.hpp"
+#include "vart/runner_ext.hpp"
 #include "vart/tensor_buffer.hpp"
 
 static cv::Mat read_image(const std::string& image_file_name);
@@ -99,11 +99,12 @@ int main(int argc, char* argv[]) {
     const auto kernel_name = std::string("resnet50_0");
     auto runner =
         vart::dpu::DpuRunnerFactory::create_dpu_runner(filename, kernel_name);
+    auto input_tensors = runner->get_input_tensors();
+    auto output_tensors = runner->get_output_tensors();
+
     // create runner and input/output tensor buffers;
-    auto input_scale =
-        dynamic_cast<vart::dpu::DpuRunnerExt*>(runner.get())->get_input_scale();
-    auto output_scale = dynamic_cast<vart::dpu::DpuRunnerExt*>(runner.get())
-                            ->get_output_scale();
+    auto input_scale = vart::get_input_scale(input_tensors);
+    auto output_scale = vart::get_output_scale(output_tensors);
 
     // a image file, e.g.
     // /usr/share/VITIS_AI_SDK/samples/classification/images/001.JPEG
@@ -111,14 +112,12 @@ int main(int argc, char* argv[]) {
     cv::Mat input_image = read_image(image_file_name);
 
     // prepare input tensor buffer
-    auto input_tensors = runner->get_input_tensors();
     CHECK_EQ(input_tensors.size(), 1u) << "only support resnet50 model";
     auto input_tensor = input_tensors[0];
     auto height = input_tensor->get_shape().at(1);
     auto width = input_tensor->get_shape().at(2);
     auto input_tensor_buffer = create_cpu_flat_tensor_buffer(input_tensor);
     // prepare output tensor buffer
-    auto output_tensors = runner->get_output_tensors();
     CHECK_EQ(output_tensors.size(), 1u) << "only support resnet50 model";
     auto output_tensor = output_tensors[0];
     auto output_tensor_buffer = create_cpu_flat_tensor_buffer(output_tensor);

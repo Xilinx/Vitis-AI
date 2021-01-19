@@ -19,7 +19,7 @@ Vitis-AI Profiler is an application level tool that could help to optimize the w
 
 ## Vitis AI Profiler Architecture
 <div align="center">
-<img width="800px" src="img/arch_v1.3.png"/>
+<img width="800px" src="img/arch.png"/>
 </div>  
 
 ## Why Vitis AI Profiler
@@ -80,24 +80,14 @@ From Vitis-AI v1.3, [Vitis Analyzer](https://www.xilinx.com/html_docs/xilinx2020
     - Preparing debug environment for docker
       If you are using Vitis AI with docker, please add this patch to docker_run.sh to get root permission for vaitrace  
       ```diff
-      --- a/docker_run.sh
-      +++ b/docker_run.sh
-      @@ -94,6 +94,7 @@ if [[ $IMAGE_NAME == *"gpu"* ]]; then
+      @@ -89,6 +71,7 @@ docker_run_params=$(cat <<-END
            -e USER=$user -e UID=$uid -e GID=$gid \
            -e VERSION=$VERSION \
-           -v $HERE:/workspace \
+           -v $DOCKER_RUN_DIR:/vitis_ai_home \
       +    -v /sys/kernel/debug:/sys/kernel/debug  --privileged=true \
+           -v $HERE:/workspace \
            -w /workspace \
            --rm \
-           --runtime=nvidia \
-      @@ -111,6 +112,7 @@ else
-           -e USER=$user -e UID=$uid -e GID=$gid \
-           -e VERSION=$VERSION \
-           -v $HERE:/workspace \
-      +    -v /sys/kernel/debug:/sys/kernel/debug  --privileged=true \
-           -w /workspace \
-           --rm \
-           --network=host \
 
       ```
       - This step is only required for Alveo devices working in docker environment   

@@ -312,36 +312,54 @@ class Graph {
   /**
    * @brief Save graph to dot format which could be visualized by graphviz.
    *
-   * @param filename Name of dot file.
+   * @param file_path The path of dot file.
    *
    */
-  virtual void save_to_dot(const std::string& file_name) const = 0;
+  virtual void save_to_dot(const std::string& file_path) const = 0;
 
   /**
    * @brief Save graph to other format.
    *
-   * @param filename Name of the file.
+   * @param file_path The path of the output picture.
    *
-   * @param format, such as "png", "svg".
+   * @param format such as "png", "svg".
    */
-  virtual void visualize(const std::string& filename,
+  virtual void visualize(const std::string& file_path,
                          const std::string& format) const = 0;
+
+  /**
+   * @brief Serialize the graph.
+   *
+   * @param file_path The path of output xmodel.
+   *
+   * @return A string storing the graph.
+   */
+  virtual void serialize(const std::string& file_path) const = 0;
 
   /**
    * @brief Serialize the graph.
    *
    * @return A string storing the graph.
    */
-  virtual void serialize(const std::string& pb_fname) const = 0;
+  virtual void serialize_to_string(std::string* str) const = 0;
 
   /**
    * @brief Deserializa a graph from a pb file.
    *
-   * @param pb_fname The path of the pb file.
+   * @param file_path The path of the xmodel.
    *
    * @return A unique pointer to the graph object.
    */
-  static std::unique_ptr<Graph> deserialize(const std::string& pb_fname);
+  static std::unique_ptr<Graph> deserialize(const std::string& file_path);
+
+  /**
+   * @brief Deserializa a graph from a string.
+   *
+   * @param str The generated string of pb file.
+   *
+   * @return A unique pointer to the graph object.
+   */
+  static std::unique_ptr<Graph> deserialize_from_string(const std::string& str);
 
   /**
    * @brief Get root subgraph of this graph.
@@ -374,6 +392,24 @@ class Graph {
    * @return A raw pointer to the subgraph.
    */
   virtual const Subgraph* get_leaf_subgraph(const Op* op) const = 0;
+
+  /**
+   * @brief Get the subgraph with corresponding name from this graph.
+   *
+   * @param name Name of the subgraph.
+   *
+   * @return A raw pointer to the subgraph.
+   */
+  virtual Subgraph* get_subgraph(const std::string& name) = 0;
+
+  /**
+   * @brief Get the subgraph with corresponding name from this graph.
+   *
+   * @param name Name of the subgraph.
+   *
+   * @return A raw pointer to the subgraph.
+   */
+  virtual const Subgraph* get_subgraph(const std::string& name) const = 0;
 
   /**
    * @brief Check the existence of the Attrs object in current subgraph.

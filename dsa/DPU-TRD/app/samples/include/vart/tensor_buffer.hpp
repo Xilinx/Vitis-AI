@@ -59,36 +59,83 @@ class TensorBuffer {
     DEVICE_6 = 8,
     DEVICE_7 = 9
   };
+  /** @brief for TensorBuffer location message */
   static std::string to_string(location_t value);
-  // copy tensor
+  /**
+   * @brief copy TensorBuffer from one to another.
+   * @param the source TensorBuffer.
+   * @param the destination TensorBuffer.
+   */
   static void copy_tensor_buffer(vart::TensorBuffer* tb_from,
                                  vart::TensorBuffer* tb_to);
 
  public:
+  /**
+   * @brief Get the data address of the index and 
+   * the left accessible data size.
+   * @param The index of the data to be accessed, 
+   * its dimension same to the tensor shape.
+   * @return A pair of the data address of the index and 
+   * the left accessible data size in byte unit.
+   */
   virtual std::pair<std::uint64_t, std::size_t> data(
       const std::vector<std::int32_t> idx = {}) = 0;
-  /** @brief return where the tensor buffer resistant. */
+  /**
+   *@brief Get where the tensor buffer located.
+   *@return the tensor buffer location : HOST_VIRT/HOST_PHY/DEVICE_*.
+   */
   virtual location_t get_location() const { return location_t::HOST_VIRT; }
-
-  /** @brief return the physical addresses for zero copy. */
+  /**
+   * @brief Get the data physical address of the index and
+   * the left accessible data size.
+   * @param The index of the data to be accessed,
+   * its dimension same to the tensor shape.
+   * @return A pair of the data physical address of the index and
+   * the left accessible data size in byte unit.
+   */
   virtual std::pair<uint64_t, size_t> data_phy(
       const std::vector<std::int32_t> idx) {
     return std::make_pair<uint64_t, size_t>(0u, 0u);
   }
 
-  /** @brief invalid cache for reading, it is no-op in case get_location()
-   * returns DEVICE_ONLY or HOST_VIRT */
+  /**
+   * @brief Invalid cache for reading Before read, it is no-op 
+   * in case get_location() returns DEVICE_ONLY or HOST_VIRT.
+   * @param The start offset address.
+   * @param The data size.
+   */
   virtual void sync_for_read(uint64_t offset, size_t size) {}
-  /** @brief flush cache for writing, it is no-op in case get_location()
-   * returns DEVICE_ONLY or HOST_VIRT */
+  /**
+   * @brief Flush cache for writing after write, it is no-op
+   * in case get_location() returns DEVICE_ONLY or HOST_VIRT.
+   * @param The start offset address.
+   * @param The data size.
+   */
   virtual void sync_for_write(uint64_t offset, size_t size){};
-
+  /**
+   * @brief copy data from source buffer.
+   * @param the batch index.
+   * @param source buffer start address.
+   * @param data size to be copied.
+   * @param the start offset to be copied.
+   */
   virtual void copy_from_host(size_t batch_idx, const void* buf, size_t size,
                               size_t offset);
+  /**
+   * @brief copy data to destination buffer.
+   * @param the batch index.
+   * @param destination buffer start address.
+   * @param data size to be copied.
+   * @param the start offset to be copied.
+   */
   virtual void copy_to_host(size_t batch_idx, void* buf, size_t size,
                             size_t offset);
 
  public:
+  /**
+   *@brief Get tensor of TensorBuffer.
+   *@return A pointer to the tensor.
+   */
   const xir::Tensor* get_tensor() const;
 
   /** @brief for fancy log messages */

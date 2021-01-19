@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdresnet50v1_fpn_coco_640_640_178.4G_1.3.zip
-  checksum: 011c916531c17486fed646d6754b211d
+  checksum: 51e420bd279a8ebfed23e8e719b758ec
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: zcu102 & zcu104
