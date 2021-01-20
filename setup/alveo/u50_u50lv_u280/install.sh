@@ -83,7 +83,7 @@ fi
 
 /opt/xilinx/xrt/bin/xbutil scan | grep xilinx_u280_
 if [ $? -eq 0 ]; then
-  echo "U50LV card detected, now install platform"
+  echo "U280 card detected, now install platform"
   source ./u280_shell_setup.sh
 fi
 

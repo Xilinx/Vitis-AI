@@ -788,7 +788,7 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUv3int8 kernels running at 300Mhz:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUCADF8H kernels running at 300Mhz:
   
 
 | No\. | Model        | Name                                    | E2E latency (ms) Thread num =20 | E2E throughput \-fps\(Multi Thread) |
@@ -800,7 +800,7 @@ The following table lists the performance number including end-to-end throughput
 | 5    | resnetv1_101 | tf_resnetv1_101_imagenet_224_224_14.4G  | 8.5                             | 472                                 |
 | 6    | resnetv1_152 | tf_resnetv1_152_imagenet_224_224_21.83G | 12.7                            | 316                                 |
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUv1 kernels running at 350Mhz with xilinx_u200_xdma_201830_2 shell:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUCADX8G kernels running at 350Mhz with xilinx_u200_xdma_201830_2 shell:
   
 
 | No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
@@ -824,7 +824,7 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUv3int8 kernels running at 300Mhz:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUCADF8H kernels running at 300Mhz:
   
 
 | No\. | Model        | Name                                    | E2E latency (ms) Thread num =20 | E2E throughput \-fps\(Multi Thread) |
@@ -836,7 +836,7 @@ The following table lists the performance number including end-to-end throughput
 | 5    | resnetv1_101 | tf_resnetv1_101_imagenet_224_224_14.4G  | 4.24                            | 941.9                               |
 | 6    | resnetv1_152 | tf_resnetv1_152_imagenet_224_224_21.83G | 6.35                            | 630.3                               |
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUv1 kernels running at 350Mhz with xilinx_u250_xdma_201830_1 shell:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUCADX8G kernels running at 350Mhz with xilinx_u250_xdma_201830_1 shell:
   
 
 | No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
