@@ -178,7 +178,7 @@ For a caffe model, you should see the following directory structure:
     │    ├── quantize_train_test.prototxt     # Used for quantized-point training and testing with quantize_train_test.caffemodel 
     │    │                                      on GPU when datalayer modified to user's data path.         
     │    └── DNNC
-    │         └──deploy.prototxt              # Quantized prototxt for dnnc. 
+    │         └──deploy.prototxt              # Quantized prototxt for dnnc. It's the deploy.prototxt without option 'keep fixed neuron'.
     │                                           
     │                                                 
     └── float                           
@@ -788,7 +788,7 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 4 DPUv3E kernels running at 300Mhz:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUv3int8 kernels running at 300Mhz:
   
 
 | No\. | Model        | Name                                    | E2E latency (ms) Thread num =20 | E2E throughput \-fps\(Multi Thread) |
@@ -824,7 +824,7 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUv3E kernels running at 300Mhz:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUv3int8 kernels running at 300Mhz:
   
 
 | No\. | Model        | Name                                    | E2E latency (ms) Thread num =20 | E2E throughput \-fps\(Multi Thread) |
