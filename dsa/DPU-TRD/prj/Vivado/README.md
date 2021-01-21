@@ -436,6 +436,22 @@ An example of block RAM and UltraRAM utilization is shown in the Summary tab sec
 dict set dict_prj dict_param  DPU_URAM_PER_DPU {0}
 ```
 
+#### DPU_CONV_WP
+The DPU supports additional write-parallel acceleration for the **PointPillar models**.
+Modify line 49 of scripts/base/trd_bd.tcl file can change the default settings.
+
+The option could be set as power of 2 and up to PP/2.
+
+For B512/B800/B1152 architectures, DPU_CONV_WP can be set up to 2:
+```
+dict set dict_prj dict_param  DPU_CONV_WP {2}
+```
+
+For B1024/B1600/B2304/B3136/B4096 architectures, DPU_CONV_WP can be set up to 4:
+```
+dict set dict_prj dict_param  DPU_CONV_WP {4}
+```
+
 ## 6 Run with Vitis AI Library
 
 For the instroduction of Vitis AI Library, please refer to **Quick Start For Edge** of this page [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/demo/Vitis-AI-Library)
