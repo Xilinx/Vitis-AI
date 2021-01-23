@@ -1,19 +1,29 @@
-# Vitis AI Release Notes
+
+<table>
+ <tr>
+   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   </td>
+ </tr>
+ <tr>
+ <td align="center"><h2>Release Notes</h2>
+ </td>
+ </tr>
+</table>
 
 ## Release 1.3
-### New Features/Highlights 
-1. Added support for Pytorch and Tensorflow 2.3 frameworks 
+### New Features/Highlights
+1. Added support for Pytorch and Tensorflow 2.3 frameworks
 2. Added more ready-to-use AI models for a wider range of applications, including 3D point cloud detection and segmentation, COVID-19 chest image segmentation and other reference models
 3. Unified XIR-based compilation flow from edge to cloud
 4. Vitis AI Runtime (VART) fully open source
-5. New RNN overlay for NLP applications 
+5. New RNN overlay for NLP applications
 6. New CNN DPUs for the low-latency and higher throughput applications on Alveo cards
-7. EoU enhancement with Beta version model partitioning and custom layer/operators plug-in 
+7. EoU enhancement with Beta version model partitioning and custom layer/operators plug-in
 
-### Release Notes 
+### Release Notes
 #### Model Zoo
 - 28 new models added, over 92 total
-  - 13 new Pytorch models 
+  - 13 new Pytorch models
   - 17 new Tensorlfow models, including 5 Tensorflow 2 models
   - 6 new Caffe models
 - Added support for Pytorch, Tensorflow 2.3 models
@@ -32,20 +42,20 @@
 
 
 ### Optimizer
-- Pytorch support added 
+- Pytorch support added
 
 ### Compiler
 - Added support for  Tensorflow 2.3
 - Added support for all the new CNN DPUs on Alveo and Versal platforms
   1. DPUCAHX8L (DPUv3ME)
   2. DPUCADF8H (DPUv3INT8)
-  3. DPUCVDX8G (Versal CNN DPU) 
+  3. DPUCVDX8G (Versal CNN DPU)
 - EoU Enhancement
   1. Added support for model partition & custom layer/operators Plugin (Beta)
   2. AI compilation unified to the XIR-based compilation flow from edge to cloud platforms
   3. Supports hybrid compilation for customer accelerator & DPU for higher e2e performance
 
-### AI Library 
+### AI Library
 - Added support for 36 new models from AI Model Zoo
 - Added supports for Xmodel compiled with XIR flow from edge to cloud
 - Added support for DPUCAHX8L (DPUv3ME) on Alveo U280/U50
@@ -53,14 +63,14 @@
 
 
 
-### AI Profiler 
+### AI Profiler
 
 - Integrated with Vitis Analyzer 2020.2
   1. Use Vitis Analyzer 2020.2 as default GUI
   2. Added the profiling .csv file to be compatible with Vitis Analyzer
 - Vaitrace supports profiling Python applications
 
-### VART 
+### VART
 - Fully open source in Vitis AI 1.3
 - Added new Python APIs
   1. APIs for TensorBuffer Operation
@@ -69,7 +79,7 @@
 - Added support for all DPU for CNN and RNN
 - Added supports for CNN DPU on Versal platforms
 
-### DPU 
+### DPU
 - CNN DPU for Zynq SoC / MPSoC, DPUCZDX8G (DPUv2)
   - Extended stride from 1-4 to 1-8
   - Extended MaxPooling kernel from 1-8 to 1-256 to support Pointpillar network
@@ -77,7 +87,7 @@
   - Optimized save engine to improve efficiency
   - Supported XIR based AI Compiler
   - EoU Enhancement
-    - DPU TRD (DPUCZDX8G) upgraded from v3.2 to v3.3 
+    - DPU TRD (DPUCZDX8G) upgraded from v3.2 to v3.3
     - Added support for Vitis GUI flow for the integration
 
 - CNN DPU for Alveo-HBM, DPUCAHX8L (v3ME)
@@ -112,11 +122,11 @@
     2. IMDB Sentiment Detection
     3. Open Information Extraction
 
-       
+
 
 ### Whole App Acceleration
-- DPUv2 TRD flow to build from sources [dsa/WAA-TRD](dsa/WAA-TRD) 
-- DFx based TRD flow to build from pre-built IPs 
+- DPUv2 TRD flow to build from sources [dsa/WAA-TRD](dsa/WAA-TRD)
+- DFx based TRD flow to build from pre-built IPs
   1. DPUCZDZ8G
 
 - Existing WAA classification and detection examples ported to DPUv3e (earlier only for DPUv2 and DPUv1) (examples/Whole-App-Acceleration)
@@ -130,24 +140,24 @@
 - Added kernels for Accelerated Optical Flow
 
 ### TVM
-- New Flow (BYOC) or running TVM supported models on DPUv1, DPUv2 
+- New Flow (BYOC) or running TVM supported models on DPUv1, DPUv2
 
-### Known Issues 
+### Known Issues
 
 
 
 ------------------
 ## Release 1.2
 
-### New Features/Highlights 
+### New Features/Highlights
 1. Vitis AI Quantizer and DNNDK runtime all open source
 2. 14 new Reference Models  AI Model Zoo (Pytorch, Caffe, Tensorflow)
-3. VAI Quantizer supports optimized models (pruned) 
+3. VAI Quantizer supports optimized models (pruned)
 4. DPU naming scheme has been updated to be consistent across all configurations
 5. Introducing Vitis AI profiler for edge and cloud
 6. Added  Alveo U50/U50LV support
 7. Added  Alveo U280 support
-8. Alveo U50/U50LV DPU DPUCAHX8H micro-architecture improvement 
+8. Alveo U50/U50LV DPU DPUCAHX8H micro-architecture improvement
 9. DPU TRD upgraded to support Vitis 2020.1 and Vivado 2020.1
 11. Vitis AI for Pytorch CNN general access (Beta version)
 
@@ -158,32 +168,32 @@
 - 8 new Pytorch models added in the AI Model Zoo (Beta version)
   - ENet, SemanticFPN(ResNet18), facerec_pretrain_res20, face_quality, MT-resnet18, face_reid_large, face_reid_small, person_reid
 - Added new Caffe models , including license plate detection and recognition, face detection, medical image segmentation, etc.
-- Support pruned model quantization 
+- Support pruned model quantization
 - Caffe_Dev open source for easier integration
 - New Models added for DPUCADX8G on Alveo U200/U250
   - Caffe: Refine-Det, U-Net, Pix2Pix (6 models), Re-identification, Face_Detect (360x640)
   - TF: VGG16, VGG19
 
-#### Quantizer 
+#### Quantizer
 - Vitis AI for Pytorch CNN general access (Beta version)
 - Vitis AI Quantizer open source on Github (Caffe, Tensorflow 1.15 and Pytorch)
 - Add Caffe binary and pycaffe support in docker environment (python 2.7)
 - Integrated quantization finetuning feature for Caffe and Tensorflow
 - Option to specify which layer to be 16-bit
 
-#### Optimizer 
+#### Optimizer
 - Added support for Tensorflow 1.15
 - Added Support weight-shared conv pruning
 - Optimizer compatible with docker environment
 
-#### Compiler 
+#### Compiler
 - Added support for 14 new models from Xilinx AI Model Zoo
-- Added support NNDCT quantized pytorch model compilation 
+- Added support NNDCT quantized pytorch model compilation
 - Improved DPUCAHX8H (for Alveo U50) performance by enabling new IP enhancements and complier optimizations
 - Reduced compiler times by 10x for DPUCAHX8H (Alveo U50)
 - Optimized compiler memory planning to maximize HBM memory reuse for DPUCAHX8H (Alveo U50)
 
-#### AI Library 
+#### AI Library
 - Add new Vitis AI examples, including license plate detection & recognition, face detection, medical image segmentation
 - Added support forDPUCADX8G (Alveo U200/U250). Users can build and run the documented models on U200/U250 now.
 
@@ -192,7 +202,7 @@
 - VART adds support for Alveo U50LV, U280
 - VART updated to use unified APIs, which explicitly uses XIR, as the unified data structure. All samples are updated to use the new APIs.
 - Optimizations for single server, Multi-Card deployments
-- Added support for TVM 
+- Added support for TVM
 - Added support for ONNXRuntime
 
 #### AI Profiler
@@ -216,7 +226,7 @@
 #### Platforms
 - Added Alveo U50LV support
 - Added Alveo U280 support
-- Improved Alveo U50 performance 
+- Improved Alveo U50 performance
 
 #### Examples & Demo
 - Whole application acceleration
@@ -229,21 +239,21 @@
 
 - Added scripts to convert darknet yolo networks to caffe and test the accuracy
 
-  
+
 
 ### Known Issues
 1. The model "ssd_pedestrain_pruned_0_97" in pre-compiled model packages has a typo, which should be "ssd_pedestrian_pruned_0.97"
 2. Force option "--force" should be used when installing updated packages over the default packages in edge board images
 3. The cloud demo cannot support drm for display because of the docker limitations
-4. VART does not validate model and DPU combinations. This feature will be added in future releases. users should ensure they have loaded the correct models for the target devices. If not, there will be an unexpected runtime error. 
+4. VART does not validate model and DPU combinations. This feature will be added in future releases. users should ensure they have loaded the correct models for the target devices. If not, there will be an unexpected runtime error.
 5. The "builddrm.sh" under demo directories in Vitis AI Library can only be cross compiled, and cannot be native build on the board directly
 
-### Updates 
+### Updates
 - v1.2.1
-  - Added Zynq Ultrascale Plus Whole App examples 
+  - Added Zynq Ultrascale Plus Whole App examples
   - Updated U50 XRT and shell to *Xilinx-u50-gen3x4-xdma-2-202010.1-2902115*
   - Updated docker launch instructions  
-  - Updated TRD makefile instructions 
+  - Updated TRD makefile instructions
 
 ------
 
@@ -267,7 +277,7 @@
 
 #### Compiler
 
-* Support cross compilation for Zynq and ZU+ based platforms 
+* Support cross compilation for Zynq and ZU+ based platforms
 * Vitis AI Compiler for U50
     -	Based on the new XIR (Xilinx Intermediate Representation)
     -	Support DPUv3E
@@ -279,7 +289,7 @@
 
 #### Runtime
 
-* VART (Vitis AI Runtime) 
+* VART (Vitis AI Runtime)
     -   Unified runtime based on XIR for Zynq, ZU+ and Alveo
     -   Include new APIs for NN performance improvement
     -   7 samples with VART APIs provided
@@ -293,13 +303,13 @@
     -  DPU TRD update with Vitis 2019.2 and Vitis AI Library 1.1
 *  DPUv3E
     -  https://github.com/Xilinx/Vitis-AI/tree/master/alveo-hbm
-    
+
 #### Vitis AI Library
 
 * All source code open source
 * Support VART
 * Add support for Alveo
-* Support batch model for DPUv3E 
+* Support batch model for DPUv3E
 
 #### Example & Demo
 
@@ -318,11 +328,11 @@
 * Improved support on upsampling, deconvolution and large convolutions for segmentation models including FPN for DPUv1
 
 ### Known Issues
-* Alveo U50 toolchain doesn't support Conv2DTranspose trained in Keras and converted to TF 1.15, which will be fixed in Vitis AI 1.2 release. 
+* Alveo U50 toolchain doesn't support Conv2DTranspose trained in Keras and converted to TF 1.15, which will be fixed in Vitis AI 1.2 release.
 
-### Updates 
-* 5/6/20 - Fixed hardware bug which will lead to computation errors in some corner case for Alveo U50 Production shell xclbin. 
-* 5/6/20 - Added support for Alveo U50 using EA x4 shell for increased performance. 
+### Updates
+* 5/6/20 - Fixed hardware bug which will lead to computation errors in some corner case for Alveo U50 Production shell xclbin.
+* 5/6/20 - Added support for Alveo U50 using EA x4 shell for increased performance.
 
 ------
 
@@ -357,10 +367,10 @@
 
 *  Tensorflow quantization
     -	Support DPU simulation and dumping quantize simulation results.
-    -	Improve support for some layers and node patterns, including tf.keras.layers.Conv2DTranspose, tf.keras.Dense, tf.keras.layers.LeakyReLU, tf.conv2d + tf.mul 
+    -	Improve support for some layers and node patterns, including tf.keras.layers.Conv2DTranspose, tf.keras.Dense, tf.keras.layers.LeakyReLU, tf.conv2d + tf.mul
     -	Move temp quantize info files from /tmp/ to $output_dir/temp folder, to support multi-users on one machine
     -	Bugfixes
-	
+
 *  Caffe quantization
     -	Enhanced activation data dump function
     -	Ubuntu 18 support
@@ -369,9 +379,9 @@
     -	Support of scale layers without parameters but with multiple inputs
 
 #### Compiler
-* Support cross compilation for Zynq and ZU+ based platforms 
+* Support cross compilation for Zynq and ZU+ based platforms
 * Enhancements and bug fixes for a broader set of Tensorflow models
-* New Split IO memory model enablement for performance optimization 
+* New Split IO memory model enablement for performance optimization
 * Improved code generation
 * Support Caffe/TensorFlow model compilation over cloud DPU V3E (Early Access)
 
@@ -399,7 +409,7 @@
 #### Vitis AI Library
 
 * Support of new Vitis AI Runtime - Vitis AI Library is updated to be based on the new Vitis AI Runtime with unified APIs. It also fully supports XRT 2019.2.
-* New DPU support - Besides DPUv2 for Zynq and ZU+, a new AI Library will support new DPUv3 IPs for Alveo/Cloud using same codes (Early access). 
+* New DPU support - Besides DPUv2 for Zynq and ZU+, a new AI Library will support new DPUv3 IPs for Alveo/Cloud using same codes (Early access).
 * New Tensorflow model support - There are up to 19 tensorflow models supported, which are from official tensorflow repository
 * New libraries and demos - There are two new libraries “libdpmultitask” and “libdptfssd” which supports multi-task models and Tensorflow SSD models. An updated classification demo is included to shows how to uses unified APIs in Vitis AI runtime.
 * New Open Source Library - The “libdpbase” library is open source in this release, which shows how to use unified APIs in Vitis AI runtime to construct high-level libraries.
@@ -418,4 +428,3 @@
 * Support for pix2pix models
 
 ### Known Issues
-
