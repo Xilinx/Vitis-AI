@@ -100,6 +100,7 @@ Runtime packages on the board separately.**
 * Install the model package.
 	```
 	  tar -xzvf yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
+	  sudo mkdir -p /usr/share/vitis_ai_library/models
 	  sudo cp yolov3_adas_pruned_0_9 /usr/share/vitis_ai_library/models -r
 	```
 * Download test images	
