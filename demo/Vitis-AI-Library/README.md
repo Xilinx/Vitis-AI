@@ -27,7 +27,8 @@ Vitis_AI_Library
     ├── 3Dsegmentation
     ├── classification
     ├── covid19segmentation
-    ├── facedetect
+    ├── dpu_task
+    ├── facedetect	
     ├── facefeature
     ├── facelandmark
     ├── facequality5pt
@@ -49,7 +50,8 @@ Vitis_AI_Library
     ├── ssd
     ├── tfssd
     ├── yolov2
-    └── yolov3
+    ├── yolov3	
+    └── yolov4
 ```
 
 ## Quick Start For Edge
