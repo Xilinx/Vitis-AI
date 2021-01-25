@@ -103,6 +103,7 @@ Runtime packages on the board separately.**
 
 	```
 	  tar -xzvf resnet50-u50-r1.3.0.tar.gz
+	  sudo mkdir -p /usr/share/vitis_ai_library/models
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 * Download test images
