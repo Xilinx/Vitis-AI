@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.5)
-project(vitis_ai_library VERSION 1.3.0 LANGUAGES C CXX)
+project(vitis_ai_library VERSION 1.3.1 LANGUAGES C CXX)
 include(${CMAKE_SOURCE_DIR}/cmake/XilinxCommon.cmake)
 
 ## ugly solution for search XRT library, xrt is built without proper rpath setting
@@ -92,18 +92,24 @@ if(ENABLE_DPUCADX8G_RUNNER)
 endif()
 
 if(ENABLE_DPUCADF8H_RUNNER)
-    # Enble supported models for DPUV1
+    # Enble supported models for DPUCADF8H
     unset(DISABLE_ALL CACHE)
     unset(ENABLE_CLASSIFICATION CACHE)
     option(DISABLE_ALL "disable all libraries" ON)
     option(ENABLE_CLASSIFICATION "enable classification" ON)
+
+    # Enable DPUCADF8H flag
+    add_definitions(-DENABLE_DPUCADF8H_RUNNER)
 endif()
 
 find_package(xir)
 find_package(unilog)
-find_package(vart COMPONENTS util xrt-device-handle buffer-object dpu-controller runner dpu-runner  mem-manager REQUIRED)
+find_package(vart COMPONENTS util xrt-device-handle buffer-object dpu-controller runner dpu-runner  runner-assistant mem-manager REQUIRED)
 find_package(Protobuf 3.4.0 REQUIRED)
 find_package(OpenCV COMPONENTS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake")
+
+find_package(Xrt MODULE)
 if(NOT OpenCV_FOUND)
   find_package(OpenCV_LIBS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
 endif(NOT OpenCV_FOUND)

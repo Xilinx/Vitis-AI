@@ -139,8 +139,9 @@ struct ReadImagesThread : public MyThread {
         queue_{queue} {}
 
   virtual ~ReadImagesThread() {}
-  
-  virtual void set_filename_and_queue( const std::string& images_list_file, queue_t* queue){
+
+  virtual void set_filename_and_queue(const std::string& images_list_file,
+                                      queue_t* queue) {
     images_list_file_ = images_list_file;
     queue_ = queue;
   }
@@ -300,12 +301,14 @@ struct DpuRunThread : public MyThread {
           << "thread [" << name()
           << "] dpu_result frame_id: " << dpu_result.frame_id
           << " ,dpu queue size :" << queue_out_->size();
+      if (int(dpu_result.frame_id) == g_last_frame_id) g_is_completed = true;
       while (!queue_out_->push(dpu_result, std::chrono::milliseconds(500))) {
         if (is_stopped()) {
           return -1;
         }
       }
     }
+    if (g_is_completed) return -1;
     return 0;
   }
 
@@ -405,20 +408,18 @@ inline void parse_opt(int argc, char* argv[], int start_pos = 1) {
 
 // Entrance of accuracy demo
 template <typename FactoryMethod>
-int main_for_accuracy_demo(int argc, char* argv[],
-                           const FactoryMethod& factory_method,
-                           std::shared_ptr<AccThread> acc_thread,
-                           int start_pos = 1,
-                           std::shared_ptr<ReadImagesThread> read_thread = NULL) {
+int main_for_accuracy_demo(
+    int argc, char* argv[], const FactoryMethod& factory_method,
+    std::shared_ptr<AccThread> acc_thread, int start_pos = 1,
+    std::shared_ptr<ReadImagesThread> read_thread = NULL) {
   signal(SIGINT, MyThread::signal_handler);
   parse_opt(argc, argv, start_pos);
   {
     auto images_queue = std::unique_ptr<queue_t>{new queue_t{50}};
-    if(read_thread == NULL){
+    if (read_thread == NULL) {
       read_thread = std::shared_ptr<ReadImagesThread>(
           new ReadImagesThread{g_input_file, images_queue.get()});
-    } 
-    else {
+    } else {
       read_thread->set_filename_and_queue(g_input_file, images_queue.get());
     }
     auto dpu_run_thread = std::vector<std::unique_ptr<DpuRunThread>>{};
@@ -441,6 +442,5 @@ int main_for_accuracy_demo(int argc, char* argv[],
   LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO)) << "BYEBYE";
   return 0;
 }
-
 }  // namespace ai
 }  // namespace vitis

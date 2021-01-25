@@ -18,13 +18,13 @@
 #include <vitis/ai/refinedet.hpp>
 
 #include "./refinedet_imp.hpp"
-
 namespace vitis {
 namespace ai {
-RefineDet::RefineDet() {}
+RefineDet::RefineDet(const std::string& model_name, bool need_preprocess)
+    : ConfigurableDpuTaskBase(model_name, need_preprocess) {}
 RefineDet::~RefineDet() {}
 
-std::unique_ptr<RefineDet> RefineDet::create(const std::string &model_name,
+std::unique_ptr<RefineDet> RefineDet::create(const std::string& model_name,
                                              bool need_preprocess) {
   return std::unique_ptr<RefineDet>(
       new RefineDetImp(model_name, need_preprocess));

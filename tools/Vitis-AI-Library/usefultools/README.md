@@ -17,59 +17,59 @@
 
 ## obtain fingerprint of DPU
 ```
-xilinx_show_devices
+python3 -m xdputil query  
 ```
 ## obtain fingerprint of Xmodel
 ```
-xilinx_show_xmodel_kernel <xmodel> | grep fingerprint
-
+python3 -m xdputil xmodel <xmodel> -l
 ```
 
 ## Obtain git commit versions of xir&vart&vitis-ai-library
 ```
+python3 -m xdputil query  
 ```
 ## obtain inputs&outputs info
 ```
-xilinx_show_xmodel_kernel <xmodel> | grep -A2 device=DPU
+python3 -m xdputil xmodel <xmodel> -l
 ```
 
 ## xmodel to txt
 ```
+python3 -m xdputil xmodel <xmodel> -t <TXT> 
 ```
 
 ## xmodel to png/svg
 ```
-xilinx_xmodel_to_png <xmodel> <png>
-xilinx_xmodel_to_svg <xmodel> <svg>
+python3 -m xdputil xmodel <xmodel> -s <SVG> 
+python3 -m xdputil xmodel <xmodel> -p <PNG> 
 ```
 
 ## show xmodel's kernels
 ```
-xilinx_show_xmodel_kernel <xmodel>
+python3 -m xdputil xmodel <xmodel> -l
 ```
 
 ## show device infos
 ```
-xilinx_show_devices
+python3 -m xdputil query  
 ```
 
 ## verify that load dpu.xclbin is normal
 ```
-env [XLNX_VART_FIRMWARE=$bit_path/dpu.xclbin] xilinx_show_devices
+//?env [XLNX_VART_FIRMWARE=$bit_path/dpu.xclbin] xilinx_show_devices
 ```
 
 ## read register
 ```
-```
-
-## write register
-```
+python3 -m xdputil status
 ```
 
 ## read data from device
 ```
+python3 -m xdputil [-r] addr size file
 ```
 
 ## write data to device
 ```
+python3 -m xdputil [-w] addr size file
 ```

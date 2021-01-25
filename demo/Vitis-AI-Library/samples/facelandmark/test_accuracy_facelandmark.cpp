@@ -72,11 +72,11 @@ void LoadImageNames(std::string const &filename,
 //const string g_output_img = "./result_img/";
 int main(int argc, char *argv[]) {
   if (argc < 4) {
-    std::cout << " usage: " << argv[0] << " <model_name> <image_list> <output_dir>"
+    std::cout << " usage: " << argv[0] << " <model_name> <image_list> <output_file>"
               << std::endl;  //
     abort();
   }
-  auto output_dir = std::string(argv[3]);
+//  auto output_dir = std::string(argv[3]);
 
   auto landmark = FaceLandmark::create(argv[1]);
 
@@ -86,17 +86,20 @@ int main(int argc, char *argv[]) {
   vector<string> names;
   LoadImageNames(argv[2], names);
   
-  auto ret = access(output_dir.c_str(), F_OK);
-  if (ret == -1) {
-    std::cout << "make output_dir: " << output_dir.c_str() << std::endl;
-    mkdir(output_dir.c_str(), 0755);
-  }
+//  auto ret = access(output_dir.c_str(), F_OK);
+//  if (ret == -1) {
+//    std::cout << "make output_dir: " << output_dir.c_str() << std::endl;
+//    mkdir(output_dir.c_str(), 0755);
+//  }
+
+  std::ofstream out(argv[3], std::ofstream::out);
 
   for (auto name : names) {
     cv::Mat image = cv::imread(name);
     auto single_name = get_single_name(name);
     replace_all(single_name, ".jpg", "");
-    ofstream out(output_dir + "/" + single_name + ".txt");
+//    ofstream out(output_dir + "/" + single_name + ".txt");
+    out << single_name << " ";
     if (image.empty()) {
       std::cout << "cannot load " << name << std::endl;
       continue;
@@ -118,8 +121,10 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < 5; i++) {
       out << (int)(points[i].second * img_resize.rows) << " ";
     }
+    out << std::endl;
     // cv::imwrite(g_output_img + name + "_out.jpg", img_resize);
-    out.close();
+//    out.close();
   }
+  out.close();
   return 0;
 }

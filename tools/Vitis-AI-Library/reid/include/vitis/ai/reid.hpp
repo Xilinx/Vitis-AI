@@ -26,9 +26,9 @@
 #pragma once
 #include <vitis/ai/nnpp/reid.hpp>
 
+#include "vitis/ai/configurable_dpu_task.hpp"
 namespace vitis {
 namespace ai {
-
 /**
  * @brief Base class for detecting roadline from an image (cv::Mat).
  *
@@ -62,7 +62,7 @@ namespace ai {
     @endcode
  *
  */
-class Reid {
+class Reid : public ConfigurableDpuTaskBase {
  public:
   /**
    * @brief Factory function to get an instance of derived classes of class
@@ -74,14 +74,14 @@ class Reid {
    * @return An instance of Reid class.
    *
    */
-  static std::unique_ptr<Reid> create(const std::string &model_name,
+  static std::unique_ptr<Reid> create(const std::string& model_name,
                                       bool need_preprocess = true);
   /**
    * @cond NOCOMMENTS
    */
  public:
-  explicit Reid();
-  Reid(const Reid &) = delete;
+  explicit Reid(const std::string& model_name, bool need_preprocess);
+  Reid(const Reid&) = delete;
   virtual ~Reid();
   /**
    * @endcond
@@ -95,7 +95,7 @@ class Reid {
    * @return ReidResult.
    *
    */
-  virtual ReidResult run(const cv::Mat &image) = 0;
+  virtual ReidResult run(const cv::Mat& image) = 0;
 
   /**
    * @brief Function to get running result of the ReID neuron network in batch
@@ -106,31 +106,19 @@ class Reid {
    * @return vector of ReidResult.
    *
    */
-  virtual std::vector<ReidResult> run(const std::vector<cv::Mat> &images) = 0;
-  /**
-   * @brief Function to get InputWidth of the ReID network (input image
-   *columns).
-   *
-   * @return InputWidth of the ReID network
-   */
-  virtual int getInputWidth() const = 0;
-  /**
-   *@brief Function to get InputHeight of the ReID network (input image
-   *rows).
-   *
-   *@return InputHeight of the ReID network.
-   */
-  virtual int getInputHeight() const = 0;
+  virtual std::vector<ReidResult> run(const std::vector<cv::Mat>& images) = 0;
 
   /**
-   * @brief Function to get the number of images processed by the DPU at one
-   *time.
-   * @note Different DPU core the batch size may be different. This depends on
-   *the IP used.
+   * @brief Function to get running results of the reid neuron network in
+   * batch mode , used to receive user's xrt_bo to support zero copy.
    *
-   *@return Batch size.
+   * @param input_bos The vector of vart::xrt_bo_t.
+   *
+   * @return The vector of ReidResult.
+   *
    */
-  virtual size_t get_input_batch() const = 0;
+  virtual std::vector<ReidResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) = 0;
 };
 }  // namespace ai
 }  // namespace vitis

@@ -15,8 +15,6 @@
  */
 #ifndef DEEPHI_SSD_HPP_
 #define DEEPHI_SSD_HPP_
-
-#include <vitis/ai/configurable_dpu_task.hpp>
 #include <vitis/ai/ssd.hpp>
 
 using std::shared_ptr;
@@ -26,15 +24,18 @@ namespace vitis {
 
 namespace ai {
 
-class SSDImp : public vitis::ai::TConfigurableDpuTask<SSD> {
+class SSDImp : public SSD {
  public:
-  SSDImp(const std::string &model_name, bool need_preprocess = true);
-  SSDImp(const std::string &model_name, xir::Attrs *attrs,  bool need_preprocess = true);
+  SSDImp(const std::string& model_name, bool need_preprocess = true);
+  SSDImp(const std::string& model_name, xir::Attrs* attrs,
+         bool need_preprocess = true);
   virtual ~SSDImp();
 
  private:
-  virtual SSDResult run(const cv::Mat &img) override;
-  virtual std::vector<SSDResult> run(const std::vector<cv::Mat> &img) override;
+  virtual SSDResult run(const cv::Mat& img) override;
+  virtual std::vector<SSDResult> run(const std::vector<cv::Mat>& img) override;
+  virtual std::vector<SSDResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) override;
   bool is_tf;
   std::unique_ptr<SSDPostProcess> processor_;
 };
