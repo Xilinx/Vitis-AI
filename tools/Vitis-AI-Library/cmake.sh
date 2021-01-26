@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -14,7 +15,6 @@
 # limitations under the License.
 #
 
-#!/bin/bash
 set -e
 
 script_path=$(dirname "$(realpath $0)")
