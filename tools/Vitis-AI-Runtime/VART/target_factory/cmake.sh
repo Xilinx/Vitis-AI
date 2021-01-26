@@ -111,7 +111,7 @@ else
     echo "cd $PWD"
     echo cmake "${args[@]}" "$script_path"
     cmake "${args[@]}" "$script_path"
-    make -j
+    make -j$(nproc)
     ${build_only:=false} || make install
     ${build_package:=false} && make package
 fi
