@@ -109,6 +109,8 @@ if(NOT OpenCV_FOUND)
 endif(NOT OpenCV_FOUND)
 find_package(vart REQUIRED)
 
+include_directories("/usr/include/opencv4")
+
 set(PACKAGE_COMPONENTS
   model_config
   math
