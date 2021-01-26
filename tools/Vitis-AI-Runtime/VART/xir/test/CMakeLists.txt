@@ -25,7 +25,7 @@ foreach(FIL ${SRC_FILS})
   set(BIN ${FIL_NAME}.bin)
 
   add_executable(${BIN} ${FIL})
-  target_link_libraries(${BIN} protobuf::libprotobuf unilog::unilog glog::glog crypto ${PROJECT_NAME})
+  target_link_libraries(${BIN} protobuf::libprotobuf unilog::unilog PkgConfig::PKG_GLOG crypto ${PROJECT_NAME})
 endforeach()
 
 add_executable (test_c_api test_c_api.c)

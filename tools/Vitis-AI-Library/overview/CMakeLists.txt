@@ -67,7 +67,7 @@ XILINX_AI_SDK_TEST_BY_NAME(retinaface RetinaFace)
 XILINX_AI_SDK_TEST_BY_NAME(classification Classification)
 XILINX_AI_SDK_add_accuracy(classification classification)
 add_executable(test_accuracy_classification_mt  ${CMAKE_CURRENT_SOURCE_DIR}/samples/classification/test_accuracy_classification_mt.cpp)
-target_link_libraries(test_accuracy_classification_mt  ${OpenCV_LIBS} ${PROJECT_NAME}::classification vart::util glog::glog ${Pthread_LIB})
+target_link_libraries(test_accuracy_classification_mt  ${OpenCV_LIBS} ${PROJECT_NAME}::classification vart::util PkgConfig::PKG_GLOG ${Pthread_LIB})
 install(TARGETS test_accuracy_classification_mt DESTINATION ${SAMPLE_INATLL_PATH}/classification/)
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/samples/classification/test_accuracy_classification_mt.cpp
@@ -82,13 +82,13 @@ XILINX_AI_SDK_TEST_BY_NAME(posedetect PoseDetect)
 
 
 add_executable(test_jpeg_reid  ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/test_jpeg_reid.cpp)
-target_link_libraries(test_jpeg_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util glog::glog ${Pthread_LIB})
+target_link_libraries(test_jpeg_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util PkgConfig::PKG_GLOG ${Pthread_LIB})
 
 add_executable(test_accuracy_reid  ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/test_accuracy_reid.cpp)
-target_link_libraries(test_accuracy_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util glog::glog ${Pthread_LIB})
+target_link_libraries(test_accuracy_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util PkgConfig::PKG_GLOG ${Pthread_LIB})
 
 add_executable(test_performance_reid  ${CMAKE_CURRENT_SOURCE_DIR}/samples/reid/test_performance_reid.cpp)
-target_link_libraries(test_performance_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util glog::glog ${Pthread_LIB})
+target_link_libraries(test_performance_reid  ${OpenCV_LIBS} ${PROJECT_NAME}::reid vart::util PkgConfig::PKG_GLOG ${Pthread_LIB})
 install(TARGETS test_jpeg_reid test_accuracy_reid test_performance_reid DESTINATION ${SAMPLE_INATLL_PATH}/reid/)
 
 #install(DIRECTORY
@@ -109,13 +109,13 @@ install(FILES
   DESTINATION ${SAMPLE_INATLL_PATH}/reid/)
 
 add_executable(test_jpeg_posedetect_with_ssd  ${CMAKE_CURRENT_SOURCE_DIR}/samples/posedetect/test_jpeg_posedetect_with_ssd.cpp)
-target_link_libraries(test_jpeg_posedetect_with_ssd  ${OpenCV_LIBS} ${PROJECT_NAME}::ssd ${PROJECT_NAME}::posedetect glog::glog ${Pthread_LIB})
+target_link_libraries(test_jpeg_posedetect_with_ssd  ${OpenCV_LIBS} ${PROJECT_NAME}::ssd ${PROJECT_NAME}::posedetect PkgConfig::PKG_GLOG ${Pthread_LIB})
 if(HAVE_DRM)
   target_link_libraries(test_jpeg_posedetect_with_ssd drm)
 endif(HAVE_DRM)
 
 add_executable(test_video_posedetect_with_ssd  ${CMAKE_CURRENT_SOURCE_DIR}/samples/posedetect/test_video_posedetect_with_ssd.cpp)
-target_link_libraries(test_video_posedetect_with_ssd  ${OpenCV_LIBS} ${PROJECT_NAME}::ssd ${PROJECT_NAME}::posedetect glog::glog ${Pthread_LIB})
+target_link_libraries(test_video_posedetect_with_ssd  ${OpenCV_LIBS} ${PROJECT_NAME}::ssd ${PROJECT_NAME}::posedetect PkgConfig::PKG_GLOG ${Pthread_LIB})
 if(HAVE_DRM)
   target_link_libraries(test_video_posedetect_with_ssd drm)
 endif(HAVE_DRM)
@@ -196,7 +196,7 @@ add_executable(test_jpeg_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_
 add_executable(test_performance_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_performance_yolov4.cpp)
 add_executable(test_video_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_video_yolov4.cpp)
 target_link_libraries(test_jpeg_yolov4 ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lglog protobuf::libprotobuf)
-target_link_libraries(test_performance_yolov4  ${OpenCV_LIBS} ${PROJECT_NAME}::yolov3 vart::util glog::glog ${Pthread_LIB})
+target_link_libraries(test_performance_yolov4  ${OpenCV_LIBS} ${PROJECT_NAME}::yolov3 vart::util PkgConfig::PKG_GLOG ${Pthread_LIB})
 target_link_libraries(test_video_yolov4 ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lglog protobuf::libprotobuf)
 add_executable(test_accuracy_yolov4 ${CMAKE_CURRENT_SOURCE_DIR}/samples/yolov4/test_accuracy_yolov4_mt.cpp)
 target_link_libraries(test_accuracy_yolov4 ${COMPONENT_NAME} ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::yolov3 -lpthread -lglog protobuf::libprotobuf)
@@ -282,7 +282,7 @@ install(TARGETS test_accuracy_facequality5pt_mt DESTINATION ${SAMPLE_INATLL_PATH
 
 
 add_executable(seg_and_pose_detect ${CMAKE_CURRENT_SOURCE_DIR}/demo/seg_and_pose_detect/seg_and_pose_detect.cpp)
-target_link_libraries(seg_and_pose_detect ${OpenCV_LIBS} ${PROJECT_NAME}::multitask ${PROJECT_NAME}::posedetect ${PROJECT_NAME}::ssd glog::glog ${Pthread_LIB})
+target_link_libraries(seg_and_pose_detect ${OpenCV_LIBS} ${PROJECT_NAME}::multitask ${PROJECT_NAME}::posedetect ${PROJECT_NAME}::ssd PkgConfig::PKG_GLOG ${Pthread_LIB})
 if(HAVE_DRM)
   target_link_libraries(seg_and_pose_detect drm)
 endif(HAVE_DRM)
@@ -298,7 +298,7 @@ install(FILES
   DESTINATION ${DEMO_INATLL_PATH}/seg_and_pose_detect/)
 
 add_executable(segs_and_roadline_detect ${CMAKE_CURRENT_SOURCE_DIR}/demo/segs_and_roadline_detect/segs_and_roadline_detect.cpp)
-target_link_libraries(segs_and_roadline_detect ${OpenCV_LIBS} ${PROJECT_NAME}::multitask ${PROJECT_NAME}::lanedetect ${PROJECT_NAME}::ssd glog::glog ${Pthread_LIB})
+target_link_libraries(segs_and_roadline_detect ${OpenCV_LIBS} ${PROJECT_NAME}::multitask ${PROJECT_NAME}::lanedetect ${PROJECT_NAME}::ssd PkgConfig::PKG_GLOG ${Pthread_LIB})
 if(HAVE_DRM)
   target_link_libraries(segs_and_roadline_detect drm)
 endif(HAVE_DRM)
@@ -324,7 +324,7 @@ endif(HAVE_DRM)
 ##find_package(unilog REQUIRED)
 ##find_package(vart REQUIRED COMPONENTS util runner xrt-device-handle dpu-controller dpu-runner)
 add_executable(demo_classification ${CMAKE_CURRENT_SOURCE_DIR}/demo/classification/demo_classification.cpp)
-target_link_libraries(demo_classification ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task vart::dpu-runner)
+target_link_libraries(demo_classification ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task vart::dpu-runner)
 
 install(TARGETS demo_classification DESTINATION ${DEMO_INATLL_PATH}/classification/)
 install(FILES
@@ -337,7 +337,7 @@ install(FILES
   DESTINATION ${DEMO_INATLL_PATH}/classification/)
 
 add_executable(demo_yolov3 ${CMAKE_CURRENT_SOURCE_DIR}/demo/yolov3/demo_yolov3.cpp)
-target_link_libraries(demo_yolov3 ${OpenCV_LIBS} glog::glog protobuf::libprotobuf ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task xnnpp)
+target_link_libraries(demo_yolov3 ${OpenCV_LIBS} PkgConfig::PKG_GLOG protobuf::libprotobuf ${PROJECT_NAME}::model_config ${PROJECT_NAME}::dpu_task xnnpp)
 install(TARGETS demo_yolov3 DESTINATION ${DEMO_INATLL_PATH}/yolov3/)
 install(FILES
   demo/yolov3/readme
@@ -350,10 +350,10 @@ install(FILES
   DESTINATION ${DEMO_INATLL_PATH}/yolov3/)
 
 add_executable(test_jpeg_covid19segmentation ${CMAKE_CURRENT_SOURCE_DIR}/samples/covid19segmentation/test_jpeg_covid19segmentation.cpp)
-target_link_libraries(test_jpeg_covid19segmentation ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::covid19segmentation)
+target_link_libraries(test_jpeg_covid19segmentation ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::covid19segmentation)
 install(TARGETS test_jpeg_covid19segmentation DESTINATION ${SAMPLE_INATLL_PATH}/covid19segmentation/)
 add_executable(test_performance_covid19segmentation ${CMAKE_CURRENT_SOURCE_DIR}/samples/covid19segmentation/test_performance_covid19segmentation.cpp)
-target_link_libraries(test_performance_covid19segmentation ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::covid19segmentation)
+target_link_libraries(test_performance_covid19segmentation ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::covid19segmentation)
 install(TARGETS test_performance_covid19segmentation DESTINATION ${SAMPLE_INATLL_PATH}/covid19segmentation/)
 install(FILES
   samples/covid19segmentation/readme
@@ -366,10 +366,10 @@ install(FILES
   DESTINATION ${SAMPLE_INATLL_PATH}/covid19segmentation/)
 
 add_executable(test_jpeg_3Dsegmentation ${CMAKE_CURRENT_SOURCE_DIR}/samples/3Dsegmentation/test_jpeg_3Dsegmentation.cpp)
-target_link_libraries(test_jpeg_3Dsegmentation ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::3Dsegmentation)
+target_link_libraries(test_jpeg_3Dsegmentation ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::3Dsegmentation)
 install(TARGETS test_jpeg_3Dsegmentation DESTINATION ${SAMPLE_INATLL_PATH}/3Dsegmentation/)
 add_EXecutable(test_performance_3Dsegmentation ${CMAKE_CURRENT_SOURCE_DIR}/samples/3Dsegmentation/test_performance_3Dsegmentation.cpp)
-target_link_libraries(test_performance_3Dsegmentation ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::3Dsegmentation)
+target_link_libraries(test_performance_3Dsegmentation ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::3Dsegmentation)
 install(TARGETS test_performance_3Dsegmentation DESTINATION ${SAMPLE_INATLL_PATH}/3Dsegmentation/)
 install(FILES
   samples/3Dsegmentation/readme
@@ -385,10 +385,10 @@ add_executable(test_jpeg_classification_squeezenet ${CMAKE_CURRENT_SOURCE_DIR}/s
 add_executable(test_jpeg_classification_cifar ${CMAKE_CURRENT_SOURCE_DIR}/samples/classification/test_jpeg_classification_cifar.cpp)
 add_executable(test_performance_classification_squeezenet ${CMAKE_CURRENT_SOURCE_DIR}/samples/classification/test_performance_classification_squeezenet.cpp)
 add_executable(test_accuracy_classification_squeezenet ${CMAKE_CURRENT_SOURCE_DIR}/samples/classification/test_accuracy_classification_squeezenet.cpp)
-target_link_libraries(test_jpeg_classification_squeezenet ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::classification)
-target_link_libraries(test_jpeg_classification_cifar ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::classification)
-target_link_libraries(test_performance_classification_squeezenet ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::classification vart::util ${Pthread_LIB})
-target_link_libraries(test_accuracy_classification_squeezenet ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::model_config ${PROJECT_NAME}::classification)
+target_link_libraries(test_jpeg_classification_squeezenet ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::classification)
+target_link_libraries(test_jpeg_classification_cifar ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::classification)
+target_link_libraries(test_performance_classification_squeezenet ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::classification vart::util ${Pthread_LIB})
+target_link_libraries(test_accuracy_classification_squeezenet ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::model_config ${PROJECT_NAME}::classification)
 install(TARGETS test_jpeg_classification_squeezenet DESTINATION ${SAMPLE_INATLL_PATH}/classification/)
 install(TARGETS test_jpeg_classification_cifar DESTINATION ${SAMPLE_INATLL_PATH}/classification/)
 install(TARGETS test_performance_classification_squeezenet DESTINATION ${SAMPLE_INATLL_PATH}/classification/)
@@ -413,9 +413,9 @@ install(TARGETS test_accuracy_facerec_pretrain_res20 DESTINATION ${SAMPLE_INATLL
 add_executable(test_bin_pointpillars ${CMAKE_CURRENT_SOURCE_DIR}/samples/pointpillars/test_bin_pointpillars.cpp)
 add_executable(test_performance_pointpillars ${CMAKE_CURRENT_SOURCE_DIR}/samples/pointpillars/test_performance_pointpillars.cpp)
 add_executable(test_accuracy_pointpillars ${CMAKE_CURRENT_SOURCE_DIR}/samples/pointpillars/test_accuracy_pointpillars.cpp)
-target_link_libraries(test_bin_pointpillars ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::pointpillars)
-target_link_libraries(test_performance_pointpillars ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::pointpillars vart::util ${Pthread_LIB})
-target_link_libraries(test_accuracy_pointpillars ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::model_config ${PROJECT_NAME}::pointpillars)
+target_link_libraries(test_bin_pointpillars ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::pointpillars)
+target_link_libraries(test_performance_pointpillars ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::pointpillars vart::util ${Pthread_LIB})
+target_link_libraries(test_accuracy_pointpillars ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::model_config ${PROJECT_NAME}::pointpillars)
 install(TARGETS test_bin_pointpillars DESTINATION ${SAMPLE_INATLL_PATH}/pointpillars/)
 install(TARGETS test_performance_pointpillars DESTINATION ${SAMPLE_INATLL_PATH}/pointpillars/)
 install(TARGETS test_accuracy_pointpillars DESTINATION ${SAMPLE_INATLL_PATH}/pointpillars/)
@@ -433,8 +433,8 @@ install(FILES
 #cifar10classification
 add_executable(test_jpeg_cifar10classification ${CMAKE_CURRENT_SOURCE_DIR}/samples/cifar10classification/test_jpeg_cifar10classification.cpp)
 add_executable(test_performance_cifar10classification ${CMAKE_CURRENT_SOURCE_DIR}/samples/cifar10classification/test_performance_cifar10classification.cpp)
-target_link_libraries(test_jpeg_cifar10classification ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::cifar10classification)
-target_link_libraries(test_performance_cifar10classification ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::cifar10classification vart::util ${Pthread_LIB})
+target_link_libraries(test_jpeg_cifar10classification ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::cifar10classification)
+target_link_libraries(test_performance_cifar10classification ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::cifar10classification vart::util ${Pthread_LIB})
 install(TARGETS test_jpeg_cifar10classification DESTINATION ${SAMPLE_INATLL_PATH}/cifar10classification/)
 install(TARGETS test_performance_cifar10classification DESTINATION ${SAMPLE_INATLL_PATH}/cifar10classification/)
 install(FILES
@@ -451,8 +451,8 @@ install(FILES
 #mnistclassification
 add_executable(test_jpeg_mnistclassification ${CMAKE_CURRENT_SOURCE_DIR}/samples/mnistclassification/test_jpeg_mnistclassification.cpp)
 add_executable(test_performance_mnistclassification ${CMAKE_CURRENT_SOURCE_DIR}/samples/mnistclassification/test_performance_mnistclassification.cpp)
-target_link_libraries(test_jpeg_mnistclassification ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::mnistclassification)
-target_link_libraries(test_performance_mnistclassification ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::mnistclassification vart::util ${Pthread_LIB})
+target_link_libraries(test_jpeg_mnistclassification ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::mnistclassification)
+target_link_libraries(test_performance_mnistclassification ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::mnistclassification vart::util ${Pthread_LIB})
 install(TARGETS test_jpeg_mnistclassification DESTINATION ${SAMPLE_INATLL_PATH}/mnistclassification/)
 install(TARGETS test_performance_mnistclassification DESTINATION ${SAMPLE_INATLL_PATH}/mnistclassification/)
 install(FILES
@@ -470,10 +470,10 @@ add_executable(test_jpeg_medicalsegcell  ${CMAKE_CURRENT_SOURCE_DIR}/samples/med
 add_executable(test_video_medicalsegcell ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_video_medicalsegcell.cpp)
 add_executable(test_performance_medicalsegcell ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_performance_medicalsegcell.cpp)
 add_executable(test_accuracy_medicalsegcell ${CMAKE_CURRENT_SOURCE_DIR}/samples/medicalsegcell/test_accuracy_medicalsegcell.cpp)
-target_link_libraries(test_jpeg_medicalsegcell ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::medicalsegcell)
-target_link_libraries(test_video_medicalsegcell ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::medicalsegcell)
-target_link_libraries(test_performance_medicalsegcell ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::medicalsegcell vart::util ${Pthread_LIB})
-target_link_libraries(test_accuracy_medicalsegcell ${OpenCV_LIBS} glog::glog ${PROJECT_NAME}::medicalsegcell vart::util ${Pthread_LIB})
+target_link_libraries(test_jpeg_medicalsegcell ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::medicalsegcell)
+target_link_libraries(test_video_medicalsegcell ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::medicalsegcell)
+target_link_libraries(test_performance_medicalsegcell ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::medicalsegcell vart::util ${Pthread_LIB})
+target_link_libraries(test_accuracy_medicalsegcell ${OpenCV_LIBS} PkgConfig::PKG_GLOG ${PROJECT_NAME}::medicalsegcell vart::util ${Pthread_LIB})
 install(TARGETS test_jpeg_medicalsegcell DESTINATION ${SAMPLE_INATLL_PATH}/medicalsegcell/)
 install(TARGETS test_video_medicalsegcell DESTINATION ${SAMPLE_INATLL_PATH}/medicalsegcell/)
 install(TARGETS test_performance_medicalsegcell DESTINATION ${SAMPLE_INATLL_PATH}/medicalsegcell/)

@@ -19,7 +19,8 @@ include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(BUILD_TEST "build test" OFF)
 
-find_package(glog REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(PKG_GLOG REQUIRED IMPORTED_TARGET GLOBAL libglog)
 
 add_subdirectory(src)
 

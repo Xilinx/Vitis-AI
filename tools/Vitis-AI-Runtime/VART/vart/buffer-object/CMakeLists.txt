@@ -28,7 +28,7 @@ set(MY_PROJECT_SOURCES
   src/buffer_object_fd.cpp
   src/buffer_object_fd.hpp
   )
-set(MY_PROJECT_DEPS glog::glog)
+set(MY_PROJECT_DEPS PkgConfig::PKG_GLOG)
 
 if(XRT_CLOUD_FOUND)
   add_definitions(-DENABLE_CLOUD)
@@ -123,15 +123,15 @@ endif()
 
 
 add_executable(mem_write test/mem_write.cpp)
-target_link_libraries(mem_write ${COMPONENT_NAME} glog::glog )
+target_link_libraries(mem_write ${COMPONENT_NAME} PkgConfig::PKG_GLOG )
 add_executable(mem_read test/mem_read.cpp)
-target_link_libraries(mem_read ${COMPONENT_NAME} glog::glog )
+target_link_libraries(mem_read ${COMPONENT_NAME} PkgConfig::PKG_GLOG )
 add_executable(mem_save test/mem_save.cpp)
-target_link_libraries(mem_save ${COMPONENT_NAME} glog::glog )
+target_link_libraries(mem_save ${COMPONENT_NAME} PkgConfig::PKG_GLOG )
 add_executable(dump_op_weights test/dump_op_weights.cpp)
-target_link_libraries(dump_op_weights ${COMPONENT_NAME} glog::glog )
+target_link_libraries(dump_op_weights ${COMPONENT_NAME} PkgConfig::PKG_GLOG )
 add_executable(dump_op_weights_2 test/dump_op_weights_2.cpp)
-target_link_libraries(dump_op_weights_2 ${COMPONENT_NAME} glog::glog )
+target_link_libraries(dump_op_weights_2 ${COMPONENT_NAME} PkgConfig::PKG_GLOG )
 
 install(
   TARGETS mem_write mem_read mem_save dump_op_weights dump_op_weights_2

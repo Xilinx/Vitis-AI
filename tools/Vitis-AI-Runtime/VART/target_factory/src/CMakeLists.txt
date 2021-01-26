@@ -54,7 +54,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC protobuf::libprotobuf unilog::unilog glog::glog)
+target_link_libraries(${PROJECT_NAME} PUBLIC protobuf::libprotobuf unilog::unilog PkgConfig::PKG_GLOG)
 
 install(
   TARGETS ${PROJECT_NAME}

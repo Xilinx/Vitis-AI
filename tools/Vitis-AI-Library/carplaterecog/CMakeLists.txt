@@ -28,7 +28,7 @@ target_link_libraries(${COMPONENT_NAME}
   ${PROJECT_NAME}::platerecog
   ${PROJECT_NAME}::ssd
   ${OpenCV_LIBS} # cv::resize
-  glog::glog
+  PkgConfig::PKG_GLOG
   )
 target_link_libraries(${COMPONENT_NAME} xir::xir) 
 target_include_directories(${COMPONENT_NAME} PUBLIC

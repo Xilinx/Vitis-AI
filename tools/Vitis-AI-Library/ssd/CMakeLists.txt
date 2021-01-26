@@ -70,10 +70,10 @@ install(
 install(FILES include/vitis/ai/ssd.hpp DESTINATION include/vitis/ai)
 
 add_executable(test_ssd test/test_ssd.cpp)
-target_link_libraries(test_ssd ${COMPONENT_NAME} glog::glog ${OpenCV_LIBS})
+target_link_libraries(test_ssd ${COMPONENT_NAME} PkgConfig::PKG_GLOG ${OpenCV_LIBS})
 
 add_executable(test_ssd_batch test/test_ssd_batch.cpp)
-target_link_libraries(test_ssd_batch ${COMPONENT_NAME} glog::glog ${OpenCV_LIBS})
+target_link_libraries(test_ssd_batch ${COMPONENT_NAME} PkgConfig::PKG_GLOG ${OpenCV_LIBS})
 
 add_executable(test_ssd_accuracy test/test_accuracy_ssd.cpp)
-target_link_libraries(test_ssd_accuracy ${COMPONENT_NAME} math glog::glog ${OpenCV_LIBS} model_config)
+target_link_libraries(test_ssd_accuracy ${COMPONENT_NAME} math PkgConfig::PKG_GLOG ${OpenCV_LIBS} model_config)

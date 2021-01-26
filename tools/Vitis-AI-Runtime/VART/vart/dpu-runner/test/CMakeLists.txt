@@ -26,7 +26,7 @@ foreach(FNAME resnet50.cpp test_dpu_runner.cpp test_dpu_runner_mt.cpp)
 
   add_executable(${ELF} ${FNAME})
   target_link_libraries(${ELF}
-    ${COMPONENT_NAME} xir::xir glog::glog opencv_core opencv_video
+    ${COMPONENT_NAME} xir::xir PkgConfig::PKG_GLOG opencv_core opencv_video
     opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui
     util pthread mem-manager)
 endforeach()

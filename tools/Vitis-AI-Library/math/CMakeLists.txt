@@ -70,7 +70,7 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
   SOVERSION "${PROJECT_VERSION_MAJOR}"
   LIBRARY_OUTPUT_NAME  ${PROJECT_NAME}-${COMPONENT_NAME}
   )
-target_link_libraries(${COMPONENT_NAME} glog::glog vart::util vart::dpu-controller)
+target_link_libraries(${COMPONENT_NAME} PkgConfig::PKG_GLOG vart::util vart::dpu-controller)
 target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -127,16 +127,16 @@ if(HAVE_NEON)
   target_link_libraries(test_max_index ${COMPONENT_NAME} ${GTEST_DEPS})
 
   add_executable(test_softmax_my test/test_softmax_my.cpp)
-  target_link_libraries(test_softmax_my ${COMPONENT_NAME} ${OpenCV_LIBS} ${Other_LIBS} glog::glog)
+  target_link_libraries(test_softmax_my ${COMPONENT_NAME} ${OpenCV_LIBS} ${Other_LIBS} PkgConfig::PKG_GLOG)
 
   add_executable(bgr_to_yuv420 test/bgr_to_yuv420.cpp)
-  target_link_libraries(bgr_to_yuv420 ${OpenCV_LIBS} ${Other_LIBS} glog::glog)
+  target_link_libraries(bgr_to_yuv420 ${OpenCV_LIBS} ${Other_LIBS} PkgConfig::PKG_GLOG)
 
   add_executable(test_softmax_table test/test_softmax_table.cpp)
-  target_link_libraries(test_softmax_table ${COMPONENT_NAME} ${OpenCV_LIBS} ${Other_LIBS} glog::glog)
+  target_link_libraries(test_softmax_table ${COMPONENT_NAME} ${OpenCV_LIBS} ${Other_LIBS} PkgConfig::PKG_GLOG)
 
   add_executable(prototype_8bit_to_4bit test/prototype_8bit_to_4bit.cpp)
-  target_link_libraries(prototype_8bit_to_4bit glog::glog vart::util)
+  target_link_libraries(prototype_8bit_to_4bit PkgConfig::PKG_GLOG vart::util)
 
   add_executable(test_transform_mean_scale_performance test/test_transform_mean_scale_performance.cpp)
   target_link_libraries(test_transform_mean_scale_performance vart::util)
@@ -148,4 +148,4 @@ if(HAVE_NEON)
 endif(HAVE_NEON)
 
 add_executable(test_softmax_1 test/test_softmax_1.cpp)
-target_link_libraries(test_softmax_1 ${COMPONENT_NAME} ${OpenCV_LIBS} ${Other_LIBS} glog::glog)
+target_link_libraries(test_softmax_1 ${COMPONENT_NAME} ${OpenCV_LIBS} ${Other_LIBS} PkgConfig::PKG_GLOG)

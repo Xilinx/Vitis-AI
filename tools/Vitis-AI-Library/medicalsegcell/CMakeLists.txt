@@ -38,7 +38,7 @@ add_library(${COMPONENT_NAME} SHARED
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
-target_link_libraries(${COMPONENT_NAME} model_config dpu_task xnnpp glog::glog pthread ${OpenCV_LIBS})
+target_link_libraries(${COMPONENT_NAME} model_config dpu_task xnnpp PkgConfig::PKG_GLOG pthread ${OpenCV_LIBS})
 target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -68,10 +68,10 @@ install(
 install(FILES include/vitis/ai/medicalsegcell.hpp DESTINATION include/vitis/ai)
 
 add_executable(test_medicalsegcell test/test_medicalsegcell.cpp)
-target_link_libraries(test_medicalsegcell ${COMPONENT_NAME} glog::glog  ${OpenCV_LIBS})
+target_link_libraries(test_medicalsegcell ${COMPONENT_NAME} PkgConfig::PKG_GLOG  ${OpenCV_LIBS})
 
 add_executable(test_medicalsegcell_batch test/test_medicalsegcell_batch.cpp)
-target_link_libraries(test_medicalsegcell_batch ${COMPONENT_NAME} glog::glog  ${OpenCV_LIBS})
+target_link_libraries(test_medicalsegcell_batch ${COMPONENT_NAME} PkgConfig::PKG_GLOG  ${OpenCV_LIBS})
 
 add_executable(test_medicalsegcell_accuracy test/test_accuracy_medicalsegcell.cpp)
-target_link_libraries(test_medicalsegcell_accuracy ${COMPONENT_NAME} math glog::glog ${OpenCV_LIBS})
+target_link_libraries(test_medicalsegcell_accuracy ${COMPONENT_NAME} math PkgConfig::PKG_GLOG ${OpenCV_LIBS})

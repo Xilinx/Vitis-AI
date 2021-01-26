@@ -66,13 +66,13 @@ if(BUILD_TEST)
   include_directories(${CMAKE_SOURCE_DIR}/runner/include)
   include_directories(${CMAKE_SOURCE_DIR}/runner/src)
   add_executable(test_xrnn_runner test/test_xrnn_runner.cpp)
-  target_link_libraries (test_xrnn_runner runner xir::xir glog::glog util)
+  target_link_libraries (test_xrnn_runner runner xir::xir PkgConfig::PKG_GLOG util)
 
   add_executable(test_xrnn_runner_u50 test/test_xrnn_runner_u50.cpp)
-  target_link_libraries (test_xrnn_runner_u50 runner xir::xir glog::glog util)
+  target_link_libraries (test_xrnn_runner_u50 runner xir::xir PkgConfig::PKG_GLOG util)
 
   add_executable(test_xrnn_runner_mt test/test_xrnn_runner_mt.cpp)
-  target_link_libraries (test_xrnn_runner_mt runner xir::xir glog::glog util)
+  target_link_libraries (test_xrnn_runner_mt runner xir::xir PkgConfig::PKG_GLOG util)
 endif()
 
 
