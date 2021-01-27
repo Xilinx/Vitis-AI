@@ -1,7 +1,0 @@
-ck
-orderedset
-youtube-dl
-pafy
-wget
-requests
-websocket-client

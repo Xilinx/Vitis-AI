@@ -1,8 +1,0 @@
-op {
-  name: "StackCloseV2"
-  input_arg {
-    name: "handle"
-    type: DT_RESOURCE
-  }
-  is_stateful: true
-}

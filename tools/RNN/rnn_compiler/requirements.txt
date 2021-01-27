@@ -1,3 +1,0 @@
-numpy==1.17.2
-tqdm
-networkx

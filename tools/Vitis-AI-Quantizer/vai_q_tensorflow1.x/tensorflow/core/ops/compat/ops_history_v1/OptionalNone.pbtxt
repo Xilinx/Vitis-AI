@@ -1,7 +1,0 @@
-op {
-  name: "OptionalNone"
-  output_arg {
-    name: "optional"
-    type: DT_VARIANT
-  }
-}
