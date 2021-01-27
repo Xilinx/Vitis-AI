@@ -38,6 +38,9 @@ if [[ $distroname == *"Ubuntu 16.04"* ]]; then
 elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
   echo "Ubuntu 18.04"
   XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_18.04-amd64-xrt.deb"
+elif [[ $distroname == *"Ubuntu 20.04"* ]]; then
+  echo "Ubuntu 20.04"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_20.04-amd64-xrt.deb"
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"Red Hat"* ]]; then
   echo "CentOS/RHEL"
   XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_7.4.1708-x86_64-xrt.rpm"
@@ -51,7 +54,7 @@ fi
 ##############################
 mkdir ./temp
 cd ./temp
-if [[ $distroname == *"Ubuntu 16.04"* ]] || [[ $distroname == *"Ubuntu 18.04"* ]]; then
+if [[ $distroname == *"Ubuntu 16.04"* ]] || [[ $distroname == *"Ubuntu 18.04"* ]] || [[ $distroname == *"Ubuntu 20.04"* ]]; then
   wget $XRT_URL -O xrt.deb
   sudo apt install ./xrt*.deb -y
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"RHEL"* ]]; then
