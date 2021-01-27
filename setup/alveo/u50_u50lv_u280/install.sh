@@ -87,12 +87,4 @@ if [ $? -eq 0 ]; then
   source ./u280_shell_setup.sh
 fi
 
-##############################
-# Downloads Overlays
-##############################
-wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
-tar xfz alveo_xclbin-1.3.0.tar.gz
-rm alveo_xclbin-1.3.0.tar.gz
-
-
 echo "You may need to cold reboot the machine, please refer to the prompt above."
