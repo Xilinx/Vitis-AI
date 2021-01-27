@@ -49,13 +49,9 @@
 #include <xir/graph/graph.hpp>
 #include <xir/tensor/tensor.hpp>
 
-#define _HW_SORT_EN_ 1
-
-#if _HW_SORT_EN_
 /* HW post proc-sort Init */
 #include "tfssd/sort_xrt/sort_wrapper.h"
 PPHandle* pphandle;
-#endif
 
 using namespace std;
 using namespace cv;
@@ -128,7 +124,7 @@ void preProcessSsdmobilenet(Mat &image, float scale, int width, int height, int 
         i++;
     }
 
-void runSSD(vart::Runner* runner, string config_file, string img_dir, bool profile)
+void runSSD(vart::Runner* runner, string config_file, string img_dir, bool profile, bool en_hwpost)
 {
 	auto outTBuffs_ = dynamic_cast<vart::RunnerExt*>(runner)->get_outputs();
 	auto inTBuffs_ = dynamic_cast<vart::RunnerExt*>(runner)->get_inputs();
@@ -136,6 +132,8 @@ void runSSD(vart::Runner* runner, string config_file, string img_dir, bool profi
 	int8_t* input = (int8_t*)inTBuffs_[0]->data().first;
 	auto ip_scales = vart::get_input_scale(dynamic_cast<vart::RunnerExt*>(runner)->get_input_tensors());
 	auto out_scales = vart::get_output_scale(dynamic_cast<vart::RunnerExt*>(runner)->get_output_tensors());
+	float loc_scale = out_scales[0];  
+	float conf_scale = out_scales[1];
 	
 	auto tensor = inTBuffs_[0]->get_tensor();
 	auto in_dims = tensor->get_shape();
@@ -147,11 +145,13 @@ void runSSD(vart::Runner* runner, string config_file, string img_dir, bool profi
 		
 	vector<std::unique_ptr<vitis::ai::TFSSDPostProcess>> processor_;
 	processor_.push_back( vitis::ai::TFSSDPostProcess::create(
-	    width, height, out_scales[0], out_scales[1], config_));
-	
-	const short* fx_priors_ = processor_[0]->fixed_priors_;
-	//# Hardware post proc kernel init
-	hw_sort_init(pphandle, "/usr/lib/dpu.xclbin", fx_priors_);
+	    width, height, conf_scale, loc_scale, config_));
+
+	if(en_hwpost) {	
+		const short* fx_priors_ = processor_[0]->fixed_priors_;
+		//# Hardware post proc kernel init
+		hw_sort_init(pphandle, "/usr/lib/dpu.xclbin", fx_priors_);
+	}
 		
 	long pre_time = 0, exec_time = 0, post_time = 0; 
 	vector<cv::String> files;
@@ -176,14 +176,16 @@ void runSSD(vart::Runner* runner, string config_file, string img_dir, bool profi
 		//# Execution on FPGA
 		auto ret = (runner)->execute_async(inTBuffs_, outTBuffs_);
 		(runner)->wait(uint32_t(ret.first), -1);
-		
+	
+
 		auto t3 = std::chrono::system_clock::now();
 		auto value_t2 = std::chrono::duration_cast<std::chrono::microseconds>(t3-t2);
 		exec_time += value_t2.count();
 		
-		int8_t* conf = (int8_t*)outTBuffs_[0]->data().first;
-		int8_t* loc_ptr = (int8_t*)outTBuffs_[1]->data().first;
-		auto results = processor_[0]->ssd_post_process(conf, loc_ptr);
+		int8_t* loc_ptr = (int8_t*)outTBuffs_[0]->data().first;
+		int8_t* conf = (int8_t*)outTBuffs_[1]->data().first;
+		
+		auto results = processor_[0]->ssd_post_process(conf, loc_ptr, en_hwpost);
 		auto t4 = std::chrono::system_clock::now();
 		auto value_t3 = std::chrono::duration_cast<std::chrono::microseconds>(t4-t3);
 		post_time += value_t3.count();
@@ -220,14 +222,15 @@ void runSSD(vart::Runner* runner, string config_file, string img_dir, bool profi
  * app.exe <options>
  */
 int main(int argc, char **argv) {
-  if(argc != 5){
-   std::cerr << "invalid options <exe> <config proto> <xmodel> <image dir> <enable profile>\n";
+  if(argc != 6){
+   std::cerr << "invalid options <exe> <config proto> <xmodel> <image dir> <enable profile> <sw/hw switch>\n";
    return -1; 
   }
   std::string config_proto = argv[1];
   std::string xmodel_filename = argv[2]; 
   std::string img_dir = argv[3]; 
   bool profile = atoi(argv[4]); 
+  bool en_hwpost = atoi(argv[5]);
  
   // runner
   std::unique_ptr<xir::Graph> graph = xir::Graph::deserialize(xmodel_filename);
@@ -235,7 +238,7 @@ int main(int argc, char **argv) {
   auto r = vart::Runner::create_runner(subgraph[0], "run");
   auto runner_ = std::move(r.get());
   
-  runSSD(runner_, config_proto, img_dir, profile);
+  runSSD(runner_, config_proto, img_dir, profile, en_hwpost);
   
   return 0;
 }
