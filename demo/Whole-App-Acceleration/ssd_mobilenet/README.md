@@ -30,7 +30,7 @@ conda activate vitis-ai-caffe
 
 
 ## Build the Application
-- `cd ${VAI_HOME}/demo/Whole-App-Acceleration/apps/ssd_mobilenet/`
+- `cd ${VAI_HOME}/demo/Whole-App-Acceleration/ssd_mobilenet/`
 - `make build && make -j`
 
 ## Running the Application using Hardware accelerated post process
