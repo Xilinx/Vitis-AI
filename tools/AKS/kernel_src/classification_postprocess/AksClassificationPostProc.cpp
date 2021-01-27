@@ -19,6 +19,8 @@
 #include <queue>
 #include <cassert>
 #include <cmath>
+#include <numeric>
+#include <functional>
 
 #include <aks/AksKernelBase.h>
 #include <aks/AksDataDescriptor.h>
@@ -106,7 +108,7 @@ int ClassificationPostProc::exec_async (
   std::vector <int> inShape  = in[0]->getShape();
 
   int inBatch = inShape[0];
-  int inSize  = inShape[1] * inShape[2] * inShape[3];
+  int inSize  = std::accumulate(std::next(inShape.begin()), inShape.end(), 1, std::multiplies<int>());
 
   /// Get input data 
   float * inData  = (float*) in[0]->data();

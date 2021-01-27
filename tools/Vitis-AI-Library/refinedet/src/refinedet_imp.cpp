@@ -26,7 +26,7 @@ namespace vitis {
 namespace ai {
 
 RefineDetImp::RefineDetImp(const std::string& model_name, bool need_preprocess)
-    : vitis::ai::TConfigurableDpuTask<RefineDet>(model_name, need_preprocess),
+    : RefineDet(model_name, need_preprocess),
       is_tf_(configurable_dpu_task_->getConfig().is_tf()) {
   if (is_tf_) {
     tfprocessor_ = vitis::ai::TFRefineDetPostProcess::create(
@@ -97,6 +97,23 @@ std::vector<RefineDetResult> RefineDetImp::run(
   __TIC__(DPREFINEDET_DPU)
   configurable_dpu_task_->run(0);
   __TOC__(DPREFINEDET_DPU)
+  __TIC__(DPREFINEDET_POST_ARM)
+  std::vector<RefineDetResult> results;
+  if (is_tf_) {
+    results = tfprocessor_->tfrefinedet_post_process();
+  } else {
+    results = processor_->refine_det_post_process();
+  }
+  __TOC__(DPREFINEDET_POST_ARM)
+  return results;
+}
+
+std::vector<RefineDetResult> RefineDetImp::run(
+    const std::vector<vart::xrt_bo_t>& input_bos) {
+  __TIC__(DPREFINEDET_DPU)
+  configurable_dpu_task_->run_with_xrt_bo(input_bos);
+  __TOC__(DPREFINEDET_DPU)
+
   __TIC__(DPREFINEDET_POST_ARM)
   std::vector<RefineDetResult> results;
   if (is_tf_) {

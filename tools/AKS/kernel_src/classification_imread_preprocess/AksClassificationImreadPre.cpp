@@ -83,7 +83,7 @@ int ClassificationImreadPreKernel::exec_async (
 
     /// Resize the image to Network Shape
     cv::Mat resizedImage = cv::Mat(outHeight, outWidth, CV_8SC3);
-    cv::resize(inImage, resizedImage, cv::Size(outHeight, outWidth));
+    cv::resize(inImage, resizedImage, cv::Size(outWidth, outHeight));
 
     /// Pre-Processing loop
     float* batchData = outData + i * nelemsPerImg;

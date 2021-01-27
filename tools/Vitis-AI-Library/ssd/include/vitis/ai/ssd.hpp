@@ -26,10 +26,10 @@
 
 #include <memory>
 #include <opencv2/core.hpp>
+#include <vitis/ai/configurable_dpu_task.hpp>
 #include <vitis/ai/nnpp/ssd.hpp>
-
 namespace xir {
-  class Attrs;
+class Attrs;
 };
 namespace vitis {
 namespace ai {
@@ -62,7 +62,7 @@ namespace ai {
  * Display of the model results:
  * @image latex images/sample_ssd_result.jpg "detection result" width=\textwidth
  */
-class SSD {
+class SSD : public ConfigurableDpuTaskBase {
  public:
   /**
    * @brief Factory function to get an instance of derived classes of class
@@ -74,17 +74,19 @@ class SSD {
    * @return An instance of SSD class.
    *
    */
-  static std::unique_ptr<SSD> create(const std::string &model_name,
+  static std::unique_ptr<SSD> create(const std::string& model_name,
                                      bool need_preprocess = true);
-  static std::unique_ptr<SSD> create(const std::string &model_name,
-                                     xir::Attrs *attrs,
+  static std::unique_ptr<SSD> create(const std::string& model_name,
+                                     xir::Attrs* attrs,
                                      bool need_preprocess = true);
   /**
    * @cond NOCOMMENTS
    */
  protected:
-  explicit SSD();
-  SSD(const SSD &) = delete;
+  explicit SSD(const std::string& model_name, bool need_preprocess = true);
+  explicit SSD(const std::string& model_name, xir::Attrs* attrs,
+               bool need_preprocess = true);
+  SSD(const SSD&) = delete;
 
  public:
   virtual ~SSD();
@@ -100,7 +102,7 @@ class SSD {
    * @return SSDResult.
    *
    */
-  virtual vitis::ai::SSDResult run(const cv::Mat &image) = 0;
+  virtual vitis::ai::SSDResult run(const cv::Mat& image) = 0;
 
   /**
    * @brief Function to get running results of the SSD neuron network in
@@ -113,29 +115,19 @@ class SSD {
    *
    */
   virtual std::vector<vitis::ai::SSDResult> run(
-      const std::vector<cv::Mat> &images) = 0;
+      const std::vector<cv::Mat>& images) = 0;
 
   /**
-   * @brief Function to get InputWidth of the SSD network (input image columns).
+   * @brief Function to get running results of the SSD neuron network in
+   * batch mode, used to receive user's xrt_bo to support zero copy.
    *
-   * @return InputWidth of the SSD network.
-   */
-  virtual int getInputWidth() const = 0;
-  /**
-   *@brief Function to get InputHeight of the SSD network (input image rows).
+   * @param input_bos The vector of vart::xrt_bo_t.
    *
-   *@return InputHeight of the SSD network.
-   */
-  virtual int getInputHeight() const = 0;
-  /**
-   * @brief Function to get the number of images processed by the DPU at one
-   *time.
-   * @note Different DPU core the batch size may be different. This depends on
-   *the IP used.
+   * @return The vector of SSDResult.
    *
-   *@return Batch size.
    */
-  virtual size_t get_input_batch() const = 0;
+  virtual std::vector<vitis::ai::SSDResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) = 0;
 };
 }  // namespace ai
 }  // namespace vitis

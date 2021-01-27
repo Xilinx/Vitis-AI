@@ -19,31 +19,32 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vector>
-#include <vitis/ai/configurable_dpu_task.hpp>
 #include <vitis/ai/facedetect.hpp>
 using std::tuple;
 using std::vector;
 
 namespace vitis {
 namespace ai {
-
-class DetectImp : public vitis::ai::TConfigurableDpuTask<FaceDetect> {
+class DetectImp : public FaceDetect {
  public:
-  DetectImp(const std::string &model_name, bool need_preprocess);
-  DetectImp(const std::string &model_name, xir::Attrs *attrs, bool need_preprocess);
+  DetectImp(const std::string& model_name, bool need_preprocess);
+  DetectImp(const std::string& model_name, xir::Attrs* attrs,
+            bool need_preprocess);
 
   /// Destructor
   virtual ~DetectImp();
   /// Set an image and get positions and scores of faces in the image
-  virtual FaceDetectResult run(const cv::Mat &img) override;
+  virtual FaceDetectResult run(const cv::Mat& img) override;
 
   /// Set an image list and get positions and scores of faces in the image
   virtual std::vector<FaceDetectResult> run(
-      const std::vector<cv::Mat> &img) override;
+      const std::vector<cv::Mat>& img) override;
   /// Get detect threshold
   virtual float getThreshold() const override;
   /// Set detect threshold
   virtual void setThreshold(float threshold) override;
+  virtual std::vector<FaceDetectResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) override;
 
  private:
   float det_threshold_;

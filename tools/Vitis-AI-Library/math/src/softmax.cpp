@@ -87,10 +87,15 @@ void softmax(const float* input, float scale, unsigned int cls,
 
 void softmax(const int8_t* input, float scale, unsigned int cls,
              unsigned int group, float* output) {
-  static auto hw_smfc = xir::SfmController::get_instance();
   if (ENV_PARAM(XLNX_ENABLE_C_SOFTMAX)) {
     GLOBAL_ENABLE_C_SOFTMAX = 2;
   }
+
+//# Enable software softmax by default for DPUCADF8H
+#ifdef ENABLE_DPUCADF8H_RUNNER
+    GLOBAL_ENABLE_C_SOFTMAX = 2;
+#endif
+
 #ifdef ENABLE_NEON
   if (GLOBAL_ENABLE_C_SOFTMAX == 1) {
     if (cls == 2) {
@@ -101,6 +106,7 @@ void softmax(const int8_t* input, float scale, unsigned int cls,
       softmax_c(input, scale, cls, group, output);
     }
   } else if (GLOBAL_ENABLE_C_SOFTMAX == 0) {
+    static auto hw_smfc = xir::SfmController::get_instance();
     //判断scale
     auto scale2fixpos = [](float scale) { return std::abs((int)log2(scale)); };
     int fixpos = scale2fixpos(scale);
@@ -121,6 +127,7 @@ void softmax(const int8_t* input, float scale, unsigned int cls,
   }
 #else
   if (GLOBAL_ENABLE_C_SOFTMAX == 0) {
+    static auto hw_smfc = xir::SfmController::get_instance();
     if (hw_smfc && hw_smfc->supported(scale, cls, group)) {
       hw_smfc->run(input, scale, cls, group, output);
     } else {

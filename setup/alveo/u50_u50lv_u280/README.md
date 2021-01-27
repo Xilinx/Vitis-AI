@@ -2,11 +2,11 @@
 
 Xilinx DPU IP family for convolution nerual network (CNN) inference application supports Alveo accelerator cards with HBM now, including Alveo U50, U50LV and U280 cards. The Xilinx DPUs for Alveo-HBM card include ***DPUCAHX8H*** and ***DPUCAHX8L***, the former is for optimized for high throughput and the latter is optimized for MobileNet model and ultra low latency. The on-premise DPUCAHX8H and DPUCAHX8L overlays are released along with Vitis AI, and a few of variants are provided.
 
-Following section will guide you through the Alveo-HBM card preparation steps and on-premise overlays setup flow for Vitis AI.
+Following section will guide you through the Alveo-HBM card preparation steps for Vitis AI.
 
-## Alveo Card and Overlays Setup
+## Alveo Card Setup
 
-We provide some scripts to help to automatically finish the Alveo card and overlay files setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect the cards type (U50, U50LV or U280) and Operating System you are using, then download and install the appropriate packages.
+We provide some scripts to help to automatically finish the Alveo card setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect the cards type (U50, U50LV or U280) and Operating System you are using, then download and install the appropriate packages.
 
 **Please note you should use this script in host environment, namely out of the Docker container.** 
 
@@ -17,7 +17,7 @@ source ./install.sh
 <details>
  <summary><b>Advanced - Step by Step XRT/Platform Setup</b></summary>
 
-If you don't use the script above, you could follow following steps to finish the Alveo card and overlays setup.
+If you don't use the script above, you could follow following steps to finish the Alveo card setup.
 
 **Please note you should use this script in host environment, namely out of the Docker container.** 
 
@@ -53,28 +53,20 @@ Ubuntu 18.04:
 For U50 card, gen3x4 version target platform is used. Please download and install the required gen3x4 target platform files.
 
 CentOS/Redhat:
-[Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz)
+[xilinx-u50-gen3x4-xdma-platform-2-1.noarch.rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u50-gen3x4-xdma-platform-2-1.noarch.rpm.tar.gz)
 
-Ubuntu 16.04:
-[Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_16.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_16.04_deb.tar.gz)
-
-Ubuntu 18.04:
-[Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_18.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_18.04_deb.tar.gz)
-
+Ubuntu 16.04/18.04/20.04:
+[xilinx-u50-gen3x4-xdma-platform_2-1_all.deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u50-gen3x4-xdma-platform_2-1_all.deb.tar.gz)
 
 #### Alveo U50LV Card
 
 For U50LV card, gen3x4 version target platform is used. Please download and install the required gen3x4 target platform files.
 
 CentOS/Redhat:
-[Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-noarch_rpm.tar.gz)
+[xilinx-u50lv-gen3x4-xdma-platform-2-1.noarch.rpm.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u50lv-gen3x4-xdma-platform-2-1.noarch.rpm.tar.gz)
 
-Ubuntu 16.04:
-[Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-16.04_deb.tar.gz)
-
-Ubuntu 18.04:
-[Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-18.04_deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50lv-gen3x4-xdma-2-202010.1-2902115-18.04_deb.tar.gz)
-
+Ubuntu 16.04/18.04/20.04:
+[xilinx-u50lv-gen3x4-xdma-platform_2-1_all.deb.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u50lv-gen3x4-xdma-platform_2-1_all.deb.tar.gz)
 
 ### Update the Alveo Card Flash
 After you have downloaded and installed the platform files above, use following commands and cold reboot your machine to finished the setup.
@@ -92,4 +84,28 @@ sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50_gen3x4_xdma_ba
 For Alveo U50LV:
 ~~~
 sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_base_2
+~~~
+
+</details>
+
+***
+
+**Notes**: if there are more than one supported cards installed on the host, all available cards will be used for DPU applications by default. You can use following command to check the installed Alveo card on the host:
+
+~~~
+/opt/xilinx/xrt/bin/xbutil list
+~~~
+
+If you want to specify whith cards to use for Vitis AI, you can use the environment variable *XLNX_ENABLE_DEVICES* in the **Docker container**. The example usage is like below:
+
+* To use card 0 for the DPU, use following setting in docker: 
+
+~~~
+export XLNX_ENABLE_DEVICES=0.
+~~~
+
+* To use card 0, card 1, and card 2 for the DPU, use following setting in docker:
+
+~~~
+export XLNX_ENABLE_DEVICES=0,1,2
 ~~~

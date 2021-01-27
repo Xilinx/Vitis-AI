@@ -27,9 +27,48 @@ std::unique_ptr<ConfigurableDpuTask> ConfigurableDpuTask::create(
 }
 
 std::unique_ptr<ConfigurableDpuTask> ConfigurableDpuTask::create(
-    const std::string& model_name, xir::Attrs *attrs, bool need_preprocess) {
+    const std::string& model_name, xir::Attrs* attrs, bool need_preprocess) {
   return std::unique_ptr<ConfigurableDpuTask>(
       new ConfigurableDpuTaskImp(model_name, attrs, need_preprocess));
 }
+
+ConfigurableDpuTaskBase::ConfigurableDpuTaskBase(const std::string& model_name,
+                                                 bool need_preprocess)
+    : configurable_dpu_task_{
+          ConfigurableDpuTask::create(model_name, need_preprocess)} {};
+ConfigurableDpuTaskBase::ConfigurableDpuTaskBase(const std::string& model_name,
+                                                 xir::Attrs* attrs,
+                                                 bool need_preprocess)
+    : configurable_dpu_task_{
+          ConfigurableDpuTask::create(model_name, attrs, need_preprocess)} {};
+
+ConfigurableDpuTaskBase::~ConfigurableDpuTaskBase(){};
+
+int ConfigurableDpuTaskBase::get_input_width() const {
+  return configurable_dpu_task_->getInputWidth();
+}
+
+int ConfigurableDpuTaskBase::get_input_height() const {
+  return configurable_dpu_task_->getInputHeight();
+}
+
+size_t ConfigurableDpuTaskBase::get_input_batch() const {
+  return configurable_dpu_task_->get_input_batch();
+}
+
+int ConfigurableDpuTaskBase::get_input_buffer_size() const {
+  return configurable_dpu_task_->get_input_buffer_size();
+}
+/**
+ * @brief return the vector of input offset for zero copy
+ */
+size_t ConfigurableDpuTaskBase::get_input_offset() const {
+  return configurable_dpu_task_->get_input_offset();
+}
+
+int ConfigurableDpuTaskBase::get_input_fix_point() const {
+  return configurable_dpu_task_->get_input_fix_point();
+}
+
 }  // namespace ai
 }  // namespace vitis
