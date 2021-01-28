@@ -14,7 +14,7 @@
 
 ## 1 Introduction
 
-WAA-TRD demonstrates integration of pre/post processing accelerator with DPU(Deep Neural Network DNN accelerator) for Embedded or cloud platform. The pre/post processing accelerator is implemented using Xilinx® [Vitis Vision library](https://github.com/Xilinx/Vitis_Libraries/tree/master/vision) functions. WAA-TRD provides examples for integrating different pre processing involved in the object classification & detection networks with DPU. 
+WAA-TRD demonstrates integration of pre/post processing accelerator with DPU(Deep Neural Network DNN accelerator) for Embedded and cloud platform. The pre/post processing accelerator is implemented using Xilinx® [Vitis Vision library](https://github.com/Xilinx/Vitis_Libraries/tree/master/vision) functions. WAA-TRD provides examples for integrating different pre processing involved in the object classification & detection networks with DPU. 
 
 There are two flows being provided 
 1.	Build : Both the pre-processing accelerator and DPU are built from sources. This flow uses DPU-TRD’s make flows.
