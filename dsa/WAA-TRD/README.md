@@ -98,7 +98,7 @@ This tutorial contents information about:
 
 ### 4.2 Design files
 Source  files location for DPU & Pre-processor IP is as below
-- DPU IP: `~/Vitis-AI/dsa/DPU-TRD/dpu-ip`
+- DPUv2 IP: `~/Vitis-AI/dsa/DPU-TRD/dpu-ip`
 - Pre-processor IP: `~/Vitis-AI/dsa/WAA-TRD/accel/classification-pre` & `detection-pre`
 
 
