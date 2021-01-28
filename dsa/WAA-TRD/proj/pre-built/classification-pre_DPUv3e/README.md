@@ -60,7 +60,7 @@ Note that
 
     Download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
 	
-### Compile & run the application on Alveo U50
+### 3. Compile & run the application on Alveo U50
 
   	```
   	cd /workspace/dsa/WAA-TRD/app/resnet50_waa

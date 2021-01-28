@@ -1,8 +1,8 @@
-setenv PLATFORM_REPO_PATHS /proj/DAB/ravishan/abstract_shell/from_nkpavan/dpuv3_me/20201103_u50_from_bo_with_pp/rel_to_Pavan.20201103/WAA-TRD/bin
-setenv DEVICE xilinx_u50_gen3x4_xdma_2_202010_1
-setenv SDX_PLATFORM /proj/DAB/ravishan/abstract_shell/from_nkpavan/dpuv3_me/20201103_u50_from_bo_with_pp/rel_to_Pavan.20201103/WAA-TRD/bin/xilinx_u50_gen3x4_xdma_2_202010_1/xilinx_u50_gen3x4_xdma_2_202010_1.xpfm
-source /proj/xbuilds/2020.2_daily_latest/xbb/xrt/packages/setenv.csh
-source /proj/xbuilds/2020.2_daily_latest/installs/lin64/Vitis/2020.2/settings64.csh
+#setenv PLATFORM_REPO_PATHS /proj/DAB/ravishan/abstract_shell/from_nkpavan/dpuv3_me/20201103_u50_from_bo_with_pp/rel_to_Pavan.20201103/WAA-TRD/bin
+#setenv DEVICE xilinx_u50_gen3x4_xdma_2_202010_1
+#setenv SDX_PLATFORM /proj/DAB/ravishan/abstract_shell/from_nkpavan/dpuv3_me/20201103_u50_from_bo_with_pp/rel_to_Pavan.20201103/WAA-TRD/bin/xilinx_u50_gen3x4_xdma_2_202010_1/xilinx_u50_gen3x4_xdma_2_202010_1.xpfm
+#source /proj/xbuilds/2020.2_daily_latest/xbb/xrt/packages/setenv.csh
+#source /proj/xbuilds/2020.2_daily_latest/installs/lin64/Vitis/2020.2/settings64.csh
 
 make -f ../../../bin/common/waa_trd.mk \
 ACCEL=detection-pre \
