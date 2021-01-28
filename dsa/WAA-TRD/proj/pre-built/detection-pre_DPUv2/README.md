@@ -1,4 +1,4 @@
-# Detection example: TRD run using Pre-processor source files & pre-built DPU IP
+# Detection example: ZCU102 TRD run using Pre-processor source files & pre-built DPU IP
 
 ## 1 Software Tools and System Requirements
 
