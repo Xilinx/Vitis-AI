@@ -98,7 +98,7 @@ import torch
 
 ### vai_q_pytorch Tool Usage
 
-vai_q_pytorch is designed to work as a Pytorch plugin. We provide simplest APIs to introduce our FPAG-friendly quantization feature.
+vai_q_pytorch is designed to work as a Pytorch plugin. We provide simplest APIs to introduce our FPGA-friendly quantization feature.
 For a well-defined model, user only need to add 2-3 lines to get a quantize model object.
 
 ##### Model pre-requirements for quantizer
