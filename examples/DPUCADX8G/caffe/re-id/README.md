@@ -49,7 +49,7 @@ Compile the Model - In this step, the network files are compiled.
 Subgraph Partitioning - In this step, the original graph is cut, and a custom FPGA accelerated python layer is inserted to be used for Inference.
 
 ```sh
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/re-id
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/re-id
 python run.py --prototxt reid_model/trainval.prototxt --caffemodel reid_model/trainval.caffemodel --prepare
 ```
 

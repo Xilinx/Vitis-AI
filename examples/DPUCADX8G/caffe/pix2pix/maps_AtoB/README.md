@@ -22,7 +22,7 @@ Download maps-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/p
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/maps_AtoB/
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/maps_AtoB/
 wget https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/maps.tar.gz
 tar -xvf maps.tar.gz
 rm maps.tar.gz
@@ -31,22 +31,22 @@ rm maps.tar.gz
 The folder is supposed to be as the following.
 
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/maps_AtoB/maps/train
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/maps_AtoB/maps/val
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/maps_AtoB/maps/train
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/maps_AtoB/maps/val
 ```
 
 The downloaded images have the combination of Cityscapes Semantic photo and label.
 To split Semantic photo and label, please run the following command lines.
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/maps_AtoB/
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/maps_AtoB/
 python extract_label_aerial.py
 ```
 
 This will generate two subfolders in val folder. 'photo' and 'label'.
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/maps_AtoB/maps/val/photo
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/maps_AtoB/maps/val/label
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/maps_AtoB/maps/val/photo
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/maps_AtoB/maps/val/label
 ```
 
 
@@ -70,16 +70,16 @@ To get the quantized Caffe model, run the following command lines.
 
 > **Note:** Skip, If you have already run the below steps.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe
 python getModels.py
 ```
 
-The Pix2Pix (maps_AtoB) model files would be located in '${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/maps_AtoB' folder.
+The Pix2Pix (maps_AtoB) model files would be located in '${VAI_HOME}/examples/DPUCADX8G/caffe/models/maps_AtoB' folder.
 
 Copy the model files to 'pix2pix/maps_AtoB/quantize_results' with the following commands.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/maps_AtoB
-cp -R ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/maps_AtoB ./quantize_results
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/maps_AtoB
+cp -R ${VAI_HOME}/examples/DPUCADX8G/caffe/models/maps_AtoB ./quantize_results
 ```
 
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'maps_AtoB/quantize_results' sub-folder.
@@ -89,7 +89,7 @@ You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'maps_
 
 To run the inference model on cpu for translating aerial photo to map, run the following commands.
 ```sh
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/maps_AtoB
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/maps_AtoB
 python maps_AtoB_cpu.py --image <image-file>
 
 [sample]
@@ -104,7 +104,7 @@ The generated semantic label image will be stored in 'test_output' sub-folder.
 The quantized caffemodel need to be compiled and partitioned at your local drive using the following commands
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/maps_AtoB
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/maps_AtoB
 source run.sh deploy
 ```
 
@@ -120,7 +120,7 @@ xfdnn_deploy.prototxt (used to execute Caffe model on FPGA) will be generated at
 To run the inference model on fpga with cityscape photo images, run the following commands.
 
 ```sh
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/maps_AtoB
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/maps_AtoB
 python maps_AtoB_fpga.py --image <image-file>
 
 [sample]

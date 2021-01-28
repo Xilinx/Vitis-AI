@@ -94,7 +94,7 @@ Runtime packages on the board separately.**
 
 * To download and install `adas detection` model:
 	```
-	  cd ${VAI_ALVEO_ROOT}/..
+	  cd ${VAI_HOME}
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz -O yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
 	```	
 * Install the model package.

@@ -8,7 +8,7 @@ Please activate Caffe conda environment using the following commands.
 ```
 conda activate vitis-ai-caffe
 source /vitis_ai_home/setup/alveo/u200_u250/overlaybins/setup.sh
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net
 ```
 
 
@@ -29,18 +29,18 @@ Please unzip the zip file of the PhC-U373 dataset inside of U-Net folder.
 The folder is supposed to be as the following.
 
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/01
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/01_GT
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/01_ST
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/02
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/02_GT
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/02_ST
+${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/01
+${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/01_GT
+${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/01_ST
+${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/02
+${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/02_GT
+${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/02_ST
 ```
 
 For training/interference, we need to make two subfolders. 'Img' and 'Seg'.
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net
 python convert_dataset.py
 ```
 
@@ -70,18 +70,18 @@ After training the model, we converted Keras model to Caffemodel.
 To get the pre-trained Caffe model, run the following command lines.
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe
 python getModels.py && python replace_mluser.py --modelsdir models
 
 ```
 
-The U-Net model files would be located in '${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/U-Net' folder.
+The U-Net model files would be located in '${VAI_HOME}/examples/DPUCADX8G/caffe/models/U-Net' folder.
 
 
 We need to copy the model files into 'U-Net/float' sub-foloder using the following command lines.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net
-cp -R ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/U-Net ./float
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net
+cp -R ${VAI_HOME}/examples/DPUCADX8G/caffe/models/U-Net ./float
 ```
 You can find unet_U373_256.prototxt and unet_U373_256.caffemodel in 'U-Net/float' sub-foloder.
 
@@ -92,7 +92,7 @@ You can find unet_U373_256.prototxt and unet_U373_256.caffemodel in 'U-Net/float
 To run the Caffe model on CPU with the test images, please use the following command line.
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net
 python unet_caffe_cpu.py
 ```
 
@@ -180,10 +180,10 @@ Using any text editor, the input block of the quantize_train_test.prototxt shoul
 #    crop_size: 256
 #  }
 #  image_data_param {
-#    source: "${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net/U373_list.txt"
+#    source: "${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net/U373_list.txt"
 #    batch_size: 1
 #    shuffle: false
-#    root_folder: "${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/Img/"
+#    root_folder: "${VAI_HOME}/examples/DPUCADX8G/caffe/U-Net/PhC-C2DH-U373/Img/"
 #  }
 #}
 layer {

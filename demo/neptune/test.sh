@@ -60,7 +60,7 @@ if [[ $TESTS != "" ]]; then
 fi
 
 . ../../setup/alveo/u200_u250/overlaybins/setup.sh > /dev/null # needed to add VAI_ALVEO_ROOT to env
-export PYTHONPATH=${PYTHONPATH}$VAI_ALVEO_ROOT:
+export PYTHONPATH=${PYTHONPATH}:${VAI_HOME}:${VAI_HOME}/examples
 pytest $CAPTURE -rA --hostname $HOSTNAME --port $PORT --wsport $WSPORT \
     --fpgas $FPGAS --benchmark $BENCHMARK --neptune_mode $MODE $TESTS $COV
 if [[ $COV == "--coverage" ]]; then

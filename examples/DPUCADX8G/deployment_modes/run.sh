@@ -65,7 +65,7 @@ do
     -is|--imagescale    ) IMG_INPUT_SCALE="$2"                                            ; shift 2 ;;
     -y |--numprepproc   ) NUMPREPPROC="$2"                                                ; shift 2 ;;
     -acu|--acquirecu    ) ACQUIRECU="$2"                                                  ; shift 2 ;;
-    -g |--checkaccuracy ) GOLDEN=$VAI_ALVEO_ROOT/DPUCADX8G/deployment_modes/gold.txt     ; shift 1 ;;
+    -g |--checkaccuracy ) GOLDEN=$VAI_HOME/examples/DPUCADX8G/deployment_modes/gold.txt     ; shift 1 ;;
     -v |--verbose       ) VERBOSE=1                                                       ; shift 1 ;;
     -x |--perpetual     ) PERPETUAL=1                                                     ; shift 1 ;;
     -cn|--customnet     ) CUSTOM_NETCFG="$2"                                              ; shift 2 ;;
@@ -118,7 +118,7 @@ echo -e "Running:\n Test: $TEST\n Model: $MODEL\n Xclbin: $XCLBIN\n Accelerator:
 BASEOPT="--xclbin $XCLBIN
          --netcfg $NETCFG
          --weights $WEIGHTS
-         --labels $VAI_ALVEO_ROOT/DPUCADX8G/deployment_modes/synset_words.txt
+         --labels $VAI_HOME/examples/DPUCADX8G/deployment_modes/synset_words.txt
          --quantizecfg $QUANTCFG
          --img_input_scale $IMG_INPUT_SCALE
          --batch_sz $BATCHSIZE"
@@ -266,12 +266,12 @@ elif [ "$TEST" == "classify_cpp" ]; then
   cp ./classify.exe ../classify.exe
   cd -
   BATCHSIZE=1
-  DIRECTORY=$VAI_ALVEO_ROOT/DPUCADX8G/deployment_modes/dog.jpg
+  DIRECTORY=$VAI_HOME/examples/DPUCADX8G/deployment_modes/dog.jpg
   BASEOPT_CPP="--xclbin $XCLBIN --netcfg $NETCFG --datadir $WEIGHTS --labels ./synset_words.txt --quantizecfg $QUANTCFG --img_input_scale $IMG_INPUT_SCALE --batch_sz $BATCHSIZE"
   BASEOPT_CPP+=" --image $DIRECTORY"
   OPENCV_LIB=/usr/lib/x86_64-linux-gnu
-  HDF5_PATH=${VAI_ALVEO_ROOT}/ext/hdf5
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$VAI_ALVEO_ROOT/ext/zmq/libs:$VAI_ALVEO_ROOT/ext/boost/libs:${HDF5_PATH}/lib:$VAI_ALVEO_ROOT/vai/dpuv1/rt/libs:/opt/xilinx/xrt/lib:$OPENCV_LIB
+  HDF5_PATH=${VAI_HOME}/examples/ext/hdf5
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$VAI_HOME/examples/ext/zmq/libs:$VAI_HOME/examples/ext/boost/libs:${HDF5_PATH}/lib:$VAI_ALVEO_ROOT/vai/dpuv1/rt/libs:/opt/xilinx/xrt/lib:$OPENCV_LIB
 
 ###########################
 # multi-PE multi-network (Run two different networks simultaneously)
@@ -294,5 +294,5 @@ if [ "$TEST" == "classify_cpp" ]; then
   ./classify.exe $BASEOPT_CPP
 else
   echo python $TEST $BASEOPT
-  python $VAI_ALVEO_ROOT/DPUCADX8G/deployment_modes/$TEST $BASEOPT
+  python $VAI_HOME/examples/DPUCADX8G/deployment_modes/$TEST $BASEOPT
 fi

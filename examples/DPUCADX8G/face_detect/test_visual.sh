@@ -64,7 +64,7 @@ else
 fi
 
 # Path to Model-Zoo directory
-MODEL_ZOO=$VAI_ALVEO_ROOT/models/container/caffe/
+MODEL_ZOO=$VAI_HOME/examples/models/container/caffe/
 
 PROTOTXT=$Model_Name/${Model_Name}.prototxt
 CAFFMODEL=$Model_Name/$Model_Name.caffemodel

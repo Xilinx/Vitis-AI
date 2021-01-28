@@ -15,7 +15,7 @@ import os
 
 import neptune.recipes.recipe as Recipe
 
-root_path = os.environ['VAI_ALVEO_ROOT']
+root_path = os.environ['VAI_HOME']
 model_path = root_path + '../artifacts'
 artifact_server = "http://www.xilinx.com/bin/public/openDownload?filename="
 if os.path.isdir('/opt/xilinx/overlaybins/xdnnv3'):

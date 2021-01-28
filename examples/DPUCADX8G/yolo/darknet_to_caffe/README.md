@@ -14,7 +14,7 @@ The convert.py script supports yolov2 and yolov3 models. This tool does not supp
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ```sh
-cd $VAI_ALVEO_ROOT/DPUCADX8G/yolo/darknet_to_caffe
+cd $VAI_HOME/examples/DPUCADX8G/yolo/darknet_to_caffe
 #Download yolov3.weights and yolov3.cfg
 wget https://pjreddie.com/media/files/yolov3.weights
 wget https://raw.githubusercontent.com/pjreddie/darknet/master/cfg/yolov3.cfg
@@ -23,10 +23,10 @@ python convert.py yolov3.cfg yolov3.weights yolov3.prototxt yolov3.caffemodel
 
 ## Run the converted model on cpu using $VAI_ROOT/DPUCADX8G/yolo/detect.sh and visualize output on test_image_set.
 
-Before running the below command, download and prepare the data as mentioned in the $VAI_ALVEO_ROOT/DPUCADX8G/yolo/README.md file.
+Before running the below command, download and prepare the data as mentioned in the $VAI_HOME/examples/DPUCADX8G/yolo/README.md file.
 
 ```sh
-cd $VAI_ALVEO_ROOT/DPUCADX8G/yolo
+cd $VAI_HOME/examples/DPUCADX8G/yolo
 ./detect.sh -t cpu_detect  \
         -m custom \
         -d test_image_set \
@@ -48,9 +48,9 @@ The output images are stored in cpu_results folder.
 
 ## Calculate accuracy (mAP) on CPU with val_set of 2000 images.
 
-The steps for creating val2k folder is mentioned in the $VAI_ALVEO_ROOT/DPUCADX8G/yolo/README.md
+The steps for creating val2k folder is mentioned in the $VAI_HOME/examples/DPUCADX8G/yolo/README.md
 ```sh
-cd $VAI_ALVEO_ROOT/DPUCADX8G/yolo
+cd $VAI_HOME/examples/DPUCADX8G/yolo
 ./detect.sh -t cpu_detect  \
         -m custom \
         -d val2k \
@@ -67,7 +67,7 @@ cd $VAI_ALVEO_ROOT/DPUCADX8G/yolo
 ## Calculate accuracy (mAP) on FPGA with val_set of 2000 images
 
 ```sh
-cd $VAI_ALVEO_ROOT/DPUCADX8G/yolo
+cd $VAI_HOME/examples/DPUCADX8G/yolo
 ./detect.sh -t test_detect  \
         -m custom \
         -d val2k \
