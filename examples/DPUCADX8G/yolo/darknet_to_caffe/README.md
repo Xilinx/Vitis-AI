@@ -21,7 +21,7 @@ wget https://raw.githubusercontent.com/pjreddie/darknet/master/cfg/yolov3.cfg
 python convert.py yolov3.cfg yolov3.weights yolov3.prototxt yolov3.caffemodel
 ```
 
-## Run the converted model on cpu using $VAI_ROOT/DPUCADX8G/yolo/detect.sh and visualize output on test_image_set.
+## Run the converted model on cpu using $VAI_HOME/examples/DPUCADX8G/yolo/detect.sh and visualize output on test_image_set.
 
 Before running the below command, download and prepare the data as mentioned in the $VAI_HOME/examples/DPUCADX8G/yolo/README.md file.
 

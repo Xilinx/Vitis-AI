@@ -165,13 +165,13 @@ LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${AKS_ROOT}/libs
 PYTHONPATH=${PYTHONPATH}:${AKS_ROOT}/libs:${AKS_ROOT}/libs/pykernels:/usr/lib
 
 # Add Library Paths (DPUCADX8G)
-if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib" ]
+if [ -d "${VAI_HOME}/vai/dpuv1/rt/xdnn_cpp/lib" ]
 then
-  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib
+  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_HOME}/vai/dpuv1/rt/xdnn_cpp/lib
 fi
-if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/utils" ]
+if [ -d "${VAI_HOME}/vai/dpuv1/utils" ]
 then
-  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/utils
+  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_HOME}/vai/dpuv1/utils
 fi
 PYTHONPATH=${PYTHONPATH}:${VAI_HOME}/examples:${VAI_HOME}/examples/DPUCADX8G/face_detect
 

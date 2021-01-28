@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Copyright 2019 Xilinx Inc.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
@@ -59,7 +59,6 @@ if [[ $TESTS != "" ]]; then
     TESTS="-k $TESTS"
 fi
 
-. ../../setup/alveo/u200_u250/overlaybins/setup.sh > /dev/null # needed to add VAI_ALVEO_ROOT to env
 export PYTHONPATH=${PYTHONPATH}:${VAI_HOME}:${VAI_HOME}/examples
 pytest $CAPTURE -rA --hostname $HOSTNAME --port $PORT --wsport $WSPORT \
     --fpgas $FPGAS --benchmark $BENCHMARK --neptune_mode $MODE $TESTS $COV

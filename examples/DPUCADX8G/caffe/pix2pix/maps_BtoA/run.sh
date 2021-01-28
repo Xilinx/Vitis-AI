@@ -2,8 +2,8 @@
 #set -x
 
 # Set Platform Environment Variables
-if [ -z $VAI_ALVEO_ROOT ]; then
-  echo "Please set VAI_ALVEO_ROOT, see you next time!"
+if [ -z $VAI_HOME ]; then
+  echo "Please set VAI_HOME, see you next time!"
   exit 1
 fi
 
@@ -19,7 +19,7 @@ OUTDIR=$MODELDIR/work
 # Choose the target
 ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
 if [ ! -f $ARCH_JSON ]; then
-  ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
+  ARCH_JSON="$VAI_HOME/arch.json"
 fi
 
 

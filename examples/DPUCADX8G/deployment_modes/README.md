@@ -115,9 +115,9 @@ For Multinet deployments, the different models/networks are set in the `--jsoncf
 
   ```sh
 ------------------
-Using VAI_ALVEO_ROOT
+Using VAI_HOME
 ------------------
-/vitis_ai_home/examples
+/vitis_ai_home
 
 ---------------------
 Verifying XILINX_XRM

@@ -95,7 +95,7 @@ if [ -d $XCLBIN ]; then
   echo "--- Using System XCLBIN ---"
 else
   echo "--- Using Local XCLBIN ---"
-  XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
+  XCLBIN=${VAI_HOME}/overlaybins/xdnnv3
 fi
 WEIGHTS=./data/${MODEL}_data.h5
 DSP_WIDTH=96
@@ -144,7 +144,7 @@ if [ -z $VITIS_RUNDIR ]; then
   ln -s $(get_abs_filename $WEIGHTS) ${VITIS_RUNDIR}/weights.h5
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"acquire_cu\": \"$ACQUIRECU\", \"publish_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}/meta.json
   # meta.json accepts {env_variables} in paths as well, e.g.:
-  #echo "{ \"lib\": \"{VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_ALVEO_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
+  #echo "{ \"lib\": \"{VAI_HOME}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_HOME}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
   cp -fr $VITIS_RUNDIR ${VITIS_RUNDIR}_worker
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"acquire_cu\": \"$ACQUIRECU\", \"subscribe_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}_worker/meta.json
   BASEOPT+=" --vitis_rundir ${VITIS_RUNDIR}"
@@ -209,7 +209,7 @@ elif [[ "$TEST" == "streaming_classify"*  || "$TEST" == "test_mp_classify"* ]] ;
   if [ "$PERPETUAL" == 1 ]; then
     BASEOPT+=" --zmqpub --perpetual --deviceID $DEVICEID"
   fi
-  
+
   if [ "$PROFILING_ENABLE" == 1 ]; then
     BASEOPT+=" --profile"
   fi
@@ -271,7 +271,7 @@ elif [ "$TEST" == "classify_cpp" ]; then
   BASEOPT_CPP+=" --image $DIRECTORY"
   OPENCV_LIB=/usr/lib/x86_64-linux-gnu
   HDF5_PATH=${VAI_HOME}/examples/ext/hdf5
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$VAI_HOME/examples/ext/zmq/libs:$VAI_HOME/examples/ext/boost/libs:${HDF5_PATH}/lib:$VAI_ALVEO_ROOT/vai/dpuv1/rt/libs:/opt/xilinx/xrt/lib:$OPENCV_LIB
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$VAI_HOME/examples/ext/zmq/libs:$VAI_HOME/examples/ext/boost/libs:${HDF5_PATH}/lib:$VAI_HOME/vai/dpuv1/rt/libs:/opt/xilinx/xrt/lib:$OPENCV_LIB
 
 ###########################
 # multi-PE multi-network (Run two different networks simultaneously)

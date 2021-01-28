@@ -29,10 +29,10 @@ from shutil import rmtree
 
 
 XCLBIN = '/opt/xilinx/overlaybins/xdnnv3/'
-if (not os.path.exists(XCLBIN) and 'VAI_ALVEO_ROOT' in os.environ and
-        os.path.isdir(os.path.join(os.environ['VAI_ALVEO_ROOT'], 'overlaybins/xdnnv3'))):
+if (not os.path.exists(XCLBIN) and 'VAI_HOME' in os.environ and
+        os.path.isdir(os.path.join(os.environ['VAI_HOME'], 'overlaybins/xdnnv3'))):
     # Environment Variables (obtained by running "source overlaybins/setup.sh")
-    XCLBIN = os.path.join(os.environ['VAI_ALVEO_ROOT'], 'overlaybins/xdnnv3')
+    XCLBIN = os.path.join(os.environ['VAI_HOME'], 'overlaybins/xdnnv3')
 
 def get_default_compiler_args():
     return {
@@ -104,8 +104,8 @@ if __name__ == "__main__":
 
     if 'VAI_ROOT' in os.environ:
       arch_json = os.path.join(os.environ['VAI_ROOT'], 'compiler/arch/DPUCADX8G/ALVEO/arch.json')
-    elif 'VAI_ALVEO_ROOT' in os.environ and os.path.isdir(os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1/tools')):
-      arch_json = os.path.join(os.environ['VAI_ALVEO_ROOT'], 'vai/dpuv1/tools/compile/bin/arch.json')
+    elif 'VAI_HOME' in os.environ and os.path.isdir(os.path.join(os.environ['VAI_HOME'], 'vai/dpuv1/tools')):
+      arch_json = os.path.join(os.environ['VAI_HOME'], 'vai/dpuv1/tools/compile/bin/arch.json')
     else:
       arch_json = '/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json'
     input_fn = get_input_fn(args.pre_process, args.input_nodes, imagedir = args.imagedir, imagelist = args.imagelist)

@@ -195,7 +195,7 @@ export XDNN_VERBOSE=$VERBOSE
 # Chose the target
 ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
 if [ ! -f $ARCH_JSON ]; then
-  ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
+  ARCH_JSON="$VAI_HOME/arch.json"
 fi
 
 # Calibration dataset and image list
@@ -220,7 +220,7 @@ if [ -d $XCLBIN ]; then
   echo "--- Using System XCLBIN ---"
 else
   echo "--- Using Local XCLBIN ---"
-  XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
+  XCLBIN=${VAI_HOME}/overlaybins/xdnnv3
 fi
 
 # Determine Quantizer
@@ -233,8 +233,8 @@ fi
 # Determine Compiler
 if [[ -f $(which vai_c_caffe) ]]; then
   COMPILER=vai_c_caffe
-elif [[ -f $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/bin/vai_c_caffe.py ]]; then
-  COMPILER=$VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/bin/vai_c_caffe.py
+elif [[ -f $VAI_HOME/vai/dpuv1/tools/compile/bin/vai_c_caffe.py ]]; then
+  COMPILER=$VAI_HOME/vai/dpuv1/tools/compile/bin/vai_c_caffe.py
 else
   echo "Couldn't find the VAI compiler. Exiting ..."
   exit 1
@@ -432,7 +432,7 @@ then
   QUANTCFG=$COMP_DIR/quantizer.json
 
   if [ $COMPILEROPT == "throughput" ] && [ "$KCFG" == "v3" ]; then
-     python $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/scripts/xfdnn_gen_throughput_json.py --i $NETCFG --o $COMP_DIR/compiler_tput.json
+     python $VAI_HOME/vai/dpuv1/tools/compile/scripts/xfdnn_gen_throughput_json.py --i $NETCFG --o $COMP_DIR/compiler_tput.json
      NETCFG=$COMP_DIR/compiler_tput.json
   fi
 fi
@@ -491,7 +491,7 @@ if [ -z $VITIS_RUNDIR ]; then
   ln -s $(get_abs_filename $WEIGHTS) ${VITIS_RUNDIR}/weights.h5
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"publish_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}/meta.json
   # meta.json accepts {env_variables} in paths as well, e.g.:
-  #echo "{ \"lib\": \"{VAI_ALVEO_ROOT}/xfdnn/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_ALVEO_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
+  #echo "{ \"lib\": \"{VAI_HOME}/xfdnn/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_HOME}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
   cp -fr $VITIS_RUNDIR ${VITIS_RUNDIR}_worker
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"subscribe_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}_worker/meta.json
 fi
