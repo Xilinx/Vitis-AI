@@ -6,11 +6,11 @@ Requirements: XRT 2019.2+.
 Ubuntu:
 ```sh
 cd ${VAI_ALVEO_ROOT}/../setup/alveo/u200_u250/packages/ubuntu/
-sudo apt install ./xbutler_2.0-6.deb
+sudo apt install ./xbutler_3.0-1.deb
 ```
 
 CentOS:
 ```sh
 cd ${VAI_ALVEO_ROOT}/../setup/alveo/u200_u250/packages/centos/
-sudo yum install ./xbutler-2.0.6-1.el7.centos.x86_64.rpms
+sudo yum install ./xbutler-3.0.1-1.el7.centos.x86_64.rpm
 ```
