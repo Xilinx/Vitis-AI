@@ -1,4 +1,4 @@
-# Classification example: TRD run using Pre-processor & DPU source files
+# Classification example: ZCU102 TRD run using Pre-processor & DPU source files
 
 ## 1 Software Tools and System Requirements
 

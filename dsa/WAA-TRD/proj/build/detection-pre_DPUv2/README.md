@@ -1,4 +1,4 @@
-# Detection example: TRD run Pre-processor & DPU source files
+# Detection example: ZCU102 TRD run Pre-processor & DPU source files
 
 ## 1 Software Tools and System Requirements
 
