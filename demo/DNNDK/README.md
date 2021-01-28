@@ -3,7 +3,7 @@ This directory contains instructions and examples for running DPUCZDX8G on Zynq 
 It includes a set of highly optimized instructions, and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and others.
 With Vitis-AI, Xilinx has integrated all the edge and cloud solutions under a unified API and toolset.
 
-**Learn More:** [DPUCZDX8G Overview](https://github.com/Xilinx/Vitis-AI/tree/master/dsa/DPU-TRD)  
+**Learn More:** [DPUCZDX8G Overview](../../dsa/DPU-TRD)  
 
 
 Assume you have run the docker and the current working directory is /workspace
