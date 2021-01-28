@@ -61,6 +61,7 @@ Note that
   	```
   	cd /workspace/dsa/WAA-TRD/app/adas_detection_waa
 	./build.sh
+	mkdir output
 	./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel
   	```
 
