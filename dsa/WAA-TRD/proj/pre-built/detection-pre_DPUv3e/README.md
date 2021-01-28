@@ -56,7 +56,7 @@ Note that
 
   For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa/data`
 
-### Compile & run the application on Alveo U50
+### 3. Compile & run the application on Alveo U50
 
   	```
   	cd /workspace/dsa/WAA-TRD/app/adas_detection_waa
