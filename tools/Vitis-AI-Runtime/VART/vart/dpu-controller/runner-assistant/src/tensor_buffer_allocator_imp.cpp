@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2019 Xilinx Inc.
  *
@@ -20,6 +21,7 @@
 #include <limits>
 #include <memory>
 #include <mutex>
+#include <string>
 #include <unordered_map>
 #include <xir/graph/subgraph.hpp>
 #include <xir/tensor/tensor.hpp>
@@ -27,11 +29,14 @@
 #include "./tensor_buffer_imp_host.hpp"
 #include "./tensor_buffer_imp_host_phy.hpp"
 #include "./tensor_buffer_imp_view.hpp"
+#include "vart/zero_copy_helper.hpp"
 #include "vitis/ai/env_config.hpp"
 #include "vitis/ai/weak.hpp"
 
 DEF_ENV_PARAM(DEBUG_TENSOR_BUFFER_ALLOCATOR, "0")
 namespace {
+using reg_type_t = vart::reg_type_t;
+
 TensorBufferAllocatorImp::TensorBufferAllocatorImp(const xir::Attrs* attrs)
     : attrs_{attrs} {}
 
@@ -104,21 +109,9 @@ static size_t get_size(const xir::Tensor* tensor) {
   return (size_t)tensor->get_data_size() / tensor->get_shape()[0];
 }
 
-enum class reg_type_t : int {
-  CONST,
-  DATA_LOCAL,
-  DATA_GLOBAL,
-};
-static std::string to_string(reg_type_t t) {
-  const char* name[] = {"CONST", "DATA_LOCAL", "DATA_GLOBAL"};
-  return std::string(name[(int)t]);
-}
-
 struct reg_info_t {
-  size_t reg_id;
-  reg_type_t type;
+  vart::reg_basic_info_t basic_info_;
   vart::TensorBuffer::location_t location;
-  size_t size;
   size_t batch;
   size_t device_id;
   size_t device_core_id;
@@ -130,10 +123,10 @@ struct reg_info_t {
 static std::string to_string(const reg_info_t& reg_info) {
   std::ostringstream str;
   str << "reg_info_t{";
-  str << "id=" << reg_info.reg_id << ";";
-  str << "type=" << to_string(reg_info.type) << ";";
+  str << "id=" << reg_info.basic_info_.reg_id << ";";
+  str << "type=" << vart::to_string(reg_info.basic_info_.type) << ";";
   str << "location=" << vart::TensorBuffer::to_string(reg_info.location) << ";";
-  str << "size=" << reg_info.size << ";";
+  str << "size=" << reg_info.basic_info_.size << ";";
   str << "batch=" << reg_info.batch << ";";
   str << "device_id=" << reg_info.device_id << ";";
   str << "device_core_id=" << reg_info.device_core_id << ";";
@@ -144,17 +137,6 @@ static std::string to_string(const reg_info_t& reg_info) {
               : reg_info.reg_tensor_buffer->to_string());
   str << "}";
   return str.str();
-}
-
-static int get_reg_index(const std::string& reg_id) {
-  CHECK(reg_id.size() >= 5 &&  //
-        reg_id[0] == 'R' &&    //
-        reg_id[1] == 'E' &&    //
-        reg_id[2] == 'G' &&    //
-        reg_id[3] == '_' &&    //
-        reg_id[4] >= '0' && reg_id[4] <= '9')
-      << "reg id is not support! reg_id = " << reg_id;
-  return reg_id[4] - '0';
 }
 
 static std::string get_allocator_key(const xir::Subgraph* subgraph,
@@ -183,62 +165,48 @@ extract_reg_info_from_subgraph_and_attrs(const xir::Subgraph* subgraph_,
       << "cu_name " << cu_name << " "                //
       ;
   auto ret = std::vector<std::unique_ptr<reg_info_t>>();
-  if (!(subgraph_->has_attr("reg_id_to_context_type") &&
-        subgraph_->has_attr("reg_id_to_shared") &&
-        subgraph_->has_attr("reg_id_to_size") &&
-        subgraph_->has_attr("reg_id_to_parameter_value"))) {
-    return {};
+  auto reg_id_to_parameter_value = std::map<std::string, std::vector<char>>();
+  if (subgraph_->has_attr("reg_id_to_parameter_value")) {
+    reg_id_to_parameter_value =
+        subgraph_->get_attr<std::map<std::string, std::vector<char>>>(
+            "reg_id_to_parameter_value");
   }
-  auto reg_id_to_context_type =
-      subgraph_->get_attr<std::map<std::string, std::string>>(
-          "reg_id_to_context_type");
-  auto reg_id_to_shared =
-      subgraph_->get_attr<std::map<std::string, std::string>>(
-          "reg_id_to_shared");
-  auto reg_id_to_size =
-      subgraph_->get_attr<std::map<std::string, int>>("reg_id_to_size");
-  auto reg_id_to_parameter_value =
-      subgraph_->get_attr<std::map<std::string, std::vector<char>>>(
-          "reg_id_to_parameter_value");
+  auto basic_infos = vart::extract_reg_info_from_subgraph(subgraph_);
+  ret.resize(basic_infos.size());
+  for (auto i = 0u; i < basic_infos.size(); ++i) {
+    if (basic_infos[i].type != reg_type_t::INVALID) {
+      ret[i] = std::unique_ptr<reg_info_t>(new reg_info_t{});
+      ret[i]->basic_info_ = basic_infos[i];
+    }
+  }
 
-  for (auto& reg : reg_id_to_context_type) {
-    auto reg_id = reg.first;
-    auto reg_type = reg.second;
-    auto reg_shared = reg_id_to_shared[reg_id];
-    auto reg_size = reg_id_to_size[reg_id];
-    auto reg_id_int = get_reg_index(reg_id);
+  for (auto i = 0u; i < ret.size(); ++i) {
+    if (ret[i] == nullptr) {
+      continue;
+    }
+    auto reg_id = ret[i]->basic_info_.reg_id;
+    auto reg_type = ret[i]->basic_info_.type;
+    auto reg_size = ret[i]->basic_info_.size;
+    auto reg_id_int = reg_id;
     auto allocator_key =
         get_allocator_key(subgraph_, attrs, (size_t)reg_id_int);
-    ret.resize(reg_id_int + 1);
-    ret[reg_id_int] = std::unique_ptr<reg_info_t>(new reg_info_t{});
     auto& reg_info = *ret[reg_id_int].get();
     {  // begin initialize the reg_info_t
       auto ok = true;
-      if (reg_type == "CONST") {
-        reg_info.type = reg_type_t::CONST;
-      } else if (reg_type == "DATA" && reg_shared == "LOCAL") {
-        reg_info.type = reg_type_t::DATA_LOCAL;
-      } else if (reg_type == "DATA" && reg_shared != "LOCAL") {
-        reg_info.type = reg_type_t::DATA_GLOBAL;
-      } else {
-        ok = false;
-      }
-      reg_info.reg_id = (size_t)reg_id_int;
-      reg_info.type = reg_info.type;
       reg_info.location = location;
-      reg_info.size = (size_t)reg_size;
       ok = ok && reg_size > 0;
-      ok = ok && (reg_info.reg_id < 16 && reg_info.reg_id >= 0);
-      // for CONST reg, it does not support batch.
-      reg_info.batch = reg_info.type == reg_type_t::CONST ? 1u : batch;
+      ok = ok && (reg_info.basic_info_.reg_id < 16 &&
+                  reg_info.basic_info_.reg_id >= 0);
+      reg_info.batch = reg_type == vart::reg_type_t::CONST ? 1u : batch;
       reg_info.device_id = device_id;
       reg_info.device_core_id = device_core_id;
       reg_info.cu_name = cu_name;
       reg_info.subgraph = subgraph_;
-      if (reg_type == "CONST") {
+      if (reg_type == vart::reg_type_t::CONST) {
         static std::mutex mtx;
         std::lock_guard<std::mutex> lock(mtx);
-        auto it_value = reg_id_to_parameter_value.find(reg_id);
+        auto it_value = reg_id_to_parameter_value.find(std::string("REG_") +
+                                                       std::to_string(reg_id));
         CHECK(it_value != reg_id_to_parameter_value.end());
         reg_info.content =
             vitis::ai::WeakStore<std::string, std::vector<char>>::create(
@@ -262,6 +230,10 @@ static std::vector<std::unique_ptr<reg_info_t>> collect_reg_info(
   }
   for (auto i = 0u; i < tensors.size(); ++i) {
     auto tensor = tensors[i];
+    auto location_from_tensor = tensor->template get_attr<int>("location");
+    if (location_from_tensor == 0) {
+      continue;
+    }
     auto reg_id = get_reg_id(tensor);
     CHECK_LT(reg_id, reg_infos.size()) << " tensor:" << tensor->to_string();
     auto offset = get_offset(tensor);
@@ -271,18 +243,18 @@ static std::vector<std::unique_ptr<reg_info_t>> collect_reg_info(
     auto new_size = offset + size;
     CHECK(reg_infos[reg_id] != nullptr)
         << "cannot find reg_info: reg_id=" << reg_id;
-    CHECK_EQ(reg_infos[reg_id]->reg_id, reg_id)
+    CHECK_EQ(reg_infos[reg_id]->basic_info_.reg_id, reg_id)
         << "reg id conflict: tensor = " << tensor->to_string();
     CHECK_EQ((int)reg_infos[reg_id]->location, (int)location)
         << "location conflict: tensor = " << tensor->to_string()
         << " reg=" << to_string(*reg_infos[reg_id]);
-    if (reg_infos[reg_id]->type != reg_type_t::CONST) {
+    if (reg_infos[reg_id]->basic_info_.type != reg_type_t::CONST) {
       CHECK_EQ(reg_infos[reg_id]->batch, batch)
           << "batch conflict: tensor = " << tensor->to_string()
           << " reg=" << to_string(*reg_infos[reg_id]);
     }
     bool log_warn = ENV_PARAM(DEBUG_TENSOR_BUFFER_ALLOCATOR) &&
-                    new_size > reg_infos[reg_id]->size;
+                    new_size > reg_infos[reg_id]->basic_info_.size;
     LOG_IF(WARNING, log_warn)
         << "ddr execeed? new_size=" << new_size << " reg_infos[" << reg_id
         << "]=" << to_string(*reg_infos[reg_id])
@@ -301,8 +273,8 @@ static std::vector<std::unique_ptr<reg_info_t>> collect_reg_info(
 static std::string get_reg_tensor_buffer_key(const reg_info_t& reg_info) {
   static uint64_t counter = 0u;
   std::ostringstream str;
-  str << "reg_" << reg_info.reg_id;
-  switch (reg_info.type) {
+  str << "reg_" << reg_info.basic_info_.reg_id;
+  switch (reg_info.basic_info_.type) {
     case reg_type_t::CONST: {
       str << "_sg_" << (void*)reg_info.subgraph;
       // TODO: for U50, it is also device_core_specific
@@ -316,10 +288,15 @@ static std::string get_reg_tensor_buffer_key(const reg_info_t& reg_info) {
       str << "_device_core_id_" << device_core_id;
       break;
     }
-    case reg_type_t::DATA_LOCAL: {
+    case reg_type_t::DATA_LOCAL:
+    case reg_type_t::DATA_LOCAL_INPUT:
+    case reg_type_t::DATA_LOCAL_OUTPUT: {
       // DATA_LOCAL is not shared, so a unique key should be returned.
       str << "_" << counter++;
       break;
+    }
+    default: {
+      CHECK(false) << "not a valid type" << to_string(reg_info);
     }
   }
   return str.str();
@@ -339,16 +316,20 @@ static std::shared_ptr<vart::TensorBuffer> create_tensor_buffer_for_reg(
       // buffer.
       break;
     default:
+      auto tensor = xir::Tensor::create(
+          std::string("__reg__") + std::to_string(reg_info.basic_info_.reg_id) +
+              "__",
+          std::vector<std::int32_t>{(int)reg_info.batch,
+                                    (int)reg_info.basic_info_.size},
+          xir::DataType{xir::DataType::XINT, 8});
+      tensor->set_attr<int>("reg_id", reg_info.basic_info_.reg_id);
+      tensor->set_attr<int>("ddr_addr", 0);
+      tensor->set_attr<int>("location", 1);
       ret = vitis::ai::
           WeakStore<std::string, vart::dpu::TensorBufferExtImpHostPhy>::create(
               key,  // key is important
-              xir::Tensor::create(std::string("__reg__") +
-                                      std::to_string(reg_info.reg_id) + "__",
-                                  std::vector<std::int32_t>{(int)reg_info.batch,
-                                                            (int)reg_info.size},
-                                  xir::DataType{xir::DataType::XINT, 8})
-                  .get(),
-              location, reg_info.device_id, reg_info.cu_name, reg_info.content);
+              tensor.get(), location, reg_info.device_id, reg_info.cu_name,
+              reg_info.content);
       break;
   }
   return ret;
@@ -358,12 +339,16 @@ static void create_tensor_buffer_for_reg(
     std::vector<std::unique_ptr<reg_info_t>>& reg_infos) {
   static std::mutex mtx;
   std::lock_guard<std::mutex> lock(mtx);
-  std::for_each(reg_infos.begin(), reg_infos.end(),
-                [](std::unique_ptr<reg_info_t>& v) {
-                  v->reg_tensor_buffer = create_tensor_buffer_for_reg(*v);
-                  LOG_IF(INFO, ENV_PARAM(DEBUG_TENSOR_BUFFER_ALLOCATOR))
-                      << "allocate backstore tensor buffer: " << to_string(*v);
-                });
+
+  for (auto& reg_info : reg_infos) {
+    if (reg_info == nullptr) {
+      continue;
+    }
+    reg_info->reg_tensor_buffer = create_tensor_buffer_for_reg(*reg_info);
+    LOG_IF(INFO, ENV_PARAM(DEBUG_TENSOR_BUFFER_ALLOCATOR))
+        << "allocate backstore tensor buffer: " << to_string(*reg_info);
+  }
+
   return;
 }
 
@@ -494,7 +479,7 @@ TensorBufferAllocatorImp::~TensorBufferAllocatorImp() {}
 
 }  // namespace
 
-extern "C" vart::TensorBufferAllocator* create_tensor_buffer_allocator(
-    const xir::Attrs* attrs) {
+extern "C" vart::assistant::TensorBufferAllocator*
+create_tensor_buffer_allocator(const xir::Attrs* attrs) {
   return new TensorBufferAllocatorImp(attrs);
 }

@@ -38,8 +38,6 @@ add_library(${COMPONENT_NAME} SHARED
   include/vart/runner_ext.hpp
   include/vart/tensor_buffer.hpp
   include/vart/vart.h
-  include/vart/tensor_buffer_allocator.hpp
-  src/tensor_buffer_allocator.cpp
   include/vitis/ai/dpu_runner.hpp
   include/vitis/ai/runner.hpp
   include/vitis/ai/tensor.hpp
@@ -106,8 +104,6 @@ if(BUILD_TEST)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/test)
   add_executable(test_runner test/test_runner.cpp)
   target_link_libraries(test_runner ${COMPONENT_NAME} ${PROJECT_NAME}::util pthread)
-  add_executable(test_allocator test/test_allocator.cpp)
-  target_link_libraries(test_allocator ${COMPONENT_NAME} ${PROJECT_NAME}::util pthread)
   add_executable(test_tensor_buffer test/test_tensor_buffer.cpp)
   target_link_libraries(test_tensor_buffer ${COMPONENT_NAME} ${PROJECT_NAME}::util pthread)
 

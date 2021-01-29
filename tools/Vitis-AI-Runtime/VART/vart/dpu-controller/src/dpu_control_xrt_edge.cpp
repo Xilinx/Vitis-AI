@@ -29,7 +29,7 @@ DEF_ENV_PARAM(DEBUG_DPU_CONTROLLER, "0");
 DEF_ENV_PARAM(DISABLE_DPU_CONTROLLER_XRT, "0");
 DEF_ENV_PARAM(XLNX_SHOW_DPU_COUNTER, "0");
 
-DEF_ENV_PARAM(DEBUG_AP_START_CU, "1");
+DEF_ENV_PARAM(DEBUG_AP_START_CU, "0");
 #define DOMAIN xclBOKind(1)
 
 DpuControllerXrtEdge::DpuControllerXrtEdge(std::unique_ptr<xir::XrtCu>&& xrt_cu)
@@ -131,17 +131,12 @@ void DpuControllerXrtEdge::run(size_t core_idx, const uint64_t code,
     } else {
       ecmd->state = ERT_CMD_STATE_NEW;
       ecmd->opcode = ERT_EXEC_WRITE;
-      ecmd->data[XDPU_CONTROL_AP] = 0x0;            // [0] APCTL=0,
-      ecmd->data[XDPU_CONTROL_IER / 4] = 0x1;       // [1] IER = 1
-      ecmd->data[XDPU_CONTROL_PROF_ENA / 4] = 0x1;  // [2] PROF_ENA =1
-
-      auto p = 6;
-      ecmd->data[p++] = 0x4;
-      ecmd->data[p++] = 0x1;
-      ecmd->data[p++] = 0x8;
-      ecmd->data[p++] = 0x1;
-      ecmd->data[p++] = 0xC;
-      ecmd->data[p++] = 0x0;
+      auto p = ecmd->extra_cu_masks;
+      
+      ecmd->data[p++] = 0x40;  // CLEAR INTERRUPT
+      ecmd->data[p++] = 1;
+      ecmd->data[p++] = 0x44;  // PROF_EN= 0 or 1
+      ecmd->data[p++] = 1;
 
       ecmd->data[p++] = XDPU_CONTROL_HP;
       ecmd->data[p++] = 0x07070f0f;

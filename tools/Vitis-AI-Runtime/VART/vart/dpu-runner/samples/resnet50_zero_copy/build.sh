@@ -23,6 +23,7 @@ target_info=${os}.${os_version}.${arch}
 install_prefix_default=$HOME/.local/${target_info}
 $CXX --version
 name=$(basename $PWD)
+sample=${1:-resnet50}
 if [[ "$CXX"  == *"sysroot"* ]];then
 $CXX -O2 -fno-inline -I. \
      -I=/install/Debug/include \
@@ -31,13 +32,14 @@ $CXX -O2 -fno-inline -I. \
      -L=/install/Debug/lib \
      -L=/install/Release/lib \
      -o $name -std=c++17 \
-     $PWD/resnet50.cpp \
+     $PWD/${sample}.cpp \
      -Wl,-rpath=$PWD/lib \
      -lvart-runner \
      -lvart-dpu-controller \
      -lvart-xrt-device-handle \
      -lvart-buffer-object \
      -lvart-util \
+     -lvart-runner-assistant \
      -lopencv_videoio  \
      -lopencv_imgcodecs \
      -lopencv_highgui \
@@ -58,7 +60,7 @@ $CXX -O2 -fno-inline -I. \
      -Wl,-rpath=${install_prefix_default}.Debug/lib \
      -Wl,-rpath=${install_prefix_default}.Release/lib \
      -o $name -std=c++17 \
-     $PWD/resnet50.cpp \
+     $PWD/${sample}.cpp \
      -lvart-runner \
      -lvart-dpu-controller \
      -lopencv_videoio  \
