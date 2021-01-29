@@ -47,9 +47,4 @@ files:
   board: u50lv9e & u50lv10e & u280
   download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u50lv-u280-r1.3.0.tar.gz
   checksum: 483116d5c531c98f1f9801c0cef44589
-- name: plate_num
-  type: xmodel
-  board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
