@@ -28,7 +28,7 @@ set(MY_PROJECT_SOURCES
   src/buffer_object_fd.cpp
   src/buffer_object_fd.hpp
   )
-set(MY_PROJECT_DEPS glog::glog)
+set(MY_PROJECT_DEPS PkgConfig::PKG_GLOG)
 
 if(XRT_CLOUD_FOUND)
   add_definitions(-DENABLE_CLOUD)
@@ -63,19 +63,19 @@ if(XRT_CLOUD_FOUND)
 endif(XRT_CLOUD_FOUND)
 
 
-if(CMAKE_CROSSCOMPILING)
+if(IS_EDGE)
   list(APPEND MY_PROJECT_SOURCES
      ${CMAKE_CURRENT_SOURCE_DIR}/src/device_memory_edge.hpp
      ${CMAKE_CURRENT_SOURCE_DIR}/src/device_memory_edge.cpp
      )
-endif(CMAKE_CROSSCOMPILING)
+endif(IS_EDGE)
 
 add_library(${COMPONENT_NAME} SHARED ${MY_PROJECT_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/version.c)
-if(CMAKE_CROSSCOMPILING)
-  target_compile_definitions (${COMPONENT_NAME} PRIVATE "-DCROSSCOMPILING=1")
-else(CMAKE_CROSSCOMPILING)
-  target_compile_definitions (${COMPONENT_NAME} PRIVATE "-DCROSSCOMPILING=0")
-endif(CMAKE_CROSSCOMPILING)
+if(IS_EDGE)
+  target_compile_definitions (${COMPONENT_NAME} PRIVATE "-DIS_EDGE=1")
+else(IS_EDGE)
+  target_compile_definitions (${COMPONENT_NAME} PRIVATE "-DIS_EDGE=0")
+endif(IS_EDGE)
 
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 
@@ -123,15 +123,15 @@ endif()
 
 
 add_executable(mem_write test/mem_write.cpp)
-target_link_libraries(mem_write ${COMPONENT_NAME} glog::glog )
+target_link_libraries(mem_write ${COMPONENT_NAME} PkgConfig::PKG_GLOG )
 add_executable(mem_read test/mem_read.cpp)
-target_link_libraries(mem_read ${COMPONENT_NAME} glog::glog )
+target_link_libraries(mem_read ${COMPONENT_NAME} PkgConfig::PKG_GLOG )
 add_executable(mem_save test/mem_save.cpp)
-target_link_libraries(mem_save ${COMPONENT_NAME} glog::glog )
+target_link_libraries(mem_save ${COMPONENT_NAME} PkgConfig::PKG_GLOG )
 add_executable(dump_op_weights test/dump_op_weights.cpp)
-target_link_libraries(dump_op_weights ${COMPONENT_NAME} glog::glog )
+target_link_libraries(dump_op_weights ${COMPONENT_NAME} PkgConfig::PKG_GLOG )
 add_executable(dump_op_weights_2 test/dump_op_weights_2.cpp)
-target_link_libraries(dump_op_weights_2 ${COMPONENT_NAME} glog::glog )
+target_link_libraries(dump_op_weights_2 ${COMPONENT_NAME} PkgConfig::PKG_GLOG )
 
 install(
   TARGETS mem_write mem_read mem_save dump_op_weights dump_op_weights_2

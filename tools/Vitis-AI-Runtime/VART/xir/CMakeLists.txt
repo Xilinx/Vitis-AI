@@ -26,7 +26,9 @@ option(BUILD_PYTHON "build python interface" OFF)
 option(INSTALL_HOME "install python lib in cmake install path" OFF)
 option(INSTALL_USER "install python lib in user space" OFF)
 
-find_package(glog REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(PKG_GLOG REQUIRED IMPORTED_TARGET GLOBAL libglog)
+
 find_package(unilog REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED)

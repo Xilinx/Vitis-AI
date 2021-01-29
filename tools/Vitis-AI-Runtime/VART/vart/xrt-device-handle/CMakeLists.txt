@@ -89,7 +89,7 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
   )
 target_link_libraries(${COMPONENT_NAME}
   PRIVATE pthread Boost::filesystem OpenSSL::Crypto
-  PUBLIC glog::glog util)
+  PUBLIC PkgConfig::PKG_GLOG util)
 if(XRT_FOUND)
   target_link_libraries(${COMPONENT_NAME} PRIVATE XRT::XRT)
 endif(XRT_FOUND)
@@ -120,14 +120,14 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/xir/xrt_device_handle.hpp
 
 if(XRT_FOUND)
   add_executable(xrt_read_register test/read_counter.cpp)
-  target_link_libraries(xrt_read_register ${COMPONENT_NAME} XRT::XRT glog::glog)
+  target_link_libraries(xrt_read_register ${COMPONENT_NAME} XRT::XRT PkgConfig::PKG_GLOG)
   install(
   TARGETS xrt_read_register
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib)
 endif(XRT_FOUND)
 
-if(CMAKE_CROSSCOMPILING)
+if(IS_EDGE)
   install(FILES
 	  ${CMAKE_CURRENT_SOURCE_DIR}/src/vart.conf
 	  DESTINATION
@@ -145,24 +145,24 @@ endif()
 
 if(XRT_FOUND)
   add_executable(test_xrt_device_handle test/test_xrt_device_handle.cpp)
-  target_link_libraries(test_xrt_device_handle ${COMPONENT_NAME} XRT::XRT glog::glog)
+  target_link_libraries(test_xrt_device_handle ${COMPONENT_NAME} XRT::XRT PkgConfig::PKG_GLOG)
   install (TARGETS test_xrt_device_handle DESTINATION bin)
   if(BUILD_TEST)
 
 #    add_executable(write_counter test/write_counter.cpp)
-#    target_link_libraries(write_counter ${COMPONENT_NAME} XRT::XRT glog::glog)
+#    target_link_libraries(write_counter ${COMPONENT_NAME} XRT::XRT PkgConfig::PKG_GLOG)
 
 
   add_executable(write_counter test/write_counter.cpp)
-  target_link_libraries(write_counter ${COMPONENT_NAME} XRT::XRT glog::glog)
+  target_link_libraries(write_counter ${COMPONENT_NAME} XRT::XRT PkgConfig::PKG_GLOG)
 
   add_executable(test_ecmd test/test_ecmd.cpp)
   target_link_libraries(test_ecmd ${COMPONENT_NAME} XRT::XRT -lpthread)
 
   add_executable(test_bin_stream test/test_bin_stream.cpp)
-  target_link_libraries(test_bin_stream ${COMPONENT_NAME} XRT::XRT glog::glog)
+  target_link_libraries(test_bin_stream ${COMPONENT_NAME} XRT::XRT PkgConfig::PKG_GLOG)
   endif()
   add_subdirectory (xclbinutil)
   add_executable(test_alloc_bo test/test_alloc_bo.cpp)
-  target_link_libraries (test_alloc_bo ${COMPONENT_NAME} XRT::XRT glog::glog)
+  target_link_libraries (test_alloc_bo ${COMPONENT_NAME} XRT::XRT PkgConfig::PKG_GLOG)
 endif()

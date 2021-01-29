@@ -38,7 +38,7 @@ add_library(${COMPONENT_NAME} SHARED
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
-target_link_libraries(${COMPONENT_NAME} model_config dpu_task xnnpp glog::glog pthread ${OpenCV_LIBS})
+target_link_libraries(${COMPONENT_NAME} model_config dpu_task xnnpp PkgConfig::PKG_GLOG pthread ${OpenCV_LIBS})
 target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -68,10 +68,10 @@ install(
 install(FILES include/vitis/ai/mnistclassification.hpp DESTINATION include/vitis/ai)
 
 add_executable(test_mnistclassification test/test_mnistclassification.cpp)
-target_link_libraries(test_mnistclassification ${COMPONENT_NAME} glog::glog  ${OpenCV_LIBS})
+target_link_libraries(test_mnistclassification ${COMPONENT_NAME} PkgConfig::PKG_GLOG  ${OpenCV_LIBS})
 
 add_executable(test_mnistclassification_batch test/test_mnistclassification_batch.cpp)
-target_link_libraries(test_mnistclassification_batch ${COMPONENT_NAME} glog::glog  ${OpenCV_LIBS})
+target_link_libraries(test_mnistclassification_batch ${COMPONENT_NAME} PkgConfig::PKG_GLOG  ${OpenCV_LIBS})
 
 #add_executable(test_performance_mnistclassification test/test_performance_mnistclassification.cpp)
-#target_link_libraries(test_performance_mnistclassification ${COMPONENT_NAME} glog::glog  ${OpenCV_LIBS})
+#target_link_libraries(test_performance_mnistclassification ${COMPONENT_NAME} PkgConfig::PKG_GLOG  ${OpenCV_LIBS})

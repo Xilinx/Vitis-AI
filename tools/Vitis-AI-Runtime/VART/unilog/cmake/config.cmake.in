@@ -21,4 +21,5 @@ message(STATUS "Found importable target @PROJECT_NAME@::@PROJECT_NAME@: ${TARGET
 get_filename_component(@PROJECT_NAME@_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 set(@PROJECT_NAME@_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
 
-find_package(glog REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(PKG_GLOG REQUIRED IMPORTED_TARGET GLOBAL libglog)

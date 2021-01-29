@@ -25,7 +25,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 target_link_libraries(${PROJECT_NAME} 
   PRIVATE ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
-  PUBLIC glog::glog)
+  PUBLIC PkgConfig::PKG_GLOG)
 
 install(
   TARGETS ${PROJECT_NAME}

@@ -22,7 +22,7 @@ set(MY_PROJECT_SOURCES
 set(SFMX_SOURCES
   include/xir/sfm_controller.hpp
   src/sfm_controller.cpp)
-set(MY_PROJECT_DEPS glog::glog)
+set(MY_PROJECT_DEPS PkgConfig::PKG_GLOG)
 
 ## the qnx_dpu implementation
 if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
@@ -31,7 +31,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dpu_controller_qnx.hpp
     )
   list(APPEND MY_PROJECT_DEPS xlnx_qnx_dpu)
-elseif (CMAKE_CROSSCOMPILING)
+elseif (IS_EDGE)
     list(APPEND MY_PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dpu_controller_dnndk.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dpu_controller_dnndk.hpp
@@ -100,7 +100,7 @@ install(
 
 
   add_executable(show_dpu test/show_dpu.cpp)
-  target_link_libraries(show_dpu ${COMPONENT_NAME} glog::glog)
+  target_link_libraries(show_dpu ${COMPONENT_NAME} PkgConfig::PKG_GLOG)
   install (TARGETS show_dpu DESTINATION bin)
 
 if(XRT_CLOUD_FOUND)
@@ -112,15 +112,15 @@ endif(XRT_CLOUD_FOUND)
 if(BUILD_TEST)
   if(XRT_FOUND)
     add_executable(test_dpu_controller test/test_dpu_controller.cpp)
-    target_link_libraries(test_dpu_controller ${COMPONENT_NAME} XRT::XRT xrt-device-handle glog::glog)
+    target_link_libraries(test_dpu_controller ${COMPONENT_NAME} XRT::XRT xrt-device-handle PkgConfig::PKG_GLOG)
 
     add_executable(test_dpu_controller_cloud test/test_dpu_controller_cloud.cpp)
-    target_link_libraries(test_dpu_controller_cloud ${COMPONENT_NAME} glog::glog)
+    target_link_libraries(test_dpu_controller_cloud ${COMPONENT_NAME} PkgConfig::PKG_GLOG)
     add_executable(test_softmax test/test_softmax.cpp)
-    target_link_libraries(test_softmax ${COMPONENT_NAME} glog::glog)
+    target_link_libraries(test_softmax ${COMPONENT_NAME} PkgConfig::PKG_GLOG)
 
     add_executable(test_softmax_mt test/test_softmax_mt.cpp)
-    target_link_libraries(test_softmax_mt ${COMPONENT_NAME} glog::glog)
+    target_link_libraries(test_softmax_mt ${COMPONENT_NAME} PkgConfig::PKG_GLOG)
     install(TARGETS test_softmax_mt test_softmax DESTINATION bin)
   endif(XRT_FOUND)
 endif()

@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -15,7 +16,7 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_facedetect test_accuracy_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -lvitis_ai_library-model_config -lvitis_ai_library-math -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_facedetect test_jpeg_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_facedetect test_performance_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -lvart-util -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_facedetect test_video_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -pthread -lglog 
+$CXX -std=c++11 -I/usr/include/opencv4 -I. -o test_accuracy_facedetect test_accuracy_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -lvitis_ai_library-model_config -lvitis_ai_library-math -lglog 
+$CXX -std=c++11 -I/usr/include/opencv4 -I. -o test_jpeg_facedetect test_jpeg_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -pthread -lglog 
+$CXX -std=c++11 -I/usr/include/opencv4 -I. -o test_performance_facedetect test_performance_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -lvart-util -pthread -lglog 
+$CXX -std=c++11 -I/usr/include/opencv4 -I. -o test_video_facedetect test_video_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -pthread -lglog 

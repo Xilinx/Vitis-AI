@@ -71,7 +71,7 @@ target_link_libraries(${COMPONENT_NAME}
   PUBLIC ${PROJECT_NAME}::dpu_task
   PRIVATE xir::xir)
 
-target_link_libraries(${COMPONENT_NAME} PUBLIC model_config dpu_task glog::glog pthread ${OpenCV_LIBS} )
+target_link_libraries(${COMPONENT_NAME} PUBLIC model_config dpu_task PkgConfig::PKG_GLOG pthread ${OpenCV_LIBS} )
 
 target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
@@ -106,7 +106,7 @@ install(FILES
 install(FILES include/vitis/ai/pointpillars.hpp DESTINATION include/vitis/ai)
 
 add_executable(test_pointpillars test/test_pointpillars.cpp)
-target_link_libraries(test_pointpillars ${COMPONENT_NAME} glog::glog  ${OpenCV_LIBS})
+target_link_libraries(test_pointpillars ${COMPONENT_NAME} PkgConfig::PKG_GLOG  ${OpenCV_LIBS})
 add_executable(test_pointpillars_accuracy test/test_pointpillars_accuracy.cpp)
-target_link_libraries(test_pointpillars_accuracy ${COMPONENT_NAME} glog::glog  ${OpenCV_LIBS})
+target_link_libraries(test_pointpillars_accuracy ${COMPONENT_NAME} PkgConfig::PKG_GLOG  ${OpenCV_LIBS})
 

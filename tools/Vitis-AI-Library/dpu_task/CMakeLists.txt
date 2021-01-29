@@ -50,7 +50,7 @@ target_include_directories(${COMPONENT_NAME} PUBLIC
 
 target_link_libraries(${COMPONENT_NAME}
   PUBLIC model_config ${OpenCV_LIBS} ${Other_LIBS} vart::util # for Meta definitions
-  PRIVATE xir::xir vart::dpu-runner  glog::glog math
+  PRIVATE xir::xir vart::dpu-runner  PkgConfig::PKG_GLOG math
   )
 set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"

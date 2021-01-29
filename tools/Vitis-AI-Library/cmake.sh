@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -14,7 +15,6 @@
 # limitations under the License.
 #
 
-#!/bin/bash
 set -e
 
 script_path=$(dirname "$(realpath $0)")
@@ -108,7 +108,7 @@ else
     echo "cd $PWD"
     echo cmake "${args[@]}" "$script_path"
     cmake "${args[@]}" "$script_path"
-    make -j 10
+    make -j$(nproc)
     ${build_only:=false} || make install
     ${build_package:=false} && make package
 fi

@@ -51,7 +51,7 @@ if(XRT_FOUND AND NOT TARGET XRT::XRT)
   set_property(TARGET XRT::XRT APPEND PROPERTY INTERFACE_LINK_LIBRARIES -lxrt_coreutil)
 endif()
 
-if(CMAKE_CROSSCOMPILING)
+if(IS_EDGE)
   set(XRT_EDGE_FOUND true)
   set(XRT_CLOUD_FOUND false)
 else()

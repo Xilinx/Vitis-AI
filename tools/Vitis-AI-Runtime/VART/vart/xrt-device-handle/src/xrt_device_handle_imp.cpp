@@ -451,7 +451,7 @@ uint64_t XrtDeviceHandleImp::get_fingerprint(const std::string& cu_name,
 unsigned int XrtDeviceHandleImp::get_bank_flags(const std::string& cu_name,
                                                 size_t device_core_idx) const {
   // TODO return available banks. and DEV_ONLY
-  //#if CROSSCOMPILING
+  //#if IS_EDGE
   return XCL_BO_FLAGS_CACHEABLE;
   //#else
   //  return XCL_BO_FLAGS_DEV_ONLY;

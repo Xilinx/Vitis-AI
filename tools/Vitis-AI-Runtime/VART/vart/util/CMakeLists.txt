@@ -51,9 +51,9 @@ target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir glog::glog)
+target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir PkgConfig::PKG_GLOG pthread)
 if(XRT_FOUND AND ENABLE_DPU_RUNNER)
-  target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir glog::glog PRIVATE XRT::XRT)
+  target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir PkgConfig::PKG_GLOG PRIVATE XRT::XRT)
   add_definitions(-DENABLE_XRT_TIMESTAMP)
 endif()
 
@@ -90,7 +90,7 @@ if(BUILD_TEST)
   target_link_libraries(test_env_config ${COMPONENT_NAME})
 
   add_library(test_injector_lib test/device_scheduler_imp.cpp test/device_scheduler.cpp)
-  target_link_libraries(test_injector_lib glog::glog dl ${COMPONENT_NAME})
+  target_link_libraries(test_injector_lib PkgConfig::PKG_GLOG dl ${COMPONENT_NAME})
 
   add_executable(test_injector test/test_injector.cpp)
   target_link_libraries(test_injector test_injector_lib)

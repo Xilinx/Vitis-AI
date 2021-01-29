@@ -170,7 +170,7 @@ target_include_directories(${COMPONENT_NAME} PUBLIC
 
 target_link_libraries(${COMPONENT_NAME} vart::util
   ${PROJECT_NAME}::math
-  ${PROJECT_NAME}::model_config glog::glog
+  ${PROJECT_NAME}::model_config PkgConfig::PKG_GLOG
   ${OpenCV_LIBS})
 set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"

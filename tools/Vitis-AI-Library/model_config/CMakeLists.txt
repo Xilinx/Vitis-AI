@@ -39,7 +39,7 @@ add_library(${COMPONENT_NAME} SHARED
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 target_link_libraries(${COMPONENT_NAME}
- PUBLIC protobuf::libprotobuf glog::glog)
+ PUBLIC protobuf::libprotobuf PkgConfig::PKG_GLOG)
 
 set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"

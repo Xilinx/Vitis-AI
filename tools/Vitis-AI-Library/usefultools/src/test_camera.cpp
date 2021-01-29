@@ -21,6 +21,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/videoio/legacy/constants_c.h>
 #include <string>
 #include <vitis/ai/env_config.hpp>
 DEF_ENV_PARAM(IMSHOW, "1");
