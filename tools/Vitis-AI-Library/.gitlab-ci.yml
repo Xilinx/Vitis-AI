@@ -17,17 +17,6 @@ build_on_host:
        - ./cmake.sh  --cmake-options=-DENABLE_OVERVIEW=on --clean
        - cd sample_client && ./cmake.sh --clean
 
-build_for_microblaze:
-   tags:
-       - aisw
-   script:
-       - source /var/lib/docker/scratch/gitlab-runner/build/mb_sdk/environment-setup-microblazeel-v11.0-bs-cmp-re-mh-div-xilinx-linux
-       - (cd unilog; ./cmake.sh --clean)
-       - (cd target_factory; ./cmake.sh --clean)
-       - (cd xir; ./cmake.sh --clean)
-       - (cd vart; ./cmake.sh --clean --cmake-options=-DENABLE_CPU_RUNNER=off --cmake-options=-DENABLE_SIM_RUNNER=off  --cmake-options=-DENABLE_DPU_RUNNER=on)
-       - ./cmake.sh  --cmake-options=-DENABLE_OVERVIEW=on --clean
-       - cd sample_client && ./cmake.sh --clean
 
 build_for_petalinux:
    tags:

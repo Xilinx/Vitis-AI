@@ -20,18 +20,23 @@
 namespace vitis {
 namespace ai {
 
-SSD::SSD() {}
+SSD::SSD(const std::string& model_name, bool need_mean_scale_process)
+    : ConfigurableDpuTaskBase(model_name, need_mean_scale_process) {}
+SSD::SSD(const std::string& model_name, xir::Attrs* attrs,
+         bool need_mean_scale_process)
+    : ConfigurableDpuTaskBase(model_name, attrs, need_mean_scale_process) {}
 SSD::~SSD() {}
 
-std::unique_ptr<SSD> SSD::create(const std::string &model_name,
+std::unique_ptr<SSD> SSD::create(const std::string& model_name,
                                  bool need_mean_scale_process) {
   return std::unique_ptr<SSD>(new SSDImp(model_name, need_mean_scale_process));
 }
 
-std::unique_ptr<SSD> SSD::create(const std::string &model_name,
-                                 xir::Attrs *attrs,
+std::unique_ptr<SSD> SSD::create(const std::string& model_name,
+                                 xir::Attrs* attrs,
                                  bool need_mean_scale_process) {
-  return std::unique_ptr<SSD>(new SSDImp(model_name, attrs, need_mean_scale_process));
+  return std::unique_ptr<SSD>(
+      new SSDImp(model_name, attrs, need_mean_scale_process));
 }
 }  // namespace ai
 }  // namespace vitis

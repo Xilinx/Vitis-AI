@@ -16,6 +16,7 @@
 
 #include <sys/stat.h>
 
+#include <fstream>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <sstream>
@@ -25,23 +26,25 @@
 using namespace cv;
 using namespace std;
 
-void LoadListNames(const std::string& filename,  std::vector<std::string> &vlist)
-{
+void LoadListNames(const std::string& filename,
+                   std::vector<std::string>& vlist) {
   ifstream Tin;
   Tin.open(filename, ios_base::in);
   std::string str;
-  if(!Tin)  {
-     std::cout<<"Can't open the file " << filename << "\n";      exit(-1);
+  if (!Tin) {
+    std::cout << "Can't open the file " << filename << "\n";
+    exit(-1);
   }
-  while( getline(Tin, str)) {
+  while (getline(Tin, str)) {
     vlist.emplace_back(str);
   }
   Tin.close();
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc < 4) {
-    std::cout << " usage: " << argv[0] << " <model_name> <img_list> <result_dir>" << std::endl;  //
+    std::cout << " usage: " << argv[0]
+              << " <model_name> <img_list> <result_dir>" << std::endl;  //
     abort();
   }
 
@@ -50,13 +53,13 @@ int main(int argc, char *argv[]) {
 
   auto ret = mkdir(argv[3], 0777);
   if (!(ret == 0 || (ret == -1 && EEXIST == errno))) {
-     std::cout << "error occured when mkdir " << argv[3] << std::endl;
-     return -1;
+    std::cout << "error occured when mkdir " << argv[3] << std::endl;
+    return -1;
   }
 
-  auto seg = vitis::ai::MedicalSegcell::create(argv[1] );
+  auto seg = vitis::ai::MedicalSegcell::create(argv[1]);
   Mat imgw;
-  for(auto &it: vlist) {
+  for (auto& it : vlist) {
     Mat img = cv::imread(it);
     if (img.empty()) {
       cerr << "cannot load " << it << endl;
@@ -66,9 +69,8 @@ int main(int argc, char *argv[]) {
     cv::resize(result.segmentation, imgw, img.size(), 0, 0, cv::INTER_NEAREST);
     std::string filenamepart1 = it.substr(it.find_last_of('/') + 1);
     filenamepart1 = filenamepart1.substr(0, filenamepart1.find_last_of('.'));
-    filenamepart1 = std::string(argv[3])+ "/pred_" + filenamepart1+".png";
+    filenamepart1 = std::string(argv[3]) + "/pred_" + filenamepart1 + ".png";
     cv::imwrite(filenamepart1, imgw);
   }
   return 0;
 }
-

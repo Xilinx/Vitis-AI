@@ -25,16 +25,17 @@ namespace vitis {
 namespace ai {
 DEF_ENV_PARAM(ENABLE_SSD_DEBUG, "0");
 
-SSDImp::SSDImp(const std::string &model_name, bool need_preprocess)
-    : vitis::ai::TConfigurableDpuTask<SSD>(model_name, need_preprocess),
+SSDImp::SSDImp(const std::string& model_name, bool need_preprocess)
+    : SSD(model_name, need_preprocess),
       is_tf{configurable_dpu_task_->getConfig().is_tf()},
       processor_{vitis::ai::SSDPostProcess::create(
           configurable_dpu_task_->getInputTensor()[0],
           configurable_dpu_task_->getOutputTensor()[0],
           configurable_dpu_task_->getConfig())} {}
 
-SSDImp::SSDImp(const std::string &model_name,xir::Attrs *attrs,bool need_preprocess)
-    : vitis::ai::TConfigurableDpuTask<SSD>(model_name,attrs,  need_preprocess),
+SSDImp::SSDImp(const std::string& model_name, xir::Attrs* attrs,
+               bool need_preprocess)
+    : SSD(model_name, attrs, need_preprocess),
       is_tf{configurable_dpu_task_->getConfig().is_tf()},
       processor_{vitis::ai::SSDPostProcess::create(
           configurable_dpu_task_->getInputTensor()[0],
@@ -43,7 +44,7 @@ SSDImp::SSDImp(const std::string &model_name,xir::Attrs *attrs,bool need_preproc
 
 SSDImp::~SSDImp() {}
 
-SSDResult SSDImp::run(const cv::Mat &input_img) {
+SSDResult SSDImp::run(const cv::Mat& input_img) {
   cv::Mat img;
   auto size = cv::Size(getInputWidth(), getInputHeight());
   if (size != input_img.size()) {
@@ -72,7 +73,7 @@ SSDResult SSDImp::run(const cv::Mat &input_img) {
   return results[0];
 }
 
-std::vector<SSDResult> SSDImp::run(const std::vector<cv::Mat> &input_img) {
+std::vector<SSDResult> SSDImp::run(const std::vector<cv::Mat>& input_img) {
   auto size = cv::Size(getInputWidth(), getInputHeight());
   // auto batch_size = get_input_batch();
   auto batch_size = input_img.size();
@@ -102,6 +103,20 @@ std::vector<SSDResult> SSDImp::run(const std::vector<cv::Mat> &input_img) {
 
   __TIC__(SSD_post)
   auto results = processor_->ssd_post_process(input_img.size());
+  __TOC__(SSD_post)
+
+  __TOC__(SSD_total)
+  return results;
+}
+std::vector<SSDResult> SSDImp::run(
+    const std::vector<vart::xrt_bo_t>& input_bos) {
+  __TIC__(SSD_total)
+  __TIC__(SSD_dpu)
+  configurable_dpu_task_->run_with_xrt_bo(input_bos);
+  __TOC__(SSD_dpu)
+
+  __TIC__(SSD_post)
+  auto results = processor_->ssd_post_process(input_bos.size());
   __TOC__(SSD_post)
 
   __TOC__(SSD_total)

@@ -464,5 +464,27 @@ Example:
 ```
 :pushpin: **Note:** The default build path for vitis-ai-library is `$HOME/build/<target>/Vitis-AI-Library/`.
 
+## Tools
+In this release, `xdputil` tool is introduced for board developing. It's preinstalled in the latest board image or docker. The source code of `xdputil` is under `usefultools`.
+* Show device information, including DPU, fingerprint and VAI version. 
+```
+xdputil query
+```
+* Show xmodel information, including xmodel's inputs&outputs and kernels
+```
+xdputil xmodel <xmodel> -l
+```
+* Convert xmodel to the other format
+```
+xdputil xmodel <xmodel> -t <TXT> 
+xdputil xmodel <xmodel> -s <SVG>
+xdputil xmodel <xmodel> -p <PNG> 
+```
+* Test xmodel performance
+```
+xdputil benchmark <xmodel> [-i subgraph_index] <num_of_threads>
+```
+For more usage of `xdputil`, execute `xdputil -h`.
+
 ## Reference
 For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_3/ug1354-xilinx-ai-sdk.pdf).

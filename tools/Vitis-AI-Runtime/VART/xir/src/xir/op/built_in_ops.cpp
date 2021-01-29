@@ -21,7 +21,7 @@
 
 using namespace xir;
 
-#define XIR_REGISTER_BUILT_IN_OP(OP) \
+#define XIR_REGISTER_BUILT_IN_OP(OP)                                           \
   static BuiltInOPsRegisterer BUILT_IN_OPDEFS_##OP(OP);
 
 class BuiltInOPsRegistry {
@@ -51,20 +51,25 @@ void register_built_in_ops(xir::OpDefFactory* self) {
 
 namespace xir {
 
-auto tensor_shape = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
-    "shape", AttrDef::REQUIRED, 0,
-    "`Datatype`: `vector<int>`\n\n"
-    "The shape of the output tensor");
-
-auto tensor_data_type = xir::AttrDefBuilder<std::string>::build(
-    "data_type", AttrDef::REQUIRED,
-    "`Datatype`: `string`\n\n"
-    "The data type of the data of output feature maps, "
-    "we use FLOAT32 as the default.");
+std::function<void(xir::OpDef& op_def)> SrcOpGenerator() {
+  return [=](xir::OpDef& op_def) {
+    auto tensor_shape = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        "shape", AttrDef::REQUIRED, 0,
+        "`Datatype`: `vector<int>`\n\n"
+        "The shape of the output tensor");
+    auto tensor_data_type = xir::AttrDefBuilder<std::string>::build(
+        "data_type", AttrDef::REQUIRED,
+        "`Datatype`: `string`\n\n"
+        "The data type of the data of output feature maps, "
+        "we use FLOAT32 as the default.");
+    op_def
+        .add_attr(tensor_shape)  //
+        .add_attr(tensor_data_type);
+  };
+}
 
 auto data = xir::OpDef("data")
-                .add_attr(tensor_shape)
-                .add_attr(tensor_data_type)
+                .inherit_from(SrcOpGenerator())
                 .set_annotation(
                     "A placeholder which stores the float-point input data, \n"
                     "data operator would always be fed by users.")
@@ -72,8 +77,7 @@ auto data = xir::OpDef("data")
 
 auto const_op =
     xir::OpDef("const")
-        .add_attr(tensor_shape)
-        .add_attr(tensor_data_type)
+        .inherit_from(SrcOpGenerator())
         .add_attr(xir::AttrDefBuilder<std::vector<char>>::build(
             "data", AttrDef::REQUIRED, 0,
             "Constant values stored in this operator, \n"
@@ -93,16 +97,14 @@ auto const_op =
 
 auto data_fix =
     xir::OpDef("data-fix")
-        .add_attr(tensor_shape)
-        .add_attr(tensor_data_type)
+        .inherit_from(SrcOpGenerator())
         .set_annotation(
             "A placeholder which stores the fixed-point input data, \n"
             "data operator would always be fed by users.")
         .set_shape_infer(xir::shape_infer_data_fix);
 
 auto const_fix = xir::OpDef("const-fix")
-                     .add_attr(tensor_shape)
-                     .add_attr(tensor_data_type)
+                     .inherit_from(SrcOpGenerator())
                      .add_attr(xir::AttrDefBuilder<std::vector<char>>::build(
                          "data", AttrDef::REQUIRED, 0,
                          "Constant values stored in this operator, \n"
@@ -116,6 +118,28 @@ XIR_REGISTER_BUILT_IN_OP(data);
 XIR_REGISTER_BUILT_IN_OP(const_op);
 XIR_REGISTER_BUILT_IN_OP(data_fix);
 XIR_REGISTER_BUILT_IN_OP(const_fix);
+
+// Random Generator
+auto random_standard_normal =
+    xir::OpDef("random_standard_normal")  //
+        .inherit_from(SrcOpGenerator())   //
+        .add_attr(xir::AttrDefBuilder<std::int32_t>::build(
+            "seed", AttrDef::OPTIONAL,
+            "`DataType`: `int`\n\nDefaults to 0. If either `seed` or `seed2` "
+            "are set to be non-zero, the random number generator is seeded by "
+            "the given seed. Otherwise, it is seeded by a random seed.",
+            0))
+        .add_attr(xir::AttrDefBuilder<std::int32_t>::build(
+            "seed2", AttrDef::OPTIONAL,
+            "`DataType`: `int`\n\nDefaults to 0. A second seed to avoid seed "
+            "collision.",
+            0))
+        .set_annotation(
+            "Outputs random values from a normal distribution.\n\nAnd the "
+            "generated values will have mean 0 and standard deviation 1.")
+        .set_shape_infer(xir::shape_infer_data);
+
+XIR_REGISTER_BUILT_IN_OP(random_standard_normal);
 
 std::function<void(xir::OpDef&)> ConvOpDefGenerator(xir::DataType::Type T) {
   return [=](xir::OpDef& op_def) {
@@ -300,7 +324,8 @@ auto transposed_depthwise_conv2d =
     xir::OpDef("transposed-depthwise-conv2d")
         .inherit_from(ConvOpDefGenerator(xir::DataType::FLOAT))
         .set_annotation(
-            "2D depth-wise transposed convolution, our equivalent implementations::\n"
+            "2D depth-wise transposed convolution, our equivalent "
+            "implementations::\n"
             "Firstly, we dilate the input feature maps by `stride`:\n\n"
             "    dilated_input[batch, h, w, c] =\n"
             "        ((h mod stride[1] == 0) && (w mod stride[0] == 0))\n"
@@ -731,7 +756,8 @@ auto fix =
         .set_annotation(
             "fix operator transforms float-point value into "
             "fixed-point value into float-point format.\n\n"
-            "(1). Firstly, we transform the float input feature map x into fixed value:\n\n"
+            "(1). Firstly, we transform the float input feature map x into "
+            "fixed value:\n\n"
             "    fixed_value = round(x * pow(2, fix_point))\n"
             "and then\n\n"
             "(2) transform the fixed value into float-point format:\n\n"
@@ -850,31 +876,26 @@ XIR_REGISTER_BUILT_IN_OP(reduction_sum);
 XIR_REGISTER_BUILT_IN_OP(reduction_max);
 
 auto l2_normalize =
-  xir::OpDef("l2_normalize")
-    .add_input_arg(
-      xir::OpArgDef{
-        "input",
-        OpArgDef::REQUIRED,
-        xir::DataType::FLOAT,
-        "The feature maps, can be x-dimension."})
-    .add_attr(
-      xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
-        "axis", AttrDef::OPTIONAL, 0,
-        "`Datatype`: `vector<int>`\n\n"
-        "Dimension along which to normalize.",
-        {}))
-    .add_attr(
-      xir::AttrDefBuilder<double>::build(
-        "epsilon", AttrDef::OPTIONAL,
-        "`Datatype`: `double`\n\n"
-        "A lower bound value for the norm.",
-        0.000000000001))
-    .set_annotation(
-      "For a 1-D tensor with `axis = 0`, computes\n\n"
-      "    output = x / sqrt(max(sum(x ^ 2), epsilon))\n"
-      "For x with more dimensions,\n"
-      "independently normalizes each 1-D slice along dimension axis.\n")
-    .set_shape_infer(xir::shape_infer_l2_normalize);
+    xir::OpDef("l2_normalize")
+        .add_input_arg(xir::OpArgDef{"input", OpArgDef::REQUIRED,
+                                     xir::DataType::FLOAT,
+                                     "The feature maps, can be x-dimension."})
+        .add_attr(xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+            "axis", AttrDef::OPTIONAL, 0,
+            "`Datatype`: `vector<int>`\n\n"
+            "Dimension along which to normalize.",
+            {}))
+        .add_attr(xir::AttrDefBuilder<double>::build(
+            "epsilon", AttrDef::OPTIONAL,
+            "`Datatype`: `double`\n\n"
+            "A lower bound value for the norm.",
+            0.000000000001))
+        .set_annotation(
+            "For a 1-D tensor with `axis = 0`, computes\n\n"
+            "    output = x / sqrt(max(sum(x ^ 2), epsilon))\n"
+            "For x with more dimensions,\n"
+            "independently normalizes each 1-D slice along dimension axis.\n")
+        .set_shape_infer(xir::shape_infer_l2_normalize);
 
 XIR_REGISTER_BUILT_IN_OP(l2_normalize);
 
@@ -888,20 +909,19 @@ std::function<void(xir::OpDef&)> InterfaceOpDefGenerator(
 }
 
 auto identity =
-  xir::OpDef("identity")
-    .inherit_from(InterfaceOpDefGenerator(xir::DataType::XINT))
-    .set_annotation(
-      "An interface operator that holds the data. Do nothing here.")
-    .set_shape_infer(xir::shape_infer_identity);
+    xir::OpDef("identity")
+        .inherit_from(InterfaceOpDefGenerator(xir::DataType::XINT))
+        .set_annotation(
+            "An interface operator that holds the data. Do nothing here.")
+        .set_shape_infer(xir::shape_infer_identity);
 
-auto upload =
-  xir::OpDef("upload")
-    .inherit_from(InterfaceOpDefGenerator(xir::DataType::FLOAT))
-    .set_annotation(
-      "An interface operator that holds the data achieved by a "
-      "CPU-runner, "
-      "and would be sent to a DPU-runner later.")
-    .set_shape_infer(xir::shape_infer_upload);
+auto upload = xir::OpDef("upload")
+                  .inherit_from(InterfaceOpDefGenerator(xir::DataType::FLOAT))
+                  .set_annotation(
+                      "An interface operator that holds the data achieved by a "
+                      "CPU-runner, "
+                      "and would be sent to a DPU-runner later.")
+                  .set_shape_infer(xir::shape_infer_upload);
 
 auto download =
     xir::OpDef("download")
@@ -926,30 +946,23 @@ auto shape = xir::OpDef("shape")
 XIR_REGISTER_BUILT_IN_OP(shape);
 
 auto reshape =
-  xir::OpDef("reshape")
-    .add_input_arg(
-      xir::OpArgDef{
-        "input",
-        OpArgDef::REQUIRED,
-        xir::DataType::FLOAT,
-        "The feature maps, can be x-dimension."})
-    .add_input_arg(
-      xir::OpArgDef{
-        "shape",
-        OpArgDef::OPTIONAL,
-        xir::DataType::INT,
-        "Constant values that define the shape of the output."})
-    .add_attr(
-      xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
-        "shape", AttrDef::OPTIONAL, 0,
-        "`Datatype`: `vector<int>`\n\n"
-        "Constant values that define the shape of the output.",
-        {0}))
-    .set_annotation(
-      "Reshape the feature maps or constant data into new shape without "
-      "changing "
-      "the layout of data in memory.")
-    .set_shape_infer(xir::shape_infer_reshape);
+    xir::OpDef("reshape")
+        .add_input_arg(xir::OpArgDef{"input", OpArgDef::REQUIRED,
+                                     xir::DataType::FLOAT,
+                                     "The feature maps, can be x-dimension."})
+        .add_input_arg(xir::OpArgDef{
+            "shape", OpArgDef::OPTIONAL, xir::DataType::INT,
+            "Constant values that define the shape of the output."})
+        .add_attr(xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+            "shape", AttrDef::OPTIONAL, 0,
+            "`Datatype`: `vector<int>`\n\n"
+            "Constant values that define the shape of the output.",
+            {0}))
+        .set_annotation(
+            "Reshape the feature maps or constant data into new shape without "
+            "changing "
+            "the layout of data in memory.")
+        .set_shape_infer(xir::shape_infer_reshape);
 
 XIR_REGISTER_BUILT_IN_OP(reshape);
 

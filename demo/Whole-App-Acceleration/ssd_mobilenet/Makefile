@@ -5,8 +5,6 @@ CXX       :=   g++ -std=c++17
 LDFLAGS   :=     -L/opt/xilinx/xrt/lib -L/usr/local/lib64  -L$(CONDA_PREFIX)/lib
 LDFLAGS   +=     -luuid -lxilinxopencl -lxrt_core  -lpthread -lopencv_imgcodecs -lopencv_core -lopencv_highgui -lopencv_imgproc   -lpthread -lboost_system -lprotobuf -lglog -lxir -ltarget-factory -lvart-runner
 
-
-
 CUR_DIR =   $(shell pwd)
 BUILD   =   build
 SRC     =   $(CUR_DIR)

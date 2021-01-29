@@ -24,6 +24,7 @@
 #include <vitis/ai/weak.hpp>
 
 #include "vart/runner.hpp"
+#include "xir/util/tool_function.hpp"
 
 DEF_ENV_PARAM(DEBUG_DPU_RUNNER, "0");
 #if CROSSCOMPILING
@@ -106,8 +107,9 @@ DpuSessionBaseImp::DpuSessionBaseImp(xir::Attrs* attrs)
 void DpuSessionBaseImp::initialize() {
   my_input_tensors_ = init_input_tensors(kernel_->get_subgraph());
   my_output_tensors_ = init_output_tensors(kernel_->get_subgraph());
-  my_all_tensors_ = init_tensors(kernel_->get_subgraph(),
-                                 get_all_tensor_names(kernel_->get_subgraph()));
+  my_all_tensors_ =
+      init_tensors(kernel_->get_subgraph(),
+                   get_all_tensor_names(kernel_->get_subgraph()), false);
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER))
       << "session is created."
       << "subgraph: " << kernel_->get_subgraph()->get_name();
@@ -130,7 +132,7 @@ static std::vector<std::string> get_input_tensor_names(
 
 std::vector<my_tensor_t> DpuSessionBaseImp::init_input_tensors(
     const xir::Subgraph* subgraph) {
-  return init_tensors(subgraph, get_input_tensor_names(subgraph));
+  return init_tensors(subgraph, get_input_tensor_names(subgraph), true);
 }
 
 std::vector<my_tensor_t> DpuSessionBaseImp::init_output_tensors(
@@ -139,7 +141,7 @@ std::vector<my_tensor_t> DpuSessionBaseImp::init_output_tensors(
   for (auto tensor : subgraph->get_output_tensors()) {
     ret.emplace_back(tensor->get_name());
   }
-  return init_tensors(subgraph, ret);
+  return init_tensors(subgraph, ret, true);
 }
 
 template <typename T>
@@ -163,30 +165,42 @@ struct op_output_tensor_ddr {
   size_t location;
 };
 
+static bool belong_to_subgraph(const xir::Op* op,
+                               const xir::Subgraph* subgraph) {
+  auto ops = subgraph->get_ops();
+  return ops.find(op) != ops.end();
+}
+
 static op_output_tensor_ddr get_op_output_tensor_ddr(
     const xir::Op* op, const xir::Subgraph* subgraph) {
   auto tensor = op->get_output_tensor();
-  if (op->get_type() == "download") {
+  if (op->get_type() == "download" && belong_to_subgraph(op, subgraph)) {
     auto input_ops = op->get_input_ops("input");
     CHECK_EQ(input_ops.size(), 1u)
         << "There must be only one pre_op for download op";
     tensor = input_ops[0]->get_output_tensor();
-  } else if (!tensor->has_attr("reg_id")) {
+  } else if (!tensor->has_attr("reg_id") ||
+             (!belong_to_subgraph(op, subgraph))) {
     auto fanout_ops = op->get_fanout_ops();
-    auto subgraph_ops = subgraph->get_ops();
+    auto subgraph_ops1 = subgraph->get_ops();
+    auto subgraph_ops =
+        std::vector<const xir::Op*>(subgraph_ops1.begin(), subgraph_ops1.end());
     auto ops = std::vector<const xir::Op*>();
+    std::sort(fanout_ops.begin(), fanout_ops.end());
+    std::sort(subgraph_ops.begin(), subgraph_ops.end());
     std::set_intersection(fanout_ops.begin(), fanout_ops.end(),
                           subgraph_ops.begin(), subgraph_ops.end(),
                           std::back_inserter(ops));
     CHECK_EQ(ops.size(), 1u)
         << "illegal xmodel. op:" << op->get_name() << "  has no ddr info";
     auto upload_op = ops.front();
-    /*CHECK_EQ(upload_op->get_type(), "upload")
+    CHECK_EQ(upload_op->get_type(), "upload")
         << "illegal xmodel. op:" << op->get_name() << "  has no ddr info";
-    auto up_next_op = upload_op->get_fanout_ops();
-    CHECK_EQ(up_next_op.size(), 1u)
-        << "illegal xmodel. op:" << op->get_name() << "  has no ddr info";
-        auto next_op = up_next_op.front();*/
+    /*    auto up_next_op = upload_op->get_fanout_ops();
+        CHECK_EQ(up_next_op.size(), 1u)
+            << "illegal xmodel. op:" << op->get_name() << "  has no ddr info";
+        auto next_op = up_next_op.front();
+    */
     tensor = upload_op->get_output_tensor();
   }
   CHECK(tensor->has_attr("reg_id")) << "op_name " << op->get_name();
@@ -205,16 +219,38 @@ static void set_ddr_info(xir::Tensor* tensor, op_output_tensor_ddr& info) {
   tensor->template set_attr<int>("location", (int)info.location);
 }
 
+std::vector<int> get_stride(const xir::Tensor* vitis_tensor) {
+  auto ret = std::vector<int>{};
+  if (vitis_tensor->has_attr("stride")) {
+    ret = vitis_tensor->get_attr<std::vector<int>>("stride");
+  }
+  return ret;
+}
+
+static bool is_normal_stride(const xir::Tensor* vitis_tensor) {
+  auto ret = true;
+  auto shape = vitis_tensor->get_shape();
+  auto stride = 1;
+  auto strides = get_stride(vitis_tensor);
+  auto c = shape.size() - 1;
+  for (auto s = strides.rbegin(); s != strides.rend(); ++s) {
+    ret = ret && stride == (*s);
+    stride = stride * shape[c];
+    c = c - 1;
+  }
+  return ret;
+}
+
 std::vector<my_tensor_t> DpuSessionBaseImp::init_tensors(
-    const xir::Subgraph* subgraph,
-    const std::vector<std::string>& tensor_names) {
+    const xir::Subgraph* subgraph, const std::vector<std::string>& tensor_names,
+    bool check_stride) {
   auto graph = subgraph->get_graph();
   auto ret = std::vector<my_tensor_t>{};
   ret.reserve(tensor_names.size());
 
   std::transform(
       tensor_names.begin(), tensor_names.end(), std::back_inserter(ret),
-      [&graph, subgraph, this](const auto& tensor_name) {
+      [&graph, subgraph, this, check_stride](const auto& tensor_name) {
         auto xir_tensor = graph->get_tensor(tensor_name);
         CHECK(xir_tensor != nullptr) << "cannot find tensor: " << tensor_name;
         auto op = xir_tensor->get_producer();
@@ -235,6 +271,11 @@ std::vector<my_tensor_t> DpuSessionBaseImp::init_tensors(
                                                 xir_tensor->get_data_type());
         vitis_tensor->set_attrs(std::move(attrs));
         set_ddr_info(vitis_tensor.get(), tensor_ddr);
+        if (check_stride) {
+          CHECK(is_normal_stride(vitis_tensor.get()))
+              << "stride=" << xir::to_string(get_stride(vitis_tensor.get()))
+              << ";tensor=" << vitis_tensor->to_string();
+        }
         auto ret = my_tensor_t{xir_tensor,               //
                                std::move(vitis_tensor),  //
                                tensor_ddr.reg_id,        //
@@ -277,13 +318,15 @@ std::vector<const xir::Tensor*> DpuSessionBaseImp::get_output_tensors() const {
 }
 
 size_t DpuSessionBaseImp::get_num_of_engines() const {
-  /*  auto core_id = get_dpu_controller()->get_core_id(get_device_core_id());
-      auto batch_from_hbm_txt = vart::dpu::get_engine_hbm(core_id).size(); */
+  /*  auto core_id =
+get_dpu_controller()->get_core_id(get_device_core_id()); auto
+batch_from_hbm_txt = vart::dpu::get_engine_hbm(core_id).size(); */
   auto batch_from_dpu_controller = const_cast<DpuSessionBaseImp*>(this)
                                        ->get_dpu_controller()
                                        ->get_batch_size(get_device_core_id());
   /*  CHECK_EQ(batch_from_hbm_txt, batch_from_dpu_controller)
-      << ", logic error, please check hbm_address_assignment.txt or dpu IP"; */
+      << ", logic error, please check hbm_address_assignment.txt or dpu IP";
+   */
   return batch_from_dpu_controller;
 }
 }  // namespace dpu

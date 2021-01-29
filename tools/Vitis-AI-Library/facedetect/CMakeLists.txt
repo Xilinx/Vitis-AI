@@ -63,3 +63,9 @@ target_link_libraries(test_facedetect_batch ${COMPONENT_NAME})
 
 add_executable(test_facedetect_accuracy test/test_accuracy_facedetect.cpp)
 target_link_libraries(test_facedetect_accuracy ${COMPONENT_NAME} math)
+
+find_package(Xrt MODULE)
+if(XRT_FOUND)
+  add_executable(test_facedetect_zero_copy test/test_facedetect_zero_copy.cpp)
+  target_link_libraries(test_facedetect_zero_copy ${COMPONENT_NAME} XRT::XRT)
+endif(XRT_FOUND)

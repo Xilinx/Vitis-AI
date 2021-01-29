@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
     cv::Mat image;
     cap >> image;
     if (ENV_PARAM(MAX_FPS) != 0) {
-      cap.set(CV_CAP_PROP_FPS, ENV_PARAM(MAX_FPS));
+      cap.set(cv::CAP_PROP_FPS, ENV_PARAM(MAX_FPS));
     }
     auto video_ended = image.empty();
     if (video_ended) {
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
         break;
       }
     }
-    auto prop_fps = cap.get(CV_CAP_PROP_FPS);
+    auto prop_fps = cap.get(cv::CAP_PROP_FPS);
     auto e = std::chrono::steady_clock::now();
     auto us =
         std::chrono::duration_cast<std::chrono::microseconds>(e - now).count();

@@ -1,4 +1,3 @@
-
 /*
 # Copyright 2019 Xilinx Inc.
 #
@@ -18,7 +17,7 @@ const char* xilinx_@PROJECT_NAME@_version() {
     return "@PROJECT_NAME@-@GIT_VERSION@@VERSION_SUFFIX@"; 
 }
 
-static char @PROJECT_NAME@_version[] = "Xilinx @PROJECT_NAME@ Version: @PROJECT_NAME@-@GIT_VERSION@@VERSION_SUFFIX@ @BUILD_DATE@";
+static char @PROJECT_NAME@_version[] = "Xilinx @PROJECT_NAME@ @COMPONENT_NAME@ Version: @PROJECT_VERSION@-@GIT_VERSION@ @BUILD_ID@ @BUILD_DATE@ ";
 const char* xilinx_version() {
   return @PROJECT_NAME@_version;
 }

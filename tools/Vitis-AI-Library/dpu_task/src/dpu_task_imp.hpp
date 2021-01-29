@@ -37,12 +37,15 @@ class DpuTaskImp : public DpuTask {
 
  public:
   virtual void run(size_t idx) override;
+  virtual void run_with_xrt_bo(
+      const std::vector<vart::xrt_bo_t>& input_bos) override;
   virtual void setMeanScaleBGR(const std::vector<float>& mean,
                                const std::vector<float>& scale) override;
   virtual void setImageBGR(const cv::Mat& img) override;
   virtual void setImageRGB(const cv::Mat& img) override;
   virtual void setInputDataArray(const std::vector<int8_t> input) override;
-  virtual void setInputDataArray(const std::vector<std::vector<int8_t>> input) override;
+  virtual void setInputDataArray(
+      const std::vector<std::vector<int8_t>> input) override;
 
   virtual void setImageBGR(const std::vector<cv::Mat>& imgs) override;
   virtual void setImageRGB(const std::vector<cv::Mat>& imgs) override;
@@ -60,6 +63,9 @@ class DpuTaskImp : public DpuTask {
   virtual size_t get_num_of_kernels() const override;
   virtual const xir::Graph* get_graph() const override;
   virtual std::unique_ptr<xir::Attrs> get_attrs() const override;
+  virtual int get_input_buffer_size() const override;
+  virtual size_t get_input_offset() const override;
+  virtual int get_input_fix_point() const override;
 
  private:
   void setImageBGR(const uint8_t* input, int stride);
@@ -73,6 +79,7 @@ class DpuTaskImp : public DpuTask {
   std::shared_ptr<GraphHolder> graph_holder_;
   //# Adding dirname_ back for DPUV1
   const std::string dirname_;
+  std::unique_ptr<xir::Attrs> default_attrs_;
   std::vector<std::unique_ptr<vart::Runner>> runners_;
   std::vector<float> mean_;
   std::vector<float> scale_;

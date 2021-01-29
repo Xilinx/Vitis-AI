@@ -101,7 +101,7 @@ struct FaceLandmarkAcc : public AccThread {
 
   void process_result(DpuResultInfo dpu_result) {
     auto result = (FaceLandmarkResult*)dpu_result.result_ptr.get();
-    of << split(dpu_result.single_name, ".")[0] << std::endl;
+    of << split(dpu_result.single_name, ".")[0] << " ";
     auto points = result->points;
     for (int i = 0; i < 5; ++i) {
       of << (int)(points[i].first * model_info_landmark.w) << " ";
@@ -109,6 +109,7 @@ struct FaceLandmarkAcc : public AccThread {
     for (int i = 0; i < 5; i++) {
       of << (int)(points[i].second * model_info_landmark.h) << " ";
     }
+    of << std::endl;
   }
 
   virtual int run() override {
@@ -126,6 +127,12 @@ struct FaceLandmarkAcc : public AccThread {
 }  // namespace vitis
 
 int main(int argc, char* argv[]) {
+  if (argc < 4) {
+    std::cout << " usage: " << argv[0] << " <model_name> <image_list> <output_file>"
+              << std::endl;  //
+    abort();
+  }
+
   model_info_landmark = vitis::ai::get_model_zise(argv[1]);
   return vitis::ai::main_for_accuracy_demo(
       argc, argv,

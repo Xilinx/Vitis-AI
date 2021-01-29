@@ -23,12 +23,12 @@ using namespace std;
 namespace vitis {
 namespace ai {
 
-ReidImp::ReidImp(const std::string &model_name, bool need_preprocess)
-    : vitis::ai::TConfigurableDpuTask<Reid>(model_name, need_preprocess) {}
+ReidImp::ReidImp(const std::string& model_name, bool need_preprocess)
+    : Reid(model_name, need_preprocess) {}
 
 ReidImp::~ReidImp() {}
 
-ReidResult ReidImp::run(const cv::Mat &input_image) {
+ReidResult ReidImp::run(const cv::Mat& input_image) {
   cv::Mat image;
   int sWidth = getInputWidth();
   int sHeight = getInputHeight();
@@ -53,7 +53,7 @@ ReidResult ReidImp::run(const cv::Mat &input_image) {
   return ret;
 }
 
-std::vector<ReidResult> ReidImp::run(const std::vector<cv::Mat> &input_images) {
+std::vector<ReidResult> ReidImp::run(const std::vector<cv::Mat>& input_images) {
   vector<cv::Mat> images;
   int sWidth = getInputWidth();
   int sHeight = getInputHeight();
@@ -72,6 +72,19 @@ std::vector<ReidResult> ReidImp::run(const std::vector<cv::Mat> &input_images) {
   __TOC__(REID_SET_IMG)
   __TIC__(REID_DPU)
   configurable_dpu_task_->run(0);
+  __TOC__(REID_DPU)
+  __TIC__(REID_POST_PROCESS)
+  auto ret =
+      vitis::ai::reid_post_process(configurable_dpu_task_->getInputTensor(),
+                                   configurable_dpu_task_->getOutputTensor(),
+                                   configurable_dpu_task_->getConfig());
+  __TOC__(REID_POST_PROCESS)
+  return ret;
+}
+std::vector<ReidResult> ReidImp::run(
+    const std::vector<vart::xrt_bo_t>& input_bos) {
+  __TIC__(REID_DPU)
+  configurable_dpu_task_->run_with_xrt_bo(input_bos);
   __TOC__(REID_DPU)
   __TIC__(REID_POST_PROCESS)
   auto ret =
