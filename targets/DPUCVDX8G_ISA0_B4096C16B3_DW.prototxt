@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: "DPUCVDX8G_ISA0_B8192C32B3_DW"
+name: "DPUCVDX8G_ISA0_B4096C16B3_DW"
 type: "DPUCVDX8G"
 isa_version: 0x00
-feature_code: 0x0000f6088831
+feature_code: 0x0000f6088830
 bank_group {
   name: "VB0"
   type: "Virtual"
@@ -76,7 +76,7 @@ save_engine {
 }
 conv_engine {
   input_channel_parallel: 16
-  output_channel_parallel: 32
+  output_channel_parallel: 16
   pixel_parallel: 8
   input_bank: "VB0"
   input_bank: "VB1"
