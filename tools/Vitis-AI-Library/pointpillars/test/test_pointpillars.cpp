@@ -17,6 +17,7 @@
 #include <csignal>
 #include <execinfo.h>
 #include <iostream>
+#include <fstream>
 #include <sys/stat.h>
 #include <future>
 #include <vitis/ai/pointpillars.hpp>

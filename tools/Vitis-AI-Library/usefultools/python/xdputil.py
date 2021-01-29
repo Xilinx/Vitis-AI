@@ -17,8 +17,8 @@ limitations under the License.
 """
 
 
-from subcommands import *
-import subcommands
+from xdputil_component import *
+import xdputil_component
 
 
 def main():
@@ -29,8 +29,8 @@ def main():
     subparsers = parser.add_subparsers(
         title="sub command ", description="xmodel tools", help="sub-command help"
     )
-    for i in subcommands.__all__:
-        m = getattr(subcommands, i)
+    for i in xdputil_component.__all__:
+        m = getattr(xdputil_component, i)
         m.help(subparsers)
     args = parser.parse_args()
 

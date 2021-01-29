@@ -16,6 +16,7 @@
 #include <glog/logging.h>
 
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <opencv2/opencv.hpp>
@@ -28,7 +29,7 @@ using namespace cv;
 string RESULT_FILE_PATH = "accuracy_result_plate/";
 extern int enable_platenum_acc;
 
-std::string get_single_name(const std::string &line) {
+std::string get_single_name(const std::string& line) {
   std::size_t found = line.rfind('/');
   if (found != std::string::npos) {
     return line.substr(found + 1);
@@ -36,8 +37,8 @@ std::string get_single_name(const std::string &line) {
   return line;
 }
 
-static std::vector<std::string> split(const std::string &s,
-                                      const std::string &delim) {
+static std::vector<std::string> split(const std::string& s,
+                                      const std::string& delim) {
   std::vector<std::string> elems;
   size_t pos = 0;
   size_t len = s.length();
@@ -55,7 +56,7 @@ static std::vector<std::string> split(const std::string &s,
   return elems;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   enable_platenum_acc = 1;
   if (argc != 4) {
     cerr << "usage: test_platenum_accuracy model_name file_list_file_name "

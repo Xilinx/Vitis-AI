@@ -51,7 +51,8 @@ V2F center_to_corner_box2d_to_standup_nd(const V2F& );
 V3F rotation_2d(const V3F& points, const V2F& angles);
 V3F einsum(const V3F& points, const V3F& rot_mat_T);
 
-void sparse_sum_for_anchors_mask(const CoorsType& coors, int, V2F& );
+void sparse_sum_for_anchors_mask(const std::vector<std::pair<int,int>>& coors, int, V2F& );
+
 int cumsum(V2F& v);
 
 int get_max3(int8_t* in){
@@ -65,7 +66,7 @@ void PointPillarsPost::get_anchors_mask( std::shared_ptr<preout_dict> pre_dict_)
 {
   __TIC__(inner_anchors_mask)
   __TIC__(dense_voxel_map)
-  sparse_sum_for_anchors_mask(  pre_dict_->GetCoordinates() ,  pre_dict_->GetSize() , dense_voxel_map );
+  sparse_sum_for_anchors_mask(  pre_dict_->coorData ,  pre_dict_->GetSize() , dense_voxel_map );
   __TOC__(dense_voxel_map)
   __TIC__(cumsum)    // 4ms
   cumsum(dense_voxel_map);
@@ -290,15 +291,14 @@ V1F PointPillarsPost::get_decode_box(int idx) {
   return o;
 }
 
-void sparse_sum_for_anchors_mask(const CoorsType& coors , int size, V2F& v2f)
+void sparse_sum_for_anchors_mask(const std::vector<std::pair<int,int>>& coors, int size, V2F&  v2f)
 {
   for(auto &it: v2f) {
     it.assign(it.size() ,0);
   }
   for(int i=0; i< size; i++){
-    // ret[ coors[i][1] ][ coors[i][2] ]+=1; // origin version for import from Python
-    // ret[ coors(i,2) ][ coors(i,3) ]+=1;
-    v2f[ coors(i,1) ][ coors(i,2) ]+=1;  // change to original version: because I changed the definition of coors to 3 len
+    v2f[ coors[i].first  ][ coors[i].second ]+=1;  // change to original version: because I changed the definition of coors to 3 len
+
   }
 }
 
