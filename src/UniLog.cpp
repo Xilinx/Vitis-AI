@@ -172,7 +172,6 @@ void Checker::operator&(ErrorCode &errCode) {
   if (condition_) {
     return;
   } else {
-    UNI_LOG_INFO_LOW << errCode;
     throw errCode;
   }
 }
