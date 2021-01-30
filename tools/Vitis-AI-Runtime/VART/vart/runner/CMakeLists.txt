@@ -157,5 +157,5 @@ if(BUILD_PYTHON)
       DESTINATION ${PYTHON_SITE_PACKAGES})
   endif(CMAKE_CROSSCOMPILING)
 
-
+  target_include_directories(vitis-ai-runner-py PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../util/include")
 endif(BUILD_PYTHON)
