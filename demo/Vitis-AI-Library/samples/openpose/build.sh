@@ -15,8 +15,8 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_openpose test_accuracy_openpose.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-openpose  -lvitis_ai_library-model_config -ljson-c -lglog 
-$CXX -std=c++11 -I. -o test_accuracy_openpose_mt test_accuracy_openpose_mt.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-openpose  -lvitis_ai_library-model_config -ljson-c -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_openpose test_jpeg_openpose.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-openpose  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_openpose test_performance_openpose.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-openpose  -lvart-util -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_openpose test_video_openpose.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-openpose  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_openpose test_accuracy_openpose.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-openpose  -lvitis_ai_library-model_config -ljson-c -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_openpose_mt test_accuracy_openpose_mt.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-openpose  -lvitis_ai_library-model_config -ljson-c -pthread -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_openpose test_jpeg_openpose.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-openpose  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_openpose test_performance_openpose.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-openpose  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+$CXX -std=c++17 -I. -o test_video_openpose test_video_openpose.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-openpose  -pthread -lglog 

@@ -15,6 +15,6 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_bin_pointpillars test_bin_pointpillars.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-pointpillars  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_accuracy_pointpillars test_accuracy_pointpillars.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-pointpillars  -lvitis_ai_library-model_config -lpthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_pointpillars test_performance_pointpillars.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-pointpillars  -lvart-util -pthread -lglog 
+$CXX -std=c++17 -I. -o test_bin_pointpillars test_bin_pointpillars.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-pointpillars  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_pointpillars test_accuracy_pointpillars.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-pointpillars  -lvitis_ai_library-model_config -lpthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_pointpillars test_performance_pointpillars.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-pointpillars  -lvart-util -lvitis_ai_library-dpu_task  -pthread -lglog 
