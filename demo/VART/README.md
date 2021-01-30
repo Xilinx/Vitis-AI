@@ -230,7 +230,7 @@ If you encounter any path errors in running examples, check to see if you follow
 	* Take `resnet50` of U50 as an example.
 	```
 	  cd /workspace
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.1.tar.gz -O resnet50-u50-r1.3.1.tar.gz
 	```	
 	* Install the model package.  
 	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
@@ -239,7 +239,7 @@ If you encounter any path errors in running examples, check to see if you follow
 	```  
 	Then install the model package.
 	```
-	  tar -xzvf resnet50-u50-r1.3.0.tar.gz
+	  tar -xzvf resnet50-u50-r1.3.1.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 
