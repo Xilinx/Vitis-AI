@@ -30,23 +30,23 @@ files:
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 82ef3545fad204bfb4b58d73120db208
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 96ac7dc7216e60cef5d4c6110cefa670
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-vck190-r1.3.0.tar.gz
-  checksum: 1a1e97377ccc6aa3512a25638af4ba21
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-vck190-r1.3.1.tar.gz
+  checksum: 35c7b9908f553f6faf7e4f6eada734d2
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-r1.3.0.tar.gz
-  checksum: 1f32647b0b0c9996bbea50000ae11f54
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-r1.3.1.tar.gz
+  checksum: ed1ec5cbf91845c753e28821fbbe97ac
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 6f230a5766ae5804f3012985bb7bef78
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: b4ec0b8089fb8b3d49d8375dc829ca05
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

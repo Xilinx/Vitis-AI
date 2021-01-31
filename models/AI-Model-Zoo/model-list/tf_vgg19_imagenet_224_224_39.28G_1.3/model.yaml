@@ -30,23 +30,23 @@ files:
 - name: vgg_19_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 63f8629b4ffad7f8b789101dbd13f0c0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 3b1a1b65ee9692f1bddcb63da95d8538
 - name: vgg_19_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-vck190-r1.3.0.tar.gz
-  checksum: 959538f5a981cda9373249843c6f3573
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-vck190-r1.3.1.tar.gz
+  checksum: ecfc077c4c7c81daa953c69178e8265a
 - name: vgg_19_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50-r1.3.0.tar.gz
-  checksum: 8ea900d5ed022b319f285595cc48b46c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50-r1.3.1.tar.gz
+  checksum: c611bf86f8b3aa57849067f438af06c4
 - name: vgg_19_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: f17d01f924aecc514289e8727d0fe8ba
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 512f09c53d9a58840d9a85487778ab5a
 - name: vgg_19_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

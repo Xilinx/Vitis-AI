@@ -30,23 +30,23 @@ files:
 - name: openpose_pruned_0_3
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 6172c985e50d2f5439626b6831cc55d8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: f89478ee24863265c132ebd7d3a42114
 - name: openpose_pruned_0_3
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-vck190-r1.3.0.tar.gz
-  checksum: 922481602ccd0d7e939df84f018321e0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-vck190-r1.3.1.tar.gz
+  checksum: 362b608dc467f0aed9b36985c1dff6a6
 - name: openpose_pruned_0_3
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50-r1.3.0.tar.gz
-  checksum: 5de5d46facf4aeb8029fd4426022caac
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50-r1.3.1.tar.gz
+  checksum: 4529fc4374ef653ee3136cf78d303681
 - name: openpose_pruned_0_3
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50lv-u280-r1.3.0.tar.gz
-  checksum: f2283ec27c8dcaa95b0758f826d5c900
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50lv-u280-r1.3.1.tar.gz
+  checksum: 5c9ac4c7e0fb040edb8e7ee69c51a7b9
 - name: openpose_pruned_0_3
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

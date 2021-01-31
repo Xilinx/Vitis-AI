@@ -30,23 +30,23 @@ files:
 - name: resnet50_tf2
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 50239d482f0f0a666296f9a433ba0773
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: e3bd6d188142800fa15a86dfdea0a515
 - name: resnet50_tf2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-vck190-r1.3.0.tar.gz
-  checksum: b7142c26b0590a977f779348669b976b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-vck190-r1.3.1.tar.gz
+  checksum: a90e2bd4a901e3f30057bb335a1b91a8
 - name: resnet50_tf2
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50-r1.3.0.tar.gz
-  checksum: fb7a1b3a2a7515a0cddced5d5d79ecfa
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50-r1.3.1.tar.gz
+  checksum: c743414ead089a0efc7c90877f53dd5d
 - name: resnet50_tf2
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50lv-u280-r1.3.0.tar.gz
-  checksum: 24be402c0d3b5347bc84d86822c07ad1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50lv-u280-r1.3.1.tar.gz
+  checksum: b53ad2d2b3106ba58343bda00dc6b3cb
 - name: resnet50_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

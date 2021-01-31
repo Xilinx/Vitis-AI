@@ -30,23 +30,23 @@ files:
 - name: salsanext_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 768919e64a3024968f141f367f001452
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 94d9cc47f16bf1c40da46e4ffe3fcc57
 - name: salsanext_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck190-r1.3.0.tar.gz
-  checksum: a08fee55c01e6fee1a3062d67c97f153
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck190-r1.3.1.tar.gz
+  checksum: ffdff46eecf14a2584862dfd9b6c21cb
 - name: salsanext_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-r1.3.0.tar.gz
-  checksum: fa67463e2ee6f59c31e401e9e494057a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-r1.3.1.tar.gz
+  checksum: c67f59e75885bed7f9b64be7e7e1e871
 - name: salsanext_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 05396f3c17a5cbba69582980ddc720c8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 393ce011cf885386b38f6e83e0dfddfc
 - name: salsanext_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

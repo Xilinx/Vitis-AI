@@ -30,23 +30,23 @@ files:
 - name: densebox_640_360
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 51a99ad9ac27fc7e37eb5c0f6c64cf3c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 4cfb477f654c405abf3ad32b5851af80
 - name: densebox_640_360
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-vck190-r1.3.0.tar.gz
-  checksum: e97c68770594e242be9fd288a84aea9f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-vck190-r1.3.1.tar.gz
+  checksum: b6023962a8442b83973f34b34efcc380
 - name: densebox_640_360
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50-r1.3.0.tar.gz
-  checksum: bf66f757558f0619a24c5d17c3b5fbb0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50-r1.3.1.tar.gz
+  checksum: 68852cae50b99ae55796c504dd2b328e
 - name: densebox_640_360
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50lv-u280-r1.3.0.tar.gz
-  checksum: f1e58bcf1a77e48f60e5fa4bede79f0d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50lv-u280-r1.3.1.tar.gz
+  checksum: e553b67e005b3760c0e87ee84f5cee35
 - name: densebox_640_360
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

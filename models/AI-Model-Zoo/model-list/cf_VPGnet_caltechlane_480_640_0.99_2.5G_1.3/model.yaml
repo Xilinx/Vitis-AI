@@ -30,23 +30,23 @@ files:
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 975960474bd2c9351bb390205dde389e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 075520fdc6c7025a31a301a78236a4d1
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-vck190-r1.3.0.tar.gz
-  checksum: b7fc1e0f7db991fd30b4adcd28fa2bd0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-vck190-r1.3.1.tar.gz
+  checksum: f270c19e1b9568254e3b171098d8fdb6
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50-r1.3.0.tar.gz
-  checksum: 5fa1c5401bdb2221a06ff39e9ed2ee0e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50-r1.3.1.tar.gz
+  checksum: 71e1c8a0bf978c1700345673047351fa
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50lv-u280-r1.3.0.tar.gz
-  checksum: cc125162c73b031bd67f428bbc66ba59
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50lv-u280-r1.3.1.tar.gz
+  checksum: 0667160a503cac4a6f0a091ab2ae1e1f
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

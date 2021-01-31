@@ -30,23 +30,23 @@ files:
 - name: facereid-small_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 0122b1218e43ce6eaf80577c4530f1e4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 29f4551066fd18eede1f081dcf86218d
 - name: facereid-small_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-vck190-r1.3.0.tar.gz
-  checksum: 0debc0c0ce59c3a43bec9f2326116f88
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-vck190-r1.3.1.tar.gz
+  checksum: 9c0b2d3a3e2c269d8b9390685308d659
 - name: facereid-small_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-r1.3.0.tar.gz
-  checksum: 023045354e05ca9b0de290c31a999ba2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-r1.3.1.tar.gz
+  checksum: cfe590d2d7cf8426027f98c6527b0c62
 - name: facereid-small_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: ad7db745eb048cad801cbac65029fdb7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: b03a94320396da9ca8c2be25977514a8
 - name: facereid-small_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

@@ -30,8 +30,8 @@ files:
 - name: ssd_mobilenet_v2_coco_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2_coco_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: a917046cdc680f392ba5c9c8b6f675e4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2_coco_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 1fb903239f5cefde0fd73826e8da6f25
 - name: ssd_mobilenet_v2_coco_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

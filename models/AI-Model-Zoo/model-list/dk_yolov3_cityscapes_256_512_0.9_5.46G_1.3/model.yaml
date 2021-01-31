@@ -30,21 +30,21 @@ files:
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 8497e4be2036325b43aef3cd00553849
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 5d01d6064933656afe7ffbccdabda61e
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck190-r1.3.0.tar.gz
-  checksum: bbf6b662ede3769183e4a9b52a9d2a59
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck190-r1.3.1.tar.gz
+  checksum: 689f74dd0b9b7208121f717392c802e6
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
-  checksum: 7ca76ae0900432d639b53c544a0e465a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.1.tar.gz
+  checksum: 242c29239f01d6edbe2e9b7b278974ef
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50lv-u280-r1.3.0.tar.gz
-  checksum: 9051358ea2efd8a303675e06b42fb2df
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50lv-u280-r1.3.1.tar.gz
+  checksum: d2697a006f96cafef4a754a6e7e37991
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

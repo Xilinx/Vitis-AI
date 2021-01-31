@@ -30,23 +30,23 @@ files:
 - name: personreid-res50_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 9bedd8b010c6d9224f26748e7c725a42
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 3584dde9fd3c6da976786128c110fde9
 - name: personreid-res50_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-vck190-r1.3.0.tar.gz
-  checksum: 7a1dcab03db80eaf6e11de440bb42fa9
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-vck190-r1.3.1.tar.gz
+  checksum: cba4080406b1cbb3ac7d6f7c97ba2326
 - name: personreid-res50_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-r1.3.0.tar.gz
-  checksum: f99ca8aa1fb7abd3dcd7352e564866eb
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-r1.3.1.tar.gz
+  checksum: d6a9a0ce97ffc287a747a92936303e8b
 - name: personreid-res50_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 84e8f533129c1b6aa50ddc8be2395bfa
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 9cb77af22bf9b30d27c0958cd70f8db8
 - name: personreid-res50_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

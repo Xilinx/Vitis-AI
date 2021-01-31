@@ -31,23 +31,23 @@ files:
 - name: face-quality_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 3982dc2a04b799128d673353724214ba
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: a3cb53eb85cbde65ecef4579083ee09d
 - name: face-quality_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck190-r1.3.0.tar.gz
-  checksum: 97876f140af110d69792a51b44027274
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck190-r1.3.1.tar.gz
+  checksum: 695c1c2e4d5ef624263aa91747c4b052
 - name: face-quality_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-r1.3.0.tar.gz
-  checksum: 85951585925aa008fe81dc80872a00b8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-r1.3.1.tar.gz
+  checksum: b6d409c16727559c4aee6712ebd6e826
 - name: face-quality_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 52c2268fdcda04e89ae416db8b7eaed6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 4356da8b82a2115554afa061651454e7
 - name: face-quality_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me

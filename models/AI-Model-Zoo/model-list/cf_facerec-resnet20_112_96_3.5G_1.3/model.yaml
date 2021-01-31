@@ -30,23 +30,23 @@ files:
 - name: facerec_resnet20
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 25e0a186865b02b5524fac29d4cf3482
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 268e12f1731ba537fea60933acd8baa4
 - name: facerec_resnet20
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-vck190-r1.3.0.tar.gz
-  checksum: 1a873a4dcff0644a3bdf7460dfd95105
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-vck190-r1.3.1.tar.gz
+  checksum: 0a79320425dd68c1ce98c500cfa1d777
 - name: facerec_resnet20
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50-r1.3.0.tar.gz
-  checksum: dbd8d8d3582e9919e5d6e56d61536738
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50-r1.3.1.tar.gz
+  checksum: e482d1322e68d9675cf8848bd0c21bc4
 - name: facerec_resnet20
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50lv-u280-r1.3.0.tar.gz
-  checksum: ef5a203153c2ef9fad2643b37db438d8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50lv-u280-r1.3.1.tar.gz
+  checksum: 543db487006f5b175a3e9c76ce1f83e6
 - name: facerec_resnet20
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
