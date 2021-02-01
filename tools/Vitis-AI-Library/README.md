@@ -336,7 +336,7 @@ Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/demo/Vit
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
-1. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_images.tar.gz) and [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_video.tar.gz) packages and untar them.
+1. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_images.tar.gz) and [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz) packages and untar them.
 ```
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_images.tar.gz -O vitis_ai_library_r1.3.1_images.tar.gz
