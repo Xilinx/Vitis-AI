@@ -14,6 +14,7 @@ The following tutorials assume that the $TRD_HOME environment variable is set as
 We need install the Vitis Core Development Environment.
 
 Download [Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
+
 **Note that for bash, same Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz file can be obtained from here `/wrk/acceleration/users/maheshm/publicDownloadrepo/`
 
 The following tutorials assume that the Vitis and XRT environment variable is set as given below.
@@ -59,19 +60,19 @@ Note that
     For bash, please use test image from here
 
 	```
-	  /wrk/acceleration/users/maheshm/publicDownloadrepo/image_data/adas_detection_input.jpg
+	  XHD/XSJ: /wrk/acceleration/users/maheshm/publicDownloadrepo/image_data/adas_detection_input.jpg
 	```
 ### 3. Compile & run the application on Alveo U50
 
   	```
-  	   cd /workspace/dsa/WAA-TRD/app/adas_detection_waa
-	   ./build.sh
-	   mkdir output
-	   ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel
-
-	   Expect: 
-	   Input Image:./data/<img>.jpg
-	   Output Image:./output/<img>.jpg
+	  cd /workspace/dsa/WAA-TRD/app/adas_detection_waa
+	  ./build.sh
+	  mkdir output
+	  ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel
+	  
+	  Expect: 
+	  Input Image:./data/<img>.jpg
+	  Output Image:./output/<img>.jpg
   	```
 
 
