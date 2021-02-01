@@ -64,7 +64,8 @@ We need install the Vitis Core Development Environment.
 
 Download and unzip mpsoc common system & zcu102 base platform package from chapter 1.
 
-Download [Vitis-AI.1.3-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.3-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
+Download [Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
+**Note that for bash, same Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz file can be obtained from here `/wrk/acceleration/users/maheshm/publicDownloadrepo/`
 
 The following tutorials assume that the Vitis and XRT environment variable is set as given below.
 
@@ -157,6 +158,12 @@ This part is about how to run the Adas detection example on zcu102 board.
 
 Download the images at https://cocodataset.org/#download. Please select suitable images which has car, bicycle or pedestrian and copy these images to `Vitis-AI/dsa/WAA-TRD/app/adas_detection_waa/data`. 
 
+
+    For bash, please use test image from here
+
+	```
+	  /wrk/acceleration/users/maheshm/publicDownloadrepo/image_data/adas_detection_input.jpg
+	```
 Copy the directory $TRD_HOME/app/adas_detection_waa to the BOOT partition of the SD Card.
 
 Please insert SD_CARD on the ZCU102 board.After the linux boot, run:
