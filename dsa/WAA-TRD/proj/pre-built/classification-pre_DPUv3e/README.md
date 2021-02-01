@@ -6,7 +6,7 @@
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =< Vitis-AI-path >/WAA-TRD
+%export TRD_HOME =< Vitis-AI-path >/dsa/WAA-TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
