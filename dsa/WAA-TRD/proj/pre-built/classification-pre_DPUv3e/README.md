@@ -69,17 +69,17 @@ Note that
 ### 3. Compile & run the application on Alveo U50
 
   	```
-  	   cd /workspace/dsa/WAA-TRD/app/resnet50_waa
-	   ./build.sh
-	   ./resnet50_waa /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
-
-	   Expect:
-	   Image : ./img/bellpeppe-994958.JPEG
-	   top[0] prob = 0.990457  name = bell pepper
-	   top[1] prob = 0.004048  name = acorn squash
-	   top[2] prob = 0.002455  name = cucumber, cuke
-	   top[3] prob = 0.000903  name = zucchini, courgette
-	   top[4] prob = 0.000703  name = strawberry
+	  cd /workspace/dsa/WAA-TRD/app/resnet50_waa
+	  ./build.sh
+	  ./resnet50_waa /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
+	  
+	  Expect:
+	  Image : ./img/bellpeppe-994958.JPEG
+	  top[0] prob = 0.990457  name = bell pepper
+	  top[1] prob = 0.004048  name = acorn squash
+	  top[2] prob = 0.002455  name = cucumber, cuke
+	  top[3] prob = 0.000903  name = zucchini, courgette
+	  top[4] prob = 0.000703  name = strawberry
   	```
 
 
