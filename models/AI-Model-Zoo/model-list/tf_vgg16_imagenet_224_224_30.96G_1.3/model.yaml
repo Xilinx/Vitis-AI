@@ -52,4 +52,9 @@ files:
   board: u50-v3me & u50lv-v3me & u280-v3me
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
   checksum: 0273da96069026c7275095e0f04e9259
+- name: vgg_16_tf
+  type: xmodel
+  board: u200 & u250
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u200-u250-r1.3.0.tar.gz
+  checksum: 574db993a06a04b5f8323f3dbdb65331
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
