@@ -30,7 +30,7 @@ Open a linux terminal. Set the linux as Bash mode.
 ```
 Note that 
 - Generated xclbin will be here **$TRD_HOME/proj/pre-built/detection-pre_DPUv3e/dpu.xclbin**.
-- Build runtime is ~1.5 hours.
+- Build runtime is ~2.5 hours.
 
 ### 2. Setting Up the Target Alveo U50
 **Note that the docker container needs to be loaded and the below commands need to be run in the docker environment**
