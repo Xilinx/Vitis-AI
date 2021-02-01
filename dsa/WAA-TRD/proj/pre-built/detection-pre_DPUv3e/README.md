@@ -64,13 +64,15 @@ Note that
 	```
 ### 3. Compile & run the application on Alveo U50
 
-	```
-	  cd /workspace/dsa/WAA-TRD/app/adas_detection_waa
- 	  ./build.sh
- 	  mkdir output
- 	  ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel
- 
- 	  Expect: 
- 	  Input Image:./data/<img>.jpg
- 	  Output Image:./output/<img>.jpg
-	```
+```
+% cd /workspace/dsa/WAA-TRD/app/adas_detection_waa
+% ./build.sh
+% mkdir output
+% ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel  
+
+Expect: 
+Input Image:./data/<img>.jpg
+Output Image:./output/<img>.jpg
+
+```
+
