@@ -66,15 +66,13 @@ Download and unzip mpsoc common system & zcu102 base platform package from chapt
 
 Download [Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
 
-**Note that for bash, same Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz file can be obtained from here `/wrk/acceleration/users/maheshm/publicDownloadrepo/`
-
 The following tutorials assume that the Vitis and XRT environment variable is set as given below.
 
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
 % source < vitis-install-directory >/Vitis/2020.2/settings64.sh
-% source < part-to-XRT-installation-directory >/setup.sh
+% source < path-to-XRT-installation-directory >/setup.sh
 % gunzip < mpsoc-common-system >/xilinx-zynqmp-common-v2020.2/rootfs.tar.gz
 % export EDGE_COMMON_SW=< mpsoc-common-system >/xilinx-zynqmp-common-v2020.2 
 % export SDX_PLATFORM=< zcu102-base-platform-path >/xilinx_zcu102_base_202020_1/xilinx_zcu102_base_202020_1.xpfm
@@ -157,11 +155,6 @@ This part is about how to run the Resnet50 example on zcu102 board.
 
 * Download the images at http://image-net.org/download-images and copy images to `Vitis-AI/dsa/WAA-TRD/app/resnet50_waa/img` 
 
-    For bash, please use test image from here
-
-	```
-	   XHD/XSJ: /wrk/acceleration/users/maheshm/publicDownloadrepo/image_data/resnet50_input_img.JPEG
-	```
 * Copy the directory $TRD_HOME/app/resnet50_waa to the BOOT partition of the SD Card.
 
 * Please insert SD_CARD on the ZCU102 board. After the linux boot, run:

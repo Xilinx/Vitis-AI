@@ -15,14 +15,13 @@ We need install the Vitis Core Development Environment.
 
 Download [Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
 
-**Note that for bash, same Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz file can be obtained from here `/wrk/acceleration/users/maheshm/publicDownloadrepo/`
 
 Open a linux terminal. Set the linux as Bash mode and execute follwoing instructions.
 
 ```
 % cd $TRD_HOME/proj/pre-built/detection-pre_DPUv3e
 % source < vitis-install-directory >/Vitis/2020.2/settings64.sh
-% source < part-to-XRT-installation-directory >/setup.sh
+% source < path-to-XRT-installation-directory >/setup.sh
 % export PLATFORM_REPO_PATHS=`readlink -f ../../../bin`
 % export SDX_PLATFORM=xilinx_u50_gen3x4_xdma_2_202010_1
 % ./run.sh
@@ -56,11 +55,6 @@ Note that
 
   For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa/data`
 
-    For bash, please use test image from here
-
-	```
-	  XHD/XSJ: /wrk/acceleration/users/maheshm/publicDownloadrepo/image_data/adas_detection_input.jpg
-	```
 ### 3. Compile & run the application on Alveo U50
 
 ```
