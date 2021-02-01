@@ -50,6 +50,6 @@ files:
 - name: personreid-res50_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 8e600460166287821c5a5d809773162d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 278cf46aac6df8b9aace47280de8c613
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -50,6 +50,6 @@ files:
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: c07358fc2302e3af0ee4f4320cc4aaf6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 79a58a0bf94f0ffa3251ad8f1f166d8c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

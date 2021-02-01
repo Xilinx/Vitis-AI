@@ -35,6 +35,6 @@ files:
 - name: mobilenet_v1_0_5_160_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: fec7e362a270a17d30afff9cb329692b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: debb37155adc24d7176ac3680b753592
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

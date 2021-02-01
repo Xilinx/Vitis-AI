@@ -50,6 +50,6 @@ files:
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: e6c558ccfdb608c1bdc121f658f1fc68
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: bf5195dc8cad6d5006bb062da1812ad5
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

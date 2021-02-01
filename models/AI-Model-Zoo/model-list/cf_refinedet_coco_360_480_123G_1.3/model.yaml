@@ -50,6 +50,6 @@ files:
 - name: refinedet_baseline
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 60a09f4fd41d824a9520b80c74684038
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 59d5d83f8eab761b031f02d2bc8e3fe4
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

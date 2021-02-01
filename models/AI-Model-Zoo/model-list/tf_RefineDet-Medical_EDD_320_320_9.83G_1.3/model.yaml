@@ -50,6 +50,6 @@ files:
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: f7e43a10708ef52a33176bafae0bb7a1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 40b9d99c6ca3f64e70c2deb2d90f8190
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

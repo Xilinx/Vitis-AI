@@ -50,8 +50,8 @@ files:
 - name: inception_v3_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: bf80c2651e12d3a1c73ff40ef6f58cd2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 4e38fa90c272d298775ad43b7cec7688
 - name: inception_v3_tf
   type: xmodel
   board: u200 & u250

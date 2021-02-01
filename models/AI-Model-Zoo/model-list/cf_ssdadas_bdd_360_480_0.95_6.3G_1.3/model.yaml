@@ -50,6 +50,6 @@ files:
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: bdda822ac2eaeb27693a32e2b96e4bf0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: d979e5a220bb7185c417280f831df6eb
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

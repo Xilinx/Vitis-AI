@@ -50,6 +50,6 @@ files:
 - name: multi_task
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 0729c63d5012f630abc910e51b88e616
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 897e57e8a158027a2027e18c021596b6
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

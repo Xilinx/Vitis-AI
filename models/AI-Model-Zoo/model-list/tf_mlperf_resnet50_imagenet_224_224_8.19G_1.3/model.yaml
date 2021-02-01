@@ -50,6 +50,6 @@ files:
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: eef60f05f84ac90daa11c6587ecb61d0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 445e0a45f941a715ff50ca2a0473f019
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

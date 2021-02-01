@@ -50,6 +50,6 @@ files:
 - name: facereid-small_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 49330dcd73627d33229b83d84d18be51
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: ad4cbed2f5b9776a16ea1658b36a801b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

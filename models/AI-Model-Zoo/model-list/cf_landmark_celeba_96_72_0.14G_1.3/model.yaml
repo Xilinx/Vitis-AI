@@ -51,6 +51,6 @@ files:
 - name: face_landmark
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 9b8dd21718756669ecc892e45703d67a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 5ca7f1ba4ecdc2191921a518e2c5cb4b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

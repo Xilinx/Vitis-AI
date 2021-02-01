@@ -42,6 +42,6 @@ files:
 - name: inception_v3_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 3edf37d2ea94e58914d11516021ca7f5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 58835e764e16691ad24ea96468deb0ee
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

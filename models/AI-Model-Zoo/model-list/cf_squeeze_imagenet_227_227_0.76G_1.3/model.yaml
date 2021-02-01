@@ -50,6 +50,6 @@ files:
 - name: squeezenet
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 6d0ab7c3f0f8df4c4fb82cc8253029d5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 481bde0d2383ae9b276b14cbc638e1ea
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -50,6 +50,6 @@ files:
 - name: densebox_640_360
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 49da9644522051e001ac4c87372ac350
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: b308269fa9b4e17ae6c8d62edd4bab1d
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

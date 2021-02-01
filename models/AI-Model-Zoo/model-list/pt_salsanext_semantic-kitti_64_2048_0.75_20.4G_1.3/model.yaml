@@ -50,6 +50,6 @@ files:
 - name: salsanext_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: e8fdd60dd5b7e004b237aac559819e63
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 8aef2960cf3ec6fbfb4eb117b7b9e66a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

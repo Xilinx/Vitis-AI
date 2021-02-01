@@ -50,6 +50,6 @@ files:
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 6c2b4fa6360ac113416838bbe931a0ad
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: cd7a8e762702e19168f93b3b301e0da8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

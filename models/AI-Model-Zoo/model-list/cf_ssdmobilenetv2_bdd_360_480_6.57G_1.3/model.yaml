@@ -35,6 +35,6 @@ files:
 - name: ssd_mobilenet_v2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: fd2bf38c68d12751a5ef0e1f00673c96
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: a6ff5545313ea3f1d0152f8440a8fc33
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

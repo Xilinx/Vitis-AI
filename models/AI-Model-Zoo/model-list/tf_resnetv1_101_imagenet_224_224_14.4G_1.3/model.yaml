@@ -50,8 +50,8 @@ files:
 - name: resnet_v1_101_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 1a25b01f3f8f72300472bc73a7ded152
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: a2ead5739890eff991c2dcf584b00cee
 - name: resnet_v1_101_tf
   type: xmodel
   board: u200 & u250
