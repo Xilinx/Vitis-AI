@@ -21,6 +21,7 @@ The following tutorials assume that the Vitis and XRT environment variable is se
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
+% cd $TRD_HOME/proj/pre-built/classification-pre_DPUv3e
 % source < vitis-install-directory >/Vitis/2020.2/settings64.sh
 % source < part-to-XRT-installation-directory >/setup.sh
 % export PLATFORM_REPO_PATHS=`readlink -f ../../../bin`
