@@ -17,9 +17,7 @@ Download [Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/o
 
 **Note that for bash, same Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz file can be obtained from here `/wrk/acceleration/users/maheshm/publicDownloadrepo/`
 
-The following tutorials assume that the Vitis and XRT environment variable is set as given below.
-
-Open a linux terminal. Set the linux as Bash mode.
+Open a linux terminal. Set the linux as Bash mode and execute follwoing instructions.
 
 ```
 % cd $TRD_HOME/proj/pre-built/detection-pre_DPUv3e
