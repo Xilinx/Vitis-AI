@@ -1,4 +1,4 @@
-<table>
+﻿<table class="sphinxhide">
  <tr>
    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
    </td>
@@ -13,7 +13,7 @@ designs. It is designed with high efficiency and ease of use in mind,
 unleashing the full potential of AI acceleration on Xilinx FPGA and
 ACAP.
 
-[![Vitis AI architecture](images/Vitis-AI-arch.png)
+![Vitis AI architecture](images/Vitis-AI-arch.png)
 
 Vitis AI is composed of the following key components:
 
@@ -40,4 +40,31 @@ Vitis AI is composed of the following key components:
 
 For more details on the different DPUs available, see [DPU Naming](https://github.com/Xilinx/Vitis-AI/blob/master/docs/dpu_naming.md).
 
-Learn More: [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html&gt;).
+## References
+- [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)
+- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_3/zmw1606771874842.html)
+- [Vitis AI Model Zoo with Performance & Accuracy Data](models/AI-Model-Zoo)
+- [Vitis AI Tutorials](https://github.com/Xilinx/Vitis-In-Depth-Tutorial/tree/master/Machine_Learning)
+- [Developer Articles](https://developer.xilinx.com/en/get-started/ai.html)
+
+## [System Requirements](docs/system_requirements.md)
+
+## Questions and Support
+- [FAQ](docs/faq.md)
+- [Vitis AI Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
+- [Third Party Source](docs/Thirdpartysource.md)
+
+<!-- Do these need to be links on the page? -->
+[models]: docs/models.md
+[Amazon AWS EC2 F1]: https://aws.amazon.com/marketplace/pp/B077FM2JNS
+[Xilinx Virtex UltraScale+ FPGA VCU1525 Acceleration Development Kit]: https://www.xilinx.com/products/boards-and-kits/vcu1525-a.html
+[AWS F1 Application Execution on Xilinx Virtex UltraScale Devices]: https://github.com/aws/aws-fpga/blob/master/SDAccel/README.md
+[Release Notes]: docs/release-notes/1.x.md
+[UG1023]: https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_4/ug1023-sdaccel-user-guide.pdf
+[FAQ]: docs/faq.md
+[ML Suite Overview]: docs/ml-suite-overview.md
+[Webinar on Xilinx FPGA Accelerated Inference]: https://event.on24.com/wcc/r/1625401/2D3B69878E21E0A3DA63B4CDB5531C23?partnerref=Mlsuite
+[Vitis AI Forum]: https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI
+[ML Suite Lounge]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html
+[Models]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html#gettingStartedCloud
+[whitepaper here]: https://www.xilinx.com/support/documentation/white_papers/wp504-accel-dnns.pdf

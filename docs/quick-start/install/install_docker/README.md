@@ -1,3 +1,10 @@
+<table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   </td>
+ </tr>
+</table>
+
 # Installing Docker
 Please refer to official Docker Documentation
 
@@ -18,11 +25,11 @@ Vitis AI Docker images is based on Ubuntu Bonic 18.04. The software packages sou
 ```   
   deb http://us.archive.ubuntu.com/ubuntu/ bionic universe   
 ```
- 
-These hostname "archive.ubuntu.com" by default resolve to servers in the United States. Any customers building the Vitis AI GPU image https://github.com/Xilinx/Vitis-AI/blob/master/docker/DockerfileGPU will pull from these servers. Users accessing from China, might experience slow download speeds using these servers. 
+
+These hostname "archive.ubuntu.com" by default resolve to servers in the United States. Any customers building the Vitis AI GPU image https://github.com/Xilinx/Vitis-AI/blob/master/docker/DockerfileGPU will pull from these servers. Users accessing from China, might experience slow download speeds using these servers.
 
 ### Workaround
-Change the Ubuntu apt sources.list to use servers in China. 
+Change the Ubuntu apt sources.list to use servers in China.
 
 In Dockerfile, change the 1st instance of:
 ```
@@ -50,4 +57,3 @@ deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restri
 Other alternate sources:
 
 https://momane.com/change-ubuntu-18-04-source-to-china-mirror
-
