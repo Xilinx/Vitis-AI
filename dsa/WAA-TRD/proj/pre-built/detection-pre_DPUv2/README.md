@@ -163,7 +163,7 @@ Download the images at https://cocodataset.org/#download. Please select suitable
     For bash, please use test image from here
 
 	```
-	  XHD:XSJ: /wrk/acceleration/users/maheshm/publicDownloadrepo/image_data/adas_detection_input.jpg
+	  XHD/XSJ: /wrk/acceleration/users/maheshm/publicDownloadrepo/image_data/adas_detection_input.jpg
 	```
 Copy the directory $TRD_HOME/app/adas_detection_waa to the BOOT partition of the SD Card.
 
