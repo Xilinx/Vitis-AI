@@ -6,7 +6,7 @@
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =< Vitis-AI-path >/WAA-TRD
+%export TRD_HOME =< Vitis-AI-path >/dsa/WAA-TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
@@ -14,32 +14,31 @@ The following tutorials assume that the $TRD_HOME environment variable is set as
 We need install the Vitis Core Development Environment.
 
 Download [Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
-Note that for bash, Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz file can be obtained from here `/wrk/acceleration/users/maheshm/publicDownloadrepo/`
 
-The following tutorials assume that the Vitis and XRT environment variable is set as given below.
 
-Open a linux terminal. Set the linux as Bash mode.
+Open a linux terminal. Set the linux as Bash mode and execute follwoing instructions.
 
 ```
-% source < vitis-install-directory >/Vitis/2020.2/settings64.sh
-% source < part-to-XRT-installation-directory >/setup.sh
-% export SDX_PLATFORM=< alveo-u50-platform-path >/xilinx_u50_gen3x4_xdma_2_202010_1/xilinx_u50_gen3x4_xdma_2_202010_1.xpfm
 % cd $TRD_HOME/proj/pre-built/detection-pre_DPUv3e
+% source < vitis-install-directory >/Vitis/2020.2/settings64.sh
+% source < path-to-XRT-installation-directory >/setup.sh
+% export PLATFORM_REPO_PATHS=`readlink -f ../../../bin`
+% export SDX_PLATFORM=xilinx_u50_gen3x4_xdma_2_202010_1
 % ./run.sh
 ```
 Note that 
-- Generated xclbin will be here **$TRD_HOME/proj/pre-built/detection-pre_DPUv3e/_x_output_noKernFreq/dpu.xclbin**.
-- Build runtime is ~1.5 hours.
+- Generated xclbin will be here **$TRD_HOME/proj/pre-built/detection-pre_DPUv3e/dpu.xclbin**.
+- Build runtime is ~2.5 hours.
 
 ### 2. Setting Up the Target Alveo U50
 **Note that the docker container needs to be loaded and the below commands need to be run in the docker environment**
 
-* Follow the steps mentioned [here](../../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
+* Follow the steps mentioned [here](../../../../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
 
 * Update xclbin file
 
 	```
-	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/detection-pre_DPUv3e/_x_output_noKernFreq/dpu.xclbin /usr/lib/dpu.xclbin
+	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/detection-pre_DPUv3e/dpu.xclbin /usr/lib/dpu.xclbin
 	```	
 * To download and install `adas detection` model:
 	```
@@ -58,11 +57,15 @@ Note that
 
 ### 3. Compile & run the application on Alveo U50
 
-  	```
-  	cd /workspace/dsa/WAA-TRD/app/adas_detection_waa
-	./build.sh
-	mkdir output
-	./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel
-  	```
+```
+% cd /workspace/dsa/WAA-TRD/app/adas_detection_waa
+% ./build.sh
+% mkdir output
+% ./adas_detection_waa /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel  
 
+Expect: 
+Input Image:./data/<img>.jpg
+Output Image:./output/<img>.jpg
+
+```
 

@@ -55,7 +55,7 @@ Required:
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =< Vitis-AI-path >/WAA-TRD
+%export TRD_HOME =< Vitis-AI-path >/dsa/WAA-TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
@@ -70,7 +70,7 @@ Open a linux terminal. Set the linux as Bash mode.
 
 ```
 % source < vitis-install-directory >/Vitis/2020.2/settings64.sh
-% source < part-to-XRT-installation-directory >/setup.sh
+% source < path-to-XRT-installation-directory >/setup.sh
 % gunzip < mpsoc-common-system >/xilinx-zynqmp-common-v2020.2/rootfs.tar.gz
 % export EDGE_COMMON_SW=< mpsoc-common-system >/xilinx-zynqmp-common-v2020.2 
 % export SDX_PLATFORM=< zcu102-base-platform-path >/xilinx_zcu102_base_202020_1/xilinx_zcu102_base_202020_1.xpfm

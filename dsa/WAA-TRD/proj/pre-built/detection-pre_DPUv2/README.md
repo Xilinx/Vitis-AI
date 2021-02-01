@@ -55,7 +55,7 @@ Required:
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =< Vitis-AI-path >/WAA-TRD
+%export TRD_HOME =< Vitis-AI-path >/dsa/WAA-TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
@@ -64,7 +64,7 @@ We need install the Vitis Core Development Environment.
 
 Download and unzip mpsoc common system & zcu102 base platform package from chapter 1.
 
-Download [Vitis-AI.1.3-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.3-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
+Download [Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
 
 The following tutorials assume that the Vitis and XRT environment variable is set as given below.
 
@@ -72,7 +72,7 @@ Open a linux terminal. Set the linux as Bash mode.
 
 ```
 % source < vitis-install-directory >/Vitis/2020.2/settings64.sh
-% source < part-to-XRT-installation-directory >/setup.sh
+% source < path-to-XRT-installation-directory >/setup.sh
 % gunzip < mpsoc-common-system >/xilinx-zynqmp-common-v2020.2/rootfs.tar.gz
 % export EDGE_COMMON_SW=< mpsoc-common-system >/xilinx-zynqmp-common-v2020.2 
 % export SDX_PLATFORM=< zcu102-base-platform-path >/xilinx_zcu102_base_202020_1/xilinx_zcu102_base_202020_1.xpfm
@@ -156,6 +156,7 @@ Here we install it under `~/petalinux_sdk`.
 This part is about how to run the Adas detection example on zcu102 board.
 
 Download the images at https://cocodataset.org/#download. Please select suitable images which has car, bicycle or pedestrian and copy these images to `Vitis-AI/dsa/WAA-TRD/app/adas_detection_waa/data`. 
+
 
 Copy the directory $TRD_HOME/app/adas_detection_waa to the BOOT partition of the SD Card.
 
