@@ -58,7 +58,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="DPU Naming" href="dpu_naming.html" />
-    <link rel="prev" title="Program in Vitis AI" href="programming.html" /> 
+    <link rel="prev" title="Programming with Vitis AI" href="programming.html" /> 
 	</head>
 	<body>
 		<div class="xilinx-bs3"/>
@@ -306,7 +306,7 @@
             
             
               <div class="version">
-                2020.1
+                1.3
               </div>
             
           
@@ -333,14 +333,15 @@
             
               <p class="caption"><span class="caption-text">Learn</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Vitis AI Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="whats_new.html">Whats New in Vitis AI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="programming.html">Program in Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="programming.html">Programming with Vitis AI</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dpu_naming.html">DPU Naming</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Quick Start</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start/install/README.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quick-start/faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quick-start/support.html">Getting Support</a></li>
 </ul>
@@ -356,7 +357,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Versions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/Vitis-AI/master/docs/README.html">Master</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pages.gitenterprise.xilinx.com/Vitis/vitis-ai-staging/master/docs/README.html">Master</a></li>
 </ul>
 
             
@@ -432,59 +433,21 @@
  <tr>
    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
    </td>
- </tr>
-</table><div class="section" id="system-requirements">
+ </tr></table><div class="section" id="system-requirements">
 <h1>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h1>
 <p>The following table lists system requirements for running docker containers as well as Alveo cards.</p>
-<table border="1" class="docutils">
-<thead>
-<tr>
-<th><strong>Component</strong></th>
-<th><strong>Requirement</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Motherboard</td>
-<td>PCI Express 3.0-compliant with one dual-width x16 slot</td>
-</tr>
-<tr>
-<td>System Power Supply</td>
-<td>225W</td>
-</tr>
-<tr>
-<td>Operating System</td>
-<td>Ubuntu 16.04, 18.04</td>
-</tr>
-<tr>
-<td></td>
-<td>CentOS 7.4, 7.5</td>
-</tr>
-<tr>
-<td></td>
-<td>RHEL 7.4, 7.5</td>
-</tr>
-<tr>
-<td>CPU</td>
-<td>Intel i3/i5/i7/i9/Xeon 64-bit CPU</td>
-</tr>
-<tr>
-<td>GPU (Optional to accelerate quantization)</td>
-<td>NVIDIA GPU with a compute capability &gt; 3.0</td>
-</tr>
-<tr>
-<td>CUDA Driver (Optional to accelerate quantization)</td>
-<td>nvidia-410</td>
-</tr>
-<tr>
-<td>FPGA</td>
-<td>Xilinx Alveo U200 or U250</td>
-</tr>
-<tr>
-<td>Docker Version</td>
-<td>19.03.1</td>
-</tr>
-</tbody>
+<table>
+<tr><th colspan="2">Component</th><th>Requirement</th></tr>
+<tr><td colspan="2">Motherboard</td><td>PCI Express 3\.0\-compliant with one dual\-width x16 slot</td></tr>
+<tr><td colspan="2">System Power Supply</td><td>225W</td></tr>
+<tr><td rowspan="3">Operating System</td><td>Ubuntu</td><td>16.04, 18.04</td></tr>
+<tr><td>CentOS</td><td>7.4, 7.5</td></tr>
+<tr><td>RHEL</td><td>7.4, 7.5</td></tr>
+<tr><td colspan="2">CPU</td><td>Intel i3/i5/i7/i9/Xeon 64-bit CPU</td></tr>
+<tr><td colspan="2">GPU (Optional to accelerate quantization)</td><td>	NVIDIA GPU with a compute capability > 3.0</td></tr>
+<tr><td colspan="2">CUDA Driver (Optional to accelerate quantization)</td><td>nvidia-410</td></tr>
+<tr><td colspan="2">FPGA</td><td>Xilinx Alveo U200 or U250</td></tr>
+<tr><td colspan="2">Docker Version</td><td>19.03.1</td></tr>
 </table></div>
 
 
@@ -506,7 +469,7 @@
         <a href="dpu_naming.html" class="btn btn-neutral float-right" title="DPU Naming" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="programming.html" class="btn btn-neutral float-left" title="Program in Vitis AI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="programming.html" class="btn btn-neutral float-left" title="Programming with Vitis AI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -516,7 +479,7 @@
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on January 23, 2021.
+        Last updated on February 01, 2021.
       </span>
 
     </p>

@@ -304,7 +304,7 @@
             
             
               <div class="version">
-                2020.1
+                1.3
               </div>
             
           
@@ -331,14 +331,15 @@
             
               <p class="caption"><span class="caption-text">Learn</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../learn/release_notes.html">Vitis AI Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../learn/release_notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../learn/whats_new.html">Whats New in Vitis AI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../learn/programming.html">Program in Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../learn/programming.html">Programming with Vitis AI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../learn/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../learn/dpu_naming.html">DPU Naming</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Quick Start</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../support.html">Getting Support</a></li>
 </ul>
@@ -354,7 +355,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Versions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/Vitis-AI/master/docs/README.html">Master</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pages.gitenterprise.xilinx.com/Vitis/vitis-ai-staging/master/docs/README.html">Master</a></li>
 </ul>
 
             
@@ -407,7 +408,7 @@
     
       <li><a href="../../../README.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>CPU tools docker</li>
+      <li>Load and Run Docker</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -426,15 +427,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <p><strong>Docker Images Are Hosted on Docker Hub <a class="reference external" href="https://hub.docker.com/repository/docker/xilinx/vitis-ai">HERE</a></strong></p>
+  <table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   </td>
+ </tr>
+</table><div class="section" id="load-and-run-docker">
+<h1>Load and Run Docker<a class="headerlink" href="#load-and-run-docker" title="Permalink to this headline">¶</a></h1>
+<p><strong>Docker Images Are Hosted on Docker Hub <a class="reference external" href="https://hub.docker.com/repository/docker/xilinx/vitis-ai">HERE</a></strong></p>
 <p><strong>The GPU docker has been tested with GPU machines with Docker 19.03.1, NVIDIA driver 410.xx (to work with CUDA 10.0) and nvidia-docker 2.2.2.</strong></p>
 <div class="section" id="cpu-tools-docker">
-<h1>CPU tools docker<a class="headerlink" href="#cpu-tools-docker" title="Permalink to this headline">¶</a></h1>
+<h2>CPU tools docker<a class="headerlink" href="#cpu-tools-docker" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the CPU image from dockerhub</span>
 
 ./docker_run.sh xilinx/vitis-ai-cpu:latest
 
-Or 
+Or
 
 <span class="c1"># Build the CPU image and load it</span>
 
@@ -446,8 +454,8 @@ Or
 </div>
 </div>
 <div class="section" id="gpu-tools-docker">
-<h1>GPU tools docker<a class="headerlink" href="#gpu-tools-docker" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU Image must be built by user. </span>
+<h2>GPU tools docker<a class="headerlink" href="#gpu-tools-docker" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU Image must be built by user.</span>
 
 <span class="nb">cd</span> Vitis-AI/docker
 ./docker_build_gpu.sh
@@ -457,6 +465,7 @@ Or
 <span class="nb">cd</span> ..
 ./docker_run.sh xilinx/vitis-ai-gpu:latest
 </pre></div>
+</div>
 </div>
 </div>
 
@@ -480,7 +489,7 @@ Or
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on January 23, 2021.
+        Last updated on February 01, 2021.
       </span>
 
     </p>
