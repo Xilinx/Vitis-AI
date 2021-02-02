@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="100%" height="100%" src="docs/img/Vitis-AI.png">
+  <img width="100%" height="100%" src="docs/image/Vitis-AI.png">
 </div>
 
 <br />
@@ -8,7 +8,7 @@ Vitis AI is Xilinx’s development stack for AI inference on Xilinx hardware pla
 <br />
 
 <div align="center">
-  <img width="45%" height="45%" src="docs/img/Vitis-AI-arch.png">
+  <img width="45%" height="45%" src="docs/images/Vitis-AI-arch.png">
 </div>
 
 <br />
