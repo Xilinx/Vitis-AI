@@ -5,7 +5,7 @@
  </tr>
 </table>
 
-Vitis AI is Xilinx’s development stack for AI inference on Xilinx
+Xilinx&reg; Vitis&trade; AI is a development stack for AI inference on Xilinx
 hardware platforms, including both edge devices and Alveo cards.
 
 It consists of optimized IP, tools, libraries, models, and example
