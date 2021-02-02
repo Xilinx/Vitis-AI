@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="100%" height="100%" src="docs/image/Vitis-AI.png">
+  <img width="100%" height="100%" src="docs/images/Vitis-AI.png">
 </div>
 
 <br />
