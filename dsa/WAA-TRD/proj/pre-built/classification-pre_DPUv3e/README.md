@@ -26,7 +26,7 @@ Open a linux terminal. Set the linux as Bash mode and execute following instruct
 % ./run.sh
 ```
 Note that 
-- Generated xclbin will be here **$TRD_HOME/proj/pre-built/classification-pre_DPUv3e/dpu.xclbin**.
+- Generated xclbin will be here **$TRD_HOME/proj/pre-built/classification-pre_DPUv3e/_x_output/dpu.xclbin**.
 - Build runtime is ~2.5 hours.
 
 ### 2. Setting Up the Target Alveo U50
@@ -34,10 +34,11 @@ Note that
 
 * Follow the steps mentioned [here](../../../../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
 
-* Update xclbin file
+* Update xclbin & hbm address assignment file
 
 	```
-	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/classification-pre_DPUv3e/dpu.xclbin /usr/lib/dpu.xclbin
+	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/classification-pre_DPUv3e/_x_output/dpu.xclbin /usr/lib/dpu.xclbin
+	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/classification-pre_DPUv3e/hbm_address_assignment.txt /usr/lib/
 	```	
 
 * To download and install `resnet50` model:
