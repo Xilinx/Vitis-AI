@@ -18,7 +18,7 @@ WAA-TRD demonstrates integration of pre/post processing accelerator with DPU(Dee
 
 There are two flows being provided 
 1.	Build : Both the pre-processing accelerator and DPU are built from sources. This flow uses DPU-TRD’s make flows.
-2.	Pre-built : ML is pre-built and its partial bitfiles are pre-created (using DFx flow). only pre-processing accelerator is built from sources. This flow gives 10x saving in build time.
+2.	Pre-built : ML is pre-built and its partial bitfiles are pre-created (using DFx flow). only pre-processing accelerator is built from sources. This flow gives 10x & 5x saving in build time for Embedded platform & cloud platform respectively.
 
 ## 2 Background
 Input images are preprocessed  before being fed for inference of different deep neural networks. The pre-processing steps vary from network to network. For example, for classification networks like Resnet-50 the input image is resized to 224 x 224 size and then channel-wise mean subtraction is performed before feeding the data to the DNN accelerator. For detection networks like YOLO v3 the input image is resized to 256 x 512 size using letterbox before feeding the data to the DNN accelerator. 
