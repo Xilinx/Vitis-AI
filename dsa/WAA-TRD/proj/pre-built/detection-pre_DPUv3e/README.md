@@ -31,11 +31,11 @@ Note that
 - Build runtime is ~2.5 hours.
 
 ### 2. Setting Up the Target Alveo U50
-**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment**
+**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment. Docker installation instructions are available [here](../../../../../README.md#Installation) **
 
 * Follow the steps mentioned [here](../../../../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
 
-* Update xclbin iand hbm address assignment file
+* Update xclbin and hbm address assignment file
 
 	```
 	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/detection-pre_DPUv3e/_x_output/dpu.xclbin /usr/lib/dpu.xclbin
