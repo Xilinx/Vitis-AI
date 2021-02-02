@@ -27,18 +27,19 @@ Open a linux terminal. Set the linux as Bash mode and execute follwoing instruct
 % ./run.sh
 ```
 Note that 
-- Generated xclbin will be here **$TRD_HOME/proj/pre-built/detection-pre_DPUv3e/dpu.xclbin**.
+- Generated xclbin will be here **$TRD_HOME/proj/pre-built/detection-pre_DPUv3e/_x_output/dpu.xclbin**.
 - Build runtime is ~2.5 hours.
 
 ### 2. Setting Up the Target Alveo U50
-**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment**
+**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment. Docker installation instructions are available [here](../../../../../README.md#Installation)**
 
 * Follow the steps mentioned [here](../../../../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
 
-* Update xclbin file
+* Update xclbin and hbm address assignment file
 
 	```
-	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/detection-pre_DPUv3e/dpu.xclbin /usr/lib/dpu.xclbin
+	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/detection-pre_DPUv3e/_x_output/dpu.xclbin /usr/lib/dpu.xclbin
+	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/detection-pre_DPUv3e/hbm_address_assignment.txt /usr/lib/
 	```	
 * To download and install `adas detection` model:
 	```
