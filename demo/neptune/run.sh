@@ -57,10 +57,10 @@ fi
 
 if [[ $QUIET == 1 ]]; then
     . $VAI_HOME/setup/alveo/u200_u250/overlaybins/setup.sh &> /dev/null
-    export PYTHONPATH=${PYTHONPATH}:$VAI_HOME/examples:$VAI_HOME/examples/DPUCADX8G/yolo
+    export PYTHONPATH=${PYTHONPATH}:$VAI_HOME/demo:$VAI_HOME/examples/DPUCADX8G/yolo
     $cmd server.py --port=$PORT --wsport=$WSPORT &> /dev/null
 else
     . $VAI_HOME/setup/alveo/u200_u250/overlaybins/setup.sh
-    export PYTHONPATH=${PYTHONPATH}:$VAI_HOME/examples:$VAI_HOME/examples/DPUCADX8G/yolo
+    export PYTHONPATH=${PYTHONPATH}:$VAI_HOME/demo:$VAI_HOME/examples/DPUCADX8G/yolo
     $cmd server.py --port=$PORT --wsport=$WSPORT
 fi
