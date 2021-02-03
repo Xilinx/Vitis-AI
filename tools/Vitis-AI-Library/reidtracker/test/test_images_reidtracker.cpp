@@ -107,7 +107,7 @@ void displayImage() {
   Mat img;
   VideoWriter writer;
   int imgcount = 1;
-  writer.open("results.avi", CV_FOURCC('M', 'J', 'P', 'G'), 15, Size(960, 540),
+  writer.open("results.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, Size(960, 540),
               true);
   while (true) {
     mtxQueueShow.lock();

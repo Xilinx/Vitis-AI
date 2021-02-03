@@ -26,15 +26,15 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdmobilenetv1_coco_300_300_2.47G_1.3.zip
-  checksum: b65135fda548e75726ed7f7b9d9994be
+  checksum: 323c634b1ae3fa3906285403887a75c0
 - name: ssd_mobilenet_v1_coco_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 8108637b559a808c9e58e87a0dfd1ef5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 88825515d9f799c149531656a269d48c
 - name: ssd_mobilenet_v1_coco_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 9d20795ee5f9866d66dd955cd4279278
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 3082a973c92227d5ff467ac3a33c5c5c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

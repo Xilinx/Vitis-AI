@@ -97,10 +97,18 @@ int main(int argc, char* argv[]) {
       if (j < batch && i < imgs.size() - 1) {
         continue;
       }
-
+      for (auto input : inputs) {
+        input->sync_for_write(0, input->get_tensor()->get_data_size() /
+                                     input->get_tensor()->get_shape()[0]);
+      }
       auto v = runner->execute_async(inputs, outputs);
       auto status = runner->wait((int)v.first, -1);
       CHECK_EQ(status, 0) << "failed to run dpu";
+      for (auto output : outputs) {
+        output->sync_for_read(0, output->get_tensor()->get_data_size() /
+                                     output->get_tensor()->get_shape()[0]);
+      }
+
       // post process
       auto topk = post_process(outputs[0], output_scale[0]);
       // print the result

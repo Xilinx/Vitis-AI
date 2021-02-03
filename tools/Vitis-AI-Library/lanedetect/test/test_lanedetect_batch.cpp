@@ -19,6 +19,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
 #include <vitis/ai/lanedetect.hpp>
 
 using namespace std;
@@ -75,7 +76,7 @@ int main(int argc, char *argv[]) {
         continue;
       cout << " points clouster size: " << points_poly.size() << endl;
       cv::polylines(batch_images[batch_idx], points_poly, false,
-                    Scalar(color1[type], color2[type], color3[type]), 3, CV_AA,
+                    Scalar(color1[type], color2[type], color3[type]), 3, LINE_AA,
                     0);
     }
     string tmp = batch_images_names[batch_idx].substr(

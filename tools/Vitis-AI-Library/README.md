@@ -119,9 +119,9 @@ source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.2-r1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.0.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2020.2-r1.3.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.1.tar.gz) and install it to the petalinux system.
 ```
-tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+tar -xzvf vitis_ai_2020.2-r1.3.1.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
 5. To compile the library sample in the AI Library, take `facedetect` as an example, execute the following command.
@@ -149,9 +149,9 @@ steps.**
 1. Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
-		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.3.0.img.gz)  
+		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.3.1.img.gz)  
 	
-		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.2-v1.3.0.img.gz)  
+		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.2-v1.3.1.img.gz)  
 	
       	Note: The version of the board image should be 2020.2 or above.
 	* Use Etcher software to burn the image file onto the SD card.
@@ -176,27 +176,27 @@ steps.**
 	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
 	* Download the model according to the model's yaml file. Take `densebox_320_320` of ZCU102 as an example.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz -O densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104-r1.3.1.tar.gz -O densebox_320_320-zcu102_zcu104-r1.3.1.tar.gz
 	```	
 	* Copy the downloaded file to the board using scp with the following command. 
 	```
-	  scp densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz root@IP_OF_BOARD:~/
+	  scp densebox_320_320-zcu102_zcu104-r1.3.1.tar.gz root@IP_OF_BOARD:~/
 	```
 	* Log in to the board (using ssh or serial port) and install the model package.
 	```
-	  tar -xzvf densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz
+	  tar -xzvf densebox_320_320-zcu102_zcu104-r1.3.1.tar.gz
 	  cp densebox_320_320 /usr/share/vitis_ai_library/models -r
 	```
 
 4. (Optional) How to update Vitis AI Runtime and install them separately. 
 
 	If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
-	* Download the [Vitis AI Runtime 1.3.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.0.tar.gz).  
+	* Download the [Vitis AI Runtime 1.3.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.1.tar.gz).  
 	
 	* Untar the runtime packet and copy the following folder to the board using scp.
 	```
-	tar -xzvf vitis-ai-runtime-1.3.0.tar.gz
-	scp -r vitis-ai-runtime-1.3.0/aarch64/centos root@IP_OF_BOARD:~/
+	tar -xzvf vitis-ai-runtime-1.3.1.tar.gz
+	scp -r vitis-ai-runtime-1.3.1/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
 	* Install the Vitis AI Runtime. Execute the following command.
@@ -207,7 +207,7 @@ steps.**
 	 	  
 ### Running Vitis AI Library Examples
 
-1. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) and 
+1. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_images.tar.gz) and 
 the [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz). Copy them from host to the target using scp with the following command.
 ```
 [Host]$scp vitis_ai_library_r1.3.x_images.tar.gz root@IP_OF_BOARD:~/
@@ -259,21 +259,21 @@ If you want to support video data in other formats, you need to install the rele
 
 1. Follow [Setup Alveo Accelerator Card with HBM for DPUCAHX8H/L](../../setup/alveo/u50_u50lv_u280/README.md) to set up the Alveo Card.
 
-2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
+2. Download the xclbin files from [here](https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.1.tar.gz). Untar it, choose the Alveo card and install it. Take `U50`
 as an example.
 ```
 cd /workspace
-wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
-tar -xzvf alveo_xclbin-1.3.0.tar.gz
-cd alveo_xclbin-1.3.0/U50/6E300M
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.1.tar.gz -O alveo_xclbin-1.3.1.tar.gz
+tar -xzvf alveo_xclbin-1.3.1.tar.gz
+cd alveo_xclbin-1.3.1/U50/6E300M
 sudo cp dpu.xclbin hbm_address_assignment.txt /usr/lib
 ```  
 For `DPUCAHX8L`, take `U50lv` as an example.
 ```
 cd /workspace
-wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.0.tar.gz -O alveo_xclbin-1.3.0.tar.gz
-tar -xzvf alveo_xclbin-1.3.0.tar.gz
-cd alveo_xclbin-1.3.0/U50lv-V3ME/1E250M
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbin-1.3.1.tar.gz -O alveo_xclbin-1.3.1.tar.gz
+tar -xzvf alveo_xclbin-1.3.1.tar.gz
+cd alveo_xclbin-1.3.1/U50lv-V3ME/1E250M
 sudo cp dpu.xclbin /opt/xilinx/overlaybins/
 export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpu.xclbin
 ```
@@ -289,11 +289,11 @@ sudo service xbutler restart
 
 	* Download the model according to the model's yaml file. Take `densebox_320_320` of U50 as an example.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.0.tar.gz -O densebox_320_320-u50-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.1.tar.gz -O densebox_320_320-u50-r1.3.1.tar.gz
 	```
 	  For `DPUCAHX8L`, take `U50lv` as an example.  
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-u50lv-u280-v3me-r1.3.0.tar.gz -O densebox_320_320-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-u50lv-u280-v3me-r1.3.1.tar.gz -O densebox_320_320-u50-u50lv-u280-v3me-r1.3.1.tar.gz
 	```	  
 	* Install the model package.  
 	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
@@ -302,12 +302,12 @@ sudo service xbutler restart
 	```	
 	Then install the model package.
 	```
-	  tar -xzvf densebox_320_320-u50-r1.3.0.tar.gz
+	  tar -xzvf densebox_320_320-u50-r1.3.1.tar.gz
 	  sudo cp densebox_320_320 /usr/share/vitis_ai_library/models -r
 	```
 	  For `DPUCAHX8L`, execute the following commands to install the model package.
 	```
-	  tar -xzvf densebox_320_320-u50-u50lv-u280-v3me-r1.3.0.tar.gz
+	  tar -xzvf densebox_320_320-u50-u50lv-u280-v3me-r1.3.1.tar.gz
 	  sudo cp densebox_320_320 /usr/share/vitis_ai_library/models -r
 	```
 	  
@@ -336,12 +336,12 @@ Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/demo/Vit
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
-1. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) and [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz) packages and untar them.
+1. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_images.tar.gz) and [vitis_ai_library_r1.3.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz) packages and untar them.
 ```
 cd /workspace
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz -O vitis_ai_library_r1.3.0_images.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_images.tar.gz -O vitis_ai_library_r1.3.1_images.tar.gz
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_video.tar.gz -O vitis_ai_library_r1.3.0_video.tar.gz
-tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz -C demo/Vitis-AI-Library/
+tar -xzvf vitis_ai_library_r1.3.1_images.tar.gz -C demo/Vitis-AI-Library/
 tar -xzvf vitis_ai_library_r1.3.0_video.tar.gz -C demo/Vitis-AI-Library/
 ```
 2. Enter the directory of sample and then compile it. Take `facedetect` as an example.
@@ -403,11 +403,11 @@ $sudo tar -xvf vai_lib_u200_u250_models.tar.gz --absolute-names
 ```
 :pushpin: **Note:** All models will download to `/usr/share/vitis_ai_library/models` directory. Currently supported networks for `DPUCADX8G` are classification, facedetect, facelandmark, reid and yolov3. And currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.3` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.3`.
 
-2. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) package and untar. Extracted images can be found under `samples` folder.
+2. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_images.tar.gz) package and untar. Extracted images can be found under `samples` folder.
 ```
 cd /vitis_ai_home/tools/Vitis-AI-Library
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz -O vitis_ai_library_r1.3.0_images.tar.gz
-tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_images.tar.gz -O vitis_ai_library_r1.3.1_images.tar.gz
+tar -xzvf vitis_ai_library_r1.3.1_images.tar.gz
 ```
 
 3. Setup the environment.
@@ -435,11 +435,11 @@ tar -xvf resnet_v1_50_tf-u200-u250-r1.3.0.tar.gz
 ```
 :pushpin: **Note:** Currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.3` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.3`.
 
-2. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz) package and untar. Extracted images can be found under `samples` folder.
+2. Download the [vitis_ai_library_r1.3.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_images.tar.gz) package and untar. Extracted images can be found under `samples` folder.
 ```
 cd /vitis_ai_home/tools/Vitis-AI-Library
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.0_images.tar.gz -O vitis_ai_library_r1.3.0_images.tar.gz
-tar -xzvf vitis_ai_library_r1.3.0_images.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.3.1_images.tar.gz -O vitis_ai_library_r1.3.1_images.tar.gz
+tar -xzvf vitis_ai_library_r1.3.1_images.tar.gz
 ```
 
 3. Setup the environment.
@@ -463,6 +463,28 @@ Example:
 ~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification inception_v1_tf <img_path>
 ```
 :pushpin: **Note:** The default build path for vitis-ai-library is `$HOME/build/<target>/Vitis-AI-Library/`.
+
+## Tools
+In this release, `xdputil` tool is introduced for board developing. It's preinstalled in the latest board image or docker. The source code of `xdputil` is under `usefultools`.
+* Show device information, including DPU, fingerprint and VAI version. 
+```
+xdputil query
+```
+* Show xmodel information, including xmodel's inputs&outputs and kernels
+```
+xdputil xmodel <xmodel> -l
+```
+* Convert xmodel to the other format
+```
+xdputil xmodel <xmodel> -t <TXT> 
+xdputil xmodel <xmodel> -s <SVG>
+xdputil xmodel <xmodel> -p <PNG> 
+```
+* Test xmodel performance
+```
+xdputil benchmark <xmodel> [-i subgraph_index] <num_of_threads>
+```
+For more usage of `xdputil`, execute `xdputil -h`.
 
 ## Reference
 For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_3/ug1354-xilinx-ai-sdk.pdf).

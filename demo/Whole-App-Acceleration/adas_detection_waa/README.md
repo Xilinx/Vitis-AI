@@ -85,12 +85,17 @@ Runtime packages on the board separately.**
 
 ## Setting Up and Running on Alveo U50
 ### Setting Up the Target Alveo U50
-**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment**
+**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment. Docker installation instructions are available [here](../../../README.md#Installation)**
 
 * Follow the steps mentioned [here](../../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
 
 * Download [waa_system_u50_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_u50_v1.3.0.tar.gz) and update the xclbin file.
 
+
+	```
+	tar -xzvf waa_system_u50_v1.3.0.tar.gz
+	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
+	```	
 
 * To download and install `adas detection` model:
 	```

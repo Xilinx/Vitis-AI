@@ -132,8 +132,7 @@ const bool TensorImp::has_attr(const std::string& key) const {
 const xir::any TensorImp::get_attr(const std::string& key) const {
   UNI_LOG_CHECK(attrs_->has_attr(key), XIR_UNREGISTERED_ATTR)
       << "Attrs doesn't contain attribute " << key;
-  auto tmp = Attrs::clone(attrs_.get());
-  return tmp->get_attr(key);
+  return attrs_->get_attr(key);
 }
 
 Tensor* TensorImp::set_attr(const std::string& key, const xir::any& value) {

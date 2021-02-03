@@ -33,6 +33,7 @@ add_library(${COMPONENT_NAME} SHARED
   src/dim_calc.cpp
   src/util_4bit.cpp
   src/xir_helper.cpp
+  src/zero_copy_helper.cpp
   src/time_measure.cpp
   src/tracepoint.cpp
   src/file_lock.cpp
@@ -115,4 +116,7 @@ if(BUILD_TEST)
 
   add_executable(test_thread_pool test/test_thread_pool.cpp)
   target_link_libraries(test_thread_pool ${COMPONENT_NAME})
+
+  add_executable(test_zero_copy_helper test/test_zero_copy_helper.cpp)
+  target_link_libraries(test_zero_copy_helper ${COMPONENT_NAME} xir::xir)
 endif()

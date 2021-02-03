@@ -212,8 +212,12 @@ def output_vart_trace(OUTPUT_PATH):
         s = []
         s.append("Group_Start,DPU\n")
         for i in range(dpu_core_num):
+            try:
+                cu_name = cus[str(i)].get("name", "DPU_%d" % i)
+            except:
+                cu_name = "DPU_%d" % i
             s.append("Dynamic_Row, %d, %s\n" %
-                     (i+1, cus[str(i)].get('name', "DPU_%d" % i)))
+                     (i+1, cu_name))
 
         s.append("Group_End,DPU\n")
         s.append("\n")
@@ -266,7 +270,10 @@ def output_profile_summary(OUTPUT_PATH):
         csv_f.write(title)
         csv_f.write(column_headers)
         for id in dpuLatencyStat.keys():
-            cu_name = cus[str(id)].get("name", "DPU_%d" % id)
+            try:
+                cu_name = cus[str(id)].get("name", "DPU_%d" % id)
+            except:
+                cu_name = "DPU_%d" % id
             for subg in dpuLatencyStat[id]:
                 times = sorted(dpuLatencyStat[id][subg])
 

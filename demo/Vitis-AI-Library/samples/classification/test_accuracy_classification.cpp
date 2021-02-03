@@ -25,7 +25,8 @@
 #include <vitis/ai/classification.hpp>
 
 using namespace std;
-int main(int argc, char *argv[]) {
+using namespace cv;
+int main(int argc, char* argv[]) {
   if (argc != 4) {
     cout << "Please input a model name as the first param!" << endl;
     cout << "Please input your image path as the second param!" << endl;

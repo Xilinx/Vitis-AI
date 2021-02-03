@@ -48,7 +48,7 @@ class MyPerformanceTestRunner : public vitis::ai::PerformanceTestRunner {
  public:
   explicit MyPerformanceTestRunner(const std::string& filename,  //
                                    const std::string& kernel);
-  virtual ~MyPerformanceTestRunner() = default;
+  virtual ~MyPerformanceTestRunner();
   MyPerformanceTestRunner(const PerformanceTestRunner& other) = delete;
   MyPerformanceTestRunner& operator=(const PerformanceTestRunner& rhs) = delete;
 
@@ -286,6 +286,13 @@ MyPerformanceTestRunner::MyPerformanceTestRunner(
 }
 thread_local int error_counter = 0;
 thread_local int ok_counter = 0;
+
+std::atomic<u_int64_t> errors_total = 0;
+MyPerformanceTestRunner::~MyPerformanceTestRunner() {
+  errors_total += error_counter;
+  LOG_IF(INFO, error_counter) << "error_counter = " << error_counter
+                              << ",errors_total = " << errors_total;
+}
 void MyPerformanceTestRunner::step(size_t idx, int thread_id) {
   if (ENV_PARAM(THREAD_ADD_LOCK)) {
     static std::mutex mtx;
@@ -387,13 +394,15 @@ int main(int argc, char* argv[]) {
   auto kernel = argv[2];
   auto runner_num = std::stoi(std::string(argv[3]));
   CHECK_GT(runner_num, 0);
-  auto runners = vector<std::unique_ptr<vitis::ai::PerformanceTestRunner>>();
-  for (auto i = 0; i < runner_num; ++i) {
-    LOG(INFO) << "create runner ... " << i << "/" << runner_num;
-    runners.emplace_back(
-        std::make_unique<MyPerformanceTestRunner>(filename, kernel));
+  {
+    auto runners = vector<std::unique_ptr<vitis::ai::PerformanceTestRunner>>();
+    for (auto i = 0; i < runner_num; ++i) {
+      LOG(INFO) << "create runner ... " << i << "/" << runner_num;
+      runners.emplace_back(
+          std::make_unique<MyPerformanceTestRunner>(filename, kernel));
+    }
+    std::make_unique<vitis::ai::PerformanceTest>()->main(argc, argv,
+                                                         std::move(runners));
   }
-  std::make_unique<vitis::ai::PerformanceTest>()->main(argc, argv,
-                                                       std::move(runners));
-  return error_counter == 0 ? 0 : -1;
+  return errors_total == 0 ? 0 : -1;
 }

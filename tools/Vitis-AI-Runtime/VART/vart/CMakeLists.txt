@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.12)
-project(vart VERSION 1.3.0 LANGUAGES C CXX)
+project(vart VERSION 1.3.1 LANGUAGES C CXX)
 
 link_directories("$ENV{CONDA_PREFIX}/lib")
 include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)

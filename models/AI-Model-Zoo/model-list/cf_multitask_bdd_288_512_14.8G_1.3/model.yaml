@@ -30,26 +30,26 @@ files:
 - name: multi_task
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 2483357e7de454c74287b372827e9268
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: bc22cc6ab4568b58640c7fdd22827d6e
 - name: multi_task
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck190-r1.3.0.tar.gz
-  checksum: a112d465bbcbe4d1860b78a0c43e9971
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck190-r1.3.1.tar.gz
+  checksum: bca2ad96e54e1063d33333bd98e6ea01
 - name: multi_task
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-r1.3.0.tar.gz
-  checksum: 6d60fbca917ed1bc45c05400c1d55237
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-r1.3.1.tar.gz
+  checksum: 0a4ea81aa8752d8b5f878f141d196643
 - name: multi_task
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50lv-u280-r1.3.0.tar.gz
-  checksum: 6f2d7c304818337fa0bd4ac353a8daab
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50lv-u280-r1.3.1.tar.gz
+  checksum: beed51ec201cd6bd0ad02b5b40e4c5bd
 - name: multi_task
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 0729c63d5012f630abc910e51b88e616
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 897e57e8a158027a2027e18c021596b6
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

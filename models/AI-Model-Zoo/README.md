@@ -178,7 +178,7 @@ For a caffe model, you should see the following directory structure:
     │    ├── quantize_train_test.prototxt     # Used for quantized-point training and testing with quantize_train_test.caffemodel 
     │    │                                      on GPU when datalayer modified to user's data path.         
     │    └── DNNC
-    │         └──deploy.prototxt              # Quantized prototxt for dnnc. 
+    │         └──deploy.prototxt              # Quantized prototxt for dnnc. It's the deploy.prototxt without option 'keep fixed neuron'.
     │                                           
     │                                                 
     └── float                           
@@ -714,7 +714,7 @@ The following table lists the performance number including end-to-end throughput
 | 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G         | 275            | 223.3                               |
 | 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G             | 275            | 3501.0                              |
 | 8    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G       | 275            | 620.5                               |
-| 9    | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 275            | 26.0                                  |
+| 9    | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 275            | 26.0                                |
 | 10   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G             | 275            | 249.4                               |
 | 11   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G         | 275            | 572.3                               |
 | 12   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G          | 275            | 783.0                               |
@@ -788,7 +788,7 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 4 DPUCADF8H kernels running at 300Mhz:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUCADF8H kernels running at 300Mhz:
   
 
 | No\. | Model        | Name                                    | E2E latency (ms) Thread num =20 | E2E throughput \-fps\(Multi Thread) |

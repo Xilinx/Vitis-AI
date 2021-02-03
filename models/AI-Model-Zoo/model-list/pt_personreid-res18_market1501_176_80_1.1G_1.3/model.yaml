@@ -30,21 +30,21 @@ files:
 - name: personreid-res18_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: dc77b6366a5368dfb5890c7d9b6b7d1d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 64e63dcff572183d577911119cfb4633
 - name: personreid-res18_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-vck190-r1.3.0.tar.gz
-  checksum: 421cdc8d1034b35b979d83815414b168
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-vck190-r1.3.1.tar.gz
+  checksum: d7bbce40ab191138ce329e8c361538ee
 - name: personreid-res18_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-u50-r1.3.0.tar.gz
-  checksum: f8836543e91eef47bb2ff1d737191bab
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-u50-r1.3.1.tar.gz
+  checksum: fd4a99bfb9b2a4a61b3a017dac9b98ca
 - name: personreid-res18_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 5175c1b0ae037d4ba534d9271d3c1190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 5e1c1dcd76c75b18df70ecc822e0ae11
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

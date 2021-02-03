@@ -1,3 +1,10 @@
+<table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   </td>
+ </tr>
+</table>
+
 # Frequently Asked Questions
 
 - [What is Vitis AI](#what-is-vitis-ai)
@@ -21,42 +28,42 @@
 
 ## What is Vitis AI
 
-Vitis AI is our unified AI inference solution for all Xilinx platforms (including Versal ACAPs) from edge to cloud. 
+Vitis AI is our unified AI inference solution for all Xilinx platforms (including Versal ACAPs) from edge to cloud.
 It consists of optimized IP, tools, libraries, models, and example designs. It’s a unification of the following:  
-* DNNDK (AI Inference solution for the Edge) 
+* DNNDK (AI Inference solution for the Edge)
 * ML Suite (AI Inference solution for on-premise and cloud)
 * Metropolis (AI Inference solution for Versal ACAPs) –  note “Metropolis” was only an internal project name
 
-With Vitis AI, ML and AI developers can have a familiar and consistent user experience that’s scalable across all Xilinx deployment options. 
+With Vitis AI, ML and AI developers can have a familiar and consistent user experience that’s scalable across all Xilinx deployment options.
 Visit www.xilinx.com/vitis-ai for an overview
 
- 
+
 
 
 ## What are the different components of the Vitis AI
 
 Please refer to the overview and description of the different components on the Vitis AI Product Page here: www.xilinx.com/vitis-ai
- 
+
 ## Are all the components of Vitis AI free
 Everything except Vitis AI Optimizer is completely free. Vitis AI Optimizer does require a separate license. Please contact your Xilinx representative for additional information on this.
 
 ## Is Vitis AI a separate download
 Yes, it is.
-The Vitis AI development environment will not be part of the Vitis core development kit download through the Vitis Installer. 
+The Vitis AI development environment will not be part of the Vitis core development kit download through the Vitis Installer.
 
 ## Is there a specific version compatibility between Vitis AI and Vitis
-Vitis AI will have a new release every 3-months. 
+Vitis AI will have a new release every 3-months.
 Each Vitis AI release will be compatible with the most current version of Vitis tools – E.g. Vitis AI 1.0 is compatible with Vitis tools 2019.2.
 
 
 ## Which deep learning frameworks will Vitis AI support  
 
-At launch (Vitis AI 1.0), we will have support for Tensorflow, Caffe and Darknet. We will continue to add support for other popular frameworks such as Pytorch in near future. 
+At launch (Vitis AI 1.0), we will have support for Tensorflow, Caffe and Darknet. We will continue to add support for other popular frameworks such as Pytorch in near future.
 
 ## Which AI Models will Vitis AI Support
 The models supported by Vitis AI will be published in [Vitis AI Model Zoo](https://github.com/Xilinx/AI-Model-Zoo),  
 where you can find model files, model information and model performance number on various platforms.
-Vitis AI also supports other models including custom models, which may not be in the Model Zoo yet. 
+Vitis AI also supports other models including custom models, which may not be in the Model Zoo yet.
 
 
 ## Which Vitis Platforms will Vitis AI Support
@@ -98,12 +105,12 @@ DPU for Vivado will be maintained and updated along with Vitis AI 1.0 and therea
 - Pooling (Max/Average)
 - ReLU / Leaky Relu / Relu6
 - Fully Connected
-- BatchNorm 
-- Scale 
+- BatchNorm
+- Scale
 - Reorg
 - Softmax
 
-Note: Layers not supported for hardware acceleration typically are not a performance bottleneck, and therefore can be ran on the CPU as a post processing step. 
+Note: Layers not supported for hardware acceleration typically are not a performance bottleneck, and therefore can be ran on the CPU as a post processing step.
 
 
 ## What batch sizes are supported
@@ -126,7 +133,7 @@ FPGA accelerated networks are far superior to GPU accelerated networks for laten
 
 1. Ensure the model is defined in a framework that is digestible by Vitis AI (Caffe, Tensorflow, Darknet)
 2. Ensure your software environment is set up appropriately  
-  a. [docker setup](./install_docker/load_run_docker.md) 
+  a. [docker setup](./install_docker/load_run_docker.md)
 3. Ensure your hardware environment is set up appropriately (Before you attempt to deploy on hardware)  
 4. Quantize the model  
 5. Compile the model  
@@ -158,4 +165,3 @@ This process requires determining the range of floating point values that need t
 Fixed point arithmetic allows us to reach maximum OPs/second, and there is a pool of research papers that show how fixed point quantization minimally impacts the accuracy of convolutional neural nets. Some papers citing a degradation in accuracy of 2%.
 
 Xilinx has actually seen some networks perform better with fixed-point quantization.
-

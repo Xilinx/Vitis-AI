@@ -1,14 +1,14 @@
 <div align="center">
-  <img width="100%" height="100%" src="docs/img/Vitis-AI.png">
+  <img width="100%" height="100%" src="docs/images/Vitis-AI.png">
 </div>
 
 <br />
-Vitis AI is Xilinx’s development stack for AI inference on Xilinx hardware platforms, including both edge devices and Alveo cards. It consists of optimized IP, tools, libraries, models, and example designs. It is designed with high efficiency and ease of use in mind, unleashing the full potential of AI acceleration on Xilinx FPGA and ACAP.  
+Xilinx&reg; Vitis&trade; AI is a development stack for AI inference on Xilinx hardware platforms, including both edge devices and Alveo cards. It consists of optimized IP, tools, libraries, models, and example designs. It is designed with high efficiency and ease of use in mind, unleashing the full potential of AI acceleration on Xilinx FPGA and ACAP.  
 <br />
 <br />
 
 <div align="center">
-  <img width="45%" height="45%" src="docs/img/Vitis-AI-arch.png">
+  <img width="45%" height="45%" src="docs/images/Vitis-AI-arch.png">
 </div>
 
 <br />
@@ -29,11 +29,11 @@ Vitis AI is composed of the following key components:
 
 ## [See What's New](docs/release-notes/1.x.md)
 - [Release Notes](docs/release-notes/1.x.md)
-- Added support for Pytorch and Tensorflow 2.3 frameworks 
+- Added support for Pytorch and Tensorflow 2.3 frameworks
 - Added more ready-to-use AI models for a wider range of applications, including 3D point cloud detection and segmentation, COVID-19 chest image segmentation and other reference models
 - Unified XIR-based compilation flow from edge to cloud
 - Vitis AI Runtime (VART) fully open source
-- New RNN overlay for NLP applications 
+- New RNN overlay for NLP applications
 - New CNN DPUs for the low-latency and higher throughput applications on Alveo cards
 - EoU enhancement with Beta version model partitioning and custom layer/operators plug-in
 
@@ -97,7 +97,7 @@ To run the GPU docker, use command:
 Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
 More Detail can be found here: [Run Docker Container](docs/install_docker/load_run_docker.md)
 
-**X11 Support for Running Vitis AI Docker with Alveo** 
+**X11 Support for Running Vitis AI Docker with Alveo**
 
 If you are running Vitis AI docker with Alveo card and want to use X11 support for graphics (for example, some demo applications in VART and Vitis-AI-Library for Alveo need to display images or video), please add following line into the *docker_run_params* variable definition in *docker_run.sh* script:
 
@@ -114,7 +114,7 @@ sudo chown vitis-ai-user:vitis-ai-group ~/.Xauthority
 
 Please note before running this script, please make sure either you have local X11 server running if you are using Windows based ssh terminal to connect to remote server, or you have run **xhost +** command at a command terminal if you are using Linux with Desktop. Also if you are using ssh to connect to the remote server, remember to enable *X11 Forwarding* option either with Windows ssh tools setting or with *-X* options in ssh command line.
 
-  
+
 
  ### Get Started with Examples
   - [VART](demo/VART/README.md)

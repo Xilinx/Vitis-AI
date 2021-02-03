@@ -30,21 +30,21 @@ files:
 - name: yolov3_bdd
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 7a68b6b701482f161e1bb9c0c799a498
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: fcdda5496adc36a76355bd90a6fbc412
 - name: yolov3_bdd
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-vck190-r1.3.0.tar.gz
-  checksum: 2f18f38093f3feb80ab7788804e2e36f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-vck190-r1.3.1.tar.gz
+  checksum: 8041ddcae66cd4220b0c392f87b15ee0
 - name: yolov3_bdd
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u50-r1.3.0.tar.gz
-  checksum: 021bdc7bf1415f3bd59dc4a9d64181af
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u50-r1.3.1.tar.gz
+  checksum: c1d0471f3a45d7b02bd342d02a52805b
 - name: yolov3_bdd
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u50lv-u280-r1.3.0.tar.gz
-  checksum: 6ed1fa186ba894c2b6705f1bd60a4fc2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u50lv-u280-r1.3.1.tar.gz
+  checksum: e52afa2323c96d2640bb0d8d2e95e7e2
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

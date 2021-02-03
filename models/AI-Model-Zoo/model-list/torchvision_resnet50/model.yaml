@@ -22,26 +22,26 @@ files:
 - name: resnet50_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: e40b05ea017e96061a9256733e135af1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: d27926fcf796358a76ca89024a939f13
 - name: resnet50_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck190-r1.3.0.tar.gz
-  checksum: b39af80e7fc21b4f557cd9b9d0a2b9c8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck190-r1.3.1.tar.gz
+  checksum: 4853e78d285323e2cd6fc9de3b67e364
 - name: resnet50_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-r1.3.0.tar.gz
-  checksum: 12b72c7d5d40d8fdd85d7e01aefa72a3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-r1.3.1.tar.gz
+  checksum: 87906e732ea1939c8a2212a076878128
 - name: resnet50_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: b181ac49594e357ac0c19ef3c1d00e15
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: b3e8424bc00596570c9f1b48c8da15e3
 - name: resnet50_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 5ed1279c3eab007e450c05f8bb49a101
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 1a4a1738cd963bb879e4b8b1cdd988d0
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

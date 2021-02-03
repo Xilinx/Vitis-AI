@@ -15,7 +15,7 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_retinaface test_accuracy_retinaface.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-retinaface  -lvitis_ai_library-model_config -lvitis_ai_library-math -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_retinaface test_jpeg_retinaface.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-retinaface  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_retinaface test_performance_retinaface.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-retinaface  -lvart-util -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_retinaface test_video_retinaface.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-retinaface  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_retinaface test_accuracy_retinaface.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-retinaface  -lvitis_ai_library-model_config -lvitis_ai_library-math -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_retinaface test_jpeg_retinaface.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-retinaface  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_retinaface test_performance_retinaface.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-retinaface  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+$CXX -std=c++17 -I. -o test_video_retinaface test_video_retinaface.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-retinaface  -pthread -lglog 

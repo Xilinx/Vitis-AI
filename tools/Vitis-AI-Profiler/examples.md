@@ -21,7 +21,7 @@
   {
       "options": {
           "runmode": "normal",
-          "cmd": "/home/root/Vitis_AI/examples/VART/samples/resnet50/resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel"
+          "cmd": "/home/root/Vitis-AI/demo/VART/samples/resnet50/resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel"
       },
       "trace": {
           "enable_trace_list": ["vart", "opencv", "custom"]
@@ -52,8 +52,8 @@ Upload all csv files and xclbin.ex.run_summary and open the xclbin.ex.run_summar
     2. Add __@vai_tracepoint__ as decorator to functions that we want to trace
     3. Uncomment CPUCalcSoftmax and TopK
      ```diff
-     --- a/examples/VART/samples/resnet50_mt_py/resnet50.py
-     +++ b/examples/VART/samples/resnet50_mt_py/resnet50.py
+     --- a/demo/VART/samples/resnet50_mt_py/resnet50.py
+     +++ b/demo/VART/samples/resnet50_mt_py/resnet50.py
      @@ -25,6 +25,7 @@ import math
       import threading
       import time
@@ -107,7 +107,7 @@ Upload all csv files and xclbin.ex.run_summary and open the xclbin.ex.run_summar
 Edge: ZCU104
 - Preparing 
   ```bash
-  # cd ~/Vitis_AI/examples/Vitis-AI-Library/samples/posedetect
+  # cd ~/Vitis-AI/demo/Vitis-AI-Library/samples/posedetect
   ```
 - Starting Trace:
   ```bash

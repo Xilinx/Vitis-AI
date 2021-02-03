@@ -30,26 +30,26 @@ files:
 - name: densebox_320_320
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 106f9587ed645faea9b5ec51d68f03b9
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 3a983585fb23e881d865d6d498b05434
 - name: densebox_320_320
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck190-r1.3.0.tar.gz
-  checksum: eeddf8db79ef7a03d62da1fa8cab2928
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck190-r1.3.1.tar.gz
+  checksum: ef6ee9b117bbc6c8e5e070cc49086dba
 - name: densebox_320_320
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.0.tar.gz
-  checksum: a540e261937de8622a8b3492149e7e6e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.1.tar.gz
+  checksum: 63ed7d3a284aa667f0fcb64faba88262
 - name: densebox_320_320
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50lv-u280-r1.3.0.tar.gz
-  checksum: 9945deefb8476dec49446184cddd191f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50lv-u280-r1.3.1.tar.gz
+  checksum: 42be167b198b3942eb85a15f2592b5b8
 - name: densebox_320_320
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 57c329052f26e73676ad5c8d8cedf0da
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 015004942c0ae8cd50b73d90dc9e6cc2
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

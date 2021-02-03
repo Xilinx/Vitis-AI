@@ -50,7 +50,7 @@ class MyPerformanceTestRunner : public vitis::ai::PerformanceTestRunner {
  public:
   explicit MyPerformanceTestRunner(const string& filename,  //
                                    const string& kernel);
-  virtual ~MyPerformanceTestRunner() = default;
+  virtual ~MyPerformanceTestRunner();
   MyPerformanceTestRunner(const PerformanceTestRunner& other) = delete;
   MyPerformanceTestRunner& operator=(const PerformanceTestRunner& rhs) = delete;
 
@@ -65,6 +65,8 @@ class MyPerformanceTestRunner : public vitis::ai::PerformanceTestRunner {
   const vector<vector<vector<char>>> ref_outputs_;
   vector<vector<char>> output_buffers_;
   size_t result_ = 0;
+  int error_counter_ = 0;
+  int ok_counter_ = 0;
 };
 
 static vector<char> random_vector_char(size_t sz, int batch_size) {
@@ -220,8 +222,14 @@ MyPerformanceTestRunner::MyPerformanceTestRunner(const string& filename,
       inputs_{generate_inputs(runner_.get())},
       ref_outputs_{generate_outputs(runner_.get(), inputs_)},
       output_buffers_{allocate_buffer(runner_->get_output_tensors())} {}
-thread_local int error_counter = 0;
-thread_local int ok_counter = 0;
+
+std::atomic<u_int64_t> errors_total = 0;
+MyPerformanceTestRunner::~MyPerformanceTestRunner() {
+  errors_total += error_counter_;
+  LOG_IF(INFO, error_counter_) << "error_counter = " << error_counter_
+                               << ",errors_total = " << errors_total;
+}
+
 void MyPerformanceTestRunner::step(size_t idx, int thread_id) {
   if (ENV_PARAM(THREAD_ADD_LOCK)) {
     static mutex mtx;
@@ -268,17 +276,17 @@ void MyPerformanceTestRunner::step(size_t idx, int thread_id) {
           ok = ok && r == 0;
           LOG_IF(INFO, r != 0)
               << "thread " << thread_id << " batch " << batch_idx
-              << " error_counter " << error_counter + 1 << " ok_counter "
-              << (ok_counter + 1);
+              << " error_counter " << error_counter_ + 1 << " ok_counter "
+              << (ok_counter_ + 1);
           if (r != 0 && ENV_PARAM(SAVE_ERROR_OUTPUT_TO_FILE)) {
             auto ref_file_name =
                 string("ref_t") + to_string(thread_id) + string("_") +
                 to_string(idx) + string("_batch_") + to_string(batch_idx) +
-                string("_") + to_string(error_counter + 1) + string(".bin");
+                string("_") + to_string(error_counter_ + 1) + string(".bin");
             auto out_file_name =
                 string("out_t") + to_string(thread_id) + string("_") +
                 to_string(idx) + string("_batch_") + to_string(batch_idx) +
-                string("_") + to_string(error_counter + 1) + string(".bin");
+                string("_") + to_string(error_counter_ + 1) + string(".bin");
 
             write_to_file(&ref_outputs_[idx][i][batch_idx * size_per_batch],
                           size_per_batch, ref_file_name);
@@ -287,12 +295,13 @@ void MyPerformanceTestRunner::step(size_t idx, int thread_id) {
           }
         }
         if (ok) {
-          ok_counter++;
+          ok_counter_++;
         } else {
-          error_counter++;
+          error_counter_++;
         }
         LOG_IF(INFO, ENV_PARAM(DEBUG_TEST))
-            << "checking ok idx =" << idx << ",i=" << i;
+            << "thread " << thread_id << "checking ok is " << ok
+            << " idx =" << idx << ",i=" << i;
       }
     }
   }
@@ -304,15 +313,17 @@ size_t MyPerformanceTestRunner::get_result() { return result_; }
 
 bool test_dpu_runner_mt(string filename, string kernel, uint32_t runner_num) {
   CHECK_GT(runner_num, 0);
-  auto runners = vector<unique_ptr<vitis::ai::PerformanceTestRunner>>();
-  for (auto i = 0u; i < runner_num; ++i) {
-    LOG(INFO) << "create runner ... " << i << "/" << runner_num;
-    runners.emplace_back(
-        make_unique<MyPerformanceTestRunner>(filename, kernel));
+  {
+    auto runners = vector<unique_ptr<vitis::ai::PerformanceTestRunner>>();
+    for (auto i = 0u; i < runner_num; ++i) {
+      LOG(INFO) << "create runner ... " << i << "/" << runner_num;
+      runners.emplace_back(
+          make_unique<MyPerformanceTestRunner>(filename, kernel));
+    }
+    // not use
+    int argc = 0;
+    char* argv[] = {};
+    make_unique<vitis::ai::PerformanceTest>()->main(argc, argv, move(runners));
   }
-  // not use
-  int argc = 0;
-  char* argv[] = {};
-  make_unique<vitis::ai::PerformanceTest>()->main(argc, argv, move(runners));
-  return error_counter == 0;
+  return errors_total == 0;
 }

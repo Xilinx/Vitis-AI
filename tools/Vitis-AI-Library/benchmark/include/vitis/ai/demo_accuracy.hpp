@@ -277,7 +277,12 @@ struct DpuRunThread : public MyThread {
     while (frames.size() < batch) {
       FrameInfo frame;
       if (!queue_in_->pop(frame, std::chrono::milliseconds(500))) {
+        if (frames.size() > 0 &&
+            (int(frames.rbegin()->frame_id) == g_last_frame_id)) {
+          g_is_completed = true;
+        }
         if (g_is_completed) break;
+        if (is_stopped()) return -1;
         continue;
       }
       if (int(frame.frame_id) == g_last_frame_id) g_is_completed = true;
@@ -424,7 +429,7 @@ int main_for_accuracy_demo(
     }
     auto dpu_run_thread = std::vector<std::unique_ptr<DpuRunThread>>{};
     auto sorting_queue =
-        std::unique_ptr<queue_dpu>(new queue_dpu(20 * g_num_of_threads));
+        std::unique_ptr<queue_dpu>(new queue_dpu(50 * g_num_of_threads));
     auto acc_queue = acc_thread->getQueue();
     for (int i = 0; i < g_num_of_threads; ++i) {
       dpu_run_thread.emplace_back(new DpuRunThread(

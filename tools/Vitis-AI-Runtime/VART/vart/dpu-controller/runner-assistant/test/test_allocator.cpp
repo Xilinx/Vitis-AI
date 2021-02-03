@@ -19,8 +19,9 @@
 #include <fstream>
 #include <iostream>
 #include <xir/tensor/tensor.hpp>
+
+#include "vart/assistant/tensor_buffer_allocator.hpp"
 #include "vart/tensor_buffer.hpp"
-#include "vart/tensor_buffer_allocator.hpp"
 #include "vitis/ai/collection_helper.hpp"
 #include "vitis/ai/env_config.hpp"
 #include "vitis/ai/parse_value.hpp"
@@ -78,7 +79,8 @@ int main(int argc, char* argv[]) {
     attrs->set_attr<size_t>("__batch__", ENV_PARAM(BATCH));
     attrs->set_attr<int>("__tensor_buffer_location__", ENV_PARAM(LOCATION));
     attrs->set_attr<std::string>("__cu_name__", ENV_PARAM(CU_NAME));
-    auto allocator = vart::TensorBufferAllocator::create(attrs.get());
+    auto allocator =
+        vart::assistant::TensorBufferAllocator::create(attrs.get());
     std::vector<std::pair<std::vector<std::unique_ptr<vart::TensorBuffer>>,
                           std::vector<std::unique_ptr<vart::TensorBuffer>>>>
         all(2u);
