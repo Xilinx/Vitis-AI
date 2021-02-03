@@ -486,5 +486,10 @@ xdputil benchmark <xmodel> [-i subgraph_index] <num_of_threads>
 ```
 For more usage of `xdputil`, execute `xdputil -h`.
 
+Note that when you use `xdputil` in the docker, `/usr/bin/python3 -m xdputil` is used instead of `xdputil`, for example,
+```
+/usr/bin/python3 -m xdputil query
+```
+
 ## Reference
 For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_3/ug1354-xilinx-ai-sdk.pdf).
