@@ -141,9 +141,9 @@
 
 ### Known Issues
 - Limitations for DPUCADF8H on U200/U250:  
-  -Python API not yet supported   
-  -Segmentation networks not yet supported   
-  -Possible accuracy issue when accessing DPUCADF8H from multiple threads    
+  - Python API not yet supported   
+  - Segmentation networks not yet supported   
+  - Possible accuracy issue when accessing DPUCADF8H from multiple threads    
 
 ### Updates
 - v1.3.1
