@@ -27,8 +27,8 @@ Vitis AI is composed of the following key components:
 **Learn More:** [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)  
 
 
-## [See What's New](docs/release-notes/1.x.md)
-- [Release Notes](docs/release-notes/1.x.md)
+## [See What's New](docs//learn/release_notes.md)
+- [Release Notes](docs//learn/release_notes.md)
 - Added support for Pytorch and Tensorflow 2.3 frameworks
 - Added more ready-to-use AI models for a wider range of applications, including 3D point cloud detection and segmentation, COVID-19 chest image segmentation and other reference models
 - Unified XIR-based compilation flow from edge to cloud
