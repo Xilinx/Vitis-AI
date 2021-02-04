@@ -125,7 +125,7 @@ The top-level directory structure shows the the major design components. The TRD
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =<Vitis AI path>/DPU_TRD
+%export TRD_HOME=<Vitis AI path>/DPU-TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
@@ -230,7 +230,7 @@ If the prebuilt design is wanted, please use the path for **--get-hw-description
 
 This part is about how to run the Resnet50 example from the source code.
 
-The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in page 65 of [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_2/ug1144-petalinux-tools-reference-guide.pdf)for Petalinux 2020.2:
+The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in page 107 of [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_2/ug1144-petalinux-tools-reference-guide.pdf)for Petalinux 2020.2:
 
 Copy the image.ub and BOOT.BIN files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to BOOT partition.
 
