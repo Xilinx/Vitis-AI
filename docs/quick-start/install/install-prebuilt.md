@@ -6,3 +6,13 @@
 </table>
 
 # Prebuilt Image Installation
+
+Download the latest Vitis AI Docker with the following command. This container runs on CPU.  
+```
+docker pull xilinx/vitis-ai-cpu:latest  
+```
+
+To run the docker, use command:
+```
+./docker_run.sh xilinx/vitis-ai-cpu:latest
+```
