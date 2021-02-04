@@ -12,8 +12,11 @@ export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 EN_HWPOSTPROC=$4
 if [[ $EN_HWPOSTPROC -eq 1 ]];
 then
-    # Disable DPU output data transfre to host
+    # Disable DPU output data transfer to host
 	export DPU_HW_POST=1
+else
+    # Enable DPU output data transfer to host
+	export DPU_HW_POST=0
 fi
 
 # Run on FPGA
