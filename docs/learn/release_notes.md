@@ -141,7 +141,14 @@
 
 ### Known Issues
 
-
+### Updates
+- v1.3.1
+  - Bug fixes and improvements for v1.3
+  - Updated Compiler to improve performance by 5% in average for most models
+  - Added Zero copy support (new APIs in VART / Vitis AI Library)
+  - Added Cross-layer equalization support in TensorFlow v1.15 (more benefits for mobilenet models)
+  - Added WAA U50 TRD
+  - Updated U280 Pre-Processing using Multi-Preprocessing JPEG decode kernels 
 
 ------------------
 ## Release 1.2
