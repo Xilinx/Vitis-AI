@@ -225,9 +225,9 @@ Copy the directory **$TRD_HOME/app** to the BOOT partition of the SD Card.
 After the linux boot, run:
 
 ```
-% cp -r /mnt/app/sd-mmcblk0p1/samples ~
+% cp -r /mnt/sd-mmcblk0p1/app/samples ~
 
-% cp /mnt/app/sd-mmcblk0p1/models/resnet50.xmodel ~
+% cp /mnt/sd-mmcblk0p1/app/models/resnet50.xmodel ~
 
 % cp -r /mnt/sd-mmcblk0p1/app/img ~
 
@@ -636,7 +636,7 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
       
 			1. Location - Location to which the DPU TRD to be downloaded
 
-			2. Git URL - DPU TRD URL - https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging.git
+			2. Git URL - DPU TRD URL - https://github.com/Xilinx/Vitis-AI.git 
   
 			3. Branch - ML-2605-folder-structure
   
