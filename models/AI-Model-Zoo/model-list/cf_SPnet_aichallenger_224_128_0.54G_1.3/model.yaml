@@ -30,26 +30,26 @@ files:
 - name: sp_net
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 2e85a1947f9647b569eb63a8cb8b37f0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: b3adbaf92316ea1b4cdde7318be328a2
 - name: sp_net
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.3.0.tar.gz
-  checksum: 1d10af90d23fd6df172a97e20af8817e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.3.1.tar.gz
+  checksum: 9997312e299bcbf69fe597e8a1f1c5dc
 - name: sp_net
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-r1.3.0.tar.gz
-  checksum: 1c188cb779c030e96683c249b717ab97
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-r1.3.1.tar.gz
+  checksum: a2c7924ea27b0c5790d411b180b25403
 - name: sp_net
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50lv-u280-r1.3.0.tar.gz
-  checksum: 425b70d99f5c0718fbccc8987c8652c2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50lv-u280-r1.3.1.tar.gz
+  checksum: facb8d2a5b72480739231f29b6283f85
 - name: sp_net
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: d6895e5b84e4365da9dc94899197d26b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: bb77cf120f0a5e45f5baa113a06fd14e
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -40,6 +40,7 @@ add_library(${COMPONENT_NAME} SHARED
   src/configurable_dpu_task_imp.cpp
   src/graph_holder.hpp
   src/graph_holder.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/version.c
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 

@@ -33,17 +33,17 @@ extern std::vector<cv::Rect> GLOBAL_SET_RECT_MANUAL;
 #include <eigen3/Eigen/Dense>
 // Overlay the original image with the result
 // Eigen Optimized version
-static void overLay1(cv::Mat &src1, const cv::Mat &src2) {
+static void overLay1(cv::Mat& src1, const cv::Mat& src2) {
   const int imsize = src1.cols * src2.rows * 3;
-  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data1(const_cast<uchar *>(src1.data),
+  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data1(const_cast<uchar*>(src1.data),
                                                 imsize);
-  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data2(const_cast<uchar *>(src2.data),
+  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data2(const_cast<uchar*>(src2.data),
                                                 imsize);
   data1 = data1 / 2 + data2 / 2;
 }
 #else
 // c version
-static void overLay1(cv::Mat &src1, const cv::Mat &src2) {
+static void overLay1(cv::Mat& src1, const cv::Mat& src2) {
   const int imsize = src1.cols * src2.rows * 3;
   for (int i = 0; i < imsize; ++i) {
     src1.data[i] = src1.data[i] / 2 + src2.data[i] / 2;
@@ -52,7 +52,7 @@ static void overLay1(cv::Mat &src1, const cv::Mat &src2) {
 #endif
 // This function is used to process the multitask result and show on the image
 static cv::Mat process_result_multitask(
-    cv::Mat &m1, const vitis::ai::MultiTaskResult &result, bool is_jpeg) {
+    cv::Mat& m1, const vitis::ai::MultiTaskResult& result, bool is_jpeg) {
   (void)process_result_multitask;
   cv::Mat image;
   // Overlay segmentation result to the original image
@@ -64,7 +64,7 @@ static cv::Mat process_result_multitask(
     overLay1(image, m1);
   }
   // Draw detection results
-  for (auto &r : result.vehicle) {
+  for (auto& r : result.vehicle) {
     LOG_IF(INFO, is_jpeg) << r.label << " " << r.x << " " << r.y << " "
                           << r.width << " " << r.height << " " << r.angle;
     int xmin = r.x * image.cols;
@@ -81,15 +81,15 @@ static cv::Mat process_result_multitask(
 using namespace cv;
 
 // This function is used to process the roadline result and show on the image
-cv::Mat process_result_roadline(cv::Mat &image,
-                                const vitis::ai::RoadLineResult &result,
+cv::Mat process_result_roadline(cv::Mat& image,
+                                const vitis::ai::RoadLineResult& result,
                                 bool is_jpeg) {
   std::vector<int> color1 = {0, 255, 0, 0, 100, 255};
   std::vector<int> color2 = {0, 0, 255, 0, 100, 255};
   std::vector<int> color3 = {0, 0, 0, 255, 100, 255};
 
   LOG_IF(INFO, is_jpeg) << "lines.size " << result.lines.size() << " ";
-  for (auto &line : result.lines) {
+  for (auto& line : result.lines) {
     LOG_IF(INFO, is_jpeg) << "line.points_cluster.size() "
                           << line.points_cluster.size() << " ";
     std::vector<cv::Point> points_poly = line.points_cluster;
@@ -97,12 +97,12 @@ cv::Mat process_result_roadline(cv::Mat &image,
     if (type == 2 && points_poly[0].x < image.rows * 0.5) continue;
     cv::polylines(image, points_poly, false,
                   cv::Scalar(color1[type], color2[type], color3[type]), 3,
-                  CV_AA, 0);
+                  cv::LINE_AA, 0);
   }
   return image;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   // set the layout
   //
   int seg_px = 100;

@@ -30,26 +30,26 @@ files:
 - name: facerec_resnet64
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 6e16eb8b7ba79f847762b8f17887f00d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: ff3f505b9764a640b4fd529b78996c80
 - name: facerec_resnet64
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-vck190-r1.3.0.tar.gz
-  checksum: f083c01c4305e31333c8a6ec21d709a2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-vck190-r1.3.1.tar.gz
+  checksum: 7c242338ea1f4695b98a6500720ffda0
 - name: facerec_resnet64
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50-r1.3.0.tar.gz
-  checksum: f7c96dd3572bcbefa1edf00032508069
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50-r1.3.1.tar.gz
+  checksum: 684897036d33dd08c14b237de1e265a1
 - name: facerec_resnet64
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50lv-u280-r1.3.0.tar.gz
-  checksum: f30c94efdcf5cb9569e72e657ead7882
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50lv-u280-r1.3.1.tar.gz
+  checksum: 15a25d8a2beffe8e0b713c0d4dbad1d7
 - name: facerec_resnet64
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: ed2b7a4d45572a05bb1daef990ecf49b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 8640f160aa87050389b002fe80aadc26
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

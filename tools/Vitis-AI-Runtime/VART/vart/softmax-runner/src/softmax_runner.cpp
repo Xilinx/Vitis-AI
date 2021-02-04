@@ -20,9 +20,9 @@
 #include <cstdint>
 
 #include "../src/runner_helper.hpp"
+#include "vart/assistant/tensor_buffer_allocator.hpp"
 #include "vart/runner_ext.hpp"
 #include "vart/tensor_buffer.hpp"
-#include "vart/tensor_buffer_allocator.hpp"
 #include "vitis/ai/env_config.hpp"
 #include "xir/graph/subgraph.hpp"
 #include "xir/sfm_controller.hpp"
@@ -50,7 +50,7 @@ SoftmaxRunner::SoftmaxRunner(const xir::Subgraph* subgraph, xir::Attrs* attrs)
   attrs->set_attr<size_t>("__batch__", 1);
   attrs->set_attr<int>(subgraph->get_name() + ":__tensor_buffer_location__", 1);
 
-  auto allocator = vart::TensorBufferAllocator::create(attrs);
+  auto allocator = vart::assistant::TensorBufferAllocator::create(attrs);
   auto tensor_buffers = allocator->allocate(
       subgraph, std::vector<const xir::Tensor*>{*input_set.begin()},
       std::vector<const xir::Tensor*>{*output_set.begin()});

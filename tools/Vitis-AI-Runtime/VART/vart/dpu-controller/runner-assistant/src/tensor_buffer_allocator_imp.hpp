@@ -16,35 +16,30 @@
 #pragma once
 #include <memory>
 #include <string>
-#include <vart/runner.hpp>
-namespace xir {
-class Tensor;
-class Attrs;
-}  // namespace xir
-namespace vart {
-class TensorBufferAllocator {
+
+#include "vart/assistant/tensor_buffer_allocator.hpp"
+
+namespace {
+class TensorBufferAllocatorImp : public vart::assistant::TensorBufferAllocator {
  public:
-  /** @brief create a tensor buffer allocator */
-  static std::unique_ptr<TensorBufferAllocator> create(const xir::Attrs* attrs);
-  explicit TensorBufferAllocator();
+  explicit TensorBufferAllocatorImp(const xir::Attrs* attrs);
 
-  TensorBufferAllocator(const TensorBufferAllocator&) = delete;
-  TensorBufferAllocator& operator=(const TensorBufferAllocator& other) = delete;
+  TensorBufferAllocatorImp(const TensorBufferAllocatorImp&) = delete;
+  TensorBufferAllocatorImp& operator=(const TensorBufferAllocatorImp& other) =
+      delete;
 
-  virtual ~TensorBufferAllocator() = default;
+  virtual ~TensorBufferAllocatorImp();
 
- public:
-  /** @brief allocate a vector of tensor buffers.
-   *  @param subgraph
-   *  @param input_tensors
-   *  @param output_tensors
-   *  @return <input_tensor_buffer, output_tensor_buffers>
-   *
+ private:
+  /** @brief allocate a vector of buffers.
    * */
   virtual std::pair<std::vector<std::unique_ptr<vart::TensorBuffer>>,
                     std::vector<std::unique_ptr<vart::TensorBuffer>>>
   allocate(const xir::Subgraph* subgraph,
            const std::vector<const xir::Tensor*>& input_tensors,
-           const std::vector<const xir::Tensor*>& output_tensors) = 0;
+           const std::vector<const xir::Tensor*>& output_tensors) override;
+
+ private:
+  const xir::Attrs* attrs_;
 };
-}  // namespace vart
+}  // namespace

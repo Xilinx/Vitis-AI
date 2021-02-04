@@ -69,42 +69,35 @@ typedef Eigen::Tensor<int8_t, 3, Eigen::RowMajor>       PointPillarsScatterOutDp
 typedef Eigen::TensorMap<PointPillarsScatterOutDpuTensor> PointPillarsScatterOutDpuTensorMap;
 typedef Eigen::Tensor<int8_t, 3, Eigen::RowMajor>       VoxelsTensor;
 typedef Eigen::TensorMap<VoxelsTensor>                  VoxelsTensorMap;
-typedef Eigen::Tensor<int32_t, 2, Eigen::RowMajor>      CoorsTensorType;
-typedef Eigen::TensorMap<CoorsTensorType>               CoorsType;
-typedef Eigen::Tensor<float, 2, Eigen::RowMajor>        PointsTensorType;
-typedef Eigen::TensorMap<PointsTensorType>              PointsType;
-typedef Eigen::Tensor<int32_t, 1, Eigen::RowMajor>  CoorsSubTensorType;
 
 class preout_dict 
 {
     public:
         preout_dict( int8_t* dpu_in, int s0, int s1, int s2) : // should be hwc :   12000 100  4
-            voxelsData (dpu_in),
-            voxelsShape (std::make_tuple(s0, s1, s2)),  
-            coorData (std::unique_ptr<int32_t[]>(new int32_t[s0*3])), // note: we use 3 here instead of 4
-            coorShape (std::make_tuple(s0, 3))
+            voxelsData (dpu_in)
         {
             memset(dpu_in, 0, s0*s1*s2);
             num_points.resize(s0);
             cur_size = 0;
+            coorData.resize(s0 );
+            voxelsShape[0] = s0;
+            voxelsShape[1] = s1;
+            voxelsShape[2] = s2;
         } 
         void SetSize(int s)   { 
            num_points.assign(s ,0);
            cur_size = s; 
         }
-        void clear() { memset(voxelsData, 0, std::get<0>(voxelsShape)*std::get<1>(voxelsShape)*std::get<2>(voxelsShape)); }  // 5000 100 4 
+        void clear() { memset(voxelsData, 0, voxelsShape[0]*voxelsShape[1]*voxelsShape[2]); }  // 5000 100 4 
         int  GetSize()    { return cur_size; }
         V1I& GetNumPoints()   { return num_points; }
-        VoxelsTensorMap GetVoxels() { return VoxelsTensorMap( voxelsData, std::get<0>(voxelsShape), std::get<1>(voxelsShape), std::get<2>(voxelsShape) ); }
-        CoorsType GetCoordinates()  { return CoorsType( coorData.get(), std::get<0>(coorShape), std::get<1>(coorShape) ); }
-
+        VoxelsTensorMap GetVoxels() { return VoxelsTensorMap( voxelsData, voxelsShape[0], voxelsShape[1], voxelsShape[2] ); }
+        std::vector< std::pair<int, int> > coorData;
     private:
         int cur_size;
         V1I   num_points;
         int8_t*     voxelsData;
-	std::tuple<int,int,int>      voxelsShape;
-        std::unique_ptr<int32_t[]>   coorData;
-        std::tuple<int,int>          coorShape;
+        std::array<int, 3> voxelsShape;
 };
 
 

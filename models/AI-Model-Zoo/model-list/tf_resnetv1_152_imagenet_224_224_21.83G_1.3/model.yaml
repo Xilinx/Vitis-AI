@@ -30,31 +30,31 @@ files:
 - name: resnet_v1_152_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: c0b85b1e3e970ce09bd60822f8268941
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: dcd5f82f5a9f4119fab7e9395bc3697f
 - name: resnet_v1_152_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-vck190-r1.3.0.tar.gz
-  checksum: 2c35c3b7b3f9effd970dd6a63533ac49
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-vck190-r1.3.1.tar.gz
+  checksum: cd864fa205f0150df24ea3321e54be45
 - name: resnet_v1_152_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50-r1.3.0.tar.gz
-  checksum: 4fa640f4f970f77f84281459d80d323b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50-r1.3.1.tar.gz
+  checksum: 71c80cdccea49546d72c94b4f023b0cd
 - name: resnet_v1_152_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: 5eeccd4cad89da6363582f66d112f4b6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 851b8fb172b7f19a6e245e5aa8c67174
 - name: resnet_v1_152_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: dfa01455e1db12fec59a4bbfc51939fa
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 5d76b1fa9166df8206dc40d15d630365
 - name: resnet_v1_152_tf
   type: xmodel
   board: u200 & u250
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152-u200-u250-r1.3.0.tar.gz
-  checksum: 6641c5cd4a63181816725e7ace8beeb0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u200-u250-r1.3.0.tar.gz
+  checksum: 1933b0b312257528ae5a5bb34e6f0ffc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

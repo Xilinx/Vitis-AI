@@ -1,9 +1,14 @@
-# Third Party Source 
+<table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   </td>
+ </tr>
+</table>
 
+# Third Party Source
 
-
-## Ubuntu Packages 
-Below is a list of Ubuntu Apt packages used by Vitis AI: 
+## Ubuntu Packages
+Below is a list of Ubuntu Apt packages used by Vitis AI:
 
 
 1.  sudo  
@@ -37,8 +42,8 @@ If you cannot access the internet pages for Ubuntu’s main source code reposito
 
 
 
-## Conda Packages 
-Below is a list of Conda packages used by Vitis AI: 
+## Conda Packages
+Below is a list of Conda packages used by Vitis AI:
 
 1.  _libgcc_mutex                     
 2.  attrs                             
@@ -209,11 +214,11 @@ Below is a list of Conda packages used by Vitis AI:
 
 More detail, source code and licensing information can be found from Ubuntu here: https://anaconda.org
 
-If you cannot access the internet pages for Anaconda’s main source code repositories and obtain the source code for the Anaconda software packages in this distribution, then you may obtain the source code at https://www.xilinx.com/products/design-tools/guest-resources.html. Xilinx hereby offers (which offer is valid for as long as required by the applicable license; and we may charge you the cost thereof unless prohibited by the license) to provide you with a copy of such source code; and to accept such offer send a letter requesting such source code (please be specific by identifying the particular Xilinx Software you are inquiring about (name and version number), to: Xilinx, Inc., Legal Department, Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA U.S.A. 95124. 
+If you cannot access the internet pages for Anaconda’s main source code repositories and obtain the source code for the Anaconda software packages in this distribution, then you may obtain the source code at https://www.xilinx.com/products/design-tools/guest-resources.html. Xilinx hereby offers (which offer is valid for as long as required by the applicable license; and we may charge you the cost thereof unless prohibited by the license) to provide you with a copy of such source code; and to accept such offer send a letter requesting such source code (please be specific by identifying the particular Xilinx Software you are inquiring about (name and version number), to: Xilinx, Inc., Legal Department, Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA U.S.A. 95124.
 
 
 
-## XRT 
+## XRT
 
 XRT userspace code includes software developed by the following (Apache 2.0)
 
@@ -239,7 +244,7 @@ XRT xocl and xclmgmt Linux kernel drivers include software from Linux kernel (GP
 
 XRT xocl and xclmgmt Linux kernel drivers include software developed by the following (GPL 2.0)
 * Copyright (C) Jan Stephan <j.stephan@hzdr.de>
-* 
+*
 XRT xclmgmt Linux kernel driver includes software developed by the following (dual Apache 2.0 OR GPL 2.0)
 * Copyright (C) Jan Stephan <j.stephan@hzdr.de>
 

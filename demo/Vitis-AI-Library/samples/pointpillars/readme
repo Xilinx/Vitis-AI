@@ -30,20 +30,29 @@ Important:
 
    run the executable file.
 
-    sample : /test_bin_pointpillars  pointpillars_kitti_12000_0_pt pointpillars_kitti_12000_1_pt sample_pointpillars.bin  sample_pointpillars.png 
+    sample : env XLNX_POINTPILLARS_PRE_MT=1 ./test_bin_pointpillars  pointpillars_kitti_12000_0_pt pointpillars_kitti_12000_1_pt sample_pointpillars.bin  sample_pointpillars.png 
     output : 
-0       18.541065 3.999999 -1.732742 1.730013 4.419279 1.465484 1.695000     0.880797
-0       34.606930 1.505865 -1.601687 1.503061 3.495937 1.398375 1.757500     0.835484
-0       10.851732 4.705865 -1.609760 1.650789 4.350764 1.609520 1.632500     0.835484
-1       21.309460 -2.400001 -1.749794 0.600000 1.963422 1.813025 4.711593     0.777300
-0       57.825863 -4.254135 -1.536627 1.550773 3.839536 1.512004 2.007500     0.679179
-    
-    sample : ./test_accuracy_pointpillars pointpillars_kitti_12000_0_pt  pointpillars_kitti_12000_1_pt  test_accuracy_pointpillars_bin.list test_accuracy_pointpillars_rgb.list test_accuracy_pointpillars_calib.list result
+0       18.465866 3.999999 -1.708367 1.703191 4.350764 1.465484 1.679375     0.880797
+0       10.917599 4.705865 -1.622433 1.650789 4.350764 1.634866 1.632500     0.867036
+0       34.531731 1.571731 -1.563948 1.503061 3.495937 1.420396 1.726250     0.851953
+1       21.338514 -2.400001 -1.681677 0.600000 1.963422 1.784916 4.742843     0.777300
+0       57.891731 -4.188268 -1.536627 1.575194 3.780010 1.512004 2.007500     0.679179
+   
+    sample : env XLNX_POINTPILLARS_PRE_MT=1 ./test_accuracy_pointpillars pointpillars_kitti_12000_0_pt  pointpillars_kitti_12000_1_pt  test_accuracy_pointpillars_bin.list test_accuracy_pointpillars_rgb.list test_accuracy_pointpillars_calib.list result
     output : 
     result dir holding the detect result files for each data in test_accuracy_pointpillars_bin.list
    
-    sample : ./test_performance_pointpillars pointpillars_kitti_12000_0_pt  pointpillars_kitti_12000_1_pt  -t 1 -s 30 test_performance_pointpillars.list
-
+    sample : env XLNX_POINTPILLARS_PRE_MT=1 ./test_performance_pointpillars pointpillars_kitti_12000_0_pt  pointpillars_kitti_12000_1_pt  -t 1 -s 30 test_performance_pointpillars.list
+ 
+    note: env variable  XLNX_POINTPILLARS_PRE_MT means the inner threads num for preprocess. default value=2 (range 1 to 4).
+      if it >1, it may cause some random to the result ( usually it becomes better)
+      for accuracy test, it's better to set it to 1 to eliminate the random.
+      for performance test, the total threads num will be inner_threads_num*test_threads_num,
+      if this value is too big, too many threads cause the performance will be dropping instead of raising. 
+      so if test threads num is little, XLNX_POINTPILLARS_PRE_MT can be set a little bigger;
+      if test threads num is big, XLNX_POINTPILLARS_PRE_MT can be set to 1.
+      it's better to do more test with different combination to choose the best value. 
+       
 
 
 * how to set DISPLAY_PARAM

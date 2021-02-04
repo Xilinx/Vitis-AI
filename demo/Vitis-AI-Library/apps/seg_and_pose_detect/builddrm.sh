@@ -14,4 +14,4 @@
 # limitations under the License.
 #
 CXX=${CXX:-"g++ --sysroot=/"}
-$CXX -std=c++11 -O2 -I=/usr/include/drm/ -o seg_and_pose_detect_drm seg_and_pose_detect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lglog -lvitis_ai_library-multitask -lvitis_ai_library-posedetect -lvitis_ai_library-ssd -ldrm -lpthread -DUSE_DRM=1
+$CXX -std=c++17 -O2 -I=/usr/include/drm/ -o seg_and_pose_detect_drm seg_and_pose_detect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lglog -lvitis_ai_library-multitask -lvitis_ai_library-posedetect -lvitis_ai_library-ssd -lvitis_ai_library-dpu_task -ldrm -lpthread -DUSE_DRM=1

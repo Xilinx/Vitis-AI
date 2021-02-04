@@ -25,7 +25,10 @@
 #include <iosfwd>
 #include <memory>
 #include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
+#include <opencv2/imgproc/types_c.h>
+#include <opencv2/highgui/highgui_c.h>
 #include <string>
 #include <utility>
 #include <vector>

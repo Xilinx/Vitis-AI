@@ -30,21 +30,21 @@ files:
 - name: yolov3_voc_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: c0acc1c1aecce000c72958ab3333eff5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: d249e9ee172aaa67c27f6dc7e9f8f778
 - name: yolov3_voc_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.3.0.tar.gz
-  checksum: 8bdfd3f42b0966abe9655e2d6f16efda
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.3.1.tar.gz
+  checksum: 89dcee1d960c7c7203c36d845d3b79f4
 - name: yolov3_voc_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50-r1.3.0.tar.gz
-  checksum: 7effe414e8c796fefbe5593bc83efd60
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50-r1.3.1.tar.gz
+  checksum: 74d4e4ce59eed95c672ac89d2fb00a5b
 - name: yolov3_voc_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: 521b4c583c433bbcf917743100a3ccce
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 2bdd54ed091f9307c09cee06e725f34c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

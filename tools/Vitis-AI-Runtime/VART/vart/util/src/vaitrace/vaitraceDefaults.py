@@ -118,12 +118,9 @@ trace_va_timeout = 60
 trace_xat_timeout = 5
 
 traceCfgDefaule = {
-    "options": {
-        "runmodel": "normal"
-    },
+    "runmode": "normal",
     'collector': {},
     'trace': {
-
         "enable_trace_list": ["vitis-ai-library", "vart", "xnnpp_post_process", "custom"]
     },
     'control': {

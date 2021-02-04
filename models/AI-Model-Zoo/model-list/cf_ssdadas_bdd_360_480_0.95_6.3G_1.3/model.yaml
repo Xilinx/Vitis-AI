@@ -30,26 +30,26 @@ files:
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 7a516929483c9cb2cda1be8eaeeed18a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 09548f3778f4ba67e8f8b06d7458bc16
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck190-r1.3.0.tar.gz
-  checksum: bb73f682b746b00aa4b749cb637e8b77
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck190-r1.3.1.tar.gz
+  checksum: 65c3d9345121ba013f56131e457e1229
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-r1.3.0.tar.gz
-  checksum: 04ee315321919e1faebe13e448367a39
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-r1.3.1.tar.gz
+  checksum: 405a2bd60c6d82c24077dd5ffcc923c4
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0669e11fad2e1b3c1b77661b87ece6a6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50lv-u280-r1.3.1.tar.gz
+  checksum: 8d5d46eb7f7b7bd8a69ae7f352120e47
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: bdda822ac2eaeb27693a32e2b96e4bf0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: d979e5a220bb7185c417280f831df6eb
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

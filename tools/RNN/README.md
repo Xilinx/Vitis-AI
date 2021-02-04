@@ -111,9 +111,9 @@ And get the result as follows.
 ### Copy Data to RNN runtime docker
 1. To run the generated instructions in hardware, another runtime docker should be built. The docker can be built and launched as follows.
 ```
-docker build --build-arg BASE_IMAGE="xdock:5000/vitis-ai-gpu:1.3.343" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xdock:5000/vitis-ai-gpu-rnn:1.3.343 .
+docker build --build-arg BASE_IMAGE="xilinx/vitis-ai-cpu:latest" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xilinx/vitis-ai-cpu-rnn:latest . 
 cd dsa/DPU-for-RNN/
-bash docker_run.sh xdock:5000/vitis-ai-gpu-rnn:1.3.343
+bash docker_run.sh xilinx/vitis-ai-cpu-rnn:latest
 ```
 2. Download the required data. Besides the data below, the imdb.csv should also be downloaded. You can register an account on this website (https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews) and download it.
 ```

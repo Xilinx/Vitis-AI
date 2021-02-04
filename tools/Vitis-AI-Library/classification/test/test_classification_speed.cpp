@@ -68,7 +68,7 @@ class ImageCache {
     std::vector<std::string> images;
     std::vector<cv::String> files;
     cv::glob(imageDir, files);
-    for (auto cvStr : files) images.push_back(cvStr.operator std::string());
+    for (auto cvStr : files) images.push_back(std::string(cvStr));
     assert(images.size() > 0);
 
     unsigned int numImages = images.size();
