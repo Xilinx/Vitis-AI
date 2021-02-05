@@ -144,6 +144,11 @@
   - Python API not yet supported   
   - Segmentation networks not yet supported   
   - Possible accuracy issue when accessing DPUCADF8H from multiple threads    
+- ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+ vai-q-tensorflow2 1.3.0.dev0 requires dm-tree~=0.1.1, which is not installed.
+ aiohttp 3.6.3 requires chardet<4.0,>=2.0, but you have chardet 4.0.0 which is incompatible.
+ aiohttp 3.6.3 requires yarl<1.6.0,>=1.0, but you have yarl 1.6.3 which is incompatible.
+   - Errors like this can be safely ignored does not affect any Vitis AI functionality
 
 ### Updates
 - v1.3.1
