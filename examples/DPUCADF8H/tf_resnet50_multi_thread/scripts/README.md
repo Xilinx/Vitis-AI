@@ -1,8 +1,11 @@
-### Scripts for Inconsistencies in Accuracy observed for threads>1
+# Inconsistent accuracies observed in multi-threaded applications 
 
-An example scenario - Running the multi thread test with resnet50 xmodel taken from model Zoo provides good accuracy when ran with threads=1 but inconsistencies in accuracy are observed when ran with threads>1.
+In current release, multi-threaded applications (threads >1) are resulting in inconsistent inference accuracy. Single threaded applications produce correct accuracy results. 
 
-In such a scenario, if a user wants to gets good accuracy even while using threads>1, user can utilize disabledru.py script provided in this directory. User can provide current xmodel and run disabledru.py script and utilize the output xmodel from the script and re-run the test with threads>1, this should fix the inconsistencies observed in accuracy, however a dip in performance is noticed.
+## Work Around:
+In Multi-threaded applications, to preserve accuracy, users can use the *disabledru.py* script provided in this directory. Use your current xmodel and run *disabledru.py*, and utilize the output xmodel file, and re-run with your multi-threaded application. This will fix the inconsistent inference accuracy. With this workaround, you may see performance degradation. 
 
-To revert back xmodel to earlier state, enabledru.py script can be used, where user would get best possible performance with threads>1 but with inconsistencies in accuracy.
+To revert back xmodel to earlier state, *enabledru.py* script run, this will deliver proper performance. 
 
+## Fix:
+A fix will come in the next release for this issue. 
