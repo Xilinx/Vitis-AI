@@ -22,3 +22,25 @@ Two options are available for installing the containers with the Vitis AI tools 
 
     cd Vitis-AI
     ```
+
+Refer to the following pages for installation information:
+
+## Build from Recipe
+
+See [Build from Recipe](install-recipe.md).
+
+## Build from Source
+
+See [Build from Source](install-source.md).
+
+## Cloud Installation
+
+See [Cloud Installation](install-cloud.md).
+
+## Install Docker Images
+
+See [Install Docker Images](install_docker/README.md).
+
+## Pre-Built Image Installation
+
+See [Pre-Built Image Installation](install-prebuilt.md).

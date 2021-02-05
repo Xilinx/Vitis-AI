@@ -5,7 +5,7 @@
  </tr>
 </table>
 
-# Introduction
+# Build from Source
 This directory contains instructions for running DPUCZDX8G on Zynq Ultrascale+ MPSoC platforms.
 **DPUCZDX8G**  is a configurable computation engine dedicated for convolutional neural networks.
 It includes a set of highly optimized instructions, and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and others.

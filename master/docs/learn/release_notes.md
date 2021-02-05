@@ -152,13 +152,14 @@
  - Inconsistent accuracies observed in multi-threaded applications using DPUCADF8H
    - View workaround [here](https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/examples/DPUCADF8H/tf_resnet50_multi_thread/scripts).
 
-### Updates for v1.3.1
-- Bug fixes and improvements for v1.3
-- Updated Compiler to improve performance by 5% in average for most models
-- Added Zero copy support (new APIs in VART / Vitis AI Library)
-- Added Cross-layer equalization support in TensorFlow v1.15 (more benefits for mobilenet models)
-- Added WAA U50 TRD
-- Updated U280 Pre-Processing using Multi-Preprocessing JPEG decode kernels 
+### Updates
+- v1.3.1
+  - Bug fixes and improvements for v1.3
+  - Updated Compiler to improve performance by 5% in average for most models
+  - Added Zero copy support (new APIs in VART / Vitis AI Library)
+  - Added Cross-layer equalization support in TensorFlow v1.15 (more benefits for mobilenet models)
+  - Added WAA U50 TRD
+  - Updated U280 Pre-Processing using Multi-Preprocessing JPEG decode kernels 
 
 ------------------
 ## Release 1.2

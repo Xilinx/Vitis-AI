@@ -306,7 +306,7 @@
             
             
               <div class="version">
-                1.3
+                1.3.1
               </div>
             
           
@@ -351,7 +351,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ai-kernel-scheduler">AI Kernel Scheduler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#tvm">TVM</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#known-issues">Known Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#updates">Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-for-v1-3-1">Updates for v1.3.1</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#release-1-2">Release 1.2</a><ul>
@@ -372,38 +372,38 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#id12">Known Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id13">Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates">Updates</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#release-1-1">Release 1.1</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#new-features">New Features</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id14">Model Zoo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id15">Quantizer</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id16">Compiler</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id17">Runtime</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id18">DPU</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">Model Zoo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">Quantizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id15">Compiler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id16">Runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id17">DPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vitis-ai-library">Vitis AI Library</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#example-demo">Example &amp; Demo</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id19">Known Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id20">Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">Known Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">Updates</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#release-1-0">Release 1.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id21">New Features</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id22">Model Zoo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">New Features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id21">Model Zoo</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#optimizer-a-separate-package-which-requires-licensing">Optimizer (A separate package which requires licensing)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id23">Quantizer</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id24">Compiler</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id25">Runtime</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id26">DPU</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id27">Vitis AI Library</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id28">Others</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id22">Quantizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id23">Compiler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id24">Runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id25">DPU</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id26">Vitis AI Library</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id27">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id29">Known Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">Known Issues</a></li>
 </ul>
 </li>
 </ul>
@@ -746,19 +746,15 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 </li>
 </ul>
 </div>
-<div class="section" id="updates">
-<h3>Updates<a class="headerlink" href="#updates" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="updates-for-v1-3-1">
+<h3>Updates for v1.3.1<a class="headerlink" href="#updates-for-v1-3-1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>v1.3.1</p>
-<ul>
 <li><p>Bug fixes and improvements for v1.3</p></li>
 <li><p>Updated Compiler to improve performance by 5% in average for most models</p></li>
 <li><p>Added Zero copy support (new APIs in VART / Vitis AI Library)</p></li>
 <li><p>Added Cross-layer equalization support in TensorFlow v1.15 (more benefits for mobilenet models)</p></li>
 <li><p>Added WAA U50 TRD</p></li>
 <li><p>Updated U280 Pre-Processing using Multi-Preprocessing JPEG decode kernels</p></li>
-</ul>
-</li>
 </ul>
 </div>
 </div>
@@ -915,8 +911,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 <li><p>The “builddrm.sh” under demo directories in Vitis AI Library can only be cross compiled, and cannot be native build on the board directly</p></li>
 </ol>
 </div>
-<div class="section" id="id13">
-<h3>Updates<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="updates">
+<h3>Updates<a class="headerlink" href="#updates" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>v1.2.1</p>
 <ul>
@@ -934,8 +930,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 <h2>Release 1.1<a class="headerlink" href="#release-1-1" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="new-features">
 <h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id14">
-<h4>Model Zoo<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id13">
+<h4>Model Zoo<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Model quantization accuracy update</p></li>
 <li><p>Model test and retraining improved</p></li>
@@ -943,15 +939,15 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 <li><p>U50, U200, U250 performance added</p></li>
 </ul>
 </div>
-<div class="section" id="id15">
-<h4>Quantizer<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id14">
+<h4>Quantizer<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Add Tensorflow 1.15 support</p></li>
 <li><p>Bugfixes</p></li>
 </ul>
 </div>
-<div class="section" id="id16">
-<h4>Compiler<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id15">
+<h4>Compiler<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Support cross compilation for Zynq and ZU+ based platforms</p></li>
 <li><p>Vitis AI Compiler for U50</p>
@@ -970,8 +966,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 </li>
 </ul>
 </div>
-<div class="section" id="id17">
-<h4>Runtime<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id16">
+<h4>Runtime<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>VART (Vitis AI Runtime)</p>
 <ul>
@@ -982,8 +978,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 </li>
 </ul>
 </div>
-<div class="section" id="id18">
-<h4>DPU<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id17">
+<h4>DPU<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>DPUv2 for Zynq and ZU+</p></li>
 <li><p>DPUv2</p>
@@ -1032,14 +1028,14 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 </ul>
 </div>
 </div>
-<div class="section" id="id19">
-<h3>Known Issues<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id18">
+<h3>Known Issues<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Alveo U50 toolchain doesn’t support Conv2DTranspose trained in Keras and converted to TF 1.15, which will be fixed in Vitis AI 1.2 release.</p></li>
 </ul>
 </div>
-<div class="section" id="id20">
-<h3>Updates<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id19">
+<h3>Updates<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>5/6/20 - Fixed hardware bug which will lead to computation errors in some corner case for Alveo U50 Production shell xclbin.</p></li>
 <li><p>5/6/20 - Added support for Alveo U50 using EA x4 shell for increased performance.</p></li>
@@ -1049,10 +1045,10 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 <hr class="docutils" />
 <div class="section" id="release-1-0">
 <h2>Release 1.0<a class="headerlink" href="#release-1-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id20">
+<h3>New Features<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="id21">
-<h3>New Features<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id22">
-<h4>Model Zoo<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
+<h4>Model Zoo<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Release custom Caffe framework distribution caffe_xilinx</p></li>
 <li><p>Add accuracy test code and retrain code for all Caffe models</p></li>
@@ -1084,8 +1080,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 </li>
 </ul>
 </div>
-<div class="section" id="id23">
-<h4>Quantizer<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id22">
+<h4>Quantizer<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Tensorflow quantization</p>
 <ul>
@@ -1106,8 +1102,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 </li>
 </ul>
 </div>
-<div class="section" id="id24">
-<h4>Compiler<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id23">
+<h4>Compiler<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Support cross compilation for Zynq and ZU+ based platforms</p></li>
 <li><p>Enhancements and bug fixes for a broader set of Tensorflow models</p></li>
@@ -1116,8 +1112,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 <li><p>Support Caffe/TensorFlow model compilation over cloud DPU V3E (Early Access)</p></li>
 </ul>
 </div>
-<div class="section" id="id25">
-<h4>Runtime<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id24">
+<h4>Runtime<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Enable edge to cloud deployment over XRT 2019.2</p></li>
 <li><p>Offer the unified Vitis AI C++/Python programming APIs</p></li>
@@ -1128,8 +1124,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 <li><p>Performance improvements</p></li>
 </ul>
 </div>
-<div class="section" id="id26">
-<h4>DPU<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id25">
+<h4>DPU<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>DPUv2 for Zynq and ZU+</p>
 <ul>
@@ -1142,8 +1138,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 <li><p>DPUv3 for U50/U280 (Early access)</p></li>
 </ul>
 </div>
-<div class="section" id="id27">
-<h4>Vitis AI Library<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id26">
+<h4>Vitis AI Library<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Support of new Vitis AI Runtime - Vitis AI Library is updated to be based on the new Vitis AI Runtime with unified APIs. It also fully supports XRT 2019.2.</p></li>
 <li><p>New DPU support - Besides DPUv2 for Zynq and ZU+, a new AI Library will support new DPUv3 IPs for Alveo/Cloud using same codes (Early access).</p></li>
@@ -1153,8 +1149,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 <li><p>New Installation Method - The host side environment adopts uses image installation, which simplifies and unifies the installation process.</p></li>
 </ul>
 </div>
-<div class="section" id="id28">
-<h4>Others<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id27">
+<h4>Others<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Support for TVM which enables support for Pytorch, ONNX and SageMaker NEO</p></li>
 <li><p>Partitioning of Tensorflow models and support for xDNNv3 execution in Tensorflow natively</p></li>
@@ -1171,8 +1167,8 @@ aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is 
 </ul>
 </div>
 </div>
-<div class="section" id="id29">
-<h3>Known Issues<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id28">
+<h3>Known Issues<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 </div>
