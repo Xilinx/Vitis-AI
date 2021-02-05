@@ -56,5 +56,5 @@ files:
   type: xmodel
   board: u200 & u250
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-u200-u250-r1.3.0.tar.gz
-  checksum: dd1a9c158d7c9b563f2d015720c2e073
+  checksum: 0533ba379833a8ec6463c478c8ace7bd
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
