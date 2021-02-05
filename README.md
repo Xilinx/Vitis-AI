@@ -3,7 +3,9 @@
 </div>
 
 <br />
-Xilinx&reg; Vitis&trade; AI is a development stack for AI inference on Xilinx hardware platforms, including both edge devices and Alveo cards. It consists of optimized IP, tools, libraries, models, and example designs. It is designed with high efficiency and ease of use in mind, unleashing the full potential of AI acceleration on Xilinx FPGA and ACAP.  
+Xilinx&reg; Vitis&trade; AI is a development stack for AI inference on Xilinx hardware platforms, including both edge devices and Alveo cards.
+
+It consists of optimized IP, tools, libraries, models, and example designs. It is designed with high efficiency and ease of use in mind, unleashing the full potential of AI acceleration on Xilinx FPGA and ACAP.  
 <br />
 <br />
 
@@ -20,8 +22,8 @@ Vitis AI is composed of the following key components:
 * **AI Compiler** - Compiles the quantized model to a high-efficient instruction set and data flow.
 * **AI Profiler** - Perform an in-depth analysis of the efficiency and utilization of AI inference implementation.
 * **AI Library** - Offers high-level yet optimized C++ APIs for AI applications from edge to cloud.
-* **DPU** - Efficient and scalable IP cores can be customized to meet the needs for many different applications
-  * For more details on the different DPUs available, please [click here](docs/dpu_naming.md).
+* **DPU** - Efficient and scalable IP cores can be customized to meet the needs for many different applications.
+  * For more details on the different DPUs available, refer to [DPU Naming](docs/learn/dpu_naming.md).
 
 
 **Learn More:** [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)  
