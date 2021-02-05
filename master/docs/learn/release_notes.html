@@ -350,10 +350,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#whole-app-acceleration">Whole App Acceleration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ai-kernel-scheduler">AI Kernel Scheduler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#tvm">TVM</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#known-issues">Known Issues</a><ul>
-<li class="toctree-l4"><a class="reference external" href="https://pages.gitenterprise.xilinx.com/techdocs/vitis-ai-staging/master/docs/README.html..\examples\DPUCADF8H\tf_resnet50_multi_thread\scripts\README.html">Workaround here</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#known-issues">Known Issues</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#updates">Updates</a></li>
 </ul>
 </li>
@@ -695,15 +692,15 @@
 <div class="section" id="whole-app-acceleration">
 <h3>Whole App Acceleration<a class="headerlink" href="#whole-app-acceleration" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>DPUv2 TRD flow to build from sources <a class="reference external" href="dsa/WAA-TRD">dsa/WAA-TRD</a></p></li>
+<li><p>DPUv2 TRD flow to build from sources (see <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/dsa/WAA-TRD">WAA-TRD</a>)</p></li>
 <li><p>DFx based TRD flow to build from pre-built IPs</p>
 <ol class="simple">
 <li><p>DPUCZDZ8G</p></li>
 </ol>
 </li>
-<li><p>Existing WAA classification and detection examples ported to DPUv3e (earlier only for DPUv2 and DPUv1) (examples/Whole-App-Acceleration)</p></li>
-<li><p>Fall Detection App using DPUv1 and Accelerated Optical Flow (examples/apps/fall_detection)</p></li>
-<li><p>Detection Post Processing (NMS) Acceleration (examples/Whole-App-Acceleration/ssd_mobilenet)</p></li>
+<li><p>Existing WAA classification and detection examples ported to DPUv3e (earlier only for DPUv2 and DPUv1) (see <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/demo/Whole-App-Acceleration">Whole-App-Acceleration</a>)</p></li>
+<li><p>Fall Detection App using DPUv1 and Accelerated Optical Flow (see <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/demo/Whole-App-Acceleration/fall_detection">Fall Detection</a>)</p></li>
+<li><p>Detection Post Processing (NMS) Acceleration (see <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/demo/Whole-App-Acceleration/ssd_mobilenet">ssd_mobilenet</a>)</p></li>
 </ul>
 </div>
 <div class="section" id="ai-kernel-scheduler">
@@ -726,9 +723,9 @@
 </div>
 <div class="section" id="known-issues">
 <h3>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p>Limitations for DPUCADF8H on U200/U250:</p>
 <ul class="simple">
+<li><p>Limitations for DPUCADF8H on U200/U250:</p>
+<ul>
 <li><p>Python API not yet supported</p></li>
 <li><p>Segmentation networks not yet supported</p></li>
 <li><p>Possible accuracy issue when accessing DPUCADF8H from multiple threads</p></li>
@@ -738,16 +735,14 @@
 vai-q-tensorflow2 1.3.0.dev0 requires dm-tree~=0.1.1, which is not installed.
 aiohttp 3.6.3 requires chardet&lt;4.0,&gt;=2.0, but you have chardet 4.0.0 which is incompatible.
 aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is incompatible.</p>
-<ul class="simple">
+<ul>
 <li><p>Errors like this can be safely ignored does not affect any Vitis AI functionality</p></li>
 </ul>
 </li>
 <li><p>Inconsistent accuracies observed in multi-threaded applications using DPUCADF8H</p>
-<div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://pages.gitenterprise.xilinx.com/techdocs/vitis-ai-staging/master/docs/README.html..\examples\DPUCADF8H\tf_resnet50_multi_thread\scripts\README.html">Workaround here</a></li>
+<li><p>View workaround <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/examples/DPUCADF8H/tf_resnet50_multi_thread/scripts">here</a>.</p></li>
 </ul>
-</div>
 </li>
 </ul>
 </div>
