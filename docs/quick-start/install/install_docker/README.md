@@ -10,7 +10,7 @@ Please refer to official Docker Documentation
 
 - https://docs.docker.com/engine/install/
 
-# Installing NVIDIA Docker Runtime
+## Installing NVIDIA Docker Runtime
 (Only applicable for model training or model quantization use cases)  
 If you are building the Vitis AI Docker Image with GPU acceleration
 You will need to install NVIDIA Container Runtime
@@ -19,7 +19,7 @@ Please refer to the offical NVIDIA Documentation
 - https://nvidia.github.io/nvidia-container-runtime/
 
 
-# Slow Connection To Ubuntu Servers Outside China
+## Slow Connection To Ubuntu Servers Outside China
 Vitis AI Docker images is based on Ubuntu Bonic 18.04. The software packages sources **/etc/apt/sources.list** looks like this:
 
 ```   
