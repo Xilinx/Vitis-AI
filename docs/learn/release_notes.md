@@ -149,6 +149,8 @@
  aiohttp 3.6.3 requires chardet<4.0,>=2.0, but you have chardet 4.0.0 which is incompatible.
  aiohttp 3.6.3 requires yarl<1.6.0,>=1.0, but you have yarl 1.6.3 which is incompatible.
    - Errors like this can be safely ignored does not affect any Vitis AI functionality
+ - Inconsistent accuracies observed in multi-threaded applications using DPUCADF8H
+   - [Workaround here](../../examples/DPUCADF8H/tf_resnet50_multi_thread/scripts/README.md)
 
 ### Updates
 - v1.3.1
