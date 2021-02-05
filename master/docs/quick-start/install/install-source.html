@@ -408,7 +408,7 @@
     
       <li><a href="../../README.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Build from Source</li>
+      <li>Introduction</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -432,8 +432,208 @@
    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
    </td>
  </tr>
-</table><div class="section" id="build-from-source">
-<h1>Build from Source<a class="headerlink" href="#build-from-source" title="Permalink to this headline">¶</a></h1>
+</table><div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>This directory contains instructions for running DPUCZDX8G on Zynq Ultrascale+ MPSoC platforms.
+<strong>DPUCZDX8G</strong>  is a configurable computation engine dedicated for convolutional neural networks.
+It includes a set of highly optimized instructions, and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and others.
+With Vitis-AI, Xilinx has integrated all the edge and cloud solutions under a unified API and toolset.</p>
+<div class="section" id="step-1-set-up-cross-compiler">
+<h2>Step 1: Set Up Cross-Compiler<a class="headerlink" href="#step-1-set-up-cross-compiler" title="Permalink to this headline">¶</a></h2>
+<ol class="simple">
+<li><p>Download the <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=sdk-2020.2.0.0.sh">sdk-2020.2.0.0.sh</a></p></li>
+<li><p>Install the cross-compilation system environment, follow the prompts to install.</p></li>
+</ol>
+<p><strong>Please install it on your local host linux system, not in the docker system.</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">sdk</span><span class="o">-</span><span class="mf">2020.2</span><span class="o">.</span><span class="mf">0.0</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">~/petalinux_sdk</span></code> path is recommended for the installation. Regardless of the path you choose for the installation, make sure the path has read-write permissions.
+Here we install it under <code class="docutils literal notranslate"><span class="pre">~/petalinux_sdk</span></code>.</p>
+<ol class="simple">
+<li><p>When the installation is complete, follow the prompts and execute the following command.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">~/</span><span class="n">petalinux_sdk</span><span class="o">/</span><span class="n">environment</span><span class="o">-</span><span class="n">setup</span><span class="o">-</span><span class="n">aarch64</span><span class="o">-</span><span class="n">xilinx</span><span class="o">-</span><span class="n">linux</span>
+</pre></div>
+</div>
+<p>Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.</p>
+<ol class="simple">
+<li><p>Download the <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.1.tar.gz">vitis_ai_2020.2-r1.3.1.tar.gz</a> and install it to the petalinux system.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">vitis_ai_2020</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="n">r1</span><span class="o">.</span><span class="mf">3.1</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="o">-</span><span class="n">C</span> <span class="o">~/</span><span class="n">petalinux_sdk</span><span class="o">/</span><span class="n">sysroots</span><span class="o">/</span><span class="n">aarch64</span><span class="o">-</span><span class="n">xilinx</span><span class="o">-</span><span class="n">linux</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>Cross compile the sample, take <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> as an example.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">demo</span><span class="o">/</span><span class="n">VART</span><span class="o">/</span><span class="n">resnet50</span>
+<span class="n">bash</span> <span class="o">-</span><span class="n">x</span> <span class="n">build</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>If the compilation process does not report any error and the executable file <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> is generated, the host environment is installed correctly.</p>
+</div>
+<div class="section" id="step-2-set-up-the-target">
+<h2>Step 2: Set Up the Target<a class="headerlink" href="#step-2-set-up-the-target" title="Permalink to this headline">¶</a></h2>
+<p><strong>To improve the user experience, the Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples and
+models have been built into the board image. Therefore, user does not need to install Vitis AI
+Runtime packages and model package on the board separately. However, users can still install
+the model or Vitis AI Runtime on their own image or on the official image by following these
+steps.</strong></p>
+<ol>
+<li><p>Installing a Board Image.</p>
+<ul>
+<li><p>Download the SD card system image files from the following links:</p>
+<p><a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.3.1.img.gz">ZCU102</a></p>
+<p><a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.2-v1.3.1.img.gz">ZCU104</a></p>
+<p>Note: The version of the board image should be 2020.2 or above.</p>
+</li>
+<li><p>Use Etcher software to burn the image file onto the SD card.</p></li>
+<li><p>Insert the SD card with the image into the destination board.</p></li>
+<li><p>Plug in the power and boot the board using the serial port to operate on the system.</p></li>
+<li><p>Set up the IP information of the board using the serial port.</p></li>
+</ul>
+<p><strong>For the details, please refer to <a class="reference external" href="https://www.xilinx.com/html_docs/vitis_ai/1_3/installation.html#yjf1570690235238">Setting Up the Evaluation Board</a></strong></p>
+</li>
+<li><p>(Optional) Running <code class="docutils literal notranslate"><span class="pre">zynqmp_dpu_optimize.sh</span></code> to optimize the board setting.</p>
+<p>The script runs automatically after the board boots up with the official image.
+But you can also download the <code class="docutils literal notranslate"><span class="pre">dpu_sw_optimize.tar.gz</span></code> from <a class="reference external" href="../../../dsa/DPU-TRD/app/dpu_sw_optimize.tar.gz">here</a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">dpu_sw_optimize</span><span class="o">/</span><span class="n">zynqmp</span><span class="o">/</span>
+<span class="o">./</span><span class="n">zynqmp_dpu_optimize</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</li>
+<li><p>(Optional) How to update Vitis AI Runtime and install them separately.</p>
+<p>If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.</p>
+<ul class="simple">
+<li><p>Download the <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.1.tar.gz">Vitis AI Runtime 1.3.1</a>.</p></li>
+<li><p>Untar the runtime packet and copy the following folder to the board using scp.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">runtime</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mf">1.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">scp</span> <span class="o">-</span><span class="n">r</span> <span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">runtime</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">1</span><span class="o">/</span><span class="n">aarch64</span><span class="o">/</span><span class="n">centos</span> <span class="n">root</span><span class="nd">@IP_OF_BOARD</span><span class="p">:</span><span class="o">~/</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Log in to the board using ssh. You can also use the serial port to login.</p></li>
+<li><p>Install the Vitis AI Runtime. Execute the following command.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">centos</span>
+<span class="n">bash</span> <span class="n">setup</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</li>
+<li><p>(Optional) Download the model.  	
+For each model, there will be a yaml file which is used for describe all the details about the model.
+In the yaml, you will find the model’s download links for different platforms. Please choose the corresponding model and download it.
+Click <a class="reference external" href="../../../models/AI-Model-Zoo/model-list">Xilinx AI Model Zoo</a> to view all the models.</p>
+<ul class="simple">
+<li><p>Take <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> of ZCU102 as an example.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  cd /workspace
+  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.1.tar.gz -O resnet50-zcu102_zcu104-r1.3.1.tar.gz
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Copy the downloaded file to the board using scp with the following command.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">scp</span> <span class="n">resnet50</span><span class="o">-</span><span class="n">zcu102_zcu104</span><span class="o">-</span><span class="n">r1</span><span class="o">.</span><span class="mf">3.1</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="n">root</span><span class="nd">@IP_OF_BOARD</span><span class="p">:</span><span class="o">~/</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Log in to the board (using ssh or serial port) and install the model package.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">resnet50</span><span class="o">-</span><span class="n">zcu102_zcu104</span><span class="o">-</span><span class="n">r1</span><span class="o">.</span><span class="mf">3.1</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+  <span class="n">cp</span> <span class="n">resnet50</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">vitis_ai_library</span><span class="o">/</span><span class="n">models</span> <span class="o">-</span><span class="n">r</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="step-3-run-the-vitis-ai-examples">
+<h2>Step 3: Run the Vitis AI Examples<a class="headerlink" href="#step-3-run-the-vitis-ai-examples" title="Permalink to this headline">¶</a></h2>
+<ol>
+<li><p>Download the <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.3.0_image_video.tar.gz">vitis_ai_runtime_r1.3.x_image_video.tar.gz</a> from host to the target using scp with the following command.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[Host]$scp vitis_ai_runtime_r1.3.x_image_video.tar.gz root@[IP_OF_BOARD]:~/
+</pre></div>
+</div>
+</li>
+<li><p>Unzip the <code class="docutils literal notranslate"><span class="pre">vitis_ai_runtime_r1.3.x_image_video.tar.gz</span></code> package on the target.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~</span>
+<span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">vitis_ai_runtime_r</span><span class="o">*</span><span class="mf">1.3</span><span class="o">*</span><span class="n">_image_video</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="o">-</span><span class="n">C</span> <span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">demo</span><span class="o">/</span><span class="n">VART</span>
+</pre></div>
+</div>
+</li>
+<li><p>Enter the directory of samples in the target board. Take <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> as an example.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">demo</span><span class="o">/</span><span class="n">VART</span><span class="o">/</span><span class="n">resnet50</span>
+</pre></div>
+</div>
+</li>
+<li><p>Run the example.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">resnet50</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">vitis_ai_library</span><span class="o">/</span><span class="n">models</span><span class="o">/</span><span class="n">resnet50</span><span class="o">/</span><span class="n">resnet50</span><span class="o">.</span><span class="n">xmodel</span>
+</pre></div>
+</div>
+<p>For examples with video input, only <code class="docutils literal notranslate"><span class="pre">webm</span></code> and <code class="docutils literal notranslate"><span class="pre">raw</span></code> format are supported by default with the official system image.
+If you want to support video data in other formats, you need to install the relevant packages on the system.</p>
+</li>
+</ol>
+ <summary><b>Launching Commands for VART Samples on edge </b></summary><table border="1" class="docutils">
+<thead>
+<tr>
+<th align="left">No.</th>
+<th align="left">Example Name</th>
+<th align="left">Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">1</td>
+<td align="left">resnet50</td>
+<td align="left">./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">resnet50_mt_py</td>
+<td align="left">python3 resnet50.py 1 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">inception_v1_mt_py</td>
+<td align="left">python3 inception_v1.py 1 /usr/share/vitis_ai_library/models/inception_v1_tf/inception_v1_tf.xmodel</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left">pose_detection</td>
+<td align="left">./pose_detection video/pose.webm /usr/share/vitis_ai_library/models/sp_net/sp_net.xmodel /usr/share/vitis_ai_library/models/ssd_pedestrian_pruned_0_97/ssd_pedestrian_pruned_0_97.xmodel</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left">video_analysis</td>
+<td align="left">./video_analysis video/structure.webm /usr/share/vitis_ai_library/models/ssd_traffic_pruned_0_9/ssd_traffic_pruned_0_9.xmodel</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left">adas_detection</td>
+<td align="left">./adas_detection video/adas.webm /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="left">segmentation</td>
+<td align="left">./segmentation video/traffic.webm /usr/share/vitis_ai_library/models/fpn/fpn.xmodel</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="left">squeezenet_pytorch</td>
+<td align="left">./squeezenet_pytorch /usr/share/vitis_ai_library/models/squeezenet_pt/squeezenet_pt.xmodel</td>
+</tr>
+</tbody>
+</table></div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://www.xilinx.com/html_docs/vitis_ai/1_3/zmw1606771874842.html">Vitis AI User Guide</a></li>
+</ul>
+</div>
+</div>
 </div>
 
 
@@ -456,7 +656,7 @@
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 01, 2021.
+        Last updated on February 05, 2021.
       </span>
 
     </p>

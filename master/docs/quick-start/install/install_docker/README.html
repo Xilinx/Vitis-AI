@@ -438,9 +438,8 @@
 <ul class="simple">
 <li><p>https://docs.docker.com/engine/install/</p></li>
 </ul>
-</div>
 <div class="section" id="installing-nvidia-docker-runtime">
-<h1>Installing NVIDIA Docker Runtime<a class="headerlink" href="#installing-nvidia-docker-runtime" title="Permalink to this headline">¶</a></h1>
+<h2>Installing NVIDIA Docker Runtime<a class="headerlink" href="#installing-nvidia-docker-runtime" title="Permalink to this headline">¶</a></h2>
 <p>(Only applicable for model training or model quantization use cases)<br />If you are building the Vitis AI Docker Image with GPU acceleration
 You will need to install NVIDIA Container Runtime
 Please refer to the offical NVIDIA Documentation</p>
@@ -449,14 +448,14 @@ Please refer to the offical NVIDIA Documentation</p>
 </ul>
 </div>
 <div class="section" id="slow-connection-to-ubuntu-servers-outside-china">
-<h1>Slow Connection To Ubuntu Servers Outside China<a class="headerlink" href="#slow-connection-to-ubuntu-servers-outside-china" title="Permalink to this headline">¶</a></h1>
+<h2>Slow Connection To Ubuntu Servers Outside China<a class="headerlink" href="#slow-connection-to-ubuntu-servers-outside-china" title="Permalink to this headline">¶</a></h2>
 <p>Vitis AI Docker images is based on Ubuntu Bonic 18.04. The software packages sources <strong>/etc/apt/sources.list</strong> looks like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">us</span><span class="o">.</span><span class="n">archive</span><span class="o">.</span><span class="n">ubuntu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ubuntu</span><span class="o">/</span> <span class="n">bionic</span> <span class="n">universe</span>   
 </pre></div>
 </div>
 <p>These hostname “archive.ubuntu.com” by default resolve to servers in the United States. Any customers building the Vitis AI GPU image https://github.com/Xilinx/Vitis-AI/blob/master/docker/DockerfileGPU will pull from these servers. Users accessing from China, might experience slow download speeds using these servers.</p>
 <div class="section" id="workaround">
-<h2>Workaround<a class="headerlink" href="#workaround" title="Permalink to this headline">¶</a></h2>
+<h3>Workaround<a class="headerlink" href="#workaround" title="Permalink to this headline">¶</a></h3>
 <p>Change the Ubuntu apt sources.list to use servers in China.</p>
 <p>In Dockerfile, change the 1st instance of:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span> <span class="o">-</span><span class="n">y</span> <span class="o">&amp;&amp;</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">recommends</span> \
@@ -481,6 +480,7 @@ deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restri
 <p>https://momane.com/change-ubuntu-18-04-source-to-china-mirror</p>
 </div>
 </div>
+</div>
 
 
            </div>
@@ -502,7 +502,7 @@ deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restri
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 01, 2021.
+        Last updated on February 05, 2021.
       </span>
 
     </p>

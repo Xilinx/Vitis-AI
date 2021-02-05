@@ -8,8 +8,8 @@
 # Third Party Source
 
 ## Ubuntu Packages
-
 Below is a list of Ubuntu Apt packages used by Vitis AI:
+
 
 1.  sudo  
 2.  git  
@@ -45,7 +45,7 @@ If you cannot access the internet pages for Ubuntu’s main source code reposito
 ## Conda Packages
 Below is a list of Conda packages used by Vitis AI:
 
-1.  \_libgcc_mutex                     
+1.  _libgcc_mutex                     
 2.  attrs                             
 3.  backcall                          
 4.  blas                              
@@ -215,6 +215,8 @@ Below is a list of Conda packages used by Vitis AI:
 More detail, source code and licensing information can be found from Ubuntu here: https://anaconda.org
 
 If you cannot access the internet pages for Anaconda’s main source code repositories and obtain the source code for the Anaconda software packages in this distribution, then you may obtain the source code at https://www.xilinx.com/products/design-tools/guest-resources.html. Xilinx hereby offers (which offer is valid for as long as required by the applicable license; and we may charge you the cost thereof unless prohibited by the license) to provide you with a copy of such source code; and to accept such offer send a letter requesting such source code (please be specific by identifying the particular Xilinx Software you are inquiring about (name and version number), to: Xilinx, Inc., Legal Department, Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA U.S.A. 95124.
+
+
 
 ## XRT
 

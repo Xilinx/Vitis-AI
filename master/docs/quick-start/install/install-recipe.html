@@ -434,6 +434,40 @@
  </tr>
 </table><div class="section" id="build-from-recipe">
 <h1>Build from Recipe<a class="headerlink" href="#build-from-recipe" title="Permalink to this headline">¶</a></h1>
+<p>There are two types of docker recipes provided - CPU recipe and GPU recipe. If you have a compatible nVidia graphics card with CUDA support, you could use GPU recipe; otherwise you could use CPU recipe.</p>
+<p><strong>CPU Docker</strong></p>
+<p>Use below commands to build the CPU docker:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">setup</span><span class="o">/</span><span class="n">docker</span>
+<span class="o">./</span><span class="n">docker_build_cpu</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>To run the CPU docker, use command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
+</pre></div>
+</div>
+<p><strong>GPU Docker</strong></p>
+<p>Use below commands to build the GPU docker:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">setup</span><span class="o">/</span><span class="n">docker</span>
+<span class="o">./</span><span class="n">docker_build_gpu</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>To run the GPU docker, use command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">gpu</span><span class="p">:</span><span class="n">latest</span>
+</pre></div>
+</div>
+<p>Please use the file <strong>./docker_run.sh</strong> as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
+More Detail can be found here: <a class="reference external" href="docs/install_docker/load_run_docker">Run Docker Container</a></p>
+<p><strong>X11 Support for Running Vitis AI Docker with Alveo</strong></p>
+<p>If you are running Vitis AI docker with Alveo card and want to use X11 support for graphics (for example, some demo applications in VART and Vitis-AI-Library for Alveo need to display images or video), please add following line into the <em>docker_run_params</em> variable definition in <em>docker_run.sh</em> script:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>-e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.Xauthority:/tmp/.Xauthority \
+</pre></div>
+</div>
+<p>And after the docker starts up, run following command lines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/.</span><span class="n">Xauthority</span> <span class="o">~/</span>
+<span class="n">sudo</span> <span class="n">chown</span> <span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">user</span><span class="p">:</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">group</span> <span class="o">~/.</span><span class="n">Xauthority</span>
+</pre></div>
+</div>
+<p>Please note before running this script, please make sure either you have local X11 server running if you are using Windows based ssh terminal to connect to remote server, or you have run <strong>xhost +</strong> command at a command terminal if you are using Linux with Desktop. Also if you are using ssh to connect to the remote server, remember to enable <em>X11 Forwarding</em> option either with Windows ssh tools setting or with <em>-X</em> options in ssh command line.</p>
 </div>
 
 
@@ -456,7 +490,7 @@
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 01, 2021.
+        Last updated on February 05, 2021.
       </span>
 
     </p>

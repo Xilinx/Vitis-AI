@@ -1,3 +1,12 @@
+<table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   </td>
+ </tr>
+</table>
+
+# Load and Run Docker
+
 **Docker Images Are Hosted on Docker Hub [HERE](https://hub.docker.com/repository/docker/xilinx/vitis-ai)**  
 
 **The GPU docker has been tested with GPU machines with Docker 19.03.1, NVIDIA driver 410.xx (to work with CUDA 10.0) and nvidia-docker 2.2.2.**
@@ -9,7 +18,7 @@
 
 ./docker_run.sh xilinx/vitis-ai-cpu:latest
 
-Or 
+Or
 
 # Build the CPU image and load it
 
@@ -23,7 +32,7 @@ cd ..
 ## GPU tools docker
 
 ```shell
-# GPU Image must be built by user. 
+# GPU Image must be built by user.
 
 cd Vitis-AI/docker
 ./docker_build_gpu.sh
@@ -34,4 +43,3 @@ cd ..
 ./docker_run.sh xilinx/vitis-ai-gpu:latest
 
 ```
-

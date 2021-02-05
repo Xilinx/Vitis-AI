@@ -45,7 +45,7 @@ Learn More: `Vitis AI Overview <https://www.xilinx.com/products/design-tools/vit
    learn/programming
    learn/system_requirements
    learn/dpu_naming
-
+   
 .. toctree::
    :maxdepth: 2
    :caption: Quick Start
@@ -70,8 +70,7 @@ Learn More: `Vitis AI Overview <https://www.xilinx.com/products/design-tools/vit
    
    reference/README
    reference/Thirdpartysource
-
-
+   
 .. _Versions:
 
 .. toctree::
@@ -79,10 +78,6 @@ Learn More: `Vitis AI Overview <https://www.xilinx.com/products/design-tools/vit
    :caption: Versions
    :hidden:
 
-   Master <https://xilinx.github.io/Vitis-AI/master/docs/README.html>
+   Master <https://pages.gitenterprise.xilinx.com/Vitis/vitis-ai-staging/master/docs/README.html>
 
-      
-	 
-
-
-   
+© Copyright 2021 Xilinx, Inc.  
