@@ -16,7 +16,7 @@ source /vitis_ai_home/setup/alveo/u200_u250/overlaybins/setup.sh
 Download the caffe models.
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe
 python getModels.py
 ```
 

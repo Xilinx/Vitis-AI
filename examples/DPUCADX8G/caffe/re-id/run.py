@@ -1,9 +1,9 @@
 # Copyright 2019 Xilinx Inc.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
@@ -53,12 +53,12 @@ name = "inception_v2_ssd"
 def Compile(prototxt="quantize_results/deploy.prototxt",\
             caffemodel="quantize_results/deploy.caffemodel",\
             quantize_info="quantize_results/quantize_info.txt"):
-    
-    VAI_ROOT = os.environ['VAI_ALVEO_ROOT']
+
+    VAI_HOME = os.environ['VAI_HOME']
     arch_json = "/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
     if(not os.path.exists(arch_json)):
-        arch_json = os.path.join(VAI_ROOT, "arch.json")
- 
+        arch_json = os.path.join(VAI_HOME, "arch.json")
+
     subprocess.call(["vai_c_caffe",
                     "--prototxt", prototxt,
                     "--caffemodel", caffemodel,
@@ -96,10 +96,10 @@ if __name__ == "__main__":
     parser.add_argument('--prepare', action="store_true", help='In prepare mode, model preperation will be perfomred = Quantize + Compile')
     parser.add_argument('--qtest_iter', type=int, default=1, help='User can provide the number of iterations to test the quantization')
     parser.add_argument('--qcalib_iter', type=int, default=1, help='User can provide the number of iterations to run the quantization')
-  
+
 
     args = vars(parser.parse_args())
-    
+
     if 	args["prepare"]:
         Quantize(args["prototxt"],args["caffemodel"], args["qtest_iter"], args["qcalib_iter"])
         Compile()
@@ -107,4 +107,4 @@ if __name__ == "__main__":
 
 
 
-       
+

@@ -195,24 +195,24 @@ export XDNN_VERBOSE=$VERBOSE
 # Chose the target
 ARCH_JSON="/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
 if [ ! -f $ARCH_JSON ]; then
-  ARCH_JSON="$VAI_ALVEO_ROOT/arch.json"
+  ARCH_JSON="$VAI_HOME/arch.json"
 fi
 
 # Calibration dataset and image list
 if [ -z $CALIB_DATASET ]; then
-    CALIB_DATASET="$VAI_ALVEO_ROOT/"DPUCADX8G/yolo/test_image_set/
+    CALIB_DATASET="$VAI_HOME/"examples/DPUCADX8G/yolo/test_image_set/
     echo -e "\n[WARNING] --calibdata not provided. Taking default calibration dataset : $CALIB_DATASET"
 fi
 
 if [ -z $IMGLIST ]; then
-    IMGLIST="$VAI_ALVEO_ROOT/"DPUCADX8G/yolo/images.txt
+    IMGLIST="$VAI_HOME/"examples/DPUCADX8G/yolo/images.txt
     echo -e "\n[WARNING] --imglist not provided. Generating from calibration dataset directory : $CALIB_DATASET"
     echo -e "[WARNING] Please make sure there are images in $CALIB_DATASET\n"
     ls $CALIB_DATASET | awk '{print $1 " " 0}' > $IMGLIST
 fi
 
 # Add YOLO utils to PYTHONPATH
-export PYTHONPATH=$PYTHONPATH:${VAI_ALVEO_ROOT}/DPUCADX8G/yolo
+export PYTHONPATH=$PYTHONPATH:${VAI_HOME}/examples/DPUCADX8G/yolo
 
 # Determine XCLBIN
 XCLBIN=/opt/xilinx/overlaybins/xdnnv3
@@ -220,7 +220,7 @@ if [ -d $XCLBIN ]; then
   echo "--- Using System XCLBIN ---"
 else
   echo "--- Using Local XCLBIN ---"
-  XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
+  XCLBIN=${VAI_HOME}/overlaybins/xdnnv3
 fi
 
 # Determine Quantizer
@@ -233,8 +233,8 @@ fi
 # Determine Compiler
 if [[ -f $(which vai_c_caffe) ]]; then
   COMPILER=vai_c_caffe
-elif [[ -f $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/bin/vai_c_caffe.py ]]; then
-  COMPILER=$VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/bin/vai_c_caffe.py
+elif [[ -f $VAI_HOME/vai/dpuv1/tools/compile/bin/vai_c_caffe.py ]]; then
+  COMPILER=$VAI_HOME/vai/dpuv1/tools/compile/bin/vai_c_caffe.py
 else
   echo "Couldn't find the VAI compiler. Exiting ..."
   exit 1
@@ -247,8 +247,8 @@ mkdir -p $RESULTS_DIR
 
 # Model Selection
 if [ "$MODEL" == "yolo_v2" ]; then
-  NET_DEF=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_deploy_224.prototxt
-  NET_WEIGHTS=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolov2.caffemodel
+  NET_DEF=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_deploy_224.prototxt
+  NET_WEIGHTS=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolov2.caffemodel
   NET_DEF_FPGA=$NET_DEF
   YOLO_TYPE="xilinx_yolo_v2"
   ANCHOR_COUNT=5
@@ -257,9 +257,9 @@ if [ "$MODEL" == "yolo_v2" ]; then
   INSHAPE_WIDTH=224
   INSHAPE_HEIGHT=224
 elif [ "$MODEL" == "tiny_yolo_v2_voc" ]; then
-  NET_DEF=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_v2_tiny_voc_224.prototxt
-  NET_DEF_FPGA=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_v2_tiny_voc_224.prototxt
-  NET_WEIGHTS=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_v2_tiny_voc.caffemodel
+  NET_DEF=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_v2_tiny_voc_224.prototxt
+  NET_DEF_FPGA=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_v2_tiny_voc_224.prototxt
+  NET_WEIGHTS=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_v2_tiny_voc.caffemodel
   YOLO_TYPE="tiny_yolo_v2_voc"
   NUM_CLASSES=20
   ANCHOR_COUNT=5
@@ -269,8 +269,8 @@ elif [ "$MODEL" == "tiny_yolo_v2_voc" ]; then
   INSHAPE_WIDTH=224
   INSHAPE_HEIGHT=224
 elif [ "$MODEL" == "tiny_yolo_v2" ]; then
-  NET_DEF=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_v2_tiny_224.prototxt
-  NET_DEF_FPGA=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_v2_tiny_224_fpga.prototxt
+  NET_DEF=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_v2_tiny_224.prototxt
+  NET_DEF_FPGA=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_v2_tiny_224_fpga.prototxt
   NET_WEIGHTS=../../models/caffe/yolov2/fp32/yolo_v2_tiny.caffemodel
   YOLO_TYPE="tiny_yolo_v2"
   ANCHOR_COUNT=5
@@ -279,17 +279,17 @@ elif [ "$MODEL" == "tiny_yolo_v2" ]; then
   INSHAPE_WIDTH=224
   INSHAPE_HEIGHT=224
 elif [ "$MODEL" == "standard_yolo_v3" ]; then
-  NET_DEF=${VAI_ALVEO_ROOT}/models/caffe/yolov3/fp32/yolo_v3_standard_608.prototxt
-  NET_DEF_FPGA=${VAI_ALVEO_ROOT}/models/caffe/yolov3/fp32/yolo_v3_standard_608_fpga.prototxt
-  NET_WEIGHTS=${VAI_ALVEO_ROOT}/models/caffe/yolov3/fp32/yolo_v3_standard.caffemodel
+  NET_DEF=${VAI_HOME}/examples/models/caffe/yolov3/fp32/yolo_v3_standard_608.prototxt
+  NET_DEF_FPGA=${VAI_HOME}/examples/models/caffe/yolov3/fp32/yolo_v3_standard_608_fpga.prototxt
+  NET_WEIGHTS=${VAI_HOME}/examples/models/caffe/yolov3/fp32/yolo_v3_standard.caffemodel
   YOLO_TYPE="standard_yolo_v3"
   ANCHOR_COUNT=3
   LABEL=coco.names
   YOLO_VERSION="v3"
 elif [ "$MODEL" == "yolo_v3_spp" ]; then
-  NET_DEF=${VAI_ALVEO_ROOT}/models/caffe/yolov3/fp32/yolov3_spp_608.prototxt
-  NET_DEF_FPGA=${VAI_ALVEO_ROOT}/models/caffe/yolov3/fp32/yolov3_spp_608.prototxt
-  NET_WEIGHTS=${VAI_ALVEO_ROOT}/models/caffe/yolov3/fp32/yolov3_spp.caffemodel
+  NET_DEF=${VAI_HOME}/examples/models/caffe/yolov3/fp32/yolov3_spp_608.prototxt
+  NET_DEF_FPGA=${VAI_HOME}/examples/models/caffe/yolov3/fp32/yolov3_spp_608.prototxt
+  NET_WEIGHTS=${VAI_HOME}/examples/models/caffe/yolov3/fp32/yolov3_spp.caffemodel
   YOLO_TYPE="yolo_v3_spp"
   ANCHOR_COUNT=3
   YOLO_VERSION="v3"
@@ -297,9 +297,9 @@ elif [ "$MODEL" == "yolo_v3_spp" ]; then
   INSHAPE_WIDTH=608
   INSHAPE_HEIGHT=608
 elif [ "$MODEL" == "standard_yolo_v2" ]; then
-  NET_DEF=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_v2_standard_224.prototxt
-  NET_DEF_FPGA=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_v2_standard_224_fpga.prototxt
-  NET_WEIGHTS=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_v2_standard.caffemodel
+  NET_DEF=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_v2_standard_224.prototxt
+  NET_DEF_FPGA=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_v2_standard_224_fpga.prototxt
+  NET_WEIGHTS=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_v2_standard.caffemodel
   YOLO_TYPE="standard_yolo_v2"
   YOLO_VERSION="v2"
   ANCHOR_COUNT=5
@@ -307,8 +307,8 @@ elif [ "$MODEL" == "standard_yolo_v2" ]; then
   INSHAPE_WIDTH=224
   INSHAPE_HEIGHT=224
 elif [ "$MODEL" == "yolo_v2_prelu" ]; then
-  NET_DEF=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_v2_prelu_224.prototxt
-  NET_WEIGHTS=${VAI_ALVEO_ROOT}/models/caffe/yolov2/fp32/yolo_v2_prelu.caffemodel
+  NET_DEF=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_v2_prelu_224.prototxt
+  NET_WEIGHTS=${VAI_HOME}/examples/models/caffe/yolov2/fp32/yolo_v2_prelu.caffemodel
   YOLO_TYPE="yolo_v2_prelu"
   NET_DEF_FPGA=$NET_DEF
   YOLO_VERSION="v2"
@@ -317,9 +317,9 @@ elif [ "$MODEL" == "yolo_v2_prelu" ]; then
   INSHAPE_WIDTH=224
   INSHAPE_HEIGHT=224
 elif [ "$MODEL" == "tiny_yolo_v3" ]; then
-  NET_DEF=${VAI_ALVEO_ROOT}/models/caffe/yolov3/fp32/yolov3_tiny_without_bn.prototxt
-  NET_DEF_FPGA=${VAI_ALVEO_ROOT}/models/caffe/yolov3/fp32/yolov3_tiny_without_bn.prototxt
-  NET_WEIGHTS=${VAI_ALVEO_ROOT}/models/caffe/yolov3/fp32/yolov3_tiny_without_bn.caffemodel
+  NET_DEF=${VAI_HOME}/examples/models/caffe/yolov3/fp32/yolov3_tiny_without_bn.prototxt
+  NET_DEF_FPGA=${VAI_HOME}/examples/models/caffe/yolov3/fp32/yolov3_tiny_without_bn.prototxt
+  NET_WEIGHTS=${VAI_HOME}/examples/models/caffe/yolov3/fp32/yolov3_tiny_without_bn.caffemodel
   YOLO_TYPE="tiny_yolo_v3"
   YOLO_VERSION="v3"
   ANCHOR_COUNT=3
@@ -335,7 +335,7 @@ if [[ ( ! -f "$NET_DEF" ) && ( $YOLO_TYPE != "custom" ) ]]; then
   echo "$NET_DEF does not exist on disk :("
   echo "Downloading the yolo${YOLO_VERSION} models ..."
   eval "URL=\$URL_$YOLO_VERSION"
-  cd $VAI_ALVEO_ROOT && wget $URL -O temp.zip && unzip temp.zip && rm -rf temp.zip && cd -
+  cd $VAI_HOME/examples && wget $URL -O temp.zip && unzip temp.zip && rm -rf temp.zip && cd -
   if [[ $? != 0 ]]; then echo "Network download failed. Exiting ..."; exit 1; fi;
   if [ ! -f "$NET_DEF" ]; then echo "Couldn't find $NET_DEF in models. Please check the filename. Exiting ..."; exit 1; fi;
 fi
@@ -345,12 +345,12 @@ fi
 if [[ ( -v NETWORK_HEIGHT ) && ( -v NETWORK_WIDTH ) ]]; then
   echo "Changing input dimensions in the $NET_DEF ..."
   echo "python modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file $QUANT_DIR/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH"
-  python $VAI_ALVEO_ROOT/DPUCADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file $QUANT_DIR/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
+  python $VAI_HOME/examples/DPUCADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF --output_deploy_file $QUANT_DIR/new_dim.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
   if [[ $? != 0 ]]; then echo "Network modification failed. Exiting ..."; exit 1; fi;
   NET_DEF=$QUANT_DIR/new_dim.prototxt
 
   echo "python modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file $QUANT_DIR/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH"
-  python $VAI_ALVEO_ROOT/DPUCADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file $QUANT_DIR/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
+  python $VAI_HOME/examples/DPUCADX8G/yolo/modify_network_dims.py --input_deploy_file $NET_DEF_FPGA --output_deploy_file $QUANT_DIR/new_dim_fpga.prototxt --in_shape 3 $NETWORK_HEIGHT $NETWORK_WIDTH
   if [[ $? != 0 ]]; then echo "Network modification failed. Exiting ..."; exit 1; fi;
   NET_DEF_FPGA=$QUANT_DIR/new_dim_fpga.prototxt
 fi
@@ -370,7 +370,7 @@ if [[ $RUN_QUANTIZER == 1 ]]; then
 
   export DECENT_DEBUG=1
   DUMMY_PTXT=$QUANT_DIR/dummy.prototxt
-  python $VAI_ALVEO_ROOT/DPUCADX8G/yolo/get_decent_q_prototxt.py $(pwd) $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
+  python $VAI_HOME/examples/DPUCADX8G/yolo/get_decent_q_prototxt.py $(pwd) $NET_DEF  $DUMMY_PTXT $IMGLIST  $CALIB_DATASET
   if [[ $? != 0 ]]; then echo "Network generation failed. Exiting ..."; exit 1; fi
 
   echo -e "quantize  -model $DUMMY_PTXT -weights $NET_WEIGHTS --output_dir $QUANT_DIR/  -calib_iter 5 -weights_bit $BITWIDTH -data_bit $BITWIDTH"
@@ -432,7 +432,7 @@ then
   QUANTCFG=$COMP_DIR/quantizer.json
 
   if [ $COMPILEROPT == "throughput" ] && [ "$KCFG" == "v3" ]; then
-     python $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/scripts/xfdnn_gen_throughput_json.py --i $NETCFG --o $COMP_DIR/compiler_tput.json
+     python $VAI_HOME/vai/dpuv1/tools/compile/scripts/xfdnn_gen_throughput_json.py --i $NETCFG --o $COMP_DIR/compiler_tput.json
      NETCFG=$COMP_DIR/compiler_tput.json
   fi
 fi
@@ -491,7 +491,7 @@ if [ -z $VITIS_RUNDIR ]; then
   ln -s $(get_abs_filename $WEIGHTS) ${VITIS_RUNDIR}/weights.h5
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"publish_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}/meta.json
   # meta.json accepts {env_variables} in paths as well, e.g.:
-  #echo "{ \"lib\": \"{VAI_ALVEO_ROOT}/xfdnn/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_ALVEO_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
+  #echo "{ \"lib\": \"{VAI_HOME}/xfdnn/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_HOME}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
   cp -fr $VITIS_RUNDIR ${VITIS_RUNDIR}_worker
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"subscribe_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}_worker/meta.json
 fi
@@ -501,7 +501,7 @@ echo -e "Running:\n Test: $TEST\n Model: $MODEL\n Platform: $MLSUITE_PLATFORM\n 
   Xclbin: $XCLBIN\n Kernel Config: $KCFG\n Precision: $BITWIDTH\n Accelerator: $ACCELERATOR\n"
 
 if [ -z ${DIRECTORY+x} ]; then
-  DIRECTORY=${VAI_ALVEO_ROOT}/DPUCADX8G/yolo/test_image_set/
+  DIRECTORY=${VAI_HOME}/examples/DPUCADX8G/yolo/test_image_set/
 fi
 
 if [[ ( $TEST != "cpu_detect" ) ]]; then
@@ -569,7 +569,7 @@ fi
 
 if [ $ZELDA -eq "0" ]; then
   echo -e "python $TEST $BASEOPT" | sed 's/--/\n  --/g' -
-  python $VAI_ALVEO_ROOT/DPUCADX8G/yolo/$TEST $BASEOPT 2>&1 | tee single_img_out.txt
+  python $VAI_HOME/examples/DPUCADX8G/yolo/$TEST $BASEOPT 2>&1 | tee single_img_out.txt
   if [[ $? != 0 ]]; then echo "Execution failed. Exiting ..."; exit 1; fi
 else
   gdb --args python $TEST $BASEOPT

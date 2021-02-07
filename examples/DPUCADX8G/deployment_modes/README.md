@@ -46,9 +46,9 @@ Setup the Environment
 
 To run any of the three examples, use the provided bash run.sh script.
 
-1. Navigate to the `$VAI_ALVEO_ROOT/DPUCADX8G/deployment_modes` dir.
+1. Navigate to the `$VAI_HOME/examples/DPUCADX8G/deployment_modes` dir.
     ```sh
-    cd $VAI_ALVEO_ROOT/DPUCADX8G/deployment_modes
+    cd $VAI_HOME/examples/DPUCADX8G/deployment_modes
     ```
 
 2. Familiarize yourself with the script usage by:
@@ -115,9 +115,9 @@ For Multinet deployments, the different models/networks are set in the `--jsoncf
 
   ```sh
 ------------------
-Using VAI_ALVEO_ROOT
+Using VAI_HOME
 ------------------
-/vitis_ai_home/examples
+/vitis_ai_home
 
 ---------------------
 Verifying XILINX_XRM
@@ -169,7 +169,7 @@ Loading weights/bias/quant_params to FPGA...
 [XDNN]   max xbar entries           : 4096
 [XDNN]   version                    : 3.2
 [XDNN]   8-bit mode                 : 1
----------- Prediction 1/4 for ${VAI_ALVEO_ROOT}/DPUCADX8G/deployment_modes/dog.jpg ----------
+---------- Prediction 1/4 for ${VAI_HOME}/examples/DPUCADX8G/deployment_modes/dog.jpg ----------
 0.9851 "n02099601 golden retriever"
 0.0017 "n02102318 cocker spaniel, English cocker spaniel, cocker"
 0.0016 "n02100877 Irish setter, red setter"

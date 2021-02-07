@@ -18,7 +18,7 @@ Download Face Detection Data Set and Benchmark (FDDB)dataset.
 
 ```sh
 # Download the data.
-cd $VAI_ALVEO_ROOT/DPUCADX8G/face_detect/FDDB
+cd $VAI_HOME/examples/DPUCADX8G/face_detect/FDDB
 wget http://vis-www.cs.umass.edu/fddb/originalPics.tar.gz
 # Extract the data.
 tar -xvf originalPics.tar.gz
@@ -27,7 +27,7 @@ cd ..
 
 ## Run Inference on sample images
 ```sh
-cd $VAI_ALVEO_ROOT/DPUCADX8G/face_detect/
+cd $VAI_HOME/examples/DPUCADX8G/face_detect/
 ```
 Face detection on test_images using face_detection_320_320 model on FPGA and save results in folder output/.
 ```sh
@@ -42,7 +42,7 @@ Face detection on test_images using face_detection_360_640 model on FPGA and sav
 
 Build evalution tools
 ```sh
-cd $VAI_ALVEO_ROOT/DPUCADX8G/face_detect/
+cd $VAI_HOME/examples/DPUCADX8G/face_detect/
 wget http://vis-www.cs.umass.edu/fddb/evaluation.tgz
 tar -xvf evaluation.tgz
 #ignore the warnings
@@ -70,7 +70,7 @@ The output will be an array. [ 0.883775 99.   0.957]. The recall is 88.37@fp=99.
 This is a demo application showing how face detection model can be ran on the FPGA. Frames from a video are streamed into our hardware accelerator. Some post processing is performed in the CPU, such as NMS.
 
 ```sh
-cd $VAI_ALVEO_ROOT/DPUCADX8G/face_detect/
+cd $VAI_HOME/examples/DPUCADX8G/face_detect/
 ```
 Face detection on video using face_detection_320_320 model on FPGA and save results in folder output/.
 ```sh
@@ -88,7 +88,7 @@ Face detection on video using face_detection_360_640 model on FPGA and save resu
 If you have already saved all detections to a text file (say `FDDB_results.txt`) and you want to measure its precision, you can use following method:
 
 ```sh
-cd $VAI_ALVEO_ROOT/DPUCADX8G/face_detect/
+cd $VAI_HOME/examples/DPUCADX8G/face_detect/
 python roc.py --results <path to result file>
 ```
 

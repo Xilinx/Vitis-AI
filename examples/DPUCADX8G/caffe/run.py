@@ -21,7 +21,6 @@ from vai.dpuv1.rt.scripts.framework.caffe.xfdnn_subgraph import CaffeCutter as x
 import numpy as np
 import caffe
 
-VAI_ALVEO_ROOT = os.getenv("VAI_ALVEO_ROOT", "../../")
 
 # Generate scaling parameters for fixed point conversion
 
@@ -51,12 +50,12 @@ def Getopts():
 
 # Generate hardware instructions for runtime -> compiler.json
 def Compile(output_dir="work"):
-    
-  VAI_ROOT = os.environ['VAI_ALVEO_ROOT']
+
+  VAI_HOME = os.environ['VAI_HOME']
   arch_json = "/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
   if(not os.path.exists(arch_json)):
-     arch_json = os.path.join(VAI_ROOT, "arch.json")
- 
+     arch_json = os.path.join(VAI_HOME, "arch.json")
+
   subprocess.call(["vai_c_caffe",
       "--prototxt",output_dir+"/deploy.prototxt",
       "--caffemodel",output_dir+"/deploy.caffemodel",
@@ -64,7 +63,7 @@ def Compile(output_dir="work"):
       "--output_dir",output_dir,
       "--arch", arch_json,
       "--options", "{\"quant_cfgfile\":\"%s\"}" %(output_dir+"/quantize_info.txt")])
-    
+
 # Generate a new prototxt with custom python layer in place of FPGA subgraph
 def Cut(prototxt,output_dir="work"):
 

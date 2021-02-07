@@ -28,8 +28,8 @@ if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
     NO_DEFAULT_PATH
   )
   set_target_properties(xfdnn PROPERTIES
-    IMPORTED_LOCATION "$ENV{VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so"
-    INTERFACE_INCLUDE_DIRECTORIES "$ENV{VAI_ALVEO_ROOT}/vai/dpuv1/rt/vitis/include"
+    IMPORTED_LOCATION "$ENV{VAI_HOME}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so"
+    INTERFACE_INCLUDE_DIRECTORIES "$ENV{VAI_HOME}/vai/dpuv1/rt/vitis/include"
   )
 else()
   find_package(aks REQUIRED

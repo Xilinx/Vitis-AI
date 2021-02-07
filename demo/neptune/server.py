@@ -16,7 +16,7 @@
 # logging should be setup first so imported modules' logging is configured too
 import os
 from vai.dpuv1.rt import logging_mp
-log_file = os.environ['VAI_ALVEO_ROOT'] + "/../demo/neptune/logging.ini"
+log_file = os.environ['VAI_HOME'] + "/demo/neptune/logging.ini"
 logging_mp.setup_logger(log_file, 'neptune')
 
 from datetime import datetime
@@ -168,7 +168,7 @@ class DestructServiceHandler(tornado.web.RequestHandler):
         if found_index != -1:
             del self.application.default_router.rules[found_index]
             ServiceManager().remove(name)
-            recipe_cache = os.environ["VAI_ALVEO_ROOT"] + "/../demo/neptune/recipes/recipe_%s.bak" % name
+            recipe_cache = os.environ["VAI_HOME"] + "/demo/neptune/recipes/recipe_%s.bak" % name
             os.remove(recipe_cache)
             self.write("service destroyed at /serve/%s" % url)
         else:
@@ -337,7 +337,7 @@ class ServerApp(object):
         the default recipe functions.
         """
         recipes = []
-        recipes_cache = os.environ["VAI_ALVEO_ROOT"] + "/../demo/neptune/recipes/"
+        recipes_cache = os.environ["VAI_HOME"] + "/demo/neptune/recipes/"
         file_names = [fn for fn in os.listdir(recipes_cache)
             if fn.startswith('recipe_') and fn.endswith('.bak')]
         if file_names:
@@ -534,7 +534,7 @@ class ServerApp(object):
         #     main()
 
 def main():
-    logging_directory = os.environ['VAI_ALVEO_ROOT'] + '/../demo/neptune/logs/'
+    logging_directory = os.environ['VAI_HOME'] + '/demo/neptune/logs/'
     log_name = '_{:%Y-%m-%d}.log'.format(datetime.now())
     with open(logging_directory + 'neptune' + log_name, 'a') as f:
         f.write("################################################################\n")
