@@ -56,5 +56,5 @@ files:
   type: xmodel
   board: u200 & u250
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u200-u250-r1.3.0.tar.gz
-  checksum: 574db993a06a04b5f8323f3dbdb65331
+  checksum: 2ce3920af67080cb6d01a27a8dc69794
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

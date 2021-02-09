@@ -56,5 +56,5 @@ files:
   type: xmodel
   board: u200 & u250
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u200-u250-r1.3.0.tar.gz
-  checksum: 2e70bcb78400530ce171dad9af53560c
+  checksum: 57162bfcfdd5b91b4b0fee7e62124a1b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

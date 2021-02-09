@@ -46,8 +46,8 @@ if [ -z $FDDB_PATH ];then
 fi
 
 # Set Platform Environment Variables
-if [ -z $VAI_ALVEO_ROOT ]; then
-  echo "Please set VAI_ALVEO_ROOT, see you next time!"
+if [ -z $VAI_HOME ]; then
+  echo "Please set VAI_HOME, see you next time!"
   exit 1
 fi
 
@@ -84,8 +84,8 @@ vai_q_caffe quantize -model $DUMMY_PTXT -weights $CAFFMODEL  -calib_iter 5 -outp
 
 if [[ -f $(which vai_c_caffe) ]]; then
   COMPILER=vai_c_caffe
-elif [[ -f $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/bin/vai_c_caffe.py ]]; then
-  COMPILER=$VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/bin/vai_c_caffe.py
+elif [[ -f $VAI_HOME/vai/dpuv1/tools/compile/bin/vai_c_caffe.py ]]; then
+  COMPILER=$VAI_HOME/vai/dpuv1/tools/compile/bin/vai_c_caffe.py
 else
   echo "Couldn't find the VAI compiler. Exiting ..."
   exit 1
@@ -96,7 +96,7 @@ if [ -d $XCLBIN ]; then
   echo "--- Using System XCLBIN ---"
 else
   echo "--- Using Local XCLBIN ---"
-  XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
+  XCLBIN=${VAI_HOME}/overlaybins/xdnnv3
 fi
 
 COMPILER_BASE_OPT=" --prototxt $QUANT_DIR/deploy.prototxt \
@@ -121,5 +121,5 @@ python3 detect_precision.py \
     --resize_w $NET_W \
 	--fddbList ${FDDB_PATH}/FDDB_list.txt \
     --fddbPath ${FDDB_PATH}/ \
-    --fddbAnno ${FDDB_PATH}/FDDB_annotations.txt 
+    --fddbAnno ${FDDB_PATH}/FDDB_annotations.txt
 

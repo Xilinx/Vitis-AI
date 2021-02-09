@@ -22,7 +22,7 @@ from vai.dpuv1.rt import xstream, logging_mp
 from vai.dpuv1.rt.xsnodes import fpga, pre, post, grapher
 from multiprocessing import Queue
 
-log_file = os.environ['VAI_ALVEO_ROOT'] + "/vai/dpuv1/rt/logging.ini"
+log_file = os.environ['VAI_HOME'] + "/vai/dpuv1/rt/logging.ini"
 logging_mp.setup_logger(log_file, 'xstream')
 
 ########################################################

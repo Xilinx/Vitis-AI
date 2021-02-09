@@ -23,13 +23,13 @@ Download cityscapes-dataset from https://www.cityscapes-dataset.com/downloads/
 
 The unpacked image files are supposed to be at the following location.
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/
 ```
 
 Alternatively you can download cityscapes-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz as follows
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/
 wget https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz
 tar -xvf cityscapes.tar.gz
 rm cityscapes.tar.gz
@@ -38,22 +38,22 @@ rm cityscapes.tar.gz
 The folder is supposed to be as the following.
 
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/train
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/val
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/train
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/val
 ```
 
 The downloaded images have the combination of Cityscapes Semantic photo and label.
 To split Semantic photo and label, please run the following command lines.
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/
 python extract_label_semantic.py
 ```
 
 This will generate two subfolders in val folder. 'photo' and 'label'.
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/val/photo
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/val/label
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/val/photo
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA/cityscapes/val/label
 ```
 
 
@@ -79,16 +79,16 @@ To get the quantized Caffe model, run the following command lines.
 
 > **Note:** Skip, If you have already run the below steps.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe
 python getModels.py
 ```
 
-The Pix2Pix (cityscapes_BtoA) model files would be located in '${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/cityscapes_BtoA' folder.
+The Pix2Pix (cityscapes_BtoA) model files would be located in '${VAI_HOME}/examples/DPUCADX8G/caffe/models/cityscapes_BtoA' folder.
 
 Copy the model files to 'pix2pix/cityscapes_BtoA/quantize_results' with the following commands.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA
-cp -R ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/cityscapes_BtoA ./quantize_results
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA
+cp -R ${VAI_HOME}/examples/DPUCADX8G/caffe/models/cityscapes_BtoA ./quantize_results
 ```
 
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'cityscapes_BtoA/quantize_results' sub-folder.
@@ -98,7 +98,7 @@ You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'citys
 
 To run the inference model on cpu for translating semantic label to photo images, run the following commands.
 ```sh
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA
 python cityscapes_BtoA_cpu.py --image <image-file>
 
 [sample]
@@ -114,7 +114,7 @@ The generated semantic label image will be stored in 'test_output' sub-folder.
 The quantized caffemodel need to be compiled and partitioned at your local drive using the following commands
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA
 source run.sh deploy
 ```
 
@@ -130,7 +130,7 @@ xfdnn_deploy.prototxt (used to execute Caffe model on FPGA) will be generated at
 To run the inference model on fpga for translating semantic label to photo images, run the following commands.
 
 ```sh
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/cityscapes_BtoA
 python cityscapes_BtoA_fpga.py --image <image-file>
 
 [sample]

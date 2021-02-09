@@ -28,7 +28,7 @@ You need to register for the website to download the dataset.
 The unpacked image files are supposed to be at the following location.
 
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/FPN_CityScapes/leftImg8bit/val/frankfurt
+${VAI_HOME}/examples/DPUCADX8G/caffe/FPN_CityScapes/leftImg8bit/val/frankfurt
 ```
 
 > **Note:** This model was trained using cityscapes/frankfurt dataset. The alternative dataset might not provide correct output.
@@ -36,7 +36,7 @@ ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/FPN_CityScapes/leftImg8bit/val/frankfurt
 Alternatively you can download cityscapes-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz as follows
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/FPN_CityScapes/
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/FPN_CityScapes/
 wget https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/cityscapes.tar.gz
 tar -xvf cityscapes.tar.gz
 rm cityscapes.tar.gz
@@ -45,22 +45,22 @@ rm cityscapes.tar.gz
 The folder is supposed to be as the following.
 
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/FPN_CityScapes/cityscapes/train
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/FPN_CityScapes/cityscapes/val
+${VAI_HOME}/examples/DPUCADX8G/caffe/FPN_CityScapes/cityscapes/train
+${VAI_HOME}/examples/DPUCADX8G/caffe/FPN_CityScapes/cityscapes/val
 ```
 
 The downloaded images have the combination of Cityscapes Semantic photo and label.
 To split Semantic photo and label, please run the following command lines.
 
 ```
-$ cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/FPN_CityScapes/
+$ cd ${VAI_HOME}/examples/DPUCADX8G/caffe/FPN_CityScapes/
 $ python extract_label_semantic.py
 ```
 
 This will generate two subfolders in val folder. 'photo' and 'label'.
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/FPN_CityScapes/cityscapes/val/photo
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/FPN_CityScapes/cityscapes/val/label
+${VAI_HOME}/examples/DPUCADX8G/caffe/FPN_CityScapes/cityscapes/val/photo
+${VAI_HOME}/examples/DPUCADX8G/caffe/FPN_CityScapes/cityscapes/val/label
 ```
 
 
@@ -76,17 +76,17 @@ After training the model, we quantized the model to deploy on FPGA.
 To get the quantized Caffe model, run the following command lines.
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe
 python getModels.py
 ```
 
-The FPN CityScapes model files would be located in '${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/FPN_CityScapes' folder.
+The FPN CityScapes model files would be located in '${VAI_HOME}/examples/DPUCADX8G/caffe/models/FPN_CityScapes' folder.
 
 
 We need to copy the model files into 'FPN_CityScapes/quantize_results' sub-foloder using the following command lines.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/FPN_CityScapes
-cp -R ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/FPN_CityScapes ./quantize_results
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/FPN_CityScapes
+cp -R ${VAI_HOME}/examples/DPUCADX8G/caffe/models/FPN_CityScapes ./quantize_results
 ```
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'FPN_CityScapes/quantize_results' sub-foloder.
 

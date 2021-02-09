@@ -64,7 +64,7 @@ def test_construct(request, new_service):
     assert 'url' in response
     assert response['url'] == "/serve/" + TEST_NAME
 
-    recipe_cache = os.environ['VAI_ALVEO_ROOT'] + '/../demo/neptune/recipes/recipe_%s.bak' % TEST_NAME
+    recipe_cache = os.environ['VAI_HOME'] + '/demo/neptune/recipes/recipe_%s.bak' % TEST_NAME
     assert os.path.exists(recipe_cache)
 
     # destroy the service

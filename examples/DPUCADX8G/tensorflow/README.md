@@ -30,7 +30,7 @@ This directory provides scripts for running several well known models on the FPG
    Download Samples Models (will be downloaded into `./models` directory).
 
    ```sh
-   cd ${VAI_ALVEO_ROOT}/DPUCADX8G/tensorflow
+   cd ${VAI_HOME}/examples/DPUCADX8G/tensorflow
    python getModels.py
    ```
 
@@ -38,10 +38,10 @@ This directory provides scripts for running several well known models on the FPG
 
   After the setup, run through a sample end-to-end tensorflow classification example using the following steps that demonstrates preparing and deploying a trained tensorflow model for FPGA acceleration using Xilinx Vitis-AI.
 
-  The following example uses the googlenet example. You can try the flow with the other models found in `${VAI_ALVEO_ROOT}/DPUCADX8G/tensorflow/models` directory.
+  The following example uses the googlenet example. You can try the flow with the other models found in `${VAI_HOME}/examples/DPUCADX8G/tensorflow/models` directory.
 
   ```sh
-  cd ${VAI_ALVEO_ROOT}/DPUCADX8G/tensorflow
+  cd ${VAI_HOME}/examples/DPUCADX8G/tensorflow
   ```
 #### Inspect TensorFlow model
 
