@@ -2,6 +2,7 @@ ck
 orderedset
 youtube-dl
 pafy
+#pyarrow
 wget
 requests
 websocket-client

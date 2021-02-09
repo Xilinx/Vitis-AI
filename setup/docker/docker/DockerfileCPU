@@ -19,6 +19,7 @@ RUN chmod 1777 /tmp \
     && chmod 1777 /scratch \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
+        apt-transport-https \
         autoconf \
         automake \
         bc \
@@ -28,6 +29,7 @@ RUN chmod 1777 /tmp \
         cmake \
         curl \
         g++ \
+        gnupg \
         git \
         locales \
         libboost-all-dev \
@@ -91,6 +93,14 @@ RUN apt-get install -y \
         g++-8 \
         gcc-9 \
         g++-9 \
+    && wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null \
+    && apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main' \
+    && apt-get update -y \
+    && apt-get install -y \
+        cmake=3.16.0-0kitware1 \
+        cmake-data=3.16.0-0kitware1 \
+        kitware-archive-keyring \
+    && apt-get install -y ffmpeg \
     && cd /usr/src/gtest \
     && mkdir -p build \
     && cd build \
@@ -109,16 +119,6 @@ RUN wget --progress=dot:mega -O xrt.deb https://www.xilinx.com/bin/public/openDo
     && apt-get update -y \
     && apt-get install -y ./xrt.deb \
     && rm -fr /tmp/*
-
-# cmake 3.16.1
-RUN cd /tmp; wget --progress=dot:mega https://github.com/Kitware/CMake/releases/download/v3.16.1/cmake-3.16.1.tar.gz \
-    && tar xvf cmake-3.16.1.tar.gz \
-    && cd cmake-3.16.1 \
-    && ./configure \
-    && make -j \
-    && make install \
-    && rm -fr /tmp/* \
-    && ldconfig
 
 # glog 0.4.0
 RUN cd /tmp \
@@ -169,15 +169,6 @@ RUN cd /tmp; wget --progress=dot:mega https://github.com/gflags/gflags/archive/v
     && make install \
     && rm -fr /tmp/*
 
-# ffmpeg 2.8.15
-RUN cd /tmp; wget --progress=dot:mega https://github.com/FFmpeg/FFmpeg/archive/n2.8.15.tar.gz \
-    && tar xvf n2.8.15.tar.gz \
-    && cd FFmpeg-n2.8.15/ \
-    && ./configure  --enable-pic --enable-shared \
-    && make -j \
-    && make install \
-    && rm -fr /tmp/*
-
 # pybind 2.5.0
 RUN cd /tmp; git clone https://github.com/pybind/pybind11.git \
     && cd pybind11 \
@@ -218,6 +209,7 @@ RUN groupadd vitis-ai-group \
     && echo "conda activate base" >> ~vitis-ai-user/.bashrc \
     && echo "export VERSION=${VERSION}" >> ~vitis-ai-user/.bashrc \
     && echo "export BUILD_DATE=\"${DATE}\"" >> ~vitis-ai-user/.bashrc \
+    && cat ~vitis-ai-user/.bashrc >> /root/.bashrc \
     && echo $VERSION > /etc/VERSION.txt \
     && echo $DATE > /etc/BUILD_DATE.txt \
     && echo 'export PS1="\[\e[91m\]Vitis-AI\[\e[m\] \w > "' >> ~vitis-ai-user/.bashrc \
@@ -242,9 +234,11 @@ ARG CACHEBUST=1
 
 # Create conda envs
 RUN cd /scratch/ \
-    && wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.3.411-01.tar.gz \
+    && wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.3.593-01.tar.gz \
     && tar -xzvf conda-channel.tar.gz \
     && . $VAI_ROOT/conda/etc/profile.d/conda.sh \
+    && conda index /scratch/conda-channel \
+    && python3 -m pip install --upgrade pip wheel setuptools \
     && conda env create -f /scratch/vitis-ai-pytorch.yml \
         && conda activate vitis-ai-pytorch \
         && pip install -r /scratch/pip_requirements.txt \
@@ -270,14 +264,14 @@ RUN cd /scratch/ \
 USER root
 ARG CACHEBUST=1
 RUN cd /tmp/ \
-    && wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog_1.3.0-r20_amd64.deb \
-    && wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory_1.3.0-r22_amd64.deb \
-    && wget -O libxir.deb https://www.xilinx.com/bin/public/openDownload?filename=libxir_1.3.0-r29_amd64.deb \
-    && wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_1.3.0-r53_amd64.deb \
-    && wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis%5fai%5flibrary_1.3.0-r45_amd64.deb \
+    && wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog_1.3.1-r31_amd64.deb \
+    && wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory_1.3.1-r29_amd64.deb \
+    && wget -O libxir.deb https://www.xilinx.com/bin/public/openDownload?filename=libxir_1.3.1-r42_amd64.deb \
+    && wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_1.3.1-r67_amd64.deb \
+    && wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis_ai_library_1.3.1-r69_amd64.deb \
     && wget -O libbutler-base.deb https://www.xilinx.com/bin/public/openDownload?filename=libbutler-base_1.3.0_amd64.deb \
     && wget -O librt-engine.deb https://www.xilinx.com/bin/public/openDownload?filename=librt-engine_1.3.0-r106_amd64.deb \
-    && wget -O aks.deb https://www.xilinx.com/bin/public/openDownload?filename=aks_1.3.0-r3020_amd64.deb \
+    && wget -O aks.deb https://www.xilinx.com/bin/public/openDownload?filename=aks_1.3.0-r43_amd64.deb \
     && apt-get install -y --no-install-recommends /tmp/*.deb \
     && rm -rf /tmp/* \
     && ldconfig
@@ -285,5 +279,16 @@ RUN cd /tmp/ \
 RUN apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /scratch/*
+
+# Set default build toolchain to GCC 9 for better performance
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 \
+        --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
+        --slave /usr/bin/gcov gcov /usr/bin/gcov-9 \
+    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 \
+        --slave /usr/bin/g++ g++ /usr/bin/g++-8 \
+        --slave /usr/bin/gcov gcov /usr/bin/gcov-8 \
+    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 70 \
+        --slave /usr/bin/g++ g++ /usr/bin/g++-7 \
+        --slave /usr/bin/gcov gcov /usr/bin/gcov-7
 
 ADD docker/banner.sh /etc/
