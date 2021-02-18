@@ -1,7 +1,7 @@
 name: vitis-ai-pytorch
 
 channels:
-  - http://artifactory/artifactory/vitis-ai-release
+  - file:///scratch/conda-channel
   - pytorch
   - defaults
   - conda-forge/label/gcc7

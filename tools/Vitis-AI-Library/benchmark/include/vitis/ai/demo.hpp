@@ -23,6 +23,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/imgproc/types_c.h>
 #include <thread>
 #include <type_traits>
 #include <vitis/ai/bounded_queue.hpp>
@@ -172,8 +173,8 @@ struct DecodeThread : public MyThread {
     open_stream();
     auto &cap = *video_stream_.get();
     if (is_camera_) {
-      cap.set(CV_CAP_PROP_FRAME_WIDTH, 640);
-      cap.set(CV_CAP_PROP_FRAME_HEIGHT, 360);
+      cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
+      cap.set(cv::CAP_PROP_FRAME_HEIGHT, 360);
     }
   }
 

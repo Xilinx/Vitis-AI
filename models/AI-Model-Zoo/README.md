@@ -13,7 +13,7 @@ This repository includes optimized deep learning models to speed up the deployme
 </p>
 
 ## Vitis AI 1.3 Model Zoo New Features！
-1.New added 28 models. Total 92 models from different deep learning frameworks, Caffe, TensorFlow, TensorFlow 2 and PyTorch supported in Vitis AI Model Zoo. </br>
+1.New added 28 models. Total 92 models from different deep learning frameworks, Caffe, TensorFlow, TensorFlow 2 and PyTorch are supported in Vitis AI Model Zoo. </br>
 
 2.The variety of Model Zoo has been significantly improved for a wider range of applications.</br> 
 For medical applications, we added CT image segmentation, medical robot instrument segmentation, Covid-19 chest radiograph segmentation and other reference models.</br> 
@@ -21,9 +21,9 @@ For autonomous driving and ADAS applications, we added 3D point cloud detection 
 
 3.Provided accuracy evaluation and quantization scripts for all the released models.</br>
 
-4.Restructured model list show all model versions that run on all supported Xilinx platforms in more obvious form, and users can download the specific version they need for every model.</br>
+4.Restructured model list show all versions of models that running on all supported Xilinx platforms in a clearer and more explicit way, and users could download the specific version they need for every model.</br>
 
-## Model Information
+## Model Details
 The following table includes comprehensive information about each model, including application, framework, training and validation dataset, backbone, input size, computation as well as float and quantized precision.
 
 <details>
@@ -65,7 +65,7 @@ The following table includes comprehensive information about each model, includi
 |  32  |       Object Detection        |   yolov2\_voc\_pruned\_0\.77   | dk\_yolov2\_voc\_448\_448\_0\.77\_7\.82G\_1\.3            |  darknet   |    darknet\-19    |  448\*448  |    7\.82G     |           voc07\+12\_trainval           |       voc07\_test       |                           0\.7576                            |                           0\.7482                            |
 |  33  |       Face Recognition        |         ResNet20-face          | cf_facerec-resnet20_112_96_3.5G_1.3                       |   caffe    |     resnet20      |   112*96   |     3.5G      |              private data               |      private data       |                        0.9610 (1e-06)                        |                        0.9480 (1e-06)                        |
 |  34  |       Face Recognition        |         ResNet64-face          | cf_facerec-resnet64_112_96_11G_1.3                        |   caffe    |     resnet64      |   112*96   |      11G      |              private data               |      private data       |                        0.9830 (1e-06)                        |                        0.9820 (1e-06)                        |
-|  35  |     Medical Segmentation      | FPN_Res18_Medical_Segmentation | cf_FPN-resnet18_EDD_320_320_45.3G_1.3                     |   caffe    |     resnet18      |  320*320   |    45.30G     |                 EDD_seg                 |         EDD_seg         | mean dice=0.8203                mean jaccard=0.7925                                                                       F2-score=0.8075 | mean dice=0.8055                     mean jaccard=0.7772                                                                              F2- score=0.7925 |
+|  35  |     Medical Segmentation      | FPN_Res18                      | cf_FPN-resnet18_EDD_320_320_45.3G_1.3                     |   caffe    |     resnet18      |  320*320   |    45.30G     |                 EDD_seg                 |         EDD_seg         | mean dice=0.8203                mean jaccard=0.7925                                                                       F2-score=0.8075 | mean dice=0.8055                     mean jaccard=0.7772                                                                              F2- score=0.7925 |
 |  36  |        Plate Detection        |        plate_detection         | cf_plate-detection_320_320_0.49G_1.3                      |   caffe    |    modify_vgg     |  320*320   |     0.49G     |              private data               |      private data       |                       Recall1: 0.9660                        |                       Recall1: 0.9650                        |
 |  37  |       Plate Recognition       |       plate_recognition        | cf_plate-recognition_96_288_1.75G_1.3                     |   caffe    |    Google\_v1     |   96*288   |     1.75G     |              private data               |      private data       |             plate number:99.51% plate color:100%             |             plate number:99.51% plate color:100%             |
 |  38  |        Face Detection         |           retinaface           | cf_retinaface_wider_360_640_1.11G_1.3                     |   caffe    | MobileNet_v1 0.25 |  360*640   |     1.11G     |            wideface and FDDB            |   widerface and FDDB    |                        0.9140@fp=100                         |                        0.8940@fp=100                         |
@@ -142,15 +142,15 @@ For example, `cf_refinedet_coco_360_480_0.8_25G_1.3` is a `RefineDet` model trai
 
 
 ### caffe-xilinx 
-This is a custom distribution of caffe. Please use **caffe-xilinx** to test/finetune the caffe models listed in this page.
+This is a custom distribution of caffe. Please use [caffe-xilinx](/models/AI-Model-Zoo/caffe-xilinx) to test and finetune the caffe models listed in this page.
 
 ## Model Download
-Please visit our **[model-list]** in this page. You will get downloadlink and MD5 of all the released models, including pre-compiled models running on different platforms.                                 
+Please visit [model-list](/models/AI-Model-Zoo/model-list) in this page. You will get downloadlink and MD5 of all the released models, including pre-compiled models running on different platforms.                                 
 
 </details>
 
 ### Model Directory Structure
-Download and extract the model archive to your working area on the local hard disk. For details on the various models, their download link and MD5 checksum for the zip file of each model, see  **[model-list]** .
+Download and extract the model archive to your working area on the local hard disk. For details on the various models, their download link and MD5 checksum for the zip file of each model, see [model-list](/models/AI-Model-Zoo/model-list).
 
 
 #### Caffe Model Directory Structure
@@ -175,8 +175,11 @@ For a caffe model, you should see the following directory structure:
     │    │                                      Pytorch (ReID) or there is no Caffe Test (Densebox). 
     │    │
     │    ├── quantize_train_test.caffemodel   # Quantized weights can be used for quantized-point training and evaluation.       
-    │    └── quantize_train_test.prototxt     # Used for quantized-point training and testing with           
-    │                                           quantize_train_test.caffemodel on GPU when datalayer modified to user's data path.
+    │    ├── quantize_train_test.prototxt     # Used for quantized-point training and testing with quantize_train_test.caffemodel 
+    │    │                                      on GPU when datalayer modified to user's data path.         
+    │    └── DNNC
+    │         └──deploy.prototxt              # Quantized prototxt for dnnc. It's the deploy.prototxt without option 'keep fixed neuron'.
+    │                                           
     │                                                 
     └── float                           
          ├── trainval.caffemodel              # Trained float-point weights.
@@ -184,8 +187,8 @@ For a caffe model, you should see the following directory structure:
          └── trainval.prorotxt                # Used for training and testing with caffe train/test command 
                                                 when datalayer modified to user's data path.Some models don't
                                                 have this file if they are converted from Darknet (Yolov2, Yolov3),
-                                                Pytorch (ReID) or there is no Caffe Test (Densebox).          
-
+                                                Pytorch (ReID) or there is no Caffe Test (Densebox).              
+          
 
 #### Tensorflow Model Directory Structure
 For a Tensorflow model, you should see the following directory structure:
@@ -239,12 +242,12 @@ For a Pytorch model, you should see the following directory structure:
 
 
 ## Model Performance
-All the models in the Model Zoo have been deployed on Xilinx hardware with [Vitis AI](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library). The performance number including end-to-end throughput and latency for each model on various boards with different DPU configurations are listed in the following sections.
+All the models in the Model Zoo have been deployed on Xilinx hardware with [Vitis AI](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/tools/Vitis-AI-Library). The performance number including end-to-end throughput and latency for each model on various boards with different DPU configurations are listed in the following sections.
 
 For more information about DPU, see [DPU IP Product Guide](https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=latest;d=pg338-dpu.pdf).
 
 
-**Note:** The model performance number listed in the following sections is generated with Vitis AI v1.3 and Vitis AI Lirary v1.3. For different boards, different DPU configurations are used. Vitis AI and Vitis AI Library can be downloaded for free from [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library Github](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library).
+**Note:** The model performance number listed in the following sections is generated with Vitis AI v1.3 and Vitis AI Lirary v1.3. For different boards, different DPU configurations are used. Vitis AI and Vitis AI Library can be downloaded for free from [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library Github](https://github.com/Xilinx/Vitis-AI/tree/master/tools/Vitis-AI-Library).
 We will continue to improve the performance with Vitis AI. The performance number reported here is subject to change in the near future.
 
 ### Performance on ZCU102 (0432055-04)  
@@ -711,7 +714,7 @@ The following table lists the performance number including end-to-end throughput
 | 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G         | 275            | 223.3                               |
 | 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G             | 275            | 3501.0                              |
 | 8    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G       | 275            | 620.5                               |
-| 9    | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 275            | NA                                  |
+| 9    | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 275            | 26.0                                |
 | 10   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G             | 275            | 249.4                               |
 | 11   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G         | 275            | 572.3                               |
 | 12   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G          | 275            | 783.0                               |
@@ -785,7 +788,19 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUv1 kernels running at 350Mhz with xilinx_u200_xdma_201830_2 shell:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUCADF8H kernels running at 300Mhz:
+  
+
+| No\. | Model        | Name                                    | E2E latency (ms) Thread num =20 | E2E throughput \-fps\(Multi Thread) |
+| ---- | :----------- | :-------------------------------------- | ------------------------------- | ----------------------------------- |
+| 1    | resnet50     | cf_resnet50_imagenet_224_224_7.7G       | 3.8                             | 1054                                |
+| 2    | Inception_v1 | tf_inceptionv1_imagenet_224_224_3G      | 2.2                             | 1834                                |
+| 3    | Inception_v3 | tf_inceptionv3_imagenet_299_299_11.45G  | 18.4                            | 218                                 |
+| 4    | resnetv1_50  | tf_resnetv1_50_imagenet_224_224_6.97G   | 4.2                             | 947                                 |
+| 5    | resnetv1_101 | tf_resnetv1_101_imagenet_224_224_14.4G  | 8.5                             | 472                                 |
+| 6    | resnetv1_152 | tf_resnetv1_152_imagenet_224_224_21.83G | 12.7                            | 316                                 |
+
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUCADX8G kernels running at 350Mhz with xilinx_u200_xdma_201830_2 shell:
   
 
 | No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
@@ -809,7 +824,19 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUv1 kernels running at 350Mhz with xilinx_u250_xdma_201830_1 shell:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUCADF8H kernels running at 300Mhz:
+  
+
+| No\. | Model        | Name                                    | E2E latency (ms) Thread num =20 | E2E throughput \-fps\(Multi Thread) |
+| ---- | :----------- | :-------------------------------------- | ------------------------------- | ----------------------------------- |
+| 1    | resnet50     | cf_resnet50_imagenet_224_224_7.7G       | 1.94                            | 2134.8                              |
+| 2    | Inception_v1 | tf_inceptionv1_imagenet_224_224_3G      | 1.10                            | 3631.7                              |
+| 3    | Inception_v3 | tf_inceptionv3_imagenet_299_299_11.45G  | 9.20                            | 434.9                               |
+| 4    | resnetv1_50  | tf_resnetv1_50_imagenet_224_224_6.97G   | 2.13                            | 1881.6                              |
+| 5    | resnetv1_101 | tf_resnetv1_101_imagenet_224_224_14.4G  | 4.24                            | 941.9                               |
+| 6    | resnetv1_152 | tf_resnetv1_152_imagenet_224_224_21.83G | 6.35                            | 630.3                               |
+
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUCADX8G kernels running at 350Mhz with xilinx_u250_xdma_201830_1 shell:
   
 
 | No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
@@ -836,51 +863,164 @@ Measured with Vitis AI 1.3 and Vitis AI Library 1.3
 The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U280` board with 14 DPUv3E kernels running at 300Mhz in Gen3x4:
   
 
-| No\. | Model                          | Name                                         | Frequency \(MHz\) | E2E throughput \-fps\(Multi Thread\) |
-| ---- | :----------------------------- | :------------------------------------------- | ----------------- | ------------------------------------ |
-| 1    | resnet50                       | cf_resnet50_imagenet_224_224_7.7G            | 210               | 918.07                               |
-| 2    | resnet18                       | cf_resnet18_imagenet_224_224_3.65G           | 150               | 1634.40                               |
-| 3    | Inception_v1                   | cf_inceptionv1_imagenet_224_224_3.16G        | 150               | 1169.53                               |
-| 4    | Inception_v2                   | cf_inceptionv2_imagenet_224_224_4G           | 150               | 937.03                               |
-| 5    | Inception_v3                   | cf_inceptionv3_imagenet_299_299_11.4G        | 150               | 371.96                               |
-| 6    | Inception_v4                   | cf_inceptionv4_imagenet_299_299_24.5G        | 150               | 167.02                               |
-| 7    | SqueezeNet                     | cf_squeeze_imagenet_227_227_0.76G            | 150               | 2821.66                               |
-| 8    | ssd_pedestrian_pruned_0_97     | cf_ssdpedestrian_coco_360_640_0.97_5.9G      | 150               | 423.29                               |
-| 9    | ssd_adas_pruned_0_95           | cf_ssdadas_bdd_360_480_0.95_6.3G             | 150               | 476.11                               |
-| 10   | ssd_traffic_pruned_0_9         | cf_ssdtraffic_360_480_0.9_11.6G              | 150               | 306.03                               |
-| 11   | VPGnet_pruned_0_99             | cf_VPGnet_caltechlane_480_640_0.99_2.5G      | 150               | 567.75                               |
-| 12   | FPN                            | cf_fpn_cityscapes_256_512_8.9G               | 150               | 362.94                               |
-| 13   | SP_net                         | cf_SPnet_aichallenger_224_128_0.54G          | 150               | 2126.61                               |
-| 14   | Openpose_pruned_0_3            | cf_openpose_aichallenger_368_368_0.3_189.7G  | 150               | 36.54                                 |
-| 15   | densebox_320_320               | cf_densebox_wider_320_320_0.49G              | 150               | 2                                     |
-| 16   | densebox_640_360               | cf_densebox_wider_360_640_1.11G              | 150               | 1138.79                               |
-| 17   | face_landmark                  | cf_landmark_celeba_96_72_0.14G               | 150               | 11302.40                             |
-| 18   | reid                           | cf_reid_market1501_160_80_0.95G              | 150               | 4608.02                               |
-| 19   | multi_task                     | cf_multitask_bdd_288_512_14.8G               | 150               | 128.32                               |
-| 20   | yolov3_bdd                     | dk_yolov3_bdd_288_512_53.7G                  | 180               | 108.62                               |
-| 21   | yolov3_adas_pruned_0_9         | dk_yolov3_cityscapes_256_512_0.9_5.46G       | 180               | 893.08                               |
-| 22   | yolov3_voc                     | dk_yolov3_voc_416_416_65.42G                 | 180               | 113.56                               |
-| 23   | yolov2_voc_pruned_0_66         | dk_yolov2_voc_448_448_0.66_11.56G            | 150               | 490.34                               |
-| 24   | yolov2_voc_pruned_0_71         | dk_yolov2_voc_448_448_0.71_9.86G             | 150               | 570.32                               |
-| 25   | yolov2_voc_pruned_0_77         | dk_yolov2_voc_448_448_0.77_7.82G             | 150               | 679.56                               |
-| 26   | ResNet20-face                  | cf_facerec-resnet20_112_96_3.5G              | 150               | 1576.89                               |
-| 27   | ResNet64-face                  | cf_facerec-resnet64_112_96_11G               | 150               | 575.43                               |
-| 28   | FPN_Res18_Medical_segmentation | cf_FPN-resnet18_EDD_320_320_45.3G            | 150               | 104.89                               |
-| 29   | plate detection                | cf_plate-detection_320_320_0.49G             | 150               | 4235.68                               |
-| 30   | Inception_resnet_v2            | tf_inceptionresnetv2_imagenet_299_299_26.35G | 150               | 150.08                               |
-| 31   | Inception_v1                   | tf_inceptionv1_imagenet_224_224_3G           | 150               | 1117.86                               |
-| 32   | Inception_v3                   | tf_inceptionv3_imagenet_299_299_11.45G       | 150               | 371.75                               |
-| 33   | Inception_v4                   | tf_inceptionv4_imagenet_299_299_24.55G       | 150               | 167.97                               |
-| 34   | resnet_v1_50                   | tf_resnetv1_50_imagenet_224_224_6.97G        | 180               | 890.26                               |
-| 35   | resnet_v1_101                  | tf_resnetv1_101_imagenet_224_224_14.4G       | 150               | 387.53                               |
-| 36   | resnet_v1_152                  | tf_resnetv1_152_imagenet_224_224_21.83G      | 150               | 258.93                               |
-| 37   | vgg_16                         | tf_vgg16_imagenet_224_224_30.96G             | 150               | 182.70                               |
-| 38   | vgg_19                         | tf_vgg19_imagenet_224_224_39.28G             | 150               | 153.15                               |
-| 39   | ssd_resnet_50_v1_fpn           | tf_ssdresnet50v1_fpn_coco_640_640_178.4G     | 150               | 28.81                                 |
-| 40   | yolov3_voc                     | tf_yolov3_voc_416_416_65.63G                 | 180               | 112.37                               |
-| 41   | torchvision                    | resnet50                                     | 210               | 878.38                               |
-| 42   | torchvision                    | inception_v3                                 | 150               | 371.01                               |
-| 43   | torchvision                    | squeezenet                                   | 150               | 1655.73                               |
+| No\. | Model                      | Name                                          | Frequency(MHz) | E2E throughput \-fps\(Multi Thread) |
+| ---- | :------------------------- | :-------------------------------------------- | -------------- | ----------------------------------- |
+| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G             | 300            | 801.2                               |
+| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G            | 300            | 1649.2                              |
+| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G         | 300            | 1235.5                              |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G            | 300            | 1055.4                              |
+| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G         | 300            | 416.3                               |
+| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G         | 300            | 189.9                               |
+| 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G             | 300            | 2899.2                              |
+| 8    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G       | 300            | 434.9                               |
+| 9    | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 300            | 46.4                                |
+| 10   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G             | 300            | 171.2                               |
+| 11   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G         | 300            | 427.2                               |
+| 12   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G          | 300            | 591                                 |
+| 13   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G              | 300            | 570                                 |
+| 14   | ssd_traffic_pruned_0_9     | cf_ssdtraffic_360_480_0.9_11.6G               | 300            | 310.2                               |
+| 15   | VPGnet_pruned_0_99         | cf_VPGnet_caltechlane_480_640_0.99_2.5G       | 300            | 581.5                               |
+| 16   | FPN                        | cf_fpn_cityscapes_256_512_8.9G                | 300            | 374.9                               |
+| 17   | SP_net                     | cf_SPnet_aichallenger_224_128_0.54G           | 300            | 2449.3                              |
+| 18   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G   | 300            | 35.3                                |
+| 19   | densebox_320_320           | cf_densebox_wider_320_320_0.49G               | 300            | 2924.8                              |
+| 20   | densebox_640_360           | cf_densebox_wider_360_640_1.11G               | 300            | 1300.1                              |
+| 21   | face_landmark              | cf_landmark_celeba_96_72_0.14G                | 300            | 12371                               |
+| 22   | reid                       | cf_reid_market1501_160_80_0.95G               | 300            | 4765.6                              |
+| 23   | multi_task                 | cf_multitask_bdd_288_512_14.8G                | 300            | 226.6                               |
+| 24   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                   | 300            | 92                                  |
+| 25   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G        | 300            | 790.3                               |
+| 26   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                  | 300            | 96.5                                |
+| 27   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                     | 300            | 196.9                               |
+| 28   | yolov2_voc_pruned_0_66     | dk_yolov2_voc_448_448_0.66_11.56G             | 300            | 495.7                               |
+| 29   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G              | 300            | 579.7                               |
+| 30   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G              | 300            | 691.7                               |
+| 31   | ResNet20-face              | cf_facerec-resnet20_112_96_3.5G               | 300            | 1598.4                              |
+| 32   | ResNet64-face              | cf_facerec-resnet64_112_96_11G                | 300            | 580.6                               |
+| 33   | FPN_Res18_segmentation     | cf_FPN-resnet18_EDD_320_320_45.3G             | 300            | 107.4                               |
+| 34   | plate detection            | cf_plate-detection_320_320_0.49G              | 300            | 4288.6                              |
+| 35   | plate recognition          | cf_plate-recognition_96_288_1.75G             | 300            | 1100.8                              |
+| 36   | face_quality               | cf_face-quality_80_60_61.68M                  | 300            | 23507                               |
+| 37   | tiny-yolov3                | dk_tiny-yolov3_416_416_5.46G                  | 300            | 920.2                               |
+| 38   | yolov4                     | dk_yolov4_coco_416_416_60.1G                  | 300            | 95.3                                |
+| 39   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G  | 300            | 186.4                               |
+| 40   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G            | 300            | 1293.2                              |
+| 41   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G        | 300            | 414.8                               |
+| 42   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G        | 300            | 189.6                               |
+| 43   | resnet_v1_50               | tf_resnetv1_50_imagenet_224_224_6.97G         | 300            | 751.7                               |
+| 44   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G        | 300            | 390.1                               |
+| 45   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G       | 300            | 259.9                               |
+| 46   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G              | 300            | 183.7                               |
+| 47   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G              | 300            | 153.9                               |
+| 48   | ssd_resnet_50_v1_fpn       | tf_ssdresnet50v1_fpn_coco_640_640_178.4G      | 300            | 30.7                                |
+| 49   | yolov3_voc                 | tf_yolov3_voc_416_416_65.63G                  | 300            | 95.7                                |
+| 50   | mlperf_ssd_resnet34        | tf_mlperf_resnet34_coco_1200_1200_433G        | 300            | 11.2                                |
+| 51   | mlperf_resnet50            | tf_mlperf_resnet50_imagenet_224_224_8.19G     | 300            | 647.3                               |
+| 52   | refinedet                  | tf_refinedet_VOC_320_320_81.9G                | 300            | 85.2                                |
+| 53   | refinedet_medical          | tf_RefineDet-Medical_EDD_320_320_9.83G        | 300            | 498.7                               |
+| 54   | resnet50                   | tf2_resnet50_imagenet_224_224_7.76G           | 300            | 668.2                               |
+| 55   | Inception_v3               | tf2_inceptionv3_imagenet_299_299_11.5G        | 300            | 437.5                               |
+| 56   | 2d-unet                    | tf2_2d-unet_nuclei_128_128_5.31G              | 300            | 102.5                               |
+| 57   | ERFNet                     | tf2_erfnet_cityscapes_512_1024_54G            | 300            | 54.1                                |
+| 58   | ENet                       | pt_ENet_cityscapes_512_1024_8.6G              | 300            | 88.5                                |
+| 59   | SemanticFPN                | pt_SemanticFPN_cityscapes_256_512_10G         | 300            | 408.9                               |
+| 60   | ResNet20-face              | pt_facerec-resnet20_mixed_112_96_3.5G         | 300            | 1598.4                              |
+| 61   | face quality               | pt_face-quality_80_60_61.68M                  | 300            | 23286                               |
+| 62   | face_reid_large            | pt_facereid-large_96_96_515M                  | 300            | 9164.1                              |
+| 63   | face_reid_small            | pt_facereid-small_80_80_90M                   | 300            | 20088.5                             |
+| 64   | person_reid                | pt_personreid-res50_market1501_256_128_5.4G   | 300            | 1044.9                              |
+| 65   | person_reid                | pt_personreid-res18_market1501_176_80_1.1G    | 300            | 4521.9                              |
+| 66   | salsanext                  | pt_salsanext_semantic-kitti_64_2048_0.6_20.4G | 300            | 105                                 |
+| 67   | FPN-R18 (light-weight)     | pt_FPN-resnet18_covid19-seg_352_352_22.7G     | 300            | 221.2                               |
+| 68   | 2d-unet                    | pt_unet_chaos-CT_512_512_23.3G                | 300            | 102.5                               |
+| 69   | Inception_v3               | torchvision_inception_v3                      | 300            | 415.5                               |
+| 70   | SqueezeNet                 | torchvision_squeezenet                        | 300            | 1780.7                              |
+| 71   | resnet50                   | torchvision_resnet50                          | 300            | 776.2                               |
+
+</details>
+
+### Performance on VCK190
+Measured with Vitis AI 1.3 and Vitis AI Library 1.3 
+
+<details>
+ <summary><b>Click here to view details</b></summary>
+
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Versal VCK190` board with 96 AIEs running at 1333Mhz:
+  
+
+| No\. | Model                      | Name                                          | Frequency(MHz) | E2E throughput \-fps\(Multi Thread) |
+| ---- | :------------------------- | :-------------------------------------------- | -------------- | ----------------------------------- |
+| 1    | resnet50                   | cf_resnet50_imagenet_224_224_7.7G             | 300            | 1295.9                              |
+| 2    | resnet18                   | cf_resnet18_imagenet_224_224_3.65G            | 300            | 2831.2                              |
+| 3    | Inception_v1               | cf_inceptionv1_imagenet_224_224_3.16G         | 300            | 1501.7                              |
+| 4    | Inception_v2               | cf_inceptionv2_imagenet_224_224_4G            | 300            | 1089.9                              |
+| 5    | Inception_v3               | cf_inceptionv3_imagenet_299_299_11.4G         | 300            | 572.6                               |
+| 6    | Inception_v4               | cf_inceptionv4_imagenet_299_299_24.5G         | 300            | 278.8                               |
+| 7    | SqueezeNet                 | cf_squeeze_imagenet_227_227_0.76G             | 300            | 1794.7                              |
+| 8    | ssd_pedestrian_pruned_0_97 | cf_ssdpedestrian_coco_360_640_0.97_5.9G       | 300            | 673.6                               |
+| 9    | refinedet\_baseline        | cf_refinedet_coco_360_480_123G                | 300            | 138.8                               |
+| 10   | refinedet_pruned_0_8       | cf_refinedet_coco_360_480_0.8_25G             | 300            | 385.9                               |
+| 11   | refinedet_pruned_0_92      | cf_refinedet_coco_360_480_0.92_10.10G         | 300            | 593.6                               |
+| 12   | refinedet_pruned_0_96      | cf_refinedet_coco_360_480_0.96_5.08G          | 300            | 796.9                               |
+| 13   | ssd_adas_pruned_0_95       | cf_ssdadas_bdd_360_480_0.95_6.3G              | 300            | 720.4                               |
+| 14   | ssd_traffic_pruned_0_9     | cf_ssdtraffic_360_480_0.9_11.6G               | 300            | 622.8                               |
+| 15   | VPGnet_pruned_0_99         | cf_VPGnet_caltechlane_480_640_0.99_2.5G       | 300            | 463.8                               |
+| 16   | FPN                        | cf_fpn_cityscapes_256_512_8.9G                | 300            | 196.6                               |
+| 17   | SP_net                     | cf_SPnet_aichallenger_224_128_0.54G           | 300            | 3408.7                              |
+| 18   | Openpose_pruned_0_3        | cf_openpose_aichallenger_368_368_0.3_189.7G   | 300            | 43.6                                |
+| 19   | densebox_320_320           | cf_densebox_wider_320_320_0.49G               | 300            | 2146.6                              |
+| 20   | densebox_640_360           | cf_densebox_wider_360_640_1.11G               | 300            | 1040                                |
+| 21   | face_landmark              | cf_landmark_celeba_96_72_0.14G                | 300            | 10031.2                             |
+| 22   | reid                       | cf_reid_market1501_160_80_0.95G               | 300            | 4825.8                              |
+| 23   | multi_task                 | cf_multitask_bdd_288_512_14.8G                | 300            | 197.2                               |
+| 24   | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                   | 300            | 185                                 |
+| 25   | yolov3_adas_pruned_0_9     | dk_yolov3_cityscapes_256_512_0.9_5.46G        | 300            | 866.8                               |
+| 26   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                  | 300            | 185                                 |
+| 27   | yolov2_voc                 | dk_yolov2_voc_448_448_34G                     | 300            | 439.2                               |
+| 28   | yolov2_voc_pruned_0_66     | dk_yolov2_voc_448_448_0.66_11.56G             | 300            | 879.8                               |
+| 29   | yolov2_voc_pruned_0_71     | dk_yolov2_voc_448_448_0.71_9.86G              | 300            | 978                                 |
+| 30   | yolov2_voc_pruned_0_77     | dk_yolov2_voc_448_448_0.77_7.82G              | 300            | 1093.9                              |
+| 31   | ResNet20-face              | cf_facerec-resnet20_112_96_3.5G               | 300            | 2561.6                              |
+| 32   | ResNet64-face              | cf_facerec-resnet64_112_96_11G                | 300            | 1260.4                              |
+| 33   | FPN_Res18_segmentation     | cf_FPN-resnet18_EDD_320_320_45.3G             | 300            | 75.5                                |
+| 34   | plate detection            | cf_plate-detection_320_320_0.49G              | 300            | 2518.1                              |
+| 35   | plate recognition          | cf_plate-recognition_96_288_1.75G             | 300            | 716.3                               |
+| 36   | face_quality               | cf_face-quality_80_60_61.68M                  | 300            | 18695.5                             |
+| 37   | tiny-yolov3                | dk_tiny-yolov3_416_416_5.46G                  | 300            | 1322.7                              |
+| 38   | yolov4                     | dk_yolov4_coco_416_416_60.1G                  | 300            | 147.4                               |
+| 39   | Inception_resnet_v2        | tf_inceptionresnetv2_imagenet_299_299_26.35G  | 300            | 288.3                               |
+| 40   | Inception_v1               | tf_inceptionv1_imagenet_224_224_3G            | 300            | 1523.5                              |
+| 41   | Inception_v3               | tf_inceptionv3_imagenet_299_299_11.45G        | 300            | 572.7                               |
+| 42   | Inception_v4               | tf_inceptionv4_imagenet_299_299_24.55G        | 300            | 278.7                               |
+| 43   | resnet_v1_50               | tf_resnetv1_50_imagenet_224_224_6.97G         | 300            | 1385.5                              |
+| 44   | resnet_v1_101              | tf_resnetv1_101_imagenet_224_224_14.4G        | 300            | 779                                 |
+| 45   | resnet_v1_152              | tf_resnetv1_152_imagenet_224_224_21.83G       | 300            | 546.5                               |
+| 46   | vgg_16                     | tf_vgg16_imagenet_224_224_30.96G              | 300            | 336                                 |
+| 47   | vgg_19                     | tf_vgg19_imagenet_224_224_39.28G              | 300            | 302                                 |
+| 48   | ssd_resnet_50_v1_fpn       | tf_ssdresnet50v1_fpn_coco_640_640_178.4G      | 300            | 11.8                                |
+| 49   | yolov3_voc                 | tf_yolov3_voc_416_416_65.63G                  | 300            | 184                                 |
+| 50   | mlperf_ssd_resnet34        | tf_mlperf_resnet34_coco_1200_1200_433G        | 300            | 22.8                                |
+| 51   | mlperf_resnet50            | tf_mlperf_resnet50_imagenet_224_224_8.19G     | 300            | 1288.3                              |
+| 52   | refinedet                  | tf_refinedet_VOC_320_320_81.9G                | 300            | 175.7                               |
+| 53   | refinedet_medical          | tf_RefineDet-Medical_EDD_320_320_9.83G        | 300            | 747.3                               |
+| 54   | resnet50                   | tf2_resnet50_imagenet_224_224_7.76G           | 300            | 1275.1                              |
+| 55   | Inception_v3               | tf2_inceptionv3_imagenet_299_299_11.5G        | 300            | 603.6                               |
+| 56   | 2d-unet                    | tf2_2d-unet_nuclei_128_128_5.31G              | 300            | 1746.5                              |
+| 57   | ERFNet                     | tf2_erfnet_cityscapes_512_1024_54G            | 300            | 48.9                                |
+| 58   | ENet                       | pt_ENet_cityscapes_512_1024_8.6G              | 300            | 49.7                                |
+| 59   | SemanticFPN                | pt_SemanticFPN_cityscapes_256_512_10G         | 300            | 196.9                               |
+| 60   | ResNet20-face              | pt_facerec-resnet20_mixed_112_96_3.5G         | 300            | 2561.4                              |
+| 61   | face quality               | pt_face-quality_80_60_61.68M                  | 300            | 19593.9                             |
+| 62   | face_reid_large            | pt_facereid-large_96_96_515M                  | 300            | 11841.2                             |
+| 63   | face_reid_small            | pt_facereid-small_80_80_90M                   | 300            | 16828.4                             |
+| 64   | person_reid                | pt_personreid-res50_market1501_256_128_5.4G   | 300            | 1804.7                              |
+| 65   | person_reid                | pt_personreid-res18_market1501_176_80_1.1G    | 300            | 4666.3                              |
+| 66   | salsanext                  | pt_salsanext_semantic-kitti_64_2048_0.6_20.4G | 300            | 21.7                                |
+| 67   | FPN-R18 (light-weight)     | pt_FPN-resnet18_covid19-seg_352_352_22.7G     | 300            | 330.4                               |
+| 68   | 2d-unet                    | pt_unet_chaos-CT_512_512_23.3G                | 300            | 148.7                               |
+| 69   | Inception_v3               | torchvision_inception_v3                      | 300            | 567.9                               |
+| 70   | SqueezeNet                 | torchvision_squeezenet                        | 300            | 1677.4                              |
+| 71   | resnet50                   | torchvision_resnet50                          | 300            | 1267.9                              |
 
 </details>
 
@@ -940,8 +1080,8 @@ The following table lists the performance number including end-to-end throughput
 ## Contributing
 We welcome community contributions. When contributing to this repository, first discuss the change you wish to make via:
 
-* [GitHub Issues](https://github.com/Xilinx/TechDocs/issues)
-* [Forum](https://forums.xilinx.com/t5/Deephi-DNNDK/bd-p/Deephi)
+* [GitHub Issues](https://github.com/Xilinx/Vitis-AI/issues)
+* [Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
 * <a href="mailto:xilinx_ai_model_zoo@xilinx.com">Email</a>
 
 You can also submit a pull request with details on how to improve the product. Prior to submitting your pull request, ensure that you can build the product and run all the demos with your patch. In case of a larger feature, provide a relevant demo.

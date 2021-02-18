@@ -1,4 +1,4 @@
-# Classification example: TRD run using Pre-processor files & pre-built DPU
+# Classification example: ZCU102 TRD run using Pre-processor files & pre-built DPU
 
 ## 1 Software Tools and System Requirements
 
@@ -55,7 +55,7 @@ Required:
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =< Vitis-AI-path >/WAA-TRD
+%export TRD_HOME =< Vitis-AI-path >/dsa/WAA-TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
@@ -64,12 +64,7 @@ We need install the Vitis Core Development Environment.
 
 Download and unzip mpsoc common system & zcu102 base platform package from chapter 1.
 
-Download [bin.tar.gz](IN_XHD_SERVER_/wrk/acceleration/users/maheshm/publicDownloadrepo/bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
-
-For bash, same bin.tar.gz file can be obtained from here
-```
-XHD/XSJ/XCO: /wrk/acceleration/users/maheshm/vai_1_3/bin.tar.gz
-```
+Download [Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
 
 The following tutorials assume that the Vitis and XRT environment variable is set as given below.
 
@@ -77,7 +72,7 @@ Open a linux terminal. Set the linux as Bash mode.
 
 ```
 % source < vitis-install-directory >/Vitis/2020.2/settings64.sh
-% source < part-to-XRT-installation-directory >/setup.sh
+% source < path-to-XRT-installation-directory >/setup.sh
 % gunzip < mpsoc-common-system >/xilinx-zynqmp-common-v2020.2/rootfs.tar.gz
 % export EDGE_COMMON_SW=< mpsoc-common-system >/xilinx-zynqmp-common-v2020.2 
 % export SDX_PLATFORM=< zcu102-base-platform-path >/xilinx_zcu102_base_202020_1/xilinx_zcu102_base_202020_1.xpfm
@@ -101,14 +96,7 @@ Note that
 
 ## 2.3 Installing Vitis AI Runtime on the Evaluation Board
 
-- Download the [Vitis AI Runtime 1.3.0](https::/www.xilinx.com). 
-
-For bash, same Vitis AI Runtime 1.3.0 package can be obtanined from here
-
-```
-#XCD_SERVER
-/group/dphi_software/vitis_ai_library/r1.3/vitis-ai-runtime-1.3.0.tar.gz
-```  
+- Download the  [Vitis AI Runtime 1.3.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.0.tar.gz). 
 	
 - Untar the runtime packet and copy the following folder to the board using scp.
 ```
@@ -120,8 +108,39 @@ For bash, same Vitis AI Runtime 1.3.0 package can be obtanined from here
 	cd ~/centos
 	bash setup.sh
 ```
+## 2.4 (Optional) Cross-compile WAA-TRD example
+* Download the [sdk-2020.2.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2020.2.0.0.sh)
 
-## 2.4 Download Model files for Resnet50
+* Install the cross-compilation system environment, follow the prompts to install. 
+
+    **Please install it on your local host linux system, not in the docker system.**
+    ```
+    ./sdk-2020.2.0.0.sh
+    ```
+    Note that the `~/petalinux_sdk` path is recommended for the installation. Regardless of the path you choose for the installation, make sure the path has read-write permissions. 
+Here we install it under `~/petalinux_sdk`.
+
+* When the installation is complete, follow the prompts and execute the following command.
+    ```
+    source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
+    ```
+    Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
+
+* Download the [vitis_ai_2020.2-r1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.0.tar.gz) and install it to the petalinux system.
+    ```
+    tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+    ```
+
+* Cross compile `resnet50_waa` example.
+    ```
+    cd  ~/Vitis-AI/dsa/WAA-TRD/app/resnet50_waa
+    bash -x build.sh
+    ```
+    If the compilation process does not report any error and the executable file `resnet50_waa` is generated , then the host environment is installed correctly.
+
+
+
+## 2.5 Download Model files for Resnet50
 
 ```
 %	cd /Vitis-AI/dsa/WAA-TRD/app/resnet50_waa
@@ -130,24 +149,21 @@ For bash, same Vitis AI Runtime 1.3.0 package can be obtanined from here
 %	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.0.tar.gz -O resnet50-zcu102_zcu104-r1.3.0.tar.gz
 %	tar -xzvf resnet50-zcu102_zcu104-r1.3.0.tar.gz
 ```
-For bash, same *resnet50-zcu102_zcu104-r1.3.0.tar.gz* model file can be obtained from here.
-```
-#XCD server
-/group/dphi_software/vitis_ai_library/r1.3/xilinx_model_zoo_1.3.0-r186/resnet50-zcu102_zcu104-r1.3.0.tar.gz
-```
-## 2.5 Run Resnet50 Example
+
+## 2.6 Run Resnet50 Example
 This part is about how to run the Resnet50 example on zcu102 board.
 
-Copy any image from [Vitis-AI/dsa/DPU-TRD/app/img](../../../../DPU-TRD/app/img) and copy to `Vitis-AI/dsa/WAA-TRD/app/resnet50_waa/img` 
+* Download the images at http://image-net.org/download-images and copy images to `Vitis-AI/dsa/WAA-TRD/app/resnet50_waa/img` 
 
-Copy the directory $TRD_HOME/app/resnet50_waa to the BOOT partition of the SD Card.
+* Copy the directory $TRD_HOME/app/resnet50_waa to the BOOT partition of the SD Card.
 
-Please insert SD_CARD on the ZCU102 board. After the linux boot, run:
+* Please insert SD_CARD on the ZCU102 board. After the linux boot, run:
 
 ```
 % cd /media/sd-mmcblk0p1/resnet50_waa
 % cp /media/sd-mmcblk0p1/dpu.xclbin /usr/lib/
 % export XILINX_XRT=/usr
+% echo 1 > /proc/sys/kernel/printk
 % ./resnet50_waa model_zcu102/resnet50/resnet50.xmodel
 
 Expect: 

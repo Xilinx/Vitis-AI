@@ -25,31 +25,31 @@ files:
 - name: tf_mlperf_resnet50_imagenet_224_224_8.19G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mlperf_resnet50_imagenet_224_224_8.19G_1.3.zip
+  checksum: 7d2ca4921391939282a7d99947115589
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: dcef35873a7424a9b18c2db5e924287c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 98aa2a1c1476107f5b9e2df9dbdd7312
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-vck190-r1.3.0.tar.gz
-  checksum: 6a5035712ccbea1a0f5794f5a4e9a6da
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-vck190-r1.3.1.tar.gz
+  checksum: b147bcb4331a2cc1003edcce860c1ae0
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50-r1.3.0.tar.gz
-  checksum: b493841dbcb41d645805bf498bc5ae7a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50-r1.3.1.tar.gz
+  checksum: a1e563e58f8d3e63221472fa73205477
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: e85928978d43c738cc7929bdb6b1d912
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 1e70bef22d668c9240436a3362e4f268
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 445e0a45f941a715ff50ca2a0473f019
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

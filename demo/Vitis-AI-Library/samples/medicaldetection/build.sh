@@ -15,7 +15,7 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_medicaldetection test_accuracy_medicaldetection.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicaldetection  -lvitis_ai_library-model_config -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_medicaldetection test_jpeg_medicaldetection.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicaldetection  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_medicaldetection test_performance_medicaldetection.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicaldetection  -lvart-util -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_medicaldetection test_video_medicaldetection.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicaldetection  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_medicaldetection test_accuracy_medicaldetection.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicaldetection  -lvitis_ai_library-model_config -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_medicaldetection test_jpeg_medicaldetection.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicaldetection  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_medicaldetection test_performance_medicaldetection.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicaldetection  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+$CXX -std=c++17 -I. -o test_video_medicaldetection test_video_medicaldetection.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicaldetection  -pthread -lglog 

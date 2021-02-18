@@ -25,31 +25,36 @@ files:
 - name: tf_vgg19_imagenet_224_224_39.28G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg19_imagenet_224_224_39.28G_1.3.zip
+  checksum: 446a4f1c1839ea4601f0e7f9171c7e1c
 - name: vgg_19_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: d2f137cf829c6c8c8f7225b456cb6822
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 3b1a1b65ee9692f1bddcb63da95d8538
 - name: vgg_19_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-vck190-r1.3.0.tar.gz
-  checksum: 4bb95787ea1bbadb3ce0ab3a5ed42a2f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-vck190-r1.3.1.tar.gz
+  checksum: ecfc077c4c7c81daa953c69178e8265a
 - name: vgg_19_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50-r1.3.0.tar.gz
-  checksum: 8105cb006dc183b7f55c60a9094099a6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50-r1.3.1.tar.gz
+  checksum: c611bf86f8b3aa57849067f438af06c4
 - name: vgg_19_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: da9c40425c07bf5e6b14a6cb7e75ea60
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 512f09c53d9a58840d9a85487778ab5a
 - name: vgg_19_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 8a65a062193c9e0be2ff27c430fae34e
+- name: vgg_19_tf
+  type: xmodel
+  board: u200 & u250
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u200-u250-r1.3.0.tar.gz
+  checksum: c2298d83738c161e054ba0bdd7a900fb
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

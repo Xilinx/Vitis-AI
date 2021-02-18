@@ -20,36 +20,36 @@ float ops: 45.3G
 task: segmentation
 framework: caffe
 prune: 'no'
-version: 1.2
+version: 1.3
 files:
-- name: cf_FPN-resnet18_EDD_320_320_45.3G_1.2
+- name: cf_FPN-resnet18_EDD_320_320_45.3G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_FPN-resnet18_EDD_320_320_45.3G_1.3.zip
+  checksum: 9147cfb2a8e09442988bf8cc21c2c305
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 6a5b009bca9a1e93747830ab78a813c0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: f19949ab5b4250e79e25bda115ab321a
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-vck190-r1.3.0.tar.gz
-  checksum: 7a578bf88bb9736342c702cf95d31119
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-vck190-r1.3.1.tar.gz
+  checksum: 78e34bae159c2a0ef9c1cd942d90aaa8
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-r1.3.0.tar.gz
-  checksum: de5a52edfb2780a569259a63f047f542
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-r1.3.1.tar.gz
+  checksum: 9e4cba54a501a808a7866e6b8bb963fc
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50lv-u280-r1.3.0.tar.gz
-  checksum: b9909ade75f8f3147aa3e1c9872b3bae
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50lv-u280-r1.3.1.tar.gz
+  checksum: b4412be95bacb53d41db11bb1e780bae
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: bf5195dc8cad6d5006bb062da1812ad5
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

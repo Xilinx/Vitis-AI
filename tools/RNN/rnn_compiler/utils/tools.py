@@ -86,8 +86,8 @@ def extend_graph_op_dims(ordered_ops):
             input_op_num = aop.get_input_num()
             if input_op_num == 2:
                 attr_dict = get_matmul_weights_data(aop)
-                aop_dim = [attr_dict['weights'].get_output_tensor().ndim[0], 
-                           attr_dict['vector'].get_output_tensor().ndim[1]]
+                aop_dim = [attr_dict['weights'].get_output_tensor().dims[0], 
+                           attr_dict['vector'].get_output_tensor().dims[1]]
                 aop_tensor = aop.get_output_tensor()
                 aop_tensor = 
             elif input_op_num == 3:

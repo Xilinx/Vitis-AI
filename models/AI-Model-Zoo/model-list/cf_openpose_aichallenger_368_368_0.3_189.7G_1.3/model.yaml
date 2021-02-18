@@ -20,36 +20,36 @@ float ops: 189.7G
 task: pose estimation
 framework: caffe
 prune: 'no'
-version: 1.2
+version: 1.3
 files:
 - name: cf_openpose_aichallenger_368_368_49.88G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_openpose_aichallenger_368_368_0.3_189.7G_1.3.zip
+  checksum: b4af219b035454e6b6541963472c332e
 - name: openpose_pruned_0_3
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 78394cb92da1e2ce0dd6457be9356261
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: f89478ee24863265c132ebd7d3a42114
 - name: openpose_pruned_0_3
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-vck190-r1.3.0.tar.gz
-  checksum: dbd9249a7f3ba588a102ccf3d3245bec
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-vck190-r1.3.1.tar.gz
+  checksum: 362b608dc467f0aed9b36985c1dff6a6
 - name: openpose_pruned_0_3
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50-r1.3.0.tar.gz
-  checksum: 925a24c52bdc7f22596b2f75596877b2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50-r1.3.1.tar.gz
+  checksum: 4529fc4374ef653ee3136cf78d303681
 - name: openpose_pruned_0_3
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0348a51a048bc2a2695a78b46d0d645d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50lv-u280-r1.3.1.tar.gz
+  checksum: 5c9ac4c7e0fb040edb8e7ee69c51a7b9
 - name: openpose_pruned_0_3
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: af7c444a25e5af57e9211242e4eb2efe
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

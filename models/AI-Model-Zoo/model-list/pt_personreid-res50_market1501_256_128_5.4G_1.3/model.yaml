@@ -25,31 +25,31 @@ files:
 - name: pt_personreid-res50_market1501_256_128_5.4G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_personreid-res50_market1501_256_128_5.4G_1.3.zip
+  checksum: 4d697b51dd0affb3029a5963b6567274
 - name: personreid-res50_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 1bfb91293f68e203d2d934d71db305a7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 3584dde9fd3c6da976786128c110fde9
 - name: personreid-res50_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-vck190-r1.3.0.tar.gz
-  checksum: 7ea1944dbd9a7f864afd2bb12be59b70
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-vck190-r1.3.1.tar.gz
+  checksum: cba4080406b1cbb3ac7d6f7c97ba2326
 - name: personreid-res50_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-r1.3.0.tar.gz
-  checksum: 58997108e81cf0434692c123d4a2e5d6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-r1.3.1.tar.gz
+  checksum: d6a9a0ce97ffc287a747a92936303e8b
 - name: personreid-res50_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 07a5a1cc3e39845f817e0ea697817e27
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 9cb77af22bf9b30d27c0958cd70f8db8
 - name: personreid-res50_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 278cf46aac6df8b9aace47280de8c613
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

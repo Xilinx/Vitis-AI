@@ -124,3 +124,6 @@ if(BUILD_TEST)
     install(TARGETS test_softmax_mt test_softmax DESTINATION bin)
   endif(XRT_FOUND)
 endif()
+
+set(PACKAGE_COMPONENTS "${PACKAGE_COMPONENTS};runner-assistant" PARENT_SCOPE)
+add_subdirectory (runner-assistant)

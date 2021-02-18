@@ -25,11 +25,11 @@ files:
 - name: tf_mobilenetv1_0.25_imagenet_128_128_27M_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_0.25_imagenet_128_128_27M_1.3.zip
+  checksum: ba054de360fbaa28b41b51b6c5a28749
 - name: mobilenet_v1_0_25_128_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_25_128_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 49b0ceb7c5b5faa7d840410dd4c567ae
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_25_128_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: b416480054eb5825d21eb9b123f0e774
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -25,31 +25,31 @@ files:
 - name: tf2_resnet50_imagenet_224_224_7.76G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_resnet50_imagenet_224_224_7.76G_1.3.zip
+  checksum: c69ebc6b471c814cf9a89f84cd7afd56
 - name: resnet50_tf2
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 312151d74bc21037543cbf05d7faf6ab
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: e3bd6d188142800fa15a86dfdea0a515
 - name: resnet50_tf2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-vck190-r1.3.0.tar.gz
-  checksum: ca9aea282f25df8ffa07147a4e72fcc6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-vck190-r1.3.1.tar.gz
+  checksum: a90e2bd4a901e3f30057bb335a1b91a8
 - name: resnet50_tf2
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50-r1.3.0.tar.gz
-  checksum: da6ad694aa78342cd5e9c5a28dd2273b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50-r1.3.1.tar.gz
+  checksum: c743414ead089a0efc7c90877f53dd5d
 - name: resnet50_tf2
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50lv-u280-r1.3.0.tar.gz
-  checksum: 5b5a4a6399ed85bf94f66c12331dbd43
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50lv-u280-r1.3.1.tar.gz
+  checksum: b53ad2d2b3106ba58343bda00dc6b3cb
 - name: resnet50_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: e31342496931e82366de70b82d799eb8
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

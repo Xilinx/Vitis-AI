@@ -32,14 +32,7 @@ Runtime packages on the board separately.**
 * Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
-		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.1-v1.3.0.img.gz) 
-
-		For bash, same sd_card system image can be obtained from here
-
-		```
-		#XCD server
-		/group/dphi_software/vitis_ai_library/r1.3/xilinx-zcu102-dpu-v2020.2-v1.3.0.img.gz
-		``` 
+      [ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.3.0.img.gz)   
 	    
       	Note: The version of the board image should be 2020.2 or above.
 	* Use Etcher software to burn the image file onto the SD card.
@@ -51,34 +44,26 @@ Runtime packages on the board separately.**
 * Update the system image files.
 	* Download the [waa_system_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_v1.3.0.tar.gz).	
 
-		For bash, same tar file can be obtained from `/wrk/acceleration/users/maheshm/vai_1_3/waa_system_v1.3.0.tar.gz`
-	* Copy the `waa_system_v1.3.0.tar.gz` to the board using scp.
-	  ```
-	  scp waa_system_v1.3.0.tar.gz root@IP_OF_BOARD:~/
-	  ```
+	
     * Update the system image files on the target side
 
   	  ```
 	  cd ~
 	  tar -xzvf waa_system_v1.3.0.tar.gz
-	  cp waa_system_v1.3.0/sd_card_resnet50/* /mnt/sd-mmcblk0p1/
+	  cp waa_system_v1.3.0/sd_card_adasdetection/* /mnt/sd-mmcblk0p1/
 	  cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
 	  ln -s /usr/lib/dpu.xclbin /mnt/dpu.xclbin
-	  cp waa_system_v1.3.0/lib/* /usr/lib/
 	  reboot
   	  ```
 
-* Download test images
+* Download test images	
 
-    Download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa/images` 
-
-    For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/resnet_test_image.jpg`
+  For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa/data`
 
 * Copy application files to SD card
 
     ```
-	  scp -r Vitis-AI/demo/Whole-App-Acceleration/resnet50_mt_py_waa  
-	  root@IP_OF_BOARD:~/
+	  scp -r Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa root@IP_OF_BOARD:~/
     ```
 
 
@@ -100,36 +85,32 @@ Runtime packages on the board separately.**
 
 ## Setting Up and Running on Alveo U50
 ### Setting Up the Target Alveo U50
+**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment. Docker installation instructions are available [here](../../../README.md#Installation)**
 
 * Follow the steps mentioned [here](../../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
 
 * Download [waa_system_u50_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_u50_v1.3.0.tar.gz) and update the xclbin file.
 
-* For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/waa_system_u50_v1.3.0.tar.gz`
 
-  ```
+	```
 	tar -xzvf waa_system_u50_v1.3.0.tar.gz
 	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
-  ```	
-
+	```	
 
 * To download and install `adas detection` model:
 	```
-	  cd ${VAI_ALVEO_ROOT}/..
+	  cd ${VAI_HOME}
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz -O yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
-	  For bash tar file can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz`
 	```	
 * Install the model package.
 	```
 	  tar -xzvf yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
+	  sudo mkdir -p /usr/share/vitis_ai_library/models
 	  sudo cp yolov3_adas_pruned_0_9 /usr/share/vitis_ai_library/models -r
 	```
 * Download test images	
 
   For adas_detection_waa example, download the images at https://cocodataset.org/#download and copy the images to `Vitis-AI/demo/Whole-App-Acceleration/adas_detection_waa/data`
-
-  For bash test images can be obtained from `/wrk/acceleration/users/nkpavan/vai_1_3/vai_1_3_u50_package/adas_detection_input.jpg`
-
 
 ### Building and running the application on Alveo U50
  *  Build
@@ -151,7 +132,7 @@ Runtime packages on the board separately.**
 Below table shows the comparison of througput achieved by acclerating the pre-processing pipeline on FPGA. 
 For `Adas Detection`, the performance numbers are achieved by running 1K images randomly picked from COCO dataset. 
 
-FPGA: ZCU102
+Network: YOLOv3 Adas Detection
 <table style="undefined;table-layout: fixed; width: 534px">
 <colgroup>
 <col style="width: 119px">
@@ -160,7 +141,7 @@ FPGA: ZCU102
 <col style="width: 134px">
 </colgroup>
   <tr>
-    <th rowspan="2">Network</th>
+    <th rowspan="2">FPGA</th>
     <th colspan="2">E2E Throughput (fps)</th>
     <th rowspan="2"><span style="font-weight:bold">Percentage improvement in throughput</span></th>
   </tr>
@@ -172,10 +153,17 @@ FPGA: ZCU102
 
   
   <tr>
-   <td>Adas Detection</td>
+   <td>ZCU102</td>
     <td>11.1</td>
     <td>18.2</td>
         <td>63.9%</td>
+  </tr>
+
+  <tr>
+   <td>U50</td>
+    <td>29.6</td>
+    <td>42.6</td>
+        <td>43.9%</td>
   </tr>
 </table>
 

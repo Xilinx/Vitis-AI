@@ -25,31 +25,31 @@ files:
 - name: pt_facereid-small_80_80_90M_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_facereid-small_80_80_90M_1.3.zip
+  checksum: 137e8a6db8f864e5859983773d14d938
 - name: facereid-small_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 3b74daf12d4c39324f8bbf9425f08c60
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 29f4551066fd18eede1f081dcf86218d
 - name: facereid-small_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-vck190-r1.3.0.tar.gz
-  checksum: 00e719a6f9b247f6ce838fb5b3b0fe6d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-vck190-r1.3.1.tar.gz
+  checksum: 9c0b2d3a3e2c269d8b9390685308d659
 - name: facereid-small_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-r1.3.0.tar.gz
-  checksum: 775e53ead660f2d9f5f9296416fa35c5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-r1.3.1.tar.gz
+  checksum: cfe590d2d7cf8426027f98c6527b0c62
 - name: facereid-small_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 77d051f31416437d6436092cd4410c55
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: b03a94320396da9ca8c2be25977514a8
 - name: facereid-small_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: ad4cbed2f5b9776a16ea1658b36a801b
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

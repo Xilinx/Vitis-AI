@@ -25,31 +25,26 @@ files:
 - name: cf_plate-recognition_96_288_1.75G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_plate-recognition_96_288_1.75G_1.3.zip
+  checksum: 12e35733c050520e18fdb08b295877f6
 - name: plate_num
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: c73f71d8a689182c50245f50b3c66dc4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 93c6591a5f9364f92b524ace8da64490
 - name: plate_num
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-vck190-r1.3.0.tar.gz
-  checksum: 8c81e733e751b5fe65ce111071d5568b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-vck190-r1.3.1.tar.gz
+  checksum: ec8280ee0e9162308c03adb6ce274a9d
 - name: plate_num
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u50-r1.3.0.tar.gz
-  checksum: eac261a1b0e1703aeafdcc22fafedbfa
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u50-r1.3.1.tar.gz
+  checksum: 20a41fbe7688f193eb886e71f96d6052
 - name: plate_num
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u50lv-u280-r1.3.0.tar.gz
-  checksum: 5c9f47698a14dd031480c307e9719b52
-- name: plate_num
-  type: xmodel
-  board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u50lv-u280-r1.3.1.tar.gz
+  checksum: 3a761698ab42ae9211b9ee3dd08bd240
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

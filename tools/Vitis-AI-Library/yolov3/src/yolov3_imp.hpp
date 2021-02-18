@@ -15,22 +15,22 @@
  */
 #pragma once
 
-#include <vitis/ai/configurable_dpu_task.hpp>
-
 #include "vitis/ai/yolov3.hpp"
 
 namespace vitis {
 namespace ai {
 
-class YOLOv3Imp : public vitis::ai::TConfigurableDpuTask<YOLOv3> {
+class YOLOv3Imp : public YOLOv3 {
  public:
-  YOLOv3Imp(const std::string &model_name, bool need_preprocess = true);
+  YOLOv3Imp(const std::string& model_name, bool need_preprocess = true);
   virtual ~YOLOv3Imp();
 
  private:
-  virtual YOLOv3Result run(const cv::Mat &image) override;
+  virtual YOLOv3Result run(const cv::Mat& image) override;
   virtual std::vector<YOLOv3Result> run(
-      const std::vector<cv::Mat> &image) override;
+      const std::vector<cv::Mat>& image) override;
+  virtual std::vector<YOLOv3Result> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) override;
   bool tf_flag_;
 };
 

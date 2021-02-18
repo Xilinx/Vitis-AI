@@ -25,31 +25,26 @@ files:
 - name: pt_personreid-res18_market1501_176_80_1.1G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_personreid-res18_market1501_176_80_1.1G_1.3.zip
+  checksum: c0422cdcf6a85a54cff2f85331cb41a1
 - name: personreid-res18_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 2ee58f7a2fe68e170f4c2750f4c5a2b5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 64e63dcff572183d577911119cfb4633
 - name: personreid-res18_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-vck190-r1.3.0.tar.gz
-  checksum: a21ccb4550916abf9f8db5e77c920086
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-vck190-r1.3.1.tar.gz
+  checksum: d7bbce40ab191138ce329e8c361538ee
 - name: personreid-res18_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-u50-r1.3.0.tar.gz
-  checksum: 3069dbc7316cc071747126a908e7c9df
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-u50-r1.3.1.tar.gz
+  checksum: fd4a99bfb9b2a4a61b3a017dac9b98ca
 - name: personreid-res18_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: f22d90ad29dbe480c69274fbd1f276f3
-- name: personreid-res18_pt
-  type: xmodel
-  board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res18_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 5e1c1dcd76c75b18df70ecc822e0ae11
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

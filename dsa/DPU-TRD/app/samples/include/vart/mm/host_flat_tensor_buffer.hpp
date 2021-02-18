@@ -47,6 +47,12 @@ class HostFlatTensorBuffer : public TensorBuffer {
 void init_from_file(HostFlatTensorBuffer* buffer, std::string file_name);
 void dump_to_file(HostFlatTensorBuffer* buffer, std::string file_name);
 
+std::vector<int32_t> get_strides(const xir::Tensor* tensor,
+                                 bool ignore_def = false);
+
+void tensorbuffer_copy(HostFlatTensorBuffer* buffer_src,
+                       HostFlatTensorBuffer* buffer_dest);
+
 std::pair<std::unique_ptr<HostFlatTensorBuffer>, std::unique_ptr<xir::Tensor>>
 transform_to_fix_buffer(TensorBuffer* buffer, int32_t fix_point,
                         int32_t bit_width, bool if_signed,

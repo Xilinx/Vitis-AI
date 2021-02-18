@@ -16,7 +16,7 @@
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
 add_library(${COMPONENT_NAME} SHARED src/softmax_runner.cpp include/vart/softmax_runner.hpp)
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
-target_link_libraries(${COMPONENT_NAME} ${PROJECT_NAME}::runner ${PROJECT_NAME}::mem-manager dpu-controller)
+target_link_libraries(${COMPONENT_NAME} ${PROJECT_NAME}::runner ${PROJECT_NAME}::mem-manager dpu-controller runner-assistant)
 target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>

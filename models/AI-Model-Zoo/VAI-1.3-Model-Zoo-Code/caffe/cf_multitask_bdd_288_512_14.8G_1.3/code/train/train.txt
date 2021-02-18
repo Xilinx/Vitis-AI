@@ -1,2 +1,0 @@
-images/a296eb41-691738fc.png label_txt/a296eb41-691738fc.txt seg_label/a296eb41-691738fc.png
-images/ac45a2b9-df30e99b.png label_txt/ac45a2b9-df30e99b.txt seg_label/ac45a2b9-df30e99b.png

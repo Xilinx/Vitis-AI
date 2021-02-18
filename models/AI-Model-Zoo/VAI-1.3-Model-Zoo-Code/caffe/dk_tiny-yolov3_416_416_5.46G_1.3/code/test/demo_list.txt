@@ -1,2 +1,0 @@
-./code/test/00000.jpg
-./code/test/00001.jpg

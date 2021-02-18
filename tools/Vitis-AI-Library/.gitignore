@@ -1,0 +1,3 @@
+.clangd/
+compile_commands.json
+*pyc

@@ -31,12 +31,10 @@ The key attributes for Tensor is the data type and shape, which are also the mos
 XIR's Subgraph is a tree-like hierarchy, which divides a set of ops into serveral non-overlapping sets. And the Graph's entire op set can be seem as the __root__. And Subgraph can be nested, but still non-overlapping. The nested insiders will be the children of the outer one.
 
 # Build XIR from source code
-XIR is depended on some other projects, [UniLog](http://xcdl190260/aisw/unilog.git) and [pybind11](http://xcdl190260/aisw/pybind11.git).
+XIR is depended on some other projects, [UniLog](../unilog) and pybind11.
 
 ## Build and Installation on Linux
 ```bash
-git clone gits@xcdl190260:aisw/xir.git
-cd xir
 ./cmake.sh
 ```
 

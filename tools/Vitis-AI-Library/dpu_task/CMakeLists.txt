@@ -40,6 +40,7 @@ add_library(${COMPONENT_NAME} SHARED
   src/configurable_dpu_task_imp.cpp
   src/graph_holder.hpp
   src/graph_holder.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/version.c
   )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 
@@ -50,7 +51,7 @@ target_include_directories(${COMPONENT_NAME} PUBLIC
 
 target_link_libraries(${COMPONENT_NAME}
   PUBLIC model_config ${OpenCV_LIBS} ${Other_LIBS} vart::util # for Meta definitions
-  PRIVATE xir::xir vart::dpu-runner  glog::glog math
+  PRIVATE xir::xir vart::dpu-runner vart::runner-assistant glog::glog math
   )
 set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"

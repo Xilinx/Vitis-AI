@@ -25,31 +25,31 @@ files:
 - name: pt_facerec-resnet20_mixed_112_96_3.5G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_facerec-resnet20_mixed_112_96_3.5G_1.3.zip
+  checksum: 4d8e27fe3628f321f2d98e4891a1d4ea
 - name: facerec-resnet20_mixed_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec-resnet20_mixed_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 9c0110ffcd58b3aecb4cc40bb451c345
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec-resnet20_mixed_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 4307d23372ea5b7d375e09941bb0e6c8
 - name: facerec-resnet20_mixed_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec-resnet20_mixed_pt-vck190-r1.3.0.tar.gz
-  checksum: 5a9f4f2718a329814808e63177475d00
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec-resnet20_mixed_pt-vck190-r1.3.1.tar.gz
+  checksum: 599aee62f2f20d1a3c92ba3205ae827a
 - name: facerec-resnet20_mixed_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec-resnet20_mixed_pt-u50-r1.3.0.tar.gz
-  checksum: b15ebfd2cbbd7859e3730ac9bce512cd
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec-resnet20_mixed_pt-u50-r1.3.1.tar.gz
+  checksum: afec4b5e11e1233bdb868814fc69e92c
 - name: facerec-resnet20_mixed_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec-resnet20_mixed_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: edbd5982679d404e1d0b5236ca85fb81
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec-resnet20_mixed_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 965c0212f8de6cf16e75fc274c0e30cb
 - name: facerec-resnet20_mixed_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec-resnet20_mixed_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 1da958a3a025ca7082f528a3f14f7672
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

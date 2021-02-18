@@ -25,11 +25,11 @@ files:
 - name: tf_mobilenetEdge0.75_imagenet_224_224_624M_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetEdge0.75_imagenet_224_224_624M_1.3.zip
+  checksum: dc5c4f9a6b1da19010876e8b76ceb00d
 - name: mobilenet_edge_0_75_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_0_75_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 75908e8ec89583c566671b3c750c3686
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_0_75_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 63454fda8d99a629db6218ca1f2970d8
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

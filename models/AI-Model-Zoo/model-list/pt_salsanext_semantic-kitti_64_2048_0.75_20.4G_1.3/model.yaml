@@ -25,31 +25,31 @@ files:
 - name: pt_salsanext_semantic-kitti_64_2048_0.75_20.4G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_salsanext_semantic-kitti_64_2048_0.75_20.4G_1.3.zip
+  checksum: fb5857aa55aa6621e9263247513d6045
 - name: salsanext_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 9302808ab007881f09f295e643cc7e63
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 94d9cc47f16bf1c40da46e4ffe3fcc57
 - name: salsanext_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck190-r1.3.0.tar.gz
-  checksum: 6b9f30c213d59989c9d37008db63b64b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck190-r1.3.1.tar.gz
+  checksum: ffdff46eecf14a2584862dfd9b6c21cb
 - name: salsanext_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-r1.3.0.tar.gz
-  checksum: c111de55828d1e02580e24df76ab3abe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-r1.3.1.tar.gz
+  checksum: c67f59e75885bed7f9b64be7e7e1e871
 - name: salsanext_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: fb75f39b76d8314fc22f27f0e35f1db4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 393ce011cf885386b38f6e83e0dfddfc
 - name: salsanext_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 8aef2960cf3ec6fbfb4eb117b7b9e66a
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

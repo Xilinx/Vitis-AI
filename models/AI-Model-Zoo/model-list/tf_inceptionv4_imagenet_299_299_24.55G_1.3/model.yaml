@@ -25,31 +25,31 @@ files:
 - name: tf_inceptionv4_imagenet_299_299_24.55G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv4_imagenet_299_299_24.55G_1.3.zip
+  checksum: f49020cef8093a5744a76729885b6b49
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: f687f326c92ba853fd9dc52b3621e6d4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 89bfbd79528bb4d3a84993f858373aba
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-vck190-r1.3.0.tar.gz
-  checksum: 11f4a08ab35d59b20de164befdd5202c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-vck190-r1.3.1.tar.gz
+  checksum: 1f1bfa755be2fedbcfd73b3e242ab316
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50-r1.3.0.tar.gz
-  checksum: 13148574d8059a5bae320f188f37ac27
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50-r1.3.1.tar.gz
+  checksum: 382a66f39c2cce7b75a76bfa70011766
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0f2d475ba41cd2955fb53eca958afc37
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 167cf7e621633ab7bdca552022eb9b85
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: eb5a58690ba021b0486b151bfb8bf5e0
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

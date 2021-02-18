@@ -25,31 +25,31 @@ files:
 - name: tf_RefineDet-Medical_EDD_320_320_9.83G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_RefineDet-Medical_EDD_320_320_9.83G_1.3.zip
+  checksum: f725560b75350902147a9bd2f298d13a
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 371c10a9caabaf306f6903591378bb40
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 14a4be0246c3392b6cd8eaa4ceeddca4
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck190-r1.3.0.tar.gz
-  checksum: 4aeff83eaf1b07eed633e27764d5db40
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck190-r1.3.1.tar.gz
+  checksum: 66f96be8df219f5b29004c05be2786ff
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-r1.3.0.tar.gz
-  checksum: 3bee7af285a5bb517156971dfeac2d61
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-r1.3.1.tar.gz
+  checksum: 2b349beb9c2a45659cea25a1fa673a7e
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: 4e663e4c4ab6c348ffbe9974a3b81ba0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 5fb83dda0485e3654196bb964256dc49
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 40b9d99c6ca3f64e70c2deb2d90f8190
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

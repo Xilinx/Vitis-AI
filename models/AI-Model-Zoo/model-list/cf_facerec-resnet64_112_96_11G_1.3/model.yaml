@@ -25,31 +25,31 @@ files:
 - name: cf_facerec-resnet64_112_96_11G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_facerec-resnet64_112_96_11G_1.3.zip
+  checksum: c320ae3c7bef2302edfc8e29cb1a36a0
 - name: facerec_resnet64
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: e6b0e534cd6984486fc77a3f9dddb44a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: ff3f505b9764a640b4fd529b78996c80
 - name: facerec_resnet64
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-vck190-r1.3.0.tar.gz
-  checksum: b9a6325ddf0de272bee9cf6524030173
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-vck190-r1.3.1.tar.gz
+  checksum: 7c242338ea1f4695b98a6500720ffda0
 - name: facerec_resnet64
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50-r1.3.0.tar.gz
-  checksum: aa0ee442ad890ed36a809d9a94ad90f9
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50-r1.3.1.tar.gz
+  checksum: 684897036d33dd08c14b237de1e265a1
 - name: facerec_resnet64
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50lv-u280-r1.3.0.tar.gz
-  checksum: 832ced3034af412d37edcefb766bf7cf
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50lv-u280-r1.3.1.tar.gz
+  checksum: 15a25d8a2beffe8e0b713c0d4dbad1d7
 - name: facerec_resnet64
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet64-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 8640f160aa87050389b002fe80aadc26
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

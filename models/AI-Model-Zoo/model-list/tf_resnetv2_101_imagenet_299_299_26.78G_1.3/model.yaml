@@ -25,11 +25,11 @@ files:
 - name: tf_resnetv2_101_imagenet_299_299_26.78G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv2_101_imagenet_299_299_26.78G_1.3.zip
+  checksum: c868981928812930d63a98884d61ddf9
 - name: resnet_v2_101_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_101_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: bbaf25f9cefb07e060987f92d8b339bf
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_101_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: dcc32ed6d829a3d516ac4c872d9e28bc
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

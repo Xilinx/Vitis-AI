@@ -18,7 +18,6 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <vitis/ai/configurable_dpu_task.hpp>
 #include <vitis/ai/reid.hpp>
 
 using namespace cv;
@@ -26,15 +25,17 @@ using namespace std;
 
 namespace vitis {
 namespace ai {
-class ReidImp : public vitis::ai::TConfigurableDpuTask<Reid> {
+class ReidImp : public Reid {
  public:
-  ReidImp(const std::string &model_name, bool need_preprocess = true);
+  ReidImp(const std::string& model_name, bool need_preprocess = true);
   virtual ~ReidImp();
 
  private:
-  virtual ReidResult run(const cv::Mat &image) override;
+  virtual ReidResult run(const cv::Mat& image) override;
   virtual std::vector<ReidResult> run(
-      const std::vector<cv::Mat> &image) override;
+      const std::vector<cv::Mat>& image) override;
+  virtual std::vector<ReidResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) override;
 };
 
 }  // namespace ai

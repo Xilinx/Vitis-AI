@@ -25,31 +25,31 @@ files:
 - name: cf_ssdadas_bdd_360_480_0.95_6.3G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdadas_bdd_360_480_0.95_6.3G_1.3.zip
+  checksum: 20c3f934179f155f2a434ea976d7cabe
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 4916aa924ee1d95846cbdd1d66c07d68
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 09548f3778f4ba67e8f8b06d7458bc16
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck190-r1.3.0.tar.gz
-  checksum: 67406167334d9c7d652fe29601089422
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck190-r1.3.1.tar.gz
+  checksum: 65c3d9345121ba013f56131e457e1229
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-r1.3.0.tar.gz
-  checksum: 93c0e6baef01b2965d4cdad31bd648d5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-r1.3.1.tar.gz
+  checksum: 405a2bd60c6d82c24077dd5ffcc923c4
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0c2dacec63979253cf0d20f734c45fb4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50lv-u280-r1.3.1.tar.gz
+  checksum: 8d5d46eb7f7b7bd8a69ae7f352120e47
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: d979e5a220bb7185c417280f831df6eb
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -25,31 +25,31 @@ files:
 - name: cf_inceptionv1_imagenet_224_224_3.16G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv1_imagenet_224_224_3.16G_1.3.zip
+  checksum: ef897ab4b7e07b40f1477ab6c4c1d0c4
 - name: inception_v1
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 9a15aa62b60e52c205622cc7ee74cb41
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 348ba6f71b0c5b47e8aa48771e7f39f4
 - name: inception_v1
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-vck190-r1.3.0.tar.gz
-  checksum: df4de39a8700acfdc58fe148840abe34
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-vck190-r1.3.1.tar.gz
+  checksum: 840f574f0bb5e81929dfc2e688347f19
 - name: inception_v1
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-u50-r1.3.0.tar.gz
-  checksum: ef51ccc13552ffab5d6b8803ca9a705b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-u50-r1.3.1.tar.gz
+  checksum: 6fc0107354dedc8269cb38247aa60850
 - name: inception_v1
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-u50lv-u280-r1.3.0.tar.gz
-  checksum: 9f2eb472c3e8154208ce8b3404e6302c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-u50lv-u280-r1.3.1.tar.gz
+  checksum: 57e16ed9aefa942ca77db86f2d0086ed
 - name: inception_v1
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 678318243a4099beedd2fa2df0adfd49
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

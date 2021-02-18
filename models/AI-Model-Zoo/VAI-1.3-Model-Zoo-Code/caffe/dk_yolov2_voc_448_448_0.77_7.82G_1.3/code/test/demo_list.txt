@@ -1,2 +1,0 @@
-./data/images/000001.jpg
-./data/images/000002.jpg

@@ -278,7 +278,7 @@ class Op {
   /**
    * @brief Set OP attributes
    *
-   * @param OP attributes Attrs object.
+   * @param attrs OP attributes Attrs object.
    */
   virtual Op* set_attrs(std::unique_ptr<Attrs> attrs) = 0;
 

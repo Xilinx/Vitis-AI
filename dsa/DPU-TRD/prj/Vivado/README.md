@@ -1,4 +1,4 @@
-# Zynq UltraScale＋ MPSoC DPU TRD Vivado 2020.2
+# Zynq UltraScale＋ MPSoC DPU TRD V3.3 Vivado 2020.2
 
 ## Table of Contents
 
@@ -24,9 +24,21 @@
 
 ## 1 Revision History
 
-This wiki page complements the Vivado 2020.2 version of the DPU TRD.
-
 Change Log:
+
+V3.3 Change log:
+
+-  Supported range of conv stride from 4 to 8
+-  Supported Pool MaxReduce
+-  Supported Elew Multiply
+
+V3.2 Change log:
+
+-  Updated IP Name
+-  Supported Bias-right-shift.
+-  Supported up-to 4 cores DPU
+
+V3.1 Change Log:
 
 -  The first version of Vivado DPU TRD
 
@@ -57,9 +69,7 @@ Required:
 
   Required:
   - Vivado 2020.2 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html)
-  - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [Vitis AI](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
-  - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library
   
 ------
 
@@ -107,8 +117,8 @@ The top-level directory structure shows the the major design components. The TRD
 ###### Jumpers & Switches:
 
   - Set boot mode to SD card:
-    - Rev 1.0: SW6[4:1] - **off,off,off, on**
-    - Rev D2: SW6[4:1] - **on, off on, off**
+    - Rev 1.0: SW6[4:1] - **OFF,OFF,OFF,ON**
+    - Rev D2: SW6[4:1] - **ON,OFF,ON,OFF**
 
 ### 5.2 Build and Run TRD Flow
 
@@ -222,7 +232,7 @@ This part is about how to run the Resnet50 example from the source code.
 
 The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in page 65 of [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_2/ug1144-petalinux-tools-reference-guide.pdf)for Petalinux 2020.2:
 
-Copy the image.ub and BOOT.BIN files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to BOOT partition.
+Copy the Image, BOOT.BIN, boot.scr and system.dtb files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to BOOT partition.
 
 Extract the rootfs.tar.gz files in **TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to RootFs partition.
 
@@ -278,13 +288,14 @@ The TRD supports to modify the following parameters.
 - DPU_NUM
 - DPU_ARCH
 - DPU_RAM_USAGE
-- DPU_CHN_AUG_ENA 
+- DPU_CHN_AUG_ENA
 - DPU_DWCV_ENA
 - DPU_AVG_POOL_ENA
 - DPU_CONV_RELU_TYPE
 - DPU_SFM_NUM
-- DPU_DSP48_USAGE 
-- DPU_URAM_PER_DPU 
+- DPU_DSP48_USAGE
+- DPU_URAM_PER_DPU
+- DPU_CONV_WP
 
 #### DPU_NUM
 
@@ -426,9 +437,25 @@ An example of block RAM and UltraRAM utilization is shown in the Summary tab sec
 dict set dict_prj dict_param  DPU_URAM_PER_DPU {0}
 ```
 
+#### DPU_CONV_WP
+The DPU supports additional write-parallel acceleration for the **PointPillar models**.
+Modify line 49 of scripts/base/trd_bd.tcl file can change the default settings.
+
+The option could be set as power of 2 and up to PP/2.
+
+For B512/B800/B1152 architectures, DPU_CONV_WP can be set up to 2:
+```
+dict set dict_prj dict_param  DPU_CONV_WP {2}
+```
+
+For B1024/B1600/B2304/B3136/B4096 architectures, DPU_CONV_WP can be set up to 4:
+```
+dict set dict_prj dict_param  DPU_CONV_WP {4}
+```
+
 ## 6 Run with Vitis AI Library
 
-For the instroduction of Vitis AI Library, please refer to **Quick Start For Edge** of this page https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library
+For the instroduction of Vitis AI Library, please refer to **Quick Start For Edge** of this page [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/demo/Vitis-AI-Library)
 
 ## 7 Known issues
 

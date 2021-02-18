@@ -1,14 +1,16 @@
 <div align="center">
-  <img width="100%" height="100%" src="docs/img/Vitis-AI.png">
+  <img width="100%" height="100%" src="docs/images/Vitis-AI.png">
 </div>
 
 <br />
-Vitis AI is Xilinx’s development stack for AI inference on Xilinx hardware platforms, including both edge devices and Alveo cards. It consists of optimized IP, tools, libraries, models, and example designs. It is designed with high efficiency and ease of use in mind, unleashing the full potential of AI acceleration on Xilinx FPGA and ACAP.  
+Xilinx&reg; Vitis&trade; AI is a development stack for AI inference on Xilinx hardware platforms, including both edge devices and Alveo cards.
+
+It consists of optimized IP, tools, libraries, models, and example designs. It is designed with high efficiency and ease of use in mind, unleashing the full potential of AI acceleration on Xilinx FPGA and ACAP.  
 <br />
 <br />
 
 <div align="center">
-  <img width="45%" height="45%" src="docs/img/Vitis-AI-arch.png">
+  <img width="45%" height="45%" src="docs/images/Vitis-AI-arch.png">
 </div>
 
 <br />
@@ -20,37 +22,33 @@ Vitis AI is composed of the following key components:
 * **AI Compiler** - Compiles the quantized model to a high-efficient instruction set and data flow.
 * **AI Profiler** - Perform an in-depth analysis of the efficiency and utilization of AI inference implementation.
 * **AI Library** - Offers high-level yet optimized C++ APIs for AI applications from edge to cloud.
-* **DPU** - Efficient and scalable IP cores can be customized to meet the needs for many different applications
-  * For more details on the different DPUs available, please [click here](doc/dpu_naming.md).
+* **DPU** - Efficient and scalable IP cores can be customized to meet the needs for many different applications.
+  * For more details on the different DPUs available, refer to [DPU Naming](docs/learn/dpu_naming.md).
 
 
 **Learn More:** [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)  
 
 
-## [See What's New](doc/release-notes/1.x.md)
-- [Release Notes](doc/release-notes/1.x.md)
-- Vitis AI Quantizer and DNNDK runtime all open source
-- 14 new Reference Models  AI Model Zoo (Pytorch, Caffe, Tensorflow)
-- VAI Quantizer supports optimized models (pruned)
-- DPU naming scheme has been updated to be consistent across all configurations
-- Introducing Vitis AI profiler for edge and cloud
-- VAI DPUs supported in ONNXRuntime and TVM
-- Added Alveo U50/U50LV support
-- Added Alveo U280 support
-- Alveo U50/U50LV DPU DPUCAHX8H micro-architecture improvement
-- DPU TRD upgraded to support Vitis 2020.2 and Vivado 2020.2
-- Vitis AI for Pytorch CNN general access (Beta version)
+## [See What's New](docs//learn/release_notes.md)
+- [Release Notes](docs//learn/release_notes.md)
+- Added support for Pytorch and Tensorflow 2.3 frameworks
+- Added more ready-to-use AI models for a wider range of applications, including 3D point cloud detection and segmentation, COVID-19 chest image segmentation and other reference models
+- Unified XIR-based compilation flow from edge to cloud
+- Vitis AI Runtime (VART) fully open source
+- New RNN overlay for NLP applications
+- New CNN DPUs for the low-latency and higher throughput applications on Alveo cards
+- EoU enhancement with Beta version model partitioning and custom layer/operators plug-in
 
 ## Getting Started
 
 Two options are available for installing the containers with the Vitis AI tools and resources.
 
  - Pre-built containers on Docker Hub: [xilinx/vitis-ai](https://hub.docker.com/r/xilinx/vitis-ai/tags)
- - Build containers locally with Docker recipes: [Docker Recipes](docker)
+ - Build containers locally with Docker recipes: [Docker Recipes](setup/docker)
 
 
 ### Installation
- - [Install Docker](doc/install_docker/README.md) - if Docker not installed on your machine yet
+ - [Install Docker](docs/install_docker/README.md) - if Docker not installed on your machine yet
 
  - [Ensure your linux user is in the group docker](https://docs.docker.com/install/linux/linux-postinstall/)
 
@@ -65,12 +63,12 @@ Two options are available for installing the containers with the Vitis AI tools 
 
 Download the latest Vitis AI Docker with the following command. This container runs on CPU.  
 ```
-docker pull xilinx/vitis-ai:latest  
+docker pull xilinx/vitis-ai-cpu:latest  
 ```
 
 To run the docker, use command:
 ```
-./docker_run.sh xilinx/vitis-ai:latest
+./docker_run.sh xilinx/vitis-ai-cpu:latest
 ```
 #### Building Docker from Recipe
 
@@ -99,61 +97,31 @@ To run the GPU docker, use command:
 ./docker_run.sh xilinx/vitis-ai-gpu:latest
 ```
 Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
-More Detail can be found here: [Run Docker Container](doc/install_docker/load_run_docker.md)
+More Detail can be found here: [Run Docker Container](docs/install_docker/load_run_docker.md)
 
-<details>
- <summary><b>Advanced - X11 Support for Examples on Alveo</b></summary>
-   Some examples in VART and Vitis-AI-Library for Alveo card need X11 support to display images, this requires you have X11 server support at your terminal and you need to make some modifications to **./docker_run.sh** file to enable the image display. For example, you could use following script to start the Vitis-AI CPU docker for Alveo with X11 support.
+**X11 Support for Running Vitis AI Docker with Alveo**
 
- ```
- #!/bin/bash
- HERE=$(pwd) # Absolute path of current directory
- user=`whoami`
- uid=`id -u`
- gid=`id -g`
- xclmgmt_driver="$(find /dev -name xclmgmt\*)"
- docker_devices=""
- for i in ${xclmgmt_driver} ;
- do
-   docker_devices+="--device=$i "
- done
+If you are running Vitis AI docker with Alveo card and want to use X11 support for graphics (for example, some demo applications in VART and Vitis-AI-Library for Alveo need to display images or video), please add following line into the *docker_run_params* variable definition in *docker_run.sh* script:
 
- render_driver="$(find /dev/dri -name renderD\*)"
- for i in ${render_driver} ;
- do
-   docker_devices+="--device=$i "
- done
+~~~
+-e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.Xauthority:/tmp/.Xauthority \
+~~~
 
- rm -Rf /tmp/.Xauthority
- cp $HOME/.Xauthority /tmp/
- chmod -R a+rw /tmp/.Xauthority
+And after the docker starts up, run following command lines:
 
- docker run \
-   $docker_devices \
-   -v /opt/xilinx/dsa:/opt/xilinx/dsa \
-   -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
-   -e USER=$user -e UID=$uid -e GID=$gid \
-   -v $HERE:/workspace \
-   -v /tmp/.X11-unix:/tmp/.X11-unix \
-   -v /tmp/.Xauthority:/tmp/.Xauthority \
-   -e DISPLAY=$DISPLAY \
-   -w /workspace \
-   -it \
-   --rm \
-   --network=host \
-   xilinx/vitis-ai-cpu:latest \
-   bash
- ```
+~~~
+cp /tmp/.Xauthority ~/
+sudo chown vitis-ai-user:vitis-ai-group ~/.Xauthority
+~~~
 
-  Before run this script, please make sure either you have local X11 server running if you are using Windows based ssh terminal to connect to remote server, or you have run **xhost +** command at a command terminal if you are using Linux with Desktop. Also if you are using ssh to connect to the remote server, remember to enable *X11 Forwarding* option either with Windows ssh tools setting or with *-X* options in ssh command line.
+Please note before running this script, please make sure either you have local X11 server running if you are using Windows based ssh terminal to connect to remote server, or you have run **xhost +** command at a command terminal if you are using Linux with Desktop. Also if you are using ssh to connect to the remote server, remember to enable *X11 Forwarding* option either with Windows ssh tools setting or with *-X* options in ssh command line.
 
-</details>
-  
+
 
  ### Get Started with Examples
   - [VART](demo/VART/README.md)
   - [Vitis AI Library](demo/Vitis-AI-Library/README.md)
-  - [Alveo U200/U250](alveo/README.md)
+  - [Examples](examples/README.md)
   - [Vitis AI DNNDK samples](demo/DNNDK)
 
 
@@ -173,23 +141,22 @@ Vitis AI offers a unified set of high-level C++/Python programming APIs to run A
 | 7  | segmentation          | FPN                 | Caffe      | Semantic segmentation with VART C\+\+ APIs\.                  |
 | 8  | squeezenet\_pytorch   | Squeezenet          | Pytorch    | Image classification with VART C\+\+ APIs\.                   |
 
-For more information, please refer to [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_2/zkj1576857115470.html)
+For more information, please refer to [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_3/zmw1606771874842.html)
 
 
 ## References
 - [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)
-- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_2/zkj1576857115470.html)
-- [Vitis AI Model Zoo with Performance & Accuracy Data](https://github.com/Xilinx/AI-Model-Zoo)
-- [Vitis AI Tutorials](https://github.com/Xilinx/Vitis-AI-Tutorials)
+- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_3/zmw1606771874842.html)
+- [Vitis AI Model Zoo with Performance & Accuracy Data](models/AI-Model-Zoo)
+- [Vitis AI Tutorials](https://github.com/Xilinx/Vitis-In-Depth-Tutorial/tree/master/Machine_Learning)
 - [Developer Articles](https://developer.xilinx.com/en/get-started/ai.html)
-- [Performance Whitepaper][]
 
 ## [System Requirements](docs/system_requirements.md)
 
 ## Questions and Support
-- [FAQ](doc/faq.md)
+- [FAQ](docs/faq.md)
 - [Vitis AI Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
-- [Third Party Source](doc/Thirdpartysource.md)
+- [Third Party Source](docs/Thirdpartysource.md)
 
 [models]: docs/models.md
 [Amazon AWS EC2 F1]: https://aws.amazon.com/marketplace/pp/B077FM2JNS
@@ -204,6 +171,5 @@ For more information, please refer to [Vitis AI User Guide](https://www.xilinx.c
 [ML Suite Lounge]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html
 [Models]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html#gettingStartedCloud
 [whitepaper here]: https://www.xilinx.com/support/documentation/white_papers/wp504-accel-dnns.pdf
-[Performance Whitepaper]: https://www.xilinx.com/support/documentation/white_papers/wp504-accel-dnns.pdf
 
    ```

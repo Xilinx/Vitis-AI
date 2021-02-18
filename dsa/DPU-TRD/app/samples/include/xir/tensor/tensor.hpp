@@ -251,8 +251,8 @@ class Tensor {
    *
    * @return A raw pointer to the current Tensor object.
    *
-   * @detail it will check the identity of the name, and it's not recommended to
-   * use.
+   * @details it will check the identity of the name, and it's not recommended
+   * to use.
    */
   virtual Tensor* rename(const std::string& name) = 0;
 

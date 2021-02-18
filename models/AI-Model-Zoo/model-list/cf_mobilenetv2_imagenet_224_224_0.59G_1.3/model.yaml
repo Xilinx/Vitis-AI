@@ -22,14 +22,14 @@ framework: caffe
 prune: 'no'
 version: 1.3
 files:
-- name: cf_mobilenetv2_imagenet_224_224_0.59G_13
+- name: cf_mobilenetv2_imagenet_224_224_0.59G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_mobilenetv2_imagenet_224_224_0.59G_1.3.zip
+  checksum: a9bfb45b6361fc1115d856cabdde041c
 - name: mobilenet_v2
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 30b20b68f06363d7823792190d0f2eac
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 94d34f2fa5451d2bcb708887e87661d7
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

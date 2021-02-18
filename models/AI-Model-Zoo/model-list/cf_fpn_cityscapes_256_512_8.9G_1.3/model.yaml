@@ -20,36 +20,36 @@ float ops: 8.9G
 task: segmentation
 framework: caffe
 prune: 'no'
-version: 1.0
+version: 1.3
 files:
-- name: cf_fpn_cityscapes_256_512_8.9G_1.0
+- name: cf_fpn_cityscapes_256_512_8.9G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_fpn_cityscapes_256_512_8.9G_1.3.zip
+  checksum: 269e91066d76b116f45bfe6f9ba725d5
 - name: fpn
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 41bdb819d9d6a1565cebc5de620358e0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: f3657c429aa56e0e3564f0d60db92df0
 - name: fpn
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck190-r1.3.0.tar.gz
-  checksum: 6ee2d838ef5389fe4b90cdae16694720
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck190-r1.3.1.tar.gz
+  checksum: 1f2e0f5cc98b5ec52ee6069866a98644
 - name: fpn
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50-r1.3.0.tar.gz
-  checksum: 46f37438e6bba2e1d3d55f405f5ff79d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50-r1.3.1.tar.gz
+  checksum: ddaec8c0d6a7a11b6d199891bcd2c04b
 - name: fpn
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50lv-u280-r1.3.0.tar.gz
-  checksum: a6c181f168af958344813685e5216c62
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50lv-u280-r1.3.1.tar.gz
+  checksum: b66911738214fb83e9149d4e8dcf2f07
 - name: fpn
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 8df4fc5a1059e40b3d32ffde44b8b66a
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

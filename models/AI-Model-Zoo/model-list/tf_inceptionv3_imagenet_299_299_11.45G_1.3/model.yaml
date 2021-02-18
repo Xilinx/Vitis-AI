@@ -25,31 +25,36 @@ files:
 - name: tf_inceptionv3_imagenet_299_299_11.45G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv3_imagenet_299_299_11.45G_1.3.zip
+  checksum: 03027984c92594e5f2d0262a3364410a
 - name: inception_v3_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 9d1d23650f6a1f9bd0144dc0fac8a8e3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 51967d7ae93f6575928a4c3b10edba40
 - name: inception_v3_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-vck190-r1.3.0.tar.gz
-  checksum: 8c46a63c86dffe87bbf46558a2923114
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-vck190-r1.3.1.tar.gz
+  checksum: 5a0057c4e53130b83bcb2301a0579e9b
 - name: inception_v3_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u50-r1.3.0.tar.gz
-  checksum: be213ca2606b69f0473977fde401d9e4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u50-r1.3.1.tar.gz
+  checksum: 06633d62a227dd11384238e3d9231795
 - name: inception_v3_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: 567dab6b68ba4314ae9b40e0ef29c445
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 6acb3aa04ba64a236d770b83ce889beb
 - name: inception_v3_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 4e38fa90c272d298775ad43b7cec7688
+- name: inception_v3_tf
+  type: xmodel
+  board: u200 & u250
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u200-u250-r1.3.0.tar.gz
+  checksum: bb03a15515b412247da93f9b1d4a6d75
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

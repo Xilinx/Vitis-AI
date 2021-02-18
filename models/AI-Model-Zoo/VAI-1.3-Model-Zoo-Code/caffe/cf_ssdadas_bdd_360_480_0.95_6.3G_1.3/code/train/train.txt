@@ -1,2 +1,0 @@
-images/0c8b32af-2d9a6111.png label_txt/0c8b32af-2d9a6111.txt
-images/0d4570ff-76fd2615.png label_txt/0d4570ff-76fd2615.txt

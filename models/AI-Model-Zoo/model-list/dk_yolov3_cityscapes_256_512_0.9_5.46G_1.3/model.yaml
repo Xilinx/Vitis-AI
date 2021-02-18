@@ -25,26 +25,26 @@ files:
 - name: dk_yolov3_cityscapes_256_512_0.9_5.46G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov3_cityscapes_256_512_0.9_5.46G_1.3.zip
+  checksum: ae6cc8ada32fa0c8419588cb8a70409a
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 40bc8c8510e7a7f0407e8a8f5c3c8baa
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 5d01d6064933656afe7ffbccdabda61e
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck190-r1.3.0.tar.gz
-  checksum: c67ed00614348a437d203ee0d4531ae7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck190-r1.3.1.tar.gz
+  checksum: 689f74dd0b9b7208121f717392c802e6
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.0.tar.gz
-  checksum: ff66d2b5d85dadc4ec197e9ffce96f70
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-r1.3.1.tar.gz
+  checksum: 242c29239f01d6edbe2e9b7b278974ef
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50lv-u280-r1.3.0.tar.gz
-  checksum: 18472f3aca16ffb92cd43a86cda07c7b
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50lv-u280-r1.3.1.tar.gz
+  checksum: d2697a006f96cafef4a754a6e7e37991
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

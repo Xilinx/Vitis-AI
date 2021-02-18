@@ -15,7 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.9)
-project(xir VERSION 1.3.0 LANGUAGES C CXX)
+project(xir VERSION 1.3.1 LANGUAGES C CXX)
 
 include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
 

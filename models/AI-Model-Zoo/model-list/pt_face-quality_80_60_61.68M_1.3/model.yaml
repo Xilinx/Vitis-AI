@@ -26,31 +26,31 @@ files:
 - name: py_face-quality_80_60_61.68M_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_face-quality_80_60_61.68M_1.3.zip
+  checksum: 9cff1dcf6c9a9029df9cc8b47a8bfb9e
 - name: face-quality_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 976b748039c3801b8c8f772ee6428079
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: a3cb53eb85cbde65ecef4579083ee09d
 - name: face-quality_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck190-r1.3.0.tar.gz
-  checksum: cfd76cd88ffe88775d05b613b5a90a78
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck190-r1.3.1.tar.gz
+  checksum: 695c1c2e4d5ef624263aa91747c4b052
 - name: face-quality_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-r1.3.0.tar.gz
-  checksum: e59c6ce18826f51324604d6c43f652a1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-r1.3.1.tar.gz
+  checksum: b6d409c16727559c4aee6712ebd6e826
 - name: face-quality_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 5cfc4a642219e14114d244d404315005
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 4356da8b82a2115554afa061651454e7
 - name: face-quality_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: b502a408f0968986121153e214b9dbd9
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

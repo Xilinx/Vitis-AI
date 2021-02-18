@@ -166,8 +166,8 @@ int main(int argc, char **argv) {
     }
     const std::string videoFile = argv[1];
     const std::string output_video = "./detection_output.avi";
-    std::string labelsFile = std::string(getenv("VAI_ALVEO_ROOT")) + \
-        "/DPU-CADX8G/yolo/coco.names";
+    std::string labelsFile = std::string(getenv("VAI_HOME")) + \
+        "/examples/DPUCADX8G/yolo/coco.names";
     std::vector<std::string> vecOfLabels;
     if (! getFileContent(labelsFile, vecOfLabels)) {
         return 0;

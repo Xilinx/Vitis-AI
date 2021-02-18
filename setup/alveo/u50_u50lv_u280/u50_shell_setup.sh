@@ -31,15 +31,12 @@ fi
 ##############################
 # Get Gen3x4 Platform Link
 ##############################
-if [[ $distroname == *"Ubuntu 16.04"* ]]; then
-  echo "Ubuntu 16.04"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_16.04_deb.tar.gz"
-elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
-  echo "Ubuntu 18.04"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_18.04_deb.tar.gz"
+if [[ $distroname == *"Ubuntu 16.04"* ]] || [[ $distroname == *"Ubuntu 18.04"* ]] || [[ $distroname == *"Ubuntu 20.04"* ]]; then
+  echo "Ubuntu"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u50-gen3x4-xdma-platform_2-1_all.deb.tar.gz"
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"Red Hat"* ]]; then
   echo "CentOS/RHEL"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=Xilinx-u50-gen3x4-xdma-2-202010.1_2902115_noarch_rpm.tar.gz"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u50-gen3x4-xdma-platform-2-1.noarch.rpm.tar.gz"
 else
   echo "Failed, couldn't detect os distribution"
   exit 1

@@ -25,11 +25,11 @@ files:
 - name: tf_inceptionv2_imagenet_224_224_3.88G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv2_imagenet_224_224_3.88G_1.3.zip
+  checksum: 47f612197f842975a4bdc2d1dc9c949d
 - name: inception_v2_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 9b53e5f53ae24b12386c644f87199568
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: ff09bc4d2b9fcfc51f907bb4e30083c1
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,12 +1,6 @@
 ## Cross-compile WAA-TRD example
 * Download the [sdk-2020.2.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2020.2.0.0.sh)
 
-    For bash, same sdk-2020.2.0.0.sh file can be obtaind from here.
-    ```
-    #XCD_SERVER 
-    /group/dphi_software/vitis_ai_library/r1.3/sdk-2020.2.0.0.sh
-    ```
-
 * Install the cross-compilation system environment, follow the prompts to install. 
 
     **Please install it on your local host linux system, not in the docker system.**
@@ -25,11 +19,6 @@ Here we install it under `~/petalinux_sdk`.
 * Download the [vitis_ai_2020.2-r1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.0.tar.gz) and install it to the petalinux system.
     ```
     tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
-    ```
-    For bash, same vitis_ai_2020.2-r1.3.0.tar.gz tar file can be obtaind from here.
-    ```
-    #XCD_SERVER 
-    /group/dphi_software/vitis_ai_library/r1.3/vitis_ai_2020.2-r1.3.0.tar.gz
     ```
 
 * Cross compile `resnet50_waa` example.

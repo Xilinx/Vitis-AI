@@ -20,7 +20,7 @@ from vai.dpuv1.rt import xdnn, xdnn_io
 from vai.dpuv1.rt.vitis.python.dpu.runner import Runner
 from vai.dpuv1.utils.postproc import yolo
 
-sys.path.append("../../../examples/DPU-CADX8G/yolo")
+sys.path.append("../../../examples/DPUCADX8G/yolo")
 from get_mAP_darknet import calc_detector_mAP
 from yolo_utils import bias_selector, saveDetectionDarknetStyle, yolo_parser_args
 from yolo_utils import draw_boxes, generate_colors

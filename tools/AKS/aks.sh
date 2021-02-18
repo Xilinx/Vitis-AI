@@ -62,6 +62,12 @@ usage() {
   echo "    ./aks.sh -m resnet50_edge --dir1 <image-dir>"
   echo -e ""
 
+  echo "Examples New DPU for Alveo-U200/U250 (DPUCADF8H):"
+  echo "------------------------------------------------"
+  echo "Run ResNet50 on Alveo-U200/U250: "
+  echo "    ./aks.sh -m resnet50_cadf8h --dir1 <image-dir>"
+  echo -e ""
+
   echo "Arguments:"
   echo "------------------------------------------------"
   echo "  -n  nFPGA   | --nfpga   nFPGA   Number of FPGAs (Connected on System)"
@@ -75,6 +81,7 @@ usage() {
   echo "                                  Possible values: [facedetect]"
   echo "                                  Possible values: [resnet50_edge] - only on edge devices"
   echo "                                  Possible values: [resnet50_u50] - only on U50 devices"
+  echo "                                  Possible values: [resnet50_cadf8h] - only on U200/U250 devices"
   echo "  -i  IMPL    | --impl    IMPL    Implemetation"
   echo "                                  Possible values: [cpp, py]"
   echo "  -d1 IMAGES  | --dir1    IMAGES  Image Directory"
@@ -129,7 +136,7 @@ done
 
 # Supported Modes & Models
 declare -A SUPPORTED_MODELS
-for name in "googlenet" "resnet50" "inception_v1_tf" "googlenet_resnet50" "tinyyolov3" "tinyyolov3_video" "googlenet_tinyyolov3" "stdyolov2" "facedetect" "googlenet_pp_accel" "resnet50_edge" "resnet50_u50"
+for name in "googlenet" "resnet50" "inception_v1_tf" "googlenet_resnet50" "tinyyolov3" "tinyyolov3_video" "googlenet_tinyyolov3" "stdyolov2" "facedetect" "googlenet_pp_accel" "resnet50_edge" "resnet50_u50" "resnet50_cadf8h"
 do
     SUPPORTED_MODELS[$name]=1
 done
@@ -158,15 +165,15 @@ LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${AKS_ROOT}/libs
 PYTHONPATH=${PYTHONPATH}:${AKS_ROOT}/libs:${AKS_ROOT}/libs/pykernels:/usr/lib
 
 # Add Library Paths (DPUCADX8G)
-if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib" ]
+if [ -d "${VAI_HOME}/vai/dpuv1/rt/xdnn_cpp/lib" ]
 then
-  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib
+  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_HOME}/vai/dpuv1/rt/xdnn_cpp/lib
 fi
-if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/utils" ]
+if [ -d "${VAI_HOME}/vai/dpuv1/utils" ]
 then
-  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/utils
+  LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_HOME}/vai/dpuv1/utils
 fi
-PYTHONPATH=${PYTHONPATH}:${VAI_ALVEO_ROOT}:${VAI_ALVEO_ROOT}/DPU-CADX8G/face_detect
+PYTHONPATH=${PYTHONPATH}:${VAI_HOME}/examples:${VAI_HOME}/examples/DPUCADX8G/face_detect
 
 if [ ! -z "${CONDA_PREFIX}" ]; then
   LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib/python3.6/site-packages/vai/dpuv1/utils
@@ -199,23 +206,26 @@ fi
 
 CPP_EXE=""
 PY_EXE=""
-AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=aksMeta_vai1p2_30062020.zip"
-# Check if the model files exists
-if [[ `uname -m` != "aarch64" ]]; then
-  for name in "meta_googlenet" "meta_inception_v1_tf" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
-  do
-    NAME="graph_zoo/$name"
-    if [[ ! -d "${NAME}" ]]; then
-      echo -e "${NAME} doesn't exist"
-      wget ${AKS_GRAPH_META_URL} -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
-      if [[ $? != 0 ]]; then
-        echo "Network download failed. Exiting ...";
-        exit 1
+
+# Check if the model files exists, download if not
+get_dpucadx8g_artifacts () {
+  AKS_GRAPH_META_URL="https://www.xilinx.com/bin/public/openDownload?filename=aksMeta_vai1p2_30062020.zip"
+  if [[ `uname -m` != "aarch64" ]]; then
+    for name in "meta_googlenet" "meta_inception_v1_tf" "meta_resnet50" "meta_tinyyolov3" "meta_stdyolov2" "meta_googlenet_no_xbar" "meta_facedetect"
+    do
+      NAME="graph_zoo/$name"
+      if [[ ! -d "${NAME}" ]]; then
+        echo -e "${NAME} doesn't exist"
+        wget ${AKS_GRAPH_META_URL} -O temp.zip && unzip temp.zip -d graph_zoo/ && rm temp.zip
+        if [[ $? != 0 ]]; then
+          echo "Network download failed. Exiting ...";
+          exit 1
+        fi
+        break
       fi
-      break
-    fi
-  done
-fi
+    done
+  fi
+}
 
 # Check input image/video args
 if [ "${MODEL}" == "tinyyolov3_video" ]; then
@@ -235,7 +245,15 @@ else
 fi
 
 # Model Selection
-if [ "${MODEL}" == "googlenet" ]; then
+if [ "${MODEL}" == "resnet50_cadf8h" ]; then
+  PY_EXE=examples/resnet50_dpucadf8h.py
+  CPP_EXE=examples/bin/resnet50_dpucadf8h.exe
+  exec_args="$DIRECTORY1"
+  export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8
+  PYTHON=/usr/bin/python3
+
+elif [ "${MODEL}" == "googlenet" ]; then
+  get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/googlenet.exe
   PY_EXE=examples/googlenet.py
   exec_args="$DIRECTORY1"
@@ -247,21 +265,25 @@ elif [ "${MODEL}" == "resnet50_u50" ]; then
   exec_args="$DIRECTORY1"
 
 elif [ "${MODEL}" == "inception_v1_tf" ]; then
+  get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/inception_v1_tf.exe
   PY_EXE=examples/inception_v1_tf.py
   exec_args="$DIRECTORY1"
 
 elif [ "${MODEL}" == "googlenet_pp_accel" ]; then
+  get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/googlenet_pp_accel.exe
   PY_EXE=examples/googlenet_pp_accel.py
   exec_args="$DIRECTORY1"
 
 elif [ "${MODEL}" == "resnet50" ]; then
+  get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/resnet50.exe
   PY_EXE=examples/resnet50.py
   exec_args="$DIRECTORY1"
 
 elif [ "${MODEL}" == "tinyyolov3" ]; then
+  get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/tinyyolov3.exe
   PY_EXE=examples/tinyyolov3.py
   exec_args="$DIRECTORY1"
@@ -273,15 +295,18 @@ elif [ "${MODEL}" == "tinyyolov3_video" ]; then
     echo ""
     exit 1
   fi
+  get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/tinyyolov3_video.exe
   exec_args="$VIDEO"
 
 elif [ "${MODEL}" == "stdyolov2" ]; then
+  get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/stdyolov2.exe
   PY_EXE=examples/stdyolov2.py
   exec_args="$DIRECTORY1"
 
 elif [ "${MODEL}" == "googlenet_resnet50" ]; then
+  get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/googlenet_resnet50.exe
   PY_EXE=examples/googlenet_resnet50.py
   exec_args="$DIRECTORY1 $DIRECTORY2"
@@ -295,6 +320,7 @@ elif [ "${MODEL}" == "googlenet_resnet50" ]; then
   fi;
 
 elif [ "${MODEL}" == "googlenet_tinyyolov3" ]; then
+  get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/googlenet_tinyyolov3.exe
   PY_EXE=examples/googlenet_tinyyolov3.py
   exec_args="$DIRECTORY1 $DIRECTORY2"
@@ -308,11 +334,12 @@ elif [ "${MODEL}" == "googlenet_tinyyolov3" ]; then
   fi;
 
 elif [ "${MODEL}" == "facedetect" ]; then
-  echo "[INFO] Visit $VAI_ALVEO_ROOT/DPU-CADX8G/face_detect to prepare FDDB dataset."
+  echo "[INFO] Visit $VAI_HOME/examples/DPUCADX8G/face_detect to prepare FDDB dataset."
   echo -n "[INFO] To save results to a text file for accuracy measurement, "
   echo "provide a text file path to 'save_result_txt' argument in the graph_zoo/graph_facedetect.json"
-  echo "[INFO] Visit $VAI_ALVEO_ROOT/DPU-CADX8G/face_detect to see how to measure accuracy from the text file"
+  echo "[INFO] Visit $VAI_HOME/examples/DPUCADX8G/face_detect to see how to measure accuracy from the text file"
   echo ""
+  get_dpucadx8g_artifacts
   CPP_EXE=examples/bin/facedetect.exe
   PY_EXE=examples/facedetect.py
   exec_args="$DIRECTORY1"

@@ -25,31 +25,31 @@ files:
 - name: cf_refinedet_coco_360_480_0.8_25G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_refinedet_coco_360_480_0.8_25G_1.3.zip
+  checksum: e796733bd6f322b0584881aeb419cdb7
 - name: refinedet_pruned_0_8
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 2a892ccee43f6bb0c4b20c86a2315fe2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: d5f69505a95cf51a3b366f1db7fe5fe5
 - name: refinedet_pruned_0_8
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-vck190-r1.3.0.tar.gz
-  checksum: b1a7f1fb3f662ee00fa9786ed9e1300b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-vck190-r1.3.1.tar.gz
+  checksum: aa5e88d5f31700849cdd1a2890ca599f
 - name: refinedet_pruned_0_8
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-u50-r1.3.0.tar.gz
-  checksum: 8465f31049d7d6d3dba2daed782fab29
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-u50-r1.3.1.tar.gz
+  checksum: f85bfd481f0e167d21b5068d6084cf7b
 - name: refinedet_pruned_0_8
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-u50lv-u280-r1.3.0.tar.gz
-  checksum: a249b83ba52ca5802d0c50c4641fd4ab
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-u50lv-u280-r1.3.1.tar.gz
+  checksum: aa581f1e949b0a3f52ceb601dde6ded3
 - name: refinedet_pruned_0_8
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_8-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: af4556565d10d7ea71047b4a4f81cda9
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

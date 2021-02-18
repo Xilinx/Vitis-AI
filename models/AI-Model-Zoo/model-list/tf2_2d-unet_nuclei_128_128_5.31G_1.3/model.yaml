@@ -25,31 +25,31 @@ files:
 - name: tf2_2d-unet_nuclei_128_128_5.31G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_2d-unet_nuclei_128_128_5.31G_1.3.zip
+  checksum: ff46b7934cd1ae10dcf84e4997e5ba80
 - name: medical_seg_cell_tf2
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 5ed8c8cc414b779a71d7d3618d84d7a0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: fc06c7f7c0f35c987f7da47412019b9e
 - name: medical_seg_cell_tf2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck190-r1.3.0.tar.gz
-  checksum: bf3c78d7eef1c265dd1520f1118ae831
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck190-r1.3.1.tar.gz
+  checksum: e5272204acfc4a5bc672e07caccc66be
 - name: medical_seg_cell_tf2
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50-r1.3.0.tar.gz
-  checksum: 276dc3bcb0673c23749410f1b30a5386
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50-r1.3.1.tar.gz
+  checksum: a3e7806a7178d0399d2d2a08b471be8a
 - name: medical_seg_cell_tf2
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50lv-u280-r1.3.0.tar.gz
-  checksum: f5d8b42f63ddd6b2dbb5d57e4ca04890
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50lv-u280-r1.3.1.tar.gz
+  checksum: e860f47c8fc4ebef28a4fc66dac5db8d
 - name: medical_seg_cell_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 28721b1264db5b50710e370793f6d10e
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -139,9 +139,9 @@ class MatmulRebuilder(BaseRebuilder):
             if node.get_type() == 'data':
                 rebuild_config['input'] = node
             '''
-            if (node.get_type() == 'const') and (len(node.get_output_tensor().ndim) == 2):
+            if (node.get_type() == 'const') and (node.get_output_tensor().ndim == 2):
                 rebuild_config['weights'] = node
-            elif (node.get_type() == 'const') and (len(node.get_output_tensor().ndim) == 1):
+            elif (node.get_type() == 'const') and (node.get_output_tensor().ndim == 1):
                 rebuild_config['bias'] = node
             else:
                 rebuild_config['input'] = node
@@ -267,9 +267,9 @@ class StridedSliceRebuilder(BaseRebuilder):
             for op in param_ops:
                 if op.get_type() == 'data':
                     param_ops_dict['input'] = op
-                elif len(op.get_output_tensor().ndim) == 2:
+                elif op.get_output_tensor().ndim == 2:
                     param_ops_dict['weights'] = op
-                elif len(op.get_output_tensor().ndim) == 1:
+                elif op.get_output_tensor().ndim == 1:
                     param_ops_dict['bias'] = op
         else:
             raise ValueError('Can not handle this kind of strided_slice op')
@@ -481,7 +481,7 @@ class StridedSliceRebuilder(Rebuilder):
                 add_ops['input'] = [wx_xt_mmul]
                 add_ops['input'].append(bias_op)
                 
-                add_shape = wx_xt_mmul.get_output_tensor().ndim
+                add_shape = wx_xt_mmul.get_output_tensor().dims
                 add_tensor = np.zeros(add_shape, dtype=np.int64)
                 
                 add_name = op.get_name() + '_eltwise'

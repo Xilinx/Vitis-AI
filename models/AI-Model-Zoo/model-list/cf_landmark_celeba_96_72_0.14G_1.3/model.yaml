@@ -26,31 +26,31 @@ files:
 - name: cf_landmark_celeba_96_72_0.14G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_landmark_celeba_96_72_0.14G_1.3.zip
+  checksum: 4ea69006fd8223039197d61aa3a73318
 - name: face_landmark
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: ea62be63082d11c0bf84e814c231b6e9
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: a307807e7a721fa518de4a3c9d01be3d
 - name: face_landmark
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck190-r1.3.0.tar.gz
-  checksum: 52850429c29d436fd0ed8545c6c79b62
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck190-r1.3.1.tar.gz
+  checksum: 892a2785ae57b1597fc88f870cd37b01
 - name: face_landmark
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-r1.3.0.tar.gz
-  checksum: aefea518bec7770d2233c3bc01a2cc08
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-r1.3.1.tar.gz
+  checksum: a9cba72a36eb3d7c4b379af72552831d
 - name: face_landmark
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0117d005dfab615e9908d43029c44a84
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50lv-u280-r1.3.1.tar.gz
+  checksum: 814b6af283f401cf6e82e1cc11beb358
 - name: face_landmark
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 5ca7f1ba4ecdc2191921a518e2c5cb4b
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

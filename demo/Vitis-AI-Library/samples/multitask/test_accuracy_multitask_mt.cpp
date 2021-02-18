@@ -80,12 +80,13 @@ struct MultiTaskAcc : public AccThread {
     auto result = (MultiTaskResult*)dpu_result.result_ptr.get();
     auto single_name = split(dpu_result.single_name, ".")[0];
     auto label_map = label_map_v1;
-    if (model_name == "MT-resnet18_mixed_pt_acc") label_map = label_map_v2;
-    else{
+    if (model_name == "MT-resnet18_mixed_pt_acc") {
+      label_map = label_map_v2;
+    } else {
       single_name += ".png";
     }
     for (auto& box : result->vehicle) {
-      std::string label_name = label_map_v2[box.label];
+      std::string label_name = label_map[box.label];
       float xmin = box.x * dpu_result.w;
       float ymin = box.y * dpu_result.h;
       float xmax = (box.x + box.width) * dpu_result.w;

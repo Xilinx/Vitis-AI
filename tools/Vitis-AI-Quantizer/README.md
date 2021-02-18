@@ -1,2 +1,0 @@
-# TODO: Vitis-AI-Quantizer
-

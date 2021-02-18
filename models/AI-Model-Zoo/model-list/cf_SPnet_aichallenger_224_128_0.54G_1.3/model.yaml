@@ -25,31 +25,31 @@ files:
 - name: cf_SPnet_aichallenger_224_128_0.54G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_SPnet_aichallenger_224_128_0.54G_1.3.zip
+  checksum: 6b3f6e70dd849a26144db66795259404
 - name: sp_net
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: a2b6633c677c85e2f93a9728926dcb0b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: b3adbaf92316ea1b4cdde7318be328a2
 - name: sp_net
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.3.0.tar.gz
-  checksum: 972433fc120568c94169108a26f824aa
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.3.1.tar.gz
+  checksum: 9997312e299bcbf69fe597e8a1f1c5dc
 - name: sp_net
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-r1.3.0.tar.gz
-  checksum: 5aba6bc61e6feadfcb3083385d0a455e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-r1.3.1.tar.gz
+  checksum: a2c7924ea27b0c5790d411b180b25403
 - name: sp_net
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50lv-u280-r1.3.0.tar.gz
-  checksum: 255f59fa0ed088eab2baa8641f97b28b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50lv-u280-r1.3.1.tar.gz
+  checksum: facb8d2a5b72480739231f29b6283f85
 - name: sp_net
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: bb77cf120f0a5e45f5baa113a06fd14e
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

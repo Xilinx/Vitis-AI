@@ -22,6 +22,7 @@
 #include <csignal>
 #include <execinfo.h>
 #include <iostream>
+#include <fstream>
 #include <iterator>
 
 // #define PREP_DEMO_DATA 1    // only for demo program

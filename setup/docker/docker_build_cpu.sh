@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright 2019 Xilinx Inc.
+# Copyright 2020 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,4 +23,4 @@ DATE="$(date)"
 # Final Build Image Tag
 IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}
 
-docker build --network=host --build-arg VERSION=${VERSION} --build-arg CACHEBUST="$(date +%s)" --build-arg DATE="$(date)" -f ${DOCKERFILE} -t $IMAGE_TAG ./
+docker build --network=host --build-arg VERSION=${VERSION} --build-arg CACHEBUST="$(date +%s)" --build-arg DATE="$(date -I)" -f ${DOCKERFILE} -t $IMAGE_TAG ./

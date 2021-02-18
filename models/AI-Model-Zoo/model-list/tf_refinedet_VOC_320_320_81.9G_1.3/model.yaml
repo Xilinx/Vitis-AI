@@ -25,31 +25,31 @@ files:
 - name: tf_refinedet_VOC_320_320_81.9G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_refinedet_VOC_320_320_81.9G_1.3.zip
+  checksum: 96eab2f40a633bae7dace116534eb490
 - name: refinedet_VOC_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 72500de1f8ab4a54d8871e4f06e2d9c7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 231fd4aec0d529e173cc5996f6719e9f
 - name: refinedet_VOC_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck190-r1.3.0.tar.gz
-  checksum: 66cd3def331fcf528f4080f891a80f59
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck190-r1.3.1.tar.gz
+  checksum: c6ec9fdd3fc5e667e19c3c929ed98c0f
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-r1.3.0.tar.gz
-  checksum: f11d4be393d686245b06ef18c6b1f6e3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-r1.3.1.tar.gz
+  checksum: 40a906b5c1b16527d13bd08ebd914e1a
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: a5d555ae3e3510d58390458bcfa126fc
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 6a3fb32c82e11939f2aa9bc0de854dff
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: cd7a8e762702e19168f93b3b301e0da8
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

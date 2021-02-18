@@ -25,31 +25,31 @@ files:
 - name: cf_densebox_wider_320_320_0.49G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_densebox_wider_320_320_0.49G_1.3.zip
+  checksum: 31783f9139d57332dcca4cb0ff1f974d
 - name: densebox_320_320
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 10c15e56f331b6c3920ba024b024c5f1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 3a983585fb23e881d865d6d498b05434
 - name: densebox_320_320
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck190-r1.3.0.tar.gz
-  checksum: e89d5f8fa1b5dc1809ec0c9bbe273952
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck190-r1.3.1.tar.gz
+  checksum: ef6ee9b117bbc6c8e5e070cc49086dba
 - name: densebox_320_320
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.0.tar.gz
-  checksum: f1baf963bc4d32f9d796c128c372dfd3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.1.tar.gz
+  checksum: 63ed7d3a284aa667f0fcb64faba88262
 - name: densebox_320_320
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50lv-u280-r1.3.0.tar.gz
-  checksum: cc1df0ebd37a018c2823e457cfbe0392
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50lv-u280-r1.3.1.tar.gz
+  checksum: 42be167b198b3942eb85a15f2592b5b8
 - name: densebox_320_320
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 015004942c0ae8cd50b73d90dc9e6cc2
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

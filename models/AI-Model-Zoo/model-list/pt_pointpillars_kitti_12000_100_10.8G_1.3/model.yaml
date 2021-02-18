@@ -25,16 +25,16 @@ files:
 - name: pt_pointpillars_kitti_12000_100_10.8G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pointpillars_kitti_12000_100_10.8G_1.3.zip
+  checksum: 7922b57f6f6e1dd7ae5b00344bcaa8f6
 - name: pointpillars_kitti_12000_0_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 280c1f153a334d5d2ad6683a75fc3685
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 17e3b11d5ddd6ba9d4a2ec40e44152b8
 - name: pointpillars_kitti_12000_1_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: f9cb1fe8868001c641aa76f60ae34c76
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 7c5a7e82edfb65860d14d495756b16af
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

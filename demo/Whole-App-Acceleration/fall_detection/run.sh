@@ -24,7 +24,7 @@ usage() {
 NUM_FPGA=""
 DIRECTORY=""
 VERBOSE=1
-AKS_ROOT=${VAI_ALVEO_ROOT}/../tools/AKS
+AKS_ROOT=${VAI_HOME}/tools/AKS
 
 # Parse Options
 while true
@@ -85,15 +85,6 @@ if [[ ! -d "${NAME}" ]]; then
 fi;
 
 # Add Library Paths
-if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib" ]
-then
-    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib
-fi
-if [ -d "${VAI_ALVEO_ROOT}/vai/dpuv1/utils" ]
-then
-    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${VAI_ALVEO_ROOT}/vai/dpuv1/utils
-fi
-
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:libs
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${AKS_ROOT}
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib

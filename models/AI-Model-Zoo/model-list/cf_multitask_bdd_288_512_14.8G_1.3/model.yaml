@@ -25,31 +25,31 @@ files:
 - name: cf_multitask_bdd_288_512_14.8G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_multitask_bdd_288_512_14.8G_1.3.zip
+  checksum: 792896071c8337ad936d4178f222c9f7
 - name: multi_task
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: d6bb204a1b5e8a9b57a6b7131b6c4c87
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: bc22cc6ab4568b58640c7fdd22827d6e
 - name: multi_task
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck190-r1.3.0.tar.gz
-  checksum: 04174bca6346022500ae71cf562340ba
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck190-r1.3.1.tar.gz
+  checksum: bca2ad96e54e1063d33333bd98e6ea01
 - name: multi_task
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-r1.3.0.tar.gz
-  checksum: a3d91161b49554d48ca42b9870109ad7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-r1.3.1.tar.gz
+  checksum: 0a4ea81aa8752d8b5f878f141d196643
 - name: multi_task
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50lv-u280-r1.3.0.tar.gz
-  checksum: 8a0469c9fee790f8c824c382fce1fd27
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50lv-u280-r1.3.1.tar.gz
+  checksum: beed51ec201cd6bd0ad02b5b40e4c5bd
 - name: multi_task
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 897e57e8a158027a2027e18c021596b6
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

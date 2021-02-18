@@ -25,31 +25,31 @@ files:
 - name: cf_ssdpedestrian_coco_360_640_0.97_5.9G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdpedestrian_coco_360_640_0.97_5.9G_1.3.zip
+  checksum: efd9d865b6af13c40c391af5d8aa8303
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 1fb2a9861dbfd2ff6af499605f573483
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 720c46a27c14c06b195b9c70c9e93ac7
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-vck190-r1.3.0.tar.gz
-  checksum: 8b5d72ce3b2f3c079ff0f0b892852498
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-vck190-r1.3.1.tar.gz
+  checksum: f35901dea5f040ec41180c0fe08c79bc
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-r1.3.0.tar.gz
-  checksum: 7a0cc5fbb6da648192cd988f1207b15b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-r1.3.1.tar.gz
+  checksum: d547da688b5796d6fcf081c7fb1f83b6
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50lv-u280-r1.3.0.tar.gz
-  checksum: 407b433ba03087fc21844c94f30343f8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50lv-u280-r1.3.1.tar.gz
+  checksum: c7083e188ab472f1d5610f9d9a292fde
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 586616a231a7c710d5a693602b2c385a
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

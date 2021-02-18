@@ -25,16 +25,16 @@ files:
 - name: tf_ssdlite_mobilenetv2_coco_300_300_1.5G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdlite_mobilenetv2_coco_300_300_1.5G_1.3.zip
+  checksum: bdd63a848da40eaae1a2597769bb676f
 - name: ssdlite_mobilenet_v2_coco_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 6eb8a34851c9c539baf88e8be448779a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 02a0c219b4ea253e23843ca9983d4a79
 - name: ssdlite_mobilenet_v2_coco_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 20cd67189a8708282e7425fe5974ea15
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

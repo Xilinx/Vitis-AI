@@ -25,31 +25,26 @@ files:
 - name: pt_facereid-large_96_96_515M_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_facereid-large_96_96_515M_1.3.zip
+  checksum: fd5adfd437a1c35f2ec5f207649605fd
 - name: facereid-large_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 5e14c316ec1503b90c1a2f28fe65f9ac
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 41c09bd605b78bbe840613df332ec519
 - name: facereid-large_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-vck190-r1.3.0.tar.gz
-  checksum: 8a6af731226be064a99731b9b19b87f7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-vck190-r1.3.1.tar.gz
+  checksum: 10d9461167bf42fa579b889db721713c
 - name: facereid-large_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50-r1.3.0.tar.gz
-  checksum: db3ea638ad9b697ab33075d8bdc68e93
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50-r1.3.1.tar.gz
+  checksum: 62e172d2cbac7dc536c4e01127249902
 - name: facereid-large_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 7f7a0a43e290d79a48dda11ad56ec98b
-- name: facereid-large_pt
-  type: xmodel
-  board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 555bd0524a9c6770c64d2856533cf647
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -25,26 +25,26 @@ files:
 - name: tf_yolov3_voc_416_416_65.63G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_yolov3_voc_416_416_65.63G_1.3.zip
+  checksum: e1024c8600305f7cbea105141b17f10c
 - name: yolov3_voc_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: a48299ade03b7e84549323f874f78ee2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: d249e9ee172aaa67c27f6dc7e9f8f778
 - name: yolov3_voc_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.3.0.tar.gz
-  checksum: ad525428d41a11c182fc32fa3545fb06
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.3.1.tar.gz
+  checksum: 89dcee1d960c7c7203c36d845d3b79f4
 - name: yolov3_voc_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50-r1.3.0.tar.gz
-  checksum: d382209f890cd152ff20fbedd1b61d54
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50-r1.3.1.tar.gz
+  checksum: 74d4e4ce59eed95c672ac89d2fb00a5b
 - name: yolov3_voc_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: c59499c8110b35dfea7401acc7b3c8de
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 2bdd54ed091f9307c09cee06e725f34c
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

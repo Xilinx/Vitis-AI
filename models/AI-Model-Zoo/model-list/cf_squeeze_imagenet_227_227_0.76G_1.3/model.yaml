@@ -25,31 +25,31 @@ files:
 - name: cf_squeeze_imagenet_227_227_0.76G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_squeeze_imagenet_227_227_0.76G_1.3.zip
+  checksum: 96bb1502f54bcbbbebb54a1656f8cbf7
 - name: squeezenet
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 76dcaf39923001e8177becda30db2e5b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 6875bdbdeb875fb8004b41943a085c86
 - name: squeezenet
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-vck190-r1.3.0.tar.gz
-  checksum: 54bf80f93fc238367ffb501e7b4fb5f6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-vck190-r1.3.1.tar.gz
+  checksum: 21dea24ccd588012957a8047fb36c56a
 - name: squeezenet
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-r1.3.0.tar.gz
-  checksum: 1bfdd068195e4203dbfb47330825476a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-r1.3.1.tar.gz
+  checksum: 16dca20aad2cedce95bfb2e9f22af7db
 - name: squeezenet
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50lv-u280-r1.3.0.tar.gz
-  checksum: 3313ebc6acfd2ea0161d42734a08ced6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50lv-u280-r1.3.1.tar.gz
+  checksum: 3c4ffaec14c3fc0b823a78b065543f6d
 - name: squeezenet
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 481bde0d2383ae9b276b14cbc638e1ea
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

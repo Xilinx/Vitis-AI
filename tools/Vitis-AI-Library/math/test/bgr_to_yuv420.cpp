@@ -18,6 +18,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgproc/types_c.h>
 static void bgr_to_yuv420(const char *filename) {
   auto image_file_name = std::string(filename);
   auto out_file =

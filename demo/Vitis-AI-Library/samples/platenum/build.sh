@@ -15,7 +15,7 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_platenum test_accuracy_platenum.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-platenum  -lvitis_ai_library-model_config -lvitis_ai_library-math -lglog -lxnnpp-xnnpp 
-$CXX -std=c++11 -I. -o test_jpeg_platenum test_jpeg_platenum.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-platenum  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_platenum test_performance_platenum.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-platenum  -lvart-util -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_platenum test_video_platenum.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-platenum  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_platenum test_accuracy_platenum.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-platenum  -lvitis_ai_library-model_config -lvitis_ai_library-math -lglog -lxnnpp-xnnpp 
+$CXX -std=c++17 -I. -o test_jpeg_platenum test_jpeg_platenum.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-platenum  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_platenum test_performance_platenum.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-platenum  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+$CXX -std=c++17 -I. -o test_video_platenum test_video_platenum.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-platenum  -pthread -lglog 

@@ -25,31 +25,36 @@ files:
 - name: cf_resnet50_imagenet_224_224_7.7G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_resnet50_imagenet_224_224_7.7G_1.3.zip
+  checksum: 4ef5c8c680a52dc22252a9d82417d0bb
 - name: resnet50
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 17dfd9e58c5212e9524cd17b96f29b04
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 0333923b5803aeb28cc008f9e41fbf41
 - name: resnet50
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck190-r1.3.0.tar.gz
-  checksum: be3d761e3604b3c799956bdf2bc63579
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck190-r1.3.1.tar.gz
+  checksum: 7fcadacbc5282f72ad57e88d6ae434c3
 - name: resnet50
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz
-  checksum: 67174923a1f37c150f3b03c133d7641d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.1.tar.gz
+  checksum: aaa25cec795c3ff96e85cad975db0ff3
 - name: resnet50
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50lv-u280-r1.3.0.tar.gz
-  checksum: 2e341026244d19e6df45787b53020a09
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50lv-u280-r1.3.1.tar.gz
+  checksum: 87506d1c429b377961791550df018575
 - name: resnet50
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: fb52a0a877f157d19f13eb27beb8c360
+- name: resnet50
+  type: xmodel
+  board: u200 & u250
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u200-u250-r1.3.0.tar.gz
+  checksum: bebaf93bd59531262b31bfbce422d4eb
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -25,31 +25,31 @@ files:
 - name: cf_plate-detection_320_320_0.49G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_plate-detection_320_320_0.49G_1.3.zip
+  checksum: 6bf8436d398856387a632e4a2d06935e
 - name: plate_detect
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: bed1df2e81e2a1ae04cbbfa3e0cc0221
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 4df3a2d12c3a07258d0bedb7b1a6973a
 - name: plate_detect
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-vck190-r1.3.0.tar.gz
-  checksum: 01259aebb6f7748689cf6815788ea069
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-vck190-r1.3.1.tar.gz
+  checksum: 0772276becb655471b157950bbec1f74
 - name: plate_detect
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50-r1.3.0.tar.gz
-  checksum: 40f22022b3e8e6e2dce9bd3e30476b36
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50-r1.3.1.tar.gz
+  checksum: fcd60e2dafc12c9ea2d8e3e98dadf787
 - name: plate_detect
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50lv-u280-r1.3.0.tar.gz
-  checksum: 0e413818c3dae9fe0832952976314275
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50lv-u280-r1.3.1.tar.gz
+  checksum: 5ca47f709b601cb43a07be94aea15091
 - name: plate_detect
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 799f537b209f9b4e530d8fb58a123044
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

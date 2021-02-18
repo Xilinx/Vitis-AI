@@ -15,13 +15,11 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_yolov3_adas_pruned_0_9 test_accuracy_yolov3_adas_pruned_0_9.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog 
-$CXX -std=c++11 -I. -o test_accuracy_yolov3_bdd test_accuracy_yolov3_bdd.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog 
-$CXX -std=c++11 -I. -o test_accuracy_yolov3_voc test_accuracy_yolov3_voc.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog 
-$CXX -std=c++11 -I. -o test_accuracy_yolov3_voc_tf test_accuracy_yolov3_voc_tf.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog 
-$CXX -std=c++11 -I. -o test_accuracy_tiny_yolov3_vmss test_accuracy_tiny_yolov3_vmss.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog 
-$CXX -std=c++11 -I. -o test_accuracy_yolov4 test_accuracy_yolov4_mt.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog -lpthread
-$CXX -std=c++11 -I. -o test_jpeg_yolov3 test_jpeg_yolov3.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_yolov4 test_jpeg_yolov4.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_yolov3 test_performance_yolov3.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvart-util -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_yolov3 test_video_yolov3.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_yolov3_adas_pruned_0_9 test_accuracy_yolov3_adas_pruned_0_9.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_yolov3_bdd test_accuracy_yolov3_bdd.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_yolov3_voc test_accuracy_yolov3_voc.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_yolov3_voc_tf test_accuracy_yolov3_voc_tf.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_tiny_yolov3_vmss test_accuracy_tiny_yolov3_vmss.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvitis_ai_library-model_config -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_yolov3 test_jpeg_yolov3.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_yolov3 test_performance_yolov3.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+$CXX -std=c++17 -I. -o test_video_yolov3 test_video_yolov3.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-yolov3  -pthread -lglog 

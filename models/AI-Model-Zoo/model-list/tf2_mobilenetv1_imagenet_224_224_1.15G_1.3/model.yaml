@@ -25,16 +25,16 @@ files:
 - name: tf2_mobilenetv1_imagenet_224_224_1.15G_1.3
   type: float & quantized
   board: GPU
-  download link: download link
-  checksum: md5sum value
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_mobilenetv1_imagenet_224_224_1.15G_1.3.zip
+  checksum: 9b0b1795d08a4c19dfb00f6650a5caea
 - name: mobilenet_1_0_224_tf2
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 2f472fecead3f8c0f8d9437010220b7a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 0c810ace79433535b6ea98b22df8a88a
 - name: mobilenet_1_0_224_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: download link
-  checksum: md5sum value
-license: license link
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 0ca52bad9fe21d6b2494104f7bdf365f
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

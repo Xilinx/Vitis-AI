@@ -85,7 +85,7 @@ struct PoseDetectAccThread : public AccThread {
   }
 
   virtual int run() override {
-    if (g_last_frame_id == int(dpu_result.frame_id)) return -1;
+    if (g_last_frame_id == int(dpu_result.frame_id)) exit(0);
     if (getQueue()->pop(dpu_result, std::chrono::milliseconds(5000))) {
       LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
           << "[" << name() << "] process result id :" << dpu_result.frame_id
