@@ -204,6 +204,8 @@ steps.**
 	cd centos
 	bash setup.sh
 	```
+	Note if you update the VART to 1.3.1 and want to run the sample program, make sure you also use the latest sample code.
+
 	 	  
 ### Running Vitis AI Library Examples
 
