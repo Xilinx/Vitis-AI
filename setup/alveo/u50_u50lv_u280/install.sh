@@ -69,19 +69,19 @@ cd ..
 ##############################
 # Call platform install scripts
 ##############################
-/opt/xilinx/xrt/bin/xbutil scan | grep xilinx_u50_
+/opt/xilinx/xrt/bin/xbutil flash scan | grep xilinx_u50_
 if [ $? -eq 0 ]; then
   echo "U50 card detected, now install platform"
   source ./u50_shell_setup.sh
 fi
 
-/opt/xilinx/xrt/bin/xbutil scan | grep xilinx_u50lv_
+/opt/xilinx/xrt/bin/xbutil flash scan | grep xilinx_u50lv_
 if [ $? -eq 0 ]; then
   echo "U50LV card detected, now install platform"
   source ./u50lv_shell_setup.sh
 fi
 
-/opt/xilinx/xrt/bin/xbutil scan | grep xilinx_u280_
+/opt/xilinx/xrt/bin/xbutil flash scan | grep xilinx_u280_
 if [ $? -eq 0 ]; then
   echo "U280 card detected, now install platform"
   source ./u280_shell_setup.sh
