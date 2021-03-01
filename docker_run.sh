@@ -40,6 +40,7 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
 fi
 
 HERE=$(pwd -P) # Absolute path of current directory
+WORKSPACE="${WORKSPACE:-$HERE}" # Use $WORKSPACE or default to $HERE
 user=`whoami`
 uid=`id -u`
 gid=`id -g`
@@ -88,8 +89,8 @@ docker_run_params=$(cat <<-END
     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
     -e USER=$user -e UID=$uid -e GID=$gid \
     -e VERSION=$VERSION \
-    -v $DOCKER_RUN_DIR:/vitis_ai_home \
-    -v $HERE:/workspace \
+    -v "$DOCKER_RUN_DIR:/vitis_ai_home" \
+    -v "$WORKSPACE:/workspace" \
     -w /workspace \
     --rm \
     --network=host \
