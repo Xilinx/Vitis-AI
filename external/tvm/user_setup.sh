@@ -36,6 +36,8 @@ else
   rm /this_is_writable_file_system
 fi
 
+mv /etc/bash.bashrc /root/
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
  
 
