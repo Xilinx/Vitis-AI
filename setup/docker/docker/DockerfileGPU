@@ -227,11 +227,10 @@ ADD --chown=vitis-ai-user:vitis-ai-group docker/pip_requirements_neptune.txt /sc
 ARG CACHEBUST=1
 
 RUN cd /scratch/ \
-    && wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.3.593-01.tar.gz \
+    && wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.3.598-01.tar.gz \
     && tar -xzvf conda-channel.tar.gz \
     && . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && conda install conda-build \
-    && conda index /scratch/conda-channel \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && conda env create -f /scratch/vitis-ai-optimizer_darknet.yml \
     && conda env create -f /scratch/vitis-ai-optimizer_caffe.yml \
