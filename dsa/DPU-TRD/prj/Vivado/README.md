@@ -69,8 +69,8 @@ Required:
 
   Required:
   - Vivado 2020.2 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html)
-  - [Vitis AI](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional 
-  
+  - [Vitis AI](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional
+
 ------
 
 ## 4 Design Files
@@ -125,7 +125,7 @@ The top-level directory structure shows the the major design components. The TRD
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =<Vitis AI path>/DPU_TRD
+%export TRD_HOME=<Vitis AI path>/DPU_TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
@@ -143,7 +143,7 @@ Open a linux terminal. Set the linux as Bash mode.
 
 ```
 
-The default settings of DPU is **B4096** with RAM_USAGE_LOW, CHANNEL_AUGMENTATION_ENABLE, DWCV_ENABLE, POOL_AVG_ENABLE, RELU_LEAKYRELU_RELU6, Softmax. 
+The default settings of DPU is **B4096** with RAM_USAGE_LOW, CHANNEL_AUGMENTATION_ENABLE, DWCV_ENABLE, POOL_AVG_ENABLE, RELU_LEAKYRELU_RELU6, Softmax.
 
 Modify the $TRD_HOME/prj/Vivado/scripts/trd_prj.tcl file can change the default settings.
 
@@ -168,7 +168,7 @@ After the generation of bitstream completed.
 - Go to **File > Export > Export Hardware**
 
   ![EXPORT HW](./doc/5.2.1-3.png)
-  
+
 - In the Export Hardware window select "**Include bitstream**" and click "**OK**".
 
   ![INCLUDE BIT](./doc/5.2.1-4.png)
@@ -177,7 +177,7 @@ The XSA file is created at $TRD_HOME/prj/Vivado/prj/top_wrapper.xsa
 
 ###### **Note:** The actual results might graphically look different than the image shown
 
-#### 5.2.2 Get Json File 
+#### 5.2.2 Get Json File
 
 Json file is an important file that needed by the VAI Compiler. The file has been created when compile by the Vivado tool. It works together with VAI Compiler to support model compilation under various DPU configurations.
 
@@ -223,23 +223,26 @@ If the prebuilt design is wanted, please use the path for **--get-hw-description
 % cd images/linux
 % petalinux-package --boot --fsbl zynqmp_fsbl.elf --u-boot u-boot.elf --pmufw pmufw.elf --fpga system.bit
 ```
- 
-#### 5.2.4 Run Resnet50 Example 
+
+#### 5.2.4 Run Resnet50 Example
 
 **The TRD project has generated the matching model file in $TRD_HOME/app path as the default settings. If the user change the DPU settings. The model need to be created again.**
 
 This part is about how to run the Resnet50 example from the source code.
 
-The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in page 65 of [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_2/ug1144-petalinux-tools-reference-guide.pdf)for Petalinux 2020.2:
+The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in page 65 of [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_2/ug1144-petalinux-tools-reference-guide.pdf) for PetaLinux 2020.2:
 
-Copy the Image, BOOT.BIN, boot.scr and system.dtb files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to BOOT partition.
+Copy the image.ub, system.dtb, boot.scr, and BOOT.BIN files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to BOOT partition.
 
-Extract the rootfs.tar.gz files in **TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to RootFs partition.
+Extract the rootfs.ext4 file in **TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to RootFs partition using the `dd` command. For example:
+
+```
+sudo dd if=rootfs.ext4 of=/dev/mmcblk0p2 bs=1M conv=fsync
+```
 
 Copy the folder **$TRD_HOME/app/** to RootFs partition
 
-
-Reboot, after the linux boot, run in the RootFs partition:
+Insert the SD card into the FPGA and boot it in SD mode. After the Linux boot, run the following commands in the RootFs partition:
 
 ```
 % cd ./app
@@ -267,10 +270,10 @@ score[949]  =  0.00054879   text: strawberry,
 The DPU IP provides some user-configurable parameters to optimize resource utilization and customize different features. Different configurations can be selected for DSP slices, LUT, block RAM(BRAM), and UltraRAM utilization based on the amount of available programmable logic resources. There are also options for addition functions, such as channel augmentation, average pooling, depthwise convolution.
 
 The TRD also support the softmax function.
-   
+
 For more details about the DPU, please read [DPU IP Product Guide](https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=latest;d=pg338-dpu.pdf)
 
- 
+
 #### 5.3.1 Modify the Frequency
 
 Modify the scripts/trd_prj.tcl to modify the frequency of m_axi_dpu_aclk. The frequency of dpu_2x_clk is twice of m_axi_dpu_aclk.
@@ -281,7 +284,7 @@ dict set dict_prj dict_param  DPU_CLK_MHz {325}
 
 #### 5.3.2 Modify the parameters
 
-Modify the scripts/trd_prj.tcl to modify the parameters which can also be modified on the GUI. 
+Modify the scripts/trd_prj.tcl to modify the parameters which can also be modified on the GUI.
 
 The TRD supports to modify the following parameters.
 
@@ -299,17 +302,17 @@ The TRD supports to modify the following parameters.
 
 #### DPU_NUM
 
-The DPU core number is set 2 as default setting. 
+The DPU core number is set 2 as default setting.
 
 ```
 dict set dict_prj dict_param  DPU_NUM {2}
 ```
-A maximum of 4 cores can be selected on DPU IP. 
+A maximum of 4 cores can be selected on DPU IP.
 ###### **Note:** The DPU needs lots of LUTs and RAMs. Use 3 or more DPU may cause the resourse and timing issue.
 
 #### DPU_ARCH
 
-Arch of DPU: The DPU IP can be configured with various convolution architectures which are related to the parallelism of the convolution unit. 
+Arch of DPU: The DPU IP can be configured with various convolution architectures which are related to the parallelism of the convolution unit.
 The architectures for the DPU IP include B512, B800, B1024, B1152, B1600, B2304, B3136, and B4096.
 
 ```
@@ -319,7 +322,7 @@ dict set dict_prj dict_param  DPU_ARCH {4096}
 
 #### DPU_RAM_USAGE
 
-RAM Usage: The RAM Usage option determines the total amount of on-chip memory used in different DPU architectures, and the setting is for all the DPU cores in the DPU IP. 
+RAM Usage: The RAM Usage option determines the total amount of on-chip memory used in different DPU architectures, and the setting is for all the DPU cores in the DPU IP.
 High RAM Usage means that the on-chip memory block will be larger, allowing the DPU more flexibility to handle the intermediate data. High RAM Usage implies higher performance in each DPU core.
 
 Low
@@ -335,11 +338,11 @@ dict set dict_prj dict_param  DPU_RAM_USAGE {high}
 
 Channel Augmentation: Channel augmentation is an optional feature for improving the efficiency of the DPU when handling input channels much lower than the available channel parallelism.
 
-Enable 
+Enable
 ```
 dict set dict_prj dict_param  DPU_CHN_AUG_ENA {1}
 ```
-Disable 
+Disable
 ```
 dict set dict_prj dict_param  DPU_CHN_AUG_ENA {0}
 ```
@@ -429,8 +432,8 @@ dict set dict_prj dict_param  DPU_DSP48_USAGE {low}
 
 #### DPU_URAM_PER_DPU
 
-The DPU uses block RAM as the memory unit by default. For a target device with both block RAM and UltraRAM, configure the number of UltraRAM to determine how many UltraRAMs are used to replace some block RAMs. 
-The number of UltraRAM should be set as a multiple of the number of UltraRAM required for a memory unit in the DPU. 
+The DPU uses block RAM as the memory unit by default. For a target device with both block RAM and UltraRAM, configure the number of UltraRAM to determine how many UltraRAMs are used to replace some block RAMs.
+The number of UltraRAM should be set as a multiple of the number of UltraRAM required for a memory unit in the DPU.
 An example of block RAM and UltraRAM utilization is shown in the Summary tab section.
 
 ```
