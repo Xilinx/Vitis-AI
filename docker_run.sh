@@ -86,6 +86,7 @@ docker_run_params=$(cat <<-END
     -v /dev/shm:/dev/shm \
     -v /opt/xilinx/dsa:/opt/xilinx/dsa \
     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
+    -v /etc/xbutler:/etc/xbutler \
     -e USER=$user -e UID=$uid -e GID=$gid \
     -e VERSION=$VERSION \
     -v $DOCKER_RUN_DIR:/vitis_ai_home \
