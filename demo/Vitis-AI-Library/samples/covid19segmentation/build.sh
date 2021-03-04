@@ -15,5 +15,5 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_jpeg_covid19segmentation test_jpeg_covid19segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-covid19segmentation  -lxnnpp-xnnpp -pthread -lglog
-$CXX -std=c++11 -I. -o test_performance_covid19segmentation test_performance_covid19segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-covid19segmentation -lvart-util -lxnnpp-xnnpp -pthread -lglog
+$CXX -std=c++17 -I. -o test_jpeg_covid19segmentation test_jpeg_covid19segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-covid19segmentation  -lxnnpp-xnnpp -pthread -lglog
+$CXX -std=c++17 -I. -o test_performance_covid19segmentation test_performance_covid19segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-covid19segmentation -lvart-util -lxnnpp-xnnpp -lvitis_ai_library-dpu_task -pthread -lglog

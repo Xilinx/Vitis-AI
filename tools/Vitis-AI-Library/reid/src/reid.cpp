@@ -19,10 +19,11 @@
 
 namespace vitis {
 namespace ai {
-Reid::Reid() {}
+Reid::Reid(const std::string& model_name, bool need_preprocess)
+    : ConfigurableDpuTaskBase(model_name, need_preprocess) {}
 Reid::~Reid() {}
 
-std::unique_ptr<Reid> Reid::create(const std::string &model_name,
+std::unique_ptr<Reid> Reid::create(const std::string& model_name,
                                    bool need_preprocess) {
   return std::unique_ptr<Reid>(new ReidImp(model_name, need_preprocess));
 }

@@ -100,6 +100,7 @@ install(
   LIBRARY DESTINATION lib)
 install(FILES
   include/xir/buffer_object.hpp
+  include/xir/device_memory.hpp
   # include/xir/buffer_object_manager.hpp
   # include/xir/buffer_object_manager_store.hpp
   # include/xir/device_scheduler.hpp

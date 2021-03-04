@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     int type = line.type < 5 ? line.type : 5;
     if (type == 2 && points_poly[0].x < image.rows * 0.5) continue;
     cv::polylines(image, points_poly, false,
-                  Scalar(color1[type], color2[type], color3[type]), 3, CV_AA,
+                  Scalar(color1[type], color2[type], color3[type]), 3, LINE_AA,
                   0);
   }
   cv::imwrite("roadline_results.jpg", image);

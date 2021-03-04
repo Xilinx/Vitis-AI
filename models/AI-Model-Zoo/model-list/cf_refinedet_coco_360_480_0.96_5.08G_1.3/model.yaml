@@ -30,26 +30,26 @@ files:
 - name: refinedet_pruned_0_96
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 00f1b31b3e6d060eb33668552e482e64
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: da7c46456587548f75cfe88edc064cd9
 - name: refinedet_pruned_0_96
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-vck190-r1.3.0.tar.gz
-  checksum: 645d077bc7ccc8d01a93c92ab7dc4c71
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-vck190-r1.3.1.tar.gz
+  checksum: 5a2dd196ce91a7001c953321dc1c7de3
 - name: refinedet_pruned_0_96
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50-r1.3.0.tar.gz
-  checksum: b89f0bc917245b182f83794345454663
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50-r1.3.1.tar.gz
+  checksum: 40c65d3db247246adcfaf2f7f43c6aa3
 - name: refinedet_pruned_0_96
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50lv-u280-r1.3.0.tar.gz
-  checksum: db158f6c4087137e212558c3efbf3653
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50lv-u280-r1.3.1.tar.gz
+  checksum: 006decd5780a5edc687fe264b6e4ebc1
 - name: refinedet_pruned_0_96
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 8b5e940d73afd83eed859d104b7a9d62
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 7afd6c7103c2bd5b206c1f54ae3f172f
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

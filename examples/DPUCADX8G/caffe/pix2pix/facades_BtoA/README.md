@@ -23,7 +23,7 @@ Setup the Environment
 Download facades-dataset from https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/facades.tar.gz as follows
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA/
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA/
 wget https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/facades.tar.gz
 tar -xvf facades.tar.gz
 rm facades.tar.gz
@@ -32,23 +32,23 @@ rm facades.tar.gz
 The folder is supposed to be as the following.
 
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA/facades/test
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA/facades/train
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA/facades/val
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA/facades/test
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA/facades/train
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA/facades/val
 ```
 
 The downloaded images have the combination of Architectural photo and label.
 To split Architectural photo and label, please run the following command lines.
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA/
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA/
 python extract_label_facades.py
 ```
 
 This will generate two subfolders in val folder. 'photo' and 'label'.
 ```
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA/facades/val/photo
-${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA/facades/val/label
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA/facades/val/photo
+${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA/facades/val/label
 ```
 
 
@@ -71,16 +71,16 @@ To get the quantized Caffe model, run the following command lines.
 
 > **Note:** Skip, If you have already run the below steps.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe
 python getModels.py
 ```
 
-The Pix2Pix (facades_BtoA) model files would be located in '${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/facades_BtoA' folder.
+The Pix2Pix (facades_BtoA) model files would be located in '${VAI_HOME}/examples/DPUCADX8G/caffe/models/facades_BtoA' folder.
 
 Copy the model files to 'pix2pix/facades_BtoA/quantize_results' with the following commands.
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA
-cp -R ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/facades_BtoA ./quantize_results
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA
+cp -R ${VAI_HOME}/examples/DPUCADX8G/caffe/models/facades_BtoA ./quantize_results
 ```
 
 You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'facades_BtoA/quantize_results' sub-folder.
@@ -90,7 +90,7 @@ You can find deploy.prototxt, deploy.caffemodel, and quantize_info.txt in 'facad
 
 To run the inference model on cpu to translate Architectural label to photo image, run the following commands.
 ```sh
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA
 python facades_BtoA_cpu.py --image <image-file>
 
 [sample]
@@ -106,7 +106,7 @@ The generated Architectural photo image will be stored in 'test_output' sub-fold
 The quantized caffemodel need to be compiled and partitioned at your local drive using the following commands
 
 ```
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA
 source run.sh deploy
 ```
 
@@ -122,7 +122,7 @@ xfdnn_deploy.prototxt (used to execute Caffe model on FPGA) will be generated at
 To run the inference model on fpga to translate Architectural label to photo image, run the following commands.
 
 ```sh
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/pix2pix/facades_BtoA
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/pix2pix/facades_BtoA
 python facades_BtoA_fpga.py --image <image-file>
 
 [sample]

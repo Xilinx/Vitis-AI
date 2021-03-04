@@ -30,16 +30,16 @@ files:
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 10a4e7649175e82ce19e2f7a9f3f0459
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 5763c1f90b9fbc4f4eca9408ff9acf3f
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-vck190-r1.3.0.tar.gz
-  checksum: db416c4b3079b6479b988e153d64b971
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-vck190-r1.3.1.tar.gz
+  checksum: 20327f7518c158d1b8ea90eb830e278e
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 54750dad14183084189e876c1db1b6a3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: d3d7afa50ff832114bcec8e9e5903e3f
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

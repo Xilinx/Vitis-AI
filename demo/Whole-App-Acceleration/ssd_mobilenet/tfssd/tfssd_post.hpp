@@ -29,8 +29,8 @@ class TFSSDPost : public vitis::ai::TFSSDPostProcess {
       const vitis::ai::proto::DpuModelParam& config);//,
   virtual ~TFSSDPost();
 
-  virtual TFSSDResult ssd_post_process(int8_t* conf, int8_t* loc,unsigned int idx) override;
-  virtual std::vector<TFSSDResult> ssd_post_process(int8_t* conf, int8_t* loc) override;
+  virtual TFSSDResult ssd_post_process(int8_t* conf, int8_t* loc,unsigned int idx, bool en_hwpost) override;
+  virtual std::vector<TFSSDResult> ssd_post_process(int8_t* conf, int8_t* loc, bool en_hwpost) override;
   
  private:
   int num_classes_;

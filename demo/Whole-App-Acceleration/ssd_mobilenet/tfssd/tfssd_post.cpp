@@ -239,23 +239,24 @@ TFSSDPost::TFSSDPost(int inWidth, int inHeight, float conf_scale, float loc_scal
 
 	__TOC__(PRIORBOX)
 	__TIC__(CREATESSD)
+	
 	detector_ =
 			createSSD(priors_, fx_priors_, scale_conf_, scale_loc_, score_converter_, tfcfg);
 
 	__TOC__(CREATESSD)
 }
 
-std::vector<vitis::ai::TFSSDResult> TFSSDPost::ssd_post_process(int8_t* conf, int8_t* loc) {
+std::vector<vitis::ai::TFSSDResult> TFSSDPost::ssd_post_process(int8_t* conf, int8_t* loc, bool en_hwpost) {
 	auto batch_size = inBatch;
 	auto ret = std::vector<vitis::ai::TFSSDResult>{};
 	ret.reserve(batch_size);
 	for (auto i = 0u; i < batch_size; ++i) {
-		ret.emplace_back(ssd_post_process(conf,loc,i));
+		ret.emplace_back(ssd_post_process(conf,loc,i,en_hwpost));
 	}
 	return ret;
 }
 
-vitis::ai::TFSSDResult TFSSDPost::ssd_post_process(int8_t* conf,int8_t* box_c,unsigned int idx) {
+vitis::ai::TFSSDResult TFSSDPost::ssd_post_process(int8_t* conf,int8_t* box_c, unsigned int idx, bool en_hwpost) {
 	__TIC__(SSD_total)
 
 		//  std::cout <<  "########### Post Proc Start ########################" << std::endl;
@@ -267,7 +268,9 @@ vitis::ai::TFSSDResult TFSSDPost::ssd_post_process(int8_t* conf,int8_t* box_c,un
 	TFSSDResult results{inWidth_,
 		inHeight_, bboxes};
 
-	detector_->Detect<int8_t>(&results, box_c);
+	detector_->Detect<int8_t>(box_c, conf, &results, en_hwpost);
+
+	//detector_->Detect<int8_t>(&results, box_c);
 
 	__TOC__(SSD_total)
 	return results;

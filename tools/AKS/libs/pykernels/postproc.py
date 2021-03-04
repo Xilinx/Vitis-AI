@@ -8,7 +8,7 @@ from detect_ap2_legacy import det_postprocess
 
 class FDDBFaceDetectPostProc:
   ''' Face Detection Post Processing module.
-  It is compatible with $(VAI_ALVEO_ROOT)/DPUCADX8G/face_detect.
+  It is compatible with $(VAI_HOME)/examples/DPUCADX8G/face_detect.
 
   Module arguments:
     network_input_dims : Input dimensions to the network, [Height, Width, Channels] 

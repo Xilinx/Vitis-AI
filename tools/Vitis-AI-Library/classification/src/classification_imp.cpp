@@ -35,7 +35,7 @@ DEF_ENV_PARAM(CLASSIFICATION_SET_INPUT, "0");
 
 ClassificationImp::ClassificationImp(const std::string& model_name,
                                      bool need_preprocess)
-    : TConfigurableDpuTask<Classification>(model_name, need_preprocess),
+    : Classification(model_name, need_preprocess),
       preprocess_type{configurable_dpu_task_->getConfig()
                           .classification_param()
                           .preprocess_type()},
@@ -249,9 +249,9 @@ std::vector<ClassificationResult> ClassificationImp::run(
           if (test_accuracy) {
 //# DPUV1 directly uses the resized image dataset so no need of crop
 #ifdef ENABLE_DPUCADX8G_RUNNER
-          cv::resize(input_images[i], image, size);
+            cv::resize(input_images[i], image, size);
 #else
-          croppedImage(input_images[i], height, width, image);
+            croppedImage(input_images[i], height, width, image);
 #endif
           } else {
             cv::resize(input_images[i], image, size);
@@ -353,6 +353,78 @@ std::vector<ClassificationResult> ClassificationImp::run(
   }
   __TOC__(CLASSIFY_POST_ARM)
   //__TOC__(CLASSIFY_E2E_TIME)
+  return rets;
+}
+
+std::vector<ClassificationResult> ClassificationImp::run(
+    const std::vector<vart::xrt_bo_t>& input_bos) {
+  auto postprocess_index = 0;
+  if (configurable_dpu_task_->getConfig()
+          .classification_param()
+          .has_avg_pool_param()) {
+    __TIC__(CLASSIFY_DPU_0)
+    configurable_dpu_task_->run_with_xrt_bo(input_bos);
+    __TOC__(CLASSIFY_DPU_0)
+
+    auto avg_scale = configurable_dpu_task_->getConfig()
+                         .classification_param()
+                         .avg_pool_param()
+                         .scale();
+    auto batch_size = configurable_dpu_task_->getInputTensor()[0][0].batch;
+
+    __TIC__(CLASSIFY_AVG_POOL)
+    for (auto batch_idx = 0u; batch_idx < batch_size; batch_idx++) {
+      vitis::ai::globalAvePool(
+          (int8_t*)configurable_dpu_task_->getOutputTensor()[0][0].get_data(
+              batch_idx),
+          // 1024, 9, 3,
+          configurable_dpu_task_->getOutputTensor()[0][0].channel,
+          configurable_dpu_task_->getOutputTensor()[0][0].width,
+          configurable_dpu_task_->getOutputTensor()[0][0].height,
+          (int8_t*)configurable_dpu_task_->getInputTensor()[1][0].get_data(
+              batch_idx),
+          avg_scale);
+    }
+    __TOC__(CLASSIFY_AVG_POOL)
+    __TIC__(CLASSIFY_DPU_1)
+    configurable_dpu_task_->run(1);
+    __TOC__(CLASSIFY_DPU_1)
+    postprocess_index = 1;
+  } else {
+    __TIC__(CLASSIFY_DPU)
+    configurable_dpu_task_->run_with_xrt_bo(input_bos);
+    __TOC__(CLASSIFY_DPU)
+  }
+
+  __TIC__(CLASSIFY_POST_ARM)
+  auto rets = classification_post_process(
+      configurable_dpu_task_->getInputTensor()[postprocess_index],
+      configurable_dpu_task_->getOutputTensor()[postprocess_index],
+      configurable_dpu_task_->getConfig());
+
+  for (auto& ret : rets) {
+    if (configurable_dpu_task_->getOutputTensor()[postprocess_index][0]
+            .channel == 1001) {
+      for (auto& s : ret.scores) {
+        s.index--;
+      }
+    }
+
+    ret.type = 0;
+    if (configurable_dpu_task_->getConfig()
+            .classification_param()
+            .has_label_type()) {
+      auto label_type = configurable_dpu_task_->getConfig()
+                            .classification_param()
+                            .label_type();
+      if (label_type == "CIFAR10") {
+        ret.type = 1;
+      } else if (label_type == "FMNIST") {
+        ret.type = 2;
+      }
+    }
+  }
+  __TOC__(CLASSIFY_POST_ARM)
   return rets;
 }
 

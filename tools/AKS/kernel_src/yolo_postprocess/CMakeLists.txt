@@ -28,8 +28,8 @@ if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
     NO_DEFAULT_PATH
   )
   set_target_properties(dpuv1utils PROPERTIES
-    IMPORTED_LOCATION "$ENV{VAI_ALVEO_ROOT}/vai/dpuv1/utils/libdpuv1utils.so"
-    INTERFACE_INCLUDE_DIRECTORIES "$ENV{VAI_ALVEO_ROOT}/vai/dpuv1/utils/postproc"
+    IMPORTED_LOCATION "$ENV{VAI_HOME}/vai/dpuv1/utils/libdpuv1utils.so"
+    INTERFACE_INCLUDE_DIRECTORIES "$ENV{VAI_HOME}/vai/dpuv1/utils/postproc"
   )
 else()
   find_package(aks REQUIRED

@@ -70,7 +70,7 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
   SOVERSION "${PROJECT_VERSION_MAJOR}"
   LIBRARY_OUTPUT_NAME  ${PROJECT_NAME}-${COMPONENT_NAME}
   )
-target_link_libraries(${COMPONENT_NAME} glog::glog vart::util vart::dpu-controller)
+target_link_libraries(${COMPONENT_NAME} PRIVATE glog::glog vart::util vart::dpu-controller PUBLIC opencv_core)
 target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -139,10 +139,10 @@ if(HAVE_NEON)
   target_link_libraries(prototype_8bit_to_4bit glog::glog vart::util)
 
   add_executable(test_transform_mean_scale_performance test/test_transform_mean_scale_performance.cpp)
-  target_link_libraries(test_transform_mean_scale_performance vart::util)
+  target_link_libraries(test_transform_mean_scale_performance vart::util  ${COMPONENT_NAME})
 
   add_executable(test_transform_mean_scale test/test_transform_mean_scale.cpp)
-  target_link_libraries(test_transform_mean_scale vart::util)
+  target_link_libraries(test_transform_mean_scale vart::util ${COMPONENT_NAME})
 
 
 endif(HAVE_NEON)

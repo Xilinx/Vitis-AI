@@ -65,7 +65,7 @@ do
     -is|--imagescale    ) IMG_INPUT_SCALE="$2"                                            ; shift 2 ;;
     -y |--numprepproc   ) NUMPREPPROC="$2"                                                ; shift 2 ;;
     -acu|--acquirecu    ) ACQUIRECU="$2"                                                  ; shift 2 ;;
-    -g |--checkaccuracy ) GOLDEN=$VAI_ALVEO_ROOT/DPUCADX8G/deployment_modes/gold.txt     ; shift 1 ;;
+    -g |--checkaccuracy ) GOLDEN=$VAI_HOME/examples/DPUCADX8G/deployment_modes/gold.txt     ; shift 1 ;;
     -v |--verbose       ) VERBOSE=1                                                       ; shift 1 ;;
     -x |--perpetual     ) PERPETUAL=1                                                     ; shift 1 ;;
     -cn|--customnet     ) CUSTOM_NETCFG="$2"                                              ; shift 2 ;;
@@ -95,7 +95,7 @@ if [ -d $XCLBIN ]; then
   echo "--- Using System XCLBIN ---"
 else
   echo "--- Using Local XCLBIN ---"
-  XCLBIN=${VAI_ALVEO_ROOT}/overlaybins/xdnnv3
+  XCLBIN=${VAI_HOME}/overlaybins/xdnnv3
 fi
 WEIGHTS=./data/${MODEL}_data.h5
 DSP_WIDTH=96
@@ -118,7 +118,7 @@ echo -e "Running:\n Test: $TEST\n Model: $MODEL\n Xclbin: $XCLBIN\n Accelerator:
 BASEOPT="--xclbin $XCLBIN
          --netcfg $NETCFG
          --weights $WEIGHTS
-         --labels $VAI_ALVEO_ROOT/DPUCADX8G/deployment_modes/synset_words.txt
+         --labels $VAI_HOME/examples/DPUCADX8G/deployment_modes/synset_words.txt
          --quantizecfg $QUANTCFG
          --img_input_scale $IMG_INPUT_SCALE
          --batch_sz $BATCHSIZE"
@@ -144,7 +144,7 @@ if [ -z $VITIS_RUNDIR ]; then
   ln -s $(get_abs_filename $WEIGHTS) ${VITIS_RUNDIR}/weights.h5
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"acquire_cu\": \"$ACQUIRECU\", \"publish_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}/meta.json
   # meta.json accepts {env_variables} in paths as well, e.g.:
-  #echo "{ \"lib\": \"{VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_ALVEO_ROOT}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
+  #echo "{ \"lib\": \"{VAI_HOME}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so\", \"xclbin\": \"{VAI_HOME}/overlaybins/xdnnv3\" }" > ${VITIS_RUNDIR}/meta.json
   cp -fr $VITIS_RUNDIR ${VITIS_RUNDIR}_worker
   echo "{ \"target\": \"xdnn\", \"filename\": \"\", \"kernel\": \"xdnn\", \"config_file\": \"\", \"lib\": \"${LIBXDNN_PATH}\", \"xclbin\": \"${XCLBIN}\", \"acquire_cu\": \"$ACQUIRECU\", \"subscribe_id\": \"${BASHPID}\" }" > ${VITIS_RUNDIR}_worker/meta.json
   BASEOPT+=" --vitis_rundir ${VITIS_RUNDIR}"
@@ -209,7 +209,7 @@ elif [[ "$TEST" == "streaming_classify"*  || "$TEST" == "test_mp_classify"* ]] ;
   if [ "$PERPETUAL" == 1 ]; then
     BASEOPT+=" --zmqpub --perpetual --deviceID $DEVICEID"
   fi
-  
+
   if [ "$PROFILING_ENABLE" == 1 ]; then
     BASEOPT+=" --profile"
   fi
@@ -266,12 +266,12 @@ elif [ "$TEST" == "classify_cpp" ]; then
   cp ./classify.exe ../classify.exe
   cd -
   BATCHSIZE=1
-  DIRECTORY=$VAI_ALVEO_ROOT/DPUCADX8G/deployment_modes/dog.jpg
+  DIRECTORY=$VAI_HOME/examples/DPUCADX8G/deployment_modes/dog.jpg
   BASEOPT_CPP="--xclbin $XCLBIN --netcfg $NETCFG --datadir $WEIGHTS --labels ./synset_words.txt --quantizecfg $QUANTCFG --img_input_scale $IMG_INPUT_SCALE --batch_sz $BATCHSIZE"
   BASEOPT_CPP+=" --image $DIRECTORY"
   OPENCV_LIB=/usr/lib/x86_64-linux-gnu
-  HDF5_PATH=${VAI_ALVEO_ROOT}/ext/hdf5
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$VAI_ALVEO_ROOT/ext/zmq/libs:$VAI_ALVEO_ROOT/ext/boost/libs:${HDF5_PATH}/lib:$VAI_ALVEO_ROOT/vai/dpuv1/rt/libs:/opt/xilinx/xrt/lib:$OPENCV_LIB
+  HDF5_PATH=${VAI_HOME}/examples/ext/hdf5
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$VAI_HOME/examples/ext/zmq/libs:$VAI_HOME/examples/ext/boost/libs:${HDF5_PATH}/lib:$VAI_HOME/vai/dpuv1/rt/libs:/opt/xilinx/xrt/lib:$OPENCV_LIB
 
 ###########################
 # multi-PE multi-network (Run two different networks simultaneously)
@@ -294,5 +294,5 @@ if [ "$TEST" == "classify_cpp" ]; then
   ./classify.exe $BASEOPT_CPP
 else
   echo python $TEST $BASEOPT
-  python $VAI_ALVEO_ROOT/DPUCADX8G/deployment_modes/$TEST $BASEOPT
+  python $VAI_HOME/examples/DPUCADX8G/deployment_modes/$TEST $BASEOPT
 fi

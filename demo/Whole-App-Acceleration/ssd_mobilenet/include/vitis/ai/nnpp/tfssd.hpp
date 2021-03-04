@@ -93,12 +93,12 @@ class TFSSDPostProcess {
    * @brief The post-processing function of the ssd network.
    * @return The struct of TFSSDResult.
    */
-  virtual TFSSDResult ssd_post_process(int8_t* conf, int8_t* loc,unsigned int idx) = 0;
+  virtual TFSSDResult ssd_post_process(int8_t* conf, int8_t* loc,unsigned int idx, bool en_hwpost) = 0;
   /**
    * @brief The batch mode post-processing function of the ssd network.
    * @return The vector of struct of TFSSDResult.
    */
-  virtual std::vector<TFSSDResult> ssd_post_process(int8_t* conf, int8_t* loc) = 0;
+  virtual std::vector<TFSSDResult> ssd_post_process(int8_t* conf, int8_t* loc, bool en_hwpost) = 0;
 
     /**
    * @cond NOCOMMENTS

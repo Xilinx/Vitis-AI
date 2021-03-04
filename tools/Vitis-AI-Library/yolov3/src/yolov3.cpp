@@ -22,9 +22,10 @@
 namespace vitis {
 namespace ai {
 
-YOLOv3::YOLOv3() {}
+YOLOv3::YOLOv3(const std::string& model_name, bool need_preprocess)
+    : ConfigurableDpuTaskBase(model_name, need_preprocess) {}
 YOLOv3::~YOLOv3() {}
-std::unique_ptr<YOLOv3> YOLOv3::create(const std::string &model_name,
+std::unique_ptr<YOLOv3> YOLOv3::create(const std::string& model_name,
                                        bool need_preprocess) {
   return std::unique_ptr<YOLOv3>(new YOLOv3Imp(model_name, need_preprocess));
 }

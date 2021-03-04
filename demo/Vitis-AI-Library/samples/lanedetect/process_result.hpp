@@ -17,14 +17,14 @@
 #include <opencv2/opencv.hpp>
 #include <string>
 
-cv::Mat process_result(cv::Mat &image, const vitis::ai::RoadLineResult &result,
+cv::Mat process_result(cv::Mat& image, const vitis::ai::RoadLineResult& result,
                        bool is_jpeg) {
   std::vector<int> color1 = {0, 255, 0, 0, 100, 255};
   std::vector<int> color2 = {0, 0, 255, 0, 100, 255};
   std::vector<int> color3 = {0, 0, 0, 255, 100, 255};
 
   LOG_IF(INFO, is_jpeg) << "lines.size " << result.lines.size() << " ";
-  for (auto &line : result.lines) {
+  for (auto& line : result.lines) {
     LOG_IF(INFO, is_jpeg) << "line.points_cluster.size() "
                           << line.points_cluster.size() << " ";
     std::vector<cv::Point> points_poly = line.points_cluster;
@@ -32,7 +32,7 @@ cv::Mat process_result(cv::Mat &image, const vitis::ai::RoadLineResult &result,
     if (type == 2 && points_poly[0].x < image.rows * 0.5) continue;
     cv::polylines(image, points_poly, false,
                   cv::Scalar(color1[type], color2[type], color3[type]), 3,
-                  CV_AA, 0);
+                  cv::LINE_AA, 0);
   }
   return image;
 }

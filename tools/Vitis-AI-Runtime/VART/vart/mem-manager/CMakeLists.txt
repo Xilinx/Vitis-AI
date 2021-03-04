@@ -33,21 +33,6 @@ target_include_directories(${COMPONENT_NAME} PUBLIC
 )
 target_link_libraries(${COMPONENT_NAME} PUBLIC unilog::unilog xir::xir util runner)
 
-if(${ENABLE_DPU_RUNNER})
-  target_sources(${COMPONENT_NAME}
-    PRIVATE
-    src/tensor_buffer_imp_host.cpp
-    src/tensor_buffer_imp_host.hpp
-    src/tensor_buffer_imp_host_phy.cpp
-    src/tensor_buffer_imp_host_phy.hpp
-    src/tensor_buffer_imp_view.cpp
-    src/tensor_buffer_imp_view.hpp
-    src/tensor_buffer_allocator_imp.cpp
-    src/tensor_buffer_allocator_imp.hpp)
-  target_link_libraries(${COMPONENT_NAME}
-   PRIVATE ${PROJECT_NAME}::buffer-object)
-endif(TARGET ${PROJECT_NAME}::buffer-object)
-
 install(
   TARGETS ${COMPONENT_NAME}
   EXPORT ${COMPONENT_NAME}-targets

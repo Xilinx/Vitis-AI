@@ -15,7 +15,7 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_jpeg_medicalsegcell test_jpeg_medicalsegcell.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegcell  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_medicalsegcell test_performance_medicalsegcell.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegcell  -lvart-util -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_medicalsegcell test_video_medicalsegcell.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegcell  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_accuracy_medicalsegcell test_accuracy_medicalsegcell.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegcell  -lvart-util -pthread -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_medicalsegcell test_jpeg_medicalsegcell.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegcell  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_medicalsegcell test_performance_medicalsegcell.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegcell  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+$CXX -std=c++17 -I. -o test_video_medicalsegcell test_video_medicalsegcell.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegcell  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_medicalsegcell test_accuracy_medicalsegcell.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegcell  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 

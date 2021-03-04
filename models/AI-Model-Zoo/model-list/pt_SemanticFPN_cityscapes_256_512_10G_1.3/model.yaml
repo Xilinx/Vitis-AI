@@ -30,26 +30,26 @@ files:
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: c24f9d7268a20f76067526e84aae3fe7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 153742f30c39050b645a2deaa2c3be83
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck190-r1.3.0.tar.gz
-  checksum: 6b18cb2b079e98f2b91fcd72116ab69b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck190-r1.3.1.tar.gz
+  checksum: 72be06ccaedf42ccf6be092a2b21c528
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-r1.3.0.tar.gz
-  checksum: 2228568fcafa13573cafc703ac184f3a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-r1.3.1.tar.gz
+  checksum: b16d45972460c2bd69e559471b17e5a7
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 78597f81fb17e92511b3aff9e1ca6c27
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 25681004e02634104915133e0e6fc700
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: c07358fc2302e3af0ee4f4320cc4aaf6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 79a58a0bf94f0ffa3251ad8f1f166d8c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

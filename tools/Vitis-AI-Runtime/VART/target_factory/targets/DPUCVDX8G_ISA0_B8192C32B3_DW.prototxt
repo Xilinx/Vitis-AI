@@ -56,6 +56,14 @@ bank_group {
   bank_width: 16
   bank_depth: 2048
 }
+bank_group {
+  name: "DWCVBIAS"
+  type: "Param"
+  base_id: 34
+  bank_num: 1
+  bank_width: 16
+  bank_depth: 2048
+}
 load_engine {
   channel_parallel: 16
   output_bank: "VB0"
@@ -130,7 +138,7 @@ dwconv_engine {
   output_bank: "VB0"
   output_bank: "VB1"
   weight_bank: "DWCONVW"
-  bias_bank: "BIAS"
+  bias_bank: "DWCVBIAS"
   nonlinear {
     nonlinear_type: relu
     nonlinear_type: relu_six

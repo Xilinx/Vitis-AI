@@ -26,10 +26,10 @@
 #include <xir/graph/graph.hpp>
 
 #include "../src/runner_helper.hpp"
+#include "vart/assistant/tensor_buffer_allocator.hpp"
 #include "vart/mm/host_flat_tensor_buffer.hpp"
 #include "vart/softmax_runner.hpp"
 #include "vart/tensor_buffer.hpp"
-#include "vart/tensor_buffer_allocator.hpp"
 #include "vitis/ai/collection_helper.hpp"
 #include "vitis/ai/env_config.hpp"
 #include "vitis/ai/profiling.hpp"
@@ -133,7 +133,7 @@ int main(int argc, char* argv[]) {
   std::pair<std::vector<std::unique_ptr<vart::TensorBuffer>>,
             std::vector<std::unique_ptr<vart::TensorBuffer>>>
       tensor_buffers;
-  auto allocator = vart::TensorBufferAllocator::create(attrs.get());
+  auto allocator = vart::assistant::TensorBufferAllocator::create(attrs.get());
   if (ENV_PARAM(TEST_ZERO_COPY) == 1) {
     LOG(INFO) << "allocate tensor buffers at PHY";
     tensor_buffers =

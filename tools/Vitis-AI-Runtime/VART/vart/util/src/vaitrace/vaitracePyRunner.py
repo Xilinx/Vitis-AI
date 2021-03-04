@@ -21,6 +21,7 @@ import sys
 import time
 import signal
 from multiprocessing import Process
+from threading import Thread
 
 import collector
 import tracer
@@ -88,11 +89,11 @@ def run(globalOptions: dict):
     timeout = options.get('control').get('timeout')
 
     #pyRunCtx(pyCmd)
-    pyProc = Process(target=pyRunCtx, args=(pyCmd,))
+    pyProc = Thread(target=pyRunCtx, args=(pyCmd,))
     pyProc.start()
 
     options['control']['launcher'] = "python"
-    options['control']['pid'] = pyProc.pid
+    options['control']['pid'] = os.getpid()
     options['control']['time'] = time.strftime(
         "%Y-%m-%d %H:%M:%S", time.localtime())
     

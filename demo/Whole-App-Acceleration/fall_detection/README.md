@@ -22,18 +22,18 @@ source /vitis_ai_home/setup/alveo/u200_u250/overlaybins/setup.sh
 
 #### Build common kernels
 ```sh
-cd ${VAI_ALVEO_ROOT}/../tools/AKS
+cd ${VAI_HOME}/tools/AKS
 ./cmake-kernels.sh --dpu=dpucadx8g --clean
 ```
 
 #### Build fall-detection kernels
 ```sh
-cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/fall_detection
+cd ${VAI_HOME}/demo/Whole-App-Acceleration/fall_detection
 ./cmake-kernels.sh --clean
 ```
 #### Compile main file
 ```sh
-cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/fall_detection
+cd ${VAI_HOME}/demo/Whole-App-Acceleration/fall_detection
 make
 ```
 
