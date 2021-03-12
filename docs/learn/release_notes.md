@@ -14,7 +14,8 @@
 3. Added cross-layer equalization support in TensorFlow v1.15 
 4. Added WAA U50 TRD
 5. Updated U280 Pre-processing using Multi-preprocessing JPEG decode kernels
-6. Bug fixes and improvements for v1.3
+6. Added DPUCADF8H support on AWS F1
+7. Bug fixes and improvements for v1.3
 
 ## Release 1.3
 ### New Features/Highlights
