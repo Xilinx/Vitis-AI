@@ -23,9 +23,9 @@ source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.1-r1.3.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.1-r1.3.1.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2020.2-r1.3.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.1.tar.gz) and install it to the petalinux system.
 ```
-tar -xzvf vitis_ai_2020.1-r1.3.1.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+tar -xzvf vitis_ai_2020.2-r1.3.1.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
 ## Compile the VART 
