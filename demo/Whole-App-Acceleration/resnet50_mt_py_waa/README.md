@@ -95,7 +95,7 @@ Runtime packages on the board separately.**
 	```	
 * To download and install `resnet50` model:
 	```
-	  cd ${VAI_ALVEO_ROOT}/..
+	  cd cd ${VAI_HOME}
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
 	```	
 	* Install the model package.
