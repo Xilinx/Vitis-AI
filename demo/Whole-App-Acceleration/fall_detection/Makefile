@@ -34,7 +34,7 @@ LIB_PATHS += -L $(CONDA_PREFIX)/lib
 # Add libs under current directory
 LIB_PATHS += -L libs
 # Add libs unders aks
-LIB_PATHS += -L $(VAI_ALVEO_ROOT)/../tools/AKS/libs
+LIB_PATHS += -L $(VAI_HOME)/tools/AKS/libs
 
 # Common
 LIBS := -lpthread -ldl -lz

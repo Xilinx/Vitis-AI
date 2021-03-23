@@ -1,9 +1,9 @@
 # Copyright 2019 Xilinx Inc.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
@@ -34,17 +34,17 @@ import skimage.io as io
 
 def norm_image(IMG):
     # output scale: [0,1]
-    output = (IMG - np.min(IMG))/(np.max(IMG)-np.min(IMG)) 
+    output = (IMG - np.min(IMG))/(np.max(IMG)-np.min(IMG))
     # normalize [0,255]
     output1 = output*255
     # assure integer 8bit
-    output1 = output1.astype('uint8')    
+    output1 = output1.astype('uint8')
     return output1
 
 
 
-#%% main 
-if __name__ == "__main__":    
+#%% main
+if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--output_path', default="./test_output/", help='Optionally, save all generated outputs in specified folder')
@@ -52,13 +52,12 @@ if __name__ == "__main__":
                         help='User can provide an image to run')
     args = vars(parser.parse_args())
 
-    VAI_ALVEO_ROOT = os.environ["VAI_ALVEO_ROOT"]
-    os.makedirs(args['output_path'], exist_ok=True) 
+    os.makedirs(args['output_path'], exist_ok=True)
 
     # model configuration
     model_def = './quantize_results/deploy.prototxt'
     model_weights = './quantize_results/deploy.caffemodel'
-    net = caffe.Net(model_def, model_weights, caffe.TEST) 
+    net = caffe.Net(model_def, model_weights, caffe.TEST)
     input_shape = (256, 256)
 
     image_path = args["image"]
@@ -71,7 +70,7 @@ if __name__ == "__main__":
     # add one dimension
     batch_A = np.expand_dims(image,0)
     # normalize [0,255] --> [-1,1]
-    batch_A1 = (batch_A / 127.5) - 1  
+    batch_A1 = (batch_A / 127.5) - 1
     # channel transpose NHWC to NCHW
     batch_A2 = np.transpose(batch_A1,(0,3,1,2))
 
@@ -88,5 +87,5 @@ if __name__ == "__main__":
     name, ext = os.path.splitext(image_name)
     out_name = name + '_cpu.jpg'
     out_path = os.path.join(args['output_path'], out_name)
-    io.imsave(out_path, fake_B1)       
+    io.imsave(out_path, fake_B1)
     print('[INFO] output file is saved in ' + args["output_path"])

@@ -1,9 +1,9 @@
 # Copyright 2019 Xilinx Inc.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
@@ -35,7 +35,7 @@ class Net(caffe.Net):
     for layer in self.layer_dict:
       if hasattr(self.layer_dict[layer],"fpgaRT"):
         del self.layer_dict[layer].fpgaRT
-        
+
 def Quantize(prototxt,caffemodel,test_iter=1,calib_iter=1):
     os.environ["DECENT_DEBUG"] = "1"
     subprocess.call(["vai_q_caffe", "quantize",
@@ -60,11 +60,11 @@ def Compile(prototxt="quantize_results/deploy.prototxt",\
             caffemodel="quantize_results/deploy.caffemodel",\
             quantize_info="quantize_results/quantize_info.txt"):
 
-    VAI_ROOT = os.environ['VAI_ALVEO_ROOT']
+    VAI_HOME = os.environ['VAI_HOME']
     arch_json = "/opt/vitis_ai/compiler/arch/DPUCADX8G/ALVEO/arch.json"
     if(not os.path.exists(arch_json)):
-        arch_json = os.path.join(VAI_ROOT, "arch.json")
- 
+        arch_json = os.path.join(VAI_HOME, "arch.json")
+
     subprocess.call(["vai_c_caffe",
                     "--prototxt", prototxt,
                     "--caffemodel", caffemodel,
@@ -114,7 +114,7 @@ def get_labelname(labelmap, labels):
     get labelname from lablemap and lables
     :param labelmap: map of label to name
     :param labels: label list
-    :return: labelname list 
+    :return: labelname list
     '''
     num_labels = len(labelmap.item)
     labelnames = []
@@ -160,7 +160,7 @@ def detect_one_image(net,transformer,labelmap,image_path,image_resize_height, im
     net.blobs['data'].data[...] = transformed_image
     start = time.time()
     detections = net.forward()['detection_out']
-    
+
     end = time.time()
     print ("Foward time: ", end - start )
     det_label = detections[0, 0, :, 1]
@@ -177,7 +177,7 @@ def detect_one_image(net,transformer,labelmap,image_path,image_resize_height, im
     top_ymin = det_ymin[top_indices]
     top_xmax = det_xmax[top_indices]
     top_ymax = det_ymax[top_indices]
-    if top_conf.size > 0:    
+    if top_conf.size > 0:
         size = len(top_labels)
         for i in range(size):
             f_xmin = width * top_xmin[i]
@@ -190,15 +190,15 @@ def detect_one_image(net,transformer,labelmap,image_path,image_resize_height, im
             int_ymax = int(f_ymax)
             if is_view and top_conf[i] >= view_theshold:
                 color = colors_tableau[int(top_label_indices[i])]
-                print  (str(top_labels[i]),':','xmin',int_xmin,'ymin',int_ymin,'xmax',int_xmax,'ymax', int_ymax) 
+                print  (str(top_labels[i]),':','xmin',int_xmin,'ymin',int_ymin,'xmax',int_xmax,'ymax', int_ymax)
                 cv2.rectangle(image, (int_xmin, int_ymin), (int_xmax, int_ymax), color, 1)
-                cv2.putText(image, str(top_labels[i]), (int_xmin, int_ymin + 10), font, 0.4, (255, 255, 255), 1) 
+                cv2.putText(image, str(top_labels[i]), (int_xmin, int_ymin + 10), font, 0.4, (255, 255, 255), 1)
                 cv2.putText(image, str(top_conf[i]), (int_xmin, int_ymin - 10), font, 0.4, (255, 255, 255), 1)
             if image_name is not None and fp is not None:
                 fp.writelines(image_name + " " + str(top_labels[i]) + " " + str(top_conf[i]) + " " \
-                              + str(f_xmin) + " " + str(f_ymin) + " " + str(f_xmax) + " " + str(f_ymax) + "\n")  
+                              + str(f_xmin) + " " + str(f_ymin) + " " + str(f_xmax) + " " + str(f_ymax) + "\n")
     if is_view:
-        cv2.imwrite("res_det.jpg", image)     
+        cv2.imwrite("res_det.jpg", image)
 
 
 def compute_map_of_datset(net, transformer, lablemap, image_list_file, det_res_file, gt_file, test_image_root, image_resize_height, image_resize_width, mean, compute_map_script_path):
@@ -208,7 +208,7 @@ def compute_map_of_datset(net, transformer, lablemap, image_list_file, det_res_f
     :param det_res_file:
     :param gt_file:
     :return: None
-    '''  
+    '''
     assert os.path.exists(image_list_file)
     f_image_list = open(image_list_file, 'r')
     lines = f_image_list.readlines()
@@ -261,10 +261,10 @@ if __name__ == "__main__":
     parser.add_argument('--img_mean',type=int, nargs=3, default=[104,117,123],  # BGR for Caffe
 			help='image mean values ')
     parser.add_argument('--img_input_scale', type=float, default=1.0, help='image input scale value ')
-   
+
 
     args = vars(parser.parse_args())
-    
+
     if 	args["prepare"]:
         Quantize(args["prototxt"],args["caffemodel"], args["qtest_iter"], args["qcalib_iter"])
         Compile()
@@ -281,4 +281,4 @@ if __name__ == "__main__":
 
 
 
-       
+

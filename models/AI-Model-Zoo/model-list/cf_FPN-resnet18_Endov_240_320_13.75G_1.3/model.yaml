@@ -30,6 +30,6 @@ files:
 - name: FPN-resnet18_Endov
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_Endov-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 167fc4b65518d6a83769cb0f69826640
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_Endov-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 9b17fa1326a4a0eb029e295bf22971e4
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

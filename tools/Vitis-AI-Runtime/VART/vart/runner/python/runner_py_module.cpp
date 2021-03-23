@@ -18,8 +18,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include <iostream>
 #include <chrono>
+#include <iostream>
 #include <thread>
 using namespace std;
 
@@ -27,18 +27,35 @@ using namespace std;
 #ifndef MODULE_NAME
 #define MODULE_NAME vart
 #endif
+#include <unordered_map>
 #include <xir/graph/subgraph.hpp>
 #include <xir/tensor/tensor.hpp>
 
 #include "vart/runner.hpp"
 #include "vart/runner_ext.hpp"
 #include "vart/tensor_buffer.hpp"
+#include "vitis/ai/env_config.hpp"
+#include "vitis/ai/weak.hpp"
+
+DEF_ENV_PARAM(DEBUG_RUNNER, "0");
+
 namespace py = pybind11;
 namespace {
+using tensor_buffers_t = std::vector<vart::TensorBuffer*>;
+using map_from_job_id_to_tensor_buffers_t =
+    std::unordered_map<int, tensor_buffers_t>;
+using the_map_t =
+    std::unordered_map<vart::Runner*, map_from_job_id_to_tensor_buffers_t>;
+
+static std::shared_ptr<the_map_t> get_store() {
+  return vitis::ai::WeakSingleton<the_map_t>::create();
+}
+
 class CpuFlatTensorBuffer : public vart::TensorBuffer {
  public:
   explicit CpuFlatTensorBuffer(py::buffer_info&& info,
                                std::unique_ptr<xir::Tensor>&& tensor);
+
   virtual ~CpuFlatTensorBuffer();
 
  public:
@@ -62,11 +79,15 @@ class CpuFlatTensorBuffer : public vart::TensorBuffer {
     return {reinterpret_cast<uint64_t>(data_) + offset * size,
             (elem_num - offset) * size};
   }
+  void save_to_map(vart::Runner* runner, int job_id);
 
  private:
   py::buffer_info info_;
   void* data_;
   std::unique_ptr<xir::Tensor> my_tensor_;
+  std::shared_ptr<the_map_t> the_shared_map_;
+  vart::Runner* runner_;
+  int job_id_;
 };
 
 CpuFlatTensorBuffer::CpuFlatTensorBuffer(py::buffer_info&& info,
@@ -74,15 +95,43 @@ CpuFlatTensorBuffer::CpuFlatTensorBuffer(py::buffer_info&& info,
     : TensorBuffer{tensor.get()},
       info_{std::move(info)},
       data_{info.ptr},
-      my_tensor_{std::move(tensor)} {
-  LOG_IF(INFO, false) << "create CpuFlatTensorBuffer @" << (void*)this
-                      << " data= " << data_ << " DEUBG "
-                      << (int)((char*)data_)[0];
+      my_tensor_{std::move(tensor)},
+      the_shared_map_{},
+      runner_{nullptr},
+      job_id_{0} {
+  LOG_IF(INFO, ENV_PARAM(DEBUG_RUNNER))
+      << "create CpuFlatTensorBuffer @" << (void*)this << " data= " << data_
+      << " DEUBG " << (int)((char*)data_)[0];
 }
 
 CpuFlatTensorBuffer::~CpuFlatTensorBuffer() {
-  LOG_IF(INFO, false) << "destroy CpuFlatTensorBuffer @" << (void*)this
-                      << " data= " << data_;
+  LOG_IF(INFO, ENV_PARAM(DEBUG_RUNNER))
+      << "destroy CpuFlatTensorBuffer @" << (void*)this << " data= " << data_;
+  if (the_shared_map_) {
+    CHECK(runner_ != nullptr);
+    auto& the_map = *the_shared_map_.get();
+    auto& v = the_map[runner_][job_id_];
+    v.erase(std::remove(v.begin(), v.end(), this), v.end());
+    if (v.empty()) {
+      the_map[runner_].erase(job_id_);
+      if (the_map[runner_].empty()) {
+        the_map.erase(runner_);
+      }
+    }
+    LOG_IF(INFO, ENV_PARAM(DEBUG_RUNNER))
+        << "size of map:" << the_map.size() << " "             //
+        << "use_count:" << the_shared_map_.use_count() << " "  //
+        << endl;
+  }
+}
+
+void CpuFlatTensorBuffer::save_to_map(vart::Runner* runner, int job_id) {
+  the_shared_map_ = get_store();
+  CHECK(runner != nullptr);
+  CHECK_GE(job_id, 0);
+  runner_ = runner;
+  job_id_ = job_id;
+  (*the_shared_map_)[runner][job_id].push_back(this);
 }
 
 static std::vector<int> calculate_strides(const std::vector<int>& shape,
@@ -134,7 +183,7 @@ static vart::TensorBuffer* array_to_tensor_buffer(py::buffer& a,
   // do not copy attrs, we should check vart::TensorBuffer::copy, if
   // "fix_point" is get from the attr or not
   //
-// new_tensor->set_attrs(tensor->get_attrs());
+  // new_tensor->set_attrs(tensor->get_attrs());
   return new CpuFlatTensorBuffer(std::move(info), std::move(new_tensor));
 }
 
@@ -201,23 +250,45 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def("execute_async",
            [](vart::Runner* self, std::vector<py::buffer> inputs,
               std::vector<py::buffer> outputs) {
+             // NOTE: it is important to initialize cpu_inputs and
+             // cpu_outputs with GIL protection. the_map is the global
+             // variable alike.
              auto cpu_inputs =
                  array_to_tensor_buffer(inputs, self->get_input_tensors());
              auto cpu_outputs =
                  array_to_tensor_buffer(outputs, self->get_output_tensors());
-             py::gil_scoped_release release;
              auto ret = make_pair(uint32_t(0), int32_t(0));
              if (1) {
-//               py::gil_scoped_release release;
+               py::gil_scoped_release release;
                ret = self->execute_async(cpu_inputs, cpu_outputs);
              }
-             destroy(cpu_inputs);
-             destroy(cpu_outputs);
+             // obtain the GIL again.
+             if (ret.first >= 0) {
+               for (auto t : cpu_inputs) {
+                 static_cast<CpuFlatTensorBuffer*>(t)->save_to_map(self,
+                                                                   ret.first);
+               }
+               for (auto t : cpu_outputs) {
+                 static_cast<CpuFlatTensorBuffer*>(t)->save_to_map(self,
+                                                                   ret.first);
+               }
+             } else {
+               destroy(cpu_inputs);
+               destroy(cpu_outputs);
+             }
              return ret;
            })
       .def("wait",
            [](vart::Runner* self, std::pair<uint32_t, int> job_id) {
-             return self->wait(job_id.first, -1);
+             auto ret = self->wait(job_id.first, -1);
+             auto the_map = get_store();
+             // copy instead of reference, it is important, do not use reference
+             // here, the decontructor will clean up the mess.
+             auto v = (*the_map)[self][(int)job_id.first];
+             for (auto t : v) {
+               delete t;
+             }
+             return ret;
            })
       .def("__repr__", [](const vart::Runner* self) {
         std::ostringstream str;

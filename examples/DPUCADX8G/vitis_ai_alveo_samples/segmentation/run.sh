@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-. ${VAI_ALVEO_ROOT}/../setup/alveo/u200_u250/overlaybins/setup.sh
+. ${VAI_HOME}/setup/alveo/u200_u250/overlaybins/setup.sh
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CONDA_PREFIX}/lib
 

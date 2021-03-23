@@ -26,8 +26,9 @@
 #include <opencv2/core.hpp>
 #include <vitis/ai/nnpp/facedetect.hpp>
 
+#include "vitis/ai/configurable_dpu_task.hpp"
 namespace xir {
-  class Attrs;
+class Attrs;
 };
 
 namespace vitis {
@@ -58,10 +59,11 @@ namespace ai {
    @endcode
  *
  * Display of the model results:
- * @image latex images/sample_facedetect_result.jpg "result image" width=\textwidth
+ * @image latex images/sample_facedetect_result.jpg "result image"
+ width=\textwidth
  *
  */
-class FaceDetect {
+class FaceDetect : public ConfigurableDpuTaskBase {
  public:
   /**
  * @brief Factory function to get instance of derived classes of class
@@ -72,50 +74,23 @@ class FaceDetect {
  value is true.
  * @return An instance of FaceDetect class.
  */
-  static std::unique_ptr<FaceDetect> create(const std::string &model_name,
+  static std::unique_ptr<FaceDetect> create(const std::string& model_name,
                                             bool need_preprocess = true);
-  static std::unique_ptr<FaceDetect> create(const std::string &model_name,
-                                            xir::Attrs *attrs,
+  static std::unique_ptr<FaceDetect> create(const std::string& model_name,
+                                            xir::Attrs* attrs,
                                             bool need_preprocess = true);
   /**
    * @cond NOCOMMENTS
    */
  protected:
-  explicit FaceDetect();
-  FaceDetect(const FaceDetect &) = delete;
-  FaceDetect &operator=(const FaceDetect &) = delete;
+  explicit FaceDetect(const std::string& model_name, bool need_preprocess);
+  explicit FaceDetect(const std::string& model_name, xir::Attrs* attrs,
+                      bool need_preprocess);
+  FaceDetect(const FaceDetect&) = delete;
+  FaceDetect& operator=(const FaceDetect&) = delete;
 
  public:
   virtual ~FaceDetect();
-  /**
-   * @endcond
-   */
-  /**
-   * @brief Function to get InputWidth of the facedetect network (input image
-   * columns).
-   *
-   * @return InputWidth of the facedetect network
-   */
-  virtual int getInputWidth() const = 0;
-
-  /**
-   *@brief Function to get InputHeight of the facedetect network (input image
-   *rows).
-   *
-   *@return InputHeight of the facedetect network.
-   */
-  virtual int getInputHeight() const = 0;
-
-  /**
-   * @brief Function to get the number of images processed by the DPU at one
-   *time.
-   * @note Different DPU core the batch size may be different. This depends on
-   *the IP used.
-   *
-   * @return Batch size.
-   */
-  virtual size_t get_input_batch() const = 0;
-
   /**
    * @brief Function to get detect threshold.
    * @return The detect threshold. The value ranges from 0 to 1.
@@ -140,7 +115,7 @@ class FaceDetect {
    *>= det_threshold
    *
    */
-  virtual FaceDetectResult run(const cv::Mat &img) = 0;
+  virtual FaceDetectResult run(const cv::Mat& img) = 0;
 
   /**
    * @brief Function to get running results of the facedetect neuron network in
@@ -155,7 +130,19 @@ class FaceDetect {
    *
    */
   virtual std::vector<FaceDetectResult> run(
-      const std::vector<cv::Mat> &imgs) = 0;
+      const std::vector<cv::Mat>& imgs) = 0;
+
+  /**
+   * @brief Function to get running results of the facedetect neuron network in
+   * batch mode , used to receive user's xrt_bo to support zero copy.
+   *
+   * @param input_bos The vector of vart::xrt_bo_t.
+   *
+   * @return The vector of FaceDetectResult.
+   *
+   */
+  virtual std::vector<FaceDetectResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) = 0;
 };
 
 }  // namespace ai

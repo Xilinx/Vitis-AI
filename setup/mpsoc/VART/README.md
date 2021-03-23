@@ -29,12 +29,12 @@ source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.2-r1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.0.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2020.2-r1.3.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.1.tar.gz) and install it to the petalinux system.
 ```
-tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+tar -xzvf vitis_ai_2020.2-r1.3.1.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
-5. Cross compile the sample, take resnet50 as an example.
+5. Cross compile the sample, take `resnet50` as an example.
 ```
 cd ~/Vitis-AI/demo/VART/resnet50
 bash -x build.sh
@@ -52,9 +52,9 @@ steps.**
 1. Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
-		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.3.0.img.gz)  
+		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.3.1.img.gz)  
 	
-		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.2-v1.3.0.img.gz)  
+		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.2-v1.3.1.img.gz)  
 	
       	Note: The version of the board image should be 2020.2 or above.
 	* Use Etcher software to burn the image file onto the SD card.
@@ -62,12 +62,12 @@ steps.**
 	* Plug in the power and boot the board using the serial port to operate on the system.
 	* Set up the IP information of the board using the serial port.
 	
-	**For the details, please refer to [Setting Up the Evaluation Board](https://www.xilinx.com/html_docs/vitis_ai/1_2/setupevaluationboard.html#yjf1570690235238)**
+	**For the details, please refer to [Setting Up the Evaluation Board](https://www.xilinx.com/html_docs/vitis_ai/1_3/installation.html#yjf1570690235238)**
 
 2. (Optional) Running `zynqmp_dpu_optimize.sh` to optimize the board setting.
 	
 	The script runs automatically after the board boots up with the official image.
-	But you can also download the `dpu_sw_optimize.tar.gz` from [here](../../DPU-TRD/app/dpu_sw_optimize.tar.gz).
+	But you can also download the `dpu_sw_optimize.tar.gz` from [here](../../../dsa/DPU-TRD/app/dpu_sw_optimize.tar.gz).
 	```
 	cd ~/dpu_sw_optimize/zynqmp/
 	./zynqmp_dpu_optimize.sh
@@ -76,20 +76,36 @@ steps.**
 3. (Optional) How to update Vitis AI Runtime and install them separately. 
 	
 	If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
-	* Download the [Vitis AI Runtime 1.3.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.0.tar.gz).  	
+	* Download the [Vitis AI Runtime 1.3.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.1.tar.gz).  	
 	* Untar the runtime packet and copy the following folder to the board using scp.
 	```
-	tar -xzvf vitis-ai-runtime-1.3.0.tar.gz
-	scp -r vitis-ai-runtime-1.3.0/aarch64/centos root@IP_OF_BOARD:~/
+	tar -xzvf vitis-ai-runtime-1.3.1.tar.gz
+	scp -r vitis-ai-runtime-1.3.1/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
-	* Install the Vitis AI Runtime. Execute the following command in order.
+	* Install the Vitis AI Runtime. Execute the following command.
 	```
 	cd ~/centos
-	rpm -ivh --force libunilog-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libxir-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libtarget-factory-1.3.0-r<x>.aarch64.rpm
-	rpm -ivh --force libvart-1.3.0-r<x>.aarch64.rpm
+	bash setup.sh
+	```
+4. (Optional) Download the model.  	
+	For each model, there will be a yaml file which is used for describe all the details about the model. 
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
+	Click [Xilinx AI Model Zoo](../../../models/AI-Model-Zoo/model-list) to view all the models.
+	
+	* Take `resnet50` of ZCU102 as an example.
+	```
+	  cd /workspace
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.1.tar.gz -O resnet50-zcu102_zcu104-r1.3.1.tar.gz
+	```	
+	* Copy the downloaded file to the board using scp with the following command. 
+	```
+	  scp resnet50-zcu102_zcu104-r1.3.1.tar.gz root@IP_OF_BOARD:~/
+	```
+	* Log in to the board (using ssh or serial port) and install the model package.
+	```
+	  tar -xzvf resnet50-zcu102_zcu104-r1.3.1.tar.gz
+	  cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 	  
 ## Step3: Run the Vitis AI Examples
@@ -101,13 +117,13 @@ steps.**
 2. Unzip the `vitis_ai_runtime_r1.3.x_image_video.tar.gz` package on the target.
 	```
 	cd ~
-	tar -xzvf vitis_ai_runtime_r*1.3*_image_video.tar.gz -C Vitis-AI/examples/VART
+	tar -xzvf vitis_ai_runtime_r*1.3*_image_video.tar.gz -C Vitis-AI/demo/VART
 	```
 3. Enter the directory of samples in the target board. Take `resnet50` as an example.
 	```
 	cd ~/Vitis-AI/demo/VART/resnet50
 	```
-5. Run the example.
+4. Run the example.
 	```
 	./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
 	```
@@ -126,6 +142,7 @@ steps.**
 | 5    | video_analysis           | ./video_analysis video/structure.webm /usr/share/vitis_ai_library/models/ssd_traffic_pruned_0_9/ssd_traffic_pruned_0_9.xmodel    |
 | 6    | adas_detection           | ./adas_detection video/adas.webm /usr/share/vitis_ai_library/models/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel         |
 | 7    | segmentation             | ./segmentation video/traffic.webm /usr/share/vitis_ai_library/models/fpn/fpn.xmodel        |
+| 8    | squeezenet_pytorch       | ./squeezenet_pytorch /usr/share/vitis_ai_library/models/squeezenet_pt/squeezenet_pt.xmodel        |
 
 ## References
-- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_2/fmu1570690027480.html)
+- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_3/zmw1606771874842.html)

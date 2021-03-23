@@ -30,26 +30,26 @@ files:
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 9dbf27aeef8f62644bc4feb371105ad4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 14a4be0246c3392b6cd8eaa4ceeddca4
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck190-r1.3.0.tar.gz
-  checksum: 528b98d44ae80f53613c165e20bf81d7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck190-r1.3.1.tar.gz
+  checksum: 66f96be8df219f5b29004c05be2786ff
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-r1.3.0.tar.gz
-  checksum: c7568ce39f9addf603b07bcbbaebed59
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-r1.3.1.tar.gz
+  checksum: 2b349beb9c2a45659cea25a1fa673a7e
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: a6638053790ec5ae93aa27e566f9e2f2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: 5fb83dda0485e3654196bb964256dc49
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: f7e43a10708ef52a33176bafae0bb7a1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 40b9d99c6ca3f64e70c2deb2d90f8190
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

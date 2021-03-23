@@ -172,7 +172,7 @@ def _construct(graph, args, name, url, handlers):
 
 def construct(dict_in):
     name = str(dict_in['name'])
-    recipe_cache = os.environ["VAI_ALVEO_ROOT"] + "/../demo/neptune/recipes/recipe_%s.bak" % name
+    recipe_cache = os.environ["VAI_HOME"] + "/demo/neptune/recipes/recipe_%s.bak" % name
     enc = MultiDimensionalArrayEncoder()
     with open(recipe_cache, 'w') as f:
         f.write(enc.encode(dict_in))

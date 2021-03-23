@@ -26,30 +26,30 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_erfnet_cityscapes_512_1024_54G_1.3.zip
-  checksum: 3581c997dcfbb1a73e5562a613b541bc
+  checksum: 7d31306e30b77d18b0c213b76a2115d4
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 39c18cbf7aedd87db25562a2b34d491e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 93d5225c4ddb60b0df11c466e1c7bb93
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck190-r1.3.0.tar.gz
-  checksum: b10d69f761c7ea9b0ec087e6fde8d4eb
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck190-r1.3.1.tar.gz
+  checksum: cf0ac4839036af5e883674324438722f
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-r1.3.0.tar.gz
-  checksum: 6444bd34fa15b14fb5e0fd746f4c2ad5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-r1.3.1.tar.gz
+  checksum: 397a322d1c3e450eaa6b2964a159b136
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50lv-u280-r1.3.0.tar.gz
-  checksum: db3e6527d3b809954ba4d1352a572207
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50lv-u280-r1.3.1.tar.gz
+  checksum: b323a90efa047224745a01e27ca9bcaf
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 79b598df49fb0c872fcc87cab3901b7b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: baa274db43b4740fe8b23bdd8afaeed0
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

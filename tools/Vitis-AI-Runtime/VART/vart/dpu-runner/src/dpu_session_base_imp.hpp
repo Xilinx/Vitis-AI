@@ -53,7 +53,8 @@ class DpuSessionBaseImp : public DpuSession {
   std::vector<my_tensor_t> init_input_tensors(const xir::Subgraph* subgraph);
   std::vector<my_tensor_t> init_output_tensors(const xir::Subgraph* subgraph);
   std::vector<my_tensor_t> init_tensors(
-      const xir::Subgraph* subgraph, const std::vector<std::string>& op_names);
+      const xir::Subgraph* subgraph, const std::vector<std::string>& op_names,
+      bool check_stride);
 
  public:
   xir::DpuController* get_dpu_controller() { return dpu_controller_.get(); }

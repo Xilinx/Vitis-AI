@@ -30,26 +30,26 @@ files:
 - name: refinedet_baseline
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 914ecc09464a0a9001cdf1ea5a71d1c3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 20f631eeb66aba4d04e5fcfdf2436c45
 - name: refinedet_baseline
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-vck190-r1.3.0.tar.gz
-  checksum: d96df84078877994a01b8193881bdafe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-vck190-r1.3.1.tar.gz
+  checksum: a97dbf596d11fb70ba9d741cb00ea6d5
 - name: refinedet_baseline
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50-r1.3.0.tar.gz
-  checksum: 93c845cb69ae19963d7e1d69fb3af27c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50-r1.3.1.tar.gz
+  checksum: e3ba0e85c1d3d6767a1ad2925c5d3e7e
 - name: refinedet_baseline
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50lv-u280-r1.3.0.tar.gz
-  checksum: 30863b2bf3fa3cc2b5d344e401945ecd
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50lv-u280-r1.3.1.tar.gz
+  checksum: 8e11dfafc4aa9ed983f817dd0b4bdae2
 - name: refinedet_baseline
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 60a09f4fd41d824a9520b80c74684038
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 59d5d83f8eab761b031f02d2bc8e3fe4
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -23,7 +23,7 @@
 
 using namespace std;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   bool preprocess = !(getenv("PRE") != nullptr);
   if (argc < 2) {
     std::cout << " usage: " << argv[0] << " <img_url> [<img_url> ...]"
@@ -32,12 +32,8 @@ int main(int argc, char *argv[]) {
   }
 
   auto v = vitis::ai::FaceDetect::create(argv[1], preprocess);
-  std::cerr << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__
-            << "]"  //
-                    //<< "width " << width << " " //
-                    //<< "height " << height << " "            //
-            << "pre " << preprocess << " "
-            << "v.get() " << (void *)v.get() << " "  //
+  LOG(INFO) << "pre " << preprocess << " "
+            << "v.get() " << (void*)v.get() << " "  //
             << std::endl;
   int width = v->getInputWidth();
   int height = v->getInputHeight();
@@ -68,7 +64,7 @@ int main(int argc, char *argv[]) {
     __TIC__(FACE_DET_TOTLE)
     auto result = v->run(canvas);
     __TOC__(FACE_DET_TOTLE)
-    for (const auto &r : result.rects) {
+    for (const auto& r : result.rects) {
       cout << " " << r.score << " "  //
            << r.x << " "             //
            << r.y << " "             //

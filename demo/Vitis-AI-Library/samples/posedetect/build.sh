@@ -15,9 +15,9 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_posedetect test_accuracy_posedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -lvitis_ai_library-model_config -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_posedetect test_jpeg_posedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_posedetect_with_ssd test_jpeg_posedetect_with_ssd.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -pthread -lvitis_ai_library-ssd -lglog 
-$CXX -std=c++11 -I. -o test_performance_posedetect test_performance_posedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -lvart-util -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_posedetect test_video_posedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_posedetect_with_ssd test_video_posedetect_with_ssd.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -pthread -lvitis_ai_library-ssd -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_posedetect test_accuracy_posedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -lvitis_ai_library-model_config -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_posedetect test_jpeg_posedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_posedetect_with_ssd test_jpeg_posedetect_with_ssd.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -pthread -lvitis_ai_library-ssd -lvitis_ai_library-dpu_task -lglog 
+$CXX -std=c++17 -I. -o test_performance_posedetect test_performance_posedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+$CXX -std=c++17 -I. -o test_video_posedetect test_video_posedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_video_posedetect_with_ssd test_video_posedetect_with_ssd.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-posedetect  -pthread -lvitis_ai_library-ssd -lvitis_ai_library-dpu_task -lglog 

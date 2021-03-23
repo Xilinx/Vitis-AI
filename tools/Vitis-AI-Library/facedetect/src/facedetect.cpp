@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <glog/logging.h>
+
 #include <vitis/ai/facedetect.hpp>
 
 #include "./detect_imp.hpp"
@@ -20,15 +22,20 @@
 namespace vitis {
 namespace ai {
 
-FaceDetect::FaceDetect() {}
+FaceDetect::FaceDetect(const std::string& model_name, bool need_preprocess)
+    : ConfigurableDpuTaskBase(model_name, need_preprocess) {}
+
+FaceDetect::FaceDetect(const std::string& model_name, xir::Attrs* attrs,
+                       bool need_preprocess)
+    : ConfigurableDpuTaskBase(model_name, attrs, need_preprocess) {}
 FaceDetect::~FaceDetect() {}
-std::unique_ptr<FaceDetect> FaceDetect::create(const std::string &model_name,
+std::unique_ptr<FaceDetect> FaceDetect::create(const std::string& model_name,
                                                bool need_preprocess) {
   return std::unique_ptr<FaceDetect>(
       new DetectImp(model_name, need_preprocess));
 }
-std::unique_ptr<FaceDetect> FaceDetect::create(const std::string &model_name,
-                                               xir::Attrs *attrs,
+std::unique_ptr<FaceDetect> FaceDetect::create(const std::string& model_name,
+                                               xir::Attrs* attrs,
                                                bool need_preprocess) {
   return std::unique_ptr<FaceDetect>(
       new DetectImp(model_name, attrs, need_preprocess));

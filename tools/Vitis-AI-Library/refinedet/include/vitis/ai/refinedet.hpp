@@ -24,8 +24,8 @@
 #pragma once
 #include <memory>
 #include <opencv2/core.hpp>
+#include <vitis/ai/configurable_dpu_task.hpp>
 #include <vitis/ai/nnpp/refinedet.hpp>
-
 namespace vitis {
 namespace ai {
 
@@ -74,7 +74,7 @@ namespace ai {
  *  @image latex images/sample_refinedet_result.jpg " result image" width=\textwidth
  *
  */
-class RefineDet {
+class RefineDet : public ConfigurableDpuTaskBase {
  public:
   /**
    * @brief Factory function to get an instance of derived classes of class
@@ -86,14 +86,14 @@ class RefineDet {
    * @return An instance of RefineDet class.
    *
    */
-  static std::unique_ptr<RefineDet> create(const std::string &model_name,
+  static std::unique_ptr<RefineDet> create(const std::string& model_name,
                                            bool need_preprocess = true);
   /**
    * @cond NOCOMMENTS
    */
  public:
-  explicit RefineDet();
-  RefineDet(const RefineDet &) = delete;
+  explicit RefineDet(const std::string& model_name, bool need_preprocess);
+  RefineDet(const RefineDet&) = delete;
   virtual ~RefineDet();
   /**
    * @endcond
@@ -108,7 +108,7 @@ class RefineDet {
    *
    */
 
-  virtual RefineDetResult run(const cv::Mat &image) = 0;
+  virtual RefineDetResult run(const cv::Mat& image) = 0;
   /**
    * @brief Function to get running result of the RefineDet neuron network in
    * batch mode.
@@ -119,30 +119,19 @@ class RefineDet {
    *
    */
   virtual std::vector<RefineDetResult> run(
-      const std::vector<cv::Mat> &images) = 0;
+      const std::vector<cv::Mat>& images) = 0;
+
   /**
-   * @brief Function to get InputWidth of the refinedet network (input image
-   * columns).
+   * @brief Function to get running results of the RefineDet neuron network in
+   * batch mode, used to receive user's xrt_bo to support zero copy.
    *
-   * @return InputWidth of the refinedet network
-   */
-  virtual int getInputWidth() const = 0;
-  /**
-   *@brief Function to get InputHeight of the refinedet network (input image
-   *rows).
+   * @param input_bos The vector of vart::xrt_bo_t.
    *
-   *@return InputHeight of the refinedet network.
-   */
-  virtual int getInputHeight() const = 0;
-  /**
-   * @brief Function to get the number of images processed by the DPU at one
-   *time.
-   * @note Different DPU core the batch size may be different. This depends on
-   *the IP used.
+   * @return The vector of RefineDetResult.
    *
-   *@return Batch size.
    */
-  virtual size_t get_input_batch() const = 0;
+  virtual std::vector<vitis::ai::RefineDetResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) = 0;
 };
 }  // namespace ai
 }  // namespace vitis

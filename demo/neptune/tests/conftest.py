@@ -23,8 +23,8 @@ import requests
 
 neptune_command = []
 server_addr = ""
-root_path = os.environ['VAI_ALVEO_ROOT']
-run_path = root_path + '/neptune/run.sh'
+root_path = os.environ['VAI_HOME']
+run_path = root_path + '/demo/neptune/run.sh'
 
 # The timeout code is taken from https://stackoverflow.com/a/46773292
 class Termination(SystemExit):

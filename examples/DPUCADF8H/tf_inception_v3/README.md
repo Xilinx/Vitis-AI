@@ -35,7 +35,7 @@ This directory provides scripts for running several well known models on the FPG
 
   The following example uses the pretrained Inception-v3 Tensorflow model from the AI-Model-Zoo.
 
-   Download Samples Models from [AI-Model-Zoo](../../../models/AI-Model-Zoo)
+   Download sample models from [AI-Model-Zoo](../../../models/AI-Model-Zoo)
 
    In the following steps your downloaded model's .pb file should be placed inside a models directory
 

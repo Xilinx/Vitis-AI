@@ -34,7 +34,7 @@ static std::string get_single_name(const std::string& line) {
   if (found != std::string::npos) {
     return line.substr(found + 1 + 13, line.length() - found - 5);
   }
-  return line;
+  return line.substr(1 + 13, line.length() - 5);
 }
 
 struct TFSSDAcc : public AccThread {

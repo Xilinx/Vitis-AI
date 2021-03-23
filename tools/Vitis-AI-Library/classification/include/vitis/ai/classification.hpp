@@ -28,7 +28,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vitis/ai/nnpp/classification.hpp>
-
+#include "vitis/ai/configurable_dpu_task.hpp"
 namespace vitis {
 namespace ai {
 
@@ -53,7 +53,7 @@ namespace ai {
  *
  */
 
-class Classification {
+class Classification : public ConfigurableDpuTaskBase {
  public:
   /**
    * @brief Factory function to get an instance of derived classes of class
@@ -73,7 +73,7 @@ class Classification {
   /**
    * @cond NOCOMMENTS
    */
-  explicit Classification();
+  explicit Classification(const std::string& model_name, bool need_preprocess);
   Classification(const Classification&) = delete;
   virtual ~Classification();
   /**
@@ -103,28 +103,16 @@ class Classification {
   virtual std::vector<vitis::ai::ClassificationResult> run(
       const std::vector<cv::Mat>& images) = 0;
   /**
-   * @brief Function to get InputWidth of the classification network (input
-   *image columns).
+   * @brief Function to get running results of the classification neuron network
+   * in batch mode , used to receive user's xrt_bo to support zero copy.
    *
-   * @return Input width of the classification network
-   */
-  virtual int getInputWidth() const = 0;
-  /**
-   *@brief Function to get InputHeight of the classification network (input
-   *image rows).
+   * @param input_bos The vector of vart::xrt_bo_t.
    *
-   *@return Input height of the classification network.
-   */
-  virtual int getInputHeight() const = 0;
-  /**
-   * @brief Function to get the number of images processed by the DPU at one
-   *time.
-   * @note The batch size of different DPU core may be different. This depends
-   *on the IP used.
+   * @return The vector of ClassifcationResult.
    *
-   * @return Batch size.
    */
-  virtual size_t get_input_batch() const = 0;
+  virtual std::vector<vitis::ai::ClassificationResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) = 0;
 };
 
 }  // namespace ai

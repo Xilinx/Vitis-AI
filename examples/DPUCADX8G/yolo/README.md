@@ -48,7 +48,7 @@ find $HOME/CK-TOOLS/dataset-coco-2014-val/val2014/ -name "*.jpg" | tail -25 | xa
 ## Running the Application
  To run:
 
- 1. `cd $VAI_ALVEO_ROOT/DPUCADX8G/yolo`
+ 1. `cd $VAI_HOME/examples/DPUCADX8G/yolo`
 
  2. Run it : `./detect.sh -t test_detect -m yolo_v3_spp --dump_results --visualize`
     - Output results will be saved as text files as well as images in the directory `out_labels/`

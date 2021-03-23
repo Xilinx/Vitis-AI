@@ -49,8 +49,8 @@ DOCKER_REPO="xilinx/"
 BRAND=vitis-ai
 VERSION=latest
 
-CPU_IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}-cpu
-GPU_IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}-gpu
+CPU_IMAGE_TAG=${DOCKER_REPO}${BRAND}-cpu:${VERSION}
+GPU_IMAGE_TAG=${DOCKER_REPO}${BRAND}-gpu:${VERSION}
 IMAGE_NAME="${1:-$CPU_IMAGE_TAG}"
 DEFAULT_COMMAND="bash"
 
@@ -86,6 +86,7 @@ docker_run_params=$(cat <<-END
     -v /dev/shm:/dev/shm \
     -v /opt/xilinx/dsa:/opt/xilinx/dsa \
     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
+    -v /etc/xbutler:/etc/xbutler \
     -e USER=$user -e UID=$uid -e GID=$gid \
     -e VERSION=$VERSION \
     -v $DOCKER_RUN_DIR:/vitis_ai_home \

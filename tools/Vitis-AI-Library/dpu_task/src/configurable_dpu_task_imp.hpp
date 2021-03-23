@@ -24,8 +24,7 @@ class ConfigurableDpuTaskImp : public ConfigurableDpuTask {
  public:
   ConfigurableDpuTaskImp(const std::string& model_name,
                          bool need_preprocess = true);
-  ConfigurableDpuTaskImp(const std::string& model_name,
-                         xir::Attrs *attrs,
+  ConfigurableDpuTaskImp(const std::string& model_name, xir::Attrs* attrs,
                          bool need_preprocess = true);
   virtual ~ConfigurableDpuTaskImp();
 
@@ -35,8 +34,11 @@ class ConfigurableDpuTaskImp : public ConfigurableDpuTask {
   virtual void setInputImageBGR(const std::vector<cv::Mat>& image) override;
   virtual void setInputImageRGB(const std::vector<cv::Mat>& image) override;
   virtual void setInputDataArray(const std::vector<int8_t>& array) override;
-  virtual void setInputDataArray(const std::vector<std::vector<int8_t>>& array) override;
+  virtual void setInputDataArray(
+      const std::vector<std::vector<int8_t>>& array) override;
   virtual void run(int task_index) override;
+  virtual void run_with_xrt_bo(
+      const std::vector<vart::xrt_bo_t>& input_bos) override;
   virtual const vitis::ai::proto::DpuModelParam& getConfig() const override;
   virtual std::vector<std::vector<vitis::ai::library::InputTensor>>
   getInputTensor() const override;
@@ -48,6 +50,10 @@ class ConfigurableDpuTaskImp : public ConfigurableDpuTask {
 
   virtual size_t get_input_batch() const override;
   virtual const xir::Graph* get_graph() const override;
+
+  virtual int get_input_buffer_size() const override;
+  virtual size_t get_input_offset() const override;
+  virtual int get_input_fix_point() const override;
 
  private:
   std::unique_ptr<DpuTask> tasks_;

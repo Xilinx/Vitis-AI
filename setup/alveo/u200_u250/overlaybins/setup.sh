@@ -18,13 +18,14 @@ if [[ "$CONDA_DEFAULT_ENV" = "base" ]]; then
   return
 fi
 
-
-export VAI_ALVEO_ROOT="$( readlink -f "$( dirname "${BASH_SOURCE[0]}" )/../../../../examples" )"
+if [[ -z $VAI_HOME ]]; then
+	export VAI_HOME="$( readlink -f "$( dirname "${BASH_SOURCE[0]}" )/../../../.." )"
+fi
 
 echo "------------------"
-echo "Using VAI_ALVEO_ROOT"
+echo "Using VAI_HOME"
 echo "------------------"
-echo $VAI_ALVEO_ROOT
+echo $VAI_HOME
 echo ""
 
 ##############################
@@ -37,7 +38,7 @@ echo "---------------------"
 if [[ "$XDNN_XRM" -eq 1 ]]; then
     export LD_LIBRARY_PATH=/opt/xilinx/xrm/lib:$LD_LIBRARY_PATH
     echo "Using Xilinx XRM"
-fi 
+fi
 
 echo "---------------------"
 echo "Using LD_LIBRARY_PATH"
@@ -54,12 +55,12 @@ else
   echo "---------------------"
   echo "Developer Flow"
   echo "---------------------"
-  PYTHONPATH=${VAI_ALVEO_ROOT}:${VAI_ALVEO_ROOT}/apps/yolo:${VAI_ALVEO_ROOT}/apps/yolo:${VAI_ALVEO_ROOT}/xfmlp/python:${PYTHONPATH}
-  ln -s $VAI_ALVEO_ROOT/vai/dpuv1/tools/compile/bin/vai_c_tensorflow.py $CONDA_PREFIX/bin/vai_c_tensorflow
+  PYTHONPATH=${VAI_HOME}:${VAI_HOME}/examples/DPUCADX8G/yolo:${PYTHONPATH}
+  ln -s $VAI_HOME/vai/dpuv1/tools/compile/bin/vai_c_tensorflow.py $CONDA_PREFIX/bin/vai_c_tensorflow
   ln -s $CONDA_PREFIX/bin/decent_q $CONDA_PREFIX/bin/vai_q_tensorflow
-  MLSUITE_ROOT=$VAI_ALVEO_ROOT
+  MLSUITE_ROOT=$VAI_HOME
   export MLSUITE_ROOT
-  LIBXDNN_PATH=${VAI_ALVEO_ROOT}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so
+  LIBXDNN_PATH=${VAI_HOME}/vai/dpuv1/rt/xdnn_cpp/lib/libxfdnn.so
 fi
 
 export LIBXDNN_PATH
@@ -82,7 +83,7 @@ export OMP_NUM_THREADS=4
 export MKL_NUM_THREADS=4
 export XBLAS_NUM_PREP_THREADS=4
 
-export XRT_INI_PATH=${VAI_ALVEO_ROOT}/../setup/alveo/u200_u250/overlaybins/xrt.ini
+export XRT_INI_PATH=${VAI_HOME}/setup/alveo/u200_u250/overlaybins/xrt.ini
 export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8
 ##############################
 # Enable XILINX_XRT
@@ -116,6 +117,6 @@ else
 fi
 
 # Build NMS for YOLOv2 Demos
-#make -C ${VAI_ALVEO_ROOT}/apps/yolo/nms
+#make -C ${VAI_HOME}/examples/DPUCADX8G/yolo/nms
 
 #export XBLAS_EMIT_PROFILING_INFO=1

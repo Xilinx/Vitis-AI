@@ -30,11 +30,11 @@ files:
 - name: mobilenet_v1_1_0_224_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 2cccd02986a069009d26ae840ca66e90
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 4b91584ff79ba77105825dfe067fb93d
 - name: mobilenet_v1_1_0_224_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 90f8c5a8a1dbbe4cd427dffe50a29d3b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 76e9d2d6d77c1f5725934cc6bfcbcbe6
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -17,12 +17,15 @@
 #include <cmath>
 #include <memory>
 #include <opencv2/core.hpp>
+#include <vart/assistant/xrt_bo_tensor_buffer.hpp>
+#include <vart/experimental/runner_helper.hpp>
+#include <vart/zero_copy_helper.hpp>
 #include <vector>
 #include <vitis/ai/library/tensor.hpp>
 namespace xir {
 class Graph;
 class Attrs;
-}
+}  // namespace xir
 
 namespace vitis {
 namespace ai {
@@ -57,7 +60,8 @@ class DpuTask {
    */
   static std::unique_ptr<DpuTask> create(const std::string& kernal_name);
 
-  static std::unique_ptr<DpuTask> create(const std::string& kernal_name, xir::Attrs *attrs);
+  static std::unique_ptr<DpuTask> create(const std::string& kernal_name,
+                                         xir::Attrs* attrs);
 
  public:
   /**
@@ -66,6 +70,8 @@ class DpuTask {
    * copied to input tensors, via `setImageBGR` or `setImageRGB`.
    */
   virtual void run(size_t idx) = 0;
+  virtual void run_with_xrt_bo(
+      const std::vector<vart::xrt_bo_t>& input_bos) = 0;
   /**
    * @brief Set the mean/scale values.
    * @note By default, no mean-scale processing, after invoking this
@@ -104,7 +110,8 @@ class DpuTask {
   /**
    * @cond NOCOMMENTS
    */
-  virtual void setInputDataArray(const std::vector<std::vector<int8_t>> input) = 0;
+  virtual void setInputDataArray(
+      const std::vector<std::vector<int8_t>> input) = 0;
   /**
    * @endcond
    */
@@ -146,6 +153,10 @@ class DpuTask {
   virtual const xir::Graph* get_graph() const = 0;
 
   virtual std::unique_ptr<xir::Attrs> get_attrs() const = 0;
+
+  virtual int get_input_buffer_size() const = 0;
+  virtual size_t get_input_offset() const = 0;
+  virtual int get_input_fix_point() const = 0;
 };
 
 }  // namespace ai

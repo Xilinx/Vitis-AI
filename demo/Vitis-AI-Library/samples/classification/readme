@@ -397,11 +397,12 @@ squeezenet_pt 5 0.00246783
 squeezenet_pt 973 0.000333984
 squeezenet_pt 397 0.000333984
 squeezenet_pt 392 0.000333984
-	
-    sample: ./test_jpeg_classification_squeezenet squeezenet sample_classification.jpg
+
+
+    sample : ./test_jpeg_classification_squeezenet squeezenet sample_classification.jpg
+    output :
 squeezenet 109 0.940369
 squeezenet 397 0.0172235
 squeezenet 973 0.0172235
 squeezenet 5 0.0172235
 squeezenet 390 0.00233094
-

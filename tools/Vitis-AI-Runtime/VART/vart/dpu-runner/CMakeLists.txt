@@ -19,7 +19,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/VitisVersion.cmake)
 find_package(OpenSSL REQUIRED)
 link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 set(DEPS_PUBLIC xir::xir unilog::unilog crypto runner)
-set(DEPS_PRIVATE dpu-controller xrt-device-handle)
+set(DEPS_PRIVATE dpu-controller xrt-device-handle runner-assistant)
 
 if(XRT_FOUND)
   list(APPEND  DEPS_PRIVATE XRT::XRT)

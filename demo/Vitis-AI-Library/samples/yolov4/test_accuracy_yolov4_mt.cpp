@@ -16,13 +16,13 @@
 #include <glog/logging.h>
 
 #include <fstream>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <memory>
-#include <vector>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <vector>
 #include <vitis/ai/demo_accuracy.hpp>
 #include <vitis/ai/nnpp/yolov3.hpp>
 #include <vitis/ai/yolov3.hpp>
@@ -36,21 +36,19 @@ namespace ai {
 
 vector<int> coco_id_map_dict() {
   vector<int> category_ids;
-  category_ids = {1,2,3,4,5,6,7,8,9,10,
-                  11,13,14,15,16,17,18,19,20,21,
-                  22,23,24,25,27,28,31,32,33,34,
-                  35,36,37,38,39,40,41,42,43,44,
-                  46,47,48,49,50,51,52,53,54,55,
-                  56,57,58,59,60,61,62,63,64,65,
-                  67,70,72,73,74,75,76,77,78,79,
-                  80,81,82,84,85,86,87,88,89,90};
+  category_ids = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 13, 14, 15,
+                  16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 31, 32,
+                  33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 47,
+                  48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61,
+                  62, 63, 64, 65, 67, 70, 72, 73, 74, 75, 76, 77, 78, 79,
+                  80, 81, 82, 84, 85, 86, 87, 88, 89, 90};
   return category_ids;
 }
 
 int imagename_to_id(string imagename) {
   int idx1 = imagename.size();
   int idx2 = imagename.find_last_of('_');
-  string id = imagename.substr(idx2+1, idx1-idx2);
+  string id = imagename.substr(idx2 + 1, idx1 - idx2);
   int image_id = atoi(id.c_str());
   return image_id;
 }
@@ -88,24 +86,26 @@ struct Yolov3Acc : public AccThread {
       if (xmax > dpu_result.w) xmax = dpu_result.w;
       if (ymax > dpu_result.h) ymax = dpu_result.h;
       float confidence = box.score;
-      of << fixed << setprecision(0) <<"{\"image_id\":" << imagename_to_id(dpu_result.single_name) <<
-      ", \"category_id\":" << ccoco_id_map_dict[box.label]<< ", \"bbox\":[" << fixed <<
-      setprecision(6) << xmin << ", " << ymin << ", " << xmax-xmin << ", " << ymax-ymin << "], \"score\":"
-      << confidence << "}," << endl;
+      of << fixed << setprecision(0)
+         << "{\"image_id\":" << imagename_to_id(dpu_result.single_name)
+         << ", \"category_id\":" << ccoco_id_map_dict[box.label]
+         << ", \"bbox\":[" << fixed << setprecision(6) << xmin << ", " << ymin
+         << ", " << xmax - xmin << ", " << ymax - ymin
+         << "], \"score\":" << confidence << "}," << endl;
     }
   }
 
   virtual int run() override {
-    if(is_first) {
-      of << "[" << endl; 
+    if (is_first) {
+      of << "[" << endl;
       is_first = false;
     }
     if (g_last_frame_id == int(dpu_result.frame_id)) {
       of.seekp(-2L, ios::end);
-      of << endl << "]" << endl;  
-      return -1;
+      of << endl << "]" << endl;
+      exit(0);
     }
-    if (queue_->pop(dpu_result, std::chrono::milliseconds(50000))){
+    if (queue_->pop(dpu_result, std::chrono::milliseconds(50000))) {
       process_result(dpu_result);
     }
     return 0;

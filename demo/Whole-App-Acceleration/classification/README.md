@@ -32,7 +32,7 @@ source /vitis_ai_home/setup/alveo/u200_u250/overlaybins/setup.sh
 ```
 
 ## Running the Application
-- `cd ${VAI_ALVEO_ROOT}/../demo/Whole-App-Acceleration/classification`
+- `cd ${VAI_HOME}/demo/Whole-App-Acceleration/classification`
 -  Use `run.sh` file to run the application.
 
 ### Examples

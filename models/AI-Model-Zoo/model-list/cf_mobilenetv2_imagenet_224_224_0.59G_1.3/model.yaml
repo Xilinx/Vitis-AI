@@ -30,6 +30,6 @@ files:
 - name: mobilenet_v2
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: fec8084e502de9148051337c479488a0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 94d34f2fa5451d2bcb708887e87661d7
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

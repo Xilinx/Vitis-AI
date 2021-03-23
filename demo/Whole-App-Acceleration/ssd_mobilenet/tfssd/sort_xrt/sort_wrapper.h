@@ -65,7 +65,7 @@ const int NMS_FX = 9830;
 const int CLASS_SIZE = 1917;
 
 
-static int runHWSort(PPHandle * &pphandle, int8_t* loc_in, short *&nms_out)
+static int runHWSort(PPHandle * &pphandle, short *&nms_out)
 {	
 	xclDeviceHandle handle = pphandle->handle;
 	uint64_t cu_base_addr = pphandle->cu_base_addr;

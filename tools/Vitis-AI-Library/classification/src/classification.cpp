@@ -21,7 +21,9 @@
 namespace vitis {
 namespace ai {
 
-Classification::Classification() {}
+Classification::Classification(const std::string& model_name,
+                               bool need_preprocess)
+    : ConfigurableDpuTaskBase(model_name, need_preprocess) {}
 Classification::~Classification() {}
 
 std::unique_ptr<Classification> Classification::create(

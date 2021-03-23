@@ -26,30 +26,30 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_FPN-resnet18_covid19-seg_352_352_22.7G_1.3.zip
-  checksum: 220b9eae6af5c7e39d08a02d9ed68992
+  checksum: 32d941e02670021d5c84a5cb16745c9c
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 82ef3545fad204bfb4b58d73120db208
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 96ac7dc7216e60cef5d4c6110cefa670
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-vck190-r1.3.0.tar.gz
-  checksum: 1a1e97377ccc6aa3512a25638af4ba21
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-vck190-r1.3.1.tar.gz
+  checksum: 35c7b9908f553f6faf7e4f6eada734d2
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-r1.3.0.tar.gz
-  checksum: 1f32647b0b0c9996bbea50000ae11f54
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-r1.3.1.tar.gz
+  checksum: ed1ec5cbf91845c753e28821fbbe97ac
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 6f230a5766ae5804f3012985bb7bef78
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: b4ec0b8089fb8b3d49d8375dc829ca05
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: f521384ffa1cf77822ffe5e3558caecd
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: c37b551b55501d2be80866f679b3e6c5
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

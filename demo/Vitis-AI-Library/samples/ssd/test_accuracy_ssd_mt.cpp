@@ -24,6 +24,7 @@
 #include <vitis/ai/demo_accuracy.hpp>
 #include <vitis/ai/ssd.hpp>
 extern int g_last_frame_id;
+extern int GLOBAL_ENABLE_C_SOFTMAX;
 
 std::string model_name;
 
@@ -79,6 +80,10 @@ struct SSDAcc : public AccThread {
            << it.x * dpu_result.w << " " << it.y * dpu_result.h << " "
            << (it.x + it.width) * dpu_result.w << " "
            << (it.y + it.height) * dpu_result.h << std::endl;
+      } else if ("mlperf_ssd_resnet34_tf" == model_name) {
+        of << get_single_name(dpu_result.single_name) << " " << it.label << " "
+           << it.score << " " << it.x << " " << it.y << " " << it.width << " "
+           << it.height << std::endl;
       } else {
         of << get_single_name(dpu_result.single_name) << " " << it.label << " "
            << it.score << " " << it.x * dpu_result.w << " "
@@ -107,6 +112,7 @@ struct SSDAcc : public AccThread {
 }  // namespace vitis
 
 int main(int argc, char* argv[]) {
+  GLOBAL_ENABLE_C_SOFTMAX = 2;
   model_name = argv[1];
   return vitis::ai::main_for_accuracy_demo(
       argc, argv, [&] { return vitis::ai::SSD::create(model_name + "_acc"); },

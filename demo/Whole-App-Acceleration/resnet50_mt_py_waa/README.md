@@ -40,21 +40,21 @@ Runtime packages on the board separately.**
 	You can now operate on the board using SSH.
 	
 * Update the system image files.
-	* Download the [waa_system_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_v1.3.0.tar.gz).	
+	* Download the [waa_system_v1.3.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_v1.3.1.tar.gz).	
 
-	* Copy the `waa_system_v1.3.0.tar.gz` to the board using scp.
+	* Copy the `waa_system_v1.3.1.tar.gz` to the board using scp.
 		```
-		scp waa_system_v1.3.0.tar.gz root@IP_OF_BOARD:~/
+		scp waa_system_v1.3.1.tar.gz root@IP_OF_BOARD:~/
 		```
 	* Update the system image files on the target side
 
 		```
 		cd ~
-		tar -xzvf waa_system_v1.3.0.tar.gz
-		cp waa_system_v1.3.0/sd_card_resnet50/* /mnt/sd-mmcblk0p1/
+		tar -xzvf waa_system_v1.3.1.tar.gz
+		cp waa_system_v1.3.1/sd_card_resnet50/* /mnt/sd-mmcblk0p1/
 		cp /mnt/sd-mmcblk0p1/dpu.xclbin /usr/lib/
 		ln -s /usr/lib/dpu.xclbin /mnt/dpu.xclbin
-		cp waa_system_v1.3.0/lib/* /usr/lib/
+		cp waa_system_v1.3.1/lib/* /usr/lib/
 		reboot
 		```
 
@@ -83,19 +83,19 @@ Runtime packages on the board separately.**
 ## Setting Up and Running Alveo U50
 
 ### Setting Up the Target Alveo U50
-**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment**
+**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment. Docker installation instructions are available [here](../../../README.md#Installation)**
 
 * Follow the steps mentioned [here](../../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
 
-* Download [waa_system_u50_v1.3.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_u50_v1.3.0.tar.gz) and update the xclbin file.
+* Download [waa_system_u50_v1.3.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=waa_system_u50_v1.3.1.tar.gz) and update the xclbin file.
 
 	```
-	tar -xzvf waa_system_u50_v1.3.0.tar.gz
-	sudo cp waa_system_u50_v1.3.0/* /usr/lib/.
+	tar -xzvf waa_system_u50_v1.3.1.tar.gz
+	sudo cp waa_system_u50_v1.3.1/* /usr/lib/.
 	```	
 * To download and install `resnet50` model:
 	```
-	  cd ${VAI_ALVEO_ROOT}/..
+	  cd ${VAI_HOME}
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
 	```	
 	* Install the model package.
@@ -127,8 +127,7 @@ Runtime packages on the board separately.**
 Below table shows the comparison of througput achieved by acclerating the pre-processing pipeline on FPGA. 
 For `Resnet-50`, the performance numbers are achieved by running 1K images randomly picked from ImageNet dataset. 
 
-FPGA: ZCU102
-
+Network: Resnet50
 <table style="undefined;table-layout: fixed; width: 534px">
 <colgroup>
 <col style="width: 119px">
@@ -137,7 +136,7 @@ FPGA: ZCU102
 <col style="width: 134px">
 </colgroup>
   <tr>
-    <th rowspan="2">Network</th>
+    <th rowspan="2">FPGA</th>
     <th colspan="2">E2E Throughput (fps)</th>
     <th rowspan="2"><span style="font-weight:bold">Percentage improvement in throughput</span></th>
   </tr>
@@ -146,14 +145,22 @@ FPGA: ZCU102
     <td>with hardware Pre-processing</td>
   </tr>
 
-  <tr>
-    <td>Resnet-50</td>
-    <td>47.6</td>
-    <td>64</td>
-    <td>34.4%</td>
-  </tr>
-  
 
+  
+  <tr>
+   <td>ZCU102</td>
+    <td>47.48</td>
+    <td>68.97</td>
+        <td>45.26%</td>
+  </tr>
+
+  <tr>
+   <td>U50</td>
+    <td>112.07</td>
+    <td>122.8</td>
+        <td>9.5%</td>
+  </tr>
 </table>
+
 
 **Note that Performance numbers are computed using end-to-end latency and it depends on input image resolution. So performance numbers can vary with different images**  

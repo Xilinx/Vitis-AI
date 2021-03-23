@@ -29,7 +29,7 @@ from yolo_utils import bias_selector, saveDetectionDarknetStyle, yolo_parser_arg
 from yolo_utils import draw_boxes, generate_colors
 from get_mAP_darknet import calc_detector_mAP
 
-log_file = os.environ['VAI_ALVEO_ROOT'] + "/vai/dpuv1/rt/logging.ini"
+log_file = os.environ['VAI_HOME'] + "/vai/dpuv1/rt/logging.ini"
 logging_mp.setup_logger(log_file, 'xstream')
 
 ########################################################
@@ -108,7 +108,7 @@ def run(args=None):
 
   timerQ = Queue()
   args['timerQ']           = timerQ
-  
+
   compJson = xdnn.CompilerJsonParser(args['netcfg'])
   firstInputShape = next(itervalues(compJson.getInputs()))
   args['net_h'] = firstInputShape[2]

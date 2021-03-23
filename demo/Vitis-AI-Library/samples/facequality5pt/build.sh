@@ -15,6 +15,6 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_facequality5pt test_accuracy_facequality5pt.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facequality5pt  -lvitis_ai_library-model_config -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_facequality5pt test_jpeg_facequality5pt.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facequality5pt  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_facequality5pt test_performance_facequality5pt.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facequality5pt  -lvart-util -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_facequality5pt test_accuracy_facequality5pt.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facequality5pt  -lvitis_ai_library-model_config -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_facequality5pt test_jpeg_facequality5pt.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facequality5pt  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_facequality5pt test_performance_facequality5pt.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facequality5pt  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
