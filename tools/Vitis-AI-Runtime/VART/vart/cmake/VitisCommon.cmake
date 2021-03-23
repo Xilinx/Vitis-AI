@@ -31,6 +31,21 @@ endif()
 
 include(CMakePackageConfigHelpers)
 
-if(NOT CMAKE_CROSSCOMPILING)
+if(NOT IS_EDGE)
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH True)
 endif()
+
+##
+if(CMAKE_CROSSCOMPILING)
+  set(_IS_EDGE_DEFULAT_VALUE ON)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64.*|AARCH64.*|arm64.*|ARM64.*)")
+  set(_IS_EDGE_DEFULAT_VALUE ON)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm.*|ARM.*)")
+  set(_IS_EDGE_DEFULAT_VALUE ON)
+elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  set(_IS_EDGE_DEFULAT_VALUE OFF)
+else()
+  set(_IS_EDGE_DEFULAT_VALUE OFF)
+endif(CMAKE_CROSSCOMPILING)
+option(IS_EDGE "ENABLE building for edge platform" ${_IS_EDGE_DEFULAT_VALUE})
+message(STATUS "building for edge ${IS_EDGE}")

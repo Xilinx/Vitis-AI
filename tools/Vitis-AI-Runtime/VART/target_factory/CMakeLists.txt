@@ -20,7 +20,6 @@ include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(BUILD_TEST "build test" OFF)
 
-find_package(glog REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(unilog REQUIRED)
 

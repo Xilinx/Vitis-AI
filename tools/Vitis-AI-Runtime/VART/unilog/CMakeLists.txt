@@ -19,7 +19,13 @@ include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(BUILD_TEST "build test" OFF)
 
-find_package(glog REQUIRED)
+find_package(glog QUIET)
+if(NOT glog_FOUND)
+    message(STATUS "cannot find glogConfig.cmake fallback to pkg-config")
+    find_package(PkgConfig)
+    pkg_search_module(PKG_GLOG REQUIRED IMPORTED_TARGET GLOBAL libglog)
+    add_library(glog::glog ALIAS PkgConfig::PKG_GLOG)
+endif(NOT glog_FOUND)
 
 add_subdirectory(src)
 
