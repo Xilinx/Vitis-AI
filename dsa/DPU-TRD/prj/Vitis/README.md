@@ -163,7 +163,7 @@ DPU_TRD 
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =<Vitis AI path>/DPU-TRD
+%export TRD_HOME =<Vitis AI path>/dsa/DPU-TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
@@ -193,7 +193,7 @@ Build the hardware design.
 
 % export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2020.2 
 
-% export SDX_PLATFORM=<zcu102 base platform path>/xilinx_zcu102_base_202010_1/xilinx_zcu102_base_202010_1.xpfm
+% export SDX_PLATFORM=<zcu102 base platform path>/xilinx_zcu102_base_202020_1/xilinx_zcu102_base_202020_1.xpfm
 
 % make KERNEL=DPU_SM DEVICE=zcu102
 ```
@@ -212,7 +212,7 @@ $TRD_HOME/prj/Vitis/binary_container_1/link/vivado/vpl/prj/prj.gen/sources_1/bd/
 
 #### 5.2.3 Run Resnet50 Example 
 
-**The TRD project has generated the matching model file in $TRD_HOME/prj/app/ path as the default settings. If the user change the DPU settings. The model need to be created again.**
+**The TRD project has generated the matching model file in $TRD_HOME/app/ path as the default settings. If the user change the DPU settings. The model need to be created again.**
 
 This part is about how to run the Resnet50 example from the source code.
 
@@ -220,7 +220,7 @@ All the related files have been packaged in **$TRD_HOME/prj/Vitis/binary_contain
 
 The all needed files are in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card**.
 
-Copy the directory **$TRD_HOME/app** to the BOOT partition of the SD Card.
+Copy the directory **$TRD_HOME/app** to SD Card with ssh directly.
 
 After the linux boot, run:
 
