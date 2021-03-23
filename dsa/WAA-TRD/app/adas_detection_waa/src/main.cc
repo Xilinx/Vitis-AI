@@ -144,13 +144,14 @@ void setInputImageForYOLO(vart::Runner* runner, float* data, const Mat& frame,
   int height = shapes.inTensorList[0].height;
   int size = shapes.inTensorList[0].size;
   if(usePPFlag){
-    /* pre-processing for input frame */
+    /* Hardware Pre-process */
     preprocess(handle, frame, height, width, data);
     float scalei = pow(2, 7);
     for(int i = 0; i < size; ++i) {
       if(data[i] < 0) data[i] = (float)(127/scalei);
     }
   } else {
+    /* Software Pre-process */
     std::cout << "SW pre processor" << std::endl;
     image img_new = load_image_cv(frame);
     image img_yolo = letterbox_image(img_new, width, height);

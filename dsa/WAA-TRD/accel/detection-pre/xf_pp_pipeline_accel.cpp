@@ -57,13 +57,22 @@ void pp_pipeline_accel(ap_uint<INPUT_PTR_WIDTH>* img_inp,
 	int srcMat_cols_align_npc = ((out_mat.cols + (NPC_T - 1)) >> XF_BITSHIFT(NPC_T)) << XF_BITSHIFT(NPC_T);
 // clang-format off	
 	#pragma HLS DATAFLOW
-// clang-format on	
+// clang-format on
+ 
+	//conversion of pointer to xf::Mat
 	xf::cv::Array2xfMat<INPUT_PTR_WIDTH,XF_8UC3,HEIGHT, WIDTH, NPC1>  (img_inp, imgInput0);
+	
+	//xf::cv::bgr2rgb - BGR to RGB conversion
        xf::cv::bgr2rgb<XF_8UC3,XF_8UC3, HEIGHT, WIDTH, NPC1>(imgInput0, imgOutput0);
 	
+	//xf::cv::letterbox - Letterbox 8bit RGB image
 	xf::cv::letterbox<INTERPOLATION,TYPE,HEIGHT,WIDTH,NEWHEIGHT,NEWWIDTH,NPC_T,MAXDOWNSCALE,128> (imgOutput0, out_mat, rows_out_resize, cols_out_resize);
+	
 	xf::cv::accel_utils obj;
+	//conversion of xf::Mat to stream
 	obj.xfMat2hlsStrm<INPUT_PTR_WIDTH, TYPE, NEWHEIGHT, NEWWIDTH, NPC_T, (NEWWIDTH*NEWHEIGHT/8)>(out_mat, resizeStrmout, srcMat_cols_align_npc);
+
+	//xf::cv::preProcess - Mean-Sub, scaling and int8 to float conversion
 	xf::cv::preProcess <INPUT_PTR_WIDTH, OUTPUT_PTR_WIDTH, T_CHANNELS, CPW, HEIGHT, WIDTH, NPC_TEST, PACK_MODE, X_WIDTH, ALPHA_WIDTH, BETA_WIDTH, GAMMA_WIDTH, OUT_WIDTH, X_IBITS, ALPHA_IBITS, BETA_IBITS, GAMMA_IBITS, OUT_IBITS, SIGNED_IN, OPMODE> (resizeStrmout, img_out, params, rows_out, cols_out, th1, th2);
 
 }
