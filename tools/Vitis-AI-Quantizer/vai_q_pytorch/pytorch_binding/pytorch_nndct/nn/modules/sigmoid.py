@@ -42,7 +42,7 @@ class deephi_Sigmoid(torch.nn.modules.Sigmoid):
         self.quantizer,
         inputs=[input])
 
-    if NndctOption.nndct_quant_off.value:
+    if NndctOption.nndct_quant_off.value or NndctOption.nndct_cv_app.value:
       output = super().forward(input)
     elif self.quant_mode > 0:
       output = torch.empty_like(input)

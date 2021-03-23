@@ -287,6 +287,12 @@ class NndctScreenLogger(metaclass=SingletonMeta):
   def full_message(msg, prefix, suffix=NOCOLOR):
     return prefix + msg + suffix
  
+  def check(self, msg, condition):
+    if not condition:
+      self.error(msg)
+      _sys.exit(1)
+    
+
   
 class NndctDebugLogger(metaclass=SingletonMeta):
   def __init__(self, file_name):

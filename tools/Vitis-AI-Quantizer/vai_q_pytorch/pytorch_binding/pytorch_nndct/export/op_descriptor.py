@@ -126,7 +126,12 @@ class OpDescriptor(object):
     return "{output}[{symbols}] = {input_tensor}".format(
         output=destination,
         input_tensor=source, symbols=symbols)
-   
+
+  @staticmethod
+  def floor_div(ctx, node, output_str):
+    inputs = node.node_config("input")
+    others = node.node_config("other")
+    return f"{output_str} = {ctx.tensor_output_map.get(inputs.name, inputs.name)} // {ctx.tensor_output_map.get(others.name, others.name)}"
   
   @staticmethod
   def default(ctx, node, output_str):
@@ -143,5 +148,6 @@ MISC_OP_DISCR_MAP = {
     NNDCT_OP.SLICE_TENSOR_INPLACE_COPY: OpDescriptor.slice_tensor_inplace_copy,
     NNDCT_OP.INDEX: OpDescriptor.index,
     NNDCT_OP.INT: OpDescriptor.default,
-    NNDCT_OP.STRIDED_SLICE_INPLACE_COPY: OpDescriptor.strided_slice_inplace_copy
+    NNDCT_OP.STRIDED_SLICE_INPLACE_COPY: OpDescriptor.strided_slice_inplace_copy,
+    NNDCT_OP.FLOOR_DIV: OpDescriptor.floor_div,
 }

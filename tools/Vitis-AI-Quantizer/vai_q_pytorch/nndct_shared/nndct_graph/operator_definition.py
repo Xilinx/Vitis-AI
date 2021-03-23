@@ -22,7 +22,7 @@ from nndct_shared.base import NNDCT_OP
 from nndct_shared.nndct_graph.base_operator import (AutoName, NndctIrAttr,
                                                     OccurenceType, Operation)
 from nndct_shared.nndct_graph.base_tensor import Tensor
-
+import numpy as np
 
 class Conv2d(Operation):
 
@@ -821,6 +821,37 @@ class StridedSlice(Operation):
                 strides[i] are ignored in this case.""")
 
 
+class BinaryOp(Operation):
+  
+  @unique
+  class AttrName(AutoName):
+    INPUT = auto()
+    OTHER = auto()
+
+  def __init__(self, *args, **kwargs) -> None:
+    super().__init__(*args, **kwargs)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.INPUT: [None],
+        self.AttrName.OTHER: [None],
+    }
+    self._attrs[self.AttrName.INPUT] = NndctIrAttr(
+        name=self.AttrName.INPUT,
+        value_type=(int, float, bool, Tensor, np.ndarray),
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.INPUT],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""the first input tensor.""")
+
+    self._attrs[self.AttrName.OTHER] = NndctIrAttr(
+        name=self.AttrName.OTHER,
+        value_type=(int, float, Tensor, np.ndarray),
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.OTHER],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""the second input tensor.""")
+
+
 class Sub(Operation):
 
   @unique
@@ -837,7 +868,7 @@ class Sub(Operation):
     }
     self._attrs[self.AttrName.INPUT] = NndctIrAttr(
         name=self.AttrName.INPUT,
-        value_type=(int, float, Tensor),
+        value_type=(int, float, Tensor, np.ndarray),
         size=1,
         value_mem=self._attr_value_mem[self.AttrName.INPUT],
         occurence_type=OccurenceType.REQUIRED,
@@ -845,7 +876,7 @@ class Sub(Operation):
 
     self._attrs[self.AttrName.OTHER] = NndctIrAttr(
         name=self.AttrName.OTHER,
-        value_type=(int, float, Tensor),
+        value_type=(int, float, Tensor, np.ndarray),
         size=1,
         value_mem=self._attr_value_mem[self.AttrName.OTHER],
         occurence_type=OccurenceType.REQUIRED,

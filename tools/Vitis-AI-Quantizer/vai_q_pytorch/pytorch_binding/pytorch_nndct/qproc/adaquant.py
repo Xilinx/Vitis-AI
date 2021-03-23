@@ -208,7 +208,9 @@ class AdvancedQuantProcessor(torch.nn.Module):
     opt_bias = None
     lr_b = 0
     if hasattr(layer, "bias") and layer.bias is not None:
-      lr_b = lr_factor * layer.bias.std().item()
+      if layer.bias.flatten().shape[0] == 1: lr_b = 0.0
+      else: lr_b = lr_factor * layer.bias.std().item()
+      # lr_b = lr_factor * layer.bias.std().item()
       # lr_b=1e-3
       opt_bias = torch.optim.Adam([layer.bias], lr=lr_b)
       
@@ -336,7 +338,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
     if self.quantizer.quant_mode == 2:
       NndctScreenLogger().warning(f"Finetune function will be ignored in test mode!")
       return
-    NndctScreenLogger().info(f"=>Finetuning module parameters for better quantization accuracy... ")
+    NndctScreenLogger().info(f"=>Preparing data for fast finetuning module parameters ...")
 
     # backup option value
     opt_bak_param_corr = NndctOption.nndct_param_corr.value
@@ -379,6 +381,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
     torch.cuda.empty_cache()
   
     #print("****Parameter finetuning")
+    NndctScreenLogger().info(f"=>Fast finetuning module parameters for better quantization accuracy...")
     device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)      
     graph_searcher = GraphSearcher(self.graph)
     node_sets = graph_searcher.find_nodes_from_type([
@@ -423,7 +426,8 @@ class AdvancedQuantProcessor(torch.nn.Module):
           # hook_mods.append(fmod)
     # self.hook_cache_output(hook_mods, hook_type="single")
           
-    for node, module_pair in finetune_group.items():
+    #for node, module_pair in finetune_group.items():
+    for idx, (node, module_pair) in tqdm(enumerate(finetune_group.items()), total=len(finetune_group.items())):
       # if self.quantizer.configer.is_node_quantizable(node, False) and \
       #   len(node.op.params) > 0:
       quant_layer, float_layer = module_pair
@@ -460,6 +464,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
     self.quantizer.quant_mode = 1
     set_option_value("nndct_param_corr", opt_bak_param_corr)
 
+    NndctScreenLogger().info(f"=>Export fast finetuned parameters ...")
     # export finetuned parameters
     self.quantizer.export_param()
  
