@@ -6,7 +6,7 @@ xf_pp_pipeline_accel.cpp is the pre-process accelerator file which consist of fo
 - xf::cv::bgr2rgb : BGR to RGB conversion
 - xf::cv::letterbox - Letterbox 8bit RGB image
 - xfMat2hlsStrm : Data adaptor for conversion of xf::Mat to HLS stream
-- xf::cv::preProcess : Mean-Sub, scaling and int8 to float conversion
+- xf::cv::preProcess : int8 to float conversion
 
 <div align="center">
   <img width="75%" height="75%" src="./block_diag_detection.PNG">
