@@ -89,4 +89,3 @@ def transformed_axis(src: str, dst: str, ndim: int, dim: int) -> int:
     return dim + [0, 2, -1, -1][dim]
   elif src == "NHWC" and dst == "NCHW":
     return dim + [0, 1, 1, -2][dim]
-  

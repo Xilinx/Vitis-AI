@@ -194,6 +194,16 @@ class TORCHQuantizer(BaseQuantizer):
     if NndctOption.nndct_quant_off.value:
       return 
 
+    # check quantization calibration is performed completely
+    for node in self.Nndctgraph.nodes:
+      if self.configer.is_node_quantizable(node, self.lstm) and node.in_quant_part:
+        qout = self.configer.quant_output(node.name).name
+        bnfp = self.get_bnfp(qout, False)
+        if bnfp[1] is None:
+          if self.lstm and node.op.type not in [NNDCT_OP.SIGMOID, NNDCT_OP.TANH]:
+            NndctScreenLogger().warning("Quantization is not performed completely, check if model inference function is called!!!")
+            return
+
     # align lstm fix pos with cell output
     if self.lstm:
       if self.rnn_front_end:

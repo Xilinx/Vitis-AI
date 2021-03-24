@@ -208,12 +208,10 @@ void DpuRunnerDdr::fill_gen_reg(size_t device_core_id,
     for (auto batch_idx = 0; batch_idx < num_of_batch; ++batch_idx) {
       auto idx2 = std::min(batch_idx, reg->get_tensor()->get_shape()[0] - 1);
       dim_idx[0] = idx2;
-
       uint64_t base;
       size_t size;
       std::tie(base, size) = reg->data_phy(dim_idx);
       CHECK_NE(size, 0u);
-
       // move get_ddr_addr() out of this loop to improve perf;
       // int ddr_addr = get_ddr_addr(reg->get_tensor());
       base = base - ddr_addr;
@@ -229,7 +227,6 @@ void DpuRunnerDdr::fill_gen_reg(size_t device_core_id,
           << " ddr = " << std::hex << "0x" << ddr_addr << std::dec  //
           << " tensor " << reg->get_tensor()->to_string()           //
           ;
-
       gen_reg[reg_idx] = base;
     }
   }

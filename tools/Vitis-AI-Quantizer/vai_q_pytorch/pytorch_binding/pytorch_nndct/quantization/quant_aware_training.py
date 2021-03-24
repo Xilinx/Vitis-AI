@@ -1,5 +1,3 @@
-
-
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -33,13 +31,6 @@ from pytorch_nndct.qproc import base as qproc
 from pytorch_nndct.quantization import module_transform
 from pytorch_nndct.quantization.module_transform import ModuleTransformer
 from pytorch_nndct.utils import module_util as mod_util
-
-# TODO(yuwang): Move to utils to reduce repeatness.
-class InputSpec(object):
-
-  def __init__(self, shape, dtype):
-    self.shape = shape
-    self.dtype = dtype
 
 def dummy_inputs(input_specs):
   inputs = []

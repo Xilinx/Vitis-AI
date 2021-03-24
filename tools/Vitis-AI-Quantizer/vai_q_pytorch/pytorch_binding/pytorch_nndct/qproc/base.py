@@ -25,7 +25,7 @@ import torch
 import nndct_shared.utils as nndct_utils
 from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS
 from nndct_shared.compile import CompilerFactory, DeployChecker
-from nndct_shared.utils import AddXopError, NndctOption, NndctScreenLogger
+from nndct_shared.utils import AddXopError, NndctOption, NndctScreenLogger, option_util
 from nndct_shared.quantization import DefaultQstrategy
 from pytorch_nndct.quantization import TORCHQuantizer
 from .adaquant import AdvancedQuantProcessor
@@ -108,6 +108,8 @@ class TorchQuantProcessor():
     GLOBAL_MAP.set_map(NNDCT_KEYS.QUANTIZER, quantizer)
     GLOBAL_MAP.set_map(NNDCT_KEYS.QUANT_MODE, qmode)
     GLOBAL_MAP.set_map(NNDCT_KEYS.QUANT_DEVICE, device)
+    if lstm_app: option_util.set_option_value("nndct_cv_app", False)
+    else: option_util.set_option_value("nndct_cv_app", True)
     
     # Prepare quantizable module
     quant_module, graph = prepare_quantizable_module(

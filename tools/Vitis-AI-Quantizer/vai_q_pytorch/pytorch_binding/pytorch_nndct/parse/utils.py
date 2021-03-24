@@ -21,6 +21,7 @@ from torch.jit import _unique_state_dict
 import torch.jit
 
 from nndct_shared.utils import DeprecatedAPIError
+from nndct_shared.nndct_graph import Tensor
 
 _GRAPH_SCOPE_SYM = "::"
 # IGNORE_STATEDICT_KEYS = ['num_batches_tracked']
@@ -227,7 +228,22 @@ def unique_name(value: torch.Value):
     raise DeprecatedAPIError('debugName', value.__class__.__name__)
 
 
-
-
+def python_dtype(value):
+  type_map = {
+    "torch.int": "int",
+    "torch.long": "int",
+    "torch.short": "int",
+    "torch.float": "float",
+    "torch.double": "float",
+    "torch.bool": "bool",
+    int: "int",
+    float: "float",
+    bool: "bool",
+    str: "str",
+  }
+  if isinstance(value, Tensor):
+    return type_map[value.dtype]
+  else:
+    return type_map[type(value)]
 
 

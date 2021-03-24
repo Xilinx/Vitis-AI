@@ -454,7 +454,7 @@ class OpCreator(object):
   def NumToTensor(self, input, *args):
     op = TorchBaseOperation(NNDCT_OP.TENSOR, "tensor")
     op.set_config("data", input)
-    op.set_config("dtype", "torch.float32")
+    op.set_config("dtype", input.dtype)
     op.set_config("device", f"'{self._device_type}'")
     return op
 
@@ -501,7 +501,11 @@ class OpCreator(object):
     return op
 
   def div(self, input, other):
-    op = TorchDiv()
+    if python_dtype(input) == "float" or python_dtype(other) == "float":
+      op = TorchBinaryOp(NNDCT_OP.DIV, "div")
+    else:
+      op = TorchBinaryOp(NNDCT_OP.FLOOR_DIV, "//", force_to_primitive=False)
+    
     op.set_config("input", input)
     op.set_config("other", other)
     return op
@@ -714,7 +718,8 @@ class OpCreator(object):
       op.set_config("start", args[0])
       op.set_config("end", args[1])
       op.set_config("step", args[2])
-      op.set_config("dtype", scalar_type_to_pytorch_type[args[3]])
+      dtype = scalar_type_to_pytorch_type[args[3]] if args[3] is not None else scalar_type_to_pytorch_type[4]
+      op.set_config("dtype", dtype)
       op.set_config("device", f"'{self._device_type}'")
     else:
       raise NotImplementedError("Unknown aten::arange signature taking " +
