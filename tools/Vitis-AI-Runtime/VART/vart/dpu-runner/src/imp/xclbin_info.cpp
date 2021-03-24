@@ -17,7 +17,7 @@
 
 #include <map>
 #include <memory>
-#if CROSSCOMPILING
+#if IS_EDGE
 #include "./xclbin_info.hpp"
 #else
 #include "./xclbin_info_imp.hpp"
@@ -27,7 +27,7 @@ namespace vart {
 namespace dpu {
 
 std::unique_ptr<XclbinInfo> XclbinInfo::create(const std::string& xclbin_file) {
-#if CROSSCOMPILING
+#if IS_EDGE
   LOG(FATAL) << "NOT IMPLEMENTATED";
   return nullptr;
 #else

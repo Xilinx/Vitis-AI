@@ -15,7 +15,8 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++17 -I. -o test_accuracy_facedetect test_accuracy_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -lvitis_ai_library-model_config -lvitis_ai_library-math -lvitis_ai_library-dpu_task -lglog 
-$CXX -std=c++17 -I. -o test_jpeg_facedetect test_jpeg_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -pthread -lglog 
-$CXX -std=c++17 -I. -o test_performance_facedetect test_performance_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
-$CXX -std=c++17 -I. -o test_video_facedetect test_video_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -pthread -lglog 
+
+$CXX -std=c++17 -I. -I/usr/include/opencv4 -o test_accuracy_facedetect test_accuracy_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -lvitis_ai_library-model_config -lvitis_ai_library-math -lvitis_ai_library-dpu_task -lglog 
+$CXX -std=c++17 -I. -I/usr/include/opencv4 -o test_jpeg_facedetect test_jpeg_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -pthread -lglog 
+$CXX -std=c++17 -I. -I/usr/include/opencv4 -o test_performance_facedetect test_performance_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+$CXX -std=c++17 -I. -I/usr/include/opencv4 -o test_video_facedetect test_video_facedetect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-facedetect  -pthread -lglog 

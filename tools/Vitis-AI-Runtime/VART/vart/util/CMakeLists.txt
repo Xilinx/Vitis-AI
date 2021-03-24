@@ -52,7 +52,7 @@ target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir glog::glog)
+target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir glog::glog pthread)
 if(XRT_FOUND AND ENABLE_DPU_RUNNER)
   target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir glog::glog PRIVATE XRT::XRT)
   add_definitions(-DENABLE_XRT_TIMESTAMP)
