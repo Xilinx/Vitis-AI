@@ -145,6 +145,10 @@ void setInputImageForYOLO(vart::Runner* runner, float* data, const Mat& frame,
   int size = shapes.inTensorList[0].size;
   if(usePPFlag){
     /* Hardware Pre-process */
+    /* Using Letterbox, input image is scaled to height x width resolution while 
+    preserving ascpect ratio of origial image. If required, zeroes are padded for 
+    preserving the aspect ratio post resize. */
+    /* Pre-processed output image is in Floating point format */
     preprocess(handle, frame, height, width, data);
     float scalei = pow(2, 7);
     for(int i = 0; i < size; ++i) {

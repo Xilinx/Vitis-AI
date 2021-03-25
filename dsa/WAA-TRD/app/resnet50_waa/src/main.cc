@@ -229,10 +229,13 @@ void runResnet50(vart::Runner* runner) {
       Mat image = imread(baseImagePath + images[n + i]);
 
 #if 1
-      //Hardware Pre-process call
+      /* Hardware Pre-process */
+      /* Input image is first resized to inWidth x inHeight resolution */
+      /* Channel wise mean subtraction is performed over this resized image */
+      /* Pre-processed output image is in Floating point format */
       preprocess(handle, image, inHeight, inWidth, mean, imageInputs + i * inSize);
 #else
-     //Software Pre-process call
+      /* Software Pre-process */
       Mat image2 = cv::Mat(inHeight, inWidth, CV_8SC3);
       resize(image, image2, Size(inHeight, inWidth), 0, 0, INTER_NEAREST);
       for (int h = 0; h < inHeight; h++) {
