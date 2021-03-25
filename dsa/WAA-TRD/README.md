@@ -125,7 +125,9 @@ Source  files location for DPU & Pre-processor IP is as below
 
 
 ## 5 Build with new Pre-processing Accelerator
-In this section, example is provided for integrating new Pre-procsssing accelerator with DPU.
+For Classification & Detection example pre-processor accelerator please refer to [classification-preprocess README](./accel/classification-pre/README.md) & [detection-preprocess README](./accel/detection-pre/README.md) respectively. Array2xfMat, xfMat2hlsStrm & xf::cv::preProcess are manditory submodules in the Pre-process accelerator. As long as the interface of the pp_pipeline_accel function remains same, user can add or remove other submodules depending upon the Deep Neural Network's pre-process requirements.
+
+In this section, example is provided for integrating new Pre-procsssing accelerator with DPU for classification example. 
 
 Provided Resnet50 classification examples uses caffe resnet50 model `WAA-TRD/app/resnet50_waa/resnet50.xmodel`. In this model, pre-processing components are image resize and mean sub operation. Here Bilinear Interpolation is used in the resize. User can changes interpolation type to Nearest Neighbor by modifying line no 61 of accel file `WAA-TRD/accel/classification-pre/xf_pp_pipeline_accel.cpp` as below.
 
