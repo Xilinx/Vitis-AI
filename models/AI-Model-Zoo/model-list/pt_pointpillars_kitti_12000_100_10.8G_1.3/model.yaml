@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pointpillars_kitti_12000_100_10.8G_1.3.zip
-  checksum: 7922b57f6f6e1dd7ae5b00344bcaa8f6
+  checksum: bb35178cee2e3d5584d8ee751be11eed
 - name: pointpillars_kitti_12000_0_pt
   type: xmodel
   board: zcu102 & zcu104
