@@ -1,4 +1,3 @@
-
 '''
 Copyright (c) 2015 Preferred Infrastructure, Inc.
 Copyright (c) 2015 Preferred Networks, Inc.
@@ -252,7 +251,6 @@ def darknet2caffe(cfgfile, weightfile, protofile, caffemodel):
     for block in blocks:
         if start >= buf.size:
             break
-
         if block['type'] == 'net':
             continue
         elif block['type'] == 'convolutional':
@@ -334,6 +332,7 @@ def load_conv_bn2caffe(buf, start, conv_param, bn_param, format_type):
         bn_param[4].data[...] = np.array(buf[start:start + 1]); start = start + 1
     else:
         bn_param[4].data[...] = np.array([1.0])
+    
     conv_param[0].data[...] = np.reshape(buf[start:start+conv_weight.size], conv_weight.shape); start = start + conv_weight.size
     return start
 
@@ -463,6 +462,22 @@ def cfg2prototxt(cfgfile):
                 else:
                     prev_layer_id = int(from_layers[0])
                 bottom = topnames[prev_layer_id]
+                
+                # NOTE: modify for group in tiny-yolov4
+                if 'groups' in block:
+                    slice_layer = OrderedDict()
+                    slice_layer['bottom'] = bottom
+                    slice_layer['name'] = 'layer%d-slice' % layer_id
+                    slice_layer['type'] = 'Slice'
+                    top_tmp= ['layer%d-slice_aborted' % layer_id, 'layer%d-slice' % layer_id]
+                    slice_layer['top'] = top_tmp 
+                    slice_param = OrderedDict()
+                    slice_param['axis'] = 1
+                    slice_layer['slice_param'] = slice_param
+                    layers.append(slice_layer) 
+               
+                    bottom = 'layer%d-slice' % layer_id 
+                     
                 topnames[layer_id] = bottom
                 layer_id = layer_id + 1
             else:
@@ -623,4 +638,6 @@ if __name__ == '__main__':
     protofile = sys.argv[3]
     caffemodel = sys.argv[4]
     darknet2caffe(cfgfile, weightfile, protofile, caffemodel)
+
+
 
