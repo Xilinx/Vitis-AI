@@ -119,7 +119,7 @@ vector<int> coco_id_map_dict() {
   return category_ids;
 }
 
-vector<float> InitBiases(const string& biases, string dataset="COCO") {
+vector<float> InitBiases(const string& biases, string dataset="COCO", string model_type="yolov4") {
   vector<float> new_biases;
   if(biases != "") {
     size_t start = 0;
@@ -132,14 +132,17 @@ vector<float> InitBiases(const string& biases, string dataset="COCO") {
       new_biases.push_back(atof(biases.substr(start).c_str()));
   }
   else if(dataset == "COCO") {
-    new_biases = {12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401};
+    if (model_type == "yolov4-tiny")
+        new_biases = {10,14,  23,27,  37,58,  81,82,  135,169,  344, 319};
+    else
+        new_biases = {12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401};
   }
   else {
     LOG(FATAL) << "Unknown datatset: " << dataset;
   } 
-  //for (auto it = 0; it < new_biases.size(); it ++) {
-  //   LOG(INFO) << "new_biases List:" << new_biases[it] ;
-  //}
+  // for (auto it = 0; it < new_biases.size(); it ++) {
+  //    LOG(INFO) << "new_biases List:" << new_biases[it] ;
+  // }
   return new_biases;
 }
 
@@ -208,6 +211,7 @@ public:
   Detector(const string& model_file, const string& weights_file);
 
   vector<vector<float>> Detectv4(string file, int classes, vector<float> biases ,int anchorCnt, int w, int h, int letterbox, float conf_threshold, float nms_threshold);
+  vector<vector<float>> Detectv4_t(string file, int classes, vector<float> biases ,int anchorCnt, int w, int h, int letterbox, float conf_threshold, float nms_threshold);
 private:
   boost::shared_ptr<Net<float>> net_;
   cv::Size input_geometry_;
@@ -296,6 +300,91 @@ vector<vector<float>> Detector::Detectv4(string file, int classes, vector<float>
   return res;
 }
 
+vector<vector<float>> Detector::Detectv4_t(string file, int classes, vector<float> biases ,int anchorCnt, int img_width, int img_height, int letterbox, float conf_threshold, float nms_threshold) {
+  Blob<float>* input_layer = net_->input_blobs()[0];
+  image img = load_image_yolov4(file.c_str(), input_layer->width(), input_layer->height(), input_layer->channels(), letterbox);
+
+  input_layer->set_cpu_data(img.data);
+  net_->Forward();
+  free_image(img);
+  /* Copy the output layer to a std::vector */
+  vector<vector<float>> boxes;
+  vector<int> scale_feature;
+  
+  for (int iter = 2; iter < net_->num_outputs(); iter++){
+    int width = net_->output_blobs()[iter]->width();
+    
+    if (iter == 3)
+        continue;
+    scale_feature.push_back(width);
+  }
+  
+  sort(scale_feature.begin(), scale_feature.end(), [](int a, int b){return a > b;});
+  for (int iter = 2; iter < net_->num_outputs(); iter++) {
+    if (iter == 3)
+        continue;
+    
+    Blob<float>* result_blob = net_->output_blobs()[iter];
+    const float* result = result_blob->cpu_data();
+    
+    int height = net_->output_blobs()[iter]->height();
+    int width = net_->output_blobs()[iter]->width();
+    int channles = net_->output_blobs()[iter]->channels();
+    
+    int index = 0;
+    for (int i = 0; i < scale_feature.size(); i++) {
+      if(width == scale_feature[i]) {
+        index = i;
+        break;
+      }
+    }
+    
+    // swap the network's result to a new sequence
+    float swap[width*height][anchorCnt][5+classes];
+    for(int h =0; h < height; h++)
+      for(int w =0; w < width; w++)
+        for(int c =0 ; c < channles; c++)
+          swap[h * width + w][c / (5 + classes)][c % (5 + classes)] = result[c * height * width + h * width + w];
+
+    // compute the coordinate of each primary box
+    for (int h = 0; h < height; h++) {
+      for (int w = 0; w < width; w++) {
+        for (int n = 0 ; n < anchorCnt; n++) {
+          float obj_score = sigmoid(swap[h * width + w][n][4]);
+          if(obj_score < conf_threshold)
+            continue;
+          vector<float>box,cls;
+          float x = (w + sigmoid(swap[h * width + w][n][0])) / width;
+          float y = (h + sigmoid(swap[h * width + w][n][1])) / height;
+          //float ww = exp(swap[h * width + w][n][2]) * biases[2 * n + 2 * anchorCnt * index] / input_geometry_.width;
+          //float hh = exp(swap[h * width + w][n][3]) * biases[2 * n + 2 * anchorCnt * index + 1] / input_geometry_.height;
+          float ww, hh;
+          if (index == 0) {
+            ww = exp(swap[h * width + w][n][2]) * biases[2 * n + 2] / input_geometry_.width;
+            hh = exp(swap[h * width + w][n][3]) * biases[2 * n + 2 + 1] / input_geometry_.height;
+          }
+          else{
+            ww = exp(swap[h * width + w][n][2]) * biases[2 * n + 6] / input_geometry_.width;
+            hh = exp(swap[h * width + w][n][3]) * biases[2 * n + 6 + 1] / input_geometry_.height;         
+          }
+
+          box.push_back(x);
+          box.push_back(y);
+          box.push_back(ww);
+          box.push_back(hh);
+          box.push_back(-1);
+          box.push_back(obj_score);
+          for(int p =0; p < classes; p++)
+            box.push_back(obj_score * sigmoid(swap[h * width + w][n][5 + p]));
+          boxes.push_back(box);
+        }
+      }
+    }
+  } 
+  boxes = correct_region_boxes(boxes,boxes.size(), img_width,img_height, input_geometry_.width, input_geometry_.height, letterbox);
+  vector<vector<float>> res = apply_nms(boxes, classes, nms_threshold);
+  return res;
+}
 
 DEFINE_string(mode, "eval",
   "Default support for eval mode {eval, demo}");
@@ -357,7 +446,7 @@ int main(int argc, char** argv) {
    
   // Initialize the label,biases.
   vector<string> labels = InitLabelfile(FLAGS_labels, FLAGS_dataset); 
-  vector<float> biases = InitBiases(FLAGS_biases, FLAGS_dataset); 
+  vector<float> biases = InitBiases(FLAGS_biases, FLAGS_dataset, FLAGS_model_type); 
   // Process image one by one.
   const string& image_root = argv[3];
   ifstream infile(argv[4]);
@@ -387,7 +476,9 @@ int main(int argc, char** argv) {
       vector<vector<float>> results;
       if(model_type == "yolov4")
         results = detector.Detectv4(image_root + '/' + file, classes,biases, anchorCnt, w, h, 0, conf_threshold, nms_threshold);
-      else 
+      else if (model_type == "yolov4-tiny")
+        results = detector.Detectv4_t(image_root + '/' + file, classes,biases, anchorCnt, w, h, 0, conf_threshold, nms_threshold);
+      else
         LOG(FATAL) << "Unknown model_type: " << model_type;
 
       for(int i = 0; i < results.size(); i++) {
@@ -430,8 +521,8 @@ int main(int argc, char** argv) {
       if (mode == "demo") {        
         cv::imwrite("demo/" + file, img);
       }
-      results.clear();
 
+      results.clear();
     } else {
       LOG(FATAL) << "Unknown file_type: " << file_type;
     }
@@ -447,4 +538,3 @@ int main(int argc, char** argv) {
   LOG(FATAL) << "This example requires OpenCV; compile with USE_OPENCV.";
 }
 #endif  // USE_OPENCV
-
