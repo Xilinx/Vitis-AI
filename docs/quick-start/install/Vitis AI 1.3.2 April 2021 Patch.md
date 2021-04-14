@@ -1,6 +1,6 @@
 ## April 2021 Patch
 ### New Features/Highlights
-- Fixed a compiler bug about "[XIR_REMOVE_OP_FAIL][Failed to remove an op!]"
+- Fixed a compiler bug about "XIR_REMOVE_OP_FAIL"
 - Updated target description to support pool kernel=1 in DPUCZDX8G
 - Updated parser to support integrated activation in tf2 dense
 - Updated parser to fix a bug when using fine-tuned tf2 model
