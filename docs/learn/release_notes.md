@@ -7,21 +7,6 @@
 
 # Release Notes
 
-## Release 1.3.2
-### New Features/Highlights
-1. Enable Ubuntu 20.04 on MPSoC (Vitis AI Runtime and Vitis AI Library)
-2. Added environment variable for Vitis AI Library’s model search path
-
-## Release 1.3.1
-### New Features/Highlights
-1. Update compiler to improve performance by 5% in average for most models
-2. Added zero copy support (new APIs in VART / Vitis AI Library)
-3. Added cross-layer equalization support in TensorFlow v1.15 
-4. Added WAA U50 TRD
-5. Updated U280 Pre-processing using Multi-preprocessing JPEG decode kernels
-6. Added DPUCADF8H support on AWS F1
-7. Bug fixes and improvements for v1.3
-
 ## Release 1.3
 ### New Features/Highlights
 1. Added support for Pytorch and Tensorflow 2.3 frameworks
@@ -284,6 +269,11 @@
   - Updated U50 XRT and shell to *Xilinx-u50-gen3x4-xdma-2-202010.1-2902115*
   - Updated docker launch instructions  
   - Updated TRD makefile instructions
+- v1.3.2
+  - Enable Ubuntu 20.04 on MPSoC (Vitis AI Runtime and Vitis AI Library)
+  - Added environment variable for Vitis AI Library’s model search path
+
+
 
 ------
 
