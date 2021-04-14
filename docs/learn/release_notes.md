@@ -160,6 +160,9 @@
   - Added Cross-layer equalization support in TensorFlow v1.15 (more benefits for mobilenet models)
   - Added WAA U50 TRD
   - Updated U280 Pre-Processing using Multi-Preprocessing JPEG decode kernels 
+- v1.3.2
+  - Enable Ubuntu 20.04 on MPSoC (Vitis AI Runtime and Vitis AI Library)
+  - Added environment variable for Vitis AI Library’s model search path
 
 ------------------
 ## Release 1.2
