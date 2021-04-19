@@ -13,13 +13,13 @@
 Vitis AI
 ###########
 
-.. image:: images/Vitis-AI.png
+.. image:: docs/images/Vitis-AI.png
 
-Xilinx&reg; Vitis&trade; AI is a development stack for AI inference on Xilinx hardware platforms, including both edge devices and Alveo cards. It consists of optimized IP, tools, libraries, models, and example designs. 
+Vitis |copy| AI is a development stack for AI inference on Xilinx|copy| hardware platforms, including both edge devices and Alveo|trade| cards.
 
-It is designed with high efficiency and ease of use in mind, unleashing the full potential of AI acceleration on Xilinx FPGA and ACAP.  
+It consists of optimized IP, tools, libraries, models, and example designs. It is designed with high efficiency and ease of use in mind, unleashing the full potential of AI acceleration on Xilinx FPGA and ACAP.
 
-.. image:: images/Vitis-AI-arch.png
+.. image:: docs/images/Vitis-AI-arch.png
 
 Vitis AI is composed of the following key components:
 
@@ -29,7 +29,7 @@ Vitis AI is composed of the following key components:
 * AI Compiler - Compiles the quantized model to a high-efficient instruction set and data flow.
 * AI Profiler - Perform an in-depth analysis of the efficiency and utilization of AI inference implementation.
 * AI Library - Offers high-level yet optimized C++ APIs for AI applications from edge to cloud.
-* DPU - Efficient and scalable IP cores can be customized to meet the needs for many different applications.
+* DPU - Efficient and scalable IP cores can be customized to meet the needs for many different applications
 
 For more details on the different DPUs available, refer to `DPU Naming <docs/learn/dpu_naming.md>`_.
 
@@ -40,37 +40,38 @@ Learn More: `Vitis AI Overview <https://www.xilinx.com/products/design-tools/vit
    :caption: Learn
    :hidden:
 
-   learn/release_notes
-   learn/whats_new
-   learn/programming
-   learn/system_requirements
-   learn/dpu_naming
-   
+   docs/learn/release_notes
+   docs/learn/whats_new
+   docs/learn/programming
+   docs/learn/system_requirements
+   docs/learn/dpu_naming
+
 .. toctree::
    :maxdepth: 2
    :caption: Quick Start
    :hidden:
    
-   quick-start/install/README
-   quick-start/faq
-   quick-start/support
+   docs/quick-start/install/README
+   docs/quick-start/faq
+   docs/quick-start/support
    
 .. toctree::
    :maxdepth: 2
    :caption: Get Started
    :hidden:
    
-   get-started/examples/README
-   get-started/tutorials/README
+   docs/get-started/examples/README
+   docs/get-started/tutorials/README
    
 .. toctree::
    :maxdepth: 2
    :caption: Reference
    :hidden:
    
-   reference/README
-   reference/Thirdpartysource
-   
+   docs/reference/README
+   docs/reference/Thirdpartysource
+
+
 .. _Versions:
 
 .. toctree::
@@ -78,6 +79,10 @@ Learn More: `Vitis AI Overview <https://www.xilinx.com/products/design-tools/vit
    :caption: Versions
    :hidden:
 
-   Master <https://pages.gitenterprise.xilinx.com/Vitis/vitis-ai-staging/master/docs/README.html>
+   Master <https://xilinx.github.io/Vitis-AI/master/docs/README.html>
 
-© Copyright 2021 Xilinx, Inc.  
+      
+	 
+
+
+   
