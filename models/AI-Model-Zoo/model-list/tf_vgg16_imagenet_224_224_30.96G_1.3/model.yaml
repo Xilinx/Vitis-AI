@@ -30,26 +30,31 @@ files:
 - name: vgg_16_tf
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: fde2a5c5fec4986d305487decf4b2e53
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: d6cb74e70b58c07985c6b3cdc561a67d
 - name: vgg_16_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-vck190-r1.3.0.tar.gz
-  checksum: f9cab72947a020415a9bbc3fbfe0ea12
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-vck190-r1.3.1.tar.gz
+  checksum: b347476b78941d8eae1794fc73e79483
 - name: vgg_16_tf
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-r1.3.0.tar.gz
-  checksum: bbe29ca6b2e999004e1413349939773a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-r1.3.1.tar.gz
+  checksum: bb642084f20d25d415fd4fca2b861b80
 - name: vgg_16_tf
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50lv-u280-r1.3.0.tar.gz
-  checksum: 59e43a8fc0ff2c0807debbfa0f53cd11
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50lv-u280-r1.3.1.tar.gz
+  checksum: e2468ea51777a7b2d960716b19ace3e8
 - name: vgg_16_tf
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: bda77b4c2ce7bf3557102dcce526ff78
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 0273da96069026c7275095e0f04e9259
+- name: vgg_16_tf
+  type: xmodel
+  board: u200 & u250
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u200-u250-r1.3.0.tar.gz
+  checksum: 2ce3920af67080cb6d01a27a8dc69794
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

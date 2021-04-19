@@ -105,7 +105,7 @@ class QuantConfigerCommander(BaseCommander):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.PERMUTE)
 
     def SoftFuseDivide(graph, quant_groups):
-      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.DEVIDE)
+      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.DIV)
 
     def SoftFuseExp(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.EXP)

@@ -15,7 +15,7 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_multitask test_accuracy_multitask.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-multitask  -lvitis_ai_library-model_config -lvitis_ai_library-math -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_multitask test_jpeg_multitask.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-multitask  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_multitask test_performance_multitask.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-multitask  -lvart-util -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_multitask test_video_multitask.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-multitask  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_multitask test_accuracy_multitask.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-multitask  -lvitis_ai_library-model_config -lvitis_ai_library-math -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_multitask test_jpeg_multitask.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-multitask  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_multitask test_performance_multitask.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-multitask  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+$CXX -std=c++17 -I. -o test_video_multitask test_video_multitask.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-multitask  -pthread -lglog 

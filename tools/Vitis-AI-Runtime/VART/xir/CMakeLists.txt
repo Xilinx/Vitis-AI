@@ -15,7 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.9)
-project(xir VERSION 1.3.0 LANGUAGES C CXX)
+project(xir VERSION 1.3.1 LANGUAGES C CXX)
 
 include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
@@ -26,7 +26,6 @@ option(BUILD_PYTHON "build python interface" OFF)
 option(INSTALL_HOME "install python lib in cmake install path" OFF)
 option(INSTALL_USER "install python lib in user space" OFF)
 
-find_package(glog REQUIRED)
 find_package(unilog REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED)

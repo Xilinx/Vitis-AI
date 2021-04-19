@@ -17,6 +17,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <opencv2/opencv.hpp>
 #include <string>

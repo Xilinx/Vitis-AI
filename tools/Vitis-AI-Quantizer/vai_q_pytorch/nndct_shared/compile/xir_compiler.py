@@ -58,6 +58,9 @@ class XirCompiler(object):
         if any([blob_name in dev_graph for dev_graph in deploy_graphs]):
           quant_config["output"][blob_name] = copy.deepcopy(quant_info)
         else:
+          if len(quant_groups[blob_name]) == 1:
+            continue
+  
           *prev_blobs, candidate_blob, blob_self = quant_groups[blob_name]
           if blob_self != blob_name:
             raise RuntimeError(f"Please check quant group:{blob_name}\n{quant_groups[blob_name]}")

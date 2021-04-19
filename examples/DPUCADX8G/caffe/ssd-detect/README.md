@@ -22,7 +22,7 @@ Download VOC2007 dataset.
 
 ```sh
 # Download the data.
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/ssd-detect
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/ssd-detect
 wget http://pjreddie.com/media/files/VOCtest_06-Nov-2007.tar
 # Extract the data.
 tar -xvf VOCtest_06-Nov-2007.tar
@@ -45,7 +45,7 @@ The format of `calib.txt` used in calibration phase of `vai_q_caffe` is as follo
 
 ```sh
 # Get the necessary models
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/ && python getModels.py && python replace_mluser.py --modelsdir models
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/ && python getModels.py && python replace_mluser.py --modelsdir models
 ```
 
 ### Prepare a model for inference
@@ -53,9 +53,9 @@ cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/ && python getModels.py && python replace_m
 To run a Caffe model on the FPGA, it needs to be quantized, compiled, and a new graph needs to be generated. The new graph is similar to the original, with the FPGA subgraph removed, and replaced with a custom Python layer.
 
 ```sh
-cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/ssd-detect
+cd ${VAI_HOME}/examples/DPUCADX8G/caffe/ssd-detect
 
-python run_ssd.py --prototxt ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/inception_v2_ssd/inception_v2_ssd_train.prototxt --caffemodel ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe/models/inception_v2_ssd/inception_v2_ssd.caffemodel --prepare
+python run_ssd.py --prototxt ${VAI_HOME}/examples/DPUCADX8G/caffe/models/inception_v2_ssd/inception_v2_ssd_train.prototxt --caffemodel ${VAI_HOME}/examples/DPUCADX8G/caffe/models/inception_v2_ssd/inception_v2_ssd.caffemodel --prepare
 ```
 
 ### Run Inference on entire dataset and caluculate mAP

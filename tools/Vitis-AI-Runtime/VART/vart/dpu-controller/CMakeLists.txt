@@ -31,7 +31,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dpu_controller_qnx.hpp
     )
   list(APPEND MY_PROJECT_DEPS xlnx_qnx_dpu)
-elseif (CMAKE_CROSSCOMPILING)
+elseif (IS_EDGE)
     list(APPEND MY_PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dpu_controller_dnndk.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dpu_controller_dnndk.hpp
@@ -124,3 +124,6 @@ if(BUILD_TEST)
     install(TARGETS test_softmax_mt test_softmax DESTINATION bin)
   endif(XRT_FOUND)
 endif()
+
+set(PACKAGE_COMPONENTS "${PACKAGE_COMPONENTS};runner-assistant" PARENT_SCOPE)
+add_subdirectory (runner-assistant)

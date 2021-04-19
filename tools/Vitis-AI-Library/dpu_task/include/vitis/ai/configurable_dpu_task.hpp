@@ -19,7 +19,7 @@
 namespace xir {
 class Graph;
 class Attrs;
-};
+};  // namespace xir
 #include "./dpu_task.hpp"
 #include "./vitis/ai/proto/dpu_model_param.pb.h"
 namespace vitis {
@@ -30,7 +30,9 @@ class ConfigurableDpuTask {
       const std::string& model_name, bool need_preprocess = true);
 
   static std::unique_ptr<ConfigurableDpuTask> create(
-      const std::string& model_name, xir::Attrs *attrs, bool need_preprocess = true);
+      const std::string& model_name, xir::Attrs* attrs,
+      bool need_preprocess = true);
+
  protected:
   explicit ConfigurableDpuTask();
 
@@ -44,8 +46,11 @@ class ConfigurableDpuTask {
   virtual void setInputDataArray(const std::vector<int8_t>& array) = 0;
   virtual void setInputImageBGR(const std::vector<cv::Mat>& images) = 0;
   virtual void setInputImageRGB(const std::vector<cv::Mat>& images) = 0;
-  virtual void setInputDataArray(const std::vector<std::vector<int8_t>>& array) = 0;
+  virtual void setInputDataArray(
+      const std::vector<std::vector<int8_t>>& array) = 0;
   virtual void run(int task_index) = 0;
+  virtual void run_with_xrt_bo(
+      const std::vector<vart::xrt_bo_t>& input_bos) = 0;
   virtual const vitis::ai::proto::DpuModelParam& getConfig() const = 0;
   virtual std::vector<std::vector<vitis::ai::library::InputTensor>>
   getInputTensor() const = 0;
@@ -54,7 +59,7 @@ class ConfigurableDpuTask {
   /**
    * @brief Function to get InputWidth of the neural network (input image cols).
    *
-   * @return InputWidth of the facedetect network
+   * @return InputWidth of the network
    */
   virtual int getInputWidth() const = 0;
 
@@ -68,6 +73,9 @@ class ConfigurableDpuTask {
 
   virtual size_t get_input_batch() const = 0;
   virtual const xir::Graph* get_graph() const = 0;
+  virtual int get_input_buffer_size() const = 0;
+  virtual size_t get_input_offset() const = 0;
+  virtual int get_input_fix_point() const = 0;
 };
 
 template <typename Interface>
@@ -78,8 +86,7 @@ class TConfigurableDpuTask : public Interface {
       : configurable_dpu_task_{
             ConfigurableDpuTask::create(model_name, need_preprocess)} {};
   explicit TConfigurableDpuTask(const std::string& model_name,
-                                xir::Attrs *attrs,
-                                bool need_preprocess = true)
+                                xir::Attrs* attrs, bool need_preprocess = true)
       : configurable_dpu_task_{
             ConfigurableDpuTask::create(model_name, attrs, need_preprocess)} {};
   TConfigurableDpuTask(const TConfigurableDpuTask&) = delete;
@@ -97,5 +104,90 @@ class TConfigurableDpuTask : public Interface {
  protected:
   std::unique_ptr<ConfigurableDpuTask> configurable_dpu_task_;
 };
+
+class ConfigurableDpuTaskBase {
+ public:
+  explicit ConfigurableDpuTaskBase(const std::string& model_name,
+                                   bool need_preprocess = true);
+  explicit ConfigurableDpuTaskBase(const std::string& model_name,
+                                   xir::Attrs* attrs,
+                                   bool need_preprocess = true);
+  ConfigurableDpuTaskBase(const ConfigurableDpuTaskBase&) = delete;
+  virtual ~ConfigurableDpuTaskBase();
+  /**
+   * @brief Function to get InputWidth of the network (input image
+   * columns).
+   *
+   * @return InputWidth of the network
+   */
+  int getInputWidth() const {
+    return get_input_width();  //
+  }
+  /**
+   *@brief Function to get InputHeight of the network (input image
+   *rows).
+   *
+   *@return InputHeight of the network.
+   */
+  int getInputHeight() const { return get_input_height(); }
+
+  /**
+   * @brief Function to get InputWidth of the network (input image
+   * columns).
+   *
+   * @return InputWidth of the network.
+   */
+  int get_input_width() const;
+  /**
+   *@brief Function to get InputHeight of the network (input image
+   *rows).
+   *
+   *@return InputHeight of the network.
+   */
+  int get_input_height() const;
+  /**
+   * @brief Function to get the number of images processed by the DPU at one
+   *time.
+   * @note Different DPU core the batch size may be different. This depends on
+   *the IP used.
+   *
+   * @return Batch size.
+   */
+  size_t get_input_batch() const;
+
+  /**
+   * @brief The total size of the buffer including input and padding.
+   *
+   * For DPU model with one input, input data should be organized as one buffer
+   * with padding
+   *
+   * | padding input |
+   *
+   * For input, there is an offset which take the start address of padding as
+   * the base.
+   *
+   * @return The total size of the input buffer including input and padding,
+   * return -1 if zero copy is not supported.
+   */
+  int get_input_buffer_size() const;
+
+  /**
+   * @brief Function to get input offset for zero copy.
+   *
+   * @return Input offset
+   */
+  size_t get_input_offset() const;
+
+  /**
+   * @brief Function to get input tensor's fix point of the network.
+   *
+   * @return Input fix point.
+   */
+  int get_input_fix_point() const;
+
+ protected:
+  std::unique_ptr<ConfigurableDpuTask> configurable_dpu_task_;
+};
+
 }  // namespace ai
 }  // namespace vitis

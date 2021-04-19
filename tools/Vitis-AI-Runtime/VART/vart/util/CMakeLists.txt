@@ -33,6 +33,7 @@ add_library(${COMPONENT_NAME} SHARED
   src/dim_calc.cpp
   src/util_4bit.cpp
   src/xir_helper.cpp
+  src/zero_copy_helper.cpp
   src/time_measure.cpp
   src/tracepoint.cpp
   src/file_lock.cpp
@@ -51,7 +52,7 @@ target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir glog::glog)
+target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir glog::glog pthread)
 if(XRT_FOUND AND ENABLE_DPU_RUNNER)
   target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir glog::glog PRIVATE XRT::XRT)
   add_definitions(-DENABLE_XRT_TIMESTAMP)
@@ -115,4 +116,7 @@ if(BUILD_TEST)
 
   add_executable(test_thread_pool test/test_thread_pool.cpp)
   target_link_libraries(test_thread_pool ${COMPONENT_NAME})
+
+  add_executable(test_zero_copy_helper test/test_zero_copy_helper.cpp)
+  target_link_libraries(test_zero_copy_helper ${COMPONENT_NAME} xir::xir)
 endif()

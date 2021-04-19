@@ -22,27 +22,24 @@ using std::vector;
 namespace vitis {
 namespace ai {
 
-DetectImp::DetectImp(const std::string &model_name, bool need_preprocess)
-    : vitis::ai::TConfigurableDpuTask<FaceDetect>(model_name, need_preprocess),
+DetectImp::DetectImp(const std::string& model_name, bool need_preprocess)
+    : FaceDetect(model_name, need_preprocess),
       det_threshold_(configurable_dpu_task_->getConfig()
                          .dense_box_param()
                          .det_threshold()) {  //
 }
 
-DetectImp::DetectImp(const std::string &model_name, 
-                     xir::Attrs *attrs,
+DetectImp::DetectImp(const std::string& model_name, xir::Attrs* attrs,
                      bool need_preprocess)
-    : vitis::ai::TConfigurableDpuTask<FaceDetect>(model_name, attrs,
-                                                  need_preprocess),
+    : FaceDetect(model_name, attrs, need_preprocess),
       det_threshold_(configurable_dpu_task_->getConfig()
                          .dense_box_param()
                          .det_threshold()) {  //
 }
-
 
 DetectImp::~DetectImp() {}
 
-FaceDetectResult DetectImp::run(const cv::Mat &input_image) {
+FaceDetectResult DetectImp::run(const cv::Mat& input_image) {
   __TIC__(FACE_DETECT_E2E)
   // Set input image into DPU Task
   cv::Mat image;
@@ -72,7 +69,7 @@ FaceDetectResult DetectImp::run(const cv::Mat &input_image) {
 }
 
 std::vector<FaceDetectResult> DetectImp::run(
-    const std::vector<cv::Mat> &input_images) {
+    const std::vector<cv::Mat>& input_images) {
   __TIC__(FACE_DETECT_E2E)
   // Set input image into DPU Task
   std::vector<cv::Mat> images;
@@ -92,6 +89,24 @@ std::vector<FaceDetectResult> DetectImp::run(
 
   __TIC__(FACE_DETECT_DPU)
   configurable_dpu_task_->run(0);
+  __TOC__(FACE_DETECT_DPU)
+
+  __TIC__(FACE_DETECT_POST_ARM)
+  auto ret = vitis::ai::face_detect_post_process(
+      configurable_dpu_task_->getInputTensor(),
+      configurable_dpu_task_->getOutputTensor(),
+      configurable_dpu_task_->getConfig(), det_threshold_);
+  __TOC__(FACE_DETECT_POST_ARM)
+
+  __TOC__(FACE_DETECT_E2E)
+  return ret;
+}
+
+std::vector<FaceDetectResult> DetectImp::run(
+    const std::vector<vart::xrt_bo_t>& input_bos) {
+  __TIC__(FACE_DETECT_E2E)
+  __TIC__(FACE_DETECT_DPU)
+  configurable_dpu_task_->run_with_xrt_bo(input_bos);
   __TOC__(FACE_DETECT_DPU)
 
   __TIC__(FACE_DETECT_POST_ARM)

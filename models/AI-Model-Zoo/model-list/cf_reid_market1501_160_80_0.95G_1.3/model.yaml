@@ -30,26 +30,26 @@ files:
 - name: reid
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 09b671d9c07144687b9c17cc9c1dd462
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 6e2c4f44912a36c2b225f9bf8cf78b9a
 - name: reid
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-vck190-r1.3.0.tar.gz
-  checksum: 47ab27f9fe24bb34ea26b0b1a1bf6d4e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-vck190-r1.3.1.tar.gz
+  checksum: 651179f737b57e220bf387f9d4efdac8
 - name: reid
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50-r1.3.0.tar.gz
-  checksum: 2b33184065088f86a599b527381d2c8f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50-r1.3.1.tar.gz
+  checksum: 7f702eee6361600c81f2325b8d68938c
 - name: reid
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50lv-u280-r1.3.0.tar.gz
-  checksum: c89dbc7a3f759aab0ab7ab3900ca4721
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50lv-u280-r1.3.1.tar.gz
+  checksum: 6210d7b3aaa76eaf78feafae188fe5b8
 - name: reid
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 2f3729bf550884132745c79772c5e23e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: a06cb799b250204f061cbfac834fb840
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

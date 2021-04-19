@@ -30,7 +30,7 @@ Setup the Environment
 
   ```sh
   # For Caffe Notebooks
-  cd ${VAI_ALVEO_ROOT}/DPUCADX8G/caffe
+  cd ${VAI_HOME}/examples/DPUCADX8G/caffe
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
   python -m ck install package:imagenet-2012-aux
@@ -43,7 +43,7 @@ Setup the Environment
   python replace_mluser.py --modelsdir models
 
   # For Tensorflow Notebooks
-  cd ${VAI_ALVEO_ROOT}/DPUCADX8G/tensorflow
+  cd ${VAI_HOME}/examples/DPUCADX8G/tensorflow
   python -m ck pull repo:ck-env
   python -m ck install package:imagenet-2012-val-min
   python -m ck install package:imagenet-2012-aux
@@ -55,7 +55,7 @@ Setup the Environment
 
 3. Launch Jupyter notebook server
   ```sh
-  cd ${VAI_ALVEO_ROOT}/DPUCADX8G/notebooks
+  cd ${VAI_HOME}/examples/DPUCADX8G/notebooks
   jupyter notebook --no-browser --ip=0.0.0.0 --NotebookApp.token='' --NotebookApp.password=''
   ```
 

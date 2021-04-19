@@ -61,5 +61,7 @@ class NndctOption(object):
 
   nndct_param_corr_rate = Option(name="param_corr_rate", dtype=float, default=0.05, help="parameter correction rate")
 
+  nndct_cv_app = Option(name="cv_app", dtype=bool, default=True, action="store_true", help="cv application")
+
   nndct_finetune_lr_factor = Option(name="finetune_lr_factor", dtype=float, default=0.01, help="finetune learning rate factor")
   

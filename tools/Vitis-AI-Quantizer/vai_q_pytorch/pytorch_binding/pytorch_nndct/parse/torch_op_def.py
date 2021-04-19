@@ -434,7 +434,7 @@ class TorchView(base_op.Reshape):
     else:
       value = [value]
 
-    if self._input_ndim != len(value):
+    if self._input_ndim != len(value) or self._input_ndim != 4:
       self._attr_value_mem[self.AttrName.SHAPE][:] = value[:]
     else:
       raise RuntimeError(
@@ -696,11 +696,38 @@ class TorchFloor(Operation):
 #     super(TorchInt, self).__init__(NNDCT_OP.INT, *args, **kwargs)
 
 
-class TorchDiv(Operation):
+class TorchBinaryOp(base_op.BinaryOp):
+  def __init__(self, nndct_op_type, torch_op_type, force_to_primitive=False):
+    super().__init__(nndct_op_type)
+    utils.op_register(nndct_op_type, torch_op_type, force_to_primitive=force_to_primitive)
+    
+  @property
+  def input(self):
+    return self.get_attr(self.AttrName.INPUT)
 
+  @input.setter
+  def input(self, input):
+    self.set_attr(self.AttrName.INPUT, input)
+
+  @property
+  def other(self):
+    return self.get_attr(self.AttrName.OTHER)
+
+  @other.setter
+  def other(self, other):
+    self.set_attr(self.AttrName.OTHER, other)
+    
+# class TorchDiv(Operation):
+
+#   def __init__(self, *args, **kwargs):
+#     super(TorchDiv, self).__init__(NNDCT_OP.DEVIDE, *args, **kwargs)
+#     utils.op_register(NNDCT_OP.DEVIDE, 'div')
+    
+
+class TorchFloorDiv(Operation):
   def __init__(self, *args, **kwargs):
-    super(TorchDiv, self).__init__(NNDCT_OP.DEVIDE, *args, **kwargs)
-    utils.op_register(NNDCT_OP.DEVIDE, 'div')
+    super(TorchFloorDiv, self).__init__(NNDCT_OP.FLOOR_DIV, *args, **kwargs)
+    utils.op_register(NNDCT_OP.FLOOR_DIV, 'floor_divide')
 
 
 class TorchSoftmax(base_op.Softmax):
@@ -961,12 +988,16 @@ class TorchPad(base_op.Pad):
   @property
   def pad(self):
     pad = self.get_attr(self.AttrName.PAD_WITH)
-    return pad[2:-2]
-
+    # HW -> WH
+    pad = pad[-4:-2] + pad[2:4]
+    return pad
+   
   @pad.setter
   def pad(self, value):
     if len(value) != 4:
       raise RuntimeError("only support 2D pad")
+    # WH -> HW
+    value = value[-2:] + value[:2]
     value = [0, 0] + value + [0, 0]
     self.set_attr(self.AttrName.PAD_WITH, value)
 

@@ -15,7 +15,7 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_medicalsegmentation test_accuracy_medicalsegmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegmentation  -lvitis_ai_library-model_config -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_medicalsegmentation test_jpeg_medicalsegmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegmentation  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_medicalsegmentation test_performance_medicalsegmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegmentation  -lvart-util -pthread -lglog 
-# $CXX -std=c++11 -I. -o test_video_medicalsegmentation test_video_medicalsegmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegmentation  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_medicalsegmentation test_accuracy_medicalsegmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegmentation  -lvitis_ai_library-model_config -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_medicalsegmentation test_jpeg_medicalsegmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegmentation  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_medicalsegmentation test_performance_medicalsegmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegmentation  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+# $CXX -std=c++17 -I. -o test_video_medicalsegmentation test_video_medicalsegmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-medicalsegmentation  -pthread -lglog 

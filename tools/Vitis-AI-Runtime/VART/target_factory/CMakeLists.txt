@@ -14,13 +14,12 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.5)
-project(target-factory VERSION 1.3.0 LANGUAGES C CXX)
+project(target-factory VERSION 1.3.1 LANGUAGES C CXX)
 
 include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(BUILD_TEST "build test" OFF)
 
-find_package(glog REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(unilog REQUIRED)
 

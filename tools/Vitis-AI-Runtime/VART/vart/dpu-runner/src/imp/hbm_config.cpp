@@ -18,8 +18,10 @@
 #include <glog/logging.h>
 #include <sys/stat.h>
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <utility>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/parse_value.hpp>
 
@@ -187,6 +189,7 @@ std::vector<HbmChannelProperty> get_hbm_channels() {
       ret = xclbin->HBM_CHANNELS();
     }
   }
+
   if (ENV_PARAM(DEBUG_DPU_RUNNER)) {
     LOG(INFO) << "HBM config is: ";
     for (auto& hbm : ret) {
@@ -213,16 +216,36 @@ std::map<std::string, chunk_def_t> get_hbm(size_t core_id) {
   }
   return ret;
 }
+
 // ret[name]
 std::vector<chunk_def_t> get_engine_hbm(size_t core_id) {
   auto ret = std::vector<chunk_def_t>();
+  auto chunks_used_by_core = std::vector<std::pair<std::string, chunk_def_t>>();
   const auto& all = vart::dpu::HBM_CHANNELS();
   for (const auto& hbm : all) {
     auto used_by_core = core_id == hbm.core_id;
     if (used_by_core && hbm.name[0] == 'D') {
-      ret.emplace_back(hbm.channels_);
+      chunks_used_by_core.push_back(std::make_pair(hbm.name, hbm.channels_));
     }
   }
+
+  std::sort(chunks_used_by_core.begin(), chunks_used_by_core.end(),
+            [](std::pair<std::string, chunk_def_t> a,
+               std::pair<std::string, chunk_def_t> b) {
+              return a.first.compare(b.first) < 0;
+            });
+
+  for (const auto& chunk : chunks_used_by_core) {
+    ret.push_back(chunk.second);
+  }
+
+  if (ENV_PARAM(DEBUG_DPU_RUNNER)) {
+    LOG(INFO) << "sort used HBM by name: ";
+    for (auto& chunk : ret) {
+      LOG(INFO) << chunk;
+    }
+  }
+
   return ret;
 }
 /*

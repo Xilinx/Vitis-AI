@@ -22,8 +22,7 @@ import logging
 HW_zynq = [
     {'type': 'CPU', 'file': ['/proc/cpuinfo',
                              '/sys/kernel/debug/clk/acpu/clk_rate']},
-    {'type': 'Memory', 'file': ['/proc/meminfo']},
-    {'type': 'DPU', 'file': ['dexplorer -w']}
+    {'type': 'Memory', 'file': ['/proc/meminfo']}
 ]
 
 HW_alveo = [

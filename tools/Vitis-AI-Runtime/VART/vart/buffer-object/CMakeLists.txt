@@ -63,19 +63,19 @@ if(XRT_CLOUD_FOUND)
 endif(XRT_CLOUD_FOUND)
 
 
-if(CMAKE_CROSSCOMPILING)
+if(IS_EDGE)
   list(APPEND MY_PROJECT_SOURCES
      ${CMAKE_CURRENT_SOURCE_DIR}/src/device_memory_edge.hpp
      ${CMAKE_CURRENT_SOURCE_DIR}/src/device_memory_edge.cpp
      )
-endif(CMAKE_CROSSCOMPILING)
+endif(IS_EDGE)
 
 add_library(${COMPONENT_NAME} SHARED ${MY_PROJECT_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/version.c)
-if(CMAKE_CROSSCOMPILING)
-  target_compile_definitions (${COMPONENT_NAME} PRIVATE "-DCROSSCOMPILING=1")
-else(CMAKE_CROSSCOMPILING)
-  target_compile_definitions (${COMPONENT_NAME} PRIVATE "-DCROSSCOMPILING=0")
-endif(CMAKE_CROSSCOMPILING)
+if(IS_EDGE)
+  target_compile_definitions (${COMPONENT_NAME} PRIVATE "-DIS_EDGE=1")
+else(IS_EDGE)
+  target_compile_definitions (${COMPONENT_NAME} PRIVATE "-DIS_EDGE=0")
+endif(IS_EDGE)
 
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 
@@ -100,6 +100,7 @@ install(
   LIBRARY DESTINATION lib)
 install(FILES
   include/xir/buffer_object.hpp
+  include/xir/device_memory.hpp
   # include/xir/buffer_object_manager.hpp
   # include/xir/buffer_object_manager_store.hpp
   # include/xir/device_scheduler.hpp

@@ -62,12 +62,12 @@ install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/vaitrace DESTINATION bin)
 
 if(BUILD_PYTHON)
     find_package(Python3 REQUIRED COMPONENTS Development)
-    if(CMAKE_CROSSCOMPILING)
+    if(IS_EDGE)
         set(VAITRACE_PY_INSTALL_DIR "lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
-    else(CMAKE_CROSSCOMPILING)
+    else(IS_EDGE)
         find_package(pybind11 REQUIRED)
         set(VAITRACE_PY_INSTALL_DIR ${PYTHON_SITE_PACKAGES})
-    endif(CMAKE_CROSSCOMPILING)
+    endif(IS_EDGE)
     install(DIRECTORY python/vaitrace_py DESTINATION ${VAITRACE_PY_INSTALL_DIR}
 	    FILES_MATCHING
 	    PATTERN "*.py"

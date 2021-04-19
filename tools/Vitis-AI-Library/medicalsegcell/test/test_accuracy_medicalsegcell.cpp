@@ -17,6 +17,7 @@
 #include <sys/stat.h>
 
 #include <iostream>
+#include <fstream>
 #include <opencv2/opencv.hpp>
 #include <sstream>
 #include <vector>

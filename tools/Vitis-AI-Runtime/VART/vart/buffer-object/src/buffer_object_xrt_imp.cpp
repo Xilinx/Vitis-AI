@@ -164,7 +164,7 @@ void BufferObjectXrtEdgeImp::copy_from_host(const void* buf, size_t size,
       ;
   CHECK_LE(offset + size, size_) << " out of range";
   auto ok = 0;
-#if CROSSCOMPILING
+#if IS_EDGE
   //  ok = xclWriteBO(xrt_.handle, bo_, buf, size, offset);
   memcpy(static_cast<char*>(data_w()) + offset, buf, size);
   sync_for_write(offset, size);
@@ -188,7 +188,7 @@ void BufferObjectXrtEdgeImp::copy_to_host(void* buf, size_t size,
       ;
   CHECK_LE(offset + size, size_) << " out of range";
   auto ret = 0;
-#if CROSSCOMPILING
+#if IS_EDGE
   // ret = xclReadBO(xrt_.handle, bo_, buf, size, offset);
   sync_for_read(offset, size);
   memcpy(buf, static_cast<const char*>(data_r()) + offset, size);

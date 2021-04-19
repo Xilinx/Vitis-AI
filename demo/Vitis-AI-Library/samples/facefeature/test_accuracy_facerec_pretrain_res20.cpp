@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 
+#include <fstream>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <string>
@@ -23,12 +24,12 @@
 #include <vitis/ai/facefeature.hpp>
 using namespace std;
 
-void LoadImageNames(std::string const &filename,
-                    std::vector<std::string> &images) {
+void LoadImageNames(std::string const& filename,
+                    std::vector<std::string>& images) {
   images.clear();
 
   /*Check if path is a valid directory path. */
-  FILE *fp = fopen(filename.c_str(), "r");
+  FILE* fp = fopen(filename.c_str(), "r");
   if (NULL == fp) {
     fprintf(stdout, "open file: %s  error\n", filename.c_str());
     exit(1);
@@ -45,11 +46,10 @@ void LoadImageNames(std::string const &filename,
   fclose(fp);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc < 4) {
     std::cout << "usage : " << argv[0] << " <model_name>"
-              << " <image_list_file>  <output_file>" 
-              << std::endl;
+              << " <image_list_file>  <output_file>" << std::endl;
     return -1;
   }
   string image_list_name = argv[2];

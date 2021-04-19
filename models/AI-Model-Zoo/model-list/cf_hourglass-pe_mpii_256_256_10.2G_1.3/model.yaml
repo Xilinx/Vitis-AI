@@ -30,6 +30,6 @@ files:
 - name: hourglass-pe_mpii
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=hourglass-pe_mpii-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 71e74eefe416eea10d64292fac2ce6d1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=hourglass-pe_mpii-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: fc29f17d94fd57eba4d4453489b51822
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

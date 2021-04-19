@@ -22,26 +22,26 @@ files:
 - name: squeezenet_pt
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 3bc3bdd08412b11aeeb8d27575f66723
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 502a7b695c016b1a1e387f99ecb434a5
 - name: squeezenet_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck190-r1.3.0.tar.gz
-  checksum: bbd552d1d6a3f8f8181ae630fc3f66eb
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck190-r1.3.1.tar.gz
+  checksum: 0c4590ff859ec43a3d7e81d475d8d5b8
 - name: squeezenet_pt
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-r1.3.0.tar.gz
-  checksum: bafc03b2b7deac3b10560768913ad870
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-r1.3.1.tar.gz
+  checksum: 519c2570b910c92aef8817b7b7e350ca
 - name: squeezenet_pt
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50lv-u280-r1.3.0.tar.gz
-  checksum: 66ef37dbbaff79613f1d915d02afe37e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50lv-u280-r1.3.1.tar.gz
+  checksum: 2ac77f90c3ebbb0c570c0e6d27aeb73a
 - name: squeezenet_pt
   type: xmodel
   board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-u50lv-u280-v3me-r1.3.0.tar.gz
-  checksum: 5f2141fc1e81a559c0f493de9ac0bdf3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
+  checksum: 0c3edadf55123effa4a6d4de8ef0d406
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

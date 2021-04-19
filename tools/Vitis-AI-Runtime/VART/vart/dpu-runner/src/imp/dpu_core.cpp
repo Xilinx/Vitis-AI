@@ -128,6 +128,9 @@ DpuCoreWorkspace::get_workspaces(const std::vector<DpuReg>& regs) {
           reg_id,
           std::make_unique<HbmChunk>(workspace.get_offset() + reg_offset,  //
                                      reg.size_)));
+      CHECK_LE(reg.size_, workspace.get_capacity())
+          << "out of HBM memory"
+          << ";reg.name=" << reg.name_;
       reg_offset = reg_offset + align(reg.size_, _4K);
     }
   }

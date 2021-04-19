@@ -15,7 +15,7 @@
 #
 
 CXX=${CXX:-g++}
-$CXX -std=c++11 -I. -o test_accuracy_segmentation test_accuracy_segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-segmentation  -lvitis_ai_library-model_config -lglog 
-$CXX -std=c++11 -I. -o test_jpeg_segmentation test_jpeg_segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-segmentation  -pthread -lglog 
-$CXX -std=c++11 -I. -o test_performance_segmentation test_performance_segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-segmentation  -lvart-util -pthread -lglog 
-$CXX -std=c++11 -I. -o test_video_segmentation test_video_segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-segmentation  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_accuracy_segmentation test_accuracy_segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-segmentation  -lvitis_ai_library-model_config -lglog 
+$CXX -std=c++17 -I. -o test_jpeg_segmentation test_jpeg_segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-segmentation  -pthread -lglog 
+$CXX -std=c++17 -I. -o test_performance_segmentation test_performance_segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-segmentation  -lvart-util -lvitis_ai_library-dpu_task -pthread -lglog 
+$CXX -std=c++17 -I. -o test_video_segmentation test_video_segmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-segmentation  -pthread -lglog 

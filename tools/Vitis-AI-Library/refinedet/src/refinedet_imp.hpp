@@ -15,13 +15,13 @@
  */
 #pragma once
 #include <vector>
-#include <vitis/ai/configurable_dpu_task.hpp>
+
 #include <vitis/ai/nnpp/tfrefinedet.hpp>
 #include <vitis/ai/refinedet.hpp>
 using namespace std;
 namespace vitis {
 namespace ai {
-class RefineDetImp : public vitis::ai::TConfigurableDpuTask<RefineDet> {
+class RefineDetImp : public RefineDet {
  public:
   RefineDetImp(const std::string& model_name, bool need_preprocess = true);
   virtual ~RefineDetImp();
@@ -30,6 +30,10 @@ class RefineDetImp : public vitis::ai::TConfigurableDpuTask<RefineDet> {
   virtual RefineDetResult run(const cv::Mat& image) override;
   virtual std::vector<RefineDetResult> run(
       const std::vector<cv::Mat>& images) override;
+  virtual std::vector<RefineDetResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) override;
+
+ private:
   std::unique_ptr<RefineDetPostProcess> processor_;
   std::unique_ptr<TFRefineDetPostProcess> tfprocessor_;
   bool is_tf_;

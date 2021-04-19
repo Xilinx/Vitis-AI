@@ -43,6 +43,17 @@ float overlap(float x1, float w1, float x2, float w2) {
   return right - left;
 }
 
+float box_c(vector<float> a, vector<float> b) {
+  float top = min(a[1] - a[3] / 2.0, b[1] - b[3] / 2.0);
+  float bot = max(a[1] + a[3] / 2.0, b[1] + b[3] / 2.0);
+  float left = min(a[0] - a[2] / 2.0, b[0] - b[2] / 2.0);
+  float right = max(a[0] + a[2] / 2.0, b[0] + b[2] / 2.0);
+ 
+  float res = (bot-top)*(bot-top) + (right-left)*(right-left);
+  return res;
+}
+
+/*
 float cal_iou(vector<float> box, vector<float> truth) {
   float w = overlap(box[0], box[2], truth[0], truth[2]);
   float h = overlap(box[1], box[3], truth[1], truth[3]);
@@ -51,6 +62,24 @@ float cal_iou(vector<float> box, vector<float> truth) {
   float inter_area = w * h;
   float union_area = box[2] * box[3] + truth[2] * truth[3] - inter_area;
   return inter_area * 1.0 / union_area;
+}
+*/
+float cal_iou(vector<float> box, vector<float> truth) {
+  float c = box_c(box, truth);
+
+  float w = overlap(box[0], box[2], truth[0], truth[2]);
+  float h = overlap(box[1], box[3], truth[1], truth[3]);
+  if (w<0 || h<0)
+    return 0;
+  float inter_area = w * h;
+  float union_area = box[2] * box[3] + truth[2] * truth[3] - inter_area;
+  float iou = inter_area * 1.0 / union_area;
+  if (c==0)
+    return iou;
+  
+  float d = (box[0] - truth[0]) * (box[0] - truth[0]) + (box[1] - truth[1]) * (box[1] - truth[1]);
+  float u = pow(d / c, 0.6);
+  return iou - u;
 }
 
 vector<string> InitLabelfile(const string& labels, string dataset="COCO") {
@@ -71,7 +100,7 @@ vector<string> InitLabelfile(const string& labels, string dataset="COCO") {
                    "dog","horse","motorbike","person","pottedplant",
                    "sheep","sofa","train","tvmonitor"};
   }
-  else if(dataset == "COCO") {
+  else if(dataset.find("COCO") != string::npos) {
     new_labels = {"person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",  
                   "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",  
                   "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack",  
@@ -106,6 +135,16 @@ string get_imagename(string imagename) {
   return image_name;
 }
 
+int imagename_to_id_2017(string cfgfile)
+{
+    int idx1 = cfgfile.find_last_of('.');
+    int idx2 = cfgfile.find_last_of('/');
+    
+    string id = cfgfile.substr(idx2+1, idx1-idx2-1); 
+    int image_id = atoi(id.c_str());
+    return image_id; 
+}
+
 vector<int> coco_id_map_dict() {
   vector<int> category_ids;
   category_ids = {1,2,3,4,5,6,7,8,9,10, 
@@ -119,7 +158,7 @@ vector<int> coco_id_map_dict() {
   return category_ids;
 }
 
-vector<float> InitBiases(const string& biases, string dataset="COCO") {
+vector<float> InitBiases(const string& biases, string dataset="COCO", string model_type="yolov4") {
   vector<float> new_biases;
   if(biases != "") {
     size_t start = 0;
@@ -131,14 +170,17 @@ vector<float> InitBiases(const string& biases, string dataset="COCO") {
      }
       new_biases.push_back(atof(biases.substr(start).c_str()));
   }
-  else if(dataset == "COCO") {
-    new_biases = {12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401};
+  else if(dataset.find("COCO") != string::npos) {
+    if (model_type == "yolov4-tiny")
+        new_biases = {23,27,  37,58,  81,82, 81, 82, 135,169, 334, 319};
+    else
+        new_biases = {12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401};
   }
   else {
     LOG(FATAL) << "Unknown datatset: " << dataset;
   } 
   //for (auto it = 0; it < new_biases.size(); it ++) {
-  //   LOG(INFO) << "new_biases List:" << new_biases[it] ;
+  //  cout << " " << new_biases[it] ;
   //}
   return new_biases;
 }
@@ -157,7 +199,7 @@ vector<vector<float>> apply_nms(vector<vector<float>>boxes , int classes ,float 
     for(size_t _i = 0; _i < boxes.size(); ++_i){
       size_t i = order[_i].first;
       if(!exist_box[i]) continue;
-      if(boxes[i][6 + k] < 0.001) {
+      if(boxes[i][6 + k] <= 0.001) { //<
         exist_box[i] = false;
         continue;
       }
@@ -166,12 +208,14 @@ vector<vector<float>> apply_nms(vector<vector<float>>boxes , int classes ,float 
         size_t j = order[_j].first;
         if(!exist_box[j]) continue;
         float ovr = cal_iou(boxes[j], boxes[i]);
-        if(ovr >= thres) exist_box[j] = false;
+        if(ovr > thres) exist_box[j] = false; //>=
       }
     }
   }
   return result;
 }
+
+
 
 vector<vector<float>> correct_region_boxes(
     vector<vector<float>> boxes, int n, int w, int h, int netw, int neth, int letter) {
@@ -194,7 +238,15 @@ vector<vector<float>> correct_region_boxes(
     boxes[i][1] = (boxes[i][1] - (neth - new_h) / 2.0 / neth) / ((float)new_h / neth);
     boxes[i][2] *= (float)netw / new_w;
     boxes[i][3] *= (float)neth / new_h;
+   
+    // NOTE: !relative
+    boxes[i][0] *= w;
+    boxes[i][1] *= h;
+    boxes[i][2] *= w;
+    boxes[i][3] *= h;
   }
+ 
+ 
   return boxes;
 }
 
@@ -243,15 +295,26 @@ vector<vector<float>> Detector::Detectv4(string file, int classes, vector<float>
   vector<int> scale_feature;
   for (int iter = 0; iter < net_->num_outputs(); iter++){
     int width = net_->output_blobs()[iter]->width();
+    
+    int channels = net_->output_blobs()[iter]->channels();
+    if (channels != 255)
+        continue;
+
     scale_feature.push_back(width);
   }
   sort(scale_feature.begin(), scale_feature.end(), [](int a, int b){return a > b;});
+  
+  
   for (int iter = 0; iter < net_->num_outputs(); iter++) {
     Blob<float>* result_blob = net_->output_blobs()[iter];
     const float* result = result_blob->cpu_data();
     int height = net_->output_blobs()[iter]->height();
     int width = net_->output_blobs()[iter]->width();
-    int channles = net_->output_blobs()[iter]->channels();
+    int channels = net_->output_blobs()[iter]->channels();
+   
+    if (channels != 255)
+        continue;
+    
     int index = 0;
     for (int i = 0; i < net_->num_outputs(); i++) {
       if(width == scale_feature[i]) {
@@ -263,30 +326,30 @@ vector<vector<float>> Detector::Detectv4(string file, int classes, vector<float>
     float swap[width*height][anchorCnt][5+classes];
     for(int h =0; h < height; h++)
       for(int w =0; w < width; w++)
-        for(int c =0 ; c < channles; c++)
+        for(int c =0 ; c < channels; c++)
           swap[h * width + w][c / (5 + classes)][c % (5 + classes)] = result[c * height * width + h * width + w];
-
+    
     // compute the coordinate of each primary box
     for (int h = 0; h < height; h++) {
       for (int w = 0; w < width; w++) {
         for (int n = 0 ; n < anchorCnt; n++) {
           float obj_score = sigmoid(swap[h * width + w][n][4]);
-          if(obj_score < conf_threshold)
-            continue;
-          vector<float>box,cls;
-          float x = (w + sigmoid(swap[h * width + w][n][0])) / width;
-          float y = (h + sigmoid(swap[h * width + w][n][1])) / height;
-          float ww = exp(swap[h * width + w][n][2]) * biases[2 * n + 2 * anchorCnt * index] / input_geometry_.width;
-          float hh = exp(swap[h * width + w][n][3]) * biases[2 * n + 2 * anchorCnt * index + 1] / input_geometry_.height;
-          box.push_back(x);
-          box.push_back(y);
-          box.push_back(ww);
-          box.push_back(hh);
-          box.push_back(-1);
-          box.push_back(obj_score);
-          for(int p =0; p < classes; p++)
-            box.push_back(obj_score * sigmoid(swap[h * width + w][n][5 + p]));
-          boxes.push_back(box);
+          if(obj_score > conf_threshold) {
+            vector<float> box,cls;
+            float x = (w + sigmoid(swap[h * width + w][n][0])) / width;
+            float y = (h + sigmoid(swap[h * width + w][n][1])) / height;
+            float ww = exp(swap[h * width + w][n][2]) * biases[2 * n + 2 * anchorCnt * index] / input_geometry_.width;
+            float hh = exp(swap[h * width + w][n][3]) * biases[2 * n + 2 * anchorCnt * index + 1] / input_geometry_.height;
+            box.push_back(x);
+            box.push_back(y);
+            box.push_back(ww);
+            box.push_back(hh);
+            box.push_back(-1);
+            box.push_back(obj_score);
+            for(int p =0; p < classes; p++)
+              box.push_back(obj_score * sigmoid(swap[h * width + w][n][5 + p]));
+            boxes.push_back(box);         
+          }
         }
       }
     }
@@ -297,6 +360,7 @@ vector<vector<float>> Detector::Detectv4(string file, int classes, vector<float>
 }
 
 
+
 DEFINE_string(mode, "eval",
   "Default support for eval mode {eval, demo}");
 DEFINE_string(file_type, "image",
@@ -305,8 +369,8 @@ DEFINE_string(out_file, "out_file.txt",
   "If provided, store the detection results in the out_file.");
 DEFINE_string(labels, "",
   "If not provided, the defult support for COCO.");
-DEFINE_string(dataset, "COCO",
-  "If not provided, the defult support for COCO {COCO, VOC}.");
+DEFINE_string(dataset, "COCO_2014",
+  "If not provided, the defult support for COCO {COCO_2014, COCO_2017, VOC}.");
 DEFINE_string(biases, "",
   "If not provided, the defult support for COCO.");
 DEFINE_string(model_type, "yolov4",
@@ -357,12 +421,12 @@ int main(int argc, char** argv) {
    
   // Initialize the label,biases.
   vector<string> labels = InitLabelfile(FLAGS_labels, FLAGS_dataset); 
-  vector<float> biases = InitBiases(FLAGS_biases, FLAGS_dataset); 
+  vector<float> biases = InitBiases(FLAGS_biases, FLAGS_dataset, FLAGS_model_type); 
   // Process image one by one.
   const string& image_root = argv[3];
   ifstream infile(argv[4]);
   string file;
-  if (FLAGS_dataset == "COCO" && mode == "eval") {
+  if (FLAGS_dataset.find("COCO") != string::npos && mode == "eval") {
     fout << "[" << endl;
     ccoco_id_map_dict = coco_id_map_dict();
   }
@@ -385,24 +449,43 @@ int main(int argc, char** argv) {
       int w = img.cols;
       int h = img.rows;
       vector<vector<float>> results;
-      if(model_type == "yolov4")
+      if (model_type == "yolov4" || model_type == "yolov4-tiny")
         results = detector.Detectv4(image_root + '/' + file, classes,biases, anchorCnt, w, h, 0, conf_threshold, nms_threshold);
-      else 
+      else
         LOG(FATAL) << "Unknown model_type: " << model_type;
-
+        
       for(int i = 0; i < results.size(); i++) {
+        // NOTE: !relative
+        float xmin = results[i][0] - results[i][2] / 2.0;
+        float ymin = results[i][1] - results[i][3] / 2.0;
+        float xmax = results[i][0] + results[i][2] / 2.0;
+        float ymax = results[i][1] + results[i][3] / 2.0;
+ 
+        /*
         float xmin = (results[i][0] - results[i][2] / 2.0) * w;
         float ymin = (results[i][1] - results[i][3] / 2.0) * h;
         float xmax = (results[i][0] + results[i][2] / 2.0) * w;
         float ymax = (results[i][1] + results[i][3] / 2.0) * h;
-        if (xmin < 0) xmin = 1;
-        if (ymin < 0) ymin = 1;
+        */
+        if (xmin < 0) xmin = 0;
+        if (ymin < 0) ymin = 0;
         if (xmax > w) xmax = w;
         if (ymax > h) ymax = h;
+        
         if (results[i][results[i][4] + 6] > conf_threshold) {
+        // if (results[i][results[i][4] + 6] > 0) {
           if (mode == "eval") {
-            if (FLAGS_dataset == "COCO") {
-              int image_id = imagename_to_id(file);
+            if (FLAGS_dataset.find("COCO") != string::npos) {
+              int image_id;
+              if (FLAGS_dataset == "COCO_2014")
+                // for val2014
+                image_id = imagename_to_id(file);
+              else if (FLAGS_dataset == "COCO_2017")
+                // for val2017
+                image_id = imagename_to_id_2017(file);
+              else
+                LOG(FATAL) << "Unknown dataset: " << FLAGS_dataset;
+
               // vector<int> ccoco_id_map_dict = coco_id_map_dict();
               // LOG(INFO) << "class: " << labels[results[i][4]] << " id: " << results[i][4] << " coco_id: " << ccoco_id_map_dict[int(results[i][4])]  <<endl;
               fout << fixed << setprecision(0) <<"{\"image_id\":" << image_id << ", \"category_id\":" << ccoco_id_map_dict[int(results[i][4])]<< ", \"bbox\":[" << fixed << 
@@ -430,13 +513,13 @@ int main(int argc, char** argv) {
       if (mode == "demo") {        
         cv::imwrite("demo/" + file, img);
       }
-      results.clear();
 
+      results.clear();
     } else {
       LOG(FATAL) << "Unknown file_type: " << file_type;
     }
   }
-  if (FLAGS_dataset == "COCO") {
+  if (FLAGS_dataset.find("COCO") != string::npos) {
     fout.seekp(-2L, ios::end); 
     fout << endl << "]" << endl; 
   }
@@ -447,4 +530,3 @@ int main(int argc, char** argv) {
   LOG(FATAL) << "This example requires OpenCV; compile with USE_OPENCV.";
 }
 #endif  // USE_OPENCV
-

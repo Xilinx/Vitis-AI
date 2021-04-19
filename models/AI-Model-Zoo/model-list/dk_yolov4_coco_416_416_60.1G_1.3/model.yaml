@@ -30,21 +30,21 @@ files:
 - name: yolov4_leaky_spp_m
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: d9d6708063cb6c7e2150c3d7dcd7f6d5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: 3ee6a02f3095f58e9c370808370e0b4f
 - name: yolov4_leaky_spp_m
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-vck190-r1.3.0.tar.gz
-  checksum: 0fab48b0f0ad66b53b159f06fbab85af
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-vck190-r1.3.1.tar.gz
+  checksum: 0cde7b597bc9b8b09e6abaee2c75b21f
 - name: yolov4_leaky_spp_m
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-u50-r1.3.0.tar.gz
-  checksum: d74526c452fa03f2ac5d7dd6ba967527
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-u50-r1.3.1.tar.gz
+  checksum: 752c71d2baab4ec9aa3f53faac347539
 - name: yolov4_leaky_spp_m
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-u50lv-u280-r1.3.0.tar.gz
-  checksum: 540c223361915472294cb4cfe3069616
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-u50lv-u280-r1.3.1.tar.gz
+  checksum: da58ac9890b486bbefba275f1bc9e5b1
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -24,6 +24,7 @@
 #include <vitis/ai/demo_accuracy.hpp>
 #include <vitis/ai/refinedet.hpp>
 extern int g_last_frame_id;
+extern int GLOBAL_ENABLE_C_SOFTMAX;
 static std::map<std::string, std::vector<std::string>> label_maps{
     {"caffe_model", {"", "person", ""}},
     {"refinedet_VOC_tf",
@@ -85,6 +86,7 @@ struct refinedetAcc : public AccThread {
 
 int main(int argc, char* argv[]) {
   std::string model_name = argv[1];
+  GLOBAL_ENABLE_C_SOFTMAX = 2;
 
   if (label_maps.count(model_name)) {
     label_map = label_maps[model_name];

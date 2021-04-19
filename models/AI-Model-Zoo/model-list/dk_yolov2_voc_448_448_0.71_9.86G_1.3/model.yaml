@@ -30,21 +30,21 @@ files:
 - name: yolov2_voc_pruned_0_71
   type: xmodel
   board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-zcu102_zcu104-r1.3.0.tar.gz
-  checksum: 5d9eb5e3ff17d50cedf4469424fe10de
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-zcu102_zcu104-r1.3.1.tar.gz
+  checksum: f2611ab3382c41bbdd86d0892eeab36b
 - name: yolov2_voc_pruned_0_71
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-vck190-r1.3.0.tar.gz
-  checksum: c1f2e534230518ca805dfdfcc12d1ba6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-vck190-r1.3.1.tar.gz
+  checksum: 3a63a14468782d1e1cdfb7475665704b
 - name: yolov2_voc_pruned_0_71
   type: xmodel
   board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-u50-r1.3.0.tar.gz
-  checksum: afbe87d284a2c485752ea1f3e033c147
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-u50-r1.3.1.tar.gz
+  checksum: a7e228dcbb55b81156b727f2a7d2e19c
 - name: yolov2_voc_pruned_0_71
   type: xmodel
   board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-u50lv-u280-r1.3.0.tar.gz
-  checksum: baa2a447df6921b8793feccadfe004ec
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-u50lv-u280-r1.3.1.tar.gz
+  checksum: 6f304ca97fcfced2639319e374365d94
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
