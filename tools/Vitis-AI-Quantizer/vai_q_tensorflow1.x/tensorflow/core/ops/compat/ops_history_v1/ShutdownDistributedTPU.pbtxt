@@ -1,4 +1,0 @@
-op {
-  name: "ShutdownDistributedTPU"
-  is_stateful: true
-}
