@@ -150,7 +150,7 @@ const Target create_target_v2(const std::uint64_t fingerprint) {
   pool_nonlinear->add_nonlinear_type(Target::Nonlinear::relu);
   pool_engine->add_pool_type(Target::Pool::max);
   auto max_limit = pool_engine->mutable_max_limit();
-  max_limit->set_kernel_size("2-8");
+  max_limit->set_kernel_size("1-8");
   max_limit->set_stride("1-8");
   if (PL_AVG) {
     pool_engine->add_pool_type(Target::Pool::avg);
