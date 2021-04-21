@@ -94,7 +94,7 @@ conv_engine {
   }
   conv_limit {
     kernel_size: "1-16"
-    stride: "1-4"
+    stride: "1-8"
   }
 }
 eltwise_engine {
@@ -121,7 +121,7 @@ pool_engine {
   }
   pool_type: max
   max_limit {
-    kernel_size: "2-8"
+    kernel_size: "1-8"
     stride: "1-4"
   }
   pool_type: avg
