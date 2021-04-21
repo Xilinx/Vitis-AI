@@ -204,29 +204,21 @@ void DpuRunnerDdr::fill_gen_reg(size_t device_core_id,
     auto reg_id = get_reg_id(reg->get_tensor());
     CHECK(reg_id >= 0 && reg_id < 16) << "reg_id = " << reg_id;
     int ddr_addr = get_ddr_addr(reg->get_tensor());
-
-    for (auto batch_idx = 0; batch_idx < num_of_batch; ++batch_idx) {
-      auto idx2 = std::min(batch_idx, reg->get_tensor()->get_shape()[0] - 1);
-      dim_idx[0] = idx2;
+    for (auto batch_idx = 0; batch_idx < num_of_batch && 
+         batch_idx <= (reg->get_tensor()->get_shape()[0] - 1); ++batch_idx) {
+      dim_idx[0] = batch_idx;
       uint64_t base;
       size_t size;
       std::tie(base, size) = reg->data_phy(dim_idx);
       CHECK_NE(size, 0u);
-      // move get_ddr_addr() out of this loop to improve perf;
-      // int ddr_addr = get_ddr_addr(reg->get_tensor());
+      //move get_ddr_addr() out of this loop to improve perf;
+      //int ddr_addr = get_ddr_addr(reg->get_tensor());
       base = base - ddr_addr;
       auto reg_idx = batch_idx * num_of_regs + reg_id;
       LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER) >= 2)
-          << "set base reg: " << reg_idx                            //
-          << " num_of_regs: " << num_of_regs                        //
-          << " reg_id: " << reg_id                                  //
-          << " batch_idx: " << batch_idx                            //
-          << " num_of_batch " << num_of_batch                       //
-          << " / " << (reg->get_tensor()->get_shape()[0] - 1)       //
-          << " base = " << std::hex << "0x" << base << std::dec     //
-          << " ddr = " << std::hex << "0x" << ddr_addr << std::dec  //
-          << " tensor " << reg->get_tensor()->to_string()           //
-          ;
+          << "set base reg: " << reg_idx  //
+          << "base = " << std::hex << "0x" << base << std::dec
+          << "ddr = " << std::hex << "0x" << ddr_addr << std::dec;
       gen_reg[reg_idx] = base;
     }
   }
