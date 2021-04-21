@@ -367,18 +367,24 @@ class VitisQuantizer(object):
       if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
         q_info = quantize_info[layer.layer.name]
         for k, v in q_info.items():
+          if k == 'NoQuantizeActivation':
+            continue
           if key == 'w' and v['type'] == 'weight' and k.endswith('kernel:0'):
             v['info']['quant_pos_var'] = new_pos
+            return
           elif key == 'b' and v['type'] == 'weight' and k.endswith('bias:0'):
             v['info']['quant_pos_var'] = new_pos
+            return
           elif key == 'o' and v['type'] in [
               'post_activation', 'pre_activation', 'output'
           ]:
             v['info']['quant_pos_var'] = new_pos
+            return
       elif isinstance(layer, vitis_quantize_layer.QuantizeLayer):
         if key == 'o':
           q_info = quantize_info[layer.name]
           q_info['info']['quant_pos_var'] = new_pos
+          return
 
     def _adjust_shift_cut(layer, adjusted_quantize_info, ip, wp, bp, op):
       min_sc = 0
@@ -394,8 +400,8 @@ class VitisQuantizer(object):
       if new_sc:
         new_wp = min_sc + op - ip
         _set_pos(layer, adjusted_quantize_info, 'w', new_wp)
-        print('[INFO] Shift cut of layer {} is {}. It exceed range [{}, {}]. '
-              'Modify wpos from {} to {}.'.format(layer.name, int(sc),
+        print('[INFO] Shift cut of layer {} is {}. It exceeds range [{}, {}]. '
+              'Adjust wpos from {} to {}.'.format(layer.name, int(sc),
                                                   int(min_sc), int(max_sc),
                                                   int(wp), int(new_wp)))
 
@@ -414,8 +420,8 @@ class VitisQuantizer(object):
       if new_sb:
         new_bp = wp + ip - new_sb
         _set_pos(layer, adjusted_quantize_info, 'b', new_bp)
-        print('[INFO] Shift bias of layer {} is {}. It exceed range [{}, {}]. '
-              'Modify bpos from {} to {}.'.format(layer.name, int(sb),
+        print('[INFO] Shift bias of layer {} is {}. It exceeds range [{}, {}]. '
+              'Adjust bpos from {} to {}.'.format(layer.name, int(sb),
                                                   int(min_sb), int(max_sb),
                                                   int(bp), int(new_bp)))
 
@@ -447,13 +453,13 @@ class VitisQuantizer(object):
 
       pre_layer = layer.inbound_nodes[0].inbound_layers
       ip = _get_pos(pre_layer, quantize_info, 'o')
-      if all([ip, wp, bp, op]):
+      if None not in [ip, wp, bp, op]:
         if adjust_shift_cut:
           _adjust_shift_cut(layer, adjusted_quantize_info, ip, wp, bp, op)
         if adjust_shift_bias:
           _adjust_shift_bias(layer, adjusted_quantize_info, ip, wp, bp, op)
       else:
-        print('[Warning] Skip quantize pos adjustment for layer {}, '
+        print('[INFO] Skip quantize pos adjustment for layer {}, '
               'its quantize pos is [i={}, w={}, b={}, o={}]'.format(
                   layer.name, ip, wp, bp, op))
     return adjusted_quantize_info

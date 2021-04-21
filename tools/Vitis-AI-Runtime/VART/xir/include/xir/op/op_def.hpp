@@ -77,8 +77,7 @@ class OpDef {
   OpDef(const std::string& name);
   /// Create a definition of an op by name, inputs,
   /// attributes, shape_infer function and annotation.
-  OpDef(const std::string& name,
-        const std::vector<OpArgDef>& input_args,
+  OpDef(const std::string& name, const std::vector<OpArgDef>& input_args,
         const std::vector<AttrDef>& attrs,
         const std::function<void(Op* op)>& shape_infer,
         const std::string& annotation);

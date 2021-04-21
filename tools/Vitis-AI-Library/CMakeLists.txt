@@ -16,7 +16,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(
   vitis_ai_library
-  VERSION 1.3.1
+  VERSION 1.3.2
   LANGUAGES C CXX)
 include(${CMAKE_SOURCE_DIR}/cmake/XilinxCommon.cmake)
 

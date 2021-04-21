@@ -29,9 +29,9 @@ source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.2-r1.3.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.1.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2020.2-r1.3.2.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.2.tar.gz) and install it to the petalinux system.
 ```
-tar -xzvf vitis_ai_2020.2-r1.3.1.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+tar -xzvf vitis_ai_2020.2-r1.3.2.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
 5. Cross compile the sample, take `resnet50` as an example.
@@ -76,11 +76,11 @@ steps.**
 3. (Optional) How to update Vitis AI Runtime and install them separately. 
 	
 	If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
-	* Download the [Vitis AI Runtime 1.3.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.1.tar.gz).  	
+	* Download the [Vitis AI Runtime 1.3.2](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.2.tar.gz).  	
 	* Untar the runtime packet and copy the following folder to the board using scp.
 	```
-	tar -xzvf vitis-ai-runtime-1.3.1.tar.gz
-	scp -r vitis-ai-runtime-1.3.1/aarch64/centos root@IP_OF_BOARD:~/
+	tar -xzvf vitis-ai-runtime-1.3.2.tar.gz
+	scp -r vitis-ai-runtime-1.3.2/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
 	* Install the Vitis AI Runtime. Execute the following command.

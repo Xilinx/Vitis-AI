@@ -130,7 +130,7 @@ pool_engine {
   }
   pool_type: max
   max_limit {
-    kernel_size: "2-8"
+    kernel_size: "1-8"
     stride: "1-8"
   }
   pool_type: avg
