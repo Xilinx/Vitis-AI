@@ -12,17 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: "DPUCVDX8G_ISA0_B16384C64B1"
+name: "DPUCVDX8G_ISA0_B4096C16B1_DW_QT"
 type: "DPUCVDX8G"
 isa_version: 0x00
-feature_code: 0x000076080812
+feature_code: 0x0004f2022210
 bank_group {
   name: "VB0"
   type: "Virtual"
   base_id: 0
   bank_num: 8
   bank_width: 16
-  bank_depth: 8192
+  bank_depth: 4096
 }
 bank_group {
   name: "VB1"
@@ -30,7 +30,7 @@ bank_group {
   base_id: 8
   bank_num: 8
   bank_width: 16
-  bank_depth: 8192
+  bank_depth: 4096
 }
 bank_group {
   name: "CONVW"
@@ -38,12 +38,28 @@ bank_group {
   base_id: 16
   bank_num: 16
   bank_width: 16
-  bank_depth: 16384
+  bank_depth: 4096
+}
+bank_group {
+  name: "DWCONVW"
+  type: "Param"
+  base_id: 32
+  bank_num: 1
+  bank_width: 16
+  bank_depth: 4096
 }
 bank_group {
   name: "BIAS"
   type: "Param"
-  base_id: 32
+  base_id: 33
+  bank_num: 1
+  bank_width: 16
+  bank_depth: 2048
+}
+bank_group {
+  name: "DWCVBIAS"
+  type: "Param"
+  base_id: 34
   bank_num: 1
   bank_width: 16
   bank_depth: 2048
@@ -60,7 +76,7 @@ save_engine {
 }
 conv_engine {
   input_channel_parallel: 16
-  output_channel_parallel: 64
+  output_channel_parallel: 16
   pixel_parallel: 8
   input_bank: "VB0"
   input_bank: "VB1"
@@ -68,9 +84,6 @@ conv_engine {
   output_bank: "VB1"
   weight_bank: "CONVW"
   bias_bank: "BIAS"
-  channel_augmentation {
-    channel_num: 32
-  }
   nonlinear {
     nonlinear_type: relu
     nonlinear_type: leaky_relu
@@ -83,7 +96,7 @@ conv_engine {
 }
 eltwise_engine {
   channel_parallel: 16
-  pixel_parallel: 8
+  pixel_parallel: 2
   input_bank: "VB0"
   input_bank: "VB1"
   output_bank: "VB0"
@@ -95,7 +108,7 @@ eltwise_engine {
 }
 pool_engine {
   channel_parallel: 16
-  pixel_parallel: 8
+  pixel_parallel: 2
   input_bank: "VB0"
   input_bank: "VB1"
   output_bank: "VB0"
@@ -111,6 +124,24 @@ pool_engine {
   pool_type: avg
   avg_limit {
     kernel_size: "2-8"
+    stride: "1-4"
+  }
+}
+dwconv_engine {
+  channel_parallel: 16
+  pixel_parallel: 2
+  input_bank: "VB0"
+  input_bank: "VB1"
+  output_bank: "VB0"
+  output_bank: "VB1"
+  weight_bank: "DWCONVW"
+  bias_bank: "DWCVBIAS"
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: relu_six
+  }
+  dwconv_limit {
+    kernel_size: "1-16"
     stride: "1-4"
   }
 }

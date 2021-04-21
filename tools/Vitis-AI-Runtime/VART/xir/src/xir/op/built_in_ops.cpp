@@ -586,41 +586,49 @@ std::function<void(xir::OpDef&)> BroadcastOpDefGenerator(
   return [=](xir::OpDef& op_def) {
     auto input = xir::OpArgDef{"input", OpArgDef::REQUIRED_AND_REPEATED, T,
                                "The feature maps, can be x-dimension."};
-    op_def.add_input_arg(input).set_annotation(
-        "We support broadcasting operations:\n\n"
-        "    \"add\": input[0] + input[1]\n"
-        "    \"sub\": input[0] - input[1]\n"
-        "    \"mul\": input[0] * input[1]\n"
-        "    \"div\": input[0] / input[1]\n"
-        "    \"min\": min(input[0], input[1])\n"
-        "    \"max\": max(input[0], input[1])\n"
-        "What is broadcasting?\n\n"
-        "When operating on two arrays, we compare their shapes element-wise. \n"
-        "It starts with the trailing dimensions, and works its way forward.\n\n"
-        "Two dimensions are compatible when:\n\n"
-        "1. they are equal, or\n"
-        "2. one of them is 1\n"
-        "If these conditions are not met, a mismatch would be thrown, \n"
-        "indicating that the arrays have incompatible shapes. \n"
-        "The size of the resulting array is the maximum size \n"
-        "along each dimension of the input arrays.\n"
-        "For example,\n\n"
-        "(1). bias_add, which is a channel-wise operation:\n\n"
-        "    input[0] (4d tensor): 1 x 112 x 112 x 64\n"
-        "    input[1] (1d tensor):                 64\n"
-        "    result   (4d tensor): 1 x 112 x 112 x 64\n"
-        "(2). element-wise add, which is an element-wise operation:\n\n"
-        "    input[0] (3d tensor): 32 x 32 x 10\n"
-        "    input[1] (3d tensor): 32 x 32 x 10\n"
-        "    result   (3d tensor): 32 x 32 x 10\n"
-        "(3). more examples:\n\n"
-        "    input[0] (4d tensor): 1 x 32 x 32 x 10\n"
-        "    input[1] (3d tensor):     32 x  1 x  1\n"
-        "    result   (4d tensor): 1 x 32 x 32 x 10\n"
-        "(4). mismatched examples:\n\n"
-        "    input[0] (4d tensor): 1 x 32 x 32 x 10\n"
-        "    input[1] (3d tensor):      1 x 32 x  2\n"
-        "    result              :         mismatch\n");
+    op_def.add_input_arg(input)
+        .set_annotation(
+            "We support broadcasting operations:\n\n"
+            "    \"add\": input[0] + input[1]\n"
+            "    \"sub\": input[0] - input[1]\n"
+            "    \"mul\": input[0] * input[1]\n"
+            "    \"div\": input[0] / input[1]\n"
+            "    \"min\": min(input[0], input[1])\n"
+            "    \"max\": max(input[0], input[1])\n"
+            "What is broadcasting?\n\n"
+            "When operating on two arrays, we compare their shapes "
+            "element-wise. \n"
+            "It starts with the trailing dimensions, and works its way "
+            "forward.\n\n"
+            "Two dimensions are compatible when:\n\n"
+            "1. they are equal, or\n"
+            "2. one of them is 1\n"
+            "If these conditions are not met, a mismatch would be thrown, \n"
+            "indicating that the arrays have incompatible shapes. \n"
+            "The size of the resulting array is the maximum size \n"
+            "along each dimension of the input arrays.\n"
+            "For example,\n\n"
+            "(1). bias_add, which is a channel-wise operation:\n\n"
+            "    input[0] (4d tensor): 1 x 112 x 112 x 64\n"
+            "    input[1] (1d tensor):                 64\n"
+            "    result   (4d tensor): 1 x 112 x 112 x 64\n"
+            "(2). element-wise add, which is an element-wise operation:\n\n"
+            "    input[0] (3d tensor): 32 x 32 x 10\n"
+            "    input[1] (3d tensor): 32 x 32 x 10\n"
+            "    result   (3d tensor): 32 x 32 x 10\n"
+            "(3). more examples:\n\n"
+            "    input[0] (4d tensor): 1 x 32 x 32 x 10\n"
+            "    input[1] (3d tensor):     32 x  1 x  1\n"
+            "    result   (4d tensor): 1 x 32 x 32 x 10\n"
+            "(4). mismatched examples:\n\n"
+            "    input[0] (4d tensor): 1 x 32 x 32 x 10\n"
+            "    input[1] (3d tensor):      1 x 32 x  2\n"
+            "    result              :         mismatch\n")
+        .add_constraint([](xir::Op* op) {
+          UNI_LOG_CHECK(op->get_input_num() > 1, XIR_INVALID_ARG_OCCUR)
+              << op->to_string() << " only has " << op->get_input_num()
+              << " input arguments, but it requires at least 2 inputs.";
+        });
   };
 }
 
@@ -1509,10 +1517,16 @@ auto eltwise_fix =
             "The feature maps, can be x-dimension. "
             "eltwise-fix operator implements element-wise add."})
         .add_attr(xir::AttrDefBuilder<std::string>::build(
-            "nonlinear", AttrDef::REQUIRED,
+            "nonlinear", AttrDef::OPTIONAL,
             "`Datatype`: `string`\n\n"
             "nonlinear type, \"NONE\", \"RELU\", \"PRELU\", "
-            "\"LEAKYRELU\",\"RELU6\"."))
+            "\"LEAKYRELU\",\"RELU6\". Default is \"NONE\"",
+            "NONE"))
+        .add_attr(xir::AttrDefBuilder<std::string>::build(
+            "type", AttrDef::OPTIONAL,
+            "`Datatype`: `string`\n\n"
+            "eltwise type, \"ADD\", \"MUL\". Default is \"ADD\"",
+            "ADD"))
         .set_shape_infer(xir::shape_infer_eltwise_fix);
 
 XIR_REGISTER_BUILT_IN_OP(eltwise_fix);
