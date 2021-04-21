@@ -7,49 +7,6 @@
 
 # Release Notes
 
-## April 2021 Patch
-### New Features/Highlights
-- Fixed a compiler bug about "[XIR_REMOVE_OP_FAIL][Failed to remove an op!]"
-- Updated target description to support pool kernel=1 in DPUCZDX8G
-- Updated parser to support integrated activation in tf2 dense
-- Updated parser to fix a bug when using fine-tuned tf2 model
-- Removed some unnecessary assertions in parser to support unquantized leakyrelu
-- Updated parser to support customized tf2 UpsampleLike operator
-- Updated compiler to support depth-wise engine in DPUCVDX8G
-- Updated XIR to raise compilation warnings for using legacy APIs other than runtime warnings
-
-### New Packages
-- [unilog-1.3.2-h7b12538_35.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=unilog-1.3.2-h7b12538_35.tar.bz2)
-- [target_factory-1.3.2-hf484d3e_35.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=target_factory-1.3.2-hf484d3e_35.tar.bz2) 
-- [xir-1.3.2-py36h7b12538_47.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xir-1.3.2-py36h7b12538_47.tar.bz2)
-- [xir-1.3.2-py37h7b12538_47.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xir-1.3.2-py37h7b12538_47.tar.bz2)
-- [xcompiler-1.3.2-py36h7b12538_53.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xcompiler-1.3.2-py36h7b12538_53.tar.bz2)
-- [xcompiler-1.3.2-py37h7b12538_53.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xcompiler-1.3.2-py37h7b12538_53.tar.bz2)
-- [xnnc-1.3.2-py36_48.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xnnc-1.3.2-py36_48.tar.bz2)
-- [xnnc-1.3.2-py37_48.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xnnc-1.3.2-py37_48.tar.bz2)
-
-## Installation
-Download the packages from the link above. 
-```
-sudo env PATH=/opt/vitis_ai/conda/bin:$PATH CONDA_PREFIX=/opt/vitis_ai/conda/envs/YOUR_ENV_NAME conda install PATCH_PACKAGE.tar.bz2
-```
-You can install the packages with the command above. Make sure you install them in the order of unilog, target_factory, xir, xcompiler, xnnc, and use the proper version according to the python version installed in your current conda env.
-
-## Release 1.3.2
-### New Features/Highlights
-1. Enable Ubuntu 20.04 on MPSoC (Vitis AI Runtime and Vitis AI Library)
-2. Added environment variable for Vitis AI Library’s model search path
-
-## Release 1.3.1
-### New Features/Highlights
-1. Update compiler to improve performance by 5% in average for most models
-2. Added zero copy support (new APIs in VART / Vitis AI Library)
-3. Added cross-layer equalization support in TensorFlow v1.15 
-4. Added WAA U50 TRD
-5. Updated U280 Pre-processing using Multi-preprocessing JPEG decode kernels
-6. Added DPUCADF8H support on AWS F1
-7. Bug fixes and improvements for v1.3
-
 ## Release 1.3
 ### New Features/Highlights
 1. Added support for Pytorch and Tensorflow 2.3 frameworks
@@ -315,6 +272,11 @@ You can install the packages with the command above. Make sure you install them 
   - Updated U50 XRT and shell to *Xilinx-u50-gen3x4-xdma-2-202010.1-2902115*
   - Updated docker launch instructions  
   - Updated TRD makefile instructions
+- v1.3.2
+  - Enable Ubuntu 20.04 on MPSoC (Vitis AI Runtime and Vitis AI Library)
+  - Added environment variable for Vitis AI Library’s model search path
+
+
 
 ------
 

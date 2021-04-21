@@ -16,7 +16,7 @@
 - [xir-1.3.2-py37h7b12538_47.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xir-1.3.2-py37h7b12538_47.tar.bz2)
 - [xcompiler-1.3.2-py36h7b12538_53.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xcompiler-1.3.2-py36h7b12538_53.tar.bz2)
 - [xcompiler-1.3.2-py37h7b12538_53.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xcompiler-1.3.2-py37h7b12538_53.tar.bz2)
-- [xnnc-1.3.2-py36_48.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xnnc-1.3.2-py36_48.tar.bz)
+- [xnnc-1.3.2-py36_48.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xnnc-1.3.2-py36_48.tar.bz2)
 - [xnnc-1.3.2-py37_48.tar.bz2](https://www.xilinx.com/bin/public/openDownload?filename=xnnc-1.3.2-py37_48.tar.bz2)
 
 ## Installation
