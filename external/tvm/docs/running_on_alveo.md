@@ -11,25 +11,33 @@ The Xilinx Deep Learning Processor Unit (DPU) is a configurable computation engi
 
 ## Resources
 You could find more information here:
-* Board Setup - Follow instruction in [Alveo Setup] repository to download and install DPUCADX8G on one of the supported Alveo board.
+* Board Setup - Follow the instructions in [Alveo Setup] repository to download and install DPUCADX8G on one of the supported Alveo boards.
 
 
 ## Executing a Compiled Model
 
-Prior to running a model on the board, you need to compile the model for your targeted evaluation board and transfer the compiled model on to the board. Please refer to the "compiling_a_model.md" guide for compiling a model using the TVM with Vitis AI flow.
+Prior to running a model on the board, you need to compile the model for your target evaluation board and transfer the compiled model (.so) on to the board. Please refer to the [Compiling a model](compiling_a_model.md) guide for compiling a model using the TVM with Vitis AI flow.
 
 The examples directory provides scripts for compiling and running models.
 
-Once you transfer the compile model, you could use the provided scripts to run the model on the board. If the TVM with Vitis AI support docker is setup on a machine that includes an Alveo board, the compiled model can be executed directly in the docker. Below we present an example of running the mxnet_resnet_18 model using the run_mxnet_resnet_18.py script. Ensure to source the proper XRT runtime path before running on the board.
+Once you transfer the compile model, you could use the provided scripts to run the model on the board. If the TVM with Vitis AI support docker is setup on a machine that includes an Alveo board, the compiled model can be executed directly in the docker. Below we present an example of running the mxnet_resnet_18 model using the run_mxnet_resnet_18.py script.
 
 
 ```sh
 # Inside docker
 $ conda activate vitis-ai-tensorflow
-$ python3 run_mxnet_resent_18.py -f PATH_TO_COMPILED_MODEL
+$ python3 run_mxnet_resnet_18.py -f "PATH_TO_COMPILED_TVM_MODEL (.so)"
 ```
 
-This script runs the model mxnet_resnet_18 model compiled using the TVM with Vitis AI flow on an image and produce the classification result.
+This script runs the model mxnet_resnet_18 model compiled using the TVM with Vitis AI flow on an image and produces the classification result.
+
+Following table shows all possible script flags:
+
+| Flag         | Description                                              | Default   |
+| -------------|----------------------------------------------------------| ----------|
+| -f           | Path to the exported TVM compiled model (tvm_dpu_cpu.so in the example)|           |
+| --iterations | The number of iterations that the model will be executed | 1         |
+
 
 
 

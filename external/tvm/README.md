@@ -2,7 +2,7 @@
 
 Apache TVM is a versatile framework that integrates the high-performance computing power of Xilinx Vitis-AI DPUs with the flexibility of the TVM framework to accelerate models from many different training frameworks supported by TVM in a matter that is seamless to the end-user. 
 
-The current Vitis-AI Byoc flow inside TVM enables acceleration of Neural Network model inference on edge and cloud. The identifiers for the supported edge and cloud Deep Learning Processor Units (DPU's) are DPUCZDX8G respectively DPUCADX8G. DPUCZDX8G and DPUCADX8G are hardware accelerators for convolutional neural networks (CNN's) deployed on the Xilinx [Zyq Ultrascale+ MPSoc] [Alveo] (U200/U250) platforms, respectively.
+The current Vitis-AI Byoc flow inside TVM enables acceleration of Neural Network model inference on edge and cloud. The identifiers for the supported edge and cloud Deep Learning Processor Units (DPU's) are DPUCZDX8G respectively DPUCADX8G. DPUCZDX8G and DPUCADX8G are hardware accelerators for convolutional neural networks (CNN's) deployed on the Xilinx [Zynq Ultrascale+ MPSoc] and [Alveo] (U200/U250) platforms, respectively.
 
 In this repository you will find information on how to build TVM with Vitis-AI and on how to get started with an example.
 
@@ -12,10 +12,6 @@ Apache TVM with Vitis-AI uses a number of projects as follows:
 * [Apache TVM] - An end-to-end deep learning compiler stack
 * [Xilinx Vitis AI] - Xilinx development platform for AI inference
 * [DPU] :  Xilinx Deep Learning Processor Unit (DPU)
-* [Pynq-DPU] - DPU overlay for Pynq to run models compiled using TVM-Vitis flow on edge devices
-
-
-
 
 
 ## System Requirements
@@ -54,7 +50,7 @@ The TVM with Vitis AI flow currently supports the [Zyq Ultrascale+ MPSoc] device
 
 | Target Board  | TVM Identifier|
 |:-:|:-:|
-| [Ulra96]  | DPUCZDX8G-ultra96 |
+| [Ultra96]  | DPUCZDX8G-ultra96 |
 | [ZCU104]  | DPUCZDX8G-zcu104  |
 | [ZCU102]  | DPUCZDX8G-zcu102  |
 
@@ -65,7 +61,7 @@ This section provide the instructions for setting up the TVM with Vitis-AI flow 
 The following command will create the TVM with Vitis-AI image on the host machine
 
 ```sh
-$ bash ./build.sh ci_vai_1x bash
+$ ./build.sh ci_vai_1x bash
 ```
 This command downloads the latest Apache TVM repository, installs the necessary dependencies, and builds it with Vitis-AI support.
 
@@ -73,7 +69,7 @@ This command downloads the latest Apache TVM repository, installs the necessary 
 
 Once finished builiding the container, run the docker image using the run script.
 ```sh
-$ bash ./bash.sh tvm.ci_vai_1x
+$ ./docker_run.sh tvm.ci_vai_1x
 # ...
 # Now inside docker...
 $ conda activate vitis-ai-tensorflow
@@ -81,14 +77,15 @@ $ conda activate vitis-ai-tensorflow
 The installation may be verified inside the docker image by importing the following packages in python3. Be sure to import pyxir before importing the TVM package.
 
 ```sh
-$ python3
-$ import pyxir
-$ import tvm
+$ python3 -c "import pyxir; import tvm"
 ```
-The provided docker image can be used to compile models for the cloud and for the edge targets. 
+The provided docker image can be used to compile models for the cloud and for the edge targets.
 
+## Next steps
 
-Examples and documentations of compiling and running models using Apache TVM with Vitis AI support are provided in the "examples" and "docs" directories. Once inside the docker container, you could copy the examples directory from "/workspace/examples/" into the home directory and run the examples.
+* [Compiling a model](./docs/compiling_a_model.md)
+* [Running on Alveo](./docs/running_on_alveo.md)
+* [Running on Zynq](./docs/running_on_zynq.md)
 
 For more details on how to compile and run models using TVM with the Vitis-AI, you could refer to [Vitis-AI Integration].
 
@@ -100,9 +97,9 @@ For more details on how to compile and run models using TVM with the Vitis-AI, y
    [DPU]: https://www.xilinx.com/products/intellectual-property/dpu.html
    [Pynq-DPU]: https://github.com/Xilinx/DPU-PYNQ 
    [ZCU104]: https://www.xilinx.com/products/boards-and-kits/zcu104.html
-   [Ulra96]: https://www.xilinx.com/products/boards-and-kits/1-vad4rl.html
+   [Ultra96]: https://www.xilinx.com/products/boards-and-kits/1-vad4rl.html
    [ZCU102]: https://www.xilinx.com/products/boards-and-kits/ek-u1-zcu102-g.html
    [Alveo]: https://www.xilinx.com/products/boards-and-kits/alveo.html
    [Alveo Setup]: https://github.com/Xilinx/Vitis-AI/tree/master/alveo
    [Vitis-AI Integration]: https://github.com/apache/incubator-tvm/blob/main/docs/deploy/vitis_ai.rst
-   [Zyq Ultrascale+ MPSoc]: https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html
+   [Zynq Ultrascale+ MPSoc]: https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html

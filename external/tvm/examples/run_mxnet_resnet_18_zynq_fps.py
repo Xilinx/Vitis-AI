@@ -22,11 +22,12 @@ Run TVM model with Xilinx Vitis AI acceleration
 This example shows how to run MxNet ResNet 18 model
 built with TVM for Vitis AI acceleration
 """
-
 import os
+import time
 import argparse
 import numpy as np
-import time
+import threading
+import multiprocessing as mp
 
 import pyxir
 import tvm
@@ -67,50 +68,60 @@ def transform_image(image):
 
 
 def softmax(x):        
-    x_exp = np.exp(x - np.max(x))
-    return x_exp / x_exp.sum()
+        x_exp = np.exp(x - np.max(x))
+        return x_exp / x_exp.sum()
 
 
 ###########################################################
-# Main function
+# Main and run functions
 ###########################################################
 
-def run(file_path, shape_dict, iterations):
-    # DOWNLOAD IMAGE FOR TEST
+def run(mod, nb_images, inputs):
+    for _ in range(nb_images):
+        for name, data in inputs.items():
+            mod.set_input(name, data)
+        mod.run()
+
+
+def main(lib_path, shape_dict, threadnum, iterations, nb_tvm_threads=None):
+    # Load image and do preprocessing
     img_shape = shape_dict[list(shape_dict.keys())[0]][2:]
     image = Image.open(img_path).resize(img_shape)
-    
-    # IMAGE PRE-PROCESSING
     image = transform_image(image)
-    
-    # RUN #
     inputs = {}
     inputs[list(shape_dict.keys())[0]] = image
+    
+    # Tune number of TVM CPU threads being used to get best performance.
+    # Setting this to 0 uses all available threads.
+    config_threadpool = tvm.get_global_func("runtime.config_threadpool")
+    if nb_tvm_threads is not None:
+        config_threadpool(1, nb_tvm_threads)
 
-    # load the pre-compiled module into memory
-    lib = tvm.runtime.load_module(file_path)
-    module = graph_executor.GraphModule(lib["default"](tvm.cpu()))
-    module.set_input(**inputs)
+    # Create TVM runtime modules
+    mods = []
+    for i in range(threadnum):
+        lib = tvm.runtime.module.load_module(lib_path)
+        mod = graph_executor.GraphModule(lib["default"](tvm.cpu()))
+        mods.append(mod)
+    
+    threads = []
+    time_start = time.time()
+    for i in range(threadnum):
+        t = mp.Process(target=run, args=(mods[i], iterations, inputs))
+        threads.append(t)
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
 
-    # VAI FLOW
-    for i in range(iterations):
-        start = time.time()
-        module.run()
-        stop = time.time()
-        res = [module.get_output(idx).asnumpy()
-               for idx in range(module.get_num_outputs())]
-        
-        inference_time = np.round((stop - start) * 1000, 2)
-        
-        res = softmax(res[0])
-        top1 = np.argmax(res)
-        print('========================================')
-        print('TVM prediction top-1:', top1, synset[top1])
-        print('========================================')
-        
-        print('========================================')
-        print('Inference time: ' + str(inference_time) + " ms")
-        print('========================================')
+    time_end = time.time()
+    total = iterations * threadnum
+    time_total = time_end - time_start
+    print("Total", total, "Time", time_total)
+    fps = float(total / time_total)
+    print("%.2f FPS" % fps)
+
+    del mods
         
 
 ###############################################################################
@@ -124,10 +135,13 @@ def run(file_path, shape_dict, iterations):
 #
 # Parameter settings for the run script:
 # -f           : Path to the exported TVM compiled model (tvm_dpu_cpu.so in the example)
+# -t           : Number of threads to use
 # --iterations : The number of iterations to run the model
+# --nb_tvm_threads : The number of CPU threads being used by TVM. You might have to limit this number
+#                      to get best performance.
 #
 # example:
-# ./run_mxnet_resnet_18.py -f /PATH_TO_DIR --iterations 1
+# ./run_mxnet_resnet_18_fps.py -f /PATH_TO_DIR -t 500 --iterations 1
 
 ##############################################################################
  
@@ -135,9 +149,13 @@ def run(file_path, shape_dict, iterations):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", help="Path to TVM library file (.so)", default=FILE_DIR)
-    parser.add_argument("--iterations", help="The number of iterations to run.", default=1, type=int)
+    parser.add_argument("-t", help="Number of threads", default=1, type=int)
+    parser.add_argument("--iterations", help="The number of iterations to run.", default=1000, type=int)
+    parser.add_argument("--nb_tvm_threads", help="The number of CPU threads being used by TVM.", default=None, type=int)
     args = parser.parse_args()
-    file_path = args.f if os.path.isabs(args.f) else os.path.join(os.getcwd(), args.f)
+    lib_path = args.f if os.path.isabs(args.f) else os.path.join(os.getcwd(), args.f)
+    threadnum = args.t
     iterations = args.iterations
+    nb_tvm_threads = args.nb_tvm_threads
     shape_dict = {'data': [1, 3, 224, 224]}
-    run(file_path, shape_dict, iterations)
+    main(lib_path, shape_dict, threadnum, iterations, nb_tvm_threads)
