@@ -159,7 +159,8 @@ void TopK(const float* d, int size, int k, vector<string>& vkinds) {
  *
  * @return none
  */
-void runInception(vart::Runner* runner, const string imagePath) {
+void runInception(vart::Runner* runner_ori, const string imagePath) {
+  vart::RunnerExt * runner = (vart::RunnerExt *) runner_ori;
   vector<string> kinds, images;
   string baseImagePath = imagePath.back() == '/' ? imagePath : imagePath + '/';
 
@@ -204,8 +205,18 @@ void runInception(vart::Runner* runner, const string imagePath) {
 
   float* softmax = new float[outSize];
   float* FCResult = new float[batchSize * outSize];
-  std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
-  std::vector<std::shared_ptr<xir::Tensor>> batchTensors;
+
+  std::vector<vart::TensorBuffer*> inputsPtr = runner->get_inputs();
+  std::vector<vart::TensorBuffer*> outputsPtr = runner->get_outputs();
+  auto scale_in = pow(2,(*inputsPtr.begin())->get_tensor()->get_attr<std::int32_t>("fix_point"));
+  auto scale_out = pow(2,(-1)*(*outputsPtr.begin())->get_tensor()->get_attr<std::int32_t>("fix_point"));
+
+  auto size_src = inSize * batchSize;
+  auto size_dst = outSize * batchSize;
+
+  void* std_data_in = (void*) inputsPtr[0]->data().first;
+  void* std_data_out = (void*) outputsPtr[0]->data().first;
+
   /*run with batch*/
   for (unsigned int n = 0; n < images.size(); n += batchSize) {
     unsigned int runSize =
@@ -230,27 +241,21 @@ void runInception(vart::Runner* runner, const string imagePath) {
       imageList.push_back(image);
     }
 
-    /* in/out tensor refactory for batch inout/output */
-    batchTensors.push_back(std::shared_ptr<xir::Tensor>(xir::Tensor::create(
-        inputTensors[0]->get_name(), in_dims,
-        xir::DataType{xir::DataType::FLOAT, sizeof(float) * 8u})));
-    inputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
-        imageInputs, batchTensors.back().get()));
-    batchTensors.push_back(std::shared_ptr<xir::Tensor>(xir::Tensor::create(
-        outputTensors[0]->get_name(), out_dims,
-        xir::DataType{xir::DataType::FLOAT, sizeof(float) * 8u})));
-    outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
-        FCResult, batchTensors.back().get()));
-
-    /*tensor buffer input/output */
-    inputsPtr.clear();
-    outputsPtr.clear();
-    inputsPtr.push_back(inputs[0].get());
-    outputsPtr.push_back(outputs[0].get());
+    for (int i=0;i < size_src; i++)
+    {
+        int8_t fix = (int8_t) (imageInputs[i] * scale_in);
+        *(int8_t *)((long long) std_data_in+i) = fix;
+    }
 
     /*run*/
     auto job_id = runner->execute_async(inputsPtr, outputsPtr);
     runner->wait(job_id.first, -1);
+
+    for (int i=0;i < size_dst; i++)
+    {
+        int8_t fix = (*(int8_t *)((long long) std_data_out+i));
+        FCResult[i] = ((float) fix) * scale_out;
+    }
 
     for (unsigned int i = 0; i < runSize; i++) {
       cout << "\nImage : " << images[n + i] << endl;
@@ -262,8 +267,6 @@ void runInception(vart::Runner* runner, const string imagePath) {
       //cv::waitKey(10000);
     }
     imageList.clear();
-    inputs.clear();
-    outputs.clear();
   }
   delete[] FCResult;
   delete[] imageInputs;
