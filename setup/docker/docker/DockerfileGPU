@@ -267,7 +267,7 @@ RUN cd /tmp/ \
     && wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_1.3.1-r67_amd64.deb \
     && wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis_ai_library_1.3.1-r69_amd64.deb \
     && wget -O libbutler-base.deb https://www.xilinx.com/bin/public/openDownload?filename=libbutler-base_1.3.0_amd64.deb \
-    && wget -O librt-engine.deb https://www.xilinx.com/bin/public/openDownload?filename=librt-engine_1.3.0-r106_amd64.deb \
+    && wget -O librt-engine.deb https://www.xilinx.com/bin/public/openDownload?filename=librt-engine_1.3.0-r130_amd64.deb \
     && wget -O aks.deb https://www.xilinx.com/bin/public/openDownload?filename=aks_1.3.0-r43_amd64.deb \
     && apt-get install -y --no-install-recommends /tmp/*.deb \
     && rm -rf /tmp/* \
