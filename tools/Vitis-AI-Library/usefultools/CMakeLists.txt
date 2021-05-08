@@ -83,7 +83,10 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
     set(MODULE_NAME tools_extra_ops)
     if(CMAKE_CROSSCOMPILING)
       find_package(Python3 REQUIRED COMPONENTS Development)
-      find_path(_PYBIND11_PATH pybind11 HINTS /usr/include/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}m)
+      find_path(_PYBIND11_PATH pybind11 
+	    HINTS 
+	    /usr/include/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}m
+	    /usr/include/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR})
       message("_PYBIND11_PATH is ${_PYBIND11_PATH}")
       if(NOT _PYBIND11_PATH)
         message(WARNING "PYBIND11 NOT FOUND. python extenions for vitis dpu runner will not be built.")
@@ -91,11 +94,11 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
         get_filename_component(PYBIND11_PATH ${_PYBIND11_PATH} DIRECTORY)
         add_library(${MODULE_NAME} SHARED ${XDPUTIL_SRC} src/tools_extra_ops.cpp )
         set_target_properties(${MODULE_NAME} PROPERTIES
-          INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR};${CMAKE_CURRENT_SOURCE_DIR}/include;${_PYBIND11_PATH};${CMAKE_SYSROOT}/usr/include/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}m"
+          INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR};${CMAKE_CURRENT_SOURCE_DIR}/include;${_PYBIND11_PATH};${Python3_INCLUDE_DIRS}"
           COMPILE_DEFINITIONS "MODULE_NAME=${MODULE_NAME}"
           PREFIX ""
           LIBRARY_OUTPUT_NAME "${MODULE_NAME}")
-        target_link_libraries(${MODULE_NAME} PRIVATE -lpython${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}m ${COMPONENT_NAME})
+        target_link_libraries(${MODULE_NAME} PRIVATE ${Python3_LIBRARIES} ${COMPONENT_NAME})
         target_link_libraries(${MODULE_NAME} PRIVATE glog::glog protobuf::libprotobuf xir::xir crypto dl vart::buffer-object vart::dpu-runner vart::util vart::mem-manager target-factory::target-factory)
         if(XRT_FOUND)
           target_link_libraries (${MODULE_NAME} PRIVATE XRT::XRT vart::xrt-device-handle )
