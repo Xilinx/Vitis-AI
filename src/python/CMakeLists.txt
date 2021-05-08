@@ -21,8 +21,12 @@ set(PYTHON_BUILD_PATH ${CMAKE_BINARY_DIR}/python)
 set(MODULE_SRCS wrapper/wrapper.cpp wrapper/pyxir_error_code.cpp)
 
 if(CMAKE_CROSSCOMPILING)
+  find_package(Python3 REQUIRED COMPONENTS Development)
   ## pybind11 does not support cross compiling very well
-  find_path(_PYBIND11_PATH pybind11 HINTS /usr/include/python3.7m)
+  find_path(_PYBIND11_PATH pybind11 
+	  HINTS 
+	  /usr/include/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}m
+	  /usr/include/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR})
   message("_PYBIND11_PATH is ${_PYBIND11_PATH}")
   if(NOT _PYBIND11_PATH)
     message(WARNING "PYBIND11 NOT FOUND. python extenions for vitis dpu runner will not be built.")
@@ -31,13 +35,12 @@ if(CMAKE_CROSSCOMPILING)
     get_filename_component(PYBIND11_PATH ${_PYBIND11_PATH} DIRECTORY)
     add_library(${TARGET_NAME} SHARED ${MODULE_SRCS})
     set_target_properties(${TARGET_NAME} PROPERTIES
-      INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include;${_PYBIND11_PATH};${CMAKE_SYSROOT}/usr/\
-include/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}m;${CMAKE_SOURCE_DIR}/include;${CMAKE_SOURCE_DIR}/src"
+      INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include;${_PYBIND11_PATH};${Python3_INCLUDE_DIRS};${CMAKE_SOURCE_DIR}/include;${CMAKE_SOURCE_DIR}/src"
       COMPILE_DEFINITIONS "MODULE_NAME=${MODULE_NAME}"
       PREFIX ""
       LIBRARY_OUTPUT_NAME ${MODULE_NAME})
     target_link_libraries(${TARGET_NAME} PRIVATE
-      -lpython${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}m
+      ${Python3_LIBRARIES}
       ${PROJECT_NAME})
     set(PYTHON_SITE_PACKAGES_USER "lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
     set(PYTHON_SITE_PACKAGES "lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
