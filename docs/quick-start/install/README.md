@@ -10,7 +10,7 @@
 Two options are available for installing the containers with the Vitis AI tools and resources.
 
  - Pre-built containers on Docker Hub: [xilinx/vitis-ai](https://hub.docker.com/r/xilinx/vitis-ai/tags)
- - Build containers locally with Docker recipes: [Docker Recipes](https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/setup/docker)
+ - Build containers locally with Docker recipes: [Docker Recipes](https://github.com/xilinx/vitis-ai/setup/docker)
 
  - [Install Docker](install_docker/README.md) - if Docker not installed on your machine yet
 
