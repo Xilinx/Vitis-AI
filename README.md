@@ -78,8 +78,7 @@ There are two types of docker recipes provided - CPU recipe and GPU recipe. If y
 
 Use below commands to build the CPU docker:
 ```
-cd setup/docker
-./docker_build_cpu.sh
+./setup/docker/docker_build_cpu.sh
 ```
 To run the CPU docker, use command:
 ```
@@ -89,8 +88,7 @@ To run the CPU docker, use command:
 
 Use below commands to build the GPU docker:
 ```
-cd setup/docker
-./docker_build_gpu.sh
+./setup/docker/docker_build_gpu.sh
 ```
 To run the GPU docker, use command:
 ```
