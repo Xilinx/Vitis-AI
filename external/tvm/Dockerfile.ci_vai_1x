@@ -32,7 +32,7 @@ RUN mkdir "${TVM_HOME}"
 RUN mkdir "${PYXIR_HOME}"
 
 RUN git clone --recursive --single-branch https://github.com/apache/tvm.git "${TVM_HOME}" && \
-    cd "${TVM_HOME}" && git checkout ${TVM_COMMIT}
+    cd "${TVM_HOME}" && git checkout ${TVM_COMMIT} && git submodule update --init --recursive
 
 RUN apt-get update --fix-missing
 RUN apt-get -y install gpg-agent
@@ -61,8 +61,8 @@ RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_vitis_ai_core.sh
 # Install dependencies inside vitis-ai-tensorflow conda
 RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
     conda activate vitis-ai-tensorflow && \
-    pip install --no-cache-dir antlr4-python3-runtime && \
-    pip install mxnet==1.6.0 image cffi h5py==2.10.0 && \
+    pip install --no-cache-dir antlr4-python3-runtime==4.9.2 && \
+    pip install mxnet==1.6.0 image==1.5.33 cffi==1.14.5 h5py==2.10.0 && \
     bash "${TVM_HOME}"/docker/install/ubuntu_install_python_package.sh
 
 # BUILD PYXIR
