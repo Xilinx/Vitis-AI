@@ -7,6 +7,16 @@
 
 # Release Notes
 
+## Release 1.3.1
+### New Features/Highlights
+1. Update compiler to improve performance by 5% in average for most models
+2. Added zero copy support (new APIs in VART / Vitis AI Library)
+3. Added cross-layer equalization support in TensorFlow v1.15 
+4. Added WAA U50 TRD
+5. Updated U280 Pre-processing using Multi-preprocessing JPEG decode kernels
+6. Added DPUCADF8H support on AWS F1
+7. Bug fixes and improvements for v1.3
+
 ## Release 1.3
 ### New Features/Highlights
 1. Added support for Pytorch and Tensorflow 2.3 frameworks
