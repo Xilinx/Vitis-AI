@@ -18,6 +18,7 @@ project(unilog VERSION 1.3.2 LANGUAGES C CXX)
 include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(BUILD_TEST "build test" OFF)
+option(BUILD_STATIC_LIBS "Build static libraries" OFF)
 
 find_package(glog QUIET)
 if(NOT glog_FOUND)
