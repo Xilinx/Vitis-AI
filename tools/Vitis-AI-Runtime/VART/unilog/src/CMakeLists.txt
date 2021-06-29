@@ -14,7 +14,12 @@
 
 aux_source_directory(. LOG_SRC_LIST)
 
-add_library(${PROJECT_NAME} SHARED ${LOG_SRC_LIST})
+if (NOT BUILD_STATIC_LIBS)                                                                          
+  add_library(${PROJECT_NAME} SHARED ${LOG_SRC_LIST})
+else (NOT BUILD_STATIC_LIBS)                                                                        
+  add_library(${PROJECT_NAME} STATIC ${LOG_SRC_LIST})
+endif (NOT BUILD_STATIC_LIBS) 
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}")
