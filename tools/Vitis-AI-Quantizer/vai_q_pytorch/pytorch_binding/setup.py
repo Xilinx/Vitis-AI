@@ -27,7 +27,7 @@ build_update_message = """
     $ python setup.py develop
   To make a wheel package:
     $ python setup.py sdist bdist_wheel -d $YOUR_TARGET
-  
+
 """
 
 
@@ -43,13 +43,13 @@ class develop(setuptools.command.develop.develop):
 
 def check_env_args():
   global INSTALL, DEVELOP, BDIST, EMIT_WARNING, CUDA_AVAILABLE
-  #if torch.cuda.is_available() and "CUDA_HOME" in os.environ: 
-  if "CUDA_HOME" in os.environ: 
+  #if torch.cuda.is_available() and "CUDA_HOME" in os.environ:
+  if "CUDA_HOME" in os.environ:
     CUDA_AVAILABLE = True
     #MACROS += [("WITH_CUDA", None)]
   else:
     CUDA_AVAILABLE = False
-    print("CUDA is not available, or CUDA_HOME not found in the environment " 
+    print("CUDA is not available, or CUDA_HOME not found in the environment "
           "so building without GPU support.")
     '''
     print("CUDA_HOME not found in the environment so building "
@@ -57,7 +57,7 @@ def check_env_args():
           "please define the CUDA_HOME environment variable. "
           "This should be a path which contains include/cuda.h")
     '''
-    
+
   if "install" in sys.argv:
     INSTALL = True
   elif "develop" in sys.argv:
@@ -88,8 +88,8 @@ def clean_install_info():
           shutil.rmtree(dir_name)
   except Exception:
     print("failed to do the cleaning, please clean up manully")
-  
-    
+
+
 def build_config_setup():
   global INSTALL, DEVELOP, BDIST, CUDA_AVAILABLE
   install_packages = ["nndct_shared"]
@@ -103,7 +103,7 @@ def build_config_setup():
         os.symlink(f"../{package}", package)
     else:
       os.symlink(f"../{package}", package)
-      
+
   if INSTALL:
     if not os.path.exists("pytorch_nndct/nn/kernel"):
       os.mkdir("pytorch_nndct/nn/kernel")
@@ -111,52 +111,52 @@ def build_config_setup():
         cwd = os.path.dirname(os.path.realpath(__file__))
         nn_path = os.path.join(cwd, "pytorch_nndct/nn")
         f.write(f"NN_PATH='{nn_path}'")
-  
+
   install_requires = []
   if not DEVELOP:
     install_requires += ["sklearn",
                          "scipy==1.3.1",
                          "numpy==1.17.2",
                          "tqdm",
-                         "ninja"] 
+                         "ninja"]
   extensions = []
   if not BDIST:
     cmdclass = {"install": install,
                 "develop": develop
                 }
-  
+
   else:
     cmdclass = {"build_ext": BuildExtension}
-    extra_compile_args = {'cxx': ['-std=c++11', '-fPIC']}
+    extra_compile_args = {'cxx': ['-std=c++14', '-fPIC']}
     cwd = os.path.dirname(os.path.realpath(__file__))
     cpu_src_path = os.path.join(cwd, "../csrc/cpu")
-    
+
     source_files = []
     for name in os.listdir(cpu_src_path):
       if name.split(".")[-1] in ["cpp", "cc", "c"]:
         source_files.append(os.path.join(cpu_src_path, name))
-    
+
 
     include_dir = [
         os.path.join(cwd, "../include/cpu"),
         os.path.join(cwd, "pytorch_nndct/nn/include")
     ]
     Extension = CppExtension
-    
+
     if CUDA_AVAILABLE:
       extra_compile_args['nvcc'] = ['-O2','-arch=sm_35']
       cuda_src_path = os.path.join(cwd, "../csrc/cuda")
       for name in os.listdir(cuda_src_path):
         if name.split(".")[-1] in ["cu", "cpp", "cc", "c"]:
           source_files.append(os.path.join(cuda_src_path, name))
-      
+
       cpp_src_path = os.path.join(cwd, "pytorch_nndct/nn/src/cuda")
       for name in os.listdir(cpp_src_path):
         if name.split(".")[-1] in ["cpp", "cc", "c"]:
           source_files.append(os.path.join(cpp_src_path, name))
-      
+
       include_dir.append(os.path.join(cwd, "../include/cuda"))
-      
+
       from torch.utils.cpp_extension import CUDAExtension
       Extension = CUDAExtension
     else:
@@ -164,21 +164,21 @@ def build_config_setup():
       for name in os.listdir(cpp_src_path):
         if name.split(".")[-1] in ["cpp", "cc", "c"]:
           source_files.append(os.path.join(cpp_src_path, name))
-      
-    ext_module = Extension(name='pytorch_nndct.nn._kernels', 
+
+    kernel_ext = Extension(name='pytorch_nndct.nn._kernels',
                            language='c++',
                            sources=source_files,
                            include_dirs=include_dir,
                            extra_compile_args=extra_compile_args)
-    extensions.append(ext_module)
-  
+    extensions.append(kernel_ext)
+
   return extensions, cmdclass, install_requires
 
 
 def get_version():
   global version
   sha = "Unknown"
-  try: 
+  try:
     sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=cwd).decode("ascii").strip()
   except Exception:
     pass
@@ -195,10 +195,10 @@ if __name__ == '__main__':
     is_valid_args = dist.parse_command_line()
   except DistutilsArgError as msg:
     raise SystemExit(f"{core.gen_usage(dist.script_name)}\nerror:{msg}")
-  
+
   if not is_valid_args:
     sys.exit()
-    
+
   check_env_args()
   extensions, cmdclass, install_requires = build_config_setup()
   cwd = os.path.dirname(os.path.abspath(__file__))
@@ -207,10 +207,10 @@ if __name__ == '__main__':
   with open(version_path, "w") as f:
     f.write(f"__version__ = '{version}'\n")
     f.write(f"git_version = '{sha}'\n")
-  
+
   if BDIST:
     version += f"%torch{torch.__version__}"
-    
+
   setup(
       name=package_name,
       version=version,
@@ -225,10 +225,10 @@ if __name__ == '__main__':
       install_requires=install_requires,
       python_requires='>=3.6.8'
   )
-  
+
   if BDIST:
     print(f"Building wheel {package_name}--{version}")
-    
+
   clean_install_info()
   if EMIT_WARNING:
     print(80 * "#")

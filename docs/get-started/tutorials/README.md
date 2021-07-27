@@ -87,14 +87,14 @@ These tutorials illustrate end-to-end design concepts or workflows using Vitis A
 
  <tr>
   <td align="center">
-   <a href="https://xilinx.github.io/Vitis-Tutorials/master/docs/Machine_Learning/Design_Tutorials/08-tf2_flow/README.html">TensorFlow2 and Vitis AI design flow</a>
+   <a href="https://github.com/Xilinx/Vitis-Tutorials/blob/master/Machine_Learning/Design_Tutorials/08-tf2_flow/README.md">TensorFlow2 and Vitis AI design flow</a>
  </td>
  <td>Learn about the TF2 flow for Vitis AI. In this tutorial, you'll be trained on TF2, including conversion of a dataset into TFRecords, optimization with a plug-in, and compiling and execution on a Xilinx ZCU102 board or Xilinx Alveo U50 Data Center Accelerator card.</td>
  </tr>
 
  <tr>
   <td align="center">
-   <a href="https://xilinx.github.io/Vitis-Tutorials/master/docs/Machine_Learning/Design_Tutorials/09-mnist_pyt-master/README.html">PyTorch flow for Vitis AI</a>
+   <a href="https://github.com/Xilinx/Vitis-Tutorials/blob/master/Machine_Learning/Design_Tutorials/09-mnist_pyt-master/README.md">PyTorch flow for Vitis AI</a>
  </td>
  <td>Learn how to use by using PyTorch. You'll use a simple `get-you-started` example to get started, and then be trained on quantization with a plug-in, and then compiling and execution on a Xilinx ZCU102 board or Xilinx Alveo U50 Data Center Accelerator card.
 </td>
@@ -116,7 +116,7 @@ These tutorials illustrate end-to-end design concepts or workflows using Vitis A
  <td>Freeze a Keras model by generating a binary protobuf (.pb) file.</td>
  </tr>
   <tr>
- <td align="center"><a href="https://xilinx.github.io/Vitis-Tutorials/master/docs/Machine_Learning/Feature_Tutorials/02-profiling-example/README.html">Profiling a CNN Using DNNDK or VART with Vitis AI (UG1487)</a></td>
+ <td align="center"><a href="https://xilinx.github.io/Vitis-Tutorials/master/docs/Machine_Learning/Feature_Tutorials/02-profiling-example/README.html">Profiling a CNN Using VART with Vitis AI (UG1487)</a></td>
  <td>Profile a CNN application running on the ZCU102 target board with Vitis AI.</td>
  </tr>
   <tr>

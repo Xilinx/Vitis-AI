@@ -18,7 +18,6 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vector>
-#include <vitis/ai/configurable_dpu_task.hpp>
 #include <vitis/ai/retinaface.hpp>
 using std::tuple;
 using std::vector;
@@ -26,19 +25,24 @@ using std::vector;
 namespace vitis {
 namespace ai {
 
-class RetinaFaceImp : public vitis::ai::TConfigurableDpuTask<RetinaFace> {
+class RetinaFaceImp : public RetinaFace {
  public:
-  RetinaFaceImp(const std::string &model_name, bool need_preprocess);
-  RetinaFaceImp(const std::string &model_name, xir::Attrs *attrs, bool need_preprocess);
+  RetinaFaceImp(const std::string& model_name, bool need_preprocess);
+  RetinaFaceImp(const std::string& model_name, xir::Attrs* attrs,
+                bool need_preprocess);
 
   /// Destructor
   virtual ~RetinaFaceImp();
   /// Set an image and get positions, scores and landmarks of faces in the image
-  virtual RetinaFaceResult run(const cv::Mat &img) override;
+  virtual RetinaFaceResult run(const cv::Mat& img) override;
 
-  /// Set an image list and get positions,scores and landmarks of faces in the image
+  /// Set an image list and get positions,scores and landmarks of faces in the
+  /// image
   virtual std::vector<RetinaFaceResult> run(
-      const std::vector<cv::Mat> &img) override;
+      const std::vector<cv::Mat>& img) override;
+
+  virtual std::vector<RetinaFaceResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) override;
 
  private:
   std::unique_ptr<RetinaFacePostProcess> processor_;

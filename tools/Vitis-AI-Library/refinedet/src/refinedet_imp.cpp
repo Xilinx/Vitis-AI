@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#define ENABLE_NEON
 #include "./refinedet_imp.hpp"
 
 #include <opencv2/highgui.hpp>
@@ -65,9 +64,9 @@ RefineDetResult RefineDetImp::run(const cv::Mat& input_image) {
   __TIC__(DPREFINEDET_POST_ARM)
   RefineDetResult results;
   if (is_tf_) {
-    results = tfprocessor_->tfrefinedet_post_process(0);
+    results = tfprocessor_->tfrefinedet_post_process(1u)[0];
   } else {
-    results = processor_->refine_det_post_process(0);
+    results = processor_->refine_det_post_process(1u)[0];
   }
   __TOC__(DPREFINEDET_POST_ARM)
   return results;
@@ -100,9 +99,9 @@ std::vector<RefineDetResult> RefineDetImp::run(
   __TIC__(DPREFINEDET_POST_ARM)
   std::vector<RefineDetResult> results;
   if (is_tf_) {
-    results = tfprocessor_->tfrefinedet_post_process();
+    results = tfprocessor_->tfrefinedet_post_process(images.size());
   } else {
-    results = processor_->refine_det_post_process();
+    results = processor_->refine_det_post_process(images.size());
   }
   __TOC__(DPREFINEDET_POST_ARM)
   return results;
@@ -117,9 +116,9 @@ std::vector<RefineDetResult> RefineDetImp::run(
   __TIC__(DPREFINEDET_POST_ARM)
   std::vector<RefineDetResult> results;
   if (is_tf_) {
-    results = tfprocessor_->tfrefinedet_post_process();
+    results = tfprocessor_->tfrefinedet_post_process(input_bos.size());
   } else {
-    results = processor_->refine_det_post_process();
+    results = processor_->refine_det_post_process(input_bos.size());
   }
   __TOC__(DPREFINEDET_POST_ARM)
   return results;

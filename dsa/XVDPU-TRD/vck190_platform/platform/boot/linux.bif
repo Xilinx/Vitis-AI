@@ -1,0 +1,8 @@
+/* linux */
+the_ROM_image:
+{
+  { load=0x1000, file=<dtb,system.dtb> }
+  { core=a72-0, exception_level=el-3, trustzone, file=<atf,bl31.elf> }
+  { core=a72-0, exception_level=el-2, load=0x8000000, file=<uboot,u-boot.elf> }
+}
+

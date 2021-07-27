@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: FPN(ResNet18) segmentation on EDD2020.
+input size: 320*320
+float ops: 45.3G
+task: segmentation
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_FPN-resnet18_EDD_320_320_45.3G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_FPN-resnet18_EDD_320_320_45.3G_1.4.zip
+  checksum: aa9effad76f286229ee79956f46d6ae7
+- name: FPN_Res18_Medical_segmentation
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: fe62c7c6dacbfd73255e88ba4febc68f
+- name: FPN_Res18_Medical_segmentation
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-vck190-r1.4.0.tar.gz
+  checksum: 92cdbf9f6322e146bee74c92cbdf0c29
+- name: FPN_Res18_Medical_segmentation
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 0cdecd9f808d91a83aed42b5f83be350
+- name: FPN_Res18_Medical_segmentation
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 3f91188cb08d30b91bca7c2b08891acd
+- name: FPN_Res18_Medical_segmentation
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 33089f40a39bb3f8ed3d6a7423483ff0
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

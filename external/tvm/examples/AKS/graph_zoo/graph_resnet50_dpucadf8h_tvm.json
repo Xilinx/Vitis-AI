@@ -1,0 +1,53 @@
+{
+    "graph_name": "resnet50", 
+    
+    "node_list": [
+      {
+        "node_name": "preproc", 
+        "node_params" : {
+          "ClassificationImreadResizeCCrop": {
+            "net_w" : 224, 
+            "net_h" : 224, 
+            "net_c": 3,
+            "mean": [ 123, 107, 104],
+            "output_layout" : "NHWC"
+          }
+        },
+        "next_node": ["resnet50_tvm"]
+      },
+      
+      {
+        "node_name": "resnet50_tvm",
+        "node_params": {
+          "TvmKernel": {
+            "lib":      "graph_zoo/meta_resnet50_dpucadf8h_tvm/Tensorflow-SLIM-ResNet_V1_50_DPUCADF8H_batch4.so",
+            "input_name": "Placeholder", 
+            "in_dim": [ 4, 224, 224, 3],
+	          "num_runners": 4
+
+          }
+        },
+        "next_node": ["resnet50_post"]
+      },
+      {
+        "node_name": "resnet50_post",
+        "node_params": {
+          "classificationPostProcess": {}
+        },
+        "next_node": ["resnet50_accuracy"]
+      },
+       {
+        "node_name": "resnet50_accuracy",
+        "node_params": {
+          "ClassificationAccuracy": {
+            "ground_truth": "graph_zoo/gold.txt"
+          }
+        },
+        "next_node": []
+      }
+
+    ],
+    
+    "version": "0.1"
+  }
+  

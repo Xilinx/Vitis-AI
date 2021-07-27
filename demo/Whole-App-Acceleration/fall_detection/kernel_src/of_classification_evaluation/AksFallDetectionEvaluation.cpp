@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2021 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -23,8 +24,10 @@
 #include <chrono>
 
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
+#include <aks/AksLogger.h>
+#include <aks/AksTensorBuffer.h>
+
 
 struct EvaluationData
 {
@@ -43,13 +46,15 @@ class FallDetectionEvaluation : public AKS::KernelBase
     int getNumCUs (void) { return 1; }
     void nodeInit (AKS::NodeParams*);
     int exec_async (
-        std::vector<AKS::DataDescriptor*> &in, 
-        std::vector<AKS::DataDescriptor*> &out, 
+        std::vector<vart::TensorBuffer*> &in,
+        std::vector<vart::TensorBuffer*> &out,
         AKS::NodeParams* nodeParams,
         AKS::DynamicParamValues* dynParams);
 
-    void loadGroundTruth (AKS::NodeParams* nodeParams);
-    int updateEvaluation (AKS::NodeParams* nodeParams, std::string & path, float probability);
+    void loadGroundTruth(AKS::NodeParams* nodeParams);
+    void evaluate(
+        AKS::NodeParams* nodeParams, std::vector<std::string> &paths,
+        float* probabilities, int8_t* outData);
     void report(AKS::NodeParams* nodeParams);
     ~FallDetectionEvaluation();
 
@@ -60,9 +65,13 @@ class FallDetectionEvaluation : public AKS::KernelBase
     map<AKS::NodeParams*, EvaluationData*> _EvaluationDatas;
     std::chrono::time_point<std::chrono::steady_clock> _t0, _t1;
     bool _is_timer_started = false;
+    std::string output_folder;
+    float threshold;
+    std::string path;
+    int default_label;
 };
 
-extern "C" { /// Add this to make this available for python bindings and 
+extern "C" { /// Add this to make this available for python bindings and
 
 
 AKS::KernelBase* getKernel (AKS::NodeParams *params)
@@ -90,18 +99,22 @@ EvaluationData* FallDetectionEvaluation::getEvaluationData(AKS::NodeParams *node
   return nullptr;
 }
 
-void FallDetectionEvaluation::nodeInit (AKS::NodeParams* nodeParams)
+void FallDetectionEvaluation::nodeInit (AKS::NodeParams* params)
 {
   //std::cout << "\n[DBG] FallDetectionEvaluation Node: Labels: " << labels << std::endl;
- 
-  EvaluationData *accuData = getEvaluationData(nodeParams);
-  
+
+  threshold = params->getValue<float>("threshold");
+  path = params->getValue<std::string>("ground_truth");
+  output_folder = params->_stringParams.find("visualize") == \
+    params->_stringParams.end() ? "" : params->getValue<std::string>("visualize");
+  default_label = params->getValue<int>("default_label");
+
+  EvaluationData *accuData = getEvaluationData(params);
   if (!accuData) {
     /// Create entry for accuracy data
     accuData = new EvaluationData;
-    setEvaluationData(nodeParams, accuData);
+    setEvaluationData(params, accuData);
     /// Get Ground Truth file
-    std::string path = nodeParams->getValue<std::string>("ground_truth");
     fstream gtFile(path);
 
     if (gtFile.fail()) {
@@ -125,81 +138,101 @@ void FallDetectionEvaluation::nodeInit (AKS::NodeParams* nodeParams)
   }
 }
 
-int FallDetectionEvaluation::updateEvaluation(AKS::NodeParams* nodeParams, std::string & path, float probability)
+void FallDetectionEvaluation::evaluate(
+    AKS::NodeParams* nodeParams, std::vector<std::string> &paths,
+    float* probs, int8_t* outData)
 {
   EvaluationData *accuData = getEvaluationData(nodeParams);
-  float threshold = nodeParams->getValue<float>("threshold");
   if(accuData){
-    std::vector<std::string> imgPathSplit; 
-    boost::split(imgPathSplit, path, boost::is_any_of("/"));
-    int gtLabel;
-    if (accuData->_groundTruth.find(imgPathSplit.back()) == accuData->_groundTruth.end()) {
-      gtLabel = nodeParams->getValue<int>("default_label");
-    } else {
-      gtLabel = accuData->_groundTruth.find(imgPathSplit.back())->second;
-    }
-    accuData->_imagesProcessed++;
+    for (int i=0; i<paths.size(); i++) {
+      auto path = paths.at(i);
+      float prob = probs[i];
+      std::vector<std::string> imgPathSplit;
+      boost::split(imgPathSplit, path, boost::is_any_of("/"));
+      int gtLabel;
+      if (accuData->_groundTruth.find(imgPathSplit.back()) == accuData->_groundTruth.end()) {
+        gtLabel = default_label;
+      } else {
+        gtLabel = accuData->_groundTruth.find(imgPathSplit.back())->second;
+      }
+      accuData->_imagesProcessed++;
 
-    // probability > threshold ? class_1 : class_0
-    int label = (probability > threshold ? 1 : 0);
-    if (label == gtLabel) {
-      accuData->accuracy++;
-      if (label == 0)
-        accuData->truePos++;
-      else
-        accuData->trueNeg++;
-    }
-    else {
-      if (label == 0)
-        accuData->falsePos++;
-      else
-        accuData->falseNeg++;
-    }
-    return label;
-  }
-  return -1;
-}
-
-int FallDetectionEvaluation::exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
-           AKS::NodeParams* nodeParams,
-           AKS::DynamicParamValues* dynParams)
-{
-  // std::cout << "\n[DBG] FallDetectionEvaluation Node start ..... \n" << std::endl;
-
-  // Start the timer
-  if(!_is_timer_started) {
-    _t0 = std::chrono::steady_clock::now();
-    _is_timer_started = true;
-  }
-  
-  /// Expects the data to be the output from Sigmoid (only to be used for binary classification)
-  float probability = static_cast<float*>(in[0]->data())[0];
-
-  /// Update Evaluation
-  // std::cout << "[DBG] FallDetectionEvaluation Node: Image: " << dynParams->imagePaths.front() << "| " << probability << std::endl;
-  int label = updateEvaluation(nodeParams, dynParams->imagePaths.front(), probability);
-
-  std::string output_folder = \
-      nodeParams->_stringParams.find("visualize") == nodeParams->_stringParams.end() ?
-        "" : nodeParams->_stringParams["visualize"];
-    if (!output_folder.empty()) {
-        boost::filesystem::path p(dynParams->imagePaths.front());
+      // prob > threshold ? no_fall : fall
+      int label = prob > threshold ? 1 : 0;
+      outData[i] = label;
+      if (label == gtLabel) {
+        accuData->accuracy++;
+        if (label == 0)
+          accuData->truePos++;
+        else
+          accuData->trueNeg++;
+      }
+      else {
+        if (label == 0)
+          accuData->falsePos++;
+        else
+          accuData->falseNeg++;
+      }
+      if (!output_folder.empty()) {
+        boost::filesystem::path p(path);
         std::string filename = p.filename().string();
         std::string folder = p.parent_path().filename().string();
         boost::filesystem::create_directories(output_folder);
         std::string output_path = output_folder + "/" + folder + ".txt";
         ofstream fout;
         fout.open(output_path, ios::app);
-        fout << filename << " " << probability << std::endl;
+        fout << filename << " " << prob << std::endl;
         fout.close();
+      }
     }
+  }
+}
 
-  AKS::DataDescriptor *outDD = new AKS::DataDescriptor ({1, 1, 1, 1}, AKS::DataType::FLOAT32);
-  float *outData = static_cast<float*>(outDD->data());
-  outData[0] = label;
-  out.push_back(outDD);
+float calcSigmoid(float input) {
+  return 1 / (1 + exp(-input));
+}
+
+int FallDetectionEvaluation::exec_async (
+           std::vector<vart::TensorBuffer*> &in,
+           std::vector<vart::TensorBuffer*> &out,
+           AKS::NodeParams* nodeParams,
+           AKS::DynamicParamValues* dynParams)
+{
+  // std::cout << "\n[DBG] FallDetectionEvaluation Node start ..... \n" << std::endl;
+  int batchSize = in[0]->get_tensor()->get_shape().at(0);
+
+  // Start the timer
+  if(!_is_timer_started) {
+    _t0 = std::chrono::steady_clock::now();
+    _is_timer_started = true;
+  }
+
+  // Expects the data to be the output from Sigmoid (only to be used for binary classification)
+  float* inData = reinterpret_cast<float*>(in[0]->data().first);
+
+  auto *probsBuffer = new AKS::AksTensorBuffer(
+                xir::Tensor::create(
+                  "probabilities", {batchSize},
+                  xir::create_data_type<float>()
+                ));
+  float* probsData = reinterpret_cast<float*>(probsBuffer->data().first);
+  for (int i = 0; i < batchSize; i++) {
+    probsData[i] = calcSigmoid(inData[i]);
+  }
+
+  auto *labelsBuffer = new AKS::AksTensorBuffer(
+                xir::Tensor::create(
+                  "labels", {batchSize},
+                  xir::create_data_type<char>()
+                ));
+  int8_t* labelsData = reinterpret_cast<int8_t*>(labelsBuffer->data().first);
+
+  evaluate(nodeParams, dynParams->imagePaths, probsData, labelsData);
+  // for (int i=0; i<batchSize; i++) {
+  //   std::cout << (int)labelsData[i] << std::endl;
+  // }
+  out.push_back(probsBuffer);
+  out.push_back(labelsBuffer);
   // std::cout << "\n[DBG] FallDetectionEvaluation Node end ..... \n" << std::endl;
   return -1; /// No wait
 }

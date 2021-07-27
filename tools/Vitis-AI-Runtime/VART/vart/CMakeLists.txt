@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.12)
-project(vart VERSION 1.3.2 LANGUAGES C CXX)
+project(vart VERSION 1.4.0 LANGUAGES C CXX)
 
 link_directories("$ENV{CONDA_PREFIX}/lib")
 include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
@@ -23,6 +23,7 @@ option(ENABLE_CPU_RUNNER "enable cpu runner or not" OFF)
 option(ENABLE_SIM_RUNNER "enable sim runner or not" OFF)
 option(ENABLE_DPU_RUNNER "enable dpu runner or not" OFF)
 option(ENABLE_XRNN_RUNNER "enable xrnn runner or not" OFF)
+option(ENABLE_RNN_RUNNER "enable rnn runner or not" OFF)
 option(BUILD_PYTHON "build python library" OFF)
 option(BUILD_TEST "build test" OFF)
 
@@ -32,15 +33,16 @@ find_package(unilog REQUIRED)
 find_package(xir REQUIRED)
 find_package(target-factory REQUIRED)
 find_package(Xrt MODULE)
+find_package(hiredis QUIET)
 
-set(PACKAGE_COMPONENTS util runner dummy-runner async-runner)
+set(PACKAGE_COMPONENTS util trace runner dummy-runner async-runner)
 list(APPEND PACKAGE_COMPONENTS mem-manager)
 if(ENABLE_DPU_RUNNER)
   # append xrt-device-handle anyway, even if xrt is not found, because
   # softmax controller is part if and vitis-ai-library needs such
   # components.
   list(APPEND PACKAGE_COMPONENTS xrt-device-handle)
-  list(APPEND PACKAGE_COMPONENTS buffer-object dpu-controller dpu-runner softmax-runner)
+  list(APPEND PACKAGE_COMPONENTS buffer-object dpu-controller dpu-runner softmax-runner softmax-runner-cpu)
 endif()
 if(ENABLE_SIM_RUNNER)
   list(APPEND PACKAGE_COMPONENTS sim-runner)
@@ -51,6 +53,10 @@ endif()
 if(ENABLE_XRNN_RUNNER)
   list(APPEND PACKAGE_COMPONENTS xrt-device-handle)
   list(APPEND PACKAGE_COMPONENTS buffer-object xrnn-runner)
+endif()
+if(ENABLE_RNN_RUNNER)
+  list(APPEND PACKAGE_COMPONENTS xrt-device-handle)
+  list(APPEND PACKAGE_COMPONENTS buffer-object rnn-runner)
 endif()
 
 list(REMOVE_DUPLICATES PACKAGE_COMPONENTS)
@@ -118,6 +124,10 @@ if(DEFINED ENV{BUILD_NUMBER})
   set(CPACK_RPM_PACKAGE_RELEASE "r$ENV{BUILD_NUMBER}")
 endif()
 set(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "cortexa72-cortexa53")
+    set(CPACK_RPM_PACKAGE_ARCHITECTURE "aarch64")
+endif()
+
 
 set(CPACK_COMPONENTS_GROUPING ALL_COMPONENTS_IN_ONE)
 

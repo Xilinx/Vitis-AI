@@ -18,7 +18,9 @@
 #define _FTD_TRAJECTORY_HPP_
 
 #include <tuple>
+#include <vitis/ai/env_config.hpp>
 #include "ftd_filter_linear.hpp"
+DEF_ENV_PARAM(DEBUG_REID_TRACKER, "0")
 
 using namespace cv;
 
@@ -26,23 +28,24 @@ namespace vitis {
 namespace ai {
 
 // InputCharact: roi, score, label, local_id
-typedef std::tuple<cv::Rect_<float>, float, int, int> InputCharact;
+typedef std::tuple<cv::Mat, cv::Rect_<float>, float, int, int> InputCharact;
 // OutputCharact: gid, roi, score, label, local_id
 typedef std::tuple<uint64_t, cv::Rect_<float>, float, int, int> OutputCharact;
 
 class FTD_Trajectory {
  public:
-  FTD_Trajectory(SpecifiedCfg &specified_cfg);
+  FTD_Trajectory(SpecifiedCfg& specified_cfg);
   ~FTD_Trajectory(){};
   void Predict();
   int GetId();
-  InputCharact &GetCharact();
-  void Init(const InputCharact &input_charact, std::vector<uint64_t> &id_record,
+  void SetId(uint64_t& update_id);
+  InputCharact& GetCharact();
+  void Init(const InputCharact& input_charact, std::vector<uint64_t>& id_record,
             int mode);
   void UpdateTrack();
-  void UpdateDetect(const InputCharact &input_charact);
+  void UpdateDetect(const InputCharact& input_charact);
   void UpdateWithoutDetect();
-  void UpdateFeature(const cv::Mat &feat);
+  void UpdateFeature(const cv::Mat& feat);
   int GetStatus();
   bool GetShown();
   OutputCharact GetOut();

@@ -63,16 +63,18 @@ I1201 06:48:43.820338  4222 process_result.hpp:34] RESULT2:     399     130     
     sample : ./test_jpeg_refinedet refinedet_pruned_0_96 sample_refinedet.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1201 06:48:48.685418  4231 process_result.hpp:34] RESULT2:     100     163     424     624     0.980669
-I1201 06:48:48.685642  4231 process_result.hpp:34] RESULT2:     0       198     45      386     0.870224
-I1201 06:48:48.685701  4231 process_result.hpp:34] RESULT2:     7       207     186     404     0.870224
-I1201 06:48:48.685760  4231 process_result.hpp:34] RESULT2:     400     135     424     245     0.648349
+I0709 05:50:57.432204  3925 demo.hpp:1183] batch: 0     image: sample_refinedet.jpg
+I0709 05:50:57.433010  3925 process_result.hpp:34] RESULT2:     99      163     414     624     0.980669
+I0709 05:50:57.433176  3925 process_result.hpp:34] RESULT2:     0       198     45      386     0.870224
+I0709 05:50:57.433228  3925 process_result.hpp:34] RESULT2:     7       207     186     404     0.870224
+I0709 05:50:57.433279  3925 process_result.hpp:34] RESULT2:     400     135     424     245     0.648349
+I0709 05:50:57.433317  3925 process_result.hpp:34] RESULT2:     39      190     253     564     0.562484
 
 
     sample : ./test_jpeg_refinedet_tf refinedet_VOC_tf sample_refinedet.jpg
     output :
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1029 17:15:20.431576 282494 process_result_tf.hpp:35] RESULT15:        93      155     419     640     0.999978
-I1029 17:15:20.431833 282494 process_result_tf.hpp:35] RESULT15:        0       193     50      349     0.904579
-I1029 17:15:20.431872 282494 process_result_tf.hpp:35] RESULT15:        19      201     168     407     0.904445
-
+I0709 05:51:00.050213  3930 demo.hpp:1183] batch: 0     image: sample_refinedet.jpg
+I0709 05:51:00.050945  3930 process_result_tf.hpp:35] RESULT15:         92      155     420     640     0.999977
+I0709 05:51:00.051111  3930 process_result_tf.hpp:35] RESULT15:         0       193     50      349     0.904579
+I0709 05:51:00.051163  3930 process_result_tf.hpp:35] RESULT15:         20      207     169     399     0.893095

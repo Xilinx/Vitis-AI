@@ -50,16 +50,25 @@ int getTensorShape(vart::Runner* runner, GraphInfo* shapes, int cntin,
                    const std::vector<std::string> output_names);
 int getTensorShape(vart::Runner* runner, GraphInfo* shapes, int cntin,
                    int cnout);
+// fix_point to scale for input tensor
+inline float get_input_scale(const xir::Tensor* tensor) {
+  int fixpos = tensor->template get_attr<int>("fix_point");
+  return std::exp2f(1.0f * (float)fixpos);
+}
+// fix_point to scale for output tensor
+inline float get_output_scale(const xir::Tensor* tensor) {
+  int fixpos = tensor->template get_attr<int>("fix_point");
+  return std::exp2f(-1.0f * (float)fixpos);
+}
 
 inline std::vector<std::unique_ptr<xir::Tensor>> cloneTensorBuffer(
     const std::vector<const xir::Tensor*>& tensors) {
   auto ret = std::vector<std::unique_ptr<xir::Tensor>>{};
-  auto type = xir::DataType::FLOAT;
+  auto type = xir::DataType::XINT;
   ret.reserve(tensors.size());
   for (const auto& tensor : tensors) {
-    ret.push_back(std::unique_ptr<xir::Tensor>(
-        xir::Tensor::create(tensor->get_name(), tensor->get_shape(),
-                            xir::DataType{type, sizeof(float) * 8u})));
+    ret.push_back(std::unique_ptr<xir::Tensor>(xir::Tensor::create(
+        tensor->get_name(), tensor->get_shape(), xir::DataType{type, 8u})));
   }
   return ret;
 }

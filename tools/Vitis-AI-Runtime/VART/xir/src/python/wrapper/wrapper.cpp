@@ -273,6 +273,18 @@ void set_attrs(Object* obj, py::dict dict) {
     set_attr<xir::Attrs>(attrs.get(), py::cast<std::string>(attr.first),
                          attr.second);
   }
+  if (std::is_same<Object, xir::Op>::value) {
+    auto defs = ((xir::Op*)(obj))->get_opdef()->attrs();
+    for (auto key : attrs->get_keys()) {
+      auto iter = std::find_if(defs.begin(), defs.end(), [key](const auto& def) {
+        return def.name == key;
+      });
+      if (iter != defs.end()) {
+        AttrHelper<xir::Attrs>::set_hint(
+          attrs.get(), key, get_attr<xir::Attrs>(attrs.get(), key), iter->data_type);
+      }
+    }
+  }
   obj->set_attrs(std::move(attrs));
 }
 

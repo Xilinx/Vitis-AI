@@ -19,16 +19,17 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <aks/AksBatchTensorBuffer.h>
+#include <aks/AksTensorBuffer.h>
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
 
 class ClassificationPreProc : public AKS::KernelBase
 {
   public:
     int exec_async (
-        std::vector<AKS::DataDescriptor*> &in, 
-        std::vector<AKS::DataDescriptor*> &out, 
+        std::vector<vart::TensorBuffer*> &in,
+        std::vector<vart::TensorBuffer*> &out,
         AKS::NodeParams* nodeParams,
         AKS::DynamicParamValues* dynParams);
 };
@@ -43,26 +44,49 @@ extern "C" {
 } //extern "C"
 
 int ClassificationPreProc::exec_async (
-    std::vector<AKS::DataDescriptor*> &in, 
-    std::vector<AKS::DataDescriptor*> &out, 
+    std::vector<vart::TensorBuffer*> &in,
+    std::vector<vart::TensorBuffer*> &out,
     AKS::NodeParams* nodeParams,
     AKS::DynamicParamValues* dynParams)
 {
-  /// Get input and output data shapes
-  /// Input could be batch array or batch of images
-  const std::vector<int>& inShape = in[0]->getShape();
-  int batchSize = inShape[0];
+  std::vector<uint8_t*> buffers;
+  std::vector<const xir::Tensor*> tensors;
+  int batchSize = 1;
+  if(auto* tb = dynamic_cast<AKS::AksBatchTensorBuffer*>(in[0])) {
+    tensors = tb->get_tensors();
+    batchSize = tensors.size();
+    for(int b = 0; b < batchSize; ++b) {
+      buffers.push_back(reinterpret_cast<uint8_t*>(tb->data({b}).first));
+    }
+  } else {
+    const auto* tensor = in[0]->get_tensor();
+    batchSize = tensor->get_shape()[0];
+    for(int b = 0; b < batchSize; ++b) {
+      tensors.push_back(tensor);
+      buffers.push_back(reinterpret_cast<uint8_t*>(in[0]->data({b}).first));
+    }
+  }
 
   /// Get output Dimensions (Network input dim)
   int outHeight    = nodeParams->_intParams["net_h"];
   int outWidth     = nodeParams->_intParams["net_w"];
   int outChannels  = 3;
   int nOutElemsPerImg = outChannels * outHeight * outWidth;
+  string outputLayout = nodeParams->hasKey<string>("output_layout") ?
+                        nodeParams->getValue<string>("output_layout"): "NCHW";
 
   /// Create output data buffer
-  std::vector<int> shape      = { batchSize, outChannels, outHeight, outWidth };
-  AKS::DataDescriptor * outDD = new AKS::DataDescriptor(shape, AKS::DataType::FLOAT32);
-  float * outData = (float*) outDD->data();
+  auto shape = (outputLayout == "NCHW") ?
+    std::vector<int>{ batchSize, 3, outHeight, outWidth }:
+    std::vector<int>{ batchSize, outHeight, outWidth, 3 };
+
+  std::string tensorName ("pre-output");
+  AKS::AksTensorBuffer * outTB = new AKS::AksTensorBuffer(
+                                   xir::Tensor::create(
+                                     tensorName, shape,
+                                     xir::create_data_type<float>()
+                                 ));
+  float * outData = reinterpret_cast<float*>(outTB->data().first);
 
   /// Get mean values
   auto meanIter = nodeParams->_floatVectorParams.find("mean");
@@ -77,19 +101,9 @@ int ClassificationPreProc::exec_async (
   int inWidth   = 0;
   uint8_t* inData = nullptr;
   for (int b = 0; b < batchSize; ++b) {
-    if(in[0]->dtype() == AKS::DataType::AKSDD) {
-      auto& dd = in[0]->data<AKS::DataDescriptor>()[b];
-      inData   = dd.data<uint8_t>();
-      // Shape = (Batch=1, H, W, C=3)
-      inHeight = dd.getShape()[1];
-      inWidth  = dd.getShape()[2];
-    }
-    else {
-      inHeight = inShape[1];
-      inWidth  = inShape[2];
-      int nInElemsPerImg  = b * inChannel * inHeight * inWidth;
-      inData   = in[0]->data<uint8_t>() + nInElemsPerImg;
-    }
+    inData   = buffers[b];
+    inHeight = tensors[b]->get_shape()[1];
+    inWidth  = tensors[b]->get_shape()[2];
 
     /// Create a cv::Mat with input data
     cv::Mat inImage(inHeight, inWidth, CV_8UC3, inData);
@@ -100,25 +114,30 @@ int ClassificationPreProc::exec_async (
 
     /// Pre-Processing loop
     float* out = outData + b * nOutElemsPerImg;
-    if (1 /* TODO: Insert correct condition */ ) {
-      for (int c = 0; c < 3; c++)
-        for (int h = 0; h < outHeight; h++)
+    if (outputLayout == "NCHW") {
+      for (int c = 0; c < 3; c++) {
+        for (int h = 0; h < outHeight; h++) {
           for (int w = 0; w < outWidth; w++) {
             out[(c*outHeight*outWidth)
               + (h*outWidth) + w]
               = resizedImage.at<cv::Vec3b>(h,w)[c]-mean[c];
           }
-    } else {
-      for (int h = 0; h < outHeight; h++)
-        for (int w = 0; w < outWidth; w++)
-          for (int c = 0; c < 3; c++)
+        }
+      }
+    } else if (outputLayout == "NHWC"){
+      for (int h = 0; h < outHeight; h++) {
+        for (int w = 0; w < outWidth; w++) {
+          for (int c = 0; c < 3; c++) {
             out[h*outWidth*3 + w*3 + c]
               = resizedImage.at<cv::Vec3b>(h,w)[c]-mean[c];
+          }
+        }
+      }
     }
   }
 
   /// Push back output
-  out.push_back(outDD);
+  out.push_back(outTB);
   return 0;
 }
 

@@ -82,8 +82,8 @@ void runSegmentation(vart::Runner* runner, bool& is_running) {
   std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
   auto inputTensors = cloneTensorBuffer(runner->get_input_tensors());
   int batch = inputTensors[0]->get_shape().at(0);
-  float* result = new float[shapes.outTensorList[0].size * batch];
-  float* imageInputs = new float[shapes.inTensorList[0].size * batch];
+  int8_t* result = new int8_t[shapes.outTensorList[0].size * batch];
+  int8_t* imageInputs = new int8_t[shapes.inTensorList[0].size * batch];
   while (is_running) {
     // Get an image from read queue
     int index;
@@ -107,6 +107,8 @@ void runSegmentation(vart::Runner* runner, bool& is_running) {
     auto outputTensors = cloneTensorBuffer(runner->get_output_tensors());
     auto inputTensors = cloneTensorBuffer(runner->get_input_tensors());
 
+    auto input_scale = get_input_scale(runner->get_input_tensors()[0]);
+
     // get tensor shape info
     int outHeight = shapes.outTensorList[0].height;
     int outWidth = shapes.outTensorList[0].width;
@@ -121,7 +123,7 @@ void runSegmentation(vart::Runner* runner, bool& is_running) {
       for (int w = 0; w < inWidth; w++) {
         for (int c = 0; c < 3; c++) {
           imageInputs[h * inWidth * 3 + w * 3 + c] =
-              img.at<Vec3b>(h, w)[c] - mean[c];
+              (int8_t)(((float)img.at<Vec3b>(h, w)[c] - mean[c]) * input_scale);
         }
       }
     }

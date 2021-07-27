@@ -16,7 +16,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-
 from typing import List
 import numpy as np
 import xir
@@ -52,35 +51,25 @@ def get_child_subgraph_dpu(graph: "Graph") -> List["Subgraph"]:
     """
     assert graph is not None, "'graph' should not be None."
     root_subgraph = graph.get_root_subgraph()
-    assert (
-        root_subgraph is not None
-    ), "Failed to get root subgraph of input Graph object."
+    assert (root_subgraph
+            is not None), "Failed to get root subgraph of input Graph object."
     if root_subgraph.is_leaf:
         return []
     child_subgraphs = root_subgraph.toposort_child_subgraph()
     assert child_subgraphs is not None and len(child_subgraphs) > 0
     return [
-        cs
-        for cs in child_subgraphs
+        cs for cs in child_subgraphs
         if cs.has_attr("device") and cs.get_attr("device").upper() == "DPU"
     ]
 
 
-def main(args):
-    # get subgraph
-    graph = xir.Graph.deserialize(args.xmodel)
-    child_subgraph = get_child_subgraph_dpu(graph)
-    assert len(child_subgraph) > args.subgraph_index, (
-        "cannot get child_subgraph[" + str(args.subgraph_index) + "]"
-    )
-
+def run(child_subgraph, args):
     # create runner
-    runner = vart.RunnerExt.create_runner(child_subgraph[args.subgraph_index], "run")
-
+    runner = vart.RunnerExt.create_runner(child_subgraph[args.subgraph_index],
+                                          "run")
     """get input&output  tensor_buffers"""
     inputs = runner.get_inputs()
     outputs = runner.get_outputs()
-
     """ fillin input data """
     fillin_inputs(args.input_bin, inputs[0])
 
@@ -92,13 +81,23 @@ def main(args):
     dump_outputs(outputs)
 
 
+def main(args):
+    # get subgraph
+    graph = xir.Graph.deserialize(args.xmodel)
+    child_subgraph = get_child_subgraph_dpu(graph)
+    assert len(child_subgraph) > args.subgraph_index, (
+        "cannot get child_subgraph[" + str(args.subgraph_index) + "]")
+    run(child_subgraph, args)
+
+
 def help(subparsers):
     parser = subparsers.add_parser(
-        "run", help="<xmodel> [-i <subgraph_index>] <input_bin>"
-    )
+        "run", help="<xmodel> [-i <subgraph_index>] <input_bin>")
     parser.add_argument("xmodel", help="xmodel file path ")
-    parser.add_argument(
-        "-i", "--subgraph_index", type=int, default=0, help="<subgraph_index>"
-    )
+    parser.add_argument("-i",
+                        "--subgraph_index",
+                        type=int,
+                        default=0,
+                        help="<subgraph_index>")
     parser.add_argument("input_bin", nargs="+", help="input_bin ")
     parser.set_defaults(func=main)

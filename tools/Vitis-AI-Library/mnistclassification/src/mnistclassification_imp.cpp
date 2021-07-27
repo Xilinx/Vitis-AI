@@ -46,11 +46,7 @@ MnistClassificationResult MnistClassificationImp::post_process(int idx)
 
   auto size_ = (int)output_tensors_[0].width * (int)output_tensors_[0].height * (int)output_tensors_[0].channel;
   int8_t* conf = (int8_t*)(output_tensors_[0].get_data(idx));
-  std::vector<float> vconf(size_);
-  for(int i=0; i<size_; i++) {
-     vconf[i] = conf[i]*scale_conf_;
-  }
-  result.classIdx = std::max_element(vconf.begin(), vconf.end()) - vconf.begin();
+  result.classIdx = std::max_element(conf, conf+size_) - conf;
   return result;
 }
 
@@ -86,7 +82,7 @@ MnistClassificationResult MnistClassificationImp::run(
   }
 
   __TIC__(CLS_total)
-
+  real_batch_size = 1;
   // preprocess :
   __TIC__(CLS_pre)
   pre_process(0, img);
@@ -108,10 +104,10 @@ std::vector<MnistClassificationResult> MnistClassificationImp::run(
     const std::vector<cv::Mat> &input_img) {
   auto size = cv::Size(getInputWidth(), getInputHeight());
   auto batch_size = get_input_batch();
+  real_batch_size = std::min((int)batch_size, (int)input_img.size());
+  std::vector<cv::Mat> vimg(real_batch_size);
 
-  std::vector<cv::Mat> vimg(batch_size);
-
-  for (auto i = 0ul; i < batch_size; i++) {
+  for (auto i = 0; i < real_batch_size; i++) {
     if (size != input_img[i].size()) {
       cv::resize(input_img[i], vimg[i], size, 0, 0, cv::INTER_LINEAR);
     } else {
@@ -122,7 +118,7 @@ std::vector<MnistClassificationResult> MnistClassificationImp::run(
 
   // preprocess :
   __TIC__(CLS_pre)
-  for (auto i = 0ul; i < batch_size; i++) {
+  for (auto i = 0; i < real_batch_size; i++) {
      pre_process(i, vimg[i]);
   }
   __TOC__(CLS_pre)
@@ -133,7 +129,7 @@ std::vector<MnistClassificationResult> MnistClassificationImp::run(
 
   __TIC__(CLS_post)
   std::vector<MnistClassificationResult>  results(batch_size);
-  for (auto i = 0ul; i < batch_size; i++) {
+  for (auto i = 0; i < real_batch_size; i++) {
     results[i] = this->post_process(i);
   }
   __TOC__(CLS_post)

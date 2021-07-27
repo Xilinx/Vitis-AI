@@ -9,6 +9,7 @@
   "param_list" : {
     "net_w": {"type": "int"},
     "net_h": {"type": "int"},
-    "net_c": {"type": "int"}
+    "net_c": {"type": "int"},
+    "output_layout" : {"type": "string"}
   }
 }

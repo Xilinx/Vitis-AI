@@ -16,6 +16,7 @@
 * limitations under the License.
 */
 
+
 #ifndef NNDCT_MATH_GPU_H
 #define NNDCT_MATH_GPU_H
 

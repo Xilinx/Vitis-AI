@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: refinedet detector based on VOC.
+input size: 320*320
+float ops: 81.9G
+task: detection
+framework: tensorflow
+prune: 'no'
+version: 1.4
+files:
+- name: tf_refinedet_VOC_320_320_81.9G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_refinedet_VOC_320_320_81.9G_1.4.zip
+  checksum: 29df78d3f25b6ed215c3ef8d0a2a3b10
+- name: refinedet_VOC_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: ec69ab027db9b641e468e1b4c4e41540
+- name: refinedet_VOC_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck190-r1.4.0.tar.gz
+  checksum: 4d5b5feb4a6b93853d8c2d710310b61a
+- name: refinedet_VOC_tf
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 828807593df086495f3a65eefafae1d4
+- name: refinedet_VOC_tf
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: c2945e0790a3ab5d19ad13bf1b32dfe7
+- name: refinedet_VOC_tf
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 02b34c741f798bf27c2d20f1ddb12e0e
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

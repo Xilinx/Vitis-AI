@@ -16,7 +16,6 @@
 
 import os
 import copy
-import math
 import collections
 
 import tensorflow as tf
@@ -24,14 +23,23 @@ import numpy as np
 
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.base import quantize_annotate as quantize_annotate_mod
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.base import quantize_config as quantize_config_mod
-from tensorflow_model_optimization.python.core.quantization.keras.vitis import vitis_quantize_aware_activation
-from tensorflow_model_optimization.python.core.quantization.keras.vitis import vitis_quantize_wrapper
-from tensorflow_model_optimization.python.core.quantization.keras.vitis import vitis_8bit_quantize_layout_transform
-from tensorflow_model_optimization.python.core.quantization.keras.vitis import vitis_8bit_quantize_registry
-from tensorflow_model_optimization.python.core.quantization.keras.vitis import vitis_8bit_quantize_configs
-from tensorflow_model_optimization.python.core.quantization.keras.vitis import vitis_quantizers
-from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers import vitis_quantize_layer
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_aware_activation
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_registry
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantizers
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_configs
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.optimizations import vitis_fast_finetune
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.optimizations import vitis_bias_correction
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers import vitis_quantize as vitis_quantize_layer
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers import vitis_activation
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers import vitis_pooling
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.eight_bit import vitis_8bit_quantize_strategy
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.eight_bit_fs import vitis_8bit_fs_quantize_strategy
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import model_utils
+from tensorflow_model_optimization.python.core.quantization.keras.vitis import vitis_quantize_strategies
 
+logger = common_utils.VAILogger
 keras = tf.keras
 
 
@@ -67,154 +75,20 @@ def quantize_scope(*args):
     Object of type `CustomObjectScope` with quantization objects included.
   """
   quantization_objects = {
-      'QuantizeAnnotate':
-          quantize_annotate_mod.QuantizeAnnotate,
       'QuantizeAwareActivation':
           vitis_quantize_aware_activation.QuantizeAwareActivation,
       'NoQuantizeActivation':
           vitis_quantize_aware_activation.NoQuantizeActivation,
       'QuantizeWrapper':
           vitis_quantize_wrapper.QuantizeWrapper,
-      'QuantizeLayer':
-          vitis_quantize_layer.QuantizeLayer,
   }
-  quantization_objects.update(vitis_quantizers._types_dict())  # pylint: disable=protected-access
-  quantization_objects.update(vitis_8bit_quantize_configs._types_dict())  # pylint: disable=protected-access
+  quantization_objects.update(vitis_quantizers._types_dict())
+  quantization_objects.update(vitis_quantize_configs._types_dict())
+  quantization_objects.update(vitis_quantize_layer._types_dict())
+  quantization_objects.update(vitis_activation._types_dict())
+  quantization_objects.update(vitis_pooling._types_dict())
 
   return tf.keras.utils.custom_object_scope(*(args + (quantization_objects,)))
-
-
-def get_quantize_info(model):
-  """Get the quantize info of the model"""
-  quantize_info = {}
-  for layer in model.layers:
-    if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
-      quantize_info[layer.layer.name] = layer.get_quantize_info()
-    elif isinstance(layer, vitis_quantize_layer.QuantizeLayer):
-      quantize_info[layer.name] = layer.get_quantize_info()
-  return quantize_info
-
-
-def set_quantize_info(model, new_quantize_info):
-  """Set the quantize info of the model"""
-  for layer in model.layers:
-    if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper
-                 ) and layer.layer.name in new_quantize_info:
-      layer.set_quantize_info(new_quantize_info[layer.layer.name])
-    elif isinstance(
-        layer,
-        vitis_quantize_layer.QuantizeLayer) and layer.name in new_quantize_info:
-      layer.set_quantize_info(new_quantize_info[layer.name])
-  return
-
-
-def is_quantize_layer(layer):
-  """Check if QuantizeWrapper or QuantizeLayer."""
-  return isinstance(layer,
-                    vitis_quantize_wrapper.QuantizeWrapper) or isinstance(
-                        layer, vitis_quantize_layer.QuantizeLayer)
-
-
-def set_layer_mode(model, mode, layer_names=None):
-  """Set the mode of QuantizeWrapper and QuantizeLayer."""
-  for layer in model.layers:
-    if is_quantize_layer(layer):
-      if not layer_names or layer.name in layer_names:
-        layer.mode = mode
-
-
-def clone_model_with_weights(model_to_clone):
-  """Clone keras model with weights."""
-  with quantize_scope():
-    cloned_model = keras.models.clone_model(model_to_clone)
-    cloned_model.set_weights(model_to_clone.get_weights())
-  return cloned_model
-
-
-def dump_model_weights(model, output_dir):
-  """Dump model weights."""
-  # Get weight quantize info
-  w_q_map = {}
-  for layer in model.layers:
-    if is_quantize_layer(layer):
-      if isinstance(layer, vitis_quantize_layer.QuantizeLayer):
-        continue
-      layer_quantize_info = layer.get_quantize_info()
-      for name, value in layer_quantize_info.items():
-        if value.get('type') == 'weight':
-          w_name = name.rstrip(':0')
-          w_q_map[w_name] = value['info']['quant_pos_var']
-
-  print("[INFO] Dumping weights/biases...")
-  dump_folder = os.path.join(output_dir, "dump_results_weights")
-  if not os.path.exists(dump_folder):
-    os.makedirs(dump_folder)
-
-  index = 0
-  for w in model.weights:
-    w_name = w.name.rstrip(':0')
-    if w_name not in w_q_map:
-      continue
-
-    index = index + 1
-    filename = os.path.join(dump_folder, w_name.replace('/', '_'))
-    print("[INFO] Dumping ({}/{}): {}".format(index, len(w_q_map), w_name))
-
-    res = w.numpy()
-    res = res.flatten()
-    if w_name in w_q_map:
-      res = np.round(res * 2**w_q_map[w_name])
-      res = res.clip(-128, 127)
-      res.astype(np.int8).tofile(filename + ".bin")
-      np.savetxt(
-          filename + ".txt", res.astype(np.int8), fmt="%s", delimiter=",")
-
-
-def dump_model_activations(model, output_dir, dataset):
-  """Dump model activation."""
-  # Get activation quantize info
-  a_q_map = {}
-  for layer in model.layers:
-    if is_quantize_layer(layer):
-      layer_quantize_info = layer.get_quantize_info()
-      if isinstance(layer, vitis_quantize_layer.QuantizeLayer):
-        a_q_map[layer.name] = layer_quantize_info['info']['quant_pos_var']
-      else:
-        for name, value in layer_quantize_info.items():
-          if value.get('type') in [
-              'output', 'pre_activation', 'post_activation'
-          ]:
-            a_q_map[layer.name] = value['info']['quant_pos_var']
-
-  quant_layers = [layer for layer in model.layers if is_quantize_layer(layer)]
-  model = keras.Model(
-      inputs=model.inputs, outputs=[layer.output for layer in quant_layers])
-
-  print("[INFO] Dumping activations...")
-  # TODO: Support dump for multi-batches
-  dump_folder = os.path.join(output_dir, "dump_results_0")
-  if not os.path.exists(dump_folder):
-    os.makedirs(dump_folder)
-
-  results = model.predict(dataset, steps=1)
-
-  index = 0
-  for layer, res in zip(quant_layers, results):
-    index = index + 1
-    a_name = layer.name
-    filename = os.path.join(dump_folder, a_name.replace('/', '_'))
-    print("[INFO] Dumping ({}/{}): {}".format(index, len(quant_layers), a_name))
-    res = res.flatten()
-    if a_name in a_q_map:
-      if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper) and any(
-          act._should_pre_quantize() for act in layer._quantize_activations):
-        res.tofile(filename + '_float.bin')
-        np.savetxt(filename + "_float.txt", res, fmt="%s", delimiter=",")
-      else:
-        res = res * 2**a_q_map[a_name]
-        res.astype(np.int8).tofile(filename + ".bin")
-        np.savetxt(
-            filename + ".txt", res.astype(np.int8), fmt="%s", delimiter=",")
 
 
 class CollectQuantizeInfoCallback(keras.callbacks.Callback):
@@ -225,7 +99,7 @@ class CollectQuantizeInfoCallback(keras.callbacks.Callback):
     self._quantize_info = collections.OrderedDict()
 
   def on_predict_batch_end(self, batch, logs=None):
-    self._quantize_info[batch] = get_quantize_info(self.model)
+    self._quantize_info[batch] = model_utils.get_quantize_info(self.model)
 
   @property
   def quantize_info(self):
@@ -278,7 +152,11 @@ class CollectQuantizeInfoCallback(keras.callbacks.Callback):
 class VitisQuantizer(object):
   """Vitis Quantizer main APIs"""
 
-  def __init__(self, float_model, custom_quantize_strategy=None):
+  def __init__(self,
+               float_model,
+               quantize_strategy='8bit',
+               custom_quantize_strategy=None,
+               custom_objects={}):
     """Init VitisQuantizer."""
     self._float_model = float_model
     self._qat_model = None
@@ -286,216 +164,122 @@ class VitisQuantizer(object):
     self._qcbev_model = None
     self._analyse_model = None
     self._optimized_model = None
+    self._candidate_layers = None
+    self._layer_metadata = None
 
-    self._quantize_registry = vitis_8bit_quantize_registry.QuantizeRegistry()
+    # Custom objects
+    self._custom_object_scope = tf.keras.utils.custom_object_scope(
+        custom_objects)
 
-    # Custom quantizer strategy
-    self._custom_quantize_strategy = custom_quantize_strategy
+    # Built-in quantize strategy
+    self._quantize_strategy = vitis_quantize_strategies.get(quantize_strategy)
+
+    # Custom quantize strategy
     if custom_quantize_strategy:
-      self._quantize_registry.update_quantize_strategy(custom_quantize_strategy)
+      if isinstance(custom_quantize_strategy, str):
+        custom_quantize_strategy = common_utils.load_json(
+            custom_quantize_strategy)
+      self._quantize_strategy.update(custom_quantize_strategy)
 
   def _create_qat_model(self):
     """Create quantize-aware training model."""
-    self._qat_model = create_quantize_model(
-        self._optimized_model, self._quantize_registry, mode='QAT')
+    if not self._optimized_model:
+      logger.error('Should call `optimize_model()` before `_create_qat_model`.')
+    self._qat_model, self._layer_metadata = create_quantize_model(
+        self._optimized_model,
+        candidate_layers=self._candidate_layers,
+        layer_metadata=self._layer_metadata,
+        quantize_strategy=self._quantize_strategy,
+        mode='QAT')
 
-  def _run_model_with_collector(self, model, dataset):
+  def _run_model_with_collector(self, model, dataset, batch_size, steps):
     """Run model with quantize info collector."""
     collector = CollectQuantizeInfoCallback()
     model.predict(
-        dataset, batch_size=50, verbose=1, steps=None, callbacks=[collector])
+        dataset,
+        batch_size=batch_size,
+        verbose=1,
+        steps=steps,
+        callbacks=[collector])
     return collector
 
-  def _create_optimized_model(self, remove_dropout, fold_conv_bn, fold_bn,
-                              replace_relu6, include_cle, cle_steps):
+  def _create_optimized_model(self):
     """Create optimized model."""
-    self._optimized_model, _ = create_optimize_model(self._float_model, {},
-                                                     remove_dropout,
-                                                     fold_conv_bn, fold_bn,
-                                                     replace_relu6, include_cle,
-                                                     cle_steps)
+    self._optimized_model, self._layer_metadata = create_optimize_model(
+        self._float_model,
+        candidate_layers=self._candidate_layers,
+        layer_metadata=self._layer_metadata,
+        quantize_strategy=self._quantize_strategy)
 
   def _create_analysed_model(self, dataset):
     """Create analysed model."""
-    self._analysed_model = create_quantize_model(
-        self._float_model, self._quantize_registry, mode='ANALYSE')
+    self._analysed_model, self._layer_metadata = create_quantize_model(
+        self._float_model,
+        candidate_layers=self._candidate_layers,
+        layer_metadata=self._layer_metadata,
+        quantize_strategy=self._quantize_strategy,
+        mode='ANALYSE')
 
-    print("[INFO] Start Model Analyse...")
-    collector = self._run_model_with_collector(self._analysed_model, dataset)
-    print("[INFO] Model Analyse Done.")
+    logger.info("Start Model Analyse...")
+    collector = self._run_model_with_collector(self._analysed_model, dataset,
+                                               batch_size, steps)
+    logger.info("Model Analyse Done.")
     #  model_info = collector.get_last_quantize_info()
     model_info = collector.get_most_common_quantize_info()
     return model_info
 
   def _freeze_quantize_info(self, quantize_info):
-    """Freeze the quantize info into the quantize evaluate model."""
+    """Freeze the quantize info into the quantize calibrate and evaluate model."""
     if not self._qcb_model:
-      raise ValueError('No qcb_model found.')
+      logger.error('No qcb_model found.')
 
-    #  Create quantize calibration evaluation model
-    self._qcbev_model = clone_model_with_weights(self._qcb_model)
-    set_layer_mode(self._qcbev_model, 'QCBEV')
+    if not self._qcbev_model:
+      logger.error('No qcbev_model found.')
 
-    # Freeze the quantize info into the model
-    set_quantize_info(self._qcbev_model, quantize_info)
+    # Freeze the quantize info into the quantized model
+    model_utils.set_quantize_info(self._qcb_model, quantize_info)
+    model_utils.set_quantize_info(self._qcbev_model, quantize_info)
 
-  def _adjust_quantize_info(self,
-                            quantize_info,
-                            adjust_shift_cut=True,
-                            adjust_shift_bias=True):
-    """Adjust the quantize info to meet the compiler constraints."""
-
-    def _get_pos(layer, quantize_info, key):
-      if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
-        q_info = quantize_info[layer.layer.name]
-        for k, v in q_info.items():
-          if key == 'w' and v['type'] == 'weight' and k.endswith('kernel:0'):
-            return v['info']['quant_pos_var']
-          elif key == 'b' and v['type'] == 'weight' and k.endswith('bias:0'):
-            return v['info']['quant_pos_var']
-          elif key == 'o':
-            if v.get('type') in ['post_activation', 'pre_activation', 'output']:
-              return v['info']['quant_pos_var']
-      elif isinstance(layer, vitis_quantize_layer.QuantizeLayer):
-        if key == 'o':
-          q_info = quantize_info[layer.name]
-          return q_info['info']['quant_pos_var']
-      else:
-        return None
-
-    def _set_pos(layer, quantize_info, key, new_pos):
-      if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
-        q_info = quantize_info[layer.layer.name]
-        for k, v in q_info.items():
-          if k == 'NoQuantizeActivation':
-            continue
-          if key == 'w' and v['type'] == 'weight' and k.endswith('kernel:0'):
-            v['info']['quant_pos_var'] = new_pos
-            return
-          elif key == 'b' and v['type'] == 'weight' and k.endswith('bias:0'):
-            v['info']['quant_pos_var'] = new_pos
-            return
-          elif key == 'o' and v['type'] in [
-              'post_activation', 'pre_activation', 'output'
-          ]:
-            v['info']['quant_pos_var'] = new_pos
-            return
-      elif isinstance(layer, vitis_quantize_layer.QuantizeLayer):
-        if key == 'o':
-          q_info = quantize_info[layer.name]
-          q_info['info']['quant_pos_var'] = new_pos
-          return
-
-    def _adjust_shift_cut(layer, adjusted_quantize_info, ip, wp, bp, op):
-      min_sc = 0
-      max_sc = 16
-      sc = wp + ip - op
-
-      new_sc = None
-      if sc < min_sc:
-        new_sc = min_sc
-      elif sc > max_sc:
-        new_sc = max_sc
-
-      if new_sc:
-        new_wp = min_sc + op - ip
-        _set_pos(layer, adjusted_quantize_info, 'w', new_wp)
-        print('[INFO] Shift cut of layer {} is {}. It exceeds range [{}, {}]. '
-              'Adjust wpos from {} to {}.'.format(layer.name, int(sc),
-                                                  int(min_sc), int(max_sc),
-                                                  int(wp), int(new_wp)))
-
-    def _adjust_shift_bias(layer, adjusted_quantize_info, ip, wp, bp, op):
-      sc = wp + ip - op
-      min_sb = min(0, -(24 - (8 + sc)))
-      max_sb = 16
-      sb = wp + ip - bp
-
-      new_sb = None
-      if sb < min_sb:
-        new_sb = min_sb
-      elif sb > max_sb:
-        new_sb = max_sb
-
-      if new_sb:
-        new_bp = wp + ip - new_sb
-        _set_pos(layer, adjusted_quantize_info, 'b', new_bp)
-        print('[INFO] Shift bias of layer {} is {}. It exceeds range [{}, {}]. '
-              'Adjust bpos from {} to {}.'.format(layer.name, int(sb),
-                                                  int(min_sb), int(max_sb),
-                                                  int(bp), int(new_bp)))
-
-    adjusted_quantize_info = copy.deepcopy(quantize_info)
-
-    for i in range(len(self._qcbev_model.layers)):
-      if i == 0:
-        continue
-
-      layer = self._qcbev_model.layers[i]
-      if not isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
-        continue
-
-      if not (isinstance(layer.layer, keras.layers.Conv2D) or
-              isinstance(layer.layer, keras.layers.DepthwiseConv2D) or
-              isinstance(layer.layer, keras.layers.Conv2DTranspose) or
-              isinstance(layer.layer, keras.layers.Dense)):
-        continue
-
-      wp = _get_pos(layer, quantize_info, 'w')
-      bp = _get_pos(layer, quantize_info, 'b')
-
-      if isinstance(layer.layer.activation.activation,
-                    vitis_quantize_aware_activation.NoQuantizeActivation):
-        post_layer = layer.outbound_nodes[0].outbound_layer
-        op = _get_pos(post_layer, quantize_info, 'o')
-      else:
-        op = _get_pos(layer, quantize_info, 'o')
-
-      pre_layer = layer.inbound_nodes[0].inbound_layers
-      ip = _get_pos(pre_layer, quantize_info, 'o')
-      if None not in [ip, wp, bp, op]:
-        if adjust_shift_cut:
-          _adjust_shift_cut(layer, adjusted_quantize_info, ip, wp, bp, op)
-        if adjust_shift_bias:
-          _adjust_shift_bias(layer, adjusted_quantize_info, ip, wp, bp, op)
-      else:
-        print('[INFO] Skip quantize pos adjustment for layer {}, '
-              'its quantize pos is [i={}, w={}, b={}, o={}]'.format(
-                  layer.name, ip, wp, bp, op))
-    return adjusted_quantize_info
-
-  def _calibrate_without_loss(self, calib_dataset):
+  def _calibrate_without_loss(self, calib_dataset, calib_batch_size,
+                              calib_steps):
     """Calibrate model without loss, only with unlabeled dataset."""
     # Create quantize calibration model
-    self._qcb_model = create_quantize_model(
-        self._optimized_model, self._quantize_registry, mode='QCB')
+    if not self._optimized_model:
+      logger.error(
+          'Should call `optimize_model()` before `_calibrate_without_loss`.')
+    self._qcb_model, self._layer_metadata = create_quantize_model(
+        self._optimized_model,
+        candidate_layers=self._candidate_layers,
+        layer_metadata=self._layer_metadata,
+        quantize_strategy=self._quantize_strategy,
+        mode='QCB')
 
-    print("[INFO] Start Quantize Calibration...")
-    collector = self._run_model_with_collector(self._qcb_model, calib_dataset)
-    print("[INFO] Quantize Calibration Done.")
+    logger.info("Start Quantize Calibration...")
+    collector = self._run_model_with_collector(self._qcb_model, calib_dataset,
+                                               calib_batch_size, calib_steps)
 
-    print("[INFO] Start Generating Quantized Model...")
     #  Create quantize calibration evaluation model
-    self._qcbev_model = clone_model_with_weights(self._qcb_model)
-    set_layer_mode(self._qcbev_model, 'QCBEV')
+    self._qcbev_model = model_utils.clone_model_with_weights(self._qcb_model)
+    model_utils.set_layer_mode(self._qcbev_model, 'QCBEV')
 
-    # Freeze the quantize info into the model, now using most_common_quantize_info
-    #  last_quantize_info = collector.get_last_quantize_info()
-    common_quantize_info = collector.get_most_common_quantize_info()
-    adjusted_quantize_info = self._adjust_quantize_info(
-        common_quantize_info, adjust_shift_cut=True, adjust_shift_bias=True)
-    self._freeze_quantize_info(adjusted_quantize_info)
-    print("[INFO] Generating Quantized Model Done.")
+    if type(self._quantize_strategy
+           ) == vitis_8bit_quantize_strategy.Vitis8BitQuantizeStrategy:
+      # Freeze the quantize info into the model, now using most_common_quantize_info
+      #  last_quantize_info = collector.get_last_quantize_info()
+      common_quantize_info = collector.get_most_common_quantize_info()
+      self._freeze_quantize_info(common_quantize_info)
+
+    logger.info("Quantize Calibration Done.")
 
   def _calibrate_with_loss(self, loss, metrics, calib_dataset, eval_dataset,
                            verbose):
     """Calibrate model with loss and metrics to get better accuracy, need eval_dataset."""
-    self._calibrate_without_loss(calib_dataset)
-    init_quantize_info = get_quantize_info(self._qcbev_model)
+    self._calibrate_without_loss(calib_dataset, calib_batch_size, calib_steps)
+    init_quantize_info = model_utils.get_quantize_info(self._qcbev_model)
 
     quantize_layers = {}
     for layer in self._qcb_model.layers:
-      if is_quantize_layer(layer):
+      if model_utils.is_quantize_layer(layer):
         quantize_layers[layer.name] = layer
 
     def _recompile(model):
@@ -524,7 +308,7 @@ class VitisQuantizer(object):
       print(pstr)
 
     # Get float results
-    set_layer_mode(self._qcb_model, 'ANALYSE')
+    model_utils.set_layer_mode(self._qcb_model, 'ANALYSE')
     float_results = _evaluate(self._qcb_model)
     _print_results(float_results, 'float_results')
 
@@ -533,16 +317,16 @@ class VitisQuantizer(object):
     _print_results(init_results, 'init_results')
 
     # Do quantize pos searching
-    print("[INFO] Start Quantize Position Searching...")
-    set_layer_mode(self._qcb_model, 'QCBEV')
+    logger.info("Start Quantize Position Searching...")
+    model_utils.set_layer_mode(self._qcb_model, 'QCBEV')
     best_results = init_results
     best_quantize_info = copy.deepcopy(init_quantize_info)
     count = 0
     for name, layer in quantize_layers.items():
       count += 1
-      print('[INFO] ({}/{})Processing layer: {}'.format(count,
-                                                        len(quantize_layers),
-                                                        name))
+      logger.info('({}/{})Processing layer: {}'.format(count,
+                                                       len(quantize_layers),
+                                                       name))
 
       def _search_optimal_pos(init_quantize_info,
                               init_results,
@@ -564,10 +348,10 @@ class VitisQuantizer(object):
 
         for dt in delta:
           if verbose:
-            print('[INFO]  Try change {}.{}: {} -> {}'.format(
+            logger.info('Try change {}.{}: {} -> {}'.format(
                 layer_name, quantizer_name, q_pos, q_pos + dt))
           q_info['quant_pos_var'] = q_pos + dt
-          set_quantize_info(self._qcb_model, tmp_quantize_info)
+          model_utils.set_quantize_info(self._qcb_model, tmp_quantize_info)
           q_results = _evaluate(self._qcb_model)
           if q_results['loss'] < new_best_results['loss']:
             new_best_results = q_results
@@ -576,7 +360,7 @@ class VitisQuantizer(object):
         return new_best_quantize_info, new_best_results
 
       # Quantize Layer
-      if isinstance(layer, vitis_quantize_layer.QuantizeLayer):
+      if isinstance(layer, vitis_quantize_layer.VitisQuantize):
         best_quantize_info, best_results = _search_optimal_pos(
             init_quantize_info=best_quantize_info,
             init_results=best_results,
@@ -592,138 +376,274 @@ class VitisQuantizer(object):
               layer_name=layer.layer.name,
               quantizer_name=quantizer_name)
 
-    print("[INFO] Done Quantize Position Searching.")
+    logger.info("Quantize Position Searching Done.")
     _print_results(best_results, 'Final Best Results')
 
     # Freeze the quantize info into the model, now using last_quantize_info
     self._freeze_quantize_info(best_quantize_info)
 
-  def optimize_model(self,
-                     remove_dropout=True,
-                     fold_conv_bn=True,
-                     fold_bn=True,
-                     replace_relu6=True,
-                     include_cle=True,
-                     cle_steps=10):
-    """Get optimized model."""
-    if not self._optimized_model:
-      self._create_optimized_model(remove_dropout, fold_conv_bn, fold_bn,
-                                   replace_relu6, include_cle, cle_steps)
+  def _parse_configs(self, configs, kwargs):
+    """Parse configs from arguments and update the quantize strategy."""
+    if not isinstance(configs, dict):
+      logger.error('Configs should be a Dict.')
+    configs = {}
+    configs.update(kwargs)
+    if configs:
+      self._quantize_strategy.update(configs)
+
+  # Public Interfaces
+  def optimize_model(self, configs={}, **kwargs):
+    """Get optimized model.
+
+    Available configs:
+       * remove_dropout=True
+       * fold_conv_bn=True
+       * fold_bn=True
+       * replace_relu6=False
+       * include_cle=True
+       * cle_steps=5
+    """
+    # Configure the quantize strategy
+    self._parse_configs(configs, kwargs)
+
+    with self._custom_object_scope:
+      logger.debug('Optimize Configurations:')
+      self._quantize_strategy.get_optimize_pipeline().print_configs()
+
+      self._create_optimized_model()
     return self._optimized_model
 
   def get_analysed_model(self, dataset):
     """Get analysed model."""
     if not self._analyse_model:
-      model_info = self._create_analysed_model(dataset)
+      with self._custom_object_scope:
+        model_info = self._create_analysed_model(dataset)
     return self._analysed_model, model_info
 
   def get_qat_model(self,
-                    remove_dropout=True,
-                    fold_conv_bn=True,
-                    fold_bn=True,
-                    replace_relu6=True,
-                    include_cle=True,
-                    cle_steps=10):
-    """Get quantize-aware training model."""
-    self.optimize_model(remove_dropout, fold_conv_bn, fold_bn, replace_relu6,
-                        include_cle, cle_steps)
-    if not self._qat_model:
-      self._create_qat_model()
+                    init_quant=False,
+                    calib_dataset=None,
+                    calib_batch_size=None,
+                    calib_steps=None,
+                    configs={},
+                    **kwargs):
+    """Get quantize-aware training model.
+
+    Available configs:
+       * input_bit=8
+       * weight_bit=8
+       * activation_bit=8
+       * remove_dropout=True
+       * fold_conv_bn=True
+       * fold_bn=True
+       * replace_relu6=False
+       * include_cle=True
+       * cle_steps=5
+       * forced_cle=False
+       * include_fast_ft=False
+       * fast_ft_epochs=10
+    """
+    with self._custom_object_scope:
+      self._parse_configs(configs, kwargs)
+      self.optimize_model()
+
+      logger.debug('Quantize Pipeline Configurations:')
+      self._quantize_strategy.get_quantize_registry().print_configs()
+      self._quantize_strategy.get_quantize_pipeline().print_configs()
+
+      logger.info('Start Generation of Quantize-aware Training Model.')
+      if not self._qat_model:
+        self._create_qat_model()
+
+      # Do post training quantization to initialize the quantize-aware training model
+      if init_quant:
+        logger.info('Start Initialization with Quantize Calibration...')
+        self.quantize_model(
+            loss=None,
+            metrics=None,
+            calib_dataset=calib_dataset,
+            calib_batch_size=calib_batch_size,
+            calib_steps=calib_steps,
+            eval_dataset=None,
+            verbose=0)
+        init_weights = self._qcbev_model.get_weights()
+        self._qat_model.set_weights(init_weights)
+        logger.info('Initialization with Quantize Calibration Done.')
+
+      logger.info('Generation of Quantize-aware Training Model Done.')
     return self._qat_model
 
-  def quantize_model(
-      self,
-      loss=None,
-      metrics=None,
-      calib_dataset=None,
-      eval_dataset=None,
-      verbose=0,
-      remove_dropout=True,
-      fold_conv_bn=True,
-      fold_bn=True,
-      replace_relu6=True,
-      include_cle=True,
-      cle_steps=10,
-  ):
-    """Interface of quantize calibration."""
-    if not 'calib_dataset':
-      raise ValueError(
+  def quantize_model(self,
+                     loss=None,
+                     metrics=None,
+                     calib_dataset=None,
+                     calib_batch_size=None,
+                     calib_steps=None,
+                     eval_dataset=None,
+                     verbose=0,
+                     configs={},
+                     **kwargs):
+    """Interface of Post-Training Quantize.
+    
+    Available configs:
+       * input_bit=8
+       * weight_bit=8
+       * activation_bit=8
+       * remove_dropout=True
+       * fold_conv_bn=True
+       * fold_bn=True
+       * replace_relu6=False
+       * include_cle=True
+       * cle_steps=5
+       * forced_cle=False
+       * include_fast_ft=False
+       * fast_ft_epochs=10
+       * include_bias_corr=True
+    """
+    if calib_dataset is None:
+      logger.error(
           'Need to assign `calib_dataset` for when calling quantize_model().')
 
     if loss and not eval_dataset:
-      raise ValueError(
+      logger.error(
           'Need to assign `eval_dataset` for when calling quantize_model(loss=loss_fn).'
       )
 
-    self.optimize_model(remove_dropout, fold_conv_bn, fold_bn, replace_relu6,
-                        include_cle, cle_steps)
+    # Configure the quantize strategy
+    self._parse_configs(configs, kwargs)
+    configs = self._quantize_strategy.get_configs()
+    # Disable tf.logging warnings during quantization
+    log_level = tf.get_logger().level
+    tf.get_logger().setLevel('ERROR')
 
-    if not self._qcb_model or not self._qcbev_model:
+    with self._custom_object_scope:
+      # Optimize model before quantization
+      if not self._optimized_model:
+        self.optimize_model()
+
+      logger.debug('Quantize Pipeline Configurations:')
+      self._quantize_strategy.get_quantize_registry().print_configs()
+      self._quantize_strategy.get_quantize_pipeline().print_configs()
+
       if loss:
-        self._calibrate_with_loss(loss, metrics, calib_dataset, eval_dataset,
+        self._calibrate_with_loss(loss, metrics, calib_dataset,
+                                  calib_batch_size, calib_steps, eval_dataset,
                                   verbose)
       else:
-        self._calibrate_without_loss(calib_dataset)
+        self._calibrate_without_loss(calib_dataset, calib_batch_size,
+                                     calib_steps)
+
+        # Post-quantize adjustment (Only for 8bit)
+        if type(self._quantize_strategy
+               ) == vitis_8bit_quantize_strategy.Vitis8BitQuantizeStrategy:
+          logger.info("Start Post-Quantize Adjustment...")
+          quantize_info = model_utils.get_quantize_info(self._qcbev_model)
+          adjust_sc = configs['quantize_pipeline_config']['adjust_shift_cut']
+          adjust_sb = configs['quantize_pipeline_config']['adjust_shift_bias']
+          adjusted_quantize_info = model_utils.post_quant_adjust(
+              self._qcbev_model, quantize_info, adjust_sc, adjust_sb)
+          self._freeze_quantize_info(adjusted_quantize_info)
+          logger.info("Post-Quantize Adjustment Done.")
+
+        if logger.debug_enabled():
+          model_utils.save_model(self._qcbev_model, 'calibrated_model.h5',
+                                 './debug/')
+
+        # Fast finetune
+        include_fast_ft = configs['quantize_pipeline_config']['include_fast_ft']
+        fast_ft_epochs = configs['quantize_pipeline_config']['fast_ft_epochs']
+        if include_fast_ft:
+          logger.info("Start Fast Finetuning...")
+          vitis_fast_finetune.fast_finetune(self._qcbev_model,
+                                            self._optimized_model,
+                                            calib_dataset, calib_batch_size,
+                                            calib_steps, fast_ft_epochs)
+          logger.info("Fast Finetuning Done.")
+
+        #  # Bias correction
+        #  include_bias_corr = configs['quantize_pipeline_config'][
+        #      'include_bias_corr']
+        #  if include_bias_corr:
+        #    logger.info("Start Bias Correction...")
+        #    vitis_bias_correction.bias_correction(self._qcbev_model,
+        #                                          self._optimized_model,
+        #                                          calib_dataset, calib_batch_size,
+        #                                          calib_steps)
+        #    logger.info("Bias Correction Done.")
+
+        if type(self._quantize_strategy
+               ) == vitis_8bit_quantize_strategy.Vitis8BitQuantizeStrategy:
+          if logger.debug_enabled():
+            quantize_info = model_utils.get_quantize_info(self._qcbev_model)
+            model_utils.save_quantize_info(quantize_info, './debug/')
+
+        logger.info("Quantization Finished.")
+
+    tf.get_logger().setLevel(log_level)
     return self._qcbev_model
+
+  @staticmethod
+  def get_deploy_model(model):
+    """Convert the QAT model to the deploy model which is compatible with the compiler
+    and meet the DPU hardware constraints. """
+    deploy_model = model_utils.clone_model_with_weights(model)
+
+    # Fold conv_bn_quantize layers
+    deploy_model = model_utils.conv_bn_quantize_fold(deploy_model)
+
+    # Convert quantize strategy
+    deploy_model = model_utils.convert_quantize_strategy(
+        deploy_model, conversion='8bit_tqt_to_8bit')
+
+    # Remove dropout
+    deploy_model = model_utils.remove_layer(deploy_model, 'Dropout')
+
+    # Post-quant adjustment
+    quantize_info = model_utils.get_quantize_info(deploy_model)
+    adjusted_quantize_info = model_utils.post_quant_adjust(
+        deploy_model,
+        quantize_info,
+        adjust_shift_cut=True,
+        adjust_shift_bias=True)
+    model_utils.set_quantize_info(deploy_model, adjusted_quantize_info)
+    return deploy_model
 
   @staticmethod
   def dump_model(model,
                  dataset=None,
                  output_dir='./dump_results',
+                 dump_float=False,
                  weights_only=False):
     """Dump golden results of quantized model."""
     if not os.path.exists(output_dir):
       os.makedirs(output_dir)
 
     if not weights_only and dataset is None:
-      raise ValueError('`dataset` is needed to dump with activation.')
+      logger.error('`dataset` is needed to dump with activation.')
 
-    print("INFO: Start Dumping...")
-    dump_model_weights(model, output_dir)
+    logger.info("Start Dumping...")
+    model_utils.dump_model_weights(model, dump_float, output_dir)
     if not weights_only:
-      dump_model_activations(model, output_dir, dataset)
+      model_utils.dump_model_activations(model, dataset, dump_float, output_dir)
 
 
-def create_optimize_model(model, layer_quantize_map, remove_dropout,
-                          fold_conv_bn, fold_bn, replace_relu6, include_cle,
-                          cle_steps):
-  """Optimize a `tf.keras` model before quantization, such as bn folding, activation folding."""
-  optimize_transform = \
-    vitis_8bit_quantize_layout_transform.Vitis8BitOptimizeLayoutTransform()
-  optimized_model, layer_quantize_map = optimize_transform.apply(
-      model, layer_quantize_map, remove_dropout, fold_conv_bn, fold_bn,
-      replace_relu6, include_cle, cle_steps)
-  #  optimized_model.save('optimized.h5')
-  return optimized_model, layer_quantize_map
+def create_optimize_model(model, candidate_layers, layer_metadata,
+                          quantize_strategy):
+  """Optimize a `tf.keras` model before quantization, such as bn folding, 
+  activation folding."""
+  optimize_pipeline = quantize_strategy.get_optimize_pipeline()
+  optimized_model, layer_metadata = optimize_pipeline.apply(
+      model, candidate_layers, layer_metadata)
+  return optimized_model, layer_metadata
 
 
-def create_quantize_model(to_quantize, quantize_registry, mode):
+def create_quantize_model(to_quantize, candidate_layers, layer_metadata,
+                          quantize_strategy, mode):
   """Quantize a `tf.keras` model with the default quantization implementation.
 
   Quantization constructs a model which emulates quantization during training.
   This allows the model to learn parameters robust to quantization loss, and
   also model the accuracy of a quantized model.
-
-  For more information, see
-  https://www.tensorflow.org/model_optimization/guide/quantization/training
-
-  Quantize a model:
-
-  ```python
-  # Quantize sequential model
-  model = create_quantize_model(
-      keras.Sequential([
-          layers.Dense(10, activation='relu', input_shape=(100,)),
-          layers.Dense(2, activation='sigmoid')
-      ]))
-
-  # Quantize functional model
-  in = tf.keras.Input((3,))
-  out = tf.keras.Dense(2)(in)
-  model = tf.keras.Model(in, out)
-
-  quantized_model = create_quantize_model(model)
-  ```
 
   Note that this function removes the optimizer from the original model.
 
@@ -734,185 +654,40 @@ def create_quantize_model(to_quantize, quantize_registry, mode):
   Args:
     to_quantize: tf.keras model to be quantized. It can have pre-trained
       weights.
+    quantize_strategy: QuantizeStrategy constaining the configurations.
 
   Returns:
     Returns a new `tf.keras` model prepared for quantization.
   """
   if to_quantize is None:
-    raise ValueError('`to_quantize` cannot be None')
+    logger.error('`to_quantize` cannot be None')
 
   if not isinstance(to_quantize, keras.Model):
-    raise ValueError(
-        '`to_quantize` can only be a `tf.keras.Model` instance. Use '
-        'the `quantize_annotate_layer` API to handle individual layers.'
-        'You passed an instance of type: {input}.'.format(
-            input=to_quantize.__class__.__name__))
+    logger.error('`to_quantize` can only be a `tf.keras.Model` instance. '
+                 'You passed an instance of type: {input}.'.format(
+                     input=to_quantize.__class__.__name__))
 
   if not isinstance(to_quantize, keras.Sequential) \
       and not to_quantize._is_graph_network:  # pylint: disable=protected-access
-    raise ValueError(
-        '`to_quantize` can only either be a tf.keras Sequential or '
-        'Functional model.')
+    logger.error('`to_quantize` can only either be a tf.keras Sequential or '
+                 'Functional model.')
 
   AVAILABLE_MODES = ['QCB', 'QAT', 'ANALYSE', 'QCBEV']
   if mode not in AVAILABLE_MODES:
-    raise ValueError('Mode `{}` is not valid, available modes are:{}.'.format(
+    logger.error('Mode `{}` is not valid, available modes are:{}.'.format(
         mode, AVAILABLE_MODES))
 
-  annotated_model = quantize_annotate_model(to_quantize)
-  return quantize_apply(annotated_model, quantize_registry, mode)
+  return quantize_apply(to_quantize, candidate_layers, layer_metadata,
+                        quantize_strategy, mode)
 
 
-def quantize_annotate_model(to_annotate):
-  """Annotate a `tf.keras` model to be quantized.
-
-  This function does not actually quantize the model. It merely specifies
-  that the model needs to be quantized. `quantize_apply` can then be used
-  to quantize the model.
-
-  This function is intended to be used in conjunction with the
-  `quantize_annotate_layer` API. Otherwise, it is simpler to use
-  `create_quantize_model`.
-
-  Annotate a model while overriding the default behavior for a layer:
-
-  ```python
-  quantize_config = MyDenseQuantizeConfig()
-
-  model = quantize_annotate_model(
-    keras.Sequential([
-      layers.Dense(10, activation='relu', input_shape=(100,)),
-      quantize_annotate_layer(
-          layers.Dense(2, activation='sigmoid'),
-          quantize_config=quantize_config)
-    ]))
-
-  # The first Dense layer gets quantized with the default behavior,
-  # but the second layer uses `MyDenseQuantizeConfig` for quantization.
-  quantized_model = quantize_apply(model)
-  ```
-
-  Note that this function removes the optimizer from the original model.
-
-  Args:
-    to_annotate: `tf.keras` model which needs to be quantized.
-
-  Returns:
-    New tf.keras model with each layer in the model wrapped with
-    `QuantizeAnnotate`. The new model preserves weights from the original
-    model.
-  """
-  if to_annotate is None:
-    raise ValueError('`to_annotate` cannot be None')
-
-  if not isinstance(to_annotate, keras.Model):
-    raise ValueError(
-        '`to_annotate` can only be a `tf.keras.Model` instance. Use '
-        'the `quantize_annotate_layer` API to handle individual layers. '
-        'You passed an instance of type: {input}.'.format(
-            input=to_annotate.__class__.__name__))
-
-  if not isinstance(to_annotate, keras.Sequential) \
-      and not to_annotate._is_graph_network:  # pylint: disable=protected-access
-    raise ValueError(
-        '`to_annotate` can only either be a tf.keras Sequential or '
-        'Functional model.')
-
-  def _add_quant_wrapper(layer):
-    """Add annotation wrapper."""
-    # Already annotated layer. No need to wrap.
-    if isinstance(layer, quantize_annotate_mod.QuantizeAnnotate):
-      return layer
-
-    if isinstance(layer, tf.keras.Model):
-      raise ValueError(
-          'Quantizing a tf.keras Model inside another tf.keras Model is not supported.'
-      )
-
-    return quantize_annotate_mod.QuantizeAnnotate(layer)
-
-  return keras.models.clone_model(
-      to_annotate, input_tensors=None, clone_function=_add_quant_wrapper)
-
-
-def quantize_annotate_layer(to_annotate, quantize_config=None):
-  """Annotate a `tf.keras` layer to be quantized.
-
-  This function does not actually quantize the layer. It is merely used to
-  specify that the layer should be quantized. The layer then gets quantized
-  accordingly when `quantize_apply` is used.
-
-  This method should be used when the user wants to quantize only certain
-  layers of the model, or change the default behavior of how a layer is
-  quantized.
-
-  Annotate a layer:
-
-  ```python
-  model = keras.Sequential([
-      layers.Dense(10, activation='relu', input_shape=(100,)),
-      quantize_annotate_layer(layers.Dense(2, activation='sigmoid'))
-  ])
-
-  # Only the second Dense layer is quantized.
-  quantized_model = quantize_apply(model)
-  ```
-
-  Args:
-    to_annotate: `tf.keras` layer which needs to be quantized.
-    quantize_config: optional `QuantizeConfig` which controls how the layer is
-      quantized. In its absence, the default behavior for the layer is used.
-
-  Returns:
-    `tf.keras` layer wrapped with `QuantizeAnnotate`.
-  """
-  if to_annotate is None:
-    raise ValueError('`to_annotate` cannot be None')
-
-  # Check against keras.Model since it is an instance of keras.layers.Layer.
-  if not isinstance(to_annotate, keras.layers.Layer) or isinstance(
-      to_annotate, keras.Model):
-    raise ValueError(
-        '`to_annotate` can only be a `tf.keras.layers.Layer` instance. '
-        'You passed an instance of type: {input}.'.format(
-            input=to_annotate.__class__.__name__))
-
-  if quantize_config is not None and not isinstance(
-      quantize_config, quantize_config_mod.QuantizeConfig):
-    raise ValueError(
-        '`quantize_config` can only be a `tfmot.quantization.keras.QuantizeConfig` instance.'
-        'You passed an instance of type: {input}.'.format(
-            input=quantize_config.__class__.__name__))
-
-  return quantize_annotate_mod.QuantizeAnnotate(
-      layer=to_annotate, quantize_config=quantize_config)
-
-
-def quantize_apply(model, quantize_registry, mode):
+def quantize_apply(model, candidate_layers, layer_metadata, quantize_strategy,
+                   mode):
   """Quantize a `tf.keras` model that has been annotated for quantization.
 
   Quantization constructs a model which emulates quantization during training.
   This allows the model to learn parameters robust to quantization loss, and
   also model the accuracy of a quantized model.
-
-  For more information, see
-  https://www.tensorflow.org/model_optimization/guide/quantization/training
-  TODO(tfmot): Link blog once launched.
-
-  This function takes a `tf.keras` model in which the desired layers for
-  quantization have already been annotated. See `quantize_annotate_model`
-  and `quantize_annotate_layer`.
-
-  Quantize model.
-  ```python
-  model = keras.Sequential([
-      layers.Dense(10, activation='relu', input_shape=(100,)),
-      quantize_annotate_layer(layers.Dense(2, activation='sigmoid'))
-  ])
-
-  # Only the second Dense layer is quantized.
-  quantized_model = quantize_apply(model)
-  ```
 
   Note that this function removes the optimizer from the original model.
 
@@ -929,108 +704,37 @@ def quantize_apply(model, quantize_registry, mode):
     prepared for quantization.
   """
   if model is None:
-    raise ValueError('`model` cannot be None')
+    logger.error('`model` cannot be None')
 
   if not isinstance(model, keras.Model):
-    raise ValueError('`model` can only be a `tf.keras.Model` instance.'
-                     'You passed an instance of type: {input}.'.format(
-                         input=model.__class__.__name__))
+    logger.error('`model` can only be a `tf.keras.Model` instance.'
+                 'You passed an instance of type: {input}.'.format(
+                     input=model.__class__.__name__))
 
   if not isinstance(model, keras.Sequential) \
       and not model._is_graph_network:  # pylint: disable=protected-access
-    raise ValueError('`model` can only either be a tf.keras Sequential or '
-                     'Functional model.')
+    logger.error('Only tf.keras Sequential or Functional models are supported.')
 
   if not model.built:
-    raise ValueError('`model` must be a built model. '
-                     'been built yet. Please call `model.build(input_shape)` '
-                     'before quantizing your model.')
-
-  def _extract_original_model(model_to_unwrap):
-    """Extracts original model by removing wrappers."""
-    layer_quantize_map = {}
-
-    def _unwrap(layer):
-      if not isinstance(layer, quantize_annotate_mod.QuantizeAnnotate):
-        return layer
-
-      annotate_wrapper = layer
-      layer_quantize_map[annotate_wrapper.layer.name] = {
-          'quantize_config': annotate_wrapper.quantize_config
-      }
-      return annotate_wrapper.layer
-
-    unwrapped_model = keras.models.clone_model(
-        model_to_unwrap, input_tensors=None, clone_function=_unwrap)
-
-    return unwrapped_model, layer_quantize_map
-
-  def _make_quantize_fn(mode):
-
-    def quantize_fn(layer):  # pylint: disable=missing-docstring
-      if layer.name not in layer_quantize_map:
-        return layer
-
-      quantize_config = layer_quantize_map[layer.name].get('quantize_config')
-      if not quantize_config and quantize_registry.supports(layer):
-        quantize_config = quantize_registry.get_quantize_config(layer)
-
-      if not quantize_config:
-        warning_msg = (
-            '[WARNING] Layer {}:{} is not quantized. You can quantize this '
-            'layer by passing a custom quantize strategy to the quantizer. '
-            'For example of quantize strategy, please see the [Vitis AI User Document]'
-            '(https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html#documentation)'
-        )
-        print(
-            warning_msg.format(layer.name, layer.__class__,
-                               quantize_registry.__class__))
-        return layer
-
-      # `QuantizeWrapper` does not copy any additional layer params from
-      # `QuantizeAnnotate`. This should generally be fine, but occasionally
-      # `QuantizeAnnotate` wrapper may contain `batch_input_shape` like params.
-      # TODO(pulkitb): Ensure this does not affect model cloning.
-      return vitis_quantize_wrapper.QuantizeWrapper(layer, quantize_config,
-                                                    mode)
-
-    return quantize_fn
+    logger.error('`model` must be a built model. '
+                 'been built yet. Please call `model.build(input_shape)` '
+                 'before quantizing your model.')
 
   # 1. Create a copy of the model with the same weights. This ensures
   # modifications don't affect the original model, or its weights.
   try:
-    model_copy = clone_model_with_weights(model)
+    model_copy = model_utils.clone_model_with_weights(model)
   except ValueError:
-    raise ValueError(
+    logger.error(
         'Unable to clone model. This generally happens if you used custom Keras layers or objects '
-        'in your model. Please specify them via `quantize_scope` for your calls to `create_quantize_model`'
+        'in your model. Please wrap the functions in the custom_object_scope() with all the custom layers.'
     )
 
-  # 2. Remove QuantizeAnnotate wrappers from the layers in the model. This
-  # extracts the original model structure (easier to transform), and
-  # stores relevant quantization information in a map.
-  unwrapped_model, layer_quantize_map = _extract_original_model(model_copy)
-  # Model cloning excludes input layers. Add input layers into the map
-  # since they need to be matched for patterns as well.
-  # pylint: disable=protected-access
-  for input_layer in unwrapped_model._input_layers:
-    for outbound_node in input_layer._outbound_nodes:
-      if outbound_node.outbound_layer.name in layer_quantize_map:
-        layer_quantize_map[input_layer.name] = {}
-  # pylint: enable=protected-access
+  # 2. Run the pipeline of quantize transforms.
+  # Quantizable layers will be wrapped with QuantizeWrapper while others ramain float.
+  quantize_pipeline = quantize_strategy.get_quantize_pipeline()
+  quantized_model, layer_metadata = quantize_pipeline.apply(
+      model_copy, candidate_layers, layer_metadata,
+      quantize_strategy.get_quantize_registry(), mode)
 
-  # 3. Apply the graph transformations required to match model passes on
-  # target device/dialect.
-  quantize_transform = \
-    vitis_8bit_quantize_layout_transform.Vitis8BitQuantizeLayoutTransform()
-  # layer_quantize_map gets modified by the transformations.
-  transformed_model, layer_quantize_map = quantize_transform.apply(
-      unwrapped_model, layer_quantize_map, quantize_registry, mode)
-
-  # 4. Actually quantize all the relevant layers in the model. This is done by
-  # wrapping the layers with QuantizeWrapper, and passing the associated
-  # `QuantizeConfig`.
-  return keras.models.clone_model(
-      transformed_model,
-      input_tensors=None,
-      clone_function=_make_quantize_fn(mode))
+  return quantized_model, layer_metadata

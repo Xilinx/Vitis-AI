@@ -49,10 +49,13 @@ source ${SCRIPTS}/install_xrt.sh
 # Install the required shells
 ##############################
 # reload drivers for XRT (xocl, xclmgmt)
-sudo modprobe -r xocl
-sudo modprobe -r xclmgmt
-sudo modprobe xocl
-sudo modprobe xclmgmt
+
+# This is sometimes helpful, sometimes troublesome
+# For now it is being removed
+#sudo modprobe -r xocl
+#sudo modprobe -r xclmgmt
+#sudo modprobe xocl
+#sudo modprobe xclmgmt
 
 sleep 3
 

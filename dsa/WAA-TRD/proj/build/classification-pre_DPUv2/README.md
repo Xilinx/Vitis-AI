@@ -16,7 +16,7 @@ Required:
 
   Required:
   - Vitis 2020.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-2.html) 
-  - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
+  - [CP210x_Universal_Windows_Driver](https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.2)
   - [zcu102 base platform](https://www.xilinx.com/member/forms/download/design-license-zcu102-base.html?filename=xilinx_zcu102_base_202020_1.zip)
@@ -94,13 +94,12 @@ Note that
 
 ## 2.3 Installing Vitis AI Runtime on the Evaluation Board
 
-- Download the [Vitis AI Runtime 1.3.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.0.tar.gz). 
+- Download the [Vitis AI Runtime 1.4.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.4.0.tar.gz). 
 
-	
 - Untar the runtime packet and copy the following folder to the board using scp.
 ```
-	tar -xzvf vitis-ai-runtime-1.3.0.tar.gz
-	scp -r vitis-ai-runtime-1.3.0/aarch64/centos root@IP_OF_BOARD:~/
+	tar -xzvf vitis-ai-runtime-1.4.0.tar.gz
+	scp -r vitis-ai-runtime-1.4.0/2020.2/aarch64/centos root@IP_OF_BOARD:~/
 ```
 - Install the Vitis AI Runtime on the evaluation board. Execute the following command.
 ```
@@ -130,19 +129,19 @@ Here we install it under `~/petalinux_sdk`.
     tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
     ```
 
-* Cross compile `resnet50_waa` example.
+* Cross compile `resnet50` example.
     ```
-    cd  ~/Vitis-AI/dsa/WAA-TRD/app/resnet50_waa
+    cd  ~/Vitis-AI/dsa/WAA-TRD/app/resnet50
     bash -x build.sh
     ```
-    If the compilation process does not report any error and the executable file `resnet50_waa` is generated , then the host environment is installed correctly.
+    If the compilation process does not report any error and the executable file `resnet50` is generated , then the host environment is installed correctly.
 
 
 
 ## 2.5 Download Model files for Resnet50
 
 ```
-%	cd /Vitis-AI/dsa/WAA-TRD/app/resnet50_waa
+%	cd /Vitis-AI/dsa/WAA-TRD/app/resnet50
 %	mkdir model_zcu102
 %	cd model_zcu102
 %	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.0.tar.gz -O resnet50-zcu102_zcu104-r1.3.0.tar.gz
@@ -152,20 +151,22 @@ Here we install it under `~/petalinux_sdk`.
 ## 2.6 Run Resnet50 Example
 This part is about how to run the Resnet50 example on zcu102 board.
 
-* Download the images at http://image-net.org/download-images and copy images to `Vitis-AI/dsa/WAA-TRD/app/resnet50_waa/img` 
+* Download the images at http://image-net.org/download-images and copy images to `Vitis-AI/dsa/WAA-TRD/app/resnet50/img` 
 
-* Copy the directory $TRD_HOME/app/resnet50_waa to the BOOT partition of the SD Card.
+* Copy the directory $TRD_HOME/app/resnet50 to the BOOT partition of the SD Card.
 
 * Please insert SD_CARD on the ZCU102 board. After the linux boot, run:
 
 ```
-% cd /media/sd-mmcblk0p1/resnet50_waa
+% cd /media/sd-mmcblk0p1/resnet50
 % cp /media/sd-mmcblk0p1/dpu.xclbin /usr/lib/
 % export XILINX_XRT=/usr
 % echo 1 > /proc/sys/kernel/printk
-% ./resnet50_waa model_zcu102/resnet50/resnet50.xmodel
+%
+% #run with waa
+%./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel 1 0
 
-Expect: 
+Expect:
 Image : ./img/bellpeppe-994958.JPEG
 top[0] prob = 0.990457  name = bell pepper
 top[1] prob = 0.004048  name = acorn squash
@@ -173,4 +174,15 @@ top[2] prob = 0.002455  name = cucumber, cuke
 top[3] prob = 0.000903  name = zucchini, courgette
 top[4] prob = 0.000703  name = strawberry
 
-```
+``
+
+% #run without waa
+%./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel 0 0
+
+Expect:
+Image : ./img/bellpeppe-994958.JPEG
+top[0] prob = 0.992920  name = bell pepper
+top[1] prob = 0.003160  name = strawberry
+top[2] prob = 0.001493  name = cucumber, cuke
+top[3] prob = 0.000705  name = acorn squash
+top[4] prob = 0.000428  name = zucchini, courgette`

@@ -105,7 +105,7 @@ void dp_quantize_gpu(const int n, const T* x, T* y, const int bit_width,
   bool dpu_accuracy =
       (!getenv("DPU_ACCURACY")) ||
       (getenv("DPU_ACCURACY") && std::atoi(getenv("DPU_ACCURACY")) == 1);
-  if (mode == 0 || (!dpu_accuracy)) {
+  if (mode != 1 || (!dpu_accuracy)) {
     // Do normal round for weights/biases and if DPU_ACCURACY is false
     quantize_kernel_gpu<T><<<block_count, thread_per_block>>>(
         n, x, y, step, lower_bound, upper_bound);

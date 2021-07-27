@@ -32,17 +32,17 @@ struct FaceDetectResult {
    *@brief The coordinate and confidence of a face.
    */
   struct BoundingBox {
-    /// x-coordinate , x is normalized relative to the input image columns ,the
-    /// value range from 0 to 1.
+    /// x-coordinate. x is normalized relative to the input image columns.
+    /// Range from 0 to 1.
     float x;
-    /// y-coordinate , y is normalized relative to the input image rows ,the
-    /// value range from 0 to 1.
+    /// y-coordinate. y is normalized relative to the input image rows.
+    /// Range from 0 to 1.
     float y;
-    /// face width , width is normalized relative to the input image columns , the
-    /// value range from 0 to 1.
+    /// face width. Width is normalized relative to the input image columns,
+    /// Range from 0 to 1.
     float width;
-    /// face height , heigth is normalized relative to the input image rows ,the
-    /// value range from 0 to 1.
+    /// face height. Heigth is normalized relative to the input image rows,
+    /// Range from 0 to 1.
     float height;
     /// face confidence, the value range from 0 to 1.
     float score;

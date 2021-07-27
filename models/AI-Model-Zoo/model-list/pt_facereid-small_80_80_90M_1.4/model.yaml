@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: face re-identification model(light-weighted) in tracking senario.
+input size: 80*80
+float ops: 90M
+task: face reid
+framework: pytorch
+prune: 'no'
+version: 1.4
+files:
+- name: pt_facereid-small_80_80_90M_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_facereid-small_80_80_90M_1.4.zip
+  checksum: f6714310a322c1a07baa7cdc6867d9a8
+- name: facereid-small_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 18c1ec5a6bf5a3821d12a157d4fe0244
+- name: facereid-small_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-vck190-r1.4.0.tar.gz
+  checksum: 97f93c20163070f65c756df8c4766ce6
+- name: facereid-small_pt
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: f7857717582b928986204aa65d07f1fa
+- name: facereid-small_pt
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-small_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 1dad68a71d21d9752ba4c22a282c073d
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

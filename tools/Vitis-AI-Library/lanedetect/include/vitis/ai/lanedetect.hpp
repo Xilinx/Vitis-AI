@@ -66,8 +66,8 @@ namespace ai {
     if (type == 2 && points_poly[0].x < image.rows * 0.5)
       continue;
     cv::polylines(image, points_poly, false,
-                  Scalar(color1[type], color2[type], color3[type]), 3, CV_AA,
-                  0);
+                  Scalar(color1[type], color2[type], color3[type]), 3,
+ cv::LINE_AA, 0);
   }
     @endcode
  *
@@ -88,14 +88,14 @@ class RoadLine {
    * @return An instance of RoadLine class.
    */
 
-  static std::unique_ptr<RoadLine> create(const std::string &model_name,
+  static std::unique_ptr<RoadLine> create(const std::string& model_name,
                                           bool need_preprocess = true);
   /**
    * @cond NOCOMMENTS
    */
  protected:
   explicit RoadLine();
-  RoadLine(const RoadLine &) = delete;
+  RoadLine(const RoadLine&) = delete;
 
  public:
   virtual ~RoadLine();
@@ -134,7 +134,7 @@ class RoadLine {
    *
    * @return The struct of RoadLineResult
    */
-  virtual RoadLineResult run(const cv::Mat &image) = 0;
+  virtual RoadLineResult run(const cv::Mat& image) = 0;
   /**
    * @brief Function to get running result of the RoadLine network in
    * batch mode.
@@ -145,7 +145,7 @@ class RoadLine {
    * @return The vector of RoadLineResult
    */
   virtual std::vector<RoadLineResult> run(
-      const std::vector<cv::Mat> &images) = 0;
+      const std::vector<cv::Mat>& images) = 0;
 };
 }  // namespace ai
 }  // namespace vitis

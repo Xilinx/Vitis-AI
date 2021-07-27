@@ -13,16 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Note XDNNv3 aka DPUv1 is to be retired
-
-XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=xdnnv3_xclbins_1_3_0.tar.gz"
-XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
-INSTALLER=tar
-INSTALL_PATH=/
-
-wget $XCLBIN_URL -O $XCLBIN_INSTALLER && sudo ${INSTALLER} -xzf $XCLBIN_INSTALLER --directory $INSTALL_PATH && rm $XCLBIN_INSTALLER
-
-XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_3_0.tar.gz"
+XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_4_0.tar.gz"
 XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
 INSTALLER=tar
 INSTALL_PATH=/

@@ -9,9 +9,9 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * permissions and limitations under the License.
  */
 #include "dpu_task_imp.hpp"
 
@@ -36,11 +36,14 @@
 #include <vitis/ai/time_measure.hpp>
 #include <vitis/ai/weak.hpp>
 #include <xir/tensor/tensor.hpp>  // for xir
+
 using namespace vitis::ai;
 using namespace std;
 
 DEF_ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME, "0");
 DEF_ENV_PARAM(DEBUG_DPBASE, "0");
+
+int GLOBAL_ENABLE_C_SOFTMAX = 0;
 
 //# Disable for DPUV1, as DPUV1 dont have xmodel
 #ifndef ENABLE_DPUCADX8G_RUNNER
@@ -80,10 +83,22 @@ static int get_batch_size_of_runner(vart::Runner* r) {
   return r->get_input_tensors()[0]->get_shape().at(0);
 }
 
+//# Enable software softmax for DPU's which uses rt-engine
+static void enable_sw_softmax(const xir::Subgraph* subgraph) {
+  auto libs = subgraph->get_attr<std::map<std::string, std::string>>("runner");
+  auto iter_lib = libs.find("run");
+  auto lib_name_ = iter_lib->second;
+
+  if (lib_name_.compare("librt-engine.so") == 0) GLOBAL_ENABLE_C_SOFTMAX = 2;
+
+  return;
+}
+
 static std::vector<std::unique_ptr<vart::Runner>> create_runners_with_attrs(
     std::shared_ptr<GraphHolder> graph_holder, xir::Attrs* attrs) {
   auto subgraphs = (graph_holder.get())->get_subgraphs();
   CHECK_GT(subgraphs.size(), 0);
+  enable_sw_softmax(subgraphs[0]);
   auto runners = std::vector<std::unique_ptr<vart::Runner>>();
   runners.reserve(subgraphs.size());
   auto batch_size = 0;
@@ -533,12 +548,14 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
   auto ret = vitis::ai::library::InputTensor{};
   auto tensor = tb->get_tensor();
   auto dim_num = tensor->get_shape().size();
-  ret.size = tensor->get_element_num() *
-             std::ceil(tensor->get_data_type().bit_width / 8.f);
-  ret.batch = dim_num <= 0 ? 1 : tensor->get_shape().at(0);
+  auto batch = dim_num <= 0 ? 1 : tensor->get_shape().at(0);
+  ret.batch = batch;
   if (num_of_input != -1) {
     ret.batch = (unsigned)num_of_input;
   }
+  ret.size = tensor->get_element_num() *
+             std::ceil(tensor->get_data_type().bit_width / 8.f) * ret.batch /
+             batch;
   //# Store the params as per format
   if (fmt == vart::Runner::TensorFormat::NHWC) {
     ret.height = dim_num <= 1 ? 1 : tensor->get_shape().at(1);
@@ -585,13 +602,15 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
   auto ret = vitis::ai::library::OutputTensor{};
   auto tensor = tb->get_tensor();
   auto dim_num = tensor->get_shape().size();
-  ret.size = tensor->get_element_num() *
-             std::ceil(tensor->get_data_type().bit_width / 8.f);
-  ret.batch = dim_num <= 0 ? 1 : tensor->get_shape().at(0);
+  auto batch = dim_num <= 0 ? 1 : tensor->get_shape().at(0);
+  ret.batch = batch;
   if (num_of_input != -1) {
     CHECK_LE((unsigned)num_of_input, ret.batch) << "logical error";
     ret.batch = (unsigned)num_of_input;
   }
+  ret.size = tensor->get_element_num() *
+             std::ceil(tensor->get_data_type().bit_width / 8.f) * ret.batch /
+             batch;
   //# Store the params as per format
   if (fmt == vart::Runner::TensorFormat::NHWC) {
     if (dim_num == 2) {

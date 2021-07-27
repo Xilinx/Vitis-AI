@@ -286,8 +286,7 @@ MyPerformanceTestRunner::MyPerformanceTestRunner(
 }
 thread_local int error_counter = 0;
 thread_local int ok_counter = 0;
-
-std::atomic<u_int64_t> errors_total = 0;
+u_int64_t errors_total = 0;
 MyPerformanceTestRunner::~MyPerformanceTestRunner() {
   errors_total += error_counter;
   LOG_IF(INFO, error_counter) << "error_counter = " << error_counter

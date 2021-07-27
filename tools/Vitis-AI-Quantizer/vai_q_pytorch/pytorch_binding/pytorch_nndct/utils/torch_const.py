@@ -37,4 +37,8 @@ class TorchOpClassType(Enum):
   TENSOR = 'tensor'
   PRIMITIVE = 'primitive'
   UNKNOWN = 'unknown'
+  TORCH_SCRIPT_BUILTIN_FUNCTION = 'torch_bultin_funcion'
+  MATH_BUILTIN_FUNCTION = 'math_builtin'
+  GLOBAL_BUILTIN_FUNCTION = 'global_builtin'
+  NN_CORE_FUNCTION = 'torch._C.nn'
   

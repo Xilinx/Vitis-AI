@@ -24,6 +24,7 @@
 #include <iostream>
 #include <mutex>
 #include <vitis/ai/env_config.hpp>
+#include <vitis/ai/trace.hpp>
 
 #include "./dpu_edge.hpp"
 DEF_ENV_PARAM(DEBUG_DPU_CONTROLLER, "0");
@@ -37,7 +38,20 @@ DEF_ENV_PARAM_2(XLNX_DIRTY_HACK_XVDPU_GEN_BASE, "0x200", uint32_t);
 DpuControllerXrtXvDpu::DpuControllerXrtXvDpu(
     std::unique_ptr<xir::XrtCu>&& xrt_cu)
     : xir::DpuController{},  //
-      xrt_cu_{std::move(xrt_cu)} {}
+      xrt_cu_{std::move(xrt_cu)} {
+        for (size_t i=0;i < get_num_of_dpus();i++) {
+          auto cu_device_id = xrt_cu_->get_device_id(i);
+          auto cu_core_id = xrt_cu_->get_core_id(i);
+          auto cu_name = xrt_cu_->get_instance_name(i);
+          auto cu_full_name = xrt_cu_->get_full_name(i);
+          auto cu_fingerprint = xrt_cu_->get_fingerprint(i);
+          auto cu_batch = get_batch_size(i);
+            vitis::ai::trace::add_info("dpu-controller",
+            TRACE_VAR(cu_device_id), TRACE_VAR(cu_core_id),
+            TRACE_VAR(cu_batch), TRACE_VAR(cu_name),
+            TRACE_VAR(cu_full_name), TRACE_VAR(cu_fingerprint));
+        }
+      }
 
 DpuControllerXrtXvDpu::~DpuControllerXrtXvDpu() {}
 
@@ -47,6 +61,7 @@ std::string DpuControllerXrtXvDpu::xdpu_get_counter(size_t device_core_id) {
     char name[64];
     uint32_t addr;
   } regs[] = {
+      {"AP", 0x0},                            //
       {"LSTART", 0x180},  {"LEND", 0x184},    //
       {"CSTART", 0x188},  {"CEND", 0x18C},    //
       {"SSTART", 0x190},  {"SEND", 0x194},    //
@@ -74,7 +89,7 @@ static std::string dump_gen_reg(const std::vector<uint64_t>& gen_reg) {
 }
 static size_t get_offset(size_t batch, size_t reg_id) {
   auto base = ENV_PARAM(XLNX_DIRTY_HACK_XVDPU_GEN_BASE);
-  auto offset = base + batch * 0x20u + reg_id * 0x8u;
+  auto offset = base + batch * 0x40u + reg_id * 0x8u;
   return offset;
 }
 
@@ -163,6 +178,7 @@ void DpuControllerXrtXvDpu::run(size_t core_idx, const uint64_t code,
       ecmd->count = p + 1;
     }
   };
+  vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_start, core_idx);
   xrt_cu_->run(
       core_idx, func,
       // on_success
@@ -178,6 +194,7 @@ void DpuControllerXrtXvDpu::run(size_t core_idx, const uint64_t code,
                    << "core_idx = " << core_idx << "\n"
                    << xdpu_get_counter(core_idx);
       });
+  vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_end, core_idx);
 }
 size_t DpuControllerXrtXvDpu::get_num_of_dpus() const {
   return xrt_cu_->get_num_of_cu();
@@ -204,7 +221,7 @@ size_t DpuControllerXrtXvDpu::get_batch_size(size_t device_core_id) const {
 
 size_t DpuControllerXrtXvDpu::get_size_of_gen_regs(
     size_t device_core_id) const {
-  return 4u;
+  return 8u;
 }
 std::string DpuControllerXrtXvDpu::get_full_name(size_t device_core_id) const {
   return xrt_cu_->get_full_name(device_core_id);

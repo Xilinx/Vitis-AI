@@ -35,13 +35,14 @@ struct FaceFeatureFloatResult {
   int height;
   /// The 512 dimensions vector
   using vector_t = std::array<float, 512>;
-  // A vector of 512 float values.
+  /// A vector of 512 float values.
   std::unique_ptr<vector_t> feature;
 };
 
 /**
  * @struct FaceFeatureFixedResult
- * @brief The result of FaceFeature. It is a 512 dimensions vector, fix point values.
+ * @brief The result of FaceFeature. It is a 512 dimensions vector, fix point
+ * values.
  * */
 struct FaceFeatureFixedResult {
   /// Width of an input image
@@ -52,7 +53,7 @@ struct FaceFeatureFixedResult {
   float scale;
   /// The 512 dimensions vector, in fix point format
   using vector_t = std::array<int8_t, 512>;
-  // A vector of 512 fixed values.
+  /// A vector of 512 fixed values.
   std::unique_ptr<vector_t> feature;
 };
 

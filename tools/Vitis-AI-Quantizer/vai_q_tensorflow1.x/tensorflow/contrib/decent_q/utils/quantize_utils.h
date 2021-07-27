@@ -135,7 +135,12 @@ Status ConvertMeanToAvgpool(const GraphDef& input_graph_def,
                             GraphDef* output_graph_def);
 
 // Convert the graph to simulate DPU behaviour, such as avgpooling and leakyrelu
-Status SimulateDPU(const GraphDef& input_graph_def, GraphDef* output_graph_def);
+Status SimulateDPU(const GraphDef& input_graph_def, GraphDef* output_graph_def,
+                   const int scale_all_avgpool);
+
+// remove IdentityN node in swish pattern
+Status RemoveIdentityNNode(const GraphDef& input_graph_def,
+                          GraphDef* output_graph_def);
 
 // Insert Identity node after nodes and keep the node name unchanged
 Status InsertIdForNodes(const GraphDef& input_graph_def,

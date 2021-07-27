@@ -1,0 +1,9 @@
+@startuml
+class Mat {
+  int rows;
+  int cols;
+  int type;
+  void* data;
+  size_t step;
+}
+@enduml

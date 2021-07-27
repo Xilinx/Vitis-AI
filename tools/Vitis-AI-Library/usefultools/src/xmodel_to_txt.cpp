@@ -108,3 +108,15 @@ std::string xmodel_to_txt(std::string xmodel) {
   }
   return DebugString(pb_graph2);
 }
+std::map<std::string, std::string> get_reg_id_to_parameter(
+    const xir::Subgraph* s) {
+  std::map<std::string, std::string> md5s;
+  if (s->has_attr("reg_id_to_parameter_value")) {
+    auto values = s->get_attr<std::map<std::string, std::vector<char>>>(
+        "reg_id_to_parameter_value");
+    for (auto& it : values) {
+      md5s[it.first] = md5sum(string(it.second.begin(), it.second.end()));
+    }
+  }
+  return md5s;
+}

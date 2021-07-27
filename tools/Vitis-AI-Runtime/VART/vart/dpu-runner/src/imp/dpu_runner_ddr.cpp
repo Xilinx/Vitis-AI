@@ -28,14 +28,55 @@
 #include "vart/tensor_buffer.hpp"
 DEF_ENV_PARAM(XLNX_ENABLE_DUMP, "0");
 DEF_ENV_PARAM(DEBUG_DPU_RUNNER, "0");
+DEF_ENV_PARAM(DEBUG_DPU_WARMUP, "0");
 
 namespace vart {
 namespace dpu {
+static void init_tensor_buffer(vart::TensorBuffer* tb, int is_output) {
+  auto shape = tb->get_tensor()->get_shape();
+  for (auto i = 0; i < shape[0]; ++i) {
+    auto index = std::vector<int>(shape.size(), 0);
+    index[0] = i;
+    int64_t data;
+    size_t size;
+    std::tie(data, size) = tb->data(index);
+    if (0) {
+      for (auto s = 0u; s < size; ++s) {
+        char* p = reinterpret_cast<char*>(data);
+        p[s] = (char)(int)s;
+      }
+    }
+    if (1) {
+      if (is_output) {
+        tb->sync_for_read(0u, size);
+      } else {
+        tb->sync_for_write(0u, size);
+      }
+    }
+  }
+}
 
 DpuRunnerDdr::DpuRunnerDdr(const std::vector<const xir::Tensor*> input_tensors,
                            const std::vector<const xir::Tensor*> output_tensors,
                            DpuSessionBaseImp* session)
-    : vart::dpu::DpuRunnerBaseImp(input_tensors, output_tensors, session) {}
+    : vart::dpu::DpuRunnerBaseImp(input_tensors, output_tensors, session) {
+  for (auto i = 0; i < ENV_PARAM(DEBUG_DPU_WARMUP); ++i) {
+    if (0)
+      for (auto tb : session_->get_inputs()) {
+        init_tensor_buffer(tb, 0);
+      }
+    if (0) execute_async(session_->get_inputs(), session_->get_outputs());
+    if (1)
+      for (auto tb : session_->get_outputs()) {
+        init_tensor_buffer(tb, 1);
+      }
+    if (0)
+      LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_WARMUP))
+          << "dpu runner warmup " << (void*)this                          //
+          << " device_core_id " << session_->get_device_core_id() << " "  //
+          ;
+  }
+}
 
 static int find_tensor_index(std::vector<vart::TensorBuffer*> tensor_buffers,
                              const std::string& name) {
@@ -204,21 +245,28 @@ void DpuRunnerDdr::fill_gen_reg(size_t device_core_id,
     auto reg_id = get_reg_id(reg->get_tensor());
     CHECK(reg_id >= 0 && reg_id < 16) << "reg_id = " << reg_id;
     int ddr_addr = get_ddr_addr(reg->get_tensor());
-    for (auto batch_idx = 0; batch_idx < num_of_batch && 
-         batch_idx <= (reg->get_tensor()->get_shape()[0] - 1); ++batch_idx) {
-      dim_idx[0] = batch_idx;
+    for (auto batch_idx = 0; batch_idx < num_of_batch; ++batch_idx) {
+      auto idx2 = std::min(batch_idx, reg->get_tensor()->get_shape()[0] - 1);
+      dim_idx[0] = idx2;
       uint64_t base;
       size_t size;
       std::tie(base, size) = reg->data_phy(dim_idx);
       CHECK_NE(size, 0u);
-      //move get_ddr_addr() out of this loop to improve perf;
-      //int ddr_addr = get_ddr_addr(reg->get_tensor());
+      // move get_ddr_addr() out of this loop to improve perf;
+      // int ddr_addr = get_ddr_addr(reg->get_tensor());
       base = base - ddr_addr;
       auto reg_idx = batch_idx * num_of_regs + reg_id;
       LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER) >= 2)
-          << "set base reg: " << reg_idx  //
-          << "base = " << std::hex << "0x" << base << std::dec
-          << "ddr = " << std::hex << "0x" << ddr_addr << std::dec;
+          << "set base reg: " << reg_idx                            //
+          << " num_of_regs: " << num_of_regs                        //
+          << " reg_id: " << reg_id                                  //
+          << " batch_idx: " << batch_idx                            //
+          << " num_of_batch " << num_of_batch                       //
+          << " / " << (reg->get_tensor()->get_shape()[0] - 1)       //
+          << " base = " << std::hex << "0x" << base << std::dec     //
+          << " ddr = " << std::hex << "0x" << ddr_addr << std::dec  //
+          << " tensor " << reg->get_tensor()->to_string()           //
+          ;
       gen_reg[reg_idx] = base;
     }
   }

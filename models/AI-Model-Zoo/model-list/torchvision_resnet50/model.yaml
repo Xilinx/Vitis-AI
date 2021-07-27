@@ -21,27 +21,27 @@ For more information, please visit: ' https://pytorch.org/docs/stable/torchvisio
 files:
 - name: resnet50_pt
   type: xmodel
-  board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-zcu102_zcu104-r1.3.1.tar.gz
-  checksum: d27926fcf796358a76ca89024a939f13
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 000c1799abe92eeb9890243cb4a25f68
 - name: resnet50_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck190-r1.3.1.tar.gz
-  checksum: 4853e78d285323e2cd6fc9de3b67e364
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck190-r1.4.0.tar.gz
+  checksum: ef1a2acfd9027adefb9aba32d79518b0
 - name: resnet50_pt
   type: xmodel
-  board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-r1.3.1.tar.gz
-  checksum: 87906e732ea1939c8a2212a076878128
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: d60878fe399cd7efd6a0d2bc97dbec67
 - name: resnet50_pt
   type: xmodel
-  board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50lv-u280-r1.3.1.tar.gz
-  checksum: b3e8424bc00596570c9f1b48c8da15e3
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: e1b883483e43d2d59468e07624735dae
 - name: resnet50_pt
   type: xmodel
-  board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
-  checksum: 1a4a1738cd963bb879e4b8b1cdd988d0
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 3dff5841ac72558aeec7a19038f99865
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

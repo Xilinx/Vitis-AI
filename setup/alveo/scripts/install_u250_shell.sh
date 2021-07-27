@@ -34,34 +34,39 @@ INSTALLER=""
 ##############################
 # Download DSA
 ##############################
-if [[ $distroname == *"Ubuntu 16.04"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015_16.04.deb"
-  XSA_INSTALLER=/tmp/xsa.deb
+if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* || $distroname == *"Ubuntu 20.04"* ]]; then
+  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-gen3x16-xdma-all_3.1-3063142.deb_2.tar.gz"
+  XSA_INSTALLER=/tmp/xsa.tar.gz
   INSTALLER="apt"
-elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015_18.04.deb"
-  XSA_INSTALLER=/tmp/xsa.deb
-  INSTALLER="apt"
-elif [[ $distroname == *"Ubuntu 20.04"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015_20.04.deb" # Doesn't exist yet
-  XSA_INSTALLER=/tmp/xsa.deb
-  INSTALLER="apt"
-elif [[ $distroname == *"CentOS"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015.x86_64.rpm"
-  XSA_INSTALLER=/tmp/xsa.rpm
-  INSTALLER="yum"
-elif [[ $distroname == *"Red Hat"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-xdma-201830.2-2580015.x86_64.rpm"
-  XSA_INSTALLER=/tmp/xsa.rpm
+elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
+  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-gen3x16-xdma-noarch_3.1-3063142.rpm_2.tar.gz"
+  XSA_INSTALLER=/tmp/xsa.tar.gz
   INSTALLER="yum"
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
 fi
 
-wget $XSA_URL -O $XSA_INSTALLER && sudo ${INSTALLER} install $XSA_INSTALLER -y && rm $XSA_INSTALLER
+XSA_DIR="/tmp/xsa"
+mkdir $XSA_DIR
+
+wget $XSA_URL -O $XSA_INSTALLER
+tar -xzf $XSA_INSTALLER --directory $XSA_DIR
+sudo $INSTALLER install $XSA_DIR/*cmc* -y
+sudo $INSTALLER install $XSA_DIR/*sc-fw* -y
+sudo $INSTALLER install $XSA_DIR/*validate* -y
+sudo $INSTALLER install $XSA_DIR/*base* -y
+sudo $INSTALLER install $XSA_DIR/*shell* -y
+rm $XSA_INSTALLER
+rm -rf $XSA_DIR
 
 ##############################
 # Flash alveo
 ##############################
-sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u250_xdma_201830_2
+sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u250_gen3x16_base_3
+
+echo "INFO: The Alveo-U250 Shell is a DFX-2RP platform."
+echo "INFO: This means a base shell is loaded from flash."
+echo "INFO: However, the user must dynamically load an intermediate shell, after every cold boot."
+echo "INFO: See AR: https://www.xilinx.com/support/answers/75975.html"
+echo "EXAMPLE: sudo /opt/xilinx/xrt/bin/xbmgmt partition --program --name xilinx_u250_gen3x16_xdma_shell_3_1 --card 0000:03:00.0"

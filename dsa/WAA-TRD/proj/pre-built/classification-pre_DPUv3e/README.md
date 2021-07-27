@@ -13,7 +13,7 @@ The following tutorials assume that the $TRD_HOME environment variable is set as
 
 We need install the Vitis Core Development Environment.
 
-Download [Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.3.1-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
+Download [Vitis-AI.1.4-WAA-TRD.bin.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=Vitis-AI.1.4-WAA-TRD.bin.tar.gz). Untar the packet and copy `bin` folder to `Vitis-AI/dsa/WAA-TRD/`. 
 
 Open a linux terminal. Set the linux as Bash mode and execute following instructions.
 
@@ -32,18 +32,19 @@ Note that
 ### 2. Setting Up the Target Alveo U50
 **Note that the docker container needs to be loaded and the below commands need to be run in the docker environment. Docker installation instructions are available [here](../../../../../README.md#Installation)**
 
-* Follow the steps mentioned [here](../../../../../setup/alveo/u50_u50lv_u280/README.md) to setup the target. 
+* Follow the steps mentioned [here](../../../../../setup/alveo/README.md) to setup the target. 
 
 * Update xclbin & hbm address assignment file
 
 	```
-	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/classification-pre_DPUv3e/_x_output/dpu.xclbin /usr/lib/dpu.xclbin
-	  sudo cp /workspace/dsa/WAA-TRD/proj/pre-built/classification-pre_DPUv3e/hbm_address_assignment.txt /usr/lib/
+	  sudo cp ${VAI_HOME}/dsa/WAA-TRD/proj/pre-built/classification-pre_DPUv3e/_x_output/dpu.xclbin /usr/lib/dpu.xclbin
+	  sudo cp ${VAI_HOME}/dsa/WAA-TRD/proj/pre-built/classification-pre_DPUv3e/hbm_address_assignment.txt /usr/lib/
 	```	
 
 * To download and install `resnet50` model:
 	```
-	  cd ${VAI_ALVEO_ROOT}/..
+	  mkdir -p ${VAI_HOME}/dsa/WAA-TRD/app/resnet50/model
+	  cd ${VAI_HOME}/dsa/WAA-TRD/app/resnet50/model
 	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
 	```	
 	* Install the model package.
@@ -57,14 +58,15 @@ Note that
 
 * Download test images
 
-    Download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/dsa/WAA-TRD/app/resnet50_waa/img` 
+    Download the images at http://image-net.org/download-images and copy 1000 images to `Vitis-AI/dsa/WAA-TRD/app/resnet50/img` 
 
 ### 3. Compile & run the application on Alveo U50
 
 ```
-% cd /workspace/dsa/WAA-TRD/app/resnet50_waa
+% cd ${VAI_HOME}/dsa/WAA-TRD/app/resnet50
 %./build.sh
-%./resnet50_waa /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
+% #run with waa
+%./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel 1 0
 
 Expect: 
 Image : ./img/bellpeppe-994958.JPEG
@@ -74,4 +76,15 @@ top[2] prob = 0.002455  name = cucumber, cuke
 top[3] prob = 0.000903  name = zucchini, courgette
 top[4] prob = 0.000703  name = strawberry
 
-```
+``
+
+% #run without waa
+%./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel 0 0
+
+Expect: 
+Image : ./img/bellpeppe-994958.JPEG
+top[0] prob = 0.992920  name = bell pepper
+top[1] prob = 0.003160  name = strawberry
+top[2] prob = 0.001493  name = cucumber, cuke
+top[3] prob = 0.000705  name = acorn squash
+top[4] prob = 0.000428  name = zucchini, courgette`

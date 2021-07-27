@@ -16,13 +16,13 @@
 # under the License.
 
 # CI docker VAI env
-ARG  BASE_IMAGE=xilinx/vitis-ai-cpu:1.3.598
+ARG  BASE_IMAGE=xilinx/vitis-ai:latest
 FROM $BASE_IMAGE
 
 ARG PYXIR_REPO=https://github.com/Xilinx/pyxir
-ARG PYXIR_BRANCH=v0.2.0
-ARG PYXIR_FLAGS="--use_vai_rt_dpucadx8g --use_dpuczdx8g_vart"
-ARG TVM_COMMIT=cc7f529
+ARG PYXIR_BRANCH=rel-v0.3.0
+ARG PYXIR_FLAGS="--use_vart_cloud_dpu --use_dpuczdx8g_vart"
+ARG TVM_COMMIT=40d5193
 
 ENV TVM_VAI_HOME /opt/tvm-vai/
 ENV TVM_HOME /opt/tvm-vai/tvm
@@ -32,10 +32,15 @@ RUN mkdir "${TVM_HOME}"
 RUN mkdir "${PYXIR_HOME}"
 
 RUN git clone --recursive --single-branch https://github.com/apache/tvm.git "${TVM_HOME}" && \
-    cd "${TVM_HOME}" && git checkout ${TVM_COMMIT}
+    cd "${TVM_HOME}" && \
+    git checkout ${TVM_COMMIT} && \
+    git submodule update --init --recursive
 
 RUN apt-get update --fix-missing
 RUN apt-get -y install gpg-agent
+
+RUN apt-get -y install libhdf5-dev
+RUN pip3 install pydot==1.4.1 h5py==2.8.0
  
 RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_core.sh
  
@@ -61,8 +66,8 @@ RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_vitis_ai_core.sh
 # Install dependencies inside vitis-ai-tensorflow conda
 RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
     conda activate vitis-ai-tensorflow && \
-    pip install --no-cache-dir antlr4-python3-runtime && \
-    pip install mxnet==1.6.0 image cffi h5py==2.10.0 && \
+    pip install --no-cache-dir antlr4-python3-runtime==4.9.2 && \
+    pip install mxnet==1.6.0 image==1.5.33 cffi==1.14.5 h5py==2.10.0 && \
     bash "${TVM_HOME}"/docker/install/ubuntu_install_python_package.sh
 
 # BUILD PYXIR
@@ -100,8 +105,9 @@ RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
     python -m ck pull repo:ck-env && \
     python -m ck install package:imagenet-2012-val-min
 
+# Make sure conda libraries are found before /usr/lib (necessary for librt-engine.so)
+RUN echo "export LD_LIBRARY_PATH=\$CONDA_PREFIX/lib:\${LD_LIBRARY_PATH}" >> \
+    /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/etc/conda/activate.d/env_vars.sh
 
-ENV PATH="/opt/vitis_ai/compiler/dnnc/dpuv2:${PATH}"
- 
 ENV USER="root"
 

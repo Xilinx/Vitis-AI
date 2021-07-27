@@ -8,17 +8,20 @@ This document provides instruction to execute compiled models using the TVM with
 
 
 The Xilinx Deep Learning Processor Unit (DPU) is a configurable computation engine dedicated for convolutional neural networks. On edge devices, The TVM with Vitis AI flow exploits [DPUCZDX8G] hardware accelerator built for the following evaluation boards:
-* [Ultra96]
+
 * [ZCU104]
 * [ZCU102]
+* [Ultra96]
+* [Kria SOM]
 
-## Resources
+## Zynq Setup
 You could find more information on how to setup your target device below:
 
 ### Petalinux setup
 1. Download the Petalinux image for your target:
-    * [ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.3.1.img.gz)
-    * [ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.2-v1.3.1.img.gz)
+    * [ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2021.1-v1.4.0.img.gz)
+    * [ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2021.1-v1.4.0.img.gz)
+    * [KV260](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-kv260-dpu-v2020.2-v1.4.0.img.gz)
 2. Use Etcher software to burn the image file onto the SD card.
 3. Insert the SD card with the image into the destination board.
 4. Plug in the power and boot the board using the serial port to operate on the system.
@@ -87,5 +90,6 @@ python3 run_mxnet_resnet_18_zynq_fps.py -f "PATH_TO_COMPILED_TVM_MODEL (.so)" -t
    [Pynq-DPU]: https://github.com/Xilinx/DPU-PYNQ 
    [Vitis-AI User Guide]: https://www.xilinx.com/cgi-bin/docs/rdoc?t=vitis_ai;v=latest;d=zkj1576857115470.html
    [ZCU102]:  https://www.xilinx.com/products/boards-and-kits/ek-u1-zcu102-g.html
+   [Kria SOM]: https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit.html
   
   

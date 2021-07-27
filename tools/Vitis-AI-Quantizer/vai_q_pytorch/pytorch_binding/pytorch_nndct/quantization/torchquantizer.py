@@ -1,5 +1,4 @@
 
-
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -24,6 +23,7 @@ from scipy import stats
 import torch
 from os import environ
 from torch.autograd import Variable
+import pdb
 
 import pytorch_nndct as py_nndct
 
@@ -39,42 +39,46 @@ import nndct_shared.quantization as nndct_quant
 global_snr_inv = 0.0
 class TORCHQuantizer(BaseQuantizer):
 
-  def __init__(self, 
-               quant_mode: int, 
+  def __init__(self,
+               quant_mode: int,
                output_dir: str,
                bitwidth_w: int,
                bitwidth_a: int,
                mix_bit: bool):
-    super().__init__(quant_mode, 
+    super().__init__(quant_mode,
                      output_dir,
-                     bitwidth_w, 
+                     bitwidth_w,
                      bitwidth_a,
                      mix_bit)
     self._quant_model = None
     if NndctOption.nndct_param_corr.value > 0:
-      if self.quant_mode == 2: 
+      if self.quant_mode == 2:
         self.bias_corr = torch.load(self.bias_corr_file)
 
   def get_model_type(self):
-    return FrameworkType.TORCH    
+    return FrameworkType.TORCH
 
   def do_scan(self,
               res,
               name,
               node=None,
-              tensor_type='input'):    
+              tensor_type='input'):
     # forward quant graph but not quantize parameter and activation
     if NndctOption.nndct_quant_off.value:
       return res
-    
-    res_save = res
+
+    res_save = None
     if isinstance(res.values, torch.Tensor):
-      res = res.values
-    
+      res_save = res
+      res = res.values.data
+
     quant_device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
     if res.device.type != quant_device.type:
       raise TypeError("Device of quantizer is {}, device of model and data should match device of quantizer".format(quant_device.type))
-    
+
+    # get fixed position
+    bnfp = self.get_bnfp(name, False, tensor_type)
+
     # hardware cut method
     mth = 4 if self.lstm else 2
     if tensor_type == 'param':
@@ -82,19 +86,23 @@ class TORCHQuantizer(BaseQuantizer):
 
     range = 5
     # set fix pos scanning range to 1 for some type of tensors
-    if ((node.op.type in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB])
-        or (self.lstm and tensor_type == 'input')) :
+    if (node.op.type in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB]):
       range = 1
+    if (self.lstm and tensor_type == 'input'):
+      range = 1
+      res = res.detach().clone()
 
-    # get fixed position
-    bnfp = self.get_bnfp(name, False, tensor_type)
-    #if(res.device == torch.device("cpu")):
+    '''
     if(quant_device.type == "cpu"):
       Tbuffer = torch.empty_like(res).to(torch.device("cpu"))
       Tfixpos = torch.tensor([1], dtype=torch.get_default_dtype()).to(torch.device("cpu"))
     else:
       Tbuffer = torch.empty_like(res).cuda()
       Tfixpos = torch.tensor([1], dtype=torch.get_default_dtype()).cuda()
+    '''
+
+    Tbuffer = torch.empty_like(res).to(quant_device)
+    Tfixpos = torch.tensor([1], dtype=torch.get_default_dtype()).to(quant_device)
 
     # activation always calculate fix pos
     # calcualte fix pos if it is None
@@ -111,36 +119,37 @@ class TORCHQuantizer(BaseQuantizer):
       # record fix pos of activation
       if tensor_type != 'param':
         self.fp_history[tensor_type][name].append(bnfp[1])
+        if (NndctOption.nndct_stat.value > 1):
+          print(f'---- fp history: {stats.mode(np.array(self.fp_history[tensor_type][name]))}')
         data = np.array(self.fp_history[tensor_type][name])
         bnfp[1] = stats.mode(data)[0][0]
         bnfp[1] = bnfp[1].astype(np.int32).tolist()
       self.set_bnfp(name, bnfp, tensor_type)
-      #print('---- quant %s with bw = %d and fp = %g' % (name, bnfp[0], bnfp[1]))
+      if (NndctOption.nndct_stat.value > 1):
+        print('---- quant %s tensor: %s with bw = %d and fp = %g' % (
+            tensor_type, name, bnfp[0], bnfp[1]))
 
       # get 2^bit_width and 2^fracpos
       bnfp = self.get_bnfp(name, True, tensor_type)
 
-      if (NndctOption.nndct_quant_opt.value and 
-          NndctOption.nndct_logging_level.value > 0):
-        #if tensor_type == "param":
+      if (NndctOption.nndct_stat.value > 2):
         quant_data = nndct_quant.QuantizeData(name, res.cpu().detach().numpy())
-  
-      #print('---- quant %s with bw = %d and 1/step = %g' % (name, bnfp[0], bnfp[1]))
+
       # do quantization for parameter or activation
-      res = py_nndct.nn.NndctFixNeuron(res, 
-                                       res, 
-                                       maxamp = [bnfp[0], bnfp[1]], 
+      res = py_nndct.nn.NndctFixNeuron(res,
+                                       res,
+                                       maxamp = [bnfp[0], bnfp[1]],
                                        method = mth)
-      
-      if (NndctOption.nndct_quant_opt.value and 
-          NndctOption.nndct_logging_level.value > 0):
-        #if tensor_type == "param":
+
+      if (NndctOption.nndct_stat.value > 2):
         global global_snr_inv
-        quant_efficiency, sqnr = quant_data.quant_efficiency(res.cpu().detach().numpy(), 8) 
+        quant_efficiency, sqnr = quant_data.quant_efficiency(res.cpu().detach().numpy(), 8)
         global_snr_inv += 1 / sqnr
         print(f"quant_efficiency={quant_efficiency}, {quant_data._name}\n")
-        #print(f"quant_efficiency={quant_efficiency}, global_snr_inv={globacl_snr_inv} {quant_data._name}\n")
-    res = res_save
+
+    if res_save is not None:
+      res_save.values.data = res
+      res = res_save
     return res
 
   def do_quantize(self, blob, name, node=None, tensor_type='input'):
@@ -148,63 +157,76 @@ class TORCHQuantizer(BaseQuantizer):
     if NndctOption.nndct_quant_off.value:
       return blob
     
-    blob_save = blob
+    blob_save = None
     if isinstance(blob.values, torch.Tensor):
-      blob = blob.values
-    
+      blob_save = blob
+      blob = blob.values.data
+
     quant_device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
     if blob.device.type != quant_device.type:
       raise TypeError("Device of quantizer is {}, device of model and data should match device of quantizer".format(quant_device.type))
 
-    if (NndctOption.nndct_quant_opt.value and 
-        NndctOption.nndct_logging_level.value > 0):
+    if (NndctOption.nndct_stat.value > 2):
       quant_data = nndct_quant.QuantizeData(name, blob.cpu().detach().numpy())
     # quantize the tensor
     bnfp = self.get_bnfp(name, True, tensor_type)
-    #print('---- quant %s with 1/step = %g' % (name, bnfp[1]))
+    if (NndctOption.nndct_stat.value > 1):
+        print('---- quant %s tensor: %s with 1/step = %g' % (
+            tensor_type, name, bnfp[1]))
     # hardware cut method
     mth = 4 if self.lstm else 2
     if tensor_type == 'param':
       mth = 3
-    
-    res = py_nndct.nn.NndctFixNeuron(blob, 
-                                     blob, 
-                                     maxamp = [bnfp[0], bnfp[1]], 
+
+    res = py_nndct.nn.NndctFixNeuron(blob,
+                                     blob,
+                                     maxamp = [bnfp[0], bnfp[1]],
                                      method = mth)
 
-    if (NndctOption.nndct_quant_opt.value and 
-        NndctOption.nndct_logging_level.value > 0):
+    if (NndctOption.nndct_stat.value > 2):
       global global_snr_inv
-      quant_efficiency, sqnr = quant_data.quant_efficiency(blob.cpu().detach().numpy(), 8) 
+      quant_efficiency, sqnr = quant_data.quant_efficiency(blob.cpu().detach().numpy(), 8)
       global_snr_inv += 1 / sqnr
       print(f"quant_efficiency={quant_efficiency}, global_snr_inv={global_snr_inv} {quant_data._name}\n")
 
     # update param to nndct graph
     if tensor_type == 'param':
       self.update_param_to_nndct(node, name, res.cpu().detach().numpy())
-
-    blob = blob_save
-    res = blob_save
     
+    if blob_save is not None:
+      blob_save.values.data = blob
+      blob = blob_save
+      res = blob_save
+
     return res
 
-  def organize_quant_pos(self):
-    # Transfer inplace operation fragpos forward,
-    # to replace configerComannder in future
-    if NndctOption.nndct_quant_off.value:
-      return 
-
-    # check quantization calibration is performed completely
+  def _check_calibration_completion(self):
+    ret = True
+    # Check node output tensors
     for node in self.Nndctgraph.nodes:
       if self.configer.is_node_quantizable(node, self.lstm) and node.in_quant_part:
         qout = self.configer.quant_output(node.name).name
         bnfp = self.get_bnfp(qout, False)
         if bnfp[1] is None:
-          if self.lstm and node.op.type not in [NNDCT_OP.SIGMOID, NNDCT_OP.TANH]:
-            NndctScreenLogger().warning("Quantization is not performed completely, check if model inference function is called!!!")
-            return
+          if node.op.type not in [NNDCT_OP.SIGMOID, NNDCT_OP.TANH]:
+            NndctScreenLogger().warning(f'Node ouptut tensor is not quantized: {node.name} type: {node.op.type}')
+            ret = False
+    # Check node input tensors 
+    for item in self._QuantInfo['input']:
+      bnfp = self._QuantInfo['input'][item]
+      if bnfp[1] is None:
+        NndctScreenLogger().warning(f'Input tensor is not quantized: {item}')
+        ret = False
+    # Check node parameters
+    for item in self._QuantInfo['param']:
+      bnfp = self._QuantInfo['param'][item]
+      if bnfp[1] is None:
+        NndctScreenLogger().warning(f'Parameter tensor is not quantized: {item}')
+        ret = False
 
-    # align lstm fix pos with cell output
+    return ret
+
+  def _align_lstm_fix_pos_with_cell_output(self):
     if self.lstm:
       if self.rnn_front_end:
         for node in self.Nndctgraph.nodes:
@@ -253,40 +275,10 @@ class TORCHQuantizer(BaseQuantizer):
           else:
             self.set_bnfp(node.name, last_bnfp)
 
+  def _node_relative_fix_pos_check(self):
     for node in self.Nndctgraph.nodes:
-      # align linear OP bias fix pos with output for lstm
-      if self.lstm:
-        if node.op.type == NNDCT_OP.DENSE:
-          if len(node.op.params.values()) > 1: 
-            params = [v.name for v in node.op.params.values()]
-            bnfp = self.get_bnfp(node.name, False)
-            self.set_bnfp(params[1], bnfp, 'param')
-      # node with multiple ouputs 
-      if (node.in_quant_part and 
-          node.op.type == NNDCT_OP.STRIDED_SLICE): 
-        bnfp = None
-        src_name = self.configer.quant_output(node.name).name
-        bnfp = self.get_bnfp(src_name, False)
-        self.quant_config['output'][node.name] = [bnfp[0], bnfp[1]]
-      # concat inputs fix pos align with output
-      if (node.in_quant_part and 
-          node.op.type == NNDCT_OP.CONCAT):
-        out_name = self.configer.quant_output(node.name).name
-        bnfp = self.get_bnfp(out_name, False)
-        for i in node.in_nodes:
-          in_name = self.configer.quant_output(i).name
-          #print('---- set concat input %s fix pos to %d' % (in_name, bnfp[1]))
-          self.set_bnfp(in_name, bnfp)
-      # zero padding output fix pos align with input
-      if (node.in_quant_part and 
-          node.op.type == NNDCT_OP.PAD):
-        in_name = self.configer.quant_output(node.in_nodes[0]).name
-        out_name = self.configer.quant_output(node.name).name
-        bnfp = self.get_bnfp(in_name, False)
-        #print('---- set zero padding output %s fix pos to %s : %d' % (out_name, in_name, bnfp[1]))
-        self.set_bnfp(out_name, bnfp)
-      # do shift_bias and shift_cut check
-      if (node.in_quant_part and node.op.type == NNDCT_OP.CONV2D):
+      # shift_bias and shift_cut check
+      if (node.in_quant_part and self.configer.is_conv_like(node)):
         # get i/w/b/o fix pos
         conv_quant_output = self.configer.quant_output(node.name).name
         fix_pos_i = self.get_bnfp(node.in_nodes[0], False, 'output')
@@ -320,11 +312,55 @@ class TORCHQuantizer(BaseQuantizer):
             self.set_bnfp(node.op.param['bias'].name, fix_pos_b, tensor_type = "param")
           elif shift_bias > shift_bias_max:
             NndctScreenLogger().warning("weight {} value is too small, so adjust the fix position from {} to {}"
-                    .format(node.op.param['weights'].name, fix_pos_w[-1], fix_pos_w[-1] - shift_bias - shift_bias_max))
-            fix_pos_w[-1] = fix_pos_w[-1] - shift_bias - shift_bias_max;
+                    .format(node.op.param['weights'].name, fix_pos_w[-1], fix_pos_w[-1] - shift_bias + shift_bias_max))
+            fix_pos_w[-1] = fix_pos_w[-1] - shift_bias + shift_bias_max;
             self.set_bnfp(node.op.param['weights'].name, fix_pos_w, tensor_type = "param")
 
-  def export_quant_config(self, export_file=None):
+  def organize_quant_pos(self):
+    # Transfer inplace operation fragpos forward,
+    # to replace configerComannder in future
+    if NndctOption.nndct_quant_off.value:
+      return
+
+    # check quantization calibration is performed completely
+    if not self._check_calibration_completion():
+      NndctScreenLogger().warning("Quantization is not performed completely, check if model inference function is called!!!")
+      return
+
+    # align lstm fix pos with cell output
+    self._align_lstm_fix_pos_with_cell_output()
+
+    for node in self.Nndctgraph.nodes:
+      # align linear OP bias fix pos with output for lstm
+      if self.lstm:
+        if node.op.type == NNDCT_OP.DENSE:
+          if len(node.op.params.values()) > 1:
+            params = [v.name for v in node.op.params.values()]
+            bnfp = self.get_bnfp(node.name, False)
+            self.set_bnfp(params[1], bnfp, 'param')
+      # Strided_slice branches fix pos alignment
+      if (node.in_quant_part and
+          node.op.type == NNDCT_OP.STRIDED_SLICE):
+        bnfp = None
+        src_name = self.configer.quant_output(node.name).name
+        bnfp = self.get_bnfp(src_name, False)
+        self.quant_config['output'][node.name] = [bnfp[0], bnfp[1]]
+        #print('Strided_Slice fix pos setting node: {} qout: {} pos: {}'.format(
+        #    node.name, src_name, bnfp[1]))
+
+      # zero padding output fix pos align with input
+      if (node.in_quant_part and
+          node.op.type == NNDCT_OP.PAD):
+        in_name = self.configer.quant_output(node.in_nodes[0]).name
+        out_name = self.configer.quant_output(node.name).name
+        bnfp = self.get_bnfp(in_name, False)
+        #print('---- set zero padding output %s fix pos to %s : %d' % (out_name, in_name, bnfp[1]))
+        self.set_bnfp(out_name, bnfp)
+    
+    # shift_bias and shift_cut check and adjustment
+    self._node_relative_fix_pos_check()
+
+  def export_quant_config(self, export_file=None, adjust_pos=True):
     if NndctOption.nndct_param_corr.value > 0:
       if self.quant_mode == 1:
         # gather bias correction, how to get nn module objec?
@@ -339,11 +375,12 @@ class TORCHQuantizer(BaseQuantizer):
         # export bias correction
         torch.save(self.bias_corr, self.bias_corr_file)
 
-    # export quant steps 
+    # export quant steps
     file_name = export_file or self.export_file
     if isinstance(file_name, str):
         NndctScreenLogger().info(f"=>Exporting quant config.({file_name})")
-        self.organize_quant_pos()
+        if adjust_pos:
+          self.organize_quant_pos()
         with open(file_name, 'w') as f:
           f.write(nndct_utils.to_jsonstr(self.quant_config))
 
@@ -353,14 +390,14 @@ class TORCHQuantizer(BaseQuantizer):
         if node.op.type == NNDCT_OP.CONVTRANSPOSE2D:
           if param_type == node.op.ParamName.WEIGHTS:
             param_data = np.copy(param_data).transpose(1, 0, 2, 3)
-            
+
         if node.op.type == NNDCT_OP.DEPTHWISE_CONV2D and param_type == node.op.ParamName.WEIGHTS:
             in_channels = node.node_config("in_channels")
             out_channels = node.node_config("out_channels")
             kernel_size = node.node_config("kernel_size")
             channel_mutiplier = int(out_channels / in_channels)
             param_data = param_data.reshape((channel_mutiplier, in_channels, *kernel_size))
-            
+
         tensor.from_ndarray(param_data)
         tensor_util.convert_parameter_tensor_format(
             tensor, key_names.FrameworkType.TORCH,
@@ -379,8 +416,8 @@ class TORCHQuantizer(BaseQuantizer):
   @property
   def quant_model(self):
     return self._quant_model
- 
+
   @quant_model.setter
   def quant_model(self, quant_model):
     self._quant_model = quant_model
-    
+

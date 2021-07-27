@@ -35,6 +35,7 @@ private:
   virtual MedicalDetectionResult run(const cv::Mat &img) override;
   virtual std::vector<MedicalDetectionResult> run(const std::vector<cv::Mat> &img) override;
   std::unique_ptr<MedicalDetectionPostProcess> processor_;
+  int real_batch_size = 1;
 };
 } // namespace ai
 } // namespace vitis

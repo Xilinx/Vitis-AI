@@ -554,9 +554,10 @@ void SSD::Init(const string& path, const string& input_node,
   int batch = ssd_runner->get_input_tensors()[0]->get_shape().at(0);
   conf_size = shapes.outTensorList[1].size;
   loc_size = shapes.outTensorList[0].size;
-  loc = new float[loc_size * batch];
-  conf = new float[conf_size * batch];
-  loc_scale = 1.0;
+  loc = new int8_t[loc_size * batch];
+  conf = new int8_t[conf_size * batch];
+  loc_scale =
+      get_output_scale(ssd_runner->get_output_tensors()[output_mapping[0]]);
   detector_ = new SSDdetector(num_classes_, SSDdetector::CodeType::CENTER_SIZE,
                               false, class_k, th_conf_, top_k, th_nms, 1.0,
                               priors_, loc_scale);
@@ -570,12 +571,13 @@ void SSD::Init(const string& path, const string& input_node,
  *
  * @return none
  */
-void CPUCalcSoftmax(const float* data, size_t size, float* result) {
+void CPUCalcSoftmax(const int8_t* data, size_t size, float scale,
+                    float* result) {
   assert(data && result);
   double sum = 0.0f;
 
   for (size_t i = 0; i < size; i++) {
-    result[i] = exp(data[i]);
+    result[i] = exp(data[i] * scale);
     sum += result[i];
   }
 
@@ -594,11 +596,15 @@ void CPUCalcSoftmax(const float* data, size_t size, float* result) {
 void SSD::Run(Mat& img, MultiDetObjects* results) {
   auto inputTensors = cloneTensorBuffer(ssd_runner->get_input_tensors());
   auto outputTensors = cloneTensorBuffer(ssd_runner->get_output_tensors());
+  auto input_scale = get_input_scale(ssd_runner->get_input_tensors()[0]);
+  auto conf_output_scale =
+      get_output_scale(ssd_runner->get_output_tensors()[output_mapping[1]]);
+
   int batchSize = ssd_runner->get_input_tensors()[0]->get_shape().at(0);
   int inSize = inshapes[0].size;
   int inHeight = inshapes[0].height;
   int inWidth = inshapes[0].width;
-  float* imageInputs = new float[inSize * batchSize];
+  int8_t* imageInputs = new int8_t[inSize * batchSize];
   float mean[3] = {104, 117, 123};
   Mat image2 = cv::Mat(inHeight, inWidth, CV_8SC3);
   cv::resize(img, image2, Size(inWidth, inHeight), 0, 0, cv::INTER_LINEAR);
@@ -612,7 +618,7 @@ void SSD::Run(Mat& img, MultiDetObjects* results) {
     for (int w = 0; w < inWidth; w++) {
       for (int c = 0; c < 3; c++) {
         imageInputs[h * inWidth * 3 + w * 3 + c] =
-            image2.at<Vec3b>(h, w)[c] - mean[c];
+            (int8_t)((image2.at<Vec3b>(h, w)[c] - mean[c]) * input_scale);
       }
     }
   }
@@ -633,7 +639,7 @@ void SSD::Run(Mat& img, MultiDetObjects* results) {
   auto job_id = ssd_runner->execute_async(inputsPtr, outputsPtr);
   ssd_runner->wait(job_id.first, -1);
   for (int i = 0; i < conf_size / num_classes_; i++)
-    CPUCalcSoftmax(&conf[i * num_classes_], num_classes_,
+    CPUCalcSoftmax(&conf[i * num_classes_], num_classes_, conf_output_scale,
                    &softmax_data_[i * num_classes_]);
   _T(detector_->Detect(loc, softmax_data_, results));
   delete imageInputs;

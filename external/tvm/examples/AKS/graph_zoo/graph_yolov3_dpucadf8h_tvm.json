@@ -1,0 +1,63 @@
+{
+  "graph_name": "yolov3", 
+  
+  "node_list": [
+    {
+      "node_name": "yolov3_preproc", 
+      "node_params" : {
+        "DetectionImreadPreProcess": {
+          "net_w" : 608, 
+          "net_h" : 608, 
+          "net_c": 3,
+	        "output_layout" : "NCHW"
+        }
+      },
+      "next_node": ["yolov3_tvm"]
+    },
+    {
+      "node_name": "yolov3_tvm",
+      "node_params": {
+        "TvmKernel": {
+          "lib": "graph_zoo/meta_yolov3_dpucadf8h_tvm/Relay-DarkNet-YoloV3_DPUCADF8H_batch4.so",
+          "input_name": "data", 
+          "in_dim": [ 4, 3, 608, 608],
+	        "num_runners": 4
+        }
+      },
+      "next_node": ["yolov3_post"]
+    },
+
+    {
+      "node_name": "yolov3_post",
+      "node_params": {
+        "YoloPostProcessTVM": {
+          "yolo_version": 3,
+          "net_h":        608,
+          "net_w":        608,
+          "num_classes":  80,
+          "anchor_cnt":   3,
+          "conf_thresh":  0.5,
+          "iou_thresh":   0.45,
+          "biases":    [10,13,  16,30,  33,23,  30,61,  62,45,  59,119,  116,90,  156,198,  373,326]
+        }
+      },
+      "next_node": ["writeDarknetFormat"]
+    },
+        {
+      "node_name": "writeDarknetFormat",
+      "exec_kernel": ["SaveBoxesDarknetFormat"],
+      "node_params": {
+        "SaveBoxesDarknetFormat": {
+          "output_dir": "out_labels"
+        }
+      },
+      "next_node": []
+    }
+
+       
+  ],
+  
+  "version": "0.1"
+}
+
+

@@ -13,5 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+result=0 && pkg-config --list-all | grep opencv4 && result=1
+if [ $result -eq 1 ]; then
+	OPENCV_FLAGS=$(pkg-config --cflags --libs-only-L opencv4)
+else
+	OPENCV_FLAGS=$(pkg-config --cflags --libs-only-L opencv)
+fi
+
 CXX=${CXX:-"g++ --sysroot=/"}
-$CXX -std=c++17 -O2 -I=/usr/include/drm -o segs_and_lanedetect_detect_drm segs_and_roadline_detect.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lglog -lvitis_ai_library-multitask  -lvitis_ai_library-lanedetect -ldrm -lvitis_ai_library-dpu_task -lpthread -DUSE_DRM=1
+$CXX -std=c++17 -O2 -I=/usr/include/drm -o segs_and_lanedetect_detect_drm segs_and_roadline_detect.cpp -lglog -lvitis_ai_library-multitask -lvitis_ai_library-lanedetect -ldrm -lvitis_ai_library-dpu_task -lpthread -DUSE_DRM=1 ${OPENCV_FLAGS} -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui

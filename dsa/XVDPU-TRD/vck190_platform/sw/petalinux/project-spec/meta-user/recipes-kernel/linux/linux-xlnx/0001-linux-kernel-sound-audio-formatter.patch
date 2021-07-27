@@ -1,0 +1,49 @@
+From 01d4034514f993f3ebe267954d6cf19d254c59c6 Mon Sep 17 00:00:00 2001
+From: vivekana <vivekana@xilinx.com>
+Date: Tue, 23 Feb 2021 23:09:42 -0800
+Subject: [PATCH] linux-kernel: sound-audio-formatter
+
+enable dma to access high address range
+---
+ sound/soc/xilinx/xlnx_formatter_pcm.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
+index a2eef3c..77eecc2 100644
+--- a/sound/soc/xilinx/xlnx_formatter_pcm.c
++++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <linux/clk.h>
++#include <linux/dma-mapping.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/of_address.h>
+@@ -746,6 +747,13 @@ static int xlnx_formatter_pcm_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 
+ 	aud_drv_data = devm_kzalloc(dev, sizeof(*aud_drv_data), GFP_KERNEL);
++	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
++	       if (ret) {
++	               dev_err(&pdev->dev, "dma_set_coherent_mask: %d\n", ret);
++	               goto err;
++	       }
++
++
+ 	if (!aud_drv_data)
+ 		return -ENOMEM;
+ 
+@@ -811,6 +819,9 @@ static int xlnx_formatter_pcm_probe(struct platform_device *pdev)
+ 	dev_info(dev, "pcm platform device registered\n");
+ 	return 0;
+ 
++err: 
++	return ret;
++
+ clk_err:
+ 	clk_disable_unprepare(aud_drv_data->axi_clk);
+ 	return ret;
+-- 
+2.7.4
+

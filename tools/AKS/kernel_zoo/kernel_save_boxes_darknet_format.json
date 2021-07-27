@@ -1,6 +1,6 @@
 {
   "kernel_name": "SaveBoxesDarknetFormat",
-  "description": "Save results of detection network in Darknet format for mAP calculation",
+  "description": "Returns detection boxes in Darknet format. Output format: {batch idx, class id, score, x, y, w, h}",
   "kernel_type": "cpp",
   "device_type": "cpu",
   "kernel_lib" : "libs/libSaveBoxesDarknetFormat.so",

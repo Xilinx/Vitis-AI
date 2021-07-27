@@ -1,0 +1,55 @@
+From 72f64a62f226a22c24dedbfb7bf97dacb6ac5064 Mon Sep 17 00:00:00 2001
+From: Maulik K Patel <maulikkp@xilinx.com>
+Date: Tue, 6 Aug 2019 15:01:59 +0530
+Subject: [PATCH] drm:xlnx_mixer: Dont enable primary plane by default.
+
+Enabling primary by default is causing bandwidth of 2GB.
+This patch is not to enable mixer primary plane by default.
+Enable/Disable it through module_param and devmem by using
+below commands.
+
+Enable:
+echo Y > /sys/module/xlnx_mixer/parameters/mixer_primary_enable
+
+Disable:
+devmem 0xa0070040 32 0x0
+echo N > /sys/module/xlnx_mixer/parameters/mixer_primary_enable
+
+Signed-off-by: Maulik K Patel <maulikkp@xilinx.com>
+---
+ drivers/gpu/drm/xlnx/xlnx_mixer.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/gpu/drm/xlnx/xlnx_mixer.c b/drivers/gpu/drm/xlnx/xlnx_mixer.c
+index e0d5273..7346101 100644
+--- a/drivers/gpu/drm/xlnx/xlnx_mixer.c
++++ b/drivers/gpu/drm/xlnx/xlnx_mixer.c
+@@ -125,6 +125,11 @@ static const u32 color_table[] = {
+ 	DRM_FORMAT_XV20,
+ };
+
++static bool xlnx_mixer_primary_enable = false;
++module_param_named(mixer_primary_enable, xlnx_mixer_primary_enable, bool, 0600);
++MODULE_PARM_DESC(mixer_primary_enable, "Enable mixer primary plane (default: 0)");
++
++
+ /*********************** Inline Functions/Macros *****************************/
+ #define to_mixer_hw(p) (&((p)->mixer->mixer_hw))
+ #define to_xlnx_crtc(x)	container_of(x, struct xlnx_crtc, crtc)
+@@ -572,6 +577,13 @@ static void xlnx_mix_layer_enable(struct xlnx_mix_hw *mixer,
+ {
+ 	struct xlnx_mix_layer_data *layer_data;
+ 	u32 curr_state;
++	struct xlnx_mix *mix;
++
++	mix = container_of(mixer, struct xlnx_mix, mixer_hw);
++	if (mix->drm_primary_layer->mixer_layer->id == id) {
++		if (!xlnx_mixer_primary_enable)
++		return;
++	}
+
+ 	/* Ensure layer is marked as 'active' by application before
+ 	 * turning on in hardware.  In some cases, layer register data
+--
+2.7.4
+

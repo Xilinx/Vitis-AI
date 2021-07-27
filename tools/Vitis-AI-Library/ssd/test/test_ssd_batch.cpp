@@ -21,7 +21,7 @@
 using namespace cv;
 using namespace std;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc < 3) {
     std::cerr << "usage :" << argv[0]
               << " <model_name> <image_url> ... <image_url> " << std::endl;
@@ -49,8 +49,8 @@ int main(int argc, char *argv[]) {
 
   std::vector<cv::Mat> batch_images;
   std::vector<std::string> batch_images_names;
-  auto batch = ssd->get_input_batch();
-  for (auto batch_idx = 0u; batch_idx < batch; batch_idx++) {
+  // auto batch = ssd->get_input_batch();
+  for (auto batch_idx = 0u; batch_idx < arg_input_images.size(); batch_idx++) {
     batch_images.push_back(
         arg_input_images[batch_idx % arg_input_images.size()]);
     batch_images_names.push_back(
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
     std::cout << "batch_index " << batch_idx << " "                     //
               << "image_name " << batch_images_names[batch_idx] << " "  //
               << std::endl;
-    for (auto &box : results[batch_idx].bboxes) {
+    for (auto& box : results[batch_idx].bboxes) {
       int label = box.label;
       float fxmin = box.x * batch_images[batch_idx].cols;
       float fymin = box.y * batch_images[batch_idx].rows;

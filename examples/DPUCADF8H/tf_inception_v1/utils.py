@@ -16,54 +16,88 @@
 from functools import partial
 import os
 import os.path as osp
+import cv2
 
-from vai.dpuv1.rt.xdnn_io import loadImageBlobFromFileScriptBase
 
 IMAGEROOT = osp.join(os.environ['HOME'], 'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min')
 IMAGELIST = osp.join(os.environ['HOME'], 'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val.txt')
 INPUT_NODES = 'input'
 
-### Preprocessing formulas
-### Available transformations: ['resize', 'resize2mindim', 'resize2maxdim', 'crop_letterbox',
-###                             'crop_center', 'plot', 'pxlscale', 'meansub', 'chtranspose', 'chswap']
+CMD_SEQ = {
+    'resnet50_v1_tf': {
+        'means': [103.94, 116.78, 123.68], # BGR
+        'scales': [1.0, 1.0, 1.0],
+        'channel_swap': True,
+        'resize_crop': True,
+        'center_crop': 1,
+        'width': 224,
+        'height': 224,
+    },
+    'inception_v1_tf': {
+        'means': [127.5, 127.5, 127.5], # BGR
+        'scales': [2.0/255, 2.0/255, 2.0/255],
+        'channel_swap': True,
+        'resize_crop': False,
+        'center_crop': 0.875,
+        'width': 224,
+        'height': 224,
+    },
+    'inception_v3_tf': {
+        'means': [127.5, 127.5, 127.5], # BGR
+        'scales': [2.0/255, 2.0/255, 2.0/255],
+        'channel_swap': True,
+        'resize_crop': False,
+        'center_crop': 0.875,
+        'width': 299,
+        'height': 299,
+    },
+}
 
-CMD_SEQ        = {
-    'resnet50_v1_tf':[
-        ('meansub', [103.94, 116.78, 123.68]),
-        ('chswap',(2,1,0)),
-        ('resize', [256, 256]),
-        ('crop_center', [224, 224]),
-        ],
-    'inception_v1_tf':[
-        ('pxlscale', 1/255.),
-        ('meansub', 0.5),
-        ('pxlscale', 2),
-        ('resize', [256, 256]),
-        ('crop_center', [224, 224]),
-        ],
-    'inception_v3_tf':[
-        ('pxlscale', 1/255.),
-        ('meansub', 0.5),
-        ('pxlscale', 2),
-        ('resize', [342, 342]),
-        ('crop_center', [299, 299]),
-        ],
-    }
+def center_crop_img(image, factor):
+    assert factor <= 1
+    h, w, _ = image.shape
+    hh = int(h * factor)
+    ww = int(w * factor)
+    offset_h = (h - hh) // 2
+    offset_w = (w - ww) // 2
+    return image[offset_h:offset_h+hh, offset_w:offset_w+ww,:]
 
-def load_image(iter, image_list = None, pre_process_function = None, input_nodes = 'data', get_shapes = False, batch_size = 1):
+def resize_img(image, resize_crop, width, height):
+    if not resize_crop:
+        image = cv2.resize(image, (width, height))
+    else:
+        h, w, _ = image.shape
+        scale_h = height / float(h)
+        scale_w = width / float(w)
+        scale = max(scale_h, scale_w)
+        image = cv2.resize(image, (0, 0), fx=scale, fy=scale)
+        offset_h = (image.shape[0] - height) // 2
+        offset_w = (image.shape[1] - width) // 2
+        image = image[offset_h:offset_h+height, offset_w:offset_w+width, :]
+    return image
+
+def preprocess_one_image_fn(image_path, fn):
+    width = fn['width']
+    height = fn['height']
+
+    image = cv2.imread(image_path).astype('float32')
+    image = center_crop_img(image, fn.get('center_crop', 1))
+    image = resize_img(image, fn.get('resize_crop', False), width, height)
+    image = (image - fn['means']) * fn['scales']
+    if fn.get('channel_swap', False):
+        return image[:,:,::-1]
+    else:
+        return image
+
+def load_image(iter, image_list = None, pre_process_function = None, input_nodes = 'data', batch_size = 1):
     images = []
-    shapes = []
     labels = []
     for i in range(batch_size):
         image_name, label  = image_list[iter * batch_size + i].split(' ')
         print((image_name))
-        image, shape = loadImageBlobFromFileScriptBase(image_name, pre_process_function)
+        image = preprocess_one_image_fn(image_name, pre_process_function)
         images.append(image)
-        shapes.append(shape)
-    if get_shapes:
-        return {input_nodes: images}, shapes
-    else:
-        return {input_nodes: images}
+    return {input_nodes: images}
 
 def get_input_fn(pre_processing_function_name, imageroot = IMAGEROOT, imagelist = IMAGELIST, input_nodes = INPUT_NODES):
     cmd_seq = CMD_SEQ[pre_processing_function_name]

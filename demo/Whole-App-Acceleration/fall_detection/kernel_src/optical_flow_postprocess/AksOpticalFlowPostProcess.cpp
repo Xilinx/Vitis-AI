@@ -1,6 +1,23 @@
+/*
+ * Copyright 2021 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include <iostream>
 #include <stdint.h>
 #include <vector>
+#include <atomic>
 
 #include <boost/filesystem.hpp>
 
@@ -8,26 +25,30 @@
 #include <opencv2/imgcodecs.hpp>
 
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
+#include <aks/AksLogger.h>
+#include <aks/AksTensorBuffer.h>
 
 class OpticalFlowPostProcess : public AKS::KernelBase
 {
   public:
-    int id =0;
+    void nodeInit (AKS::NodeParams*);
     int exec_async (
-           std::vector<AKS::DataDescriptor*> &in, 
-           std::vector<AKS::DataDescriptor*> &out, 
+           std::vector<vart::TensorBuffer*> &in,
+           std::vector<vart::TensorBuffer*> &out,
            AKS::NodeParams* nodeParams,
            AKS::DynamicParamValues* dynParams);
+  private:
+    int bound;
+    std::string output_folder;
 };
 
 
-void boundPixels(AKS::DataDescriptor* src, cv::Mat& dst, int bound) {
-  auto shape = src->getShape();
+void boundPixels(vart::TensorBuffer* src, cv::Mat& dst, int bound) {
+  auto shape = src->get_tensor()->get_shape();
   int rows = shape[0];
   int cols = shape[1];
-  float* srcPtr = static_cast<float*>(src->data());
+  float* srcPtr = reinterpret_cast<float*>(src->data().first);
   for (int i=0; i<rows; ++i) {
     for (int j=0; j<cols; ++j) {
       float x = srcPtr[i*cols+j];
@@ -39,66 +60,73 @@ void boundPixels(AKS::DataDescriptor* src, cv::Mat& dst, int bound) {
 }
 
 
-void mat2DD(const cv::Mat &src, int8_t* dst) {
+void mat2TensorBuffer(const cv::Mat &src, int8_t* dst) {
   // Gray scale cv::Mat --> Gray scale DataDescriptor
-  int channels = src.channels();
   int rows = src.rows;
   int cols = src.cols;
-  for (int k=0; k<channels; k++) {
-    for (int i=0; i<rows; i++) {
-      for (int j=0; j<cols; j++) {
-        dst[(k*rows*cols) + (i*cols) + j] = src.at<cv::Vec<uint8_t, 2>>(i,j)[k] - 128;
+  int channels = src.channels();
+  for (int i=0; i<rows; i++) {
+    for (int j=0; j<cols; j++) {
+      for (int k=0; k<channels; k++) {
+        dst[(i*cols*channels) + (j*channels) + k] = \
+            src.at<cv::Vec<uint8_t, 2>>(i,j)[k] - 128;
       }
     }
   }
 }
 
 
-extern "C" { // Add this to make this available for python bindings and 
+extern "C" { // Add this to make this available for python bindings and
 
 AKS::KernelBase* getKernel (AKS::NodeParams *params)
 {
   return new OpticalFlowPostProcess();
 }
 
+void OpticalFlowPostProcess::nodeInit (AKS::NodeParams* nodeParams)
+{
+  output_folder = nodeParams->_stringParams.find("visualize") == nodeParams->_stringParams.end() ?
+    "" : nodeParams->getValue<std::string>("visualize");
+  bound = nodeParams->getValue<int>("bound");
+}
 
 int OpticalFlowPostProcess::exec_async (
-                      std::vector<AKS::DataDescriptor*> &in, 
-                      std::vector<AKS::DataDescriptor*> &out, 
-                      AKS::NodeParams* nodeParams,
-                      AKS::DynamicParamValues* dynParams)
+      std::vector<vart::TensorBuffer*> &in,
+      std::vector<vart::TensorBuffer*> &out,
+      AKS::NodeParams* nodeParams,
+      AKS::DynamicParamValues* dynParams)
 {
     // in[0] contains flowx data
     // in[1] contains flowy data
+    // std::cout << "[DBG] Starting OpticalFlowPostProcess... " << std::endl;
+    auto shape = in[0]->get_tensor()->get_shape();
+    int rows = shape.at(0);
+    int cols = shape.at(1);
 
-    // std::cout << "[DBG] OpticalFlowPostProcess: running now ... " << std::endl;
-    auto shape = in[0]->getShape();
-    int rows = shape[0];
-    int cols = shape[1];
-
-    int bound = nodeParams->_intParams["bound"];
     cv::Mat boundedFlowX(rows, cols, CV_8UC1);
     cv::Mat boundedFlowY(rows, cols, CV_8UC1);
 
-    float* flowxData = static_cast<float*>(in[0]->data());
-    float* flowyData = static_cast<float*>(in[1]->data());
+    float* flowxData = reinterpret_cast<float*>(in[0]->data().first);
+    float* flowyData = reinterpret_cast<float*>(in[1]->data().first);
 
     boundPixels(in[0], boundedFlowX, bound);
     boundPixels(in[1], boundedFlowY, bound);
 
     cv::Mat flow[2] = { boundedFlowX, boundedFlowY };
-    cv::Mat bounded(rows, cols, CV_8UC(2));
-    cv::merge(flow, 2, bounded);
+    cv::Mat merged(rows, cols, CV_8UC(2));
+    cv::merge(flow, 2, merged);
 
-    AKS::DataDescriptor *flowDD = new AKS::DataDescriptor(
-        { 1, 2, rows, cols }, AKS::DataType::INT8);
-    int8_t* flowData = static_cast<int8_t*>(flowDD->data());
-    mat2DD(bounded, flowData);
+    auto flowDD = new AKS::AksTensorBuffer(
+                  xir::Tensor::create(
+                    "ofPostProc", {1, rows, cols, 2},
+                    xir::create_data_type<char>()
+                    // xir::DataType {xir::DataType::INT, 8u}
+                  ));
+    int8_t* flowData = reinterpret_cast<int8_t*>(flowDD->data().first);
+    mat2TensorBuffer(merged, flowData);
+
     out.push_back(flowDD);
 
-    std::string output_folder = \
-      nodeParams->_stringParams.find("visualize") == nodeParams->_stringParams.end() ?
-        "" : nodeParams->_stringParams["visualize"];
     if (!output_folder.empty()) {
         boost::filesystem::path p(dynParams->imagePaths.front());
         std::string filename = p.filename().string();

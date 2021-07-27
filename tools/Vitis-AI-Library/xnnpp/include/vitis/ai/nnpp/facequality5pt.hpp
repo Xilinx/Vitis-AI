@@ -30,12 +30,14 @@ struct FaceQuality5ptResult {
   int width;
   /// Height of a input image
   int height;
-  /// The quality of face. The value range is from 0 to 1 if the option "orginal_quality" in the model prototxt is false, it is a normal mode. 
-  /// If the option "original_quality" is true, the quality score can be larger than 1, this is a special mode only for accuracy test.
+  /// The quality of face. The value range is from 0 to 1. If the option
+  /// "original_quality" in the model prototxt is false, it is a normal mode. If
+  /// the option "original_quality" is true, the quality score can be larger
+  /// than 1, this is a special mode only for accuracy test.
   float score;
-  /// Five key points coordinate. An array of <x,y> has five elements where x and y are
-  /// normalized relative to input image columns and rows. The value range is from 0
-  /// to 1.
+  /// Five key points coordinate. An array of <x,y> has five elements where x
+  /// and y are normalized relative to input image columns and rows. The value
+  /// range is from 0 to 1.
   std::array<std::pair<float, float>, 5> points;
 };
 /**
@@ -53,16 +55,14 @@ std::vector<FaceQuality5ptResult> face_quality5pt_post_process(
         input_tensors,
     const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
-    const vitis::ai::proto::DpuModelParam& config,
-    bool day = true);
+    const vitis::ai::proto::DpuModelParam& config, bool day = true);
 
-//std::vector<FaceQuality5ptResult> face_quality5pt_post_process_original(
+// std::vector<FaceQuality5ptResult> face_quality5pt_post_process_original(
 //    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
 //        input_tensors,
 //    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
 //        output_tensors,
 //    const vitis::ai::proto::DpuModelParam& config);
-
 
 }  // namespace ai
 }  // namespace vitis

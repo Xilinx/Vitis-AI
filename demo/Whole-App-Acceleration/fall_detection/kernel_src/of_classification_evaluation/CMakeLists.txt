@@ -1,4 +1,4 @@
-# Copyright 2019 Xilinx Inc.
+# Copyright 2021 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,10 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.12)
+set (CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -O0 -fno-inline")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 project(FallDetectionEvaluation VERSION 1.3.0)
 
@@ -29,6 +33,7 @@ endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
 
 find_package (Boost 1.65.1 EXACT REQUIRED COMPONENTS system filesystem)
+find_package(xir REQUIRED)
 
 add_library (${PROJECT_NAME} SHARED
   AksFallDetectionEvaluation.cpp
@@ -45,4 +50,5 @@ target_include_directories (${PROJECT_NAME}
 
 target_link_libraries (${PROJECT_NAME}
  PRIVATE ${Boost_LIBRARY}
+ PRIVATE xir
 )

@@ -20,17 +20,20 @@
 
 #include <thread>
 
-#include "batch_tensor_buffer_view.hpp"
+#include "tensor_buffer_proxy.hpp"
 #include "vart/op_imp.h"
 #include "vart/runner_helper.hpp"
 #include "vitis/ai/collection_helper.hpp"
 #include "vitis/ai/env_config.hpp"
+#include "vitis/ai/path_util.hpp"
 #include "xir/graph/subgraph.hpp"
 #include "xir/op/op_def.hpp"
 #include "xir/tensor/tensor.hpp"
 DEF_ENV_PARAM(DEBUG_CPU_TASK, "0")
+DEF_ENV_PARAM(XLNX_ENABLE_DUMP, "0")
 // defined in op_imp.cpp
-extern std::unique_ptr<vart::OpImp> create_op_imp(const xir::Op* op);
+extern std::unique_ptr<vart::OpImp> create_op_imp(const xir::Op* op,
+                                                  xir::Attrs* attrs);
 
 namespace {
 
@@ -39,13 +42,7 @@ static std::vector<std::unique_ptr<xir::Tensor>> copy_set_to_vector_tensor(
   auto ret = std::vector<std::unique_ptr<xir::Tensor>>();
   ret.reserve(tensors.size());
   for (auto b : tensors) {
-    // clone it, it is pontentially possible to change the batch size.
-    // see get_input_tensors and get_output_tensors
-    auto dims = b->get_shape();
-    // not change the dimetions here, because we cannot make sure that
-    // 1st dimention is always the batch size for all tensors.
-    auto x = xir::Tensor::create(b->get_name(), dims, b->get_data_type());
-    ret.emplace_back(std::move(x));
+    ret.emplace_back(xir::Tensor::clone(b));
   }
   return ret;
 }
@@ -57,16 +54,20 @@ static std::vector<const xir::Tensor*> get_all_tensors(
 }
 
 static std::vector<std::unique_ptr<vart::OpImp>> create_op_imp_vec(
-    const std::vector<const xir::Op*>& ops) {
-  return vitis::ai::vec_map(ops, [](const xir::Op* op) {
+    const std::vector<const xir::Op*>& ops, xir::Attrs* attrs) {
+  return vitis::ai::vec_map(ops, [attrs](const xir::Op* op) {
     LOG_IF(INFO, ENV_PARAM(DEBUG_CPU_TASK) >= 2)
         << "create op_imp " << op->get_name() << " :: " << op->get_type();
-    return create_op_imp(op);
+    return create_op_imp(op, attrs);
   });
 }
 
 CpuTask::CpuTask(const xir::Subgraph* subgraph, xir::Attrs* attrs)
-    : attrs_{attrs}, inputs_{}, outputs_{} {
+    : default_attrs_{xir::Attrs::create()},
+      attrs_{attrs == nullptr ? default_attrs_.get() : attrs},
+      subgraph_{subgraph},
+      inputs_{},
+      outputs_{} {
   LOG_IF(INFO, ENV_PARAM(DEBUG_CPU_TASK))
       << "@" << (void*)this << " cpu task is created for subgraph "
       << subgraph->get_name();
@@ -75,15 +76,23 @@ CpuTask::CpuTask(const xir::Subgraph* subgraph, xir::Attrs* attrs)
   inputs_ = copy_set_to_vector_tensor(subgraph->get_input_tensors());
   outputs_ = copy_set_to_vector_tensor(subgraph->get_output_tensors());
   ops_ = subgraph->topological_sort();
-  op_imp_ = create_op_imp_vec(ops_);
+  op_imp_ = create_op_imp_vec(ops_, attrs_);
   tensors_ = get_all_tensors(ops_);
   auto subgraph_inputs = subgraph->get_input_tensors();
   tensors_.insert(tensors_.begin(), subgraph_inputs.begin(),
                   subgraph_inputs.end());
   tensor_buffers_ = vart::alloc_cpu_flat_tensor_buffers(tensors_);
+  proxy_tensor_buffers_ = vitis::ai::vec_map(
+      tensor_buffers_, [](const std::unique_ptr<vart::TensorBuffer>& tb) {
+        return std::make_unique<vart::TensorBufferProxy>(
+            const_cast<vart::TensorBuffer*>(tb.get()), tb->get_tensor());
+      });
   tensor_name_2_index_ = build_tensor_name_2_index();
-  tensor_buffer_views_ = build_tensor_buffer_views();
   my_op_args_ = build_my_op_args();
+  if (!attrs_->has_attr("__batch__")) {
+    // dirty hack, allocator needs this field and I forgot why?
+    attrs_->set_attr<size_t>("__batch__", (size_t)tensors_[0]->get_shape()[0]);
+  }
 }
 
 CpuTask::~CpuTask() {
@@ -100,16 +109,6 @@ std::unordered_map<std::string, size_t> CpuTask::build_tensor_name_2_index() {
   return ret;
 }
 
-std::vector<std::unique_ptr<vart::BatchTensorBufferView>>
-CpuTask::build_tensor_buffer_views() {
-  return vitis::ai::vec_map(
-      tensor_buffers_,
-      [](const std::unique_ptr<vart::TensorBuffer>& tb)
-          -> std::unique_ptr<vart::BatchTensorBufferView> {
-        return std::make_unique<vart::BatchTensorBufferView>(tb.get());
-      });
-}
-
 std::vector<MyOpArgs> CpuTask::build_my_op_args() {
   return vitis::ai::vec_map(ops_, [this](const xir::Op* op) -> MyOpArgs {
     auto inputs = std::vector<vart::OpImpArg>();
@@ -123,12 +122,12 @@ std::vector<MyOpArgs> CpuTask::build_my_op_args() {
               name, vitis::ai::vec_map(
                         input_ops,
                         [this](const xir::Op* input_op) -> vart::TensorBuffer* {
-                          return find_tensor_buffer_view(
+                          return find_proxy_tensor_buffer(
                               input_op->get_output_tensor()->get_name());
                         })};
         });
     vart::TensorBuffer* output =
-        find_tensor_buffer_view(op->get_output_tensor()->get_name());
+        find_proxy_tensor_buffer(op->get_output_tensor()->get_name());
     return MyOpArgs{inputs, output};
   });
 }
@@ -140,57 +139,12 @@ vart::TensorBuffer* CpuTask::find_tensor_buffer(const std::string& name) {
   return ret;
 }
 
-vart::BatchTensorBufferView* CpuTask::find_tensor_buffer_view(
+vart::TensorBufferProxy* CpuTask::find_proxy_tensor_buffer(
     const std::string& name) {
-  vart::BatchTensorBufferView* ret =
-      tensor_buffer_views_[tensor_name_2_index_.at(name)].get();
+  vart::TensorBufferProxy* ret =
+      proxy_tensor_buffers_[tensor_name_2_index_.at(name)].get();
   CHECK(ret != nullptr) << "cannot find tensor buffer. name = " << name;
   return ret;
-}
-
-size_t CpuTask::get_batch_size(
-    const std::vector<vart::TensorBuffer*>& input,
-    const std::vector<vart::TensorBuffer*>& output) const {
-  int batch_size = -1;
-  auto update_batch_size =
-      [&batch_size](const std::vector<vart::TensorBuffer*>& tbs) {
-        for (auto b : tbs) {
-          if (batch_size == -1) {
-            batch_size = (int)b->get_tensor()->get_shape()[0];
-          } else {
-            CHECK_EQ(batch_size, b->get_tensor()->get_shape()[0])
-                << "all tensor must have same batch size: " << b->to_string();
-          }
-        }
-      };
-  update_batch_size(input);
-  update_batch_size(output);
-  CHECK_NE(batch_size, -1);
-  return (size_t)batch_size;
-}
-
-size_t CpuTask::get_batch_step(const std::vector<vart::TensorBuffer*>& input,
-                               const std::vector<vart::TensorBuffer*>& output) {
-  int batch_size = -1;
-  auto update_batch_size =
-      [&batch_size, this](const std::vector<vart::TensorBuffer*>& tbs) mutable {
-        for (auto b : tbs) {
-          if (batch_size == -1) {
-            batch_size = find_tensor_buffer(b->get_tensor()->get_name())
-                             ->get_tensor()
-                             ->get_shape()[0];
-          } else {
-            CHECK_EQ(batch_size, find_tensor_buffer(b->get_tensor()->get_name())
-                                     ->get_tensor()
-                                     ->get_shape()[0])
-                << "all tensor must have same batch size: " << b->to_string();
-          }
-        }
-      };
-  update_batch_size(input);
-  update_batch_size(output);
-  CHECK_NE(batch_size, -1);
-  return (size_t)batch_size;
 }
 
 static bool host_accessible(vart::TensorBuffer::location_t loc) {
@@ -198,56 +152,102 @@ static bool host_accessible(vart::TensorBuffer::location_t loc) {
          loc == vart::TensorBuffer::location_t::HOST_VIRT;
 }
 
-void CpuTask::update_tensor_buffer_view(
-    size_t batch_index, const std::vector<vart::TensorBuffer*>& input,
-    const std::vector<vart::TensorBuffer*>& output) {
-  auto update =
-      [this, batch_index](const std::vector<vart::TensorBuffer*>& tbs) mutable {
-        for (auto& tb : tbs) {
-          auto accessible = host_accessible(tb->get_location());
-          auto view = find_tensor_buffer_view(tb->get_tensor()->get_name());
-          if (accessible) {
-            view->update_batch_index(tb, batch_index);
-          } else {
-            auto internal = find_tensor_buffer(tb->get_tensor()->get_name());
-            auto view_device =
-                std::make_unique<vart::BatchTensorBufferView>(internal);
-            view_device->update_batch_index(tb, batch_index);
-            view->update_batch_index(internal, 0);
-            vart::TensorBuffer::copy_tensor_buffer(view_device.get(), internal);
-          }
-          LOG(INFO) << "updating " << tb->get_tensor()->get_name();
-        }
-      };
-  update(input);
-  update(output);
-}
-
 std::pair<uint32_t, int> CpuTask::execute_async(
     const std::vector<vart::TensorBuffer*>& input,
     const std::vector<vart::TensorBuffer*>& output) {
-  auto batch_size = get_batch_size(input, output);
-  auto batch_step = get_batch_step(input, output);
-  LOG_IF(INFO, ENV_PARAM(DEBUG_CPU_TASK))
-      << "@" << (void*)this << " start to run: "
-      << " inputs= " << to_string(input) << " "
-      << " outputs= " << to_string(output) << " "  //
-      << "batch_size " << batch_size << " "        //
-      << "batch_step " << batch_step << " "        //
-      ;
   auto size = op_imp_.size();
   CHECK_EQ(size, my_op_args_.size()) << "must be equal";
-  for (auto batch_index = 0u; batch_index < batch_size;
-       batch_index = batch_index + batch_step) {
-    update_tensor_buffer_view(batch_index, input, output);
-    for (auto i = 0u; i < size; ++i) {
-      auto& inputs = my_op_args_[i].inputs;
-      auto& output = my_op_args_[i].output;
-      auto error_code = op_imp_[i]->calculate(inputs, output);
-      CHECK_EQ(error_code, 0);
+  update_proxy(input);
+  update_proxy(output);
+  maybe_sync_for_read(input);
+  for (auto i = 0u; i < size; ++i) {
+    LOG_IF(INFO, ENV_PARAM(DEBUG_CPU_TASK))
+        << "op: " << ops_[i]->get_type()                         //
+        << "\n\tname: " << ops_[i]->get_name()                   //
+        << "\n\tinputs: " << to_string(my_op_args_[i].inputs)    //
+        << "\n\toutput: " << my_op_args_[i].output->to_string()  //
+        ;
+    auto& inputs = my_op_args_[i].inputs;
+    auto& output = my_op_args_[i].output;
+    auto error_code = op_imp_[i]->calculate(inputs, output);
+    if (ENV_PARAM(XLNX_ENABLE_DUMP)) {
+      auto dir = std::string("dump") + "/" +
+                 vitis::ai::to_valid_file_name(subgraph_->get_name()) + "/";
+      int batch_base = 0;
+      if (attrs_->has_attr("__batch_base__")) {
+        batch_base = attrs_->get_attr<int>("__batch_base__");
+      }
+      vart::dump_tensor_buffer(dir, output, batch_base);
     }
+    CHECK_EQ(error_code, 0);
   }
+  maybe_sync_for_write(output);
+  // TODO: do we need to restore the proxy?
   return std::make_pair(0u, 0);
+}
+
+void CpuTask::maybe_sync_for_read(const std::vector<vart::TensorBuffer*>& b) {
+  for (auto& x : b) {
+    maybe_sync_for_read(x);
+  }
+}
+
+void CpuTask::maybe_sync_for_write(const std::vector<vart::TensorBuffer*>& b) {
+  for (auto& x : b) {
+    maybe_sync_for_write(x);
+  }
+}
+
+void CpuTask::maybe_sync_for_read(vart::TensorBuffer* b) {
+  switch (b->get_location()) {
+    case vart::TensorBuffer::location_t::HOST_VIRT:
+      // do nothing
+      break;
+    case vart::TensorBuffer::location_t::HOST_PHY:
+      // TODO: check continous
+      b->sync_for_read(0, b->get_tensor()->get_data_size());
+      break;
+    default:
+      // update_proxy already copy the tensor buffer
+      // do nothing LOG(FATAL) << "Not supported!";
+      break;
+  }
+}
+
+void CpuTask::maybe_sync_for_write(vart::TensorBuffer* b) {
+  switch (b->get_location()) {
+    case vart::TensorBuffer::location_t::HOST_VIRT:
+      // do nothing
+      break;
+    case vart::TensorBuffer::location_t::HOST_PHY:
+      // TODO: check continous
+      b->sync_for_write(0, b->get_tensor()->get_data_size());
+      break;
+    default:
+      // update_proxy already copy the tensor buffer
+      // LOG(FATAL) << "Not supported!";
+      break;
+  }
+}
+
+void CpuTask::update_proxy(const std::vector<vart::TensorBuffer*>& inputs) {
+  for (auto& tb : inputs) {
+    auto accessible = host_accessible(tb->get_location());
+    auto tensor_buffer = find_tensor_buffer(tb->get_tensor()->get_name());
+    auto proxy_tensor_buffer =
+        find_proxy_tensor_buffer(tb->get_tensor()->get_name());
+    if (accessible) {
+      proxy_tensor_buffer->update_backend(tb);
+    } else {
+      // no need to restore the proxy, because it is updated anyway.
+      proxy_tensor_buffer->update_backend(tensor_buffer);
+      vart::TensorBuffer::copy_tensor_buffer(tb, tensor_buffer);
+    }
+    LOG_IF(INFO, ENV_PARAM(DEBUG_CPU_TASK))
+        << "updating " << tb->get_tensor()->get_name()
+        << " proxy_tensor_buffer=" << proxy_tensor_buffer->to_string()
+        << " backend=" << tb->to_string();
+  }
 }
 
 int CpuTask::wait(int jobid, int timeout) { return 0; }
@@ -275,4 +275,9 @@ std::vector<const xir::Tensor*> CpuTask::get_output_tensors() {
 extern "C" vart::Runner* create_runner_with_attrs(const xir::Subgraph* subgraph,
                                                   xir::Attrs* attrs) {
   return new CpuTask(subgraph, attrs);
+}
+
+extern "C" vart::Runner* create_runner(const xir::Subgraph* subgraph,
+                                       const std::string& mode) {
+  return new CpuTask(subgraph, nullptr);
 }

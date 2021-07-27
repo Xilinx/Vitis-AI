@@ -171,14 +171,14 @@ std::unique_ptr<Runner> Runner::create_runner_with_attrs(
     const xir::Subgraph* subgraph, xir::Attrs* attrs) {
   UNI_LOG_CHECK(subgraph != nullptr, VART_RUNNER_CONSTRUCTION_FAIL)
       << "Invalid subgraph!";
-  UNI_LOG_CHECK(attrs != nullptr, VART_RUNNER_CONSTRUCTION_FAIL)
-      << "Invalid attrs!";
+  // UNI_LOG_CHECK(attrs != nullptr, VART_RUNNER_CONSTRUCTION_FAIL)
+  //   << "Invalid attrs!";
   UNI_LOG_CHECK(subgraph->has_attr("runner"), VART_RUNNER_CONSTRUCTION_FAIL)
       << "Cannot find runner attr, this subgraph may not be compiled! subgraph "
          "name: "
       << subgraph->get_name();
   auto mode = std::string("run");
-  if (attrs->has_attr("mode")) {
+  if (attrs && attrs->has_attr("mode")) {
     mode = attrs->get_attr<std::string>("mode");
   }
   auto libs = subgraph->get_attr<std::map<std::string, std::string>>("runner");
@@ -214,7 +214,7 @@ std::unique_ptr<Runner> Runner::create_runner_with_attrs(
   //                                  {"DPU", "libvart-dummy-runner.so"}});
   // }
   // [/code]
-  if (attrs->has_attr("lib")) {
+  if (attrs && attrs->has_attr("lib")) {
     auto override_libs =
         attrs->get_attr<std::map<std::string, std::string>>("lib");
     auto device = subgraph->get_attr<std::string>("device");
@@ -241,7 +241,7 @@ std::unique_ptr<Runner> Runner::create_runner_with_attrs(
       << "cannot load symbol 'create_runner'!"
       << " lib=" << iter_lib->second << ", error=" << dlerror();
   // attrs
-  if (attrs->has_attr("interception")) {
+  if (attrs && attrs->has_attr("interception")) {
     auto interception_lib = attrs->get_attr<std::string>("interception");
     typedef vart::Runner* (*INTERCEPT_INIT_FUN)(
         INIT_FUN fun, const xir::Subgraph* subgraph, xir::Attrs* attrs);

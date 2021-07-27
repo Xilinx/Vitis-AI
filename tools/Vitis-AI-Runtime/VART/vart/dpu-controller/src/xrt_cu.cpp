@@ -21,7 +21,6 @@
 
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/profiling.hpp>
-#include <vitis/ai/tracepoint.hpp>
 #include <vitis/ai/xxd.hpp>
 
 #include "../../xrt-device-handle/src/xrt_xcl_read.hpp"
@@ -59,11 +58,6 @@ XrtCu::XrtCu(const std::string& cu_name)
                    << "fingerprint " << std::hex << "0x"  //
                    << cu_fingerprint << std::dec << " "   //
         ;
-    auto cu_hw_info = "cu_device:" + std::to_string(cu_device_id) + "," +
-                      "cu_core:" + std::to_string(cu_core_id) + "," +
-                      "cu_addr:" + std::to_string(cu_addr) + "," +
-                      "cu_fingerprint:" + std::to_string(cu_fingerprint);
-    vitis::ai::tracepoint(VAI_EVENT_INFO, "DPUC", cu_device_id, cu_hw_info);
     LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_CU))
         << "idx " << idx << " "              //
         << "handle " << xcl_handle << " "    //
@@ -159,7 +153,6 @@ void XrtCu::run(size_t device_core_idx, XrtCu::prepare_ecmd_t prepare,
     is_done = true;
     state = 4;
   } else {
-    vitis::ai::tracepoint(VAI_EVENT_DEVICE_START, "DPUC", device_core_idx);
     auto exec_buf_result = xclExecBuf(handle, bo_handle);
     CHECK_EQ(exec_buf_result, 0) << "cannot execute buffer";
     start_from = std::chrono::steady_clock::now();
@@ -226,7 +219,6 @@ void XrtCu::run(size_t device_core_idx, XrtCu::prepare_ecmd_t prepare,
         ;
     print_timestamp(start, end, c);
   }
-  vitis::ai::tracepoint(VAI_EVENT_DEVICE_END, "DPUC", device_core_idx);
   __TOC__(XRT_RUN)
   if (is_done) {
     on_success(handle, cu_addr);

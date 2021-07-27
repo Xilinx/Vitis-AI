@@ -91,11 +91,6 @@ void softmax(const int8_t* input, float scale, unsigned int cls,
     GLOBAL_ENABLE_C_SOFTMAX = 2;
   }
 
-//# Enable software softmax by default for DPUCADF8H
-#ifdef ENABLE_DPUCADF8H_RUNNER
-    GLOBAL_ENABLE_C_SOFTMAX = 2;
-#endif
-
 #ifdef ENABLE_NEON
   if (GLOBAL_ENABLE_C_SOFTMAX == 1) {
     if (cls == 2) {
@@ -106,7 +101,6 @@ void softmax(const int8_t* input, float scale, unsigned int cls,
       softmax_c(input, scale, cls, group, output);
     }
   } else if (GLOBAL_ENABLE_C_SOFTMAX == 0) {
-    static auto hw_smfc = xir::SfmController::get_instance();
     //判断scale
     auto scale2fixpos = [](float scale) { return std::abs((int)log2(scale)); };
     int fixpos = scale2fixpos(scale);
@@ -117,7 +111,10 @@ void softmax(const int8_t* input, float scale, unsigned int cls,
     bool neon_opt_supported = cls_supported && fixpoint_supported;
     if (neon_opt_supported) {
       softmax_neon_table(input, fixpos, cls, group, output);
-    } else if (hw_smfc && hw_smfc->supported(scale, cls, group)) {
+      return;
+    }
+    static auto hw_smfc = xir::SfmController::get_instance();
+    if (hw_smfc && hw_smfc->supported(scale, cls, group)) {
       hw_smfc->run(input, scale, cls, group, output);
     } else {
       softmax_c(input, scale, cls, group, output);
@@ -150,12 +147,30 @@ static void softmax_c(T* input, float scale, unsigned int cls,
 }
 template <typename T>
 static void softmax_c(T* input, float scale, unsigned int cls, float* output) {
+  if (ENV_PARAM(DEBUG_DPMATH) >= 5) {
+    auto mode =
+        std::ios_base::out | std::ios_base::binary | std::ios_base::trunc;
+    CHECK(std::ofstream("softmax_c_input.bin", mode)
+              .write((char*)(input), sizeof(T) * cls)
+              .good())
+        << " faild to write to "
+        << "softmax_c_input.bin";
+  }
   float sum = 0.f;
   for (unsigned int i = 0; i < cls; ++i) {
     output[i] = exp(input[i] * scale);
     sum += output[i];
   }
   for (unsigned int i = 0; i < cls; ++i) output[i] /= sum;
+  if (ENV_PARAM(DEBUG_DPMATH) >= 5) {
+    auto mode =
+        std::ios_base::out | std::ios_base::binary | std::ios_base::trunc;
+    CHECK(std::ofstream("softmax_c_output.bin", mode)
+              .write((char*)(output), sizeof(float) * cls)
+              .good())
+        << " faild to write to "
+        << "softmax_c_output.bin";
+  }
 }
 
 /*

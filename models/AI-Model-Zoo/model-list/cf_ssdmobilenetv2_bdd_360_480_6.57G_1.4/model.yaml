@@ -1,0 +1,40 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: ssd adas detection on bdd dataset.
+input size: 360*480
+float ops: 6.57G
+task: detection
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_ssdmobilenetv2_bdd_360_480_6.57G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdmobilenetv2_bdd_360_480_6.57G_1.4.zip
+  checksum: 1d4fb49a0639f974858b7e7a263a6874
+- name: ssd_mobilenet_v2
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 24313e0eebd6a0b0af2b3c25eb63fa37
+- name: ssd_mobilenet_v2
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: f0fa0095b63e6ea14f7f177402d53dae
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

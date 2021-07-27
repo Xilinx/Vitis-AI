@@ -311,10 +311,10 @@ vector<vector<float>> Detector::Detectv4(string file, int classes, vector<float>
     int height = net_->output_blobs()[iter]->height();
     int width = net_->output_blobs()[iter]->width();
     int channels = net_->output_blobs()[iter]->channels();
-   
+    
     if (channels != 255)
         continue;
-    
+   
     int index = 0;
     for (int i = 0; i < net_->num_outputs(); i++) {
       if(width == scale_feature[i]) {
@@ -530,3 +530,4 @@ int main(int argc, char** argv) {
   LOG(FATAL) << "This example requires OpenCV; compile with USE_OPENCV.";
 }
 #endif  // USE_OPENCV
+

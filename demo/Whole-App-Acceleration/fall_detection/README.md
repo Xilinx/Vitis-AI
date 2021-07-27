@@ -1,29 +1,38 @@
-
 # Fall detection using Accelerated Optical Flow
 
 :pushpin: **Note:** This application can be run only on Alveo-U200 platform.
 
 ## Table of Contents
 
-- [Introduction](#Introduction)
-- [Setup and Build the Kernels](#Setup-and-Build-the-Kernels)
-- [Prepare the Data](#Prepare-the-data)
-- [Running the Application](#Running-the-Application)
-- [Performance](#Performance)
+- [Introduction](#introduction)
+- [Setting Up the Target](#Setting-Up-the-Target-Alveo-U200)
+- [Setup and Build the Kernels](#building-kernels)
+- [Prepare the Data](#prepare-the-data)
+- [Running the Application](#running-the-application)
+- [Performance](#performance)
 
 ## Introduction
 This application demonstrates the acceleration of Lucas-Kanade Dense Non-Pyramidal Optical Flow algorithm and modified VGG16 network which takes 20 channel input. Every consecutive pair of frames are resized and fed to Optical Flow kernel which generates a 2 dimensional Optical Flow vector. 10 of such consecutive vectors are stacked together and passed to the inference model, which is trained to classify fall from no-fall.
 
-## Setup and Build the Kernels
+## Setting Up the Target Alveo U200
+**Refer to [Setup Alveo Accelerator Card](../../../setup/alveo) to set up the Alveo Card.**
+
+**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment. Docker installation instructions are available [here](../../../README.md#Installation)**
+
+* Download the [dpuv3int8_xclbins_1_4_0](https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_4_0.tar.gz) xclbin tar and install xclbin.
 ```sh
-conda activate vitis-ai-caffe
-source /vitis_ai_home/setup/alveo/u200_u250/overlaybins/setup.sh
+wget https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_4_0.tar.gz -O dpuv3int8_xclbins_1_4_0.tar.gz
+[sudo] tar -xzvf dpuv3int8_xclbins_1_4_0.tar.gz --directory /
+rm dpuv3int8_xclbins_1_4_0.tar.gz
 ```
+
+## Building Kernels
 
 #### Build common kernels
 ```sh
 cd ${VAI_HOME}/tools/AKS
-./cmake-kernels.sh --dpu=dpucadx8g --clean
+./cmake-kernels.sh --name=dpu
+./cmake-kernels.sh --name=optical_flow_fpga
 ```
 
 #### Build fall-detection kernels
@@ -50,8 +59,9 @@ make
 
 * Each `video` and `images directory` will be processed in a separate thread.
 * thread x: One for each stream (either video or image-directory).
-* Pass every pair of i-1 and i frames to runOpticalFlow. Pass the future object returned from runOpticalFlow to runOFInference. Keep filling up the stack with the value returned from future objects in sequence.
+* Pass every consecutive pair of frames to runOpticalFlow. Pass the future object returned from runOpticalFlow to runOFInference. Keep filling up the stack with the value returned from future objects in sequence.
 * Once the stack is full (size=OFStackSize), Copy the elements to a container and pass it to OFinfernece.
+* DPUCADF8H Runner takes batches of each size 4. Therefore, if we are going to stack 10 optical flow vectors and pass them as a single unit for the inference, we want to maintain OFStackSize of 13 (stackSize + bacthSize - 1).
 
 
 ### Graph Zoo
@@ -76,11 +86,13 @@ make
 ```sh
 mkdir urfd_dataset
 
-[sample]
-wget http://fenix.univ.rzeszow.pl/~mkepski/ds/data/fall-01-cam0-rgb.zip && unzip fall-01-cam0-rgb.zip -d urfd_dataset && rm fall-01-cam0-rgb.zip
+for i in {01..30}; do
+  wget http://fenix.univ.rzeszow.pl/~mkepski/ds/data/fall-${i}-cam0-rgb.zip && unzip fall-${i}-cam0-rgb.zip -d urfd_dataset && rm fall-${i}-cam0-rgb.zip
+done
 
-[sample]
-wget http://fenix.univ.rzeszow.pl/~mkepski/ds/data/adl-01-cam0-rgb.zip && unzip adl-01-cam0-rgb.zip -d urfd_dataset && rm adl-01-cam0-rgb.zip
+for i in {01..40}; do
+  wget http://fenix.univ.rzeszow.pl/~mkepski/ds/data/adl-${i}-cam0-rgb.zip && unzip adl-${i}-cam0-rgb.zip -d urfd_dataset && rm adl-${i}-cam0-rgb.zip
+done
 ```
 
 * If the accuracy, recall and other metrics are to be evaluated, we need to pass ground_truth file to calc_accuracy node of graph_of_inference.json.
@@ -96,13 +108,15 @@ python convert_csv_to_gt_file.py
 
 ## Running the Application
 ```sh
-./run.sh -d <directory>
+./run.sh -d <directory> [-t <max-concurrent-streams> -v <verbose-level>]
 
 [sample]
 ./run.sh -d urfd_dataset
 ```
 
-Input passed to `run.sh` (`<directory>`) should contain either videos and/or directories of images. The filename of the images in the images directory should be chronological.
+* Input passed to `run.sh` (`<directory>`) should contain either videos and/or directories of images. The filename of the images in the images directory should be chronological.
+
+* Predictions stored in separate text files for each stream in `output_infer_urfd` (or the directory as mentioned in the `visualize` parameter of `calc_evaluation` node of `graph_of_inference.json`)
 
 ```sh
 [sample structure]
@@ -126,14 +140,16 @@ Input passed to `run.sh` (`<directory>`) should contain either videos and/or dir
 ## Performance
 
 Performance metrics observed on urfd_dataset (70 streams):
-* Total timetaken: 97.0882 seconds..
-* Total images processed: 11236
-* Accuracy: 0.961819
-* Sensitivity/Recall: 0.993281
-* Specificity: 0.959103
-* FAR/FPR: 0.0408972
-* MDR/FNR: 0.00671893
-* Throughput (fps): 115.73
+
+* Accuracy: 0.923339
+* Sensitivity/Recall: 0.163494
+* Specificity: 0.989558
+* FAR/FPR: 0.0104421
+* MDR/FNR: 0.836506
+* Total frames inferred: 11140
+* Total timetaken: 64.7961 seconds..
+* Throughput (fps): 171.924
+
 
 **Note that the overall performance of the application depends on the available system resources.**
 
@@ -143,18 +159,9 @@ Following table shows the comparison of end-to-end application's throughput with
 
 | Fall detection | E2E Throughput (FPS) on 70 streams | Improvement in throughput with accelerated<br>Dense Non-Pyramidal Lucas Kanade |
 |:-:|:-:|:-:|
-| with hardware accelerated<br>Dense Non-Pyramidal<br>Lucas-Kanade | 115.73 | - |
-| with OpenCV's Farneback<br>(1 thread) | 24.0867 | 380.47 % |
-| with OpenCV's Farneback<br>(6 threads) | 112.651 | 2.73 % |
-
-Following table shows the comparison of end-to-end application's throughput with OpenCV Farneback algorithm (dense) on CPU against accelerated Dense Non-pyramidal Optical Flow on FPGA on `single stream`.
-
-
-| Fall detection | E2E Throughput (FPS) | Improvement in throughput with accelerated<br>Dense Non-Pyramidal Lucas Kanade |
-|:-:|:-:|:-:|
-| hardware accelerated<br>Dense Non-Pyramidal<br>Lucas-Kanade | 71.2248 | - |
-| OpenCV Farneback<br>(1 thread) | 24.2314 | 193.93 % |
-| OpenCV Farneback<br>(3 threads) | 64.2677 | 10.82 % |
+| with hardware accelerated<br>Dense Non-Pyramidal<br>Lucas-Kanade | 171.924 | - |
+| with OpenCV's Farneback<br>(1 thread) | 24.7984 | 593.28 % |
+| with OpenCV's Farneback<br>(12 threads) | 131.806 | 30.43 % |
 
 
 ## Write prediction probabilities to video
@@ -184,9 +191,13 @@ optional arguments:
                         Threshold used to color code the probability
 ```
 
-```
+```sh
+conda activate vitis-ai-tensorflow
+
 python write_to_video.py \
     --input-dir output_infer_urfd \
     --images-dir urfd_dataset \
     --output-dir output_video_urfd
+
+conda deactivate
 ```

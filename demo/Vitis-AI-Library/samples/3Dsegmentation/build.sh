@@ -14,6 +14,15 @@
 # limitations under the License.
 #
 
+result=0 && pkg-config --list-all | grep opencv4 && result=1
+if [ $result -eq 1 ]; then
+	OPENCV_FLAGS=$(pkg-config --cflags --libs-only-L opencv4)
+else
+	OPENCV_FLAGS=$(pkg-config --cflags --libs-only-L opencv)
+fi
+
 CXX=${CXX:-g++}
-$CXX -std=c++17 -I. -o test_jpeg_3Dsegmentation test_jpeg_3Dsegmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-3Dsegmentation  -lxnnpp-xnnpp -pthread -lglog
-#$CXX -std=c++17 -I. -o test_performance_3Dsegmentation test_performance_3Dsegmentation.cpp -lopencv_core -lopencv_video -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lvitis_ai_library-3Dsegmentation -lvart-util -lxnnpp-xnnpp -lvitis_ai_library-dpu_task -pthread -lglog
+for file in $(ls *.cpp); do
+	filename=${file%.*}
+	$CXX -std=c++17 -O2 -I. -o ${filename} ${file} -lvitis_ai_library-3Dsegmentation -lvitis_ai_library-dpu_task -lvitis_ai_library-xnnpp -lvitis_ai_library-model_config -lvitis_ai_library-math -lvart-util -lxir -pthread -ljson-c -lglog ${OPENCV_FLAGS} -lopencv_core -lopencv_videoio -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui
+done

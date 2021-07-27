@@ -34,6 +34,7 @@
 #include <vector>
 
 #include <vitis/ai/refinedet.hpp>
+#include <vitis/ai/reid.hpp>
 #include <vitis/ai/reidtracker.hpp>
 #include "../src/common.hpp"
 
@@ -73,7 +74,7 @@ void reader() {
   for (size_t i = 0; i < images.size(); ++i) {
     string imageName = images[i];
     Mat img = imread(baseImagePath + "/img1/" + imageName);
-    resize(img, img, Size(960, 540));
+    // resize(img, img, Size(480, 360));
     read_imgs.emplace_back(img);
   }
   cout << "read end " << endl;
@@ -105,10 +106,11 @@ string num2str(int i) {
 
 void displayImage() {
   Mat img;
-  VideoWriter writer;
+  // VideoWriter writer;
   int imgcount = 1;
-  writer.open("results.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 15, Size(960, 540),
-              true);
+  // writer.open("results.avi", CV_FOURCC('M', 'J', 'P', 'G'), 15, Size(960,
+  // 540),
+  //            true);
   while (true) {
     mtxQueueShow.lock();
     if (queueShow.empty()) {
@@ -129,12 +131,12 @@ void displayImage() {
       cv::putText(img, to_string(queueShow.top().first), cv::Point(10, 1000), 1,
                   3, cv::Scalar{240, 240, 240}, 2);
       // resize(img, img, Size(720, 480));0
-      writer.write(img);
+      // writer.write(img);
       // cv::imwrite(num2str(queueShow.top().first) + ".jpg", img);  // display
       // image moveWindow("reidvideo", 0, 0); cv::imshow("reidvideo", img);  //
       // display image waitKey(40);
       if (queueShow.top().first == imgCount) {
-        writer.release();
+        // writer.release();
         exit(1);
       }
 
@@ -155,10 +157,10 @@ void displayImage() {
 
 void run() {
   auto tracker = vitis::ai::ReidTracker::create();
+  auto reid = vitis::ai::Reid::create("personreid-res18_pt");
   auto det = vitis::ai::RefineDet::create("refinedet_pruned_0_96");
   std::vector<vitis::ai::ReidTracker::InputCharact> input_characts;
-  string outfile =
-      "result" + baseImagePath.substr(baseImagePath.size() - 3, 2) + ".txt";
+  string outfile = baseImagePath.substr(0, baseImagePath.size() - 1) + ".txt";
   ofstream of(outfile);
   while (1) {
     pair<int, Mat> pairIndexImage;
@@ -184,21 +186,28 @@ void run() {
     input_characts.clear();
     int lid = 0;
     for (auto box : results.bboxes) {
-      Rect2f in_box = Rect2f(box.x, box.y, box.width, box.height);
-      input_characts.emplace_back(in_box, box.score, -1, lid++);
+      Rect in_box = Rect(box.x * image.cols, box.y * image.rows,
+                         box.width * image.cols, box.height * image.rows);
+      Mat img = image(in_box);
+      auto feat = reid->run(img).feat;
+      input_characts.emplace_back(feat, in_box, box.score, -1, lid++);
     }
+    // input_characts.resize(3);
+    __TIC__(track)
     std::vector<vitis::ai::ReidTracker::OutputCharact> track_results =
         std::vector<vitis::ai::ReidTracker::OutputCharact>(
-            tracker->track(image, frame_id, input_characts, true, true));
+            tracker->track(frame_id, input_characts, true, true));
+    __TOC__(track)
+    __TIC__(deallater)
     cout << "frame_id: " << frame_id << endl;
     for (auto &r : track_results) {
       auto box = get<1>(r);
-      float x = box.x * (image.cols);
-      float y = box.y * (image.rows);
+      float x = box.x;
+      float y = box.y;
       float xmin = x;
       float ymin = y;
-      float xmax = x + (box.width) * (image.cols);
-      float ymax = y + (box.height) * (image.rows);
+      float xmax = x + (box.width);
+      float ymax = y + (box.height);
       xmin = std::min(std::max(xmin, 0.f), float(image.cols));
       xmax = std::min(std::max(xmax, 0.f), float(image.cols));
       ymin = std::min(std::max(ymin, 0.f), float(image.rows));
@@ -215,6 +224,7 @@ void run() {
       cv::putText(image, to_string(gid), cv::Point(xmin, ymin), 1, 2,
                   cv::Scalar{0, 0, 255}, 2);
     }
+    __TOC__(deallater)
     if (frame_id == imgCount) {
       cout << "##########################finsh : " << frame_id << endl;
       of.close();

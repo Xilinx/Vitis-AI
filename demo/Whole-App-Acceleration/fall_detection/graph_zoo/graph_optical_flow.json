@@ -19,7 +19,6 @@
       "exec_kernel": ["OpticalFlowDenseNonPyrLK"],
       "node_params": {
         "OpticalFlowDenseNonPyrLK": {
-          "xclbin":   "/opt/xilinx/overlaybins/xdnnv3/xplusml/optical_flow/dpu_lk_dense_non_pyr_optical_flow_U200.xclbin",
           "lk_kName": "dense_non_pyr_of_accel",
           "of_w": 224,
           "of_h": 224
@@ -33,8 +32,7 @@
       "exec_kernel": ["OpticalFlowPostProcess"],
       "node_params" : {
         "OpticalFlowPostProcess": {
-          "bound": 15,
-          "visualize": ""
+          "bound": 15
         }
       },
       "next_node": []

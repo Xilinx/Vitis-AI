@@ -35,6 +35,8 @@ limitations under the License.
 namespace tensorflow {
 namespace decent_q {
 
+class OpTypePatternBase;
+
 // Quantizable op types
 extern const std::set<string> quantizable_op_types;
 
@@ -45,8 +47,7 @@ extern const std::set<string> supported_op_types;
 extern const std::set<string> unsupported_op_types;
 
 // Known patterns
-extern const std::vector<std::tuple<const string, const OpTypePattern>>
-    known_patterns;
+extern const std::vector<const OpTypePatternBase*> known_patterns;
 
 // Known ignore patterns
 extern const std::vector<std::tuple<const string, const OpTypePattern>>
@@ -72,6 +73,104 @@ std::vector<const NodeDef*> get_ignore_nodes(const NodeMatch& match,
 std::vector<const NodeDef*> get_weights_nodes(const NodeMatch& match,
                                               const string& pattern_name);
 
+class OpTypePatternBase {
+ public:
+  OpTypePatternBase() {}
+
+  OpTypePatternBase(const OpTypePattern& pattern, const string& name = "")
+    : _pattern(pattern), _name(name) {}
+
+  string GetName() const { return _name; };
+
+  OpTypePattern GetPattern() const {
+    return _pattern;
+  }
+
+  virtual std::vector<const NodeDef*> GetInputNodes(const NodeMatch& match) const { return std::vector<const NodeDef*>(); };
+
+  virtual std::vector<const NodeDef*> GetWeightsNodes(const NodeMatch& match) const { return std::vector<const NodeDef*>(); };
+
+  virtual ~OpTypePatternBase() {};
+
+ private:
+  string _name;
+  OpTypePattern _pattern;
+};
+
+
+#define CREATE_PATTERN_CLASS(NAME)              \
+class NAME##Pattern : public OpTypePatternBase {                                     \
+ public:                                                                            \
+  NAME##Pattern(const OpTypePattern& pattern, const string& name = "")              \
+    : OpTypePatternBase(pattern, name) {}                                           \
+                                                                                    \
+  virtual std::vector<const NodeDef*> GetInputNodes (                               \
+      const NodeMatch& match) const override;                                       \
+                                                                                    \
+  virtual std::vector<const NodeDef*> GetWeightsNodes (                             \
+      const NodeMatch& match) const override;                                       \
+};                                                                                  \
+
+#define DEFINE_GET_INPUT_NODES(NAME) \
+  std::vector<const NodeDef*> NAME##Pattern::GetInputNodes(const NodeMatch& match) const \
+
+#define DEFINE_GET_WEIGHTS_NODES(NAME) \
+  std::vector<const NodeDef*> NAME##Pattern::GetWeightsNodes(const NodeMatch& match) const \
+
+CREATE_PATTERN_CLASS(Placeholder)
+CREATE_PATTERN_CLASS(AtrousConvBiasRelu)
+CREATE_PATTERN_CLASS(AtrousConvBias)
+CREATE_PATTERN_CLASS(AtrousConvRelu)
+CREATE_PATTERN_CLASS(AtrousConv)
+CREATE_PATTERN_CLASS(ConvfcBiasSwish)
+CREATE_PATTERN_CLASS(ConvfcBiasHardSwishV2)
+CREATE_PATTERN_CLASS(ConvfcBiasHardSwish)
+CREATE_PATTERN_CLASS(ConvfcBiasHardSigmoid)
+CREATE_PATTERN_CLASS(ConvfcBiasLeakyrelu)
+CREATE_PATTERN_CLASS(ConvfcBiasFusedLeakyrelu)
+CREATE_PATTERN_CLASS(ConvfcBiasKerasLeakyrelu)
+CREATE_PATTERN_CLASS(ConvfcSwish)
+CREATE_PATTERN_CLASS(ConvfcHardSwishV2)
+CREATE_PATTERN_CLASS(ConvfcHardSwish)
+CREATE_PATTERN_CLASS(ConvfcHardSigmoid)
+CREATE_PATTERN_CLASS(ConvfcLeakyrelu)
+CREATE_PATTERN_CLASS(ConvfcFusedLeakyrelu)
+CREATE_PATTERN_CLASS(ConvfcKerasLeakyrelu)
+CREATE_PATTERN_CLASS(Swish)
+CREATE_PATTERN_CLASS(HardSwishV2)
+CREATE_PATTERN_CLASS(HardSwish)
+CREATE_PATTERN_CLASS(HardSigmoid)
+CREATE_PATTERN_CLASS(Leakyrelu)
+CREATE_PATTERN_CLASS(FusedLeakyrelu)
+CREATE_PATTERN_CLASS(KerasLeakyrelu)
+CREATE_PATTERN_CLASS(ConvfcBiasIdRelu)
+CREATE_PATTERN_CLASS(ConvfcBiasRelu)
+CREATE_PATTERN_CLASS(ConvfcBias)
+CREATE_PATTERN_CLASS(ConvfcRelu)
+CREATE_PATTERN_CLASS(Convfc)
+CREATE_PATTERN_CLASS(Conv2dTransposeBiasRelu)
+CREATE_PATTERN_CLASS(Conv2dTransposeBias)
+CREATE_PATTERN_CLASS(Conv2dTransposeRelu)
+CREATE_PATTERN_CLASS(Conv2dTranspose)
+CREATE_PATTERN_CLASS(KerasConv2dTransposeBiasRelu)
+CREATE_PATTERN_CLASS(KerasConv2dTransposeBias)
+CREATE_PATTERN_CLASS(KerasConv2dTransposeRelu)
+CREATE_PATTERN_CLASS(KerasConv2dTranspose)
+CREATE_PATTERN_CLASS(Conv2dBackpropInputBiasRelu)
+CREATE_PATTERN_CLASS(Conv2dBackpropInputBias)
+CREATE_PATTERN_CLASS(Conv2dBackpropInputRelu)
+CREATE_PATTERN_CLASS(Conv2dBackpropInput)
+CREATE_PATTERN_CLASS(Upsampling)
+CREATE_PATTERN_CLASS(Resize)
+CREATE_PATTERN_CLASS(TpuNearestNeighborUpsampling)
+CREATE_PATTERN_CLASS(BatchnormRelu)
+CREATE_PATTERN_CLASS(Batchnorm)
+CREATE_PATTERN_CLASS(ArrayRelu)
+CREATE_PATTERN_CLASS(Array)
+CREATE_PATTERN_CLASS(AvgpoolMul)
+CREATE_PATTERN_CLASS(ClipByValue)
+CREATE_PATTERN_CLASS(OtherRelu)
+CREATE_PATTERN_CLASS(Other)
 
 }  // namespace decent_q
 }  // namespace tensorflow

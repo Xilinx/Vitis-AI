@@ -136,6 +136,46 @@ static bool has_reg_id_in_tensors(
   return ret;
 }
 
+static std::string to_string(const std::vector<op_output_tensor_ddr> infos) {
+  std::ostringstream str;
+  str << "[";
+  for (auto info : infos) {
+    str << "{info.ddr_addr " << info.ddr_addr << ","  //
+        << "info.location " << info.location << ","
+        << "info.reg_id " << info.reg_id  //
+        << "}";
+  }
+  str << "]";
+  return str.str();
+}
+static std::string more_debug_info(
+    const xir::Subgraph* subgraph,
+    const std::vector<op_output_tensor_ddr> inputs,
+    const std::vector<op_output_tensor_ddr> outputs) {
+  std::ostringstream str;
+  str << "subgraph: " << subgraph->get_name() << "inputs " << to_string(inputs)
+      << " "                                       //
+      << "outputs " << to_string(outputs) << " ";  //
+  return str.str();
+}
+
+static std::string to_string(const vart::reg_basic_info_t& info) {
+  std::ostringstream str;
+  str << "\treg_id = " << info.reg_id << ";\n";
+  str << "\ttype = " << to_string(info.type) << ";\n";
+  str << "\tsize = " << info.size << ";\n";
+  return str.str();
+}
+static std::string to_string(const std::vector<vart::reg_basic_info_t>& infos) {
+  std::ostringstream str;
+  str << "\n{";
+  for (auto info : infos) {
+    str << to_string(info);
+  }
+  str << "},\n";
+  return str.str();
+}
+
 std::vector<vart::reg_basic_info_t> extract_reg_info_from_subgraph(
     const xir::Subgraph* subgraph_) {
   auto ret = std::vector<reg_basic_info_t>();
@@ -180,12 +220,20 @@ std::vector<vart::reg_basic_info_t> extract_reg_info_from_subgraph(
         } else if ((!is_input_reg_id) && is_output_reg_id) {
           reg_info.type = reg_type_t::DATA_LOCAL_OUTPUT;
         } else {
-          CHECK(false) << "invalid type";  // TODO: add more log info
+          CHECK(false) << "invalid type: "
+                       << more_debug_info(subgraph_, input_ddr_info,
+                                          output_ddr_info)
+                       << "reg_type " << reg_type << " "                  //
+                       << "reg_id_int " << reg_id_int << " "              //
+                       << "is_input_reg_id " << is_input_reg_id << " "    //
+                       << "is_output_reg_id " << is_output_reg_id << " "  //
+                       << endl;
         }
       }
       reg_info.size = reg_size;
     }
   }
+  LOG_IF(INFO, ENV_PARAM(DEBUG_ZERO_COPY_HELPER) >= 1) << to_string(ret);
   return ret;
 }
 

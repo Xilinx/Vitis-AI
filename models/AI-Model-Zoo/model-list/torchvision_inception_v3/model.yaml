@@ -21,27 +21,22 @@ For more information, please visit: ' https://pytorch.org/docs/stable/torchvisio
 files:
 - name: inception_v3_pt
   type: xmodel
-  board: zcu102 & zcu104
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-zcu102_zcu104-r1.3.1.tar.gz
-  checksum: 85d1df3869423490bd7faea91ee2c404
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: d1928bab8a80de357c4af24b4d7bbda3
 - name: inception_v3_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-vck190-r1.3.1.tar.gz
-  checksum: ecfb1b4c2df2f12072149a2e84bc6ade
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-vck190-r1.4.0.tar.gz
+  checksum: 5abe927b4732ae82443cf33f338fb507
 - name: inception_v3_pt
   type: xmodel
-  board: u50
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-u50-r1.3.1.tar.gz
-  checksum: a80a6f9515fd75589587712a65d6eed8
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 43b18c1846e723a0ee6239f8363634be
 - name: inception_v3_pt
   type: xmodel
-  board: u50lv9e & u50lv10e & u280
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-u50lv-u280-r1.3.1.tar.gz
-  checksum: a26c183f52fa9c8f0c162905db62e213
-- name: inception_v3_pt
-  type: xmodel
-  board: u50-v3me & u50lv-v3me & u280-v3me
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-u50-u50lv-u280-v3me-r1.3.1.tar.gz
-  checksum: 58835e764e16691ad24ea96468deb0ee
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 7c8508b9daef5105c23a28bf2a2d7456
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

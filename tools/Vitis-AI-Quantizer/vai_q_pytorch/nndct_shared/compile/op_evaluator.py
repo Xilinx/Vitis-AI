@@ -58,4 +58,8 @@ class Evaluator(object):
   @staticmethod
   def floor_div(node):
     node.out_tensors[0].data = int(node.node_attr(node.op.AttrName.INPUT) // node.node_attr(node.op.AttrName.OTHER))
+
+  @staticmethod
+  def add(node):
+    node.out_tensors[0].data = node.node_attr(node.op.AttrName.INPUT) + node.node_attr(node.op.AttrName.OTHER)
     

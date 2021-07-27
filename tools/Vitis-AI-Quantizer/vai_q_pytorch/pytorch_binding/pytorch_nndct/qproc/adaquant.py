@@ -249,6 +249,10 @@ class AdvancedQuantProcessor(torch.nn.Module):
             train_output = F.relu(train_output)
           elif act_node.op.type == NNDCT_OP.RELU6:
             train_output = F.relu6(train_output)
+          elif act_node.op.type == NNDCT_OP.HSIGMOID:
+            train_output = F.hardsigmoid(train_output)
+          elif act_node.op.type == NNDCT_OP.HSWISH:
+            train_output = F.hardswish(train_output)
           else:
             raise       
         
@@ -385,11 +389,30 @@ class AdvancedQuantProcessor(torch.nn.Module):
     device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)      
     graph_searcher = GraphSearcher(self.graph)
     node_sets = graph_searcher.find_nodes_from_type([
+        PatternType(pattern=[NNDCT_OP.CONV2D, NNDCT_OP.HSWISH]),
+        PatternType(pattern=[NNDCT_OP.CONV2D, NNDCT_OP.HSIGMOID]),
         PatternType(pattern=[NNDCT_OP.CONV2D, NNDCT_OP.RELU]),
         PatternType(pattern=[NNDCT_OP.CONV2D, NNDCT_OP.RELU6]),
+        PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.HSWISH]),
+        PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.HSIGMOID]),
         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.RELU]),
         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.RELU6]),
-        PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.RELU])
+        PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.HSWISH]),
+        PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.HSIGMOID]),
+        PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.RELU]),
+        PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.RELU6]),
+        PatternType(pattern=[NNDCT_OP.CONV3D, NNDCT_OP.HSWISH]),
+        PatternType(pattern=[NNDCT_OP.CONV3D, NNDCT_OP.HSIGMOID]),
+        PatternType(pattern=[NNDCT_OP.CONV3D, NNDCT_OP.RELU]),
+        PatternType(pattern=[NNDCT_OP.CONV3D, NNDCT_OP.RELU6]),
+        PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.HSWISH]),
+        PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.HSIGMOID]),
+        PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.RELU]),
+        PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.RELU6]),
+        PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.HSWISH]),
+        PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.HSIGMOID]),
+        PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.RELU]),
+        PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.RELU6]),
     ])
     
     layer_act_group = {}

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root versionMajor="1" versionMinor="6">
+  <kernel name="dpu_6e" language="ip_c" vlnv="deephi.com:kernel:dpu_6e:1.0" attributes="" preferredWorkGroupSizeMultiple="0" workGroupSize="1" interrupt="false">

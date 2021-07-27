@@ -16,12 +16,29 @@
 
 #pragma once
 
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
 #include <string>
 #include <vector>
-
+#include <xir/graph/subgraph.hpp>
+namespace py = pybind11;
 std::string xmodel_to_txt(std::string xmodel);
-std::vector<uint32_t> read_register(std::string cu_name, int index,
-                                    std::vector<uint32_t> addrs);
+py::dict xdputil_query();
+py::dict xdputil_status();
+std::vector<uint32_t> read_register(void* handle, uint32_t ip_index,
+                                    uint64_t cu_base_addr,
+                                    const std::vector<uint32_t>& addrs);
 std::vector<std::string> xilinx_version(std::vector<std::string> so_names);
-bool test_dpu_runner_mt(std::string filename, std::string kernel,
-                        uint32_t runner_num);
+bool test_dpu_runner_mt(const xir::Subgraph* subgraph, uint32_t runner_num,
+                        const std::vector<std::string>& input_filenames,
+                        const std::vector<std::string>& output_filenames);
+
+template <class T>
+string to_string(T t, ios_base& (*f)(ios_base&), string prefix = "0x") {
+  ostringstream oss;
+  oss << prefix << f << t;
+  return oss.str();
+}
+std::map<std::string, std::string> get_reg_id_to_parameter(
+    const xir::Subgraph* s);

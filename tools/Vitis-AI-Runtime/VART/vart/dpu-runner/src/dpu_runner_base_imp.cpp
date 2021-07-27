@@ -23,7 +23,7 @@
 #include <limits>  // std::numeric_limits
 #include <vitis/ai/dim_calc.hpp>
 #include <vitis/ai/env_config.hpp>
-#include <vitis/ai/tracepoint.hpp>
+#include <vitis/ai/trace.hpp>
 #include <vitis/ai/weak.hpp>
 #include <xir/util/tool_function.hpp>
 
@@ -355,7 +355,7 @@ void DpuRunnerBaseImp::upload_tensor(const my_tensor_t& tensor) {
   }
   // auto subgraph_name = layer_name(subgraph_->get_name());
   auto reg_id = tensor.get_reg_id();
-  auto is_parameter = reg_id != 1;  // dirty hack
+  auto is_parameter = reg_id == 0;  // dirty hack
   if (is_parameter) {
     return;
   }
@@ -401,7 +401,7 @@ void DpuRunnerBaseImp::clear_tensor(const my_tensor_t& tensor) {
     return;
   }
   auto reg_id = tensor.get_reg_id();
-  auto is_parameter = reg_id != 1;  // dirty hack
+  auto is_parameter = reg_id == 0;  // dirty hack
   if (is_parameter) {
     return;
   }
@@ -452,7 +452,7 @@ void DpuRunnerBaseImp::compare_tensor(const my_tensor_t& tensor) {
     return;
   }
   auto reg_id = tensor.get_reg_id();
-  auto is_parameter = reg_id != 1;  // dirty hack
+  auto is_parameter = reg_id == 0;  // dirty hack
   if (is_parameter) {
     return;
   }
@@ -650,16 +650,13 @@ void DpuRunnerBaseImp::start_dpu2(size_t device_core_id) {
     LOG_IF(INFO, ENV_PARAM(XLNX_SHOW_DPU_COUNTER))
         << "subgraph name : "
         << layer_name(sg_and_code[idx].subgraph->get_name());
-    if (vitis::ai::tracepoint_is_enabled()) {
-        auto op_num = sg_and_code[idx].subgraph->get_op_num();
-        auto workload = sg_and_code[idx].subgraph->get_attr<std::uint64_t>("workload");
-        auto info =
-            std::string("subgraph:") +
-            layer_name(sg_and_code[idx].subgraph->get_name()) + ',' +
-            std::string("batch:" + std::to_string(session_->get_num_of_engines())) + ',' +
-            std::string("op_num:" + std::to_string(op_num)) + ',' +
-            std::string("workload:" + std::to_string(workload));
-        vitis::ai::tracepoint(VAI_EVENT_INFO, "DPUR", device_core_id, info);
+    if (vitis::ai::trace::is_enabled()) {
+      auto workload =
+          sg_and_code[idx].subgraph->get_attr<std::uint64_t>("workload");
+      auto depth = sg_and_code[idx].subgraph->get_depth();
+      auto name = sg_and_code[idx].subgraph->get_name();
+      auto batch = session_->get_num_of_engines();
+      vitis::ai::trace::add_trace("dpu-runner", name, batch, workload, depth);
     }
     LOG_IF(FATAL, ENV_PARAM(XLNX_ENABLE_FINGERPRINT_CHECK) &&
                       !check_fingerprint(session_->get_device_core_id()))

@@ -1,0 +1,5 @@
+python3 -c'
+
+so = ctypes.cdll.LoadLibrary("./libhello_vitis_ai_lib-sample_client.so");
+so.xilinx_version.restype = ctypes.c_char_p;
+print(s.xilinx_version_verbose());'

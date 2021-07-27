@@ -36,29 +36,43 @@ INSTALLER=""
 # Download XRT/DSA
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* ]]; then
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_16.04-amd64-xrt.deb"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_16.04-amd64-xrt.deb"
   XRT_INSTALLER=/tmp/xrt.deb
   INSTALLER="apt"
 elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_18.04-amd64-xrt.deb"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_18.04-amd64-xrt.deb"
   XRT_INSTALLER=/tmp/xrt.deb
   INSTALLER="apt"
 elif [[ $distroname == *"Ubuntu 20.04"* ]]; then
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_20.04-amd64-xrt.deb"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_20.04-amd64-xrt.deb"
   XRT_INSTALLER=/tmp/xrt.deb
   INSTALLER="apt"
-elif [[ $distroname == *"CentOS"* ]]; then
-  echo "CentOS"
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_7.4.1708-x86_64-xrt.rpm"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.4"* ]]; then
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_7.6.1810-x86_64-xrt.rpm"
   XRT_INSTALLER=/tmp/xrt.rpm
   INSTALLER="yum"
-elif [[ $distroname == *"Red Hat"* ]]; then
-  echo "RHEL"
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_7.4.1708-x86_64-xrt.rpm"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.5"* ]]; then
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_7.6.1810-x86_64-xrt.rpm"
+  XRT_INSTALLER=/tmp/xrt.rpm
+  INSTALLER="yum"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.6"* ]]; then
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_7.6.1810-x86_64-xrt.rpm"
+  XRT_INSTALLER=/tmp/xrt.rpm
+  INSTALLER="yum"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.7"* ]]; then
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_7.7.1908-x86_64-xrt.rpm"
+  XRT_INSTALLER=/tmp/xrt.rpm
+  INSTALLER="yum"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.8"* ]]; then
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_7.8.2003-x86_64-xrt.rpm"
+  XRT_INSTALLER=/tmp/xrt.rpm
+  INSTALLER="yum"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"8.1"* ]]; then
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_8.1.1911-x86_64-xrt.rpm"
   XRT_INSTALLER=/tmp/xrt.rpm
   INSTALLER="yum"
 else
-  echo "Failed, couldn't detect os distribution"
+  echo "Error: XRT does not support this OS"
   exit 1
 fi
 	

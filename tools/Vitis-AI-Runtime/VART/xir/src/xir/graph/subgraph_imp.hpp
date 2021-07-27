@@ -183,6 +183,8 @@ class SubgraphImp : public Subgraph {
   void remove_op(Op* op);
   void remove_op_helper_(Op* op);
 
+  std::int32_t count_op_(const std::set<std::string>& op_types) const;
+
  private:
   std::string name_;
 

@@ -16,7 +16,7 @@ Required:
 
   Required:
   - Vitis 2020.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-2.html) 
-  - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
+  - [CP210x_Universal_Windows_Driver](https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
   - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.2)
   - [zcu102 base platform](https://www.xilinx.com/member/forms/download/design-license-zcu102-base.html?filename=xilinx_zcu102_base_202020_1.zip)
@@ -93,15 +93,14 @@ Note that
 - Use Etcher software to burn the sd card image file onto the SD card.
 
 ## 2.3 Installing Vitis AI Runtime on the Evaluation Board
+- Download the [Vitis AI Runtime 1.4.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.4.0.tar.gz).
 
-- Download the  [Vitis AI Runtime 1.3.0](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.0.tar.gz).
-
-	
 - Untar the runtime packet and copy the following folder to the board using scp.
 ```
-	tar -xzvf vitis-ai-runtime-1.3.0.tar.gz
-	scp -r vitis-ai-runtime-1.3.0/aarch64/centos root@IP_OF_BOARD:~/
+	tar -xzvf vitis-ai-runtime-1.4.0.tar.gz
+	scp -r vitis-ai-runtime-1.4.0/2020.2/aarch64/centos root@IP_OF_BOARD:~/
 ```
+
 - Install the Vitis AI Runtime on the evaluation board. Execute the following command.
 ```
 	cd ~/centos
@@ -130,19 +129,19 @@ Here we install it under `~/petalinux_sdk`.
     tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
     ```
 
-* Cross compile `adas_detection_waa` example.
+* Cross compile `adas_detection` example.
     ```
-    cd  ~/Vitis-AI/dsa/WAA-TRD/app/adas_detection_waa
+    cd  ~/Vitis-AI/dsa/WAA-TRD/app/adas_detection
     bash -x build.sh
     ``` 	
-    If the compilation process does not report any error and the executable file `adas_detection_waa` is generated, then the host environment is installed correctly.
+    If the compilation process does not report any error and the executable file `adas_detection` is generated, then the host environment is installed correctly.
 
 
 
 ## 2.5 Download Model files for Adas_detection
 
 ```
-%	cd /Vitis-AI/dsa/WAA-TRD/app/adas_detection_waa
+%	cd /Vitis-AI/dsa/WAA-TRD/app/adas_detection
 %	mkdir model_zcu102
 %	cd model_zcu102
 %	wget https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz -O yolov3_adas_pruned_0_9-zcu102_zcu104-r1.3.0.tar.gz
@@ -152,22 +151,27 @@ Here we install it under `~/petalinux_sdk`.
 ## 2.6 Run Adas detection Example
 This part is about how to run the Adas detection example on zcu102 board.
 
-Download the images at https://cocodataset.org/#download. Please select suitable images which has car, bicycle or pedestrian and copy these images to `Vitis-AI/dsa/WAA-TRD/app/adas_detection_waa/data`. 
+Download the images at https://cocodataset.org/#download. Please select suitable images which has car, bicycle or pedestrian and copy these images to `Vitis-AI/dsa/WAA-TRD/app/adas_detection/data`. 
 
-Copy the directory $TRD_HOME/app/adas_detection_waa to the BOOT partition of the SD Card.
+Copy the directory $TRD_HOME/app/adas_detection to the BOOT partition of the SD Card.
 
 Please insert SD_CARD on the ZCU102 board. After the linux boot, run:
 
 ```
-% cd /media/sd-mmcblk0p1/adas_detection_waa
+% cd /media/sd-mmcblk0p1/adas_detection
 % cp /media/sd-mmcblk0p1/dpu.xclbin /usr/lib/
 % export XILINX_XRT=/usr
 % echo 1 > /proc/sys/kernel/printk
 % mkdir output
-% ./adas_detection_waa model_zcu102/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel
+% ./adas_detection model_zcu102/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel 1
 
-Expect: 
-Input Image:./data/img1.jpg
-Output Image:./output/img1.jpg
+Expect:
+Found Platform
+Platform Name: Xilinx
+INFO: Reading /usr/lib/dpu.xclbin
+Loading: '/usr/lib/dpu.xclbin'
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0509 09:02:17.206205  1112 main.cc:458] create running for subgraph: subgraph_layer0-conv
+Performance:18.2 FPS
 
 ```

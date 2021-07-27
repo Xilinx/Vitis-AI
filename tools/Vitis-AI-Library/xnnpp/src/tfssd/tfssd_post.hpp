@@ -27,7 +27,8 @@ class TFSSDPost : public vitis::ai::TFSSDPostProcess {
   TFSSDPost(const std::vector<vitis::ai::library::InputTensor>& input_tensors,
             const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
             const vitis::ai::proto::DpuModelParam& config,
-            const std::string& dirname);
+            const std::string& dirname,
+            int& real_batch_size );
   virtual ~TFSSDPost();
 
   virtual TFSSDResult ssd_post_process(unsigned int idx) override;
@@ -44,7 +45,7 @@ class TFSSDPost : public vitis::ai::TFSSDPostProcess {
   const std::vector<vitis::ai::library::InputTensor> input_tensors_;
   const std::vector<vitis::ai::library::OutputTensor> output_tensors_;
   SCORE_CONVERTER score_converter_;
-
+  int& real_batch_size;
   int CONF_IDX = 0;
   int LOC_IDX = 1;
 };

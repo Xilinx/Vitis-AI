@@ -1,0 +1,61 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: face landmark model. This model outputs five points, left-eye-center,
+  right-eye-center, nose, left-mouth-corner, right-mouth-corner.
+input size: 96*72
+float ops: 0.14G
+task: face keypoints detection
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_landmark_celeba_96_72_0.14G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_landmark_celeba_96_72_0.14G_1.4.zip
+  checksum: cd5cd7542a90eb9a04782eb0ec1886e9
+- name: face_landmark
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: f5778e117d3a58b317ae0fab5bb7df41
+- name: face_landmark
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck190-r1.4.0.tar.gz
+  checksum: 7e48d775c3ddfb5e8279d69285428146
+- name: face_landmark
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: cca96c4b6cd3f260ea0721f287994b27
+- name: face_landmark
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 2cd363bd024bd2a3e6a59ea22591b9f9
+- name: face_landmark
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: c1ad6680c66d129d7a01cd9d7604b46b
+- name: face_landmark
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u200-u250-r1.4.0.tar.gz
+  checksum: 69dd98e8ac333f152ee5e4dc9ce92817
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

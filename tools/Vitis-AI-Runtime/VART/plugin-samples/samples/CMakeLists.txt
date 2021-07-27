@@ -23,3 +23,11 @@ target_link_libraries(plugin-smfc
   PUBLIC xir::xir unilog::unilog glog::glog xcompiler::xcompiler-core)
 
 install(TARGETS plugin-smfc LIBRARY DESTINATION lib)
+
+file(GLOB PLUGINSMFCCPU "./plugin-smfc-cpu/*.cpp")
+add_library(plugin-smfc-cpu SHARED ${PLUGINSMFCCPU})
+target_link_libraries(plugin-smfc-cpu
+  PRIVATE pthread dl crypto stdc++fs
+  PUBLIC xir::xir unilog::unilog glog::glog xcompiler::xcompiler-core)
+
+install(TARGETS plugin-smfc-cpu LIBRARY DESTINATION lib)

@@ -1,0 +1,30 @@
+From 08ecfa8ea773efe21e130434b875126e18a3eeb9 Mon Sep 17 00:00:00 2001
+From: Varalaxmi Bingi <varalaxmi.bingi@xilinx.com>
+Date: Mon, 7 Sep 2020 11:45:37 +0530
+Subject: [UBOOT PATCH] xilinx_versal.h: ubifs distroboot support
+
+This patch will add ubifs support for versal.
+
+Signed-off-by: Varalaxmi Bingi <varalaxmi.bingi@xilinx.com>
+---
+ include/configs/xilinx_versal.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/include/configs/xilinx_versal.h b/include/configs/xilinx_versal.h
+index 2054bf5..6039276 100644
+--- a/include/configs/xilinx_versal.h
++++ b/include/configs/xilinx_versal.h
+@@ -112,7 +112,10 @@
+
+ #define BOOTENV_DEV_XSPI(devtypeu, devtypel, instance) \
+	"bootcmd_xspi0=sf probe 0 0 0 && " \
+-	"sf read $scriptaddr $script_offset_f $script_size_f && " \
++	"setenv mtdids 'nor0=nor0' && " \
++	"setenv mtdparts 'mtdparts=nor0:16m(raw),-(boot)' && " \
++	"mtdparts && " \
++	"ubi part boot; ubifsmount ubi0:boot; ubifsload $scriptaddr boot.scr; && " \
+	"echo XSPI: Trying to boot script at ${scriptaddr} && " \
+	"source ${scriptaddr}; echo XSPI: SCRIPT FAILED: continuing...;\0"
+
+--
+2.7.4

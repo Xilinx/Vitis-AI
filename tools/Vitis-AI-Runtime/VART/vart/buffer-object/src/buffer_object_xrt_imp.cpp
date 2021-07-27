@@ -87,7 +87,6 @@ BufferObjectXrtEdgeImp::BufferObjectXrtEdgeImp(size_t size, size_t device_id,
     data_ = nullptr;
   } else {
     data_ = (int*)xclMapBO(xrt_.handle, bo_, true);  //
-    std::memset(data_, 0, size_);
   }
   phy_ = get_physical_address(xrt_.handle, bo_);  //
   LOG_IF(INFO, ENV_PARAM(DEBUG_BUFFER_OBJECT))

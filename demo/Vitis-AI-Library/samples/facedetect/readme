@@ -32,12 +32,13 @@ Important:
     sample : ./test_jpeg_facedetect densebox_320_320 sample_facedetect.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1108 22:41:20.277091  5071 process_result.hpp:57]  1.00007 0.19375 0.14375 0.14375 0.15625
-I1108 22:41:20.277343  5071 process_result.hpp:57]  1.00007 0.53125 0.1 0.1375 0.1625
-   
-    
+I0709 05:50:18.379515  3839 demo.hpp:1183] batch: 0     image: sample_facedetect.jpg
+I0709 05:50:18.382613  3839 process_result.hpp:25]  1.00007 0.53125 0.1 0.1375 0.1625
+I0709 05:50:18.382756  3839 process_result.hpp:25]  1.00007 0.190625 0.14375 0.146875 0.159375
+
     sample : ./test_jpeg_facedetect densebox_640_360 sample_facedetect.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1108 22:41:20.460816  5078 process_result.hpp:57]  0.996612 0.535937 0.075 0.117188 0.194444
-   
+I0709 05:50:18.645131  3843 demo.hpp:1183] batch: 0     image: sample_facedetect.jpg
+I0709 05:50:18.648787  3843 process_result.hpp:25]  0.996612 0.535937 0.0611111 0.120312 0.211111
+

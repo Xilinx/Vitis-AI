@@ -22,12 +22,15 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <mutex>
 #include <numeric>
 #include <set>
+#include <string>
 #include <utility>
 
 #include "vitis/ai/env_config.hpp"
+#include "vitis/ai/lock.hpp"
 #include "vitis/ai/simple_config.hpp"
 #include "vitis/ai/weak.hpp"
 #include "xrt_xcl_read.hpp"
@@ -218,6 +221,7 @@ XrtDeviceHandleImp::XrtDeviceHandleImp() {
   if (detect_ddr_or_hbm) {
     xlnx_ddr_or_hbm.resize(num_of_devices);
   }
+
   for (const auto& deviceIndex : device_id_list) {
     if (!ENV_PARAM(XLNX_DISABLE_CHECK_DEVICE_TYPE)) {
 #ifdef ENABLE_CLOUD
@@ -236,29 +240,17 @@ XrtDeviceHandleImp::XrtDeviceHandleImp() {
       xlnx_ddr_or_hbm[deviceIndex] =
           do_detect_ddr_or_hbm(devices[deviceIndex].mName);
     }
-    auto lock_file_name =
-        std::string("/tmp/vart_device_") + std::to_string(deviceIndex);
-    auto lock_pid_file_name =
-        std::string("/tmp/vart_device_") + std::to_string(deviceIndex) + ".pid";
-    auto mtx = std::make_unique<vitis::ai::FileLock>(lock_file_name);
+
+    auto mtx = vitis::ai::Lock::create("DPU_" + std::to_string(deviceIndex));
     mtx_.push_back(std::move(mtx));
-    auto lock = std::make_unique<std::unique_lock<vitis::ai::FileLock>>(
+    auto lock = std::make_unique<std::unique_lock<vitis::ai::Lock>>(
         *(mtx_.back().get()), std::try_to_lock_t());
     if (!lock->owns_lock()) {
-      int pid = 0;
-      pid = ((std::ifstream(lock_pid_file_name) >> pid).good()) ? pid : -1;
-      LOG(INFO) << "waiting for process [" << pid
-                << "] to release the resource:" << lock_file_name;
+      LOG(INFO) << "waiting for process to release the resource:"
+                << " DPU_" + std::to_string(deviceIndex);
       lock->lock();
     }
-    file_lock_.push_back(std::move(lock));
-    if (!(std::ofstream(lock_pid_file_name) << getpid() << std::endl).good()) {
-      LOG(INFO) << "can not write process id to " << lock_file_name;
-    }
-    auto fd =
-        open(lock_pid_file_name.c_str(), FD_CLOEXEC | O_WRONLY | O_CREAT, 0777);
-    fchmod(fd, 0666);
-    close(fd);
+    locks_.push_back(std::move(lock));
 
     auto handle = xclOpen(deviceIndex, NULL, XCL_INFO);
     if (!ENV_PARAM(XLNX_DISABLE_LOAD_XCLBIN)) {
@@ -351,15 +343,6 @@ XrtDeviceHandleImp::~XrtDeviceHandleImp() {
         << " cu_index " << x.cu_index                                     //
         << " cu_addr " << std::hex << "0x" << x.cu_base_addr << std::dec  //
         ;
-    auto deviceIndex = x.device_id;
-    auto lock_pid_file_name =
-        std::string("/tmp/vart_device_") + std::to_string(deviceIndex) + ".pid";
-    if (deleted.find(lock_pid_file_name) == deleted.end()) {
-      LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_DEVICE_HANDLE))
-          << "delete lock file " << lock_pid_file_name;
-      unlink(lock_pid_file_name.c_str());
-      deleted.insert(lock_pid_file_name);
-    }
   }
 }
 
@@ -448,14 +431,16 @@ uint64_t XrtDeviceHandleImp::get_fingerprint(const std::string& cu_name,
                                              size_t device_core_idx) const {
   return find_cu(cu_name, device_core_idx).fingerprint;
 }
+
 unsigned int XrtDeviceHandleImp::get_bank_flags(const std::string& cu_name,
                                                 size_t device_core_idx) const {
-  // TODO return available banks. and DEV_ONLY
-  //#if IS_EDGE
-  return XCL_BO_FLAGS_CACHEABLE;
-  //#else
-  //  return XCL_BO_FLAGS_DEV_ONLY;
-  //#endif
+  auto ret = XCL_BO_FLAGS_CACHEABLE;
+  if (binstream_->is_lpddr()) {
+    ret = 2;
+  } else {
+    ret = XCL_BO_FLAGS_CACHEABLE;
+  }
+  return ret;
 }
 
 std::array<unsigned char, SIZE_OF_UUID> XrtDeviceHandleImp::get_uuid(

@@ -36,6 +36,7 @@ class TFSSDImp : public vitis::ai::TConfigurableDpuTask<TFSSD> {
   virtual std::vector<TFSSDResult> run(
       const std::vector<cv::Mat> &img) override;
   std::unique_ptr<TFSSDPostProcess> processor_;
+  int real_batch_size = 1;
 };
 }  // namespace ai
 }  // namespace vitis

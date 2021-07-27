@@ -32,19 +32,19 @@ struct RetinaFaceResult {
    *@brief The coordinate and confidence of a face.
    */
   struct BoundingBox {
-    /// x-coordinate, x is normalized relative to the input image columns ,the
-    /// value range from 0 to 1.
+    /// x-coordinate. x is normalized relative to the input image columns.
+    /// Range from 0 to 1.
     float x;
-    /// y-coordinate, y is normalized relative to the input image rows ,the
-    /// value range from 0 to 1.
+    /// y-coordinate. y is normalized relative to the input image rows.
+    /// Range from 0 to 1.
     float y;
-    /// Face width, width is normalized relative to the input image columns , the
-    /// value range from 0 to 1.
+    /// Face width. Width is normalized relative to the input image columns,
+    /// Range from 0 to 1.
     float width;
-    /// Face height, height is normalized relative to the input image rows ,the
-    /// value range from 0 to 1.
+    /// Face height. Heigth is normalized relative to the input image rows,
+    /// Range from 0 to 1.
     float height;
-    /// Face confidence, the value ranges from 0 to 1.
+    /// Face confidence. The value ranges from 0 to 1.
     float score;
   };
   /// Width of input image.
@@ -59,8 +59,8 @@ struct RetinaFaceResult {
 
 /**
  * @class RetinaFacePostProcess
- * @brief Class of the retinaface post-process. It initializes the parameters once
- * instead of computing them each time the program executes.
+ * @brief Class of the retinaface post-process. It initializes the parameters
+ * once instead of computing them each time the program executes.
  * */
 class RetinaFacePostProcess {
  public:
@@ -82,7 +82,8 @@ class RetinaFacePostProcess {
    * @brief The batch mode post-processing function of the retinaface network.
    * @return The vector of struct of RetinaFaceResult.
    */
-  virtual std::vector<RetinaFaceResult> retinaface_post_process(size_t batch_size) = 0;
+  virtual std::vector<RetinaFaceResult> retinaface_post_process(
+      size_t batch_size) = 0;
   /**
    * @cond NOCOMMENTS
    */

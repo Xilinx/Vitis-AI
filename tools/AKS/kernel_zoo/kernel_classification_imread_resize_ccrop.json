@@ -1,0 +1,16 @@
+{
+  "kernel_name": "ClassificationImreadResizeCCrop",
+  "description": "Reads an image, Resize and Central Crops Image",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libClassificationImreadResizeCCrop.so",
+  "num_cu": 20,
+
+  "param_list" : {
+    "net_w": {"type": "int"},
+    "net_h": {"type": "int"},
+    "net_c": {"type": "int"},
+    "mean": {"type": "float_array"},
+    "output_layout" : {"type": "string"}
+  }
+}

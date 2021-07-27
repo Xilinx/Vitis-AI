@@ -33,7 +33,7 @@ namespace ai {
 
 /**
  * @struct YOLOv2Result
- * @brie Struct of the result returned by the YOLOv2 network.
+ * @brief Struct of the result returned by the YOLOv2 network.
  */
 struct YOLOv2Result {
   /**
@@ -43,19 +43,19 @@ struct YOLOv2Result {
   struct BoundingBox {
     /// Classification.
     int label;
-    /// Confidence, the value ranges from 0 to 1.
+    /// Confidence. The value ranges from 0 to 1.
     float score;
-    /// x-coordinate, x is normalized relative to the input image columns, the
-    /// value ranges from 0 to 1.
+    /// x-coordinate. x is normalized relative to the input image columns.
+    /// Range from 0 to 1.
     float x;
-    /// y-coordinate, y is normalized relative to the input image rows, the 
-    /// value ranges from 0 to 1.
+    /// y-coordinate. y is normalized relative to the input image rows.
+    /// Range from 0 to 1.
     float y;
-    /// Width, width is normalized relative to the input image columns, the 
-    /// value ranges from 0 to 1.
+    /// Width. Width is normalized relative to the input image columns,
+    /// Range from 0 to 1.
     float width;
-    /// Height, height is normalized relative to the input image rows, the value
-    /// ranges from 0 to 1.
+    /// Height. Heigth is normalized relative to the input image rows,
+    /// Range from 0 to 1.
     float height;
   };
   /// Width of input image.

@@ -24,11 +24,13 @@ echo "this is pwd $PWD, echo $CMAKE_INSTALL_PREFIX"
 cp -av                                          \
 $CMAKE_INSTALL_PREFIX/lib/libvart-util.so*               \
 $CMAKE_INSTALL_PREFIX/lib/libvart-runner.so*                  \
+$CMAKE_INSTALL_PREFIX/lib/libvart-runner-assistant.so*        \
 $CMAKE_INSTALL_PREFIX/lib/libvart-xrt-device-handle.so*        \
 $CMAKE_INSTALL_PREFIX/lib/libvart-buffer-object.so*            \
 $CMAKE_INSTALL_PREFIX/lib/libvart-dpu-controller.so*           \
 $CMAKE_INSTALL_PREFIX/lib/libvart-dpu-runner.so*               \
 $CMAKE_INSTALL_PREFIX/lib/libvart-mem-manager.so*               \
+$CMAKE_INSTALL_PREFIX/lib/libvart-trace.so*               \
 $CMAKE_INSTALL_PREFIX/lib/libxir.so*               \
 $CMAKE_INSTALL_PREFIX/lib/libunilog.so*               \
 samples/lib
@@ -42,11 +44,18 @@ mkdir -p samples/src
 cp -av $CMAKE_CURRENT_SOURCE_DIR/resnet50.cpp samples/src/
 cp -av ${CMAKE_CURRENT_BINARY_DIR}/word_list.inc samples/src/
 cat <<EOF > samples/build.sh
-\$CXX -std=c++17 -Llib -Iinclude -Isrc src/resnet50.cpp -lglog -lvart-mem-manager -lxir -lunilog -lvart-buffer-object -lvart-runner -lvart-util -lvart-xrt-device-handle -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lvart-dpu-runner -lvart-dpu-controller
+result=0 && pkg-config --list-all | grep opencv4 && result=1
+if [ $result -eq 1 ]; then
+	OPENCV_FLAGS=\$(pkg-config --cflags --libs-only-L opencv4)
+else
+	OPENCV_FLAGS=\$(pkg-config --cflags --libs-only-L opencv)
+fi
+
+\$CXX -std=c++17 -Llib -Iinclude -Isrc src/resnet50.cpp -lglog -lvart-mem-manager -lxir -lunilog -lvart-buffer-object -lvart-runner -lvart-util -lvart-xrt-device-handle ${OPENCV_FLAGS} -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lvart-dpu-runner -lvart-dpu-controller
 EOF
 
 tar -zcvf $CMAKE_CURRENT_BINARY_DIR/resnet50.tar.gz samples
-echo "CONGRADULATION $CMAKE_CURRENT_BINARY_DIR/resnet50.tar.gz is ready"
+echo "CONGRATULATION $CMAKE_CURRENT_BINARY_DIR/resnet50.tar.gz is ready"
 trap on_finish EXIT
 
 function on_finish {

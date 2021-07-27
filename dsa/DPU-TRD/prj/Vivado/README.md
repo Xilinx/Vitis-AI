@@ -1,4 +1,4 @@
-# Zynq UltraScale＋ MPSoC DPU TRD V3.3 Vivado 2020.2
+# Zynq UltraScale＋ MPSoC DPU TRD V3.3 Vivado 2021.1
 
 ## Table of Contents
 
@@ -68,7 +68,7 @@ Required:
 ### 3.2 Software
 
   Required:
-  - Vivado 2020.2 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html)
+  - Vivado 2021.1 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html)
   - [Vitis AI](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional
 
 ------
@@ -82,7 +82,9 @@ The top-level directory structure shows the the major design components. The TRD
 ```
 ├── app
 │   ├── img
-│   └── model
+│   ├── model
+│   ├── samples
+│   └── dpu_sw_optimize.tar.gz
 ├── dpu_ip
 │   ├── DPUCZDX8G_v3_3_0
 │   └── Vitis
@@ -93,7 +95,8 @@ The top-level directory structure shows the the major design components. The TRD
         ├── dpu_petalinux_bsp
         ├── pre-built
         └── scripts
-            └── base
+            ├── base
+            └── trd_prj.tcl
 ```
 
 ## 5 Tutorials
@@ -139,7 +142,7 @@ The following tutorials assume that the Vivado environment variable is set as gi
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <Vivado install path>/Vivado/2020.2/settings64.sh
+% source <Vivado install path>/Vivado/2021.1/settings64.sh
 
 ```
 
@@ -183,22 +186,32 @@ Json file is an important file that needed by the VAI Compiler. The file has bee
 
 The user can get the arch.json file in the following path.
 
-$TRD_HOME/prj/Vivado/srcs/top/ip/top_dpu_0/arch.json
+$TRD_HOME/prj/Vivado/srcs/top/ip/top_DPUCZDX8G_0/arch.json
 
 
 #### 5.2.3  DPU PetaLinux BSP
 
 This tutorial shows how to build the Linux image and boot image using the PetaLinux build tool.
 
-**PetaLinux Installation**: Refer to the [PetaLinux Tools Documentation ](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_2/ug1144-petalinux-tools-reference-guide.pdf)(UG1144) for installation.
+**PetaLinux Working Environment Setup**: Refer to the [PetaLinux Tools Documentation ](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2021_1/ug1144-petalinux-tools-reference-guide.pdf)(UG1144) for installation.
+
+For Bash as user login shell:
 
 ```
-% source <path/to/petalinux-installer>/settings.sh
+$ source <path-to-installed-PetaLinux>/settings.sh
+```
+
+For C shell as user login shell:
+
+```
+$ source <path-to-installed-PetaLinux>/settings.csh
+```
+
+Verify that the working environment has been set:
+
+```
 % echo $PETALINUX
 ```
-
-Post PetaLinux installation $PETALINUX environment variable should be set.
-
 
 ##### Configure and build the PetaLinux project
 
@@ -230,19 +243,19 @@ If the prebuilt design is wanted, please use the path for **--get-hw-description
 
 This part is about how to run the Resnet50 example from the source code.
 
-The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in page 65 of [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_2/ug1144-petalinux-tools-reference-guide.pdf) for PetaLinux 2020.2:
+The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2021_1/ug1144-petalinux-tools-reference-guide.pdf) for PetaLinux 2021.1:
 
-Copy the image.ub, system.dtb, boot.scr, and BOOT.BIN files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to BOOT partition.
+Copy the Image, BOOT.BIN, boot.scr and system.dtb files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to BOOT partition.
 
-Extract the rootfs.ext4 file in **TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to RootFs partition using the `dd` command. For example:
+Extract the rootfs.tar.gz files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to RootFs partition.
 
 ```
-sudo dd if=rootfs.ext4 of=/dev/mmcblk0p2 bs=1M conv=fsync
+tar -zxvf rootfs.tar.gz -C <path-of-SD-card-ext4-partition>
 ```
 
-Copy the folder **$TRD_HOME/app/** to RootFs partition
+Copy the folder **$TRD_HOME/app/** to RootFs partition.
 
-Insert the SD card into the FPGA and boot it in SD mode. After the Linux boot, run the following commands in the RootFs partition:
+Reboot, after the linux boot, run in the RootFs partition:
 
 ```
 % cd ./app
@@ -462,7 +475,7 @@ For the instroduction of Vitis AI Library, please refer to **Quick Start For Edg
 
 ## 7 Known issues
 
-1.DDR QOS
+1. DDR QOS
 
 When AXI HP0 port connects to DPU and use DisplayPort to display, if the QoS settings are not modified, the DisplayPort transmission may under-run, producing black frames or screen flicker intermittently during DPU running. Apart from QoS settings, increasing the read and write issuing capability (outstanding commands) of DPU connected AXI FIFO interface S_AXI_HPC{0, 1}_FPD or S_AXI_HP{0:3}_FPD or S_AXI_LPD may keep the ports busy with always some requests in the queue, which could improve DPU performance highly. [solution](#solution)
 
@@ -479,4 +492,28 @@ Copy **$TRD_HOME/app/dpu_sw_optimize.tar.gz** to target board, after linux boot-
 
 (refer to dpu_sw_optimize/zynqmp/README.md get more info)
 
+```
+
+2. Application hang
+
+If the design of DPU connection is changed, such as using FPD port instead of LPD port, then the address of DPU is not start from 0x8F000000 by default.
+
+In this case, the line "KCFLAGS +=-DSIG_BASE_ADDR=0x8FF00000" in "xilinx-zcu102-trd/project-spec/meta-user/recipes-modules/dpu/files/Makefile" should be modified.
+
+The value of "KCFLAGS +=-DSIG_BASE_ADDR=value" is equal to the DPU start address plus offset 0xF00000.
+
+For LPD port, the default DPU start address is 0x8F000000， so "KCFLAGS +=-DSIG_BASE_ADDR=0x8FF00000".
+
+For FPD port, the start address is 0xB0000000， so "KCFLAGS +=-DSIG_BASE_ADDR=0xB0F00000".
+
+After making the above modification, the abnormal conditions such as crashes, hanging may occur when run the program with DPU.
+
+This is caused by the “get_dpu_fingerprint” function in “Vitis-AI/tools/Vitis-AI-Runtime/VART/vart/dpu-controller/src/dpu_controller_dnndk.cpp”.
+
+The solution is as follows:
+
+Use the following command to skip the fingerprint check when run the program.
+
+```
+env XLNX_ENABLE_FINGERPRINT_CHECK=0 <program running command>
 ```

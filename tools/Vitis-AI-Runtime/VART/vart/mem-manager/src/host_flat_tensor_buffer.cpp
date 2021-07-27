@@ -191,6 +191,13 @@ static inline uint8_t get_data_4bit(uint8_t* ptr,
   return (offset % 8 == 0) ? (ptr[offset / 8] & 0x0f) : (ptr[offset / 8] >> 4);
 }
 
+static uint32_t get_file_size(std::string file_name) {
+  std::ifstream infile(file_name, ios::binary | ios::ate);
+  UNI_LOG_CHECK(infile.is_open(), VAIEDIFF_BAD_FILE)
+      << "Cannot open file " << file_name;
+  return infile.tellg();
+}
+
 static void init_from_file_4bit(HostFlatTensorBuffer* buffer,
                                 std::string file_name) {
   clear_buffer(buffer);
@@ -216,12 +223,20 @@ static void init_from_file_common(HostFlatTensorBuffer* buffer,
                                   std::string file_name) {
   clear_buffer(buffer);
   auto ptr = reinterpret_cast<uint8_t*>(buffer->data({}).first);
-  // TODO: check file size
+
+  auto num = buffer->get_tensor()->get_element_num();
+  auto bytes = buffer->data_type.bit_width / 8;
+
+  auto file_size = get_file_size(file_name);
+  UNI_LOG_CHECK(file_size == static_cast<uint32_t>(num * bytes),
+                VART_UNEXPECTED_FILE_SIZE)
+      << "Failed to initialize tensor buffer "
+      << buffer->get_tensor()->get_name() << " from file " << file_name
+      << ". file size: " << file_size << " expected size: " << num * bytes;
+
   std::ifstream infile(file_name, std::ios_base::in | std::ios_base::binary);
   UNI_LOG_CHECK(infile.is_open(), VART_FAILED_FILE_OPERATION)
       << "Cannot open " << file_name;
-  auto num = buffer->get_tensor()->get_element_num();
-  auto bytes = buffer->data_type.bit_width / 8;
   auto idx = std::vector<int32_t>(buffer->shape.size(), 0);
   uint8_t word;
   for (auto idx_num = 0; idx_num < num; idx_num++) {
@@ -397,50 +412,58 @@ static uint32_t float_2_xuint(float data, int32_t fix_point,
 }
 
 static void copy_to_fix_buffer_4bit(TensorBuffer* buffer_in,
-                                    HostFlatTensorBuffer* buffer_out,
+                                    TensorBuffer* buffer_out,
                                     int32_t fix_point) {
   auto num = buffer_in->get_tensor()->get_element_num();
-  auto idx = std::vector<int32_t>(buffer_out->shape.size(), 0U);
+  auto idx =
+      std::vector<int32_t>(buffer_out->get_tensor()->get_shape().size(), 0U);
   auto ptr = reinterpret_cast<uint8_t*>(buffer_out->data({}).first);
   uint8_t value;
   for (auto idx_num = 0; idx_num < num; idx_num++) {
     auto float_value = *reinterpret_cast<float*>(buffer_in->data(idx).first);
-    if (buffer_out->data_type.type == xir::DataType::XINT) {
+    if (buffer_out->get_tensor()->get_data_type().type == xir::DataType::XINT) {
       auto tmp =
-          float_2_xint(float_value, fix_point, buffer_out->data_type.bit_width);
+          float_2_xint(float_value, fix_point,
+                       buffer_out->get_tensor()->get_data_type().bit_width);
       value = *reinterpret_cast<uint8_t*>(&tmp);
     } else {
-      auto tmp = float_2_xuint(float_value, fix_point,
-                               buffer_out->data_type.bit_width);
+      auto tmp =
+          float_2_xuint(float_value, fix_point,
+                        buffer_out->get_tensor()->get_data_type().bit_width);
       value = *reinterpret_cast<uint8_t*>(&tmp);
     }
-    set_data_4bit(ptr, idx, buffer_out->strides, value & 0x0f);
+    set_data_4bit(ptr, idx, get_strides(buffer_out->get_tensor()),
+                  value & 0x0f);
     bump_idx(idx, buffer_out->get_tensor()->get_shape());
   }
 }
 
 static void copy_to_fix_buffer_common(TensorBuffer* buffer_in,
-                                      HostFlatTensorBuffer* buffer_out,
+                                      TensorBuffer* buffer_out,
                                       int32_t fix_point) {
   auto num = buffer_in->get_tensor()->get_element_num();
-  auto idx = std::vector<int32_t>(buffer_out->shape.size(), 0U);
+  auto idx =
+      std::vector<int32_t>(buffer_out->get_tensor()->get_shape().size(), 0U);
   char* data_src;
   char* data_dst;
   int32_t signed_value;
   uint32_t unsigned_value;
   for (auto idx_num = 0; idx_num < num; idx_num++) {
     auto float_value = *reinterpret_cast<float*>(buffer_in->data(idx).first);
-    if (buffer_out->data_type.type == xir::DataType::XINT) {
+    if (buffer_out->get_tensor()->get_data_type().type == xir::DataType::XINT) {
       signed_value =
-          float_2_xint(float_value, fix_point, buffer_out->data_type.bit_width);
+          float_2_xint(float_value, fix_point,
+                       buffer_out->get_tensor()->get_data_type().bit_width);
       data_src = reinterpret_cast<char*>(&signed_value);
     } else {
-      unsigned_value = float_2_xuint(float_value, fix_point,
-                                     buffer_out->data_type.bit_width);
+      unsigned_value =
+          float_2_xuint(float_value, fix_point,
+                        buffer_out->get_tensor()->get_data_type().bit_width);
       data_src = reinterpret_cast<char*>(&unsigned_value);
     }
     data_dst = reinterpret_cast<char*>(buffer_out->data(idx).first);
-    for (auto idx_byte = 0; idx_byte < buffer_out->data_type.bit_width / 8;
+    for (auto idx_byte = 0;
+         idx_byte < buffer_out->get_tensor()->get_data_type().bit_width / 8;
          idx_byte++) {
       data_dst[idx_byte] = data_src[idx_byte];
     }
@@ -474,6 +497,43 @@ transform_to_fix_buffer(TensorBuffer* buffer, int32_t fix_point,
     UNI_LOG_FATAL(VART_TENSOR_BUFFER_UNSUPPORT_FORMAT)
         << "transform_float_2_xint doesn't support " << bit_width << "bit data";
   return {std::move(new_buffer), std::move(new_tensor)};
+}
+
+void transform_to_fix_buffer(TensorBuffer* buffer_src,
+                             TensorBuffer* buffer_dest,
+                             std::string round_mode) {
+  auto type_src = buffer_src->get_tensor()->get_data_type();
+  UNI_LOG_CHECK(
+      type_src.type == xir::DataType::FLOAT && type_src.bit_width == 32,
+      VART_TENSOR_BUFFER_UNSUPPORT_FORMAT)
+      << "transform_float_2_xint only supports FLOAT32 input, but it is "
+      << type_src.to_string();
+  auto type_dest = buffer_dest->get_tensor()->get_data_type();
+  UNI_LOG_CHECK(type_dest.type == xir::DataType::XINT ||
+                    type_dest.type == xir::DataType::XUINT,
+                VART_TENSOR_BUFFER_UNSUPPORT_FORMAT)
+      << "transform_float_2_xint only supports XINT/XUINT output, but it is "
+      << type_dest.to_string();
+
+  UNI_LOG_CHECK(round_mode == "DPU_ROUND", VART_TENSOR_BUFFER_UNSUPPORT_FORMAT)
+      << "transform_float_2_xint only supports DPU_ROUND mode";
+
+  UNI_LOG_CHECK(buffer_src->get_tensor()->get_element_num() ==
+                    buffer_dest->get_tensor()->get_element_num(),
+                VART_TENSOR_BUFFER_UNSUPPORT_FORMAT)
+      << "transform_float_2_xint, element numbers mismatch, "
+      << xir::to_string(buffer_src->get_tensor()->get_shape()) << " to "
+      << xir::to_string(buffer_dest->get_tensor()->get_shape());
+
+  auto fix_point = buffer_dest->get_tensor()->get_attr<int32_t>("fix_point");
+  if (type_dest.bit_width == 4)
+    copy_to_fix_buffer_4bit(buffer_src, buffer_dest, fix_point);
+  else if (type_dest.bit_width % 8 == 0 && type_dest.bit_width <= 32)
+    copy_to_fix_buffer_common(buffer_src, buffer_dest, fix_point);
+  else
+    UNI_LOG_FATAL(VART_TENSOR_BUFFER_UNSUPPORT_FORMAT)
+        << "transform_float_2_xint doesn't support " << type_dest.bit_width
+        << "bit output";
 }
 
 }  // namespace mm

@@ -52,16 +52,17 @@ class MultiTaskPostProcessImp : public vitis::ai::MultiTaskPostProcess {
           output_tensors,
       size_t batch_idx);
 
-  virtual std::vector<MultiTaskResult> post_process_seg() override;
+  virtual std::vector<MultiTaskResult> post_process_seg(
+      size_t batch_size) override;
 
-  virtual std::vector<MultiTaskResult> post_process_seg_visualization()
-      override;
+  virtual std::vector<MultiTaskResult> post_process_seg_visualization(
+      size_t batch_size) override;
 
  private:
   int num_detection_classes_;
   int num_segmention_classes_;
-  std::vector<SSDOutputInfo> loc_infos_;
-  std::vector<SSDOutputInfo> conf_infos_;
+  std::vector<std::vector<vitis::ai::multitask::SSDOutputInfo>> all_loc_infos_;
+  std::vector<std::vector<vitis::ai::multitask::SSDOutputInfo>> all_conf_infos_;
   std::vector<float> softmax_result;
   std::unique_ptr<vitis::ai::multitask::SSDdetector> detector_;
   const std::vector<std::vector<vitis::ai::library::InputTensor>>

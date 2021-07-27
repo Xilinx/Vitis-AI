@@ -61,16 +61,11 @@ class TFRefineDetPostProcess {
       const vitis::ai::proto::DpuModelParam& config);
 
   /**
-   * @brief Run tfrefinedet post-process.
-   * @return The struct of RefineDetResult.
-   */
-  virtual RefineDetResult tfrefinedet_post_process(unsigned int idx) = 0;
-
-  /**
    * @brief Run batch mode of tfrefinedet post-process.
    * @return The vector of struct of RefineDetResult.
    */
-  virtual std::vector<RefineDetResult> tfrefinedet_post_process() = 0;
+  virtual std::vector<RefineDetResult> tfrefinedet_post_process(
+      size_t batch_size) = 0;
   /**
    * @cond NOCOMMENTS
    */

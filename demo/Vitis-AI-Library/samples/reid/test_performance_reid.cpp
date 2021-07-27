@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <vitis/ai/benchmark.hpp>
-#include <vitis/ai/nnpp/reid.hpp>
+#include <string>
 #include <vitis/ai/reid.hpp>
+#include <vitis/ai/benchmark.hpp>
+
 int main(int argc, char *argv[]) {
   std::string model = argv[1];
   return vitis::ai::main_for_performance(argc, argv, [model] {

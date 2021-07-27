@@ -106,15 +106,15 @@ void LoadWords(string const& path, vector<string>& kinds) {
   fkinds.close();
 }
 
-void globalAvePool(float* src, int channel, int width, int height, float* dst,
-                   int num = 1) {
+void globalAvePool(int8_t* src, int channel, int width, int height, float* dst,
+                   float scale) {
   float sum;
   for (int i = 0; i < channel; i++) {
     sum = 0.0f;
     for (int j = 0; j < width * height; j++) {
       sum += src[i + channel * j];
     }
-    dst[i] = (sum / (width * height)) * num;
+    dst[i] = (sum / (width * height)) * scale;
   }
 }
 
@@ -198,6 +198,8 @@ void runSqueezenet(vart::Runner* runner) {
   auto inputTensors = runner->get_input_tensors();
   auto out_dims = outputTensors[0]->get_shape();
   auto in_dims = inputTensors[0]->get_shape();
+  auto input_scale = get_input_scale(runner->get_input_tensors()[0]);
+  auto output_scale = get_output_scale(runner->get_output_tensors()[0]);
 
   /*get shape info*/
   int inSize = shapes.inTensorList[0].size;
@@ -214,9 +216,9 @@ void runSqueezenet(vart::Runner* runner) {
   std::vector<std::unique_ptr<vart::TensorBuffer>> inputs, outputs;
 
   vector<Mat> imageList;
-  vector<float> imageInputs(inSize * batchSize);
+  vector<int8_t> imageInputs(inSize * batchSize);
 
-  vector<float> FCResult(batchSize * outSize);
+  vector<int8_t> FCResult(batchSize * outSize);
   vector<float> avgpool(cls);
   vector<float> softmax(cls);
   std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
@@ -237,7 +239,8 @@ void runSqueezenet(vart::Runner* runner) {
         for (int w = 0; w < inWidth; w++) {
           for (int c = 0; c < 3; c++) {
             imageInputs[i * inSize + h * inWidth * 3 + w * 3 + 2 - c] =
-                (image2.at<Vec3b>(h, w)[c] - mean[c]) * scale[c];
+                (int8_t)(((image2.at<Vec3b>(h, w)[c] - mean[c]) * scale[c]) *
+                         input_scale);
           }
         }
       }
@@ -245,14 +248,14 @@ void runSqueezenet(vart::Runner* runner) {
     }
 
     /* in/out tensor refactory for batch inout/output */
-    batchTensors.push_back(std::shared_ptr<xir::Tensor>(xir::Tensor::create(
-        inputTensors[0]->get_name(), in_dims,
-        xir::DataType{xir::DataType::FLOAT, sizeof(float) * 8u})));
+    batchTensors.push_back(std::shared_ptr<xir::Tensor>(
+        xir::Tensor::create(inputTensors[0]->get_name(), in_dims,
+                            xir::DataType{xir::DataType::XINT, 8u})));
     inputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
         imageInputs.data(), batchTensors.back().get()));
-    batchTensors.push_back(std::shared_ptr<xir::Tensor>(xir::Tensor::create(
-        outputTensors[0]->get_name(), out_dims,
-        xir::DataType{xir::DataType::FLOAT, sizeof(float) * 8u})));
+    batchTensors.push_back(std::shared_ptr<xir::Tensor>(
+        xir::Tensor::create(outputTensors[0]->get_name(), out_dims,
+                            xir::DataType{xir::DataType::XINT, 8u})));
     outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
         FCResult.data(), batchTensors.back().get()));
 
@@ -269,7 +272,7 @@ void runSqueezenet(vart::Runner* runner) {
       cout << "\nImage : " << images[n + i] << endl;
       /* Calculate softmax on CPU and display TOP-5 classification results */
       globalAvePool(FCResult.data() + (i * outSize), cls, ot_w, ot_h,
-                    avgpool.data());
+                    avgpool.data(), output_scale);
       CPUCalcSoftmax(avgpool.data(), cls, softmax.data());
       TopK(softmax.data(), cls, 5, kinds);
       /* Display the impage */
@@ -298,7 +301,7 @@ int main(int argc, char* argv[]) {
   auto graph = xir::Graph::deserialize(argv[1]);
   auto subgraph = get_dpu_subgraph(graph.get());
   CHECK_EQ(subgraph.size(), 1u)
-      <<  argv[0] << " should have one and only one dpu subgraph.";
+      << argv[0] << " should have one and only one dpu subgraph.";
   LOG(INFO) << "create running for subgraph: " << subgraph[0]->get_name();
   /*create runner*/
   auto runner = vart::Runner::create_runner(subgraph[0], "run");

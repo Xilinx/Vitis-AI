@@ -40,7 +40,9 @@ class DevGraphOptimizer(object):
         NNDCT_OP.TENSOR: Evaluator.tensor,
         NNDCT_OP.FLOOR: Evaluator.floor,
         NNDCT_OP.DIV: Evaluator.elemwise_div,
-        NNDCT_OP.FLOOR_DIV: Evaluator.floor_div
+        NNDCT_OP.FLOOR_DIV: Evaluator.floor_div, 
+        NNDCT_OP.ADD: Evaluator.add,
+        NNDCT_OP.SCALAR_ADD: Evaluator.add
         
     }
     # self._redundant_ops = [NNDCT_OP.CONTIGUOUS]
@@ -106,10 +108,12 @@ class DevGraphOptimizer(object):
       elif node.name in folding_nodes:
         self._eval_node_value(node)
         return True
+      elif node.op.type not in self._evalute_func_map:
+        return False
 
       find_evaluable_op = False
       for tensor in node.in_tensors:
-        if tensor.node.name not in visited:  # and tensor.data is None:
+        if tensor.node and tensor.node.name not in visited:  # and tensor.data is None:
           find_evaluable_op = dfs(tensor.node)
           if find_evaluable_op is False:
             break
@@ -127,7 +131,7 @@ class DevGraphOptimizer(object):
       if is_evaluable:
         data = value.node.out_tensors[0].data
         cur_node.in_tensors.remove(value)
-        if not cur_node.in_tensors:
+        if not cur_node.in_tensors and cur_node.op.type not in [NNDCT_OP.ZEROS]:
           folding_nodes.add(cur_node.name)
         return data
       else:

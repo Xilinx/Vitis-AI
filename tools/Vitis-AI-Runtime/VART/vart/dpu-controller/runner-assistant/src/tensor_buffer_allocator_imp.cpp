@@ -309,6 +309,7 @@ static std::shared_ptr<vart::TensorBuffer> create_tensor_buffer_for_reg(
   auto location = reg_info.location;
   // key is important, it determines which scope the tensor buffer is shared.
   auto key = get_reg_tensor_buffer_key(reg_info);
+  LOG_IF(INFO, ENV_PARAM(DEBUG_TENSOR_BUFFER_ALLOCATOR)) << "key=" << key;
   switch (location) {
     case vart::TensorBuffer::location_t::HOST_VIRT:
       // it is not need to create a shared back store for a reg. For

@@ -1,3 +1,4 @@
+
 '''
 Copyright (c) 2015 Preferred Infrastructure, Inc.
 Copyright (c) 2015 Preferred Networks, Inc.
@@ -23,11 +24,12 @@ THE SOFTWARE.
 
 from __future__ import print_function
 import sys
-sys.path.append('caffe/python')
+sys.path.append('./python')
 import caffe
 import numpy as np
 from collections import OrderedDict
 from six import moves
+import random
 
 DEBUG = True
 format_type = True
@@ -464,18 +466,29 @@ def cfg2prototxt(cfgfile):
                 bottom = topnames[prev_layer_id]
                 
                 # NOTE: modify for group in tiny-yolov4
+                random_id = random.randint(1,100)
                 if 'groups' in block:
                     slice_layer = OrderedDict()
                     slice_layer['bottom'] = bottom
-                    slice_layer['name'] = 'layer%d-slice' % layer_id
+                    slice_layer['name'] = 'layer%d-slice-%d' % (layer_id,random_id)
                     slice_layer['type'] = 'Slice'
                     top_tmp= ['layer%d-slice_aborted' % layer_id, 'layer%d-slice' % layer_id]
                     slice_layer['top'] = top_tmp 
+
                     slice_param = OrderedDict()
+                    if int(block['groups']) == 2:
+                        slice_point = int(int(blocks[bidx + int(block['layers'])]['filters'])/2)
                     slice_param['axis'] = 1
+                    slice_param['slice_point'] = slice_point
                     slice_layer['slice_param'] = slice_param
                     layers.append(slice_layer) 
-               
+                  
+                    silence_layer = OrderedDict()
+                    silence_layer['bottom'] = 'layer%d-slice_aborted' % layer_id
+                    silence_layer['name'] = 'silence-layer%d' % layer_id
+                    silence_layer['type'] = 'Silence'
+
+                    layers.append(silence_layer) 
                     bottom = 'layer%d-slice' % layer_id 
                      
                 topnames[layer_id] = bottom
@@ -638,6 +651,5 @@ if __name__ == '__main__':
     protofile = sys.argv[3]
     caffemodel = sys.argv[4]
     darknet2caffe(cfgfile, weightfile, protofile, caffemodel)
-
 
 

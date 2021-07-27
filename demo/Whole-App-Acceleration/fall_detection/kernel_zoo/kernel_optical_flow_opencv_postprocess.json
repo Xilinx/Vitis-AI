@@ -1,0 +1,13 @@
+{
+  "kernel_name": "OpticalFlowOpenCVPostProcess",
+  "description": "Preprocess an image for Optical Flow",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libOpticalFlowOpenCVPostProcess.so",
+  "num_cu": 1,
+
+  "param_list" : {
+    "bound": {"type": "int", "optional": false},
+    "visualize": {"type": "string"}
+  }
+}

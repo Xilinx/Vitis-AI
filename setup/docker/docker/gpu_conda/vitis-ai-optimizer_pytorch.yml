@@ -1,0 +1,9 @@
+name: vitis-ai-optimizer_pytorch
+
+channels:
+  - pytorch
+  - defaults
+
+dependencies:
+  - python=3.6
+  - vai_optimizer_pytorch_gpu

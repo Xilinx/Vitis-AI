@@ -33,9 +33,9 @@ namespace ai {
 
 class ReidTrackerImp : public ReidTracker {
  public:
-  ReidTrackerImp(uint64_t, const SpecifiedCfg &);
-  ReidTrackerImp(const ReidTrackerImp &) = delete;
-  ReidTrackerImp &operator=(const ReidTrackerImp &) = delete;
+  ReidTrackerImp(uint64_t, const SpecifiedCfg&);
+  ReidTrackerImp(const ReidTrackerImp&) = delete;
+  ReidTrackerImp& operator=(const ReidTrackerImp&) = delete;
   /// Destructor
   virtual ~ReidTrackerImp();
 
@@ -59,9 +59,8 @@ class ReidTrackerImp : public ReidTracker {
       const uint64_t frame_id) override;
 
   virtual std::vector<OutputCharact> track(
-      const cv::Mat &image, const uint64_t frame_id,
-      std::vector<InputCharact> &input_characts, const bool is_detection,
-      const bool is_normalized) override;
+      const uint64_t frame_id, std::vector<InputCharact>& input_characts,
+      const bool is_detection, const bool is_normalized) override;
 
   virtual bool addDetStart(int frame_id) override;
   virtual bool setDetEnd(int frame_id) override;
@@ -70,10 +69,10 @@ class ReidTrackerImp : public ReidTracker {
                             int interval = 1) override;
   virtual bool releaseTrackLock(int frame_id) override;
   virtual std::vector<OutputCharact> trackWithoutLock(
-      const uint64_t frame_id, std::vector<InputCharact> &input_characts,
+      const uint64_t frame_id, std::vector<InputCharact>& input_characts,
       const bool is_detection = true, const bool is_normalized = true) override;
   virtual std::vector<OutputCharact> trackWithLock(
-      const uint64_t frame_id, std::vector<InputCharact> &input_characts,
+      const uint64_t frame_id, std::vector<InputCharact>& input_characts,
       const bool is_detection = true, const bool is_normalized = true);
   virtual std::vector<OutputCharact> outputUndetTracks(
       uint64_t frame_id) override;
@@ -81,11 +80,11 @@ class ReidTrackerImp : public ReidTracker {
   virtual void printUndetTracks() override;
 
  private:
-  FTD_Structure *ftd_ = NULL;
-  StateMap *sm_ = NULL;
+  FTD_Structure* ftd_ = NULL;
+  StateMap* sm_ = NULL;
   uint64_t mode_ = 0;
   uint64_t lastframe_id = 0;
-  RingQueue<std::pair<uint64_t, std::vector<OutputCharact>>> *undet_tracks_ =
+  RingQueue<std::pair<uint64_t, std::vector<OutputCharact>>>* undet_tracks_ =
       NULL;
 };
 

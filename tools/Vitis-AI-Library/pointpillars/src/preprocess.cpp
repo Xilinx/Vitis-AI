@@ -93,20 +93,20 @@ inline bool PointPillarsPre::judge_op_same(int canvas_index, int idx)
   return false;
 }
 
-void PointPillarsPre::process_net0(const V1F& points)
+void PointPillarsPre::process_net0( const float* points, int len_f )
 {
-   int start = 0, len = 0 , size = points.size()/4;
+   int start = 0, len = 0 , size = len_f/4;
    int voxel_num = 0;
    pre_dict_->clear();
 
    if(PRE_MT_NUM==1) {
       process_net0_thread(points, 0, 0, size, voxel_num);
-   } 
+   }
    else {
       for(int i=0; i<PRE_MT_NUM; i++) {
          start = i * size/PRE_MT_NUM;
          len = (i != PRE_MT_NUM-1) ? size/PRE_MT_NUM : (size- (size/PRE_MT_NUM*(PRE_MT_NUM-1))) ;
-         vth0.emplace_back( std::thread( &PointPillarsPre::process_net0_thread, this, std::cref(points), i, start, len, std::ref(voxel_num) ) );
+         vth0.emplace_back( std::thread( &PointPillarsPre::process_net0_thread, this,  points, i, start, len, std::ref(voxel_num) ) );
       }
       for(int i=0; i<PRE_MT_NUM; i++) {
          vth0[i].join();
@@ -118,7 +118,7 @@ void PointPillarsPre::process_net0(const V1F& points)
    vth0.clear();
 }
 
-void PointPillarsPre::process_net0_thread(const V1F& points, int idx, int start, int len, int& voxel_num)
+void PointPillarsPre::process_net0_thread(const float* points, int idx, int start, int len, int& voxel_num)
 {
     __TIC__(POINT_TO_VOXELX)
     std::array<int32_t, 3> coor;

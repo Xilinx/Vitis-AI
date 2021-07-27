@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: detection & segmentation on bdd dataset.
+input size: 288*512
+float ops: 14.8G
+task: detection&segmentation
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_multitask_bdd_288_512_14.8G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_multitask_bdd_288_512_14.8G_1.4.zip
+  checksum: ec63158ab603d1f1297909ab064670f8
+- name: multi_task
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: fbdcf1fec7a0bd6f46fa82610dede0ff
+- name: multi_task
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck190-r1.4.0.tar.gz
+  checksum: 2c6bc5b2990c9732bad8ef28736b90d7
+- name: multi_task
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 0603ab9f7addd58488a79711172c1a3b
+- name: multi_task
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: f77622254276d6c4694fdc4350595e29
+- name: multi_task
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 7ac5eacfe6413657ad7debe58d7efceb
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

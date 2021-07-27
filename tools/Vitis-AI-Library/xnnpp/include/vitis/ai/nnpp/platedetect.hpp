@@ -33,17 +33,17 @@ struct PlateDetectResult {
   struct BoundingBox {
     /// Plate confidence, the value ranges from 0 to 1.
     float score;
-    /// x-coordinate of the plate, x is normalized relative to input image columns,
-    /// the value ranges from 0 to 1.
+    /// x-coordinate. x is normalized relative to the input image columns.
+    /// Range from 0 to 1.
     float x;
-    /// y-coordinate of the plate, y is normalized relative to input image rows,
-    /// the value ranges from 0 to 1.
+    /// y-coordinate. y is normalized relative to the input image rows.
+    /// Range from 0 to 1.
     float y;
-    /// Plate width, width is normalized relative to input image columns,
-    /// the value ranges from 0 to 1.
+    /// Plate width. Width is normalized relative to the input image columns,
+    /// Range from 0 to 1.
     float width;
-    /// Plate height, height is normalized relative to input image rows, 
-    /// the value ranges from 0 to 1.
+    /// Plate height. Heigth is normalized relative to the input image rows,
+    /// Range from 0 to 1.
     float height;
   };
   /// The position of plate.

@@ -1,0 +1,20 @@
+@startuml
+
+class XmodelImage
+together {
+class vart::RunnerExt
+class XmodelPreprocessor
+class XmodelPostprocessorBase
+}
+class XmodelImageImp implements XmodelImage {
+  {field} std::unique_ptr<vart::RunnerExt> runner_;
+  {field} std::unique_ptr<XmodelPreprocessor> preprocessor_;
+  {field} std::unique_ptr<XmodelPostprocessorBase> postprocessor_;
+}
+
+XmodelImageImp::runner_ *-- vart::RunnerExt
+XmodelImageImp::preprocessor_ *-- XmodelPreprocessor
+XmodelImageImp::postprocessor_ *-- XmodelPostprocessorBase
+
+
+@enduml

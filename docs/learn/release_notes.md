@@ -7,6 +7,123 @@
 
 # Release Notes
 
+## Release 1.4
+### New Features/Highlights
+1. Support new platforms, including Versal ACAP platforms VCK190, VCK5000 and Kria SoM 
+2. Better Pytorch and Tensorflow model support: Pytorch 1.5-1.7.1, improved quantization for Tensorflow 2.x models
+3. New models, including 4D Radar detection, Image-Lidar sensor fusion, 3D detection & segmentation, multi-task, depth estimation, super resolution for automotive, smart medical and industrial vision applications
+4. New Graph Runner API to deploy models with multiple subgraphs
+5. DPUCADX8G (DPUv1)deprecated with DPUCADF8H (DPUv3Int8)
+6. DPUCAHX8H (DPUv3E) and DPUCAHX8L (DPUv3ME) release with xo
+7. Classification & Detection WAA examples for Versal (VCK190)
+
+
+### Release Notes
+#### Model Zoo
+- 17 new models added, 109 total
+  - 11 new Pytorch models
+  - 5 new Tensorlfow models
+  - 1 new Caffe model
+- Added support for Pytorch, Tensorflow 2.3 models
+- Added new application models
+  - Medical and industrial vision: depth estimation, RGB-D segmentation, super resolution 
+  - Automotive: 4D Radar detection, Image-Lidar sensor fusion, surround-view 3D detection, upgraded 3D segmentation and multi-task models
+- EoU Enhancements:
+  - provided automated download script to select models with model name and hardware platform
+
+### Quantizer
+- TensorFlow 2.x version
+  - Support fast finetune in post-training quantization (PTQ)
+  - Improved quantize-aware training (QAT) functions
+  - Support more layers: swish/sigmoid, hard-swish, hard-sigmoid, LeakyRelu, nested tf.keras functional and sequential models
+  - Support custom layers via subclassing tf.keras.layers and support custom quantization strategies
+- Pytorch version
+  - Support Pytorch 1.5-1.7.1 
+  - Support more operators including hard-swish, hard-sigmoid
+  - Support shared parameters in quantization
+  - Enhanced quantization profiling and error check functions
+  - Improved QAT functions
+    - support training from PTQ results
+    - support reused modules
+    - support resuming training
+
+### Optimizer
+- TensorFlow
+  - Support tf.keras APIs in TF1
+  - Supports single GPU mode for model analysis
+- Pytorch version
+  - Improved easy-of-use with simplified APIs
+  - Support torch.nn.ConvTranspose2d
+  - Support reused modules
+
+### Compiler
+- Support ALU for DPUCVDX8G (xvDPU)
+- Support cross-layer prefetch optimization option
+- Support xmodel output nodes assignment
+- Enabled features to implement zero-copy for DPUCZDX8G(DPUv2), DPUCAHX8H(DPUv3E) and DPUCAHX8L(DPUv3ME)
+- Open-source network visualization tool Netron officially supports XIR
+
+### AI Library
+- Added support for 17 new models from AI Model Zoo
+- Introduced new deploy APIs graph_runner, especially for models with multiple subgraphs
+- Introduced new tool xdputil for DPU and xmodel debug
+- Support new KV260 SoM kit
+- Support DPUCVDX8G(xvDPU) on VCK190
+- Support DPUCVDX8H(DPUv4E) on VCK5000
+
+### AI Profiler
+- Support new DPU IPs: DPUCAHX8L(DPUv3ME), DPUCVDX8G(xvDPU) and DPUCVDX8H(DPUv4E)
+- Support DPUCZDX8G(DPUv2) and DPUCVDX8G(xvDPU) in Vivado flow
+- Add Memory IO statistics
+
+### VART
+- Support Petalinux 2021.1 and OpenCV v4
+- Update samples to use INT8 as the input instead of FP32
+
+### DPU
+- CNN DPU for Zynq SoC / MPSoC, DPUCZDX8G (DPUv2)
+  - Upgraded to 2021.1
+
+- CNN DPU for Alveo-HBM, DPUCAHX8H (DPUv3E), DPUCAHX8L (DPUv3ME)
+  - Released xo
+
+- CNN DPU for Alveo-DDR, DPUCADF8H (DPUv3Int8)
+  - Support latest U250 platform (2020.2) 
+  - Support latest U200 platform (2021.1)
+  - Support AWS F1
+
+- CNN DPU for Versal, DPUCVDX8G (xvDPU)
+  - VCK190 DPU TRD
+  - Provide basic unit C32 with 32-aie cores for a single batch
+  - Support configurable batch size 1~6
+  - Support new OPs: Global Average Pooling up to 256x256, Element Multiply, Hardsigmoid and Hardswish
+  
+- CNN DPU for Versal, DPUCVDX8H (DPUv4E)
+  - Improved the DPU performance of small model inference with weight pre-fetch function
+
+- CNN DPU for Alveo-DDR, DPUCADX8G (DPUv1)
+  - Deprecated with DPUCADF8H (DPUv3Int8)
+
+### Whole App Acceleration
+- Multi Object Tracking (SORT) example on ZCU102 
+- Classification & Detection App examples for Versal (VCK190)  
+- Updated existing examples to XRT APIs and zero copy
+- Added U200 (DPUv3INT8) based WAA TRD 
+- Ported U200/250 examples to DPUCADF8H (DPUv3INT8)
+- SSD-MobileNet U280 example accelerates both pre and post-processing on hardware
+
+### AI Kernel Scheduler
+- Unified DPU kernels into one and added samples for Alveo U200/250 (DPUv3INT8), U280, U50, U50lv
+
+### TVM
+- Support of all DPUs - ZCU102/4, U50, U200, U250, U280
+- Using Petalinux for edge devices
+- Increased throughput using AKS at the application level
+- Yolov3 tutorial as python notebook
+
+### Known Issues
+- ZCU104 power patch fail to work in 2021.1. Board will hang or reboot with heavy workload
+
 ## Release 1.3
 ### New Features/Highlights
 1. Added support for Pytorch and Tensorflow 2.3 frameworks
@@ -151,6 +268,7 @@
    - Errors like this can be safely ignored does not affect any Vitis AI functionality
  - Inconsistent accuracies observed in multi-threaded applications using DPUCADF8H
    - View workaround [here](https://github.com/xilinx/vitis-ai/examples/DPUCADF8H/tf_resnet50_multi_thread/scripts).
+
 
 ### Updates
 - v1.3.1

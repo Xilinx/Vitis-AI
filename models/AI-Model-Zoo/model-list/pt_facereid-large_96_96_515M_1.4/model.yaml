@@ -1,0 +1,45 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: 'face re-identification model(backbone: resnet18) in tracking senario.'
+input size: 96*96
+float ops: 515M
+task: face reid
+framework: pytorch
+prune: 'no'
+version: 1.4
+files:
+- name: pt_facereid-large_96_96_515M_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_facereid-large_96_96_515M_1.4.zip
+  checksum: 855d13e212eab67c98ce89cc988dcd2f
+- name: facereid-large_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: c73feadb85fd266762692cfb57592d40
+- name: facereid-large_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-vck190-r1.4.0.tar.gz
+  checksum: 37cbbf223f2373fc28aa3c1c6119b854
+- name: facereid-large_pt
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 24657e7b92e6328ee5d7137f4a829f27
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

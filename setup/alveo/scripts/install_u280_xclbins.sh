@@ -13,19 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=U280_xclbins_1_3_0.tar.gz"
+XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=dpuv3me_xclbins_1_4_0.tar.gz"
 XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
 INSTALLER=tar
 INSTALL_PATH=/
 
 wget $XCLBIN_URL -O $XCLBIN_INSTALLER && sudo ${INSTALLER} -xzf $XCLBIN_INSTALLER --directory $INSTALL_PATH && rm $XCLBIN_INSTALLER
 
-XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=U280-V3ME_xclbins_1_3_0.tar.gz"
+XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=dpuv3e_xclbins_1_4_0.tar.gz"
 XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
 INSTALLER=tar
 INSTALL_PATH=/
 
 wget $XCLBIN_URL -O $XCLBIN_INSTALLER && sudo ${INSTALLER} -xzf $XCLBIN_INSTALLER --directory $INSTALL_PATH && rm $XCLBIN_INSTALLER
 
-echo "Alveo U280 XCLBINS have beein installed to /opt/xilinx/overlaybins/"
-echo "You may need to copy them or link them to /usr/lib/dpu.xclbin"

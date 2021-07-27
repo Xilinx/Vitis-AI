@@ -34,6 +34,10 @@ class Segmentation3DImp : public vitis::ai::TConfigurableDpuTask<Segmentation3D>
   virtual std::vector<Segmentation3DResult> run(std::vector<std::vector<std::vector<float>>>& arrays) override;
   const std::vector<float> sensor_means_{12.12, 10.88, 0.23, -1.04, 0.21};
   const std::vector<float> sensor_stds_{12.32, 11.47, 6.91, 0.86, 0.16};
+  std::vector<int>  map_inv_{0, 10, 11, 15, 18,
+                         20, 30, 31, 32, 40,
+                         44, 48, 49, 50, 51,
+                         70, 71, 72, 80, 81};
 };
 }  // namespace ai
 }  // namespace vitis

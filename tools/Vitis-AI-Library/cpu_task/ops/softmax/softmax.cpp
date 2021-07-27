@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 xilinx Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <cmath>
+#include <fstream>
 #include <iostream>
 
 #include "vart/op_imp.h"
+#include "vart/runner_helper.hpp"
+#include "vitis/ai/env_config.hpp"
 using namespace std;
-
+DEF_ENV_PARAM(DEBUG_OP_SOFTMAX, "0")
+DEF_ENV_PARAM(SOFTMAX_OP_DOUBLE, "0")
 namespace {
-class SoftmaxOpImp : public vart::OpImp {
- public:
-  explicit SoftmaxOpImp(const xir::Op* op);
-  virtual ~SoftmaxOpImp();
-  SoftmaxOpImp(const SoftmaxOpImp& other) = delete;
-  SoftmaxOpImp& operator=(const SoftmaxOpImp& rhs) = delete;
 
- public:
-  virtual int calculate(const std::vector<vart::OpImpArg>& inputs,
-                        vart::TensorBuffer* output) override;
-};
-
-SoftmaxOpImp::SoftmaxOpImp(const xir::Op* op) : vart::OpImp(op){};
-SoftmaxOpImp::~SoftmaxOpImp() {}
-int SoftmaxOpImp::calculate(const std::vector<vart::OpImpArg>& inputs,
-                            vart::TensorBuffer* output) {
-  return 0;
+static void softmax(float* input, float* output, size_t cls) {
+  if (!ENV_PARAM(SOFTMAX_OP_DOUBLE)) {
+    float sum = 0.f;
+    for (auto i = 0u; i < cls; ++i) {
+      output[i] = std::exp(input[i]);
+      sum += output[i];
+    }
+    for (unsigned int i = 0u; i < cls; ++i) {
+      output[i] /= sum;
+    }
+  } else {
+    double sum = 0.0;
+    vector<float> tmp(cls);
+    for (auto i = 0u; i < cls; ++i) {
+      float f = std::exp((double)input[i]);
+      tmp[i] = f;
+      sum += f;
+    }
+    for (unsigned int i = 0u; i < cls; ++i) {
+      output[i] = tmp[i] / sum;
+    }
+  }
 }
 
+struct SoftmaxOpImp : public vart::experimental::OpImpBase {
+  SoftmaxOpImp(xir::Op* op, xir::Attrs* attrs)
+      : vart::experimental::OpImpBase{op, attrs} {}
+  int calculate(vart::experimental::simple_tensor_buffer_t<float> result,
+                vart::experimental::simple_tensor_buffer_t<float> input) {
+    auto input_shape = input.tensor->get_shape();
+    auto output_shape = result.tensor->get_shape();
+    auto num_of_dims = input_shape.size();
+    CHECK_EQ(num_of_dims, output_shape.size());
+    for (auto dim = 0u; dim < num_of_dims; ++dim) {
+      CHECK_EQ(input_shape[dim], output_shape[dim]);
+    }
+    auto num_of_elements = input.tensor->get_element_num();
+    auto channels = input_shape[num_of_dims - 1];
+    for (auto i = 0; i < num_of_elements; i = i + channels) {
+      softmax(&input.data[i], &result.data[i], channels);
+    }
+    return 0;
+  }
+};
 }  // namespace
 extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::make_vart_opt_imp<SoftmaxOpImp>();
+  return vart::experimental::make_vart_opt_imp<SoftmaxOpImp>();
 }

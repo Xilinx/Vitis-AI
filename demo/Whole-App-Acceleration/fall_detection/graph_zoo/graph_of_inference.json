@@ -14,24 +14,9 @@
     {
       "node_name": "of_infer_runner",
       "node_params": {
-        "DPUCADX8GRunner": {
-          "acquire_cu": 0,
-          "num_fpga": 1,
-          "xclbin":   "/opt/xilinx/overlaybins/xdnnv3/xplusml/optical_flow/dpu_lk_dense_non_pyr_optical_flow_U200.xclbin",
-          "vitis_rundir": "graph_zoo/meta_vgg_fall_detection"
-        }
-      },
-      "next_node": ["fc_sigmoid"]
-    },
-
-    {
-      "node_name": "fc_sigmoid",
-      "node_params": {
-        "FullyConnectedSigmoid": {
-          "weights" : "graph_zoo/meta_vgg_fall_detection/weights.h5",
-          "fc_weights": "fc_0",
-          "fc_bias": "fc_bias_0",
-          "transpose_input": 0
+        "DPURunner": {
+          "model_file" : "model/fall_detection.xmodel",
+          "num_runners": 2
         }
       },
       "next_node": [ "calc_evaluation" ]
@@ -50,6 +35,5 @@
       "next_node": []
     }
   ],
-
   "version": "0.1"
 }

@@ -15,20 +15,35 @@
  */
 #pragma once
 #include <glog/logging.h>
+#include <opencv2/imgproc/types_c.h>
 #include <signal.h>
 #include <unistd.h>
 
+#include <cassert>
 #include <iostream>
 #include <map>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <opencv2/imgproc/types_c.h>
+#include <opencv2/videoio.hpp>
+#include <string>
 #include <thread>
 #include <type_traits>
 #include <vitis/ai/bounded_queue.hpp>
 #include <vitis/ai/env_config.hpp>
+
 DEF_ENV_PARAM(DEBUG_DEMO, "0")
+DEF_ENV_PARAM(DEMO_USE_VIDEO_WRITER, "0")
+DEF_ENV_PARAM_2(
+    DEMO_VIDEO_WRITER,
+    "appsrc ! videoconvert ! queue ! kmssink "
+    "driver-name=xlnx plane-id=39 fullscreen-overlay=false sync=false",
+    std::string)
+DEF_ENV_PARAM(DEMO_VIDEO_WRITER_WIDTH, "640")
+DEF_ENV_PARAM(DEMO_VIDEO_WRITER_HEIGHT, "480")
+DEF_ENV_PARAM(SAMPLES_ENABLE_BATCH, "1");
+DEF_ENV_PARAM(SAMPLES_BATCH_NUM, "0");
+
 #ifndef USE_DRM
 #define USE_DRM 0
 #endif
@@ -37,17 +52,17 @@ DEF_ENV_PARAM(DEBUG_DEMO, "0")
 #endif
 
 // set the layout
-inline std::vector<cv::Rect> &gui_layout() {
+inline std::vector<cv::Rect>& gui_layout() {
   static std::vector<cv::Rect> rects;
   return rects;
 }
 // set the wallpaper
-inline cv::Mat &gui_background() {
+inline cv::Mat& gui_background() {
   static cv::Mat img;
   return img;
 }
 
-inline std::vector<cv::Size> &each_channel_mosaik_size() {
+inline std::vector<cv::Size>& each_channel_mosaik_size() {
   static std::vector<cv::Size> msize;
   return msize;
 }
@@ -57,7 +72,7 @@ namespace ai {
 // Read a video without doing anything
 struct VideoByPass {
  public:
-  int run(const cv::Mat &input_image) { return 0; }
+  int run(const cv::Mat& input_image) { return 0; }
 };
 
 // Do nothing after after excuting
@@ -85,30 +100,30 @@ struct FrameInfo {
 using queue_t = vitis::ai::BoundedQueue<FrameInfo>;
 struct MyThread {
   // static std::vector<MyThread *> all_threads_;
-  static inline std::vector<MyThread *> &all_threads() {
-    static std::vector<MyThread *> threads;
+  static inline std::vector<MyThread*>& all_threads() {
+    static std::vector<MyThread*> threads;
     return threads;
   };
   static void signal_handler(int) { stop_all(); }
   static void stop_all() {
-    for (auto &th : all_threads()) {
+    for (auto& th : all_threads()) {
       th->stop();
     }
   }
   static void wait_all() {
-    for (auto &th : all_threads()) {
+    for (auto& th : all_threads()) {
       th->wait();
     }
   }
   static void start_all() {
     LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
         << "Thread num " << all_threads().size();
-    for (auto &th : all_threads()) {
+    for (auto& th : all_threads()) {
       th->start();
     }
   }
 
-  static void main_proxy(MyThread *me) { return me->main(); }
+  static void main_proxy(MyThread* me) { return me->main(); }
   void main() {
     LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
         << "thread [" << name() << "] is started";
@@ -163,7 +178,7 @@ struct MyThread {
 
 // std::vector<MyThread *> MyThread::all_threads_;
 struct DecodeThread : public MyThread {
-  DecodeThread(int channel_id, const std::string &video_file, queue_t *queue)
+  DecodeThread(int channel_id, const std::string& video_file, queue_t* queue)
       : MyThread{},
         channel_id_{channel_id},
         video_file_{video_file},
@@ -171,7 +186,7 @@ struct DecodeThread : public MyThread {
         video_stream_{},
         queue_{queue} {
     open_stream();
-    auto &cap = *video_stream_.get();
+    auto& cap = *video_stream_.get();
     if (is_camera_) {
       cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
       cap.set(cv::CAP_PROP_FRAME_HEIGHT, 360);
@@ -181,7 +196,7 @@ struct DecodeThread : public MyThread {
   virtual ~DecodeThread() {}
 
   virtual int run() override {
-    auto &cap = *video_stream_.get();
+    auto& cap = *video_stream_.get();
     cv::Mat image;
     cap >> image;
     auto video_ended = image.empty();
@@ -224,7 +239,7 @@ struct DecodeThread : public MyThread {
   std::string video_file_;
   unsigned long frame_id_;
   std::unique_ptr<cv::VideoCapture> video_stream_;
-  queue_t *queue_;
+  queue_t* queue_;
   bool is_camera_;
 };
 
@@ -232,8 +247,8 @@ std::vector<std::vector<cv::Mat>> mosaik_images;
 
 struct ClassificaitonDecodeThread : public MyThread {
   ClassificaitonDecodeThread(int channel_id, std::string channel_name,
-                             const std::vector<cv::String> &namelist,
-                             queue_t *queue, int page_num,
+                             const std::vector<cv::String>& namelist,
+                             queue_t* queue, int page_num,
                              cv::Rect_<int> page_layout, cv::Size mosaik_size)
       : MyThread{},
         channel_id_{channel_id},
@@ -288,7 +303,7 @@ struct ClassificaitonDecodeThread : public MyThread {
            std::to_string(channel_id_);
   }
 
-  void load_image(const std::vector<cv::String> &namelist) {
+  void load_image(const std::vector<cv::String>& namelist) {
     for (auto name : namelist) {
       auto image = cv::imread(name);
       cv::resize(image, image, cv::Size(224, 224));
@@ -296,7 +311,7 @@ struct ClassificaitonDecodeThread : public MyThread {
     }
   }
 
-  void get_mosaik(std::vector<cv::Mat> &mosaik_image) {
+  void get_mosaik(std::vector<cv::Mat>& mosaik_image) {
     int tmp_horizontal_num = page_layout_.width / mosaik_width_;
     int tmp_vertical_num = page_layout_.height / mosaik_height_;
     horizontal_num_ = tmp_horizontal_num;
@@ -348,7 +363,7 @@ struct ClassificaitonDecodeThread : public MyThread {
   int channel_id_;
   std::string channel_name_;
   unsigned long frame_id_;
-  queue_t *queue_;
+  queue_t* queue_;
   int per_page_;
   int page_num_;
   cv::Rect_<int> page_layout_;
@@ -357,6 +372,25 @@ struct ClassificaitonDecodeThread : public MyThread {
   int horizontal_num_;
   int vertical_num_;
 };
+
+static std::unique_ptr<cv::VideoWriter> maybe_create_gst_video_writer(
+    int width, int height) {
+  if (!ENV_PARAM(DEMO_USE_VIDEO_WRITER)) {
+    return nullptr;
+  }
+  auto pipeline = ENV_PARAM(DEMO_VIDEO_WRITER);
+  auto video_stream = std::unique_ptr<cv::VideoWriter>(new cv::VideoWriter(
+      pipeline, cv::CAP_GSTREAMER, 0, 25.0, cv::Size(width, height), true));
+  auto& writer = *video_stream.get();
+  if (!writer.isOpened()) {
+    LOG(FATAL) << "cannot open gst: " << pipeline;
+    return nullptr;
+  } else {
+    LOG(INFO) << "video writer is created: " << width << "x" << height << " "
+              << pipeline;
+  }
+  return video_stream;
+}
 
 struct GuiThread : public MyThread {
   static std::shared_ptr<GuiThread> instance() {
@@ -382,7 +416,10 @@ struct GuiThread : public MyThread {
             new queue_t{
                 10}  // assuming GUI is not bottleneck, 10 is high enough
         },
-        inactive_counter_{0} {
+        inactive_counter_{0},
+        video_writer_{maybe_create_gst_video_writer(
+            ENV_PARAM(DEMO_VIDEO_WRITER_WIDTH),
+            ENV_PARAM(DEMO_VIDEO_WRITER_HEIGHT))} {
     LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO)) << "INIT GUI";
   }
   virtual ~GuiThread() {  //
@@ -419,7 +456,7 @@ struct GuiThread : public MyThread {
     clean_up_queue();
 #if USE_DRM
     bool all_dirty = true;
-    for (auto &f : frames_) {
+    for (auto& f : frames_) {
       all_dirty = all_dirty && f.second.dirty;
     }
     if (!all_dirty) {
@@ -431,14 +468,14 @@ struct GuiThread : public MyThread {
     auto screen_size = cv::Size{width, height};
     auto sizes = std::vector<cv::Size>(frames_.size());
     std::transform(frames_.begin(), frames_.end(), sizes.begin(),
-                   [](const decltype(frames_)::value_type &a) {
+                   [](const decltype(frames_)::value_type& a) {
                      return a.second.frame_info.mat.size();
                    });
     std::vector<cv::Rect> rects;
     rects = gui_layout();
     LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO)) << "rects size is  " << rects.size();
 
-    for (const auto &rect : rects) {
+    for (const auto& rect : rects) {
       LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
           << "screen " << screen_size << "; r = " << rect;
       if ((rect.x + rect.width > width) || (rect.y + rect.height > height) ||
@@ -447,7 +484,7 @@ struct GuiThread : public MyThread {
       }
     }
     int c = 0;
-    for (auto &f : frames_) {
+    for (auto& f : frames_) {
       vitis::ai::imshow(rects[c], f.second.frame_info.mat);
       f.second.dirty = false;
       c++;
@@ -455,19 +492,25 @@ struct GuiThread : public MyThread {
     vitis::ai::imshow_update();
 #else
     bool any_dirty = false;
-    for (auto &f : frames_) {
+    for (auto& f : frames_) {
       if (f.second.dirty) {
-        cv::imshow(
-            std::string{"CH-"} + std::to_string(f.second.frame_info.channel_id),
-            f.second.frame_info.mat);
+        if (video_writer_ == nullptr) {
+          cv::imshow(std::string{"CH-"} +
+                         std::to_string(f.second.frame_info.channel_id),
+                     f.second.frame_info.mat);
+        } else {
+          *video_writer_ << f.second.frame_info.mat;
+        }
         f.second.dirty = false;
         any_dirty = true;
       }
     }
-    if (any_dirty) {
-      auto key = cv::waitKey(1);
-      if (key == 27) {
-        return 1;
+    if (video_writer_ == nullptr) {
+      if (any_dirty) {
+        auto key = cv::waitKey(1);
+        if (key == 27) {
+          return 1;
+        }
       }
     }
 #endif
@@ -477,7 +520,7 @@ struct GuiThread : public MyThread {
 
   virtual std::string name() override { return std::string{"GUIThread"}; }
 
-  queue_t *getQueue() { return queue_.get(); }
+  queue_t* getQueue() { return queue_.get(); }
 
   std::unique_ptr<queue_t> queue_;
   int inactive_counter_;
@@ -486,7 +529,8 @@ struct GuiThread : public MyThread {
     FrameInfo frame_info;
   };
   std::map<int, FrameCache> frames_;
-};
+  std::unique_ptr<cv::VideoWriter> video_writer_;
+};  // namespace ai
 
 struct GridGuiThread : public MyThread {
   static std::shared_ptr<GridGuiThread> instance() {
@@ -570,7 +614,7 @@ struct GridGuiThread : public MyThread {
     rects = gui_layout();
     LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO)) << "rects size is  " << rects.size();
 
-    for (const auto &rect : rects) {
+    for (const auto& rect : rects) {
       LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
           << "screen " << screen_size << "; r = " << rect;
       if ((rect.x + rect.width > width) || (rect.y + rect.height > height) ||
@@ -586,8 +630,8 @@ struct GridGuiThread : public MyThread {
     // }
     LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
         << "current frame size is " << frames_.size();
-    for (auto &f : frames_) {
-      for (auto &frame_info : f.second.all_frame_info) {
+    for (auto& f : frames_) {
+      for (auto& frame_info : f.second.all_frame_info) {
         LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
             << "local rect: " << frame_info.local_rect;
         vitis::ai::imshow(frame_info.local_rect, frame_info.mat);
@@ -621,8 +665,8 @@ struct GridGuiThread : public MyThread {
     //               cv::Scalar(0, 0, 0), 1, 1);
     // vitis::ai::imshow(cv::Rect_<int>(0, 0, mosaik_width, 16), fps_mat);
     vitis::ai::imshow_update();
-    for (auto &f : frames_) {
-      for (auto &frame_info : f.second.all_frame_info) {
+    for (auto& f : frames_) {
+      for (auto& frame_info : f.second.all_frame_info) {
         LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
             << "local rect: " << frame_info.local_rect;
         vitis::ai::imshow(frame_info.local_rect, frame_info.mat);
@@ -647,7 +691,7 @@ struct GridGuiThread : public MyThread {
     }
 
     // vitis::ai::imshow(cv::Rect_<int>(0, 0, mosaik_width, 16), fps_mat);
-    for (auto &f : frames_) {
+    for (auto& f : frames_) {
       f.second.all_frame_info.clear();
     }
 #else
@@ -674,7 +718,7 @@ struct GridGuiThread : public MyThread {
 
   virtual std::string name() override { return std::string{"GUIThread"}; }
 
-  queue_t *getQueue() { return queue_.get(); }
+  queue_t* getQueue() { return queue_.get(); }
 
   std::unique_ptr<queue_t> queue_;
   int inactive_counter_;
@@ -688,26 +732,29 @@ struct GridGuiThread : public MyThread {
 struct Filter {
   explicit Filter() {}
   virtual ~Filter() {}
-  virtual cv::Mat run(cv::Mat &input) = 0;
+  virtual cv::Mat run(cv::Mat& input) = 0;
 };
 
 // Execute each lib run function and processor your implement
 template <typename dpu_model_type_t, typename ProcessResult>
 struct DpuFilter : public Filter {
-  DpuFilter(std::unique_ptr<dpu_model_type_t> &&dpu_model,
-            const ProcessResult &processor)
-      : Filter{}, dpu_model_{std::move(dpu_model)}, processor_{processor} {}
+  DpuFilter(std::unique_ptr<dpu_model_type_t>&& dpu_model,
+            const ProcessResult& processor)
+      : Filter{}, dpu_model_{std::move(dpu_model)}, processor_{processor} {
+    LOG(INFO) << "DPU model size=" << dpu_model_->getInputWidth() << "x"
+              << dpu_model_->getInputHeight();
+  }
   virtual ~DpuFilter() {}
-  cv::Mat run(cv::Mat &image) override {
+  cv::Mat run(cv::Mat& image) override {
     auto result = dpu_model_->run(image);
     return processor_(image, result, false);
   }
   std::unique_ptr<dpu_model_type_t> dpu_model_;
-  const ProcessResult &processor_;
+  const ProcessResult& processor_;
 };
 template <typename FactoryMethod, typename ProcessResult>
-std::unique_ptr<Filter> create_dpu_filter(const FactoryMethod &factory_method,
-                                          const ProcessResult &process_result) {
+std::unique_ptr<Filter> create_dpu_filter(const FactoryMethod& factory_method,
+                                          const ProcessResult& process_result) {
   using dpu_model_type_t = typename decltype(factory_method())::element_type;
   return std::unique_ptr<Filter>(new DpuFilter<dpu_model_type_t, ProcessResult>(
       factory_method(), process_result));
@@ -715,8 +762,8 @@ std::unique_ptr<Filter> create_dpu_filter(const FactoryMethod &factory_method,
 
 // Execute dpu filter
 struct DpuThread : public MyThread {
-  DpuThread(std::unique_ptr<Filter> &&filter, queue_t *queue_in,
-            queue_t *queue_out, const std::string &suffix)
+  DpuThread(std::unique_ptr<Filter>&& filter, queue_t* queue_in,
+            queue_t* queue_out, const std::string& suffix)
       : MyThread{},
         filter_{std::move(filter)},
         queue_in_{queue_in},
@@ -746,15 +793,15 @@ struct DpuThread : public MyThread {
 
   virtual std::string name() override { return std::string("DPU-") + suffix_; }
   std::unique_ptr<Filter> filter_;
-  queue_t *queue_in_;
-  queue_t *queue_out_;
+  queue_t* queue_in_;
+  queue_t* queue_out_;
   std::string suffix_;
 };
 
 // Implement sorting thread
 struct SortingThread : public MyThread {
-  SortingThread(queue_t *queue_in, queue_t *queue_out,
-                const std::string &suffix)
+  SortingThread(queue_t* queue_in, queue_t* queue_out,
+                const std::string& suffix)
       : MyThread{},
         queue_in_{queue_in},
         queue_out_{queue_out},
@@ -770,7 +817,7 @@ struct SortingThread : public MyThread {
     frame_id_++;
     auto frame_id = frame_id_;
     auto cond =
-        std::function<bool(const FrameInfo &)>{[frame_id](const FrameInfo &f) {
+        std::function<bool(const FrameInfo&)>{[frame_id](const FrameInfo& f) {
           // sorted by frame id
           return f.frame_id <= frame_id;
         }};
@@ -816,15 +863,15 @@ struct SortingThread : public MyThread {
   }
 
   virtual std::string name() override { return std::string{"SORT-"} + suffix_; }
-  queue_t *queue_in_;
-  queue_t *queue_out_;
+  queue_t* queue_in_;
+  queue_t* queue_out_;
   unsigned long frame_id_;
   std::deque<std::chrono::time_point<std::chrono::steady_clock>> points_;
   std::string suffix_;
   float fps_;
   float max_fps_;
 };
-inline void usage_video(const char *progname) {
+inline void usage_video(const char* progname) {
   std::cout << "usage: " << progname << "      -t <num_of_threads>\n"
             << "      <video file name>\n"
             << std::endl;
@@ -836,7 +883,7 @@ inline void usage_video(const char *progname) {
 static std::vector<int> g_num_of_threads;
 static std::vector<std::string> g_avi_file;
 
-inline void parse_opt(int argc, char *argv[], int start_pos = 1) {
+inline void parse_opt(int argc, char* argv[], int start_pos = 1) {
   int opt = 0;
   optind = start_pos;
   while ((opt = getopt(argc, argv, "c:t:")) != -1) {
@@ -867,9 +914,9 @@ inline void parse_opt(int argc, char *argv[], int start_pos = 1) {
 
 // Entrance of single channel video demo
 template <typename FactoryMethod, typename ProcessResult>
-int main_for_video_demo(int argc, char *argv[],
-                        const FactoryMethod &factory_method,
-                        const ProcessResult &process_result,
+int main_for_video_demo(int argc, char* argv[],
+                        const FactoryMethod& factory_method,
+                        const ProcessResult& process_result,
                         int start_pos = 1) {
   signal(SIGINT, MyThread::signal_handler);
   parse_opt(argc, argv, start_pos);
@@ -890,9 +937,11 @@ int main_for_video_demo(int argc, char *argv[],
     }
     video_cap.release();
 #else
-    cv::moveWindow(std::string{"CH-"} + std::to_string(0), 500, 500);
-    LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
-        << "Window name " << std::string{"CH-"} + std::to_string(0);
+    if (ENV_PARAM(DEMO_USE_VIDEO_WRITER) == 0) {
+      cv::moveWindow(std::string{"CH-"} + std::to_string(0), 500, 500);
+      LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
+          << "Window name " << std::string{"CH-"} + std::to_string(0);
+    }
 #endif
     auto channel_id = 0;
     auto decode_queue = std::unique_ptr<queue_t>{new queue_t{5}};
@@ -922,8 +971,8 @@ int main_for_video_demo(int argc, char *argv[],
 
 // A class can create a video channel
 struct Channel {
-  Channel(size_t ch, const std::string &avi_file,
-          const std::function<std::unique_ptr<Filter>()> &filter,
+  Channel(size_t ch, const std::string& avi_file,
+          const std::function<std::unique_ptr<Filter>()>& filter,
           int n_of_threads) {
     LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
         << "create channel " << ch << " for " << avi_file;
@@ -954,8 +1003,8 @@ struct Channel {
 
 // Entrance of multi-channel video demo
 inline int main_for_video_demo_multiple_channel(
-    int argc, char *argv[],
-    const std::vector<std::function<std::unique_ptr<Filter>()>> &filters) {
+    int argc, char* argv[],
+    const std::vector<std::function<std::unique_ptr<Filter>()>>& filters) {
   signal(SIGINT, MyThread::signal_handler);
   parse_opt(argc, argv);
   auto gui_thread = GuiThread::instance();
@@ -981,8 +1030,8 @@ inline int main_for_video_demo_multiple_channel(
 // &namelist, queue_t *queue, int page_num, int page_height, int page_width)
 
 struct Classification_Channel {
-  Classification_Channel(size_t ch, const std::vector<cv::String> &image_list,
-                         const std::function<std::unique_ptr<Filter>()> &filter,
+  Classification_Channel(size_t ch, const std::vector<cv::String>& image_list,
+                         const std::function<std::unique_ptr<Filter>()>& filter,
                          std::string channel_name, int n_of_threads,
                          int page_num, cv::Rect_<int> layout,
                          cv::Size mosaik_size) {
@@ -1015,9 +1064,9 @@ struct Classification_Channel {
 };
 
 int main_for_classification_demo(
-    int argc, char *argv[],
+    int argc, char* argv[],
     const std::vector<std::pair<std::function<std::unique_ptr<Filter>()>,
-                                std::string>> &filters) {
+                                std::string>>& filters) {
   signal(SIGINT, MyThread::signal_handler);
   auto gui_thread = GridGuiThread::instance();
   parse_opt(argc, argv);
@@ -1086,35 +1135,79 @@ int main_for_classification_demo(
   return 0;
 }
 
-static inline void usage_jpeg(const char *progname) {
+static inline void usage_jpeg(const char* progname) {
   std::cout << "usage : " << progname << " <img_url> [<img_url> ...]"
             << std::endl;
 }
 
 // Entrance of jpeg demo
 template <typename FactoryMethod, typename ProcessResult>
-int main_for_jpeg_demo(int argc, char *argv[],
-                       const FactoryMethod &factory_method,
-                       const ProcessResult &process_result, int start_pos = 1) {
+int main_for_jpeg_demo(int argc, char* argv[],
+                       const FactoryMethod& factory_method,
+                       const ProcessResult& process_result, int start_pos = 1) {
   if (argc <= 1) {
     usage_jpeg(argv[0]);
     exit(1);
   }
+
   auto model = factory_method();
-  for (int i = start_pos; i < argc; ++i) {
-    auto image_file_name = std::string{argv[i]};
-    auto image = cv::imread(image_file_name);
-    if (image.empty()) {
-      LOG(FATAL) << "cannot load " << image_file_name << std::endl;
-      abort();
+  if (ENV_PARAM(SAMPLES_ENABLE_BATCH)) {
+    std::vector<std::string> image_files;
+    for (int i = start_pos; i < argc; ++i) {
+      image_files.push_back(std::string(argv[i]));
     }
-    auto result = model->run(image);
-    image = process_result(image, result, true);
-    auto out_file =
-        image_file_name.substr(0, image_file_name.size() - 4) + "_result.jpg";
-    cv::imwrite(out_file, image);
-    LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO)) << "result image write to " << out_file;
+    if (image_files.empty()) {
+      std::cerr << "no input file" << std::endl;
+      exit(1);
+    }
+
+    auto batch = model->get_input_batch();
+    if (ENV_PARAM(SAMPLES_BATCH_NUM)) {
+      unsigned int batch_set = ENV_PARAM(SAMPLES_BATCH_NUM);
+      assert(batch_set <= batch);
+      batch = batch_set;
+    }
+    std::vector<std::string> batch_files(batch);
+    std::vector<cv::Mat> images(batch);
+    for (auto index = 0u; index < batch; ++index) {
+      const auto& file = image_files[index % image_files.size()];
+      batch_files[index] = file;
+      images[index] = cv::imread(file);
+      CHECK(!images[index].empty()) << "cannot read image from " << file;
+    }
+
+    auto results = model->run(images);
+
+    assert(results.size() == batch);
+    for (auto i = 0u; i < results.size(); i++) {
+      LOG(INFO) << "batch: " << i << "     image: " << batch_files[i];
+      auto image = process_result(images[i], results[i], true);
+      auto out_file = std::to_string(i) + "_" +
+                      batch_files[i].substr(0, batch_files[i].size() - 4) +
+                      "_result.jpg";
+      cv::imwrite(out_file, image);
+      LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
+          << "result image write to " << out_file;
+      std::cout << std::endl;
+    }
+  } else {
+    for (int i = start_pos; i < argc; ++i) {
+      auto image_file_name = std::string{argv[i]};
+      auto image = cv::imread(image_file_name);
+      if (image.empty()) {
+        LOG(FATAL) << "cannot load " << image_file_name << std::endl;
+        abort();
+      }
+      auto result = model->run(image);
+      image = process_result(image, result, true);
+      auto out_file =
+          image_file_name.substr(0, image_file_name.size() - 4) + "_result.jpg";
+      cv::imwrite(out_file, image);
+      LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))
+          << "result image write to " << out_file;
+    }
   }
+
   LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO)) << "BYEBYE";
   return 0;
 }

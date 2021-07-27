@@ -15,7 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.9)
-project(xir VERSION 1.3.2 LANGUAGES C CXX)
+project(xir VERSION 1.4.0 LANGUAGES C CXX)
 
 include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
@@ -100,5 +100,8 @@ if(DEFINED ENV{BUILD_NUMBER})
   set(CPACK_RPM_PACKAGE_RELEASE "r$ENV{BUILD_NUMBER}")
 endif()
 set(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "cortexa72-cortexa53")
+    set(CPACK_RPM_PACKAGE_ARCHITECTURE "aarch64")
+endif()
 
 include(CPack)

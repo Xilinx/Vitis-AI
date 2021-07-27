@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <vitis/ai/trace.hpp>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/weak.hpp>
 #include <vitis/ai/xxd.hpp>
@@ -77,6 +78,9 @@ DpuKernel::~DpuKernel() {
 
 void DpuKernel::initialize() {
   my_load_parameter();
+
+  vitis::ai::trace::add_subgraph(subgraph_);
+
   if (ENV_PARAM(XLNX_ENABLE_DEBUG_MODE) == 0) {
     my_load_release_code();
   } else {

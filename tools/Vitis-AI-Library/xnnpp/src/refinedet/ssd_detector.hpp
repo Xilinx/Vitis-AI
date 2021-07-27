@@ -51,12 +51,7 @@ class SSDdetector {
   unsigned int num_priors() const { return priors_.size(); }
 
  protected:
-  template <typename T>
-  void ApplyOneClassNMS(
-      const T (*bboxes)[4], const float* conf_data, int label,
-      const std::vector<std::pair<float, int> >& score_index_vec,
-      std::vector<int>* indices);
-
+ 
   void GetOneClassMaxScoreIndex(
       const float* conf_data, int label,
       std::vector<std::pair<float, int> >* score_index_vec);

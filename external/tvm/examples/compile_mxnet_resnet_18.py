@@ -35,7 +35,7 @@ from typing import List
 from pathlib import Path
 
 import pyxir
-import pyxir.contrib.target.DPUCADX8G
+import pyxir.contrib.target.DPUCADF8H
 
 import logging
 
@@ -98,7 +98,7 @@ def transform_image(image):
 # Parameter settings for compiling a model using tvm-vai flow
 # quant_dir      : path to images for quantization
 # dpu_target         : hardware accelerator to run the compiled model
-#                      options: 'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
+#                      options: 'DPUCADF8H',  'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
 # tvm_target     :
 # lib_kwargs     : 
 
@@ -106,7 +106,7 @@ def transform_image(image):
 
 if len(sys.argv) < 2:
     raise ValueError("No DPU target specified. Please run with 'python3 compile_mxnet_resnet_18.py `DPU_TARGET`'"\
-                     " DPU_TARGET options: 'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'")
+                     " DPU_TARGET options: 'DPUCADF8H', 'DPUCAHX8H-u50', 'DPUCAHX8H-u280', 'DPUCAHX8L', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'")
 
 input_name  = 'data'
 input_shape = (1,3,224,224)
@@ -139,7 +139,7 @@ def inputs_func(img_files: List[str]):
 ###############################################################################
 # PARTITION & BUILD
 # 
-# Use TVM Module pass to annotate and partition Relay graph for Vitis-AI acceleration. Targets can be 'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
+# Use TVM Module pass to annotate and partition Relay graph for Vitis-AI acceleration. Targets can be 'DPUCADF8H', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
 # Afterwards build graph using standard TVM flow.
 ##############################################################################
 
@@ -149,30 +149,28 @@ mod, params = relay.frontend.from_mxnet(block, shape_dict)
 mod["main"] = bind_params_by_name(mod["main"], params)
 mod = transform.RemoveUnusedFunctions()(mod)
 
-# For edge DPU we recommend converting the convolutions' data layout
-#    to NHWC for best performance. Therefore, we first convert the layouts
-#    of all convolutions to NHWC before partitioning. Afterwards, we can
-#    convert any remaining convolutions (to be executed on CPU) back to NCHW.
-if dpu_target.startswith('DPUCZDX8G'):
-    desired_layouts = {'nn.conv2d': ['NHWC', 'default']}
-    seq = tvm.transform.Sequential([relay.transform.RemoveUnusedFunctions(),
-                                    relay.transform.ConvertLayout(desired_layouts),
-                                    relay.transform.FoldConstant()])
-    with tvm.transform.PassContext(opt_level=3):
-        mod = seq(mod)
+# For DPU we convert the convolutions' data layout to NHWC for best performance.
+#    Therefore, we first convert the layouts of all convolutions to NHWC before
+#    partitioning. Afterwards, we can convert any remaining convolutions (to be
+#    executed on CPU) back to NCHW.
+desired_layouts = {'nn.conv2d': ['NHWC', 'default']}
+seq = tvm.transform.Sequential([relay.transform.RemoveUnusedFunctions(),
+                                relay.transform.ConvertLayout(desired_layouts),
+                                relay.transform.FoldConstant()])
+with tvm.transform.PassContext(opt_level=3):
+    mod = seq(mod)
 
 mod = partition_for_vitis_ai(mod, params, dpu=dpu_target)
 
 # For edge DPU, we recommend transforming the remaining convolutions after
 #    partitioning (that will be executed on CPU, if any) back to NCHW data layout
 #    for best CPU performance
-if dpu_target.startswith('DPUCZDX8G'):
-    desired_layouts = {'nn.conv2d': ['NCHW', 'default']}
-    seq = tvm.transform.Sequential([relay.transform.RemoveUnusedFunctions(),
-                                    relay.transform.ConvertLayout(desired_layouts),
-                                    relay.transform.FoldConstant()])
-    with tvm.transform.PassContext(opt_level=3):
-        mod = seq(mod)
+desired_layouts = {'nn.conv2d': ['NCHW', 'default']}
+seq = tvm.transform.Sequential([relay.transform.RemoveUnusedFunctions(),
+                                relay.transform.ConvertLayout(desired_layouts),
+                                relay.transform.FoldConstant()])
+with tvm.transform.PassContext(opt_level=3):
+    mod = seq(mod)
 
 
 export_rt_mod_file = os.path.join(os.getcwd(), 'vitis_ai.rtmod')
@@ -251,5 +249,6 @@ if dpu_target.startswith('DPUCZDX8G'):
 else:
     lib.export_library('tvm_dpu_cpu.so')
 
+print("Finished storing compiled model as tvm_dpu_cpu.so")
 del InferenceSession
 

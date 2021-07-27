@@ -13,11 +13,16 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.12)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -O0 -fno-inline")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-project(ClassificationPostProcess VERSION 1.3.0)
+project(ClassificationPostProcess VERSION 1.4.0)
+
+find_package(xir REQUIRED)
+find_package(unilog REQUIRED)
+find_package(vart REQUIRED)
 
 if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
   message(STATUS "AKS Install Prefix: ${AKS_INSTALL_PREFIX}")
@@ -42,4 +47,10 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 
 target_include_directories (${PROJECT_NAME}
   PRIVATE ${aks_INCLUDE_DIRS}
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE ${aks_LIBRARIES}
+  PRIVATE vart-runner
+  PRIVATE xir unilog
 )

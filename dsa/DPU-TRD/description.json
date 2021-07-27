@@ -93,7 +93,7 @@
         "zcu102_base" : {
             "containers": [
                 {
-                    "ldclflags" : "--config PROJECT/src/prj/Vitis/config_file/prj_config_gui",
+                    "ldclflags" : "--config PROJECT/config_gui.cfg",
                     "name" : "dpu"
                 }
             ]
@@ -101,7 +101,7 @@
         "zcu104_base" : {
             "containers": [
                 {
-                    "ldclflags" : "--config PROJECT/src/prj/Vitis/config_file/prj_config_gui",
+                    "ldclflags" : "--config PROJECT/config_gui.cfg",
                     "name" : "dpu"
                 }
             ]

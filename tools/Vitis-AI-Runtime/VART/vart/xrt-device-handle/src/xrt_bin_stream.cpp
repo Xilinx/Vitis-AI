@@ -48,6 +48,7 @@ XrtBinStream::XrtBinStream(const std::string filename) {
   init_mem_topology();
   init_cu_names();
   init_cu_indices();
+  guess_lpddr();
 }
 
 XrtBinStream::~XrtBinStream() {
@@ -91,6 +92,16 @@ void XrtBinStream::init_cu_indices() {
   });
 }
 
+void XrtBinStream::guess_lpddr() {
+  is_lpddr_ = false;
+  for (int i = 0; i < topology_->m_count; ++i) {
+    if (topology_->m_mem_data[i].m_used &&
+        strncmp((char*)topology_->m_mem_data[i].m_tag, "LPDDR", 5) == 0) {
+      is_lpddr_ = true;
+    }
+  }
+}
+
 static std::string to_string(const xuid_t x) {
   char buf[sizeof(xuid_t) * 4 + 1];
   char* p = &buf[0];
@@ -120,7 +131,9 @@ void XrtBinStream::dump_layout() const {
               << "cu base addr: " << std::hex << "0x"
               << ip_layout_->m_ip_data[i].m_base_address << "\n"  //
               << "properties : 0x" << ip_layout_->m_ip_data[i].properties
-              << "\n"  //
+              << "\n"                         //
+              << "is_lpddr_ : " << is_lpddr_  //
+              << "\n"                         //
         ;
   }
 }
@@ -128,13 +141,13 @@ void XrtBinStream::dump_layout() const {
 void XrtBinStream::dump_mem_topology() const {
   std::ostringstream str;
   for (int i = 0; i < topology_->m_count; ++i) {
-    if (topology_->m_mem_data[i].m_used) {
-      str << (((int)topology_->m_mem_data[i].m_used) ? "o" : "*");
-    }
+    // if (topology_->m_mem_data[i].m_used) {
+    str << (((int)topology_->m_mem_data[i].m_used) ? "o" : "*")
+        << (char*)topology_->m_mem_data[i].m_tag << " ";
+    // }
   }
   LOG(INFO) << "MEM TOPOLOGY: [" << str.str() << "]";
 }
-
 void XrtBinStream::burn(int device_id) {
   auto handle = xclOpen(device_id, NULL, XCL_INFO);
   burn(handle);

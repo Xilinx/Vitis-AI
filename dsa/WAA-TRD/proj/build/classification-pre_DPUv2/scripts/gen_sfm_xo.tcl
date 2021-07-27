@@ -27,10 +27,18 @@ set device    [lindex $::argv 3]
 
 set suffix "${krnl_name}_${target}_${device}"
 
-source -notrace ./scripts/package_sfm_kernel.tcl
+if { [info exists ::env(DIR_PATH)] } {
+    source -notrace $env(DIR_PRJ)/scripts/package_sfm_kernel.tcl
+} else {
+    source -notrace ./scripts/package_sfm_kernel.tcl
+}
 
 if {[file exists "${xoname}"]} {
     file delete -force "${xoname}"
 }
 
-package_xo -xo_path ${xoname} -kernel_name ${krnl_name} -ip_directory ./packaged_kernel_${suffix} -kernel_xml ./kernel_xml/sfm/kernel.xml
+if { [info exists ::env(DIR_PATH)] } {
+    package_xo -xo_path ${xoname} -kernel_name ${krnl_name} -ip_directory ./packaged_kernel_${suffix} -kernel_xml $env(DIR_PRJ)/kernel_xml/sfm/kernel.xml
+} else {
+    package_xo -xo_path ${xoname} -kernel_name ${krnl_name} -ip_directory ./packaged_kernel_${suffix} -kernel_xml ./kernel_xml/sfm/kernel.xml
+}

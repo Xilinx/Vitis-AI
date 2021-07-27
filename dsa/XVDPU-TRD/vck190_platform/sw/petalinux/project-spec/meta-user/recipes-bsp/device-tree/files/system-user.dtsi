@@ -1,0 +1,8 @@
+/include/ "system-conf.dtsi"
+/ {
+	chosen {
+		stdout-path = "serial0:115200";
+	};
+};
+#include "pl-custom.dtsi"
+#include "ina226-power-monitor.dtsi"

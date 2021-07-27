@@ -63,7 +63,7 @@ void dp_quantize_cpu(const int n, const T* x, T* y, const int bit_width,
       (!getenv("DPU_ACCURACY")) ||
       (getenv("DPU_ACCURACY") && std::atoi(getenv("DPU_ACCURACY")) == 1);
   for (auto i = 0; i < n; ++i) {
-    if (mode == 0 || (!dpu_accuracy)) {
+    if (mode != 1 || (!dpu_accuracy)) {
       // Do normal round for weights/biases and if DPU_ACCURACY is false
       y[i] = quantize_kernel_cpu(x[i], step, lower_bound, upper_bound);
     } else {

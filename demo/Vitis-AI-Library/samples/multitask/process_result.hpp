@@ -14,33 +14,23 @@
  * limitations under the License.
  */
 #pragma once
+#include <eigen3/Eigen/Dense>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#ifndef HAVE_EIGEN
-#define HAVE_EIGEN 0
-#endif
-#if HAVE_EIGEN
-#include <eigen3/Eigen/Dense>
-static void overLay1(cv::Mat &src1, const cv::Mat &src2) {
+
+static void overLay1(cv::Mat& src1, const cv::Mat& src2) {
   const int imsize = src1.cols * src2.rows * 3;
   // vector<uchar> te(imsize, 2);
-  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data1(const_cast<uchar *>(src1.data),
+  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data1(const_cast<uchar*>(src1.data),
                                                 imsize);
-  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data2(const_cast<uchar *>(src2.data),
+  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data2(const_cast<uchar*>(src2.data),
                                                 imsize);
   data1 = data1 / 2 + data2 / 2;
 }
-#else
-static void overLay1(cv::Mat &src1, const cv::Mat &src2) {
-  const int imsize = src1.cols * src2.rows * 3;
-  for (int i = 0; i < imsize; ++i) {
-    src1.data[i] = src1.data[i] / 2 + src2.data[i] / 2;
-  }
-}
-#endif
-static cv::Mat process_result(cv::Mat &m1,
-                              const vitis::ai::MultiTaskResult &result,
+
+static cv::Mat process_result(cv::Mat& m1,
+                              const vitis::ai::MultiTaskResult& result,
                               bool is_jpeg) {
   cv::Mat image;
   cv::resize(m1, image, result.segmentation.size());
@@ -52,7 +42,7 @@ static cv::Mat process_result(cv::Mat &m1,
   //   }
   // }
   overLay1(image, result.segmentation);
-  for (auto &r : result.vehicle) {
+  for (auto& r : result.vehicle) {
     LOG_IF(INFO, is_jpeg) << r.label << " " << r.x << " " << r.y << " "
                           << r.width << " " << r.height << " " << r.angle;
     int xmin = r.x * result.segmentation.cols;

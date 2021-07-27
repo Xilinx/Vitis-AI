@@ -34,34 +34,32 @@ INSTALLER=""
 ##############################
 # Download DSA
 ##############################
-if [[ $distroname == *"Ubuntu 16.04"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015_16.04.deb"
-  XSA_INSTALLER=/tmp/xsa.deb
+if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* || $distroname == *"Ubuntu 20.04"* ]]; then
+  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-gen3x16-xdma-all_1-3209015.deb_2.tar.gz"
+  XSA_INSTALLER=/tmp/xsa.tar.gz
   INSTALLER="apt"
-elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015_18.04.deb"
-  XSA_INSTALLER=/tmp/xsa.deb
-  INSTALLER="apt"
-elif [[ $distroname == *"Ubuntu 20.04"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015_20.04.deb" # Doesn't exist yet
-  XSA_INSTALLER=/tmp/xsa.deb
-  INSTALLER="apt"
-elif [[ $distroname == *"CentOS"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015.x86_64.rpm"
-  XSA_INSTALLER=/tmp/xsa.rpm
-  INSTALLER="yum"
-elif [[ $distroname == *"Red Hat"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-xdma-201830.2-2580015.x86_64.rpm"
-  XSA_INSTALLER=/tmp/xsa.rpm
+elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
+  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u200-gen3x16-xdma-noarch_1-3209015.rpm_2.tar.gz"
+  XSA_INSTALLER=/tmp/xsa.tar.gz
   INSTALLER="yum"
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
 fi
 
-wget $XSA_URL -O $XSA_INSTALLER && sudo ${INSTALLER} install $XSA_INSTALLER -y && rm $XSA_INSTALLER
+XSA_DIR="/tmp/xsa"
+mkdir $XSA_DIR
+
+wget $XSA_URL -O $XSA_INSTALLER
+tar -xzf $XSA_INSTALLER --directory $XSA_DIR
+sudo $INSTALLER install $XSA_DIR/*cmc* -y
+sudo $INSTALLER install $XSA_DIR/*sc-fw* -y
+sudo $INSTALLER install $XSA_DIR/*validate* -y
+sudo $INSTALLER reinstall $XSA_DIR/*base* -y
+rm $XSA_INSTALLER
+rm -rf $XSA_DIR
 
 ##############################
 # Flash alveo
 ##############################
-sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u200_xdma_201830_2
+sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u200_gen3x16_xdma_base_1

@@ -72,6 +72,8 @@ class deephi_Conv2d(torch.nn.modules.conv.Conv2d):
                 self.quantizer.bias_corr[self.node.name],
                 device=self.bias.data.device))
       self.param_saved = True
+    #print('deephi_conv2d forward:', self.node.name)
+    #print('float weight & bias:', self.weight.sum(), self.bias.sum() if self.bias is not None else None)
     if (not self.param_quantized):
       # quantize weights and bias
       __, __ = process_inputs_and_params(
@@ -82,10 +84,8 @@ class deephi_Conv2d(torch.nn.modules.conv.Conv2d):
           param_names=self.params_name)
       self.param_quantized = True
 
-    #print('conv2d weight:', self.node.name, self.weight.sum())
-    #print('conv2d bias:', self.node.name, self.bias.sum())
+    #print('quantized weight & bias:', self.weight.sum(), self.bias.sum() if self.bias is not None else None)
     output = super().forward(input)
-    #print('conv2d output:', output.sum())
 
     # quantize output
     [output] = post_quant_process(self.node, [output])
@@ -107,14 +107,17 @@ class deephi_Conv2d(torch.nn.modules.conv.Conv2d):
         if noise > 0:
           eff = 1.25 * res_f.pow(2).mean().div(noise).log10().detach().cpu().numpy()
           dev = math.fabs(eff - self.efficency)
-          self.efficency = (self.efficency * 4 + eff) * 0.2
-          self.deviation = (self.deviation * 4 + dev) * 0.2
-          #print(self.node.name, self.efficency, self.deviation)
-          if self.efficency > 4.0:
-            rate = rate * 0.5
-          if (self.efficency > 4.3 or
-              (self.deviation / self.efficency) < 0.05 or
-              math.fabs(dev - self.deviation / dev) < 0.05):
+          if dev > 0:
+            self.efficency = (self.efficency * 4 + eff) * 0.2
+            self.deviation = (self.deviation * 4 + dev) * 0.2
+            #print(self.node.name, self.efficency, self.deviation)
+            if self.efficency > 4.0:
+              rate = rate * 0.5
+            if (self.efficency > 4.3 or
+                (self.deviation / self.efficency) < 0.05 or
+                math.fabs(dev - self.deviation / dev) < 0.05):
+              self.stop = True
+          else:
             self.stop = True
         else:
           self.stop = True

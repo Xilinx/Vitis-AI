@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Xilinx Inc.
+ * Copyright 2021 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,12 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <queue>
 #include <iterator>     // std::back_inserter
 #include <algorithm>
 #include <condition_variable>
 #include <chrono>
+#include <functional>
 
 #include <boost/filesystem.hpp>
 
@@ -34,6 +36,10 @@
 
 #include <aks/AksSysManagerExt.h>
 #include <aks/AksNodeParams.h>
+#include <aks/AksTensorBuffer.h>
+#include <function_pool.hpp>
+
+#define MAX_CONCURRENT_STREAMS 70
 
 using namespace std::chrono;
 
@@ -43,6 +49,8 @@ AKS::AIGraph *OFInferenceGraph;
 std::atomic<long> frameCount(0);
 std::once_flag reset_timer_flag;
 high_resolution_clock::time_point start_timer;
+int stack_size = 10;
+int batch_size = 4;
 
 struct content_pointer {
     bool is_video;
@@ -50,28 +58,26 @@ struct content_pointer {
     boost::filesystem::directory_iterator dirIt;
 };
 
-static std::map<std::string, bool> status_flag;  // status flag by stream
-static std::map<std::string, content_pointer> map_content;  // OpenCV videocapture objects and corresponding index
-std::mutex mtx_sflag;  // mutex of status_flag map
+// OpenCV videocapture objects and corresponding index
+static std::map<std::string, content_pointer> map_content;
 
-// Utility function to convert Mat object to DataDescriptor
-AKS::DataDescriptor mat2DD(const cv::Mat& src) {
+// Utility function to convert Mat object to TensorBuffer
+void mat2TensorBuffer(const cv::Mat& src,
+                      AKS::AksTensorBuffer* tensorBuffer) {
     assert(src.depth() == CV_8U);
     int channels = src.channels();
     int rows = src.rows;
     int cols = src.cols;
-    AKS::DataDescriptor dst({1, channels, rows, cols}, AKS::DataType::UINT8);
-    uint8_t* dstptr = dst.data<uint8_t>();
     uint8_t* srcptr = src.data;
-    std::memcpy(dstptr, srcptr, channels*rows*cols*sizeof(uint8_t));
-    return dst;
+    uint8_t* bufferData = reinterpret_cast<uint8_t*>(tensorBuffer->data().first);
+    std::memcpy(bufferData, srcptr, rows*cols*channels*sizeof(uint8_t));
 }
 
 
 void loadKernels(std::vector<std::string>& kernelPaths) {
     AKS::SysManagerExt *sysMan = AKS::SysManagerExt::getGlobal();
     for (auto & kernelPath : kernelPaths) {
-        sysMan -> loadKernels(kernelPath);
+        sysMan->loadKernels(kernelPath);
     }
 }
 
@@ -89,181 +95,170 @@ void loadGraph(std::string& graphJson, std::string& graphName, AKS::AIGraph **gr
 }
 
 
-AKS::DataDescriptor createBlob(std::vector<AKS::DataDescriptor>& vDD) {
-  uint8_t numDD = vDD.size();
-  assert(numDD > 0);
-
-  auto dd = vDD[0];
-  auto shape = dd.getShape();
-  int channels = shape[1];
-  int rows = shape[2];
-  int cols = shape[3];
-
-  AKS::DataDescriptor outDD({1, channels*numDD, rows, cols}, AKS::DataType::FLOAT32);
-  float* outData = outDD.data<float>();
-  // merge at Channels
-  for (int i=0; i<numDD*channels; i++) {
-    int8_t* data = vDD[i/channels].data<int8_t>();
-    for (int j=0; j<rows; j++) {
-      for (int k=0; k<cols; k++) {
-          outData[i*rows*cols + j*cols + k] = data[(i%channels)*rows*cols + j*cols + k];
-      }
-    }
-  }
-  return outDD;
-}
-
-
 // Run inference on a blob of Optical Flow vectors
 // Get data from last n OF flow vectors, pass them for inference
-void runOFInference(std::vector<AKS::DataDescriptor>& stack,
-        std::future<std::vector<AKS::DataDescriptor>> fut, std::string title,
-        std::mutex& stack_mutex, int counter, int& whose_turn,
-        std::condition_variable &cond_var) {
-    int stack_size=10;
-    int stride=1;
+void runOFInference(
+        std::vector<
+            std::pair<std::string,
+                      std::future<std::vector<std::unique_ptr<vart::TensorBuffer>>>>>& ofQueue,
+        std::mutex &ofQueueMutex, std::atomic<bool> &is_done) {
     auto sysMan = AKS::SysManagerExt::getGlobal();
-    AKS::DataDescriptor outDD = fut.get()[0];
-    std::unique_lock<std::mutex> ulock(stack_mutex);
-    cond_var.wait(ulock, [counter, &whose_turn] {return counter == whose_turn;});
-    whose_turn++;
-    stack.push_back(outDD);
-    if (stack.size() >= stack_size) {
-        std::vector<AKS::DataDescriptor> st(stack.begin(), stack.begin()+stack_size);
-        stack.erase(stack.begin(), stack.begin()+stride);
-        ulock.unlock();
-        cond_var.notify_all();
-        frameCount++;
-        auto inferenceFut = sysMan->enqueueJob(OFInferenceGraph, title, std::move(st));
-        auto outDD = inferenceFut.get()[0];
-        float* outData = outDD.data<float>();
-        std::cout << "Frame: " << title << " | Class: " << outData[0] << std::endl;
-    }
-    else {
-        ulock.unlock();
-        cond_var.notify_all();
+    int stackSize = stack_size + batch_size - 1;
+    std::vector<std::pair<std::string, std::unique_ptr<vart::TensorBuffer>>> stacks;
+    stacks.reserve(stackSize);
+    while ((!is_done) | (!ofQueue.empty())) {
+        // Locking of ofQueueMutex is not required above (before while loop)
+        // since there won't be a race condition as we are not pushing anything
+        // to ofQueue after is_done is set to True
+        std::unique_lock<std::mutex> lock(ofQueueMutex);
+        while ((! ofQueue.empty()) & (stacks.size() < stackSize)) {
+            stacks.push_back({
+                ofQueue.front().first,
+                std::move(ofQueue.front().second.get().front())});
+            ofQueue.erase(ofQueue.begin());
+        }
+        lock.unlock();
+        if (stacks.size() == stackSize) {
+            std::vector<std::unique_ptr<vart::TensorBuffer>> enqueueVec;
+            enqueueVec.reserve(stackSize);
+            std::vector<std::string> enqueueTitles;
+            enqueueTitles.reserve(batch_size);
+
+            for (int i=0; i<stackSize; i++) {
+                auto tempPtr = std::make_unique<AKS::AksTensorBuffer>(
+                    *(static_cast<AKS::AksTensorBuffer*>(stacks.at(i).second.get())));
+                enqueueVec.push_back(std::move(tempPtr));
+                if (i >= stackSize - batch_size)
+                    enqueueTitles.push_back(stacks.at(i).first);
+            }
+            // Remove the first 4 elements in stacks (9 stacks elems will remain)
+            stacks.erase(stacks.begin(), stacks.begin()+batch_size);
+
+            frameCount += batch_size;
+            auto inferenceFut = sysMan->enqueueJob(
+                OFInferenceGraph, enqueueTitles, std::move(enqueueVec));
+            auto future = std::move(inferenceFut.get());
+            // auto probsBuffer = static_cast<AKS::AksTensorBuffer*>(future.at(0).release());
+            // float* probsData = reinterpret_cast<float*>(probsBuffer->data().first);
+            // for (int i=0; i<batch_size; i++) {
+            //     std::cout << enqueueTitles.at(i) << " | Probability: " << probsData[i] << std::endl;
+            // }
+        }
+        else if (is_done)
+            break;
     }
 }
 
 
 // Run Optical Flow on a pair of images <current frame, previous frame>
-std::future<std::vector<AKS::DataDescriptor>> runOpticalFlow(
-        std::string title, AKS::DataDescriptor& prev_dd,
-        AKS::DataDescriptor& curr_dd) {
+std::future<std::vector<std::unique_ptr<vart::TensorBuffer>>> runOpticalFlow(
+        std::string title,
+        std::unique_ptr<AKS::AksTensorBuffer> prev_tb,
+        std::unique_ptr<AKS::AksTensorBuffer> curr_tb) {
     auto sysMan = AKS::SysManagerExt::getGlobal();
-    std::vector<AKS::DataDescriptor> v { curr_dd, prev_dd };
+    std::vector<std::unique_ptr<vart::TensorBuffer>> vec;
+    vec.reserve(2);
+    vec.push_back(std::move(curr_tb));
+    vec.push_back(std::move(prev_tb));
     // Optical Flow: EnqueueJob to SystemManager with Optical flow graph
     std::call_once(reset_timer_flag,
         [&sysMan](){sysMan->resetTimer();
                     start_timer = high_resolution_clock::now();});
-    auto fut = sysMan->enqueueJob(OFGraph, title, std::move(v));
+    auto fut = sysMan->enqueueJob(OFGraph, title, std::move(vec));
     return fut;
 }
 
 
 // Push each image in the directory to Optical Flow and Inference jobs
-void readImgDir(std::string container_name) {
+void readImgDir(const std::string& container_name) {
     boost::filesystem::directory_iterator it_dir = map_content[container_name].dirIt;
-    AKS::DataDescriptor prev_dd;
-    std::vector<AKS::DataDescriptor> stack;
-    std::mutex stack_mutex;
-    std::condition_variable cond_var;
-    int counter = 0;
-    int whose_turn = 0;
-
-    std::vector<std::thread> threads;
-
     std::vector<boost::filesystem::path> vec;
     copy(it_dir, boost::filesystem::directory_iterator(), std::back_inserter(vec));
     sort(vec.begin(), vec.end());
-
     std::vector<boost::filesystem::path>::const_iterator vecIterator = vec.begin();
-    while (1) {
-        std::unique_lock<std::mutex> locker(mtx_sflag);
-        std::map<std::string, bool>::iterator it = status_flag.find(container_name);
-        if (it != status_flag.end()) {
-            if (it->second == true) {            // would be false if user chose to abort this stream
-                if (vecIterator == vec.end()) {  // end of the files in directory
-                    status_flag.erase(it->first);
-                    break;
-                } else {
-                    locker.unlock();
-                    std::string title = (*(vecIterator++)).string();
-                    cv::Mat curr_image = cv::imread(title);
-                    AKS::DataDescriptor curr_dd = mat2DD(curr_image);
-                    if (prev_dd.getNumberOfElements() == 0) {
-                        prev_dd = curr_dd;
-                        continue;
-                    }
-                    auto fut = runOpticalFlow(title, prev_dd, curr_dd);
-                    auto th = std::thread(
-                        runOFInference, std::ref(stack), std::move(fut), title,
-                        std::ref(stack_mutex), counter++, std::ref(whose_turn),
-                        std::ref(cond_var));
-                    threads.push_back(std::move(th));
-                    prev_dd = curr_dd;
-                }
-            } else {  // User chose to abort this stream
-                status_flag.erase(it->first);
-                std::cout << "=== [READ] Force exit reading directory: " << container_name << std::endl; // User requested input reading thread exit
-                break;
-            }
+    std::unique_ptr<AKS::AksTensorBuffer> curr_tb_for_later(nullptr);
+    std::unique_ptr<AKS::AksTensorBuffer> prev_tb(nullptr);
+    std::cout << "[INFO] Started processing stream: " << container_name << std::endl;
+    std::vector<std::pair<
+        std::string,
+        std::future<std::vector<std::unique_ptr<vart::TensorBuffer>>>>> ofQueue;
+    std::mutex ofQueueMutex;
+    std::atomic<bool> is_done = false;
+    std::thread inferenceThread(runOFInference, std::ref(ofQueue),
+                                std::ref(ofQueueMutex), std::ref(is_done));
+    while (true) {
+        if (vecIterator == vec.end()) {  // end of the files in directory
+            break;
+        }
+        std::string title = (*(vecIterator++)).string();
+        cv::Mat curr_img = cv::imread(title);
+        auto curr_tb = std::make_unique<AKS::AksTensorBuffer>(
+            xir::Tensor::create(
+                "mainImageTensor",
+                {1, curr_img.rows, curr_img.cols, curr_img.channels()},
+                xir::create_data_type<unsigned char>()));
+        mat2TensorBuffer(curr_img, curr_tb.get());
+        if (! prev_tb) {
+            prev_tb = std::make_unique<AKS::AksTensorBuffer>(*curr_tb.get());
+            continue;
+        }
+        curr_tb_for_later = std::make_unique<AKS::AksTensorBuffer>(*curr_tb.get());
+        auto fut = runOpticalFlow(title, std::move(prev_tb), std::move(curr_tb));
+        prev_tb = std::move(curr_tb_for_later);
+        {
+            std::lock_guard<std::mutex> lock(ofQueueMutex);
+            ofQueue.push_back({title, std::move(fut)});
         }
     }
-    for (auto & th: threads)
-        th.join();
+    is_done = true;
+    inferenceThread.join();
+    std::cout << "[INFO] Done processing stream: " << container_name << std::endl;
 }
 
 
 // Push each frame in the video to Optical Flow job
-void readVideoObj(std::string container_name) {
+void readVideoObj(const std::string& container_name) {
     cv::VideoCapture* const vCaptureObj = map_content[container_name].videoCaptureObj;
     int frame = 1;
-    AKS::DataDescriptor prev_dd;
-    std::vector<AKS::DataDescriptor> stack;
-    std::mutex stack_mutex;
-    std::condition_variable cond_var;
-    int counter = 0;
-    int whose_turn = 0;
-    std::vector<std::thread> threads;
-
+    std::unique_ptr<AKS::AksTensorBuffer> curr_tb_for_later(nullptr);
+    std::unique_ptr<AKS::AksTensorBuffer> prev_tb(nullptr);
+    std::cout << "Started processing stream: " << container_name << std::endl;
+    std::vector<std::pair<
+        std::string,
+        std::future<std::vector<std::unique_ptr<vart::TensorBuffer>>>>> ofQueue;
+    std::mutex ofQueueMutex;
+    std::atomic<bool> is_done = false;
+    std::thread inferenceThread(runOFInference, std::ref(ofQueue),
+                                std::ref(ofQueueMutex), std::ref(is_done));
     while (1) {
-        std::unique_lock<std::mutex> locker(mtx_sflag);
-        std::map<std::string, bool>::iterator it = status_flag.find(container_name);
-        if (it != status_flag.end()) {
-            if (it->second == true) {  // would be false if user chose to abort this stream
-                cv::Mat curr_frame;
-                if (!vCaptureObj->read(curr_frame)) {  // end of frames in video
-                    status_flag.erase(it->first);
-                    vCaptureObj->release();
-                    break;
-                } else {
-                    locker.unlock();
-                    std::string title = container_name + "/" + std::to_string(frame++) + ".jpg";
-                    AKS::DataDescriptor curr_dd = mat2DD(curr_frame);
-                    if (prev_dd.getNumberOfElements() == 0) {
-                        prev_dd = curr_dd;
-                        continue;
-                    }
-                    auto fut = runOpticalFlow(title, prev_dd, curr_dd);
-                    auto th = std::thread(
-                        runOFInference, std::ref(stack), std::move(fut), title,
-                        std::ref(stack_mutex), counter++, std::ref(whose_turn),
-                        std::ref(cond_var));
-                    threads.push_back(std::move(th));
-                    prev_dd = curr_dd;
-                }
-            } else {  // User chose to abort this stream
-                status_flag.erase(it->first);
-                vCaptureObj->release();
-                std::cout << "=== [READ] Force exit reading video: " << container_name << std::endl; // User requested input reading thread exit
-                break;
-            }
+        cv::Mat curr_frame;
+        if (!vCaptureObj->read(curr_frame)) {  // end of frames in video
+            vCaptureObj->release();
+            break;
+        }
+        std::string title = container_name + "/" + std::to_string(frame++) + ".jpg";
+        auto curr_tb = std::make_unique<AKS::AksTensorBuffer>(
+            xir::Tensor::create(
+                "mainVideoTensor",
+                {1, curr_frame.rows, curr_frame.cols, curr_frame.channels()},
+                xir::create_data_type<unsigned char>()));
+        mat2TensorBuffer(curr_frame, curr_tb.get());
+        if (! prev_tb) {
+            prev_tb = std::make_unique<AKS::AksTensorBuffer>(*curr_tb.get());
+            continue;
+        }
+        curr_tb_for_later = std::make_unique<AKS::AksTensorBuffer>(*curr_tb.get());
+        auto fut = runOpticalFlow(title, std::move(prev_tb), std::move(curr_tb));
+        {
+            std::lock_guard<std::mutex> lock(ofQueueMutex);
+            ofQueue.push_back({title, std::move(fut)});
         }
     }
-    for (auto & th: threads)
-        th.join();
+    is_done = true;
+    inferenceThread.join();
+    std::cout << "Done processing stream: " << container_name << std::endl;
 }
+
 
 // read worker
 void Read(std::string container_name) {
@@ -275,11 +270,16 @@ void Read(std::string container_name) {
 
 
 int main(int argc, char **argv) {
-    if (argc != 2) {
-        std::cout << "Usage: .exe <directory>" << std::endl;
+    if (argc < 2) {
+        std::cout << "Usage: .exe <directory> <num_threads>" << std::endl;
         std::cout << "Pass directory that contains videos and/or directory of images" << std::endl;
     }
     const std::string vDirPath = argv[1];
+
+    int num_threads = MAX_CONCURRENT_STREAMS;
+    if (argc == 3) {
+        num_threads = std::stoi(argv[2]);
+    }
 
     auto sysMan = AKS::SysManagerExt::getGlobal();
     std::vector<std::string> kernelPaths;
@@ -288,6 +288,7 @@ int main(int argc, char **argv) {
     loadKernels(kernelPaths);
 
     std::string OFGraphJson = "graph_zoo/graph_optical_flow.json";
+    // std::string OFGraphJson = "graph_zoo/graph_optical_flow_opencv.json";
     std::string OFGraphName = "optical_flow";
     loadGraph(OFGraphJson, OFGraphName, &OFGraph);
 
@@ -297,35 +298,40 @@ int main(int argc, char **argv) {
 
     std::vector<std::thread> mainThreads;
     std::string container_name;
-    for(boost::filesystem::directory_iterator dit {vDirPath};
-            dit != boost::filesystem::directory_iterator{}; dit++)
+
+    Function_pool func_pool(num_threads, Read);
+    boost::filesystem::directory_iterator dit {vDirPath};
+    std::vector<boost::filesystem::path> vec;
+    copy(dit, boost::filesystem::directory_iterator(), std::back_inserter(vec));
+    sort(vec.begin(), vec.end());
+    for(auto vecIterator=vec.begin(); vecIterator != vec.end(); vecIterator++)
     {
-        std::string dirElement = dit->path().string();
+        std::string dirElement = vecIterator->string();
         cv::VideoCapture *videoCaptureObj = new cv::VideoCapture();
         videoCaptureObj->open(dirElement);
-        content_pointer cp;
-        std::string container_name = dit->path().filename().string();
+        boost::filesystem::directory_iterator subDirIterator {dirElement};
+        content_pointer cp {false, nullptr, subDirIterator};
+        std::string container_name = vecIterator->filename().string();
         if (!videoCaptureObj->isOpened()) {
-            cp.is_video = false;
-            boost::filesystem::directory_iterator subDirIterator {dirElement};
-            cp.dirIt = subDirIterator;
+            videoCaptureObj->release();
         }
         else {
             cp.is_video = true;
             cp.videoCaptureObj = videoCaptureObj;
         }
         map_content[container_name] = cp;
-        status_flag[container_name] = true;
-        mainThreads.push_back(std::thread(Read, container_name));
+        func_pool.push(container_name);
     }
-    for (auto & thread : mainThreads) {
-        thread.join();
-    }
+    func_pool.done();
+    func_pool.wait_on_thread_pool();
     auto stop_timer = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop_timer - start_timer);
-    std::cout << "Total timetaken: " << (float)duration.count()/1000000 << " seconds.." << std::endl;
     sysMan->report(OFInferenceGraph);
+    std::cout << "Total frames inferred: " << frameCount << std::endl;
+    std::cout << "Total timetaken: " << (float)duration.count()/1000000 << " seconds.." << std::endl;
     std::cout << "Throughput (fps): " << frameCount*1000000/(float)duration.count() << std::endl;
     AKS::SysManagerExt::deleteGlobal();
     return 0;
 }
+
+// info proc status

@@ -17,8 +17,10 @@
 #include <vitis/ai/benchmark.hpp>
 #include <vitis/ai/nnpp/yolov3.hpp>
 #include <vitis/ai/yolov3.hpp>
-int main(int argc, char *argv[]) {
+extern int GLOBAL_ENABLE_NEW_IOU;
+int main(int argc, char* argv[]) {
   std::string model = argv[1];
+  GLOBAL_ENABLE_NEW_IOU = 1;
   return vitis::ai::main_for_performance(argc, argv, [model] {
     { return vitis::ai::YOLOv3::create(model); }
   });

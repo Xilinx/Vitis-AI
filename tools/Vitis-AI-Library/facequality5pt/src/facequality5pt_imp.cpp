@@ -28,7 +28,8 @@ namespace ai {
 DEF_ENV_PARAM(ENABLE_FACE_QUALITY5PT_DEBUG, "0"); 
 
 FaceQuality5ptImp::FaceQuality5ptImp(const string& model_name, bool need_preprocess)
-    : vitis::ai::TConfigurableDpuTask<FaceQuality5pt>(model_name, need_preprocess) {
+    : vitis::ai::TConfigurableDpuTask<FaceQuality5pt>(model_name, need_preprocess),
+      mode_{FaceQuality5pt::Mode::DAY} {
 } 
 
 FaceQuality5ptImp::~FaceQuality5ptImp() {}

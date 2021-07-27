@@ -207,6 +207,14 @@ static void report(std::ostream *p_out) {
   return;
 }
 
+static void report_for_mt(std::ostream *p_out) {
+  std::ostream &out = *p_out;
+  float sec = (float)act_time / 1000000.0;
+  float fps = ((float)g_total) / sec;
+  out << "FPS=" << fps << "\n";
+  out << std::flush;
+  return;
+}
 int total_step = 0;
 int step = 10;
 static void report_step(std::ostream *p_out) {
@@ -299,8 +307,11 @@ inline int main_for_performance(int argc, char *argv[], T factory_method) {
   g_dpu_mean = dpuStatSamples.getMean();
 
   g_total = total;
-
-  report(report_fs);
+  if (g_num_of_threads==1){
+    report(report_fs);
+  }else{
+    report_for_mt(report_fs);
+  }
   return 0;
 }
 

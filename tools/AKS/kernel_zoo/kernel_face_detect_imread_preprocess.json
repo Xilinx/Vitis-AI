@@ -1,0 +1,16 @@
+{
+  "kernel_name": "FaceDetectImreadPreProcess",
+  "description": "Reads an image and preprocesses it for face detect network",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libFaceDetectImreadPreProcess.so",
+  "num_cu": 8,
+
+  "param_list" : {
+    "net_w": {"type": "int"},
+    "net_h": {"type": "int"},
+    "net_c": {"type": "int"},
+    "mean": {"type": "float_array"},
+    "output_layout" : {"type": "string"}
+  }
+}

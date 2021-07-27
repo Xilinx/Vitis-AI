@@ -23,6 +23,7 @@
 #include <iostream>
 #include <mutex>
 #include <vitis/ai/env_config.hpp>
+#include <vitis/ai/trace.hpp>
 
 #include "./dpu_edge.hpp"
 DEF_ENV_PARAM(DEBUG_DPU_CONTROLLER, "0");
@@ -35,6 +36,18 @@ DEF_ENV_PARAM(DEBUG_AP_START_CU, "0");
 DpuControllerXrtEdge::DpuControllerXrtEdge(std::unique_ptr<xir::XrtCu>&& xrt_cu)
     : xir::DpuController{},  //
       xrt_cu_{std::move(xrt_cu)} {
+  for (size_t i=0;i < get_num_of_dpus();i++) {
+    auto cu_device_id = xrt_cu_->get_device_id(i);
+    auto cu_core_id = xrt_cu_->get_core_id(i);
+    auto cu_name = xrt_cu_->get_instance_name(i);
+    auto cu_full_name = xrt_cu_->get_full_name(i);
+    auto cu_fingerprint = xrt_cu_->get_fingerprint(i);
+    auto cu_batch = get_batch_size(i);
+      vitis::ai::trace::add_info("dpu-controller",
+      TRACE_VAR(cu_device_id), TRACE_VAR(cu_core_id),
+      TRACE_VAR(cu_batch), TRACE_VAR(cu_name),
+      TRACE_VAR(cu_full_name), TRACE_VAR(cu_fingerprint));
+  }
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_CONTROLLER))
       << "creating dpu controller: "  //
       << " this=" << (void*)this      //
@@ -158,6 +171,7 @@ void DpuControllerXrtEdge::run(size_t core_idx, const uint64_t code,
       ecmd->count = p + 1;
     }
   };
+  vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_start, core_idx);
   xrt_cu_->run(
       core_idx, func,
       // on_success
@@ -173,6 +187,7 @@ void DpuControllerXrtEdge::run(size_t core_idx, const uint64_t code,
                    << "core_idx = " << core_idx << "\n"
                    << xdpu_get_counter(core_idx);
       });
+  vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_end, core_idx);
 }
 size_t DpuControllerXrtEdge::get_num_of_dpus() const {
   return xrt_cu_->get_num_of_cu();

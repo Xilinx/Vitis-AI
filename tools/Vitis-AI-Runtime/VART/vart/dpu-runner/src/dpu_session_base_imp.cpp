@@ -117,7 +117,7 @@ void DpuSessionBaseImp::initialize() {
     LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER)) << "input tensor:" << tensor;
   }
   for (const auto& tensor : my_output_tensors_) {
-    LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER)) << "input tensor:" << tensor;
+    LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER)) << "output tensor:" << tensor;
   }
 }
 

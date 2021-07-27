@@ -28,8 +28,9 @@ class RefineDetPost : public vitis::ai::RefineDetPostProcess {
       const vitis::ai::proto::DpuModelParam& config);
   virtual ~RefineDetPost();
 
-  virtual RefineDetResult refine_det_post_process(unsigned int idx) override;
-  virtual std::vector<RefineDetResult> refine_det_post_process() override;
+  virtual RefineDetResult refine_det_post_process_internal(unsigned int idx);
+  virtual std::vector<RefineDetResult> refine_det_post_process(
+      size_t batch_size) override;
 
  private:
   int num_classes_;

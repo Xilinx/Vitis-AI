@@ -1,6 +1,3 @@
-
-
-#
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,28 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import torch.nn as nn
 import torch.nn.functional as F
 
-class Linear(nn.Linear):
-  """A linear module attached with FakeQuantize modules for both output
-    activation and weight, used for quantization aware training.
+class QuantizedLinear(nn.Linear):
+  """A QuantizedLinear module attached with FakeQuantizer module for weight,
+    used for quantization aware training.
 
-    We adopt the same interface as `torch.nn.Linear`, please see
+    The interface is adopted from `torch.nn.Linear`, please see
     https://pytorch.org/docs/stable/nn.html#torch.nn.Linear
     for documentation.
-
-    Similar to `torch.nn.Linear`, with FakeQuantize modules initialized to
-    default.
-
     """
   _FLOAT_MODULE = nn.Linear
 
   def __init__(self, in_features, out_features, bias=True, qconfig=None):
-    super(Linear, self).__init__(in_features, out_features, bias)
-    #assert qconfig, 'qconfig must be provided for QAT module'
+    super().__init__(in_features, out_features, bias)
+    assert qconfig, 'qconfig must be provided for quantized module'
     self.qconfig = qconfig
 
     self.weight_quantizer = qconfig.weight
@@ -47,25 +39,29 @@ class Linear(nn.Linear):
     bias = self.bias_quantizer(self.bias) if self.bias is not None else None
     return F.linear(input, weight, bias)
 
-  def extra_repr(self):
-    return super(Linear, self).extra_repr()
+  @property
+  def is_quantized(self):
+    return True
 
   @classmethod
   def from_float(cls, mod, qconfig):
-    """Create a qat module from a float module or qparams_dict
+    """Create a quantized module from a float module.
 
-    Args: `mod` a float module, either produced by torch.quantization utilities
-        or directly from user
+    Args:
+      mod: A float module of type torch.nn.Linear.
+      qconfig (pytorch_nndct.quantization.quant_aware_training.QConfig):
+          A qconfig object that saves the quantizers for the module.
     """
-    assert qconfig, 'Input float module must have a valid qconfig'
+
+    assert qconfig, 'qconfig must be provided for quantized module'
     assert type(mod) == cls._FLOAT_MODULE, ' qat.' + cls.__name__ + '.from_float only works for ' + \
         cls._FLOAT_MODULE.__name__
 
-    qat_linear = cls(
+    linear = cls(
         mod.in_features,
         mod.out_features,
         bias=mod.bias is not None,
         qconfig=qconfig)
-    qat_linear.weight = mod.weight
-    qat_linear.bias = mod.bias
-    return qat_linear
+    linear.weight = mod.weight
+    linear.bias = mod.bias
+    return linear

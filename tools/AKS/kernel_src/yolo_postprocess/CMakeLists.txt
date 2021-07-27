@@ -13,13 +13,15 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.12)
+set (CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -O0 -fno-inline")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-project(YoloPostProcess VERSION 1.3.0)
-
-add_library(dpuv1utils SHARED IMPORTED)
+project(YoloPostProcess VERSION 1.4.0)
+find_package(xir REQUIRED)
+find_package(unilog REQUIRED)
+find_package(vart REQUIRED)
 
 if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
   message(STATUS "AKS Install Prefix: ${AKS_INSTALL_PREFIX}")
@@ -27,23 +29,17 @@ if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
     PATHS ${AKS_INSTALL_PREFIX}
     NO_DEFAULT_PATH
   )
-  set_target_properties(dpuv1utils PROPERTIES
-    IMPORTED_LOCATION "$ENV{VAI_HOME}/vai/dpuv1/utils/libdpuv1utils.so"
-    INTERFACE_INCLUDE_DIRECTORIES "$ENV{VAI_HOME}/vai/dpuv1/utils/postproc"
-  )
 else()
   find_package(aks REQUIRED
-  )
-  set_target_properties(dpuv1utils PROPERTIES
-    IMPORTED_LOCATION "$ENV{CONDA_PREFIX}/lib/python3.6/site-packages/vai/dpuv1/utils/libdpuv1utils.so"
-    INTERFACE_INCLUDE_DIRECTORIES "$ENV{CONDA_PREFIX}/lib/python3.6/site-packages/vai/dpuv1/utils/postproc/"
   )
 endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
 
+find_package(OpenCV REQUIRED COMPONENTS core imgproc)
 
 add_library (${PROJECT_NAME} SHARED
   AksYoloPostProc.cpp
+  yolo.cpp
 )
 
 set_target_properties (${PROJECT_NAME} PROPERTIES
@@ -52,9 +48,13 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 )
 
 target_include_directories (${PROJECT_NAME}
+  PRIVATE ${OpenCV_INCLUDE_DIRS}
   PRIVATE ${aks_INCLUDE_DIRS}
 )
 
 target_link_libraries (${PROJECT_NAME}
- PRIVATE dpuv1utils
+  PRIVATE opencv_core opencv_imgproc
+  PRIVATE ${aks_LIBRARIES}
+  PRIVATE vart-runner
+  PRIVATE xir unilog
 )

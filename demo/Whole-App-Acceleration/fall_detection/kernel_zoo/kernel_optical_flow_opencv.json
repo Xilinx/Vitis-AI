@@ -1,0 +1,12 @@
+{
+  "kernel_name": "opticalFlowOpenCV",
+  "description": "Run OpenCV's Optical Flow algorithm on pair of images",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libOpticalFlowOpenCV.so",
+  "num_cu": 12,
+
+  "param_list" : {
+    "of_algorithm": {"type": "string"}
+  }
+}

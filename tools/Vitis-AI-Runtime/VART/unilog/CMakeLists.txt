@@ -1,21 +1,22 @@
 # Copyright 2019 Xilinx Inc.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
 
 cmake_minimum_required(VERSION 3.5)
-project(unilog VERSION 1.3.2 LANGUAGES C CXX)
+project(unilog VERSION 1.4.0 LANGUAGES C CXX)
 
 include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/vai_add_pybind11_module.cmake)
 
 option(BUILD_TEST "build test" OFF)
 
@@ -30,21 +31,21 @@ endif(NOT glog_FOUND)
 add_subdirectory(src)
 
 file(RELATIVE_PATH REL_INCLUDE_DIR
-  ${CMAKE_INSTALL_PREFIX}/share/cmake/${PROJECT_NAME}
-  ${CMAKE_INSTALL_PREFIX}/include)
+     ${CMAKE_INSTALL_PREFIX}/share/cmake/${PROJECT_NAME}
+     ${CMAKE_INSTALL_PREFIX}/include)
 set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME}_CMAKE_DIR}/${REL_INCLUDE_DIR}")
 configure_file(cmake/config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
-  @ONLY)
+               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake" @ONLY)
 
 write_basic_package_version_file(
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion)
 
-install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
+install(
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
+        "${CMAKE_CURRENT_LIST_DIR}/cmake/vai_add_pybind11_module.cmake"
   DESTINATION share/cmake/${PROJECT_NAME})
 
 if(BUILD_TEST)
@@ -91,5 +92,13 @@ if(DEFINED ENV{BUILD_NUMBER})
   set(CPACK_RPM_PACKAGE_RELEASE "r$ENV{BUILD_NUMBER}")
 endif()
 set(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "cortexa72-cortexa53")
+    set(CPACK_RPM_PACKAGE_ARCHITECTURE "aarch64")
+endif()
 
 include(CPack)
+
+if(BUILD_PYTHON)
+  vai_add_pybind11_module(py_unilog MODULE_NAME unilog python/unilog_py.cpp)
+  target_link_libraries(py_unilog PRIVATE glog::glog)
+endif(BUILD_PYTHON)

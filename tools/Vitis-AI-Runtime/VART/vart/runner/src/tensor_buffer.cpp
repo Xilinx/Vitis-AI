@@ -228,8 +228,9 @@ static void copy_tensor_buffer_real_from_phy_to_phy(vart::TensorBuffer* tb_from,
     CHECK_LE(single_batch_size, tensor_size);
     tb_from->copy_to_host(batch, reinterpret_cast<void*>(data),
                           single_batch_size, 0u);
+    tb_to->sync_for_write(0, single_batch_size);
   }
-  tb_to->sync_for_write(0, tb_to->get_tensor()->get_data_size());
+//  tb_to->sync_for_write(0, tb_to->get_tensor()->get_data_size());
 }
 
 static void copy_tensor_buffer_real(vart::TensorBuffer* tb_from,

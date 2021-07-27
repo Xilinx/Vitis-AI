@@ -1,0 +1,137 @@
+syntax = "proto3";
+package vitis.ai.Xmodel;
+message Classification {
+  string label = 1;
+  uint32 index = 2;
+  float score = 3;
+}
+
+message Point {
+  float x = 1;
+  float y = 2;
+}
+
+message Size {
+  float width = 1;
+  float height = 2;
+}
+
+message BoundingBox {
+  Classification attr = 1;
+  // it is normalized to [0.0, 1.0]
+  Point top_left = 3;
+  Size size = 4;
+}
+
+message LandmarkResult {
+  float score = 1;
+  repeated Point point = 2;
+  uint32 gender = 3;
+  uint32 age = 4;
+}
+
+message DetectionResult {
+  repeated BoundingBox bounding_box = 1;
+}
+
+message LineAttr {
+  int32 type = 1;
+  repeated Point point = 2;
+}
+
+message RoadlineResult {
+  repeated LineAttr line_attr = 1;
+}
+
+message ClassificationResult {
+  repeated Classification topk = 1;
+}
+
+message PlateDetectionResult {
+  BoundingBox bounding_box = 1;
+}
+
+message PlateNumberResult {
+  string plate_number = 1;
+  string plate_color = 2;  // TODO: change to enum?
+}
+
+message PlateRecognitionResult {
+  BoundingBox bounding_box = 1;
+  PlateNumberResult number = 2;
+}
+
+message Pose14Points {
+  Point right_shoulder = 1;
+  Point right_elbow = 2;
+  Point right_wrist = 3;
+  Point left_shoulder = 4;
+  Point left_elbow = 5;
+  Point left_wrist = 6;
+  Point right_hip = 7;
+  Point right_knee = 8;
+  Point right_ankle = 9;
+  Point left_hip = 10;
+  Point left_knee = 11;
+  Point left_ankle = 12;
+  Point head = 13;
+  Point neck = 14;
+}
+
+message PoseDetectionResult {
+  repeated Pose14Points key_point = 1;
+}
+
+message FaceFeatureResult {
+  repeated float float_vec = 1;
+  repeated bytes fix_vec = 2;
+}
+
+message FaceDetectRecogResult {
+  repeated BoundingBox bounding_box = 1;
+  repeated FaceFeatureResult feature = 2;
+}
+
+message SegmetationResult {
+  repeated uint32 data = 1;
+}
+
+message MedicalSegmetationResult {
+  repeated SegmetationResult segmentation = 1;
+}
+
+message VehicleResult {
+  int32 label = 1;
+  float score = 2;
+  float x = 3;
+  float y = 4;
+  float width = 5;
+  float height = 6;
+  float angle = 7;
+}
+
+message MultiTaskResult {
+  SegmetationResult segmentation = 1;
+  repeated VehicleResult vehicle_reuslt = 2;
+}
+
+message ReidResult {
+  repeated uint32 data = 1;
+}
+
+message XmodelResult {
+  oneof xmodel_result {
+    LandmarkResult landmark_result = 1;
+    DetectionResult detect_result = 2;
+    ClassificationResult classification_result = 5;
+    RoadlineResult roadline_result = 6;
+    PoseDetectionResult pose_detect_result = 7;
+    PlateDetectionResult plate_detection_result = 8;
+    PlateNumberResult plate_number_result = 9;
+    FaceFeatureResult face_feature_result = 12;
+    SegmetationResult segmentation_result = 13;
+    MedicalSegmetationResult medical_segmentation_result = 14;
+    MultiTaskResult multitask_result = 15;
+    ReidResult reid_result = 16;
+  }
+}

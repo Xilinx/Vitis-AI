@@ -7,7 +7,6 @@
 
 # Examples
 
-   - [VART](demo/VART/README.md)
-   - [Vitis AI Library](demo/Vitis-AI-Library/README.md)
-   - [Examples](examples/README.md)
-   - [Vitis AI DNNDK samples](demo/DNNDK)
+   - [VART](../../../demo/VART/README.md)
+   - [Vitis AI Library](../../../demo/Vitis-AI-Library/README.md)
+   - [Examples](../../../examples/README.md)

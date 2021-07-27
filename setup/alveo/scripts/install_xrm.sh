@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2020 Xilinx Inc.
+# Copyright 2021 Xilinx Inc.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,17 +35,45 @@ INSTALLER=""
 ##############################
 # Download XRM
 ##############################
-if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* || $distroname == *"Ubuntu 20.04"* ]]; then
-  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xbutler_4.0-0.deb"
-  XRM_INSTALLER=/tmp/xrm.deb
+if [[ $distroname == *"Ubuntu 16.04"* ]]; then
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_16.04-x86_64.deb"
+  XRM_INSTALLER=/tmp/xrt.deb
   INSTALLER="apt"
-elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
-  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xbutler-4.0.0-1.x86_64.rpm"
-  XRM_INSTALLER=/tmp/xrm.rpm
+elif [[ $distroname == *"Ubuntu 18.04"* ]]; then
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_18.04-x86_64.deb"
+  XRM_INSTALLER=/tmp/xrt.deb
+  INSTALLER="apt"
+elif [[ $distroname == *"Ubuntu 20.04"* ]]; then
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_20.04-x86_64.deb"
+  XRM_INSTALLER=/tmp/xrt.deb
+  INSTALLER="apt"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.4"* ]]; then
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_7.6.1810-x86_64.rpm"
+  XRM_INSTALLER=/tmp/xrt.rpm
+  INSTALLER="yum"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.5"* ]]; then
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_7.6.1810-x86_64.rpm"
+  XRM_INSTALLER=/tmp/xrt.rpm
+  INSTALLER="yum"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.6"* ]]; then
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_7.6.1810-x86_64.rpm"
+  XRM_INSTALLER=/tmp/xrt.rpm
+  INSTALLER="yum"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.7"* ]]; then
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_7.7.1908-x86_64.rpm"
+  XRM_INSTALLER=/tmp/xrt.rpm
+  INSTALLER="yum"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.8"* ]]; then
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_7.8.2003-x86_64.rpm"
+  XRM_INSTALLER=/tmp/xrt.rpm
+  INSTALLER="yum"
+elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"8.1"* ]]; then
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_8.1.1911-x86_64.rpm"
+  XRM_INSTALLER=/tmp/xrt.rpm
   INSTALLER="yum"
 else
-  echo "Failed, couldn't support os distribution"
+  echo "Error: XRM does not support this OS"
   exit 1
 fi
-	
+
 wget $XRM_URL -O $XRM_INSTALLER && sudo ${INSTALLER} install $XRM_INSTALLER -y && rm $XRM_INSTALLER

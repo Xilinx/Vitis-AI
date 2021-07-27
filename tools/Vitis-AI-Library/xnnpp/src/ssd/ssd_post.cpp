@@ -55,7 +55,7 @@ SSDPost::SSDPost(
     bbox_layer_indexes_.emplace(0);
     conf_layer_indexes_.emplace(1);
     output_layer_infos_.reserve(valid_output_tensors_size);
-    output_layer_infos_.assign(valid_output_tensors_size, SSDOutputInfo{});
+    output_layer_infos_.assign(valid_output_tensors_size, vitis::ai::dpssd::SSDOutputInfo{});
     output_layer_infos_[0].output_tensor_index = 0;
     output_layer_infos_[0].type = 2;  // conf:1, bbox:2
     output_layer_infos_[0].order = 0;
@@ -67,7 +67,7 @@ SSDPost::SSDPost(
     valid_output_tensors_size = config.ssd_param().output_info().size();
     assert(valid_output_tensors_size % 2 == 0);
     output_layer_infos_.reserve(valid_output_tensors_size);
-    output_layer_infos_.assign(valid_output_tensors_size, SSDOutputInfo{});
+    output_layer_infos_.assign(valid_output_tensors_size, vitis::ai::dpssd::SSDOutputInfo{});
 
     // In output_layer_infos_, order as: bbox1 bbox2... conf1 conf2...
     int bbox_base_index = 0;
@@ -235,7 +235,7 @@ vitis::ai::SSDResult SSDPost::ssd_post_process_internal_uniform(
   std::vector<SSDResult::BoundingBox> bboxes;
   SSDResult results{(int)input_tensors_[0].width, (int)input_tensors_[0].height,
                     bboxes};
-  std::map<uint32_t, SSDOutputInfo> bbox_layer_infos;
+  std::map<uint32_t, vitis::ai::dpssd::SSDOutputInfo> bbox_layer_infos;
   // for (auto i : bbox_layer_indexes_) {
   for (auto i = 0u; i < output_layer_infos_.size(); ++i) {
     if (output_layer_infos_[i].type == 2) {  // bbox

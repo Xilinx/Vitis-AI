@@ -26,7 +26,8 @@ class MedicalDetectionPost : public vitis::ai::MedicalDetectionPostProcess {
   MedicalDetectionPost(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
       const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-      const vitis::ai::proto::DpuModelParam& config);
+      const vitis::ai::proto::DpuModelParam& config,
+      int& real_batch_size);
   virtual ~MedicalDetectionPost();
 
   virtual MedicalDetectionResult medicaldetection_post_process(unsigned int idx) override;
@@ -39,6 +40,7 @@ class MedicalDetectionPost : public vitis::ai::MedicalDetectionPostProcess {
 
   const std::vector<vitis::ai::library::InputTensor> input_tensors_;
   const std::vector<vitis::ai::library::OutputTensor> output_tensors_;
+  int& real_batch_size;
 };
 
 }}}  // namespace 

@@ -13,61 +13,27 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.12)
+set(CMAKE_CXX_STANDARD 17)
 
-project(examples VERSION 1.3.0)
+project(examples VERSION 1.4.0)
 
-if (DPU STREQUAL "dpucadx8g")
 # Set source files of examples (non-video)
 set (EXAMPLES_IMAGE
-  facedetect.cpp
-  googlenet.cpp
-  googlenet_pp_accel.cpp
-  googlenet_resnet50.cpp
-  googlenet_tinyyolov3.cpp
-  inception_v1_tf.cpp
-  resnet50.cpp
-  stdyolov2.cpp
-  tinyyolov3.cpp
+  tf_resnet_v1_50.cpp
+  cf_resnet50.cpp
+  cf_densebox_320_320.cpp
 )
-# Set source files of examples (video)
-set (EXAMPLES_VIDEO
-  tinyyolov3_video.cpp
-)
-elseif (DPU STREQUAL "dpucahx8h")
-# Set source files of examples (non-video)
-set (EXAMPLES_IMAGE
-  resnet50_u50.cpp
-)
+
 # Set source files of examples (video)
 set (EXAMPLES_VIDEO
   ""
 )
-elseif (DPU STREQUAL "dpuczdx8g")
-# Set source files of examples (non-video)
-set (EXAMPLES_IMAGE
-  resnet50_edge.cpp
-  )
-# Set source files of examples (video)
-set (EXAMPLES_VIDEO
-  ""
-)
-elseif (DPU STREQUAL "dpucadf8h")
-# Set source files of examples (non-video)
-set (EXAMPLES_IMAGE
-  resnet50_dpucadf8h.cpp
-  )
-# Set source files of examples (video)
-set (EXAMPLES_VIDEO
-  ""
-)
-else()
-message (FATAL_ERROR "
-  Nothing to build.
-  Make sure to specify target DPU with \'--dpu\' option."
-  )
-endif()
 
 # Find Packages
+find_package(xir REQUIRED)
+find_package(unilog REQUIRED)
+find_package(vart REQUIRED)
+
 if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
   message(STATUS "AKS Install Prefix: ${AKS_INSTALL_PREFIX}")
   find_package(aks REQUIRED
@@ -75,23 +41,22 @@ if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
     NO_DEFAULT_PATH
   )
 else()
-  find_package(aks REQUIRED
-  )
+  find_package(aks REQUIRED)
 endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
+message(STATUS "AKS libraries: ${aks_LIBRARIES}")
 
 execute_process(COMMAND uname -m OUTPUT_VARIABLE arch)
 find_package(Threads REQUIRED)
-if(${arch} MATCHES ".*x86.*")
+if(${arch} MATCHES ".*x86.*" AND (NOT DEFINED ENV{OECORE_TARGET_ARCH}))
   find_package(Boost 1.65.1 EXACT REQUIRED COMPONENTS system filesystem)
 else()
   find_package(Boost 1.65.1 REQUIRED COMPONENTS system filesystem)
 endif()
-find_package(OpenCV REQUIRED COMPONENTS core imgproc video videoio)
+find_package(OpenCV REQUIRED COMPONENTS core imgproc video videoio imgcodecs)
 
 # Set output directories for executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-
 
 # Compile Sources
 foreach( sourcefile ${EXAMPLES_IMAGE} )
@@ -105,6 +70,7 @@ foreach( sourcefile ${EXAMPLES_IMAGE} )
   target_include_directories (${exename}
     PRIVATE ${aks_INCLUDE_DIRS}
     PRIVATE ${Boost_INCLUDE_DIRS}
+    PRIVATE ${OpenCV_INCLUDE_DIRS}
   )
 
   # Set libraries to be linked
@@ -113,10 +79,12 @@ foreach( sourcefile ${EXAMPLES_IMAGE} )
     PRIVATE ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY}
     PRIVATE ${CMAKE_DL_LIBS}
     PRIVATE ${CMAKE_THREAD_LIBS_INIT}
+    PRIVATE vart-runner
+    PRIVATE xir unilog
+    PRIVATE opencv_core opencv_imgproc opencv_imgcodecs
   )
   # set (CMAKE_DEBUG_TARGET_PROPERTIES INCLUDE_DIRECTORIES)
 endforeach()
-
 
 # Compile Sources
 foreach( sourcefile ${EXAMPLES_VIDEO} )
@@ -138,6 +106,8 @@ foreach( sourcefile ${EXAMPLES_VIDEO} )
     PRIVATE ${CMAKE_DL_LIBS}
     PRIVATE ${CMAKE_THREAD_LIBS_INIT}
     PRIVATE opencv_core opencv_imgproc opencv_video opencv_videoio
+    PRIVATE vart-runner
+    PRIVATE xir unilog
   )
   # set (CMAKE_DEBUG_TARGET_PROPERTIES INCLUDE_DIRECTORIES)
 endforeach()

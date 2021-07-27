@@ -18,9 +18,10 @@
 
 #include "vitis/ai/nnpp/openpose.hpp"
 
+#include <opencv2/imgproc/types_c.h>
+
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <opencv2/imgproc/types_c.h>
 #include <vector>
 
 using namespace std;
@@ -327,7 +328,7 @@ OpenPoseResult open_pose_post_process(
   AllPeaks all_peaks;
   for (int i = 0; i < channelL2 - 1; ++i) {
     cv::Mat um(hL2, wL2, CV_32F, chwdataL2.data() + i * wL2 * hL2);
-    resize(um, um, cv::Size(0, 0), 8, 8, CV_INTER_CUBIC);
+    resize(um, um, cv::Size(0, 0), 8, 8, cv::INTER_CUBIC);
     Peaks peaks;
 #ifdef ENABLE_NEON
     find_peak_neon(um, peaks, idx);
@@ -349,7 +350,7 @@ OpenPoseResult open_pose_post_process(
   vector<cv::Mat> pafs;
   for (int i = 0; i < channelL1; ++i) {
     cv::Mat um(hL1, wL1, CV_32F, chwdataL1.data() + i * wL1 * hL1);
-    cv::resize(um, um, cv::Size(0, 0), 8, 8, CV_INTER_CUBIC);
+    cv::resize(um, um, cv::Size(0, 0), 8, 8, cv::INTER_CUBIC);
     pafs.emplace_back(um);
   }
   vector<int> special_k;

@@ -74,7 +74,7 @@ ClassificationResult classification_post_process(
     const vitis::ai::proto::DpuModelParam& config, size_t batch_idx) {
   auto top_k = config.classification_param().top_k();
   std::vector<vitis::ai::library::OutputTensor> virtual_output;
-  if (config.classification_param().has_layer_name()) {
+  if (!config.classification_param().layer_name().empty()) {
     auto layer_names = config.classification_param().layer_name();
     for (auto i = 0u; i < output_tensors.size(); i++) {
       if (output_tensors[i].name.find(layer_names) != std::string::npos) {

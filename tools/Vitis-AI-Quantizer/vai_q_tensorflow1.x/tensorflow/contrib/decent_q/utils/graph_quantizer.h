@@ -98,6 +98,15 @@ class QuantizeConfig {
   // Simulate dpu
   int simulate_dpu;
 
+  // do cross layers equalization
+  int do_cle;
+
+  // Scale all avgpool
+  int scale_all_avgpool;
+
+  // replace relu6 with relu
+  int replace_relu6;
+
   QuantizeConfig(const QuantizePhase& phase = QuantizePhase::CALIB,
                  const QuantizeMethod& method = QuantizeMethod::NOOF,
                  const int& weight_bit = 8, const int& activation_bit = 8,
@@ -111,7 +120,9 @@ class QuantizeConfig {
                  const std::vector<string> quant_input_dtypes = {},
                  const int& calib_iter = 0, const string output_dir = "",
                  const int& align_concat = 0, const int& adjust_shift_bias = 0,
-                 const int& adjust_shift_cut = 0, const int& simulate_dpu = 0)
+                 const int& adjust_shift_cut = 0, const int& simulate_dpu = 0,
+                 const int& do_cle = 0, const int& scale_all_avgpool = 1,
+                 const int& replace_relu6 = 1)
       : phase(phase),
         method(method),
         weight_bit(weight_bit),
@@ -129,7 +140,9 @@ class QuantizeConfig {
         align_concat(align_concat),
         adjust_shift_bias(adjust_shift_bias),
         adjust_shift_cut(adjust_shift_cut),
-        simulate_dpu(simulate_dpu) {}
+        simulate_dpu(simulate_dpu),
+        do_cle(do_cle),
+        scale_all_avgpool(scale_all_avgpool) {}
 
   Status FromString(const string config_string);
 };
@@ -144,6 +157,10 @@ class GraphQuantizer {
 
   // Check Graph
   Status CheckGraph(const GraphDef& input_graph_def, const string graph_path);
+
+  // replace sigmoid op with hard_sigmoid
+  Status ReplaceSigmoidWithHardSigmoid(const GraphDef& input_graph_def,
+                                       GraphDef* output_graph_def);
 
   // Convert Constants To Variables
   Status ConvertConstantsToVariables(const GraphDef& input_graph_def,
@@ -164,6 +181,10 @@ class GraphQuantizer {
   // Create Optimized Graph
   Status CreateOptimizedGraph(const GraphDef& input_graph_def,
                               GraphDef& output_graph_def);
+
+  // implement cross layers equlization
+  Status CrossLayersEqualization(const GraphDef& input_graph_def,
+                                  GraphDef& output_graph_def);
 
   // Create Quantize Calibration Graph
   Status CreateQuantizeCalibrationGraph(const GraphDef& input_graph_def,

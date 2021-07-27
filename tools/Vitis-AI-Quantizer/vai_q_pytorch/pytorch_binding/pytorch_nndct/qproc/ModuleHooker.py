@@ -24,7 +24,7 @@ import torch
 import nndct_shared.quantization as nndct_quant
 import pytorch_nndct.parse.torch_op_def as torch_op_def
 import pytorch_nndct.utils.tensor_utils as py_tensor_utils
-from nndct_shared.base import NNDCT_OP
+from nndct_shared.base import NNDCT_OP, GLOBAL_MAP, NNDCT_KEYS
 from nndct_shared.utils import NndctScreenLogger, NndctOption
 from typing import Sequence
 
@@ -44,14 +44,20 @@ class ModuleHooker(object):
   _parameter_map = {
       torch_op_def.TorchConv2d.ParamName.WEIGHTS: "weight",
       torch_op_def.TorchConv2d.ParamName.BIAS: "bias",
+      torch_op_def.TorchConv3d.ParamName.WEIGHTS: "weight",
+      torch_op_def.TorchConv3d.ParamName.BIAS: "bias",
       torch_op_def.TorchLinear.ParamName.WEIGHTS: "weight",
       torch_op_def.TorchLinear.ParamName.BIAS: "bias",
       torch_op_def.TorchBatchNorm.ParamName.GAMMA: "weight",
       torch_op_def.TorchBatchNorm.ParamName.BETA: "bias",
       torch_op_def.TorchBatchNorm.ParamName.MOVING_MEAN: "running_mean",
-      torch_op_def.TorchBatchNorm.ParamName.MOVING_VAR: "running_var"
-  }
+      torch_op_def.TorchBatchNorm.ParamName.MOVING_VAR: "running_var",
+      torch_op_def.TorchLayerNorm.ParamName.GAMMA: "weight",
+      torch_op_def.TorchLayerNorm.ParamName.BETA: "bias", 
 
+  }
+  
+  
   @staticmethod
   def name_modules(module):
     for name, op in module.named_modules():
@@ -81,7 +87,7 @@ class ModuleHooker(object):
   @staticmethod
   def clear_record_outputs(module):
     for op in module.modules():
-      if op.__outputs__ is not None:
+      if hasattr(op, "__outputs__") and op.__outputs__ is not None:
         if isinstance(op.__outputs__, TimeStepData):
           op.__outputs__.clear()
         else:
@@ -181,51 +187,58 @@ class ModuleHooker(object):
   @classmethod
   def update_parameters(cls, module, graph, graph2module):
 
-    def _graph2module(op, param_map):
+    def _graph2module(op):
       node = getattr(op, "node", None)
-      for param_name, tensor in node.op.params.items():
+      for param_type, tensor in node.op.params.items():
         py_tensor_utils.param_to_torch_format(tensor)
 
         data = np.copy(tensor.data)
-        if node.op.type == NNDCT_OP.CONVTRANSPOSE2D and param_name == torch_op_def.TorchConv2d.ParamName.WEIGHTS:
+        if node.op.type == NNDCT_OP.CONVTRANSPOSE2D and param_type == torch_op_def.TorchConv2d.ParamName.WEIGHTS:
           data = data.transpose(1, 0, 2, 3)
           data = np.ascontiguousarray(data)
         
-        if node.op.type == NNDCT_OP.DEPTHWISE_CONV2D and param_name == torch_op_def.TorchConv2d.ParamName.WEIGHTS:
+        if node.op.type == NNDCT_OP.DEPTHWISE_CONV2D and param_type == torch_op_def.TorchConv2d.ParamName.WEIGHTS:
           out_channels = node.node_config("out_channels")
           kernel_size = node.node_config("kernel_size")
           data = data.reshape((out_channels, 1, *kernel_size)) 
           
         torch_tensor = torch.from_numpy(data)
-    
-        if hasattr(op, param_map[param_name]):
-          if isinstance(getattr(op, param_map[param_name]), torch.Tensor):
-            torch_tensor = torch_tensor.to(
-                getattr(op, param_map[param_name]))
+        param_name = cls._parameter_map.get(param_type, param_type.value)
+        if node.has_bound_params():
+          if hasattr(op, param_name):
+            if isinstance(getattr(op, param_name), torch.Tensor):
+              torch_tensor = torch_tensor.to(
+                  getattr(op, param_name))
+            else:
+              torch_tensor = torch_tensor.to(
+                  getattr(op, param_name).data)
+              
+            if param_name in op._buffers:
+              op._buffers[param_name] = torch_tensor
+            else:
+              op._parameters[param_name] = torch.nn.Parameter(torch_tensor)
           else:
-            torch_tensor = torch_tensor.to(
-                getattr(op, param_map[param_name]).data)
-            
-          if param_map[param_name] in op._buffers:
-            op._buffers[param_map[param_name]] = torch_tensor
-          else:
-            op._parameters[param_map[param_name]] = torch.nn.Parameter(torch_tensor)
+            NndctScreenLogger().warning(f"new parameter: '{param_name}' is registered in {node.name}")
+            op.register_parameter(param_name,
+                                  torch.nn.Parameter(torch_tensor))
         else:
-          op.register_parameter(param_map[param_name],
-                                torch.nn.Parameter(torch_tensor))
+          torch_tensor = torch_tensor.to(device=GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE))
+          module.register_parameter(param_name, torch.nn.Parameter(torch_tensor))
+          
+          
 
         py_tensor_utils.param_to_nndct_format(tensor)
 
     # No one will call it and will be removed later.
-    def _module2graph(op, param_map):
+    def _module2graph(op):
       node = getattr(op, "node", None)
       for param_name, tensor in node.op.params.items():
-        if hasattr(op, param_map[param_name]):
+        if hasattr(op, cls._parameter_map[param_name]):
           if param_name in [torch_op_def.TorchBatchNorm.ParamName.MOVING_MEAN, 
                             torch_op_def.TorchBatchNorm.ParamName.MOVING_VAR]:
-            torch_tensor = getattr(op, param_map[param_name])
+            torch_tensor = getattr(op, cls._parameter_map[param_name])
           else:
-            torch_tensor = getattr(op, param_map[param_name]).data
+            torch_tensor = getattr(op, cls._parameter_map[param_name]).data
             
           torch_tensor_data = np.copy(torch_tensor.detach().cpu().numpy())
 
@@ -246,10 +259,11 @@ class ModuleHooker(object):
     if not _is_module_hooked(module):
       cls.hook_module_with_node(module, graph)
 
-    partial_func = partial(
-        _graph2module if graph2module else _module2graph,
-        param_map=cls._parameter_map)
-    cls.apply_to_children(module, partial_func)
+    func = _graph2module if graph2module else _module2graph
+    # partial_func = partial(
+    #     _graph2module if graph2module else _module2graph,
+    #     param_map=cls._parameter_map)
+    cls.apply_to_children(module, func)
     
   @staticmethod
   def _get_output_data(outptus, outptus_name):
@@ -268,7 +282,7 @@ class ModuleHooker(object):
     def _update_node_outputs(op):
       if hasattr(op, "node") and op.node is not None:
         node = op.node
-        if op.__outputs__ is None or (isinstance(op.__outputs__, TimeStepData) and len(op.__outputs__) == 0):
+        if not hasattr(op, "__outputs__") or op.__outputs__ is None or (isinstance(op.__outputs__, TimeStepData) and len(op.__outputs__) == 0):
           return   
         one_step_outputs = op.__outputs__[
             time_step] if time_step is not None else op.__outputs__

@@ -40,7 +40,7 @@ struct MedicalSegcellResult {
   int width;
   /// Height of input image.
   int height;
-  /// segmentation result in cv::Mat mode
+  /// Segmentation result in cv::Mat mode.
   cv::Mat segmentation;
 };
 
@@ -55,8 +55,8 @@ struct MedicalSegcellResult {
    @code
    Mat img = cv::imread("sample_medicalsegcell.jpg");
    auto medicalsegcell =
-   vitis::ai::MedicalSegcell::create("medical_seg_cell_tf2",true); 
-   auto results = medicalsegcell->run(img); 
+   vitis::ai::MedicalSegcell::create("medical_seg_cell_tf2",true);
+   auto results = medicalsegcell->run(img);
    // results is structure holding cv::Mat.
    // please check test samples for detail usage.
    @endcode
@@ -74,14 +74,14 @@ class MedicalSegcell {
    * @return An instance of MedicalSegcell class.
    *
    */
-  static std::unique_ptr<MedicalSegcell> create(
-      const std::string &model_name, bool need_preprocess = true);
+  static std::unique_ptr<MedicalSegcell> create(const std::string& model_name,
+                                                bool need_preprocess = true);
   /**
    * @cond NOCOMMENTS
    */
  protected:
   explicit MedicalSegcell();
-  MedicalSegcell(const MedicalSegcell &) = delete;
+  MedicalSegcell(const MedicalSegcell&) = delete;
 
  public:
   virtual ~MedicalSegcell();
@@ -98,11 +98,11 @@ class MedicalSegcell {
    * @return MedicalSegcellResult.
    *
    */
-  virtual vitis::ai::MedicalSegcellResult run(const cv::Mat &img) = 0;
+  virtual vitis::ai::MedicalSegcellResult run(const cv::Mat& img) = 0;
 
   /**
-   * @brief Function to get running results of the MedicalSegcell neuron network in
-   * batch mode.
+   * @brief Function to get running results of the MedicalSegcell neuron network
+   * in batch mode.
    *
    * @param imgs Input data of input images (vector<cv::Mat>).The size of
    * input images equals batch size obtained by get_input_batch.
@@ -111,16 +111,18 @@ class MedicalSegcell {
    *
    */
   virtual std::vector<vitis::ai::MedicalSegcellResult> run(
-      const std::vector<cv::Mat> &imgs) = 0;
+      const std::vector<cv::Mat>& imgs) = 0;
 
   /**
-   * @brief Function to get InputWidth of the MedicalSegcell network (input image columns).
+   * @brief Function to get InputWidth of the MedicalSegcell network (input
+   * image columns).
    *
    * @return InputWidth of the MedicalSegcell network.
    */
   virtual int getInputWidth() const = 0;
   /**
-   *@brief Function to get InputHeight of the MedicalSegcell network (input image rows).
+   *@brief Function to get InputHeight of the MedicalSegcell network (input
+   *image rows).
    *
    *@return InputHeight of the MedicalSegcell network.
    */

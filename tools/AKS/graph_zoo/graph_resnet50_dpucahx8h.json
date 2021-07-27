@@ -19,8 +19,8 @@
     {
       "node_name": "resnet50_fpga",
       "node_params": {
-        "DPUCAHX8HRunner": {
-          "model_file" : "graph_zoo/meta_resnet50_u50/resnet50.xmodel",
+        "DPURunner": {
+          "model_file" : "meta_resnet50_u50/resnet50.xmodel",
           "num_runners": 4
         }
       },

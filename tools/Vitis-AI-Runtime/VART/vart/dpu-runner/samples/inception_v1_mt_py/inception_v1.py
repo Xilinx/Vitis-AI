@@ -35,11 +35,11 @@ return: softamx result
 """
 
 
-def CPUCalcSoftmax(data, size):
+def CPUCalcSoftmax(data, size, scale):
     sum = 0.0
     result = [0 for i in range(size)]
     for i in range(size):
-        result[i] = math.exp(data[i])
+        result[i] = math.exp(data[i] * scale)
         sum += result[i]
     for i in range(size):
         result[i] /= sum
@@ -73,25 +73,29 @@ def TopK(datain, size, filePath):
                 print("Top[%d] %d %s" % (i, flag, (line.strip)("\n")))
             flag = flag + 1
 
+
 """
 pre-process for resnet50 (caffe)
 """
 _B_MEAN = 104.0
 _G_MEAN = 117.0
 _R_MEAN = 123.0
-MEANS = [_B_MEAN,_G_MEAN,_R_MEAN]
+MEANS = [_B_MEAN, _G_MEAN, _R_MEAN]
 SCALES = [1.0, 1.0, 1.0]
 
-def preprocess_one_image_fn(image_path, width=224, height=224):
-   means = MEANS
-   scales = SCALES
-   image = cv2.imread(image_path)
-   image = cv2.resize(image,(width, height))
-   B, G, R = cv2.split(image)
-   B = (B - means[0]) * scales[0]
-   G = (G - means[1]) * scales[1]
-   R = (R - means[2]) * scales[2]
-   return image
+
+def preprocess_one_image_fn(image_path, fix_scale, width=224, height=224):
+    means = MEANS
+    scales = SCALES
+    image = cv2.imread(image_path)
+    image = cv2.resize(image, (width, height))
+    B, G, R = cv2.split(image)
+    B = (B - means[0]) * scales[0] * fix_scale
+    G = (G - means[1]) * scales[1] * fix_scale
+    R = (R - means[2]) * scales[2] * fix_scale
+    image = cv2.merge([B, G, R])
+    image = image.astype(np.int8)
+    return image
 
 
 SCRIPT_DIR = get_script_directory()
@@ -109,22 +113,22 @@ cnt: threadnum
 
 
 def runInceptionV1(dpu: "Runner", img, cnt):
-
     """get tensor"""
     inputTensors = dpu.get_input_tensors()
     outputTensors = dpu.get_output_tensors()
     shapeIn = tuple(inputTensors[0].dims)
     shapeOut = tuple(outputTensors[0].dims)
     pre_output_size = int(outputTensors[0].get_data_size() / shapeIn[0])
+
+    output_fixpos = outputTensors[0].get_attr("fix_point")
+    output_scale = 1 / (2**output_fixpos)
     count = 0
     n_of_images = len(img)
     while count < cnt:
         runSize = shapeIn[0]
-
         """prepare batch input/output """
-        outputData = [np.empty(shapeOut, dtype=np.float32, order="C")]
-        inputData = [np.empty(shapeIn, dtype=np.float32, order="C")]
-
+        outputData = [np.empty(shapeOut, dtype=np.int8, order="C")]
+        inputData = [np.empty(shapeIn, dtype=np.int8, order="C")]
         """init input image to input buffer """
         for j in range(runSize):
             imageRun = inputData[0]
@@ -132,13 +136,11 @@ def runInceptionV1(dpu: "Runner", img, cnt):
         """run with batch """
         job_id = dpu.execute_async(inputData, outputData)
         dpu.wait(job_id)
-
-
         """softmax calculate with batch """
         """Benchmark DPU FPS performance over Vitis AI APIs execute_async() and wait() """
         """Uncomment the following code snippet to include softmax calculation for model’s end-to-end FPS evaluation """
         #for j in range(runSize):
-        #    softmax = CPUCalcSoftmax(outputData[0][j], pre_output_size)
+        #    softmax = CPUCalcSoftmax(outputData[0][j], pre_output_size, output_scale)
         #    TopK(softmax, pre_output_size, "./words.txt")
 
         count = count + runSize
@@ -179,12 +181,13 @@ def main(argv):
     all_dpu_runners = []
     for i in range(int(threadnum)):
         all_dpu_runners.append(vart.Runner.create_runner(subgraphs[0], "run"))
+    input_fixpos = all_dpu_runners[0].get_input_tensors()[0].get_attr("fix_point")
+    input_scale = 2**input_fixpos
     """image list to be run """
     img = []
     for i in range(runTotall):
         path = os.path.join(calib_image_dir, listimage[i])
-        img.append(preprocess_one_image_fn(path))
-
+        img.append(preprocess_one_image_fn(path, input_scale))
     """
       The cnt variable is used to control the number of times a single-thread DPU runs.
       Users can modify the value according to actual needs. It is not recommended to use

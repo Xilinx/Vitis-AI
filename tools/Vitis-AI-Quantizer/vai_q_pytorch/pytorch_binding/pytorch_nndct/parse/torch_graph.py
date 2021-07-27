@@ -20,8 +20,9 @@ from collections import OrderedDict, ChainMap
 import json
 import torch
 import weakref
-from .utils import *
+from pytorch_nndct.utils.jit_utils import *
 from nndct_shared.nndct_graph import GraphBase, NodeBase
+from typing import Union
 
 _NODE_NAME_SEPERATOR = '/'
 
@@ -43,12 +44,24 @@ class TorchGraph(GraphBase):
     TorchGraph._graph_id += 1
     return cls(name)
   
+  # def __str__(self):
+  #   strs = ["{}/{}:".format(self.__class__.__name__, self._name)]
+  #   for n in sorted(self._nodes, key=lambda n: n.idx):
+  #     strs.append("node {}".format(n))
+  #   return "\n".join(strs)
   def __str__(self):
-    strs = ["{}/{}:".format(self.__class__.__name__, self._name)]
+    return json.dumps(self.description(), indent=4, separators=(',', ': '))
+ 
+  def description(self):
+    graph_des = {}
+    graph_des['graph_name'] = "{}/{}:".format(self.__class__.__name__, self._name)
+    graph_des['nodes'] = []
     for n in sorted(self._nodes, key=lambda n: n.idx):
-      strs.append("node {}".format(n))
-    return "\n".join(strs)
-
+      graph_des['nodes'].append(n.description())
+    
+    return graph_des
+    
+    
   def _infer_dtype(self, node):
     if node.outputs[0].dtype == "unknown":
       dtype = list(node.flatten_inputs)[0].dtype
@@ -116,6 +129,26 @@ class TorchGraph(GraphBase):
   def remove_node(self, node):
     self._nodes.remove(node)
 
+  def subgraphs(self):
+    for node in self.nodes:
+      if node.blocks:
+        for block in node.blocks:
+          yield block
+
+  def reconnect_nodes(self):
+    for idx, node in enumerate(self.nodes):
+      node.idx = idx
+      node.clean_connection()
+    self.connect_nodes()
+    
+  def connect_nodes(self):
+    for nodeA in self.nodes:
+      for ip in nodeA.flatten_inputs:
+        for nodeB in self.nodes:
+          if nodeB is not nodeA and ip in nodeB.outputs:
+            nodeB.add_out_node(nodeA)
+            nodeA.add_in_node(ip.node)
+            
   @property
   def nodes(self):
     for node in self._nodes:
@@ -136,35 +169,47 @@ class TorchGraph(GraphBase):
     return {node.kind for node in self.nodes}
   
   
-class TorchValue(object):
-
-  def __init__(self, value: torch.Value):
-
-    def _get_value(node):
-      sel = node.kindOf("value")
-      return getattr(node, sel)("value")
-
-    self._name = unique_name(value)
-    self._scope_name = value.node().scopeName()
-    self._node = None
-    self._shape = list(
-        value.type().sizes()) if value.isCompleteTensor() else None
-    self._is_none = False
-    self._is_plain_value = False
-    self._type = str(value.type())
-    self._data = None
-    if value.node().mustBeNone():
-      self._is_none = True
-    elif value.node().kind().split("::")[-1] == "Constant":
-      self._data = _get_value(value.node())
-      if self._type != "Tensor":
-        self._is_plain_value = True
+class TorchValue(object): 
+  
+  def __init__(self, value, name=None):
+    
+    if isinstance(value, torch.Value):
+      self._name = unique_name(value) if name is None else name
+      self._scope_name = value.node().scopeName()
+      self._node = None
+      self._shape = list(
+          value.type().sizes()) if value.isCompleteTensor() else None
+      self._is_none = False
+      self._is_plain_value = False
+      self._type = str(value.type())
+      self._data = None
+      if value.node().mustBeNone():
+        self._is_none = True
+      elif value.node().kind().split("::")[-1] == "Constant":
+        self._data = get_attr_value(value.node(), "value")
+        if self._type != "Tensor":
+          self._is_plain_value = True
+        
+    elif isinstance(value, (float, int, bool)):
+      self._name = name
+      self._scope_name = ''
+      self._node = None
+      self._shape = None
+      self._is_none = False
+      self._is_plain_value = True
+      self._type = {float: 'float', 
+                    int: 'int',  
+                    bool: 'bool'}.get(type(value), None)
+      self._data = value
+    else:
+      raise RuntimeError(f"The type of value ({type(value)}) is unkown.")
 
     self._init_dtype(value)
-
+    self._layout = None
+    
   def _init_dtype(self, value):
     known_types = ['int', 'long', 'float', 'double', 'bool']
-    if self.is_tensor() and value.isCompleteTensor():
+    if isinstance(value, torch.Value) and self.is_tensor() and value.isCompleteTensor():
       dtype = value.type().scalarType().lower()
     elif self.is_none():
       dtype = None
@@ -201,6 +246,10 @@ class TorchValue(object):
   @property
   def dtype(self):
     return self._dtype
+  
+  @dtype.setter
+  def dtype(self, dtype):
+    self._dtype = dtype
 
   @property
   def scope_name(self):
@@ -209,12 +258,30 @@ class TorchValue(object):
   @property
   def shape(self):
     return self._shape
+  
+  @property
+  def ndim(self):
+    if self._shape is not None:
+      return len(self._shape)
 
+  @property
+  def layout(self):
+    return self._layout
+  
+  @layout.setter
+  def layout(self, layout):
+    self._layout = layout
+    
+    
   @property
   def data(self):
     return self._data
 
-
+  @data.setter
+  def data(self, data):
+    self._data = data
+    
+    
 class TorchNode(NodeBase):
 
   def __init__(self, node: torch.Node = None):
@@ -229,7 +296,9 @@ class TorchNode(NodeBase):
     self._outputs = []
     self._in_nodes = []
     self._out_nodes = []
+    self._blocks = []
     self._dtype = "unknown"
+    self._schema = None
 
   def __str__(self):
     return json.dumps(self.description(), indent=4, separators=(',', ': '))
@@ -251,6 +320,12 @@ class TorchNode(NodeBase):
         node_des['in_value'].append(ip.name)
 
     node_des['out_value'] = [ot.name for ot in self._outputs]
+    
+    if self._blocks:
+      for i, block in enumerate(self._blocks):
+        node_des[f'block_{i}'] = []
+        for n in sorted(block._nodes, key=lambda n: n.idx):
+          node_des[f'block_{i}'].append(n.description())
     return node_des
 
   def add_input(self, value):
@@ -269,6 +344,13 @@ class TorchNode(NodeBase):
   def clean_connection(self):
     self._out_nodes.clear()
     self._in_nodes.clear()
+  
+  @property
+  def blocks(self):
+    return self._blocks
+  
+  def add_block(self, block):
+    self._blocks.append(block)
 
   @property
   def inputs(self):
@@ -341,6 +423,14 @@ class TorchNode(NodeBase):
   @name.setter
   def name(self, name):
     setattr(self, "_name", name)
+    
+  @property
+  def schema(self):
+    return self._schema
+  
+  @schema.setter
+  def schema(self, schema):
+    self._schema = schema
 
 
   

@@ -43,6 +43,31 @@ def txt(args):
         print(res)
 
 
+def get_op_output_tensor_ddr(op: "Op", s: "Subgraph"):
+    tensor = op.get_output_tensor()
+    if op.get_type() == "download" and op in s.get_ops():
+        input_ops = op.get_input_ops_by_name("input")
+        assert len(input_ops) == 1, "There must be only one pre_op for download op."
+        tensor = input_ops[0].get_output_tensor()
+    elif not tensor.has_attr("reg_id") or not op in s.get_ops():
+        ops = list(set(op.get_fanout_ops()) & s.get_ops())
+        assert len(ops) == 1, (
+            "illegal xmodel. op:" + op.get_name() + "  has no ddr info"
+        )
+        assert ops[0].get_type() == "upload", (
+            "illegal xmodel. op:" + op.get_name() + "  has no ddr info"
+        )
+        tensor = ops[0].get_output_tensor()
+    assert tensor.has_attr("reg_id"), "op_name " + op.get_name()
+    reg_id = tensor.get_attr("reg_id")
+
+    return reg_id
+
+
+def get_tensor_ddr_info(s: "Subgraph", tensors):
+    return {get_op_output_tensor_ddr(t.producer, s) for t in tensors}
+
+
 def create_dpu_result(s: "Subgraph"):
     result_s = {}
     result_s["fingerprint"] = (
@@ -57,7 +82,6 @@ def create_dpu_result(s: "Subgraph"):
             "name": t.name,
             "shape": str(t.dims),
             "fixpos": t.get_attr("fix_point"),
-            "# of elements": hex(t.get_element_num()),
         }
         for t in s.get_input_tensors()
     ]
@@ -66,40 +90,54 @@ def create_dpu_result(s: "Subgraph"):
             "name": t.name,
             "shape": str(t.dims),
             "fixpos": t.get_attr("fix_point"),
-            "# of elements": hex(t.get_element_num()),
         }
         for t in s.get_output_tensors()
     ]
     # result_s["subgraph"] = [c.get_name() for c in s.toposort_child_subgraph()]
-    table = {}
+    """
     if s.has_attr("reg_id_to_context_type"):
         cont_type = s.get_attr("reg_id_to_context_type")
         table = {k: [v] for k, v in cont_type.items()}
-
     """
-    if cs.has_attr("reg_id_to_context_type_v2"):
-        cont_type = cs.get_attr("reg_id_to_context_type_v2")
-        for k, v in cont_type.items():
-            if k in table:
-                table[k].append(v)
-            else:
-                table[k] = [v]
-    else:
-        print("not have _v2")
-    """
+    input_id_set = get_tensor_ddr_info(s, s.get_input_tensors())
+    output_id_set = get_tensor_ddr_info(s, s.get_output_tensors())
+    cont_type = {}
+    if s.has_attr("reg_id_to_context_type_v2"):
+        cont_type_2 = s.get_attr("reg_id_to_context_type_v2")
+        for k, v in cont_type_2.items():
+            if v == "INTERFACE":
+                if int(k[-1]) in input_id_set and int(k[-1]) in output_id_set:
+                    v = "DATA_LOCAL"
+                elif int(k[-1]) in input_id_set:
+                    v = "DATA_LOCAL_INPUT"
+                elif int(k[-1]) in output_id_set:
+                    v = "DATA_LOCAL_OUTPUT"
+                else:
+                    v = "INVALID TYPE: " + v
+            cont_type[k] = v
+    elif s.has_attr("reg_id_to_context_type"):
+        cont_type = s.get_attr("reg_id_to_context_type")
 
-    if s.has_attr("reg_id_to_parameter_value"):
-        size = tools.get_reg_id_to_parameter(s)
-        for k, v in size.items():
-            if k in table:
-                table[k].append(hashlib.md5(bytes(list(map(ord, v)))).hexdigest())
-            else:
-                table[k] = [hashlib.md5(bytes(list(map(ord, v)))).hexdigest()]
+    pmd5 = tools.get_reg_id_to_parameter(s)
 
+    size = {}
     if s.has_attr("reg_id_to_size"):
         size = s.get_attr("reg_id_to_size")
         for k, v in size.items():
-            table[k].append(str(round(v / 1024.0 / 1024.0, 2)) + "MB")
+            size[k] = str(round(v / 1024.0 / 1024.0, 2)) + "MB"
+
+    keys = list(set(list(cont_type.keys()) + list(pmd5.keys()) + list(size.keys())))
+    keys.sort()
+    table = [
+        {
+            "name": k,
+            "context type": cont_type.get(k),
+            "parameter md5 value": pmd5.get(k),
+            "memory size required": size.get(k),
+        }
+        for k in keys
+    ]
+
     result_s["reg info"] = table
     return result_s
 
@@ -121,14 +159,16 @@ def get_child_subgraph(graph: "Graph") -> List["Subgraph"]:
 def glist(xmodel_path: "String"):
     graph = xir.Graph.deserialize(xmodel_path)
     res = {}
+    res["subgraphs"] = []
     for cs in get_child_subgraph(graph):
         device = "" if not cs.has_attr("device") else cs.get_attr("device").upper()
         if device:
             result_s = {}
+            result_s["name"] = cs.get_name()
             result_s["device"] = device
             if device == "DPU":
                 result_s = dict(result_s, **create_dpu_result(cs))
-            res[cs.get_name()] = result_s
+            res["subgraphs"].append(result_s)
 
     print(json.dumps(res, sort_keys=False, indent=4, separators=(",", ":")))
 
@@ -139,7 +179,7 @@ def meta_info(xmodel_path: "String"):
         graph["files_md5sum"][k.split("/")[-1]] = graph["files_md5sum"].pop(k)
 
     for k in graph["files_md5sum"].keys():
-        if k.find("xmodel") != -1:
+        if k.find("_org.xmodel") != -1:
             graph["files_md5sum"].pop(k)
             break
 
@@ -163,7 +203,7 @@ def help(subparsers):
     parser = subparsers.add_parser(
         "xmodel",
         description="xmodel ",
-        help="<xmodel> [-h] | [-l] | [-i] | [-p png] | [-s svg] | [-t txt]",
+        help="<xmodel> [-h] | [-l] | [-m] | [-p png] | [-s svg] | [-t txt]",
     )
     parser.add_argument("xmodel", help="xmodel file path ")
     parser.add_argument(

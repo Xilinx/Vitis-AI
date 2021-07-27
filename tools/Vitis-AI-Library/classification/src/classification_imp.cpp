@@ -115,6 +115,29 @@ static void inception_pt(const cv::Mat& image, int height, int width,
   }
 }
 
+static void efficientnet_preprocess(const cv::Mat& input, int height, int width, 
+				 cv::Mat& output) {
+  int CROP_PADDING = 32;
+  CHECK_EQ(height, width)
+      << "width must be equal with height";
+  int output_size = height;
+  int input_height = input.rows;
+  int input_width = input.cols;
+
+  float scale = (float)(output_size) / (output_size + CROP_PADDING);
+  int padded_center_crop_size = 
+      (int)(scale * ((input_height > input_width) ? input_width : input_height));
+  int offset_height = ((input_height - padded_center_crop_size) + 1) / 2;
+  int offset_width = ((input_width - padded_center_crop_size) + 1) / 2;
+
+  cv::Mat cropped_img;
+  cv::Rect box(offset_width, offset_height, padded_center_crop_size,  padded_center_crop_size);
+  cropped_img = input(box).clone();
+
+  cv::resize(cropped_img, output,
+             cv::Size(output_size, output_size), 0, 0, cv::INTER_CUBIC);
+}
+
 vitis::ai::ClassificationResult ClassificationImp::run(
     const cv::Mat& input_image) {
   cv::Mat image;
@@ -152,13 +175,16 @@ vitis::ai::ClassificationResult ClassificationImp::run(
       case 5:
         vgg_preprocess(input_image, height, width, image);
         break;
+      case 6:
+        efficientnet_preprocess(input_image, height, width, image);
+        break;
       default:
         break;
     }
   }
   //__TIC__(CLASSIFY_E2E_TIME)
   __TIC__(CLASSIFY_SET_IMG)
-  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4) {
+  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4 || preprocess_type == 6) {
     configurable_dpu_task_->setInputImageRGB(image);
   } else {
     configurable_dpu_task_->setInputImageBGR(image);
@@ -211,9 +237,10 @@ vitis::ai::ClassificationResult ClassificationImp::run(
   }
 
   ret[0].type = 0;
-  if (configurable_dpu_task_->getConfig()
-          .classification_param()
-          .has_label_type()) {
+  if (!configurable_dpu_task_->getConfig()
+           .classification_param()
+           .label_type()
+           .empty()) {
     auto label_type =
         configurable_dpu_task_->getConfig().classification_param().label_type();
     if (label_type == "CIFAR10") {
@@ -269,6 +296,9 @@ std::vector<ClassificationResult> ClassificationImp::run(
         case 5:
           vgg_preprocess(input_images[i], height, width, image);
           break;
+        case 6:
+          efficientnet_preprocess(input_images[i], height, width, image);
+          break;
         default:
           break;
       }
@@ -277,7 +307,7 @@ std::vector<ClassificationResult> ClassificationImp::run(
   }
 
   __TIC__(CLASSIFY_SET_IMG)
-  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4) {
+  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4 || preprocess_type == 6) {
     configurable_dpu_task_->setInputImageRGB(images);
   } else {
     configurable_dpu_task_->setInputImageBGR(images);
@@ -338,9 +368,10 @@ std::vector<ClassificationResult> ClassificationImp::run(
     }
 
     ret.type = 0;
-    if (configurable_dpu_task_->getConfig()
-            .classification_param()
-            .has_label_type()) {
+    if (!configurable_dpu_task_->getConfig()
+             .classification_param()
+             .label_type()
+             .empty()) {
       auto label_type = configurable_dpu_task_->getConfig()
                             .classification_param()
                             .label_type();
@@ -411,9 +442,10 @@ std::vector<ClassificationResult> ClassificationImp::run(
     }
 
     ret.type = 0;
-    if (configurable_dpu_task_->getConfig()
-            .classification_param()
-            .has_label_type()) {
+    if (!configurable_dpu_task_->getConfig()
+             .classification_param()
+             .label_type()
+             .empty()) {
       auto label_type = configurable_dpu_task_->getConfig()
                             .classification_param()
                             .label_type();

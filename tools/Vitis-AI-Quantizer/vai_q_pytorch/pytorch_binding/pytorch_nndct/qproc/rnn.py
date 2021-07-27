@@ -155,7 +155,7 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
 
     # hook module with quantizer
     # connect_module_with_quantizer(quant_module, quantizer)
-    quantizer.quant_model = module
+    quantizer.quant_model = module.to(device)
 
     self.quantizer = quantizer
 

@@ -23,14 +23,14 @@ ifneq "$(wildcard $(XILINX_XRM))" ""
   endif
 endif
 
-CPPFLAGS ?= $(VITIS_INCLUDES) $(VITIS_LIBS) -fpermissive -Wall -std=c++17 -O3
+CPPFLAGS := $(VITIS_INCLUDES) $(VITIS_LIBS) -fpermissive -Wall -std=c++17 -O3
 
 .PHONY: all
 all: $(BUILD_DIR)/DPUCADF8H.exe
 
 $(BUILD_DIR)/DPUCADF8H.exe: src/*.cpp 
 	$(MKDIR_P) build
-	$(CXX) $(CPPFLAGS) -o $@ src/*.cpp -lrt-engine -lpthread -lxilinxopencl -lxrt_core -ljson-c -lglog -lgflags -lxrt++ -lxrt_coreutil -lunilog -lprotobuf -lxir -ltarget-factory -lvart-runner -ljsoncpp -lbutler -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -ltiff -lboost_system -lboost_filesystem
+	$(CXX) $(CPPFLAGS) -o $@ src/*.cpp -lrt-engine -lpthread -lxilinxopencl -lxrt_core -ljson-c -lglog -lgflags -lxrt++ -lxrt_coreutil -lunilog -lprotobuf -lxir -ltarget-factory -lvart-runner -ljsoncpp -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -ltiff -lboost_system -lboost_filesystem
 
 .PHONY: clean
 

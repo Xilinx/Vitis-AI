@@ -603,7 +603,7 @@ proc lib_dpu_ips_pack { dict_verreg dict_ip } {
   set ip_name     dpu
   set d_ip_name   d_ip_dpu
   dict set dict_ip $d_ip_name [dict create    \
-    PATH  $hier_path/dpu                      \
+    PATH  $hier_path/DPUCZDX8G                \
     NAME  [dict get $dict_verreg info_ip $ip_name NAME]  \
     VLNV  {}                                  \
     ]

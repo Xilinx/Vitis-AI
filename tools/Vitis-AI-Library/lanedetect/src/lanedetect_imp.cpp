@@ -54,8 +54,8 @@ RoadLineResult RoadLineImp::run(const cv::Mat& input_image) {
   __TOC__(ROADLINE_DPU)
   __TIC__(ROADLINE_POST_PROCESS)
 
-  auto results =
-      processor_->road_line_post_process(input_image.cols, input_image.rows, 0);
+  auto results = processor_->road_line_post_process(
+      vector<int>{input_image.cols}, vector<int>{input_image.rows}, 1u)[0];
   __TOC__(ROADLINE_POST_PROCESS)
   return results;
 }
@@ -63,12 +63,11 @@ RoadLineResult RoadLineImp::run(const cv::Mat& input_image) {
 std::vector<RoadLineResult> RoadLineImp::run(
     const std::vector<cv::Mat>& input_img) {
   auto size = cv::Size(getInputWidth(), getInputHeight());
-  auto batch_size = get_input_batch();
 
-  std::vector<cv::Mat> vimg(batch_size);
+  std::vector<cv::Mat> vimg(input_img.size());
   std::vector<int> vcols, vrows;
 
-  for (auto i = 0ul; i < batch_size; i++) {
+  for (auto i = 0ul; i < input_img.size(); i++) {
     if (size != input_img[i].size()) {
       cv::resize(input_img[i], vimg[i], size, 0, 0, cv::INTER_LINEAR);
 
@@ -86,7 +85,7 @@ std::vector<RoadLineResult> RoadLineImp::run(
   configurable_dpu_task_->run(0);
   __TOC__(ROADLINE_DPU)
   __TIC__(ROADLINE_POST_PROCESS)
-  auto results = processor_->road_line_post_process(vcols, vrows);
+  auto results = processor_->road_line_post_process(vcols, vrows, vimg.size());
   __TOC__(ROADLINE_POST_PROCESS)
   return results;
 }

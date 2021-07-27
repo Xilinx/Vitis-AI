@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: face detection model.
+input size: 320*320
+float ops: 0.49G
+task: face detection
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_densebox_wider_320_320_0.49G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_densebox_wider_320_320_0.49G_1.4.zip
+  checksum: 97bf89109695b40b3164c2e7af7470e0
+- name: densebox_320_320
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 89b2fc48ec5d6f32cc66fb0f9c324a8e
+- name: densebox_320_320
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck190-r1.4.0.tar.gz
+  checksum: cd0df49ce9195cf3510662b1d97b9c4a
+- name: densebox_320_320
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 02a69bd2d792ae8d69832739880fd065
+- name: densebox_320_320
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: df00b6e5346f679f4abdc936ceb1951f
+- name: densebox_320_320
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u200-u250-r1.4.0.tar.gz
+  checksum: 22f783398a3052e755d5eb0d3f8de7c5
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

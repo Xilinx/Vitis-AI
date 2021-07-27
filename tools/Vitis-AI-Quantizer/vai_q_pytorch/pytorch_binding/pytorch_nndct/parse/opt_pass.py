@@ -16,7 +16,10 @@
 # limitations under the License.
 #
 
-from .torch_graph import TorchNode
+import copy
+from typing import Dict
+from .torch_graph import TorchNode, TorchValue
+import itertools
 
 
 class OptPass(object):
@@ -31,8 +34,42 @@ class OptPass(object):
       nodes_list.extend(nodes)
     return nodes_list
   
+  
   @staticmethod
-  def unpack_ListUnpack_op(graph_handler, raw_graph, node_sets):
+  def penetrate_pack_unpack(raw_graph, node_sets):
+    remove_nodes = []
+    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
+    if not nodes_list:
+      return 
+    for nodeset in nodes_list:
+      pack_node = nodeset[0]
+      unpack_node = nodeset[1]
+      assert len(pack_node.inputs) == len(unpack_node.outputs)
+      remove_nodes.extend([pack_node, unpack_node])
+      for outp, inp in zip(unpack_node.outputs, pack_node.inputs):
+        for node in unpack_node.out_nodes:
+          if outp in node.inputs:
+            index = node.inputs.index(outp)
+            node.inputs[index] = inp
+          
+        if outp.name in raw_graph.ret_values():
+          ori_return_values = copy.copy(raw_graph.ret_values())
+          raw_graph.ret_values().clear()
+          for name, value in ori_return_values.items():
+            if name == outp.name:
+              raw_graph.add_ret_value(inp)
+            else:
+              raw_graph.add_ret_value(value)
+              
+    for r_node in remove_nodes:
+      raw_graph.remove_node(r_node)
+    
+    if remove_nodes:
+      raw_graph.reconnect_nodes()
+    
+    
+  @staticmethod
+  def unpack_ListUnpack_op(raw_graph, node_sets):
     remove_nodes = []
     nodes_list = OptPass.merge_node_sets_to_list(node_sets)
     if not nodes_list:
@@ -48,9 +85,11 @@ class OptPass(object):
             if ip in unpack_in_node.outputs:
               j = unpack_in_node.outputs.index(ip)
               node2index[id(on)] = (i, j)
-                  
+          
         unpack_in_node.outputs = unpack_node.outputs
-                
+        for output in unpack_in_node.outputs:
+          output.node = unpack_in_node  
+                        
         for on in unpack_in_node.out_nodes:
           if id(on) in node2index:
             i, j = node2index[id(on)]
@@ -58,12 +97,13 @@ class OptPass(object):
           
     for r_node in remove_nodes:
       raw_graph.remove_node(r_node)
-      
-    graph_handler.reconnect_nodes(raw_graph)
+    
+    if remove_nodes:
+      raw_graph.reconnect_nodes()
 
   
   @staticmethod
-  def pack_ListConstruct_op(graph_handler, raw_graph, node_sets):
+  def pack_ListConstruct_op(raw_graph, node_sets):
     ListConstruct_nodes = set()
     nodes_list = OptPass.merge_node_sets_to_list(node_sets)
     if not nodes_list:
@@ -75,21 +115,26 @@ class OptPass(object):
         for i, ip in enumerate(packed_out_node.inputs):
           if isinstance(ip, list):
             continue
-          if ip.node and ip.node.kind == packed_node.kind:
+          if ip.node and ip.node is packed_node and len(ip.node.outputs) == 1:
             id2list[i] = packed_node.inputs
             ListConstruct_nodes.add(packed_node)
           
         for i, lst in id2list.items():
           packed_out_node.inputs[i] = lst
+      
+      if packed_node.outputs[0].name in raw_graph.ret_values():
+        ListConstruct_nodes.add(packed_node)
+        raw_graph.ret_values()[packed_node.outputs[0].name] = packed_node.inputs
 
     for node in ListConstruct_nodes:
       raw_graph.remove_node(node)
 
-    graph_handler.reconnect_nodes(raw_graph)
+    if ListConstruct_nodes:
+      raw_graph.reconnect_nodes()
     
     
   @staticmethod
-  def slice_to_strided_slice(graph_handler, raw_graph, node_sets):
+  def slice_to_strided_slice(raw_graph, node_sets):
     strided_slice_nodes = {}
     slice_nodes = []
     nodes_list = OptPass.merge_node_sets_to_list(node_sets)
@@ -108,7 +153,7 @@ class OptPass(object):
         for ip in node.inputs[1:]:
           strided_node.add_input([ip])
         strided_node.add_output(node.outputs[0])
-        strided_node.outputs
+        # strided_node.outputs
         strided_slice_nodes[node.name] = strided_node
       else:
         node.name = node.inputs[0].node.name
@@ -125,12 +170,13 @@ class OptPass(object):
     for node in slice_nodes:
       if node in raw_graph.nodes:
         raw_graph.remove_node(node)
-
-    graph_handler.reconnect_nodes(raw_graph) 
+        
+    if slice_nodes:                        
+      raw_graph.reconnect_nodes() 
     
   
   @staticmethod
-  def select_to_slice_inplace_copy(graph_handler, raw_graph, node_sets):
+  def select_to_slice_inplace_copy(raw_graph, node_sets):
     select_nodes = []
     nodes_list = OptPass.merge_node_sets_to_list(node_sets)
     if not nodes_list:
@@ -148,11 +194,12 @@ class OptPass(object):
     for node in select_nodes:
       raw_graph.remove_node(node)
 
-    graph_handler.reconnect_nodes(raw_graph)
+    if select_nodes:
+      raw_graph.reconnect_nodes()
     
   
   @staticmethod
-  def create_stride_slice_inplace_copy(graph_handler, raw_graph, node_sets):
+  def create_stride_slice_inplace_copy(raw_graph, node_sets):
     stride_slice_nodes = []
     nodes_list = OptPass.merge_node_sets_to_list(node_sets)
     if not nodes_list:
@@ -171,12 +218,13 @@ class OptPass(object):
   
     for node in stride_slice_nodes:
       raw_graph.remove_node(node)
-
-    graph_handler.reconnect_nodes(raw_graph)
+    
+    if stride_slice_nodes:
+      raw_graph.reconnect_nodes()
     
   
   @staticmethod
-  def stride_slice_to_index_inplace_put(graph_handler, raw_graph, node_sets):
+  def stride_slice_to_index_inplace_put(raw_graph, node_sets):
     select_nodes = []
     nodes_list = OptPass.merge_node_sets_to_list(node_sets)
     if not nodes_list:
@@ -198,10 +246,11 @@ class OptPass(object):
     for node in select_nodes:
       raw_graph.remove_node(node)
 
-    graph_handler.reconnect_nodes(raw_graph)
+    if select_nodes:
+      raw_graph.reconnect_nodes()
     
   @staticmethod
-  def strip_reduantant_tensors_in_embedding_bag(graph_handler, raw_graph, node_sets):
+  def strip_reduantant_tensors_in_embedding_bag(raw_graph, node_sets):
     nodes_list = OptPass.merge_node_sets_to_list(node_sets)
     if not nodes_list:
       return
@@ -211,7 +260,7 @@ class OptPass(object):
   
   
   @staticmethod
-  def merge_matmul_with_add(graph_handler, raw_graph, node_sets):
+  def merge_matmul_with_add(raw_graph, node_sets):
     matmul_nodes = []
     nodes_list = OptPass.merge_node_sets_to_list(node_sets)
     if not nodes_list:
@@ -233,4 +282,170 @@ class OptPass(object):
     for node in matmul_nodes:
       raw_graph.remove_node(node)
     
-    graph_handler.reconnect_nodes(raw_graph)
+    if matmul_nodes:
+      raw_graph.reconnect_nodes(raw_graph)
+    
+  @staticmethod
+  def merge_param_transpose_with_addmm(raw_graph, node_sets):
+    t_nodes = []
+    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
+    if not nodes_list:
+      return
+
+    for node_set in nodes_list:
+      t, addmm = node_set
+      if t.inputs[0].name not in raw_graph.param_names():
+        continue
+      
+      t_nodes.append(t)
+      addmm.inputs[2] = t.inputs[0]
+        
+    for node in t_nodes:
+      raw_graph.remove_node(node)
+      
+    if t_nodes:
+      raw_graph.reconnect_nodes()
+
+  @staticmethod
+  def merge_select_to_strided_slice(raw_graph, node_sets):
+    def have_inplace_copy_child(node):
+      if node.kind == "copy_":
+        return True
+      
+      for cn in raw_graph.children(node):
+        if have_inplace_copy_child(cn):
+          return True
+        
+      return False    
+    
+    remove_nodes = []
+    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
+    if not nodes_list:
+      return
+
+    for node_set in nodes_list:
+      select_node = node_set[0]
+      strided_slice = node_set[1]
+      if not have_inplace_copy_child(strided_slice):
+        continue
+      
+      remove_nodes.append(select_node)
+      strided_slice.inputs[0] = select_node.inputs[0]
+      select_dim = select_node.inputs[1]
+      select_index = select_node.inputs[2]
+      
+      new_slice_dim = select_dim
+      new_slice_start = select_index
+      new_slice_end = select_index
+      new_slice_step = TorchValue(1)     
+      
+      strided_slice_dims = []
+      for i, dim in enumerate([new_slice_dim] + strided_slice.inputs[1]):
+        if i > 0:
+          dim.data += 1
+        strided_slice_dims.append(dim)
+      
+      strided_slice.inputs[1] = strided_slice_dims
+      strided_slice.inputs[2] = [new_slice_start] + strided_slice.inputs[2][:]
+      strided_slice.inputs[3] = [new_slice_end] + strided_slice.inputs[3][:]
+      strided_slice.inputs[4] = [new_slice_step] + strided_slice.inputs[4][:]
+      
+    for node in remove_nodes:
+      raw_graph.remove_node(node)
+      
+    if remove_nodes:
+      raw_graph.reconnect_nodes()
+
+    return True if remove_nodes else False
+    
+      
+  @staticmethod
+  def merge_consecutive_strided_slice(raw_graph, node_sets):
+    remove_nodes = []
+    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
+    if not nodes_list:
+      return   
+
+    sorted_node_list = sorted(nodes_list, key=lambda nodeset: nodeset[0].idx)
+        
+    consecutive_slice_group = []
+    for nodeset in sorted_node_list:
+      if consecutive_slice_group:
+        if nodeset[0] in consecutive_slice_group[-1]:
+          consecutive_slice_group[-1].append(nodeset[1])
+        else:
+          consecutive_slice_group.append(nodeset)
+      else:
+        consecutive_slice_group.append(nodeset)
+     
+    for slice_group in consecutive_slice_group:
+      dim = list(itertools.chain.from_iterable([slice_op.inputs[1] for slice_op in slice_group]))
+      start = list(itertools.chain.from_iterable([slice_op.inputs[2] for slice_op in slice_group]))
+      end = list(itertools.chain.from_iterable([slice_op.inputs[3] for slice_op in slice_group]))
+      step = list(itertools.chain.from_iterable([slice_op.inputs[4] for slice_op in slice_group]))
+      slice_group[-1].inputs[0] = slice_group[0].inputs[0]
+      slice_group[-1].inputs[1] = dim
+      slice_group[-1].inputs[2] = start
+      slice_group[-1].inputs[3] = end
+      slice_group[-1].inputs[4] = step
+      remove_nodes.extend(slice_group[:-1])
+      
+    
+    for node in remove_nodes:
+      raw_graph.remove_node(node)
+      
+    if remove_nodes:
+      raw_graph.reconnect_nodes()
+      
+
+  @staticmethod
+  def remove_reduantant_view(raw_graph, node_sets):
+    remove_nodes = []
+    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
+    if not nodes_list:
+      return   
+    
+    for nodeset in nodes_list:
+      view = nodeset[0]
+      if view.inputs[0].shape == view.outputs[0].shape:
+        remove_nodes.append(view)
+        for node in raw_graph.children(view):
+          for i, inp in enumerate(node.inputs):
+            if inp is view.outputs[0]:
+              node.inputs[i] = view.inputs[0]
+      
+    for node in remove_nodes:
+      raw_graph.remove_node(node)
+      
+    if remove_nodes:
+      raw_graph.reconnect_nodes()
+          
+    
+  @staticmethod
+  def merge_empty_with_zero(raw_graph, node_sets):
+    remove_nodes = []
+    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
+    if not nodes_list:
+      return   
+    
+    for nodeset in nodes_list:
+      empty = nodeset[0]
+      zero = nodeset[1]
+      zero.kind = 'zeros'
+      zero.inputs.clear()
+      for input in empty.inputs[:-1]:
+        zero.inputs.append(input)
+      
+      remove_nodes.append(empty)
+      
+    for node in remove_nodes:
+      raw_graph.remove_node(node)
+      
+    if remove_nodes:
+      raw_graph.reconnect_nodes()
+
+      
+      
+      
+      
+      

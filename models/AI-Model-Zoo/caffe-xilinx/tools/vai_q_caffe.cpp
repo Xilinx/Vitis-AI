@@ -105,7 +105,7 @@ DEFINE_string(ap_style, "11point",
 DEFINE_string(seg_metric, "classIOU", "Optional; Test metric for segmentation "
                                       "net, now only classIOU is supported");
 DEFINE_int32(seg_class_num, 19, "Optional; The number of segmentation classes");
-DEFINE_bool(keep_fixed_neuron, false,
+DEFINE_bool(keep_fixed_neuron, true,
                         "Remain FixedNeuron layers in the output float caffemodel ");
 
 // A simple registry for caffe commands.

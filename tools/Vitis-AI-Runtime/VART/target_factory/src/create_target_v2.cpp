@@ -36,6 +36,7 @@ const Target create_target_v2(const std::uint64_t fingerprint) {
   auto PP = PP_MAP[ARCH];
   auto ICP = ICP_MAP[ARCH];
   auto OCP = OCP_MAP[ARCH];
+  auto PEAK = PP * ICP * OCP * 2;
 
   auto PL_PP = (fingerprint & 0xf00) >> 8;
   auto DW_PP = (fingerprint & 0xf000) >> 12;
@@ -49,6 +50,15 @@ const Target create_target_v2(const std::uint64_t fingerprint) {
   auto DW_RL6 = (fingerprint & 0x80000000) >> 31;
   auto EL_MULT = (fingerprint & 0x1000000000) >> 36;
   auto PL_DSM = (fingerprint & 0x2000000000) >> 37;
+  auto ISA = (fingerprint & 0x00ff000000000000) >> 48;
+
+  std::string NAME = "DPUCVDX8G_ISAx_Bx_x";
+  char finger_hex[17];
+  sprintf(finger_hex, "%016lX", fingerprint);
+  NAME.replace(18, 1, finger_hex);
+  NAME.replace(16, 1, std::to_string(PEAK));
+  NAME.replace(13, 1, std::to_string(ISA));
+  target.set_name(NAME);
 
   auto base_id = 0U;
   for (auto idx = 0U; idx < IMG_BG; idx++) {

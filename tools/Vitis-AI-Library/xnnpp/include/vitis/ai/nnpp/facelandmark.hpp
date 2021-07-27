@@ -27,8 +27,8 @@ namespace ai {
  *@brief Struct of the result returned by the facelandmark network.
  */
 struct FaceLandmarkResult {
-  /// Five key points coordinate, this array of <x,y> has five elements ,x / y is
-  /// normalized relative to width / height, the value range from 0 to 1.
+  /// Five key points coordinate. This array of <x,y> has five elements, x / y
+  /// is normalized relative to width / height, the value range from 0 to 1.
   std::array<std::pair<float, float>, 5> points;
 };
 /**

@@ -76,7 +76,7 @@ int CmdSubgraph::main(int argc, char* argv[]) {
 
 std::string CmdSubgraph::help() const {
   std::ostringstream str;
-  str << "xir " << get_name() << "xir subgraph <xmodel>\n\t"
+  str << "xir " << get_name() << " <xmodel>\n\t"
       << "show subgraph tree" << endl;
   return str.str();
 }

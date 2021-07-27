@@ -20,7 +20,7 @@
 #include <boost/filesystem.hpp>
 
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
+#include <aks/AksTensorBuffer.h>
 #include <aks/AksNodeParams.h>
 
 // Box coordinates as (x, y, w, h)
@@ -37,13 +37,13 @@ class SaveBoxesDarknetFormat : public AKS::KernelBase
   public:
     void nodeInit(AKS::NodeParams*);
     int exec_async (
-        std::vector<AKS::DataDescriptor*> &in, 
-        std::vector<AKS::DataDescriptor*> &out, 
+        std::vector<vart::TensorBuffer*> &in,
+        std::vector<vart::TensorBuffer*> &out,
         AKS::NodeParams* nodeParams,
         AKS::DynamicParamValues* dynParams);
 };
 
-extern "C" { /// Add this to make this available for python bindings and 
+extern "C" { /// Add this to make this available for python bindings and
 
   AKS::KernelBase* getKernel (AKS::NodeParams *params)
   {
@@ -53,16 +53,18 @@ extern "C" { /// Add this to make this available for python bindings and
 }//externC
 
 void SaveBoxesDarknetFormat::nodeInit(AKS::NodeParams* nodeParams) {
-  auto& tmp = nodeParams->_stringParams["output_dir"];
-  _output_dir = tmp.empty() ? "." : tmp;
-  if(_output_dir != "." && !boost::filesystem::exists(_output_dir)) {
+  _output_dir = nodeParams->hasKey<std::string>("output_dir") ?
+                nodeParams->getValue<std::string>("output_dir") : "";
+  if(!_output_dir.empty() && !boost::filesystem::exists(_output_dir)) {
     boost::filesystem::create_directory(_output_dir);
   }
 }
 
+void writeOutput(const std::string& filename ) {}
+
 int SaveBoxesDarknetFormat::exec_async (
-    std::vector<AKS::DataDescriptor*> &in, 
-    std::vector<AKS::DataDescriptor*> &out, 
+    std::vector<vart::TensorBuffer*> &in,
+    std::vector<vart::TensorBuffer*> &out,
     AKS::NodeParams* nodeParams,
     AKS::DynamicParamValues* dynParams)
 {
@@ -70,44 +72,78 @@ int SaveBoxesDarknetFormat::exec_async (
   const auto& imagePaths = dynParams->imagePaths;
   std::vector<int>& imgShapes = dynParams->_intVectorParams.at("img_dims");
 
-  for(int b=0; b<imagePaths.size(); ++b) {
-    std::vector<std::string> tokens;
-    boost::split(tokens, imagePaths[b], boost::is_any_of("/,."));
-    auto& imgFile = tokens[tokens.size()-2];
+  auto* boxes = in[0];
+  int nboxes = boxes->get_tensor()->get_shape()[0];
+  const auto* boxptr = reinterpret_cast<float*>(in[0]->data().first);
 
-    // Append output_dir and .txt to get output file
-    std::string output_file = _output_dir + "/" + imgFile + ".txt";
-    ofstream f(output_file);
-    if(!f) {
-      std::cerr << "[WARNING] : Couldn't open " << output_file << std::endl;
-      std::cerr << "[WARNING] : Check if path is correct" << std::endl;
-      return -1;
-    }
+  auto* outBuf = new AKS::AksTensorBuffer(xir::Tensor::clone(boxes->get_tensor()));
+  auto* outptr = reinterpret_cast<float*>(outBuf->data().first);
 
-    // Get the boxes & image_dims from inputs and write it to file
+  // Convert boxes to darknet format
+  for(int i=0; i < nboxes; ++i) {
+    float b        = boxptr[0];
+    float llx      = boxptr[1];
+    float lly      = boxptr[2];
+    float urx      = boxptr[3];
+    float ury      = boxptr[4];
+    float class_id = boxptr[5];
+    float score    = boxptr[6];
+
+    int batch = static_cast<int>(b);
     int img_h = imgShapes[b*3 + 1];
     int img_w = imgShapes[b*3 + 2];
 
-    AKS::DataDescriptor* boxes = &(in[0]->data<AKS::DataDescriptor>()[b]);
+    XYWH xywh = _darknetStyleCoords(img_w, img_h, llx, lly, urx, ury);
 
-    for(int i=0; i<boxes->getShape()[0]; ++i) {
-      auto box     = boxes->data<float>() + i*6;
-      int class_id = static_cast<int>(box[4]);
-      float score  = box[5];
-      float llx    = box[0];
-      float lly    = box[1];
-      float urx    = box[2];
-      float ury    = box[3];
+    outptr[0] = b;
+    outptr[1] = class_id;
+    outptr[2] = score;
+    outptr[3] = xywh.x;
+    outptr[4] = xywh.y;
+    outptr[5] = xywh.w;
+    outptr[6] = xywh.h;
 
-      XYWH xywh = _darknetStyleCoords(img_w, img_h, llx, lly, urx, ury);
-
-      f << class_id << " " << score << " ";
-      f << xywh.x << " " << xywh.y << " ";
-      f << xywh.w << " " << xywh.h << '\n';
-    }
-
-    f.close();
+    boxptr += 7;
+    outptr += 7;
   }
+
+  // Dump the boxes to file if needed
+  if(!_output_dir.empty()) {
+    boxptr = reinterpret_cast<float*>(outBuf->data().first);
+    int boxcnt = 0;
+    for(int b=0; b<imagePaths.size(); ++b) {
+      std::vector<std::string> tokens;
+      boost::split(tokens, imagePaths[b], boost::is_any_of("/,."));
+      auto& imgFile = tokens[tokens.size()-2];
+
+      // Append output_dir and .txt to get output file
+      std::string output_file = _output_dir + "/" + imgFile + ".txt";
+      ofstream f(output_file);
+      if(!f) {
+        std::cerr << "[WARNING] : Couldn't open " << output_file << std::endl;
+        std::cerr << "[WARNING] : Check if path is correct" << std::endl;
+        return -1;
+      }
+
+      while((boxptr[0] == b) && (boxcnt < nboxes)) {
+        float class_id = boxptr[1];
+        float score    = boxptr[2];
+        float x        = boxptr[3];
+        float y        = boxptr[4];
+        float w        = boxptr[5];
+        float h        = boxptr[6];
+
+        f << class_id << " " << score << " ";
+        f << x << " " << y << " ";
+        f << w << " " << h << '\n';
+        boxptr += 7;
+        ++boxcnt;
+      }
+      f.close();
+    }
+  }
+
+  out.push_back(outBuf);
   return -1;
 }
 

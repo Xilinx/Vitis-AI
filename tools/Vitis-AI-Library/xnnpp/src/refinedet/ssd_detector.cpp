@@ -15,6 +15,8 @@
  */
 #include "ssd_detector.hpp"
 
+#include <glog/logging.h>
+
 #include <algorithm>
 #include <cmath>
 #include <functional>
@@ -22,6 +24,8 @@
 #include <opencv2/core/core.hpp>
 #include <thread>
 #include <tuple>
+
+#include "vitis/ai/nnpp/apply_nms.hpp"
 
 namespace vitis {
 namespace nnpp {
@@ -78,87 +82,85 @@ void SSDdetector::Detect(const T* arm_loc_data, const T* odm_loc_data,
   // }
 
   //  __TOC__(Sort)
+  vector<vector<float>> score_vec(num_classes_);
   //  __TIC__(NMS)
-  for (size_t c = 1; c < num_classes_; ++c) {
+  for (size_t label = 1; label < num_classes_; ++label) {
     // Perform NMS for one class
-    ApplyOneClassNMS(arm_bboxes, conf_data, c, score_index_vec[c],
-                     &(indices[c]));
+    vector<size_t> results;
+    vector<vector<float>> boxes;
+    vector<float> scores;
+    map<size_t, int> resultmap;
 
-    num_det += indices[c].size();
+    size_t i = 0;
+    while (i < score_index_vec[label].size()) {
+      const int idx = score_index_vec[label][i].second;
+      if (decoded_bboxes_.find(idx) == decoded_bboxes_.end()) {
+        DecodeBBox(arm_bboxes, idx, true);
+      }
+      boxes.push_back(decoded_bboxes_[idx]);
+      scores.push_back(score_index_vec[label][i].first);
+      resultmap[i] = idx;
+      ++i;
+    }
+    applyNMS(boxes, scores, nms_threshold_, confidence_threshold_[label],
+             results);
+    for (auto& r : results) {
+      indices[label].push_back(resultmap[r]);
+      score_vec[label].push_back(scores[r]);
+    }
+    num_det += results.size();
   }
 
   if (keep_top_k_ > 0 && num_det > keep_top_k_) {
-    vector<tuple<float, int, int>> score_index_tuples;
+    vector<tuple<float, int, int>> score_label_index_tuples;
     for (size_t label = 0; label < num_classes_; ++label) {
       const vector<int>& label_indices = indices[label];
       for (size_t j = 0; j < label_indices.size(); ++j) {
         auto idx = label_indices[j];
         auto score = conf_data[idx * num_classes_ + label];
-        score_index_tuples.emplace_back(score, label, idx);
+        score_label_index_tuples.emplace_back(score, label, idx);
       }
     }
 
     // Keep top k results per image.
-    std::sort(score_index_tuples.begin(), score_index_tuples.end(),
+    std::sort(score_label_index_tuples.begin(), score_label_index_tuples.end(),
               [](const tuple<float, int, int>& lhs,
                  const tuple<float, int, int>& rhs) {
                 return get<0>(lhs) > get<0>(rhs);
               });
-    score_index_tuples.resize(keep_top_k_);
+    score_label_index_tuples.resize(keep_top_k_);
 
     indices.clear();
+    score_vec.clear();
     indices.resize(num_classes_);
-    for (auto& item : score_index_tuples) {
+    score_vec.resize(num_classes_);
+    for (auto& item : score_label_index_tuples) {
       indices[get<1>(item)].push_back(get<2>(item));
+      score_vec[get<1>(item)].push_back(get<0>(item));
     }
-
     num_det = keep_top_k_;
   }
 
   //  __TOC__(NMS)
-  auto it = decoded_bboxes_.begin();
-  while (it != decoded_bboxes_.end()) {
-    int idx = it->first;
-    DecodeBBoxMini(odm_bboxes, idx, true);
-    it++;
-  }
-  for (size_t label = 1; label < indices.size(); ++label) {
-    for (size_t i = 0; i < indices[label].size(); ++i) {
-      int idx = indices[label][i];
-      for (size_t j = 0; j < i; ++j) {
-        int nms_idx = indices[label][j];
-        float overlap = JaccardOverlap(odm_bboxes, idx, nms_idx);
-        if (overlap > nms_threshold_) {
-          decoded_bboxes_.erase(decoded_bboxes_.find(idx));
-          indices[label].erase(indices[label].begin() + i);
-          i--;
-          break;
-        }
-      }
-    }
-  }
 
-  //  __TIC__(Box)
   for (size_t label = 1; label < indices.size(); ++label) {
+    // Do nms.
+    vector<size_t> results;
+    vector<vector<float>> boxes;
+
     for (auto idx : indices[label]) {
-      if (idx == -1) continue;
-      auto score = conf_data[idx * num_classes_ + label];
-      if (score < confidence_threshold_[label]) {
-        continue;
-      }
-      auto& bbox = decoded_bboxes_[idx];
-      bbox[0] = std::max(std::min(bbox[0], 1.f), 0.f);
-      bbox[1] = std::max(std::min(bbox[1], 1.f), 0.f);
-      bbox[2] = std::max(std::min(bbox[2], 1.f), 0.f);
-      bbox[3] = std::max(std::min(bbox[3], 1.f), 0.f);
-
-      auto box_rect =
-          Rect_<float>(Point2f(bbox[0], bbox[1]), Point2f(bbox[2], bbox[3]));
-      result->emplace_back(label, score, box_rect);
+      DecodeBBoxMini(odm_bboxes, idx, true);
+      boxes.push_back(decoded_bboxes_[idx]);
+    }
+    applyNMS(boxes, score_vec[label], nms_threshold_,
+             confidence_threshold_[label], results);
+    for (auto& r : results) {
+      Rect_<float> box_rect(boxes[r][0] - 0.5f * boxes[r][2],
+                            boxes[r][1] - 0.5f * boxes[r][3], boxes[r][2],
+                            boxes[r][3]);
+      result->emplace_back(label, score_vec[label][r], box_rect);
     }
   }
-
-  //  __TOC__(Box)
 }
 
 template void SSDdetector::Detect(const int* arm_loc_data,
@@ -169,54 +171,6 @@ template void SSDdetector::Detect(const int8_t* arm_loc_data,
                                   const int8_t* odm_loc_data,
                                   const float* conf_data,
                                   MultiDetObjects* result);
-
-template <typename T>
-void SSDdetector::ApplyOneClassNMS(
-    const T (*bboxes)[4], const float* conf_data, int label,
-    const vector<pair<float, int>>& score_index_vec, vector<int>* indices) {
-  // Get top_k scores (with corresponding indices).
-  // vector<pair<float, int> > score_index_vec;
-  // GetOneClassMaxScoreIndex(conf_data, label, &score_index_vec);
-
-  // Do nms.
-  float adaptive_threshold = nms_threshold_;
-  indices->clear();
-  size_t i = 0;
-  while (i < score_index_vec.size()) {
-    //	__TIC__(Decode)
-    const int idx = score_index_vec[i].second;
-    if (decoded_bboxes_.find(idx) == decoded_bboxes_.end()) {
-      DecodeBBox(bboxes, idx, true);
-    }
-    //	__TOC__(Decode)
-    //	__TIC__(OVERLAP)
-    bool keep = true;
-    for (size_t k = 0; k < indices->size(); ++k) {
-      if (keep) {
-        const int kept_idx = (*indices)[k];
-        float overlap = JaccardOverlap(bboxes, idx, kept_idx);
-        keep = overlap <= adaptive_threshold;
-      } else {
-        break;
-      }
-    }
-    if (keep) {
-      indices->push_back(idx);
-    }
-    ++i;
-    if (keep && eta_ < 1 && adaptive_threshold > 0.5) {
-      adaptive_threshold *= eta_;
-    }
-    //	__TOC__(OVERLAP)
-  }
-}
-
-template void SSDdetector::ApplyOneClassNMS(
-    const int (*bboxes)[4], const float* conf_data, int label,
-    const vector<pair<float, int>>& score_index_vec, vector<int>* indices);
-template void SSDdetector::ApplyOneClassNMS(
-    const int8_t (*bboxes)[4], const float* conf_data, int label,
-    const vector<pair<float, int>>& score_index_vec, vector<int>* indices);
 
 void SSDdetector::GetOneClassMaxScoreIndex(
     const float* conf_data, int label,
@@ -275,87 +229,9 @@ void SSDdetector::GetMultiClassMaxScoreIndexMT(
     if (worker.joinable()) worker.join();
 }
 
-void BBoxSize(vector<float>& bbox, bool normalized) {
-  float width = bbox[2] - bbox[0];
-  float height = bbox[3] - bbox[1];
-  if (width > 0 && height > 0) {
-    if (normalized) {
-      bbox[4] = width * height;
-    } else {
-      bbox[4] = (width + 1) * (height + 1);
-    }
-  } else {
-    bbox[4] = 0.f;
-  }
-}
-
-float IntersectBBoxSize(const vector<float>& bbox1, const vector<float>& bbox2,
-                        bool normalized) {
-  if (bbox2[0] > bbox1[2] || bbox2[2] < bbox1[0] || bbox2[1] > bbox1[3] ||
-      bbox2[3] < bbox1[1]) {
-    // Return 0 if there is no intersection.
-    return 0.f;
-  }
-
-  vector<float> intersect_bbox(5);
-  intersect_bbox[0] = max(bbox1[0], bbox2[0]);
-  intersect_bbox[1] = max(bbox1[1], bbox2[1]);
-  intersect_bbox[2] = min(bbox1[2], bbox2[2]);
-  intersect_bbox[3] = min(bbox1[3], bbox2[3]);
-  BBoxSize(intersect_bbox, normalized);
-  return intersect_bbox[4];
-}
-
-/*
-void ClipBBox(const NormalizedBBox& bbox, NormalizedBBox* clip_bbox) {
-  clip_bbox->set_xmin(std::max(std::min(bbox.xmin(), 1.f), 0.f));
-  clip_bbox->set_ymin(std::max(std::min(bbox.ymin(), 1.f), 0.f));
-  clip_bbox->set_xmax(std::max(std::min(bbox.xmax(), 1.f), 0.f));
-  clip_bbox->set_ymax(std::max(std::min(bbox.ymax(), 1.f), 0.f));
-  clip_bbox->clear_size();
-  clip_bbox->set_size(BBoxSize(*clip_bbox));
-  clip_bbox->set_difficult(bbox.difficult());
-}
-
-void ClipBBox(const NormalizedBBox& bbox, const float height, const float width,
-              NormalizedBBox* clip_bbox) {
-  clip_bbox->set_xmin(std::max(std::min(bbox.xmin(), width), 0.f));
-  clip_bbox->set_ymin(std::max(std::min(bbox.ymin(), height), 0.f));
-  clip_bbox->set_xmax(std::max(std::min(bbox.xmax(), width), 0.f));
-  clip_bbox->set_ymax(std::max(std::min(bbox.ymax(), height), 0.f));
-  clip_bbox->clear_size();
-  clip_bbox->set_size(BBoxSize(*clip_bbox));
-  clip_bbox->set_difficult(bbox.difficult());
-}
-*/
-
-template <typename T>
-float SSDdetector::JaccardOverlap(const T (*bboxes)[4], int idx, int kept_idx,
-                                  bool normalized) {
-  /*
-    if (decoded_bboxes_.find(idx) == decoded_bboxes_.end()) {
-      DecodeBBox(bboxes, idx, normalized);
-    }
-    if (decoded_bboxes_.find(kept_idx) == decoded_bboxes_.end()) {
-      DecodeBBox(bboxes, kept_idx, normalized);
-    }
-  */
-  const vector<float>& bbox1 = decoded_bboxes_[idx];
-  const vector<float>& bbox2 = decoded_bboxes_[kept_idx];
-  float intersect_size = IntersectBBoxSize(bbox1, bbox2, normalized);
-  return intersect_size <= 0
-             ? 0
-             : intersect_size / (bbox1[4] + bbox2[4] - intersect_size);
-}
-
-template float SSDdetector::JaccardOverlap(const int (*bboxes)[4], int idx,
-                                           int kept_idx, bool normalized);
-template float SSDdetector::JaccardOverlap(const int8_t (*bboxes)[4], int idx,
-                                           int kept_idx, bool normalized);
-
 template <typename T>
 void SSDdetector::DecodeBBox(const T (*bboxes)[4], int idx, bool normalized) {
-  vector<float> bbox(5, 0);
+  vector<float> bbox(4, 0);
   // scale bboxes
   transform(bboxes[idx], bboxes[idx] + 4, bbox.begin(),
             std::bind2nd(multiplies<float>(), arm_scale_));
@@ -423,10 +299,15 @@ void SSDdetector::DecodeBBox(const T (*bboxes)[4], int idx, bool normalized) {
     // LOG(FATAL) << "Unknown LocLossType.";
   }
 
-  BBoxSize(bbox, normalized);
-  // if (clip_) {
-  //   ClipBBox(*bbox, normalized);
-  // }
+  bbox[0] = std::max(std::min(bbox[0], 1.f), 0.f);
+  bbox[1] = std::max(std::min(bbox[1], 1.f), 0.f);
+  bbox[2] = std::max(std::min(bbox[2], 1.f), 0.f);
+  bbox[3] = std::max(std::min(bbox[3], 1.f), 0.f);
+
+  bbox[0] = (bbox[0] + bbox[2]) / 2.0;
+  bbox[1] = (bbox[1] + bbox[3]) / 2.0;
+  bbox[2] = std::abs(bbox[2] - bbox[0]) * 2.0;
+  bbox[3] = std::abs(bbox[3] - bbox[1]) * 2.0;
 
   decoded_bboxes_.emplace(idx, std::move(bbox));
 }
@@ -434,7 +315,7 @@ void SSDdetector::DecodeBBox(const T (*bboxes)[4], int idx, bool normalized) {
 template <typename T>
 void SSDdetector::DecodeBBoxMini(const T (*bboxes)[4], int idx,
                                  bool normalized) {
-  vector<float> bbox(5, 0);
+  vector<float> bbox(4, 0);
   // scale bboxes
   transform(bboxes[idx], bboxes[idx] + 4, bbox.begin(),
             std::bind2nd(multiplies<float>(), odm_scale_));
@@ -443,18 +324,18 @@ void SSDdetector::DecodeBBoxMini(const T (*bboxes)[4], int idx,
       make_shared<vector<float>>(tprior_bbox);
   //  auto& prior_bbox = priors_[idx];
   auto tmp_box = decoded_bboxes_[idx];
-  (*prior_bbox)[0] = tmp_box[0];
-  (*prior_bbox)[1] = tmp_box[1];
-  (*prior_bbox)[2] = tmp_box[2];
-  (*prior_bbox)[3] = tmp_box[3];
+  (*prior_bbox)[0] = (tmp_box)[0] - 0.5f * (tmp_box)[2];
+  (*prior_bbox)[1] = (tmp_box)[1] - 0.5f * (tmp_box)[3];
+  (*prior_bbox)[2] = (tmp_box)[0] + 0.5f * (tmp_box)[2];
+  (*prior_bbox)[3] = (tmp_box)[1] + 0.5f * (tmp_box)[3];
   (*prior_bbox)[4] = 0.1;
   (*prior_bbox)[5] = 0.1;
   (*prior_bbox)[6] = 0.2;
   (*prior_bbox)[7] = 0.2;
-  (*prior_bbox)[8] = 0.5f * ((tmp_box)[0] + (tmp_box)[2]);
-  (*prior_bbox)[9] = 0.5f * ((tmp_box)[1] + (tmp_box)[3]);
-  (*prior_bbox)[10] = (tmp_box)[2] - (tmp_box)[0];
-  (*prior_bbox)[11] = (tmp_box)[3] - (tmp_box)[1];
+  (*prior_bbox)[8] = tmp_box[0];
+  (*prior_bbox)[9] = tmp_box[1];
+  (*prior_bbox)[10] = tmp_box[2];
+  (*prior_bbox)[11] = tmp_box[3];
 
   if (code_type_ == CodeType::CORNER) {
     if (variance_encoded_in_target_) {
@@ -518,10 +399,10 @@ void SSDdetector::DecodeBBoxMini(const T (*bboxes)[4], int idx,
     // LOG(FATAL) << "Unknown LocLossType.";
   }
 
-  BBoxSize(bbox, normalized);
-  // if (clip_) {
-  //   ClipBBox(*bbox, normalized);
-  // }
+  bbox[0] = (bbox[0] + bbox[2]) / 2.0;
+  bbox[1] = (bbox[1] + bbox[3]) / 2.0;
+  bbox[2] = std::abs(bbox[2] - bbox[0]) * 2.0;
+  bbox[3] = std::abs(bbox[3] - bbox[1]) * 2.0;
 
   decoded_bboxes_[idx] = bbox;
 }

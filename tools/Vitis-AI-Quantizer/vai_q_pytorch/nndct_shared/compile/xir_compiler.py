@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 
-
 import copy
 from collections import namedtuple
 from typing import Any, Dict, List, NoReturn, Optional
@@ -94,9 +93,6 @@ class XirCompiler(object):
     if NndctOption.nndct_quant_off.value:
       quant_config_info = None
     
-    # xoptmizer = GraphOptimizer(compile_graph)
-    # compile_graph = xoptmizer.get_nndct_graph()
-    
     xgraph = XGraph(compile_graph.name)
     
     if graph_attr_kwargs is not None:
@@ -105,10 +101,22 @@ class XirCompiler(object):
         
     for node in compile_graph.nodes:
       for param_type, param_tensor in node.op.params.items():
+        if (node.op.type in [NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D] 
+            and param_type not in [node.op.ParamName.GAMMA, node.op.ParamName.BETA]):
+          continue
+        if xgraph.get_op_by_name(param_tensor.name):
+          continue
+        # print(f"{node.name}: {param_tensor.name}, {id(param_tensor)}")
         data = np.copy(param_tensor.data)
         if node.op.type == NNDCT_OP.CONVTRANSPOSE2D and param_type == node.op.ParamName.WEIGHTS:
           # OHWI -> OH'W'I reverse the order of ele in both h and w axis
           data = np.flip(data, (1, 2))
+          data = np.ascontiguousarray(data)
+        elif node.op.type == NNDCT_OP.CONV3D and param_type == node.op.ParamName.WEIGHTS:
+          data = data.transpose(0, 2, 3, 4, 1)
+          data = np.ascontiguousarray(data)
+        elif node.op.type == NNDCT_OP.CONVTRANSPOSE3D and param_type == node.op.ParamName.WEIGHTS:
+          data = data.transpose(1, 2, 3, 4, 0)
           data = np.ascontiguousarray(data)
         try:
           xgraph.create_fixed_const_op(

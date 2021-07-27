@@ -6,16 +6,20 @@ This directory provides scripts for running several well known models on the FPG
 ### Setup
 > **Note:** Skip, If you have already run the below steps.
 
+#### Alveo Card Setup in Host
+  Please refer to [Alveo Card Setup Instructions](/setup/alveo#alveo-card-setup-in-host) for Alveo card setup in host.
+
+#### Environment Variable Setup in Docker Container
   Activate Conda Environment
   ```sh
   conda activate vitis-ai-tensorflow
   ```
 
-  Setup the Environment
+  DPU IP selection
 
   ```sh
   # Typically, <path-to-vitis-ai> is `/workspace`
-  source <path-to-vitis-ai>/setup/alveo/u200_u250/overlaybins/setup.sh
+  source <path-to-vitis-ai>/setup/alveo/setup.sh DPUCADF8H
   ```
 
    Download a minimal validation set for [Imagenet2012](http://www.image-net.org/challenges/LSVRC/2012) using [Collective Knowledge (CK)](https://github.com/ctuning).
@@ -24,8 +28,8 @@ This directory provides scripts for running several well known models on the FPG
    ```sh
    python -m ck pull repo:ck-env
    python -m ck install package:imagenet-2012-val-min
-   python -m ck install package:imagenet-2012-aux
-   head -n 500 ~/CK-TOOLS/dataset-imagenet-ilsvrc2012-aux/val.txt > ~/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val.txt
+   python -m ck install package:imagenet-2012-aux --tags=from.berkeley
+   head -n 500 ~/CK-TOOLS/dataset-imagenet-ilsvrc2012-aux-from.berkeley/val.txt > ~/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/val.txt
    ```
 
 
@@ -50,7 +54,7 @@ This directory provides scripts for running several well known models on the FPG
    ./inspect_tf_model.sh models/inception_v1_inference.pb
    ```
 
-#### Quantize Model and Convert Model to XIR Model
+#### Quantize the Model
 
   To deploy a Tensorflow model on the FPGA, it needs to be quantized.
 
@@ -69,30 +73,23 @@ This directory provides scripts for running several well known models on the FPG
   ```
   By default, the quantization result will be saved to `quantize_results` directory under current work directory.
 
-  *Convert the model to XIR format*
-  ```sh
-  xnnc-run \
-        --type tensorflow \
-        --layout NHWC \
-        --model quantize_results/quantize_eval_model.pb \
-        --out tf_inception_v1.xmodel \
-        --inputs-shape 4,224,224,3
-  ```
-
 #### Compile the Model
-
-
-  *Compile the Model*
 
   In this step, the network graph (xmodel file) is compiled using the Vitis-AI compiler.  Note this may take approximately 5 minutes.
 
   ```sh
-  xcompiler -i ./tf_inception_v1.xmodel -o ./tf_inception_v1_compiled.xmodel -t DPUCADF8H 
+  vai_c_tensorflow \
+        --arch /opt/vitis_ai/compiler/arch/DPUCADF8H/U250/arch.json \
+        --frozen_pb quantize_results/quantize_eval_model.pb \
+        --output_dir out \
+        --net_name tf_inception_v1_compiled \
+        --options '{"input_shape": "4,224,224,3"}'
   ```
+  > **Note:** DPUCADF8H uses a default batchsize of 4. If the original model's batchsize is 1, you will need to specify the `input_shape` using the `--options` argument as the command above. The `--options` is a general argument for vai\_c\_caffe/vai\_c\_tensorflow/vai\_c\_tensorflow2.
 
 #### Run example classification code
 
-  This example code is derived from [VART demos](../../demo/VART).
+  This example code is derived from [VART demos](../../../demo/VART).
 
   *Compile the executable*
   ```sh

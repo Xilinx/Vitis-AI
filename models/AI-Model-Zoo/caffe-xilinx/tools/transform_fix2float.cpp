@@ -31,7 +31,7 @@
 
 DEFINE_int32(gpu, 0,
              "GPU device id, note: this tool can only run in GPU mode ");
-DEFINE_bool(keep_fixed_neuron, false,
+DEFINE_bool(keep_fixed_neuron, true,
             "Remain FixedNeuron layers in the output float caffemodel ");
 DEFINE_string(fix_info, "", "Filename for output fix_info ");
 DEFINE_string(prototxt, "", "Filename for output prototxt");

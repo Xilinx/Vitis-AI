@@ -29,10 +29,6 @@
           <spirit:name>ASSOCIATED_RESET</spirit:name>
           <spirit:value spirit:id="BUSIFPARAM_VALUE.S_AXI_ACLK.ASSOCIATED_RESET">s_axi_aresetn</spirit:value>
         </spirit:parameter>
-        <spirit:parameter>
-          <spirit:name>FREQ_HZ</spirit:name>
-          <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="BUSIFPARAM_VALUE.S_AXI_ACLK.FREQ_HZ">100000000</spirit:value>
-        </spirit:parameter>
       </spirit:parameters>
       <spirit:vendorExtensions>
         <xilinx:busInterfaceInfo>
@@ -95,10 +91,6 @@
           <spirit:name>ASSOCIATED_RESET</spirit:name>
           <spirit:value spirit:id="BUSIFPARAM_VALUE.DPU_2X_CLK.ASSOCIATED_RESET">dpu_2x_resetn</spirit:value>
         </spirit:parameter>
-        <spirit:parameter>
-          <spirit:name>FREQ_HZ</spirit:name>
-          <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="BUSIFPARAM_VALUE.DPU_2X_CLK.FREQ_HZ">325000000</spirit:value>
-        </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
     <spirit:busInterface>
@@ -150,10 +142,6 @@
         <spirit:parameter>
           <spirit:name>ASSOCIATED_CLKEN</spirit:name>
           <spirit:value spirit:id="BUSIFPARAM_VALUE.DPU1_2X_CLK.ASSOCIATED_CLKEN">dpu1_2x_clk_ce</spirit:value>
-        </spirit:parameter>
-        <spirit:parameter>
-          <spirit:name>FREQ_HZ</spirit:name>
-          <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="BUSIFPARAM_VALUE.DPU1_2X_CLK.FREQ_HZ">325000000</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_RESET</spirit:name>
@@ -212,10 +200,6 @@
           <spirit:value spirit:id="BUSIFPARAM_VALUE.DPU2_2X_CLK.ASSOCIATED_CLKEN">dpu2_2x_clk_ce</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
-          <spirit:name>FREQ_HZ</spirit:name>
-          <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="BUSIFPARAM_VALUE.DPU2_2X_CLK.FREQ_HZ">325000000</spirit:value>
-        </spirit:parameter>
-        <spirit:parameter>
           <spirit:name>ASSOCIATED_RESET</spirit:name>
           <spirit:value spirit:id="BUSIFPARAM_VALUE.DPU2_2X_CLK.ASSOCIATED_RESET">dpu_2x_resetn</spirit:value>
         </spirit:parameter>
@@ -270,10 +254,6 @@
         <spirit:parameter>
           <spirit:name>ASSOCIATED_CLKEN</spirit:name>
           <spirit:value spirit:id="BUSIFPARAM_VALUE.DPU3_2X_CLK.ASSOCIATED_CLKEN">dpu3_2x_clk_ce</spirit:value>
-        </spirit:parameter>
-        <spirit:parameter>
-          <spirit:name>FREQ_HZ</spirit:name>
-          <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="BUSIFPARAM_VALUE.DPU3_2X_CLK.FREQ_HZ">325000000</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_RESET</spirit:name>
@@ -352,10 +332,6 @@
         <spirit:parameter>
           <spirit:name>ASSOCIATED_RESET</spirit:name>
           <spirit:value spirit:id="BUSIFPARAM_VALUE.M_AXI_DPU_ACLK.ASSOCIATED_RESET">m_axi_dpu_aresetn</spirit:value>
-        </spirit:parameter>
-        <spirit:parameter>
-          <spirit:name>FREQ_HZ</spirit:name>
-          <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="BUSIFPARAM_VALUE.M_AXI_DPU_ACLK.FREQ_HZ">650000000</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_BUSIF</spirit:name>
@@ -7989,7 +7965,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>fd875601</spirit:value>
+            <spirit:value>89044fa1</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -8008,7 +7984,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>eb459ee8</spirit:value>
+            <spirit:value>02dc1956</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -8040,7 +8016,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>7c114036</spirit:value>
+            <spirit:value>1fb84e40</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -8084,7 +8060,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1148b917</spirit:value>
+            <spirit:value>aa3af104</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -23572,7 +23548,7 @@
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>GIT_COMMIT_ID</spirit:name>
         <spirit:displayName>Git Commit Id</spirit:displayName>
-        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.GIT_COMMIT_ID" spirit:bitStringLength="32">0x01542be4</spirit:value>
+        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.GIT_COMMIT_ID" spirit:bitStringLength="32">0x0df4d0c7</spirit:value>
         <spirit:vendorExtensions>
           <xilinx:parameterInfo>
             <xilinx:enablement>
@@ -23584,7 +23560,7 @@
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>GIT_COMMIT_TIME</spirit:name>
         <spirit:displayName>Git Commit Time</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.GIT_COMMIT_TIME">2011021524</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.GIT_COMMIT_TIME">2106071910</spirit:value>
         <spirit:vendorExtensions>
           <xilinx:parameterInfo>
             <xilinx:enablement>
@@ -24239,27 +24215,27 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
       <spirit:file>
         <spirit:name>xci/sfm/fp_exp/fp_exp.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_95662ef7.u_11de46fc/u_6154f75a/g_06b0f14e[0].fp_exp_inst/fp_exp</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/g_dd4c6d01[0].fp_exp_inst/fp_exp</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_convert/fp_convert.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_95662ef7.u_11de46fc/u_6154f75a/g_06b0f14e[0].fp_convert_inst/fp_convert</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/g_dd4c6d01[0].fp_convert_inst/fp_convert</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_div/fp_div.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_95662ef7.u_11de46fc/u_6154f75a/fp_div_inst_0/fp_div</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_div_inst_0/fp_div</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_acc/fp_acc.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_95662ef7.u_11de46fc/u_6154f75a/fp_acc_inst/fp_acc</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_acc_inst/fp_acc</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_add/fp_add.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_95662ef7.u_11de46fc/u_6154f75a/fp_add_inst_0/fp_add</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_add_inst_0/fp_add</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>inc/function.vh</spirit:name>
@@ -24291,7 +24267,7 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
       <spirit:file>
         <spirit:name>hdl/DPUCZDX8G_v3_3_0_vl_top.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_42d530d1</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_f888e0c8</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -24325,27 +24301,27 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
       <spirit:file>
         <spirit:name>xci/sfm/fp_exp/fp_exp.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_95662ef7.u_11de46fc/u_6154f75a/g_06b0f14e[0].fp_exp_inst/fp_exp</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/g_dd4c6d01[0].fp_exp_inst/fp_exp</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_convert/fp_convert.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_95662ef7.u_11de46fc/u_6154f75a/g_06b0f14e[0].fp_convert_inst/fp_convert</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/g_dd4c6d01[0].fp_convert_inst/fp_convert</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_div/fp_div.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_95662ef7.u_11de46fc/u_6154f75a/fp_div_inst_0/fp_div</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_div_inst_0/fp_div</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_acc/fp_acc.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_95662ef7.u_11de46fc/u_6154f75a/fp_acc_inst/fp_acc</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_acc_inst/fp_acc</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_add/fp_add.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_95662ef7.u_11de46fc/u_6154f75a/fp_add_inst_0/fp_add</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_add_inst_0/fp_add</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>inc/function.vh</spirit:name>
@@ -24415,7 +24391,7 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
       <spirit:file>
         <spirit:name>xgui/DPUCZDX8G_v3_3.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_7c114036</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_1fb84e40</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -24642,7 +24618,7 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
     <spirit:parameter>
       <spirit:name>GIT_COMMIT_ID</spirit:name>
       <spirit:displayName>ID </spirit:displayName>
-      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.GIT_COMMIT_ID" spirit:bitStringLength="32">0x01542be4</spirit:value>
+      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.GIT_COMMIT_ID" spirit:bitStringLength="32">0x0df4d0c7</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -24654,7 +24630,7 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
     <spirit:parameter>
       <spirit:name>GIT_COMMIT_TIME</spirit:name>
       <spirit:displayName>Time </spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.GIT_COMMIT_TIME">2011021524</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.GIT_COMMIT_TIME">2106071910</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -25457,17 +25433,17 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
       </xilinx:designToolContexts>
       <xilinx:vendorURL>https://www.xilinx.com/products/design-tools/deephi.html</xilinx:vendorURL>
       <xilinx:coreRevision>0</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2020-11-02T07:32:16Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2021-06-07T11:17:55Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2020.2</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="54ea05e5"/>
+      <xilinx:xilinxVersion>2021.1</xilinx:xilinxVersion>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="c831beff"/>
       <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="3c1ec388"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="92742ca9"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="eefde0d9"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="633ded73"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="dd98cb45"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="9bd67f06"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="ec1c4682"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="6e548d0d"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="57c1e75c"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

@@ -22,16 +22,16 @@
 #include <numeric>
 #include <functional>
 
+#include <aks/AksTensorBuffer.h>
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
 
 class ClassificationPostProc : public AKS::KernelBase
 {
   public:
     int exec_async (
-        std::vector<AKS::DataDescriptor*> &in, 
-        std::vector<AKS::DataDescriptor*> &out, 
+        std::vector<vart::TensorBuffer*> &in, 
+        std::vector<vart::TensorBuffer*> &out, 
         AKS::NodeParams* nodeParams,
         AKS::DynamicParamValues* dynParams);
 };
@@ -91,7 +91,7 @@ std::vector<std::pair<int, float>> TopK(const float *d, int size, int k) {
   std::vector<std::pair<int, float>> topKIndex;
   for (auto i = 0; i < k; ++i) {
     std::pair<float, int> ki = q.top();
-    // printf("top[%d] index = %d prob = %-8f  \n", i, ki.second, d[ki.second]);
+    //printf("top[%d] index = %d prob = %-8f  \n", i, ki.second, d[ki.second]);
     q.pop();
     topKIndex.push_back(make_pair(ki.second, ki.first));
   }
@@ -99,30 +99,42 @@ std::vector<std::pair<int, float>> TopK(const float *d, int size, int k) {
 }
 
 int ClassificationPostProc::exec_async (
-    std::vector<AKS::DataDescriptor*> &in, 
-    std::vector<AKS::DataDescriptor*> &out, 
+    std::vector<vart::TensorBuffer*> &in, 
+    std::vector<vart::TensorBuffer*> &out, 
     AKS::NodeParams* nodeParams,
     AKS::DynamicParamValues* dynParams)
 {
   /// Get input and output data shapes
-  std::vector <int> inShape  = in[0]->getShape();
+  auto inShape = in[0]->get_tensor()->get_shape();
 
   int inBatch = inShape[0];
   int inSize  = std::accumulate(std::next(inShape.begin()), inShape.end(), 1, std::multiplies<int>());
 
   /// Get input data 
-  float * inData  = (float*) in[0]->data();
+  float * inData  = reinterpret_cast<float*>(in[0]->data().first);
 
   /// Get K value for top "K"
   int k = nodeParams->_intParams.find("top_k") == nodeParams->_intParams.end() ?
           5 : nodeParams->_intParams["top_k"];
 
-  /// Create output data
-  AKS::DataDescriptor *labels = new AKS::DataDescriptor ({inBatch, k, 1, 1}, AKS::DataType::INT32);
-  AKS::DataDescriptor *probs  = new AKS::DataDescriptor ({inBatch, k, 1, 1}, AKS::DataType::FLOAT32);
 
-  int *labelsData  = static_cast<int*>(labels->data());
-  float *probsData = static_cast<float*>(probs->data());
+  std::string tensor_name_labels ("post-labels");
+  std::string tensor_name_probs  ("post-probs");
+
+  AKS::AksTensorBuffer * labels = new AKS::AksTensorBuffer(
+                                    xir::Tensor::create(
+		                                tensor_name_labels, {inBatch, k, 1, 1}, 
+		                                xir::create_data_type<int>()
+                                  ));
+
+  AKS::AksTensorBuffer *probs = new AKS::AksTensorBuffer(
+                                  xir::Tensor::create(
+                                    tensor_name_probs, {inBatch, k, 1, 1},
+                                    xir::create_data_type<float>()
+                                ));
+
+  int *labelsData  = reinterpret_cast<int*>(labels->data().first);
+  float *probsData = reinterpret_cast<float*>(probs->data().first);
 
   float * softmaxOut = new float[inSize];
 

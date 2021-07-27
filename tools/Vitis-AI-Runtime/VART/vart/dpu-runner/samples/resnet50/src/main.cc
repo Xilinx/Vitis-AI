@@ -115,12 +115,13 @@ void LoadWords(string const& path, vector<string>& kinds) {
  *
  * @return none
  */
-void CPUCalcSoftmax(const float* data, size_t size, float* result) {
+void CPUCalcSoftmax(const int8_t* data, size_t size, float* result,
+                    float scale) {
   assert(data && result);
   double sum = 0.0f;
 
   for (size_t i = 0; i < size; i++) {
-    result[i] = exp(data[i]);
+    result[i] = exp((float)data[i] * scale);
     sum += result[i];
   }
   for (size_t i = 0; i < size; i++) {
@@ -186,6 +187,9 @@ void runResnet50(vart::Runner* runner) {
   auto out_dims = outputTensors[0]->get_shape();
   auto in_dims = inputTensors[0]->get_shape();
 
+  auto input_scale = get_input_scale(inputTensors[0]);
+  auto output_scale = get_output_scale(outputTensors[0]);
+
   /*get shape info*/
   int outSize = shapes.outTensorList[0].size;
   int inSize = shapes.inTensorList[0].size;
@@ -197,10 +201,10 @@ void runResnet50(vart::Runner* runner) {
   std::vector<std::unique_ptr<vart::TensorBuffer>> inputs, outputs;
 
   vector<Mat> imageList;
-  float* imageInputs = new float[inSize * batchSize];
+  int8_t* imageInputs = new int8_t[inSize * batchSize];
 
   float* softmax = new float[outSize];
-  float* FCResult = new float[batchSize * outSize];
+  int8_t* FCResult = new int8_t[batchSize * outSize];
   std::vector<vart::TensorBuffer*> inputsPtr, outputsPtr;
   std::vector<std::shared_ptr<xir::Tensor>> batchTensors;
   /*run with batch*/
@@ -213,13 +217,13 @@ void runResnet50(vart::Runner* runner) {
       Mat image = imread(baseImagePath + images[n + i]);
 
       /*image pre-process*/
-      Mat image2 = cv::Mat(inHeight, inWidth, CV_8SC3);
+      Mat image2;  //= cv::Mat(inHeight, inWidth, CV_8SC3);
       resize(image, image2, Size(inHeight, inWidth), 0, 0);
       for (int h = 0; h < inHeight; h++) {
         for (int w = 0; w < inWidth; w++) {
           for (int c = 0; c < 3; c++) {
             imageInputs[i * inSize + h * inWidth * 3 + w * 3 + c] =
-                image2.at<Vec3b>(h, w)[c] - mean[c];
+                (int8_t)((image2.at<Vec3b>(h, w)[c] - mean[c]) * input_scale);
           }
         }
       }
@@ -227,14 +231,14 @@ void runResnet50(vart::Runner* runner) {
     }
 
     /* in/out tensor refactory for batch inout/output */
-    batchTensors.push_back(std::shared_ptr<xir::Tensor>(xir::Tensor::create(
-        inputTensors[0]->get_name(), in_dims,
-        xir::DataType{xir::DataType::FLOAT, sizeof(float) * 8u})));
+    batchTensors.push_back(std::shared_ptr<xir::Tensor>(
+        xir::Tensor::create(inputTensors[0]->get_name(), in_dims,
+                            xir::DataType{xir::DataType::XINT, 8u})));
     inputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
         imageInputs, batchTensors.back().get()));
-    batchTensors.push_back(std::shared_ptr<xir::Tensor>(xir::Tensor::create(
-        outputTensors[0]->get_name(), out_dims,
-        xir::DataType{xir::DataType::FLOAT, sizeof(float) * 8u})));
+    batchTensors.push_back(std::shared_ptr<xir::Tensor>(
+        xir::Tensor::create(outputTensors[0]->get_name(), out_dims,
+                            xir::DataType{xir::DataType::XINT, 8u})));
     outputs.push_back(std::make_unique<CpuFlatTensorBuffer>(
         FCResult, batchTensors.back().get()));
 
@@ -250,11 +254,14 @@ void runResnet50(vart::Runner* runner) {
     for (unsigned int i = 0; i < runSize; i++) {
       cout << "\nImage : " << images[n + i] << endl;
       /* Calculate softmax on CPU and display TOP-5 classification results */
-      CPUCalcSoftmax(&FCResult[i * outSize], outSize, softmax);
+      CPUCalcSoftmax(&FCResult[i * outSize], outSize, softmax, output_scale);
       TopK(softmax, outSize, 5, kinds);
       /* Display the impage */
-      cv::imshow("Classification of ResNet50", imageList[i]);
-      cv::waitKey(10000);
+      bool quiet = (getenv("QUIET_RUN") != nullptr);
+      if (!quiet) {
+        cv::imshow("Classification of ResNet50", imageList[i]);
+        cv::waitKey(10000);
+      }
     }
     imageList.clear();
     inputs.clear();

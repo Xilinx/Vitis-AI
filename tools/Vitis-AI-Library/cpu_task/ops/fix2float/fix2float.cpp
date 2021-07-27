@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 xilinx Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <cmath>
 #include <iostream>
 
 #include "vart/op_imp.h"
+#include "vart/runner_helper.hpp"
+
 using namespace std;
 
 namespace {
-class Fix2FloatOpImp : public vart::OpImp {
- public:
-  explicit Fix2FloatOpImp(const xir::Op* op);
-  virtual ~Fix2FloatOpImp();
-  Fix2FloatOpImp(const Fix2FloatOpImp& other) = delete;
-  Fix2FloatOpImp& operator=(const Fix2FloatOpImp& rhs) = delete;
+struct Fix2FloatOpImp : public vart::experimental::OpImpBase {
+  Fix2FloatOpImp(xir::Op* op, xir::Attrs* attrs)
+      : vart::experimental::OpImpBase{op, attrs} {
+    CHECK(op->has_attr("fix_point"))
+        << "get op fix_point error! has no fix_point attr, op name is "
+        << op->get_name();
+    CHECK(op->has_attr("if_signed"))
+        << "get op if_signed error! has no if_signed attr, op name is "
+        << op->get_name();
 
- public:
-  virtual int calculate(const std::vector<vart::OpImpArg>& inputs,
-                        vart::TensorBuffer* output) override;
+    auto fix_point = op->template get_attr<int>("fix_point");
+    scale_ = std::exp2f(-1.0f * (float)fix_point);
+    if_signed_ = op->template get_attr<bool>("if_signed");
+  };
+  int calculate(vart::experimental::simple_tensor_buffer_t<float> result,
+                vart::experimental::simple_tensor_buffer_t<void> input) {
+    auto input_shape = input.tensor->get_shape();
+    auto output_shape = result.tensor->get_shape();
+    auto num_of_dims = input_shape.size();
+    CHECK_EQ(num_of_dims, output_shape.size());
+    for (auto dim = 0u; dim < num_of_dims; ++dim) {
+      CHECK_EQ(input_shape[dim], output_shape[dim]);
+    }
+    auto size = input.tensor->get_element_num();
+    if (if_signed_) {
+      auto src = (int8_t*)input.data;
+      for (auto i = 0; i < size; ++i) {
+        result.data[i] = ((float)(src[i])) * scale_;
+      }
+    } else {
+      auto src = (uint8_t*)input.data;
+      for (auto i = 0; i < size; ++i) {
+        result.data[i] = ((float)(src[i])) * scale_;
+      }
+    }
+    return 0;
+  }
+  float scale_;
+  bool if_signed_;
 };
 
-Fix2FloatOpImp::Fix2FloatOpImp(const xir::Op* op) : vart::OpImp(op){};
-Fix2FloatOpImp::~Fix2FloatOpImp() {}
-int Fix2FloatOpImp::calculate(const std::vector<vart::OpImpArg>& inputs,
-                              vart::TensorBuffer* output) {
-  LOG(INFO) << "hello " << inputs.size() << "output "
-            << output->get_tensor()->get_name();
-
-  return 0;
-}
-
 }  // namespace
+
 extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::make_vart_opt_imp<Fix2FloatOpImp>();
+  return vart::experimental::make_vart_opt_imp<Fix2FloatOpImp>();
 }

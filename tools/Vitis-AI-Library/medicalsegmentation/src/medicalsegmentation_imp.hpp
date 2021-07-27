@@ -38,6 +38,7 @@ class MedicalSegmentationImp
   virtual std::vector<MedicalSegmentationResult> run(
       const std::vector<cv::Mat> &img) override;
   std::unique_ptr<MedicalSegmentationPostProcess> processor_;
+  int real_batch_size = 1;
 };
 }  // namespace ai
 }  // namespace vitis

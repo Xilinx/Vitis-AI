@@ -28,6 +28,7 @@
 #include <vitis/ai/yolov3.hpp>
 extern int g_last_frame_id;
 
+extern int GLOBAL_ENABLE_NEW_IOU;
 std::string model_name;
 bool is_first = true;
 using namespace std;
@@ -81,8 +82,8 @@ struct Yolov3Acc : public AccThread {
       float ymin = box.y * dpu_result.h;
       float xmax = (box.x + box.width) * dpu_result.w;
       float ymax = (box.y + box.height) * dpu_result.h;
-      if (xmin < 0) xmin = 1;
-      if (ymin < 0) ymin = 1;
+      if (xmin < 0) xmin = 0;
+      if (ymin < 0) ymin = 0;
       if (xmax > dpu_result.w) xmax = dpu_result.w;
       if (ymax > dpu_result.h) ymax = dpu_result.h;
       float confidence = box.score;
@@ -120,6 +121,7 @@ struct Yolov3Acc : public AccThread {
 
 int main(int argc, char* argv[]) {
   model_name = argv[1];
+  GLOBAL_ENABLE_NEW_IOU = 1;
   return vitis::ai::main_for_accuracy_demo(
       argc, argv,
       [&] { return vitis::ai::YOLOv3::create(model_name + "_acc"); },

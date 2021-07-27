@@ -75,14 +75,14 @@ static std::unique_ptr<vitis::nnpp::refinedet::SSDdetector> createSSDDetector(
   const int TOP_K = config.refine_det_param().top_k();
   // vector<float> th_conf(num_classes, CONF_THRESHOLD);
   if (ENV_PARAM(ENABLE_REFINE_DET_DEBUG) == 1)
-    DLOG(INFO) << " arm_scale " << arm_scale                       //
-               << " odm_scale " << odm_scale                       //
-               << " num_classes " << num_classes                   //
-               << " KEEP_TOP_K " << KEEP_TOP_K                     //
-               << " th_conf " << th_conf[0] << ", " << th_conf[1]  //
-               << " TOP_K " << TOP_K                               //
-               << " NMS_THRESHOLD " << NMS_THRESHOLD               //
-               << " priors.size() " << priors.size()               //
+    LOG(INFO) << " arm_scale " << arm_scale                       //
+              << " odm_scale " << odm_scale                       //
+              << " num_classes " << num_classes                   //
+              << " KEEP_TOP_K " << KEEP_TOP_K                     //
+              << " th_conf " << th_conf[0] << ", " << th_conf[1]  //
+              << " TOP_K " << TOP_K                               //
+              << " NMS_THRESHOLD " << NMS_THRESHOLD               //
+              << " priors.size() " << priors.size()               //
         ;
 
   return std::unique_ptr<vitis::nnpp::refinedet::SSDdetector>(
@@ -119,7 +119,8 @@ RefineDetPost::RefineDetPost(
       vitis::ai::library::tensor_scale(output_tensors_[2]), config);
 }
 
-RefineDetResult RefineDetPost::refine_det_post_process(unsigned int idx) {
+RefineDetResult RefineDetPost::refine_det_post_process_internal(
+    unsigned int idx) {
   int sWidth = input_tensors_[0].width;
   int sHeight = input_tensors_[0].height;
   size_t batch = input_tensors_[0].batch;
@@ -171,34 +172,34 @@ RefineDetResult RefineDetPost::refine_det_post_process(unsigned int idx) {
   auto conf_softmax = vector<float>(odm_conf_size);
 
   if (ENV_PARAM(ENABLE_REFINE_DET_DEBUG) == 1)
-    DLOG(INFO) << "odm_conf_width " << odm_conf_width << " "       //
-               << "odm_conf_height " << odm_conf_height << " "     //
-               << "odm_conf_size " << odm_conf_size << " "         //
-               << "odm_conf_channel " << odm_conf_channel << " "   //
-               << "odm_conf_addr " << (void*)odm_conf_addr << " "  //
-               << "odm_conf_scale " << odm_conf_scale << " "       //
-               << "odm_loc_width " << odm_loc_width << " "         //
-               << "odm_loc_height " << odm_loc_height << " "       //
-               << "odm_loc_size " << odm_loc_size << " "           //
-               << "odm_loc_scale " << odm_loc_scale << " "         //
-               << "odm_loc_channel " << odm_loc_channel << " "     //
-               << "odm_loc_addr " << (void*)odm_loc_addr << " "    //
+    LOG(INFO) << "odm_conf_width " << odm_conf_width << " "       //
+              << "odm_conf_height " << odm_conf_height << " "     //
+              << "odm_conf_size " << odm_conf_size << " "         //
+              << "odm_conf_channel " << odm_conf_channel << " "   //
+              << "odm_conf_addr " << (void*)odm_conf_addr << " "  //
+              << "odm_conf_scale " << odm_conf_scale << " "       //
+              << "odm_loc_width " << odm_loc_width << " "         //
+              << "odm_loc_height " << odm_loc_height << " "       //
+              << "odm_loc_size " << odm_loc_size << " "           //
+              << "odm_loc_scale " << odm_loc_scale << " "         //
+              << "odm_loc_channel " << odm_loc_channel << " "     //
+              << "odm_loc_addr " << (void*)odm_loc_addr << " "    //
         ;
   if (ENV_PARAM(ENABLE_REFINE_DET_DEBUG) == 1)
-    DLOG(INFO) << "arm_conf_width " << arm_conf_width << " "            //
-               << "arm_conf_height " << arm_conf_height << " "          //
-               << "arm_conf_size " << arm_conf_size << " "              //
-               << "arm_conf_channel " << arm_conf_channel << " "        //
-               << "arm_conf_addr " << (void*)arm_conf_addr << " "       //
-               << "arm_conf_scale " << arm_conf_scale << " "            //
-               << "arm_loc_width " << arm_loc_width << " "              //
-               << "arm_loc_height " << arm_loc_height << " "            //
-               << "arm_loc_size " << arm_loc_size << " "                //
-               << "arm_loc_scale " << arm_loc_scale << " "              //
-               << "arm_loc_channel " << arm_loc_channel << " "          //
-               << "arm_loc_addr " << (void*)arm_loc_addr << " "         //
-               << "num_classes " << num_classes_ << " "                 //
-               << "conf_softmax.size() " << conf_softmax.size() << " "  //
+    LOG(INFO) << "arm_conf_width " << arm_conf_width << " "            //
+              << "arm_conf_height " << arm_conf_height << " "          //
+              << "arm_conf_size " << arm_conf_size << " "              //
+              << "arm_conf_channel " << arm_conf_channel << " "        //
+              << "arm_conf_addr " << (void*)arm_conf_addr << " "       //
+              << "arm_conf_scale " << arm_conf_scale << " "            //
+              << "arm_loc_width " << arm_loc_width << " "              //
+              << "arm_loc_height " << arm_loc_height << " "            //
+              << "arm_loc_size " << arm_loc_size << " "                //
+              << "arm_loc_scale " << arm_loc_scale << " "              //
+              << "arm_loc_channel " << arm_loc_channel << " "          //
+              << "arm_loc_addr " << (void*)arm_loc_addr << " "         //
+              << "num_classes " << num_classes_ << " "                 //
+              << "conf_softmax.size() " << conf_softmax.size() << " "  //
         ;
   __TIC__(REFINEDET_ARM_SOFTMAX)
   if (1) {
@@ -243,14 +244,14 @@ RefineDetResult RefineDetPost::refine_det_post_process(unsigned int idx) {
   return RefineDetResult{sWidth, sHeight, bboxes};
 }
 
-std::vector<RefineDetResult> RefineDetPost::refine_det_post_process() {
+std::vector<RefineDetResult> RefineDetPost::refine_det_post_process(
+    size_t batch_size) {
   __TIC__(RefineDet_total_batch)
 
-  auto batch_size = input_tensors_[0].batch;
   auto ret = std::vector<vitis::ai::RefineDetResult>{};
   ret.reserve(batch_size);
   for (auto i = 0u; i < batch_size; ++i) {
-    ret.emplace_back(refine_det_post_process(i));
+    ret.emplace_back(refine_det_post_process_internal(i));
   }
   __TOC__(RefineDet_total_batch)
   return ret;

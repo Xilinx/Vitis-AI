@@ -26,6 +26,8 @@
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/weak.hpp>
 #include <vitis/ai/xxd.hpp>
+#include <vitis/ai/trace.hpp>
+
 DEF_ENV_PARAM(DEBUG_DPU_CONTROLLER, "0")
 DEF_ENV_PARAM(XLNX_ENABLE_FINGERPRINT_CHECK, "1")
 #define DPU_IOCTL_MAGIC 'D'
@@ -106,6 +108,16 @@ DpuControllerDnndk::DpuControllerDnndk()
       fd_{open("/dev/dpu", O_RDWR)},
       fingerprint_{get_dpu_fingerprint()} {
   CHECK_GT(fd_, 0) << "cannot open /dev/dpu";
+
+  auto cu_device_id = 0;
+  auto cu_core_id = 0;
+  auto cu_addr = 0x0;
+  auto cu_name = "DPU";
+  auto cu_full_name = "DPU";
+  auto cu_fingerprint = fingerprint_;
+
+  vitis::ai::trace::add_info("dpu-controller", TRACE_VAR(cu_device_id), TRACE_VAR(cu_core_id),
+                           TRACE_VAR(cu_addr), TRACE_VAR(cu_name), TRACE_VAR(cu_full_name), TRACE_VAR(cu_fingerprint));
 }
 
 DpuControllerDnndk::~DpuControllerDnndk() {  //
@@ -142,7 +154,9 @@ void DpuControllerDnndk::run(size_t core_idx, const uint64_t code,
   t2.addr5 = (uint32_t)size >= 6 ? gen_reg[5] : 0;
   t2.addr6 = (uint32_t)size >= 7 ? gen_reg[6] : 0;
   t2.addr7 = (uint32_t)size >= 8 ? gen_reg[7] : 0;
+  vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_start, core_idx);
   auto retval = ioctl(fd_, REQ_DPU_RUN, (void*)(&t2));
+  vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_end, core_idx);
 
   CHECK_EQ(retval, 0) << "run dpu failed.";
   return;
@@ -170,16 +184,13 @@ uint64_t DpuControllerDnndk::get_fingerprint(size_t device_core_id) const {
 
 static struct Registar {
   Registar() {
-    auto fd = open("/dev/dpu", O_RDWR);
-    auto disabled = fd < 0;
-    if (!disabled) {
+    if (!access("/dev/dpu", F_OK)) {
       xir::DpuController::registar("00_dnndk", []() {
         return std::shared_ptr<xir::DpuController>(
             vitis::ai::WeakSingleton<DpuControllerDnndk>::create());
       });
       LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_CONTROLLER))
           << "register the dnndk dpu controller";
-      close(fd);
     } else {
       LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_CONTROLLER))
           << "cancel register the dnndk dpu controller, because "

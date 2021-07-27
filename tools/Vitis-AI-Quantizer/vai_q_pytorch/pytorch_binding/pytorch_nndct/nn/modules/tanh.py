@@ -20,6 +20,7 @@ import torch
 import numpy as np
 from nndct_shared.quantization import maybe_get_quantizer, process_inputs_and_params, post_quant_process
 from nndct_shared.utils import NndctOption
+from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS
 from .tanh_table import *
 from .fix_ops import NndctTanhTableLookup
 import pytorch_nndct.utils as py_utils
@@ -48,12 +49,19 @@ class deephi_Tanh(torch.nn.modules.Tanh):
       output = torch.empty_like(input)
       input_name = self.node.in_nodes[0]
       fragpos = self.quantizer.get_bnfp(input_name, False)[1]
+      
+      '''
       if(input.device == torch.device("cpu")):
         Ttable = TANH_TABLE.table.to(torch.device("cpu"))
         output = output.to(torch.device("cpu"))
       else:
         Ttable = TANH_TABLE.table.cuda()
         output = output.cuda()
+      '''
+      quant_device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
+      Ttable = TANH_TABLE.table.to(quant_device)
+      output = output.to(quant_device)
+      
       NndctTanhTableLookup(input,
                            Ttable,
                            output,

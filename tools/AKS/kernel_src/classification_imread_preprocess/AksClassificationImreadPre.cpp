@@ -20,21 +20,21 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <aks/AksTensorBuffer.h>
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
 
 class ClassificationImreadPreKernel : public AKS::KernelBase
 {
   public:
     int exec_async (
-        std::vector<AKS::DataDescriptor*> &in, 
-        std::vector<AKS::DataDescriptor*> &out, 
+        std::vector<vart::TensorBuffer*> &in, 
+        std::vector<vart::TensorBuffer*> &out, 
         AKS::NodeParams* nodeParams,
         AKS::DynamicParamValues* dynParams);
 };
 
-extern "C" { /// Add this to make this available for python bindings
+extern "C" {
 
   AKS::KernelBase* getKernel (AKS::NodeParams *params)
   {
@@ -44,15 +44,14 @@ extern "C" { /// Add this to make this available for python bindings
 }//extern "C"
 
 int ClassificationImreadPreKernel::exec_async (
-    std::vector<AKS::DataDescriptor*> &in, 
-    std::vector<AKS::DataDescriptor*> &out, 
+    std::vector<vart::TensorBuffer*> &in, 
+    std::vector<vart::TensorBuffer*> &out, 
     AKS::NodeParams* nodeParams,
     AKS::DynamicParamValues* dynParams)
 {
-  //std::cout << "[DBG] ClassificationImreadPreKernel: running now ... " << std::endl ;
+  int batchSize = dynParams->imagePaths.size();
   int outHeight = nodeParams->_intParams["net_h"];
   int outWidth  = nodeParams->_intParams["net_w"];
-  int batchSize = dynParams->imagePaths.size();
   string outputLayout = nodeParams->hasKey<string>("output_layout") ?
                         nodeParams->getValue<string>("output_layout"): "NCHW";
 
@@ -68,8 +67,15 @@ int ClassificationImreadPreKernel::exec_async (
     std::vector<int>{ batchSize, 3, outHeight, outWidth }:
     std::vector<int>{ batchSize, outHeight, outWidth, 3 };
 
-  AKS::DataDescriptor * outDD = new AKS::DataDescriptor(shape, AKS::DataType::FLOAT32);
-  float * outData = (float*) outDD->data();
+  /// Create output Tensor buffer
+  std::string tensorName ("pre-output");
+  AKS::AksTensorBuffer * outTB = new AKS::AksTensorBuffer(
+                                   xir::Tensor::create(
+                                     tensorName, shape,
+                                     xir::create_data_type<float>()
+                                 ));
+
+  float * outData = reinterpret_cast<float*>(outTB->data().first);
 
   const uint32_t nelemsPerImg = 3 * outHeight * outWidth;
 
@@ -79,7 +85,7 @@ int ClassificationImreadPreKernel::exec_async (
     if (!inImage.data) {
       std::cerr << "[ERR] Unable to read image: " << dynParams->imagePaths[i] << std::endl;
       return -2;
-    }
+    } 
 
     /// Resize the image to Network Shape
     cv::Mat resizedImage = cv::Mat(outHeight, outWidth, CV_8SC3);
@@ -105,7 +111,7 @@ int ClassificationImreadPreKernel::exec_async (
   }
 
   /// Push back output
-  out.push_back(outDD);
+  out.push_back(outTB);
   return 0;
 }
 

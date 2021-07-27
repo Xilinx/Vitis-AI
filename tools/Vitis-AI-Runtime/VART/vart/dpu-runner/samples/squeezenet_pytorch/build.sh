@@ -22,9 +22,18 @@ arch=`uname -p`
 target_info=${os}.${os_version}.${arch}
 install_prefix_default=$HOME/.local/${target_info}
 $CXX --version
+
+result=0 && pkg-config --list-all | grep opencv4 && result=1
+if [ $result -eq 1 ]; then
+	OPENCV_FLAGS=$(pkg-config --cflags --libs-only-L opencv4)
+else
+	OPENCV_FLAGS=$(pkg-config --cflags --libs-only-L opencv)
+fi
+
 name=$(basename $PWD)
 if [[ "$CXX"  == *"sysroot"* ]];then
 $CXX -O2 -fno-inline -I. \
+     -I=/usr/include/opencv4 \
      -I=/install/Debug/include \
      -I=/install/Release/include \
      -L=/install/Debug/lib \
@@ -34,6 +43,7 @@ $CXX -O2 -fno-inline -I. \
      $PWD/../common/common.cpp  \
      -Wl,-rpath=$PWD/lib \
      -lvart-runner \
+     ${OPENCV_FLAGS} \
      -lopencv_videoio  \
      -lopencv_imgcodecs \
      -lopencv_highgui \
@@ -56,6 +66,7 @@ $CXX -O2 -fno-inline -I. \
      $PWD/../common/common.cpp  \
      -Wl,-rpath=$PWD/lib \
      -lvart-runner \
+     ${OPENCV_FLAGS} \
      -lopencv_videoio  \
      -lopencv_imgcodecs \
      -lopencv_highgui \

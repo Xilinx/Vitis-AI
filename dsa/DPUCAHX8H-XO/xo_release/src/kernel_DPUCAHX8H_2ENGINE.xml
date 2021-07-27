@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root versionMajor="1" versionMinor="6">
+  <kernel name="DPUCAHX8H_2ENGINE" language="ip_c" vlnv="deephi.com:kernel:DPUCAHX8H_2ENGINE:1.0" attributes="" preferredWorkGroupSizeMultiple="0" workGroupSize="1" interrupt="false">
+    <ports>
+      <port name="s_axi_control" mode="slave"  range="0x1000"             dataWidth="32"  portType="addressable" base="0x0"/>
+      <port name="DPU_AXI_0"     mode="master" range="0xFFFFFFFFFFFFFFFF" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_AXI_1"     mode="master" range="0xFFFFFFFFFFFFFFFF" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_AXI_I0"     mode="master" range="0xFFFFFFFFFFFFFFFF" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_AXI_W0"    mode="master" range="0xFFFFFFFFFFFFFFFF" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_AXI_W1"    mode="master" range="0xFFFFFFFFFFFFFFFF" dataWidth="256" portType="addressable" base="0x0"/>
+    </ports>
+    <args>
+      <arg name="LP_ADDR_AP_CTRL"               addressQualifier ="0" id="0" port="s_axi_control" size="0x4" offset="0x000" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_GIE"                   addressQualifier ="0" id="1" port="s_axi_control" size="0x4" offset="0x004" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_IER"                   addressQualifier ="0" id="2" port="s_axi_control" size="0x4" offset="0x008" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_ISR"                   addressQualifier ="0" id="3" port="s_axi_control" size="0x4" offset="0x00c" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR00"         addressQualifier ="0" id="4" port="s_axi_control" size="0x4" offset="0x010" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR01"         addressQualifier ="0" id="5" port="s_axi_control" size="0x4" offset="0x014" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR02"         addressQualifier ="0" id="6" port="s_axi_control" size="0x4" offset="0x018" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR03"         addressQualifier ="0" id="7" port="s_axi_control" size="0x4" offset="0x01c" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR04"         addressQualifier ="0" id="8" port="s_axi_control" size="0x4" offset="0x020" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR05"         addressQualifier ="0" id="9" port="s_axi_control" size="0x4" offset="0x024" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR06"         addressQualifier ="0" id="10" port="s_axi_control" size="0x4" offset="0x028" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR07"         addressQualifier ="0" id="11" port="s_axi_control" size="0x4" offset="0x02c" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR08"         addressQualifier ="0" id="12" port="s_axi_control" size="0x4" offset="0x030" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR09"         addressQualifier ="0" id="13" port="s_axi_control" size="0x4" offset="0x034" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR10"         addressQualifier ="0" id="14" port="s_axi_control" size="0x4" offset="0x038" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR11"         addressQualifier ="0" id="15" port="s_axi_control" size="0x4" offset="0x03c" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR12"         addressQualifier ="0" id="16" port="s_axi_control" size="0x4" offset="0x040" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR13"         addressQualifier ="0" id="17" port="s_axi_control" size="0x4" offset="0x044" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_SCALAR14"         addressQualifier ="0" id="18" port="s_axi_control" size="0x4" offset="0x048" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS00"         addressQualifier ="0" id="19" port="s_axi_control" size="0x4" offset="0x080" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS01"         addressQualifier ="0" id="20" port="s_axi_control" size="0x4" offset="0x084" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS02"         addressQualifier ="0" id="21" port="s_axi_control" size="0x4" offset="0x088" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS03"         addressQualifier ="0" id="22" port="s_axi_control" size="0x4" offset="0x08c" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS04"         addressQualifier ="0" id="23" port="s_axi_control" size="0x4" offset="0x090" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS05"         addressQualifier ="0" id="24" port="s_axi_control" size="0x4" offset="0x094" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS06"         addressQualifier ="0" id="25" port="s_axi_control" size="0x4" offset="0x098" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS07"         addressQualifier ="0" id="26" port="s_axi_control" size="0x4" offset="0x09c" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS08"         addressQualifier ="0" id="27" port="s_axi_control" size="0x4" offset="0x0a0" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS09"         addressQualifier ="0" id="28" port="s_axi_control" size="0x4" offset="0x0a4" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_STATUS10"         addressQualifier ="0" id="29" port="s_axi_control" size="0x4" offset="0x0a8" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR00_0"    addressQualifier ="0" id="30" port="s_axi_control" size="0x4" offset="0x100" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR00_1"    addressQualifier ="0" id="31" port="s_axi_control" size="0x4" offset="0x104" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR01_0"    addressQualifier ="0" id="32" port="s_axi_control" size="0x4" offset="0x108" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR01_1"    addressQualifier ="0" id="33" port="s_axi_control" size="0x4" offset="0x10c" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR02_0"    addressQualifier ="0" id="34" port="s_axi_control" size="0x4" offset="0x110" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR02_1"    addressQualifier ="0" id="35" port="s_axi_control" size="0x4" offset="0x114" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR03_0"    addressQualifier ="0" id="36" port="s_axi_control" size="0x4" offset="0x118" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR03_1"    addressQualifier ="0" id="37" port="s_axi_control" size="0x4" offset="0x11c" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR04_0"    addressQualifier ="0" id="38" port="s_axi_control" size="0x4" offset="0x120" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR04_1"    addressQualifier ="0" id="39" port="s_axi_control" size="0x4" offset="0x124" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR05_0"    addressQualifier ="0" id="40" port="s_axi_control" size="0x4" offset="0x128" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR05_1"    addressQualifier ="0" id="41" port="s_axi_control" size="0x4" offset="0x12c" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR06_0"    addressQualifier ="0" id="42" port="s_axi_control" size="0x4" offset="0x130" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR06_1"    addressQualifier ="0" id="43" port="s_axi_control" size="0x4" offset="0x134" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR07_0"    addressQualifier ="0" id="44" port="s_axi_control" size="0x4" offset="0x138" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR07_1"    addressQualifier ="0" id="45" port="s_axi_control" size="0x4" offset="0x13c" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR08_0"    addressQualifier ="0" id="46" port="s_axi_control" size="0x4" offset="0x140" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR08_1"    addressQualifier ="0" id="47" port="s_axi_control" size="0x4" offset="0x144" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR09_0"    addressQualifier ="0" id="48" port="s_axi_control" size="0x4" offset="0x148" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_AXI00_PTR09_1"    addressQualifier ="0" id="49" port="s_axi_control" size="0x4" offset="0x14c" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_HW_CODE"          addressQualifier ="0" id="50" port="s_axi_control" size="0x4" offset="0x1ec" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_HW_VERSION_0"     addressQualifier ="0" id="51" port="s_axi_control" size="0x4" offset="0x1f0" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_HW_VERSION_1"     addressQualifier ="0" id="52" port="s_axi_control" size="0x4" offset="0x1f4" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_TEST_0"           addressQualifier ="0" id="53" port="s_axi_control" size="0x4" offset="0x1f8" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU0_TEST_1"           addressQualifier ="0" id="54" port="s_axi_control" size="0x4" offset="0x1fc" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR00_0"    addressQualifier ="0" id="55" port="s_axi_control" size="0x4" offset="0x200" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR00_1"    addressQualifier ="0" id="56" port="s_axi_control" size="0x4" offset="0x204" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR01_0"    addressQualifier ="0" id="57" port="s_axi_control" size="0x4" offset="0x208" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR01_1"    addressQualifier ="0" id="58" port="s_axi_control" size="0x4" offset="0x20c" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR02_0"    addressQualifier ="0" id="59" port="s_axi_control" size="0x4" offset="0x210" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR02_1"    addressQualifier ="0" id="60" port="s_axi_control" size="0x4" offset="0x214" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR03_0"    addressQualifier ="0" id="61" port="s_axi_control" size="0x4" offset="0x218" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR03_1"    addressQualifier ="0" id="62" port="s_axi_control" size="0x4" offset="0x21c" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR04_0"    addressQualifier ="0" id="63" port="s_axi_control" size="0x4" offset="0x220" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR04_1"    addressQualifier ="0" id="64" port="s_axi_control" size="0x4" offset="0x224" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR05_0"    addressQualifier ="0" id="65" port="s_axi_control" size="0x4" offset="0x228" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR05_1"    addressQualifier ="0" id="66" port="s_axi_control" size="0x4" offset="0x22c" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR06_0"    addressQualifier ="0" id="67" port="s_axi_control" size="0x4" offset="0x230" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR06_1"    addressQualifier ="0" id="68" port="s_axi_control" size="0x4" offset="0x234" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR07_0"    addressQualifier ="0" id="69" port="s_axi_control" size="0x4" offset="0x238" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="LP_ADDR_DPU1_AXI00_PTR07_1"    addressQualifier ="0" id="70" port="s_axi_control" size="0x4" offset="0x23c" type="int*" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="DPU_AXI_0"  addressQualifier ="1" id="71" port="DPU_AXI_0"     size="0x8" offset="0x000" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="DPU_AXI_1"  addressQualifier ="1" id="72" port="DPU_AXI_1"     size="0x8" offset="0x000" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="DPU_AXI_I0"  addressQualifier ="1" id="73" port="DPU_AXI_I0"     size="0x8" offset="0x000" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="DPU_AXI_W0"  addressQualifier ="1" id="74" port="DPU_AXI_W0"    size="0x8" offset="0x000" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="DPU_AXI_W1"  addressQualifier ="1" id="75" port="DPU_AXI_W1"    size="0x8" offset="0x000" type="int*" hostOffset="0x0" hostSize="0x8"/>
+    </args>
+  </kernel>
+</root>
+

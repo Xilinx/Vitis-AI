@@ -53,12 +53,12 @@ DEF_ENV_PARAM_2(VAI_LIBRARY_MODELS_DIR, ".", std::string)
 namespace vitis {
 namespace ai {
 
-extern "C" vitis::ai::proto::DpuModelParam *find(const std::string &model_name);
+extern "C" vitis::ai::proto::DpuModelParam* find(const std::string& model_name);
 
 General::General() {}
 General::~General() {}
 
-static std::vector<std::string> find_model_search_path() {
+static vector<string> find_model_search_path() {
   auto ret = vector<string>{};
   ret.push_back(".");
   ret.push_back(ENV_PARAM(VAI_LIBRARY_MODELS_DIR));
@@ -107,14 +107,14 @@ static string find_model(const string& name) {
 
   stringstream str;
   str << "cannot find model <" << name << "> after checking following dir:";
-  for (const auto &p : find_model_search_path()) {
+  for (const auto& p : find_model_search_path()) {
     str << "\n\t" << p;
   }
   LOG(FATAL) << str.str();
   return string{""};
 }
 
-static string find_config_file(const string &name) {
+static string find_config_file(const string& name) {
   auto model = find_model(name);
   std::string pre_name = model.substr(0, model.rfind("."));
   auto config_file = pre_name + ".prototxt";
@@ -125,7 +125,7 @@ static string find_config_file(const string &name) {
   return string{""};
 }
 
-static std::string slurp(const char *filename) {
+static std::string slurp(const char* filename) {
   std::ifstream in;
   in.open(filename, std::ifstream::in);
   CHECK(in.good()) << "failed to read config file. filename=" << filename;
@@ -136,7 +136,7 @@ static std::string slurp(const char *filename) {
 }
 
 static vitis::ai::proto::DpuModelParam get_config(
-    const std::string &model_name) {
+    const std::string& model_name) {
   auto config_file = find_config_file(find_model(model_name));
   vitis::ai::proto::DpuModelParamList mlist;
   auto text = slurp(config_file.c_str());
@@ -155,7 +155,7 @@ struct SupportedModels {
   using types = std::tuple<T...>;
   static std::unique_ptr<General> create(
       vitis::ai::proto::DpuModelParam::ModelType type,
-      const std::string &name) {
+      const std::string& name) {
     return SupportedModels_create(SupportedModels<T...>(), type, name);
   };
 };
@@ -169,7 +169,7 @@ struct ModelDef {
 
 std::unique_ptr<General> SupportedModels_create(
     SupportedModels<> _tag, vitis::ai::proto::DpuModelParam::ModelType type,
-    const std::string &name) {
+    const std::string& name) {
   LOG_IF(INFO, ENV_PARAM(DEBUG_GENERAL)) << " type = " << type       //
                                          << " mode name = " << name  //
                                          << endl;
@@ -179,7 +179,7 @@ std::unique_ptr<General> SupportedModels_create(
 template <typename T0, typename... Tn>
 std::unique_ptr<General> SupportedModels_create(
     SupportedModels<T0, Tn...> _tag,
-    vitis::ai::proto::DpuModelParam::ModelType type, const std::string &name) {
+    vitis::ai::proto::DpuModelParam::ModelType type, const std::string& name) {
   LOG_IF(INFO, ENV_PARAM(DEBUG_GENERAL)) << " type = " << type          //
                                          << " T0::type = " << T0::type  //
                                          << " mode name = " << name     //
@@ -239,11 +239,11 @@ std::unique_ptr<General> General::create(const std::string& model_name,
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::ReidResult>(
-    const vitis::ai::ReidResult &result) {
+    const vitis::ai::ReidResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &reid_result = *dpu_model_result.mutable_reid_result();
-  auto p_data = (uint32_t *)result.feat.data;
+  auto& reid_result = *dpu_model_result.mutable_reid_result();
+  auto p_data = (uint32_t*)result.feat.data;
   while (p_data) {
     reid_result.add_data(*p_data++);
   }
@@ -252,12 +252,12 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::ReidResult>(
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::MultiTaskResult>(
-    const vitis::ai::MultiTaskResult &result) {
+    const vitis::ai::MultiTaskResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &multitask_result = *dpu_model_result.mutable_multitask_result();
+  auto& multitask_result = *dpu_model_result.mutable_multitask_result();
   auto segmentation = multitask_result.mutable_segmentation();
-  auto p_data = (uint32_t *)result.segmentation.data;
+  auto p_data = (uint32_t*)result.segmentation.data;
   while (p_data) {
     segmentation->add_data(*p_data++);
   }
@@ -267,14 +267,14 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::MultiTaskResult>(
 template <>
 vitis::ai::proto::DpuModelResult
 process_result<vitis::ai::MedicalSegmentationResult>(
-    const vitis::ai::MedicalSegmentationResult &result) {
+    const vitis::ai::MedicalSegmentationResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &medical_segmentation_result =
+  auto& medical_segmentation_result =
       *dpu_model_result.mutable_medical_segmentation_result();
-  for (auto &r : result.segmentation) {
+  for (auto& r : result.segmentation) {
     auto segmentation = medical_segmentation_result.add_segmentation();
-    auto p_data = (uint32_t *)r.data;
+    auto p_data = (uint32_t*)r.data;
     while (p_data) {
       segmentation->add_data(*p_data++);
     }
@@ -284,11 +284,11 @@ process_result<vitis::ai::MedicalSegmentationResult>(
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::SegmentationResult>(
-    const vitis::ai::SegmentationResult &result) {
+    const vitis::ai::SegmentationResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &segmentation_result = *dpu_model_result.mutable_segmentation_result();
-  auto p_data = (uint32_t *)result.segmentation.data;
+  auto& segmentation_result = *dpu_model_result.mutable_segmentation_result();
+  auto p_data = (uint32_t*)result.segmentation.data;
   while (p_data) {
     segmentation_result.add_data(*p_data++);
   }
@@ -298,57 +298,57 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::SegmentationResult>(
 template <>
 vitis::ai::proto::DpuModelResult
 process_result<vitis::ai::FaceFeatureFloatResult>(
-    const vitis::ai::FaceFeatureFloatResult &result) {
+    const vitis::ai::FaceFeatureFloatResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &face_feature_float_result =
-      *dpu_model_result.mutable_face_feature_float_result();
-  for (auto &r : *result.feature.get()) {
-    face_feature_float_result.add_feature(r);
+  auto& face_feature_float_result =
+      *dpu_model_result.mutable_face_feature_result()->mutable_float_vec();
+  for (auto& r : *result.feature.get()) {
+    face_feature_float_result.Add(r);
   }
   return dpu_model_result;
 }
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::PoseDetectResult>(
-    const vitis::ai::PoseDetectResult &result) {
+    const vitis::ai::PoseDetectResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &pose_detect_result = *dpu_model_result.mutable_pose_detect_result();
-  auto &right_shoulder = *pose_detect_result.mutable_right_shoulder();
+  auto& pose_detect_result = *dpu_model_result.mutable_pose_detect_result();
+  auto& right_shoulder = *pose_detect_result.mutable_right_shoulder();
   right_shoulder.set_x(result.pose14pt.right_shoulder.x);
   right_shoulder.set_y(result.pose14pt.right_shoulder.y);
-  auto &right_elbow = *pose_detect_result.mutable_right_elbow();
+  auto& right_elbow = *pose_detect_result.mutable_right_elbow();
   right_elbow.set_x(result.pose14pt.right_elbow.x);
   right_elbow.set_y(result.pose14pt.right_elbow.y);
-  auto &right_wrist = *pose_detect_result.mutable_right_wrist();
+  auto& right_wrist = *pose_detect_result.mutable_right_wrist();
   right_wrist.set_x(result.pose14pt.right_wrist.x);
   right_wrist.set_y(result.pose14pt.right_wrist.y);
-  auto &left_shoulder = *pose_detect_result.mutable_left_shoulder();
+  auto& left_shoulder = *pose_detect_result.mutable_left_shoulder();
   left_shoulder.set_x(result.pose14pt.left_shoulder.x);
   left_shoulder.set_y(result.pose14pt.left_shoulder.y);
-  auto &left_elbow = *pose_detect_result.mutable_left_elbow();
+  auto& left_elbow = *pose_detect_result.mutable_left_elbow();
   left_elbow.set_x(result.pose14pt.left_elbow.x);
   left_elbow.set_y(result.pose14pt.left_elbow.y);
-  auto &left_wrist = *pose_detect_result.mutable_left_wrist();
+  auto& left_wrist = *pose_detect_result.mutable_left_wrist();
   left_wrist.set_x(result.pose14pt.left_wrist.x);
   left_wrist.set_y(result.pose14pt.left_wrist.y);
-  auto &right_hip = *pose_detect_result.mutable_right_hip();
+  auto& right_hip = *pose_detect_result.mutable_right_hip();
   right_hip.set_x(result.pose14pt.right_hip.x);
   right_hip.set_y(result.pose14pt.right_hip.y);
-  auto &right_knee = *pose_detect_result.mutable_right_knee();
+  auto& right_knee = *pose_detect_result.mutable_right_knee();
   right_knee.set_x(result.pose14pt.right_knee.x);
   right_knee.set_y(result.pose14pt.right_knee.y);
-  auto &right_ankle = *pose_detect_result.mutable_right_ankle();
+  auto& right_ankle = *pose_detect_result.mutable_right_ankle();
   right_ankle.set_x(result.pose14pt.right_ankle.x);
   right_ankle.set_y(result.pose14pt.right_ankle.y);
-  auto &left_hip = *pose_detect_result.mutable_left_hip();
+  auto& left_hip = *pose_detect_result.mutable_left_hip();
   left_hip.set_x(result.pose14pt.left_hip.x);
   left_hip.set_y(result.pose14pt.left_hip.y);
-  auto &left_knee = *pose_detect_result.mutable_left_knee();
+  auto& left_knee = *pose_detect_result.mutable_left_knee();
   left_knee.set_x(result.pose14pt.left_knee.x);
   left_knee.set_y(result.pose14pt.left_knee.y);
-  auto &left_ankle = *pose_detect_result.mutable_left_ankle();
+  auto& left_ankle = *pose_detect_result.mutable_left_ankle();
   left_ankle.set_x(result.pose14pt.left_ankle.x);
   left_ankle.set_y(result.pose14pt.left_ankle.y);
 
@@ -374,10 +374,10 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::PoseDetectResult>(
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::PlateNumResult>(
-    const vitis::ai::PlateNumResult &result) {
+    const vitis::ai::PlateNumResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &plate_num_result = *dpu_model_result.mutable_plate_num_result();
+  auto& plate_num_result = *dpu_model_result.mutable_plate_number_result();
   plate_num_result.set_plate_number(result.plate_number);
   plate_num_result.set_plate_color(result.plate_color);
   return dpu_model_result;
@@ -385,26 +385,26 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::PlateNumResult>(
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::PlateDetectResult>(
-    const vitis::ai::PlateDetectResult &result) {
+    const vitis::ai::PlateDetectResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &plate_detect_result = *dpu_model_result.mutable_plate_detect_result();
-  auto &box = *plate_detect_result.mutable_bounding_box();
-  box.set_score(result.box.score);
-  box.set_x(result.box.x);
-  box.set_y(result.box.y);
-  box.set_height(result.box.height);
-  box.set_width(result.box.width);
+  auto& plate_detect_result = *dpu_model_result.mutable_plate_detect_result();
+  auto& box = *plate_detect_result.mutable_bounding_box();
+  box.mutable_label()->set_score(result.box.score);
+  box.mutable_top_left()->set_x(result.box.x);
+  box.mutable_top_left()->set_y(result.box.y);
+  box.mutable_size()->set_height(result.box.height);
+  box.mutable_size()->set_width(result.box.width);
   return dpu_model_result;
 }
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::FaceLandmarkResult>(
-    const vitis::ai::FaceLandmarkResult &result) {
+    const vitis::ai::FaceLandmarkResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &facelandmark_result = *dpu_model_result.mutable_facelandmark_result();
-  for (auto &r : result.points) {
+  auto& facelandmark_result = *dpu_model_result.mutable_facelandmark_result();
+  for (auto& r : result.points) {
     auto point = facelandmark_result.add_point();
     point->set_x(r.first);
     point->set_y(r.second);
@@ -416,38 +416,39 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::FaceLandmarkResult>(
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::RoadLineResult>(
-    const vitis::ai::RoadLineResult &result) {
+    const vitis::ai::RoadLineResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &roadline_result = *dpu_model_result.mutable_roadline_result();
-  for (auto &r : result.lines) {
-    auto line = roadline_result.add_line_att();
+  auto& roadline_result = *dpu_model_result.mutable_roadline_result();
+  for (auto& r : result.lines) {
+    auto line = roadline_result.add_line_attribute();
     line->set_type(r.type);
-    for (auto &p : r.points_cluster) {
+    for (auto& p : r.points_cluster) {
       auto point = line->add_point();
       point->set_x(p.x);
       point->set_y(p.y);
     }
   }
   LOG(INFO) << "detect_result.line_att().size() "
-            << roadline_result.line_att().size() << " ";
+            << roadline_result.line_attribute().size() << " ";
   return dpu_model_result;
 }
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::SSDResult>(
-    const vitis::ai::SSDResult &result) {
+    const vitis::ai::SSDResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &detect_result = *dpu_model_result.mutable_detect_result();
-  for (auto &r : result.bboxes) {
+  auto& detect_result = *dpu_model_result.mutable_detect_result();
+  for (auto& r : result.bboxes) {
     auto box = detect_result.add_bounding_box();
-    box->set_label(r.label);
-    box->set_x(r.x);
-    box->set_y(r.y);
-    box->set_width(r.width);
-    box->set_height(r.height);
-    box->set_score(r.score);
+    // TODO: convert label index to name
+    box->mutable_label()->set_name(std::to_string(r.label));
+    box->mutable_top_left()->set_x(r.x);
+    box->mutable_top_left()->set_y(r.y);
+    box->mutable_size()->set_width(r.width);
+    box->mutable_size()->set_height(r.height);
+    box->mutable_label()->set_score(r.score);
   }
   LOG(INFO) << "detect_result.bounding_box().size() "
             << detect_result.bounding_box().size() << " ";
@@ -456,18 +457,19 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::SSDResult>(
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::TFSSDResult>(
-    const vitis::ai::TFSSDResult &result) {
+    const vitis::ai::TFSSDResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &detect_result = *dpu_model_result.mutable_detect_result();
-  for (auto &r : result.bboxes) {
+  auto& detect_result = *dpu_model_result.mutable_detect_result();
+  for (auto& r : result.bboxes) {
     auto box = detect_result.add_bounding_box();
-    box->set_label(r.label);
-    box->set_x(r.x);
-    box->set_y(r.y);
-    box->set_width(r.width);
-    box->set_height(r.height);
-    box->set_score(r.score);
+    // TODO: convert label index to name
+    box->mutable_label()->set_name(std::to_string(r.label));
+    box->mutable_top_left()->set_x(r.x);
+    box->mutable_top_left()->set_y(r.y);
+    box->mutable_size()->set_width(r.width);
+    box->mutable_size()->set_height(r.height);
+    box->mutable_label()->set_score(r.score);
   }
   LOG(INFO) << "detect_result.bounding_box().size() "
             << detect_result.bounding_box().size() << " ";
@@ -476,34 +478,35 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::TFSSDResult>(
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::RefineDetResult>(
-    const vitis::ai::RefineDetResult &result) {
+    const vitis::ai::RefineDetResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
 
-  auto &refine_det_result = *dpu_model_result.mutable_refine_det_result();
-  for (auto &r : result.bboxes) {
+  auto& refine_det_result = *dpu_model_result.mutable_refine_det_result();
+  for (auto& r : result.bboxes) {
     auto box = refine_det_result.add_bounding_box();
-    box->set_x(r.x);
-    box->set_y(r.y);
-    box->set_width(r.width);
-    box->set_height(r.height);
-    box->set_score(r.score);
+    box->mutable_top_left()->set_x(r.x);
+    box->mutable_top_left()->set_y(r.y);
+    box->mutable_size()->set_width(r.width);
+    box->mutable_size()->set_height(r.height);
+    box->mutable_label()->set_score(r.score);
   }
   return dpu_model_result;
 }
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::YOLOv2Result>(
-    const vitis::ai::YOLOv2Result &result) {
+    const vitis::ai::YOLOv2Result& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
-  auto &detect_result = *dpu_model_result.mutable_detect_result();
-  for (auto &r : result.bboxes) {
+  auto& detect_result = *dpu_model_result.mutable_detect_result();
+  for (auto& r : result.bboxes) {
     auto box = detect_result.add_bounding_box();
-    box->set_label(r.label);
-    box->set_x(r.x);
-    box->set_y(r.y);
-    box->set_width(r.width);
-    box->set_height(r.height);
-    box->set_score(r.score);
+    // TODO: convert label index to name
+    box->mutable_label()->set_name(std::to_string(r.label));
+    box->mutable_top_left()->set_x(r.x);
+    box->mutable_top_left()->set_y(r.y);
+    box->mutable_size()->set_width(r.width);
+    box->mutable_size()->set_height(r.height);
+    box->mutable_label()->set_score(r.score);
   }
   LOG(INFO) << "detect_result.bounding_box().size() "
             << detect_result.bounding_box().size() << " ";
@@ -512,17 +515,18 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::YOLOv2Result>(
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::YOLOv3Result>(
-    const vitis::ai::YOLOv3Result &result) {
+    const vitis::ai::YOLOv3Result& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
-  auto &detect_result = *dpu_model_result.mutable_detect_result();
-  for (auto &r : result.bboxes) {
+  auto& detect_result = *dpu_model_result.mutable_detect_result();
+  for (auto& r : result.bboxes) {
     auto box = detect_result.add_bounding_box();
-    box->set_label(r.label);
-    box->set_x(r.x);
-    box->set_y(r.y);
-    box->set_width(r.width);
-    box->set_height(r.height);
-    box->set_score(r.score);
+    // TODO: convert label index to name
+    box->mutable_label()->set_name(std::to_string(r.label));
+    box->mutable_top_left()->set_x(r.x);
+    box->mutable_top_left()->set_y(r.y);
+    box->mutable_size()->set_width(r.width);
+    box->mutable_size()->set_height(r.height);
+    box->mutable_label()->set_score(r.score);
   }
   LOG(INFO) << "detect_result.bounding_box().size() "
             << detect_result.bounding_box().size() << " ";
@@ -532,12 +536,12 @@ vitis::ai::proto::DpuModelResult process_result<vitis::ai::YOLOv3Result>(
 template <>
 vitis::ai::proto::DpuModelResult
 process_result<vitis::ai::ClassificationResult>(
-    const vitis::ai::ClassificationResult &result) {
+    const vitis::ai::ClassificationResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
-  auto &classification_result =
+  auto& classification_result =
       *dpu_model_result.mutable_classification_result();
-  for (auto &r : result.scores) {
-    auto score = classification_result.add_score();
+  for (auto& r : result.scores) {
+    auto score = classification_result.add_topk();
     score->set_index(r.index);
     score->set_score(r.score);
   }
@@ -546,16 +550,16 @@ process_result<vitis::ai::ClassificationResult>(
 
 template <>
 vitis::ai::proto::DpuModelResult process_result<vitis::ai::FaceDetectResult>(
-    const vitis::ai::FaceDetectResult &result) {
+    const vitis::ai::FaceDetectResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
-  auto &detect_result = *dpu_model_result.mutable_detect_result();
-  for (auto &r : result.rects) {
+  auto& detect_result = *dpu_model_result.mutable_detect_result();
+  for (auto& r : result.rects) {
     auto box = detect_result.add_bounding_box();
-    box->set_x(r.x);
-    box->set_y(r.y);
-    box->set_width(r.width);
-    box->set_height(r.height);
-    box->set_score(r.score);
+    box->mutable_top_left()->set_x(r.x);
+    box->mutable_top_left()->set_y(r.y);
+    box->mutable_size()->set_width(r.width);
+    box->mutable_size()->set_height(r.height);
+    box->mutable_label()->set_score(r.score);
   }
   LOG(INFO) << "detect_result.bounding_box().size() "
             << detect_result.bounding_box().size() << " ";
@@ -568,20 +572,20 @@ process_result<vitis::ai::FaceDetectRecogFloatResult>(
     const vitis::ai::FaceDetectRecogFloatResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
   auto& detect_recog_result =
-      *dpu_model_result.mutable_face_detect_recog_float_result();
+      *dpu_model_result.mutable_face_detect_recog_result();
   for (auto& r : result.rects) {
     auto box = detect_recog_result.add_bounding_box();
-    box->set_x(r.x);
-    box->set_y(r.y);
-    box->set_width(r.width);
-    box->set_height(r.height);
-    box->set_score(r.score);
+    box->mutable_top_left()->set_x(r.x);
+    box->mutable_top_left()->set_y(r.y);
+    box->mutable_size()->set_width(r.width);
+    box->mutable_size()->set_height(r.height);
+    box->mutable_label()->set_score(r.score);
   }
 
   for (auto& f : result.features) {
-    auto feature = detect_recog_result.add_float_feature();
+    auto feature = detect_recog_result.add_feature();
     for (auto i = 0u; i < f.size(); i++) {
-      feature->add_feature(f[i]);
+      feature->mutable_float_vec()->Add(f[i]);
     }
   }
 
@@ -596,22 +600,22 @@ process_result<vitis::ai::FaceDetectRecogFixedResult>(
     const vitis::ai::FaceDetectRecogFixedResult& result) {
   vitis::ai::proto::DpuModelResult dpu_model_result;
   auto& detect_recog_result =
-      *dpu_model_result.mutable_face_detect_recog_fixed_result();
+      *dpu_model_result.mutable_face_detect_recog_result();
   for (auto& r : result.rects) {
     auto box = detect_recog_result.add_bounding_box();
-    box->set_x(r.x);
-    box->set_y(r.y);
-    box->set_width(r.width);
-    box->set_height(r.height);
-    box->set_score(r.score);
+    box->mutable_top_left()->set_x(r.x);
+    box->mutable_top_left()->set_y(r.y);
+    box->mutable_size()->set_width(r.width);
+    box->mutable_size()->set_height(r.height);
+    box->mutable_label()->set_score(r.score);
   }
-  detect_recog_result.set_scale(result.feature_scale);
 
   for (auto& f : result.features) {
-    auto feature = detect_recog_result.add_fixed_feature();
+    auto feature = detect_recog_result.add_feature();
     for (auto i = 0u; i < f.size(); i++) {
-      feature->add_feature(f[i]);
+      feature->mutable_fix_vec()->push_back(f[i]);
     }
+    feature->set_scale(result.feature_scale);
   }
 
   LOG(INFO) << "detect_recog_result.bounding_box().size() "

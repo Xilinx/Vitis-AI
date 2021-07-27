@@ -113,6 +113,8 @@ void vart_runner_get_inputs(vart_runner_t runner,
 void vart_runner_get_outputs(vart_runner_t runner,
                              vart_tensor_buffer_t outputs[]);
 
+void vart_destroy_tensor_buffer(vart_tensor_buffer_t tb);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,0 +1,35 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: resnetv2_50 classifier on ImageNet.
+input size: 299*299
+float ops: 13.1G
+task: classification
+framework: tensorflow
+prune: 'no'
+version: 1.4
+files:
+- name: tf_resnetv2_50_imagenet_299_299_13.1G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv2_50_imagenet_299_299_13.1G_1.4.zip
+  checksum: 57429654ea00632732e743087ec3cded
+- name: resnet_v2_50_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_50_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 31a8805c2891cee5af1fbc09f65fc5c8
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

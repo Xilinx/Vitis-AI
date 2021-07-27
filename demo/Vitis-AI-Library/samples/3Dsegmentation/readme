@@ -17,6 +17,7 @@ Important:
   ./test_jpeg_3Dsegmentation, ./test_performance_3Dsegmentation first param followed must be with model name.
   Valid model name:
     salsanext_pt
+    salsanext_v2_pt
 
 
 1, compile
@@ -31,3 +32,6 @@ Important:
     
     sample : ./test_jpeg_3Dsegmentation salsanext_pt  scan_x.txt scan_y.txt scan_z.txt scan_remission.txt
     ./test_performance_3Dsegmentation salsanext_pt test_performance_3Dsegmentation.list  -t 4 -s 60(Please copy the folder salsanext_input/ in the current directory)
+
+    sample : ./test_jpeg_3Dsegmentation salsanext_v2_pt  scan_x.txt scan_y.txt scan_z.txt scan_remission.txt
+    output :

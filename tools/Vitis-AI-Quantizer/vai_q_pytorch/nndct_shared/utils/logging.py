@@ -121,7 +121,6 @@ def _log_prefix(level, timestamp=None, file_and_line=None):
   if level in _level_names:
     severity = _level_names[level][0]
 
-  # TODO(yuwang): Format by environment variable.
   s = '%c%02d%02d %02d:%02d:%02d.%06d %s:%d]' % (
       severity,
       now_tuple[1],  # month
@@ -147,7 +146,7 @@ def get_logger(name, level=None, file_name=None, only2file=False):
   _logger_lock.acquire()
 
   try:
- 
+
     # Scope the TensorFlow logger to not conflict with users' loggers.
     logger = _logging.getLogger(name)
     if level:
@@ -186,12 +185,12 @@ def get_logger(name, level=None, file_name=None, only2file=False):
       if file_name is not None:
         _file_handler = _logging.FileHandler(file_name)
         logger.addHandler(_file_handler)
-        
+
     return logger
 
   finally:
     _logger_lock.release()
-    
+
 
 def log(level, msg, *args, **kwargs):
   extra = {'nndct_prefix': _log_prefix(level)}
@@ -254,46 +253,46 @@ def vlog(level, msg, *args, **kwargs):
 class NndctScreenLogger(metaclass=SingletonMeta):
   def __init__(self):
     # self.logger = get_logger(name="nndct_screen", level=INFO)
-    self.flush = _sys.stdout.flush  
-    self._log_prefix = {WARN: f"\n{YELLOW}[NNDCT_WARN]: ",
-                        INFO: f"\n{GREEN}[NNDCT_NOTE]: ",
-                        ERROR: f"\n{RED}[NNDCT_ERROR]: "
+    self.flush = _sys.stdout.flush
+    self._log_prefix = {WARN: f"\n{YELLOW}[VAIQ_WARN]: ",
+                        INFO: f"\n{GREEN}[VAIQ_NOTE]: ",
+                        ERROR: f"\n{RED}[VAIQ_ERROR]: "
                         }
-    
+
 
   def warning(self, msg, *args, **kwargs):
     msg = self.full_message(msg, prefix=self._log_prefix[WARN])
     self._logger().warning(msg, *args, **kwargs)
     self.flush()
-  
+
   def error(self, msg, *args, **kwargs):
     msg = self.full_message(msg, prefix=self._log_prefix[ERROR])
     self._logger().error(msg, *args, **kwargs)
     self.flush()
-    
+
   def info(self, msg, *args, **kwargs):
     msg = self.full_message(msg, prefix=self._log_prefix[INFO])
     self._logger().info(msg, *args, **kwargs)
     self.flush()
-    
+
   @staticmethod
   def _logger():
     logger = get_logger(name="nndct_screen", level=INFO)
     if logger.handlers and any([isinstance(hdler, _logging.StreamHandler) for hdler in logger.parent.handlers]):
       logger.removeHandler(logger.handlers[0])
     return logger
-     
+
   @staticmethod
   def full_message(msg, prefix, suffix=NOCOLOR):
     return prefix + msg + suffix
- 
+
   def check(self, msg, condition):
     if not condition:
       self.error(msg)
       _sys.exit(1)
-    
 
-  
+
+
 class NndctDebugLogger(metaclass=SingletonMeta):
   def __init__(self, file_name):
     self.file = open(file_name, "w")
@@ -302,8 +301,8 @@ class NndctDebugLogger(metaclass=SingletonMeta):
   def write(cls, msg):
     cls._instance.file.write(msg)
     cls._instance.file.flush()
-    
+
   def __del__(self):
     self.file.close()
-    
-    
+
+

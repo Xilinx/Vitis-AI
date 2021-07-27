@@ -18,9 +18,12 @@
 
 #include <sstream>
 #include <xir/tensor/tensor.hpp>
+#include <xir/util/tool_function.hpp>
 
 #include "vitis/ai/collection_helper.hpp"
-
+#include "vitis/ai/env_config.hpp"
+#include "vitis/ai/path_util.hpp"
+DEF_ENV_PARAM(DEBUG_RUNNER_HELPER, "0")
 static std::string to_string(const std::pair<void*, size_t>& v) {
   std::ostringstream str;
   str << "@(" << v.first << "," << std::dec << v.second << ")";
@@ -151,6 +154,26 @@ std::vector<std::int32_t> get_index_zeros(const xir::Tensor* tensor) {
   return ret;
 }
 
+tensor_buffer_data_t get_tensor_buffer_data(vart::TensorBuffer* tensor_buffer,
+                                            size_t batch_index) {
+  tensor_buffer_data_t ret;
+  auto idx = vart::get_index_zeros(tensor_buffer->get_tensor());
+  idx[0] = (int)batch_index;
+  uint64_t data;
+  std::tie(data, ret.size) = tensor_buffer->data(idx);
+  ret.data = (void*)data;
+  return ret;
+}
+
+tensor_buffer_data_t get_tensor_buffer_data(vart::TensorBuffer* tensor_buffer,
+                                            const std::vector<int>& idx) {
+  tensor_buffer_data_t ret;
+  uint64_t data;
+  std::tie(data, ret.size) = tensor_buffer->data(idx);
+  ret.data = (void*)data;
+  return ret;
+}
+
 class CpuFlatTensorBuffer : public TensorBuffer {
  public:
   explicit CpuFlatTensorBuffer(void* data, const xir::Tensor* tensor);
@@ -162,6 +185,7 @@ class CpuFlatTensorBuffer : public TensorBuffer {
 
  protected:
   void* data_;
+  // std::unique_ptr<xir::Tensor> tensor_;
 };
 
 class CpuFlatTensorBufferOwned : public CpuFlatTensorBuffer {
@@ -214,4 +238,227 @@ std::unique_ptr<vart::TensorBuffer> alloc_cpu_flat_tensor_buffer(
       new CpuFlatTensorBufferOwned(tensor));
 }
 
+void dump_tensor_buffer(const std::string& dir0,
+                        vart::TensorBuffer* tensor_buffer, int batch_base) {
+  auto maybe_remove_trail_slah = [](const std::string& s) {
+    if (s.back() == '/') {
+      return s.substr(0, s.size() - 1);
+    }
+    return s;
+  };
+  std::string dir = maybe_remove_trail_slah(dir0);
+  vitis::ai::create_parent_path(dir);
+  CHECK(vitis::ai::is_directory(dir)) << "cannot create directory: dir=" << dir;
+  auto tensor_name = tensor_buffer->get_tensor()->get_name();
+  auto tensor_name_remove_fix = xir::remove_xfix(tensor_name);
+  auto filename0 = vitis::ai::to_valid_file_name(tensor_name_remove_fix);
+  auto idx = get_index_zeros(tensor_buffer->get_tensor());
+  auto batch = tensor_buffer->get_tensor()->get_shape()[0];
+  if (batch < 32) {
+    for (auto b = 0; b < batch; ++b) {
+      auto data = get_tensor_buffer_data(tensor_buffer, idx);
+      tensor_buffer->sync_for_read(0u, data.size);
+      auto filename =
+          dir + "/" + filename0 + "_" + std::to_string(b + batch_base) + ".bin";
+      CHECK(std::ofstream(filename)
+                .write((char*)data.data, data.size / batch)
+                .good())
+          << "failed to write: " << filename;
+      LOG_IF(INFO, true || ENV_PARAM(DEBUG_RUNNER_HELPER))
+          << "write tensor buffer @" << (void*)tensor_buffer << ":"
+          << " tensor_name=" << tensor_name  //
+          << " filename=" << filename        //
+          << " data=" << data.data           //
+          << " size=" << data.size / batch;
+      idx[0] = b;
+    }
+  } else {
+    auto data = get_tensor_buffer_data(tensor_buffer, idx);
+    tensor_buffer->sync_for_read(0u, data.size);
+    auto filename =
+        dir + "/" + filename0 + "_" + std::to_string(batch_base) + ".bin";
+    CHECK(std::ofstream(filename).write((char*)data.data, data.size).good())
+        << "failed to write: " << filename;
+    LOG_IF(INFO, true || ENV_PARAM(DEBUG_RUNNER_HELPER))
+        << "write tensor buffer @" << (void*)tensor_buffer << ":"
+        << " tensor_name=" << tensor_name  //
+        << " filename=" << filename        //
+        << " data=" << data.data           //
+        << " size=" << data.size;
+  }
+  return;
+}
 }  // namespace vart
+
+namespace xir {
+template <typename... T>
+struct SupportedAttryTypes {
+  using types = std::tuple<T...>;
+};
+
+using bytes_t = std::vector<int8_t>;
+
+using ListOfSupportedAttryType1 = SupportedAttryTypes<
+    /** begin supported list of attr types */
+    bool,                                             //
+    int8_t,                                           //
+    uint8_t,                                          //
+    int16_t, uint16_t,                                //
+    int32_t, uint32_t,                                //
+    int64_t, uint64_t,                                //
+    float, double,                                    //
+    std::string,                                      //
+    bytes_t,                                          //
+    std::vector<bool>,                                //
+    std::vector<int8_t>, std::vector<uint8_t>,        //
+    std::vector<int16_t>, std::vector<uint16_t>,      //
+    std::vector<int32_t>, std::vector<uint32_t>,      //
+    std::vector<int64_t>, std::vector<uint64_t>,      //
+    std::vector<float>, std::vector<double>,          //
+    std::vector<std::string>,                         //
+    std::vector<bytes_t>,                             //
+    std::map<std::string, int8_t>,                    //
+    std::map<std::string, uint8_t>,                   //
+    std::map<std::string, int16_t>,                   //
+    std::map<std::string, uint16_t>,                  //
+    std::map<std::string, int32_t>,                   //
+    std::map<std::string, uint32_t>,                  //
+    std::map<std::string, int64_t>,                   //
+    std::map<std::string, uint64_t>,                  //
+    std::map<std::string, float>,                     //
+    std::map<std::string, double>,                    //
+    std::map<std::string, std::string>,               //
+    std::map<std::string, bytes_t>,                   //
+    std::map<std::string, std::vector<bool>>,         //
+    std::map<std::string, std::vector<int8_t>>,       //
+    std::map<std::string, std::vector<uint8_t>>,      //
+    std::map<std::string, std::vector<int16_t>>,      //
+    std::map<std::string, std::vector<uint16_t>>,     //
+    std::map<std::string, std::vector<int32_t>>,      //
+    std::map<std::string, std::vector<uint32_t>>,     //
+    std::map<std::string, std::vector<int64_t>>,      //
+    std::map<std::string, std::vector<uint64_t>>,     //
+    std::map<std::string, std::vector<float>>,        //
+    std::map<std::string, std::vector<double>>,       //
+    std::map<std::string, std::vector<std::string>>,  //
+    std::map<std::string, std::vector<bytes_t>>,      //
+    nullptr_t>;
+
+using ListOfSupportedAttryType =
+    SupportedAttryTypes<std::string,                        //
+                        std::map<std::string, std::string>  //
+                        >;
+
+template <typename Op>
+struct Apply {
+  std::string do_it(const std::any& x) {
+    return do_it(ListOfSupportedAttryType(), x);
+  }
+  template <typename T0, typename... T>
+  std::string do_it(SupportedAttryTypes<T0, T...> tag, const std::any& x) {
+    if (x.type() == typeid(T0)) {
+      return Op()(std::any_cast<T0>(x));
+    }
+    return do_it(SupportedAttryTypes<T...>(), x);
+  }
+  std::string do_it(SupportedAttryTypes<> tag, const std::any& x) {
+    return "NA";
+  };
+};
+
+template <typename T, class = void>
+struct is_cout_able : public std::false_type {};
+template <typename T>
+struct is_cout_able<
+    T, std::void_t<decltype(declval<std::ostream&>() << declval<T>())>>
+    : public std::true_type {};
+
+template <typename T>
+constexpr auto is_cout_able_v = is_cout_able<T>::value;
+
+template <typename K, typename V>
+std::enable_if_t<is_cout_able_v<K> && is_cout_able_v<V>, std::ostream&>
+operator<<(std::ostream& out, const std::map<K, V>& v) {
+  out << "{";
+  for (const auto x : v) {
+    out << "\n\t\"" << x.first << "\" = " << x.second;
+  }
+  out << "\n}";
+  return out;
+}
+
+struct ToString {
+  template <typename T>
+  std::enable_if_t<is_cout_able_v<T>, std::string> operator()(const T& x) {
+    std::ostringstream str;
+    str << x;
+    return str.str();
+  }
+  template <typename T>
+  std::enable_if_t<!is_cout_able_v<T>, std::string> operator()(const T& x) {
+    std::ostringstream str;
+    str << "unknwon type: " << typeid(x).name() << " and " << is_cout_able_v<T>;
+    return str.str();
+  }
+};
+
+std::string to_string(const xir::Attrs* attr) {
+  std::ostringstream str;
+  for (auto key : attr->get_keys()) {
+    str << '"' << key
+        << "\" = " << Apply<ToString>().do_it(attr->get_attr(key));
+    str << std::endl;
+  }
+  return str.str();
+}
+std::string to_string(const xir::OpDef* opdef) {
+  std::ostringstream str;
+  str << "OpDef{"                                 //
+      << "name=" << opdef->name()                 //
+      << ",#args=" << opdef->input_args().size()  //
+      << to_string(opdef->input_args())           //
+      << "\n\tdoc:" << opdef->annotation()        //
+      << "}";                                     //
+  return str.str();
+}
+std::string to_string(const std::vector<OpArgDef>& argdef) {
+  std::ostringstream str;
+  str << "[";
+  int c = 0;
+  for (auto& arg : argdef) {
+    if (c != 0) {
+      str << ",";
+    }
+    str << to_string(arg);
+    c++;
+  }
+  str << "]";
+  return str.str();
+}
+
+std::string to_string(const OpArgDef& argdef) {
+  std::ostringstream str;
+  str << "argname: " << argdef.name;
+  switch (argdef.occur_type) {
+    case OpArgDef::REQUIRED:
+      str << " (required)";
+      break;
+    case OpArgDef::OPTIONAL:
+      str << " (optional)";
+      break;
+    case OpArgDef::REPEATED:
+      str << " (repeated)";
+      break;
+    case OpArgDef::REQUIRED_AND_REPEATED:
+      str << " (required/repeated)";
+      break;
+    default:
+      str << "()";
+      break;
+  }
+  // str << ":: " << argdef.data_type.to_string();
+  str << "// " << argdef.annotation;
+  return str.str();
+}
+
+}  // namespace xir

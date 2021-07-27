@@ -24,3 +24,4 @@ REGISTER_ERROR_CODE(VART_TENSOR_BUFFER_INVALID_INDEX, "Invalid index!", "");
 REGISTER_ERROR_CODE(VART_TENSOR_BUFFER_UNSUPPORT_FORMAT, "unsupported format!",
                     "");
 REGISTER_ERROR_CODE(VART_FAILED_FILE_OPERATION, "failed file operation!", "");
+REGISTER_ERROR_CODE(VART_UNEXPECTED_FILE_SIZE, "Unexpected file size!", "");

@@ -16,6 +16,7 @@
 * limitations under the License.
 */
 
+
 #ifndef _NNDCT_BATCHNORM_KERNELS_H_
 #define _NNDCT_BATCHNORM_KERNELS_H_
 

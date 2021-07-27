@@ -43,17 +43,23 @@ I1122 00:07:51.290259 15705 process_result.hpp:77] RESULT: 18   111.551 30.9807 
     sample : ./test_jpeg_tfssd ssd_mobilenet_v2_coco_tf sample_tfssd.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1122 00:08:57.767942 15707 process_result.hpp:77] RESULT: 1    86.0862 0       203.307 222.717 0.622459
-I1122 00:08:57.768280 15707 process_result.hpp:77] RESULT: 18   115.827 32.9267 295.622 275.625 0.970688
-I1122 00:08:57.768360 15707 process_result.hpp:77] RESULT: 18   0       7.99977 92.8194 258.224 0.731059
-   
-    
+I0709 05:51:20.939500  4000 demo.hpp:1183] batch: 0     image: sample_tfssd.jpg
+I0709 05:51:20.939601  4000 process_result.hpp:43] RESULT: 1    83.2766 -5.45941        203.465 206.673 0.377541
+I0709 05:51:20.939754  4000 process_result.hpp:43] RESULT: 1    87.3896 11.7359 243.635 267.581 0.377541
+I0709 05:51:20.939824  4000 process_result.hpp:43] RESULT: 18   111.551 27.7169 291.346 276.559 0.952574
+I0709 05:51:20.939899  4000 process_result.hpp:43] RESULT: 18   4.24144 2.43604 95.5333 255.138 0.817575
+
+
     sample : ./test_jpeg_tfssd ssd_resnet_50_fpn_coco_tf sample_tfssd.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1122 00:09:31.598120 15709 process_result.hpp:77] RESULT: 18   6.55091 11.9622 95.4491 258.038 0.817575
-I1122 00:09:31.598419 15709 process_result.hpp:77] RESULT: 18   112.851 41.9628 295.149 276.037 0.705785
-   
+I0709 05:51:26.215736  4005 demo.hpp:1183] batch: 0     image: sample_tfssd.jpg
+I0709 05:51:26.215852  4005 process_result.hpp:43] RESULT: 18   6.92568 11.9622 98.0743 258.038 0.798187
+I0709 05:51:26.215986  4005 process_result.hpp:43] RESULT: 18   107.544 39      294.456 279     0.787931
+I0709 05:51:26.216050  4005 process_result.hpp:43] RESULT: 18   8.10038 8.96218 219.9   255.038 0.334589
+I0709 05:51:26.216116  4005 process_result.hpp:43] RESULT: 21   109.902 32.352  292.826 285.523 0.307358
+
+
     sample : ./test_jpeg_tfssd ssd_inception_v2_coco_tf sample_tfssd.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
@@ -63,6 +69,8 @@ I0826 15:11:04.684190 16311 process_result.hpp:43] RESULT: 18   0.718068        
     sample : ./test_jpeg_tfssd ssdlite_mobilenet_v2_coco_tf sample_tfssd.jpg
     output :
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1204 09:06:55.441154 22379 process_result.hpp:43] RESULT: 19   118.174 32.8396 295.293 277.977 0.731059
-I1204 09:06:55.441392 22379 process_result.hpp:43] RESULT: 19   1.76009 7.73934 95.363  260.441 0.562177
-I1204 09:06:55.441465 22379 process_result.hpp:43] RESULT: 20   118.046 29.9955 293.402 278.837 0.320821
+I0709 05:51:29.020128  4018 demo.hpp:1183] batch: 0     image: sample_tfssd.jpg
+I0709 05:51:29.020251  4018 process_result.hpp:43] RESULT: 1    77.2704 -0.462019       206.82  228.192 0.437824
+I0709 05:51:29.020419  4018 process_result.hpp:43] RESULT: 1    156.833 -1.90521        212.689 80.8526 0.320821
+I0709 05:51:29.020473  4018 process_result.hpp:43] RESULT: 18   113.689 35.0645 293.484 277.762 0.939913
+I0709 05:51:29.020546  4018 process_result.hpp:43] RESULT: 18   1.76009 10.391  95.363  263.092 0.817575

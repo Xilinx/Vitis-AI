@@ -1,5 +1,5 @@
 {
-  "kernel_name": "classificationPreProcess",
+  "kernel_name": "ClassificationPreProcess",
   "description": "Preprocess an image for a classification network",
   "kernel_type": "cpp",
   "device_type": "cpu",
@@ -12,6 +12,7 @@
     "net_c": {"type": "int"},
     "th1":{"type": "int"},
     "th2": {"type": "float"},
-    "mean": {"type": "float_array"}
+    "mean": {"type": "float_array"},
+    "output_layout" : {"type": "string"}
   }
 }

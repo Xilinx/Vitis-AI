@@ -105,6 +105,7 @@ cc_library(
         "quantize_utils.h",
         "known_patterns.h",
         "graph_quantizer.h",
+        "cross_layers_equalization.h",
     ],
     copts = tf_copts(),
     visibility = ["//visibility:public"],
@@ -129,6 +130,7 @@ cc_library(
 cc_library(
     name = "decent_q_transforms_lib",
     srcs = [
+        "cross_layers_equalization.cc",
         "remove_nodes.cc",
         "fold_constants.cc",
         "strip_unused_nodes.cc",
@@ -140,6 +142,7 @@ cc_library(
         "separate_shared_constants.cc"
     ],
     hdrs = [
+        "cross_layers_equalization.h",
         "remove_nodes.h",
         "fold_constants.h",
         "strip_unused_nodes.h",

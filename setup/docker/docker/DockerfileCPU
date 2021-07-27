@@ -9,6 +9,15 @@ ARG VERSION
 ENV VERSION=$VERSION
 ARG DATE
 ENV DATE=$DATE
+ARG XRT_URL=https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_18.04-amd64-xrt.deb
+ENV XRT_URL=$XRT_URL
+ARG XRM_URL=https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_18.04-x86_64.deb
+ENV XRM_URL=$XRM_URL
+ARG PETALINUX_URL=https://www.xilinx.com/bin/public/openDownload?filename=sdk-2021.1.0.0.sh
+ENV PETALINUX_URL=$PETALINUX_URL
+ARG VAI_CONDA_CHANNEL="file:///scratch/conda-channel"
+ENV VAI_CONDA_CHANNEL=$VAI_CONDA_CHANNEL
+ARG VAI_DEB_CHANNEL=""
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
@@ -26,17 +35,18 @@ RUN chmod 1777 /tmp \
         build-essential \
         bzip2 \
         ca-certificates \
-        cmake \
         curl \
         g++ \
-        gnupg \
+        gdb \
         git \
+        gnupg \
         locales \
         libboost-all-dev \
         libgflags-dev \
         libgoogle-glog-dev \
         libgtest-dev \
         libjson-c-dev \
+        libjsoncpp-dev \
         libssl-dev \
         libtool \
         libunwind-dev \
@@ -77,6 +87,7 @@ RUN apt-get install -y \
         libgtest-dev \
         libgtk-3-dev \
         libgtk2.0-dev \
+        libhdf5-dev \
         libjpeg-dev \
         libopenexr-dev \
         libpng-dev \
@@ -114,10 +125,16 @@ RUN pip3 install \
         wheel
 
 # Install XRT
-RUN wget --progress=dot:mega -O xrt.deb https://www.xilinx.com/bin/public/openDownload?filename=xrt_202020.2.8.726_18.04-amd64-xrt.deb \
+RUN wget --progress=dot:mega -O xrt.deb ${XRT_URL} \
     && ls -lhd ./xrt.deb \
     && apt-get update -y \
     && apt-get install -y ./xrt.deb \
+    && rm -fr /tmp/*
+
+# Install XRM
+RUN wget --progress=dot:mega -O xrm.deb ${XRM_URL} \
+    && ls -lhd ./xrm.deb \
+    && apt-get install -y ./xrm.deb \
     && rm -fr /tmp/*
 
 # glog 0.4.0
@@ -144,19 +161,73 @@ RUN cd /tmp; wget --progress=dot:mega https://codeload.github.com/google/protobu
     && ldconfig \
     && rm -fr /tmp/*
 
-# opencv 3.4.3
-RUN export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
-    && cd /tmp; wget --progress=dot:mega https://github.com/opencv/opencv/archive/3.4.3.tar.gz \
-    && tar -xvf 3.4.3.tar.gz \
-    && cd opencv-3.4.3 \
-    && mkdir build \
-    && cd build \
-    && cmake -DBUILD_SHARED_LIBS=ON .. \
-    && make -j \
-    && make install \
-    && ldconfig \
-    && export PATH="${VAI_ROOT}/conda/bin:${VAI_ROOT}/utility:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
-    && rm -fr /tmp/*
+# opencv 3.4.1
+RUN add-apt-repository ppa:timsc/opencv-3.4 \
+    && apt-get update \
+    && apt install -y\
+        libcv-dev=3.4.1-bionic1.1 \
+        libcv3.4=3.4.1-bionic1.1 \
+        libopencv-calib3d-dev=3.4.1-bionic1.1  \
+        libopencv-calib3d3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-calib3d3.4=3.4.1-bionic1.1 \
+        libopencv-core-dev=3.4.1-bionic1.1 \
+        libopencv-core3.4=3.4.1-bionic1.1 \
+        libopencv-dev=3.4.1-bionic1.1 \
+        libopencv-dnn-dev=3.4.1-bionic1.1 \
+        libopencv-dnn3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-dnn3.4=3.4.1-bionic1.1 \
+        libopencv-features2d-dev=3.4.1-bionic1.1 \
+        libopencv-features2d3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-features2d3.4=3.4.1-bionic1.1 \
+        libopencv-flann-dev=3.4.1-bionic1.1 \
+        libopencv-flann3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-flann3.4=3.4.1-bionic1.1 \
+        libopencv-highgui-dev=3.4.1-bionic1.1 \
+        libopencv-highgui3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-highgui3.4=3.4.1-bionic1.1 \
+        libopencv-imgcodecs-dev=3.4.1-bionic1.1 \
+        libopencv-imgcodecs3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-imgcodecs3.4=3.4.1-bionic1.1 \
+        libopencv-imgproc-dev=3.4.1-bionic1.1 \
+        libopencv-imgproc3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-imgproc3.4=3.4.1-bionic1.1 \
+        libopencv-ml-dev=3.4.1-bionic1.1 \
+        libopencv-ml3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-ml3.4=3.4.1-bionic1.1 \
+        libopencv-objdetect-dev=3.4.1-bionic1.1 \
+        libopencv-objdetect3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-objdetect3.4=3.4.1-bionic1.1 \
+        libopencv-photo-dev=3.4.1-bionic1.1 \
+        libopencv-photo3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-photo3.4=3.4.1-bionic1.1 \
+        libopencv-shape-dev=3.4.1-bionic1.1 \
+        libopencv-shape3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-shape3.4=3.4.1-bionic1.1 \
+        libopencv-stitching-dev=3.4.1-bionic1.1 \
+        libopencv-stitching3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-stitching3.4=3.4.1-bionic1.1 \
+        libopencv-superres-dev=3.4.1-bionic1.1 \
+        libopencv-superres3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-superres3.4=3.4.1-bionic1.1 \
+        libopencv-ts-dev=3.4.1-bionic1.1 \
+        libopencv-video-dev=3.4.1-bionic1.1 \
+        libopencv-video3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-video3.4=3.4.1-bionic1.1 \
+        libopencv-videoio-dev=3.4.1-bionic1.1 \
+        libopencv-videoio3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-videoio3.4=3.4.1-bionic1.1 \
+        libopencv-videostab-dev=3.4.1-bionic1.1 \
+        libopencv-videostab3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-videostab3.4=3.4.1-bionic1.1 \
+        libopencv-viz-dev=3.4.1-bionic1.1 \
+        libopencv-viz3.4-dbg=3.4.1-bionic1.1 \
+        libopencv-viz3.4=3.4.1-bionic1.1 \
+        libopencv3.4-java=3.4.1-bionic1.1 \
+        opencv-data=3.4.1-bionic1.1 \
+        opencv-doc=3.4.1-bionic1.1 \
+        python-opencv=3.4.1-bionic1.1 \
+        python3-opencv=3.4.1-bionic1.1
+
 
 # gflags 2.2.2
 RUN cd /tmp; wget --progress=dot:mega https://github.com/gflags/gflags/archive/v2.2.2.tar.gz \
@@ -185,13 +256,6 @@ RUN cd /tmp; wget --progress=dot:mega http://launchpadlibrarian.net/436533799/li
     && dpkg -i ./libjson-c4_0.13.1+dfsg-4_amd64.deb \
     && rm -fr /tmp/*
 
-RUN cd /tmp \
-    && wget --progress=dot:mega -O sdk.sh https://www.xilinx.com/bin/public/openDownload?filename=sdk-2020.2.0.0.sh  \
-    && chmod a+x /tmp/sdk.sh \
-    && /tmp/sdk.sh -y \
-    && rm -fr /tmp/* \
-    && chmod 777 /opt/petalinux/2020.2/sysroots/aarch64-xilinx-linux/
-
 RUN echo $VERSION > /etc/VERSION.txt
 
 ENV GOSU_VERSION 1.12
@@ -203,6 +267,7 @@ RUN groupadd vitis-ai-group \
     && passwd -d vitis-ai-user \
     && usermod -aG sudo vitis-ai-user \
     && echo 'ALL ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+    && echo 'Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/vitis_ai/conda/bin"' >> /etc/sudoers \
     && curl -sSkLo /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
     && chmod +x /usr/local/bin/gosu \
     && echo ". $VAI_ROOT/conda/etc/profile.d/conda.sh" >> ~vitis-ai-user/.bashrc \
@@ -214,30 +279,44 @@ RUN groupadd vitis-ai-group \
     && echo $DATE > /etc/BUILD_DATE.txt \
     && echo 'export PS1="\[\e[91m\]Vitis-AI\[\e[m\] \w > "' >> ~vitis-ai-user/.bashrc \
     && mkdir -p ${VAI_ROOT} \
-    && chown -R vitis-ai-user:vitis-ai-group ${VAI_ROOT}
+    && chown -R vitis-ai-user:vitis-ai-group ${VAI_ROOT} \
+    && mkdir /etc/conda \
+    && touch /etc/conda/condarc \
+    && chmod 777 /etc/conda/condarc \
+    && echo "DEBUG: Docker build environment variable VAI_CONDA_CHANNEL is ${VAI_CONDA_CHANNEL}" \
+    && echo "DEBUG: /etc/conda/condarc is \n\n" \
+    && cat /etc/conda/condarc \
+    && mkdir -p ${VAI_ROOT}/scripts \
+    && chmod 775 ${VAI_ROOT}/scripts
+
+COPY docker/host_cross_compiler_setup.sh ${VAI_ROOT}/scripts/
+RUN chmod a+rx ${VAI_ROOT}/scripts/host_cross_compiler_setup.sh
+
+COPY docker/replace_pytorch.sh ${VAI_ROOT}/scripts/
+RUN chmod a+rx ${VAI_ROOT}/scripts/replace_pytorch.sh
 
 # Set up Anaconda
 USER vitis-ai-user
-ENV MY_CONDA_CHANNEL="file:///scratch/conda-channel"
 
 RUN cd /tmp \
     && wget --progress=dot:mega https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh \
     && /bin/bash ./miniconda.sh -b -p $VAI_ROOT/conda \
+    && echo "channels:" >> /etc/conda/condarc \
+    && echo "  - ${VAI_CONDA_CHANNEL}" >> /etc/conda/condarc \
     && sudo ln -s $VAI_ROOT/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
 
 ADD --chown=vitis-ai-user:vitis-ai-group docker/cpu_conda/*.yml /scratch/
 ADD --chown=vitis-ai-user:vitis-ai-group docker/pip_requirements.txt /scratch/
-ADD --chown=vitis-ai-user:vitis-ai-group docker/pip_requirements_neptune.txt /scratch/
 
 # Rebuild this layer every time
 ARG CACHEBUST=1
 
 # Create conda envs
 RUN cd /scratch/ \
-    && wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.3.598-01.tar.gz \
+    && wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.4.914-01.tar.gz \
     && tar -xzvf conda-channel.tar.gz \
     && . $VAI_ROOT/conda/etc/profile.d/conda.sh \
-    && conda install conda-build \
+    && conda install -c defaults conda-build \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && conda env create -f /scratch/vitis-ai-pytorch.yml \
         && conda activate vitis-ai-pytorch \
@@ -252,26 +331,30 @@ RUN cd /scratch/ \
         && conda activate vitis-ai-tensorflow2 \
         && pip install -r /scratch/pip_requirements.txt \
         && pip install --ignore-installed tensorflow==2.3.0 \
-    && conda env create -f /scratch/vitis-ai-neptune.yml \
-        && conda activate vitis-ai-neptune \
-        && pip install -r /scratch/pip_requirements_neptune.txt \
     && mkdir -p $VAI_ROOT/compiler \
         && conda activate vitis-ai-caffe \
         && sudo cp -r $CONDA_PREFIX/lib/python3.6/site-packages/vaic/arch $VAI_ROOT/compiler/arch \
     && rm -fr /scratch/*
 
-# Rebuild this layer every time
 USER root
+# VAI-1372: Workaround to fix GCC 9 in vitis-ai-tensorflow
+RUN rm -f /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/etc/conda/activate.d/activate-binutils_linux-64.sh \
+    && rm -f /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/etc/conda/activate.d/activate-gcc_linux-64.sh \
+    && rm -f /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/etc/conda/activate.d/activate-gxx_linux-64.sh \
+    && rm -f /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/etc/conda/deactivate.d/deactivate-binutils_linux-64.sh \
+    && rm -f /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/etc/conda/deactivate.d/deactivate-gcc_linux-64.sh \
+    && rm -f /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/etc/conda/deactivate.d/deactivate-gxx_linux-64.sh
+
+# Rebuild this layer every time
 ARG CACHEBUST=1
-RUN cd /tmp/ \
-    && wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog_1.3.1-r31_amd64.deb \
-    && wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory_1.3.1-r29_amd64.deb \
-    && wget -O libxir.deb https://www.xilinx.com/bin/public/openDownload?filename=libxir_1.3.1-r42_amd64.deb \
-    && wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_1.3.1-r67_amd64.deb \
-    && wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis_ai_library_1.3.1-r69_amd64.deb \
-    && wget -O libbutler-base.deb https://www.xilinx.com/bin/public/openDownload?filename=libbutler-base_1.3.0_amd64.deb \
-    && wget -O librt-engine.deb https://www.xilinx.com/bin/public/openDownload?filename=librt-engine_1.3.0-r106_amd64.deb \
-    && wget -O aks.deb https://www.xilinx.com/bin/public/openDownload?filename=aks_1.3.0-r43_amd64.deb \
+RUN cd /tmp \
+    && wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog_1.4.0-r75_amd64.deb \
+    && wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory_1.4.0-r77_amd64.deb \
+    && wget -O libxir.deb https://www.xilinx.com/bin/public/openDownload?filename=libxir_1.4.0-r80_amd64.deb \
+    && wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_1.4.0-r117_amd64.deb \
+    && wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis_ai_library_1.4.0-r105_amd64.deb \
+    && wget -O librt-engine.deb https://www.xilinx.com/bin/public/openDownload?filename=librt-engine_1.4.0-r178_amd64.deb \
+    && wget -O aks.deb https://www.xilinx.com/bin/public/openDownload?filename=aks_1.4.0-r73_amd64.deb \
     && apt-get install -y --no-install-recommends /tmp/*.deb \
     && rm -rf /tmp/* \
     && ldconfig

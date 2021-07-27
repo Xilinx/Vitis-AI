@@ -1,4 +1,4 @@
-# Zynq UltraScale＋ MPSoC DPU TRD Vitis 2020.2
+# Zynq UltraScale＋ MPSoC DPU TRD Vitis 2021.1
 
 ## Table of Contents
 
@@ -29,7 +29,7 @@
 
 ## 1 Revision History
 
-This wiki page complements the Vitis 2020.2 version of the DPU TRD.
+This wiki page complements the Vitis 2021.1 version of the DPU TRD.
 
 Vitis1.3 Change log:
 
@@ -52,7 +52,7 @@ This tutorial contains information about:
 
 - How to set up the ZCU102 evaluation board and run the TRD.
 - How to change the Configuration of DPU.
-- How to integrate the DPU in the customer platform in vitis 2020.2 environment.
+- How to integrate the DPU in the customer platform in vitis 2021.1 environment.
 
 ------
 
@@ -71,12 +71,12 @@ Required:
 ### 3.2 Software
 
   Required:
-  - Vitis 2020.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-2.html) 
-  - [Silicon Labs quad CP210x USB-to-UART bridge driver](http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
+  - Vitis 2021.1[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2021-1.html) 
+  - [CP210x_Universal_Windows_Driver](https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
-  - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.2)
-  - [zcu102 base platform 2020.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
-  - [ZYNQMP common image 2020.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
+  - [XRT 2021.1](https://github.com/Xilinx/XRT/tree/2021.1)
+  - [zcu102 base platform 2021.1](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
+  - [ZYNQMP common image 2021.1](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
   - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
 
@@ -163,7 +163,7 @@ DPU_TRD 
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-%export TRD_HOME =<Vitis AI path>/dsa/DPU-TRD
+%export TRD_HOME =<Vitis AI path>/DPU-TRD
 ```
 
 ###### **Note:** It is recommended to follow the build steps in sequence.
@@ -179,7 +179,7 @@ The following tutorials assume that the Vitis and XRT environment variable is se
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <vitis install path>/Vitis/2020.2/settings64.sh
+% source <vitis install path>/Vitis/2021.1/settings64.sh
 
 % source opt/xilinx/xrt/setup.sh
 ```
@@ -191,9 +191,9 @@ Build the hardware design.
 ```
 % cd $TRD_HOME/prj/Vitis
 
-% export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2020.2 
+% export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2021.1 
 
-% export SDX_PLATFORM=<zcu102 base platform path>/xilinx_zcu102_base_202020_1/xilinx_zcu102_base_202020_1.xpfm
+% export SDX_PLATFORM=<zcu102 base platform path>/xilinx_zcu102_base_202010_1/xilinx_zcu102_base_202010_1.xpfm
 
 % make KERNEL=DPU_SM DEVICE=zcu102
 ```
@@ -212,7 +212,7 @@ $TRD_HOME/prj/Vitis/binary_container_1/link/vivado/vpl/prj/prj.gen/sources_1/bd/
 
 #### 5.2.3 Run Resnet50 Example 
 
-**The TRD project has generated the matching model file in $TRD_HOME/app/ path as the default settings. If the user change the DPU settings. The model need to be created again.**
+**The TRD project has generated the matching model file in $TRD_HOME/prj/app/ path as the default settings. If the user change the DPU settings. The model need to be created again.**
 
 This part is about how to run the Resnet50 example from the source code.
 
@@ -220,7 +220,7 @@ All the related files have been packaged in **$TRD_HOME/prj/Vitis/binary_contain
 
 The all needed files are in **$TRD_HOME/prj/Vitis/binary_container_1/sd_card**.
 
-Copy the directory **$TRD_HOME/app** to SD Card with ssh directly.
+Copy the directory **$TRD_HOME/app** to the BOOT partition of the SD Card.
 
 After the linux boot, run:
 
@@ -638,7 +638,7 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
 
 			2. Git URL - DPU TRD URL - https://github.com/Xilinx/Vitis-AI.git 
   
-			3. Branch - ML-2605-folder-structure
+			3. Branch - 1.4
   
 			4. click Apply and Close
 
@@ -654,8 +654,8 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
 
   ![PROJECT_NAME](./doc/6.6.png) 
 
-	c. Enter the Sysroot, Root FS, Kernel Image paths and click Next. Find them in the common system. The user can get the related in the ZYNQMP common image 2020.2. 
-[ZYNQMP common image 2020.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
+	c. Enter the Sysroot, Root FS, Kernel Image paths and click Next. Find them in the common system. The user can get the related in the ZYNQMP common image 2021.1 
+[ZYNQMP common image 2021.1](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
 
   ![SYSROOT](./doc/sysroot.png) 
  
@@ -707,9 +707,13 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
 
 	b. Enter "-std=c++17" in Miscellaneous->Other flags, This step has supported by the Json. The user can skip it.
 
+  ![OPENCV](./doc/opencv.png)
+
+	c. Enter "sysroots/cortexa72-cortexa53-xilinx-linux/user/include/opencv4" path into GCC Host Compilier -> includes.
+
   ![C_BUILD](./doc/6.13.png)
 
-	c. Add the following libraries in libraries window, This step has supported by the Json. The user can skip it.
+	d. Add the following libraries in libraries window, This step has supported by the Json. The user can skip it.
   - glog 
   - vart-mem-manager 
   - xir 
@@ -724,7 +728,7 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
   - vart-dpu-runner
   - vart-dpu-controller
 
-   d. Add <Vitis AI path>/DPU-TRD/src/app/samples/lib in GCC Host Link-> Libraries->Library search path. make sure that new path is in front of the SYSROOT path.
+   e. Add <Vitis AI path>/DPU-TRD/src/app/samples/lib in GCC Host Link-> Libraries->Library search path. make sure that new path is in front of the SYSROOT path.
   
   ![LIBRARY](./doc/6.14.png)
   

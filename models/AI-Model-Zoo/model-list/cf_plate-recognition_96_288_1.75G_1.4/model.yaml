@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: license plate recognition model based on inception-v1.
+input size: 96*288
+float ops: 1.75G
+task: classification
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_plate-recognition_96_288_1.75G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_plate-recognition_96_288_1.75G_1.4.zip
+  checksum: 67daf39c09322109a34a2820fe164721
+- name: plate_num
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 29f65459534a7d772f0463523b953c86
+- name: plate_num
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-vck190-r1.4.0.tar.gz
+  checksum: b5ac54f3cc1f642c6c5c1e0a44220502
+- name: plate_num
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 666f9c9d0db8e7d1d9d666928ee22d9b
+- name: plate_num
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u200-u250-r1.4.0.tar.gz
+  checksum: 1bdb1a1cd2961a8b21336e67dd7606f8
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

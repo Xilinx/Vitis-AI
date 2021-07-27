@@ -36,6 +36,7 @@ class XrtBinStream {
   std::string get_dsa() const;
   uint64_t get_cu_base_addr(size_t cu_idx) const;
   std::array<unsigned char, sizeof(xuid_t)> get_uuid() const;
+  bool is_lpddr() const { return is_lpddr_; }
 
  private:
   void init_fd(const std::string filename);
@@ -45,6 +46,7 @@ class XrtBinStream {
   void init_mem_topology();
   void init_cu_names();
   void init_cu_indices();
+  void guess_lpddr();
 
  private:
   int fd_;
@@ -56,5 +58,6 @@ class XrtBinStream {
   std::vector<std::string> cu_names_;
   std::vector<size_t> indices_;
   std::string dsa_;
+  bool is_lpddr_;
 };
 }  // namespace xir

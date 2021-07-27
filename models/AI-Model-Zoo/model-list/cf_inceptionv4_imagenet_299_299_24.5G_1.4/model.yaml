@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: inception-v4 classifier on ImageNet.
+input size: 299*299
+float ops: 24.5G
+task: classification
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_inceptionv4_imagenet_299_299_24.5G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv4_imagenet_299_299_24.5G_1.4.zip
+  checksum: 8a71218bf557af79d93f6e1346c03aad
+- name: inception_v4
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: b6a6752715c7dc47a0c5b9d320f97d11
+- name: inception_v4
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4-vck190-r1.4.0.tar.gz
+  checksum: 89a6690510e0b5c2587bfa24e8a83141
+- name: inception_v4
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 00f88e5e8859c528f9c12e3f5b6afec1
+- name: inception_v4
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: abda2f2d60c2bfd39162a2335ac9a6e8
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

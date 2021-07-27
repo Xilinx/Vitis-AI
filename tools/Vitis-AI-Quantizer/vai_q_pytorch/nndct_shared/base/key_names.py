@@ -1,6 +1,3 @@
-
-
-#
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
+import sys
 
 class GlobalMap(object):
   globalmap = {}
@@ -84,19 +82,13 @@ class NNDCT_KEYS(object):
   XBLOBS_SUFFIX = '.xblobs'
 
   #for parsing/exporting
-  TF_REFLECT_OPS_MAP = 'tf_reflect_ops_map'
-  TF_PARSER_MAP = 'tf_parser_map'
-  TF_SUPPORT_OPS_MAP = 'tf_support_ops_map'
-  TF_IR_ATTRS_MAP = 'tf_ir_attrs_map'
-  TFKERAS_REFLECT_OPS_MAP = 'tf_keras_reflect_ops_map'
-  TFKERAS_PARSER_MAP = 'tf_keras_parser_map'
-  TFKERAS_SUPPORT_OPS_MAP = 'tf_keras_support_ops_map'
-  TFKERAS_IR_ATTRS_MAP = 'tfkeras_ir_attrs_map'
   TORCH_REFLECT_OPS_MAP = 'torch_reflect_ops_map'
   TORCH_PARSER_MAP = 'torch_parser_map'
   TORCH_SUPPORT_OPS_MAP = 'torch_support_ops_map'
   TORCH_PARAM_MAP = 'torch_parameters_name_map'
   TORCH_IR_ATTRS_MAP = 'torch_ir_attrs_map'
+  TORCH_SCHEMA_OP_TABLE = 'torch_schema_op_table'
+  NODE_CALLER_MAP = 'node_caller_map'
 
   #for quantization module:
   QUANT_MODE = "quant_mode"
@@ -149,16 +141,17 @@ class NNDCT_KEYS(object):
   DEPLOY_CHECK_DATA_FOLDER = 'deploy_check_data'
 
 
+
+
 # TODO(yuwang): Move to base_operation.py
 class NNDCT_OP(object):
   ADAPTIVEAVGPOOL2D = 'adaptive_avg_pool2d'
   ADD = 'elemwise_add'
-  SCALAR_ADD = "add"
   ARANGE = 'arange'
   ARGMAX = 'argmax'
   AVG_POOL = 'avgpool'
-  BASIC_LSTM = 'basic_lstm'
   BASIC_GRU = 'basic_gru'
+  BASIC_LSTM = 'basic_lstm'
   BATCH_NORM = 'batch_norm'
   BATCH_NORM1D = 'batch_norm_1d'
   BATCH_NORM3D = 'batch_norm_3d'
@@ -168,6 +161,7 @@ class NNDCT_OP(object):
   BMM = "bmm"
   BUFFER_GET_NEXT = 'buffer_get_next'
   CAST = 'cast'
+  CHANNEL_SCALE = 'channel_scale'
   CHUNK = 'chunk'
   CLAMP = 'clamp'
   CONCAT = 'concat'
@@ -175,9 +169,13 @@ class NNDCT_OP(object):
   CONTIGUOUS = 'contiguous'
   CONV1D = 'conv1d'
   CONV2D = 'conv2d'
+  CONV3D = 'conv3d'
   CONVTRANSPOSE2D = 'conv_transpose_2d'
+  CONVTRANSPOSE3D = 'conv_transpose_3d'
   DENSE = 'dense'
   DEPTHWISE_CONV2D = 'depthwise_conv2d'
+  DEPTHWISE_CONV3D = 'depthwise_conv3d'
+  DEQUANT_STUB = 'dequant_stub'
   DETACH = 'detach'
   DIV = 'elemwise_div'
   DROPOUT = 'dropout'
@@ -190,14 +188,19 @@ class NNDCT_OP(object):
   EXPAND_AS = 'expand_as'
   FLATTEN = 'flatten'
   FLOOR = 'floor'
-  FLOOR_DIV = 'floor_div'
+  FLOOR_DIV = 'floor_divide'
   FPGA_OP = 'fpga_op'
+  GATHER = 'gather'
+  GENERIC = 'generic'
+  GRID_SAMPLE = 'grid_sample'
   GRU = 'gru'
   HARDTANH = 'hardtanh'
+  HSIGMOID = 'hsigmoid'
+  HSWISH = 'hswish'
   IDENTITY = 'identity'
+  IF = 'if'
   INDEX = 'index'
   INDEX_INPUT_INPLACE = 'index_put_inplace'
-  IMAGE_SUMMARY = 'image_summary'
   INPLACE_COPY = 'copy_'
   INPUT = 'input'
   INPUT_WITH_DEFAULT = 'input_with_default'
@@ -205,10 +208,13 @@ class NNDCT_OP(object):
   INDEX = 'index'
   INTERPOLATE = 'interpolate'
   ITER_GET_NEXT = 'iter_get_next'
+  LAYER_NORM = 'layer_norm'
   LEAKY_RELU = 'leaky_relu'
   LINEAR = 'linear'
   LIST = 'list'
+  LIST_ADD = "list_add"
   LOG = 'log'
+  LOOP = 'loop'
   LSTM = 'lstm'
   LSTM_CELL = 'lstm_cell'
   MATMUL = 'matmul'
@@ -219,18 +225,19 @@ class NNDCT_OP(object):
   MERGE = 'merge'
   MIN = "min"
   MULTIPLY = 'elemwise_mul'
-  SCALAR_MUL = 'mul'
+  NEG = 'neg'
   NOOP = 'noop'
-  NOT_EQUAL = 'not_equal'
   NORM = 'normalize'
+  NOT_EQUAL = 'not_equal'
   ONE_HOT = 'one_hot'
   PACK = 'pack'
   PAD = 'pad'
   PERMUTE = 'permute'
+  PIXEL_SHUFFLE = 'pixel_shuffle'
+  PIXEL_UNSHUFFLE = 'pixel_unshuffle'
   PLACEHOLDER = 'placeholder'
   QUANT_NEURON = 'quant_neuron'
   QUANT_STUB = 'quant_stub'
-  DEQUANT_STUB = 'dequant_stub'
   RANDOM_UNIFORM = 'random_uniform'
   RANGE = 'range'
   REALDIV = 'real_div'
@@ -240,10 +247,13 @@ class NNDCT_OP(object):
   REPEAT = 'repeat'
   RESHAPE = 'reshape'
   RESIZE = 'resize'
+  RESIZE_3D = 'resize_3d'
   RNN = 'rnn'
   RNN_LAYER = 'rnn_layer'
   RSQRT = 'rsqrt'
   RSUB = 'rsub'
+  SCALAR_ADD = "add"
+  SCALAR_MUL = 'mul'
   SELECT = 'select'
   SHAPE = 'shape'
   SIGMOID = 'sigmoid'
@@ -291,4 +301,4 @@ class FrameworkType(object):
   NNDCT = 'nndct'
 
 class NNDCT_CONSTANT(object):
-  INT_MAX = 2147483647
+  INT_MAX = 2 ** 31 - 1

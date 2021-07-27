@@ -42,15 +42,15 @@ For more details on the different DPUs available, see [DPU Naming](https://githu
 
 ## References
 - [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)
-- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_3/zmw1606771874842.html)
+- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_4/index.html)
 - [Vitis AI Model Zoo with Performance & Accuracy Data](../models/AI-Model-Zoo)
-- [Vitis AI Tutorials](https://github.com/Xilinx/Vitis-In-Depth-Tutorial/tree/master/Machine_Learning)
+- [Vitis AI Tutorials](https://github.com/Xilinx/Vitis-Tutorials/tree/master/Machine_Learning)
 - [Developer Articles](https://developer.xilinx.com/en/get-started/ai.html)
 
 ## [System Requirements](learn/system_requirements.md)
 
 ## Questions and Support
-- [FAQ](docs/faq.md)
+- [FAQ](quick-start/faq.md)
 - [Vitis AI Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
 - [Third Party Source](reference/Thirdpartysource.md)
 
@@ -61,7 +61,7 @@ For more details on the different DPUs available, see [DPU Naming](https://githu
 [AWS F1 Application Execution on Xilinx Virtex UltraScale Devices]: https://github.com/aws/aws-fpga/blob/master/SDAccel/README.md
 [Release Notes]: release-notes.md
 [UG1023]: https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_4/ug1023-sdaccel-user-guide.pdf
-[FAQ]: docs/faq.md
+[FAQ]: quick-start/faq.md
 [Webinar on Xilinx FPGA Accelerated Inference]: https://event.on24.com/wcc/r/1625401/2D3B69878E21E0A3DA63B4CDB5531C23?partnerref=Mlsuite
 [Vitis AI Forum]: https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI
 [Models]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html#gettingStartedCloud

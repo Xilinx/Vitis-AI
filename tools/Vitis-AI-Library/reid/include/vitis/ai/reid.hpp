@@ -30,13 +30,11 @@
 namespace vitis {
 namespace ai {
 /**
- * @brief Base class for detecting roadline from an image (cv::Mat).
+ * @brief Base class for getting feat from an image (cv::Mat).
  *
  * Input is an image (cv::Mat).
  *
- * Output road line type and points maked road line.
- *
- * @note The input image size is 640x480
+ * Output image reid feat.
  *
  * Sample code:
  * @code

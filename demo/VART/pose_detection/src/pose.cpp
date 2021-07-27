@@ -65,24 +65,27 @@ void draw_img(Mat& img, vector<float>& results, float scale_w, float scale_h) {
 /**
  * convert output data format
  */
-void dpuOutputIn2FP32(float* outputAddr, float* buffer, int size) {
+void dpuOutputIn2FP32(int8_t* outputAddr, float* buffer, int size,
+                      float output_scale) {
   for (int idx = 0; idx < size; idx++) {
-    buffer[idx] = outputAddr[idx];
+    buffer[idx] = outputAddr[idx] * output_scale;
   }
 }
 
 /**
  * do average pooling calculation
  */
-void CPUCalAvgPool(float* data1, float* data2, int outWidth, int outHeight,
-                   int outChannel) {
+void CPUCalAvgPool(int8_t* data1, int8_t* data2, int outWidth, int outHeight,
+                   int outChannel, float pt_output_scale,
+                   float fc_pt_input_scale) {
   int length = outHeight * outWidth;
   for (int i = 0; i < outChannel; i++) {
     float sum = 0.0f;
     for (int j = 0; j < length; j++) {
       sum += data1[outChannel * j + i];
     }
-    data2[i] = sum / length;
+    int temp = (int)((sum / length) * pt_output_scale * fc_pt_input_scale);
+    data2[i] = (int8_t)std::min(temp, 127);
   }
 }
 
@@ -152,13 +155,15 @@ void GestureDetect::Run(cv::Mat& img) {
   float mean[3] = {104, 117, 123};
   auto inTensors = cloneTensorBuffer(pt_runner->get_input_tensors());
   auto outTensors = cloneTensorBuffer(pt_runner->get_output_tensors());
+  auto pt_input_scale = get_input_scale(pt_runner->get_input_tensors()[0]);
+  auto pt_output_scale = get_output_scale(pt_runner->get_output_tensors()[0]);
   int batchSize = inTensors[0]->get_shape().at(0);
   int width = inshapes[0].width;
   int height = inshapes[0].height;
   int inSize = inshapes[0].size;
   int outSize = outshapes[0].size;
-  float* imageInputs = new float[inSize * batchSize];
-  float* results1 = new float[outSize * batchSize];
+  int8_t* imageInputs = new int8_t[inSize * batchSize];
+  int8_t* results1 = new int8_t[outSize * batchSize];
   Mat img2 = cv::Mat(height, width, CV_8SC3);
   cv::resize(img, img2, Size(width, height), 0, 0, cv::INTER_LINEAR);
 
@@ -166,7 +171,7 @@ void GestureDetect::Run(cv::Mat& img) {
     for (int w = 0; w < width; w++) {
       for (int c = 0; c < 3; c++) {
         imageInputs[h * width * 3 + w * 3 + c] =
-            img2.at<Vec3b>(h, w)[c] - mean[c];
+            (int8_t)((img2.at<Vec3b>(h, w)[c] - mean[c]) * pt_input_scale);
       }
     }
   }
@@ -185,14 +190,18 @@ void GestureDetect::Run(cv::Mat& img) {
 
   inTensors = cloneTensorBuffer(fc_pt_runner->get_input_tensors());
   outTensors = cloneTensorBuffer(fc_pt_runner->get_output_tensors());
+  auto fc_pt_input_scale =
+      get_input_scale(fc_pt_runner->get_input_tensors()[0]);
+  auto fc_pt_output_scale =
+      get_output_scale(fc_pt_runner->get_output_tensors()[0]);
 
   inSize = fc_inshapes[0].size;
   outSize = fc_outshapes[0].size;
   int outSize2 = fc_outshapes[1].size;
-  float* datain0 = new float[inSize * batchSize];
-  float* dataresult = new float[outSize * batchSize];
+  int8_t* datain0 = new int8_t[inSize * batchSize];
+  int8_t* dataresult = new int8_t[outSize * batchSize];
   CPUCalAvgPool(results1, datain0, outshapes[0].width, outshapes[0].height,
-                outshapes[0].channel);
+                outshapes[0].channel, pt_output_scale, fc_pt_input_scale);
 
   std::vector<std::unique_ptr<vart::TensorBuffer>> inputs, outputs;
   inputs.push_back(
@@ -206,7 +215,7 @@ void GestureDetect::Run(cv::Mat& img) {
   fc_pt_runner->wait(job.first, -1);
   vector<float> results(28);
 
-  dpuOutputIn2FP32(dataresult, results.data(), outSize);
+  dpuOutputIn2FP32(dataresult, results.data(), outSize, fc_pt_output_scale);
 
   float scale_w = (float)img.cols / (float)width;
   float scale_h = (float)img.rows / (float)height;

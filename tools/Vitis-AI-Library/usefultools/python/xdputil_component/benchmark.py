@@ -32,8 +32,24 @@ def get_child_subgraph_dpu_i(xmodel: "String", subgraph_index: "int") -> "String
 
 
 def main(args):
-    subgraph_name = get_child_subgraph_dpu_i(args.xmodel, args.subgraph_index)
-    if tools.test_dpu_runner_mt(args.xmodel, subgraph_name, args.num_of_threads):
+    import os
+
+    for f in args.input_files:
+        if not os.path.exists(f):
+            print(f, " does not exist")
+            return
+    for f in args.output_files:
+        if not os.path.exists(f):
+            print(f, " does not exist")
+            return
+    graph = xir.Graph.deserialize(args.xmodel)
+
+    if tools.test_dpu_runner_mt(
+        get_child_subgraph_dpu(graph)[args.subgraph_index],
+        args.num_of_threads,
+        args.input_files,
+        args.output_files,
+    ):
         print("Test PASS.")
     else:
         print("Test Failed!!!")
@@ -47,11 +63,12 @@ def help(subparsers):
         help="<xmodel> [-i subgraph_index] <num_of_threads>",
         description=(
             "env variables:\n"
-            + "\tCOPY_INPUT=1   : enable copying input\n"
-            + "\tCOPY_OUTPUT=1  : enable copying output\n"
-            + "\tENABLE_MEMCMP=1: enable comparing\n"
-            + "\tSLEEP_MS=60000 : sleep for 60s before stopping\n"
-            + "\tNUM_OF_REF=4   : num of reference results per runner\n"
+            + "\tCOPY_INPUT=1           : enable copying input\n"
+            + "\tCOPY_OUTPUT=1          : enable copying output\n"
+            + "\tENABLE_MEMCMP=1        : enable comparing\n"
+            + "\tSLEEP_MS=60000         : sleep for 60s before stopping\n"
+            + "\tNUM_OF_REF=4           : num of reference results per runner\n"
+            + "\tSAVE_INPUT_TO_FILE=1   : enable save input to file"
         ),
         formatter_class=RawTextHelpFormatter,
     )
@@ -59,5 +76,19 @@ def help(subparsers):
     parser.add_argument(
         "-i", "--subgraph_index", type=int, default=0, help="<subgraph_index>"
     )
-    parser.add_argument("num_of_threads", type=int, help="the output png path ")
+    parser.add_argument("num_of_threads", type=int, help="Number of threads using dpu")
+    parser.add_argument(
+        "-inputs",
+        "--input_files",
+        nargs="*",
+        default=[],
+        help="input_files; eg. input_tensor_0_data_0.bin input_tensor_1_data_0.bin input_tensor_0_data_1.bin input_tensor_1_data_1.bin",
+    )
+    parser.add_argument(
+        "-outputs",
+        "--output_files",
+        nargs="*",
+        default=[],
+        help="output_files; eg. output_tensor_0_data_0.bin output_tensor_1_data_0.bin output_tensor_0_data_1.bin output_tensor_1_data_1.bin",
+    )
     parser.set_defaults(func=main)

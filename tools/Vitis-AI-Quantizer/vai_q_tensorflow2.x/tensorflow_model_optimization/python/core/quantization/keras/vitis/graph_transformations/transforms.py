@@ -22,6 +22,8 @@ import abc
 import collections
 import six
 
+from tensorflow.keras import layers
+
 
 class LayerPattern(object):
   """Defines a tree sub-graph pattern of Keras layers to match in a model.
@@ -64,8 +66,7 @@ class LayerPattern(object):
 
   def __str__(self):
     return '{} : {} <- [{}]'.format(
-        self.class_name,
-        self.config,
+        self.class_name, self.config,
         ', '.join([str(inp) for inp in self.inputs]))
 
 
@@ -100,6 +101,53 @@ class LayerNode(object):
     self.input_layers = input_layers
     self.metadata = metadata
 
+  @classmethod
+  def from_layer(cls,
+                 layer,
+                 name=None,
+                 weights=None,
+                 input_layers=None,
+                 metadata=None):
+    """Construct a LayerNode from a keras.layers.Layer object.
+    Args:
+      layer: keras.layers.Layer object.
+      name: string of layer name, layer.name will be used if it is not set.
+      weights: An OrderedDict of weight name => value for the layer, layer's weights
+        will be used if it is not set.
+      input_layers: List of `LayerNode`s that feed into this layer.
+      metadata: Dictionary of metadata for a given layer.
+    Return:
+    """
+    layer_config = layers.serialize(layer)
+    if not name:
+      layer_config['name'] = layer.name
+    else:
+      layer_config['name'] = name
+
+    def _weight_name(name):
+      """Extracts the weight name by removing layer from TF variable name.
+      For example, returns 'kernel:0' for 'dense_2/kernel:0'.
+      Args:
+        name: TensorFlow variable name.
+      Returns:
+        Extracted weight name.
+      """
+      return name.split('/')[-1]
+
+    def _get_keras_layer_weights(keras_layer):
+      """Returns a map of weight name, weight matrix. Keeps keras ordering."""
+      weights_map = collections.OrderedDict()
+      for weight_tensor, weight_numpy in \
+      zip(keras_layer.weights, keras_layer.get_weights()):
+        weights_map[_weight_name(weight_tensor.name)] = weight_numpy
+
+      return weights_map
+
+    if not weights:
+      weights = _get_keras_layer_weights(layer)
+
+    return cls(layer_config, weights, input_layers, metadata)
+
   def __str__(self):
     return '{} <- [{}]'.format(
         self.layer,
@@ -129,8 +177,8 @@ class LayerNode(object):
     if len(self.input_layers) != len(other.input_layers):
       return False
 
-    for first_input_layer, second_input_layer in zip(
-        self.input_layers, other.input_layers):
+    for first_input_layer, second_input_layer in zip(self.input_layers,
+                                                     other.input_layers):
       if first_input_layer != second_input_layer:
         return False
 

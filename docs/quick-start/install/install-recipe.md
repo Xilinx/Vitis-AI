@@ -32,7 +32,7 @@ To run the GPU docker, use command:
 ./docker_run.sh xilinx/vitis-ai-gpu:latest
 ```
 Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
-More Detail can be found here: [Run Docker Container](docs/install_docker/load_run_docker.md)
+More Detail can be found here: [Run Docker Container](./install_docker/load_run_docker.md)
 
 **X11 Support for Running Vitis AI Docker with Alveo**
 

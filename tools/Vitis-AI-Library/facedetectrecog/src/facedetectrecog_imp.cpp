@@ -24,6 +24,7 @@
 #include <xir/attrs/attrs.hpp>
 //#include <vitis/ai/expand_and_align.hpp>
 
+DEF_ENV_PARAM_2(VAI_LIBRARY_MODELS_DIR, ".", std::string)
 DEF_ENV_PARAM(ENABLE_DEBUG_FACE_DETECT_RECOG, "0");
 using Eigen::Map;
 using Eigen::Matrix3f;
@@ -176,7 +177,7 @@ static std::pair<cv::Rect, cv::Rect> expand_and_align(
 
 static vector<string> find_model_search_path() {
   auto ret = vector<string>{};
-  ret.push_back(".");
+  ret.push_back(ENV_PARAM(VAI_LIBRARY_MODELS_DIR));
   ret.push_back("/usr/share/vitis_ai_library/models");
   ret.push_back("/usr/share/vitis_ai_library/.models");
   return ret;

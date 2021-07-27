@@ -1,0 +1,35 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: Deeplabv3+(Mobilenetv2) segmentation on Cityscapes.
+input size: 1024*2048
+float ops: 132.74G
+task: segmentation
+framework: tensorflow
+prune: 'no'
+version: 1.4
+files:
+- name: tf_mobilenetv2_cityscapes_1024_2048_132.74G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv2_cityscapes_1024_2048_132.74G_1.4.zip
+  checksum: 91d2e5e6f9bfb09b962a3ab4953dd9df
+- name: mobilenet_v2_cityscapes_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: dbabb85e9b8248df3270d324400cb755
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

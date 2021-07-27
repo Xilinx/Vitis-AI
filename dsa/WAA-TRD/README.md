@@ -33,57 +33,47 @@ Input images are preprocessed  before being fed for inference of different deep 
 WAA-TRD
 ├── README.md
 ├── accel
-│   ├── DPUv2_B4096                         # DPUv2 Accelerator xo file used in the Pre-built flow
-│   │   └── dpu.xo
 │   ├── DPUV3E_3ENGINE                      # DPUv3e Accelerator xo file used in the Pre-built flow
-│   │   └── dpu.xo
+│   ├── DPUV3INT8                           # DPUv3eint8 Accelerator xo file used in the Build flow
+│   ├── DPUv2_B4096                         # DPUv2 Accelerator xo file used in the Pre-built flow
 │   ├── classification-pre                  # Pre-processing Accelerator for Resnet50 application
-│   └── detection-pre                       # Pre-processing Accelerator for Adas detection application
+│   ├── classification-pre_int8             # Pre-processing Accelerator for Resnet50_int8 application
+│   ├── classification-pre_jpeg             # Pre-processing Accelerator for Resnet50_jpeg application
+│   ├── detection-pre                       # Pre-processing Accelerator for Adas detection application
+│   └── jpeg_decoder                        # JPEG decoder Accelerator xo file
 ├── app
 │   ├── README.MD
-│   ├── adas_detection_waa                  # Adas detection application
+│   ├── adas_detection                      # Adas detection application
 │   │   ├── model
 │   │   ├── src
-│   │   ├── adas_detection_waa              # pre-compiled executable file
+│   │   ├── adas_detection                  # pre-compiled executable file for zcu102
 │   │   └── build.sh
-│   └── resnet50_waa                        # resnet50 application
+│   ├── resnet50                            # resnet50 application
+│   │   ├── model
+│   │   ├── src
+│   │   ├── resnet50                        # pre-compiled executable file for zcu102
+│   │   └── build.sh
+│   ├── resnet50_int8                       # resnet50_int8 application
+│   │   ├── model
+│   │   ├── src
+│   │   ├── resnet50_int8                   # pre-compiled executable file for zcu102
+│   │   └── build.sh
+│   └── resnet50_jpeg                       # resnet50_jpeg application
 │       ├── model
 │       ├── src
-│       ├── resnet50_waa                    # pre-compiled executable file
+│       ├── libs/libjfif                    # jpeg accelerator lib files
+│       ├── resnet50_jpeg                   # pre-compiled executable file for zcu102
 │       └── build.sh
 └── proj
     ├── build                               # Build TRD flow using source files
     │   ├── classification-pre_DPUv2        # zcu102: sd card image generation for classification example
-    │   │   ├── config_file                 # config file to integrate 2 DPU instances    
-    │   │   ├── kernel_xml
-    │   │   │   ├── dpu
-    │   │   │   └── sfm
-    │   │   ├── scripts        
-    │   │   ├── scripts_gui            
-    │   │   ├── syslink                     # postlink tcl file    
-    │   │   ├── Makefile
-    │   │   ├── build_classification_pre.sh    
-    │   │   └── dpu_conf.vh                 # dpu configuration file
+    │   ├── classification-pre_DPUv3int8    # alveo U200: xclbin generation for classification example    
     │   └── detection-pre_DPUv2             # zcu102: sd card image generation for detection example
-    │       ├── config_file                 # config file to integrate 2 DPU instances   
-    │       ├── kernel_xml
-    │       │   ├── dpu
-    │       │   └── sfm
-    │       ├── scripts        
-    │       ├── scripts_gui            
-    │       ├── syslink                     # postlink tcl file    
-    │       ├── Makefile
-    │       ├── build_detection_pre.sh    
-    │       └── dpu_conf.vh                 # dpu configuration file    
     └── pre-built                           # Build using Pre-processor sources & pre-built DPU  
         ├── classification-pre_DPUv2        # zcu102: sd card image generation for classification example
-        │   └── run.sh
         ├── detection-pre_DPUv2             # zcu102: sd card image generation for detection example
-        │   └── run.sh        
         ├── classification-pre_DPUv3e       # alveo U50: xclbin generation for classification example
-        │   └── run.sh
         └── detection-pre_DPUv3e            # alveo U50: xclbin generation for detection example
-            └── run.sh        
 
 ```
 
@@ -91,7 +81,8 @@ WAA-TRD
 
 ### 4.1 Overview
 This tutorial contents information about:
-- Build & Pre-built flow for ZCU102
+- Build flow for ZCU102 & Alveo-U200 
+- Pre-built flow for ZCU102 & Alveo-U50
 - Run classification & detection applications
 
 ------
@@ -99,36 +90,33 @@ This tutorial contents information about:
 ### 4.2 Design files
 Source  files location for DPU & Pre-processor IP is as below
 - DPUv2 IP: `~/Vitis-AI/dsa/DPU-TRD/dpu-ip`
-- Pre-processor IP: `~/Vitis-AI/dsa/WAA-TRD/accel/classification-pre` & `detection-pre`
-
+- Pre-processor IP: `~/Vitis-AI/dsa/WAA-TRD/accel/classification-pre`, `classification-pre_int8`, `classification-pre_jpeg` & `detection-pre`
 
 ### 4.3 Build and run the application
+Build flow for ZCU102 & Alveo-U200
 
-### ZCU102 Build flow- Build hardware design from sources and run the application.
-- For classification example, please refer to [WAA-TRD/proj/build/classification-pre_DPUv2/README](./proj/build/classification-pre_DPUv2/README.md) file
-
-- For detection example, please refer to [WAA-TRD/proj/build/detection-pre_DPUv2/README](./proj/build/detection-pre_DPUv2/README.md) file
-
-### ZCU102 Pre-built flow- DPU is pre-built and only pre-processing accelerator is built from sources. 
-
-
-- For classification example, please refer to [WAA-TRD/proj/pre-built/classification-pre_DPUv2/README](./proj/pre-built/classification-pre_DPUv2/README.md) file
-
-- For detection example, please refer to [WAA-TRD/proj/pre-built/detection-pre_DPUv2/README](./proj/pre-built/detection-pre_DPUv2/README.md) file
-
-### Alveo U50 Pre-built flow- DPU is pre-built and only pre-processing accelerator is built from sources. 
+| No. | Build flow                    | Device     | H/W Accelerated Functions                                                        | Documentation                                 |
+|-----|-------------------------------|------------|----------------------------------------------------------------------------------|-----------------------------------------------|
+| 1   | classification-pre_DPUv2      | ZCU102     | resize, mean subtraction & DPUv2                                                 | [WAA-TRD/proj/build/classification-pre_DPUv2/README](./proj/build/classification-pre_DPUv2/README.md)                      |
+| 2   | detection-pre_DPUv2           | ZCU102     | resize, mean subtraction, scale & DPUv2                                          | [WAA-TRD/proj/build/detection-pre_DPUv2/README](./proj/build/detection-pre_DPUv2/README.md)                      |
+| 3   | classification-pre_DPUv3int8  | Alveo-U200 | resize, mean subtraction & DPUv3int8                                             | [WAA-TRD/proj/build/classification-pre_DPUv3int8/README](./proj/build/classification-pre_DPUv3int8/README.md)                      |
 
 
-- For classification example, please refer to [WAA-TRD/proj/pre-built/classification-pre_DPUv3e/README](./proj/pre-built/classification-pre_DPUv3e/README.md) file
+Pre-built flow for ZCU102 & Alveo-U50
 
-- For detection example, please refer to [WAA-TRD/proj/pre-built/detection-pre_DPUv3e/README](./proj/pre-built/detection-pre_DPUv3e/README.md) file
-
+| No. | Pre-built flow                | Device     | H/W Accelerated Functions                                                        | Documentation                                 |
+|-----|-------------------------------|------------|----------------------------------------------------------------------------------|-----------------------------------------------|
+| 1   | classification-pre_DPUv2      | ZCU102     | JPEG decoder, YUV to RGB conversion, resize, mean subtraction & DPUv2            | [WAA-TRD/proj/pre-built/classification-pre_DPUv2/README](./proj/pre-built/classification-pre_DPUv2/README.md)                      |
+| 2   | detection-pre_DPUv2           | ZCU102     | resize, mean subtraction, scale & DPUv2                                          | [WAA-TRD/proj/pre-built/detection-pre_DPUv2/README](./proj/pre-built/detection-pre_DPUv2/README.md)                      |
+| 3   | classification-pre_DPUv3e     | Alveo-U50  | resize, mean subtraction & DPUv3e                                                | [WAA-TRD/proj/pre-built/classification-pre_DPUv3e/README](./proj/pre-built/classification-pre_DPUv3e/README.md)                      |
+| 4   | detection-pre_DPUv3e          | Alveo-U50  | resize, mean subtraction, scale & DPUv3e                                         | [WAA-TRD/proj/pre-built/detection-pre_DPUv3e/README](./proj/pre-built/detection-pre_DPUv3e/README.md)                     |
 
 ## 5 Build with new Pre-processing Accelerator
-In this section, example is provided for integrating new Pre-procsssing accelerator with DPU.
+For Classification & Detection example pre-processor accelerator please refer to [classification-preprocess README](./accel/classification-pre/README.md) & [detection-preprocess README](./accel/detection-pre/README.md) respectively. Array2xfMat, xfMat2hlsStrm & xf::cv::preProcess are manditory submodules in the Pre-process accelerator. As long as the interface of the pp_pipeline_accel function remains same, user can add or remove other submodules depending upon the Deep Neural Network's pre-process requirements.
+
+In this section, example is provided for integrating new Pre-procsssing accelerator with DPU for classification example. 
 
 Provided Resnet50 classification examples uses caffe resnet50 model `WAA-TRD/app/resnet50_waa/resnet50.xmodel`. In this model, pre-processing components are image resize and mean sub operation. Here Bilinear Interpolation is used in the resize. User can changes interpolation type to Nearest Neighbor by modifying line no 61 of accel file `WAA-TRD/accel/classification-pre/xf_pp_pipeline_accel.cpp` as below.
-
 ```
 61	xf::cv::resize<0,TYPE,HEIGHT,WIDTH,NEWHEIGHT,NEWWIDTH,NPC_T,MAXDOWNSCALE> (imgInput0, out_mat);
 ```

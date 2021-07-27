@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 #include <string>
-#include <vitis/ai/benchmark.hpp>
-#include <vitis/ai/nnpp/openpose.hpp>
 #include <vitis/ai/openpose.hpp>
+#include <vitis/ai/benchmark.hpp>
+
 int main(int argc, char *argv[]) {
   std::string model = argv[1];
   return vitis::ai::main_for_performance(argc, argv, [model] {

@@ -71,10 +71,9 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}"
   LIBRARY_OUTPUT_NAME ${PROJECT_NAME}-${COMPONENT_NAME}
-  INTERFACE_LINK_DIRECTORIES "/opt/xilinx/xrt/lib"
   BUILD_RPATH "\$ORIGIN/../buffer-object;\$ORIGIN/../xrt-device-handle"
   )
-target_link_libraries(${COMPONENT_NAME} PRIVATE ${MY_PROJECT_DEPS} buffer-object PUBLIC util)
+target_link_libraries(${COMPONENT_NAME} PRIVATE ${MY_PROJECT_DEPS} buffer-object PUBLIC util PRIVATE trace)
 target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>

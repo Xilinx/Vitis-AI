@@ -55,6 +55,12 @@ class NndctOption(object):
 
   nndct_equalization = Option(name="equalization", dtype=bool, default=True, action="store_true", 
                               help="enable weights equalization")
+  
+  nndct_wes = Option(name="weights_equalizing_shift", dtype=bool, default=False, action="store_true",
+                     help="enable weights equalizing shift")
+  
+  nndct_wes_in_cle = Option(name="weights_equalizing_shift in cle", dtype=bool, default=False, action="store_true",
+                     help="enable weights equalizing shift in cle")
 
   nndct_param_corr = Option(name="param_corr", dtype=bool, default=True, action="store_true", 
                             help="enable parameter correction")
@@ -64,4 +70,6 @@ class NndctOption(object):
   nndct_cv_app = Option(name="cv_app", dtype=bool, default=True, action="store_true", help="cv application")
 
   nndct_finetune_lr_factor = Option(name="finetune_lr_factor", dtype=float, default=0.01, help="finetune learning rate factor")
+
+  nndct_stat = Option(name="stat", dtype=int, default=0, help="quantizer statistic level")
   

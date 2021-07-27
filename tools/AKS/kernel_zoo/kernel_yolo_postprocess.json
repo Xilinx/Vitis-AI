@@ -13,6 +13,7 @@
     "anchor_cnt":   {"type": "int"},
     "conf_thresh":  {"type": "float"},
     "iou_thresh":   {"type": "float"},
+    "input_layout": {"type": "string"},
     "biases":       {"type": "float_array"}
   }
 }

@@ -20,9 +20,11 @@ import torch
 import numpy as np
 from nndct_shared.quantization import maybe_get_quantizer, process_inputs_and_params, post_quant_process
 from nndct_shared.utils import NndctOption
+from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS
 from .sigmoid_table import *
 from .fix_ops import NndctSigmoidTableLookup
 import pytorch_nndct.utils as py_utils
+
 __all__ = ['Sigmoid']
 
 SIGMOID_TABLE = deephi_sigmoid_table()
@@ -48,12 +50,20 @@ class deephi_Sigmoid(torch.nn.modules.Sigmoid):
       output = torch.empty_like(input)
       input_name = self.node.in_nodes[0]
       fragpos = self.quantizer.get_bnfp(input_name, False)[1]
+      
+      '''
       if(input.device == torch.device("cpu")):
         Ttable = SIGMOID_TABLE.table.to(torch.device("cpu"))
         output = output.to(torch.device("cpu"))
       else:
         Ttable = SIGMOID_TABLE.table.cuda()
         output = output.cuda()
+      '''
+      
+      quant_device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
+      Ttable = SIGMOID_TABLE.table.to(quant_device)
+      output = output.to(quant_device)
+      
       NndctSigmoidTableLookup(input,
                               Ttable,
                               output,

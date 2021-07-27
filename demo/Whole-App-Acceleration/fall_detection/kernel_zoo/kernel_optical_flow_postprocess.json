@@ -8,6 +8,6 @@
 
   "param_list" : {
     "bound": {"type": "int", "optional": false},
-    "visualize": {"type": "string"}
+    "visualize": {"type": "string", "optional": true}
   }
 }

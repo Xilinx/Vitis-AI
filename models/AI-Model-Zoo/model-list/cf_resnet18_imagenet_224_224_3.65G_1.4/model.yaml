@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: resnet_18 classifier on ImageNet.
+input size: 224*224
+float ops: 3.65G
+task: classification
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_resnet18_imagenet_224_224_3.65G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_resnet18_imagenet_224_224_3.65G_1.4.zip
+  checksum: 014b68040ddc1dc942a1eac29ef8b585
+- name: resnet18
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 93f67ee1c13adce4ea7e35c1622f1d89
+- name: resnet18
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-vck190-r1.4.0.tar.gz
+  checksum: 40fbaebc8a737fc3c797d64a52f241f4
+- name: resnet18
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 7aa79b418315cb6ee01889f070bccf1f
+- name: resnet18
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: f9e1892249d8b5c94972e5bd3690d5e7
+- name: resnet18
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 27ae5e335caf952114d2db4063c12cc0
+- name: resnet18
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-u200-u250-r1.4.0.tar.gz
+  checksum: 42553ec8a36ebfebde602d24a74f6db6
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

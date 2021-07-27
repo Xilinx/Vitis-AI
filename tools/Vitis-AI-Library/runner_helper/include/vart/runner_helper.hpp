@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 #pragma once
+#include <map>
 #include <vector>
+#include <xir/op/op_def.hpp>
 
 #include "vart/runner.hpp"
 #include "vitis/ai/dpu_runner.hpp"
-
 std::string to_string(
     const std::vector<vitis::ai::TensorBuffer*>& tensor_buffers);
 std::string to_string(const std::vector<vart::TensorBuffer*>& tensor_buffers);
+// std::string to_string(const std::vector<vart::TensorBuffer*>&
+// tensor_buffers);
 std::string to_string(const std::vector<xir::Tensor*>& tensors);
 std::string to_string(
     const std::vector<const vitis::ai::TensorBuffer*>& tensor_buffers);
@@ -46,4 +49,24 @@ std::vector<std::unique_ptr<vart::TensorBuffer>> alloc_cpu_flat_tensor_buffers(
     const std::vector<const xir::Tensor*>& tensors);
 std::unique_ptr<vart::TensorBuffer> alloc_cpu_flat_tensor_buffer(
     const xir::Tensor* tensor);
+typedef struct {
+  void* data;
+  size_t size;
+} tensor_buffer_data_t;
+
+tensor_buffer_data_t get_tensor_buffer_data(vart::TensorBuffer* tensor_buffer,
+                                            size_t batch_index);
+tensor_buffer_data_t get_tensor_buffer_data(vart::TensorBuffer* tensor_buffer,
+                                            const std::vector<int>& idx);
+void dump_tensor_buffer(const std::string& dir,
+                        vart::TensorBuffer* tensor_buffer, int batch_base = 0);
 }  // namespace vart
+
+namespace xir {
+
+std::string to_string(const xir::Attrs* attr);
+std::string to_string(const xir::OpDef* opdef);
+std::string to_string(const std::vector<OpArgDef>& argdef);
+std::string to_string(const OpArgDef& argdef);
+
+}  // namespace xir

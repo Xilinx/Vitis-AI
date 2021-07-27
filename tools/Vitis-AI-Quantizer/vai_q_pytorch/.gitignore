@@ -3,6 +3,7 @@
 *.a
 
 *.pb
+*.pth
 *.ckpt
 *.meta
 *.h5

@@ -1,0 +1,285 @@
+&i2c1 {
+	i2c-mux@74 {
+		compatible = "nxp,pca9548";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x74>;
+
+		i2c@6 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <6>;
+
+			si570_2: clock-generator@5d {
+				#clock-cells = <0>;
+				compatible = "silabs,si570";
+				reg = <0x5d>;
+				temperature-stability = <50>;
+				factory-fout = <156250000>;
+				clock-frequency = <200000000>;
+				clock-output-names = "si570_mgt";
+			};
+		};
+
+		i2c@3 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <3>;
+
+			si570_1: clock-generator@60 {
+				#clock-cells = <0>;
+				compatible = "silabs,si570";
+				reg = <0x60>;
+				temperature-stability = <50>;
+				factory-fout = <200000000>;
+			};
+		};
+	};
+};
+
+&amba_pl {
+	display_pipe_v_mix_0: v_mix@a4040000 {
+		clock-names = "ap_clk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,mixer-5.0";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 86 4>;
+		reg = <0x0 0xa4040000 0x0 0x10000>;
+		reset-gpios = <&gpio0 26 1>;
+		xlnx,bpc = <8>;
+		xlnx,dma-addr-width = <64>;
+		xlnx,num-layers = <10>;
+		xlnx,ppc = <4>;
+
+		crtc_mixer_port: port@0 {
+			reg = <0>;
+			mixer_crtc: endpoint {
+			        remote-endpoint = <&hdmi_encoder>;
+			};
+		};
+		xx_mix_master: layer_0 {
+			/*dmas = <&v_frmbuf_rd 0>;
+			dma-names = "dma0";*/
+			xlnx,layer-id = <0>;
+			xlnx,layer-max-height = <2160>;
+			xlnx,layer-max-width = <3840>;
+			/*xlnx,layer-streaming;*/
+			xlnx,vformat = "RG24";
+		};
+		xx_mix_overlay_1: layer_1 {
+			xlnx,layer-alpha ;
+			xlnx,layer-id = <1>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "BG24";
+		};
+		xx_mix_overlay_2: layer_2 {
+			xlnx,layer-alpha ;
+			xlnx,layer-id = <2>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "NV12";
+		};
+		xx_mix_overlay_3: layer_3 {
+			xlnx,layer-alpha ;
+			xlnx,layer-id = <3>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "YUYV";
+		};
+		xx_mix_overlay_4: layer_4 {
+			xlnx,layer-alpha ;
+			xlnx,layer-id = <4>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "YUYV";
+		};
+		xx_mix_overlay_5: layer_5 {
+			xlnx,layer-alpha ;
+			xlnx,layer-id = <5>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "YUYV";
+		};
+		xx_mix_overlay_6: layer_6 {
+			xlnx,layer-alpha ;
+			xlnx,layer-id = <6>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "YUYV";
+		};
+		xx_mix_overlay_7: layer_7 {
+			xlnx,layer-alpha ;
+			xlnx,layer-id = <7>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "YUYV";
+		};
+		xx_mix_overlay_8: layer_8 {
+			xlnx,layer-alpha ;
+			xlnx,layer-id = <8>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "YUYV";
+		};
+		xx_mix_overlay_9: layer_9 {
+			xlnx,layer-alpha ;
+			xlnx,layer-id = <9>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "AR24";
+			xlnx,layer-primary;
+		};
+	};
+
+	refhdmi: refhdmi {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <40000000>;
+	};
+
+	hdmi_tx_pipe_fmch_axi_iic: i2c@a4010000 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		clock-names = "s_axi_aclk";
+		clocks = <&versal_clk 65>;
+		compatible = "xlnx,axi-iic-2.0", "xlnx,xps-iic-2.00.a";
+		reg = <0x0 0xa4010000 0x0 0x10000>;
+		interrupt-names = "iic2intc_irpt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 87 4>;
+
+		idt8t49n24x: clock-generator@6c {
+			status = "okay";
+			compatible = "idt,idt8t49n241";
+			#clock-cells = <1>;
+			reg = <0x6c>;
+
+			clocks = <&refhdmi>;
+			clock-names = "input-xtal";
+
+			settings = [
+				09 50 00 60 67 c5 6c 01 03 00 31 00 01 40 00 01 40 00 74 04 00 74 04 77 6d 00 00 00 00 00 00 ff
+				ff ff ff 01 3f 00 2e 00 0d 00 00 00 01 00 00 d0 08 00 00 00 00 00 08 00 00 00 00 00 00 44 44 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 e9 0a 2b 20 00 00 00 0f 00 00 00 0e 00 00 0e 00 00 00 27 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				e3 00 08 01 00 00 00 00 00 00 00 00 00 b0 00 00 00 0a 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 85 00 00 9c 01 d4 02 71 07 00 00 00 00 83 00 10 02 08 8c
+				];
+		};
+
+		dp159: hdmi-retimer@5e {
+			status = "okay";
+			compatible = "ti,dp159";
+			reg = <0x5e>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			#clock-cells = <0>;
+		};
+	};
+
+	hdmi_tx_pipe_hdmi_gt_controller_1: hdmi_gt_controller@a4000000 {
+		clock-names = "gt_refclk0_odiv2", "gt_refclk1_odiv2", "gt_refclk2_odiv2", "sb_aclk", "axi4lite_aclk", "apb_clk", "dru-clk";
+		clocks = <&misc_clk_1>, <&misc_clk_1>, <&misc_clk_6>, <&versal_clk 65>, <&versal_clk 65>, <&versal_clk 65>, <&si570_2>;
+		compatible = "xlnx,hdmi-gt-controller-1.0";
+		interrupt-names = "irq";
+		interrupt-parent = <&gic>;
+		interrupts = <0 84 4>;
+		reg = <0x0 0xa4000000 0x0 0x10000>;
+		xlnx,err-irq-en = <0>;
+		xlnx,hdmi-fast-switch = <0>;
+		xlnx,input-pixels-per-clock = <4>;
+		xlnx,nidru = <1>;
+		xlnx,nidru-refclk-sel = <2>;
+		xlnx,rx-frl-refclk-sel = <2>;
+		xlnx,rx-no-of-channels = <3>;
+		xlnx,rx-pll-selection = <8>;
+		xlnx,rx-protocol = <1>;
+		xlnx,rx-refclk-sel = <0>;
+		xlnx,transceiver-type = <7>;
+		xlnx,transceiver-width = <4>;
+		xlnx,tx-buffer-bypass = <1>;
+		xlnx,tx-frl-refclk-sel = <2>;
+		xlnx,tx-no-of-channels = <4>;
+		xlnx,tx-pll-selection = <7>;
+		xlnx,tx-protocol = <1>;
+		xlnx,tx-refclk-sel = <1>;
+		xlnx,use-gt-ch4-hdmi = <1>;
+		vphy_lane0: vphy_lane@0 {
+			#phy-cells = <4>;
+		};
+		vphy_lane1: vphy_lane@1 {
+			#phy-cells = <4>;
+		};
+		vphy_lane2: vphy_lane@2 {
+			#phy-cells = <4>;
+		};
+		vphy_lane3: vphy_lane@3 {
+			#phy-cells = <4>;
+		};
+	};
+
+	hdmi_acr_ctrl_0: hdmi_acr_ctrl@a4210000 {
+		clock-names = "axi_aclk", "aud_clk", "hdmi_clk";
+		clocks = <&misc_clk_1>, <&si570_1>, <&misc_clk_3>;
+		compatible = "xlnx,hdmi-acr-ctrl-1.1", "xlnx,hdmi_act_ctrl";
+		reg = <0x0 0xa4210000 0x0 0x10000>;
+	};
+// "read interface only" option for tx-audio 
+	audio_pipe_audio_formatter_0: audio_formatter@a4200000 {
+		clock-names = "s_axi_lite_aclk", "m_axis_mm2s_aclk", "aud_mclk";
+		clocks = <&misc_clk_1>, <&si570_1>, <&si570_1>;
+		compatible = "xlnx,audio-formatter-1.0", "xlnx,audio-formatter-1.0";
+		interrupt-parent = <&gic>;
+		interrupt-names = "irq_mm2s";
+		interrupts = <0 89 4>;
+		reg = <0x0 0xa4200000 0x0 0x10000>;
+		xlnx,include-mm2s = <0x1>;
+		xlnx,max-num-channels-mm2s = <0x2>;
+		xlnx,mm2s-addr-width = <0x40>;
+		xlnx,mm2s-async-clock = <0x1>;
+		xlnx,mm2s-dataformat = <0x3>;
+		xlnx,packing-mode-mm2s = <0x0>;
+		xlnx,tx = <&hdmi_tx_pipe_v_hdmi_tx_ss_0>;
+	};
+	hdmi_tx_pipe_v_hdmi_tx_ss_0: v_hdmi_tx_ss@a4020000 {
+		clock-names = "s_axi_cpu_aclk", "s_axis_audio_aclk", "video_clk", "s_axis_video_aclk", "txref-clk", "retimer-clk";
+		clocks = <&versal_clk 65>, <&misc_clk_0>, <&misc_clk_3>, <&misc_clk_0>, <&idt8t49n24x 2>, <&dp159>;
+		compatible = "xlnx,v-hdmi-tx-ss-3.1", "xlnx,v-hdmi-tx-ss-3.1";
+		interrupt-names = "irq";
+		interrupt-parent = <&gic>;
+		interrupts = <0 85 4>;
+		phy-names = "hdmi-phy0", "hdmi-phy1", "hdmi-phy2", "hdmi-phy3";
+		phys = <&vphy_lane0 0 1 1 1>, <&vphy_lane1 0 1 1 1>, <&vphy_lane2 0 1 1 1>, <&vphy_lane3 0 1 1 1>;
+		reg = <0x0 0xa4020000 0x0 0x20000>;
+		reg-names = "hdmi-txss";
+		xlnx,input-pixels-per-clock = <4>;
+		xlnx,max-bits-per-component = <8>;
+		xlnx,snd-pcm = <&audio_pipe_audio_formatter_0>;
+		xlnx,xlnx-hdmi-acr-ctrl = <&hdmi_acr_ctrl_0>;
+		xlnx,audio-enabled;
+
+		hdmitx_ports: ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			encoder_hdmi_port: port@0 {
+				reg = <0>;
+				hdmi_encoder: endpoint {
+				        remote-endpoint = <&mixer_crtc>;
+				};
+			};
+		};
+	};
+};

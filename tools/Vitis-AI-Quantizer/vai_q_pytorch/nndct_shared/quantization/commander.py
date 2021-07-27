@@ -45,14 +45,26 @@ class QuantConfigerCommander(BaseCommander):
     def SoftFuseRelu(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.RELU)
 
+    def SoftFuseLeakyRelu(graph, quant_groups):
+      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.LEAKY_RELU)
+
     def SoftFuseRelu6(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.RELU6)
     
     def SoftFuseReluk(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.RELUK)
-
+    
+    def SoftFuseChannelScale(graph, quant_groups):
+      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.CHANNEL_SCALE)
+    
     def SoftFuseFlatten(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.FLATTEN)
+
+    def SoftFuseSqueeze(graph, quant_groups):
+      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.SQUEEZE)
+
+    def SoftFusePixelShuffle(graph, quant_groups):
+      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.PIXEL_SHUFFLE)
 
     def SoftFuseReshape(graph, quant_groups):
 
@@ -124,3 +136,13 @@ class QuantConfigerCommander(BaseCommander):
 
     return locals()
 
+
+def soft_fuse_custom_ops(ctx, quant_groups):
+  fused_op = set()
+  for node in ctx.Nndctgraph.nodes:
+    if node.has_custom_op() and (not ctx.is_node_quantizable(node, False)):
+      if node.op.type not in fused_op:
+        fused_op.add(node.op.type)
+        quant_groups = graph_utils.group_up(ctx.Nndctgraph, quant_groups, node.op.type)    
+  return quant_groups
+        

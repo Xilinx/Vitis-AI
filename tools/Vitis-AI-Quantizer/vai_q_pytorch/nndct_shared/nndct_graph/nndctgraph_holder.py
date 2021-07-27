@@ -41,13 +41,17 @@ class NndctGraphHolder(NndctDebugger):
     #for quantization
     self.QUANTIZABLE_OPS = [
         NNDCT_OP.AVG_POOL, NNDCT_OP.ADAPTIVEAVGPOOL2D, NNDCT_OP.CONVTRANSPOSE2D,
-        NNDCT_OP.BATCH_NORM, NNDCT_OP.BIAS_ADD, NNDCT_OP.BASIC_LSTM, NNDCT_OP.BASIC_GRU,
+        NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D,
+        NNDCT_OP.BIAS_ADD, NNDCT_OP.BASIC_LSTM, NNDCT_OP.BASIC_GRU,
         NNDCT_OP.CONV2D, NNDCT_OP.CONCAT, NNDCT_OP.DEPTHWISE_CONV2D,
+        NNDCT_OP.CONV1D,
         NNDCT_OP.DENSE, NNDCT_OP.ADD, NNDCT_OP.MULTIPLY, NNDCT_OP.DIV,
-        NNDCT_OP.LEAKY_RELU, NNDCT_OP.MAX_POOL, NNDCT_OP.MAX, NNDCT_OP.MEAN,
+        NNDCT_OP.MAX_POOL, NNDCT_OP.MAX, NNDCT_OP.MEAN,
         NNDCT_OP.MIN, NNDCT_OP.RESIZE, NNDCT_OP.SIGMOID, NNDCT_OP.TANH,
         NNDCT_OP.SUB, NNDCT_OP.RSUB, NNDCT_OP.PAD, NNDCT_OP.QUANT_STUB,
-        NNDCT_OP.INPUT
+        NNDCT_OP.INPUT, NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.RESIZE_3D,
+        NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.SUM, NNDCT_OP.HSWISH, NNDCT_OP.HSIGMOID,
+        NNDCT_OP.MATMUL#,NNDCT_OP.CHANNEL_SCALE
     ]
     self.LSTM_QUANTIZABLE_OPS = [
         #NNDCT_OP.PLACEHOLDER,
@@ -56,15 +60,41 @@ class NndctGraphHolder(NndctDebugger):
         NNDCT_OP.SIGMOID, NNDCT_OP.TANH,
         NNDCT_OP.SUB, NNDCT_OP.RSUB,
         NNDCT_OP.CONCAT, 
+        NNDCT_OP.INPUT
+    ]
+    self.QUANTIZABLE_OPS_WITH_PARAMS = [
+        NNDCT_OP.DENSE,
+        NNDCT_OP.CONV1D,
+        NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D,
+        NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D,
+        NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D
     ]
     self.MULTIPLE_OUTPUTS_OPS = [ # OP types where cannot do quantization 
         NNDCT_OP.CHUNK, # has multiple outputs and cannot be deployed
         NNDCT_OP.STRIDED_SLICE, # copy part of memory from a tensor and create a new tensor
         NNDCT_OP.PERMUTE, # can not be deployed
         NNDCT_OP.FLATTEN, # no calculation and only tensor in-place operation
+        NNDCT_OP.RESHAPE, # no calculation and only tensor in-place operation
+        NNDCT_OP.PIXEL_SHUFFLE, # no calculation and only tensor in-place operation
         NNDCT_OP.CONTIGUOUS, # no calculation and only tensor in-place operation
+        NNDCT_OP.SQUEEZE, # no calculation and only tensor in-place operation
     ]
     self.QUANTIZABLE_DTYPES = ['float32', 'float64']
+    self.DPU_APPROXIMATION_OPS = [
+        NNDCT_OP.AVG_POOL, NNDCT_OP.ADAPTIVEAVGPOOL2D,
+        NNDCT_OP.SIGMOID, NNDCT_OP.TANH,
+        NNDCT_OP.HSWISH, NNDCT_OP.HSIGMOID
+    ]
+    self.CONV_LIKE_OPS = [
+        NNDCT_OP.CONV2D,
+        NNDCT_OP.CONV3D,
+        NNDCT_OP.CONV1D,
+        NNDCT_OP.CONVTRANSPOSE2D,
+        NNDCT_OP.CONVTRANSPOSE3D,
+        NNDCT_OP.DEPTHWISE_CONV2D,
+        NNDCT_OP.DEPTHWISE_CONV3D,
+        NNDCT_OP.DENSE
+    ]
 
   def get_model_type(self):
     return self.model_type or 'Nndct'
@@ -127,6 +157,11 @@ class NndctGraphHolder(NndctDebugger):
       ret = node.op.type in self.QUANTIZABLE_OPS
       # check the node is in quant_stub or not:
       ret = ret and node.in_quant_part
+      # if CONST input is used to caluation
+      if node.in_quant_part and node.op.type == NNDCT_OP.CONST:
+        for c in self.Nndctgraph.children(node):
+          if c.op.type in [NNDCT_OP.ADD, NNDCT_OP.SUB, NNDCT_OP.MULTIPLY, NNDCT_OP.DIV]:
+            ret = True
       return ret
     else:
       return node.op.type in self.LSTM_QUANTIZABLE_OPS
@@ -136,14 +171,20 @@ class NndctGraphHolder(NndctDebugger):
       return False
     else:
       return True
+  
+  def node_quantizable_with_params(self, node):
+    if node.op.type in self.QUANTIZABLE_OPS_WITH_PARAMS:
+      return True
+    else:
+      return False
 
   def quant_node_params(self, node_or_name):
     node = self._find_node(node_or_name)
-    if node.op.type == NNDCT_OP.BATCH_NORM:
+    if node.op.type in [NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D]:
       return {
           k: v
           for k, v in node.op.params.items()
-          if k in [NNDCT_PARAM.GAMMA, NNDCT_PARAM.BETA]
+          if k in [node.op.ParamName.GAMMA, node.op.ParamName.BETA]
       }
     else:
       return node.op.params
@@ -156,6 +197,15 @@ class NndctGraphHolder(NndctDebugger):
     node = self._find_node(node_or_name)
     return node == self.__Nndctgraph.node(self._QuantGroups[node.name][0])
 
+  def is_concat_input(self, node_or_name):
+    node = self._find_node(node_or_name)
+    isConcatInput = True # only ouput tensor to concat
+    for c in self.Nndctgraph.children(node):
+      if c.op.type != NNDCT_OP.CONCAT:
+        isConcatInput = False
+        break
+    return isConcatInput
+
   def quant_output(self, node_or_name):
     node = self._find_node(node_or_name)
     idx = -1
@@ -163,6 +213,11 @@ class NndctGraphHolder(NndctDebugger):
     while end_node.op.type in self.MULTIPLE_OUTPUTS_OPS:
       idx = idx - 1
       end_node = self.__Nndctgraph.node(self._QuantGroups[node.name][idx])
+    if self.is_concat_input(end_node):
+      for c in self.Nndctgraph.children(end_node):
+        if c.op.type == NNDCT_OP.CONCAT:
+          end_node = c
+          break
     return end_node
 
   # only used in TF RNN case
@@ -196,6 +251,10 @@ class NndctGraphHolder(NndctDebugger):
     else:
       return node_or_name
 
+  def is_conv_like(self, node_or_name):
+    node = self._find_node(node_or_name)
+    return node.op.type in self.CONV_LIKE_OPS
+
   @property
   def quant_groups(self):
     return self._QuantGroups
@@ -203,4 +262,8 @@ class NndctGraphHolder(NndctDebugger):
   @property
   def Nndctgraph(self):
     return self.__Nndctgraph
+
+  @property
+  def dpu_approximation_ops(self):
+    return self.DPU_APPROXIMATION_OPS
 

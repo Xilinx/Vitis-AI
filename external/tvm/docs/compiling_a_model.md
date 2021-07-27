@@ -24,16 +24,26 @@ The examples directory incorporates example python scripts for compiling models 
 ```sh
 # In docker
 $ conda activate vitis-ai-tensorflow
-# !! For DPUCADX8G source the XRT setup script: 
-#   $ source /opt/xilinx/xrt/setup.sh
-
-# Execute examples in /workspace/examples. (Note that this assumes that the Vitis-AI/external/tvm directory has been mounted on /workspace inside the docker container, this will be the case if you executed Vitis-AI/docker_run.sh from inside Vitis-AI/external/tvm: ../../docker_run.sh tvm.ci_vai_1x)
-$ cd /workspace/examples
-# DPU_TARGET options: 'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102', 'DPUCZDX8G-som', 'DPUCZDX8G-ultra96'
+# Execute examples in /workspace/external/tvm/examples. (Note that this assumes that the Vitis-AI directory has been mounted on /workspace inside the docker container, this will be the case if you executed Vitis-AI/docker_run.sh from Vitis-AI root directory: ./docker_run.sh tvm.ci_vai_1x)
+$ cd /workspace/external/tvm/examples
 $ python3 compile_mxnet_resnet_18.py "DPU_TARGET"
 ```
 
+You can find the DPU targets here: [DPU Targets]
+
 The compilation output is saved on disk (as a .so) to run the model on the target device during the Execution stage. For edge devices, the compilation output needs to be transfered over to the board.
+
+As another example, you can also follow the YoloV3 jupyter notebook tutorial in the [Examples] directory:
+
+```sh
+# In docker
+$ conda activate vitis-ai-tensorflow
+$ cd /workspace/external/tvm/examples
+$ jupyter notebook --allow-root --ip 0.0.0.0 --no-browser
+```
+
+Afterwards, access the notebook in a browser by following the provided URL. Then follow the steps inside the notebook to download and compile a public YoloV3 model.
+
 
 ### Compiling MXNet ResNet 18
 
@@ -43,10 +53,10 @@ In this section we walk through the mxnet_resent_18.py tutorial script to furthe
 
 ```python
 tvm_target = 'llvm'
-dpu_target = 'DPUCADX8G' # options: 'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
+dpu_target = 'DPUCADF8H' # options: 'DPUCADF8H', 'DPUCAHX8H-u50', 'DPUCAHX8H-u280', 'DPUCAHX8L', 'DPUCVDX8H', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
 ```
 
-The TVM with Vitis AI flow currently supports 'DPUCADX8G', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'. AS mentioned previously, the "DPUCADX8G" computation engine targets cloud devices and "DPUCZDX8G-*" targets edge devices. Once the approrpiate targets are defined, we invoke the TVM compiler to build the graph for the specified target:
+The TVM with Vitis AI flow currently supports the DPU targets listed here: [DPU Targets] . Once the approrpiate targets are defined, we invoke the TVM compiler to build the graph for the specified target:
 
 #### Import the Model
 
@@ -55,13 +65,11 @@ The TVM with Vitis AI support provides ease of use by mimicking the flow of that
 ```python
 mod, params = relay.frontend.from_mxnet(block, input_shape)
 ```
-To be able to target the Vitis-AI cloud DPUCADX8G target we first have to import the target in PyXIR. This PyXIR package is the interface being used by TVM to integrate with the Vitis-AI stack. Additionaly, import the typical TVM and Relay modules and the Vitis-AI contrib module inside TVM.
+To be able to target the Vitis-AI cloud DPUCADF8H target we first have to import the target in PyXIR. This PyXIR package is the interface being used by TVM to integrate with the Vitis-AI stack. Additionaly, import the typical TVM and Relay modules and the Vitis-AI contrib module inside TVM.
 
 
 ```python
 import pyxir
-# Only needed for DPUCADX8G
-import pyxir.contrib.target.DPUCADX8G
 
 import tvm
 import tvm.relay as relay
@@ -81,30 +89,28 @@ After importing the model, we utilize the Relay API to annotate the Relay expres
 mod["main"] = bind_params_by_name(mod["main"], params)
 mod = transform.RemoveUnusedFunctions()(mod)
 
-# For edge DPU we recommend converting the convolutions' data layout
-#    to NHWC for best performance. Therefore, we first convert the layouts
-#    of all convolutions to NHWC before partitioning. Afterwards, we can
-#    convert any remaining convolutions (to be executed on CPU) back to NCHW.
-if dpu_target.startswith('DPUCZDX8G'):
-    desired_layouts = {'nn.conv2d': ['NHWC', 'OIHW']}
-    seq = tvm.transform.Sequential([relay.transform.RemoveUnusedFunctions(),
-                                    relay.transform.ConvertLayout(desired_layouts),
-                                    relay.transform.FoldConstant()])
-    with tvm.transform.PassContext(opt_level=3):
-        mod = seq(mod)
+# For DPU we convert the convolutions' data layout to NHWC for best performance.
+#    Therefore, we first convert the layouts of all convolutions to NHWC before
+#    partitioning. Afterwards, we can convert any remaining convolutions (to be
+#    executed on CPU) back to NCHW.
+desired_layouts = {'nn.conv2d': ['NHWC', 'OIHW']}
+seq = tvm.transform.Sequential([relay.transform.RemoveUnusedFunctions(),
+                                relay.transform.ConvertLayout(desired_layouts),
+                                relay.transform.FoldConstant()])
+with tvm.transform.PassContext(opt_level=3):
+    mod = seq(mod)
 
 mod = partition_for_vitis_ai(mod, params, dpu=dpu_target)
 
-# For edge DPU, we recommend transforming the remaining convolutions after
+# We recommend transforming the remaining convolutions after
 #    partitioning (that will be executed on CPU, if any) back to NCHW data layout
 #    for best CPU performance
-if dpu_target.startswith('DPUCZDX8G'):
-    desired_layouts = {'nn.conv2d': ['NCHW', 'default']}
-    seq = tvm.transform.Sequential([relay.transform.RemoveUnusedFunctions(),
-                                    relay.transform.ConvertLayout(desired_layouts),
-                                    relay.transform.FoldConstant()])
-    with tvm.transform.PassContext(opt_level=3):
-        mod = seq(mod)
+desired_layouts = {'nn.conv2d': ['NCHW', 'default']}
+seq = tvm.transform.Sequential([relay.transform.RemoveUnusedFunctions(),
+                                relay.transform.ConvertLayout(desired_layouts),
+                                relay.transform.FoldConstant()])
+with tvm.transform.PassContext(opt_level=3):
+    mod = seq(mod)
 ````
 
 
@@ -167,7 +173,7 @@ For example, execute the following line in the terminal before calling the compi
 $ export PX_QUANT_SIZE=8
 ```
 
-Lastly, we store the compiled output from the TVM compiler on disk for running the model on the target device. This happens as follows for cloud DPU's (for example DPUCADX8G):
+Lastly, we store the compiled output from the TVM compiler on disk for running the model on the target device. This happens as follows for cloud DPU's (for example DPUCADF8H):
 
 ```python
 lib_path = "deploy_lib.so"
@@ -214,6 +220,8 @@ Checkout how other model types can be compiled through TVM and adjust the "compi
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job.)
 
    [Compiling MXNet Models]: https://tvm.apache.org/docs/tutorials/frontend/from_mxnet.html#sphx-glr-tutorials-frontend-from-mxnet-py
+   [DPU Targets]: ../README.md#dpu-targets
+   [Examples]: ../examples
    [here]: https://tvm.apache.org/docs/tutorials/index.html#compile-deep-learning-models
    [Apache TVM Tutorials]: https://tvm.apache.org/docs/tutorials/index.html
    [Compiling Deep Learning Models]: https://tvm.apache.org/docs/tutorials/index.html#compile-deep-learning-models

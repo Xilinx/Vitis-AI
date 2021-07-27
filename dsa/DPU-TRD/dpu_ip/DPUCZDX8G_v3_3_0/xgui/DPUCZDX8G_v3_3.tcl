@@ -1167,21 +1167,21 @@ proc validate_PARAM_VALUE.UBANK_IMG_N { PARAM_VALUE.UBANK_IMG_N } {
 	return true
 }
 
-proc update_PARAM_VALUE.UBANK_IMG_N_USER { PARAM_VALUE.UBANK_IMG_N_USER PARAM_VALUE.URAM_N_USER PARAM_VALUE.ARCH_OCP PARAM_VALUE.ARCH_ICP PARAM_VALUE.ARCH_PP PARAM_VALUE.ARCH_IMG_BKGRP } {
+proc update_PARAM_VALUE.UBANK_IMG_N_USER { PARAM_VALUE.UBANK_IMG_N_USER PARAM_VALUE.URAM_N_USER PARAM_VALUE.BANK_BIAS PARAM_VALUE.BANK_WGT_N PARAM_VALUE.ARCH_ICP PARAM_VALUE.BANK_IMG_N } {
 	# Procedure called to update UBANK_IMG_N_USER when any of the dependent parameters in the arguments change
 	
 	set UBANK_IMG_N_USER ${PARAM_VALUE.UBANK_IMG_N_USER}
 	set URAM_N_USER ${PARAM_VALUE.URAM_N_USER}
-	set ARCH_OCP ${PARAM_VALUE.ARCH_OCP}
+	set BANK_BIAS ${PARAM_VALUE.BANK_BIAS}
+	set BANK_WGT_N ${PARAM_VALUE.BANK_WGT_N}
 	set ARCH_ICP ${PARAM_VALUE.ARCH_ICP}
-	set ARCH_PP ${PARAM_VALUE.ARCH_PP}
-	set ARCH_IMG_BKGRP ${PARAM_VALUE.ARCH_IMG_BKGRP}
+	set BANK_IMG_N ${PARAM_VALUE.BANK_IMG_N}
 	set values(URAM_N_USER) [get_property value $URAM_N_USER]
-	set values(ARCH_OCP) [get_property value $ARCH_OCP]
+	set values(BANK_BIAS) [get_property value $BANK_BIAS]
+	set values(BANK_WGT_N) [get_property value $BANK_WGT_N]
 	set values(ARCH_ICP) [get_property value $ARCH_ICP]
-	set values(ARCH_PP) [get_property value $ARCH_PP]
-	set values(ARCH_IMG_BKGRP) [get_property value $ARCH_IMG_BKGRP]
-	set_property value [gen_USERPARAMETER_UBANK_IMG_N_USER_VALUE $values(URAM_N_USER) $values(ARCH_OCP) $values(ARCH_ICP) $values(ARCH_PP) $values(ARCH_IMG_BKGRP)] $UBANK_IMG_N_USER
+	set values(BANK_IMG_N) [get_property value $BANK_IMG_N]
+	set_property value [gen_USERPARAMETER_UBANK_IMG_N_USER_VALUE $values(URAM_N_USER) $values(BANK_BIAS) $values(BANK_WGT_N) $values(ARCH_ICP) $values(BANK_IMG_N)] $UBANK_IMG_N_USER
 }
 
 proc validate_PARAM_VALUE.UBANK_IMG_N_USER { PARAM_VALUE.UBANK_IMG_N_USER } {
@@ -1203,19 +1203,19 @@ proc validate_PARAM_VALUE.UBANK_WGT_N { PARAM_VALUE.UBANK_WGT_N } {
 	return true
 }
 
-proc update_PARAM_VALUE.UBANK_WGT_N_USER { PARAM_VALUE.UBANK_WGT_N_USER PARAM_VALUE.URAM_N_USER PARAM_VALUE.ARCH_ICP PARAM_VALUE.ARCH_OCP PARAM_VALUE.DWCV_ENA } {
+proc update_PARAM_VALUE.UBANK_WGT_N_USER { PARAM_VALUE.UBANK_WGT_N_USER PARAM_VALUE.URAM_N_USER PARAM_VALUE.ARCH_ICP PARAM_VALUE.BANK_BIAS PARAM_VALUE.BANK_WGT_N } {
 	# Procedure called to update UBANK_WGT_N_USER when any of the dependent parameters in the arguments change
 	
 	set UBANK_WGT_N_USER ${PARAM_VALUE.UBANK_WGT_N_USER}
 	set URAM_N_USER ${PARAM_VALUE.URAM_N_USER}
 	set ARCH_ICP ${PARAM_VALUE.ARCH_ICP}
-	set ARCH_OCP ${PARAM_VALUE.ARCH_OCP}
-	set DWCV_ENA ${PARAM_VALUE.DWCV_ENA}
+	set BANK_BIAS ${PARAM_VALUE.BANK_BIAS}
+	set BANK_WGT_N ${PARAM_VALUE.BANK_WGT_N}
 	set values(URAM_N_USER) [get_property value $URAM_N_USER]
 	set values(ARCH_ICP) [get_property value $ARCH_ICP]
-	set values(ARCH_OCP) [get_property value $ARCH_OCP]
-	set values(DWCV_ENA) [get_property value $DWCV_ENA]
-	set_property value [gen_USERPARAMETER_UBANK_WGT_N_USER_VALUE $values(URAM_N_USER) $values(ARCH_ICP) $values(ARCH_OCP) $values(DWCV_ENA)] $UBANK_WGT_N_USER
+	set values(BANK_BIAS) [get_property value $BANK_BIAS]
+	set values(BANK_WGT_N) [get_property value $BANK_WGT_N]
+	set_property value [gen_USERPARAMETER_UBANK_WGT_N_USER_VALUE $values(URAM_N_USER) $values(ARCH_ICP) $values(BANK_BIAS) $values(BANK_WGT_N)] $UBANK_WGT_N_USER
 }
 
 proc validate_PARAM_VALUE.UBANK_WGT_N_USER { PARAM_VALUE.UBANK_WGT_N_USER } {

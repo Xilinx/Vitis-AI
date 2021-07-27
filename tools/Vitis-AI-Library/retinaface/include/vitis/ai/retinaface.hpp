@@ -17,25 +17,26 @@
  * Filename: retinaface.hpp
  *
  * Description:
- * This network is used to getting position, score and landmark of faces in the input
- * image Please refer to document "XILINX_AI_SDK_Programming_Guide.pdf" for more
- * details of these APIs.
+ * This network is used to getting position, score and landmark of faces in the
+ * input image Please refer to document "XILINX_AI_SDK_Programming_Guide.pdf"
+ * for more details of these APIs.
  */
 #pragma once
 #include <memory>
 #include <opencv2/core.hpp>
 #include <vitis/ai/nnpp/retinaface.hpp>
 
+#include "vitis/ai/configurable_dpu_task.hpp"
 namespace xir {
-  class Attrs;
+class Attrs;
 };
 
 namespace vitis {
 namespace ai {
 
 /**
- * @brief Base class for detecting the position,score and landmark of faces in the input image
- (cv::Mat).
+ * @brief Base class for detecting the position,score and landmark of faces in
+ the input image (cv::Mat).
  *
  * Input is an image (cv::Mat).
  *
@@ -66,7 +67,7 @@ namespace ai {
  * @image latex images/sample_retinaface_result.jpg "result image" width=\textwidth
  *
  */
-class RetinaFace {
+class RetinaFace : public ConfigurableDpuTaskBase {
  public:
   /**
  * @brief Factory function to get an instance of derived classes of class
@@ -77,49 +78,26 @@ class RetinaFace {
  value is true.
  * @return An instance of RetinaFace class.
  */
-  static std::unique_ptr<RetinaFace> create(const std::string &model_name,
+  static std::unique_ptr<RetinaFace> create(const std::string& model_name,
                                             bool need_preprocess = true);
-  static std::unique_ptr<RetinaFace> create(const std::string &model_name,
-                                            xir::Attrs *attrs,
+  static std::unique_ptr<RetinaFace> create(const std::string& model_name,
+                                            xir::Attrs* attrs,
                                             bool need_preprocess = true);
   /**
    * @cond NOCOMMENTS
    */
  protected:
-  explicit RetinaFace();
-  RetinaFace(const RetinaFace &) = delete;
-  RetinaFace &operator=(const RetinaFace &) = delete;
+  explicit RetinaFace(const std::string& model_name, bool need_preprocess);
+  explicit RetinaFace(const std::string& model_name, xir::Attrs* attrs,
+                      bool need_preprocess);
+  RetinaFace(const RetinaFace&) = delete;
+  RetinaFace& operator=(const RetinaFace&) = delete;
 
  public:
   virtual ~RetinaFace();
   /**
    * @endcond
    */
-  /**
-   * @brief Function to get InputWidth of the retinaface network (input image
-   * columns).
-   *
-   * @return InputWidth of the retinaface network
-   */
-  virtual int getInputWidth() const = 0;
-
-  /**
-   *@brief Function to get InputHeight of the retinaface network (input image
-   *rows).
-   *
-   *@return InputHeight of the retinaface network.
-   */
-  virtual int getInputHeight() const = 0;
-
-  /**
-   * @brief Function to get the number of images processed by the DPU at one
-   *time.
-   * @note Different DPU core the batch size may be different. This depends on
-   *the IP used.
-   *
-   * @return Batch size.
-   */
-  virtual size_t get_input_batch() const = 0;
 
   /**
    * @brief Function to get running result of the retinaface network.
@@ -131,7 +109,7 @@ class RetinaFace {
    *>= det_threshold
    *
    */
-  virtual RetinaFaceResult run(const cv::Mat &img) = 0;
+  virtual RetinaFaceResult run(const cv::Mat& img) = 0;
 
   /**
    * @brief Function to get running results of the retinaface neuron network in
@@ -146,7 +124,19 @@ class RetinaFace {
    *
    */
   virtual std::vector<RetinaFaceResult> run(
-      const std::vector<cv::Mat> &imgs) = 0;
+      const std::vector<cv::Mat>& imgs) = 0;
+
+  /**
+   * @brief Function to get running results of the retina neuron network in
+   * batch mode , used to receive user's xrt_bo to support zero copy.
+   *
+   * @param input_bos The vector of vart::xrt_bo_t.
+   *
+   * @return The vector of RetinaFacesResult.
+   *
+   */
+  virtual std::vector<RetinaFaceResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) = 0;
 };
 
 }  // namespace ai

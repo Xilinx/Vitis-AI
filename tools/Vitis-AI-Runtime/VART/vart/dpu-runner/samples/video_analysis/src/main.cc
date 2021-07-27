@@ -78,16 +78,18 @@ GraphInfo shapes;
  *  @brief calculate softmax
  *  @param data - pointer to input buffer
  *  @param size - size of input buffer
+ * @param scale - output scale, used to fixed to float
  *  @param result - calculation result
  *
  *  @return none
  */
-void CPUCalcSoftmax(const float* data, size_t size, float* result) {
+void CPUCalcSoftmax(const int8_t* data, size_t size, float scale,
+                    float* result) {
   assert(data && result);
   double sum = 0.0f;
 
   for (size_t i = 0; i < size; i++) {
-    result[i] = exp(data[i]);
+    result[i] = exp(data[i] * scale);
     sum += result[i];
   }
 
@@ -355,10 +357,11 @@ vector<vector<float>> NMS(vector<vector<float>>& boxes, float nms_threshold) {
  * @param top_k - maximum number of boxes(with large confidence) to keep
  * @param nms_threshold - maximum overlap ratio of two boxes
  * @param conf_threshold - minimum confidence of kept boxes
+ * @param output_scale - used to fixed to float
  *
  * @return vector of final boxes
  */
-vector<vector<float>> Detect(float* loc, float loc_scale, float* conf_softmax,
+vector<vector<float>> Detect(int8_t* loc, float loc_scale, float* conf_softmax,
                              vector<vector<float>>& priors, size_t top_k,
                              float nms_threshold, float conf_threshold) {
   vector<vector<float>> results;
@@ -425,19 +428,24 @@ vector<vector<float>> Detect(float* loc, float loc_scale, float* conf_softmax,
  * @return none
  */
 void RunSSD(vart::Runner* runner, bool& is_running) {
-  float loc_scale = 1.0;
   // get out tensors and shapes
   auto outputTensors = cloneTensorBuffer(runner->get_output_tensors());
   auto inputTensors = cloneTensorBuffer(runner->get_input_tensors());
+  auto input_scale = get_input_scale(runner->get_input_tensors()[0]);
+  auto loc_output_scale =
+      get_output_scale(runner->get_output_tensors()[shapes.output_mapping[0]]);
+  auto conf_output_scale =
+      get_output_scale(runner->get_output_tensors()[shapes.output_mapping[1]]);
+
   int inHeight = shapes.inTensorList[0].height;
   int inWidth = shapes.inTensorList[0].width;
   int inSize = shapes.inTensorList[0].size;
   int size = shapes.outTensorList[0].size;
   int size2 = shapes.outTensorList[1].size;
   int batch = inputTensors[0]->get_shape().at(0);
-  float* loc = new float[size * batch];
-  float* conf = new float[size2 * batch];
-  float* imageInputs = new float[inSize * batch];
+  int8_t* loc = new int8_t[size * batch];
+  int8_t* conf = new int8_t[size2 * batch];
+  int8_t* imageInputs = new int8_t[inSize * batch];
 
   vector<string> label = {"background", "car", "bicycle", "person"};
   vector<vector<float>> priors = CreatePriors();
@@ -475,7 +483,7 @@ void RunSSD(vart::Runner* runner, bool& is_running) {
       for (int w = 0; w < inWidth; w++) {
         for (int c = 0; c < 3; c++) {
           imageInputs[h * inWidth * 3 + w * 3 + c] =
-              image2.at<Vec3b>(h, w)[c] - mean[c];
+              (int8_t)((image2.at<Vec3b>(h, w)[c] - mean[c]) * input_scale);
         }
       }
     }
@@ -500,12 +508,12 @@ void RunSSD(vart::Runner* runner, bool& is_running) {
 
     // Run Softmax
     for (int i = 0; i < size2 / 4; i++) {
-      CPUCalcSoftmax(&conf[i * 4], 4, &conf_softmax[i * 4]);
+      CPUCalcSoftmax(&conf[i * 4], 4, conf_output_scale, &conf_softmax[i * 4]);
     }
     // Post-process
     vector<vector<float>> results =
-        Detect(loc, loc_scale, conf_softmax, priors, TOP_K, NMS_THRESHOLD,
-               CONF_THRESHOLD);
+        Detect(loc, loc_output_scale, conf_softmax, priors, TOP_K,
+               NMS_THRESHOLD, CONF_THRESHOLD);
 
     // Modify image to display
     for (size_t i = 0; i < results.size(); ++i) {
@@ -516,15 +524,15 @@ void RunSSD(vart::Runner* runner, bool& is_running) {
       float x_max = results[i][2] * img.cols;
       float y_max = results[i][3] * img.rows;
       if (label_index == 1 && confidence >= CAR_THRESHOLD) {  // car
-        rectangle(img, cvPoint(x_min, y_min), cvPoint(x_max, y_max),
+        rectangle(img, Point(x_min, y_min), Point(x_max, y_max),
                   Scalar(0, 0, 255), 1, 1, 0);
       } else if (label_index == 2 &&
                  confidence >= BICYCLE_THRESHOLD) {  // bicycle
-        rectangle(img, cvPoint(x_min, y_min), cvPoint(x_max, y_max),
+        rectangle(img, Point(x_min, y_min), Point(x_max, y_max),
                   Scalar(0, 255, 0), 1, 1, 0);
       } else if (label_index == 3 &&
                  confidence >= PERSON_THRESHOLD) {  // person
-        rectangle(img, cvPoint(x_min, y_min), cvPoint(x_max, y_max),
+        rectangle(img, Point(x_min, y_min), Point(x_max, y_max),
                   Scalar(255, 0, 0), 1, 1, 0);
       } else {  // background
       }

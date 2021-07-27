@@ -1,13 +1,13 @@
-syntax = "proto2";
+syntax = "proto3";
 package vitis.ai.proto;
 
 message YoloV3Param {
-  optional int32 num_classes = 1;
-  optional int32 anchorCnt = 2;
-  optional float conf_threshold = 3;
-  optional float nms_threshold = 4;
+  int32 num_classes = 1;
+  int32 anchorCnt = 2;
+  float conf_threshold = 3;
+  float nms_threshold = 4;
   repeated float biases = 5;
-  optional bool test_mAP = 6;
+  bool test_mAP = 6;
   repeated string layer_name = 7;
 }
 
@@ -18,21 +18,21 @@ message MedicalPriorBoxParam {
   repeated int32 max_sizes = 4;
   repeated float aspect_ratios = 5;
   repeated int32 steps = 6;
-  optional float offset = 7;
+  float offset = 7;
 }
 
 message PriorBoxParam {
-  optional int32 layer_width = 1;
-  optional int32 layer_height = 2;
+  int32 layer_width = 1;
+  int32 layer_height = 2;
   repeated float variances = 4;
   repeated float min_sizes = 5;
   repeated float max_sizes = 6;
   repeated float aspect_ratios = 7;
-  optional float offset = 8;
-  optional float step_width = 9;
-  optional float step_height = 10;
-  optional bool flip = 11;
-  optional bool clip = 12;
+  float offset = 8;
+  float step_width = 9;
+  float step_height = 10;
+  bool flip = 11;
+  bool clip = 12;
 }
 
 message SSDParam {
@@ -40,54 +40,55 @@ message SSDParam {
     USELESS = 0;
     CONF = 1;
     BBOX = 2;
+    FUNCTIONAL = 3;
   }
   message OutputInfo {
-    optional OutputType type = 1;
-    optional int32 order = 2;
-    optional string name = 3;
+    OutputType type = 1;
+    int32 order = 2;
+    string name = 3;
   }
   repeated PriorBoxParam prior_box_param = 1;
-  optional int32 num_classes = 2;
-  optional float nms_threshold = 3;
+  int32 num_classes = 2;
+  float nms_threshold = 3;
   repeated float conf_threshold = 4;
-  optional int32 keep_top_k = 5;
-  optional int32 top_k = 6;
-  optional bool is_mlperf = 7;
+  int32 keep_top_k = 5;
+  int32 top_k = 6;
+  bool is_mlperf = 7;
   repeated int32 bbox_layer_index = 8;
   repeated OutputInfo output_info = 9;
 }
 
 message RefineDetParam {
   repeated PriorBoxParam prior_box_param = 1;
-  optional int32 num_classes = 2;
-  optional float nms_threshold = 3;
+  int32 num_classes = 2;
+  float nms_threshold = 3;
   repeated float conf_threshold = 4;
-  optional int32 keep_top_k = 5;
-  optional int32 top_k = 6;
+  int32 keep_top_k = 5;
+  int32 top_k = 6;
   repeated string layer_name = 7;
 }
 
 message TFRefineDetParam {
-  optional MedicalPriorBoxParam prior_box_param = 1;
-  optional int32 num_classes = 2;
-  optional float nms_threshold = 3;
-  optional float conf_threshold = 4;
-  optional int32 keep_top_k = 5;
-  optional int32 top_k = 6;
+  MedicalPriorBoxParam prior_box_param = 1;
+  int32 num_classes = 2;
+  float nms_threshold = 3;
+  float conf_threshold = 4;
+  int32 keep_top_k = 5;
+  int32 top_k = 6;
   repeated string layer_name = 7;
-  optional float scale_xy = 8;
-  optional float scale_wh = 9;
+  float scale_xy = 8;
+  float scale_wh = 9;
 }
 
 message MedicalRefineDetParam {
-  optional int32 num_classes = 1;
-  optional float scale_xy = 2;
-  optional float scale_wh = 3;
-  optional float nms_threshold = 4;
-  optional float conf_threshold = 5;
-  optional int32 keep_top_k = 6;
-  optional int32 top_k = 7;
-  optional MedicalPriorBoxParam medical_prior_box_param = 8;
+  int32 num_classes = 1;
+  float scale_xy = 2;
+  float scale_wh = 3;
+  float nms_threshold = 4;
+  float conf_threshold = 5;
+  int32 keep_top_k = 6;
+  int32 top_k = 7;
+  MedicalPriorBoxParam medical_prior_box_param = 8;
 }
 
 message ReidParam {
@@ -101,8 +102,8 @@ message OpenPoseParam {
 }
 
 message ClassificationParam {
-  optional int32 top_k = 1;
-  optional bool test_accuracy = 2;
+  int32 top_k = 1;
+  bool test_accuracy = 2;
   enum PreprocessType {
     UNKNOWN_TYPE = 0;
     CAFFE = 1;
@@ -110,70 +111,75 @@ message ClassificationParam {
     INCEPTION_PREPROCESS = 3;
     INCEPTION_PT = 4;
     RESNET50_TF2 = 5;
+    EFFICIENTNET_PREPROCESS = 6;
   }
   message AvgPoolParam {
-    optional int32 scale = 1;
+    int32 scale = 1;
   }
-  optional PreprocessType preprocess_type = 3;
-  optional string layer_name = 4;
-  optional string label_type = 5;
-  optional AvgPoolParam avg_pool_param = 6;
+  PreprocessType preprocess_type = 3;
+  string layer_name = 4;
+  string label_type = 5;
+  AvgPoolParam avg_pool_param = 6;
 }
 
 message DenseBoxParam {
-  optional int32 num_of_classes = 1;
-  optional float nms_threshold = 2;
-  optional float det_threshold = 3;
+  int32 num_of_classes = 1;
+  float nms_threshold = 2;
+  float det_threshold = 3;
 }
 
 message MultiTaskParam {
   repeated float th_conf = 1;
-  optional int32 num_of_detection_classes = 2;
-  optional int32 num_of_segmentation_classes = 3;
-  optional int32 keep_top_k = 4;
-  optional int32 top_k = 5;
-  optional float nms_threshold = 6;
+  int32 num_of_detection_classes = 2;
+  int32 num_of_segmentation_classes = 3;
+  int32 keep_top_k = 4;
+  int32 top_k = 5;
+  float nms_threshold = 6;
   repeated PriorBoxParam prior_box_param = 7;
   repeated string loc_name = 8;
   repeated string conf_name = 9;
-  optional string seg_name = 10;
+  repeated string centerness_name = 10;
+  string seg_name = 11;
+  string drivable_name = 12;
+  string depth_name = 13;
+  string lane_name = 14;
 }
 
 message RoadlineParam {
-  optional int32 ratio = 1;
-  optional float ipm_width = 2;
-  optional float ipm_height = 3;
-  optional float ipm_left = 4;
-  optional float ipm_right = 5;
-  optional float ipm_top = 6;
-  optional float ipm_bottom = 7;
-  optional float ipm_interpolation = 8;
-  optional float ipm_vp_portion = 9;
-  optional float focal_length_x = 10;
-  optional float focal_length_y = 11;
-  optional float optical_center_x = 12;
-  optional float optical_center_y = 13;
-  optional float camera_height = 14;
-  optional float pitch = 15;
-  optional float yaw = 16;
+  int32 ratio = 1;
+  float ipm_width = 2;
+  float ipm_height = 3;
+  float ipm_left = 4;
+  float ipm_right = 5;
+  float ipm_top = 6;
+  float ipm_bottom = 7;
+  float ipm_interpolation = 8;
+  float ipm_vp_portion = 9;
+  float focal_length_x = 10;
+  float focal_length_y = 11;
+  float optical_center_x = 12;
+  float optical_center_y = 13;
+  float camera_height = 14;
+  float pitch = 15;
+  float yaw = 16;
   repeated string layer_name = 17;
 }
 
 message RoadlineDeephiParam {
-  optional int32 resize_w = 1;
-  optional int32 resize_h = 2;
-  optional int32 crop_x = 3;
-  optional int32 crop_y = 4;
-  optional int32 crop_w = 5;
-  optional int32 crop_h = 6;
-  optional int32 area_threshold = 7;
-  optional int32 epow = 8;
+  int32 resize_w = 1;
+  int32 resize_h = 2;
+  int32 crop_x = 3;
+  int32 crop_y = 4;
+  int32 crop_w = 5;
+  int32 crop_h = 6;
+  int32 area_threshold = 7;
+  int32 epow = 8;
 }
 
 message SegmentationParam {
-  optional string color1 = 1;
-  optional string color2 = 2;
-  optional string color3 = 3;
+  string color1 = 1;
+  string color2 = 2;
+  string color3 = 3;
 }
 
 message PlatenumParam {
@@ -183,34 +189,34 @@ message PlatenumParam {
 }
 
 message LaneParam {
-  optional int32 roi_x = 1;
-  optional int32 roi_y = 2;
-  optional int32 expect_height = 3;
+  int32 roi_x = 1;
+  int32 roi_y = 2;
+  int32 expect_height = 3;
 }
 
 message BlinkerParam {
   repeated PriorBoxParam prior_box_param = 1;
-  optional int32 num_classes = 2;
-  optional float nms_threshold = 3;
+  int32 num_classes = 2;
+  float nms_threshold = 3;
   repeated float conf_threshold = 4;
-  optional int32 keep_top_k = 5;
-  optional int32 top_k = 6;
+  int32 keep_top_k = 5;
+  int32 top_k = 6;
 }
 
 message SegdetParam {
   repeated PriorBoxParam prior_box_param = 1;
-  optional int32 num_classes = 2;
-  optional float nms_threshold = 3;
+  int32 num_classes = 2;
+  float nms_threshold = 3;
   repeated float conf_threshold = 4;
-  optional int32 keep_top_k = 5;
-  optional int32 top_k = 6;
+  int32 keep_top_k = 5;
+  int32 top_k = 6;
 }
 
 message FaceQuality5ptParam {
-  optional bool use_day_night_mode = 1;
-  optional bool original_quality = 2;
-  optional string quality_layer_name = 3;
-  optional string point_layer_name = 4;
+  bool use_day_night_mode = 1;
+  bool original_quality = 2;
+  string quality_layer_name = 3;
+  string point_layer_name = 4;
 }
 
 message RetinaFaceParam {
@@ -225,29 +231,29 @@ message RetinaFaceParam {
     FG = 1;
   }
   message OutputAnchorInfo {
-    optional AnchorType type = 1;
-    optional int32 index = 2;
+    AnchorType type = 1;
+    int32 index = 2;
   }
   message OutputInfo {
-    optional OutputType type = 1;
-    optional int32 stride = 2;
-    optional string name = 3;
-    optional OutputAnchorInfo output_anchor_info = 4;
+    OutputType type = 1;
+    int32 stride = 2;
+    string name = 3;
+    OutputAnchorInfo output_anchor_info = 4;
   }
   message AnchorParam {
-    optional int32 stride = 1;
-    optional int32 base_size = 2;
+    int32 stride = 1;
+    int32 base_size = 2;
     repeated float ratios = 3;
     repeated int32 scales = 4;
   }
   repeated OutputInfo output_info = 1;
-  optional float nms_threshold = 2;
-  optional float det_threshold = 3;
+  float nms_threshold = 2;
+  float det_threshold = 3;
   repeated AnchorParam anchor_param = 4;
 }
 
 message DpuKernelParam {
-  optional string name = 1;
+  string name = 1;
   repeated float mean = 2;
   repeated float scale = 3;
 }
@@ -259,18 +265,53 @@ message TfssdParam {
     BBOX = 2;
   }
   message OutputInfo {
-    optional OutputType type = 1;
-    optional int32 order = 2;
-    optional string name = 3;
+    OutputType type = 1;
+    int32 order = 2;
+    string name = 3;
   }
   repeated OutputInfo output_info = 1;
   repeated int32 feature_map_list = 2;
-  // optional object_detection.protos.TrainEvalPipelineConfig modeltf = 3;
-  optional string official_cfg = 3;
+  // object_detection.protos.TrainEvalPipelineConfig modeltf = 3;
+  string official_cfg = 3;
+}
+
+message PointPillarsNusParam {
+  message AnchorInfo {
+    message Ranges {
+      repeated float single_range = 1;
+    }
+    message Sizes {
+      repeated float single_size = 1;
+    }
+    repeated Ranges ranges = 1;
+    repeated Sizes sizes = 2;
+    repeated float rotations = 3; 
+    repeated float custom_value = 4;
+    bool align_corner = 5;
+    float scale = 6;
+  }
+  repeated float point_cloud_range = 1;
+  int32 in_channels = 2;
+  int32 max_points_num = 3;
+  int32 max_voxels_num = 4;
+  repeated int32 featmap_size = 5;
+  AnchorInfo anchor_info = 6;
+  int32 num_classes = 7;
+  float nms_pre = 8;
+  float nms_thresh = 9;
+  float max_num = 10;
+  float score_thresh = 11;
+  string score_layer_name = 12;
+  string bbox_layer_name = 13;
+  string dir_layer_name = 14;
+}
+
+message Segmentation3DParam {
+  bool enable_knn = 1;
 }
 
 message DpuModelParam {
-  optional string name = 1;
+  string name = 1;
   repeated DpuKernelParam kernel = 2;
   enum ModelType {
     UNKNOWN_TYPE = 0;
@@ -307,6 +348,7 @@ message DpuModelParam {
     HOURGLASS = 31;
     RETINAFACE = 32;
     TFREFINEDET = 33;
+    POINTPILLARS_NUS = 34;
   }
   enum OrderType {
     UNKNOWNORDER = 0;
@@ -314,31 +356,33 @@ message DpuModelParam {
     RGB = 2;
     GREY = 3;
   }
-  optional ModelType model_type = 3;
-  optional RefineDetParam refine_det_param = 4;
-  optional YoloV3Param yolo_v3_param = 5;
-  optional SSDParam ssd_param = 6;
-  optional ClassificationParam classification_param = 7;
-  optional DenseBoxParam dense_box_param = 8;
-  optional MultiTaskParam multi_task_param = 9;
-  optional RoadlineParam roadline_param = 10;
-  optional SegmentationParam segmentation_param = 11;
-  optional LaneParam lane_param = 12;
-  optional BlinkerParam blinker_param = 13;
-  optional SegdetParam segdet_param = 14;
-  optional RoadlineDeephiParam roadline_dp_param = 15;
+  ModelType model_type = 3;
+  RefineDetParam refine_det_param = 4;
+  YoloV3Param yolo_v3_param = 5;
+  SSDParam ssd_param = 6;
+  ClassificationParam classification_param = 7;
+  DenseBoxParam dense_box_param = 8;
+  MultiTaskParam multi_task_param = 9;
+  RoadlineParam roadline_param = 10;
+  SegmentationParam segmentation_param = 11;
+  LaneParam lane_param = 12;
+  BlinkerParam blinker_param = 13;
+  SegdetParam segdet_param = 14;
+  RoadlineDeephiParam roadline_dp_param = 15;
 
-  optional bool is_tf = 16;
-  optional FaceQuality5ptParam face_quality5pt_param = 17;
+  bool is_tf = 16;
+  FaceQuality5ptParam face_quality5pt_param = 17;
 
-  optional TfssdParam tfssd_param = 18;
-  optional OpenPoseParam open_pose_param = 19;
-  optional ReidParam reid_param = 20;
-  optional MedicalRefineDetParam medical_refine_det_param = 21;
-  optional PlatenumParam platenum_param = 22;
-  optional OrderType order_type = 23;
-  optional RetinaFaceParam retinaface_param = 24;
-  optional TFRefineDetParam tfrefinedet_param = 25;
+  TfssdParam tfssd_param = 18;
+  OpenPoseParam open_pose_param = 19;
+  ReidParam reid_param = 20;
+  MedicalRefineDetParam medical_refine_det_param = 21;
+  PlatenumParam platenum_param = 22;
+  OrderType order_type = 23;
+  RetinaFaceParam retinaface_param = 24;
+  TFRefineDetParam tfrefinedet_param = 25;
+  PointPillarsNusParam pointpillars_nus_param = 26;
+  Segmentation3DParam segmentation_3d_param = 27;
 }
 
 message DpuModelParamList {
@@ -347,23 +391,26 @@ message DpuModelParamList {
 
 // results definitions
 message Attribute {
-  optional string label = 1;
-  optional uint32 value = 2;
-  optional float score = 3;
+  string label = 1;
+  uint32 value = 2;
+  float score = 3;
 }
 
 message Point {
-  optional float x = 1;
-  optional float y = 2;
+  float x = 1;
+  float y = 2;
+}
+
+message Size {
+  float width = 1;
+  float height = 2;
 }
 
 message BoundingBox {
-  optional uint32 label = 1;
-  optional float score = 2;
-  optional float x = 3;
-  optional float y = 4;
-  optional float width = 5;
-  optional float height = 6;
+  ClassificationLabel label = 1;
+  // it is normalized to [0.0, 1.0]
+  Point top_left = 3;
+  Size size = 4;
 }
 
 message AttributeResult {
@@ -371,36 +418,38 @@ message AttributeResult {
 }
 
 message LandmarkResult {
-  optional float score = 1;
+  float score = 1;
   repeated Point point = 2;
-  optional uint32 gender = 3;
-  optional uint32 age = 4;
+  uint32 gender = 3;
+  uint32 age = 4;
 }
 
 message DetectResult {
   repeated BoundingBox bounding_box = 1;
 }
 
-message RefineDetResult {
-  repeated BoundingBox bounding_box = 1;
-}
-
-message LineAtt {
-  optional int32 type = 1;
+message LineAttribute {
+  int32 type = 1;
   repeated Point point = 2;
 }
 
 message RoadlineResult {
-  repeated LineAtt line_att = 1;
+  repeated LineAttribute line_attribute = 1;
 }
 
 message Score {
-  optional int32 index = 1;
-  optional float score = 2;
+  int32 index = 1;
+  float score = 2;
+}
+
+message ClassificationLabel {
+  string name = 1;
+  uint32 index = 2;
+  float score = 3;
 }
 
 message ClassificationResult {
-  repeated Score score = 1;
+  repeated ClassificationLabel topk = 1;
 }
 
 message FaceLandmarkResult {
@@ -408,54 +457,46 @@ message FaceLandmarkResult {
 }
 
 message PlateDetectResult {
-  optional BoundingBox bounding_box = 1;
+  BoundingBox bounding_box = 1;
 }
 
-message PlateNumResult {
-  optional string plate_number = 1;
-  optional string plate_color = 2;
+message PlateNumberResult {
+  string plate_number = 1;
+  string plate_color = 2;  // TODO: change to enum?
 }
 
 message PlateRecogResult {
-  optional BoundingBox bounding_box = 1;
-  optional string plate_number = 2;
-  optional string plate_color = 3;
+  BoundingBox bounding_box = 1;
+  string plate_number = 2;
+  string plate_color = 3;
 }
 
 message PoseDetectResult {
-  optional Point right_shoulder = 1;
-  optional Point right_elbow = 2;
-  optional Point right_wrist = 3;
-  optional Point left_shoulder = 4;
-  optional Point left_elbow = 5;
-  optional Point left_wrist = 6;
-  optional Point right_hip = 7;
-  optional Point right_knee = 8;
-  optional Point right_ankle = 9;
-  optional Point left_hip = 10;
-  optional Point left_knee = 11;
-  optional Point left_ankle = 12;
-  optional Point head = 13;
-  optional Point neck = 14;
+  Point right_shoulder = 1;
+  Point right_elbow = 2;
+  Point right_wrist = 3;
+  Point left_shoulder = 4;
+  Point left_elbow = 5;
+  Point left_wrist = 6;
+  Point right_hip = 7;
+  Point right_knee = 8;
+  Point right_ankle = 9;
+  Point left_hip = 10;
+  Point left_knee = 11;
+  Point left_ankle = 12;
+  Point head = 13;
+  Point neck = 14;
 }
 
-message FaceFeatureFloatResult {
-  repeated float feature = 1;
+message FaceFeatureResult {
+  repeated float float_vec = 1;
+  bytes fix_vec = 2;
+  float scale = 3;
 }
 
-message FaceFeatureFixedResult {
-  repeated int32 feature = 1;
-}
-
-message FaceDetectRecogFloatResult {
+message FaceDetectRecogResult {
   repeated BoundingBox bounding_box = 1;
-  repeated FaceFeatureFloatResult float_feature = 2;
-}
-
-message FaceDetectRecogFixedResult {
-  repeated BoundingBox bounding_box = 1;
-  optional float scale = 2;
-  repeated FaceFeatureFixedResult fixed_feature = 3;
+  repeated FaceFeatureResult feature = 2;
 }
 
 message SegmetationResult {
@@ -467,17 +508,17 @@ message MedicalSegmetationResult {
 }
 
 message VehicleResult {
-  optional int32 label = 1;
-  optional float score = 2;
-  optional float x = 3;
-  optional float y = 4;
-  optional float width = 5;
-  optional float height = 6;
-  optional float angle = 7;
+  int32 label = 1;
+  float score = 2;
+  float x = 3;
+  float y = 4;
+  float width = 5;
+  float height = 6;
+  float angle = 7;
 }
 
 message MultiTaskResult {
-  optional SegmetationResult segmentation = 1;
+  SegmetationResult segmentation = 1;
   repeated VehicleResult vehicle_reuslt = 2;
 }
 
@@ -490,20 +531,19 @@ message DpuModelResult {
     LandmarkResult landmark_result = 1;
     DetectResult detect_result = 2;
     AttributeResult attribute_result = 3;
-    RefineDetResult refine_det_result = 4;
+    DetectResult refine_det_result = 4;
     ClassificationResult classification_result = 5;
     RoadlineResult roadline_result = 6;
     FaceLandmarkResult facelandmark_result = 7;
     PlateDetectResult plate_detect_result = 8;
-    PlateNumResult plate_num_result = 9;
+    PlateNumberResult plate_number_result = 9;
     PlateRecogResult plate_recog_result = 10;
     PoseDetectResult pose_detect_result = 11;
-    FaceFeatureFloatResult face_feature_float_result = 12;
+    FaceFeatureResult face_feature_result = 12;
     SegmetationResult segmentation_result = 13;
     MedicalSegmetationResult medical_segmentation_result = 14;
     MultiTaskResult multitask_result = 15;
     ReidResult reid_result = 16;
-    FaceDetectRecogFloatResult face_detect_recog_float_result = 17;
-    FaceDetectRecogFixedResult face_detect_recog_fixed_result = 18;
+    FaceDetectRecogResult face_detect_recog_result = 17;
   }
 }

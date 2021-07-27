@@ -15,6 +15,7 @@
  */
 #include <glog/logging.h>
 
+#include <eigen3/Eigen/Dense>
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -26,11 +27,6 @@
 
 extern std::vector<cv::Rect> GLOBAL_SET_RECT_MANUAL;
 
-#ifndef HAVE_EIGEN
-#define HAVE_EIGEN 0
-#endif
-#if HAVE_EIGEN
-#include <eigen3/Eigen/Dense>
 // Overlay the original image with the result
 // Eigen Optimized version
 static void overLay1(cv::Mat& src1, const cv::Mat& src2) {
@@ -41,15 +37,7 @@ static void overLay1(cv::Mat& src1, const cv::Mat& src2) {
                                                 imsize);
   data1 = data1 / 2 + data2 / 2;
 }
-#else
-// c version
-static void overLay1(cv::Mat& src1, const cv::Mat& src2) {
-  const int imsize = src1.cols * src2.rows * 3;
-  for (int i = 0; i < imsize; ++i) {
-    src1.data[i] = src1.data[i] / 2 + src2.data[i] / 2;
-  }
-}
-#endif
+
 // This function is used to process the multitask result and show on the image
 static cv::Mat process_result_multitask(
     cv::Mat& m1, const vitis::ai::MultiTaskResult& result, bool is_jpeg) {

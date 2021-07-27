@@ -1,4 +1,3 @@
-#
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +23,12 @@ import copy
 import pytorch_nndct.nn.qat as nnqat
 import six
 import torch
+
+from torch import nn
+try:
+  from torch.nn.modules.conv import _ConvTransposeNd
+except ImportError:
+  from torch.nn.modules.conv import _ConvTransposeMixin as _ConvTransposeNd
 
 from pytorch_nndct.utils import module_util as mod_util
 
@@ -72,14 +77,24 @@ def fuse_conv_bn(conv, bn, qconfig):
   """Given the conv and bn modules, fuses them and returns the fused module
 
     Args:
-        conv: Module instance of torch.nn.Conv2d
-        bn: torch.nn.BatchNorm2d instance that needs to be fused with the conv
+        conv: Module instance of (nn.Conv2d, nn.Conv3d)
+        bn: nn.BatchNorm2d or nn.BatchNorm3d instance that needs
+            to be fused with the conv
         qconfig: Quantization config used to initialize the fused module.
 
     Return:
       The fused module.
   """
 
+  foldable_patterns = {
+      (nn.Conv2d, nn.BatchNorm2d): nnqat.QuantizedConvBatchNorm2d,
+      (nn.Conv3d, nn.BatchNorm3d): nnqat.QuantizedConvBatchNorm3d,
+      (nn.ConvTranspose2d, nn.BatchNorm2d): nnqat.QuantizedConvTransposeBatchNorm2d,
+      (nn.ConvTranspose3d, nn.BatchNorm3d): nnqat.QuantizedConvTransposeBatchNorm3d,
+  }
+
+  cls_pair = (type(conv), type(bn))
+  assert cls_pair in foldable_patterns
   assert(conv.training == bn.training),\
       "Conv and BN both must be in the same mode (train or eval)."
 
@@ -88,38 +103,14 @@ def fuse_conv_bn(conv, bn, qconfig):
   assert bn.num_features == conv.out_channels, 'Output channel of Conv2d must match num_features of BatchNorm2d'
   assert bn.affine, 'Only support fusing BatchNorm2d with affine set to True'
   assert bn.track_running_stats, 'Only support fusing BatchNorm2d with tracking_running_stats set to True'
-  return nnqat.ConvBatchNorm2d.from_float(conv, bn, qconfig)
 
-def replace_modules(model, module_names, new_modules):
-  if not isinstance(module_names, (tuple, list)):
-    module_names = [module_names]
-  if not isinstance(new_modules, (tuple, list)):
-    new_modules = [new_modules]
-  assert len(new_modules) <= len(module_names)
-
-  modules = []
-  for name in module_names:
-    modules.append(mod_util.get_module(model, name))
-
-  for handle_id, pre_hook_fn in modules[0]._forward_pre_hooks.items():
-    new_modules[0].register_forward_pre_hook(pre_hook_fn)
-    del modules[0]._forward_pre_hooks[handle_id]
-  # Move post forward hooks of the last module to resulting fused module
-  for handle_id, hook_fn in modules[-1]._forward_hooks.items():
-    new_modules[-1].register_forward_hook(hook_fn)
-    del modules[-1]._forward_hooks[handle_id]
-
-  # Use Identity to fill in the missing modules.
-  for i in range(len(module_names) - len(new_modules)):
-    new_modules.append(torch.nn.Identity())
-    new_modules[i].training = modules[0].training
-
-  for i, name in enumerate(module_names):
-    mod_util.set_module(model, name, new_modules[i])
+  fused_cls = foldable_patterns[cls_pair]
+  #print('fuse', cls_pair, '->', fused_cls)
+  return fused_cls.from_float(conv, bn, qconfig)
 
 @six.add_metaclass(abc.ABCMeta)
 class Transform(object):
-  """Defines a transform to be applied to a torch.nn.Module object.
+  """Defines a transform to be applied to a nn.Module object.
 
   A transform is a combination of 'Find + Replace' which describes how to find
   a pattern of layers in a model, and what to replace those layers with.
@@ -152,20 +143,45 @@ class Transform(object):
     """
     raise NotImplementedError()
 
-class FuseAndQuantizeConv2dBatchNorm(Transform):
-
-  def pattern(self):
-    return NodePattern('BatchNorm2d', inputs=[NodePattern('Conv2d')])
-
+class _FuseAndQuantizeConvNdBatchNorm(Transform):
   def replace(self, model, match):
-    # Fuse Conv2d and BatchNorm2d
+    # Fuse (Conv2d, BatchNorm2d) and (Conv3d, BatchNorm3d)
     conv_match, bn_match = match.inputs[0].node, match.node
     conv_name, bn_name = conv_match.name, bn_match.name
     conv, bn = conv_match.module, bn_match.module
     #print('Fusing {} and {}'.format(conv_name, bn_name))
+    transposed = True if isinstance(conv, _ConvTransposeNd) else False
     conv_bn = fuse_conv_bn(conv, bn, conv_match.qconfig)
-    replace_modules(model, [conv_name, bn_name], conv_bn)
+    mod_util.replace_modules(model, [conv_name, bn_name], conv_bn)
     return {bn_name: conv_name + '.bn'}
+
+class FuseAndQuantizeConv2dBatchNorm(_FuseAndQuantizeConvNdBatchNorm):
+  def pattern(self):
+    return NodePattern(
+        'BatchNorm2d', inputs=[NodePattern('Conv2d|ConvTranspose2d')])
+
+class FuseAndQuantizeConv3dBatchNorm(_FuseAndQuantizeConvNdBatchNorm):
+  def pattern(self):
+    return NodePattern(
+        'BatchNorm3d', inputs=[NodePattern('Conv3d|ConvTranspose3d')])
+
+class QuantizeConvNd(Transform):
+  def pattern(self):
+    return NodePattern('Conv2d|Conv3d|ConvTranspose2d|ConvTranspose3d')
+
+  def replace(self, model, match):
+    float_to_qat = {
+      nn.Conv2d: nnqat.QuantizedConv2d,
+      nn.Conv3d: nnqat.QuantizedConv3d,
+      nn.ConvTranspose2d: nnqat.QuantizedConvTranspose2d,
+      nn.ConvTranspose3d: nnqat.QuantizedConvTranspose3d,
+    }
+    matched_module = match.node.module
+    #print('replace:', match.node.graph_node.name, match.node.qconfig)
+    qat_cls = float_to_qat[type(matched_module)]
+    mod_util.replace_modules(
+        model, match.node.name,
+        qat_cls.from_float(matched_module, match.node.qconfig))
 
 class QuantizeLinear(Transform):
 
@@ -173,36 +189,52 @@ class QuantizeLinear(Transform):
     return NodePattern('Linear')
 
   def replace(self, model, match):
-    replace_modules(model, match.node.name,
-        nnqat.Linear.from_float(match.node.module, match.node.qconfig))
+    mod_util.replace_modules(
+        model, match.node.name,
+        nnqat.QuantizedLinear.from_float(match.node.module, match.node.qconfig))
 
-class ReplaceAdaptiveAvgPool2d(Transform):
+class ReplacePooling2d(Transform):
 
   def pattern(self):
-    return NodePattern('AdaptiveAvgPool2d')
+    return NodePattern('AvgPool2d|AdaptiveAvgPool2d')
 
   def replace(self, model, match):
     op = match.node.op
     attrs = {name: op.get_config(name) for name in op.configs}
-    #print('Replace AdaptiveAvgPool2d with AvgPool2d using', attrs)
-    avgpool2d = nnqat.AvgPool2d(**attrs)
-    replace_modules(model, match.node.name, avgpool2d)
+
+    replacement_map = {
+        nn.AvgPool2d: nnqat.DPUAvgPool2d,
+        nn.AdaptiveAvgPool2d: nnqat.DPUAdaptiveAvgPool2d,
+    }
+    pool2d = replacement_map[type(match.node.module)](**attrs)
+    mod_util.replace_modules(model, match.node.name, pool2d)
+
+class ReplaceLeakyReLU(Transform):
+
+  def pattern(self):
+    return NodePattern('LeakyReLU')
+
+  def replace(self, model, match):
+    op = match.node.op
+    attrs = {name: op.get_config(name) for name in op.configs}
+    relu = nnqat.DPULeakyReLU(*attrs)
+    mod_util.replace_modules(model, match.node.name, relu)
 
 class ModuleTransformer(object):
-  """Matches patterns to apply transforms a torch.nn.Module."""
+  """Matches patterns to apply transforms a nn.Module."""
 
   def __init__(self, model, model_topo, transforms):
     """Construct ModelTransformer.
 
     Args:
-      model: A torch.nn.Module object to be transformed.
+      model: A nn.Module object to be transformed.
       transforms: List of transforms to be applied to the model.
     """
     self.model = model
     self.model_topo = model_topo
     self.transforms = transforms
 
-  def _match_node_with_inputs(self, node, pattern, matched_nodes):
+  def _match_node_with_inputs(self, node, model_topo, pattern, matched_nodes):
     """Match pattern at this node, and continue to match at its inputs."""
     if node.name in matched_nodes:
       return None
@@ -233,8 +265,9 @@ class ModuleTransformer(object):
     if len(pattern.inputs) != len(node.inputs):
       return None
     for i, input_pattern in enumerate(pattern.inputs):
-      input_node = self.model_topo.node(node.inputs[i])
-      input_match = self._match_node_with_inputs(input_node, pattern.inputs[i],
+      input_node = model_topo.node(node.inputs[i])
+      input_match = self._match_node_with_inputs(input_node, model_topo,
+                                                 pattern.inputs[i],
                                                  matched_nodes)
       if not input_match:
         return None
@@ -242,18 +275,15 @@ class ModuleTransformer(object):
 
     return match
 
-  def _match(self, pattern, strict=False):
-    self._update_node_module()
-    if not strict:
-      self._rebuild_topo()
-
+  def _match(self, model_topo, pattern, strict=False):
     matches = []
     matched_nodes = set()
-    for node in self.model_topo.nodes:
+    for node in model_topo.nodes:
       if node.name in matched_nodes:
         continue
 
-      node_match = self._match_node_with_inputs(node, pattern, matched_nodes)
+      node_match = self._match_node_with_inputs(node, model_topo, pattern,
+                                                matched_nodes)
       if node_match:
         self._save_matched_nodes(node_match, matched_nodes)
         matches.append(node_match)
@@ -264,17 +294,11 @@ class ModuleTransformer(object):
     for input_match in match.inputs:
       self._save_matched_nodes(input_match, matched_nodes)
 
-  def _update_node_module(self):
-    for node in self.model_topo.nodes:
-      try:
-        node.module = mod_util.get_module(self.model, node.name)
-      except AttributeError:
-        pass
+  def _rebuild_topo(self, model, topo):
+    """Rebuild topology of the given model.
 
-  def _rebuild_topo(self):
-    """Rebuild topology of the model by skiping Identity module.
-
-    Some sub modules of the model may be replaced by torch.nn.Identity in
+    1. Skiping Identity module.
+    Some sub modules of the model may be replaced by nn.Identity in
     transform and these Identity modules can cause patterns to fail to be
     matched.
 
@@ -284,11 +308,12 @@ class ModuleTransformer(object):
     NodePattern("Add", inputs=["ConvBatchNorm2d", "ConvBatchNorm2d"]) can not
     be matched.
 
+    2. Updating node's module. The node's corresponding module may change
+    after the transformation. Assign the actual module to the node.
+
     Call this function before doing pattern matching
     to make sure no matches are missed.
     """
-
-    topo = self.model_topo
 
     node_to_inputs = {}
     for node in topo.nodes:
@@ -297,24 +322,32 @@ class ModuleTransformer(object):
     for node in topo.nodes:
       for i, inp in enumerate(node.inputs):
         input_node = topo.node(inp)
-        while type(input_node.module) == torch.nn.Identity:
+        while type(input_node.module) == nn.Identity:
           input_node = topo.node(node_to_inputs[inp][0])
         node.inputs[i] = input_node.name
         #print('Skip identity: {} <- {}'.format(node.name, input_node.name))
 
+    # Update node's module.
+    for node in topo.nodes:
+      try:
+        node.module = mod_util.get_module(model, node.name)
+      except AttributeError:
+        pass
+
   def transform(self, inplace=False):
-    """Transforms the torch.nn.Module by applying all the specified transforms.
+    """Transforms the nn.Module by applying all the specified transforms.
 
     Returns:
-      The transformed torch.nn.Module.
+      The transformed nn.Module.
     """
     model = self.model if inplace else copy.deepcopy(self.model)
+    model_topo = self.model_topo
 
     replace_map = {}
-
     for transform in self.transforms:
-      matches = self._match(transform.pattern())
+      self._rebuild_topo(model, model_topo)
 
+      matches = self._match(model_topo, transform.pattern())
       for match in matches:
         orig_to_transformed = transform.replace(model, match)
         if not orig_to_transformed:
@@ -323,7 +356,10 @@ class ModuleTransformer(object):
         for key in orig_to_transformed.keys():
           if key in replace_map:
             raise RuntimeError(
-                'Mapping module "{}" to more than one transformed module'.format(key))
+                'Mapping module "{}" to more than one transformed module'
+                .format(key))
         replace_map.update(orig_to_transformed)
 
-    return model, replace_map
+    # Make sure the topo is up to date.
+    self._rebuild_topo(model, model_topo)
+    return model, model_topo, replace_map

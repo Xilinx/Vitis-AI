@@ -22,13 +22,15 @@
 #include <opencv2/imgproc.hpp>
 #include <vitis/ai/classification.hpp>
 #include <vitis/ai/demo.hpp>
-#include <vitis/ai/nnpp/classification.hpp>
 
 #include "./process_result.hpp"
-using namespace std;
+
 int main(int argc, char *argv[]) {
-  string model = argv[1];
+  std::string model = argv[1];
   return vitis::ai::main_for_video_demo(
-      argc, argv, [model] { return vitis::ai::Classification::create(model); },
+      argc, argv,
+      [model] {
+        return vitis::ai::Classification::create(model);
+      },
       process_result, 2);
 }

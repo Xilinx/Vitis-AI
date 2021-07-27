@@ -31,13 +31,13 @@ Vitis AI is composed of the following key components:
 
 ## [See What's New](docs//learn/release_notes.md)
 - [Release Notes](docs//learn/release_notes.md)
-- Added support for Pytorch and Tensorflow 2.3 frameworks
-- Added more ready-to-use AI models for a wider range of applications, including 3D point cloud detection and segmentation, COVID-19 chest image segmentation and other reference models
-- Unified XIR-based compilation flow from edge to cloud
-- Vitis AI Runtime (VART) fully open source
-- New RNN overlay for NLP applications
-- New CNN DPUs for the low-latency and higher throughput applications on Alveo cards
-- EoU enhancement with Beta version model partitioning and custom layer/operators plug-in
+- Support new platforms, including Versal ACAP platforms VCK190, VCK5000 and Kria SoM 
+- Better Pytorch and Tensorflow model support: Pytorch 1.5-1.7.1, improved quantization for Tensorflow 2.x models
+- New models, including 4D Radar detection, Image-Lidar sensor fusion, 3D detection & segmentation, multi-task, depth estimation, super resolution for automotive, smart medical and industrial vision applications
+- New Graph Runner API to deploy models with multiple subgraphs
+- DPUCADX8G (DPUv1)deprecated with DPUCADF8H (DPUv3Int8)
+- DPUCAHX8H (DPUv3E) and DPUCAHX8L (DPUv3ME) release with xo
+- Classification & Detection WAA examples for Versal (VCK190)
 
 ## Getting Started
 
@@ -48,9 +48,11 @@ Two options are available for installing the containers with the Vitis AI tools 
 
 
 ### Installation
- - [Install Docker](docs/install_docker/README.md) - if Docker not installed on your machine yet
+ - [Install Docker](docs/quick-start/install/install_docker/README.md) - if Docker not installed on your machine yet
 
  - [Ensure your linux user is in the group docker](https://docs.docker.com/install/linux/linux-postinstall/)
+
+ - At least **100GB** of disk space for the disk partition running Docker
 
  - Clone the Vitis-AI repository to obtain the examples, reference code, and scripts.
     ```bash
@@ -58,6 +60,8 @@ Two options are available for installing the containers with the Vitis AI tools 
 
     cd Vitis-AI
     ```
+
+**Note:** The following commands are for the latest version of Vitis AI. For details and history click [Run Docker Container](docs/quick-start/install/install_docker/load_run_docker.md)
 
 #### Using Pre-built Docker
 
@@ -97,7 +101,20 @@ To run the GPU docker, use command:
 ./docker_run.sh xilinx/vitis-ai-gpu:latest
 ```
 Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
-More Detail can be found here: [Run Docker Container](docs/install_docker/load_run_docker.md)
+
+
+### Installing Patch in Docker
+
+You can install Anaconda packages in a conda environment this way:
+
+```
+Vitis-AI /workspace > sudo conda install -n vitis-ai-caffe https://www.xilinx.com/bin/public/openDownload?filename=unilog-1.3.2-h7b12538_35.tar.bz2
+```
+For a downloaded file:
+
+```sh
+sudo conda install -n vitis-ai-caffe ./<conda_package>.tar.bz2
+ ```
 
 **X11 Support for Running Vitis AI Docker with Alveo**
 
@@ -121,42 +138,42 @@ Please note before running this script, please make sure either you have local X
  ### Get Started with Examples
   - [VART](demo/VART/README.md)
   - [Vitis AI Library](demo/Vitis-AI-Library/README.md)
-  - [Examples](examples/README.md)
-  - [Vitis AI DNNDK samples](demo/DNNDK)
 
 
 ## Programming with Vitis AI
 
-Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo, and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa. 8 samples in [VART Samples](demo/VART) are available to help you get familiar with the unfied programming APIs.
+Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo, and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa. 10 samples in [VART Samples](demo/VART) are available to help you get familiar with the unfied programming APIs.
 
 
 | ID | Example Name          | Models              | Framework  | Notes                                                                     |
 |----|-----------------------|---------------------|------------|---------------------------------------------------------------------------|
 | 1  | resnet50              | ResNet50            | Caffe      | Image classification with VART C\+\+ APIs\.                   |
-| 2  | resnet50\_mt\_py      | ResNet50            | TensorFlow | Multi\-threading image classification with VART Python APIs\. |
-| 3  | inception\_v1\_mt\_py | Inception\-v1       | TensorFlow | Multi\-threading image classification with VART Python APIs\. |
-| 4  | pose\_detection       | SSD, Pose detection | Caffe      | Pose detection with VART C\+\+ APIs\.                         |
-| 5  | video\_analysis       | SSD                 | Caffe      | Traffic detection with VART C\+\+ APIs\.                      |
-| 6  | adas\_detection       | YOLO\-v3            | Caffe      | ADAS detection with VART C\+\+ APIs\.                         |
-| 7  | segmentation          | FPN                 | Caffe      | Semantic segmentation with VART C\+\+ APIs\.                  |
-| 8  | squeezenet\_pytorch   | Squeezenet          | Pytorch    | Image classification with VART C\+\+ APIs\.                   |
+| 2  | resnet50\_pt          | ResNet50            | Pytorch    | Image classification with VART extension C\+\+ APIs\.         |
+| 3  | resnet50\_ext         | ResNet50            | Caffe      | Image classification with VART extension C\+\+ APIs\.         |
+| 4  | resnet50\_mt\_py      | ResNet50            | TensorFlow | Multi\-threading image classification with VART Python APIs\. |
+| 5  | inception\_v1\_mt\_py | Inception\-v1       | TensorFlow | Multi\-threading image classification with VART Python APIs\. |
+| 6  | pose\_detection       | SSD, Pose detection | Caffe      | Pose detection with VART C\+\+ APIs\.                         |
+| 7  | video\_analysis       | SSD                 | Caffe      | Traffic detection with VART C\+\+ APIs\.                      |
+| 8  | adas\_detection       | YOLO\-v3            | Caffe      | ADAS detection with VART C\+\+ APIs\.                         |
+| 9  | segmentation          | FPN                 | Caffe      | Semantic segmentation with VART C\+\+ APIs\.                  |
+| 10 | squeezenet\_pytorch   | Squeezenet          | Pytorch    | Image classification with VART C\+\+ APIs\.                   |
 
-For more information, please refer to [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_3/zmw1606771874842.html)
+For more information, please refer to [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_4/index.html)
 
 
 ## References
 - [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)
-- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_3/zmw1606771874842.html)
+- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_4/index.html)
 - [Vitis AI Model Zoo with Performance & Accuracy Data](models/AI-Model-Zoo)
-- [Vitis AI Tutorials](https://github.com/Xilinx/Vitis-In-Depth-Tutorial/tree/master/Machine_Learning)
+- [Vitis AI Tutorials](https://github.com/Xilinx/Vitis-Tutorials/tree/master/Machine_Learning)
 - [Developer Articles](https://developer.xilinx.com/en/get-started/ai.html)
 
-## [System Requirements](docs/system_requirements.md)
+## [System Requirements](docs/learn/system_requirements.md)
 
 ## Questions and Support
-- [FAQ](docs/faq.md)
+- [FAQ](docs/quick-start/faq.md)
 - [Vitis AI Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
-- [Third Party Source](docs/Thirdpartysource.md)
+- [Third Party Source](docs/reference/Thirdpartysource.md)
 
 [models]: docs/models.md
 [Amazon AWS EC2 F1]: https://aws.amazon.com/marketplace/pp/B077FM2JNS
@@ -164,12 +181,9 @@ For more information, please refer to [Vitis AI User Guide](https://www.xilinx.c
 [AWS F1 Application Execution on Xilinx Virtex UltraScale Devices]: https://github.com/aws/aws-fpga/blob/master/SDAccel/README.md
 [Release Notes]: docs/release-notes/1.x.md
 [UG1023]: https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_4/ug1023-sdaccel-user-guide.pdf
-[FAQ]: docs/faq.md
 [ML Suite Overview]: docs/ml-suite-overview.md
 [Webinar on Xilinx FPGA Accelerated Inference]: https://event.on24.com/wcc/r/1625401/2D3B69878E21E0A3DA63B4CDB5531C23?partnerref=Mlsuite
-[Vitis AI Forum]: https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI
 [ML Suite Lounge]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html
 [Models]: https://www.xilinx.com/products/boards-and-kits/alveo/applications/xilinx-machine-learning-suite.html#gettingStartedCloud
 [whitepaper here]: https://www.xilinx.com/support/documentation/white_papers/wp504-accel-dnns.pdf
 
-   ```

@@ -30,7 +30,6 @@
 
 Vitis AI is our unified AI inference solution for all Xilinx platforms (including Versal ACAPs) from edge to cloud.
 It consists of optimized IP, tools, libraries, models, and example designs. It’s a unification of the following:  
-* DNNDK (AI Inference solution for the Edge)
 * ML Suite (AI Inference solution for on-premise and cloud)
 * Metropolis (AI Inference solution for Versal ACAPs) –  note “Metropolis” was only an internal project name
 
@@ -86,7 +85,7 @@ It also provides memory management, and interrupt handling based on XRT.
 
 ## How does developer migrate to Vitis AI
 It will be the similar developing flow using AI quantizer and AI compiler as before.  
-For the legacy AI development based on DNNDK/xfDNN, the deployment source code can be migrated to Vitis AI easily.  
+For the legacy AI development based on xfDNN, the deployment source code can be migrated to Vitis AI easily.  
 What the developer must take care is to change Vivado DPU to Vitis DPU, which will be released together with Zynq DPU TRD on Xilinx GitHub.  
 For the request on upgraded DPU for Alveo, please contact your Xilinx representative.
 
@@ -133,18 +132,18 @@ FPGA accelerated networks are far superior to GPU accelerated networks for laten
 
 1. Ensure the model is defined in a framework that is digestible by Vitis AI (Caffe, Tensorflow, Darknet)
 2. Ensure your software environment is set up appropriately  
-  a. [docker setup](./install_docker/load_run_docker.md)
+  a. [docker setup](./install/install_docker/load_run_docker.md)
 3. Ensure your hardware environment is set up appropriately (Before you attempt to deploy on hardware)  
 4. Quantize the model  
 5. Compile the model  
 6. Deploy the model  
   a. This is accomplished using Vitis AI C++ or Python APIs.  
-  b. For Alveo, [See Vitis AI samples](../alveo/examples/vitis_ai_alveo_samples)  
-  c. For ZU+ MPSoC, [See Vitis AI samples](../mpsoc//mpsoc/vitis_ai_samples_zcu102)
+  b. For VART, [See VART samples](../../demo/VART)  
+  c. For Vitis-AI-Library, [See Vitis-AI-LIbrary samples](../../demo/Vitis-AI-Library)
 
 Should you hit errors at step 5, it is possible that your network needs some modification to run optimally.  
 Ensure that you aren't dealing with unsupported layers.  
-Leverage the community for debug help, by accessing the [Vitis AI Forum](https://forums.xilinx.com/t5/Machine-Learning/bd-p/Deephi)
+Leverage the community for debug help, by accessing the [Vitis AI Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
 
 
 ## What is quantization why needed does it impact accuracy

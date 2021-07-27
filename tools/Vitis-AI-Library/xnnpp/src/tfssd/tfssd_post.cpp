@@ -193,8 +193,12 @@ static std::string slurp(const char* filename) {
 TFSSDPost::TFSSDPost(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-    const vitis::ai::proto::DpuModelParam& config, const std::string& dirname)
-    : input_tensors_(input_tensors), output_tensors_(output_tensors) {
+    const vitis::ai::proto::DpuModelParam& config, 
+    const std::string& dirname,
+    int& real_batch_sizex )
+    : input_tensors_(input_tensors), 
+      output_tensors_(output_tensors),
+      real_batch_size(real_batch_sizex) {
   // read official tensorflow ssd configure file
   auto path = dirname + "/" + config.tfssd_param().official_cfg();
   auto text = slurp(path.c_str());
@@ -253,11 +257,10 @@ static void sigmoid_c(const int8_t* input, float scale, unsigned int cls,
 }
 
 std::vector<vitis::ai::TFSSDResult> TFSSDPost::ssd_post_process() {
-  auto batch_size = input_tensors_[0].batch;
 
   auto ret = std::vector<vitis::ai::TFSSDResult>{};
-  ret.reserve(batch_size);
-  for (auto i = 0u; i < batch_size; ++i) {
+  ret.reserve(real_batch_size);
+  for (auto i = 0; i < real_batch_size; ++i) {
     ret.emplace_back(ssd_post_process(i));
   }
 

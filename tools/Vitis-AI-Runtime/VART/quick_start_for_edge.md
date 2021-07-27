@@ -1,31 +1,34 @@
 <table width="100%">
   <tr width="100%">
-    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Runtime v1.3.1</h1>
+    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Runtime v1.4</h1>
     </td>
  </tr>
  </table>
  
 ## Setting Up the Host
-1. Download the [sdk-2020.2.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2020.2.0.0.sh)
+Follow [Setting Up the Host](../../../setup/mpsoc/VART#step1-setup-cross-compiler) to set up the host automatically for edge.   
+Or refer to the following steps to set up the host manually.
+
+1. Download the [sdk-2021.1.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2021.1.0.0.sh)
 
 2. Install the cross-compilation system environment, follow the prompts to install. 
 
 **Please install it on your local host linux system, not in the docker system.**
 ```
-./sdk-2020.2.0.0.sh
+./sdk-2021.1.0.0.sh
 ```
-Note that the `~/petalinux_sdk` path is recommended for the installation. Regardless of the path you choose for the installation, make sure the path has read-write permissions. 
-Here we install it under `~/petalinux_sdk`.
+Note that the `~/petalinux_sdk_2021.1` path is recommended for the installation. Regardless of the path you choose for the installation, make sure the path has read-write permissions. 
+Here we install it under `~/petalinux_sdk_2021.1`.
 
 3. When the installation is complete, follow the prompts and execute the following command.
 ```
-source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
+source ~/petalinux_sdk_2021.1/environment-setup-cortexa72-cortexa53-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.2-r1.3.2.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.2.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2021.1-r1.4.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2021.1-r1.4.0.tar.gz) and install it to the petalinux system.
 ```
-tar -xzvf vitis_ai_2020.2-r1.3.2.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+tar -xzvf vitis_ai_2021.1-r1.4.0.tar.gz -C ~/petalinux_sdk_2021.1/sysroots/cortexa72-cortexa53-xilinx-linux
 ```
 
 ## Compile the VART 
@@ -34,26 +37,26 @@ To modify the VART source code, view and modify them under `Vitis-AI/tools/Vitis
 * unilog
 ```
 cd Vitis-AI/tools/Vitis-AI-Runtime/VART/unilog
-./cmake.sh
+./cmake.sh --clean
 ```
 * xir
 ```
 cd Vitis-AI/tools/Vitis-AI-Runtime/VART/xir
-./cmake.sh
+./cmake.sh --clean
 ```
 * target_factory
 ```
 cd Vitis-AI/tools/Vitis-AI-Runtime/VART/target_factory
-./cmake.sh
+./cmake.sh --clean
 ```
 * vart
 ```
 cd Vitis-AI/tools/Vitis-AI-Runtime/VART/vart
-./cmake.sh --cmake-options='-DENABLE_DPU_RUNNER=ON -DENABLE_CPU_RUNNER=OFF -DENABLE_SIM_RUNNER=OFF'
+./cmake.sh --clean
 ```
-After you compile each module of VART, the libraries and test programs will be generated under `~/build/build.linux.2020.1.aarch64.Debug/`.  
-Take `unilog` as an example, you will find the `libunilog.so` under `~/build/build.linux.2020.1.aarch64.Debug/unilog/src` and the test programs under
-`~/build/build.linux.2020.1.aarch64.Debug/unilog/test`.  
+After you compile each module of VART, the libraries and test programs will be generated under `~/build/build.linux.2021.1.aarch64.Debug/`.  
+Take `unilog` as an example, you will find the `libunilog.so` under `~/build/build.linux.2021.1.aarch64.Debug/unilog/src` and the test programs under
+`~/build/build.linux.2021.1.aarch64.Debug/unilog/test`.  
 And the libraries will be installed to cross compile system by default. The installation path is `<sdk install path>/sysroots/aarch64-xilinx-linux/install/Debug/lib`
 
 To reduce the size of generated libraries, execute the following command.

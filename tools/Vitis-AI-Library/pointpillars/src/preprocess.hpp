@@ -30,14 +30,14 @@ class PointPillarsPre
     );
     ~PointPillarsPre();
 
-    void process_net0(const V1F& points);
+    void process_net0(const float* points, int len);
     void process_net1();
     void process_net1_cleanmem();
     void process_net1_thread( int start, int len);
 
 
-   inline bool judge_op_same(int canvas_index, int idx);
-   void process_net0_thread(const V1F& points , int idx, int start, int len, int&);
+    inline bool judge_op_same(int canvas_index, int idx);
+    void process_net0_thread(const float* points , int idx, int start, int len, int&);
 
     std::shared_ptr<preout_dict>   pre_dict_;
 

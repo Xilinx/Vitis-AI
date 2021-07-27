@@ -162,6 +162,52 @@ static void max_index_neon_c8(int8_t *d, int g, uint8_t *results) {
   }
 }
 
+static void max_index_neon_c12(int8_t *d, int g, uint8_t *results) {
+  const auto g_to = g / 16 * 16;
+  for (int i = 0; i < g / 16; ++i) {
+    uint8x16_t temp;
+    for (int j = 0; j < 16; j = j + 2) {
+      volatile int8x8x4_t d4x4 = vld4_s8(d);
+      const int8x8x2_t cmp_c0_c1 = compare(d4x4.val[0], d4x4.val[1],        //
+                                           vcreate_s8(0xFFFF080400080400),  //
+                                           vcreate_s8(0xFFFF090501090501));
+      const int8x8x2_t cmp_c0_c1_c2 =
+          compare(cmp_c0_c1.val[0], d4x4.val[2],  //
+                  cmp_c0_c1.val[1], vcreate_s8(0xFFFF0A06020A0602));
+      int8x8x2_t cmp_c0_c1_c2_c3 =
+          compare(cmp_c0_c1_c2.val[0], d4x4.val[3],  //
+                  cmp_c0_c1_c2.val[1], vcreate_s8(0xFFFF0B07030B0703));
+
+      cmp_c0_c1_c2_c3.val[0][6] = cmp_c0_c1_c2_c3.val[0][3];
+      cmp_c0_c1_c2_c3.val[1][6] = cmp_c0_c1_c2_c3.val[1][3];
+      cmp_c0_c1_c2_c3.val[0][3] = 0xFF;
+      cmp_c0_c1_c2_c3.val[1][3] = 0xFF;
+      cmp_c0_c1_c2_c3.val[0][7] = 0xFF;
+      // Final compare, only lower 4 bytes are valid
+      const int8x8x2_t cmp_r0_vs_r1_and_r2_vs_r3 =
+          compare(cmp_c0_c1_c2_c3.val[0], vrev16_s8(cmp_c0_c1_c2_c3.val[0]),
+                  cmp_c0_c1_c2_c3.val[1], vrev16_s8(cmp_c0_c1_c2_c3.val[1]));
+      const int8x8x2_t cmp_r01_vs_r23 =
+          compare(cmp_r0_vs_r1_and_r2_vs_r3.val[0],
+                  vreinterpret_s8_s16(vrev32_s16(
+                      vreinterpret_s16_s8(cmp_r0_vs_r1_and_r2_vs_r3.val[0]))),
+                  cmp_r0_vs_r1_and_r2_vs_r3.val[1],
+                  vreinterpret_s8_s16(vrev32_s16(
+                      vreinterpret_s16_s8(cmp_r0_vs_r1_and_r2_vs_r3.val[1]))));
+
+      temp[j] = cmp_r01_vs_r23.val[1][0];
+      temp[j + 1] = cmp_r01_vs_r23.val[1][4];
+      d += 24;
+    }
+    vst1q_u8(results, temp);
+    results += 16;
+  }
+  if (g_to != g) {
+    const auto c = 12;
+    vitis::ai::max_index_c(d, c, g - g_to, results);
+  }
+}
+
 static void max_index_neon_c16(int8_t *d, int g, uint8_t *results) {
   const auto g_to = g / 16 * 16;
   for (int i = 0; i < g / 16; ++i) {
@@ -202,6 +248,53 @@ static void max_index_neon_c16(int8_t *d, int g, uint8_t *results) {
     vitis::ai::max_index_c(d, c, g - g_to, results);
   }
 }
+
+/*
+static void max_index_neon_c19(int8_t *d, int g, uint8_t *results) {
+  const auto g_to = g / 16 * 16;
+  for (int i = 0; i < g / 16; ++i) {
+    uint8x16_t temp;
+    for (int j = 0; j < 16; ++j) {
+      volatile int8x8x4_t d4x4 = vld4_s8(d);
+      d4x4.val[3][4] = 0xff;
+      const int8x8x2_t cmp_c0_c1 = compare(d4x4.val[0], d4x4.val[1],        //
+                                           vcreate_s8(0xFFFFFF100C080400),  //
+                                           vcreate_s8(0xFFFFFF110D090501));
+      const int8x8x2_t cmp_c0_c1_c2 =
+          compare(cmp_c0_c1.val[0], d4x4.val[2],  //
+                  cmp_c0_c1.val[1], vcreate_s8(0xFFFFFF120E0A0602));
+      int8x8x2_t cmp_c0_c1_c2_c3 =
+          compare(cmp_c0_c1_c2.val[0], d4x4.val[3],  //
+                  cmp_c0_c1_c2.val[1], vcreate_s8(0xFFFFFF130F0B0703));
+      cmp_c0_c1_c2_c3.val[0][5] = 0xff;
+      cmp_c0_c1_c2_c3.val[0][6] = 0xff;
+      cmp_c0_c1_c2_c3.val[0][7] = 0xff;
+
+      // Final compare, only lower 4 bytes are valid
+      const int8x8x2_t cmp_r0_vs_r1_and_r2_vs_r3 =
+          compare(cmp_c0_c1_c2_c3.val[0], vrev16_s8(cmp_c0_c1_c2_c3.val[0]),
+                  cmp_c0_c1_c2_c3.val[1], vrev16_s8(cmp_c0_c1_c2_c3.val[1]));
+      const int8x8x2_t cmp_r01_vs_r23 =
+          compare(cmp_r0_vs_r1_and_r2_vs_r3.val[0],
+                  vreinterpret_s8_s16(vrev32_s16(
+                      vreinterpret_s16_s8(cmp_r0_vs_r1_and_r2_vs_r3.val[0]))),
+                  cmp_r0_vs_r1_and_r2_vs_r3.val[1],
+                  vreinterpret_s8_s16(vrev32_s16(
+                      vreinterpret_s16_s8(cmp_r0_vs_r1_and_r2_vs_r3.val[1]))));
+
+      temp[j] = cmp_r01_vs_r23.val[0][0] >= cmp_r01_vs_r23.val[0][4] ? cmp_r01_vs_r23.val[1][0]: cmp_r01_vs_r23.val[1][4];
+      d += 19;
+    }
+    vst1q_u8(results, temp);
+    results += 16;
+  }
+  if (g_to != g) {
+    const auto c = 19;
+    vitis::ai::max_index_c(d, c, g - g_to, results);
+  }
+}
+*/
+
 #endif
 
 namespace vitis {
@@ -224,9 +317,15 @@ void max_index_void(int8_t *feature_map, int width, int height, int channel,
     case 8:
       max_index_neon_c8(feature_map, g, &ret[0]);
       break;
+    case 12:
+      max_index_neon_c12(feature_map, g, &ret[0]);
+      break;
     case 16:
       max_index_neon_c16(feature_map, g, &ret[0]);
       break;
+    //case 19:
+    //  max_index_neon_c19(feature_map, g, &ret[0]);
+    //  break;
     default:
       max_index_c(feature_map, channel, g, &ret[0]);
   }
@@ -246,9 +345,15 @@ std::vector<uint8_t> max_index(int8_t *feature_map, int width, int height,
     case 8:
       max_index_neon_c8(feature_map, g, &ret[0]);
       break;
+    case 12:
+      max_index_neon_c12(feature_map, g, &ret[0]);
+      break;
     case 16:
       max_index_neon_c16(feature_map, g, &ret[0]);
       break;
+    //case 19:
+    //  max_index_neon_c19(feature_map, g, &ret[0]);
+    //  break;
     default:
       max_index_c(feature_map, channel, g, &ret[0]);
   }

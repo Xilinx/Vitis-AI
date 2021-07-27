@@ -35,6 +35,7 @@
 using Clock = chrono::steady_clock;
 
 DEF_ENV_PARAM(DEBUG_TEST, "0");
+DEF_ENV_PARAM(LOG_ERROR_COUNTER, "0");
 DEF_ENV_PARAM(NUM_OF_REF, "4");
 DEF_ENV_PARAM(THREAD_ADD_LOCK, "0");
 DEF_ENV_PARAM(SAME_INPUT, "0");
@@ -48,21 +49,24 @@ using namespace std;
 
 class MyPerformanceTestRunner : public vitis::ai::PerformanceTestRunner {
  public:
-  explicit MyPerformanceTestRunner(const string& filename,  //
-                                   const string& kernel);
+  explicit MyPerformanceTestRunner(const xir::Subgraph* subgraph);
+  explicit MyPerformanceTestRunner(const xir::Subgraph* subgraph,
+                                   const vector<string>& input_filenames,
+                                   const vector<string>& output_filenames);
   virtual ~MyPerformanceTestRunner();
   MyPerformanceTestRunner(const PerformanceTestRunner& other) = delete;
   MyPerformanceTestRunner& operator=(const PerformanceTestRunner& rhs) = delete;
 
  public:
   virtual void step(size_t idx, int thread_id) override;
+  void generate_output(uint32_t runner_num);
   virtual size_t get_result() override;
   vart::Runner* get_runner() { return runner_.get(); };
 
  private:
   unique_ptr<vart::Runner> runner_;
   const vector<vector<vector<char>>> inputs_;
-  const vector<vector<vector<char>>> ref_outputs_;
+  vector<vector<vector<char>>> ref_outputs_;
   vector<vector<char>> output_buffers_;
   size_t result_ = 0;
   int error_counter_ = 0;
@@ -107,7 +111,33 @@ static vector<vector<vector<char>>> generate_inputs(vart::Runner* runner) {
   }
   return ret;
 }
+static vector<vector<vector<char>>> fill_tensors(
+    vector<const xir::Tensor*> tensors, const vector<string>& input_filenames) {
+  auto tensors_size = tensors.size();
+  auto sz = (size_t)ENV_PARAM(NUM_OF_REF);
+  auto ret = vector<vector<vector<char>>>(sz);
+  uint num_of_batch = tensors[0]->get_shape()[0];
+  for (auto i = 0u; i < sz; ++i) {
+    ret[i].resize(tensors_size);
+    for (auto b = 0u; b < num_of_batch; ++b) {
+      for (auto j = 0u; j < tensors_size; ++j) {
+        auto element_num = tensors[j]->get_element_num();
+        auto each_file_size = element_num / num_of_batch;
+        ret[i][j].resize(element_num);
+        auto& filename = input_filenames[(i * num_of_batch * tensors_size +
+                                          b * tensors_size + j) %
+                                         input_filenames.size()];
+        auto flag = std::ifstream(filename)
+                        .read((char*)ret[i][j].data() + each_file_size * b,
+                              each_file_size)
+                        .good();
 
+        LOG_IF(INFO, !flag) << "fail to read! filename=" << filename;
+      }
+    }
+  }
+  return ret;
+}
 static void copy_input(const vector<char>& data, vart::TensorBuffer* tb) {
   size_t batch_size = tb->get_tensor()->get_shape()[0];
   for (auto i = 0u; i < batch_size; ++i) {
@@ -177,8 +207,37 @@ static void write_tensors(size_t batch_size,
     write_tensors(batch_size, t[0], file + "_c_" + to_string(c++));
   }
 }
-static vector<vector<vector<char>>> generate_outputs(
-    vart::Runner* runner, const vector<vector<vector<char>>>& inputs) {
+
+inline void run(vart::Runner* runner,
+                const vector<vector<vector<char>>>& inputs, size_t idx,
+                vector<vector<char>>& output_buffers) {
+  auto r = dynamic_cast<vart::RunnerExt*>(runner);
+  auto dpu_inputs = r->get_inputs();
+  auto dpu_outputs = r->get_outputs();
+  if (ENV_PARAM(COPY_INPUT)) {
+    LOG_IF(INFO, ENV_PARAM(DEBUG_TEST)) << "copying input...";
+    copy_inputs(inputs[idx], dpu_inputs);
+  }
+
+  for (auto input : dpu_inputs) {
+    input->sync_for_write(0, input->get_tensor()->get_data_size() /
+                                 input->get_tensor()->get_shape()[0]);
+  }
+  auto v = runner->execute_async(dpu_inputs, dpu_outputs);
+  runner->wait((int)v.first, -1);
+  for (auto output : dpu_outputs) {
+    output->sync_for_read(0, output->get_tensor()->get_data_size() /
+                                 output->get_tensor()->get_shape()[0]);
+  }
+  if (ENV_PARAM(COPY_INPUT) && ENV_PARAM(COPY_OUTPUT)) {
+    LOG_IF(INFO, ENV_PARAM(DEBUG_TEST)) << "copying output...";
+    copy_outputs(output_buffers, dpu_outputs);
+  }
+}
+
+inline vector<vector<vector<char>>> generate_outputs(
+    vart::Runner* runner, const vector<vector<vector<char>>>& inputs,
+    uint32_t runner_num) {
   auto output_tensors = runner->get_output_tensors();
   auto sz = inputs.size();
   auto num_of_batch = output_tensors[0]->get_shape()[0];
@@ -186,48 +245,47 @@ static vector<vector<vector<char>>> generate_outputs(
   for (auto i = 0u; i < sz; ++i) {
     ret[i] = allocate_buffer(output_tensors);
   }
+
   for (auto i = 0u; i < sz; ++i) {
-    auto r = dynamic_cast<vart::RunnerExt*>(runner);
-    auto dpu_inputs = r->get_inputs();
-    auto dpu_outputs = r->get_outputs();
     LOG_IF(INFO, ENV_PARAM(DEBUG_TEST)) << "generating ref " << i << endl;
-    copy_inputs(inputs[i], dpu_inputs);
-    for (auto input : dpu_inputs) {
-      input->sync_for_write(0, input->get_tensor()->get_data_size() /
-                                   input->get_tensor()->get_shape()[0]);
-    }
-
-    runner->execute_async(dpu_inputs, dpu_outputs);
-    runner->wait(0, 0);
-    for (auto output : dpu_outputs) {
-      output->sync_for_read(0, output->get_tensor()->get_data_size() /
-                                   output->get_tensor()->get_shape()[0]);
-    }
-
-    copy_outputs(ret[i], dpu_outputs);
+    run(runner, inputs, i, ret[i]);
   }
   if (ENV_PARAM(SAVE_INPUT_TO_FILE)) {
     auto input_batch = inputs[0][0].size() / num_of_batch;
     auto output_batch = ret[0][0].size() / num_of_batch;
-    write_tensors(input_batch, inputs, string("ref_input"));
-    write_tensors(output_batch, ret, string("ref_ouput"));
+    write_tensors(input_batch, inputs,
+                  string("ref_input_thread_") + to_string(runner_num));
+    write_tensors(output_batch, ret,
+                  string("ref_ouput_thread_") + to_string(runner_num));
   }
   LOG_IF(INFO, ENV_PARAM(DEBUG_TEST)) << "references are generated" << endl;
   return ret;
 }
 
-MyPerformanceTestRunner::MyPerformanceTestRunner(const string& filename,
-                                                 const string& kernel)
-    : runner_{vart::dpu::DpuRunnerFactory::create_dpu_runner(filename, kernel)},
+MyPerformanceTestRunner::MyPerformanceTestRunner(const xir::Subgraph* subgraph)
+    : runner_{vart::Runner::create_runner(subgraph, "run")},
       inputs_{generate_inputs(runner_.get())},
-      ref_outputs_{generate_outputs(runner_.get(), inputs_)},
+      // ref_outputs_{generate_outputs(runner_.get(), inputs_)},
+      output_buffers_{allocate_buffer(runner_->get_output_tensors())} {}
+void MyPerformanceTestRunner::generate_output(uint32_t runner_num) {
+  ref_outputs_ = generate_outputs(runner_.get(), inputs_, runner_num);
+}
+
+MyPerformanceTestRunner::MyPerformanceTestRunner(
+    const xir::Subgraph* subgraph, const vector<string>& input_filenames,
+    const vector<string>& output_filenames)
+    : runner_{vart::Runner::create_runner(subgraph, "run")},
+      inputs_{fill_tensors(runner_->get_input_tensors(), input_filenames)},
+      ref_outputs_{
+          fill_tensors(runner_->get_output_tensors(), output_filenames)},
       output_buffers_{allocate_buffer(runner_->get_output_tensors())} {}
 
 std::atomic<u_int64_t> errors_total = 0;
 MyPerformanceTestRunner::~MyPerformanceTestRunner() {
   errors_total += error_counter_;
-  LOG_IF(INFO, error_counter_) << "error_counter = " << error_counter_
-                               << ",errors_total = " << errors_total;
+  LOG_IF(INFO, ENV_PARAM(LOG_ERROR_COUNTER) && error_counter_)
+      << "error_counter = " << error_counter_
+      << ",errors_total = " << errors_total;
 }
 
 void MyPerformanceTestRunner::step(size_t idx, int thread_id) {
@@ -238,71 +296,51 @@ void MyPerformanceTestRunner::step(size_t idx, int thread_id) {
   CHECK_EQ(inputs_.size(), ref_outputs_.size());
   idx = idx % inputs_.size();
   auto output_tensors = runner_->get_output_tensors();
-  auto r = dynamic_cast<vart::RunnerExt*>(runner_.get());
-  auto dpu_inputs = r->get_inputs();
-  auto dpu_outputs = r->get_outputs();
-  if (ENV_PARAM(COPY_INPUT)) {
-    LOG_IF(INFO, ENV_PARAM(DEBUG_TEST)) << "copying input...";
-    copy_inputs(inputs_[idx], dpu_inputs);
-  }
+  run(get_runner(), inputs_, idx, output_buffers_);
+  if (ENV_PARAM(COPY_INPUT) && ENV_PARAM(COPY_OUTPUT) &&
+      ENV_PARAM(ENABLE_MEMCMP)) {
+    for (auto i = 0u; i < output_buffers_.size(); ++i) {
+      auto mem_size = output_buffers_[i].size();
+      auto num_of_batch = output_tensors[i]->get_shape()[0];
+      auto size_per_batch = mem_size / num_of_batch;
+      CHECK_EQ(mem_size, ref_outputs_[idx][i].size());
+      auto ok = true;
+      LOG_IF(INFO, false) << " mem_size " << mem_size << " num_of_batch "
+                          << num_of_batch << " size_per_batch "
+                          << size_per_batch;
+      for (auto batch_idx = 0; batch_idx < num_of_batch; ++batch_idx) {
+        auto r = memcmp(&output_buffers_[i][batch_idx * size_per_batch],
+                        &ref_outputs_[idx][i][batch_idx * size_per_batch],
+                        size_per_batch);
+        ok = ok && r == 0;
+        LOG_IF(INFO, ENV_PARAM(LOG_ERROR_COUNTER) && r != 0)
+            << "thread " << thread_id << " batch " << batch_idx
+            << " error_counter " << error_counter_ + 1 << " ok_counter "
+            << (ok_counter_ + 1);
+        if (r != 0 && ENV_PARAM(SAVE_ERROR_OUTPUT_TO_FILE)) {
+          auto ref_file_name =
+              string("ref_t") + to_string(thread_id) + string("_") +
+              to_string(idx) + string("_batch_") + to_string(batch_idx) +
+              string("_") + to_string(error_counter_ + 1) + string(".bin");
+          auto out_file_name =
+              string("out_t") + to_string(thread_id) + string("_") +
+              to_string(idx) + string("_batch_") + to_string(batch_idx) +
+              string("_") + to_string(error_counter_ + 1) + string(".bin");
 
-  for (auto input : dpu_inputs) {
-    input->sync_for_write(0, input->get_tensor()->get_data_size() /
-                                 input->get_tensor()->get_shape()[0]);
-  }
-  runner_->execute_async(dpu_inputs, dpu_outputs);
-  runner_->wait(0, 0);
-  for (auto output : dpu_outputs) {
-    output->sync_for_read(0, output->get_tensor()->get_data_size() /
-                                 output->get_tensor()->get_shape()[0]);
-  }
-  if (ENV_PARAM(COPY_INPUT) && ENV_PARAM(COPY_OUTPUT)) {
-    LOG_IF(INFO, ENV_PARAM(DEBUG_TEST)) << "copying output...";
-    copy_outputs(output_buffers_, dpu_outputs);
-    if (ENV_PARAM(ENABLE_MEMCMP)) {
-      for (auto i = 0u; i < output_buffers_.size(); ++i) {
-        auto mem_size = output_buffers_[i].size();
-        auto num_of_batch = output_tensors[i]->get_shape()[0];
-        auto size_per_batch = mem_size / num_of_batch;
-        CHECK_EQ(mem_size, ref_outputs_[idx][i].size());
-        auto ok = true;
-        LOG_IF(INFO, false)
-            << " mem_size " << mem_size << " num_of_batch " << num_of_batch
-            << " size_per_batch " << size_per_batch;
-        for (auto batch_idx = 0; batch_idx < num_of_batch; ++batch_idx) {
-          auto r = memcmp(&output_buffers_[i][batch_idx * size_per_batch],
-                          &ref_outputs_[idx][i][batch_idx * size_per_batch],
-                          size_per_batch);
-          ok = ok && r == 0;
-          LOG_IF(INFO, r != 0)
-              << "thread " << thread_id << " batch " << batch_idx
-              << " error_counter " << error_counter_ + 1 << " ok_counter "
-              << (ok_counter_ + 1);
-          if (r != 0 && ENV_PARAM(SAVE_ERROR_OUTPUT_TO_FILE)) {
-            auto ref_file_name =
-                string("ref_t") + to_string(thread_id) + string("_") +
-                to_string(idx) + string("_batch_") + to_string(batch_idx) +
-                string("_") + to_string(error_counter_ + 1) + string(".bin");
-            auto out_file_name =
-                string("out_t") + to_string(thread_id) + string("_") +
-                to_string(idx) + string("_batch_") + to_string(batch_idx) +
-                string("_") + to_string(error_counter_ + 1) + string(".bin");
-
-            write_to_file(&ref_outputs_[idx][i][batch_idx * size_per_batch],
-                          size_per_batch, ref_file_name);
-            write_to_file(&output_buffers_[i][batch_idx * size_per_batch],
-                          size_per_batch, out_file_name);
-          }
+          write_to_file(&ref_outputs_[idx][i][batch_idx * size_per_batch],
+                        size_per_batch, ref_file_name);
+          write_to_file(&output_buffers_[i][batch_idx * size_per_batch],
+                        size_per_batch, out_file_name);
         }
-        if (ok) {
-          ok_counter_++;
-        } else {
-          error_counter_++;
-        }
-        LOG_IF(INFO, ENV_PARAM(DEBUG_TEST))
-            << "thread " << thread_id << "checking ok is " << ok
-            << " idx =" << idx << ",i=" << i;
       }
+      if (ok) {
+        ok_counter_++;
+      } else {
+        error_counter_++;
+      }
+      LOG_IF(INFO, ENV_PARAM(DEBUG_TEST))
+          << "thread " << thread_id << "checking ok is " << ok
+          << " idx =" << idx << ",i=" << i;
     }
   }
   result_ = result_ + runner_->get_input_tensors()[0]->get_shape()[0];
@@ -311,14 +349,28 @@ void MyPerformanceTestRunner::step(size_t idx, int thread_id) {
 
 size_t MyPerformanceTestRunner::get_result() { return result_; }
 
-bool test_dpu_runner_mt(string filename, string kernel, uint32_t runner_num) {
+bool test_dpu_runner_mt(const xir::Subgraph* subgraph, uint32_t runner_num,
+                        const vector<string>& input_filenames,
+                        const vector<string>& output_filenames) {
   CHECK_GT(runner_num, 0);
   {
     auto runners = vector<unique_ptr<vitis::ai::PerformanceTestRunner>>();
     for (auto i = 0u; i < runner_num; ++i) {
       LOG(INFO) << "create runner ... " << i << "/" << runner_num;
-      runners.emplace_back(
-          make_unique<MyPerformanceTestRunner>(filename, kernel));
+
+      if (input_filenames.empty() || output_filenames.empty()) {
+        runners.emplace_back(
+            move(make_unique<MyPerformanceTestRunner>(subgraph)));
+      } else {
+        runners.emplace_back(make_unique<MyPerformanceTestRunner>(
+            subgraph, input_filenames, output_filenames));
+      }
+    }
+    if (input_filenames.empty() || output_filenames.empty()) {
+      for (auto i = 0u; i < runner_num; ++i) {
+        dynamic_cast<MyPerformanceTestRunner*>(runners[i].get())
+            ->generate_output(i);
+      }
     }
     // not use
     int argc = 0;

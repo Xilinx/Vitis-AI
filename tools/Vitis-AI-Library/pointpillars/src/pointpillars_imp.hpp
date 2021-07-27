@@ -36,6 +36,7 @@ class TConfigurableDpuTask2 : public Interface {
     return configurable_dpu_task_->get_input_batch();
   }
   virtual PointPillarsResult run(const V1F&) override { return PointPillarsResult{}; }
+  virtual PointPillarsResult run(const float*, int len) override { return PointPillarsResult{}; }
   virtual void do_pointpillar_display(vitis::ai::PointPillarsResult&, int flag, vitis::ai::DISPLAY_PARAM&, 
                   cv::Mat&, cv::Mat&, int, int, ANNORET& annoret) override {}
  public: // change here: from protected to public
@@ -55,6 +56,7 @@ public:
 
 private:
   virtual PointPillarsResult run( const V1F& v1f) override;
+  virtual PointPillarsResult run( const float*, int) override;
   virtual void do_pointpillar_display(PointPillarsResult& res, int flag, DISPLAY_PARAM& g_test,
             cv::Mat& rgb_map, cv::Mat& bev_map, int, int, ANNORET& annoret)  override;
 

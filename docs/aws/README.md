@@ -22,7 +22,7 @@ sudo apt-get update && sudo apt-get upgrade
 ```
 git clone https://github.com/Xilinx/XRT.git
 cd XRT 
-git checkout 0e856e22e83d9ba5ed1ba8123990f6f3586270d8
+git checkout 2021.1
 sudo ./src/runtime_src/tools/scripts/xrtdeps.sh
 
 cd
@@ -40,18 +40,18 @@ sudo apt install ./Release/*-aws.deb
 cd
 ```
 
-- Install XButler
+- Install XRM
 ```
-wget https://www.xilinx.com/bin/public/openDownload?filename=xbutler_4.0-1.deb -O xbutler.deb
-sudo apt install ./xbutler.deb
+wget https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_18.04-x86_64.deb -O xrm.deb
+sudo apt install ./xrm.deb
 ```
 
 - Install the DPU Accelerator (FPGA Binary)
 ```
-wget https://www.xilinx.com/bin/public/openDownload?filename=dpu-aws.xclbin -O dpu-aws.xclbin
+wget https://www.xilinx.com/bin/public/openDownload?filename=dpu-aws-1.4.0.xclbin -O dpu-aws.xclbin
 sudo mkdir -p /opt/xilinx/overlaybins/dpuv3int8
 sudo cp dpu-aws.xclbin /opt/xilinx/overlaybins/dpuv3int8
-sudo chmod -R a+r /opt/xilinx/overlaybins/dpuv3int8
+sudo chmod -R a+rx /opt/xilinx/overlaybins/dpuv3int8
 ```
 
 - [Install Docker](https://docs.docker.com/engine/install/ubuntu/)
@@ -73,9 +73,4 @@ cd Vitis-AI
 ./docker_run.sh xilinx/vitis-ai-cpu
 ```
 
-- [Run Examples](https://github.com/Xilinx/Vitis-AI/tree/master/examples/DPUCADF8H)
-
-## Known Issue
-After reboot, or instance start the FPGA devices may not be available when the xbutler daemon starts.
-This causes an issue with resource allocation.
-`sudo systemctl restart xbutler` will fix this
+- [Run Examples](../../examples/DPUCADF8H/README.md)
