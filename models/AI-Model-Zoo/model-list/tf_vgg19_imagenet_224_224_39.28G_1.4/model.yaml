@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: vgg19 classifier on ImageNet.
+input size: 224*224
+float ops: 39.28G
+task: classification
+framework: tensorflow
+prune: 'no'
+version: 1.4
+files:
+- name: tf_vgg19_imagenet_224_224_39.28G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg19_imagenet_224_224_39.28G_1.4.zip
+  checksum: 13b5da8bf9a391d97acf47075b88b79d
+- name: vgg_19_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 8bfcc57f47db1d99edb389c66bc6e9a3
+- name: vgg_19_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-vck190-r1.4.0.tar.gz
+  checksum: 5a4fe95b0fbb4921e76030a50db46793
+- name: vgg_19_tf
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 21d7546d6f426e7d0512d2ec1fde5472
+- name: vgg_19_tf
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: c4af415be549d898593b961c0b5593ed
+- name: vgg_19_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u200-u250-r1.4.0.tar.gz
+  checksum: d419703a3354ecd8cca699c27d1d9e6e
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

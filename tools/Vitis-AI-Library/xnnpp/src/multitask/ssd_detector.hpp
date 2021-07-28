@@ -27,6 +27,10 @@
 namespace vitis {
 namespace ai {
 
+using ai::VehicleResult;
+
+namespace multitask {
+
 struct SSDOutputInfo {
   uint32_t order;        // order of bbox layer or conf layer
   int8_t* base_ptr;      // original ptr
@@ -38,9 +42,6 @@ struct SSDOutputInfo {
   uint32_t bbox_single_size;  // usualy 4, but sometimes 6 and last 2 number not
                               // valid
 };
-using ai::VehicleResult;
-
-namespace multitask {
 
 class SSDdetector {
  public:

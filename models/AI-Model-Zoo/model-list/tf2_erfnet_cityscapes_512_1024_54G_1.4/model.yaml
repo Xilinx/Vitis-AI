@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: Erfnet segmentation on Cityscapes.
+input size: 512*1024
+float ops: 54G
+task: segmentation
+framework: tensorflow
+prune: 'no'
+version: 1.4
+files:
+- name: tf2_erfnet_cityscapes_512_1024_54G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_erfnet_cityscapes_512_1024_54G_1.4.zip
+  checksum: 5c7d83f5230207f31a58f70d03a1e173
+- name: semantic_seg_citys_tf2
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 363a2465e2c91ebf6b2a13a6eb16ba71
+- name: semantic_seg_citys_tf2
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck190-r1.4.0.tar.gz
+  checksum: ce6a6244d0ee0051d97ead9cb397950d
+- name: semantic_seg_citys_tf2
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 92e24e9d5ed7d1dfb156b50c33931cea
+- name: semantic_seg_citys_tf2
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: cced4cada8e9b24050921fadd1681430
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

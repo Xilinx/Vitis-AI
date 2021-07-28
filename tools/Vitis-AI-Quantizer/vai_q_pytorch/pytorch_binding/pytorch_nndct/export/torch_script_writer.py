@@ -18,19 +18,17 @@
 
 import abc
 from collections import OrderedDict
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, List
 import pytorch_nndct.utils as py_utils
 from nndct_shared.base.key_names import FrameworkType
 from nndct_shared.nndct_graph import Graph, Node, Tensor
 from pytorch_nndct.utils import TorchOpClassType, TorchSymbol
-
 from .op_descriptor import MISC_OP_DISCR_MAP
-
 
 class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
   def __init__(self):
-    self.tensor_output_map: Dict[str, str] = {}  # key: torch tensor name, value: output name
-  
+    self._tensor_output_map: Dict[str, str] = {}  # key: torch tensor name, value: output name
+    self._output_name_alias: Dict[str, str] = {}  # key: output name , value: real output name
   def write(self, graph: Graph, file_path: str):
     with open(file_path, 'w') as f:
       self._do_write(f, graph)    
@@ -53,11 +51,26 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
     indent_str += indent_str
 
     f.write(indent_str + "super({}, self).__init__()\n".format(graph.name))
-    for node in graph.nodes:
-      module_init_str = self._get_init_module_str(node)
-      if module_init_str:
-        f.write(indent_str + module_init_str + '\n')
-  
+    
+    def _write_module_init(graph):
+      for node in graph.nodes:
+        if node.blocks:
+          for block in node.blocks:
+            _write_module_init(block)
+        else:
+          module_init_str = self._get_init_module_str(node)
+          if module_init_str:
+            f.write(indent_str + module_init_str + '\n')
+    
+      # generate global params init code
+      for node in graph.nodes:
+        param_init_str_lst = self._get_init_param_str(node)
+        if param_init_str_lst:
+          for parma_init_str in param_init_str_lst:
+            f.write(indent_str + parma_init_str + '\n')
+            
+    _write_module_init(graph)
+    
   def _write_forward(self, f: Callable, graph: Graph):
     indent_str = 4 * " "
     f.write('\n' + indent_str + "def forward(self, *args):\n")
@@ -70,14 +83,27 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
     for i, end_tensor in enumerate(graph.end_tensors):
       if i > 0:
         return_str = ','.join(
-            [return_str, self.tensor_output_map[end_tensor.name]])
+            [return_str, self.get_output_tensor_name(end_tensor)])
       else:
-        return_str += self.tensor_output_map[end_tensor.name]
+        return_str += self.get_output_tensor_name(end_tensor)
        
     f.write(return_str + '\n')
   
+  def _get_init_param_str(self, node: Node) -> List[str]:
+    str_list = []
+    if node.has_bound_params():
+      return str_list
+    for param_type, param_tensor in node.op.params.items():
+      if param_tensor.name not in self._tensor_output_map:
+        param_name = param_type.value
+        param_shape = tuple(param_tensor.shape)
+        param_init_str = f"self.{param_name} = torch.nn.parameter.Parameter(torch.Tensor{param_shape})"
+        str_list.append(param_init_str)
+        self._tensor_output_map[param_tensor.name] = f"self.{param_name}"
+    return str_list
+  
   @abc.abstractmethod
-  def _get_init_module_str(self, node: None) -> str:
+  def _get_init_module_str(self, node: Node) -> str:
     pass
   
   @abc.abstractmethod
@@ -101,7 +127,7 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
       output_node = node.out_tensors[0].node
       name_list = [TorchSymbol.MODULE_OUTPUT_PREFIX, self._get_module_name(output_node)]
       name = 'self.' + TorchSymbol.MODULE_NAME_SEPERATOR.join(name_list)
-      self.tensor_output_map[node.out_tensors[0].name] = name
+      self._tensor_output_map[node.out_tensors[0].name] = name
       output_list.append(name)
     else:
       for id, tensor in enumerate(node.out_tensors):
@@ -110,44 +136,61 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
         name = 'self.' + TorchSymbol.MODULE_NAME_SEPERATOR.join(
             name_list + [str(id)])
         
-        self.tensor_output_map[tensor.name] = name
+        self._tensor_output_map[tensor.name] = name
         output_list.append(name)
 
     return output_list
   
+  def set_name_alias_for_output(self, name, alias_name):
+    self._output_name_alias[name] = alias_name
+  
+  def get_output_tensor_name(self, tensor):
+    output_tensor_name = self._tensor_output_map.get(tensor.name, tensor.name)
+    while True:
+      alias_name = self._output_name_alias.get(output_tensor_name)
+      if alias_name is None:
+        return output_tensor_name
+      else:
+        output_tensor_name = alias_name
+        
+  
   def _get_module_input(self, node):
     input_list = []
     for tensor in node.in_tensors:
-      input_list.append(self.tensor_output_map[tensor.name])
+      if node.has_bound_params() and tensor.is_param_tensor():
+        continue
+      input_list.append(self.get_output_tensor_name(tensor))
     return input_list
   
-  def _infer_attr_value(self, value):
+  def infer_attr_value(self, value):
     r'''
-        Sometimes, the attribute value is a tuple or list, looks like ["111", 4],
-        the "111" is a temp str value and means a output tensor of one node, the we need to replace "111"
-        with output name of the node, then, the value will be looks like [output_module_..., 4]
-        '''
+      Sometimes, the attribute value is a tuple or list, looks like ["111", 4],
+      the "111" is a temp str value and means a output tensor of one node, the we need to replace "111"
+      with output name of the node, then, the value will be looks like [output_module_..., 4]
+      '''
 
     if isinstance(value, (tuple, list)):
-      value_list = []
+      value_list: List[str] = []
       for element in value:
-        if isinstance(element, Tensor):
-          str_value = self.tensor_output_map.get(element.name, element.name)
-          value_list.append(str_value)
-        else:
-          value_list.append(str(element))
+        str_element = self.infer_attr_value(element)
+        value_list.append(str_element)
+        # if isinstance(element, Tensor):
+        #   str_value = self.get_output_tensor_name(element)
+        #   value_list.append(str_value)
+        # else:
+        #   value_list.append(str(element))
       if isinstance(value, tuple):
         return '(' + self._to_list_str(value_list) + ')'
       else:
         return '[' + self._to_list_str(value_list) + ']'
     elif isinstance(value, Tensor):
-      return self.tensor_output_map.get(value.name, value.name)
+      return self.get_output_tensor_name(value)
     else:
       return str(value)
 
   def _infer_attrs(self, attrs: dict):
     for name, value in attrs.items():
-      value = self._infer_attr_value(value)
+      value = self.infer_attr_value(value)
       attrs[name] = value
   
   @staticmethod
@@ -204,7 +247,8 @@ class TorchScriptWriter(TorchBaseScriptWriter):
                                                                     input=input_str)
 
     elif (torch_op_attr.op_class_type == TorchOpClassType.NN_FUNCTION or 
-          torch_op_attr.op_class_type == TorchOpClassType.TORCH_FUNCTION):
+          torch_op_attr.op_class_type == TorchOpClassType.TORCH_FUNCTION or
+          torch_op_attr.op_class_type == TorchOpClassType.NN_CORE_FUNCTION):
       func_attrs = self._get_module_attrs_map(node, torch_op_type, torch_op_attr.attrs)
       self._infer_attrs(func_attrs)
       forward_str = "{output} = {op_name}({attrs}) #{node_name}".format(output=output_str, 
@@ -280,7 +324,8 @@ class TorchQuantScriptWriter(TorchBaseScriptWriter):
     elif (torch_op_attr.op_class_type == TorchOpClassType.NN_FUNCTION or 
           torch_op_attr.op_class_type == TorchOpClassType.TORCH_FUNCTION or 
           torch_op_attr.op_class_type == TorchOpClassType.TENSOR or
-          torch_op_attr.op_class_type == TorchOpClassType.PRIMITIVE):
+          torch_op_attr.op_class_type == TorchOpClassType.PRIMITIVE or
+          torch_op_attr.op_class_type == TorchOpClassType.NN_CORE_FUNCTION):
       func_attrs = self._get_module_attrs_map(node, torch_op_type,
                                               torch_op_attr.attrs)
       
@@ -298,8 +343,21 @@ class TorchQuantScriptWriter(TorchBaseScriptWriter):
     elif torch_op_attr.op_class_type == TorchOpClassType.UNKNOWN and node.op.type in MISC_OP_DISCR_MAP:
       forward_str = MISC_OP_DISCR_MAP[node.op.type](self, node, output_str)
 
+    elif torch_op_attr.op_class_type in [TorchOpClassType.TORCH_SCRIPT_BUILTIN_FUNCTION,
+                                         TorchOpClassType.MATH_BUILTIN_FUNCTION,
+                                         TorchOpClassType.GLOBAL_BUILTIN_FUNCTION]:
+      func_attrs = self._get_module_attrs_map(node, torch_op_type, torch_op_attr.attrs)
+      
+      self._infer_attrs(func_attrs)
+      args = [arg_value for arg_value in func_attrs.values()]
+      args_str = self._to_list_str(args)
+      forward_str = "{output} = self.{module_name}({attrs})".format(
+          output=output_str,
+          module_name=self._get_module_name(node),
+          attrs=args_str)
+      
     else:
-      raise RuntimeError('op_class_type of op is unknown, please check the operation: {}'.format(node.op.type))
+      raise RuntimeError(f'op_class_type of op ({torch_op_attr.op_class_type.value}) is unknown, please check the operation: {node.op.type}.')
      
     return forward_str, output_str
 

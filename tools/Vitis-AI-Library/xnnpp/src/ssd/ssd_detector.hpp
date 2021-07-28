@@ -24,6 +24,9 @@
 
 namespace vitis {
 namespace ai {
+using ai::SSDResult;
+
+namespace dpssd {
 
 struct SSDOutputInfo {
   int8_t output_tensor_index;  // output tensor index
@@ -39,9 +42,6 @@ struct SSDOutputInfo {
                               // valid
 };
 
-using ai::SSDResult;
-
-namespace dpssd {
 
 class SSDdetector {
  public:

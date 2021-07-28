@@ -33,6 +33,7 @@
 #include <tuple>
 #include <vector>
 
+#include <vitis/ai/reid.hpp>
 #include <vitis/ai/reidtracker.hpp>
 
 using namespace cv;
@@ -51,7 +52,7 @@ int flag = 0;
 typedef pair<int, Mat> imagePair;
 class paircomp {
  public:
-  bool operator()(const imagePair &n1, const imagePair &n2) const {
+  bool operator()(const imagePair& n1, const imagePair& n2) const {
     if (n1.first == n2.first) return n1.first > n2.first;
     return n1.first > n2.first;
   }
@@ -127,6 +128,7 @@ void displayImage() {
 
 void run() {
   auto tracker = vitis::ai::ReidTracker::create();
+  auto reid = vitis::ai::Reid::create("personreid-res18_pt");
   vector<vector<vector<float>>> dets(
       imgCount + 1, vector<vector<float>>(0, vector<float>(7)));
   ifstream inf(baseImagePath + "/det.txt");
@@ -149,8 +151,7 @@ void run() {
     exit(0);
   }
   std::vector<vitis::ai::ReidTracker::InputCharact> input_characts;
-  string outfile =
-      "MOT-" + baseImagePath.substr(baseImagePath.size() - 3, 2) + ".txt";
+  string outfile = baseImagePath.substr(0, baseImagePath.size() - 1) + ".txt";
   ofstream of(outfile);
   while (1) {
     pair<int, Mat> pairIndexImage;
@@ -172,18 +173,26 @@ void run() {
     if (frame_id == 1) tracker = vitis::ai::ReidTracker::create();
     // auto results = det->run(image);
     vector<vector<float>> results;
+    auto roi_img = cv::Rect_<float>(0, 0, image.cols, image.rows);
     results = dets[frame_id];
     input_characts.clear();
     int lid = 0;
     for (auto box : results) {
-      Rect2f in_box =
+      Rect2f in_box = Rect2f(box[2], box[3], box[4], box[5]);
+      Rect rect_in = Rect(Point(round(in_box.x), round(in_box.y)),
+                          Point(round(in_box.x + in_box.width),
+                                round(in_box.y + in_box.height)));
+      rect_in = in_box & roi_img;
+      Mat img = image(rect_in);
+      auto feat = reid->run(img).feat;
+      in_box =
           Rect2f(box[2] / 1920, box[3] / 1080, box[4] / 1920, box[5] / 1080);
-      input_characts.emplace_back(in_box, box[6], -1, lid++);
+      input_characts.emplace_back(feat, in_box, box[6], -1, lid++);
     }
     std::vector<vitis::ai::ReidTracker::OutputCharact> track_results =
         std::vector<vitis::ai::ReidTracker::OutputCharact>(
-            tracker->track(image, frame_id, input_characts, true, true));
-    for (auto &r : track_results) {
+            tracker->track(frame_id, input_characts, true, true));
+    for (auto& r : track_results) {
       auto box = get<1>(r);
       float x = box.x * (image.cols);
       float y = box.y * (image.rows);
@@ -223,7 +232,7 @@ void run() {
   }
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   if (argc != 2) {
     cout << "Please set input image. " << endl;
     return 0;

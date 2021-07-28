@@ -50,3 +50,14 @@ class RelukF(torch.autograd.Function):
   @staticmethod
   def backward(ctx, grad_output):
     return grad_output
+  
+class ChannelScaleF(torch.autograd.Function):
+  @staticmethod
+  def forward(ctx, input:torch.Tensor, channel_scale):
+    input = input * channel_scale
+    return input
+  
+  @staticmethod
+  def backward(ctx, grad_output):
+    return grad_output
+ 

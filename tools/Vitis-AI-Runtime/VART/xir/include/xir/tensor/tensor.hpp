@@ -62,10 +62,13 @@ class Tensor {
    *
    * @return A unique pointer to the new Tensor object.
    */
-  static std::unique_ptr<Tensor> create(const std::string& name,
-                                        const std::vector<std::int32_t>& shape,
-                                        const DataType::Type& data_type,
-                                        const std::int32_t bit_width);
+  [[deprecated(
+      "This API will be removed in the future release version. Please use "
+      "static std::unique_ptr<Tensor> Tensor::create(const std::string& name, "
+      "const std::vector<std::int32_t>& shape, const DataType& data_type) "
+      "instead.")]] static std::unique_ptr<Tensor>
+  create(const std::string& name, const std::vector<std::int32_t>& shape,
+         const DataType::Type& data_type, const std::int32_t bit_width);
 
   /**
    * @brief Create a Tensor instance of the Tensor from an existing one.
@@ -114,7 +117,7 @@ class Tensor {
 
   /**
    * @brief Get the tensor shape.
-   *
+
    * @return A vector of the tensor shape.
    */
   virtual const std::vector<std::int32_t> get_shape() const = 0;
@@ -125,7 +128,11 @@ class Tensor {
    *
    * @return A vector of the tensor shape.
    */
-  virtual const std::vector<std::int32_t> get_dims() const = 0;
+  [[deprecated(
+      "Tensor::get_dims() will be removed in the future version. Please use "
+      "the Tensor::get_shape() instead.")]] virtual const std::
+      vector<std::int32_t>
+      get_dims() const = 0;
 
   /**
    * @brief Get the tensor shape size. This API will be removed in the future
@@ -133,7 +140,11 @@ class Tensor {
    *
    * @return A vector of the tensor shape size.
    */
-  virtual const std::int32_t get_dim_num() const = 0;
+  [
+      [deprecated("Tensor::get_dim_num() will be removed in the future "
+                  "version. Please use the Tensor::get_shape().get_size() "
+                  "instead.")]] virtual const std::int32_t
+  get_dim_num() const = 0;
 
   /**
    * @brief Get the dimension size of one specific dimension indicated by idx.
@@ -143,7 +154,11 @@ class Tensor {
    *
    * @return The dimension size.
    */
-  virtual const std::int32_t get_dim_size(std::int32_t idx) const = 0;
+  [[deprecated(
+      "Tensor::get_dim_size(std::int32_t idx) will be removed in the future "
+      "version. Please use the Tensor::get_shape().at(idx) "
+      "instead.")]] virtual const std::int32_t
+  get_dim_size(std::int32_t idx) const = 0;
 
   /**
    * @brief Get the number of data in the current Tensor object.
@@ -165,7 +180,11 @@ class Tensor {
    *
    * @return bit_width.
    */
-  virtual const std::int32_t get_bit_width() const = 0;
+  [[deprecated(
+      "Tensor::get_bit_width() API will be removed in the future version, "
+      "please use the Tensor::get_data_type() API to get the data type and "
+      "read the bit width information in it.")]] virtual const std::int32_t
+  get_bit_width() const = 0;
 
   /**
    * @brief Get the number of elements in the current Tensor object.

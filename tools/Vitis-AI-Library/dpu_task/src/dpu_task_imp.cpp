@@ -9,9 +9,9 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * permissions and limitations under the License.
  */
 #include "dpu_task_imp.hpp"
 
@@ -25,7 +25,12 @@
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <vart/assistant/batch_tensor_buffer.hpp>
+#include <vart/assistant/xrt_bo_tensor_buffer.hpp>
+#include <vart/experimental/runner_helper.hpp>
 #include <vart/tensor_buffer.hpp>  // for vitis
+#include <vart/zero_copy_helper.hpp>
+#include <vitis/ai/collection_helper.hpp>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/image_util.hpp>
 #include <vitis/ai/time_measure.hpp>
@@ -37,6 +42,8 @@ using namespace std;
 
 DEF_ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME, "0");
 DEF_ENV_PARAM(DEBUG_DPBASE, "0");
+
+int GLOBAL_ENABLE_C_SOFTMAX = 0;
 
 //# Disable for DPUV1, as DPUV1 dont have xmodel
 #ifndef ENABLE_DPUCADX8G_RUNNER
@@ -75,48 +82,23 @@ static int get_batch_size_of_runner(vart::Runner* r) {
   CHECK(!r->get_input_tensors().empty());
   return r->get_input_tensors()[0]->get_shape().at(0);
 }
-static std::vector<std::unique_ptr<vart::Runner>> create_runners(
-    std::shared_ptr<GraphHolder> graph_holder) {
-  auto subgraphs = (graph_holder.get())->get_subgraphs();
-  CHECK_GT(subgraphs.size(), 0);
-  auto runners = std::vector<std::unique_ptr<vart::Runner>>();
-  runners.reserve(subgraphs.size());
-  auto batch_size = 0;
-  for (auto subgraph : subgraphs) {
-    LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
-        << "create runner for " << subgraph->get_name();
-    if (batch_size == 0) {
-      // create the very first runner
-      auto r = vart::Runner::create_runner(subgraph, "run");
-      batch_size = get_batch_size_of_runner(r.get());
-      runners.emplace_back(std::move(r));
-    } else {
-      // the following runners must have the batch size as same as the
-      // first runner's.
-      auto is_same = false;
-      int num_of_tries = 0;
-      do {
-        auto r = vart::Runner::create_runner(subgraph, "run");
-        is_same = get_batch_size_of_runner(r.get()) == batch_size;
-        if (is_same) {
-          runners.emplace_back(std::move(r));
-        }
-        num_of_tries++;
-      } while (!is_same && num_of_tries < 100);
-      CHECK_LT(num_of_tries, 100) << "too many tries...";
-    }
-    LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
-        << "create runner for " << subgraph->get_name()
-        << " done. batch_size=" << batch_size;
-  }
-  CHECK_EQ(runners.size(), subgraphs.size());
-  return runners;
+
+//# Enable software softmax for DPU's which uses rt-engine
+static void enable_sw_softmax(const xir::Subgraph* subgraph) {
+  auto libs = subgraph->get_attr<std::map<std::string, std::string>>("runner");
+  auto iter_lib = libs.find("run");
+  auto lib_name_ = iter_lib->second;
+
+  if (lib_name_.compare("librt-engine.so") == 0) GLOBAL_ENABLE_C_SOFTMAX = 2;
+
+  return;
 }
 
 static std::vector<std::unique_ptr<vart::Runner>> create_runners_with_attrs(
     std::shared_ptr<GraphHolder> graph_holder, xir::Attrs* attrs) {
   auto subgraphs = (graph_holder.get())->get_subgraphs();
   CHECK_GT(subgraphs.size(), 0);
+  enable_sw_softmax(subgraphs[0]);
   auto runners = std::vector<std::unique_ptr<vart::Runner>>();
   runners.reserve(subgraphs.size());
   auto batch_size = 0;
@@ -131,17 +113,10 @@ static std::vector<std::unique_ptr<vart::Runner>> create_runners_with_attrs(
     } else {
       // the following runners must have the batch size as same as the
       // first runner's.
-      auto is_same = false;
-      int num_of_tries = 0;
-      do {
-        auto r = vart::Runner::create_runner_with_attrs(subgraph, attrs);
-        is_same = get_batch_size_of_runner(r.get()) == batch_size;
-        if (is_same) {
-          runners.emplace_back(std::move(r));
-        }
-        num_of_tries++;
-      } while (!is_same && num_of_tries < 100);
-      CHECK_LT(num_of_tries, 100) << "too many tries...";
+      auto r = vart::Runner::create_runner_with_attrs(subgraph, attrs);
+      CHECK_EQ(get_batch_size_of_runner(r.get()), batch_size)
+          << "batch size not same as first runner";
+      runners.emplace_back(std::move(r));
     }
     LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
         << "create runner for " << subgraph->get_name()
@@ -154,7 +129,8 @@ static std::vector<std::unique_ptr<vart::Runner>> create_runners_with_attrs(
 DpuTaskImp::DpuTaskImp(const std::string& model_name)
     : model_name_{model_name},
       graph_holder_{create_graph_holder(model_name)},
-      runners_{create_runners(graph_holder_)},
+      default_attrs_{xir::Attrs::create()},
+      runners_{create_runners_with_attrs(graph_holder_, default_attrs_.get())},
       mean_{std::vector<float>(3, 0.f)},   //
       scale_{std::vector<float>(3, 1.f)},  //
       do_mean_scale_{false} {}
@@ -162,6 +138,7 @@ DpuTaskImp::DpuTaskImp(const std::string& model_name)
 DpuTaskImp::DpuTaskImp(const std::string& model_name, xir::Attrs* attrs)
     : model_name_{model_name},
       graph_holder_{create_graph_holder(model_name)},
+      default_attrs_{xir::Attrs::create()},
       runners_{create_runners_with_attrs(graph_holder_, attrs)},
       mean_{std::vector<float>(3, 0.f)},   //
       scale_{std::vector<float>(3, 1.f)},  //
@@ -265,6 +242,51 @@ void DpuTaskImp::run(size_t idx) {
       << "dpu task " << model_name_ << "[" << idx << "]";
 }
 
+void DpuTaskImp::run_with_xrt_bo(const std::vector<vart::xrt_bo_t>& input_bos) {
+  // TODO: refactor them to prepresessing and post processing.
+  auto idx = 0;
+  LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
+      << "running dpu task " << model_name_ << "[" << idx << "]";
+
+  auto input_tensors = runners_[idx].get()->get_input_tensors();
+  // we assumethe order of input_bos is as same as the input tensors.
+  CHECK_EQ(input_tensors.size(), 1u);
+  auto the_input_tensor = input_tensors.front();
+  auto the_input_shape = the_input_tensor->get_shape();
+  CHECK(!the_input_shape.empty());
+  auto the_input_batch = the_input_shape[0];
+  CHECK_LE(input_bos.size(), (size_t)the_input_batch);
+  auto the_xrt_bo_tensor_buffers = vitis::ai::vec_map(
+      input_bos, [the_input_tensor](const vart::xrt_bo_t& xrt_bo) {
+        return vart::assistant::XrtBoTensorBuffer::create(xrt_bo,
+                                                          the_input_tensor);
+      });
+  auto the_input_tensor_buffer = vart::assistant::BatchTensorBuffer::create(
+      vitis::ai::vector_unique_ptr_get(the_xrt_bo_tensor_buffers));
+  auto inputs = std::vector<vart::TensorBuffer*>{the_input_tensor_buffer.get()};
+  auto outputs =
+      dynamic_cast<vart::RunnerExt*>(runners_[idx].get())->get_outputs();
+  std::pair<uint32_t, int> v;
+
+  if (ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME)) {
+    auto start = std::chrono::steady_clock::now();
+    v = runners_[idx]->execute_async(inputs, outputs);
+    auto end = std::chrono::steady_clock::now();
+    auto time =
+        std::chrono::duration_cast<std::chrono::microseconds>(end - start)
+            .count();
+    TimeMeasure::getThreadLocalForDpu().add(int(time));
+  } else {
+    v = runners_[idx]->execute_async(inputs, outputs);
+  }
+  runners_[idx]->wait((int)v.first, -1);
+  for (auto output : outputs) {
+    output->sync_for_read(0, output->get_tensor()->get_data_size() /
+                                 output->get_tensor()->get_shape()[0]);
+  }
+  LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
+      << "dpu task " << model_name_ << "[" << idx << "]";
+}
 void DpuTaskImp::setMeanScaleBGR(const std::vector<float>& mean,
                                  const std::vector<float>& scale) {
   mean_ = mean;
@@ -324,14 +346,16 @@ void DpuTaskImp::setInputDataArray(const std::vector<int8_t> input) {
 
   if (do_mean_scale_) {
     LOG(FATAL) << "pleaseset do_mean_scale_= false and do it yourself";
-    //NormalizeInputData(input, rows, cols, channels, stride, mean_, real_scale,
+    // NormalizeInputData(input, rows, cols, channels, stride, mean_,
+    // real_scale,
     //                   data);
   } else {
     copy_line_by_line(data, rows, cols, channels, stride, input.data());
   }
 }
 
-void DpuTaskImp::setInputDataArray(const std::vector<std::vector<int8_t>> input) {
+void DpuTaskImp::setInputDataArray(
+    const std::vector<std::vector<int8_t>> input) {
   set_num_of_inputs(input.size());
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
@@ -349,7 +373,7 @@ void DpuTaskImp::setInputDataArray(const std::vector<std::vector<int8_t>> input)
   auto stride = cols * channels;
   vector<float> real_scale(channels);
   for (size_t c = 0; c < channels; c++) {
-    real_scale[c] = scale_[c] * input_fixed_scale;  
+    real_scale[c] = scale_[c] * input_fixed_scale;
   }
   for (auto i = 0; i < (signed)input.size(); i++) {
 //# For DPUV1 the datatype is float
@@ -361,7 +385,8 @@ void DpuTaskImp::setInputDataArray(const std::vector<std::vector<int8_t>> input)
 
     if (do_mean_scale_) {
       LOG(FATAL) << "pleaseset do_mean_scale_= false and do it yourself";
-      //NormalizeInputData(input, rows, cols, channels, stride, mean_, real_scale,
+      // NormalizeInputData(input, rows, cols, channels, stride, mean_,
+      // real_scale,
       //                   data);
     } else {
       copy_line_by_line(data, rows, cols, channels, stride, input[i].data());
@@ -523,12 +548,14 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
   auto ret = vitis::ai::library::InputTensor{};
   auto tensor = tb->get_tensor();
   auto dim_num = tensor->get_shape().size();
-  ret.size = tensor->get_element_num() *
-             std::ceil(tensor->get_data_type().bit_width / 8.f);
-  ret.batch = dim_num <= 0 ? 1 : tensor->get_shape().at(0);
+  auto batch = dim_num <= 0 ? 1 : tensor->get_shape().at(0);
+  ret.batch = batch;
   if (num_of_input != -1) {
     ret.batch = (unsigned)num_of_input;
   }
+  ret.size = tensor->get_element_num() *
+             std::ceil(tensor->get_data_type().bit_width / 8.f) * ret.batch /
+             batch;
   //# Store the params as per format
   if (fmt == vart::Runner::TensorFormat::NHWC) {
     ret.height = dim_num <= 1 ? 1 : tensor->get_shape().at(1);
@@ -575,13 +602,15 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
   auto ret = vitis::ai::library::OutputTensor{};
   auto tensor = tb->get_tensor();
   auto dim_num = tensor->get_shape().size();
-  ret.size = tensor->get_element_num() *
-             std::ceil(tensor->get_data_type().bit_width / 8.f);
-  ret.batch = dim_num <= 0 ? 1 : tensor->get_shape().at(0);
+  auto batch = dim_num <= 0 ? 1 : tensor->get_shape().at(0);
+  ret.batch = batch;
   if (num_of_input != -1) {
     CHECK_LE((unsigned)num_of_input, ret.batch) << "logical error";
     ret.batch = (unsigned)num_of_input;
   }
+  ret.size = tensor->get_element_num() *
+             std::ceil(tensor->get_data_type().bit_width / 8.f) * ret.batch /
+             batch;
   //# Store the params as per format
   if (fmt == vart::Runner::TensorFormat::NHWC) {
     if (dim_num == 2) {
@@ -693,6 +722,33 @@ void DpuTaskImp::set_num_of_inputs(size_t n) {
   CHECK_LT(n, 100) << "with current DPU design, it is not possible for very "
                       "large batch size.";
   num_of_inputs_ = (int)n;
+}
+
+int DpuTaskImp::get_input_buffer_size() const {
+  auto subgraphs = graph_holder_->get_subgraphs();
+  CHECK_NE(subgraphs.size(), 0u);
+  auto subgraph = subgraphs[0];
+  return vart::get_input_buffer_size(subgraph);
+}
+
+size_t DpuTaskImp::get_input_offset() const {
+  auto subgraphs = graph_holder_->get_subgraphs();
+  CHECK_NE(subgraphs.size(), 0u);
+  auto subgraph = subgraphs[0];
+  auto offsets = vart::get_input_offset(subgraph);
+  CHECK_EQ(offsets.size(), 1u);
+  return offsets.front();
+}
+
+int DpuTaskImp::get_input_fix_point() const {
+  CHECK(!runners_.empty());
+  auto the_first_runner = runners_.front().get();
+  auto tensors = the_first_runner->get_input_tensors();
+  CHECK_EQ(tensors.size(), 1u);
+  auto tensor = tensors[0];
+  CHECK(tensor->has_attr("fix_point"));
+  int fixpos = tensor->get_attr<int>("fix_point");
+  return fixpos;
 }
 
 // Local Variables:

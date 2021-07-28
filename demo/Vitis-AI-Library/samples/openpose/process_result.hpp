@@ -18,7 +18,7 @@ using namespace cv;
 using namespace std;
 using Result = vitis::ai::OpenPoseResult::PosePoint;
 
-static cv::Mat process_result(cv::Mat &image, vitis::ai::OpenPoseResult results,
+static cv::Mat process_result(cv::Mat& image, vitis::ai::OpenPoseResult results,
                               bool is_jpeg) {
   vector<vector<int>> limbSeq = {{0, 1},  {1, 2},   {2, 3},  {3, 4}, {1, 5},
                                  {5, 6},  {6, 7},   {1, 8},  {8, 9}, {9, 10},

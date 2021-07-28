@@ -43,6 +43,7 @@ class MedicalSegcellImp
  private:
   const std::vector<vitis::ai::library::InputTensor> input_tensors_;
   const std::vector<vitis::ai::library::OutputTensor> output_tensors_;
+  int real_batch_size = 1;
 };
 
 }  // namespace ai

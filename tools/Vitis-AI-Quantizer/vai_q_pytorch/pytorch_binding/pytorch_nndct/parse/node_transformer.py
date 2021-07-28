@@ -22,7 +22,7 @@ from nndct_shared.base import NNDCT_OP
 from nndct_shared.nndct_graph import Graph, Node, Tensor
 
 from .torch_op_def import *
-from .utils import _GRAPH_SCOPE_SYM, get_full_name
+from .parse_utils import _GRAPH_SCOPE_SYM, get_full_name
 
 
 class _NodeCreator(object):
@@ -442,6 +442,7 @@ class NodeTransformer(object):
     return graphs
   
   def basic_gru(self, node):
+    graph_scope_name = node.name.split(_GRAPH_SCOPE_SYM)[0]
     node_creator = _NodeCreator()
     graphs = []
     bidirectional = node.node_attr(node.op.AttrName.BIDIRECTIONAL)
@@ -478,7 +479,7 @@ class NodeTransformer(object):
           else:
             bias = False
         # lstm_node_name = node.name.replace("/", "_")
-        graph_name = f"StandardGruCell_layer_{i}_{direction}"
+        graph_name = f"{graph_scope_name}_StandardGruCell_layer_{i}_{direction}"
         graph = Graph(graph_name = graph_name)
         lstm_cell_pair[direction] = graph
         

@@ -59,7 +59,10 @@ class QuantizeConfig:
                align_concat=0,
                adjust_shift_bias=0,
                adjust_shift_cut=0,
-               simulate_dpu=0):
+               simulate_dpu=1,
+               scale_all_avgpool=1,
+               do_cle=0,
+               replace_relu6=1):
     if not (isinstance(input_nodes, list)):
       raise TypeError('input_nodes should be list(str)')
     if not (isinstance(input_shapes, list)):
@@ -84,6 +87,9 @@ class QuantizeConfig:
     self.adjust_shift_bias = adjust_shift_bias
     self.adjust_shift_cut = adjust_shift_cut
     self.simulate_dpu = simulate_dpu
+    self.scale_all_avgpool = scale_all_avgpool
+    self.do_cle = do_cle
+    self.replace_relu6 = replace_relu6
 
   def to_string(self):
     config_string = ''
@@ -111,6 +117,9 @@ class QuantizeConfig:
     config_string += 'adjust_shift_bias,' + str(self.adjust_shift_bias) + ','
     config_string += 'adjust_shift_cut,' + str(self.adjust_shift_cut) + ','
     config_string += 'simulate_dpu,' + str(self.simulate_dpu) + ','
+    config_string += 'scale_all_avgpool,' + str(self.scale_all_avgpool) + ','
+    config_string += 'do_cle,' + str(self.do_cle) + ','
+    config_string += 'replace_relu6,' + str(self.replace_relu6) + ','
     return compat.as_bytes(config_string)
 
 
@@ -568,8 +577,8 @@ def CreateQuantizeDeployGraph(graph=None, checkpoint='', config=None):
     frozen_graph_def, config)
 
   # Deploy
-  quantize_deploy_graph_def = CreateQuantizeDeployGraphDef(
-    frozen_quantize_eval_graph_def, config)
+  # quantize_deploy_graph_def = CreateQuantizeDeployGraphDef(
+  #   frozen_quantize_eval_graph_def, config)
 
   # Save the model
   # for quantize finetune model, replace input node with placeholder
@@ -585,9 +594,9 @@ def CreateQuantizeDeployGraph(graph=None, checkpoint='', config=None):
   print("INFO: Quantize eval model is generated in: {}".format(
     frozen_quantize_eval_path))
 
-  deploy_path = os.path.join(
-    config.output_dir, "deploy_model_{}_{}.pb".format(
-      step_in_ckpt, time.strftime("%Y%m%d%H%M%S", time.localtime())))
-  save_pb_file(quantize_deploy_graph_def, deploy_path)
-  print("INFO: Deploy model is generated in: {}".format(deploy_path))
+  # deploy_path = os.path.join(
+  #   config.output_dir, "deploy_model_{}_{}.pb".format(
+  #     step_in_ckpt, time.strftime("%Y%m%d%H%M%S", time.localtime())))
+  # save_pb_file(quantize_deploy_graph_def, deploy_path)
+  # print("INFO: Deploy model is generated in: {}".format(deploy_path))
   return

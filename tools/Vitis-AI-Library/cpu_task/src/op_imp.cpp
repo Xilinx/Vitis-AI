@@ -18,10 +18,14 @@
 
 #include <dlfcn.h>
 #include <glog/logging.h>
+
+#include "vart/runner_helper.hpp"
+#include "xir/op/op_def.hpp"
 namespace vart {
 class OpImpStub : public OpImp {
  public:
-  explicit OpImpStub(const vart_op_imp_t& imp, const xir::Op* op);
+  explicit OpImpStub(const vart_op_imp_t& imp, const xir::Op* op,
+                     xir::Attrs* attrs);
   virtual ~OpImpStub();
   OpImpStub(const OpImpStub& other) = delete;
   OpImpStub& operator=(const OpImpStub& rhs) = delete;
@@ -35,8 +39,9 @@ class OpImpStub : public OpImp {
   void* self_;
 };
 
-OpImpStub::OpImpStub(const vart_op_imp_t& imp, const xir::Op* op)
-    : OpImp(op), imp_{imp}, self_{imp.init((void*)(op))} {}
+OpImpStub::OpImpStub(const vart_op_imp_t& imp, const xir::Op* op,
+                     xir::Attrs* attrs)
+    : OpImp(op), imp_{imp}, self_{imp.init((void*)(op), (void*)attrs)} {}
 
 OpImpStub::~OpImpStub() { imp_.cleanup(self_); }
 
@@ -52,6 +57,26 @@ int OpImpStub::calculate(const std::vector<OpImpArg>& inputs1,
   return imp_.calculate(self_, &inputs[0], inputs.size(), output);
 }
 
+std::string to_string(const std::vector<vart::OpImpArg>& inputs) {
+  std::ostringstream str;
+  str << "{";
+  for (auto& input : inputs) {
+    str << "\n\t" << to_string(input);
+  }
+  str << "\n{";
+  return str.str();
+}
+
+std::string to_string(const vart::OpImpArg& input) {
+  std::ostringstream str;
+  str << "{args: " << input.arg_name << "=";
+  for (auto& arg : input.args) {
+    str << " " << arg->to_string();
+  }
+  str << "}";
+  return str.str();
+}
+
 }  // namespace vart
 
 static std::string find_dl_lib_for_op(const xir::Op* op) {
@@ -62,7 +87,7 @@ static std::string find_dl_lib_for_op(const xir::Op* op) {
 static vart_op_imp_t get_op_imp(const std::string& lib, const xir_op_t op) {
   vart_op_imp_t ret;
   typedef vart_op_imp_t (*INIT_FUN)(const xir_op_t op);
-  auto handle = dlopen(lib.c_str(), RTLD_LAZY);
+  auto handle = dlopen(lib.c_str(), RTLD_LAZY | RTLD_LOCAL);
   CHECK(handle != NULL) << "cannot open library!"
                         << " lib=" << lib << ";error=" << dlerror() << ";"
                         << "op=" << ((const xir::Op*)(op))->to_string();
@@ -73,9 +98,10 @@ static vart_op_imp_t get_op_imp(const std::string& lib, const xir_op_t op) {
   return ret;
 }
 
-std::unique_ptr<vart::OpImp> create_op_imp(const xir::Op* op) {
+std::unique_ptr<vart::OpImp> create_op_imp(const xir::Op* op,
+                                           xir::Attrs* attrs) {
   auto dl_file_name = find_dl_lib_for_op(op);
   auto op_imp = get_op_imp(dl_file_name, (const xir_op_t)op);
-  auto ret = new vart::OpImpStub(op_imp, op);
+  auto ret = new vart::OpImpStub(op_imp, op, attrs);
   return std::unique_ptr<vart::OpImp>(ret);
 }

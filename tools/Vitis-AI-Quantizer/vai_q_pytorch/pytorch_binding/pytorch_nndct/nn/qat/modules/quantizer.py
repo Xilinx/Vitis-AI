@@ -1,6 +1,3 @@
-
-
-#
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,6 +36,7 @@ class TQTQuantize(torch.autograd.Function):
     ctx.save_for_backward(x, scale, quant_max, quant_min, logt)
 
     x = x.clone()
+    #ctx.mark_dirty(x)
     return fix_ops.NndctFixNeuron(x, x, (domain, 1 / scale), method)
     #return torch.clamp(torch.round(x/scale), quant_min.item(), quant_max.item()) * scale
 
@@ -75,7 +73,24 @@ class TQTQuantize(torch.autograd.Function):
     grad_x = torch.where(
         is_ge_min_and_le_max, grad_x, 0 * grad_x)
 
-    return grad_x, grad_logt, None, None, None
+    return grad_x, grad_logt, None, None
+
+class TQTWarmup(torch.autograd.Function):
+  """Warmup step for initializing log threshold."""
+
+  @staticmethod
+  def forward(ctx, x, logt, lr, num_devices):
+    max_x = torch.max(torch.abs(x))
+    ctx.save_for_backward(max_x, lr, num_devices)
+    return x
+
+  @staticmethod
+  def backward(ctx, grad_output):
+    max_x, lr, num_devices = ctx.saved_tensors
+    grad_logt = torch.tensor([torch.log(max_x) / math.log(2)],
+        dtype=max_x.dtype, device=max_x.device)
+    grad_logt = grad_logt / (-lr * num_devices)
+    return grad_output, grad_logt, None, None
 
 class FakeQuantizer(nn.Module):
   """Simulate the quantize and dequantize operations in training time.
@@ -114,7 +129,13 @@ class FakeQuantizer(nn.Module):
   def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict,
                             missing_keys, unexpected_keys, error_msgs):
     # We save 'num_bits' to state_dict but not load it.
-    state_dict.pop(prefix + 'num_bits')
+    num_bits_key = prefix + 'num_bits'
+    if num_bits_key not in state_dict:
+      raise ValueError(('Missing key "{}" in state dict, '
+          'please make sure the loaded weights was saved from quantized '
+          'model').format(num_bits_key))
+
+    state_dict.pop(num_bits_key)
     super(FakeQuantizer,
           self)._load_from_state_dict(state_dict, prefix, local_metadata,
                                       strict, missing_keys, unexpected_keys,
@@ -123,7 +144,10 @@ class FakeQuantizer(nn.Module):
     ignored_params = ['num_bits', 'quant_enabled', 'domain']
     ignored_keys = [prefix + name for name in ignored_params]
     for key in ignored_keys:
-      missing_keys.remove(key)
+      if key in missing_keys:
+        missing_keys.remove(key)
+      else:
+        print('[WARN] Unexpected key in state dict:', key)
 
 class TQTQuantizer(FakeQuantizer):
 
@@ -132,10 +156,10 @@ class TQTQuantizer(FakeQuantizer):
 
     if tensor_type not in ['param', 'blob']:
       raise ValueError("'tensor_type' must be one of ['param', 'blob']")
+    # See TorchQuantizer::do_quantize() in quantization/torchquantizer.py
+    self.method = 3 if tensor_type == 'param' else 2
 
     self.quantize_fn_cls = TQTQuantize
-    # See TorchQuantizer::do_quantize() in quantization/torchquantizer.py
-    self.quantize_method = 3 if tensor_type == 'param' else 2
 
     self.log_threshold = nn.Parameter(torch.tensor([0.0]))
     self.register_buffer('warmup_enabled', torch.tensor([1], dtype=torch.uint8))
@@ -145,12 +169,13 @@ class TQTQuantizer(FakeQuantizer):
       return x
 
     if self.training and self.warmup_enabled[0] == 1:
-      max_x = torch.tensor([torch.max(torch.abs(x))], dtype=x.dtype, device=x.device)
-      self.log_threshold.data = torch.log(max_x) / math.log(2)
       self.warmup_enabled[0] = 0
+      max_x = torch.tensor([torch.max(torch.abs(x))],
+          dtype=x.dtype, device=x.device)
+      self.log_threshold.data = torch.log(max_x) / math.log(2)
     else:
       x = self.quantize_fn_cls.apply(
-          x, self.log_threshold, self.domain, self.quantize_method)
+          x, self.log_threshold, self.domain, self.method)
     return x
 
   def enable_quant(self, enabled=True):
@@ -168,13 +193,12 @@ class TQTQuantizer(FakeQuantizer):
     return self.enable_warmup(False)
 
   def extra_repr(self):
-    return 'quant_enabled={}, num_bits={}, quant_method={}'.format(
-        self.quant_enabled, self.num_bits, self.quantize_method)
+    return 'quant_enabled={}, num_bits={}, method={}'.format(
+        self.quant_enabled, self.num_bits, self.method)
 
   def _save_to_state_dict(self, destination, prefix, keep_vars):
     super(TQTQuantizer, self)._save_to_state_dict(destination, prefix,
                                                    keep_vars)
-    destination.pop(prefix + 'warmup_enabled')
 
   def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict,
                             missing_keys, unexpected_keys, error_msgs):
@@ -183,11 +207,11 @@ class TQTQuantizer(FakeQuantizer):
                                       strict, missing_keys, unexpected_keys,
                                       error_msgs)
 
-    ignored_keys = [prefix + 'warmup_enabled']
-    for key in ignored_keys:
-      missing_keys.remove(key)
+    #ignored_keys = ['']
+    #for key in ignored_keys:
+    #  missing_keys.remove(prefix + key)
 
-  def quant_info(self):
+  def export_quant_info(self):
     """Generate quant info as TorchQuantizer's format, which is [num_bits, fp].
     (1) TQT: qx = clip(round(fx / scale)) * scale, scale = 2^ceil(log2t) / 2^(b-1)
     (2) NndctFixNeron: qx = clip(round(fx * scale)) * (1 / scale), scale = 2^fp
@@ -199,6 +223,12 @@ class TQTQuantizer(FakeQuantizer):
     num_bits = self.num_bits.item()
     logt_ceil = torch.ceil(self.log_threshold).item()
     return [num_bits, int(num_bits - 1 - logt_ceil)]
+
+  def import_quant_info(self, qinfo):
+    num_bits, fp = qinfo
+    self.num_bits[0] = num_bits
+    self.log_threshold.data = torch.tensor([num_bits - 1 - fp], dtype=self.log_threshold.dtype)
+    self.warmup_enabled[0] = 0
 
 def enable_quant(mod):
   if isinstance(mod, FakeQuantizer):
@@ -215,69 +245,3 @@ def enable_warmup(mod):
 def disable_warmup(mod):
   if isinstance(mod, FakeQuantizer):
     mod.disable_warmup()
-
-#Used only for warmup
-def nonlin(x, alpha, signed):
-  if signed:
-    out = torch.clamp(x, -alpha.item(), alpha.item())
-  else:
-    out = torch.clamp(x, 0, alpha.item())
-  return out
-
-class QuantizekConv2d(nn.Conv2d):
-
-  def __init__(self,
-               k,
-               init_weights_clip_val=2.,
-               init_bias_clip_val=2.,
-               *args,
-               **kwargs):
-    super(QuantizekConv2d, self).__init__(*args, **kwargs)
-
-    self.register_buffer('clip_val_weight',
-                         torch.Tensor([init_weights_clip_val]))
-    self.clip_val_weight = nn.Parameter(
-        torch.Tensor([init_weights_clip_val]), requires_grad=True)
-
-    self.register_buffer('clip_val_bias', torch.Tensor([init_bias_clip_val]))
-    self.clip_val_bias = nn.Parameter(
-        torch.Tensor([init_bias_clip_val]), requires_grad=True)
-    self.k = k
-
-  def forward(self, input):
-
-    if warmup:
-      max_w = torch.cuda.FloatTensor([torch.max(abs(self.weight))])
-      weight_k = nonlin(self.weight, alpha=max_w, signed=True)
-      if self.bias is not None:
-        max_b = torch.cuda.FloatTensor([torch.max(abs(self.bias))])
-        bias_k = nonlin(self.bias, alpha=max_b, signed=True)
-        out = F.conv2d(input, weight_k, bias_k, self.stride, self.padding)
-      else:
-        out = F.conv2d(input, weight_k, self.bias, self.stride, self.padding)
-
-      if ALT:
-        self.clip_val_weight.data = torch.log(max_w) / math.log(2)
-        if self.bias is not None:
-          self.clip_val_bias.data = torch.log(max_b) / math.log(2)
-      else:
-        self.clip_val_weight.data = max_w
-        if self.bias is not None:
-          self.clip_val_bias.data = max_b
-    else:
-      if ALT:
-        weight_k = quantizeW_ALT(self.weight, self.clip_val_weight, self.k)
-        if self.bias is not None:
-          bias_k = quantizeW_ALT(self.bias, self.clip_val_bias, 8.)
-          out = F.conv2d(input, weight_k, bias_k, self.stride, self.padding)
-        else:
-          out = F.conv2d(input, weight_k, self.bias, self.stride, self.padding)
-      else:
-        weight_k = fw(self.weight, self.k)
-        if self.bias is not None:
-          bias_k = fw(self.bias, self.k)
-          out = F.conv2d(input, weight_k, bias_k, self.stride, self.padding)
-        else:
-          out = F.conv2d(input, weight_k, self.bias, self.stride, self.padding)
-
-    return out

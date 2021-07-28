@@ -22,12 +22,11 @@
 #include <opencv2/imgproc.hpp>
 #include <vitis/ai/retinaface.hpp>
 #include <vitis/ai/demo.hpp>
-#include <vitis/ai/nnpp/retinaface.hpp>
 
 #include "./process_result.hpp"
-using namespace std;
+
 int main(int argc, char* argv[]) {
-  string model = argv[1];
+  std::string model = argv[1];
   return vitis::ai::main_for_jpeg_demo(
       argc, argv,
       [model] {
@@ -35,4 +34,3 @@ int main(int argc, char* argv[]) {
       },
       process_result, 2);
 }
-

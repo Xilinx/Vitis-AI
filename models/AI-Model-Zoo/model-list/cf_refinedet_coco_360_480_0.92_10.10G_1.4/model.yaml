@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: refinedet pedestrian detector.
+input size: 360*480
+float ops: 10.10G
+task: detection
+framework: caffe
+prune: '0.92'
+version: 1.4
+files:
+- name: cf_refinedet_coco_360_480_0.92_10.10G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_refinedet_coco_360_480_0.92_10.10G_1.4.zip
+  checksum: d0f383e1b1d09adc6e70bf2617535d42
+- name: refinedet_pruned_0_92
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_92-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 439ec9e5e8631e8dda81b58b39c6576b
+- name: refinedet_pruned_0_92
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_92-vck190-r1.4.0.tar.gz
+  checksum: 2f7b42597dd934f41d98540ebc2456bc
+- name: refinedet_pruned_0_92
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_92-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 0d46c4cbd4b42fb05174f922d2afb18c
+- name: refinedet_pruned_0_92
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_92-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: eff6b52508945e4719feb9de4f5acaa2
+- name: refinedet_pruned_0_92
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_92-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 9b88baf2cb945a8027e78c48860b4bfb
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

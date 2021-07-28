@@ -242,8 +242,8 @@ class SSD {
   SSDdetector* detector_;
   std::unique_ptr<xir::Graph> graph;
   std::unique_ptr<vart::Runner> ssd_runner;
-  float* loc;
-  float* conf;
+  int8_t* loc;
+  int8_t* conf;
   float loc_scale, conf_scale;
   int conf_size, loc_size;
   SSD_TYPE type_;

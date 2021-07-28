@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: ssd pedestrian detector.
+input size: 360*640
+float ops: 5.9G
+task: detection
+framework: caffe
+prune: '0.97'
+version: 1.4
+files:
+- name: cf_ssdpedestrian_coco_360_640_0.97_5.9G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_ssdpedestrian_coco_360_640_0.97_5.9G_1.4.zip
+  checksum: 4d98f713c7c9f9c94a2ee3ada59bc7d0
+- name: ssd_pedestrian_pruned_0_97
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 34642ed0a2cc1f38c319652ba5cf16fd
+- name: ssd_pedestrian_pruned_0_97
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-vck190-r1.4.0.tar.gz
+  checksum: 6268c619be1bd4a86be48ef36a94d6d5
+- name: ssd_pedestrian_pruned_0_97
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: c656da5e83f49cecd773a5fc7591b15a
+- name: ssd_pedestrian_pruned_0_97
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 5a7ee03e3fdb0d4ab2ee45bcd73379fc
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

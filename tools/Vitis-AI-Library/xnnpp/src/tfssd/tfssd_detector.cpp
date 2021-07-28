@@ -142,8 +142,9 @@ void TFSSDdetector::Detect(const T* loc_data, const float* conf_data,
                       ? 1.0 / (1.0 + exp(-1.0 * score * scale_score_))
                       : score;
 
-      res.x = bbox[0];
-      res.y = bbox[1];
+      res.x = bbox[0] - bbox[2] / 2.0;
+      res.y = bbox[1] - bbox[3] / 2.0;
+
       res.width = bbox[2];
       res.height = bbox[3];
       // std::cout <<"Detect(): Rect: bbox: " << bbox[0] << " " << bbox[1] << "
@@ -288,11 +289,8 @@ void TFSSDdetector::DecodeBBox(const T (*bboxes)[4], int idx, bool normalized) {
   // seems x, y changed ? Yes. test and found.
 
   // bbox x,y,w,h
-  bbox[0] = xcenter - w / 2.0;
-  bbox[1] = ycenter - h / 2.0;
-
-  bbox[0] = std::max(std::min(bbox[0], 1.f), 0.f);
-  bbox[1] = std::max(std::min(bbox[1], 1.f), 0.f);
+  bbox[0] = xcenter;
+  bbox[1] = ycenter;
   bbox[2] = w;
   bbox[3] = h;
 

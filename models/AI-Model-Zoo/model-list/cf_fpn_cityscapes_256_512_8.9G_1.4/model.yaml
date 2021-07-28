@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: FPN(Inception-v1) segmentation on Cityscapes.
+input size: 256*512
+float ops: 8.9G
+task: segmentation
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_fpn_cityscapes_256_512_8.9G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_fpn_cityscapes_256_512_8.9G_1.4.zip
+  checksum: 8c77187129c1c26d13621e7bee6adf28
+- name: fpn
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 1a53f726794ae1e612ba30c0ddbed6ac
+- name: fpn
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck190-r1.4.0.tar.gz
+  checksum: 8777307471c248b6d0ab8560d455481b
+- name: fpn
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 64371b8e12c48a7a17495a94299c239f
+- name: fpn
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: a824444d99ffe212fe351194c424c5a4
+- name: fpn
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 5b7e5eec884caac6650da3588cb16b85
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

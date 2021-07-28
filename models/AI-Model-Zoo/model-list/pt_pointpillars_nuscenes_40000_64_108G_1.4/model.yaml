@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: PointPillars on nuScenes.
+input size: 40000*64*5
+float ops: 108G
+task: 3d detection
+framework: pytorch
+prune: 'no'
+version: 1.4
+files:
+- name: pt_pointpillars_nuscenes_40000_64_108G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pointpillars_nuscenes_40000_64_108G_1.4.zip
+  checksum: b51c3340e3e469cd7eead97718b9d7f3
+- name: pointpillars_nuscenes_40000_64_0_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_0_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 152956394aab0f49f0b9b3db30d242be
+- name: pointpillars_nuscenes_40000_64_1_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_1_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: c3a1459d199c380ffd53f20d78188764
+- name: pointpillars_nuscenes_40000_64_0_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_0_pt-vck190-r1.4.0.tar.gz
+  checksum: 532767bb6065207c55f178e803adacdf
+- name: pointpillars_nuscenes_40000_64_1_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_1_pt-vck190-r1.4.0.tar.gz
+  checksum: af8e23d63e2be18b1aafbdb45b46f2dc
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

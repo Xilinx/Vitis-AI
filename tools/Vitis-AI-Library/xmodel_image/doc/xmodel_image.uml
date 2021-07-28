@@ -1,0 +1,16 @@
+@startuml
+
+interface XmodelImage {
+    {static}   std::unique_ptr<XmodelImage> create(const std::string& filename);
+    {abstract} std::vector<vitis::ai::proto::DpuModelResult> run(
+      const std::vector<vart::Mat>& image_buffers) = 0;
+
+}
+note right of XmodelImage::run
+   avoid dependency on cv::Mat
+end note
+
+note left of XmodelImage::run
+   protobuf message for structure info
+end note
+@enduml

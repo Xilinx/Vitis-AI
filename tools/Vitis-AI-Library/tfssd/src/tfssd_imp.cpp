@@ -35,7 +35,8 @@ TFSSDImp::TFSSDImp(const std::string& model_name, bool need_preprocess)
           configurable_dpu_task_->getOutputTensor()[0],
           configurable_dpu_task_->getConfig(),
           (configurable_dpu_task_->get_graph())
-              ->get_attr<std::string>("dirname"))} {}
+              ->get_attr<std::string>("dirname"),
+          real_batch_size )} {}
 
 TFSSDImp::~TFSSDImp() {}
 
@@ -50,7 +51,7 @@ TFSSDResult TFSSDImp::run(const cv::Mat& input_img) {
   }
   __TIC__(SSD_total)
   __TIC__(SSD_setimg)
-
+  real_batch_size = 1;
   configurable_dpu_task_->setInputImageRGB(img);
 
   __TOC__(SSD_setimg)
@@ -68,11 +69,10 @@ TFSSDResult TFSSDImp::run(const cv::Mat& input_img) {
 
 std::vector<TFSSDResult> TFSSDImp::run(const std::vector<cv::Mat>& input_img) {
   auto size = cv::Size(getInputWidth(), getInputHeight());
-  auto batch_size = input_img.size();
-
-  std::vector<cv::Mat> vimg(batch_size);
-
-  for (auto i = 0ul; i < batch_size; i++) {
+  auto batch_size = get_input_batch();
+  real_batch_size = std::min(int(input_img.size()), int(batch_size));
+  std::vector<cv::Mat> vimg(real_batch_size);
+  for (auto i = 0; i < real_batch_size; i++) {
     if (size != input_img[i].size()) {
       cv::resize(input_img[i], vimg[i], size, 0, 0, cv::INTER_LINEAR);
     } else {

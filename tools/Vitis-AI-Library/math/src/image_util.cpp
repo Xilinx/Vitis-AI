@@ -21,19 +21,22 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <fstream>
 #include <tuple>
 #include <utility>
 #include <vector>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/profiling.hpp>
-#include <fstream>
 DEF_ENV_PARAM(USING_OLD_NEON, "1");
+DEF_ENV_PARAM(DEBUG_IMAGE_UTIL, "0");
+DEF_ENV_PARAM(XLNX_ENABLE_ROUND_SETINPUT, "0");
 
 using std::get;
 using std::make_tuple;
 using std::pair;
 using std::tuple;
 using std::vector;
+int GLOBAL_ENABLE_ROUND_SETINPUT = 0;
 
 namespace vitis {
 namespace ai {
@@ -53,19 +56,19 @@ void transform_mean_scale(int w, int h, const uint8_t* src, int8_t* dst,
                           const std::vector<float>& mean,
                           const std::vector<int>& scale, bool is_dst_bgr);
 #endif
-void NormalizeInputData(const float *input, int rows, int cols, int channels,
-                        int stride, const std::vector<float> &mean,
-                        const std::vector<float> &scale, int8_t *data) {
- // std::ofstream output_file("final.txt");
+void NormalizeInputData(const float* input, int rows, int cols, int channels,
+                        int stride, const std::vector<float>& mean,
+                        const std::vector<float>& scale, int8_t* data) {
+  // std::ofstream output_file("final.txt");
   for (auto h = 0; h < rows; ++h) {
     for (auto w = 0; w < cols; ++w) {
       for (auto c = 0; c < channels; ++c) {
-        auto value =
-            (int)((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
-                  scale[c]);
-        value = std::min(-128, value);
-        value = std::max(127, value);
-   //     output_file << ((input[h * stride + w * channels + c] * 1.0f - mean[c]) * scale[c]) << std::endl;
+        auto value = (int)round(
+            (input[h * stride + w * channels + c] * 1.0f - mean[c]) * scale[c]);
+        value = std::max(-128, value);
+        value = std::min(127, value);
+        //     output_file << ((input[h * stride + w * channels + c] * 1.0f -
+        //     mean[c]) * scale[c]) << std::endl;
         //(int)((input[h * cols * channels + w * channels + c] - mean[c]) *
         // scale[c]);
         data[h * cols * channels + w * channels + c] = (char)value;
@@ -77,30 +80,86 @@ void NormalizeInputData(const float *input, int rows, int cols, int channels,
 void NormalizeInputData(const uint8_t* input, int rows, int cols, int channels,
                         int stride, const std::vector<float>& mean,
                         const std::vector<float>& scale, int8_t* data) {
+  if (ENV_PARAM(XLNX_ENABLE_ROUND_SETINPUT) == 1) {
+    GLOBAL_ENABLE_ROUND_SETINPUT = 1;
+  }
 #ifndef ENABLE_NEON
-  //#if 1
-  for (auto h = 0; h < rows; ++h) {
-    for (auto w = 0; w < cols; ++w) {
-      for (auto c = 0; c < channels; ++c) {
-        auto value =
-            (int)((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
-                  scale[c]);
-        //(int)((input[h * cols * channels + w * channels + c] - mean[c]) *
-        // scale[c]);
-        data[h * cols * channels + w * channels + c] = (char)value;
+  if (GLOBAL_ENABLE_ROUND_SETINPUT == 0) {
+    for (auto h = 0; h < rows; ++h) {
+      for (auto w = 0; w < cols; ++w) {
+        for (auto c = 0; c < channels; ++c) {
+          auto value =
+              (int)((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
+                    scale[c]);
+          data[h * cols * channels + w * channels + c] = (char)value;
+          // IMPORTANT: we must keep this loop as simple as possible so
+          // that gcc can optimize it in the release version
+#ifndef NDEBUG
+          LOG_IF(INFO, ENV_PARAM(DEBUG_IMAGE_UTIL) &&
+                           h * cols * channels + w * channels + c < 10)  //
+              << "value " << value << " "                                //
+              << "mean[c] " << mean[c] << " "                            //
+              << "scale[c] " << scale[c] << " "                          //
+              << "input: " << (input[h * stride + w * channels + c] * 1.0f)
+              << " ";
+#endif
+        }
+      }
+    }
+  } else {
+    for (auto h = 0; h < rows; ++h) {
+      for (auto w = 0; w < cols; ++w) {
+        for (auto c = 0; c < channels; ++c) {
+          auto value = (int)round(
+              (input[h * stride + w * channels + c] * 1.0f - mean[c]) *
+              scale[c]);
+          value = std::max(-128, value);
+          value = std::min(127, value);
+          data[h * cols * channels + w * channels + c] = (char)value;
+          LOG_IF(INFO, ENV_PARAM(DEBUG_IMAGE_UTIL) &&
+                           h * cols * channels + w * channels + c < 10)  //
+              << "value " << value << " "                                //
+              << "mean[c] " << mean[c] << " "                            //
+              << "scale[c] " << scale[c] << " "                          //
+              << "input: " << (input[h * stride + w * channels + c] * 1.0f)
+              << " ";
+        }
       }
     }
   }
-#else
-  std::vector<int> scale_int;
-  if (!ENV_PARAM(USING_OLD_NEON) && cols >= 16 &&
-      calc_scale(scale, scale_int)) {
-    transform_mean_scale(cols, rows, input, data, mean, scale_int, true);
+#endif
+#ifdef ENABLE_NEON
+  if (GLOBAL_ENABLE_ROUND_SETINPUT == 0) {
+    std::vector<int> scale_int;
+    if (!ENV_PARAM(USING_OLD_NEON) && cols >= 16 &&
+        calc_scale(scale, scale_int)) {
+      transform_mean_scale(cols, rows, input, data, mean, scale_int, true);
+    } else {
+      for (auto i = 0; i < rows; ++i) {
+        transform_bgr(cols, 1, const_cast<uint8_t*>(input) + i * stride,
+                      data + i * cols * 3, mean[0], scale[0], mean[1], scale[1],
+                      mean[2], scale[2]);
+      }
+    }
   } else {
-    for (auto i = 0; i < rows; ++i) {
-      transform_bgr(cols, 1, const_cast<uint8_t*>(input) + i * stride,
-                    data + i * cols * 3, mean[0], scale[0], mean[1], scale[1],
-                    mean[2], scale[2]);
+    for (auto h = 0; h < rows; ++h) {
+      for (auto w = 0; w < cols; ++w) {
+        for (auto c = 0; c < channels; ++c) {
+          auto value = (int)round(
+              (input[h * stride + w * channels + c] * 1.0f - mean[c]) *
+              scale[c]);
+          value = std::max(-128, value);
+          value = std::min(127, value);
+          data[h * cols * channels + w * channels + c] = (char)value;
+          LOG_IF(INFO, ENV_PARAM(DEBUG_IMAGE_UTIL) &&
+                           h * cols * channels + w * channels + c < 10)  //
+              << "value " << value << " "                                //
+              << "mean[c] " << mean[c] << " "                            //
+              << "scale[c] " << scale[c] << " "                          //
+              << "input: " << (input[h * stride + w * channels + c] * 1.0f)
+              << " ";
+        }
+      }
     }
   }
 #endif

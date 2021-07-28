@@ -15,12 +15,12 @@
  */
 #include "road_line_post.hpp"
 
+#include <sys/stat.h>
 #include <fstream>
 #include <numeric>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vector>
-#include <sys/stat.h>  
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/math.hpp>
 #include <vitis/ai/max_index.hpp>
@@ -174,8 +174,9 @@ RoadLinePost::RoadLinePost(
   }
 }
 
-RoadLineResult RoadLinePost::road_line_post_process(int inWidth, int inHeight,
-                                                    unsigned int idx) {
+RoadLineResult RoadLinePost::road_line_post_process_internal(int inWidth,
+                                                             int inHeight,
+                                                             unsigned int idx) {
   int sWidth = input_tensors_[0].width;
   int sHeight = input_tensors_[0].height;
   vector<RoadLineResult::Line> lines;
@@ -213,7 +214,8 @@ RoadLineResult RoadLinePost::road_line_post_process(int inWidth, int inHeight,
       }
     }
     if (!g_roadline_acc_outdir.empty()) {
-      if (access(g_roadline_acc_outdir.c_str(), 0) == -1)	mkdir(g_roadline_acc_outdir.c_str(), 0777);
+      if (access(g_roadline_acc_outdir.c_str(), 0) == -1)
+        mkdir(g_roadline_acc_outdir.c_str(), 0777);
       std::ofstream out_datase(g_roadline_acc_outdir + "/datase.txt", ios::app);
       std::ofstream out_seedx(g_roadline_acc_outdir + "/seedx.txt", ios::app);
       std::ofstream out_seedy(g_roadline_acc_outdir + "/seedy.txt", ios::app);
@@ -302,12 +304,13 @@ RoadLineResult RoadLinePost::road_line_post_process(int inWidth, int inHeight,
 }
 
 std::vector<RoadLineResult> RoadLinePost::road_line_post_process(
-    const std::vector<int>& inWidth, const std::vector<int>& inHeight) {
-  auto batch_size = input_tensors_[0].batch;
+    const std::vector<int>& inWidth, const std::vector<int>& inHeight,
+    size_t batch_size) {
   auto ret = std::vector<vitis::ai::RoadLineResult>{};
   ret.reserve(batch_size);
   for (auto i = 0u; i < batch_size; ++i) {
-    ret.emplace_back(road_line_post_process(inWidth[i], inHeight[i], i));
+    ret.emplace_back(
+        road_line_post_process_internal(inWidth[i], inHeight[i], i));
   }
   return ret;
 }

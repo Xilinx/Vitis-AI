@@ -53,21 +53,21 @@ struct RefineDetResult {
    *@brief Struct of an object coordinates and confidence.
    */
   struct BoundingBox {
-    /// x-coordinate , x is normalized relative to the input image columns ,the
-    /// value ranges from 0 to 1.
+    /// x-coordinate. x is normalized relative to the input image columns.
+    /// Range from 0 to 1.
     float x;
-    /// y-coordinate , y is normalized relative to the input image rows ,the
-    /// value ranges from 0 to 1.
+    /// y-coordinate. y is normalized relative to the input image rows.
+    /// Range from 0 to 1.
     float y;
-    /// Body width , width is normalized relative to the input image columns , the
-    /// value ranges from 0 to 1.
+    /// Body width. Width is normalized relative to the input image columns,
+    /// Range from 0 to 1.
     float width;
-    /// Body height , height is normalized relative to the input image rows ,
-    /// the value ranges from 0 to 1.
+    /// Body height. Heigth is normalized relative to the input image rows,
+    /// Range from 0 to 1.
     float height;
-    /// Body detection label, the value ranges from 0 to 21.
+    /// Body detection label. The value ranges from 0 to 21.
     int label;
-    /// Body detection confidence, the value ranges from 0 to 1.
+    /// Body detection confidence. The value ranges from 0 to 1.
     float score;
   };
   /// The vector of BoundingBox.
@@ -96,16 +96,11 @@ class RefineDetPostProcess {
       const vitis::ai::proto::DpuModelParam& config);
 
   /**
-   * @brief Run refinedet post-process.
-   * @return The struct of RefineDetResult.
-   */
-  virtual RefineDetResult refine_det_post_process(unsigned int idx) = 0;
-
-  /**
    * @brief Run batch mode of refinedet post-process.
    * @return The vector of struct of RefineDetResult.
    */
-  virtual std::vector<RefineDetResult> refine_det_post_process() = 0;
+  virtual std::vector<RefineDetResult> refine_det_post_process(
+      size_t batch_size) = 0;
   /**
    * @cond NOCOMMENTS
    */

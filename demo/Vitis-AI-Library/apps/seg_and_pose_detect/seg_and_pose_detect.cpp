@@ -15,6 +15,7 @@
  */
 #include <glog/logging.h>
 
+#include <eigen3/Eigen/Dense>
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -23,13 +24,14 @@
 #include <vitis/ai/multitask.hpp>
 #include <vitis/ai/posedetect.hpp>
 #include <vitis/ai/ssd.hpp>
+
 namespace vitis {
 namespace ai {
 
 struct SSDPoseDetect {
   static std::unique_ptr<SSDPoseDetect> create();
   SSDPoseDetect();
-  std::vector<vitis::ai::PoseDetectResult> run(const cv::Mat &input_image);
+  std::vector<vitis::ai::PoseDetectResult> run(const cv::Mat& input_image);
   int getInputWidth();
   int getInputHeight();
 
@@ -49,7 +51,7 @@ SSDPoseDetect::SSDPoseDetect()
       pose_detect_{vitis::ai::PoseDetect::create("sp_net")} {}
 
 std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
-    const cv::Mat &input_image) {
+    const cv::Mat& input_image) {
   std::vector<vitis::ai::PoseDetectResult> mt_results;
   cv::Mat image;
   auto size = cv::Size(ssd_->getInputWidth(), ssd_->getInputHeight());
@@ -61,7 +63,7 @@ std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
   // run ssd
   auto ssd_results = ssd_->run(image);
 
-  for (auto &box : ssd_results.bboxes) {
+  for (auto& box : ssd_results.bboxes) {
     if (1)
       DLOG(INFO) << "box.x " << box.x << " "            //
                  << "box.y " << box.y << " "            //
@@ -85,14 +87,14 @@ std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
     // process each result of ssd detection
     auto single_result = pose_detect_->run(sub_img);
     for (size_t i = 0; i < 28; i = i + 2) {
-      ((float *)&single_result.pose14pt)[i] =
-          ((float *)&single_result.pose14pt)[i] * sub_img.cols;
-      ((float *)&single_result.pose14pt)[i] =
-          (((float *)&single_result.pose14pt)[i] + xmin) / input_image.cols;
-      ((float *)&single_result.pose14pt)[i + 1] =
-          ((float *)&single_result.pose14pt)[i + 1] * sub_img.rows;
-      ((float *)&single_result.pose14pt)[i + 1] =
-          (((float *)&single_result.pose14pt)[i + 1] + ymin) / input_image.rows;
+      ((float*)&single_result.pose14pt)[i] =
+          ((float*)&single_result.pose14pt)[i] * sub_img.cols;
+      ((float*)&single_result.pose14pt)[i] =
+          (((float*)&single_result.pose14pt)[i] + xmin) / input_image.cols;
+      ((float*)&single_result.pose14pt)[i + 1] =
+          ((float*)&single_result.pose14pt)[i + 1] * sub_img.rows;
+      ((float*)&single_result.pose14pt)[i + 1] =
+          (((float*)&single_result.pose14pt)[i + 1] + ymin) / input_image.rows;
     }
     mt_results.emplace_back(single_result);
   }
@@ -101,28 +103,16 @@ std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
 }  // namespace ai
 }  // namespace vitis
 
-#ifndef HAVE_EIGEN
-#define HAVE_EIGEN 0
-#endif
-#if HAVE_EIGEN
-#include <eigen3/Eigen/Dense>
-static void overLay1(cv::Mat &src1, const cv::Mat &src2) {
+static void overLay1(cv::Mat& src1, const cv::Mat& src2) {
   const int imsize = src1.cols * src2.rows * 3;
   // vector<uchar> te(imsize, 2);
-  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data1(const_cast<uchar *>(src1.data),
+  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data1(const_cast<uchar*>(src1.data),
                                                 imsize);
-  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data2(const_cast<uchar *>(src2.data),
+  Eigen::Map<Eigen::Matrix<uchar, -1, 1>> data2(const_cast<uchar*>(src2.data),
                                                 imsize);
   data1 = data1 / 2 + data2 / 2;
 }
-#else
-static void overLay1(cv::Mat &src1, const cv::Mat &src2) {
-  const int imsize = src1.cols * src2.rows * 3;
-  for (int i = 0; i < imsize; ++i) {
-    src1.data[i] = src1.data[i] / 2 + src2.data[i] / 2;
-  }
-}
-#endif
+
 // static cv::Mat process_result_multitask(
 //     cv::Mat &m1, const vitis::multitask::MultiTaskResult &result,
 //     bool is_jpeg) {
@@ -150,7 +140,7 @@ static void overLay1(cv::Mat &src1, const cv::Mat &src2) {
 // }
 using namespace cv;
 static cv::Mat process_result_multitask_with_original(
-    cv::Mat &m1, const vitis::ai::MultiTaskResult &result, bool is_jpeg) {
+    cv::Mat& m1, const vitis::ai::MultiTaskResult& result, bool is_jpeg) {
   (void)process_result_multitask_with_original;
   cv::Mat image;
   if (false) {
@@ -160,7 +150,7 @@ static cv::Mat process_result_multitask_with_original(
     cv::resize(result.segmentation, image, m1.size());
     overLay1(image, m1);
   }
-  for (auto &r : result.vehicle) {
+  for (auto& r : result.vehicle) {
     LOG_IF(INFO, is_jpeg) << r.label << " " << r.x << " " << r.y << " "
                           << r.width << " " << r.height << " " << r.angle;
     int xmin = r.x * image.cols;
@@ -178,7 +168,7 @@ static cv::Mat process_result_multitask_with_original(
   return canvas;
 }
 
-static inline void DrawLine(Mat &img, Point2f point1, Point2f point2,
+static inline void DrawLine(Mat& img, Point2f point1, Point2f point2,
                             Scalar colour, int thickness, float scale_w,
                             float scale_h) {
   if ((point1.x * img.cols > scale_w || point1.y * img.rows > scale_h) &&
@@ -188,8 +178,8 @@ static inline void DrawLine(Mat &img, Point2f point1, Point2f point2,
              thickness);
 }
 
-static void DrawLines(Mat &img,
-                      const vitis::ai::PoseDetectResult::Pose14Pt &results) {
+static void DrawLines(Mat& img,
+                      const vitis::ai::PoseDetectResult::Pose14Pt& results) {
   float scale_w = 1;
   float scale_h = 1;
 
@@ -198,10 +188,10 @@ static void DrawLines(Mat &img,
   float mark_h = mark * scale_h;
   std::vector<Point2f> pois(14);
   for (size_t i = 0; i < pois.size(); ++i) {
-    pois[i].x = ((float *)&results)[i * 2] * img.cols;
+    pois[i].x = ((float*)&results)[i * 2] * img.cols;
     // std::cout << ((float*)&results)[i * 2] << " " << ((float*)&results)[i * 2
     // + 1] << std::endl;
-    pois[i].y = ((float *)&results)[i * 2 + 1] * img.rows;
+    pois[i].y = ((float*)&results)[i * 2 + 1] * img.rows;
   }
   for (size_t i = 0; i < pois.size(); ++i) {
     circle(img, pois[i], 3, Scalar::all(255));
@@ -236,11 +226,11 @@ static void DrawLines(Mat &img,
            mark_w, mark_h);
 }
 
-cv::Mat process_result_pose_detect(cv::Mat &image,
-                                   const vitis::ai::PoseDetectResult &results,
+cv::Mat process_result_pose_detect(cv::Mat& image,
+                                   const vitis::ai::PoseDetectResult& results,
                                    bool is_jpeg) {
-  std::vector<float> pose14pt_arry((float *)&results.pose14pt,
-                                   (float *)&results.pose14pt + 28);
+  std::vector<float> pose14pt_arry((float*)&results.pose14pt,
+                                   (float*)&results.pose14pt + 28);
   for (size_t i = 0; i < pose14pt_arry.size(); i = i + 2) {
     LOG_IF(INFO, is_jpeg) << "(" << pose14pt_arry[i] << ","
                           << pose14pt_arry[i + 1] << ")";
@@ -250,19 +240,19 @@ cv::Mat process_result_pose_detect(cv::Mat &image,
 }
 
 static cv::Mat process_result_pose_detect_with_ssd(
-    cv::Mat &image, const std::vector<vitis::ai::PoseDetectResult> &results,
+    cv::Mat& image, const std::vector<vitis::ai::PoseDetectResult>& results,
     bool is_jpeg) {
   (void)process_result_pose_detect_with_ssd;
   cv::Mat canvas(cv::Size(image.cols, image.rows * 2), CV_8UC3);
   image.copyTo(canvas(Rect(0, image.rows, image.cols, image.rows)));
-  for (auto &result : results) {
+  for (auto& result : results) {
     process_result_pose_detect(image, result, is_jpeg);
   }
   image.copyTo(canvas(Rect(0, 0, image.cols, image.rows)));
   return canvas;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   gui_layout() = {{0, 0, 960, 540 * 2}, {960, 0, 960, 540 * 2}};
   gui_background() = cv::imread("/etc/alternatives/background.jpg");
   return vitis::ai::main_for_video_demo_multiple_channel(

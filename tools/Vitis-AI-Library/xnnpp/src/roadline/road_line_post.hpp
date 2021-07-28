@@ -28,12 +28,13 @@ class RoadLinePost : public vitis::ai::RoadLinePostProcess {
       const vitis::ai::proto::DpuModelParam& config);
   virtual ~RoadLinePost();
 
-  virtual RoadLineResult road_line_post_process(int inWidth, int inHeight,
-                                                unsigned int idx) override;
+  virtual RoadLineResult road_line_post_process_internal(int inWidth,
+                                                         int inHeight,
+                                                         unsigned int idx);
 
   virtual std::vector<RoadLineResult> road_line_post_process(
-      const std::vector<int>& inWidth,
-      const std::vector<int>& inHeight) override;
+      const std::vector<int>& inWidth, const std::vector<int>& inHeight,
+      size_t batch) override;
 
  private:
   std::unique_ptr<vitis::nnpp::roadline::IpmInfo> ipminfo_;

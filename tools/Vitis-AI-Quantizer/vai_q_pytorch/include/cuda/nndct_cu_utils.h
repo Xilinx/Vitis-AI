@@ -16,6 +16,7 @@
 * limitations under the License.
 */
 
+
 #ifndef _NNDCT_CU_UTILS_H_
 #define _NNDCT_CU_UTILS_H_
 #include <cuda.h>

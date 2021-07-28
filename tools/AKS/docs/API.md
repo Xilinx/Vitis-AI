@@ -1,4 +1,5 @@
-## Integrating AI Kernel Scheduler in Your Application
+Integrating AI Kernel Scheduler in Your Application
+===
 
 Users can create their own application pipelines by defining custom graphs and use AI Kernel Scheduler in their applications through the C++ or Python APIs. Please refer to the examples provided in [examples](../examples) directory.
 
@@ -91,19 +92,19 @@ Jobs are enqueued asynchronously to SysManagerExt using its `enqueueJob()` metho
 In C++ API, `enqueueJob()` takes 4 arguments:
 1. **Graph Handle:** It specifies to which graph the job is being pushed.
 2. **Image Path:** A string representing the image path. Typically, first node in an computer vision pipeline loads an image. If it is not the case, pass an empty string.
-3. **Buffers:** (*Optional*) This is a `vector<AKS::DataDescriptor>`. This lets the user to directly pass any number of input buffers like decoded video frames. By default, an empty vector is passed.
+3. **Buffers:** (*Optional*) This is a `std::vector<std::unique_ptr<vart::TensorBuffer>>`. This lets the user to directly pass any number of input buffers like decoded video frames. By default, an empty vector is passed.
 4. **User Args:** (*Optional*) This is a reference to `AKS::NodeParams` object. This lets user to pass any job-specific information and this information will be accessible to every node in the pipeline. By default, a `nullptr` is passed.
 
 It returns a `C++ future` object which can be used to wait for the results asynchronously.
 
 ```cpp
 // C++
-// create the data descriptor vector
-std::vector<AKS::DataDescriptor> v(3);
+// create the tensor buffer vector
+std::vector<std::unique_ptr<vart::TensorBuffer>> v(3);
 auto fut = sysMan->enqueueJob (graph, imagePath, std::move(v), nullptr);
 ```
 
-:pushpin: **Note:** Include `aks/AksDataDescriptor.h` and `aks/AksNodeParams.h` to get `AKS::DataDescriptor` and `AKS::NodeParams` respectively
+:pushpin: **Note:** Include `aks/AksTensorBuffer.h`, `aks/AksBatchTensorBuffer` and `aks/AksNodeParams.h` to get `AKS::AksTensorBuffer`, `AKS::AksBatchTensorBuffer` and `AKS::NodeParams` respectively.
 
 
 #### Enqueue Jobs in Python
@@ -152,15 +153,13 @@ AKS supports waiting for results at three levels.
 
 1. **Job level:** : This let's the user to get the output of a particular job without blocking other jobs that are still running. This is done by calling `.get()` method of `std::future` object returned for every `enqueueJob()` call.
 
-    Eg : [examples/tinyyolov3_video.cpp](../examples/tinyyolov3_video.cpp) uses this feature to get the boxes detected in every video frame sent to tiny-yolo-v3 network and draw boxes on the input image.
-
     ```cpp
     // C++
     auto fut = sysMan->enqueueJob (graph, imagePath, std::move(v), nullptr);
-    vector<AKS::DataDescriptor> outDD = fut.get();
+    std::vector<std::unique_ptr<vart::TensorBuffer>> outDD = fut.get();
     ```
 
-    :pushpin: **Note:** AKS doesn't guarantee any sequential consistency. There is a possibility that second job might finish before the first job. Therefore, when sequentiality is important, it is recommended to use Job-level waiting. For performance consideration, waiting may have to be done in a separate thread. Please refer to [examples/tinyyolov3_video.cpp](../examples/tinyyolov3_video.cpp) to see how these techniques are used to run object detection on a video input.
+    :pushpin: **Note:** AKS doesn't guarantee any sequential consistency. There is a possibility that second job might finish before the first job. Therefore, when sequentiality is important, it is recommended to use Job-level waiting. For performance consideration, waiting may have to be done in a separate thread. 
 
     :pushpin: **Note:** Job level waiting is not exposed with Python API.
 
@@ -239,81 +238,14 @@ There should be a generator function named, **`getKernel()`**, which returns a p
 
 **`KernelBase::exec_async()`** is the only pure virtual method. It takes four arguments.
 
-1. **`inputs`** :  It is a `vector<DataDescriptor*>`. [DataDescriptor](../ext/AksDataDescriptor.h) is a N-dimensional array structure to store input/output of each node. Inputs to a node are automatically filled with previous nodes' outputs by AKS.
+1. **`inputs`** :  It is a `vector<vart::TensorBuffer*>`. `vart::TensorBuffer` is a base class for N-dimensional array structure to store input/output of each node. Inputs to a node are automatically filled with previous nodes' outputs by AKS. `vart::TensorBuffer` can be dynamically casted to `AKS::AksTensorBuffer` or `AKS::AksBatchTensorBuffer` based on the requirement.
 
-2. **`outputs`** : It is also a `vector<DataDescriptor*>`. `exec_async()` of custom kernel should create as many outputs it wants and keep them in output.
+2. **`outputs`** : It is also a `vector<vart::TensorBuffer*>`. `exec_async()` of custom kernel should create as many outputs it wants and keep them in output.
 
 3. **`NodeParams* params`** : It is populated by AKS with all the node parameters from the graph json. This parameter is unique per node. If graph contains two nodes of same kernel, each of them will have their own `params` so that kernel can identify each node based on its param.
 
 4. **`DynamicParamValues* dynParams`** : It is passed by the user as an argument to `enqueueJob()`. This includes any job specific input params and it is common to all the nodes in a graph. For eg: ground truth file for each input image in an object detection task.
 
-:bulb: **INFO:** All `DataDescriptors` registered as inputs/outputs inside kernels are automatically managed by AKS.
+:bulb: **INFO:** All `vart::TensorBuffer` registered as inputs/outputs inside kernels are automatically managed by AKS.
 
 Once the implementation is ready, it should be compiled to a shared library and keep it in [libs](../libs) directory. Please refer the [CMakeLists.txt](../kernel_src/add/CMakeLists.txt) for `Add Kernel`.
-
-
-## Creating Python Kernels
-
-AKS kernels can also be written with Python. This enables users exploit Numpy features for fast array processing.
-
-### Invoking a Python Kernel from the Graph JSON
-
-[graph_facedetect.json](../graph_zoo/graph_facedetect.json) uses a Python kernel for post-processing.
-
-Python Kernel in Graph JSON should have following information:
-
-1. Kernel type should be `"Python"`
-
-1. **`module`** : filename of Python module file stored in [libs/pykernels](../libs/pykernels)
-    - *Notice that, extension `.py` is removed*
-    - For example, if filepath is `libs/pykernels/pyimread.py`, module name should be `pyimread`
-
-1. **`kernel`** :  name of the Python kernel class inside module file
-    - Multiple kernels can be kept inside a single module file
-
-1. **`pyargs`** : This is a list of strings in JSON.
-    - Each string is written as key-value pair that you would pass to create a typical Python Dict.
-    - AKS internally combine all these strings to a single string that looks like a Python Dict creation and stored inside the Node Params
-    - Later Python kernel can access it through NodeParams Python API and call `eval` on it to get a Python Dict.
-
-### Writing Python Kernels
-
-Some examples for Python kernels are provided in [libs/pykernels](../libs/pykernels).
-
-[pyimread.py](../libs/pykernels/pyimread.py) is a Python Kernel for image preprocessing and [postproc.py](../libs/pykernels/postproc.py) is a Python Kernel for FDDB face-detection postprocessing.
-
-A Python kernel can be created as follows:
-
-1. Create a Python Module in [libs/pykernels](../libs/pykernels).
-   - This is the `.py` file)
-
-1. Import AKS Python module by `import aks`
-   - This is for exposing AKS Data Structures to Python
-
-1. Kernel should be a Python class with following methods:
-
-    - **`Constructor`** has a single argument `params` which is equivalent to `NodeParams` in C++.
-        1. This contains the various data you passed to the Python node in graph.json. Remember, it is unique to a node in the graph and same for all the jobs.
-        2. All the strings that you passed to Python node in graph.json is combined to a single string and can be accessed from params
-        3. Once you have the string, directly call `eval` to get a Python dictionary of these arguments.
-
-    - **`exec_async`** takes three arguments
-        1. `inputs` : List of input numpy arrays. They all will be `c_contiguous` and `np.float32` type.
-        2. `params` : This is same as the `NodeParams` again.
-        3. `dynParams` : This contain any arguments sent by the user while enqueuing a job to sysManager. Eg : image path.
-        4. The output is always a `list of numpy arrays`
-        5. Each numpy array should be `c_contiguous` as well as `np.float32` type
-
-    - **`wait`** is not currently supported. So you can just `pass` it.
-
-    - **`Destructor`** can be user-defined, else `pass` it.
-
-### Limitations of Python Kernel
-
-Current implementation of Python Kernel has some limitations and some of them might impact its overall performance.
-
-1. All Python kernels should be kept at [libs/pykernels](../libs/pykernels) directory
-1. Every time a Python kernel is called, input & output buffers are copied between C++ & Python. This might impact performance based on the size of buffers.
-1. All inputs to Python kernel are `c_contiguous` and `np.float32` type. And the kernel must ensure that all of its outputs are also `c_contiguous` and `np.float32`. The kernel has to do explicit casting internally if required.
-1. Python Kernel is not thread-safe. So only one AKS thread will be used to dispatch Python kernel, even if your graph has multiple Python nodes.
-1. Currently, all Python kernels are blocking kernels. Async kernels are not supported.

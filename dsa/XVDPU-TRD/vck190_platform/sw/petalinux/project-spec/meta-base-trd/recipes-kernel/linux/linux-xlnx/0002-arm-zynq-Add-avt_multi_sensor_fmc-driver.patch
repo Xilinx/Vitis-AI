@@ -1,0 +1,4568 @@
+From 98b62131079b64c42258be7b3bf2ae11548007fe Mon Sep 17 00:00:00 2001
+From: watson <watson.chow@avnet.com>
+Date: Tue, 31 Mar 2020 21:17:28 -0700
+Subject: [PATCH 2/5] arm: zynq: Add avt_multi_sensor_fmc driver
+
+This is a combo driver that is composed of
+
+ ar0231
+ max96705
+ max9286
+
+Signed-off-by: watson <watson.chow@avnet.com>
+---
+ .../media/i2c/avt_multi_sensor_fmc/ar0231.txt      |   31 +
+ .../i2c/avt_multi_sensor_fmc/max9286_serdes.txt    |  120 ++
+ .../i2c/avt_multi_sensor_fmc/max96705_serdes.txt   |   12 +
+ drivers/media/i2c/Kconfig                          |    2 +
+ drivers/media/i2c/Makefile                         |    1 +
+ drivers/media/i2c/avt_multi_sensor_fmc/Kconfig     |    6 +
+ drivers/media/i2c/avt_multi_sensor_fmc/Makefile    |    3 +
+ drivers/media/i2c/avt_multi_sensor_fmc/ar0231.c    |  866 +++++++++
+ drivers/media/i2c/avt_multi_sensor_fmc/ar0231.h    |   30 +
+ .../i2c/avt_multi_sensor_fmc/max9286_serdes.c      | 1879 ++++++++++++++++++++
+ .../i2c/avt_multi_sensor_fmc/max9286_serdes.h      | 1370 ++++++++++++++
+ .../i2c/avt_multi_sensor_fmc/max96705_serdes.c     |  108 ++
+ .../i2c/avt_multi_sensor_fmc/max96705_serdes.h     |   14 +
+ 13 files changed, 4442 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/ar0231.txt
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/max9286_serdes.txt
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/max96705_serdes.txt
+ create mode 100644 drivers/media/i2c/avt_multi_sensor_fmc/Kconfig
+ create mode 100644 drivers/media/i2c/avt_multi_sensor_fmc/Makefile
+ create mode 100644 drivers/media/i2c/avt_multi_sensor_fmc/ar0231.c
+ create mode 100644 drivers/media/i2c/avt_multi_sensor_fmc/ar0231.h
+ create mode 100644 drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.c
+ create mode 100644 drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.h
+ create mode 100644 drivers/media/i2c/avt_multi_sensor_fmc/max96705_serdes.c
+ create mode 100644 drivers/media/i2c/avt_multi_sensor_fmc/max96705_serdes.h
+
+diff --git a/Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/ar0231.txt b/Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/ar0231.txt
+new file mode 100644
+index 0000000..0edd8ca
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/ar0231.txt
+@@ -0,0 +1,31 @@
++* ONSEMI AR0231
++
++Required properties:
++- compatible: "ar0231", "ar0231-i2c"
++- reg: I2C slave address, usually 0x10, 0x11.
++
++
++Example 1) ar0231
++
++sensor@11 {
++	compatible = "ar0231";
++	reg = <0x11>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	port@0 {
++		reg = <0>;
++		sensor_out0: endpoint {
++			remote-endpoint = <&serdes_in0>;
++		};
++	};
++};
++
++Example 2) ar0231-i2c
++
++sensor@10 {
++	compatible = "ar0231-i2c";
++	reg = <0x10>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++};
+\ No newline at end of file
+diff --git a/Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/max9286_serdes.txt b/Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/max9286_serdes.txt
+new file mode 100644
+index 0000000..7b23518
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/max9286_serdes.txt
+@@ -0,0 +1,120 @@
++* MAXIM MAX9286 SERDES
++
++Required properties:
++- compatible: "max9286-serdes"
++- reg: I2C slave address, usually 0x48.
++- num-si-slots: Number of input ports
++- num-mi-slots: Number of outputs ports
++- cam-config: Camera configuration
++		<0> MONO_CAM_0
++		<4> DUAL_CAM_01
++		<6> QUAD_CAM_0123
++- mipi-lanes: Number of lanes in mipi interface
++- pixel-freq: Sensor pixel clock
++- sensor_0-supply: Device node for sensor_0 power
++- sensor_1-supply: Device node for sensor_1 power
++- sensor_2-supply: Device node for sensor_2 power
++- sensor_3-supply: Device node for sensor_3 power
++- enable-gpios: GPIO for chip power down
++- serializer_adapter_default: Device node for serializer
++				(default i2c address)
++- serializer_adapter_brdcast: Device node for serializer
++				(broadcast i2c address)
++- sensor_adapter_brdcast: Device node for sensor (broadcast i2c address)
++- port: Video port, using the DT bindings defined in ../video-interfaces.txt.
++  The deserializer has a 5 ports, four input ports for connecting to
++  camera sensors and one is output port.
++- enable: port enable
++- serializer_adapter_link0: Device node for serializer (link0)
++- serializer_adapter_link1: Device node for serializer (link1)
++- serializer_adapter_link2: Device node for serializer (link2)
++- serializer_adapter_link3: Device node for serializer (link3)
++- sensor_adapter_0: Device node for sensor 0
++- sensor_adapter_1: Device node for sensor 1
++- sensor_adapter_2: Device node for sensor 2
++- sensor_adapter_3: Device node for sensor 3
++
++Example 1) MAX9286, enable all 4 input ports
++
++serdes@48 {
++	compatible = "max9286-serdes";
++	reg = <0x48>;
++	num-si-slots = <0x4>;
++	num-mi-slots = <0x1>;
++	cam-config = <0x6>;
++	mipi-lanes = <0x4>;
++	pixel-freq = <75>;
++	sensor_0-supply = <&camvcc_0>;
++	sensor_1-supply = <&camvcc_1>;
++	sensor_2-supply = <&camvcc_2>;
++	sensor_3-supply = <&camvcc_3>;
++	enable-gpios = <&gpio 110 0>;
++
++	serializer_adapter_default	= <&max96705_serdes_0>;
++	serializer_adapter_brdcast	= <&max96705_serdes_5>;
++	sensor_adapter_brdcast = <&ar0231_4>;
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			enable = <1>;
++			video-format = <XVIP_VF_MONO_SENSOR>;
++			video-width = <8>;
++			cfa-pattern = "rggb";
++			serializer_adapter_link0 = <&max96705_serdes_1>;
++			sensor_adapter_0 = <&ar0231_0>;
++			serdes_in0: endpoint {
++				remote-endpoint = <&sensor_out0>;
++			};
++		};
++		port@1 {
++			reg = <1>;
++			enable = <1>;
++			video-format = <XVIP_VF_MONO_SENSOR>;
++			video-width = <8>;
++			cfa-pattern = "rggb";
++			serializer_adapter_link1 = <&max96705_serdes_2>;
++			sensor_adapter_1 = <&ar0231_1>;
++			serdes_in1: endpoint {
++				remote-endpoint = <&sensor_out1>;
++			};
++		};
++		port@2 {
++			reg = <2>;
++			enable = <1>;
++			video-format = <XVIP_VF_MONO_SENSOR>;
++			video-width = <8>;
++			cfa-pattern = "rggb";
++			serializer_adapter_link2 = <&max96705_serdes_3>;
++			sensor_adapter_2 = <&ar0231_2>;
++			serdes_in2: endpoint {
++				remote-endpoint = <&sensor_out2>;
++			};
++		};
++		port@3 {
++			reg = <3>;
++			enable = <1>;
++			video-format = <XVIP_VF_MONO_SENSOR>;
++			video-width = <8>;
++			cfa-pattern = "rggb";
++			serializer_adapter_link3 = <&max96705_serdes_4>;
++			sensor_adapter_3 = <&ar0231_3>;
++			serdes_in3: endpoint {
++				remote-endpoint = <&sensor_out3>;
++			};
++		};
++		port@4 {
++			reg = <4>;
++			enable = <1>;
++			video-format = <XVIP_VF_MONO_SENSOR>;
++			video-width = <8>;
++			cfa-pattern = "rggb";
++			serdes_out0: endpoint {
++				remote-endpoint = <&csiss_in>;
++			};
++		};
++	};
++};
+diff --git a/Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/max96705_serdes.txt b/Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/max96705_serdes.txt
+new file mode 100644
+index 0000000..ed32e70
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/avt_multi_sensor_fmc/max96705_serdes.txt
+@@ -0,0 +1,12 @@
++* MAXIM MAX96705 SERDES
++
++Required properties:
++- compatible: "max96705-serdes"
++- reg: I2C slave address, usually 0x40.
++
++Example 1) MAX96705
++
++serdes@40 {
++	compatible = "max96705-serdes";
++	reg = <0x40>;
++};
+diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+index 7eee181..72c5d50f 100644
+--- a/drivers/media/i2c/Kconfig
++++ b/drivers/media/i2c/Kconfig
+@@ -1169,4 +1169,6 @@ config VIDEO_ST_MIPID02
+ 
+ endmenu
+ 
++source "drivers/media/i2c/avt_multi_sensor_fmc/Kconfig"
++
+ endif
+diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+index beb170b..572ecf0 100644
+--- a/drivers/media/i2c/Makefile
++++ b/drivers/media/i2c/Makefile
+@@ -117,3 +117,4 @@ obj-$(CONFIG_VIDEO_IMX355)	+= imx355.o
+ obj-$(CONFIG_VIDEO_ST_MIPID02) += st-mipid02.o
+ 
+ obj-$(CONFIG_SDR_MAX2175) += max2175.o
++obj-y				+= avt_multi_sensor_fmc/
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/Kconfig b/drivers/media/i2c/avt_multi_sensor_fmc/Kconfig
+new file mode 100644
+index 0000000..9bf99fe
+--- /dev/null
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/Kconfig
+@@ -0,0 +1,6 @@
++config AVT_MULTI_SENSOR_FMC
++	tristate "AVT_MULTI_SENSOR_FMC (MAX9286 MAX96705 AR0231 support)"
++	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API
++	depends on VIDEO_XILINX
++	---help---
++	  Driver for the MAX9286_MAX96705 SerDes and AR0231 sensor
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/Makefile b/drivers/media/i2c/avt_multi_sensor_fmc/Makefile
+new file mode 100644
+index 0000000..bd695dc
+--- /dev/null
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/Makefile
+@@ -0,0 +1,3 @@
++obj-$(CONFIG_AVT_MULTI_SENSOR_FMC)	+= max9286_serdes.o
++obj-$(CONFIG_AVT_MULTI_SENSOR_FMC)	+= max96705_serdes.o
++obj-$(CONFIG_AVT_MULTI_SENSOR_FMC)	+= ar0231.o
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/ar0231.c b/drivers/media/i2c/avt_multi_sensor_fmc/ar0231.c
+new file mode 100644
+index 0000000..2d19400
+--- /dev/null
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/ar0231.c
+@@ -0,0 +1,866 @@
++/*
++ * ar0231.c - driver for AR0231
++ *
++ * Copyright (C) 2018, Avnet, Inc.
++ *
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * This driver is based on vs2016.c
++ *
++ */
++#define DEBUG
++#include <linux/delay.h>
++#include <linux/gpio.h>
++#include <linux/i2c.h>
++#include <linux/regmap.h>
++#include <linux/kernel.h>
++#include <linux/media.h>
++#include <linux/module.h>
++#include <linux/ratelimit.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++#include <linux/videodev2.h>
++
++#include <media/media-entity.h>
++#include <media/v4l2-device.h>
++#include <media/v4l2-event.h>
++#include <media/v4l2-image-sizes.h>
++#include <media/v4l2-subdev.h>
++#include <media/v4l2-mediabus.h>
++#include "ar0231.h"
++
++#define DRIVER_NAME "AR0231"
++
++/*
++ * Video format codes
++ * Note: The below definitions are borrowed from
++ * "\include\dt-bindings\media\xilinx-vip.h".
++ * Should keep in sync
++ */
++#define XVIP_VF_YUV_422			0
++#define XVIP_VF_YUV_444			1
++#define XVIP_VF_RBG			2
++#define XVIP_VF_YUV_420			3
++#define XVIP_VF_YUVA_422		4
++#define XVIP_VF_YUVA_444		5
++#define XVIP_VF_RGBA			6
++#define XVIP_VF_YUVA_420		7
++#define XVIP_VF_YUVD_422		8
++#define XVIP_VF_YUVD_444		9
++#define XVIP_VF_RGBD			10
++#define XVIP_VF_YUVD_420		11
++#define XVIP_VF_MONO_SENSOR		12
++#define XVIP_VF_CUSTOM2			13
++#define XVIP_VF_CUSTOM3			14
++#define XVIP_VF_CUSTOM4			15
++#define XVIP_VF_VUY_422			16
++#define XVIP_VF_BGRX			17
++#define XVIP_VF_YUVX			18
++#define XVIP_VF_XBGR			19
++#define XVIP_VF_Y_GREY			20
++#define XVIP_VF_XRGB			21
++
++/* There's no standard V4L2_CID_GREEN_BALANCE defined in the
++ * linux kernel. Let's borrow V4L2_CID_CHROMA_GAIN on green
++ * balance adjustment
++ */
++#define V4L2_CID_GREEN_BALANCE	V4L2_CID_CHROMA_GAIN
++
++enum {
++	PAD_TYPE_SINK,
++	PAD_TYPE_SOURCE
++};
++
++static const struct regmap_config ar0231_regmap_config = {
++	.reg_bits = 16,
++	.val_bits = 16,
++	.cache_type = REGCACHE_NONE,
++};
++
++struct ar0231_video_format {
++	unsigned int vf_code;
++	unsigned int width;
++	const char *pattern;
++	unsigned int code;
++	unsigned int bpl_factor;
++	unsigned int bpp;
++	u32 fourcc;
++	u8 num_planes;
++	u8 buffers;
++	u8 hsub;
++	u8 vsub;
++	const char *description;
++};
++
++struct ar0231_resolution {
++	unsigned int width;
++	unsigned int height;
++};
++
++static const struct ar0231_resolution supported_source_resolutions[] = {
++	[0] = {
++		.width  = 1280,
++		.height = 720,
++	},
++	[1] = {
++		.width  = 1920,
++		.height = 1080,
++	},
++};
++
++static const struct ar0231_video_format supported_video_formats[] = {
++	{ XVIP_VF_MONO_SENSOR, 8, "rggb", MEDIA_BUS_FMT_SRGGB8_1X8,
++	  1, 8, V4L2_PIX_FMT_SGRBG8, 1, 1, 1, 1, "Bayer 8-bit RGGB" },
++	{ XVIP_VF_MONO_SENSOR, 8, "grbg", MEDIA_BUS_FMT_SGRBG8_1X8,
++	  1, 8, V4L2_PIX_FMT_SGRBG8, 1, 1, 1, 1, "Bayer 8-bit GRBG" },
++	{ XVIP_VF_MONO_SENSOR, 8, "gbrg", MEDIA_BUS_FMT_SGBRG8_1X8,
++	  1, 8, V4L2_PIX_FMT_SGBRG8, 1, 1, 1, 1, "Bayer 8-bit GBRG" },
++	{ XVIP_VF_MONO_SENSOR, 8, "bggr", MEDIA_BUS_FMT_SBGGR8_1X8,
++	  1, 8, V4L2_PIX_FMT_SBGGR8, 1, 1, 1, 1, "Bayer 8-bit BGGR" },
++};
++
++/* -----------------------------------------------------------------------
++ * Helper Functions
++ */
++static inline struct v4l2_subdev *ctrl_to_sd(struct v4l2_ctrl *ctrl)
++{
++	return &container_of(ctrl->handler, struct ar0231_device,
++					ctrls.handler)->sd;
++}
++
++static inline struct ar0231_device *to_ar0231(struct v4l2_subdev *sd)
++{
++	return container_of(sd, struct ar0231_device, sd);
++}
++
++/* -----------------------------------------------------------------------
++ * Register Configuration
++ */
++/* GROUPED_PARAMETER_HOLD_ */
++static u16 ar0231_group_param_hold[] = {0x02, 0x3022, 0x0001};
++/* GROUPED_PARAMETER_HOLD_ */
++static u16 ar0231_group_param_release[] = {0x02, 0x3022, 0x0000};
++/* COARSE_INTEGRATION_TIME_ */
++static u16 ar0231_coarse_integration[]	= {0x02, 0x3012, 0x0335};
++/* FINE_INTEGRATION_TIME_ */
++/*static u16 ar0231_fine_integration[] = {0x02, 0x3014, 0x06A4};*/
++/*
++ * ANALOG_GAIN
++ * -----------
++ * 0000: 1/8x
++ * 0001: 2/8x
++ * 0010: 2/7x
++ * 0011: 3/7x
++ * 0100: 3/6x
++ * 0101: 4/6x
++ * 0110: 4/5x
++ * 0111: 5/5x
++ * 1000: 5/4x
++ * 1001: 6/4x
++ * 1010: 6/3x
++ * 1011: 7/3x
++ * 1100: 7/2x
++ * 1101: 8/2x
++ * 1110: 8/1x
++ * -----------
++ */
++static u16 ar0231_analog_gain[] = {0x02, 0x3366, 0x7777};
++static u16 ar0231_digital_gain[] = {0x02, 0x3308, 0x200};
++static u16 ar0231_read_mode[] = {0x02, 0x3040, 0x0};
++static u16 ar0231_red_gain[] = {0x02, 0x305a, 0x80};
++static u16 ar0231_blue_gain[] = {0x02, 0x3058, 0x26b};
++
++static u16 ar0231_green_gain[] = {
++	0x02, 0x3056, 0x0091, // GREEN1_GAIN
++	0x02, 0x305C, 0x0091, // GREEN2_GAIN
++};
++
++static u16 ar0231_test_pattern_none[] = {
++	0x02, 0x3070, 0x0000, // Test Pattern = normal
++	0x02, 0x3072, 0x0000, // Red    = 0x000
++	0x02, 0x3074, 0x0000, // Green1 = 0x000
++	0x02, 0x3076, 0x0000, // Blue   = 0x000
++	0x02, 0x3078, 0x0000, // Green2 = 0x000
++	0x02, 0x307A, 0x0000, // ?
++	0xFF    // End marker
++};
++
++static u16 ar0231_test_pattern_solid_red[] = {
++	0x02, 0x3070, 0x0001, // Test Pattern = solid color
++	0x02, 0x3072, 0x0FFF, // Red    = 0xFFF
++	0x02, 0x3074, 0x0000, // Green1 = 0x000
++	0x02, 0x3076, 0x0000, // Blue   = 0x000
++	0x02, 0x3078, 0x0000, // Green2 = 0x000
++	0x02, 0x307A, 0x0000, // ?
++	0xFF    // End marker
++};
++
++static u16 ar0231_test_pattern_solid_green[] = {
++	0x02, 0x3070, 0x0001, // Test Pattern = solid color
++	0x02, 0x3072, 0x0000, // Red    = 0x000
++	0x02, 0x3074, 0x0FFF, // Green1 = 0xFFF
++	0x02, 0x3076, 0x0000, // Blue   = 0x000
++	0x02, 0x3078, 0x0FFF, // Green2 = 0xFFF
++	0x02, 0x307A, 0x0000, // ?
++	0xFF    // End marker
++};
++
++static u16 ar0231_test_pattern_solid_blue[] = {
++	0x02, 0x3070, 0x0001, // Test Pattern = solid color
++	0x02, 0x3072, 0x0000, // Red    = 0x000
++	0x02, 0x3074, 0x0000, // Green1 = 0x000
++	0x02, 0x3076, 0x0FFF, // Blue   = 0xFFF
++	0x02, 0x3078, 0x0000, // Green2 = 0x000
++	0x02, 0x307A, 0x0000, // ?
++	0xFF    // End marker
++};
++
++static u16 ar0231_test_pattern_cbars_full[] = {
++	0x02, 0x3070, 0x0002, // Test Pattern = solid color bars
++	0x02, 0x3072, 0x0000, // Red    = 0x000
++	0x02, 0x3074, 0x0000, // Green1 = 0x000
++	0x02, 0x3076, 0x0000, // Blue   = 0x000
++	0x02, 0x3078, 0x0000, // Green2 = 0x000
++	0x02, 0x307A, 0x0000, // ?
++	0xFF    // End marker
++};
++
++static u16 ar0231_test_pattern_cbars_f2g[] = {
++	0x02, 0x3070, 0x0003, // Test Pattern = fade to grey color bars
++	0x02, 0x3072, 0x0000, // Red    = 0x000
++	0x02, 0x3074, 0x0000, // Green1 = 0x000
++	0x02, 0x3076, 0x0000, // Blue   = 0x000
++	0x02, 0x3078, 0x0000, // Green2 = 0x000
++	0x02, 0x307A, 0x0000, // ?
++	0xFF    // End marker
++};
++
++static int ar0231_write_array_a(struct ar0231_device *ar0231,
++				unsigned int reg, int len, void *data)
++{
++	dev_dbg(ar0231->dev, "reg 0x%02x len %02d\n", reg, len);
++	return regmap_bulk_write(ar0231->regmap, reg, data, len);
++}
++
++static int ar0231_write_array_b(struct ar0231_device *ar0231, void *data)
++{
++	u16 *array = data;
++	int len, reg;
++
++	len = array[0] - 1;
++	reg = array[1];
++	dev_dbg(ar0231->dev, "reg 0x%02x len %02d\n", reg, len);
++	return regmap_bulk_write(ar0231->regmap, reg, &array[2], len);
++}
++
++static int ar0231_read(struct ar0231_device *ar0231,
++		       unsigned int reg, unsigned int *val)
++{
++	int ret;
++
++	ret = regmap_read(ar0231->regmap, reg, val);
++	dev_dbg(ar0231->dev, "i2c reg 0x%04x, val 0x%04x\n", reg, *val);
++	return ret;
++}
++
++static int ar0231_write_table_u16(struct ar0231_device *ar0231, u16 *data)
++{
++	u16 *array = data;
++	unsigned int reg, len;
++	int ret = 0;
++
++	while (1) {
++		if (array[0] == 0xff)
++			break;
++		if (array[0] != 0 && array[0] < 2) {
++			dev_err(ar0231->dev, "Invalid reg array length\n");
++			ret = -1;
++			break;
++		}
++		if (array[0] == 0x00) {
++			msleep(array[1]);
++			dev_dbg(ar0231->dev, "delay %dms\n", array[1]);
++			array = array + 2;
++		} else {
++			len = array[0] - 1;
++			reg = array[1];
++			ret = ar0231_write_array_a(ar0231, reg,
++						   len, (void *)&array[2]);
++			if (ret < 0) {
++				dev_err(ar0231->dev,
++					"Write reg array failed\n");
++				break;
++			}
++			array = array + (array[0] + 1);
++			dev_dbg(ar0231->dev, "array %p\n", array);
++		}
++	}
++	return ret;
++}
++
++static int ar0231_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
++{
++	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
++	struct ar0231_device *ar0231 = to_ar0231(sd);
++	int ret = 0;
++
++	dev_dbg(ar0231->dev, "s_ctrl: %s, value: %d.\n",
++		ctrl->name, ctrl->val);
++
++	switch (ctrl->id) {
++	case V4L2_CID_EXPOSURE:
++		dev_dbg(ar0231->dev, "get V4L2_CID_EXPOSURE\n");
++		/* TODO: Add code */
++		break;
++	case V4L2_CID_ANALOGUE_GAIN:
++		dev_dbg(ar0231->dev, "get V4L2_CID_ANALOGUE_GAIN\n");
++		/* TODO: Add code */
++		break;
++	case V4L2_CID_GAIN:
++		dev_dbg(ar0231->dev, "get V4L2_CID_GAIN\n");
++		/* TODO: Add code */
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static int ar0231_s_ctrl(struct v4l2_ctrl *ctrl)
++{
++	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
++	struct ar0231_device *ar0231 = to_ar0231(sd);
++	unsigned int val;
++	int ret = 0;
++
++	dev_dbg(ar0231->dev, "s_ctrl: %s, value: %d.\n",
++		ctrl->name, ctrl->val);
++	ret = ar0231_write_array_b(ar0231,
++				   ar0231_group_param_hold);
++	if (ret < 0)
++		goto exit;
++	switch (ctrl->id) {
++	case V4L2_CID_EXPOSURE:
++		dev_dbg(ar0231->dev, "set V4L2_CID_EXPOSURE\n");
++		ar0231_coarse_integration[2] = ctrl->val;
++		ret = ar0231_write_array_b(ar0231,
++					   ar0231_coarse_integration);
++		break;
++	case V4L2_CID_ANALOGUE_GAIN:
++		dev_dbg(ar0231->dev, "set V4L2_CID_ANALOGUE_GAIN\n");
++		val = (ctrl->val & 0xf000) | (ctrl->val & 0x0f00) |
++			(ctrl->val & 0x00f0) | (ctrl->val & 0x000f);
++		ar0231_analog_gain[2] = val;
++		ret = ar0231_write_array_b(ar0231, ar0231_analog_gain);
++		break;
++	case V4L2_CID_GAIN:
++		dev_dbg(ar0231->dev, "set V4L2_CID_GAIN\n");
++		val = ctrl->val;
++		ar0231_digital_gain[2] = val;
++		ret = ar0231_write_array_b(ar0231, ar0231_digital_gain);
++		break;
++	case V4L2_CID_HFLIP:
++		dev_dbg(ar0231->dev, "set V4L2_CID_HFLIP\n");
++		ret = ar0231_read(ar0231, ar0231_read_mode[1], &val);
++		if (ret < 0)
++			break;
++		if (ctrl->val)
++			val |= 0x4000;
++		else
++			val &= ~0x4000;
++		ar0231_read_mode[2] = val;
++		ret = ar0231_write_array_b(ar0231, ar0231_read_mode);
++		break;
++	case V4L2_CID_VFLIP:
++		dev_dbg(ar0231->dev, "set V4L2_CID_VFLIP\n");
++		ret = ar0231_read(ar0231, ar0231_read_mode[1], &val);
++		if (ret < 0)
++			break;
++		if (ctrl->val)
++			val |= 0x8000;
++		else
++			val &= ~0x8000;
++		ar0231_read_mode[2] = val;
++		ret = ar0231_write_array_b(ar0231, ar0231_read_mode);
++		break;
++	case V4L2_CID_RED_BALANCE:
++		dev_dbg(ar0231->dev, "set V4L2_CID_RED_BALANCE\n");
++		val = ctrl->val;
++		ar0231_red_gain[2] = val;
++		ret = ar0231_write_array_b(ar0231, ar0231_red_gain);
++		break;
++	case V4L2_CID_BLUE_BALANCE:
++		dev_dbg(ar0231->dev, "set V4L2_CID_BLUE_BALANCE\n");
++		val = ctrl->val;
++		ar0231_blue_gain[2] = val;
++		ret = ar0231_write_array_b(ar0231, ar0231_blue_gain);
++		break;
++	case V4L2_CID_GREEN_BALANCE:
++		dev_dbg(ar0231->dev, "set V4L2_CID_GREEN_BALANCE\n");
++		val = ctrl->val;
++		ar0231_green_gain[2] = val;
++		ar0231_green_gain[5] = val;
++		ret = ar0231_write_table_u16(ar0231, ar0231_green_gain);
++		break;
++	case V4L2_CID_TEST_PATTERN:
++		switch (ctrl->val) {
++		case 0:
++			ret = ar0231_write_table_u16(ar0231,
++						     ar0231_test_pattern_none);
++			break;
++		case 1:
++			ret =
++			ar0231_write_table_u16(ar0231,
++					       ar0231_test_pattern_solid_red);
++			break;
++		case 2:
++			ret =
++			ar0231_write_table_u16(ar0231,
++					       ar0231_test_pattern_solid_green);
++			break;
++		case 3:
++			ret =
++			ar0231_write_table_u16(ar0231,
++					       ar0231_test_pattern_solid_blue);
++			break;
++		case 4:
++			ret =
++			ar0231_write_table_u16(ar0231,
++					       ar0231_test_pattern_cbars_full);
++			break;
++		case 5:
++			ret =
++			ar0231_write_table_u16(ar0231,
++					       ar0231_test_pattern_cbars_f2g);
++			break;
++		default:
++			ret = -EINVAL;
++			break;
++		}
++		break;
++	default:
++		ar0231_write_array_b(ar0231,
++				     ar0231_group_param_release);
++		return -EINVAL;
++	}
++
++	ret = ar0231_write_array_b(ar0231,
++				   ar0231_group_param_release);
++exit:
++	return ret;
++}
++
++static struct v4l2_mbus_framefmt *
++ar0231_get_pad_format(
++		      struct ar0231_device *ar0231,
++		      struct v4l2_subdev_pad_config *cfg,
++		      unsigned int pad, u32 which)
++{
++	switch (which) {
++	case V4L2_SUBDEV_FORMAT_TRY:
++		return v4l2_subdev_get_try_format(&ar0231->sd,
++						  cfg, pad);
++	case V4L2_SUBDEV_FORMAT_ACTIVE:
++		return &ar0231->formats[pad];
++	default:
++		return NULL;
++	}
++}
++
++static int ar0231_get_fmt(struct v4l2_subdev *sd,
++			  struct v4l2_subdev_pad_config *cfg,
++			  struct v4l2_subdev_format *fmt)
++{
++	struct ar0231_device *ar0231 = to_ar0231(sd);
++	int pad = fmt->pad;
++
++	fmt->format = *ar0231_get_pad_format(ar0231, cfg, pad, fmt->which);
++	return 0;
++}
++
++static void ar0231_res_roundup(u32 *width, u32 *height, int pad_type)
++{
++	int i;
++	int size;
++	const struct ar0231_resolution *table;
++
++	table = supported_source_resolutions;
++	size = ARRAY_SIZE(supported_source_resolutions);
++	/* TODO: Search for best match instead of rounding */
++	for (i = 0; i < size; i++) {
++		if ((table[i].width >= *width) &&
++		    (table[i].height >= *height)) {
++			*width = table[i].width;
++			*height = table[i].height;
++			return;
++		}
++	}
++
++	/* Use default in case of no match */
++	*width = table[0].width;
++	*height = table[0].height;
++}
++
++static int ar0231_try_mbus_fmt(struct v4l2_subdev *sd,
++			       struct v4l2_mbus_framefmt *fmt,
++			       int pad_type)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(supported_video_formats); i++) {
++		if (supported_video_formats[i].code == fmt->code)
++			break;
++	}
++
++	if (i >= ARRAY_SIZE(supported_video_formats)) {
++		/* default to first format in case no match */
++		i = 0;
++		fmt->code = supported_video_formats[0].code;
++	}
++
++	/* Find suitable supported resolution */
++	ar0231_res_roundup(&fmt->width, &fmt->height, pad_type);
++
++	fmt->field = V4L2_FIELD_NONE;
++	fmt->colorspace = V4L2_COLORSPACE_SRGB;
++
++	return 0;
++}
++
++static int ar0231_set_fmt(struct v4l2_subdev *sd,
++			  struct v4l2_subdev_pad_config *cfg,
++			  struct v4l2_subdev_format *fmt)
++{
++	struct ar0231_device *ar0231 = to_ar0231(sd);
++
++	struct v4l2_mbus_framefmt *fmt_ptr;
++	struct v4l2_mbus_framefmt resp_fmt;
++
++	fmt_ptr = ar0231_get_pad_format(ar0231, cfg, fmt->pad, fmt->which);
++	resp_fmt = fmt->format;
++
++	dev_dbg(ar0231->dev, "Configure source pad %d\n", fmt->pad);
++	ar0231_try_mbus_fmt(sd, &resp_fmt, PAD_TYPE_SOURCE);
++
++	dev_dbg(ar0231->dev, "width %d height %d\n",
++		resp_fmt.width, resp_fmt.height);
++
++	*fmt_ptr = resp_fmt;
++	fmt->format = resp_fmt;
++
++	return 0;
++}
++
++static int ar0231_s_stream(struct v4l2_subdev *sd, int on)
++{
++	/* TODO: Add necessary code */
++	return 0;
++}
++
++static int ar0231_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
++{
++	/* TODO: Add necessary code */
++	return 0;
++}
++
++static int ar0231_close(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
++{
++	/* TODO: Add necessary code */
++	return 0;
++}
++
++/* ----------------------------------------------------------------------------
++ * Media Operations
++ */
++
++static const struct media_entity_operations ar0231_media_ops = {
++	.link_validate = v4l2_subdev_link_validate
++};
++
++static const struct v4l2_subdev_pad_ops ar0231_pad_ops = {
++	.get_fmt = ar0231_get_fmt,
++	.set_fmt = ar0231_set_fmt,
++};
++
++static const struct v4l2_subdev_video_ops ar0231_video_ops = {
++	.s_stream = ar0231_s_stream,
++};
++
++static const struct v4l2_subdev_internal_ops ar0231_sd_internal_ops = {
++	.open = ar0231_open,
++	.close = ar0231_close
++};
++
++static const struct v4l2_subdev_core_ops ar0231_core_ops = {
++};
++
++static const struct v4l2_subdev_ops ar0231_subdev_ops = {
++	.core = &ar0231_core_ops,
++	.pad = &ar0231_pad_ops,
++	.video = &ar0231_video_ops,
++};
++
++static const struct v4l2_ctrl_ops ar0231_ctrl_ops = {
++	.g_volatile_ctrl = ar0231_g_volatile_ctrl,
++	.s_ctrl	= ar0231_s_ctrl,
++};
++
++static const char * const test_pattern_menu[] = {
++	"Disabled",
++	"Solid Red",
++	"Solid Green",
++	"Solid Blue",
++	"Color Bars (full)",
++	"Color Bars (f2grey)",
++};
++
++const s64 test_pattern_menu_index[] = {0, 1, 2, 3, 4, 5};
++
++static struct v4l2_ctrl_config ar0231_sd_ctrls[] = {
++	{
++		.ops	= &ar0231_ctrl_ops,
++		.id	= V4L2_CID_EXPOSURE,
++		.name	= "AR0231 Exposure",
++		.type	= V4L2_CTRL_TYPE_INTEGER,
++		.min	= 0x10,
++		.max	= 0x53b,
++		.step	= 1,
++		.def	= 0x10,
++	}, {
++		.ops	= &ar0231_ctrl_ops,
++		.id	= V4L2_CID_ANALOGUE_GAIN,
++		.name	= "AR0231 Analog Gain",
++		.type	= V4L2_CTRL_TYPE_INTEGER,
++		.min	= 0,
++		.max	= 0xe,
++		.step	= 1,
++		.def	= 7,
++	}, {
++		.ops	= &ar0231_ctrl_ops,
++		.id	= V4L2_CID_GAIN,
++		.name	= "AR0231 Digital Gain",
++		.type	= V4L2_CTRL_TYPE_INTEGER,
++		.min	= 0,
++		.max	= 0x7ff,
++		.step	= 1,
++		.def	= 0x200,
++	}, {
++		.ops	= &ar0231_ctrl_ops,
++		.id	= V4L2_CID_RED_BALANCE,
++		.name	= "AR0231 Red Balance",
++		.type	= V4L2_CTRL_TYPE_INTEGER,
++		.min	= 0,
++		.max	= 0x7ff,
++		.step	= 1,
++		.def	= 0x80,
++	}, {
++		.ops	= &ar0231_ctrl_ops,
++		.id	= V4L2_CID_BLUE_BALANCE,
++		.name	= "AR0231 Blue Balance",
++		.type	= V4L2_CTRL_TYPE_INTEGER,
++		.min	= 0,
++		.max	= 0x7ff,
++		.step	= 1,
++		.def	= 0x26b,
++	}, {
++		.ops	= &ar0231_ctrl_ops,
++		.id	= V4L2_CID_GREEN_BALANCE,
++		.name	= "AR0231 Green Balance",
++		.type	= V4L2_CTRL_TYPE_INTEGER,
++		.min	= 0,
++		.max	= 0x7ff,
++		.step	= 1,
++		.def	= 0x91,
++	}, {
++		.ops	= &ar0231_ctrl_ops,
++		.id	= V4L2_CID_HFLIP,
++		.name	= "AR0231 Horizontal Flip",
++		.type	= V4L2_CTRL_TYPE_BOOLEAN,
++		.min	= 0,
++		.max	= 1,
++		.step	= 1,
++		.def	= 0,
++	}, {
++		.ops	= &ar0231_ctrl_ops,
++		.id	= V4L2_CID_VFLIP,
++		.name	= "AR0231 Vertical Flip",
++		.type	= V4L2_CTRL_TYPE_BOOLEAN,
++		.min	= 0,
++		.max	= 1,
++		.step	= 1,
++		.def	= 0,
++	}, {
++		.ops = &ar0231_ctrl_ops,
++		.id = V4L2_CID_TEST_PATTERN,
++		.name = "AR0231 Test Pattern",
++		.type = V4L2_CTRL_TYPE_MENU,
++		.min = 0,
++		.max = ARRAY_SIZE(test_pattern_menu) - 1,
++		.menu_skip_mask = 0,
++		.def = 0,
++		.qmenu = test_pattern_menu,
++	},
++};
++
++static const struct ar0231_framesize ar0231_framesizes[] = {
++	{
++		.width		= 1920,
++		.height		= 1080,
++	}
++};
++
++static int ar0231_probe(struct i2c_client *client,
++			const struct i2c_device_id *id)
++{
++	struct v4l2_subdev *sd;
++	struct ar0231_device *ar0231;
++	int num_ctrls;
++	int i;
++	int ret;
++
++	dev_info(&client->dev, "Enter\n");
++
++	ar0231 = devm_kzalloc(&client->dev, sizeof(*ar0231), GFP_KERNEL);
++	if (!ar0231)
++		return -ENOMEM;
++
++	ar0231->driver_data = id->driver_data;
++	dev_info(&client->dev, "id %ld name %s\n", id->driver_data, id->name);
++	ar0231->dev = &client->dev;
++	ar0231->client = client;
++
++	/* Initialize regmap */
++	ar0231->regmap = devm_regmap_init_i2c(client, &ar0231_regmap_config);
++	if (IS_ERR(ar0231->regmap)) {
++		dev_err(&client->dev, "regmap init failed: %ld\n",
++			PTR_ERR(ar0231->regmap));
++		return -ENODEV;
++	}
++
++	sd = &ar0231->sd;
++	v4l2_i2c_subdev_init(sd, client, &ar0231_subdev_ops);
++	strlcpy(sd->name, DRIVER_NAME, sizeof(sd->name));
++	strlcat(sd->name, ".", sizeof(sd->name));
++	strlcat(sd->name, dev_name(ar0231->dev), sizeof(sd->name));
++	dev_dbg(ar0231->dev, "name %s\n", sd->name);
++	if (ar0231->driver_data != 0)
++		goto exit;
++
++	sd->internal_ops = &ar0231_sd_internal_ops;
++	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
++
++	ar0231->pad.flags = MEDIA_PAD_FL_SOURCE;
++	sd->entity.function = MEDIA_ENT_F_CAM_SENSOR;
++	sd->entity.ops = &ar0231_media_ops;
++
++	ret = media_entity_pads_init(&sd->entity, 1, &ar0231->pad);
++	if (ret < 0) {
++		dev_err(&client->dev, "media_entity_init failed %d\n", ret);
++		return ret;
++	}
++
++	num_ctrls = ARRAY_SIZE(ar0231_sd_ctrls);
++	dev_dbg(ar0231->dev, "# of ctrls = %d\n", num_ctrls);
++
++	v4l2_ctrl_handler_init(&ar0231->ctrls.handler, num_ctrls);
++
++	for (i = 0; i < num_ctrls; i++) {
++		struct v4l2_ctrl *ctrl;
++
++		dev_dbg(ar0231->dev, "%d ctrl = 0x%x\n", i,
++			ar0231_sd_ctrls[i].id);
++
++		ctrl = v4l2_ctrl_new_custom(&ar0231->ctrls.handler,
++					    &ar0231_sd_ctrls[i], NULL);
++		if (!ctrl) {
++			dev_err(ar0231->dev, "Failed for %s ctrl\n",
++				ar0231_sd_ctrls[i].name);
++			goto err_ctrls;
++		}
++	}
++
++	dev_dbg(ar0231->dev, "# v4l2 ctrls registered = %d\n", i - 1);
++
++	if (ar0231->ctrls.handler.error) {
++		dev_err(ar0231->dev, "failed to add controls\n");
++		ret = ar0231->ctrls.handler.error;
++		goto err_ctrls;
++	}
++
++	ar0231->sd.ctrl_handler = &ar0231->ctrls.handler;
++
++	ar0231->formats[0].width = ar0231_framesizes[0].width;
++	ar0231->formats[0].height = ar0231_framesizes[0].height;
++	ar0231->formats[0].field = V4L2_FIELD_NONE;
++	ar0231->formats[0].code = MEDIA_BUS_FMT_UYVY8_1X16;
++	ar0231->formats[0].colorspace = V4L2_COLORSPACE_SRGB;
++
++	ret = v4l2_async_register_subdev(sd);
++	if (ret < 0) {
++		dev_err(&client->dev, "v4l2_async_register_subdev failed %d\n",
++			ret);
++		return ret;
++	}
++
++exit:
++	dev_info(&client->dev, "AR0231 probe Success Done\n");
++	return 0;
++
++err_ctrls:
++	v4l2_ctrl_handler_free(sd->ctrl_handler);
++	media_entity_cleanup(&sd->entity);
++	return ret;
++}
++
++static int ar0231_remove(struct i2c_client *client)
++{
++	struct v4l2_subdev *sd = i2c_get_clientdata(client);
++	struct ar0231_device *ar0231 = to_ar0231(sd);
++
++	if (ar0231->driver_data == 0) {
++		v4l2_device_unregister_subdev(sd);
++		v4l2_ctrl_handler_free(sd->ctrl_handler);
++		media_entity_cleanup(&sd->entity);
++	}
++	return 0;
++}
++
++static const struct of_device_id ar0231_of_id_table[] = {
++	{ .compatible = "ar0231" },
++	{ .compatible = "ar0231-i2c" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, ar0231_of_id_table);
++
++static const struct i2c_device_id ar0231_id[] = {
++	{ "ar0231", 0 },
++	{ "ar0231-i2c", 1 },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(i2c, ar0231_id);
++
++static struct i2c_driver ar0231_i2c_driver = {
++	.driver = {
++		.name	= DRIVER_NAME,
++		.of_match_table	= ar0231_of_id_table,
++	},
++	.probe		= ar0231_probe,
++	.remove		= ar0231_remove,
++	.id_table	= ar0231_id,
++};
++
++module_i2c_driver(ar0231_i2c_driver);
++
++MODULE_AUTHOR("Watson Chow <watson.chow@avnet.com>");
++MODULE_DESCRIPTION("Driver for AR0231");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/ar0231.h b/drivers/media/i2c/avt_multi_sensor_fmc/ar0231.h
+new file mode 100644
+index 0000000..051101e
+--- /dev/null
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/ar0231.h
+@@ -0,0 +1,30 @@
++#ifndef __AR0231_H
++#define __AR0231_H
++
++#include <media/v4l2-ctrls.h>
++
++struct ar0231_ctrls {
++	struct v4l2_ctrl_handler handler;
++};
++
++struct ar0231_framesize {
++	u16 width;
++	u16 height;
++	u16 max_exp_lines;
++	const u8 *regs;
++};
++
++struct ar0231_device {
++	struct device *dev;
++	kernel_ulong_t driver_data;
++	struct v4l2_subdev sd;
++	struct media_pad pad;
++	enum v4l2_mbus_type bus_type;
++	struct i2c_client *client;
++	struct ar0231_ctrls ctrls;
++	const struct ar0231_framesize *frame_size;
++	struct v4l2_mbus_framefmt formats[1];
++	struct regmap *regmap;
++};
++
++#endif
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.c b/drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.c
+new file mode 100644
+index 0000000..2779d86
+--- /dev/null
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.c
+@@ -0,0 +1,1879 @@
++/*
++ * max9286_96705_serdes.c - serdes driver for MAX96705 and MAX9286
++ *
++ * Copyright (C) 2018, Avnet, Inc.
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * This driver is based on xilinx-axis-switch.c
++ */
++#define DEBUG
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/of.h>
++#include <linux/i2c.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/of_gpio.h>
++#include <linux/regulator/consumer.h>
++#include <media/media-device.h>
++#include <media/v4l2-async.h>
++#include <media/v4l2-subdev.h>
++#include "max9286_serdes.h"
++#include "max96705_serdes.h"
++#include "ar0231.h"
++
++#define DRIVER_NAME "MAX9286-SERDES"
++
++/*
++ * Video format codes
++ * Note: The below definitions are borrowed from
++ * "\include\dt-bindings\media\xilinx-vip.h".
++ * Should keep in sync
++ */
++#define XVIP_VF_YUV_422			0
++#define XVIP_VF_YUV_444			1
++#define XVIP_VF_RBG			2
++#define XVIP_VF_YUV_420			3
++#define XVIP_VF_YUVA_422		4
++#define XVIP_VF_YUVA_444		5
++#define XVIP_VF_RGBA			6
++#define XVIP_VF_YUVA_420		7
++#define XVIP_VF_YUVD_422		8
++#define XVIP_VF_YUVD_444		9
++#define XVIP_VF_RGBD			10
++#define XVIP_VF_YUVD_420		11
++#define XVIP_VF_MONO_SENSOR		12
++#define XVIP_VF_CUSTOM2			13
++#define XVIP_VF_CUSTOM3			14
++#define XVIP_VF_CUSTOM4			15
++#define XVIP_VF_VUY_422			16
++#define XVIP_VF_BGRX			17
++#define XVIP_VF_YUVX			18
++#define XVIP_VF_XBGR			19
++#define XVIP_VF_Y_GREY			20
++#define XVIP_VF_XRGB			21
++
++enum {
++	PAD_TYPE_SINK,
++	PAD_TYPE_SOURCE
++};
++
++enum {
++	MONO_CAM_0,
++	MONO_CAM_1,
++	MONO_CAM_2,
++	MONO_CAM_3,
++	DUAL_CAM_01,
++	DUAL_CAM_23,
++	QUAD_CAM_0123
++};
++
++struct max9286_serdes_video_format {
++	unsigned int vf_code;
++	unsigned int width;
++	const char *pattern;
++	unsigned int code;
++	unsigned int bpl_factor;
++	unsigned int bpp;
++	u32 fourcc;
++	u8 num_planes;
++	u8 buffers;
++	u8 hsub;
++	u8 vsub;
++	const char *description;
++};
++
++struct max9286_serdes_device {
++	struct device *dev;
++	struct i2c_client *client;
++	struct regmap *regmap;
++	struct v4l2_subdev subdev;
++	struct media_pad *pads;
++	struct v4l2_mbus_framefmt *formats;
++	struct max9286_serdes_video_format *vip_formats;
++	u32 nsinks;
++	u32 nsources;
++	struct gpio_desc *enable_gpio;
++	struct regulator *sensor_supply[MAX_SERDES_SINKS];
++
++	/* Serializer adatper */
++	struct i2c_client *serializer_i2c_client[SER_DEV_NUM];
++	struct max96705_serdes_device *serializer_dev[SER_DEV_NUM];
++
++	/* Sensor adapter */
++	struct i2c_client *sensor_i2c_client[SEN_DEV_NUM];
++	struct ar0231_device *sensor_dev[SEN_DEV_NUM];
++
++	/* GMSL variables */
++	int pixel_freq;
++	int image_h;
++	int image_w;
++	int mipi_lanes;
++	int cam_num;
++	int cam_config;
++	int gmsl_link_status[MAX_GMSL_LINK];
++	int port_enable[MAX_GMSL_LINK];
++};
++
++static const struct regmap_config max9286_serdes_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.cache_type = REGCACHE_NONE,
++};
++
++struct max9286_serdes_resolution {
++	unsigned int width;
++	unsigned int height;
++};
++
++static const struct max9286_serdes_resolution supported_sink_resolutions[] = {
++	[0] = {
++		.width  = 1280,
++		.height = 720,
++	},
++	[1] = {
++		.width  = 1920,
++		.height = 1080,
++	},
++};
++
++static const struct
++max9286_serdes_resolution supported_source_resolutions[] = {
++	[0] = {
++		.width  = 1280,
++		.height = 2880,
++	},
++	[1] = {
++		.width  = 1920,
++		.height = 4320,
++	},
++};
++
++static const struct max9286_serdes_video_format supported_video_formats[] = {
++	{ XVIP_VF_MONO_SENSOR, 8, "rggb", MEDIA_BUS_FMT_SRGGB8_1X8,
++	  1, 8, V4L2_PIX_FMT_SGRBG8, 1, 1, 1, 1, "Bayer 8-bit RGGB" },
++	{ XVIP_VF_MONO_SENSOR, 8, "grbg", MEDIA_BUS_FMT_SGRBG8_1X8,
++	  1, 8, V4L2_PIX_FMT_SGRBG8, 1, 1, 1, 1, "Bayer 8-bit GRBG" },
++	{ XVIP_VF_MONO_SENSOR, 8, "gbrg", MEDIA_BUS_FMT_SGBRG8_1X8,
++	  1, 8, V4L2_PIX_FMT_SGBRG8, 1, 1, 1, 1, "Bayer 8-bit GBRG" },
++	{ XVIP_VF_MONO_SENSOR, 8, "bggr", MEDIA_BUS_FMT_SBGGR8_1X8,
++	  1, 8, V4L2_PIX_FMT_SBGGR8, 1, 1, 1, 1, "Bayer 8-bit BGGR" },
++};
++
++/* -----------------------------------------------------------------------
++ * Helper Functions
++ */
++static inline struct
++max9286_serdes_device *to_serdes(struct v4l2_subdev *subdev)
++{
++	return container_of(subdev, struct max9286_serdes_device, subdev);
++}
++
++static inline struct ar0231_device *to_ar0231(struct v4l2_subdev *sd)
++{
++	return container_of(sd, struct ar0231_device, sd);
++}
++
++/* -----------------------------------------------------------------------
++ * GPIO Functions
++ */
++
++static void max9286_pwdn_assert(struct max9286_serdes_device *serdes)
++{
++	gpiod_set_value(serdes->enable_gpio, 0);
++}
++
++static void max9286_pwdn_deassert(struct max9286_serdes_device *serdes)
++{
++	gpiod_set_value(serdes->enable_gpio, 1);
++}
++
++/* -----------------------------------------------------------------------
++ * Register Configuration
++ */
++static struct regmap *
++max9286_serdes_get_i2c_handle(struct max9286_serdes_device *serdes, int target)
++{
++	struct regmap *regmap = NULL;
++
++	switch (target) {
++	case SER_I2C_DEF:
++		regmap = serdes->serializer_dev[SER_DEV_DEF]->regmap;
++		break;
++	case SER_I2C_BRD:
++		regmap = serdes->serializer_dev[SER_DEV_BRD]->regmap;
++		break;
++	case SER_I2C_LK0:
++		regmap = serdes->serializer_dev[SER_DEV_LK0]->regmap;
++		break;
++	case SER_I2C_LK1:
++		regmap = serdes->serializer_dev[SER_DEV_LK1]->regmap;
++		break;
++	case SER_I2C_LK2:
++		regmap = serdes->serializer_dev[SER_DEV_LK2]->regmap;
++		break;
++	case SER_I2C_LK3:
++		regmap = serdes->serializer_dev[SER_DEV_LK3]->regmap;
++		break;
++	case DSR_I2C_DEF:
++		regmap = serdes->regmap;
++		break;
++	case CAM_I2C_DEF:
++	case CAM_I2C_BRD:
++		regmap = serdes->sensor_dev[SEN_DEV_BRD]->regmap;
++		break;
++	case CAM_I2C_LK0:
++		regmap = serdes->sensor_dev[SEN_DEV_LK0]->regmap;
++		break;
++	case CAM_I2C_LK1:
++		regmap = serdes->sensor_dev[SEN_DEV_LK1]->regmap;
++		break;
++	case CAM_I2C_LK2:
++		regmap = serdes->sensor_dev[SEN_DEV_LK2]->regmap;
++		break;
++	case CAM_I2C_LK3:
++		regmap = serdes->sensor_dev[SEN_DEV_LK3]->regmap;
++		break;
++	default:
++		dev_err(serdes->dev,
++			"Unsupported i2c interface %d\n", target);
++		break;
++	}
++
++	return regmap;
++}
++
++static int
++max9286_serdes_write_array(struct max9286_serdes_device *serdes,
++			   unsigned int reg, int len, void *data, int target)
++{
++	struct regmap *regmap;
++
++	regmap = max9286_serdes_get_i2c_handle(serdes, target);
++	if (!regmap) {
++		dev_err(serdes->dev, "Get regmap failed\n");
++		return -1;
++	}
++
++	//dev_dbg(serdes->dev, "i2c interface %d reg 0x%02x len %02d\n",
++	//	target, reg, len);
++	return regmap_bulk_write(regmap, reg, data, len);
++}
++
++static int max9286_serdes_write(struct max9286_serdes_device *serdes,
++				unsigned int reg, unsigned int val, int target)
++{
++	struct regmap *regmap;
++
++	regmap = max9286_serdes_get_i2c_handle(serdes, target);
++	if (!regmap) {
++		dev_err(serdes->dev, "Get regmap failed\n");
++		return -1;
++	}
++
++	//dev_dbg(serdes->dev, "i2c interface %d reg 0x%02x val 0x%02x\n",
++	//	target, reg, val);
++	return regmap_write(regmap, reg, val);
++}
++
++static int
++max9286_serdes_read_array(struct max9286_serdes_device *serdes,
++			  unsigned int reg, int len, void *data, int target)
++{
++	struct regmap *regmap;
++
++	regmap = max9286_serdes_get_i2c_handle(serdes, target);
++	if (!regmap) {
++		dev_err(serdes->dev, "Get regmap failed\n");
++		return -1;
++	}
++
++	//dev_dbg(serdes->dev, "i2c interface %d reg 0x%02x len %02d\n",
++	//	target, reg, len);
++	return regmap_bulk_read(regmap, reg, data, len);
++}
++
++static int
++max9286_serdes_read(struct max9286_serdes_device *serdes,
++		    unsigned int reg, unsigned int *val, int target)
++{
++	struct regmap *regmap;
++
++	regmap = max9286_serdes_get_i2c_handle(serdes, target);
++	if (!regmap) {
++		dev_err(serdes->dev, "Get regmap failed\n");
++		return -1;
++	}
++
++	//dev_dbg(serdes->dev, "i2c interface %d reg 0x%02x\n", target, reg);
++	return regmap_read(regmap, reg, val);
++}
++
++static int max9286_serdes_write_table_u8(struct max9286_serdes_device *serdes,
++					 u8 *data)
++{
++	u8 *array = data;
++	unsigned int reg, len;
++	int target;
++	int ret = 0;
++
++	while (1) {
++		if (array[0] == 0xff)
++			break;
++		if (array[0] != 0 && array[0] < 3) {
++			dev_err(serdes->dev, "Invalid reg array length\n");
++			ret = -1;
++			break;
++		}
++		if (array[0] == 0x00) {
++			msleep(array[1]);
++			//dev_dbg(serdes->dev, "delay %dms\n", array[1]);
++			array = array + 2;
++		} else {
++			len = array[0] - 2;
++			target = array[1];
++			reg = array[2];
++			ret =
++			max9286_serdes_write_array(serdes, reg, len,
++						   (void *)&array[3], target);
++			if (ret < 0) {
++				dev_err(serdes->dev,
++					"Write reg array failed\n");
++				break;
++			}
++			array = array + (array[0] + 1);
++			//dev_dbg(serdes->dev, "array %p\n", array);
++		}
++	}
++	return ret;
++}
++
++static int max9286_serdes_write_table_u16(struct max9286_serdes_device *serdes,
++					  u16 *data)
++{
++	u16 *array = data;
++	unsigned int reg, len;
++	int target;
++	int ret = 0;
++
++	while (1) {
++		if (array[0] == 0xff)
++			break;
++		if (array[0] != 0 && array[0] < 3) {
++			dev_err(serdes->dev, "Invalid reg array length\n");
++			ret = -1;
++			break;
++		}
++		if (array[0] == 0x00) {
++			msleep(array[1]);
++			//dev_dbg(serdes->dev, "delay %dms\n", array[1]);
++			array = array + 2;
++		} else {
++			len = array[0] - 2;
++			target = array[1];
++			reg = array[2];
++			ret =
++			max9286_serdes_write_array(serdes, reg, len,
++						   (void *)&array[3], target);
++			if (ret < 0) {
++				dev_err(serdes->dev,
++					"Write reg array failed\n");
++				break;
++			}
++			array = array + (array[0] + 1);
++			//dev_dbg(serdes->dev, "array %p\n", array);
++		}
++	}
++
++	return ret;
++}
++
++/*
++ * Init PART1 - Reverse Channel Setup
++ */
++static int
++max9286_serdes_reverse_chan_setup(struct max9286_serdes_device *serdes)
++{
++	dev_dbg(serdes->dev, "*** %s ***\n", __func__);
++	return max9286_serdes_write_table_u8(serdes, reverse_chan_setup);
++}
++
++/*
++ * Init PART2 - MAX9286 Initial Setup
++ */
++static int max9286_serdes_initial_setup(struct max9286_serdes_device *serdes)
++{
++	int ret = 0;
++
++	dev_dbg(serdes->dev, "*** %s ***\n", __func__);
++	dev_dbg(serdes->dev, "Config mipi lane %d\n", serdes->mipi_lanes);
++	switch (serdes->mipi_lanes) {
++	case 1:
++		ret =
++		max9286_serdes_write_table_u8(serdes,
++					      max9286_initial_setup_p1_1lane);
++		break;
++	case 2:
++		ret =
++		max9286_serdes_write_table_u8(serdes,
++					      max9286_initial_setup_p1_2lane);
++		break;
++	case 3:
++		ret =
++		max9286_serdes_write_table_u8(serdes,
++					      max9286_initial_setup_p1_3lane);
++		break;
++	case 4:
++		ret =
++		max9286_serdes_write_table_u8(serdes,
++					      max9286_initial_setup_p1_4lane);
++		break;
++	default:
++		dev_err(serdes->dev, "Unsupporte3d mipi lane %d\n",
++			serdes->mipi_lanes);
++		break;
++	}
++
++	if (ret < 0)
++		return ret;
++
++	//return max9286_serdes_write_table_u8(serdes,
++	//				     max9286_initial_setup_p2);
++
++	ret =  max9286_serdes_write_table_u8(serdes,
++					     max9286_initial_setup_p2b);
++	if (ret < 0)
++		return ret;
++
++	switch (serdes->formats[PAD_TYPE_SINK].height) {
++	case 720:
++		//dev_dbg(serdes->dev, "Image Resolution = 1280x720 => 30FPS\n");
++		//ret =  max9286_serdes_write_table_u8(serdes, max9286_initial_setup_p2c_30fps_75mhz);
++		dev_dbg(serdes->dev, "Image Resolution = 1280x720 => 60FPS\n");
++		ret =  max9286_serdes_write_table_u8(serdes, max9286_initial_setup_p2c_60fps_75mhz);
++		break;
++	case 1080:
++	default:
++		dev_dbg(serdes->dev, "Image Resolution = 1920x1080 => 30FPS\n");
++		//ret =  max9286_serdes_write_table_u8(serdes, max9286_initial_setup_p2c_30fps);
++		ret =  max9286_serdes_write_table_u8(serdes, max9286_initial_setup_p2c_30fps_75mhz);
++		break;
++	}
++	if (ret < 0) {
++		dev_err(serdes->dev, "max9286_initial_setup_p2c failed\n");
++		return ret;
++	}
++
++	return max9286_serdes_write_table_u8(serdes,
++					     max9286_initial_setup_p2d);
++}
++
++/*
++ * Init PART3 - GMSL Link Setup
++ */
++static int max9286_serdes_gmsl_link_setup(struct max9286_serdes_device *serdes)
++{
++	int i;
++	unsigned int reg;
++	int target;
++	unsigned int val = 0;
++	int ret = 0;
++
++	dev_dbg(serdes->dev, "*** %s ***\n", __func__);
++	for (i = 0; i < MAX_GMSL_LINK; i++)
++		serdes->gmsl_link_status[i] = 0;
++
++	switch (serdes->cam_config) {
++	case DUAL_CAM_01:
++		ret = max9286_serdes_write_table_u8(serdes,
++						    gmsl_link_setup_cam_0);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"GMSL setup cam_0 failed, cam_config 0x%x\n",
++				serdes->cam_config);
++			return ret;
++		}
++		ret = max9286_serdes_write_table_u8(serdes,
++						    gmsl_link_setup_cam_1);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"GMSL setup cam_1 failed, cam_config 0x%x\n",
++				serdes->cam_config);
++			return ret;
++		}
++		val = 0x33;
++		break;
++	case DUAL_CAM_23:
++		ret = max9286_serdes_write_table_u8(serdes,
++						    gmsl_link_setup_cam_2);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"GMSL setup cam_2 failed, cam_config 0x%x\n",
++				serdes->cam_config);
++			return ret;
++		}
++		ret = max9286_serdes_write_table_u8(serdes,
++						    gmsl_link_setup_cam_3);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"GMSL setup cam_3 failed, cam_config 0x%x\n",
++				serdes->cam_config);
++			return ret;
++		}
++		val = 0xcc;
++		break;
++	case QUAD_CAM_0123:
++		ret = max9286_serdes_write_table_u8(serdes,
++						    gmsl_link_setup_cam_0);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"GMSL setup cam_0 failed, cam_config 0x%x\n",
++				serdes->cam_config);
++			return ret;
++		}
++		ret = max9286_serdes_write_table_u8(serdes,
++						    gmsl_link_setup_cam_1);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"GMSL setup cam_1 failed, cam_config 0x%x\n",
++				serdes->cam_config);
++			return ret;
++		}
++		ret = max9286_serdes_write_table_u8(serdes,
++						    gmsl_link_setup_cam_2);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"GMSL setup cam_2 failed, cam_config 0x%x\n",
++				serdes->cam_config);
++			return ret;
++		}
++		ret = max9286_serdes_write_table_u8(serdes,
++						    gmsl_link_setup_cam_3);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"GMSL setup cam_3 failed, cam_config 0x%x\n",
++				serdes->cam_config);
++			return ret;
++		}
++		val = 0xff;
++		break;
++	case MONO_CAM_0:
++		ret = max9286_serdes_write_table_u8(serdes,
++						    gmsl_link_setup_cam_0);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"GMSL setup cam_0 failed, cam_config 0x%x\n",
++				serdes->cam_config);
++			return ret;
++		}
++		val = 0x11;
++		break;
++	case MONO_CAM_1:
++	case MONO_CAM_2:
++	case MONO_CAM_3:
++	default:
++		dev_err(serdes->dev, "Invalid cam_config 0x%x\n",
++			serdes->cam_config);
++		return -EINVAL;
++	}
++
++	reg = 0xa;
++	ret = max9286_serdes_write(serdes, reg, val, DSR_I2C_DEF);
++	if (ret < 0) {
++		dev_err(serdes->dev, "GMSL enable link failed\n");
++		return ret;
++	}
++
++	usleep_range(2000, 3000);
++
++	/* Check link status */
++	target = SER_I2C_LK0;
++	for (i = 0; i < serdes->nsinks; i++) {
++		if (serdes->port_enable[i]) {
++			reg = 0;
++			val = 0;
++			ret = max9286_serdes_read(serdes, reg, &val, target);
++			if (ret < 0)
++				serdes->gmsl_link_status[i] = 0;
++			else
++				serdes->gmsl_link_status[i] = 1;
++		} else {
++			serdes->gmsl_link_status[i] = 0;
++		}
++		target++;
++		dev_dbg(serdes->dev, "gmsl_link_status[%d] is %s\n", i,
++			serdes->gmsl_link_status[i] ? "active" : "inactive");
++	}
++
++	return 0;
++}
++
++/*
++ * Init PART4 - Image Sensor Initialization
++ */
++static int
++max9286_serdes_image_sensor_init(struct max9286_serdes_device *serdes)
++{
++	int i;
++	unsigned int reg, val;
++	int ret = 0;
++
++	dev_dbg(serdes->dev, "*** %s ***\n", __func__);
++	ret = max9286_serdes_write_table_u8(serdes,
++					    max9286_pre_image_sensor_setup);
++	if (ret < 0) {
++		dev_err(serdes->dev,
++			"max9286_pre_image_sensor_setup failed\n");
++		return ret;
++	}
++
++	ret = max9286_serdes_write_table_u16(serdes, ar0231_config_part1);
++	if (ret < 0) {
++		dev_err(serdes->dev, "ar0231_config_part1 failed\n");
++		return ret;
++	}
++
++	switch (serdes->pixel_freq) {
++	case 99:
++		dev_dbg(serdes->dev, "Pixel Frequency = 99 MHz\n");
++		ret =
++		max9286_serdes_write_table_u16(serdes,
++					       ar0231_config_part2_99mhz);
++		break;
++	case 75:
++		dev_dbg(serdes->dev, "Pixel Frequency = 75 MHz\n");
++		ret =
++		max9286_serdes_write_table_u16(serdes,
++					       ar0231_config_part2_75mhz);
++		break;
++	case 72:
++		dev_dbg(serdes->dev, "Pixel Frequency = 72 MHz\n");
++		ret =
++		max9286_serdes_write_table_u16(serdes,
++					       ar0231_config_part2_72mhz);
++		break;
++	case 66:
++		dev_dbg(serdes->dev, "Pixel Frequency = 66 MHz\n");
++		ret =
++		max9286_serdes_write_table_u16(serdes,
++					       ar0231_config_part2_66mhz);
++		break;
++	case 88:
++	default:
++		dev_dbg(serdes->dev, "Pixel Frequency = 88 MHz\n");
++		ret =
++		max9286_serdes_write_table_u16(serdes,
++					       ar0231_config_part2_88mhz);
++		break;
++	}
++	if (ret < 0) {
++		dev_err(serdes->dev, "ar0231_config_part2 failed\n");
++		return ret;
++	}
++
++	ret = max9286_serdes_write_table_u16(serdes, ar0231_config_part3);
++	if (ret < 0) {
++		dev_err(serdes->dev, "ar0231_config_part3 failed\n");
++		return ret;
++	}
++
++	switch (serdes->formats[PAD_TYPE_SINK].height) {
++	case 720:
++		dev_dbg(serdes->dev, "Image Resolution = 1280x720\n");
++		ret =
++		max9286_serdes_write_table_u16(serdes,
++					       ar0231_config_part4_720p);
++		break;
++	case 1080:
++	default:
++		dev_dbg(serdes->dev, "Image Resolution = 1920x1080\n");
++		ret =
++		max9286_serdes_write_table_u16(serdes,
++					       ar0231_config_part4_1080p);
++		break;
++	}
++	if (ret < 0) {
++		dev_err(serdes->dev, "ar0231_config_part4 failed\n");
++		return ret;
++	}
++
++	ret = max9286_serdes_write_table_u16(serdes, ar0231_config_part5a);
++	if (ret < 0) {
++		dev_err(serdes->dev, "ar0231_config_part5a failed\n");
++		return ret;
++	}
++
++	switch (serdes->formats[PAD_TYPE_SINK].height) {
++	case 720:
++		dev_dbg(serdes->dev, "Image Resolution = 1280x720\n");
++		ret =
++		max9286_serdes_write_table_u16(serdes,
++					       ar0231_config_part5b_720p);
++		break;
++	case 1080:
++	default:
++		dev_dbg(serdes->dev, "Image Resolution = 1920x1080\n");
++		ret =
++		max9286_serdes_write_table_u16(serdes,
++					       ar0231_config_part5b_1080p);
++		break;
++	}
++	if (ret < 0) {
++		dev_err(serdes->dev, "ar0231_config_part5b failed\n");
++		return ret;
++	}
++
++	ret = max9286_serdes_write_table_u16(serdes, ar0231_config_part5c);
++	if (ret < 0) {
++		dev_err(serdes->dev, "ar0231_config_part5c failed\n");
++		return ret;
++	}
++
++	ret =
++	max9286_serdes_write_table_u16(serdes,
++				       ar0231_config_part6_exposure);
++	if (ret < 0) {
++		dev_err(serdes->dev, "ar0231_config_part6_exposure failed\n");
++		return ret;
++	}
++
++	ret = max9286_serdes_write_table_u16(serdes,
++					     ar0231_config_part7_gains);
++	if (ret < 0) {
++		dev_err(serdes->dev, "ar0231_config_part7_gains failed\n");
++		return ret;
++	}
++
++	ret = max9286_serdes_write_table_u8(serdes,
++					    max9286_post_image_sensor_setup);
++	if (ret < 0) {
++		dev_err(serdes->dev,
++			"max9286_post_image_sensor_setup failed\n");
++		return ret;
++	}
++
++	/* Verify validity of PCLK */
++	for (i = 0; i < serdes->nsinks; i++) {
++		if (serdes->gmsl_link_status[i]) {
++			reg = 0x15;
++			val = 0;
++			ret = regmap_read(
++			serdes->serializer_dev[SER_DEV_LK0 + i]->regmap,
++			reg, &val);
++			if (ret < 0) {
++				dev_err(serdes->dev,
++					"Read link status failed\n");
++				continue;
++			}
++			dev_dbg(serdes->dev, "GMSL LINK%d = CX_TP=%d(%s), ",
++				i,
++				(val & 0x80) >> 7,
++				((val & 0x80) >> 7) ? "COAX" : "STP");
++			dev_dbg(serdes->dev, "LCCEN=%d, OUTPUTEN=%d, ",
++				(val & 0x20) >> 5,
++				(val & 0x02) >> 1);
++			dev_dbg(serdes->dev, "PCLKDET=%d\n", (val & 0x01) >> 0);
++		}
++	}
++
++	return 0;
++}
++
++/*
++ * Init PART5 - Enable GMSL & CSI-2
++ */
++static int max9286_serdes_enable_gmsl_csi(struct max9286_serdes_device *serdes)
++{
++	int ret = 0;
++
++	dev_dbg(serdes->dev, "*** %s ***\n", __func__);
++	switch (serdes->cam_config) {
++	case DUAL_CAM_01:
++		dev_dbg(serdes->dev, "GMSL enable link 01\n");
++		ret =
++		max9286_serdes_write_table_u8(serdes,
++					      max9286_enable_gmsl_csi_dual01);
++		if (ret < 0) {
++			dev_err(serdes->dev, "GMSL enable failed\n");
++			return ret;
++		}
++		break;
++	case DUAL_CAM_23:
++		dev_dbg(serdes->dev, "GMSL enable link 23\n");
++		ret =
++		max9286_serdes_write_table_u8(serdes,
++					      max9286_enable_gmsl_csi_dual23);
++		if (ret < 0) {
++			dev_err(serdes->dev, "GMSL enable failed\n");
++			return ret;
++		}
++		break;
++	case QUAD_CAM_0123:
++		dev_dbg(serdes->dev, "GMSL enable link 0123\n");
++		ret =
++		max9286_serdes_write_table_u8(serdes,
++					      max9286_enable_gmsl_csi_quad);
++		if (ret < 0) {
++			dev_err(serdes->dev, "GMSL enable failed\n");
++			return ret;
++		}
++		break;
++	case MONO_CAM_0:
++		dev_dbg(serdes->dev, "GMSL enable link 0\n");
++		ret =
++		max9286_serdes_write_table_u8(serdes,
++					      max9286_enable_gmsl_csi_mono0);
++		if (ret < 0) {
++			dev_err(serdes->dev, "GMSL enable failed\n");
++			return ret;
++		}
++		break;
++	case MONO_CAM_1:
++	case MONO_CAM_2:
++	case MONO_CAM_3:
++	default:
++		dev_err(serdes->dev, "Invalid cam_config %d\n",
++			serdes->cam_config);
++		return -EINVAL;
++	}
++
++	return ret;
++}
++
++/*
++ * Init PART6 - Verification
++ */
++static int max9286_serdes_verification(struct max9286_serdes_device *serdes)
++{
++	u32 reg;
++	int len;
++	u8 data[8];
++	u32 gmsl_link0_pixel_count;
++	u32 gmsl_link1_pixel_count;
++	u32 gmsl_link2_pixel_count;
++	u32 gmsl_link3_pixel_count;
++	u32 gmsl_frame_period;
++	u32 gmsl_frame_sync_error_count;
++	int ret = 0;
++
++	dev_dbg(serdes->dev, "*** %s ***\n", __func__);
++	ret = max9286_serdes_write_table_u8(serdes,
++					    max9286_setup_verification);
++	if (ret < 0) {
++		dev_err(serdes->dev, "Verification failed\n");
++		return ret;
++	}
++
++	/* Verify status of Link0 Pixel Count */
++	if (serdes->gmsl_link_status[0]) {
++		reg = 0x4d;
++		len = 2;
++		ret = max9286_serdes_read_array(serdes, reg, len, data,
++						DSR_I2C_DEF);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"Read link pixed count status failed ");
++			dev_err(serdes->dev, "[reg=0x%02x len=%d]\n",
++				reg, len);
++		} else {
++			gmsl_link0_pixel_count = (u32)(data[0]) |
++						((u32)(data[1]) << 8);
++			dev_dbg(serdes->dev, "GMSL LINK0 Pixel Count = %d\n",
++				gmsl_link0_pixel_count);
++		}
++	}
++
++	/* Verify status of Link1 Pixel Count */
++	if (serdes->gmsl_link_status[1]) {
++		reg = 0x51;
++		len = 2;
++		ret = max9286_serdes_read_array(serdes, reg, len, data,
++						DSR_I2C_DEF);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"Read link pixed count status failed ");
++			dev_err(serdes->dev, "[reg=0x%02x len=%d]\n",
++				reg, len);
++		} else {
++			gmsl_link1_pixel_count = (u32)(data[0]) |
++						((u32)(data[1]) << 8);
++			dev_dbg(serdes->dev, "GMSL LINK1 Pixel Count = %d\n",
++				gmsl_link1_pixel_count);
++		}
++	}
++
++	/* Verify status of Link2 Pixel Count */
++	if (serdes->gmsl_link_status[2]) {
++		reg = 0x55;
++		len = 2;
++		ret = max9286_serdes_read_array(serdes, reg, len, data,
++						DSR_I2C_DEF);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"Read link pixed count status failed ");
++			dev_err(serdes->dev, "[reg=0x%02x len=%d]\n",
++				reg, len);
++		} else {
++			gmsl_link2_pixel_count = (u32)(data[0]) |
++			((u32)(data[1]) << 8);
++			dev_dbg(serdes->dev, "GMSL LINK2 Pixel Count = %d\n",
++				gmsl_link2_pixel_count);
++		}
++	}
++
++	/* Verify status of Link3 Pixel Count */
++	if (serdes->gmsl_link_status[3]) {
++		reg = 0x59;
++		len = 2;
++		ret = max9286_serdes_read_array(serdes, reg, len, data,
++						DSR_I2C_DEF);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"Read link pixed count status failed");
++			dev_err(serdes->dev, "[reg=0x%02x len=%d]\n",
++				reg, len);
++		} else {
++			gmsl_link3_pixel_count = (u32)(data[0]) |
++						((u32)(data[1]) << 8);
++			dev_dbg(serdes->dev, "GMSL LINK3 Pixel Count = %d\n",
++				gmsl_link3_pixel_count);
++		}
++	}
++
++	/* Verify status of Frame Period */
++	reg = 0x5b;
++	len = 3;
++	ret = max9286_serdes_read_array(serdes, reg, len, data, DSR_I2C_DEF);
++	if (ret < 0) {
++		dev_err(serdes->dev, "Read link pixed count status ");
++		dev_err(serdes->dev, "failed [reg=0x%02x len=%d]\n",
++			reg, len);
++	} else {
++		gmsl_frame_period = (u32)(data[0]) | ((u32)(data[1]) << 8) |
++				((u32)(data[2]) << 16);
++		dev_dbg(serdes->dev, "GMSL Frame Period = %d\n",
++			gmsl_frame_period);
++	}
++
++	/* Verify status of Frame Sync Error Count */
++	reg = 0x5e;
++	len = 1;
++	ret = max9286_serdes_read_array(serdes, reg, len, data, DSR_I2C_DEF);
++	if (ret < 0) {
++		dev_err(serdes->dev, "Read link pixed count ");
++		dev_err(serdes->dev, "status failed [reg=0x%02x len=%d]\n",
++			reg, len);
++	} else {
++		gmsl_frame_sync_error_count = (u32)(data[0]);
++		dev_dbg(serdes->dev, "GMSL Frame Sync Error Count = %d\n",
++			gmsl_frame_sync_error_count);
++	}
++
++	return ret;
++}
++
++/*
++ * Stop - Disable GMSL & CSI-2
++ */
++static int
++max9286_serdes_disable_gmsl_csi(struct max9286_serdes_device *serdes)
++{
++	int ret = 0;
++
++	dev_dbg(serdes->dev, "*** %s ***\n", __func__);
++
++	ret = max9286_serdes_write_table_u8(serdes, max9286_disable_gmsl_csi);
++	if (ret < 0) {
++		dev_err(serdes->dev, "Disable failed\n");
++		return ret;
++	}
++
++	return ret;
++}
++
++/* -----------------------------------------------------------------------
++ * V4L2 Subdevice Video Operations
++ */
++static int max9286_serdes_s_stream(struct v4l2_subdev *subdev, int enable)
++{
++	struct max9286_serdes_device *serdes = to_serdes(subdev);
++	int i;
++	int target;
++	int ret = 0;
++	u32 reg, val;
++
++	if (enable) {
++		dev_dbg(serdes->dev, "%s stream\n", enable ? "start" : "stop");
++
++		/* Turn on serializer power */
++		for (i = 0; i < serdes->nsinks; i++) {
++			if (serdes->port_enable[i] == 0)
++				continue;
++			if (!regulator_is_enabled(serdes->sensor_supply[i])) {
++				ret = regulator_enable(
++						serdes->sensor_supply[i]);
++				if (ret < 0) {
++					dev_err(serdes->dev,
++						"regulator_enable failed %d\n",
++						ret);
++					return ret;
++				}
++				dev_dbg(serdes->dev,
++					"Enable serializer + sensor power %d\n",
++					i);
++			}
++		}
++		msleep(100);
++		/* Bring deserializer out of power down */
++		max9286_pwdn_deassert(serdes);
++		msleep(100);
++		/* Reverse Channel Setup */
++		ret = max9286_serdes_reverse_chan_setup(serdes);
++		if (ret < 0)
++			goto error_start;
++
++		/* MAX9286 Initial Setup */
++		ret = max9286_serdes_initial_setup(serdes);
++		if (ret < 0)
++			goto error_start;
++
++		/* GMSL Link Setup */
++		ret = max9286_serdes_gmsl_link_setup(serdes);
++		if (ret < 0)
++			goto error_start;
++
++		/* Image Sensor Initialization */
++		ret = max9286_serdes_image_sensor_init(serdes);
++		if (ret < 0)
++			goto error_start;
++
++		/* Enable GMSL & CSI-2 */
++		ret = max9286_serdes_enable_gmsl_csi(serdes);
++		if (ret < 0)
++			goto error_start;
++
++		/* Verification */
++		ret = max9286_serdes_verification(serdes);
++		if (ret < 0)
++			goto error_start;
++
++		/* Check MAX96705 chip id  */
++		target = SER_I2C_LK0;
++		for (i = 0; i < serdes->nsinks; i++) {
++			if (serdes->gmsl_link_status[i]) {
++				reg = MAX96705_REG_CHIPID;
++				val = 0;
++				ret =
++				max9286_serdes_read(serdes,
++						    reg, &val, target);
++				if (ret < 0) {
++					dev_err(serdes->dev,
++						"Failed to read reg 0x%x, %d\n",
++						reg, ret);
++				}
++				dev_dbg(serdes->dev,
++					"MAX96705 chip id 0x%x\n", val);
++				if (val != MAX96705_CHIPID) {
++					dev_err(serdes->dev,
++						"Chip id mismatch 0x%x\n", val);
++				}
++			}
++			target++;
++		}
++	} else {
++		dev_dbg(serdes->dev, "%s stream\n", enable ? "start" : "stop");
++
++		ret = max9286_serdes_disable_gmsl_csi(serdes);
++		if (ret < 0) {
++			dev_err(serdes->dev,
++				"Serdes disable failed %d\n", ret);
++		}
++
++		/* Turn off power */
++		for (i = 0; i < serdes->nsinks; i++) {
++			if (serdes->port_enable[i] == 0)
++				continue;
++
++			if (regulator_is_enabled(serdes->sensor_supply[i])) {
++				dev_dbg(serdes->dev,
++					"Disable serializer + sensor powered\n");
++				ret =
++				regulator_disable(serdes->sensor_supply[i]);
++				if (ret < 0) {
++					dev_err(serdes->dev,
++						"regulator_disable failed %d\n",
++						ret);
++				}
++			}
++		}
++
++		/* Bring deserializer to power down */
++		max9286_pwdn_assert(serdes);
++	}
++
++	return ret;
++
++error_start:
++	return ret;
++}
++
++/* -----------------------------------------------------------------------
++ * V4L2 Subdevice Pad Operations
++ */
++
++static int max9286_serdes_enum_mbus_code(struct v4l2_subdev *subdev,
++					 struct v4l2_subdev_pad_config *cfg,
++					 struct v4l2_subdev_mbus_code_enum *
++					 code)
++{
++	struct v4l2_mbus_framefmt *format;
++
++	/* Enumerating frame sizes based on the active configuration isn't
++	 * supported yet.
++	 */
++	if (code->which == V4L2_SUBDEV_FORMAT_ACTIVE)
++		return -EINVAL;
++
++	if (code->index)
++		return -EINVAL;
++
++	format = v4l2_subdev_get_try_format(subdev, cfg, code->pad);
++
++	code->code = format->code;
++
++	return 0;
++}
++
++static struct v4l2_mbus_framefmt *
++max9286_serdes_get_pad_format(struct max9286_serdes_device *serdes,
++			      struct v4l2_subdev_pad_config *cfg,
++			      unsigned int pad, u32 which)
++{
++	switch (which) {
++	case V4L2_SUBDEV_FORMAT_TRY:
++		return v4l2_subdev_get_try_format(&serdes->subdev, cfg, pad);
++	case V4L2_SUBDEV_FORMAT_ACTIVE:
++		return &serdes->formats[pad];
++	default:
++		return NULL;
++	}
++}
++
++static int max9286_serdes_get_format(struct v4l2_subdev *subdev,
++				     struct v4l2_subdev_pad_config *cfg,
++				     struct v4l2_subdev_format *fmt)
++{
++	struct max9286_serdes_device *serdes = to_serdes(subdev);
++	int pad = fmt->pad;
++
++	fmt->format = *max9286_serdes_get_pad_format(serdes,
++						     cfg, pad, fmt->which);
++
++	return 0;
++}
++
++static void max9286_serdes_res_roundup(u32 *width, u32 *height, int pad_type)
++{
++	int i;
++	int size;
++	const struct max9286_serdes_resolution *table;
++
++	if (pad_type == PAD_TYPE_SINK) {
++		table = supported_sink_resolutions;
++		size = ARRAY_SIZE(supported_sink_resolutions);
++	} else {
++		table = supported_source_resolutions;
++		size = ARRAY_SIZE(supported_source_resolutions);
++	}
++	/* TODO: Search for best match instead of rounding */
++	for (i = 0; i < size; i++) {
++		if ((table[i].width >= *width) &&
++		    (table[i].height >= *height)) {
++			*width = table[i].width;
++			*height = table[i].height;
++			return;
++		}
++	}
++
++	/* Use default in case of no match */
++	*width = table[0].width;
++	*height = table[0].height;
++}
++
++static int max9286_serdes_try_mbus_fmt(struct v4l2_subdev *subdev,
++				       struct v4l2_mbus_framefmt *fmt,
++				       int pad_type)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(supported_video_formats); i++) {
++		if (supported_video_formats[i].code == fmt->code)
++			break;
++	}
++
++	if (i >= ARRAY_SIZE(supported_video_formats)) {
++		/* default to first format in case no match */
++		i = 0;
++		fmt->code = supported_video_formats[0].code;
++	}
++
++	/* Find suitable supported resolution */
++	max9286_serdes_res_roundup(&fmt->width, &fmt->height, pad_type);
++
++	fmt->field = V4L2_FIELD_NONE;
++	fmt->colorspace = V4L2_COLORSPACE_SRGB;
++
++	return 0;
++}
++
++static int max9286_serdes_set_format(struct v4l2_subdev *subdev,
++				     struct v4l2_subdev_pad_config *cfg,
++				     struct v4l2_subdev_format *fmt)
++{
++	struct max9286_serdes_device *serdes = to_serdes(subdev);
++	struct v4l2_mbus_framefmt *fmt_ptr;
++	struct v4l2_mbus_framefmt resp_fmt;
++
++	fmt_ptr = max9286_serdes_get_pad_format(serdes, cfg,
++						fmt->pad, fmt->which);
++	resp_fmt = fmt->format;
++
++	if ((serdes->pads[fmt->pad].flags & MEDIA_PAD_FL_SINK) ==
++						MEDIA_PAD_FL_SINK) {
++		dev_dbg(serdes->dev, "Configure sink pad %d\n", fmt->pad);
++		max9286_serdes_try_mbus_fmt(subdev, &resp_fmt, PAD_TYPE_SINK);
++	} else {
++		dev_dbg(serdes->dev, "Configure source pad %d\n", fmt->pad);
++		max9286_serdes_try_mbus_fmt(subdev, &resp_fmt,
++					    PAD_TYPE_SOURCE);
++	}
++	dev_dbg(serdes->dev, "width %d height %d\n",
++		resp_fmt.width, resp_fmt.height);
++
++	*fmt_ptr = resp_fmt;
++	fmt->format = resp_fmt;
++
++	return 0;
++}
++
++static int
++max9286_serdes_open(struct v4l2_subdev *subdev, struct v4l2_subdev_fh *fh)
++{
++	return 0;
++}
++
++static int
++max9286_serdes_close(struct v4l2_subdev *subdev, struct v4l2_subdev_fh *fh)
++{
++	return 0;
++}
++
++static struct v4l2_subdev_video_ops max9286_serdes_video_ops = {
++	.s_stream = max9286_serdes_s_stream,
++};
++
++static struct v4l2_subdev_pad_ops max9286_serdes_pad_ops = {
++	.enum_mbus_code = max9286_serdes_enum_mbus_code,
++	.get_fmt = max9286_serdes_get_format,
++	.set_fmt = max9286_serdes_set_format,
++};
++
++static struct v4l2_subdev_ops max9286_serdes_ops = {
++	.video = &max9286_serdes_video_ops,
++	.pad = &max9286_serdes_pad_ops,
++};
++
++static const struct v4l2_subdev_internal_ops max9286_serdes_internal_ops = {
++	.open = max9286_serdes_open,
++	.close = max9286_serdes_close,
++};
++
++/* -----------------------------------------------------------------------
++ * Media Operations
++ */
++static const struct media_entity_operations max9286_serdes_media_ops = {
++	.link_validate = v4l2_subdev_link_validate,
++};
++
++/* -----------------------------------------------------------------------
++ * Platform Device Driver
++ */
++static const struct max9286_serdes_video_format *
++max9286_serdes_of_get_format(struct device_node *node)
++{
++	const char *pattern = "mono";
++	unsigned int vf_code;
++	unsigned int i;
++	u32 width;
++	int ret;
++
++	ret = of_property_read_u32(node, "video-format", &vf_code);
++	if (ret < 0)
++		return ERR_PTR(ret);
++
++	ret = of_property_read_u32(node, "video-width", &width);
++	if (ret < 0)
++		return ERR_PTR(ret);
++
++	if (vf_code == XVIP_VF_MONO_SENSOR)
++		of_property_read_string(node, "cfa-pattern", &pattern);
++
++	for (i = 0; i < ARRAY_SIZE(supported_video_formats); ++i) {
++		const struct max9286_serdes_video_format *format =
++						&supported_video_formats[i];
++
++		if (format->vf_code != vf_code || format->width != width)
++			continue;
++
++		if (vf_code == XVIP_VF_MONO_SENSOR &&
++		    strcmp(pattern, format->pattern))
++			continue;
++
++		return format;
++	}
++
++	return ERR_PTR(-EINVAL);
++}
++
++static int
++max9286_serdes_parse_of_get_vip_format(struct max9286_serdes_device *serdes)
++{
++	struct device_node *node = serdes->dev->of_node;
++	struct device_node *ports;
++	struct device_node *port;
++	unsigned int nports;
++
++	ports = of_get_child_by_name(node, "ports");
++	if (!ports)
++		ports = node;
++
++	nports = 0;
++	for_each_child_of_node(ports, port) {
++		const struct max9286_serdes_video_format *format;
++		struct device_node *endpoint;
++
++		if (serdes->port_enable[nports] == 0) {
++			nports++;
++			continue;
++		}
++
++		format = max9286_serdes_of_get_format(port);
++		if (IS_ERR(format)) {
++			dev_err(serdes->dev, "invalid format in DT");
++			return PTR_ERR(format);
++		}
++		dev_dbg(serdes->dev, "pattern %s\n", format->pattern);
++
++		/* copy the vip_format */
++		serdes->vip_formats[nports] = *format;
++
++		endpoint = of_get_next_child(port, NULL);
++		if (!endpoint) {
++			dev_err(serdes->dev, "No port at\n");
++			return -EINVAL;
++		}
++
++		/* Count the number of ports. */
++		nports++;
++	}
++
++	return 0;
++}
++
++static int max9286_serdes_parse_of(struct max9286_serdes_device *serdes)
++{
++	struct device_node *node = serdes->dev->of_node;
++	struct device_node *ports;
++	struct device_node *port;
++	struct device_node *serializer_node;
++	struct device_node *sensor_node;
++	struct v4l2_subdev *sd;
++	unsigned int nports;
++	char name[32];
++	int serializer_index, sensor_index;
++	int i;
++	int ret;
++
++	serdes->pixel_freq = 88;
++	serdes->mipi_lanes = 4;
++
++	for (i = 0; i < MAX_GMSL_LINK; i++)
++		serdes->gmsl_link_status[i] = 0;
++
++	/* Parse GPIO */
++	serdes->enable_gpio = devm_gpiod_get(serdes->dev, "enable",
++					     GPIOD_OUT_HIGH);
++	if (IS_ERR(serdes->enable_gpio)) {
++		dev_err(serdes->dev, "Missing enable-gpio property\n");
++		return PTR_ERR(serdes->enable_gpio);
++	}
++
++	/* Parse sink/source ports */
++	ret = of_property_read_u32(node, "num-si-slots", &serdes->nsinks);
++	if ((ret < 0) || (serdes->nsinks < MIN_SERDES_SINKS) ||
++	    (serdes->nsinks > MAX_SERDES_SINKS)) {
++		dev_err(serdes->dev,
++			"Missing or invalid num-si-slots property\n");
++		return ret;
++	}
++
++	ret = of_property_read_u32(node, "num-mi-slots",
++				   &serdes->nsources);
++	if ((ret < 0) || (serdes->nsources < MIN_SERDES_SRCS) ||
++	    (serdes->nsources > MAX_SERDES_SRCS)) {
++		dev_err(serdes->dev,
++			"Missing or invalid num-mi-slots property\n");
++		return ret;
++	}
++
++	/* Parse camera configuration */
++	ret = of_property_read_u32(node, "cam-config", &serdes->cam_config);
++	if (ret < 0) {
++		dev_err(serdes->dev, "Missing cam-config property\n");
++		return ret;
++	}
++	ret = of_property_read_u32(node, "mipi-lanes", &serdes->mipi_lanes);
++	if (ret < 0) {
++		dev_err(serdes->dev, "Missing mipi-lanes property\n");
++		return ret;
++	}
++	ret = of_property_read_u32(node, "pixel-freq", &serdes->pixel_freq);
++	if (ret < 0) {
++		dev_err(serdes->dev, "Missing pixel-freq property\n");
++		return ret;
++	}
++
++	/* Parse port */
++	ports = of_get_child_by_name(node, "ports");
++	if (!ports)
++		ports = node;
++
++	nports = 0;
++	serializer_index = SER_DEV_LK0;
++	sensor_index = SEN_DEV_LK0;
++	for_each_child_of_node(ports, port) {
++		struct device_node *endpoint;
++
++		if (!port->name || of_node_cmp(port->name, "port"))
++			continue;
++
++		if (nports < serdes->nsinks) {
++			/* Check if port enabled */
++			ret =
++			of_property_read_u32(port, "enable",
++					     &serdes->port_enable[nports]);
++			if (ret < 0) {
++				dev_err(serdes->dev,
++					"Missing enable property\n");
++				return ret;
++			}
++			if (serdes->port_enable[nports] == 0) {
++				dev_dbg(serdes->dev, "skip port %d\n", nports);
++				nports++;
++				serializer_index++;
++				sensor_index++;
++				continue;
++			}
++
++			/* TODO: Add checking on cam-config */
++
++			/* Obtain serializer handle (per port) */
++			snprintf(name, sizeof(name),
++				 "serializer_adapter_link%u", nports);
++			dev_dbg(serdes->dev, "%s %s\n", port->name, name);
++			serializer_node = of_parse_phandle(port, name, 0);
++			if (!serializer_node) {
++				dev_err(serdes->dev,
++					"Missing serializer_node property\n");
++				return -EINVAL;
++			}
++			dev_dbg(serdes->dev,
++				"Got serializer_node property %s\n", name);
++
++			serdes->serializer_i2c_client[serializer_index] =
++				of_find_i2c_device_by_node(serializer_node);
++			of_node_put(serializer_node);
++			if (!serdes->serializer_i2c_client[serializer_index]) {
++				dev_err(serdes->dev,
++					"of_find_i2c_device_by_node failed\n");
++				return -EINVAL;
++			}
++			dev_dbg(serdes->dev,
++				"i2c_serializer[%d] %s\n", serializer_index,
++			serdes->serializer_i2c_client[serializer_index]->name);
++
++			serdes->serializer_dev[serializer_index] =
++			(struct max96705_serdes_device *)i2c_get_clientdata(
++			serdes->serializer_i2c_client[serializer_index]);
++
++			dev_dbg(serdes->dev, "serializer %p regmap %p\n",
++				serdes->serializer_dev[serializer_index],
++				serdes->serializer_dev[serializer_index]->regmap
++				);
++
++			serializer_index++;
++
++			/* Obtain sensor handle (per port) */
++			snprintf(name, sizeof(name), "sensor_adapter_%u",
++				 nports);
++			dev_dbg(serdes->dev, "%s %s\n", port->name, name);
++			sensor_node = of_parse_phandle(port, name, 0);
++			if (!sensor_node) {
++				dev_err(serdes->dev,
++					"Missing sensor_node property\n");
++				return -EINVAL;
++			}
++			dev_dbg(serdes->dev, "Got sensor_node property, %s\n",
++				name);
++
++			serdes->sensor_i2c_client[sensor_index] =
++				of_find_i2c_device_by_node(sensor_node);
++			of_node_put(sensor_node);
++			if (!serdes->sensor_i2c_client[sensor_index]) {
++				dev_err(serdes->dev,
++					"of_find_i2c_device_by_node failed\n");
++				return -EINVAL;
++			}
++			dev_dbg(serdes->dev, "i2c_sensor[%d] %s\n",
++				sensor_index,
++				serdes->sensor_i2c_client[sensor_index]->name);
++
++			sd = (struct v4l2_subdev *)i2c_get_clientdata(
++				serdes->sensor_i2c_client[sensor_index]);
++			if (!sd || !to_ar0231(sd)) {
++				dev_err(serdes->dev,
++					"Get sensor device failed\n");
++				return -EINVAL;
++			}
++			serdes->sensor_dev[sensor_index] = to_ar0231(sd);
++
++			dev_dbg(serdes->dev, "sensor %p regmap %p\n",
++				serdes->sensor_dev[sensor_index],
++				serdes->sensor_dev[sensor_index]->regmap);
++
++			sensor_index++;
++		}
++
++		endpoint = of_get_next_child(port, NULL);
++		if (!endpoint) {
++			dev_err(serdes->dev, "No port at\n");
++			return -EINVAL;
++		}
++
++		/* Count the number of ports. */
++		nports++;
++	}
++
++	/* Validate number of ports */
++	if (nports != (serdes->nsinks + serdes->nsources)) {
++		dev_err(serdes->dev, "invalid number of ports %u\n",
++			nports);
++		return -EINVAL;
++	}
++
++	/* Obtain regulator node */
++	for (i = 0; i < serdes->nsinks; i++) {
++		if (serdes->port_enable[i] == 0)
++			continue;
++		snprintf(name, sizeof(name), "sensor_%u", i);
++		dev_dbg(serdes->dev, "Supply %s\n", name);
++		serdes->sensor_supply[i] =
++			devm_regulator_get_exclusive(serdes->dev, name);
++		if (IS_ERR(serdes->sensor_supply[i])) {
++			dev_err(serdes->dev, "%s not ready %ld\n", name,
++				PTR_ERR(serdes->sensor_supply[i]));
++			//return PTR_ERR(serdes->sensor_supply[i]);
++			return -EPROBE_DEFER;
++		}
++	}
++
++	/* Obtain serializer handle (for broadcast) */
++	for (i = 0; i < serdes->nsinks; i++) {
++		if (i == SER_DEV_DEF)
++			snprintf(name, sizeof(name),
++				 "serializer_adapter_default");
++		else if (i == SER_DEV_BRD)
++			snprintf(name, sizeof(name),
++				 "serializer_adapter_brdcast");
++		else
++			continue;
++
++		serializer_node = of_parse_phandle(node, name, 0);
++		if (!serializer_node) {
++			dev_err(serdes->dev,
++				"Missing serializer_node property\n");
++			return -EINVAL;
++		}
++		dev_dbg(serdes->dev,
++			"Got serializer_node property, %s\n", name);
++
++		serdes->serializer_i2c_client[i] =
++			of_find_i2c_device_by_node(serializer_node);
++		of_node_put(serializer_node);
++		if (!serdes->serializer_i2c_client[i]) {
++			dev_err(serdes->dev,
++				"of_find_i2c_device_by_node failed\n");
++			return -EINVAL;
++		}
++		dev_dbg(serdes->dev, "i2c_serializer[%d] %s\n",
++			i, serdes->serializer_i2c_client[i]->name);
++		serdes->serializer_dev[i] =
++			(struct max96705_serdes_device *)i2c_get_clientdata(
++				serdes->serializer_i2c_client[i]);
++		dev_dbg(serdes->dev, "serializer %p regmap %p\n",
++			serdes->serializer_dev[i],
++			serdes->serializer_dev[i]->regmap);
++	}
++
++	/* Obtain sensor handle (for broadcast) */
++	for (i = 0; i < serdes->nsinks; i++) {
++		if (i == SEN_DEV_BRD)
++			snprintf(name, sizeof(name), "sensor_adapter_brdcast");
++		else
++			continue;
++
++		sensor_node = of_parse_phandle(node, name, 0);
++		if (!sensor_node) {
++			dev_err(serdes->dev, "Missing sensor_node property\n");
++			return -EINVAL;
++		}
++		dev_dbg(serdes->dev, "Got sensor_node property, %s\n", name);
++
++		serdes->sensor_i2c_client[i] =
++			of_find_i2c_device_by_node(sensor_node);
++		of_node_put(sensor_node);
++		if (!serdes->sensor_i2c_client[i]) {
++			dev_err(serdes->dev,
++				"of_find_i2c_device_by_node failed\n");
++			return -EINVAL;
++		}
++		dev_dbg(serdes->dev,
++			"i2c_sensor[%d] %s\n",
++			i, serdes->sensor_i2c_client[i]->name);
++		sd = (struct v4l2_subdev *)i2c_get_clientdata(
++				serdes->sensor_i2c_client[i]);
++		if (!sd || !to_ar0231(sd)) {
++			dev_err(serdes->dev, "Get sensor device failed\n");
++			return -EINVAL;
++		}
++		serdes->sensor_dev[i] = to_ar0231(sd);
++		dev_dbg(serdes->dev, "sensor %p regmap %p\n",
++			serdes->sensor_dev[i], serdes->sensor_dev[i]->regmap);
++	}
++
++	return 0;
++}
++
++static int
++max9286_serdes_cleanup_resources(struct max9286_serdes_device *serdes)
++{
++	int i, ret;
++
++	for (i = 0; i < serdes->nsinks; i++) {
++		if (serdes->port_enable[i] == 0)
++			continue;
++		/* Release serializer adapter */
++		if (serdes->serializer_i2c_client[i])
++			put_device(&serdes->serializer_i2c_client[i]->dev);
++	}
++	for (i = 0; i < serdes->nsinks; i++) {
++		if (serdes->port_enable[i] == 0)
++			continue;
++		/* Release sensor adapter */
++		if (serdes->sensor_i2c_client[i])
++			put_device(&serdes->sensor_i2c_client[i]->dev);
++	}
++	for (i = 0; i < serdes->nsinks; i++) {
++		if (serdes->port_enable[i] == 0)
++			continue;
++		/* Turn off sensor supply */
++		if (regulator_is_enabled(serdes->sensor_supply[i])) {
++			ret = regulator_disable(serdes->sensor_supply[i]);
++			if (ret < 0)
++				dev_err(serdes->dev,
++					"regulator_disable failed %d\n", ret);
++		}
++	}
++
++	/* TODO: Turn off serdes */
++	return 0;
++}
++
++static int
++max9286_serdes_probe(struct i2c_client *client, const struct i2c_device_id *id)
++{
++	struct v4l2_subdev *subdev;
++	struct max9286_serdes_device *serdes;
++	unsigned int npads;
++	unsigned int i;
++	unsigned int val;
++	int ret;
++
++	serdes = devm_kzalloc(&client->dev, sizeof(*serdes), GFP_KERNEL);
++	if (!serdes)
++		return -ENOMEM;
++
++	serdes->dev = &client->dev;
++	serdes->client = client;
++
++	/* Initialize regmap */
++	serdes->regmap =
++	devm_regmap_init_i2c(client,
++			     &max9286_serdes_regmap_config);
++	if (IS_ERR(serdes->regmap)) {
++		dev_err(&client->dev,
++			"regmap init failed: %ld\n", PTR_ERR(serdes->regmap));
++		return -ENODEV;
++	}
++
++	/* Parse dt */
++	ret = max9286_serdes_parse_of(serdes);
++	if (ret < 0)
++		return ret;
++
++	/* Check chip id */
++	ret = regmap_read(serdes->regmap, MAX9286_REG_CHIPID, &val);
++	if (ret < 0) {
++		dev_err(serdes->dev,
++			"Failed to read MAX9286_REG_CHIPID (%d), %d\n",
++			MAX9286_REG_CHIPID, ret);
++		return ret;
++	}
++
++	dev_dbg(serdes->dev, "MAX9286 chip id 0x%x\n", val);
++	if (val != MAX9286_CHIPID)
++		dev_err(serdes->dev, "Chip id mismatch 0x%x\n", val);
++
++	/* Initialize V4L2 subdevice and media entity. Pad numbers depend on
++	 * the number of pads.
++	 */
++	npads = serdes->nsinks + serdes->nsources;
++	serdes->pads =
++		devm_kzalloc(&client->dev, npads * sizeof(*serdes->pads),
++			     GFP_KERNEL);
++	if (!serdes->pads)
++		return -ENOMEM;
++
++	for (i = 0; i < serdes->nsinks; ++i)
++		serdes->pads[i].flags = MEDIA_PAD_FL_SINK;
++
++	for (; i < npads; ++i)
++		serdes->pads[i].flags = MEDIA_PAD_FL_SOURCE;
++
++	/*
++	 * Allocate format per pad
++	 */
++	serdes->formats = devm_kzalloc(&client->dev,
++			(npads) * sizeof(*serdes->formats), GFP_KERNEL);
++	serdes->vip_formats = devm_kzalloc(&client->dev,
++			(npads) * sizeof(*serdes->vip_formats), GFP_KERNEL);
++	if (!serdes->formats || !serdes->vip_formats)
++		return -ENOMEM;
++
++	ret = max9286_serdes_parse_of_get_vip_format(serdes);
++	if (ret < 0) {
++		dev_err(serdes->dev, "Invalid formats set on ports\n");
++		return ret;
++	}
++
++	for (i = 0; i < npads; i++) {
++		serdes->formats[i].code = serdes->vip_formats[i].code;
++		serdes->formats[i].field = V4L2_FIELD_NONE;
++		serdes->formats[i].colorspace = V4L2_COLORSPACE_SRGB;
++		serdes->formats[i].width = SERDES_MAX_WIDTH;
++		serdes->formats[i].height = SERDES_MAX_HEIGHT;
++	}
++
++	subdev = &serdes->subdev;
++	v4l2_i2c_subdev_init(subdev, client, &max9286_serdes_ops);
++	subdev->internal_ops = &max9286_serdes_internal_ops;
++	strlcpy(subdev->name, DRIVER_NAME, sizeof(subdev->name));
++	strlcat(subdev->name, ".", sizeof(subdev->name));
++	strlcat(subdev->name, dev_name(serdes->dev), sizeof(subdev->name));
++	subdev->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
++	subdev->entity.ops = &max9286_serdes_media_ops;
++	subdev->entity.function = MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER;
++	ret = media_entity_pads_init(&subdev->entity, npads, serdes->pads);
++	if (ret < 0)
++		goto error;
++
++	ret = v4l2_async_register_subdev(subdev);
++	if (ret < 0) {
++		dev_err(&client->dev, "failed to register subdev\n");
++		goto error;
++	}
++
++	/*
++	 * Turn on sensor + serializer power
++	 */
++	for (i = 0; i < serdes->nsinks; ++i) {
++		if (serdes->port_enable[i] == 0)
++			continue;
++
++		ret = regulator_enable(serdes->sensor_supply[i]);
++		if (ret < 0) {
++			dev_err(serdes->dev, "regulator_enable failed %d\n",
++				ret);
++			goto error;
++		}
++	}
++
++	dev_dbg(serdes->dev, "SERDES found!\n");
++
++	return 0;
++
++error:
++	media_entity_cleanup(&subdev->entity);
++	max9286_serdes_cleanup_resources(serdes);
++
++	return ret;
++}
++
++static int max9286_serdes_remove(struct i2c_client *client)
++{
++	struct v4l2_subdev *subdev = i2c_get_clientdata(client);
++	struct max9286_serdes_device *serdes = to_serdes(subdev);
++
++	v4l2_async_unregister_subdev(subdev);
++	media_entity_cleanup(&subdev->entity);
++	max9286_serdes_cleanup_resources(serdes);
++
++	return 0;
++}
++
++static const struct of_device_id max9286_serdes_of_id_table[] = {
++	{ .compatible = "max9286-serdes" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, max9286_serdes_of_id_table);
++
++static const struct i2c_device_id max9286_serdes_id[] = {
++	{ "max9286-serdes", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, max9286_serdes_id);
++
++static struct i2c_driver max9286_serdes_driver = {
++	.driver = {
++		.name			= DRIVER_NAME,
++		.of_match_table	= max9286_serdes_of_id_table,
++	},
++	.probe		= max9286_serdes_probe,
++	.remove		= max9286_serdes_remove,
++	.id_table	= max9286_serdes_id,
++};
++
++module_i2c_driver(max9286_serdes_driver);
++
++MODULE_AUTHOR("Watson Chow <watson.chow@avnet.com>");
++MODULE_DESCRIPTION("MAX9286_MAX96705 SerDes and AR0231 combo Driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.h b/drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.h
+new file mode 100644
+index 0000000..9811a12
+--- /dev/null
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.h
+@@ -0,0 +1,1370 @@
++#ifndef __MAX9286_96705_SERDES_H
++#define __MAX9286_96705_SERDES_H
++
++#include <linux/types.h>
++
++#define MIN_SERDES_SINKS	4
++#define MAX_SERDES_SINKS	4
++#define MIN_SERDES_SRCS		1
++#define MAX_SERDES_SRCS		1
++
++#define MAX_GMSL_LINK		4
++
++#define SERDES_MIN_WIDTH	32
++#define SERDES_MAX_WIDTH	7680
++#define SERDES_MIN_HEIGHT	32
++#define SERDES_MAX_HEIGHT	7680
++
++#define SERDES_PAD_SINK		0
++#define SERDES_PAD_SOURCE	1
++
++/* Register Offset */
++#define MAX9286_REG_CHIPID	0x1e
++
++/* Register Value */
++#define MAX9286_CHIPID		0x40
++
++enum {
++	SER_DEV_DEF,	// 0x40(0x80)
++	SER_DEV_BRD,	// 0x41(0x8a)
++	SER_DEV_LK0,	// 0x42(0x82)
++	SER_DEV_LK1,	// 0x43(0x84)
++	SER_DEV_LK2,	// 0x44(0x86)
++	SER_DEV_LK3,	// 0x45(0x88)
++	SER_DEV_NUM
++};
++
++enum {
++	SEN_DEV_BRD,	// 0x10(0x20)
++	SEN_DEV_LK0,	// 0x11(0x22)
++	SEN_DEV_LK1,	// 0x12(0x24)
++	SEN_DEV_LK2,	// 0x13(0x26)
++	SEN_DEV_LK3,	// 0x14(0x28)
++	SEN_DEV_NUM
++};
++
++enum {
++	SER_I2C_DEF,	// 0x40(0x80)
++	SER_I2C_BRD,	// 0x41(0x8a)
++	SER_I2C_LK0,	// 0x42(0x82)
++	SER_I2C_LK1,	// 0x43(0x84)
++	SER_I2C_LK2,	// 0x44(0x86)
++	SER_I2C_LK3,	// 0x45(0x88)
++	DSR_I2C_DEF,	// 0x48(0x90)
++	CAM_I2C_DEF,	// 0x10(0x20)
++	CAM_I2C_BRD,	// 0x10(0x20)
++	CAM_I2C_LK0,	// 0x11(0x22)
++	CAM_I2C_LK1,	// 0x11(0x24)
++	CAM_I2C_LK2,	// 0x11(0x26)
++	CAM_I2C_LK3,	// 0x11(0x28)
++	SER_I2C_NUM
++};
++
++enum {
++	I2c_DATA_TYPE_U8,
++	I2c_DATA_TYPE_U16
++};
++
++u8 reverse_chan_setup[] = {
++	/*********************************************************************/
++	/*                    Reverse Control Channel Setup                  */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x3F, 0x4F,	// Enable Custom Reverse Channel &
++					// First Pulse Length
++	0x00, 0x02,			// Delay 2ms
++	0x03, DSR_I2C_DEF, 0x3B, 0x1E,	// Reverse Channel Amplitude to mid
++					// level and transition time
++	0x00, 0x02,			// Delay 2ms
++	0x03, DSR_I2C_DEF, 0x0A, 0xFF,	// Enable forward & reverse control
++					// channel communication for all links
++	0x03, SER_I2C_DEF, 0x04, 0x43,	// Enable Configuration Link
++	0x00, 0x05,			// Delay 5ms
++	0x03, SER_I2C_DEF, 0x08, 0x01,	// Serializer input gain and thresholds
++	0x03, SER_I2C_DEF, 0x97, 0x5F,	// Added enable bit for MAX96705
++					// over MAX9271
++	0x00, 0x02,			// Delay 2ms
++	0x03, DSR_I2C_DEF, 0x3B, 0x19,	// Reverse Channel Amplitude level
++	0x00, 0x02,			// Delay 2ms
++	0xFF				// End marker
++};
++
++u8 max9286_initial_setup_p1_1lane[] = {
++	/*********************************************************************/
++	/*                   MAX9286 Pre MAX9271 Setup                       */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x15, 0x03,	// Disable CSI output
++	0x03, DSR_I2C_DEF, 0x12, 0x37,	// DBL=1, CSI_DBL=1
++					// CSI Lanes, CSI DBL, GMSL DBL,
++					// Data Type
++					// [7:6] Enable CSI-2 Lanes D0
++					//   [5] Enable CSI-2 DBL
++					//   [4] Enable GMSL DBL for RAWx2
++					// [3:0] Enable RAW11/RAW12
++	0xFF				// End marker
++};
++
++u8 max9286_initial_setup_p1_2lane[] = {
++	/*********************************************************************/
++	/*                   MAX9286 Pre MAX9271 Setup                       */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x15, 0x03,	// Disable CSI output
++	0x03, DSR_I2C_DEF, 0x12, 0x77,	// DBL=1, CSI_DBL=1
++					// CSI Lanes, CSI DBL, GMSL DBL,
++					// Data Type
++					// [7:6] Enable CSI-2 Lanes D0, D1
++					//   [5] Enable CSI-2 DBL
++					//   [4] Enable GMSL DBL for RAWx2
++					// [3:0] Enable RAW11/RAW12
++	0xFF				// End marker
++};
++
++u8 max9286_initial_setup_p1_3lane[] = {
++	/*********************************************************************/
++	/*                   MAX9286 Pre MAX9271 Setup                       */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x15, 0x03,	// Disable CSI output
++	0x03, DSR_I2C_DEF, 0x12, 0xB7,	// DBL=1, CSI_DBL=1
++					// CSI Lanes, CSI DBL, GMSL DBL,
++					// Data Type
++					// [7:6] Enable CSI-2 Lanes D0, D1, D2
++					//   [5] Enable CSI-2 DBL
++					//   [4] Enable GMSL DBL for RAWx2
++					// [3:0] Enable RAW11/RAW12
++	0xFF				// End marker
++};
++
++u8 max9286_initial_setup_p1_4lane[] = {
++	/*********************************************************************/
++	/*                   MAX9286 Pre MAX9271 Setup                       */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x15, 0x03,	// Disable CSI output
++	0x03, DSR_I2C_DEF, 0x12, 0xF7,	// DBL=1, CSI_DBL=1
++					// CSI Lanes, CSI DBL, GMSL DBL,
++					// Data Type
++					// [7:6] Enable CSI-2 Lanes D0-D3
++					//   [5] Enable CSI-2 DBL
++					//   [4] Enable GMSL DBL for RAWx2
++					// [3:0] Enable RAW11/RAW12
++	0xFF				// End marker
++};
++
++u8 max9286_initial_setup_p2b[] = {
++	0x03, DSR_I2C_DEF, 0x01, 0x40,	// frame sync on, manual
++					// [7:6] Internally generated Frame
++					//       Sync, FSYNC pin outputs frame
++					//       sync
++					// [1:0] manual mode
++					//      (using registers 0x06-0x08)
++
++	0x03, DSR_I2C_DEF, 0x00, 0xEF,	// Enable GMSL Links
++					// [7:5] Master Link Select = AUTO
++					//   [4] Disable Internal
++					//       VSYNC generation
++					//       (VSYNC comes from camera)
++					//   [3] Enable LINK3
++					//   [2] Enable LINK2
++					//   [1] Enable LINK1
++					//   [0] Enable LINK0
++					//
++					// Reference MAX9286 Fsync Guide
++					//
++	0xFF				// End marker
++};
++
++u8 max9286_initial_setup_p2c_30fps[] = {
++					// Setup PCLK's per frame
++					// 88MHz, 30fps
++					// MAX9286 sends FSYNC to all active
++					// links once count is reached.
++	0x03, DSR_I2C_DEF, 0x06, 0x55,	// [7:0] FSYNC_PERIODL
++	0x03, DSR_I2C_DEF, 0x07, 0xC2,	// [7:0] FSYNC_PERIODM
++	0x03, DSR_I2C_DEF, 0x08, 0x2C,	// [7:0] FSYNC_PERIODH
++					// FSYNC_PERIOD = 0x2CC255 =
++					// 2,933,333 cycles / 88MHz =
++					// 0.0333 => 30fps
++					//
++	0xFF				// End marker
++};
++
++u8 max9286_initial_setup_p2c_30fps_75mhz[] = {
++					// Setup PCLK's per frame
++					// 75MHz, 30fps
++					// MAX9286 sends FSYNC to all active
++					// links once count is reached.
++	0x03, DSR_I2C_DEF, 0x06, 0xA0,	// [7:0] FSYNC_PERIODL
++	0x03, DSR_I2C_DEF, 0x07, 0x25,	// [7:0] FSYNC_PERIODM
++	0x03, DSR_I2C_DEF, 0x08, 0x26,	// [7:0] FSYNC_PERIODH
++					// FSYNC_PERIOD = 0x2625A0 = 
++					// 2,500,000 cycles / 75MHz = 
++					// 0.0333 => 30fps
++					//
++	0xFF				// End marker
++};
++
++u8 max9286_initial_setup_p2c_60fps_75mhz[] = {
++					// Setup PCLK's per frame
++					// 75MHz, 60fps
++					// MAX9286 sends FSYNC to all active
++					// links once count is reached.
++	0x03, DSR_I2C_DEF, 0x06, 0xD0,	// [7:0] FSYNC_PERIODL
++	0x03, DSR_I2C_DEF, 0x07, 0x12,	// [7:0] FSYNC_PERIODM
++	0x03, DSR_I2C_DEF, 0x08, 0x13,	// [7:0] FSYNC_PERIODH
++					// FSYNC_PERIOD = 0x1312D0 = 
++					// 1,250,000 cycles / 75MHz = 
++					// 0.0166 => 60fps
++					//
++	0xFF				// End marker
++};
++
++u8 max9286_initial_setup_p2d[] = {
++	0x03, DSR_I2C_DEF, 0x63, 0x00,	// Disable overlap windlow as
++					// relationship will be broken between
++					// Fsync & returning Vsync
++					// [7:0] OVLP_WINDOWL
++	0x03, DSR_I2C_DEF, 0x64, 0x00,	// After Vsync timing regeneration
++					// Vsync does not return within this
++					// many PCLKs.
++					// [7:6] RSVD
++					//   [5] ENFSINLAST = 0 - FSIN occurs
++					//       anytime between VS rising edge
++					// [4:0] OVLP_WINDOWH
++					// OVLP_WINDOW = 0 (disabled)
++	0x03, DSR_I2C_DEF, 0x1C, 0x06,	// HIBW=1
++					//   [7] HIGHIMM3 = 0
++					//       legacy reverse channel
++					//   [6] HIGHIMM2 = 0
++					//       legacy reverse channel
++					//   [5] HIGHIMM1 = 0
++					//       legacy reverse channel
++					//   [4] HIGHIMM0 = 0
++					//       legacy reverse channel
++					// [3:0] RSVD
++	0x00, 0x02,			// Delay 2ms
++	0x03, SER_I2C_DEF, 0x07, 0xC4,	// DBL=1, HIBW = 1, rising edge
++	0x00, 0x02,			// Delay 2ms
++					//
++					// Reference GMSL_Timing_ReGen_1.1 or
++					// later for
++					//
++					// vsync delay
++					//
++					// Delay should be on the order of 4
++					// lines or more
++	0x03, SER_I2C_DEF, 0x44, 0x00,	// [7:0] VS_DLY[23:16] = 0x00
++	0x00, 0x02,			// Delay 2ms
++	0x03, SER_I2C_DEF, 0x45, 0x21,	// [7:0] VS_DLY[15:8] = 0x21
++	0x00, 0x05,			// Delay 5ms
++	0x03, SER_I2C_DEF, 0x46, 0xC8,	// [7:0] VS_DLY[7:0] = 0xC8
++					// VS_DLY = 2162 * 4 = 8648 (0x21C8
++					//
++					// vsync high
++					//
++					// High time >200Pclks
++					// Ensure there are >200 PCLK's
++	0x03, SER_I2C_DEF, 0x47, 0x00,	// [7:0] VS_H[23:16]
++	0x03, SER_I2C_DEF, 0x48, 0x00,	// [7:0] VS_H[15:8]
++	0x03, SER_I2C_DEF, 0x49, 0xC8,	// [7:0] VS_H[7:0]
++					// VS_H = 200 (0xC8)
++					//
++	0x03, SER_I2C_DEF, 0x43, 0x21,	// enable vsync re-gen
++					//   [7] RSVD = 0
++					//   [6] RSVD = 0
++					//   [5] GEN_VS = 1
++					//       enable VS output generation
++					//       (VS internally generated)
++					//   [4] GEN_HS = 0
++					//       disable HS output generation
++					//       (HS used from input)
++					//   [3] GEN_DE = 0
++					//       disable DE output generation
++					//       (DE used from input)
++					//   [2] VS_TRIG = 0
++					//       VS trigger uses falling edge
++					// [1:0] VTG_MODE = 1
++					//       VS edge triggers one VS frame
++					//       (current frame is extended/cut
++					//        shfot to adjust timing to net
++					//        trigger)
++					//
++	0x03, SER_I2C_DEF, 0x67, 0xC4,	// align at HS rising edge
++					// [7:6] RVSD = 3
++					//   [5] AUTO_CLINK = 0
++					//       enable configuration link only
++					//       when CLINKEN=1 and SEREN=0
++					//   [4] RSVD = 0
++					//   [3] RSVD = 0
++					// [2:0] DBL_ALIGN_TO = 4 = align at
++					//       each rising edge of HS
++	0xFF				// End marker
++};
++
++u8 gmsl_link_setup[] = {
++	/*********************************************************************/
++	/*                          Setup Link 0                             */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x0a, 0xF1,		// Enable Link 0 Reverse
++						// Channel
++	0x03, SER_I2C_DEF, 0x00, 0x82,		// Change serializer I2C Slave
++						// Address
++	0x03, SER_I2C_LK0, 0x09, 0x22,		// Unique Link 0 Image Sensor
++						// I2C Slave Address
++	0x03, SER_I2C_LK0, 0x0a, 0x20,		// Link 0 Image Sensor Address
++	0x03, SER_I2C_LK0, 0x0b, 0x8A,		// Serializer Broadcast Address
++	0x03, SER_I2C_LK0, 0x0c, 0x82,		// Link 0 Serializer Address
++	/*********************************************************************/
++	/*                          Setup Link 1                             */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x0a, 0xF2,		// Enable Link 1 Reverse
++						// Channel
++	0x03, SER_I2C_DEF, 0x00, 0x84,		// Change serializer I2C Slave
++						// Address
++	0x03, SER_I2C_LK1, 0x09, 0x24,		// Unique Link 1 Image Sensor
++						// I2C Slave Address
++	0x03, SER_I2C_LK1, 0x0a, 0x20,		// Link 1 Image Sensor Address
++	0x03, SER_I2C_LK1, 0x0b, 0x8A,		// Serializer Broadcast Address
++	0x03, SER_I2C_LK1, 0x0c, 0x84,		// Link 1 Serializer Address
++	/*********************************************************************/
++	/*                          Setup Link 2                             */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x0a, 0xF4,		// Enable Link 2 Reverse
++						// Channel
++	0x03, SER_I2C_DEF, 0x00, 0x86,		// Change serializer I2C Slave
++						// Address
++	0x03, SER_I2C_LK2, 0x09, 0x26,		// Unique Link 2 Image Sensor
++						// I2C Slave Address
++	0x03, SER_I2C_LK2, 0x0a, 0x20,		// Link 2 Image Sensor Address
++	0x03, SER_I2C_LK2, 0x0b, 0x8A,		// Serializer Broadcast Address
++	0x03, SER_I2C_LK2, 0x0c, 0x86,		// Link 2 Serializer Address
++	/*********************************************************************/
++	/*                          Setup Link 3                             */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x0a, 0xF8,		// Enable Link 3 Reverse
++						// Channel
++	0x03, SER_I2C_DEF, 0x00, 0x88,		// Change serializer I2C Slave
++						// Address
++	0x03, SER_I2C_LK3, 0x09, 0x28,		// Unique Link 3 Image Sensor
++						// I2C Slave Address
++	0x03, SER_I2C_LK3, 0x0a, 0x20,		// Link 3 Image Sensor Address
++	0x03, SER_I2C_LK3, 0x0b, 0x8A,		// Serializer Broadcast Address
++	0x03, SER_I2C_LK3, 0x0c, 0x88,		// Link 3 Serializer Address
++	/*********************************************************************/
++	/*                   MAX9286 Post MAX9271 Setup                      */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x0a, 0xFF,		// Enable all I2C reverse and
++						// forward channels
++	0x00, 0x02,
++	0xFF					// End marker
++};
++
++u8 gmsl_link_setup_cam_0[] = {
++	/*********************************************************************/
++	/*                          Setup Link 0                             */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x0a, 0xF1,		// Enable Link 0 Reverse
++						// Channel
++	0x03, SER_I2C_DEF, 0x00, 0x82,		// Change serializer I2C Slave
++						// Address
++	0x03, SER_I2C_LK0, 0x09, 0x22,		// Unique Link 0 Image Sensor
++						// I2C Slave Address
++	0x03, SER_I2C_LK0, 0x0a, 0x20,		// Link 0 Image Sensor Address
++	0x03, SER_I2C_LK0, 0x0b, 0x8A,		// Serializer Broadcast Address
++	0x03, SER_I2C_LK0, 0x0c, 0x82,		// Link 0 Serializer Address
++	0x00, 0x02,
++	0xFF					// End marker
++};
++
++u8 gmsl_link_setup_cam_1[] = {
++	/*********************************************************************/
++	/*                          Setup Link 1                             */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x0a, 0xF2,		// Enable Link 1 Reverse
++						// Channel
++	0x03, SER_I2C_DEF, 0x00, 0x84,		// Change serializer I2C Slave
++						// Address
++	0x03, SER_I2C_LK1, 0x09, 0x24,		// Unique Link 1 Image Sensor
++						// I2C Slave Address
++	0x03, SER_I2C_LK1, 0x0a, 0x20,		// Link 1 Image Sensor Address
++	0x03, SER_I2C_LK1, 0x0b, 0x8A,		// Serializer Broadcast Address
++	0x03, SER_I2C_LK1, 0x0c, 0x84,		// Link 1 Serializer Address
++	0x00, 0x02,
++	0xFF					// End marker
++};
++
++u8 gmsl_link_setup_cam_2[] = {
++	/*********************************************************************/
++	/*                          Setup Link 2                             */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x0a, 0xF4,		// Enable Link 2 Reverse
++						// Channel
++	0x03, SER_I2C_DEF, 0x00, 0x86,		// Change serializer I2C Slave
++						// Address
++	0x03, SER_I2C_LK2, 0x09, 0x26,		// Unique Link 2 Image Sensor
++						// I2C Slave Address
++	0x03, SER_I2C_LK2, 0x0a, 0x20,		// Link 2 Image Sensor Address
++	0x03, SER_I2C_LK2, 0x0b, 0x8A,		// Serializer Broadcast Address
++	0x03, SER_I2C_LK2, 0x0c, 0x86,		// Link 2 Serializer Address
++	0x00, 0x02,
++	0xFF					// End marker
++};
++
++u8 gmsl_link_setup_cam_3[] = {
++	/*********************************************************************/
++	/*                          Setup Link 3                             */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x0a, 0xF8,		// Enable Link 3 Reverse
++						// Channel
++	0x03, SER_I2C_DEF, 0x00, 0x88,		// Change serializer I2C Slave
++						// Address
++	0x03, SER_I2C_LK3, 0x09, 0x28,		// Unique Link 3 Image Sensor
++						// I2C Slave Address
++	0x03, SER_I2C_LK3, 0x0a, 0x20,		// Link 3 Image Sensor Address
++	0x03, SER_I2C_LK3, 0x0b, 0x8A,		// Serializer Broadcast Address
++	0x03, SER_I2C_LK3, 0x0c, 0x88,		// Link 3 Serializer Address
++	0x00, 0x02,
++	0xFF					// End marker
++};
++
++u8 max9286_pre_image_sensor_setup[] = {
++	/*********************************************************************/
++	/*               MAX9286 Pre Image Sensor Setup                      */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x34, 0x36,	//Dis enable auto ACK -Optional-
++					//   [7] I2CLOCACK = 0
++					//      acknowledge not generated when
++					//      forward channel is not
++					//      available
++					// [6:5] I2CSLVSH =  b01 = 1
++					//       469ns/234ns I2C setup/hold
++					//       time
++					// [4:2] I2CMSTBT = b101 = 5
++					//       339kbps I2C-to-I2C master
++					//       bit-rate setting
++					// [1:0] I2CSLVTO =  b10 = 2
++					//       1024us I2C-to-I2C slave remote
++					//       timeout
++	0xFF				// End marker
++};
++
++u16 ar0231_config_part1[] = {
++	/*********************************************************************/
++	/*                      Image Sensor Setup                           */
++	/*********************************************************************/
++	0x03, CAM_I2C_BRD, 0x301A, 0x10D8, // RESET_REGISTER
++	0x00, 250, // DELAY= 500
++	0x00, 250,
++	0x00, 200, // DELAY= 200
++	0x03, CAM_I2C_BRD, 0x3056, 0x0080, // GREEN1_GAIN
++	0x03, CAM_I2C_BRD, 0x3058, 0x0080, // BLUE_GAIN
++	0x03, CAM_I2C_BRD, 0x305A, 0x0080, // RED_GAIN
++	0x03, CAM_I2C_BRD, 0x305C, 0x0080, // GREEN2_GAIN
++	0x03, CAM_I2C_BRD, 0x3138, 0x000B, // OTPM_TCFG_OPT
++	0x03, CAM_I2C_BRD, 0x30FE, 0x0020, // NOISE_PEDESTAL
++	0x03, CAM_I2C_BRD, 0x3372, 0xF54F, // DBLC_FS0_CONTROL
++	0x03, CAM_I2C_BRD, 0x337A, 0x0D70, // DBLC_SCALE0
++	0x03, CAM_I2C_BRD, 0x337E, 0x1FFD, // DBLC_OFFSET0
++	0x03, CAM_I2C_BRD, 0x3382, 0x00C0, // DBLC_WEIGHT0
++	0x03, CAM_I2C_BRD, 0x3092, 0x0024, // ROW_NOISE_CONTROL
++	0x03, CAM_I2C_BRD, 0x3C04, 0x0E80, // RESERVED_MFR_3C04
++	0x03, CAM_I2C_BRD, 0x3F90, 0x06E1, // TEMPVSENS0_TMG_CTRL
++	0x03, CAM_I2C_BRD, 0x3F92, 0x06E1, // TEMPVSENS1_TMG_CTRL
++	0x03, CAM_I2C_BRD, 0x350E, 0xFF14, // RESERVED_MFR_350E
++	0x03, CAM_I2C_BRD, 0x3506, 0x4444, // RESERVED_MFR_3506
++	0x03, CAM_I2C_BRD, 0x3508, 0x4444, // RESERVED_MFR_3508
++	0x03, CAM_I2C_BRD, 0x350A, 0x4465, // RESERVED_MFR_350A
++	0x03, CAM_I2C_BRD, 0x350C, 0x055F, // RESERVED_MFR_350C
++	0x03, CAM_I2C_BRD, 0x30BA, 0x11F0, // DIGITAL_CTRL
++	0x03, CAM_I2C_BRD, 0x3566, 0x1D28, // RESERVED_MFR_3566
++	0x03, CAM_I2C_BRD, 0x3518, 0x1FFE, // RESERVED_MFR_3518
++	0x03, CAM_I2C_BRD, 0x318E, 0x0200, // DLO_CONTROL0
++	0x03, CAM_I2C_BRD, 0x3190, 0x5000, // RESERVED_MFR_3190
++	0x03, CAM_I2C_BRD, 0x319E, 0x6060, // RESERVED_MFR_319E
++	0x03, CAM_I2C_BRD, 0x3520, 0x4688, // RESERVED_MFR_3520
++	0x03, CAM_I2C_BRD, 0x3522, 0x8840, // RESERVED_MFR_3522
++	0x03, CAM_I2C_BRD, 0x3524, 0x4046, // RESERVED_MFR_3524
++	0x03, CAM_I2C_BRD, 0x352C, 0xC6C6, // RESERVED_MFR_352C
++	0x03, CAM_I2C_BRD, 0x352A, 0x089F, // RESERVED_MFR_352A
++	0x03, CAM_I2C_BRD, 0x352E, 0x0011, // RESERVED_MFR_352E
++	0x03, CAM_I2C_BRD, 0x352E, 0x0011, // RESERVED_MFR_352E
++	0x03, CAM_I2C_BRD, 0x3530, 0x4400, // RESERVED_MFR_3530
++	0x03, CAM_I2C_BRD, 0x3530, 0x4400, // RESERVED_MFR_3530
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3536, 0xFF06, // RESERVED_MFR_3536
++	0x03, CAM_I2C_BRD, 0x3538, 0xFFFF, // RESERVED_MFR_3538
++	0x03, CAM_I2C_BRD, 0x3538, 0xFFFF, // RESERVED_MFR_3538
++	0x03, CAM_I2C_BRD, 0x3538, 0xFFFF, // RESERVED_MFR_3538
++	0x03, CAM_I2C_BRD, 0x3538, 0xFFFF, // RESERVED_MFR_3538
++	0x03, CAM_I2C_BRD, 0x3538, 0xFFFF, // RESERVED_MFR_3538
++	0x03, CAM_I2C_BRD, 0x3538, 0xFFFF, // RESERVED_MFR_3538
++	0x03, CAM_I2C_BRD, 0x3538, 0xFFFF, // RESERVED_MFR_3538
++	0x03, CAM_I2C_BRD, 0x3538, 0xFFFF, // RESERVED_MFR_3538
++	0x03, CAM_I2C_BRD, 0x3538, 0xFFFF, // RESERVED_MFR_3538
++	0x03, CAM_I2C_BRD, 0x3538, 0xFFFF, // RESERVED_MFR_3538
++	0x03, CAM_I2C_BRD, 0x353A, 0x9000, // RESERVED_MFR_353A
++	0x03, CAM_I2C_BRD, 0x353C, 0x3F00, // RESERVED_MFR_353C
++	0x03, CAM_I2C_BRD, 0x353C, 0x3F00, // RESERVED_MFR_353C
++	0x03, CAM_I2C_BRD, 0x353C, 0x3F00, // RESERVED_MFR_353C
++	0x03, CAM_I2C_BRD, 0x353C, 0x3F00, // RESERVED_MFR_353C
++	0x03, CAM_I2C_BRD, 0x353C, 0x3F00, // RESERVED_MFR_353C
++	0x03, CAM_I2C_BRD, 0x353C, 0x3F00, // RESERVED_MFR_353C
++	0x03, CAM_I2C_BRD, 0x32EC, 0x72A1, // RESERVED_MFR_32EC
++	0x03, CAM_I2C_BRD, 0x3540, 0xC63E, // RESERVED_MFR_3540
++	0x03, CAM_I2C_BRD, 0x3540, 0xC63E, // RESERVED_MFR_3540
++	0x03, CAM_I2C_BRD, 0x3556, 0x101F, // RESERVED_MFR_3556
++	0x03, CAM_I2C_BRD, 0x3566, 0x1D28, // RESERVED_MFR_3566
++	0x03, CAM_I2C_BRD, 0x3566, 0x1D28, // RESERVED_MFR_3566
++	0x03, CAM_I2C_BRD, 0x3566, 0x1D28, // RESERVED_MFR_3566
++	0x03, CAM_I2C_BRD, 0x3566, 0x1128, // RESERVED_MFR_3566
++	0x03, CAM_I2C_BRD, 0x3566, 0x1328, // RESERVED_MFR_3566
++	0x03, CAM_I2C_BRD, 0x3566, 0x3328, // RESERVED_MFR_3566
++	0x03, CAM_I2C_BRD, 0x3528, 0xDDDD, // RESERVED_MFR_3528
++	0x03, CAM_I2C_BRD, 0x3540, 0xC63E, // RESERVED_MFR_3540
++	0x03, CAM_I2C_BRD, 0x3542, 0x545B, // RESERVED_MFR_3542
++	0x03, CAM_I2C_BRD, 0x3544, 0x645A, // RESERVED_MFR_3544
++	0x03, CAM_I2C_BRD, 0x3546, 0x5A5A, // RESERVED_MFR_3546
++	0x03, CAM_I2C_BRD, 0x3548, 0x6400, // RESERVED_MFR_3548
++	0x03, CAM_I2C_BRD, 0x301A, 0x10D8, // RESET_REGISTER
++	0x00, 200, // DELAY= 200
++	0x03, CAM_I2C_BRD, 0x2512, 0x8000, // SEQ_CTRL_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0905, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x3350, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x2004, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1460, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1578, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1360, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x7B24, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0xFF24, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0xFF24, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0xEA24, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1022, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x2410, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x155A, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1342, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1400, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x24FF, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x24FF, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x24EA, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x2324, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x647A, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x2404, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x052C, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x400A, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0xFF0A, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0xFF0A, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1808, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x3851, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1440, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0004, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0801, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0408, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1180, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x15DC, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x134C, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1002, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1016, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1181, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1189, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1056, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1210, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0901, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0D08, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0913, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x13C8, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x092B, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1588, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0901, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1388, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0909, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x11D9, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x091D, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1441, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0903, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1214, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0901, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x10D6, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1210, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1212, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1210, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x11DD, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x11D9, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1056, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0905, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x11DB, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x092B, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x119B, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x11BB, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x121A, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1210, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1460, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1250, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1076, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x10E6, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0901, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x15AB, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0901, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x13A8, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1240, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1260, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0923, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x158D, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x138D, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0901, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0B09, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0108, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0901, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1440, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x091D, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1588, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1388, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x092D, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1066, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0905, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0C08, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x090B, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1441, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x090D, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x10E6, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0901, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1262, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1260, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x11BF, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x11BB, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1066, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x11FB, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0935, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x11BB, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1263, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1260, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1400, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1510, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x11B8, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x12A0, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1200, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1026, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1000, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1342, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x1100, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x7A06, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0913, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0507, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x0841, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x3750, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0x2C2C, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0xFE05, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x2510, 0xFE13, // SEQ_DATA_PORT
++	0x03, CAM_I2C_BRD, 0x1008, 0x0361, // RESERVED_PARAM_1008
++	0x03, CAM_I2C_BRD, 0x100C, 0x0589, // RESERVED_PARAM_100C
++	0x03, CAM_I2C_BRD, 0x100E, 0x07B1, // RESERVED_PARAM_100E
++	0x03, CAM_I2C_BRD, 0x1010, 0x0139, // RESERVED_PARAM_1010
++	0x03, CAM_I2C_BRD, 0x3230, 0x0304, // FINE_CORRECTION
++	0x03, CAM_I2C_BRD, 0x3232, 0x052C, // FINE_CORRECTION2
++	0x03, CAM_I2C_BRD, 0x3234, 0x0754, // FINE_CORRECTION3
++	0x03, CAM_I2C_BRD, 0x3236, 0x00DC, // FINE_CORRECTION4
++	0x03, CAM_I2C_BRD, 0x3566, 0x3328, // RESERVED_MFR_3566
++	0x03, CAM_I2C_BRD, 0x350C, 0x055F, // RESERVED_MFR_350C
++	0x03, CAM_I2C_BRD, 0x32D0, 0x3A02, // RESERVED_MFR_32D0
++	0x03, CAM_I2C_BRD, 0x32D2, 0x3508, // RESERVED_MFR_32D2
++	0x03, CAM_I2C_BRD, 0x32D4, 0x3702, // RESERVED_MFR_32D4
++	0x03, CAM_I2C_BRD, 0x32D6, 0x3C04, // RESERVED_MFR_32D6
++	0x03, CAM_I2C_BRD, 0x32DC, 0x370A, // RESERVED_MFR_32DC
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part2_99mhz[] = {
++	// PLL 27MHz In - 99MHz out
++	0x03, CAM_I2C_BRD, 0x302A, 0x0008, // VT_PIX_CLK_DIV
++	0x03, CAM_I2C_BRD, 0x302C, 0x0001, // VT_SYS_CLK_DIV
++	0x03, CAM_I2C_BRD, 0x302E, 0x0003, // PRE_PLL_CLK_DIV
++	0x03, CAM_I2C_BRD, 0x3030, 0x0058, // PLL_MULTIPLIER
++	0x03, CAM_I2C_BRD, 0x3036, 0x0008, // OP_WORD_CLK_DIV
++	0x03, CAM_I2C_BRD, 0x3038, 0x0001, // OP_SYS_CLK_DIV
++	0xFF    // End marker
++};
++
++u16 ar0231_config_part2_88mhz[] = {
++	// PLL 27MHz In - 87MHz out
++	0x03, CAM_I2C_BRD, 0x302A, 0x0008, //VT_PIX_CLK_DIV = 8
++	0x03, CAM_I2C_BRD, 0x302C, 0x0001, //VT_SYS_CLK_DIV = 1
++	0x03, CAM_I2C_BRD, 0x302E, 0x0009, //PRE_PLL_CLK_DIV = 9
++	0x03, CAM_I2C_BRD, 0x3030, 0x00E8, //PLL_MULTIPLIER = 232
++	0x03, CAM_I2C_BRD, 0x3036, 0x0008, //OP_PIX_CLK_DIV = 8
++	0x03, CAM_I2C_BRD, 0x3038, 0x0001, //OP_SYS_CLK_DIV = 1
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part2_75mhz[] = {
++	// PLL 27MHz In - 75MHz out
++	0x03, CAM_I2C_BRD, 0x302A, 0x0008, //VT_PIX_CLK_DIV = 8
++	0x03, CAM_I2C_BRD, 0x302C, 0x0001, //VT_SYS_CLK_DIV = 1
++	0x03, CAM_I2C_BRD, 0x302E, 0x0009, //PRE_PLL_CLK_DIV = 9
++	0x03, CAM_I2C_BRD, 0x3030, 0x00C8, //PLL_MULTIPLIER = 200
++	0x03, CAM_I2C_BRD, 0x3036, 0x0008, //OP_PIX_CLK_DIV = 8
++	0x03, CAM_I2C_BRD, 0x3038, 0x0001, //OP_SYS_CLK_DIV = 1
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part2_72mhz[] = {
++	// PLL 27MHz In - 72MHz out
++	0x03, CAM_I2C_BRD, 0x302A, 0x0008, //VT_PIX_CLK_DIV = 8
++	0x03, CAM_I2C_BRD, 0x302C, 0x0001, //VT_SYS_CLK_DIV = 1
++	0x03, CAM_I2C_BRD, 0x302E, 0x0003, //PRE_PLL_CLK_DIV = 3
++	0x03, CAM_I2C_BRD, 0x3030, 0x0040, //PLL_MULTIPLIER = 64
++	0x03, CAM_I2C_BRD, 0x3036, 0x0008, //OP_PIX_CLK_DIV = 8
++	0x03, CAM_I2C_BRD, 0x3038, 0x0001, //OP_SYS_CLK_DIV = 1
++	0xFF    // End marker
++};
++
++u16 ar0231_config_part2_66mhz[] = {
++	// PLL 27MHz In - 66MHz out
++	0x03, CAM_I2C_BRD, 0x302A, 0x0008, //VT_PIX_CLK_DIV = 8
++	0x03, CAM_I2C_BRD, 0x302C, 0x0001, //VT_SYS_CLK_DIV = 1
++	0x03, CAM_I2C_BRD, 0x302E, 0x0009, //PRE_PLL_CLK_DIV = 9
++	0x03, CAM_I2C_BRD, 0x3030, 0x00B0, //PLL_MULTIPLIER = 176
++	0x03, CAM_I2C_BRD, 0x3036, 0x0008, //OP_PIX_CLK_DIV = 8
++	0x03, CAM_I2C_BRD, 0x3038, 0x0001, //OP_SYS_CLK_DIV = 1
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part3[] = {
++	0x03, CAM_I2C_BRD, 0x30B0, 0x0B00, // DIGITAL_TEST - [8] PIXCLK_ON
++					   //       continuous clock mode
++	0x03, CAM_I2C_BRD, 0x30A2, 0x0001, // X_ODD_INC_ (1 == no skip)
++	0x03, CAM_I2C_BRD, 0x30A6, 0x0001, // Y_ODD_INC_ (1 == no skip)
++	0x03, CAM_I2C_BRD, 0x3040, 0x0000, // READ_MODE
++	0x03, CAM_I2C_BRD, 0x3040, 0x0000, // READ_MODE
++	0x03, CAM_I2C_BRD, 0x3082, 0x0000, // OPERATION_MODE_CTRL
++	0x03, CAM_I2C_BRD, 0x3082, 0x0000, // OPERATION_MODE_CTRL
++	0x03, CAM_I2C_BRD, 0x3082, 0x0000, // OPERATION_MODE_CTRL
++	0x03, CAM_I2C_BRD, 0x3082, 0x0000, // OPERATION_MODE_CTRL
++	0x03, CAM_I2C_BRD, 0x30BA, 0x11F0, // DIGITAL_CTRL
++	0x03, CAM_I2C_BRD, 0x30BA, 0x11F0, // DIGITAL_CTRL
++	0x03, CAM_I2C_BRD, 0x30BA, 0x11F0, // DIGITAL_CTRL
++	0x03, CAM_I2C_BRD, 0x3044, 0x0400, // DARK_CONTROL
++	0x03, CAM_I2C_BRD, 0x3044, 0x0400, // DARK_CONTROL
++	0x03, CAM_I2C_BRD, 0x3044, 0x0400, // DARK_CONTROL
++	0x03, CAM_I2C_BRD, 0x3044, 0x0400, // DARK_CONTROL
++	0x03, CAM_I2C_BRD, 0x3064, 0x1802, // SMIA_TEST
++	0x03, CAM_I2C_BRD, 0x3064, 0x1802, // SMIA_TEST
++	0x03, CAM_I2C_BRD, 0x3064, 0x1802, // SMIA_TEST
++	0x03, CAM_I2C_BRD, 0x3064, 0x1802, // SMIA_TEST
++	0x03, CAM_I2C_BRD, 0x33E0, 0x0C80, // TEST_ASIL_ROWS
++	0x03, CAM_I2C_BRD, 0x33E0, 0x0C80, // TEST_ASIL_ROWS
++	0x03, CAM_I2C_BRD, 0x3180, 0x0080, // RESERVED_MFR_3180
++	0x03, CAM_I2C_BRD, 0x33E4, 0x0080, // RESERVED_MFR_33E4
++	0x03, CAM_I2C_BRD, 0x33E0, 0x0C80, // TEST_ASIL_ROWS
++	0x03, CAM_I2C_BRD, 0x33E0, 0x0C80, // TEST_ASIL_ROWS
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part4_720p[] = {
++	0x03, CAM_I2C_BRD, 0x3004, 0x0140, // X_ADDR_START = 320
++	0x03, CAM_I2C_BRD, 0x3008, 0x063F, // X_ADDR_END = 1599 ... 1599-320
++					   // = 1279
++	0x03, CAM_I2C_BRD, 0x3002, 0x00F0, // Y_ADDR_START = 240
++	0x03, CAM_I2C_BRD, 0x3006, 0x03BF, // Y_ADDR_END = 959 ... 959-240
++					   // =719
++	0x03, CAM_I2C_BRD, 0x3032, 0x0000, // SCALING_MODE
++	0x03, CAM_I2C_BRD, 0x3400, 0x0010, // RESERVED_MFR_3400
++	0x03, CAM_I2C_BRD, 0x3402, 0x0F10, // X_OUTPUT_CONTROL
++	0x03, CAM_I2C_BRD, 0x3402, 0x0A10, // X_OUTPUT_CONTROL
++	0x03, CAM_I2C_BRD, 0x3404, 0x0880, // Y_OUTPUT_CONTROL
++	0x03, CAM_I2C_BRD, 0x3404, 0x05B0, // Y_OUTPUT_CONTROL
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part4_1080p[] = {
++	0x03, CAM_I2C_BRD, 0x3004, 0x0000, // X_ADDR_START = 0
++	0x03, CAM_I2C_BRD, 0x3008, 0x077F, // X_ADDR_END = 1919
++	0x03, CAM_I2C_BRD, 0x3002, 0x003C, // Y_ADDR_START = 60
++	0x03, CAM_I2C_BRD, 0x3006, 0x0473, // Y_ADDR_END = 1139 ... 1139-60
++					   // =1079
++	0x03, CAM_I2C_BRD, 0x3032, 0x0000, // SCALING_MODE
++	0x03, CAM_I2C_BRD, 0x3400, 0x0010, // RESERVED_MFR_3400
++	0x03, CAM_I2C_BRD, 0x3402, 0x0F10, // X_OUTPUT_CONTROL
++	0x03, CAM_I2C_BRD, 0x3402, 0x0F10, // X_OUTPUT_CONTROL
++	0x03, CAM_I2C_BRD, 0x3404, 0x0880, // Y_OUTPUT_CONTROL
++	0x03, CAM_I2C_BRD, 0x3404, 0x0880, // Y_OUTPUT_CONTROL
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part5a[] = {
++	0x03, CAM_I2C_BRD, 0x3082, 0x0000,	// OPERATION_MODE_CTRL
++	0x03, CAM_I2C_BRD, 0x30BA, 0x11F1,	// DIGITAL_CTRL
++	0x00, 100, // DELAY= 100
++	0x03, CAM_I2C_BRD, 0x30BA, 0x11F0,	// DIGITAL_CTRL
++
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part5b_1080p[] = {
++	0x03, CAM_I2C_BRD, 0x300C, 0x080E,	// LINE_LENGTH_PCK_ = 2062
++	0x03, CAM_I2C_BRD, 0x300A, 0x0484,	// FRAME_LENGTH_LINES_ = 1156
++	0x03, CAM_I2C_BRD, 0x3042, 0x0000,	// EXTRA_DELAY = 0
++						// TOTAL CYCLES = 2062*1156 + 0
++						// = 2,383,672
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part5b_720p[] = {
++	0x03, CAM_I2C_BRD, 0x300C, 0x05DC,	// LINE_LENGTH_PCK_ = 1500 (1280+220 or 1280+17%)
++	0x03, CAM_I2C_BRD, 0x300A, 0x0335,	// FRAME_LENGTH_LINES_ = 821
++	0x03, CAM_I2C_BRD, 0x3042, 0x0000,	// EXTRA_DELAY = 0
++						// TOTAL CYCLES = 1500*821 + 0 
++						// = 1,315,000
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part5c[] = {
++	0x03, CAM_I2C_BRD, 0x3238, 0x0222,	// EXPOSURE_RATIO
++	0x03, CAM_I2C_BRD, 0x3238, 0x0222,	// EXPOSURE_RATIO
++	0x03, CAM_I2C_BRD, 0x3238, 0x0222,	// EXPOSURE_RATIO
++	0x03, CAM_I2C_BRD, 0x3238, 0x0222,	// EXPOSURE_RATIO
++	0x03, CAM_I2C_BRD, 0x3012, 0x0163,	// COARSE_INTEGRATION_TIME_
++	0x03, CAM_I2C_BRD, 0x3014, 0x06A4,	// FINE_INTEGRATION_TIME_
++	0x03, CAM_I2C_BRD, 0x30B0, 0x0B00,	// DIGITAL_TEST - [8] PIXCLK_ON
++						//  - continuous clock mode
++	0x03, CAM_I2C_BRD, 0x32EA, 0x3C08,	// RESERVED_MFR_32EA
++	0x03, CAM_I2C_BRD, 0x32EA, 0x3C08,	// RESERVED_MFR_32EA
++	0x03, CAM_I2C_BRD, 0x32EA, 0x3C08,	// RESERVED_MFR_32EA
++	0x03, CAM_I2C_BRD, 0x32EC, 0x72A1,	// RESERVED_MFR_32EC
++	0x03, CAM_I2C_BRD, 0x32EC, 0x72A1,	// RESERVED_MFR_32EC
++	0x03, CAM_I2C_BRD, 0x32EC, 0x72A1,	// RESERVED_MFR_32EC
++	0x03, CAM_I2C_BRD, 0x32EC, 0x72A1,	// RESERVED_MFR_32EC
++	0x03, CAM_I2C_BRD, 0x32EC, 0x72A1,	// RESERVED_MFR_32EC
++	0x03, CAM_I2C_BRD, 0x32EC, 0x72A1,	// RESERVED_MFR_32EC
++	0x03, CAM_I2C_BRD, 0x31D0, 0x0000,	// COMPANDING
++	0x03, CAM_I2C_BRD, 0x31AE, 0x0001,	// SERIAL_FORMAT
++	0x03, CAM_I2C_BRD, 0x31AE, 0x0001,	// SERIAL_FORMAT
++	0x03, CAM_I2C_BRD, 0x31AC, 0x0C0C,	// DATA_FORMAT_BITS
++	0x03, CAM_I2C_BRD, 0x31AC, 0x0C0C,	// DATA_FORMAT_BITS
++	// Enable external synchronization
++	0x03, CAM_I2C_BRD, 0x340A, 0x0077,	// GPIO_CONTROL1
++						// [ 7] GPIO3_INPUT_DISABLE = 0
++						// [ 6] GPIO2_INPUT_DISABLE = 1
++						// [ 5] GPIO1_INPUT_DISABLE = 1
++						// [ 4] GPIO0_INPUT_DISABLE = 1
++						// [ 7] GPIO3_OUTPUT_ENABLE = 0
++						// [ 6] GPIO2_OUTPUT_ENABLE = 1
++						// [ 5] GPIO1_OUTPUT_ENABLE = 1
++						// [ 4] GPIO0_OUTPUT_ENABLE = 1
++	0x03, CAM_I2C_BRD, 0x340C, 0x0080,	// GPIO_CONTROL2
++						//    [11] GPIO_HIDRV_EN = 0
++						//         (1.8V)
++						// [10: 8] GPIO_SLEW = 000
++						// [ 7: 6] GPIO3_ISEL = 10
++						//	   (TRIGGER)
++						// [ 5: 4] GPIO2_ISEL = 00
++						//	   (none)
++						// [ 3: 2] GPIO1_ISEL = 00
++						//	   (none)
++						// [ 1: 0] GPIO0_ISEL = 00
++						//	   (none)
++	0x03, CAM_I2C_BRD, 0x30CE, 0x0120,	// GRR_CONTROL1, Trigger
++						// Shutter Sync
++						// (Surround View Slave) Mode
++						//  [ 8] SLAVE_SH_SYNC_MODE = 1
++						//  [ 7] SHUTTER_ALWAYS_OPEN
++						//  [ 6] SHUTTER_DISABLE
++						//  [ 5] FRAME_START_MODE /
++						//       FRAME_START_SYNCED = 1
++						//  [ 4] SLAVE_MODE
++						//  [ 2] EXT_SHUT_PULSED
++						//  [ 1] LINE_SYNC_MODE
++						//  [ 0] GRR_MODE
++	0x03, CAM_I2C_BRD, 0x301A, 0x19DC,	// RESET_REGISTER
++						//  [15] GROUPED_PARAMETER_HOLD
++						//       = 0
++						//  [14] RSVD
++						//  [13] LPF_ENABLE = 0
++						//  [12] SMIA_SERIALIZER_DIS= 1
++						//  [11] FORCED_PLL_ON = 1
++						//  [10] RESTART_BAD   = 0
++						//  [ 9] MASK_BAD      = 0
++						//  [ 8] GPI_EN        = 1
++						//  [ 7] PARALLEL_EN = 1
++						//  [ 6] DRIVE_PINS  = 1
++						//  [ 5] RSVD
++						//  [ 4] UNUSED      = 1
++						//  [ 3] LOCK_REG = 1
++						//  [ 2] STREAM   = 1
++						//  [ 1] RESTART  = 0
++						//  [ 0] RESET    = 0
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part6_exposure[] = {
++	// Sleep 1 sec
++	00, 250,
++	00, 250,
++	00, 250,
++	00, 250,
++	// Adjust Integration Time
++	0x03, CAM_I2C_BRD, 0x3022, 0x0001, // GROUPED_PARAMETER_HOLD_
++	0x03, CAM_I2C_BRD, 0x3012, 0x0335, // COARSE_INTEGRATION_TIME_
++	0x03, CAM_I2C_BRD, 0x3014, 0x06A4, // FINE_INTEGRATION_TIME_
++	0x03, CAM_I2C_BRD, 0x3022, 0x0000, // GROUPED_PARAMETER_HOLD_
++	// Sleep 1 sec
++	00, 250,
++	00, 250,
++	00, 250,
++	00, 250,
++	0xFF	// End marker
++};
++
++u16 ar0231_config_part7_gains[] = {
++	// Adust Gains
++	0x03, CAM_I2C_BRD, 0x3022, 0x0001, // GROUPED_PARAMETER_HOLD_
++	0x03, CAM_I2C_BRD, 0x3362, 0x0000, // DC_GAIN
++	0x03, CAM_I2C_BRD, 0x3366, 0x7777, // ANALOG_GAIN
++	0x03, CAM_I2C_BRD, 0x3056, 0x0091, // GREEN1_GAIN
++	0x03, CAM_I2C_BRD, 0x305C, 0x0091, // GREEN2_GAIN
++	0x03, CAM_I2C_BRD, 0x305A, 0x0080, // RED_GAIN
++	0x03, CAM_I2C_BRD, 0x3058, 0x026B, // BLUE_GAIN
++	0x03, CAM_I2C_BRD, 0x3308, 0x0200, // DIG_GAIN_GLOBAL
++	0x03, CAM_I2C_BRD, 0x3022, 0x0000, // GROUPED_PARAMETER_HOLD_
++	0xFF	// End marker
++};
++
++u8 max9286_post_image_sensor_setup[] = {
++	/*********************************************************************/
++	/*               MAX9286 Post Image Sensor Setup                     */
++	/*********************************************************************/
++	0x03, DSR_I2C_DEF, 0x34, 0xB6,  // Re enable auto ACK -Optional-
++					// [7] I2CLOCACK = 1 - I2C-to-I2C slave
++					//     generates lock acknowledge when
++					//     forward channel is not available
++					// [6:5] I2CSLVSH =  b01 = 1
++					//       469ns/234ns I2C setup/hold
++					//       time
++					// [4:2] I2CMSTBT = b101 = 5
++					//       339kbps I2C-to-I2C master
++					//       bit-rate setting
++					// [1:0] I2CSLVTO =  b10 = 2
++					//       1024us I2C-to-I2C slave remote
++					//       timeout
++	0xFF				// End marker
++};
++
++u8 max9286_enable_gmsl_csi_mono0[] = {
++	/*********************************************************************/
++	/*               Enable GMSL & CSI-2                                 */
++	/*********************************************************************/
++	0x03, SER_I2C_BRD, 0x06, 0xAC,	// preemphasis setting 6.0dB by default
++	0x00, 0x05,			// Delay 5ms
++	0x03, SER_I2C_BRD, 0x04, 0x83,	// Enable all serializer and disable
++					// configuration link
++					//   [7] SEREN = 1 - enable
++					//                   serialization
++					//               (requires valid PCLK)
++					//   [6] CLINKEN = 0 - disable
++					//                     configuration
++					//                     link
++					//   [5] PRBSEN = 0 - disable PRBS test
++					//   [4] SLEEP = 0 - disable sleep mode
++					// [3:2] INTTYPE = 0 - uart/i2c
++					//                     interface type
++					//                (n/a when I2CSEL = 1)
++					//   [1] REVCCEN = 1 - enable reverse
++					//            control-channel receiver
++					//   [0] FWDCCEN - 1 - enable forward
++					//          control-cahnnel transmitter
++	0x00, 0x05,			// Delay 5ms
++	// Single Camera
++	0x03, DSR_I2C_DEF, 0x00, 0xE1,  // Enable GMSL Links
++					// [7:5] Master Link Select = AUTO
++					//   [4] Disable Internal VSYNC
++					//               generation
++					//            (VSYNC comes from camera)
++					//   [3] Disable LINK3
++					//   [2] Disable LINK2
++					//   [1] Disable LINK1
++					//   [0] Enable LINK0
++	0x03, DSR_I2C_DEF, 0x15, 0x9F,  // Enable CSI output
++					//   [7] FRAME_COMBINER = 1 =
++					//                       W X (4 X H)
++					// [6:5] VD = 0 - CSI-2 outputs on
++					//            virtual channel 0
++					//            (when VCITYPE = 0)
++					//   [4] VCTYPE = 1 - set virtual
++					//       channel according to link
++					//       number
++					//   [3] CSIOUTEN = 1
++					//       enable CSI-2 output
++					// [2:0] RSVD = b011
++	0xFF				// End marker
++};
++
++u8 max9286_enable_gmsl_csi_mono1[] = {
++	/*********************************************************************/
++	/*               Enable GMSL & CSI-2                                 */
++	/*********************************************************************/
++	0x03, SER_I2C_BRD, 0x06, 0xAC,	// preemphasis setting 6.0 dB by
++					// default
++	0x00, 0x05,			// Delay 5ms
++	0x03, SER_I2C_BRD, 0x04, 0x83,  // Enable all serializer and disable
++					// configuration link
++					//   [7] SEREN = 1 - enable
++					//             serialization
++					//             (requires valid PCLK)
++					//   [6] CLINKEN = 0 - disable
++					//                  configuration link
++					//   [5] PRBSEN = 0 - disable PRBS test
++					//   [4] SLEEP = 0 - disable sleep mode
++					// [3:2] INTTYPE = 0 - uart/i2c
++					//                interface type
++					//                (n/a when I2CSEL = 1)
++					//   [1] REVCCEN = 1 - enable reverse
++					//             control-channel receiver
++					//   [0] FWDCCEN - 1 - enable
++					//              forward control-cahnnel
++					//              transmitter
++	0x00, 0x05,			// Delay 5ms
++	// Single Camera
++	0x03, DSR_I2C_DEF, 0x00, 0xE2,	// Enable GMSL Links
++					// [7:5] Master Link Select = AUTO
++					//   [4] Disable Internal VSYNC
++					//       generation
++					//        (VSYNC comes from camera)
++					//   [3] Disable LINK3
++					//   [2] Disable LINK2
++					//   [1] Enable LINK1
++					//   [0] Disable LINK0
++
++	0x03, DSR_I2C_DEF, 0x15, 0x9F,	//Enable CSI output
++					//   [7] FRAME_COMBINER = 1 =
++					//                     W X (4 X H)
++					// [6:5] VD = 0 - CSI-2 outputs on
++					//                virtual channel 0
++					//                (when VCITYPE = 0)
++					//   [4] VCTYPE = 1 - set virtual
++					//           channel according to link
++					//           number
++					//   [3] CSIOUTEN = 1 - enable CSI-2
++					//                  output
++					// [2:0] RSVD = b011
++
++	0xFF	// End marker
++};
++
++u8 max9286_enable_gmsl_csi_mono2[] = {
++	/*********************************************************************/
++	/*               Enable GMSL & CSI-2                                 */
++	/*********************************************************************/
++	0x03, SER_I2C_BRD, 0x06, 0xAC,	// preemphasis setting 6.0 dB by
++					// default
++	0x00, 0x05,			// Delay 5ms
++	0x03, SER_I2C_BRD, 0x04, 0x83,	// Enable all serializer and disable
++					// configuration link
++					//   [7] SEREN = 1 - enable
++					//              serialization
++					//              (requires valid PCLK)
++					//   [6] CLINKEN = 0 - disable
++					//                   configuration link
++					//   [5] PRBSEN = 0 - disable PRBS test
++					//   [4] SLEEP = 0 - disable sleep mode
++					// [3:2] INTTYPE = 0 - uart/i2c
++					//                  interface type
++					//                (n/a when I2CSEL = 1)
++					//   [1] REVCCEN = 1 - enable reverse
++					//             control-channel receiver
++					//   [0] FWDCCEN - 1 - enable
++					//  forward control-cahnnel transmitter
++	0x00, 0x05,			// Delay 5ms
++	// Single Camera
++	0x03, DSR_I2C_DEF, 0x00, 0xE4,	//Enable GMSL Links
++					// [7:5] Master Link Select = AUTO
++					//   [4] Disable Internal VSYNC
++					//              generation
++					//            (VSYNC comes from camera)
++					//   [3] Disable LINK3
++					//   [2] Enable LINK2
++					//   [1] Disable LINK1
++					//   [0] Disable LINK0
++
++	0x03, DSR_I2C_DEF, 0x15, 0x9F,  //Enable CSI output
++					//   [7] FRAME_COMBINER = 1 =
++					//                      W X (4 X H)
++					// [6:5] VD = 0 - CSI-2 outputs on
++					//                 virtual channel 0
++					//                 (when VCITYPE = 0)
++					//   [4] VCTYPE = 1 - set virtual
++					//            channel according to link
++					//            number
++					//   [3] CSIOUTEN = 1 - enable
++					//                        CSI-2 output
++					// [2:0] RSVD = b011
++
++	0xFF	// End marker
++};
++
++u8 max9286_enable_gmsl_csi_mono3[] = {
++	/*********************************************************************/
++	/*               Enable GMSL & CSI-2                                 */
++	/*********************************************************************/
++	0x03, SER_I2C_BRD, 0x06, 0xAC,  // preemphasis setting 6.0 dB by
++					// default
++	0x00, 0x05,			// Delay 5ms
++	0x03, SER_I2C_BRD, 0x04, 0x83,  // Enable all serializer and disable
++					//        configuration link
++					//   [7] SEREN = 1 - enable
++					//               serialization
++					//               (requires valid PCLK)
++					//   [6] CLINKEN = 0 - disable
++					//                  configuration link
++					//   [5] PRBSEN = 0 - disable
++					//                    PRBS test
++					//   [4] SLEEP = 0 - disable
++					//                   sleep mode
++					// [3:2] INTTYPE = 0 - uart/i2c
++					//                    interface type
++					//                (n/a when I2CSEL = 1)
++					//   [1] REVCCEN = 1 - enable
++					//     reverse control-channel receiver
++					//   [0] FWDCCEN - 1 - enable
++					//   orward control-cahnnel transmitter
++	0x00, 0x05,			// Delay 5ms
++	// Single Camera
++	0x03, DSR_I2C_DEF, 0x00, 0xE8,  //Enable GMSL Links
++					// [7:5] Master Link Select = AUTO
++					//   [4] Disable Internal VSYNC
++					//       generation
++					//       (VSYNC comes from camera)
++					//   [3] Enable LINK3
++					//   [2] Disable LINK2
++					//   [1] Disable LINK1
++					//   [0] Disable LINK0
++	0x03, DSR_I2C_DEF, 0x15, 0x9F,  // Enable CSI output
++					//   [7] FRAME_COMBINER = 1 =
++					//                        W X (4 X H)
++					// [6:5] VD = 0 - CSI-2 outputs on
++					//                  virtual channel 0
++					//                  (when VCITYPE = 0)
++					//   [4] VCTYPE = 1 - set virtual
++					//     channel according to link number
++					//   [3] CSIOUTEN = 1 - enable
++					//                      CSI-2 output
++					// [2:0] RSVD = b011
++
++	0xFF	// End marker
++};
++
++u8 max9286_enable_gmsl_csi_dual01[] = {
++	/*********************************************************************/
++	/*               Enable GMSL & CSI-2                                 */
++	/*********************************************************************/
++	0x03, SER_I2C_BRD, 0x06, 0xAC,  // preemphasis setting 6.0dB by default
++	0x00, 0x05,			// Delay 5ms
++	0x03, SER_I2C_BRD, 0x04, 0x83,  // Enable all serializer and disable
++					// configuration link
++					//   [7] SEREN = 1 - enable
++					//                   serialization
++					//                (requires valid PCLK)
++					//   [6] CLINKEN = 0 - disable
++					//                  configuration link
++					//   [5] PRBSEN = 0 - disable PRBS test
++					//   [4] SLEEP = 0 - disable sleep mode
++					// [3:2] INTTYPE = 0 - uart/i2c
++					//                      interface type
++					//                (n/a when I2CSEL = 1)
++					//   [1] REVCCEN = 1 - enable reverse
++					//             control-channel receiver
++					//   [0] FWDCCEN - 1 - enable
++					//  forward control-cahnnel transmitter
++	0x03, SER_I2C_BRD, 0x40, 0x0F,  // Crossbar VS
++					//   [7] RSVD
++					//   [6] INVERT_MUX_VS = 0
++					//       (non-inverted)
++					//   [5] FORCE_MUX_VS = 0
++					// [4:0] CROSSBARVS
++	0x00, 0x05,			// Delay 5ms
++	// Dual Camera
++	0x03, DSR_I2C_DEF, 0x00, 0xE3,	//Enable GMSL Links
++					// [7:5] Master Link Select = AUTO
++					//   [4] Disable Internal VSYNC
++					//       generation
++					//       (VSYNC comes from camera)
++					//   [3] Disable LINK3
++					//   [2] Disable LINK2
++					//   [1] Enable LINK1
++					//   [0] Enable LINK0
++	0x03, DSR_I2C_DEF, 0x15, 0x9F,	//Enable CSI output
++					//   [7] FRAME_COMBINER = 1 =
++					//                          W X (4 X H)
++					// [6:5] VD = 0 - CSI-2 outputs on
++					//                virtual channel 0
++					//                (when VCITYPE = 0)
++					//   [4] VCTYPE = 1 - set virtual
++					//                    channel according
++					//                    to link number
++					//   [3] CSIOUTEN = 1 - enable
++					//                      CSI-2 output
++					// [2:0] RSVD = b011
++
++	0xFF	// End marker
++};
++
++u8 max9286_enable_gmsl_csi_dual23[] = {
++	/*********************************************************************/
++	/*               Enable GMSL & CSI-2                                 */
++	/*********************************************************************/
++	0x03, SER_I2C_BRD, 0x06, 0xAC,  // preemphasis setting 6.0dB by default
++	0x00, 0x05,			// Delay 5ms
++	0x03, SER_I2C_BRD, 0x04, 0x83,  // Enable all serializer and disable
++					// configuration link
++					//   [7] SEREN = 1 - enable
++					//                   serialization
++					//                (requires valid PCLK)
++					//   [6] CLINKEN = 0 - disable
++					//                  configuration link
++					//   [5] PRBSEN = 0 - disable PRBS test
++					//   [4] SLEEP = 0 - disable sleep mode
++					// [3:2] INTTYPE = 0 - uart/i2c
++					//                     interface type
++					//                (n/a when I2CSEL = 1)
++					//   [1] REVCCEN = 1 - enable reverse
++					//             control-channel receiver
++					//   [0] FWDCCEN - 1 - enable
++					//              forward control-cahnnel
++					//              transmitter
++	0x03, SER_I2C_BRD, 0x40, 0x0F,  // Crossbar VS
++					//   [7] RSVD
++					//   [6] INVERT_MUX_VS = 0
++					//       (non-inverted)
++					//   [5] FORCE_MUX_VS = 0
++					// [4:0] CROSSBARVS
++	0x00, 0x05,			// Delay 5ms
++	// Dual Camera
++	0x03, DSR_I2C_DEF, 0x00, 0xEC,	//Enable GMSL Links
++					// [7:5] Master Link Select = AUTO
++					//   [4] Disable Internal VSYNC
++					//       generation
++					//       (VSYNC comes from camera)
++					//   [3] Enable LINK3
++					//   [2] Enable LINK2
++					//   [1] Disable LINK1
++					//   [0] Disable LINK0
++
++	0x03, DSR_I2C_DEF, 0x15, 0x9F,	//Enable CSI output
++					//   [7] FRAME_COMBINER = 1 =
++					//                        W X (4 X H)
++					// [6:5] VD = 0 - CSI-2 outputs on
++					//                   virtual channel 0
++					//                   (when VCITYPE = 0)
++					//   [4] VCTYPE = 1 - set virtual
++					//                    channel according
++					//                    to link number
++					//   [3] CSIOUTEN = 1 - enable CSI-2
++					//                      output
++					// [2:0] RSVD = b011
++
++	0xFF	// End marker
++};
++
++u8 max9286_enable_gmsl_csi_quad[] = {
++	/*********************************************************************/
++	/*               Enable GMSL & CSI-2                                 */
++	/*********************************************************************/
++	0x03, SER_I2C_BRD, 0x06, 0xAC,  // preemphasis setting 6.0dB by default
++	0x00, 0x05,			// Delay 5ms
++	0x03, SER_I2C_BRD, 0x04, 0x83,  // Enable all serializer and disable
++					// configuration link
++					//   [7] SEREN = 1 - enable
++					//                   serialization
++					//                (requires valid PCLK)
++					//   [6] CLINKEN = 0 - disable
++					//                   configuration link
++					//   [5] PRBSEN = 0 - disable PRBS test
++					//   [4] SLEEP = 0 - disable sleep mode
++					// [3:2] INTTYPE = 0 - uart/i2c
++					//                     interface type
++					//                (n/a when I2CSEL = 1)
++					//   [1] REVCCEN = 1 - enable reverse
++					//                     control-channel
++					//                     receiver
++					//   [0] FWDCCEN - 1 - enable forward
++					//                     control-cahnnel
++					//                     transmitter
++	0x00, 0x05,			// Delay 5ms
++	// Quad Camera
++	0x03, DSR_I2C_DEF, 0x00, 0xEF,  //Enable GMSL Links
++					// [7:5] Master Link Select = AUTO
++					//   [4] Disable Internal VSYNC
++					//       generation
++					//       (VSYNC comes from camera)
++					//   [3] Enable LINK3
++					//   [2] Enable LINK2
++					//   [1] Enable LINK1
++					//   [0] Enable LINK0
++	0x03, DSR_I2C_DEF, 0x15, 0x9F,  //Enable CSI output
++					//   [7] FRAME_COMBINER = 1 =
++					//                        W X (4 X H)
++					// [6:5] VD = 0 - CSI-2 outputs on
++					//                   virtual channel 0
++					//                   (when VCITYPE = 0)
++					//   [4] VCTYPE = 1 - set virtual
++					//                 channel according to
++					//                 link number
++					//   [3] CSIOUTEN = 1 - enable CSI-2
++					//                      output
++					// [2:0] RSVD = b011
++
++	0xFF	// End marker
++};
++
++u8 max9286_setup_verification[] = {
++	0x00, 0x80,
++	0xFF	// End marker
++};
++
++u8 max9286_disable_gmsl_csi[] = {
++	/*********************************************************************/
++	/*               Disable GMSL & CSI-2                                */
++	/*********************************************************************/
++	0x03, SER_I2C_BRD, 0x04, 0x03,	// Disable all serializer and disable
++					// configuration link
++					//   [7] SEREN = 0 - enable
++					//                   serialization
++					//   [6] CLINKEN = 0 - disable
++					//                   configuration link
++					//   [5] PRBSEN = 0 - disable PRBS test
++					//   [4] SLEEP = 0 - disable sleep mode
++					// [3:2] INTTYPE = 0 - uart/i2c
++					//                     interface type
++					//                (n/a when I2CSEL = 1)
++					//   [1] REVCCEN = 1 - enable reverse
++					//             control-channel receiver
++					//   [0] FWDCCEN - 1 - enable forward
++					//          control-channel transmitter
++	0x03, DSR_I2C_DEF, 0x00, 0xE0,	//Disable GMSL Links
++					// [7:5] Master Link Select = AUTO
++					//   [4] Disable Internal VSYNC
++					//       generation
++					//       (VSYNC comes from camera)
++					//   [3] Disable LINK3
++					//   [2] Disable LINK2
++					//   [1] Disable LINK1
++					//   [0] Disable LINK0
++	0x03, DSR_I2C_DEF, 0x15, 0x93,	//Disable CSI output
++					//   [7] FRAME_COMBINER = 1 =
++					//                         W X (4 X H)
++					// [6:5] VD = 0 - CSI-2 outputs on
++					//               virtual channel 0
++					//              (when VCITYPE = 0)
++					//   [4] VCTYPE = 1 - set virtual
++					//              channel according to
++					//              link number
++					//   [3] CSIOUTEN = 0 - disable CSI-2
++					//                      output
++					// [2:0] RSVD = b011
++	0xFF	// End marker
++};
++
++#endif
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/max96705_serdes.c b/drivers/media/i2c/avt_multi_sensor_fmc/max96705_serdes.c
+new file mode 100644
+index 0000000..c77de2a
+--- /dev/null
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/max96705_serdes.c
+@@ -0,0 +1,108 @@
++/*
++ * max96705_serdes.c - serdes driver for MAX96705
++ *
++ * Copyright (C) 2018, Avnet, Inc.
++ *
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++#define DEBUG
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/i2c.h>
++#include <linux/regmap.h>
++#include "max96705_serdes.h"
++
++#define DRIVER_NAME		"MAX96705-SERDES"
++
++static const struct regmap_config max96705_serdes_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.cache_type = REGCACHE_NONE,
++};
++
++/* -----------------------------------------------------------------------
++ * Helper Functions
++ */
++
++/* -----------------------------------------------------------------------
++ * Register Configuration
++ */
++
++/* -----------------------------------------------------------------------
++ * Platform Device Driver
++ */
++
++static int max96705_serdes_probe(struct i2c_client *client,
++				 const struct i2c_device_id *id)
++{
++	struct max96705_serdes_device *serdes;
++
++	serdes = devm_kzalloc(&client->dev, sizeof(*serdes), GFP_KERNEL);
++	if (!serdes)
++		return -ENOMEM;
++
++	serdes->dev = &client->dev;
++	serdes->client = client;
++
++	dev_info(serdes->dev, "enter\n");
++
++	/* Initialize regmap */
++	serdes->regmap = devm_regmap_init_i2c(client,
++					      &max96705_serdes_regmap_config);
++	if (IS_ERR(serdes->regmap)) {
++		dev_err(&client->dev,
++			"regmap init failed: %ld\n", PTR_ERR(serdes->regmap));
++		return -ENODEV;
++	}
++
++	i2c_set_clientdata(client, serdes);
++	dev_info(serdes->dev, "serdes %p regmap %p\n", serdes, serdes->regmap);
++	dev_info(serdes->dev, "MAX96705 found!\n");
++
++	return 0;
++}
++
++static int max96705_serdes_remove(struct i2c_client *client)
++{
++	return 0;
++}
++
++static const struct of_device_id max96705_serdes_of_id_table[] = {
++	{ .compatible = "max96705-serdes" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, max96705_serdes_of_id_table);
++
++static const struct i2c_device_id max96705_serdes_id[] = {
++	{ "max96705-serdes", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, max96705_serdes_id);
++
++static struct i2c_driver max96705_serdes_driver = {
++	.driver = {
++		.name			= DRIVER_NAME,
++		.of_match_table	= max96705_serdes_of_id_table,
++	},
++	.probe		= max96705_serdes_probe,
++	.remove		= max96705_serdes_remove,
++	.id_table	= max96705_serdes_id,
++};
++
++module_i2c_driver(max96705_serdes_driver);
++
++MODULE_AUTHOR("Watson Chow <watson.chow@avnet.com>");
++MODULE_DESCRIPTION("MAX96705 SerDes Driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/max96705_serdes.h b/drivers/media/i2c/avt_multi_sensor_fmc/max96705_serdes.h
+new file mode 100644
+index 0000000..b32b7bb
+--- /dev/null
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/max96705_serdes.h
+@@ -0,0 +1,14 @@
++#ifndef __MAX96705_SERDES_H
++#define __MAX96705_SERDES_H
++
++#define MAX96705_REG_CHIPID	0x1e
++
++#define MAX96705_CHIPID		0x41
++
++struct max96705_serdes_device {
++	struct device *dev;
++	struct i2c_client *client;
++	struct regmap *regmap;
++};
++
++#endif
+-- 
+2.7.4
+

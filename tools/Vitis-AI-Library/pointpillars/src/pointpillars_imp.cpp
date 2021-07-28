@@ -97,6 +97,10 @@ PointPillarsImp::~PointPillarsImp() {
 }
 
 PointPillarsResult PointPillarsImp::run(const V1F& points) {
+  return run(points.data(), points.size());
+}
+
+PointPillarsResult PointPillarsImp::run( const  float* p_f, int len ) {
   if (ENV_PARAM(ENABLE_PP_DEBUG) == 1) {
     {
       void* addr2 = m0_.configurable_dpu_task_->getInputTensor()[0][0].get_data(0);   (void)addr2; printf("add-0-in: %p   ", addr2);
@@ -142,7 +146,7 @@ PointPillarsResult PointPillarsImp::run(const V1F& points) {
 
   __TIC__(PP_total)
   __TIC__(PP_pre)
-  pre_->process_net0(points);
+  pre_->process_net0(p_f, len);
   __TOC__(PP_pre)
 
   __TIC__(anchor_and_dpu)  // about 19ms, so it's shorter than the dpu0+dpu1+pp_middle time.
@@ -172,6 +176,7 @@ PointPillarsResult PointPillarsImp::run(const V1F& points) {
   __TOC__(PP_post)
   __TOC__(PP_total)
   return results;
+
 }
 
 void PointPillarsImp::do_pointpillar_display(PointPillarsResult& res, int flag, DISPLAY_PARAM& g_test,

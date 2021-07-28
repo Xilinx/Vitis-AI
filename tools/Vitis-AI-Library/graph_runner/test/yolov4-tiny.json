@@ -1,0 +1,108 @@
+{
+    "yolov4-tiny-tensorflow": {
+        "meta": {
+            "dump_tensors_ref": {
+                "detector/yolo-v4-tiny/Conv_10/LeakyRelu/aquant": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_Conv_10_LeakyRelu_aquant.bin",
+                        "md5sum": "4efe5a9bf47ce2bd861632ec1a535b34",
+                        "md5sum_ref": "4efe5a9bf47ce2bd861632ec1a535b34",
+                        "size": 173056
+                    }
+                ],
+                "detector/yolo-v4-tiny/Conv_17/BiasAdd/aquant": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_Conv_17_BiasAdd_aquant.bin",
+                        "md5sum": "a77b0a1c6da78ef5b02e3f14c5b382b9",
+                        "md5sum_ref": "a77b0a1c6da78ef5b02e3f14c5b382b9",
+                        "size": 43095
+                    }
+                ],
+                "detector/yolo-v4-tiny/Conv_17/BiasAdd/aquant_": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_Conv_17_BiasAdd_aquant_.bin",
+                        "md5sum": "1109b998fcbbcef79b812d5f85f3f440",
+                        "md5sum_ref": "1109b998fcbbcef79b812d5f85f3f440",
+                        "size": 172380
+                    }
+                ],
+                "detector/yolo-v4-tiny/Conv_2/LeakyRelu/aquant": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_Conv_2_LeakyRelu_aquant.bin",
+                        "md5sum": "a47ffd19dbae3b7185f48198e024736a",
+                        "md5sum_ref": "a47ffd19dbae3b7185f48198e024736a",
+                        "size": 692224
+                    }
+                ],
+                "detector/yolo-v4-tiny/Conv_20/BiasAdd/aquant": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_Conv_20_BiasAdd_aquant.bin",
+                        "md5sum": "17eb158cbb6c978bb75445c3002998fb",
+                        "md5sum_ref": "17eb158cbb6c978bb75445c3002998fb",
+                        "size": 172380
+                    }
+                ],
+                "detector/yolo-v4-tiny/Conv_20/BiasAdd/aquant_": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_Conv_20_BiasAdd_aquant_.bin",
+                        "md5sum": "4d1f3f06746e47bf2d1c48da7333a790",
+                        "md5sum_ref": "4d1f3f06746e47bf2d1c48da7333a790",
+                        "size": 689520
+                    }
+                ],
+                "detector/yolo-v4-tiny/Conv_6/LeakyRelu/aquant": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_Conv_6_LeakyRelu_aquant.bin",
+                        "md5sum": "1866755506ebdb54c7f766fd530e1cc3",
+                        "md5sum_ref": "1866755506ebdb54c7f766fd530e1cc3",
+                        "size": 346112
+                    }
+                ],
+                "detector/yolo-v4-tiny/ResizeNearestNeighbor/size_const": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_ResizeNearestNeighbor_size_const.bin",
+                        "md5sum": "52c453acf7be6b4321f88732ba46dedb",
+                        "md5sum_ref": "52c453acf7be6b4321f88732ba46dedb",
+                        "size": 16
+                    }
+                ],
+                "detector/yolo-v4-tiny/strided_slice/aquant": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_strided_slice_aquant.bin",
+                        "md5sum": "aa55fc2bfef038563e5a031dbddebee9",
+                        "md5sum_ref": "aa55fc2bfef038563e5a031dbddebee9",
+                        "size": 346112
+                    }
+                ],
+                "detector/yolo-v4-tiny/strided_slice_1/aquant": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_strided_slice_1_aquant.bin",
+                        "md5sum": "9fe461a5deb61f09210bb4ac415ec8b7",
+                        "md5sum_ref": "9fe461a5deb61f09210bb4ac415ec8b7",
+                        "size": 173056
+                    }
+                ],
+                "detector/yolo-v4-tiny/strided_slice_2/aquant": [
+                    {
+                        "file": "golden/fake/detector_yolo-v4-tiny_strided_slice_2_aquant.bin",
+                        "md5sum": "b4eb64306980a99f951ae2396edc08e4",
+                        "md5sum_ref": "b4eb64306980a99f951ae2396edc08e4",
+                        "size": 86528
+                    }
+                ]
+            },
+            "init_tensors": {
+                "inputs/aquant": [
+                    {
+                        "file": "golden/fake/inputs_aquant.bin",
+                        "md5sum": "7432192dbe8b0cacdf99c2112732324b",
+                        "size": 519168
+                    }
+                ]
+            },
+            "path": "/",
+            "type": "decent-tensorflow",
+            "xmodel": "yolov4-tiny.xmodel"
+        }
+    }
+}

@@ -1,6 +1,3 @@
-
-
-#
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +14,7 @@
 #
 
 import numpy as np
-import weakref 
+import weakref
 from enum import Enum, unique, auto
 
 
@@ -34,7 +31,7 @@ class Tensor(object):
   class Layout(Enum):
     NHWC = auto()
     NCHW = auto()
-    
+
   def __init__(self,
                name=None,
                shape=None,
@@ -42,7 +39,8 @@ class Tensor(object):
                device=None,
                requires_grad=None,
                data=None,
-               node=None):
+               node=None,
+               layout=None):
     self._node = weakref.ref(node) if node else node
     self._name = name
     self._shape = shape
@@ -50,6 +48,7 @@ class Tensor(object):
     self._dtype_map = {
         np.dtype('float64'): 'float64',
         np.dtype('float32'): 'float32',
+        np.dtype('complex64'): 'complex64',
         np.dtype('int64'): 'int64',
         np.dtype('int32'): 'int32',
         np.dtype('int16'): 'int16',
@@ -64,6 +63,11 @@ class Tensor(object):
     self._device = device
     self._requires_grad = requires_grad
     self._layout = None
+    if layout == ['N', 'C', 'H', 'W']:
+      self._layout = Tensor.Layout.NCHW
+    elif layout == ['N', 'H', 'W', 'C']:
+      self._layout = Tensor.Layout.NHWC
+    #self._copy_from = None
 
   def from_ndarray(self, data):
     if not isinstance(data, np.ndarray):
@@ -110,6 +114,9 @@ class Tensor(object):
     # not necessary to hold real data for completeTensor
     return True if self.shape and self.dtype else False
 
+  def is_param_tensor(self) -> bool:
+    return True if self._node is None else False
+
   @property
   def shape(self):
     return self._shape
@@ -120,7 +127,7 @@ class Tensor(object):
 
   @property
   def ndim(self):
-    return len(self._shape)
+    return len(self._shape) if self._shape else None
 
   @property
   def dtype(self):
@@ -145,10 +152,10 @@ class Tensor(object):
         raise ValueError(f"Accept [int, float, bool] type data, but {type(value)} is given")
       self._data = value
       self._shape = []
-  
+
   @property
   def node(self):
-    return self._node()
+    return self._node() if self._node is not None else None
 
   @node.setter
   def node(self, value):
@@ -181,10 +188,24 @@ class Tensor(object):
   @property
   def layout(self):
     return self._layout
-  
+
   @layout.setter
   def layout(self, layout):
-    if self._layout:
-      raise RuntimeError(f"Don't allow to assign layout repeatedly:{self._layout.name}")
-    self._layout = layout
-    
+    if self._layout is not None:
+      assert layout == self._layout, f"Check the layout of {self.name}"
+    else:
+      self._layout = layout
+
+  '''
+  @property
+  def copy_from(self):
+    if self._copy_from == None:
+      return self
+    else:
+      return self._copy_from
+
+  @copy_from.setter
+  def copy_from(self, tensor):
+    self._copy_from = tensor
+  '''
+

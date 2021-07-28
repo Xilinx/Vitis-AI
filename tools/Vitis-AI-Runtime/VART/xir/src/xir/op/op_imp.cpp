@@ -34,7 +34,7 @@ static void op_arg_occur_check(const OpArgDef& arg, std::uint32_t num) {
   } else if (arg.occur_type == OpArgDef::REPEATED) {
     ;
   } else if (arg.occur_type == OpArgDef::REQUIRED_AND_REPEATED) {
-    UNI_LOG_CHECK(num >= 1, XIR_INVALID_ARG_OCCUR)
+    UNI_LOG_CHECK(num > 0, XIR_INVALID_ARG_OCCUR)
         << "Arg " << arg.name << " has type REQUIRED_AND_REPEATED, but try set "
         << num << " elements";
   } else {

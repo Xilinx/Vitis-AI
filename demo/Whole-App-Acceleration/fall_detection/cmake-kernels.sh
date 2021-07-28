@@ -34,7 +34,7 @@ RST="${reset}"
 declare -a args
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \
-		 -l help,clean,clean-only,aks-install-prefix: \
+		 -l help,clean,clean-only,aks-install-prefix:,type: \
 		 -- "$0" "$@")
 [ $? -eq 0 ] || {
     echo "Failed to parse arguments! try --help"
@@ -43,11 +43,18 @@ options=$(getopt -a -n 'parse-options' -o h \
 eval set -- "$options"
 while true; do
   case "$1" in
-	-h | --help                ) show_help=true; break;;
-	     --clean               ) clean=true;;
-	     --clean-only          ) clean_only=true;;
-	     --aks-install-prefix  ) shift; install_prefix=$1;;
-	     --) shift; break;;
+    -h | --help                ) show_help=true; break;;
+         --clean               ) clean=true;;
+         --clean-only          ) clean_only=true;;
+         --aks-install-prefix  ) shift; install_prefix=$1;;
+         --type)
+           shift
+           case "$1" in
+             release           ) build_type=Release;;
+             debug             ) build_type=Debug;;
+             *) echo "Invalid build type \"$1\"! try --help"; exit 1;;
+           esac ;;
+         --) shift; break;;
   esac
   shift
 done
@@ -65,6 +72,11 @@ if [ ${show_help:=false} == true ]; then
 fi
 
 args=(-DAKS_INSTALL_PREFIX="${install_prefix}")
+
+# set build type
+args+=(-DCMAKE_BUILD_TYPE=${build_type:="Release"})
+args+=(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
+#[ ${build_type} == "Debug" ] && args+=(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 # Get all Kernels
 KERNELS=$(ls -d -1 kernel_src/*)

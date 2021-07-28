@@ -24,16 +24,19 @@ using namespace std;
 namespace vitis {
 namespace ai {
 
-MedicalDetectionImp::MedicalDetectionImp(const std::string &model_name, bool need_preprocess)
-    : vitis::ai::TConfigurableDpuTask<MedicalDetection>(model_name, need_preprocess),
+MedicalDetectionImp::MedicalDetectionImp(const std::string& model_name,
+                                         bool need_preprocess)
+    : vitis::ai::TConfigurableDpuTask<MedicalDetection>(model_name,
+                                                        need_preprocess),
       processor_{vitis::ai::MedicalDetectionPostProcess::create(
           configurable_dpu_task_->getInputTensor()[0],
           configurable_dpu_task_->getOutputTensor()[0],
-          configurable_dpu_task_->getConfig())} {}
+          configurable_dpu_task_->getConfig(),
+          real_batch_size) } {}
 
 MedicalDetectionImp::~MedicalDetectionImp() {}
 
-MedicalDetectionResult MedicalDetectionImp::run(const cv::Mat &input_img) {
+MedicalDetectionResult MedicalDetectionImp::run(const cv::Mat& input_img) {
   cv::Mat img;
   auto size = cv::Size(getInputWidth(), getInputHeight());
 
@@ -45,6 +48,7 @@ MedicalDetectionResult MedicalDetectionImp::run(const cv::Mat &input_img) {
   __TIC__(DET_total)
   __TIC__(DET_setimg)
 
+  real_batch_size = 1;
   // tensorflow but need BGR
   configurable_dpu_task_->setInputImageBGR(img);
 
@@ -61,14 +65,14 @@ MedicalDetectionResult MedicalDetectionImp::run(const cv::Mat &input_img) {
   return results;
 }
 
-std::vector<MedicalDetectionResult> MedicalDetectionImp::run(const std::vector<cv::Mat> &input_img) {
-
+std::vector<MedicalDetectionResult> MedicalDetectionImp::run(
+    const std::vector<cv::Mat>& input_img) {
   auto size = cv::Size(getInputWidth(), getInputHeight());
-  auto batch_size = get_input_batch();
+  auto batch_size = get_input_batch();;
 
-  std::vector<cv::Mat> vimg(batch_size);
-
-  for (auto i= 0ul; i < batch_size; i++) {
+  real_batch_size = std::min(int(input_img.size()), int(batch_size));
+  std::vector<cv::Mat> vimg(real_batch_size);
+  for (auto i = 0; i < real_batch_size; i++) {
     if (size != input_img[i].size()) {
       cv::resize(input_img[i], vimg[i], size, 0, 0, cv::INTER_LINEAR);
     } else {
@@ -93,5 +97,5 @@ std::vector<MedicalDetectionResult> MedicalDetectionImp::run(const std::vector<c
   return results;
 }
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis

@@ -61,7 +61,9 @@ void MultiTaskImp::run_it(const std::vector<cv::Mat>& input_images) {
   std::vector<cv::Mat> images;
   auto size = cv::Size(getInputWidth(), getInputHeight());
 
-  for (auto i = 0u; i < input_images.size(); i++) {
+  for (auto i = 0u; i < std::min(input_images.size(),
+                                 configurable_dpu_task_->get_input_batch());
+       i++) {
     cv::Mat image;
     if (size != input_images[i].size()) {
       cv::resize(input_images[i], image, size, 0, 0, cv::INTER_LINEAR);
@@ -83,24 +85,24 @@ void MultiTaskImp::run_it(const std::vector<cv::Mat>& input_images) {
 
 MultiTaskResult MultiTaskImp::run_8UC1(const cv::Mat& input_image) {
   run_it(input_image);
-  return processor_->post_process_seg()[0];
+  return processor_->post_process_seg(1u)[0];
 }
 
 std::vector<MultiTaskResult> MultiTaskImp::run_8UC1(
     const std::vector<cv::Mat>& input_images) {
   run_it(input_images);
-  return processor_->post_process_seg();
+  return processor_->post_process_seg(input_images.size());
 }
 
 MultiTaskResult MultiTaskImp::run_8UC3(const cv::Mat& input_image) {
   run_it(input_image);
-  return processor_->post_process_seg_visualization()[0];
+  return processor_->post_process_seg_visualization(1u)[0];
 }
 
 std::vector<MultiTaskResult> MultiTaskImp::run_8UC3(
     const std::vector<cv::Mat>& input_images) {
   run_it(input_images);
-  return processor_->post_process_seg_visualization();
+  return processor_->post_process_seg_visualization(input_images.size());
 }
 
 }  // namespace ai

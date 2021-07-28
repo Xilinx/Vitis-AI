@@ -28,6 +28,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
+#include "tensorflow/contrib/decent_q/utils/cross_layers_equalization.h"
 #include "tensorflow/contrib/decent_q/utils/quantize_utils.h"
 #include "tensorflow/core/common_runtime/shape_refiner.h"
 #include "tensorflow/core/framework/node_def_util.h"
@@ -125,7 +126,7 @@ void PrintMatchedNodePatterns(
   DLOG_INFO(1) << "Matched Node Patterns:";
   for (int i = 0; i < matched_node_patterns.size(); ++i) {
     int pattern_id = std::get<0>(matched_node_patterns[i]);
-    DLOG_INFO(1) << i << ": " << std::get<0>(known_patterns[pattern_id]);
+    DLOG_INFO(1) << i << ": " << known_patterns[pattern_id]->GetName();
     PrintNodeMatch(std::get<1>(matched_node_patterns[i]), 2);
   }
   return;
@@ -248,15 +249,15 @@ Status ParseGraph(
 
   int match_id = 0;
   for (auto pattern_id = 0; pattern_id < known_patterns.size(); ++pattern_id) {
-    auto pattern = known_patterns[pattern_id];
+    auto pattern = known_patterns[pattern_id]->GetPattern();
     auto pattern_name = get_pattern_name_from_id(pattern_id);
     DLOG_INFO(1) << "Parsing: " << pattern_name;
 
     GraphMatcher matcher(input_graph_def);
     std::vector<NodeMatch> matches;
     bool allow_intersection = true;
-    TF_RETURN_IF_ERROR(matcher.GetOpTypeMatches(std::get<1>(pattern), &matches,
-                                                allow_intersection));
+    TF_RETURN_IF_ERROR(
+        matcher.GetOpTypeMatches(pattern, &matches, allow_intersection));
     DLOG_INFO(2) << "  found number of pattern " << pattern_name << ": "
                  << matches.size();
     for (const NodeMatch& match : matches) {
@@ -569,8 +570,8 @@ Status ConvertMeanToAvgpool(const GraphDef& input_graph_def,
   return Status::OK();
 }
 
-Status SimulateDPU(const GraphDef& input_graph_def,
-                   GraphDef* output_graph_def) {
+Status SimulateDPU(const GraphDef& input_graph_def, GraphDef* output_graph_def,
+                   const int scale_all_avgpool) {
   GraphDef current_graph_def, processed_graph_def;
   std::map<string, string> inputs_to_rename;
   std::unordered_set<string> nodes_to_ignore;
@@ -588,7 +589,7 @@ Status SimulateDPU(const GraphDef& input_graph_def,
           {"*"},
         }
       },  // clang-format on
-      [&inputs_to_rename, &nodes_to_ignore](
+      [&inputs_to_rename, &nodes_to_ignore, &scale_all_avgpool](
           const NodeMatch& match, const std::set<string>& input_nodes,
           const std::set<string>& output_nodes,
           std::vector<NodeDef>* new_nodes) {
@@ -622,11 +623,33 @@ Status SimulateDPU(const GraphDef& input_graph_def,
         } else if (kernel_h == 14 && kernel_w == 14) {
           scale_factor = 196.0 * 21.f / 4096.f;
           need_scale = true;
+        } else if (scale_all_avgpool == 1 && kernel_h <= 256 &&
+                   kernel_w <= 256) {
+          int rec = kernel_h * kernel_w;
+          int n_max = std::ceil(std::log2(rec * 128));
+          // 1 / rec almost equal k / 2**n
+          int k = 0;
+          int n = 0;
+          float diff = 1;
+          for (int n_ = 0; n_ < n_max; ++n_) {
+            int k_ = std::round(std::pow(2, n_) / rec);
+            k_ = k_ > 0 ? k_ : 1;
+            float diff_ = std::abs((1. * k_) / std::pow(2, n_) - 1.0 / rec);
+            if (diff_ < diff) {
+              k = k_;
+              diff = diff_;
+              n = n_;
+              scale_factor = k / std::pow(2, n);
+              scale_factor *= kernel_h * kernel_w;
+            }
+          }
+          need_scale = true;
         }
 
         if (need_scale) {
           DLOG_WARNING << "Scale output of avg_pool node "
-                       << avgpool_node.name() << " to simulate DPU.";
+                       << avgpool_node.name() << " to simulate DPU."
+                       << " Kernel size is " << kernel_h << " * " << kernel_w;
 
           // Construct the new nodes.
           NodeDef scale_value_node;
@@ -820,6 +843,31 @@ Status SimulateDPU(const GraphDef& input_graph_def,
                                       nodes_to_ignore, &current_graph_def));
 
   *output_graph_def = current_graph_def;
+  return Status::OK();
+}
+
+Status RemoveIdentityNNode(const GraphDef& input_graph_def,
+                           GraphDef* output_graph_def) {
+  std::map<string, const NodeDef*> node_map;
+  MapNamesToNodes(input_graph_def, &node_map);
+  output_graph_def->Clear();
+  for (const NodeDef& node : input_graph_def.node()) {
+    string op_type = node.op();
+    if (op_type != "IdentityN") {
+      NodeDef new_node = node;
+      new_node.mutable_input()->Clear();
+      for (int i = 0; i < node.input_size(); ++i) {
+        const string input_name = GetRealName(node.input(i));
+        const NodeDef* input_node = node_map[input_name];
+        if (input_node->op() == "IdentityN") {
+          AddNodeInput(input_node->input(0), &new_node);
+        } else {
+          AddNodeInput(node.input(i), &new_node);
+        }
+      }
+      *(output_graph_def->mutable_node()->Add()) = new_node;
+    }
+  }
   return Status::OK();
 }
 

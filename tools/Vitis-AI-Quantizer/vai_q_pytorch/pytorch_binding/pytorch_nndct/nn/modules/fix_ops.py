@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+
 # import os
 # import sys
 import torch
@@ -29,7 +30,7 @@ __all__ = ["NndctScale", \
            "NndctSigmoidTableLookup",\
            "NndctTanhTableLookup"]
 # try:
-#   dir_path = os.path.dirname(os.path.realpath(__file__)) 
+#   dir_path = os.path.dirname(os.path.realpath(__file__))
 #   extra_include_paths=[os.path.join(dir_path,"../include")]
 #   fix_kernels=load(name="fix_kernels",
 #               sources=[os.path.join(dir_path,"../src/nndct_fixneuron_op.cpp"),
@@ -38,7 +39,7 @@ __all__ = ["NndctScale", \
 #                        os.path.join(dir_path,"../src/nndct_fix_kernels.cu"),
 #                        os.path.join(dir_path,"../src/nndct_cuda_math.cu"),
 #                        os.path.join(dir_path,"../src/nndct_cu_utils.cc")],
-                     
+
 #               verbose=True,
 #               extra_include_paths=extra_include_paths
 #               )
@@ -47,7 +48,7 @@ __all__ = ["NndctScale", \
 #   sys.exit(1)
 # else:
 #   print("Import 'fix_kernels module' successfully.")
-  
+
 
 def NndctScale(Tinput, scale):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
@@ -68,11 +69,11 @@ def NndctFixNeuron(Tinput, Toutput, maxamp, method=2):
   '''
   if Tinput.device == torch.device("cpu"):
     output = Tinput.cuda()
-    nndct_kernels.FixNeuronV2(output, output, valmax, 
+    nndct_kernels.FixNeuronV2(output, output, valmax,
                               valamp, method)
     Tinput.copy_(output.cpu())
     return Tinput
-  
+
     # cpu fix neuron
     """
     # output = Tinput.cpu().detach().numpy()
@@ -84,7 +85,7 @@ def NndctFixNeuron(Tinput, Toutput, maxamp, method=2):
     #   output = np.where(output >= 0, np.round(output), output)
     #   output = np.where(np.logical_and(output < 0, output - np.floor(output) == 0.5), np.ceil(output), output)
     #   output = np.where(output < 0, np.round(output), output)
-     
+
     # elif method == 3:
     #   output = np.where(output > valmax - 1, (valmax - 1), output)
     #   output = np.where(output < (-valmax), -valmax, output)
@@ -92,22 +93,22 @@ def NndctFixNeuron(Tinput, Toutput, maxamp, method=2):
     #   output = np.where(output >= 0, np.round(output), output)
     #   output = np.where(np.logical_and(output < 0, np.logical_and(np.ceil(output) % 2 == 0, output - np.floor(output) == 0.5)), np.floor(output), output)
     #   output = np.where(output < 0, np.round(output), output)
-      
+
     # Tinput.copy_(torch.from_numpy(output))
     # Tinput.div_(valamp)
     # return Tinput
     """
   else:
-    nndct_kernels.FixNeuronV2(Tinput, Toutput, valmax, 
+    nndct_kernels.FixNeuronV2(Tinput, Toutput, valmax,
                               valamp, method)
   return Toutput
   '''
 
 
-def NndctDiffsFixPos(Tinput, Tbuffer, Tfixpos, bit_width=8, range=5, method=2):  
+def NndctDiffsFixPos(Tinput, Tbuffer, Tfixpos, bit_width=8, range=5, method=2):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   nndct_kernels.DiffsFixPos(Tinput, Tbuffer, Tfixpos, bit_width, range, method, device_id)
-  
+
 
 def NndctSigmoidTableLookup(Tinput, Ttable, Toutput, fragpos):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0

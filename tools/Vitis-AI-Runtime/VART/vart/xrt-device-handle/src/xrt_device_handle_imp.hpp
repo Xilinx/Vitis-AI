@@ -22,7 +22,7 @@
 #include <memory>
 #include <mutex>
 #include <string>
-#include <vitis/ai/file_lock.hpp>
+#include <vitis/ai/lock.hpp>
 
 #include "./xrt_bin_stream.hpp"
 #include "xir/xrt_device_handle.hpp"
@@ -91,8 +91,8 @@ class XrtDeviceHandleImp : public xir::XrtDeviceHandle {
  private:
   std::map<std::string, DeviceObject> handles_;
   std::unique_ptr<xir::XrtBinStream> binstream_;
-  std::vector<std::unique_ptr<vitis::ai::FileLock>> mtx_;
-  std::vector<std::unique_ptr<std::unique_lock<vitis::ai::FileLock>>>
-      file_lock_;
+
+  std::vector<std::unique_ptr<vitis::ai::Lock>> mtx_;
+  std::vector<std::unique_ptr<std::unique_lock<vitis::ai::Lock>>> locks_;
 };
 }  // namespace

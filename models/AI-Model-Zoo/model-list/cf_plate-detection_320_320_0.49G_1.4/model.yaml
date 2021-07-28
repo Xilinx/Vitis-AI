@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: license plate recognition model based on inception-v1.
+input size: 320*320
+float ops: 0.49G
+task: detection
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_plate-detection_320_320_0.49G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_plate-detection_320_320_0.49G_1.4.zip
+  checksum: 0ad15f3e65d55987a359a099587e59de
+- name: plate_detect
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: e0d246ad9a6fce8d7b7e43468248844b
+- name: plate_detect
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-vck190-r1.4.0.tar.gz
+  checksum: 2c070dfb32d89c36595f9db130491f0f
+- name: plate_detect
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 83a8beedc28bc9571a6e3a082495ed84
+- name: plate_detect
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: a77b0ac78c159dc301f18270181d1d00
+- name: plate_detect
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 1dedda87cadc08035d7e568b536eb5e1
+- name: plate_detect
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u200-u250-r1.4.0.tar.gz
+  checksum: cdfabe70b5190ef3b1fc8c885048f164
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: FPN(ResNet18) for segmentation on Cityscapes.
+input size: 256*512
+float ops: 10G
+task: segmentation
+framework: pytorch
+prune: 'no'
+version: 1.4
+files:
+- name: pt_SemanticFPN_cityscapes_256_512_10G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_SemanticFPN_cityscapes_256_512_10G_1.4.zip
+  checksum: b85413de071fffe7a7e082dfbc74a65a
+- name: SemanticFPN_cityscapes_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: f33a7e3a9e5ebba2ded12eae44df38e6
+- name: SemanticFPN_cityscapes_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck190-r1.4.0.tar.gz
+  checksum: 652f294586ac279487e02c9c28f00309
+- name: SemanticFPN_cityscapes_pt
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 6d56a43e3bfd5f9af01ef3d2e97949d7
+- name: SemanticFPN_cityscapes_pt
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: cfbb92891671036064b19aa07fec5445
+- name: SemanticFPN_cityscapes_pt
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 9699f06ef86a05dfacbe503bfb2afb44
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

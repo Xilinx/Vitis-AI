@@ -20,16 +20,17 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <vitis/ai/demo.hpp>
 #include <vitis/ai/medicalsegmentation.hpp>
-#include <vitis/ai/nnpp/medicalsegmentation.hpp>
+#include <vitis/ai/demo.hpp>
 
 #include "./process_result.hpp"
-using namespace std;
-int main(int argc, char *argv[]) {
-  string model = argv[1];
+
+int main(int argc, char* argv[]) {
+  std::string model = argv[1];
   return vitis::ai::main_for_jpeg_demo(
       argc, argv,
-      [model] { return vitis::ai::MedicalSegmentation::create(model); },
+      [model] {
+        return vitis::ai::MedicalSegmentation::create(model);
+      },
       process_result, 2);
 }

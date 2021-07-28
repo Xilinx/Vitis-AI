@@ -18,24 +18,21 @@
 #include <glog/logging.h>
 #include "../common.hpp"
 
-//#define _FTD_DEBUG_
 using namespace cv;
 using namespace std;
 
 namespace vitis {
 namespace ai {
 
-FTD_Structure::FTD_Structure(const SpecifiedCfg &specified_cfg) {
+FTD_Structure::FTD_Structure(const SpecifiedCfg& specified_cfg) {
   CHECK(id_record.empty()) << "id_record must be empty when initial";
-  id_record.push_back(1);
+  id_record.push_back(0);
+  track_id = 1;
   iou_threshold = 0.3f;
   feat_distance_low = 0.8f;
   feat_distance_high = 1.0f;
   score_threshold = 0.f;
   specified_cfg_ = specified_cfg;
-  reid0 = vitis::ai::Reid::create("reid");
-  reid1 = vitis::ai::Reid::create("reid");
-  reid2 = vitis::ai::Reid::create("reid");
 }
 
 FTD_Structure::~FTD_Structure() { this->clear(); }
@@ -43,8 +40,9 @@ FTD_Structure::~FTD_Structure() { this->clear(); }
 void FTD_Structure::clear() {
   tracks.clear();
   id_record.clear();
+  track_id = 1;
   remove_id_this_frame.clear();
-  id_record.push_back(1);
+  id_record.push_back(0);
 }
 
 double cosine_distance(Mat feat1, Mat feat2) { return 1 - feat1.dot(feat2); }
@@ -60,7 +58,7 @@ double get_euro_dis(Mat feat1, Mat feat2) {
   return sqrt(sumvalue);
 }
 
-void FindRemain(std::vector<int> &input, std::vector<int> &output, int len) {
+void FindRemain(std::vector<int>& input, std::vector<int>& output, int len) {
   output.clear();
   for (int i = 0; i < len; i++) {
     if (input.empty() ||
@@ -72,13 +70,13 @@ void FindRemain(std::vector<int> &input, std::vector<int> &output, int len) {
       << "error happen in function FindRemain";
 }
 
-float GetIou(const cv::Rect_<float> &rect1, const cv::Rect_<float> &rect2) {
+float GetIou(const cv::Rect_<float>& rect1, const cv::Rect_<float>& rect2) {
   float inner = (rect1 & rect2).area();
   float univer = rect1.area() + rect2.area() - inner;
   return (inner / univer);
 }
-float GetCenterDis(const cv::Rect_<float> &rect1,
-                   const cv::Rect_<float> &rect2) {
+float GetCenterDis(const cv::Rect_<float>& rect1,
+                   const cv::Rect_<float>& rect2) {
   float cx = rect1.x + rect1.width * 0.5;
   float cy = rect1.y + rect1.height * 0.5;
   if (cx >= rect2.x && cx <= rect2.x + rect2.width && cy >= rect2.y &&
@@ -87,19 +85,26 @@ float GetCenterDis(const cv::Rect_<float> &rect1,
   } else
     return 0;
 }
-float GetCoverRatio(const cv::Rect_<float> &rect1,
-                    const cv::Rect_<float> &rect2) {
+float GetCoverRatio(const cv::Rect_<float>& rect1,
+                    const cv::Rect_<float>& rect2) {
   float inner = (rect1 & rect2).area();
   return (inner / rect1.area());
 }
 
-void FTD_Structure::GetOut(std::vector<OutputCharact> &output_characts) {
+void FTD_Structure::GetOut(std::vector<OutputCharact>& output_characts) {
   CHECK(output_characts.size() == 0) << "error output_characts size";
+  if (tracks.empty()) return;
   for (auto ti = tracks.end() - 1; ti >= tracks.begin();) {
     if ((((*ti)->time_since_update) < 1) &&
+        //(((*ti)->hit_streak >= (*ti)->time_since_update) || frame_count <=
+        //min_hits)) {
         (((*ti)->hit_streak >= min_hits) || frame_count <= min_hits)) {
+      auto id = (*ti)->GetId();
+      if (id == 0u) {
+        (*ti)->SetId(track_id);
+        track_id++;
+      }
       auto oout = (*ti)->GetOut();
-      std::get<1>(oout) = (std::get<1>(oout) & roi_range);
       output_characts.push_back(oout);
     }
     if ((*ti)->time_since_update > max_age) {
@@ -109,75 +114,35 @@ void FTD_Structure::GetOut(std::vector<OutputCharact> &output_characts) {
   }
 }
 
-struct ThreadArgs {
-  std::unique_ptr<mutex> mtxQueueInput;
-  std::unique_ptr<mutex> mtxQueueFeats;
-  std::unique_ptr<queue<imagePair>> queueInput;
-  std::unique_ptr<priority_queue<imagePair, vector<imagePair>, paircomp>>
-      queueFeats;
-};
-struct ReidArgs {
-  std::shared_ptr<Reid> reid;
-  shared_ptr<ThreadArgs> targs;
-};
-
-void doreid(std::shared_ptr<ReidArgs> rg) {
-  __TIC__(create);
-  std::shared_ptr<Reid> reid = rg->reid;
-  std::shared_ptr<ThreadArgs> args = rg->targs;
-  __TOC__(create);
-  while (1) {
-    pair<int, Mat> pairIndexImage;
-    args->mtxQueueInput->lock();
-    if (args->queueInput->size() != 0) {
-      pairIndexImage = args->queueInput->front();
-      args->queueInput->pop();
-      args->mtxQueueInput->unlock();
-    } else {
-      args->mtxQueueInput->unlock();
-      break;
-    }
-    Mat img = pairIndexImage.second;
-    Mat feat = reid->run(img).feat;
-    pairIndexImage.second = feat;
-    args->mtxQueueFeats->lock();
-    args->queueFeats->push(pairIndexImage);
-    args->mtxQueueFeats->unlock();
-  }
-}
-
 std::vector<OutputCharact> FTD_Structure::Update(
-    const cv::Mat &image, uint64_t frame_id, bool detect_flag, int mode,
-    std::vector<InputCharact> &input_characts) {
+    uint64_t frame_id, bool detect_flag, int mode,
+    std::vector<InputCharact>& input_characts) {
+  __TIC__(update);
   remove_id_this_frame.clear();
   frame_count += 1;
-#ifdef _FTD_DEBUG_
-  LOG(INFO) << "frame " << frame_id << " detect_flag " << detect_flag;
-#endif
+  LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER))
+      << "frame " << frame_id << " detect_flag " << detect_flag;
   // get range of frame and check detect_flag
   std::vector<OutputCharact> output_characts;
   if (detect_flag == false)
     CHECK(input_characts.size() == 0) << "error input_characts size";
-  roi_range = cv::Rect_<float>(0.f, 0.f, 1.f, 1.f);
-// show and prune predict
-#ifdef _FTD_DEBUG_
-  LOG(INFO) << "there are already " << tracks.size()
-            << " trajectory(id predict_bbox):";
-#endif
+  // roi_range = cv::Rect_<float>(0.f, 0.f, 1.f, 1.f);
+  // show and prune predict
+  LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER))
+      << "there are already " << tracks.size()
+      << " trajectory(id predict_bbox):";
   for (auto ti = tracks.begin(); ti != tracks.end();) {
     (*ti)->Predict();
-    auto track_rect = std::get<0>((*ti)->GetCharact());
+    auto track_rect = std::get<1>((*ti)->GetCharact());
     if (track_rect.width <= 0.f || track_rect.height <= 0.f) {
-#ifdef _FTD_DEBUG_
       auto track_id = (*ti)->GetId();
-      LOG(INFO) << "trajectory " << track_id << " predict fail, remove "
-                << track_id;
-#endif
+      LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER))
+          << "trajectory " << track_id << " predict fail, remove " << track_id;
       ti = tracks.erase(ti);
     } else {
-#ifdef _FTD_DEBUG_
-      LOG(INFO) << track_id << " " << track_rect;
-#endif
+      auto track_id = (*ti)->GetId();
+      LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER))
+          << track_id << " " << track_rect;
       ti++;
     }
   }
@@ -186,79 +151,27 @@ std::vector<OutputCharact> FTD_Structure::Update(
     GetOut(output_characts);
     return output_characts;
   }
-// show detect
-#ifdef _FTD_DEBUG_
-  LOG(INFO) << "there are " << input_characts.size()
-            << " new detections(bbox):";
-  LOG(INFO) << "size: " << tracks.size();
-#endif
+  // show detect
+  LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER))
+      << "there are " << input_characts.size() << " new detections(bbox):";
+  LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER)) << "size: " << tracks.size();
   for (auto ici = input_characts.begin(); ici != input_characts.end();) {
-    auto rect = std::get<0>(*ici);
-    auto ici_score = std::get<1>(*ici);
-    rect = rect & roi_range;
+    auto rect = std::get<1>(*ici);
+    auto ici_score = std::get<2>(*ici);
+    // rect = rect & roi_range;
     if (rect.width <= 0.f || rect.height <= 0.f ||
         ici_score < score_threshold) {
       ici = input_characts.erase(ici);
     } else {
-      std::get<0>(*ici) = rect;
-#ifdef _FTD_DEBUG_
-      LOG(INFO) << rect;
-#endif
+      std::get<1>(*ici) = rect;
+      LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER)) << rect;
       ici++;
     }
   }
-  __TIC__(get_feats);
-  auto roi_img = cv::Rect_<int>(0, 0, image.cols, image.rows);
-  std::unique_ptr<queue<imagePair>> queueInput =
-      make_unique<queue<imagePair>>();
-  for (auto &ic : input_characts) {
-    auto rect_i = std::get<0>(ic);
-    rect_i.x *= image.cols;
-    rect_i.y *= image.rows;
-    rect_i.width *= image.cols;
-    rect_i.height *= image.rows;
-    Rect rect_in = Rect(
-        Point(round(rect_i.x), round(rect_i.y)),
-        Point(round(rect_i.x + rect_i.width), round(rect_i.y + rect_i.height)));
-    rect_in = rect_in & roi_img;
-    Mat img = image(rect_in);
-#ifdef _FTD_DEBUG_
-    LOG(INFO) << rect_in;
-#endif
-    queueInput->push(make_pair(get<3>(ic), img));
-  }
-  std::unique_ptr<mutex> mtxQueueInput = make_unique<mutex>();
-  std::unique_ptr<mutex> mtxQueueFeats = make_unique<mutex>();
-  std::unique_ptr<priority_queue<imagePair, vector<imagePair>, paircomp>>
-      queueFeats =
-          make_unique<priority_queue<imagePair, vector<imagePair>, paircomp>>();
-  std::shared_ptr<ThreadArgs> args = make_shared<ThreadArgs>();
-  args->mtxQueueInput = move(mtxQueueInput);
-  args->mtxQueueFeats = move(mtxQueueFeats);
-  args->queueInput = move(queueInput);
-  args->queueFeats = move(queueFeats);
-  std::shared_ptr<ReidArgs> rg0 = make_shared<ReidArgs>();
-  std::shared_ptr<ReidArgs> rg1 = make_shared<ReidArgs>();
-  std::shared_ptr<ReidArgs> rg2 = make_shared<ReidArgs>();
-  rg0->targs = args;
-  rg0->reid = reid0;
-  rg1->targs = args;
-  rg1->reid = reid1;
-  rg2->targs = args;
-  rg2->reid = reid2;
-  __TIC__(thread);
-  array<thread, 3> threads{thread(doreid, rg0), thread(doreid, rg1),
-                           thread(doreid, rg2)};
-  for (int i = 0; i < 3; ++i) {
-    threads[i].join();
-  }
-  __TOC__(thread);
   vector<Mat> feats;
-  while (!args->queueFeats->empty()) {
-    feats.emplace_back(args->queueFeats->top().second);
-    args->queueFeats->pop();
+  for (auto& ic : input_characts) {
+    feats.emplace_back(get<0>(ic));
   }
-  __TOC__(get_feats);
   __TIC__(get_dis);
   // double dismat[features.size()][feats.size()];
   vector<vector<double>> feat_dists(tracks.size(),
@@ -267,7 +180,8 @@ std::vector<OutputCharact> FTD_Structure::Update(
   for (size_t i = 0; i < tracks.size(); ++i) {
     for (size_t j = 0; j < feats.size(); ++j) {
       double min_dis = 2.0;
-      for (size_t h = 0; h < tracks[i]->GetFeatures().size(); ++h) {
+      // for (size_t h = 0; h < tracks[i]->GetFeatures().size(); ++h) {
+      for (size_t h = 0; h < 1u; ++h) {
         double cdis = get_euro_dis(tracks[i]->GetFeatures()[h], feats[j]);
         // double cdis = cosine_distance(tracks[i]->GetFeatures()[h], feats[j]);
         min_dis = cdis < min_dis ? cdis : min_dis;
@@ -281,14 +195,14 @@ std::vector<OutputCharact> FTD_Structure::Update(
   /*cal iou between predict and det*/
   vector<vector<double>> neg_iou_scores;
   vector<vector<double>> center_dists;
-  for (auto &t : tracks) {
+  for (auto& t : tracks) {
     std::vector<double> neg_iou_score;
     std::vector<double> center_dis;
-    for (auto &ic : input_characts) {
-      auto rect_t = std::get<0>(t->GetCharact());
-      auto label_t = std::get<2>(t->GetCharact());
-      auto rect_i = std::get<0>(ic);
-      auto label_i = std::get<2>(ic);
+    for (auto& ic : input_characts) {
+      auto rect_t = std::get<1>(t->GetCharact());
+      auto label_t = std::get<3>(t->GetCharact());
+      auto rect_i = std::get<1>(ic);
+      auto label_i = std::get<3>(ic);
       neg_iou_score.push_back(
           label_t == label_i ? (1.0f - GetIou(rect_t, rect_i)) : 1.0f);
       center_dis.push_back(label_t == label_i ? GetCenterDis(rect_i, rect_t)
@@ -306,12 +220,11 @@ std::vector<OutputCharact> FTD_Structure::Update(
   FtdHungarian HungAlgo;
   vector<int> assignment;
   HungAlgo.Solve(neg_iou_scores, assignment);
-#ifdef _FTD_DEBUG_
-  LOG(INFO) << "assign size: " << assignment.size();
-  LOG(INFO) << "iou: ";
+  LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER))
+      << "assign size: " << assignment.size();
+  LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER)) << "iou: ";
   for (unsigned int x = 0; x < assignment.size(); x++)
-    std::LOG(INFO) << x << " " << assignment[x];
-#endif
+    LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER)) << x << " " << assignment[x];
   // greedy find match track and detect number
   std::vector<int> match_track;
   std::vector<int> match_detect;
@@ -342,17 +255,14 @@ std::vector<OutputCharact> FTD_Structure::Update(
   FindRemain(match_track, unmatch_track, divide1);
   vector<int> unmatch_detect;
   FindRemain(match_detect, unmatch_detect, divide2);
-#ifdef _FTD_DEBUG_
-  LOG(INFO) << "unmatchdet1 size: " << unmatch_detect.size();
-#endif
+  LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER))
+      << "unmatchdet1 size: " << unmatch_detect.size();
 
   vector<int> feats_assign;
   HungAlgo.Solve(feat_dists, feats_assign);
-#ifdef _FTD_DEBUG_
-  LOG(INFO) << "feats: ";
+  LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER)) << "feats: ";
   for (unsigned int x = 0; x < feats_assign.size(); x++)
-    std::LOG(INFO) << x << " " << feats_assign[x];
-#endif
+    LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER)) << x << " " << feats_assign[x];
   for (size_t iii = 0; iii < feats_assign.size(); iii++) {
     if (feats_assign[iii] == -1) continue;
     if (feat_dists[iii][feats_assign[iii]] < feat_distance_low) {
@@ -375,11 +285,10 @@ std::vector<OutputCharact> FTD_Structure::Update(
     }
     feats_assign.clear();
     HungAlgo.Solve(feat_dists, feats_assign);
-#ifdef _FTD_DEBUG_
-    LOG(INFO) << "feats2: ";
+    LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER)) << "feats2: ";
     for (unsigned int x = 0; x < feats_assign.size(); x++)
-      std::LOG(INFO) << x << " " << feats_assign[x];
-#endif
+      LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER))
+          << x << " " << feats_assign[x];
     for (size_t iii = 0; iii < feats_assign.size(); iii++) {
       if (feats_assign[iii] == -1) continue;
       if (feat_dists[iii][feats_assign[iii]] < feat_distance_high) {
@@ -392,10 +301,10 @@ std::vector<OutputCharact> FTD_Structure::Update(
     FindRemain(match_track, unmatch_track, divide1);
     unmatch_detect.clear();
     FindRemain(match_detect, unmatch_detect, divide2);
-#ifdef _FTD_DEBUG_
-    LOG(INFO) << "untrack size: " << unmatch_track.size();
-    LOG(INFO) << "unmatchdet2 size: " << unmatch_detect.size();
-#endif
+    LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER))
+        << "untrack size: " << unmatch_track.size();
+    LOG_IF(INFO, ENV_PARAM(DEBUG_REID_TRACKER))
+        << "unmatchdet2 size: " << unmatch_detect.size();
   }
 
   /*new detection with new id*/
@@ -413,6 +322,7 @@ std::vector<OutputCharact> FTD_Structure::Update(
   }
   GetOut(output_characts);
   __TOC__(deal);
+  __TOC__(update);
   return output_characts;
 }
 

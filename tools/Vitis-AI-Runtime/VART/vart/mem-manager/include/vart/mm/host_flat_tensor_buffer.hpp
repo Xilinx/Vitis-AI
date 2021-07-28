@@ -57,6 +57,8 @@ std::pair<std::unique_ptr<HostFlatTensorBuffer>, std::unique_ptr<xir::Tensor>>
 transform_to_fix_buffer(TensorBuffer* buffer, int32_t fix_point,
                         int32_t bit_width, bool if_signed,
                         std::string round_mode);
+void transform_to_fix_buffer(TensorBuffer* buffer_src,
+                             TensorBuffer* buffer_dest, std::string round_mode);
 
 }  // namespace mm
 }  // namespace vart

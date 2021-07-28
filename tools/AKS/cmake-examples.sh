@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,8 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-#!/bin/bash
 
 # ROOT dir
 ROOT=$(dirname "$(realpath $0)")
@@ -34,7 +33,7 @@ RST="${reset}"
 declare -a args
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \
-		 -l help,clean,clean-only,dpu:,aks-install-prefix:,type: \
+		 -l help,clean,clean-only,aks-install-prefix:,type: \
 		 -- "$0" "$@")
 [ $? -eq 0 ] || {
     echo "Failed to parse arguments! try --help"
@@ -46,7 +45,6 @@ while true; do
     --help | -h           ) show_help=true; break;;
     --clean               ) clean=true;;
     --clean-only          ) clean_only=true;;
-    --dpu                 ) shift; dpu=$1;;
     --aks-install-prefix  ) shift; install_prefix=$1;;
     --type)
       shift
@@ -67,26 +65,16 @@ if [ ${show_help:=false} == true ]; then
   echo -e "    --help                 show help"
   echo -e "    --clean                discard previous configs/builds before build"
   echo -e "    --clean-only           discard previous configs/builds"
-  echo -e "    --dpu                  set DPU target [dpucadx8g, dpucadf8h, dpucahx8h, dpuczdx8g]"
   echo -e "    --type                 set build type [release (Default), debug]"
   echo -e "    --aks-install-prefix   set customized aks install prefix"
   echo -e
   exit 0
 fi
 
-if [ "${dpu}" == "" ]; then
-  echo -e
-  echo -e "${ERR} No Target specified. Use --dpu option to specify DPU target! ${RST}"
-  echo -e
-  exit 1
-fi
-
 args=(-DAKS_INSTALL_PREFIX="${install_prefix}")
 # set build type
 args+=(-DCMAKE_BUILD_TYPE=${build_type:="Release"})
 args+=(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
-# target dpu
-args+=(-DDPU="${dpu}")
 
 EXAMPLES=${ROOT}/examples
 

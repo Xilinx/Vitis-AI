@@ -17,12 +17,15 @@ LD_LIBRARY_PATH :=
 
 ###
 # AKS
-INCLUDE += -I /usr/include/aks/
+INCLUDE += -I /usr/include/aks
+INCLUDE += -I /usr/include/xir
+INCLUDE += -I /usr/include/vart
+INCLUDE += -I src/include
 
 CXX := g++ #$(GXX)
 # Flags
 CXXOPT :=-O3
-CCOPTS :=-D __USE_XOPEN2K8 -std=c++11 -fPIC -static-libgcc -static-libstdc++
+CCOPTS :=-D __USE_XOPEN2K8 -std=c++17 -fPIC -static-libgcc -static-libstdc++
 
 #####################
 #        Linker
@@ -34,7 +37,7 @@ LIB_PATHS += -L $(CONDA_PREFIX)/lib
 # Add libs under current directory
 LIB_PATHS += -L libs
 # Add libs unders aks
-LIB_PATHS += -L $(VAI_ALVEO_ROOT)/../tools/AKS/libs
+LIB_PATHS += -L $(VAI_HOME)/tools/AKS/libs
 
 # Common
 LIBS := -lpthread -ldl -lz
@@ -45,19 +48,19 @@ LIBS += -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
 # Opencv video
 LIBS += -lopencv_videoio -lopencv_video
 # AKS
-LIBS += -laks
+LIBS += -laks -lvart-runner -lxir -lunilog
 
 #####################
 #      Rules/Targets
 #####################
-SRC := ./src/main.cpp
+SRC := ./src/*.cpp
 BIN := ./src/bin
 $(shell mkdir -p $(BIN))
 TARGET := $(BIN)/main.exe
 
 $(TARGET): $(SRC)
 	@echo -e "\n[BUILD] Building $@ \n"
-	$(CXX) $(CXXOPT) $(CCOPTS) -std=c++11 $(SRC) $(INCLUDE) $(LIB_PATHS) $(LIBS) -o $@
+	$(CXX) $(CXXOPT) $(CCOPTS) $(SRC) $(INCLUDE) $(LIB_PATHS) $(LIBS) -o $@
 	@echo -e "\n[BUILD] Done\n"
 
 LD_LIBRARY_PATH :=${TMP_LD_PATH}	

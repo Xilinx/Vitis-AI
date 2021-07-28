@@ -13,11 +13,16 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.12)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -O0 -fno-inline")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-project(ClassificationAccuracy VERSION 1.3.0)
+project(ClassificationAccuracy VERSION 1.4.0)
+
+find_package(xir REQUIRED)
+find_package(unilog REQUIRED)
+find_package(vart REQUIRED)
 
 if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
   message(STATUS "AKS Install Prefix: ${AKS_INSTALL_PREFIX}")
@@ -32,7 +37,7 @@ endif()
 message(STATUS "AKS Includes: ${aks_INCLUDE_DIRS}")
 
 execute_process(COMMAND uname -m OUTPUT_VARIABLE arch)
-if(${arch} MATCHES ".*x86.*")
+if(${arch} MATCHES ".*x86.*" AND (NOT DEFINED ENV{OECORE_TARGET_ARCH}))
   find_package(Boost 1.65.1 EXACT REQUIRED COMPONENTS system filesystem)
 else()
   find_package(Boost 1.65.1 REQUIRED COMPONENTS system filesystem)
@@ -53,4 +58,7 @@ target_include_directories (${PROJECT_NAME}
 
 target_link_libraries (${PROJECT_NAME}
   PRIVATE ${Boost_LIBRARY}
+  PRIVATE ${aks_LIBRARIES}
+  PRIVATE vart-runner
+  PRIVATE xir unilog
 )

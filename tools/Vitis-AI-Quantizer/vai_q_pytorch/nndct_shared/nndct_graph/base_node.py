@@ -18,6 +18,7 @@
 
 import copy
 import json
+from nndct_shared.base import NNDCT_OP
 from .base_operator import Operation
 from typing import Optional
 import weakref
@@ -54,6 +55,7 @@ class Node(NodeBase):
     self._out_tensors = []
     self._in_nodes = []
     self._out_nodes = []
+    self._blocks = []
     self._is_quantizable = in_quant_part
 
   def __repr__(self):
@@ -92,6 +94,11 @@ class Node(NodeBase):
     node_des['in_tensors'] = [it.description() for it in self.in_tensors]
     node_des['out_tensors'] = [ot.description() for ot in self.out_tensors]
     node_des['op'] = self._op.description()
+    if self._blocks:
+      for i, block in enumerate(self._blocks):
+        node_des[f'block_{i}'] = []
+        for n in sorted(block.nodes, key=lambda n: n.idx):
+          node_des[f'block_{i}'].append(n.description())
     return node_des
 
   def clean_connections(self):
@@ -199,7 +206,7 @@ class Node(NodeBase):
     return self._op.get_attr(key)
 
   def set_node_attr(self, key, value):
-    self._op.set_attr(key, value)
+    self._op.set_attr(key, value)  
 
   def node_config(self, key):
     return self._op.get_config(key)
@@ -207,6 +214,13 @@ class Node(NodeBase):
   def set_node_config(self, key, value):
     self._op.set_config(key, value)
 
+  def has_bound_params(self):
+    return self._op.has_native_params()
+  
+  @property
+  def op_type(self):
+    return self.op.type
+  
   @property
   def op_type(self):
     return self.op.type
@@ -262,4 +276,14 @@ class Node(NodeBase):
   @module.setter
   def module(self, module):
     self._module = weakref.ref(module)
+  
+  @property
+  def blocks(self):
+    return self._blocks
+  
+  def add_block(self, block):
+    self._blocks.append(block)
     
+  def has_custom_op(self):
+    return self.op.type not in NNDCT_OP.__dict__.values()
+  

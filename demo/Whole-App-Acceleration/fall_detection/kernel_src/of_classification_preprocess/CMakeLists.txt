@@ -1,4 +1,4 @@
-# Copyright 2019 Xilinx Inc.
+# Copyright 2021 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,9 +13,14 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.12)
+set (CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -O0 -fno-inline")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 project(OFClassificationPreProcess VERSION 1.3.0)
 
+find_package(xir REQUIRED)
 if (NOT "${AKS_INSTALL_PREFIX}" STREQUAL "")
   message(STATUS "AKS Install Prefix: ${AKS_INSTALL_PREFIX}")
   find_package(aks REQUIRED
@@ -39,4 +44,5 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 
 target_include_directories (${PROJECT_NAME}
   PRIVATE ${aks_INCLUDE_DIRS}
+  PRIVATE xir
 )

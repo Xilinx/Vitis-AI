@@ -41,12 +41,6 @@ set_property sdx_kernel true [ipx::current_core]
 set_property sdx_kernel_type rtl [ipx::current_core]
 set_property type ttcl [ipx::get_files src/*.ttcl -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis            -of_objects [ipx::current_core]]]
 set_property type ttcl [ipx::get_files src/*.ttcl -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-set clk_bus1  [ipx::get_bus_interfaces aclk -of_objects [ipx::current_core]]
-set clk_freq1 [ipx::get_bus_parameters FREQ_HZ -of_objects $clk_bus1]
-set_property value_resolve_type {user} $clk_freq1
-set clk_bus2  [ipx::get_bus_interfaces ap_clk_2 -of_objects [ipx::current_core]]
-set clk_freq2 [ipx::get_bus_parameters FREQ_HZ -of_objects $clk_bus2]
-set_property value_resolve_type {user} $clk_freq2
 ipx::create_xgui_files [ipx::current_core]
 ipx::associate_bus_interfaces -busif M_AXI_GP0 -clock aclk [ipx::current_core]
 ipx::associate_bus_interfaces -busif M_AXI_HP0 -clock aclk [ipx::current_core]

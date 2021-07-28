@@ -27,8 +27,8 @@
 #include <memory>
 #include <opencv2/core.hpp>
 #include <vector>
+#include <vitis/ai/configurable_dpu_task.hpp>
 #include <vitis/ai/nnpp/yolov3.hpp>
-
 namespace vitis {
 namespace ai {
 
@@ -82,7 +82,7 @@ namespace ai {
  * Display of the model results:
  * @image latex images/sample_yolov3_result.jpg "out image" width=\textwidth
  */
-class YOLOv3 {
+class YOLOv3 : public ConfigurableDpuTaskBase {
  public:
   /**
    * @brief Factory function to get an instance of derived classes of class
@@ -102,7 +102,7 @@ class YOLOv3 {
    * @cond NOCOMMENTS
    */
  protected:
-  explicit YOLOv3();
+  explicit YOLOv3(const std::string& model_name, bool need_preprocess);
   YOLOv3(const YOLOv3&) = delete;
 
  public:
@@ -111,18 +111,6 @@ class YOLOv3 {
    * @endcond
    */
  public:
-  /**
-   * @brief Function to get InputWidth of the YOLOv3 network (input image columns).
-   *
-   * @return InputWidth of the YOLOv3 network
-   */
-  virtual int getInputWidth() const = 0;
-  /**
-   *@brief Function to get InputHeight of the YOLOv3 network (input image rows).
-   *
-   *@return InputHeight of the YOLOv3 network.
-   */
-  virtual int getInputHeight() const = 0;
   /**
    * @brief Function to get running result of the YOLOv3 neuron network.
    *
@@ -144,14 +132,16 @@ class YOLOv3 {
    */
   virtual std::vector<YOLOv3Result> run(const std::vector<cv::Mat>& images) = 0;
   /**
-   * @brief Function to get the number of images processed by the DPU at one
-   * time.
-   * @note Different DPU core the batch size may be different. This depends on
-   * the IP used.
+   * @brief Function to get running result of the YOLOv3 neuron network
+   * in batch mode, used to receive user's xrt_bo to support zero copy.
    *
-   * @return Batch size.
+   * @param input_bos The vector of vart::xrt_bo_t.
+   *
+   * @return The vector of YOLOv3Result.
+   *
    */
-  virtual size_t get_input_batch() const = 0;
+  virtual std::vector<YOLOv3Result> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) = 0;
 };
 }  // namespace ai
 }  // namespace vitis

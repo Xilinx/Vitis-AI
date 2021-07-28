@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#define ENABLE_NEON
 #include "./yolov3_imp.hpp"
 
 #include <opencv2/highgui.hpp>
@@ -27,13 +26,13 @@ using namespace std;
 namespace vitis {
 namespace ai {
 
-YOLOv3Imp::YOLOv3Imp(const std::string &model_name, bool need_preprocess)
-    : vitis::ai::TConfigurableDpuTask<YOLOv3>(model_name, need_preprocess),
+YOLOv3Imp::YOLOv3Imp(const std::string& model_name, bool need_preprocess)
+    : YOLOv3(model_name, need_preprocess),
       tf_flag_(configurable_dpu_task_->getConfig().is_tf()) {}
 
 YOLOv3Imp::~YOLOv3Imp() {}
 
-YOLOv3Result YOLOv3Imp::run(const cv::Mat &input_images) {
+YOLOv3Result YOLOv3Imp::run(const cv::Mat& input_images) {
   cv::Mat image;
   int sWidth = getInputWidth();
   int sHeight = getInputHeight();
@@ -48,11 +47,11 @@ YOLOv3Result YOLOv3Imp::run(const cv::Mat &input_images) {
           library::tensor_scale(configurable_dpu_task_->getInputTensor()[0][0]);
 //# DPUV1 needs float input data
 #ifdef ENABLE_DPUCADX8G_RUNNER
-      float *data =
-          (float *)configurable_dpu_task_->getInputTensor()[0][0].get_data(0);
+      float* data =
+          (float*)configurable_dpu_task_->getInputTensor()[0][0].get_data(0);
 #else
-      int8_t *data =
-          (int8_t *)configurable_dpu_task_->getInputTensor()[0][0].get_data(0);
+      int8_t* data =
+          (int8_t*)configurable_dpu_task_->getInputTensor()[0][0].get_data(0);
 #endif
 
       LOG_IF(INFO, false) << "scale " << scale << " "      //
@@ -92,7 +91,7 @@ YOLOv3Result YOLOv3Imp::run(const cv::Mat &input_images) {
   __TOC__(YOLOV3_POST_ARM)
   return ret;
 }
-vector<YOLOv3Result> YOLOv3Imp::run(const vector<cv::Mat> &input_images) {
+vector<YOLOv3Result> YOLOv3Imp::run(const vector<cv::Mat>& input_images) {
   cv::Mat image;
   int sWidth = getInputWidth();
   int sHeight = getInputHeight();
@@ -108,12 +107,11 @@ vector<YOLOv3Result> YOLOv3Imp::run(const vector<cv::Mat> &input_images) {
       for (size_t i = 0; i < input_images.size(); i++) {
 //# DPUV1 needs float input data
 #ifdef ENABLE_DPUCADX8G_RUNNER
-        float *data =
-            (float *)configurable_dpu_task_->getInputTensor()[0][0].get_data(i);
+        float* data =
+            (float*)configurable_dpu_task_->getInputTensor()[0][0].get_data(i);
 #else
-        int8_t *data =
-            (int8_t *)configurable_dpu_task_->getInputTensor()[0][0].get_data(
-                i);
+        int8_t* data =
+            (int8_t*)configurable_dpu_task_->getInputTensor()[0][0].get_data(i);
 #endif
         LOG_IF(INFO, false) << "scale " << scale << " "      //
                             << "sWidth " << sWidth << " "    //
@@ -157,6 +155,24 @@ vector<YOLOv3Result> YOLOv3Imp::run(const vector<cv::Mat> &input_images) {
     cols.push_back(input_image.cols);
     rows.push_back(input_image.rows);
   }
+  auto ret = vitis::ai::yolov3_post_process(
+      configurable_dpu_task_->getInputTensor()[0],
+      configurable_dpu_task_->getOutputTensor()[0],
+      configurable_dpu_task_->getConfig(), cols, rows);
+
+  __TOC__(YOLOV3_POST_ARM)
+  return ret;
+}
+
+vector<YOLOv3Result> YOLOv3Imp::run(const vector<vart::xrt_bo_t>& input_bos) {
+  __TIC__(YOLOV3_DPU)
+  configurable_dpu_task_->run_with_xrt_bo(input_bos);
+  __TOC__(YOLOV3_DPU)
+
+  __TIC__(YOLOV3_POST_ARM)
+  auto batch = input_bos.size();
+  vector<int> cols(batch, getInputWidth());
+  vector<int> rows(batch, getInputHeight());
   auto ret = vitis::ai::yolov3_post_process(
       configurable_dpu_task_->getInputTensor()[0],
       configurable_dpu_task_->getOutputTensor()[0],

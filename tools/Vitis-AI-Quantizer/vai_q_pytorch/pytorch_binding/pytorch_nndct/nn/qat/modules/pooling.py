@@ -1,6 +1,3 @@
-
-
-#
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +17,7 @@ import torch
 
 from pytorch_nndct.nn.modules.fix_ops import NndctScale
 
-class AvgPool2d(torch.nn.modules.AvgPool2d):
+class DPUAvgPool2d(torch.nn.modules.AvgPool2d):
 
   def forward(self, input):
     output = super().forward(input)
@@ -34,13 +31,49 @@ class AvgPool2d(torch.nn.modules.AvgPool2d):
     elif self.kernel_size == [5, 5]:
       need_scale = True
       scale = 25.0 * 10.0 / 256.0
-    elif self.kernel_size == [6, 6]:
+    elif self.kernel_size == [[6, 6], [3, 6], [6, 3]]:
       need_scale = True
       scale = 36.0 * 7.0 / 256.0
     elif self.kernel_size == [7, 7]:
       need_scale = True
       scale = 49.0 * 21.0 / 1024.0
     elif self.kernel_size == [14, 14]:
+      need_scale = True
+      scale = 196.0 * 21.0 / 4096.0
+
+    if need_scale:
+      NndctScale(output, scale)
+
+    return output
+
+class DPUAdaptiveAvgPool2d(torch.nn.modules.AdaptiveAvgPool2d):
+
+  def forward(self, input):
+    output = super().forward(input)
+
+    if (isinstance(self.output_size,
+                   (tuple, list)) and tuple(self.output_size) !=
+        (1, 1)) or self.output_size != 1:
+      print(
+          "Warning: For adaptive average pooling, DPU only supports output size=1"
+      )
+
+
+    need_scale = False
+    scale = 1.0
+    if input.shape[2] == 3 and input.shape[3] == 3:
+      need_scale = True
+      scale = 9.0 * 7.0 / 64.0
+    elif input.shape[2] == 5 and input.shape[3] == 5:
+      need_scale = True
+      scale = 25.0 * 10.0 / 256.0
+    elif input.shape[2] == 6 and input.shape[3] == 6:
+      need_scale = True
+      scale = 36.0 * 7.0 / 256.0
+    elif input.shape[2] == 7 and input.shape[3] == 7:
+      need_scale = True
+      scale = 49.0 * 21.0 / 1024.0
+    elif input.shape[2] == 14 and input.shape[3] == 14:
       need_scale = True
       scale = 196.0 * 21.0 / 4096.0
 

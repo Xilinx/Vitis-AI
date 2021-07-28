@@ -29,6 +29,7 @@
 /* header file for Vitis AI unified API */
 #include <vart/mm/host_flat_tensor_buffer.hpp>
 #include <vart/runner.hpp>
+#include <vart/runner_ext.hpp>
 #include <xir/graph/graph.hpp>
 #include <xir/tensor/tensor.hpp>
 #include <xir/util/data_type.hpp>

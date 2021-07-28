@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <vitis/ai/trace.hpp>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/weak.hpp>
 #include <vitis/ai/xxd.hpp>
@@ -77,6 +78,9 @@ DpuKernel::~DpuKernel() {
 
 void DpuKernel::initialize() {
   my_load_parameter();
+
+  vitis::ai::trace::add_subgraph(subgraph_);
+
   if (ENV_PARAM(XLNX_ENABLE_DEBUG_MODE) == 0) {
     my_load_release_code();
   } else {
@@ -87,10 +91,14 @@ void DpuKernel::initialize() {
 void DpuKernel::my_load_parameter() {
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER))
       << "loading parameter for " << subgraph_->get_graph()->get_name();
-  CHECK(subgraph_->has_attr("reg_id_to_parameter_value"));
-  auto reg_id_to_parameter_value =
-      subgraph_->get_attr<std::map<std::string, std::vector<char>>>(
-          "reg_id_to_parameter_value");
+  // CHECK(subgraph_->has_attr("reg_id_to_parameter_value"))
+  //     << "subgraph name:" << subgraph_->get_name();
+  auto reg_id_to_parameter_value = std::map<std::string, std::vector<char>>();
+  if (subgraph_->has_attr("reg_id_to_parameter_value")) {
+    reg_id_to_parameter_value =
+        subgraph_->get_attr<std::map<std::string, std::vector<char>>>(
+            "reg_id_to_parameter_value");
+  }
 
   CHECK(subgraph_->has_attr("reg_id_to_context_type"));
   auto reg_id_to_context_type =
@@ -105,7 +113,11 @@ void DpuKernel::my_load_parameter() {
       continue;
     }
     auto it_value = reg_id_to_parameter_value.find(reg_id);
-    CHECK(it_value != reg_id_to_parameter_value.end());
+    CHECK(it_value != reg_id_to_parameter_value.end())
+        << "cannot find CONST REG values:"
+        << " subgraph name= " << subgraph_->get_name()
+        << " reg_id = " << reg_id;
+
     total = total + it_value->second.size();
     if (ENV_PARAM(XLNX_ENABLE_DUMP_PARAMTER)) {
       auto filename = std::string("") + reg_id + ".bin";
@@ -120,8 +132,10 @@ void DpuKernel::my_load_parameter() {
     parameters.emplace_back(reg_id, RegType::CONST,
                             std::move(it_value->second));
   }
-  CHECK_GT(total, 0u) << "no parameter loaded.";
-  load_parameter(parameters);
+  // CHECK_GT(total, 0u) << "no parameter loaded.";
+  if (total != 0u) {
+    load_parameter(parameters);
+  }
 }
 void DpuKernel::my_load_release_code() {
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER))

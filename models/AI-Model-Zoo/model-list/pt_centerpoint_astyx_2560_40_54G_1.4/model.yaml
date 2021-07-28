@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: CenterPoint on Astyx 4D radar data.
+input size: 2560*40*4
+float ops: 54G
+task: 3d detection
+framework: pytorch
+prune: 'no'
+version: 1.4
+files:
+- name: pt_centerpoint_astyx_2560_40_54G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_centerpoint_astyx_2560_40_54G_1.4.zip
+  checksum: b7a7fccd067b11cbae41b3a11fef8211
+- name: centerpoint_0_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_0_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 67f7e3f99ddca501273095f239aa9d16
+- name: centerpoint_1_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_1_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 2559e8a5c843298fbda465b4f92e43f8
+- name: centerpoint_0_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_0_pt-vck190-r1.4.0.tar.gz
+  checksum: 54a880e137aeeff94134a0b5c4e74509
+- name: centerpoint_1_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_1_pt-vck190-r1.4.0.tar.gz
+  checksum: a1691ddec15dd8868376e0ae771cb4bc
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

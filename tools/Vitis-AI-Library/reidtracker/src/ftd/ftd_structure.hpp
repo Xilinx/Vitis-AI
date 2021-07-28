@@ -27,7 +27,7 @@
 typedef pair<int, Mat> imagePair;
 class paircomp {
  public:
-  bool operator()(const imagePair &n1, const imagePair &n2) const {
+  bool operator()(const imagePair& n1, const imagePair& n2) const {
     if (n1.first == n2.first) return n1.first > n2.first;
     return n1.first > n2.first;
   }
@@ -38,13 +38,13 @@ namespace ai {
 
 class FTD_Structure {
  public:
-  FTD_Structure(const SpecifiedCfg &specified_cfg);
+  FTD_Structure(const SpecifiedCfg& specified_cfg);
   ~FTD_Structure();
   void clear();
 
-  std::vector<OutputCharact> Update(const cv::Mat &image, uint64_t frame_id,
-                                    bool detect_flag, int mode,
-                                    std::vector<InputCharact> &input_characts);
+  std::vector<OutputCharact> Update(uint64_t frame_id, bool detect_flag,
+                                    int mode,
+                                    std::vector<InputCharact>& input_characts);
   std::vector<int> GetRemoveID();
 
   int max_age = 60;
@@ -53,17 +53,15 @@ class FTD_Structure {
 
  private:
   std::vector<uint64_t> id_record;
+  uint64_t track_id;
   float iou_threshold;
   float feat_distance_low;
   float feat_distance_high;
   float score_threshold;
   cv::Rect_<float> roi_range;
   std::vector<std::shared_ptr<FTD_Trajectory>> tracks;
-  std::shared_ptr<Reid> reid0;
-  std::shared_ptr<Reid> reid1;
-  std::shared_ptr<Reid> reid2;
 
-  void GetOut(std::vector<OutputCharact> &output_characts);
+  void GetOut(std::vector<OutputCharact>& output_characts);
   std::vector<int> remove_id_this_frame;
   SpecifiedCfg specified_cfg_;
 };

@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: UNet(2D) for segmentation on ChaosCT.
+input size: 512*512
+float ops: 23.3G
+task: segmentation
+framework: pytorch
+prune: 'no'
+version: 1.4
+files:
+- name: pt_unet_chaos-CT_512_512_23.3G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_unet_chaos-CT_512_512_23.3G_1.4.zip
+  checksum: 8160edd9a0abf82cc8cd457adbe8c575
+- name: unet_chaos-CT_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: fc77afc10b9e23c1b2a5f0957eb5ae5a
+- name: unet_chaos-CT_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-vck190-r1.4.0.tar.gz
+  checksum: 86fa3b47c7a11da69d65d88b0d873752
+- name: unet_chaos-CT_pt
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: e7f9bb8d24457bae0771f3461302d44b
+- name: unet_chaos-CT_pt
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 1a4aad13dfba482dbc20ff06d72f9f4a
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -16,12 +16,11 @@
 # under the License.
 
 """
-Run TVM model for Xilinx Vitis-AI acceleration
-==================================================
+Run TVM model with Xilinx Vitis AI acceleration
+===============================================
 
-This example shows how to run MxNet Resent_18 model
- built with TVM for Vitis-AI acceleration
-
+This example shows how to run MxNet ResNet 18 model
+built with TVM for Vitis AI acceleration
 """
 
 import os
@@ -29,17 +28,14 @@ import argparse
 import numpy as np
 import time
 
-
 import pyxir
 import tvm
-from tvm.contrib import graph_runtime
-from tvm.contrib.target import vitis_ai
+from tvm.contrib import graph_executor
 
 from PIL import Image
 from tvm.contrib.download import download_testdata
 
 FILE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 
 
 ######################################################################
@@ -69,16 +65,19 @@ def transform_image(image):
     image = image[np.newaxis, :]
     return image
 
+
 def softmax(x):        
-        x_exp = np.exp(x - np.max(x))
-        return x_exp / x_exp.sum()
+    x_exp = np.exp(x - np.max(x))
+    return x_exp / x_exp.sum()
 
-def run(fdir,shape_dict, iterations):
 
-    
+###########################################################
+# Main function
+###########################################################
+
+def run(file_path, shape_dict, iterations):
     # DOWNLOAD IMAGE FOR TEST
-    img_shape=shape_dict[list(shape_dict.keys())[0]][2:]
-    print(img_shape)
+    img_shape = shape_dict[list(shape_dict.keys())[0]][2:]
     image = Image.open(img_path).resize(img_shape)
     
     # IMAGE PRE-PROCESSING
@@ -89,11 +88,9 @@ def run(fdir,shape_dict, iterations):
     inputs[list(shape_dict.keys())[0]] = image
 
     # load the pre-compiled module into memory
-    lib = tvm.runtime.load_module(os.path.join(fdir,"tvm_dpu_cpu.so"))
-    module = graph_runtime.GraphModule(lib["default"](tvm.cpu()))
+    lib = tvm.runtime.load_module(file_path)
+    module = graph_executor.GraphModule(lib["default"](tvm.cpu()))
     module.set_input(**inputs)
-  
-
 
     # VAI FLOW
     for i in range(iterations):
@@ -101,7 +98,7 @@ def run(fdir,shape_dict, iterations):
         module.run()
         stop = time.time()
         res = [module.get_output(idx).asnumpy()
-                for idx in range(module.get_num_outputs())]
+               for idx in range(module.get_num_outputs())]
         
         inference_time = np.round((stop - start) * 1000, 2)
         
@@ -126,7 +123,7 @@ def run(fdir,shape_dict, iterations):
 # Once you setup your device, you could copy the compiled file to your acceleration device and run the model as follows:
 #
 # Parameter settings for the run script:
-# -f           : Path to directory containing TVM compiled model
+# -f           : Path to the exported TVM compiled model (tvm_dpu_cpu.so in the example)
 # --iterations : The number of iterations to run the model
 #
 # example:
@@ -137,11 +134,10 @@ def run(fdir,shape_dict, iterations):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", help="Path to directory containing TVM compilation files", default=FILE_DIR)
-    parser.add_argument("--iterations", help="The number of iterations to run.", default=2, type=int)
+    parser.add_argument("-f", help="Path to TVM library file (.so)", default=FILE_DIR)
+    parser.add_argument("--iterations", help="The number of iterations to run.", default=1, type=int)
     args = parser.parse_args()
-    fdir = args.f if os.path.isabs(args.f) else os.path.join(os.getcwd(), args.f)
+    file_path = args.f if os.path.isabs(args.f) else os.path.join(os.getcwd(), args.f)
     iterations = args.iterations
     shape_dict = {'data': [1, 3, 224, 224]}
-    
-    run(fdir, shape_dict, iterations)
+    run(file_path, shape_dict, iterations)

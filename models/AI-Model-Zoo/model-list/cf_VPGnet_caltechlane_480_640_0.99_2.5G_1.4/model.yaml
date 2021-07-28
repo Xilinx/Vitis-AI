@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: VPG lane detection on Caltech dataset.
+input size: 480*640
+float ops: 2.5G
+task: Lane Detection
+framework: caffe
+prune: '0.99'
+version: 1.4
+files:
+- name: cf_VPGnet_caltechlane_480_640_0.99_2.5G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_VPGnet_caltechlane_480_640_0.99_2.5G_1.4.zip
+  checksum: 1e605ece231ec58d7b88096b1411ef1f
+- name: vpgnet_pruned_0_99
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: a4bc810ffbb4064a0b01353d537a135b
+- name: vpgnet_pruned_0_99
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-vck190-r1.4.0.tar.gz
+  checksum: 3ae0be2aa6dd465c40d2be43855e2478
+- name: vpgnet_pruned_0_99
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: a31c2a664385f0a13430fe881d60ba53
+- name: vpgnet_pruned_0_99
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: e6c84816db47e1ad340e088c81713251
+- name: vpgnet_pruned_0_99
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 674d62085043bfe43f61c7b89c105525
+- name: vpgnet_pruned_0_99
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u200-u250-r1.4.0.tar.gz
+  checksum: 57037d37ecf7b5e35ad4c3a3ed859eb1
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

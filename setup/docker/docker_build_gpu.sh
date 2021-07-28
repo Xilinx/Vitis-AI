@@ -16,11 +16,17 @@
 DOCKER_REPO="${DOCKER_REPO:-xilinx/}"
 VERSION="${VERSION:-`cat docker/VERSION.txt`}"
 DOCKERFILE="${DOCKERFILE:-docker/DockerfileGPU}"
+XRT_URL="${XRT_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_18.04-amd64-xrt.deb}"
+XRM_URL="${XRT_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_18.04-x86_64.deb}"
+PETALINUX_URL="${XRT_URL:-https://www.xilinx.com/bin/public/openDownload?filename=sdk-2021.1.0.0.sh}"
+
 
 BRAND="${BRAND:-vitis-ai-gpu}"
 DATE="$(date)"
 
 # Final Build Image Tag
-IMAGE_TAG=${DOCKER_REPO}$BRAND:${VERSION}
+IMAGE_TAG=${DOCKER_REPO}${BRAND}:${VERSION}
+IMAGE_LATEST_TAG=${DOCKER_REPO}${BRAND}:latest
 
-docker build --network=host --build-arg VERSION=${VERSION} --build-arg CACHEBUST="$(date +%s)" --build-arg DATE="$(date -I)" -f ${DOCKERFILE} -t $IMAGE_TAG ./
+docker build --network=host --build-arg VERSION=${VERSION} --build-arg CACHEBUST="$(date +%s)" --build-arg DATE="$(date -I)" -f ${DOCKERFILE} -t ${IMAGE_TAG} ./
+docker tag ${IMAGE_TAG} ${IMAGE_LATEST_TAG}

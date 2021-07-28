@@ -1,0 +1,25 @@
+{
+"layer": {
+"0": {
+    "load_src_reg_0": {
+    "dir": 1,
+    "size": 32
+    },
+    "load_src_reg_1": {
+    "dir": 1,
+    "size": 128
+    },
+    "save_dest_reg_0": {
+    "dir": 1,
+    "size": 128
+    }
+}
+},
+ "batch4_lines": [],
+ "batch3_lines": [],
+ "batch1_lines": [
+  315,
+  52,
+  2
+ ]
+}

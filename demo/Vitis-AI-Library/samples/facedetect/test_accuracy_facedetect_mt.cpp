@@ -130,7 +130,8 @@ struct FaceDetectReadImages : public ReadImagesThread {
         std::cerr << "cannot read image: " << line;
         continue;
       }
-      single_name = get_single_name(line);
+      auto namesp = split(line, "FDDB_images/");
+      single_name = split(namesp[1], ".")[0];
       auto image_resize = image_pre_resize(image);
       int w = image_resize.cols;
       int h = image_resize.rows;

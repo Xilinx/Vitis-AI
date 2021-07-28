@@ -52,6 +52,13 @@ static std::string reg_info(const xir::Subgraph* s, int n) {
   for (auto& r : reg_id_to_context_type) {
     str << indent(n + 1) << r.first << " => " << r.second << '\n';
   }
+  auto reg_id_to_context_type_v2 =
+      s->get_attr<std::map<std::string, std::string>>(
+          "reg_id_to_context_type_v2");
+  str << indent(n + 1) << "reg_id_to_context_type_v2:" << '\n';
+  for (auto& r : reg_id_to_context_type_v2) {
+    str << indent(n + 1) << r.first << " => " << r.second << '\n';
+  }
   auto reg_id_to_hw_segment =
       s->get_attr<std::map<std::string, std::string>>("reg_id_to_hw_segment");
   str << indent(n + 1) << "reg_id_to_hw_segment:" << '\n';

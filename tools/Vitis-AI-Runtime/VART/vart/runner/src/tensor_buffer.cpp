@@ -155,7 +155,8 @@ static void copy_tensor_buffer_real_from_host_to_phy(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = tb_from->get_tensor()->get_data_size() / batch_size;
+  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
+                           tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
     std::tie(data, tensor_size) = tb_from->data(idx);
@@ -170,7 +171,8 @@ static void copy_tensor_buffer_real_from_phy_to_host(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = tb_from->get_tensor()->get_data_size() / batch_size;
+  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
+                           tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
     std::tie(data, tensor_size) = tb_to->data(idx);
@@ -185,7 +187,8 @@ static void copy_tensor_buffer_real_from_host_to_device(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = tb_from->get_tensor()->get_data_size() / batch_size;
+  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
+                           tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
     std::tie(data, tensor_size) = tb_from->data(idx);
@@ -200,7 +203,8 @@ static void copy_tensor_buffer_real_from_device_to_host(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = tb_from->get_tensor()->get_data_size() / batch_size;
+  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
+                           tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
     std::tie(data, tensor_size) = tb_to->data(idx);
@@ -208,6 +212,25 @@ static void copy_tensor_buffer_real_from_device_to_host(
     tb_from->copy_to_host(batch, reinterpret_cast<void*>(data),
                           single_batch_size, 0u);
   }
+}
+
+static void copy_tensor_buffer_real_from_phy_to_phy(vart::TensorBuffer* tb_from,
+                                                    vart::TensorBuffer* tb_to,
+                                                    size_t batch_size) {
+  auto idx = vart::get_index_zeros(tb_from->get_tensor());
+  uint64_t data = 0u;
+  size_t tensor_size = 0;
+  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
+                           tb_from->get_tensor()->get_shape()[0];
+  for (auto batch = 0u; batch < batch_size; ++batch) {
+    idx[0] = (int)batch;
+    std::tie(data, tensor_size) = tb_to->data(idx);
+    CHECK_LE(single_batch_size, tensor_size);
+    tb_from->copy_to_host(batch, reinterpret_cast<void*>(data),
+                          single_batch_size, 0u);
+    tb_to->sync_for_write(0, single_batch_size);
+  }
+//  tb_to->sync_for_write(0, tb_to->get_tensor()->get_data_size());
 }
 
 static void copy_tensor_buffer_real(vart::TensorBuffer* tb_from,
@@ -247,8 +270,13 @@ static void copy_tensor_buffer_real(vart::TensorBuffer* tb_from,
     LOG_IF(INFO, ENV_PARAM(DEBUG_RUNNER))
         << "copy tensor buffer device to virt";
     copy_tensor_buffer_real_from_device_to_host(tb_from, tb_to, batch_size);
+  } else if (tb_from->get_location() ==
+                 vart::TensorBuffer::location_t::HOST_PHY &&
+             tb_to->get_location() ==
+                 vart::TensorBuffer::location_t::HOST_PHY) {
+    copy_tensor_buffer_real_from_phy_to_phy(tb_from, tb_to, batch_size);
   } else {
-    LOG(FATAL) << "TODO: from phy to phy";
+    LOG(FATAL) << "TODO: from device to phy / phy to device / device to device";
   }
 }
 
@@ -365,6 +393,10 @@ void TensorBuffer::copy_tensor_buffer(vart::TensorBuffer* tb_from,
   CHECK_EQ(tensor_from->get_name(), tensor_to->get_name());
   auto from_batch_size = tensor_from->get_shape()[0];
   auto to_batch_size = tensor_to->get_shape()[0];
+  auto from_single_batch_size =
+      tensor_from->get_element_num() / from_batch_size;
+  auto to_single_batch_size = tensor_to->get_element_num() / to_batch_size;
+  CHECK_EQ(from_single_batch_size, to_single_batch_size);
   auto batch_size = std::min(from_batch_size, to_batch_size);
   std::int32_t from_dim_num = tensor_from->get_shape().size();
   auto to_dim_num = tensor_to->get_shape().size();

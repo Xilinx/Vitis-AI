@@ -53,8 +53,6 @@ const std::vector<std::int32_t> TensorImp::get_shape() const {
 
 // TODO: legacy API
 const std::vector<std::int32_t> TensorImp::get_dims() const {
-  UNI_LOG_WARNING << "Tensor::get_dims() will be removed in the future "
-                     "version. Please use the Tensor::get_shape() instead.";
   return this->shape_;
 }
 
@@ -62,9 +60,6 @@ const std::int32_t TensorImp::get_dim_num() const {
   return this->shape_.size();
 }
 const std::int32_t TensorImp::get_dim_size(std::int32_t idx) const {
-  UNI_LOG_WARNING
-      << "Tensor::get_dim_size(std::int32_t idx) will be removed in the future "
-         "version. Please use the Tensor::get_shape().at(idx) instead.";
   return this->shape_.at(idx);
 }
 
@@ -86,10 +81,6 @@ const std::int32_t TensorImp::get_element_num() const {
 const DataType& TensorImp::get_data_type() const { return data_type_; }
 
 const std::int32_t TensorImp::get_bit_width() const {
-  UNI_LOG_WARNING
-      << "Tensor::get_bit_width() API will be removed in the future version, "
-         "please use the Tensor::get_data_type() API to get the data type and "
-         "read the bit width information in it.";
   return this->data_type_.bit_width;
 }
 
@@ -132,8 +123,7 @@ const bool TensorImp::has_attr(const std::string& key) const {
 const xir::any TensorImp::get_attr(const std::string& key) const {
   UNI_LOG_CHECK(attrs_->has_attr(key), XIR_UNREGISTERED_ATTR)
       << "Attrs doesn't contain attribute " << key;
-  auto tmp = Attrs::clone(attrs_.get());
-  return tmp->get_attr(key);
+  return attrs_->get_attr(key);
 }
 
 Tensor* TensorImp::set_attr(const std::string& key, const xir::any& value) {

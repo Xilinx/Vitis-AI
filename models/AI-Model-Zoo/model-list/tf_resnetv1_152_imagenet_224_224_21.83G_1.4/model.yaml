@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: resnetv1_152 classifier on ImageNet.
+input size: 224*224
+float ops: 21.83G
+task: classification
+framework: tensorflow
+prune: 'no'
+version: 1.4
+files:
+- name: tf_resnetv1_152_imagenet_224_224_21.83G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_152_imagenet_224_224_21.83G_1.4.zip
+  checksum: 485552b67b809aa302212004bfc8c0ff
+- name: resnet_v1_152_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: d3b57f13cc557ed70cbba872e74cb9bb
+- name: resnet_v1_152_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-vck190-r1.4.0.tar.gz
+  checksum: 3fb546898afd3bbc9b3bdc8feae1aba1
+- name: resnet_v1_152_tf
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: a1966d81587c1df63d60fff40d4b4ffd
+- name: resnet_v1_152_tf
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 2b19c451045b0406bd42c76abc51a821
+- name: resnet_v1_152_tf
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 859ec0f6c4e1435f408dc598e27e6d42
+- name: resnet_v1_152_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u200-u250-r1.4.0.tar.gz
+  checksum: 37ea6bc9e94d232d70d91c4f068aa5a9
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

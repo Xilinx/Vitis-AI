@@ -35,6 +35,13 @@ void readfile(string& filename, vector<float>& data) {
   cout << filename << " " << data.size() << endl;
 }
 
+
+template<typename T> 
+void writefilebin(string& filename, vector<T>& data) {
+  ofstream output_file(filename, ios::binary);
+  output_file.write(reinterpret_cast<char *>(data.data()), sizeof(T) * data.size());
+}
+
 template<typename T> 
 void writefile(string& filename, vector<T>& data) {
   ofstream output_file(filename);
@@ -53,18 +60,24 @@ int main(int argc, char *argv[]) {
             << "height " << height << " "  //
             << std::endl;
   vector<vector<float>> arrays(4);
-  string scan_x = argv[2];
-  string scan_y = argv[3];
-  string scan_z = argv[4];
-  string remission = argv[5];
+  string name = argv[2];
+  auto path = name + "/";
+  string scan_x = path + "scan_x.txt";
+  string scan_y = path + "scan_y.txt";
+  string scan_z = path + "scan_z.txt";
+  string remission = path + "scan_remission.txt";
+  cout << "load file " << endl;
   readfile(scan_x, arrays[0]);
   readfile(scan_y, arrays[1]);
   readfile(scan_z, arrays[2]);
   readfile(remission, arrays[3]);
 
+  cout << "start running " << endl;
   vitis::ai::Segmentation3DResult res = det->run(arrays);
   string result_name = "result.txt";
   writefile(result_name, res.array);
+  string result_bin_name = "result.bin";
+  writefilebin(result_bin_name, res.array);
 
   return 0;
 }

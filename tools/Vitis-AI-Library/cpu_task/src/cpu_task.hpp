@@ -16,8 +16,7 @@
 
 #include <unordered_map>
 
-#include "./batch_tensor_buffer_view.hpp"
-#include "batch_tensor_buffer_view.hpp"
+#include "./tensor_buffer_proxy.hpp"
 #include "vart/op_imp.h"
 #include "vart/runner.hpp"
 
@@ -44,34 +43,32 @@ class CpuTask : public vart::Runner {
 
  private:
   std::unordered_map<std::string, size_t> build_tensor_name_2_index();
-  std::vector<std::unique_ptr<vart::BatchTensorBufferView>>
-  build_tensor_buffer_views();
   std::vector<MyOpArgs> build_my_op_args();
 
   vart::TensorBuffer* find_tensor_buffer(const std::string& name);
-  vart::BatchTensorBufferView* find_tensor_buffer_view(const std::string& name);
-
-  size_t get_batch_size(const std::vector<vart::TensorBuffer*>& input,
-                        const std::vector<vart::TensorBuffer*>& output) const;
-  size_t get_batch_step(const std::vector<vart::TensorBuffer*>& input,
-                        const std::vector<vart::TensorBuffer*>& output);
-  void update_tensor_buffer_view(
-      size_t batch_index, const std::vector<vart::TensorBuffer*>& input,
-      const std::vector<vart::TensorBuffer*>& output);
+  vart::TensorBufferProxy* find_proxy_tensor_buffer(const std::string& name);
+  void update_proxy(const std::vector<vart::TensorBuffer*>& input);
+  void maybe_sync_for_read(const std::vector<vart::TensorBuffer*>& b);
+  void maybe_sync_for_write(const std::vector<vart::TensorBuffer*>& b);
+  void maybe_sync_for_read(vart::TensorBuffer* b);
+  void maybe_sync_for_write(vart::TensorBuffer* b);
 
  private:
+  std::unique_ptr<xir::Attrs> default_attrs_;
   xir::Attrs* attrs_;
+  const xir::Subgraph* subgraph_;
   std::vector<std::unique_ptr<xir::Tensor>> inputs_;
   std::vector<std::unique_ptr<xir::Tensor>> outputs_;
   std::vector<const xir::Op*> ops_;
   std::vector<std::unique_ptr<vart::OpImp>> op_imp_;
   // all tensors inside the subgraph, not including the input ops
   std::vector<const xir::Tensor*> tensors_;
-  // the corresponding tensor buffers, not including the input ops.
+  // the corresponding tensor buffers, including the input ops.
   std::vector<std::unique_ptr<vart::TensorBuffer>> tensor_buffers_;
+  std::vector<std::unique_ptr<vart::TensorBufferProxy>> proxy_tensor_buffers_;
+  // pointer to point to OpArgs;
+  std::vector<vart::TensorBuffer*> tensor_buffer_view_;
   std::unordered_map<std::string, size_t> tensor_name_2_index_;
-  std::vector<std::unique_ptr<vart::BatchTensorBufferView>>
-      tensor_buffer_views_;
   std::vector<MyOpArgs> my_op_args_;
 };
 }  // namespace

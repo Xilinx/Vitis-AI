@@ -14,7 +14,7 @@ echo -e "Docker Image Version: \e[32m $VERSION \e[m"
 echo "Build Date: $BUILD_DATE"
 echo "VAI_ROOT: $VAI_ROOT"
 echo -e ""
-echo -e "For TensorFlow Workflows do:"
+echo -e "For TensorFlow 1.15 Workflows do:"
 echo -e "    \e[31m conda activate vitis-ai-tensorflow \e[m"
 echo -e "For Caffe Workflows do:"
 echo -e "    \e[31m conda activate vitis-ai-caffe \e[m"
@@ -34,7 +34,7 @@ fi
 
 caffe_opt="`conda env list |grep optimizer_caffe`"
 if [ X"$caffe_opt" != "X" ];then
-   echo -e "For Caffe Optimizer Workflows do:"
+   echo -e "For TensorFlow 1.15 Optimizer Workflows do:"
    echo -e "    \e[31m conda activate vitis-ai-optimizer_caffe \e[m"
 fi
 optimizer_tensorflow="`conda env list |grep optimizer_tensorflow`"

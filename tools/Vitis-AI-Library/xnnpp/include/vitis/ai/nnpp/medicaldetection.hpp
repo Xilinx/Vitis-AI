@@ -23,10 +23,10 @@
  * details of these APIs.
  */
 #pragma once
-#include <memory>
-#include <vector>
-#include <opencv2/core.hpp>
 #include <vitis/ai/proto/dpu_model_param.pb.h>
+#include <memory>
+#include <opencv2/core.hpp>
+#include <vector>
 #include <vitis/ai/library/tensor.hpp>
 
 namespace vitis {
@@ -50,16 +50,16 @@ struct MedicalDetectionResult {
     int label;
     /// Confidence
     float score;
-    /// x-coordinate, x is normalized relative to the input image columns ,the
-    /// value range from 0 to 1.
+    /// x-coordinate. x is normalized relative to the input image columns.
+    /// The range of values is from 0 to 1.
     float x;
-    /// y-coordinate ,y is normalized relative to the input image rows ,the
-    /// value range from 0 to 1.
+    /// y-coordinate. y is normalized relative to the input image rows.
+    /// The range of values is from 0 to 1.
     float y;
-    /// width, width is normalized relative to the input image columns ,the value
-    /// range from 0 to 1.
+    /// width. width is normalized relative to the input image columns. The
+    /// value range from 0 to 1.
     float width;
-    /// height, height is normalized relative to the input image rows ,the value
+    /// height, height is normalized relative to the input image rows. The value
     /// range from 0 to 1.
     float height;
   };
@@ -69,8 +69,9 @@ struct MedicalDetectionResult {
 
 /**
  * @class MedicalDetectionPostProcess
- * @brief Class of the MedicalDetection post-process. It initializes the parameters once
- * instead of computing them every time when the program execute.
+ * @brief Class of the MedicalDetection post-process. It initializes the
+ * parameters once instead of computing them every time when the program
+ * execute.
  * */
 class MedicalDetectionPostProcess {
  public:
@@ -86,20 +87,23 @@ class MedicalDetectionPostProcess {
   static std::unique_ptr<MedicalDetectionPostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
       const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-      const vitis::ai::proto::DpuModelParam& config);
+      const vitis::ai::proto::DpuModelParam& config, int& real_batch_size);
 
   /**
    * @brief The post-processing function of the MedicalDetection network.
    * @return The struct of MedicalDetectionResult.
    */
-  virtual MedicalDetectionResult medicaldetection_post_process(unsigned int idx) = 0;
+  virtual MedicalDetectionResult medicaldetection_post_process(
+      unsigned int idx) = 0;
   /**
-   * @brief The batch mode post-processing function of the MedicalDetection network.
+   * @brief The batch mode post-processing function of the MedicalDetection
+   * network.
    * @return The vector of struct of MedicalDetectionResult.
    */
-  virtual std::vector<MedicalDetectionResult> medicaldetection_post_process() = 0;
+  virtual std::vector<MedicalDetectionResult>
+  medicaldetection_post_process() = 0;
 
-    /**
+  /**
    * @cond NOCOMMENTS
    */
   virtual ~MedicalDetectionPostProcess();
@@ -107,8 +111,9 @@ class MedicalDetectionPostProcess {
  protected:
   explicit MedicalDetectionPostProcess();
   MedicalDetectionPostProcess(const MedicalDetectionPostProcess&) = delete;
-  MedicalDetectionPostProcess& operator=(const MedicalDetectionPostProcess&) = delete;
-    /**
+  MedicalDetectionPostProcess& operator=(const MedicalDetectionPostProcess&) =
+      delete;
+  /**
    * @endcond
    */
 };

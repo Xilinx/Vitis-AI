@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <stdlib.h>
+
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -21,13 +23,12 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vitis/ai/segmentation.hpp>
-#include <stdlib.h>
 
 using namespace std;
 using namespace cv;
 
-static std::vector<std::string> split(const std::string &s,
-                                      const std::string &delim) {
+static std::vector<std::string> split(const std::string& s,
+                                      const std::string& delim) {
   std::vector<std::string> elems;
   size_t pos = 0;
   size_t len = s.length();
@@ -45,12 +46,12 @@ static std::vector<std::string> split(const std::string &s,
   return elems;
 }
 
-void LoadImageNames(std::string const &filename,
-                    std::vector<std::string> &images) {
+void LoadImageNames(std::string const& filename,
+                    std::vector<std::string>& images) {
   images.clear();
 
   /*Check if path is a valid directory path. */
-  FILE *fp = fopen(filename.c_str(), "r");
+  FILE* fp = fopen(filename.c_str(), "r");
   if (NULL == fp) {
     fprintf(stdout, "open file: %s  error\n", filename.c_str());
     exit(1);
@@ -67,21 +68,22 @@ void LoadImageNames(std::string const &filename,
   fclose(fp);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc != 5) {
-    std::cerr << "usage: " << argv[0] << "\n model name: " << argv[1] << "\nimage_list_file " << argv[2] << "\nresult_path: " << argv[3] << std::endl;
+    std::cerr << "usage: " << argv[0] << "\n model name: " << argv[1]
+              << "\nimage_list_file " << argv[2] << "\nresult_path: " << argv[3]
+              << std::endl;
     return -1;
   }
   auto det = vitis::ai::Segmentation::create(argv[1]);  // Init
-  
+
   string g_output_dir = argv[4];
-  string mkdir = "mkdir -p " + g_output_dir +"/";
+  string mkdir = "mkdir -p " + g_output_dir + "/";
   vector<string> names;
   string base_path = argv[2];
   LoadImageNames(argv[3], names);
   auto a = system(mkdir.c_str());
-  if (a == -1)
-    exit(0);
+  if (a == -1) exit(0);
   for (auto name : names) {
     cout << name << endl;
     cv::Mat img_resize;
@@ -90,15 +92,16 @@ int main(int argc, char *argv[]) {
     cv::Mat image = cv::imread(base_path + "/" + name);
     auto result = det->run_8UC1(image);
     cv::Mat img;
-    string mkdir_sub = "mkdir -p " + g_output_dir +"/" + namesp[0] ;
-    cout << "mkdir -p " + g_output_dir +"/" + namesp[0]  << endl;
+    string mkdir_sub = "mkdir -p " + g_output_dir + "/" + namesp[0];
+    cout << "mkdir -p " + g_output_dir + "/" + namesp[0] << endl;
     a = system(mkdir.c_str());
-    if (a == -1)
-      exit(0);
-    cv::resize(result.segmentation, img, cv::Size(512 , 512), 0, 0,
+    if (a == -1) exit(0);
+    cv::resize(result.segmentation, img, cv::Size(512, 512), 0, 0,
                cv::INTER_NEAREST);
-    cv::imwrite(g_output_dir + "/" + namesp[0] + "/"  + namesp[namesp.size() - 1], img);
-    cout << g_output_dir + "/" + namesp[0] + "/" + namesp[namesp.size() - 1] << endl;
+    cv::imwrite(
+        g_output_dir + "/" + namesp[0] + "/" + namesp[namesp.size() - 1], img);
+    cout << g_output_dir + "/" + namesp[0] + "/" + namesp[namesp.size() - 1]
+         << endl;
   }
 
   return 0;

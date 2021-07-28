@@ -70,18 +70,17 @@ TFRefineDetPost::TFRefineDetPost(
 }
 
 std::vector<vitis::ai::RefineDetResult>
-TFRefineDetPost::tfrefinedet_post_process() {
-  auto batch_size = input_tensors_[0].batch;
+TFRefineDetPost::tfrefinedet_post_process(size_t batch_size) {
   auto ret = std::vector<vitis::ai::RefineDetResult>{};
   ret.reserve(batch_size);
 
   for (auto i = 0u; i < batch_size; ++i) {
-    ret.emplace_back(tfrefinedet_post_process(i));
+    ret.emplace_back(tfrefinedet_post_process_internal(i));
   }
   return ret;
 }
 
-vitis::ai::RefineDetResult TFRefineDetPost::tfrefinedet_post_process(
+vitis::ai::RefineDetResult TFRefineDetPost::tfrefinedet_post_process_internal(
     unsigned int idx) {
   constexpr size_t arm_loc = 0;
   constexpr size_t arm_conf = 1;

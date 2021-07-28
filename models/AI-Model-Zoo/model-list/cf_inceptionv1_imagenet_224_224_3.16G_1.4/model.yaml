@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: inception-v1 classifier on ImageNet.
+input size: 224*224
+float ops: 3.16G
+task: classification
+framework: caffe
+prune: 'no'
+version: 1.4
+files:
+- name: cf_inceptionv1_imagenet_224_224_3.16G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv1_imagenet_224_224_3.16G_1.4.zip
+  checksum: c51a8442288deb4108846583aa1eafa2
+- name: inception_v1
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 971603519301a527138e72c156513c72
+- name: inception_v1
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-vck190-r1.4.0.tar.gz
+  checksum: ca9e79edfb192467024fa12415afe6cc
+- name: inception_v1
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 73a5f8f27ede688797129fbcb2704722
+- name: inception_v1
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 25dd352a7a16d155cba68eee9b266232
+- name: inception_v1
+  type: xmodel
+  board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
+  checksum: 6232b13e1131a62f5ef4a053bc3ceb45
+- name: inception_v1
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-u200-u250-r1.4.0.tar.gz
+  checksum: 9c3d7ecf6433a9164c0af9ef48eb7ca0
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

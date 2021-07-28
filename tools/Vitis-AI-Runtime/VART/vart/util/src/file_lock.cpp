@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "../include/vitis/ai/file_lock.hpp"
+#include "./file_lock.hpp"
+
 #include <fcntl.h>
 #include <glog/logging.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
 namespace vitis {
 namespace ai {
+
 static int obtain_fd(const char* filename) {
   auto fd = open(filename, FD_CLOEXEC | O_WRONLY | O_CREAT, 0777);
   CHECK_GE(fd, 0) << "cannot open file: " << filename;
@@ -29,6 +32,7 @@ static int obtain_fd(const char* filename) {
   }
   return fd;
 }
+
 FileLock::FileLock(const std::string filename, size_t offset)
     : fd_(obtain_fd(filename.c_str())), offset_(offset) {}
 
@@ -53,6 +57,7 @@ bool FileLock ::try_lock() {
   }
   return ret;
 }
+
 void FileLock::unlock() {
   auto ret = lockf(fd_, F_ULOCK, offset_);
   CHECK_EQ(ret, 0) << "unlock failed";

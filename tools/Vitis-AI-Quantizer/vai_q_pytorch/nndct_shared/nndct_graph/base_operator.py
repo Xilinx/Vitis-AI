@@ -84,6 +84,7 @@ class NndctIrAttr(object):
                occurence_type: OccurenceType,
                default_value: Optional[List[Any]] = None,
                annotation: Optional[str] = None,
+               map_to_xir: bool = True,
                read_and_write_value_func: Optional[Callable] = None) -> None:
     self._name = name
     self._type = value_type
@@ -91,6 +92,7 @@ class NndctIrAttr(object):
     self._value_mem = value_mem
     self._occurence_type = occurence_type
     self._annotation = annotation
+    self._is_xir_attr = map_to_xir
 
     if read_and_write_value_func is not None:
       self._read_and_write_value_func = read_and_write_value_func
@@ -128,6 +130,10 @@ class NndctIrAttr(object):
           f"the length of  value of {self._name.value} is not equal to {self._size}"
       )
     self._read_and_write_value_func(in_out=0, attr_value=value)
+
+  @property
+  def is_xir_attr(self):
+    return self._is_xir_attr
 
 class AttrParamIndexer(object):
   def __init__(self, getter, setter, enum_cls):
@@ -227,11 +233,6 @@ class Operation(object):
       value = serialize_attr(attr.value)
       op_des['attrs'][name.value] = value
 
-    op_des['configs'] = {}
-    for name in self._configs:
-      value = serialize_attr(self.get_config(name))
-      op_des['configs'][name] = value
-
     return op_des
 
   def set_optype(self, value):
@@ -317,6 +318,13 @@ class Operation(object):
     else:
       new_tensor.name = self._params[param_name].name
     self._params[param_name] = new_tensor
+
+  def has_native_params(self):
+    return hasattr(self, 'ParamName')
+
+  def is_xir_attr(self, attr_name: Enum):
+    return self._attrs[attr_name].is_xir_attr
+
 
   @property
   def type(self):

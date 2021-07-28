@@ -5,10 +5,12 @@ from nndct_shared.utils import NndctOption, option_util, NndctDebugLogger, Nndct
 from .version import __version__
 try:
   from xir import Graph
-except Exception:
-   NndctScreenLogger().warning(f"Can't find xir package in your environment.")
+except ModuleNotFoundError:
+  NndctScreenLogger().warning(f"Can't find xir package in your environment.")
+except Exception as e:
+  NndctScreenLogger().warning(f"Import module 'xir' error: '{str(e)}'")
 
-#Importing any module in pytorch_nndct before xir is forbidden!!! 
+#Importing any module in pytorch_nndct before xir is forbidden!!!
 from .apis import *
 __all__ = ["apis", "nn"]
 
@@ -61,11 +63,13 @@ def _init_torch_nndct_module():
     option_util.set_option_value("nndct_quant_opt", 0)
     option_util.set_option_value("nndct_param_corr", False)
     option_util.set_option_value("nndct_equalization", False)
+    option_util.set_option_value("nndct_wes", False)
+    option_util.set_option_value("nndct_wes_in_cle", False)
 
   #if NndctOption.nndct_quant_opt.value > 2:
   if (not hasattr(NndctOption.nndct_param_corr, '_value')) and (NndctOption.nndct_quant_opt.value <= 0 ):
     option_util.set_option_value("nndct_param_corr", False)
-  
+
   if (not hasattr(NndctOption.nndct_equalization, '_value')) and (NndctOption.nndct_quant_opt.value <= 0):
     option_util.set_option_value("nndct_equalization", False)
 
@@ -74,8 +78,4 @@ _init_torch_nndct_module()
 import pytorch_nndct.apis
 import pytorch_nndct.nn
 import pytorch_nndct.utils
-
-from pytorch_nndct.pruning import InputSpec
-from pytorch_nndct.pruning import Pruner
-
 

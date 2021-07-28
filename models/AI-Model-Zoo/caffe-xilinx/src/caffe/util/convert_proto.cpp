@@ -649,6 +649,8 @@ bool IsInplace(const LayerParameter *layer) {
 
 bool isSingleOutputLayer(const NetParameter &net, const int index,
                          const vector<vector<bool>> &connect) {
+  if (net.layer(index).top_size() > 1)
+    return false;
   int count = 0;
   for (int i = index + 1; i < net.layer_size(); i++) {
     if (connect[index][i]) {
@@ -1415,7 +1417,7 @@ void AdjustShiftcutAndShiftbias(NetParameter &net_in, FIX_INFO &weight_infos,
              << cur_layer->name()
              << "'s weight value is too small, so adjust the fix position from "
              << fix_pos_w << " to " << fix_pos_w - shift_bias - shift_bias_max;
-         fix_pos_w = fix_pos_w - shift_bias - shift_bias_max;
+         fix_pos_w = fix_pos_w - shift_bias + shift_bias_max;
          weight_infos.at(cur_layer->name())[1] = fix_pos_w;
        }
     }

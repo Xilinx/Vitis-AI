@@ -31,9 +31,10 @@ MedicalDetectionPostProcess::~MedicalDetectionPostProcess(){};
 std::unique_ptr<MedicalDetectionPostProcess> MedicalDetectionPostProcess::create(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-    const vitis::ai::proto::DpuModelParam& config ) {
+    const vitis::ai::proto::DpuModelParam& config,
+    int& real_batch_size ) {
   return std::unique_ptr<MedicalDetectionPostProcess>(
-      new medicaldetection::MedicalDetectionPost(input_tensors, output_tensors, config ));
+      new medicaldetection::MedicalDetectionPost(input_tensors, output_tensors, config, real_batch_size ));
 }
 
 }  // namespace ai

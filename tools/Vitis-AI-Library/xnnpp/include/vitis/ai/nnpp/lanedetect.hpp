@@ -28,8 +28,8 @@
 #include <vitis/ai/proto/dpu_model_param.pb.h>
 
 #include <memory>
-#include <string>
 #include <opencv2/core.hpp>
+#include <string>
 #include <vitis/ai/library/tensor.hpp>
 
 extern std::string g_roadline_acc_outdir;
@@ -85,17 +85,12 @@ class RoadLinePostProcess {
       const vitis::ai::proto::DpuModelParam& config);
 
   /**
-   * @brief Run roadline post-process.
-   * @return The struct of RoadLineResult.
-   */
-  virtual RoadLineResult road_line_post_process(int inWidth, int inHeight,
-                                                unsigned int idx) = 0;
-  /**
    * @brief Run roadline post-process in batch mode.
    * @return The vector of struct of RoadLineResult.
    */
   virtual std::vector<RoadLineResult> road_line_post_process(
-      const std::vector<int>& inWidth, const std::vector<int>& inHeight) = 0;
+      const std::vector<int>& inWidth, const std::vector<int>& inHeight,
+      size_t batch_size) = 0;
   /**
    * @cond NOCOMMENTS
    */

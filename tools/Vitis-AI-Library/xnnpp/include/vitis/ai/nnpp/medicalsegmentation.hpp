@@ -65,7 +65,8 @@ class MedicalSegmentationPostProcess {
   static std::unique_ptr<MedicalSegmentationPostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
       const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-      const vitis::ai::proto::DpuModelParam& config);
+      const vitis::ai::proto::DpuModelParam& config,
+      int& real_batch_size);
 
   /**
    * @brief The post-processing function of the MedicalSegmentation network.

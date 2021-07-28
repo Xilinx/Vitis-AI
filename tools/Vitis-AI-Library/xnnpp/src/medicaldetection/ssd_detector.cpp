@@ -97,10 +97,6 @@ void SSDDetector::detect(const int8_t* arm_loc_addr, const int8_t* odm_loc_addr,
         std::exp(odm_loc_addr[j * 4 + 3] * odm_loc_scale * scale_wh_) *
         arm_bboxes_in[3];
 
-    float l = odm_bboxes_in[0] - 0.5 * odm_bboxes_in[2];
-    float t = odm_bboxes_in[1] - 0.5 * odm_bboxes_in[3];
-    odm_bboxes_in[0] = std::max(std::min(l, 1.f), 0.f);
-    odm_bboxes_in[1] = std::max(std::min(t, 1.f), 0.f);
     return odm_bboxes_in;
   };
 
@@ -155,8 +151,8 @@ void SSDDetector::detect(const int8_t* arm_loc_addr, const int8_t* odm_loc_addr,
     auto scorex = std::get<0>(item);
     res.label = i;
     res.score = scorex;
-    res.x = bboxes[i][idx][0];
-    res.y = bboxes[i][idx][1];
+    res.x = bboxes[i][idx][0] - 0.5f * bboxes[i][idx][2];
+    res.y = bboxes[i][idx][1] - 0.5f * bboxes[i][idx][3];
     res.width = bboxes[i][idx][2];
     res.height = bboxes[i][idx][3];
     result.bboxes.emplace_back(res);

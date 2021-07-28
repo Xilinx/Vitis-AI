@@ -24,6 +24,7 @@
 #include <vitis/ai/profiling.hpp>
 
 #include "vitis/ai/env_config.hpp"
+#include "vitis/ai/nnpp/apply_nms.hpp"
 DEF_ENV_PARAM(DEBUG_XNNPP, "0")
 using namespace std;
 namespace vitis {
@@ -113,56 +114,6 @@ static vector<vector<float>> FilterBox(const float bb_out_scale,
     }
   }
   return boxes;
-}
-
-static void getResult(const vector<vector<float>>& box, const vector<int>& keep,
-                      vector<vector<float>>& results) {
-  results.clear();
-  results.reserve(keep.size());
-  for (auto i = 0u; i < keep.size(); ++i) {
-    auto b = box[keep[i]];
-    b[2] -= b[0];
-    b[3] -= b[1];
-    results.emplace_back(b);
-  }
-}
-
-static void NMS(const float nms_threshold, const vector<vector<float>>& box,
-                vector<vector<float>>& results) {
-  auto count = box.size();
-  vector<pair<size_t, float>> order(count);
-  for (auto i = 0u; i < count; ++i) {
-    order[i].first = i;
-    order[i].second = box[i][4];
-  }
-  sort(order.begin(), order.end(),
-       [](const pair<int, float>& ls, const pair<int, float>& rs) {
-         return ls.second > rs.second;
-       });
-
-  vector<int> keep;
-  vector<bool> exist_box(count, true);
-  for (auto i = 0u; i < count; ++i) {
-    auto idx = order[i].first;
-    if (!exist_box[idx]) continue;
-    keep.emplace_back(idx);
-    for (auto j = i + 1; j < count; ++j) {
-      auto kept_idx = order[j].first;
-      if (!exist_box[kept_idx]) continue;
-      auto x1 = max(box[idx][0], box[kept_idx][0]);
-      auto y1 = max(box[idx][1], box[kept_idx][1]);
-      auto x2 = min(box[idx][2], box[kept_idx][2]);
-      auto y2 = min(box[idx][3], box[kept_idx][3]);
-      auto intersect = max(0.f, x2 - x1 + 1) * max(0.f, y2 - y1 + 1);
-      auto sum_area =
-          (box[idx][2] - box[idx][0] + 1) * (box[idx][3] - box[idx][1] + 1) +
-          (box[kept_idx][2] - box[kept_idx][0] + 1) *
-              (box[kept_idx][3] - box[kept_idx][1] + 1);
-      auto overlap = intersect / (sum_area - intersect);
-      if (overlap >= nms_threshold) exist_box[kept_idx] = false;
-    }
-  }
-  getResult(box, keep, results);
 }
 
 //# Post process for DPUV1
@@ -256,8 +207,26 @@ FaceDetectResult face_detect_post_process(
   __TOC__(DET_FILTER)
 
   __TIC__(DET_NMS)
+  vector<float> scores(boxes.size());
+  transform(boxes.begin(), boxes.end(), scores.begin(),
+            [](auto& b) { return b[4]; });
+  transform(boxes.begin(), boxes.end(), boxes.begin(), [](auto b) {
+    b[0] = 0.5f * (b[0] + b[2]);
+    b[1] = 0.5f * (b[1] + b[3]);
+    b[2] = (b[2] - b[0]) * 2.0 + 1;
+    b[3] = (b[3] - b[1]) * 2.0 + 1;
+    return b;
+  });
+  vector<size_t> res_k;
+  applyNMS(boxes, scores, config.dense_box_param().nms_threshold(), 0, res_k);
   vector<vector<float>> results;
-  NMS(config.dense_box_param().nms_threshold(), boxes, results);
+  for (auto& k : res_k) {
+    boxes[k][2] -= 1;
+    boxes[k][3] -= 1;
+    boxes[k][0] -= 0.5f * boxes[k][2];
+    boxes[k][1] -= 0.5f * boxes[k][3];
+    results.push_back(boxes[k]);
+  }
   __TOC__(DET_NMS)
 
   const int input_width = input_tensors[0][0].width;
@@ -346,8 +315,27 @@ FaceDetectResult face_detect_post_process(
   __TOC__(DET_FILTER)
 
   __TIC__(DET_NMS)
+
+  vector<float> scores(boxes.size());
+  transform(boxes.begin(), boxes.end(), scores.begin(),
+            [](auto& b) { return b[4]; });
+  transform(boxes.begin(), boxes.end(), boxes.begin(), [](auto b) {
+    b[0] = 0.5f * (b[0] + b[2]);
+    b[1] = 0.5f * (b[1] + b[3]);
+    b[2] = (b[2] - b[0]) * 2.0 + 1;
+    b[3] = (b[3] - b[1]) * 2.0 + 1;
+    return b;
+  });
+  vector<size_t> res_k;
+  applyNMS(boxes, scores, config.dense_box_param().nms_threshold(), 0, res_k);
   vector<vector<float>> results;
-  NMS(config.dense_box_param().nms_threshold(), boxes, results);
+  for (auto& k : res_k) {
+    boxes[k][2] -= 1;
+    boxes[k][3] -= 1;
+    boxes[k][0] -= 0.5f * boxes[k][2];
+    boxes[k][1] -= 0.5f * boxes[k][3];
+    results.push_back(boxes[k]);
+  }
   __TOC__(DET_NMS)
 
   const int input_width = input_tensors[0][0].width;

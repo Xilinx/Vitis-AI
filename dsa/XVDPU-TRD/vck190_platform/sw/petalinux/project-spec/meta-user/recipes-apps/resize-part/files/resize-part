@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+# Expand the sd card partition to 100% from unpartitioned space.
+#
+# Usage: resize-part "/dev/mmcblk0p2"
+#
+# Copyright 2019 Xilinx Inc.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+
+ROOT_PART=$1
+ROOT_DEV=$(echo $ROOT_PART | cut -c 1-12)
+PART_NUM=$(echo -n $ROOT_PART | tail -c 1)
+
+do_expand_rootfs() {
+
+    local target=$1
+    local root_part=$2
+    local part_num=$3
+
+    # back up data before extend partition, otherwise data might be lost
+    if [[ `mount | grep ${root_part}` ]]
+    then 
+        parted ${target} resizepart ${part_num} yes 100%
+    else 
+        parted ${target} resizepart ${part_num} 100%
+    fi
+}
+
+do_check_media() {
+
+    if ! ls "$ROOT_PART" 2> /dev/null; then
+	echo "$ROOT_PART is not an valid SD card partition, please check"
+	exit 0
+    fi
+
+    do_expand_rootfs $ROOT_DEV $ROOT_PART $PART_NUM
+}
+
+if [ "$#" -eq 0 ] ; then
+        echo "Pass the SD card partition as argument to expand"
+else
+        do_check_media && resize2fs $ROOT_PART
+fi

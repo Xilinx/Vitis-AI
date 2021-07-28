@@ -1,10 +1,8 @@
 name: vitis-ai-optimizer_darknet
 
 channels:
-  - file:///scratch/conda-channel
-  - pytorch
+  - conda-forge
   - defaults
-  - conda-forge/label/gcc7
 
 dependencies:
   - python=3.6

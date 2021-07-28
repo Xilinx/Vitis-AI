@@ -30,8 +30,9 @@ class TFRefineDetPost : public vitis::ai::TFRefineDetPostProcess {
       const vitis::ai::proto::DpuModelParam& config);
   virtual ~TFRefineDetPost();
 
-  virtual RefineDetResult tfrefinedet_post_process(unsigned int idx) override;
-  virtual std::vector<RefineDetResult> tfrefinedet_post_process() override;
+  virtual RefineDetResult tfrefinedet_post_process_internal(unsigned int idx);
+  virtual std::vector<RefineDetResult> tfrefinedet_post_process(
+      size_t batch_size) override;
 
  private:
   std::unique_ptr<vitis::ai::tfrefinedet::SSDDetector> detector_;

@@ -89,10 +89,10 @@ class deephi_ConvTranspose2d(torch.nn.modules.conv.ConvTranspose2d):
       rate = NndctOption.nndct_param_corr_rate.value
       # statistic of quantization error
       if (self.quant_mode == 1):
-        output_padding = self._output_padding(input,
-                                              None,
-                                              self.stride,
-                                              self.padding,
+        output_padding = self._output_padding(input, 
+                                              None, 
+                                              self.stride, 
+                                              self.padding, 
                                               self.kernel_size)
         res_f = torch.nn.functional.conv_transpose2d(input,
                                            self.weight_f, 
@@ -107,14 +107,17 @@ class deephi_ConvTranspose2d(torch.nn.modules.conv.ConvTranspose2d):
         if noise > 0:
           eff = 1.25 * res_f.pow(2).mean().div(noise).log10().detach().cpu().numpy()
           dev = math.fabs(eff - self.efficency)
-          self.efficency = (self.efficency * 4 + eff) * 0.2
-          self.deviation = (self.deviation * 4 + dev) * 0.2
-          #print(self.node.name, self.efficency, self.deviation)
-          if self.efficency > 4.0:
-            rate = rate * 0.5
-          if (self.efficency > 4.3 or
-              (self.deviation / self.efficency) < 0.05 or
-              math.fabs(dev - self.deviation / dev) < 0.05):
+          if dev > 0:
+            self.efficency = (self.efficency * 4 + eff) * 0.2
+            self.deviation = (self.deviation * 4 + dev) * 0.2
+            #print(self.node.name, self.efficency, self.deviation)
+            if self.efficency > 4.0:
+              rate = rate * 0.5
+            if (self.efficency > 4.3 or
+                (self.deviation / self.efficency) < 0.05 or
+                math.fabs(dev - self.deviation / dev) < 0.05):
+              self.stop = True
+          else:
             self.stop = True
         else:
           self.stop = True

@@ -35,7 +35,7 @@ DEF_ENV_PARAM(CLASSIFICATION_SET_INPUT, "0");
 
 ClassificationImp::ClassificationImp(const std::string& model_name,
                                      bool need_preprocess)
-    : TConfigurableDpuTask<Classification>(model_name, need_preprocess),
+    : Classification(model_name, need_preprocess),
       preprocess_type{configurable_dpu_task_->getConfig()
                           .classification_param()
                           .preprocess_type()},
@@ -115,6 +115,29 @@ static void inception_pt(const cv::Mat& image, int height, int width,
   }
 }
 
+static void efficientnet_preprocess(const cv::Mat& input, int height, int width, 
+				 cv::Mat& output) {
+  int CROP_PADDING = 32;
+  CHECK_EQ(height, width)
+      << "width must be equal with height";
+  int output_size = height;
+  int input_height = input.rows;
+  int input_width = input.cols;
+
+  float scale = (float)(output_size) / (output_size + CROP_PADDING);
+  int padded_center_crop_size = 
+      (int)(scale * ((input_height > input_width) ? input_width : input_height));
+  int offset_height = ((input_height - padded_center_crop_size) + 1) / 2;
+  int offset_width = ((input_width - padded_center_crop_size) + 1) / 2;
+
+  cv::Mat cropped_img;
+  cv::Rect box(offset_width, offset_height, padded_center_crop_size,  padded_center_crop_size);
+  cropped_img = input(box).clone();
+
+  cv::resize(cropped_img, output,
+             cv::Size(output_size, output_size), 0, 0, cv::INTER_CUBIC);
+}
+
 vitis::ai::ClassificationResult ClassificationImp::run(
     const cv::Mat& input_image) {
   cv::Mat image;
@@ -152,13 +175,16 @@ vitis::ai::ClassificationResult ClassificationImp::run(
       case 5:
         vgg_preprocess(input_image, height, width, image);
         break;
+      case 6:
+        efficientnet_preprocess(input_image, height, width, image);
+        break;
       default:
         break;
     }
   }
   //__TIC__(CLASSIFY_E2E_TIME)
   __TIC__(CLASSIFY_SET_IMG)
-  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4) {
+  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4 || preprocess_type == 6) {
     configurable_dpu_task_->setInputImageRGB(image);
   } else {
     configurable_dpu_task_->setInputImageBGR(image);
@@ -211,9 +237,10 @@ vitis::ai::ClassificationResult ClassificationImp::run(
   }
 
   ret[0].type = 0;
-  if (configurable_dpu_task_->getConfig()
-          .classification_param()
-          .has_label_type()) {
+  if (!configurable_dpu_task_->getConfig()
+           .classification_param()
+           .label_type()
+           .empty()) {
     auto label_type =
         configurable_dpu_task_->getConfig().classification_param().label_type();
     if (label_type == "CIFAR10") {
@@ -249,9 +276,9 @@ std::vector<ClassificationResult> ClassificationImp::run(
           if (test_accuracy) {
 //# DPUV1 directly uses the resized image dataset so no need of crop
 #ifdef ENABLE_DPUCADX8G_RUNNER
-          cv::resize(input_images[i], image, size);
+            cv::resize(input_images[i], image, size);
 #else
-          croppedImage(input_images[i], height, width, image);
+            croppedImage(input_images[i], height, width, image);
 #endif
           } else {
             cv::resize(input_images[i], image, size);
@@ -269,6 +296,9 @@ std::vector<ClassificationResult> ClassificationImp::run(
         case 5:
           vgg_preprocess(input_images[i], height, width, image);
           break;
+        case 6:
+          efficientnet_preprocess(input_images[i], height, width, image);
+          break;
         default:
           break;
       }
@@ -277,7 +307,7 @@ std::vector<ClassificationResult> ClassificationImp::run(
   }
 
   __TIC__(CLASSIFY_SET_IMG)
-  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4) {
+  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4 || preprocess_type == 6) {
     configurable_dpu_task_->setInputImageRGB(images);
   } else {
     configurable_dpu_task_->setInputImageBGR(images);
@@ -338,9 +368,10 @@ std::vector<ClassificationResult> ClassificationImp::run(
     }
 
     ret.type = 0;
-    if (configurable_dpu_task_->getConfig()
-            .classification_param()
-            .has_label_type()) {
+    if (!configurable_dpu_task_->getConfig()
+             .classification_param()
+             .label_type()
+             .empty()) {
       auto label_type = configurable_dpu_task_->getConfig()
                             .classification_param()
                             .label_type();
@@ -353,6 +384,79 @@ std::vector<ClassificationResult> ClassificationImp::run(
   }
   __TOC__(CLASSIFY_POST_ARM)
   //__TOC__(CLASSIFY_E2E_TIME)
+  return rets;
+}
+
+std::vector<ClassificationResult> ClassificationImp::run(
+    const std::vector<vart::xrt_bo_t>& input_bos) {
+  auto postprocess_index = 0;
+  if (configurable_dpu_task_->getConfig()
+          .classification_param()
+          .has_avg_pool_param()) {
+    __TIC__(CLASSIFY_DPU_0)
+    configurable_dpu_task_->run_with_xrt_bo(input_bos);
+    __TOC__(CLASSIFY_DPU_0)
+
+    auto avg_scale = configurable_dpu_task_->getConfig()
+                         .classification_param()
+                         .avg_pool_param()
+                         .scale();
+    auto batch_size = configurable_dpu_task_->getInputTensor()[0][0].batch;
+
+    __TIC__(CLASSIFY_AVG_POOL)
+    for (auto batch_idx = 0u; batch_idx < batch_size; batch_idx++) {
+      vitis::ai::globalAvePool(
+          (int8_t*)configurable_dpu_task_->getOutputTensor()[0][0].get_data(
+              batch_idx),
+          // 1024, 9, 3,
+          configurable_dpu_task_->getOutputTensor()[0][0].channel,
+          configurable_dpu_task_->getOutputTensor()[0][0].width,
+          configurable_dpu_task_->getOutputTensor()[0][0].height,
+          (int8_t*)configurable_dpu_task_->getInputTensor()[1][0].get_data(
+              batch_idx),
+          avg_scale);
+    }
+    __TOC__(CLASSIFY_AVG_POOL)
+    __TIC__(CLASSIFY_DPU_1)
+    configurable_dpu_task_->run(1);
+    __TOC__(CLASSIFY_DPU_1)
+    postprocess_index = 1;
+  } else {
+    __TIC__(CLASSIFY_DPU)
+    configurable_dpu_task_->run_with_xrt_bo(input_bos);
+    __TOC__(CLASSIFY_DPU)
+  }
+
+  __TIC__(CLASSIFY_POST_ARM)
+  auto rets = classification_post_process(
+      configurable_dpu_task_->getInputTensor()[postprocess_index],
+      configurable_dpu_task_->getOutputTensor()[postprocess_index],
+      configurable_dpu_task_->getConfig());
+
+  for (auto& ret : rets) {
+    if (configurable_dpu_task_->getOutputTensor()[postprocess_index][0]
+            .channel == 1001) {
+      for (auto& s : ret.scores) {
+        s.index--;
+      }
+    }
+
+    ret.type = 0;
+    if (!configurable_dpu_task_->getConfig()
+             .classification_param()
+             .label_type()
+             .empty()) {
+      auto label_type = configurable_dpu_task_->getConfig()
+                            .classification_param()
+                            .label_type();
+      if (label_type == "CIFAR10") {
+        ret.type = 1;
+      } else if (label_type == "FMNIST") {
+        ret.type = 2;
+      }
+    }
+  }
+  __TOC__(CLASSIFY_POST_ARM)
   return rets;
 }
 

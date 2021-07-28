@@ -371,15 +371,14 @@ def quantize_frozen(input_graph_def,
 
   quantize_eval_graph_def = calibrate_frozen(input_graph_def, input_fn,
                                              q_config, s_config)
-  deploy_graph_def = deploy_frozen(quantize_eval_graph_def, q_config)
+  # deploy_graph_def = deploy_frozen(quantize_eval_graph_def, q_config)
+  print("INFO: skip create deploy_model.pb")
 
   # Summarize Quantize Results
   print("********************* Quantization Summary *********************\
       \nINFO: Output: \
-      \n  quantize_eval_model: {} \
-      \n  deploy_model: {}".format(
-      os.path.join(q_config.output_dir, "quantize_eval_model.pb"),
-      os.path.join(q_config.output_dir, "deploy_model.pb")))
+      \n  quantize_eval_model: {} ".format(
+      os.path.join(q_config.output_dir, "quantize_eval_model.pb")))
 
   #  if dump_as_xir:
   #    in_shapes = None
@@ -546,19 +545,19 @@ def dump(input_graph_def,
     a_fetch_tensors = []
     a_fetch_names = []
     for op in graph.get_operations():
-      if dump_float:
-        try:
-          a_fetch_tensors.append(op.outputs[0])
-          a_fetch_names.append(op.name)
-        except KeyError:
-          continue
-      elif op.type == "FixNeuron":
+      if op.type == "FixNeuron":
         if op.name.endswith("wquant"):
           w_fetch_tensors.append(op.outputs[0])
           w_fetch_names.append(op.name)
         else:
           a_fetch_tensors.append(op.outputs[0])
           a_fetch_names.append(op.name)
+      elif dump_float:
+        try:
+          a_fetch_tensors.append(op.outputs[0])
+          a_fetch_names.append(op.name)
+        except KeyError:
+          continue
 
     # Dump weights/biases
     print("INFO: Start Dumping for {} batches".format(max_dump_batches))
@@ -661,7 +660,10 @@ def main(unused_args, flags):
                                 align_concat=flags.align_concat,
                                 adjust_shift_bias=flags.adjust_shift_bias,
                                 adjust_shift_cut=flags.adjust_shift_cut,
-                                simulate_dpu=flags.simulate_dpu)
+                                simulate_dpu=flags.simulate_dpu,
+                                scale_all_avgpool=flags.scale_all_avgpool,
+                                do_cle=flags.do_cle,
+                                replace_relu6=flags.replace_relu6)
       input_fn = _parse_input_fn(flags.input_fn)
       s_config = _parse_session_config(flags.gpu, flags.gpu_memory_fraction)
 
@@ -691,7 +693,8 @@ def main(unused_args, flags):
                                 align_concat=flags.align_concat,
                                 adjust_shift_bias=flags.adjust_shift_bias,
                                 adjust_shift_cut=flags.adjust_shift_cut,
-                                simulate_dpu=flags.simulate_dpu)
+                                simulate_dpu=flags.simulate_dpu,
+                                scale_all_avgpool=flags.scale_all_avgpool)
 
       quantize_train(input_meta_graph_def, q_config)
 
@@ -718,7 +721,8 @@ def main(unused_args, flags):
                                 align_concat=flags.align_concat,
                                 adjust_shift_bias=flags.adjust_shift_bias,
                                 adjust_shift_cut=flags.adjust_shift_cut,
-                                simulate_dpu=flags.simulate_dpu)
+                                simulate_dpu=flags.simulate_dpu,
+                                scale_all_avgpool=flags.scale_all_avgpool)
       quantize_evaluate(input_meta_graph_def, q_config)
 
     else:
@@ -948,6 +952,33 @@ def run_main():
       "Set to 1 to enable simulation of DPU. The behavior of DPU for some operations are different from tensorflow. \
       For example, the dividing in LeakyRelu and AvgPooling are replaced by bit-shifting, so there maybe slight difference \
       between DPU outputs and CPU/GPU outputs. This quantizer will simulate the behavior for these operations if this flag is set to 1"
+  )
+  parser.add_argument(
+      "--scale_all_avgpool",
+      type=int,
+      default=1,
+      choices=[0, 1],
+      help=
+      "Set to 1 to enable scale output of AvgPooling op to simulate DPU. Only kernel_size <= 256 will be scaled. \
+      This operation do not affect the special case such as kernel_size=3,5,6,7,14"
+  )
+  parser.add_argument(
+      "--do_cle",
+      type=int,
+      default=0,
+      choices=[0, 1],
+      help=
+      "Set to 1 to enable implement cross layer equalization to adjust the weights distribution . \
+      Set to 0 will skip cross layer equalization operation "
+  )
+  parser.add_argument(
+      "--replace_relu6",
+      type=int,
+      default=1,
+      choices=[0, 1],
+      help=
+      "Set to 1 to enable replace relu6 with relu. \
+      Set to 0 will skip replacement."
   )
 
   ############################################

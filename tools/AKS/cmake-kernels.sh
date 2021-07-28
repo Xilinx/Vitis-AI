@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,8 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-#!/bin/bash
 
 # ROOT dir
 ROOT=$(dirname "$(realpath $0)")
@@ -34,20 +33,21 @@ RST="${reset}"
 declare -a args
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \
-		 -l help,clean,clean-only,dpu:,aks-install-prefix:,type: \
-		 -- "$0" "$@")
+     -l help,clean,clean-only,name:,aks-install-prefix:,type: \
+     -- "$0" "$@")
 [ $? -eq 0 ] || {
     echo "Failed to parse arguments! try --help"
     exit 1
 }
+
 eval set -- "$options"
 while true; do
   case "$1" in
     --help | -h           ) show_help=true; break;;
     --clean               ) clean=true;;
     --clean-only          ) clean_only=true;;
-    --dpu                 ) shift; dpu=$1;;
     --aks-install-prefix  ) shift; install_prefix=$1;;
+    --name                ) shift; kernel_name=$1;;
     --type)
       shift
       case "$1" in
@@ -67,8 +67,8 @@ if [ ${show_help:=false} == true ]; then
   echo -e "    --help                 show help"
   echo -e "    --clean                discard previous configs/builds before build"
   echo -e "    --clean-only           discard previous configs/builds"
-  echo -e "    --dpu                  set DPU target [dpucadx8g, dpucadf8h, dpucahx8h, dpuczdx8g]"
   echo -e "    --aks-install-prefix   set customized aks install prefix"
+  echo -e "    --name                 kernel name to build specific kernel"
   echo -e "    --type                 set build type [release (Default), debug]"
   echo -e
   exit 0
@@ -79,70 +79,36 @@ args=(-DAKS_INSTALL_PREFIX="${install_prefix}")
 # set build type
 args+=(-DCMAKE_BUILD_TYPE=${build_type:="Release"})
 args+=(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
-#[ ${build_type} == "Debug" ] && args+=(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
-# Common kernels (Arch & DPU independent)
-declare -a COMMON_KER
-COMMON_KER=("kernel_src/add"
-            "kernel_src/classification_accuracy"
-            "kernel_src/classification_imread_preprocess"
-            "kernel_src/classification_postprocess"
-            "kernel_src/classification_preprocess"
-            "kernel_src/detection_imread_preprocess"
-            "kernel_src/detection_preprocess"
-            "kernel_src/image_read"
-            "kernel_src/python_kernel"
-            "kernel_src/save_boxes_darknet_format"
-            )
-
-# DPUCADX8G (Alveo-u200/u250) specific
-declare -a DPU_CADX8G
-DPU_CADX8G=("kernel_src/dpucadx8g"
-            "kernel_src/classification_preprocess_accel"
-            "kernel_src/classification_fc_softmax_top_k"
-            "kernel_src/fully_connected_relu"
-            "kernel_src/fully_connected_sigmoid"
-            "kernel_src/optical_flow_fpga"
-            "kernel_src/optical_flow_preprocess"
-            "kernel_src/optical_flow_opencv"
-            "kernel_src/optical_flow_opencv_postprocess"
-            "kernel_src/yolo_postprocess"
-           )
-
-# DPUCAHX8H (Alveo-u50) specific
-declare -a DPU_CAHX8H
-DPU_CAHX8H=("kernel_src/dpucahx8h")
-
-# DPUCADF8H (Alveo-u200/u250) specific (New DPU)
-declare -a DPU_CADF8H
-DPU_CADF8H=("kernel_src/dpucadf8h"
-            "kernel_src/classification_imread_preprocess_int8"
-           )
-
-# DPUCZDX8G (Zync-Ultrascale/Edge) specific
-declare -a DPU_CZDX8G
-DPU_CZDX8G=("kernel_src/dpuczdx8g")
-
-# Get all Kernels based on DPU
+# Kernels
 declare -a KERNELS
-if   [ ${dpu:="common"} == "dpucadx8g" ]; then
-  KERNELS=(${COMMON_KER[@]} ${DPU_CADX8G[@]})
-elif [ ${dpu:="common"} == "dpucahx8h" ]; then
-  KERNELS=(${COMMON_KER[@]} ${DPU_CAHX8H[@]})
-elif [ ${dpu:="common"} == "dpuczdx8g" ]; then
-  KERNELS=(${COMMON_KER[@]} ${DPU_CZDX8G[@]})
-elif [ ${dpu:="common"} == "dpucadf8h" ]; then
-  KERNELS=(${COMMON_KER[@]} ${DPU_CADF8H[@]})
+
+if [ "${kernel_name:=default}" != "default" ]; then
+  KERNELS=("kernel_src/$kernel_name")
 else
-  echo -e
-  echo -e "${MSG} Building Only Common Kernels!"
-  echo -e "${MSG} Use \"--dpu\" option to build DPU specific kernels"
-  KERNELS=(${COMMON_KER[@]})
-  echo -e
+  KERNELS=("kernel_src/dpu"
+           "kernel_src/add"
+           "kernel_src/classification_accuracy"
+           "kernel_src/classification_imread_preprocess"
+           "kernel_src/classification_postprocess"
+           "kernel_src/detection_imread_preprocess"
+           "kernel_src/image_read"
+           "kernel_src/classification_preprocess"
+           "kernel_src/mean_subtract"
+           "kernel_src/classification_imread_resize_ccrop"
+           "kernel_src/detection_preprocess"
+           "kernel_src/face_detect_imread_preprocess"
+           "kernel_src/face_detect_preprocess"
+           "kernel_src/face_detect_post_process"
+           "kernel_src/yolo_postprocess"
+           "kernel_src/save_boxes_darknet_format"
+           "kernel_src/optical_flow_fpga"
+          )
 fi
 
 declare -a skipped_kernels
 declare -a failed_kernels
+
 
 # Build all kernels
 for kernel in ${KERNELS[@]}; do

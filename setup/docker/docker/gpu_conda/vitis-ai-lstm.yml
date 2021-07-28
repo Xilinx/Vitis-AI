@@ -1,16 +1,15 @@
 name: vitis-ai-lstm
 
 channels:
-  - file:///scratch/conda-channel
   - pytorch
+  - conda-forge
   - defaults
-  - conda-forge/label/gcc7
 
 dependencies:
   - python=3.6
   - dctc_lstm
   - tf_nndct
-  - pytorch_nndct
+  - pytorch_nndct_lstm
   - pydot
   - pyyaml
   - jupyter

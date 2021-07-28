@@ -73,6 +73,7 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
     option_util.set_option_value("nndct_quant_opt", 0)
     option_util.set_option_value("nndct_param_corr", False)
     option_util.set_option_value("nndct_equalization", False)
+    option_util.set_option_value("nndct_cv_app", False)
     
     # Create a quantizer object, which can control all quantization flow,
     #if quant_strategy == None:
@@ -154,7 +155,7 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
 
     # hook module with quantizer
     # connect_module_with_quantizer(quant_module, quantizer)
-    quantizer.quant_model = module
+    quantizer.quant_model = module.to(device)
 
     self.quantizer = quantizer
 

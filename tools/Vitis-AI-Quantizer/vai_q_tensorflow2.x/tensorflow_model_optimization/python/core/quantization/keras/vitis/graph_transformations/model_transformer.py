@@ -22,11 +22,13 @@ import re
 import tensorflow as tf
 
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.graph_transformations import transforms as transforms_mod
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
 
 LayerNode = transforms_mod.LayerNode
 
 keras = tf.keras
 K = tf.keras.backend
+logger = common_utils.VAILogger
 
 
 class ModelTransformer(object):
@@ -77,7 +79,7 @@ class ModelTransformer(object):
     for layer in self._config['layers']:
       for inbound_node in layer['inbound_nodes']:
         for connection_info in inbound_node:
-          if connection_info[0] == check_layer['config']['name']:
+          if connection_info[0] == self._get_layer_name(check_layer):
             consuming_layers.append(layer)
     return consuming_layers
 
@@ -85,15 +87,31 @@ class ModelTransformer(object):
     """Returns if any tensors from the layer are outputs of the model."""
     output_consumers = []
     for output_layer in self._config['output_layers']:
-      if output_layer[0] == check_layer['config']['name']:
+      if output_layer[0] == self._get_layer_name(check_layer):
         output_consumers.append(output_layer)
     return output_consumers
 
+  @staticmethod
+  def _get_layer_name(layer):
+    # TensorFlowOpLayer's config name is different from layer name,
+    # make sure to get the right layer name
+    if layer['class_name'] == 'TensorFlowOpLayer':
+      return layer['name']
+    else:
+      return layer['config']['name']
+
   def _get_layers(self, layer_names):
-    return [
-        layer for layer in self._config['layers']
-        if layer['config']['name'] in layer_names
-    ]
+    """Returns layers with given names, keeps the order."""
+    layers = []
+    for name in layer_names:
+      for layer in self._config['layers']:
+        if self._get_layer_name(layer) == name:
+          layers.append(layer)
+          found = True
+          break
+      if not found:
+        logger.error('Layer {} not found in the model.'.format(name))
+    return layers
 
   def _get_layer_weights(self, layer_name):
     return self._layer_weights_map.get(layer_name, {})
@@ -120,9 +138,8 @@ class ModelTransformer(object):
     layer_config = layer['config']
     for key, value in pattern.config.items():
       # This comparison should probably use the serialized value.
-      # Consider adding regex support to key/values as well. This will allow
-      # negative matches as well.
-      if layer_config.get(key) != value:
+      # Allow regex for config value matching.
+      if not (self._match_pattern(str(layer_config.get(key)), str(value))):
         return False
 
     return True
@@ -184,6 +201,10 @@ class ModelTransformer(object):
       else:
         return [layers[i - 1]['config']['name']]
 
+  def _is_tf_op_layer(self, layer):
+    """Check if the layer is a TensorflowOpLayer."""
+    return
+
   def _match_layer_with_inputs(self, layer, pattern, is_head_node):
     """Match pattern at this layer, and continue to match at its inputs."""
 
@@ -196,8 +217,9 @@ class ModelTransformer(object):
 
     if len(pattern.inputs) == 0:
       # Leaf layer in pattern.
-      return LayerNode(layer, self._get_layer_weights(layer['config']['name']),
-                       [], self._get_layer_metadata(layer['config']['name']))
+      return LayerNode(layer,
+                       self._get_layer_weights(self._get_layer_name(layer)), [],
+                       self._get_layer_metadata(self._get_layer_name(layer)))
 
     # There is a possible edge case where a single layer may output multiple
     # tensors and multiple tensors from that layer may be used by the
@@ -225,13 +247,14 @@ class ModelTransformer(object):
         return None
       input_match_layer_nodes.append(match_layer_node)
 
-    return LayerNode(layer, self._get_layer_weights(layer['config']['name']),
+    return LayerNode(layer,
+                     self._get_layer_weights(self._get_layer_name(layer)),
                      input_match_layer_nodes,
-                     self._get_layer_metadata(layer['config']['name']))
+                     self._get_layer_metadata(self._get_layer_name(layer)))
 
   def _find_pattern(self, pattern, matched_layers=None):
     for layer in self._config['layers']:
-      if matched_layers and layer['config']['name'] in matched_layers:
+      if matched_layers and self._get_layer_name(layer) in matched_layers:
         continue
       match_layer = self._match_layer_with_inputs(
           layer, pattern, is_head_node=True)
@@ -246,19 +269,24 @@ class ModelTransformer(object):
     if not match_layer.input_layers:
       return [match_layer.layer]
 
-    # If 2 different layers point to the same input, or if a layer uses the
-    # same input multiple times, the input layer can be repeated. But it
-    # preserves a bit of structure.
-
     leaf_layers = []
     for inp in match_layer.input_layers:
       leaf_layers.extend(self._get_leaf_layers(inp))
 
-    return leaf_layers
+    # Remove duplicate leaf layers in case of:
+    # 1) Two different layers point to the same leaf layer
+    # 2) One layer uses the same leaf layer multiple times
+
+    uniq_leaf_layers = []
+    for layer in leaf_layers:
+      if layer not in uniq_leaf_layers:
+        uniq_leaf_layers.append(layer)
+
+    return uniq_leaf_layers
 
   @staticmethod
   def _get_layer_names(layer_node):
-    result = [layer_node.layer['config']['name']]
+    result = [ModelTransformer._get_layer_name(layer_node.layer)]
     for input_layer in layer_node.input_layers:
       result.extend(ModelTransformer._get_layer_names(input_layer))
     return result
@@ -294,12 +322,13 @@ class ModelTransformer(object):
     for consumer in consuming_layers:
       for inbound_node in consumer['inbound_nodes']:
         for connection_info in inbound_node:
-          if connection_info[0] == match_layer_node.layer['config']['name']:
-            connection_info[0] = replacement_layer_node.layer['config']['name']
+          if connection_info[0] == self._get_layer_name(match_layer_node.layer):
+            connection_info[0] = self._get_layer_name(
+                replacement_layer_node.layer)
 
     output_consumers = self._get_output_consumers(match_layer_node.layer)
     for output_consumer in output_consumers:
-      output_consumer[0] = replacement_layer_node.layer['config']['name']
+      output_consumer[0] = self._get_layer_name(replacement_layer_node.layer)
 
     # 2. Create inbound nodes for the replacement layers. This connects all
     # the replacement layers.
@@ -320,7 +349,7 @@ class ModelTransformer(object):
         # These are reasonable assumptions for almost all case we are
         # interested in.
         layer_node.layer['inbound_nodes'][0].append(
-            [input_layer.layer['config']['name'], 0, 0, {}])
+            [self._get_layer_name(input_layer.layer), 0, 0, {}])
 
         _assign_inbounds_for_replacement(input_layer)
 
@@ -333,6 +362,12 @@ class ModelTransformer(object):
     original_inbound_nodes = [
         layer['inbound_nodes'] for layer in original_leaf_layers
     ]
+
+    for inbound_node in original_inbound_nodes:
+      for connection_info in inbound_node:
+        # For transformation of TFOplambda layers, need to clear the call_kwargs
+        # in the connection_info.
+        connection_info[0][3] = {}
 
     replacement_leaf_layers = self._get_leaf_layers(replacement_layer_node)
 
@@ -360,7 +395,7 @@ class ModelTransformer(object):
     def _add_replacement_layer(layer_node):
       """Recursively add new layers."""
       self._config['layers'].append(layer_node.layer)
-      layer_name = layer_node.layer['config']['name']
+      layer_name = self._get_layer_name(layer_node.layer)
       if layer_node.weights:
         self._layer_weights_map[layer_name] = layer_node.weights
       if layer_node.metadata:
@@ -406,7 +441,7 @@ class ModelTransformer(object):
       i = first_layer_removed_index
       for replacement_node in replacement_nodes:
         self._config['layers'].insert(i, replacement_node.layer)
-        layer_name = replacement_node.layer['config']['name']
+        layer_name = self._get_layer_name(replacement_node.layer)
         if replacement_node.weights:
           self._layer_weights_map[layer_name] = replacement_node.weights
         if replacement_node.metadata:
@@ -464,7 +499,7 @@ class ModelTransformer(object):
       self._transform_matched_layers_map[self._name(transform)] = []
 
     self._transform_matched_layers_map[self._name(transform)].append(
-        layer_node.layer['config']['name'])
+        self._get_layer_name(layer_node.layer))
 
   def transform(self):
     """Transforms the Keras model by applying all the specified transforms.
@@ -564,3 +599,35 @@ class ModelTransformer(object):
         self._set_layer_weights(layer, weights)
 
     return transformed_model, copy.deepcopy(self._layer_metadata_map)
+
+  def recursive_transform(self):
+    """Transforms the Keras model recursively by applying all the specified transforms.
+
+    This is the main entry point function used to apply the transformations to
+    the Keras model.
+
+    Not suitable for multi-threaded use. Creates and manipulates internal state.
+
+    Returns:
+      (Keras model after transformation, Updated layer metadata map)
+    """
+
+    def _make_transform_fn():
+
+      def transform_fn(layer):
+        if self._is_sequential_or_functional_model(layer):
+          transformed_layer, self.layer_metadata = ModelTransformer(
+              layer, self.transforms, self.candidate_layers,
+              self.layer_metadata).transform()
+          logger.debug('Transform nested model: {}'.format(layer.name))
+          return transformed_layer
+        else:
+          return layer
+
+      return transform_fn
+
+    transformed_model = keras.models.clone_model(
+        self.model, clone_function=_make_transform_fn())
+    return ModelTransformer(transformed_model, self.transforms,
+                            self.candidate_layers,
+                            self.layer_metadata).transform()

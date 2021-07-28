@@ -1,0 +1,820 @@
+#include <dt-bindings/media/xilinx-vip.h>
+
+&amba_pl {
+	cap_pipe_pipe_0_v_demosaic_0: v_demosaic@a40c0000 {
+		clock-names = "ap_clk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,v-demosaic-1.0", "xlnx,v-demosaic";
+		reg = <0x0 0xa40c0000 0x0 0x10000>;
+		reset-gpios = <&gpio0 27 1>;
+		xlnx,max-height = <1080>;
+		xlnx,max-width = <1920>;
+		xlnx,s-axi-ctrl-addr-width = <6>;
+		xlnx,s-axi-ctrl-data-width = <32>;
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+
+				xlnx,video-width = <8>;
+				xlnx,cfa-pattern = "grbg";
+
+				demosaic_0_in: endpoint {
+					remote-endpoint = <&switch_out0>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+
+				xlnx,video-width = <8>;
+
+				demosaic_0_out: endpoint {
+					remote-endpoint = <&scaler_0_in>;
+				};
+			};
+		};
+	};
+	cap_pipe_pipe_0_v_scaler_0: scaler@a4080000 {
+		compatible = "xlnx,v-vpss-scaler-2.2";
+		reg = <0x0 0xa4080000 0x0 0x40000>;
+		clock-names = "aclk_axis", "aclk_ctrl";
+		clocks = <&misc_clk_0>, <&misc_clk_0>;
+		xlnx,num-hori-taps = <6>;
+		xlnx,num-vert-taps = <6>;
+		xlnx,pix-per-clk = <2>;
+		reset-gpios = <&gpio0 28 1>;
+		xlnx,max-width = <1920>;
+		xlnx,max-height = <1080>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				xlnx,video-format = <XVIP_VF_RBG>;
+				xlnx,video-width = <8>;
+
+				scaler_0_in: endpoint {
+				        remote-endpoint = <&demosaic_0_out>;
+				};
+			};
+			port@1 {
+				reg = <1>;
+				xlnx,video-format = <XVIP_VF_YUV_422>;
+				xlnx,video-width = <8>;
+
+				scaler_0_out: endpoint {
+				        remote-endpoint = <&vcap_gmsl_in0>;
+				};
+			};
+		};
+	};
+
+	cap_pipe_pipe_0_v_frmbuf_wr_0: v_frmbuf_wr@a40D0000 {
+		#dma-cells = <1>;
+		clock-names = "ap_clk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,v-frmbuf-wr-2.1", "xlnx,axi-frmbuf-wr-v2.1";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 92 4>;
+		reg = <0x0 0xa40D0000 0x0 0x10000>;
+		reset-gpios = <&gpio0 29 1>;
+		xlnx,dma-addr-width = <64>;
+		xlnx,dma-align = <16>;
+		xlnx,max-height = <1080>;
+		xlnx,max-width = <1920>;
+		xlnx,pixels-per-clock = <2>;
+		xlnx,s-axi-ctrl-addr-width = <0x7>;
+		xlnx,s-axi-ctrl-data-width = <0x20>;
+		xlnx,vid-formats = "rgb888", "bgr888", "yuyv";
+		xlnx,video-width = <8>;
+	};
+	cap_pipe_pipe_1_v_demosaic_1: v_demosaic@a40e0000 {
+		clock-names = "ap_clk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,v-demosaic-1.0", "xlnx,v-demosaic";
+		reg = <0x0 0xa40e0000 0x0 0x10000>;
+		reset-gpios = <&gpio0 30 1>;
+		xlnx,max-height = <1080>;
+		xlnx,max-width = <1920>;
+		xlnx,s-axi-ctrl-addr-width = <6>;
+		xlnx,s-axi-ctrl-data-width = <32>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+
+				xlnx,video-width = <8>;
+				xlnx,cfa-pattern = "grbg";
+
+				demosaic_1_in: endpoint {
+					remote-endpoint = <&switch_out1>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+
+				xlnx,video-width = <8>;
+
+				demosaic_1_out: endpoint {
+					remote-endpoint = <&scaler_1_in>;
+				};
+			};
+		};
+	};
+	cap_pipe_pipe_1_v_scaler_1: scaler@a4100000 {
+		compatible = "xlnx,v-vpss-scaler-2.2";
+		reg = <0x0 0xa4100000 0x0 0x40000>;
+		clock-names = "aclk_axis", "aclk_ctrl";
+		clocks = <&misc_clk_0>, <&misc_clk_0>;
+		xlnx,num-hori-taps = <6>;
+		xlnx,num-vert-taps = <6>;
+		xlnx,pix-per-clk = <2>;
+		reset-gpios = <&gpio0 31 1>;
+		xlnx,max-width = <1920>;
+		xlnx,max-height = <1080>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				xlnx,video-format = <XVIP_VF_RBG>;
+				xlnx,video-width = <8>;
+
+				scaler_1_in: endpoint {
+				        remote-endpoint = <&demosaic_1_out>;
+				};
+			};
+			port@1 {
+				reg = <1>;
+				xlnx,video-format = <XVIP_VF_YUV_422>;
+				xlnx,video-width = <8>;
+
+				scaler_1_out: endpoint {
+				        remote-endpoint = <&vcap_gmsl_in1>;
+				};
+			};
+		};
+	};
+	cap_pipe_pipe_1_v_frmbuf_wr_1: v_frmbuf_wr@a40f0000 {
+		#dma-cells = <1>;
+		clock-names = "ap_clk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,v-frmbuf-wr-2.1", "xlnx,axi-frmbuf-wr-v2.1";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 93 4>;
+		reg = <0x0 0xa40f0000 0x0 0x10000>;
+		reset-gpios = <&gpio0 32 1>;
+		xlnx,dma-addr-width = <64>;
+		xlnx,dma-align = <16>;
+		xlnx,max-height = <1080>;
+		xlnx,max-width = <1920>;
+		xlnx,pixels-per-clock = <2>;
+		xlnx,s-axi-ctrl-addr-width = <0x7>;
+		xlnx,s-axi-ctrl-data-width = <0x20>;
+		xlnx,vid-formats = "rgb888", "bgr888", "yuyv";
+		xlnx,video-width = <8>;
+	};
+	cap_pipe_pipe_2_v_demosaic_2: v_demosaic@a4180000 {
+		clock-names = "ap_clk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,v-demosaic-1.0", "xlnx,v-demosaic";
+		reg = <0x0 0xa4180000 0x0 0x10000>;
+		reset-gpios = <&gpio0 33 1>;
+		xlnx,max-height = <1080>;
+		xlnx,max-width = <1920>;
+		xlnx,s-axi-ctrl-addr-width = <6>;
+		xlnx,s-axi-ctrl-data-width = <32>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+
+				xlnx,video-width = <8>;
+				xlnx,cfa-pattern = "grbg";
+
+				demosaic_2_in: endpoint {
+					remote-endpoint = <&switch_out2>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+
+				xlnx,video-width = <8>;
+
+				demosaic_2_out: endpoint {
+					remote-endpoint = <&scaler_2_in>;
+				};
+			};
+		};
+	};
+	cap_pipe_pipe_2_v_scaler_2: scaler@a4140000 {
+		compatible = "xlnx,v-vpss-scaler-2.2";
+		reg = <0x0 0xa4140000 0x0 0x40000>;
+		clock-names = "aclk_axis", "aclk_ctrl";
+		clocks = <&misc_clk_0>, <&misc_clk_0>;
+		xlnx,num-hori-taps = <6>;
+		xlnx,num-vert-taps = <6>;
+		xlnx,pix-per-clk = <2>;
+		reset-gpios = <&gpio0 34 1>;
+		xlnx,max-width = <1920>;
+		xlnx,max-height = <1080>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				xlnx,video-format = <XVIP_VF_RBG>;
+				xlnx,video-width = <8>;
+
+				scaler_2_in: endpoint {
+				        remote-endpoint = <&demosaic_2_out>;
+				};
+			};
+			port@1 {
+				reg = <1>;
+				xlnx,video-format = <XVIP_VF_YUV_422>;
+				xlnx,video-width = <8>;
+
+				scaler_2_out: endpoint {
+				        remote-endpoint = <&vcap_gmsl_in2>;
+				};
+			};
+		};
+	};
+	cap_pipe_pipe_2_v_frmbuf_wr_2: v_frmbuf_wr@a4190000 {
+		#dma-cells = <1>;
+		clock-names = "ap_clk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,v-frmbuf-wr-2.1", "xlnx,axi-frmbuf-wr-v2.1";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 94 4>;
+		reg = <0x0 0xa4190000 0x0 0x10000>;
+		reset-gpios = <&gpio0 35 1>;
+		xlnx,dma-addr-width = <64>;
+		xlnx,dma-align = <16>;
+		xlnx,max-height = <1080>;
+		xlnx,max-width = <1920>;
+		xlnx,pixels-per-clock = <2>;
+		xlnx,s-axi-ctrl-addr-width = <0x7>;
+		xlnx,s-axi-ctrl-data-width = <0x20>;
+		xlnx,vid-formats = "rgb888", "bgr888", "yuyv";
+		xlnx,video-width = <8>;
+	};
+	cap_pipe_pipe_3_v_demosaic_3: v_demosaic@a41a0000 {
+		clock-names = "ap_clk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,v-demosaic-1.0", "xlnx,v-demosaic";
+		reg = <0x0 0xa41a0000 0x0 0x10000>;
+		reset-gpios = <&gpio0 36 1>;
+		xlnx,max-height = <1080>;
+		xlnx,max-width = <1920>;
+		xlnx,s-axi-ctrl-addr-width = <6>;
+		xlnx,s-axi-ctrl-data-width = <32>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+
+				xlnx,video-width = <8>;
+				xlnx,cfa-pattern = "grbg";
+
+				demosaic_3_in: endpoint {
+					remote-endpoint = <&switch_out3>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+
+				xlnx,video-width = <8>;
+
+				demosaic_3_out: endpoint {
+					remote-endpoint = <&scaler_3_in>;
+				};
+			};
+		};
+	};
+	cap_pipe_pipe_3_v_scaler_3: scaler@a41c0000 {
+		compatible = "xlnx,v-vpss-scaler-2.2";
+		reg = <0x0 0xa41c0000 0x0 0x40000>;
+		clock-names = "aclk_axis", "aclk_ctrl";
+		clocks = <&misc_clk_0>, <&misc_clk_0>;
+		xlnx,num-hori-taps = <6>;
+		xlnx,num-vert-taps = <6>;
+		xlnx,pix-per-clk = <2>;
+		reset-gpios = <&gpio0 37 1>;
+		xlnx,max-width = <1920>;
+		xlnx,max-height = <1080>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				xlnx,video-format = <XVIP_VF_RBG>;
+				xlnx,video-width = <8>;
+
+				scaler_3_in: endpoint {
+				        remote-endpoint = <&demosaic_3_out>;
+				};
+			};
+			port@1 {
+				reg = <1>;
+				xlnx,video-format = <XVIP_VF_YUV_422>;
+				xlnx,video-width = <8>;
+
+				scaler_3_out: endpoint {
+				        remote-endpoint = <&vcap_gmsl_in3>;
+				};
+			};
+		};
+	};
+	cap_pipe_pipe_3_v_frmbuf_wr_3: v_frmbuf_wr@a41b0000 {
+		#dma-cells = <1>;
+		clock-names = "ap_clk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,v-frmbuf-wr-2.1", "xlnx,axi-frmbuf-wr-v2.1";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 95 4>;
+		reg = <0x0 0xa41b0000 0x0 0x10000>;
+		reset-gpios = <&gpio0 38 1>;
+		xlnx,dma-addr-width = <64>;
+		xlnx,dma-align = <16>;
+		xlnx,max-height = <1080>;
+		xlnx,max-width = <1920>;
+		xlnx,pixels-per-clock = <2>;
+		xlnx,s-axi-ctrl-addr-width = <0x7>;
+		xlnx,s-axi-ctrl-data-width = <0x20>;
+		xlnx,vid-formats = "rgb888", "bgr888", "yuyv";
+		xlnx,video-width = <8>;
+	};
+
+	mipi_csi_rx_ss_fmc_multicam_control_fmc_multicam_iic: i2c@a4070000 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		clock-names = "s_axi_aclk";
+		clocks = <&versal_clk 65>;
+		compatible = "xlnx,axi-iic-2.0", "xlnx,xps-iic-2.00.a";
+		interrupt-names = "iic2intc_irpt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 91 4>;
+		reg = <0x0 0xa4070000 0x0 0x10000>;
+
+		i2cswitch@70 {
+			compatible = "nxp,pca9548";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x70>;
+			reset-gpios = <&gpio0 56 1>;
+
+			i2c@0 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0>;
+
+				ar0231_0: sensor@11 {
+					compatible = "ar0231";
+					reg = <0x11>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					port@0 {
+						reg = <0>;
+						sensor_out0: endpoint {
+							remote-endpoint = <&serdes_in0>;
+						};
+					};
+				};
+
+				ar0231_1: sensor@12 {
+					compatible = "ar0231";
+					reg = <0x12>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					port@0 {
+						reg = <0>;
+						sensor_out1: endpoint {
+							remote-endpoint = <&serdes_in1>;
+						};
+					};
+				};
+
+				ar0231_2: sensor@13 {
+					compatible = "ar0231";
+					reg = <0x13>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					port@0 {
+						reg = <0>;
+						sensor_out2: endpoint {
+							remote-endpoint = <&serdes_in2>;
+						};
+					};
+				};
+
+				ar0231_3: sensor@14 {
+					compatible = "ar0231";
+					reg = <0x14>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					port@0 {
+						reg = <0>;
+						sensor_out3: endpoint {
+							remote-endpoint = <&serdes_in3>;
+						};
+					};
+				};
+
+				ar0231_4: sensor@10 {
+					compatible = "ar0231-i2c";
+					reg = <0x10>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+				};
+
+				max96705_serdes_0: serdes@40 {
+					compatible = "max96705-serdes";
+					reg = <0x40>;
+				};
+				max96705_serdes_1: serdes@41 {
+					compatible = "max96705-serdes";
+					reg = <0x41>;
+				};
+				max96705_serdes_2: serdes@42 {
+					compatible = "max96705-serdes";
+					reg = <0x42>;
+				};
+				max96705_serdes_3: serdes@43 {
+					compatible = "max96705-serdes";
+					reg = <0x43>;
+				};
+				max96705_serdes_4: serdes@44 {
+					compatible = "max96705-serdes";
+					reg = <0x44>;
+				};
+				max96705_serdes_5: serdes@45 {
+					compatible = "max96705-serdes";
+					reg = <0x45>;
+				};
+
+				max9286_serdes_0: serdes@48 {
+					compatible = "max9286-serdes";
+					reg = <0x48>;
+					num-si-slots = <0x4>;
+					num-mi-slots = <0x1>;
+					cam-config = <0x6>;
+					mipi-lanes = <0x4>;
+					pixel-freq = <75>;
+					sensor_0-supply = <&camvcc_0>;
+					sensor_1-supply = <&camvcc_1>;
+					sensor_2-supply = <&camvcc_2>;
+					sensor_3-supply = <&camvcc_3>;
+
+					enable-gpios = <&gpio0 54 0>;
+
+					serializer_adapter_default	= <&max96705_serdes_0>;
+					serializer_adapter_brdcast	= <&max96705_serdes_5>;
+					sensor_adapter_brdcast = <&ar0231_4>;
+
+					ports {
+						#address-cells = <1>;
+						#size-cells = <0>;
+
+						port@0 {
+							reg = <0>;
+							enable = <1>;
+							video-format = <12>;
+							video-width = <8>;
+							cfa-pattern = "rggb";
+							serializer_adapter_link0 = <&max96705_serdes_1>;
+							sensor_adapter_0 = <&ar0231_0>;
+							serdes_in0: endpoint {
+								remote-endpoint = <&sensor_out0>;
+							};
+						};
+						port@1 {
+							reg = <1>;
+							enable = <1>;
+							video-format = <12>;
+							video-width = <8>;
+							cfa-pattern = "rggb";
+							serializer_adapter_link1 = <&max96705_serdes_2>;
+							sensor_adapter_1 = <&ar0231_1>;
+							serdes_in1: endpoint {
+								remote-endpoint = <&sensor_out1>;
+							};
+						};
+						port@2 {
+							reg = <2>;
+							enable = <1>;
+							video-format = <12>;
+							video-width = <8>;
+							cfa-pattern = "rggb";
+							serializer_adapter_link2 = <&max96705_serdes_3>;
+							sensor_adapter_2 = <&ar0231_2>;
+							serdes_in2: endpoint {
+								remote-endpoint = <&sensor_out2>;
+							};
+						};
+						port@3 {
+							reg = <3>;
+							enable = <1>;
+							video-format = <12>;
+							video-width = <8>;
+							cfa-pattern = "rggb";
+							serializer_adapter_link3 = <&max96705_serdes_4>;
+							sensor_adapter_3 = <&ar0231_3>;
+							serdes_in3: endpoint {
+								remote-endpoint = <&sensor_out3>;
+							};
+						};
+						port@4 {
+							reg = <4>;
+							enable = <1>;
+							video-format = <12>;
+							video-width = <8>;
+							cfa-pattern = "rggb";
+							serdes_out0: endpoint {
+								remote-endpoint = <&csiss_in>;
+							};
+						};
+					};
+				};
+			};
+
+			i2c@2 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <2>;
+
+				poc1: poc@28 {
+					compatible = "max20087";
+					reg = <0x28>;
+
+					enable-gpios = <&gpio0 52 0>;
+
+					regulators {
+						camvcc_0: OUT1 {
+							regulator-name = "CAP0_VOUT1";
+							regulator-min-microvolt = <1200000>;
+							regulator-max-microvolt = <1200000>;
+							regulator-min-microamp	= <600000>;
+							regulator-max-microamp	= <600000>;
+						};
+						camvcc_1: OUT2 {
+							regulator-name = "CAP0_VOUT2";
+							regulator-min-microvolt = <1200000>;
+							regulator-max-microvolt = <1200000>;
+							regulator-min-microamp	= <600000>;
+							regulator-max-microamp	= <600000>;
+						};
+						camvcc_2: OUT3 {
+							regulator-name = "CAP0_VOUT3";
+							regulator-min-microvolt = <1200000>;
+							regulator-max-microvolt = <1200000>;
+							regulator-min-microamp	= <600000>;
+							regulator-max-microamp	= <600000>;
+						};
+						camvcc_3: OUT4 {
+							regulator-name = "CAP0_VOUT4";
+							regulator-min-microvolt = <1200000>;
+							regulator-max-microvolt = <1200000>;
+							regulator-min-microamp	= <600000>;
+							regulator-max-microamp	= <600000>;
+						};
+					};
+				};
+			};
+		};
+	};
+
+	mipi_csi_rx_ss_mipi_csi2_rx_subsyst_0: mipi_csi2_rx_subsystem@a4060000 {
+		clock-names = "lite_aclk", "dphy_clk_200M", "video_aclk";
+		clocks = <&versal_clk 65>, <&misc_clk_4>, <&misc_clk_0>;
+		compatible = "xlnx,mipi-csi2-rx-subsystem-4.0", "xlnx,mipi-csi2-rx-subsystem-4.0";
+		interrupt-names = "csirxss_csi_irq";
+		interrupt-parent = <&gic>;
+		interrupts = <0 90 4>;
+		reg = <0x0 0xa4060000 0x0 0x10000>;
+		xlnx,axis-tdata-width = <32>;
+		xlnx,cal-mode = "NONE";
+		xlnx,clk-io-swap = "false";
+		xlnx,clk-lane-io-position = <0x0>;
+		xlnx,clk-lp-io-swap = "false";
+		xlnx,csi-en-activelanes = "true";
+		xlnx,csi-en-crc = "true";
+		xlnx,csi-filter-userdatatype = "true";
+		xlnx,csi-opt1-regs = "false";
+
+		xlnx,csi-pxl-format = "RAW8";
+		xlnx,csi2rx-dbg = <0x0>;
+		xlnx,data-lane0-io-position = <0x2>;
+		xlnx,data-lane1-io-position = <0x4>;
+		xlnx,data-lane2-io-position = <0x6>;
+		xlnx,data-lane3-io-position = <0x8>;
+		xlnx,dl0-io-swap = "false";
+		xlnx,dl0-lp-io-swap = "false";
+		xlnx,dl1-io-swap = "false";
+		xlnx,dl1-lp-io-swap = "false";
+		xlnx,dl2-io-swap = "false";
+		xlnx,dl2-lp-io-swap = "false";
+		xlnx,dl3-io-swap = "false";
+		xlnx,dl3-lp-io-swap = "false";
+		xlnx,dphy-lanes = <0x4>;
+		xlnx,dphy-mode = "SLAVE";
+		xlnx,en-active-lanes ;
+		xlnx,en-bg0-pin0 = "false";
+		xlnx,en-bg0-pin6 = "false";
+		xlnx,en-bg1-pin0 = "false";
+		xlnx,en-bg1-pin6 = "false";
+		xlnx,en-bg2-pin0 = "false";
+		xlnx,en-bg2-pin6 = "false";
+		xlnx,en-bg3-pin0 = "false";
+		xlnx,en-bg3-pin6 = "false";
+		xlnx,en-clk300m = "false";
+		xlnx,en-csi-v2-0 = "false";
+		xlnx,en-exdesigns = "false";
+		xlnx,en-timeout-regs = "false";
+		xlnx,esc-timeout = <0x6400>;
+		xlnx,exdes-board = "ZCU102";
+		xlnx,exdes-config = "MIPI_Video_Pipe_Camera_to_Display";
+		xlnx,exdes-fmc = "LI-IMX274MIPI-FMC V1.0 Single Sensor";
+		xlnx,fifo-rd-en-control = "true";
+		xlnx,hs-line-rate = <0x5dc>;
+		xlnx,hs-settle-ns = <0x8d>;
+		xlnx,hs-timeout = <0x10005>;
+		xlnx,idly-group-name = "mipi_csi2rx_idly_group";
+		xlnx,idly-tap = <0x1>;
+		xlnx,init = <0x186a0>;
+		xlnx,is-7series = "false";
+		xlnx,is-versal = "true";
+		xlnx,max-lanes = <4>;
+		xlnx,mipi-slv-int = <0x0>;
+		xlnx,ppc = <2>;
+		xlnx,rcve-deskew-seq = "false";
+		xlnx,share-idlyctrl = "false";
+		xlnx,stretch-line-rate = <0x9c4>;
+		xlnx,vc = <4>;
+		xlnx,vfb ;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+
+				xlnx,video-format = <12>;
+				xlnx,video-width = <8>;
+				xlnx,cfa-pattern = "rggb";
+
+				csiss_out: endpoint {
+					remote-endpoint = <&switch_in0>;
+				};
+			};
+			port@1 {
+				reg = <1>;
+
+				xlnx,video-format = <12>;
+				xlnx,video-width = <8>;
+				xlnx,cfa-pattern = "rggb";
+
+				csiss_in: endpoint {
+					data-lanes = <1 2 3 4>;
+					remote-endpoint = <&serdes_out0>;
+				};
+			};
+		};
+	};
+
+	axis_switch_0: axis_switch@0 {
+
+		compatible = "xlnx,axis-switch-1.1";
+
+		xlnx,routing-mode = <0x0>;
+		xlnx,num-si-slots = <0x1>;
+		xlnx,num-mi-slots = <0x4>;
+		clocks = <&misc_clk_0>;
+		clock-names = "aclk";
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			port@0 {
+				reg = <0>;
+				xlnx,video-format = <12>;
+				xlnx,video-width = <8>;
+				switch_in0: endpoint {
+					remote-endpoint = <&csiss_out>;
+				};
+			};
+			port@1 {
+				reg = <1>;
+				xlnx,video-format = <12>;
+				xlnx,video-width = <8>;
+				switch_out0: endpoint {
+					remote-endpoint = <&demosaic_0_in>;
+				};
+			};
+			port@2 {
+				reg = <2>;
+				xlnx,video-format = <12>;
+				xlnx,video-width = <8>;
+				switch_out1: endpoint {
+					remote-endpoint = <&demosaic_1_in>;
+				};
+			};
+			port@3 {
+				reg = <3>;
+				xlnx,video-format = <12>;
+				xlnx,video-width = <8>;
+				switch_out2: endpoint {
+					remote-endpoint = <&demosaic_2_in>;
+				};
+			};
+			port@4 {
+				reg = <4>;
+				xlnx,video-format = <12>;
+				xlnx,video-width = <8>;
+				switch_out3: endpoint {
+					remote-endpoint = <&demosaic_3_in>;
+				};
+			};
+		};
+	};
+
+	vcap_gmsl {
+		compatible = "xlnx,video";
+		dmas = <&cap_pipe_pipe_0_v_frmbuf_wr_0 0>, <&cap_pipe_pipe_1_v_frmbuf_wr_1 0>, <&cap_pipe_pipe_2_v_frmbuf_wr_2 0>, <&cap_pipe_pipe_3_v_frmbuf_wr_3 0>;
+		dma-names = "port0", "port1", "port2", "port3";
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				direction = "input";
+
+				vcap_gmsl_in0: endpoint {
+					remote-endpoint = <&scaler_0_out>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+				direction = "input";
+
+				vcap_gmsl_in1: endpoint {
+					remote-endpoint = <&scaler_1_out>;
+				};
+			};
+
+			port@2 {
+				reg = <2>;
+				direction = "input";
+
+				vcap_gmsl_in2: endpoint {
+					remote-endpoint = <&scaler_2_out>;
+				};
+			};
+
+			port@3 {
+				reg = <3>;
+				direction = "input";
+
+				vcap_gmsl_in3: endpoint {
+					remote-endpoint = <&scaler_3_out>;
+				};
+			};
+		};
+	};
+};

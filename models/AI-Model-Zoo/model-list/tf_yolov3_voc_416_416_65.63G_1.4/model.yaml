@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: YOLOv3 on VOC.
+input size: 416*416
+float ops: 65.63G
+task: detection
+framework: tensorflow
+prune: 'no'
+version: 1.4
+files:
+- name: tf_yolov3_voc_416_416_65.63G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_yolov3_voc_416_416_65.63G_1.4.zip
+  checksum: 69e94431a3846868f550ac1f6884f076
+- name: yolov3_voc_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 8ece8195c006a5ab1c81e1da1ed25edd
+- name: yolov3_voc_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.4.0.tar.gz
+  checksum: 5f7d13975202ba363e55df7e3fcf6e07
+- name: yolov3_voc_tf
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: 1892636c4cdd4cf4b6e85af93734054e
+- name: yolov3_voc_tf
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 172e9779db87b6c1872f4d7f1d02e5df
+- name: yolov3_voc_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u200-u250-r1.4.0.tar.gz
+  checksum: 39fe239726a583e2f24616f3f89c902d
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

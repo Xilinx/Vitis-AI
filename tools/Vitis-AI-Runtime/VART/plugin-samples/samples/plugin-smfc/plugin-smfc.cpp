@@ -31,38 +31,38 @@ std::set<xir::Subgraph*> plugin_smfc::partition(xir::Graph* graph) {
   auto softmaxs = PluginHelper::filter_by_type(graph, "softmax");
   std::set<xir::Subgraph*> targets;
   for (auto softmax : softmaxs) {
-    for (auto op : graph->get_ops()) {
-      if (op->get_type() == "softmax") {
-        auto input = op->get_input_ops("input")[0];
-        if (input->get_type() == "fix") {
-          bool if_signed = input->has_attr("if_signed")
-                             ? input->get_attr<bool>("if_signed")
-                             : true;
-          auto dtype = if_signed ? xir::DataType::XINT : xir::DataType::XUINT;
-          auto bit_width = input->get_attr<int>("bit_width");
-          auto op_float2fix =
-            graph->add_op(input->get_name() + "_float2fix",
-                          "float2fix",
-                          input->get_attrs(),
-                          {{"input", input->get_input_ops("input")}},
-                          xir::DataType{dtype, bit_width},
-                          graph->get_leaf_subgraph(input)->get_parent());
-          op_float2fix->get_output_tensor()->set_attrs(input->get_attrs());
-          auto op_fix2float =
-            graph->add_op(input->get_name() + "_fix2float",
-                          "fix2float",
-                          input->get_attrs(),
-                          {{"input", {op_float2fix}}},
-                          xir::DataType{xir::DataType::FLOAT, 32},
-                          graph->get_leaf_subgraph(input)->get_parent());
-          op_fix2float->get_output_tensor()->set_attrs(input->get_attrs());
-          op->replace_input_op(input, op_fix2float);
-          graph->remove_op(input);
-          auto mergerd = PluginHelper::merge_subgraph(
-            {graph->get_root_subgraph()->find_op(op_fix2float), softmax});
-          targets.emplace(*mergerd.begin());
-        }
-      }
+    auto op = *(softmax->get_ops().begin());
+    auto input = op->get_input_ops("input")[0];
+    if (input->get_type() == "fix") {
+      bool if_signed = input->has_attr("if_signed")
+                         ? input->get_attr<bool>("if_signed")
+                         : true;
+      auto dtype = if_signed ? xir::DataType::XINT : xir::DataType::XUINT;
+      auto bit_width = input->get_attr<int>("bit_width");
+      auto op_float2fix =
+        graph->add_op(input->get_name() + "_float2fix",
+                      "float2fix",
+                      input->get_attrs(),
+                      {{"input", input->get_input_ops("input")}},
+                      xir::DataType{dtype, bit_width},
+                      graph->get_leaf_subgraph(input)->get_parent());
+      op_float2fix->get_output_tensor()->set_attrs(input->get_attrs());
+      auto op_fix2float =
+        graph->add_op(input->get_name() + "_fix2float",
+                      "fix2float",
+                      input->get_attrs(),
+                      {{"input", {op_float2fix}}},
+                      xir::DataType{xir::DataType::FLOAT, 32},
+                      graph->get_leaf_subgraph(input)->get_parent());
+      op_fix2float->get_output_tensor()->set_attrs(input->get_attrs());
+      op->replace_input_op(input, op_fix2float);
+      graph->remove_op(input);
+      auto merged = PluginHelper::merge_subgraph(
+        {graph->get_root_subgraph()->find_op(op_fix2float), softmax});
+      std::transform(merged.begin(),
+                     merged.end(),
+                     std::inserter(targets, targets.end()),
+                     [](auto sub) { return sub; });
     }
   }
   return targets;

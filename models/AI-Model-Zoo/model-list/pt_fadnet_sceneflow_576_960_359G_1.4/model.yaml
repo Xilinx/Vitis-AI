@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: fadnet for disparity estimation on scene flow.
+input size: 576*960
+float ops: 359G
+task: disparity estimation
+framework: pytorch
+prune: 'no'
+version: 1.4
+files:
+- name: pt_fadnet_sceneflow_576_960_359G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnet_sceneflow_576_960_359G_1.4.zip
+  checksum: 7404e51b9a3ed1b53994620ccf19c42c
+- name: FADNet_0_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 71843c85b5ff9e06815cabb085e5a031
+- name: FADNet_1_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 5e3a8896ec33e91786886d92771f37b7
+- name: FADNet_2_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 7363c204dafa0d5220a328b7031d5bef
+- name: FADNet_0_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-vck190-r1.4.0.tar.gz
+  checksum: a7c22acf667b0395a0ce295064b6547f
+- name: FADNet_1_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-vck190-r1.4.0.tar.gz
+  checksum: 95cbbb4ba8544eb2501af2793d9b58aa
+- name: FADNet_2_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-vck190-r1.4.0.tar.gz
+  checksum: c344751d4e765406a7e98ba16b1eb031
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

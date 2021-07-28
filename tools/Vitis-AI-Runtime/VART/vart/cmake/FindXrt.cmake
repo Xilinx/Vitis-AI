@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-if(NOT CMAKE_CROSSCOMPILING)
+if(NOT IS_EDGE)
   find_path(XRT_INCLUDE_DIRS
     NAMES xrt.h
     PATHS "/opt/xilinx/xrt/include"
@@ -33,7 +33,7 @@ else()
   find_library(XRT_LIBRARYIES
     NAMES xrt_core
     )
-endif(NOT CMAKE_CROSSCOMPILING)
+endif(NOT IS_EDGE)
 set(XRT_VERSION "2.3.1301")
 mark_as_advanced(XRT_FOUND XRT_CLOUD_FOUND XRT_EDGE_FOUND XRT_LIBRARYIES XRT_INCLUDE_DIRS XRT_VERSION)
 include(FindPackageHandleStandardArgs)
@@ -51,7 +51,7 @@ if(XRT_FOUND AND NOT TARGET XRT::XRT)
   set_property(TARGET XRT::XRT APPEND PROPERTY INTERFACE_LINK_LIBRARIES -lxrt_coreutil)
 endif()
 
-if(CMAKE_CROSSCOMPILING)
+if(IS_EDGE)
   set(XRT_EDGE_FOUND true)
   set(XRT_CLOUD_FOUND false)
 else()

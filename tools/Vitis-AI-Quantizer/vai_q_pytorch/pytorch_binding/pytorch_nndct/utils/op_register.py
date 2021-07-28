@@ -23,9 +23,9 @@ from .nndct2torch_op_map import add_mapping_item
 from .torch_op_attr import gen_attr
 from .torch_const import TorchSymbol
 
-def op_register(nndct_op: str, torch_op: str, force_to_primitive=False):
+def op_register(nndct_op: str, torch_op: str, force_to_primitive=False, schema=None):
   add_mapping_item(nndct_op, torch_op)
-  gen_attr(torch_op, force_to_primitive=force_to_primitive)
+  gen_attr(torch_op, force_to_primitive=force_to_primitive, schema=schema)
 
 
 

@@ -42,7 +42,15 @@ class DpuRunnerDdr : public DpuRunnerBaseImp {
 
  private:
   std::vector<vart::TensorBuffer*> prepare_input(
-      const std::vector<vart::TensorBuffer*>& input);
+      const std::vector<vart::TensorBuffer*>& input,
+      const std::vector<vart::TensorBuffer*>& output);
+  void maybe_copy_input(vart::TensorBuffer::location_t location,
+                        const std::vector<vart::TensorBuffer*>& input);
+  void prepare_input_for_reg(
+      vart::TensorBuffer::location_t location,
+      const std::vector<vart::TensorBuffer*>& tensor_buffers,
+      std::vector<vart::TensorBuffer*>& ret);
+
   void prepare_output(const std::vector<vart::TensorBuffer*>& output);
   void copy_data_for_input(vart::TensorBuffer* tb_from,
                            vart::TensorBuffer* tb_to);

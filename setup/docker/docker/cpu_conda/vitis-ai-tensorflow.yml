@@ -1,11 +1,8 @@
 name: vitis-ai-tensorflow
 
 channels:
-  - file:///scratch/conda-channel
-  - pytorch
-  - defaults
-  - conda-forge/label/gcc7
   - conda-forge
+  - defaults
 
 dependencies:
   - python=3.6
@@ -23,9 +20,5 @@ dependencies:
   - matplotlib
   - pillow
   - vaic
-  - xip
-  - dpuv1-rt
-  - dpuv1-rt-ext
-  - ddump
   - vart
   - rt-engine

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 xilinx Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <cmath>
 #include <iostream>
 
 #include "vart/op_imp.h"
+#include "vart/runner_helper.hpp"
+
 using namespace std;
 
 namespace {
-class fix_OpImp : public vart::OpImp {
- public:
-  explicit fix_OpImp(const xir::Op* op);
-  virtual ~fix_OpImp();
-  fix_OpImp(const fix_OpImp& other) = delete;
-  fix_OpImp& operator=(const fix_OpImp& rhs) = delete;
 
- public:
-  virtual int calculate(const std::vector<vart::OpImpArg>& inputs,
-                        vart::TensorBuffer* output) override;
+struct MyOp : public vart::experimental::OpImpBase {
+  MyOp(xir::Op* op, xir::Attrs* attrs)
+      : vart::experimental::OpImpBase{op, attrs} {
+    fix_point_ = op->get_attr<int>("fix_point");
+    auto round_mode = op->get_attr<std::string>("round_mode");
+    CHECK_EQ(round_mode, "DPU_ROUND") << "TODO:";
+    auto bit_width = op->get_attr<int>("quant_in_bit_width");
+    CHECK_EQ(bit_width, 8) << "TODO:";
+    scale_ = std::pow(2.0f, fix_point_);
+  };
+  int calculate(vart::experimental::simple_tensor_buffer_t<float> output,
+                vart::experimental::simple_tensor_buffer_t<float> input) {
+    auto input_shape = input.tensor->get_shape();
+    auto output_shape = output.tensor->get_shape();
+    auto num_of_dims = input_shape.size();
+    CHECK_EQ(input_shape.size(), output_shape.size());
+    CHECK_EQ(num_of_dims, output_shape.size());
+    auto num_of_elements = input.tensor->get_element_num();
+    for (auto i = 0; i < num_of_elements; ++i) {
+      output.data[i] = fix(input.data[i] * scale_) / scale_;
+    }
+    return 0;
+  }
+  float fix(float data) {
+    auto data_max = 127.0;
+    auto data_min = -128.0;
+    if (data > data_max) {
+      data = data_max;
+    } else if (data < data_min) {
+      data = data_min;
+    } else if (data < 0 && (data - floor(data)) == 0.5) {
+      data = static_cast<float>(ceil(data));
+    } else {
+      data = static_cast<float>(round(data));
+    }
+    return data;
+  }
+
+ private:
+  int fix_point_;
+  float scale_;
 };
-
-fix_OpImp::fix_OpImp(const xir::Op* op) : vart::OpImp(op){};
-fix_OpImp::~fix_OpImp() {}
-int fix_OpImp::calculate(const std::vector<vart::OpImpArg>& inputs,
-                         vart::TensorBuffer* output) {
-  return 0;
-}
-
 }  // namespace
+
 extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::make_vart_opt_imp<fix_OpImp>();
+  return vart::experimental::make_vart_opt_imp<MyOp>();
 }

@@ -1,0 +1,137 @@
+{
+"layer": {
+    "0": {
+        "load_src_reg_0": {
+        "dir": 1,
+        "size": 224
+        },
+        "load_src_reg_1": {
+        "dir": 0,
+        "size": 320
+        },
+        "save_dest_reg_0": {
+        "dir": 0,
+        "size": 320
+        }
+    },
+    "1": {
+        "load_src_reg_0": {
+        "dir": 1,
+        "size": 320
+        },
+        "load_src_reg_1": {
+        "dir": 0,
+        "size": 320
+        },
+        "save_dest_reg_0": {
+        "dir": 0,
+        "size": 320
+        }
+    },
+    "2": {
+        "load_src_reg_0": {
+        "dir": 1,
+        "size": 320
+        },
+        "load_src_reg_1": {
+        "dir": 0,
+        "size": 320
+        },
+        "save_dest_reg_0": {
+        "dir": 0,
+        "size": 320
+        }
+    },
+    "3": {
+        "load_src_reg_0": {
+        "dir": 1,
+        "size": 320
+        },
+        "load_src_reg_1": {
+        "dir": 0,
+        "size": 320
+        },
+        "save_dest_reg_0": {
+        "dir": 0,
+        "size": 320
+        }
+    },
+    "4": {
+        "load_src_reg_0": {
+        "dir": 1,
+        "size": 320
+        },
+        "load_src_reg_1": {
+        "dir": 0,
+        "size": 320
+        },
+        "save_dest_reg_0": {
+        "dir": 0,
+        "size": 320
+        }
+    },
+    "5": {
+        "load_src_reg_0": {
+        "dir": 1,
+        "size": 320
+        },
+        "load_src_reg_1": {
+        "dir": 0,
+        "size": 320
+        },
+        "save_dest_reg_0": {
+        "dir": 0,
+        "size": 320
+        }
+    },
+    "6": {
+        "load_src_reg_0": {
+        "dir": 1,
+        "size": 320
+        },
+        "load_src_reg_1": {
+        "dir": 0,
+        "size": 320
+        },
+        "save_dest_reg_0": {
+        "dir": 0,
+        "size": 320
+        }
+    },
+    "7": {
+        "load_src_reg_0": {
+        "dir": 1,
+        "size": 320
+        },
+        "load_src_reg_1": {
+        "dir": 1,
+        "size": 320
+        },
+        "save_dest_reg_0": {
+        "dir": 1,
+        "size": 320
+        }
+    }
+    },
+ "batch4_lines": [],
+ "batch3_lines": [],
+ "batch1_lines": [
+  509,
+  142,
+  505,
+  142,
+  505,
+  142,
+  505,
+  142,
+  505,
+  142,
+  505,
+  142,
+  505,
+  142,
+  504,
+  142,
+  2
+ ]
+}

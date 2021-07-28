@@ -1,0 +1,8 @@
+scripts/user_setup/env_config.tcl
+scripts/syn_tcl/read_fileset.tcl
+src/hdl/dpuv3_shell/dpdpuv3_wrapper.v
+
+outputs/logs/deleteme
+outputs/checkpoints/deleteme
+outputs/reports/deleteme
+outputs/xclbin/deleteme

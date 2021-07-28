@@ -22,15 +22,14 @@ In the model.yaml, you will find the model's download links for different platfo
 Please choose the corresponding model and download it.
 
 Take ZCU102/ZCU104 as an example, execute the following commands to download and install the model.
-	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.0.tar.gz -O resnet50-zcu102_zcu104-r1.3.0.tar.gz
+	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r1.4.0.tar.gz -O resnet50-zcu102_zcu104_kv260-r1.4.0.tar.gz
 	mkdir -p /usr/share/vitis_ai_library/models
-	tar -xzvf resnet50-zcu102_zcu104-r1.3.0.tar.gz
+	tar -xzvf resnet50-zcu102_zcu104_kv260-r1.4.0.tar.gz
 	cp resnet50 /usr/share/vitis_ai_library/models -r
 
 For U50, execute the following commands.
-	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.0.tar.gz -O resnet50-u50-r1.3.0.tar.gz
+	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-DPUCAHX8H-r1.4.0.tar.gz -O resnet50-u50-DPUCAHX8H-r1.4.0.tar.gz
 	sudo mkdir -p /usr/share/vitis_ai_library/models
-	tar -xzvf resnet50-u50-r1.3.0.tar.gz
+	tar -xzvf resnet50-u50-DPUCAHX8H-r1.4.0.tar.gz
 	sudo cp resnet50 /usr/share/vitis_ai_library/models -r 
-
 

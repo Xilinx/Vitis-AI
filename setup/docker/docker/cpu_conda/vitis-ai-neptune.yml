@@ -8,7 +8,6 @@ channels:
   - conda-forge
 
 dependencies:
-  - python=3.6.*
+  - python=3.6
   - xip
   - dpuv1-rt-neptune
-  - ddump

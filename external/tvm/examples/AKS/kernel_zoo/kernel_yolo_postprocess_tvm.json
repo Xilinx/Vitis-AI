@@ -1,0 +1,18 @@
+{
+  "kernel_name": "YoloPostProcessTVM",
+  "description": "Postprocessing kernel for YOLO v2/v3 network",
+  "kernel_type": "cpp",
+  "device_type": "cpu",
+  "kernel_lib" : "libs/libYoloPostProcessTVM.so",
+  "num_cu": 6,
+  "param_list" : {
+    "yolo_version": {"type": "int"},
+    "net_h":        {"type": "int"},
+    "net_w":        {"type": "int"},
+    "num_classes":  {"type": "int"},
+    "anchor_cnt":   {"type": "int"},
+    "conf_thresh":  {"type": "float"},
+    "iou_thresh":   {"type": "float"},
+    "biases":       {"type": "float_array"}
+  }
+}

@@ -17,11 +17,10 @@
 #
 
 import json
-import os
 from typing import Dict, List, NoReturn, Union, Sequence
 from abc import ABC, abstractmethod, abstractproperty
 from nndct_shared import utils as nndct_utils
-from nndct_shared.base import NNDCT_KEYS
+from nndct_shared.base import NNDCT_KEYS, NNDCT_OP
 from nndct_shared.nndct_graph.base_node import Node
 
 
@@ -29,35 +28,35 @@ class GraphBase(ABC):
   @abstractmethod
   def children(self, node):
     """Get successors of a node in graph
-    
+
     Returns:
     list: list of successors
     """
-    
+
   @abstractmethod
   def parents(self, node):
     """Get precessors of a node in graph
-    
+
     Returns:
     list: list of precessors
     """
-    
+
   @abstractproperty
   def nodes(self):
     """Yield node in graph according to topo order
-  
+
     Returns:
     generator: yiled a node when tranverse graph
-    """  
-    
+    """
+
   @abstractproperty
   def op_types(self):
     """Get all op types in graph
-    
+
     Returns:
     set: set of op types
     """
-    
+
 class Graph(GraphBase):
   """ Graph object of NNDCT, contain list of NndctNodes.
     That will be used for topology or export to XGraph"""
@@ -71,6 +70,13 @@ class Graph(GraphBase):
     self._tensors = {}
 
     self._end_tensors = []
+    self._copy_tensor_map = {}
+
+  def __contains__(self, node_or_name: Union[str, Node]) -> bool:
+    if isinstance(node_or_name, str):
+      return node_or_name in self._nodes_by_name
+    else:
+      return node_or_name.name in self._nodes_by_name
 
   def __contains__(self, node_or_name: Union[str, Node]) -> bool:
     if isinstance(node_or_name, str):
@@ -83,7 +89,20 @@ class Graph(GraphBase):
     return self._nodes_by_name.get(name, None)
 
   def get_node_by_idx(self, idx):
-    return self._nodes_by_id.get(idx, None)
+    node = self._nodes_by_id.get(idx, None)
+    if node is None:
+      for block in self.block_subgraphs():
+        node = block.get_node_by_idx(idx)
+        if node is not None:
+          break
+    return node
+
+  def get_input_nodes(self):
+    input_nodes = []
+    for node in self.nodes:
+      if len(self.parents(node)) == 0:
+        input_nodes.append(node)
+    return input_nodes
 
   def add_node(self, node: Node) -> None:
     if node.idx == -1:
@@ -102,9 +121,27 @@ class Graph(GraphBase):
     del self._nodes_by_id[node.idx]
 
   def remove_node(self, node: Node) -> None:
-    if len(node.in_tensors) > 1 and len(node.in_tensors) == len(node.out_tensors):
+
+    if len(node.in_nodes) != len(node.out_tensors):
+      raise RuntimeError(f"Can't remove node '{node.name}' in which number of inputs is not equal with that of outputs.")
+
+    parents = self.parents(node)
+    children = self.children(node)
+
+    parent = parents[0] if len(parents) else None
+
+    if parent:
+      # In some cases, op's attribute may refer to a tensor.
+      # In order to not to update the attribute after deleting the node,
+      # we modify parent's output tensor instead of child's input tensor.
+      # For example, the topology is like A -> B -> C and there is a node D
+      # refering the output tensor of B, which is B:0. Now we want to delete
+      # node B and the directly set the output tensor of A to B:0, then there
+      # is no need to update D's attribute.
       tensorId2node = {}
       for i, tensor in enumerate(node.in_tensors):
+        if tensor.is_param_tensor():
+          continue
         index = tensor.node.out_tensors.index(tensor)
         node.out_tensors[i].name = tensor.name
         tensor.node.out_tensors[index] = node.out_tensors[i]
@@ -126,45 +163,16 @@ class Graph(GraphBase):
           pn.out_nodes.remove(node.name)
 
     else:
-
-      assert len(node.in_tensors) <= 1, "Can't remove a node that has multiple input tensors: {}".format(
-          node.name)
-      parents = self.parents(node)
-      children = self.children(node)
-
-      parent = parents[0] if len(parents) else None
-
-      if parent:
-        assert len(parent.out_tensors) == 1 and len(
-            node.in_tensors) == 1, "Cannot remove node: {}".format(node.name)
-
-        # In some cases, op's attribute may refer to a tensor.
-        # In order to not to update the attribute after deleting the node,
-        # we modify parent's output tensor instead of child's input tensor.
-        # For example, the topology is like A -> B -> C and there is a node D
-        # refering the output tensor of B, which is B:0. Now we want to delete
-        # node B and the directly set the output tensor of A to B:0, then there
-        # is no need to update D's attribute.
-        if len(node.out_tensors) > 0:
-          # Make sure the tensor name is the same as the original.
-          node.out_tensors[0].name = parent.out_tensors[0].name
-          parent.out_tensors[0] = node.out_tensors[0]
-          parent.out_tensors[0].node = parent
-        for child in children:
-          index = child.in_nodes.index(node.name)
-          child.in_nodes[index] = parent.name
-          parent.add_out_node(child.name)
-        parent.out_nodes.remove(node.name)
-      else:
-        for child in children:
-          for i, input_tensor in enumerate(child.in_tensors):
-            if input_tensor.node.name == node.name:
-              del child.in_tensors[i]
-          child.in_nodes.remove(node.name)
+      for child in children:
+        for i, input_tensor in enumerate(child.in_tensors):
+          if input_tensor.is_param_tensor():
+            continue
+          if input_tensor.node.name == node.name:
+            del child.in_tensors[i]
+        child.in_nodes.remove(node.name)
 
     self.remove_node_forcely(node)
-    # del self._nodes_by_name[node.name]
-    # del self._nodes_by_id[node.idx]
+
 
   def remove_node_by_types(self, node_types: List[str]) -> Dict[str, str]:
     if any([node_type in self.op_types for node_type in node_types]):
@@ -175,6 +183,16 @@ class Graph(GraphBase):
 
       for node in nodes_to_remove:
         self.remove_node(node)
+
+  def find_nodes_by_types(self, node_types: List[NNDCT_OP]):
+    conv_nodes = []
+    for node in self.nodes:
+      if node.op.type in node_types:
+        conv_nodes.append(node)
+      else:
+        continue
+
+    return conv_nodes
 
   def reconnect_nodes(self):
     for idx, node in enumerate(self.nodes):
@@ -207,6 +225,12 @@ class Graph(GraphBase):
   def tensor(self, name):
     return self._tensors.get(name, None)
 
+  def param_tensor(self, name):
+    for node in self.nodes:
+      for tensor_name, tensor in node.op.params.items():
+        if tensor.name == name:
+          return tensor
+
   def add_end_tensor(self, tensor):
     self._end_tensors.append(tensor)
 
@@ -215,6 +239,20 @@ class Graph(GraphBase):
     for n in sorted(self.nodes, key=lambda n: n.idx):
       strs.append("node {}".format(n))
     return "\n".join(strs)
+
+  def __str__(self):
+    return json.dumps(self.description(), indent=4, separators=(',', ': '))
+
+
+  def description(self):
+    graph_des = {}
+    graph_des['graph_name'] = f"{self.__class__.__name__}"
+    graph_des['nodes'] = []
+    for n in sorted(self.nodes, key=lambda n: n.idx):
+      graph_des['nodes'].append(n.description())
+
+    return graph_des
+
 
   def add_node_with_ctx(self, node, p_nodes=None, c_nodes=None):
     r"""add node and connect it with context
@@ -265,6 +303,19 @@ class Graph(GraphBase):
     node.idx = index
     self._nodes_by_id[index] = node
 
+  def set_copy_tensor(self, tensor, tensor_copy):
+    tensor_name = tensor.name
+    tensor_copy_name = tensor_copy.name
+    self._copy_tensor_map[tensor_name] = tensor_copy_name
+
+  def get_copy_tensor(self, tensor):
+    tensor_name = tensor.name
+    if tensor_name in self._copy_tensor_map:
+      tensor_copy_name = self._copy_tensor_map[tensor_name]
+      return self.param_tensor(tensor_copy_name)
+    else:
+      return self.param_tensor(tensor_name)
+
   @classmethod
   def create_subgraph_from_nodeset(cls, origin_graph, nodeset, graph_name):
     """
@@ -294,6 +345,14 @@ class Graph(GraphBase):
         dfs(node)
     return sorted_nodes[::-1]
 
+  def block_subgraphs(self):
+    for node in self.nodes:
+      if node.blocks:
+        for block in node.blocks:
+          yield block
+
+
+
   @property
   def id2node_map(self):
     return self._nodes_by_id
@@ -319,6 +378,19 @@ class Graph(GraphBase):
   @property
   def end_tensors(self):
     return self._end_tensors
+
+  @end_tensors.setter
+  def end_tensors(self, tensors):
+    self._end_tensors = tensors
+
+
+  @property
+  def copy_tensor_map(self):
+    return self._copy_tensor_map
+
+  @copy_tensor_map.setter
+  def copy_tensor_map(self, tensor_map):
+    self._copy_tensor_map = tensor_map
 
   @property
   def inputs(self):

@@ -1,4 +1,4 @@
-## Cross-compile WAA-TRD example
+## Cross-compile WAA-TRD example for Edge Platform
 * Download the [sdk-2020.2.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2020.2.0.0.sh)
 
 * Install the cross-compilation system environment, follow the prompts to install. 
@@ -21,15 +21,30 @@ Here we install it under `~/petalinux_sdk`.
     tar -xzvf vitis_ai_2020.2-r1.3.0.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
     ```
 
-* Cross compile `resnet50_waa` example.
+* Cross compile `resnet50` example.
     ```
-    cd  ~/Vitis-AI/dsa/WAA-TRD/app/resnet50_waa
+    cd  ~/Vitis-AI/dsa/WAA-TRD/app/resnet50
     bash -x build.sh
     ```
-   Cross compile `adas_detection_waa` example.
+   Cross compile `resnet50_jpeg` example.
     ```
-    cd  ~/Vitis-AI/dsa/WAA-TRD/app/adas_detection_waa
+    cd  ~/Vitis-AI/dsa/WAA-TRD/app/resnet50_jpeg
+    bash -x build.sh
+    ```
+   Cross compile `adas_detection` example.
+    ```
+    cd  ~/Vitis-AI/dsa/WAA-TRD/app/adas_detection
     bash -x build.sh
     ``` 	
-    If the compilation process does not report any error and the executable file `resnet50_waa` & `adas_detection_waa` are generated in the respective example folder, then the host environment is installed correctly.
+    If the compilation process does not report any error and the executable file `resnet50`, 'resnet50_jpeg' & `adas_detection` are generated in the respective example folder, then the host environment is installed correctly.
 
+
+## Cross-compile resnet50_int8 for cloud platform
+
+**Note that the docker container needs to be loaded and the below commands need to be run in the docker environment. Docker installation instructions are available [here](../../../README.md#Installation)**
+
+* Cross compile `resnet50_int8` example.
+    ```
+    cd /workspace/dsa/WAA-TRD/app/resnet50_int8
+    bash -x build.sh
+    ```

@@ -25,7 +25,8 @@ class MedicalSegmentationPost
   MedicalSegmentationPost(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
       const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-      const vitis::ai::proto::DpuModelParam& config);
+      const vitis::ai::proto::DpuModelParam& config,
+      int& real_batch_size);
   virtual ~MedicalSegmentationPost();
 
   virtual MedicalSegmentationResult medicalsegmentation_post_process(
@@ -36,6 +37,7 @@ class MedicalSegmentationPost
  private:
   const std::vector<vitis::ai::library::InputTensor> input_tensors_;
   const std::vector<vitis::ai::library::OutputTensor> output_tensors_;
+  int& real_batch_size;
 };
 
 }  // namespace ai

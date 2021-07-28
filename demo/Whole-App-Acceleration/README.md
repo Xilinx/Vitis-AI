@@ -11,30 +11,28 @@ Input images are preprocessed  before being fed for inference of different deep 
 
 [Vitis Vision library](https://github.com/Xilinx/Vitis_Libraries/tree/master/vision) provides functions optimized for FPGA devices that are drop-in replacements for standard OpenCV library functions. These application demonstrates how Vitis Vision library functions can be used to accelerate the complete application.
 
-Refer below examples for demonstration of complete acceleration of various applications where pre/post-processing of several networks are accelerated on different target platforms.
+## Model Performance
+Refer below table for examples with demonstration on complete acceleration of various applications where pre/post-processing of several networks are accelerated on different target platforms.
 
 
-## Classification network (Resnet-50) pre-process acceleration on ZCU102/Alveo-U50:
-
-This example can be run on ZCU102 or Alveo-U50 platforms. Refer [README](./resnet50_mt_py_waa/README.md) for further details and steps to run.
-
-## ADAS detection pre-process acceleration on ZCU102/Alveo-U50:
-
-This example demonstrates acceleration of pre-processing of YOLO-v3 network. Refer [README](./adas_detection_waa/README.md) for further details and steps to run.
-
-## Classification network (Resnet-50/Inception-v1) pre-process acceleration on Alveo-U200:
-
-Refer [README](./classification/README.md) for further details and steps to run.
-
-## Detection network pre-process acceleration on Alveo-U200:
-
-This example demonstrates acceleration of pre-processing of tiny_yolo_v3 network on Alveo-U200. Refer [README](./yolo/README.md) for further details and steps to run.
-
-## SSD-Mobilenet post-process acceleration on Alveo-U280:
-
-This example demonstrates acceleration of post-processing of ssd-mobilenet network on Alveo-U280. Refer [README](./ssd_mobilenet/README.md) for further details and steps to run the example.
+| No. | Application                                           | Backbone Network | Accelerated Part(s)   | H/W Accelerated Functions                     | DPU Supported (% Improvement Over Non-WAA App) |
+|-----|-------------------------------------------------------|------------------|----------------------------|-----------------------------------------------|--------------------------------------------------------------------------|
+| 1   | adas_detection                                        | Yolo v3          | Pre-process                | resize, letter box, scale                     | ZCU102  (*64%) , ALVEO-U50 (*44%)                                        |
+| 2   | adas_detection_versal                                 | Yolo v3          | Pre-process                | resize, letter box, scale                     | VCK190 (*14.17%)                                                         |
+| 3   | adas_detection_int8                                   | Yolo v3          | Pre-process                | resize, letter box, scale                     | ALVEO-U200 (**83%)                                                       |
+| 4   | adas_detection_zero_copy                              | Yolo v3          | Pre-process                | resize, letter box, scale                     | ZCU102  (*89%)                                                           |
+| 5   | fall_detection                                        | VGG16            | Pre-process                | Lucas-Kanade Dense Non-Pyramidal Optical Flow | ALVEO-U200 (*6%)                                                        |
+| 6   | resnet50_int8                                         | resnet-50        | Pre-process                | resize, mean subtraction, scale               | ALVEO-U200 (37%)                                                         |
+| 7   | resnet50_jpeg                                         | resnet-50        | Pre-process                | JPEG decoder, resize, mean subtraction, scale | ZCU102  (*69%)                                                           |
+| 8   | resnet50_mt_py                                        | resnet-50        | Pre-process                | resize, mean subtraction, scale               | ZCU102 (*61%), ALVEO-U50 (*22%)                                          |
+| 9   | resnet50_versal                                       | resnet-50        | Pre-process                | resize, mean subtraction                      | VCK190 (44.5%)                                                           |
+| 10  | resnet50_zero_copy                                    | resnet-50        | Pre-process                | resize, mean subtraction, scale               | ZCU102 (29%)                                                             |
+| 11  | ssd_mobilenet_zero_copy                               | mobilenet        | pre-process & post-process | resize, BGR2RGB, scale, sort, NMS             | ALVEO-U280 (74%)                                                         |
+| 12  | SORT |                  | Post-process               | kalman filters                                | ZCU102 (**59%)                                                           |
 
 
-## Fall detection on Alveo-U200:
+`*` Includes imread/jpeg-decoder latency in both WAA and non WAA app
 
-This example demonstrates acceleration of Lucas_kanade optical flow on Alveo-U200. Refer [README](./fall_detection/README.md) for further details and steps to run.
+`**` Impact shown is on pre/post processing acceleration
+
+:pushpin: **Note:** Non-WAA applications use equivalent OpenCV functions. As OpenCV's LK OF is sparse, equivalent non-WAA application uses OpenCV's Farneback OF algorithm with 10 threads.

@@ -20,15 +20,19 @@
 namespace vitis {
 namespace ai {
 
-RetinaFace::RetinaFace() {}
+RetinaFace::RetinaFace(const std::string& model_name, bool need_preprocess)
+    : ConfigurableDpuTaskBase(model_name, need_preprocess) {}
+RetinaFace::RetinaFace(const std::string& model_name, xir::Attrs* attrs,
+                       bool need_preprocess)
+    : ConfigurableDpuTaskBase(model_name, attrs, need_preprocess) {}
 RetinaFace::~RetinaFace() {}
-std::unique_ptr<RetinaFace> RetinaFace::create(const std::string &model_name,
+std::unique_ptr<RetinaFace> RetinaFace::create(const std::string& model_name,
                                                bool need_preprocess) {
   return std::unique_ptr<RetinaFace>(
       new RetinaFaceImp(model_name, need_preprocess));
 }
-std::unique_ptr<RetinaFace> RetinaFace::create(const std::string &model_name,
-                                               xir::Attrs *attrs,
+std::unique_ptr<RetinaFace> RetinaFace::create(const std::string& model_name,
+                                               xir::Attrs* attrs,
                                                bool need_preprocess) {
   return std::unique_ptr<RetinaFace>(
       new RetinaFaceImp(model_name, attrs, need_preprocess));

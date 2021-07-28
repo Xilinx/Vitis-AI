@@ -47,4 +47,19 @@ class Evaluator(object):
   def int(node):
     node.out_tensors[0].data = int(node.in_tensors[0].data)
     
-  
+  @staticmethod
+  def sub(node):
+    node.out_tensors[0].data = node.node_attr(node.op.AttrName.INPUT) - node.node_attr(node.op.AttrName.OTHER)
+
+  @staticmethod
+  def elemwise_div(node):
+    node.out_tensors[0].data = float(node.node_attr(node.op.AttrName.INPUT) / node.node_attr(node.op.AttrName.OTHER))
+    
+  @staticmethod
+  def floor_div(node):
+    node.out_tensors[0].data = int(node.node_attr(node.op.AttrName.INPUT) // node.node_attr(node.op.AttrName.OTHER))
+
+  @staticmethod
+  def add(node):
+    node.out_tensors[0].data = node.node_attr(node.op.AttrName.INPUT) + node.node_attr(node.op.AttrName.OTHER)
+    

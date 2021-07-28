@@ -21,7 +21,7 @@
 
 using namespace xir;
 
-#define XIR_REGISTER_BUILT_IN_OP(OP) \
+#define XIR_REGISTER_BUILT_IN_OP(OP)                                           \
   static BuiltInOPsRegisterer BUILT_IN_OPDEFS_##OP(OP);
 
 class BuiltInOPsRegistry {
@@ -51,20 +51,25 @@ void register_built_in_ops(xir::OpDefFactory* self) {
 
 namespace xir {
 
-auto tensor_shape = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
-    "shape", AttrDef::REQUIRED, 0,
-    "`Datatype`: `vector<int>`\n\n"
-    "The shape of the output tensor");
-
-auto tensor_data_type = xir::AttrDefBuilder<std::string>::build(
-    "data_type", AttrDef::REQUIRED,
-    "`Datatype`: `string`\n\n"
-    "The data type of the data of output feature maps, "
-    "we use FLOAT32 as the default.");
+std::function<void(xir::OpDef& op_def)> SrcOpGenerator() {
+  return [=](xir::OpDef& op_def) {
+    auto tensor_shape = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        "shape", AttrDef::REQUIRED, 0,
+        "`Datatype`: `vector<int>`\n\n"
+        "The shape of the output tensor");
+    auto tensor_data_type = xir::AttrDefBuilder<std::string>::build(
+        "data_type", AttrDef::REQUIRED,
+        "`Datatype`: `string`\n\n"
+        "The data type of the data of output feature maps, "
+        "we use FLOAT32 as the default.");
+    op_def
+        .add_attr(tensor_shape)  //
+        .add_attr(tensor_data_type);
+  };
+}
 
 auto data = xir::OpDef("data")
-                .add_attr(tensor_shape)
-                .add_attr(tensor_data_type)
+                .inherit_from(SrcOpGenerator())
                 .set_annotation(
                     "A placeholder which stores the float-point input data, \n"
                     "data operator would always be fed by users.")
@@ -72,8 +77,7 @@ auto data = xir::OpDef("data")
 
 auto const_op =
     xir::OpDef("const")
-        .add_attr(tensor_shape)
-        .add_attr(tensor_data_type)
+        .inherit_from(SrcOpGenerator())
         .add_attr(xir::AttrDefBuilder<std::vector<char>>::build(
             "data", AttrDef::REQUIRED, 0,
             "Constant values stored in this operator, \n"
@@ -93,16 +97,14 @@ auto const_op =
 
 auto data_fix =
     xir::OpDef("data-fix")
-        .add_attr(tensor_shape)
-        .add_attr(tensor_data_type)
+        .inherit_from(SrcOpGenerator())
         .set_annotation(
             "A placeholder which stores the fixed-point input data, \n"
             "data operator would always be fed by users.")
         .set_shape_infer(xir::shape_infer_data_fix);
 
 auto const_fix = xir::OpDef("const-fix")
-                     .add_attr(tensor_shape)
-                     .add_attr(tensor_data_type)
+                     .inherit_from(SrcOpGenerator())
                      .add_attr(xir::AttrDefBuilder<std::vector<char>>::build(
                          "data", AttrDef::REQUIRED, 0,
                          "Constant values stored in this operator, \n"
@@ -116,6 +118,28 @@ XIR_REGISTER_BUILT_IN_OP(data);
 XIR_REGISTER_BUILT_IN_OP(const_op);
 XIR_REGISTER_BUILT_IN_OP(data_fix);
 XIR_REGISTER_BUILT_IN_OP(const_fix);
+
+// Random Generator
+auto random_standard_normal =
+    xir::OpDef("random_standard_normal")  //
+        .inherit_from(SrcOpGenerator())   //
+        .add_attr(xir::AttrDefBuilder<std::int32_t>::build(
+            "seed", AttrDef::OPTIONAL,
+            "`DataType`: `int`\n\nDefaults to 0. If either `seed` or `seed2` "
+            "are set to be non-zero, the random number generator is seeded by "
+            "the given seed. Otherwise, it is seeded by a random seed.",
+            0))
+        .add_attr(xir::AttrDefBuilder<std::int32_t>::build(
+            "seed2", AttrDef::OPTIONAL,
+            "`DataType`: `int`\n\nDefaults to 0. A second seed to avoid seed "
+            "collision.",
+            0))
+        .set_annotation(
+            "Outputs random values from a normal distribution.\n\nAnd the "
+            "generated values will have mean 0 and standard deviation 1.")
+        .set_shape_infer(xir::shape_infer_data);
+
+XIR_REGISTER_BUILT_IN_OP(random_standard_normal);
 
 std::function<void(xir::OpDef&)> ConvOpDefGenerator(xir::DataType::Type T) {
   return [=](xir::OpDef& op_def) {
@@ -300,7 +324,8 @@ auto transposed_depthwise_conv2d =
     xir::OpDef("transposed-depthwise-conv2d")
         .inherit_from(ConvOpDefGenerator(xir::DataType::FLOAT))
         .set_annotation(
-            "2D depth-wise transposed convolution, our equivalent implementations::\n"
+            "2D depth-wise transposed convolution, our equivalent "
+            "implementations::\n"
             "Firstly, we dilate the input feature maps by `stride`:\n\n"
             "    dilated_input[batch, h, w, c] =\n"
             "        ((h mod stride[1] == 0) && (w mod stride[0] == 0))\n"
@@ -384,7 +409,7 @@ std::function<void(xir::OpDef&)> FixedConvOpDefGenerator(
         "nonlinear", AttrDef::OPTIONAL,
         "`Datatype`: `string`\n\n"
         "nonlinear type, \"NONE\", \"RELU\", \"PRELU\", "
-        "\"LEAKYRELU\",\"RELU6\".",
+        "\"LEAKYRELU\",\"RELU6\",\"HSIGMOID\",\"HSWISH\".",
         "");
     op_def.add_input_arg(input)
         .add_input_arg(weights)
@@ -400,6 +425,47 @@ std::function<void(xir::OpDef&)> FixedConvOpDefGenerator(
 auto conv2d_fix =
     xir::OpDef("conv2d-fix")
         .inherit_from(FixedConvOpDefGenerator(xir::DataType::XINT))
+        .add_attr(xir::AttrDefBuilder<int>::build("hsigmoid_in",
+                                                  AttrDef::OPTIONAL,
+                                                  "`Datatype`: `int`\n\n"
+                                                  "fix_point of hsigmoid",
+                                                  -128))
+        .add_attr(xir::AttrDefBuilder<int>::build("shift_hsigmoid",
+                                                  AttrDef::OPTIONAL,
+                                                  "`Datatype`: `int`\n\n"
+                                                  "shift value after hsigmoid",
+                                                  -128))
+        .add_attr(xir::AttrDefBuilder<int>::build("shift_hswish",
+                                                  AttrDef::OPTIONAL,
+                                                  "`Datatype`: `int`\n\n"
+                                                  "shift value after hswish",
+                                                  -128))
+        .add_constraint([](xir::Op* op) {
+          if (op->has_attr("nonlinear")) {
+            if (op->get_attr<std::string>("nonlinear") == "HSIGMOID" ||
+                op->get_attr<std::string>("nonlinear") == "HSWISH") {
+              UNI_LOG_CHECK(op->get_attr<int>("hsigmoid_in") != -128 &&
+                                op->get_attr<int>("shift_hsigmoid") != -128,
+                            XIR_INVALID_ARG_OCCUR)
+                  << "the activation type of conv2d-fix is "
+                  << op->get_attr<std::string>("nonlinear")
+                  << " but you do not set the shift value for this operation.";
+              if (op->get_attr<std::string>("nonlinear") == "HSWISH")
+                UNI_LOG_CHECK(op->get_attr<int>("shift_hswish") != -128,
+                              XIR_INVALID_ARG_OCCUR)
+                    << "the activation type of conv2d-fix is "
+                    << op->get_attr<std::string>("nonlinear")
+                    << " but you do not set the shift_hswish for this "
+                       "operation.";
+              UNI_LOG_CHECK(
+                  op->has_attr("shift_bias") && op->has_attr("shift_cut"),
+                  XIR_INVALID_ARG_OCCUR)
+                  << "the activation type of conv2d-fix is "
+                  << op->get_attr<std::string>("nonlinear")
+                  << " you need to set shift_bias and shift_cut for it..";
+            }
+          }
+        })
         .set_shape_infer(xir::shape_infer_conv2d_fix);
 
 auto depthwise_conv2d_fix =
@@ -561,41 +627,49 @@ std::function<void(xir::OpDef&)> BroadcastOpDefGenerator(
   return [=](xir::OpDef& op_def) {
     auto input = xir::OpArgDef{"input", OpArgDef::REQUIRED_AND_REPEATED, T,
                                "The feature maps, can be x-dimension."};
-    op_def.add_input_arg(input).set_annotation(
-        "We support broadcasting operations:\n\n"
-        "    \"add\": input[0] + input[1]\n"
-        "    \"sub\": input[0] - input[1]\n"
-        "    \"mul\": input[0] * input[1]\n"
-        "    \"div\": input[0] / input[1]\n"
-        "    \"min\": min(input[0], input[1])\n"
-        "    \"max\": max(input[0], input[1])\n"
-        "What is broadcasting?\n\n"
-        "When operating on two arrays, we compare their shapes element-wise. \n"
-        "It starts with the trailing dimensions, and works its way forward.\n\n"
-        "Two dimensions are compatible when:\n\n"
-        "1. they are equal, or\n"
-        "2. one of them is 1\n"
-        "If these conditions are not met, a mismatch would be thrown, \n"
-        "indicating that the arrays have incompatible shapes. \n"
-        "The size of the resulting array is the maximum size \n"
-        "along each dimension of the input arrays.\n"
-        "For example,\n\n"
-        "(1). bias_add, which is a channel-wise operation:\n\n"
-        "    input[0] (4d tensor): 1 x 112 x 112 x 64\n"
-        "    input[1] (1d tensor):                 64\n"
-        "    result   (4d tensor): 1 x 112 x 112 x 64\n"
-        "(2). element-wise add, which is an element-wise operation:\n\n"
-        "    input[0] (3d tensor): 32 x 32 x 10\n"
-        "    input[1] (3d tensor): 32 x 32 x 10\n"
-        "    result   (3d tensor): 32 x 32 x 10\n"
-        "(3). more examples:\n\n"
-        "    input[0] (4d tensor): 1 x 32 x 32 x 10\n"
-        "    input[1] (3d tensor):     32 x  1 x  1\n"
-        "    result   (4d tensor): 1 x 32 x 32 x 10\n"
-        "(4). mismatched examples:\n\n"
-        "    input[0] (4d tensor): 1 x 32 x 32 x 10\n"
-        "    input[1] (3d tensor):      1 x 32 x  2\n"
-        "    result              :         mismatch\n");
+    op_def.add_input_arg(input)
+        .set_annotation(
+            "We support broadcasting operations:\n\n"
+            "    \"add\": input[0] + input[1]\n"
+            "    \"sub\": input[0] - input[1]\n"
+            "    \"mul\": input[0] * input[1]\n"
+            "    \"div\": input[0] / input[1]\n"
+            "    \"min\": min(input[0], input[1])\n"
+            "    \"max\": max(input[0], input[1])\n"
+            "What is broadcasting?\n\n"
+            "When operating on two arrays, we compare their shapes "
+            "element-wise. \n"
+            "It starts with the trailing dimensions, and works its way "
+            "forward.\n\n"
+            "Two dimensions are compatible when:\n\n"
+            "1. they are equal, or\n"
+            "2. one of them is 1\n"
+            "If these conditions are not met, a mismatch would be thrown, \n"
+            "indicating that the arrays have incompatible shapes. \n"
+            "The size of the resulting array is the maximum size \n"
+            "along each dimension of the input arrays.\n"
+            "For example,\n\n"
+            "(1). bias_add, which is a channel-wise operation:\n\n"
+            "    input[0] (4d tensor): 1 x 112 x 112 x 64\n"
+            "    input[1] (1d tensor):                 64\n"
+            "    result   (4d tensor): 1 x 112 x 112 x 64\n"
+            "(2). element-wise add, which is an element-wise operation:\n\n"
+            "    input[0] (3d tensor): 32 x 32 x 10\n"
+            "    input[1] (3d tensor): 32 x 32 x 10\n"
+            "    result   (3d tensor): 32 x 32 x 10\n"
+            "(3). more examples:\n\n"
+            "    input[0] (4d tensor): 1 x 32 x 32 x 10\n"
+            "    input[1] (3d tensor):     32 x  1 x  1\n"
+            "    result   (4d tensor): 1 x 32 x 32 x 10\n"
+            "(4). mismatched examples:\n\n"
+            "    input[0] (4d tensor): 1 x 32 x 32 x 10\n"
+            "    input[1] (3d tensor):      1 x 32 x  2\n"
+            "    result              :         mismatch\n")
+        .add_constraint([](xir::Op* op) {
+          UNI_LOG_CHECK(op->get_input_num() > 1, XIR_INVALID_ARG_OCCUR)
+              << op->to_string() << " only has " << op->get_input_num()
+              << " input arguments, but it requires at least 2 inputs.";
+        });
   };
 }
 
@@ -665,12 +739,61 @@ auto relu6 = xir::OpDef("relu6")
                      "    f(x) = min(max(x, 0), 6).\n")
                  .set_shape_infer(xir::shape_infer_relu6);
 
+auto elu = xir::OpDef("elu")
+               .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
+               .set_annotation(
+                   "Computes the elu function element-wise:\n\n"
+                   "    f(x) = x if x > 0.\n"
+                   "    f(x) = alpha * (exp(x) - 1) if x <= 0.\n")
+               .add_attr(xir::AttrDefBuilder<float>::build(
+                   "alpha", xir::AttrDef::OPTIONAL,
+                   "`Datatype`: `float`\n\n"
+                   "Slope of the activation function at x <= 0.",
+                   1))
+               .set_shape_infer(xir::shape_infer_elu);
+
+auto celu =
+    xir::OpDef("celu")
+        .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
+        .set_annotation(
+            "Computes the celu function element-wise:\n\n"
+            "    f(x) = max(0, x) + min(0, alpha * (exp(x / alpha) - 1)).\n")
+        .add_attr(xir::AttrDefBuilder<float>::build(
+            "alpha", xir::AttrDef::OPTIONAL,
+            "`Datatype`: `float`\n\n"
+            "Slope of the activation function.",
+            1))
+        .set_shape_infer(xir::shape_infer_celu);
+
+auto gelu = xir::OpDef("gelu")
+                .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
+                .set_annotation(
+                    "Computes the gelu function element-wise:\n\n"
+                    "    f(x) = x * 1 / 2 * (1 + erf(x / sqrt(2))).\n")
+                .set_shape_infer(xir::shape_infer_gelu);
+
+auto selu =
+    xir::OpDef("selu")
+        .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
+        .set_annotation(
+            "Computes the selu function element-wise:\n\n"
+            "    f(x) = scale * (max(0, x) + min(0, alpha * (exp(x) - 1))).\n"
+            "alpha and scale are constant value.\n")
+        .set_shape_infer(xir::shape_infer_selu);
+
 auto sigmoid = xir::OpDef("sigmoid")
                    .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
                    .set_annotation(
                        "Computes the sigmoid function element-wise:\n\n"
                        "    f(x) = 1 / (1 + exp(-x)).\n")
                    .set_shape_infer(xir::shape_infer_sigmoid);
+
+auto swish = xir::OpDef("swish")
+                 .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
+                 .set_annotation(
+                     "Computes the swish function element-wise:\n\n"
+                     "    f(x) = x * sigmoid(x).\n")
+                 .set_shape_infer(xir::shape_infer_swish);
 
 auto tanh = xir::OpDef("tanh")
                 .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
@@ -679,11 +802,52 @@ auto tanh = xir::OpDef("tanh")
                     "    f(x) = tanh(x).\n")
                 .set_shape_infer(xir::shape_infer_tanh);
 
+auto hard_sigmoid =
+    xir::OpDef("hard-sigmoid")
+        .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
+        .set_annotation(
+            "Computes the hard sigmoid function element-wise:\n\n"
+            "    f(x) = relu6(x + 3) / 6.\n")
+        .set_shape_infer(xir::shape_infer_hard_sigmoid);
+
+auto hard_sigmoid_fix =
+    xir::OpDef("hard-sigmoid-fix")
+        .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
+        .set_annotation(
+            "Computes the hard sigmoid function element-wise:\n\n"
+            "    f(x) = relu6(x + 3) * 2731 / 2 ^ 14.\n")
+        .set_shape_infer(xir::shape_infer_hard_sigmoid);
+
+auto hard_swish =
+    xir::OpDef("hard-swish")
+        .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
+        .set_annotation(
+            "Computes the hard swish function element-wise:\n\n"
+            "    f(x) = x * relu6(x + 3) / 6.\n")
+        .set_shape_infer(xir::shape_infer_hard_swish);
+
+auto hard_tanh =
+    xir::OpDef("hard-tanh")
+        .inherit_from(ActivationOpDefGenerator(xir::DataType::FLOAT))
+        .set_annotation(
+            "Computes the hard tanh function element-wise:\n\n"
+            "    f(x) = clip(x, -1, 1).\n")
+        .set_shape_infer(xir::shape_infer_hard_tanh);
+
 XIR_REGISTER_BUILT_IN_OP(relu);
 XIR_REGISTER_BUILT_IN_OP(leaky_relu);
 XIR_REGISTER_BUILT_IN_OP(relu6);
+XIR_REGISTER_BUILT_IN_OP(elu);
+XIR_REGISTER_BUILT_IN_OP(celu);
+XIR_REGISTER_BUILT_IN_OP(gelu);
+XIR_REGISTER_BUILT_IN_OP(selu);
 XIR_REGISTER_BUILT_IN_OP(sigmoid);
+XIR_REGISTER_BUILT_IN_OP(swish);
 XIR_REGISTER_BUILT_IN_OP(tanh);
+XIR_REGISTER_BUILT_IN_OP(hard_sigmoid);
+XIR_REGISTER_BUILT_IN_OP(hard_sigmoid_fix);
+XIR_REGISTER_BUILT_IN_OP(hard_swish);
+XIR_REGISTER_BUILT_IN_OP(hard_tanh);
 
 std::function<void(xir::OpDef&)> FixOpDefGenerator(xir::DataType::Type T) {
   return [=](xir::OpDef& op_def) {
@@ -731,7 +895,8 @@ auto fix =
         .set_annotation(
             "fix operator transforms float-point value into "
             "fixed-point value into float-point format.\n\n"
-            "(1). Firstly, we transform the float input feature map x into fixed value:\n\n"
+            "(1). Firstly, we transform the float input feature map x into "
+            "fixed value:\n\n"
             "    fixed_value = round(x * pow(2, fix_point))\n"
             "and then\n\n"
             "(2) transform the fixed value into float-point format:\n\n"
@@ -850,31 +1015,26 @@ XIR_REGISTER_BUILT_IN_OP(reduction_sum);
 XIR_REGISTER_BUILT_IN_OP(reduction_max);
 
 auto l2_normalize =
-  xir::OpDef("l2_normalize")
-    .add_input_arg(
-      xir::OpArgDef{
-        "input",
-        OpArgDef::REQUIRED,
-        xir::DataType::FLOAT,
-        "The feature maps, can be x-dimension."})
-    .add_attr(
-      xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
-        "axis", AttrDef::OPTIONAL, 0,
-        "`Datatype`: `vector<int>`\n\n"
-        "Dimension along which to normalize.",
-        {}))
-    .add_attr(
-      xir::AttrDefBuilder<double>::build(
-        "epsilon", AttrDef::OPTIONAL,
-        "`Datatype`: `double`\n\n"
-        "A lower bound value for the norm.",
-        0.000000000001))
-    .set_annotation(
-      "For a 1-D tensor with `axis = 0`, computes\n\n"
-      "    output = x / sqrt(max(sum(x ^ 2), epsilon))\n"
-      "For x with more dimensions,\n"
-      "independently normalizes each 1-D slice along dimension axis.\n")
-    .set_shape_infer(xir::shape_infer_l2_normalize);
+    xir::OpDef("l2_normalize")
+        .add_input_arg(xir::OpArgDef{"input", OpArgDef::REQUIRED,
+                                     xir::DataType::FLOAT,
+                                     "The feature maps, can be x-dimension."})
+        .add_attr(xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+            "axis", AttrDef::OPTIONAL, 0,
+            "`Datatype`: `vector<int>`\n\n"
+            "Dimension along which to normalize.",
+            {}))
+        .add_attr(xir::AttrDefBuilder<double>::build(
+            "epsilon", AttrDef::OPTIONAL,
+            "`Datatype`: `double`\n\n"
+            "A lower bound value for the norm.",
+            0.000000000001))
+        .set_annotation(
+            "For a 1-D tensor with `axis = 0`, computes\n\n"
+            "    output = x / sqrt(max(sum(x ^ 2), epsilon))\n"
+            "For x with more dimensions,\n"
+            "independently normalizes each 1-D slice along dimension axis.\n")
+        .set_shape_infer(xir::shape_infer_l2_normalize);
 
 XIR_REGISTER_BUILT_IN_OP(l2_normalize);
 
@@ -888,20 +1048,19 @@ std::function<void(xir::OpDef&)> InterfaceOpDefGenerator(
 }
 
 auto identity =
-  xir::OpDef("identity")
-    .inherit_from(InterfaceOpDefGenerator(xir::DataType::XINT))
-    .set_annotation(
-      "An interface operator that holds the data. Do nothing here.")
-    .set_shape_infer(xir::shape_infer_identity);
+    xir::OpDef("identity")
+        .inherit_from(InterfaceOpDefGenerator(xir::DataType::XINT))
+        .set_annotation(
+            "An interface operator that holds the data. Do nothing here.")
+        .set_shape_infer(xir::shape_infer_identity);
 
-auto upload =
-  xir::OpDef("upload")
-    .inherit_from(InterfaceOpDefGenerator(xir::DataType::FLOAT))
-    .set_annotation(
-      "An interface operator that holds the data achieved by a "
-      "CPU-runner, "
-      "and would be sent to a DPU-runner later.")
-    .set_shape_infer(xir::shape_infer_upload);
+auto upload = xir::OpDef("upload")
+                  .inherit_from(InterfaceOpDefGenerator(xir::DataType::FLOAT))
+                  .set_annotation(
+                      "An interface operator that holds the data achieved by a "
+                      "CPU-runner, "
+                      "and would be sent to a DPU-runner later.")
+                  .set_shape_infer(xir::shape_infer_upload);
 
 auto download =
     xir::OpDef("download")
@@ -912,9 +1071,17 @@ auto download =
             "and would be sent to a CPU-runner later.")
         .set_shape_infer(xir::shape_infer_download);
 
+auto placeholder =
+    xir::OpDef("placeholder")
+        .inherit_from(InterfaceOpDefGenerator(xir::DataType::FLOAT))
+        .set_annotation(
+            "An interface operator that holds the data. Do nothing here.")
+        .set_shape_infer(xir::shape_infer_placeholder);
+
 XIR_REGISTER_BUILT_IN_OP(identity);
 XIR_REGISTER_BUILT_IN_OP(upload);
 XIR_REGISTER_BUILT_IN_OP(download);
+XIR_REGISTER_BUILT_IN_OP(placeholder);
 
 auto shape = xir::OpDef("shape")
                  .add_input_arg(xir::OpArgDef{
@@ -926,30 +1093,23 @@ auto shape = xir::OpDef("shape")
 XIR_REGISTER_BUILT_IN_OP(shape);
 
 auto reshape =
-  xir::OpDef("reshape")
-    .add_input_arg(
-      xir::OpArgDef{
-        "input",
-        OpArgDef::REQUIRED,
-        xir::DataType::FLOAT,
-        "The feature maps, can be x-dimension."})
-    .add_input_arg(
-      xir::OpArgDef{
-        "shape",
-        OpArgDef::OPTIONAL,
-        xir::DataType::INT,
-        "Constant values that define the shape of the output."})
-    .add_attr(
-      xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
-        "shape", AttrDef::OPTIONAL, 0,
-        "`Datatype`: `vector<int>`\n\n"
-        "Constant values that define the shape of the output.",
-        {0}))
-    .set_annotation(
-      "Reshape the feature maps or constant data into new shape without "
-      "changing "
-      "the layout of data in memory.")
-    .set_shape_infer(xir::shape_infer_reshape);
+    xir::OpDef("reshape")
+        .add_input_arg(xir::OpArgDef{"input", OpArgDef::REQUIRED,
+                                     xir::DataType::FLOAT,
+                                     "The feature maps, can be x-dimension."})
+        .add_input_arg(xir::OpArgDef{
+            "shape", OpArgDef::OPTIONAL, xir::DataType::INT,
+            "Constant values that define the shape of the output."})
+        .add_attr(xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+            "shape", AttrDef::OPTIONAL, 0,
+            "`Datatype`: `vector<int>`\n\n"
+            "Constant values that define the shape of the output.",
+            {0}))
+        .set_annotation(
+            "Reshape the feature maps or constant data into new shape without "
+            "changing "
+            "the layout of data in memory.")
+        .set_shape_infer(xir::shape_infer_reshape);
 
 XIR_REGISTER_BUILT_IN_OP(reshape);
 
@@ -1494,15 +1654,36 @@ auto eltwise_fix =
         .add_input_arg(xir::OpArgDef{
             "input", OpArgDef::REQUIRED_AND_REPEATED, xir::DataType::XINT,
             "The feature maps, can be x-dimension. "
-            "eltwise-fix operator implements element-wise add."})
+            "eltwise-fix operator implements element-wise operations."})
         .add_attr(xir::AttrDefBuilder<std::string>::build(
-            "nonlinear", AttrDef::REQUIRED,
+            "nonlinear", AttrDef::OPTIONAL,
             "`Datatype`: `string`\n\n"
             "nonlinear type, \"NONE\", \"RELU\", \"PRELU\", "
-            "\"LEAKYRELU\",\"RELU6\"."))
+            "\"LEAKYRELU\",\"RELU6\". Default is \"NONE\"",
+            "NONE"))
+        .add_attr(xir::AttrDefBuilder<std::string>::build(
+            "type", AttrDef::OPTIONAL,
+            "`Datatype`: `string`\n\n"
+            "eltwise type, \"ADD\", \"MUL\". Default is \"ADD\"",
+            "ADD"))
         .set_shape_infer(xir::shape_infer_eltwise_fix);
 
 XIR_REGISTER_BUILT_IN_OP(eltwise_fix);
+
+auto depthwise_fix =
+    xir::OpDef("depthwise-fix")
+        .add_input_arg(xir::OpArgDef{
+            "input", OpArgDef::REQUIRED_AND_REPEATED, xir::DataType::XINT,
+            "The feature maps, can be x-dimension. "
+            "depthwise-fix operator implements channel-wise operations."})
+        .add_attr(xir::AttrDefBuilder<std::string>::build(
+            "type", AttrDef::OPTIONAL,
+            "`Datatype`: `string`\n\n"
+            "depthwise type, \"ADD\", \"MUL\". Default is \"ADD\"",
+            "MUL"))
+        .set_shape_infer(xir::shape_infer_depthwise_fix);
+
+XIR_REGISTER_BUILT_IN_OP(depthwise_fix);
 
 auto exp = xir::OpDef("exp")
                .add_input_arg(xir::OpArgDef{
@@ -1528,18 +1709,23 @@ XIR_REGISTER_BUILT_IN_OP(neg);
 
 auto scale =
     xir::OpDef("scale")
-        .add_input_arg(
-            xir::OpArgDef{"input", OpArgDef::REQUIRED, xir::DataType::FLOAT,
-                          "`[batch, in_height, in_width, in_channels]`."})
+        .add_input_arg(xir::OpArgDef{"input", OpArgDef::REQUIRED,
+                                     xir::DataType::FLOAT,
+                                     "The feature maps, can be x-dimension."})
         .add_input_arg(xir::OpArgDef{"scale", OpArgDef::REQUIRED,
                                      xir::DataType::FLOAT,
                                      "1-dimension, channel-wise."})
         .add_input_arg(xir::OpArgDef{"bias", OpArgDef::OPTIONAL,
                                      xir::DataType::FLOAT,
                                      "1-dimension, channel-wise."})
+        .add_attr(xir::AttrDefBuilder<int>::build(
+            "axis", AttrDef::OPTIONAL,
+            "`Datatype`: `int`\n\n"
+            "the axis of the input to implement scale",
+            -1))
         .set_annotation(
             "This function computes the channel-wise dot product and adds the "
-            "bias.\n\n"
+            "bias. For example, axis = -1:\n\n"
             "    output[b, h, w, c] = input[b, h, w, c] * scale[c] + bias[c]\n")
         .set_shape_infer(xir::shape_infer_scale);
 XIR_REGISTER_BUILT_IN_OP(scale);

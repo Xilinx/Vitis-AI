@@ -110,14 +110,17 @@ class deephi_Linear(torch.nn.modules.linear.Linear):
         if noise > 0:
           eff = 1.25 * res_f.pow(2).mean().div(noise).log10().detach().cpu().numpy()
           dev = math.fabs(eff - self.efficency)
-          self.efficency = (self.efficency * 4 + eff) * 0.2
-          self.deviation = (self.deviation * 4 + dev) * 0.2
-          #print(self.node.name, self.efficency, self.deviation)
-          if self.efficency > 4.0:
-            rate = rate * 0.5
-          if (self.efficency > 4.3 or
-              (self.deviation / self.efficency) < 0.05 or
-              math.fabs(dev - self.deviation / dev) < 0.05):
+          if dev > 0:
+            self.efficency = (self.efficency * 4 + eff) * 0.2
+            self.deviation = (self.deviation * 4 + dev) * 0.2
+            #print(self.node.name, self.efficency, self.deviation)
+            if self.efficency > 4.0:
+              rate = rate * 0.5
+            if (self.efficency > 4.3 or
+                (self.deviation / self.efficency) < 0.05 or
+                math.fabs(dev - self.deviation / dev) < 0.05):
+              self.stop = True
+          else:
             self.stop = True
         else:
           self.stop = True

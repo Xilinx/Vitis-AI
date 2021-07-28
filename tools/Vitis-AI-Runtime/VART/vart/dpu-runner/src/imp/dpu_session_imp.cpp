@@ -27,12 +27,12 @@
 #include "./dpu_kernel_hbm.hpp"
 #include "./dpu_runner_ddr.hpp"
 #include "./dpu_runner_hbm.hpp"
-#include "vart/tensor_buffer_allocator.hpp"
+#include "vart/assistant/tensor_buffer_allocator.hpp"
 
 DEF_ENV_PARAM(DEBUG_DPU_RUNNER, "0");
 DEF_ENV_PARAM_2(XLNX_DDR_OR_HBM, "", std::vector<std::string>);
 
-#if CROSSCOMPILING
+#if IS_EDGE
 DEF_ENV_PARAM(XLNX_TENSOR_BUFFER_LOCATION, "1" /* HOST_PHY */);
 #else
 DEF_ENV_PARAM(XLNX_TENSOR_BUFFER_LOCATION, "2" /* DEVICE */);
@@ -200,7 +200,7 @@ DpuSessionImp::init_tensor_buffer(std::vector<my_tensor_t>& my_tensors) {
       xir_tensors.emplace_back(const_cast<xir::Tensor*>(tensor));
     }
   }
-  auto allocator = vart::TensorBufferAllocator::create(attrs_);
+  auto allocator = vart::assistant::TensorBufferAllocator::create(attrs_);
   return allocator->allocate(kernel_->get_subgraph(), xir_tensors, {}).first;
 }
 

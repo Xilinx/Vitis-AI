@@ -14,13 +14,12 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.5)
-project(target-factory VERSION 1.3.0 LANGUAGES C CXX)
+project(target-factory VERSION 1.4.0 LANGUAGES C CXX)
 
 include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(BUILD_TEST "build test" OFF)
 
-find_package(glog REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(unilog REQUIRED)
 
@@ -89,5 +88,8 @@ if(DEFINED ENV{BUILD_NUMBER})
   set(CPACK_RPM_PACKAGE_RELEASE "r$ENV{BUILD_NUMBER}")
 endif()
 set(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "cortexa72-cortexa53")
+    set(CPACK_RPM_PACKAGE_ARCHITECTURE "aarch64")
+endif()
 
 include(CPack)

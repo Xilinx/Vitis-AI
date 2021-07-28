@@ -39,8 +39,8 @@ namespace ai {
 
 class ReidTracker {
  public:
-  /// InputCharact: bbox, score, label, local_id
-  typedef std::tuple<cv::Rect_<float>, float, int, int> InputCharact;
+  /// InputCharact: feat, bbox, score, label, local_id
+  typedef std::tuple<cv::Mat, cv::Rect_<float>, float, int, int> InputCharact;
   /// OutputCharact: gid, bbox, score, label, local_id
   typedef std::tuple<uint64_t, cv::Rect_<float>, float, int, int> OutputCharact;
   typedef std::tuple<std::array<int, 4>, std::array<int, 3>> SpecifiedCfg;
@@ -104,9 +104,8 @@ class ReidTracker {
    * patched by ReidTracker.
    */
   virtual std::vector<OutputCharact> track(
-      const cv::Mat &image, const uint64_t frame_id,
-      std::vector<InputCharact> &input_characts, const bool is_detection,
-      const bool is_normalized) = 0;
+      const uint64_t frame_id, std::vector<InputCharact> &input_characts,
+      const bool is_detection, const bool is_normalized) = 0;
 
   /**
    * @brief Function : only use in MODE_MULTIDETS mode.

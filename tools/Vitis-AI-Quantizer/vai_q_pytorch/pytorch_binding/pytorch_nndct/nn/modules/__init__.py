@@ -20,4 +20,7 @@ from .module_template import *
 from .relu import *
 from .quant_stubs import *
 from .reluk import *
+from .channel_scale import *
 from .function import *
+from .hardsigmoid import *
+from .hardswish import *

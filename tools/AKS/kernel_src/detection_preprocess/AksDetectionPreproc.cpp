@@ -19,28 +19,29 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <aks/AksBatchTensorBuffer.h>
+#include <aks/AksTensorBuffer.h>
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
 
 class DetectionPreproc : public AKS::KernelBase
 {
   public:
     int exec_async (
-        std::vector<AKS::DataDescriptor*> &in,
-        std::vector<AKS::DataDescriptor*> &out,
+        std::vector<vart::TensorBuffer*> &in,
+        std::vector<vart::TensorBuffer*> &out,
         AKS::NodeParams* nodeParams,
         AKS::DynamicParamValues* dynParams);
 };
 
-extern "C" { /// Add this to make this available for python bindings
+extern "C" {
 
   AKS::KernelBase* getKernel (AKS::NodeParams *params)
   {
     return new DetectionPreproc();
   }
 
-}//externC
+}//extern "C"
 
 void embedImage(cv::Mat& source, cv::Mat& dest, int dx, int dy)
 {
@@ -93,64 +94,67 @@ void letterBoxImage(cv::Mat &inImage, int resizeH, int resizeW, cv::Mat& outImag
   /// Fill output image with 0.5 (for letterbox)
   outImage.setTo(cv::Scalar(0.5f, 0.5f, 0.5f));
   embedImage(scaledImage, outImage, (resizeW-new_w)/2, (resizeH-new_h)/2);
-
-#if DUMP_DATA
-  float * tmp = (float*)outImage.data;
-  FILE * fp1 = fopen ("letterbox-out.txt", "w");
-  for (int h = 0; h < outImage.rows * outImage.cols * outImage.channels(); h++)
-    fprintf (fp1, "%f\n", tmp[h]);
-  fclose(fp1);
-#endif
 }
 
-
 int DetectionPreproc::exec_async (
-    std::vector<AKS::DataDescriptor*> &in,
-    std::vector<AKS::DataDescriptor*> &out,
+    std::vector<vart::TensorBuffer*> &in,
+    std::vector<vart::TensorBuffer*> &out,
     AKS::NodeParams* nodeParams,
     AKS::DynamicParamValues* dynParams)
 {
-  /// Get input and output data shapes
-  /// Input could be batch array or batch of images
-  const std::vector<int>& inShape = in[0]->getShape();
-  int batchSize = inShape[0];
+  std::vector<uint8_t*> buffers;
+  std::vector<const xir::Tensor*> tensors;
+  int batchSize = 1;
+  if(auto* tb = dynamic_cast<AKS::AksBatchTensorBuffer*>(in[0])) {
+    tensors = tb->get_tensors();
+    batchSize = tensors.size();
+    for(int b = 0; b < batchSize; ++b) {
+      buffers.push_back(reinterpret_cast<uint8_t*>(tb->data({b}).first));
+    }
+  } else {
+    const auto* tensor = in[0]->get_tensor();
+    batchSize = tensor->get_shape()[0];
+    for(int b = 0; b < batchSize; ++b) {
+      tensors.push_back(tensor);
+      buffers.push_back(reinterpret_cast<uint8_t*>(in[0]->data({b}).first));
+    }
+  }
 
   /// Get output Dimensions (Network input dim)
   int outHeight    = nodeParams->_intParams["net_h"];
   int outWidth     = nodeParams->_intParams["net_w"];
-  int outChannels  = 3;
+  int outChannels  = nodeParams->_intParams["net_c"];
   int nOutElemsPerImg = outChannels * outHeight * outWidth;
+  string outputLayout = nodeParams->hasKey<string>("output_layout") ?
+                        nodeParams->getValue<string>("output_layout"): "NCHW";
 
   /// Create output data buffer
-  std::vector<int> shape      = { batchSize, outChannels, outHeight, outWidth };
-  AKS::DataDescriptor * outDD = new AKS::DataDescriptor(shape, AKS::DataType::FLOAT32);
-  float * outData = (float*) outDD->data();
+  auto shape = (outputLayout == "NCHW") ?
+    std::vector<int>{ batchSize, outChannels, outHeight, outWidth }:
+    std::vector<int>{ batchSize, outHeight, outWidth, outChannels };
+
+  std::string tensorName ("det-pre-output");
+  AKS::AksTensorBuffer * outTB = new AKS::AksTensorBuffer(
+                                   xir::Tensor::create(
+                                     tensorName, shape,
+                                     xir::create_data_type<float>()
+                                 ));
+  float * outData = reinterpret_cast<float*>(outTB->data().first);
 
   /// Get input dims incase batch array
   std::vector<int> imgDims; imgDims.reserve(3*batchSize);
-  int inChannel = 3;
+  int inChannel = outChannels;
   int inHeight  = 0;
   int inWidth   = 0;
   const uint8_t* inData = nullptr;
-  for(ssize_t b=0; b<batchSize; ++b) {
-    if(in[0]->dtype() == AKS::DataType::AKSDD) {
-      const auto& dd = in[0]->data<AKS::DataDescriptor>()[b];
-      inData   = dd.const_data<uint8_t>();
-      // Shape = (Batch=1, H, W, C=3)
-      inHeight = dd.getShape()[1];
-      inWidth  = dd.getShape()[2];
-    }
-    else {
-      inHeight = inShape[1];
-      inWidth  = inShape[2];
-      int nInElemsPerImg  = b * inChannel * inHeight * inWidth;
-      inData   = in[0]->const_data<uint8_t>() + nInElemsPerImg;
-    }
+  for (int b = 0; b < batchSize; ++b) {
+    inData   = buffers[b];
+    inHeight = tensors[b]->get_shape()[1];
+    inWidth  = tensors[b]->get_shape()[2];
 
+    auto imgPtr = (void*)const_cast<uint8_t*>(inData);
     /// Create a cv::Mat with input data
-    /// TODO : cv::Mat doesn't have a constructor that accepts const_pointer
-    /// So using \const_cast\ to avoid copy.
-    cv::Mat inImage(inHeight, inWidth, CV_8UC3, (void*)const_cast<uint8_t*>(inData));
+    cv::Mat inImage(inHeight, inWidth, CV_8UC3, imgPtr);
 
     /// Resize the image to Network Shape (LetterBox)
     cv::Mat outImage = cv::Mat(outHeight, outWidth, CV_32FC3);
@@ -159,22 +163,26 @@ int DetectionPreproc::exec_async (
 
     /// Transpose: HWC-->CHW
     float* out = outData + b * nOutElemsPerImg;
-    for (int c = 0; c < 3; c++) {
+    if (outputLayout == "NCHW") {
+      for (int c = 0; c < outChannels; c++) {
+        for (int h = 0; h < outHeight; h++) {
+          for (int w = 0; w < outWidth; w++) {
+            out[(c*outHeight*outWidth) + (h*outWidth) + w]
+              = outImage.at<cv::Vec3f>(h,w)[c];
+          }
+        }
+      }
+    } else if (outputLayout == "NHWC") {
       for (int h = 0; h < outHeight; h++) {
         for (int w = 0; w < outWidth; w++) {
-          out[ (c*outHeight*outWidth)
-            + (h*outWidth) + w]
-            = outImage.at<cv::Vec3f>(h,w)[c];
+          for (int c = 0; c < outChannels; c++) {
+            out[(h*outWidth*outChannels) + (w*outChannels) + c]
+              = outImage.at<cv::Vec3f>(h,w)[c];
+          }
         }
       }
     }
 
-#if DUMP_DATA
-    FILE * fp = fopen ("preprocess-out.txt", "w");
-    for (int h = 0; h < outImage.rows * outImage.cols * outImage.channels(); h++)
-      fprintf (fp, "%f\n", outData[h]);
-    fclose(fp);
-#endif
     imgDims.insert(imgDims.end(), {inChannel, inHeight, inWidth});
   }
 
@@ -182,6 +190,6 @@ int DetectionPreproc::exec_async (
   dynParams->_intVectorParams["img_dims"] = std::move(imgDims);
 
   /// Push back output
-  out.push_back(outDD);
+  out.push_back(outTB);
   return 0;
 }

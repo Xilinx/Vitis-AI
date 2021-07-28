@@ -60,7 +60,7 @@ class BaseQuantizer():
                quant_strategy.num_bits_a,
                quant_strategy.mix_bit)
   
-  def setup(self, nndct_graph, rnn_front_end=False, lstm=False, mix_bit=False):
+  def setup(self, nndct_graph, rnn_front_end=False, lstm=False, mix_bit=False, custom_quant_ops=None):
 
     self.Nndctgraph = nndct_graph
     self.rnn_front_end = rnn_front_end
@@ -70,12 +70,16 @@ class BaseQuantizer():
     # further setup
     if self.quant_mode > 0:
       model_type = self.get_model_type()
+      if NndctOption.nndct_stat.value > 1:
+        print('nndct graph:')
+        print(self.Nndctgraph)
       self._configer = QuantInfoMgr(self.Nndctgraph, 
                                     model_type,
                                     self.bitwidth_w, 
                                     self.bitwidth_a, 
                                     self.lstm,
-                                    self.mix_bit)
+                                    self.mix_bit,
+                                    custom_quant_ops=custom_quant_ops)
       self._QuantInfo = self._configer.quant_info
       self.quant_opt = {
           'range': 2,

@@ -23,7 +23,6 @@ from nndct_shared.base import NNDCT_KEYS, GLOBAL_MAP, NNDCT_DEBUG_LVL, NNDCT_OP
 from nndct_shared.algorithms import breadth_first_search_handler
 from nndct_shared.nndct_graph import NndctGraphHolder, Tensor
 from nndct_shared import utils as nndct_utils
-from .commander import QuantConfigerCommander
 from .quant_ops import normal_quant_neuron
 
 def quantize_data2int(data, bn, fp, method=2):
@@ -82,11 +81,11 @@ def process_inputs_and_params(node,
   if quantizer.need_quantize_tensor(node.name, 'input'):
     for idx in range(len(inputs)):
       if quant_mode in [1, 3]:
-        quantizer.do_scan(
-            inputs[idx],
-            node.name,
-            node,
-            tensor_type='input')
+        inputs[idx] = quantizer.do_scan(
+                        inputs[idx],
+                        node.name,
+                        node,
+                        tensor_type='input')
       elif quant_mode == 2:
         inputs[idx] = quantizer.do_quantize(
             inputs[idx], node.name, node, tensor_type='input')
@@ -156,6 +155,24 @@ def quant_reluk_params(node, channel_max):
         channel_max, output_name, node, tensor_type='output')
 
   return channel_max
+
+def quant_channel_scale_params(node, channel_scale):
+  quant_mode, quantizer = maybe_get_quantizer()
+  # ignore parameters quantization if the node is not to be quantized
+  #print('---- quant o: {}, in quant part:{}'.format(node.name, node.in_quant_part))
+  if not node.in_quant_part or quantizer is None:
+    return channel_scale
+
+  if quantizer.need_quantize_tensor(node.name, 'output'):
+    #print('---- quant o: {}'.format(node.name))
+    output_name = node.name
+    #print('qmode = %d, q_end: %d activation: %s' %
+    #         (quant_mode, is_quant_end, output_name))
+    if quant_mode == 2:
+      channel_scale = quantizer.do_quantize(
+        channel_scale, output_name, node, tensor_type='output')
+
+  return channel_scale
 
 class QuantizeData(object):
   def __init__(self, name, data):

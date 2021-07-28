@@ -15,7 +15,7 @@
 #
 set (CMAKE_CXX_STANDARD 14)
 set (CMAKE_C_STANDARD 99)
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -ggdb -O0 -fno-inline")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -ggdb -O0 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -fno-inline")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -Wall -Werror")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14 -Wall -Werror -march=skylake-avx512")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14 -Wall -Werror")
@@ -31,6 +31,21 @@ endif()
 
 include(CMakePackageConfigHelpers)
 
-if(NOT CMAKE_CROSSCOMPILING)
+if(NOT IS_EDGE)
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH True)
 endif()
+
+##
+if(CMAKE_CROSSCOMPILING)
+  set(_IS_EDGE_DEFULAT_VALUE ON)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64.*|AARCH64.*|arm64.*|ARM64.*)")
+  set(_IS_EDGE_DEFULAT_VALUE ON)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm.*|ARM.*)")
+  set(_IS_EDGE_DEFULAT_VALUE ON)
+elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  set(_IS_EDGE_DEFULAT_VALUE OFF)
+else()
+  set(_IS_EDGE_DEFULAT_VALUE OFF)
+endif(CMAKE_CROSSCOMPILING)
+option(IS_EDGE "ENABLE building for edge platform" ${_IS_EDGE_DEFULAT_VALUE})
+message(STATUS "building for edge ${IS_EDGE}")

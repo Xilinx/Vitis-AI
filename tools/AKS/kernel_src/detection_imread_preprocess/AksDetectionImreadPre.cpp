@@ -20,28 +20,28 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <aks/AksTensorBuffer.h>
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
 
 class DetectionImreadPre : public AKS::KernelBase
 {
   public:
     int exec_async (
-        std::vector<AKS::DataDescriptor*> &in, 
-        std::vector<AKS::DataDescriptor*> &out, 
+        std::vector<vart::TensorBuffer*> &in, 
+        std::vector<vart::TensorBuffer*> &out, 
         AKS::NodeParams* nodeParams,
         AKS::DynamicParamValues* dynParams);
 };
 
-extern "C" { /// Add this to make this available for python bindings
+extern "C" {
 
   AKS::KernelBase* getKernel (AKS::NodeParams *params)
   {
     return new DetectionImreadPre();
   }
 
-}//externC
+}//extern C
 
 void embedImage(cv::Mat& source, cv::Mat& dest, int dx, int dy)
 {
@@ -94,21 +94,12 @@ void letterBoxImage(cv::Mat &inImage, int resizeH, int resizeW, cv::Mat& outImag
   /// Fill output image with 0.5 (for letterbox)
   outImage.setTo(cv::Scalar(0.5f, 0.5f, 0.5f));
   embedImage(scaledImage, outImage, (resizeW-new_w)/2, (resizeH-new_h)/2);
-
-#if DUMP_DATA
-  float * tmp = (float*)outImage.data;
-  FILE * fp1 = fopen ("letterbox-out.txt", "w");
-  for (int h = 0; h < outImage.rows * outImage.cols * outImage.channels(); h++)
-    fprintf (fp1, "%f\n", tmp[h]);
-  fclose(fp1);
-#endif
-
 }
 
 
 int DetectionImreadPre::exec_async (
-    std::vector<AKS::DataDescriptor*> &in,
-    std::vector<AKS::DataDescriptor*> &out,
+    std::vector<vart::TensorBuffer*> &in,
+    std::vector<vart::TensorBuffer*> &out,
     AKS::NodeParams* nodeParams,
     AKS::DynamicParamValues* dynParams)
 {
@@ -119,17 +110,29 @@ int DetectionImreadPre::exec_async (
   int batchSize = dynParams->imagePaths.size();
   int nelemsPerImg = outChannels * outHeight * outWidth;
 
-  /// Create output data buffer
-  std::vector<int> shape = { batchSize, outChannels, outHeight, outWidth };
-  AKS::DataDescriptor * outDD = new AKS::DataDescriptor(shape, AKS::DataType::FLOAT32);
-  float * outData = (float*) outDD->data();
+  std::string outputLayout = nodeParams->hasKey<string>("output_layout") ?
+                             nodeParams->getValue<string>("output_layout"):
+                             "NCHW";
 
-  //std::cout << "[DBG] DetectionImreadPre: running now ... " << std::endl ;
+  /// Create output data buffer
+  auto shape = (outputLayout == "NCHW") ?
+    std::vector<int>{ batchSize, 3, outHeight, outWidth }:
+    std::vector<int>{ batchSize, outHeight, outWidth, 3 };
+
+  std::string tensorName ("det-im-pre-out");
+  AKS::AksTensorBuffer * outTB = new AKS::AksTensorBuffer(
+                                   xir::Tensor::create(
+                                     tensorName, shape,
+                                     xir::create_data_type<float>()
+                                 ));
+  float * outData = reinterpret_cast<float*>(outTB->data().first);
+
   std::vector<int> imgDims; imgDims.reserve(3*batchSize);
-  for(int i=0; i < batchSize; ++i) {
+  for(int i = 0; i < batchSize; ++i) {
     cv::Mat inImage = cv::imread(dynParams->imagePaths[i]);
     if (!inImage.data) {
-      std::cerr << "[ERR] Unable to read image: " << dynParams->imagePaths[0] << std::endl;
+      std::cerr << "[ERR] Unable to read image: " 
+                << dynParams->imagePaths[0] << std::endl;
       return -2;
     }
 
@@ -144,32 +147,34 @@ int DetectionImreadPre::exec_async (
     letterBoxImage(inImage, outHeight, outWidth, outImage);
 
     /// Transpose: HWC-->CHW
-    cv::Mat tmpImg = cv::Mat(outHeight, outWidth, CV_32FC3);
-
     float* batchData = outData + i * nelemsPerImg;
-    for (int c = 0; c < 3; c++) {
+    if (outputLayout == "NCHW") {
+      for (int c = 0; c < 3; c++) {
+        for (int h = 0; h < outHeight; h++) {
+          for (int w = 0; w < outWidth; w++) {
+            batchData[(c*outHeight*outWidth) + (h*outWidth) + w]
+              = outImage.at<cv::Vec3f>(h,w)[c];
+          }
+        }
+      }
+    } else if (outputLayout == "NHWC") {
       for (int h = 0; h < outHeight; h++) {
         for (int w = 0; w < outWidth; w++) {
-          batchData[ (c*outHeight*outWidth)
-            + (h*outWidth) + w]
-            = outImage.at<cv::Vec3f>(h,w)[c];
+          for (int c = 0; c < 3; c++) {
+            batchData[(h*outWidth*3) + (w*3) + c]
+              = outImage.at<cv::Vec3f>(h,w)[c];
+          }
         }
       }
     }
+
     imgDims.insert(imgDims.end(), {inChannel, inHeight, inWidth});
   }
 
   /// Write back image shape to dynParams for PostProc
   dynParams->_intVectorParams["img_dims"] = std::move(imgDims);
 
-#if DUMP_DATA
-  FILE * fp = fopen ("preprocess-out.txt", "w");
-  for (int h = 0; h < outImage.rows * outImage.cols * outImage.channels(); h++)
-    fprintf (fp, "%f\n", outData[h]);
-  fclose(fp);
-#endif
-
   /// Push back output
-  out.push_back(outDD);
+  out.push_back(outTB);
   return 0;
 }

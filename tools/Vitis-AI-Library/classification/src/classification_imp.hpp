@@ -15,14 +15,13 @@
  */
 
 #pragma once
-#include <vitis/ai/configurable_dpu_task.hpp>
 
 #include "vitis/ai/classification.hpp"
 
 namespace vitis {
 namespace ai {
 
-class ClassificationImp : public TConfigurableDpuTask<Classification> {
+class ClassificationImp : public Classification {
  public:
   ClassificationImp(const std::string& model_name, bool need_preprocess = true);
   virtual ~ClassificationImp();
@@ -31,6 +30,8 @@ class ClassificationImp : public TConfigurableDpuTask<Classification> {
   virtual ClassificationResult run(const cv::Mat& image) override;
   virtual std::vector<ClassificationResult> run(
       const std::vector<cv::Mat>& images) override;
+  virtual std::vector<ClassificationResult> run(
+      const std::vector<vart::xrt_bo_t>& input_bos) override;
 
  private:
   int preprocess_type;

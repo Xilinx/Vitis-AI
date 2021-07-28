@@ -1,0 +1,31 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+compile:
+  sh build.sh
+  or
+  sh builddrm.sh(board only)
+
+copy current lib to /usr/lib:  
+  cp lib/* /usr/lib/
+
+multitaskv3, running on board ZCU102. 
+  1. This sample include 1 way multitask with 4 windows
+     It's neccesary to follow the instruction to run this sample
+     drm mode: ./multitaskv3_quad_windows_drm d58cbda2-97976be7__640x360.avi  -t 4  > /dev/null 2>&1
+     X mode:   ./multitaskv3_quad_windows_x d58cbda2-97976be7__640x360.avi -t 4 > /dev/null 2>&1
+
+  
+

@@ -120,8 +120,8 @@ void SSDdetector::Detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
       VehicleResult res;
       res.label = label;
       res.score = score;
-      res.x = bbox[0];
-      res.y = bbox[1];
+      res.x = bbox[0] - 0.5f * bbox[2];
+      res.y = bbox[1] - 0.5f * bbox[3];
       res.width = bbox[2];
       res.height = bbox[3];
       res.angle = atan2(bbox[5], bbox[4]) * 180.0 / 3.1415926;
@@ -313,8 +313,11 @@ void SSDdetector::DecodeBBox(const int8_t* bbox_ptr, int idx, float scale,
   bbox[2] = std::max(std::min(bbox[2], 1.f), 0.f);
   bbox[3] = std::max(std::min(bbox[3], 1.f), 0.f);
 
-  bbox[2] -= bbox[0];
-  bbox[3] -= bbox[1];
+  bbox[0] = 0.5f * (bbox[0] + bbox[2]);
+  bbox[1] = 0.5f * (bbox[1] + bbox[3]);
+
+  bbox[2] = (bbox[2] - bbox[0]) * 2.0f;
+  bbox[3] = (bbox[3] - bbox[1]) * 2.0f;
 
   decoded_bboxes_.emplace(idx, std::move(bbox));
 }

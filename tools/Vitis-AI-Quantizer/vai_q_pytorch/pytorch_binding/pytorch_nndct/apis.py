@@ -16,18 +16,19 @@
 # limitations under the License.
 #
 
+
 import copy
 import os
-from typing import Any, Optional, Sequence, Union
+from typing import Any, Optional, Sequence, Union, List, Dict
 import torch
 from nndct_shared.utils import NndctScreenLogger
 from .qproc import TorchQuantProcessor
 from .qproc import base as qp
 from .qproc import LSTMTorchQuantProcessor
-from .quantization import QatScheduler
+from .quantization import QatProcessor
 
 # API class
-class torch_quantizer(): 
+class torch_quantizer():
   def __init__(self,
                quant_mode: str, # ['calib', 'test']
                module: torch.nn.Module,
@@ -39,15 +40,18 @@ class torch_quantizer():
                device: torch.device = torch.device("cuda"),
                lstm: bool = False,
                app_deploy: str = "CV",
-               qat_proc: bool = False):
+               qat_proc: bool = False,
+               custom_quant_ops: List[str] = None):
+    
     if app_deploy == "CV": lstm_app = False
     elif app_deploy == "NLP": lstm_app = True
     self._qat_proc = False
     if qat_proc:
-      self.processor = QatScheduler(model = module,
-                                    input_args = input_args, 
-                                    base_bit = bitwidth, 
-                                    mix_bit = mix_bit)
+      self.processor = QatProcessor(model = module,
+                                    inputs = input_args,
+                                    bitwidth = bitwidth,
+                                    mix_bit = mix_bit,
+                                    device = device)
       self._qat_proc = True
     elif lstm:
       self.processor = LSTMTorchQuantProcessor(quant_mode = quant_mode,
@@ -56,7 +60,8 @@ class torch_quantizer():
                                                state_dict_file = state_dict_file,
                                                output_dir = output_dir,
                                                bitwidth_w = bitwidth,
-                                               bitwidth_a = bitwidth,
+                                               # lstm IP only support 16 bit activation
+                                               bitwidth_a = 16,
                                                device = device,
                                                lstm_app = lstm_app)
     else:
@@ -68,8 +73,9 @@ class torch_quantizer():
                                            bitwidth_w = bitwidth,
                                            bitwidth_a = bitwidth,
                                            device = device,
-                                           lstm_app = lstm_app)
-  # Finetune parameters, 
+                                           lstm_app = lstm_app,
+                                           custom_quant_ops = custom_quant_ops)
+  # Finetune parameters,
   # After finetuning, run original forwarding code for calibration
   # After calibration, run original forwarding code to test quantized model accuracy
   def fast_finetune(self, run_fn, run_args):
@@ -86,23 +92,23 @@ class torch_quantizer():
   # export quantization steps information for tensors to be quantized
   def export_quant_config(self):
     self.processor.export_quant_config()
-  
+
   # export xmodel for compilation
   def export_xmodel(self, output_dir="quantize_result", deploy_check=False):
     self.processor.export_xmodel(output_dir, deploy_check)
-  
+
   # deploy the trained model for quant aware training process
-  def deploy(self, trained_model, mix_bit = False):
+  def deploy(self, trained_model, output_dir, mix_bit=False):
     if not self._qat_proc:
       NndctScreenLogger().warning(f"Only quant aware training process has deploy function.")
       return
-    self.processor.convert_to_deployable(trained_model, mix_bit=mix_bit)
+    self.processor.convert_to_deployable(trained_model, output_dir, mix_bit=mix_bit)
 
   @property
   def quant_model(self):
     NndctScreenLogger().info(f"=>Get module with quantization.")
     return self.processor.quant_model()
-  
+
   @property
   def deploy_model(self):
     if not self._qat_proc:
@@ -112,6 +118,8 @@ class torch_quantizer():
     return self.processor.deploy_model()
 
 # for vitis-ai 1.2 backward compatible
-def dump_xmodel(output_dir="quantize_result", deploy_check=False):
+def dump_xmodel(output_dir="quantize_result", deploy_check=False, app_deploy="CV"):
+  if app_deploy == "CV": lstm_app = False
+  elif app_deploy == "NLP": lstm_app = True
   NndctScreenLogger().warning(f"The function dump_xmodel() will retire in future version. Use torch_quantizer.export_xmodel() reversely.")
-  qp.dump_xmodel(output_dir, deploy_check)
+  qp.dump_xmodel(output_dir, deploy_check, lstm_app)

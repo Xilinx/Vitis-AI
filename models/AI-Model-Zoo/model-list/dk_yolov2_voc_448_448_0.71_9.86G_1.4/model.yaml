@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: yolov2 detection on voc dataset.
+input size: 448*448
+float ops: 9.86G
+task: detection
+framework: darknet
+prune: '0.71'
+version: 1.4
+files:
+- name: dk_yolov2_voc_448_448_0.71_9.86G_1.4
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_0.71_9.86G_1.4.zip
+  checksum: e58e249b4c8d811f92990f8d7554077a
+- name: yolov2_voc_pruned_0_71
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-zcu102_zcu104_kv260-r1.4.0.tar.gz
+  checksum: 463b48ff5bf497f99d9c38035d80fb89
+- name: yolov2_voc_pruned_0_71
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-vck190-r1.4.0.tar.gz
+  checksum: 4a44a33fb7ef45fb09e928d355b02409
+- name: yolov2_voc_pruned_0_71
+  type: xmodel
+  board: vck5000
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-vck5000-DPUCVDX8H-r1.4.0.tar.gz
+  checksum: db5b869e1208670de8fe85b80879499b
+- name: yolov2_voc_pruned_0_71
+  type: xmodel
+  board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_71-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+  checksum: 3213c652f4ea754ac1c8cf85864c0262
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

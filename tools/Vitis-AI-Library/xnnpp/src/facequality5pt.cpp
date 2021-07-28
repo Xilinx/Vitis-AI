@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 #include "vitis/ai/nnpp/facequality5pt.hpp"
-#include "vitis/ai/profiling.hpp"
+
 #include "vitis/ai/env_config.hpp"
+#include "vitis/ai/profiling.hpp"
 
 DEF_ENV_PARAM(DEBUG_XNNPP_FACEQUALITY5PT, "0")
 using namespace std;
@@ -35,50 +36,46 @@ FaceQuality5ptResult face_quality5pt_post_process(
         input_tensors,
     const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
-    const vitis::ai::proto::DpuModelParam& config,
-    size_t batch_idx,
-    bool day) {
+    const vitis::ai::proto::DpuModelParam& config, size_t batch_idx, bool day) {
   const int input_width = input_tensors[0][0].width;
   const int input_height = input_tensors[0][0].height;
 
-  
   vitis::ai::library::OutputTensor point_layer = output_tensors[0][0];
   vitis::ai::library::OutputTensor quality_layer = output_tensors[0][1];
-  if (config.face_quality5pt_param().has_point_layer_name()) {
+  if (!config.face_quality5pt_param().point_layer_name().empty()) {
     auto key = config.face_quality5pt_param().point_layer_name();
     for (auto i = 0u; i < output_tensors[0].size(); ++i) {
       if (output_tensors[0][i].name.find(key) != std::string::npos) {
-        point_layer = output_tensors[0][i];  
+        point_layer = output_tensors[0][i];
         LOG_IF(INFO, ENV_PARAM(DEBUG_XNNPP_FACEQUALITY5PT))
-              << "find point layer : " << point_layer.name
-              << ", index :" << i;
+            << "find point layer : " << point_layer.name << ", index :" << i;
         break;
       }
-    } 
+    }
   }
 
-  if (config.face_quality5pt_param().has_quality_layer_name()) {
+  if (!config.face_quality5pt_param().quality_layer_name().empty()) {
     auto key = config.face_quality5pt_param().quality_layer_name();
     for (auto i = 0u; i < output_tensors[0].size(); ++i) {
       if (output_tensors[0][i].name.find(key) != std::string::npos) {
-        quality_layer = output_tensors[0][i];  
+        quality_layer = output_tensors[0][i];
         LOG_IF(INFO, ENV_PARAM(DEBUG_XNNPP_FACEQUALITY5PT))
-              << "find quality layer : " << quality_layer.name
-              << ", index :" << i;
+            << "find quality layer : " << quality_layer.name
+            << ", index :" << i;
         break;
       }
-    } 
-  } 
- 
+    }
+  }
+
   // 5 points
   auto points = std::unique_ptr<std::array<std::pair<float, float>, 5>>(
       new std::array<std::pair<float, float>, 5>());
   LOG_IF(INFO, ENV_PARAM(DEBUG_XNNPP_FACEQUALITY5PT))
-        << " point layer name " << point_layer.name
-        << ", scale : " << vitis::ai::library::tensor_scale(point_layer); 
+      << " point layer name " << point_layer.name
+      << ", scale : " << vitis::ai::library::tensor_scale(point_layer);
   LOG_IF(INFO, ENV_PARAM(DEBUG_XNNPP_FACEQUALITY5PT))
-        << " quality layer name " << quality_layer.name
-        << ", scale : " << vitis::ai::library::tensor_scale(quality_layer); 
+      << " quality layer name " << quality_layer.name
+      << ", scale : " << vitis::ai::library::tensor_scale(quality_layer);
 
   for (auto i = 0u; i < points->size(); i++) {
     auto x = (float)(((int8_t*)point_layer.get_data(batch_idx))[i]) *
@@ -101,12 +98,11 @@ FaceQuality5ptResult face_quality5pt_post_process(
     } else {
       score = mapped_quality_night(score_original);
     }
-  } 
-  return FaceQuality5ptResult{input_width, input_height, score,
-                              *points};
+  }
+  return FaceQuality5ptResult{input_width, input_height, score, *points};
 }
 
-//FaceQuality5ptResult face_quality5pt_post_process_original(
+// FaceQuality5ptResult face_quality5pt_post_process_original(
 //    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
 //        input_tensors,
 //    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
@@ -120,39 +116,41 @@ FaceQuality5ptResult face_quality5pt_post_process(
 //      new std::array<std::pair<float, float>, 5>());
 //  for (auto i = 0u; i < points->size(); i++) {
 //    auto x = (float)(((int8_t*)output_tensors[0][0].get_data(batch_idx))[i]) *
-//             vitis::ai::library::tensor_scale(output_tensors[0][0]) / input_width;
-//    auto y = (float)(((int8_t*)output_tensors[0][0].get_data(batch_idx))[i + 5]) *
-//             vitis::ai::library::tensor_scale(output_tensors[0][0]) / input_height;
+//             vitis::ai::library::tensor_scale(output_tensors[0][0]) /
+//             input_width;
+//    auto y = (float)(((int8_t*)output_tensors[0][0].get_data(batch_idx))[i +
+//    5]) *
+//             vitis::ai::library::tensor_scale(output_tensors[0][0]) /
+//             input_height;
 //    (*points)[i] = std::make_pair(x, y);
 //  }
 //
 //  // quality output
-//  float score_original = ((int8_t*)output_tensors[0][1].get_data(batch_idx))[0] *
+//  float score_original =
+//  ((int8_t*)output_tensors[0][1].get_data(batch_idx))[0] *
 //                         vitis::ai::library::tensor_scale(output_tensors[0][1]);
 //  return FaceQuality5ptResult{input_width, input_height, score_original,
 //                              *points};
 //}
-
 
 std::vector<FaceQuality5ptResult> face_quality5pt_post_process(
     const std::vector<std::vector<vitis::ai::library::InputTensor>>&
         input_tensors,
     const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
-    const vitis::ai::proto::DpuModelParam& config,
-    bool day) {
-    auto batch_size = input_tensors[0][0].batch;
-    auto ret = std::vector<FaceQuality5ptResult>{};
-    ret.reserve(batch_size);
-    for (auto i = 0u; i < batch_size; i++) {
-      auto r = face_quality5pt_post_process(input_tensors, output_tensors,
-                                          config, i, day);
-      ret.emplace_back(r);
-    }
-    return ret;
+    const vitis::ai::proto::DpuModelParam& config, bool day) {
+  auto batch_size = input_tensors[0][0].batch;
+  auto ret = std::vector<FaceQuality5ptResult>{};
+  ret.reserve(batch_size);
+  for (auto i = 0u; i < batch_size; i++) {
+    auto r = face_quality5pt_post_process(input_tensors, output_tensors, config,
+                                          i, day);
+    ret.emplace_back(r);
+  }
+  return ret;
 }
 
-//std::vector<FaceQuality5ptResult> face_quality5pt_post_process_original(
+// std::vector<FaceQuality5ptResult> face_quality5pt_post_process_original(
 //    const std::vector<std::vector<vitis::ai::library::InputTensor>>&
 //        input_tensors,
 //    const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
@@ -162,14 +160,13 @@ std::vector<FaceQuality5ptResult> face_quality5pt_post_process(
 //    auto ret = std::vector<FaceQuality5ptResult>{};
 //    ret.reserve(batch_size);
 //    for (auto i = 0u; i < batch_size; i++) {
-//      auto r = face_quality5pt_post_process_original(input_tensors, output_tensors,
+//      auto r = face_quality5pt_post_process_original(input_tensors,
+//      output_tensors,
 //                                          config, i);
 //      ret.emplace_back(r);
 //    }
 //    return ret;
 //}
-
-
 
 }  // namespace ai
 }  // namespace vitis

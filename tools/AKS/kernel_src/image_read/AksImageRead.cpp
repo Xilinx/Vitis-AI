@@ -20,15 +20,17 @@
 #include <opencv2/imgcodecs.hpp>
 
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
+#include <aks/AksBatchTensorBuffer.h>
+#include <xir/tensor/tensor.hpp>
+#include <xir/util/data_type.hpp>
 
 class ImageRead : public AKS::KernelBase
 {
   public:
     int exec_async (
-        std::vector<AKS::DataDescriptor*> &in, 
-        std::vector<AKS::DataDescriptor*> &out, 
+        std::vector<vart::TensorBuffer*> &in,
+        std::vector<vart::TensorBuffer*> &out,
         AKS::NodeParams* nodeParams,
         AKS::DynamicParamValues* dynParams);
 };
@@ -43,15 +45,15 @@ extern "C" { /// Add this to make this available for python bindings
 }//extern "C"
 
 int ImageRead::exec_async (
-    std::vector<AKS::DataDescriptor*> &in, 
-    std::vector<AKS::DataDescriptor*> &out, 
+    std::vector<vart::TensorBuffer*> &in,
+    std::vector<vart::TensorBuffer*> &out,
     AKS::NodeParams* nodeParams,
     AKS::DynamicParamValues* dynParams)
 {
   /// Get the image path
   int batchSize = dynParams->imagePaths.size();
-  out.push_back(new AKS::DataDescriptor({batchSize,}, AKS::DataType::AKSDD));
-  auto outData = out[0]->data<AKS::DataDescriptor>();
+  std::vector<std::unique_ptr<xir::Tensor>> tensors; tensors.reserve(batchSize);
+  std::vector<cv::Mat> images; images.reserve(batchSize);
   for(int b = 0; b < dynParams->imagePaths.size(); ++b) {
 
     cv::Mat inImage = cv::imread (dynParams->imagePaths[b].c_str());
@@ -62,11 +64,20 @@ int ImageRead::exec_async (
 
     /// Assign the image data to output vector
     std::vector<int> shape = { 1, inImage.rows, inImage.cols, inImage.channels() };
-    AKS::DataDescriptor dd(shape, AKS::DataType::UINT8);
-    unsigned long imgSize = inImage.channels() * inImage.rows * inImage.cols;
-    memcpy(dd.data(), inImage.data, imgSize);
-    outData[b] = std::move(dd);
+
+    auto tensorOut = xir::Tensor::create("imread_output", shape,
+		                                     xir::DataType {xir::DataType::INT, 8U});
+    tensors.push_back(std::move(tensorOut));
+    images.push_back(std::move(inImage));
   }
+
+  auto* buf =  new AKS::AksBatchTensorBuffer(std::move(tensors));
+  for(int i=0; i<batchSize; ++i) {
+    auto* bufptr = reinterpret_cast<uint8_t*>(buf->data({i}).first);
+    auto* imgptr = images[i].data;
+    memcpy(bufptr, imgptr, buf->get_tensors()[i]->get_data_size());
+  }
+  out.push_back(buf);
   return 0;
 }
 

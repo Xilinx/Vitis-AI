@@ -1,0 +1,36 @@
+/ {
+	amba_pl: amba_pl@0 {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		compatible = "simple-bus";
+		ranges ;
+		misc_clk_0: misc_clk_0 {
+			#clock-cells = <0>;
+			clock-frequency = <149998499>;
+			compatible = "fixed-clock";
+		};
+		misc_clk_4: misc_clk_4 {
+                         #clock-cells = <0>;
+                         clock-frequency = <109999083>;
+                         compatible = "fixed-clock";
+		};
+		misc_clk_5: misc_clk_5 {
+                         #clock-cells = <0>;
+                         clock-frequency = <200000000>;
+                         compatible = "fixed-clock";
+		};
+		misc_clk_1: misc_clk_1 {
+			#clock-cells = <0>;
+			clock-frequency = <100000000>;
+			compatible = "fixed-clock";
+		};
+
+		misc_clk_3: misc_clk_3 {
+			#clock-cells = <0>;
+			clock-frequency = <297000000>;
+			compatible = "fixed-clock";
+		};
+	};
+};
+
+#include "aie.dtsi"

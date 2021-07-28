@@ -22,8 +22,8 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <aks/AksTensorBuffer.h>
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
 #include <aks/AksNodeParams.h>
 #include <aks/AksLogger.h>
 
@@ -40,8 +40,8 @@ class ClassificationAccuracy : public AKS::KernelBase
   public:
     void nodeInit (AKS::NodeParams*);
     int exec_async (
-        std::vector<AKS::DataDescriptor*> &in, 
-        std::vector<AKS::DataDescriptor*> &out, 
+        std::vector<vart::TensorBuffer*> &in, 
+        std::vector<vart::TensorBuffer*> &out, 
         AKS::NodeParams* nodeParams,
         AKS::DynamicParamValues* dynParams);
 
@@ -136,8 +136,8 @@ void ClassificationAccuracy::updateTopK (AKS::NodeParams* nodeParams,std::string
 }
 
 int ClassificationAccuracy::exec_async (
-    std::vector<AKS::DataDescriptor*> &in, 
-    std::vector<AKS::DataDescriptor*> &out, 
+    std::vector<vart::TensorBuffer*> &in, 
+    std::vector<vart::TensorBuffer*> &out, 
     AKS::NodeParams* nodeParams,
     AKS::DynamicParamValues* dynParams)
 {
@@ -147,11 +147,11 @@ int ClassificationAccuracy::exec_async (
     _is_timer_started = true;
   }
 
-  int batchSize = in[0]->getShape()[0];
-  int K = in[0]->getShape()[1];
+  int batchSize = in[0]->get_tensor()->get_shape()[0];
+  int K = in[0]->get_tensor()->get_shape()[1];
 
   /// Get Top K 
-  int * topKData = static_cast<int*>(in[0]->data());
+  int * topKData = reinterpret_cast<int*>(in[0]->data().first);
 
   /// Update Accuracy
   for(int i = 0; i < batchSize; ++i)
@@ -166,11 +166,13 @@ void ClassificationAccuracy::report(AKS::NodeParams* nodeParams)
   AccuracyData *accuData = getAccuracyData(nodeParams);
   if(accuData){
     _INFO << "Accuracy: Total Images Processed: " << accuData->_imagesProcessed << std::endl;
-    _INFO << "Accuracy: Top 1: " << float(accuData->_top1) / float(accuData->_imagesProcessed) << std::endl;
-    _INFO << "Accuracy: Top 5: " << float(accuData->_top5) / float(accuData->_imagesProcessed) << std::endl;
+    _INFO << "Accuracy: Top 1: "
+          << 100 * (float(accuData->_top1) / float(accuData->_imagesProcessed)) << std::endl;
+    _INFO << "Accuracy: Top 5: "
+          << 100 * (float(accuData->_top5) / float(accuData->_imagesProcessed)) << std::endl;
   }
 
   auto dur = std::chrono::duration<float>{_t1-_t0}.count() ;
-  LOG(DEBUG) << "Total time (s) around Accuracy Layer : " << dur << std::endl;
-  LOG(DEBUG) << "FPS around Accuracy Layer : " << accuData->_imagesProcessed / dur << std::endl;
+  LOG_X(DEBUG) << "Total time (s) around Accuracy Layer : " << dur << std::endl;
+  LOG_X(DEBUG) << "FPS around Accuracy Layer : " << accuData->_imagesProcessed / dur << std::endl;
 }

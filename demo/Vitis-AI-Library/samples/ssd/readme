@@ -21,8 +21,6 @@ Important:
     ssd_adas_pruned_0_95
     ssd_mobilenet_v2
     mlperf_ssd_resnet34_tf
-    VAI-Caffe-SSD-Tutorial-Mobilenetv2-SSD 
-    VAI-Caffe-SSD-Tutorial-VGG16-SSD
 
 
 1, compile
@@ -92,31 +90,12 @@ I1108 22:41:26.411677  5217 process_result.hpp:77] RESULT: 3	413.789	326.621	429
     sample : ./test_jpeg_ssd mlperf_ssd_resnet34_tf sample_ssd.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I0610 09:48:37.363206 26029 process_result.hpp:45] RESULT: 3    506.95 331.122 562.95 370.578 0.993008
-I0610 09:48:37.363262 26029 process_result.hpp:45] RESULT: 3    550.047 333.337 648.928 385.598 0.992703
-I0610 09:48:37.363322 26029 process_result.hpp:45] RESULT: 3    174.958 326.629 290.542 422.434 0.948542
-I0610 09:48:37.363410 26029 process_result.hpp:45] RESULT: 3    0 285.414 203.6 600 0.946633
-I0610 09:48:37.363467 26029 process_result.hpp:45] RESULT: 3    466.223 319.156 518.177 360.119 0.942119
-I0610 09:48:37.363521 26029 process_result.hpp:45] RESULT: 3    254.046 320.736 306.654 363.264 0.818738
-I0610 09:48:37.363588 26029 process_result.hpp:45] RESULT: 3    628.796 323.968 793.538 526.286 0.769743
-
-    sample : ./test_jpeg_ssd VAI-Caffe-SSD-Tutorial-Mobilenetv2-SSD ./sample_ssd.jpg
-    output : 
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1102 08:15:54.422906  3848 process_result.hpp:43] RESULT: 7    0       300.844 195.979 596.468 0.997822
-I1102 08:15:54.423151  3848 process_result.hpp:43] RESULT: 7    631.522 317.735 800     515.338 0.983179
-I1102 08:15:54.423225  3848 process_result.hpp:43] RESULT: 7    167.069 324.999 309.599 418.822 0.981444
-I1102 08:15:54.423293  3848 process_result.hpp:43] RESULT: 7    552.127 329.746 649.155 385.727 0.70312
-I1102 08:15:54.423352  3848 process_result.hpp:43] RESULT: 7    450.631 318.707 523.586 357.537 0.627134
-I1102 08:15:54.423409  3848 process_result.hpp:43] RESULT: 7    507.557 323.688 572.122 377.214 0.572502
-
-    sample : ./test_jpeg_ssd VAI-Caffe-SSD-Tutorial-VGG16-SSD ./sample_ssd.jpg
-    output : 
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1102 08:19:12.456532  3871 process_result.hpp:43] RESULT: 7    178.702 330.919 300.651 416.839 0.996843
-I1102 08:19:12.456784  3871 process_result.hpp:43] RESULT: 7    5.39681 302.969 187.812 594.24  0.989187
-I1102 08:19:12.456869  3871 process_result.hpp:43] RESULT: 7    554.078 334.935 643.297 382.413 0.979633
-I1102 08:19:12.456919  3871 process_result.hpp:43] RESULT: 7    634.271 322.353 795.491 514.371 0.979429
-I1102 08:19:12.456984  3871 process_result.hpp:43] RESULT: 7    455.735 320.14  517.265 360.36  0.620632
-I1102 08:19:12.457032  3871 process_result.hpp:43] RESULT: 7    394.52  325.589 447.48  347.661 0.318388
+I0709 05:51:18.753609  3990 demo.hpp:1183] batch: 0     image: sample_ssd.jpg
+I0709 05:51:18.753762  3990 process_result.hpp:43] RESULT: 3    506.941 331.609 564.359 370.091 0.995687
+I0709 05:51:18.753878  3990 process_result.hpp:43] RESULT: 3    551.268 333.895 647.708 384.865 0.99344
+I0709 05:51:18.753928  3990 process_result.hpp:43] RESULT: 3    174.231 326.646 291.269 421.854 0.955159
+I0709 05:51:18.753984  3990 process_result.hpp:43] RESULT: 3    0       287.857 203.6   600     0.947692
+I0709 05:51:18.754058  3990 process_result.hpp:43] RESULT: 3    465.873 319.156 517.827 360.119 0.946124
+I0709 05:51:18.754107  3990 process_result.hpp:43] RESULT: 3    254.373 321     306.327 363     0.856711
+I0709 05:51:18.754155  3990 process_result.hpp:43] RESULT: 3    629.963 325.847 794.704 524.407 0.764188
 

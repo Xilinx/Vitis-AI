@@ -1,0 +1,18 @@
+diff --git a/sound/soc/xilinx/xlnx_pl_snd_card.c b/sound/soc/xilinx/xlnx_pl_snd_card.c
+index 7e4684e..b25b873 100644
+--- a/sound/soc/xilinx/xlnx_pl_snd_card.c
++++ b/sound/soc/xilinx/xlnx_pl_snd_card.c
+@@ -322,6 +322,13 @@ static int xlnx_snd_probe(struct platform_device *pdev)
+ 
+ 	card->num_links = 0;
+ 	for (i = XLNX_PLAYBACK; i < XLNX_MAX_PATHS; i++) {
++
++		if (!node[i]) {
++			dev_info(card->dev, "No device available for %s\n",
++					(i ? "capture" : "playback"));
++			continue;
++		}
++
+ 		struct device_node *pnode = of_parse_phandle(node[i],
+ 							     "xlnx,snd-pcm", 0);
+ 		if (!pnode) {

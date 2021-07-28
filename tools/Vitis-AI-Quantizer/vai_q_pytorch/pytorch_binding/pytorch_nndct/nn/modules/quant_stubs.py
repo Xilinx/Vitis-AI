@@ -33,15 +33,14 @@ class QuantStub(torch.nn.Module):
 
     outputs = []
     for ip in inputs:
-      output = QuantStubF.apply(ip) if isinstance(ip, torch.Tensor) else ip
+      # output = QuantStubF.apply(ip) if isinstance(ip, torch.Tensor) else ip
+      output = self.forward(ip)
       outputs.append(output)
     if len(outputs) == 1:
       return outputs[0]
     else:
       return outputs
-    # if any([isinstance(ip, Sequence) for ip in inputs]):
-    #   raise TypeError("The input type can't be sequence, including list and tuple")
-    # return QuantStubF.apply(*inputs)
+   
 
 class DeQuantStub(torch.nn.Module):
   def __init__(self):
@@ -53,12 +52,11 @@ class DeQuantStub(torch.nn.Module):
 
     outputs = []
     for ip in inputs:
-      output = DeQuantStubF.apply(ip) if isinstance(ip, torch.Tensor) else ip
+      # output = DeQuantStubF.apply(ip) if isinstance(ip, torch.Tensor) else ip
+      output = self.forward(ip)
       outputs.append(output)
     if len(outputs) == 1:
       return outputs[0]
     else:
       return outputs
-    # if any([isinstance(ip, Sequence) for ip in inputs]):
-    #   raise TypeError("The input type can't be sequence")
-    # return DeQuantStubF.apply(*inputs)
+   

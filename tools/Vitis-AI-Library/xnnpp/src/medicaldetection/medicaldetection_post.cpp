@@ -31,8 +31,9 @@ MedicalDetectionPost::~MedicalDetectionPost() {}
 MedicalDetectionPost::MedicalDetectionPost(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
-    const vitis::ai::proto::DpuModelParam& config)
-    : input_tensors_(input_tensors), output_tensors_(output_tensors) {
+    const vitis::ai::proto::DpuModelParam& config,
+    int& real_batch_sizex)
+    : input_tensors_(input_tensors), output_tensors_(output_tensors), real_batch_size(real_batch_sizex) {
 
   vitis::ai::medicaldetection::PriorBox pb(
      std::vector<int>(  config.medical_refine_det_param().medical_prior_box_param().input_shape().begin(),
@@ -63,11 +64,10 @@ MedicalDetectionPost::MedicalDetectionPost(
 }
 
 std::vector<vitis::ai::MedicalDetectionResult> MedicalDetectionPost::medicaldetection_post_process() {
-  auto batch_size = input_tensors_[0].batch;
   auto ret = std::vector<vitis::ai::MedicalDetectionResult>{};
-  ret.reserve(batch_size);
+  ret.reserve(real_batch_size);
 
-  for (auto i = 0u; i < batch_size; ++i) {
+  for (auto i = 0; i < real_batch_size; ++i) {
     ret.emplace_back(medicaldetection_post_process(i));
   }
   return ret;

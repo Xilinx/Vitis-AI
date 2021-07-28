@@ -1,0 +1,23 @@
+&amba_pl {
+	misc_clk_aie: misc_clk_aie {
+		#clock-cells = <0>;
+		clock-frequency = <99999000>;
+		compatible = "fixed-clock";
+	};
+	ai_engine_0: ai_engine@20000000000 {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		clock-names = "aclk0";
+		clocks = <&misc_clk_aie>;
+		compatible = "xlnx,ai-engine-2.0", "xlnx,ai-engine-v1.0";
+		interrupt-names = "interrupt1", "interrupt2", "interrupt3";
+		interrupt-parent = <&gic>;
+		interrupts = <0x0 0x94 0x4>, <0x0 0x95 0x4>, <0x0 0x96 0x4>;
+		power-domains = <&versal_firmware 0x18224072>;
+		reg = <0x00000200 0x00000000 0x00000001 0x00000000>;
+		aie_partition0: aie_partition@0 {
+			reg = <0 0 50 9>;
+			xlnx,partition-id = <1>;
+		};
+	};
+};

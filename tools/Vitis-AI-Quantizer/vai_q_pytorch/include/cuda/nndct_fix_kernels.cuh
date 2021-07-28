@@ -16,6 +16,7 @@
 * limitations under the License.
 */
 
+
 #ifndef _NNDCT_FIX_KERNELS_CUH_
 #define _NNDCT_FIX_KERNELS_CUH_
 template<typename Real>

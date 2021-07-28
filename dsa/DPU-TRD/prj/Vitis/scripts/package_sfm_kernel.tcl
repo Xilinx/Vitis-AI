@@ -14,8 +14,11 @@
 # * limitations under the License.
 # */
 
-
-set path_to_hdl "../../dpu_ip"
+if { [info exists ::env(TRD_PATH)] } {
+    set path_to_hdl "$env(TRD_PATH)/dpu_ip"
+} else {
+    set path_to_hdl "../../dpu_ip"
+}
 set path_to_packaged "./packaged_kernel_${suffix}"
 set path_to_tmp_project "./tmp_kernel_pack_${suffix}"
 

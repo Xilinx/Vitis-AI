@@ -1,0 +1,24 @@
+From 30eac6349ca61e5ca74de8deaea1d58d9c73630d Mon Sep 17 00:00:00 2001
+From: Christian Kohn <christian.kohn@xilinx.com>
+Date: Tue, 31 Mar 2020 21:26:09 -0700
+Subject: [PATCH 5/5] avt_multi_sensor_fmc: Add dependency on REGULATOR
+
+Add missing dependency on REGULATOR in KConfig.
+---
+ drivers/media/i2c/avt_multi_sensor_fmc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/Kconfig b/drivers/media/i2c/avt_multi_sensor_fmc/Kconfig
+index 9bf99fe..af34841 100644
+--- a/drivers/media/i2c/avt_multi_sensor_fmc/Kconfig
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/Kconfig
+@@ -2,5 +2,6 @@ config AVT_MULTI_SENSOR_FMC
+ 	tristate "AVT_MULTI_SENSOR_FMC (MAX9286 MAX96705 AR0231 support)"
+ 	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API
+ 	depends on VIDEO_XILINX
++	depends on REGULATOR
+ 	---help---
+ 	  Driver for the MAX9286_MAX96705 SerDes and AR0231 sensor
+-- 
+2.7.4
+

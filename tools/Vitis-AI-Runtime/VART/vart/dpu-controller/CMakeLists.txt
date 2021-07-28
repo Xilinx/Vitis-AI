@@ -31,7 +31,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dpu_controller_qnx.hpp
     )
   list(APPEND MY_PROJECT_DEPS xlnx_qnx_dpu)
-elseif (CMAKE_CROSSCOMPILING)
+elseif (IS_EDGE)
     list(APPEND MY_PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dpu_controller_dnndk.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dpu_controller_dnndk.hpp
@@ -71,10 +71,9 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}"
   LIBRARY_OUTPUT_NAME ${PROJECT_NAME}-${COMPONENT_NAME}
-  INTERFACE_LINK_DIRECTORIES "/opt/xilinx/xrt/lib"
   BUILD_RPATH "\$ORIGIN/../buffer-object;\$ORIGIN/../xrt-device-handle"
   )
-target_link_libraries(${COMPONENT_NAME} PRIVATE ${MY_PROJECT_DEPS} buffer-object PUBLIC util)
+target_link_libraries(${COMPONENT_NAME} PRIVATE ${MY_PROJECT_DEPS} buffer-object PUBLIC util PRIVATE trace)
 target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -124,3 +123,6 @@ if(BUILD_TEST)
     install(TARGETS test_softmax_mt test_softmax DESTINATION bin)
   endif(XRT_FOUND)
 endif()
+
+set(PACKAGE_COMPONENTS "${PACKAGE_COMPONENTS};runner-assistant" PARENT_SCOPE)
+add_subdirectory (runner-assistant)

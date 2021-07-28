@@ -87,6 +87,10 @@ extern "C" vart_tensor_buffer_address_t vart_tensor_buffer_data(
   return ret;
 }
 
+extern "C" void vart_destroy_tensor_buffer(vart_tensor_buffer_t tb) {
+  delete static_cast<vart::TensorBuffer*>(tb);
+}
+
 /* Local Variables: */
 /* mode:c */
 /* c-basic-offset: 2 */

@@ -1,18 +1,16 @@
-# ONNXRuntime with Xilinx Vitis-AI acceleration
+# ONNX Runtime with Xilinx Vitis AI DPU acceleration
 
-Microsoft ONNXRuntime is a framework designed for high performance execution of ONNX models on a variety of platforms.
+Microsoft ONNX Runtime is a framework designed for high performance execution of ONNX models on a variety of platforms.
 
-ONNXRuntime is enabled with Vitis-AI and available through the Microsoft github page:
+ONNX Runtime is enabled with Vitis AI and available through the Microsoft [ONNX Runtime](https://github.com/microsoft/onnxruntime) github page.
 
-https://github.com/microsoft/onnxruntime
+Vitis AI documentation for ONNX Runtime is available [here](https://www.onnxruntime.ai/docs/reference/execution-providers/Vitis-AI-ExecutionProvider.html).
 
-Vitis-AI documentation for ONNXRuntime is available [here](https://github.com/microsoft/onnxruntime/blob/master/docs/execution_providers/Vitis-AI-ExecutionProvider.md).
-
-The current Vitis-AI execution provider inside ONNXRuntime enables acceleration of Neural Network model inference using DPUCADX8G. DPUCADX8G is a hardware accelerator for Convolutional Neural Networks (CNN) on top of the Xilinx Alveo platform and targets U200 and U250 accelerator cards.
+The current Vitis AI execution provider inside ONNX Runtime enables acceleration of Neural Network model inference with DPUCAHX8H (U50/U280) and DPUCZDX8G (Zynq) DPUs. These DPUs are hardware accelerators for Convolutional Neural Networks (CNN) on top of the Xilinx Alveo and Zynq platforms.
 
 ## Setup
 
-1. Follow setup instructions here to setup the ONNXRuntime - Vitis-AI environment [here](https://github.com/microsoft/onnxruntime/blob/master/docs/execution_providers/Vitis-AI-ExecutionProvider.md).
+1. Follow [ONNX Runtime - Vitis AI ExecutionProvider] setup instructions.
 2. Download minimal ImageNet validation dataset (step specific to this example):
    ```
    python3 -m ck pull repo:ck-env
@@ -29,10 +27,14 @@ The current Vitis-AI execution provider inside ONNXRuntime enables acceleration 
 
 ## Run example
 
-After you have followed the above setup steps, you can copy the python image classification example and the 'images' directory containing the 'dog.jpg' test image inside the ONNXRuntime - Vitis-AI docker to run the script (for example clone this repo inside the docker container to get the script and test image). Then execute the script with:
+After you have followed the above setup steps, you can copy the python image classification example and the 'images' directory containing the 'dog.jpg' test image inside the ONNX Runtime - Vitis AI docker to run the script (for example clone this repo inside the docker container to get the script and test image). Then execute the script with:
 
 ```
-python3 image_classification_DPUCADX8G.py
+python3 image_classification_DPUCAHX8H_U50.py
 ```
 
-After the model has been quantized and compiled using the first N inputs you should see accelerated execution of the 'images/dog.jpg' image with the DPUCADX8G accelerator.
+After the model has been quantized and compiled using the first N inputs you should see accelerated execution of the 'images/dog.jpg' image with the DPUCAHX8H accelerator.
+
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job.)
+
+   [ONNX Runtime - Vitis AI ExecutionProvider]: https://www.onnxruntime.ai/docs/reference/execution-providers/Vitis-AI-ExecutionProvider.html

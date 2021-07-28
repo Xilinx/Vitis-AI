@@ -31,6 +31,7 @@
 using namespace std;
 
 DEF_ENV_PARAM(DEBUG_DPBASE, "0");
+DEF_ENV_PARAM_2(VAI_LIBRARY_MODELS_DIR, ".", std::string)
 
 namespace vitis {
 namespace ai {
@@ -38,6 +39,7 @@ namespace ai {
 static vector<string> find_model_search_path() {
   auto ret = vector<string>{};
   ret.push_back(".");
+  ret.push_back(ENV_PARAM(VAI_LIBRARY_MODELS_DIR));
   ret.push_back("/usr/share/vitis_ai_library/models");
   ret.push_back("/usr/share/vitis_ai_library/.models");
   return ret;
@@ -160,14 +162,16 @@ static std::vector<float> get_scales(
 static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name) {
   return DpuTask::create(model_name);
 }
-static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name, xir::Attrs *attrs) {
+static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name,
+                                           xir::Attrs* attrs) {
   return DpuTask::create(model_name, attrs);
 }
 #else
 static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name) {
   return DpuTask::create(find_model(model_name));
 }
-static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name, xir::Attrs *attrs) {
+static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name,
+                                           xir::Attrs* attrs) {
   return DpuTask::create(find_model(model_name), attrs);
 }
 #endif
@@ -184,7 +188,7 @@ ConfigurableDpuTaskImp::ConfigurableDpuTaskImp(const std::string& model_name,
 }
 
 ConfigurableDpuTaskImp::ConfigurableDpuTaskImp(const std::string& model_name,
-                                               xir::Attrs *attrs,
+                                               xir::Attrs* attrs,
                                                bool need_preprocess)
     : tasks_{init_tasks(model_name, attrs)},  //
       model_{get_config(model_name)} {
@@ -247,12 +251,13 @@ ConfigurableDpuTaskImp::getOutputTensor() const {
   return ret;
 }
 
-
-void ConfigurableDpuTaskImp::setInputDataArray(const std::vector<int8_t>& array) {
+void ConfigurableDpuTaskImp::setInputDataArray(
+    const std::vector<int8_t>& array) {
   tasks_->setInputDataArray(array);
 }
 
-void ConfigurableDpuTaskImp::setInputDataArray(const std::vector<std::vector<int8_t>>& arrays) {
+void ConfigurableDpuTaskImp::setInputDataArray(
+    const std::vector<std::vector<int8_t>>& arrays) {
   tasks_->setInputDataArray(arrays);
 }
 
@@ -321,6 +326,27 @@ void ConfigurableDpuTaskImp::run(int task_index) {
     }
   }
   tasks_->run(task_index);
+}
+
+void ConfigurableDpuTaskImp::run_with_xrt_bo(
+    const std::vector<vart::xrt_bo_t>& input_bos) {
+  //
+  tasks_->run_with_xrt_bo(input_bos);
+}
+
+int ConfigurableDpuTaskImp::get_input_buffer_size() const {
+  CHECK_NE(tasks_->get_num_of_kernels(), 0u);
+  return tasks_->get_input_buffer_size();
+}
+
+size_t ConfigurableDpuTaskImp::get_input_offset() const {
+  CHECK_NE(tasks_->get_num_of_kernels(), 0u);
+  return tasks_->get_input_offset();
+}
+
+int ConfigurableDpuTaskImp::get_input_fix_point() const {
+  CHECK_NE(tasks_->get_num_of_kernels(), 0u);
+  return tasks_->get_input_fix_point();
 }
 
 }  // namespace ai

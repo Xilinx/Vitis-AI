@@ -36,12 +36,18 @@ void readfile(string& filename, vector<float>& data) {
 }
 
 template<typename T> 
+void writefilebin(string& filename, vector<T>& data) {
+  ofstream output_file(filename, ios::binary);
+  output_file.write(reinterpret_cast<char *>(data.data()), sizeof(T) * data.size());
+}
+
+
+template<typename T> 
 void writefile(string& filename, vector<T>& data) {
   ofstream output_file(filename);
   for(size_t i = 0; i < data.size(); i++) 
     output_file << data[i] << endl;
 }
-
 
 using namespace vitis::ai;
 int main(int argc, char *argv[]) {
@@ -72,6 +78,8 @@ int main(int argc, char *argv[]) {
   for(size_t i = 0; i < res.size(); i++) {
     string result_name = "batch_result_" + to_string(i) + ".txt";
     writefile(result_name, res[i].array);
+    string result_bin_name = "batch_result_" + to_string(i) + ".bin";
+    writefilebin(result_bin_name, res[i].array);
   }
 
   return 0;

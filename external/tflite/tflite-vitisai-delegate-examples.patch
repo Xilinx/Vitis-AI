@@ -1,0 +1,149 @@
+diff --git a/lite/examples/image_classification/raspberry_pi/classify_picamera.py b/lite/examples/image_classification/raspberry_pi/classify_picamera.py
+index 1c82ef0e..eb97c225 100644
+--- a/lite/examples/image_classification/raspberry_pi/classify_picamera.py
++++ b/lite/examples/image_classification/raspberry_pi/classify_picamera.py
+@@ -23,10 +23,10 @@ import argparse
+ import io
+ import time
+ import numpy as np
+-import picamera
+ 
+-from PIL import Image
+-from tflite_runtime.interpreter import Interpreter
++import cv2
++import tensorflow as tf
++import os
+ 
+ 
+ def load_labels(path):
+@@ -63,34 +63,109 @@ def main():
+       '--model', help='File path of .tflite file.', required=True)
+   parser.add_argument(
+       '--labels', help='File path of labels file.', required=True)
++  parser.add_argument(
++      '--target', help='Target Vitis AI IP.', required=True)
+   args = parser.parse_args()
+ 
+   labels = load_labels(args.labels)
+ 
+-  interpreter = Interpreter(args.model)
++  #tflite_vitisai_delegate_target = 'DPUCADX8G'
++  #tflite_vitisai_delegate_target = 'DPUCZDX8G-zcu104'
++  #tflite_vitisai_delegate_target = 'DPUCAHX8H-u50'
++  tflite_vitisai_delegate_target = args.target
++
++  import pyxir
++  if (tflite_vitisai_delegate_target.find('DPUCADX8G') == 0):
++    from pyxir.contrib.target import DPUCADX8G
++  elif (tflite_vitisai_delegate_target.find('DPUCZDX8G') == 0):
++    from pyxir.contrib.target import DPUCZDX8G
++  elif (tflite_vitisai_delegate_target.find('DPUCAHX8H') == 0):
++    from pyxir.contrib.target import DPUCAHX8H
++  import logging
++  logger = logging.getLogger('pyxir')
++  logger.setLevel(logging.DEBUG)
++  from pyxir.shared import fancy_logging
++  fancy_logger = fancy_logging.getLogger("pyxir")
++
++  tflite_vitisai_delegate_path = os.environ.get('TFLITE_VITISAI_DELEGATE_PATH', './libvitisai_delegate.so')
++  if (not os.path.exists(tflite_vitisai_delegate_path)):
++    raise ValueError('Invalid environment variable "TFLITE_VITISAI_DELEGATE_PATH"')
++
++  delegate = None
++  delegate = tf.lite.experimental.load_delegate(tflite_vitisai_delegate_path, {'target': tflite_vitisai_delegate_target})
++
++  if (delegate is not None):
++    interpreter = tf.lite.Interpreter(args.model, experimental_delegates=[delegate])
++  else:
++    interpreter = tf.lite.Interpreter(args.model)
++
+   interpreter.allocate_tensors()
+   _, height, width, _ = interpreter.get_input_details()[0]['shape']
+ 
+-  with picamera.PiCamera(resolution=(640, 480), framerate=30) as camera:
+-    camera.start_preview()
+-    try:
+-      stream = io.BytesIO()
+-      for _ in camera.capture_continuous(
+-          stream, format='jpeg', use_video_port=True):
+-        stream.seek(0)
+-        image = Image.open(stream).convert('RGB').resize((width, height),
+-                                                         Image.ANTIALIAS)
+-        start_time = time.time()
+-        results = classify_image(interpreter, image)
+-        elapsed_ms = (time.time() - start_time) * 1000
+-        label_id, prob = results[0]
+-        stream.seek(0)
+-        stream.truncate()
+-        camera.annotate_text = '%s %.2f\n%.1fms' % (labels[label_id], prob,
+-                                                    elapsed_ms)
+-    finally:
+-      camera.stop_preview()
+-
++  px_quant_size = int(os.environ.get('PX_QUANT_SIZE', 4))
++  if (px_quant_size < 1 or 499 < px_quant_size):
++    raise ValueError('Invalid environment variable "PX_QUANT_SIZE"')
++
++  for i in range(0, px_quant_size + 2, 1):
++    print('Iteration: ', i + 1)
++    if (i < px_quant_size):
++      image = cv2.imread('/home/vitis-ai-user/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/ILSVRC2012_val_00000' + str(i % 500 + 1).zfill(3) + '.JPEG')
++    else:
++      image = cv2.imread('/home/vitis-ai-user/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/ILSVRC2012_val_00000' + str(500).zfill(3) + '.JPEG')
++      # ILSVRC2012_val_00000500.JPEG: 175 (otterhound, otter hound)
++
++    scale_width = width / image.shape[1]
++    scale_height = height / image.shape[0]
++    scale = max(scale_width, scale_height)
++    dsize = (int(round(image.shape[1] * scale)), int(round(image.shape[0] * scale)))
++    image = cv2.resize(image, dsize)
++
++    offset_width = int((image.shape[1] - width) / 2)
++    offset_height = int((image.shape[0] - height) / 2)
++    image = image[offset_height:offset_height + height, offset_width:offset_width + width]
++
++    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
++
++    if "quant" in args.model.split("/")[-1]:
++      pass
++    else:
++      image = image / 255.0
++
++      if args.model.split("/")[-1] == "resnet_v2_101_299.tflite":
++        image_min = np.array((-2.118, -2.036, -1.804))
++        image_max = np.array((2.249, 2.429, 2.640))
++      elif args.model.split("/")[-1] == "inception_v3.tflite":
++        image_min = -1.0
++        image_max = +1.0
++      elif args.model.split("/")[-1] == "mobilenet_v1_1.0_224.tflite":
++        image_min = -1.0
++        image_max = +1.0
++      elif args.model.split("/")[-1] == "tf_resnet_50.tflite":
++        image_min = np.array((-2.118, -2.036, -1.804))
++        image_max = np.array((2.249, 2.429, 2.640))
++      elif args.model.split("/")[-1] == "tf_inception_v3.tflite":
++        image_min = -1.0
++        image_max = +1.0
++      elif args.model.split("/")[-1] == "tf_vgg_16.tflite":
++        image_min = np.array((-2.118, -2.036, -1.804))
++        image_max = np.array((2.249, 2.429, 2.640))
++      elif args.model.split("/")[-1] == "resnet_v1_50.tflite":
++        image_min = np.array((-2.118, -2.036, -1.804))
++        image_max = np.array((2.249, 2.429, 2.640))
++      elif args.model.split("/")[-1] == "vgg16.tflite":
++        image_min = np.array((-2.118, -2.036, -1.804))
++        image_max = np.array((2.249, 2.429, 2.640))
++      else:
++        image_min = -1.0
++        image_max = +1.0
++
++      image = image * (image_max - image_min) + image_min
++
++    start_time = time.time()
++    results = classify_image(interpreter, image)
++    elapsed_ms = (time.time() - start_time) * 1000
++    label_id, prob = results[0]
++    print('%s %.2f\n%.1fms' % (labels[label_id], prob, elapsed_ms))
+ 
+ if __name__ == '__main__':
+   main()

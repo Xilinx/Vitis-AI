@@ -146,6 +146,14 @@ static void report(ostream *p_out) {
   return;
 }
 
+static void report_for_mt(std::ostream *p_out) {
+  std::ostream &out = *p_out;
+  float sec = (float)act_time / 1000000.0;
+  float fps = ((float)g_total) / sec;
+  out << "FPS=" << fps << "\n";
+  out << std::flush;
+  return;
+}
 int main(int argc, char *argv[]) {
   parse_opt(argc, argv);
   if (g_run_mode == "performance") {
@@ -226,8 +234,11 @@ static int main_performance() {
   } else {
     LOG(INFO) << "writing report to <STDOUT>";
   }
-
-  report(report_fs);
+  if (g_num_of_threads==1){
+    report(report_fs);
+  }else{
+    report_for_mt(report_fs);
+  }
   return 0;
 }
 

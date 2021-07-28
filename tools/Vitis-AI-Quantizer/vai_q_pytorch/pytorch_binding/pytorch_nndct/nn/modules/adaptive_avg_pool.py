@@ -43,12 +43,16 @@ class deephi_AdaptiveAvgPool2d(torch.nn.modules.AdaptiveAvgPool2d):
         inputs=[input])
     output = super().forward(input)
 
-    
     # scale to DPU accuracy
-    if self.output_size != [1, 1]:
+    if (isinstance(self.output_size, (tuple, list)) and tuple(self.output_size) != (1, 1)) or self.output_size != 1:
       print(
           "NNDCT-Waring: For adaptive average pooling, DPU only supports output size 1"
       )
+      
+    kernel = [input.shape[3], input.shape[2]]
+    self.node.set_node_attr(self.node.op.AttrName.KERNEL, kernel)
+    self.node.set_node_attr(self.node.op.AttrName.STRIDE, kernel)   
+    
     needScale = False
     scale = 1.0
     if input.shape[2] == 3 and input.shape[3] == 3:

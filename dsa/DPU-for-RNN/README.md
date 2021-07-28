@@ -1,186 +1,106 @@
-#### DPU for RNN v1.0-beta
-##### Introduction
+# RNN-T Demo on Versal
+## Introduction
+This demo shows one RNN-T model based ASR solution on Xilinx Versal device VCK5000. Versal is the first Adaptive Compute Acceleration Platform (ACAP). It is a fully software-programmable heterogeneous compute platform that combines Scalar Engines, Adaptable Engines, and Intelligent Engines to achieve dramatic performance improvements over FPGA and CPU implementations among different applications. Please find more information on the [Xilinx Versal website](https://www.xilinx.com/products/silicon-devices/acap/versal.html). RNN-T is a sequence-to-sequence model that continuously processes input samples and streams output symbols. The speech recognition model used here is a modified RNN-T model and belongs to the MLPerf Inference benchmark suite. More details about the model can be found from the [mlcommons inference repo](https://github.com/mlcommons/inference/tree/r0.7/speech_recognition/rnnt).
 
-The Xilinx Deep Learning Processing Unit (DPU) for Recurrent Neural Network is a customized inference engine optimized for recurrent nueral networks. It is designed to implement and accelerate most variations of recurrent neural network, such as standard RNN, Gate Recurrent Unit (GRU), Unidirectional and Bidirectional Long Short-Term Memory (LSTM). 
+The hardware kernel is a 40 AIE cores design. INT8 Matrix-Matrix multiplications are performed on AIE cores and other functions are implemented in Programmable Logic (PL) with INT16 precision. The following table shows the total resource utilization for the kernel and platform. URAM resources are mainly used as weights buffer. It will be shared if multiple kernels are instantiated.
 
-DPU for RNN v1.0-beta release includes two xclbin files which can be programed into Alveo U25 and Alveo U50LV cards, customized runner in the VART, three example LSTM applications, as well as LSTM quantizer and compiler tools. Please check the supported operation types and constraints from the [tools](../../tools/RNN) first for new target networks.
-- Toolchain - [RNN Quantizer](../../tools/RNN/rnn_quantizer)
-- Toolchain - [RNN Compiler](../../tools/RNN/rnn_compiler)
+|           | CLB LUTs | Registers | Block RAM | URAM | DSP Slices | AIE Cores |
+|:---------:|:--------:|:---------:|:---------:|:----:|:----------:|:---------:|
+| Available | 899712   | 1799424   |  967      |463   |1968        |400        |
+| Utilized  |169163(18.8%)|241657(13.43%)|197(20.37%)|332(71.71%)|82(4.17%)|40(10%)|
 
-The DPU for RNN features are:
-- XCLBIN files
-    - Alveo U25: DPURADR16L-1.0.0
-    - Avleo U50LV: DPURAHR16L-1.0.0
-- Architecture
-    - One AXI-Lite slave interface for accessing configuration and status registers.
-    - One AXI master interface for accessing instructions.
-    - Several AXI master interfaces for accessing model parameters and input.
-    - The kernel batch size on Alveo U25 and U50LV are 1 and 7.
-- Supported operation types
-    - Matrix-vector multiplication
-    - Element-wise multiplication
-    - Element-wise addition
-    - Sigmoid
-    - Tanh
-##### DPU for RNN directory structure introduction
+The Quantizer and Compiler are not ready now. The process of mix-precision quantization and instruction generation are completed manually for this demo.
 
-    dpu-for-rnn
-    |---- README.md
-    |---- docker_run.sh
-    |---- xclbin
-    |     |---- u25
-    |     |     |---- dpu.xclbin
-    |     |---- u50lv
-    |           |---- dpu.xclbin
-    |---- scripts
-    |     |---- install.sh
-    |     |---- setup_u25.sh
-    |     |---- setup_u50lv.sh
-    |---- app
-    |     |---- customer_satisfaction
-    |     |     |---- README
-    |     |     |---- setup.sh
-    |     |     |---- build_libdpu4rnn.sh
-    |     |     |---- run_cpu_e2e.py 
-    |     |     |---- run_cpu_e2e_batch1.py 
-    |     |     |---- run_dpu_e2e.py 
-    |     |     |---- backup
-    |     |     |     |---- hdf5_format.py
-    |     |---- imdb_sentiment_detection
-    |     |     |---- README
-    |     |     |---- setup.sh
-    |     |     |---- build_libdpu4rnn.sh
-    |     |     |---- demo.csv 
-    |     |     |---- run_cpu_e2e.py 
-    |     |     |---- run_dpu_e2e.py 
-    |     |     |---- backup
-    |     |     |     |---- hdf5_format.py
-    |     |---- open_information_extraction
-    |     |     |---- README
-    |     |     |---- setup.sh
-    |     |     |---- build_libdpu4rnn.sh
-    |     |     |---- run_cpu.sh 
-    |     |     |---- run_cpu_one_trans.sh 
-    |     |     |---- run_dpu.sh 
-    |     |     |---- run_dpu_one_trans.sh 
-    |     |     |---- test_device_close.sh 
-    |     |     |---- backup
-    |     |     |     |---- benchmark.py
-    |     |     |     |---- moveConf.py
-    |     |     |     |---- run_oie.py
-    |     |     |     |---- run_oie_test.py
-    |     |     |     |---- stacked_alternating_lstm_cpu.py
-    |     |     |     |---- stacked_alternating_lstm_dpu.py
-    |     |     |     |---- stacked_alternating_lstm_dpu_new.py
-    |     |     |     |---- tabReader.py
-    |     |     |---- test 
-    |     |     |     |---- test.oie.sent
-    |     |     |     |---- test_in.txt
-    |     |     |---- weights 
-    |     |     |     |---- config.json
-    |     |     |     |---- vocabulary 
-    |     |     |     |     |---- labels.txt
-    |     |     |     |     |---- non_padded_namespaces.txt
-    |     |     |     |     |---- tokens.txt
-    |---- libdpu4rnn
-    |     |---- CMakeLists.txt
-    |     |---- make.sh 
-    |     |---- test.cpp
-    |     |---- test.py
-    |     |---- include
-    |     |     |---- dpu4rnn.hpp
-    |     |---- python
-    |     |     |---- dpu4rnn_python.cpp
-    |     |---- src
-    |     |     |---- dpu4rnn.cpp
-    |     |     |---- dpu4rnn_img.cpp
-    |     |     |---- dpu4rnn_imp.hpp
+Please take the following steps to run the RNN-T based ASR demo on Versal VCK5000.
 
-##### Quick Start from examples
-1. Install Platform.
-    
-    Alveo U25 Platform:
-    ```
-    xilinx-cmc-u25 2.1.2-2955241
-    xilinx-u25-gen3x8-xdma-base 1-2953517
-    xilinx-u25-gen3x8-xdma-validate 1-2954712
-    ```
-    Alveo U50LV Platform:
-    ```
-    xilinx-cmc-u50-1.0.20-2853996.noarch
-    xilinx-u50lv-gen3x4-xdma-base-2-2902115.noarch
-    xilinx-u50lv-gen3x4-xdma-validate-2-2902115.noarch
-    xilinx-sc-fw-u50-5.0.27-2.e289be9.noarch
-    ```
-2. Get dependent model files ready.
-    ```
-    $cd <Your_Path>/dsa/DPU-for-RNN/models/
-    $wget -O u50lv-2020-12-16.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=u50lv-2020-12-16.tar.gz
-    $tar -xvf  u50lv-2020-12-16.tar.gz
-    $wget -O u25-2020-12-16.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=u25-2020-12-16.tar.gz
-    $tar -xvf  u25-2020-12-16.tar.gz
-    ```
-    Then following [this guide](models/README.md) to get all dependent files ready.
+## Install Platform and XRT
+Please install the Platform and XRT as the [user guide](https://www.xilinx.com/products/boards-and-kits/vck5000.html#getStarted).
 
-3. Build rnn docker based on vitis-ai and launch the docker image.
-    
-    To build rnn docker:
-    ```    
-    $cd <Your_Path>
-    $docker build --build-arg BASE_IMAGE=<Vitis AI Docker Image> -f dsa/DPU-for-RNN/Dockerfile.rnn -t <YOUR RNN Docker Image>  .
-    e.g.:
-    $cd <Your_Path>
-    $docker build --build-arg BASE_IMAGE="xilinx/vitis-ai-cpu:latest" -f dsa/DPU-for-RNN/Dockerfile.rnn -t xilinx/vitis-ai-cpu-rnn:latest . 
-    ```    
-    To launch the docker image:
-    ```    
-    $cd <Your_Path>/dsa/DPU-for-RNN/
-    $bash docker_run.sh <YOUR RNN Docker Image>
-    ```
-4. Setup the Alveo U25 (or U50LV)
-    ``` 
-    $cd scripts
-    $source setup_u25.sh # Alveo U25
-    $source setup_u50lv.sh # Alveo U50LV
-    ```
-5. Execute commands as described in application README files. It indicates that your runs get correct output if it reports the same accurcy number as provided in readme file. 
-    - [README: Customer Satisfaction](app/customer_satisfaction/README.md)
-    - [README: Imdb Sentiment Detection](app/imdb_sentiment_detection/README.md)
-    - [README: Open Information Extraction](app/open_information_extraction/README.md)
+VCK5000 Platform
+```
+xilinx-vck5000-es1-gen3x16-base-2-3123623
+xilinx-sc-fw-vck5000-4.4.6-2.e1f5e26
+xilinx-vck5000-es1-gen3x16-validate-2-3123623
+```
+XRT
+```
+xrt-2.11.648-1.x86_64
+```
 
-##### Get Re-trained or New RNN Model Running on DPU
-1. Please check if the model is supported by current version RNN tools.
-2. Take the quantization and compilation process.
-3. Run it on DPU. The following table shows registers map for DPU on Alveo U50lv:
-    
-    | Register | Address (32-bit) | Description |
-    |----------|------------------|-------------|
-    | AP_CTRL  | 0x0              | AP_CTRL[0]: ap_start. 1-busy, 0-idle.|
-    |          |                  | AP_CTRL[1]: ap_done. 1-done, clear on first read.|
-    |          |                  | AP_CTRL[2]: ap_idle. 1-idle, 0-busy.|
-    |          |                  | AP_CTRL[3]: ap_ready. 1-ready, 0-busy. |
-    | SOFT_RESET | 0x14           | Reset the DPU, high level activate |
-    | FRAME_LEN | 0x18            | The sequence length of the input sample |
-    | INSTR_BASE_ADDR_H | 0x1C    | The higher 32bits of instructions address in DDR. Shared with model parameter address register |
-    | INSTR_BASE_ADDR_L | 0x20    | The lower 32bits of instructions address in DDR |
-    | MODEL_BASE_ADDR_L | 0x24    | The lower 32bits of model parameters address in DDR |
-    | INPUT_BASE_ADDR_H | 0x28    | The higher 32bits of input address in DDR. Shared with output address register |
-    | INPUT_BASE_ADDR_L | 0x2C    | The lower 32bits of input address in DDR |
-    | OUTPUT_BASE_ADDR_L | 0x30    | The lower 32bits of output address in DDR |
+## RNN-T demo dependency setup
 
-#### License
- Copyright 2019 Xilinx Inc.
+```shell
+cd setup
+sh docker_build_rnnt.sh
+cd ..
+sh scipts/copyfile.sh
+```
+Download the models
+```shell
+wget https://www.xilinx.com/bin/public/openDownload?filename=best_lstm1616else816.pt -O my_work_dir/best_lstm1616else816.pt
+wget https://www.xilinx.com/bin/public/openDownload?filename=rnnt.bin -O model/rnnt.bin
+```
+We use the [Librispeech  dev clean dataset](http://www.openslr.org/resources/12/dev-clean.tar.gz) as the test dataset. Please download it to the current folder.
+```shell
+wget http://www.openslr.org/resources/12/dev-clean.tar.gz 
+```
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+## Start Docker and activate the conda environment
 
-     http://www.apache.org/licenses/LICENSE-2.0
+```shell
+sh scripts/docker_run.sh
+conda activate rnn_pytorch_1.4
+```
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+## Test dataset preparation
+
+The scripts will generate a summary json file of the dataset.
+Besides, the number of workers in dataloader is 0 by default, you may change it in dataset.py to increase loading data speed.
+
+```shell 
+sh scripts/dataset_prepare.sh
+```
+
+## Compile lib
+
+You don't need to compile it in the docker environment because the library is already prepared. 
+If you want to recompile the library, you should do it in the docker by the following scripts.
+
+```shell
+cd hwlib/libxvrnn/
+sh make.sh
+```
+If you want to compile your own library, you need to set your related python paths in hwlib/libxvrnn/CMakeLists.txt
+
+
+## Run librispeech dev clean  on CPU 
+
+```shell
+sh scipts/run_dataset_cpu.sh
+```
+
+## Run librispeech dev clean on DPU 
+
+```shell
+sh scripts/run_dataset_dpu.sh
+```
+
+
+## Run long wav test
+
+```shell
+sh scripts/run_audio_dpu.sh
+```
+
+## License
+Copyright 2019 Xilinx Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+```
+http://www.apache.org/licenses/LICENSE-2.0
+```
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+
 
 

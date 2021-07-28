@@ -19,17 +19,15 @@
 #include <vector>
 #include <iostream>
 
+#include <aks/AksTensorBuffer.h>
 #include <aks/AksNodeParams.h>
 #include <aks/AksKernelBase.h>
-#include <aks/AksDataDescriptor.h>
-
-using namespace AKS;
 
 class AddKernelBase: public AKS::KernelBase {
   public:
     int exec_async (
-        std::vector<AKS::DataDescriptor *> &in,
-        std::vector<AKS::DataDescriptor *> &out,
+        std::vector<vart::TensorBuffer *> &in,
+        std::vector<vart::TensorBuffer *> &out,
         AKS::NodeParams* params,
         AKS::DynamicParamValues* dynParams);
     int getNumCUs(void);
@@ -48,17 +46,18 @@ int AddKernelBase::getNumCUs(void)
 }
 
 int AddKernelBase::exec_async (
-    vector<AKS::DataDescriptor *>& in, vector<AKS::DataDescriptor *>& out,
+    vector<vart::TensorBuffer *>& in, vector<vart::TensorBuffer *>& out,
     AKS::NodeParams* params, AKS::DynamicParamValues* dynParams)
 {
   AddKernelBase* kbase = this;
-  float* input = (float*)(in[0]->data());
+  float* input = reinterpret_cast<float*>(in[0]->data().first);
 
   // Create one output buffer and resize buffer to required size
-  out.push_back(new AKS::DataDescriptor({1}, AKS::DataType::FLOAT32));
-  float* output = (float*)(out[0]->data());
-
+  std::string tensorName ("add-out");
+  out.push_back(new AKS::AksTensorBuffer(xir::Tensor::clone(in[0]->get_tensor())));
+  float* output = reinterpret_cast<float*>(out[0]->data().first);
+  // Add 
   output[0] = input[0] + params->_intParams["adder"];
-  std::cout << "Node Output : " << params << " " << input[0] << " " << output[0] << std::endl;
+
   return 0;
 }

@@ -23,6 +23,7 @@ Important:
     SemanticFPN_cityscapes_pt
     ENet_cityscapes_pt
     mobilenet_v2_cityscapes_tf
+    SemanticFPN_Mobilenetv2_pt
 
 
 1, compile
@@ -54,4 +55,7 @@ Important:
     output :
 
     sample : ./test_jpeg_segmentation mobilenet_v2_cityscapes_tf sample_segmentation.jpg
+    output :
+
+    sample : ./test_jpeg_segmentation SemanticFPN_Mobilenetv2_pt sample_segmentation.jpg
     output :

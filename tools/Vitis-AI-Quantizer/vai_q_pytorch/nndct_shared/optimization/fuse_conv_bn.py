@@ -69,6 +69,12 @@ class ConvBnHandler(object):
         new_conv_weights = new_conv_weights.reshape((channel_multiplier, in_dim, *kernel_size))
         # [channel_multiplier, in_channles, h, w] -> [channel_multiplier, h, w, in_channles]
         new_conv_weights = new_conv_weights.transpose(0, 2, 3, 1)
+      elif conv_node.op.type == NNDCT_OP.CONV3D:
+        new_conv_weights = conv_weights.transpose(1, 2, 3, 4, 0) * scale
+        new_conv_weights = new_conv_weights.transpose(4, 0, 1, 2, 3)
+      elif conv_node.op.type == NNDCT_OP.CONVTRANSPOSE3D:
+        new_conv_weights = conv_weights.transpose(2, 3, 4, 0, 1) * scale
+        new_conv_weights = new_conv_weights.transpose(3, 4, 0, 1, 2)
       else:
         new_conv_weights = conv_weights.transpose(2, 3, 1, 0) * scale
         new_conv_weights = new_conv_weights.transpose(3, 2, 0, 1)

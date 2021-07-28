@@ -41,9 +41,9 @@ class SSDPost : public vitis::ai::SSDPostProcess {
   bool is_mlperf_;
   std::set<int> bbox_layer_indexes_;
   std::set<int> conf_layer_indexes_;
-  std::vector<SSDOutputInfo> output_layer_infos_;
+  std::vector<vitis::ai::dpssd::SSDOutputInfo> output_layer_infos_;
   // std::vector<int> bbox_layer_indexes_;
-  // std::map<uint32_t, SSDOutputInfo> bbox_layer_infos_;
+  // std::map<uint32_t, vitis::ai::dpssd::SSDOutputInfo> bbox_layer_infos_;
   // std::set<int> bbox_layer_indexes_;
   // Prior Box
   std::vector<std::shared_ptr<std::vector<float>>> priors_;

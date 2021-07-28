@@ -43,7 +43,7 @@ struct ClassificationResult {
   /// Height of input image.
   int height;
   /**
-   *A vector of objects width confidence in the first k, k defaults to 5 and
+   *A vector of object width confidence in the first k; k defaults to 5 and
    *can be modified through the model configuration file.
    */
   std::vector<Score> scores;

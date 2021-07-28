@@ -63,8 +63,17 @@ message Target {
       prelu = 1;
       leaky_relu = 2;
       relu_six = 3;
+      hsigmoid = 4;
+      hswish = 5;
     }
     repeated NonlinearType nonlinear_type = 1;
+  }
+
+  message PadLimit {
+    string pad_left = 1;
+    string pad_right = 2;
+    string pad_top = 3;
+    string pad_bottom = 4;
   }
 
   message Conv {
@@ -98,6 +107,10 @@ message Target {
         mult = 1;
     }
     repeated ElewType elew_type = 6;
+    message ConvCascade {
+        uint32 pixel_parallel = 1;
+    }
+    ConvCascade conv_cascade = 7;
   }
 
   message Pool {
@@ -155,6 +168,33 @@ message Target {
     string param_bank = 5;
   }
 
+  message Alu {
+    uint32 channel_parallel = 1;
+    uint32 pixel_parallel = 2;
+    repeated string input_bank = 3;
+    repeated string output_bank = 4;
+    string weight_bank = 5;
+    string bias_bank = 6;
+    enum AluType {
+        dwconv = 0;
+        prelu = 1;
+        avg_pool = 2;
+        max_pool = 3;
+        leaky_relu = 4;
+        max_reduce = 5;
+        dwconv_no_bias = 6;
+        hsigmoid = 7;
+    }
+    repeated AluType alu_type = 7;
+    Nonlinear nonlinear = 8;
+    message AluLimit {
+      string kernel_size = 1;
+      string stride = 2;
+    }
+    AluLimit alu_limit = 9;
+    PadLimit pad_limit = 10;
+  }
+
   string name = 1;
   string type = 2;
   uint64 isa_version = 3;
@@ -170,6 +210,7 @@ message Target {
   Dwconv dwconv_engine = 11;
   Move move_engine = 12;
   Threshold threshold_engine = 13;
+  Alu alu_engine = 15;
 
   uint32 batch = 14;
 }

@@ -24,7 +24,9 @@ namespace ai {
 struct SSDPoseDetect {
   static std::unique_ptr<SSDPoseDetect> create();
   SSDPoseDetect();
-  std::vector<vitis::ai::PoseDetectResult> run(const cv::Mat &input_image);
+  std::vector<vitis::ai::PoseDetectResult> run(const cv::Mat& input_image);
+  std::vector<std::vector<vitis::ai::PoseDetectResult>> run(
+      const std::vector<cv::Mat>& input_images);
   int getInputWidth();
   int getInputHeight();
   size_t get_input_batch();
@@ -46,7 +48,7 @@ SSDPoseDetect::SSDPoseDetect()
       pose_detect_{vitis::ai::PoseDetect::create("sp_net")} {}
 
 std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
-    const cv::Mat &input_image) {
+    const cv::Mat& input_image) {
   std::vector<vitis::ai::PoseDetectResult> mt_results;
   cv::Mat image;
   auto size = cv::Size(ssd_->getInputWidth(), ssd_->getInputHeight());
@@ -58,7 +60,7 @@ std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
   // run ssd
   auto ssd_results = ssd_->run(image);
 
-  for (auto &box : ssd_results.bboxes) {
+  for (auto& box : ssd_results.bboxes) {
     if (0)
       DLOG(INFO) << "box.x " << box.x << " "            //
                  << "box.y " << box.y << " "            //
@@ -82,18 +84,27 @@ std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
     // process each result of ssd detection
     auto single_result = pose_detect_->run(sub_img);
     for (size_t i = 0; i < 28; i = i + 2) {
-      ((float *)&single_result.pose14pt)[i] =
-          ((float *)&single_result.pose14pt)[i] * sub_img.cols;
-      ((float *)&single_result.pose14pt)[i] =
-          (((float *)&single_result.pose14pt)[i] + xmin) / input_image.cols;
-      ((float *)&single_result.pose14pt)[i + 1] =
-          ((float *)&single_result.pose14pt)[i + 1] * sub_img.rows;
-      ((float *)&single_result.pose14pt)[i + 1] =
-          (((float *)&single_result.pose14pt)[i + 1] + ymin) / input_image.rows;
+      ((float*)&single_result.pose14pt)[i] =
+          ((float*)&single_result.pose14pt)[i] * sub_img.cols;
+      ((float*)&single_result.pose14pt)[i] =
+          (((float*)&single_result.pose14pt)[i] + xmin) / input_image.cols;
+      ((float*)&single_result.pose14pt)[i + 1] =
+          ((float*)&single_result.pose14pt)[i + 1] * sub_img.rows;
+      ((float*)&single_result.pose14pt)[i + 1] =
+          (((float*)&single_result.pose14pt)[i + 1] + ymin) / input_image.rows;
     }
     mt_results.emplace_back(single_result);
   }
   return mt_results;
+}
+
+std::vector<std::vector<vitis::ai::PoseDetectResult>> SSDPoseDetect::run(
+    const std::vector<cv::Mat>& input_images) {
+  std::vector<std::vector<vitis::ai::PoseDetectResult>> rets;
+  for (auto& image : input_images) {
+    rets.push_back(run(image));
+  }
+  return rets;
 }
 
 }  // namespace ai

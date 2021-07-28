@@ -110,6 +110,18 @@ const std::set<const Tensor*> SubgraphImp::get_output_tensors() const {
   return ret;
 }
 
+std::int32_t SubgraphImp::count_op_(
+    const std::set<std::string>& op_types) const {
+  std::int32_t ret = 0;
+  std::for_each(this->ops_.begin(), this->ops_.end(),
+                [&ret, &op_types](Op* op) {
+                  if (op_types.count(op->get_type())) {
+                    ++ret;
+                  }
+                });
+  return ret;
+}
+
 bool SubgraphImp::has_op(const std::string& op_name) const {
   auto ops = this->filter_op_by_name_(op_name);
   switch (ops.size()) {
@@ -692,12 +704,22 @@ std::vector<std::map<OpTemplate*, Op*>> SubgraphImp::isomorphism(
   auto graph_large = get_filtered_graph();
   auto graph_small = static_cast<GraphTemplateImp*>(graph_template);
   auto result = std::make_shared<std::vector<std::map<OpTemplate*, Op*>>>();
+
+  GraphTemplateImp::GraphType& small_graph = *(graph_small->get_boost_graph());
+  auto vertex_order_by_mult = boost::vertex_order_by_mult(small_graph);
+  std::sort(vertex_order_by_mult.begin(), vertex_order_by_mult.end(),
+            [this, &small_graph](GraphTemplateImp::VertexD vertex_x,
+                                 GraphTemplateImp::VertexD vertex_y) {
+              return this->count_op_(small_graph[vertex_x]->get_types()) <
+                     this->count_op_(small_graph[vertex_y]->get_types());
+            });
+
   boost::vf2_subgraph_iso(
       *(graph_small->get_boost_graph()), *graph_large,
-      IsoCallback{graph_small, *graph_large, result},
-      boost::vertex_order_by_mult(*(graph_small->get_boost_graph())),
+      IsoCallback{graph_small, *graph_large, result}, vertex_order_by_mult,
       boost::edges_equivalent(IsoEdgeEquivalent{graph_small, *graph_large})
           .vertices_equivalent(IsoVertexEquivalent{graph_small, *graph_large}));
+
   return *result;
 }
 

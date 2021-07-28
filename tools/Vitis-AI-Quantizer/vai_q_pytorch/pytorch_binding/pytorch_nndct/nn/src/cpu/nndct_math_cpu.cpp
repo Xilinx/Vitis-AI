@@ -16,7 +16,6 @@
 * limitations under the License.
 */
 
-
 #include <ATen/ATen.h>
 #include "c10/util/ArrayRef.h"
 #include "../../include/nndct_math.h"

@@ -45,6 +45,13 @@ const OpTypePattern bias_pattern({"Const|Identity|ReadVariableOp|Sub"});
 
 // Placeholder
 const OpTypePattern placeholder_pattern({"Placeholder"});
+DEFINE_GET_INPUT_NODES(Placeholder) {
+  return std::vector<const NodeDef*> ();
+}
+DEFINE_GET_WEIGHTS_NODES(Placeholder) {
+  return std::vector<const NodeDef*> ();
+}
+const PlaceholderPattern placeholder_pattern_wrapper(placeholder_pattern, "placeholder");
 
 // AtrousConv
 const OpTypePattern atrous_conv_pattern(
@@ -66,6 +73,17 @@ const OpTypePattern atrous_conv_pattern(
         {"*"}, // crops node
       }
     });
+DEFINE_GET_INPUT_NODES(AtrousConv) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(AtrousConv) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const AtrousConvPattern atrous_conv_pattern_wrapper(atrous_conv_pattern, "atrous_conv");
 
 // AtrousConv + bias
 const OpTypePattern atrous_conv_bias_pattern(
@@ -75,6 +93,18 @@ const OpTypePattern atrous_conv_bias_pattern(
         bias_pattern, // bias node
       }
     });
+DEFINE_GET_INPUT_NODES(AtrousConvBias) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(AtrousConvBias) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[1].node));
+  return weights_nodes;
+}
+const AtrousConvBiasPattern atrous_conv_bias_pattern_wrapper(atrous_conv_bias_pattern, "atrous_conv_bias");
 
 // AtrousConv + relu
 const OpTypePattern atrous_conv_relu_pattern(
@@ -83,6 +113,17 @@ const OpTypePattern atrous_conv_relu_pattern(
         atrous_conv_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(AtrousConvRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(AtrousConvRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const AtrousConvReluPattern atrous_conv_relu_pattern_wrapper(atrous_conv_relu_pattern, "atrous_conv_relu");
 
 // AtrousConv
 const OpTypePattern atrous_conv_bias_relu_pattern(
@@ -91,6 +132,18 @@ const OpTypePattern atrous_conv_bias_relu_pattern(
         atrous_conv_bias_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(AtrousConvBiasRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(AtrousConvBiasRelu) {
+    std::vector<const NodeDef*> weights_nodes;
+    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
+    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+    return weights_nodes;
+}
+const AtrousConvBiasReluPattern atrous_conv_bias_relu_pattern_wrapper(atrous_conv_bias_relu_pattern, "atrous_conv_bias_relu");
 
 // ConvFc
 const OpTypePattern convfc_pattern(
@@ -100,14 +153,36 @@ const OpTypePattern convfc_pattern(
         weight_pattern, // weight node
       }
     });
+DEFINE_GET_INPUT_NODES(Convfc) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Convfc) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcPattern convfc_pattern_wrapper(convfc_pattern, "convfc");
 
-// ConvFc + relu
+// ConvFc + relu|sigmoid
 const OpTypePattern convfc_relu_pattern(
-    {"Relu|Relu6",
+    {"Relu|Relu6|Sigmoid",
       {
         convfc_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(ConvfcRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcReluPattern convfc_relu_pattern_wrapper(convfc_relu_pattern, "convfc_relu");
 
 // ConvFc + bias
 const OpTypePattern convfc_bias_pattern(
@@ -117,14 +192,38 @@ const OpTypePattern convfc_bias_pattern(
         bias_pattern, // bias node
       }
     });
+DEFINE_GET_INPUT_NODES(ConvfcBias) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBias) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcBiasPattern convfc_bias_pattern_wrapper(convfc_bias_pattern, "convfc_bias");
 
-// ConvFc + bias + relu
+// ConvFc + bias + relu|sigmod
 const OpTypePattern convfc_bias_relu_pattern(
-    {"Relu|Relu6", // relu node
+    {"Relu|Relu6|Sigmoid", // relu|sigmoid node
       {
         convfc_bias_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(ConvfcBiasRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBiasRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcBiasReluPattern convfc_bias_relu_pattern_wrapper(convfc_bias_relu_pattern, "convfc_bias_relu");
 
 // ConvFc + bias + Identity + relu
 const OpTypePattern convfc_bias_id_relu_pattern(
@@ -137,6 +236,18 @@ const OpTypePattern convfc_bias_id_relu_pattern(
         },
       }
     });
+DEFINE_GET_INPUT_NODES(ConvfcBiasIdRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBiasIdRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcBiasIdReluPattern convfc_bias_id_relu_pattern_wrapper(convfc_bias_id_relu_pattern, "convfc_bias_id_relu");
 
 // Conv2d_transpose
 const OpTypePattern conv2d_transpose_pattern(
@@ -171,6 +282,17 @@ const OpTypePattern conv2d_transpose_pattern(
         input_pattern, // input node
       }
     });
+DEFINE_GET_INPUT_NODES(Conv2dTranspose) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Conv2dTranspose) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[1].node));
+  return weights_nodes;
+}
+const Conv2dTransposePattern conv2d_transpose_pattern_wrapper(conv2d_transpose_pattern, "conv2d_transpose");
 
 // Conv2d_transpose + bias
 const OpTypePattern conv2d_transpose_bias_pattern(
@@ -180,6 +302,18 @@ const OpTypePattern conv2d_transpose_bias_pattern(
         bias_pattern, // bias node
       }
     });
+DEFINE_GET_INPUT_NODES(Conv2dTransposeBias) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Conv2dTransposeBias) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[1].node));
+  return weights_nodes;
+}
+const Conv2dTransposeBiasPattern conv2d_transpose_bias_pattern_wrapper(conv2d_transpose_bias_pattern, "conv2d_transpose_bias");
 
 // Conv2d_transpose + relu
 const OpTypePattern conv2d_transpose_relu_pattern(
@@ -188,6 +322,17 @@ const OpTypePattern conv2d_transpose_relu_pattern(
         conv2d_transpose_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(Conv2dTransposeRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Conv2dTransposeRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const Conv2dTransposeReluPattern conv2d_transpose_relu_pattern_wrapper(conv2d_transpose_relu_pattern, "conv2d_transpose_relu");
 
 // Conv2d_transpose + bias + relu
 const OpTypePattern conv2d_transpose_bias_relu_pattern(
@@ -196,6 +341,18 @@ const OpTypePattern conv2d_transpose_bias_relu_pattern(
         conv2d_transpose_bias_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(Conv2dTransposeBiasRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Conv2dTransposeBiasRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const Conv2dTransposeBiasReluPattern conv2d_transpose_bias_relu_pattern_wrapper(conv2d_transpose_bias_relu_pattern, "conv2d_transpose_bias_relu");
 
 // keras.Conv2DTranspose
 const OpTypePattern keras_conv2d_transpose_pattern(
@@ -240,6 +397,17 @@ const OpTypePattern keras_conv2d_transpose_pattern(
         input_pattern, // input node
       }
     });
+DEFINE_GET_INPUT_NODES(KerasConv2dTranspose) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(KerasConv2dTranspose) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[1].node));
+  return weights_nodes;
+}
+const KerasConv2dTransposePattern keras_conv2d_transpose_pattern_wrapper(keras_conv2d_transpose_pattern, "keras_conv2d_transpose");
 
 // Keras.Conv2DTranspose + bias
 const OpTypePattern keras_conv2d_transpose_bias_pattern(
@@ -249,6 +417,18 @@ const OpTypePattern keras_conv2d_transpose_bias_pattern(
         bias_pattern, // bias node
       }
     });
+DEFINE_GET_INPUT_NODES(KerasConv2dTransposeBias) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(KerasConv2dTransposeBias) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[1].node));
+  return weights_nodes;
+}
+const KerasConv2dTransposeBiasPattern keras_conv2d_transpose_bias_pattern_wrapper(keras_conv2d_transpose_bias_pattern, "keras_conv2d_transpose_bias");
 
 // Keras.Conv2DTranspose + relu
 const OpTypePattern keras_conv2d_transpose_relu_pattern(
@@ -257,6 +437,17 @@ const OpTypePattern keras_conv2d_transpose_relu_pattern(
         keras_conv2d_transpose_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(KerasConv2dTransposeRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(KerasConv2dTransposeRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const KerasConv2dTransposeReluPattern keras_conv2d_transpose_relu_pattern_wrapper(keras_conv2d_transpose_relu_pattern, "keras_conv2d_transpose_relu");
 
 // Keras.Conv2DTranspose + bias + relu
 const OpTypePattern keras_conv2d_transpose_bias_relu_pattern(
@@ -265,6 +456,18 @@ const OpTypePattern keras_conv2d_transpose_bias_relu_pattern(
         keras_conv2d_transpose_bias_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(KerasConv2dTransposeBiasRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(KerasConv2dTransposeBiasRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const KerasConv2dTransposeBiasReluPattern keras_conv2d_transpose_bias_relu_pattern_wrapper(keras_conv2d_transpose_bias_relu_pattern, "keras_conv2d_transpose_bias_relu");
 
 // Conv2d_backprop_input
 const OpTypePattern conv2d_backprop_input_pattern(
@@ -275,6 +478,17 @@ const OpTypePattern conv2d_backprop_input_pattern(
         input_pattern, // input node
       }
     });
+DEFINE_GET_INPUT_NODES(Conv2dBackpropInput) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Conv2dBackpropInput) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[1].node));
+  return weights_nodes;
+}
+const Conv2dBackpropInputPattern conv2d_backprop_input_pattern_wrapper(conv2d_backprop_input_pattern, "conv2d_backprop_input");
 
 // Conv2d_backprop_input + bias
 const OpTypePattern conv2d_backprop_input_bias_pattern(
@@ -284,6 +498,18 @@ const OpTypePattern conv2d_backprop_input_bias_pattern(
         bias_pattern, // bias node
       }
     });
+DEFINE_GET_INPUT_NODES(Conv2dBackpropInputBias) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Conv2dBackpropInputBias) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[1].node));
+  return weights_nodes;
+}
+const Conv2dBackpropInputBiasPattern conv2d_backprop_input_bias_pattern_wrapper(conv2d_backprop_input_bias_pattern, "conv2d_backprop_input_bias");
 
 // Conv2d_backprop_input + relu
 const OpTypePattern conv2d_backprop_input_relu_pattern(
@@ -292,6 +518,17 @@ const OpTypePattern conv2d_backprop_input_relu_pattern(
         conv2d_backprop_input_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(Conv2dBackpropInputRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Conv2dBackpropInputRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const Conv2dBackpropInputReluPattern conv2d_backprop_input_relu_pattern_wrapper(conv2d_backprop_input_relu_pattern, "conv2d_backprop_input_relu");
 
 // Conv2d_backprop_input + bias + Relu
 const OpTypePattern conv2d_backprop_input_bias_relu_pattern(
@@ -300,6 +537,18 @@ const OpTypePattern conv2d_backprop_input_bias_relu_pattern(
         conv2d_backprop_input_bias_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(Conv2dBackpropInputBiasRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[2].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Conv2dBackpropInputBiasRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const Conv2dBackpropInputBiasReluPattern conv2d_backprop_input_bias_relu_pattern_wrapper(conv2d_backprop_input_bias_relu_pattern, "conv2d_backprop_input_bias_relu");
 
 // LeakyRelu
 // - nn.leaky_relu
@@ -315,6 +564,15 @@ const OpTypePattern leakyrelu_pattern(
         input_pattern, // input node
       }
     });
+DEFINE_GET_INPUT_NODES(Leakyrelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[1].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Leakyrelu) {
+  return std::vector<const NodeDef*> ();
+}
+const LeakyreluPattern leakyrelu_pattern_wrapper(leakyrelu_pattern, "leakyrelu");
 
 // - tf1.15.fused_leaky_relu
 const OpTypePattern fused_leakyrelu_pattern(
@@ -323,6 +581,15 @@ const OpTypePattern fused_leakyrelu_pattern(
         input_pattern, // input node
       }
     });
+DEFINE_GET_INPUT_NODES(FusedLeakyrelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(FusedLeakyrelu) {
+  return std::vector<const NodeDef*> ();
+}
+const FusedLeakyreluPattern fused_leakyrelu_pattern_wrapper(fused_leakyrelu_pattern, "fused_leakyrelu");
 
 // - conv + tf1.15.fused_leaky_relu
 const OpTypePattern convfc_fused_leakyrelu_pattern(
@@ -331,6 +598,17 @@ const OpTypePattern convfc_fused_leakyrelu_pattern(
         convfc_pattern, // input node
       }
     });
+DEFINE_GET_INPUT_NODES(ConvfcFusedLeakyrelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcFusedLeakyrelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcFusedLeakyreluPattern convfc_fused_leakyrelu_pattern_wrapper(convfc_fused_leakyrelu_pattern, "convfc_fused_leakyrelu");
 
 // - conv + bias + tf1.15.fused_leaky_relu
 const OpTypePattern convfc_bias_fused_leakyrelu_pattern(
@@ -339,6 +617,18 @@ const OpTypePattern convfc_bias_fused_leakyrelu_pattern(
         convfc_bias_pattern, // input node
       }
     });
+DEFINE_GET_INPUT_NODES(ConvfcBiasFusedLeakyrelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBiasFusedLeakyrelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcBiasFusedLeakyreluPattern convfc_bias_fused_leakyrelu_pattern_wrapper(convfc_bias_fused_leakyrelu_pattern, "convfc_bias_fused_leakyrelu");
 
 // - conv +  nn.leaky_relu
 const OpTypePattern convfc_leakyrelu_pattern(
@@ -353,6 +643,17 @@ const OpTypePattern convfc_leakyrelu_pattern(
         convfc_pattern, // input node
       }
     });
+DEFINE_GET_INPUT_NODES(ConvfcLeakyrelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[1].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcLeakyrelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[1].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcLeakyreluPattern convfc_leakyrelu_pattern_wrapper(convfc_leakyrelu_pattern, "convfc_leakyrelu");
 
 // - conv + bias + nn.leaky_relu
 const OpTypePattern convfc_bias_leakyrelu_pattern(
@@ -360,13 +661,384 @@ const OpTypePattern convfc_bias_leakyrelu_pattern(
       {
         {"Mul",
           {
-            {"Const"}, // alpha node
+            {"Const"}, // alpha node;
             convfc_bias_pattern, // input node
           }
         },
         convfc_bias_pattern, // input node
       }
     });
+DEFINE_GET_INPUT_NODES(ConvfcBiasLeakyrelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[1].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBiasLeakyrelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[1].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[1].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcBiasLeakyreluPattern convfc_bias_leakyrelu_pattern_wrapper(convfc_bias_leakyrelu_pattern, "convfc_bias_leakyrelu");
+
+// swish
+const OpTypePattern swish_pattern(
+    {"Mul",
+      {
+        input_pattern, // input node
+        {"Sigmoid",
+          {
+            input_pattern, // input node
+          }
+        },
+      }
+    });
+DEFINE_GET_INPUT_NODES(Swish) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Swish) {
+  return std::vector<const NodeDef*> ();
+}
+const SwishPattern swish_pattern_wrapper(swish_pattern, "swish");
+
+// - conv +  swish
+const OpTypePattern convfc_swish_pattern(
+    {"Mul",
+      {
+        convfc_pattern, // input node
+        {"Sigmoid",
+          {
+            convfc_pattern, // input node
+          }
+        },
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcSwish) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcSwish) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcSwishPattern  convfc_swish_pattern_wrapper(convfc_swish_pattern, "convfc_swish");
+
+// convfc + bias + swish
+const OpTypePattern convfc_bias_swish_pattern(
+    {"Mul",
+      {
+        convfc_bias_pattern, // input node
+        {"Sigmoid",
+          {
+            convfc_bias_pattern, // input node
+          }
+        },
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcBiasSwish) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBiasSwish) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcBiasSwishPattern convfc_bias_swish_pattern_wrapper(convfc_bias_swish_pattern, "convfc_bias_swish");
+
+// hard swish v2 replace sigmoid_with hard_sigmoid
+const OpTypePattern hard_swish_v2_pattern(
+    {"Mul",
+      {
+        input_pattern, // input node
+        {"Mul",
+          {
+            {"Relu6",
+              {
+                {"Add|AddV2",
+                  {
+                    input_pattern, // input node
+                    {"Const"},    // add 3
+                  }
+                },
+              }
+            },
+            {"Const"}, // scale=1/6
+          }
+        },
+      }
+    });
+DEFINE_GET_INPUT_NODES(HardSwishV2) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(HardSwishV2) {
+  return std::vector<const NodeDef*> ();
+}
+const HardSwishV2Pattern hard_swish_v2_pattern_wrapper(hard_swish_v2_pattern, "hard_swish_v2");
+
+// - conv +  hard_swish_v2
+const OpTypePattern convfc_hard_swish_v2_pattern(
+    {"Mul",
+      {
+        convfc_pattern, // input node
+        {"Mul",
+          {
+            {"Relu6",
+              {
+                {"Add|AddV2",
+                  {
+                    convfc_pattern, // input node
+                    {"Const"},    // add 3
+                  }
+                },
+              }
+            },
+            {"Const"}, // scale=1/6
+          }
+        },
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcHardSwishV2) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcHardSwishV2) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcHardSwishV2Pattern  convfc_hard_swish_v2_pattern_wrapper(convfc_hard_swish_v2_pattern, "convfc_hard_swish_v2");
+
+// convfc + bias + hard_swish_v2
+const OpTypePattern convfc_bias_hard_swish_v2_pattern(
+    {"Mul",
+      {
+        convfc_bias_pattern, // input node
+        {"Mul",
+          {
+            {"Relu6",
+              {
+                {"Add|AddV2",
+                  {
+                    convfc_bias_pattern, // input node
+                    {"Const"},    // add 3
+                  }
+                },
+              }
+            },
+            {"Const"}, // scale=1/6
+          }
+        },
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcBiasHardSwishV2) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBiasHardSwishV2) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcBiasHardSwishV2Pattern convfc_bias_hard_swish_v2_pattern_wrapper(convfc_bias_hard_swish_v2_pattern, "convfc_bias_hard_swish_v2");
+
+// hard swish, place scale of hard_sigmoid to the end of pattern
+const OpTypePattern hard_swish_pattern(
+    {"Mul",
+      {
+        {"Mul",
+          {
+            input_pattern, // input node
+            {"Relu6",
+              {
+                {"Add|AddV2",
+                  {
+                    input_pattern, // input node
+                    {"Const"},    // add 3
+                  }
+                },
+              }
+            },
+          }
+        },
+        {"Const"}, // scale=1/6
+      }
+    });
+DEFINE_GET_INPUT_NODES(HardSwish) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(HardSwish) {
+  return std::vector<const NodeDef*> ();
+}
+const HardSwishPattern hard_swish_pattern_wrapper(hard_swish_pattern, "hard_swish");
+
+// - conv +  hard_swish
+const OpTypePattern convfc_hard_swish_pattern(
+    {"Mul",
+      {
+        {"Mul",
+          {
+            convfc_pattern, // input node
+            {"Relu6",
+              {
+                {"Add|AddV2",
+                  {
+                    convfc_pattern, // input node
+                    {"Const"}, // add 3
+                  }
+                },
+              }
+            },
+          }
+        },
+        {"Const"}, // scale = 1/6
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcHardSwish) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcHardSwish) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcHardSwishPattern  convfc_hard_swish_pattern_wrapper(convfc_hard_swish_pattern, "convfc_hard_swish");
+
+// convfc + bias + hard_swish
+const OpTypePattern convfc_bias_hard_swish_pattern(
+    {"Mul",
+      {
+        {"Mul",
+          {
+            convfc_bias_pattern, // input node
+            {"Relu6",
+              {
+                {"Add|AddV2",
+                  {
+                    convfc_bias_pattern, // input node
+                    {"Const"},  // add 3
+                  }
+                },
+              }
+            },
+          }
+        },
+        {"Const"}, // scale = 1/6
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcBiasHardSwish) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBiasHardSwish) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcBiasHardSwishPattern convfc_bias_hard_swish_pattern_wrapper(convfc_bias_hard_swish_pattern, "convfc_bias_hard_swish");
+
+// Squeeze Excite gating function, hard-sigmoid
+const OpTypePattern hard_sigmoid_pattern(
+    {"Mul",
+      {
+        {"Relu6",
+          {
+            {"Add|AddV2",
+              {
+                input_pattern, // input node
+                {"Const"},    // add 3
+              }
+            },
+          }
+        },
+        {"Const"}, // scale=1/6
+      }
+    });
+DEFINE_GET_INPUT_NODES(HardSigmoid) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(HardSigmoid) {
+  return std::vector<const NodeDef*> ();
+}
+const HardSigmoidPattern hard_sigmoid_pattern_wrapper(hard_sigmoid_pattern, "hard_sigmoid");
+
+// - conv +  hard_sigmoid
+const OpTypePattern convfc_hard_sigmoid_pattern(
+    {"Mul",
+      {
+        {"Relu6",
+          {
+            {"Add|AddV2",
+              {
+                convfc_pattern, // input node
+                {"Const"},    // add 3
+              }
+            },
+          }
+        },
+        {"Const"}, // scale=1/6
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcHardSigmoid) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcHardSigmoid) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcHardSigmoidPattern  convfc_hard_sigmoid_pattern_wrapper(convfc_hard_sigmoid_pattern, "convfc_hard_sigmoid");
+
+// convfc + bias + hard_sigmoid
+const OpTypePattern convfc_bias_hard_sigmoid_pattern(
+    {"Mul",
+      {
+        {"Relu6",
+          {
+            {"Add|AddV2",
+              {
+                convfc_bias_pattern, // input node
+                {"Const"},    // add 3
+              }
+            },
+          }
+        },
+        {"Const"}, // scale=1/6
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcBiasHardSigmoid) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBiasHardSigmoid) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcBiasHardSigmoidPattern convfc_bias_hard_sigmoid_pattern_wrapper(convfc_bias_hard_sigmoid_pattern, "convfc_bias_hard_sigmoid");
 
 // - tf.keras.LeakyRelu
 const OpTypePattern keras_leakyrelu_pattern(
@@ -389,6 +1061,15 @@ const OpTypePattern keras_leakyrelu_pattern(
         },
       }
     });
+DEFINE_GET_INPUT_NODES(KerasLeakyrelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(KerasLeakyrelu) {
+  return std::vector<const NodeDef*> ();
+}
+const KerasLeakyreluPattern keras_leakyrelu_pattern_wrapper(keras_leakyrelu_pattern, "keras_leakyrelu");
 
 // - conv + tf.keras.LeakyRelu
 const OpTypePattern convfc_keras_leakyrelu_pattern(
@@ -411,6 +1092,17 @@ const OpTypePattern convfc_keras_leakyrelu_pattern(
         },
       }
     });
+DEFINE_GET_INPUT_NODES(ConvfcKerasLeakyrelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcKerasLeakyrelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcKerasLeakyreluPattern convfc_keras_leakyrelu_pattern_wrapper(convfc_keras_leakyrelu_pattern, "convfc_keras_leakyrelu");
 
 // - conv + bias + tf.keras.LeakyRelu
 const OpTypePattern convfc_bias_keras_leakyrelu_pattern(
@@ -433,6 +1125,18 @@ const OpTypePattern convfc_bias_keras_leakyrelu_pattern(
         },
       }
     });
+DEFINE_GET_INPUT_NODES(ConvfcBiasKerasLeakyrelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBiasKerasLeakyrelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
+  return weights_nodes;
+}
+const ConvfcBiasKerasLeakyreluPattern convfc_bias_keras_leakyrelu_pattern_wrapper(convfc_bias_keras_leakyrelu_pattern, "convfc_bias_keras_leakyrelu");
 
 // Upsampling
 // - tf.keras.layers.Upsampling2D
@@ -455,6 +1159,15 @@ const OpTypePattern upsampling_pattern(
         },
       }
     });
+DEFINE_GET_INPUT_NODES(Upsampling) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Upsampling) {
+  return std::vector<const NodeDef*> ();
+}
+const UpsamplingPattern upsampling_pattern_wrapper(upsampling_pattern, "upsampling");
 
 // - ResizeBilinear
 const OpTypePattern resize_pattern(
@@ -464,6 +1177,15 @@ const OpTypePattern resize_pattern(
         {"*"}, // size node
       }
     });
+DEFINE_GET_INPUT_NODES(Resize) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Resize) {
+  return std::vector<const NodeDef*> ();
+}
+const ResizePattern resize_pattern_wrapper(resize_pattern, "resize_bilinear");
 
 // nearest_neighbor_upsampling implementation
 // - this implementation only uses reshape and broadcasting to make it TPU compatible,
@@ -485,6 +1207,15 @@ const OpTypePattern tpu_nearest_neighbor_upsampling_pattern(
         {"Const|Pack"},  // output_shape node
       }
     });
+DEFINE_GET_INPUT_NODES(TpuNearestNeighborUpsampling) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(TpuNearestNeighborUpsampling) {
+  return std::vector<const NodeDef*> ();
+}
+const TpuNearestNeighborUpsamplingPattern tpu_nearest_neighbor_upsampling_pattern_wrapper(tpu_nearest_neighbor_upsampling_pattern, "tpu_nearest_neighbor_upsampling");
 
 // BatchNorm
 const OpTypePattern batchnorm_pattern(
@@ -499,6 +1230,15 @@ const OpTypePattern batchnorm_pattern(
         {"Const"}, // offset node
       }
     });
+DEFINE_GET_INPUT_NODES(Batchnorm) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Batchnorm) {
+  return std::vector<const NodeDef*> ();
+}
+const BatchnormPattern batchnorm_pattern_wrapper(batchnorm_pattern, "batchnorm");
 
 // BatchNorm + relu
 const OpTypePattern batchnorm_relu_pattern(
@@ -507,6 +1247,15 @@ const OpTypePattern batchnorm_relu_pattern(
         batchnorm_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(BatchnormRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(BatchnormRelu) {
+  return std::vector<const NodeDef*> ();
+}
+const BatchnormReluPattern batchnorm_relu_pattern_wrapper(batchnorm_relu_pattern, "batchnorm_relu");
 
 // Array
 const OpTypePattern array_pattern(
@@ -516,6 +1265,16 @@ const OpTypePattern array_pattern(
         {"*"}, // input node 2
       }
     });
+DEFINE_GET_INPUT_NODES(Array) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].node));
+  input_nodes.push_back(&(match.inputs[1].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Array) {
+  return std::vector<const NodeDef*> ();
+}
+const ArrayPattern array_pattern_wrapper(array_pattern, "array");
 
 // Array + relu
 const OpTypePattern array_relu_pattern(
@@ -524,6 +1283,16 @@ const OpTypePattern array_relu_pattern(
         array_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(ArrayRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  input_nodes.push_back(&(match.inputs[0].inputs[1].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ArrayRelu) {
+  return std::vector<const NodeDef*> ();
+}
+const ArrayReluPattern array_relu_pattern_wrapper(array_relu_pattern, "array_relu");
 
 // AvgPool + scale
 const OpTypePattern avgpool_mul_pattern(
@@ -537,6 +1306,15 @@ const OpTypePattern avgpool_mul_pattern(
         {"Const"},
       }
     });
+DEFINE_GET_INPUT_NODES(AvgpoolMul) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(AvgpoolMul) {
+  return std::vector<const NodeDef*> ();
+}
+const AvgpoolMulPattern avgpool_mul_pattern_wrapper(avgpool_mul_pattern, "avgpool_mul");
 
 // tf.clip_by_value
 const OpTypePattern clip_by_value_pattern(
@@ -551,10 +1329,26 @@ const OpTypePattern clip_by_value_pattern(
         {"*"}, // min value
       }
     });
+DEFINE_GET_INPUT_NODES(ClipByValue) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ClipByValue) {
+  return std::vector<const NodeDef*> ();
+}
+const ClipByValuePattern clip_by_value_pattern_wrapper(clip_by_value_pattern, "clip_by_value");
 
 // Other
 const OpTypePattern other_pattern(
     {"AvgPool|MaxPool|Mean|Pad|Concat|ConcatV2|Squeeze|Reshape|ExpandDims|Relu|Relu6|AddN|AddV2"});
+DEFINE_GET_INPUT_NODES(Other) {
+  return std::vector<const NodeDef*> ();
+}
+DEFINE_GET_WEIGHTS_NODES(Other) {
+  return std::vector<const NodeDef*> ();
+}
+const OtherPattern other_pattern_wrapper(other_pattern, "other");
 
 // Other + relu
 const OpTypePattern other_relu_pattern(
@@ -563,53 +1357,73 @@ const OpTypePattern other_relu_pattern(
         other_pattern,
       }
     });
+DEFINE_GET_INPUT_NODES(OtherRelu) {
+  return std::vector<const NodeDef*> ();
+}
+DEFINE_GET_WEIGHTS_NODES(OtherRelu) {
+  return std::vector<const NodeDef*> ();
+}
+const OtherReluPattern other_relu_pattern_wrapper(other_relu_pattern, "other_relu");
+
 
 // Known patterns
 // The quantization will perform in the order of this vector, the previously matched
-// pattern will not be matched again. Watch out for the order.
-const std::vector<std::tuple<const string, const OpTypePattern>> known_patterns({
-  std::make_tuple("placeholder", placeholder_pattern),
-  std::make_tuple("atrous_conv_bias_relu", atrous_conv_bias_relu_pattern),
-  std::make_tuple("atrous_conv_bias", atrous_conv_bias_pattern),
-  std::make_tuple("atrous_conv_relu", atrous_conv_relu_pattern),
-  std::make_tuple("atrous_conv", atrous_conv_pattern),
-  std::make_tuple("convfc_bias_leakyrelu", convfc_bias_leakyrelu_pattern),
-  std::make_tuple("convfc_bias_fused_leakyrelu", convfc_bias_fused_leakyrelu_pattern),
-  std::make_tuple("convfc_bias_keras_leakyrelu", convfc_bias_keras_leakyrelu_pattern),
-  std::make_tuple("convfc_leakyrelu", convfc_leakyrelu_pattern),
-  std::make_tuple("convfc_fused_leakyrelu", convfc_fused_leakyrelu_pattern),
-  std::make_tuple("convfc_keras_leakyrelu", convfc_keras_leakyrelu_pattern),
-  std::make_tuple("leakyrelu", leakyrelu_pattern),
-  std::make_tuple("fused_leakyrelu", fused_leakyrelu_pattern),
-  std::make_tuple("keras_leakyrelu", keras_leakyrelu_pattern),
-  std::make_tuple("convfc_bias_id_relu", convfc_bias_id_relu_pattern),
-  std::make_tuple("convfc_bias_relu", convfc_bias_relu_pattern),
-  std::make_tuple("convfc_bias", convfc_bias_pattern),
-  std::make_tuple("convfc_relu", convfc_relu_pattern),
-  std::make_tuple("convfc", convfc_pattern),
-  std::make_tuple("conv2d_transpose_bias_relu", conv2d_transpose_bias_relu_pattern),
-  std::make_tuple("conv2d_transpose_bias", conv2d_transpose_bias_pattern),
-  std::make_tuple("conv2d_transpose_relu", conv2d_transpose_relu_pattern),
-  std::make_tuple("conv2d_transpose", conv2d_transpose_pattern),
-  std::make_tuple("keras_conv2d_transpose_bias_relu", keras_conv2d_transpose_bias_relu_pattern),
-  std::make_tuple("keras_conv2d_transpose_bias", keras_conv2d_transpose_bias_pattern),
-  std::make_tuple("keras_conv2d_transpose_relu", keras_conv2d_transpose_relu_pattern),
-  std::make_tuple("keras_conv2d_transpose", keras_conv2d_transpose_pattern),
-  std::make_tuple("conv2d_backprop_input_bias_relu", conv2d_backprop_input_bias_relu_pattern),
-  std::make_tuple("conv2d_backprop_input_bias", conv2d_backprop_input_bias_pattern),
-  std::make_tuple("conv2d_backprop_input_relu", conv2d_backprop_input_relu_pattern),
-  std::make_tuple("conv2d_backprop_input", conv2d_backprop_input_pattern),
-  std::make_tuple("upsampling", upsampling_pattern),
-  std::make_tuple("resize_bilinear", resize_pattern),
-  std::make_tuple("tpu_nearest_neighbor_upsampling", tpu_nearest_neighbor_upsampling_pattern),
-  std::make_tuple("batchnorm_relu", batchnorm_relu_pattern),
-  std::make_tuple("batchnorm", batchnorm_pattern),
-  std::make_tuple("array_relu", array_relu_pattern),
-  std::make_tuple("array", array_pattern),
-  std::make_tuple("avgpool_mul", avgpool_mul_pattern),
-  std::make_tuple("clip_by_value", clip_by_value_pattern),
-  std::make_tuple("other_relu", other_relu_pattern),
-  std::make_tuple("other", other_pattern),
+// pattern will not be matched again. Watch out for the order
+const std::vector<const OpTypePatternBase*> known_patterns ({
+  &placeholder_pattern_wrapper,
+  &atrous_conv_bias_relu_pattern_wrapper,
+  &atrous_conv_bias_pattern_wrapper,
+  &atrous_conv_relu_pattern_wrapper,
+  &atrous_conv_pattern_wrapper,
+  &convfc_bias_hard_swish_v2_pattern_wrapper,
+  &convfc_bias_hard_swish_pattern_wrapper,
+  &convfc_bias_hard_sigmoid_pattern_wrapper,
+  &convfc_bias_swish_pattern_wrapper,
+  &convfc_bias_leakyrelu_pattern_wrapper,
+  &convfc_bias_fused_leakyrelu_pattern_wrapper,
+  &convfc_bias_keras_leakyrelu_pattern_wrapper,
+  &convfc_hard_swish_v2_pattern_wrapper,
+  &convfc_hard_swish_pattern_wrapper,
+  &convfc_hard_sigmoid_pattern_wrapper,
+  &convfc_swish_pattern_wrapper,
+  &convfc_leakyrelu_pattern_wrapper,
+  &convfc_fused_leakyrelu_pattern_wrapper,
+  &convfc_keras_leakyrelu_pattern_wrapper,
+  &hard_swish_v2_pattern_wrapper,
+  &hard_swish_pattern_wrapper,
+  &hard_sigmoid_pattern_wrapper,
+  &swish_pattern_wrapper,
+  &leakyrelu_pattern_wrapper,
+  &fused_leakyrelu_pattern_wrapper,
+  &keras_leakyrelu_pattern_wrapper,
+  &convfc_bias_id_relu_pattern_wrapper,
+  &convfc_bias_relu_pattern_wrapper,
+  &convfc_bias_pattern_wrapper,
+  &convfc_relu_pattern_wrapper,
+  &convfc_pattern_wrapper,
+  &conv2d_transpose_bias_relu_pattern_wrapper,
+  &conv2d_transpose_bias_pattern_wrapper,
+  &conv2d_transpose_relu_pattern_wrapper,
+  &conv2d_transpose_pattern_wrapper,
+  &keras_conv2d_transpose_bias_relu_pattern_wrapper,
+  &keras_conv2d_transpose_bias_pattern_wrapper,
+  &keras_conv2d_transpose_relu_pattern_wrapper,
+  &keras_conv2d_transpose_pattern_wrapper,
+  &conv2d_backprop_input_bias_relu_pattern_wrapper,
+  &conv2d_backprop_input_bias_pattern_wrapper,
+  &conv2d_backprop_input_relu_pattern_wrapper,
+  &conv2d_backprop_input_pattern_wrapper,
+  &upsampling_pattern_wrapper,
+  &resize_pattern_wrapper,
+  &tpu_nearest_neighbor_upsampling_pattern_wrapper,
+  &batchnorm_relu_pattern_wrapper,
+  &batchnorm_pattern_wrapper,
+  &array_relu_pattern_wrapper,
+  &array_pattern_wrapper,
+  &avgpool_mul_pattern_wrapper,
+  &clip_by_value_pattern_wrapper,
+  &other_relu_pattern_wrapper,
+  &other_pattern_wrapper
   });
 
 //// ignore patterns:
@@ -647,39 +1461,48 @@ const std::vector<std::tuple<const string, const OpTypePattern>> known_ignore_pa
   });
 
 const std::set<string> compute_patterns{
-    "convfc",
-    "convfc_relu",
-    "convfc_bias",
-    "convfc_bias_relu",
-    "convfc_bias_id_relu",
-    "atrous_conv",
-    "atrous_conv_relu",
-    "atrous_conv_bias",
-    "atrous_conv_bias_relu",
-    "convfc_leakyrelu",
-    "convfc_fused_leakyrelu",
-    "convfc_keras_leakyrelu",
-    "convfc_bias_leakyrelu",
-    "convfc_bias_fused_leakyrelu",
-    "convfc_bias_keras_leakyrelu",
-    "conv2d_transpose",
-    "conv2d_transpose_relu",
-    "conv2d_transpose_bias",
-    "conv2d_transpose_bias_relu",
-    "keras_conv2d_transpose",
-    "keras_conv2d_transpose_relu",
-    "keras_conv2d_transpose_bias",
-    "keras_conv2d_transpose_bias_relu",
-    "conv2d_backprop_input",
-    "conv2d_backprop_input_relu",
-    "conv2d_backprop_input_bias",
-    "conv2d_backprop_input_bias_relu"};
+    convfc_pattern_wrapper.GetName(),
+    convfc_relu_pattern_wrapper.GetName(),
+    convfc_bias_pattern_wrapper.GetName(),
+    convfc_bias_relu_pattern_wrapper.GetName(),
+    convfc_bias_id_relu_pattern_wrapper.GetName(),
+    atrous_conv_pattern_wrapper.GetName(),
+    atrous_conv_relu_pattern_wrapper.GetName(),
+    atrous_conv_bias_pattern_wrapper.GetName(),
+    atrous_conv_bias_relu_pattern_wrapper.GetName(),
+    convfc_hard_swish_v2_pattern_wrapper.GetName(),
+    convfc_hard_swish_pattern_wrapper.GetName(),
+    convfc_hard_sigmoid_pattern_wrapper.GetName(),
+    convfc_swish_pattern_wrapper.GetName(),
+    convfc_leakyrelu_pattern_wrapper.GetName(),
+    convfc_fused_leakyrelu_pattern_wrapper.GetName(),
+    convfc_keras_leakyrelu_pattern_wrapper.GetName(),
+    convfc_bias_hard_swish_v2_pattern_wrapper.GetName(),
+    convfc_bias_hard_swish_pattern_wrapper.GetName(),
+    convfc_bias_hard_sigmoid_pattern_wrapper.GetName(),
+    convfc_bias_swish_pattern_wrapper.GetName(),
+    convfc_bias_leakyrelu_pattern_wrapper.GetName(),
+    convfc_bias_fused_leakyrelu_pattern_wrapper.GetName(),
+    convfc_bias_keras_leakyrelu_pattern_wrapper.GetName(),
+    conv2d_transpose_pattern_wrapper.GetName(),
+    conv2d_transpose_relu_pattern_wrapper.GetName(),
+    conv2d_transpose_bias_pattern_wrapper.GetName(),
+    conv2d_transpose_bias_relu_pattern_wrapper.GetName(),
+    keras_conv2d_transpose_pattern_wrapper.GetName(),
+    keras_conv2d_transpose_relu_pattern_wrapper.GetName(),
+    keras_conv2d_transpose_bias_pattern_wrapper.GetName(),
+    keras_conv2d_transpose_bias_relu_pattern_wrapper.GetName(),
+    conv2d_backprop_input_pattern_wrapper.GetName(),
+    conv2d_backprop_input_relu_pattern_wrapper.GetName(),
+    conv2d_backprop_input_bias_pattern_wrapper.GetName(),
+    conv2d_backprop_input_bias_relu_pattern_wrapper.GetName()
+};
 
 const string get_pattern_name_from_id(const int pattern_id) {
   if (pattern_id < 0 || pattern_id > known_patterns.size()) {
     LOG(FATAL) << "Invalid pattern id: " << pattern_id;
   }
-  return std::get<0>(known_patterns[pattern_id]);
+  return known_patterns[pattern_id]->GetName();
 }
 
 const string get_ignore_pattern_name_from_id(const int pattern_id) {
@@ -693,98 +1516,12 @@ const string get_ignore_pattern_name_from_id(const int pattern_id) {
 std::vector<const NodeDef*> get_input_nodes(const NodeMatch& match,
                                             const string& pattern_name) {
   std::vector<const NodeDef*> input_nodes;
-  if (pattern_name == "placeholder") {
-    // No input
-  } else if (pattern_name == "atrous_conv_bias_relu") {
-    input_nodes.push_back(
-        &(match.inputs[0].inputs[0].inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "atrous_conv_bias") {
-    input_nodes.push_back(
-        &(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "atrous_conv_relu") {
-    input_nodes.push_back(
-        &(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "atrous_conv") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "convfc_bias_id_relu") {
-    input_nodes.push_back(
-        &(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "convfc_bias_relu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "convfc_bias") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  } else if (pattern_name == "convfc_relu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  } else if (pattern_name == "convfc") {
-    input_nodes.push_back(&(match.inputs[0].node));
-  } else if (pattern_name == "conv2d_transpose_bias_relu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[2].node));
-  } else if (pattern_name == "conv2d_transpose_bias") {
-    input_nodes.push_back(&(match.inputs[0].inputs[2].node));
-  } else if (pattern_name == "conv2d_transpose_relu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[2].node));
-  } else if (pattern_name == "conv2d_transpose") {
-    input_nodes.push_back(&(match.inputs[2].node));
-  } else if (pattern_name == "keras_conv2d_transpose_bias_relu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[2].node));
-  } else if (pattern_name == "keras_conv2d_transpose_bias") {
-    input_nodes.push_back(&(match.inputs[0].inputs[2].node));
-  } else if (pattern_name == "keras_conv2d_transpose_relu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[2].node));
-  } else if (pattern_name == "keras_conv2d_transpose") {
-    input_nodes.push_back(&(match.inputs[2].node));
-  } else if (pattern_name == "conv2d_backprop_input_bias_relu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[2].node));
-  } else if (pattern_name == "conv2d_backprop_input_bias") {
-    input_nodes.push_back(&(match.inputs[0].inputs[2].node));
-  } else if (pattern_name == "conv2d_backprop_input_relu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[2].node));
-  } else if (pattern_name == "conv2d_backprop_input") {
-    input_nodes.push_back(&(match.inputs[2].node));
-  } else if (pattern_name == "convfc_bias_fused_leakyrelu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "convfc_bias_leakyrelu") {
-    input_nodes.push_back(&(match.inputs[1].inputs[0].inputs[0].node));
-  } else if (pattern_name == "convfc_bias_keras_leakyrelu") {
-    input_nodes.push_back(
-        &(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "convfc_fused_leakyrelu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  } else if (pattern_name == "convfc_leakyrelu") {
-    input_nodes.push_back(&(match.inputs[1].inputs[0].node));
-  } else if (pattern_name == "convfc_keras_leakyrelu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "leakyrelu") {
-    input_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "fused_leakyrelu") {
-    input_nodes.push_back(&(match.inputs[0].node));
-  } else if (pattern_name == "keras_leakyrelu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  } else if (pattern_name == "upsampling") {
-    input_nodes.push_back(&(match.inputs[0].node));
-  } else if (pattern_name == "resize_bilinear") {
-    input_nodes.push_back(&(match.inputs[0].node));
-  } else if (pattern_name == "tpu_nearest_neighbor_upsampling") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "batchnorm_relu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
-  } else if (pattern_name == "batchnorm") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  } else if (pattern_name == "array_relu") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-    input_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "array") {
-    input_nodes.push_back(&(match.inputs[0].node));
-    input_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "avgpool_mul") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  } else if (pattern_name == "clip_by_value") {
-    input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  } else if (pattern_name == "other_relu") {
-  } else if (pattern_name == "other") {
-  } else {
-    LOG(FATAL) << "Unknown pattern_name: " << pattern_name;
+  for (auto it = known_patterns.begin(); it != known_patterns.end(); ++it) {
+    if ((*it)->GetName() == pattern_name) {
+      return (*it)->GetInputNodes(match);
+    }
   }
+  LOG(FATAL) << "Unknown pattern_name: " << pattern_name;
   return input_nodes;
 }
 
@@ -804,97 +1541,14 @@ std::vector<const NodeDef*> get_ignore_nodes(const NodeMatch& match,
 std::vector<const NodeDef*> get_weights_nodes(const NodeMatch& match,
                                               const string& pattern_name) {
   std::vector<const NodeDef*> weights_nodes;
-  if (pattern_name == "placeholder") {
-    // No weights
-  } else if (pattern_name == "atrous_conv_bias_relu") {
-    weights_nodes.push_back(
-        &(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "atrous_conv_bias") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "atrous_conv_relu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-  } else if (pattern_name == "atrous_conv") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "convfc_bias_id_relu") {
-    weights_nodes.push_back(
-        &(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-  } else if (pattern_name == "convfc_bias_relu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "convfc_bias") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "convfc_relu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "convfc") {
-    weights_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "conv2d_transpose_bias_relu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "conv2d_transpose_bias") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "conv2d_transpose_relu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "conv2d_transpose") {
-    weights_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "keras_conv2d_transpose_bias_relu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "keras_conv2d_transpose_bias") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "keras_conv2d_transpose_relu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "keras_conv2d_transpose") {
-    weights_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "conv2d_backprop_input_bias_relu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "conv2d_backprop_input_bias") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "conv2d_backprop_input_relu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "conv2d_backprop_input") {
-    weights_nodes.push_back(&(match.inputs[1].node));
-  } else if (pattern_name == "convfc_bias_fused_leakyrelu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "convfc_bias_leakyrelu") {
-    weights_nodes.push_back(&(match.inputs[1].inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[1].inputs[1].node));
-  } else if (pattern_name == "convfc_bias_keras_leakyrelu") {
-    weights_nodes.push_back(
-        &(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
-    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-  } else if (pattern_name == "convfc_fused_leakyrelu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  } else if (pattern_name == "convfc_leakyrelu") {
-    weights_nodes.push_back(&(match.inputs[1].inputs[1].node));
-  } else if (pattern_name == "convfc_keras_leakyrelu") {
-    weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-  } else if (pattern_name == "leakyrelu") {
-  } else if (pattern_name == "fused_leakyrelu") {
-  } else if (pattern_name == "keras_leakyrelu") {
-  } else if (pattern_name == "upsampling") {
-  } else if (pattern_name == "resize_bilinear") {
-  } else if (pattern_name == "tpu_nearest_neighbor_upsampling") {
-  } else if (pattern_name == "batchnorm_relu") {
-  } else if (pattern_name == "batchnorm") {
-  } else if (pattern_name == "array_relu") {
-  } else if (pattern_name == "array") {
-  } else if (pattern_name == "avgpool_mul") {
-  } else if (pattern_name == "clip_by_value") {
-  } else if (pattern_name == "other_relu") {
-  } else if (pattern_name == "other") {
-  } else {
-    LOG(FATAL) << "Unknown pattern_name: " << pattern_name;
+  for (auto it = known_patterns.begin(); it != known_patterns.end(); ++it) {
+    if ((*it)->GetName() == pattern_name) {
+      return (*it)->GetWeightsNodes(match);
+    }
   }
+  LOG(FATAL) << "Unknown pattern_name: " << pattern_name;
   return weights_nodes;
 }
+
 }  // namespace decent_q
 }  // namespace tensorflow

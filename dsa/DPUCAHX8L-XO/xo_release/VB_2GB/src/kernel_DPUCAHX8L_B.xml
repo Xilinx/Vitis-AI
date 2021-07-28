@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root versionMajor="1" versionMinor="6">
+  <kernel name="DPUCAHX8L_B" language="ip_c" vlnv="deephi.com:kernel:DPUCAHX8L_B:1.0" attributes="" preferredWorkGroupSizeMultiple="0" workGroupSize="1" interrupt="true">
+    <ports>
+      <port name="s_axi_control" mode="slave" range="0x1000" dataWidth="32" portType="addressable" base="0x0"/>
+      <port name="DPU_VB_M_AXI_00" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_VB_M_AXI_01" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_VB_M_AXI_02" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_VB_M_AXI_03" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_VB_M_AXI_04" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_VB_M_AXI_05" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_VB_M_AXI_06" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_VB_M_AXI_07" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_SYS_M_AXI_00" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_SYS_M_AXI_01" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+      <port name="DPU_SYS_M_AXI_02" mode="master" range="0x100000000" dataWidth="256" portType="addressable" base="0x0"/>
+         </ports>
+    <args>
+      <arg name="scalar00"   addressQualifier="0" id="0"  port="s_axi_control" size="0x4" offset="0x010" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar01"   addressQualifier="0" id="1"  port="s_axi_control" size="0x4" offset="0x014" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar02"   addressQualifier="0" id="2"  port="s_axi_control" size="0x4" offset="0x018" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar03"   addressQualifier="0" id="3"  port="s_axi_control" size="0x4" offset="0x01c" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar04"   addressQualifier="0" id="4"  port="s_axi_control" size="0x4" offset="0x020" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar05"   addressQualifier="0" id="5"  port="s_axi_control" size="0x4" offset="0x024" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar06"   addressQualifier="0" id="6"  port="s_axi_control" size="0x4" offset="0x028" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar07"   addressQualifier="0" id="7"  port="s_axi_control" size="0x4" offset="0x080" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar08"   addressQualifier="0" id="8"  port="s_axi_control" size="0x4" offset="0x084" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar09"   addressQualifier="0" id="9"  port="s_axi_control" size="0x4" offset="0x088" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar10"   addressQualifier="0" id="10" port="s_axi_control" size="0x4" offset="0x08c" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar11"   addressQualifier="0" id="11" port="s_axi_control" size="0x4" offset="0x090" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar12"   addressQualifier="0" id="12" port="s_axi_control" size="0x4" offset="0x094" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar13"   addressQualifier="0" id="13" port="s_axi_control" size="0x4" offset="0x098" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar14"   addressQualifier="0" id="14" port="s_axi_control" size="0x4" offset="0x09c" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar15"   addressQualifier="0" id="15" port="s_axi_control" size="0x4" offset="0x0a0" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar16"   addressQualifier="0" id="16" port="s_axi_control" size="0x4" offset="0x0a4" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar17"   addressQualifier="0" id="17" port="s_axi_control" size="0x4" offset="0x0a8" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar18"   addressQualifier="0" id="18" port="s_axi_control" size="0x4" offset="0x0ac" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar19"   addressQualifier="0" id="19" port="s_axi_control" size="0x4" offset="0x0b0" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar20"   addressQualifier="0" id="20" port="s_axi_control" size="0x4" offset="0x0b4" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar21"   addressQualifier="0" id="21" port="s_axi_control" size="0x4" offset="0x0b8" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar22"   addressQualifier="0" id="22" port="s_axi_control" size="0x4" offset="0x0bc" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar23"   addressQualifier="0" id="23" port="s_axi_control" size="0x4" offset="0x0c0" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar24"   addressQualifier="0" id="24" port="s_axi_control" size="0x4" offset="0x1f0" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar25"   addressQualifier="0" id="25" port="s_axi_control" size="0x4" offset="0x1f8" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="scalar26"   addressQualifier="0" id="26" port="s_axi_control" size="0x4" offset="0x1fc" type="uint" hostOffset="0x0" hostSize="0x4"/>
+      <arg name="axi00_ptr0" addressQualifier="1" id="27" port="DPU_VB_M_AXI_00"       size="0x8" offset="0x100" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="axi01_ptr0" addressQualifier="1" id="28" port="DPU_VB_M_AXI_01"       size="0x8" offset="0x108" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="axi02_ptr0" addressQualifier="1" id="29" port="DPU_VB_M_AXI_02"       size="0x8" offset="0x110" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="axi03_ptr0" addressQualifier="1" id="30" port="DPU_VB_M_AXI_03"       size="0x8" offset="0x118" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="axi04_ptr0" addressQualifier="1" id="31" port="DPU_VB_M_AXI_04"       size="0x8" offset="0x120" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="axi05_ptr0" addressQualifier="1" id="32" port="DPU_VB_M_AXI_05"       size="0x8" offset="0x128" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="axi06_ptr0" addressQualifier="1" id="33" port="DPU_VB_M_AXI_06"       size="0x8" offset="0x130" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="axi07_ptr0" addressQualifier="1" id="34" port="DPU_VB_M_AXI_07"       size="0x8" offset="0x138" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="axis01_ptr0" addressQualifier="1" id="35" port="DPU_SYS_M_AXI_00"       size="0x8" offset="0x140" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="axis02_ptr0" addressQualifier="1" id="36" port="DPU_SYS_M_AXI_01"       size="0x8" offset="0x148" type="int*" hostOffset="0x0" hostSize="0x8"/>
+      <arg name="axis03_ptr0" addressQualifier="1" id="37" port="DPU_SYS_M_AXI_02"       size="0x8" offset="0x150" type="int*" hostOffset="0x0" hostSize="0x8"/>
+    </args>
+  </kernel>
+</root>
+
