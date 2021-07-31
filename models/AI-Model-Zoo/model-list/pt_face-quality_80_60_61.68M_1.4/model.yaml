@@ -27,7 +27,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_face-quality_80_60_61.68M_1.4.zip
-  checksum: 7d1732264a16ebefb46d36b6bb5eead7
+  checksum: fbbd98e015b5927f7c9426759b4deba7
 - name: face-quality_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
