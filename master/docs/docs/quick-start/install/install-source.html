@@ -1,4 +1,4 @@
-
+﻿
 
 
 <!DOCTYPE HTML>
@@ -76,7 +76,7 @@
 															<div class="logo-column">
 																<div class="logo">
 																	<a href="https://www.xilinx.com/">
-																	<img src="https://www.xilinx.com/etc.clientlibs/site/clientlibs/xilinx/all/resources/imgs/header/xilinx-header-logo.svg" title="Xilinx Inc"/>
+																	<img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-header-logo.svg" title="Xilinx Inc"/>
 																	</a>
 																</div>
 															</div>
@@ -304,7 +304,7 @@
             
             
               <div class="version">
-                1.3.1
+                1.4
               </div>
             
           
@@ -428,7 +428,7 @@
             
   <table class="sphinxhide">
  <tr>
-   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
    </td>
  </tr>
 </table><div class="section" id="introduction">
@@ -457,7 +457,7 @@ Here we install it under <code class="docutils literal notranslate"><span class=
 </div>
 <p>Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.</p>
 <ol class="simple">
-<li><p>Download the <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.1.tar.gz">vitis_ai_2020.2-r1.3.1.tar.gz</a> and install it to the petalinux system.</p></li>
+<li><p>Download the <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.4.tar.gz">vitis_ai_2020.2-r1.4.tar.gz</a> and install it to the petalinux system.</p></li>
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">vitis_ai_2020</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="n">r1</span><span class="o">.</span><span class="mf">3.1</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="o">-</span><span class="n">C</span> <span class="o">~/</span><span class="n">petalinux_sdk</span><span class="o">/</span><span class="n">sysroots</span><span class="o">/</span><span class="n">aarch64</span><span class="o">-</span><span class="n">xilinx</span><span class="o">-</span><span class="n">linux</span>
 </pre></div>
@@ -482,8 +482,8 @@ steps.</strong></p>
 <li><p>Installing a Board Image.</p>
 <ul>
 <li><p>Download the SD card system image files from the following links:</p>
-<p><a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.3.1.img.gz">ZCU102</a></p>
-<p><a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.2-v1.3.1.img.gz">ZCU104</a></p>
+<p><a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.4.img.gz">ZCU102</a></p>
+<p><a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.2-v1.4.img.gz">ZCU104</a></p>
 <p>Note: The version of the board image should be 2020.2 or above.</p>
 </li>
 <li><p>Use Etcher software to burn the image file onto the SD card.</p></li>
@@ -504,7 +504,7 @@ But you can also download the <code class="docutils literal notranslate"><span c
 <li><p>(Optional) How to update Vitis AI Runtime and install them separately.</p>
 <p>If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.</p>
 <ul class="simple">
-<li><p>Download the <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.1.tar.gz">Vitis AI Runtime 1.3.1</a>.</p></li>
+<li><p>Download the <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.4.tar.gz">Vitis AI Runtime 1.4</a>.</p></li>
 <li><p>Untar the runtime packet and copy the following folder to the board using scp.</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">runtime</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mf">1.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
@@ -528,7 +528,7 @@ Click <a class="reference external" href="../../../models/AI-Model-Zoo/model-lis
 <li><p>Take <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> of ZCU102 as an example.</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  cd /workspace
-  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.1.tar.gz -O resnet50-zcu102_zcu104-r1.3.1.tar.gz
+  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.4.tar.gz -O resnet50-zcu102_zcu104-r1.4.tar.gz
 </pre></div>
 </div>
 <ul class="simple">
@@ -655,7 +655,7 @@ If you want to support video data in other formats, you need to install the rele
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on April 19, 2021.
+        Last updated on August 02, 2021.
       </span>
 
     </p>

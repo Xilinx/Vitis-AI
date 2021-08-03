@@ -1,6 +1,6 @@
 <table class="sphinxhide">
  <tr>
-   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
    </td>
  </tr>
 </table>
@@ -29,9 +29,9 @@ source ~/petalinux_sdk/environment-setup-aarch64-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2020.2-r1.3.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.3.1.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2020.2-r1.4.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2020.2-r1.4.tar.gz) and install it to the petalinux system.
 ```
-tar -xzvf vitis_ai_2020.2-r1.3.1.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
+tar -xzvf vitis_ai_2020.2-r1.4.tar.gz -C ~/petalinux_sdk/sysroots/aarch64-xilinx-linux
 ```
 
 5. Cross compile the sample, take `resnet50` as an example.
@@ -52,9 +52,9 @@ steps.**
 1. Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 
-		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.3.1.img.gz)  
+		[ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2020.2-v1.4.img.gz)  
 
-		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.2-v1.3.1.img.gz)  
+		[ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2020.2-v1.4.img.gz)  
 
       	Note: The version of the board image should be 2020.2 or above.
 	* Use Etcher software to burn the image file onto the SD card.
@@ -76,11 +76,11 @@ steps.**
 3. (Optional) How to update Vitis AI Runtime and install them separately.
 
 	If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
-	* Download the [Vitis AI Runtime 1.3.1](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.3.1.tar.gz).  	
+	* Download the [Vitis AI Runtime 1.4](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-1.4.tar.gz).  	
 	* Untar the runtime packet and copy the following folder to the board using scp.
 	```
-	tar -xzvf vitis-ai-runtime-1.3.1.tar.gz
-	scp -r vitis-ai-runtime-1.3.1/aarch64/centos root@IP_OF_BOARD:~/
+	tar -xzvf vitis-ai-runtime-1.4.tar.gz
+	scp -r vitis-ai-runtime-1.4/aarch64/centos root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
 	* Install the Vitis AI Runtime. Execute the following command.
@@ -96,15 +96,15 @@ steps.**
 	* Take `resnet50` of ZCU102 as an example.
 	```
 	  cd /workspace
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.1.tar.gz -O resnet50-zcu102_zcu104-r1.3.1.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.4.tar.gz -O resnet50-zcu102_zcu104-r1.4.tar.gz
 	```
 	* Copy the downloaded file to the board using scp with the following command.
 	```
-	  scp resnet50-zcu102_zcu104-r1.3.1.tar.gz root@IP_OF_BOARD:~/
+	  scp resnet50-zcu102_zcu104-r1.4.tar.gz root@IP_OF_BOARD:~/
 	```
 	* Log in to the board (using ssh or serial port) and install the model package.
 	```
-	  tar -xzvf resnet50-zcu102_zcu104-r1.3.1.tar.gz
+	  tar -xzvf resnet50-zcu102_zcu104-r1.4.tar.gz
 	  cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 

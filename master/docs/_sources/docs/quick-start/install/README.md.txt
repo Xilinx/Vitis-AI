@@ -1,6 +1,6 @@
 <table class="sphinxhide">
  <tr>
-   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
    </td>
  </tr>
 </table>
@@ -10,7 +10,7 @@
 Two options are available for installing the containers with the Vitis AI tools and resources.
 
  - Pre-built containers on Docker Hub: [xilinx/vitis-ai](https://hub.docker.com/r/xilinx/vitis-ai/tags)
- - Build containers locally with Docker recipes: [Docker Recipes](https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/setup/docker)
+ - Build containers locally with Docker recipes: [Docker Recipes](https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.4/setup/docker)
 
  - [Install Docker](install_docker/README.md) - if Docker not installed on your machine yet
 
