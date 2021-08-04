@@ -34,6 +34,11 @@ files:
   checksum: 456845b1f5c65d19864a00f421a7ccdf
 - name: mobilenet_1_0_224_tf2
   type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-vck190-r1.4.0.tar.gz
+  checksum: 9060b19c6b67c4904a977d22ad3622be
+- name: mobilenet_1_0_224_tf2
+  type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
   checksum: 7532e52398add160e0116a8b5d0eaef8
