@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_personreid-res18_market1501_176_80_1.1G_1.4.zip
-  checksum: 626b888715211407778cf8b5b69f0bd8
+  checksum: e33cf512ccd3a738039e572e4a14c27f
 - name: personreid-res18_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

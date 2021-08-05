@@ -16,7 +16,7 @@
 # under the License.
 
 # CI docker VAI env
-ARG  BASE_IMAGE=xilinx/vitis-ai:latest
+ARG  BASE_IMAGE=xilinx/vitis-ai:1.4.916
 FROM $BASE_IMAGE
 
 ARG PYXIR_REPO=https://github.com/Xilinx/pyxir

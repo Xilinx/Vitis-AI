@@ -34,6 +34,11 @@ files:
   checksum: 4bf2519f8c57f9e6be380d94c21e3d4d
 - name: ssdlite_mobilenet_v2_coco_tf
   type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-vck190-r1.4.0.tar.gz
+  checksum: 41a19f41e99b254740fa681ffe0d3cec
+- name: ssdlite_mobilenet_v2_coco_tf
+  type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
   checksum: 4f63aa076394eb8dc9ccd3b19615dce5

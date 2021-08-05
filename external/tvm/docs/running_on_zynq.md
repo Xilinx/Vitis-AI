@@ -19,9 +19,9 @@ You could find more information on how to setup your target device below:
 
 ### Petalinux setup
 1. Download the Petalinux image for your target:
-    * [ZCU102](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu102-dpu-v2021.1-v1.4.0.img.gz)
-    * [ZCU104](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-zcu104-dpu-v2021.1-v1.4.0.img.gz)
-    * [KV260](https://www.xilinx.com/bin/public/openDownload?filename=xilinx-kv260-dpu-v2020.2-v1.4.0.img.gz)
+    * [ZCU102](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu102-dpu-v2021.1-v1.4.0.img.gz)
+    * [ZCU104](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu104-dpu-v2021.1-v1.4.0.img.gz)
+    * [KV260](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-kv260-dpu-v2020.2-v1.4.0.img.gz)
 2. Use Etcher software to burn the image file onto the SD card.
 3. Insert the SD card with the image into the destination board.
 4. Plug in the power and boot the board using the serial port to operate on the system.

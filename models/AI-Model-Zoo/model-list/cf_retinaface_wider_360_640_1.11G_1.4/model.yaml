@@ -34,6 +34,11 @@ files:
   checksum: 19bd9b8ab6d1f82f417b39f74e0181ba
 - name: retinaface
   type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=retinaface-vck190-r1.4.0.tar.gz
+  checksum: d6675a9110ad0bd1ea9394a40c1c8a07
+- name: retinaface
+  type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
   download link: https://www.xilinx.com/bin/public/openDownload?filename=retinaface-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
   checksum: 34bfea475ec7ea85f2b864b66e367d9d

@@ -34,6 +34,11 @@ files:
   checksum: 7fb1daab7b67ee4b7cc1c052e5c3ed81
 - name: ssd_mobilenet_v1_coco_tf
   type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-vck190-r1.4.0.tar.gz
+  checksum: ac40074927d320515c7712445f8b4068
+- name: ssd_mobilenet_v1_coco_tf
+  type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
   checksum: 5237e55726c4ee7cff284d5ae9c1b78d

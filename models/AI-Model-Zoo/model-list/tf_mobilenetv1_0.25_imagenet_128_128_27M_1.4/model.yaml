@@ -32,4 +32,9 @@ files:
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_25_128_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
   checksum: 3c011693e8255b7c5dedb48d54604ab5
+- name: mobilenet_v1_0_25_128_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_25_128_tf-vck190-r1.4.0.tar.gz
+  checksum: ed05cb69afefff736953b3bdfa59303f
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
