@@ -77,8 +77,8 @@ do
   docker_devices+="--device=$i "
 done
 
-DOCKER_RUN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-if [ "$PWD" != "$DOCKER_RUN_DIR" ]; then
+DOCKER_RUN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd -P )"
+if [ "$HERE" != "$DOCKER_RUN_DIR" ]; then
   echo "WARNING: Please start 'docker_run.sh' from the Vitis-AI/ source directory";
 fi
 
