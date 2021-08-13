@@ -50,15 +50,15 @@ files:
 	sed -i "s/define wrp_SAVE_PARALLEL_IMG   .*/define wrp_SAVE_PARALLEL_IMG   $(SAVE_PARALLEL_IMG)/g" $(CFG_VH_PATH)
 
 ifeq  ($(DBG_ENA), 1)
-	echo -e "\`define wrp_DBG_ENA             1"  >> $(CFG_VH_PATH)
+	printf "\`define wrp_DBG_ENA             1\n"  >> $(CFG_VH_PATH)
 endif
 
 ifeq  ($(PROF_ENA), 1)
-	echo -e "\`define wrp_PROF_ENA            1"  >> $(CFG_VH_PATH)
+	printf "\`define wrp_PROF_ENA            1\n"  >> $(CFG_VH_PATH)
 endif
 
 ifeq  ($(BATCH_N), 6)
-	echo -e "\`define wrp_UBANK_IMG_MRS       1" >> $(CFG_VH_PATH)
-	echo -e "\`define wrp_UBANK_WGT_MRS       1" >> $(CFG_VH_PATH)
-	echo -e "\`define wrp_ELEW_MULT_ENA       0" >> $(CFG_VH_PATH)
+	printf "\`define wrp_UBANK_IMG_MRS       1\n" >> $(CFG_VH_PATH)
+	printf "\`define wrp_UBANK_WGT_MRS       1\n" >> $(CFG_VH_PATH)
+	printf "\`define wrp_ELEW_MULT_ENA       0\n" >> $(CFG_VH_PATH)
 endif
