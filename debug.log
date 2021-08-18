@@ -1,9 +1,11 @@
-[0419/123619.989:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: The pipe has been ended. (0x6D)
-[0419/124107.466:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: The pipe has been ended. (0x6D)
-[0419/124346.211:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: The pipe has been ended. (0x6D)
-[0419/133624.377:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: The pipe has been ended. (0x6D)
-[0419/134329.065:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: The pipe has been ended. (0x6D)
-[0419/135008.832:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: The pipe has been ended. (0x6D)
-[0419/135130.194:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: The pipe has been ended. (0x6D)
-[0419/143739.201:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: The pipe has been ended. (0x6D)
-[0419/143747.751:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: The pipe has been ended. (0x6D)
+[0909/110103.936:ERROR:exit_code_watcher_win.cc(87)] Failed to wait for process exit or stop event
+[0909/110104.261:ERROR:registration_protocol_win.cc(131)] TransactNamedPipe: The pipe has been ended. (0x6D)
+[0909/110127.287:ERROR:exit_code_watcher_win.cc(87)] Failed to wait for process exit or stop event
+[0909/110127.489:ERROR:registration_protocol_win.cc(131)] TransactNamedPipe: The pipe has been ended. (0x6D)
+[0909/110331.138:ERROR:exit_code_watcher_win.cc(87)] Failed to wait for process exit or stop event
+[0909/110331.442:ERROR:registration_protocol_win.cc(131)] TransactNamedPipe: The pipe has been ended. (0x6D)
+[0909/110425.824:ERROR:exit_code_watcher_win.cc(87)] Failed to wait for process exit or stop event
+[0909/110426.029:ERROR:registration_protocol_win.cc(131)] TransactNamedPipe: The pipe has been ended. (0x6D)
+[1203/001419.544:ERROR:registration_protocol_win.cc(131)] TransactNamedPipe: The pipe has been ended. (0x6D)
+[1203/002138.303:ERROR:exit_code_watcher_win.cc(87)] Failed to wait for process exit or stop event
+[1203/002138.470:ERROR:registration_protocol_win.cc(131)] TransactNamedPipe: The pipe has been ended. (0x6D)

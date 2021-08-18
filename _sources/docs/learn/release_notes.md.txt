@@ -1,6 +1,6 @@
-<table class="sphinxhide">
+﻿<table class="sphinxhide">
  <tr>
-   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   <td align="center"><img src="https://github.com/Xilinx/Image-Collateral/blob/main/xilinx-logo.png?raw=true" width="30%"/><h1>Vitis AI</h1>
    </td>
  </tr>
 </table>
@@ -122,13 +122,13 @@
 
 
 ### Whole App Acceleration
-- DPUv2 TRD flow to build from sources (see [WAA-TRD](https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/dsa/WAA-TRD))
+- DPUv2 TRD flow to build from sources (see [WAA-TRD](https://github.com/Xilinx/Vitis-AI/tree/master/dsa/WAA-TRD))
 - DFx based TRD flow to build from pre-built IPs
   1. DPUCZDZ8G
 
-- Existing WAA classification and detection examples ported to DPUv3e (earlier only for DPUv2 and DPUv1) (see [Whole-App-Acceleration](https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/demo/Whole-App-Acceleration))
-- Fall Detection App using DPUv1 and Accelerated Optical Flow (see [Fall Detection](https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/demo/Whole-App-Acceleration/fall_detection))
-- Detection Post Processing (NMS) Acceleration (see [ssd_mobilenet](https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/demo/Whole-App-Acceleration/ssd_mobilenet))
+- Existing WAA classification and detection examples ported to DPUv3e (earlier only for DPUv2 and DPUv1) (see [Whole-App-Acceleration](https://github.com/Xilinx/Vitis-AI/tree/master/demo/Whole-App-Acceleration))
+- Fall Detection App using DPUv1 and Accelerated Optical Flow (see [Fall Detection](https://github.com/Xilinx/Vitis-AI/tree/master/demo/Whole-App-Acceleration/fall_detection))
+- Detection Post Processing (NMS) Acceleration (see [ssd_mobilenet](https://github.com/Xilinx/Vitis-AI/tree/master/demo/Whole-App-Acceleration/ssd_mobilenet))
 
 ### AI Kernel Scheduler
 - Added kernels for new DPUs
@@ -150,7 +150,7 @@
  aiohttp 3.6.3 requires yarl<1.6.0,>=1.0, but you have yarl 1.6.3 which is incompatible.
    - Errors like this can be safely ignored does not affect any Vitis AI functionality
  - Inconsistent accuracies observed in multi-threaded applications using DPUCADF8H
-   - View workaround [here](https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.3.1/examples/DPUCADF8H/tf_resnet50_multi_thread/scripts).
+   - View workaround [here](https://github.com/Xilinx/Vitis-AI/tree/master/examples/DPUCADF8H/tf_resnet50_multi_thread/scripts).
 
 ### Updates
 - v1.3.1
