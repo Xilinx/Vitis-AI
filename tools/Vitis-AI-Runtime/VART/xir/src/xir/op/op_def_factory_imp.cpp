@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-#include "xir/op/op_def_factory_imp.hpp"
-#include "xir/attrs/attrs.hpp"
-#include "xir/op/built_in_ops.hpp"
-
-#include "UniLog/UniLog.hpp"
-
 #include <dlfcn.h>
 #include <iostream>
 #include <iterator>
+#include <mutex>
 #include <sstream>
+
+#include "UniLog/UniLog.hpp"
+#include "xir/attrs/attrs.hpp"
+#include "xir/op/built_in_ops.hpp"
+#include "xir/op/op_def_factory_imp.hpp"
 
 namespace xir {
 
@@ -52,7 +52,9 @@ static void load_ops_library(OpDefFactoryImp* self,
   reg_func(self);
 }
 
+std::mutex factory_mutex;
 const OpDefFactoryImp* op_def_factory() {
+  std::lock_guard<std::mutex> gaurd(factory_mutex);
   static unique_ptr<OpDefFactoryImp> self;
   if (!self) {
     self = make_unique<OpDefFactoryImp>();

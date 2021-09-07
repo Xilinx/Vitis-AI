@@ -1627,13 +1627,15 @@ void shape_infer_conv2d_fix(xir::Op* cur) {
     std::transform(tmp.begin(), tmp.end(), padding.begin(),
                    [](auto i) { return i; });
   }
-  oh = std::ceil((in_shape[1] + padding[2] + padding[3] -
-                  (kernel[1] - 1) * dilation[1] - 1) /
-                 stride[1]) +
+  oh = std::floor(1.0f *
+                  (in_shape[1] + padding[2] + padding[3] -
+                   (kernel[1] - 1) * dilation[1] - 1) /
+                  stride[1]) +
        1;
-  ow = std::ceil((in_shape[2] + padding[0] + padding[1] -
-                  (kernel[0] - 1) * dilation[0] - 1) /
-                 stride[0]) +
+  ow = std::floor(1.0f *
+                  (in_shape[2] + padding[0] + padding[1] -
+                   (kernel[0] - 1) * dilation[0] - 1) /
+                  stride[0]) +
        1;
   oc = w_shape[0];
   std::vector<std::int32_t> new_out_shape = {in->get_shape().at(0), oh, ow, oc};
@@ -1672,13 +1674,15 @@ void shape_infer_depthwise_conv2d_fix(xir::Op* cur) {
     std::transform(tmp.begin(), tmp.end(), padding.begin(),
                    [](auto i) { return i; });
   }
-  oh = std::ceil((in_shape[1] + padding[2] + padding[3] -
-                  (kernel[1] - 1) * dilation[1] - 1) /
-                 stride[1]) +
+  oh = std::floor(1.0f *
+                  (in_shape[1] + padding[2] + padding[3] -
+                   (kernel[1] - 1) * dilation[1] - 1) /
+                  stride[1]) +
        1;
-  ow = std::ceil((in_shape[2] + padding[0] + padding[1] -
-                  (kernel[0] - 1) * dilation[0] - 1) /
-                 stride[0]) +
+  ow = std::floor(1.0f *
+                  (in_shape[2] + padding[0] + padding[1] -
+                   (kernel[0] - 1) * dilation[0] - 1) /
+                  stride[0]) +
        1;
   oc = w_shape[0] * w_shape[3];
   std::vector<std::int32_t> new_out_shape = {in->get_shape().at(0), oh, ow, oc};
@@ -1799,11 +1803,11 @@ void shape_infer_pool_fix(xir::Op* cur) {
     std::transform(tmp.begin(), tmp.end(), padding.begin(),
                    [](auto i) { return i; });
   }
-  oh = std::ceil((in_shape[1] + padding[2] + padding[3] - kernel[1]) /
-                 stride[1]) +
+  oh = std::floor(1.0f * (in_shape[1] + padding[2] + padding[3] - kernel[1]) /
+                  stride[1]) +
        1;
-  ow = std::ceil((in_shape[2] + padding[0] + padding[1] - kernel[0]) /
-                 stride[0]) +
+  ow = std::floor(1.0f * (in_shape[2] + padding[0] + padding[1] - kernel[0]) /
+                  stride[0]) +
        1;
   oc = in_shape[3];
   std::vector<std::int32_t> new_out_shape = {in->get_shape().at(0), oh, ow, oc};

@@ -13,39 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "xir/op/built_in_ops.hpp"
-
 #include <functional>
 
+#include "xir/op/built_in_ops.hpp"
 #include "xir/op/shape_inference.hpp"
 
 using namespace xir;
 
 #define XIR_REGISTER_BUILT_IN_OP(OP)                                           \
-  static BuiltInOPsRegisterer BUILT_IN_OPDEFS_##OP(OP);
+  static BuiltInOPsRegister BUILT_IN_OPDEFS_##OP(OP);
 
-class BuiltInOPsRegistry {
+class BuiltInOPsRegister {
  public:
-  static std::vector<xir::OpDef> BUILT_IN_OPS_;
-  BuiltInOPsRegistry() = default;
+  BuiltInOPsRegister(const xir::OpDef& def) { add_op_def(def); }
+
   static void add_op_def(const xir::OpDef& def) {
     BUILT_IN_OPS_.push_back(std::move(def));
   }
+
+  static std::vector<xir::OpDef> BUILT_IN_OPS_;
 };
 
-std::vector<xir::OpDef> BuiltInOPsRegistry::BUILT_IN_OPS_ =
-    std::vector<xir::OpDef>{};
-
-class BuiltInOPsRegisterer {
- public:
-  BuiltInOPsRegisterer(const xir::OpDef& def) {
-    BuiltInOPsRegistry::add_op_def(def);
-  }
-};
+std::vector<xir::OpDef> BuiltInOPsRegister::BUILT_IN_OPS_ = {};
 
 void register_built_in_ops(xir::OpDefFactory* self) {
-  std::for_each(BuiltInOPsRegistry::BUILT_IN_OPS_.begin(),
-                BuiltInOPsRegistry::BUILT_IN_OPS_.end(),
+  std::for_each(BuiltInOPsRegister::BUILT_IN_OPS_.begin(),
+                BuiltInOPsRegister::BUILT_IN_OPS_.end(),
                 [self](const xir::OpDef& def) { self->register_h(def); });
 }
 
@@ -401,9 +394,7 @@ std::function<void(xir::OpDef&)> FixedConvOpDefGenerator(
         "The padding sizes of input feature maps. "
         "The value must be `{left, right, top, bottom}`.\n\n"
         "For transposed convolutions, the padding here denotes the "
-        "`{kernel_size - 1 - actual_padding}`."
-        "This is an optional attribute, when the pad_mode is SAME or VALID, "
-        "you don't need to specify this attribute.",
+        "`{kernel_size - 1 - actual_padding}`.",
         {0, 0, 0, 0});
     auto nonlinear = xir::AttrDefBuilder<std::string>::build(
         "nonlinear", AttrDef::OPTIONAL,
@@ -514,9 +505,7 @@ std::function<void(xir::OpDef&)> Pool2dOpDefGenerator(xir::DataType::Type T) {
         "pad", AttrDef::OPTIONAL, 4,
         "`Datatype`: `vector<int>`\n\n"
         "The padding sizes of input feature maps. "
-        "The value must be `{left, right, top, bottom}`. "
-        "This is an optional attribute, when the pad_mode is SAME or VALID, "
-        "you don't need to specify this attribute.",
+        "The value must be `{left, right, top, bottom}`.",
         {0, 0, 0, 0});
     auto global = xir::AttrDefBuilder<bool>::build(
         "global", AttrDef::OPTIONAL,
@@ -1442,22 +1431,23 @@ std::function<void(xir::OpDef&)> PadOpDefGenerator(xir::DataType::Type T) {
   };
 }
 
-auto pad =
-    xir::OpDef("pad")
-        .inherit_from(PadOpDefGenerator(xir::DataType::FLOAT))
-        .add_attr(xir::AttrDefBuilder<std::vector<float>>::build(
-            "constant_values", AttrDef::REQUIRED, 0,
-            "`Datatype`: `vector<float>`\n\n"
-            "the value set into the padded locations, 2 * len(paddings)"))
-        .set_shape_infer(xir::shape_infer_pad);
+auto pad = xir::OpDef("pad")
+               .inherit_from(PadOpDefGenerator(xir::DataType::FLOAT))
+               .add_attr(xir::AttrDefBuilder<std::vector<float>>::build(
+                   "constant_values", AttrDef::OPTIONAL, 0,
+                   "`Datatype`: `vector<float>`\n\n"
+                   "the value set into the padded locations, 2 * len(paddings)",
+                   {}))
+               .set_shape_infer(xir::shape_infer_pad);
 
 auto pad_fix =
     xir::OpDef("pad-fix")
         .inherit_from(PadOpDefGenerator(xir::DataType::XINT))
         .add_attr(xir::AttrDefBuilder<std::vector<char>>::build(
-            "constant_values", AttrDef::REQUIRED, 0,
+            "constant_values", AttrDef::OPTIONAL, 0,
             "`Datatype`: `vector<char>`\n\n"
-            "the value set into the padded locations, 2 * len(paddings)"))
+            "the value set into the padded locations, 2 * len(paddings)",
+            {}))
         .set_shape_infer(xir::shape_infer_pad_fix);
 
 XIR_REGISTER_BUILT_IN_OP(pad);
