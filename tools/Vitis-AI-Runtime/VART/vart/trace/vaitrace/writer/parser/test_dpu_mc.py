@@ -42,14 +42,14 @@ def xmodel_to_subgraphs(xmodel):
     root = graph.get_root_subgraph()
 
     # add subgraphs of depth=1
-    ret = list(root.get_children())
+    ret = list(root.toposort_child_subgraph())
 
     # add subgraphs of depth=2
-    for dp1_subgraph in root.get_children():
-        for dp2_subgraph in dp1_subgraph.get_children():
+    for dp1_subgraph in root.toposort_child_subgraph():
+        for dp2_subgraph in dp1_subgraph.toposort_child_subgraph():
             ret.append(dp2_subgraph)
     #return ret
-    return root.get_children()
+    return root.toposort_child_subgraph()
 
 
 def subgraph_to_mc_str(subg):
@@ -120,6 +120,10 @@ if __name__ == "__main__":
                 logging.info(logging_prefix + "Processing subgraph: %s, dpu_name: %s" %
                          (subg.get_name(), dpu_name))
                 load_img_size, load_para_size, save_size, workload = process_mc_str(dpu_name, mc_str)
+                if workload == 0:
+                    """Try to get workload from xmodel"""
+                    if subg.has_attr("workload"):
+                        workload =  subg.get_attr("workload")
                 logging.info(logging_prefix + "Result: LoadImgSize: {:,}, LoadParaSize: {:,}, SaveSize: {:,}, Workload: {:,}".format\
                              (load_img_size, load_para_size, save_size, workload))
                 t_subgraph_dur = (time.time() - t_subgraph_start)
@@ -132,12 +136,17 @@ if __name__ == "__main__":
             # process depth=1 subgraphs
             if xmodel_parse_depth == 1:
                 continue
-            for dp2_subg in subg.get_children():
+            for dp2_subg in subg.toposort_child_subgraph():
                 mc_str = subgraph_to_mc_str(dp2_subg)
                 if mc_str != None:
                     logging.info(logging_prefix + "Processing subgraph of depth=2: %s, dpu_name: %s" %
                                  (dp2_subg.get_name(), dpu_name))
                     load_img_size, load_para_size, save_size, workload = process_mc_str(dpu_name, mc_str)
+
+                    if workload == 0:
+                        """Try to get workload from xmodel"""
+                        if dp2_subg.has_attr("workload"):
+                            workload =  dp2_subg.get_attr("workload")
                     logging.info(logging_prefix + "Result: LoadImgSize: {:,}, LoadParaSize: {:,}, SaveSize: {:,}, Workload: {:,}".format\
                                  (load_img_size, load_para_size, save_size, workload))
                     logging.info(logging_prefix + 80 * "-")

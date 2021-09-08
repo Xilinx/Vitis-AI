@@ -19,7 +19,7 @@ cmake_minimum_required(VERSION 3.5)
 if(DEFINED ENV{BUILD_VER}) 
   project(vitis_ai_library VERSION $ENV{BUILD_VER} LANGUAGES C CXX)
 else()
-  project(vitis_ai_library VERSION 1.4.0 LANGUAGES C CXX)
+  project(vitis_ai_library VERSION 1.4.1 LANGUAGES C CXX)
 endif()
 
 include(${CMAKE_SOURCE_DIR}/cmake/XilinxCommon.cmake)

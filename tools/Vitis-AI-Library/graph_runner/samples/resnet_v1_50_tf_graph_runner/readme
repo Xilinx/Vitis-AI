@@ -24,12 +24,12 @@
 
    run the executable file.
     
-    sample : ./resnet_v1_50_tf_graph_runner ./resnet_v1_50_tf.xmodel sample_classification.jpg 
+    sample : ./resnet_v1_50_tf_graph_runner /usr/share/vitis_ai_library/models/resnet_v1_50_tf/resnet_v1_50_tf.xmodel sample_classification.jpg
              batch_index: 0
-             score[109]  =  0.992801     text: brain coral,
-             score[973]  =  0.00405735   text: coral reef,
-             score[955]  =  0.00246091   text: jackfruit, jak, jack,
-             score[397]  =  0.000122521  text: puffer, pufferfish, blowfish, globefish,
-             score[390]  =  9.54197e-05  text: eel,
+             score[109]  =  0.989221     text: brain coral,
+             score[973]  =  0.00666532   text: coral reef,
+             score[955]  =  0.00314847   text: jackfruit, jak, jack,
+             score[5]    =  0.000156753  text: electric ray, crampfish, numbfish, torpedo,
+             score[115]  =  0.000156753  text: sea slug, nudibranch, 
 
    
