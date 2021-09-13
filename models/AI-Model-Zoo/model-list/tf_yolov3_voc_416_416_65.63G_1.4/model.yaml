@@ -30,13 +30,13 @@ files:
 - name: yolov3_voc_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 8ece8195c006a5ab1c81e1da1ed25edd
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 00e0f31549676fb6506538e5fdd33344
 - name: yolov3_voc_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.4.0.tar.gz
-  checksum: 5f7d13975202ba363e55df7e3fcf6e07
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.4.1.tar.gz
+  checksum: 83e371909f23f59fb1b4a5f2985499dc
 - name: yolov3_voc_tf
   type: xmodel
   board: vck5000

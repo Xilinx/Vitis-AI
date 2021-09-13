@@ -30,13 +30,13 @@ files:
 - name: medical_seg_cell_tf2
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 30fcd5b53dc080285dd6364e7eb40c58
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 75ab10befc7c0b5fa945e17640fac6a1
 - name: medical_seg_cell_tf2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck190-r1.4.0.tar.gz
-  checksum: 59a460ea62e11571f0bffdef40448b6b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck190-r1.4.1.tar.gz
+  checksum: 4739df5990810d6961bf6230dcfef79b
 - name: medical_seg_cell_tf2
   type: xmodel
   board: vck5000

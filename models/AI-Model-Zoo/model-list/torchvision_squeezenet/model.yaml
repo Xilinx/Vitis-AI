@@ -22,13 +22,13 @@ files:
 - name: squeezenet_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 5f148ed4706ffb708809398384c46788
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 1a3434a0312ed3a1e7e5336da7472bcd
 - name: squeezenet_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck190-r1.4.0.tar.gz
-  checksum: 85fdab840433c30194d7f9aed1fa3f3d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck190-r1.4.1.tar.gz
+  checksum: 848de2871a8104a8f44bfe33518a45e8
 - name: squeezenet_pt
   type: xmodel
   board: vck5000

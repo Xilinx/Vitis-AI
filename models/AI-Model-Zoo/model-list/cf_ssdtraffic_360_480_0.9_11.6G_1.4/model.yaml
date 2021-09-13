@@ -30,13 +30,13 @@ files:
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: ebb633c9cfa29cd4843ff2e9d46bef7c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 1d8bb6d44effb68fdf0281b716a56527
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-vck190-r1.4.0.tar.gz
-  checksum: 798049a94f754d11c08313a6344677ef
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-vck190-r1.4.1.tar.gz
+  checksum: 3910e074e1f9c170dd62ecd2edaab263
 - name: ssd_traffic_pruned_0_9
   type: xmodel
   board: vck5000

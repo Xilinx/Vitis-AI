@@ -30,11 +30,11 @@ files:
 - name: efficientNet-edgetpu-L_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-L_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 93e8fa8d2087bc0e2ab55eb18438725f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-L_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 79f587a6daceb74a24948a482324757a
 - name: efficientNet-edgetpu-L_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-L_tf-vck190-r1.4.0.tar.gz
-  checksum: f958d17638d2074cad2031bcd34da4a1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-L_tf-vck190-r1.4.1.tar.gz
+  checksum: 0c9dc6f3bdd9f78cde8728f24e81dc5a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

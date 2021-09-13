@@ -30,13 +30,13 @@ files:
 - name: plate_detect
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: e0d246ad9a6fce8d7b7e43468248844b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 7523811e1c202cc6943853baab553161
 - name: plate_detect
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-vck190-r1.4.0.tar.gz
-  checksum: 2c070dfb32d89c36595f9db130491f0f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-vck190-r1.4.1.tar.gz
+  checksum: bedff31c56da6a6d149af18b2f4b1330
 - name: plate_detect
   type: xmodel
   board: vck5000

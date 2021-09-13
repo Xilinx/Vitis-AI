@@ -30,13 +30,13 @@ files:
 - name: refinedet_VOC_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: ec69ab027db9b641e468e1b4c4e41540
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 0985a57f7d64cd71f24e6f1968e5f016
 - name: refinedet_VOC_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck190-r1.4.0.tar.gz
-  checksum: 4d5b5feb4a6b93853d8c2d710310b61a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck190-r1.4.1.tar.gz
+  checksum: 69b214e7e1b8f38121b385290c1e156c
 - name: refinedet_VOC_tf
   type: xmodel
   board: vck5000

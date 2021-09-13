@@ -31,13 +31,13 @@ files:
 - name: face_landmark
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: f5778e117d3a58b317ae0fab5bb7df41
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 0510d0b119794ee0dcaacbdd0478c62c
 - name: face_landmark
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck190-r1.4.0.tar.gz
-  checksum: 7e48d775c3ddfb5e8279d69285428146
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck190-r1.4.1.tar.gz
+  checksum: d78af1e5a2b3142b5b0bbffadb11d59f
 - name: face_landmark
   type: xmodel
   board: vck5000

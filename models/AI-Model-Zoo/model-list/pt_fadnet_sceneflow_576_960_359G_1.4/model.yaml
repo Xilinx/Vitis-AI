@@ -30,31 +30,31 @@ files:
 - name: FADNet_0_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 71843c85b5ff9e06815cabb085e5a031
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: b4776c833279feab03e51c3b3a3fd982
 - name: FADNet_1_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 5e3a8896ec33e91786886d92771f37b7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: b5293c8b01790c2142ab298c18c7e6c9
 - name: FADNet_2_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 7363c204dafa0d5220a328b7031d5bef
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 8be8347924cdb6edcb1e517a953afc47
 - name: FADNet_0_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-vck190-r1.4.0.tar.gz
-  checksum: a7c22acf667b0395a0ce295064b6547f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-vck190-r1.4.1.tar.gz
+  checksum: 8ca3ad3f119c7649ab59d59011db6c9e
 - name: FADNet_1_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-vck190-r1.4.0.tar.gz
-  checksum: 95cbbb4ba8544eb2501af2793d9b58aa
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-vck190-r1.4.1.tar.gz
+  checksum: 752324d4f76cbb2b44ecc0630a99df67
 - name: FADNet_2_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-vck190-r1.4.0.tar.gz
-  checksum: c344751d4e765406a7e98ba16b1eb031
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-vck190-r1.4.1.tar.gz
+  checksum: 458445dc4ec88dc0bc49ef1d416f90e2
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

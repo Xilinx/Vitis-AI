@@ -30,21 +30,21 @@ files:
 - name: centerpoint_0_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_0_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 67f7e3f99ddca501273095f239aa9d16
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_0_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 92456422d38c36b0f08bdf666b176211
 - name: centerpoint_1_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_1_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 2559e8a5c843298fbda465b4f92e43f8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_1_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 0d123bee47d89c5f5237cd14c26a2095
 - name: centerpoint_0_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_0_pt-vck190-r1.4.0.tar.gz
-  checksum: 54a880e137aeeff94134a0b5c4e74509
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_0_pt-vck190-r1.4.1.tar.gz
+  checksum: d769b2bc3599792cab8072d7a21676c6
 - name: centerpoint_1_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_1_pt-vck190-r1.4.0.tar.gz
-  checksum: a1691ddec15dd8868376e0ae771cb4bc
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_1_pt-vck190-r1.4.1.tar.gz
+  checksum: 4e7540a11f3e37667ecc7a3fb1e1cae5
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

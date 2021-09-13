@@ -30,13 +30,13 @@ files:
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: e24d1c0bf87d3ce91a7c5f9c55740d9f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 2805ecb4497a81d7f05af8cb5740bcaa
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck190-r1.4.0.tar.gz
-  checksum: 58bedf68267b7280c9d9f5e1ee12d20a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck190-r1.4.1.tar.gz
+  checksum: 405098df29ab0b9ea6290b6d02b10003
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: vck5000

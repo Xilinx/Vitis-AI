@@ -30,13 +30,13 @@ files:
 - name: multi_task
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: fbdcf1fec7a0bd6f46fa82610dede0ff
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 318a1de9f30c3426796c1ae08eccc642
 - name: multi_task
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck190-r1.4.0.tar.gz
-  checksum: 2c6bc5b2990c9732bad8ef28736b90d7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck190-r1.4.1.tar.gz
+  checksum: 00518a2444bf48687025b759dac3c924
 - name: multi_task
   type: xmodel
   board: vck5000

@@ -30,13 +30,13 @@ files:
 - name: ssd_mobilenet_v2
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 24313e0eebd6a0b0af2b3c25eb63fa37
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 4c9ceeb5a45535e94e7d3618032ce051
 - name: ssd_mobilenet_v2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-vck190-r1.4.0.tar.gz
-  checksum: f46eabe544ad9e32386a3a0c1e853c88
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-vck190-r1.4.1.tar.gz
+  checksum: b95b54a91c9bea00a5f1b977e839ea81
 - name: ssd_mobilenet_v2
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L

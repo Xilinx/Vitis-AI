@@ -30,11 +30,11 @@ files:
 - name: inception_v2_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: c168309f6d068fd133d13176c61a5475
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 41c8e9e13073fc3fd74ad6e085cb1b3a
 - name: inception_v2_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2_tf-vck190-r1.4.0.tar.gz
-  checksum: f4b6ab6bd59434e293841c042f9342af
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2_tf-vck190-r1.4.1.tar.gz
+  checksum: 862e5a5da7ea30d966c26a3d26359c30
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

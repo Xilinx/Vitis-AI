@@ -30,6 +30,6 @@ files:
 - name: efficientnet-b0_tf2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-vck190-r1.4.0.tar.gz
-  checksum: 51ca2506cec74e09d4801caf933508a3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-vck190-r1.4.1.tar.gz
+  checksum: 132242664e6fc5ad8635e3bf6661a455
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

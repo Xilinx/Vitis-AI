@@ -30,13 +30,13 @@ files:
 - name: yolov4_leaky_spp_m_pruned_0_36
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m_pruned_0_36-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: d6f10a453da239998cd5e43587366865
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m_pruned_0_36-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 8aeb13a3c187adbbe5daa1474383480b
 - name: yolov4_leaky_spp_m_pruned_0_36
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m_pruned_0_36-vck190-r1.4.0.tar.gz
-  checksum: c76d48b6eebcde24f76f47a9c668e8c5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m_pruned_0_36-vck190-r1.4.1.tar.gz
+  checksum: 401b8b7720f37a19c9ad1a57d8340f8f
 - name: yolov4_leaky_spp_m_pruned_0_36
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H

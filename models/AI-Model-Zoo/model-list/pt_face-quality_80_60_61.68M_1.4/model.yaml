@@ -31,13 +31,13 @@ files:
 - name: face-quality_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 751e3f137e75fe90328eff96137a4393
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 1313d9847e7623e165cf1028a4d4cc4d
 - name: face-quality_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck190-r1.4.0.tar.gz
-  checksum: 7dd34900afdbdff19ddd9232ece7d4b7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck190-r1.4.1.tar.gz
+  checksum: c1e9d839def09f013c5c11e19bf8eddb
 - name: face-quality_pt
   type: xmodel
   board: vck5000

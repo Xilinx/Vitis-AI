@@ -30,13 +30,13 @@ files:
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 5bdedd5b463d62ce3e5b148c94bb047a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: ea23db2aecec5e322060691c0254f2a0
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck190-r1.4.0.tar.gz
-  checksum: 8cf5ffadb59741288e8074245d46d819
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck190-r1.4.1.tar.gz
+  checksum: ac0d3acd12690d0b9cefaba7e0665337
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: vck5000

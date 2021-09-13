@@ -30,13 +30,13 @@ files:
 - name: resnet_v1_50_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 63c3dc4e3c78d51206f9a0edbf1a1b8d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: d88c82878f305e8a98006f5dc97429b1
 - name: resnet_v1_50_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-vck190-r1.4.0.tar.gz
-  checksum: baaf737170e7fdbab8974cb45fc1fe1f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-vck190-r1.4.1.tar.gz
+  checksum: 578bfda3aa9f1ad69e71a797cd299274
 - name: resnet_v1_50_tf
   type: xmodel
   board: vck5000

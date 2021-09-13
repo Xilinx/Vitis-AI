@@ -30,13 +30,13 @@ files:
 - name: sp_net
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: f65eb78514d08feade03e64302f51e0a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: fddefd4176dcbf5e28c2d968192ad81e
 - name: sp_net
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.4.0.tar.gz
-  checksum: 67371df7d3b86e5ad8bc7cbdf3ab67a5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.4.1.tar.gz
+  checksum: b5d16dc2421e26192857c029d7c773b5
 - name: sp_net
   type: xmodel
   board: vck5000

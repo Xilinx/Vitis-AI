@@ -30,13 +30,13 @@ files:
 - name: resnet18
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 93f67ee1c13adce4ea7e35c1622f1d89
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: f25fbc677b9ae48308e4e16ac52fc604
 - name: resnet18
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-vck190-r1.4.0.tar.gz
-  checksum: 40fbaebc8a737fc3c797d64a52f241f4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-vck190-r1.4.1.tar.gz
+  checksum: 4d6305f596a3a7658bba25688ec80018
 - name: resnet18
   type: xmodel
   board: vck5000

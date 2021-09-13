@@ -30,13 +30,13 @@ files:
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: a4bc810ffbb4064a0b01353d537a135b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 552bbe607cdeeaf3e315b533928e9c14
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-vck190-r1.4.0.tar.gz
-  checksum: 3ae0be2aa6dd465c40d2be43855e2478
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-vck190-r1.4.1.tar.gz
+  checksum: 5b9dbba972ab7fda559902920e21bab0
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: vck5000

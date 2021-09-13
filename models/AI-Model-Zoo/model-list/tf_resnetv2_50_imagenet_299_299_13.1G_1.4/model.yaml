@@ -30,11 +30,11 @@ files:
 - name: resnet_v2_50_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_50_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 31a8805c2891cee5af1fbc09f65fc5c8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_50_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: f4de824e854f2f53282bfe0cf2bb33b9
 - name: resnet_v2_50_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_50_tf-vck190-r1.4.0.tar.gz
-  checksum: f2c20daf04a89bbb63103a047d19d5c4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_50_tf-vck190-r1.4.1.tar.gz
+  checksum: ec1ecb50da8ae0ef73e7172e4ae67f13
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

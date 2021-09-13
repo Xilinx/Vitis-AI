@@ -30,13 +30,13 @@ files:
 - name: refinedet_pruned_0_96
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 6a525d07db96f25776c4057127bf28be
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: d8117508830967a0cc40922f5fe205fa
 - name: refinedet_pruned_0_96
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-vck190-r1.4.0.tar.gz
-  checksum: 133c64efe50d2edcdf5c62e04d67c296
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-vck190-r1.4.1.tar.gz
+  checksum: 846434ed26d7bc3f0f93f344872414f3
 - name: refinedet_pruned_0_96
   type: xmodel
   board: vck5000

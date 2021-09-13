@@ -30,13 +30,13 @@ files:
 - name: fpn
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 1a53f726794ae1e612ba30c0ddbed6ac
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 60a8752c7fbca0c2146472573d4cd12f
 - name: fpn
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck190-r1.4.0.tar.gz
-  checksum: 8777307471c248b6d0ab8560d455481b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck190-r1.4.1.tar.gz
+  checksum: f901d42d7a5a8a66b5881d4c4ba0e4f1
 - name: fpn
   type: xmodel
   board: vck5000

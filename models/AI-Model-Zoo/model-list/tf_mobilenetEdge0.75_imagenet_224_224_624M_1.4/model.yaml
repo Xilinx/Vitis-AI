@@ -30,11 +30,11 @@ files:
 - name: mobilenet_edge_0_75_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_0_75_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: c64f2b14ab23c858534ece8f2b05a63f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_0_75_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: b08b2fdac4b7aaa37ad116985982c98e
 - name: mobilenet_edge_0_75_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_0_75_tf-vck190-r1.4.0.tar.gz
-  checksum: a58c2b651cac615d7fbd9e6cc048b0c8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_0_75_tf-vck190-r1.4.1.tar.gz
+  checksum: 97d1d3003025d8cf396ac15e38bdb960
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

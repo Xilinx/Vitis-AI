@@ -30,11 +30,11 @@ files:
 - name: FPN-resnet18_Endov
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_Endov-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: a64431611870e897b5ca9ed5270e6e17
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_Endov-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 654a4bdfff0a84e5b1851d2ef0c76593
 - name: FPN-resnet18_Endov
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_Endov-vck190-r1.4.0.tar.gz
-  checksum: 3321ca251faf08a799342be9068e354d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_Endov-vck190-r1.4.1.tar.gz
+  checksum: ce1c85d2e269af3e38ff4685dde2c410
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

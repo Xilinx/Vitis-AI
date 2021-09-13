@@ -30,13 +30,13 @@ files:
 - name: refinedet_baseline
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 0d819f3c5d312b69b142d4a503ab6c93
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 2527eb82a1fa425344b0bf90eb99c8e4
 - name: refinedet_baseline
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-vck190-r1.4.0.tar.gz
-  checksum: 8cec15cd47578aa771c6ad65bc29af53
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-vck190-r1.4.1.tar.gz
+  checksum: d5b9c86337d79be3d6a53971d0544735
 - name: refinedet_baseline
   type: xmodel
   board: vck5000

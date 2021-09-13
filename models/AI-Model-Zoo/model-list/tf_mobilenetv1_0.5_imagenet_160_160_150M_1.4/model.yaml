@@ -30,13 +30,13 @@ files:
 - name: mobilenet_v1_0_5_160_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 2cccddb9cb4d1ce5490ac5a16ef9636a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 7f959944efc3f7e1111d0cdf4c257c8a
 - name: mobilenet_v1_0_5_160_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-vck190-r1.4.0.tar.gz
-  checksum: aaa74310010f139181df322d16cc7271
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-vck190-r1.4.1.tar.gz
+  checksum: eecc39df31843f37cafd7022fde6638f
 - name: mobilenet_v1_0_5_160_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
