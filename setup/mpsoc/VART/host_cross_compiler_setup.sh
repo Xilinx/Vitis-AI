@@ -17,7 +17,7 @@
 
 
 wget https://www.xilinx.com/bin/public/openDownload?filename=sdk-2021.1.0.0.sh -O sdk-2021.1.0.0.sh
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2021.1-r1.4.0.tar.gz -O vitis_ai_2021.1-r1.4.0.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2021.1-r1.4.1.tar.gz -O vitis_ai_2021.1-r1.4.1.tar.gz
 
 chmod +x sdk-2021.1.0.0.sh
 
@@ -33,7 +33,7 @@ fi
 
 echo $install_path|./sdk-2021.1.0.0.sh
 
-tar -xzvf vitis_ai_2021.1-r1.4.0.tar.gz -C $install_path/sysroots/cortexa72-cortexa53-xilinx-linux/
+tar -xzvf vitis_ai_2021.1-r1.4.1.tar.gz -C $install_path/sysroots/cortexa72-cortexa53-xilinx-linux/
 
 echo "Complete Cross Compiler installation"
 echo ""
