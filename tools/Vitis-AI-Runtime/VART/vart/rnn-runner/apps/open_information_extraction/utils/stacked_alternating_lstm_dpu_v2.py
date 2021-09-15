@@ -279,8 +279,12 @@ class StackedAlternatingLstm(torch.nn.Module):
 
         if device_name == "U50LV":
             core = 2
-            models = [os.path.join("models", file)
+            models = [os.path.join("data", file)
                 for file in ["compiled_batch_3.xmodel", "compiled_batch_4.xmodel"]]
+        if device_name == "U25":
+            core = 1
+            models = [os.path.join("data", file)
+                for file in ["compiled_batch_1.xmodel"]]
 
         for i in range(core):
             xmodel = models[i]

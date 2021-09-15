@@ -44,11 +44,10 @@ import time
 #nltk.download('punkt')
 
 current_dir = os.path.dirname(__file__)
-model_filename = os.path.join(current_dir, "models", "LSTM.h5")
+model_filename = os.path.join(current_dir, "data", "LSTM.h5")
 data_filename = os.path.join(current_dir, "data", "imdb.npz")
 word_dict_path = os.path.join(current_dir, "data", "imdb_word_index.json")
 predict_file = os.path.join(current_dir, "data", "IMDB.csv")
-output_predict_file = os.path.join(current_dir, "data", 'predictions.txt')
 
 # set the seed
 np.random.seed(7)

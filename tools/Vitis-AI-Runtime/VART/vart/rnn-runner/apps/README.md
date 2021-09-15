@@ -1,10 +1,3 @@
-# For bash
-
-```sh
-cp /proj/sdxapps/users/abidk/repos/vart/tmp/vai_add_pybind11_module.cmake <your_vart_latest_repo>/cmake/
-cp /proj/sdxapps/users/abidk/repos/vart/tmp/CMakeLists.txt <your_vart_latest_repo>/runner
-```
-
 # Testing Application Models
 
 1. Log into a public xilinx vitis-ai docker
@@ -53,18 +46,10 @@ cp /proj/sdxapps/users/abidk/repos/vart/tmp/CMakeLists.txt <your_vart_latest_rep
     conda deactivate
     ```
 
-1. Get the model files ready for your device
+1. Get the compiled model files for your device
 
     ```sh
-    mkdir -p /workspace/vart/rnn-runner/models
-
-    # for U25
-    wget -O u25-2020-12-16.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=u25-2020-12-16.tar.gz
-    tar -xvf  u25-2020-12-16.tar.gz -C models
-
-    # For U50LV
-    wget -O u50lv-2020-12-16.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=u50lv-2020-12-16.tar.gz
-    tar -xvf  u50lv-2020-12-16.tar.gz -C models
+    cp -r <XCD>:/group/dphi_edge/vai-1.4-rnn-xmodel /workspace/vart/rnn-runner/models
     ```
 
 1. Now follow the instructions in each app's directory

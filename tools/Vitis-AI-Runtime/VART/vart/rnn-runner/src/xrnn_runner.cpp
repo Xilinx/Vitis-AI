@@ -112,7 +112,8 @@ class xrnnRunner : public vart::Runner {
   static std::mutex cu_mtx_[MAX_CUS];
 };
 
-std::string xrnnRunner::device_ = "xrnn";
+std::string xrnnRunner::device_ =
+    ENV_PARAM_XRNN_KERNEL_NAME::get_default_value();  // "xrnn";
 size_t xrnnRunner::count_[] = {0};
 bool xrnnRunner::initialized_[] = {false};
 std::mutex xrnnRunner::mtx_;
@@ -137,6 +138,8 @@ std::mutex xrnnRunner::cu_mtx_[MAX_CUS];
 // }
 
 void xrnnRunner::init_with_subgraph_attr(const xir::Subgraph* subgraph) {
+  DLOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_RUNNER)) << __DATE__ << " : " << __TIME__;
+
   model_parser_ = std::make_unique<vart::xrnn::RnnXmodelParser>(subgraph);
   std::string device_name = model_parser_->get_target_device();
   batch_size_ = model_parser_->get_batch_size();
@@ -269,6 +272,15 @@ std::pair<uint32_t, int> xrnnRunner::execute_async(
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_RUNNER))
       << index_ << "(map to " << index_ % cu_parallel_ << ") is runing ";
 
+  unsigned imutex;
+  if (cu_parallel_ == 1)
+    imutex = device_core_id_;
+  else
+    imutex = device_core_id_;  // index_ % cu_parallel_;
+
+  std::mutex& m = cu_mtx_[imutex];
+  m.lock();
+
   if (true) {  // (xrnn_->get_board_name() == "u50") {  // && model_ ==
                // "openie"){
     xrnn_->update(num_sequences, model_config_.get(), (uint32_t*)config_ptr_,
@@ -277,18 +289,10 @@ std::pair<uint32_t, int> xrnnRunner::execute_async(
         << "update "
         << "ptr @" << (void*)config_ptr_ << " size " << config_size_
         << model_config_->dump_instructions("instr_" + std::to_string(iter++) +
-                                            "_" + std::to_string(batch_size) +
+                                            "_bs" + std::to_string(batch_size) +
+                                            "_t" + std::to_string(index_) +
                                             ".txt");
   }
-
-  unsigned imutex;
-  if (cu_parallel_ == 1)
-    imutex = device_core_id_;
-  else
-    imutex = index_ % cu_parallel_;
-
-  std::mutex& m = cu_mtx_[imutex];
-  m.lock();
 
   xrnn_->run((char*)input_addr, input_size, (char*)output_addr, output_size,
              batch_size, num_sequences, index_ % cu_parallel_);

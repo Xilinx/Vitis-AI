@@ -19,8 +19,10 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <vitis/ai/env_config.hpp>
 
 #include "rnn_model_parser.hpp"
+DEF_ENV_PARAM(DEBUG_DUMP_DATA, "0");
 
 struct LAYER_T {
   int direction;
@@ -74,24 +76,43 @@ class ModelConfig {
   int get_reg_size(int layer_num, CONFIG_NAME config) const;
   ///
   int get_reg_dir(int layer_num, CONFIG_NAME config) const;
-
+  /// Get the filled instructions
   std::pair<char*, size_t> get_instructions();
-  bool dump_instructions(const std::string& filename) const;
+  /// Dump the filled instructions to text file
+  std::string dump_instructions(const std::string& filename) const;
+  /// Get the ddr layout
+  const std::vector<uint32_t>& get_ddr_layout() const;
 
  private:
   const vart::xrnn::RNNModelParser* model_parser_ = nullptr;
+
   // number of layers
   int layers_;
+
   // #layers x ext_mem_reg, all size in int16
   std::vector<std::vector<LAYER_T>> layer_config_;
+
   // dict [batch#n -> [#instruns]]
   // #instructions are in terms 128-bit #rows
   std::map<std::string, std::vector<int>> batch_lines_;
+
+  // Store row index of each section in ddr registers
+  // size = nlayers * 3 + 2
+  // data = [ L0_ddr_reg | L0_first_instr | L0_loop_instr
+  //          ...
+  //          LL_ddr_reg | LL_first_instr | LL_loop_instr
+  //          end_instr
+  //          end ]
+  std::vector<uint32_t> ddr_instr_layout_;
+
+  // composed ddr_reg + instructions
   std::vector<char> instrs_;
 
-  std::vector<char> compose_instructions() const;
+  std::vector<char> compose_instructions();
   std::vector<char> compose_instructions_u50() const;
   std::vector<char> compose_instructions_u25() const;
+  void generate_ddr_layout_u25();
+  void generate_ddr_layout_u50();
   void fill_ddr_config_u50(std::vector<char>& instructions) const;
   void fill_ddr_config_u25(std::vector<char>& instructions) const;
 };

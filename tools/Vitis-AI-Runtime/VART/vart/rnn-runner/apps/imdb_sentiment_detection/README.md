@@ -12,20 +12,19 @@ cp /workspace/vart/rnn-runner/xclbin/u50lv/dpu.xclbin /usr/lib/dpu.xclbin
 
 1. Download the model files
 ```sh
-mkdir -p models/
+mkdir -p data/
 
-cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/LSTM.h5 models/
+cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/LSTM.h5 data/
 
 # [For U25]
-cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/u25/*.xmodel models/
+cp ../../models/u25/xmodels-v1.0/lstm_sentiment_detection/*.xmodel data/
 
 # [For U50LV]
-cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/u50lv/*.xmodel models/
+cp ../../models/u50/xmodels-v1.3/lstm_sentiment_detection/*.xmodel data/
 ```
 
 1. Download the datasets
 ```sh
-mkdir -p data
 cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/IMDB.csv data/
 cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/imdb.npz data/
 cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/imdb_word_index.json data/

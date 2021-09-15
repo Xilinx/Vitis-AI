@@ -50,8 +50,12 @@ assert(device_name in ("U50LV", "U25")), "TARGET_DEVICE should be U50LV/U25"
 num_cores = 1
 if device_name == "U50LV":
     num_cores = 2
-    models = [os.path.join(current_dir, "models", file)
+    models = [os.path.join(current_dir, "data", file)
               for file in ["compiled_batch_3.xmodel", "compiled_batch_4.xmodel"]]
+elif device_name == "U25":
+    num_cores = 1
+    models = [os.path.join(current_dir, "data", file)
+              for file in ["compiled_batch_1.xmodel"]]
 
 num_sequences = 25
 output_seq_dim = 100
@@ -121,7 +125,7 @@ model.compile(loss='binary_crossentropy',
               optimizer='adam', metrics=['accuracy'])
 model.summary()
 
-filename = os.path.join(current_dir, 'models', 'complain_model.h5')
+filename = os.path.join(current_dir, 'data', 'complain_model.h5')
 is_training = False
 if is_training:
     model.fit(X_train, Y_train, validation_data=(

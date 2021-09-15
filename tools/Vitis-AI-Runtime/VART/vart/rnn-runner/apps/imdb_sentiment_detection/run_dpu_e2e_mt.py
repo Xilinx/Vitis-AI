@@ -40,7 +40,7 @@ parser.add_argument('-n', "--num-runners", default=4, type=int)
 args = parser.parse_args()
 
 current_dir = os.path.dirname(__file__)
-model_filename = os.path.join(current_dir, "models", "LSTM.h5")
+model_filename = os.path.join(current_dir, "data", "LSTM.h5")
 data_filename = os.path.join(current_dir, "data", "imdb.npz")
 word_dict_path = os.path.join(current_dir, "data", "imdb_word_index.json")
 predict_file = os.path.join(current_dir, "data", "IMDB.csv")
@@ -174,8 +174,12 @@ assert(device_name in ("U50LV", "U25")), "TARGET_DEVICE should be U50LV/U25"
 num_cores = 1
 if device_name == "U50LV":
     num_cores = 2
-    models = [os.path.join(current_dir, "models", file)
+    models = [os.path.join(current_dir, "data", file)
               for file in ["compiled_batch_3.xmodel", "compiled_batch_4.xmodel"]]
+elif device_name == "U25":
+    num_cores = 1
+    models = [os.path.join(current_dir, "data", file)
+              for file in ["compiled_batch_1.xmodel"]]
 
 # Setup the Runners
 for runner_idx in range(args.num_runners):

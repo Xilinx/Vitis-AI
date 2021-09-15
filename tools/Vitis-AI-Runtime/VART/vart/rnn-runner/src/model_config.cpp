@@ -25,6 +25,45 @@
 
 DEF_ENV_PARAM(DEBUG_MODEL_CONFIG, "0");
 
+template <int FACTOR>
+static uint32_t align_to(uint32_t n) {
+  auto a = n + FACTOR - 1;
+  auto b = a / FACTOR;
+  auto c = b * FACTOR;
+  return c;
+}
+
+template <typename T>
+static std::string dump_ddr_instr_layout(const std::vector<T>& layout,
+                                         const std::string& filename) {
+  std::ofstream of(filename);
+  if (!of.is_open()) {
+    LOG(WARNING) << "Couldn't open " << filename;
+    return "";
+  }
+  for (auto val : layout) {
+    of << val << "\n";
+  }
+  return "";
+}
+
+template <typename Map>
+static std::string dump_batch_lines(const Map& batch_lines,
+                                    const std::string& filename) {
+  std::ofstream of(filename);
+  if (!of.is_open()) {
+    LOG(WARNING) << "Couldn't open " << filename;
+    return "";
+  }
+  for (auto& [key, num_instrs] : batch_lines) {
+    of << key << "\n";
+    for (auto val : num_instrs) {
+      of << val << "\n";
+    }
+  }
+  return "";
+}
+
 static json_object* read_json_from_directory(
     const std::string& model_directory) {
   auto config_filename = model_directory + "/" + "config.json";
@@ -203,44 +242,46 @@ const std::vector<int>& ModelConfig::get_instr_count_vector(int batch) const {
   return batch_lines_.at(batch_name);
 }
 
-std::vector<char> ModelConfig::compose_instructions() const {
+std::vector<char> ModelConfig::compose_instructions() {
   const auto& target = model_parser_->get_target_device();
   std::vector<char> instructions;
   if (target == "U50") {
+    generate_ddr_layout_u50();
     instructions = compose_instructions_u50();
     fill_ddr_config_u50(instructions);
   } else if (target == "U25") {
-    instructions = compose_instructions_u25();
-    fill_ddr_config_u25(instructions);
+    generate_ddr_layout_u25();
+    instructions = compose_instructions_u50();
+    fill_ddr_config_u50(instructions);
   }
+  LOG_IF(INFO, ENV_PARAM(DEBUG_DUMP_DATA))
+      << "Dumping ddr layout to ddr_layout.txt ... "
+      << dump_ddr_instr_layout(ddr_instr_layout_, "ddr_layout.txt") << "Done";
+  LOG_IF(INFO, ENV_PARAM(DEBUG_DUMP_DATA))
+      << "Dumping batch lines to ddr_batchlines.txt ... "
+      << dump_batch_lines(batch_lines_, "ddr_batchlines.txt") << "Done";
   return instructions;
 }
 
 std::vector<char> ModelConfig::compose_instructions_u50() const {
-  std::vector<char> instructions;
-
   constexpr int instruction_width = 16;  // Bytes
-  constexpr int nrows_per_batch = 3;
-  constexpr int misc_rows_per_layer = 2;
-  int nrows_per_layer =
-      model_parser_->get_batch_size() * nrows_per_batch + misc_rows_per_layer;
-  int ddr_reg_size = nrows_per_layer * instruction_width;
-
+  auto ninstrs = ddr_instr_layout_.back();
+  std::vector<char> instructions(ninstrs * instruction_width);
   int nlayers = layers_;
   for (int i = 0; i < nlayers; ++i) {
-    int header_size =
-        (i == 0) ? ddr_reg_size + instruction_width : ddr_reg_size;
     auto init_instr = model_parser_->get_first_instructions(i);
     auto loop_instr = model_parser_->get_loop_instructions(i);
-
-    instructions.resize(instructions.size() + header_size);
-    instructions.insert(instructions.end(), init_instr.begin(),
-                        init_instr.end());
-    instructions.insert(instructions.end(), loop_instr.begin(),
-                        loop_instr.end());
+    auto first_iter = std::next(
+        instructions.begin(), ddr_instr_layout_[i * 3 + 1] * instruction_width);
+    auto loop_iter = std::next(
+        instructions.begin(), ddr_instr_layout_[i * 3 + 2] * instruction_width);
+    std::copy(init_instr.begin(), init_instr.end(), first_iter);
+    std::copy(loop_instr.begin(), loop_instr.end(), loop_iter);
   }
   auto end_instr = model_parser_->get_end_instructions();
-  instructions.insert(instructions.end(), end_instr.begin(), end_instr.end());
+  auto end_iter = std::next(instructions.begin(),
+                            ddr_instr_layout_.end()[-2] * instruction_width);
+  std::copy(end_instr.begin(), end_instr.end(), end_iter);
   return instructions;
 }
 
@@ -274,28 +315,27 @@ void ModelConfig::fill_ddr_config_u50(std::vector<char>& instrns) const {
   //
   // One-time Programming for a model
   //
-  int num_end_instrs = get_end_instr_count(batch);
-  int end_instr_offset = instrns.size() - num_end_instrs * BYTES_PER_ROW;
+  uint32_t num_end_instrs = get_end_instr_count(batch);
+  uint32_t end_instr_offset = ddr_instr_layout_.end()[-2] * BYTES_PER_ROW;
   i32_ptr[4] = layers_;                          // num of layers
   i32_ptr[5] = INSTR_OFFSET + end_instr_offset;  // end_instr address
   i32_ptr[6] = num_end_instrs;                   // #end instrs (in rows)
 
   //
-  // Programming DDR config for all layers
+  // Programming DDR config header for all layers
+  // Its values are constant for a compiled model
   //
 
   for (int i = 0; i < layers_; ++i) {
-    uint32_t base_addr =
-        INSTR_OFFSET + reinterpret_cast<char*>(i32_ptr) - i8_base_ptr;
+    i32_ptr = reinterpret_cast<uint32_t*>(i8_base_ptr) +
+              ddr_instr_layout_[i * 3] * REGS_PER_ROW;
+    uint32_t base_addr = INSTR_OFFSET;
     uint32_t cur_layer_header_len =
         (i == 0) ? LAYER_HEADER_LEN + 1 : LAYER_HEADER_LEN;
-    uint32_t first_instr_offset = cur_layer_header_len * BYTES_PER_ROW;
+    uint32_t first_instr_offset = ddr_instr_layout_[i * 3 + 1] * BYTES_PER_ROW;
     uint32_t first_instr_count = get_first_instr_count(i, batch);
-    uint32_t loop_instr_offset =
-        first_instr_offset + first_instr_count * BYTES_PER_ROW;
+    uint32_t loop_instr_offset = ddr_instr_layout_[i * 3 + 2] * BYTES_PER_ROW;
     uint32_t loop_instr_count = get_loop_instr_count(i, batch);
-    uint32_t instr_frame_len =
-        cur_layer_header_len + first_instr_count + loop_instr_count;
 
     i32_ptr[HEAD_LEN_OFFSET] = cur_layer_header_len - 1;  // head-len
     constexpr uint32_t L0_SKIP = 4;  // Skip extra 4 reg for layer0
@@ -311,6 +351,7 @@ void ModelConfig::fill_ddr_config_u50(std::vector<char>& instrns) const {
       i32_ptr[LINSTR_LEN_OFFSET] = loop_instr_count;
     }
 
+    // Store on-chip memory addresses generated by compiler
     uint32_t* bhead_ptr = i32_ptr + SKIP_REGS;
     if (i == 0) bhead_ptr += L0_SKIP;
     if (auto int_mem_reg_data =
@@ -329,29 +370,91 @@ void ModelConfig::fill_ddr_config_u50(std::vector<char>& instrns) const {
             int_mem_reg_data.at(b);
       }
     }
-
-    i32_ptr += (instr_frame_len * REGS_PER_ROW);
   }
 }
 
 void ModelConfig::fill_ddr_config_u25(std::vector<char>& instructions) const {}
 
-bool ModelConfig::dump_instructions(const std::string& filename) const {
+void ModelConfig::generate_ddr_layout_u25() {
+  constexpr uint32_t ROW_ALIGNMENT = 16;
+  const auto* mp = model_parser_;
+  auto batch_size = mp->get_batch_size();
+  auto header = batch_size * 3 + 2;
+
+  uint32_t idx = 0;
+  for (int i = 0; i < layers_; ++i) {
+    auto head = (i == 0) ? header + 1 : header;
+    auto first = mp->get_first_instructions(i).size();  // in bytes
+    auto loop = mp->get_loop_instructions(i).size();    // in bytes
+    CHECK(first % 16 == 0);
+    CHECK(loop % 16 == 0);
+
+    ddr_instr_layout_.push_back(idx);  // header index
+    idx = align_to<ROW_ALIGNMENT>(idx + head);
+    ddr_instr_layout_.push_back(idx);  // first_instr index
+    idx = align_to<ROW_ALIGNMENT>(idx + first / 16);
+    ddr_instr_layout_.push_back(idx);  // loop_instr index
+    idx += (loop / 16);
+  }
+
+  idx = align_to<ROW_ALIGNMENT>(idx);
+  ddr_instr_layout_.push_back(idx);  // end_instr index
+
+  auto end = mp->get_end_instructions().size();  // in bytes
+  CHECK(end % 16 == 0);
+  idx = align_to<ROW_ALIGNMENT>(idx + end / 16);
+  ddr_instr_layout_.push_back(idx);  // final row index
+}
+
+void ModelConfig::generate_ddr_layout_u50() {
+  const auto* mp = model_parser_;
+  auto batch_size = mp->get_batch_size();
+  auto header = batch_size * 3 + 2;
+
+  uint32_t idx = 0;
+  for (int i = 0; i < layers_; ++i) {
+    auto head = (i == 0) ? header + 1 : header;
+    auto first = mp->get_first_instructions(i).size();  // in bytes
+    auto loop = mp->get_loop_instructions(i).size();    // in bytes
+    CHECK(first % 16 == 0);
+    CHECK(loop % 16 == 0);
+
+    ddr_instr_layout_.push_back(idx);  // header index
+    idx += head;
+    ddr_instr_layout_.push_back(idx);  // first_instr index
+    idx += first / 16;
+    ddr_instr_layout_.push_back(idx);  // loop_instr index
+    idx += loop / 16;
+  }
+
+  ddr_instr_layout_.push_back(idx);              // end_instr index
+  auto end = mp->get_end_instructions().size();  // in bytes
+  CHECK(end % 16 == 0);
+  idx += (end / 16);
+  ddr_instr_layout_.push_back(idx);  // final row index
+}
+
+std::string ModelConfig::dump_instructions(const std::string& filename) const {
   LOG(INFO) << "Dumping instructions to " << filename;
   std::ofstream of(filename);
   if (!of.is_open()) {
     LOG(WARNING) << "Couldn't open " << filename;
-    return false;
+    return "";
   }
   int nregs = instrs_.size() / 4;
   const uint32_t* ptr = reinterpret_cast<const uint32_t*>(instrs_.data());
   of << std::hex;
   for (int reg = 0; reg < nregs; reg += 4) {
     for (int i = 0; i < 4; ++i) {
-      of << ptr[reg + i] << " ";
+      of << ptr[reg + i];
+      if (i < 3) of << " ";
     }
     of << std::endl;
   }
   of << std::dec;
-  return true;
+  return "";
+}
+
+const std::vector<uint32_t>& ModelConfig::get_ddr_layout() const {
+  return ddr_instr_layout_;
 }

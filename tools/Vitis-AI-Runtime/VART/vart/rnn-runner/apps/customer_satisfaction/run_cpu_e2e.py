@@ -64,7 +64,7 @@ model.add(layers.Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 
-filename = os.path.join(current_dir, 'models', 'complain_model.h5')
+filename = os.path.join(current_dir, 'data', 'complain_model.h5')
 
 is_training = False
 if is_training:

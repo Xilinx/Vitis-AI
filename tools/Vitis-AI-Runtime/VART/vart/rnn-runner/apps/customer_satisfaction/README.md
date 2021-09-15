@@ -12,20 +12,19 @@ sudo cp /workspace/vart/rnn-runner/xclbin/u50lv/dpu.xclbin /usr/lib/dpu.xclbin
 
 1. Download the model files
 ```sh
-mkdir -p models/
+mkdir -p data/
 
-cp /proj/rdi/staff/akorra/data/customer_satisfaction/complain_model.h5 models/
+cp /proj/rdi/staff/akorra/data/customer_satisfaction/complain_model.h5 data/
 
 # [For U25]
-cp /proj/rdi/staff/akorra/data/customer_satisfaction/u25/*.xmodel models/
+cp ../../models/u25/xmodels-v1.0/lstm_customer_satisfaction/*.xmodel data/
 
 # [For U50LV]
-cp /proj/rdi/staff/akorra/data/customer_satisfaction/u50lv/*.xmodel models/
+cp ../../models/u50/xmodels-v1.3/lstm_customer_satisfaction/*.xmodel data/
 ```
 
 1. Get the datasets
 ```sh
-mkdir -p data
 # wget https://raw.githubusercontent.com/IBM/watson-machine-learning-samples/master/cloud/data/cars-4-you/car_rental_training_data.csv -P data/
 cp /proj/rdi/staff/akorra/data/customer_satisfaction/car_rental_training_data.csv data
 ```

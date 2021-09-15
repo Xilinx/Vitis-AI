@@ -35,11 +35,10 @@ import vart
 import xir
 
 current_dir = os.path.dirname(__file__)
-model_filename = os.path.join(current_dir, "models", "LSTM.h5")
+model_filename = os.path.join(current_dir, "data", "LSTM.h5")
 data_filename = os.path.join(current_dir, "data", "imdb.npz")
 word_dict_path = os.path.join(current_dir, "data", "imdb_word_index.json")
 predict_file = os.path.join(current_dir, "data", "IMDB.csv")
-output_predict_file = os.path.join(current_dir, "data", 'predictions.txt')
 
 # set the seed
 np.random.seed(7)
@@ -166,8 +165,12 @@ assert(device_name in ("U50LV", "U25")), "TARGET_DEVICE should be U50LV/U25"
 num_cores = 1
 if device_name == "U50LV":
     num_cores = 2
-    models = [os.path.join(current_dir, "models", file)
+    models = [os.path.join(current_dir, "data", file)
               for file in ["compiled_batch_3.xmodel", "compiled_batch_4.xmodel"]]
+elif device_name == "U25":
+    num_cores = 1
+    models = [os.path.join(current_dir, "data", file)
+              for file in ["compiled_batch_1.xmodel"]]
 
 num_sequences = max_review_length
 input_seq_dim = embedding_vecor_length

@@ -25,115 +25,83 @@ tar -xvf u25-2020-12-16.tar.gz -C /workspace/rnn-runner/test/models && rm -rf u2
 cp -r <xcd>:/group/dphi_edge/vai-1.4-rnn-xmodel/ /workspace/rnn-runner/test
 ```
 
-### Download U50 model
+### Download Compiled Models
 ```sh
-mkdir -p /workspace/rnn-runner/test/models
-wget -O u50lv-2020-12-16.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=u50lv-2020-12-16.tar.gz
-tar -xvf u50lv-2020-12-16.tar.gz -C /workspace/rnn-runner/test/models && rm u50lv-2020-12-16.tar.gz
-
 cp -r <xcd>:/group/dphi_edge/vai-1.4-rnn-xmodel/ /workspace/rnn-runner/test
-```
-
-
-## Get configuration for U25
-
-### Customer Satisfaction
-```sh
-cp /workspace/rnn-runner/apps/customer_satisfaction/utils/u25_config.json /workspace/rnn-runner/test/models/u25/customer_satisfaction/config.json
-```
-
-### IMDB Sentiment Detection
-```sh
-cp /workspace/rnn-runner/apps/imdb_sentiment_detection/utils/u25_config.json /workspace/rnn-runner/test/models/u25/imdb_sentiment_detection/config.json
-```
-
-## OpenIE
-```sh
-cp /workspace/rnn-runner/apps/open_information_extraction/utils/u25_config.json /workspace/rnn-runner/test/models/u25/open_information_extraction/config.json
 ```
 
 ## Copy test data
 
 ```sh
 cd /workspace/rnn-runner/test
-cp -r <xhd>:/proj/sdxapps/users/akorra/datasets/rnn-runner-test-data.tar.gz .
-cp -r <xsj>:/proj/xsjhdstaff4/akorra/datasets/rnn-runner-test-data.tar.gz .
-cp -r <xbjjmphost>:/home/akorra/rnn-runner-test-data.tar.gz .
-cp -r <xcd>:/proj/rdi/staff/akorra/datasets/rnn-runner-test-data.tar.gz .
-tar -xzvf rnn-runner-test-data.tar.gz -C /workspace/rnn-runner/test && rm rnn-runner-test-data.tar.gz
+tar -xzvf rnn-runner-test-data.tar.gz
 ```
 
 # Run tests
+## Full Test
+`run_test.sh` is an utility script to run 4 tests (oie-36/oie-59/customer satisfaction/imdb sentiment) in a single step. 
+It provides  functionality check, latency breakup and throughput for single runner and multiple runner tests.
 
-## U25 tests
+### Script arguments
 
-> ./test_rnn_runner_u25 <device_name> <model_dir> <model_name> <test_dir> <num_sequences> <num_threads> <num_batches>
+|Argument           | Description
+|-----------------  | -------
+|**--help**         | Show help
+| **--model-dir**   | model directory containing models for all applications
+| **--device**      | target device. <br> Possible Values : **u25,  u50** <br> [default = u50]
+| **--num-iters**   | number of iterations to run. <br> [default = 4]
+| **--num-runners** | number of runners to use in multi-runner tests. <br> [default = 4]
+| **--build-dir**   | set customized build directory. <br> [default = /home/vitis-ai-user/build/build.Ubuntu.18.04.x86_64.Release]
+| **--tests-dir**   | test data directory. <br> [default = ./data]
+| **--mode**        | specify execution mode. <br> Possible Values : **func, latency, throughput, all**. <br> [default = func] <br> **func** : Run functionality check alone <br> **latency** : Get latency breakup <br> **throughput** : Get application throughput <br> **all** : Run all the 3 tests.
 
-### Customer Satisfaction
+### Example
 
 ```sh
-cd ~/build/build.Ubuntu.18.04.x86_64.Debug/workspace/rnn-runner/
-export MODEL_DIR="/workspace/rnn-runner/test/models/u25/customer_satisfaction/"
-export TEST_DIR="/workspace/rnn-runner/test/data/u25/satis"
-./test_rnn_runner_u25 U25 $MODEL_DIR satisfaction $TEST_DIR 25 1 1
+# Run all tests for U50 with Release build
+./run_test.sh \
+    --model-dir=/workspace/vart/tmp/vai-1.4-rnn-xmodel/u25/xmodels-v1.0/ \
+    --build-dir=/home/vitis-ai-user/build/build.Ubuntu.18.04.x86_64.Release/ \
+    --mode=all --device=u50
 ```
 
-### IMDB Sentiment Detection
+## Single Tests
 
+To run tests for a single model for debugging purposes, use the device specific test executable in the build directory
+
+### Usage
 ```sh
-cd ~/build/build.Ubuntu.18.04.x86_64.Debug/workspace/rnn-runner/
-export MODEL_DIR="/workspace/rnn-runner/test/models/u25/imdb_sentiment_detection/"
-export TEST_DIR="/workspace/rnn-runner/test/data/u25/sent"
-./test_rnn_runner_u25 U25 $MODEL_DIR sentiment $TEST_DIR 500 1 1
+./test_executable       \   # "test_rnn_runner_u50" or "test_rnn_runner_u25"
+    <model_directory>   \   # Path to directory containing specific model
+    <test_data_dir>     \   # Directory containing reference data for the model
+    <number of frames>  \   # Number of frames in the input
+    <number of runners> \   # Number of runners to be created 
+    <number of iterations>  # Number of iterations each runner should run.
 ```
 
-### OpenIE
-
+### Examples
 ```sh
-cd ~/build/build.Ubuntu.18.04.x86_64.Debug/workspace/rnn-runner/
-export MODEL_DIR="/workspace/rnn-runner/test/models/u25/open_information_extraction/"
+# Run applications on U50 with Release build
+BUILD_DIR=/home/vitis-ai-user/build/build.Ubuntu.18.04.x86_64.Release
+EXECUTABLE=vart/rnn-runner/test_rnn_runner_u50
 
-# num_sequences can be any of [36, 48, 59, 100, 141, 198]
-export TEST_DIR="/workspace/rnn-runner/test/data/u25/oie/100"
-./test_rnn_runner_u25 U25 $MODEL_DIR openie $TEST_DIR 100 1 1
-```
+# customer satisfaction model
+$BUILD_DIR/$EXECUTABLE                                                          \
+    /workspace/vai-1.4-rnn-xmodel/u50/xmodels-v1.3/lstm_customer_satisfaction   \
+    ./data/u50/satis                                                            \
+    25 1 4
 
+# Run imdb sentiment detection model
+$BUILD_DIR/$EXECUTABLE                                                          \
+    /workspace/vai-1.4-rnn-xmodel/u50/xmodels-v1.3/lstm_sentiment_detection     \
+    ./data/u50/sent                                                             \
+    500 1 4
 
-## U50 tests
+# Run openie model
+$BUILD_DIR/$EXECUTABLE                                                          \
+    /workspace/vai-1.4-rnn-xmodel/u50/xmodels-v1.3/openie-new                   \
+    ./data/u50/oie/36                                                           \
+    36 1 4
 
-> ./test_rnn_runner_u50 <device_name> <model_dir> <model_name> <test_dir> <num_sequences> <num_threads> <num_batches>
-
-### Customer Satisfaction
-
-```sh
-cd ~/build/build.Ubuntu.18.04.x86_64.Debug/workspace/rnn-runner/
-export TEST_DIR="/workspace/rnn-runner/test/data/u50lv/satis"
-
-export MODEL_DIR="/workspace/rnn-runner/test/xmodels/u50/lstm_customer_satisfaction/without_hbm_opt/"
-# ./test_rnn_runner <xmodel_dir> <test_dir> <num_sequences> <num_threads> <num_batches>
-./test_rnn_runner_u50 $MODEL_DIR $TEST_DIR 25 1 1
-```
-
-### IMDB Sentiment Detection
-
-```sh
-cd ~/build/build.Ubuntu.18.04.x86_64.Debug/workspace/rnn-runner/
-export TEST_DIR="/workspace/rnn-runner/test/data/u50lv/sent"
-
-export MODEL_DIR="/workspace/rnn-runner/test/xmodels/u50/lstm_sentiment_detection/without_hbm_opt/"
-# ./test_rnn_runner <xmodel_dir> <test_dir> <num_sequences> <num_threads> <num_batches>
-./test_rnn_runner_u50 $MODEL_DIR $TEST_DIR 500 1 1
-```
-
-### OpenIE
-
-```sh
-cd ~/build/build.Ubuntu.18.04.x86_64.Debug/workspace/rnn-runner/
-
-# num_sequences can be any of [36, 59]
-export TEST_DIR="/workspace/rnn-runner/test/data/u50lv/oie/36"
-
-export MODEL_DIR="/workspace/rnn-runner/test/xmodels/u50/openie-new/without_hbm_opt/"
-# ./test_rnn_runner <xmodel_dir> <test_dir> <num_sequences> <num_threads> <num_batches>
-./test_rnn_runner_u50 $MODEL_DIR $TEST_DIR 36 1 1
+# Similarly, use vart/rnn-runner/test_rnn_runner_u25 as executable for U25.
 ```

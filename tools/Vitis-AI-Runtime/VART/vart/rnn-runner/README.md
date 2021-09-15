@@ -13,5 +13,5 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/.local/Ubuntu.18.04.x86_64.Debug/lib
 sudo cp /workspace/rnn-runner/xclbin/u50lv/dpu.xclbin /usr/lib/dpu.xclbin
 
 # U25
-sudo cp /workspace/rnn-runner/xclbin/u25/dpu.xclbin /usr/lib/dpu.xclbin
+sudo cp /workspace/rnn-runner/xclbin/u25/dpuv2.xclbin /usr/lib/dpu.xclbin
 ```

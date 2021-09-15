@@ -3,14 +3,13 @@
 1. Copy compiled model files
     ``` bash
     cd /workspace/vart/rnn-runner/apps/open_information_extraction
-    mkdir -p models
+    mkdir -p data
 
     # For U50LV
-    cp -r /proj/rdi/staff/akorra/data/openie/* models/
+    cp ../../models/u50/xmodels-v1.3/openie-new/*.xmodel data/
 
     # For U25
-    cp -r ../u25/open_information_extraction/* models/
-    cp utils/u25_config.json model/config.json
+    cp ../../models/u50/xmodels-v1.0/openie-new/*.xmodel data/
     ```
 
 1. Download model files

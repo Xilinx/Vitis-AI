@@ -23,6 +23,7 @@ project_name=$(basename ${script_path})
 declare -a args
 args+=(-DBUILD_TEST=ON)
 args+=(-DENABLE_DPU_RUNNER=ON)
+args+=(-DENABLE_RNN_RUNNER=ON)
 
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \
