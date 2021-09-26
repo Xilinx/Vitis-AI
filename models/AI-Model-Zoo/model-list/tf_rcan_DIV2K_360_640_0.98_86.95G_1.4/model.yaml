@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_rcan_DIV2K_360_640_0.98_86.95G_1.4.zip
-  checksum: 7d8569027add120a185f2dd454459135
+  checksum: 1edab0c639262324f9ec2f55c2582ec9
 - name: rcan_pruned_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
