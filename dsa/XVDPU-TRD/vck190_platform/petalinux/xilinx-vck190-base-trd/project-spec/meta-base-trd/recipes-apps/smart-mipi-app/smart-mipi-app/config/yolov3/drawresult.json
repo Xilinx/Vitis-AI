@@ -1,0 +1,138 @@
+{
+  "ivas-library-repo": "/usr/lib",
+  "element-mode":"inplace",
+  "kernels" :[
+    {
+      "library-name":"libivas_xboundingbox.so",
+      "config": {
+          "font_size" : 2,
+          "font" : 3,
+          "thickness" : 7,
+          "label_color" : { "blue" : 0, "green" : 0, "red" : 0 },
+          "debug_level" : 0,
+          "label_filter" : [ "class", "probability" ],
+          "classes" : [
+                {
+                "name" : "aeroplane",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 255
+                },
+                {
+                "name" : "bicycle",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 255
+                },
+                {
+                "name" : "bird",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "boat",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "bottle",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "bus",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "car",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "cat",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "chair",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "cow",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "diningtable",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "dog",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "horse",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "motorbike",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "person",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "pottedplant",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "sheep",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "sofa",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "train",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "tvmonitor",
+                "blue" : 0,
+                "green" : 0,
+                "red" : 255
+                }]
+      }
+    }
+  ]
+}

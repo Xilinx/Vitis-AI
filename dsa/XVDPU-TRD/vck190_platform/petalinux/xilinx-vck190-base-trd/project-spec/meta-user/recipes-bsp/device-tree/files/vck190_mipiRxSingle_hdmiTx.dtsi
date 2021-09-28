@@ -1,0 +1,57 @@
+/ {
+	amba_pl: amba_pl@0 {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		compatible = "simple-bus";
+		ranges ;
+		misc_clk_0: misc_clk_0 {
+			#clock-cells = <0>;
+			clock-frequency = <149998499>;
+			compatible = "fixed-clock";
+		};
+		misc_clk_4: misc_clk_4 {
+                         #clock-cells = <0>;
+                         clock-frequency = <109999083>;
+                         compatible = "fixed-clock";
+		};
+		misc_clk_5: misc_clk_5 {
+                         #clock-cells = <0>;
+                         clock-frequency = <200000000>;
+                         compatible = "fixed-clock";
+		};
+		misc_clk_1: misc_clk_1 {
+			#clock-cells = <0>;
+			clock-frequency = <100000000>;
+			compatible = "fixed-clock";
+		};
+
+		misc_clk_3: misc_clk_3 {
+			#clock-cells = <0>;
+			clock-frequency = <297000000>;
+			compatible = "fixed-clock";
+		};
+		misc_clk_6: misc_clk_6 {
+			#clock-cells = <0>;
+			clock-frequency = <156250000>;
+			compatible = "fixed-clock";
+		};
+		axi_intc: interrupt-controller@a5000000 {
+				#interrupt-cells = <2>;
+				clock-names = "s_axi_aclk";
+				clocks = <&misc_clk_1>;
+				compatible = "xlnx,xps-intc-1.00.a";
+				interrupt-controller;
+				reg = <0x0 0xa5000000 0x0 0x10000>;
+				xlnx,kind-of-intr = <0x0>;
+				xlnx,num-intr-inputs = <0x20>;
+				interrupt-names = "irq";
+				interrupt-parent = <&gic>;
+				interrupts = <0 99 4>;
+		};
+	};
+};
+
+#include "aie.dtsi"
+#include "single-capture.dtsi"
+#include "display.dtsi"
+#include "zocl.dtsi"

@@ -1,0 +1,81 @@
+{
+    "name": "Xilinx Real Impulse", 
+    "description": "HLS case", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u200", 
+        "aws-vu9p-f1", 
+        "vck190"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [], 
+    "project": "prj_2dfft_impulse_test2", 
+    "solution": "solution1", 
+    "clock": "3.33", 
+    "clock_uncertainty": 0.1, 
+    "topfunction": "top_fft2d", 
+    "top": {
+        "source": [
+            "src/top_2d_fft_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw/vitis_2dfft/fixed/"
+    }, 
+    "testbench": {
+        "source": [
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DGoldenOut_L1024.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DGoldenOut_L16.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DGoldenOut_L16384.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DGoldenOut_L256.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DGoldenOut_L4096.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DGoldenOut_L64.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DGoldenOut_L65536.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DStimulusIn_L1024.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DStimulusIn_L16.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DStimulusIn_L16384.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DStimulusIn_L256.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DStimulusIn_L4096.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DStimulusIn_L64.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_2dfft/2dFFTVerificationData//d_2dFFTCrandomData/d_2dFFTCrandomData_2/fft2DStimulusIn_L65536.verif", 
+            "src/main_2d_fft_test.cpp", 
+            "src/top_2d_fft_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw/vitis_2dfft/fixed/ -Wno-unknown-pragmas", 
+        "ldflags": "", 
+        "argv": {}, 
+        "stdmath": false
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": {
+                    "hls_vivado_syn": 470, 
+                    "hls_csim": 60, 
+                    "hls_cosim": 470, 
+                    "hls_vivado_impl": 470, 
+                    "hls_csynth": 300
+                }
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim", 
+            "hls_vivado_syn", 
+            "hls_vivado_impl"
+        ], 
+        "category": "canary"
+    }
+}

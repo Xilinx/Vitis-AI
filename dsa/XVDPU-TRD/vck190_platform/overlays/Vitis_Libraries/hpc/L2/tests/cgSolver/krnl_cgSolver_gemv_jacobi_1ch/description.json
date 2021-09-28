@@ -1,0 +1,172 @@
+{
+    "gui": false,
+    "name": "Xilinx HPC CG-Solver Kernel Test", 
+    "description": "Xilinx HPC CG Test, GEMV, Jacobi, 1-channel", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u280",
+        "u50"
+    ], 
+    "platform_blacklist": [
+        "other"
+    ], 
+    "platform_properties": {
+        "u50": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        ""
+                    ]
+                }
+            },
+            "containers": [
+                {
+                    "name": "cgSolver", 
+                    "ldclflags": "--config PROJECT/conn_u50.cfg"
+                }
+            ]
+        },
+        "u280": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        ""
+                    ]
+                }
+            },
+            "containers": [
+                {
+                    "name": "cgSolver", 
+                    "ldclflags": "--config PROJECT/conn_u280.cfg"
+                }
+            ]
+        }
+    }, 
+    "pre_launch": [
+        {
+            "launch_cmd": "make data_gen"
+        }
+    ], 
+    "launch": [
+        {
+            "name": "generic launch for all flows", 
+            "cmd_args": "BUILD/cgSolver.xclbin"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/src/sw/cgSolver/test_cgSolver_gemv_jacobi.cpp", 
+                "LIB_DIR/../blas/L2/src/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include/", 
+                "LIB_DIR/L2/include/common/cgSolver", 
+                "LIB_DIR/L2/include/sw/cgSolver", 
+                "LIB_DIR/L2/include/sw/", 
+                "LIB_DIR/../blas/L1/tests/sw/include/", 
+                "LIB_DIR/../blas/L2/include/xcl2"
+            ], 
+            "symbols": [
+                "HW_CLK=3e-9",
+                "CG_numTasks=1", 
+                "CG_dataType=double", 
+                "CG_numChannels=1",
+                "CG_parEntries=4",
+                "CG_instrBytes=64"
+            ], 
+            "options": "-O3"
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "symbols": [
+                "CG_numTasks=1", 
+                "CG_dataType=double", 
+                "CG_instrBytes=64",
+                "CG_tkStrWidth=8",
+                "CG_parEntries=4",
+                "CG_numChannels=1",
+                "CG_vecParEntries=4"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include/", 
+                "LIB_DIR/L1/include/hw/", 
+                "LIB_DIR/L1/include/hw/cgSolver", 
+                "LIB_DIR/L2/include/hw/cgSolver", 
+                "LIB_DIR/L2/include/common/cgSolver", 
+                "LIB_DIR/L2/include/hw", 
+                "LIB_DIR/../blas/L2/include/memKernel/hw/xf_blas",
+                "LIB_DIR/../blas/L1/include/hw"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name": "cgSolver", 
+            "ldclflags": "--config PROJECT/opts.cfg", 
+            "frequency": 333, 
+            "accelerators": [
+                {
+                    "name": "krnl_timer", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_timer.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_duplicate", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_duplicate.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_gemv", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_gemv.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_update_xk", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_update_xk.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_update_rk_jacobi", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_update_rk_jacobi.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_update_pk", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_update_pk.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_control", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_control.cpp", 
+                    "frequency": 333
+                }
+            ]
+        }
+    ], 
+    "testinfo": {
+        "disable": true, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 4096, 
+                    "vitis_hw_emu": 1024, 
+                    "vitis_hw_run": 1024
+                }, 
+                "max_time_min": 240
+            }
+        ], 
+        "targets": [
+            "vitis_hw_emu", 
+            "vitis_hw"
+        ], 
+        "category": "canary"
+    }
+}

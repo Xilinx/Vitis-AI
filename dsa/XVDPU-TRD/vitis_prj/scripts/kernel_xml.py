@@ -23,6 +23,7 @@ Batch_N    = int(sys.argv[1])
 LOAD_I_P   = int(sys.argv[2])
 CPB        = int(sys.argv[3])
 BAT_SHRWGT = int(sys.argv[4])
+LOAD_W_P   = int(sys.argv[5])
 
 IMG_ports  = Batch_N*LOAD_I_P
 WGTBC_N    = int((Batch_N+BAT_SHRWGT-1)/BAT_SHRWGT)
@@ -35,6 +36,7 @@ result.append(r'''<?xml version="1.0" encoding="UTF-8"?>
     <ports>
       <port name="S_AXI_CONTROL" mode="slave"  range="0x0000FFFF" dataWidth="32"  portType="addressable" base="0x80000000"/>
 	  <port name="M00_INSTR_AXI" mode="master" range="0x7FFFFFFF" dataWidth="32"  portType="addressable" base="0x0"/>
+      <port name="M00_BIAS_AXI"  mode="master" range="0x7FFFFFFF" dataWidth="128" portType="addressable" base="0x0"/>
 ''')
 
 #PORTS section: IMG_AXI 
@@ -45,13 +47,16 @@ for i in range (IMG_ports):
     list_buf=Char1 + number_img + Char2 +  "\n"
     str_buf="".join(list_buf) 
     result.append(str_buf)    
-
-result.append(r'''	  <port name="M00_WGT_AXI"   mode="master" range="0x7FFFFFFF" dataWidth="512" portType="addressable" base="0x0"/>
-	  <port name="M01_WGT_AXI"   mode="master" range="0x7FFFFFFF" dataWidth="512" portType="addressable" base="0x0"/>
-	  <port name="M02_WGT_AXI"   mode="master" range="0x7FFFFFFF" dataWidth="512" portType="addressable" base="0x0"/>
-	  <port name="M03_WGT_AXI"   mode="master" range="0x7FFFFFFF" dataWidth="512" portType="addressable" base="0x0"/>
-      <port name="M00_BIAS_AXI"  mode="master" range="0x7FFFFFFF" dataWidth="128" portType="addressable" base="0x0"/> 
-''')
+    
+#PORTS section: WGT_AXI 
+for i in range (LOAD_W_P): 
+    number_wgt = str(i).rjust(2,'0') 
+    Char1 = r'	  <port name="M'
+    Char2 = r'_WGT_AXI"   mode="master" range="0x7FFFFFFF" dataWidth="512" portType="addressable" base="0x0"/>'
+    list_buf=Char1 + number_wgt + Char2 +  "\n"
+    str_buf="".join(list_buf) 
+    result.append(str_buf) 
+    
 
 if CPB==16:
     ifm_number = 8*Batch_N 
@@ -81,7 +86,7 @@ for i in range (ifm_number):
 
 #wgt 
 for i in range (wgt_number):
-    number_wgt = str(i).rjust(2,'0')         
+    number_wgt = str(i).rjust(2,'0')  
     Char1 = r'	  <port name="M'
     Char2 = r'_WGT_AXIS"  mode="write_only" dataWidth="128" portType="stream"/>'
     list_buf =Char1 + number_wgt + Char2 +  "\n"
@@ -90,7 +95,7 @@ for i in range (wgt_number):
 	 
 #ofm 
 for i in range (ofm_number):
-    number_ofm = str(i).rjust(2,'0')     
+    number_ofm = str(i).rjust(2,'0')   
     Char1 = r'	  <port name="S'
     Char2 = r'_OFM_AXIS"  mode="read_only"  dataWidth="64" portType="stream"/>'
     list_buf = Char1 + number_ofm + Char2 +  "\n"
@@ -108,50 +113,35 @@ result.append(r'''    </ports>
 	  <arg name="dpu_cmd"           addressQualifier="0" id="4"   port="S_AXI_CONTROL" size="0x4" offset="0x48"  hostOffset="0x0" hostSize="0x4" type="int*"/>
 	  <arg name="dpu_instr_addr"    addressQualifier="1" id="5"   port="M00_INSTR_AXI" size="0x8" offset="0x50"  hostOffset="0x0" hostSize="0x8" type="int*"/>
 	  <arg name="dpu_prof_addr"     addressQualifier="1" id="6"   port="M00_INSTR_AXI" size="0x8" offset="0x58"  hostOffset="0x0" hostSize="0x8" type="int*"/>
-      <arg name="dpu_batch0_addr0"  addressQualifier="1" id="7"   port="M00_WGT_AXI"   size="0x8" offset="0x200" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-      <arg name="dpu_batch0_addr0"  addressQualifier="1" id="8"   port="M01_WGT_AXI"   size="0x8" offset="0x200" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr0"  addressQualifier="1" id="9"   port="M02_WGT_AXI"   size="0x8" offset="0x200" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr0"  addressQualifier="1" id="10"  port="M03_WGT_AXI"   size="0x8" offset="0x200" hostOffset="0x0" hostSize="0x8" type="int*"/>	  
-	  <arg name="dpu_batch0_addr0"  addressQualifier="1" id="11"  port="M00_BIAS_AXI"  size="0x8" offset="0x200" hostOffset="0x0" hostSize="0x8" type="int*"/>
-      <arg name="dpu_batch0_addr1"  addressQualifier="1" id="12"  port="M00_WGT_AXI"   size="0x8" offset="0x208" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-      <arg name="dpu_batch0_addr1"  addressQualifier="1" id="13"  port="M01_WGT_AXI"   size="0x8" offset="0x208" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr1"  addressQualifier="1" id="14"  port="M02_WGT_AXI"   size="0x8" offset="0x208" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr1"  addressQualifier="1" id="15"  port="M03_WGT_AXI"   size="0x8" offset="0x208" hostOffset="0x0" hostSize="0x8" type="int*"/>	  
-	  <arg name="dpu_batch0_addr1"  addressQualifier="1" id="16"  port="M00_BIAS_AXI"  size="0x8" offset="0x208" hostOffset="0x0" hostSize="0x8" type="int*"/>      
-      <arg name="dpu_batch0_addr2"  addressQualifier="1" id="17"  port="M00_WGT_AXI"   size="0x8" offset="0x210" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-      <arg name="dpu_batch0_addr2"  addressQualifier="1" id="18"  port="M01_WGT_AXI"   size="0x8" offset="0x210" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr2"  addressQualifier="1" id="19"  port="M02_WGT_AXI"   size="0x8" offset="0x210" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr2"  addressQualifier="1" id="20"  port="M03_WGT_AXI"   size="0x8" offset="0x210" hostOffset="0x0" hostSize="0x8" type="int*"/>	  
-	  <arg name="dpu_batch0_addr2"  addressQualifier="1" id="21"  port="M00_BIAS_AXI"  size="0x8" offset="0x210" hostOffset="0x0" hostSize="0x8" type="int*"/>
-      <arg name="dpu_batch0_addr3"  addressQualifier="1" id="22"  port="M00_WGT_AXI"   size="0x8" offset="0x218" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-      <arg name="dpu_batch0_addr3"  addressQualifier="1" id="23"  port="M01_WGT_AXI"   size="0x8" offset="0x218" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr3"  addressQualifier="1" id="24"  port="M02_WGT_AXI"   size="0x8" offset="0x218" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr3"  addressQualifier="1" id="25"  port="M03_WGT_AXI"   size="0x8" offset="0x218" hostOffset="0x0" hostSize="0x8" type="int*"/>	  
-	  <arg name="dpu_batch0_addr3"  addressQualifier="1" id="26"  port="M00_BIAS_AXI"  size="0x8" offset="0x218" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-      <arg name="dpu_batch0_addr4"  addressQualifier="1" id="27"  port="M00_WGT_AXI"   size="0x8" offset="0x220" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-      <arg name="dpu_batch0_addr4"  addressQualifier="1" id="28"  port="M01_WGT_AXI"   size="0x8" offset="0x220" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr4"  addressQualifier="1" id="29"  port="M02_WGT_AXI"   size="0x8" offset="0x220" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr4"  addressQualifier="1" id="30"  port="M03_WGT_AXI"   size="0x8" offset="0x220" hostOffset="0x0" hostSize="0x8" type="int*"/>	  
-	  <arg name="dpu_batch0_addr4"  addressQualifier="1" id="31"  port="M00_BIAS_AXI"  size="0x8" offset="0x220" hostOffset="0x0" hostSize="0x8" type="int*"/>
-      <arg name="dpu_batch0_addr5"  addressQualifier="1" id="32"  port="M00_WGT_AXI"   size="0x8" offset="0x228" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-      <arg name="dpu_batch0_addr5"  addressQualifier="1" id="33"  port="M01_WGT_AXI"   size="0x8" offset="0x228" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr5"  addressQualifier="1" id="34"  port="M02_WGT_AXI"   size="0x8" offset="0x228" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr5"  addressQualifier="1" id="35"  port="M03_WGT_AXI"   size="0x8" offset="0x228" hostOffset="0x0" hostSize="0x8" type="int*"/>	  
-	  <arg name="dpu_batch0_addr5"  addressQualifier="1" id="36"  port="M00_BIAS_AXI"  size="0x8" offset="0x228" hostOffset="0x0" hostSize="0x8" type="int*"/>      
-      <arg name="dpu_batch0_addr6"  addressQualifier="1" id="37"  port="M00_WGT_AXI"   size="0x8" offset="0x230" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-      <arg name="dpu_batch0_addr6"  addressQualifier="1" id="38"  port="M01_WGT_AXI"   size="0x8" offset="0x230" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr6"  addressQualifier="1" id="39"  port="M02_WGT_AXI"   size="0x8" offset="0x230" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr6"  addressQualifier="1" id="40"  port="M03_WGT_AXI"   size="0x8" offset="0x230" hostOffset="0x0" hostSize="0x8" type="int*"/>	  
-	  <arg name="dpu_batch0_addr6"  addressQualifier="1" id="41"  port="M00_BIAS_AXI"  size="0x8" offset="0x230" hostOffset="0x0" hostSize="0x8" type="int*"/>
-      <arg name="dpu_batch0_addr7"  addressQualifier="1" id="42"  port="M00_WGT_AXI"   size="0x8" offset="0x238" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-      <arg name="dpu_batch0_addr7"  addressQualifier="1" id="43"  port="M01_WGT_AXI"   size="0x8" offset="0x238" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr7"  addressQualifier="1" id="44"  port="M02_WGT_AXI"   size="0x8" offset="0x238" hostOffset="0x0" hostSize="0x8" type="int*"/>	
-	  <arg name="dpu_batch0_addr7"  addressQualifier="1" id="45"  port="M03_WGT_AXI"   size="0x8" offset="0x238" hostOffset="0x0" hostSize="0x8" type="int*"/>	  
-	  <arg name="dpu_batch0_addr7"  addressQualifier="1" id="46"  port="M00_BIAS_AXI"  size="0x8" offset="0x238" hostOffset="0x0" hostSize="0x8" type="int*"/>	
+      <arg name="dpu_batch0_addr0"  addressQualifier="1" id="7"   port="M00_BIAS_AXI"  size="0x8" offset="0x200" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	  <arg name="dpu_batch0_addr1"  addressQualifier="1" id="8"   port="M00_BIAS_AXI"  size="0x8" offset="0x208" hostOffset="0x0" hostSize="0x8" type="int*"/>      
+	  <arg name="dpu_batch0_addr2"  addressQualifier="1" id="9"   port="M00_BIAS_AXI"  size="0x8" offset="0x210" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	  <arg name="dpu_batch0_addr3"  addressQualifier="1" id="10"  port="M00_BIAS_AXI"  size="0x8" offset="0x218" hostOffset="0x0" hostSize="0x8" type="int*"/>	
+ 	  <arg name="dpu_batch0_addr4"  addressQualifier="1" id="11"  port="M00_BIAS_AXI"  size="0x8" offset="0x220" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	  <arg name="dpu_batch0_addr5"  addressQualifier="1" id="12"  port="M00_BIAS_AXI"  size="0x8" offset="0x228" hostOffset="0x0" hostSize="0x8" type="int*"/>      
+	  <arg name="dpu_batch0_addr6"  addressQualifier="1" id="13"  port="M00_BIAS_AXI"  size="0x8" offset="0x230" hostOffset="0x0" hostSize="0x8" type="int*"/>
+	  <arg name="dpu_batch0_addr7"  addressQualifier="1" id="14"  port="M00_BIAS_AXI"  size="0x8" offset="0x238" hostOffset="0x0" hostSize="0x8" type="int*"/>	
 ''')
 
-arg_id = 47
+arg_id = 15
 
+for i in range (LOAD_W_P):
+    number_arg = str(i).rjust(2,'0')         
+    Char1 = r'	  <arg name="dpu_batch0_addr'    
+    Char2 = r'"  addressQualifier="1" id="'
+    Char3 = r'"  port="M'
+    Char4 = r'_WGT_AXI"   size="0x8" offset="'
+    Char5 = r'" hostOffset="0x0" hostSize="0x8" type="int*"/>' 
+    offset_Batch0 = 0x200
+    for x in range (8):
+        number_addr = str(x)      
+        number_arg_id = str(arg_id)    
+        number_offset = str (hex(offset_Batch0))
+        list_buf =Char1 + number_addr + Char2 + number_arg_id + Char3 + number_arg + Char4 + number_offset  + Char5 +"\n"
+        arg_id = arg_id + 1
+        offset_Batch0 = offset_Batch0 + 8                  
+        str_buf ="".join(list_buf) 
+        result.append(str_buf)  
 
 #arg IMG ports
 for b in range (Batch_N):
@@ -161,7 +151,7 @@ for b in range (Batch_N):
     IMG_P = LOAD_I_P * b
     for i in range (LOAD_I_P):
         total_IMG_P = IMG_P + i
-        number_arg = str(total_IMG_P).rjust(2,'0')            
+        number_arg = str(total_IMG_P).rjust(2,'0')               
         Char1 = r'	  <arg name="dpu_batch'
         Char2 = r'_addr'
         Char3 = r'"  addressQualifier="1" id="'
@@ -242,5 +232,3 @@ new_file  = open(file_name, "w+")
 new_file.write(result_str)
 
 new_file.close()
-
-

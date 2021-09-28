@@ -1,0 +1,84 @@
+{
+    "daily": {
+        "test_0_fft_ifft_dit_1ch": {
+            "DATA_TYPE":"cint16",
+            "TWIDDLE_TYPE":"cint16",
+            "POINT_SIZE":"128",
+            "FFT_NIFFT":"1",
+            "SHIFT":"8",
+            "STIM_TYPE":"0"
+        },
+        "test_1_fft_ifft_dit_1ch": {
+            "DATA_TYPE":"cint16",
+            "TWIDDLE_TYPE":"cint16",
+            "POINT_SIZE":"256",
+            "FFT_NIFFT":"1",
+            "SHIFT":"9",
+            "STIM_TYPE":"0"
+        },
+        "test_2_fft_ifft_dit_1ch": {
+            "DATA_TYPE":"cint16",
+            "TWIDDLE_TYPE":"cint16",
+            "POINT_SIZE":"512",
+            "FFT_NIFFT":"1",
+            "SHIFT":"10",
+            "STIM_TYPE":"0"
+        },
+        "test_3_fft_ifft_dit_1ch": {
+            "DATA_TYPE":"cint16",
+            "TWIDDLE_TYPE":"cint16",
+            "POINT_SIZE":"1024",
+            "FFT_NIFFT":"1",
+            "SHIFT":"11",
+            "STIM_TYPE":"0"
+        },
+        "test_4_fft_ifft_dit_1ch": {
+            "DATA_TYPE":"cint16",
+            "TWIDDLE_TYPE":"cint16",
+            "POINT_SIZE":"2048",
+            "FFT_NIFFT":"1",
+            "SHIFT":"12",
+            "STIM_TYPE":"0"
+        },
+        "test_5_fft_ifft_dit_1ch": {
+            "DATA_TYPE":"cint16",
+            "TWIDDLE_TYPE":"cint16",
+            "POINT_SIZE":"128",
+            "FFT_NIFFT":"0",
+            "SHIFT":"8",
+            "STIM_TYPE":"0"
+        },
+        "test_6_fft_ifft_dit_1ch": {
+            "DATA_TYPE":"cint16",
+            "TWIDDLE_TYPE":"cint16",
+            "POINT_SIZE":"256",
+            "FFT_NIFFT":"0",
+            "SHIFT":"9",
+            "STIM_TYPE":"0"
+        },
+        "test_7_fft_ifft_dit_1ch": {
+            "DATA_TYPE":"cint16",
+            "TWIDDLE_TYPE":"cint16",
+            "POINT_SIZE":"512",
+            "FFT_NIFFT":"0",
+            "SHIFT":"10",
+            "STIM_TYPE":"0"
+        },
+        "test_8_fft_ifft_dit_1ch": {
+            "DATA_TYPE":"cint16",
+            "TWIDDLE_TYPE":"cint16",
+            "POINT_SIZE":"1024",
+            "FFT_NIFFT":"0",
+            "SHIFT":"11",
+            "STIM_TYPE":"0"
+        },
+        "test_9_fft_ifft_dit_1ch": {
+            "DATA_TYPE":"cint16",
+            "TWIDDLE_TYPE":"cint16",
+            "POINT_SIZE":"2048",
+            "FFT_NIFFT":"0",
+            "SHIFT":"12",
+            "STIM_TYPE":"0"
+        }
+    }
+}

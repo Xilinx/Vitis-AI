@@ -1,0 +1,188 @@
+{
+    "name": "Xilinx modefilter_RO_5x5_RGB L2 Test", 
+    "description": [
+        "Mode filter L2 function example"
+    ],
+    "flow": "vitis",
+    "platform_whitelist": [
+        "u200",
+        "aws-vu9p-f1", 
+        "vck190", "zcu102", "zcu104"
+    ], 
+    "platform_blacklist": [
+        "u280", "u250", "u50"
+    ], 
+    "platform_properties": {
+        "u200": {
+            "host": {
+                "compiler": {
+			"includepaths" : [
+				"$(OPENCV_INCLUDE)"
+			]
+		},
+		"linker" : {
+			"librarypaths" : [
+				"$(OPENCV_LIB)"
+			]
+		}
+	    }
+        },
+        "aws-vu9p-f1": {
+            "host": {
+                "compiler": {
+                    "includepaths": [
+                        "$(OPENCV_INCLUDE)"
+                    ]
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(OPENCV_LIB)"
+                    ]
+                }
+            }
+        },
+        "vck190": {
+            "host": {
+                "compiler": {
+                    "includepaths": [
+			"$(SYSROOT)/usr/include",
+                        "$(SYSROOT)/usr/include/opencv4"
+                    ], 
+                    "options": "--sysroot=$(SYSROOT)"
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(SYSROOT)/usr/lib", 
+                        "${SYSROOT}/lib"
+                    ]
+                }
+            }
+        },
+	"zcu102": {
+            "host": {
+                "compiler": {
+			"includepaths" : [
+				"$(SYSROOT)/usr/include",
+				"$(SYSROOT)/usr/include/opencv4"
+			],
+			"options" : "--sysroot=$(SYSROOT)"
+		},
+		"linker" : {
+			"librarypaths" : [
+				"$(SYSROOT)/usr/lib",
+				"${SYSROOT}/lib"
+			]
+		}
+	    }
+	},
+	"zcu104": {
+            "host": {
+                "compiler": {
+			"includepaths" : [
+				"$(SYSROOT)/usr/include",
+				"$(SYSROOT)/usr/include/opencv4"
+			],
+			"options" : "--sysroot=$(SYSROOT)"					
+		},
+		"linker" : {
+			"librarypaths" : [
+				"$(SYSROOT)/usr/lib",
+				"${SYSROOT}/lib"
+			]
+		}
+	    }
+        }
+    },
+    "gui": true,
+    "launch": [
+        {
+            "target" : "sw_emu",
+            "cmd_args": "LIB_DIR/data/128x128.png ",
+            "name": "sw_emu",
+	    "ld_library_path" : [
+		"$(OPENCV_LIB)",
+		"$(LD_LIBRARY_PATH)",
+		"$(XILINX_XRT)/lib"
+	    ]
+        },
+        {
+            "target" : "hw_emu",
+            "cmd_args": "LIB_DIR/data/128x128.png ",
+            "name": "hw_emu",
+	    "ld_library_path" : [
+		"$(OPENCV_LIB)",
+		"$(LD_LIBRARY_PATH)",
+		"$(XILINX_XRT)/lib"
+	    ]
+        },
+        {
+            "target" : "hw",
+            "cmd_args": "LIB_DIR/data/4k.jpg ",
+            "name": "hardware_build",
+	    "ld_library_path" : [
+		"$(OPENCV_LIB)",
+		"$(LD_LIBRARY_PATH)",
+		"$(XILINX_XRT)/lib"
+	    ]
+        }
+    ],
+    "data": ["LIB_DIR/data/4k.jpg", "LIB_DIR/data/128x128.png"], 
+    "host": {
+        "host_exe": "modefilter", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/examples/modefilter/xf_modefilter_tb.cpp",
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ],
+	    "includepaths": [
+		"LIB_DIR/L2/examples/modefilter",
+		"LIB_DIR/L2/tests/modefilter/modefilter_RO_5x5_RGB"
+	    ], 
+            "options": "-O3",
+            "symbols": ["__SDSVHLS__" ] 
+        }
+    },
+    "v++":{
+        "compiler": {
+            "symbols": [
+                
+            ],
+ 	    "includepaths": [
+		"LIB_DIR/L2/examples/modefilter",
+		"LIB_DIR/L2/tests/modefilter/modefilter_RO_5x5_RGB"
+	    ],
+           "clflags": [
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name": "krnl_modefilter",
+            "accelerators": [
+                {
+                    "name": "modefilter_accel", 
+                    "location": "LIB_DIR/L2/examples/modefilter/xf_modefilter_accel.cpp"
+                }
+           ] 
+        }
+    ],
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": 32768, 
+                "max_time_min": 520
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw"
+        ], 
+        "category": "full"
+    } 
+}

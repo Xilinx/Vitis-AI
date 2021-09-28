@@ -1,0 +1,43 @@
+From 917d8a1fa1a5923e7491f23ff05750c1d895b067 Mon Sep 17 00:00:00 2001
+From: vivekana <vivekana@xilinx.com>
+Date: Tue, 13 Apr 2021 17:30:02 -0700
+Subject: [PATCH] drm:xlnx_mixer: Dont enable primary plane by default.
+
+Maulik K Patel <maulikkp@xilinx.com>
+Date: Tue, 6 Aug 2019 15:01:59 +0530
+Subject: [PATCH] drm:xlnx_mixer: Dont enable primary plane by default.
+
+Enabling primary by default is causing bandwidth of 2GB.
+This patch is not to enable mixer primary plane by default.
+Enable/Disable it through module_param and devmem by using
+below commands.
+
+Enable:
+echo Y > /sys/module/xlnx_mixer/parameters/mixer_primary_enable
+
+Disable:
+devmem 0xa0070040 32 0x0
+echo N > /sys/module/xlnx_mixer/parameters/mixer_primary_enable
+---
+ drivers/gpu/drm/xlnx/xlnx_mixer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/xlnx/xlnx_mixer.c b/drivers/gpu/drm/xlnx/xlnx_mixer.c
+index 0911483..58f26ef 100644
+--- a/drivers/gpu/drm/xlnx/xlnx_mixer.c
++++ b/drivers/gpu/drm/xlnx/xlnx_mixer.c
+@@ -242,9 +242,9 @@ static const u32 color_table[] = {
+ 	DRM_FORMAT_XV20,
+ };
+ 
+-static bool xlnx_mixer_primary_enable = true;
++static bool xlnx_mixer_primary_enable = false;
+ module_param_named(mixer_primary_enable, xlnx_mixer_primary_enable, bool, 0600);
+-MODULE_PARM_DESC(mixer_primary_enable, "Enable mixer primary plane (default: 1)");
++MODULE_PARM_DESC(mixer_primary_enable, "Enable mixer primary plane (default: 0)");
+ 
+ /*********************** Inline Functions/Macros *****************************/
+ #define to_mixer_hw(p) (&((p)->mixer->mixer_hw))
+-- 
+2.7.4
+

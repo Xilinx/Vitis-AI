@@ -1,0 +1,106 @@
+{
+  "model-name": "yolov3_voc_tf",
+  "num-labels": 20,
+  "labels" :[
+    {
+      "name": "aeroplane",
+      "label": 0,
+      "display_name" : "aeroplane"
+    },
+    {
+      "name": "bicycle",
+      "label": 1,
+      "display_name" : "bicycle"
+    },
+    {
+      "name": "bird",
+      "label": 2,
+      "display_name" : "bird"
+    },
+    {
+      "name": "boat",
+      "label": 3,
+      "display_name" : "boat"
+    },
+    {
+      "name": "bottle",
+      "label": 4,
+      "display_name" : "bottle"
+    },
+    {
+      "name": "bus",
+      "label": 5,
+      "display_name" : "bus"
+    },
+    {
+      "name": "car",
+      "label": 6,
+      "display_name" : "car"
+    },
+    {
+      "name": "cat",
+      "label": 7,
+      "display_name" : "cat"
+    },
+    {
+      "name": "chair",
+      "label": 8,
+      "display_name" : "chair"
+    },
+    {
+      "name": "cow",
+      "label": 9,
+      "display_name" : "cow"
+    },
+    {
+      "name": "diningtable",
+      "label": 10,
+      "display_name" : "diningtable"
+    },
+    {
+      "name": "dog",
+      "label": 11,
+      "display_name" : "dog"
+    },
+    {
+      "name": "horse",
+      "label": 12,
+      "display_name" : "horse"
+    },
+    {
+      "name": "motorbike",
+      "label": 13,
+      "display_name" : "motorbike"
+    },
+    {
+      "name": "person",
+      "label": 14,
+      "display_name" : "person"
+    },
+    {
+      "name": "pottedplant",
+      "label": 15,
+      "display_name" : "pottedplant"
+    },
+    {
+      "name": "sheep",
+      "label": 16,
+      "display_name" : "sheep"
+    },
+    {
+      "name": "sofa",
+      "label": 17,
+      "display_name" : "sofa"
+    },
+    {
+      "name": "train",
+      "label": 18,
+      "display_name" : "train"
+    },
+    {
+      "name": "tvmonitor",
+      "label": 19,
+      "display_name" : "tvmonitor"
+    }
+  ]
+}

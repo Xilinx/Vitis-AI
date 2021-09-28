@@ -1,0 +1,20 @@
+{
+  "ivas-library-repo": "/usr/lib/ivas",
+  "element-mode":"transform",
+  "kernels": [
+    {
+      "library-name": "libivas_xfilter2d_sw.so",
+      "config": {
+        "debug_level" : 1,
+        "in_fourcc" : "YUY2",
+        "out_fourcc" : "YUY2",
+        "filter_preset" : "identity",
+        "filter_coefficients" : [
+          [ 0, 0, 0],
+          [ 0, 1, 0],
+          [ 0, 0, 0]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "b_csim": true,
+  "b_synth": true,
+  "b_cosim": true,
+  "dataTypes": [
+    "uint16",
+    "int32",
+    "float64"
+  ],
+  "op": "gemv",
+  "logParEntries": 2,
+  "matrixDims": [
+    [128, 4096],
+    [1024, 512]
+  ],
+  "valueRange": [
+    -124,
+    124
+  ],
+  "numSimulation": 2 
+}

@@ -1,0 +1,137 @@
+{
+    "gui": true, 
+    "exclude": "README.md", 
+    "name": "Xilinx XF_BLAS Gemm 1CU Level 2 Gui Test", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u250"
+    ], 
+    "platform_blacklist": [
+        "vck"
+    ], 
+    "platform_properties": {
+        "u250": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {}
+            }
+        }
+    }, 
+    "launch": [
+        {
+            "name": "generic launch for all flows", 
+            "cmd_args": "BUILD/blas.xclbin 64 64 64 64 64 64 64 1 0"
+        }
+    ], 
+    "host": {
+        "host_exe": "api_gemm.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/src/memKernel/sw/api_gemm.cpp", 
+                "LIB_DIR/L2/src/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include/hw/xf_blas/helpers/utils", 
+                "LIB_DIR/L2/include/memKernel", 
+                "LIB_DIR/L2/include/memKernel/sw", 
+                "LIB_DIR/L2/include/xcl2"
+            ], 
+            "symbols": [
+                "BLAS_ddrWidth=16", 
+                "BLAS_numKernels=1", 
+                "BLAS_dataType=float", 
+                "BLAS_gemmMBlocks=4", 
+                "BLAS_gemmKBlocks=4", 
+                "BLAS_gemmNBlocks=4", 
+                "BLAS_argPipeline=2", 
+                "BLAS_instructionSizeBytes=64", 
+                "BLAS_XdataType=float", 
+                "BLAS_argInstrWidth=1", 
+                "BLAS_runGemm=1"
+            ], 
+            "options": "-O3 -Wall -Wno-unknown-pragmas -Wno-unused-label"
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw", 
+                "LIB_DIR/L1/include/hw/xf_blas", 
+                "LIB_DIR/L1/include/hw/xf_blas/gemm", 
+                "LIB_DIR/L1/include/hw/xf_blas/helpers/utils", 
+                "LIB_DIR/L2/include/memKernel", 
+                "LIB_DIR/L2/include/memKernel/hw/xf_blas"
+            ], 
+            "symbols": [
+                "BLAS_ddrWidth=16", 
+                "BLAS_XddrWidth=16", 
+                "BLAS_numKernels=1", 
+                "BLAS_dataType=float", 
+                "BLAS_gemmMBlocks=4", 
+                "BLAS_gemmKBlocks=4", 
+                "BLAS_gemmNBlocks=4", 
+                "BLAS_argPipeline=2", 
+                "BLAS_dataEqIntType=float", 
+                "BLAS_XdataType=float", 
+                "BLAS_argInstrWidth=1", 
+                "BLAS_numInstr=64", 
+                "TEST_MEMCPY=0", 
+                "BLAS_CACHE=0", 
+                "BLAS_XVEC=0", 
+                "BLAS_runGemm=1", 
+                "AP_INT_MAX_W=1026"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name": "blas",
+            "ldclflags": "--config PROJECT/conn_u250.cfg --config PROJECT/opts.cfg",
+            "frequency": 200,
+            "accelerators": [
+                {
+                    "name": "blasKernel", 
+                    "location": "LIB_DIR/L2/src/memKernel/hw/kernel.cpp", 
+                    "frequency": 200,
+                    "num_compute_units": 0
+                }
+            ]
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_emu": 470, 
+                    "vitis_hw_build": 940, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

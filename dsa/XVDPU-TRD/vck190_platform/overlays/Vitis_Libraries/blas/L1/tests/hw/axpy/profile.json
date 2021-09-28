@@ -1,0 +1,28 @@
+{
+  "b_csim": true,
+  "b_synth": true,
+  "b_cosim": true,
+  "dataTypes": [
+    "float64",
+    "uint16",
+    "int32"
+  ],
+  "retTypes": [
+    "int32",
+    "int32",
+    "int32"
+  ],
+  "op": "axpy",
+  "logParEntries": 2,
+  "parEntries": 2,
+  "vectorDims": [
+    1024,
+    4096,
+    8192
+  ],
+  "valueRange": [
+    -1024,
+    1024
+  ],
+  "numSimulation": 2
+}

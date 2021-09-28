@@ -1,0 +1,3 @@
+Input Width, 27 Bits
+Twiddle Factor Width, 18 Bits
+Scaling Mode, SSR_FFT_GROW_TO_MAX_WIDTH :int part grows and saturate at 27 bits

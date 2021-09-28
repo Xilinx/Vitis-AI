@@ -1,0 +1,60 @@
+/*
+ * Copyright 2020 Xilinx, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include <stdint.h>
+#include "xf_datamover/static_rom.hpp"
+#include "xf_datamover/types.hpp"
+
+template <{% for m in k["map"] %}class T{{ loop.index0 }}{{ ', ' if loop.index0 != (k["map"] | length) - 1 else '' }}{% endfor %}>
+void {{ k["name"] }}_run({% for m in k["map"] %}
+    // {{ loop.index0 }}
+    T{{ loop.index0 }}& rom{{ loop.index0 }},
+    hls::stream<ap_axiu<{{ m["out"]["width"] }}, 0, 0, 0> >& s{{ loop.index0 }},
+    uint64_t sz{{ loop.index0 }}{{ ',' if loop.index0 != (k["map"] | length) - 1 else '' }}
+{% endfor %}
+    ) {
+    using namespace xf::datamover;
+
+#pragma HLS dataflow
+{% for m in k["map"] %}
+    rom{{ loop.index0 }}.toStream(s{{ loop.index0 }}, sz{{ loop.index0 }});{% endfor %}
+}
+
+extern "C" void {{ k["name"] }}(
+{% for m in k["map"] %}
+    // {{ loop.index0 }}
+    hls::stream<ap_axiu<{{ m["out"]["width"] }}, 0, 0, 0> >& {{ m["out"]["name"] }},
+    uint64_t sz{{ loop.index0 }}{{ ',' if loop.index0 != (k["map"] | length) - 1 else '' }}
+{% endfor %}
+    ) {
+    using namespace xf::datamover;
+
+    ; // clang-format off{% for m in k["map"] %}
+#pragma HLS interface axis port={{ m["out"]["name"] }}
+#pragma HLS interface s_axilite bundle=control port=sz{{ loop.index0 }}
+{% endfor %}
+#pragma HLS interface s_axilite bundle=control port=return
+    ; // clang-format on
+{% for m in k["map"] %}
+    StaticRom<{{ m["out"]["width"] }}, {{ m["in_file"]["depth"] }}> rom{{ loop.index0 }};
+    const ap_uint<{{ m["out"]["width"] }}> in{{ loop.index0 }}[] = {
+#include "{{ m["in_file"]["name"] }}.inc"
+    };
+    rom{{ loop.index0 }}.data = in{{ loop.index0 }};
+{% endfor %}
+    {{ k["name"] }}_run({% for m in k["map"] %}rom{{ loop.index0 }}, {{ m["out"]["name"] }}, sz{{ loop.index0 }}{{ ', ' if loop.index0 != (k["map"] | length) - 1 else '' }}{% endfor %});
+}
+{# vim: set filetype=cpp : #}

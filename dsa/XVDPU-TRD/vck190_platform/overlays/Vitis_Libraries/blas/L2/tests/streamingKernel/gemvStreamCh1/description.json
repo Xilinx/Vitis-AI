@@ -1,0 +1,135 @@
+{
+    "gui": false,
+    "name": "Xilinx BLAS gemvStreamCh1 Kernel Test", 
+    "description": "Xilinx BLAS Test", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u280",
+        "u50"
+    ], 
+    "platform_blacklist": [
+        "vck"
+    ], 
+    "platform_properties": {
+        "u50": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        ""
+                    ]
+                }
+            },
+            "containers": [
+                {
+                    "name": "gemv", 
+                    "ldclflags": "--config PROJECT/conn_u50.cfg"
+                }
+            ]
+        },
+        "u280": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        ""
+                    ]
+                }
+            },
+            "containers": [
+                {
+                    "name": "gemv", 
+                    "ldclflags": "--config PROJECT/conn_u280.cfg"
+                }
+            ]
+        }
+    }, 
+    "launch": [
+        {
+            "name": "generic launch for all flows", 
+            "cmd_args": "BUILD/gemv.xclbin 128 64 PROJECT/data_tests/ 0"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/src/streamingKernel/sw/host/gemvMult.cpp", 
+                "LIB_DIR/L2/src/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/../hpc/L2/include/", 
+                "LIB_DIR/L1/include/", 
+                "LIB_DIR/L2/include/memKernel/sw/", 
+                "LIB_DIR/L1/tests/sw/include/", 
+                "LIB_DIR/L2/include/xcl2"
+            ], 
+            "symbols": [
+                "HW_CLK=3e-9",
+                "BLAS_dataType=double", 
+                "BLAS_numChannels=1",
+                "BLAS_parEntries=4"
+            ], 
+            "options": "-O3"
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "symbols": [
+                "BLAS_dataType=double", 
+                "BLAS_parEntries=4",
+                "BLAS_numChannels=1"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include/", 
+                "LIB_DIR/L1/include/hw/", 
+                "LIB_DIR/L1/include/hw/xf_blas", 
+                "LIB_DIR/L2/include/memKernel/hw/xf_blas/", 
+                "LIB_DIR/L2/include/streamingKernel/hw/xf_blas/", 
+                "LIB_DIR/../hpc/L1/include/hw",
+                "LIB_DIR/../hpc/L1/include/hw/cgSolver",
+                "LIB_DIR/../hpc/L2/include/hw"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name": "gemv", 
+            "ldclflags": "--config PROJECT/opts.cfg", 
+            "frequency": 333, 
+            "accelerators": [
+                {
+                    "name": "krnl_gemv", 
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemvKernel.cpp", 
+                    "frequency": 333
+                },
+                {
+                    "name": "streamTimer", 
+                    "location": "LIB_DIR/../hpc/L2/src/hw/streamTimer.cpp", 
+                    "frequency": 333
+                }
+            ]
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 40960, 
+                    "vitis_hw_run": 40960
+                }, 
+                "max_time_min": 840
+            }
+        ], 
+        "targets": [
+            "vitis_hw_emu", 
+            "vitis_hw"
+        ], 
+        "category": "canary"
+    }
+}

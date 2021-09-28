@@ -1,0 +1,20 @@
+{
+	"vitis" : "2021.1",
+	"device_name" : "xilinx_u250_gen3x16_xdma_3_1_202020_1",
+	"containers": [
+	{
+		"name": "compress",
+		"meet_system_timing": "true",
+		"accelerators": [
+		{
+			"name": "xilGzipCompBlock",
+			"check_timing": "true",
+			"PipelineType": "none",
+			"check_latency": "true",
+			"check_warning": "true",
+			"FMax" : "281 MHz"
+		}
+		]
+	}
+	]
+}

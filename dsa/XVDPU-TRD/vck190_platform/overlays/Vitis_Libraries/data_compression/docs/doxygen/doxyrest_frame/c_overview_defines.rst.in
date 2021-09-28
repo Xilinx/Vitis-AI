@@ -1,0 +1,37 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+}
+	// macros
+
+%{
+
+local isPrevMl = false
+
+for i = 1, #compound.m_defineArray do
+	local item = compound.m_defineArray [i]
+	local decl = getDefineDeclString (item, hasItemRefTarget (item), "\t")
+	local isMl = string.find (decl, "\n")
+	local extraSep = ""
+
+	if i > 1 and (isMl or isPrevMl) then
+		extraSep = "\n"
+	end
+
+	isPrevMl = isMl
+}
+$extraSep	$decl
+%{
+end -- for
+}

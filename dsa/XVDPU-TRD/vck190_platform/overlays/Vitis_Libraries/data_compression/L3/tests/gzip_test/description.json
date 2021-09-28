@@ -1,0 +1,123 @@
+{
+    "name": "Xilinx GZIP Test", 
+    "description": [
+        "GZIP test application resides in `L3/tests/gzip_test` directory."
+    ], 
+    "flow": "vitis", 
+    "platform_blacklist": [
+        "vck",
+        "zc" 
+         
+    ], 
+    "platform_whitelist": [
+        "u200", 
+        "u50", 
+        "u250", 
+        "u280"
+    ], 
+    "launch": [
+        {
+            "cmd_args": "-sx BUILD/xgzip.xclbin -t PROJECT/sample.txt", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "post_launch": [
+        {
+            "launch_cmd": [
+                  "./run.sh HOST_EXE LIB_DIR $(BINARY_CONTAINERS)"
+             ]
+        }
+    ], 
+    "match_ini": "false", 
+    "host": {
+        "host_exe": "xgzip.exe", 
+        "compiler": {
+            "sources": [
+                "./src/host.cpp", 
+                "LIB_DIR/L3/src/zlib.cpp", 
+                "LIB_DIR/common/libs/xcl2/xcl2.cpp", 
+                "LIB_DIR/common/libs/cmdparser/cmdlineparser.cpp", 
+                "LIB_DIR/common/libs/logger/logger.cpp", 
+                "LIB_DIR/common/thirdParty/zlib-1.2.7/crc32.c", 
+                "LIB_DIR/common/thirdParty/zlib-1.2.7/adler32.c"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include", 
+                "LIB_DIR/L1/include/hw",
+                "LIB_DIR/common/thirdParty/zlib-1.2.7"
+            ], 
+            "options": "-O3 ", 
+            "symbols": [
+                "PARALLEL_BLOCK=4" 
+            ]
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/tests/src/", 
+                "LIB_DIR/../security/L1/include"
+            ], 
+            "symbols": [
+                "MULTIPLE_BYTES=8"
+            ] 
+        }
+    }, 
+    "containers": [
+        {
+            "name": "xgzip", 
+            "ldclflags": "--kernel_frequency 250 --config PROJECT/connectivity.cfg", 
+            "accelerators": [
+                {
+                    "name": "xilGzipCompBlock", 
+                    "location": "LIB_DIR/L2/src/gzip_compress_multicore_mm.cpp" 
+                }, 
+                {
+                    "name": "xilGzipS2MM", 
+                    "location": "LIB_DIR/L2/tests/src/gzip_dm_s2mm.cpp" 
+                },
+                {
+                    "name": "xilGzipMM2S", 
+                    "location": "LIB_DIR/L2/tests/src/gzip_dm_mm2s.cpp" 
+                },
+                {
+                    "name": "xilDecompress", 
+                    "location": "LIB_DIR/L2/src/zlib_decompress.cpp" 
+                }
+             ]
+        }
+    ], 
+    "output_files": [
+           "sample.txt.*"
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 1000, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

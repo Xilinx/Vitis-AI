@@ -1,0 +1,23 @@
+.. CompressionLib_Docs documentation master file, created by
+   sphinx-quickstart on Thu Jun 20 14:04:09 2020.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+.. meta::
+   :keywords: Vitis, Library, Data Compression, Xilinx, L3 Overlay, User Guide
+   :description: This section provides overview of L3 APIs
+
+.. _l3_user_guide:
+
+=====================
+L3 Overlay User Guide
+=====================
+
+.. toctree::
+   :maxdepth: 2
+   
+   overview.rst
+   design.rst
+   api_reference.rst
+   demo.rst
+

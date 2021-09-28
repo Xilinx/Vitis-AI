@@ -1,0 +1,21 @@
+.. CompressionLib_Docs documentation master file, created by
+   sphinx-quickstart on Thu Jun 20 14:04:09 2020.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+.. meta::
+   :keywords: Vitis, Library, Data Compression, Xilinx, L1 Modules, Data Compression HLS, ZLIB HLS, Zlib OpenCL, LZ4 HLS, Google Snappy OpenCL
+   :description: User Guide of L1 modules under Vitis Data Compression Library
+   
+.. _l1_user_guide: 
+
+====================
+L1 Module User Guide
+====================
+
+.. toctree::
+   :maxdepth: 3
+   
+   overview.rst
+   api_reference.rst
+   

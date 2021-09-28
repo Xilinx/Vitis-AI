@@ -1,0 +1,100 @@
+{
+    "name": "Xilinx XF_HPC FCN test",
+    "description": "",
+    "flow": "vitis",
+    "platform_whitelist": [
+        "xilinx_u250_xdma_201830_2"
+    ],
+    "platform_blacklist": [],
+    "platform_type" : "pcie",
+    "gui": false,
+    "platform_properties": {
+        "u250": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            },
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u250.cfg"
+                        ]
+                }
+            }
+        }
+    },
+    "launch": [
+        {
+            "cmd_args": "BUILD/ data_64 1 64 1",
+            "name": "generic launch for all flows"
+        }
+    ],
+    "post_launch": [
+    {
+        "launch_cmd": "make dump_config"
+    }],
+    "host": {
+        "host_exe": "fcn_test.exe",
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L3/tests/mlp/fcn_test.cpp"
+            ],
+            "includepaths": [
+                "LIB_DIR/L3/include/sw/mlp",
+                "LIB_DIR/../blas/L3/include/sw/xf_blas"
+            ], 
+            "symbols": [
+                "_GLIBCXX_USE_CXX11_ABI=0"
+            ]
+        },
+        "linker": {
+            "options" : "-luuid -lxrt_coreutil"
+        }
+    },
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw/mlp",
+                "LIB_DIR/L2/include/hw/mlp",
+                "LIB_DIR/../blas/L1/include/hw",
+                "LIB_DIR/../blas/L1/include/hw/xf_blas",
+                "LIB_DIR/../blas/L1/include/hw/xf_blas/gemm",
+                "LIB_DIR/../blas/L1/include/hw/xf_blas/helpers/utils",
+                "LIB_DIR/../blas/L2/include/memKernel",
+                "LIB_DIR/../blas/L2/include/memKernel/hw/xf_blas"
+            ]
+        }
+    },
+    "containers": [
+    {
+        "name" : "fcn",
+        "ldclflags" : "--config opts.cfg",
+        "frequency": 250,
+        "accelerators": [
+        {
+            "name": "fcnKernel",
+            "location": "LIB_DIR/L2/src/hw/mlp/fcnKernel.cpp",
+            "frequency": 250
+        }
+        ]
+    }],
+    "testinfo": {
+        "disable": false,
+        "jobs": [
+        {
+            "index": 0,
+            "dependency": [],
+            "env": "",
+            "cmd": "",
+            "max_memory_MB": 81920,
+            "max_time_min": 1080
+        }
+        ],
+        "targets": [
+            "vitis_hw_emu",
+            "vitis_hw"
+        ],
+            "category": "canary"
+    }
+}

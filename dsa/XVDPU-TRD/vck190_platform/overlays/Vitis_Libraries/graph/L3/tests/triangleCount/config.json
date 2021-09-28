@@ -1,0 +1,8 @@
+
+{
+    "operationName" : "triangleCount",
+    "kernelName" : "TC_kernel",
+    "requestLoad" : 100,
+    "xclbinPath" : "PROJECTPATH/build_dir.hw.xilinx_u50_gen3x16_xdma_201920_3/TC_kernel.xclbin",
+    "deviceNeeded" : 1
+}

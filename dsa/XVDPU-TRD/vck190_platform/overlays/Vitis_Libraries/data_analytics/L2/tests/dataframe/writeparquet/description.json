@@ -1,0 +1,146 @@
+{
+    "name": "Parquet-writer test", 
+    "description": "Parquet-writer test", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u200", 
+        "u250",
+        "aws-vu9p-f1"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "platform_properties": {
+        "u200": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u200.cfg"
+                    ]
+                }
+            }
+        }, 
+        "u250": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u250.cfg"
+                    ]
+                }
+            }
+        }
+    }, 
+    "pre_build": [
+        {
+            "build_cmd": "PROJECT/arrow_compile/setup.sh $(XILINX_VIVADO)/tps/lnx64/gcc-6.2.0/bin"
+        }
+    ],
+    "launch": [
+        {
+            "cmd_args": "-xclbin BUILD/ObjToParquet.xclbin", 
+            "name": "generic launch for all flows",
+            "ld_library_path":[
+                "PROJECT/arrow_compile/arrow/cpp/release/release"     
+            ]
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "host/test.cpp", 
+                "host/utils_sw/xclhost.cpp"
+            ], 
+            "includepaths": [
+                "host", 
+                "host/utils_sw", 
+                "LIB_DIR/L1/include/hw", 
+                "LIB_DIR/L2/include/hw", 
+                "LIB_DIR/../utils/L1/include",
+                "PROJECT/arrow_compile/arrow/cpp/release/thrift_ep-install/include/",
+                "PROJECT/arrow_compile/arrow/cpp/src",
+                "PROJECT/arrow_compile/arrow/cpp/release/src/"
+            ], 
+            "options": "-O3 -std=c++14 -DXDEVICE=$(XDEVICE)"
+        },
+        "linker" : {
+            "librarypaths" : [
+                "PROJECT/arrow_compile/arrow/cpp/release/release/",
+                "PROJECT/arrow_compile/arrow/cpp/release/thrift_ep-install/lib"
+            ],
+            "libraries" : [
+                "arrow",
+                "parquet",
+                "thrift"
+            ]
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw", 
+                "LIB_DIR/L2/include/hw" 
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/src/dataframe/obj2parquet.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": "", 
+                    "name": "ObjToParquet", 
+                    "num_compute_units": 1, 
+                    "compute_units": [
+                        {
+                            "name": "obj2parquet", 
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "ddr_obj", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "schema", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "ddr_parquet", 
+                                    "memory": "DDR[1]"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "ObjToParquet"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": 300
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw"
+        ], 
+        "category": "canary"
+    }
+}

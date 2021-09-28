@@ -1,0 +1,62 @@
+Library Element,DATA_TYPE,TWIDDLE_TYPE,POINT_SIZE,FFT_NIFFT,CASC_LEN,DYN_PT_SIZE,WINDOW_VSIZE,cycleCountAvg,throughputAvg,initiationInterval,throughpuInitIntAvg,NUM_BANKS,NUM_AIE,DATA_MEMORY,PROGRAM_MEMORY
+fft_ifft_dit_1ch,cfloat,cfloat,1024,1,1,1,1024,2578,397 MSa/s,3083,332 MSa/s,13,1,55864,5116
+fft_ifft_dit_1ch,cint16,cint16,64,1,1,1,64,520,123 MSa/s,582,109 MSa/s,8,1,11832,6568
+fft_ifft_dit_1ch,cint32,cint16,1024,1,1,0,1024,1515,675 MSa/s,2067,495 MSa/s,9,1,51640,5638
+fft_ifft_dit_1ch,cint32,cint16,1024,1,1,1,1024,1019,1004 MSa/s,2068,495 MSa/s,13,1,51768,6620
+fft_ifft_dit_1ch,cint32,cint16,1024,1,2,1,1024,508 812,2015 1261 MSa/s,2071 2073,494 493 MSa/s,22,2,76848,2 0 2 0 4926 3 0 3 0 6508
+fft_ifft_dit_1ch,cint32,cint16,1024,1,3,1,1024,426 812 368,2403 1261 2782 MSa/s,2076 2077 2075,493 493 493 MSa/s,31,3,101928,1 0 1 0 4942 2 0 2 0 4942 3 0 3 0 6508
+fft_ifft_dit_1ch,cint32,cint16,1024,1,4,1,1024,494 426 368 637,2072 2403 2782 1607 MSa/s,2080 2081 2083 2079,492 492 491 492 MSa/s,40,4,127008,1 0 1 0 6540 1 1 1 1 4910 2 1 2 1 4942 3 0 3 0 4942
+fft_ifft_dit_1ch,cint32,cint16,1024,1,5,1,1024,426 408 494 482 368,2403 2509 2072 2124 2782 MSa/s,2084 2086 2085 2088 2083,491 490 491 490 491 MSa/s,47,5,152088,1 0 1 0 4942 1 1 1 1 4942 2 2 2 2 4910 3 0 3 0 3902 3 2 3 2 4732
+fft_ifft_dit_1ch,cint32,cint16,128,1,1,0,1024,2327,55 MSa/s,2408,53 MSa/s,7,1,42424,4536
+fft_ifft_dit_1ch,cint32,cint16,128,1,2,0,1024,492 1838,260 69 MSa/s,2075 2077,61 61 MSa/s,12,2,67440,0 0 0 0 2296 1 0 1 0 3788
+fft_ifft_dit_1ch,cint32,cint16,128,1,1,0,128,295,433 MSa/s,350,365 MSa/s,7,1,13752,4270
+fft_ifft_dit_1ch,cint32,cint16,128,1,1,1,128,524,244 MSa/s,587,218 MSa/s,7,1,13880,6520
+fft_ifft_dit_1ch,cint32,cint16,16,1,1,0,1024,3929,4 MSa/s,4002,3 MSa/s,7,1,42424,2376
+fft_ifft_dit_1ch,cint32,cint16,16,1,1,0,16,80,200 MSa/s,134,119 MSa/s,7,1,10168,1900
+fft_ifft_dit_1ch,cint32,cint16,256,1,1,0,1024,1782,143 MSa/s,2071,123 MSa/s,7,1,43448,5016
+fft_ifft_dit_1ch,cint32,cint16,256,1,2,0,1024,852 938,300 272 MSa/s,2070 2071,123 123 MSa/s,12,2,68464,0 0 0 0 3274 1 0 1 0 3388
+fft_ifft_dit_1ch,cint32,cint16,256,1,1,0,256,436,587 MSa/s,524,488 MSa/s,7,1,18872,4742
+fft_ifft_dit_1ch,cint32,cint16,256,1,1,1,256,580,441 MSa/s,646,396 MSa/s,7,1,19000,6476
+fft_ifft_dit_1ch,cint32,cint16,32,1,1,0,1024,4516,7 MSa/s,4589,6 MSa/s,7,1,42424,2756
+fft_ifft_dit_1ch,cint32,cint16,32,1,2,0,1024,1116 3390,28 9 MSa/s,3474 3476,9 9 MSa/s,12,2,67440,0 0 0 0 1920 1 0 1 0 2398
+fft_ifft_dit_1ch,cint32,cint16,32,1,1,0,32,147,217 MSa/s,201,159 MSa/s,7,1,10680,2586
+fft_ifft_dit_1ch,cint32,cint16,32,1,1,1,32,423,75 MSa/s,485,65 MSa/s,7,1,10808,6504
+fft_ifft_dit_1ch,cint32,cint16,512,1,1,0,512,861,594 MSa/s,1039,492 MSa/s,8,1,29624,5118
+fft_ifft_dit_1ch,cint32,cint16,512,1,1,1,512,736,695 MSa/s,1059,483 MSa/s,8,1,29752,6580
+fft_ifft_dit_1ch,cint32,cint16,512,1,1,0,1024,1739,294 MSa/s,2070,247 MSa/s,8,1,46008,5428
+fft_ifft_dit_1ch,cint32,cint16,512,1,2,0,1024,1064 704,481 727 MSa/s,2070 2071,247 247 MSa/s,14,2,71024,0 0 0 0 3824 1 0 1 0 3298
+fft_ifft_dit_1ch,cint32,cint16,64,1,1,0,1024,3145,20 MSa/s,3218,19 MSa/s,7,1,42424,3434
+fft_ifft_dit_1ch,cint32,cint16,64,1,2,0,1024,892 2239,71 28 MSa/s,2329 2330,27 27 MSa/s,12,2,67440,0 0 0 0 2120 1 0 1 0 2854
+fft_ifft_dit_1ch,cint16,cint16,64,1,1,0,64,209,306 MSa/s,271,236 MSa/s,8,1,11704,3308
+fft_ifft_dit_1ch,cint32,cint16,64,1,1,0,64,207,309 MSa/s,261,245 MSa/s,7,1,11704,3220
+fft_ifft_dit_1ch,cint16,cint16,512,1,1,0,512,852,600 MSa/s,910,562 MSa/s,9,1,25528,5174
+fft_ifft_dit_1ch,cint16,cint16,32,0,1,1,32,390,82 MSa/s,452,70 MSa/s,8,1,11320,6524
+fft_ifft_dit_1ch,cfloat,cfloat,128,1,1,1,128,885,144 MSa/s,948,135 MSa/s,7,1,13880,5076
+fft_ifft_dit_1ch,cfloat,cfloat,16,1,1,0,16,142,112 MSa/s,197,81 MSa/s,7,1,10168,2574
+fft_ifft_dit_1ch,cfloat,cfloat,256,1,1,0,1024,5391,47 MSa/s,5472,46 MSa/s,7,1,43448,5218
+fft_ifft_dit_1ch,cfloat,cfloat,256,1,1,0,256,1341,190 MSa/s,1399,182 MSa/s,7,1,18872,4980
+fft_ifft_dit_1ch,cfloat,cfloat,256,1,1,1,256,1147,223 MSa/s,1213,211 MSa/s,7,1,19000,5084
+fft_ifft_dit_1ch,cfloat,cfloat,256,1,2,0,1024,2961 2488,86 102 MSa/s,3068 3069,83 83 MSa/s,12,2,68464,0 0 0 0 3452 1 0 1 0 3502
+fft_ifft_dit_1ch,cfloat,cfloat,32,1,1,0,1024,6740,4 MSa/s,6821,4 MSa/s,7,1,42424,3738
+fft_ifft_dit_1ch,cfloat,cfloat,32,1,1,0,32,227,140 MSa/s,282,113 MSa/s,7,1,10680,3500
+fft_ifft_dit_1ch,cfloat,cfloat,32,1,1,1,32,682,46 MSa/s,744,43 MSa/s,7,1,10808,5076
+fft_ifft_dit_1ch,cfloat,cfloat,32,1,2,0,1024,2566 4343,12 7 MSa/s,4450 4452,7 7 MSa/s,12,2,67440,0 0 0 0 2380 1 0 1 0 2864
+fft_ifft_dit_1ch,cfloat,cfloat,512,1,1,0,1024,5661,90 MSa/s,5742,89 MSa/s,8,1,47544,5876
+fft_ifft_dit_1ch,cfloat,cfloat,512,1,1,0,512,2809,182 MSa/s,2873,178 MSa/s,8,1,31160,5500
+fft_ifft_dit_1ch,cfloat,cfloat,512,1,2,0,1024,2792 2845,183 179 MSa/s,2954 2955,173 173 MSa/s,14,2,72560,2 0 2 0 3476 3 0 3 0 3944
+fft_ifft_dit_1ch,cfloat,cfloat,64,1,1,0,1024,5739,11 MSa/s,5820,10 MSa/s,7,1,42424,4322
+fft_ifft_dit_1ch,cfloat,cfloat,64,1,1,0,64,369,173 MSa/s,424,150 MSa/s,7,1,11704,4052
+fft_ifft_dit_1ch,cfloat,cfloat,64,1,1,1,64,731,87 MSa/s,793,80 MSa/s,7,1,11832,5068
+fft_ifft_dit_1ch,cfloat,cfloat,64,1,2,0,1024,3056 2781,20 23 MSa/s,3165 3166,20 20 MSa/s,12,2,67440,0 0 0 0 2908 1 0 1 0 3008
+fft_ifft_dit_1ch,cint16,cint16,1024,0,1,0,1024,1647,621 MSa/s,1718,596 MSa/s,10,1,43448,5742
+fft_ifft_dit_1ch,cint16,cint16,1024,1,1,0,1024,1647,621 MSa/s,1718,596 MSa/s,10,1,43448,5742
+fft_ifft_dit_1ch,cint16,cint16,128,0,1,0,128,293,436 MSa/s,347,368 MSa/s,8,1,12728,4326
+fft_ifft_dit_1ch,cint16,cint16,128,1,1,0,128,293,436 MSa/s,347,368 MSa/s,8,1,12728,4326
+fft_ifft_dit_1ch,cint16,cint16,16,1,1,0,16,78,205 MSa/s,132,121 MSa/s,8,1,10936,1944
+fft_ifft_dit_1ch,cint16,cint16,2048,0,1,0,2048,3344,612 MSa/s,3425,597 MSa/s,13,1,79288,6054
+fft_ifft_dit_1ch,cint16,cint16,2048,1,1,0,2048,3344,612 MSa/s,3425,597 MSa/s,13,1,79288,6054
+fft_ifft_dit_1ch,cint16,cint16,256,0,1,0,256,454,563 MSa/s,511,500 MSa/s,8,1,16824,4750
+fft_ifft_dit_1ch,cint16,cint16,256,1,1,0,256,454,563 MSa/s,511,500 MSa/s,8,1,16824,4750
+fft_ifft_dit_1ch,cint16,cint16,32,0,1,0,32,136,235 MSa/s,198,161 MSa/s,8,1,11192,2562
+fft_ifft_dit_1ch,cint16,cint16,512,0,1,0,512,852,600 MSa/s,910,562 MSa/s,9,1,25528,5174
+fft_ifft_dit_1ch,cint32,cint16,64,1,1,1,64,519,123 MSa/s,582,109 MSa/s,7,1,11832,6512

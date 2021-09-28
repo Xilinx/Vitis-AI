@@ -1,0 +1,44 @@
+use graph xgraph
+set sys.data_root="./1K_patients"
+
+begin
+   create loading job load_xgraph for graph xgraph 
+   {
+     
+     load "$sys.data_root/patients.csv"
+        to vertex patients values ($"Id",$"BIRTHDATE",$"DEATHDATE",$"SSN",$"FIRST_NAME",$"LAST_NAME",$"MARITAL",$"RACE",$"ETHNICITY",$"GENDER") 
+        using header="true", separator=",";
+
+     load "$sys.data_root/immunizations.csv" 
+        to vertex immunizations VALUES (gsql_concat($"PERFORMED_ON_DATE", $"PATIENT", $"CODE"), $"PERFORMED_ON_DATE",$"PATIENT",$"CODE"),
+        to edge patient_HAD_immunization VALUES($"PATIENT" patients, gsql_concat($"PERFORMED_ON_DATE", $"PATIENT", $"CODE") immunizations) 
+        using header="true", separator=",";
+
+     load "$sys.data_root/allergies.csv" 
+        to vertex allergies VALUES (gsql_concat($"START_DATE", $"PATIENT", $"CODE"), $"START_DATE",$"STOP",$"PATIENT",$"CODE"),
+        to edge patient_HAD_allergy VALUES($"PATIENT" patients, gsql_concat($"START_DATE", $"PATIENT", $"CODE") allergies) 
+        using header="true", separator=",";
+
+     load "$sys.data_root/conditions.csv" 
+        to vertex conditions VALUES (gsql_concat($"START_DATE", $"PATIENT", $"CODE"), $"START_DATE",$"STOP",$"PATIENT",$"CODE"),
+        to edge patient_HAD_condition VALUES($"PATIENT" patients, gsql_concat($"START_DATE", $"PATIENT", $"CODE") conditions) 
+        using header="true", separator=",";
+
+     load "$sys.data_root/imaging_studies.csv" 
+        to vertex imaging_studies VALUES ($"Id", $"PERFORMED_ON_DATE",$"PATIENT",$"BODYSITE_CODE", $"MODALITY_CODE"),
+        to edge patient_HAD_imaging_study VALUES($"PATIENT" patients, $"Id" imaging_studies) 
+        using header="true", separator=",";
+
+     load "$sys.data_root/procedures.csv"
+        to vertex procedures VALUES (gsql_concat($"PERFORMED_ON_DATE", $"PATIENT", $"CODE"), $"PERFORMED_ON_DATE",$"PATIENT",$"CODE"),
+        to edge patient_HAD_procedure VALUES($"PATIENT" patients, gsql_concat($"PERFORMED_ON_DATE", $"PATIENT", $"CODE") procedures)
+        using header="true", separator=",";
+
+     load "$sys.data_root/careplans.csv"
+        to vertex careplans VALUES ($"Id", $"START_DATE",$"STOP",$"PATIENT",$"CODE", $"REASONCODE"),
+        to edge patient_HAD_careplan VALUES($"PATIENT" patients, $"Id" careplans) 
+        using header="true", separator=",";
+   }
+end
+
+run loading job load_xgraph

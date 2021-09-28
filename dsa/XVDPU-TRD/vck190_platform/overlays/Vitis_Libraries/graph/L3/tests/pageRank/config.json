@@ -1,0 +1,8 @@
+
+{
+    "operationName" : "pagerank",
+    "kernelName" : "kernel_pagerank_0",
+    "requestLoad" : 100,
+    "xclbinPath" : "PROJECTPATH/build_dir.hw.xilinx_u50_gen3x16_xdma_201920_3/kernel_pagerank_0.xclbin",
+    "deviceNeeded" : 1
+}

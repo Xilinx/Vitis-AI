@@ -1,0 +1,106 @@
+.. 
+   Copyright 2019 Xilinx, Inc.
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+.. meta::
+   :keywords: Vitis, Security, Library, MD4, MD5, message, digest, algorithms
+   :description: The MD4/MD5 Message-Digest Algorithm is a hash-based cryptographic function. It takes a message of arbitrary length as its input and produces a 128-bit digest.
+   :xlnxdocumentclass: Document
+   :xlnxdocumenttype: Tutorials
+
+
+*************************************
+The MD4/MD5 Message-Digest Algorithms
+*************************************
+
+.. toctree::
+   :maxdepth: 1
+
+Overview
+========
+
+The MD4/MD5 Message-Digest Algorithm is a hash-based cryptographic function. It takes a message of arbitrary length as its input and produces a 128-bit digest. Both MD4 and MD5 have a padding and appending process before digest the message of arbitrary length. The difference between MD4 and MD5 is the digest process. The MD4 have 3 round hash calculations while the MD5 have 4. For each round, both of them have intra loop-carried dependencies.
+
+Currently this library supports the following algorithms:
+
+* MD4
+* MD5
+
+The MD4 algorithm is defined in `RFC 1320`_, and the MD5 is defined in `RFC 1321`_.
+
+.. _`RFC 1320`: https://tools.ietf.org/html/rfc1320
+.. _`RFC 1321`: https://tools.ietf.org/html/rfc1321
+
+Implementation on FPGA
+======================
+
+The internal structure of MD4 and MD5 are shown in the figures below:
+
+.. image:: /images/internal_structure_of_md4.png
+   :alt: Structure of MD4
+   :width: 100%
+   :align: center
+
+.. image:: /images/internal_structure_of_md5.png
+   :alt: Structure of MD5
+   :width: 100%
+   :align: center
+
+As we can see from the figures, the hash calculation can be partitioned into two parts.
+
+* The pre-processing part pads or splits the input message which is comprised by a stream of 32-bit words into fixed sized blocks (512-bit for each).
+
+* The digest part iteratively computes the hash values. Loop-carried dependency is enforced by the algorithm itself, thus this part cannot reach an initiation interval (II) = 1.
+
+As these two parts can work independently, they are designed into parallel dataflow processes, connected by streams (FIFOs).
+
+Performance
+===========
+
+MD4
+---
+
+A single instance of MD4 function processes input message at the rate of ``512 bit / 50 cycles`` at 312.79MHz.
+
+The hardware resource utilizations are listed in :numref:`tab1MD4` below:
+
+.. _tab1MD4:
+
+.. table:: Hardware resources for single MD4 hash calculation
+    :align: center
+
+    +----------+----------+----------+----------+-----------+-----------+-----------------+
+    |   BRAM   |    DSP   |    FF    |    LUT   |    CLB    |    SRL    | clock period(ns)|
+    +----------+----------+----------+----------+-----------+-----------+-----------------+
+    |     0    |     0    |   3868   |   4449   |    986    |     0     |      3.197      |
+    +----------+----------+----------+----------+-----------+-----------+-----------------+
+
+MD5
+---
+
+A single instance of MD5 function processes input message at the rate of ``512 bit / 81 cycles`` at 329.05MHz.
+
+The hardware resource utilizations are listed in :numref:`tab1MD5` below:
+
+.. _tab1MD5:
+
+.. table:: Hardware resources for single MD5 hash calculation
+    :align: center
+
+    +----------+----------+----------+----------+-----------+-----------+-----------------+
+    |   BRAM   |    DSP   |    FF    |    LUT   |    CLB    |    SRL    | clock period(ns)|
+    +----------+----------+----------+----------+-----------+-----------+-----------------+
+    |     0    |     0    |   4893   |   4790   |    931    |     0     |      3.039      |
+    +----------+----------+----------+----------+-----------+-----------+-----------------+
+

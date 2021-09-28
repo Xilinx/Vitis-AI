@@ -1,0 +1,23 @@
+{
+    "id": "xf_fintech",
+    "name": "Vitis Quantitative Finance Library",
+    "description": "Vitis Quantitative Finance Library is an open-sourced Vitis library written in C++ for accelerating quantitative finance applications in a variety of use cases. It now covers two levels of acceleration: the module level and the pre-defined kernel level, and will evolve to offer the third level as pure software APIs working with pre-defined hardware overlays",
+    "v++": {
+        "includepaths": [
+            "LIB_DIR/L1/include",
+            "LIB_DIR/L2/include"
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/ext/xcl2",
+                "LIB_DIR/ext/quantlib",
+                "LIB_DIR/ext/rng",
+                "LIB_DIR/L3/include",
+                "LIB_DIR/L3/include/models",
+                "LIB_DIR/../utils/L1/include"
+            ]
+        }
+    }
+}

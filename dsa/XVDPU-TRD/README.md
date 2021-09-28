@@ -1,6 +1,6 @@
 # VCK190 DPUCVDX8G TRD for Vitis AI
 
-**Note1:** In this TRD, platform is based on VCK190 ES1 board.
+**Note1:** In this TRD, platform is based on VCK190 Prod board.
 
 ## Table of Contents
 
@@ -21,17 +21,16 @@
 - [6 Instruction for Changing Platform](#6-instruction-for-changing-platform)
 	- [6.1 Interfaces of DPUCVDX8G](#61-interfaces-of-dpucvdx8g)
 	- [6.2 Changing Platform](#62-changing-platform)
-	- [6.3 Improve Performance](#63-improve-performance)
 - [7 Basic Requirement of Platform](#7-basic-requirement-of-platform)
 - [8 Vivado Project of TRD Platform1](#8-vivado-project-of-trd-platform1)
 - [9 Known Issue ](#9-known-issue)
 
 ## 1 Revision History
 
-Change Log:
-
--  This is the first version of DPUCVDX8G TRD for Vitis AI.
-   
+Vitis1.4.1 Change log:
+- Change platform as VCK190-prod 2021.1 version
+- Update scripts to make changing platform more easier, update 'vitis_prj/Makefile' to simple the HW build steps
+- Add XVDPU configuration C64B3
 ------
 
 ## 2 Overview
@@ -42,7 +41,7 @@ It includes a set of highly optimized instructions, and supports most convolutio
 This tutorial contains information about:
 
 - How to set up the VCK190 evaluation board.
-- How to build and run the DPUCVDX8G TRD with VCK190 platform in Vitis 2020.2 environment.
+- How to build and run the DPUCVDX8G TRD with VCK190 platform in Vitis 2021.1 environment.
 - How to change platform.
 ------
 
@@ -61,8 +60,8 @@ Required:
 ### 3.2 Software
 
   Required:
-  - Vitis 2020.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-2.html) 
-  - [XRT 2020.2](https://github.com/Xilinx/XRT/tree/2020.2)
+  - Vitis 2021.1
+  - XRT 2021.1
   - Python (version 2.7.5 or 3.6.8)
 
 ------
@@ -117,22 +116,12 @@ Please make sure the board is set as booting from SD card:
 The following tutorials assume that the $TRD_HOME environment variable is set as given below.
 
 ```
-% export TRD_HOME =<Vitis AI path>/XVDPU-TRD
+% export TRD_HOME =<Vitis AI path>/dsa/XVDPU-TRD
 ```
-We need install the Vitis Development Environment.
 
-And make sure to enable the Early Access devices (Refer to https://www.xilinx.com/member/vck190_headstart.html#started ). 
+**Step1:** Build VCK190 platform 
 
-By adding the following line to each of the tcl scripts:  
-```   
- enable_beta_device *
-```  
-- $HOME/.Xilinx/Vivado/Vivado_init.tcl   
-- $HOME/.Xilinx/HLS_init.tcl
-
-**Step1:** Build VCK190 ES1 platform 
-
-Firstly, please build the VCK190 ES1 platform in the folder '$TRD_HOME/vck190_platform', build steps please follow '$TRD_HOME/vck190_platform/README.md".
+Firstly, please build the VCK190 platform in the folder '$TRD_HOME/vck190_platform', build steps please follow '$TRD_HOME/vck190_platform/README.md".
 
 
 **Step2:** Setup environment for building DPUCVDX8G
@@ -142,7 +131,7 @@ When platform is ready, please set the Vitis and XRT environment variable as giv
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <vitis install path>/Vitis/2020.2/settings64.sh
+% source <vitis install path>/Vitis/2021.1/settings64.sh
 
 % source opt/xilinx/xrt/setup.sh
 ```
@@ -152,7 +141,7 @@ Open a linux terminal. Set the linux as Bash mode.
 #### 5.2.1 Build the Hardware Design
 
 The default setting of DPUCVDX8G is 3 Batch (CPB_N=32), Frequency is 333 MHz, UBANK_IMG_N (=16) and UBANK_WGT_N (=17) are set as the Max value.
-Modify file '$TRD_HOME/vitis_prj/xvdpu_config.mk' can change the default settings. 
+Modify file '$TRD_HOME/vitis_prj/xvdpu_config.mk' can change the settings. 
  
 
 Build the hardware design.
@@ -160,13 +149,11 @@ Build the hardware design.
 ```
 % cd $TRD_HOME/vitis_prj
 
-% make files
-
 % make all
 
 ```
 
-Generated SD card image:  $TRD_HOME/vitis_prj/package_out/sd_card.img
+Generated SD card image:  $TRD_HOME/vitis_prj/package_out/sd_card.img.gz
 
 Implemented Vivado project: $TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj
 
@@ -187,12 +174,13 @@ $TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj/prj.gen/sources_1/
 
 #### 5.2.3 Run Resnet50 Example
 
-The TRD project has generated the matching model file in '$TRD_HOME/prj/app/' path for the default settings. If the user change the DPUCVDX8G settings. The model need to be created again.
+The TRD project has generated the matching model file in '$TRD_HOME/app' path for the default settings. If changing the settings of DPUCVDX8G, the model need to be created again.
 
 This part is about how to run the Resnet50 example.
 
-Use the balenaEtcher tool to flash '$TRD_HOME/vitis_prj/package_out/sd_card.img' into SD card, insert the SD card with the image into the destination board and power-on it.
-After Linux booting on board, copy the folder '$TRD_HOME/app' in this TRD to the target folder "~/", then run below commands:
+Use the balenaEtcher tool to flash '$TRD_HOME/vitis_prj/package_out/sd_card.img.gz' into SD card, insert the SD card with the image into the destination board and power-on it.
+After Linux booting on board, firstly install the Vitis AI Runtime (follow the steps in the document https://github.com/Xilinx/Vitis-AI/blob/master/setup/vck190/README.md) .
+Then copy the folder '$TRD_HOME/app' in this TRD to the target folder "~/", and run below commands:
 
 ```
 % cd ~/app/model/
@@ -221,17 +209,17 @@ I0130 22:03:11.104150   755 performance_test.hpp:96] BYEBYE
 
 The DPUCVDX8G IP provides some user-configurable parameters, please refer to the document PG389 'Xilinx Versal DPU (DPUCVDX8G) Product Guide' .
 In this TRD, user-configurable parameters are in the file '$TRD_HOME/vitis_prj/xvdpu_config.mk'. They are:
-- BATCH_N     -- number of batch engine integrated in DPUCVDX8G IP, range from 1 to 6.
+- CPB_N       -- number of AI Engine cores per batch handler, support 32 (BATCH_N = 1~6) and 64 (BATCH_N = 3)
+- BATCH_N     -- number of batch engine integrated in DPUCVDX8G IP, range from 1 to 6 for CPB_N=32, and 3 for CPB_N=64.
 - UBANK_IMG_N -- number of IMG BANKs are composed of UltraRAM, the Max is 16.
 - UBANK_WGT_N -- number of WGT BANKs are composed of UltraRAM, the Max is 17.
 - PL_FREQ     -- Frequency of 'm_axi_aclk', support range from 200M to 333M Hz. 
 
 Other parameters are set by default as below:
-- CPB_N               = 32
 - LOAD_PARALLEL_IMG   = 2
 - SAVE_PARALLEL_IMG   = 2
 
-After changing '$TRD_HOME/vitis_prj/xvdpu_config.mk', type 'make files' and 'make all' to build the design. 
+After changing '$TRD_HOME/vitis_prj/xvdpu_config.mk', type 'make all' to build the design. 
 
 ------
 
@@ -249,23 +237,20 @@ Interfaces of DPUCVDX8G are listed as below.
 - s_axi_control  -- AXI lite interface for controlling DPUCVDX8G registors, connected with CIPs through AXI_Smartconnect_IP.
 - s_axi_aclk   -- Input clock for S_AXI_CONTROL. Frequency is 150M Hz in this TRD.
 - s_axi_aresetn -- Active-Low reset for S_AXI_CONTROL.
-- interrupt -- EDGE_RISING interrupt signal generated by DPUCVDX8G.
+- interrupt -- Interrupt signal generated by DPUCVDX8G.
 
 
-The connection between AXI-stream interface of DPUCVDX8G and AIE are defined in the '$TRD_HOME/vitis_prj/scripts/DPUCVDX8G_aie.cfg'.
-
-Since the platform in this TRD does not support 'sptag', the connection between Master AXI interface of DPUCVDX8G and LPDDR's NOC are defined in the '$TRD_HOME/vitis_prj/scripts/postlink.tcl'.
+DPUCVDX8G's connection with AIE and LPDDR's NOC are all defined in the '$TRD_HOME/vitis_prj/scripts/xvdpu_aie_noc.cfg' (generated by 'xvdpu_aie_noc.py').
 
 For the clock design, please make sure that:
-- m_axi_clk of DPUCVDX8G, aclk0 of AIE (ai_engine_0), and clock for the slave AXI interfaces of LPDDR's NOC connected with DPUCVDX8G (aclk12 of NOC_0 in the TRD), should be drived by the same clock source. (333M Hz in this TRD)
 - s_axi_aclk for 's_axi_control' should use clock with lower frequency, such as 150M Hz, to get better timing.
-- 'AI Engine Core Frequency' should be 4 times of DPUCVDX8G's ap_clk. In this TRD, it is 1333M Hz (4 x 333M). The value of 'AI Engine Core Frequency' can be set in the platform design files or '/vitis_prj/scripts/postlink.tcl'.
+- 'AI Engine Core Frequency' should be 4 times of DPUCVDX8G's m_axi_clk. In this TRD, it is 1333M Hz (4 x 333M). The value of 'AI Engine Core Frequency' can be set in the platform design files or '/vitis_prj/scripts/postlink.tcl'.
 
 ### 6.2 Changing Platform
 
-Changing platform needs to modify the path of platform files in the '$TRD_HOME/vitis_prj/Makefile', and disable 'postlink.tcl' (it is specified for the VCK190 platform in this TRD)
+Changing platform needs to modify 3 files: 'vitis_prj/Makefile', 'vitis_prj/scripts/xvdpu_aie_noc.py', and 'vitis_prj/scripts/postlink.tcl'.
 
-
+1) 'vitis_prj/Makefile':
 - Change the path of 'xpfm' file for varibale 'PLATFORM'
 ```
   PLATFORM           = */*.xpfm
@@ -275,53 +260,38 @@ Changing platform needs to modify the path of platform files in the '$TRD_HOME/v
   --package.rootfs     */rootfs.ext4 \
   --package.sd_file    */Image \
 ```
-- Disable 'postlink.tcl' 
-```
-#VXXFLAGS                += --xp param:compiler.userPostSysLinkOverlayTcl=$(ABS_PATH)/scripts/post_linker.tcl
-```
 
-#### 6.3 Improve Performance
+2) 'vitis_prj/scripts/xvdpu_aie_noc.py':
+- Change the name of 'sptag'
 
-There are DDR and LPDDR on the VCK190 board. For getting better performance, please connect DPUCVDX8G with the LPDDR's NOC. This can be done by platform design (or sptag), or commands in the '/vitis_prj/scripts/postlink.tcl'. 
-Also, please do NOC performance tunning to get more better performance. You can refer to Chapter 5 of [PG313 - Versal ACAP Programmable Network on Chip and Integrated Memory Controller v1.0 Product Guide](https://www.xilinx.com/support/documentation/ip_documentation/axi_noc/v1_0/pg313-network-on-chip.pdf)
+3) 'vitis_prj/scripts/postlink.tcl':
 
-For 'postlink.tcl', a general way is that firstly disabling the 'postlink.tcl' in the Makefile, let Vitis creating the default block design for your project.
+- Change the name of LPDDR's NOC
 ```
-  #VXXFLAGS  += --xp param:compiler.userPostSysLinkOverlayTcl=$(ABS_PATH)/scripts/post_linker.tcl
+set cell_noc {*}
 ```
-Open the block design in the Vivado GUI, do changes as you wanted, and copy the commands in the 'Tcl Console' into your 'postlink.tcl'.
-Then enable the 'postlink.tcl' in the makefile, 'make clean' and build the project again. 
-```
-  VXXFLAGS  += --xp param:compiler.userPostSysLinkOverlayTcl=$(ABS_PATH)/scripts/post_linker.tcl
-```
-In the 'postlink.tcl' of this TRD, commands are:  
- -  Set 'AI Engine Core Frequency'
- -  Connect master AXI interfaces of DPUCVDX8G directly with LPDDR's NOC (NOC_0)
- -  Set the QoS of NOC_0's slave AXI interfaces 
- -  Set the clock connection
- -  Set the reset connection. 
  ------
  
 ## 7 Basic Requirement of Platform
 For platform which will integrate DPUCVDX8G, the basic requirements are listed as below:
 - One 'CIPS' IP.
-- One 'NOC' IP with its slave AXI interfaces connected with DPUCVDX8G, and its DDR interface should provide best DDR bandwidth for DPUCVDX8G. For VCK190 board as example, the NOC should have 2x Memory Controller(for 2 LPDDR on board) and 4x MC ports. 
+- One 'NOC' IP. Its slave AXI interfaces should be with 'sptag', and its DDR interface should provide best DDR bandwidth for DPUCVDX8G. For VCK190 board as example, the NOC should have 2x Memory Controller(for 2 LPDDR on board) and 4x MC ports. 
 - One 'AI Engine' IP name 'ai_engine_0', and its Core Frequency should be 1333 MHz.
 - One 'Clocking Wizard' IP, with at least 2 output clocks for DPUCVDX8G (150 MHz and 333 MHz).   
 - Two 'Processor System Resets' IP, for 150 MHz and 333 MHz.
 - One 'AXI smartconnect' IP with its master port enabled in the platform (for connection with DPUCVDX8G's 's_axi_control' port), and its slave interface connected to the CIPS master port. 
 - One 'AXI interrupt controller' IP with its interrupt port connected to pl_ps_irqXX of CIPS and its slave AXI port connected to the CIPs master with its address mapped to 0xA5000000.    
 
-For the detailed platform design, please refer to VCK190 TRD platform1.
+For the detailed platform design, please refer to VCK190 platform in this TRD.
 
  ------
  
 ## 8 Vivado Project of TRD Platform1
-Source Tcl files for XSA of TRD platform1 are in the folder '/vck190_platform/hw'.
+Source files of VCK190 platform are in the folder '/vck190_platform/platforms'.
 
 ## 9 Known Issue 
 Unsupported Models:
 - SA_gate_pt
 - fadnet
 
-For the configuration 'BATCH_N = 6', due to limited DSP resource in XCVC1902, 'ELEW_MULT_ENA' is disabled, model 'efficientnet-b0_tf2' is not supported.
+For the configuration 'CPB_N=32 & BATCH_N = 6', due to limited DSP resource in XCVC1902, 'ELEW_MULT_ENA' is disabled, model 'efficientnet-b0_tf2' is not supported.

@@ -1,0 +1,121 @@
+{
+    "name": "Xilinx Merton 76 Model Engine", 
+    "description": "L2 Merton 76 Jump Diffusion Engine", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u250", 
+        "u50", 
+        "u200"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "platform_properties": {
+        "u200": {
+            "host": {
+                "compiler": {
+                    "symbols": [
+                        "USE_DDR"
+                    ]
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u200.cfg"
+                    ]
+                }
+            }
+        }, 
+        "u250": {
+            "host": {
+                "compiler": {
+                    "symbols": [
+                        "USE_DDR"
+                    ]
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u250.cfg"
+                    ]
+                }
+            }
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": " -f PROJECT/example_test_data.csv -x -b BUILD/m76.xclbin", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "m76_host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/tests/M76Engine/src/host/m76_host.cpp", 
+                "LIB_DIR/L2/tests/M76Engine/src/host/m76_cpu.cpp", 
+                "LIB_DIR/L2/tests/M76Engine/src/host/m76_parser.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/M76Engine/src/host/", 
+                "LIB_DIR/L2/tests/M76Engine/src/kernel/", 
+                "LIB_DIR/ext/xcl2"
+            ], 
+            "options": "-O3 ", 
+            "symbols": [
+                "TEST_DT=float", 
+                "DEVICE_PART=u250"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/M76Engine/src/kernel/m76_kernel.cpp", 
+                    "frequency": 150.0, 
+                    "clflags": " -D TEST_DT=float", 
+                    "name": "m76_kernel"
+                }
+            ], 
+            "frequency": 150.0, 
+            "name": "m76"
+        }
+    ], 
+    "testinfo": {
+        "disable": true, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 2160, 
+                    "vitis_hw_emu": 600, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

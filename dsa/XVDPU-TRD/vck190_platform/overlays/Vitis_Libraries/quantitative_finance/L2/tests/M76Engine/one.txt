@@ -1,0 +1,2 @@
+S=100, K=100, r=0.05, sigma=0.2, T=1, lambda=1, kappa=0.083287, delta=0.4, N=50, exp=18.7336
+S=100, K=100, r=0.05, sigma=0.2, T=1, lambda=1, kappa=0.083287, delta=0.4, N=50, exp=28.7336

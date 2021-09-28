@@ -1,0 +1,141 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+
+local variableSectionName
+local functionSectionName
+local prevGetItemName = getItemName
+
+if compound.m_compoundKind == "namespace" or compound.m_compoundKind == "group" then
+	variableSectionName = "Global Variables"
+	functionSectionName = ""
+else
+	variableSectionName = "Fields"
+	functionSectionName = "Methods"
+end
+
+if compound.m_compoundKind == "group" then
+	getItemName = getItemQualifiedName
+else
+	getItemName = getItemSimpleName
+end
+
+local compoundStats = prepareCompound (compound)
+}
+$(getCompoundTocTree (compound))
+
+$(getItemImportString (compound))
+
+%{
+local hasDetails =
+	compoundStats.m_hasDocumentedItems or
+	compoundStats.m_hasBriefDocumentation and compoundStats.m_hasDetailedDocumentation
+
+if hasDetails then
+        if compound.m_compoundKind ~= "namespace" then
+}
+Overview
+~~~~~~~~
+
+$(getItemBriefDocumentation (compound, "details-"))
+
+%{
+        end
+else
+}
+$(getItemDetailedDocumentation (compound))
+
+%{
+end -- if
+
+if #compound.m_groupArray > 0 then
+	local groupTree = ""
+
+	for i = 1, #compound.m_groupArray do
+		local item = compound.m_groupArray [i]
+		local targetFileName = getItemFileName (item)
+
+		generateFile (targetFileName, "c_group.rst.in", item)
+		groupTree = groupTree .. getGroupTree (item)
+	end -- for
+}
+$groupTree
+
+%{
+end -- if
+
+if compoundStats.m_hasItems or
+	compound.m_baseCompound or
+	compound.m_derivedTypeArray and #compound.m_derivedTypeArray > 0 then
+	includeFile ("c_overview_compound.rst.in", compound, variableSectionName, functionSectionName)
+end
+
+if compoundStats.m_hasDocumentedUnnamedEnumValues then
+	includeFile ("c_details_unnamed_enum_values.rst.in", compound)
+end
+
+if compoundStats.m_hasDocumentedTypedefs then
+	includeFile ("c_details_typedefs.rst.in", compound)
+end
+
+if compoundStats.m_hasDocumentedVariables then
+	includeFile ("c_details_variables.rst.in", compound, variableSectionName)
+end
+
+if compoundStats.m_hasDocumentedProperties then
+	includeFile ("c_details_properties.rst.in", compound)
+end
+
+if compoundStats.m_hasDocumentedEvents then
+	includeFile ("c_details_events.rst.in", compound)
+end
+
+if compoundStats.m_hasDocumentedConstruction then
+	includeFile ("c_details_construction.rst.in", compound)
+end
+
+if compoundStats.m_hasDocumentedFunctions then
+	includeFile ("c_details_functions.rst.in", compound, functionSectionName)
+end
+
+if compoundStats.m_hasDocumentedAliases then
+	includeFile ("c_details_aliases.rst.in", compound)
+end
+
+if compoundStats.m_hasDocumentedDefines then
+	includeFile ("c_details_defines.rst.in", compound)
+end
+
+if #compound.m_footnoteArray > 0 then
+}
+---------------------
+
+.. rubric:: Footnotes
+
+%{
+	for i = 1, #compound.m_footnoteArray do
+		local item = compound.m_footnoteArray [i]
+		local text = getItemDetailedDocumentation (item)
+		text = replaceCommonSpacePrefix (text, "\t")
+}
+.. [#$(item.m_name)]
+
+$text
+
+%{
+	end -- for
+end -- if
+
+getItemName = prevGetItemName
+}

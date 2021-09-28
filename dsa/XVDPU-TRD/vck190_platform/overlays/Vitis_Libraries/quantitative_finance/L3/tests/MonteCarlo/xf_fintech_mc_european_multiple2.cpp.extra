@@ -1,0 +1,192 @@
+/*
+ * Copyright 2019 Xilinx, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include <chrono>
+
+#include "xf_fintech_mc_example.hpp"
+
+#include "xf_fintech_api.hpp"
+
+using namespace xf::fintech;
+
+static double tolerance = 0.0001;
+
+static OptionType baseOptionType = Put;
+
+static const double baseStockPrice = 36.0;
+static const double baseStrikePrice = 40.0;
+static const double baseRiskFreeRate = 0.06;
+static const double baseDividendYield = 0.0;
+static const double baseVolatility = 0.20;
+static const double baseTimeToMaturity = 1.0; /* in years */
+
+static const double baseRequiredTolerance = 0.02;
+
+/* The following variable is used to vary our input data for each run....*/
+static const double varianceFactor = 0.001;
+
+static const unsigned int NUM_ASSETS = 1000;
+
+static OptionType optionTypeArray[NUM_ASSETS];
+static double stockPriceArray[NUM_ASSETS];
+static double strikePriceArray[NUM_ASSETS];
+static double riskFreeRateArray[NUM_ASSETS];
+static double dividendYieldArray[NUM_ASSETS];
+static double volatilityArray[NUM_ASSETS];
+static double timeToMaturityArray[NUM_ASSETS];
+
+static double requiredToleranceArray[NUM_ASSETS];
+
+static double optionPriceArray[NUM_ASSETS];
+
+static void PrintParameters(void) {
+    printf("\n");
+    printf("\n");
+    printf("[XLNX] ==========\n");
+    printf("[XLNX] Parameters\n");
+    printf("[XLNX] ==========\n");
+    printf("[XLNX] baseOptionType        = %s\n", Trace::optionTypeToString(baseOptionType));
+    printf("[XLNX] baseStockPrice        = %f\n", baseStockPrice);
+    printf("[XLNX] baseStrikePrice       = %f\n", baseStrikePrice);
+    printf("[XLNX] baseRiskFreeRate      = %f\n", baseRiskFreeRate);
+    printf("[XLNX] baseDividendYield     = %f\n", baseDividendYield);
+    printf("[XLNX] baseVolatility        = %f\n", baseVolatility);
+    printf("[XLNX] baseTimeToMaturity    = %f\n", baseTimeToMaturity);
+    printf("[XLNX] baseRequiredTolerance = %f\n", baseRequiredTolerance);
+    printf("\n");
+    printf("[XLNX] varianceFactor        = %f * iteration\n", varianceFactor);
+    printf("\n");
+}
+
+static void InitialiseInput(void) {
+    unsigned int i;
+
+    for (i = 0; i < NUM_ASSETS; i++) {
+        /* We will apply some variance to our data here so we are not cacheing any
+         * values... */
+        double variance = (1.0 + (varianceFactor * i));
+
+        optionTypeArray[i] = Put;
+        stockPriceArray[i] = baseStockPrice * variance;
+        strikePriceArray[i] = baseStrikePrice * variance;
+        riskFreeRateArray[i] = baseRiskFreeRate * variance;
+        dividendYieldArray[i] = baseDividendYield * variance;
+        volatilityArray[i] = baseVolatility * variance;
+
+        timeToMaturityArray[i] = baseTimeToMaturity;
+        requiredToleranceArray[i] = baseRequiredTolerance;
+    }
+}
+
+int MCDemoRunEuropeanMultiple2(Device* pChosenDevice, MCEuropean* pMCEuropean) {
+    int retval = XLNX_OK;
+    int ret = 1; // assume fail
+    unsigned int i;
+    std::chrono::time_point<std::chrono::high_resolution_clock> start;
+    std::chrono::time_point<std::chrono::high_resolution_clock> end;
+    long long int duration;
+    double averageDurationPerAsset;
+
+    printf("\n\n\n");
+
+    printf(
+        "[XLNX] "
+        "***************************************************************\n");
+    printf("[XLNX] Running MC EUROPEAN MULTIPLE ASSET 2...\n");
+    printf(
+        "[XLNX] "
+        "***************************************************************\n");
+
+    //
+    // Claim the device for our MCEuropean object...this will download the
+    // required XCLBIN file (if needed)...
+    //
+    printf("[XLNX] mcEuropean trying to claim device...\n");
+
+    start = std::chrono::high_resolution_clock::now();
+
+    retval = pMCEuropean->claimDevice(pChosenDevice);
+
+    end = std::chrono::high_resolution_clock::now();
+
+    if (retval == XLNX_OK) {
+        printf("[XLNX] Device setup time = %lld microseconds\n",
+               (long long int)std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+    } else {
+        printf("[XLNX] ERROR- Failed to claim device - error = %d\n", retval);
+    }
+
+    if (retval == XLNX_OK) {
+        PrintParameters();
+        InitialiseInput();
+    }
+
+    // Run the model...
+    if (retval == XLNX_OK) {
+        retval = pMCEuropean->run(optionTypeArray, stockPriceArray, strikePriceArray, riskFreeRateArray,
+                                  dividendYieldArray, volatilityArray, timeToMaturityArray, requiredToleranceArray,
+                                  optionPriceArray, NUM_ASSETS);
+    }
+
+    if (retval == XLNX_OK) {
+        printf(
+            "[XLNX] "
+            "+-------+-------------+--------------+-----------+------------+-------"
+            "-----+--------------+\n");
+        printf(
+            "[XLNX] | Index | Stock Price | Strike Price | Risk Free | Div. Yield "
+            "| Volatility | Option Price |\n");
+        printf(
+            "[XLNX] "
+            "+-------+-------------+--------------+-----------+------------+-------"
+            "-----+--------------+\n");
+
+        for (i = 0; i < NUM_ASSETS; i++) {
+            printf(
+                "[XLNX] | %5d | %11.4f | %12.4f | %9.4f | %10.4f | %10.4f | %12.4f "
+                "|\n",
+                i, stockPriceArray[i], strikePriceArray[i], riskFreeRateArray[i], dividendYieldArray[i],
+                volatilityArray[i], optionPriceArray[i]);
+
+            // quick fix to get pass/fail criteria
+            if (i == 0 && std::abs(optionPriceArray[0] - 3.8761) <= tolerance) {
+                ret = 0;
+            }
+        }
+
+        printf(
+            "[XLNX] "
+            "+-------+-------------+--------------+-----------+------------+-------"
+            "-----+--------------+\n");
+
+        duration = pMCEuropean->getLastRunTime();
+
+        averageDurationPerAsset = (double)duration / (double)NUM_ASSETS;
+
+        printf("[XLNX] Overall Execution Time = %lld us\n", duration);
+        printf("[XLNX] Average Execution Time Per Asset = %8.4f us\n", averageDurationPerAsset);
+    } else {
+        printf("[XLNX] Error running algorithm\n");
+    }
+
+    //
+    // Release the device so another object can claim it...
+    //
+    printf("[XLNX] mcEuropean releasing device...\n");
+    retval = pMCEuropean->releaseDevice();
+
+    return ret;
+}

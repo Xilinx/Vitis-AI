@@ -1,0 +1,148 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+local sectionName = argArray [2]
+
+local protectionKind = compound.m_variableArray [1].m_protectionKind
+
+if g_noProtectionSections and hasNonPublicItems (compound.m_variableArray) then
+}
+	// $protectionKind $sectionName
+
+%{
+else
+}
+	// $sectionName
+
+%{
+end -- if
+
+local indent = ""
+local unnamedStack = {}
+local unnamedStackSize = 0
+local isLastUnnamed = false
+
+local i = 1
+while i <= #compound.m_variableArray do
+	local item = compound.m_variableArray [i]
+
+	if item.m_protectionKind ~= protectionKind then
+		protectionKind = item.m_protectionKind
+}
+
+	// $protectionKind $sectionName
+
+%{
+	end -- if
+
+	if not isUnnamedItem (item) then
+		local modifiers = ""
+		local suffix = ""
+
+		if item.m_modifiers ~= "" then
+			modifiers = " " .. item.m_modifiers
+		end
+
+		if item.m_bitField  ~= "" then
+			suffix = " :" .. item.m_bitField
+		elseif item.m_argString ~= "" then
+			if string.sub (item.m_argString, 1, 1) ~= "(" then
+				suffix = item.m_argString
+			else
+				suffix = " " .. item.m_argString
+			end
+		end
+
+		local unnamed = isMemberOfUnnamedType (item)
+		if unnamed then
+			if i > 1 then
+				emit ("\n")
+			end
+
+			while unnamed ~= "" do
+				local m, t, n = string.match (unnamed, "^((%a+)[/:](%d+)/*)")
+				if not m then
+					m, t = string.match (unnamed, "^((%a+)/*)")
+					if not m then
+						break
+					end
+				end
+}
+	$indent$t
+	$indent{
+%{
+				unnamed = string.sub (unnamed, string.len (m) + 1)
+				unnamedStackSize = unnamedStackSize + 1
+				unnamedStack [unnamedStackSize] = n
+				indent = indent .. "    "
+			end -- while
+		end -- if
+
+		if isLastUnnamed then
+			emit ("\n")
+			isLastUnnamed = false
+		end
+
+		local static = ""
+		if string.find (item.m_flags, "static") then
+			static = "static "
+		end
+}
+	$indent$static$(getLinkedTextString (item.m_type, true))$modifiers $(getItemNameForOverview (item))$suffix
+%{
+	elseif unnamedStackSize > 0 and not unnamedStack [unnamedStackSize] then
+		unnamedStack [unnamedStackSize] = 0 -- terminate this stack entry
+	end -- if
+
+	while unnamedStackSize > 0 do
+		if not unnamedStack [unnamedStackSize] then
+			break -- wait for unnamed variable @n to terminate this stack entry
+		end
+
+		unnamedStack [unnamedStackSize] = unnamedStack [unnamedStackSize] - 1
+		if unnamedStack [unnamedStackSize] > 0 then
+			break
+		end
+
+		indent = string.sub (indent, 5) -- remove 4 spaces
+		unnamedStackSize = unnamedStackSize - 1
+		isLastUnnamed = true
+
+		local isNextItemHasUnnamedType = false
+		local nextItem = compound.m_variableArray [i + 1]
+		if nextItem then
+			local typeString = getLinkedTextString (nextItem.m_type, false)
+			isNextItemHasUnnamedType = string.find (typeString, "@")
+		end
+
+		if isNextItemHasUnnamedType then
+			local modifiers = ""
+			if item.m_modifiers ~= "" then
+				modifiers = " " .. item.m_modifiers
+			end
+
+			i = i + 1 -- skip next
+}
+	$indent}$modifiers $(getItemNameForOverview (nextItem))
+%{
+		else
+}
+	$indent}
+%{
+		end -- if
+	end -- while
+
+	i = i + 1
+end -- while
+}

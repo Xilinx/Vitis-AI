@@ -1,0 +1,71 @@
+.. 
+   Copyright 2019 Xilinx, Inc.
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+.. meta::
+   :keywords: Vitis, Security, Library, Poly1305, algorithm
+   :description: The Poly1305 is a cryptographic message authentication code (MAC) created by Daniel J. Bernstein. It can be used to verify the data integrity and the authenticity of a message.
+   :xlnxdocumentclass: Document
+   :xlnxdocumenttype: Tutorials
+
+
+******************
+Poly1305 Algorithm
+******************
+
+.. toctree::
+   :maxdepth: 1
+
+Overview
+========
+
+The Poly1305 is a cryptographic message authentication code (MAC) created by Daniel J. Bernstein. It can be used to verify the data integrity and the authenticity of a message.
+
+The Poly1305 algorithm is defined in `RFC 8439`_.
+
+.. _`RFC 8439`: https://tools.ietf.org/html/rfc8439
+
+Implementation on FPGA
+======================
+
+As shown in the above summary of reference 2.5.1, we can know the implementation process of the Poly1305 algorithm. In order to improve the timing and reduce the latency for HLS implementation, we optimize the multiplication and modulo operations in the algorithm. The optimization idea is:
+
+* In order to improve the timing for multiplication operation, the multiplier and the multiplicand are separated into 27-bit and 18-bit arrays, and the result is multiplied to obtain the final result.
+
+* For modulo operation :math:`X=mod(A,P)`, where :math:`P=2^{130}-5`, we could take some tricks to reduce the latency. First, let :math:`N=\frac{A-X}{P}`, the equation can be transformed to :math:`X=A-NP=A-2^{130}N+5N`. Then, let :math:`X1=mod(A,2^{130})` and :math:`N1=\frac{A}{2^{130}}`,  we can get :math:`X2=X1+5*N1`. Finally, if :math:`X2<P`, there is :math:`X=X2`, otherwise, let :math:`A=X2`, then repeat the previous step. For more information, please refer to the code.
+
+For the Poly1305, We provide two APIs: `poly1305` and `poly1305MultiChan`.
+
+* `poly1305` takes a 32-byte one-time key and a message and produces a 16-byte tag. This tag is used to authenticate the message.
+
+* `poly1305MultiChan` takes N 32-byte one-time keys and N messages and produces N 16-byte tags. These tags are used to authenticate the corresponding messages.
+
+Performance
+===========
+
+The hardware resource utilizations are listed in :numref:`tabpoly` below:
+
+.. _tabpoly:
+
+.. table:: Hardware resources for the Poly1305 (the poly1305MultiChan's N is 16) 
+    :align: center
+
+    +--------------------+----------+----------+----------+----------+-----------+-----------+-----------------+
+    |   API              |   BRAM   |    DSP   |    FF    |    LUT   |    CLB    |    SRL    | clock period(ns)|
+    +--------------------+----------+----------+----------+----------+-----------+-----------+-----------------+
+    |  poly1305          |     0    |    40    |   5269   |   2751   |    778    |    16     |      2.732      |
+    +--------------------+----------+----------+----------+----------+-----------+-----------+-----------------+
+    |  poly1305MultiChan |     0    |    40    |   5394   |   3216   |    834    |    90     |      2.727      |
+    +--------------------+----------+----------+----------+----------+-----------+-----------+-----------------+
+

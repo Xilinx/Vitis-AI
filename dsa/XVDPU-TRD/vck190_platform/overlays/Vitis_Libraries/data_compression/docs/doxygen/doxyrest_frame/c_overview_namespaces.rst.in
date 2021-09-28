@@ -1,0 +1,29 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+}
+	// namespaces
+
+%{
+for i = 1, #compound.m_namespaceArray do
+	local item = compound.m_namespaceArray [i]
+	local targetFileName = getItemFileName (item)
+
+	if compound.m_compoundKind ~= "group" then
+		generateFile (targetFileName, "c_namespace.rst.in", item)
+	end
+
+	emit (getNamespaceTree (item))
+end -- for
+}

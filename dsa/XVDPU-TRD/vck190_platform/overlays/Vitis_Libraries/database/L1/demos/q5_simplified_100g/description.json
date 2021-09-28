@@ -1,0 +1,145 @@
+{
+    "name": "Xilinx Q5 Simplified 100g Demo",
+    "description": "Xilinx Q5 Simplified 100g Demo",
+    "flow": "vitis",
+    "platform_type": "pcie",
+    "platform_whitelist": [
+        "xilinx_u280_xdma_201920_3",
+        "u250",
+        "u200"
+    ],
+    "platform_blacklist": [
+        "zc"
+    ],
+    "platform_properties": {
+        "u280": {
+            "host": {
+                "compiler": {
+                    "symbols": [
+                        "USE_HBM"
+                    ]
+                }
+            },
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u280.cfg"
+                    ]
+                }
+            }
+        },
+        "u250": {
+            "host": {
+                "compiler": {
+                    "symbols": [
+                        "USE_DDR"
+                    ]
+                }
+            },
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u250.cfg"
+                    ]
+                }
+            }
+        },
+        "u200": {
+            "host": {
+                "compiler": {
+                    "symbols": [
+                        "USE_DDR"
+                    ]
+                }
+            },
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u200.cfg"
+                    ]
+                }
+            }
+        }
+    },
+    "launch": [
+        {
+            "name": "generic launch for all flows",
+            "cmd_args": " -xclbin BUILD/q5simplified.xclbin -work PROJECT/db_data -sf 1"
+        },
+        {
+            "name": "generic launch for hw_emu flows",
+            "target": "hw_emu",
+            "cmd_args": " -xclbin BUILD/q5simplified.xclbin -work PROJECT/db_data -sf 1"
+        },
+        {
+            "name": "generic launch for hw flows",
+            "target": "hw",
+            "cmd_args": " -xclbin BUILD/q5simplified.xclbin -work PROJECT/db_data -sf 100"
+        }
+    ],
+    "host": {
+        "host_exe": "test_q5s.exe",
+        "compiler": {
+            "sources": [
+                "host/test_q5s.cpp",
+                "host/xclhost.cpp"
+            ],
+            "includepaths": [
+                "host",
+                "kernel"
+            ],
+            "options": "-O3 -std=c++11"
+        }
+    },
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw",
+                "kernel",
+                "host"
+            ]
+        }
+    },
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "kernel/q5simplified.cpp",
+                    "frequency": 300,
+                    "name": "q5simplified"
+                }
+            ],
+            "frequency": 300,
+            "name": "q5simplified"
+        }
+    ],
+    "testinfo": {
+        "disable": true,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960,
+                    "vitis_hw_emu": 28672,
+                    "vitis_sw_emu": 10240,
+                    "vitis_hw_run": 10240
+                },
+                "max_time_min": {
+                    "vitis_hw_build": 470,
+                    "vitis_hw_emu": 470,
+                    "vitis_sw_emu": 60,
+                    "vitis_hw_run": 10
+                }
+            }
+        ],
+        "targets": [
+            "vitis_sw_emu",
+            "vitis_hw_build",
+            "vitis_hw_run"
+        ],
+        "category": "canary"
+    }
+}

@@ -1,0 +1,99 @@
+{
+    "name": "Xilinx Finite Difference Black Scholes Local Volatility Engine Model", 
+    "description": "L2 Finite Difference Black Scholes with Local Volatility Engine", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u250", 
+        "u200"
+    ], 
+    "platform_blacklist": [
+        "zc", 
+        "u50"
+    ], 
+    "launch": [
+        {
+            "cmd_args": " BUILD/fd_bs_lv_kernel_N128_M256.xclbin PROJECT/data/case0", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "fd_bs_lv_test.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/tests/FDBlackScholesLocalVolatilityEngine/src/host/fd_bs_lv_test.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/FDBlackScholesLocalVolatilityEngine/src/host", 
+                "LIB_DIR/ext/xcl2", 
+                "LIB_DIR/L2/tests/FDBlackScholesLocalVolatilityEngine/src/kernel"
+            ], 
+            "options": "-O3 ", 
+            "symbols": [
+                "FD_DATA_TYPE=float", 
+                "FD_DATA_EQ_TYPE=int32_t", 
+                "FD_BITS_PER_DATA_TYPE=32", 
+                "FD_N_SIZE=128", 
+                "FD_LOG2_N_SIZE=7", 
+                "FD_M_SIZE=256", 
+                "FD_DATA_WORDS_IN_DDR=16", 
+                "FD_NUM_PCR=2"
+            ]
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/FDBlackScholesLocalVolatilityEngine/src/kernel/fd_bs_lv_kernel.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D FD_DATA_TYPE=float -D FD_DATA_EQ_TYPE=int32_t -D FD_BITS_PER_DATA_TYPE=32 -D FD_N_SIZE=128 -D FD_LOG2_N_SIZE=7 -D FD_M_SIZE=256 -D FD_DATA_WORDS_IN_DDR=16 -D FD_NUM_PCR=2", 
+                    "name": "fd_bs_lv_kernel"
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "fd_bs_lv_kernel_N128_M256"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

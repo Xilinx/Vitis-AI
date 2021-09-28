@@ -1,0 +1,20 @@
+{
+    "daily": {
+        "test_0_widget_api_cast": {
+            "DATA_TYPE":"cint16",
+            "IN_API":"0",
+            "OUT_API":"0",
+            "NUM_INPUTS":"1",
+            "NUM_OUTPUT_CLONES":"1",
+            "WINDOW_VSIZE":"256"
+        },
+        "test_1_widget_api_cast": {
+            "DATA_TYPE":"cint16",
+            "IN_API":"0",
+            "OUT_API":"0",
+            "NUM_INPUTS":"1",
+            "NUM_OUTPUT_CLONES":"2",
+            "WINDOW_VSIZE":"256"
+        }
+    }
+}

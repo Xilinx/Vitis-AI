@@ -1,0 +1,6 @@
+CPU Model, Intel Xeon E5-2640 @ 2.4GHZ
+CPU Cores,16
+Host Memory, 128 GBs
+Cloud,Nimbix
+Instance Name,Xilinx SDAccel Development 2019.1
+FPGA Acceleration Card, Alveo U250

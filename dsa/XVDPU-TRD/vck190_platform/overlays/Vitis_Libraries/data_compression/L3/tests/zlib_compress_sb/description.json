@@ -1,0 +1,153 @@
+{
+    "name": "Xilinx FPGA Based GZip/Zlib Compression Slave Bridge Design",
+    "description": [
+        "GZip/Zlib Compress application supports Slave Bridge and  resides in `L3/tests/zlib_compress_sb` directory."
+    ], 
+    "flow": "vitis", 
+    "platform_blacklist": [
+        "vck", 
+        "u200",
+        "u280"
+    ], 
+    "platform_whitelist": [
+        "u50_gen3x16_nodma" 
+    ], 
+    "launch": [
+        {
+            "cmd_args": "-cx BUILD/compress.xclbin -c PROJECT/sample.txt", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "match_ini": "false", 
+    "host": {
+        "host_exe": "xil_zlibc", 
+        "compiler": {
+            "sources": [
+                "./src/host.cpp", 
+                "LIB_DIR/L3/src/zlib.cpp", 
+                "LIB_DIR/common/libs/xcl2/xcl2.cpp", 
+                "LIB_DIR/common/libs/cmdparser/cmdlineparser.cpp", 
+                "LIB_DIR/common/libs/logger/logger.cpp", 
+                "LIB_DIR/common/thirdParty/zlib-1.2.7/crc32.c", 
+                "LIB_DIR/common/thirdParty/zlib-1.2.7/adler32.c"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include", 
+                "LIB_DIR/L1/include/hw",
+                "LIB_DIR/common/thirdParty/zlib-1.2.7"
+            ], 
+            "options": "-O3 ", 
+            "symbols": [
+
+                "C_COMPUTE_UNIT=6" 
+            ]
+        }
+    }, 
+    "v++": {
+        "build_datafiles": [
+            "PROJECT/hls_directives.tcl"
+        ], 
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/tests/src/", 
+                "LIB_DIR/../security/L1/include"
+            ] 
+        }
+    }, 
+    "containers": [
+        {
+            "name": "compress", 
+            "ldclflags": "--kernel_frequency 250", 
+            "accelerators": [
+                {
+                    "name": "xilGzipCompBlock", 
+                    "location": "LIB_DIR/L2/src/gzip_compress_multicore_mm.cpp", 
+                    "num_compute_units": "6", 
+                    "compute_units": [
+                        {
+                            "arguments": [
+                                {
+                                    "name": "m_axi_gmem", 
+                                    "memory": "HOST[0]"
+                                } 
+                            ]
+                        }, 
+                        {
+                            "arguments": [
+                                {
+                                    "name": "m_axi_gmem", 
+                                    "memory": "HOST[0]"
+                                } 
+                            ]
+                        }, 
+                        {
+                            "arguments": [
+                                {
+                                    "name": "m_axi_gmem", 
+                                    "memory": "HOST[0]"
+                                } 
+                            ]
+                        }, 
+                        {
+                            "arguments": [
+                                {
+                                    "name": "m_axi_gmem", 
+                                    "memory": "HOST[0]"
+                                } 
+                            ]
+                        }, 
+                        {
+                            "arguments": [
+                                {
+                                    "name": "m_axi_gmem", 
+                                    "memory": "HOST[0]"
+                                } 
+                            ]
+                        }, 
+                        {
+                            "arguments": [
+                                {
+                                    "name": "m_axi_gmem", 
+                                    "memory": "HOST[0]"
+                                } 
+                            ]
+                        } 
+                    ]
+                } 
+            ]
+        }
+    ], 
+    "output_files": [
+          "sample.txt.*"
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 1000, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

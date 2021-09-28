@@ -1,0 +1,9 @@
+https://suitesparse-collection-website.herokuapp.com/MM/Simon/olafu.tar.gz
+https://suitesparse-collection-website.herokuapp.com/MM/Pothen/bodyy4.tar.gz
+https://suitesparse-collection-website.herokuapp.com/MM/Boeing/msc23052.tar.gz
+https://suitesparse-collection-website.herokuapp.com/MM/Nasa/nasa2910.tar.gz
+https://suitesparse-collection-website.herokuapp.com/MM/Boeing/ct20stif.tar.gz
+https://suitesparse-collection-website.herokuapp.com/MM/Nasa/nasasrb.tar.gz
+https://suitesparse-collection-website.herokuapp.com/MM/Pothen/bodyy6.tar.gz
+https://suitesparse-collection-website.herokuapp.com/MM/Boeing/msc10848.tar.gz
+https://suitesparse-collection-website.herokuapp.com/MM/Boeing/bcsstk36.tar.gz

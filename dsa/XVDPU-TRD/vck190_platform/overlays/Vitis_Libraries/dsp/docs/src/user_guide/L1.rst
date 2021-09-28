@@ -1,0 +1,792 @@
+.. 
+   Copyright 2021 Xilinx, Inc.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+.. _L1_FFT_LABEL:
+
+.. toctree::
+   :caption: Table of Contents
+   :maxdepth: 3
+
+   L1.rst
+
+
+==========================================
+1-Dimensional(Line) SSR FFT L1 FPGA Module
+==========================================
+
+.. _FIXED_FFT_PARAMS_STRUCT_LABEL:
+
+Overview
+========
+Vitis DSP Library offers a fully synthesizable Super Sample data Rate (SSR) FFT with a systolic
+architecture to process multiple input samples every clock cycle. The number of samples
+processed in parallel per cycle is denoted by the SSR factor. The SSR FFT is implemented as a C++
+template function that synthesizes into a streaming architecture. The SSR FFT architecture used for implementation can be parameterized through template parameters, which are grouped in a C++ struct of type **ssr_fft_default_params**. A new structure can be defined by extending the default structure and re-defining required member constants as follows:
+
+.. code-block:: cpp
+
+	struct ssr_fft_fix_params:ssr_fft_default_params
+	{
+		static const int N = 1024;
+		static const int R = 4;
+		static const scaling_mode_enum scaling_mode = SSR_FFT_NO_SCALING;
+		static const fft_output_order_enum output_data_order = SSR_FFT_NATURAL;
+		static const int twiddle_table_word_length = 18;
+		static const int twiddle_table_integer_part_length = 2; 
+		static const transform_direction_enum transform_direction = FORWARD_TRANSFORM;
+		static const butterfly_rnd_mode_enum butterfly_rnd_mode = TRN;
+	};
+
+The structure above defines:
+
+- N: Size or length of transform
+- R: The number of samples to be processed in parallel SSR Factor and radix of SSR FFT algorithm used
+- scaling_mode: The scaling mode as enumeration type (SSR FFT has three different scaling modes)
+- output_data_order: Which will decided if data will be in natural order or digit reversed transposed order
+- twiddle_table_word_length: Defines total number of bits to be used for storing twiddle table factors
+- twiddle_table_integer_part_length: The number of integer bits used for storing integer part of twiddles
+- transform_direction : Defines the direction of transform, inverse transform (SSR IFFT) or forward transform (SSR FFT)
+- butterfly_rnd_mode : Defines the rounding mode used by butterflies in SSR FFT stages
+
+
+Multi-Instance Support
+======================
+Single-instance example:
+
+.. code-block:: cpp
+
+   xf::dsp::fft::fft<fftParams><ssr_fft_fix_params>(...);
+
+The current release of Vitis SSR FFT supports the use of multiple instances of 1-D SSR FFT in a single design. To enable the use of multiple instances, the fft function takes as an input a new template parameter besides the parameter structure. This parameter gets a default value if no value is provided for it. But if multiple instance support is required, all the instances used should be provided with the unique integer template parameter, like: 
+
+.. code-block:: cpp
+   
+   xf::dsp::fft::fft<fftParams,1><ssr_fft_fix_params>(...);
+   xf::dsp::fft::fft<fftParams,2><ssr_fft_fix_params>(...);
+
+
+Data Type Support for Synthesis
+===============================
+Currently 1-D SSR FFT supports fixed point and floating point complex inputs for synthesis.
+
+Fixed Point
+-----------
+The fixed point SSR FFT implementation is based on fixed point data types **std::complex<ap_fixed<>>** which are used for synthesis and implementation. It is possible to use floating point types **std::complex<float>** and **std::complex<double>** for simulation but these floating point complex models will consume massive resources if synthesized to hardware.
+For the best results with fixed point type, limit the data bit width to 27 bits (integer + fraction) as it helps to map multiplication and addition within SSR FFT butterflies directly onto a single DSP block. Larger inputs can be used but may lead to slower Fmax and more resource utilization. Finally, note that the complex exponential/twiddle factor storage is on 18 bits (16F+2I bits). The selection of 18-bit is made keeping in view the 18x27 multipliers available within DSP blocks on Xilinx FPGAs.
+
+.. _FLOAT_FFT_PARAMS_STRUCT_LABEL:
+
+Floating Point
+--------------
+1-D SSR FFT also supports synthesis for single or double precision floating point type. For synthesizing a complex floating point type, it is required that std::complex type not to be used as a complex wrapper. Since this wrapper has some issues and it is required that a wrapper class provided with the Vitis DSP library called **complex_wrapper<...>** is used for wrapping complex float numbers.
+Also while synthesizing floating point 1-D SSR FFT the parameters in the structure which carry information such as scaling mode, twiddle factor storage bits, butterfly rounding mode etc. which are only related to fixed point data-path, carry no meaning. Instead SSR FFT parameter structure can simply define relevant parameters as shown below:
+
+.. code-block:: cpp
+
+	struct ssr_fft_fix_params:ssr_fft_default_params
+	{
+		static const int N = 1024;
+		static const int R = 4;
+		static const fft_output_order_enum output_data_order = SSR_FFT_NATURAL;
+		static const transform_direction_enum transform_direction = FORWARD_TRANSFORM;
+	};
+
+Managing Bit Growth in SSR FFT Stages
+=====================================
+The bit growth management is required for fixed point implementation only. The SSR FFT supports three different modes to manage bit growth between SSR FFT stages. These three modes can be used to allow bit growth in every stage, or use scaling in every stage without any
+bit growth, or allow bit growth until 27 bits and then start using scaling. The detailed description for the different modes are as follows:
+
+SSR_FFT_GROW_TO_MAX_WIDTH
+------------------------------------------------- 
+When the scaling_mode constant in the parameter structure is set to SSR_FFT_GROW_TO_MAX_WIDTH, it specifies growth from stage to stage, starting from the first stage to a specified max bit width. The output bit width grows until 27 bits and then saturates. The output bit width grows by log2(R) bits in every stage, and then
+maxes outs at 27 bits to keep the butterﬂy operation mapping to DSPs. This option is useful
+when the initial input bit width is less than 27 bits.
+
+SSR_FFT_SCALE
+----------------------
+When the scaling_mode constant in the parameter structure is set to SSR_FFT_SCALE, it enables scaling of outputs in every stage. The output is scaled in every stage and loses precision. An FFT with size L and Radix=SSR=R has logR(L) stages. This option is useful when the input bit width is already close to 27 bits and it is required that the output does not grow beyond 27 bits so that multiplication can be mapped to DSPs.
+
+SSR_FFT_NO_SCALE
+--------------------------
+When the scaling_mode constant in the parameter structure is set
+to SSR_FFT_NO_SCALE, the bit growth is allowed in every stage and the output grows
+unbounded by log2(R) in every stage. This setting can be useful when high precision is
+required. However, if the output bit width grows beyond 27 bits, the multiplication may not
+map to only DSPs, but also start using FPGA fabric logic in combination. This may reduce the
+clock speed and increase resource utilization.
+
+Configurations for Fixed Point Implementation (Recommended Flow)
+================================================================
+1-D SSR FFT supports multiple scaling modes and provides options to define input bit-widths and bit-width required to store exponential values (sin/cos in look-up tables). The signal to noise ratio
+that defines the quality of the output signal depends on the choice of these different parameters and
+also on the quantification scheme used for converting real valued continuous signal or ﬂoating point
+signal to fixed point. The range and the resolution of the signal, essentially the integer bits and
+the fraction bits, should be selected carefully to have good signal-to-noise ratio (SNR) at the
+output of the SSR FFT. Following is the recommended ﬂow for working with 1-D SSR FFT HLS IP for fixed point implementation.
+
+Start With Floating Point Model
+-------------------------------
+Currently, 1-D SSR FFT can be used with ap_fxied<>, ﬂoat, and double types. The following table list
+the support for synthesis and simulation.
+
++------------------------------+---------------------------+----------------------------+
+|                              |                           |                            |
+|              Type            |                 Synthesis |           Simulation       |
+|                              |                           |                            |
++==============================+===========================+============================+                              
+|   std::complex <ap_fixed <>> |             YES           |              YES           |
+|                              |                           |                            |
++------------------------------+---------------------------+----------------------------+
+|                              |                           |                            |
+|       std::complex<float>    |              NO           |              YES           |
+|                              |                           |                            |
++------------------------------+---------------------------+----------------------------+
+|                              |                           |                            |
+|      std::complex<double>    |              NO           |              YES           |
+|                              |                           |                            |
++------------------------------+---------------------------+----------------------------+
+|                              |                           |                            |
+|      complex_wrapper<double> |              YES          |              YES           |
+|                              |                           |                            |
++------------------------------+---------------------------+----------------------------+
+|                              |                           |                            |
+|      complex_wrapper<float>  |              YES          |              YES           |
+|                              |                           |                            |
++------------------------------+---------------------------+----------------------------+
+
+The recommended starting point is to start with ﬂoat/double inner type in **std::complex<>**
+and verify the SNR against a reference model, such as the Matlab/Python/Octave/Simulink
+whichever modeling language or tool is used by generating golden test vectors. The
+synthesizable version of the 1-D SSR FFT currently supports ap_fixed<> and float as inner type, so the next
+step in case of fixed point implementation is to start experimenting with a fixed point model.   
+
+Fixed Point Modeling and Implementation
+----------------------------------------------------
+Fixed Point Model
+^^^^^^^^^^^^^^^^^
+Once working with the fixed point model, the recommended scaling mode to start with is
+**SSR_FFT_NO_SCALING**. The input bit-widths should be selected as follows.
+Create an initial fixed point model with type **ap_fixed<WL, IL>**. The overall input type is
+**std::complex <ap_fixed<WL, IL>**, essentially storing the real and imaginary parts of the
+input.
+These parts are:
+
+- IL: Integer bits, selected based on the input range
+- WL: Word Length = IL + FL, where FL is the Fraction Bit Width, selected based on input resolution
+
+In this case, 1-D SSR FFT internally does not use any scaling because of scaling mode selection.
+Therefore, no potential scaling errors will be seen at the output. With scaling mode set to no
+scaling, you can experiment with other fixed point parameters such as integer bits and fraction
+bits used to represent the input samples. The simplistic approach would be to select bits required
+to represent the input based on the input range and resolution but depending on the other input
+characteristic user can optimize these bit widths.
+
+Selecting Bit Widths for Inputs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The selection of input bit width depends on the input data characteristics and the required
+resolution, and is a data-dependent choice essentially depending on range and resolution of the
+test data. For simulation purposes, you can select an arbitrarily large number of bits for
+representing integer and fraction bits. For implementation, you must make an optimal choice
+keeping in mind the required SNR.
+The recommended strategy is to do the following:
+
+- Keep the scaling mode fixed to **SSR_FFT_NO_SCALING**
+- Change the input bits for integer and fraction representation by observing the signal to noise ratio at the output of 1-D SSR FFT
+- Reduce the bit widths such that the output SNR requirement is met by the minimum required bits
+
+Once the SNR requirements are met, you can proceed to other fixed point optimizations, such as
+bits required to store complex exponential tables and 1-D SSR FFT output scaling options.
+
+Twiddle Factor or Sine/Cosine Lookup Table Quantization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+You can change the number of bits used to quantize the sin/cos table (twiddle factors/complex
+exponential). The recommended setting is total 18 bits and 2 bits for the fraction. This setting
+ensures that during multiplication, the twiddle/sin/cos input can map to the 18-bit input of the
+DSP block in Xilinx® FPGAs. The model can synthesize and work for other large bit widths, but
+performance might be worse due to multiplication operations not mapping to a single DSP
+block and being implemented using multiple DSP blocks and/or FPGA fabric.
+The twiddle factor width reduction can be useful when the initial setting for twiddle factor
+storage is larger than 18 bits. By default, it is set to use 18 bits with 2 bits reserved for the signed
+integer part. The 2 bits are essentially needed to accurately represent a range of numbers from +1 to -1 (for sin/cos) in the table.
+
+Choosing the Best Scaling Mode
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+After the choice for input bit width and twiddle factors is made with no scaling, which gives
+acceptable SNR or root mean square (RMS) error at the output of fixed point 1-D SSR FFT, you can
+start to experiment with the choice of scaling modes. Three different scaling modes are available
+with 1-D SSR FFT. The recommended strategy is to start with **SSR_FFT_NO_SCALING**. If there is an
+acceptable SNR/RMS error at the output, switch to **SSR_FFT_GROW_TO_MAX_WIDTHi**. If there is
+still an acceptable SNR/RMS error, switch to **SSR_FFT_SCALE** and observe the SNR/RMS again if it 
+is acceptable keep using **SSR_FFT_SCALE**, otherwise revert back to another mode which gives 
+acceptable SNR/RMS error at the output.
+
+SSR_FFT_NO_SCALING
+^^^^^^^^^^^^^^^^^^
+This is the recommended mode to start with. It performs no scaling but the output bit width
+grows in every stage by log2(R=SSR). For example, if the size of FFT is N=64 and SSR=R=4 is
+selected, then 1-D SSR FFT has log4 (64) = 3 stages. If the input bit width is W, the output bit width is
+W+3*2=W+6. Therefore, the output would have grown by logR(N)*log2(R) bits.
+SSR_FFT_NO_SCALING preserves the accuracy of the computation, but at maximum hardware
+cost. The 1-D SSR FFT computation is done in stages with one stage feeding the next stage, so
+essentially it is a pipeline of stages.
+One of the downfalls of uncontrolled bit growth is that at some point, in a certain stage when
+output widths of one stage increase beyond a limit where multiplication operation cannot map to DSP
+blocks on the FPGA, the design performance in terms of speed may fall considerably. For
+example, for a given design with logR(N) * log2(R) + Input Bit Width(IL+FL) > max(DSP
+Block Multiplier Inputs), you might consider using one of the other two available scaling
+schemes. For Xilinx DSP48 blocks with 18x27 multipliers, the condition will be logR(N) * log2(R) + Input Bit Width > 27.
+
+SSR_FFT_GROW_TO_MAX_WIDTH
+^^^^^^^^^^^^^^^^^^^^^^^^^
+In this mode, a hybrid approach is used. Initially the bit growth is allowed if there is any room for
+growth. If in the starting FFT stages, the output bit-widths are smaller than what can be mapped
+to DSP blocks, it allows the bit growth. When the bit width grows beyond what can be mapped
+to DSP blocks, it will start scaling the output.
+
+SSR_FFT_SCALE
+^^^^^^^^^^^^^
+When you know that for a given 1-D FFT size N and SSR factor, the output will grow beyond a limit
+which DSP multiplier blocks cannot handle on a given FPGA device, you have the option to set
+the scaling on for every stage by selecting the SSR_FFT_SCALE option. This option scales the
+output in every stage by right shifting the output by log2 (SSR=R) in every stage.
+The recommended flow only provides a guideline for creating a fixed point model and discusses
+options available for it in 1-D SSR FFT. Depending on the design SNR/RMS requirements the user is
+required to carefully select all these parameters keeping in view different performance and
+SNR/RMS requirements for given application.
+
+1-D SSR FFT Library Usage
+=========================
+Following sections describe how to use SSR FFT from Vitis DSP Library.
+
+Fixed Point 1-D SSR FFT Usage
+-----------------------------
+The Vitis 1-D SSR FFT L1 module can be used in a C++ HLS design by:
+1- cloning the Vitis DSP Library git repository and add the following path to compiler include path:
+
+         ``REPO_PATH/dsp/L1/include/hw/vitis_fft/fixed/``
+
+2- Include ``vt_fft.hpp``
+
+3- Use namespace ``xf::dsp::fft``
+
+4- Define fft parameter structure say call it ``params_fix`` by extending ``ssr_fft_default_params`` like :ref:`Defining 1-D SSR FFT Parameter Structure <FIXED_FFT_PARAMS_STRUCT_LABEL>`
+
+5- call ``fft<params_fix>(input_array,output_array)``
+
+The following section gives usage examples and explains some other interface level details for use in C++ based
+HLS design.
+To use the 1-D SSR FFT L1 module:
+
+1. Include the ``vt_fft.hpp`` header:
+
+
+.. code-block:: cpp
+
+  #include "vt_fft.hpp"
+
+2. Use namespace ``xf::dsp::fft``
+
+.. code-block:: cpp
+
+   using namespace xf::dsp::fft;
+
+3. Define a C++ structure that extends ``ssr_fft_default_params``:
+
+.. code-block:: cpp
+
+	struct params_fix:ssr_fft_default_params
+	{
+		static const int N-SSR_FFT_L;
+		static const int R=SSR_FFT_R;
+		static const scaling_mode_enum
+		scaling_mode=SSR_FFT_GROW_TO_MAX_WIDTH;
+		static const fft_output_order_enum
+		output_data_order=SSR_FFT_NATURAL;
+		static const int twiddle_table_word_length=18;
+		static const int twiddle_table_intger_part_length=2;
+	};
+
+4. Call 1-D SSR FFT as follows:
+
+.. code-block:: cpp
+
+
+      fft<params_fix>(inD,outD);
+      //OR   
+      fft<params_fix,IID>(inD,outD);
+      // IID: is a constant giving instance ID
+
+
+where inD and outD are 2-dimensional complex arrays of ap_fixed, float or double type,
+synthesis and simulation use is already explained in the previous table. The I/O arrays can be
+declared as follows:
+
+**Fixed Point Type**
+First define input type, then using type traits calculate output type
+based on ssr_fft_params struct (output type calculation takes in consideration scaling
+mode based bit-growth and input bit-widths).
+
+Floating Point 1-D SSR FFT Usage
+--------------------------------
+The Vitis 1-D SSR FFT L1 module can be used in a C++ HLS design by:
+
+1- Cloning the Vitis DSP Library git repository and add the following path to compiler include path:
+
+         ``REPO_PATH/dsp/L1/include/hw/vitis_fft/float/``
+
+2- Include ``vt_fft.hpp``
+
+3- Use namespace ``xf::dsp::fft``
+
+4- Define fft parameter structure lets say call it ``params_float`` by extending ``ssr_fft_default_params`` like :ref:`Defining 1-D SSR FFT Parameter Structure <FLOAT_FFT_PARAMS_STRUCT_LABEL>`
+
+5- call ``fft<params_float>(input_array,output_array)``
+
+The following section gives usage examples and explains some other interface level details for use in C++ based
+HLS design.
+To use the 1-D SSR FFT L1 module:
+
+1. Include the ``vt_fft.hpp`` header:
+
+
+.. code-block:: cpp
+
+  #include "vt_fft.hpp"
+
+2. Use namespace ``xf::dsp::fft``
+
+.. code-block:: cpp
+
+   using namespace xf::dsp::fft;
+
+3. Define a C++ structure that extends ssr_fft_default_params:
+
+.. code-block:: cpp
+
+   struct params_float:ssr_fft_default_params
+   {
+      static const int N = 1024;
+      static const int R = 4;
+      static const fft_output_order_enum output_data_order = SSR_FFT_NATURAL;
+      static const transform_direction_enum transform_direction = FORWARD_TRANSFORM;
+   };
+
+4. Call 1-D SSR FFT as follows:
+
+.. code-block:: cpp
+
+
+      fft<params_float>(inD,outD);
+      //OR   
+      fft<ssr_fft_params,IID>(inD,outD);
+      // IID: is a constant giving instance ID
+
+
+where inD and outD are 2-dimensional complex arrays of ap_fixed, float or double type,
+synthesis and simulation use is already explained in the previous table. The I/O arrays can be
+declared as follows:
+
+**Fixed Point Type**:
+First define input type, then using type traits calculate output type
+based on ssr_fft_params struct (output type calculation takes into consideration scaling
+mode based bit-growth and input bit-widths not relevant for type float).
+
+.. code-block:: cpp
+
+	typedef std::complex< float > I_TYPE;
+	typedef xf::dsp::fft::ssr_fft_output_type<ssr_fft_params,I_TYPE>::t_ssr_fft_out O_TYPE;
+	I_TYPE inD[SSR_FFT_R][SSR_FFT_L/SSR_FFT_R];
+	O_TYPE outD [R][L/R];
+
+Here SSR_FFT_R defines SSR factor and SSR_FFT_L defines the size of the FFT transform.
+
+**Float/Double Type**:
+First define the double/float input type, then using type traits calculate output type based on ssr_fft_params struct.
+For float types the output type calculation will return the same type as input.
+
+.. code-block:: cpp
+
+	typedef std::complex< float/double > I_TYPE;
+	typedef hls::ssr_fft::ssr_fft_output_type<ssr_fft_params,I_TYPE>::t_ssr_fft_out O_TYPE;
+	I_TYPE inD[SSR_FFT_R][SSR_FFT_L/SSR_FFT_R];
+	O_TYPE outD[SSR_FFT_R][SSR_FFT_L/SSR_FFT_R];
+	
+1-D SSR FFT Input Array Reading and Writing Considerations
+----------------------------------------------------------
+After synthesis, 1-D SSR FFT HLS IP maps to a processing block with buffer interface at both the input
+and output.
+
+If user requires a streaming 1-D SSR FFT block with FIFO interface at both the input and output, as shown in the following figure:
+
+.. image:: /images/1-ssr_fft_blk_dia.jpg
+    :alt: doc tool flow
+    :width: 40%
+    :align: center
+
+They should skip the wrapper **fft** with the buffer-to-stream transformation blocks named array2Stream and stream2Array,
+and directly call the **innerFFT** function in **FFTWrapper** struct.
+If input and output arrays are declared as the following:
+
+.. code-block:: cpp
+
+	I_TYPE inD[R][L/R];
+	O_TYPE outD[R][L/R];
+
+The dimensions with size L/R will be mapped to time and dimension with size R mapped to one
+stream which is R-wide. This mapping places some constraints on how these arrays can be read
+and written to by consumers and producers while writing C++ design using 1-D SSR FFT. These
+constraints stem from the physical mapping of array dimensions to time and parallel wide-accesses.
+
+All of these constraints will be well handled by **array2Stream** and **stream2Array** blocks,
+user could ignore those details by calling the wrapper with buffer interface instead of the internal streaming block **innerFFT**.
+If the streaming block is required, the read and write on **innerFFT** can be performed as follows:
+
+1. Declares the input and output streams explicitly with corresponding stream depth:
+
+.. code-block:: cpp
+
+    // input stream of innerFFT
+    hls::stream<I_TYPE, FIFO_DEPTH> inStrm[R];
+    // output stream of innerFFT
+    hls::stream<O_TYPE, FIFO_DEPTH> outStrm[R];
+
+2. Feeds data to the input FIFO, or eats from the output one:
+
+.. code-block:: cpp
+
+	for (int t = 0; t < L / R; t++)
+	{
+		for (int r = 0; r < R; r++)
+		{
+            inStrm[r].write(inD[r][t]);
+		}
+	}
+
+	for (int t = 0; t < L / R; t++)
+	{
+		for (int r = 0; r < R; r++)
+		{
+            outD[r][t] = outStrm[r].read();
+		}
+	}
+
+3. If the 1-D SSR FFT IP is facing another HLS IP in the input chain or output chain, the inner loop
+doing reading and writing should be unrolled.
+
+1-D SSR FFT Usage in Dataflow Region, Streaming/Non-Streaming Connections
+-------------------------------------------------------------------------
+1-D SSR FFT internally relies heavily on HLS dataflow optimization. The potential use case for 1-D SSR
+FFT could interconnect with an SSR FFT input or output in two ways:
+
+• Streaming Connection
+• Non-Streaming Connections
+
+Streaming Connection
+^^^^^^^^^^^^^^^^^^^^
+In the case of a streaming connection at the input, the scenario should look as follows:
+
+.. code-block:: cpp
+
+	#pragma HLS DATAFLOW
+	in_dummy_proc (..., fft_in);
+	innerFFT<template_param_needed>(fft_in, fft_out);
+	out_dummy_proc(fft_out, ....)
+	...
+	...
+	...
+
+The constraint for input producer is that it should produce an array of stream. The constraint for output consumers is that it should consume an array of stream. These constraints are also described in previous sections.	
+
+Non-Streaming Connection
+^^^^^^^^^^^^^^^^^^^^^^^^
+The current version of the 1-D SSR FFT naturally support non-streaming connection at the output and input.
+
+
+.. code-block:: cpp
+
+    // just call it
+    fft<params_float>(inD, outD);
+    //OR   
+    fft<ssr_fft_params, IID>(inD, outD);
+    // IID: is a constant giving instance ID
+
+1-D FFT Examples
+=========================
+The following sections provides brief details of examples provided for 1-D SSR FFT.
+
+1-D Fixed Point SSR FFT Example 
+----------------------------------------------------------
+The example below follows the sequence of steps described in previous sections to do a transform on impulse signal. The listing give below  ``data_path.hpp`` describes the datapath, by defining size, SSR, data-path bit-widths, scaling mode, out order etc. It also includes top level library interface header ``vt_fft.hpp``  which gives to ``fft``  function defined in namespace ``xf::dsp::fft``
+
+
+.. code-block:: cpp
+
+
+	#ifndef _DATA_PATH_H_
+	#define _DATA_PATH_H_
+	#include <ap_fixed.h>
+	#include <complex>
+	#include "vt_fft.hpp"
+	using namespace xf::dsp::fft;
+
+	// Define FFT Size and Super Sample Rate
+	#define FFT_LEN 16
+	#define SSR 4
+	// Define fixed point input/output bit-widths
+	#define IN_WL 16
+	#define IN_IL 2
+	#define TW_WL 16
+	#define TW_IL 2
+
+	//Define FFT instane ID, every instance created should have unique ID
+	#define IID 0
+
+	typedef std::complex<ap_fixed<IN_WL, IN_IL> > T_in;
+
+	/* Define parameter structure for SSR FFT that defines
+	 * holds , size, SSR, scaling mode, output order sin/cos
+	 * bit resoulation for storage*/ 
+	struct fftParams : ssr_fft_default_params {
+	    static const int N = FFT_LEN;
+	    static const int R = SSR;
+	    static const scaling_mode_enum scaling_mode = SSR_FFT_NO_SCALING;
+	    static const fft_output_order_enum output_data_order = SSR_FFT_NATURAL;
+	    static const int twiddle_table_word_length = TW_WL;
+	    static const int twiddle_table_intger_part_length = TW_IL;
+	};
+	// Using type traits calculate the output type given FFT param struct
+        // and the input type
+	typedef ssr_fft_output_type<fftParams, T_in>::t_ssr_fft_out T_out;
+
+	#endif // _DATA_PATH_H_
+
+The listing ``top_module.hpp`` and ``top_module.cpp`` declare and define top level module. The top level function here is very simple it only wraps the core SSR FFT function call in a top level wrapper called  ``fft_top`` 
+
+.. code-block:: cpp
+
+	#include "data_path.hpp"
+	#include <hls_stream.h>
+
+	void fft_top(T_in p_inData[SSR][FFT_LEN / SSR], T_out p_outData[SSR][FFT_LEN / SSR]);
+
+.. code-block:: cpp
+
+	#include "top_module.hpp"
+	#include "data_path.hpp"
+
+	void fft_top(T_in p_inData[SSR][FFT_LEN / SSR], T_out p_outData[SSR][FFT_LEN / SSR]) {
+	    xf::dsp::fft::fft<fftParams, IID>(p_inData, p_outData);
+	}
+
+The listing below gives main funtion that generates impulse data for SSR FFT input in a 2-dimensional array which is SSRx(Size/SRR) and feeds it to top level which produces a 2-dimensional output array of same dimensions. The impulse input produces a step which is verified and test declared as passed.
+
+.. code-block:: cpp
+
+	#include "top_module.hpp"
+	#include <iostream>
+
+	int main(int argc, char** argv) {
+	    T_in inData[SSR][FFT_LEN / SSR];
+	    T_out outData[SSR][FFT_LEN / SSR];
+	    for (int r = 0; r < SSR; ++r) {
+		for (int t = 0; t < FFT_LEN / SSR; ++t) {
+		    if (r == 0 && t == 0)
+		        inData[r][t] = 1;
+		    else
+		        inData[r][t] = 0;
+		}
+	    }
+	    for (int t = 0; t < 4; ++t) {
+		// Added Dummy loop iterations
+		// to make II measurable in cosim
+		fft_top(inData, outData);
+	    }
+	    int errs = 0;
+	    for (int r = 0; r < SSR; ++r) {
+		for (int t = 0; t < FFT_LEN / SSR; ++t) {
+		    if (outData[r][t].real() != 1 || outData[r][t].imag() != 0) errs++;
+		}
+	    }
+	    std::cout << "===============================================================" << std::endl;
+	    std::cout << "--Input Impulse:" << std::endl;
+	    for (int r = 0; r < SSR; ++r) {
+		for (int t = 0; t < FFT_LEN / SSR; ++t) {
+		    std::cout << inData[r][t] << std::endl;
+		}
+	    }
+	    std::cout << "===============================================================" << std::endl;
+
+	    std::cout << "===============================================================" << std::endl;
+	    std::cout << "--Output Step fuction:" << std::endl;
+	    for (int r = 0; r < SSR; ++r) {
+		for (int t = 0; t < FFT_LEN / SSR; ++t) {
+		    std::cout << outData[r][t] << std::endl;
+		}
+	    }
+	    std::cout << "===============================================================" << std::endl;
+
+	    return errs;
+	}
+
+Compiling and Building Example HLS Project
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Before compiling and running the example it is required to setup the path to HLS compiler which can be done as follows:
+change the setting of environment variable **TA_PATH** to point to the installation path of your Vitis, and run following command to set up the environment.
+
+.. code-block:: bash
+
+   export XILINX_VITIS=${TA_PATH}/Vitis/2021.1
+   export XILINX_VIVADO=${TA_PATH}/Vivado/2021.1
+   source ${XILINX_VIVADO}/settings64.sh
+
+The example discussed above is also provided as an example and available at the following path : ``REPO_PATH/dsp/L1/examples/1Dfix_impluse`` it can be simulated, synthesized or co-simulated as follows:
+Simply go to the directory ``REPO_PATH/dsp/L1/examples/1Dfix_impluse`` and simulate, build and co-simulate project using : ``make run XPART='xcu200-fsgd2104-2-e' CSIM=1 CSYNTH=1 COSIM=1`` you can choose the part number as required and by settting CSIM/CSYNTH/COSIM=0 choose what to build and run with make target.
+
+
+
+1-D Floating Point SSR FFT Example 
+----------------------------------------------------------
+The use of floating point SSR FFT is very similar to fixed point SSR FFT the following listing  ``data_path.hpp`` gives parameter struct
+which is simple as compared to fixed point since data-path constants scaling type, input bit-widths etc are not required for floatig point case.
+It essentially requires declaration of Size and SSR factor and output data order by default is set to natural order, if required it can be changed to digital reversed transposed.
+
+.. code-block:: cpp
+
+	#ifndef _DATA_PATH_H_
+	#define _DATA_PATH_H_
+
+	#include <ap_fixed.h>
+	#include <complex>
+	#include "vt_fft.hpp"
+	using namespace xf::dsp::fft;
+
+	// Define FFT Size and Super Sample Rate
+	#define FFT_LEN 16
+	#define SSR 4
+
+	typedef complex_wrapper<float> T_in;
+	#define IID 0
+
+	// Define parameter structure for SSR FFT
+	struct fftParams : ssr_fft_default_params {
+	    static const int N = FFT_LEN;
+	    static const int R = SSR;
+	};
+
+	// typedef ssr_fft_output_type<fftParams,T_in>::t_ssr_fft_out T_out;
+	typedef T_in T_out;
+
+	#endif // _DATA_PATH_H_
+
+The following two listings ``top_moduel.hpp`` and ``top_module.cpp`` give top level module decleration and definition only.
+
+.. code-block:: cpp
+
+	#include "data_path.hpp"
+	#include <hls_stream.h>
+
+	void fft_top(T_in p_inData[SSR][FFT_LEN / SSR], T_out p_outData[SSR][FFT_LEN / SSR]);
+
+.. code-block:: cpp
+
+	#include "top_module.hpp"
+	#include "data_path.hpp"
+
+	void fft_top(T_in p_inData[SSR][FFT_LEN / SSR], T_out p_outData[SSR][FFT_LEN / SSR]) {
+	    xf::dsp::fft::fft<fftParams, IID>(p_inData, p_outData);
+    }
+
+The listing below ``main.cpp`` gives main function which creates an impulse input and verfies if the correct output is produced. The only significant change w.r.t to fixed point is the data type declaration and the param struct otherwise this example is very the same like the use of fixed point SSR FFT.
+
+.. code-block:: cpp
+
+	#include "top_module.hpp"
+	#include <iostream>
+	int main(int argc, char** argv) {
+	    T_in inData[SSR][FFT_LEN / SSR];
+	    T_out outData[SSR][FFT_LEN / SSR];
+	    for (int r = 0; r < SSR; ++r) {
+		for (int t = 0; t < FFT_LEN / SSR; ++t) {
+		    if (r == 0 && t == 0)
+		        inData[r][t] = 1;
+		    else
+		        inData[r][t] = 0;
+		}
+	    }
+	    for (int t = 0; t < 4; ++t) {
+		// Added Dummy loop iterations
+		// to make II measurable in cosim
+		fft_top(inData, outData);
+	    }
+	    int errs = 0;
+	    for (int r = 0; r < SSR; ++r) {
+		for (int t = 0; t < FFT_LEN / SSR; ++t) {
+		    if (outData[r][t].real() != 1 || outData[r][t].imag() != 0) errs++;
+		}
+	    }
+	    std::cout << "===============================================================" << std::endl;
+	    std::cout << "--Input Impulse:" << std::endl;
+	    for (int r = 0; r < SSR; ++r) {
+		for (int t = 0; t < FFT_LEN / SSR; ++t) {
+		    std::cout << inData[r][t] << std::endl;
+		}
+	    }
+	    std::cout << "===============================================================" << std::endl;
+
+	    std::cout << "===============================================================" << std::endl;
+	    std::cout << "--Output Step fuction:" << std::endl;
+	    for (int r = 0; r < SSR; ++r) {
+		for (int t = 0; t < FFT_LEN / SSR; ++t) {
+		    std::cout << outData[r][t] << std::endl;
+		}
+	    }
+	    std::cout << "===============================================================" << std::endl;
+
+	    return errs;
+	}
+
+Compiling and Building Example HLS Project
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Before compiling and running the example it is required to setup the path to HLS compiler which can be done as follows:
+change the setting of environment variable **TA_PATH** to point to the installation path of your Vitis, and run following command to set up the environment.
+
+.. code-block:: bash
+
+   export XILINX_VITIS=${TA_PATH}/Vitis/2021.1
+   export XILINX_VIVADO=${TA_PATH}/Vivado/2021.1
+   source ${XILINX_VIVADO}/settings64.sh
+
+The example discussed above is also provided as an example and available at the following path : ``REPO_PATH/dsp/L1/examples/1Dfloat_impluse`` it can be simulated, synthesized or co-simulated as follows:
+Simply go to the directory ``REPO_PATH/dsp/L1/examples/1Dfloat_impluse`` and simulate, build and co-simulate project using : ``make run XPART='xcu200-fsgd2104-2-e' CSIM=1 CSYNTH=1 COSIM=1`` you can choose the part number as required and by settting CSIM/CSYNTH/COSIM=0 choose what to build and run with make target
+
+1-D SSR FFT Tests 
+----------------------------------------------------------
+Different tests are provided for fixed point and floating point 1-D SSR FFT. These tests can be ran individually using the makefile or they can all be lauched at the same time by using a provided script. All the 1-D SSR FFT tests are in folder ``REPO_PATH/dsp/L1/tests/hw/1dfft``
+
+Launching an Individual Test
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To launch an individual test first it is required to setup environment for lanching Vitis HLS Compiler which can be done as follows:
+ setup of environment variable **TA_PATH** to point to the installation path of your Vitis, and run following commands to set up the environment.
+
+.. code-block:: bash
+
+   export XILINX_VITIS=${TA_PATH}/Vitis/2021.1
+   export XILINX_VIVADO=${TA_PATH}/Vivado/2021.1
+   source ${XILINX_VIVADO}/settings64.sh
+
+Once the environment settings are done an individual test can be launched by going to test folder (any folder inside sub-directory at any level of ``REPO_PATH/dsp/L1/test/hw/1dfft`` that has a Makefile is a test) and running the make command :
+
+``make run XPART='xcu200-fsgd2104-2-e' CSIM=1 CSYNTH=1 COSIM=1``  you can choose the part number as required and by settting CSIM/CSYNTH/COSIM=0 choose what to build and run with make target
+

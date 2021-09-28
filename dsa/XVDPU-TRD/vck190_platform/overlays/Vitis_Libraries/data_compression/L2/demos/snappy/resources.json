@@ -1,0 +1,28 @@
+{
+    "vitis" : "2019.2",
+    "device_name" : "xilinx_u200_xdma_201830_2",    
+    "FMax" : [{
+            "compress" : "269 MHz",
+            "decompress" : "300 MHz"
+        }],
+    "Resources" : [
+        {
+            "kernel_name" : "xilSnappyCompress",
+            "LUT" : "53782",
+            "LUTMem" : "14129",
+            "REG" : "68514",
+            "BRAM" : "146",
+            "URAM" : "48",
+            "DSP" : "1"
+        },
+        {
+            "kernel_name" : "xilSnappyDecompress",
+            "LUT" : "31559",
+            "LUTMem" : "14003",
+            "REG" : "39632",
+            "BRAM" : "146",
+            "URAM" : "0",
+            "DSP" : "1"
+        }
+    ]    
+}

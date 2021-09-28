@@ -1,0 +1,418 @@
+{
+    "name": "Xilinx GZIP Application", 
+    "description": [
+        "GZip application for DDR resides in `L3/demos/gzip_app` directory."
+    ], 
+    "flow": "vitis", 
+    "platform_blacklist": [
+        "other" 
+    ], 
+    "platform_whitelist": [
+        "u250" 
+    ], 
+    "launch": [
+        {
+            "cmd_args": "-xbin BUILD/compress_decompress.xclbin -t PROJECT/sample.txt", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "post_launch": [
+        {
+            "launch_cmd": [
+                  "./run.sh HOST_EXE LIB_DIR BUILD/compress_decompress.xclbin"
+             ]
+        }
+    ], 
+    "match_ini": "false", 
+    "config_make": "./config.mk", 
+    "host": {
+        "host_exe": "xil_gzip", 
+        "compiler": {
+            "sources": [
+                "./src/host.cpp", 
+                "LIB_DIR/common/libs/compress/gzipOCLHost.cpp", 
+                "LIB_DIR/common/libs/compress/gzipBase.cpp", 
+                "LIB_DIR/common/libs/compress/gzipApp.cpp", 
+                "LIB_DIR/common/libs/compress/compressApp.cpp", 
+                "LIB_DIR/common/libs/xcl2/xcl2.cpp", 
+                "LIB_DIR/common/libs/cmdparser/cmdlineparser.cpp", 
+                "LIB_DIR/common/libs/logger/logger.cpp",
+                "LIB_DIR/common/thirdParty/zlib-1.2.7/crc32.c",
+                "LIB_DIR/common/thirdParty/zlib-1.2.7/adler32.c"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include", 
+                "LIB_DIR/L1/include/hw",
+                "LIB_DIR/common/thirdParty/zlib-1.2.7",
+                "LIB_DIR/common/libs/compress/"
+            ], 
+            "options": "-O3 ", 
+            "symbols": [
+                "C_COMPUTE_UNIT=2", 
+                "D_COMPUTE_UNIT=8", 
+                "PARALLEL_BLOCK=4"
+            ]
+        }
+    }, 
+    "v++": {
+        "build_datafiles": [
+            "PROJECT/advanced.cfg", 
+            "PROJECT/hls_directives.tcl"
+        ], 
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/tests/src/",
+                "LIB_DIR/../security/L1/include"
+            ], 
+            "symbols": [
+                "MULTIPLE_BYTES=8" 
+            ], 
+            "clflags": [
+                "--config PROJECT/advanced.cfg"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name": "compress_decompress", 
+            "ldclflags": "--kernel_frequency 250 --config PROJECT/connectivity.cfg", 
+            "accelerators": [
+                {
+                    "name": "xilGzipCompBlock", 
+                    "location": "LIB_DIR/L2/src/gzip_compress_multicore_mm.cpp", 
+                    "num_compute_units": "2", 
+                    "compute_units": [
+                        {
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "in", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "out", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "compressd_size", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "checksumData", 
+                                    "memory": "DDR[0]"
+                                } 
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR2", 
+                            "arguments": [
+                                {
+                                    "name": "in", 
+                                    "memory": "DDR[3]"
+                                }, 
+                                {
+                                    "name": "out", 
+                                    "memory": "DDR[3]"
+                                }, 
+                                {
+                                    "name": "compressd_size", 
+                                    "memory": "DDR[3]"
+                                }, 
+                                {
+                                    "name": "checksumData", 
+                                    "memory": "DDR[3]"
+                                } 
+                            ]
+                        }
+                    ]
+                }, 
+                {
+                    "name": "xilGzipS2MM", 
+                    "location": "LIB_DIR/L2/tests/src/gzip_dm_s2mm.cpp", 
+                    "num_compute_units": "8", 
+                    "compute_units": [
+                        {
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "out", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "encoded_size", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "status_flag", 
+                                    "memory": "DDR[0]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "out", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "encoded_size", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "status_flag", 
+                                    "memory": "DDR[0]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR1", 
+                            "arguments": [
+                                {
+                                    "name": "out", 
+                                    "memory": "DDR[1]"
+                                }, 
+                                {
+                                    "name": "encoded_size", 
+                                    "memory": "DDR[1]"
+                                }, 
+                                {
+                                    "name": "status_flag", 
+                                    "memory": "DDR[1]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR1", 
+                            "arguments": [
+                                {
+                                    "name": "out", 
+                                    "memory": "DDR[1]"
+                                }, 
+                                {
+                                    "name": "encoded_size", 
+                                    "memory": "DDR[1]"
+                                }, 
+                                {
+                                    "name": "status_flag", 
+                                    "memory": "DDR[1]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR1", 
+                            "arguments": [
+                                {
+                                    "name": "out", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "encoded_size", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "status_flag", 
+                                    "memory": "DDR[2]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR1", 
+                            "arguments": [
+                                {
+                                    "name": "out", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "encoded_size", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "status_flag", 
+                                    "memory": "DDR[2]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR2", 
+                            "arguments": [
+                                {
+                                    "name": "out", 
+                                    "memory": "DDR[3]"
+                                }, 
+                                {
+                                    "name": "encoded_size", 
+                                    "memory": "DDR[3]"
+                                }, 
+                                {
+                                    "name": "status_flag", 
+                                    "memory": "DDR[3]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR2", 
+                            "arguments": [
+                                {
+                                    "name": "out", 
+                                    "memory": "DDR[3]"
+                                }, 
+                                {
+                                    "name": "encoded_size", 
+                                    "memory": "DDR[3]"
+                                }, 
+                                {
+                                    "name": "status_flag", 
+                                    "memory": "DDR[3]"
+                                }
+                            ]
+                        }
+                    ]
+                }, 
+                {
+                    "name": "xilGzipMM2S", 
+                    "location": "LIB_DIR/L2/tests/src/gzip_dm_mm2s.cpp", 
+                    "num_compute_units": "8", 
+                    "compute_units": [
+                        {
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "in", 
+                                    "memory": "DDR[0]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "in", 
+                                    "memory": "DDR[0]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR1", 
+                            "arguments": [
+                                {
+                                    "name": "in", 
+                                    "memory": "DDR[1]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR1", 
+                            "arguments": [
+                                {
+                                    "name": "in", 
+                                    "memory": "DDR[1]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR1", 
+                            "arguments": [
+                                {
+                                    "name": "in", 
+                                    "memory": "DDR[2]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR1", 
+                            "arguments": [
+                                {
+                                    "name": "in", 
+                                    "memory": "DDR[2]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR2", 
+                            "arguments": [
+                                {
+                                    "name": "in", 
+                                    "memory": "DDR[3]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "slr": "SLR2", 
+                            "arguments": [
+                                {
+                                    "name": "in", 
+                                    "memory": "DDR[3]"
+                                }
+                            ]
+                        }
+                    ]
+                }, 
+                {
+                    "name": "xilDecompress", 
+                    "location": "LIB_DIR/L2/src/zlib_decompress.cpp", 
+                    "num_compute_units": "8", 
+                    "compute_units": [
+                        {
+                            "slr": "SLR0"
+                        }, 
+                        {
+                            "slr": "SLR0"
+                        }, 
+                        {
+                            "slr": "SLR1"
+                        }, 
+                        {
+                            "slr": "SLR1"
+                        }, 
+                        {
+                            "slr": "SLR1"
+                        }, 
+                        {
+                            "slr": "SLR1"
+                        }, 
+                        {
+                            "slr": "SLR2"
+                        }, 
+                        {
+                            "slr": "SLR2"
+                        }
+                    ]
+                }
+            ]
+        }
+    ], 
+    "output_files": [
+           "sample.txt.*"
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 1000,
+                    "vitis_hw_emu": 300,
+                    "vitis_sw_emu": 25,
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

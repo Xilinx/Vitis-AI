@@ -1,0 +1,56 @@
+{
+  "model-name": "tiny_yolov3_vmss",
+  "num-labels": 10,
+  "labels" :[
+    {
+      "name": "KELLOGS",
+      "label": 0,
+      "display_name" : "KELLOGS"
+    },
+    {
+      "name": "CHOCOLATE",
+      "label": 1,
+      "display_name" : "CHOCOLATE"
+    },
+    {
+      "name": "CANDLE",
+      "label": 2,
+      "display_name" : "CANDLE"
+    },
+    {
+      "name": "SHAMPOO",
+      "label": 3,
+      "display_name" : "SHAMPOO"
+    },
+    {
+      "name": "BULB",
+      "label": 4,
+      "display_name" : "BULB"
+    },
+    {
+      "name": "PLIERS",
+      "label": 5,
+      "display_name" : "PLIERS"
+    },
+    {
+      "name": "DETERGENT",
+      "label": 6,
+      "display_name" : "DETERGENT"
+    },
+    {
+      "name": "KOOLAID",
+      "label": 7,
+      "display_name" : "KOOLAID"
+    },
+    {
+      "name": "LIPSTICK",
+      "label": 8,
+      "display_name" : "LIPSTICK"
+    },
+    {
+      "name": "BOX",
+      "label": 9,
+      "display_name" : "BOX"
+    }
+  ]
+}

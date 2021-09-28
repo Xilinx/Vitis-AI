@@ -1,0 +1,4 @@
+$TESTDATADIR/$TEST/input/input.jpg
+$TESTDATADIR/$TEST/output/ref_Y.png
+$TESTDATADIR/$TEST/output/ref_U.png
+$TESTDATADIR/$TEST/output/ref_V.png

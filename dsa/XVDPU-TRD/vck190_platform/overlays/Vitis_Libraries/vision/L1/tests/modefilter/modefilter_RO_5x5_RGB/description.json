@@ -1,0 +1,61 @@
+{
+    "name": "Xilinx modefilter_RO_5x5_RGB Test", 
+    "description": "HLS case", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u200", 
+        "zcu102", 
+        "zcu104", 
+        "zc706", 
+        "aws-vu9p-f1", 
+        "vck190"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [], 
+    "project": "modefilter", 
+    "solution": "sol1", 
+    "clock": "3.3", 
+    "topfunction": "modefilter_accel", 
+    "top": {
+        "source": [
+            "${XF_PROJ_ROOT}/L1/examples/modefilter/xf_modefilter_accel.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include -I ./ -D__SDSVHLS__ -std=c++0x", 
+        "csimflags": "-I${XF_PROJ_ROOT}/L1/include -I ./ -D__SDSVHLS__ -std=c++0x"
+    }, 
+    "testbench": {
+        "source": [
+            "${XF_PROJ_ROOT}/L1/examples/modefilter/xf_modefilter_tb.cpp"
+        ], 
+        "cflags": "-I${OPENCV_INCLUDE} -I${XF_PROJ_ROOT}/L1/include -I ./ -D__SDSVHLS__ -std=c++0x", 
+        "ldflags": "-L ${OPENCV_LIB} -lopencv_imgcodecs -lopencv_imgproc -lopencv_core -lopencv_highgui -lopencv_flann -lopencv_features2d", 
+        "argv": {
+            "hls_csim": " ${XF_PROJ_ROOT}/data/hd.png ", 
+            "hls_cosim": " ${XF_PROJ_ROOT}/data/hd.png "
+        }, 
+        "stdmath": false, 
+        "csimflags": "-I${XF_PROJ_ROOT}/L1/include -I ./ -D__SDSVHLS__ -std=c++0x"
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": 16384, 
+                "max_time_min": 300
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim", 
+            "hls_vivado_syn", 
+            "hls_vivado_impl"
+        ], 
+        "category": "full"
+    }
+}

@@ -1,0 +1,7 @@
+g++
+clang++
+Makefile.*
+*.log
+*.exe
+*.sh
+*.prj

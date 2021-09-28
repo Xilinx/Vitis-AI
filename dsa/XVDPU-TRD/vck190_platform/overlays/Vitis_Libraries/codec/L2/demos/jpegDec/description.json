@@ -1,0 +1,149 @@
+{
+    "gui": true,
+    "name": "Xilinx JPEG Decoder Test", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u50",
+        "u280"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ],
+    "platform_properties": {
+        "u200": {
+	    "v++": {
+	        "compiler": {
+		    "cflags": [
+		        "--config PROJECT/conn_u200_u250.ini"
+		    ]
+		}
+	    }
+	},
+        "u250": {
+	    "v++": {
+	        "compiler": {
+		    "cflags": [
+		        "--config PROJECT/conn_u200_u250.ini"
+		    ]
+		}
+	    }
+	},
+        "u50": {
+	    "host": {
+	        "compiler": {
+		    "symbols": [
+		        "USE_HBM"
+		    ]
+		}
+	    },
+	    "v++": {
+	        "compiler": {
+		    "cflags": [
+		        "--config PROJECT/conn_u280_u50.ini"
+		    ]
+		}
+	    }
+	}
+    },
+    "launch": [
+        {
+            "cmd_args": " -xclbin BUILD/kernelJpegDecoder.xclbin -JPEGFile PROJECT/images/t0.jpg", 
+            "name": "generic launch for all flows",
+            "ld_library_path": [
+                          "$(LD_LIBRARY_PATH)",
+                          "$(XILINX_XRT)/lib"
+                               ] 
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/demos/jpegDec/host/test_decoder.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L2/include/hw/jpegDec", 
+                "LIB_DIR/L2/demos/jpegDec/host", 
+                "LIB_DIR/L2/demos/jpegDec/kernel", 
+                "LIB_DIR/../utils/L1/include", 
+                "LIB_DIR/ext/xcl2"
+            ], 
+            "options": "-O3 "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/include/hw/jpegDec", 
+                "LIB_DIR/../utils/L1/include", 
+                "LIB_DIR/L2/demos/jpegDec/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/demos/jpegDec/kernel/kernelJpegDecoder.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL0", 
+                    "name": "kernelJpegDecoder",
+		    "num_compute_units": 1,
+                    "compute_units": [
+                        {
+                            "name": "kernelJpegDecoder",
+                            "slr": "SLR0",
+                            "arguments": [
+                                {
+                                    "name": "jpeg_pointer",
+                                    "memory": "HBM[0]"
+                                },
+				{
+                                    "name": "yuv_mcu_pointer",
+                                    "memory": "HBM[1]"
+                                },
+				{
+                                    "name": "infos",
+                                    "memory": "HBM[2]"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "kernelJpegDecoder"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 40960, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 1600, 
+                    "vitis_hw_emu": 400, 
+                    "vitis_sw_emu": 120, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw"
+        ], 
+        "category": "canary"
+    }
+}

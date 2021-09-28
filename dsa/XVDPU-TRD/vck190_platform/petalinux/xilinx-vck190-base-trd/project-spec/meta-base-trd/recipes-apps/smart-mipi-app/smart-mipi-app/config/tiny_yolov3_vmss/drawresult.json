@@ -1,0 +1,78 @@
+{
+  "ivas-library-repo": "/usr/lib",
+  "element-mode":"inplace",
+  "kernels" :[
+    {
+      "library-name":"libivas_xboundingbox.so",
+      "config": {
+          "font_size" : 1,
+          "font" : 3,
+          "thickness" : 1,
+          "label_color" : { "blue" : 0, "green" : 0, "red" : 0 },
+          "debug_level" : 0,
+          "label_filter" : [ "class", "probability" ],
+          "classes" : [
+                {
+                "name" : "KELLOGS",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 255
+                },
+                {
+                "name" : "CHOCOLATE",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 255
+                },
+                {
+                "name" : "CANDLE",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "SHAMPOO",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "BULB",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "PLIERS",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "DETERGENT",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "KOOLAID",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "LIPSTICK",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "BOX",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                }]
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+.. 
+   Copyright 2019 Xilinx, Inc.
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+.. meta::
+   :keywords: RNG,SobolRsg, BrownianBridge, TrinomialTree, TreeLattice, 1DMesher, OrnsteinUhlenbeckProcess, StochasticProcess1D, HWModel, G2Model, ECIRModel, CIRModel, VModel, HestonModel, BKModel, BSModel
+   :description: L1 Module is the low-level primitives which could be used to build kernel and accelerate the specific option pricing. 
+   :xlnxdocumentclass: Document
+   :xlnxdocumenttype: Tutorials
+
+
+**************************************
+L1 Module User Guide
+**************************************
+
+L1 Module is the low-level primitives which could be used to build kernel and accelerate the specific option pricing.
+Currently, it includes two evaluation models, Black-Scholes and Heston model, which present the change of stock price with time. It also provides Monte Carlo framework to calculate the price of option. During the evaluation of American Option, it uses Least-Square method and linear solver based on SVD decomposition.
+
+.. toctree::
+   :maxdepth: 1
+
+Core Utility
+------------
+.. toctree::
+   :maxdepth: 1
+   
+   RNGs/RNG.rst
+   RNGs/xoshiro128.rst
+   SVD/SVD.rst
+   TRSV/TRSV.rst
+   Pentadiag/Pentadiag.rst
+   SobolRsg/sobolrsg.rst
+   brownian/bb.rst
+   StochasticProcess/stochastic_process1d.rst
+   StochasticProcess/ornsteinuhlenbeck_process.rst
+   fdmmesher/fdmmesher.rst
+   NumericalIntegration/NumericalIntegration.rst
+   pca/pca.rst
+   covariance/covariance.rst
+   distribution/distribution.rst
+   interpolation/interpolation.rst
+   
+
+L1 Module APIs
+--------------
+.. toctree::
+   :maxdepth: 1
+
+   hw_api.rst
+
+

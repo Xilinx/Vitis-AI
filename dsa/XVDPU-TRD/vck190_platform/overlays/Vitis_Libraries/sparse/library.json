@@ -1,0 +1,23 @@
+{
+    "id": "xf_SPARSE",
+    "name": "Vitis SPARSE Library",
+    "description": "Vitis SPARSE Library is an Vitis library for accelerating linear algebra functions for handling sparse matrices.",
+    "v++": {
+        "includepaths": [
+            "LIB_DIR/L1/include/hw",
+            "LIB_DIR/L1/include/sw",
+            "LIB_DIR/L2/include/hw",
+            "LIB_DIR/L2/include/hw"
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw",
+                "LIB_DIR/L1/include/sw",
+                "LIB_DIR/L2/include/hw",
+                "LIB_DIR/L2/include/hw"
+            ]
+        }
+    }
+}

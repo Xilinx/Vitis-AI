@@ -1,0 +1,113 @@
+{
+    "gui": false,
+    "name": "Xilinx HPC 3D RTM Forward Kernel Test", 
+    "description": "Xilinx HPC Test", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u280"
+    ], 
+    "platform_blacklist": [
+        "other"
+    ], 
+    "platform_properties": {
+        "u280": {}
+    }, 
+    "launch": [
+        {
+            "name": "generic launch for all flows", 
+            "cmd_args": "BUILD/rtmforward.xclbin PROJECT/data/ 70 60 80 4 1"
+        }
+    ], 
+    "pre_launch": [], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/tests/rtm3d/rtmforward_Domain_HBC/main.cpp", 
+                "LIB_DIR/../blas/L2/src/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L2/include/sw/rtm3d/", 
+                "LIB_DIR/L2/include/sw/", 
+                "LIB_DIR/../blas/L2/include/xcl2", 
+                "LIB_DIR/../blas/L1/tests/sw/include/"
+            ], 
+            "symbols": [
+                "RTM_dataType=float", 
+                "RTM_numFSMs=2", 
+                "RTM_maxZ=256", 
+                "RTM_maxY=128", 
+                "RTM_MaxB=20", 
+                "RTM_NXB=20", 
+                "RTM_NYB=20", 
+                "RTM_NZB=20", 
+                "RTM_order=8", 
+                "RTM_nPEZ=2", 
+                "RTM_nPEX=2"
+            ], 
+            "options": "-g"
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "symbols": [
+                "RTM_dataType=float", 
+                "RTM_numFSMs=2", 
+                "RTM_maxZ=256", 
+                "RTM_maxY=128", 
+                "RTM_MaxB=20", 
+                "RTM_NXB=20", 
+                "RTM_NYB=20", 
+                "RTM_NZB=20", 
+                "RTM_order=8", 
+                "RTM_nPEZ=2", 
+                "RTM_nPEX=2"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include/hw", 
+                "LIB_DIR/L2/include/hw/", 
+                "LIB_DIR/L2/include/hw/rtm3d", 
+                "LIB_DIR/../blas/L1/include/hw"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name": "rtmforward", 
+            "ldclflags": "--config conn_u280.cfg --config opts.cfg", 
+            "frequency": 250,
+            "accelerators": [
+                {
+                    "name": "rtmforward", 
+                    "location": "LIB_DIR/L2/src/hw/rtm3d/rtmforward_hbc.cpp", 
+                    "frequency": 250
+                }
+            ]
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": 800
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw"
+        ], 
+        "category": "canary"
+    }
+}

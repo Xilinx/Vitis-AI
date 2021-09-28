@@ -1,0 +1,100 @@
+{
+    "gui": false,
+    "name": "Xilinx Validate Stream with Master Kernel Test", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "vck190", 
+        "u200", 
+        "aws-vu9p-f1"
+    ], 
+    "default_target": "hw_emu",
+    "default_device": "xilinx_vck190_base_202110_1",
+    "default_HOST_ARCH": "aarch64",
+    "platform_blacklist": [], 
+    "platform_properties": {}, 
+    "launch": [
+        {
+            "name": "generic launch for all flows", 
+            "cmd_args": "--xclbin BUILD/datamover.xclbin"
+        }
+    ], 
+    "host": {
+        "host_exe": "test_mover.exe", 
+        "compiler": {
+            "sources": [
+                "host/main.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "host", 
+                "LIB_DIR/ext/xcl2"
+            ], 
+            "options": "-std=c++14"
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw", 
+                "kernel"
+            ]
+        }
+    }, 
+    "pre_build": [
+        {
+            "build_cmd": "make -f PROJECT/ksrc.mk GENKERNEL=LIB_DIR/L2/scripts/generate_kernels SPEC=PROJECT/kernel/spec.json TOOLDIR=PROJECT/_krnlgen"
+        }
+    ], 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "kernel/m2s_x2.cpp", 
+                    "name": "m2s_x2"
+                }, 
+                {
+                    "location": "kernel/sCm_x2.cpp", 
+                    "name": "sCm_x2"
+                }
+            ], 
+            "ldclflags": "--config PROJECT/conn.cfg", 
+            "name": "datamover"
+        }
+    ], 
+    "output_files": [
+        "kernel/*.cpp",
+        "kernel/*.inc",
+        "kernel/.stamp",
+        "_krnlgen"
+    ],
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 470, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

@@ -1,0 +1,101 @@
+network,geoname_id,registered_country_geoname_id,represented_country_geoname_id,is_anonymous_proxy,is_satellite_provider,postal_code,latitude,longitude,accuracy_radius,geoname_id,locale_code,continent_code,continent_name,country_iso_code,country_name,subdivision_1_iso_code,subdivision_1_name,subdivision_2_iso_code,subdivision_2_name,city_name,metro_code,time_zone,is_in_european_union
+1.0.0.0/24,2077456,2077456,,0,0,,-33.4940,143.2104,1000,2077456,en,OC,Oceania,AU,Australia,,,,,,,Australia/Sydney,0
+1.0.1.0/24,1814991,1814991,,0,0,,34.7725,113.7266,50,1814991,en,AS,Asia,CN,China,,,,,,,Asia/Shanghai,0
+1.0.2.0/23,1814991,1814991,,0,0,,34.7725,113.7266,50,1814991,en,AS,Asia,CN,China,,,,,,,Asia/Shanghai,0
+1.0.4.0/22,2077456,2077456,,0,0,,-33.4940,143.2104,1000,2077456,en,OC,Oceania,AU,Australia,,,,,,,Australia/Sydney,0
+1.0.8.0/21,1814991,1814991,,0,0,,34.7725,113.7266,50,1814991,en,AS,Asia,CN,China,,,,,,,Asia/Shanghai,0
+1.0.16.0/20,1861060,1861060,,0,0,,35.6900,139.6900,500,1861060,en,AS,Asia,JP,Japan,,,,,,,Asia/Tokyo,0
+1.0.32.0/19,1814991,1814991,,0,0,,34.7725,113.7266,50,1814991,en,AS,Asia,CN,China,,,,,,,Asia/Shanghai,0
+1.0.64.0/24,1862415,1861060,,0,0,731-5101,34.4237,132.3998,10,1862415,en,AS,Asia,JP,Japan,34,Hiroshima,,,Hiroshima,,Asia/Tokyo,0
+1.0.65.0/24,1862415,1861060,,0,0,734-0011,34.3401,132.4439,10,1862415,en,AS,Asia,JP,Japan,34,Hiroshima,,,Hiroshima,,Asia/Tokyo,0
+1.0.66.0/23,1862415,1861060,,0,0,731-0221,34.5146,132.5144,20,1862415,en,AS,Asia,JP,Japan,34,Hiroshima,,,Hiroshima,,Asia/Tokyo,0
+1.0.68.0/24,1853655,1861060,,0,0,143-0021,35.5993,139.7075,500,1853655,en,AS,Asia,JP,Japan,13,Tokyo,,,"Ōta-ku",,Asia/Tokyo,0
+1.0.69.0/24,1863018,1861060,,0,0,738-0013,34.3473,132.3361,50,1863018,en,AS,Asia,JP,Japan,34,Hiroshima,,,Hatsukaichi,,Asia/Tokyo,0
+1.0.70.0/23,1862415,1861060,,0,0,733-0871,34.3903,132.4193,10,1862415,en,AS,Asia,JP,Japan,34,Hiroshima,,,Hiroshima,,Asia/Tokyo,0
+1.0.72.0/24,1862415,1861060,,0,0,733-0871,34.3903,132.4193,50,1862415,en,AS,Asia,JP,Japan,34,Hiroshima,,,Hiroshima,,Asia/Tokyo,0
+1.0.73.0/24,1862415,1861060,,0,0,731-0121,34.4593,132.4731,10,1862415,en,AS,Asia,JP,Japan,34,Hiroshima,,,Hiroshima,,Asia/Tokyo,0
+1.0.74.0/23,1862415,1861060,,0,0,734-0011,34.3401,132.4439,5,1862415,en,AS,Asia,JP,Japan,34,Hiroshima,,,Hiroshima,,Asia/Tokyo,0
+1.0.76.0/22,1862415,1861060,,0,0,731-0141,34.4718,132.4468,20,1862415,en,AS,Asia,JP,Japan,34,Hiroshima,,,Hiroshima,,Asia/Tokyo,0
+1.0.80.0/23,1857550,1861060,,0,0,690-0141,35.4775,133.0333,20,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.82.0/23,1849892,1861060,,0,0,680-0061,35.4917,134.2333,200,1849892,en,AS,Asia,JP,Japan,31,Tottori,,,Tottori-shi,,Asia/Tokyo,0
+1.0.84.0/23,1853174,1861060,,0,0,684-0071,35.5322,133.2018,100,1853174,en,AS,Asia,JP,Japan,31,Tottori,,,Sakaiminato,,Asia/Tokyo,0
+1.0.86.0/24,1861084,1861060,,0,0,693-0031,35.2673,132.6974,100,1861084,en,AS,Asia,JP,Japan,32,Shimane,,,Izumo,,Asia/Tokyo,0
+1.0.87.0/24,1848277,1861060,,0,0,683-0851,35.4631,133.6428,20,1848277,en,AS,Asia,JP,Japan,31,Tottori,,,Yonago,,Asia/Tokyo,0
+1.0.88.0/23,1852442,1861060,,0,0,696-1131,35.0769,132.5611,50,1852442,en,AS,Asia,JP,Japan,32,Shimane,,,,,Asia/Tokyo,0
+1.0.90.0/24,1849892,1861060,,0,0,680-0012,35.5000,134.2333,100,1849892,en,AS,Asia,JP,Japan,31,Tottori,,,Tottori-shi,,Asia/Tokyo,0
+1.0.91.0/24,1857550,1861060,,0,0,690-0851,35.4498,133.0435,20,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.92.0/23,1857550,1861060,,0,0,699-0101,35.4326,133.1637,100,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.94.0/23,1849892,1861060,,0,0,680-0061,35.4917,134.2333,100,1849892,en,AS,Asia,JP,Japan,31,Tottori,,,Tottori-shi,,Asia/Tokyo,0
+1.0.96.0/22,1857550,1861060,,0,0,690-0011,35.4364,133.0619,20,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.100.0/23,1857550,1861060,,0,0,690-0011,35.4364,133.0619,20,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.102.0/24,1857550,1861060,,0,0,690-0011,35.4364,133.0619,20,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.103.0/24,1857550,1861060,,0,0,690-0141,35.4775,133.0333,20,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.104.0/24,1848277,1861060,,0,0,683-0831,35.4323,133.3584,20,1848277,en,AS,Asia,JP,Japan,31,Tottori,,,Yonago,,Asia/Tokyo,0
+1.0.105.0/25,1848277,1861060,,0,0,683-0831,35.4323,133.3584,20,1848277,en,AS,Asia,JP,Japan,31,Tottori,,,Yonago,,Asia/Tokyo,0
+1.0.105.128/25,1857550,1861060,,0,0,690-0011,35.4364,133.0619,20,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.106.0/23,1857550,1861060,,0,0,690-0011,35.4364,133.0619,10,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.108.0/23,1857550,1861060,,0,0,699-0101,35.4326,133.1637,10,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.110.0/24,1857550,1861060,,0,0,690-0141,35.4775,133.0333,10,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.111.0/24,1857550,1861060,,0,0,699-0101,35.4326,133.1637,10,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.112.0/24,1849892,1861060,,0,0,680-0851,35.3964,134.1228,50,1849892,en,AS,Asia,JP,Japan,31,Tottori,,,Tottori-shi,,Asia/Tokyo,0
+1.0.113.0/24,1857550,1861060,,0,0,699-0111,35.4326,133.1637,100,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.114.0/23,1849892,1861060,,0,0,680-0012,35.5000,134.2333,10,1849892,en,AS,Asia,JP,Japan,31,Tottori,,,Tottori-shi,,Asia/Tokyo,0
+1.0.116.0/23,1853174,1861060,,0,0,684-0071,35.5322,133.2018,20,1853174,en,AS,Asia,JP,Japan,31,Tottori,,,Sakaiminato,,Asia/Tokyo,0
+1.0.118.0/24,1857550,1861060,,0,0,690-0041,35.4476,133.0815,100,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.119.0/25,1858301,1861060,,0,0,682-0861,35.4417,134.0083,10,1858301,en,AS,Asia,JP,Japan,31,Tottori,,,Kurayoshi,,Asia/Tokyo,0
+1.0.119.128/25,1849892,1861060,,0,0,680-0012,35.5000,134.2333,10,1849892,en,AS,Asia,JP,Japan,31,Tottori,,,Tottori-shi,,Asia/Tokyo,0
+1.0.120.0/25,1857550,1861060,,0,0,690-0871,35.4498,133.0435,20,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.120.128/25,1848482,1861060,,0,0,692-0011,35.4215,133.2422,20,1848482,en,AS,Asia,JP,Japan,32,Shimane,,,Yasugicho,,Asia/Tokyo,0
+1.0.121.0/25,1861084,1861060,,0,0,699-0631,35.3847,132.8213,20,1861084,en,AS,Asia,JP,Japan,32,Shimane,,,Izumo,,Asia/Tokyo,0
+1.0.121.128/25,1857550,1861060,,0,0,690-0011,35.4364,133.0619,20,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.122.0/24,1848277,1861060,,0,0,683-0801,35.4641,133.3471,100,1848277,en,AS,Asia,JP,Japan,31,Tottori,,,Yonago,,Asia/Tokyo,0
+1.0.123.0/24,1849892,1861060,,0,0,680-0941,35.5362,134.1851,20,1849892,en,AS,Asia,JP,Japan,31,Tottori,,,Tottori-shi,,Asia/Tokyo,0
+1.0.124.0/23,1857550,1861060,,0,0,690-0011,35.4364,133.0619,20,1857550,en,AS,Asia,JP,Japan,32,Shimane,,,Matsue,,Asia/Tokyo,0
+1.0.126.0/23,1848277,1861060,,0,0,683-0803,35.4333,133.3333,50,1848277,en,AS,Asia,JP,Japan,31,Tottori,,,Yonago,,Asia/Tokyo,0
+1.0.128.0/23,1151426,1605651,,0,0,56000,19.1695,99.9165,500,1151426,en,AS,Asia,TH,Thailand,56,Phayao,,,Phayao,,Asia/Bangkok,0
+1.0.130.0/23,1609032,1605651,,0,0,15000,14.8025,100.6181,500,1609032,en,AS,Asia,TH,Thailand,16,Lopburi,,,Lopburi,,Asia/Bangkok,0
+1.0.132.0/24,1609032,1605651,,0,0,15000,14.8025,100.6181,500,1609032,en,AS,Asia,TH,Thailand,16,Lopburi,,,Lopburi,,Asia/Bangkok,0
+1.0.133.0/24,1607532,1605651,,0,0,13230,14.1667,100.3167,500,1607532,en,AS,Asia,TH,Thailand,14,"Phra Nakhon Si Ayutthaya",,,Ayutthaya,,Asia/Bangkok,0
+1.0.134.0/23,1609350,1605651,,0,0,72130,13.7494,100.5024,500,1609350,en,AS,Asia,TH,Thailand,10,Bangkok,,,Bangkok,,Asia/Bangkok,0
+1.0.136.0/23,1153269,1605651,,0,0,77110,12.5667,99.9667,200,1153269,en,AS,Asia,TH,Thailand,77,"Prachuap Khiri Khan",,,"Hua Hin",,Asia/Bangkok,0
+1.0.138.0/24,1153269,1605651,,0,0,77110,12.5667,99.9667,200,1153269,en,AS,Asia,TH,Thailand,77,"Prachuap Khiri Khan",,,"Hua Hin",,Asia/Bangkok,0
+1.0.139.0/24,1611439,1605651,,0,0,24140,13.6000,101.0833,200,1611439,en,AS,Asia,TH,Thailand,24,Chachoengsao,,,Chachoengsao,,Asia/Bangkok,0
+1.0.140.0/23,1607017,1605651,,0,0,21000,12.6660,101.2802,1,1607017,en,AS,Asia,TH,Thailand,21,Rayong,,,Rayong,,Asia/Bangkok,0
+1.0.142.0/24,1620566,1605651,,0,0,,13.4970,100.0832,50,1620566,en,AS,Asia,TH,Thailand,74,"Samut Sakhon",,,"Ban Bo",,Asia/Bangkok,0
+1.0.143.0/24,1609350,1605651,,0,0,10400,13.7618,100.5324,10,1609350,en,AS,Asia,TH,Thailand,10,Bangkok,,,Bangkok,,Asia/Bangkok,0
+1.0.144.0/22,1150515,1605651,,0,0,84150,9.1401,99.3331,100,1150515,en,AS,Asia,TH,Thailand,84,"Surat Thani",,,"Surat Thani",,Asia/Bangkok,0
+1.0.148.0/23,1150515,1605651,,0,0,84280,9.1401,99.3331,500,1150515,en,AS,Asia,TH,Thailand,84,"Surat Thani",,,"Surat Thani",,Asia/Bangkok,0
+1.0.150.0/23,1150515,1605651,,0,0,84000,9.1308,99.3628,200,1150515,en,AS,Asia,TH,Thailand,84,"Surat Thani",,,"Surat Thani",,Asia/Bangkok,0
+1.0.152.0/22,1153783,1605651,,0,0,84110,9.3833,99.2333,100,1153783,en,AS,Asia,TH,Thailand,84,"Surat Thani",,,Chaiya,,Asia/Bangkok,0
+1.0.156.0/23,1151464,1605651,,0,0,82110,8.8366,98.3688,200,1151464,en,AS,Asia,TH,Thailand,82,"Phang Nga",,,"Phang Nga",,Asia/Bangkok,0
+1.0.158.0/24,1152633,1605651,,0,0,80240,8.0731,98.9132,100,1152633,en,AS,Asia,TH,Thailand,81,Krabi,,,Krabi,,Asia/Bangkok,0
+1.0.159.0/24,1609350,1605651,,0,0,10200,13.7594,100.4889,100,1609350,en,AS,Asia,TH,Thailand,10,Bangkok,,,Bangkok,,Asia/Bangkok,0
+1.0.160.0/23,1150515,1605651,,0,0,84150,9.1401,99.3331,100,1150515,en,AS,Asia,TH,Thailand,84,"Surat Thani",,,"Surat Thani",,Asia/Bangkok,0
+1.0.162.0/23,1150007,1605651,,0,0,92110,7.4167,99.5167,100,1150007,en,AS,Asia,TH,Thailand,92,Trang,,,Trang,,Asia/Bangkok,0
+1.0.164.0/22,1150007,1605651,,0,0,92110,7.4167,99.5167,100,1150007,en,AS,Asia,TH,Thailand,92,Trang,,,Trang,,Asia/Bangkok,0
+1.0.168.0/23,1151933,1605651,,0,0,80160,8.6667,99.9333,200,1151933,en,AS,Asia,TH,Thailand,80,"Nakhon Si Thammarat",,,"Nakhon Si Thammarat",,Asia/Bangkok,0
+1.0.170.0/23,1154689,1605651,,0,0,84140,9.4333,99.9667,200,1154689,en,AS,Asia,TH,Thailand,84,"Surat Thani",,,"Ko Samui",,Asia/Bangkok,0
+1.0.172.0/23,1151464,1605651,,0,0,82180,8.5186,98.6312,100,1151464,en,AS,Asia,TH,Thailand,82,"Phang Nga",,,"Phang Nga",,Asia/Bangkok,0
+1.0.174.0/23,1151254,1605651,,0,0,83120,7.9167,98.3500,100,1151254,en,AS,Asia,TH,Thailand,83,Phuket,,,Phuket,,Asia/Bangkok,0
+1.0.176.0/23,1607017,1605651,,0,0,21000,12.6660,101.2802,20,1607017,en,AS,Asia,TH,Thailand,21,Rayong,,,Rayong,,Asia/Bangkok,0
+1.0.178.0/23,1607284,1605651,,0,0,25130,14.0651,101.5120,500,1607284,en,AS,Asia,TH,Thailand,25,"Prachin Buri",,,Prachantakham,,Asia/Bangkok,0
+1.0.180.0/23,1611269,1605651,,0,0,22000,12.6528,102.1222,50,1611269,en,AS,Asia,TH,Thailand,22,Chanthaburi,,,Chanthaburi,,Asia/Bangkok,0
+1.0.182.0/23,1616508,1605651,,0,0,,12.6631,101.3722,200,1616508,en,AS,Asia,TH,Thailand,21,Rayong,,,"Ban Na",,Asia/Bangkok,0
+1.0.184.0/24,1611269,1605651,,0,0,22000,12.6528,102.1222,200,1611269,en,AS,Asia,TH,Thailand,22,Chanthaburi,,,Chanthaburi,,Asia/Bangkok,0
+1.0.185.0/24,1611439,1605651,,0,0,24130,13.5500,101.0000,50,1611439,en,AS,Asia,TH,Thailand,24,Chachoengsao,,,Chachoengsao,,Asia/Bangkok,0
+1.0.186.0/23,1609350,1605651,,0,0,10200,13.7594,100.4889,100,1609350,en,AS,Asia,TH,Thailand,10,Bangkok,,,Bangkok,,Asia/Bangkok,0
+1.0.188.0/23,1609350,1605651,,0,0,10520,13.7167,100.7833,200,1609350,en,AS,Asia,TH,Thailand,10,Bangkok,,,Bangkok,,Asia/Bangkok,0
+1.0.190.0/23,1608539,1605651,,0,0,26000,14.2031,101.2147,100,1608539,en,AS,Asia,TH,Thailand,26,"Nakhon Nayok",,,"Nakhon Nayok",,Asia/Bangkok,0
+1.0.192.0/22,1157190,1605651,,0,0,,8.6175,98.2498,100,1157190,en,AS,Asia,TH,Thailand,82,"Phang Nga",,,"Khao Lak",,Asia/Bangkok,0
+1.0.196.0/22,7091861,1605651,,0,0,,7.8602,98.3378,10,7091861,en,AS,Asia,TH,Thailand,83,Phuket,,,Chalong,,Asia/Bangkok,0
+1.0.200.0/22,1609350,1605651,,0,0,10510,13.8177,100.7465,500,1609350,en,AS,Asia,TH,Thailand,10,Bangkok,,,Bangkok,,Asia/Bangkok,0
+1.0.204.0/22,1605912,1605651,,0,0,60140,15.6454,100.2218,50,1605912,en,AS,Asia,TH,Thailand,60,"Nakhon Sawan",,,Takhli,,Asia/Bangkok,0
+1.0.208.0/23,1606588,1605651,,0,0,74000,13.5333,100.2833,20,1606588,en,AS,Asia,TH,Thailand,74,"Samut Sakhon",,,"Samut Sakhon",,Asia/Bangkok,0
+1.0.210.0/23,1609032,1605651,,0,0,15000,14.8025,100.6181,1,1609032,en,AS,Asia,TH,Thailand,16,Lopburi,,,Lopburi,,Asia/Bangkok,0
+1.0.212.0/23,1606586,1605651,,0,0,75000,13.4000,100.0000,100,1606586,en,AS,Asia,TH,Thailand,75,"Samut Songkhram",,,"Samut Songkhram",,Asia/Bangkok,0
+1.0.214.0/23,1606147,1605651,,0,0,90110,7.1000,100.4167,500,1606147,en,AS,Asia,TH,Thailand,90,Songkhla,,,Songkhla,,Asia/Bangkok,0
+1.0.216.0/22,1151933,1605651,,0,0,80160,8.6667,99.9333,500,1151933,en,AS,Asia,TH,Thailand,80,"Nakhon Si Thammarat",,,"Nakhon Si Thammarat",,Asia/Bangkok,0
+1.0.220.0/22,1153557,1605651,,0,0,86000,10.1905,99.0905,50,1153557,en,AS,Asia,TH,Thailand,86,Chumphon,,,Chumphon,,Asia/Bangkok,0
+1.0.224.0/21,1605239,1605651,,0,0,41000,17.1350,102.9720,100,1605239,en,AS,Asia,TH,Thailand,41,"Udon Thani",,,"Udon Thani",,Asia/Bangkok,0
+1.0.232.0/22,1605070,1605651,,0,0,47150,17.2809,103.6330,50,1605070,en,AS,Asia,TH,Thailand,47,"Sakon Nakhon",,,Warichaphum,,Asia/Bangkok,0
+1.0.236.0/22,1605239,1605651,,0,0,41000,17.1350,102.9720,100,1605239,en,AS,Asia,TH,Thailand,41,"Udon Thani",,,"Udon Thani",,Asia/Bangkok,0

@@ -1,67 +1,32 @@
-# Vitis TRD Platform for the vck190 Board
+# VCK190 Base TRD
 
-## Building the Platform
+The Versal:tm: Base TRD consists of a series of platforms, accelerators, and Jupyter
+notebooks targeting the VCK190 evaluation board. A platform is a Vivado:registered: design
+with a pre-instantiated set of I/O interfaces and a corresponding PetaLinux BSP
+and image that includes the required kernel drivers and user-space libraries to
+exercise those interfaces. Accelerators are mapped to FPGA logic resources
+and/or AI Engine cores and stitched into the platform using the Vitis:tm: unified software platform toolchain.
 
-**Last Tested Vivado Release: 2020.2**
+# Build Platform
 
-The platform build process is entirely scripted. Note that as this platform
-build process involves cross-compiling Linux, build of the platform is supported
-on Linux environments **only** (although it is possible to build inside a VM or
-Docker container).
+To generate platform file, type the following command:
+```bash
+    make all
+```
+Note: It is important to note that Yocto/Petalinux requires the workspace(TMPDIR) can't be located on nfs.
 
-Also note that the default PetaLinux configuration uses local scratchpad areas. This
-will *not* work if you are building on a networked file system; Yocto will error out.
-Update PetaLinux to change the build area to a locally-mounted hard drive.
+The platform file .xpfm will be genereated at 'platforms/xilinx_vck190_mipiRxSingle_hdmiTx_202110_1/vck190_mipiRxSingle_hdmiTx.xpfm'
 
-After cloning the platform source, and with both Vivado and PetaLinux set up, run
-`make all` command. 
+# License
 
-Note that by default this Makefile will install the platform to "platform_repo/xilinx_vck190_es1_trd_202020_1/export/xilinx_vck190_es1_trd_202020_1/"
+Licensed under the Apache License, version 2.0 (the "License"); you may not use this file 
+except in compliance with the License.
 
-More details you can find from `make help`
+You may obtain a copy of the License at
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-## Platform Specification
 
-### General Information
-
-| Type                | Value                       |
-| -----------------   | --------------------------- |
-| Vitis version       | 2020.2                      |
-| PetaLinux version   | 2020.2                      |
-| XRT Tag version     | [202020.2.8.0_Petalinux](https://github.com/Xilinx/XRT/releases/tag/202020.2.8.0_PetaLinux)              |
-| Associated Document | UG1442                      | 
-| Supported Device(s) | XCVC1902-2MSEVSVA2197       |
-| Supported Board(s)  | EK-VCK190-G-ED              |
-
-### Interfaces
-
-| Interface | Region | Details            |
-| --------- | ------ | ------------------ |
-| UART      | PS     |                    |
-| GEM       | PS     |                    |
-| USB       | PS     |                    |
-| SDIO      | PS     |                    |
-| HDMI      | PL     |                    |
-| MIPI      | PL     |                    |
-
-### Hardware Configurations
-
-| Configuration                 | Values                                                | Details                             |
-| ----------------------------- | ----------------------------------------------------- | ------------------------------------|
-| LPDDR Size                    | 8GB                                                   |                                     |
-| AI Engine                     | Enabled                                               |                                     |
-| HDMI                          | Enabled                                               |                                     |
-| MIPI                          | Enabled                                               |                                     |
-
-### Software Configurations
-
-Documentation for the VCK190 Base TRD design is available here
-User Guide: https://www.xilinx.com/support/documentation/boards_and_kits/vck190/ug1442-vck190-trd.pdf
-Tutorial: https://xilinx.github.io/vck190-base-trd/build/html/index.html
-
-# Notes
-
-Use the V++ -p option to generate the sd_card.img file that consists rootfs.ext4 provided by petalinux along with the Image,BOOT.BIN and system.dtb from platform, v++ generated xclbin and host.exe files.
-
-Once the Vitis platform is ready, some example applications to build with these platforms can be found here:
-https://github.com/Xilinx/Vitis_Accel_Examples
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+either express or implied. See the License for the specific language governing permissions 
+and limitations under the License.    

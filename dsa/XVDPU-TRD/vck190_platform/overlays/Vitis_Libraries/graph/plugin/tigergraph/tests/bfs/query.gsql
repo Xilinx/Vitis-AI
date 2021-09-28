@@ -1,0 +1,12 @@
+use graph xgraph
+drop query test_bfs_fpga
+
+create query test_bfs_fpga () for graph xgraph{
+
+    double ret;
+    int sourceID = 2;
+    ret = bfs_fpga(sourceID);
+    print ret;
+}
+
+install query test_bfs_fpga

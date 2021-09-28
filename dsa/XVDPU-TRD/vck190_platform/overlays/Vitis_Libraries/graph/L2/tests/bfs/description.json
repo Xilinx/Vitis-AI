@@ -1,0 +1,207 @@
+{
+    "gui": false, 
+    "name": "Xilinx Breadth First Search Test", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u50", 
+        "u200", 
+        "u250", 
+        "aws-vu9p-f1", 
+        "vck190"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "platform_properties": {
+        "u200": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u200_u250.cfg"
+                    ]
+                }
+            }
+        },
+        "aws-vu9p-f1": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u200_u250.cfg"
+                    ]
+                }
+            }
+        },
+        "u250": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u200_u250.cfg"
+                    ]
+                }
+            }
+        }, 
+        "u50": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u50.cfg"
+                    ]
+                }
+            }
+        }, 
+        "vck190": {
+            "host": {
+                "linker": {
+                    "librarypaths": [
+                        "$(SYSROOT)/usr/lib", 
+                        "${SYSROOT}/opt/xilinx/xrt/lib"
+                    ]
+                }, 
+                "compiler": {
+                    "includepaths": [
+                        "$(SYSROOT)/usr/include"
+                    ], 
+                    "options": "--sysroot=$(SYSROOT)"
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_vck190.cfg"
+                    ]
+                }
+            },
+            "containers": [
+                {
+                    "frequency": 150.0,
+                    "name": "bfs_kernel"
+                }
+            ]
+        }
+    },
+    "data":[
+        "PROJECT/data/test_offset.csr",
+        "PROJECT/data/test_column.csr",
+        "PROJECT/data/test_golden.mtx"
+    ],
+    "launch": [
+        {
+            "cmd_args": " -xclbin BUILD/bfs_kernel.xclbin -o PROJECT/data/test_offset.csr -c PROJECT/data/test_column.csr -g PROJECT/data/test_golden.mtx -i 0", 
+            "name": "generic launch for all flows"
+        },
+        {
+            "cmd_args": " -xclbin bfs_kernel.xclbin -o test_offset.csr -c test_column.csr -g test_golden.mtx -i 0",
+            "platform": "vck190",
+            "name": "vck 190 launch"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "host/main.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/bfs/host", 
+                "LIB_DIR/L2/tests/bfs/kernel", 
+                "LIB_DIR/ext/xcl2"
+            ], 
+            "options": "-O3 "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/bfs/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "kernel/bfs_kernel.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL_NAME=bfs_kernel", 
+                    "name": "bfs_kernel", 
+                    "num_compute_units": 1, 
+                    "compute_units": [
+                        {
+                            "name": "bfs_kernel", 
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "column", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "offset", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "queue512", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "queue", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "color512", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "result_dt", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "result_ft", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "result_pt", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "result_lv", 
+                                    "memory": "DDR[0]"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "bfs_kernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": 32768, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

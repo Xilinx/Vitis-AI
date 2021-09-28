@@ -1,0 +1,1334 @@
+
+
+
+<!DOCTYPE HTML>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<meta content="Vision, Library, Vitis Vision Library, Iterative Pyramidal, Corner Tracking, cornerUpdate, cornersImgToList," name="keywords" />
+<meta content="Design examples Using Vitis Vision library." name="description" />
+<meta content="Document" name="xlnxdocumentclass" />
+<meta content="Tutorials" name="xlnxdocumenttype" />
+
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<link rel="stylesheet" href="https://static.cloud.coveo.com/searchui/v2.4382/css/CoveoFullSearch.css"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="description"/>
+		<meta name="keywords"/>
+		<meta property="og:title" content=""/>
+		<meta property="og:description"/>
+		<!-- favicon -->
+		<link rel="icon" type="image/vnd.microsoft.icon" href="_static/favicon.ico"/>
+		<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="_static/favicon.ico"/>
+		<!-- Fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet" type="text/css"/>
+
+  
+  
+  
+  
+
+  
+      <script type="text/javascript" src="_static/js/jquery.min.js"></script>	
+	  <script type="text/javascript" src="_static/js/gtm.js"></script>
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+    <script type="text/javascript" src="_static/js/d3dd8c60ed.js"></script>
+    <script type="text/javascript" src="_static/js/common-ui-all.min.js"></script>		
+    <script type="text/javascript" src="_static/js/header-footer.min.js"></script>	
+    <script type="text/javascript" src="_static/js/jquery-ui.min.js"></script>	
+    <script type="text/javascript" src="_static/js/CoveoJsSearch.Lazy.min.js"></script>	
+    <script type="text/javascript" src="_static/js/linkid.js"></script>		
+    <script type="text/javascript" src="_static/js/Searchbox.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/common-ui-all.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/header-footer.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+	</head>
+	<body>
+		<div class="xilinx-bs3"/>
+		<div class="root responsivegrid">
+			<div class="aem-Grid aem-Grid--16 aem-Grid--default--16 aem-Grid--large--16 aem-Grid--xlarge--16 aem-Grid--xxlarge--16 aem-Grid--xxxlarge--16 ">
+				<div class="xilinxExperienceFragments experiencefragment aem-GridColumn aem-GridColumn--default--12">
+					<div class="xf-content-height">
+						<div class="aem-Grid aem-Grid--16 aem-Grid--default--16 ">
+							<div class="header parbase aem-GridColumn aem-GridColumn--default--12">
+								<noindex>
+									<header data-component="header">
+										<nav class="navbar navbar-default aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid main-nav">
+													<div class="row">
+														<div class="col-xs-12">
+															<div class="logo-column">
+																<div class="logo">
+																	<a href="https://www.xilinx.com/">
+																	<img src="https://www.xilinx.com/etc.clientlibs/site/clientlibs/xilinx/all/resources/imgs/header/xilinx-header-logo.svg" title="Xilinx Inc"/>
+																	</a>
+																</div>
+															</div>
+															<div class="navbar-column">
+																<div class="navbar navbar-collapse collapse" id="xilinx-main-menu">
+																	<div class="mobile-search-container">
+																		<div id="headerSearchBox" class="headerSearch"
+																			data-component="header-search" 
+																			data-redirect-if-empty="false"
+																			data-coveo-access-token="xxa237d4dd-f0aa-47fc-9baa-af9121851b33"
+																			data-coveo-organization-id="xilinxcomprode2rjoqok">
+																			<div class='coveo-search-section'>
+																				<div class="CoveoAnalytics" data-search-hub="Site"></div>
+																				<ul class="dropdown-menu options">
+																					<li class="option" data-label="All" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-search-hub="Site">
+																						<a href="#">
+																						All</a>
+																					</li>
+																					<li data-label="Silicon Devices" data-action-link="https://www.xilinx.com//products/silicon-devices/si-keyword-search.html" data-search-hub="Product">
+																						<a href="#">
+																						Silicon Devices</a>
+																					</li>
+																					<li data-label="Boards and Kits" data-action-link="https://www.xilinx.com//products/boards-and-kits/bk-keyword-search.html" data-search-hub="Product">
+																						<a href="#">
+																						Boards and Kits</a>
+																					</li>
+																					<li data-label="Intellectual Property" data-action-link="https://www.xilinx.com//products/intellectual-property/ip-keyword-search.html" data-search-hub="Product">
+																						<a href="#">
+																						Intellectual Property</a>
+																					</li>
+																					<li data-label="Support" class="option" data-action-link="https://www.xilinx.com/search/support-keyword-search.html" data-search-hub="Support">
+																						<a href="#">
+																						Support</a>
+																						<ul>
+																							<li data-label="Documentation" data-action-link="https://www.xilinx.com//support/documentation-navigation/documentation-keyword-search.html" data-search-hub="Document">
+																								<a href="#">
+																								Documentation</a>
+																							</li>
+																							<li data-label="Knowledge Base" data-action-link="https://www.xilinx.com//support/answer-navigation/answer-keyword-search.html" data-search-hub="AnswerRecord">
+																								<a href="#">
+																								Knowledge Base</a>
+																							</li>
+																							<li data-label="Community Forums" data-action-link="https://www.xilinx.com/search/forums-keyword-search.html" data-search-hub="Forums">
+																								<a href="#">
+																								Community Forums</a>
+																							</li>
+																						</ul>
+																					</li>
+																					<li data-label="Partners" data-action-link="https://www.xilinx.com//alliance/member-keyword-search.html" data-search-hub="Partner">
+																						<a href="#">
+																						Partners</a>
+																					</li>
+																					<li data-label="Videos" data-action-link="https://www.xilinx.com/video/video-keyword-search.html" data-search-hub="Video">
+																						<a href="#">
+																						Videos</a>
+																					</li>
+																					<li data-label="Press" data-action-link="https://www.xilinx.com/search/press-keyword-search.html" data-search-hub="Press">
+																						<a href="#">
+																						Press</a>
+																					</li>
+																				</ul>
+																				<a href="#" class="btn dropdown-toggle value" data-toggle="dropdown"></a>
+																				<div class="CoveoSearchbox" data-id="coveosearchbox" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-placeholder="Search Xilinx"></div>
+																			</div>
+																		</div>
+																	</div>
+																	<ul class="nav navbar-nav nav-justified">
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/applications.html">
+																			Applications</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/products/silicon-devices.html">
+																			Products</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://developer.xilinx.com/">
+																			Developers</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/support.html">
+																			Support</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/about/company-overview.html">
+																			About</a> 
+																		</li>
+																	</ul>
+																</div>
+															</div>
+															<script type="text/javascript" src="_static/js/gtm.js"></script>
+															<!--<div class="mini-nav">
+																<button type="button" data-function="xilinx-mobile-menu" id="nav-toggle" class="navbar-toggle collapsed visible-xs-block" aria-expanded="false">
+																<span></span>
+																<span></span>
+																<span></span>
+																<span></span>
+																</button>
+																<ul class="list-inline">
+																	<li class="dropdown user-menu">
+																		<button data-toggle="dropdown">
+																		<span class="sr-only">Account</span>
+																		<span class="fas fa-user"></span>
+																		</button>
+																		<ul class="dropdown-menu">
+																			<li>
+																				<a href="https://www.xilinx.com/myprofile/subscriptions.html">
+																				My Account</a>
+																			</li>
+																			<li>
+																				<a href="https://www.xilinx.com/registration/create-account.html">
+																				Create Account</a>
+																			</li>
+																			<li>
+																				<a href="https://www.xilinx.com/bin/protected/en/signout">
+																				Sign Out</a>
+																			</li>
+																		</ul>
+																	</li>
+																	<li class="hidden-xs">
+																		<button data-function="search-toggle">
+																		<span class="sr-only">Search</span>
+																		<span class="far fa-search"></span>
+																		</button>
+																	</li>
+																</ul>
+															</div>
+															-->
+															<div class="search-container">
+																<div id="headerSearchBox" class="headerSearch"
+																	data-component="header-search" 
+																	data-redirect-if-empty="false"
+																	data-coveo-access-token="xxa237d4dd-f0aa-47fc-9baa-af9121851b33"
+																	data-coveo-organization-id="xilinxcomprode2rjoqok">
+																	<div class='coveo-search-section'>
+																		<div class="CoveoAnalytics" data-search-hub="Site"></div>
+																		<ul class="dropdown-menu options">
+																			<li class="option" data-label="All" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-search-hub="Site">
+																				<a href="#">
+																				All</a>
+																			</li>
+																			<li data-label="Silicon Devices" data-action-link="https://www.xilinx.com/products/silicon-devices/si-keyword-search.html" data-search-hub="Product">
+																				<a href="#">
+																				Silicon Devices</a>
+																			</li>
+																			<li data-label="Boards and Kits" data-action-link="https://www.xilinx.com/products/boards-and-kits/bk-keyword-search.html" data-search-hub="Product">
+																				<a href="#">
+																				Boards and Kits</a>
+																			</li>
+																			<li data-label="Intellectual Property" data-action-link="https://www.xilinx.com/products/intellectual-property/ip-keyword-search.html" data-search-hub="Product">
+																				<a href="#">
+																				Intellectual Property</a>
+																			</li>
+																			<li data-label="Support" class="option" data-action-link="https://www.xilinx.com/search/support-keyword-search.html" data-search-hub="Support">
+																				<a href="#">
+																				Support</a>
+																				<ul>
+																					<li data-label="Documentation" data-action-link="https://www.xilinx.com/support/documentation-navigation/documentation-keyword-search.html" data-search-hub="Document">
+																						<a href="#">
+																						Documentation</a>
+																					</li>
+																					<li data-label="Knowledge Base" data-action-link="https://www.xilinx.com/support/answer-navigation/answer-keyword-search.html" data-search-hub="AnswerRecord">
+																						<a href="#">
+																						Knowledge Base</a>
+																					</li>
+																					<li data-label="Community Forums" data-action-link="https://www.xilinx.com/search/forums-keyword-search.html" data-search-hub="Forums">
+																						<a href="#">
+																						Community Forums</a>
+																					</li>
+																				</ul>
+																			</li>
+																			<li data-label="Partners" data-action-link="https://www.xilinx.com/alliance/member-keyword-search.html" data-search-hub="Partner">
+																				<a href="#">
+																				Partners</a>
+																			</li>
+																			<li data-label="Videos" data-action-link="https://www.xilinx.com/video/video-keyword-search.html" data-search-hub="Video">
+																				<a href="#">
+																				Videos</a>
+																			</li>
+																			<li data-label="Press" data-action-link="https://www.xilinx.com/search/press-keyword-search.html" data-search-hub="Press">
+																				<a href="#">
+																				Press</a>
+																			</li>
+																		</ul>
+																		<a href="#" class="btn dropdown-toggle value" data-toggle="dropdown"></a>
+																		<div class="CoveoSearchbox" data-id="coveosearchbox" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-placeholder="Search Xilinx"></div>
+																	</div>
+																</div>
+																<button data-function="search-toggle">
+																<span class="sr-only">Search</span>
+																<span class="far fa-times"></span>
+																</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</nav>
+									</header>
+								</noindex>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="parsys aem-GridColumn--xxxlarge--none aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+						<div class="container-fluid">
+							<div class="row">
+							<div class="col-xs-12">
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Vitis Vision Library
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2020.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Vitis Vision Library User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#getting-started-with-vitis-vision">Getting Started with Vitis Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#getting-started-with-hls">Getting Started with HLS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#design-examples-using-vitis-vision-library">Design Examples Using Vitis Vision Library</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Vitis Vision Library API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html#xf-cv-mat-image-container-class">xf::cv::Mat Image Container Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html#vitis-vision-library-functions">Vitis Vision Library Functions</a></li>
+</ul>
+
+            
+			<p class="caption"><span class="caption-text">This Page</span></p>
+				<ul class="current">
+				  <li class="toctree-l1"><a href="_sources/design-examples.rst.txt"
+						rel="nofollow">Show Source</a></li>						
+				</ul>
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Vitis Vision Library</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Design Examples Using Vitis Vision Library</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/design-examples.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="design-examples-using-vitis-vision-library">
+<span id="design-example"></span><h1>Design Examples Using Vitis Vision Library<a class="headerlink" href="#design-examples-using-vitis-vision-library" title="Permalink to this headline">¶</a></h1>
+<p>All the hardware functions in the library have their own respective
+examples that are available in the github. This section provides details
+of image processing functions and pipelines implemented using a
+combination of various functions in Vitis vision. They illustrate how to
+best implement various functionalities using the capabilities of both
+the processor and the programmable logic. These examples also illustrate
+different ways to implement complex dataflow paths. The following
+examples are described in this section:</p>
+<ul class="simple">
+<li><a class="reference external" href="#interactive-pyramidal">Iterative Pyramidal Dense Optical Flow</a></li>
+<li><a class="reference external" href="#corner-tracking">Corner Tracking Using Optical Flow</a></li>
+<li><a class="reference external" href="#color-detection">Color Detection</a></li>
+<li><a class="reference external" href="#difference-gaussian-filter">Difference of Gaussian Filter</a></li>
+<li><a class="reference external" href="#stereo-vision">Stereo Vision Pipeline</a></li>
+<li><a class="reference external" href="#x-mlpipeline">X + ML Pipeline</a></li>
+<li><a class="reference external" href="#letter-box">Letterbox</a></li>
+<li><a class="reference external" href="#isp">Image Sensor Processing pipeline</a></li>
+</ul>
+<div class="section" id="interative-pyramidal">
+<span id="id1"></span><h2>Iterative Pyramidal Dense Optical Flow<a class="headerlink" href="#interative-pyramidal" title="Permalink to this headline">¶</a></h2>
+<p>The Dense Pyramidal Optical Flow example uses the <code class="docutils literal notranslate"><span class="pre">xf::cv::pyrDown</span></code> and
+<code class="docutils literal notranslate"><span class="pre">xf::cv::densePyrOpticalFlow</span></code> hardware functions from the Vitis vision
+library, to create an image pyramid, iterate over it and compute the
+Optical Flow between two input images. The example uses <code class="docutils literal notranslate"><span class="pre">xf::cv::pyrDown</span></code> function to compute the image pyramids
+of the two input images. The two image pyramids are
+processed by <code class="docutils literal notranslate"><span class="pre">xf::cv::densePyrOpticalFlow</span></code>
+function, starting from the smallest image size going up to the largest
+image size. The output flow vectors of each iteration are fed back to
+the hardware kernel as input to the hardware function. The output of the
+last iteration on the largest image size is treated as the output of the
+dense pyramidal optical flow example.</p>
+<div class="image figure" id="jcr1510602888334-image-jh4-sq2-bcb">
+<img alt="" src="_images/bui1554997287170.png" />
+</div>
+<p>The Iterative Pyramidal Dense Optical Flow is computed in a nested for
+loop which runs for iterations*pyramid levels number of iterations. The
+main loop starts from the smallest image size and iterates up to the
+largest image size. Before the loop iterates in one pyramid level, it
+sets the current pyramid level’s height and width, in curr_height and
+current_width variables. In the nested loop, the next_height variable is
+set to the previous image height if scaling up is necessary, that is, in
+the first iterations. As divisions are costly and one time divisions can
+be avoided in hardware, the scale factor is computed in the host and
+passed as an argument to the hardware kernel. After each pyramid level,
+in the first iteration, the scale-up flag is set to let the hardware
+function know that the input flow vectors need to be scaled up to the
+next higher image size. Scaling up is done using bilinear interpolation
+in the hardware kernel.</p>
+<p>After all the input data is prepared, and the flags are set, the host
+processor calls the hardware function. Please note that the host
+function swaps the flow vector inputs and outputs to the hardware
+function to iteratively solve the optimization problem.</p>
+</div>
+<div class="section" id="corner-tracking">
+<span id="id2"></span><h2>Corner Tracking Using Optical Flow<a class="headerlink" href="#corner-tracking" title="Permalink to this headline">¶</a></h2>
+<p>This example illustrates how to detect and track the characteristic
+feature points in a set of successive frames of video. A Harris corner
+detector is used as the feature detector, and a modified version of
+Lucas Kanade optical flow is used for tracking. The core part of the
+algorithm takes in current and next frame as the inputs and outputs the
+list of tracked corners. The current image is the first frame in the
+set, then corner detection is performed to detect the features to track.
+The number of frames in which the points need to be tracked is also
+provided as the input.</p>
+<p>Corner tracking example uses five hardware functions from the Vitis vision
+library <code class="docutils literal notranslate"><span class="pre">xf::cv::cornerHarris</span></code>, <code class="docutils literal notranslate"><span class="pre">xf::cv::</span> <span class="pre">cornersImgToList</span></code>,
+<code class="docutils literal notranslate"><span class="pre">xf::cv::cornerUpdate</span></code>, <code class="docutils literal notranslate"><span class="pre">xf::cv::pyrDown</span></code>, and <code class="docutils literal notranslate"><span class="pre">xf::cv::densePyrOpticalFlow</span></code>.</p>
+<div class="image figure" id="ypx1510602888667-image-dmv-5cv-hdb">
+<img alt="" src="_images/tpr1554997250097.png" />
+</div>
+<p>The function, <code class="docutils literal notranslate"><span class="pre">xf::cv::cornerUpdate</span></code>, has been added to ensure
+that the dense flow vectors from the output of
+the<code class="docutils literal notranslate"><span class="pre">xf::cv::densePyrOpticalFlow</span></code> function are sparsely picked and stored
+in a new memory location as a sparse array. This was done to ensure that
+the next function in the pipeline would not have to surf through the
+memory by random accesses. The function takes corners from Harris corner
+detector and dense optical flow vectors from the dense pyramidal optical
+flow function and outputs the updated corner locations, tracking the
+input corners using the dense flow vectors, thereby imitating the sparse
+optical flow behavior. This hardware function runs at 300 MHz for 10,000
+corners on a 720p image, adding very minimal latency to the pipeline.</p>
+<div class="section" id="cornerupdate">
+<h3>cornerUpdate()<a class="headerlink" href="#cornerupdate" title="Permalink to this headline">¶</a></h3>
+<p class="rubric">API Syntax</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">template</span> <span class="o">&lt;</span><span class="n">unsigned</span> <span class="nb">int</span> <span class="n">MAXCORNERSNO</span><span class="p">,</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="n">ROWS</span><span class="p">,</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="n">COLS</span><span class="p">,</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="n">NPC</span><span class="o">&gt;</span>
+<span class="n">void</span> <span class="n">cornerUpdate</span><span class="p">(</span><span class="n">ap_uint</span><span class="o">&lt;</span><span class="mi">64</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">list_fix</span><span class="p">,</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="o">*</span><span class="nb">list</span><span class="p">,</span> <span class="n">uint32_t</span> <span class="n">nCorners</span><span class="p">,</span> <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span><span class="n">ROWS</span><span class="p">,</span><span class="n">COLS</span><span class="p">,</span><span class="n">NPC</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">flow_vectors</span><span class="p">,</span> <span class="n">ap_uint</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">harris_flag</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Parameter Descriptions</p>
+<p>The following table describes the template and the function parameters.</p>
+<table border="1" class="docutils" id="id10">
+<caption><span class="caption-text">Table: CornerUpdate Function Parameter Descriptions</span><a class="headerlink" href="#id10" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Paramete
+r</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>MAXCORNE
+RSNO</td>
+<td>Maximum number of corners that the function needs to work
+on</td>
+</tr>
+<tr class="row-odd"><td>TYPE</td>
+<td>Input Pixel Type. Only 8-bit, unsigned, 1 channel is
+supported (XF_8UC1)</td>
+</tr>
+<tr class="row-even"><td>ROWS</td>
+<td>Maximum height of input and output image (Must be
+multiple of 8)</td>
+</tr>
+<tr class="row-odd"><td>COLS</td>
+<td>Maximum width of input and output image (Must be multiple
+of 8)</td>
+</tr>
+<tr class="row-even"><td>NPC</td>
+<td>Number of pixels to be processed per cycle. This function
+supports only XF_NPPC1 or 1-pixel per cycle operations.</td>
+</tr>
+<tr class="row-odd"><td>list_fix</td>
+<td>A list of packed fixed point coordinates of the corner
+locations in 16, 5 (16 integer bits and 5 fractional
+bits) format. Bits from 20 to 0 represent the column
+number, while the bits 41 to 21 represent the row number.
+The rest of the bits are used for flag, this flag is set
+when the tracked corner is valid.</td>
+</tr>
+<tr class="row-even"><td>list</td>
+<td>A list of packed positive short integer coordinates of
+the corner locations in unsigned short format. Bits from
+15 to 0 represent the column number, while the bits 31 to
+16 represent the row number. This list is same as the
+list output by Harris Corner Detector.</td>
+</tr>
+<tr class="row-odd"><td>nCorners</td>
+<td>Number of corners to track</td>
+</tr>
+<tr class="row-even"><td>flow_vec
+tors</td>
+<td>Packed flow vectors as in xf::cv::DensePyrOpticalFlow
+function</td>
+</tr>
+<tr class="row-odd"><td>harris_f
+lag</td>
+<td><p class="first">If set to 1, the function takes input corners from list.</p>
+<p class="last">if set to 0, the function takes input corners from
+list_fix.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The example codeworks on an input video which is read and processed
+using the Vitis vision library.</p>
+</div>
+<div class="section" id="cornersimgtolist">
+<h3>cornersImgToList()<a class="headerlink" href="#cornersimgtolist" title="Permalink to this headline">¶</a></h3>
+<p class="rubric">API Syntax</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">template</span> <span class="o">&lt;</span><span class="n">unsigned</span> <span class="nb">int</span> <span class="n">MAXCORNERSNO</span><span class="p">,</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="n">ROWS</span><span class="p">,</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="n">COLS</span><span class="p">,</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="n">NPC</span><span class="o">&gt;</span>
+<span class="n">void</span> <span class="n">cornersImgToList</span><span class="p">(</span><span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span><span class="n">ROWS</span><span class="p">,</span><span class="n">COLS</span><span class="p">,</span><span class="n">NPC</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">_src</span><span class="p">,</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="nb">list</span><span class="p">[</span><span class="n">MAXCORNERSNO</span><span class="p">],</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="o">*</span><span class="n">ncorners</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Parameter Descriptions</p>
+<p>The following table describes the function parameters.</p>
+<table border="1" class="docutils" id="id11">
+<caption><span class="caption-text">Table: CornerImgToList Function Parameter Descriptions</span><a class="headerlink" href="#id11" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Paramete
+r</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>_src</td>
+<td>The output image of harris corner detector. The size of
+this xf::cv::Mat object is the size of the input image to
+Harris corner detector. The value of each pixel is 255 if
+a corner is present in the location, 0 otherwise.</td>
+</tr>
+<tr class="row-odd"><td>list</td>
+<td>A 32 bit memory allocated, the size of MAXCORNERS, to
+store the corners detected by Harris Detector</td>
+</tr>
+<tr class="row-even"><td>ncorners</td>
+<td>Total number of corners detected by Harris, that is, the
+number of corners in the list</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="image-processing">
+<h4>Image Processing<a class="headerlink" href="#image-processing" title="Permalink to this headline">¶</a></h4>
+<p>The following steps demonstrate the Image Processing procedure in the
+hardware pipeline</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">xf::cv::cornerharris</span></code> is called to start processing the first input
+image</li>
+<li>The output of<code class="docutils literal notranslate"><span class="pre">xf::cv::cornerHarris</span></code> is fed to<code class="docutils literal notranslate"><span class="pre">xf::cv::cornersImgToList</span></code>. This function takes in an
+image with corners (marked as 255 and 0 elsewhere), and converts them
+to a list of corners.</li>
+<li><code class="docutils literal notranslate"><span class="pre">xf::cv::pyrDown</span></code> creates the two image pyramids and
+Dense Optical Flow is computed using the two image pyramids as
+described in the Iterative Pyramidal Dense Optical Flow example.</li>
+<li><code class="docutils literal notranslate"><span class="pre">xf::cv::densePyrOpticalFlow</span></code> is called with the two image pyramids as
+inputs.</li>
+<li><code class="docutils literal notranslate"><span class="pre">xf::cv::cornerUpdate</span></code> function is called to track the corner locations
+in the second image. If harris_flag is enabled, the <code class="docutils literal notranslate"><span class="pre">cornerUpdate</span></code>
+tracks corners from the output of the list, else it tracks the
+previously tracked corners.</li>
+</ol>
+<p>The <code class="docutils literal notranslate"><span class="pre">HarrisImg()</span></code> function takes a flag called
+harris_flag which is set during the first frame or when the corners need
+to be redetected. The <code class="docutils literal notranslate"><span class="pre">xf::cv::cornerUpdate</span></code> function outputs the updated
+corners to the same memory location as the output corners list of
+<code class="docutils literal notranslate"><span class="pre">xf::cv::cornerImgToList</span></code>. This means that when harris_flag is unset, the
+corners input to the <code class="docutils literal notranslate"><span class="pre">xf::cv::cornerUpdate</span></code> are the corners tracked in the
+previous cycle, that is, the corners in the first frame of the current
+input frames.</p>
+<p>After the Dense Optical Flow is computed, if harris_flag is set, the
+number of corners that <code class="docutils literal notranslate"><span class="pre">xf::cv::cornerharris</span></code> has detected and
+<code class="docutils literal notranslate"><span class="pre">xf::cv::cornersImgToList</span></code> has updated is copied to num_corners variable
+. The other being the tracked corners list, listfixed. If
+harris_flag is set, <code class="docutils literal notranslate"><span class="pre">xf::cv::cornerUpdate</span></code> tracks the corners in ‘list’
+memory location, otherwise it tracks the corners in ‘listfixed’ memory
+location.</p>
+</div>
+</div>
+</div>
+<div class="section" id="id3">
+<span id="id4"></span><h2>Color Detection<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>The Color Detection algorithm is basically used for color object
+tracking and object detection, based on the color of the object. The
+color based methods are very useful for object detection and
+segmentation, when the object and the background have a significant
+difference in color.</p>
+<p>The Color Detection example uses four hardware functions from the
+Vitis vision library. They are:</p>
+<ul class="simple">
+<li>xf::cv::BGR2HSV</li>
+<li>xf::cv::colorthresholding</li>
+<li>xf::cv::erode</li>
+<li>xf::cv::dilate</li>
+</ul>
+<p>In the Color Detection example, the color space of the original BGR
+image is converted into an HSV color space. Because HSV color space is
+the most suitable color space for color based image segmentation. Later,
+based on the H (hue), S (saturation) and V (value) values, apply the
+thresholding operation on the HSV image and return either 255 or 0.
+After thresholding the image, apply erode (morphological opening) and
+dilate (morphological opening) functions to reduce unnecessary white
+patches (noise) in the image. Here, the example uses two hardware
+instances of erode and dilate functions. The erode followed by dilate
+and once again applying dilate followed by erode.</p>
+<div class="image figure" id="dyn1510602889272-image-dzq-ys2-bcb">
+<img alt="" src="_images/ntl1554997353703.png" />
+</div>
+<p>The following example demonstrates the Color Detection algorithm.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">void</span> <span class="n">color_detect</span><span class="p">(</span><span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">PTR_IN_WIDTH</span><span class="o">&gt;*</span> <span class="n">img_in</span><span class="p">,</span>
+              <span class="n">unsigned</span> <span class="n">char</span><span class="o">*</span> <span class="n">low_thresh</span><span class="p">,</span>
+              <span class="n">unsigned</span> <span class="n">char</span><span class="o">*</span> <span class="n">high_thresh</span><span class="p">,</span>
+              <span class="n">unsigned</span> <span class="n">char</span><span class="o">*</span> <span class="n">process_shape</span><span class="p">,</span>
+              <span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">PTR_OUT_WIDTH</span><span class="o">&gt;*</span> <span class="n">img_out</span><span class="p">,</span>
+              <span class="nb">int</span> <span class="n">rows</span><span class="p">,</span>
+              <span class="nb">int</span> <span class="n">cols</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="c1">#pragma HLS INTERFACE m_axi      port=img_in        offset=slave  bundle=gmem0</span>
+
+<span class="c1">#pragma HLS INTERFACE m_axi      port=low_thresh    offset=slave  bundle=gmem1</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite  port=low_thresh</span>
+<span class="c1">#pragma HLS INTERFACE m_axi      port=high_thresh   offset=slave  bundle=gmem2</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite  port=high_thresh</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite  port=rows</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite  port=cols</span>
+<span class="c1">#pragma HLS INTERFACE m_axi      port=process_shape offset=slave  bundle=gmem3</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite  port=process_shape</span>
+<span class="c1">#pragma HLS INTERFACE m_axi      port=img_out       offset=slave  bundle=gmem4</span>
+
+<span class="c1">#pragma HLS INTERFACE s_axilite  port=return</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">IN_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgInput</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">IN_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">rgb2hsv</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgHelper1</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgHelper2</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgHelper3</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgHelper4</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgOutput</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+<span class="o">//</span> <span class="n">Copy</span> <span class="n">the</span> <span class="n">shape</span> <span class="n">data</span><span class="p">:</span>
+<span class="n">unsigned</span> <span class="n">char</span> <span class="n">_kernel</span><span class="p">[</span><span class="n">FILTER_SIZE</span> <span class="o">*</span> <span class="n">FILTER_SIZE</span><span class="p">];</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">unsigned</span> <span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">FILTER_SIZE</span> <span class="o">*</span> <span class="n">FILTER_SIZE</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">#pragma HLS PIPELINE</span>
+    <span class="o">//</span> <span class="n">clang</span><span class="o">-</span><span class="nb">format</span> <span class="n">on</span>
+    <span class="n">_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_shape</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">#pragma HLS DATAFLOW</span>
+<span class="o">//</span> <span class="n">clang</span><span class="o">-</span><span class="nb">format</span> <span class="n">on</span>
+<span class="o">//</span> <span class="n">Retrieve</span> <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span> <span class="n">objects</span> <span class="kn">from</span> <span class="nn">img_in</span> <span class="n">data</span><span class="p">:</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Array2xfMat</span><span class="o">&lt;</span><span class="n">PTR_IN_WIDTH</span><span class="p">,</span> <span class="n">IN_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">img_in</span><span class="p">,</span> <span class="n">imgInput</span><span class="p">);</span>
+
+<span class="o">//</span> <span class="n">Convert</span> <span class="n">RGBA</span> <span class="n">to</span> <span class="n">HSV</span><span class="p">:</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">bgr2hsv</span><span class="o">&lt;</span><span class="n">IN_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgInput</span><span class="p">,</span> <span class="n">rgb2hsv</span><span class="p">);</span>
+
+<span class="o">//</span> <span class="n">Do</span> <span class="n">the</span> <span class="n">color</span> <span class="n">thresholding</span><span class="p">:</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">colorthresholding</span><span class="o">&lt;</span><span class="n">IN_TYPE</span><span class="p">,</span> <span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">MAXCOLORS</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rgb2hsv</span><span class="p">,</span> <span class="n">imgHelper1</span><span class="p">,</span> <span class="n">low_thresh</span><span class="p">,</span>
+                                                                             <span class="n">high_thresh</span><span class="p">);</span>
+
+<span class="o">//</span> <span class="n">Use</span> <span class="n">erode</span> <span class="ow">and</span> <span class="n">dilate</span> <span class="n">to</span> <span class="n">fully</span> <span class="n">mark</span> <span class="n">color</span> <span class="n">areas</span><span class="p">:</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">erode</span><span class="o">&lt;</span><span class="n">XF_BORDER_CONSTANT</span><span class="p">,</span> <span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">XF_KERNEL_SHAPE</span><span class="p">,</span> <span class="n">FILTER_SIZE</span><span class="p">,</span> <span class="n">FILTER_SIZE</span><span class="p">,</span> <span class="n">ITERATIONS</span><span class="p">,</span>
+              <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgHelper1</span><span class="p">,</span> <span class="n">imgHelper2</span><span class="p">,</span> <span class="n">_kernel</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">dilate</span><span class="o">&lt;</span><span class="n">XF_BORDER_CONSTANT</span><span class="p">,</span> <span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">XF_KERNEL_SHAPE</span><span class="p">,</span> <span class="n">FILTER_SIZE</span><span class="p">,</span> <span class="n">FILTER_SIZE</span><span class="p">,</span> <span class="n">ITERATIONS</span><span class="p">,</span>
+               <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgHelper2</span><span class="p">,</span> <span class="n">imgHelper3</span><span class="p">,</span> <span class="n">_kernel</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">dilate</span><span class="o">&lt;</span><span class="n">XF_BORDER_CONSTANT</span><span class="p">,</span> <span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">XF_KERNEL_SHAPE</span><span class="p">,</span> <span class="n">FILTER_SIZE</span><span class="p">,</span> <span class="n">FILTER_SIZE</span><span class="p">,</span> <span class="n">ITERATIONS</span><span class="p">,</span>
+               <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgHelper3</span><span class="p">,</span> <span class="n">imgHelper4</span><span class="p">,</span> <span class="n">_kernel</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">erode</span><span class="o">&lt;</span><span class="n">XF_BORDER_CONSTANT</span><span class="p">,</span> <span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">XF_KERNEL_SHAPE</span><span class="p">,</span> <span class="n">FILTER_SIZE</span><span class="p">,</span> <span class="n">FILTER_SIZE</span><span class="p">,</span> <span class="n">ITERATIONS</span><span class="p">,</span>
+              <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgHelper4</span><span class="p">,</span> <span class="n">imgOutput</span><span class="p">,</span> <span class="n">_kernel</span><span class="p">);</span>
+
+<span class="o">//</span> <span class="n">Convert</span> <span class="n">_dst</span> <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span> <span class="nb">object</span> <span class="n">to</span> <span class="n">output</span> <span class="n">array</span><span class="p">:</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">xfMat2Array</span><span class="o">&lt;</span><span class="n">PTR_OUT_WIDTH</span><span class="p">,</span> <span class="n">OUT_TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgOutput</span><span class="p">,</span> <span class="n">img_out</span><span class="p">);</span>
+
+<span class="k">return</span><span class="p">;</span>
+
+    <span class="p">}</span> <span class="o">//</span> <span class="n">End</span> <span class="n">of</span> <span class="n">kernel</span>
+</pre></div>
+</div>
+<p>In the given example, the source image is passed to the <code class="docutils literal notranslate"><span class="pre">xf::cv::BGR2HSV</span></code>
+function, the output of that function is passed to the
+<code class="docutils literal notranslate"><span class="pre">xf::cv::colorthresholding</span></code> module, the thresholded image is passed to the
+<code class="docutils literal notranslate"><span class="pre">xf::cv::erode</span></code> function and, the <code class="docutils literal notranslate"><span class="pre">xf::cv::dilate</span></code> functions and the final
+output image are returned.</p>
+</div>
+<div class="section" id="difference-gaussian-filter">
+<span id="id5"></span><h2>Difference of Gaussian Filter<a class="headerlink" href="#difference-gaussian-filter" title="Permalink to this headline">¶</a></h2>
+<p>The Difference of Gaussian Filter example uses four hardware functions
+from the Vitis vision library. They are:</p>
+<ul class="simple">
+<li>xf::cv::GaussianBlur</li>
+<li>xf::cv::duplicateMat</li>
+<li>xf::cv::subtract</li>
+</ul>
+<p>The Difference of Gaussian Filter function can be implemented by
+applying Gaussian Filter on the original source image, and that Gaussian
+blurred image is duplicated as two images. The Gaussian blur function is
+applied to one of the duplicated images, whereas the other one is stored
+as it is. Later, perform the Subtraction function on, two times Gaussian
+applied image and one of the duplicated image.</p>
+<div class="image figure" id="fmq1510602889620-image-lgr-1xf-bcb">
+<img alt="" src="_images/crx1554997276344.png" />
+</div>
+<p>The following example demonstrates the Difference of Gaussian Filter
+example.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">void</span> <span class="n">gaussiandiference</span><span class="p">(</span><span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">PTR_WIDTH</span><span class="o">&gt;*</span> <span class="n">img_in</span><span class="p">,</span> <span class="nb">float</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">PTR_WIDTH</span><span class="o">&gt;*</span> <span class="n">img_out</span><span class="p">,</span> <span class="nb">int</span> <span class="n">rows</span><span class="p">,</span> <span class="nb">int</span> <span class="n">cols</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="c1">#pragma HLS INTERFACE m_axi      port=img_in        offset=slave  bundle=gmem0</span>
+<span class="c1">#pragma HLS INTERFACE m_axi      port=img_out       offset=slave  bundle=gmem1</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite  port=sigma</span>
+    <span class="c1">#pragma HLS INTERFACE s_axilite  port=rows</span>
+    <span class="c1">#pragma HLS INTERFACE s_axilite  port=cols</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite  port=return</span>
+
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgInput</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgin1</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgin2</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="p">,</span> <span class="mi">15360</span><span class="o">&gt;</span> <span class="n">imgin3</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgin4</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span> <span class="n">imgOutput</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+<span class="c1">#pragma HLS DATAFLOW</span>
+
+<span class="o">//</span> <span class="n">Retrieve</span> <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span> <span class="n">objects</span> <span class="kn">from</span> <span class="nn">img_in</span> <span class="n">data</span><span class="p">:</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Array2xfMat</span><span class="o">&lt;</span><span class="n">PTR_WIDTH</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">img_in</span><span class="p">,</span> <span class="n">imgInput</span><span class="p">);</span>
+
+<span class="o">//</span> <span class="n">Run</span> <span class="n">xfOpenCV</span> <span class="n">kernel</span><span class="p">:</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">GaussianBlur</span><span class="o">&lt;</span><span class="n">FILTER_WIDTH</span><span class="p">,</span> <span class="n">XF_BORDER_CONSTANT</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgInput</span><span class="p">,</span> <span class="n">imgin1</span><span class="p">,</span> <span class="n">sigma</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">duplicateMat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="p">,</span> <span class="mi">15360</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgin1</span><span class="p">,</span> <span class="n">imgin2</span><span class="p">,</span> <span class="n">imgin3</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">GaussianBlur</span><span class="o">&lt;</span><span class="n">FILTER_WIDTH</span><span class="p">,</span> <span class="n">XF_BORDER_CONSTANT</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgin2</span><span class="p">,</span> <span class="n">imgin4</span><span class="p">,</span> <span class="n">sigma</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">subtract</span><span class="o">&lt;</span><span class="n">XF_CONVERT_POLICY_SATURATE</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="p">,</span> <span class="mi">15360</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgin3</span><span class="p">,</span> <span class="n">imgin4</span><span class="p">,</span> <span class="n">imgOutput</span><span class="p">);</span>
+
+<span class="o">//</span> <span class="n">Convert</span> <span class="n">output</span> <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span> <span class="nb">object</span> <span class="n">to</span> <span class="n">output</span> <span class="n">array</span><span class="p">:</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">xfMat2Array</span><span class="o">&lt;</span><span class="n">PTR_WIDTH</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">imgOutput</span><span class="p">,</span> <span class="n">img_out</span><span class="p">);</span>
+
+<span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span> <span class="o">//</span> <span class="n">End</span> <span class="n">of</span> <span class="n">kernel</span>
+</pre></div>
+</div>
+<p>In the given example, the Gaussain Blur function is applied for source
+image imginput, and resultant image imgin1 is passed to
+xf::cv::duplicateMat. The imgin2 and imgin3 are the duplicate images of
+Gaussian applied image. Again gaussian blur is applied to imgin2 and the
+result is stored in imgin4. Now, perform the subtraction between imgin4
+and imgin3, but here imgin3 has to wait up to at least one pixel of
+imgin4 generation. Finally the subtraction performed on imgin3 and imgin4.</p>
+</div>
+<div class="section" id="stereo-vision">
+<span id="id6"></span><h2>Stereo Vision Pipeline<a class="headerlink" href="#stereo-vision" title="Permalink to this headline">¶</a></h2>
+<p>Disparity map generation is one of the first steps in creating a three
+dimensional map of the environment. The Vitis vision library has components
+to build an image processing pipeline to compute a disparity map given
+the camera parameters and inputs from a stereo camera setup.</p>
+<p>The two main components involved in the pipeline are stereo
+rectification and disparity estimation using local block matching
+method. While disparity estimation using local block matching is a
+discrete component in Vitis vision, rectification block can be constructed
+using <code class="docutils literal notranslate"><span class="pre">xf::cv::InitUndistortRectifyMapInverse()</span></code> and <code class="docutils literal notranslate"><span class="pre">xf::cv::Remap()</span></code>. The
+dataflow pipeline is shown below. The camera parameters are an
+additional input to the pipeline.</p>
+<div class="image figure">
+<a class="reference internal image-reference" href="_images/qlb1554997048260.png"><img alt="" src="_images/qlb1554997048260.png" style="width: 560px; height: 240px;" /></a>
+</div>
+<p>The following code is for the pipeline.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">void</span> <span class="n">stereopipeline_accel</span><span class="p">(</span><span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="o">&gt;*</span> <span class="n">img_L</span><span class="p">,</span>
+                      <span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="o">&gt;*</span> <span class="n">img_R</span><span class="p">,</span>
+                      <span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">OUTPUT_PTR_WIDTH</span><span class="o">&gt;*</span> <span class="n">img_disp</span><span class="p">,</span>
+                      <span class="nb">float</span><span class="o">*</span> <span class="n">cameraMA_l</span><span class="p">,</span>
+                      <span class="nb">float</span><span class="o">*</span> <span class="n">cameraMA_r</span><span class="p">,</span>
+                      <span class="nb">float</span><span class="o">*</span> <span class="n">distC_l</span><span class="p">,</span>
+                      <span class="nb">float</span><span class="o">*</span> <span class="n">distC_r</span><span class="p">,</span>
+                      <span class="nb">float</span><span class="o">*</span> <span class="n">irA_l</span><span class="p">,</span>
+                      <span class="nb">float</span><span class="o">*</span> <span class="n">irA_r</span><span class="p">,</span>
+                      <span class="nb">int</span><span class="o">*</span> <span class="n">bm_state_arr</span><span class="p">,</span>
+                      <span class="nb">int</span> <span class="n">rows</span><span class="p">,</span>
+                      <span class="nb">int</span> <span class="n">cols</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="c1">#pragma HLS INTERFACE m_axi     port=img_L  offset=slave bundle=gmem1</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=img_R  offset=slave bundle=gmem5</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=img_disp  offset=slave bundle=gmem6</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=cameraMA_l  offset=slave bundle=gmem2</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=cameraMA_r  offset=slave bundle=gmem2</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=distC_l  offset=slave bundle=gmem3</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=distC_r  offset=slave bundle=gmem3</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=irA_l  offset=slave bundle=gmem2</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=irA_r  offset=slave bundle=gmem2</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=bm_state_arr  offset=slave bundle=gmem4</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=rows</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=cols</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=return</span>
+
+<span class="n">ap_fixed</span><span class="o">&lt;</span><span class="mi">32</span><span class="p">,</span> <span class="mi">12</span><span class="o">&gt;</span> <span class="n">cameraMA_l_fix</span><span class="p">[</span><span class="n">XF_CAMERA_MATRIX_SIZE</span><span class="p">],</span> <span class="n">cameraMA_r_fix</span><span class="p">[</span><span class="n">XF_CAMERA_MATRIX_SIZE</span><span class="p">],</span>
+    <span class="n">distC_l_fix</span><span class="p">[</span><span class="n">XF_DIST_COEFF_SIZE</span><span class="p">],</span> <span class="n">distC_r_fix</span><span class="p">[</span><span class="n">XF_DIST_COEFF_SIZE</span><span class="p">],</span> <span class="n">irA_l_fix</span><span class="p">[</span><span class="n">XF_CAMERA_MATRIX_SIZE</span><span class="p">],</span>
+    <span class="n">irA_r_fix</span><span class="p">[</span><span class="n">XF_CAMERA_MATRIX_SIZE</span><span class="p">];</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">XF_CAMERA_MATRIX_SIZE</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">#pragma HLS PIPELINE II=1</span>
+    <span class="o">//</span> <span class="n">clang</span><span class="o">-</span><span class="nb">format</span> <span class="n">on</span>
+    <span class="n">cameraMA_l_fix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ap_fixed</span><span class="o">&lt;</span><span class="mi">32</span><span class="p">,</span> <span class="mi">12</span><span class="o">&gt;</span><span class="p">)</span><span class="n">cameraMA_l</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">cameraMA_r_fix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ap_fixed</span><span class="o">&lt;</span><span class="mi">32</span><span class="p">,</span> <span class="mi">12</span><span class="o">&gt;</span><span class="p">)</span><span class="n">cameraMA_r</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">irA_l_fix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ap_fixed</span><span class="o">&lt;</span><span class="mi">32</span><span class="p">,</span> <span class="mi">12</span><span class="o">&gt;</span><span class="p">)</span><span class="n">irA_l</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">irA_r_fix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ap_fixed</span><span class="o">&lt;</span><span class="mi">32</span><span class="p">,</span> <span class="mi">12</span><span class="o">&gt;</span><span class="p">)</span><span class="n">irA_r</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">XF_DIST_COEFF_SIZE</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">#pragma HLS PIPELINE II=1</span>
+    <span class="o">//</span> <span class="n">clang</span><span class="o">-</span><span class="nb">format</span> <span class="n">on</span>
+    <span class="n">distC_l_fix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ap_fixed</span><span class="o">&lt;</span><span class="mi">32</span><span class="p">,</span> <span class="mi">12</span><span class="o">&gt;</span><span class="p">)</span><span class="n">distC_l</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">distC_r_fix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ap_fixed</span><span class="o">&lt;</span><span class="mi">32</span><span class="p">,</span> <span class="mi">12</span><span class="o">&gt;</span><span class="p">)</span><span class="n">distC_r</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">xFSBMState</span><span class="o">&lt;</span><span class="n">SAD_WINDOW_SIZE</span><span class="p">,</span> <span class="n">NO_OF_DISPARITIES</span><span class="p">,</span> <span class="n">PARALLEL_UNITS</span><span class="o">&gt;</span> <span class="n">bm_state</span><span class="p">;</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">preFilterType</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">preFilterSize</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">preFilterCap</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">SADWindowSize</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">minDisparity</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">numberOfDisparities</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">textureThreshold</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">uniquenessRatio</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">7</span><span class="p">];</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">ndisp_unit</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">sweepFactor</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">9</span><span class="p">];</span>
+<span class="n">bm_state</span><span class="o">.</span><span class="n">remainder</span> <span class="o">=</span> <span class="n">bm_state_arr</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+
+<span class="nb">int</span> <span class="n">_cm_size</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span> <span class="n">_dc_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span> <span class="n">mat_L</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span> <span class="n">mat_R</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_16UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span> <span class="n">mat_disp</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_32FC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span> <span class="n">mapxLMat</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_32FC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span> <span class="n">mapyLMat</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_32FC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span> <span class="n">mapxRMat</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_32FC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span> <span class="n">mapyRMat</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span> <span class="n">leftRemappedMat</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span> <span class="n">rightRemappedMat</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+
+
+<span class="c1">#pragma HLS DATAFLOW</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Array2xfMat</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="p">,</span> <span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">img_L</span><span class="p">,</span> <span class="n">mat_L</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Array2xfMat</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="p">,</span> <span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">img_R</span><span class="p">,</span> <span class="n">mat_R</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">InitUndistortRectifyMapInverse</span><span class="o">&lt;</span><span class="n">XF_CAMERA_MATRIX_SIZE</span><span class="p">,</span> <span class="n">XF_DIST_COEFF_SIZE</span><span class="p">,</span> <span class="n">XF_32FC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span>
+                                       <span class="n">XF_NPPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cameraMA_l_fix</span><span class="p">,</span> <span class="n">distC_l_fix</span><span class="p">,</span> <span class="n">irA_l_fix</span><span class="p">,</span> <span class="n">mapxLMat</span><span class="p">,</span> <span class="n">mapyLMat</span><span class="p">,</span>
+                                                 <span class="n">_cm_size</span><span class="p">,</span> <span class="n">_dc_size</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">remap</span><span class="o">&lt;</span><span class="n">XF_REMAP_BUFSIZE</span><span class="p">,</span> <span class="n">XF_INTERPOLATION_BILINEAR</span><span class="p">,</span> <span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_32FC1</span><span class="p">,</span> <span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span>
+              <span class="n">XF_NPPC1</span><span class="p">,</span> <span class="n">XF_USE_URAM</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mat_L</span><span class="p">,</span> <span class="n">leftRemappedMat</span><span class="p">,</span> <span class="n">mapxLMat</span><span class="p">,</span> <span class="n">mapyLMat</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">InitUndistortRectifyMapInverse</span><span class="o">&lt;</span><span class="n">XF_CAMERA_MATRIX_SIZE</span><span class="p">,</span> <span class="n">XF_DIST_COEFF_SIZE</span><span class="p">,</span> <span class="n">XF_32FC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span>
+                                       <span class="n">XF_NPPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cameraMA_r_fix</span><span class="p">,</span> <span class="n">distC_r_fix</span><span class="p">,</span> <span class="n">irA_r_fix</span><span class="p">,</span> <span class="n">mapxRMat</span><span class="p">,</span> <span class="n">mapyRMat</span><span class="p">,</span>
+                                                 <span class="n">_cm_size</span><span class="p">,</span> <span class="n">_dc_size</span><span class="p">);</span>
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">remap</span><span class="o">&lt;</span><span class="n">XF_REMAP_BUFSIZE</span><span class="p">,</span> <span class="n">XF_INTERPOLATION_BILINEAR</span><span class="p">,</span> <span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_32FC1</span><span class="p">,</span> <span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span>
+              <span class="n">XF_NPPC1</span><span class="p">,</span> <span class="n">XF_USE_URAM</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mat_R</span><span class="p">,</span> <span class="n">rightRemappedMat</span><span class="p">,</span> <span class="n">mapxRMat</span><span class="p">,</span> <span class="n">mapyRMat</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">StereoBM</span><span class="o">&lt;</span><span class="n">SAD_WINDOW_SIZE</span><span class="p">,</span> <span class="n">NO_OF_DISPARITIES</span><span class="p">,</span> <span class="n">PARALLEL_UNITS</span><span class="p">,</span> <span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">XF_16UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span>
+                 <span class="n">XF_NPPC1</span><span class="p">,</span> <span class="n">XF_USE_URAM</span><span class="o">&gt;</span><span class="p">(</span><span class="n">leftRemappedMat</span><span class="p">,</span> <span class="n">rightRemappedMat</span><span class="p">,</span> <span class="n">mat_disp</span><span class="p">,</span> <span class="n">bm_state</span><span class="p">);</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">xfMat2Array</span><span class="o">&lt;</span><span class="n">OUTPUT_PTR_WIDTH</span><span class="p">,</span> <span class="n">XF_16UC1</span><span class="p">,</span> <span class="n">XF_HEIGHT</span><span class="p">,</span> <span class="n">XF_WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mat_disp</span><span class="p">,</span> <span class="n">img_disp</span><span class="p">);</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="x-mlpipeline">
+<span id="id7"></span><h2>X + ML Pipeline<a class="headerlink" href="#x-mlpipeline" title="Permalink to this headline">¶</a></h2>
+<p>This example shows how various xfOpenCV funtions can be used to accelerate preprocessing of input images before feeding them to a Deep Neural Network (DNN) accelerator.</p>
+<p>This specific application shows how pre-processing for Googlenet_v1 can be accelerated which involves resizing the input image to 224 x 224 size followed by mean subtraction. The two main
+functions from Vitis vision library which are used to build this pipeline are <code class="docutils literal notranslate"><span class="pre">xf::cv::resize()</span></code> and <code class="docutils literal notranslate"><span class="pre">xf::cv::preProcess()</span></code> which operate in dataflow.</p>
+<p><a class="image reference internal" href="_images/gnet_pp.png"><img alt="pp_image" class="image" src="_images/gnet_pp.png" style="width: 500px;" /></a></p>
+<p>The following code shows the top level wrapper containing the <code class="docutils literal notranslate"><span class="pre">xf::cv::resize()</span></code> and <code class="docutils literal notranslate"><span class="pre">xf::cv::preProcess()</span></code> calls.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="n">pp_pipeline_accel</span><span class="p">(</span><span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">img_inp</span><span class="p">,</span> <span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">OUTPUT_PTR_WIDTH</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">img_out</span><span class="p">,</span> <span class="nb">int</span> <span class="n">rows_in</span><span class="p">,</span> <span class="nb">int</span> <span class="n">cols_in</span><span class="p">,</span> <span class="nb">int</span> <span class="n">rows_out</span><span class="p">,</span> <span class="nb">int</span> <span class="n">cols_out</span><span class="p">,</span> <span class="nb">float</span> <span class="n">params</span><span class="p">[</span><span class="mi">3</span><span class="o">*</span><span class="n">T_CHANNELS</span><span class="p">],</span> <span class="nb">int</span> <span class="n">th1</span><span class="p">,</span> <span class="nb">int</span> <span class="n">th2</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="o">//</span><span class="n">HLS</span> <span class="n">Interface</span> <span class="n">pragmas</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=params  offset=slave bundle=gmem3</span>
+
+<span class="c1">#pragma HLS INTERFACE s_axilite port=rows_in     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=cols_in     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=rows_out     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=cols_out     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=th1     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=th2     bundle=control</span>
+
+<span class="c1">#pragma HLS INTERFACE s_axilite port=return   bundle=control</span>
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_8UC3</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span>   <span class="n">imgInput0</span><span class="p">(</span><span class="n">rows_in</span><span class="p">,</span> <span class="n">cols_in</span><span class="p">);</span>
+
+
+<span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">NEWHEIGHT</span><span class="p">,</span> <span class="n">NEWWIDTH</span><span class="p">,</span> <span class="n">NPC_T</span><span class="o">&gt;</span> <span class="n">out_mat</span><span class="p">(</span><span class="n">rows_out</span><span class="p">,</span> <span class="n">cols_out</span><span class="p">);</span>
+
+
+    <span class="n">hls</span><span class="p">::</span><span class="n">stream</span><span class="o">&lt;</span><span class="n">ap_uint</span><span class="o">&lt;</span><span class="mi">256</span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="n">resizeStrmout</span><span class="p">;</span>
+    <span class="nb">int</span> <span class="n">srcMat_cols_align_npc</span> <span class="o">=</span> <span class="p">((</span><span class="n">out_mat</span><span class="o">.</span><span class="n">cols</span> <span class="o">+</span> <span class="p">(</span><span class="n">NPC_T</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&gt;&gt;</span> <span class="n">XF_BITSHIFT</span><span class="p">(</span><span class="n">NPC_T</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="n">XF_BITSHIFT</span><span class="p">(</span><span class="n">NPC_T</span><span class="p">);</span>
+
+    <span class="c1">#pragma HLS DATAFLOW</span>
+
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Array2xfMat</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="p">,</span><span class="n">XF_8UC3</span><span class="p">,</span><span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC1</span><span class="o">&gt;</span>  <span class="p">(</span><span class="n">img_inp</span><span class="p">,</span> <span class="n">imgInput0</span><span class="p">);</span>
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">resize</span><span class="o">&lt;</span><span class="n">INTERPOLATION</span><span class="p">,</span><span class="n">TYPE</span><span class="p">,</span><span class="n">HEIGHT</span><span class="p">,</span><span class="n">WIDTH</span><span class="p">,</span><span class="n">NEWHEIGHT</span><span class="p">,</span><span class="n">NEWWIDTH</span><span class="p">,</span><span class="n">NPC_T</span><span class="p">,</span><span class="n">MAXDOWNSCALE</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">imgInput0</span><span class="p">,</span> <span class="n">out_mat</span><span class="p">);</span>
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">accel_utils</span> <span class="n">obj</span><span class="p">;</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">xfMat2hlsStrm</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">NEWHEIGHT</span><span class="p">,</span> <span class="n">NEWWIDTH</span><span class="p">,</span> <span class="n">NPC_T</span><span class="p">,</span> <span class="p">(</span><span class="n">NEWWIDTH</span><span class="o">*</span><span class="n">NEWHEIGHT</span><span class="o">/</span><span class="mi">8</span><span class="p">)</span><span class="o">&gt;</span><span class="p">(</span><span class="n">out_mat</span><span class="p">,</span> <span class="n">resizeStrmout</span><span class="p">,</span> <span class="n">srcMat_cols_align_npc</span><span class="p">);</span>
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">preProcess</span> <span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="p">,</span> <span class="n">OUTPUT_PTR_WIDTH</span><span class="p">,</span> <span class="n">T_CHANNELS</span><span class="p">,</span> <span class="n">CPW</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC_TEST</span><span class="p">,</span> <span class="n">PACK_MODE</span><span class="p">,</span> <span class="n">X_WIDTH</span><span class="p">,</span> <span class="n">ALPHA_WIDTH</span><span class="p">,</span> <span class="n">BETA_WIDTH</span><span class="p">,</span> <span class="n">GAMMA_WIDTH</span><span class="p">,</span> <span class="n">OUT_WIDTH</span><span class="p">,</span> <span class="n">X_IBITS</span><span class="p">,</span> <span class="n">ALPHA_IBITS</span><span class="p">,</span> <span class="n">BETA_IBITS</span><span class="p">,</span> <span class="n">GAMMA_IBITS</span><span class="p">,</span> <span class="n">OUT_IBITS</span><span class="p">,</span> <span class="n">SIGNED_IN</span><span class="p">,</span> <span class="n">OPMODE</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">resizeStrmout</span><span class="p">,</span> <span class="n">img_out</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">rows_out</span><span class="p">,</span> <span class="n">cols_out</span><span class="p">,</span> <span class="n">th1</span><span class="p">,</span> <span class="n">th2</span><span class="p">);</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This piepeline is integrated with Deep learning Processign Unit(DPU) as part of <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library">Vitis-AI-Library</a>  and achieved
+11 % speed up compared to software pre-procesing.</p>
+<ul class="simple">
+<li>Overall Performance (Images/sec):</li>
+<li>with software pre-processing : 125 images/sec</li>
+<li>with hardware accelerated pre-processing : 140 images/sec</li>
+</ul>
+</div>
+<div class="section" id="letter-box">
+<span id="id8"></span><h2>Letterbox<a class="headerlink" href="#letter-box" title="Permalink to this headline">¶</a></h2>
+<p>The Letterbox algorithm is used for scaling input image to desired output size while preserving aspect ratio of original image. If required, zeroes are padded for preserving the aspect ratio post resize.</p>
+<p>An application of letterbox is in the pre-processing block of machine learning pipelines used in image processing.</p>
+<p><a class="image reference internal" href="./images/letterbox.png"><img alt="pp_image1" class="image" src="./images/letterbox.png" style="width: 1000px;" /></a></p>
+<p>The following example demonstrates the Letterbox algorithm.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="n">letterbox_accel</span><span class="p">(</span><span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="o">&gt;*</span> <span class="n">img_inp</span><span class="p">,</span>
+                    <span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">OUTPUT_PTR_WIDTH</span><span class="o">&gt;*</span> <span class="n">img_out</span><span class="p">,</span>
+                    <span class="nb">int</span> <span class="n">rows_in</span><span class="p">,</span>
+                    <span class="nb">int</span> <span class="n">cols_in</span><span class="p">,</span>
+                    <span class="nb">int</span> <span class="n">rows_out</span><span class="p">,</span>
+                    <span class="nb">int</span> <span class="n">cols_out</span><span class="p">,</span>
+                    <span class="nb">int</span> <span class="n">insert_pad_value</span><span class="p">)</span> <span class="p">{</span>
+
+                    <span class="c1">#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1</span>
+                    <span class="c1">#pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2</span>
+                    <span class="c1">#pragma HLS INTERFACE s_axilite port=rows_in</span>
+                    <span class="c1">#pragma HLS INTERFACE s_axilite port=cols_in</span>
+                    <span class="c1">#pragma HLS INTERFACE s_axilite port=rows_out</span>
+                    <span class="c1">#pragma HLS INTERFACE s_axilite port=cols_out</span>
+                    <span class="c1">#pragma HLS INTERFACE s_axilite port=insert_pad_value</span>
+                    <span class="c1">#pragma HLS INTERFACE s_axilite port=return</span>
+
+
+                    <span class="o">//</span> <span class="n">Compute</span> <span class="n">Resize</span> <span class="n">output</span> <span class="n">image</span> <span class="n">size</span> <span class="k">for</span> <span class="n">Letterbox</span>
+                    <span class="nb">float</span> <span class="n">scale_height</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="n">rows_out</span><span class="o">/</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="n">rows_in</span><span class="p">;</span>
+                    <span class="nb">float</span> <span class="n">scale_width</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="n">cols_out</span><span class="o">/</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="n">cols_in</span><span class="p">;</span>
+                    <span class="nb">int</span> <span class="n">rows_out_resize</span><span class="p">,</span> <span class="n">cols_out_resize</span><span class="p">;</span>
+                    <span class="k">if</span><span class="p">(</span><span class="n">scale_width</span><span class="o">&lt;</span><span class="n">scale_height</span><span class="p">){</span>
+                            <span class="n">cols_out_resize</span> <span class="o">=</span> <span class="n">cols_out</span><span class="p">;</span>
+                            <span class="n">rows_out_resize</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">)((</span><span class="nb">float</span><span class="p">)(</span><span class="n">rows_in</span><span class="o">*</span><span class="n">cols_out</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="n">cols_in</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    <span class="k">else</span><span class="p">{</span>
+                            <span class="n">cols_out_resize</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">)((</span><span class="nb">float</span><span class="p">)(</span><span class="n">cols_in</span><span class="o">*</span><span class="n">rows_out</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="n">rows_in</span><span class="p">);</span>
+                            <span class="n">rows_out_resize</span> <span class="o">=</span> <span class="n">rows_out</span><span class="p">;</span>
+                    <span class="p">}</span>
+
+                    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC_T</span><span class="o">&gt;</span> <span class="n">imgInput0</span><span class="p">(</span><span class="n">rows_in</span><span class="p">,</span> <span class="n">cols_in</span><span class="p">);</span>
+                    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">NEWHEIGHT</span><span class="p">,</span> <span class="n">NEWWIDTH</span><span class="p">,</span> <span class="n">NPC_T</span><span class="o">&gt;</span> <span class="n">out_mat_resize</span><span class="p">(</span><span class="n">rows_out_resize</span><span class="p">,</span> <span class="n">cols_out_resize</span><span class="p">);</span>
+                    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">NEWHEIGHT</span><span class="p">,</span> <span class="n">NEWWIDTH</span><span class="p">,</span> <span class="n">NPC_T</span><span class="o">&gt;</span> <span class="n">out_mat</span><span class="p">(</span><span class="n">rows_out</span><span class="p">,</span> <span class="n">cols_out</span><span class="p">);</span>
+
+                    <span class="c1">#pragma HLS DATAFLOW</span>
+
+                    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Array2xfMat</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="p">,</span><span class="n">XF_8UC3</span><span class="p">,</span><span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">NPC_T</span><span class="o">&gt;</span>  <span class="p">(</span><span class="n">img_inp</span><span class="p">,</span> <span class="n">imgInput0</span><span class="p">);</span>
+                    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">resize</span><span class="o">&lt;</span><span class="n">INTERPOLATION</span><span class="p">,</span><span class="n">TYPE</span><span class="p">,</span><span class="n">HEIGHT</span><span class="p">,</span><span class="n">WIDTH</span><span class="p">,</span><span class="n">NEWHEIGHT</span><span class="p">,</span><span class="n">NEWWIDTH</span><span class="p">,</span><span class="n">NPC_T</span><span class="p">,</span><span class="n">MAXDOWNSCALE</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">imgInput0</span><span class="p">,</span> <span class="n">out_mat_resize</span><span class="p">);</span>
+                    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">insertBorder</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">NEWHEIGHT</span><span class="p">,</span> <span class="n">NEWWIDTH</span><span class="p">,</span> <span class="n">NEWHEIGHT</span><span class="p">,</span> <span class="n">NEWWIDTH</span><span class="p">,</span> <span class="n">NPC_T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">out_mat_resize</span><span class="p">,</span> <span class="n">out_mat</span><span class="p">,</span> <span class="n">insert_pad_value</span><span class="p">);</span>
+                    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">xfMat2Array</span><span class="o">&lt;</span><span class="n">OUTPUT_PTR_WIDTH</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">NEWHEIGHT</span><span class="p">,</span> <span class="n">NEWWIDTH</span><span class="p">,</span> <span class="n">NPC_T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">out_mat</span><span class="p">,</span> <span class="n">img_out</span><span class="p">);</span>
+                    <span class="k">return</span><span class="p">;</span>
+                    <span class="p">}</span><span class="o">//</span> <span class="n">end</span> <span class="n">kernel</span>
+</pre></div>
+</div>
+<p>The Letterbox example uses two hardware functions from the Vitis vision library. They are:</p>
+<ul class="simple">
+<li>xf::cv::resize</li>
+<li>xf::cv::insertBorder</li>
+</ul>
+<p>In the given example, the source image is passed to the xf::cv::resize function.
+The output of that function is passed to the xf::cv::insertBorder module and the final output image are returned.</p>
+<p class="rubric">Insert Border API Syntax</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">template</span> <span class="o">&lt;</span>
+    <span class="nb">int</span> <span class="n">TYPE</span><span class="p">,</span>
+    <span class="nb">int</span> <span class="n">SRC_ROWS</span><span class="p">,</span>
+    <span class="nb">int</span> <span class="n">SRC_COLS</span><span class="p">,</span>
+    <span class="nb">int</span> <span class="n">DST_ROWS</span><span class="p">,</span>
+    <span class="nb">int</span> <span class="n">DST_COLS</span><span class="p">,</span>
+    <span class="nb">int</span> <span class="n">NPC</span>
+    <span class="o">&gt;</span>
+<span class="n">void</span> <span class="n">insertBorder</span> <span class="p">(</span>
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span> <span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">SRC_ROWS</span><span class="p">,</span> <span class="n">SRC_COLS</span><span class="p">,</span> <span class="n">NPC</span><span class="o">&gt;&amp;</span> <span class="n">_src</span><span class="p">,</span>
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span> <span class="o">&lt;</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">DST_ROWS</span><span class="p">,</span> <span class="n">DST_COLS</span><span class="p">,</span> <span class="n">NPC</span><span class="o">&gt;&amp;</span> <span class="n">_dst</span><span class="p">,</span>
+    <span class="nb">int</span> <span class="n">insert_pad_val</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Parameters:</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>TYPE</td>
+<td>input and ouput type</td>
+</tr>
+<tr class="row-even"><td>SRC_ROWS</td>
+<td>rows of the input image</td>
+</tr>
+<tr class="row-odd"><td>SRC_COLS</td>
+<td>cols of the input image</td>
+</tr>
+<tr class="row-even"><td>DST_ROWS</td>
+<td>rows of the output image</td>
+</tr>
+<tr class="row-odd"><td>DST_COLS</td>
+<td>cols of the output image</td>
+</tr>
+<tr class="row-even"><td>NPC</td>
+<td>number of pixels processed per cycle</td>
+</tr>
+<tr class="row-odd"><td>_src</td>
+<td>input image</td>
+</tr>
+<tr class="row-even"><td>_dst</td>
+<td>output image</td>
+</tr>
+<tr class="row-odd"><td>insert_pad_val</td>
+<td>insert pad value</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="isp">
+<span id="id9"></span><h2>Image Sensor Processing pipeline<a class="headerlink" href="#isp" title="Permalink to this headline">¶</a></h2>
+<p>Image Sensor Processing (ISP) is a pipeline of image processing functions processing the raw image from the sensor.</p>
+<p>Current ISP includes following 4 blocks:</p>
+<ul class="simple">
+<li>BPC (Bad pixel correction) : An image sensor may have a certain number of defective/bad pixels that may be the result of manufacturing faults or variations in pixel voltage levels based on temperature or exposure. Bad pixel correction module removes defective pixels.</li>
+<li>Gain Control : The Gain control module improves the overall brightness of the image.</li>
+<li>Demosaicing : The demosaic module reconstructs RGB pixels from the input Bayer image (RGGB,BGGR,RGBG,GRGB).</li>
+<li>Auto white balance: The AWB module improves color balance of the image by using  image statistics.</li>
+</ul>
+<p>Current design example demonstrates how to use ISP functions in a pipeline. User can include other modules (like gamma correction, color conversion, resize etc) based on their need.</p>
+<p><a class="image reference internal" href="./images/isp.png"><img alt="pp_image_es" class="image" src="./images/isp.png" style="width: 1000px;" /></a></p>
+<p>The following example demonstrates the ISP pipeline.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>void ISPPipeline_accel(ap_uint&lt;INPUT_PTR_WIDTH&gt;* img_inp, ap_uint&lt;OUTPUT_PTR_WIDTH&gt;* img_out, int height, int width) {
+
+#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1
+#pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2
+#pragma HLS INTERFACE s_axilite port=height
+#pragma HLS INTERFACE s_axilite port=width
+#pragma HLS INTERFACE s_axilite port=return
+#pragma HLS ARRAY_PARTITION variable=hist0 complete dim=1
+#pragma HLS ARRAY_PARTITION variable=hist1 complete dim=1
+
+if (!flag) {
+        ISPpipeline(img_inp, img_out, height, width, hist0, hist1);
+        flag = 1;
+} else {
+        ISPpipeline(img_inp, img_out, height, width, hist1, hist0);
+        flag = 0;
+}
+}
+void ISPpipeline(ap_uint&lt;INPUT_PTR_WIDTH&gt;* img_inp,
+                                 ap_uint&lt;OUTPUT_PTR_WIDTH&gt;* img_out,
+                                 int height,
+                                 int width,
+                                 uint32_t hist0[3][256],
+                                 uint32_t hist1[3][256]) {
+#pragma HLS INLINE OFF
+        xf::cv::Mat&lt;XF_SRC_T, XF_HEIGHT, XF_WIDTH, XF_NPPC&gt; imgInput1(height, width);
+        xf::cv::Mat&lt;XF_SRC_T, XF_HEIGHT, XF_WIDTH, XF_NPPC&gt; bpc_out(height, width);
+        xf::cv::Mat&lt;XF_SRC_T, XF_HEIGHT, XF_WIDTH, XF_NPPC&gt; gain_out(height, width);
+        xf::cv::Mat&lt;XF_DST_T, XF_HEIGHT, XF_WIDTH, XF_NPPC&gt; demosaic_out(height, width);
+        xf::cv::Mat&lt;XF_DST_T, XF_HEIGHT, XF_WIDTH, XF_NPPC&gt; impop(height, width);
+        xf::cv::Mat&lt;XF_DST_T, XF_HEIGHT, XF_WIDTH, XF_NPPC&gt; _dst(height, width);
+
+#pragma HLS stream variable=bpc_out.data dim=1 depth=2
+#pragma HLS stream variable=gain_out.data dim=1 depth=2
+#pragma HLS stream variable=demosaic_out.data dim=1 depth=2
+#pragma HLS stream variable=imgInput1.data dim=1 depth=2
+#pragma HLS stream variable=impop.data dim=1 depth=2
+#pragma HLS stream variable=_dst.data dim=1 depth=2
+
+#pragma HLS DATAFLOW
+
+
+        float inputMin = 0.0f;
+        float inputMax = 255.0f;
+        float outputMin = 0.0f;
+        float outputMax = 255.0f;
+        float p = 2.0f;
+
+        xf::cv::Array2xfMat&lt;INPUT_PTR_WIDTH, XF_SRC_T, XF_HEIGHT, XF_WIDTH, XF_NPPC&gt;(img_inp, imgInput1);
+        xf::cv::badpixelcorrection&lt;XF_SRC_T, XF_HEIGHT, XF_WIDTH, XF_NPPC, 0, 0&gt;(imgInput1, bpc_out);
+        xf::cv::gaincontrol&lt;XF_BAYER_PATTERN, XF_SRC_T, XF_HEIGHT, XF_WIDTH, XF_NPPC&gt;(bpc_out, gain_out);
+        xf::cv::demosaicing&lt;XF_BAYER_PATTERN, XF_SRC_T, XF_DST_T, XF_HEIGHT, XF_WIDTH, XF_NPPC, 0&gt;(gain_out, demosaic_out);
+        xf::cv::AWBhistogram&lt;XF_DST_T, XF_DST_T, XF_HEIGHT, XF_WIDTH, XF_NPPC, WB_TYPE&gt;(
+                demosaic_out, impop, hist0, p, inputMin, inputMax, outputMin, outputMax);
+        xf::cv::AWBNormalization&lt;XF_DST_T, XF_DST_T, XF_HEIGHT, XF_WIDTH, XF_NPPC, WB_TYPE&gt;(impop, _dst, hist1, p, inputMin,
+                                                                                                                                                                                inputMax, outputMin, outputMax);
+        xf::cv::xfMat2Array&lt;OUTPUT_PTR_WIDTH, XF_DST_T, XF_HEIGHT, XF_WIDTH, XF_NPPC&gt;(_dst, img_out);
+}
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+<!-- Atalwar: Moved the footer code to layout.html to resolve conflict with the Xilinx template -->
+
+</footer>
+
+        </div>
+      </div>
+	  
+	  
+	  <!-- Sphinx Page Footer block -->
+  
+
+  <hr/>
+
+  <div role="contentinfo" class="copyright">
+    <p class="footerinfo">
+      <span class="lastupdated">
+        Last updated on June 05, 2020.
+      </span>
+
+    </p>
+  </div>	  
+      </div>
+    </section>
+
+
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+  
+
+  
+  <!--  Xilinx template footer block -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="xilinxExperienceFragments experiencefragment aem-GridColumn--default--none aem-GridColumn aem-GridColumn--offset--default--0 aem-GridColumn--default--16">
+					<div class="xf-content-height">
+						<div class="aem-Grid aem-Grid--16 aem-Grid--default--16 ">
+							<div class="footer parbase aem-GridColumn--default--none aem-GridColumn aem-GridColumn--offset--default--0 aem-GridColumn--default--16">
+								<noindex>
+									<footer>
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+													<div class="row">
+														<div class="footerSocial parbase">
+															<div class="col-md-push-6 col-lg-push-6 col-md-6 col-lg-6">
+																<ul class="list-inline pull-right social-menu">
+																	<li>
+																		<a href="https://www.linkedin.com/company/xilinx">
+																		<span class="linkedin icon"></span>
+																		<span class="sr-only">Connect on LinkedIn</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.twitter.com/XilinxInc">
+																		<span class="twitter icon"></span>
+																		<span class="sr-only">Follow us on Twitter</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.facebook.com/XilinxInc">
+																		<span class="facebook icon"></span>
+																		<span class="sr-only">Connect on Facebook</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.youtube.com/XilinxInc">
+																		<span class="youtube icon"></span>
+																		<span class="sr-only">Watch us on YouTube</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.xilinx.com/registration/subscriber-signup.html">
+																		<span class="newsletter icon"></span>
+																		<span class="sr-only">Subscribe to Newsletter</span>
+																		</a>
+																	</li>
+																</ul>
+															</div>
+														</div>
+														<div class="col-md-pull-6 col-lg-pull-6 col-md-6 col-lg-6">
+															<span class="copyright">
+                                  
+                                  &copy; 2020, Xilinx
+                              </span>
+															<ul class="list-inline sub-menu">
+																<li>
+																	<a href="https://www.xilinx.com/about/privacy-policy.html">Privacy</a>
+																</li>
+																<li>
+																	<a href="https://www.xilinx.com/about/legal.html">Legal</a>
+																</li>
+																<li>
+																	<a href="https://www.xilinx.com/about/contact.html">Contact</a>
+																</li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</footer>
+								</noindex>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="quicklinks parbase aem-GridColumn--default--none aem-GridColumn aem-GridColumn--offset--default--0 aem-GridColumn--default--16">
+					<noindex>
+						<span class="quickLinks">
+							<ul>
+								<li>
+									<a href="#top" class="btn backToTop">
+									<span class="fas fa-angle-up" aria-hidden="true"></span>
+									</a>
+								</li>
+							</ul>
+						</span>
+					</noindex>
+				</div>
+			</div>
+		</div>
+		<script>window.CQ = window.CQ || {}</script>
+		<script src="https://static.cloud.coveo.com/searchui/v2.4382/js/CoveoJsSearch.Lazy.min.js"></script>
+		<script>
+			var underscoreSetup = function () {
+			  _.templateSettings.interpolate = /\{\{=([^-][\S\s]+?)\}\}/g;
+			  _.templateSettings.evaluate = /\{\{([^-=][\S\s]+?)\}\}/g;
+			  _.templateSettings.escape = /\{\{-([^=][\S\s]+?)\}\}/g;
+			}
+			
+			underscoreSetup();
+		</script>
+	</body>
+</html>

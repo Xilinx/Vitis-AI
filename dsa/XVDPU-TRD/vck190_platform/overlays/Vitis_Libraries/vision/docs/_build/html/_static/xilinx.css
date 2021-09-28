@@ -1,0 +1,580 @@
+/*
+ * sphinx13.css
+ * ~~~~~~~~~~~~
+ *
+ * Sphinx stylesheet -- sphinx13 theme.
+ *
+ * :copyright: Copyright 2007-2019 by the Sphinx team, see AUTHORS.
+ * :license: BSD, see LICENSE for details.
+ *
+ */
+
+@import url("basic.css"); 
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700,300");
+
+/* -- page layout ----------------------------------------------------------- */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    text-align: center;
+    background-image: url(bodybg.png);
+    color: black;
+    padding: 0;
+    border-right: 1px solid #0a507a;
+    border-left: 1px solid #0a507a;
+
+    margin: 0 auto;
+    min-width: 780px;
+   /* max-width: 1080px;*/
+}
+
+.pageheader {
+    background-image: url(headerbg.png);
+    text-align: left;
+    padding: 20px 5px 20px 1px;
+	
+}
+
+.pageheader ul>div>a>img {
+
+}
+.pageheader ul>div {
+width:100%;
+margin-left: -40px;
+}
+
+.pageheader ul li {
+    float: right;
+    color: white;
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 10px;
+    margin-right: 10px;
+	margin-bottom: 30px;
+	font-size: 18px;
+	font-weight: 500;
+}
+
+.pageheader li {
+    float: left;
+    margin: 0 0 0 10px;
+}
+
+.pageheader li a {
+    border-radius: 1px;
+    padding: 8px 12px;
+    color: #f9f9f0;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.pageheader li a:hover {
+    background-color: none;
+    color: #d21c25;
+    text-shadow: none;
+}
+
+div.document {
+    background-color: white;
+    text-align: left;
+}
+
+div.bodywrapper {
+    margin: 0 0 0 230px;
+    border-left: 1px solid #0a507a;
+}
+
+div.body {
+    margin: 0;
+    padding: 0.5em 20px 20px 20px;
+	max-width:100%;
+}
+
+div.related {
+    font-size: 1em;
+    color: white;
+    background-color: #171c2d;
+    padding-top:1px;
+}
+
+div.related ul {
+    background-image: url(relbg.png);
+    height: 1.9em;
+    border-top: 1px solid #002e50;
+    border-bottom: 1px solid #002e50;
+	margin: 0;
+    padding: 0 0 0 0px;
+    list-style: none;
+}
+
+div.related ul li {
+    margin: 0 5px 0 0;
+    padding: 0;
+    float: left;
+}
+
+div.related ul li.right {
+    float: right;
+    margin-right: 5px;
+    display:none;
+}
+
+div.related ul li a {
+    margin: 0;
+    padding: 0 5px 0 5px;
+    line-height: 1.75em;
+    color: #f9f9f0;
+    text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5);
+}
+
+div.related ul li a:hover {
+    color: white;
+    /*text-decoration: underline;*/
+    text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.5);
+}
+
+div.related h3 {
+font-size: 0%;
+display: none;
+background-color: #171c2d;
+}
+/* Sphinx Sidebar ------------------------------- */
+div.sphinxsidebar ul ul, div.sphinxsidebar ul.want-points {
+    list-style-type: none; 
+}
+div.sphinxsidebarwrapper {
+    position: relative;
+    top: 0px;
+    padding: 0;
+    list-style-type: none;
+}
+div.sphinxsidebarwrapper > h3:first-child {
+    margin-top: 0.5em;
+    border: none;
+}
+
+div.sphinxsidebarwrapper ul li {
+    padding-left: 0px;
+}
+div.sphinxsidebarwrapper ul ul li {
+    padding-left: 24px;
+}
+
+div.sphinxsidebar {
+    margin: 0;
+    padding: 0 15px 15px 15px;
+    width: 200px;
+    float: left;
+    font-size: 1em;
+    text-align: left;
+    word-wrap: break-word;
+    border-right: 1px solid #0a507a;
+}
+
+div.sphinxsidebar .logo {
+    font-size: 1.8em;
+    color: #0A507A;
+    font-weight: 300;
+    text-align: center;
+}
+
+div.sphinxsidebar .logo img {
+    vertical-align: middle;
+}
+
+div.sphinxsidebar .download a img {
+    vertical-align: middle;
+}
+
+div.subscribeformwrapper {
+    display: block;
+    overflow: auto;
+    margin-bottom: 1.2em;
+}
+
+div.sphinxsidebar input {
+    border: 1px solid #aaa;
+    font-family: 'Open Sans', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva',
+                 'Verdana', sans-serif;
+}
+
+div.sphinxsidebar .subscribeform {
+    margin-top: 0;
+}
+
+div.sphinxsidebar .subscribeform input {
+    border: 1px solid #aaa;
+    font-size: 0.9em;
+    float: left;
+    padding: 0.25em 0.5em;
+    box-sizing: border-box;
+}
+
+div.sphinxsidebar .subscribeform input[type="text"] {
+    width: 60%;
+}
+
+div.sphinxsidebar .subscribeform input[type="submit"] {
+    width: 40%;
+    border-left: none;
+}
+
+div.sphinxsidebar p {
+    margin: 10px 0;
+  }
+
+
+
+div.sphinxsidebar h3, div.sphinxsidebar h4 {
+    margin-right: -15px;
+    margin-left: -15px;
+    padding-right: 14px;
+    padding-left: 14px;
+    color: #333;
+    font-weight: 300;
+    
+}
+
+
+
+div.sphinxsidebar h3 a {
+    color: #333;
+}
+
+div.sphinxsidebar ul, div.sphinxsidebar p {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        background-color: #f1f1f1;
+  }
+
+
+
+  div.sphinxsidebar ul li a , div.sphinxsidebar p {
+    display: block;
+    color: #000;
+    padding: 5px 10px;
+    text-decoration: none;
+  }  
+
+  div.sphinxsidebar ul li.current > a,
+  div.sphinxsidebar ul li.current > a:hover {
+
+  color: #444;
+}
+
+div.sphinxsidebar ul li a:hover , div.sphinxsidebar p:hover{
+    background-color: #428bca;
+    color: #fff;
+  }
+
+  div.sphinxsidebar ul li .active {
+    background-color: #428bca;
+    color: #fff;
+  }  
+
+div.sphinxsidebar ul ul {
+    margin: 0;
+  padding: 0;
+}
+
+div.footer {
+    background-image: url(footerbg.png);
+    color: #ccc;
+    text-shadow: 0 0 .2px rgba(255, 255, 255, 0.8);
+    padding: 3px 8px 3px 0;
+    clear: both;
+    font-size: 0.8em;
+    text-align: right;
+}
+
+/* no need to make a visible link to Sphinx on the Sphinx page */
+div.footer a {
+    color: #ccc;
+}
+
+/* -- body styles ----------------------------------------------------------- */
+
+p {    
+    margin: 0.8em 0 0.5em 0;
+}
+
+p.rubric {
+    font-size: 20px;
+	font-weight: normal;
+}
+
+
+
+a:link, a:visited { 
+    color: /* browser's internal value */;
+    text-decoration: none;
+    
+  }
+  
+  a:link:active, a:visited:active { 
+    color: /* browser's internal value */;
+  }
+
+
+a:hover {
+    color: #0B0080;
+}
+
+
+
+div.body a {
+    text-decoration: underline;
+}
+
+/*
+h1 {
+    margin: 10px 0 0 0;
+    font-size: 2.4em;
+    color: #346ec5;
+    font-weight: 400;
+}
+
+h2 {
+    margin: 1.em 0 0.2em 0;
+    font-size: 1.7em;
+    font-weight: 400;
+    padding: 0;
+    color: #174967;
+}
+
+h3 {
+    margin: 1em 0 -0.3em 0;
+    font-size: 1.3em;
+    font-weight: 400;
+}
+
+div.body h1 a, div.body h2 a, div.body h3 a, div.body h4 a, div.body h5 a, div.body h6 a {
+    text-decoration: none;
+}
+
+div.body h1 a tt, div.body h2 a tt, div.body h3 a tt, div.body h4 a tt, div.body h5 a tt, div.body h6 a tt {
+    color: #0A507A !important;
+    font-size: inherit !important;
+}
+
+a.headerlink {
+    color: #0645AD !important;
+    font-size: 12px;
+    margin-left: 6px;
+    padding: 0 4px 0 4px;
+    text-decoration: none !important;
+    float: right;
+}
+
+a.headerlink:hover {
+    background-color: #ccc;
+    color: white!important;
+}
+*/
+
+a.headerlink {
+    visibility: hidden;
+    color: #ddd;
+    padding: 0 4px;
+    text-decoration: none;
+  }
+  
+  h1:hover > a.headerlink,
+  h2:hover > a.headerlink,
+  h3:hover > a.headerlink,
+  h4:hover > a.headerlink,
+  h5:hover > a.headerlink,
+  h6:hover > a.headerlink,
+  dt:hover > a.headerlink {
+    visibility: visible;
+  }
+  
+  h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {
+    color: #5C7C98;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: black;
+    font-weight: normal;
+    padding: 0;
+    
+  }
+  
+  h1, h2, h3 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  
+  h1 {
+    font-size: 38px;
+    margin: 10px 0 0 0;
+
+  }
+  
+  h2 {
+    font-size: 34px;
+    padding: .2em 0;
+    border-bottom: 1px solid #ee3a25;
+  }
+  
+  h3 {
+    margin-top: 35px;
+    font-size: 28px;
+  }
+  
+  h4 {
+    margin-top: 30px;
+    font-size: 24px;
+  }
+  
+  h5 {
+    margin-top: 25px;
+    font-size: 20px;
+  }
+cite, code, tt {
+    font-family: 'Consolas', 'DejaVu Sans Mono',
+                 'Bitstream Vera Sans Mono', monospace;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+}
+
+table.deprecated code.literal {
+    word-break: break-all;
+}
+
+tt {
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    color: #333;
+    padding: 1px 0.2em;
+}
+
+tt.descname, tt.descclassname, tt.xref {
+    border: 0;
+}
+
+hr {
+    border: 1px solid #abc;
+    margin: 2em;
+}
+
+a tt {
+    border: 0;
+    color: #a2881d;
+}
+
+a tt:hover {
+    color: #e1c13f;
+}
+
+pre {
+    font-family: 'Consolas', 'Courier New', 'DejaVu Sans Mono',
+                 'Bitstream Vera Sans Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.015em;
+    line-height: 120%;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    background-color: #f8f8f8;
+}
+
+pre a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+td.linenos pre {
+    padding: 0.5em 0;
+}
+
+div.quotebar {
+    background-color: #f8f8f8;
+    max-width: 250px;
+    float: right;
+    padding: 0px 7px;
+    border: 1px solid #ccc;
+    margin-left: 1em;
+}
+
+div.topic {
+    background-color: #f8f8f8;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0 -0.5em 0 -0.5em;
+	border:1px solid #aaa;
+}
+
+table.docutils, table.docutils th, table.docutils td {
+    border-collapse: collapse;
+    /*margin: 0 -0.5em 0 -0.5em;*/
+	border:1px solid #aaa;
+}
+
+table td, table th {
+    padding: 0.2em 0.5em 0.2em 0.5em;
+	border:1px solid #aaa;
+}
+
+
+
+div.admonition, div.warning {
+    font-size: 0.9em;
+    margin: 1em 0 1em 0;
+    border: 1px solid #86989B;
+    border-radius: 2px;
+    background-color: #f7f7f7;
+    padding: 0;
+}
+
+div.admonition > p, div.warning > p {
+    margin: 0.5em 1em 0.5em 1em;
+    padding: 0;
+}
+
+div.admonition > pre, div.warning > pre {
+    margin: 0.4em 1em 0.4em 1em;
+}
+
+div.admonition > p.admonition-title,
+div.warning > p.admonition-title {
+    margin-top: 0.5em;
+    font-weight: bold;
+}
+
+div.warning {
+    border: 1px solid #940000;
+}
+
+div.admonition > ul,
+div.admonition > ol,
+div.warning > ul,
+div.warning > ol {
+    margin: 0.1em 0.5em 0.5em 3em;
+    padding: 0;
+}
+
+div.admonition div.highlight {
+    background: none;
+}
+
+.viewcode-back {
+    font-family: 'Open Sans', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva',
+                 'Verdana', sans-serif;
+}
+
+div.viewcode-block:target {
+    background-color: #f4debf;
+    border-top: 1px solid #ac9;
+    border-bottom: 1px solid #ac9;
+}
+
+.contentstable {
+    margin-left: 30px;
+    margin: 0 auto;
+    table-layout: fixed;
+}

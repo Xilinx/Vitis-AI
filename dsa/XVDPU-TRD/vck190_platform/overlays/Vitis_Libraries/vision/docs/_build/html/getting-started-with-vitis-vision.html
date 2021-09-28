@@ -1,0 +1,1228 @@
+
+
+
+<!DOCTYPE HTML>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<meta content="Vision, Library, Vitis Vision Library, design, methodology, OpenCL, OpenCV, libOpenCL" name="keywords" />
+<meta content="Describes the methodology to create a kernel, corresponding host code and a suitable makefile to compile an Vitis Vision kernel for any of the supported platforms in Vitis." name="description" />
+<meta content="Document" name="xlnxdocumentclass" />
+<meta content="Tutorials" name="xlnxdocumenttype" />
+
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<link rel="stylesheet" href="https://static.cloud.coveo.com/searchui/v2.4382/css/CoveoFullSearch.css"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="description"/>
+		<meta name="keywords"/>
+		<meta property="og:title" content=""/>
+		<meta property="og:description"/>
+		<!-- favicon -->
+		<link rel="icon" type="image/vnd.microsoft.icon" href="_static/favicon.ico"/>
+		<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="_static/favicon.ico"/>
+		<!-- Fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet" type="text/css"/>
+
+  
+  
+  
+  
+
+  
+      <script type="text/javascript" src="_static/js/jquery.min.js"></script>	
+	  <script type="text/javascript" src="_static/js/gtm.js"></script>
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+    <script type="text/javascript" src="_static/js/d3dd8c60ed.js"></script>
+    <script type="text/javascript" src="_static/js/common-ui-all.min.js"></script>		
+    <script type="text/javascript" src="_static/js/header-footer.min.js"></script>	
+    <script type="text/javascript" src="_static/js/jquery-ui.min.js"></script>	
+    <script type="text/javascript" src="_static/js/CoveoJsSearch.Lazy.min.js"></script>	
+    <script type="text/javascript" src="_static/js/linkid.js"></script>		
+    <script type="text/javascript" src="_static/js/Searchbox.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/common-ui-all.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/header-footer.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+	</head>
+	<body>
+		<div class="xilinx-bs3"/>
+		<div class="root responsivegrid">
+			<div class="aem-Grid aem-Grid--16 aem-Grid--default--16 aem-Grid--large--16 aem-Grid--xlarge--16 aem-Grid--xxlarge--16 aem-Grid--xxxlarge--16 ">
+				<div class="xilinxExperienceFragments experiencefragment aem-GridColumn aem-GridColumn--default--12">
+					<div class="xf-content-height">
+						<div class="aem-Grid aem-Grid--16 aem-Grid--default--16 ">
+							<div class="header parbase aem-GridColumn aem-GridColumn--default--12">
+								<noindex>
+									<header data-component="header">
+										<nav class="navbar navbar-default aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid main-nav">
+													<div class="row">
+														<div class="col-xs-12">
+															<div class="logo-column">
+																<div class="logo">
+																	<a href="https://www.xilinx.com/">
+																	<img src="https://www.xilinx.com/etc.clientlibs/site/clientlibs/xilinx/all/resources/imgs/header/xilinx-header-logo.svg" title="Xilinx Inc"/>
+																	</a>
+																</div>
+															</div>
+															<div class="navbar-column">
+																<div class="navbar navbar-collapse collapse" id="xilinx-main-menu">
+																	<div class="mobile-search-container">
+																		<div id="headerSearchBox" class="headerSearch"
+																			data-component="header-search" 
+																			data-redirect-if-empty="false"
+																			data-coveo-access-token="xxa237d4dd-f0aa-47fc-9baa-af9121851b33"
+																			data-coveo-organization-id="xilinxcomprode2rjoqok">
+																			<div class='coveo-search-section'>
+																				<div class="CoveoAnalytics" data-search-hub="Site"></div>
+																				<ul class="dropdown-menu options">
+																					<li class="option" data-label="All" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-search-hub="Site">
+																						<a href="#">
+																						All</a>
+																					</li>
+																					<li data-label="Silicon Devices" data-action-link="https://www.xilinx.com//products/silicon-devices/si-keyword-search.html" data-search-hub="Product">
+																						<a href="#">
+																						Silicon Devices</a>
+																					</li>
+																					<li data-label="Boards and Kits" data-action-link="https://www.xilinx.com//products/boards-and-kits/bk-keyword-search.html" data-search-hub="Product">
+																						<a href="#">
+																						Boards and Kits</a>
+																					</li>
+																					<li data-label="Intellectual Property" data-action-link="https://www.xilinx.com//products/intellectual-property/ip-keyword-search.html" data-search-hub="Product">
+																						<a href="#">
+																						Intellectual Property</a>
+																					</li>
+																					<li data-label="Support" class="option" data-action-link="https://www.xilinx.com/search/support-keyword-search.html" data-search-hub="Support">
+																						<a href="#">
+																						Support</a>
+																						<ul>
+																							<li data-label="Documentation" data-action-link="https://www.xilinx.com//support/documentation-navigation/documentation-keyword-search.html" data-search-hub="Document">
+																								<a href="#">
+																								Documentation</a>
+																							</li>
+																							<li data-label="Knowledge Base" data-action-link="https://www.xilinx.com//support/answer-navigation/answer-keyword-search.html" data-search-hub="AnswerRecord">
+																								<a href="#">
+																								Knowledge Base</a>
+																							</li>
+																							<li data-label="Community Forums" data-action-link="https://www.xilinx.com/search/forums-keyword-search.html" data-search-hub="Forums">
+																								<a href="#">
+																								Community Forums</a>
+																							</li>
+																						</ul>
+																					</li>
+																					<li data-label="Partners" data-action-link="https://www.xilinx.com//alliance/member-keyword-search.html" data-search-hub="Partner">
+																						<a href="#">
+																						Partners</a>
+																					</li>
+																					<li data-label="Videos" data-action-link="https://www.xilinx.com/video/video-keyword-search.html" data-search-hub="Video">
+																						<a href="#">
+																						Videos</a>
+																					</li>
+																					<li data-label="Press" data-action-link="https://www.xilinx.com/search/press-keyword-search.html" data-search-hub="Press">
+																						<a href="#">
+																						Press</a>
+																					</li>
+																				</ul>
+																				<a href="#" class="btn dropdown-toggle value" data-toggle="dropdown"></a>
+																				<div class="CoveoSearchbox" data-id="coveosearchbox" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-placeholder="Search Xilinx"></div>
+																			</div>
+																		</div>
+																	</div>
+																	<ul class="nav navbar-nav nav-justified">
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/applications.html">
+																			Applications</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/products/silicon-devices.html">
+																			Products</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://developer.xilinx.com/">
+																			Developers</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/support.html">
+																			Support</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/about/company-overview.html">
+																			About</a> 
+																		</li>
+																	</ul>
+																</div>
+															</div>
+															<script type="text/javascript" src="_static/js/gtm.js"></script>
+															<!--<div class="mini-nav">
+																<button type="button" data-function="xilinx-mobile-menu" id="nav-toggle" class="navbar-toggle collapsed visible-xs-block" aria-expanded="false">
+																<span></span>
+																<span></span>
+																<span></span>
+																<span></span>
+																</button>
+																<ul class="list-inline">
+																	<li class="dropdown user-menu">
+																		<button data-toggle="dropdown">
+																		<span class="sr-only">Account</span>
+																		<span class="fas fa-user"></span>
+																		</button>
+																		<ul class="dropdown-menu">
+																			<li>
+																				<a href="https://www.xilinx.com/myprofile/subscriptions.html">
+																				My Account</a>
+																			</li>
+																			<li>
+																				<a href="https://www.xilinx.com/registration/create-account.html">
+																				Create Account</a>
+																			</li>
+																			<li>
+																				<a href="https://www.xilinx.com/bin/protected/en/signout">
+																				Sign Out</a>
+																			</li>
+																		</ul>
+																	</li>
+																	<li class="hidden-xs">
+																		<button data-function="search-toggle">
+																		<span class="sr-only">Search</span>
+																		<span class="far fa-search"></span>
+																		</button>
+																	</li>
+																</ul>
+															</div>
+															-->
+															<div class="search-container">
+																<div id="headerSearchBox" class="headerSearch"
+																	data-component="header-search" 
+																	data-redirect-if-empty="false"
+																	data-coveo-access-token="xxa237d4dd-f0aa-47fc-9baa-af9121851b33"
+																	data-coveo-organization-id="xilinxcomprode2rjoqok">
+																	<div class='coveo-search-section'>
+																		<div class="CoveoAnalytics" data-search-hub="Site"></div>
+																		<ul class="dropdown-menu options">
+																			<li class="option" data-label="All" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-search-hub="Site">
+																				<a href="#">
+																				All</a>
+																			</li>
+																			<li data-label="Silicon Devices" data-action-link="https://www.xilinx.com/products/silicon-devices/si-keyword-search.html" data-search-hub="Product">
+																				<a href="#">
+																				Silicon Devices</a>
+																			</li>
+																			<li data-label="Boards and Kits" data-action-link="https://www.xilinx.com/products/boards-and-kits/bk-keyword-search.html" data-search-hub="Product">
+																				<a href="#">
+																				Boards and Kits</a>
+																			</li>
+																			<li data-label="Intellectual Property" data-action-link="https://www.xilinx.com/products/intellectual-property/ip-keyword-search.html" data-search-hub="Product">
+																				<a href="#">
+																				Intellectual Property</a>
+																			</li>
+																			<li data-label="Support" class="option" data-action-link="https://www.xilinx.com/search/support-keyword-search.html" data-search-hub="Support">
+																				<a href="#">
+																				Support</a>
+																				<ul>
+																					<li data-label="Documentation" data-action-link="https://www.xilinx.com/support/documentation-navigation/documentation-keyword-search.html" data-search-hub="Document">
+																						<a href="#">
+																						Documentation</a>
+																					</li>
+																					<li data-label="Knowledge Base" data-action-link="https://www.xilinx.com/support/answer-navigation/answer-keyword-search.html" data-search-hub="AnswerRecord">
+																						<a href="#">
+																						Knowledge Base</a>
+																					</li>
+																					<li data-label="Community Forums" data-action-link="https://www.xilinx.com/search/forums-keyword-search.html" data-search-hub="Forums">
+																						<a href="#">
+																						Community Forums</a>
+																					</li>
+																				</ul>
+																			</li>
+																			<li data-label="Partners" data-action-link="https://www.xilinx.com/alliance/member-keyword-search.html" data-search-hub="Partner">
+																				<a href="#">
+																				Partners</a>
+																			</li>
+																			<li data-label="Videos" data-action-link="https://www.xilinx.com/video/video-keyword-search.html" data-search-hub="Video">
+																				<a href="#">
+																				Videos</a>
+																			</li>
+																			<li data-label="Press" data-action-link="https://www.xilinx.com/search/press-keyword-search.html" data-search-hub="Press">
+																				<a href="#">
+																				Press</a>
+																			</li>
+																		</ul>
+																		<a href="#" class="btn dropdown-toggle value" data-toggle="dropdown"></a>
+																		<div class="CoveoSearchbox" data-id="coveosearchbox" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-placeholder="Search Xilinx"></div>
+																	</div>
+																</div>
+																<button data-function="search-toggle">
+																<span class="sr-only">Search</span>
+																<span class="far fa-times"></span>
+																</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</nav>
+									</header>
+								</noindex>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="parsys aem-GridColumn--xxxlarge--none aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+						<div class="container-fluid">
+							<div class="row">
+							<div class="col-xs-12">
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Vitis Vision Library
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2020.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Vitis Vision Library User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#getting-started-with-vitis-vision">Getting Started with Vitis Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#getting-started-with-hls">Getting Started with HLS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#design-examples-using-vitis-vision-library">Design Examples Using Vitis Vision Library</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Vitis Vision Library API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html#xf-cv-mat-image-container-class">xf::cv::Mat Image Container Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html#vitis-vision-library-functions">Vitis Vision Library Functions</a></li>
+</ul>
+
+            
+			<p class="caption"><span class="caption-text">This Page</span></p>
+				<ul class="current">
+				  <li class="toctree-l1"><a href="_sources/getting-started-with-vitis-vision.rst.txt"
+						rel="nofollow">Show Source</a></li>						
+				</ul>
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Vitis Vision Library</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Getting Started with Vitis Vision</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/getting-started-with-vitis-vision.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started-with-vitis-vision">
+<h1>Getting Started with Vitis Vision<a class="headerlink" href="#getting-started-with-vitis-vision" title="Permalink to this headline">¶</a></h1>
+<p>Describes the methodology to create a kernel, corresponding host code and a suitable
+makefile to compile an Vitis Vision kernel for any of the supported
+platforms in Vitis. The subsequent section also explains the
+methodology to verify the kernel in various emulation modes and on the
+hardware.</p>
+<div class="section" id="prerequisites">
+<span id="id1"></span><h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Valid installation of Vitis™ 2020.1 or later version and the
+corresponding licenses.</li>
+<li>Install the Vitis Vision libraries, if you intend to use libraries
+compiled differently than what is provided in Vitis.</li>
+<li>Install the card for which the platform is supported in Vitis 2020.1 or
+later versions.</li>
+<li>If targeting an embedded platform, set up the evaluation board.</li>
+<li>Xilinx® Runtime (XRT) must be installed. XRT provides software
+interface to Xilinx FPGAs.</li>
+<li>Install/compile OpenCV libraries(with compatible libjpeg.so).
+Appropriate version (X86/aarch32/aarch64) of compiler must be used based
+on the available processor on the target board.</li>
+<li>libOpenCL.so must be installed if not present along with the
+platform.</li>
+</ol>
+</div>
+<div class="section" id="vitis-design-methodology">
+<h2>Vitis Design Methodology<a class="headerlink" href="#vitis-design-methodology" title="Permalink to this headline">¶</a></h2>
+<p>There are three critical components in making a kernel work on a
+platform using Vitis™:</p>
+<ol class="arabic simple">
+<li>Host code with OpenCL constructs</li>
+<li>Wrappers around HLS Kernel(s)</li>
+<li>Makefile to compile the kernel for emulation or running on hardware.</li>
+</ol>
+<div class="section" id="host-code-with-opencl">
+<h3>Host Code with OpenCL<a class="headerlink" href="#host-code-with-opencl" title="Permalink to this headline">¶</a></h3>
+<p>Host code is compiled for the host machine that runs on the host and
+provides the data and control signals to the attached hardware with the
+FPGA. The host code is written using OpenCL constructs and provides
+capabilities for setting up, and running a kernel on the FPGA. The
+following functions are executed using the host code:</p>
+<ol class="arabic simple">
+<li>Loading the kernel binary on the FPGA – xcl::import_binary_file()
+loads the bitstream and programs the FPGA to enable required
+processing of data.</li>
+<li>Setting up memory buffers for data transfer – Data needs to be sent
+and read from the DDR memory on the hardware. cl::Buffers are created
+to allocate required memory for transferring data to and from the
+hardware.</li>
+<li>Transfer data to and from the hardware –enqueueWriteBuffer() and
+enqueueReadBuffer() are used to transfer the data to and from the
+hardware at the required time.</li>
+<li>Execute kernel on the FPGA – There are functions to execute kernels
+on the FPGA. There can be single kernel execution or multiple kernel
+execution that could be asynchronous or synchronous with each other.
+Commonly used command is enqueueTask().</li>
+<li>Profiling the performance of kernel execution – The host code in
+OpenCL also enables measurement of the execution time of a kernel on
+the FPGA. The function used in our examples for profiling is
+getProfilingInfo().</li>
+</ol>
+</div>
+<div class="section" id="wrappers-around-hls-kernel-s">
+<h3>Wrappers around HLS Kernel(s)<a class="headerlink" href="#wrappers-around-hls-kernel-s" title="Permalink to this headline">¶</a></h3>
+<p>All Vitis Vision kernels are provided with C++ function templates (located
+at &lt;Github repo&gt;/include) with image containers as objects of xf::cv::Mat
+class. In addition, these kernels will work either in stream based
+(where complete image is read continuously) or memory mapped (where
+image data access is in blocks).</p>
+<p>Vitis flow (OpenCL) requires kernel interfaces to be memory pointers
+with width in power(s) of 2. So glue logic is required for converting
+memory pointers to xf::cv::Mat class data type and vice-versa when
+interacting with Vitis Vision kernel(s). Wrapper(s) are build over the
+kernel(s) with this glue logic. Below examples will provide a
+methodology to handle different kernel (Vitis Vision kernels located at
+&lt;Github repo&gt;/include) types (stream and memory mapped).</p>
+<div class="section" id="stream-based-kernels">
+<h4>Stream Based Kernels<a class="headerlink" href="#stream-based-kernels" title="Permalink to this headline">¶</a></h4>
+<p>To facilitate the conversion of pointer to xf::Mat and vice versa, two
+adapter functions are included as part of Vitis Vision xf::cv::Array2xfMat() and
+xf::cv::xfMat2Array(). It is necessary for the xf::Mat objects to be invoked
+as streams using HLS pragma with a minimum depth of 2. This results in a
+top-level (or wrapper) function for the kernel as shown below:</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>extern “C”
+{
+void func_top (ap_uint *gmem_in, ap_uint *gmem_out, ...) {
+xf::cv::Mat&lt;…&gt; in_mat(…), out_mat(…);
+#pragma HLS dataflow
+xf::cv::Array2xfMat&lt;…&gt; (gmem_in, in_mat);
+xf::cv::Vitis Vision-func&lt;…&gt; (in_mat, out_mat…);
+xf::cv::xfMat2Array&lt;…&gt; (gmem_out, out_mat);
+}
+}
+</pre></div>
+</div>
+<p>The above illustration assumes that the data in xf::cv::Mat is being
+streamed in and streamed out. You can also create a pipeline with
+multiple functions in pipeline instead of just one Vitis Vision function.</p>
+<p>For the stream based kernels with different inputs of different sizes,
+multiple instances of the adapter functions are necessary. For this,</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>extern “C” {
+void func_top (ap_uint *gmem_in1, ap_uint *gmem_in2, ap_uint *gmem_in3, ap_uint *gmem_out, ...) {
+xf::cv::Mat&lt;...,HEIGHT,WIDTH,…&gt; in_mat1(…), out_mat(…);
+xf::cv::Mat&lt;...,HEIGHT/4,WIDTH,…&gt;  in_mat2(…), in_mat3(…);
+#pragma HLS dataflow
+xf::cv::accel_utils obj_a, obj_b;
+obj_a.Array2xfMat&lt;…,HEIGHT,WIDTH,…&gt; (gmem_in1, in_mat1);
+obj_b.Array2xfMat&lt;…,HEIGHT/4,WIDTH,…&gt; (gmem_in2, in_mat2);
+obj_b.Array2xfMat&lt;…,HEIGHT/4,WIDTH,…&gt; (gmem_in3, in_mat3);
+xf::cv::Vitis-Vision-func(in_mat1, in_mat2, int_mat3, out_mat…);
+xf::cv::xfMat2Array&lt;…&gt; (gmem_out, out_mat);
+}
+}
+</pre></div>
+</div>
+<p>For the stream based implementations, the data must be fetched from the
+input AXI and must be pushed to xfMat as required by the xfcv kernels
+for that particular configuration. Likewise, the same operations must be
+performed for the output of the xfcv kernel. To perform this, two
+utility functions are provided, xf::cv::Array2xfMat() and xf::cv::xfMat2Array().</p>
+</div>
+<div class="section" id="array2xfmat">
+<h4>Array2xfMat<a class="headerlink" href="#array2xfmat" title="Permalink to this headline">¶</a></h4>
+<p>This function converts the input array to xf::cv::Mat. The Vitis Vision kernel
+would require the input to be of type, xf::cv::Mat. This function would read
+from the array pointer and write into xf::cv::Mat based on the particular
+configuration (bit-depth, channels, pixel-parallelism) the xf::cv::Mat was
+created.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">template</span> <span class="o">&lt;</span><span class="nb">int</span> <span class="n">PTR_WIDTH</span><span class="p">,</span> <span class="nb">int</span> <span class="n">MAT_T</span><span class="p">,</span> <span class="nb">int</span> <span class="n">ROWS</span><span class="p">,</span> <span class="nb">int</span> <span class="n">COLS</span><span class="p">,</span> <span class="nb">int</span> <span class="n">NPC</span><span class="o">&gt;</span>
+<span class="n">void</span> <span class="n">Array2xfMat</span><span class="p">(</span><span class="n">ap_uint</span><span class="o">&lt;</span> <span class="n">PTR_WIDTH</span> <span class="o">&gt;</span> <span class="o">*</span><span class="n">srcPtr</span><span class="p">,</span> <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">MAT_T</span><span class="p">,</span><span class="n">ROWS</span><span class="p">,</span><span class="n">COLS</span><span class="p">,</span><span class="n">NPC</span><span class="o">&gt;&amp;</span> <span class="n">dstMat</span><span class="p">)</span>
+</pre></div>
+</div>
+<table border="1" class="docutils" id="id2">
+<caption><span class="caption-text">Table. Array2xfMat Parmater Description</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>PTR_WIDTH</td>
+<td>Data width of the input pointer.
+The value must be power 2,
+starting from 8 to 512.</td>
+</tr>
+<tr class="row-odd"><td>MAT_T</td>
+<td>Input Mat type. Example XF_8UC1,
+XF_16UC1, XF_8UC3 and XF_8UC4</td>
+</tr>
+<tr class="row-even"><td>ROWS</td>
+<td>Maximum height of image</td>
+</tr>
+<tr class="row-odd"><td>COLS</td>
+<td>Maximum width of image</td>
+</tr>
+<tr class="row-even"><td>NPC</td>
+<td>Number of pixels computed in
+parallel. Example XF_NPPC1,
+XF_NPPC8</td>
+</tr>
+<tr class="row-odd"><td>srcPtr</td>
+<td>Input pointer. Type of the
+pointer based on the PTR_WIDTH.</td>
+</tr>
+<tr class="row-even"><td>dstMat</td>
+<td>Output image of type xf::cv::Mat</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="xfmat2array">
+<h4>xfMat2Array<a class="headerlink" href="#xfmat2array" title="Permalink to this headline">¶</a></h4>
+<p>This function converts the input xf::cv::Mat to output array. The output of
+the xf::kernel function will be xf::cv::Mat, and it will require to convert
+that to output pointer.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">template</span> <span class="o">&lt;</span><span class="nb">int</span> <span class="n">PTR_WIDTH</span><span class="p">,</span> <span class="nb">int</span> <span class="n">MAT_T</span><span class="p">,</span> <span class="nb">int</span> <span class="n">ROWS</span><span class="p">,</span> <span class="nb">int</span> <span class="n">COLS</span><span class="p">,</span> <span class="nb">int</span> <span class="n">NPC</span><span class="o">&gt;</span>
+<span class="n">void</span> <span class="n">xfMat2Array</span><span class="p">(</span><span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">MAT_T</span><span class="p">,</span><span class="n">ROWS</span><span class="p">,</span><span class="n">COLS</span><span class="p">,</span><span class="n">NPC</span><span class="o">&gt;&amp;</span> <span class="n">srcMat</span><span class="p">,</span> <span class="n">ap_uint</span><span class="o">&lt;</span> <span class="n">PTR_WIDTH</span> <span class="o">&gt;</span> <span class="o">*</span><span class="n">dstPtr</span><span class="p">)</span>
+</pre></div>
+</div>
+<table border="1" class="docutils" id="id3">
+<caption><span class="caption-text">Table . xfMat2Array Parameter Description</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>PTR_WIDTH</td>
+<td>Data width of the output pointer.
+The value must be power 2, from 8
+to 512.</td>
+</tr>
+<tr class="row-odd"><td>MAT_T</td>
+<td>Input Mat type. Example XF_8UC1,
+XF_16UC1, XF_8UC3 and XF_8UC4</td>
+</tr>
+<tr class="row-even"><td>ROWS</td>
+<td>Maximum height of image</td>
+</tr>
+<tr class="row-odd"><td>COLS</td>
+<td>Maximum width of image</td>
+</tr>
+<tr class="row-even"><td>NPC</td>
+<td>Number of pixels computed in
+parallel. Example XF_NPPC1,
+XF_NPPC8</td>
+</tr>
+<tr class="row-odd"><td>dstPtr</td>
+<td>Output pointer. Type of the
+pointer based on the PTR_WIDTH.</td>
+</tr>
+<tr class="row-even"><td>srcMat</td>
+<td>Input image of type xf::cv::Mat</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="interface-pointer-widths">
+<h4>Interface pointer widths<a class="headerlink" href="#interface-pointer-widths" title="Permalink to this headline">¶</a></h4>
+<p>Minimum pointer widths for different configurations is shown in the
+following table:</p>
+<p>types</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">MAT type</th>
+<th class="head">Parallelism</th>
+<th class="head">Min PTR_WIDTH</th>
+<th class="head">Max PTR_WIDTH</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>XF_8UC1</td>
+<td>XF_NPPC1</td>
+<td>8</td>
+<td>512</td>
+</tr>
+<tr class="row-odd"><td>XF_16UC1</td>
+<td>XF_NPPC1</td>
+<td>16</td>
+<td>512</td>
+</tr>
+<tr class="row-even"><td>XF_ 8UC1</td>
+<td>XF_NPPC8</td>
+<td>64</td>
+<td>512</td>
+</tr>
+<tr class="row-odd"><td>XF_ 16UC1</td>
+<td>XF_NPPC8</td>
+<td>128</td>
+<td>512</td>
+</tr>
+<tr class="row-even"><td>XF_ 8UC3</td>
+<td>XF_NPPC1</td>
+<td>32</td>
+<td>512</td>
+</tr>
+<tr class="row-odd"><td>XF_ 8UC3</td>
+<td>XF_NPPC8</td>
+<td>256</td>
+<td>512</td>
+</tr>
+<tr class="row-even"><td>XF_8UC4</td>
+<td>XF_NPPC8</td>
+<td>256</td>
+<td>512</td>
+</tr>
+<tr class="row-odd"><td>XF_8UC3</td>
+<td>XF_NPPC16</td>
+<td>512</td>
+<td>512</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="kernel-to-kernel-streaming">
+<h4>Kernel-to-Kernel streaming<a class="headerlink" href="#kernel-to-kernel-streaming" title="Permalink to this headline">¶</a></h4>
+<p>There are two utility functions available in Vitis Vision, axiStrm2xfMat and xfMat2axiStrm to support streaming
+of data between two kernels. For more details on kernel-to-kernel streaming, refer to the “Streaming Data Transfers Between the
+Kernels” section of UG1277 document.</p>
+</div>
+<div class="section" id="axistrm2xfmat">
+<h4>axiStrm2xfMat<a class="headerlink" href="#axistrm2xfmat" title="Permalink to this headline">¶</a></h4>
+<p>axiStrm2xfMat is used by consumer kernel to support streaming data transfer between two kernels.
+Consumer kernel receives data from producer kernel through kernel streaming interface which is defined by hls:stream
+with the ap_axiu&lt; PTR_WIDTH, 0, 0, 0&gt; data type. axiStrm2xfMat would read from AXI stream and write into xf::cv:Mat based
+on particular configuration (bit-depth, channels, pixel-parallelism) the xf::cv:Mat was created.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">template</span> <span class="o">&lt;</span><span class="nb">int</span> <span class="n">PTR_WIDTH</span><span class="p">,</span> <span class="nb">int</span> <span class="n">MAT_T</span><span class="p">,</span> <span class="nb">int</span> <span class="n">ROWS</span><span class="p">,</span> <span class="nb">int</span> <span class="n">COLS</span><span class="p">,</span> <span class="nb">int</span> <span class="n">NPC</span><span class="o">&gt;</span>
+<span class="n">void</span> <span class="n">axiStrm2xfMat</span><span class="p">(</span><span class="n">hls</span><span class="p">::</span><span class="n">stream</span><span class="o">&lt;</span><span class="n">ap_axiu</span><span class="o">&lt;</span><span class="n">PTR_WIDTH</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="o">&gt;</span> <span class="o">&gt;&amp;</span> <span class="n">srcPtr</span><span class="p">,</span> <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">MAT_T</span><span class="p">,</span> <span class="n">ROWS</span><span class="p">,</span> <span class="n">COLS</span><span class="p">,</span> <span class="n">NPC</span><span class="o">&gt;&amp;</span> <span class="n">dstMat</span><span class="p">)</span>
+</pre></div>
+</div>
+<table border="1" class="docutils" id="id4">
+<caption><span class="caption-text">Table . Parameter description of axiStrm2xfMat function</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>PTR_WIDTH</td>
+<td>Data width of the input pointer. The value must be power 2, starting from 8 to 512.</td>
+</tr>
+<tr class="row-odd"><td>MAT_T</td>
+<td>Input Mat type. Example XF_8UC1, XF_16UC1, XF_8UC3 and XF_8UC4</td>
+</tr>
+<tr class="row-even"><td>ROWS</td>
+<td>Maximum height of image</td>
+</tr>
+<tr class="row-odd"><td>COLS</td>
+<td>Maximum width of image</td>
+</tr>
+<tr class="row-even"><td>NPC</td>
+<td>Number of pixels computed in parallel. Example XF_NPPC1, XF_NPPC8</td>
+</tr>
+<tr class="row-odd"><td>srcPtr</td>
+<td>Input image of type hls::stream&lt;ap_axiu&lt;PTR_WIDTH, 0, 0, 0&gt; &gt;</td>
+</tr>
+<tr class="row-even"><td>dstMat</td>
+<td>Output image of type xf::cv::Mat</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="xfmat2axistrm">
+<h4>xfMat2axiStrm<a class="headerlink" href="#xfmat2axistrm" title="Permalink to this headline">¶</a></h4>
+<p>xfMat2axiStrm is used by producer kernel to support streaming data transfer between two kernels.
+This function converts the input xf:cv::Mat to AXI stream based on particular configuration (bit-depth, channels, pixel-parallelism).</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">template</span> <span class="o">&lt;</span><span class="nb">int</span> <span class="n">PTR_WIDTH</span><span class="p">,</span> <span class="nb">int</span> <span class="n">MAT_T</span><span class="p">,</span> <span class="nb">int</span> <span class="n">ROWS</span><span class="p">,</span> <span class="nb">int</span> <span class="n">COLS</span><span class="p">,</span> <span class="nb">int</span> <span class="n">NPC</span><span class="o">&gt;</span>
+<span class="n">void</span> <span class="n">xfMat2axiStrm</span><span class="p">(</span><span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">MAT_T</span><span class="p">,</span> <span class="n">ROWS</span><span class="p">,</span> <span class="n">COLS</span><span class="p">,</span> <span class="n">NPC</span><span class="o">&gt;&amp;</span> <span class="n">srcMat</span><span class="p">,</span> <span class="n">hls</span><span class="p">::</span><span class="n">stream</span><span class="o">&lt;</span><span class="n">ap_axiu</span><span class="o">&lt;</span><span class="n">PTR_WIDTH</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="o">&gt;</span> <span class="o">&gt;&amp;</span> <span class="n">dstPtr</span><span class="p">)</span>
+</pre></div>
+</div>
+<table border="1" class="docutils" id="id5">
+<caption><span class="caption-text">Table . Parameter description of xfMat2axiStrm function</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>PTR_WIDTH</td>
+<td>Data width of the input pointer. The value must be power 2, starting from 8 to 512.</td>
+</tr>
+<tr class="row-odd"><td>MAT_T</td>
+<td>Input Mat type. Example XF_8UC1, XF_16UC1, XF_8UC3 and XF_8UC4</td>
+</tr>
+<tr class="row-even"><td>ROWS</td>
+<td>Maximum height of image</td>
+</tr>
+<tr class="row-odd"><td>COLS</td>
+<td>Maximum width of image</td>
+</tr>
+<tr class="row-even"><td>NPC</td>
+<td>Number of pixels computed in parallel. Example XF_NPPC1, XF_NPPC8</td>
+</tr>
+<tr class="row-odd"><td>srcPtr</td>
+<td>Input image of type hls::stream&lt;ap_axiu&lt;PTR_WIDTH, 0, 0, 0&gt; &gt;</td>
+</tr>
+<tr class="row-even"><td>dstMat</td>
+<td>Output image of type xf::cv::Mat</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="memory-mapped-kernels">
+<h4>Memory Mapped Kernels<a class="headerlink" href="#memory-mapped-kernels" title="Permalink to this headline">¶</a></h4>
+<p>In the memory map based kernels such as crop, Mean-shift tracking and
+bounding box, the input read will be for particular block of memory
+based on the requirement for the algorithm. The streaming interfaces
+will require the image to be read in raster scan manner, which is not
+the case for the memory mapped kernels. The methodology to handle this
+case is as follows:</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>extern “C”
+{
+void func_top (ap_uint *gmem_in, ap_uint *gmem_out, ...) {
+xf::cv::Mat&lt;…&gt; in_mat(…,gmem_in), out_mat(…,gmem_out);
+xf::cv::kernel&lt;…&gt; (in_mat, out_mat…);
+}
+}
+</pre></div>
+</div>
+<p>The gmem pointers must be mapped to the xf::cv::Mat objects during the
+object creation, and then the memory mapped kernels are called with
+these mats at the interface. It is necessary that the pointer size must
+be same as the size required for the xf::Vitis-Vision-func, unlike the
+streaming method where any higher size of the pointers (till 512-bits)
+are allowed.</p>
+</div>
+</div>
+<div class="section" id="makefile">
+<h3>Makefile<a class="headerlink" href="#makefile" title="Permalink to this headline">¶</a></h3>
+<p>Examples for makefile are provided in the examples and tests section of GitHub.</p>
+</div>
+<div class="section" id="design-example-using-library-on-vitis">
+<h3>Design example Using Library on Vitis<a class="headerlink" href="#design-example-using-library-on-vitis" title="Permalink to this headline">¶</a></h3>
+<p>Following is a multi-kernel example, where different kernel runs
+sequentially in a pipeline to form an application. This example performs
+Canny edge detection, where two kernels are involved, Canny and edge
+tracing. Canny function will take gray-scale image as input and provided
+the edge information in 3 states (weak edge (1), strong edge (3), and
+background (0)), which is being fed into edge tracing, which filters out
+the weak edges. The prior works in a streaming based implementation and
+the later in a memory mapped manner.</p>
+<div class="section" id="host-code">
+<h4>Host code<a class="headerlink" href="#host-code" title="Permalink to this headline">¶</a></h4>
+<p>The following is the Host code for the canny edge detection example. The
+host code sets up the OpenCL platform with the FPGA of processing
+required data. In the case of Vitis Vision example, the data is an image.
+Reading and writing of images are enabled using called to functions from
+Vitis Vision.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">setting</span> <span class="n">up</span> <span class="n">device</span> <span class="ow">and</span> <span class="n">platform</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">cl</span><span class="p">::</span><span class="n">Device</span><span class="o">&gt;</span> <span class="n">devices</span> <span class="o">=</span> <span class="n">xcl</span><span class="p">::</span><span class="n">get_xil_devices</span><span class="p">();</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">Device</span> <span class="n">device</span> <span class="o">=</span> <span class="n">devices</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">Context</span> <span class="n">context</span><span class="p">(</span><span class="n">device</span><span class="p">);</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">CommandQueue</span> <span class="n">q</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span><span class="n">CL_QUEUE_PROFILING_ENABLE</span><span class="p">);</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">string</span> <span class="n">device_name</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">getInfo</span><span class="o">&lt;</span><span class="n">CL_DEVICE_NAME</span><span class="o">&gt;</span><span class="p">();</span>
+
+    <span class="o">//</span> <span class="n">Kernel</span> <span class="mi">1</span><span class="p">:</span> <span class="n">Canny</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">string</span> <span class="n">binaryFile</span><span class="o">=</span><span class="n">xcl</span><span class="p">::</span><span class="n">find_binary_file</span><span class="p">(</span><span class="n">device_name</span><span class="p">,</span><span class="s2">&quot;krnl_canny&quot;</span><span class="p">);</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">Program</span><span class="p">::</span><span class="n">Binaries</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">xcl</span><span class="p">::</span><span class="n">import_binary_file</span><span class="p">(</span><span class="n">binaryFile</span><span class="p">);</span>
+    <span class="n">devices</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">Program</span> <span class="n">program</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">bins</span><span class="p">);</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">Kernel</span> <span class="n">krnl</span><span class="p">(</span><span class="n">program</span><span class="p">,</span><span class="s2">&quot;canny_accel&quot;</span><span class="p">);</span>
+
+    <span class="o">//</span> <span class="n">creating</span> <span class="n">necessary</span> <span class="n">cl</span> <span class="n">buffers</span> <span class="k">for</span> <span class="nb">input</span> <span class="ow">and</span> <span class="n">output</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">Buffer</span> <span class="n">imageToDevice</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">CL_MEM_READ_ONLY</span><span class="p">,(</span><span class="n">height</span><span class="o">*</span><span class="n">width</span><span class="p">));</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">Buffer</span> <span class="n">imageFromDevice</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">CL_MEM_WRITE_ONLY</span><span class="p">,(</span><span class="n">height</span><span class="o">*</span><span class="n">width</span><span class="o">/</span><span class="mi">4</span><span class="p">));</span>
+
+
+    <span class="o">//</span> <span class="n">Set</span> <span class="n">the</span> <span class="n">kernel</span> <span class="n">arguments</span>
+    <span class="n">krnl</span><span class="o">.</span><span class="n">setArg</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">imageToDevice</span><span class="p">);</span>
+    <span class="n">krnl</span><span class="o">.</span><span class="n">setArg</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">imageFromDevice</span><span class="p">);</span>
+    <span class="n">krnl</span><span class="o">.</span><span class="n">setArg</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">height</span><span class="p">);</span>
+    <span class="n">krnl</span><span class="o">.</span><span class="n">setArg</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">width</span><span class="p">);</span>
+    <span class="n">krnl</span><span class="o">.</span><span class="n">setArg</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">low_threshold</span><span class="p">);</span>
+    <span class="n">krnl</span><span class="o">.</span><span class="n">setArg</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">high_threshold</span><span class="p">);</span>
+
+    <span class="o">//</span> <span class="n">write</span> <span class="n">the</span> <span class="nb">input</span> <span class="n">image</span> <span class="n">data</span> <span class="kn">from</span> <span class="nn">host</span> <span class="n">to</span> <span class="n">device</span> <span class="n">memory</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">enqueueWriteBuffer</span><span class="p">(</span><span class="n">imageToDevice</span><span class="p">,</span> <span class="n">CL_TRUE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,(</span><span class="n">height</span><span class="o">*</span><span class="p">(</span><span class="n">width</span><span class="p">)),</span><span class="n">img_gray</span><span class="o">.</span><span class="n">data</span><span class="p">);</span>
+    <span class="o">//</span> <span class="n">Profiling</span> <span class="n">Objects</span>
+    <span class="n">cl_ulong</span> <span class="n">start</span><span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">cl_ulong</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">double</span> <span class="n">diff_prof</span> <span class="o">=</span> <span class="mf">0.0</span><span class="n">f</span><span class="p">;</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">Event</span> <span class="n">event_sp</span><span class="p">;</span>
+
+    <span class="o">//</span> <span class="n">Launch</span> <span class="n">the</span> <span class="n">kernel</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">enqueueTask</span><span class="p">(</span><span class="n">krnl</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="o">&amp;</span><span class="n">event_sp</span><span class="p">);</span>
+    <span class="n">clWaitForEvents</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">const</span> <span class="n">cl_event</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">event_sp</span><span class="p">);</span>
+
+    <span class="o">//</span> <span class="n">profiling</span>
+    <span class="n">event_sp</span><span class="o">.</span><span class="n">getProfilingInfo</span><span class="p">(</span><span class="n">CL_PROFILING_COMMAND_START</span><span class="p">,</span><span class="o">&amp;</span><span class="n">start</span><span class="p">);</span>
+    <span class="n">event_sp</span><span class="o">.</span><span class="n">getProfilingInfo</span><span class="p">(</span><span class="n">CL_PROFILING_COMMAND_END</span><span class="p">,</span><span class="o">&amp;</span><span class="n">end</span><span class="p">);</span>
+    <span class="n">diff_prof</span> <span class="o">=</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">;</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">diff_prof</span><span class="o">/</span><span class="mi">1000000</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="s2">&quot;ms&quot;</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+
+    <span class="o">//</span> <span class="n">Kernel</span> <span class="mi">2</span><span class="p">:</span> <span class="n">edge</span> <span class="n">tracing</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">Kernel</span> <span class="n">krnl2</span><span class="p">(</span><span class="n">program</span><span class="p">,</span><span class="s2">&quot;edgetracing_accel&quot;</span><span class="p">);</span>
+
+    <span class="n">cl</span><span class="p">::</span><span class="n">Buffer</span> <span class="n">imageFromDeviceedge</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">CL_MEM_WRITE_ONLY</span><span class="p">,(</span><span class="n">height</span><span class="o">*</span><span class="n">width</span><span class="p">));</span>
+
+    <span class="o">//</span> <span class="n">Set</span> <span class="n">the</span> <span class="n">kernel</span> <span class="n">arguments</span>
+    <span class="n">krnl2</span><span class="o">.</span><span class="n">setArg</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">imageFromDevice</span><span class="p">);</span>
+    <span class="n">krnl2</span><span class="o">.</span><span class="n">setArg</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">imageFromDeviceedge</span><span class="p">);</span>
+    <span class="n">krnl2</span><span class="o">.</span><span class="n">setArg</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">height</span><span class="p">);</span>
+    <span class="n">krnl2</span><span class="o">.</span><span class="n">setArg</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">width</span><span class="p">);</span>
+
+    <span class="o">//</span> <span class="n">Profiling</span> <span class="n">Objects</span>
+    <span class="n">cl_ulong</span> <span class="n">startedge</span><span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">cl_ulong</span> <span class="n">endedge</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">double</span> <span class="n">diff_prof_edge</span> <span class="o">=</span> <span class="mf">0.0</span><span class="n">f</span><span class="p">;</span>
+    <span class="n">cl</span><span class="p">::</span><span class="n">Event</span> <span class="n">event_sp_edge</span><span class="p">;</span>
+
+    <span class="o">//</span> <span class="n">Launch</span> <span class="n">the</span> <span class="n">kernel</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">enqueueTask</span><span class="p">(</span><span class="n">krnl2</span><span class="p">,</span><span class="n">NULL</span><span class="p">,</span><span class="o">&amp;</span><span class="n">event_sp_edge</span><span class="p">);</span>
+    <span class="n">clWaitForEvents</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">const</span> <span class="n">cl_event</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">event_sp_edge</span><span class="p">);</span>
+
+    <span class="o">//</span> <span class="n">profiling</span>
+    <span class="n">event_sp_edge</span><span class="o">.</span><span class="n">getProfilingInfo</span><span class="p">(</span><span class="n">CL_PROFILING_COMMAND_START</span><span class="p">,</span><span class="o">&amp;</span><span class="n">startedge</span><span class="p">);</span>
+    <span class="n">event_sp_edge</span><span class="o">.</span><span class="n">getProfilingInfo</span><span class="p">(</span><span class="n">CL_PROFILING_COMMAND_END</span><span class="p">,</span><span class="o">&amp;</span><span class="n">endedge</span><span class="p">);</span>
+    <span class="n">diff_prof_edge</span> <span class="o">=</span> <span class="n">endedge</span><span class="o">-</span><span class="n">startedge</span><span class="p">;</span>
+    <span class="n">std</span><span class="p">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">diff_prof_edge</span><span class="o">/</span><span class="mi">1000000</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="s2">&quot;ms&quot;</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+
+
+    <span class="o">//</span><span class="n">Copying</span> <span class="n">Device</span> <span class="n">result</span> <span class="n">data</span> <span class="n">to</span> <span class="n">Host</span> <span class="n">memory</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">enqueueReadBuffer</span><span class="p">(</span><span class="n">imageFromDeviceedge</span><span class="p">,</span> <span class="n">CL_TRUE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,(</span><span class="n">height</span><span class="o">*</span><span class="n">width</span><span class="p">),</span><span class="n">out_img_edge</span><span class="o">.</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">finish</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="top-level-kernel">
+<h4>Top level kernel<a class="headerlink" href="#top-level-kernel" title="Permalink to this headline">¶</a></h4>
+<p>Below is the top-level/wrapper function with all necessary glue logic.</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">streaming</span> <span class="n">based</span> <span class="n">kernel</span>
+<span class="c1">#include &quot;xf_canny_config.h&quot;</span>
+
+<span class="n">extern</span> <span class="s2">&quot;C&quot;</span> <span class="p">{</span>
+<span class="n">void</span> <span class="n">canny_accel</span><span class="p">(</span><span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">img_inp</span><span class="p">,</span> <span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">OUTPUT_PTR_WIDTH</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">img_out</span><span class="p">,</span> <span class="nb">int</span> <span class="n">rows</span><span class="p">,</span> <span class="nb">int</span> <span class="n">cols</span><span class="p">,</span><span class="nb">int</span> <span class="n">low_threshold</span><span class="p">,</span><span class="nb">int</span> <span class="n">high_threshold</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=img_inp  bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=img_out  bundle=control</span>
+
+<span class="c1">#pragma HLS INTERFACE s_axilite port=rows     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=cols     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=low_threshold     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=high_threshold     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=return   bundle=control</span>
+
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">INTYPE</span><span class="o">&gt;</span> <span class="n">in_mat</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span><span class="n">cols</span><span class="p">);</span>
+
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_2UC1</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC32</span><span class="o">&gt;</span> <span class="n">dst_mat</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span><span class="n">cols</span><span class="p">);</span>
+
+    <span class="c1">#pragma HLS DATAFLOW</span>
+
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Array2xfMat</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="p">,</span><span class="n">XF_8UC1</span><span class="p">,</span><span class="n">HEIGHT</span><span class="p">,</span><span class="n">WIDTH</span><span class="p">,</span><span class="n">INTYPE</span><span class="o">&gt;</span><span class="p">(</span><span class="n">img_inp</span><span class="p">,</span><span class="n">in_mat</span><span class="p">);</span>
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Canny</span><span class="o">&lt;</span><span class="n">FILTER_WIDTH</span><span class="p">,</span><span class="n">NORM_TYPE</span><span class="p">,</span><span class="n">XF_8UC1</span><span class="p">,</span><span class="n">XF_2UC1</span><span class="p">,</span><span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span><span class="n">INTYPE</span><span class="p">,</span><span class="n">XF_NPPC32</span><span class="p">,</span><span class="n">XF_USE_URAM</span><span class="o">&gt;</span><span class="p">(</span><span class="n">in_mat</span><span class="p">,</span><span class="n">dst_mat</span><span class="p">,</span><span class="n">low_threshold</span><span class="p">,</span><span class="n">high_threshold</span><span class="p">);</span>
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">xfMat2Array</span><span class="o">&lt;</span><span class="n">OUTPUT_PTR_WIDTH</span><span class="p">,</span><span class="n">XF_2UC1</span><span class="p">,</span><span class="n">HEIGHT</span><span class="p">,</span><span class="n">WIDTH</span><span class="p">,</span><span class="n">XF_NPPC32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">dst_mat</span><span class="p">,</span><span class="n">img_out</span><span class="p">);</span>
+
+
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="o">//</span> <span class="n">memory</span> <span class="n">mapped</span> <span class="n">kernel</span>
+<span class="c1">#include &quot;xf_canny_config.h&quot;</span>
+<span class="n">extern</span> <span class="s2">&quot;C&quot;</span> <span class="p">{</span>
+<span class="n">void</span> <span class="n">edgetracing_accel</span><span class="p">(</span><span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">INPUT_PTR_WIDTH</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">img_inp</span><span class="p">,</span> <span class="n">ap_uint</span><span class="o">&lt;</span><span class="n">OUTPUT_PTR_WIDTH</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">img_out</span><span class="p">,</span> <span class="nb">int</span> <span class="n">rows</span><span class="p">,</span> <span class="nb">int</span> <span class="n">cols</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem3</span>
+<span class="c1">#pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem4</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=img_inp  bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=img_out  bundle=control</span>
+
+<span class="c1">#pragma HLS INTERFACE s_axilite port=rows     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=cols     bundle=control</span>
+<span class="c1">#pragma HLS INTERFACE s_axilite port=return   bundle=control</span>
+
+
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_2UC1</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC32</span><span class="o">&gt;</span> <span class="n">_dst1</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span><span class="n">cols</span><span class="p">,</span><span class="n">img_inp</span><span class="p">);</span>
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">Mat</span><span class="o">&lt;</span><span class="n">XF_8UC1</span><span class="p">,</span> <span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC8</span><span class="o">&gt;</span> <span class="n">_dst2</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span><span class="n">cols</span><span class="p">,</span><span class="n">img_out</span><span class="p">);</span>
+    <span class="n">xf</span><span class="p">::</span><span class="n">cv</span><span class="p">::</span><span class="n">EdgeTracing</span><span class="o">&lt;</span><span class="n">XF_2UC1</span><span class="p">,</span><span class="n">XF_8UC1</span><span class="p">,</span><span class="n">HEIGHT</span><span class="p">,</span> <span class="n">WIDTH</span><span class="p">,</span> <span class="n">XF_NPPC32</span><span class="p">,</span><span class="n">XF_NPPC8</span><span class="p">,</span><span class="n">XF_USE_URAM</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_dst1</span><span class="p">,</span><span class="n">_dst2</span><span class="p">);</span>
+
+<span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="evaluating-the-functionality">
+<h2>Evaluating the Functionality<a class="headerlink" href="#evaluating-the-functionality" title="Permalink to this headline">¶</a></h2>
+<p>You can build the kernels and test the functionality through software
+emulation, hardware emulation, and running directly on a supported
+hardware with the FPGA. For PCIe based platforms, use the following
+commands to setup the environment:</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd &lt;path to the folder where makefile is present&gt;
+$ source &lt;path to the Vitis installation folder&gt;/Vitis/&lt;version number&gt;/settings64.sh
+$ source &lt;path to Xilinx_xrt&gt;/setup.sh
+$ export DEVICE=&lt;path-to-platform-directory&gt;/&lt;platform&gt;.xpfm
+</pre></div>
+</div>
+<div class="section" id="software-emulation">
+<h3>Software Emulation<a class="headerlink" href="#software-emulation" title="Permalink to this headline">¶</a></h3>
+<p>Software emulation is equivalent to running a C-simulation of the
+kernel. The time for compilation is minimal, and is therefore
+recommended to be the first step in testing the kernel. Following are
+the steps to build and run for the software emulation:</p>
+<p><em>For PCIe devices:</em></p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>$ make host xclbin TARGET=sw_emu
+
+$ make run TARGET=sw_emu
+</pre></div>
+</div>
+<p><em>For embedded devices:</em></p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>$ export SYSROOT=&lt; path-to-platform-sysroot &gt;
+
+$ make host xclbin TARGET=sw_emu BOARD=Zynq ARCH=&lt; aarch64 | aarch32 &gt;
+
+$ make run TARGET=sw_emu BOARD=Zynq ARCH=&lt; aarch64 | aarch32 &gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="hardware-emulation">
+<h3>Hardware Emulation<a class="headerlink" href="#hardware-emulation" title="Permalink to this headline">¶</a></h3>
+<p>Hardware emulation runs the test on the generated RTL after synthesis of
+the C/C++ code. The simulation, since being done on RTL requires longer
+to complete when compared to software emulation. Following are the steps
+to build and run for the hardware emulation:</p>
+<p><em>For PCIe devices:</em></p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>$ make host xclbin TARGET=hw_emu
+
+$ make run TARGET=hw_emu
+</pre></div>
+</div>
+<p><em>For embedded devices:</em></p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>$ export SYSROOT=&lt; path-to-platform-sysroot &gt;
+
+$ make host xclbin TARGET=hw_emu BOARD=Zynq ARCH=&lt; aarch64 | aarch32 &gt;
+
+$ make run TARGET=hw_emu BOARD=Zynq ARCH=&lt; aarch64 | aarch32 &gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="testing-on-the-hardware">
+<h3>Testing on the Hardware<a class="headerlink" href="#testing-on-the-hardware" title="Permalink to this headline">¶</a></h3>
+<p>To test on the hardware, the kernel must be compiled into a bitstream
+(building for hardware). This would consume some time since the C/C++ code must be converted to
+RTL, run through synthesis and implementation process before a bitstream
+is created. As a prerequisite the drivers has to be installed for
+corresponding XSA, for which the example was built for. Following are
+the steps to build the kernel and run on a hardware:</p>
+<p><em>For PCIe devices:</em></p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>$ make host xclbin TARGET=hw
+
+$ make run TARGET=hw
+</pre></div>
+</div>
+<p><em>For embedded devices:</em></p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span>$ export SYSROOT=&lt; path-to-platform-sysroot &gt;
+
+$ make host xclbin TARGET=hw BOARD=Zynq ARCH=&lt; aarch64 | aarch32 &gt;
+
+$ make run TARGET=hw BOARD=Zynq ARCH=&lt; aarch64 | aarch32 &gt;
+</pre></div>
+</div>
+<p><em>Note1</em>. For non-DFX platforms, BOOT.BIN has to be manually copied from &lt; build-directory &gt;/&lt; xclbin-folder &gt;/sd_card / to the top level sd_card folder.</p>
+<p><em>Note2</em>. For hw run on embedded devices, copy the generated sd_card folder content under package_hw directory to an SDCARD and run the following commands on the board:</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">mnt</span>
+
+<span class="n">export</span> <span class="n">XCL_BINDIR</span><span class="o">=&lt;</span> <span class="n">xclbin</span><span class="o">-</span><span class="n">folder</span><span class="o">-</span><span class="n">present</span><span class="o">-</span><span class="ow">in</span><span class="o">-</span><span class="n">the</span><span class="o">-</span><span class="n">sd_card</span> <span class="o">&gt;</span> <span class="c1">#For example, &quot;export XCL_BINDIR=xclbin_zcu102_base_hw&quot;</span>
+
+<span class="o">./&lt;</span> <span class="n">executable</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">arguments</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+<!-- Atalwar: Moved the footer code to layout.html to resolve conflict with the Xilinx template -->
+
+</footer>
+
+        </div>
+      </div>
+	  
+	  
+	  <!-- Sphinx Page Footer block -->
+  
+
+  <hr/>
+
+  <div role="contentinfo" class="copyright">
+    <p class="footerinfo">
+      <span class="lastupdated">
+        Last updated on June 05, 2020.
+      </span>
+
+    </p>
+  </div>	  
+      </div>
+    </section>
+
+
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+  
+
+  
+  <!--  Xilinx template footer block -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="xilinxExperienceFragments experiencefragment aem-GridColumn--default--none aem-GridColumn aem-GridColumn--offset--default--0 aem-GridColumn--default--16">
+					<div class="xf-content-height">
+						<div class="aem-Grid aem-Grid--16 aem-Grid--default--16 ">
+							<div class="footer parbase aem-GridColumn--default--none aem-GridColumn aem-GridColumn--offset--default--0 aem-GridColumn--default--16">
+								<noindex>
+									<footer>
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+													<div class="row">
+														<div class="footerSocial parbase">
+															<div class="col-md-push-6 col-lg-push-6 col-md-6 col-lg-6">
+																<ul class="list-inline pull-right social-menu">
+																	<li>
+																		<a href="https://www.linkedin.com/company/xilinx">
+																		<span class="linkedin icon"></span>
+																		<span class="sr-only">Connect on LinkedIn</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.twitter.com/XilinxInc">
+																		<span class="twitter icon"></span>
+																		<span class="sr-only">Follow us on Twitter</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.facebook.com/XilinxInc">
+																		<span class="facebook icon"></span>
+																		<span class="sr-only">Connect on Facebook</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.youtube.com/XilinxInc">
+																		<span class="youtube icon"></span>
+																		<span class="sr-only">Watch us on YouTube</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.xilinx.com/registration/subscriber-signup.html">
+																		<span class="newsletter icon"></span>
+																		<span class="sr-only">Subscribe to Newsletter</span>
+																		</a>
+																	</li>
+																</ul>
+															</div>
+														</div>
+														<div class="col-md-pull-6 col-lg-pull-6 col-md-6 col-lg-6">
+															<span class="copyright">
+                                  
+                                  &copy; 2020, Xilinx
+                              </span>
+															<ul class="list-inline sub-menu">
+																<li>
+																	<a href="https://www.xilinx.com/about/privacy-policy.html">Privacy</a>
+																</li>
+																<li>
+																	<a href="https://www.xilinx.com/about/legal.html">Legal</a>
+																</li>
+																<li>
+																	<a href="https://www.xilinx.com/about/contact.html">Contact</a>
+																</li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</footer>
+								</noindex>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="quicklinks parbase aem-GridColumn--default--none aem-GridColumn aem-GridColumn--offset--default--0 aem-GridColumn--default--16">
+					<noindex>
+						<span class="quickLinks">
+							<ul>
+								<li>
+									<a href="#top" class="btn backToTop">
+									<span class="fas fa-angle-up" aria-hidden="true"></span>
+									</a>
+								</li>
+							</ul>
+						</span>
+					</noindex>
+				</div>
+			</div>
+		</div>
+		<script>window.CQ = window.CQ || {}</script>
+		<script src="https://static.cloud.coveo.com/searchui/v2.4382/js/CoveoJsSearch.Lazy.min.js"></script>
+		<script>
+			var underscoreSetup = function () {
+			  _.templateSettings.interpolate = /\{\{=([^-][\S\s]+?)\}\}/g;
+			  _.templateSettings.evaluate = /\{\{([^-=][\S\s]+?)\}\}/g;
+			  _.templateSettings.escape = /\{\{-([^=][\S\s]+?)\}\}/g;
+			}
+			
+			underscoreSetup();
+		</script>
+	</body>
+</html>

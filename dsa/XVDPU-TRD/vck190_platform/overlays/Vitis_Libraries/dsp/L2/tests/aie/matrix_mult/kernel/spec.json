@@ -1,0 +1,44 @@
+{
+    "mm2s": {
+        "impl": "LoadDdrToStream",
+        "map": [
+            {
+                "in_port": {
+                    "buffer": "DataIn1"
+                },
+                "out": {
+                    "stream": "s",
+                    "width": 32
+                }
+            }
+        ]
+    },
+    "bmm2s": {
+        "impl": "LoadDdrToStream",
+        "map": [
+            {
+                "in_port": {
+                    "buffer": "DataIn2"
+                },
+                "out": {
+                    "stream": "s",
+                    "width": 32
+                }
+            }
+        ]
+    },
+    "s2mm": {
+        "impl": "StoreStreamToMaster",
+        "map": [
+            {
+                "in_port": {
+                    "stream": "s",
+                    "width": 32
+                },
+                "out": {
+                    "buffer": "DataOut1"
+                }
+            }
+        ]
+    }
+}

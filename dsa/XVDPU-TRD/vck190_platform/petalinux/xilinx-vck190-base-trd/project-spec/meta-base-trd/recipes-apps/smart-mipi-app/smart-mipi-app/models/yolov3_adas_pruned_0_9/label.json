@@ -1,0 +1,21 @@
+{
+  "model-name": "yolov3_adas_pruned_0_9",
+  "num-labels": 3,
+  "labels" :[
+    {
+      "name": "car",
+      "label": 0,
+      "display_name" : "car"
+    },
+    {
+      "name": "person",
+      "label": 1,
+      "display_name" : "person"
+    },
+    {
+      "name": "cycle",
+      "label": 2,
+      "display_name" : "cycle"
+    }
+  ]
+}

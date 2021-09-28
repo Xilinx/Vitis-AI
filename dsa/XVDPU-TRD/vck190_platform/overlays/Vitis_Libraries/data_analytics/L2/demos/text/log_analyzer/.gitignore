@@ -1,0 +1,11 @@
+data/out_file.json
+re_compile/*.o
+re_compile/*.so
+re_compile/lib
+re_compile/oniguruma
+data/*.exe
+data/geo_tmp.dat
+ref_result/libmaxminddb/lib
+ref_result/libmaxminddb/libmaxminddb*
+ref_result/rapidjson/rapidjson
+ref_result/results.json

@@ -1,0 +1,8 @@
+
+{
+    "operationName" : "shortestPathFloat",
+    "kernelName" : "shortestPath_top",
+    "requestLoad" : 100,
+    "xclbinPath" : "PROJECTPATH/build_dir.hw.xilinx_u50_gen3x16_xdma_201920_3/shortestPath_top.xclbin",
+    "deviceNeeded" : 1
+}

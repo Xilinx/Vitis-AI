@@ -1,0 +1,8 @@
+
+{
+    "operationName" : "similarityDense",
+    "kernelName" : "denseSimilarityKernel",
+    "requestLoad" : 100,
+    "xclbinPath" : "PROJECTPATH/build_dir.hw.xilinx_u50_gen3x16_xdma_201920_3/denseSimilarityKernel.xclbin",
+    "deviceNeeded" : 1
+}

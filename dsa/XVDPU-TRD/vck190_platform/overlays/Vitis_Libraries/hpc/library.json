@@ -1,0 +1,5 @@
+{
+    "id": "xf_hpc",
+    "name": "Vitis HPC Applications",
+    "description": "Vitis HPC Applications are open-sourced Vitis applications written in C++ for accelerating various HPC algorithms such RTM (Reverse Time Migration), which is an important seismic imaging technique used for producing an accurate representation of the subsurface."
+}

@@ -1,0 +1,181 @@
+{
+    "name": "Xilinx DSPLIB fir sr sym",
+    "description": "",
+    "gui": "false",
+    "flow": "versal",
+    "platform_whitelist": [
+        "vck190"
+    ],
+    "platform_properties": {
+        "vck190": {
+            "v++": {
+                "compiler": {
+                    "clflags": []
+                },
+                "linker": {
+                    "ldclflags": [
+                        "--config PROJECT/system.cfg"
+                    ]
+                }
+            }
+        }
+    },
+    "pre_build": [
+        {
+            "build_cmd": "tclsh LIB_DIR/L2/tests/aie/common/scripts/gen_input.tcl $(LOC_INPUT_FILE) $(INPUT_WINDOW_VSIZE) $(NITER_UUT) $(DATA_SEED) $(DATA_STIM_TYPE)"
+        },
+        {
+            "build_cmd": "TARGET=x86sim UUT_KERNEL=fir_sr_sym_ref UUT_SIM_FILE=./data/ref_output.txt make x86sim TARGET=x86sim TAG=REF"
+        },
+        {
+            "build_cmd": "make cleanall"
+        }
+    ],
+    "post_launch": [
+        {
+            "target": "aiesim",
+            "launch_cmd": [
+                "mkdir -p logs",
+                "grep -ve '[XT]' ./data/uut_output.txt > ./logs/uut_output.txt",
+                "grep -ve '[XT]' ./data/ref_output.txt > ./logs/ref_output.txt",
+                "tclsh LIB_DIR/L2/tests/aie/common/scripts/diff.tcl ./logs/uut_output.txt ./logs/ref_output.txt ./logs/diff.txt $(DIFF_TOLERANCE)",
+                "tclsh LIB_DIR/L2/tests/aie/common/scripts/get_stats.tcl $(DATA_TYPE) $(COEFF_TYPE) $(FIR_LEN) $(INPUT_WINDOW_VSIZE) $(CASC_LEN) $(INTERPOLATE_FACTOR) $(DECIMATE_FACTOR) $(SYMMETRY_FACTOR) $(DUAL_IP) $(USE_COEFF_RELOAD) $(NUM_OUTPUTS) $(STATUS_FILE) ./ \"filter\" $(NITER_UUT);"
+                ]
+        },
+        {
+            "target": "x86sim",
+            "launch_cmd": [
+                "mkdir -p logs",
+                "grep -ve '[XT]' ./data/uut_output.txt > ./logs/uut_output.txt",
+                "grep -ve '[XT]' ./data/ref_output.txt > ./logs/ref_output.txt",
+                "tclsh LIB_DIR/L2/tests/aie/common/scripts/diff.tcl ./logs/uut_output.txt ./logs/ref_output.txt ./logs/diff.txt $(DIFF_TOLERANCE)"
+                ]
+        }
+    ],
+    "launch": [
+        {
+            "name": "aiesim-launch",
+            "target": "aiesim",
+            "pkg-dir": "./Work",
+            "input-dir": "./",
+            "output-dir": "./"
+        },
+        {
+            "name": "x86sim-launch",
+            "target": "x86sim",
+            "pkg-dir": "./Work",
+            "input-dir": "./",
+            "output-dir": "./"
+        }
+    ],
+    "aiecompiler": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/aie",
+                "LIB_DIR/L1/src/aie",
+                "LIB_DIR/L1/tests/aie/inc",
+                "LIB_DIR/L1/tests/aie/src",
+                "LIB_DIR/L2/include/aie",
+                "LIB_DIR/L2/tests/aie/common/inc",
+                "./"
+            ],
+            "customized_params": {
+                "params" : "--dataflow -v --device=$(DEVICE_FILE) $($(TAG)_TARGET_COMPILE_ARGS) --test-iterations=$(NITER_$(TAG)) -workdir=$($(TAG)_WORK_DIR) -Xpreproc=\"$(TAG_PREPROC_ARGS) -DCOEFF_FILE=$(LOC_COEFF_FILE) -DINPUT_FILE=$(LOC_INPUT_FILE) -DDATA_TYPE=$(DATA_TYPE) -DCOEFF_TYPE=$(COEFF_TYPE) -DFIR_LEN=$(FIR_LEN) -DSHIFT=$(SHIFT) -DROUND_MODE=$(ROUND_MODE) -DCASC_LEN=$(CASC_LEN) -DDUAL_IP=$(DUAL_IP) -DUSE_COEFF_RELOAD=$(USE_COEFF_RELOAD) -DSTIM_TYPE=$(COEFF_STIM_TYPE) -DINTERPOLATE_FACTOR=$(INTERPOLATE_FACTOR) -DNUM_OUTPUTS=$(NUM_OUTPUTS)\"",
+                "default": {
+                    "TAG": "UUT",
+                    "UUT_KERNEL": "fir_sr_sym",
+                    "REF_KERNEL": "fir_sr_sym_ref",
+                    "UUT_GRAPH": "fir_sr_sym_graph",
+                    "REF_GRAPH": "fir_sr_sym_ref_graph",
+                    "NITER":"16",
+                    "NITER_UUT":"$(NITER)",
+                    "NITER_REF":"$$(($(NITER_UUT) / 2))",
+                    "INPUT_WINDOW_VSIZE":"256",
+                    "UUT_INPUT_WINDOW_VSIZE":"$(INPUT_WINDOW_VSIZE)",
+                    "REF_INPUT_WINDOW_VSIZE": "$$(( $(UUT_INPUT_WINDOW_VSIZE) * $(NITER_UUT) / $(NITER_REF)))",
+                    "DATA_TYPE":"cint16",
+                    "COEFF_TYPE":"int16",
+                    "COEFF_SIZE":"2",
+                    "FIR_LEN":"199",
+                    "SHIFT":"20",
+                    "ROUND_MODE":"0",
+                    "CASC_LEN":"1",
+                    "DUAL_IP":"0",
+                    "USE_COEFF_RELOAD":"0",
+                    "SYMMETRY_FACTOR": "2",
+                    "INTERPOLATE_FACTOR":"1",
+                    "DECIMATE_FACTOR": "1",
+                    "NUM_OUTPUTS": "1",
+                    "DIFF_TOLERANCE": "0.0025",
+                    "DATA_SEED": "1",
+                    "DATA_STIM_TYPE": "0",
+                    "STIM_TYPE":"0",
+                    "DEVICE_FILE":"4x4",
+                    "COEFF_STIM_TYPE":"0",
+                    "UUT_OUT_DIR":"./aiesimulator_output",
+                    "REF_OUT_DIR_x86": "./aiesimulator_ref_output",
+                    "UUT_SIM_FILE":"./data/uut_output.txt",
+                    "REF_SIM_FILE": "./data/ref_output.txt",
+                    "UUT_SIM_FILE2":"./data/uut_output_2.txt",
+                    "REF_SIM_FILE2": "./data/ref_output_2.txt",
+                    "UUT_OUT_FILE":  "$(UUT_OUT_DIR)/$(UUT_SIM_FILE)",
+                    "REF_OUT_FILE": "$(REF_OUT_DIR_X86)/$(REF_SIM_FILE)",
+                    "UUT_OUT_FILE2":  "$(UUT_OUT_DIR)/$(UUT_SIM_FILE2)",
+                    "REF_OUT_FILE2": "$(REF_OUT_DIR_X86)/$(REF_SIM_FILE2)",
+                        "INPUT_FILE": "data/input.txt",
+                    "COEFF_FILE": "data/coeff.txt",
+                    "LOC_COEFF_FILE":"./data/coeff.txt",
+                    "LOC_INPUT_FILE":"./data/input.txt",
+                    "LOG_FILE": "./logs/log_$(UUT_FILE_SUFFIX).txt",
+                    "STATUS_LOG_FILE": "./logs/status_$(UUT_FILE_SUFFIX).txt",
+                    "STATUS_FILE": "$(STATUS_LOG_FILE)",
+                    "DIFF_OUT_FILE": "diff_output.txt",
+                    "UUT_TARGET_COMPILE_ARGS": "--xlopt=1 -stacksize=$$(( $(FIR_LEN) * $(INTERPOLATE_FACTOR) * $(COEFF_SIZE) + 1536))  -Xchess=llvm.xargs=\"-std=c++2a\" -Xchess=main:backend.mist2.xargs=\"+NOdra\" -Xchess=main:noodle.optim.olbb=20 -Xchess=main:backend.mist2.pnll=\"off\" ",
+                    "REF_TARGET_COMPILE_ARGS":"",
+                    "WORK_DIR":"./Work",
+                    "UUT_WORK_DIR":"./Work",
+                    "REF_WORK_DIR":"./Work",
+                    "PREPROC_ARGS": "",
+                    "USING_REF": "",
+                    "USING_UUT": "-DUSING_UUT=1",
+                    "TAG_PREPROC_ARGS": "-DUUT_GRAPH=$($(TAG)_GRAPH) -DOUTPUT_FILE=$($(TAG)_SIM_FILE) -DOUTPUT_FILE2=$($(TAG)_SIM_FILE2) $(PREPROC_ARGS)  -DINPUT_WINDOW_VSIZE=$($(TAG)_INPUT_WINDOW_VSIZE) -DNITER=$(NITER_$(TAG)) $(USING_$(TAG))"
+                }
+            }
+        }
+    },
+    "aiecontainers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/aie/fir_sr_sym/test.cpp",
+                    "pl-freq": 1000,
+                    "workdir": "./Work",
+                    "options": "--use-phy-shim=false",
+                    "name": "libadf.a"
+                }
+            ]
+        }
+    ],
+    "testinfo": {
+        "disable": false,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": 32768,
+                "max_time_min": {
+                    "vitis_aie_x86sim": 60,
+                    "vitis_aie_sim": 200
+                }
+            }
+        ],
+        "customized_params": "multi_params.json",
+        "targets": [
+            "vitis_aie_sim",
+            "vitis_aie_x86sim"
+        ],
+        "category": "canary"
+    }
+}

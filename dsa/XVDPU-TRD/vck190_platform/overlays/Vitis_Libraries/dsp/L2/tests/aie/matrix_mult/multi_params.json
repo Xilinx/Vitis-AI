@@ -1,0 +1,49 @@
+{
+    "daily": {
+        "test_0_matmul_nxl_lxn_32x64_64x32": {
+            "t_data_a":"cint16",
+            "t_data_b":"cint16",
+            "p_dim_a":"32",
+            "p_dim_ab":"64",
+            "p_dim_b":"32",
+            "shift":"16"
+        },
+        "test_1_matmul_nxl_lxn_32x32_32x64": {
+            "t_data_a":"cint16",
+            "t_data_b":"cint16",
+            "p_dim_a":"32",
+            "p_dim_ab":"32",
+            "p_dim_b":"64",
+            "shift":"16"
+        },
+        "test_2_matmul_nxl_lxn_16x16_16x16": {
+            "t_data_a":"cint16",
+            "t_data_b":"cint16",
+            "p_dim_a":"16",
+            "p_dim_ab":"16",
+            "p_dim_b":"16",
+            "shift":"16"
+        },
+        "test_3_matmul_nxl_lxn_32x32_32x32": {
+            "t_data_a":"cint16",
+            "t_data_b":"cint16",
+            "p_dim_a":"32",
+            "p_dim_ab":"32",
+            "p_dim_b":"32",
+            "shift":"16"
+        },
+        "test_4_matmul_nxl_lxn_32x128_128x16": {
+            "t_data_a":"int16",
+            "t_data_b":"cint32",
+            "p_dim_a":"32",
+            "p_dim_ab":"128",
+            "p_dim_b":"16",
+            "shift":"32",
+            "p_casc_len": "4",
+            "p_add_tiling_a": "0",
+            "p_add_detiling_out": "1",
+            "p_dim_out_leading": "1",
+            "p_dim_a_leading": "1"
+        }
+    }
+}

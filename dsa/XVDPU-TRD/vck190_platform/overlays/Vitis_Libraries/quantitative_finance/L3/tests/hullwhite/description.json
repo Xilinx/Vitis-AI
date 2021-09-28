@@ -1,0 +1,127 @@
+{
+    "name": "Xilinx Hull White Analytic Model", 
+    "description": [
+        "Hull White Analytic model in the L3 framework"
+    ], 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u250", 
+        "u200", 
+        "u50"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "host": {
+        "host_exe": "hullwhite_test.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/ext/xcl2/xcl2.cpp", 
+                "LIB_DIR/L3/tests/hullwhite/xf_fintech_hullwhite_exe.cpp", 
+                "LIB_DIR/L3/src/models/hullwhite/src/xf_fintech_hullwhite.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_device.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_device_manager.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_internal.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_ocl_controller.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_timestamp.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_trace.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/ext/xcl2", 
+                "LIB_DIR/L3/src/models/hullwhite/include", 
+                "LIB_DIR/L3/include", 
+                "LIB_DIR/L3/include/models", 
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/kernel"
+            ], 
+            "options": "-O3 ", 
+            "symbols": [
+                "TEST_DT=float"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/kernel/HWA_k0.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D TEST_DT=double", 
+                    "name": "HWA_k0"
+                }, 
+                {
+                    "location": "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/kernel/HWA_k1.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D TEST_DT=double", 
+                    "name": "HWA_k1"
+                }, 
+                {
+                    "location": "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/kernel/HWA_k2.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D TEST_DT=double", 
+                    "name": "HWA_k2"
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "hwa_engine"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 720, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }, 
+    "platform_properties": {
+        "u250": {
+            "launch": [
+                {
+                    "name": "generic launch for all flows for u250 card", 
+                    "cmd_args": "BUILD/hwa_engine.xclbin u250"
+                }
+            ]
+        }, 
+        "u200": {
+            "launch": [
+                {
+                    "name": "generic launch for all flows for u200 card", 
+                    "cmd_args": "BUILD/hwa_engine.xclbin u200"
+                }
+            ]
+        }, 
+        "u50": {
+            "launch": [
+                {
+                    "name": "generic launch for all flows for u50 card", 
+                    "cmd_args": "BUILD/hwa_engine.xclbin u50"
+                }
+            ]
+        }
+    }
+}

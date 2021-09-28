@@ -1,0 +1,73 @@
+From fe470b7da06c24458187a1076fa5a998a77f2635 Mon Sep 17 00:00:00 2001
+From: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Date: Thu, 14 Jan 2021 18:04:27 +0100
+Subject: [PATCH 04/14] media: i2c: max9286: Break-out reverse channel setup
+
+Break out the reverse channel setup configuration procedure to its own
+function.
+
+This change prepares for configuring the reverse channel conditionally
+to the remote side high threshold configuration.
+
+No functional changes intended.
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesasa@ideasonboard.com>
+Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/i2c/max9286.c | 30 +++++++++++++++++-------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+index b1e2476..ab4bf13 100644
+--- a/drivers/media/i2c/max9286.c
++++ b/drivers/media/i2c/max9286.c
+@@ -336,6 +336,22 @@ static void max9286_configure_i2c(struct max9286_priv *priv, bool localack)
+ 	usleep_range(3000, 5000);
+ }
+ 
++static void max9286_reverse_channel_setup(struct max9286_priv *priv)
++{
++	/*
++	 * Reverse channel setup.
++	 *
++	 * - Enable custom reverse channel configuration (through register 0x3f)
++	 *   and set the first pulse length to 35 clock cycles.
++	 * - Increase the reverse channel amplitude to 170mV to accommodate the
++	 *   high threshold enabled by the serializer driver.
++	 */
++	max9286_write(priv, 0x3f, MAX9286_EN_REV_CFG | MAX9286_REV_FLEN(35));
++	max9286_write(priv, 0x3b, MAX9286_REV_TRF(1) | MAX9286_REV_AMP(70) |
++		      MAX9286_REV_AMP_X);
++	usleep_range(2000, 2500);
++}
++
+ /*
+  * max9286_check_video_links() - Make sure video links are detected and locked
+  *
+@@ -941,19 +957,7 @@ static int max9286_setup(struct max9286_priv *priv)
+ 	 * only. This should be disabled after the mux is initialised.
+ 	 */
+ 	max9286_configure_i2c(priv, true);
+-
+-	/*
+-	 * Reverse channel setup.
+-	 *
+-	 * - Enable custom reverse channel configuration (through register 0x3f)
+-	 *   and set the first pulse length to 35 clock cycles.
+-	 * - Increase the reverse channel amplitude to 170mV to accommodate the
+-	 *   high threshold enabled by the serializer driver.
+-	 */
+-	max9286_write(priv, 0x3f, MAX9286_EN_REV_CFG | MAX9286_REV_FLEN(35));
+-	max9286_write(priv, 0x3b, MAX9286_REV_TRF(1) | MAX9286_REV_AMP(70) |
+-		      MAX9286_REV_AMP_X);
+-	usleep_range(2000, 2500);
++	max9286_reverse_channel_setup(priv);
+ 
+ 	/*
+ 	 * Enable GMSL links, mask unused ones and autodetect link
+-- 
+2.7.4
+

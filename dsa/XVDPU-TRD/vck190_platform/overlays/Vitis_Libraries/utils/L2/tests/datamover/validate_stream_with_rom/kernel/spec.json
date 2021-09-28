@@ -1,0 +1,58 @@
+{
+    "romCs_x2": {
+        "impl": "ValidateStreamWithRom",
+        "map": [
+            {
+                "in_file": {
+                    "name": "din0",
+                    "type": "double",
+					"num": 512
+                },
+				"in_port": {
+					"stream": "s0",
+					"width": 64
+				},
+                "out": {
+                    "buffer": "ret0"
+                }
+            },
+            {
+                "in_file": {
+                    "name": "din1",
+                    "type": "half",
+					"num": 512
+                },
+				"in_port": {
+					"stream": "s1",
+					"width": 16
+				},
+                "out": {
+                    "buffer": "ret1"
+                }
+            }
+        ]
+    },
+    "m2s_x2": {
+        "impl": "LoadDdrToStream",
+        "map": [
+            {
+                "in_port": {
+                    "buffer": "din2a"
+                },
+                "out": {
+                    "stream": "sout2a",
+                    "width": 64
+                }
+            },
+            {
+                "in_port": {
+                    "buffer": "din2b"
+                },
+                "out": {
+                    "stream": "sout2b",
+                    "width": 32
+                }
+            }
+        ]
+    }
+}

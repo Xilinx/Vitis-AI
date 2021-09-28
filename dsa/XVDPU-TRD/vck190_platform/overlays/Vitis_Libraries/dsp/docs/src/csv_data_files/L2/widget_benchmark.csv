@@ -1,0 +1,17 @@
+Library Element,DATA_TYPE,IN_API,OUT_API,NUM_INPUTS,WINDOW_VSIZE,NUM_OUTPUT_CLONES,cycleCountAvg,throughputAvg,initiationInterval,throughpuInitIntAvg,NUM_BANKS,NUM_AIE,DATA_MEMORY,PROGRAM_MEMORY
+widget_api_cast,cfloat,0,0,1,256,1,88,2909 MSa/s,517,495 MSa/s,5,1,8980,1388
+widget_api_cast,cfloat,0,1,1,256,2,531,482 MSa/s,574,445 MSa/s,3,1,4884,1224
+widget_api_cast,cfloat,1,0,2,256,3,531,482 MSa/s,600,426 MSa/s,7,1,13076,1698
+widget_api_cast,cint16,0,0,1,256,1,56,4571 MSa/s,263,973 MSa/s,5,1,4884,1388
+widget_api_cast,cint16,0,0,1,256,2,90,2844 MSa/s,264,969 MSa/s,7,1,6932,1660
+widget_api_cast,cint16,0,0,1,256,3,124,2064 MSa/s,265,966 MSa/s,9,1,8980,1904
+widget_api_cast,cint16,0,1,1,256,1,274,934 MSa/s,314,815 MSa/s,3,1,2836,1208
+widget_api_cast,cint16,1,0,1,256,1,272,941 MSa/s,310,825 MSa/s,3,1,2836,1202
+widget_api_cast,cint16,1,0,1,256,2,275,930 MSa/s,329,778 MSa/s,5,1,4884,1406
+widget_api_cast,cint16,1,0,1,256,3,280,914 MSa/s,349,733 MSa/s,7,1,6932,1658
+widget_api_cast,cint16,1,0,2,256,1,273,937 MSa/s,311,823 MSa/s,3,1,2836,1218
+widget_api_cast,cint32,0,1,1,256,2,531,482 MSa/s,574,445 MSa/s,3,1,4884,1224
+widget_api_cast,cint32,1,0,1,256,4,535,478 MSa/s,619,413 MSa/s,9,1,17172,1848
+widget_api_cast,cint32,1,0,2,256,4,535,478 MSa/s,622,411 MSa/s,9,1,17172,1920
+widget_api_cast,int32,0,1,1,256,2,275,930 MSa/s,315,812 MSa/s,3,1,2836,1224
+widget_api_cast,int32,1,0,2,256,2,274,934 MSa/s,329,778 MSa/s,5,1,4884,1390

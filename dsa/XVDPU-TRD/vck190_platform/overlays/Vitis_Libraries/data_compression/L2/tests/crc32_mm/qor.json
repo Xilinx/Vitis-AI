@@ -1,0 +1,19 @@
+{
+	"vitis" : "2020.2",
+	"device_name" : "xilinx_u200_xdma_201830_2",
+	"containers": [
+	{
+		"name": "crc32",
+		"meet_system_timing": "true",
+		"accelerators": [
+		{
+			"name": "xilCrc32",
+			"check_timing": "true",
+			"PipelineType": "none",
+			"check_latency": "true",
+			"check_warning": "true"
+		}
+		]
+	}
+	]
+}

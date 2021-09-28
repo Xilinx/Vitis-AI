@@ -1,0 +1,72 @@
+{
+    "name": "Xilinx ZSTD compress HLS Test", 
+    "description": "Test Design to validate ZSTD compression", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u200", 
+        "aws-vu9p-f1", 
+        "vck190"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [],
+    "QoR_golden": {
+       "VV_LUT": "28819",
+       "VV_FF": "31834",
+       "VV_BRAM": "97", 
+       "VV_URAM": "14", 
+       "VV_AchievedClockPeriod": "3.295"
+    },
+    "project": "zstd_compress", 
+    "solution": "sol1", 
+    "clock": "3.3", 
+    "topfunction": "compressFile", 
+    "top": {
+        "source": [
+            "$XF_PROJ_ROOT/common/libs/logger/logger.cpp", 
+            "$XF_PROJ_ROOT/common/libs/cmdparser/cmdlineparser.cpp", 
+            "zstd_compress_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -I${XF_PROJ_ROOT}/L2/include -I${XF_PROJ_ROOT}/common/libs/cmdparser -I${XF_PROJ_ROOT}/common/libs/logger"
+    }, 
+    "testbench": {
+        "source": [
+            "$XF_PROJ_ROOT/common/libs/logger/logger.cpp", 
+            "$XF_PROJ_ROOT/common/libs/cmdparser/cmdlineparser.cpp", 
+            "zstd_compress_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -I${XF_PROJ_ROOT}/L2/include -I${XF_PROJ_ROOT}/common/libs/cmdparser", 
+        "ldflags": "", 
+        "argv": {
+            "hls_csim": "-f ${DESIGN_PATH}/sample.txt -o ${DESIGN_PATH}/sample.txt.zst", 
+            "hls_cosim": "-f ${DESIGN_PATH}/sample.txt -o -f ${DESIGN_PATH}/sample.txt.zst"
+        }
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": 300
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim", 
+            "hls_vivado_syn", 
+            "hls_vivado_impl"
+        ], 
+        "category": "canary"
+    }
+}

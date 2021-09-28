@@ -1,0 +1,171 @@
+From 55156bc197c87340debc1182ef7435e51d270e58 Mon Sep 17 00:00:00 2001
+From: Thomas Nizan <tnizan@witekio.com>
+Date: Tue, 6 Jul 2021 13:00:48 +0000
+Subject: [PATCH 11/14] max9286: WIP, modify resolution
+
+---
+ drivers/media/i2c/max9286.c | 95 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 89 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+index b304a1f..ba6428a 100644
+--- a/drivers/media/i2c/max9286.c
++++ b/drivers/media/i2c/max9286.c
+@@ -136,6 +136,8 @@
+ #define MAX9286_N_PADS			5
+ #define MAX9286_SRC_PAD			4
+ 
++#define MAX9286_MODE_REG_TABLE_SIZE 3
++
+ struct max9286_source {
+ 	struct v4l2_subdev *sd;
+ 	struct fwnode_handle *fwnode;
+@@ -187,6 +189,58 @@ struct max9286_priv {
+ 	struct v4l2_async_notifier notifier;
+ };
+ 
++struct reg_8 {
++	u8 addr;
++	u8 val;
++};
++
++static const struct reg_8 mode_1920x1080[] = {
++	// Setup PCLK's per frame
++	// 75MHz, 30fps
++	// MAX9286 sends FSYNC to all active
++	// links once count is reached.
++	// FSYNC_PERIOD = 0x2625A0 =
++	// 2,500,000 cycles / 75MHz =
++	// 0.0333 => 30fps
++	{ 0x06, 0xA0 },		// [7:0] FSYNC_PERIODL
++	{ 0x07, 0x25 },		// [7:0] FSYNC_PERIODM
++	{ 0x08, 0x26 },		// [7:0] FSYNC_PERIODH
++};
++static const struct reg_8 mode_1280x720[] = {
++
++    // Setup PCLK's per frame
++    // 75MHz, 60fps
++    // MAX9286 sends FSYNC to all active
++    // links once count is reached.
++    // FSYNC_PERIOD = 0x1312D0 =
++    // 1,250,000 cycles / 75MHz =
++    // 0.0166 => 60fps
++	{ 0x06, 0xD0 },		// [7:0] FSYNC_PERIODL
++	{ 0x07, 0x12 },		// [7:0] FSYNC_PERIODM
++	{ 0x08, 0x13 },		// [7:0] FSYNC_PERIODH
++};
++
++/*
++ * Declare modes in order, from biggest
++ * to smallest height.
++ */
++static const struct max9286_mode {
++	u32 width;
++	u32 height;
++	const struct reg_8 *reg_table;
++} max9286_modes[] = {
++	{
++		.width = 1920,
++		.height = 1080,
++		.reg_table = mode_1920x1080,
++	},
++	{
++		.width = 1280,
++		.height = 720,
++		.reg_table = mode_1280x720,
++	},
++};
++
+ static struct max9286_source *next_source(struct max9286_priv *priv,
+ 					  struct max9286_source *source)
+ {
+@@ -245,6 +299,24 @@ static int max9286_write(struct max9286_priv *priv, u8 reg, u8 val)
+ 
+ 	return ret;
+ }
++static int max9286_set_regs(struct max9286_priv *priv, const struct reg_8 *regs,
++			    unsigned int nr_regs)
++{
++	unsigned int i;
++	int ret;
++
++	for (i = 0; i < nr_regs; i++) {
++		ret = max9286_write(priv, regs[i].addr, regs[i].val);
++		if (ret) {
++			dev_err(&priv->client->dev,
++			"%s: register %u (0x%02x) write failed (%d)\n",
++			__func__, i, regs[i].addr, ret);
++			return ret;
++		}
++	}
++
++	return 0;
++}
+ 
+ /* -----------------------------------------------------------------------------
+  * I2C Multiplexer
+@@ -754,11 +826,13 @@ static int max9286_set_fmt(struct v4l2_subdev *sd,
+ 	struct max9286_priv *priv = sd_to_max9286(sd);
+ 	struct v4l2_mbus_framefmt *cfg_fmt;
+ 
++	const struct max9286_mode *mode;
++
+ 	if (format->pad == MAX9286_SRC_PAD)
+ 		return -EINVAL;
+ 
+ 	/* Refuse non YUV422 formats as we hardcode DT to 8 bit YUV422 */
+-	switch (format->format.code) {
++	/*switch (format->format.code) {
+ 	case MEDIA_BUS_FMT_UYVY8_1X16:
+ 	case MEDIA_BUS_FMT_VYUY8_1X16:
+ 	case MEDIA_BUS_FMT_YUYV8_1X16:
+@@ -768,13 +842,23 @@ static int max9286_set_fmt(struct v4l2_subdev *sd,
+ 		format->format.code = MEDIA_BUS_FMT_UYVY8_1X16;
+ 		break;
+ 	}
++	*/
+ 
+ 	cfg_fmt = max9286_get_pad_format(priv, cfg, format->pad, format->which);
+ 	if (!cfg_fmt)
+ 		return -EINVAL;
+ 
++	mode = v4l2_find_nearest_size(max9286_modes,
++				      ARRAY_SIZE(max9286_modes), width, height,
++				      format->format.width,
++				      format->format.height);
++
++	max9286_set_regs(priv, mode->reg_table, MAX9286_MODE_REG_TABLE_SIZE);
++
+ 	mutex_lock(&priv->mutex);
+ 	*cfg_fmt = format->format;
++	cfg_fmt->width = mode->width;
++	cfg_fmt->height = mode->height;
+ 	mutex_unlock(&priv->mutex);
+ 
+ 	return 0;
+@@ -825,8 +909,8 @@ static const struct v4l2_subdev_ops max9286_subdev_ops = {
+ 
+ static void max9286_init_format(struct v4l2_mbus_framefmt *fmt)
+ {
+-	fmt->width		= 1920;
+-	fmt->height		= 1080;
++	fmt->width		= max9286_modes[0].width;
++	fmt->height		= max9286_modes[0].height;
+ 	fmt->code		= MEDIA_BUS_FMT_SGRBG8_1X8;
+ 	fmt->colorspace		= V4L2_COLORSPACE_SRGB;
+ 	fmt->field		= V4L2_FIELD_NONE;
+@@ -1006,9 +1090,8 @@ static int max9286_setup(struct max9286_priv *priv)
+ 	max9286_write(priv, 0x01, MAX9286_FSYNCMODE_INT_OUT |
+ 		      MAX9286_FSYNCMETH_MANUAL);
+ 
+-	max9286_write(priv, 0x06, 0xA0);	// [7:0] FSYNC_PERIODL
+-	max9286_write(priv, 0x07, 0x25);	// [7:0] FSYNC_PERIODM
+-	max9286_write(priv, 0x08, 0x26);	// [7:0] FSYNC_PERIODH
++	max9286_set_regs(priv, max9286_modes[0].reg_table,
++			 MAX9286_MODE_REG_TABLE_SIZE);
+ 
+ 	/*
+ 	 * Enable HS/VS encoding, use HS as line valid source,
+-- 
+2.7.4
+

@@ -1,0 +1,143 @@
+{
+    "gui": false, 
+    "name": "Xilinx PageRank", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u50"
+    ], 
+    "platform_blacklist": [
+    ], 
+    "platform_properties": {
+        "u50": {
+	        "v++": {
+	            "compiler": {
+		        "cflags": [
+		            "--config PROJECT/conn_u50.ini"
+		            ]
+		        }
+	        }
+	    }
+    }, 
+    "data": [
+        "./data"
+    ],
+    "launch": [
+        {
+            "cmd_args": " -dataSetDir PROJECT/data/ -refDir PROJECT/data/", 
+            "ld_library_path": "PROJECT/../../lib:$(XILINX_XRT)/lib:$(XILINX_XRM)/lib", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L3/tests/pageRank/test_pagerank.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include"
+            ], 
+            "options": "-O3 -I$(XILINX_XRM)/include"
+        },
+        "linker": {
+            "librarypaths": [
+                "LIB_DIR/L3/lib"
+            ], 
+            "libraries" : [
+                "graphL3"
+            ],
+            "options": "-L$(XILINX_XRM)/lib -lxrm "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/../utils/L1/include", 
+                "LIB_DIR/../database/L1/include/hw", 
+                "LIB_DIR/../quantitative_finance/L1/include", 
+                "LIB_DIR/L2/tests/pagerank_cache/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+
+                    "location": "LIB_DIR/L2/tests/pagerank_cache/kernel/kernel_pagerank_0.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL0", 
+                    "name": "kernel_pagerank_0",
+                    "num_compute_units": 1,
+                    "compute_units": [
+                    {
+                        "name": "kernel_pagerank_0",
+                        "slr": "SLR0",
+                        "arguments": [
+                        {
+                            "name": "m_axi_gmem0",
+                            "memory": "HBM[0]"
+                        },
+                        {
+                            "name": "m_axi_gmem1",
+                            "memory": "HBM[2:3]"
+                        },
+                        {
+                            "name": "m_axi_gmem2",
+                            "memory": "HBM[4:5]"
+                        },
+                        {
+                            "name": "m_axi_gmem3",
+                            "memory": "HBM[6:7]"
+                        },
+                        {
+                            "name": "m_axi_gmem4",
+                            "memory": "HBM[8:9]"
+                        },
+                        {
+                            "name": "m_axi_gmem5",
+                            "memory": "HBM[10:11]"
+                        },
+                        {
+                            "name": "m_axi_gmem6",
+                            "memory": "HBM[12:13]"
+                        },
+                        {
+                            "name": "m_axi_gmem7",
+                            "memory": "HBM[1]"
+                        }
+                        ]
+                    }
+                    ]
+                }
+            ], 
+
+            "frequency": 300.0, 
+            "name": "kernel_pagerank_0"
+        }
+    ], 
+    "testinfo": {
+        "disable": true, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": 32768, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

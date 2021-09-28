@@ -1,0 +1,127 @@
+{
+    "name": "Xilinx Hash Group Aggregate Benchmark",
+    "description": "Xilinx Hash Group Aggregate Benchmark",
+    "flow": "vitis",
+    "gui": false,
+    "platform_type": "pcie",
+    "platform_whitelist": [
+        "xilinx_u280_xdma_201920_3",
+        "xilinx_u50_gen3x16_xdma_201920_3"
+    ],
+    "platform_blacklist": [
+        "zc"
+    ],
+    "platform_properties": {
+        "u280": {
+            "containers": [
+                {
+                    "name": "hash_aggr_kernel",
+	        		"ldclflags": "--config PROJECT/conn_u280.cfg --config PROJECT/opts.cfg"
+                }
+            ]
+        },
+        "u50": {
+            "containers": [
+                {
+                    "name": "hash_aggr_kernel",
+	        		"ldclflags": "--config PROJECT/conn_u50.cfg --config PROJECT/opts.cfg"
+                }
+            ]
+        }
+    },
+    "launch": [
+        {
+            "name": "generic launch for sw_emu flows",
+            "target": "sw_emu",
+            "cmd_args": " -xclbin BUILD/hash_aggr_kernel.xclbin -rep 1 -key_column 1 -pld_column 1 -scale 100"
+        },
+        {
+            "name": "generic launch for hw_emu flows",
+            "target": "hw_emu",
+            "cmd_args": " -xclbin BUILD/hash_aggr_kernel.xclbin -rep 1 -key_column 1 -pld_column 1 -scale 10000"
+        },
+        {
+            "name": "generic launch for hw flows",
+            "target": "hw",
+            "cmd_args": " -xclbin BUILD/hash_aggr_kernel.xclbin"
+        }
+    ],
+    "host": {
+        "host_exe": "test_aggr.exe",
+        "compiler": {
+            "sources": [
+                "host/test_aggr.cpp",
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ],
+            "includepaths": [
+                "host",
+                "LIB_DIR/ext/xcl2",
+                "LIB_DIR/../utils/L1/include",
+                "kernel",
+                "LIB_DIR/L1/include/hw"
+            ],
+            "options": "-O3 ",
+            "symbols": [
+                "USE_HBM"
+            ]
+        }
+    },
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw",
+                "kernel",
+                "host",
+                "LIB_DIR/../utils/L1/include"
+            ],
+            "hls_jobs": 16
+        },
+        "linker": {
+            "synth_jobs": 16,
+            "impl_jobs": 16
+        }
+    },
+    "containers": [
+        {
+            "name": "hash_aggr_kernel",
+            "accelerators": [
+                {
+                    "location": "kernel/hash_aggr_kernel.cpp",
+                    "frequency": 250,
+                    "name": "hash_aggr_kernel"
+                }
+            ],
+            "frequency": 200
+        }
+    ],
+    "testinfo": {
+        "disable": false,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": {
+                    "vitis_hw_build": 65536,
+                    "vitis_hw_emu": 28672,
+                    "vitis_sw_emu": 10240,
+                    "vitis_hw_run": 10240
+                },
+                "max_time_min": {
+                    "vitis_hw_build": 720,
+                    "vitis_hw_emu": 470,
+                    "vitis_sw_emu": 60,
+                    "vitis_hw_run": 10
+                }
+            }
+        ],
+        "targets": [
+            "vitis_sw_emu",
+            "vitis_hw_emu",
+            "vitis_hw_build",
+            "vitis_hw_run"
+        ],
+        "category": "canary"
+    }
+}

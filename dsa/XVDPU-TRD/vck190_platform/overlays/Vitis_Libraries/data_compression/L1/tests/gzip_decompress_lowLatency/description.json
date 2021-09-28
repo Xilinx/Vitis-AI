@@ -1,0 +1,76 @@
+{
+    "name": "Xilinx Gzip Multibyte Dynamic Block Streaming Decompress HLS Test", 
+    "description": "Test Design to validate core Gzip decompress module", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u200"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [],
+    "QoR_golden": {
+        "VV_LUT": "6847",
+        "VV_FF": "5276",
+        "VV_BRAM": "1",
+        "VV_URAM": "2",
+        "VV_AchievedClockPeriod": "3.394"
+    }, 
+    "project": "gzip_decompress_test", 
+    "solution": "sol1", 
+    "clock": "3.3", 
+    "topfunction": "gzipMultiByteDecompressEngineRun", 
+    "top": {
+        "source": [
+            "$XF_PROJ_ROOT/common/libs/logger/logger.cpp", 
+            "$XF_PROJ_ROOT/common/libs/cmdparser/cmdlineparser.cpp", 
+            "gzip_decompress_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -DMULTIPLE_BYTES=8 -I${XF_PROJ_ROOT}/common/libs/cmdparser -I${XF_PROJ_ROOT}/common/libs/logger"
+    }, 
+    "testbench": {
+        "source": [
+            "$XF_PROJ_ROOT/common/libs/logger/logger.cpp", 
+            "$XF_PROJ_ROOT/common/libs/cmdparser/cmdlineparser.cpp", 
+            "gzip_decompress_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -DMULTIPLE_BYTES=8 -I${XF_PROJ_ROOT}/common/libs/cmdparser -I${XF_PROJ_ROOT}/common/libs/logger", 
+        "ldflags": "", 
+        "argv": {
+            "hls_csim": "-l ${DESIGN_PATH}/test.list -p ${DESIGN_PATH}", 
+            "hls_cosim": "-f ${DESIGN_PATH}/sample.txt.gz -o ${DESIGN_PATH}/sample.txt"
+        }
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": {
+                    "hls_vivado_syn": 300, 
+                    "hls_csim": 60, 
+                    "hls_cosim": 300, 
+                    "hls_vivado_impl": 300, 
+                    "hls_csynth": 60
+                }
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim", 
+            "hls_vivado_syn", 
+            "hls_vivado_impl"
+        ], 
+        "category": "canary"
+    }
+}

@@ -1,0 +1,25 @@
+# Start clean
+drop all
+
+#Typedef
+typedef tuple<Id vertex, score double> testResults
+
+#gtient_HAD_allergy Define Vertex types
+create vertex immunizations(PRIMARY_ID Id String, PERFORMED_ON_DATE String, PATIENT String, CODE UINT)
+create vertex allergies (PRIMARY_ID Id String, START_DATE String, STOP String, PATIENT String, CODE UINT)
+create vertex conditions (PRIMARY_ID Id String, START_DATE String, STOP String, PATIENT String, CODE UINT)
+create vertex imaging_studies(PRIMARY_ID Id String, PERFORMED_ON_DATE String, PATIENT String, BODYSITE_CODE UINT, MODALITY_CODE String)
+create vertex procedures(PRIMARY_ID Id String, PERFORMED_ON_DATE String, PATIENT String, CODE UINT)
+create vertex careplans (PRIMARY_ID Id String, START_DATE String, STOP String, PATIENT String, CODE UINT, REASONCODE UINT)
+create vertex patients (PRIMARY_ID Id String, BIRTHDATE String, DEATHDATE String, SSN String, FIRST_NAME String, LAST_NAME String, MARITAL String, RACE String, ETHNICITY String, GENDER String)
+
+create directed edge patient_HAD_immunization (from patients, to immunizations)
+create directed edge patient_HAD_allergy (from patients, to allergies)
+create directed edge patient_HAD_condition (from patients, to conditions)
+create directed edge patient_HAD_imaging_study (from patients, to imaging_studies)
+create directed edge patient_HAD_procedure (from patients, to procedures)
+create directed edge patient_HAD_careplan (from patients, to careplans)
+
+
+# Create Graph
+create graph xgraph(*)

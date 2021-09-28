@@ -15,6 +15,7 @@
 <:   {12_13_11}   {set TM_RDEPTH  2 }  :>
 <:   {13_12_11}   {set TM_RDEPTH  3 }  :>
 <:   {12_12_11}   {set TM_RDEPTH  4 }  :>
+<:   {14_14_11}   {set TM_RDEPTH  5 }  :>
 <:   default      {set TM_RDEPTH  15}  :>
 <: } :>
 <: set fp 0 :>
@@ -27,6 +28,7 @@
 <: set fp [expr $fp + 2**26 * [getIntValue  LOAD_AUGM         ]] :>
 <: set fp [expr $fp + 2**28 * [getIntValue  CONV_LEAKYRELU    ]] :>
 <: set fp [expr $fp + 2**29 * [getIntValue  CONV_RELU6        ]] :>
+<: set fp [expr $fp + 2**30 * [getIntValue  SAVE_ARGMAX_ENA   ]] :>
 <: set fp [expr $fp + 2**32 * $TM_RDEPTH                       ] :>
 <: set fp [expr $fp + 2**36 * [getIntValue  ELEW_MULT_ENA     ]] :>
 <: set fp [expr $fp + 2**48 * 1                                ] :>

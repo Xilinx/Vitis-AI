@@ -1,0 +1,120 @@
+{
+    "name": "Xilinx Heston Closed Form Model", 
+    "description": [
+        "Heston Closed Form Model using the L3 framework"
+    ], 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u250", 
+        "u50", 
+        "u200"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "host": {
+        "host_exe": "hcf_test.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/ext/xcl2/xcl2.cpp", 
+                "LIB_DIR/L3/tests/hcf/xf_fintech_hcf_exe.cpp", 
+                "LIB_DIR/L3/src/models/hcf/src/xf_fintech_hcf.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_device.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_device_manager.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_internal.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_ocl_controller.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_timestamp.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_trace.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/ext/xcl2", 
+                "LIB_DIR/L3/include", 
+                "LIB_DIR/L3/include/models", 
+                "LIB_DIR/L3/src/models/hcf/include", 
+                "LIB_DIR/L2/tests/HCFEngine/src/kernel", 
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include"
+            ], 
+            "options": "-O3 "
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/HCFEngine/src/kernel/hcf_kernel.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D TEST_DT=float", 
+                    "name": "hcf_kernel"
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "hcf_kernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 720, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/tests/HCFEngine/src/kernel"
+            ]
+        }
+    }, 
+    "platform_properties": {
+        "u250": {
+            "launch": [
+                {
+                    "name": "generic launch for all flows for u250 card", 
+                    "cmd_args": "BUILD/hcf_kernel.xclbin u250"
+                }
+            ]
+        }, 
+        "u50": {
+            "launch": [
+                {
+                    "name": "generic launch for all flows for u50 card", 
+                    "cmd_args": "BUILD/hcf_kernel.xclbin u50"
+                }
+            ]
+        }, 
+        "u200": {
+            "launch": [
+                {
+                    "name": "generic launch for all flows for u200 card", 
+                    "cmd_args": "BUILD/hcf_kernel.xclbin u200"
+                }
+            ]
+        }
+    }
+}

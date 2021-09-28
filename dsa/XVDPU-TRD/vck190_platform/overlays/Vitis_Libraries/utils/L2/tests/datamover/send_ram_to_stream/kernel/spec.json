@@ -1,0 +1,56 @@
+{
+    "ram2s_x2": {
+        "impl": "SendRamToStream",
+        "map": [
+            {
+                "in_port": {
+                    "buffer": "din0"
+                },
+                "out": {
+                    "stream": "s0",
+                    "width": 64
+                },
+				"ram": {
+					"depth": 512,
+					"type": "Uram"
+				}
+            },
+            {
+                "in_port": {
+                    "buffer": "din1"
+                },
+                "out": {
+                    "stream": "s1",
+                    "width": 32
+                },
+				"ram": {
+					"depth": 1024,
+					"type": "Bram"
+				}
+            }
+        ]
+    },
+    "s2m_x2": {
+        "impl": "StoreStreamToMaster",
+        "map": [
+            {
+                "in_port": {
+                    "stream": "s0",
+                    "width": 64
+                },
+                "out": {
+                    "buffer": "p0"
+                }
+            },
+            {
+                "in_port": {
+                    "stream": "s1",
+                    "width": 32
+                },
+                "out": {
+                    "buffer": "p1"
+                }
+            }
+        ]
+    }
+}

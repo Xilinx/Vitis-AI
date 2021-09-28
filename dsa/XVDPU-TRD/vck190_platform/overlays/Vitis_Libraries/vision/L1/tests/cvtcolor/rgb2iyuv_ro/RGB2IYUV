@@ -1,0 +1,4 @@
+$TESTDATADIR/$TEST/input/testcase1_ocv.png
+$TESTDATADIR/$TEST/output/testcase1_RGBA2IYUV_Y.png
+$TESTDATADIR/$TEST/output/testcase1_RGBA2IYUV_U.png
+$TESTDATADIR/$TEST/output/testcase1_RGBA2IYUV_V.png

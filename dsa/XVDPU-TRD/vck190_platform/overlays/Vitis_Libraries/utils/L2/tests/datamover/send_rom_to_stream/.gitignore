@@ -1,0 +1,3 @@
+kernel/*.cpp
+kernel/*.inc
+_krnlgen

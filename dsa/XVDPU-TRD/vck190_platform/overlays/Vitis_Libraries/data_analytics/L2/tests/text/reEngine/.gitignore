@@ -1,0 +1,3 @@
+re_compile/lib
+re_compile/oniguruma
+re_compile/*.so

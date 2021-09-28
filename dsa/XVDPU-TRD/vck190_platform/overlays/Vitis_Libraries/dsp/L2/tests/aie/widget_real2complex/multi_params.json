@@ -1,0 +1,14 @@
+{
+    "daily": {
+        "test_0_widget_real2complex": {
+            "DATA_TYPE":"int16",
+            "DATA_OUT_TYPE":"cint16",
+            "WINDOW_VSIZE":"256"
+        },
+        "test_1_widget_real2complex": {
+            "DATA_TYPE":"cint16",
+            "DATA_OUT_TYPE":"int16",
+            "WINDOW_VSIZE":"256"
+        }
+    }
+}

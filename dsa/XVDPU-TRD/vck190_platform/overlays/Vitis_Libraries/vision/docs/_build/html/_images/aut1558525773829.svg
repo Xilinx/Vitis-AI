@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:pmml2svg="https://sourceforge.net/projects/pmml2svg/"
+     xmlns="http://www.w3.org/2000/svg"
+     version="1.1"
+     width="120.64999999999998px"
+     height="30.502499999999998px"
+     viewBox="0 0 120.64999999999998 30.502499999999998">
+   <metadata>
+      <pmml2svg:baseline-shift>11.722499999999997</pmml2svg:baseline-shift>
+   </metadata>
+   <g stroke="none"
+      fill="#000000"
+      text-rendering="optimizeLegibility"
+      font-family="STIXGeneral,STIXSizeOneSym">
+      <g xmlns:doc="http://nwalsh.com/xsl/documentation/1.0"
+         style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+         <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+               x="3.12"
+               y="18.78"
+               font-size="15">L</text>
+         <text x="15.671670000000002"
+               y="18.78"
+               font-size="15"
+               style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; ">=</text>
+         <g style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                  x="31.11334"
+                  y="12.81"
+                  font-size="15">V</text>
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                  x="41.43334"
+                  y="12.81"
+                  font-size="15">m</text>
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                  x="52.26334"
+                  y="12.81"
+                  font-size="15">a</text>
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                  x="60.18334"
+                  y="12.81"
+                  font-size="15">x</text>
+            <text x="70.22167"
+                  y="12.81"
+                  font-size="15"
+                  style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; ">+</text>
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                  x="83.83"
+                  y="12.81"
+                  font-size="15">V</text>
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                  x="94.14999999999999"
+                  y="12.81"
+                  font-size="15">m</text>
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                  x="104.97999999999999"
+                  y="12.81"
+                  font-size="15">i</text>
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                  x="109.14999999999999"
+                  y="12.81"
+                  font-size="15">n</text>
+         </g>
+         <g style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; "
+                  x="70.13166999999999"
+                  y="27.5025"
+                  font-size="15">2</text>
+         </g>
+         <line x1="30.11334"
+               y1="14.925"
+               x2="117.64999999999998"
+               y2="14.925"
+               fill="none"
+               stroke="black"
+               stroke-width="0.9375"/>
+      </g>
+   </g>
+</svg>
