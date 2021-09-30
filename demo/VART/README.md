@@ -116,7 +116,7 @@ In the docker system, `/workspace/demo/VART/` is the path for the following exam
 	* Take `resnet50` of U50 as an example.
 	```
 	  cd /workspace
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz -O resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz -O resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
 	```	
 	* Install the model package.  
 	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
@@ -125,7 +125,7 @@ In the docker system, `/workspace/demo/VART/` is the path for the following exam
 	```  
 	Then install the model package.
 	```
-	  tar -xzvf resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+	  tar -xzvf resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 
