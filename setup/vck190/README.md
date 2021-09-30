@@ -16,13 +16,15 @@ With Vitis-AI, Xilinx has integrated all the edge and cloud solutions under a un
 
 **Please install it on your local host linux system, not in the docker system.**
 ```
-./host_cross_compiler_setup_2020.2.sh
+./host_cross_compiler_setup.sh
 ```
-Note that the Cross Compiler will be installed in `~/petalinux_sdk_2020.2` by default. 
+Note that the Cross Compiler will be installed in `~/petalinux_sdk_2021.1` by default.  
+For `VCK190 ES1` board, use `host_cross_compiler_setup_2020.2.sh` to install the cross-compiler. 
+For `VCK190 Production` board, use `host_cross_compiler_setup.sh` to install the cross-compiler. 
 
 2. When the installation is complete, follow the prompts and execute the following command.
 ```
-source ~/petalinux_sdk_2020.2/environment-setup-aarch64-xilinx-linux
+source ~/petalinux_sdk_2021.1/environment-setup-cortexa72-cortexa53-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
@@ -37,9 +39,12 @@ steps.**
 1. Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 		
-		[VCK190](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-vck190-dpu-v2020.2-v1.4.0.img.gz) 
+		[VCK190 Production board](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-vck190-dpu-v2021.1-v1.4.1.img.gz)   
+
+		[VCK190 ES1 board](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-vck190-dpu-v2020.2-v1.4.0.img.gz) 
 	
-      	Note: The version of the board image should be 2020.2 and the image is only for `VCK190 ES1` board.
+      	Note: The version of the VCK190 ES1 board image is 2020.2 and the VCK190 production board image is 2021.1.  
+              If you use 2020.2 system, use the corresponding 2020.2 cross-compiler.
 	* Use Etcher software to burn the image file onto the SD card.
 	* Insert the SD card with the image into the destination board.
 	* Plug in the power and boot the board using the serial port to operate on the system.
@@ -58,7 +63,7 @@ steps.**
 	* Install the Vitis AI Runtime. Execute the following command.
 	```
 	cd ~/vck190
-	bash target_vart_setup_2020.2.sh
+	bash target_vart_setup.sh
 	```
 3. (Optional) Download the model.  	
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
