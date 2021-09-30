@@ -40,16 +40,16 @@ files:
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 6d56a43e3bfd5f9af01ef3d2e97949d7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 0332d0c352ea1d0a849ce9cfcaa73a27
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: cfbb92891671036064b19aa07fec5445
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: b31152224f4934ecdb714bd3a54237b3
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 9699f06ef86a05dfacbe503bfb2afb44
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 930f780c0d65d1206626082d0f4f1d0c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

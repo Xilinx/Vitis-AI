@@ -40,16 +40,16 @@ files:
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 7da86cb2c868d39a3ed1e3fce505d695
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: c68780e2c4568a41141eb3bdd0e6f9f5
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: debb96a59e05194371cdeb8d1f679812
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: f32739507d92a33f9c6c83c1eaed74c5
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: d3fb761bd9377cb44e51c2866ea25b56
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 7d2530678343cb221224ddf43b46e779
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

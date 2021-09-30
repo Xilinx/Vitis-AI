@@ -42,11 +42,11 @@ files:
 - name: face-quality
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 861eaf6254509a8b7b5ab6aa0885a365
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: c9089717f0127aa94266360822b3ff7a
 - name: face-quality
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 233848713b9395df56c90160c485d77e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 5bde9719147f8440fc0bad308fc636b1
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

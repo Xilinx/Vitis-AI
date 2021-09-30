@@ -40,13 +40,13 @@ files:
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 670c2c3bce319d26dff2bdafe806c56b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 09b5ff64d0ad7e38d20b358b03f29838
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: ac3ef53b82aa369556359b94e6a534e9
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v4_2016_09_09_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: c8c98b3f88f732178453f4dfb2aec7e8
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

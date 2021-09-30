@@ -40,16 +40,16 @@ files:
 - name: refinedet_pruned_0_96
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 1e5294be748cc5fe5e85e5e0c64a1dd2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: e2059578e411ed8193e11584374dbbda
 - name: refinedet_pruned_0_96
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: d64bbe39f37793ba7a5e81e45f651e5d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 17510838e8b683955915430754185c4f
 - name: refinedet_pruned_0_96
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 22ed55668a18d668d98eaf6044bc6a2a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 8c38f4a6a84d270f5a320a766d3b2aa6
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -40,6 +40,6 @@ files:
 - name: yolov4_leaky_spp_m
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: b0e75051566be5ff066a0e9ce76e1294
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: aae1a59211297a47b9a445f2409821ff
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -40,11 +40,11 @@ files:
 - name: inception_v2
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 89f7e39e5c79b3dd090ebde21c84aad7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 920971d46d5077add13fb77ff790e80b
 - name: inception_v2
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 66faca97d8ee0ab4c7efe6f48d88e3b2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v2-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 80def95614d7e2c53bd83e5c17655e79
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -40,11 +40,11 @@ files:
 - name: inception_resnet_v2_tf
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 9b5980b90356bdd22eaa50707364e6c5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 6b4ac064ff523bcd22b9014d1951ceec
 - name: inception_resnet_v2_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 96787d395607c546636313453fabd861
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 787144aa75d34e79d63c57aee5454ff4
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

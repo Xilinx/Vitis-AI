@@ -40,16 +40,16 @@ files:
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 75c3f9ecc4c568b3240d1ba9614cd3b2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 4afe2c9586360ee79026b20697a3c547
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: fa4798bb2d54cac5197c47d760b0a9dd
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 6f6fda2e46b9387cdcaffbe785fc585b
 - name: ssd_adas_pruned_0_95
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 4ae06a86fcd17206d8734017f800092e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_adas_pruned_0_95-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 86d5ee03e0a24e8f48bfb58a59f78367
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

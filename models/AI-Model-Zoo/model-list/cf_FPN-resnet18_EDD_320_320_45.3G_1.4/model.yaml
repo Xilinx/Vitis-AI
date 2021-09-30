@@ -40,16 +40,16 @@ files:
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 0cdecd9f808d91a83aed42b5f83be350
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 715f0dfc079a3774e4891c8215a2356f
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 3f91188cb08d30b91bca7c2b08891acd
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: e3085a7383ffa098e0d31508ad5cd4e7
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 33089f40a39bb3f8ed3d6a7423483ff0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: e10c1099bee0f48bdb9c4c680d5acae0
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

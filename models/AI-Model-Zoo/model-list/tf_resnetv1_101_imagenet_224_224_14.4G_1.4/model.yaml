@@ -40,18 +40,18 @@ files:
 - name: resnet_v1_101_tf
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 0d774e31275be582cdac414bfdd737d2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: b7f3ff631baf61e345d87d5833183b90
 - name: resnet_v1_101_tf
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: b93512de8eb6f31dd3c610157205200e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: c92846a96723d4818f158c156b919c8d
 - name: resnet_v1_101_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 767fc93a5cdd681ed7d5e990ed5a3c2e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_101_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 5b67e9928e2e7dc9c68248ef6dc777a6
 - name: resnet_v1_101_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

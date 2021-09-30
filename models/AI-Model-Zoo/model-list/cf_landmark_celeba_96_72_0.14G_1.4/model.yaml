@@ -41,18 +41,18 @@ files:
 - name: face_landmark
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: cca96c4b6cd3f260ea0721f287994b27
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 4cdfd70036750d16c916504eaea6c82f
 - name: face_landmark
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 2cd363bd024bd2a3e6a59ea22591b9f9
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 1b1d39a15c7720f5c34dc32494a0b6d5
 - name: face_landmark
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: c1ad6680c66d129d7a01cd9d7604b46b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 37b9a1543fffad7d950e22f8eef00a79
 - name: face_landmark
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

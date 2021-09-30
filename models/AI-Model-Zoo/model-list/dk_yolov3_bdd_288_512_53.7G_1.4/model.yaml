@@ -40,11 +40,11 @@ files:
 - name: yolov3_bdd
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: b6fd1d3bf05cdd69111b80875e45e2e3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 7a75aee98a0b0d1470d4457e80fbd1ee
 - name: yolov3_bdd
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 8ab3d6d9430217b00da5369b423c77f3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: e8740c6ad6a17b7bb2dffc26be1426d6
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

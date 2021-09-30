@@ -40,8 +40,8 @@ files:
 - name: plate_num
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 666f9c9d0db8e7d1d9d666928ee22d9b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 8772537fbbaff5a402c8fb892cbe7419
 - name: plate_num
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

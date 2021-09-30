@@ -40,18 +40,18 @@ files:
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: a31c2a664385f0a13430fe881d60ba53
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 163a42e36d422a9a80c1bef68f3e293f
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: e6c84816db47e1ad340e088c81713251
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 5d3543a050f4fb837523a421f697d6b5
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 674d62085043bfe43f61c7b89c105525
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 2b32d3c276cef61ce2abb5e84bb5ab38
 - name: vpgnet_pruned_0_99
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

@@ -40,18 +40,18 @@ files:
 - name: resnet18
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 7aa79b418315cb6ee01889f070bccf1f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 3ad5f504028767d8a584a4ccf49f17e1
 - name: resnet18
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: f9e1892249d8b5c94972e5bd3690d5e7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 744de49bf0137cff3c4c731cb6890c65
 - name: resnet18
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 27ae5e335caf952114d2db4063c12cc0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet18-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: ae70c8c7d67726a4c025de52cf3acba7
 - name: resnet18
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

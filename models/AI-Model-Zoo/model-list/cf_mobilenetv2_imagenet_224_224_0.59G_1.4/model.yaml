@@ -40,6 +40,6 @@ files:
 - name: mobilenet_v2
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 872c3a7a28cf60109ff90e18c74afd39
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 118affb0d0d491f680ff13880ba950d4
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

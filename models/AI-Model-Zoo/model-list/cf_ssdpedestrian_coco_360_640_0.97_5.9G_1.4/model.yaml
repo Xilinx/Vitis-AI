@@ -40,11 +40,11 @@ files:
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: c656da5e83f49cecd773a5fc7591b15a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 801b03846c97c814090ae0e741182a08
 - name: ssd_pedestrian_pruned_0_97
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 5a7ee03e3fdb0d4ab2ee45bcd73379fc
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 200d937db9376abb2766e04a9ff5b5fe
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

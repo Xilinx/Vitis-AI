@@ -40,6 +40,6 @@ files:
 - name: ssd_mobilenet_v1_coco_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 5237e55726c4ee7cff284d5ae9c1b78d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 1809dfe62e827446094f201c54b0606c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

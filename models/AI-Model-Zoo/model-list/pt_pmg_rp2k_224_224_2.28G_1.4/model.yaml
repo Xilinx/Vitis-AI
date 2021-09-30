@@ -40,6 +40,6 @@ files:
 - name: pmg_pt
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pmg_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: b3007c2cc1f19d45a563f15911b7d6a4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pmg_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 921048bca4bacbdf53e003281e31e94f
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

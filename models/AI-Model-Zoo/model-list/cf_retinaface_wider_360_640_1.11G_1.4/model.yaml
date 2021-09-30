@@ -40,6 +40,6 @@ files:
 - name: retinaface
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=retinaface-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 34bfea475ec7ea85f2b864b66e367d9d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=retinaface-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: a95f8722ad98d74530748bb5d0662d6b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

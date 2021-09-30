@@ -40,16 +40,16 @@ files:
 - name: multi_task
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 0603ab9f7addd58488a79711172c1a3b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 3698487776479b05f521a656e89c461c
 - name: multi_task
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: f77622254276d6c4694fdc4350595e29
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 68b6c505fb432be95ffd438c29cc7c25
 - name: multi_task
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 7ac5eacfe6413657ad7debe58d7efceb
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 16d163ce973fabb2d86f4d5fe1b27833
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

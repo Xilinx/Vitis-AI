@@ -40,6 +40,6 @@ files:
 - name: ssd_mobilenet_v2
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: f0fa0095b63e6ea14f7f177402d53dae
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: ddb7282d7c297b6b4a16285a67c574a4
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

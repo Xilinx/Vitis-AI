@@ -40,16 +40,16 @@ files:
 - name: resnet50_tf2
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: da3a419231d51b055ae613eec060afaa
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 6d2604c7f4c5d27f95a345242d820394
 - name: resnet50_tf2
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 35ef61bee0eaf5cc7d211e6936aa572a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 46a8d41d27946b374976162e34e1d34b
 - name: resnet50_tf2
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 0291b6aef7b6f327fd98768a80c4507a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: ea05889191524d4a912e103b2401a406
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

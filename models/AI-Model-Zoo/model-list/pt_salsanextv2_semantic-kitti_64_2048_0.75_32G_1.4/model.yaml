@@ -40,6 +40,6 @@ files:
 - name: salsanext_v2_pt
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: b666248fd140b85d9a76bf450ab74473
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: dbe3ba85720fd735b790fdb02e3919f3
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

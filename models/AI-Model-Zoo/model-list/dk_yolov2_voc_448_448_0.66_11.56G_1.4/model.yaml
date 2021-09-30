@@ -40,11 +40,11 @@ files:
 - name: yolov2_voc_pruned_0_66
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 3c0256f3e394d52a3bb5cbf351938d63
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: f05206bcf64b0e2cceeae1a44166a8f0
 - name: yolov2_voc_pruned_0_66
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 2e6d71a47feb6f47e2bf86fadee48fa7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: e60240a88d197658513cb11db034757d
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

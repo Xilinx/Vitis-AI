@@ -45,6 +45,6 @@ files:
 - name: SemanticFPN_Mobilenetv2_pt
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_Mobilenetv2_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 53ef6d36acabb17d2a1e60be6d5d3889
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_Mobilenetv2_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 32f479d95196be171cec15e02bc6fc70
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

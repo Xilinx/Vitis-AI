@@ -40,13 +40,13 @@ files:
 - name: vgg_16_tf
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: a3b859db65154e4026f711f80d9d8eee
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: cc095dfaf577939f2957a35bfe39eb01
 - name: vgg_16_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 2baf07835ebf59aa90da2fef28302d9b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 0043790c8de81cdaec977a2778d4779a
 - name: vgg_16_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

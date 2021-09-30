@@ -40,6 +40,6 @@ files:
 - name: ssdlite_mobilenet_v2_coco_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 4f63aa076394eb8dc9ccd3b19615dce5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: cedb73e3bdc1c7aa239cde44824f033c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

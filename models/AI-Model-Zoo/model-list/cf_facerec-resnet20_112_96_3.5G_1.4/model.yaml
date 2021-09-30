@@ -40,11 +40,11 @@ files:
 - name: facerec_resnet20
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: bc4a91402e082bcd2b999bc23382d335
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: df31940bd6dad76954efef2b962642b8
 - name: facerec_resnet20
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: d7b77b71d629da904f6587544eece5ba
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: da760e454114b09f8a2eb18ba6bc249f
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

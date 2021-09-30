@@ -40,16 +40,16 @@ files:
 - name: medical_seg_cell_tf2
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: c83c87d1be2b752aea2c8835115f940f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: d41e6cd2df9a542e3935a9dba68b31a8
 - name: medical_seg_cell_tf2
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 48c56512e0f5ebf62fad194162e56913
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: ca7c45348ae07e5acb7f7115139c21ee
 - name: medical_seg_cell_tf2
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 857eb6be6e7d2c53f0de29d49eb2a54b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: aa4a7a7e5c6d223044a4492bb65ca7cc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

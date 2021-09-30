@@ -32,16 +32,16 @@ files:
 - name: squeezenet_pt
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: afa44a3e2c8a21f9a6bb2ba782dbd856
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: c0582642a734ab746e5aa9b8f355c5bf
 - name: squeezenet_pt
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 0ff4432aa4386a64088209be8ac87531
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 9959f6512d70c84bcfe946312e7f8d8e
 - name: squeezenet_pt
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: ef2359995b426f7d4f600194902165fd
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 38b864f5c76f14a770c73c317ed8cbce
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -40,13 +40,13 @@ files:
 - name: densebox_640_360
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 88df124f009f6f5c7fa3f9ed2c380a99
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 0c5a4a6aa746729ab675536d239b6d91
 - name: densebox_640_360
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 4e7a026d70c87051f1e086d5011b1320
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 3b6d53f17f32b3b8a8981489b7dc9ec7
 - name: densebox_640_360
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

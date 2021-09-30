@@ -40,18 +40,18 @@ files:
 - name: plate_detect
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 83a8beedc28bc9571a6e3a082495ed84
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 58357f36d10b532b7f9d9d9bfed91f91
 - name: plate_detect
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: a77b0ac78c159dc301f18270181d1d00
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 982fb10213d03c1b451e6fb3332b39ec
 - name: plate_detect
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 1dedda87cadc08035d7e568b536eb5e1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 64f6343ee7761284ff6b622a7095bed9
 - name: plate_detect
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

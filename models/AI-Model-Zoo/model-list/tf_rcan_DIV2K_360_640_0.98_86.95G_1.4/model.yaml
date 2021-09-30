@@ -40,6 +40,6 @@ files:
 - name: rcan_pruned_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: e824c68dd30c8eee8923f4ec570898a0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: f9df30a129f6cb67b102184620a8e20c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

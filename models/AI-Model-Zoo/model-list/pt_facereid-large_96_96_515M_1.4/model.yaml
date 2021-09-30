@@ -40,6 +40,6 @@ files:
 - name: facereid-large_pt
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 24657e7b92e6328ee5d7137f4a829f27
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 3f1cc851e830fd692aa5cbfe68cfd017
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
