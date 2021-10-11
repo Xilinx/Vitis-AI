@@ -48,3 +48,16 @@ Here we install it under `~/petalinux_sdk`.
     cd /workspace/dsa/WAA-TRD/app/resnet50_int8
     bash -x build.sh
     ```
+
+## Model Performance
+Refer below table for examples with demonstration on complete acceleration of various applications where pre/post-processing of several networks are accelerated on different target platforms.
+
+
+| No. | Application                                           | Backbone Network | Accelerated Part(s)   | H/W Accelerated Functions                     | DPU Supported (% Improvement Over Non-WAA App) |
+|-----|-------------------------------------------------------|------------------|----------------------------|-----------------------------------------------|--------------------------------------------------------------------------|
+| 1   | adas_detection                                        | Yolo v3          | Pre-process                | resize, letter box, scale                     | ZCU102  (*64%) , ALVEO-U50 (*44%)                                        |
+| 2   | resnet50_int8                                         | resnet-50        | Pre-process                | resize, mean subtraction, scale               | ALVEO-U200 (37%)                                                         |
+| 3   | resnet50_jpeg                                         | resnet-50        | Pre-process                | JPEG decoder, resize, mean subtraction, scale | ZCU102  (*69%)                                                           |
+
+
+`*` Includes imread/jpeg-decoder latency in both WAA and non WAA app
