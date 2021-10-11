@@ -74,14 +74,14 @@ for i in range (wgt_number):
     result.append(str_buf)
 
 ###########sptag section for XVDPU and NOC#################################
-# sptag for INSTR&BIAS. Name of sptag is 'NOC_S13~18'.
+# sptag for INSTR&BIAS. Name of sptag is ' "NOC_Sxx"
 result.append(
 r'''sp=DPUCVDX8G.M00_INSTR_AXI:NOC_S13
 sp=DPUCVDX8G.M00_BIAS_AXI:NOC_S14
 ''')
 
-# sptag for WGT_ports. Name of sptag is ' "NOC_S" + number_axi '.
 S_AXI_N = 15
+# sptag for WGT_ports. Name of sptag is ' "NOC_S" + number_axi '.
 for i in range (WGT_ports): 
     number_wgt = str(i).rjust(2,'0')    
     number_axi = str(S_AXI_N)

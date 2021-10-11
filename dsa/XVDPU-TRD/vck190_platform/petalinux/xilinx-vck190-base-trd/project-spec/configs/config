@@ -219,7 +219,7 @@ CONFIG_YOCTO_BOARD_VARIANT_NAME=""
 #
 # TMPDIR Location
 #
-CONFIG_TMP_DIR_LOCATION="${PROOT}/build/tmp"
+CONFIG_TMP_DIR_LOCATION="/tmp/xilinx_vck190_base-2021.1"
 
 #
 # Devtool Workspace Location

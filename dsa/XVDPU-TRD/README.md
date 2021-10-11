@@ -76,11 +76,12 @@ The top-level directory structure shows the the major design components.
 ├── app
 ├── README.md
 ├── vck190_platform                        # VCK190 platform folder
-│   ├── hw
+│   ├── LICENSE
 │   ├── Makefile
-│   ├── platform
-│   ├── README.md
-│   └── sw
+│   ├── overlays
+│   ├── petalinux
+│   ├── platforms
+│   └── README.md
 ├── vitis_prj                              # Vitis project folder
 │   ├── Makefile
 │   ├── scripts
@@ -100,8 +101,6 @@ The top-level directory structure shows the the major design components.
 ###### Board jumper and switch settings:
 
 Please make sure the board is set as booting from SD card:
-
-
 
 - Remove J326 (7-8) jumper.
 
@@ -141,8 +140,7 @@ Open a linux terminal. Set the linux as Bash mode.
 #### 5.2.1 Build the Hardware Design
 
 The default setting of DPUCVDX8G is 3 Batch (CPB_N=32), Frequency is 333 MHz, UBANK_IMG_N (=16) and UBANK_WGT_N (=17) are set as the Max value.
-Modify file '$TRD_HOME/vitis_prj/xvdpu_config.mk' can change the settings. 
- 
+Modify file '$TRD_HOME/vitis_prj/xvdpu_config.mk' can change the settings.  
 
 Build the hardware design.
 
@@ -155,7 +153,7 @@ Build the hardware design.
 
 Generated SD card image:  $TRD_HOME/vitis_prj/package_out/sd_card.img.gz
 
-Implemented Vivado project: $TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj
+Implemented Vivado project: $TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj/prj.xpr
 
 **Note1:** With 'make help' to check the detailed information about the commands. 
 
@@ -194,7 +192,9 @@ Expect result like below:
 I0130 22:02:10.517663   755 test_dpu_runner_mt.cpp:399] create runner ... 0/1
 I0130 22:02:11.101772   755 performance_test.hpp:73] 0% ...
 I0130 22:02:17.101913   755 performance_test.hpp:76] 10% ...
-...
+.
+.
+.
 I0130 22:03:11.103199   755 performance_test.hpp:76] 100% ...
 I0130 22:03:11.103253   755 performance_test.hpp:79] stop and waiting for all threads terminated....
 I0130 22:03:11.104063   755 performance_test.hpp:85] thread-0 processes 73776 frames
@@ -262,7 +262,7 @@ Changing platform needs to modify 3 files: 'vitis_prj/Makefile', 'vitis_prj/scri
 ```
 
 2) 'vitis_prj/scripts/xvdpu_aie_noc.py':
-- Change the name of 'sptag'
+- Change the name of 'sptag'.
 
 3) 'vitis_prj/scripts/postlink.tcl':
 
