@@ -7,6 +7,8 @@ ENV VAI_ROOT=/opt/vitis_ai
 ENV VAI_HOME=/vitis_ai_home
 ARG VERSION
 ENV VERSION=$VERSION
+ARG GIT_HASH="<blank>"
+ENV GIT_HASH=$GIT_HASH
 ARG DATE
 ENV DATE=$DATE
 ARG XRT_URL=https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_18.04-amd64-xrt.deb
@@ -214,9 +216,11 @@ RUN groupadd vitis-ai-group \
     && echo "conda activate base" >> ~vitis-ai-user/.bashrc \
     && echo "export VERSION=${VERSION}" >> ~vitis-ai-user/.bashrc \
     && echo "export BUILD_DATE=\"${DATE}\"" >> ~vitis-ai-user/.bashrc \
+    && echo "export GIT_HASH=${GIT_HASH}" >> ~vitis-ai-user/.bashrc \
     && cat ~vitis-ai-user/.bashrc >> /root/.bashrc \
     && echo $VERSION > /etc/VERSION.txt \
     && echo $DATE > /etc/BUILD_DATE.txt \
+    && echo $GIT_HASH > /etc/GIT_HASH.txt \
     && echo 'export PS1="\[\e[91m\]Vitis-AI\[\e[m\] \w > "' >> ~vitis-ai-user/.bashrc \
     && mkdir -p ${VAI_ROOT} \
     && chown -R vitis-ai-user:vitis-ai-group ${VAI_ROOT} \

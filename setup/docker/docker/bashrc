@@ -24,6 +24,7 @@ fi
 . /opt/vitis_ai/conda/etc/profile.d/conda.sh
 export PATH=/opt/vitis_ai/conda/bin:$PATH
 export VERSION=`cat /etc/VERSION.txt`
+export GIT_HASH=`cat /etc/GIT_HASH.txt`
 export BUILD_DATE=`cat /etc/BUILD_DATE.txt`
 export VAI_ROOT=$VAI_ROOT
 export VAI_HOME=$VAI_HOME
