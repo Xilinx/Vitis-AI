@@ -77,10 +77,10 @@ Required:
   - [XRT 2021.1](https://github.com/Xilinx/XRT/tree/2021.1)
   - [zcu102 base platform 2021.1](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
   - [ZYNQMP common image 2021.1](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
-  - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
+  - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/tools/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
 
-###### **Note:** The user can also refer the [zcu102 dpu platform](https://github.com/Xilinx/Vitis_Embedded_Platform_Source/tree/master/Xilinx_Official_Platforms/zcu102_dpu), The github page includes all the details, such as how to generage the zcu102 dpu platform, how to create the SD card after compiling the DPU project.
+###### **Note:** The user can also refer the [zcu102 dpu platform](https://github.com/Xilinx/Vitis_Embedded_Platform_Source/tree/2021.1/Xilinx_Official_Platforms/xilinx_zcu102_base), The giuuthub page includes all the details, such as how to generage the zcu102 dpu platform, how to create the SD card after compiling the DPU project.
 ------
 
 ## 4 Design Files
