@@ -143,7 +143,7 @@ PY_EXE=""
 if [ "${MODEL}" == "tf_resnet_v1_50_u200_u250" ]; then
   CPP_EXE=examples/bin/tf_resnet_v1_50.exe
   exec_args="u200_u250 ${DIRECTORY1}"
-  export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8
+  export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H
 
 elif [ "${MODEL}" == "tf_resnet_v1_50_u50" ]; then
   CPP_EXE=examples/bin/tf_resnet_v1_50.exe
@@ -164,7 +164,7 @@ elif [ "${MODEL}" == "cf_densebox_320_320_u50" ]; then
 elif [ "${MODEL}" == "cf_densebox_320_320_u200_u250" ]; then
   CPP_EXE=examples/bin/cf_densebox_320_320.exe
   exec_args="u200_u250 ${DIRECTORY1}"
-  export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8
+  export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H
 fi
 
 # Base/Root path for xmodel directories

@@ -48,7 +48,7 @@ then
   exit 1
 fi
 
-export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8/waa/lucas_kanade_of/dpuv3int8_lkof.hw.xilinx_u200_gen3x16_xdma_1_202110_1.xclbin
+export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H/waa/lucas_kanade_of/dpuv3int8_lkof.hw.xilinx_u200_gen3x16_xdma_1_202110_1.xclbin
 export AKS_ROOT
 # Add verbose level
 export AKS_VERBOSE=$VERBOSE

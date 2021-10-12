@@ -23,11 +23,11 @@ Currently, applications accelerating pre-processing for classification networks 
 
 **Note that the docker container needs to be loaded and the below commands need to be run in the docker environment. Docker installation instructions are available [here](../../../README.md#Installation)**
 
-* Download the [dpuv3int8_xclbins_1_4_0](https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_4_0.tar.gz) xclbin tar and install xclbin.
+* Download the [DPUCADF8H_xclbins_1_4_1](https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_xclbins_1_4_1.tar.gz) xclbin tar and install xclbin.
 
 	```
 	sudo tar -xzvf dpuv3int8_xclbins_1_4_0.tar.gz --directory /
-	export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8/waa/classification
+	export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H/waa/classification
 	```
 
 * Download and install `resnet_v1_50_tf` model:

@@ -32,11 +32,11 @@ Take ZCU102/ZCU104 as an example, execute the following commands to download and
 	cp sp_net /usr/share/vitis_ai_library/models -r
 
 For U50, execute the following commands.
-	wget https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz -O ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-	wget https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz -O sp_net-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+	wget https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz -O ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+	wget https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz -O sp_net-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
 	sudo mkdir -p /usr/share/vitis_ai_library/models
-	tar -xzvf ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+	tar -xzvf ssd_pedestrian_pruned_0_97-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
 	sudo cp ssd_pedestrian_pruned_0_97 /usr/share/vitis_ai_library/models -r 
-	tar -xzvf sp_net-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+	tar -xzvf sp_net-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
 	sudo cp sp_net /usr/share/vitis_ai_library/models -r 
 

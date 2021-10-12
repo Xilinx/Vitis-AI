@@ -21,9 +21,9 @@ import subprocess
 
 # Device artifacts
 u50 = {
-  "tf_resnet_v1_50" : "https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz",
-  "cf_resnet50" : "https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz",
-  "densebox_320_320" : "https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz"
+  "tf_resnet_v1_50" : "https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz",
+  "cf_resnet50" : "https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz",
+  "densebox_320_320" : "https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz"
 }
 
 u200_u250 = {

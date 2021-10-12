@@ -19,11 +19,11 @@ This application demonstrates the acceleration of Lucas-Kanade Dense Non-Pyramid
 
 **Note that the docker container needs to be loaded and the below commands need to be run in the docker environment. Docker installation instructions are available [here](../../../README.md#Installation)**
 
-* Download the [dpuv3int8_xclbins_1_4_0](https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_4_0.tar.gz) xclbin tar and install xclbin.
+* Download the [DPUCADF8H_xclbins_1_4_1](https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_xclbins_1_4_1.tar.gz) xclbin tar and install xclbin.
 ```sh
-wget https://www.xilinx.com/bin/public/openDownload?filename=dpuv3int8_xclbins_1_4_0.tar.gz -O dpuv3int8_xclbins_1_4_0.tar.gz
-[sudo] tar -xzvf dpuv3int8_xclbins_1_4_0.tar.gz --directory /
-rm dpuv3int8_xclbins_1_4_0.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_xclbins_1_4_1.tar.gz -O DPUCADF8H_xclbins_1_4_1.tar.gz
+[sudo] tar -xzvf DPUCADF8H_xclbins_1_4_1.tar.gz --directory /
+rm DPUCADF8H_xclbins_1_4_1.tar.gz
 ```
 
 ## Building Kernels

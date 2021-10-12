@@ -39,8 +39,8 @@ echo "---------------------"
 echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
 echo "---------------------"
 
-export XCLBIN_PATH=/opt/xilinx/overlaybins/dpuv4e/8pe
-export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv4e/8pe/dpu_DPUCVDX8H_8PE350_xilinx_vck5000-es1_gen3x16_base_2.xclbin
+export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCVDX8H/8pe
+export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/8pe/dpu_DPUCVDX8H_8PE350_xilinx_vck5000-es1_gen3x16_base_2.xclbin
 
 echo "---------------------"
 echo "XCLBIN_PATH = $XCLBIN_PATH"
