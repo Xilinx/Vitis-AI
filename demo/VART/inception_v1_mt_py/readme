@@ -22,9 +22,9 @@ In the model.yaml, you will find the model's download links for different platfo
 Please choose the corresponding model and download it.
 
 Take ZCU102/ZCU104 as an example, execute the following commands to download and install the model.
-	wget https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz -O inception_v1_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
+	wget https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz -O inception_v1_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
 	mkdir -p /usr/share/vitis_ai_library/models
-	tar -xzvf inception_v1_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
+	tar -xzvf inception_v1_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
 	cp inception_v1_tf /usr/share/vitis_ai_library/models -r
 
 For U50, execute the following commands.
