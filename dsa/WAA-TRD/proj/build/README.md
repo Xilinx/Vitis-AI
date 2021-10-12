@@ -1,4 +1,4 @@
-# Classification example: ZCU102 TRD run using JPEG Decoder accelerator, Pre-process accelerator & DPU source files
+# Classification example: ZCU102 TRD run using JPEG Decoder accelerator, Pre-processor accelerator & DPU source files
 
 ## 1 Software Tools and System Requirements
 
@@ -157,6 +157,8 @@ This part is about how to run the Resnet50 example on zcu102 board.
 
 * Please insert SD_CARD on the ZCU102 board. After the linux boot, run:
 
+* Usage of resnet50 : ./resnet50_jpeg [model_file] [pp_flag] [en_profile]
+
 ```
 % cd /media/sd-mmcblk0p1/resnet50_jpeg
 % cp /media/sd-mmcblk0p1/dpu.xclbin /usr/lib/
@@ -167,7 +169,7 @@ This part is about how to run the Resnet50 example on zcu102 board.
 %./resnet50_jpeg /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel 1 0
 
 Expect:
-Image : ./img/bellpeppe-994958.JPEG
+For a test image : ./img/bellpeppe-994958.JPEG
 top[0] prob = 0.990457  name = bell pepper
 top[1] prob = 0.004048  name = acorn squash
 top[2] prob = 0.002455  name = cucumber, cuke
@@ -180,7 +182,7 @@ top[4] prob = 0.000703  name = strawberry
 %./resnet50_jpeg /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel 0 0
 
 Expect:
-Image : ./img/bellpeppe-994958.JPEG
+For a test image : ./img/bellpeppe-994958.JPEG
 top[0] prob = 0.992920  name = bell pepper
 top[1] prob = 0.003160  name = strawberry
 top[2] prob = 0.001493  name = cucumber, cuke
