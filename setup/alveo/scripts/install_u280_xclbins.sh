@@ -20,7 +20,7 @@ INSTALL_PATH=/
 
 wget $XCLBIN_URL -O $XCLBIN_INSTALLER && sudo ${INSTALLER} -xzf $XCLBIN_INSTALLER --directory $INSTALL_PATH && rm $XCLBIN_INSTALLER
 sudo rm -rf /opt/xilinx/overlaybins/dpuv3me
-sudo ln -sf DPUCAHX8L /opt/xilinx/overlaybins/dpuv3me
+sudo ln -sf /opt/xilinx/overlaybins/DPUCAHX8L /opt/xilinx/overlaybins/dpuv3me
 
 XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8H_xclbins_1_4_1.tar.gz"
 XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
@@ -29,5 +29,5 @@ INSTALL_PATH=/
 
 wget $XCLBIN_URL -O $XCLBIN_INSTALLER && sudo ${INSTALLER} -xzf $XCLBIN_INSTALLER --directory $INSTALL_PATH && rm $XCLBIN_INSTALLER
 sudo rm -rf /opt/xilinx/overlaybins/dpuv3e
-sudo ln -sf DPUCAHX8H /opt/xilinx/overlaybins/dpuv3e
+sudo ln -sf /opt/xilinx/overlaybins/DPUCAHX8H /opt/xilinx/overlaybins/dpuv3e
 
