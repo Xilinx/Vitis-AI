@@ -39,9 +39,6 @@ class QuantConfigerCommander(BaseCommander):
     def SoftFuseHardtanh(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.HARDTANH)
 
-    def SoftFuseReduceSum(graph, quant_groups):
-      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.SUM)
-
     def SoftFuseRelu(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.RELU)
 

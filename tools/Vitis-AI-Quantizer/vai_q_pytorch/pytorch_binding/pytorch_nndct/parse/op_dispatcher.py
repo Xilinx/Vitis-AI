@@ -129,10 +129,16 @@ class OpCreator(object):
     
     if transposed:
       weight_size[0], weight_size[1] = weight_size[1], weight_size[0]
-      if weight.ndim == 4:
-        op = TorchConvTranspose2d(NNDCT_OP.CONVTRANSPOSE2D)
-      elif weight.ndim == 5:
-        op = TorchConvTranspose3d(NNDCT_OP.CONVTRANSPOSE3D)
+      if weight_size[0] == 1 and groups == weight_size[1]:
+        if weight.ndim == 4:
+          op = TorchConvTranspose2d(NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D)
+        elif weight.ndim == 5:
+          raise NotImplementedError("Depthwise_ConvTranpose3D is unsupported")
+      else:
+        if weight.ndim == 4:
+          op = TorchConvTranspose2d(NNDCT_OP.CONVTRANSPOSE2D)
+        elif weight.ndim == 5:
+          op = TorchConvTranspose3d(NNDCT_OP.CONVTRANSPOSE3D)
 
       op.set_config("output_padding", list(output_padding))
       op.set_config('in_channels', weight_size[1])
@@ -148,6 +154,8 @@ class OpCreator(object):
           op = TorchConv2d(NNDCT_OP.CONV2D)
         elif weight.ndim == 5:
           op = TorchConv3d(NNDCT_OP.CONV3D)
+        elif weight.ndim == 3:
+          op = TorchConv1d(NNDCT_OP.CONV1D)
           
       op.set_config('in_channels', weight_size[1] * groups)
       op.set_config('out_channels', weight_size[0])
@@ -195,6 +203,33 @@ class OpCreator(object):
     }
     op.set_attr(op.AttrName.AXIS, dims2axis_map[len(input.shape)])
     return op
+
+  @staticmethod
+  def _max_pool1d(op, input, kernel_size, stride, padding, dilation, ceil_mode):
+    op.set_config('kernel_size', list(kernel_size))
+    if not stride:
+      op.set_config('stride', list(kernel_size))
+    else:
+      op.set_config('stride', list(stride))
+
+    if ceil_mode:
+      op.set_config('ceil_mode', True)
+    else:
+      op.set_config('ceil_mode', False)
+
+    op.set_config('padding', list(padding))
+    op.set_config('dilation', list(dilation))
+
+    return op
+
+  def max_pool1d(self, *args):
+    op = TorchMaxPool1d()
+    return self._max_pool1d(op, *args)
+
+  def max_pool1d_with_indices(self, *args):
+    op = TorchMaxPool1d()
+    op.set_config("return_indices", True)
+    return self._max_pool1d(op, *args)
 
   @staticmethod
   def _max_pool2d(op, input, kernel_size, stride, padding, dilation, ceil_mode):

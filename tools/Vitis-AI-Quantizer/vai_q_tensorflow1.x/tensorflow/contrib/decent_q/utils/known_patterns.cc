@@ -165,9 +165,9 @@ DEFINE_GET_WEIGHTS_NODES(Convfc) {
 }
 const ConvfcPattern convfc_pattern_wrapper(convfc_pattern, "convfc");
 
-// ConvFc + relu|sigmoid
+// ConvFc + relu
 const OpTypePattern convfc_relu_pattern(
-    {"Relu|Relu6|Sigmoid",
+    {"Relu|Relu6",
       {
         convfc_pattern,
       }
@@ -205,9 +205,9 @@ DEFINE_GET_WEIGHTS_NODES(ConvfcBias) {
 }
 const ConvfcBiasPattern convfc_bias_pattern_wrapper(convfc_bias_pattern, "convfc_bias");
 
-// ConvFc + bias + relu|sigmod
+// ConvFc + bias + relu
 const OpTypePattern convfc_bias_relu_pattern(
-    {"Relu|Relu6|Sigmoid", // relu|sigmoid node
+    {"Relu|Relu6", // relu node
       {
         convfc_bias_pattern,
       }
@@ -1341,7 +1341,7 @@ const ClipByValuePattern clip_by_value_pattern_wrapper(clip_by_value_pattern, "c
 
 // Other
 const OpTypePattern other_pattern(
-    {"AvgPool|MaxPool|Mean|Pad|Concat|ConcatV2|Squeeze|Reshape|ExpandDims|Relu|Relu6|AddN|AddV2"});
+    {"AvgPool|MaxPool|Mean|Pad|MirrorPad|Concat|ConcatV2|Squeeze|Reshape|ExpandDims|Relu|Relu6|AddN|AddV2"});
 DEFINE_GET_INPUT_NODES(Other) {
   return std::vector<const NodeDef*> ();
 }

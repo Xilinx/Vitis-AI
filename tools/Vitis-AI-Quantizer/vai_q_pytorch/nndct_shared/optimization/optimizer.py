@@ -42,9 +42,9 @@ class QuantOptimizer(object):
         #print("after equalization")
         #self._cal_channel_range_coeffience(graph, pre_cov)
       
-      if NndctOption.nndct_wes.value:
-        NndctScreenLogger().info(f"=>Doing weights equalizing shift...")
-        graph = commander.weights_equalizing_shift()
+      # if NndctOption.nndct_wes.value:
+      #   NndctScreenLogger().info(f"=>Doing weights equalizing shift...")
+      #   graph = commander.weights_equalizing_shift()
       
     self._tag_quant_nodes(graph)
     graph.remove_node_by_types([NNDCT_OP.DROPOUT])
@@ -104,22 +104,35 @@ class QuantOptimizer(object):
   '''  
   
   @staticmethod
-  def _tag_quant_nodes(graph: Graph):
+  def _tag_quant_nodes(graph):
     if any([node.op.type == NNDCT_OP.QUANT_STUB or node.op.type == NNDCT_OP.DEQUANT_STUB for node in graph.nodes]):
-      quant_state = False
+      def dfs(node, visited):
+        if node.op.type == NNDCT_OP.DEQUANT_STUB:
+          node.in_quant_part = False
+          return
+        
+        visited.append(node)
+        node.in_quant_part = True
+        for cn in graph.children(node):
+          if cn not in visited:
+            dfs(cn, visited)
+      
+      source = []
       for node in graph.nodes:
         if node.op.type == NNDCT_OP.QUANT_STUB:
-          quant_state = True
-          # for pn in graph.parents(node):
-          #   if pn.op.type == NNDCT_OP.INPUT:
-          #     pn.in_quant_part = quant_state
-            
-        elif node.op.type == NNDCT_OP.DEQUANT_STUB:
-          quant_state = False
-        node.in_quant_part = quant_state   
+          source.append(node)
+          
+      visited = []
+      for inp in source:
+        dfs(inp, visited)
+    
     else:
       for node in graph.nodes:
         node.in_quant_part = True
+        
+    # Debug   
+    # for node in graph.nodes:
+    #   print(node.name, node.op.type, node.in_quant_part)
   
   '''
   @staticmethod

@@ -29,6 +29,9 @@ def reset_group_members(graph, groups, host, servent):
 def group_up(graph, groups, OpType=None, POpType=None):
 
   def __is_valid_parent(node):
+    if len(graph.children(node)) > 1:
+      return False
+    
     if POpType is None:
       return True
     elif node.op.type == POpType:

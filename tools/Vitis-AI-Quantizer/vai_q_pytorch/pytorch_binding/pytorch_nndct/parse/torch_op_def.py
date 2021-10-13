@@ -173,6 +173,93 @@ class TorchBatchNorm(base_op.BatchNorm):
     self._attr_value_mem[self.AttrName.OUT_DIM][:] = [value]
 
 
+class _TorchConv1d(base_op.Conv1d):
+
+  def __init__(self, op_type, *args, **kwargs):
+    super().__init__(op_type, *args, **kwargs)
+
+  @property
+  def kernel_size(self):
+    return self.get_attr(self.AttrName.KERNEL)
+
+  @kernel_size.setter
+  def kernel_size(self, value):
+    self.set_attr(self.AttrName.KERNEL, value)
+
+  @property
+  def dilation(self):
+    return self.get_attr(self.AttrName.DILATION)
+
+  @dilation.setter
+  def dilation(self, value):
+   self.set_attr(self.AttrName.DILATION, value)
+
+  @property
+  def padding(self):
+    return self.get_attr(self.AttrName.PAD)
+   
+
+  @padding.setter
+  def padding(self, value):
+    self.set_attr(self.AttrName.PAD, value)
+    self.set_attr(self.AttrName.PAD_MODE, 0)
+ 
+
+  @property
+  def stride(self):
+    return self.get_attr(self.AttrName.STRIDE)
+
+  @stride.setter
+  def stride(self, value):
+    self.set_attr(self.AttrName.STRIDE, value)
+
+  @property
+  def in_channels(self):
+    return self.get_attr(self.AttrName.IN_DIM)
+
+  @in_channels.setter
+  def in_channels(self, value):
+    self.set_attr(self.AttrName.IN_DIM, [value])
+
+  @property
+  def out_channels(self):
+    return self.get_attr(self.AttrName.OUT_DIM)
+
+  @out_channels.setter
+  def out_channels(self, value):
+    self.set_attr(self.AttrName.OUT_DIM, [value])
+
+  @property
+  def groups(self):
+    return self.get_attr(self.AttrName.GROUP)
+
+  @groups.setter
+  def groups(self, value):
+    self.set_attr(self.AttrName.GROUP, [value])
+
+  @property
+  def bias(self):
+    return self.get_attr(self.AttrName.BIAS_TERM)
+
+  @bias.setter
+  def bias(self, value):
+    self.set_attr(self.AttrName.BIAS_TERM, [bool(value)])
+    
+    
+class TorchConv1d(_TorchConv1d):
+
+  def __init__(self, nndct_op_type, *args, **kwargs):
+    super().__init__(nndct_op_type, *args, **kwargs)
+    utils.op_register(nndct_op_type, "Conv1d")
+
+
+class TorchConvTranspose1d(_TorchConv1d):
+
+  def __init__(self, nndct_op_type, *args, **kwargs):
+    super().__init__(nndct_op_type, *args, **kwargs)
+    utils.op_register(nndct_op_type, "ConvTranspose1d")
+
+
 class _TorchConv2d(base_op.Conv2d):
 
   @unique
@@ -388,6 +475,49 @@ class TorchMaxPool(base_op.MaxPool):
   def padding(self, value):
     self._attr_value_mem[self.AttrName.PAD][:] = [
         value[1], value[1], value[0], value[0]
+    ]
+
+  @property
+  def stride(self):
+    return self._attr_value_mem[self.AttrName.STRIDE][::-1]
+
+  @stride.setter
+  def stride(self, value):
+    self._attr_value_mem[self.AttrName.STRIDE][:] = value[::-1]
+
+
+class TorchMaxPool1d(base_op.MaxPool1d):
+
+  def __init__(self, *args, **kwargs):
+    super(TorchMaxPool1d, self).__init__(NNDCT_OP.MAX_POOL1D, *args, **kwargs)
+    utils.op_register(NNDCT_OP.MAX_POOL1D, "MaxPool1d")
+
+  @property
+  def kernel_size(self):
+    return self._attr_value_mem[self.AttrName.KERNEL][::-1]
+
+  @kernel_size.setter
+  def kernel_size(self, value):
+    self._attr_value_mem[self.AttrName.KERNEL][:] = value[::-1]
+
+  @property
+  def ceil_mode(self):
+    return bool(self._attr_value_mem[self.AttrName.PAD_MODE][0])
+
+  @ceil_mode.setter
+  def ceil_mode(self, mode):
+    self._attr_value_mem[self.AttrName.PAD_MODE][:] = [int(mode)]
+
+  @property
+  def padding(self):
+    return [
+        self._attr_value_mem[self.AttrName.PAD][0]
+    ]
+
+  @padding.setter
+  def padding(self, value):
+    self._attr_value_mem[self.AttrName.PAD][:] = [
+        value[0], value[0]
     ]
 
   @property

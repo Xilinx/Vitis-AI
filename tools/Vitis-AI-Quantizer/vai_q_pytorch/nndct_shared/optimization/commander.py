@@ -33,9 +33,9 @@ from .insert_node import NodeInsertHandler
 _ACT_TYPES = [NNDCT_OP.RELU, NNDCT_OP.RELUK]
 _POOL_TYPES = [NNDCT_OP.MAX_POOL, NNDCT_OP.ADAPTIVEAVGPOOL2D, NNDCT_OP.AVG_POOL]
 _CLE_TYPES = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, \
-              NNDCT_OP.CONV3D, NNDCT_OP.CONVTRANSPOSE3D]
+              NNDCT_OP.CONV3D, NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]
 _CONV_TYPES = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, \
-               NNDCT_OP.CONV3D, NNDCT_OP.CONVTRANSPOSE3D]
+               NNDCT_OP.CONV3D, NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]
 _BN_TYPES = [NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D]
 #_CONV3D_TYPES = [NNDCT_OP.CONV3D, NNDCT_OP.CONVTRANSPOSE3D]
 
@@ -72,25 +72,37 @@ class OptimizeCommander(object):
     # find fusable bathnorm node
     fuse_bn_handler = ConvBnHandler()
     graph_searcher = GraphSearcher(self._graph)
-    node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=[NNDCT_OP.CONV2D, 
-                                                                          NNDCT_OP.BATCH_NORM],
-                                                                 action=fuse_bn_handler), 
-                                                     PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV2D, 
-                                                                          NNDCT_OP.BATCH_NORM], 
-                                                                 action=fuse_bn_handler),
-                                                     PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, 
-                                                                          NNDCT_OP.BATCH_NORM],
-                                                                 action=fuse_bn_handler),
-                                                     PatternType(pattern=[NNDCT_OP.CONV3D, 
-                                                                          NNDCT_OP.BATCH_NORM3D],
-                                                                 action=fuse_bn_handler),
-                                                     PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE3D, 
-                                                                          NNDCT_OP.BATCH_NORM3D],
-                                                                 action=fuse_bn_handler)])
+    node_sets = graph_searcher.find_nodes_from_type(
+        [PatternType(pattern=[NNDCT_OP.CONV2D, NNDCT_OP.BATCH_NORM],
+                     action=fuse_bn_handler), 
+         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.BATCH_NORM], 
+                     action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.BATCH_NORM],
+                     action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.CONV3D, NNDCT_OP.BATCH_NORM3D],
+                     action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.BATCH_NORM3D],
+                     action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.CONV2D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM],
+                     action=fuse_bn_handler), 
+         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM], 
+                     action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM],
+                     action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.CONV3D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM3D],
+                     action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM3D],
+                     action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, NNDCT_OP.BATCH_NORM],
+                     action=fuse_bn_handler)
+        ])
+    removed_bn = set()
     for id, node_list in node_sets.items():
       for nodeset in node_list:
-        _, bn_node = nodeset
-        self._graph.remove_node(bn_node)
+        bn_node = nodeset[-1]
+        if bn_node.merged and bn_node not in removed_bn:
+          self._graph.remove_node(bn_node)
+          removed_bn.add(bn_node)
   
   def DecoupleSharedParamsInConv(self):
     # decouple shared parameters in graph
@@ -263,13 +275,14 @@ class OptimizeCommander(object):
       src_layout = _OP_LAYOUTS[node.op.type]
       transpose_order = OptimizeCommander._compute_transpose_order(src_layout, layout)
       return node.op.params[node.op.ParamName.WEIGHTS].data.copy().transpose(transpose_order)
-    elif node.op.type == NNDCT_OP.DEPTHWISE_CONV2D:
+    elif node.op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
       # [channel_multipier, H, W, I]
       weight = node.op.params[node.op.ParamName.WEIGHTS].data.copy()
       # [I, H, W, channel_multiplier]
       weight = weight.transpose(3, 1, 2, 0)
       # depthwise always put channel num as first dimension
       return weight
+  
   '''
   @staticmethod
   def _get_weight_data(node, layout):
@@ -296,9 +309,10 @@ class OptimizeCommander(object):
       transpose_order = OptimizeCommander._compute_transpose_order(layout, dest_layout)
       data = data.transpose(transpose_order)
       node.op.params[node.op.ParamName.WEIGHTS].from_ndarray(data)
-    elif node.op.type == NNDCT_OP.DEPTHWISE_CONV2D:
+    elif node.op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
       data = data.transpose(3, 1, 2, 0)
       node.op.params[node.op.ParamName.WEIGHTS].from_ndarray(data)
+  
   '''
   @staticmethod
   def _set_weight_data(node, data, layout):
@@ -310,10 +324,11 @@ class OptimizeCommander(object):
         node.op.params[node.op.ParamName.WEIGHTS].from_ndarray(data)
       else:
         raise ValueError("only support OHWI/IHWO layout for weight")
-    elif node.op.type == NNDCT_OP.DEPTHWISE_CONV2D:
+   elif node.op.type == NNDCT_OP.DEPTHWISE_CONV2D:
       data = data.transpose(3, 1, 2, 0)
       node.op.params[node.op.ParamName.WEIGHTS].from_ndarray(data)
   '''
+  
   @staticmethod
   def _get_bias_data(node):
     return node.op.params[node.op.ParamName.BIAS].data.copy()
@@ -371,10 +386,10 @@ class OptimizeCommander(object):
   @classmethod
   def _scale_weights_and_bias_with_conv_reluk(cls, group):
     ops_display_layout = {NNDCT_OP.CONV2D: "OHWI", NNDCT_OP.CONVTRANSPOSE2D: "OHWI", \
-                          NNDCT_OP.DEPTHWISE_CONV2D: "OHWI", \
+                          NNDCT_OP.DEPTHWISE_CONV2D: "OHWI", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: "OHWI", \
                           NNDCT_OP.CONV3D: "ODHWI", NNDCT_OP.CONVTRANSPOSE3D: "ODHWI"}
     ops_scale_layout = {NNDCT_OP.CONV2D: "IHWO", NNDCT_OP.CONVTRANSPOSE2D: "IHWO", \
-                          NNDCT_OP.DEPTHWISE_CONV2D: "IHWO", \
+                          NNDCT_OP.DEPTHWISE_CONV2D: "IHWO", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: "IHWO", \
                           NNDCT_OP.CONV3D: "IDHWO", NNDCT_OP.CONVTRANSPOSE3D: "IDHWO"}
     # conv: [O,H, W, I] / depthwise_conv: [I, H, W, channel_multiplier]
     conv_0_weight = cls._get_weight_data(group[0], layout=ops_display_layout[group[0].op.type])
@@ -384,7 +399,7 @@ class OptimizeCommander(object):
     
     # conv: [O, H, W, I] / depthwise_conv: [I, H, W, channel_multiplier]
     conv_1_weight = cls._get_weight_data(group[-1], layout=ops_display_layout[group[-1].op.type])
-    if group[-1].op.type == NNDCT_OP.DEPTHWISE_CONV2D:
+    if group[-1].op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
       # depthwise_conv:  [I, H, W, channel_multiplier] -> [channel_muliplier, H, W, I]
       conv_1_weight = conv_1_weight.transpose(3, 1, 2, 0)
     # compute scale:
@@ -455,7 +470,7 @@ class OptimizeCommander(object):
       conv_0_bias = conv_0_bias / scale
       
     conv_1_weight = conv_1_weight * scale
-    if group[-1].op.type == NNDCT_OP.DEPTHWISE_CONV2D:
+    if group[-1].op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
       # depthwise_conv: [channel_muliplier, H, W, I] -> [I, H, W, channel_multiplier]
       conv_1_weight = conv_1_weight.transpose(3, 1, 2, 0) 
     
@@ -549,100 +564,100 @@ class OptimizeCommander(object):
     return equalized_groups
   
   
-  def weights_equalizing_shift(self):
+  # def weights_equalizing_shift(self):
     
-    # find input and conv layers  
-    graph_searcher = GraphSearcher(self._graph)
-    conv_node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=[NNDCT_OP.CONV2D, 
-                                                                               NNDCT_OP.CHANNEL_SCALE],
-                                                                      action=None), 
-                                                          PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV2D, 
-                                                                               NNDCT_OP.CHANNEL_SCALE], 
-                                                                      action=None),
-                                                          PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, 
-                                                                               NNDCT_OP.CHANNEL_SCALE],
-                                                                      action=None)])
+  #   # find input and conv layers  
+  #   graph_searcher = GraphSearcher(self._graph)
+  #   conv_node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=[NNDCT_OP.CONV2D, 
+  #                                                                              NNDCT_OP.CHANNEL_SCALE],
+  #                                                                     action=None), 
+  #                                                         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV2D, 
+  #                                                                              NNDCT_OP.CHANNEL_SCALE], 
+  #                                                                     action=None),
+  #                                                         PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, 
+  #                                                                              NNDCT_OP.CHANNEL_SCALE],
+  #                                                                     action=None)])
     
-    # do weights equalizing shift
-    #self._cross_layer_equalization_for_conv(equalized_groups)
-    self._do_weights_equalizing_shift(conv_node_sets)
-    return self._graph
+  #   # do weights equalizing shift
+  #   #self._cross_layer_equalization_for_conv(equalized_groups)
+  #   self._do_weights_equalizing_shift(conv_node_sets)
+  #   return self._graph
   
-  @classmethod
-  def _do_weights_equalizing_shift(cls, conv_sets):
+  # @classmethod
+  # def _do_weights_equalizing_shift(cls, conv_sets):
     
-    # do wes for conv layers
-    for nodes_index, nodes_list in conv_sets.items():
-      for nodes in nodes_list:
-        cls._conv_layer_wes(nodes)
+  #   # do wes for conv layers
+  #   for nodes_index, nodes_list in conv_sets.items():
+  #     for nodes in nodes_list:
+  #       cls._conv_layer_wes(nodes)
 
-  @classmethod
-  def _conv_layer_wes(cls, node_sets):
-    # get conv layer weights and bias
-    conv_layer = node_sets[0]
-    layer_weight = cls._get_weight_data(conv_layer, layout="OHWI")
-    layer_bias = None
-    if conv_layer.node_attr(conv_layer.op.AttrName.BIAS_TERM):
-      layer_bias = cls._get_bias_data(conv_layer)
-      #bias_cov_before = layer_bias.std()/layer_bias.mean()
+  # @classmethod
+  # def _conv_layer_wes(cls, node_sets):
+  #   # get conv layer weights and bias
+  #   conv_layer = node_sets[0]
+  #   layer_weight = cls._get_weight_data(conv_layer, layout="OHWI")
+  #   layer_bias = None
+  #   if conv_layer.node_attr(conv_layer.op.AttrName.BIAS_TERM):
+  #     layer_bias = cls._get_bias_data(conv_layer)
+  #     #bias_cov_before = layer_bias.std()/layer_bias.mean()
       
-    layer_weight_ihw = layer_weight.reshape(layer_weight.shape[0], -1)
-    layer_weight_bias = cls._combine_weight_and_bias(layer_weight_ihw, layer_bias)
+  #   layer_weight_ihw = layer_weight.reshape(layer_weight.shape[0], -1)
+  #   layer_weight_bias = cls._combine_weight_and_bias(layer_weight_ihw, layer_bias)
     
-    # get the absolute maxinum of weights
-    range_channel = np.max(np.fabs(layer_weight_bias), axis=1)
-    range_layer = np.max(np.fabs(layer_weight_bias))
+  #   # get the absolute maxinum of weights
+  #   range_channel = np.max(np.fabs(layer_weight_bias), axis=1)
+  #   range_layer = np.max(np.fabs(layer_weight_bias))
     
-    # calculate the overlap of the absolute maxinum of weights between layer and channel
-    overlap_mean = np.mean(range_channel/range_layer)
-    overlap_min = np.min(range_channel/range_layer)
-    if (overlap_mean > 0.33) and (overlap_min > 0.25):
-      return
+  #   # calculate the overlap of the absolute maxinum of weights between layer and channel
+  #   overlap_mean = np.mean(range_channel/range_layer)
+  #   overlap_min = np.min(range_channel/range_layer)
+  #   if (overlap_mean > 0.33) and (overlap_min > 0.25):
+  #     return
     
-    # calculate the wes scale of every channel
-    scale_channel = np.floor(np.log2(range_layer/range_channel))
-    #scale_channel = np.floor(np.log2(np.sqrt(range_layer/range_channel)))
-    scale_channel = np.where(scale_channel > 15, 15, scale_channel)
+  #   # calculate the wes scale of every channel
+  #   scale_channel = np.floor(np.log2(range_layer/range_channel))
+  #   #scale_channel = np.floor(np.log2(np.sqrt(range_layer/range_channel)))
+  #   scale_channel = np.where(scale_channel > 15, 15, scale_channel)
     
-    # weights divided by the wes scale of channel
-    scale_channel = 2**scale_channel
-    #scale_channel = np.sqrt(2**scale_channel)
-    #scale_channel = np.ones_like(scale_channel)*2.0
+  #   # weights divided by the wes scale of channel
+  #   scale_channel = 2**scale_channel
+  #   #scale_channel = np.sqrt(2**scale_channel)
+  #   #scale_channel = np.ones_like(scale_channel)*2.0
     
-    rescale_weight = layer_weight.transpose(3,1,2,0)*scale_channel
-    rescale_weight = rescale_weight.transpose(3, 1, 2, 0)
-    if conv_layer.node_attr(conv_layer.op.AttrName.BIAS_TERM):
-      rescale_bias = layer_bias*scale_channel
-      #bias_cov_after = rescale_bias.std()/rescale_bias.mean()
-      #if math.fabs(bias_cov_after) - math.fabs(bias_cov_before) > 0:
-      #  return
+  #   rescale_weight = layer_weight.transpose(3,1,2,0)*scale_channel
+  #   rescale_weight = rescale_weight.transpose(3, 1, 2, 0)
+  #   if conv_layer.node_attr(conv_layer.op.AttrName.BIAS_TERM):
+  #     rescale_bias = layer_bias*scale_channel
+  #     #bias_cov_after = rescale_bias.std()/rescale_bias.mean()
+  #     #if math.fabs(bias_cov_after) - math.fabs(bias_cov_before) > 0:
+  #     #  return
     
-    cls._set_weight_data(node_sets[0], rescale_weight, layout="OHWI")
-    if layer_bias is not None:
-      cls._set_bias_data(node_sets[0], rescale_bias)
+  #   cls._set_weight_data(node_sets[0], rescale_weight, layout="OHWI")
+  #   if layer_bias is not None:
+  #     cls._set_bias_data(node_sets[0], rescale_bias)
    
-    # TODO: insert one scale op after conv layer
-    cls._insert_channel_wise_scale_layer(node_sets, scale_channel)
+  #   # TODO: insert one scale op after conv layer
+  #   cls._insert_channel_wise_scale_layer(node_sets, scale_channel)
     
   
-  @classmethod
-  def _insert_channel_wise_scale_layer(cls, nodes, scale):
-    channel_num = scale.shape[0]
-    channel_scale = nodes[1].op.channel_scale
-    if (isinstance(channel_scale, float) 
-      or isinstance(channel_scale, int) 
-      or (isinstance(channel_scale, np.array) and channel_scale.ndim == 1)):
-      nodes[1].op.channel_scale = (channel_scale/scale).reshape((1,channel_num,1,1)).tolist()
-    elif (isinstance(channel_scale, np.array) and channel_scale.ndim == 4):
-      nodes[1].op.channel_scale = (channel_scale/(scale.reshape((1,channel_num,1,1)))).tolist()
+  # @classmethod
+  # def _insert_channel_wise_scale_layer(cls, nodes, scale):
+  #   channel_num = scale.shape[0]
+  #   channel_scale = nodes[1].op.channel_scale
+  #   if (isinstance(channel_scale, float) 
+  #     or isinstance(channel_scale, int) 
+  #     or (isinstance(channel_scale, np.array) and channel_scale.ndim == 1)):
+  #     nodes[1].op.channel_scale = (channel_scale/scale).reshape((1,channel_num,1,1)).tolist()
+  #   elif (isinstance(channel_scale, np.array) and channel_scale.ndim == 4):
+  #     nodes[1].op.channel_scale = (channel_scale/(scale.reshape((1,channel_num,1,1)))).tolist()
 
 
   def _do_conv_weights_equalizing_shift(self, conv_nodes):
     ops_display_layout = {NNDCT_OP.CONV2D: "OHWI", NNDCT_OP.CONVTRANSPOSE2D: "OHWI", \
-                          NNDCT_OP.DEPTHWISE_CONV2D: "OHWI", \
+                          NNDCT_OP.DEPTHWISE_CONV2D: "OHWI", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: "OHWI", \
                           NNDCT_OP.CONV3D: "ODHWI", NNDCT_OP.CONVTRANSPOSE3D: "ODHWI"}
     ops_scale_layout = {NNDCT_OP.CONV2D: "IHWO", NNDCT_OP.CONVTRANSPOSE2D: "IHWO", \
-                          NNDCT_OP.DEPTHWISE_CONV2D: "IHWO", \
+                          NNDCT_OP.DEPTHWISE_CONV2D: "IHWO", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: "IHWO", \
                           NNDCT_OP.CONV3D: "IDHWO", NNDCT_OP.CONVTRANSPOSE3D: "IDHWO"}    
     
     node_idx_max = np.array([node.idx for node in self._graph.nodes]).max()

@@ -175,6 +175,7 @@ class NNDCT_OP(object):
   DENSE = 'dense'
   DEPTHWISE_CONV2D = 'depthwise_conv2d'
   DEPTHWISE_CONV3D = 'depthwise_conv3d'
+  DEPTHWISE_CONVTRANSPOSE2D = 'depthwise_conv_transpose_2d'
   DEQUANT_STUB = 'dequant_stub'
   DETACH = 'detach'
   DIV = 'elemwise_div'
@@ -220,7 +221,7 @@ class NNDCT_OP(object):
   MATMUL = 'matmul'
   MAX = 'max'
   MAX_POOL = 'maxpool'
-  MAX_POOL1D = 'maxpool1D'
+  MAX_POOL1D = 'maxpool1d'
   MEAN = 'mean'
   MERGE = 'merge'
   MIN = "min"

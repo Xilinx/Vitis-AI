@@ -133,6 +133,9 @@ class DevGraphOptimizer(object):
         cur_node.in_tensors.remove(value)
         if not cur_node.in_tensors and cur_node.op.type not in [NNDCT_OP.ZEROS]:
           folding_nodes.add(cur_node.name)
+        # debug
+        # print(cur_node.name, cur_node.op.type, value.name)
+        # print(folding_nodes)
         return data
       else:
         return value

@@ -52,6 +52,7 @@ class _Converter:
                       NNDCT_OP.CONVTRANSPOSE2D: _pad_mode,
                       NNDCT_OP.CONV3D: _pad_mode,
                       NNDCT_OP.CONVTRANSPOSE3D: _pad_mode,
+                      NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: _pad_mode,
                       NNDCT_OP.MAX_POOL: _pad_mode,
                       NNDCT_OP.AVG_POOL: _pad_mode,
                       NNDCT_OP.ADAPTIVEAVGPOOL2D: _pad_mode,
@@ -143,7 +144,8 @@ def data_xop(xgraph: XGraph, node: Node,
              quant_config: NndctQuantInfo) -> NoReturn:
   
   shape = node.out_tensors[0].shape
-  
+  if not shape:
+    shape = [1]
   out_tensor = np.zeros(shape, dtype=np.float32)
   attrs: Dict[str, Any] = {}
   attrs["shape"] = shape
@@ -675,12 +677,14 @@ def to_permute_invar_op(xop_type):
 
 NNDCTIR2XIR_CONVERTOR = {
     NNDCT_OP.INPUT: data_xop,
+    NNDCT_OP.CONV1D: to_xir("conv1d"),
     NNDCT_OP.CONV2D: to_xir("conv2d"),
     NNDCT_OP.DEPTHWISE_CONV2D: to_xir("depthwise-conv2d"),
     NNDCT_OP.CONVTRANSPOSE2D: to_xir("transposed-conv2d"),
     NNDCT_OP.AVG_POOL: avgpool,
     NNDCT_OP.ADAPTIVEAVGPOOL2D: avgpool,
     NNDCT_OP.MAX_POOL: to_xir("maxpool2d"),
+    NNDCT_OP.MAX_POOL1D: to_xir("maxpool1d"),
     NNDCT_OP.RELU: to_xir("relu"),
     NNDCT_OP.LEAKY_RELU: to_xir("leaky-relu"),
     NNDCT_OP.TANH: to_xir("tanh"),
@@ -720,6 +724,7 @@ NNDCTIR2XIR_CONVERTOR = {
     NNDCT_OP.HSIGMOID: hsigmoid,
     NNDCT_OP.HSWISH: hswish,
     NNDCT_OP.PIXEL_SHUFFLE: to_xir("reorg"),
+    NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: to_xir("transposed-depthwise-conv2d")
     # NNDCT_OP.CONV3D: conv3d,
     # NNDCT_OP.CONVTRANSPOSE3D: conv_transpose_3d,
     # NNDCT_OP.RESIZE_3D: to_xir("resize3d")

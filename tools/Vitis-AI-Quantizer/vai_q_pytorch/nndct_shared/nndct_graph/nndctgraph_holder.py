@@ -47,11 +47,13 @@ class NndctGraphHolder(NndctDebugger):
         NNDCT_OP.CONV1D,
         NNDCT_OP.DENSE, NNDCT_OP.ADD, NNDCT_OP.MULTIPLY, NNDCT_OP.DIV,
         NNDCT_OP.MAX_POOL, NNDCT_OP.MAX, NNDCT_OP.MEAN,
+        NNDCT_OP.MAX_POOL1D,
         NNDCT_OP.MIN, NNDCT_OP.RESIZE, NNDCT_OP.SIGMOID, NNDCT_OP.TANH,
         NNDCT_OP.SUB, NNDCT_OP.RSUB, NNDCT_OP.PAD, NNDCT_OP.QUANT_STUB,
         NNDCT_OP.INPUT, NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.RESIZE_3D,
         NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.SUM, NNDCT_OP.HSWISH, NNDCT_OP.HSIGMOID,
-        NNDCT_OP.MATMUL#,NNDCT_OP.CHANNEL_SCALE
+        NNDCT_OP.MATMUL, #,NNDCT_OP.CHANNEL_SCALE
+        NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D,
     ]
     self.LSTM_QUANTIZABLE_OPS = [
         #NNDCT_OP.PLACEHOLDER,
@@ -67,7 +69,8 @@ class NndctGraphHolder(NndctDebugger):
         NNDCT_OP.CONV1D,
         NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D,
         NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D,
-        NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D
+        NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D,
+        NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D
     ]
     self.MULTIPLE_OUTPUTS_OPS = [ # OP types where cannot do quantization 
         NNDCT_OP.CHUNK, # has multiple outputs and cannot be deployed
@@ -93,8 +96,34 @@ class NndctGraphHolder(NndctDebugger):
         NNDCT_OP.CONVTRANSPOSE3D,
         NNDCT_OP.DEPTHWISE_CONV2D,
         NNDCT_OP.DEPTHWISE_CONV3D,
-        NNDCT_OP.DENSE
+        NNDCT_OP.DENSE,
+        NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D
     ]
+    
+    self.SOFT_FUSED_OPS = [
+      NNDCT_OP.CLAMP,
+      NNDCT_OP.HARDTANH,
+      NNDCT_OP.RELU,
+      NNDCT_OP.RELU6,
+      NNDCT_OP.RELUK,
+      NNDCT_OP.CHANNEL_SCALE,
+      NNDCT_OP.FLATTEN,
+      NNDCT_OP.SQUEEZE,
+      NNDCT_OP.PIXEL_SHUFFLE,
+      NNDCT_OP.RESHAPE,
+      NNDCT_OP.SPLIT,
+      NNDCT_OP.TRANSPOSE,
+      NNDCT_OP.DROPOUT,
+      NNDCT_OP.CONTIGUOUS,
+      NNDCT_OP.PERMUTE,
+      NNDCT_OP.EXPAND,
+      NNDCT_OP.INPLACE_COPY,
+      NNDCT_OP.REPEAT,
+      NNDCT_OP.SELECT,
+      
+    ]
+      
+    
 
   def get_model_type(self):
     return self.model_type or 'Nndct'
@@ -171,7 +200,12 @@ class NndctGraphHolder(NndctDebugger):
       return False
     else:
       return True
-  
+    
+  def op_unquantizable(self, op_type):
+    # The output of op is scalar
+    return False if op_type in self.SOFT_FUSED_OPS else True
+      
+    
   def node_quantizable_with_params(self, node):
     if node.op.type in self.QUANTIZABLE_OPS_WITH_PARAMS:
       return True
@@ -199,25 +233,26 @@ class NndctGraphHolder(NndctDebugger):
 
   def is_concat_input(self, node_or_name):
     node = self._find_node(node_or_name)
-    isConcatInput = True # only ouput tensor to concat
-    for c in self.Nndctgraph.children(node):
-      if c.op.type != NNDCT_OP.CONCAT:
-        isConcatInput = False
-        break
+    isConcatInput = False # only ouput tensor to concat
+    children = self.Nndctgraph.children(node)
+    if len(children) == 1 and children[0].op.type == NNDCT_OP.CONCAT:
+      isConcatInput = True
     return isConcatInput
 
   def quant_output(self, node_or_name):
     node = self._find_node(node_or_name)
     idx = -1
     end_node = self.__Nndctgraph.node(self._QuantGroups[node.name][idx])
-    while end_node.op.type in self.MULTIPLE_OUTPUTS_OPS:
-      idx = idx - 1
-      end_node = self.__Nndctgraph.node(self._QuantGroups[node.name][idx])
     if self.is_concat_input(end_node):
       for c in self.Nndctgraph.children(end_node):
         if c.op.type == NNDCT_OP.CONCAT:
-          end_node = c
-          break
+          return c
+   
+    while end_node.op.type in self.MULTIPLE_OUTPUTS_OPS:
+      idx = idx - 1
+      if -idx > len(self._QuantGroups[node.name]):
+        break
+      end_node = self.__Nndctgraph.node(self._QuantGroups[node.name][idx])
     return end_node
 
   # only used in TF RNN case

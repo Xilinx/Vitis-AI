@@ -56,8 +56,8 @@ class NndctOption(object):
   nndct_equalization = Option(name="equalization", dtype=bool, default=True, action="store_true", 
                               help="enable weights equalization")
   
-  nndct_wes = Option(name="weights_equalizing_shift", dtype=bool, default=False, action="store_true",
-                     help="enable weights equalizing shift")
+  # nndct_wes = Option(name="weights_equalizing_shift", dtype=bool, default=False, action="store_true",
+  #                    help="enable weights equalizing shift")
   
   nndct_wes_in_cle = Option(name="weights_equalizing_shift in cle", dtype=bool, default=False, action="store_true",
                      help="enable weights equalizing shift in cle")

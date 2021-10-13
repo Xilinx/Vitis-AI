@@ -356,7 +356,24 @@ class TORCHQuantizer(BaseQuantizer):
         bnfp = self.get_bnfp(in_name, False)
         #print('---- set zero padding output %s fix pos to %s : %d' % (out_name, in_name, bnfp[1]))
         self.set_bnfp(out_name, bnfp)
+        
+      if (node.in_quant_part and node.op.type == NNDCT_OP.RESIZE and node.node_config('mode') == "'nearest'"):
+        in_name = self.configer.quant_output(node.in_nodes[0]).name
+        out_name = self.configer.quant_output(node.name).name
+        bnfp = self.get_bnfp(in_name, False)
+        #print('---- set nearest upsampling output %s fix pos to %s : %d' % (out_name, in_name, bnfp[1]))
+        self.set_bnfp(out_name, bnfp)
     
+      # limit hardsigmoid output fix pos to >= 7
+      if (node.in_quant_part and
+          node.op.type == NNDCT_OP.HSIGMOID):
+        out_name = self.configer.quant_output(node.name).name
+        bnfp = self.get_bnfp(out_name, False)
+        #print('checking {}: {}'.format(out_name, bnfp))
+        if bnfp[1] < 7:
+          bnfp[1] = 7
+          self.set_bnfp(out_name, bnfp)
+
     # shift_bias and shift_cut check and adjustment
     self._node_relative_fix_pos_check()
 
@@ -365,7 +382,8 @@ class TORCHQuantizer(BaseQuantizer):
       if self.quant_mode == 1:
         # gather bias correction, how to get nn module objec?
         for node in self.Nndctgraph.nodes:
-          if node.op.type in [NNDCT_OP.CONV2D,
+          if node.op.type in [NNDCT_OP.CONV1D,
+                              NNDCT_OP.CONV2D,
                               NNDCT_OP.CONVTRANSPOSE2D,
                               NNDCT_OP.DEPTHWISE_CONV2D,
                               NNDCT_OP.DENSE]:
@@ -398,6 +416,15 @@ class TORCHQuantizer(BaseQuantizer):
             channel_mutiplier = int(out_channels / in_channels)
             param_data = param_data.reshape((channel_mutiplier, in_channels, *kernel_size))
 
+        if node.op.type == NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D and param_type == node.op.ParamName.WEIGHTS:
+          in_channels = node.node_config("in_channels")
+          out_channels = node.node_config("out_channels")
+          kernel_size = node.node_config("kernel_size")
+          channel_mutiplier = int(out_channels / in_channels)
+          param_data = param_data.reshape((in_channels, channel_mutiplier, *kernel_size))
+          param_data = np.copy(param_data).transpose(1, 0, 2, 3)
+          param_data = np.ascontiguousarray(param_data)
+        
         tensor.from_ndarray(param_data)
         tensor_util.convert_parameter_tensor_format(
             tensor, key_names.FrameworkType.TORCH,

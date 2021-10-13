@@ -108,7 +108,7 @@ class XirCompiler(object):
           continue
         # print(f"{node.name}: {param_tensor.name}, {id(param_tensor)}")
         data = np.copy(param_tensor.data)
-        if node.op.type == NNDCT_OP.CONVTRANSPOSE2D and param_type == node.op.ParamName.WEIGHTS:
+        if node.op.type in [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D] and param_type == node.op.ParamName.WEIGHTS:
           # OHWI -> OH'W'I reverse the order of ele in both h and w axis
           data = np.flip(data, (1, 2))
           data = np.ascontiguousarray(data)

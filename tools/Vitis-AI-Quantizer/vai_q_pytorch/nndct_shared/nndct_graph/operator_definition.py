@@ -24,6 +24,119 @@ from nndct_shared.nndct_graph.base_operator import (AutoName, NndctIrAttr,
 from nndct_shared.nndct_graph.base_tensor import Tensor
 import numpy as np
 
+
+class Conv1d(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    KERNEL = auto()
+    STRIDE = auto()
+    DILATION = auto()
+    PAD_MODE = auto()
+    PAD = auto()
+    GROUP = auto()
+    BIAS_TERM = auto()
+    IN_DIM = auto()
+    OUT_DIM = auto()
+
+  @unique
+  class ParamName(AutoName):
+    WEIGHTS = auto()
+    BIAS = auto()
+
+  def __init__(self, *args, **kwargs) -> None:
+    super(Conv1d, self).__init__(*args, **kwargs)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.KERNEL: [None],
+        self.AttrName.STRIDE: [None],
+        self.AttrName.DILATION: [None],
+        self.AttrName.PAD_MODE: [None],
+        self.AttrName.PAD: [None, None],
+        self.AttrName.GROUP: [None],
+        self.AttrName.BIAS_TERM: [None],
+        self.AttrName.IN_DIM: [None],
+        self.AttrName.OUT_DIM: [None],
+    }
+    self._attrs[self.AttrName.KERNEL] = NndctIrAttr(
+        name=self.AttrName.KERNEL,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.KERNEL],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""kernel size, [kernel_w, kernel_h]""")
+
+    self._attrs[self.AttrName.STRIDE] = NndctIrAttr(
+        name=self.AttrName.STRIDE,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.STRIDE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""stride [stride_w, stride_h]""")
+
+    self._attrs[self.AttrName.DILATION] = NndctIrAttr(
+        name=self.AttrName.DILATION,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.DILATION],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[1],
+        annotation=r"""dilation, [dilation_w, dilation_h]""")
+
+    self._attrs[self.AttrName.PAD_MODE] = NndctIrAttr(
+        name=self.AttrName.PAD_MODE,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.PAD_MODE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""padding mode, 0-PADDING, 1-SAME, 2-VALID, 3-CEIL
+    for the FUTURE. use attr pad. SAME, make output with same
+    width and height as input. VALID, no padding""")
+
+    self._attrs[self.AttrName.PAD] = NndctIrAttr(
+        name=self.AttrName.PAD,
+        value_type=int,
+        size=None,
+        value_mem=self._attr_value_mem[self.AttrName.PAD],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[0,0],
+        annotation=r"""padding size, only effective when pad mode is PADDING, ["
+                "left, right, top, bottom],""")
+
+    self._attrs[self.AttrName.GROUP] = NndctIrAttr(
+        name=self.AttrName.GROUP,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.GROUP],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[1],
+        annotation=r"""group""")
+
+    self._attrs[self.AttrName.BIAS_TERM] = NndctIrAttr(
+        name=self.AttrName.BIAS_TERM,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.BIAS_TERM],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""whether bias exist""")
+
+    self._attrs[self.AttrName.IN_DIM] = NndctIrAttr(
+        name=self.AttrName.IN_DIM,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.IN_DIM],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""in_channels""")
+
+    self._attrs[self.AttrName.OUT_DIM] = NndctIrAttr(
+        name=self.AttrName.OUT_DIM,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.OUT_DIM],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""out_channels""")
+
+
 class Conv2d(Operation):
 
   @unique
@@ -483,6 +596,73 @@ class MaxPool(Operation):
         value_mem=self._attr_value_mem[self.AttrName.PAD],
         occurence_type=OccurenceType.OPTIONAL,
         default_value=[0, 0, 0, 0],
+        annotation=r"""padding size, only effective when pad mode is PADDING, ["
+                "left, right, top, bottom],""")
+
+    self._attrs[self.AttrName.GLOBAL] = NndctIrAttr(
+        name=self.AttrName.GLOBAL,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.GLOBAL],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[False],
+        annotation=r"""global""")
+
+
+class MaxPool1d(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    KERNEL = auto()
+    STRIDE = auto()
+    DILATION = auto()
+    PAD_MODE = auto()
+    PAD = auto()
+    GLOBAL = auto()
+
+  def __init__(self, *args, **kwargs) -> None:
+    super(MaxPool1d, self).__init__(*args, **kwargs)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.KERNEL: [None],
+        self.AttrName.STRIDE: [None],
+        self.AttrName.PAD_MODE: [None],
+        self.AttrName.PAD: [None, None],
+        self.AttrName.GLOBAL: [None],
+    }
+    self._attrs[self.AttrName.KERNEL] = NndctIrAttr(
+        name=self.AttrName.KERNEL,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.KERNEL],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""kernel size, [kernel_w, kernel_h]""")
+
+    self._attrs[self.AttrName.STRIDE] = NndctIrAttr(
+        name=self.AttrName.STRIDE,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.STRIDE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""stride [stride_w, stride_h]""")
+
+    self._attrs[self.AttrName.PAD_MODE] = NndctIrAttr(
+        name=self.AttrName.PAD_MODE,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.PAD_MODE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""padding mode, 0-PADDING, 1-SAME, 2-VALID, 3-CEIL
+    for the FUTURE. use attr pad. SAME, make output with same
+    width and height as input. VALID, no padding""")
+
+    self._attrs[self.AttrName.PAD] = NndctIrAttr(
+        name=self.AttrName.PAD,
+        value_type=int,
+        size=None,
+        value_mem=self._attr_value_mem[self.AttrName.PAD],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[0, 0],
         annotation=r"""padding size, only effective when pad mode is PADDING, ["
                 "left, right, top, bottom],""")
 

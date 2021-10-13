@@ -70,8 +70,8 @@ def parse_module(module: Union[torch.nn.Module, torch.jit.ScriptModule],
     elif NndctOption.nndct_relu6_replace.value == 'relu':
       replace_relu6_with_relu(module)
   
-  if NndctOption.nndct_wes.value:
-    insert_scale_after_conv2d(module)
+  # if NndctOption.nndct_wes.value:
+  #   insert_scale_after_conv2d(module)
   
   parser = TorchParser()
   graph = parser(module._get_name() if graph_name is None else graph_name,

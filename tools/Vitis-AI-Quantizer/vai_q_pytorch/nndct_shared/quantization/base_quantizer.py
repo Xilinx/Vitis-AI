@@ -157,7 +157,8 @@ class BaseQuantizer():
           if node.op.type in [NNDCT_OP.CONV2D,
                               NNDCT_OP.CONVTRANSPOSE2D,
                               NNDCT_OP.DEPTHWISE_CONV2D,
-                              NNDCT_OP.DENSE]:
+                              NNDCT_OP.DENSE,
+                              NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
             self.bias_corr[node.name] = None
 
   def need_quantize_tensor(self, node_name, tensor_type='output'):

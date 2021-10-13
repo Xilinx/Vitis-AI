@@ -42,6 +42,8 @@ def _is_module_hooked(module):
 
 class ModuleHooker(object):
   _parameter_map = {
+      torch_op_def.TorchConv1d.ParamName.WEIGHTS: "weight",
+      torch_op_def.TorchConv1d.ParamName.BIAS: "bias",
       torch_op_def.TorchConv2d.ParamName.WEIGHTS: "weight",
       torch_op_def.TorchConv2d.ParamName.BIAS: "bias",
       torch_op_def.TorchConv3d.ParamName.WEIGHTS: "weight",
@@ -201,7 +203,14 @@ class ModuleHooker(object):
           out_channels = node.node_config("out_channels")
           kernel_size = node.node_config("kernel_size")
           data = data.reshape((out_channels, 1, *kernel_size)) 
-          
+        
+        if node.op.type == NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D and param_type == torch_op_def.TorchConv2d.ParamName.WEIGHTS:
+          in_channels = node.node_config("in_channels")
+          kernel_size = node.node_config("kernel_size")
+          data = data.reshape((1, in_channels, *kernel_size)) 
+          data = data.transpose(1, 0, 2, 3)
+          data = np.ascontiguousarray(data)
+
         torch_tensor = torch.from_numpy(data)
         param_name = cls._parameter_map.get(param_type, param_type.value)
         if node.has_bound_params():

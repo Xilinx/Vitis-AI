@@ -193,7 +193,7 @@ def dump_xmodel(output_dir="quantize_result", deploy_check=False, lstm_app=False
         if node.op.type not in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB]:
           continue
         for i, tensor in enumerate(node.out_tensors):
-          if tensor.shape[0] != 1:
+          if tensor.shape and tensor.shape[0] != 1:
             NndctScreenLogger().error(f"Batch size must be 1 when exporting xmodel.")
             error_out = True
             break

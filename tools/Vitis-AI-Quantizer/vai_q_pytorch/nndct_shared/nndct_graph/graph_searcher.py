@@ -82,7 +82,7 @@ class GraphSearcher:
           if node_sets is not None and node_set not in node_sets[pattern_id]:
             node_sets[pattern_id].append(node_set)
             if matched_pattern.action:
-              matched_pattern.action(matched_pattern, node_set)
+              matched_pattern.action(matched_pattern, node_set, graph=self._graph)
     
     for cn in self._graph.children(node):
       self._find_node_from_type_and_apply_action(cn, pattern_matcher, visited_nodes, node_sets)

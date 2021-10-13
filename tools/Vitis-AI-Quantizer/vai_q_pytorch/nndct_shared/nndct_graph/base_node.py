@@ -57,6 +57,7 @@ class Node(NodeBase):
     self._out_nodes = []
     self._blocks = []
     self._is_quantizable = in_quant_part
+    self._is_merged = False
 
   def __repr__(self):
     return f"Node(name={self.name}, id={self.idx}, op_type={self.op.type}, quant_state={self.in_quant_part})"
@@ -286,4 +287,12 @@ class Node(NodeBase):
     
   def has_custom_op(self):
     return self.op.type not in NNDCT_OP.__dict__.values()
+
+  @property
+  def merged(self):
+    return self._is_merged
+
+  @merged.setter
+  def merged(self, flag):
+    self._is_merged = flag
   

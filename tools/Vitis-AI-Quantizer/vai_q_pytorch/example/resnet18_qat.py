@@ -42,6 +42,19 @@ parser.add_argument(
     default=1e-4,
     type=float,
     help='Weight decay.')
+parser.add_argument(
+    '--mode',
+    default='train',
+    choices=['train', 'test', 'deploy'],
+    help='Running mode.')
+parser.add_argument(
+    '--deployable',
+    default='deployable.pth',
+    help='Deployable model file path.')
+parser.add_argument(
+    '--output_dir',
+    default='qat_result',
+    help='Directory to save qat result.')
 args, _ = parser.parse_known_args()
 
 def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
@@ -311,6 +324,8 @@ def train(train_loader, model, criterion, optimizer, epoch, gpu=None):
 
   end = time.time()
   for i, (images, target) in enumerate(train_loader):
+    if i > 100:
+      break
     # measure data loading time
     data_time.update(time.time() - end)
 
@@ -509,46 +524,66 @@ def main():
 
   # vai_q_pytorch interface function: create quantizer can do QAT
   input = torch.randn([args.batch_size, 3, 224, 224], dtype=torch.float32).cuda()
-  qat_processor = QatProcessor(model, input, bitwidth=8)
-  quantized_model = qat_processor.trainable_model()
 
-  optimizer = torch.optim.Adam(
-    quantized_model.parameters(), args.lr, weight_decay=args.weight_decay)
+  if args.mode == 'train':
+    qat_processor = QatProcessor(model, input, bitwidth=8)
+    quantized_model = qat_processor.trainable_model()
 
-  best_acc1 = 0
-  epochs = 2
-  for epoch in range(epochs):
-    adjust_learning_rate(optimizer, epoch, args.lr)
+    optimizer = torch.optim.Adam(
+        quantized_model.parameters(), args.lr, weight_decay=args.weight_decay)
 
-    # train for one epoch
-    train(train_loader, quantized_model, criterion, optimizer, epoch, gpu)
+    best_acc1 = 0
+    epochs = 2
+    for epoch in range(epochs):
+      adjust_learning_rate(optimizer, epoch, args.lr)
 
-    # evaluate on validation set
-    acc1 = validate(val_loader, quantized_model, criterion, gpu)
+      # train for one epoch
+      train(train_loader, quantized_model, criterion, optimizer, epoch, gpu)
 
-    # remember best acc@1 and save checkpoint
-    is_best = acc1 > best_acc1
-    best_acc1 = max(acc1, best_acc1)
+      # evaluate on validation set
+      acc1 = validate(val_loader, quantized_model, criterion, gpu)
 
-    save_checkpoint({
-        'epoch': epoch + 1,
-        'state_dict': quantized_model.state_dict(),
-        'best_acc1': best_acc1}, is_best)
-    print('Saving ckpt with best_acc1:', best_acc1)
+      # remember best acc@1 and save checkpoint
+      is_best = acc1 > best_acc1
+      best_acc1 = max(acc1, best_acc1)
 
-  # vai_q_pytorch interface function: deploy the trained model and convert xmodel
-  # need at least 1 iteration of inference with batch_size=1
-  val_subset = torch.utils.data.Subset(val_dataset, list(range(1)))
-  subset_loader = torch.utils.data.DataLoader(
-      val_subset,
-      batch_size=1,
-      shuffle=False,
-      num_workers=args.workers,
-      pin_memory=True)
-  quantizer.deploy(quantized_model, output_dir='qat_result')
-  deployable_model = quantizer.deploy_model
-  validate(subset_loader, deployable_model, criterion, gpu)
-  quantizer.export_xmodel()
+      save_checkpoint({
+          'epoch': epoch + 1,
+          'state_dict': quantized_model.state_dict(),
+          'best_acc1': best_acc1}, is_best)
+      print('Saving ckpt with best_acc1:', best_acc1)
+
+    output_dir = 'qat_result'
+    deployable_net = qat_processor.convert_to_deployable(quantized_model, output_dir=output_dir)
+    torch.save(deployable_net.state_dict(), args.deployable)
+  elif args.mode in ['test', 'deploy']:
+    from pytorch_nndct.apis import torch_quantizer
+    from nndct_shared.utils import option_util
+    option_util.set_option_value("nndct_param_corr", False)
+    option_util.set_option_value("nndct_equalization", False)
+
+    model.load_state_dict(torch.load(args.deployable))
+    # Use cpu mode to export xmodel.
+    device = torch.device('cuda') if args.mode == 'test' else torch.device('cpu')
+    quantizer = torch_quantizer('test', model, input, output_dir=args.output_dir, device=device)
+    quant_model = quantizer.quant_model
+    if args.mode == 'test':
+      validate(val_loader, quant_model, criterion, gpu)
+    else:
+      # vai_q_pytorch interface function: deploy the trained model and convert xmodel
+      # need at least 1 iteration of inference with batch_size=1
+      val_subset = torch.utils.data.Subset(val_dataset, list(range(1)))
+      subset_loader = torch.utils.data.DataLoader(
+          val_subset,
+          batch_size=1,
+          shuffle=False,
+          num_workers=args.workers,
+          pin_memory=True)
+      for images, _ in subset_loader:
+        quant_model(images)
+      quantizer.export_xmodel()
+  else:
+    raise ValueError('mode must be one of "train", "test" or "deploy"')
 
 if __name__ == '__main__':
   main()

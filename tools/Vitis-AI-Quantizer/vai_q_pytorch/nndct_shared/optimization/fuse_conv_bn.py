@@ -19,11 +19,27 @@
 import numpy as np
 from nndct_shared.base import NNDCT_OP
 
+BN_MERGED_TYPES = [NNDCT_OP.CONV2D, 
+                   NNDCT_OP.DEPTHWISE_CONV2D, 
+                   NNDCT_OP.CONVTRANSPOSE2D,
+                   NNDCT_OP.CONV3D, 
+                   NNDCT_OP.CONVTRANSPOSE3D]
 
 class ConvBnHandler(object):
   def __call__(self, *args, **kwargs):
     _, node_set = args
-    conv_node, bn_node = node_set
+    conv_node = node_set[0]
+    bn_node = node_set[-1]
+    concat_node = None
+    if len(node_set) == 3:
+      concat_node = node_set[1]
+      if len(concat_node.out_nodes) > 1:
+        return
+      for in_node in kwargs['graph'].parents(concat_node):
+        if in_node.op.type not in BN_MERGED_TYPES:
+          return
+    bn_node.merged = True
+
     # print(f"fuse conv {conv_node.name} with bn {bn_node.name}")
     if conv_node.node_attr(conv_node.op.AttrName.BIAS_TERM):
       bias_param_name = conv_node.op.params[
@@ -32,9 +48,12 @@ class ConvBnHandler(object):
     else:
       # TODO: need to infer split_sym
       split_sym = "."
+      # bias_param_name = '.'.join(
+      #     conv_node.op.params[conv_node.op.ParamName.WEIGHTS].name.split(
+      #         split_sym)[:-1]) + split_sym + 'bias'
       bias_param_name = '.'.join(
           conv_node.op.params[conv_node.op.ParamName.WEIGHTS].name.split(
-              split_sym)[:-1]) + split_sym + 'bias'
+              split_sym)) + split_sym + 'bias'
       bias_data = 0
       conv_node.set_node_attr(conv_node.op.AttrName.BIAS_TERM, True)
 
@@ -51,8 +70,20 @@ class ConvBnHandler(object):
             [conv_weights, bias_data, bn_beta, bn_gamma, bn_mean, bn_var]):
       scale = bn_gamma / np.sqrt(bn_var + epsilon)
       offset = bn_beta - bn_mean * scale
+      if concat_node is not None:
+        cat_axis = concat_node.node_attr(concat_node.op.AttrName.AXIS)
+        cat_begin = 0
+        cat_end = 0
+        for idx in range(len(concat_node.in_nodes)):
+          if conv_node.name == concat_node.in_nodes[idx]:
+            cat_end = cat_begin + concat_node.in_tensors[idx].shape[cat_axis]
+            break
+          else:
+            cat_begin += concat_node.in_tensors[idx].shape[cat_axis]
+        scale = scale[cat_begin : cat_end]
+        offset = offset[cat_begin : cat_end]
 
-      if conv_node.op.type == NNDCT_OP.DEPTHWISE_CONV2D:
+      if conv_node.op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
         # [channel_multiplier, h, w, in_channels] -> [channel_multiplier, in_channles, h, w]
         conv_weights = conv_weights.transpose(0, 3, 1, 2)
         in_dim = conv_node.node_attr(conv_node.op.AttrName.IN_DIM)

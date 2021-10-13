@@ -32,16 +32,20 @@ class DataFormatMap(object):
   """A dict mapping of framework and op type to its data format.
   """
   _nndct_format_map = {
+      NNDCT_OP.CONV1D: 'OIW',
       NNDCT_OP.CONV2D: 'OHWI',
       NNDCT_OP.DEPTHWISE_CONV2D: 'OHWI',
       NNDCT_OP.CONVTRANSPOSE2D: 'OHWI',
+      NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: 'OHWI',
       NNDCT_OP.DENSE: 'OI',
       NNDCT_OP.BASIC_LSTM: 'OI'
   }
 
   _torch_format_map = {
+      NNDCT_OP.CONV1D: 'OIW',
       NNDCT_OP.CONV2D: 'OIHW',
       NNDCT_OP.DEPTHWISE_CONV2D: 'OIHW',
+      NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: 'OIHW',
       NNDCT_OP.CONVTRANSPOSE2D: 'OIHW',
       NNDCT_OP.DENSE: 'OI',
       NNDCT_OP.BASIC_LSTM: 'OI'

@@ -195,7 +195,25 @@ class TorchParser(object):
           tensor.from_ndarray(data)
           tensor = tensor_util.convert_parameter_tensor_format(
               tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
-          
+      
+      elif node.op.type == NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D:
+          for param_name, tensor in node.op.params.items():
+            data = module.state_dict()[get_short_name(tensor.name)].cpu().numpy()
+            if param_name == node.op.ParamName.WEIGHTS:
+              # data = np.copy(data).transpose(1, 0, 2, 3)
+              # data = np.ascontiguousarray(data)
+              in_channels = node.node_config("in_channels")
+              out_channels = node.node_config("out_channels")
+              kernel_size = node.node_config("kernel_size")
+              channel_mutiplier = int(out_channels / in_channels)
+              data = np.copy(data).reshape((in_channels, channel_mutiplier, *kernel_size))
+              data = np.copy(data).transpose(1, 0, 2, 3)
+              data = np.ascontiguousarray(data)
+
+            tensor.from_ndarray(data)
+            tensor = tensor_util.convert_parameter_tensor_format(
+              tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
+   
       elif node.blocks:
         for block in node.blocks:
           TorchParser._load_data(block, module)
