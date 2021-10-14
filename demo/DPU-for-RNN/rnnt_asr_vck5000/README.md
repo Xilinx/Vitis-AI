@@ -16,9 +16,6 @@ Please take the following steps to run the RNN-T based ASR demo on Versal VCK500
 ## RNN-T demo dependency setup
 
 ```shell
-cd setup
-sh docker_build_rnnt.sh
-cd ..
 sh scipts/copyfile.sh
 ```
 Download the models

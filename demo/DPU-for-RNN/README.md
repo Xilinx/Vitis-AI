@@ -94,14 +94,26 @@ XRT
 ```
 xrt-2.11.648-1.x86_64
 ```
+## RNN-T demo dependency setup
+
+### Build RNN Docker from Recipe
+
+The Vitis AI RNN Docker container needs to be built from recipe. Before building the Vitis AI RNN Docker, please follow the instructinos at https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/1.4.1#building-docker-from-recipe and build the Vitis AI GPU Docker using ./docker_build_gpu.sh
+
+The Vitis AI RNN Docker recipe depends on the xilinx/vitis-ai-gpu:latest Docker image as a base image and will not build without it.
+
+When the  xilinx/vitis-ai-gpu:latest  docker image is available, proceed to build the Vitis AI RNN Docker image
+```
+cd setup
+sh docker_build_rnn.sh
+```
 
 ## Run Demos of DPU-for-RNN.
 
-Please refer to the following links to build and lauch the docker image, and then run the demo according to instructions.
+Please refer to the following links to run the demo in the docker image according to instructions.
 
-- [Run RNN demos of Alveo U25 and U50LV](rnn_u25_u50lv)
+- [Run RNN demos of Alveo U25 and U50LV](rnn_u25_u50lv/apps)
 - [Run the RNN-T demo on Versal VCK5000](rnnt_asr_vck5000)
-
 
 ## License
 Copyright 2019 Xilinx Inc.
