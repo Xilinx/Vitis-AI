@@ -16,13 +16,13 @@
 # under the License.
 
 # CI docker VAI env
-ARG  BASE_IMAGE=xilinx/vitis-ai:1.4.916
+ARG  BASE_IMAGE=xilinx/vitis-ai:1.4.1.978
 FROM $BASE_IMAGE
 
 ARG PYXIR_REPO=https://github.com/Xilinx/pyxir
-ARG PYXIR_BRANCH=rel-v0.3.0
+ARG PYXIR_BRANCH=rel-v0.3.2
 ARG PYXIR_FLAGS="--use_vart_cloud_dpu --use_dpuczdx8g_vart"
-ARG TVM_COMMIT=40d5193
+ARG TVM_COMMIT=627e92e7
 
 ENV TVM_VAI_HOME /opt/tvm-vai/
 ENV TVM_HOME /opt/tvm-vai/tvm
