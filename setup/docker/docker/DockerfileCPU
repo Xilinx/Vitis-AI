@@ -315,7 +315,7 @@ ARG CACHEBUST=1
 
 # Create conda envs
 RUN cd /scratch/ \
-    && wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.4.914-01.tar.gz \
+    && wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_1.4.1.978-01.tar.gz \
     && tar -xzvf conda-channel.tar.gz \
     && . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && conda install -c defaults conda-build \
@@ -350,13 +350,13 @@ RUN rm -f /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/etc/conda/activate.d/acti
 # Rebuild this layer every time
 ARG CACHEBUST=1
 RUN cd /tmp \
-    && wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog_1.4.0-r75_amd64.deb \
-    && wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory_1.4.0-r77_amd64.deb \
-    && wget -O libxir.deb https://www.xilinx.com/bin/public/openDownload?filename=libxir_1.4.0-r80_amd64.deb \
-    && wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_1.4.0-r117_amd64.deb \
-    && wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis_ai_library_1.4.0-r105_amd64.deb \
-    && wget -O librt-engine.deb https://www.xilinx.com/bin/public/openDownload?filename=librt-engine_1.4.0-r178_amd64.deb \
-    && wget -O aks.deb https://www.xilinx.com/bin/public/openDownload?filename=aks_1.4.0-r73_amd64.deb \
+    && wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog_1.4.1-r82_amd64.deb \
+    && wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory_1.4.1-r85_amd64.deb \
+    && wget -O libxir.deb https://www.xilinx.com/bin/public/openDownload?filename=libxir_1.4.1-r91_amd64.deb \
+    && wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_1.4.1-r130_amd64.deb \
+    && wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis_ai_library_1.4.1-r114_amd64.deb \
+    && wget -O librt-engine.deb https://www.xilinx.com/bin/public/openDownload?filename=librt-engine_1.4.1-r195_amd64.deb \
+    && wget -O aks.deb https://www.xilinx.com/bin/public/openDownload?filename=aks_1.4.1-r78_amd64.deb \
     && apt-get install -y --no-install-recommends /tmp/*.deb \
     && rm -rf /tmp/* \
     && ldconfig
