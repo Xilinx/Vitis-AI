@@ -63,9 +63,9 @@ RUN apt-get update -y && apt install -y sox \
 
 # Install VCK5000 Shells
 RUN cd /tmp \
-    && wget --progress=dot:mega -O xilinx-sc-fw-vck5000.deb http://xcogpuvai01.xilinx.com:8000/xilinx-sc-fw-vck5000_4.4.8-1.fe3928b_all.deb \
-    && wget --progress=dot:mega -O xilinx-vck5000-es1-gen3x16-base.deb http://xcogpuvai01.xilinx.com:8000/xilinx-vck5000-es1-gen3x16-base_2-3123623_all.deb \
-    && wget --progress=dot:mega -O xilinx-vck5000-es1-gen3x16-validate.deb http://xcogpuvai01.xilinx.com:8000/xilinx-vck5000-es1-gen3x16-validate_2-3123623_all.deb \
+    && wget --progress=dot:mega -O xilinx-sc-fw-vck5000.deb https://www.xilinx.com/bin/public/openDownload?filename=xilinx-sc-fw-vck5000_4.4.8-1.fe3928b_all.deb \
+    && wget --progress=dot:mega -O xilinx-vck5000-es1-gen3x16-base.deb https://www.xilinx.com/bin/public/openDownload?filename=xilinx-vck5000-es1-gen3x16-base_2-3123623_all.deb \
+    && wget --progress=dot:mega -O xilinx-vck5000-es1-gen3x16-validate.deb https://www.xilinx.com/bin/public/openDownload?filename=xilinx-vck5000-es1-gen3x16-validate_2-3123623_all.deb \
     && apt install -y ./xilinx-sc-fw-vck5000.deb ./xilinx-vck5000-es1-gen3x16-base.deb ./xilinx-vck5000-es1-gen3x16-validate.deb \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/*
