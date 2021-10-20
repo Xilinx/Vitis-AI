@@ -26,7 +26,7 @@ CONDA_PACKAGE_PREFIX="${CONDA_PACKAGE_PREFIX:-https://www.xilinx.com/bin/public/
 RNN_IMAGE="${RNN_IMAGE:-${DOCKER_REPO}vitis-ai-rnn:${VERSION}}"
 
 # Refresh the BASE_IMAGE
-docker pull ${BASE_IMAGE}
+docker pull ${BASE_IMAGE} || true
 
 docker build --network=host \
         --build-arg VERSION=${VERSION} \
