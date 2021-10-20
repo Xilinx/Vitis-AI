@@ -105,7 +105,7 @@ The Vitis AI RNN Docker recipe depends on the xilinx/vitis-ai-gpu:latest Docker 
 When the  xilinx/vitis-ai-gpu:latest  docker image is available, proceed to build the Vitis AI RNN Docker image
 ```
 cd setup
-sh docker_build_rnn.sh
+sh docker_build_rnnt.sh
 ```
 
 ## Run Demos of DPU-for-RNN.
