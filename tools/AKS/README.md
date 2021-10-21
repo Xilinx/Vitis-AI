@@ -112,9 +112,9 @@ Follow [Setup Alveo-U50](../../setup/alveo/README.md) page to setup your host sy
 ### Download Overlays
 
 ```sh
-wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbins_1_4_0.tar.gz -O alveo_xclbins_1_4_0.tar.gz
-tar -xzvf alveo_xclbins_1_4_0.tar.gz
-sudo cp /opt/xilinx/overlaybins/dpuv3e/dpuv3e_6E300_xilinx_u50_gen3x4_xdma_base_2.xclbin /usr/lib/
+wget https://www.xilinx.com/bin/public/openDownload?filename=alveo_xclbins_1_4_1.tar.gz -O alveo_xclbins_1_4_1.tar.gz
+tar -xzvf alveo_xclbins_1_4_1.tar.gz
+sudo cp /opt/xilinx/overlaybins/DPUCAHX8H/dpuv3e_6E300_xilinx_u50_gen3x4_xdma_base_2.xclbin /usr/lib/
 ```
 
 ### Get Image Dataset

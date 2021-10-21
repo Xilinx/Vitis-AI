@@ -1,0 +1,13 @@
+use graph xgraph 
+drop job load_xgraph
+set sys.data_root="./"
+
+create loading job load_xgraph for graph xgraph{
+    load "$sys.data_root/small.mtx"
+        to vertex Person values ($0, $0),
+        to vertex Person values ($1, $1),
+        to edge Friend values ($0, $1, $2)
+        using separator = " ", header = "false";
+}
+
+run loading job load_xgraph

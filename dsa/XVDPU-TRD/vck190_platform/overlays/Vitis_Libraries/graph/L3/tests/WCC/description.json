@@ -1,0 +1,151 @@
+{
+    "gui": false, 
+    "name": "Xilinx Connected Component Test", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u50"
+    ], 
+    "platform_blacklist": [], 
+    "platform_properties": {
+        "u50": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u50.ini"
+                    ]
+                }
+            }
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": " -offset PROJECT/data/test_offset.csr -indice PROJECT/data/test_column.csr -golden PROJECT/data/test_golden.mtx", 
+            "ld_library_path": "PROJECT/../../lib:$(XILINX_XRT)/lib:$(XILINX_XRM)/lib", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L3/tests/WCC/test_wcc.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include"
+            ], 
+            "options": "-O3 -I$(XILINX_XRM)/include"
+        }, 
+        "linker": {
+            "librarypaths": [
+                "LIB_DIR/L3/lib"
+            ], 
+            "libraries": [
+                "graphL3"
+            ], 
+            "options": "-L$(XILINX_XRM)/lib -lxrm "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/connected_component/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/connected_component/kernel/wcc_kernel.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL_NAME=wcc_kernel", 
+                    "name": "wcc_kernel", 
+                    "num_compute_units": 1, 
+                    "compute_units": [
+                        {
+                            "name": "wcc_kernel", 
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "columnG1", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "offsetG1", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "column512G2", 
+                                    "memory": "DDR[1]"
+                                }, 
+                                {
+                                    "name": "column32G2", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "offsetG2", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "offsetG2Tmp1", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "offsetG2Tmp2", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "queue512", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "queue", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "result512", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "result32", 
+                                    "memory": "DDR[0]"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "wcc_kernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": true, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

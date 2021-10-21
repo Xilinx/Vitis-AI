@@ -30,26 +30,26 @@ files:
 - name: refinedet_VOC_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: ec69ab027db9b641e468e1b4c4e41540
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 0985a57f7d64cd71f24e6f1968e5f016
 - name: refinedet_VOC_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck190-r1.4.0.tar.gz
-  checksum: 4d5b5feb4a6b93853d8c2d710310b61a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck190-r1.4.1.tar.gz
+  checksum: 69b214e7e1b8f38121b385290c1e156c
 - name: refinedet_VOC_tf
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 828807593df086495f3a65eefafae1d4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 35492cbae0b591c3e8f43a38889d931a
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: c2945e0790a3ab5d19ad13bf1b32dfe7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 3371032d4afd5760160d5682c7e46af5
 - name: refinedet_VOC_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 02b34c741f798bf27c2d20f1ddb12e0e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 0b82b0a10f755572ed067dd4be88c10b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

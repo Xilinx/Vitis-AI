@@ -31,26 +31,26 @@ files:
 - name: face-quality_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 751e3f137e75fe90328eff96137a4393
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 1313d9847e7623e165cf1028a4d4cc4d
 - name: face-quality_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck190-r1.4.0.tar.gz
-  checksum: 7dd34900afdbdff19ddd9232ece7d4b7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck190-r1.4.1.tar.gz
+  checksum: c1e9d839def09f013c5c11e19bf8eddb
 - name: face-quality_pt
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 7aa34cfb1577692399a2da45d06ba86c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 9537526bcde1ef3ac435f2e142d576f0
 - name: face-quality_pt
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: b6ac8056f364e6f212e30041293c87cb
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 6b5544176938b0c383adb1858ad8e8c8
 - name: face-quality_pt
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 0bfdd5d08c05b59b009cd252072eb710
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: e08fbbf5b2feec5f9afef4f1ec982867
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

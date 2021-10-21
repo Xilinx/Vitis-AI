@@ -1,0 +1,11 @@
+name: xf_blas 
+channels:
+  - anaconda
+dependencies:
+  - python=3.6.7
+  - numpy=1.16.2
+  - tensorflow=1.14.0
+  - keras=2.2.4
+  - pandas=0.24.2
+  - scipy=1.2.1
+  - scikit-learn=0.20.3

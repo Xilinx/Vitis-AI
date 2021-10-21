@@ -1,0 +1,136 @@
+{
+    "name": "Xilinx Q6 Mod Demo",
+    "description": "Xilinx Q6 Mod Demo",
+    "flow": "vitis",
+    "platform_type": "pcie",
+    "platform_whitelist": [
+        "xilinx_u280_xdma_201920_3",
+        "u250",
+        "u200"
+    ],
+    "platform_blacklist": [
+        "zc"
+    ],
+    "platform_properties": {
+        "u280": {
+            "host": {
+                "compiler": {
+                    "symbols": [
+                        "USE_HBM"
+                    ]
+                }
+            },
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u280.cfg"
+                    ]
+                }
+            }
+        },
+        "u250": {
+            "host": {
+                "compiler": {
+                    "symbols": [
+                        "USE_DDR"
+                    ]
+                }
+            },
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u250.cfg"
+                    ]
+                }
+            }
+        },
+        "u200": {
+            "host": {
+                "compiler": {
+                    "symbols": [
+                        "USE_DDR"
+                    ]
+                }
+            },
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u200.cfg"
+                    ]
+                }
+            }
+        }
+    },
+    "launch": [
+        {
+            "name": "generic launch for all flows",
+            "cmd_args": " -xclbin BUILD/filter_kernel.xclbin -data PROJECT/db_data"
+        }
+    ],
+    "host": {
+        "host_exe": "filter_test.exe",
+        "compiler": {
+            "sources": [
+                "host/filter_test.cpp",
+                "host/xclhost.cpp"
+            ],
+            "includepaths": [
+                "kernel",
+                "host",
+                "LIB_DIR/L1/include/hw"
+            ],
+            "options": "-O3"
+        }
+    },
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "kernel",
+                "host",
+                "LIB_DIR/L1/include/hw"
+            ]
+        }
+    },
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "kernel/filter_kernel.cpp",
+                    "frequency": 300,
+                    "name": "filter_kernel"
+                }
+            ],
+            "frequency": 300,
+            "name": "filter_kernel"
+        }
+    ],
+    "testinfo": {
+        "disable": true,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960,
+                    "vitis_hw_emu": 28672,
+                    "vitis_sw_emu": 10240,
+                    "vitis_hw_run": 10240
+                },
+                "max_time_min": {
+                    "vitis_hw_build": 470,
+                    "vitis_hw_emu": 470,
+                    "vitis_sw_emu": 60,
+                    "vitis_hw_run": 10
+                }
+            }
+        ],
+        "targets": [
+            "vitis_sw_emu",
+            "vitis_hw_build",
+            "vitis_hw_run"
+        ],
+        "category": "canary"
+    }
+}

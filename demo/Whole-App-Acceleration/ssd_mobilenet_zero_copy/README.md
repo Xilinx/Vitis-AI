@@ -21,15 +21,15 @@ The mobilenet-ssd model is a Single-Shot multibox Detection (SSD) network intend
 > **Note:** User is responsible for the use of the downloaded content and compliance with any copyright licenses.
 
 ### Download xclbin
-- Download the [dpuv3me_xclbins_1_4_0](https://www.xilinx.com/bin/public/openDownload?filename=dpuv3me_xclbins_1_4_0.tar.gz) xclbin tar and install xclbin.
-- `sudo tar -xzvf dpuv3me_xclbins_1_4_0.tar.gz --directory /`
-- `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3me/waa/detection`
+- Download the [DPUCAHX8L_xclbins_1_4_1](https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8L_xclbins_1_4_1.tar.gz) xclbin tar and install xclbin.
+- `sudo tar -xzvf DPUCAHX8L_xclbins_1_4_1.tar.gz --directory /`
+- `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8L/waa/detection`
 
 ### Download model
 - Download and extract model tar.
 - `cd ${VAI_HOME}/demo/Whole-App-Acceleration/ssd_mobilenet_zero_copy/`
-- `wget https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz -O ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz`
-- `tar -xvf ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz`
+- `wget https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz -O ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz`
+- `tar -xvf ssd_mobilenet_v1_coco_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz`
 
 ## Build the Application
 - `make build && make -j`

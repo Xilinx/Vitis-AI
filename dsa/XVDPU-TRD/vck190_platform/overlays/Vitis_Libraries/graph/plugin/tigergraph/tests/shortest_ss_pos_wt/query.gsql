@@ -1,0 +1,12 @@
+use graph xgraph
+drop query test_shortest_ss_pos_wt_fpga
+
+create query test_shortest_ss_pos_wt_fpga () for graph xgraph{
+
+    double ret;
+    int sourceID = 2;
+    ret = shortest_ss_pos_wt_fpga(sourceID);
+    print ret;
+}
+
+install query test_shortest_ss_pos_wt_fpga

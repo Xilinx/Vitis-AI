@@ -1,0 +1,54 @@
+{
+    "sCm_x2": {
+        "impl": "ValidateStreamWithMaster",
+        "map": [
+            {
+                "in_port": {
+                    "stream": "s0",
+                    "width": 64
+                },
+                "in_ref": {
+                    "buffer": "g0"
+                },
+				"out": {
+					"buffer": "ret0"
+				}
+            },
+            {
+                "in_port": {
+                    "stream": "s1",
+                    "width": 32
+                },
+                "in_ref": {
+                    "buffer": "g1"
+                },
+				"out": {
+					"buffer": "ret1"
+				}
+            }
+        ]
+    },
+    "m2s_x2": {
+        "impl": "LoadDdrToStream",
+        "map": [
+            {
+                "in_port": {
+                    "buffer": "din2a"
+                },
+                "out": {
+                    "stream": "sout2a",
+                    "width": 64
+                }
+            },
+            {
+                "in_port": {
+                    "buffer": "din2b"
+                },
+                "out": {
+                    "stream": "sout2b",
+                    "width": 32
+                }
+            }
+        ]
+    }
+}

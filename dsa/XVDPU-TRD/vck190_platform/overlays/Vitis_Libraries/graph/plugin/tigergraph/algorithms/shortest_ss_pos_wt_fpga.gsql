@@ -1,0 +1,46 @@
+use graph xgraph
+drop query all
+
+create query shortest_ss_pos_wt_fpga (int sourceID) for graph xgraph returns (double) {
+
+    ListAccum<int> @@offsetsCSR;
+    ListAccum<int> @@indicesCSR;
+    ListAccum<float> @@weightsCSR;
+    ArrayAccum<ListAccum<int> > @@indicesList[1];
+    ArrayAccum<ListAccum<float> > @@weightsList[1];
+    double ret;
+    double ret2;
+    ListAccum<int> @@predecent;
+    ListAccum<float> @@distance;
+
+    population = {Person.*};
+    @@indicesList.reallocate(population.size());
+    @@weightsList.reallocate(population.size());
+
+    plist = SELECT p 
+        FROM population:p -(Friend:e)-> :t
+        ACCUM @@indicesList[p.num] += t.num,
+              @@weightsList[p.num] += e.weight;
+
+    @@offsetsCSR += 0;
+
+    foreach i in RANGE[0, population.size()-1] DO
+        @@offsetsCSR += @@offsetsCSR.get(i) + @@indicesList[i].size();
+        foreach j in RANGE[0, @@indicesList[i].size()-1] DO
+            @@indicesCSR += @@indicesList[i].get(j);
+            @@weightsCSR += @@weightsList[i].get(j);
+        end;
+    end;
+
+    ret = udf_load_xgraph_fpga(@@offsetsCSR, @@indicesCSR, @@weightsCSR);
+    ret2 = udf_shortest_ss_pos_wt_fpga(sourceID, @@indicesCSR.size(), population.size(), @@predecent, @@distance);
+
+    print @@offsetsCSR;
+    print @@indicesCSR;
+    print @@weightsCSR;
+    print @@predecent;
+    print @@distance;
+    return ret2;
+}
+
+install query shortest_ss_pos_wt_fpga

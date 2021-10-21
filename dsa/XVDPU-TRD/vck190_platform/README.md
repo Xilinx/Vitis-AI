@@ -1,67 +1,59 @@
-# Vitis TRD Platform for the vck190 Board
+# VCK190 Base TRD
 
-## Building the Platform
+The Versal:tm: Base TRD consists of a series of platforms, accelerators, and Jupyter
+notebooks targeting the VCK190 evaluation board. A platform is a Vivado:registered: design
+with a pre-instantiated set of I/O interfaces and a corresponding PetaLinux BSP
+and image that includes the required kernel drivers and user-space libraries to
+exercise those interfaces. Accelerators are mapped to FPGA logic resources
+and/or AI Engine cores and stitched into the platform using the Vitis:tm: unified software platform toolchain.
 
-**Last Tested Vivado Release: 2020.2**
+# Build Platform
 
-The platform build process is entirely scripted. Note that as this platform
-build process involves cross-compiling Linux, build of the platform is supported
-on Linux environments **only** (although it is possible to build inside a VM or
-Docker container).
+To build the Vitis embedded platforms from source code in this repository, you will need to have the following tools
+installed and follow the build instructions:
 
-Also note that the default PetaLinux configuration uses local scratchpad areas. This
-will *not* work if you are building on a networked file system; Yocto will error out.
-Update PetaLinux to change the build area to a locally-mounted hard drive.
+- A Linux-based host OS supported by Vitis and PetaLinux
+- [Vitis][1] 2021.1
+- [PetaLinux][2] 2021.1
 
-After cloning the platform source, and with both Vivado and PetaLinux set up, run
-`make all` command. 
+[1]: https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis.html
+[2]: https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools.html
 
-Note that by default this Makefile will install the platform to "platform_repo/xilinx_vck190_es1_trd_202020_1/export/xilinx_vck190_es1_trd_202020_1/"
+To learn how to customize Vitis embedded platforms, please refer to [Vitis Platform Creation Tutorials](https://github.com/Xilinx/Vitis-Tutorials/tree/master/Vitis_Platform_Creation).
 
-More details you can find from `make help`
+Vitis and PetaLinux environment need to be setup before building the platform.
 
-## Platform Specification
+```bash
+source <Vitis_install_path>/Vitis/2021.1/settings64.sh
+source <PetaLinux_install_path>/settings.sh
+```
+This package comes with sources to generate the Vitis platform with these steps:
 
-### General Information
+1. Generate hardware specification file (XSA) using Vivado.
+2. Generate software components of platform (using Petalinux).
+3. Generate the Vitis platform by packaging hardware and software together
 
-| Type                | Value                       |
-| -----------------   | --------------------------- |
-| Vitis version       | 2020.2                      |
-| PetaLinux version   | 2020.2                      |
-| XRT Tag version     | [202020.2.8.0_Petalinux](https://github.com/Xilinx/XRT/releases/tag/202020.2.8.0_PetaLinux)              |
-| Associated Document | UG1442                      | 
-| Supported Device(s) | XCVC1902-2MSEVSVA2197       |
-| Supported Board(s)  | EK-VCK190-G-ED              |
+To generate the Vitis Versal TRD platform, type the following command:
+```bash
+make all
+```
 
-### Interfaces
+Notes:
 
-| Interface | Region | Details            |
-| --------- | ------ | ------------------ |
-| UART      | PS     |                    |
-| GEM       | PS     |                    |
-| USB       | PS     |                    |
-| SDIO      | PS     |                    |
-| HDMI      | PL     |                    |
-| MIPI      | PL     |                    |
+- When building PetaLinux image from source code, the build temp directory is set to **/tmp/xilinx_vck190_base-2021.1**. You can update the build temp directory by modifying CONFIG_TMP_DIR_LOCATION option in **<platform_name>/petalinux/xilinx-vck190-base-trd/project-spec/configs/config** file.
 
-### Hardware Configurations
+The platform file .xpfm will be genereated at **'platforms/xilinx_vck190_mipiRxSingle_hdmiTx_202110_1/vck190_mipiRxSingle_hdmiTx.xpfm'**
 
-| Configuration                 | Values                                                | Details                             |
-| ----------------------------- | ----------------------------------------------------- | ------------------------------------|
-| LPDDR Size                    | 8GB                                                   |                                     |
-| AI Engine                     | Enabled                                               |                                     |
-| HDMI                          | Enabled                                               |                                     |
-| MIPI                          | Enabled                                               |                                     |
+# License
 
-### Software Configurations
+Licensed under the Apache License, version 2.0 (the "License"); you may not use this file 
+except in compliance with the License.
 
-Documentation for the VCK190 Base TRD design is available here
-User Guide: https://www.xilinx.com/support/documentation/boards_and_kits/vck190/ug1442-vck190-trd.pdf
-Tutorial: https://xilinx.github.io/vck190-base-trd/build/html/index.html
+You may obtain a copy of the License at
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-# Notes
 
-Use the V++ -p option to generate the sd_card.img file that consists rootfs.ext4 provided by petalinux along with the Image,BOOT.BIN and system.dtb from platform, v++ generated xclbin and host.exe files.
-
-Once the Vitis platform is ready, some example applications to build with these platforms can be found here:
-https://github.com/Xilinx/Vitis_Accel_Examples
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+either express or implied. See the License for the specific language governing permissions 
+and limitations under the License.    

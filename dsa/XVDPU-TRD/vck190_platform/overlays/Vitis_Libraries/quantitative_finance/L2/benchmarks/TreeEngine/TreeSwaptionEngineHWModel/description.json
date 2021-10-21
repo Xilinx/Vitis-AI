@@ -1,0 +1,169 @@
+{
+    "gui": true, 
+    "name": "Xilinx Tree Swaption Engine HW Model Benchmark", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u250"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "platform_properties": {
+        "u250": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": ["--config PROJECT/conn_u250.cfg"]
+                }
+            }, 
+            "containers": [
+                {
+                    "ldclflags_mk": "--connectivity.nk scanTreeKernel:4:scanTreeKernel_1.scanTreeKernel_2.scanTreeKernel_3.scanTreeKernel_4", 
+                    "name": "scanTreeKernel"
+                }
+            ]
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": " -xclbin BUILD/scanTreeKernel.xclbin", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "host/main.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/benchmarks/TreeEngine/TreeSwaptionEngineHWModel/host", 
+                "LIB_DIR/L2/benchmarks/TreeEngine/TreeSwaptionEngineHWModel/kernel", 
+                "LIB_DIR/ext/xcl2"
+            ], 
+            "options": "-O3 ", 
+            "symbols": []
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/benchmarks/TreeEngine/TreeSwaptionEngineHWModel/kernel"
+            ], 
+            "symbols": []
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "kernel/scan_tree_kernel.cpp", 
+                    "frequency": 300, 
+                    "clflags": " -D DPRAGMA", 
+                    "name": "scanTreeKernel", 
+                    "num_compute_units": 4, 
+                    "compute_units": [
+                        {
+                            "name": "scanTreeKernel_1", 
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "m_axi_gmem0", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "m_axi_gmem1", 
+                                    "memory": "DDR[0]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "name": "scanTreeKernel_2", 
+                            "slr": "SLR1", 
+                            "arguments": [
+                                {
+                                    "name": "m_axi_gmem0", 
+                                    "memory": "DDR[1]"
+                                }, 
+                                {
+                                    "name": "m_axi_gmem1", 
+                                    "memory": "DDR[1]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "name": "scanTreeKernel_3", 
+                            "slr": "SLR2", 
+                            "arguments": [
+                                {
+                                    "name": "m_axi_gmem0", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "m_axi_gmem1", 
+                                    "memory": "DDR[2]"
+                                }
+                            ]
+                        }, 
+                        {
+                            "name": "scanTreeKernel_4", 
+                            "slr": "SLR3", 
+                            "arguments": [
+                                {
+                                    "name": "m_axi_gmem0", 
+                                    "memory": "DDR[3]"
+                                }, 
+                                {
+                                    "name": "m_axi_gmem1", 
+                                    "memory": "DDR[3]"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ], 
+            "frequency": 300, 
+            "name": "scanTreeKernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 1200, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

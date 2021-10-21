@@ -1,0 +1,57 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+
+local protectionKind = compound.m_typedefArray [1].m_protectionKind
+
+if g_noProtectionSections and hasNonPublicItems (compound.m_typedefArray) then
+}
+	// $protectionKind typedefs
+
+%{
+else
+}
+	// typedefs
+
+%{
+end -- if
+
+local isPrevMl = false
+
+for i = 1, #compound.m_typedefArray do
+	local item = compound.m_typedefArray [i]
+	local decl = getTypedefDeclString (item, hasItemRefTarget (item), "\t")
+	local isMl = string.find (decl, "\n")
+	local extraSep = ""
+
+	if i > 1 and (isMl or isPrevMl) then
+		extraSep = "\n"
+	end
+
+	isPrevMl = isMl
+
+	if item.m_protectionKind ~= protectionKind then
+		protectionKind = item.m_protectionKind
+		extraSep = ""
+}
+
+	// $protectionKind typedefs
+
+%{
+	end -- if
+}
+$extraSep	$decl
+%{
+end -- for
+}

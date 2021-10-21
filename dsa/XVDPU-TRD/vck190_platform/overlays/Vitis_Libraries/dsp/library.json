@@ -1,0 +1,17 @@
+{
+    "id": "xf_dsp",
+    "name": "Vitis DSP Library",
+    "description": "Vitis DSP library provides implementation of different L1/L2/L3 primitives for digital signal processing. Current version only provides implementation of Discrete Fourier Transform using Fast Fourier Transform algorithm for acceleration on Xilinx FPGAs. For FFT only L1 level primitives are provided.",
+    "v++": {
+        "includepaths": [
+            "LIB_DIR/L1/include/hw"
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw"
+            ]
+        }
+    }
+}

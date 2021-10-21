@@ -339,7 +339,7 @@ class DPUEventParser():
 
                 workload = self.xmodelInfo.get(subg_idx, {}).get(
                     "workload", 0) / 1000.0 / 1000.0 / 1000.0
-                perf = workload / avg_t * 1000  # to GOP/ms
+                perf = workload * batch / avg_t * 1000  # to GOP/ms
 
                 load_img_size = int(self.xmodelInfo.get(
                     subg_idx, {}).get("load_io_img_size", 0))
@@ -347,11 +347,11 @@ class DPUEventParser():
                     subg_idx, {}).get("load_io_para_size", 0))
 
                 read_size = load_img_size * batch + load_para_size
-                write_size = int(self.xmodelInfo.get(
+                write_size = batch * int(self.xmodelInfo.get(
                     subg_idx, {}).get("save_io_size", 0))
 
-                mem_io = (read_size + write_size) / 1000.0 / 1000.0
-                mem_io_bw = mem_io / avg_t * 1000  # to MB/ms
+                mem_io = (read_size + write_size) / 1024.0 / 1024.0
+                mem_io_bw = mem_io / avg_t * 1024  # to MB/ms
 
                 # print(subg_name, cu_name, min_t, avg_t, max_t, runs, workload, mem_io)
                 ret.append("%s,%d,%s,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,\n" % (

@@ -1,0 +1,205 @@
+{
+    "m2s_x2": {
+        "impl": "LoadDdrToStream",
+        "map": [
+            {
+                "in_port": {
+                    "buffer": "din2a"
+                },
+                "out": {
+                    "stream": "sout2a",
+                    "width": 64
+                }
+            },
+            {
+                "in_port": {
+                    "buffer": "din2b"
+                },
+                "out": {
+                    "stream": "sout2b",
+                    "width": 32
+                }
+            }
+        ]
+    },
+    "s2m_x2": {
+        "impl": "StoreStreamToMaster",
+        "map": [
+            {
+                "in_port": {
+                    "stream": "s0",
+                    "width": 64
+                },
+                "out": {
+                    "buffer": "p0"
+                }
+            },
+            {
+                "in_port": {
+                    "stream": "s1",
+                    "width": 32
+                },
+                "out": {
+                    "buffer": "p1"
+                }
+            }
+        ]
+    },
+    "ram2s_x2": {
+        "impl": "SendRamToStream",
+        "map": [
+            {
+                "in_port": {
+                    "buffer": "din0"
+                },
+                "out": {
+                    "stream": "s0",
+                    "width": 64
+                },
+				"ram": {
+					"depth": 512,
+					"type": "Uram"
+				}
+            },
+            {
+                "in_port": {
+                    "buffer": "din1"
+                },
+                "out": {
+                    "stream": "s1",
+                    "width": 32
+                },
+				"ram": {
+					"depth": 1024,
+					"type": "Bram"
+				}
+            }
+        ]
+    },
+    "rom2s_x2": {
+        "impl": "SendRomToStream",
+        "map": [
+            {
+                "in_file": {
+                    "name": "d_int64.txt",
+                    "type": "int64_t",
+					"num": 512
+                },
+                "out": {
+                    "stream": "s0",
+                    "width": 64
+                }
+            },
+            {
+                "in_file": {
+                    "name": "d_int32.txt",
+                    "type": "int32_t",
+					"num": 1024
+                },
+                "out": {
+                    "stream": "s1",
+                    "width": 32
+                }
+            }
+        ]
+    },
+    "sCm_x2": {
+        "impl": "ValidateStreamWithMaster",
+        "map": [
+            {
+                "in_port": {
+                    "stream": "s0",
+                    "width": 64
+                },
+                "in_ref": {
+                    "buffer": "g0"
+                },
+				"out": {
+					"buffer": "ret0"
+				}
+            },
+            {
+                "in_port": {
+                    "stream": "s1",
+                    "width": 32
+                },
+                "in_ref": {
+                    "buffer": "g1"
+                },
+				"out": {
+					"buffer": "ret1"
+				}
+            }
+        ]
+    },
+    "ramCs_x2": {
+        "impl": "ValidateStreamWithRam",
+        "map": [
+            {
+                "in_ref": {
+                    "buffer": "din0"
+                },
+                "in_port": {
+                    "stream": "s0",
+                    "width": 64
+                },
+				"out": {
+					"buffer": "ret0"
+				},
+				"ram": {
+					"depth": 512,
+					"type": "Uram"
+				}
+            },
+            {
+                "in_ref": {
+                    "buffer": "din1"
+                },
+                "in_port": {
+                    "stream": "s1",
+                    "width": 32
+                },
+				"out": {
+					"buffer": "ret1"
+				},
+				"ram": {
+					"depth": 1024,
+					"type": "Bram"
+				}
+            }
+        ]
+    },
+    "romCs_x2": {
+        "impl": "ValidateStreamWithRom",
+        "map": [
+            {
+                "in_file": {
+                    "name": "d_double.txt",
+                    "type": "double",
+					"num": 512
+                },
+				"in_port": {
+					"stream": "s0",
+					"width": 64
+				},
+                "out": {
+                    "buffer": "ret0"
+                }
+            },
+            {
+                "in_file": {
+                    "name": "d_half.txt",
+                    "type": "half",
+					"num": 512
+                },
+				"in_port": {
+					"stream": "s1",
+					"width": 16
+				},
+                "out": {
+                    "buffer": "ret1"
+                }
+            }
+        ]
+    }
+}

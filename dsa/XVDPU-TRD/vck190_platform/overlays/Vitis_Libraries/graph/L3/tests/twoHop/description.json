@@ -1,0 +1,98 @@
+{
+    "gui": false, 
+    "name": "Xilinx Two Hop", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u50"
+    ], 
+    "platform_blacklist": [
+    ], 
+    "platform_properties": {
+        "u50": {
+	        "v++": {
+	            "compiler": {
+		        "cflags": [
+		            "--config PROJECT/conn_u50.ini"
+		            ]
+		        }
+	        }
+	    }
+    }, 
+    "launch": [
+        {
+            "cmd_args": "--offset ./data/data-csr-offset.mtx --index ./data/data-csr-indicesweights.mtx --pair ./data/data-pair.mtx --golden ./data/data-golden.twoHop.mtx", 
+            "ld_library_path": [
+                "PROJECT/../../lib:$(XILINX_XRT)/lib:$(XILINX_XRM)/lib"
+            ], 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L3/tests/twoHop/test_twoHop.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include",
+                "LIB_DIR/../utils/L1/include"
+            ], 
+            "options": "-O3 -I$(XILINX_XRM)/include"
+        },
+        "linker": {
+            "librarypaths": [
+                "LIB_DIR/L3/lib"
+            ], 
+            "libraries" : [
+                "graphL3"
+            ],
+            "options": "-L$(XILINX_XRM)/lib -lxrm "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/include",
+                "LIB_DIR/L2/tests/twoHop/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/twoHop/kernel/twoHop_kernel.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL_NAME=twoHop_kernel", 
+                    "name": "twoHop_kernel"
+                }
+            ],
+            "ldclflags": "--nk twoHop_kernel:5:twoHop_kernel0.twoHop_kernel1.twoHop_kernel2.twoHop_kernel3.twoHop_kernel4",
+            "frequency": 300.0, 
+            "name": "twoHop_kernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": true, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": 32768, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

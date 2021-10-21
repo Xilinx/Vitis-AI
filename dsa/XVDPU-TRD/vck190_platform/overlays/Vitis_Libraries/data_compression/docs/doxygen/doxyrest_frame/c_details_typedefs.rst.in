@@ -1,0 +1,58 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+}
+Typedefs
+--------
+
+%{
+for i = 1, #compound.m_typedefArray do
+	local item = compound.m_typedefArray [i]
+	if isItemInCompoundDetails (item, compound) then
+		emit (getItemRefTargetString (item))
+
+		local decl = getTypedefDeclString (item, false, "\t")
+		local isPrevMl = string.find (decl, "\n")
+}
+.. ref-code-block:: $g_language
+	:class: title-code-block
+
+	$decl
+%{
+		if item.m_isSubGroupHead then
+			for j = 1, #item.m_subGroupSlaveArray do
+				slaveItem = item.m_subGroupSlaveArray [j]
+				local extraSep = ""
+
+				local decl = getTypedefDeclString (slaveItem, false, "\t")
+				local isMl = string.find (decl, "\n")
+
+				if isMl or isPrevMl then
+					extraSep = "\n"
+				end
+
+				isPrevMl = isMl
+}
+$extraSep	$decl
+%{
+			end -- for
+		end -- if
+}
+
+$(getItemDetailedDocumentation (item))
+
+%{
+	end -- if
+end -- for
+}

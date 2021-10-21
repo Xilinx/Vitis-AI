@@ -1,0 +1,4 @@
+.stamp
+_build/*
+rst_*
+xml_*

@@ -1,0 +1,74 @@
+{
+    "name": "Xilinx LZ4 32 Bit Memory Mapped Single Engine Compress HLS Test", 
+    "description": "This is a L1 test design to validate LZ4 compression module. It processes the data to and from the DDR into multiple parallel streams that helps in processing 8x data and achieve higher performance.", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u200", 
+        "vck190", 
+        "aws-vu9p-f1"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [], 
+    "QoR_golden": {
+        "VV_LUT": "6110", 
+        "VV_FF": "8247", 
+        "VV_BRAM": "13", 
+        "VV_URAM": "6", 
+        "VV_AchievedClockPeriod": "3.012"
+    }, 
+    "project": "lz4_compress_test", 
+    "solution": "sol1", 
+    "clock": "3.3", 
+    "topfunction": "hls_lz4CompressMM32bitSingleEngine", 
+    "top": {
+        "source": [
+            "lz4_compress_test.cpp", 
+            "$XF_PROJ_ROOT/common/thirdParty/xxhash/xxhash.c"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -I${XF_PROJ_ROOT}/common/thirdParty/xxhash"
+    }, 
+    "testbench": {
+        "source": [
+            "lz4_compress_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -I${XF_PROJ_ROOT}/common/thirdParty/xxhash -DPARALLEL_BLOCK=1", 
+        "argv": {
+            "hls_csim": "${DESIGN_PATH}/sample.txt ${DESIGN_PATH}/sample.txt.lz4", 
+            "hls_cosim": "${DESIGN_PATH}/sample.txt ${DESIGN_PATH}/sample.txt.lz4"
+        }
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": {
+                    "hls_vivado_syn": 300, 
+                    "hls_csim": 60, 
+                    "hls_cosim": 300, 
+                    "hls_vivado_impl": 300, 
+                    "hls_csynth": 60
+                }
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim", 
+            "hls_vivado_syn", 
+            "hls_vivado_impl"
+        ], 
+        "category": "canary"
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "id": "xf_opencv",
+    "name": "Vitis Vision Library",
+    "description": "Vitis Vision library is a set of 60+ kernels, optimized for Xilinx FPGAs and SoCs, based on the OpenCV computer vision functions. The kernels in the this library are optimized and supported in the Xilinx Vivado and Vitis Tool Suite.",
+    "v++": {
+        "includepaths": [
+            "LIB_DIR/L1/include/"
+        ]
+    },
+    "host": {
+	"compiler": {
+            "includepaths": [
+                "LIB_DIR/ext/xcl2/",
+                "LIB_DIR/L1/include"
+            ]
+        },
+        "linker" : {
+            "libraries" : [
+                "opencv_videoio",
+                "opencv_imgcodecs",
+                "opencv_core",
+                "opencv_imgproc",
+                "opencv_features2d",
+                "opencv_flann",
+				"opencv_video",
+				"opencv_calib3d",
+				"opencv_highgui"
+            ]
+        }
+    }
+}

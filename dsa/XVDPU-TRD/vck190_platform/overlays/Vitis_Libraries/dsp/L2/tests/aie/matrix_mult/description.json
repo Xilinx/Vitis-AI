@@ -1,0 +1,279 @@
+{
+    "name": "Xilinx DSPLIB matrix mult",
+    "description": "",
+    "gui": "false",
+    "flow": "versal",
+    "platform_whitelist": [
+        "vck190"
+    ],
+    "data": ["PROJECT/data/"],
+    "platform_properties": {
+        "vck190": {
+            "v++": {
+                "compiler": {
+                    "clflags": []
+                },
+                "linker": {
+                    "ldclflags": [
+                        "--config PROJECT/system.cfg"
+                    ]
+                },
+                "package": {
+                    "cflags": [
+                        "--package.defer_aie_run"
+                    ]
+                }
+            }
+        }
+    },
+    "pre_build": [
+        {
+            "build_cmd": "make -f PROJECT/golden.mk GOLDEN_CUR_DIR=PROJECT GOLDEN_ROOT_DIR=LIB_DIR LOC_INPUT_FILE_A=$(LOC_INPUT_FILE_A) LOC_INPUT_FILE_B=$(LOC_INPUT_FILE_B) P_INPUT_WINDOW_VSIZE_A=$(P_INPUT_WINDOW_VSIZE_A) STIM_TYPE_A=$(STIM_TYPE_A) INPUT_FILE_B=$(INPUT_FILE_B) P_INPUT_WINDOW_VSIZE_B=$(P_INPUT_WINDOW_VSIZE_B) STIM_TYPE_B=$(STIM_TYPE_B) NITER_UUT=$(NITER_UUT) P_DIM_A=$(P_DIM_A) P_DIM_AB=$(P_DIM_AB) T_DATA_A=$(T_DATA_A) T_DATA_B=$(T_DATA_B) P_CASC_LEN=$(P_CASC_LEN) P_DIM_A_LEADING=$(P_DIM_A_LEADING) P_ADD_TILING_A=$(P_ADD_TILING_A) P_DIM_B=$(P_DIM_B) P_DIM_B_LEADING=$(P_DIM_B_LEADING) P_ADD_TILING_B=$(P_ADD_TILING_B) "
+        },
+        {
+            "build_cmd": "make -f PROJECT/ksrc.mk GENKERNEL=LIB_DIR/../utils/L2/scripts/generate_kernels SPEC=PROJECT/kernel/spec.json TOOLDIR=PROJECT/_krnlgen"
+        }
+    ],
+    "post_launch": [
+        {
+            "target": "aiesim",
+            "launch_cmd": [
+                "mkdir -p logs",
+                "grep -ve '[XT]' ./data/uut_output.txt > ./logs/uut_output.txt",
+                "grep -ve '[XT]' ./data/ref_output.txt > ./logs/ref_output.txt",
+                "perl LIB_DIR/L2/tests/aie/common/scripts/matrix_mult_partition_shuffle.pl --untile --inFile ./logs/uut_output.txt --tileInPlace --inRow $(P_DIM_A) --inCol $(P_DIM_B) --T_DATA_A $(T_DATA_A) --T_DATA_B $(T_DATA_B) --colMajor $(P_DIM_OUT_LEADING) --isTiled $(P_ADD_DETILING_OUT) ",
+                "tclsh LIB_DIR/L2/tests/aie/common/scripts/diff.tcl ./logs/uut_output.txt ./logs/ref_output.txt ./logs/diff.txt $(DIFF_TOLERANCE)",
+                "tclsh LIB_DIR/L2/tests/aie/common/scripts/get_stats.tcl  $(T_DATA_A) $(T_DATA_B) 1 $(NUM_MACS_PER_KERNEL) $(P_CASC_LEN) 1 1 1 0 0 0 $(STATUS_FILE) ./ \"matMult_impl1\" $(NITER_UUT);"
+            ]
+        },
+        {
+            "target": "x86sim",
+            "launch_cmd": [
+                "mkdir -p logs",
+                "grep -ve '[XT]' ./data/uut_output.txt > ./logs/uut_output.txt",
+                "grep -ve '[XT]' ./data/ref_output.txt > ./logs/ref_output.txt",
+                "perl LIB_DIR/L2/tests/aie/common/scripts/matrix_mult_partition_shuffle.pl --untile --inFile ./logs/uut_output.txt --tileInPlace --inRow $(P_DIM_A) --inCol $(P_DIM_B) --T_DATA_A $(T_DATA_A) --T_DATA_B $(T_DATA_B) --colMajor $(P_DIM_OUT_LEADING) --isTiled $(P_ADD_DETILING_OUT) ",
+                "tclsh LIB_DIR/L2/tests/aie/common/scripts/diff.tcl ./logs/uut_output.txt ./logs/ref_output.txt ./logs/diff.txt $(DIFF_TOLERANCE)"
+                ]
+        }
+    ],
+    "launch": [
+        {
+            "name": "hwemu-launch",
+            "target": "hw_emu",
+            "pkg-dir": "$(WORK_DIR)",
+            "input-dir": "./",
+            "output-dir": "./"
+        },
+        {
+            "name": "aiesim-launch",
+            "target": "aiesim",
+            "pkg-dir": "./Work",
+            "input-dir": "./",
+            "output-dir": "./"
+        },
+        {
+            "name": "x86sim-launch",
+            "target": "x86sim",
+            "pkg-dir": "./Work",
+            "input-dir": "./",
+            "output-dir": "./"
+        }
+    ],
+    "host": {
+        "host_exe": "host.elf",
+        "compiler": {
+            "sources": [
+                "PROJECT/host.cpp",
+                "PROJECT/Work/ps/c_rts/aie_control_xrt.cpp"
+            ],
+            "includepaths": [
+                "$(SYSROOT)/usr/include/xrt/",
+                "LIB_DIR/L2/include/aie",
+                "LIB_DIR/L2/tests/aie/common/inc",
+                "LIB_DIR/L1/include/aie",
+                "LIB_DIR/L1/tests/aie/inc",
+                "LIB_DIR/L1/tests/aie/src",
+                "PROJECT"
+            ],
+            "options": "--sysroot=$(SYSROOT)",
+            "symbols": ["__PS_ENABLE_AIE__"]
+        },
+        "linker": {
+            "librarypaths": [
+                "$(SYSROOT)/usr/lib/"
+            ],
+            "options": "--sysroot=$(SYSROOT)"
+        }
+    },
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/../utils/L1/include/hw",
+                "PROJECT/kernel",
+                "PROJECT"
+            ]
+        }
+    },
+    "aiecompiler": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/aie",
+                "LIB_DIR/L1/src/aie",
+                "LIB_DIR/L1/tests/aie/inc",
+                "LIB_DIR/L1/tests/aie/src",
+                "LIB_DIR/L2/include/aie",
+                "LIB_DIR/L2/tests/aie/common/inc",
+                "./"
+            ],
+            "customized_params": {
+                "params" : "--dataflow -v --device=$(DEVICE_FILE) $($(TAG)_TARGET_COMPILE_ARGS) --test-iterations=$(NITER_$(TAG)) -workdir=$($(TAG)_WORK_DIR) -Xpreproc=\"$($(TAG)_PREPROC_ARGS)\"",
+                "default": {
+                    "TAG": "UUT",
+                    "UUT_KERNEL": "matrix_mult",
+                    "REF_KERNEL": "matrix_mult_ref",
+                    "UUT_GRAPH": "matrix_mult_graph",
+                    "REF_GRAPH": "matrix_mult_ref_graph",
+                    "NITER":"16",
+                    "NITER_UUT":"$(NITER)",
+                    "NITER_REF":"$(NITER)",
+                    "INPUT_WINDOW_VSIZE":"256",
+                    "UUT_INPUT_WINDOW_VSIZE":"$(INPUT_WINDOW_VSIZE)",
+                    "REF_INPUT_WINDOW_VSIZE": "$$(( $(UUT_INPUT_WINDOW_VSIZE) * $(NITER_UUT) / $(NITER_REF)))",
+                    "DATA_TYPE":"cint16",
+                    "COEFF_TYPE":"int16",
+                    "COEFF_SIZE":"2",
+                    "FIR_LEN":"199",
+                    "SHIFT":"20",
+                    "ROUND_MODE":"0",
+                    "CASC_LEN":"1",
+                    "P_CASC_LEN":"1",
+                    "DUAL_IP":"0",
+                    "USE_COEFF_RELOAD":"0",
+                    "SYMMETRY_FACTOR": "2",
+                    "INTERPOLATE_FACTOR":"1",
+                    "DECIMATE_FACTOR": "1",
+                    "NUM_OUTPUTS": "1",
+                    "DIFF_TOLERANCE": "0.0025",
+                    "DATA_SEED": "1",
+                    "DATA_STIM_TYPE": "0",
+                    "STIM_TYPE":"0",
+                    "STIM_TYPE_A":"0",
+                    "STIM_TYPE_B":"0",
+                    "STACKSIZE_VAL":"2048",
+                    "T_DATA_A": "cint16",
+                    "T_DATA_B": "$(T_DATA_A)",
+                    "P_SHIFT": "$(SHIFT)",
+                    "P_ROUND_MODE": "$(ROUND_MODE)",
+                    "P_DIM_A": "16",
+                    "P_DIM_AB": "$(P_DIM_A)",
+                    "P_DIM_B": "$(P_DIM_A)",
+                    "ROW_MAJOR":"0",
+                    "COL_MAJOR":"1",
+                    "P_INPUT_WINDOW_VSIZE_A":"$$(( $(P_DIM_A) * $(P_DIM_AB)))",
+                    "P_INPUT_WINDOW_VSIZE_B":"$$(( $(P_DIM_B) * $(P_DIM_AB)))",
+                    "P_ADD_TILING_A" : "1",
+                    "P_ADD_TILING_B" : "1",
+                    "P_ADD_DETILING_OUT" : "1",
+                    "NUM_MACS_PER_KERNEL": "$(shell echo $$(( ( $(P_DIM_A) * $(P_DIM_AB) * $(P_DIM_B) ) / $(P_CASC_LEN) )))",
+                    "P_DIM_A_LEADING":"$(ROW_MAJOR)",
+                    "P_DIM_B_LEADING":"$(COL_MAJOR)",
+                    "P_DIM_OUT_LEADING":"$(ROW_MAJOR)",
+                    "DEVICE_FILE":"4x4",
+                    "COEFF_STIM_TYPE":"0",
+                    "UUT_OUT_DIR":"./aiesimulator_output",
+                    "REF_OUT_DIR_x86": "./aiesimulator_ref_output",
+                    "UUT_SIM_FILE":"./data/uut_output.txt",
+                    "REF_SIM_FILE": "./data/ref_output.txt",
+                    "UUT_SIM_FILE2":"./data/uut_output_2.txt",
+                    "REF_SIM_FILE2": "./data/ref_output_2.txt",
+                    "UUT_OUT_FILE":  "$(UUT_OUT_DIR)/$(UUT_SIM_FILE)",
+                    "REF_OUT_FILE": "$(REF_OUT_DIR_X86)/$(REF_SIM_FILE)",
+                    "UUT_OUT_FILE2":  "$(UUT_OUT_DIR)/$(UUT_SIM_FILE2)",
+                    "REF_OUT_FILE2": "$(REF_OUT_DIR_X86)/$(REF_SIM_FILE2)",
+                    "COEFF_FILE": "data/coeff.txt",
+                    "LOC_COEFF_FILE":"./data/coeff.txt",
+                    "LOC_INPUT_FILE_A":"./data/inputA.txt",
+                    "LOC_INPUT_FILE_B":"./data/inputB.txt",
+                    "LOG_FILE": "./logs/log_$(UUT_FILE_SUFFIX).txt",
+                    "STATUS_LOG_FILE": "./logs/status_$(UUT_FILE_SUFFIX).txt",
+                    "STATUS_FILE": "$(STATUS_LOG_FILE)",
+                    "DIFF_OUT_FILE": "diff_output.txt",
+                    "UUT_TARGET_COMPILE_ARGS": "-Xchess=llvm.xargs=\"-std=c++2a\" -Xchess=main:backend.mist2.xargs=\"+NOdra\" -Xchess=main:noodle.optim.olbb=20 -Xchess=main:backend.mist2.pnll=\"off\" ",
+                    "REF_TARGET_COMPILE_ARGS":"",
+                    "UUT_WORK_DIR":"./Work",
+                    "REF_WORK_DIR":"./Work",
+                    "PREPROC_ARGS": " -DINPUT_FILE_A=$(LOC_INPUT_FILE_A) -DINPUT_FILE_B=$(LOC_INPUT_FILE_B) -DT_DATA_A=$(T_DATA_A) -DT_DATA_B=$(T_DATA_B) -DP_DIM_A=$(P_DIM_A) -DP_DIM_AB=$(P_DIM_AB) -DP_DIM_B=$(P_DIM_B) -DP_SHIFT=$(P_SHIFT) -DP_ROUND_MODE=$(P_ROUND_MODE) -DP_DIM_A_LEADING=$(P_DIM_A_LEADING) -DP_DIM_B_LEADING=$(P_DIM_B_LEADING) -DP_DIM_OUT_LEADING=$(P_DIM_OUT_LEADING) -DP_ADD_TILING_A=$(P_ADD_TILING_A) -DP_ADD_TILING_B=$(P_ADD_TILING_B) -DP_ADD_DETILING_OUT=$(P_ADD_DETILING_OUT) -DP_INPUT_WINDOW_VSIZE_A=$(P_INPUT_WINDOW_VSIZE_A) -DP_INPUT_WINDOW_VSIZE_B=$(P_INPUT_WINDOW_VSIZE_B) -DP_CASC_LEN=$(P_CASC_LEN) -DSTIM_TYPE_A=$(STIM_TYPE_A) -DSTIM_TYPE_B=$(STIM_TYPE_B) -DNITER=$(NITER)",
+                    "REF_PREPROC_ARGS": "-DUUT_GRAPH=$(REF_GRAPH) -DOUTPUT_FILE=$(REF_SIM_FILE) $(PREPROC_ARGS)",
+                    "UUT_PREPROC_ARGS": "-DUUT_GRAPH=$(UUT_GRAPH) -DOUTPUT_FILE=$(UUT_SIM_FILE) $(PREPROC_ARGS) -DUSING_UUT=1"
+
+
+                }
+            }
+        }
+    },
+    "aiecontainers": [
+        {
+            "accelerators": [
+                {
+                    "location": "PROJECT/test.cpp",
+                    "pl-freq": 1000,
+                    "workdir": "./Work",
+                    "options": "--use-phy-shim=false",
+                    "name": "libadf.a"
+                }
+            ]
+        }
+    ],
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "kernel/mm2s.cpp",
+                    "clflags": " ",
+                    "name": "mm2s"
+                },
+                {
+                    "location": "kernel/bmm2s.cpp",
+                    "clflags": " ",
+                    "name": "bmm2s"
+                },
+                {
+                    "location": "kernel/s2mm.cpp",
+                    "clflags": " ",
+                    "name": "s2mm"
+                }
+            ],
+            "name": "kernel"
+        }
+    ],
+    "config_make": "config.mk",
+    "testinfo": {
+        "disable": false,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": 32768,
+                "max_time_min": {
+                    "vitis_aie_sim": 200,
+                    "vitis_aie_x86sim": 60,
+                    "vitis_hw_build": 470,
+                    "vitis_hw_emu": 200,
+                    "vitis_hw_run": 30
+                }
+            }
+        ],
+        "customized_params": "multi_params.json",
+        "targets": [
+            "vitis_aie_sim",
+            "vitis_aie_x86sim",
+            "vitis_hw_emu",
+            "vitis_hw_build",
+            "vitis_hw_run"
+        ],
+        "category": "canary"
+    }
+}

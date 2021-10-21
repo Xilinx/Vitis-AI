@@ -1,0 +1,601 @@
+From 26e49dca216fdfd2123f62ee0a4992df37398c36 Mon Sep 17 00:00:00 2001
+From: watson <watson.chow@avnet.com>
+Date: Thu, 21 Jun 2018 19:41:30 +0800
+Subject: [PATCH 01/14] arm: zynq: Add MAX20087 driver
+
+It is designed to comply with
+Linux voltage and current regulator framework
+
+Support power on/off only
+
+Signed-off-by: watson <watson.chow@avnet.com>
+---
+ .../bindings/regulator/max20087-regulator.txt      |  55 +++
+ drivers/regulator/Kconfig                          |  11 +-
+ drivers/regulator/Makefile                         |   1 +
+ drivers/regulator/max20087-regulator.c             | 427 +++++++++++++++++++++
+ include/linux/regulator/max20087-regulator.h       |  38 ++
+ 5 files changed, 531 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/max20087-regulator.txt
+ create mode 100644 drivers/regulator/max20087-regulator.c
+ create mode 100644 include/linux/regulator/max20087-regulator.h
+
+diff --git a/Documentation/devicetree/bindings/regulator/max20087-regulator.txt b/Documentation/devicetree/bindings/regulator/max20087-regulator.txt
+new file mode 100644
+index 0000000..30165a9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/max20087-regulator.txt
+@@ -0,0 +1,55 @@
++* MAXIM MAX20087 Power Protector
++
++Required properties:
++- compatible: "max20087"
++- reg: I2C slave address, usually 0x28.
++- regulators: A node that houses a sub-node for each regulator within the
++  device. Each sub-node is identified using the node's name, with valid
++  values listed below. The content of each sub-node is defined by the
++  standard binding for regulators; see regulator.txt.
++  OUT1, OUT2, OUT3 and OUT4.
++- enable-gpios: platform gpio for control of OUT1/OUT2/OUT3/OUT4.
++- regulator-name: "VOUT1", "VOUT2", "VOUT3", "VOUT4"
++- regulator-min-microvolt: Fix to <1200000>;
++- regulator-max-microvolt: Fix to <1200000>;
++- regulator-min-microamp: Fix to <600000>;
++- regulator-max-microamp: Fix to <600000>;
++
++Example 1) MAX20087
++
++poc1: poc@28 {
++	compatible = "max20087";
++	reg = <0x28>;
++	enable-gpios = <&gpio 108 0>;
++
++	regulators {
++		camvcc_0: OUT1 {
++			regulator-name = "VOUT1";
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-min-microamp	= <600000>;
++			regulator-max-microamp	= <600000>;
++		};
++		camvcc_1: OUT2 {
++			regulator-name = "VOUT2";
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-min-microamp	= <600000>;
++			regulator-max-microamp	= <600000>;
++		};
++		camvcc_2: OUT3 {
++			regulator-name = "VOUT3";
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-min-microamp	= <600000>;
++			regulator-max-microamp	= <600000>;
++		};
++		camvcc_3: OUT4 {
++			regulator-name = "VOUT4";
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-min-microamp	= <600000>;
++			regulator-max-microamp	= <600000>;
++		};
++	};
++};
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 453b5e1..0fe5ab6 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -642,6 +642,16 @@ config REGULATOR_MAX77826
+ 	  It includes support for control of output voltage. This
+ 	  regulator is found on the Samsung Galaxy S5 (klte) smartphone.
+ 
++config REGULATOR_MAX20087
++	tristate "Maxim 20087 regulator (Power Protector)"
++	depends on I2C
++	select REGMAP_I2C
++	help
++	  This driver controls a Maxim 20087 regulator
++	  (Power Protector) via I2C bus. The regulator has
++	  4 outputs. This driver is only capable to turn
++	  on/off them.
++
+ config REGULATOR_MC13XXX_CORE
+ 	tristate
+ 
+@@ -1296,4 +1306,3 @@ config REGULATOR_QCOM_LABIBB
+ 	  for LCD display panel.
+ 
+ endif
+-
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 6096862..bb12851 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -79,6 +79,7 @@ obj-$(CONFIG_REGULATOR_MAX77686) += max77686-regulator.o
+ obj-$(CONFIG_REGULATOR_MAX77693) += max77693-regulator.o
+ obj-$(CONFIG_REGULATOR_MAX77802) += max77802-regulator.o
+ obj-$(CONFIG_REGULATOR_MAX77826) += max77826-regulator.o
++obj-$(CONFIG_REGULATOR_MAX20087) += max20087-regulator.o
+ obj-$(CONFIG_REGULATOR_MC13783) += mc13783-regulator.o
+ obj-$(CONFIG_REGULATOR_MC13892) += mc13892-regulator.o
+ obj-$(CONFIG_REGULATOR_MC13XXX_CORE) +=  mc13xxx-regulator-core.o
+diff --git a/drivers/regulator/max20087-regulator.c b/drivers/regulator/max20087-regulator.c
+new file mode 100644
+index 0000000..fe3df07
+--- /dev/null
++++ b/drivers/regulator/max20087-regulator.c
+@@ -0,0 +1,427 @@
++/*
++ * max20087-regulator.c - Regulator device (Power Protector)
++ *                        driver for MAX20087
++ *
++ * Copyright (C) 2018  Avnet, Inc.
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Library General Public
++ * License as published by the Free Software Foundation; either
++ * version 2 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Library General Public License for more details.
++ *
++ * This driver is based on da9211-regulator.c
++ */
++
++#include <linux/err.h>
++#include <linux/gpio.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/regulator/driver.h>
++#include <linux/regulator/machine.h>
++#include <linux/regmap.h>
++#include <linux/irq.h>
++#include <linux/interrupt.h>
++#include <linux/of_gpio.h>
++#include <linux/regulator/of_regulator.h>
++
++/* Register Offset */
++#define MAX20087_REG_MASK		0x00
++#define MAX20087_REG_CONFIG		0x01
++#define	MAX20087_REG_ID			0x02
++#define	MAX20087_REG_STAT1		0x03
++#define	MAX20087_REG_STAT2_L	0x04
++#define	MAX20087_REG_STAT2_H	0x05
++#define	MAX20087_REG_ADC1		0x06
++#define	MAX20087_REG_ADC2		0x07
++#define	MAX20087_REG_ADC3		0x08
++#define	MAX20087_REG_ADC4		0x09
++
++/* DEVICE IDs */
++#define MAX20087_DEVICE_ID	0x20
++#define DEVICE_ID_MASK		0xf0
++
++/* MAX20087 REGULATOR IDs */
++#define MAX20087_ID_OUT1	0
++#define MAX20087_ID_OUT2	1
++#define MAX20087_ID_OUT3	2
++#define MAX20087_ID_OUT4	3
++
++/* Register bits */
++#define MAX20087_EN_MASK			0x0f
++#define MAX20087_EN_ALL				0x0f
++#define MAX20087_EN_OUT1			0x01
++#define MAX20087_EN_OUT2			0x02
++#define MAX20087_EN_OUT3			0x04
++#define MAX20087_EN_OUT4			0x08
++#define MAX20087_INT_DISABLE_ALL	0x3f
++
++/* Default limits measured in millivolts and milliamps */
++#define MAX20087_MIN_MV		1200	// dummy
++#define MAX20087_MAX_MV		1200	// dummy
++#define MAX20087_STEP_MV	10		// dummy
++
++#define MAX20087_MAX_REGULATORS	4
++
++enum max20087_chip_id {
++	MAX20087_ID,
++};
++
++struct max20087 {
++	struct device *dev;
++	struct regmap *regmap;
++	int num_output;
++	struct regulator_dev *rdev[MAX20087_MAX_REGULATORS];
++	struct device_node *reg_node[MAX20087_MAX_REGULATORS];
++	struct regulator_init_data *init_data[MAX20087_MAX_REGULATORS];
++	struct gpio_desc *gpio_en;
++	int chip_irq; // reserved
++	int chip_id;
++};
++
++static unsigned int max20087_get_mode(struct regulator_dev *rdev)
++{
++	return 0; // Dummy
++}
++
++static int max20087_set_mode(struct regulator_dev *rdev, unsigned int mode)
++{
++	return 0; // Dummy
++}
++
++static int max20087_set_current_limit(struct regulator_dev *rdev, int min,
++				      int max)
++{
++	return 0; // Dummy
++}
++
++static int max20087_get_current_limit(struct regulator_dev *rdev)
++{
++	return 0; // Dummy
++}
++
++static const struct regulator_ops max20087_buck_ops = {
++	.get_mode = max20087_get_mode,
++	.set_mode = max20087_set_mode,
++	.enable = regulator_enable_regmap,
++	.disable = regulator_disable_regmap,
++	.is_enabled = regulator_is_enabled_regmap,
++	.list_voltage = regulator_list_voltage_linear,
++	.set_current_limit = max20087_set_current_limit,
++	.get_current_limit = max20087_get_current_limit,
++};
++
++#define MAX20087_OUT1 \
++{\
++	.name = "OUT1",\
++	.ops = &max20087_buck_ops,\
++	.type = REGULATOR_VOLTAGE,\
++	.id = MAX20087_ID_OUT1,\
++	.n_voltages = \
++		(MAX20087_MAX_MV - MAX20087_MIN_MV) / MAX20087_STEP_MV + 1,\
++	.min_uV = (MAX20087_MIN_MV * 1000),\
++	.uV_step = (MAX20087_STEP_MV * 1000),\
++	.enable_reg = MAX20087_REG_CONFIG,\
++	.enable_mask = MAX20087_EN_OUT1,\
++	.enable_val = MAX20087_EN_OUT1,\
++	.disable_val = 0,\
++	.owner = THIS_MODULE,\
++}
++
++#define MAX20087_OUT2 \
++{\
++	.name = "OUT2",\
++	.ops = &max20087_buck_ops,\
++	.type = REGULATOR_VOLTAGE,\
++	.id = MAX20087_ID_OUT2,\
++	.n_voltages = \
++		(MAX20087_MAX_MV - MAX20087_MIN_MV) / MAX20087_STEP_MV + 1,\
++	.min_uV = (MAX20087_MIN_MV * 1000),\
++	.uV_step = (MAX20087_STEP_MV * 1000),\
++	.enable_reg = MAX20087_REG_CONFIG,\
++	.enable_mask = MAX20087_EN_OUT2,\
++	.enable_val = MAX20087_EN_OUT2,\
++	.disable_val = 0,\
++	.owner = THIS_MODULE,\
++}
++
++#define MAX20087_OUT3 \
++{\
++	.name = "OUT3",\
++	.ops = &max20087_buck_ops,\
++	.type = REGULATOR_VOLTAGE,\
++	.id = MAX20087_ID_OUT3,\
++	.n_voltages = \
++		(MAX20087_MAX_MV - MAX20087_MIN_MV) / MAX20087_STEP_MV + 1,\
++	.min_uV = (MAX20087_MIN_MV * 1000),\
++	.uV_step = (MAX20087_STEP_MV * 1000),\
++	.enable_reg = MAX20087_REG_CONFIG,\
++	.enable_mask = MAX20087_EN_OUT3,\
++	.enable_val = MAX20087_EN_OUT3,\
++	.disable_val = 0,\
++	.owner = THIS_MODULE,\
++}
++
++#define MAX20087_OUT4 \
++{\
++	.name = "OUT4",\
++	.ops = &max20087_buck_ops,\
++	.type = REGULATOR_VOLTAGE,\
++	.id = MAX20087_ID_OUT4,\
++	.n_voltages = \
++		(MAX20087_MAX_MV - MAX20087_MIN_MV) / MAX20087_STEP_MV + 1,\
++	.min_uV = (MAX20087_MIN_MV * 1000),\
++	.uV_step = (MAX20087_STEP_MV * 1000),\
++	.enable_reg = MAX20087_REG_CONFIG,\
++	.enable_mask = MAX20087_EN_OUT4,\
++	.enable_val = MAX20087_EN_OUT4,\
++	.disable_val = 0,\
++	.owner = THIS_MODULE,\
++}
++
++static struct regulator_desc max20087_regulators[] = {
++	MAX20087_OUT1,
++	MAX20087_OUT2,
++	MAX20087_OUT3,
++	MAX20087_OUT4,
++};
++
++static struct of_regulator_match max20087_matches[] = {
++	[MAX20087_ID_OUT1] = { .name = "OUT1" },
++	[MAX20087_ID_OUT2] = { .name = "OUT2" },
++	[MAX20087_ID_OUT3] = { .name = "OUT3" },
++	[MAX20087_ID_OUT4] = { .name = "OUT4" },
++	};
++
++static int max20087_parse_regulators_dt(struct max20087 *chip)
++{
++	struct device_node *node;
++	int i, num, n;
++
++	/* Get the mux out of reset if a reset GPIO is specified. */
++	chip->gpio_en = devm_gpiod_get(chip->dev, "enable", GPIOD_OUT_HIGH);
++	if (IS_ERR(chip->gpio_en))
++		return PTR_ERR(chip->gpio_en);
++
++	node = of_get_child_by_name(chip->dev->of_node, "regulators");
++	if (!node) {
++		dev_err(chip->dev, "regulators node not found\n");
++		//return ERR_PTR(-ENODEV);
++		return PTR_ERR(node);
++	}
++
++	num = of_regulator_match(chip->dev, node,
++				 max20087_matches,
++				 ARRAY_SIZE(max20087_matches));
++	of_node_put(node);
++	if (num < 0) {
++		dev_err(chip->dev, "Failed to match regulators\n");
++		//return ERR_PTR(-EINVAL);
++		return -EINVAL;
++	}
++
++	chip->num_output = num;
++
++	n = 0;
++	for (i = 0; i < ARRAY_SIZE(max20087_matches); i++) {
++		if (!max20087_matches[i].init_data)
++			continue;
++
++		chip->init_data[n] = max20087_matches[i].init_data;
++		chip->reg_node[n] = max20087_matches[i].of_node;
++		dev_dbg(chip->dev, "name %s\n", max20087_matches[i].name);
++		printk("%s: name %s\n", __func__, max20087_matches[i].name); // testing
++
++		n++;
++	}
++
++	return 0;
++}
++
++static irqreturn_t max20087_irq_handler(int irq, void *data)
++{
++	// Not support interrupt yet
++	// TODO: Implement interrupt handler code
++	return IRQ_NONE;
++}
++
++static int max20087_regulator_init(struct max20087 *chip)
++{
++	struct regulator_config config = { };
++	int i, ret;
++
++	for (i = 0; i < chip->num_output; i++) {
++		config.init_data = chip->init_data[i];
++		config.dev = chip->dev;
++		config.driver_data = chip;
++		config.regmap = chip->regmap;
++		config.of_node = chip->reg_node[i];
++		config.ena_gpio = -EINVAL;
++		config.ena_gpio_initialized = false;
++
++		chip->rdev[i] = devm_regulator_register(chip->dev,
++					&max20087_regulators[i], &config);
++		if (IS_ERR(chip->rdev[i])) {
++			dev_err(chip->dev,
++				"Failed to register MAX20087 regulator\n");
++			return PTR_ERR(chip->rdev[i]);
++		}
++	}
++
++	// TODO: Enable interrupt support
++	ret = regmap_update_bits(chip->regmap, MAX20087_REG_MASK,
++				 MAX20087_INT_DISABLE_ALL,
++				 MAX20087_INT_DISABLE_ALL);
++	if (ret < 0) {
++		dev_err(chip->dev,
++			"Failed to update mask reg: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static bool max20087_gen_is_writeable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case MAX20087_REG_MASK:
++	case MAX20087_REG_CONFIG:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static const struct regmap_config max20087_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.writeable_reg = max20087_gen_is_writeable_reg,
++	.max_register = 0x9,
++	.cache_type = REGCACHE_NONE,
++};
++
++/*
++ * I2C driver interface functions
++ */
++static int max20087_i2c_probe(struct i2c_client *i2c,
++			      const struct i2c_device_id *id)
++{
++	struct max20087 *chip;
++	int error, ret;
++	unsigned int data;
++	printk("%s: enter\n", __func__); // testing
++
++	chip = devm_kzalloc(&i2c->dev, sizeof(struct max20087), GFP_KERNEL);
++	if (!chip)
++		return -ENOMEM;
++
++	chip->dev = &i2c->dev;
++	chip->regmap = devm_regmap_init_i2c(i2c, &max20087_regmap_config);
++	if (IS_ERR(chip->regmap)) {
++		error = PTR_ERR(chip->regmap);
++		dev_err(chip->dev, "Failed to allocate register map: %d\n",
++			error);
++		return error;
++	}
++
++	i2c_set_clientdata(i2c, chip);
++
++	ret = max20087_parse_regulators_dt(chip);
++	if (ret < 0) {
++		dev_err(chip->dev, "No regulators defined for the platform\n");
++		return ret;
++	}
++
++	ret = regmap_read(chip->regmap, MAX20087_REG_ID, &data);
++	if (ret < 0) {
++		dev_err(chip->dev, "Failed to read DEVICE_ID reg: %d\n", ret);
++		return ret;
++	}
++
++	data &= DEVICE_ID_MASK;
++	switch (data) {
++	case MAX20087_DEVICE_ID:
++		/* Turn off all outputs */
++		chip->chip_id = MAX20087_ID;
++		ret = regmap_update_bits(chip->regmap,
++					 MAX20087_REG_CONFIG,
++					 MAX20087_EN_MASK, 0);
++		if (ret < 0) {
++			dev_err(chip->dev, "Failed to write ");
++			dev_err(chip->dev, "MAX20087_REG_CONFIG reg: %d\n",
++				ret);
++		}
++		break;
++	default:
++		dev_err(chip->dev, "Unsupported device id = 0x%x.\n", data);
++		return -ENODEV;
++	}
++
++	chip->chip_irq = i2c->irq;
++	if (chip->chip_irq != 0) {
++		ret =
++		devm_request_threaded_irq(chip->dev,
++					  chip->chip_irq, NULL,
++					  max20087_irq_handler,
++					  IRQF_TRIGGER_LOW | IRQF_ONESHOT,
++					  "max20087", chip);
++		if (ret != 0) {
++			dev_err(chip->dev, "Failed to request IRQ: %d\n",
++				chip->chip_irq);
++			return ret;
++		}
++	} else {
++		dev_warn(chip->dev, "No IRQ configured\n");
++	}
++
++	ret = max20087_regulator_init(chip);
++	if (ret < 0)
++		dev_err(chip->dev,
++			"Failed to initialize regulator: %d\n", ret);
++
++	ret = regmap_read(chip->regmap, MAX20087_REG_CONFIG, &data);
++	if (ret < 0) {
++		dev_err(chip->dev,
++			"Failed to read MAX20087_REG_CONFIG reg: %d\n", ret);
++		return ret;
++	}
++	dev_dbg(chip->dev, "reg CONFIG 0x%x\n", data);
++	printk("%s: reg CONFIG 0x%x\n", __func__, data);
++
++	return ret;
++}
++
++static const struct i2c_device_id max20087_i2c_id[] = {
++	{"max20087", MAX20087_ID},
++	{},
++};
++
++MODULE_DEVICE_TABLE(i2c, max20087_i2c_id);
++
++static const struct of_device_id max20087_dt_ids[] = {
++	{ .compatible = "max20087", .data = &max20087_i2c_id[0] },
++	{},
++};
++
++MODULE_DEVICE_TABLE(of, max20087_dt_ids);
++
++static struct i2c_driver max20087_regulator_driver = {
++	.driver = {
++		.name = "max20087",
++		.of_match_table = of_match_ptr(max20087_dt_ids),
++	},
++	.probe = max20087_i2c_probe,
++	.id_table = max20087_i2c_id,
++};
++
++module_i2c_driver(max20087_regulator_driver);
++
++MODULE_AUTHOR("Watson Chow <watson.chow@avnet.com>");
++MODULE_DESCRIPTION("MAX20087 Power Protector driver");
++MODULE_LICENSE("GPL");
+diff --git a/include/linux/regulator/max20087-regulator.h b/include/linux/regulator/max20087-regulator.h
+new file mode 100644
+index 0000000..f70aa7c
+--- /dev/null
++++ b/include/linux/regulator/max20087-regulator.h
+@@ -0,0 +1,38 @@
++/*
++ * max20087-regulator.c - Regulator device (Power Protector)
++ *                        driver for MAX20087
++ *
++ * Copyright (C) 2018  Avnet
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version 2
++ * of the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * This driver is based on da9211-regulator.h
++ */
++
++#ifndef __LINUX_REGULATOR_MAX20087_H
++#define __LINUX_REGULATOR_MAX20087_H
++
++#include <linux/regulator/machine.h>
++
++#define MAX20087_MAX_REGULATORS	1
++
++enum max20087_chip_id {
++	MAX20087,
++};
++
++struct max20087_pdata {
++	int num_buck;
++	//int gpio_ren[MAX20087_MAX_REGULATORS];
++	struct device_node *reg_node[MAX20087_MAX_REGULATORS];
++	struct regulator_init_data *init_data[MAX20087_MAX_REGULATORS];
++	struct gpio_desc *gpio_en;
++};
++#endif
+-- 
+2.7.4
+

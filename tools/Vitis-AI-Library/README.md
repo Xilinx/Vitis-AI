@@ -143,14 +143,14 @@ If you encounter any path errors in running examples, check to see if you follow
 
 	* Download the model according to the model's yaml file.
 	```
-	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz -O resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz -O resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
 	```
 
 	* Install the model package.  
 	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
 	```
 	  sudo mkdir /usr/share/vitis_ai_library/models
-	  tar -xzvf resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
+	  tar -xzvf resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```	
 

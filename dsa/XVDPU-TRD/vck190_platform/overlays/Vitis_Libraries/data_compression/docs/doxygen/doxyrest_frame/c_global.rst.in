@@ -1,0 +1,26 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+if g_globalDefFile then
+}
+.. include:: $g_globalDefFile
+%{
+end -- if
+}
+.. _global-namespace:
+
+Global Namespace
+================
+
+%{
+includeFile ("c_namespace.rst.in", g_globalNamespace)
+}

@@ -1,5 +1,7 @@
 # docker build . --build-arg BASE_IMAGE=${BASE_IMAGE}  -t ${DOCKER_IMG_NAME}
 ARG BASE_IMAGE=xilinx/vitis-ai:latest
+ARG GIT_HASH_RNN="<blank>"
+ENV GIT_HASH_RNN=$GIT_HASH
 FROM $BASE_IMAGE
 RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && conda create -n rnn_tf_2.0 \
@@ -56,3 +58,5 @@ RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && conda activate rnn_pytorch_1.4 \
     && python -m nltk.downloader -d /usr/local/share/nltk_data all
 
+RUN echo $GIT_HASH_RNN > /etc/GIT_HASH_RNN.txt \
+    && echo "export GIT_HASH_RNN=${GIT_HASH_RNN}" >> ~vitis-ai-user/.bashrc

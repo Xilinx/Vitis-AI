@@ -22,26 +22,26 @@ files:
 - name: resnet50_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 000c1799abe92eeb9890243cb4a25f68
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: c63b77f9c58e73ff3e3e6174edc6c3b0
 - name: resnet50_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck190-r1.4.0.tar.gz
-  checksum: ef1a2acfd9027adefb9aba32d79518b0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck190-r1.4.1.tar.gz
+  checksum: 79b9e3d4f09cdd9f8d53d4124f9d3676
 - name: resnet50_pt
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: d60878fe399cd7efd6a0d2bc97dbec67
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: cf82c1688c189d5af24b5cbdd608486a
 - name: resnet50_pt
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: e1b883483e43d2d59468e07624735dae
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 9706ce3ca9b3d7eac6f529dbc76096f5
 - name: resnet50_pt
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 3dff5841ac72558aeec7a19038f99865
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 1a8cbd5a8a7de32635d709886b5d5226
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

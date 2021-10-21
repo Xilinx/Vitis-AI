@@ -1,0 +1,2 @@
+753f325d45718f4fdd78fe42b4eea91c  yolov3_voc_tf.prototxt
+1b2cde09786b58c19dc4539b3ec84a61  yolov3_voc_tf.xmodel

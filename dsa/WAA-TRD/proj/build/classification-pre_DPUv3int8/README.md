@@ -32,9 +32,9 @@ Note that
 * Install xclbin.
 
 	```
-	sudo mkdir -p /opt/xilinx/overlaybins/dpuv3int8_trd
-	sudo cp ${VAI_HOME}/dsa/WAA-TRD/proj/build/classification-pre_DPUv3int8/outputs/xclbin/dpdpuv3_wrapper.hw.xilinx_u200_gen3x16_xdma_1_202110_1.xclbin /opt/xilinx/overlaybins/dpuv3int8_trd/dpu.xclbin
-	export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8_trd
+	sudo mkdir -p /opt/xilinx/overlaybins/DPUCADF8H
+	sudo cp ${VAI_HOME}/dsa/WAA-TRD/proj/build/classification-pre_DPUv3int8/outputs/xclbin/dpdpuv3_wrapper.hw.xilinx_u200_gen3x16_xdma_1_202110_1.xclbin /opt/xilinx/overlaybins/DPUCADF8H/dpu.xclbin
+	export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H
 	```
 
 * Download and install `resnet_v1_50_tf` model:

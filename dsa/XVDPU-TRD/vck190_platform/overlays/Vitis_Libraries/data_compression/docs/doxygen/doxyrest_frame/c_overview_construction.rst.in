@@ -1,0 +1,68 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+
+local protectionKind = compound.m_constructorArray [1].m_protectionKind
+
+if g_noProtectionSections and hasNonPublicItems (compound.m_constructorArray) then
+}
+	// $protectionKind constructors
+
+%{
+else
+}
+	// construction
+
+%{
+end -- if
+
+local isPrevMl = false
+
+for i = 1, #compound.m_constructorArray do
+	local item = compound.m_constructorArray [i]
+	local decl = getFunctionDeclString (item, hasItemRefTarget (item), "\t")
+	local isMl = string.find (decl, "\n")
+	local extraSep = ""
+
+	if i > 1 and (isMl or isPrevMl) then
+		extraSep = "\n"
+	end
+
+	isPrevMl = isMl
+
+	if item.m_protectionKind ~= protectionKind then
+		protectionKind = item.m_protectionKind
+		extraSep = ""
+}
+
+	// $protectionKind constructors
+
+%{
+	end -- if
+}
+$extraSep	$decl
+%{
+end -- for
+
+if g_includeDestructors and compound.m_destructor then
+	local item = compound.m_destructor
+	local extraSep = ""
+	if prevParamCount > 1 then
+		extraSep = "\n"
+	end
+}
+$extraSep	$(getFunctionDeclString (item, hasItemRefTarget (item), "\t"))
+%{
+end -- if
+}

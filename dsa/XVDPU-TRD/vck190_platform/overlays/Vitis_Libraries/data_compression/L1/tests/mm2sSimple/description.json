@@ -1,0 +1,63 @@
+{
+    "name": "Xilinx Memory Mapped To Stream HLS Test", 
+    "description": "Test Design to validate mm2sSimple", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u200", 
+        "vck190", 
+        "aws-vu9p-f1"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [], 
+    "project": "mm2sSimple_test", 
+    "solution": "sol1", 
+    "clock": "3.3", 
+    "topfunction": "hls_mm2sSimple", 
+    "top": {
+        "source": [
+            "mm2sSimple_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -DPARALLEL_BLOCK=8"
+    }, 
+    "testbench": {
+        "source": [
+            "mm2sSimple_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -DPARALLEL_BLOCK=8", 
+        "argv": {}
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": {
+                    "hls_vivado_syn": 300, 
+                    "hls_csim": 60, 
+                    "hls_cosim": 300, 
+                    "hls_vivado_impl": 300, 
+                    "hls_csynth": 60
+                }
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim", 
+            "hls_vivado_syn", 
+            "hls_vivado_impl"
+        ], 
+        "category": "canary"
+    }
+}

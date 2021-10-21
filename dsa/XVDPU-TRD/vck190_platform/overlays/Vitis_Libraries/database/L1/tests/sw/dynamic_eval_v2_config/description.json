@@ -1,0 +1,57 @@
+{
+    "name": "Xilinx Dynamic Evaluation V2 Config HLS Test", 
+    "description": "generation of configuration bits", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u280", 
+        "u250", 
+        "u200", 
+        "aws-vu9p-f1", 
+        "vck190"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [], 
+    "project": "dyn_eval2_test", 
+    "solution": "sol1", 
+    "clock": "2.5", 
+    "topfunction": "eval2_dut", 
+    "top": {
+        "source": [
+            "eval_dut.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -I${XF_PROJ_ROOT}/L1/include/sw"
+    }, 
+    "testbench": {
+        "source": [
+            "eval_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -I${XF_PROJ_ROOT}/L1/include/sw", 
+        "ldflags": "", 
+        "argv": {}, 
+        "stdmath": false
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": 300
+            }
+        ], 
+        "targets": [
+            "hls_csim"
+        ], 
+        "category": "canary"
+    }
+}

@@ -1,0 +1,44 @@
+use graph xgraph
+drop query all
+
+create query bfs_fpga (int sourceID) for graph xgraph returns (double) {
+
+    ListAccum<int> @@offsetsCSR;
+    ListAccum<int> @@indicesCSR;
+    ListAccum<float> @@weightsCSR;
+    ArrayAccum<ListAccum<int> > @@indicesList[1];
+    ArrayAccum<ListAccum<float> > @@weightsList[1];
+    double ret;
+    ListAccum<int> @@predecent;
+    ListAccum<int> @@distance;
+
+    population = {Person.*};
+    @@indicesList.reallocate(population.size());
+    @@weightsList.reallocate(population.size());
+
+    plist = SELECT p 
+        FROM population:p -(Friend:e)-> :t
+        ACCUM @@indicesList[p.num] += t.num,
+              @@weightsList[p.num] += e.weight;
+
+    @@offsetsCSR += 0;
+
+    foreach i in RANGE[0, population.size()-1] DO
+        @@offsetsCSR += @@offsetsCSR.get(i) + @@indicesList[i].size();
+        foreach j in RANGE[0, @@indicesList[i].size()-1] DO
+            @@indicesCSR += @@indicesList[i].get(j);
+            @@weightsCSR += @@weightsList[i].get(j);
+        end;
+    end;
+
+    ret = udf_bfs_fpga(sourceID, @@offsetsCSR, @@indicesCSR, @@weightsCSR, @@predecent, @@distance);
+
+    print @@offsetsCSR;
+    print @@indicesCSR;
+    print @@weightsCSR;
+    print @@predecent;
+    print @@distance;
+    return ret;
+}
+
+install query bfs_fpga

@@ -1,0 +1,122 @@
+{
+    "name": "Xilinx Finite Difference Black Scholes Local Volatility Model", 
+    "description": [
+        "Finite Difference Black Scholes Local Volatility Model using L3 framework"
+    ], 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u250", 
+        "u200", 
+        "u50"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "data": [
+        "LIB_DIR/L2/tests/FDBlackScholesLocalVolatilityEngine/data"
+    ], 
+    "host": {
+        "host_exe": "fdbslv_test.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/ext/xcl2/xcl2.cpp", 
+                "LIB_DIR/L3/tests/fdbslv/xf_fintech_fdbslv_exe.cpp", 
+                "LIB_DIR/L3/src/models/fdbslv/src/xf_fintech_fdbslv.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_device.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_device_manager.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_internal.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_ocl_controller.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_timestamp.cpp", 
+                "LIB_DIR/L3/src/xf_fintech_trace.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/ext/xcl2", 
+                "LIB_DIR/L3/include", 
+                "LIB_DIR/L3/include/models", 
+                "LIB_DIR/L2/tests/FDBlackScholesLocalVolatilityEngine/src/kernel", 
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include"
+            ], 
+            "options": "-O3 "
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/FDBlackScholesLocalVolatilityEngine/src/kernel/fd_bs_lv_kernel.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": "-D FD_DATA_TYPE=float -D FD_DATA_EQ_TYPE=int32_t -D FD_BITS_PER_DATA_TYPE=32 -D FD_N_SIZE=128 -D FD_LOG2_N_SIZE=7 -D FD_M_SIZE=256 -D FD_DATA_WORDS_IN_DDR=16 -D FD_NUM_PCR=2", 
+                    "name": "fd_bs_lv_kernel"
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "fd_bs_lv_kernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/tests/FDBlackScholesLocalVolatilityEngine/src/kernel"
+            ]
+        }
+    }, 
+    "platform_properties": {
+        "u250": {
+            "launch": [
+                {
+                    "name": "generic launch for all flows for u250 card", 
+                    "cmd_args": "BUILD/fd_bs_lv_kernel.xclbin ../../data/case0 u250"
+                }
+            ]
+        }, 
+        "u200": {
+            "launch": [
+                {
+                    "name": "generic launch for all flows for u200 card", 
+                    "cmd_args": "BUILD/fd_bs_lv_kernel.xclbin ../../data/case0 u200"
+                }
+            ]
+        }, 
+        "u50": {
+            "launch": [
+                {
+                    "name": "generic launch for all flows for u50 card", 
+                    "cmd_args": "BUILD/fd_bs_lv_kernel.xclbin ../../data/case0 u50"
+                }
+            ]
+        }
+    }
+}

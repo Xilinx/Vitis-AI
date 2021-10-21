@@ -1,0 +1,141 @@
+{
+    "name": "Xilinx Hull White Analytic Engine", 
+    "description": "L2 Hull White Layer 2 Analytic Engine", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u250", 
+        "u200", 
+        "u50"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "platform_properties": {
+        "u200": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u200.cfg"
+                    ]
+                }
+            }
+        }, 
+        "u250": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u250.cfg"
+                    ]
+                }
+            }
+        }, 
+        "u50": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u50.cfg"
+                    ]
+                }
+            }
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": " -xclbin BUILD/hwa_engine.xclbin", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "hwa_host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/host/main.cpp", 
+                "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/host/cpu.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/host", 
+                "LIB_DIR/ext/xcl2", 
+                "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/kernel"
+            ], 
+            "options": "-O3 ", 
+            "symbols": [
+                "TEST_DT=double"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/kernel/HWA_k0.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D TEST_DT=double", 
+                    "name": "HWA_k0"
+                }, 
+                {
+                    "location": "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/kernel/HWA_k1.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D TEST_DT=double", 
+                    "name": "HWA_k1"
+                }, 
+                {
+                    "location": "LIB_DIR/L2/tests/HullWhiteAnalyticEngine/src/kernel/HWA_k2.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D TEST_DT=double", 
+                    "name": "HWA_k2"
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "hwa_engine"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 720, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

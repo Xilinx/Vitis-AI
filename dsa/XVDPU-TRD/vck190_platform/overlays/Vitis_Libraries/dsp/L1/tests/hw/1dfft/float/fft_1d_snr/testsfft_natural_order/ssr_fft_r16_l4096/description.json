@@ -1,0 +1,67 @@
+{
+    "name": "Xilinx SSR FFT Float Rate16_Length4096", 
+    "description": "HLS case", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u200", 
+        "aws-vu9p-f1", 
+        "vck190"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [], 
+    "project": "prj_ssr_fft_reg_test_r16_l4096", 
+    "solution": "solution1", 
+    "clock": "3.3", 
+    "topfunction": "fft_top", 
+    "top": {
+        "source": [
+            "src/main.cpp", 
+            "src/hls_ssr_fft_data_path.hpp", 
+            "src/DEBUG_CONSTANTS.hpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw/vitis_fft/float  -I${XF_PROJ_ROOT}/L1/tests/common_float"
+    }, 
+    "testbench": {
+        "source": [
+            "src/main.cpp", 
+            "${XF_PROJ_ROOT}/L1/tests/common_float/verif/fftStimulusIn_L4096.verif", 
+            "${XF_PROJ_ROOT}/L1/tests/common_float/verif/fftGoldenOut_L4096.verif"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw/vitis_fft/float  -I${XF_PROJ_ROOT}/L1/tests/common_float", 
+        "ldflags": "", 
+        "argv": {}, 
+        "stdmath": false
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": {
+                    "hls_vivado_syn": 470, 
+                    "hls_csim": 60, 
+                    "hls_cosim": 470, 
+                    "hls_vivado_impl": 470, 
+                    "hls_csynth": 60
+                }
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim"
+        ], 
+        "category": "canary"
+    }
+}

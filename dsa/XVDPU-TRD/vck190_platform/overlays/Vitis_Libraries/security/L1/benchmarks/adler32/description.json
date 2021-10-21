@@ -1,0 +1,123 @@
+{
+    "gui": false, 
+    "name": "Xilinx Adler32 Benchmark", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u50", 
+        "aws-vu9p-f1"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "platform_properties": {
+        "u50": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u50.cfg"
+                    ]
+                }
+            }
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": " -xclbin BUILD/Adler32Kernel.xclbin -data PROJECT/data/test.dat -num 16", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L1/benchmarks/adler32/host/main.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L1/benchmarks/adler32/host", 
+                "LIB_DIR/L1/benchmarks/adler32/kernel", 
+                "LIB_DIR/ext/xcl2",
+                "LIB_DIR/../utils/L1/include"
+            ], 
+            "options": "-O3 "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L1/benchmarks/adler32/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L1/benchmarks/adler32/kernel/adler32_kernel.cpp", 
+                    "frequency": 300.0, 
+                    "name": "Adler32Kernel", 
+                    "num_compute_units": 1, 
+                    "compute_units": [
+                        {
+                            "name": "Adler32Kernel", 
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "len", 
+                                    "memory": "HBM[0]"
+                                }, 
+                                {
+                                    "name": "adler", 
+                                    "memory": "HBM[0]"
+                                }, 
+                                {
+                                    "name": "inData", 
+                                    "memory": "HBM[8]"
+                                }, 
+                                {
+                                    "name": "adler32Result", 
+                                    "memory": "HBM[0]"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "Adler32Kernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build",
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

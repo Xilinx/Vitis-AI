@@ -1,0 +1,6 @@
+PETALINUX_VER=2021.1
+VALIDATE_HW_CHKSUM=1
+HARDWARE_CHECKSUM=e6cea7073f3e80234150f8013f817f8f
+YOCTO_SDK=b4cf886365639d226f0cd8f175d6238a
+RFSCONFIG_CHKSUM=97ddba657132d4e72822110483b630dc
+HARDWARE_PATH=/var/lib/docker/scratch/scratch/yey/vck190-es1-trd-platform1-v2020.2/platforms/xilinx_vck190_mipiRxSingle_hdmiTx_202110_1/hw/vck190_mipiRxSingle_hdmiTx.xsa

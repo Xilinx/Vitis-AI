@@ -1,0 +1,19 @@
+{
+  "xclbin-location":"/usr/lib/binary_container_1.xclbin",
+  "ivas-library-repo": "/usr/lib",
+  "element-mode":"inplace",
+  "kernels" :[
+    {
+      "library-name":"libivas_xboundingbox.so",
+      "config": {
+          "font_size" : 2,
+          "font" : 3,
+          "thickness" : 7,
+          "label_color" : { "blue" : 0, "green" : 0, "red" : 255 },
+          "label_filter" : [ "class", "probability" ],
+          "classes" : [
+          ]
+      }
+    }
+  ]
+}

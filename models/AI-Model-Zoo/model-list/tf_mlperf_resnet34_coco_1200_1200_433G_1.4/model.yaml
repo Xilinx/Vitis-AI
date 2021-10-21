@@ -30,21 +30,21 @@ files:
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 1919de724e79c580c29367fc8a1462bc
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 9921f0ecd619b36bf154720d7b996a4b
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-vck190-r1.4.0.tar.gz
-  checksum: e029409ccf2fef105bfb72ff202ee2b7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-vck190-r1.4.1.tar.gz
+  checksum: f9186ead739ca28a3d32126770bcd2f1
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 4f9e54d87a593551e0e993dc41dba8e4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 0b3214d1c63acf1631ae3e4f241b86ef
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 33e7a68478031c1fb03c69e8006c325b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: e93805f9b682fb6126f184d578e66ab6
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

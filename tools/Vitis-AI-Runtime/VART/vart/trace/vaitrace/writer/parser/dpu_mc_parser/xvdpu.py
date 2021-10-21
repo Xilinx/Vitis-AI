@@ -108,10 +108,15 @@ class xvdpuInstParser(dpuMcParserBase):
                 chan_ = l.channel + 1
                 block_num_ = l.block_num + 1
                 bank_id = l.bank_id
+                jump_read_ = l.jump_read + 1
 
                 #print("LOAD,%d,%d,%d" % (length_, chan_,block_num_))
                 if bank_id < 16:
-                    load_img_size += (length_ * chan_ * block_num_)
+                    if jump_read_ >= chan_:
+                        size = (length_ * chan_)
+                    else:
+                        size = jump_read_ * (length_) + chan_
+                    load_img_size += size
                 else:
                     load_para_size += (length_ * chan_ * block_num_)
 

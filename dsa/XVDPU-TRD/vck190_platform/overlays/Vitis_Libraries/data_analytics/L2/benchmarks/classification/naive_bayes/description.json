@@ -1,0 +1,140 @@
+{
+    "gui": false, 
+    "name": "Xilinx Naive Bayes Training", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u200",
+        "u50"
+    ], 
+    "platform_blacklist": [], 
+    "platform_properties": {
+        "u200": {
+            "host": {
+                "compiler": {
+                    "symbols": [
+                        "USE_DDR"
+                    ]
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u200_u250.cfg"
+                    ]
+                }
+            }
+        }, 
+        "u50": {
+            "host": {
+                "compiler": {
+                    "symbols": [
+                        "USE_HBM"
+                    ]
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u50.cfg"
+                    ]
+                }
+            }
+        }, 
+        "vck190": {
+            "host": {
+                "linker": {
+                    "librarypaths": [
+                        "$(SYSROOT)/usr/lib", 
+                        "${SYSROOT}/opt/xilinx/xrt/lib"
+                    ]
+                }, 
+                "compiler": {
+                    "includepaths": [
+                        "$(SYSROOT)/usr/include"
+                    ], 
+                    "options": "--sysroot=$(SYSROOT)"
+                }
+            }
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": " -xclbin BUILD/naiveBayesTrain_kernel.xclbin -in PROJECT/data/test.dat -g PROJECT/data/test_g.dat -c 10 -t 13107", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "data": [
+        "PROJECT/data/test.dat", 
+        "PROJECT/data/test_g.dat"
+    ], 
+    "host": {
+        "host_exe": "test_nb.exe", 
+        "compiler": {
+            "sources": [
+                "host/test_nb.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include/hw", 
+                "host", 
+                "kernel", 
+                "LIB_DIR/ext/xcl2",
+                "LIB_DIR/../utils/L1/include"
+            ], 
+            "options": "-O3 "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw", 
+                "kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "kernel/naiveBayesTrain_kernel.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL_NAME=naiveBayesTrain_kernel", 
+                    "name": "naiveBayesTrain_kernel"
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "naiveBayesTrain_kernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

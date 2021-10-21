@@ -30,6 +30,6 @@ files:
 - name: SA_gate_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=SA_gate_pt-vck190-r1.4.0.tar.gz
-  checksum: 09dcee49a935b4986fdab96fd323fafd
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SA_gate_pt-vck190-r1.4.1.tar.gz
+  checksum: 16eda832434fe9db282b9ae6d6a5cb99
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,0 +1,17 @@
+{
+    "id": "xf_utils_hw",
+    "name": "Vitis Utility Library",
+    "description": "Vitis Utility Library is an open-sourced Vitis library of common patterns of streaming and storage access. It aims to assist developers to efficiently access memory in DDR, HBM or URAM, and perform data distribution, collection, reordering, insertion, and discarding along stream-based transfer.",
+    "v++": {
+        "includepaths": [
+            "LIB_DIR/L1/include"
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include"
+            ]
+        }
+    }
+}

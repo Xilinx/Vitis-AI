@@ -1,0 +1,29 @@
+#!/bin/bash
+# vim: set filetype=sh :
+
+set -e
+script_path=$(readlink -f $(dirname $0))
+if [ "x$1" = "x--tool-dir" ]; then
+  shift
+  tool_dir=$1
+  shift
+else
+  tool_dir=${script_path}
+fi
+
+PATH=$PATH:${XILINX_VITIS}/tps/lnx64/python-3.8.3/bin
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+:}${XILINX_VITIS}/tps/lnx64/python-3.8.3/lib:${XILINX_VIVADO}/tps/lnx64/gcc-6.2.0/lib64
+
+if ! hash python3 &> /dev/null; then
+  echo "[ERROR] python3 is not found in PATH, and XILINX_VITIS is not set either. Abort!"
+  false
+fi
+
+if [ ! -f ${tool_dir}/py3env/.ok -o ! -f ${tool_dir}/dataConverter ]; then
+  make -C ${script_path} DEST_DIR=${tool_dir}
+fi
+
+unset PYTHONPATH
+source ${tool_dir}/py3env/bin/activate
+
+${script_path}/internal/generate_kernels.py --tool-dir ${tool_dir} "$@"

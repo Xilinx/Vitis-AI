@@ -1,0 +1,408 @@
+{
+    "gui": true, 
+    "name": "Xilinx PIK Encoder Demo", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u200"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "platform_properties": {
+        "u200": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u200.cfg"
+                    ]
+                }
+            }
+        }
+    }, 
+    "data": [
+        "./data"
+    ], 
+    "launch": [
+        {
+            "cmd_args": " --xclbin BUILD/pikEnc.xclbin images/small32x32.png test.pik --fast", 
+            "name": "generic launch for all flows"
+        }
+    ],
+    "post_launch": [
+        {
+            "launch_cmd": [
+            ]
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/demos/pikEnc/host/pik/cpik_main.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/ac_predictions.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/ac_strategy.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/adaptive_quantization.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/adaptive_reconstruction.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/alpha.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/ans_common.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/ans_decode.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/ans_encode.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/ar_control_field.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/arch_specific.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/bilinear_transform.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/block_dictionary.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/butteraugli_comparator.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/butteraugli_distance.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/cache_aligned.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/chroma_from_luma.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/cmdline.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/codec_impl.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/codec_png.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/codec_pnm.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/color_correlation.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/color_encoding.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/compressed_dc.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/compressed_image.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/context_map_decode.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/context_map_encode.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/cpik.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/data_parallel.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/dc_predictor.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/dct.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/dct_util.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/deconvolve.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/descriptive_statistics.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/detect_dots.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/entropy_coder.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/epf.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/epf_target.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/external_image.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/gaborish.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/gauss_blur.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/gradient_map.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/headers.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/huffman_decode.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/huffman_encode.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/image.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/lehmer_code.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/linalg.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/lossless16.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/lossless8.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/lossless_entropy.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/metadata.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/noise.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/opsin_image.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/opsin_inverse.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/opsin_params.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/os_specific.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/padded_bytes.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/pik.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/pik_frame.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/pik_info.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/quant_weights.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/quantizer.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/saliency_map.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/single_image_handler.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/status.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/upscaler.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/yuv_convert.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/yuv_opsin_convert.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/butteraugli/butteraugli.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/simd/targets.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/brotli.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik/color_management.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/encode_order.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/pik_codec_common.cc",
+                "LIB_DIR/L2/demos/pikEnc/host/host_dev.cc", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp",
+
+
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsalpha.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmscam02.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmscgats.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmscnvrt.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmserr.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsgamma.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsgmt.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmshalf.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsintrp.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsio0.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsio1.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmslut.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsmd5.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsmtrx.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsnamed.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsopt.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmspack.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmspcs.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsplugin.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsps2.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmssamp.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmssm.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmstypes.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsvirt.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmswtpnt.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/src/cmsxform.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lodepng/lodepng.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lodepng/lodepng_util.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/FiniteStateEntropy/lib/entropy_common.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/FiniteStateEntropy/lib/fseU16.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/FiniteStateEntropy/lib/fse_compress.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/FiniteStateEntropy/lib/fse_decompress.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/FiniteStateEntropy/lib/huf_compress.cpp",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/FiniteStateEntropy/lib/huf_decompress.cpp",
+
+
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/backward_references.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/backward_references_hq.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/bit_cost.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/block_splitter.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/brotli_bit_stream.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/cluster.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/compress_fragment.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/compress_fragment_two_pass.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/dictionary_hash.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/encode.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/encoder_dict.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/entropy_encode.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/histogram.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/literal_cost.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/memory.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/metablock.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/static_dict.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/enc/utf8_util.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/common/dictionary.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/common/transform.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/dec/bit_reader.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/dec/decode.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/dec/huffman.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/dec/state.c",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/fuzz/decode_fuzzer.c"
+
+            ], 
+            "includepaths": [
+                "LIB_DIR/../utils/L1/include/",
+                "LIB_DIR/L2/include/hw/pikEnc/", 
+                "LIB_DIR/L2/include/hw/pikEnc/kernel3/", 
+                "LIB_DIR/L2/demos/pikEnc/host", 
+                "LIB_DIR/L2/demos/pikEnc/kernel", 
+                "LIB_DIR/ext/xcl2",
+
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lcms/include", 
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/brotli/c/include", 
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/lodepng",
+                "LIB_DIR/L2/demos/pikEnc/host/third_party/FiniteStateEntropy/lib", 
+                "LIB_DIR/L2/demos/pikEnc/host/third_party"
+            ], 
+            "options": "-O3 "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/../utils/L1/include/",
+                "LIB_DIR/L2/include/hw", 
+                "LIB_DIR/L2/include/hw/pikEnc", 
+                "LIB_DIR/L2/demos/pikEnc/kernel"
+            ]
+        } 
+    }, 
+    "containers": [
+        {
+            "name": "pikEnc",
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/demos/pikEnc/kernel/XAccPIKKernel1.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL_NAME=kernel1Top", 
+                    "name": "kernel1Top", 
+                    "num_compute_units": 1, 
+                    "compute_units": [
+                        {
+                            "name": "kernel1Top", 
+                            "arguments": [
+                                {
+                                    "name": "gmem0_0", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "gmem0_1", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "gmem1_0", 
+                                    "memory": "DDR[1]"
+                                }, 
+                                {
+                                    "name": "gmem1_1", 
+                                    "memory": "DDR[1]"
+                                }, 
+                                {
+                                    "name": "gmem1_2", 
+                                    "memory": "DDR[1]"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "location": "LIB_DIR/L2/demos/pikEnc/kernel/XAccPIKKernel2.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL_NAME=kernel2Top", 
+                    "name": "kernel2Top", 
+                    "num_compute_units": 1, 
+                    "compute_units": [
+                        {
+                            "name": "kernel2Top", 
+                            "arguments": [
+                                {
+                                    "name": "gmem0_0", 
+                                    "memory": "DDR[1]"
+                                }, 
+                                {
+                                    "name": "gmem0_1", 
+                                    "memory": "DDR[1]"
+                                },
+                                {
+                                    "name": "gmem0_2", 
+                                    "memory": "DDR[1]"
+                                }, 
+                                {
+                                    "name": "gmem0_3", 
+                                    "memory": "DDR[1]"
+                                },
+                                {
+                                    "name": "gmem1_0", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "gmem1_1", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "gmem1_2", 
+                                    "memory": "DDR[2]"
+                                },
+                                {
+                                    "name": "gmem1_3", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "gmem1_4", 
+                                    "memory": "DDR[2]"
+                                },
+                                {
+                                    "name": "gmem1_5", 
+                                    "memory": "DDR[2]"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "location": "LIB_DIR/L2/demos/pikEnc/kernel/XAccPIKKernel3.cpp",
+                    "files": [
+                        "LIB_DIR/L2/demos/pikEnc/kernel/kernel3/kernel3_common.cpp",
+                        "LIB_DIR/L2/demos/pikEnc/kernel/kernel3/ans.cpp",
+                        "LIB_DIR/L2/demos/pikEnc/kernel/kernel3/ac_tokenize.cpp",
+                        "LIB_DIR/L2/demos/pikEnc/kernel/kernel3/build_table_encode_histo.cpp",
+                        "LIB_DIR/L2/demos/pikEnc/kernel/kernel3/dc_shrink.cpp",
+                        "LIB_DIR/L2/demos/pikEnc/kernel/kernel3/dc_tokenize.cpp",
+                        "LIB_DIR/L2/demos/pikEnc/kernel/kernel3/ctrl_tokenize.cpp",
+                        "LIB_DIR/L2/demos/pikEnc/kernel/kernel3/build_cluster.cpp"
+                    ],
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL_NAME=kernel3Top", 
+                    "name": "kernel3Top", 
+                    "num_compute_units": 1, 
+                    "compute_units": [
+                        {
+                            "name": "kernel3Top", 
+                            "arguments": [
+                                {
+                                    "name": "gmem0_0", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "gmem0_1", 
+                                    "memory": "DDR[2]"
+                                },
+                                {
+                                    "name": "gmem0_2", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "gmem0_3", 
+                                    "memory": "DDR[2]"
+                                },
+                                {
+                                    "name": "gmem0_4", 
+                                    "memory": "DDR[2]"
+                                },
+                                {
+                                    "name": "gmem0_5", 
+                                    "memory": "DDR[2]"
+                                }, 
+                                {
+                                    "name": "gmem0_6", 
+                                    "memory": "DDR[2]"
+                                },
+                                {
+                                    "name": "gmem1_0", 
+                                    "memory": "DDR[3]"
+                                }, 
+                                {
+                                    "name": "gmem1_1", 
+                                    "memory": "DDR[3]"
+                                },
+                                {
+                                    "name": "gmem1_2", 
+                                    "memory": "DDR[3]"
+                                },
+                                {
+                                    "name": "gmem1_3", 
+                                    "memory": "DDR[3]"
+                                }, 
+                                {
+                                    "name": "gmem1_4", 
+                                    "memory": "DDR[3]"
+                                } 
+                            ]
+                        }
+                    ]
+                }
+            ], 
+            "frequency": 200 
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 81920, 
+                    "vitis_hw_emu": 40960, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 3200, 
+                    "vitis_hw_emu": 1600, 
+                    "vitis_sw_emu": 120, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw"
+        ], 
+        "category": "canary"
+    }
+}

@@ -30,23 +30,23 @@ files:
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: e24d1c0bf87d3ce91a7c5f9c55740d9f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 2805ecb4497a81d7f05af8cb5740bcaa
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck190-r1.4.0.tar.gz
-  checksum: 58bedf68267b7280c9d9f5e1ee12d20a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck190-r1.4.1.tar.gz
+  checksum: 405098df29ab0b9ea6290b6d02b10003
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 6e7f944b73c5e84c1b372a7b7edc526f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 577b7a42f434126bac62a7a1473ef536
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 9ba878803bf51a807c12e5c5a2606810
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: feb46a1072e3e295b842c2d16265e235
 - name: yolov3_adas_pruned_0_9
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

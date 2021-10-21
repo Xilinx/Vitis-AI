@@ -1,0 +1,3609 @@
+﻿DESIGN LICENSE AGREEMENT
+
+CAREFULLY READ THIS DESIGN LICENSE AGREEMENT (“AGREEMENT”).  BY CLICKING 
+THE “ACCEPT” OR “AGREE” BUTTON, OR OTHERWISE ACCESSING, DOWNLOADING, 
+INSTALLING OR USING THE LICENSED MATERIALS (DEFINED BELOW), YOU AGREE ON 
+BEHALF OF LICENSEE TO BE BOUND BY THIS AGREEMENT.  “LICENSEE” MEANS THE 
+CORPORATION OR OTHER LEGAL ENTITY TO WHICH XILINX, INC., A DELAWARE 
+CORPORATION (“XILINX”) HAS ISSUED THE LICENSE DESCRIBED HEREIN.  IF LICENSEE 
+DOES NOT AGREE TO ALL OF THE TERMS AND CONDITIONS OF THIS AGREEMENT, DO NOT 
+CLICK THE “ACCEPT” OR “AGREE” BUTTON, AND DO NOT ACCESS, DOWNLOAD, INSTALL 
+OR USE THE LICENSED MATERIALS.
+
+The parties agree as follows:
+1.	Definitions
+“Affiliate” means an entity which controls, is controlled by or is under common control with a party hereto; 
+where “control” means that the controlling party directly or indirectly has the beneficial ownership of more 
+than fifty percent of the controlled entity’s shares or ownership interest giving the power to direct or cause 
+the direction of the general management of the controlled entity.  An entity shall be an Affiliate only during 
+the time when such control exists.
+“Licensed Materials” means, as applicable, all Xilinx reference designs, application notes, documentation, 
+software, design files, application program interfaces, and any related characterization, qualification or test 
+data and information, that are provided by Xilinx to Licensee pursuant to this Agreement.
+“Xilinx Device” means accelerator cards or FPGA, PLD, SoC, configurable memory or other 
+semiconductor devices that Xilinx designs and sells directly or through one or more of Xilinx’s authorized 
+distributors.
+2.	License Grants.  Subject to the terms and conditions of this Agreement, Xilinx hereby grants 
+Licensee the following nonexclusive, nontransferable licenses:
+	2.1	Use Rights:  Licensee may internally reproduce and use the Licensed Materials for the 
+sole purpose of creating designs that are programmed into a Xilinx Device; and
+       2.2.	Modification Rights:  Subject to Section 4 (Ownership), Licensee may modify, change, 
+improve and enhance any portion of the Licensed Materials that is provided by Xilinx in source code form, 
+but only for the sole purpose of creating designs that are programmed into a Xilinx Device.
+Licensee may allow any of its Affiliates to exercise the rights granted to Licensee above, and Licensee and 
+its Affiliates may disclose the Licensed Materials to contractors performing services for Licensee and/or its 
+Affiliates; provided however, that Licensee shall be liable for any failure of Affiliates or contractors to the 
+abide by the terms and conditions of this Agreement as if such failure was the failure of Licensee.
+3.	Restrictions.
+       3.1	Licensee shall not use the Licensed Materials for any purpose other than in compliance 
+with Section 2.1 (Use Rights), or allow use by any person other than in compliance with Section 2.3 
+(Distribution Rights).
+       3.2	Licensee shall not reproduce the Licensed Materials other than to the extent necessary for 
+its authorized use or distribution of the Licensed Materials (per Section 2 above), and for archival and 
+back-up purposes, provided always that Licensee will at all times and in each instance, reproduce all 
+copyright notices and proprietary legends on each copy in the same manner as such notices and legends 
+appeared on the original.
+       3.3	Licensee shall not distribute or provide Licensed Materials to a third party.
+       3.4	Licensee shall not publish or disclose the results of any benchmarking of the Licensed 
+Materials, or use such results for its own competing development activities.
+       3.5	Licensee shall not decrypt, decompile, reverse-engineer, disassemble, or otherwise 
+reduce to a human-perceivable form, or modify or alter, any portion of the Licensed Materials that are 
+provided by Xilinx in object code, encrypted or other obfuscated form.
+       3.6	Licensee shall not hypothecate, rent, lease, loan, lend, time-share, sublicense or otherwise 
+transfer the Licensed Materials.
+4.	Ownership.  Licensee acknowledges and agrees that all intellectual property and industrial rights 
+in and to the Licensed Materials and all copies thereof are and will remain the sole property of Xilinx, or its 
+licensors (if any).  Nothing contained in this Agreement will be construed as conferring by implication, 
+estoppel or otherwise upon Licensee any license or other right except the licenses and rights expressly 
+granted to Licensee in Section 2 (License Grants).  Licensee understands that portions of the Licensed 
+Materials and related documentation may have been licensed to Xilinx from third parties and that such third 
+parties are intended third-party beneficiaries of the provisions of this Agreement.  The Licensed Materials 
+are protected by laws and international treaty provisions covering intellectual property and industrial rights.  
+All modifications, changes, improvements and enhancements to the Licensed Materials (collectively 
+“Modifications”) shall be the sole property of Xilinx.  Licensee hereby assigns and agrees to assign to 
+Xilinx Licensee's entire right, title and interest in and to the Modifications and all associated intellectual 
+property rights, and Licensee shall acquire no greater rights therein than specifically provided for in this 
+Agreement; provided however that Licensee shall have no obligation to disclose or provide such 
+Modifications to Xilinx and “Modifications” do not include technology independently developed by 
+Licensee that is added to or incorporated in the Licensed Materials.  Licensee agrees that any Modifications 
+are made solely at its own risk and that Xilinx accepts no liability whatsoever for any such Modifications.
+4.1	Third-Party / Open Source Licenses.  Certain files, programs or other materials distributed in 
+connection with the Licensed Materials may originate from Xilinx or third-party licensors and are licensed 
+to Licensee (not under the terms and conditions of this Agreement, but rather) pursuant to the terms and 
+conditions of the applicable licenses that appear in Exhibit A attached hereto or upon installation, 
+acceptance and/or activation of the Licensed Materials and/or are contained or described in the 
+corresponding release notes or other documentation or header or source files.  Such files, programs or other 
+materials may be subject to the terms of the GNU General Public License or other open source or free 
+software licenses.  Licensee agrees to carefully review and abide by the terms and conditions of these 
+licenses to the extent that they govern such files, programs or other materials.  Notwithstanding the 
+foregoing, as between Xilinx and Licensee, to the maximum extent permitted by applicable law and if not 
+prohibited by any such third-party licenses, all such third-party files, programs or other materials shall be 
+deemed covered under Sections 6 (Disclaimers) and 7 (Limitation of Liability) and 9.3 (Governing Law) of 
+this Agreement.
+4.2	Xilinx Acceleration Application Store.  As described more particularly in the user guide for the 
+Licensed Materials, Licensee must obtain a license key from Xilinx in order for the Licensed Materials to 
+execute all of the functions described in the user guide.  In order to obtain a license key, access the Xilinx 
+Acceleration Application Store on www.Xilinx.com and follow the instructions set forth in the user guide.  
+The license key is stored within a “cred.json” file downloaded from www.Xilinx.com.  This “cred.json” file 
+shall be deemed to be part of the Licensed Materials and Licensee agrees that the “cred.json” file shall be 
+used strictly in accordance with this Agreement and not distributed to any third party without Xilinx’s 
+written authorization.
+5.	Confidentiality.  
+       5.1	Duties.  Except as otherwise expressly permitted in Section 2 (License Grants), Licensee 
+shall (a) maintain the confidentiality of the Licensed Materials; and (b) not make the Licensed Materials 
+available in any form to any person other than to its employees and contractors who have a genuine “need 
+to know” on behalf of Licensee for purposes authorized by this Agreement, and who are bound by 
+obligations of confidentiality no less protective of Xilinx (and its licensors, if any) than those contained 
+herein.  Licensee represents to Xilinx that it maintains a system of confidentiality consistent with 
+commonly accepted practices to protect its own confidential business information, including written 
+agreements with employees and contractors, and that the Licensed Materials will be protected by such a 
+system to the same extent, but in no event with less than reasonable care.  Licensee shall be liable to Xilinx 
+for any failure of its contractors to comply with the terms and conditions of the Agreement as if such failure 
+was a failure of the Licensee. Licensee agrees that a breach of this Agreement may result in irreparable and 
+continuing damage to Xilinx for which there may be no adequate remedy at law, and Xilinx shall be 
+entitled to seek injunctive relief and/or a decree for specific performance, and such other relief (including 
+monetary damages) as may be proper.
+       5.2	Exceptions. The obligations of confidentiality under this Agreement shall not apply to 
+information that: (a) is already known to Licensee at the time of disclosure without obligation of 
+confidentiality; (b) is or becomes publicly known through no wrongful act or omission of Licensee; (c) is 
+rightfully received by Licensee from a third party without obligation of confidentiality; (d) is approved for 
+release by written authorization of Xilinx; or (e) was developed by Licensee independently and without the 
+use or benefit of the Licensed Materials.
+6.	Disclaimers.
+       6.1	TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE 
+LICENSED MATERIALS ARE PROVIDED “AS IS” WITHOUT WARRANTY OR 
+REPRESENTATION OF ANY KIND, AND XILINX DISCLAIMS ALL WARRANTIES AND 
+REPRESENTATIONS, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING WITHOUT 
+LIMITATION, ANY IMPLIED WARRANTY OF NON-INFRINGEMENT OF THIRD PARTY RIGHTS, 
+MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  XILINX DOES NOT 
+WARRANT THAT THE FUNCTIONS CONTAINED IN THE LICENSED MATERIALS WILL MEET 
+LICENSEE’S REQUIREMENTS, THAT THE LICENSED MATERIALS WILL OPERATE PROPERLY, 
+WHETHER ALONE OR IN COMBINATION WITH OTHER FUNCTIONALITY, CORES, SOFTWARE 
+OR PROTOCOLS, OR THAT THE OPERATION OF THE LICENSED MATERIALS WILL BE 
+UNINTERRUPTED OR ERROR-FREE, OR THAT ALL ERRORS OR DEFECTS IN THE LICENSED 
+MATERIALS ARE CAPABLE OF BEING CORRECTED.  XILINX MAKES NO WARRANTY OR 
+REPRESENTATION THAT THE LICENSED MATERIALS ARE COMPLETED, TESTED, VERIFIED, 
+OR WILL WORK ON THEIR OWN WITHOUT REVISIONS.  LICENSEE IS SOLELY RESPONSIBLE 
+FOR VERIFICATION OF ITS DESIGN.  XILINX SPECIFICALLY DISCLAIMS ANY OBLIGATIONS 
+FOR TECHNICAL SUPPORT AND BUG FIXES, AS WELL AS ANY LIABILITY ARISING FROM 
+LICENSEE’S USE OF THE LICENSED MATERIALS.
+       6.2	LICENSEE ACKNOWLEDGES THAT USE OF THE LICENSED MATERIALS IN 
+COMBINATION WITH OTHER FUNCTIONALITY, CORES, SOFTWARE OR PROTOCOLS MAY 
+REQUIRE LICENSES FROM THIRD PARTIES AND LICENSEE ACCEPTS SOLE RESPONSIBILITY 
+FOR OBTAINING SUCH LICENSES.
+       6.3	THE LICENSED MATERIALS ARE NOT DESIGNED OR INTENDED TO BE FAIL-
+SAFE, OR FOR USE IN ANY APPLICATION REQUIRING FAIL-SAFE PERFORMANCE, SUCH AS 
+APPLICATIONS RELATED TO LIFE-SUPPORT OR SAFETY DEVICES OR SYSTEMS, CLASS III 
+MEDICAL DEVICES, NUCLEAR FACILITIES, DEPLOYMENT OF AIRBAGS, CONTROL OF 
+VEHICLE OR AIRCRAFT (UNLESS THERE IS A FAIL-SAFE OR REDUNDANCY FEATURE 
+WHICH DOES NOT INCLUDE USE OF SOFTWARE IN THE XILINX DEVICE TO IMPLEMENT 
+THE REDUNDANCY AND A WARNING SIGNAL UPON FAILURE TO THE OPERATOR), OR ANY 
+OTHER APPLICATIONS THAT COULD LEAD TO DEATH, PERSONAL INJURY OR SEVERE 
+PROPERTY OR ENVIRONMENTAL DAMAGE (INDIVIDUALLY AND COLLECTIVELY, 
+“CRITICAL APPLICATIONS”).  LICENSEE AGREES, PRIOR TO USING OR DISTRIBUTING ANY 
+SYSTEMS THAT INCORPORATE THE LICENSED MATERIALS, TO THOROUGHLY TEST THE 
+SAME FOR SAFETY PURPOSES.  TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE 
+LAW, LICENSEE ASSUMES THE SOLE RISK AND LIABILITY OF ANY USE OF THE LICENSED 
+MATERIALS IN CRITICAL APPLICATIONS.
+7.	Limitation of Liability.  TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE 
+LAW:  (1) IN NO EVENT SHALL XILINX OR ITS LICENSORS BE LIABLE FOR ANY LOSS OF 
+DATA, LOST PROFITS, GOODWILL, OR COST OF PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES, OR FOR ANY SPECIAL, INCIDENTAL, CONSEQUENTIAL OR INDIRECT DAMAGES 
+ARISING UNDER, RELATED TO, OR IN CONNECTION WITH THIS AGREEMENT OR THE USE 
+OR OPERATION OF THE LICENSED MATERIALS, IN WHOLE OR IN PART, HOWEVER CAUSED 
+AND UNDER ANY THEORY OF LIABILITY; (2) IN NO EVENT SHALL THE ENTIRE LIABILITY 
+OF XILINX OR ITS LICENSORS ARISING UNDER, RELATED TO, OR IN CONNECTION WITH 
+THIS AGREEMENT, EXCEED THE AMOUNT OF LICENSE FEES RECEIVED BY XILINX FROM 
+LICENSEE FOR THE LICENSED MATERIALS; (3) THESE LIMITATIONS AND EXCLUSIONS 
+SHALL APPLY REGARDLESS OF WHETHER SUCH LOSS WAS REASONABLY FORESEEABLE 
+OR IF XILINX HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES; AND (4) THESE 
+LIMITATIONS SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL 
+PURPOSE OF ANY LIMITED REMEDIES HEREIN.  NOTWITHSTANDING ANY OTHER 
+PROVISION OF THIS AGREEMENT, NEITHER PARTY EXCLUDES OR LIMITS ITS LIABILITY IN 
+ANY WAY FOR ANY MATTER THAT CANNOT, AS A MATTER OF APPLICABLE LAW, BE 
+LIMITED OR EXCLUDED.  THE PARTIES AGREE THAT THIS SECTION 7 (LIMITATION OF 
+LIABILITY) REPRESENTS AN ALLOCATION OF RISK WHICH THE PARTIES CONSIDER 
+REASONABLE.
+8.	Term and Termination. 
+       8.1	Term.  This Agreement will commence upon the date that Licensee clicks the “accept” 
+or “agree” button or otherwise accesses, downloads, installs or uses the Licensed Materials, whichever 
+occurs first, and will remain effective until terminated in accordance with this Section 8.  
+       8.2	Termination by Licensee.  Licensee may terminate this Agreement at any time for any 
+or no reason by destroying the Licensed Materials and all copies and derivative works, and providing notice 
+to Xilinx of same.
+       8.3	Termination by Xilinx.  Xilinx may terminate this Agreement for material breach by 
+Licensee, provided that Xilinx has given written notice to Licensee of such breach and Licensee fails to 
+cure such breach within thirty (30) days thereof; provided, however, in the event of a breach of 
+confidentiality under Section 5 whereby unauthorized disclosure and/or dissemination by electronic or 
+other means is likely to cause undue harm to Xilinx, then Xilinx may, at its discretion, immediately 
+terminate this Agreement and seek other appropriate equitable and legal remedies as deemed necessary to 
+protect its interests hereunder.
+       8.4	Effects of Termination.  Upon termination of this Agreement the licenses and rights 
+granted by Xilinx hereunder will cease, and Licensee shall destroy the Licensed Materials, including all 
+copies and derivative works in its possession or under its control, and all related documentation and certify 
+such destruction in writing to Xilinx.  Each party’s rights and obligations under the following provisions of 
+this Agreement shall indefinitely survive the termination of this Agreement:  Sections 4 (Ownership); 5 
+(Confidentiality); 6 (Disclaimers); 7 (Limitation of Liability), 8.4 (Effects of Termination); and 9 (General).
+9.	General.
+	9.1	Governmental Use. The Licensed Materials are comprised of commercial computer 
+software developed exclusively at the expense of Xilinx.  Accordingly, pursuant to the U.S. government’s 
+Federal Acquisition Regulations (FAR) Section 12.212 and Defense FAR Supplement (DFARS) Section 
+227.7202, use, duplication and disclosure of the Licensed Materials by or for the U.S. government is 
+subject to the restrictions set forth in this Agreement.  Manufacturer is Xilinx, Inc., 2100 Logic Drive, San 
+Jose, CA 95124.
+       9.2	Export Compliance.  Licensee shall adhere to all applicable import and export laws and 
+regulations of Licensee’s country and of the United States, without limitation.  This Agreement may 
+involve items and information that are subject to the U.S. government’s International Traffic in Arms 
+Regulations (ITAR) or Export Administration Regulations (EAR).  The importer/exporter of record shall 
+not export, reexport, resell, transfer, or disclose, directly or indirectly, any products or technical data, to any 
+proscribed person, entity, or country, or foreign persons thereof, unless properly authorized by the U.S. 
+government and/or any other applicable or relevant government or regulatory body.
+	9.3	Governing Law. (a) Where the Licensee is located in North America, South America or 
+any other location not covered by (b) or (c) below: This Agreement, and its performance shall be 
+interpreted by, construed according to, and governed by, the laws of the State of California excluding 
+conflict of laws rules and principles and the competent courts located in Santa Clara County, California 
+shall have jurisdiction; (b) Where the Licensee is located in Europe, the Middle East or Africa (EMEA) 
+region: This Agreement, and its performance shall be interpreted by, construed according to, and governed 
+by, the laws of Ireland excluding conflict of laws rules and principles and the competent Irish courts shall 
+have jurisdiction; (c) Where the Licensee is located in the Asia Pacific region, Australia or New Zealand: 
+This Agreement, and its performance shall be interpreted by, construed according to, and governed by, the 
+laws of Singapore excluding conflicts of laws rules and principles and the competent Singapore courts shall 
+have jurisdiction.  The parties specifically exclude from application to this Agreement the United Nations 
+Convention on contracts for the International Sale of Goods.  Where the Licensee is an individual, he or she 
+shall be deemed to be located in his or her usual place of residence.  Where the Licensee is a corporation or 
+any other legal entity, it shall be deemed to be located in the jurisdiction of its incorporation or other 
+formation.
+	9.4	Assignment.  Licensee shall not assign this Agreement or transfer any of the rights or 
+obligations under this Agreement, in whole or in part, by operation of law or otherwise, without the prior 
+written consent of Xilinx.  Any merger, acquisition, reorganization, change of control, or the like, involving 
+Licensee shall be deemed an assignment in violation of the foregoing.  Subject to the foregoing, this 
+Agreement will be for the benefit of Xilinx and its successors and assigns, and will be binding on 
+Licensee’s permitted assignees.
+       9.5	Waiver; Amendment.  No waiver, express or implied, by either party of any right or 
+remedy for any breach by the other party of any provision of this Agreement will be deemed or construed 
+to be a waiver of any succeeding breach of such provision or as a waiver of the provision itself or of any 
+other breach or provision.  No waiver of or modification or amendment to this Agreement will be effective 
+unless reduced to writing and executed by authorized representatives of the parties. 
+	9.6	Severability.  If any provision of this Agreement is found unenforceable, illegal, void or 
+invalid in whole or in part, then it shall to that extent be deemed not to form part of this Agreement and the 
+remainder of the Agreement will remain in full force and effect.
+       9.7	Notices.  Any notices required or permitted by this Agreement shall be in writing and 
+delivered to the address provided by each party to the other in connection with this Agreement, or to such 
+other address as either party may specify in writing.  Notices to Xilinx shall be addressed to the attention of: 
+Xilinx, Inc., Attn: General Counsel, Legal Department, 2100 Logic Drive, San Jose, CA 95124.
+	9.8	Entire Agreement.  This Agreement represents and constitutes the entire agreement 
+between the parties with respect to the Licensed Materials, and supersedes all prior or contemporaneous 
+discussions, representations, arrangements, understandings or agreements, written or oral, regarding the 
+subject matter hereof.  No additional terms or modifications proposed by Licensee shall be binding on 
+Xilinx unless expressly agreed to in writing and signed by Xilinx.
+XILINX CONFIDENTIAL
+2020.10
+
+
+Exhibit A
+Third-Party / Open Source Licenses
+
+1.	Ubuntu version 18.04 Linux Kernel and Base Operating Systems Installation
+<<<<<<<<<<Xilinx-separator>>>>>>>>>
+See releases.ubuntu.com for the main source code repository.  
+
+
+If you cannot access the internet pages for Ubuntu’s main source code repositories and obtain the source 
+code for the Ubuntu Linux OS, and if you desire to receive such source code from Xilinx, please refer to 
+the Xilinx website at https://www.xilinx.com/products/design-tools/guest-resources.html.  If you cannot 
+access the internet to obtain a copy thereof, then Xilinx hereby offers (which offer is valid for as long as 
+required by the applicable license; and we may charge you the cost thereof unless prohibited by the license) 
+to provide you with a copy of such source code; and to accept such offer send a letter requesting such 
+source code (please be specific by identifying the particular Xilinx Licensed Materials you are inquiring 
+about (name and version number), to:  Xilinx, Inc., Legal Department, Attention: Software Compliance 
+Officer, 2100 Logic Drive, San Jose, CA U.S.A. 95124.
+
+
+Ubuntu is a collection of thousands of computer programs and documents created by a range of individuals, 
+teams and companies.
+Each of these programs may come under a different licence. This licence policy describes the process that 
+we follow in determining which software will be included by default in the Ubuntu operating system.
+
+Copyright licensing and trademarks are two different areas of law, and we consider them separately in 
+Ubuntu. The following policy applies only to copyright licences. We evaluate trademarks on a case-by-case 
+basis.
+
+Categories of software in Ubuntu
+The thousands of software packages available for Ubuntu are organised into four key groups or components: 
+main, restricted, universe and multiverse. Software is published in one of these components based on 
+whether or not it meets our free software philosophy, and the level of support we can provide for it. In 
+addition, software may be published for Ubuntu as a universal Linux snap package, in which case licenses 
+are determined by the snap publisher and documented in the snap store.
+
+This policy only addresses the software that you will find in main and restricted, which contain software 
+that is fully supported by the Ubuntu team and must comply with this policy.
+
+Ubuntu 'main' component licence policy
+All application software included in the Ubuntu main component:
+
+Must include source code. The main component has a strict and non-negotiable requirement that 
+application software included in it must come with full source code.
+Must allow modification and distribution of modified copies under the same licence. Just having the source 
+code does not convey the same freedom as having the right to change it. Without the ability to modify 
+software, the Ubuntu community cannot support software, fix bugs, translate it, or improve it.
+Ubuntu 'main' and 'restricted' component licence policy
+All application software in both main and restricted must meet the following requirements:
+Must allow redistribution. Your right to sell or give away the software alone, or as part of an aggregate 
+software distribution, is important because:
+You, the user, must be able to pass on any software you have received from Ubuntu in either source code or 
+compiled form.
+While Ubuntu will not charge licence fees for this distribution, you might want to charge to print Ubuntu 
+CDs, or create your own customised versions of Ubuntu which you sell, and should have the freedom to do 
+so.
+Must not require royalty payments or any other fee for redistribution or modification.It's important that you 
+can exercise your rights to this software without having to pay for the privilege, and that you can pass these 
+rights on to other people on exactly the same basis.
+Must allow these rights to be passed on along with the software. You should be able to have exactly the 
+same rights to the software as we do.
+Must not discriminate against persons, groups or against fields of endeavour. The licence of software 
+included in Ubuntu can not discriminate against anyone or any group of users and cannot restrict users from 
+using the software for a particular field of endeavour - a business for example. So we will not distribute 
+software that is licensed "freely for non-commercial use".
+Must not be distributed under a licence specific to Ubuntu. The rights attached to the software must not 
+depend on the program being part of Ubuntu system. So we will not distribute software for which Ubuntu 
+has a "special" exemption or right, and we will not put our own software into Ubuntu and then refuse you 
+the right to pass it on.
+Must not contaminate other software licences.The licence must not place restrictions on other software that 
+is distributed along with it. For example, the licence must not insist that all other programmes distributed 
+on the same medium be free software.
+May require source modifications to be distributed as patches. In some cases, software authors are happy 
+for us to distribute their software and modifications to their software, as long as the two are distributed 
+separately, so that people always have a copy of their pristine code. We are happy to respect this preference. 
+However, the licence must explicitly permit distribution of software built from modified source code.
+Documentation, firmware and drivers
+Ubuntu contains licensed and copyrighted works that are not application software. For example, the default 
+Ubuntu installation includes documentation, images, sounds, video clips and firmware. The Ubuntu 
+community will make decisions on the inclusion of these works on a case-by-case basis, ensuring that these 
+works do not restrict our ability to make Ubuntu available free of charge, and that you can continue to 
+redistribute Ubuntu.
+
+Software installed by default
+When you install Ubuntu, you will typically install a complete desktop environment. It is also possible to 
+install a minimal set of software (just enough to boot your machine) and then manually select the precise 
+software applications to install. Such a "custom" install is usually favoured by server administrators, who 
+prefer to keep only the software they absolutely need on the server.
+
+All of the application software installed by default is free software. In addition, we install some hardware 
+drivers that are available only in binary format, but such packages are clearly marked in the restricted 
+component.
+
+
+******************************************************************************/
+
+2.	Dependent Packages
+
+
+The Licensed Materials contain the following dependent packages.  All source code corresponding to these 
+packages is available for download at the URLs referenced below.  Please consult the license and headers 
+in the following packages for more information as to the applicable license terms and copyright notices 
+corresponding to such packages. If you cannot access the internet to obtain a copy thereof, then for any 
+packages licensed under any license that requires Xilinx to make available to recipients of object code 
+distributed by Xilinx pursuant to such license the corresponding source code, and if you desire to receive 
+such source code from Xilinx, please refer to the Xilinx website at 
+https://www.xilinx.com/products/design-tools/guest-resources.html. If you cannot access the internet to 
+obtain a copy thereof, then Xilinx hereby offers (which offer is valid for as long as required by the 
+applicable license; and we may charge you the cost thereof unless prohibited by the license) to provide you 
+with a copy of such source code; and to accept such offer send a letter requesting such source code (please 
+be specific by identifying the particular Xilinx Licensed Materials you are inquiring about (name and 
+version number), to:  Xilinx, Inc., Legal Department, Attention: Software Compliance Officer, 2100 Logic 
+Drive, San Jose, CA U.S.A. 95124.
+
+
+Comp Name: dkms	version 2.2.0.3-2ubuntu11.8
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+
+Source: http://linux.dell.com/dkms/
+
+Files: debian/HOWTO.Debian
+Copyright: © 2008, Dell, Inc. <dkms-devel@lists.us.dell.com>
+                   Mario Limonciello <Mario_Limonciello@dell.com>
+License: GPL-2+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+Files: debian/*
+Copyright: © 2008-2009, David Paleino <d.paleino@gmail.com>
+           © 2005-2008, Matt Domsch <Matt_Domsch@dell.com>
+           © 2008-2009, Mario Limonciello <Mario_Limonciello@dell.com>
+           © 2008-2009, Giuseppe Iuculano <giuseppe@iuculano.it>
+License: GPL-2+
+
+Files: *
+Copyright: © 2003-2009, Dell, Inc. <dkms-devel@lists.us.dell.com>
+License: GPL-2+
+
+On Debian systems, the complete text of the GNU General
+Public License v2 can be found in `/usr/share/common-licenses/GPL-2'.
+
+Comp Name: libboost-dev	version 1.58.0.1ubuntu1
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+
+Homepage: http://www.boost.org/
+Below is the copyright & license for Boost-Defaults for Debian.  
+The license for Boost itself may be found in file
+/usr/share/doc/libboost-doc/HTML/LICENSE_1_0.txt
+
+
+Boost-Defaults for Debian
+Copyright (c) 2009-2012 Steven Robbins
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+Comp Name: libboost-filesystem-dev	version 1.58.0.1ubuntu1
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage: http://boost.org/libs/filesystem/
+
+Below is the copyright & license for Boost-Defaults for Debian.  
+The license for Boost itself may be found in file
+/usr/share/doc/libboost-doc/HTML/LICENSE_1_0.txt
+
+
+Boost-Defaults for Debian
+Copyright (c) 2009-2012 Steven Robbins
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+Comp Name: libboost-program-options-dev	version 1.58.0.1ubuntu1
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage: http://www.boost.org/libs/program_options/
+
+Below is the copyright & license for Boost-Defaults for Debian.  
+The license for Boost itself may be found in file
+/usr/share/doc/libboost-doc/HTML/LICENSE_1_0.txt
+
+
+Boost-Defaults for Debian
+Copyright (c) 2009-2012 Steven Robbins
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+Comp Name: libc6	version 2.23-0ubuntu11
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage: https://www.gnu.org/software/libc/libc.html
+
+This is the Debian prepackaged version of the GNU C Library version 2.23.
+
+It was put together by the GNU Libc Maintainers <debian-glibc@lists.debian.org>
+from <git://sourceware.org/git/glibc.git>
+
+* Most of the GNU C library is under the following copyright:
+
+    Copyright (C) 1991-2015 Free Software Foundation, Inc.
+
+    The GNU C Library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    The GNU C Library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with the GNU C Library; if not, write to the Free
+    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+    02110-1301 USA
+
+  On Debian systems, the complete text of the GNU Library
+  General Public License can be found in `/usr/share/common-licenses/LGPL-2.1'.
+
+* The utilities associated with GNU C library is under the following
+  copyright:
+
+    Copyright (C) 1991-2015 Free Software Foundation, Inc.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published
+    by the Free Software Foundation; version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software Foundation,
+    Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+
+  On Debian systems, the complete text of the GNU Library
+  General Public License can be found in `/usr/share/common-licenses/GPL-2'.
+
+* All code incorporated from 4.4 BSD is distributed under the following
+  license:
+
+   Copyright (C) 1991 Regents of the University of California.
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions
+   are met:
+
+   1. Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+   2. Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+   3. [This condition was removed.]
+   4. Neither the name of the University nor the names of its contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+   THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+PURPOSE
+   ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+   FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+   DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+   OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+STRICT
+   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+   OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+   SUCH DAMAGE.
+
+* The DNS resolver code, taken from BIND 4.9.5, is copyrighted both by
+  UC Berkeley and by Digital Equipment Corporation.  The DEC portions
+  are under the following license:
+
+    Portions Copyright (C) 1993 by Digital Equipment Corporation.
+
+    Permission to use, copy, modify, and distribute this software for any
+    purpose with or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies, and
+    that the name of Digital Equipment Corporation not be used in
+    advertising or publicity pertaining to distribution of the document or
+    software without specific, written prior permission.
+
+    THE SOFTWARE IS PROVIDED ``AS IS'' AND DIGITAL EQUIPMENT CORP.
+    DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.  IN NO EVENT SHALL
+    DIGITAL EQUIPMENT CORPORATION BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER 
+RESULTING
+    FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+    NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
+    WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+* The ISC portions are under the following license:
+
+    Portions Copyright (c) 1996-1999 by Internet Software Consortium.
+
+    Permission to use, copy, modify, and distribute this software for any
+    purpose with or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM 
+DISCLAIMS
+    ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED 
+WARRANTIES
+    OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
+    CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+    DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+    PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+    ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF 
+THIS
+    SOFTWARE.
+
+* The Sun RPC support (from rpcsrc-4.0) is covered by the following
+  license:
+
+    Copyright (c) 2010, Oracle America, Inc. 
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are
+    met:
+
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above
+          copyright notice, this list of conditions and the following
+          disclaimer in the documentation and/or other materials
+          provided with the distribution.
+        * Neither the name of the "Oracle America, Inc." nor the names of its
+          contributors may be used to endorse or promote products derived
+          from this software without specific prior written permission.
+
+      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+      FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+      COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+      INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+      DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+      GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+      INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+      WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+      NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+* The following CMU license covers some of the support code for Mach,
+  derived from Mach 3.0:
+
+    Mach Operating System
+    Copyright (C) 1991,1990,1989 Carnegie Mellon University
+    All Rights Reserved.
+
+    Permission to use, copy, modify and distribute this software and its
+    documentation is hereby granted, provided that both the copyright
+    notice and this permission notice appear in all copies of the
+    software, derivative works or modified versions, and any portions
+    thereof, and that both notices appear in supporting documentation.
+
+    CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS ``AS IS''
+    CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+    ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+
+    Carnegie Mellon requests users of this software to return to
+
+     Software Distribution Coordinator
+     School of Computer Science
+     Carnegie Mellon University
+     Pittsburgh PA 15213-3890
+
+    or Software.Distribution@CS.CMU.EDU any improvements or
+    extensions that they make and grant Carnegie Mellon the rights to
+    redistribute these changes.
+
+* The file if_ppp.h is under the following CMU license:
+
+     Redistribution and use in source and binary forms, with or without
+     modification, are permitted provided that the following conditions
+     are met:
+     1. Redistributions of source code must retain the above copyright
+        notice, this list of conditions and the following disclaimer.
+     2. Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer in the
+        documentation and/or other materials provided with the distribution.
+     3. Neither the name of the University nor the names of its contributors
+        may be used to endorse or promote products derived from this software
+        without specific prior written permission.
+
+     THIS SOFTWARE IS PROVIDED BY CARNEGIE MELLON UNIVERSITY AND
+     CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+     INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+     MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+     IN NO EVENT SHALL THE UNIVERSITY OR CONTRIBUTORS BE LIABLE FOR ANY
+     DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+     DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+     GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+     INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+     IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+     OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+     IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+* The following license covers the files from Intel's "Highly Optimized
+  Mathematical Functions for Itanium" collection:
+
+    Intel License Agreement
+
+    Copyright (c) 2000, Intel Corporation
+
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are
+    met:
+
+    * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+    * The name of Intel Corporation may not be used to endorse or promote
+    products derived from this software without specific prior written
+    permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL INTEL OR
+    CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+* The files inet/getnameinfo.c and sysdeps/posix/getaddrinfo.c are copyright
+  (C) by Craig Metz and are distributed under the following license:
+
+    /* The Inner Net License, Version 2.00
+
+      The author(s) grant permission for redistribution and use in source and
+    binary forms, with or without modification, of the software and documentation
+    provided that the following conditions are met:
+
+    0. If you receive a version of the software that is specifically labelled
+       as not being for redistribution (check the version message and/or README),
+       you are not permitted to redistribute that version of the software in any
+       way or form.
+    1. All terms of the all other applicable copyrights and licenses must be
+       followed.
+    2. Redistributions of source code must retain the authors' copyright
+       notice(s), this list of conditions, and the following disclaimer.
+    3. Redistributions in binary form must reproduce the authors' copyright
+       notice(s), this list of conditions, and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+    4. [The copyright holder has authorized the removal of this clause.]
+    5. Neither the name(s) of the author(s) nor the names of its contributors
+       may be used to endorse or promote products derived from this software
+       without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY ITS AUTHORS AND CONTRIBUTORS ``AS IS'' AND ANY
+    EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR 
+ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND 
+ON
+    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+      If these license terms cause you a real problem, contact the author.  */
+
+* The file sunrpc/des_impl.c is copyright Eric Young:
+
+    Copyright (C) 1992 Eric Young
+    Collected from libdes and modified for SECURE RPC by Martin Kuck 1994
+    This file is distributed under the terms of the GNU Lesser General
+    Public License, version 2.1 or later - see the file COPYING.LIB for details.
+    If you did not receive a copy of the license with this program, please
+    see <http://www.gnu.org/licenses/> to obtain a copy.
+
+* The libidn code is copyright Simon Josefsson, with portions copyright
+  The Internet Society, Tom Tromey and Red Hat, Inc.:
+
+    Copyright (C) 2002, 2003, 2004, 2011  Simon Josefsson
+
+    This file is part of GNU Libidn.
+
+    GNU Libidn is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    GNU Libidn is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with GNU Libidn; if not, see <http://www.gnu.org/licenses/>.
+
+* The following notice applies to portions of libidn/nfkc.c:
+
+    This file contains functions from GLIB, including gutf8.c and
+    gunidecomp.c, all licensed under LGPL and copyright hold by:
+
+    Copyright (C) 1999, 2000 Tom Tromey
+    Copyright 2000 Red Hat, Inc.
+
+* The following applies to portions of libidn/punycode.c and
+  libidn/punycode.h:
+
+    This file is derived from RFC 3492bis written by Adam M. Costello.
+
+    Disclaimer and license: Regarding this entire document or any
+    portion of it (including the pseudocode and C code), the author
+    makes no guarantees and is not responsible for any damage resulting
+    from its use.  The author grants irrevocable permission to anyone
+    to use, modify, and distribute it in any way that does not diminish
+    the rights of anyone else to use, modify, and distribute it,
+    provided that redistributed derivative works do not contain
+    misleading author or version information.  Derivative works need
+    not be licensed under similar terms.
+
+    Copyright (C) The Internet Society (2003).  All Rights Reserved.
+
+    This document and translations of it may be copied and furnished to
+    others, and derivative works that comment on or otherwise explain it
+    or assist in its implementation may be prepared, copied, published
+    and distributed, in whole or in part, without restriction of any
+    kind, provided that the above copyright notice and this paragraph are
+    included on all such copies and derivative works.  However, this
+    document itself may not be modified in any way, such as by removing
+    the copyright notice or references to the Internet Society or other
+    Internet organizations, except as needed for the purpose of
+    developing Internet standards in which case the procedures for
+    copyrights defined in the Internet Standards process must be
+    followed, or as required to translate it into languages other than
+    English.
+
+    The limited permissions granted above are perpetual and will not be
+    revoked by the Internet Society or its successors or assigns.
+
+    This document and the information contained herein is provided on an
+    "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+    TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+    BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
+    HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
+    MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+* The file inet/rcmd.c is under a UCB copyright and the following:
+
+    Copyright (C) 1998 WIDE Project.
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+    3. Neither the name of the project nor the names of its contributors
+       may be used to endorse or promote products derived from this software
+       without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE PROJECT AND CONTRIBUTORS ``AS IS'' AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+PURPOSE
+    ARE DISCLAIMED.  IN NO EVENT SHALL THE PROJECT OR CONTRIBUTORS BE LIABLE
+    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+    OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+STRICT
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+    SUCH DAMAGE.
+
+    * The file posix/runtests.c is copyright Tom Lord:
+
+    Copyright 1995 by Tom Lord
+
+                            All Rights Reserved
+
+    Permission to use, copy, modify, and distribute this software and its
+    documentation for any purpose and without fee is hereby granted,
+    provided that the above copyright notice appear in all copies and that
+    both that copyright notice and this permission notice appear in
+    supporting documentation, and that the name of the copyright holder not be
+    used in advertising or publicity pertaining to distribution of the
+    software without specific, written prior permission.
+
+    Tom Lord DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+    INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
+    EVENT SHALL TOM LORD BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+    CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS 
+OF
+    USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
+
+* The posix/rxspencer tests are copyright Henry Spencer:
+
+    Copyright 1992, 1993, 1994, 1997 Henry Spencer.  All rights reserved.
+    This software is not subject to any license of the American Telephone
+    and Telegraph Company or of the Regents of the University of California.
+
+    Permission is granted to anyone to use this software for any purpose on
+    any computer system, and to alter it and redistribute it, subject
+    to the following restrictions:
+
+    1. The author is not responsible for the consequences of use of this
+       software, no matter how awful, even if they arise from flaws in it.
+
+    2. The origin of this software must not be misrepresented, either by
+       explicit claim or by omission.  Since few users ever read sources,
+       credits must appear in the documentation.
+
+    3. Altered versions must be plainly marked as such, and must not be
+       misrepresented as being the original software.  Since few users
+       ever read sources, credits must appear in the documentation.
+
+    4. This notice may not be removed or altered.
+
+* The file posix/PCRE.tests is copyright University of Cambridge:
+
+    Copyright (c) 1997-2003 University of Cambridge
+
+    Permission is granted to anyone to use this software for any purpose on any
+    computer system, and to redistribute it freely, subject to the following
+    restrictions:
+
+    1. This software is distributed in the hope that it will be useful,
+       but WITHOUT ANY WARRANTY; without even the implied warranty of
+       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+    2. The origin of this software must not be misrepresented, either by
+       explicit claim or by omission. In practice, this means that if you use
+       PCRE in software that you distribute to others, commercially or
+       otherwise, you must put a sentence like this
+
+         Regular expression support is provided by the PCRE library package,
+         which is open source software, written by Philip Hazel, and copyright
+         by the University of Cambridge, England.
+
+       somewhere reasonably visible in your documentation and in any relevant
+       files or online help data or similar. A reference to the ftp site for
+       the source, that is, to
+
+         ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
+
+       should also be given in the documentation. However, this condition is not
+       intended to apply to whole chains of software. If package A includes PCRE,
+       it must acknowledge it, but if package B is software that includes package
+       A, the condition is not imposed on package B (unless it uses PCRE
+       independently).
+
+    3. Altered versions must be plainly marked as such, and must not be
+       misrepresented as being the original software.
+
+    4. If PCRE is embedded in any software that is released under the GNU
+      General Purpose Licence (GPL), or Lesser General Purpose Licence (LGPL),
+      then the terms of that licence shall supersede any condition above with
+      which it is incompatible.
+
+* Files from Sun fdlibm are copyright Sun Microsystems, Inc.:
+
+    Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
+
+    Developed at SunPro, a Sun Microsystems, Inc. business.
+    Permission to use, copy, modify, and distribute this
+    software is freely granted, provided that this notice
+    is preserved.
+
+* Part of stdio-common/tst-printf.c is copyright C E Chew:
+
+    (C) Copyright C E Chew
+
+    Feel free to copy, use and distribute this software provided:
+
+         1. you do not pretend that you wrote it
+         2. you leave this copyright notice intact.
+
+* Various long double libm functions are copyright Stephen L. Moshier:
+
+    Copyright 2001 by Stephen L. Moshier <moshier@na-net.ornl.gov>
+
+     This library is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public
+     License as published by the Free Software Foundation; either
+     version 2.1 of the License, or (at your option) any later version.
+
+     This library is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this library; if not, see
+     <http://www.gnu.org/licenses/>.  */
+
+Comp Name: libncurses5-dev	version 6.0+20160213-1ubuntu1
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage: https://invisible-island.net/ncurses/
+
+This is the Debian prepackaged version of the ncurses
+library and terminfo utilities. ncurses/terminfo was originally written
+by Pavel Curtis and Zeyd M. Ben-Halim <zmbenhal@netcom.com>, and is
+currently held by the Free Software Foundation.
+
+This package was put together by Vaidhyanathan G Mayilrangam
+<vaidhy@debian.org> and Joel Klecker <espy@debian.org>, using sources
+obtained from ftp://ftp.gnu.org/gnu/ncurses/ncurses-5.0.tar.gz.
+Current versions of the ncurses sources are found at
+ftp://invisible-island.net/ncurses/.
+
+It is based somewhat on work done by Bruce Perens <Bruce@Pixar.com>,
+David Engel <david@elo.ods.com>.  Michael Alan Dorman
+<mdorman@debian.org>, Richard Braakman <dark@xs4all.nl>, James Troup
+<jjtroup@comp.brad.ac.uk>, J.H.M. Dassen (Ray)
+<jdassen@wi.LeidenUniv.nl>, and Galen Hazelwood <galenh@micron.net>
+over various years.
+
+
+Copyright (c) 1998-2016 Free Software Foundation, Inc.
+Copyright © 2001 by Pradeep Padala
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, distribute with modifications, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE ABOVE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name(s) of the above copyright
+holders shall not be used in advertising or otherwise to promote the
+sale, use or other dealings in this Software without prior written
+authorization.
+
+
+Copyright (C) 1994 X Consortium
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL 
+THE
+X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
+IN
+AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNEC-
+TION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of the X Consortium shall not
+be used in advertising or otherwise to promote the sale, use or other deal-
+ings in this Software without prior written authorization from the X Consor-
+tium.
+
+
+Copyright (c) 1980, 1991, 1992, 1993
+	The Regents of the University of California.  All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. Neither the name of the University nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+
+
+Copyright 1996-2007 by Thomas E. Dickey
+
+                        All Rights Reserved
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name(s) of the above copyright
+holders shall not be used in advertising or otherwise to promote the
+sale, use or other dealings in this Software without prior written
+authorization.
+
+Comp Name: libprotoc-dev	version 2.6.1-1.3
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage:  https://github.com/google/protobuf/
+
+This package was debianized by Iustin Pop <iusty@k1024.org> on
+Mon, 07 Jul 2008 17:48:21 +0200.
+
+It was downloaded from http://code.google.com/p/protobuf/
+
+Upstream Authors: Google Inc, more specifically:
+
+Original Protocol Buffers design and implementation:
+  Sanjay Ghemawat <sanjay@google.com>
+  Jeff Dean <jeff@google.com>
+  Daniel Dulitz <daniel@google.com>
+  Craig Silverstein
+  Paul Haahr <haahr@google.com>
+  Corey Anderson <corin@google.com>
+  (and many others)
+
+Proto2 C++ and Java primary author:
+  Kenton Varda <kenton@google.com>
+
+Proto2 Python primary authors:
+  Will Robinson <robinson@google.com>
+  Petar Petrov <petar@google.com>
+
+Large code contributions:
+  Joseph Schorr <jschorr@google.com>
+  Wenbo Zhu <wenboz@google.com>
+
+Large quantity of code reviews:
+  Scott Bruce <sbruce@google.com>
+  Frank Yellin
+  Neal Norwitz <nnorwitz@google.com>
+  Jeffrey Yasskin <jyasskin@google.com>
+  Ambrose Feinstein <ambrose@google.com>
+
+Documentation:
+  Lisa Carey <lcarey@google.com>
+
+Maven packaging:
+  Gregory Kick <gak@google.com>
+
+Copyright:
+
+    Copyright (C) 2008 Google Inc.
+
+License (new style BSD, with Google Inc. as copyright holder):
+
+  Copyright 2008, Google Inc.
+  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are
+  met:
+
+      * Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+      * Redistributions in binary form must reproduce the above
+  copyright notice, this list of conditions and the following disclaimer
+  in the documentation and/or other materials provided with the
+  distribution.
+      * Neither the name of Google Inc. nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+  Code generated by the Protocol Buffer compiler is owned by the owner
+  of the input file used when generating it.  This code is not
+  standalone and requires a support library to be linked with it.  This
+  support library is itself covered by the above license.
+
+The files `python/mox.py' and `python/stubout.py' are licensed under a
+different license (Apache License 2.0):
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+
+On Debian systems, the complete text of the Apache License can be found in
+`/usr/share/common-licenses/Apache-2.0'.
+
+The Debian packaging is:
+
+        Copyright (C) 2008, 2009, 2010 Iustin Pop <iusty@k1024.org>
+
+and is licensed under the GPL version 3,
+see `/usr/share/common-licenses/GPL-3'.
+
+Comp Name: libssl-dev	version 1.0.2g-1ubuntu4.16
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage: https://www.openssl.org/
+
+This package was debianized by Christoph Martin martin@uni-mainz.de on
+Fri, 22 Nov 1996 21:29:51 +0100.
+
+Copyright (c) 1998-2004 The OpenSSL Project
+Copyright (c) 1995-1998 Eric A. Young, Tim J. Hudson
+
+The upstream sources were obtained from http://www.openssl.org/
+
+
+  LICENSE ISSUES
+  ==============
+
+  The OpenSSL toolkit stays under a dual license, i.e. both the conditions of
+  the OpenSSL License and the original SSLeay license apply to the toolkit.
+  See below for the actual license texts. Actually both licenses are BSD-style
+  Open Source licenses. In case of any license issues related to OpenSSL
+  please contact openssl-core@openssl.org.
+
+  OpenSSL License
+  ---------------
+
+/* ====================================================================
+ * Copyright (c) 1998-2004 The OpenSSL Project.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. All advertising materials mentioning features or use of this
+ *    software must display the following acknowledgment:
+ *    "This product includes software developed by the OpenSSL Project
+ *    for use in the OpenSSL Toolkit. (http://www.openssl.org/)"
+ *
+ * 4. The names "OpenSSL Toolkit" and "OpenSSL Project" must not be used to
+ *    endorse or promote products derived from this software without
+ *    prior written permission. For written permission, please contact
+ *    openssl-core@openssl.org.
+ *
+ * 5. Products derived from this software may not be called "OpenSSL"
+ *    nor may "OpenSSL" appear in their names without prior written
+ *    permission of the OpenSSL Project.
+ *
+ * 6. Redistributions of any form whatsoever must retain the following
+ *    acknowledgment:
+ *    "This product includes software developed by the OpenSSL Project
+ *    for use in the OpenSSL Toolkit (http://www.openssl.org/)"
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE OpenSSL PROJECT ``AS IS'' AND ANY
+ * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE OpenSSL PROJECT OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This product includes cryptographic software written by Eric Young
+ * (eay@cryptsoft.com).  This product includes software written by Tim
+ * Hudson (tjh@cryptsoft.com).
+ *
+ */
+
+ Original SSLeay License
+ -----------------------
+
+/* Copyright (C) 1995-1998 Eric Young (eay@cryptsoft.com)
+ * All rights reserved.
+ *
+ * This package is an SSL implementation written
+ * by Eric Young (eay@cryptsoft.com).
+ * The implementation was written so as to conform with Netscapes SSL.
+ * 
+ * This library is free for commercial and non-commercial use as long as
+ * the following conditions are aheared to.  The following conditions
+ * apply to all code found in this distribution, be it the RC4, RSA,
+ * lhash, DES, etc., code; not just the SSL code.  The SSL documentation
+ * included with this distribution is covered by the same copyright terms
+ * except that the holder is Tim Hudson (tjh@cryptsoft.com).
+ * 
+ * Copyright remains Eric Young's, and as such any Copyright notices in
+ * the code are not to be removed.
+ * If this package is used in a product, Eric Young should be given attribution
+ * as the author of the parts of the library used.
+ * This can be in the form of a textual message at program startup or
+ * in documentation (online or textual) provided with the package.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *    "This product includes cryptographic software written by
+ *     Eric Young (eay@cryptsoft.com)"
+ *    The word 'cryptographic' can be left out if the rouines from the library
+ *    being used are not cryptographic related :-).
+ * 4. If you include any Windows specific code (or a derivative thereof) from 
+ *    the apps directory (application code) you must include an acknowledgement:
+ *    "This product includes software written by Tim Hudson (tjh@cryptsoft.com)"
+ * 
+ * THIS SOFTWARE IS PROVIDED BY ERIC YOUNG ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * 
+ * The licence and distribution terms for any publically available version or
+ * derivative of this code cannot be changed.  i.e. this code cannot simply be
+ * copied and put under another distribution licence
+ * [including the GNU Public Licence.]
+ */
+
+
+Comp Name: libudev-dev	version 229-4ubuntu21.28
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: systemd
+Upstream-Contact: systemd-devel@lists.freedesktop.org
+Source: http://www.freedesktop.org/wiki/Software/systemd/
+
+Files: debian/*
+Copyright: 2010-2013 Tollef Fog Heen <tfheen@debian.org>
+           2013-2015 Michael Biebl <biebl@debian.org>
+           2013 Michael Stapelberg <stapelberg@debian.org>
+License: LGPL-2.1+
+
+Files: *
+Copyright: 2008-2015 Kay Sievers <kay@vrfy.org>
+           2010-2015 Lennart Poettering
+           2012-2015 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl>
+           2013-2015 Tom Gundersen <teg@jklm.no>
+           2013-2015 Daniel Mack
+           2010-2015 Harald Hoyer
+           2013-2015 David Herrmann
+           2013, 2014 Thomas H.P. Andersen
+           2013, 2014 Daniel Buch
+           2014 Susant Sahani
+           2009-2015 Intel Corporation
+           2000, 2005 Red Hat, Inc.
+           2009 Alan Jenkins <alan-jenkins@tuffmail.co.uk>
+           2010 ProFUSION embedded systems
+           2010 Maarten Lankhorst
+           1995-2004 Miquel van Smoorenburg
+           1999 Tom Tromey
+           2011 Michal Schmidt
+           2012 B. Poettering
+           2012 Holger Hans Peter Freyther
+           2012 Dan Walsh
+           2012 Roberto Sassu
+           2013 David Strauss
+           2013 Marius Vollmer
+           2013 Jan Janssen
+           2013 Simon Peeters
+License: LGPL-2.1+
+
+Files: src/basic/siphash24.h
+       src/basic/siphash24.c
+Copyright: 2012 Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>
+           2012 Daniel J. Bernstein <djb@cr.yp.to>
+License: CC0
+
+Files: src/basic/securebits.h
+Copyright: Linus Torvalds <torvalds@athlon.transmeta.com>
+License: GPL-2
+
+Files: src/basic/ioprio.h
+Copyright: Jens Axboe <axboe@suse.de>
+License: GPL-2
+
+Files: src/shared/linux/auto_dev-ioctl.h
+Copyright: 2008 Red Hat, Inc.
+           2008 Ian Kent <raven@themaw.net>
+License: GPL-2+
+
+Files: src/basic/sparse-endian.h
+Copyright: 2012 Josh Triplett <josh@joshtriplett.org>
+License: Expat
+
+Files: src/journal/lookup3.c
+       src/journal/lookup3.h
+Copyright: 2006 Bob Jenkins
+License: public-domain
+ You can use this free for any purpose. It's in the public domain. It has no
+ warranty.
+
+Files: src/udev/*
+Copyright: 2003-2012 Kay Sievers <kay@vrfy.org>
+           2003-2004 Greg Kroah-Hartman <greg@kroah.com>
+           2004 Chris Friesen <chris_friesen@sympatico.ca>
+           2004, 2009, 2010 David Zeuthen <david@fubar.dk>
+           2005, 2006 SUSE Linux Products GmbH
+           2003 IBM Corp.
+           2007 Hannes Reinecke <hare@suse.de>
+           2009 Canonical Ltd.
+           2009 Scott James Remnant <scott@netsplit.com>
+           2009 Martin Pitt <martin.pitt@ubuntu.com>
+           2009 Piter Punk <piterpunk@slackware.com>
+           2009, 2010 Lennart Poettering
+           2009 Filippo Argiolas <filippo.argiolas@gmail.com>
+           2010 Maxim Levitsky
+           2011 ProFUSION embedded systems
+           2011 Karel Zak <kzak@redhat.com>
+           2014 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl>
+           2014 David Herrmann <dh.herrmann@gmail.com>
+           2014 Carlos Garnacho <carlosg@gnome.org>
+License: GPL-2+
+
+Files: src/udev/udev-ctrl.c
+       src/udev/udevadm-hwdb.c
+       src/udev/udev-builtin.c
+       src/udev/udev-builtin-net_id.c
+       src/udev/udev-builtin-net_setup_link.c
+       src/udev/udev-builtin-hwdb.c
+       src/udev/udev-builtin-btrfs.c
+       src/udev/udev-builtin-keyboard.c
+       src/udev/net/link-config.h
+       src/udev/net/link-config.c
+       src/udev/net/ethtool-util.c
+       src/udev/net/ethtool-util.h
+Copyright: 2007-2013 Kay Sievers <kay@vrfy.org>
+           2013 Tom Gundersen <teg@jklm.no>
+License: LGPL-2.1+
+
+Files: src/udev/scsi_id/scsi.h
+Copyright: 2003 IBM Corp.
+License: GPL-2
+
+License: Expat
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to
+ deal in the Software without restriction, including without limitation the
+ rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ sell copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS
+ IN THE SOFTWARE.
+
+License: GPL-2
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; version 2 of the License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+ .
+ On Debian and systems the full text of the GNU General Public
+ License version 2 can be found in the file
+ `/usr/share/common-licenses/GPL-2`
+
+License: GPL-2+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ version 2 can be found in ‘/usr/share/common-licenses/GPL-2’.
+
+License: LGPL-2.1+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation; either version 2.1, or (at your option)
+ any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU Lesser General Public License along
+ with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ .
+ On Debian systems, the complete text of the GNU Lesser General Public
+ License version 2.1 can be found in ‘/usr/share/common-licenses/LGPL-2.1’.
+
+License: CC0
+ To the extent possible under law, the author(s) have dedicated all copyright
+ and related and neighboring rights to this software to the public domain
+ worldwide. This software is distributed without any warranty.
+ .
+ You should have received a copy of the CC0 Public Domain Dedication along with
+ this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+Comp Name: libxml2-dev	version 2.9.3+dfsg1-1ubuntu0.7
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage: http://xmlsoft.org
+
+This package was debianized by Vincent Renardias <vincent@waw.com> on
+Sat, 26 Sep 1998 16:50:54 +0200
+
+It was downloaded from ftp://xmlsoft.org/libxml2/
+
+==========================
+
+Except where otherwise noted in the source code (trio files, hash.c and list.c)
+covered by a similar licence but with different Copyright notices:
+
+ Copyright (C) 1998-2002 Daniel Veillard.  All Rights Reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is fur-
+nished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FIT-
+NESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+DANIEL VEILLARD BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CON-
+NECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of Daniel Veillard shall not
+be used in advertising or otherwise to promote the sale, use or other deal-
+ings in this Software without prior written authorization from him.
+==========================
+trio.c, trio.h:
+Copyright (C) 1998 Bjorn Reese and Daniel Stenberg.
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE AUTHORS AND
+CONTRIBUTORS ACCEPT NO RESPONSIBILITY IN ANY CONCEIVABLE MANNER.
+==========================
+triop.h:
+Copyright (C) 2000 Bjorn Reese and Daniel Stenberg.
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE AUTHORS AND
+CONTRIBUTORS ACCEPT NO RESPONSIBILITY IN ANY CONCEIVABLE MANNER.
+==========================
+hash.c:
+Copyright (C) 2000 Bjorn Reese and Daniel Veillard.
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE AUTHORS AND
+CONTRIBUTORS ACCEPT NO RESPONSIBILITY IN ANY CONCEIVABLE MANNER.
+==========================
+list.c:
+Copyright (C) 2000 Gary Pennington and Daniel Veillard.
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE AUTHORS AND
+CONTRIBUTORS ACCEPT NO RESPONSIBILITY IN ANY CONCEIVABLE MANNER.
+==========================
+triodef.h, trionan.c, trionan.h:
+Copyright (C) 2001 Bjorn Reese <breese@users.sourceforge.net>
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE AUTHORS AND
+CONTRIBUTORS ACCEPT NO RESPONSIBILITY IN ANY CONCEIVABLE MANNER.
+==========================
+triostr.c, triostr.h:
+Copyright (C) 2001 Bjorn Reese and Daniel Stenberg.
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE AUTHORS AND
+CONTRIBUTORS ACCEPT NO RESPONSIBILITY IN ANY CONCEIVABLE MANNER.
+
+Comp Name: libyaml-dev	version 0.1.6-3
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: LibYAML
+Upstream-Contact: Kirill Simonov <xi@resolvent.net>
+Source: http://pyyaml.org/wiki/LibYAML
+
+Files: *
+Copyright: 2006, Kirill Simonov <xi@resolvent.net>
+License: Expat
+ Permission is hereby granted, free of charge, to any person obtaining
+ a copy of this software and associated documentation files (the
+ “Software”), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+ .
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+
+Files: debian/*
+Copyright: 2008, Anders Kaseorg <andersk@mit.edu>
+License: permissive
+ Copying and distribution of this package, with or without
+ modification, are permitted in any medium without royalty
+ provided the copyright notice and this notice are
+ preserved.
+
+Comp Name: lsb-release	version 9.20160110ubuntu0.2
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage: https://wiki.linuxfoundation.org/lsb/start
+
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: LSB implementation package
+
+Files: *
+Copyright: 2002-2010, Chris Lawrence <lawrencc@debian.org> 
+License: GPL-2
+
+Files: init-functions.d/50-ubuntu-logging
+Copyright: 2005-2011, Canonical Ltd.
+License: GPL-2
+
+Files: init-functions
+Copyright: 2002-2009, Chris Lawrence <lawrencc@debian.org>
+License: BSD-3-clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 1. Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+ 3. Neither the name of the author nor the names of other contributors
+    may be used to endorse or promote products derived from this software
+    without specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS''
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS
+ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+License: GPL-2
+ This program is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public
+ License as published by the Free Software Foundation;
+ version 2 dated June 1991.
+ .
+ This program is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the GNU General Public License for more
+ details.
+ .
+ You should have received a copy of the GNU General Public
+ License along with this package; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ Boston, MA  02110-1301 USA
+ .
+ On Debian systems, the full text of the GNU General Public
+ License version 2 can be found in the file
+ `/usr/share/common-licenses/GPL-2'.
+
+Comp Name: ocl-icd-opencl-dev	version 2.2.8-1
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: ocl-icd
+Source: https://forge.imag.fr/projects/ocl-icd/
+
+Files: *
+Copyright: 2012 Brice Videau <brice.videau@imag.fr>
+           2012 Vincent Danjean <Vincent.Danjean@ens-lyon.org>
+License: BSD-2-Clause
+
+Files: debian/*
+Copyright: 2012 Vincent Danjean <vdanjean@debian.org>
+License: BSD-2-Clause
+
+License: BSD-2-Clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 1. Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+PURPOSE
+ ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+STRICT
+ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ SUCH DAMAGE.
+
+
+Comp Name: protobuf-compiler	version 2.6.1-1.3
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage: https://github.com/google/protobuf/
+
+This package was debianized by Iustin Pop <iusty@k1024.org> on
+Mon, 07 Jul 2008 17:48:21 +0200.
+
+It was downloaded from http://code.google.com/p/protobuf/
+
+Upstream Authors: Google Inc, more specifically:
+
+Original Protocol Buffers design and implementation:
+  Sanjay Ghemawat <sanjay@google.com>
+  Jeff Dean <jeff@google.com>
+  Daniel Dulitz <daniel@google.com>
+  Craig Silverstein
+  Paul Haahr <haahr@google.com>
+  Corey Anderson <corin@google.com>
+  (and many others)
+
+Proto2 C++ and Java primary author:
+  Kenton Varda <kenton@google.com>
+
+Proto2 Python primary authors:
+  Will Robinson <robinson@google.com>
+  Petar Petrov <petar@google.com>
+
+Large code contributions:
+  Joseph Schorr <jschorr@google.com>
+  Wenbo Zhu <wenboz@google.com>
+
+Large quantity of code reviews:
+  Scott Bruce <sbruce@google.com>
+  Frank Yellin
+  Neal Norwitz <nnorwitz@google.com>
+  Jeffrey Yasskin <jyasskin@google.com>
+  Ambrose Feinstein <ambrose@google.com>
+
+Documentation:
+  Lisa Carey <lcarey@google.com>
+
+Maven packaging:
+  Gregory Kick <gak@google.com>
+
+Copyright:
+
+    Copyright (C) 2008 Google Inc.
+
+License (new style BSD, with Google Inc. as copyright holder):
+
+  Copyright 2008, Google Inc.
+  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are
+  met:
+
+      * Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+      * Redistributions in binary form must reproduce the above
+  copyright notice, this list of conditions and the following disclaimer
+  in the documentation and/or other materials provided with the
+  distribution.
+      * Neither the name of Google Inc. nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+  Code generated by the Protocol Buffer compiler is owned by the owner
+  of the input file used when generating it.  This code is not
+  standalone and requires a support library to be linked with it.  This
+  support library is itself covered by the above license.
+
+The files `python/mox.py' and `python/stubout.py' are licensed under a
+different license (Apache License 2.0):
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+
+On Debian systems, the complete text of the Apache License can be found in
+`/usr/share/common-licenses/Apache-2.0'.
+
+The Debian packaging is:
+
+        Copyright (C) 2008, 2009, 2010 Iustin Pop <iusty@k1024.org>
+
+and is licensed under the GPL version 3,
+see `/usr/share/common-licenses/GPL-3'.
+
+Comp Name: python	version 3.5.2-2ubuntu0~16.04.10
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage: http://www.python.org/
+
+This is the Debian GNU/Linux prepackaged version of the Python programming
+language. Python was written by Guido van Rossum <guido@cwi.nl> and others.
+
+This package was put together by Klee Dienes <klee@debian.org> from
+sources from ftp.python.org:/pub/python, based on the Debianization by
+the previous maintainers Bernd S. Brentrup <bsb@uni-muenster.de> and
+Bruce Perens.
+
+Current maintainer is Matthias Klose <doko@debian.org> until the final
+2.3 version is released.
+
+
+Copyright notice (as found in LICENSE in the original source).
+--------------------------------------------------------------
+
+A. HISTORY OF THE SOFTWARE
+==========================
+
+Python was created in the early 1990s by Guido van Rossum at Stichting
+Mathematisch Centrum (CWI, see http://www.cwi.nl) in the Netherlands
+as a successor of a language called ABC.  Guido remains Python's
+principal author, although it includes many contributions from others.
+
+In 1995, Guido continued his work on Python at the Corporation for
+National Research Initiatives (CNRI, see http://www.cnri.reston.va.us)
+in Reston, Virginia where he released several versions of the
+software.
+
+In May 2000, Guido and the Python core development team moved to
+BeOpen.com to form the BeOpen PythonLabs team.  In October of the same
+year, the PythonLabs team moved to Digital Creations (now Zope
+Corporation, see http://www.zope.com).  In 2001, the Python Software
+Foundation (PSF, see http://www.python.org/psf/) was formed, a
+non-profit organization created specifically to own Python-related
+Intellectual Property.  Zope Corporation is a sponsoring member of
+the PSF.
+
+All Python releases are Open Source (see http://www.opensource.org for
+the Open Source Definition).  Historically, most, but not all, Python
+releases have also been GPL-compatible; the table below summarizes
+the various releases.
+
+    Release         Derived     Year        Owner       GPL-
+                    from                                compatible? (1)
+
+    0.9.0 thru 1.2              1991-1995   CWI         yes
+    1.3 thru 1.5.2  1.2         1995-1999   CNRI        yes
+    1.6             1.5.2       2000        CNRI        no
+    2.0             1.6         2000        BeOpen.com  no
+    1.6.1           1.6         2001        CNRI        yes (2)
+    2.1             2.0+1.6.1   2001        PSF         no
+    2.0.1           2.0+1.6.1   2001        PSF         yes
+    2.1.1           2.1+2.0.1   2001        PSF         yes
+    2.2             2.1.1       2001        PSF         yes
+    2.1.2           2.1.1       2002        PSF         yes
+    2.1.3           2.1.2       2002        PSF         yes
+    2.2.1           2.2         2002        PSF         yes
+    2.2.2           2.2.1       2002        PSF         yes
+    2.2.3           2.2.2       2003        PSF         yes
+    2.3             2.2.2       2002-2003   PSF         yes
+    2.3.1           2.3         2002-2003   PSF         yes
+    2.3.2           2.3.1       2002-2003   PSF         yes
+    2.3.3           2.3.2       2002-2003   PSF         yes
+    2.3.4           2.3.3       2004        PSF         yes
+    2.3.5           2.3.4       2005        PSF         yes
+    2.4             2.3         2004        PSF         yes
+    2.4.1           2.4         2005        PSF         yes
+    2.4.2           2.4.1       2005        PSF         yes
+    2.4.3           2.4.2       2006        PSF         yes
+    2.4.4           2.4.3       2006        PSF         yes
+    2.5             2.4         2006        PSF         yes
+    2.5.1           2.5         2007        PSF         yes
+    2.5.2           2.5.1       2008        PSF         yes
+    2.5.3           2.5.2       2008        PSF         yes
+    2.6             2.5         2008        PSF         yes
+    2.6.1           2.6         2008        PSF         yes
+    2.6.2           2.6.1       2009        PSF         yes
+    2.6.3           2.6.2       2009        PSF         yes
+    2.6.4           2.6.3       2009        PSF         yes
+    2.6.5           2.6.4       2010        PSF         yes
+
+Footnotes:
+
+(1) GPL-compatible doesn't mean that we're distributing Python under
+    the GPL.  All Python licenses, unlike the GPL, let you distribute
+    a modified version without making your changes open source.  The
+    GPL-compatible licenses make it possible to combine Python with
+    other software that is released under the GPL; the others don't.
+
+(2) According to Richard Stallman, 1.6.1 is not GPL-compatible,
+    because its license has a choice of law clause.  According to
+    CNRI, however, Stallman's lawyer has told CNRI's lawyer that 1.6.1
+    is "not incompatible" with the GPL.
+
+Thanks to the many outside volunteers who have worked under Guido's
+direction to make these releases possible.
+
+
+B. TERMS AND CONDITIONS FOR ACCESSING OR OTHERWISE USING PYTHON
+===============================================================
+
+PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
+--------------------------------------------
+
+1. This LICENSE AGREEMENT is between the Python Software Foundation
+("PSF"), and the Individual or Organization ("Licensee") accessing and
+otherwise using this software ("Python") in source or binary form and
+its associated documentation.
+
+2. Subject to the terms and conditions of this License Agreement, PSF hereby
+grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce,
+analyze, test, perform and/or display publicly, prepare derivative works,
+distribute, and otherwise use Python alone or in any derivative version,
+provided, however, that PSF's License Agreement and PSF's notice of copyright,
+i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
+Python Software Foundation; All Rights Reserved" are retained in Python alone or
+in any derivative version prepared by Licensee.
+
+3. In the event Licensee prepares a derivative work that is based on
+or incorporates Python or any part thereof, and wants to make
+the derivative work available to others as provided herein, then
+Licensee hereby agrees to include in any such work a brief summary of
+the changes made to Python.
+
+4. PSF is making Python available to Licensee on an "AS IS"
+basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
+DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT
+INFRINGE ANY THIRD PARTY RIGHTS.
+
+5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
+A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON,
+OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+
+6. This License Agreement will automatically terminate upon a material
+breach of its terms and conditions.
+
+7. Nothing in this License Agreement shall be deemed to create any
+relationship of agency, partnership, or joint venture between PSF and
+Licensee.  This License Agreement does not grant permission to use PSF
+trademarks or trade name in a trademark sense to endorse or promote
+products or services of Licensee, or any third party.
+
+8. By copying, installing or otherwise using Python, Licensee
+agrees to be bound by the terms and conditions of this License
+Agreement.
+
+
+BEOPEN.COM LICENSE AGREEMENT FOR PYTHON 2.0
+-------------------------------------------
+
+BEOPEN PYTHON OPEN SOURCE LICENSE AGREEMENT VERSION 1
+
+1. This LICENSE AGREEMENT is between BeOpen.com ("BeOpen"), having an
+office at 160 Saratoga Avenue, Santa Clara, CA 95051, and the
+Individual or Organization ("Licensee") accessing and otherwise using
+this software in source or binary form and its associated
+documentation ("the Software").
+
+2. Subject to the terms and conditions of this BeOpen Python License
+Agreement, BeOpen hereby grants Licensee a non-exclusive,
+royalty-free, world-wide license to reproduce, analyze, test, perform
+and/or display publicly, prepare derivative works, distribute, and
+otherwise use the Software alone or in any derivative version,
+provided, however, that the BeOpen Python License is retained in the
+Software, alone or in any derivative version prepared by Licensee.
+
+3. BeOpen is making the Software available to Licensee on an "AS IS"
+basis.  BEOPEN MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, BEOPEN MAKES NO AND
+DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE WILL NOT
+INFRINGE ANY THIRD PARTY RIGHTS.
+
+4. BEOPEN SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE
+SOFTWARE FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS
+AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THE SOFTWARE, OR ANY
+DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+
+5. This License Agreement will automatically terminate upon a material
+breach of its terms and conditions.
+
+6. This License Agreement shall be governed by and interpreted in all
+respects by the law of the State of California, excluding conflict of
+law provisions.  Nothing in this License Agreement shall be deemed to
+create any relationship of agency, partnership, or joint venture
+between BeOpen and Licensee.  This License Agreement does not grant
+permission to use BeOpen trademarks or trade names in a trademark
+sense to endorse or promote products or services of Licensee, or any
+third party.  As an exception, the "BeOpen Python" logos available at
+http://www.pythonlabs.com/logos.html may be used according to the
+permissions granted on that web page.
+
+7. By copying, installing or otherwise using the software, Licensee
+agrees to be bound by the terms and conditions of this License
+Agreement.
+
+
+CNRI LICENSE AGREEMENT FOR PYTHON 1.6.1
+---------------------------------------
+
+1. This LICENSE AGREEMENT is between the Corporation for National
+Research Initiatives, having an office at 1895 Preston White Drive,
+Reston, VA 20191 ("CNRI"), and the Individual or Organization
+("Licensee") accessing and otherwise using Python 1.6.1 software in
+source or binary form and its associated documentation.
+
+2. Subject to the terms and conditions of this License Agreement, CNRI
+hereby grants Licensee a nonexclusive, royalty-free, world-wide
+license to reproduce, analyze, test, perform and/or display publicly,
+prepare derivative works, distribute, and otherwise use Python 1.6.1
+alone or in any derivative version, provided, however, that CNRI's
+License Agreement and CNRI's notice of copyright, i.e., "Copyright (c)
+1995-2001 Corporation for National Research Initiatives; All Rights
+Reserved" are retained in Python 1.6.1 alone or in any derivative
+version prepared by Licensee.  Alternately, in lieu of CNRI's License
+Agreement, Licensee may substitute the following text (omitting the
+quotes): "Python 1.6.1 is made available subject to the terms and
+conditions in CNRI's License Agreement.  This Agreement together with
+Python 1.6.1 may be located on the Internet using the following
+unique, persistent identifier (known as a handle): 1895.22/1013.  This
+Agreement may also be obtained from a proxy server on the Internet
+using the following URL: http://hdl.handle.net/1895.22/1013".
+
+3. In the event Licensee prepares a derivative work that is based on
+or incorporates Python 1.6.1 or any part thereof, and wants to make
+the derivative work available to others as provided herein, then
+Licensee hereby agrees to include in any such work a brief summary of
+the changes made to Python 1.6.1.
+
+4. CNRI is making Python 1.6.1 available to Licensee on an "AS IS"
+basis.  CNRI MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, CNRI MAKES NO AND
+DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 1.6.1 WILL NOT
+INFRINGE ANY THIRD PARTY RIGHTS.
+
+5. CNRI SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+1.6.1 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
+A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 1.6.1,
+OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+
+6. This License Agreement will automatically terminate upon a material
+breach of its terms and conditions.
+
+7. This License Agreement shall be governed by the federal
+intellectual property law of the United States, including without
+limitation the federal copyright law, and, to the extent such
+U.S. federal law does not apply, by the law of the Commonwealth of
+Virginia, excluding Virginia's conflict of law provisions.
+Notwithstanding the foregoing, with regard to derivative works based
+on Python 1.6.1 that incorporate non-separable material that was
+previously distributed under the GNU General Public License (GPL), the
+law of the Commonwealth of Virginia shall govern this License
+Agreement only as to issues arising under or with respect to
+Paragraphs 4, 5, and 7 of this License Agreement.  Nothing in this
+License Agreement shall be deemed to create any relationship of
+agency, partnership, or joint venture between CNRI and Licensee.  This
+License Agreement does not grant permission to use CNRI trademarks or
+trade name in a trademark sense to endorse or promote products or
+services of Licensee, or any third party.
+
+8. By clicking on the "ACCEPT" button where indicated, or by copying,
+installing or otherwise using Python 1.6.1, Licensee agrees to be
+bound by the terms and conditions of this License Agreement.
+
+        ACCEPT
+
+
+CWI LICENSE AGREEMENT FOR PYTHON 0.9.0 THROUGH 1.2
+--------------------------------------------------
+
+Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam,
+The Netherlands.  All rights reserved.
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the name of Stichting Mathematisch
+Centrum or CWI not be used in advertising or publicity pertaining to
+distribution of the software without specific, written prior
+permission.
+
+STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+dh_python2, pycompile, pyclean and debpython module:
+====================================================
+Copyright © 2010,2011 Piotr Ożarowski <piotr@debian.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+Comp Name: python-pip	version 8.1.1-2ubuntu0.4
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+Homepage: https://pip.pypa.io/en/stable/
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Source: http://www.pip-installer.org/
+
+Files: *
+Copyright: Copyright © 2008-2013 The pip developers:
+    Alex Grönholm
+    Alex Morega
+    Alexandre Conrad
+    Andrey Bulgakov
+    Antti Kaihola
+    Armin Ronacher
+    Aziz Köksal
+    Ben Rosser
+    Brian Rosner
+    Carl Meyer
+    Chris McDonough
+    Christian Oudard
+    Clay McClure
+    Cody Soyland
+    Daniel Holth
+    Dave Abrahams
+    David (d1b)
+    Dmitry Gladkov
+    Donald Stufft
+    Francesco
+    Geoffrey Lehée
+    Georgi Valkov
+    Hugo Lopes Tavares
+    Ian Bicking
+    Igor Sobreira
+    Ionel Maries Cristian
+    Jakub Vysoky
+    James Cleveland
+    Jannis Leidel
+    Jay Graves
+    John-Scott Atlakson
+    Jon Parise
+    Jonas Nockert
+    Josh Bronson
+    Kamal Bin Mustafa
+    Kelsey Hightower
+    Kenneth Belitzky
+    Kumar McMillan
+    Luke Macken
+    Masklinn
+    Marc Abramowitz
+    Marcus Smith
+    Markus Hametner
+    Matt Maker
+    Maxime R.
+    Miguel Araujo
+    Nick Stenning
+    Nowell Strite
+    Oliver Tonnhofer
+    Olivier Girardot
+    Patrick Jenkins
+    Paul Moore
+    Paul Nasrat
+    Paul Oswald
+    Paul van der Linden
+    Peter Waller
+    Phil Whelan
+    Piet Delport
+    Przemek Wrzos
+    Qiangning Hong
+    Rafael Caricio
+    Rene Dudfield
+    Roey Berman
+    Ronny Pfannschmidt
+    Rory McCann
+    Simon Cross
+    Stavros Korokithakis
+    Thomas Fenzl
+    Thomas Johansson
+    Vinay Sajip
+    Vitaly Babiy
+    W Trevor King
+    Wil Tan
+    Hsiaoming Yang
+License: Expat
+
+Files: pip/cacert.pem
+Copyright: No copyrightable material
+License: public-domain
+    Upstream declares that this bundle is licensed, but it seems unreasonable
+    to think that CA certificates would be protected by copyright.
+    Forwarded: https://github.com/pypa/pip/pull/971
+
+Files: debian/*
+Copyright: Copyright 2009 Jeff Licquia <licquia@debian.org>
+License: Expat
+
+License: Expat
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+    .
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+    .
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Comp Name: uuid-dev	version 2.27.1-6ubuntu3.10
+<<<<<<<<<<xilinx-separator>>>>>>>>>
+
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: util-linux
+Upstream-Contact: util-linux@vger.kernel.org
+Source: https://www.kernel.org/pub/linux/utils/util-linux/
+
+Files: *
+Copyright:      Michal Luscon <mluscon@redhat.com>
+           1986 Gary S. Brown
+           1990 Gordon Irlam (gordoni@cs.ua.oz.au)
+           1991, 1992 Linus Torvalds
+           1991-2004 Miquel van Smoorenburg
+           1992  A. V. Le Blanc (LeBlanc@mcc.ac.uk)
+           1992-1997 Michael K. Johnson, johnsonm@redhat.com
+           1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
+                 2003, 2004, 2005, 2008 Theodore Ts'o <tytso@mit.edu>
+           1994 Kevin E. Martin (martin@cs.unc.edu)
+           1994 Salvatore Valente <svalente@mit.edu>
+           1994,1996 Alessandro Rubini (rubini@ipvvis.unipv.it)
+           1994-2005 Jeff Tranter (tranter@pobox.com)
+           1995, 1999, 2000 Andries E. Brouwer <aeb@cwi.nl>
+           1997-2005 Frodo Looijaard <frodo@frodo.looijaard.name>
+           1998 Danek Duvall <duvall@alumni.princeton.edu>
+           1999 Andreas Dilger
+           1999-2002 Transmeta Corporation
+           1999, 2000, 2002-2009, 2010, 2011, 2012, 2014 Red Hat, Inc.
+           2000 Werner Almesberger
+           2004-2006 Michael Holzt, kju -at- fqdn.org
+           2005 Adrian Bunk
+           2007-2014 Karel Zak <kzak@redhat.com>
+           2007, 2011 SuSE LINUX Products GmbH
+           2008 Cai Qian <qcai@redhat.com>
+           2008 Hayden A. James (hayden.james@gmail.com)
+           2008 James Youngman <jay@gnu.org>
+           2008 Roy Peled, the.roy.peled  -at-  gmail.com
+           2009 Mikhail Gusarov <dottedmag@dottedmag.net>
+           2010, 2011, 2012 Davidlohr Bueso <dave@gnu.org>
+           2010 Jason Borden <jborden@bluehost.com>A
+           2010 Hajime Taira <htaira@redhat.com>
+           2010 Masatake Yamato <yamato@redhat.com>
+           2011 IBM Corp.
+           2012 Andy Lutomirski <luto@amacapital.net>
+           2012 Lennart Poettering
+           2012 Sami Kerola <kerolasa@iki.fi>
+           2012 Cody Maloney <cmaloney@theoreticalchaos.com>
+           2012 Werner Fink <werner@suse.de>
+           2013,2014 Ondrej Oprala <ooprala@redhat.com>
+License: GPL-2+
+
+Files: schedutils/ionice.c
+Copyright: 2005 Jens Axboe <jens@axboe.dk>
+License: GPL-2
+
+Files: schedutils/chrt.c
+       schedutils/taskset.c
+Copyright: 2004 Robert Love <rml@tech9.net>
+           2010 Karel Zak <kzak@redhat.com>
+License: GPL-2
+
+Files: disk-utils/raw.c
+Copyright: 1999, 2000, Red Hat Software
+License: GPL-2
+
+Files: sys-utils/nsenter.c
+Copyright: 2012-2013 Eric Biederman <ebiederm@xmission.com>
+License: GPL-2
+
+Files: disk-utils/mkfs.minix.c
+       disk-utils/mkswap.c
+Copyright: 1991, 1992 Linus Torvalds
+License: GPL-2
+
+Files: lib/at.c
+       lib/blkdev.c
+       lib/loopdev.c
+       lib/sysfs.c
+       lib/ttyutils.c
+       lib/xgetpass.c
+       misc-utils/mcookie.c
+       sys-utils/setsid.c
+       text-utils/line.c
+Copyright: n/a
+License: public-domain
+
+Files: login-utils/vipw.c
+       misc-utils/cal.c
+       misc-utils/kill.c
+       misc-utils/logger.c
+       misc-utils/look.c
+       misc-utils/whereis.c
+       sys-utils/renice.c
+       term-utils/mesg.c
+       term-utils/script.c
+       term-utils/ttymsg.c
+       term-utils/wall.c
+       term-utils/write.c
+       text-utils/col.c
+       text-utils/colcrt.c
+       text-utils/colrm.c
+       text-utils/column.c
+       text-utils/hexdump.c
+       text-utils/hexdump.h
+       text-utils/hexdump-conv.c
+       text-utils/hexdump-display.c
+       text-utils/hexdump-parse.c
+       text-utils/rev.c
+       text-utils/ul.c
+Copyright: 1980, 1983, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994
+                The Regents of the University of California
+           2014 Sami Kerola <kerolasa@iki.fi>
+           2014 Karel Zak <kzak@redhat.com>
+License: BSD-4-clause
+
+Files: text-utils/tailf.c
+Copyright: 1996, 2003 Rickard E. Faith (faith@acm.org)
+License: MIT
+
+Files: sys-utils/flock.c
+Copyright: 2003-2005 H. Peter Anvin
+License: MIT
+
+Files: text-utils/pg.c
+Copyright: 2000-2001 Gunnar Ritter
+License: BSD-2-clause
+
+Files: login-utils/last-deprecated.c
+Copyright: 1987 Regents of the University of California
+License: BSD-2-clause
+
+Files: login-utils/login.c
+Copyright: 1980, 1987, 1988 The Regents of the University of California.
+           2011 Karel Zak <kzak@redhat.com>
+License: BSD-2-clause
+
+Files: login-utils/logindefs.c
+Copyright: 2003, 2004, 2005 Thorsten Kukuk
+License: BSD-3-clause
+
+Files: libuuid/*
+       libuuid/src/*
+       libuuid/man/*
+Copyright: 1996, 1997, 1998, 1999, 2007 Theodore Ts'o.
+           1999 Andreas Dilger (adilger@enel.ucalgary.ca)
+License: BSD-3-clause
+
+Files: lib/procutils.c
+       include/xalloc.h
+Copyright: 2010, 2011 Davidlohr Bueso <dave@gnu.org>
+License: LGPL-2+
+
+Files: */colors.*
+Copyright: 2012 Ondrej Oprala <ooprala@redhat.com>
+           2012-2014 Karel Zak <kzak@redhat.com>
+License: LGPL-2+
+
+Files: login-utils/setpwnam.h
+       login-utils/setpwnam.c
+Copyright: 1994 Martin Schulze <joey@infodrom.north.de>
+           1994 Salvatore Valente <svalente@mit.edu>
+License: LGPL-2+
+
+Files: libfdisk/*
+       libfdisk/src/*
+Copyright: 2007-2013 Karel Zak <kzak@redhat.com>
+           2012 Davidlohr Bueso <dave@gnu.org>
+License: LGPL-2.1+
+
+Files: lib/cpuset.c
+       */match.*
+       lib/canonicalize.c
+       include/at.h
+Copyright: 2008-2009, 2010, 2011, 2012 Karel Zak <kzak@redhat.com>
+License: LGPL-2.1+
+
+Files: */mbsalign.*
+Copyright: 2009-2010 Free Software Foundation, Inc.
+           2010-2013 Karel Zak <kzak@redhat.com>
+License: LGPL-2.1+
+
+Files: */readutmp.*
+Copyright: 1992-2007, 2009-2014 Free Software Foundation, Inc.
+License: GPL-3+
+
+Files: */timeutils.*
+Copyright: 2010 Lennart Poettering
+License: LGPL-2.1+
+
+Files: include/list.h
+Copyright: 2008 Karel Zak <kzak@redhat.com>
+           1999-2008 by Theodore Ts'o
+License: LGPL
+
+Files: libblkid/*
+       libblkid/src/*
+       libblkid/samples/*
+       libblkid/src/partitions/*
+       libblkid/src/superblocks/*
+       libblkid/src/topology/*
+Copyright: 1999, 2001 Andries Brouwer
+           1995, 1995, 1996, 1997, 1999, 2000, 2001, 2002, 2003, 2004
+               Theodore Ts'o.
+           2001 Andreas Dilger (adilger@turbolinux.com)
+           2004-2008 Kay Sievers <kay.sievers@vrfy.org>
+           2008-2013 Karel Zak <kzak@redhat.com>
+           2009 Bastian Friedrich <bastian.friedrich@collax.com>
+           2009 Corentin Chary <corentincj@iksaif.net>
+           2009 Mike Hommey <mh@glandium.org>
+           2009 Red Hat, Inc.
+           2009-2010 Andreas Dilger <adilger@sun.com>
+           2010 Andrew Nayenko <resver@gmail.com>
+           2010 Jeroen Oortwijn <oortwijn@gmail.com>
+           2010 Jiro SEKIBA <jir@unicus.jp>
+           2011 Philipp Marek <philipp.marek@linbit.com>
+           2012 Milan Broz <mbroz@redhat.com>
+           2013 Alejandro Martinez Ruiz <alex@nowcomputing.com>
+           2013 Eric Sandeen <sandeen@redhat.com>
+           2013 Rolf Fokkens <rolf@fokkens.nl>
+           2013 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
+License: LGPL-2.1+
+
+Files: include/cpuset.h
+       lib/randutils.c
+Copyright: *unknown*
+License: LGPL
+
+Files: misc-utils/blkid.c
+Copyright: 2001 Andreas Dilger
+License: LGPL
+
+Files: libmount/*
+       libmount/src/*
+Copyright: 2008-2012 Karel Zak <kzak@redhat.com>
+License: LGPL-2.1+
+
+Files: libmount/python/*
+Copyright: 2013, Red Hat, Inc.
+License: LGPL-3+
+
+Files: libsmartcols/*
+Copyright:  2009-2014 Karel Zak <kzak@redhat.com>
+            2014 Ondrej Oprala <ooprala@redhat.com>
+License: LGPL
+
+Files: debian/*
+Copyright:      Guy Maor <maor@debian.org>
+                Sean 'Shaleh' Perry <shaleh@debian.org>
+                Adrian Bunk <bunk@stusta.de>
+                LaMont Jones <lamont@debian.org>
+           2014 Andreas Henriksson <andreas@fatal.se>
+License: GPL-2+
+
+
+License: public-domain
+ The files tagged with this license contains the following paragraphs:
+ .
+ No copyright is claimed.  This code is in the public domain; do with
+ it what you wish.
+ .
+ Written by Karel Zak <kzak@redhat.com>
+
+License: GPL-2
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License, v2, as
+ published by the Free Software Foundation
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ .
+ On Debian systems, the complete text of the GNU General Public
+ License version 2 can be found in `/usr/share/common-licenses/GPL-2'.
+
+License: GPL-2+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ .
+ On Debian systems, the complete text of the GNU General Public
+ License version 2 can be found in `/usr/share/common-licenses/GPL-2'.
+
+License: GPL-3+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the complete text of the GNU General Public
+ License version 3 can be found in `/usr/share/common-licenses/GPL-3'.
+
+License: BSD-2-clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 1. Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+License: BSD-3-clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ .
+ 1) Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ .
+ 2) Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ .
+ 3) Neither the name of the ORGANIZATION nor the names of its contributors
+ may be used to endorse or promote products derived from this software
+ without specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGE.
+
+License: BSD-4-clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 1. Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+ 3. All advertising materials mentioning features or use of this software
+    must display the following acknowledgement:
+	This product includes software developed by the University of
+	California, Berkeley and its contributors.
+ 4. Neither the name of the University nor the names of its contributors
+    may be used to endorse or promote products derived from this software
+    without specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+PURPOSE
+ ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+STRICT
+ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ SUCH DAMAGE.
+
+License: LGPL
+ This file may be redistributed under the terms of the
+ GNU Lesser General Public License.
+ .
+ On Debian systems, the complete text of the GNU Lesser General Public
+ License can be found in ‘/usr/share/common-licenses/LGPL’.
+
+License: LGPL-2+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU Lesser General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>.
+ .
+ The complete text of the GNU Lesser General Public License
+ can be found in /usr/share/common-licenses/LGPL-2 file.
+
+License: LGPL-2.1+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation; either version 2.1, or (at your option)
+ any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU Lesser General Public License along
+ with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ .
+ On Debian systems, the complete text of the GNU Lesser General Public
+ License version 2.1 can be found in ‘/usr/share/common-licenses/LGPL-2.1’.
+
+License: LGPL-3+
+ This package is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 3 of the License, or (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the complete text of the GNU Lesser General
+ Public License can be found in "/usr/share/common-licenses/LGPL-3".
+
+License: MIT
+ Permission is hereby granted, free of charge, to any person
+ obtaining a copy of this software and associated documentation files
+ (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, merge,
+ publish, distribute, sublicense, and/or sell copies of the Software,
+ and to permit persons to whom the Software is furnished to do so,
+ subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+
+******************************************************************************/
+3.	db_sorting (Vitis Database Library)
+
+
+                              Apache License
+                        Version 2.0, January 2004
+                     http://www.apache.org/licenses/
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+
+   "License" shall mean the terms and conditions for use, reproduction,
+   and distribution as defined by Sections 1 through 9 of this document.
+
+   "Licensor" shall mean the copyright owner or entity authorized by
+   the copyright owner that is granting the License.
+
+   "Legal Entity" shall mean the union of the acting entity and all
+   other entities that control, are controlled by, or are under common
+   control with that entity. For the purposes of this definition,
+   "control" means (i) the power, direct or indirect, to cause the
+   direction or management of such entity, whether by contract or
+   otherwise, or (ii) ownership of fifty percent (50%) or more of the
+   outstanding shares, or (iii) beneficial ownership of such entity.
+
+   "You" (or "Your") shall mean an individual or Legal Entity
+   exercising permissions granted by this License.
+
+   "Source" form shall mean the preferred form for making modifications,
+   including but not limited to software source code, documentation
+   source, and configuration files.
+
+   "Object" form shall mean any form resulting from mechanical
+   transformation or translation of a Source form, including but
+   not limited to compiled object code, generated documentation,
+   and conversions to other media types.
+
+   "Work" shall mean the work of authorship, whether in Source or
+   Object form, made available under the License, as indicated by a
+   copyright notice that is included in or attached to the work
+   (an example is provided in the Appendix below).
+
+   "Derivative Works" shall mean any work, whether in Source or Object
+   form, that is based on (or derived from) the Work and for which the
+   editorial revisions, annotations, elaborations, or other modifications
+   represent, as a whole, an original work of authorship. For the purposes
+   of this License, Derivative Works shall not include works that remain
+   separable from, or merely link (or bind by name) to the interfaces of,
+   the Work and Derivative Works thereof.
+
+   "Contribution" shall mean any work of authorship, including
+   the original version of the Work and any modifications or additions
+   to that Work or Derivative Works thereof, that is intentionally
+   submitted to Licensor for inclusion in the Work by the copyright owner
+   or by an individual or Legal Entity authorized to submit on behalf of
+   the copyright owner. For the purposes of this definition, "submitted"
+   means any form of electronic, verbal, or written communication sent
+   to the Licensor or its representatives, including but not limited to
+   communication on electronic mailing lists, source code control systems,
+   and issue tracking systems that are managed by, or on behalf of, the
+   Licensor for the purpose of discussing and improving the Work, but
+   excluding communication that is conspicuously marked or otherwise
+   designated in writing by the copyright owner as "Not a Contribution."
+
+   "Contributor" shall mean Licensor and any individual or Legal Entity
+   on behalf of whom a Contribution has been received by Licensor and
+   subsequently incorporated within the Work.
+
+2. Grant of Copyright License. Subject to the terms and conditions of
+   this License, each Contributor hereby grants to You a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   copyright license to reproduce, prepare Derivative Works of,
+   publicly display, publicly perform, sublicense, and distribute the
+   Work and such Derivative Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of
+   this License, each Contributor hereby grants to You a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   (except as stated in this section) patent license to make, have made,
+   use, offer to sell, sell, import, and otherwise transfer the Work,
+   where such license applies only to those patent claims licensable
+   by such Contributor that are necessarily infringed by their
+   Contribution(s) alone or by combination of their Contribution(s)
+   with the Work to which such Contribution(s) was submitted. If You
+   institute patent litigation against any entity (including a
+   cross-claim or counterclaim in a lawsuit) alleging that the Work
+   or a Contribution incorporated within the Work constitutes direct
+   or contributory patent infringement, then any patent licenses
+   granted to You under this License for that Work shall terminate
+   as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the
+   Work or Derivative Works thereof in any medium, with or without
+   modifications, and in Source or Object form, provided that You
+   meet the following conditions:
+
+   (a) You must give any other recipients of the Work or
+       Derivative Works a copy of this License; and
+
+   (b) You must cause any modified files to carry prominent notices
+       stating that You changed the files; and
+
+   (c) You must retain, in the Source form of any Derivative Works
+       that You distribute, all copyright, patent, trademark, and
+       attribution notices from the Source form of the Work,
+       excluding those notices that do not pertain to any part of
+       the Derivative Works; and
+
+   (d) If the Work includes a "NOTICE" text file as part of its
+       distribution, then any Derivative Works that You distribute must
+       include a readable copy of the attribution notices contained
+       within such NOTICE file, excluding those notices that do not
+       pertain to any part of the Derivative Works, in at least one
+       of the following places: within a NOTICE text file distributed
+       as part of the Derivative Works; within the Source form or
+       documentation, if provided along with the Derivative Works; or,
+       within a display generated by the Derivative Works, if and
+       wherever such third-party notices normally appear. The contents
+       of the NOTICE file are for informational purposes only and
+       do not modify the License. You may add Your own attribution
+       notices within Derivative Works that You distribute, alongside
+       or as an addendum to the NOTICE text from the Work, provided
+       that such additional attribution notices cannot be construed
+       as modifying the License.
+
+   You may add Your own copyright statement to Your modifications and
+   may provide additional or different license terms and conditions
+   for use, reproduction, or distribution of Your modifications, or
+   for any such Derivative Works as a whole, provided Your use,
+   reproduction, and distribution of the Work otherwise complies with
+   the conditions stated in this License.
+
+5. Submission of Contributions. Unless You explicitly state otherwise,
+   any Contribution intentionally submitted for inclusion in the Work
+   by You to the Licensor shall be under the terms and conditions of
+   this License, without any additional terms or conditions.
+   Notwithstanding the above, nothing herein shall supersede or modify
+   the terms of any separate license agreement you may have executed
+   with Licensor regarding such Contributions.
+
+6. Trademarks. This License does not grant permission to use the trade
+   names, trademarks, service marks, or product names of the Licensor,
+   except as required for reasonable and customary use in describing the
+   origin of the Work and reproducing the content of the NOTICE file.
+
+7. Disclaimer of Warranty. Unless required by applicable law or
+   agreed to in writing, Licensor provides the Work (and each
+   Contributor provides its Contributions) on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+   implied, including, without limitation, any warranties or conditions
+   of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+   PARTICULAR PURPOSE. You are solely responsible for determining the
+   appropriateness of using or redistributing the Work and assume any
+   risks associated with Your exercise of permissions under this License.
+
+8. Limitation of Liability. In no event and under no legal theory,
+   whether in tort (including negligence), contract, or otherwise,
+   unless required by applicable law (such as deliberate and grossly
+   negligent acts) or agreed to in writing, shall any Contributor be
+   liable to You for damages, including any direct, indirect, special,
+   incidental, or consequential damages of any character arising as a
+   result of this License or out of the use or inability to use the
+   Work (including but not limited to damages for loss of goodwill,
+   work stoppage, computer failure or malfunction, or any and all
+   other commercial damages or losses), even if such Contributor
+   has been advised of the possibility of such damages.
+
+9. Accepting Warranty or Additional Liability. While redistributing
+   the Work or Derivative Works thereof, You may choose to offer,
+   and charge a fee for, acceptance of support, warranty, indemnity,
+   or other liability obligations and/or rights consistent with this
+   License. However, in accepting such obligations, You may act only
+   on Your own behalf and on Your sole responsibility, not on behalf
+   of any other Contributor, and only if You agree to indemnify,
+   defend, and hold each Contributor harmless for any liability
+   incurred by, or claims asserted against, such Contributor by reason
+   of your accepting any such warranty or additional liability.
+
+END OF TERMS AND CONDITIONS
+
+Copyright 2019-2020 Xilinx Inc
+
+******************************************************************************/
+4.	Xilinx Runtime (xrt) version 2020.1
+
+All userspace code authored by Xilinx is released under the following license:
+
+Copyright (C) 2016-2020 Xilinx, Inc
+
+Licensed under the Apache License, Version 2.0 (the "License"). You may
+not use this file except in compliance with the License. A copy of the
+License is located at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations
+under the License.
+
+All Linux kernel driver code included in "xocl" or "xclmgmt" authored by
+Xilinx is released under the terms of GNU General Public License version 2:
+
+Copyright (C) 2016-2020 Xilinx, Inc. All rights reserved.
+
+This software is licensed under the terms of the GNU General Public
+License version 2, as published by the Free Software Foundation, and
+may be copied, distributed, and modified under those terms.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+
+All Linux kernel driver code included in "zocl" authored by Xilinx is
+released under the terms of either Apache License, Version 2.0,
+or alternatively under the terms of the GNU General Public License
+version 2:
+
+Copyright (C) 2016-2020 Xilinx, Inc. All rights reserved.
+
+This software is licensed under the terms of the GNU General Public
+License version 2, as published by the Free Software Foundation, and
+may be copied, distributed, and modified under those terms.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You may use the Linux kernel driver code according to either of these
+licenses as is most appropriate for your project on a case-by-case basis.
+
+The full text for both licenses is included for reference below.
+
+
+
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+---------------------------------------------------------------------------
+
+ GNU GENERAL PUBLIC LICENSE
+                       Version 2, June 1991
+
+ Copyright (C) 1989, 1991 Free Software Foundation, Inc.,
+ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+                            Preamble
+
+  The licenses for most software are designed to take away your
+freedom to share and change it.  By contrast, the GNU General Public
+License is intended to guarantee your freedom to share and change free
+software--to make sure the software is free for all its users.  This
+General Public License applies to most of the Free Software
+Foundation's software and to any other program whose authors commit to
+using it.  (Some other Free Software Foundation software is covered by
+the GNU Lesser General Public License instead.)  You can apply it to
+your programs, too.
+
+  When we speak of free software, we are referring to freedom, not
+price.  Our General Public Licenses are designed to make sure that you
+have the freedom to distribute copies of free software (and charge for
+this service if you wish), that you receive source code or can get it
+if you want it, that you can change the software or use pieces of it
+in new free programs; and that you know you can do these things.
+
+  To protect your rights, we need to make restrictions that forbid
+anyone to deny you these rights or to ask you to surrender the rights.
+These restrictions translate to certain responsibilities for you if you
+distribute copies of the software, or if you modify it.
+
+  For example, if you distribute copies of such a program, whether
+gratis or for a fee, you must give the recipients all the rights that
+you have.  You must make sure that they, too, receive or can get the
+source code.  And you must show them these terms so they know their
+rights.
+
+  We protect your rights with two steps: (1) copyright the software, and
+(2) offer you this license which gives you legal permission to copy,
+distribute and/or modify the software.
+
+  Also, for each author's protection and ours, we want to make certain
+that everyone understands that there is no warranty for this free
+software.  If the software is modified by someone else and passed on, we
+want its recipients to know that what they have is not the original, so
+that any problems introduced by others will not reflect on the original
+authors' reputations.
+
+  Finally, any free program is threatened constantly by software
+patents.  We wish to avoid the danger that redistributors of a free
+program will individually obtain patent licenses, in effect making the
+program proprietary.  To prevent this, we have made it clear that any
+patent must be licensed for everyone's free use or not licensed at all.
+
+  The precise terms and conditions for copying, distribution and
+modification follow.
+
+                    GNU GENERAL PUBLIC LICENSE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+  0. This License applies to any program or other work which contains
+a notice placed by the copyright holder saying it may be distributed
+under the terms of this General Public License.  The "Program", below,
+refers to any such program or work, and a "work based on the Program"
+means either the Program or any derivative work under copyright law:
+that is to say, a work containing the Program or a portion of it,
+either verbatim or with modifications and/or translated into another
+language.  (Hereinafter, translation is included without limitation in
+the term "modification".)  Each licensee is addressed as "you".
+
+Activities other than copying, distribution and modification are not
+covered by this License; they are outside its scope.  The act of
+running the Program is not restricted, and the output from the Program
+is covered only if its contents constitute a work based on the
+Program (independent of having been made by running the Program).
+Whether that is true depends on what the Program does.
+
+  1. You may copy and distribute verbatim copies of the Program's
+source code as you receive it, in any medium, provided that you
+conspicuously and appropriately publish on each copy an appropriate
+copyright notice and disclaimer of warranty; keep intact all the
+notices that refer to this License and to the absence of any warranty;
+and give any other recipients of the Program a copy of this License
+along with the Program.
+
+You may charge a fee for the physical act of transferring a copy, and
+you may at your option offer warranty protection in exchange for a fee.
+
+  2. You may modify your copy or copies of the Program or any portion
+of it, thus forming a work based on the Program, and copy and
+distribute such modifications or work under the terms of Section 1
+above, provided that you also meet all of these conditions:
+
+    a) You must cause the modified files to carry prominent notices
+    stating that you changed the files and the date of any change.
+
+    b) You must cause any work that you distribute or publish, that in
+    whole or in part contains or is derived from the Program or any
+    part thereof, to be licensed as a whole at no charge to all third
+    parties under the terms of this License.
+
+    c) If the modified program normally reads commands interactively
+    when run, you must cause it, when started running for such
+    interactive use in the most ordinary way, to print or display an
+    announcement including an appropriate copyright notice and a
+    notice that there is no warranty (or else, saying that you provide
+    a warranty) and that users may redistribute the program under
+    these conditions, and telling the user how to view a copy of this
+    License.  (Exception: if the Program itself is interactive but
+    does not normally print such an announcement, your work based on
+    the Program is not required to print an announcement.)
+
+These requirements apply to the modified work as a whole.  If
+identifiable sections of that work are not derived from the Program,
+and can be reasonably considered independent and separate works in
+themselves, then this License, and its terms, do not apply to those
+sections when you distribute them as separate works.  But when you
+distribute the same sections as part of a whole which is a work based
+on the Program, the distribution of the whole must be on the terms of
+this License, whose permissions for other licensees extend to the
+entire whole, and thus to each and every part regardless of who wrote it.
+
+Thus, it is not the intent of this section to claim rights or contest
+your rights to work written entirely by you; rather, the intent is to
+exercise the right to control the distribution of derivative or
+collective works based on the Program.
+
+In addition, mere aggregation of another work not based on the Program
+with the Program (or with a work based on the Program) on a volume of
+a storage or distribution medium does not bring the other work under
+the scope of this License.
+
+  3. You may copy and distribute the Program (or a work based on it,
+under Section 2) in object code or executable form under the terms of
+Sections 1 and 2 above provided that you also do one of the following:
+
+    a) Accompany it with the complete corresponding machine-readable
+    source code, which must be distributed under the terms of Sections
+    1 and 2 above on a medium customarily used for software interchange; or,
+
+    b) Accompany it with a written offer, valid for at least three
+    years, to give any third party, for a charge no more than your
+    cost of physically performing source distribution, a complete
+    machine-readable copy of the corresponding source code, to be
+    distributed under the terms of Sections 1 and 2 above on a medium
+    customarily used for software interchange; or,
+
+    c) Accompany it with the information you received as to the offer
+    to distribute corresponding source code.  (This alternative is
+    allowed only for noncommercial distribution and only if you
+    received the program in object code or executable form with such
+    an offer, in accord with Subsection b above.)
+
+The source code for a work means the preferred form of the work for
+making modifications to it.  For an executable work, complete source
+code means all the source code for all modules it contains, plus any
+associated interface definition files, plus the scripts used to
+control compilation and installation of the executable.  However, as a
+special exception, the source code distributed need not include
+anything that is normally distributed (in either source or binary
+form) with the major components (compiler, kernel, and so on) of the
+operating system on which the executable runs, unless that component
+itself accompanies the executable.
+
+If distribution of executable or object code is made by offering
+access to copy from a designated place, then offering equivalent
+access to copy the source code from the same place counts as
+distribution of the source code, even though third parties are not
+compelled to copy the source along with the object code.
+
+  4. You may not copy, modify, sublicense, or distribute the Program
+except as expressly provided under this License.  Any attempt
+otherwise to copy, modify, sublicense or distribute the Program is
+void, and will automatically terminate your rights under this License.
+However, parties who have received copies, or rights, from you under
+this License will not have their licenses terminated so long as such
+parties remain in full compliance.
+
+  5. You are not required to accept this License, since you have not
+signed it.  However, nothing else grants you permission to modify or
+distribute the Program or its derivative works.  These actions are
+prohibited by law if you do not accept this License.  Therefore, by
+modifying or distributing the Program (or any work based on the
+Program), you indicate your acceptance of this License to do so, and
+all its terms and conditions for copying, distributing or modifying
+the Program or works based on it.
+
+  6. Each time you redistribute the Program (or any work based on the
+Program), the recipient automatically receives a license from the
+original licensor to copy, distribute or modify the Program subject to
+these terms and conditions.  You may not impose any further
+restrictions on the recipients' exercise of the rights granted herein.
+You are not responsible for enforcing compliance by third parties to
+this License.
+
+  7. If, as a consequence of a court judgment or allegation of patent
+infringement or for any other reason (not limited to patent issues),
+conditions are imposed on you (whether by court order, agreement or
+otherwise) that contradict the conditions of this License, they do not
+excuse you from the conditions of this License.  If you cannot
+distribute so as to satisfy simultaneously your obligations under this
+License and any other pertinent obligations, then as a consequence you
+may not distribute the Program at all.  For example, if a patent
+license would not permit royalty-free redistribution of the Program by
+all those who receive copies directly or indirectly through you, then
+the only way you could satisfy both it and this License would be to
+refrain entirely from distribution of the Program.
+
+If any portion of this section is held invalid or unenforceable under
+any particular circumstance, the balance of the section is intended to
+apply and the section as a whole is intended to apply in other
+circumstances.
+
+It is not the purpose of this section to induce you to infringe any
+patents or other property right claims or to contest validity of any
+such claims; this section has the sole purpose of protecting the
+integrity of the free software distribution system, which is
+implemented by public license practices.  Many people have made
+generous contributions to the wide range of software distributed
+through that system in reliance on consistent application of that
+system; it is up to the author/donor to decide if he or she is willing
+to distribute software through any other system and a licensee cannot
+impose that choice.
+
+This section is intended to make thoroughly clear what is believed to
+be a consequence of the rest of this License.
+
+  8. If the distribution and/or use of the Program is restricted in
+certain countries either by patents or by copyrighted interfaces, the
+original copyright holder who places the Program under this License
+may add an explicit geographical distribution limitation excluding
+those countries, so that distribution is permitted only in or among
+countries not thus excluded.  In such case, this License incorporates
+the limitation as if written in the body of this License.
+
+  9. The Free Software Foundation may publish revised and/or new versions
+of the General Public License from time to time.  Such new versions will
+be similar in spirit to the present version, but may differ in detail to
+address new problems or concerns.
+
+Each version is given a distinguishing version number.  If the Program
+specifies a version number of this License which applies to it and "any
+later version", you have the option of following the terms and conditions
+either of that version or of any later version published by the Free
+Software Foundation.  If the Program does not specify a version number of
+this License, you may choose any version ever published by the Free Software
+Foundation.
+
+  10. If you wish to incorporate parts of the Program into other free
+programs whose distribution conditions are different, write to the author
+to ask for permission.  For software which is copyrighted by the Free
+Software Foundation, write to the Free Software Foundation; we sometimes
+make exceptions for this.  Our decision will be guided by the two goals
+of preserving the free status of all derivatives of our free software and
+of promoting the sharing and reuse of software generally.
+
+                            NO WARRANTY
+
+  11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
+OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS
+TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE
+PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
+REPAIR OR CORRECTION.
+
+  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,
+INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES 
+ARISING
+OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED
+TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY
+YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
+PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGES.
+
+                     END OF TERMS AND CONDITIONS
+XRT userspace code includes software developed by the following (Apache 2.0)
+ * Copyright (C) 2019 Samsung Semiconductor, Inc
+ * (C) Copyright 2019 OSR Open Systems Resources, Inc.
+ * Copyright (C) Michael Preston <mipres@microsoft.com> Microsoft
+ * Copyright (C) Jeff Baxter <jeffb@microsoft.com> Microsoft
+
+XRT xocl and xclmgmt Linux kernel drivers include software from Linux kernel (GPL 2.0)
+ * Copyright 2012 Kim Phillips, Freescale Semiconductor.
+ * Copyright (C) 2006 David Gibson, IBM Corporation.
+ * Copyright (C) 2006 Peter Korsgaard <jacmet@sunsite.dk>
+ * Copyright (C) 2007 Secret Lab Technologies Ltd.
+ * Copyright (c) 2009-2010 Intel Corporation
+ * Copyright (C) 2012 David Gibson, IBM Corporation.
+ * Copyright (C) 2014 David Gibson <david@gibson.dropbear.id.au>
+ * Copyright (c) 2016-2019 The Khronos Group Inc.
+ * Copyright (C) 2016 Free Electrons
+ * Copyright (C) 2016 NextThing Co.
+ * Copyright (C) 2018 embedded brains GmbH
+
+XRT xocl and xclmgmt Linux kernel drivers include software developed by the following (GPL 2.0)
+ * Copyright (C) Jan Stephan <j.stephan@hzdr.de>
+
+
+XRT xclmgmt Linux kernel driver includes software developed by the following (dual Apache 2.0 OR 
+GPL 2.0)
+ * Copyright (C) Jan Stephan <j.stephan@hzdr.de>
+
+
+XRT userspace includes software from Khronos Group Inc.
+ * Copyright (c) 2008-2019 The Khronos Group Inc.
+ * Copyright (c) 2008-2015 The Khronos Group Inc.
+ * Copyright (c) 2016-2019 The Khronos Group Inc.
+   Permission is hereby granted, free of charge, to any person obtaining a
+   copy of this software and/or associated documentation files (the
+   "Materials"), to deal in the Materials without restriction, including
+   without limitation the rights to use, copy, modify, merge, publish,
+   distribute, sublicense, and/or sell copies of the Materials, and to
+   permit persons to whom the Materials are furnished to do so, subject to
+   the following conditions:
+
+   The above copyright notice and this permission notice shall be included
+   in all copies or substantial portions of the Materials.
+
+   MODIFICATIONS TO THIS FILE MAY MEAN IT NO LONGER ACCURATELY REFLECTS
+   KHRONOS STANDARDS. THE UNMODIFIED, NORMATIVE VERSIONS OF KHRONOS
+   SPECIFICATIONS AND HEADER INFORMATION ARE LOCATED AT
+      https://www.khronos.org/registry/
+
+   THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+   MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+
+
+
+
+
+

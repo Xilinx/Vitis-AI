@@ -1,0 +1,2 @@
+62239c022d967f0c273a91de4eccf603  densebox_640_360.prototxt
+c1e10a614fd37f22f80d209073496ff0  densebox_640_360.xmodel

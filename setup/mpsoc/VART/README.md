@@ -94,15 +94,15 @@ steps.**
 	* Take `resnet50` of ZCU102 as an example.
 	```
 	  cd /workspace
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r1.4.0.tar.gz -O resnet50-zcu102_zcu104_kv260-r1.4.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r1.4.1.tar.gz -O resnet50-zcu102_zcu104_kv260-r1.4.1.tar.gz
 	```	
 	* Copy the downloaded file to the board using scp with the following command. 
 	```
-	  scp resnet50-zcu102_zcu104_kv260-r1.4.0.tar.gz root@IP_OF_BOARD:~/
+	  scp resnet50-zcu102_zcu104_kv260-r1.4.1.tar.gz root@IP_OF_BOARD:~/
 	```
 	* Log in to the board (using ssh or serial port) and install the model package.
 	```
-	  tar -xzvf resnet50-zcu102_zcu104_kv260-r1.4.0.tar.gz
+	  tar -xzvf resnet50-zcu102_zcu104_kv260-r1.4.1.tar.gz
 	  cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 	  

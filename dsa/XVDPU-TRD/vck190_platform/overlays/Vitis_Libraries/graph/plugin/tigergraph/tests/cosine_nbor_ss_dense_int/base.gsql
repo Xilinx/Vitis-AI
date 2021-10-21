@@ -1,0 +1,298 @@
+set query_timeout = 600000
+use graph xgraph
+drop query all
+
+create query patient_age(vertex<patients> p) for graph xgraph returns (int){ 
+	float age;
+	datetime deathdate;
+	datetime birthdate;
+
+	deathdate = to_datetime(p.DEATHDATE);
+	birthdate = to_datetime(p.BIRTHDATE);
+
+	if (p.DEATHDATE == "") OR (p.DEATHDATE == "2999-12-31") then
+		age = datetime_diff( now(), birthdate) / (60 * 60 * 24 * 365);
+    else
+		age = datetime_diff( deathdate, birthdate) / (60 * 60 * 24 * 365);
+	end;
+
+	if (age < 1.0 ) then
+		age = 1.0;
+    else if (age > 100.0 ) then
+		age = 100.0;
+	end;
+
+	return float_to_int_xilinx(age);
+}
+
+create query patient_gender(vertex<patients> p) for graph xgraph returns (int){ 
+	uint gender;
+
+	if (p.GENDER == "M") then 
+		gender = 1;
+	else
+		gender = 2;
+	end;
+
+	return gender;
+}
+
+create query patient_race(vertex<patients> p) for graph xgraph returns (int){ 
+	uint race;
+	string raceString;
+
+	race = 1;
+	raceString = p.RACE;
+
+	case
+	    when raceString == "black" then race = 2;
+	    when raceString == "white" then race = 3;
+	    when raceString == "hispanic" OR raceString == "latino" then race = 4;
+	    when raceString == "asian" then race = 5;
+	    when raceString == "indian" then race = 6;
+	else race = 1; 
+	end;
+
+	return race;
+}
+
+create query patient_ethnicity(vertex<patients> p) for graph xgraph returns (int){ 
+	uint ethnicity;
+	STRING eString;
+
+	ethnicity = 1;
+	eString = p.ETHNICITY;
+
+	case
+		when eString == "nonhispanic" then ethnicity = 2;
+	when eString == "hispanic" then ethnicity = 3;
+	else ethnicity = 1; 
+	end;
+
+	return ethnicity;
+}
+
+
+create query patient_vector(vertex<patients> targetPatient) for graph xgraph returns (ListAccum<int>) {
+
+# For each patient population, property vector has following
+# Unused fields are filled with zeros
+
+#    Range  : Count       : Information
+#    000-002: 03 * 1 = 03 : reseved for norm, vid lower 32 bit, vid upper 32 bit
+#    003-019: 17 * 1 = 17 : patient pesonal info (AGE, GENDER, RACE, ETHNICITY, <UNUSDED7-19>)
+#    020-039: 20 * 1 = 20 : immunizations (CODE)
+#    040-059: 20 * 1 = 20 : allergies (CODE)
+#    060-079: 50 * 1 = 50 : conditions (CODE)
+#    080-139: 20 * 1 = 20 : imaging_studies (BODYSITE)
+#    140-159: 50 * 1 = 50:  procedures (CODE)
+#    160-199: 20 * 1 = 20 : careplans (CODE)
+
+
+	// Locals
+	uint patient_vid;
+	uint FIELD_LIMIT;
+	int temp;
+	uint size;
+	double norm;
+	int defaultValue;
+
+	// Global accumulators
+	ListAccum<int> @@patientVector;
+	ListAccum<uint> @@tempVec;
+
+	// Initialize
+	patientList = {targetPatient};
+	temp = 0;
+	defaultValue = 1;
+
+
+	// Field:0: Norm, add 0 for now 
+	@@patientVector += 0;
+
+	// Get 64 bit VID of patient
+	patient_vid = getvid(targetPatient);
+
+	// Field 1:2: Store vid
+	// Store lower 32 bits of vid
+	@@patientVector += udf_lsb32bits(patient_vid);
+	// Store upper 32 bit of vid
+	@@patientVector += udf_msb32bits(patient_vid);
+
+	// Field 3-6: age, gender, race
+	temp = patient_age(targetPatient);
+	@@patientVector += temp;
+	temp = patient_gender(targetPatient);
+	@@patientVector += temp;
+	temp = patient_race(targetPatient);
+	@@patientVector += temp;
+	temp = patient_ethnicity(targetPatient);
+	@@patientVector += temp;
+
+	// Field 7-19: Empty for now, add additional fields in future
+	foreach i in RANGE[7,19] do
+		temp = defaultValue;
+	@@patientVector += temp;
+	end;
+
+# Immunization
+	@@tempVec.clear();
+	property_list (ANY) = select a FROM patientList-(patient_HAD_immunization:e)-immunizations:a 
+		ACCUM @@tempVec += a.CODE ;
+#  foreach i in RANGE[0, @@tempVec.size()-1] do
+#	@@patientVector += @@tempVec.get(i);
+#  end;
+#  foreach i in RANGE[@@tempVec.size(), 19] do
+#	@@patientVector += 0;
+#  end;
+	@@patientVector += udf_get_similarity_vec(0, 20, @@tempVec);
+
+# allergies
+	@@tempVec.clear();
+	property_list = select a FROM patientList-(patient_HAD_allergy:e)-allergies:a 
+		ACCUM @@tempVec += a.CODE ;
+#  foreach i in RANGE[0, @@tempVec.size()-1] do
+#	@@patientVector += @@tempVec.get(i);
+#  end;
+#  foreach i in RANGE[@@tempVec.size(), 19] do
+#	@@patientVector += 0;
+#  end;
+	@@patientVector += udf_get_similarity_vec(1, 20, @@tempVec);
+
+# conditions
+	@@tempVec.clear();
+	property_list = select a FROM patientList-(patient_HAD_condition:e)-conditions:a 
+		ACCUM @@tempVec += a.CODE ;
+#  foreach i in RANGE[0, @@tempVec.size()-1] do
+#	@@patientVector += @@tempVec.get(i);
+#  end;
+#  foreach i in RANGE[@@tempVec.size(), 50] do
+#	@@patientVector += 0;
+#  end;
+	@@patientVector += udf_get_similarity_vec(2, 50, @@tempVec);
+
+# imaging_studies
+	@@tempVec.clear();
+	property_list = select a FROM patientList-(patient_HAD_imaging_study:e)-imaging_studies:a 
+		ACCUM @@tempVec += a.BODYSITE_CODE;
+	@@patientVector += udf_get_similarity_vec(3, 20, @@tempVec);
+
+# pocedures
+	@@tempVec.clear();
+	property_list = select a FROM patientList-(patient_HAD_procedure:e)-procedures:a 
+		ACCUM @@tempVec += a.CODE;
+	@@patientVector += udf_get_similarity_vec(4, 50, @@tempVec);
+
+# careplans
+	@@tempVec.clear();
+	property_list = select a FROM patientList-(patient_HAD_careplan:e)-careplans:a 
+		ACCUM @@tempVec += a.CODE;
+	@@patientVector += udf_get_similarity_vec(5, 20, @@tempVec);
+
+	size = @@patientVector.size();
+	foreach i in RANGE[3, size -1] do
+		temp = @@patientVector.get(i);
+	norm = norm + temp * temp;
+	end;
+	norm = sqrt(norm);
+	@@patientVector.update(0, udf_reinterpret_double_as_int64(norm));
+	PRint @@patientVector;
+	return @@patientVector;
+}
+
+create query cos_theta_tigergraph(vertex<patients> p1, vertex<patients> p2) for graph xgraph returns (double) 
+{
+	double result;
+	float resultf;
+	double dotProduct;
+	uint size;
+	double A;
+	double B;
+	int D;
+	int E;
+	float F, G;
+	ListAccum<int> @@newPatientVector;
+	ListAccum<int> @@oldPatientVector;
+	result = 0.0;
+	resultf = 0.0;
+	A = 0.0;
+	B = 0.0;
+	dotProduct = 0.0;
+	@@newPatientVector = patient_vector(p1);
+	@@oldPatientVector = patient_vector(p2);
+	size = @@newPatientVector.size();
+	foreach i in RANGE[3, size -1] do
+		D = @@newPatientVector.get(i);
+	E = @@oldPatientVector.get(i);
+	dotProduct = dotProduct + (D * E); 
+	end;
+	D = @@newPatientVector.get(0);
+	E = @@oldPatientVector.get(0);
+	A = udf_reinterpret_int64_as_double(D);
+	B = udf_reinterpret_int64_as_double(E);
+	F = A;
+	G = B;
+	resultf = dotProduct / ( F * G );
+	result = resultf;
+	return result;
+}
+
+create query cosinesim_ss_tigergraph(vertex<patients> source, uint topKID) for graph xgraph returns (ListAccum<testResults>) {
+
+# Heap with max size of topKID sorted decending by score then ascending last name
+	HeapAccum<testResults>(topKID, score DESC, Id ASC) @@topK_Heap;
+	ListAccum<testResults> @@topK;
+	ListAccum<vertex<patients>> @@plist;
+	ListAccum<int> @@newPatientVector;
+
+# Patient Population
+	population = {patients.*};
+	@@newPatientVector = patient_vector(source);
+
+	patientList = select p from population:p
+		ACCUM @@topK_Heap += testResults(p, udf_cos_theta(patient_vector(p), @@newPatientVector));
+
+	foreach item in @@topK_Heap do
+		@@topK += item; 
+	end;
+
+	return @@topK;
+}
+
+create query loadgraph_cosinesim_ss_fpga_core() for graph xgraph returns (int) {
+
+	ListAccum<ListAccum<int> > @@patientsAll;
+	int ret;
+
+	population = {patients.*};
+	patientList = select p from population:p
+		ACCUM @@patientsAll += patient_vector(p);
+
+	ret = udf_loadgraph_cosinesim_ss_fpga(population.size(), 200, @@patientsAll);
+
+    return ret;
+}
+
+create query cosinesim_ss_fpga_core (vertex<patients> source, uint topK) for graph xgraph returns (ListAccum<testResults>) {
+
+	ListAccum<testResults> @@topK_result_fpga;
+
+	ListAccum<int> @@newPatientVector;
+
+	population = {patients.*};
+
+	@@newPatientVector = patient_vector(source);
+
+	@@topK_result_fpga = udf_cosinesim_ss_fpga(topK, population.size(), 200, @@newPatientVector);
+	return @@topK_result_fpga;
+
+}
+
+create query close_fpga () for graph xgraph {
+
+	double ret;
+	ret = udf_close_fpga();
+}
+
+
+install query patient_age, patient_race, patient_gender, patient_ethnicity, patient_vector, cos_theta_tigergraph, cosinesim_ss_tigergraph, loadgraph_cosinesim_ss_fpga_core , cosinesim_ss_fpga_core, close_fpga

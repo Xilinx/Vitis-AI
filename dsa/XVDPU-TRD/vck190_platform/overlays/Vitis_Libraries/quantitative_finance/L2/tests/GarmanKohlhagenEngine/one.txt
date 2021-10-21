@@ -1,0 +1,1 @@
+s=80, k=80, r_domestic=0.01, r_foreign=0.01, v=0.01, t=0.3

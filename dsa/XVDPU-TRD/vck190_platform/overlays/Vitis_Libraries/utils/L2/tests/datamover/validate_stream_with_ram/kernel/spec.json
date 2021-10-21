@@ -1,0 +1,62 @@
+{
+    "ramCs_x2": {
+        "impl": "ValidateStreamWithRam",
+        "map": [
+            {
+                "in_ref": {
+                    "buffer": "din0"
+                },
+                "in_port": {
+                    "stream": "s0",
+                    "width": 64
+                },
+				"out": {
+					"buffer": "ret0"
+				},
+				"ram": {
+					"depth": 512,
+					"type": "Uram"
+				}
+            },
+            {
+                "in_ref": {
+                    "buffer": "din1"
+                },
+                "in_port": {
+                    "stream": "s1",
+                    "width": 32
+                },
+				"out": {
+					"buffer": "ret1"
+				},
+				"ram": {
+					"depth": 1024,
+					"type": "Bram"
+				}
+            }
+        ]
+    },
+    "m2s_x2": {
+        "impl": "LoadDdrToStream",
+        "map": [
+            {
+                "in_port": {
+                    "buffer": "din2a"
+                },
+                "out": {
+                    "stream": "sout2a",
+                    "width": 64
+                }
+            },
+            {
+                "in_port": {
+                    "buffer": "din2b"
+                },
+                "out": {
+                    "stream": "sout2b",
+                    "width": 32
+                }
+            }
+        ]
+    }
+}

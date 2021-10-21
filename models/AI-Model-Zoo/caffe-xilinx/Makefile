@@ -351,7 +351,7 @@ ifeq ($(USE_CUDNN), 1)
 	LIBRARIES += cudnn
 	INCLUDE_DIRS += $(CUDNN_DIR)/include
 	LIBRARY_DIRS += $(CUDNN_DIR)/install/cuda/lib64
-	COMMON_FLAGS += -DUSE_CUDNN
+	COMMON_FLAGS += -DUSE_CUDNN -DTHRUST_IGNORE_CUB_VERSION_CHECK
 endif
 
 # NCCL acceleration configuration
@@ -433,7 +433,7 @@ LIBRARY_DIRS += $(LIB_BUILD_DIR)
 CXXFLAGS += -MMD -MP
 
 # Complete build flags.
-COMMON_FLAGS += $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir)) -std=c++11
+COMMON_FLAGS += $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir)) -std=c++14
 CXXFLAGS += -pthread -fPIC $(COMMON_FLAGS) $(WARNINGS)
 NVCCFLAGS += -ccbin=$(CXX) -Xcompiler -fPIC $(COMMON_FLAGS)
 # mex may invoke an older gcc that is too liberal with -Wuninitalized

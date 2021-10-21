@@ -1,0 +1,129 @@
+{
+    "name": "Xilinx LZ4 Compress", 
+    "description": [
+        "Xilinx LZ4 Compress"
+    ], 
+    "flow": "vitis", 
+    "launch": [
+        {
+            "cmd_args": "-xbin BUILD/compress.xclbin -c PROJECT/data/sample.txt", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "post_launch": [
+        {
+            "launch_cmd": [
+                "./run.sh HOST_EXE LIB_DIR BUILD/compress.xclbin"
+            ]
+        }
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "platform_whitelist": [
+        "u200", 
+        "u250", 
+        "u50", 
+        "vck190", 
+        "aws-vu9p-f1"
+    ],
+    "data": [
+        "PROJECT/data/sample.txt" 
+    ],   
+    "host": {
+        "host_exe": "xil_lz4", 
+        "compiler": {
+            "sources": [
+                "./src/host.cpp", 
+                "LIB_DIR/common/libs/compress/lz4OCLHost.cpp",
+                "LIB_DIR/common/libs/compress/lz4Base.cpp",
+                "LIB_DIR/common/libs/compress/lz4App.cpp",
+                "LIB_DIR/common/libs/compress/compressApp.cpp",
+                "LIB_DIR/common/libs/xcl2/xcl2.cpp", 
+                "LIB_DIR/common/libs/cmdparser/cmdlineparser.cpp", 
+                "LIB_DIR/common/libs/logger/logger.cpp", 
+                "LIB_DIR/common/thirdParty/xxhash/xxhash.c"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L2/tests/src/",
+                "LIB_DIR/L1/include/hw",
+                "LIB_DIR/common/thirdParty/xxhash",
+                "LIB_DIR/common/libs/compress/"
+            ], 
+            "symbols": [
+                "PARALLEL_BLOCK=8"
+            ]
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "symbols": [
+                "PARALLEL_BLOCK=8"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name": "compress", 
+            "accelerators": [
+                {
+                    "name": "xilLz4Compress", 
+                    "location": "LIB_DIR/L2/src/lz4_compress_mm.cpp"
+                }
+            ]
+        }
+    ],
+    "output_files": [
+            "data/sample.txt.*",
+            "sample_run.*",
+            "test.list"
+    ],          
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 25, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }, 
+    "platform_properties": {
+        "vck190": {
+            "host": {
+                "linker": {
+                    "librarypaths": [
+                        "$(SYSROOT)/usr/lib", 
+                        "${SYSROOT}/opt/xilinx/xrt/lib"
+                    ]
+                }, 
+                "compiler": {
+                    "includepaths": [
+                        "$(SYSROOT)/usr/include"
+                    ], 
+                    "options": "--sysroot=$(SYSROOT)"
+                }
+            }
+        }
+    }
+}

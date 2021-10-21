@@ -49,9 +49,9 @@ sudo apt install ./xrm.deb
 - Install the DPU Accelerator (FPGA Binary)
 ```
 wget https://www.xilinx.com/bin/public/openDownload?filename=dpu-aws-1.4.0.xclbin -O dpu-aws.xclbin
-sudo mkdir -p /opt/xilinx/overlaybins/dpuv3int8
-sudo cp dpu-aws.xclbin /opt/xilinx/overlaybins/dpuv3int8
-sudo chmod -R a+rx /opt/xilinx/overlaybins/dpuv3int8
+sudo mkdir -p /opt/xilinx/overlaybins/DPUCADF8H
+sudo cp dpu-aws.xclbin /opt/xilinx/overlaybins/DPUCADF8H
+sudo chmod -R a+rx /opt/xilinx/overlaybins/DPUCADF8H
 ```
 
 - [Install Docker](https://docs.docker.com/engine/install/ubuntu/)

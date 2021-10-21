@@ -1,0 +1,12 @@
+{
+    "daily": {
+        "test_0_fir_9t_asym_3d": {
+            "DATA_TYPE":"cint16",
+            "COEFF_TYPE":"int16",
+            "FIR_LEN":"9",
+            "DECIMATE_FACTOR":"3",
+            "SHIFT":"15",
+            "INPUT_WINDOW_VSIZE":"384"
+        }
+    }
+}

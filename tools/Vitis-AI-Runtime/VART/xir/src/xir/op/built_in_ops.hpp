@@ -19,6 +19,6 @@
 
 #include "xir/op/op_def.hpp"
 
-class BuiltInOPsRegisterer;
+class BuiltInOPsRegister;
 
 void register_built_in_ops(xir::OpDefFactory* self);

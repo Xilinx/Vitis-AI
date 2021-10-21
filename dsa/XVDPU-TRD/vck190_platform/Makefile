@@ -1,65 +1,60 @@
-export PLATFORM = xilinx_vck190_es1_trd
-export CPU_ARCH = a72
+# (C) Copyright 2020 - 2021 Xilinx, Inc.
+# SPDX-License-Identifier: Apache-2.0
 
-export CWD              = $(shell readlink -f .)
-export VERSION          = 202020_1
-export VER              = 202020.1
-export XSA_DIR          = $(CWD)/hw
-export SYSROOT          = $(CWD)/sw/build/sysroot
-export OUTPUT_PATH      = $(CWD)/platform_repo
-export SW_COMP_DIR      = $(OUTPUT_PATH)/tmp
-export XSCT             = $(XILINX_VITIS)/bin/xsct
-export PLATFORM_NAME    = $(PLATFORM)_$(VERSION)
-export XSA              = $(XSA_DIR)/vck190_es1_base_trd_platform1.xsa
-export PLATFORM_SW_SRC  = $(CWD)/platform
-export BOOT_FILES       = $(BOOT_FILES_PATH)
+CP = cp -f
 
-############################## Help Section ##############################
+PWD = $(shell readlink -f .)
+
+# the platform directory has to be an absolute path when passed to v++
+PFM_DIR = $(PWD)/platforms
+PFM_VER = 202110_1
+
+# valid platforms / overlays
+PFM = vck190_mipiRxSingle_hdmiTx
+
+PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
+PFM_TOP = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)
+
+PLNX_DIR = petalinux/xilinx-vck190-base-trd
+PLNX_WIC = $(PLNX_DIR)/images/linux/petalinux-sdimage.wic.xz
+
+VIV_DIR = $(PFM_DIR)/vivado/$(PFM)
+VIV_XSA = $(VIV_DIR)/project/$(PFM).xsa
+
 .PHONY: help
-
-help::
-	@echo 'Makefile Usage:'
+help:
+	@echo 'Usage:'
 	@echo ''
-	@echo '  All the make commands install platform to "platform_repo/$(PLATFORM_NAME)/export/$(PLATFORM_NAME)"'
 	@echo '  make all'
-	@echo '      Command used to generate platform with petalinux. Source petalinux before running this command.'
-	@echo '      This command builds all components.'
+	@echo '    Build the Vitis platform.'
 	@echo ''
-	@echo '  make xsa'
-	@echo '      Command to generate xsa.'
+	@echo '  make clean'
+	@echo '    Clean sw only'
 	@echo ''
-	@echo '  make linux XSA_DIR=/home/user/$(PLATFORM_NAME)/vivado/build'
-	@echo '  make platform'
-	@echo '      Run these commands when XSA is already built in some other folder and no modifications are needed to it.'
-	@echo '      XSA_DIR should point to directory containing $(PLATFORM_NAME).xsa file.'
-	@echo ''
-	@echo '  make clean '
-	@echo '      Command to remove all the generated files.'
+	@echo '  make distclean'
+	@echo '    Clean hw and sw'
 	@echo ''
 
-xsa:
-	$(MAKE) -C hw all
+.PHONY: all
+all: platform
 
-linux:
-	$(MAKE) -C sw all
+$(PLNX_DIR):
+	$(MAKE) -C petalinux project
 
-petalinux_sysroot:
-	$(MAKE) -C sw/build sysroot
-	@if [ -d $(SYSROOT) ]; then cp -rf $(SYSROOT) $(OUTPUT_PATH)/; fi
+.PHONY: linux
+linux: $(PFM_XPFM)
+	$(MAKE) -C $(PLNX_DIR) -f Makefile pfm PFM=$(PFM) PFM_TOP=$(PFM_TOP)
 
 .PHONY: platform
-platform:
-	$(XSCT) -nodisp -sdx $(PLATFORM_SW_SRC)/${PLATFORM}_pfm.tcl ${PLATFORM_NAME} ${XSA_DIR} $(SW_COMP_DIR) ${OUTPUT_PATH}
-	@if [ -d $(SW_COMP_DIR)/platform/filesystem ]; then cp -rf ${SW_COMP_DIR}/platform/filesystem $(OUTPUT_PATH)/${PLATFORM_NAME}/export/${PLATFORM_NAME}/sw/${PLATFORM_NAME}/xrt/; fi
+platform: $(PFM_XPFM) linux $(PLNX_DIR)
+$(PFM_XPFM):
+	$(MAKE) -C $(PFM_DIR) platform PLATFORM=$(PFM) VERSION=$(PFM_VER)
 
-pre-built:
-	@if [ -f $(SW_COMP_DIR)/platform/BOOT.BIN ]; then mkdir -p $(OUTPUT_PATH)/${PLATFORM_NAME}/export/${PLATFORM_NAME}/pre-built/ && cp -rf $(SW_COMP_DIR)/platform/BOOT.BIN $(OUTPUT_PATH)/${PLATFORM_NAME}/export/${PLATFORM_NAME}/pre-built/; fi
-
+.PHONY: clean
 clean:
-	${RM} -r .Xil  
-	${RM} -r $(OUTPUT_PATH)
-	$(MAKE) -C hw clean
-	$(MAKE) -C sw clean
+	$(MAKE) -C $(PLNX_DIR) clean
 
-all: xsa linux platform pre-built
-	@echo 'Platform build complete'
+.PHONY: distclean
+distclean:
+	$(MAKE) -C $(PLNX_DIR) clean
+	$(MAKE) -C $(PFM_DIR) clean PLATFORM=$(PFM) VERSION=$(PFM_VER);

@@ -1,0 +1,135 @@
+{
+    "gui": false, 
+    "name": "Xilinx Triangle Count", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u50"
+    ], 
+    "platform_blacklist": [], 
+    "platform_properties": {
+        "u50": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u50.ini"
+                    ]
+                }
+            }
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": " -offset PROJECT/data/csr_offsets.txt -indice PROJECT/data/csr_columns.txt ", 
+            "ld_library_path": "PROJECT/../../lib:$(XILINX_XRT)/lib:$(XILINX_XRM)/lib", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L3/tests/triangleCount/test_trianglecount.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include"
+            ], 
+            "options": "-O3 -I$(XILINX_XRM)/include"
+        }, 
+        "linker": {
+            "librarypaths": [
+                "LIB_DIR/L3/lib"
+            ], 
+            "libraries": [
+                "graphL3"
+            ], 
+            "options": "-L$(XILINX_XRM)/lib -lxrm "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/triangle_count/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/triangle_count/kernel/TC_kernel.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL_NAME=TC_kernel", 
+                    "name": "TC_kernel", 
+                    "num_compute_units": 1, 
+                    "compute_units": [
+                        {
+                            "name": "TC_kernel", 
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "offsetsG1", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "rowsG1", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "offsetsG2", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "rowsG2", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "offsetsG3", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "rowsG3", 
+                                    "memory": "DDR[0]"
+                                }, 
+                                {
+                                    "name": "TC", 
+                                    "memory": "DDR[0]"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "TC_kernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": true, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

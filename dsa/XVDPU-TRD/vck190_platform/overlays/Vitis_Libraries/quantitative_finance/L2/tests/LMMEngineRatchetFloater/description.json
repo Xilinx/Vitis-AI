@@ -1,0 +1,90 @@
+{
+    "name": "Xilinx Libor Market Model Engine With Ratchet Floater Pricing", 
+    "description": "L2 Libor Market Model Engine with Ratchet Floater pricing", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u250", 
+        "u200", 
+        "u50"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "launch": [
+        {
+            "cmd_args": " -b BUILD/lmm_ratchetfloater.xclbin", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "lmmRatchetFloaterTest.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/tests/LMMEngineRatchetFloater/host/main.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/LMMEngineRatchetFloater/host", 
+                "LIB_DIR/ext/xcl2", 
+                "LIB_DIR/L2/tests/LMMEngineRatchetFloater/kernel"
+            ], 
+            "options": "-O3 "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/../solver/L2/include", 
+                "LIB_DIR/L2/tests/LMMEngineRatchetFloater/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/LMMEngineRatchetFloater/kernel/lmmRatchetFloaterKernel.cpp", 
+                    "frequency": 300.0, 
+                    "name": "lmmRatchetFloaterKernel"
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "lmm_ratchetfloater"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

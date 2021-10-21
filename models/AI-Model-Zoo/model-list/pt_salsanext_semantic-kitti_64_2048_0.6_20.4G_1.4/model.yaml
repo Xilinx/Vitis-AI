@@ -30,26 +30,26 @@ files:
 - name: salsanext_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 4e2a7fd8f1739fcadd8eae7a2e7b3b87
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: d15327adc1f5660c867068f7dbb4fc4c
 - name: salsanext_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck190-r1.4.0.tar.gz
-  checksum: 5f5469564fbb331f386aeff7c6501b3f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck190-r1.4.1.tar.gz
+  checksum: 0db2e9b6cbb58ec52a5b17895ba03bd6
 - name: salsanext_pt
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 76d587d55e547d1239ef84912ac92b5e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 976d7aaceb0881fd17df0558f2f004d8
 - name: salsanext_pt
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 5148b3be6abff7a5e279d0f64e7589d2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 252022c631b354d17facb6a0a4abcf82
 - name: salsanext_pt
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 3df53434bc7df6c433ed804c3a7225ea
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: dbf4060bd25edca025e6a3db93c6e490
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

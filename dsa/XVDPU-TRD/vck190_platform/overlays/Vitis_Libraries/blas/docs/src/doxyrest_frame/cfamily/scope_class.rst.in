@@ -1,0 +1,75 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack(...)
+local compound = argArray[1]
+local isOpen = argArray[2]
+
+if isOpen then
+	local decl = getClassDeclString(compound, false, "\t")
+
+	if #compound.baseTypeArray == 0 then
+}
+	$decl
+%{
+	elseif #compound.baseTypeArray == 1 then
+		local item = compound.baseTypeArray[1]
+		local protection = compound.baseTypeProtectionArray[1]
+}
+	$decl: $(getBaseClassString(item, protection))
+%{
+	else
+}
+	$decl:
+%{
+		for i = 1, #compound.baseTypeArray do
+			local item = compound.baseTypeArray[i]
+			local protection = compound.baseTypeProtectionArray[i]
+			local comma = ""
+
+			if i < #compound.baseTypeArray then
+				comma = ","
+			end
+}
+	    $(getBaseClassString(item, protection))
+%{
+		end -- for
+	end -- if
+}
+	{
+%{
+else
+}
+	};
+%{
+	if #compound.derivedTypeArray > 0 and SHOW_DIRECT_DESCENDANTS then
+		-- always link derived types (even when no documentation)
+
+		local prevHasItemRefTarget = hasItemRefTarget
+		hasItemRefTarget = function(item)
+			return true
+		end
+
+		emit("\n")
+
+		includeFile(
+			"overview_common.rst.in",
+			compound,
+			compound.derivedTypeArray,
+			getClassDeclString,
+			"direct descendants"
+			)
+
+		hasItemRefTarget = prevHasItemRefTarget
+	end
+end -- if
+}

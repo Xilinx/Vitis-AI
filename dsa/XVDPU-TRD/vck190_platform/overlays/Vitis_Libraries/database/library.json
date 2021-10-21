@@ -1,0 +1,21 @@
+{
+    "id": "xf_database",
+    "name": "Vitis Database Library",
+    "description": "Vitis Database Library is an open-sourced Vitis library written in C++ for accelerating database applications in a variety of use cases. It now covers two levels of acceleration: the module level and the pre-defined kernel level, and will evolve to offer the third level as pure software APIs working with pre-defined hardware overlays.",
+    "v++": {
+        "includepaths": [
+            "LIB_DIR/L1/include/hw",
+            "LIB_DIR/L2/include"
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw",
+                "LIB_DIR/L3/include/sw",
+                "LIB_DIR/ext/xcl2",
+                "LIB_DIR/../utils/L1/include"
+            ]
+        }
+    }
+}

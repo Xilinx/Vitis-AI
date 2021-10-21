@@ -1,0 +1,20 @@
+{
+    "id": "xf_solver",
+    "name": "Vitis Solver Library",
+    "description": "Vitis Solver Library provides a collection of matrix decomposition operations, linear solvers and eigenvalue solvers.",
+    "v++": {
+        "includepaths": [
+          "LIB_DIR/L1/include",
+          "LIB_DIR/L2/include"
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include",
+                "LIB_DIR/L2/include",
+                "LIB_DIR/ext/xcl2"
+            ]
+        }
+    }
+}

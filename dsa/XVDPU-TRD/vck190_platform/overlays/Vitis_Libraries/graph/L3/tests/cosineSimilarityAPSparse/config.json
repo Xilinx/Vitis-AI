@@ -1,0 +1,8 @@
+
+{
+    "operationName" : "similaritySparse",
+    "kernelName" : "sparseSimilarityKernel",
+    "requestLoad" : 100,
+    "xclbinPath" : "PROJECTPATH/build_dir.hw.xilinx_u50_gen3x16_xdma_201920_3/sparseSimilarityKernel.xclbin",
+    "deviceNeeded" : 1
+}

@@ -1,0 +1,34 @@
+model {
+  name: "tiny_yolov3_vmss"
+  kernel {
+     name: "tiny_yolov3_vmss_0"
+     mean: 0.0
+     mean: 0.0
+     mean: 0.0
+     scale: 0.00390625
+     scale: 0.00390625
+     scale: 0.00390625
+  }
+  model_type : YOLOv3
+  yolo_v3_param {
+    num_classes: 10
+    anchorCnt: 3
+    layer_name: "14"
+    layer_name: "21"
+    conf_threshold: 0.3
+    nms_threshold: 0.45
+    biases: 10
+    biases: 14
+    biases: 23
+    biases: 27
+    biases: 37
+    biases: 58
+    biases: 81
+    biases: 82
+    biases: 135
+    biases: 169
+    biases: 344
+    biases: 319
+    test_mAP: false
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "b_csim": true,
+  "b_synth": true,
+  "b_cosim": true,
+  "dataTypes": [
+    "float64",
+    "int32"
+  ],
+  "op": "symv",
+  "logParEntries": 2,
+  "matrixDims": [
+    16
+  ],
+  "storage": false, 
+  "valueRange": [
+    -128,
+    128
+  ],
+  "numSimulation": 2 
+}
+
+

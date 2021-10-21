@@ -1,0 +1,126 @@
+From d2d5f579d6d0b782880adbc5681d396f8f592325 Mon Sep 17 00:00:00 2001
+From: Thomas Nizan <tnizan@witekio.com>
+Date: Tue, 20 Apr 2021 10:53:01 -0700
+Subject: [PATCH 09/14] max9286: WIP, modifications for mars module
+
+---
+ drivers/media/i2c/max9286.c | 43 ++++++++++++++++++++++++++++---------------
+ 1 file changed, 28 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+index 31913c9..d3f4cfd 100644
+--- a/drivers/media/i2c/max9286.c
++++ b/drivers/media/i2c/max9286.c
+@@ -10,6 +10,8 @@
+  * Copyright (C) 2015 Cogent Embedded, Inc.
+  */
+ 
++#define DEBUG
++
+ #include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/fwnode.h>
+@@ -83,7 +85,7 @@
+ #define MAX9286_VC(n)			((n) << 5)
+ #define MAX9286_VCTYPE			BIT(4)
+ #define MAX9286_CSIOUTEN		BIT(3)
+-#define MAX9286_0X15_RESV		(3 << 0)
++#define MAX9286_0X15_RESV		(7 << 0) // image noise with RESV=3
+ /* Register 0x1b */
+ #define MAX9286_SWITCHIN(n)		(1 << ((n) + 4))
+ #define MAX9286_ENEQ(n)			(1 << (n))
+@@ -232,6 +234,9 @@ static int max9286_write(struct max9286_priv *priv, u8 reg, u8 val)
+ {
+ 	int ret;
+ 
++	dev_dbg(&priv->client->dev,
++		"%s: 0x%02x - 0x%02x\n", __func__, reg, val);
++
+ 	ret = i2c_smbus_write_byte_data(priv->client, reg, val);
+ 	if (ret < 0)
+ 		dev_err(&priv->client->dev,
+@@ -332,7 +337,7 @@ static int max9286_i2c_mux_init(struct max9286_priv *priv)
+ static void max9286_configure_i2c(struct max9286_priv *priv, bool localack)
+ {
+ 	u8 config = MAX9286_I2CSLVSH_469NS_234NS | MAX9286_I2CSLVTO_1024US |
+-		    MAX9286_I2CMSTBT_105KBPS;
++		    MAX9286_I2CMSTBT_339KBPS;
+ 
+ 	if (localack)
+ 		config |= MAX9286_I2CLOCACK;
+@@ -362,7 +367,8 @@ static void max9286_reverse_channel_setup(struct max9286_priv *priv,
+ 		chan_amplitude = max(30U, chan_amplitude - 100);
+ 		chan_config |= MAX9286_REV_AMP_X;
+ 	}
+-	max9286_write(priv, 0x3b, chan_config | MAX9286_REV_AMP(chan_amplitude));
++	max9286_write(priv, 0x3b, chan_config |
++		      MAX9286_REV_AMP(chan_amplitude));
+ 	usleep_range(2000, 2500);
+ }
+ 
+@@ -819,9 +825,9 @@ static const struct v4l2_subdev_ops max9286_subdev_ops = {
+ 
+ static void max9286_init_format(struct v4l2_mbus_framefmt *fmt)
+ {
+-	fmt->width		= 1280;
+-	fmt->height		= 800;
+-	fmt->code		= MEDIA_BUS_FMT_UYVY8_1X16;
++	fmt->width		= 1920;
++	fmt->height		= 1080;
++	fmt->code		= MEDIA_BUS_FMT_SGRBG8_1X8;
+ 	fmt->colorspace		= V4L2_COLORSPACE_SRGB;
+ 	fmt->field		= V4L2_FIELD_NONE;
+ 	fmt->ycbcr_enc		= V4L2_YCBCR_ENC_DEFAULT;
+@@ -991,18 +997,25 @@ static int max9286_setup(struct max9286_priv *priv)
+ 	 */
+ 	max9286_write(priv, 0x15, MAX9286_VCTYPE | MAX9286_0X15_RESV);
+ 
+-	/* Enable CSI-2 Lane D0-D3 only, DBL mode, YUV422 8-bit. */
++	/* Enable CSI-2 Lane D0-D3 only, DBL mode, RAW11. */
+ 	max9286_write(priv, 0x12, MAX9286_CSIDBL | MAX9286_DBL |
+ 		      MAX9286_CSILANECNT(priv->csi2_data_lanes) |
+-		      MAX9286_DATATYPE_YUV422_8BIT);
++		      MAX9286_DATATYPE_RAW11);
++
++	/* Manual FRAMESYNC*/
++	max9286_write(priv, 0x01, MAX9286_FSYNCMODE_INT_OUT |
++		      MAX9286_FSYNCMETH_MANUAL);
+ 
+-	/* Automatic: FRAMESYNC taken from the slowest Link. */
+-	max9286_write(priv, 0x01, MAX9286_FSYNCMODE_INT_HIZ |
+-		      MAX9286_FSYNCMETH_AUTO);
++	max9286_write(priv, 0x06, 0xA0);	// [7:0] FSYNC_PERIODL
++	max9286_write(priv, 0x07, 0x25);	// [7:0] FSYNC_PERIODM
++	max9286_write(priv, 0x08, 0x26);	// [7:0] FSYNC_PERIODH
+ 
+-	/* Enable HS/VS encoding, use D14/15 for HS/VS, invert VS. */
+-	max9286_write(priv, 0x0c, MAX9286_HVEN | MAX9286_INVVS |
+-		      MAX9286_HVSRC_D14);
++	/*
++	 * Enable HS/VS encoding, use HS as line valid source,
++	 * use D14/15 for HS/VS, invert VS.
++	 */
++	max9286_write(priv, 0x0c, MAX9286_HVEN | MAX9286_DESEL |
++		      MAX9286_INVVS | MAX9286_HVSRC_D14);
+ 
+ 	/*
+ 	 * The overlap window seems to provide additional validation by tracking
+@@ -1015,6 +1028,7 @@ static int max9286_setup(struct max9286_priv *priv)
+ 	 */
+ 	max9286_write(priv, 0x63, 0);
+ 	max9286_write(priv, 0x64, 0);
++	max9286_write(priv, 0x1C, 0x06); //Reserved bytes [3:0] must be = 0x06
+ 
+ 	/*
+ 	 * Wait for 2ms to allow the link to resynchronize after the
+@@ -1322,7 +1336,6 @@ static int max9286_parse_dt(struct max9286_priv *priv)
+ static int max9286_probe(struct i2c_client *client)
+ {
+ 	struct max9286_priv *priv;
+-
+ 	int ret;
+ 
+ 	priv = devm_kzalloc(&client->dev, sizeof(*priv), GFP_KERNEL);
+-- 
+2.7.4
+

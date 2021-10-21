@@ -1,0 +1,67 @@
+{
+    "name": "Xilinx Hash Lookup3 HLS Test", 
+    "description": "Xilinx Hash Lookup3 HLS Test", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u280", 
+        "u250", 
+        "u200", 
+        "aws-vu9p-f1", 
+        "vck190"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [], 
+    "project": "lookup3", 
+    "solution": "sol1", 
+    "clock": "2.5", 
+    "topfunction": "lookup3_dut", 
+    "top": {
+        "source": [
+            "test_lookup3.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw"
+    }, 
+    "testbench": {
+        "source": [
+            "test_lookup3.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw", 
+        "ldflags": "", 
+        "argv": {}, 
+        "stdmath": false
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": {
+                    "hls_vivado_syn": 300, 
+                    "hls_csim": 60, 
+                    "hls_cosim": 300, 
+                    "hls_vivado_impl": 300, 
+                    "hls_csynth": 60
+                }
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim", 
+            "hls_vivado_syn", 
+            "hls_vivado_impl"
+        ], 
+        "category": "canary"
+    }
+}

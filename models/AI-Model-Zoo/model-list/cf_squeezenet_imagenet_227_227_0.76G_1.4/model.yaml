@@ -30,28 +30,28 @@ files:
 - name: squeezenet
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 9dcc5eb2bc86f086ec86dd46d5c6b984
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 04537c9472233618b43a085df6dd4822
 - name: squeezenet
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-vck190-r1.4.0.tar.gz
-  checksum: 4fa640e724998b59e91c7bbbcbab313d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-vck190-r1.4.1.tar.gz
+  checksum: dc788679d352196452008298ec70058b
 - name: squeezenet
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 676c7695628a742af8e3c16d4e560267
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: e37615f30d7a743691db1000bc4ccdea
 - name: squeezenet
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: e832ba7c4d9666abe5febf1164cc7a29
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 3cd3da936adb28fd6f555c3d00b0d8bd
 - name: squeezenet
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: dd137faf1f1f8e09b4080d231453512d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: d7aca318a04ed1dd12ca671ebf5e17a2
 - name: squeezenet
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

@@ -1,0 +1,24 @@
+{
+    "id": "xf_graph",
+    "name": "Vitis Graph Library",
+    "description": "Vitis Graph Library is an open-sourced Vitis library written in C++ for accelerating graph applications in a variety of use cases.",
+    "v++": {
+        "includepaths": [
+            "LIB_DIR/L2/include",
+            "LIB_DIR/../database/L1/include/hw",
+            "LIB_DIR/../quantitative_finance/L1/include",
+            "LIB_DIR/../utils/L1/include"
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/include",
+                "LIB_DIR/../database/L1/include/hw",
+                "LIB_DIR/../quantitative_finance/L1/include",
+                "LIB_DIR/../utils/L1/include",
+                "LIB_DIR/ext/xcl2"
+            ]
+        }
+    }
+}

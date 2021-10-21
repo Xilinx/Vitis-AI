@@ -1,0 +1,118 @@
+{
+    "name": "Xilinx Gemm Block Stream Kernel Test",
+    "description": "Xilinx XF_BLAS Test",
+    "flow": "vitis",
+    "gui": false,
+    "platform_type": "pcie",
+    "platform_whitelist": [
+        "u250"
+        ],
+    "platform_blacklist": [
+        "vck"
+        ],
+    "platform_properties": {
+        "u250": {
+            "containers": [
+                {
+                    "name" : "gemmKernel",
+                    "ldclflags" : "--config PROJECT/conn_u250.ini"
+                }
+            ]
+        }
+    },
+    "launch": [
+    {
+        "name": "generic launch for all flows",
+        "cmd_args": "BUILD/gemmKernel.xclbin BUILD/data"
+    }],
+    "pre_launch": [
+    {
+        "launch_cmd": "make data_gen"
+    }],
+    "post_launch": [
+    {
+        "launch_cmd": "make check"
+    }],
+    "host": {
+        "host_exe": "host.exe",
+        "compiler": {
+            "sources": [
+                    "LIB_DIR/L2/src/streamingKernel/sw/host/gemm_stream.cpp",
+                    "LIB_DIR/L2/src/xcl2/xcl2.cpp"
+                ],
+            "includepaths": [
+                "LIB_DIR/L1/include/hw/xf_blas/helpers/utils",
+                "LIB_DIR/L2/include/streamingKernel/",
+                "LIB_DIR/L2/include/streamingKernel/sw/host",
+                "LIB_DIR/L2/include/streamingKernel/sw/compiler",
+                "LIB_DIR/L2/include/streamingKernel/sw",
+                "LIB_DIR/L2/include/xcl2",
+                "LIB_DIR/L2/include/streamingKernel/sw/host/"
+            ],
+            "options": "-O3"
+        }
+    },
+    "v++": {
+        "compiler": {
+            "includepaths": [
+            "LIB_DIR/L1/include/hw",
+            "LIB_DIR/L1/include/hw/xf_blas",
+            "LIB_DIR/L1/include/hw/xf_blas/gemm",
+            "LIB_DIR/L1/include/hw/xf_blas/helpers/utils",
+            "LIB_DIR/L2/include/streamingKernel/",
+            "LIB_DIR/L2/include/streamingKernel/hw/xf_blas/gemmStreamKernel/",
+            "LIB_DIR/L2/include/streamingKernel/hw/xf_blas"
+                ]
+        }
+    },
+    "containers": [
+        {
+            "name" : "gemmKernel",
+            "ldclflags" : "--config opts.ini",
+            "frequency" : 300,
+            "accelerators": [
+                {
+                    "name": "gemmStreamKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmStreamKernel.cpp",
+                    "frequency" : 300,
+                    "clflags": "--kernel_frequency 300"
+                },
+                {
+                    "name": "gemmTimerKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmTimerKernel.cpp",
+                    "frequency" : 300,
+                    "clflags": "--kernel_frequency 300"
+                },
+                {
+                    "name": "gemmLoadStoreKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmLoadStore.cpp",
+                    "frequency" : 300,
+                    "clflags": "--kernel_frequency 300"
+                }
+            ]
+        }
+    ],
+    "testinfo": {
+        "disable": false,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": 32768,
+                "max_time_min": {
+                    "vitis_hw_build": 940, 
+                    "vitis_hw_emu": 940, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ],
+        "targets": [
+            "vitis_hw_emu",
+            "vitis_hw"
+        ],
+        "category": "canary"
+    }
+}
+

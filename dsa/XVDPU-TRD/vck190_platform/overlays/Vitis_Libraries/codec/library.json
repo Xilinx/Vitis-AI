@@ -1,0 +1,15 @@
+{
+    "id": "xf_codec",
+    "name": "Vitis Codec Library",
+    "description": "Vitis Codec Library is an open-sourced Vitis library of common encode and decode algorithm, including JPEG, PIK, JPEG-XL, Lepton, WebP.",
+    "v++": {
+        "includepaths": [
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+            ]
+        }
+    }
+}

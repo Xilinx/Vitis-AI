@@ -1,0 +1,45 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+
+local protectionKind = compound.m_aliasArray [1].m_protectionKind
+
+if g_noProtectionSections and hasNonPublicItems (compound.m_aliasArray) then
+}
+	// $protectionKind aliases
+
+%{
+else
+}
+	// aliases
+
+%{
+end -- if
+
+for i = 1, #compound.m_aliasArray do
+	local item = compound.m_aliasArray [i]
+
+	if item.m_protectionKind ~= protectionKind then
+		protectionKind = item.m_protectionKind
+}
+
+	// $protectionKind aliases
+
+%{
+	end -- if
+}
+	alias $(getItemNameForOverview (item)) $(getLinkedTextString (item.m_initializer, true))
+%{
+end -- for
+}

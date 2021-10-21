@@ -1,0 +1,2 @@
+s=120, k=100, r_domestic=0.1, r_foreign=0.11, v=1, q=0.01, t=3, E=0.1, fxv=0.11, corr=0.5, exp=6.846184
+

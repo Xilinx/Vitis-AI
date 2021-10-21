@@ -1,0 +1,4 @@
+
+#define MAX_ASSETS 128
+#define MAX_PRICES 4096
+#define MAX_RETURNS (MAX_PRICES - 1)

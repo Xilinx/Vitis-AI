@@ -1,0 +1,30 @@
+{
+    "s2m_x1": {
+        "impl": "StoreStreamToMaster",
+        "map": [
+            {
+                "in_port": {
+                    "stream": "s0",
+                    "width": 128
+                },
+                "out": {
+                    "buffer": "p0"
+                }
+            }
+        ]
+    },
+    "m2s_x1": {
+        "impl": "LoadDdrToStream",
+        "map": [
+            {
+                "in_port": {
+                    "buffer": "din2a"
+                },
+                "out": {
+                    "stream": "sout2a",
+                    "width": 128
+                }
+            }
+        ]
+    }
+}

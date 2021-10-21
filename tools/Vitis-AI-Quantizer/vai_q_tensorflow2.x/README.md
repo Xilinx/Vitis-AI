@@ -444,6 +444,7 @@ vitis_quantize.VitisQuantizer.quantize_model(
     verbose=0,
     fold_conv_bn=True,
     fold_bn=True,
+    replace_sigmoid=True,
     replace_relu6=True,
     include_cle=True,
     cle_steps=10,
@@ -466,6 +467,7 @@ If the "calib_dataset" is in the form of a dataset, generator or keras.utils.Seq
 If the "calib_dataset" is in the form of a numpy.array object, the default batch size is 32.
 *  **fold_conv_bn**: A bool object, whether to fold the batchnorm layers into previous Conv2D/DepthwiseConv2D/TransposeConv2D/Dense layers.
 *  **fold_bn**: A bool object, whether to convert the standalone batchnorm layer into DepthwiseConv2D layers.
+*  **replace_sigmoid**: A bool object, whether to replace the Activation(activation='sigmoid') layers into hard sigmoid layers and do quantization. If not, the sigmoid layers will be left unquantized and put on CPU.
 *  **replace_relu6**: A bool object, whether to replace the Relu6 layers with Relu layers.
 *  **include_cle**: A bool object, whether to do Cross Layer Equalization before quantization.
 *  **cle_steps**: An int object, the iteration steps to do Cross Layer Equalization.
@@ -506,6 +508,7 @@ vitis_quantize.VitisQuantizer.get_qat_model(
     calib_steps=None,
     train_with_bn=False,
     freeze_bn_delay=-1,
+    replace_sigmoid=True,
     replace_relu6=True,
     include_cle=True,
     cle_steps=10,
@@ -527,6 +530,7 @@ If the "calib_dataset" is in the form of a dataset, generator or keras.utils.Seq
 If the "calib_dataset" is in the form of a numpy.array object, the default batch size is 32.
 *  **train_with_bn**: A bool object, whether to keep bn layers during quantize-aware training.
 *  **freeze_bn_delay**: An int object, the train steps before freezing the bn parameters. Default to -1, which means never do bn freezing.
+*  **replace_sigmoid**: A bool object, whether to replace the Activation(activation='sigmoid') layers into hard sigmoid layers and do quantization. If not, the sigmoid layers will be left unquantized and put on CPU.
 *  **replace_relu6**: A bool object, whether to replace the Relu6 layers with Relu layers.
 *  **include_cle**: A bool object, whether to do Cross Layer Equalization before quantization.
 *  **cle_steps**: An int object, the iteration steps to do Cross Layer Equalization.

@@ -1,0 +1,109 @@
+{
+    "name": "Xilinx XF_BLAS.gemm_example", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u250"
+    ], 
+    "platform_blacklist": [], 
+    "platform_type": "pcie", 
+    "gui": false, 
+    "platform_properties": {
+        "u250": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u250.cfg"
+                    ]
+                }
+            }
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": "BUILD/blas.xclbin BUILD/config_info.dat", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "pre_launch": [
+        {
+            "launch_cmd": "make dump_config"
+        }
+    ], 
+    "host": {
+        "host_exe": "gemm_example.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L3/examples/memKernel/gemm/gemm_example.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include/sw", 
+                "LIB_DIR/L3/examples/memKernel/gemm"
+            ], 
+            "symbols": [
+                "_GLIBCXX_USE_CXX11_ABI=0"
+            ]
+        }, 
+        "linker": {
+            "options": "-luuid -lxrt_coreutil"
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw", 
+                "LIB_DIR/L1/include/hw/xf_blas", 
+                "LIB_DIR/L1/include/hw/xf_blas/gemm", 
+                "LIB_DIR/L1/include/hw/xf_blas/helpers/utils", 
+                "LIB_DIR/L2/include/memKernel", 
+                "LIB_DIR/L2/include/memKernel/hw/xf_blas"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name": "blas", 
+            "ldclflags": "--config opts.cfg", 
+            "frequency": 200, 
+            "accelerators": [
+                {
+                    "name": "blasKernel", 
+                    "location": "LIB_DIR/L2/src/memKernel/hw/kernel.cpp", 
+                    "frequency": 200
+                }
+            ]
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 470, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_hw_emu"
+        ], 
+        "category": "canary"
+    }
+}

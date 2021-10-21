@@ -1,0 +1,150 @@
+{
+    "gui": false,
+    "name": "Xilinx Float64 SpMV Kernel Test", 
+    "description": "Xilinx SPARSE Test", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u280"
+    ], 
+    "platform_blacklist": [
+        "vck190",
+        "other"
+    ], 
+    "platform_properties": {
+        "u280": {
+            "containers": [
+                {
+                    "name": "spmv", 
+                    "ldclflags": "--config PROJECT/conn_u280.cfg"
+                }
+            ]
+        }
+    }, 
+    "launch": [
+        {
+            "name": "generic launch for all flows", 
+            "cmd_args": "BUILD/spmv.xclbin PROJECT/sig_dat PROJECT/vec_dat  nasa2910"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/tests/fp64/spmv/main.cpp", 
+                "LIB_DIR/../blas/L2/src/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/..",
+                "LIB_DIR/../blas/L2/include/xcl2",
+                "LIB_DIR/L2/include/sw/fp64"
+            ], 
+            "symbols": [
+                "SPARSE_dataType=double", 
+                "SPARSE_indexType=uint16_t", 
+                "SPARSE_parEntries=4",
+                "SPARSE_hbmChannels=16",
+                "SPARSE_hbmMemBits=256"
+            ], 
+            "options": "-g -O0"
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "symbols": [
+                "SPARSE_dataType=double", 
+                "SPARSE_indexType=uint16_t", 
+                "SPARSE_parEntries=4",
+                "SPARSE_hbmChannels=16",
+                "SPARSE_hbmMemBits=256",
+                "SPARSE_maxRows=4096",
+                "SPARSE_maxCols=4096",
+                "SPARSE_accLatency=8",
+                "SPARSE_dataBits=64",
+                "SPARSE_indexBits=16"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include/hw/", 
+                "LIB_DIR/L2/include/hw/fp64", 
+                "LIB_DIR/..",
+                "LIB_DIR/../blas/L1/include/hw"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name": "spmv", 
+            "ldclflags": "--config PROJECT/opts.cfg", 
+            "frequency": 333, 
+            "accelerators": [
+                {
+                    "name": "loadNnzKernel", 
+                    "location": "LIB_DIR/L2/src/hw/fp64/loadNnzKernel.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "loadParXkernel", 
+                    "location": "LIB_DIR/L2/src/hw/fp64/loadParXkernel.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "fwdParParamKernel", 
+                    "location": "LIB_DIR/L2/src/hw/fp64/fwdParParamKernel.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "moveXkernel", 
+                    "location": "LIB_DIR/L2/src/hw/fp64/moveXkernel.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "selMultXkernel", 
+                    "location": "LIB_DIR/L2/src/hw/fp64/selMultXkernel.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "loadRbParamKernel", 
+                    "location": "LIB_DIR/L2/src/hw/fp64/loadRbParamKernel.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "rowAccKernel", 
+                    "location": "LIB_DIR/L2/src/hw/fp64/rowAccKernel.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "assembleYkernel", 
+                    "location": "LIB_DIR/L2/src/hw/fp64/assembleYkernel.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "storeYkernel", 
+                    "location": "LIB_DIR/L2/src/hw/fp64/storeYkernel.cpp", 
+                    "frequency": 333
+                } 
+            ]
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": 520
+            }
+        ], 
+        "targets": [
+            "vitis_hw_emu", 
+            "vitis_hw"
+        ], 
+        "category": "canary"
+    }
+}

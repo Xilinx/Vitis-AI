@@ -1,0 +1,36 @@
+{
+  "ivas-library-repo": "/usr/lib",
+  "element-mode":"inplace",
+  "kernels" :[
+    {
+      "library-name":"libivas_xboundingbox.so",
+      "config": {
+          "font_size" : 2,
+          "font" : 3,
+          "thickness" : 2,
+          "label_color" : { "blue" : 0, "green" : 0, "red" : 255 },
+          "debug_level" : 0,
+          "label_filter" : [ "class", "probability" ],
+          "classes" : [
+                {
+                "name" : "car",
+                "blue" : 255,
+                "green" : 0,
+                "red" : 0
+                },
+                {
+                "name" : "person",
+                "blue" : 0,
+                "green" : 255,
+                "red" : 0
+                },
+                {
+                "name" : "bicycle",
+                "blue" : 0,
+                "green" : 0,
+                "red" : 255
+                }]
+      }
+    }
+  ]
+}

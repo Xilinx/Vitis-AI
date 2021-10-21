@@ -1,0 +1,134 @@
+{
+    "name": "Xilinx XF_BLAS.gemm_example_streaming", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "xilinx_u250_gen3x16_xdma_3_1_202020_1"
+    ], 
+    "platform_blacklist": [], 
+    "platform_type": "pcie", 
+    "gui": false, 
+    "platform_properties": {
+        "u250": {
+            "containers": [
+                {
+                    "name" : "gemmKernel",
+                    "ldclflags" : "--kernel_frequency 250 --config PROJECT/conn_u250.cfg"
+                }
+            ]
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": "BUILD/gemmKernel.xclbin BUILD/config_info.dat", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "pre_launch": [
+        {
+            "launch_cmd": "make dump_config"
+        }
+    ], 
+    "host": {
+        "host_exe": "gemm_example.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L3/examples/streamingKernel/gemm/gemm_example.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include/sw", 
+                "LIB_DIR/L3/examples/gemm",
+                "LIB_DIR/L2/include/streamingKernel"
+            ], 
+            "symbols": [
+                "_GLIBCXX_USE_CXX11_ABI=0"
+            ]
+        }, 
+        "linker": {
+            "options": "-luuid -lxrt_coreutil"
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+            "LIB_DIR/L1/include/hw",
+            "LIB_DIR/L1/include/hw/xf_blas",
+            "LIB_DIR/L1/include/hw/xf_blas/gemm",
+            "LIB_DIR/L1/include/hw/xf_blas/helpers/utils",
+            "LIB_DIR/L2/include/streamingKernel",
+            "LIB_DIR/L2/include/streamingKernel/hw/xf_blas/gemmStreamKernel/",
+            "LIB_DIR/L2/include/streamingKernel/hw/xf_blas"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name" : "gemmKernel",
+            "ldclflags" : "--config opts.cfg",
+            "accelerators": [
+                {
+                    "name": "gemmCPlusXKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmCPlusX.cpp",
+                    "frequency" : 300
+                },
+                {
+                    "name": "gemmTagsKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmTags.cpp",
+                    "frequency" : 300
+                },
+                {
+                    "name": "gemmTimerKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmTimerKernel.cpp",
+                    "frequency" : 300
+                },
+                {
+                    "name": "gemmMergeKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmMerge.cpp",
+                    "frequency" : 300
+                },
+                {
+                    "name": "gemmAddsKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmAdds.cpp",
+                    "frequency" : 300
+                },
+                {
+                    "name": "gemmMulsKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmMuls.cpp",
+                    "frequency" : 300
+                },
+                {
+                    "name": "gemmSystolicArrayKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmSystolicArray.cpp",
+                    "frequency" : 300
+                },
+                {
+                    "name": "gemmLoadStoreKernel",
+                    "location": "LIB_DIR/L2/src/streamingKernel/hw/gemmLoadStore.cpp",
+                    "frequency" : 300
+                }
+            ]
+        }
+    ],
+    "testinfo": {
+        "disable": true, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": 32768, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 470, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_hw_emu"
+        ], 
+        "category": "canary"
+    }
+}

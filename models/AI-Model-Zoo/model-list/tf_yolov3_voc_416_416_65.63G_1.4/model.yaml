@@ -30,23 +30,23 @@ files:
 - name: yolov3_voc_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 8ece8195c006a5ab1c81e1da1ed25edd
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 00e0f31549676fb6506538e5fdd33344
 - name: yolov3_voc_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.4.0.tar.gz
-  checksum: 5f7d13975202ba363e55df7e3fcf6e07
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r1.4.1.tar.gz
+  checksum: 83e371909f23f59fb1b4a5f2985499dc
 - name: yolov3_voc_tf
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 1892636c4cdd4cf4b6e85af93734054e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: 464c370bbadd090bb0989f4091205256
 - name: yolov3_voc_tf
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 172e9779db87b6c1872f4d7f1d02e5df
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: af236d7b07b3ab30038bf2e0d4d93782
 - name: yolov3_voc_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

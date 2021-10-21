@@ -1,0 +1,64 @@
+{
+    "name": "Xilinx RSA", 
+    "description": "", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u200", 
+        "aws-vu9p-f1", 
+        "vck190"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [], 
+    "project": "prj", 
+    "solution": "solution1", 
+    "clock": "4", 
+    "topfunction": "rsa_test", 
+    "top": {
+        "source": [
+            "test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include"
+    }, 
+    "testbench": {
+        "source": [
+            "main.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include", 
+        "ldflags": "", 
+        "argv": {}, 
+        "stdmath": false
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": {
+                    "hls_vivado_syn": 360, 
+                    "hls_csim": 60, 
+                    "hls_cosim": 360, 
+                    "hls_vivado_impl": 360, 
+                    "hls_csynth": 60
+                }
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim"
+        ], 
+        "category": "canary"
+    }, 
+    "clock_uncertainty": 0.42
+}

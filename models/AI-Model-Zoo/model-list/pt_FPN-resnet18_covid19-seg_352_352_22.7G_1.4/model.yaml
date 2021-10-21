@@ -26,30 +26,30 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_FPN-resnet18_covid19-seg_352_352_22.7G_1.4.zip
-  checksum: cb3ed446dbbad88d1f37fc8183a8e1f8
+  checksum: 44ea8b9f7ee734e67878ede318df3f90
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 3547d78e3caaeab9ed5d298c31766754
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: b2932f5f0d688963e4eefda1ae450781
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-vck190-r1.4.0.tar.gz
-  checksum: a22e684c185a94eeb24def559060a717
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-vck190-r1.4.1.tar.gz
+  checksum: 5a92d9966aa3d578e5012d486621cb31
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: 85a73dd19f9ae62019f85ecc82ab3fe1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: afb143eb946a207214abe05ff2100ac6
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: cff623e4bece099b6b24020da9adc1c5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 33a1262ec35585a52818177dd34763e4
 - name: FPN-resnet18_covid19-seg_pt
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 6245d163712bdbba671ed93f4486dc65
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN-resnet18_covid19-seg_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 4a7ff6087bb226404d34938a99f3fc87
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

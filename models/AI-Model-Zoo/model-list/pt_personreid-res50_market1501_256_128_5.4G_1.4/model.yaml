@@ -30,21 +30,21 @@ files:
 - name: personreid-res50_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 74d675499a006ab5331570ffab445244
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: a1410a0d35f0bdd99e29bf05bad1fd49
 - name: personreid-res50_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-vck190-r1.4.0.tar.gz
-  checksum: 7867e8231b8ddb774c56ce4eec827186
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-vck190-r1.4.1.tar.gz
+  checksum: 3ecd6cf9cd2e5bff5ada4e590250e311
 - name: personreid-res50_pt
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 7268cfd15b1e6242beeb4525e6d5ef9f
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 24d7d364b6a632b422791f13fcc7dae5
 - name: personreid-res50_pt
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 466fce008d0c07d14c7e7c38c7de42cc
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 76fd9af6aefa406cd006d890bad4d0a9
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

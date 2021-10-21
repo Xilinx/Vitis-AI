@@ -1,0 +1,26 @@
+{
+    "id": "xf_security",
+    "name": "Vitis Security Library",
+    "description": "Vitis Security Library is an open-sourced Vitis library written in C++ for accelerating security applications in a variety of use cases.",
+    "v++": {
+        "includepaths": [
+            "LIB_DIR/L1/include"
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/ext/xcl2"
+            ]
+        },
+        "linker": {
+            "librarypaths": [
+            ],
+
+            "libraries": [
+                "ssl",
+                "crypto"
+            ]
+        }
+    }
+}

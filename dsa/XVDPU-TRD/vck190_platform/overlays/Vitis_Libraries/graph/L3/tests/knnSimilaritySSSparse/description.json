@@ -1,0 +1,225 @@
+{
+    "gui": false, 
+    "name": "Xilinx Single Source Sparse Matrix K-Nearest Neighbors ", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u50"
+    ], 
+    "platform_blacklist": [], 
+    "platform_properties": {
+        "u50": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u50_u280.ini"
+                    ]
+                }
+            }
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": "-offset PROJECT/data/knn_sparse_offset.csr -indiceWeight PROJECT/data/knn_sparse_indice_weight.csr -golden PROJECT/data/knn_sparse.mtx -topK 32", 
+            "ld_library_path": "PROJECT/../../lib:$(XILINX_XRT)/lib:$(XILINX_XRM)/lib", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L3/tests/knnSimilaritySSSparse/test_knnSimilaritySSSparse.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include",
+                "LIB_DIR/../utils/L1/include"
+            ], 
+            "options": "-O3 -I$(XILINX_XRM)/include"
+        }, 
+        "linker": {
+            "librarypaths": [
+                "LIB_DIR/L3/lib"
+            ], 
+            "libraries": [
+                "graphL3"
+            ], 
+            "options": "-L$(XILINX_XRM)/lib -lxrm "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw", 
+                "LIB_DIR/L2/include/hw", 
+                "LIB_DIR/L2/tests/sparse_similarity/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/sparse_similarity/kernel/sparseSimilarityKernel.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL_NAME=sparseSimilarityKernel", 
+                    "name": "sparseSimilarityKernel", 
+                    "num_compute_units": 1, 
+                    "compute_units": [
+                        {
+                            "name": "sparseSimilarityKernel", 
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "config", 
+                                    "memory": "HBM[24]"
+                                }, 
+                                {
+                                    "name": "sourceIndice", 
+                                    "memory": "HBM[24]"
+                                }, 
+                                {
+                                    "name": "sourceWeight", 
+                                    "memory": "HBM[24]"
+                                }, 
+                                {
+                                    "name": "resultID", 
+                                    "memory": "HBM[24]"
+                                }, 
+                                {
+                                    "name": "similarity", 
+                                    "memory": "HBM[24]"
+                                }, 
+                                {
+                                    "name": "offsetCSR0", 
+                                    "memory": "HBM[0]"
+                                }, 
+                                {
+                                    "name": "indiceCSR0", 
+                                    "memory": "HBM[1]"
+                                }, 
+                                {
+                                    "name": "weight0", 
+                                    "memory": "HBM[2]"
+                                }, 
+                                {
+                                    "name": "offsetCSR1", 
+                                    "memory": "HBM[3]"
+                                }, 
+                                {
+                                    "name": "indiceCSR1", 
+                                    "memory": "HBM[4]"
+                                }, 
+                                {
+                                    "name": "weight1", 
+                                    "memory": "HBM[5]"
+                                }, 
+                                {
+                                    "name": "offsetCSR2", 
+                                    "memory": "HBM[6]"
+                                }, 
+                                {
+                                    "name": "indiceCSR2", 
+                                    "memory": "HBM[7]"
+                                }, 
+                                {
+                                    "name": "weight2", 
+                                    "memory": "HBM[8]"
+                                }, 
+                                {
+                                    "name": "offsetCSR3", 
+                                    "memory": "HBM[9]"
+                                }, 
+                                {
+                                    "name": "dindiceCSR3", 
+                                    "memory": "HBM[10]"
+                                }, 
+                                {
+                                    "name": "weight3", 
+                                    "memory": "HBM[11]"
+                                }, 
+                                {
+                                    "name": "offsetCSR4", 
+                                    "memory": "HBM[12]"
+                                }, 
+                                {
+                                    "name": "indiceCSR4", 
+                                    "memory": "HBM[13]"
+                                }, 
+                                {
+                                    "name": "weight4", 
+                                    "memory": "HBM[14]"
+                                }, 
+                                {
+                                    "name": "offsetCSR5", 
+                                    "memory": "HBM[15]"
+                                }, 
+                                {
+                                    "name": "indiceCSR5", 
+                                    "memory": "HBM[16]"
+                                }, 
+                                {
+                                    "name": "weight5", 
+                                    "memory": "HBM[17]"
+                                }, 
+                                {
+                                    "name": "offsetCSR6", 
+                                    "memory": "HBM[18]"
+                                }, 
+                                {
+                                    "name": "indiceCSR6", 
+                                    "memory": "HBM[19]"
+                                }, 
+                                {
+                                    "name": "weight6", 
+                                    "memory": "HBM[20]"
+                                }, 
+                                {
+                                    "name": "offsetCSR7", 
+                                    "memory": "HBM[21]"
+                                }, 
+                                {
+                                    "name": "dindiceCSR7", 
+                                    "memory": "HBM[22]"
+                                }, 
+                                {
+                                    "name": "weight7", 
+                                    "memory": "HBM[23]"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "sparseSimilarityKernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": true, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

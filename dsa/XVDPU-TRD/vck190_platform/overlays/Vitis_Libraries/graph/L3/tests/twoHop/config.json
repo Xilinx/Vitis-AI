@@ -1,0 +1,8 @@
+
+{
+    "operationName" : "twoHop",
+    "kernelName" : "twoHop_kernel",
+    "requestLoad" : 100,
+    "xclbinPath" : "PROJECTPATH/build_dir.hw.xilinx_u50_gen3x16_xdma_201920_3/twoHop_kernel.xclbin",
+    "deviceNeeded" : 1
+}

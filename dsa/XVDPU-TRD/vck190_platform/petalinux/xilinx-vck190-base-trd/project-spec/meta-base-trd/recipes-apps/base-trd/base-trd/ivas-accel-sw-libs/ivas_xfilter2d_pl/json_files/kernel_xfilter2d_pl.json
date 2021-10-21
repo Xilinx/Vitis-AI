@@ -1,0 +1,22 @@
+{
+  "xclbin-location": "/media/sd-mmcblk0p1/binary_container_1.xclbin",
+  "ivas-library-repo": "/usr/lib/ivas",
+  "element-mode":"transform",
+  "kernels": [
+    {
+      "kernel-name": "filter2d_pl_accel:filter2d_pl_accel_0",
+      "library-name": "libivas_xfilter2d_pl.so",
+      "config": {
+        "debug_level" : 1,
+        "in_fourcc" : "YUY2",
+        "out_fourcc" : "YUY2",
+        "filter_preset" : "identity",
+        "filter_coefficients" : [
+          [ 0, 0, 0],
+          [ 0, 1, 0],
+          [ 0, 0, 0]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+CPU Model, Intel Xeon @ 2.0 GHZ
+CPU Cores,8
+Host Memory, 32 GBs
+Cloud, Google Cloud Platform
+Instance Name,n1-standard-8 
+GPU, Nvdia Tesla V100

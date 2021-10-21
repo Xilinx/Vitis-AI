@@ -26,20 +26,20 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_rcan_DIV2K_360_640_0.98_86.95G_1.4.zip
-  checksum: 7d8569027add120a185f2dd454459135
+  checksum: 1edab0c639262324f9ec2f55c2582ec9
 - name: rcan_pruned_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 4c32079995fae6b22f1b78af1ce3514b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 9f32aa443b1781b22dad30e57c07660b
 - name: rcan_pruned_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck190-r1.4.0.tar.gz
-  checksum: e1bb0e1d74baf1075dba80367b5d0c1a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck190-r1.4.1.tar.gz
+  checksum: 8501471904ad34b193e41b8c9ad33aa6
 - name: rcan_pruned_tf
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: e824c68dd30c8eee8923f4ec570898a0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: f9df30a129f6cb67b102184620a8e20c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

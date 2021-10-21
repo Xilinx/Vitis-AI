@@ -24,7 +24,7 @@
 
    run the executable file.
     
-    sample : ./platenum_graph_runner ./plate_num.xmodel sample_platenum.jpg
+    sample : ./platenum_graph_runner /usr/share/vitis_ai_library/models/plate_num/plate_num.xmodel sample_platenum.jpg
              batch_index: 0
              plate_color: Blue
              plate_number: zheDZ2211

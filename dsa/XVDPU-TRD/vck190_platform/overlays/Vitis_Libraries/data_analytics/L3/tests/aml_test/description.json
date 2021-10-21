@@ -1,0 +1,363 @@
+{
+    "name": "Xilinx Anti-Money-Laundering L3 API Demo", 
+    "description": "Xilinx Anti-Money-Laundering L3 API Demo", 
+    "flow": "vitis", 
+    "platform_type": "", 
+    "platform_whitelist": [
+        "u200", 
+        "xilinx_u250_xdma_201830_2", 
+        "u50", 
+        "aws-vu9p-f1"
+    ], 
+    "platform_blacklist": [
+        "zc",
+        "vck190"
+    ], 
+    "platform_properties": {
+        "u200": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": []
+                }
+            }, 
+            "containers": [
+                {
+                    "ldclflags": "--config PROJECT/conn_u200.cfg", 
+                    "name": "fuzzy_kernel"
+                }
+            ]
+        }, 
+        "u250": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": []
+                }
+            }, 
+            "containers": [
+                {
+                    "ldclflags": "--config PROJECT/conn_u250.cfg", 
+                    "name": "fuzzy_kernel"
+                }
+            ]
+        }, 
+        "u50": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": []
+                }
+            }, 
+            "containers": [
+                {
+                    "ldclflags": "--config PROJECT/conn_u50.cfg", 
+                    "name": "fuzzy_kernel"
+                }
+            ]
+        }, 
+        "aws-vu9p-f1": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": []
+                }
+            }, 
+            "containers": [
+                {
+                    "ldclflags": "--config PROJECT/conn_aws_f1.cfg", 
+                    "name": "fuzzy_kernel"
+                }
+            ]
+        }
+    }, 
+    "launch": [
+        {
+            "name": "generic launch for sw_emu flows", 
+            "target": "sw_emu", 
+            "cmd_args": " --xclbin BUILD/fuzzy_kernel.xclbin -i PROJECT/data/ -m 2 --accept-EULA", 
+            "ld_library_path": []
+        }, 
+        {
+            "name": "generic launch for hw_emu flows", 
+            "target": "hw_emu", 
+            "cmd_args": " --xclbin BUILD/fuzzy_kernel.xclbin -i PROJECT/data/ -m 2 --accept-EULA", 
+            "ld_library_path": []
+        }, 
+        {
+            "name": "generic launch for hw flows", 
+            "target": "hw", 
+            "cmd_args": " --xclbin BUILD/fuzzy_kernel.xclbin -i PROJECT/data/ -m 2 --accept-EULA", 
+            "ld_library_path": []
+        }
+    ],
+    "data": [
+        "PROJECT/data"
+    ],
+    "gui": false, 
+    "host": {
+        "host_exe": "test.exe", 
+        "compiler": {
+            "sources": [
+                "PROJECT/host/main.cpp", 
+                "LIB_DIR/L3/src/sw/text/aml_checker.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "PROJECT/kernel", 
+                "LIB_DIR/L3/include/sw", 
+                "LIB_DIR/ext/xcl2", 
+                "LIB_DIR/../utils/L1/include/xf_utils_sw/"
+
+            ], 
+            "options": "-O3 -std=c++14"
+        }, 
+        "linker": {
+            "librarypaths": [], 
+            "libraries": [], 
+            "options": ""
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "PROJECT/kernel", 
+                "LIB_DIR/L1/include/hw"
+            ],
+	    "hls_jobs": 16
+        },
+        "linker":{
+            "synth_jobs": 16,
+            "impl_jobs": 16
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "name": "fuzzy_kernel", 
+                    "location": "PROJECT/kernel/fuzzy_kernel.cpp", 
+                    "frequency": 300, 
+                    "num_compute_units": 1
+                }
+            ], 
+            "frequency": 300, 
+            "name": "fuzzy_kernel"
+        }
+    ], 
+    "docker_container": {
+        "vendor": "on_premise", 
+        "metadata": {
+            "app_name": "Xilinx AML Auto", 
+            "owner": "sdausr", 
+            "app_description": "", 
+            "internal": true, 
+            "multi_xrt": true
+        }, 
+        "xrt": {
+            "2019.2": {
+                "version": "2019.2_released", 
+                "location": "BUILDLOCATION/2019.2_released/xbb/xrt/packages"
+            }, 
+            "2020.1": {
+                "version": "2020.1_released", 
+                "location": "BUILDLOCATION/2020.1_released/xbb/xrt/packages"
+            }, 
+            "2020.2": {
+                "version": "2020.2_released", 
+                "location": "BUILDLOCATION/2020.2_released/xbb/xrt/packages"
+            }
+        }, 
+        "shell": {
+            "xilinx_u200_xdma_201830_2": {
+                "version": "xilinx_u200_xdma_201830_2", 
+                "location": "BUILDLOCATION/2020.1_released/xbb/dsabin/internal_platforms/xilinx_u200_xdma_201830_2" 
+            }, 
+            "xilinx_u250_xdma_201830_2": {
+                "version": "xilinx_u250_xdma_201830_2", 
+                "location": "BUILDLOCATION/2020.1_released/xbb/dsabin/internal_platforms/xilinx_u250_xdma_201830_2" 
+            }, 
+            "xilinx_u50_gen3x16_xdma_201920_3": {
+                "version": "xilinx_u50_gen3x16_xdma_201920_3", 
+                "location": "BUILDLOCATION/2020.2_released/xbb/packages/internal_platforms/u50/gen3x16_xdma/blp" 
+            }
+        }, 
+        "launch": {
+            "docker_cmd_args": "",
+            "app_exe": "/opt/xilinx/apps/vt_data_analytis/aml/bin/vt_data_analytis_aml.exe", 
+            "app_args": "--accept-EULA --demo"
+        }, 
+        "provisioners": [
+            {
+                "type": "shell", 
+                "inline": [
+                    "echo \"cat /opt/xilinx/apps/vt_data_analytis/aml/docs/README.txt \" >> /etc/bash.bashrc", 
+                    "mkdir -p /opt/xilinx/apps/vt_data_analytis/aml/bin", 
+                    "mkdir -p /opt/xilinx/apps/vt_data_analytis/aml/share/xclbin", 
+                    "mkdir -p /opt/xilinx/apps/vt_data_analytis/aml/share/data", 
+                    "mkdir -p /opt/xilinx/apps/vt_data_analytis/aml/lib", 
+                    "mkdir -p /opt/xilinx/apps/vt_data_analytis/aml/docs", 
+                    "mkdir -p /home/nimbix/results"
+                ]
+            }, 
+            {
+                "type": "file", 
+                "source": "PROJ_PATH/app-test-meta.json", 
+                "destination": "/opt/xilinx/apps/vt_data_analytis/aml/app-test-meta.json"
+            }, 
+            {
+                "type": "file", 
+                "source": "PROJ_PATH/BUILD_DIR_u250/fuzzy_kernel.xclbin", 
+                "destination": "/opt/xilinx/apps/vt_data_analytis/aml/share/xclbin/fuzzy_xilinx_u250_xdma_201830_2.xclbin"
+            }, 
+            {
+                "type": "file", 
+                "source": "PROJ_PATH/BUILD_DIR_u200/fuzzy_kernel.xclbin", 
+                "destination": "/opt/xilinx/apps/vt_data_analytis/aml/share/xclbin/fuzzy_xilinx_u200_xdma_201830_2.xclbin"
+            }, 
+            {
+                "type": "file", 
+                "source": "PROJ_PATH/BUILD_DIR_u50/fuzzy_kernel.xclbin", 
+                "destination": "/opt/xilinx/apps/vt_data_analytis/aml/share/xclbin/fuzzy_xilinx_u50_gen3x16_xdma_201920_3.xclbin"
+            }, 
+            {
+                "type": "file", 
+                "source": "PROJ_PATH/BUILD_DIR_u250/test.exe", 
+                "destination": "/opt/xilinx/apps/vt_data_analytis/aml/bin/vt_data_analytis_aml.exe"
+            }, 
+            {
+                "type": "file", 
+                "source": "PROJ_PATH/data", 
+                "destination": "/etc/skel/demo_data"
+            }, 
+            {
+                "type": "file", 
+                "source": "PROJ_PATH/binary_wrapper.sh", 
+                "destination": "/opt/xilinx/apps/vt_data_analytis/aml/bin/run.sh"
+            }, 
+            {
+                "type": "shell", 
+                "inline": [
+                    "chmod 755 /opt/xilinx/apps/vt_data_analytis/aml/bin/run.sh"
+                ]
+            }, 
+            {
+                "type": "file", 
+                "source": "PROJ_PATH/docker_README", 
+                "destination": "/opt/xilinx/apps/vt_data_analytis/aml/docs/README.txt"
+            }, 
+            {
+                "type": "file", 
+                "source": "PROJ_PATH/docker_license.txt", 
+                "destination": "/opt/xilinx/apps/vt_data_analytis/aml/docs/license.txt"
+            }, 
+            {
+                "type": "shell", 
+                "inline": [
+                    "ln -sf /opt/xilinx/apps/vt_data_analytis/aml/docs/README.txt /etc/skel/README.txt", 
+                    "ln -sf /opt/xilinx/apps/vt_data_analytis/aml/docs/README.txt /home/nimbix/README.txt"
+                ]
+            }, 
+            {
+                "type": "shell", 
+                "inline": [
+                    "ln -sf /etc/skel/demo_data /home/nimbix/demo_data", 
+                    "ln -sf /etc/skel/results /home/nimbix/results"
+                ]
+            }, 
+            {
+                "type": "label", 
+                "key": "app-test-meta", 
+                "value": "/opt/xilinx/apps/vt_data_analytis/aml/app-test-meta.json"
+            }
+        ], 
+        "post_processors": {
+            "repository": "xdock:5000/xilinx_anti_money_laundering", 
+            "tag": "universal", 
+            "push_after_build": true
+        }, 
+        "app_info": {
+            "os_version": "ubuntu-18.04", 
+            "sw_shell_version": [
+                {
+                    "xrt": [
+                        [
+                            "2019.2", 
+                            "2020.1", 
+                            "2021.1"
+                        ]
+                    ], 
+                    "shell": [
+                        {
+                            "xilinx_u200_xdma_201830_2": {
+                                "v++": "2020.2"
+                            }
+                        }, 
+                        {
+                            "xilinx_u250_xdma_201830_2": {
+                                "v++": "2020.2"
+                            }
+                        }, 
+                        {
+                            "xilinx_u50_gen3x16_xdma_201920_3": {
+                                "v++": "2020.2"
+                            }
+                        }
+                    ]
+                }
+            ], 
+            "platform": [
+                "alveo-u200", 
+                "alveo-u250", 
+                "alveo-u50"
+            ]
+        }
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 81920, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 2160, 
+                    "vitis_hw_emu": 470, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run", 
+            "docker_build"
+        ], 
+        "category": "canary"
+    }
+}

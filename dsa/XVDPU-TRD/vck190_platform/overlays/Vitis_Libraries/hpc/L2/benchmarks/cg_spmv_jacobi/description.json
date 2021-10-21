@@ -1,0 +1,214 @@
+{
+    "gui": false,
+    "name": "Xilinx HPC SPMV CG-Solver Kernel Benchmark", 
+    "description": "Xilinx HPC Test", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u280"
+    ], 
+    "platform_blacklist": [
+        "other"
+    ], 
+    "platform_properties": {
+        "u280": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                    ]
+                }
+            },
+            "containers": [
+                {
+                    "name": "cgSolver", 
+                    "frequency": 333, 
+                    "ldclflags": "--config PROJECT/conn_u280.cfg"
+                }
+            ]
+        }
+    }, 
+    "launch": [
+        {
+            "name": "generic launch for all flows", 
+            "cmd_args": "BUILD/cgSolver.xclbin"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/src/sw/cgSolver/test_cgSolver_spmv_jacobi.cpp", 
+                "LIB_DIR/../blas/L2/src/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include/", 
+                "LIB_DIR/L2/include/sw/cgSolver", 
+                "LIB_DIR/L2/include/common/cgSolver", 
+                "LIB_DIR/L2/include/sw/", 
+                "LIB_DIR/../blas/L1/tests/sw/include/", 
+                "LIB_DIR/../blas/L2/include/xcl2",
+                "LIB_DIR/../sparse/L2/include/sw/fp64",
+                "LIB_DIR/.."
+            ], 
+            "symbols": [
+                "HW_CLK=4e-9",
+                "CG_numTasks=1", 
+                "CG_dataType=double", 
+                "CG_numChannels=16",
+                "CG_parEntries=4",
+                "CG_instrBytes=64",
+                "SPARSE_dataType=double",
+                "SPARSE_indexType=uint16_t",
+                "SPARSE_parEntries=4",
+                "SPARSE_hbmChannels=16",
+                 "SPARSE_hbmMemBits=256"
+            ], 
+            "options": "-g -O0"
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "symbols": [
+                "CG_numTasks=1", 
+                "CG_dataType=double", 
+                "CG_instrBytes=64",
+                "CG_tkStrWidth=8",
+                "CG_parEntries=4",
+                "CG_numChannels=16",
+                "CG_vecParEntries=4",
+                "SPARSE_dataType=double", 
+                "SPARSE_dataBits=64",
+                "SPARSE_parEntries=4",
+                "SPARSE_indexType=uint16_t",
+                "SPARSE_indexBits=16",
+                "SPARSE_maxRows=4096",
+                "SPARSE_maxCols=4096",
+                "SPARSE_accLatency=8",
+                "SPARSE_hbmMemBits=256",
+                "SPARSE_hbmChannels=16"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include/", 
+                "LIB_DIR/L1/include/hw/", 
+                "LIB_DIR/L1/include/hw/cgSolver", 
+                "LIB_DIR/L2/include/hw/cgSolver", 
+                "LIB_DIR/L2/include/hw/cgSolver/spmv", 
+                "LIB_DIR/L2/include/common/cgSolver", 
+                "LIB_DIR/L2/include/hw", 
+                "LIB_DIR/../sparse/L1/include/hw",
+                "LIB_DIR/../sparse/L2/include/hw/fp64",
+                "LIB_DIR/..",
+                "LIB_DIR/../blas/L2/include/memKernel/hw/xf_blas",
+                "LIB_DIR/../blas/L1/include/hw",
+                "LIB_DIR/L2/tests/cgSolver/krnl_cgSolver_spmv_jacobi_16ch/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "name": "cgSolver", 
+            "ldclflags": "--config PROJECT/opts.cfg", 
+            "accelerators": [
+                {
+                    "name": "krnl_timer", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_timer.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_duplicate", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_duplicate.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_dupTk4", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/spmv/krnl_dupTk4.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_loadArbParam", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/spmv/krnl_loadArbParam.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_loadAval", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/spmv/krnl_loadAval.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_loadPkApar", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/spmv/krnl_loadPkApar.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_storeApk", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/spmv/krnl_storeApk.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_update_xk", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_update_xk.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_update_rk_jacobi", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_update_rk_jacobi.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_update_pk", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_update_pk.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "krnl_control", 
+                    "location": "LIB_DIR/L2/src/hw/cgSolver/krnl_control.cpp", 
+                    "frequency": 333
+                }, 
+                {
+                    "name": "fwdParParamKernel", 
+                    "location": "LIB_DIR/../sparse/L2/src/hw/fp64/fwdParParamKernel.cpp", 
+                    "frequency": 333
+                },
+                {
+                    "name": "moveXkernel", 
+                    "location": "LIB_DIR/../sparse/L2/src/hw/fp64/moveXkernel.cpp", 
+                    "frequency": 333
+                },
+                {
+                    "name": "selMultXkernel", 
+                    "location": "LIB_DIR/../sparse/L2/src/hw/fp64/selMultXkernel.cpp", 
+                    "frequency": 333
+                },
+                {
+                    "name": "rowAccKernel", 
+                    "location": "LIB_DIR/../sparse/L2/src/hw/fp64/rowAccKernel.cpp", 
+                    "frequency": 333
+                },
+                {
+                    "name": "assembleYkernel", 
+                    "location": "LIB_DIR/../sparse/L2/src/hw/fp64/assembleYkernel.cpp", 
+                    "frequency": 333
+                }
+            ]
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 81920
+                }, 
+                "max_time_min": 1260
+            }
+        ], 
+        "targets": [
+            "vitis_hw"
+        ], 
+        "category": "canary"
+    }
+}

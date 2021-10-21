@@ -1,0 +1,62 @@
+{
+    "clock": "3.3333", 
+    "description": "", 
+    "flow": "hls", 
+    "name": "Xilinx HPC RTM backward.data_h128_w128_t10_pe2", 
+    "part_blacklist": [], 
+    "part_whitelist": [], 
+    "platform_blacklist": [], 
+    "platform_whitelist": [
+        "u280", 
+        "aws-vu9p-f1", 
+        "vck190"
+    ], 
+    "project": "backward_data_h128_w128_t10_pe2_test", 
+    "solution": "sol", 
+    "testbench": {
+        "argv": {
+            "hls_cosim": "${XF_PROJ_ROOT}/L1/tests/hw/rtm2d/backward/tests/data_h128_w128_t10_pe2/data/", 
+            "hls_csim": "${XF_PROJ_ROOT}/L1/tests/hw/rtm2d/backward/tests/data_h128_w128_t10_pe2/data/"
+        }, 
+        "cflags": "-std=c++14 -I${XF_PROJ_ROOT}/L1/tests/hw/rtm2d/backward/tests/data_h128_w128_t10_pe2 -I${XF_PROJ_ROOT}/L1/include/hw -I${XF_PROJ_ROOT}/../blas/L1/include/hw -I${XF_PROJ_ROOT}/../blas/L1/tests/sw/include", 
+        "ldflags": "", 
+        "source": [
+            "${XF_PROJ_ROOT}/L1/tests/hw/rtm2d/backward/tests/data_h128_w128_t10_pe2/../../main.cpp"
+        ], 
+        "stdmath": false
+    }, 
+    "testinfo": {
+        "category": "canary", 
+        "disable": false, 
+        "jobs": [
+            {
+                "cmd": "", 
+                "dependency": [], 
+                "env": "", 
+                "index": 0, 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": 300
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim", 
+            "hls_vivado_syn", 
+            "hls_vivado_impl"
+        ]
+    }, 
+    "top": {
+        "cflags": "-I${XF_PROJ_ROOT}/L1/tests/hw/rtm2d/backward/tests/data_h128_w128_t10_pe2 -I${XF_PROJ_ROOT}/L1/include/hw -I${XF_PROJ_ROOT}/../blas/L1/include/hw", 
+        "source": [
+            "${XF_PROJ_ROOT}/L1/tests/hw/rtm2d/backward/tests/data_h128_w128_t10_pe2/../../backward.cpp"
+        ]
+    }, 
+    "topfunction": "top"
+}

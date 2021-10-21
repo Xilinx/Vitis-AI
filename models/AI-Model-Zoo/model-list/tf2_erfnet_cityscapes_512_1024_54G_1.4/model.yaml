@@ -30,21 +30,21 @@ files:
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 363a2465e2c91ebf6b2a13a6eb16ba71
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 38a85216dd6e5ef69ca68c0fb2556002
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck190-r1.4.0.tar.gz
-  checksum: ce6a6244d0ee0051d97ead9cb397950d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck190-r1.4.1.tar.gz
+  checksum: ddb41dbc810145ecbd42e33e78d91390
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 92e24e9d5ed7d1dfb156b50c33931cea
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 2b370a50ca9efd50de687f330b899f8c
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: cced4cada8e9b24050921fadd1681430
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 4120d9a5c965502588daf397fb01bb7f
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

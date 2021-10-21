@@ -30,16 +30,16 @@ files:
 - name: mobilenet_1_0_224_tf2
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 456845b1f5c65d19864a00f421a7ccdf
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 9aefbfa003da4cacad5813293b44579a
 - name: mobilenet_1_0_224_tf2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-vck190-r1.4.0.tar.gz
-  checksum: 9060b19c6b67c4904a977d22ad3622be
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-vck190-r1.4.1.tar.gz
+  checksum: a2f47d368cf7786c22f0e3259db09e14
 - name: mobilenet_1_0_224_tf2
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 7532e52398add160e0116a8b5d0eaef8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 474119f6fd665538de6b121533f90005
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

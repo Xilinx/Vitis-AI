@@ -1,0 +1,158 @@
+{
+    "name": "Xilinx DSPLIB widget real2complex",
+    "description": "",
+    "gui": "false",
+    "flow": "versal",
+    "platform_whitelist": [
+        "vck190"
+    ],
+    "platform_properties": {
+        "vck190": {
+            "v++": {
+                "compiler": {
+                    "clflags": []
+                },
+                "linker": {
+                    "ldclflags": [
+                        "--config PROJECT/system.cfg"
+                    ]
+                }
+            }
+        }
+    },
+    "pre_build": [
+        {
+            "build_cmd": "tclsh LIB_DIR/L2/tests/aie/common/scripts/gen_input.tcl $(LOC_INPUT_FILE) $(WINDOW_VSIZE) $(NITER_UUT) $(DATA_SEED) $(DATA_STIM_TYPE)"
+        },
+        {
+            "build_cmd": "TARGET=x86sim UUT_KERNEL=widget_real2complex_ref UUT_SIM_FILE=./data/ref_output.txt make x86sim TARGET=x86sim TAG=REF"
+        },
+        {
+            "build_cmd": "make cleanall"
+        }
+    ],
+    "post_launch": [
+        {
+            "target": "aiesim",
+            "launch_cmd": [
+                "mkdir -p logs",
+                "grep -ve '[XT]' ./data/uut_output.txt > ./logs/uut_output.txt",
+                "grep -ve '[XT]' ./data/ref_output.txt > ./logs/ref_output.txt",
+                "tclsh LIB_DIR/L2/tests/aie/common/scripts/diff.tcl ./logs/uut_output.txt ./logs/ref_output.txt ./logs/diff.txt $(DIFF_TOLERANCE)",
+                "tclsh LIB_DIR/L2/tests/aie/common/scripts/get_stats.tcl $(DATA_TYPE) cint16 1 $(WINDOW_VSIZE) 1 1 1 1 0 0 1 $(STATUS_FILE) ./ \"convertData\" $(NITER_UUT);"
+                ]
+        },
+        {
+            "target": "x86sim",
+            "launch_cmd": [
+                "mkdir -p logs",
+                "grep -ve '[XT]' ./data/uut_output.txt > ./logs/uut_output.txt",
+                "grep -ve '[XT]' ./data/ref_output.txt > ./logs/ref_output.txt",
+                "tclsh LIB_DIR/L2/tests/aie/common/scripts/diff.tcl ./logs/uut_output.txt ./logs/ref_output.txt ./logs/diff.txt $(DIFF_TOLERANCE)"
+                ]
+        }
+    ],
+    "launch": [
+        {
+            "name": "aiesim-launch",
+            "target": "aiesim",
+            "pkg-dir": "./Work",
+            "input-dir": "./",
+            "output-dir": "./"
+        },
+        {
+            "name": "x86sim-launch",
+            "target": "x86sim",
+            "pkg-dir": "./Work",
+            "input-dir": "./",
+            "output-dir": "./"
+        }
+    ],
+    "aiecompiler": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/aie",
+                "LIB_DIR/L1/src/aie",
+                "LIB_DIR/L1/tests/aie/inc",
+                "LIB_DIR/L1/tests/aie/src",
+                "LIB_DIR/L2/include/aie",
+                "LIB_DIR/L2/tests/aie/common/inc",
+                "./"
+            ],
+            "customized_params": {
+                "params" : "--dataflow -v --device=$(DEVICE_FILE) $($(TAG)_TARGET_COMPILE_ARGS) --test-iterations=$(NITER_$(TAG)) -workdir=$($(TAG)_WORK_DIR) -Xpreproc=\"$(TAG_PREPROC_ARGS)\"",
+                "default": {
+                    "TAG": "UUT",
+                    "UUT_KERNEL": "widget_real2complex",
+                    "REF_KERNEL": "widget_real2complex_ref",
+                    "UUT_GRAPH": "widget_real2complex_graph",
+                    "REF_GRAPH": "widget_real2complex_ref_graph",
+                    "NITER":"16",
+                    "NITER_UUT":"$(NITER)",
+                    "NITER_REF":"$$(($(NITER_UUT) / 2))",
+                    "WINDOW_VSIZE":"256",
+                    "UUT_WINDOW_VSIZE":"$(WINDOW_VSIZE)",
+                    "REF_WINDOW_VSIZE": "$$(( $(UUT_WINDOW_VSIZE) * $(NITER_UUT) / $(NITER_REF)))",
+                    "DATA_TYPE":"int16",
+                    "DATA_OUT_TYPE":"cint16",
+                    "DIFF_TOLERANCE": "0.0025",
+                    "DATA_SEED": "1",
+                    "DATA_STIM_TYPE": "0",
+                    "DEVICE_FILE":"4x4",
+                    "UUT_OUT_DIR":"./aiesimulator_output",
+                    "REF_OUT_DIR_x86": "./aiesimulator_ref_output",
+                    "UUT_SIM_FILE":"./data/uut_output.txt",
+                    "REF_SIM_FILE": "./data/ref_output.txt",
+                    "UUT_SIM_FILE2":"./data/uut_output_2.txt",
+                    "REF_SIM_FILE2": "./data/ref_output_2.txt",
+                    "INPUT_FILE": "data/input.txt",
+                    "LOC_INPUT_FILE":"./data/input.txt",
+                    "STATUS_FILE": "./logs/status.txt",
+                    "UUT_TARGET_COMPILE_ARGS": "-Xchess=llvm.xargs=\"-std=c++2a\" -Xchess=main:backend.mist2.xargs=\"+NOdra\" -Xchess=main:noodle.optim.olbb=20 -Xchess=main:backend.mist2.pnll=\"off\" ",
+                    "REF_TARGET_COMPILE_ARGS":"",
+                    "UUT_WORK_DIR":"./Work",
+                    "REF_WORK_DIR":"./Work",
+                    "PREPROC_ARGS": "-DINPUT_FILE=$(LOC_INPUT_FILE) -DDATA_TYPE=$(DATA_TYPE) -DDATA_OUT_TYPE=$(DATA_OUT_TYPE) ",
+                    "USING_REF": "",
+                    "USING_UUT": "-DUSING_UUT=1",
+                    "TAG_PREPROC_ARGS": "-DUUT_GRAPH=$($(TAG)_GRAPH) -DOUTPUT_FILE=$($(TAG)_SIM_FILE) $(PREPROC_ARGS) -DWINDOW_VSIZE=$($(TAG)_WINDOW_VSIZE) -DNITER=$(NITER_$(TAG)) $(USING_$(TAG))"
+                }
+            }
+        }
+    },
+    "aiecontainers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/aie/widget_real2complex/test.cpp",
+                    "pl-freq": 1000,
+                    "workdir": "./Work",
+                    "options": "--use-phy-shim=false",
+                    "name": "libadf.a"
+                }
+            ]
+        }
+    ],
+    "testinfo": {
+        "disable": false,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": 32768,
+                "max_time_min": {
+                    "vitis_aie_x86sim": 60,
+                    "vitis_aie_sim": 200
+                }
+            }
+        ],
+        "customized_params": "multi_params.json",
+        "targets": [
+            "vitis_aie_sim",
+            "vitis_aie_x86sim"
+        ],
+        "category": "canary"
+    }
+}

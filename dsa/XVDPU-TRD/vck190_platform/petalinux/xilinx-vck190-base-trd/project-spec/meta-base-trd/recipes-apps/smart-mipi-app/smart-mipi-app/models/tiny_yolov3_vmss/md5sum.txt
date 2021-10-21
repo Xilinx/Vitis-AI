@@ -1,0 +1,2 @@
+149d53219bdacb253c0e440acaa7079b  tiny_yolov3_vmss.prototxt
+8af8a9a92c323fa29e5f83169c12b5a1  tiny_yolov3_vmss.xmodel

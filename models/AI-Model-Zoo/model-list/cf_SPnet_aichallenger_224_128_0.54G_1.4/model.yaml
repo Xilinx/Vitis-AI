@@ -30,28 +30,28 @@ files:
 - name: sp_net
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: f65eb78514d08feade03e64302f51e0a
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: fddefd4176dcbf5e28c2d968192ad81e
 - name: sp_net
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.4.0.tar.gz
-  checksum: 67371df7d3b86e5ad8bc7cbdf3ab67a5
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r1.4.1.tar.gz
+  checksum: b5d16dc2421e26192857c029d7c773b5
 - name: sp_net
   type: xmodel
   board: vck5000
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck5000-DPUCVDX8H-r1.4.0.tar.gz
-  checksum: ab737f16638b4248402beb438ff086cf
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck5000-DPUCVDX8H-r1.4.1.tar.gz
+  checksum: cdd45c51ca4594183a27d43f7bc80e0c
 - name: sp_net
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 3cdfe9c9ddf96ccd5962ec9051f537f7
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: 987ddac1dc9f8fe10e597d3a7e2d4dc2
 - name: sp_net
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 68d8bdc90747ec4a684d29f360becbcb
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 0f12b2deac17f1a769f98157c190c4bc
 - name: sp_net
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

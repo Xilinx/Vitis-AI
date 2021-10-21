@@ -1,0 +1,67 @@
+{
+    "name": "Xilinx CRC32 Memory Mapped HLS Test", 
+    "description": "Test Design to validate Xilinx CRC32 module", 
+    "flow": "hls", 
+    "platform_whitelist": [
+        "u200", 
+        "vck190", 
+        "aws-vu9p-f1"
+    ], 
+    "platform_blacklist": [], 
+    "part_whitelist": [], 
+    "part_blacklist": [], 
+    "QoR_golden": {
+        "VV_LUT": "2947", 
+        "VV_FF": "4516", 
+        "VV_BRAM": "24", 
+        "VV_URAM": "0", 
+        "VV_AchievedClockPeriod": "2.737"
+    }, 
+    "project": "crc32MM", 
+    "solution": "sol1", 
+    "clock": "3.3", 
+    "topfunction": "hls_crc32MM", 
+    "top": {
+        "source": [
+            "crc32_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -I${XF_PROJ_ROOT}/../security/L1/include"
+    }, 
+    "testbench": {
+        "source": [
+            "crc32_test.cpp"
+        ], 
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw -I${XF_PROJ_ROOT}/../security/L1/include", 
+        "argv": {
+            "hls_csim": "${XF_PROJ_ROOT}/L1/tests/crc32MM/sample.txt", 
+            "hls_cosim": "${XF_PROJ_ROOT}/L1/tests/crc32MM/sample.txt"
+        }
+    }, 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": 300
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim", 
+            "hls_vivado_syn", 
+            "hls_vivado_impl"
+        ], 
+        "category": "canary"
+    }
+}

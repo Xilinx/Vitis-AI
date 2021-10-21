@@ -1,0 +1,236 @@
+{
+    "name": "Xilinx Flip_NO_BOTH L2 Test", 
+    "description": [
+        "Flip L2 function example"
+    ], 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u200", 
+		"aws-vu9p-f1",
+		"vck190",	
+        "zcu102", 
+        "zcu104", 
+        "u50"
+    ], 
+    "platform_blacklist": [
+        "u280", 
+        "u250"
+    ], 
+    "platform_properties": {
+        "u200": {
+			"frequency": [
+				"300000000"
+			],
+            "host": {
+                "compiler": {
+                    "includepaths": [
+                        "$(OPENCV_INCLUDE)"
+                    ]
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(OPENCV_LIB)"
+                    ]
+                }
+            }
+        }, 
+        "u50": {
+			"frequency": [
+				"300000000"
+			],
+            "host": {
+                "compiler": {
+                    "includepaths": [
+                        "$(OPENCV_INCLUDE)"
+                    ]
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(OPENCV_LIB)"
+                    ]
+                }
+            }
+        },
+        "aws-vu9p-f1": {
+			"frequency": [
+				"300000000"
+			],
+            "host": {
+                "compiler": {
+                    "includepaths": [
+                        "$(OPENCV_INCLUDE)"
+                    ]
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(OPENCV_LIB)"
+                    ]
+                }
+            }
+        },
+        "vck190": {
+			"frequency": [
+				"300000000"
+			],
+            "host": {
+                "compiler": {
+                    "includepaths": [
+						"$(SYSROOT)/usr/include",
+                        "$(SYSROOT)/usr/include/opencv4"
+                    ], 
+                    "options": "--sysroot=$(SYSROOT)"
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(SYSROOT)/usr/lib", 
+                        "${SYSROOT}/lib"
+                    ]
+                }
+            }
+        },
+        "zcu102": {
+			"frequency": [
+				"300000000"
+			],
+            "host": {
+                "compiler": {
+                    "includepaths": [
+                        "$(SYSROOT)/usr/include",
+                        "$(SYSROOT)/usr/include/opencv4"
+                    ], 
+                    "options": "--sysroot=$(SYSROOT)"
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(SYSROOT)/usr/lib", 
+                        "${SYSROOT}/opt/xilinx/xrt/lib"
+                    ]
+                }
+            }
+        }, 
+        "zcu104": {
+			"frequency": [
+				"300000000"
+			],
+            "host": {
+                "compiler": {
+                    "includepaths": [
+                        "$(SYSROOT)/usr/include",
+                        "$(SYSROOT)/usr/include/opencv4"
+                    ], 
+                    "options": "--sysroot=$(SYSROOT)"
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(SYSROOT)/usr/lib", 
+                        "${SYSROOT}/opt/xilinx/xrt/lib"
+                    ]
+                }
+            }
+        }
+    }, 
+	"gui": true, 
+    "launch": [
+        {
+            "target": "sw_emu", 
+            "cmd_args": "LIB_DIR/data/512x512.png", 
+            "name": "sw_emu", 
+            "ld_library_path": [
+                "$(OPENCV_LIB)", 
+                "$(LD_LIBRARY_PATH)", 
+                "$(XILINX_XRT)/lib"
+            ]
+        }, 
+        {
+            "target": "hw_emu", 
+            "cmd_args": "LIB_DIR/data/512x512.png", 
+            "name": "hw_emu", 
+            "ld_library_path": [
+                "$(OPENCV_LIB)", 
+                "$(LD_LIBRARY_PATH)", 
+                "$(XILINX_XRT)/lib"
+            ]
+        }, 
+        {
+            "target": "hw", 
+            "cmd_args": "LIB_DIR/data/4k_5.png", 
+            "name": "hardware_build", 
+            "ld_library_path": [
+                "$(OPENCV_LIB)", 
+                "$(LD_LIBRARY_PATH)", 
+                "$(XILINX_XRT)/lib"
+            ]
+        }
+    ], 
+    "data": [
+        "LIB_DIR/data/512x512.png",
+		"LIB_DIR/data/4k_5.png"
+    ], 
+    "host": {
+        "host_exe": "flip", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/examples/flip/xf_flip_tb.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L2/tests/flip/flip_NO_BOTH", 
+                "LIB_DIR/L2/examples/flip"
+            ], 
+            "options": "-O3", 
+            "symbols": []
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "symbols": [], 
+            "includepaths": [
+                "LIB_DIR/L2/tests/flip/flip_NO_BOTH", 
+                "LIB_DIR/L2/examples/flip"
+            ], 
+            "clflags": []
+        }
+    }, 
+    "containers": [
+        {
+            "name": "krnl_flip",
+			"frequency": "300",
+            "accelerators": [
+                {
+                    "name": "flip_accel", 
+					"frequency": "300",
+                    "location": "LIB_DIR/L2/examples/flip/xf_flip_accel.cpp"
+                }
+            ]
+        }
+    ], 
+    "check_env": [
+        {
+            "env": "OPENCV_INCLUDE", 
+            "echo": "Cannot find OpenCV include path. Please set OPENCV_INCLUDE variable"
+        }, 
+        {
+            "env": "OPENCV_LIB", 
+            "echo": "Cannot find Opencv lib path. Please set OPENCV_LIB variable"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": 32768, 
+                "max_time_min": 520
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw"
+        ], 
+        "category": "full"
+    } 
+}

@@ -1,0 +1,38 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local namespace = argArray [1]
+
+if namespace.m_name then
+	if g_globalDefFile then
+}
+.. include:: $g_globalDefFile
+%{
+	end -- if
+}
+.. index:: pair: namespace; $(getItemName (namespace))
+.. _doxid-$(namespace.m_id):
+.. _cid-$(getItemCid (namespace)):
+
+$(getTitle ("namespace " .. getItemName (namespace), "="))
+
+%{
+	includeFile ("c_namespace_compound.rst.in", namespace, false)
+else
+}
+.. index:: pair: namespace; global
+
+%{
+	includeFile ("c_compound.rst.in", namespace, true)
+end -- if
+}

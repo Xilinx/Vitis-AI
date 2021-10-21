@@ -1,0 +1,82 @@
+{
+	"vitis" : "2020.2",
+	"device_name" : "xilinx_u200_xdma_201830_2",
+	"containers": [
+	{
+		"name": "decompress_streaming",
+		"meet_system_timing": "true",
+		"accelerators": [
+		{
+			"name": "xilDecompDatamover",
+			"check_timing": "true",
+			"PipelineType": "none",
+			"check_latency": "true",
+			"check_warning": "true",
+			"FMax" : "300 MHz",
+			"Resources" : {
+				"LUT" : "5538",
+				"LUTAsMem" : "1458",
+				"REG" : "13795",
+				"BRAM" : "15",
+				"URAM" : "0",
+				"DSP" : "0"
+			}
+		},
+		{
+			"name": "xilLz4DecompressStream",
+			"check_timing": "true",
+			"PipelineType": "none",
+			"check_latency": "true",
+			"check_warning": "true",
+			"FMax" : "300 MHz",
+			"Resources" : {
+				"LUT" : "811",
+				"LUTAsMem" : "32",
+				"REG" : "1014",
+				"BRAM" : "16",
+				"URAM" : "0",
+				"DSP" : "0"
+			}
+		}
+		]
+	},
+	{
+		"name": "compress_streaming",
+		"meet_system_timing": "true",
+		"accelerators": [
+		{
+			"name": "xilCompDatamover",
+			"check_timing": "true",
+			"PipelineType": "none",
+			"check_latency": "true",
+			"check_warning": "true",
+			"FMax" : "300 MHz",
+			"Resources" : {
+				"LUT" : "6002",
+				"LUTAsMem" : "1369",
+				"REG" : "11591",
+				"BRAM" : "15",
+				"URAM" : "0",
+				"DSP" : "0"
+			}
+		},
+		{
+			"name": "xilLz4CompressStream",
+			"check_timing": "true",
+			"PipelineType": "none",
+			"check_latency": "true",
+			"check_warning": "true",
+			"FMax" : "300 MHz",
+			"Resources" : {
+				"LUT" : "2858",
+				"LUTAsMem" : "99",
+				"REG" : "3050",
+				"BRAM" : "5",
+				"URAM" : "6",
+				"DSP" : "0"
+			}
+		}
+		]
+	}
+	]
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:pmml2svg="https://sourceforge.net/projects/pmml2svg/"
+     xmlns="http://www.w3.org/2000/svg"
+     version="1.1"
+     width="67.94px"
+     height="30.3375px"
+     viewBox="0 0 67.94 30.3375">
+   <metadata>
+      <pmml2svg:baseline-shift>11.722499999999997</pmml2svg:baseline-shift>
+   </metadata>
+   <g stroke="none"
+      fill="#000000"
+      text-rendering="optimizeLegibility"
+      font-family="STIXGeneral,STIXSizeOneSym">
+      <g xmlns:doc="http://nwalsh.com/xsl/documentation/1.0"
+         style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+         <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+               x="3"
+               y="18.615000000000002"
+               font-size="15">m</text>
+         <text x="17.99667"
+               y="18.615000000000002"
+               font-size="15"
+               style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; ">=</text>
+         <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+               x="32.55834"
+               y="18.615000000000002"
+               font-size="15">L</text>
+         <text x="44.27667000000001"
+               y="18.615000000000002"
+               font-size="15"
+               style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; ">-</text>
+         <g style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                  x="53.605000000000004"
+                  y="12.99"
+                  font-size="15">C</text>
+         </g>
+         <g style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+            <text style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; "
+                  x="55.02250000000001"
+                  y="27.337500000000006"
+                  font-size="15">2</text>
+         </g>
+         <line x1="52.605000000000004"
+               y1="14.760000000000002"
+               x2="64.94"
+               y2="14.760000000000002"
+               fill="none"
+               stroke="black"
+               stroke-width="0.9375"/>
+      </g>
+   </g>
+</svg>

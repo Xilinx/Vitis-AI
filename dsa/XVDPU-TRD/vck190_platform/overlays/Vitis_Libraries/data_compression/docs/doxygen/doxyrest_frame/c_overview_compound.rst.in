@@ -1,0 +1,230 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+local variableSectionName = string.lower (argArray [2])
+local functionSectionName = string.lower (argArray [3])
+
+function emitMemberRefTargets (compound)
+	emit (getItemArrayOverviewRefTargetString (compound.m_typedefArray))
+	emit (getEnumArrayOverviewRefTargetString (compound.m_enumArray))
+	emit (getItemArrayOverviewRefTargetString (compound.m_variableArray))
+	emit (getItemArrayOverviewRefTargetString (compound.m_propertyArray))
+	emit (getItemArrayOverviewRefTargetString (compound.m_eventArray))
+	emit (getItemArrayOverviewRefTargetString (compound.m_constructorArray))
+	emit (getItemArrayOverviewRefTargetString (compound.m_functionArray))
+	emit (getItemArrayOverviewRefTargetString (compound.m_aliasArray))
+	emit (getItemArrayOverviewRefTargetString (compound.m_defineArray))
+
+	if compound.m_destructor and not hasItemRefTarget (compound.m_destructor) then
+		emit (getItemRefTargetString (compound.m_destructor))
+	end
+end
+
+function emitInheritance (compound)
+	if compound.m_templateParamArray and #compound.m_templateParamArray > 0 or
+		compound.m_templateSpecParamArray and #compound.m_templateSpecParamArray > 0 or
+		compound.m_baseTypeArray and #compound.m_baseTypeArray > 0 or
+		compound.m_derivedTypeArray and #compound.m_derivedTypeArray > 0 then
+
+		includeFile ("c_overview_inheritance.rst.in", compound)
+		emit ("\n")
+	end -- if
+end
+
+function emitMembers (compound)
+	if #compound.m_namespaceArray > 0 then
+		includeFile ("c_overview_namespaces.rst.in", compound)
+		emit ("\n")
+	end -- if
+
+	if #compound.m_typedefArray > 0 then
+		includeFile ("c_overview_typedefs.rst.in", compound)
+		emit ("\n")
+	end -- if
+
+	if #compound.m_enumArray > 0 then
+		includeFile ("c_overview_enums.rst.in", compound)
+		emit ("\n")
+	end -- if
+
+	if #compound.m_structArray > 0 then
+		includeFile ("c_overview_classes.rst.in", compound, compound.m_structArray, "structs")
+		emit ("\n")
+	end -- if
+
+	if #compound.m_unionArray > 0 then
+		includeFile ("c_overview_classes.rst.in", compound, compound.m_unionArray, "unions")
+		emit ("\n")
+	end -- if
+
+	if #compound.m_interfaceArray > 0 then
+		includeFile ("c_overview_classes.rst.in", compound, compound.m_interfaceArray, "interfaces")
+		emit ("\n")
+	end -- if
+
+	if #compound.m_protocolArray > 0 then
+		includeFile ("c_overview_classes.rst.in", compound, compound.m_protocolArray, "protocols")
+		emit ("\n")
+	end -- if
+
+	if #compound.m_exceptionArray > 0 then
+		includeFile ("c_overview_classes.rst.in", compound, compound.m_exceptionArray, "exceptions")
+		emit ("\n")
+	end -- if
+
+	if #compound.m_classArray > 0 then
+		includeFile ("c_overview_classes.rst.in", compound, compound.m_classArray, "classes")
+		emit ("\n")
+	end -- if
+
+	if #compound.m_singletonArray > 0 then
+		includeFile ("c_overview_classes.rst.in", compound, compound.m_singletonArray, "singletons")
+		emit ("\n")
+	end -- if
+
+	if #compound.m_serviceArray > 0 then
+		includeFile ("c_overview_classes.rst.in", compound, compound.m_serviceArray, "services")
+		emit ("\n")
+	end -- if
+
+	if #compound.m_variableArray > 0 then
+		includeFile ("c_overview_variables.rst.in", compound, variableSectionName)
+		emit ("\n")
+	end -- if
+
+	if #compound.m_propertyArray > 0 then
+		includeFile ("c_overview_properties.rst.in", compound)
+		emit ("\n")
+	end -- if
+
+	if #compound.m_eventArray > 0 then
+		includeFile ("c_overview_events.rst.in", compound)
+		emit ("\n")
+	end -- if
+
+	if #compound.m_constructorArray > 0 or (g_includeDestructors and compound.m_destructor) then
+		includeFile ("c_overview_construction.rst.in", compound)
+		emit ("\n")
+	end -- if
+
+	if #compound.m_functionArray > 0 then
+		-- includeFile ("c_overview_functions.rst.in", compound, functionSectionName)
+		-- emit ("\n")
+	end
+
+	if #compound.m_aliasArray > 0 then
+		includeFile ("c_overview_aliases.rst.in", compound)
+		emit ("\n")
+	end -- if
+
+	if #compound.m_defineArray > 0 then
+		includeFile ("c_overview_defines.rst.in", compound)
+		emit ("\n")
+	end -- if
+end
+
+if g_noProtectionSections then
+	emitMemberRefTargets (compound)
+}
+.. ref-code-block:: $g_language
+	:class: overview-code-block
+
+%{
+	emitInheritance (compound)
+	emitMembers (compound)
+else
+	if compound.m_protectionCompoundArray [0] then
+		emitMemberRefTargets (compound.m_protectionCompoundArray [0])
+}
+.. ref-code-block:: $g_language
+	:class: overview-code-block
+
+%{
+		emitInheritance (compound)
+		emitMembers (compound.m_protectionCompoundArray [0])
+	elseif compound.m_baseTypeArray and #compound.m_baseTypeArray > 0 or
+		compound.m_derivedTypeArray and #compound.m_derivedTypeArray > 0 then
+}
+.. ref-code-block:: $g_language
+	:class: overview-code-block
+
+%{
+		emitInheritance (compound)
+	end
+
+	for i = 1, g_maxProtectionValue do
+		if compound.m_protectionCompoundArray [i] then
+			emitMemberRefTargets (compound.m_protectionCompoundArray [i])
+}
+
+$(getTitle (captialize (g_protectionNameMap [i]) .. " Members", '-'))
+
+.. ref-code-block:: $g_language
+	:class: overview-protected-code-block
+
+%{
+			emitMembers (compound.m_protectionCompoundArray [i])
+		end
+	end
+end
+
+if compound.m_baseCompound and compound.m_baseCompound.m_hasItems then
+	compound = compound.m_baseCompound
+}
+Inherited Members
+-----------------
+
+%{
+	-- always link inherited members (even if no documentation)
+
+	local prevHasItemRefTarget = hasItemRefTarget
+	hasItemRefTarget = function (item)
+		return true
+	end
+
+	if g_noProtectionSections then
+}
+.. ref-code-block:: $g_language
+	:class: overview-inherited-code-block
+
+%{
+		emitMembers (compound)
+	else
+		if compound.m_protectionCompoundArray [0] then
+}
+.. ref-code-block:: $g_language
+	:class: overview-inherited-code-block
+
+%{
+			emitMembers (compound.m_protectionCompoundArray [0])
+		end
+
+		for i = 1, g_maxProtectionValue do
+			if compound.m_protectionCompoundArray [i] then
+}
+$(getTitle ("Inherited " .. captialize (g_protectionNameMap [i]) .. " Members", '-'))
+
+.. ref-code-block:: $g_language
+	:class: overview-inherited-protected-code-block
+
+%{
+				emitMembers (compound.m_protectionCompoundArray [i])
+			end -- if
+		end -- for
+	end -- if
+
+
+	hasItemRefTarget = prevHasItemRefTarget
+end -- if
+}

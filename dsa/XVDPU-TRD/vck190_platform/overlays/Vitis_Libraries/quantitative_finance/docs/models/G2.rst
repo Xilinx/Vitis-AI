@@ -1,0 +1,43 @@
+
+.. 
+   Copyright 2019 Xilinx, Inc.
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+.. meta::
+   :keywords: Model, finance, G2, Two-additive-factor gaussian
+   :description: The Two-additive-factor gaussian (G2) model draws the evolution of interest rates. 
+   :xlnxdocumentclass: Document
+   :xlnxdocumenttype: Tutorials
+
+************************
+G2 Model
+************************
+
+Overview
+=========
+In mathematical finance, the Two-additive-factor gaussian (G2) model draws the evolution of interest rates. It is a "two factor model" compared with other single factor models, as it describes interest rate movements that driven by only one source of market risk. Moreover, it can be used to evaluate interest rate derivatives.
+
+Implementation
+===================
+This section mainly introduces the implementation process of short-rate and discount, which is applied in Tree/Finite-difference Engine. They are core part for option pricing. 
+
+The class :math:`G2Model` implements the two-factor model to calculate short-rate and discount. The implementation process is introduced as follows:
+
+1. Function treeShortRate: 
+   a) Since the short-rate at the current time point is independent from the short-rate at the previous time point, there is no need to calculate the short-rate in this module.
+   b) To be compatible with the generic Tree framework, this model performs the calculation of parameters of 2 independent trinomial trees.
+2. Function shortRate: The short-rate is calculated at time point :math:`t`.
+3. Function discount: The discount is calculated at time point :math:`t` with the duration :math:`dt` by function discount based on the short-rate.
+4. Function discountBond: the discount bond is calculated at time point :math:`t` with the duration :math:`dt=T-t` based on the short-rate.
+

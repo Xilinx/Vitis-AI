@@ -1,0 +1,51 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+}
+Enum Values
+-----------
+
+%{
+for i = 1, #compound.m_enumArray do
+	local item = compound.m_enumArray [i]
+
+	if isUnnamedItem (item) then
+		for j = 1, #item.m_enumValueArray do
+			local subItem = item.m_enumValueArray [j]
+			if subItem.m_hasDocumentation then
+				emit (getItemRefTargetString (subItem))
+}
+.. ref-code-block:: $g_language
+	:class: title-code-block
+
+	$(subItem.m_name)
+%{
+				if subItem.m_isSubGroupHead then
+					for j = 1, #subItem.m_subGroupSlaveArray do
+						slaveItem = subItem.m_subGroupSlaveArray [j]
+	}
+	$(slaveItem.m_name)
+%{
+					end -- for
+				end -- if
+}
+
+$(getItemDetailedDocumentation (subItem))
+
+%{
+			end -- if
+		end -- for
+	end -- if
+end -- for
+}

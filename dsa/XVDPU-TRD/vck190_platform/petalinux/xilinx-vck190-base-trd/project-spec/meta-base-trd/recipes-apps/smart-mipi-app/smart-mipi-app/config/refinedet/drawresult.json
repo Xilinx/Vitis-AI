@@ -1,0 +1,20 @@
+{
+  "ivas-library-repo": "/usr/lib",
+  "element-mode":"inplace",
+  "kernels" :[
+    {
+      "library-name":"libivas_xboundingbox.so",
+      "config": {
+          "fps_interval" : 10,
+          "font_size" : 2,
+          "font" : 3,
+          "thickness" : 10,
+          "debug_level" : 0,
+          "label_color" : { "blue" : 0, "green" : 0, "red" : 255 },
+          "label_filter" : [ "class", "probability" ],
+          "classes" : [
+          ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+# .bash_tigergraph
+
+unset JAVA_HOME https_proxy http_proxy
+
+export PATH=~/.syspre/usr/bin:~/.syspre/bin:/home/tigergraph/.syspre/usr/lib/jvm/java-8-openjdk-amd64-1.8.0.171/jre/bin:$PATH
+
+export CPATH=~/.syspre/usr/include:$CPATH
+export XILINX_XRT=/opt/xilinx/xrt
+export XILINX_XRM=/opt/xilinx/xrm
+
+export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:$XILINX_XRT/lib/:$XILINX_XRM/xrm/lib:~/.syspre/lib/x86_64-linux-gnu:~/.syspre/usr/lib/x86_64-linux-gnu:~/.syspre/usr/lib:$LD_LIBRARY_PATH
+
+export TG_TOKEN=$(cat /home/tigergraph/.gsql/auth_token)
+
+export USER=tigergraph

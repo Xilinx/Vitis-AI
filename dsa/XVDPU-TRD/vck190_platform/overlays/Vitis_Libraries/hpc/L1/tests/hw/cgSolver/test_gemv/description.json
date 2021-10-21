@@ -1,0 +1,59 @@
+{
+    "name": "Xilinx HPC CG Test", 
+    "clock": "3.3333", 
+    "description": "Xilinx HPC CG Update Vector Values", 
+    "flow": "hls", 
+    "part_blacklist": [], 
+    "part_whitelist": [], 
+    "platform_blacklist": [], 
+    "platform_whitelist": [
+        "u280", 
+        "aws-vu9p-f1", 
+        "vck190"
+    ], 
+    "project": "cg_test_gemv_test", 
+    "solution": "sol", 
+    "topfunction": "top", 
+    "top": {
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include -I${XF_PROJ_ROOT}/L1/include/hw/ -I${XF_PROJ_ROOT}/L1/tests/hw/cgSolver/test_gemv -I${XF_PROJ_ROOT}/L1/include/hw/cgSolver -I${XF_PROJ_ROOT}/../blas/L1/include/hw", 
+        "source": [
+            "${XF_PROJ_ROOT}/L1/tests/hw/cgSolver/test_gemv/top.cpp"
+        ]
+    }, 
+    "testbench": {
+        "argv": {}, 
+        "cflags": "-std=c++14 -I${XF_PROJ_ROOT}/L1/include -I${XF_PROJ_ROOT}/L1/include/hw/ -I${XF_PROJ_ROOT}/L1/include/hw/cgSolver -I${XF_PROJ_ROOT}/../blas/L1/include/hw -I${XF_PROJ_ROOT}/../blas/L1/tests/sw/include", 
+        "ldflags": "", 
+        "source": [
+            "${XF_PROJ_ROOT}/L1/tests/hw/cgSolver/test_gemv/main.cpp"
+        ], 
+        "stdmath": false
+    }, 
+    "testinfo": {
+        "category": "canary", 
+        "disable": false, 
+        "jobs": [
+            {
+                "cmd": "", 
+                "dependency": [], 
+                "env": "", 
+                "index": 0, 
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384, 
+                    "hls_csim": 10240, 
+                    "hls_cosim": 16384, 
+                    "hls_vivado_impl": 16384, 
+                    "hls_csynth": 10240
+                }, 
+                "max_time_min": 300
+            }
+        ], 
+        "targets": [
+            "hls_csim", 
+            "hls_csynth", 
+            "hls_cosim", 
+            "hls_vivado_syn", 
+            "hls_vivado_impl"
+        ]
+    }
+}

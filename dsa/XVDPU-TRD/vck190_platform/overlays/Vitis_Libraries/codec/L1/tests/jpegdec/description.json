@@ -1,0 +1,68 @@
+{
+    "name": "Xilinx jpeg decoder HLS Test",
+    "description": "Xilinx jpeg decoder HLS Test",
+    "flow": "hls",
+    "platform_whitelist": [
+        "u200"
+    ],
+    "platform_blacklist": [],
+    "part_whitelist": [],
+    "part_blacklist": [],
+    "project": "test",
+    "solution": "solution1",
+    "clock": "2.5",
+    "topfunction": "kernel_parser_decoder",
+    "top": {
+        "source": [
+            "test_decoder.cpp",
+            "${XF_PROJ_ROOT}/L1/src/XAcc_jfifparser.cpp",
+            "${XF_PROJ_ROOT}/L1/src/XAcc_jpegdecoder.cpp"
+        ],
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include -std=c++0x"
+    },
+    "testbench": {
+        "source": [
+            "test_decoder.cpp"
+        ],
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include -std=c++0x",
+        "ldflags": "",
+        "argv": {
+            "hls_csim": "-JPEGFile ${XF_PROJ_ROOT}/L1/images/android800.jpg",
+            "hls_cosim": "-JPEGFile ${XF_PROJ_ROOT}/L1/images/android800.jpg"
+        },
+        "stdmath": false
+    },
+    "testinfo": {
+        "disable": false,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": {
+                    "hls_vivado_syn": 16384,
+                    "hls_csim": 16384,
+                    "hls_cosim": 16384,
+                    "hls_vivado_impl": 16384,
+                    "hls_csynth": 16384
+                },
+                "max_time_min": {
+                    "hls_vivado_syn": 480,
+                    "hls_csim": 120,
+                    "hls_cosim": 480,
+                    "hls_vivado_impl": 480,
+                    "hls_csynth": 240
+                }
+            }
+        ],
+        "targets": [
+            "hls_csim",
+            "hls_csynth",
+            "hls_cosim",
+            "hls_vivado_syn",
+            "hls_vivado_impl"
+        ],
+        "category": "canary"
+    }
+}

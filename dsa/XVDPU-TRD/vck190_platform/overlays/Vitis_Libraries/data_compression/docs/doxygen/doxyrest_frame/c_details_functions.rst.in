@@ -1,0 +1,92 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+local functionSectionName = argArray [2]
+}
+
+.. FunctionSection
+
+$(getTitle (functionSectionName, "~"))
+
+%{
+local lastName = ""
+local overloadNum = 1
+for i = 1, #compound.m_functionArray do
+	local item = compound.m_functionArray [i]
+	if isItemInCompoundDetails (item, compound) then
+		emit (getItemRefTargetString (item))
+                local itemName = getItemName(item)
+                if itemName ~= lastName then
+                        lastName = itemName
+                        overloadNum = 1
+}
+
+$(getTitle (itemName, "-"))
+
+%{
+                        if i < #compound.m_functionArray and itemName == getItemName(compound.m_functionArray[i + 1]) then
+}
+
+$(getTitle (itemName .. " overload (1)", "+"))
+
+%{
+                        end
+                else
+                        overloadNum = overloadNum + 1
+}
+
+$(getTitle (itemName .. " overload (" .. tostring(overloadNum) .. ")", "+"))
+
+%{
+		end
+		if item.m_location.m_file and functionSectionName ~= "Methods" then
+			local f = item.m_location.m_file
+}
+
+$(getFileImportString (f))
+
+%{
+		end
+}
+
+.. ref-code-block:: $g_language
+	:class: title-code-block
+
+	$(getFunctionDeclString (item, false, "\t"))
+%{
+		if item.m_isSubGroupHead then
+			local prevParamCount = #item.m_paramArray
+
+			for j = 1, #item.m_subGroupSlaveArray do
+				slaveItem = item.m_subGroupSlaveArray [j]
+				local paramCount = #slaveItem.m_paramArray
+				local extraSep = ""
+
+				if g_hasNewLineAfterReturnType or paramCount > 1 or prevParamCount > 1 then
+					extraSep = "\n"
+				end
+}
+$extraSep	$(getFunctionDeclString (slaveItem, false, "\t"))
+%{
+				prevParamCount = #slaveItem.m_paramArray
+			end -- for
+		end -- if
+}
+
+$(getItemDetailedDocumentation (item))
+
+%{
+	end -- if
+end -- for
+}

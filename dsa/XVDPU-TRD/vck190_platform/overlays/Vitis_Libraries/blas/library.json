@@ -1,0 +1,17 @@
+{
+    "id": "xf_BLAS",
+    "name": "Vitis BLAS Library",
+    "description": "Vitis BLAS Library is an Vitis library for accelerating linear algebra functions.",
+    "v++": {
+        "includepaths": [
+            "LIB_DIR/L1/include/hw"
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/hw"
+            ]
+        }
+    }
+}

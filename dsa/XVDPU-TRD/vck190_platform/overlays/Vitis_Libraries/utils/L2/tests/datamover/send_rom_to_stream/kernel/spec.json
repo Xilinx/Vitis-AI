@@ -1,0 +1,52 @@
+{
+    "rom2s_x2": {
+        "impl": "SendRomToStream",
+        "map": [
+            {
+                "in_file": {
+                    "name": "din0",
+                    "type": "int64_t",
+					"num": 512
+                },
+                "out": {
+                    "stream": "s0",
+                    "width": 64
+                }
+            },
+            {
+                "in_file": {
+                    "name": "din1",
+                    "type": "int32_t",
+					"num": 1024
+                },
+                "out": {
+                    "stream": "s1",
+                    "width": 32
+                }
+            }
+        ]
+    },
+    "s2m_x2": {
+        "impl": "StoreStreamToMaster",
+        "map": [
+            {
+                "in_port": {
+                    "stream": "s0",
+                    "width": 64
+                },
+                "out": {
+                    "buffer": "p0"
+                }
+            },
+            {
+                "in_port": {
+                    "stream": "s1",
+                    "width": 32
+                },
+                "out": {
+                    "buffer": "p1"
+                }
+            }
+        ]
+    }
+}

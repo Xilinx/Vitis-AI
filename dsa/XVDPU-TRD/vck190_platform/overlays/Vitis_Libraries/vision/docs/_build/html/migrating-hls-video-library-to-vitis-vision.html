@@ -1,0 +1,1444 @@
+
+
+
+<!DOCTYPE HTML>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<meta content="Vision, Library, Vitis Vision Library, migrate, HLS, Mat, cv, LineBuffer" name="keywords" />
+<meta content="Migrating HLS Video Library to Vitis vision." name="description" />
+<meta content="Document" name="xlnxdocumentclass" />
+<meta content="Tutorials" name="xlnxdocumenttype" />
+
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<link rel="stylesheet" href="https://static.cloud.coveo.com/searchui/v2.4382/css/CoveoFullSearch.css"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="description"/>
+		<meta name="keywords"/>
+		<meta property="og:title" content=""/>
+		<meta property="og:description"/>
+		<!-- favicon -->
+		<link rel="icon" type="image/vnd.microsoft.icon" href="_static/favicon.ico"/>
+		<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="_static/favicon.ico"/>
+		<!-- Fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet" type="text/css"/>
+
+  
+  
+  
+  
+
+  
+      <script type="text/javascript" src="_static/js/jquery.min.js"></script>	
+	  <script type="text/javascript" src="_static/js/gtm.js"></script>
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+    <script type="text/javascript" src="_static/js/d3dd8c60ed.js"></script>
+    <script type="text/javascript" src="_static/js/common-ui-all.min.js"></script>		
+    <script type="text/javascript" src="_static/js/header-footer.min.js"></script>	
+    <script type="text/javascript" src="_static/js/jquery-ui.min.js"></script>	
+    <script type="text/javascript" src="_static/js/CoveoJsSearch.Lazy.min.js"></script>	
+    <script type="text/javascript" src="_static/js/linkid.js"></script>		
+    <script type="text/javascript" src="_static/js/Searchbox.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/common-ui-all.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/header-footer.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+	</head>
+	<body>
+		<div class="xilinx-bs3"/>
+		<div class="root responsivegrid">
+			<div class="aem-Grid aem-Grid--16 aem-Grid--default--16 aem-Grid--large--16 aem-Grid--xlarge--16 aem-Grid--xxlarge--16 aem-Grid--xxxlarge--16 ">
+				<div class="xilinxExperienceFragments experiencefragment aem-GridColumn aem-GridColumn--default--12">
+					<div class="xf-content-height">
+						<div class="aem-Grid aem-Grid--16 aem-Grid--default--16 ">
+							<div class="header parbase aem-GridColumn aem-GridColumn--default--12">
+								<noindex>
+									<header data-component="header">
+										<nav class="navbar navbar-default aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid main-nav">
+													<div class="row">
+														<div class="col-xs-12">
+															<div class="logo-column">
+																<div class="logo">
+																	<a href="https://www.xilinx.com/">
+																	<img src="https://www.xilinx.com/etc.clientlibs/site/clientlibs/xilinx/all/resources/imgs/header/xilinx-header-logo.svg" title="Xilinx Inc"/>
+																	</a>
+																</div>
+															</div>
+															<div class="navbar-column">
+																<div class="navbar navbar-collapse collapse" id="xilinx-main-menu">
+																	<div class="mobile-search-container">
+																		<div id="headerSearchBox" class="headerSearch"
+																			data-component="header-search" 
+																			data-redirect-if-empty="false"
+																			data-coveo-access-token="xxa237d4dd-f0aa-47fc-9baa-af9121851b33"
+																			data-coveo-organization-id="xilinxcomprode2rjoqok">
+																			<div class='coveo-search-section'>
+																				<div class="CoveoAnalytics" data-search-hub="Site"></div>
+																				<ul class="dropdown-menu options">
+																					<li class="option" data-label="All" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-search-hub="Site">
+																						<a href="#">
+																						All</a>
+																					</li>
+																					<li data-label="Silicon Devices" data-action-link="https://www.xilinx.com//products/silicon-devices/si-keyword-search.html" data-search-hub="Product">
+																						<a href="#">
+																						Silicon Devices</a>
+																					</li>
+																					<li data-label="Boards and Kits" data-action-link="https://www.xilinx.com//products/boards-and-kits/bk-keyword-search.html" data-search-hub="Product">
+																						<a href="#">
+																						Boards and Kits</a>
+																					</li>
+																					<li data-label="Intellectual Property" data-action-link="https://www.xilinx.com//products/intellectual-property/ip-keyword-search.html" data-search-hub="Product">
+																						<a href="#">
+																						Intellectual Property</a>
+																					</li>
+																					<li data-label="Support" class="option" data-action-link="https://www.xilinx.com/search/support-keyword-search.html" data-search-hub="Support">
+																						<a href="#">
+																						Support</a>
+																						<ul>
+																							<li data-label="Documentation" data-action-link="https://www.xilinx.com//support/documentation-navigation/documentation-keyword-search.html" data-search-hub="Document">
+																								<a href="#">
+																								Documentation</a>
+																							</li>
+																							<li data-label="Knowledge Base" data-action-link="https://www.xilinx.com//support/answer-navigation/answer-keyword-search.html" data-search-hub="AnswerRecord">
+																								<a href="#">
+																								Knowledge Base</a>
+																							</li>
+																							<li data-label="Community Forums" data-action-link="https://www.xilinx.com/search/forums-keyword-search.html" data-search-hub="Forums">
+																								<a href="#">
+																								Community Forums</a>
+																							</li>
+																						</ul>
+																					</li>
+																					<li data-label="Partners" data-action-link="https://www.xilinx.com//alliance/member-keyword-search.html" data-search-hub="Partner">
+																						<a href="#">
+																						Partners</a>
+																					</li>
+																					<li data-label="Videos" data-action-link="https://www.xilinx.com/video/video-keyword-search.html" data-search-hub="Video">
+																						<a href="#">
+																						Videos</a>
+																					</li>
+																					<li data-label="Press" data-action-link="https://www.xilinx.com/search/press-keyword-search.html" data-search-hub="Press">
+																						<a href="#">
+																						Press</a>
+																					</li>
+																				</ul>
+																				<a href="#" class="btn dropdown-toggle value" data-toggle="dropdown"></a>
+																				<div class="CoveoSearchbox" data-id="coveosearchbox" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-placeholder="Search Xilinx"></div>
+																			</div>
+																		</div>
+																	</div>
+																	<ul class="nav navbar-nav nav-justified">
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/applications.html">
+																			Applications</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/products/silicon-devices.html">
+																			Products</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://developer.xilinx.com/">
+																			Developers</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/support.html">
+																			Support</a> 
+																		</li>
+																		<li class="accordion-toggle-icons" data-component="toggle-dropdown">
+																			<a href="https://www.xilinx.com/about/company-overview.html">
+																			About</a> 
+																		</li>
+																	</ul>
+																</div>
+															</div>
+															<script type="text/javascript" src="_static/js/gtm.js"></script>
+															<!--<div class="mini-nav">
+																<button type="button" data-function="xilinx-mobile-menu" id="nav-toggle" class="navbar-toggle collapsed visible-xs-block" aria-expanded="false">
+																<span></span>
+																<span></span>
+																<span></span>
+																<span></span>
+																</button>
+																<ul class="list-inline">
+																	<li class="dropdown user-menu">
+																		<button data-toggle="dropdown">
+																		<span class="sr-only">Account</span>
+																		<span class="fas fa-user"></span>
+																		</button>
+																		<ul class="dropdown-menu">
+																			<li>
+																				<a href="https://www.xilinx.com/myprofile/subscriptions.html">
+																				My Account</a>
+																			</li>
+																			<li>
+																				<a href="https://www.xilinx.com/registration/create-account.html">
+																				Create Account</a>
+																			</li>
+																			<li>
+																				<a href="https://www.xilinx.com/bin/protected/en/signout">
+																				Sign Out</a>
+																			</li>
+																		</ul>
+																	</li>
+																	<li class="hidden-xs">
+																		<button data-function="search-toggle">
+																		<span class="sr-only">Search</span>
+																		<span class="far fa-search"></span>
+																		</button>
+																	</li>
+																</ul>
+															</div>
+															-->
+															<div class="search-container">
+																<div id="headerSearchBox" class="headerSearch"
+																	data-component="header-search" 
+																	data-redirect-if-empty="false"
+																	data-coveo-access-token="xxa237d4dd-f0aa-47fc-9baa-af9121851b33"
+																	data-coveo-organization-id="xilinxcomprode2rjoqok">
+																	<div class='coveo-search-section'>
+																		<div class="CoveoAnalytics" data-search-hub="Site"></div>
+																		<ul class="dropdown-menu options">
+																			<li class="option" data-label="All" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-search-hub="Site">
+																				<a href="#">
+																				All</a>
+																			</li>
+																			<li data-label="Silicon Devices" data-action-link="https://www.xilinx.com/products/silicon-devices/si-keyword-search.html" data-search-hub="Product">
+																				<a href="#">
+																				Silicon Devices</a>
+																			</li>
+																			<li data-label="Boards and Kits" data-action-link="https://www.xilinx.com/products/boards-and-kits/bk-keyword-search.html" data-search-hub="Product">
+																				<a href="#">
+																				Boards and Kits</a>
+																			</li>
+																			<li data-label="Intellectual Property" data-action-link="https://www.xilinx.com/products/intellectual-property/ip-keyword-search.html" data-search-hub="Product">
+																				<a href="#">
+																				Intellectual Property</a>
+																			</li>
+																			<li data-label="Support" class="option" data-action-link="https://www.xilinx.com/search/support-keyword-search.html" data-search-hub="Support">
+																				<a href="#">
+																				Support</a>
+																				<ul>
+																					<li data-label="Documentation" data-action-link="https://www.xilinx.com/support/documentation-navigation/documentation-keyword-search.html" data-search-hub="Document">
+																						<a href="#">
+																						Documentation</a>
+																					</li>
+																					<li data-label="Knowledge Base" data-action-link="https://www.xilinx.com/support/answer-navigation/answer-keyword-search.html" data-search-hub="AnswerRecord">
+																						<a href="#">
+																						Knowledge Base</a>
+																					</li>
+																					<li data-label="Community Forums" data-action-link="https://www.xilinx.com/search/forums-keyword-search.html" data-search-hub="Forums">
+																						<a href="#">
+																						Community Forums</a>
+																					</li>
+																				</ul>
+																			</li>
+																			<li data-label="Partners" data-action-link="https://www.xilinx.com/alliance/member-keyword-search.html" data-search-hub="Partner">
+																				<a href="#">
+																				Partners</a>
+																			</li>
+																			<li data-label="Videos" data-action-link="https://www.xilinx.com/video/video-keyword-search.html" data-search-hub="Video">
+																				<a href="#">
+																				Videos</a>
+																			</li>
+																			<li data-label="Press" data-action-link="https://www.xilinx.com/search/press-keyword-search.html" data-search-hub="Press">
+																				<a href="#">
+																				Press</a>
+																			</li>
+																		</ul>
+																		<a href="#" class="btn dropdown-toggle value" data-toggle="dropdown"></a>
+																		<div class="CoveoSearchbox" data-id="coveosearchbox" data-action-link="https://www.xilinx.com/search/site-keyword-search.html" data-placeholder="Search Xilinx"></div>
+																	</div>
+																</div>
+																<button data-function="search-toggle">
+																<span class="sr-only">Search</span>
+																<span class="far fa-times"></span>
+																</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</nav>
+									</header>
+								</noindex>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="parsys aem-GridColumn--xxxlarge--none aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+						<div class="container-fluid">
+							<div class="row">
+							<div class="col-xs-12">
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Vitis Vision Library
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2020.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Vitis Vision Library User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#getting-started-with-vitis-vision">Getting Started with Vitis Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#getting-started-with-hls">Getting Started with HLS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#design-examples-using-vitis-vision-library">Design Examples Using Vitis Vision Library</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Vitis Vision Library API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html#xf-cv-mat-image-container-class">xf::cv::Mat Image Container Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html#vitis-vision-library-functions">Vitis Vision Library Functions</a></li>
+</ul>
+
+            
+			<p class="caption"><span class="caption-text">This Page</span></p>
+				<ul class="current">
+				  <li class="toctree-l1"><a href="_sources/migrating-hls-video-library-to-vitis-vision.rst.txt"
+						rel="nofollow">Show Source</a></li>						
+				</ul>
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Vitis Vision Library</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Migrating HLS Video Library to Vitis vision</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/migrating-hls-video-library-to-vitis-vision.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="migrating-hls-video-library-to-vitis-vision">
+<h1>Migrating HLS Video Library to Vitis vision<a class="headerlink" href="#migrating-hls-video-library-to-vitis-vision" title="Permalink to this headline">¶</a></h1>
+<p>The HLS video library has been deprecated. All the functions and
+most of the infrastructure available in HLS video library are now
+available in Vitis vision with their names changed and some modifications.
+These HLS video library functions ported to Vitis vision supports build
+flow also.</p>
+<p>This section provides the details on using the C++ video processing
+functions and the infrastructure present in HLS video library.</p>
+<div class="section" id="infrastructure-functions-and-classes">
+<h2>Infrastructure Functions and Classes<a class="headerlink" href="#infrastructure-functions-and-classes" title="Permalink to this headline">¶</a></h2>
+<p>All the functions imported from HLS video library now take xf::cv::Mat (in
+sync with Vitis vision library) to represent image data instead of hls::Mat.
+The main difference between these two is that the hls::Mat uses
+hls::stream to store the data whereas xf::cv::Mat uses a pointer. Therefore,
+hls:: Mat cannot be exactly replaced with xf::cv::Mat for migrating.</p>
+<p>Below table summarizes the differences between member functions of
+hls::Mat to xf::cv::Mat.</p>
+<table border="1" class="docutils" id="id4">
+<caption><span class="caption-text">Table : Infrastructure Functions and Classes</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="31%" />
+<col width="31%" />
+<col width="37%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Member Function</th>
+<th class="head">hls::Mat (HLS Video
+lib)</th>
+<th class="head">xf::cv::Mat (Vitis vision
+lib)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>channels()</td>
+<td>Returns the number
+of channels</td>
+<td>Returns the number
+of channels</td>
+</tr>
+<tr class="row-odd"><td>type()</td>
+<td>Returns the enum
+value of pixel type</td>
+<td>Returns the enum
+value of pixel type</td>
+</tr>
+<tr class="row-even"><td>depth()</td>
+<td>Returns the enum
+value of pixel type</td>
+<td>Returns the depth of
+pixel including
+channels</td>
+</tr>
+<tr class="row-odd"><td>read()</td>
+<td>Readout a value and
+return it as a
+scalar from stream</td>
+<td>Readout a value from
+a given location and
+return it as a
+packed (for
+multi-pixel/clock)
+value.</td>
+</tr>
+<tr class="row-even"><td>operator &gt;&gt;</td>
+<td>Similar to read()</td>
+<td>Not available in
+Vitis vision</td>
+</tr>
+<tr class="row-odd"><td>operator &lt;&lt;</td>
+<td>Similar to write()</td>
+<td>Not available in
+Vitis vision</td>
+</tr>
+<tr class="row-even"><td>Write()</td>
+<td>Write a scalar value
+into the stream</td>
+<td>Writes a packed (for
+multi-pixel/clock)
+value into the given
+location.</td>
+</tr>
+</tbody>
+</table>
+<p>Infrastructure files available in HLS Video Library hls_video_core.hpp,
+hls_video_mem.hpp, hls_video_types.hpp are moved to xf_video_core.hpp,
+xf_video_mem.hpp, xf_video_types.hpp in Vitis vision Library and
+hls_video_imgbase.hpp is deprecated. Code inside these files unchanged
+except that these are now under xf::cv::namespace.</p>
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Memory Window Buffer</dt>
+<dd>hls::window is now xf::cv::window. No change in the implementation,
+except the namespace change. This is located in “xf_video_mem.h”
+file.</dd>
+<dt>Memory Line Buffer</dt>
+<dd>hls::LineBuffer is now xf::cv::LineBuffer. No difference between the two,
+except xf::cv::LineBuffer has extra template arguments for inferring
+different types of RAM structures, for the storage structure used.
+Default storage type is “RAM_S2P_BRAM” with RESHAPE_FACTOR=1.
+Complete description can be found here
+<a class="reference external" href="MigratingHLSVideoLibrarytoVitisvision.html#ndi1542884914646">xf::cv::LineBuffer</a>. This is
+located in xf_video_mem.hpp file.</dd>
+</dl>
+</div>
+<div class="section" id="funtions">
+<h2>Funtions<a class="headerlink" href="#funtions" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>OpenCV interface functions</dt>
+<dd>These functions covert image data of OpenCV Mat format to/from HLS
+AXI types. HLS Video Library had 14 interface functions, out of
+which, two functions are available in Vitis vision Library:
+cvMat2AXIvideo and AXIvideo2cvMat located in “xf_axi.h” file. The
+rest are all deprecated.</dd>
+<dt>AXI4-Stream I/O Functions</dt>
+<dd>The I/O functions which convert hls::Mat to/from AXI4-Stream
+compatible data type (hls::stream) are hls::AXIvideo2Mat,
+hls::Mat2AXIvideo. These functions are now deprecated and added 2 new
+functions xf::cv::AXIvideo2xfMat and xf::cv:: xfMat2AXIvideo to facilitate
+the xf::cv::Mat to/from conversion. To use these functions, the header
+file “xf_infra.hpp” must be included.</dd>
+</dl>
+</div>
+<div class="section" id="xf-cv-window">
+<h2>xf::cv::window<a class="headerlink" href="#xf-cv-window" title="Permalink to this headline">¶</a></h2>
+<p>A template class to represent the 2D window buffer. It has three
+parameters to specify the number of rows, columns in window buffer and
+the pixel data type.</p>
+<div class="section" id="class-definition">
+<h3>Class definition<a class="headerlink" href="#class-definition" title="Permalink to this headline">¶</a></h3>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">template</span><span class="o">&lt;</span><span class="nb">int</span> <span class="n">ROWS</span><span class="p">,</span> <span class="nb">int</span> <span class="n">COLS</span><span class="p">,</span> <span class="n">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="k">class</span> <span class="nc">Window</span> <span class="p">{</span>
+<span class="n">public</span><span class="p">:</span>
+    <span class="n">Window</span><span class="p">()</span>
+   <span class="o">/*</span> <span class="n">Window</span> <span class="n">main</span> <span class="n">APIs</span> <span class="o">*/</span>
+    <span class="n">void</span> <span class="n">shift_pixels_left</span><span class="p">();</span>
+    <span class="n">void</span> <span class="n">shift_pixels_right</span><span class="p">();</span>
+    <span class="n">void</span> <span class="n">shift_pixels_up</span><span class="p">();</span>
+    <span class="n">void</span> <span class="n">shift_pixels_down</span><span class="p">();</span>
+    <span class="n">void</span> <span class="n">insert_pixel</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">,</span> <span class="nb">int</span> <span class="n">row</span><span class="p">,</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">insert_row</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">[</span><span class="n">COLS</span><span class="p">],</span> <span class="nb">int</span> <span class="n">row</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">insert_top_row</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">[</span><span class="n">COLS</span><span class="p">]);</span>
+    <span class="n">void</span> <span class="n">insert_bottom_row</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">[</span><span class="n">COLS</span><span class="p">]);</span>
+    <span class="n">void</span> <span class="n">insert_col</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">[</span><span class="n">ROWS</span><span class="p">],</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">insert_left_col</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">[</span><span class="n">ROWS</span><span class="p">]);</span>
+    <span class="n">void</span> <span class="n">insert_right_col</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">[</span><span class="n">ROWS</span><span class="p">]);</span>
+    <span class="n">T</span><span class="o">&amp;</span> <span class="n">getval</span><span class="p">(</span><span class="nb">int</span> <span class="n">row</span><span class="p">,</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">T</span><span class="o">&amp;</span> <span class="n">operator</span> <span class="p">()(</span><span class="nb">int</span> <span class="n">row</span><span class="p">,</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">T</span> <span class="n">val</span><span class="p">[</span><span class="n">ROWS</span><span class="p">][</span><span class="n">COLS</span><span class="p">];</span>
+<span class="c1">#ifdef __DEBUG__</span>
+    <span class="n">void</span> <span class="n">restore_val</span><span class="p">();</span>
+    <span class="n">void</span> <span class="n">window_print</span><span class="p">();</span>
+    <span class="n">T</span> <span class="n">val_t</span><span class="p">[</span><span class="n">ROWS</span><span class="p">][</span><span class="n">COLS</span><span class="p">];</span>
+<span class="c1">#endif</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parameter-descriptions">
+<h3>Parameter Descriptions<a class="headerlink" href="#parameter-descriptions" title="Permalink to this headline">¶</a></h3>
+<p>The following table lists the xf::cv::Window class members and their
+descriptions.</p>
+<table border="1" class="docutils" id="id5">
+<caption><span class="caption-text">Table : Window Function Parameter Descriptions</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Val</td>
+<td>2-D array to hold the contents of buffer.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="member-function-description">
+<h3>Member Function Description<a class="headerlink" href="#member-function-description" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils" id="id6">
+<caption><span class="caption-text">Table : Member Function Description</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Function</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>shift_pixels_left()</td>
+<td>Shift the window left, that moves
+all stored data within the window
+right, leave the leftmost column
+(col = COLS-1) for inserting new
+data.</td>
+</tr>
+<tr class="row-odd"><td>shift_pixels_right()</td>
+<td>Shift the window right, that
+moves all stored data within the
+window left, leave the rightmost
+column (col = 0) for inserting
+new data.</td>
+</tr>
+<tr class="row-even"><td>shift_pixels_up()</td>
+<td>Shift the window up, that moves
+all stored data within the window
+down, leave the top row (row =
+ROWS-1) for inserting new data.</td>
+</tr>
+<tr class="row-odd"><td>shift_pixels_down()</td>
+<td>Shift the window down, that moves
+all stored data within the window
+up, leave the bottom row (row =
+0) for inserting new data.</td>
+</tr>
+<tr class="row-even"><td>insert_pixel(T value, int row,
+int col)</td>
+<td>Insert a new element value at
+location (row, column) of the
+window.</td>
+</tr>
+<tr class="row-odd"><td>insert_row(T value[COLS], int
+row)</td>
+<td>Inserts a set of values in any
+row of the window.</td>
+</tr>
+<tr class="row-even"><td>insert_top_row(T value[COLS])</td>
+<td>Inserts a set of values in the
+top row = 0 of the window.</td>
+</tr>
+<tr class="row-odd"><td>insert_bottom_row(T value[COLS])</td>
+<td>Inserts a set of values in the
+bottom row = ROWS-1 of the
+window.</td>
+</tr>
+<tr class="row-even"><td>insert_col(T value[ROWS], int
+col)</td>
+<td>Inserts a set of values in any
+column of the window.</td>
+</tr>
+<tr class="row-odd"><td>insert_left_col(T value[ROWS])</td>
+<td>Inserts a set of values in left
+column = 0 of the window.</td>
+</tr>
+<tr class="row-even"><td>insert_right_col(T value[ROWS])</td>
+<td>Inserts a set of values in right
+column = COLS-1 of the window.</td>
+</tr>
+<tr class="row-odd"><td>T&amp; getval(int row, int col)</td>
+<td>Returns the data value in the
+window at position (row,column).</td>
+</tr>
+<tr class="row-even"><td>T&amp; operator ()(int row, int col)</td>
+<td>Returns the data value in the
+window at position (row,column).</td>
+</tr>
+<tr class="row-odd"><td>restore_val()</td>
+<td>Restore the contents of window
+buffer to another array.</td>
+</tr>
+<tr class="row-even"><td>window_print()</td>
+<td>Print all the data present in
+window buffer onto console.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="template-parameter-description">
+<h3>Template Parameter Description<a class="headerlink" href="#template-parameter-description" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils" id="id7">
+<caption><span class="caption-text">Table : Template Parameter Description</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ROWS</td>
+<td>Number of rows in the window buffer.</td>
+</tr>
+<tr class="row-odd"><td>COLS</td>
+<td>Number of columns in the window buffer.</td>
+</tr>
+<tr class="row-even"><td>T</td>
+<td>Data type of pixel in the window buffer.</td>
+</tr>
+</tbody>
+</table>
+<p>Sample code for window buffer declaration</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Window</span><span class="o">&lt;</span><span class="n">K_ROWS</span><span class="p">,</span> <span class="n">K_COLS</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">char</span><span class="o">&gt;</span> <span class="n">kernel</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="xf-cv-linebuffer">
+<span id="ariaid-title5"></span><h2>xf::cv::LineBuffer<a class="headerlink" href="#xf-cv-linebuffer" title="Permalink to this headline">¶</a></h2>
+<p>A template class to represent 2D line buffer. It has three parameters to
+specify the number of rows, columns in window buffer and the pixel data
+type.</p>
+<div class="section" id="class-definition-1">
+<span id="id1"></span><h3>Class definition<a class="headerlink" href="#class-definition-1" title="Permalink to this headline">¶</a></h3>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">template</span><span class="o">&lt;</span><span class="nb">int</span> <span class="n">ROWS</span><span class="p">,</span> <span class="nb">int</span> <span class="n">COLS</span><span class="p">,</span> <span class="n">typename</span> <span class="n">T</span><span class="p">,</span> <span class="n">XF_ramtype_e</span> <span class="n">MEM_TYPE</span><span class="o">=</span><span class="n">RAM_S2P_BRAM</span><span class="p">,</span> <span class="nb">int</span> <span class="n">RESHAPE_FACTOR</span><span class="o">=</span><span class="mi">1</span><span class="o">&gt;</span>
+ <span class="k">class</span> <span class="nc">LineBuffer</span> <span class="p">{</span>
+<span class="n">public</span><span class="p">:</span>
+    <span class="n">LineBuffer</span><span class="p">()</span>
+       <span class="o">/*</span> <span class="n">LineBuffer</span> <span class="n">main</span> <span class="n">APIs</span> <span class="o">*/</span>
+    <span class="o">/*</span> <span class="n">LineBuffer</span> <span class="n">main</span> <span class="n">APIs</span> <span class="o">*/</span>
+    <span class="n">void</span> <span class="n">shift_pixels_up</span><span class="p">(</span><span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">shift_pixels_down</span><span class="p">(</span><span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">insert_bottom_row</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">,</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">insert_top_row</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">,</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">get_col</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">[</span><span class="n">ROWS</span><span class="p">],</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">T</span><span class="o">&amp;</span> <span class="n">getval</span><span class="p">(</span><span class="nb">int</span> <span class="n">row</span><span class="p">,</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">T</span><span class="o">&amp;</span> <span class="n">operator</span> <span class="p">()(</span><span class="nb">int</span> <span class="n">row</span><span class="p">,</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">Back</span> <span class="n">compatible</span> <span class="n">APIs</span> <span class="o">*/</span>
+    <span class="n">void</span> <span class="n">shift_up</span><span class="p">(</span><span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">shift_down</span><span class="p">(</span><span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">insert_bottom</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">,</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">insert_top</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">,</span> <span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">T</span> <span class="n">val</span><span class="p">[</span><span class="n">ROWS</span><span class="p">][</span><span class="n">COLS</span><span class="p">];</span>
+<span class="c1">#ifdef __DEBUG__</span>
+    <span class="n">void</span> <span class="n">restore_val</span><span class="p">();</span>
+    <span class="n">void</span> <span class="n">linebuffer_print</span><span class="p">(</span><span class="nb">int</span> <span class="n">col</span><span class="p">);</span>
+    <span class="n">T</span> <span class="n">val_t</span><span class="p">[</span><span class="n">ROWS</span><span class="p">][</span><span class="n">COLS</span><span class="p">];</span>
+<span class="c1">#endif</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parameter-descriptions-1">
+<span id="id2"></span><h3>Parameter Descriptions<a class="headerlink" href="#parameter-descriptions-1" title="Permalink to this headline">¶</a></h3>
+<p>The following table lists the xf::cv::LineBuffer class members and their
+descriptions.</p>
+<table border="1" class="docutils" id="id8">
+<caption><span class="caption-text">Table : Line Buffer Function Parameter Descriptions</span><a class="headerlink" href="#id8" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Val</td>
+<td>2-D array to hold the contents of line buffer.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="member-functions-description">
+<h3>Member Functions Description<a class="headerlink" href="#member-functions-description" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils" id="id9">
+<caption><span class="caption-text">Table : Member Functions Description</span><a class="headerlink" href="#id9" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Function</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>shift_pixels_up(int col)</td>
+<td>Line buffer contents Shift up,
+new values will be placed in the
+bottom row=ROWS-1.</td>
+</tr>
+<tr class="row-odd"><td>shift_pixels_down(int col)</td>
+<td>Line buffer contents Shift down,
+new values will be placed in the
+top row=0.</td>
+</tr>
+<tr class="row-even"><td>insert_bottom_row(T value, int
+col)</td>
+<td>Inserts a new value in bottom
+row= ROWS-1 of the line buffer.</td>
+</tr>
+<tr class="row-odd"><td>insert_top_row(T value, int col)</td>
+<td>Inserts a new value in top row=0
+of the line buffer.</td>
+</tr>
+<tr class="row-even"><td>get_col(T value[ROWS], int col)</td>
+<td>Get a column value of the line
+buffer.</td>
+</tr>
+<tr class="row-odd"><td>T&amp; getval(int row, int col)</td>
+<td>Returns the data value in the
+line buffer at position (row,
+column).</td>
+</tr>
+<tr class="row-even"><td>T&amp; operator ()(int row, int col);</td>
+<td>Returns the data value in the
+line buffer at position (row,
+column).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="template-parameter-description-1">
+<span id="id3"></span><h3>Template Parameter Description<a class="headerlink" href="#template-parameter-description-1" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils" id="id10">
+<caption><span class="caption-text">Table : Template Parameter Description</span><a class="headerlink" href="#id10" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ROWS</td>
+<td>Number of rows in line buffer.</td>
+</tr>
+<tr class="row-odd"><td>COLS</td>
+<td>Number of columns in line buffer.</td>
+</tr>
+<tr class="row-even"><td>T</td>
+<td>Data type of pixel in line
+buffer.</td>
+</tr>
+<tr class="row-odd"><td>MEM_TYPE</td>
+<td>Type of storage element. It takes
+one of the following enumerated
+values: RAM_1P_BRAM, RAM_1P_URAM,
+RAM_2P_BRAM, RAM_2P_URAM,
+RAM_S2P_BRAM, RAM_S2P_URAM,
+RAM_T2P_BRAM, RAM_T2P_URAM.</td>
+</tr>
+<tr class="row-even"><td>RESHAPE_FACTOR</td>
+<td>Specifies the amount to divide an
+array.</td>
+</tr>
+</tbody>
+</table>
+<p>Sample code for line buffer declaration:</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LineBuffer</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1920</span><span class="p">,</span> <span class="n">XF_8UC3</span><span class="p">,</span> <span class="n">RAM_S2P_URAM</span><span class="p">,</span><span class="mi">1</span><span class="o">&gt;</span>     <span class="n">buff</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="video-processing-functions">
+<span id="ariaid-title6"></span><h2>Video Processing Functions<a class="headerlink" href="#video-processing-functions" title="Permalink to this headline">¶</a></h2>
+<p>The following table summarizes the video processing functions ported
+from HLS Video Library into Vitis vision Library along with the API
+modifications.</p>
+<table border="1" class="docutils" id="id11">
+<caption><span class="caption-text">Table : Video Processing Functions</span><a class="headerlink" href="#id11" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="8%" />
+<col width="39%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Functions</th>
+<th class="head">HLS Video Library -API</th>
+<th class="head">xfOpenCV Library-API</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>addS</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, typename _T, int DST_T&gt;</p>
+<p class="last">void AddS(Mat&lt;ROWS, COLS, SRC_T&gt;&amp;src,Scalar&lt;HLS_MAT_CN(SRC_T), _T&gt; scl, Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt;int POLICY_TYPE, int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void addS(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, unsigned char _scl[XF_CHANNELS(SRC_T,NPC)],xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>AddWeighted</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC1_T, int SRC2_T, int DST_T, typename P_T&gt;</p>
+<p class="last">void AddWeighted(Mat&lt;ROWS, COLS, SRC1_T&gt;&amp; src1,P_T alpha,Mat&lt;ROWS, COLS, SRC2_T&gt;&amp; src2,P_T beta, P_T gamma,Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt; int SRC_T,int DST_T, int ROWS, int COLS, int NPC = 1&gt;</p>
+<p class="last">void addWeighted(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; src1,float alpha, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; src2,float beta, float gama, xf::Mat&lt;DST_T, ROWS, COLS, NPC&gt; &amp; dst)</p>
+</td>
+</tr>
+<tr class="row-even"><td>Cmp</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC1_T, int SRC2_T, int DST_T&gt;</p>
+<p>void Cmp(Mat&lt;ROWS, COLS, SRC1_T&gt;&amp; src1,Mat&lt;ROWS, COLS, SRC2_T&gt;&amp; src2,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst,int cmp_op)</p>
+</td>
+<td><p class="first">template&lt;int CMP_OP, int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void compare(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src2,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>CmpS</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, typename P_T, int DST_T&gt;</p>
+<p class="last">void CmpS(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src, P_T value, Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst, int cmp_op)</p>
+</td>
+<td><p class="first">template&lt;int CMP_OP, int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void compare(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, unsigned char _scl[XF_CHANNELS(SRC_T,NPC)],xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-even"><td>Max</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC1_T, int SRC2_T, int DST_T&gt;</p>
+<p>void Max(Mat&lt;ROWS, COLS, SRC1_T&gt;&amp; src1,</p>
+<p>Mat&lt;ROWS, COLS, SRC2_T&gt;&amp; src2,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt;int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void Max(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src2,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>MaxS</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, typename _T, int DST_T&gt;</p>
+<p>void MaxS(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p class="last">_T value, Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt; int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void max(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, unsigned char _scl[XF_CHANNELS(SRC_T,NPC)],xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-even"><td>Min</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC1_T, int SRC2_T, int DST_T&gt;</p>
+<p>void Min(Mat&lt;ROWS, COLS, SRC1_T&gt;&amp; src1,</p>
+<p>Mat&lt;ROWS, COLS, SRC2_T&gt;&amp; src2,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt; int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void Min(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src2,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>MinS</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, typename _T, int DST_T&gt;</p>
+<p>void MinS(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p class="last">_T value,Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt; int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void min(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, unsigned char _scl[XF_CHANNELS(SRC_T,NPC)],xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-even"><td>PaintMask</td>
+<td><p class="first">template&lt;int SRC_T,int MASK_T,int ROWS,int COLS&gt;</p>
+<p>void PaintMask(</p>
+<p>Mat&lt;ROWS,COLS,SRC_T&gt; &amp;_src,</p>
+<p>Mat&lt;ROWS,COLS,MASK_T&gt;&amp;_mask,</p>
+<p class="last">Mat&lt;ROWS,COLS,SRC_T&gt;&amp;_dst,Scalar&lt;HLS_MAT_CN(SRC_T),HLS_TNAME(SRC_T)&gt; _color)</p>
+</td>
+<td><p class="first">template&lt; int SRC_T,int MASK_T, int ROWS, int COLS,int NPC=1&gt;</p>
+<p class="last">void paintmask(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src_mat, xf::Mat&lt;MASK_T, ROWS, COLS, NPC&gt; &amp; in_mask, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst_mat, unsigned char _color[XF_CHANNELS(SRC_T,NPC)])</p>
+</td>
+</tr>
+<tr class="row-odd"><td>Reduce</td>
+<td><p class="first">template&lt;typename INTER_SUM_T, int ROWS, int COLS, int SRC_T, int DST_ROWS, int DST_COLS, int DST_T&gt;</p>
+<p>void Reduce(</p>
+<p>Mat&lt;ROWS, COLS, SRC_T&gt; &amp;src,</p>
+<p>Mat&lt;DST_ROWS, DST_COLS, DST_T&gt; &amp;dst,</p>
+<p>int dim,</p>
+<p class="last">int op=HLS_REDUCE_SUM)</p>
+</td>
+<td><p class="first">template&lt; int REDUCE_OP, int SRC_T,int DST_T, int ROWS, int COLS,int ONE_D_HEIGHT, int ONE_D_WIDTH, int NPC=1&gt;</p>
+<p class="last">void reduce(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src_mat, xf::Mat&lt;DST_T, ONE_D_HEIGHT, ONE_D_WIDTH, 1&gt; &amp; _dst_mat, unsigned char dim)</p>
+</td>
+</tr>
+<tr class="row-even"><td>Zero</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, int DST_T&gt;</p>
+<p>void Zero(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt; int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void zero(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>Sum</td>
+<td><p class="first">template&lt;typename DST_T, int ROWS, int COLS, int SRC_T&gt;</p>
+<p>Scalar&lt;HLS_MAT_CN(SRC_T), DST_T&gt; Sum(</p>
+<p class="last">Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src)</p>
+</td>
+<td><p class="first">template&lt; int SRC_T, int ROWS, int COLS, int NPC = 1&gt;</p>
+<p class="last">void sum(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; src1, double sum[XF_CHANNELS(SRC_T,NPC)] )</p>
+</td>
+</tr>
+<tr class="row-even"><td>SubS</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, typename _T, int DST_T&gt;</p>
+<p>void SubS(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p>Scalar&lt;HLS_MAT_CN(SRC_T), _T&gt; scl,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt;int POLICY_TYPE, int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void SubS(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, unsigned char _scl[XF_CHANNELS(SRC_T,NPC)],xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>SubRS</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, typename _T, int DST_T&gt;</p>
+<p>void SubRS(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p>Scalar&lt;HLS_MAT_CN(SRC_T), _T&gt; scl,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt;int POLICY_TYPE, int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void SubRS(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, unsigned char _scl[XF_CHANNELS(SRC_T,NPC)],xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-even"><td>Set</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, typename _T, int DST_T&gt;</p>
+<p>void Set(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p>Scalar&lt;HLS_MAT_CN(SRC_T), _T&gt; scl,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt; int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void set(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, unsigned char _scl[XF_CHANNELS(SRC_T,NPC)],xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>Absdiff</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC1_T, int SRC2_T, int DST_T&gt;</p>
+<p>void AbsDiff(</p>
+<p>Mat&lt;ROWS, COLS, SRC1_T&gt;&amp; src1,</p>
+<p>Mat&lt;ROWS, COLS, SRC2_T&gt;&amp; src2,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt;int SRC_T, int ROWS, int COLS, int NPC =1&gt;</p>
+<p class="last">void absdiff(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src2,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-even"><td>And</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC1_T, int SRC2_T, int DST_T&gt;</p>
+<p>void And(</p>
+<p>Mat&lt;ROWS, COLS, SRC1_T&gt;&amp; src1,</p>
+<p>Mat&lt;ROWS, COLS, SRC2_T&gt;&amp; src2,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt;int SRC_T, int ROWS, int COLS, int NPC = 1&gt;</p>
+<p class="last">void bitwise_and(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src2, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp;_dst)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>Dilate</td>
+<td><p class="first">template&lt;int Shape_type,int ITERATIONS,int SRC_T, int DST_T, typename KN_T,int IMG_HEIGHT,int IMG_WIDTH,int K_HEIGHT,int K_WIDTH&gt;</p>
+<p class="last">void Dilate(Mat&lt;IMG_HEIGHT, IMG_WIDTH, SRC_T&gt;&amp;_src,Mat&lt;IMG_HEIGHT, IMG_WIDTH, DST_T&amp;_dst,Window&lt;K_HEIGHT,K_WIDTH,KN_T&gt;&amp;_kernel)</p>
+</td>
+<td><p class="first">template&lt;int BORDER_TYPE, int TYPE, int ROWS, int COLS,int K_SHAPE,int K_ROWS,int K_COLS, int ITERATIONS, int NPC=1&gt;</p>
+<p class="last">void dilate (xf::Mat&lt;TYPE, ROWS, COLS, NPC&gt; &amp; _src, xf::Mat&lt;TYPE, ROWS, COLS, NPC&gt; &amp; _dst,unsigned char _kernel[K_ROWS*K_COLS])</p>
+</td>
+</tr>
+<tr class="row-even"><td>Duplicate</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, int DST_T&gt;</p>
+<p class="last">void Duplicate(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst1,Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst2)</p>
+</td>
+<td><p class="first">template&lt;int SRC_T, int ROWS, int COLS,int NPC&gt;</p>
+<p class="last">void duplicateMat(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst1,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst2)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>EqualizeHist</td>
+<td><p class="first">template&lt;int SRC_T, int DST_T,int ROW, int COL&gt;</p>
+<p class="last">void EqualizeHist(Mat&lt;ROW, COL, SRC_T&gt;&amp;_src,Mat&lt;ROW, COL, DST_T&gt;&amp;_dst)</p>
+</td>
+<td><p class="first">template&lt;int SRC_T, int ROWS, int COLS, int NPC = 1&gt;</p>
+<p class="last">void equalizeHist(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src1,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-even"><td>erode</td>
+<td><p class="first">template&lt;int Shape_type,int ITERATIONS,int SRC_T, int DST_T, typename KN_T,int IMG_HEIGHT,int IMG_WIDTH,int K_HEIGHT,int K_WIDTH&gt;</p>
+<p class="last">void Erode(Mat&lt;IMG_HEIGHT, IMG_WIDTH, SRC_T&gt;&amp;_src,Mat&lt;IMG_HEIGHT,IMG_WIDTH,DST_T&gt;&amp;_dst,Window&lt;K_HEIGHT,K_WIDTH,KN_T&gt;&amp;_kernel)</p>
+</td>
+<td><p class="first">template&lt;int BORDER_TYPE, int TYPE, int ROWS, int COLS,int K_SHAPE,int K_ROWS,int K_COLS, int ITERATIONS, int NPC=1&gt;</p>
+<p class="last">void erode (xf::Mat&lt;TYPE, ROWS, COLS, NPC&gt; &amp; _src, xf::Mat&lt;TYPE, ROWS, COLS, NPC&gt; &amp; _dst,unsigned char _kernel[K_ROWS*K_COLS])</p>
+</td>
+</tr>
+<tr class="row-odd"><td>FASTX</td>
+<td><p class="first">template&lt;int SRC_T,int ROWS,int COLS&gt;</p>
+<p>void FASTX(Mat&lt;ROWS,COLS,SRC_T&gt; &amp;_src,</p>
+<p class="last">Mat&lt;ROWS,COLS,HLS_8UC1&gt;&amp;_mask,HLS_TNAME(SRC_T)_threshold,bool _nomax_supression)</p>
+</td>
+<td><p class="first">template&lt;int NMS,int SRC_T,int ROWS, int COLS,int NPC=1&gt;</p>
+<p class="last">void fast(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src_mat,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst_mat,unsigned char _threshold)</p>
+</td>
+</tr>
+<tr class="row-even"><td>Filter2D</td>
+<td><p class="first">template&lt;int SRC_T, int DST_T, typename KN_T, typename POINT_T,</p>
+<p>int IMG_HEIGHT,int IMG_WIDTH,int K_HEIGHT,int K_WIDTH&gt;</p>
+<p class="last">void Filter2D(Mat&lt;IMG_HEIGHT, IMG_WIDTH, SRC_T&gt; &amp;_src,Mat&lt;IMG_HEIGHT, IMG_WIDTH, DST_T&gt; &amp;_dst,Window&lt;K_HEIGHT,K_WIDTH,KN_T&gt;&amp;_kernel,Point_&lt;POINT_T&gt;anchor)</p>
+</td>
+<td><p class="first">template&lt;int BORDER_TYPE,int FILTER_WIDTH,int FILTER_HEIGHT, int SRC_T,int DST_T, int ROWS, int COLS,int NPC&gt;</p>
+<p class="last">void filter2D(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src_mat,xf::Mat&lt;DST_T, ROWS, COLS, NPC&gt; &amp; _dst_mat,short int filter[FILTER_HEIGHT*FILTER_WIDTH],unsigned char _shift)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>GaussianBlur</td>
+<td><p class="first">template&lt;int KH,int KW,typename BORDERMODE,int SRC_T,int DST_T,int ROWS,int COLS&gt;</p>
+<p>void GaussianBlur(Mat&lt;ROWS, COLS, SRC_T&gt;</p>
+<p>&amp;_src, Mat&lt;ROWS, COLS, DST_T&gt;</p>
+<p class="last">&amp;_dst,double sigmaX=0,double sigmaY=0)</p>
+</td>
+<td><p class="first">template&lt;int FILTER_SIZE, int BORDER_TYPE, int SRC_T, int ROWS, int COLS,int NPC = 1&gt;</p>
+<p class="last">void GaussianBlur(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst, float sigma)</p>
+</td>
+</tr>
+<tr class="row-even"><td>Harris</td>
+<td><p class="first">template&lt;int blockSize,int Ksize,typename KT,int SRC_T,int DST_T,int ROWS,int COLS&gt;</p>
+<p>void Harris(Mat&lt;ROWS, COLS, SRC_T&gt;</p>
+<p class="last">&amp;_src,Mat&lt;ROWS, COLS, DST_T&gt;&amp;_dst,KT k,int threshold</p>
+</td>
+<td><p class="first">template&lt;int FILTERSIZE,int BLOCKWIDTH, int NMSRADIUS,int SRC_T,int ROWS, int COLS,int NPC=1,bool USE_URAM=false&gt;</p>
+<p class="last">void cornerHarris(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; src,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; dst,uint16_t threshold, uint16_t k)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>CornerHarris</td>
+<td><p class="first">template&lt;int blockSize,int Ksize,typename KT,int SRC_T,int DST_T,int ROWS,int COLS&gt;</p>
+<p>void CornerHarris(</p>
+<p class="last">Mat&lt;ROWS, COLS, SRC_T&gt;&amp;_src,Mat&lt;ROWS, COLS, DST_T&gt;&amp;_dst,KT k)</p>
+</td>
+<td><p class="first">template&lt;int FILTERSIZE,int BLOCKWIDTH, int NMSRADIUS,int SRC_T,int ROWS, int COLS,int NPC=1,bool USE_URAM=false&gt;</p>
+<p class="last">void cornerHarris(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; src,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; dst,uint16_t threshold, uint16_t k</p>
+</td>
+</tr>
+<tr class="row-even"><td>HoughLines2</td>
+<td><p class="first">template&lt;unsigned int theta,unsigned int rho,typename AT,typename RT,int SRC_T,int ROW,int COL,unsigned int linesMax&gt;</p>
+<p>void HoughLines2(Mat&lt;ROW,COL,SRC_T&gt; &amp;_src,</p>
+<p class="last">Polar_&lt;AT,RT&gt; (&amp;_lines)[linesMax],unsigned int threshold)</p>
+</td>
+<td><p class="first">template&lt;unsigned int RHO,unsigned int THETA,int MAXLINES,int DIAG,int MINTHETA,int MAXTHETA,int SRC_T, int ROWS, int COLS,int NPC&gt;</p>
+<p class="last">void HoughLines(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src_mat,float outputrho[MAXLINES],float outputtheta[MAXLINES],short threshold,short linesmax)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>Integral</td>
+<td><p class="first">template&lt;int SRC_T, int DST_T,</p>
+<p>int ROWS,int COLS&gt;</p>
+<p>void Integral(Mat&lt;ROWS, COLS, SRC_T&gt;&amp;_src,</p>
+<p class="last">Mat&lt;ROWS+1, COLS+1, DST_T&gt;&amp;_sum )</p>
+</td>
+<td><p class="first">template&lt;int SRC_TYPE,int DST_TYPE, int ROWS, int COLS, int NPC&gt;</p>
+<p class="last">void integral(xf::Mat&lt;SRC_TYPE, ROWS, COLS, NPC&gt; &amp; _src_mat, xf::Mat&lt;DST_TYPE, ROWS, COLS, NPC&gt; &amp; _dst_mat)</p>
+</td>
+</tr>
+<tr class="row-even"><td>Merge</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, int DST_T&gt;</p>
+<p>void Merge(</p>
+<p>Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src0,</p>
+<p>Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src1,</p>
+<p>Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src2,</p>
+<p>Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src3,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt;int SRC_T, int DST_T, int ROWS, int COLS, int NPC=1&gt;</p>
+<p class="last">void merge(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp;_src1, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp;_src2, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp;_src3, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp;_src4, xf::Mat&lt;DST_T, ROWS, COLS, NPC&gt; &amp;_dst)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>MinMaxLoc</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, typename P_T&gt;</p>
+<p>void MinMaxLoc(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p>P_T* min_val,P_T* max_val,Point&amp; min_loc,</p>
+<p class="last">Point&amp; max_loc)</p>
+</td>
+<td><p class="first">template&lt;int SRC_T,int ROWS,int COLS,int NPC=0&gt;</p>
+<p class="last">void minMaxLoc(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src,int32_t *min_value, int32_t *max_value,uint16_t *_minlocx, uint16_t *_minlocy, uint16_t *_maxlocx, uint16_t *_maxlocy )</p>
+</td>
+</tr>
+<tr class="row-even"><td>Mul</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC1_T, int SRC2_T, int DST_T&gt;</p>
+<p>void Mul(Mat&lt;ROWS, COLS, SRC1_T&gt;&amp; src1,</p>
+<p>Mat&lt;ROWS, COLS, SRC2_T&gt;&amp; src2,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt;int POLICY_TYPE, int SRC_T, int ROWS, int COLS, int NPC = 1&gt;</p>
+<p class="last">void multiply(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; src1, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; src2, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; dst,float scale)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>Not</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, int DST_T&gt;</p>
+<p>void Not(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst)</p>
+</td>
+<td><p class="first">template&lt;int SRC_T, int ROWS, int COLS, int NPC = 1&gt;</p>
+<p class="last">void bitwise_not(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; src, xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; dst)</p>
+</td>
+</tr>
+<tr class="row-even"><td>Range</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, int DST_T, typename P_T&gt;</p>
+<p>void Range(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p>Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst,</p>
+<p class="last">P_T start,P_T end)</p>
+</td>
+<td><p class="first">template&lt;int SRC_T, int ROWS, int COLS,int NPC=1&gt;</p>
+<p class="last">void inRange(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; src,unsigned char lower_thresh,unsigned char upper_thresh,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; dst)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>Resize</td>
+<td><p class="first">template&lt;int SRC_T, int ROWS,int COLS,int DROWS,int DCOLS&gt;</p>
+<p>void Resize (</p>
+<p>Mat&lt;ROWS, COLS, SRC_T&gt; &amp;_src,</p>
+<p>Mat&lt;DROWS, DCOLS, SRC_T&gt; &amp;_dst,</p>
+<p class="last">int interpolation=HLS_INTER_LINEAR )</p>
+</td>
+<td><p class="first">template&lt;int INTERPOLATION_TYPE, int TYPE, int SRC_ROWS, int SRC_COLS, int DST_ROWS, int DST_COLS, int NPC, int MAX_DOWN_SCALE&gt;</p>
+<p class="last">void resize (xf::Mat&lt;TYPE, SRC_ROWS, SRC_COLS, NPC&gt; &amp; _src, xf::Mat&lt;TYPE, DST_ROWS, DST_COLS, NPC&gt; &amp; _dst)</p>
+</td>
+</tr>
+<tr class="row-even"><td>sobel</td>
+<td><p class="first">template&lt;int XORDER, int YORDER, int SIZE, int SRC_T, int DST_T, int ROWS,int COLS,int DROWS,int DCOLS&gt;</p>
+<p>void Sobel (Mat&lt;ROWS, COLS, SRC_T&gt;</p>
+<p class="last">&amp;_src,Mat&lt;DROWS, DCOLS, DST_T&gt; &amp;_dst)</p>
+</td>
+<td><p class="first">template&lt;int BORDER_TYPE,int FILTER_TYPE, int SRC_T,int DST_T, int ROWS, int COLS,int NPC=1,bool USE_URAM = false&gt;</p>
+<p class="last">void Sobel(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src_mat,xf::Mat&lt;DST_T, ROWS, COLS, NPC&gt; &amp; _dst_matx,xf::Mat&lt;DST_T, ROWS, COLS, NPC&gt; &amp; _dst_maty)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>split</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, int DST_T&gt;</p>
+<p>void Split(</p>
+<p>Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p>Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst0,</p>
+<p>Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst1,</p>
+<p>Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst2,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst3)</p>
+</td>
+<td><p class="first">template&lt;int SRC_T, int DST_T, int ROWS, int COLS, int NPC=1&gt;</p>
+<p class="last">void extractChannel(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src_mat, xf::Mat&lt;DST_T, ROWS, COLS, NPC&gt; &amp; _dst_mat, uint16_t _channel)</p>
+</td>
+</tr>
+<tr class="row-even"><td>Threshold</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, int DST_T&gt;</p>
+<p>void Threshold(</p>
+<p>Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,</p>
+<p>Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst,</p>
+<p>HLS_TNAME(SRC_T) thresh,</p>
+<p>HLS_TNAME(DST_T) maxval,</p>
+<p class="last">int thresh_type)</p>
+</td>
+<td><p class="first">template&lt;int THRESHOLD_TYPE, int SRC_T, int ROWS, int COLS,int NPC=1&gt;</p>
+<p class="last">void Threshold(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src_mat,xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _dst_mat,short int thresh,short int maxval )</p>
+</td>
+</tr>
+<tr class="row-odd"><td>Scale</td>
+<td><p class="first">template&lt;int ROWS, int COLS, int SRC_T, int DST_T, typename P_T&gt;</p>
+<p class="last">void Scale(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src,Mat&lt;ROWS, COLS, DST_T&gt;&amp; dst, P_T scale=1.0,P_T shift=0.0)</p>
+</td>
+<td><p class="first">template&lt; int SRC_T,int DST_T, int ROWS, int COLS, int NPC = 1&gt;</p>
+<p class="last">void scale(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; src1, xf::Mat&lt;DST_T, ROWS, COLS, NPC&gt; &amp; dst,float scale, float shift)</p>
+</td>
+</tr>
+<tr class="row-even"><td>InitUndistortRectifyMapInverse</td>
+<td><p class="first">template&lt;typename CMT, typename DT, typename ICMT, int ROWS, int COLS, int MAP1_T, int MAP2_T, int N&gt;</p>
+<p>void InitUndistortRectifyMapInverse (</p>
+<p class="last">Window&lt;3,3, CMT&gt; cameraMatrix,DT(&amp;distCoeffs)[N],Window&lt;3,3, ICMT&gt; ir, Mat&lt;ROWS, COLS, MAP1_T&gt; &amp;map1,Mat&lt;ROWS, COLS, MAP2_T&gt; &amp;map2,int noRotation=false)</p>
+</td>
+<td><p class="first">template&lt; int CM_SIZE, int DC_SIZE, int MAP_T, int ROWS, int COLS, int NPC &gt;</p>
+<p>void InitUndistortRectifyMapInverse (</p>
+<p>ap_fixed&lt;32,12&gt; *cameraMatrix,</p>
+<p>ap_fixed&lt;32,12&gt; *distCoeffs,</p>
+<p>ap_fixed&lt;32,12&gt; *ir,</p>
+<p class="last">xf::Mat&lt;MAP_T, ROWS, COLS, NPC&gt; &amp;_mapx_mat,xf::Mat&lt;MAP_T, ROWS, COLS, NPC&gt; &amp;_mapy_mat,int _cm_size, int _dc_size)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>Avg, mean, AvgStddev</td>
+<td><p class="first">template&lt;typename DST_T, int ROWS, int COLS, int SRC_T&gt;</p>
+<p class="last">DST_T Mean(Mat&lt;ROWS, COLS, SRC_T&gt;&amp; src)</p>
+</td>
+<td>template&lt;int SRC_T,int ROWS, int COLS,int NPC=1&gt;void meanStdDev(xf::Mat&lt;SRC_T, ROWS, COLS, NPC&gt; &amp; _src,unsigned short* _mean,unsigned short* _stddev)</td>
+</tr>
+<tr class="row-even"><td>CvtColor</td>
+<td><p class="first">template&lt;typename CONVERSION,int SRC_T, int DST_T,int ROWS,int COLS&gt;</p>
+<p>void CvtColor(Mat&lt;ROWS, COLS, SRC_T&gt; &amp;_src,</p>
+<p class="last">Mat&lt;ROWS, COLS, DST_T&gt; &amp;_dst)</p>
+</td>
+<td>Color Conversion</td>
+</tr>
+</tbody>
+</table>
+<p>Note: All the functions except Reduce can process N-pixels per clock
+where N is power of 2.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+<!-- Atalwar: Moved the footer code to layout.html to resolve conflict with the Xilinx template -->
+
+</footer>
+
+        </div>
+      </div>
+	  
+	  
+	  <!-- Sphinx Page Footer block -->
+  
+
+  <hr/>
+
+  <div role="contentinfo" class="copyright">
+    <p class="footerinfo">
+      <span class="lastupdated">
+        Last updated on June 05, 2020.
+      </span>
+
+    </p>
+  </div>	  
+      </div>
+    </section>
+
+
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+  
+
+  
+  <!--  Xilinx template footer block -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="xilinxExperienceFragments experiencefragment aem-GridColumn--default--none aem-GridColumn aem-GridColumn--offset--default--0 aem-GridColumn--default--16">
+					<div class="xf-content-height">
+						<div class="aem-Grid aem-Grid--16 aem-Grid--default--16 ">
+							<div class="footer parbase aem-GridColumn--default--none aem-GridColumn aem-GridColumn--offset--default--0 aem-GridColumn--default--16">
+								<noindex>
+									<footer>
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+													<div class="row">
+														<div class="footerSocial parbase">
+															<div class="col-md-push-6 col-lg-push-6 col-md-6 col-lg-6">
+																<ul class="list-inline pull-right social-menu">
+																	<li>
+																		<a href="https://www.linkedin.com/company/xilinx">
+																		<span class="linkedin icon"></span>
+																		<span class="sr-only">Connect on LinkedIn</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.twitter.com/XilinxInc">
+																		<span class="twitter icon"></span>
+																		<span class="sr-only">Follow us on Twitter</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.facebook.com/XilinxInc">
+																		<span class="facebook icon"></span>
+																		<span class="sr-only">Connect on Facebook</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.youtube.com/XilinxInc">
+																		<span class="youtube icon"></span>
+																		<span class="sr-only">Watch us on YouTube</span>
+																		</a>
+																	</li>
+																	<li>
+																		<a href="https://www.xilinx.com/registration/subscriber-signup.html">
+																		<span class="newsletter icon"></span>
+																		<span class="sr-only">Subscribe to Newsletter</span>
+																		</a>
+																	</li>
+																</ul>
+															</div>
+														</div>
+														<div class="col-md-pull-6 col-lg-pull-6 col-md-6 col-lg-6">
+															<span class="copyright">
+                                  
+                                  &copy; 2020, Xilinx
+                              </span>
+															<ul class="list-inline sub-menu">
+																<li>
+																	<a href="https://www.xilinx.com/about/privacy-policy.html">Privacy</a>
+																</li>
+																<li>
+																	<a href="https://www.xilinx.com/about/legal.html">Legal</a>
+																</li>
+																<li>
+																	<a href="https://www.xilinx.com/about/contact.html">Contact</a>
+																</li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</footer>
+								</noindex>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="quicklinks parbase aem-GridColumn--default--none aem-GridColumn aem-GridColumn--offset--default--0 aem-GridColumn--default--16">
+					<noindex>
+						<span class="quickLinks">
+							<ul>
+								<li>
+									<a href="#top" class="btn backToTop">
+									<span class="fas fa-angle-up" aria-hidden="true"></span>
+									</a>
+								</li>
+							</ul>
+						</span>
+					</noindex>
+				</div>
+			</div>
+		</div>
+		<script>window.CQ = window.CQ || {}</script>
+		<script src="https://static.cloud.coveo.com/searchui/v2.4382/js/CoveoJsSearch.Lazy.min.js"></script>
+		<script>
+			var underscoreSetup = function () {
+			  _.templateSettings.interpolate = /\{\{=([^-][\S\s]+?)\}\}/g;
+			  _.templateSettings.evaluate = /\{\{([^-=][\S\s]+?)\}\}/g;
+			  _.templateSettings.escape = /\{\{-([^=][\S\s]+?)\}\}/g;
+			}
+			
+			underscoreSetup();
+		</script>
+	</body>
+</html>

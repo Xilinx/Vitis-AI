@@ -27,6 +27,7 @@ docker pull ${BASE_IMAGE}
 
 docker build --network=host \
         --build-arg VERSION=${VERSION} \
+        --build-arg GIT_HASH_RNN=`git rev-parse --short HEAD` \
         --build-arg DATE=${DATE} \
         --build-arg CACHEBUST=${DATE_STAMP} \
         --build-arg BASE_IMAGE=${BASE_IMAGE} \

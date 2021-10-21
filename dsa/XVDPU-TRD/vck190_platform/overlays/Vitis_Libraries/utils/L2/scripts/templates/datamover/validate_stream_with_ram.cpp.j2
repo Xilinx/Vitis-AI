@@ -1,0 +1,97 @@
+/*
+ * Copyright 2020 Xilinx, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include <stdint.h>
+#include "xf_datamover/preloadable_ram.hpp"
+#include "xf_datamover/read_const.hpp"
+#include "xf_datamover/write_result.hpp"
+#include "xf_datamover/types.hpp"
+
+template <{% for m in k["map"] %}class T{{ loop.index0 }}{{ ', ' if loop.index0 != (k["map"] | length) - 1 else '' }}{% endfor %}>
+void {{ k["name"] }}_preload({% for m in k["map"] %}
+    // {{ loop.index0 }}
+    xf::datamover::ConstData::type* {{ m["in_ref"]["name"] }},
+    T{{ loop.index0 }}& ram{{ loop.index0 }},
+    uint64_t sz{{ loop.index0 }}{{ ',' if loop.index0 != (k["map"] | length) - 1 else '' }}
+{% endfor %}
+    ) {
+    using namespace xf::datamover;
+
+#pragma HLS dataflow
+{% for m in k["map"] %}
+    hls::stream<ConstData::type, 8> is{{ loop.index0 }};{% endfor %}
+
+    readConst({% for m in k["map"] %}{{ m["in_ref"]["name"] }}, is{{ loop.index0 }}, sz{{ loop.index0 }}{{ ', ' if loop.index0 != (k["map"] | length) - 1 else '' }}{% endfor %});
+{% for m in k["map"] %}
+    ram{{ loop.index0 }}.preload(is{{ loop.index0 }}, sz{{ loop.index0 }});{% endfor %}
+}
+
+template <{% for m in k["map"] %}class T{{ loop.index0 }}{{ ', ' if loop.index0 != (k["map"] | length) - 1 else '' }}{% endfor %}>
+void {{ k["name"] }}_run({% for m in k["map"] %}
+    // {{ loop.index0 }}
+    T{{ loop.index0 }}& ram{{ loop.index0 }},
+    hls::stream<ap_axiu<{{ m["in_port"]["width"] }}, 0, 0, 0> >& s{{ loop.index0 }},
+    xf::datamover::CheckResult::type* ret{{ loop.index0 }},
+    uint64_t sz{{ loop.index0 }}{{ ',' if loop.index0 != (k["map"] | length) - 1 else '' }}
+{% endfor %}
+    ) {
+    using namespace xf::datamover;
+
+#pragma HLS dataflow
+{% for m in k["map"] %}
+    hls::stream<CheckResult::type, 2> rs{{ loop.index0 }};{% endfor %}
+{% for m in k["map"] %}
+    ram{{ loop.index0 }}.checkStream(s{{ loop.index0 }}, rs{{ loop.index0 }}, sz{{ loop.index0 }});{% endfor %}
+    writeResult({% for m in k["map"] %}rs{{ loop.index0 }}, ret{{ loop.index0 }}{{ ', ' if loop.index0 != (k["map"] | length) - 1 else '' }}{% endfor %});
+}
+
+extern "C" void {{ k["name"] }}(
+    // common
+    xf::datamover::MoverMode mode,
+{% for m in k["map"] %}
+    // {{ loop.index0 }}
+    xf::datamover::ConstData::type* {{ m["in_ref"]["name"] }},
+    hls::stream<ap_axiu<{{ m["in_port"]["width"] }}, 0, 0, 0> >& {{ m["in_port"]["name"] }},
+    xf::datamover::CheckResult::type* {{ m["out"]["name"] }},
+    uint64_t sz{{ loop.index0 }}{{ ',' if loop.index0 != (k["map"] | length) - 1 else '' }}
+{% endfor %}
+    ) {
+    using namespace xf::datamover;
+
+    ; // clang-format off
+#pragma HLS interface s_axilite bundle=control port=mode
+{% for m in k["map"] %}
+#pragma HLS interface m_axi offset=slave bundle=gmem{{ loop.index0 }} port={{ m["in_ref"]["name"] }} \
+    max_read_burst_length=32 num_read_outstanding=4 latency=128
+#pragma HLS interface s_axilite bundle=control port={{ m["in_ref"]["name"] }}
+#pragma HLS interface axis port={{ m["in_port"]["name"] }}
+#pragma HLS interface m_axi offset=slave bundle=gmemr port={{ m["out"]["name"] }} \
+    max_read_burst_length=32 num_read_outstanding=4 latency=128
+#pragma HLS interface s_axilite bundle=control port={{ m["out"]["name"] }}
+#pragma HLS interface s_axilite bundle=control port=sz{{ loop.index0 }}
+{% endfor %}
+#pragma HLS interface s_axilite bundle=control port=return
+    ; // clang-format on
+{% for m in k["map"] %}
+    Preloadable{{ m["ram"]["type"] }}<{{ m["in_port"]["width"] }}, {{ m["ram"]["depth"] }}> ram{{ loop.index0 }};{% endfor %}
+
+    if (mode == MODE_PRELOAD) {
+        {{ k["name"] }}_preload({% for m in k["map"] %}{{ m["in_ref"]["name"] }}, ram{{ loop.index0 }}, sz{{ loop.index0 }}{{ ', ' if loop.index0 != (k["map"] | length) - 1 else '' }}{% endfor %});
+    } else if (mode == MODE_RUN) {
+        {{ k["name"] }}_run({% for m in k["map"] %}ram{{ loop.index0 }}, {{ m["in_port"]["name"] }}, {{ m["out"]["name"] }}, sz{{ loop.index0 }}{{ ', ' if loop.index0 != (k["map"] | length) - 1 else '' }}{% endfor %});
+    }
+}
+{# vim: set filetype=cpp : #}

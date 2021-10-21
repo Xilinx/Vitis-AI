@@ -55,9 +55,9 @@ cd ${TVM_VAI_HOME}
 pip3 install Cython==0.29.23 h5py==2.10.0 pillow
  
 # DOWNLOAD PYXIR AND TVM
-git clone --recursive --branch rel-v0.3.0 --single-branch https://github.com/Xilinx/pyxir.git "${PYXIR_HOME}"
+git clone --recursive --branch rel-v0.3.2 --single-branch https://github.com/Xilinx/pyxir.git "${PYXIR_HOME}"
 git clone --recursive --single-branch https://github.com/apache/tvm.git "${TVM_HOME}" &&\
-    cd ${TVM_HOME} && git checkout 40d5193 && git submodule update --init --recursive
+    cd ${TVM_HOME} && git checkout 627e92e7 && git submodule update --init --recursive
     
 # BUILD PYXIR FOR EDGE
 cd "${PYXIR_HOME}"

@@ -26,9 +26,9 @@ source ~/petalinux_sdk_2021.1/environment-setup-cortexa72-cortexa53-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-4. Download the [vitis_ai_2021.1-r1.4.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2021.1-r1.4.0.tar.gz) and install it to the petalinux system.
+4. Download the [vitis_ai_2021.1-r1.4.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2021.1-r1.4.1.tar.gz) and install it to the petalinux system.
 ```
-tar -xzvf vitis_ai_2021.1-r1.4.0.tar.gz -C ~/petalinux_sdk_2021.1/sysroots/cortexa72-cortexa53-xilinx-linux
+tar -xzvf vitis_ai_2021.1-r1.4.1.tar.gz -C ~/petalinux_sdk_2021.1/sysroots/cortexa72-cortexa53-xilinx-linux
 ```
 
 ## Compile the VART 

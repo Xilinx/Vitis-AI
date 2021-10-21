@@ -1,0 +1,57 @@
+{
+    "name": "Xilinx Sort Top K V1 HLS Test",
+    "description": "Xilinx Sort Top K V1 HLS Test",
+    "flow": "hls",
+    "platform_whitelist": [
+        "u50"
+    ],
+    "platform_blacklist": [],
+    "part_whitelist": [],
+    "part_blacklist": [],
+    "project": "sortTopK",
+    "solution": "solution_OCL_REGION_0",
+    "clock": "300MHz",
+    "topfunction": "hls_sort_top_k_function",
+    "top": {
+        "source": [
+            "sort_top_k_test.cpp"
+        ],
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw"
+    },
+    "testbench": {
+        "source": [
+            "sort_top_k_test.cpp"
+        ],
+        "cflags": "-I${XF_PROJ_ROOT}/L1/include/hw",
+        "ldflags": "",
+        "argv": {},
+        "stdmath": false
+    },
+    "testinfo": {
+        "disable": false,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": 24576,
+                "max_time_min": {
+                    "hls_vivado_syn": 300,
+                    "hls_csim": 60,
+                    "hls_cosim": 300,
+                    "hls_vivado_impl": 300,
+                    "hls_csynth": 60
+                }
+            }
+        ],
+        "targets": [
+            "hls_csim",
+            "hls_csynth",
+            "hls_cosim",
+            "hls_vivado_syn",
+            "hls_vivado_impl"
+        ],
+        "category": "canary"
+    }
+}

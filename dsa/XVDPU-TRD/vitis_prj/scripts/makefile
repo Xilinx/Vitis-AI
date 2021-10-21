@@ -16,15 +16,15 @@
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CFG_VH_PATH         = xvdpu/vitis_cfg/vitis_cfg.vh
-CPB_N               = 32
 LOAD_PARALLEL_IMG   = 2
 SAVE_PARALLEL_IMG   = 2
+LOAD_PARALLEL_WGT   = 4
 BATCH_SHRWGT_N      = 4
 AIE_PL_FREQ         = 250
 DBG_ENA             = 0
 PROF_ENA            = 0
 
-#Prepare project files
+#Prepare project files: copy xvdpu IP to project folder, generate scripts for special configuration of xvdpu.
 .PHONY: files
 files: 
 	@echo "INFO:- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -36,11 +36,9 @@ files:
 	cp -r $(FATHER_PATH)/xvdpu_ip/rtl/vitis_cfg   xvdpu/.
 	cp -r $(FATHER_PATH)/xvdpu_ip/rtl/inc         xvdpu/.
 	cp -r $(FATHER_PATH)/xvdpu_ip/rtl/ttcl        xvdpu/.
-	sed -i "s/set pl_freq.*/set pl_freq $(PL_FREQ)/g" scripts/post_linker.tcl
-	sed -i "s/set CPB.*/set CPB      $(CPB_N)/g"      scripts/post_linker.tcl
-	cd scripts && python xvdpu_aie.py $(BATCH_N) $(CPB_N) $(BATCH_SHRWGT_N)&& python kernel_xml.py $(BATCH_N) $(LOAD_PARALLEL_IMG) $(CPB_N) $(BATCH_SHRWGT_N)
+	cd scripts && python xvdpu_aie_noc.py $(BATCH_N) $(CPB_N) $(LOAD_PARALLEL_IMG) $(BATCH_SHRWGT_N) $(LOAD_PARALLEL_WGT) && python kernel_xml.py $(BATCH_N) $(LOAD_PARALLEL_IMG) $(CPB_N) $(BATCH_SHRWGT_N) $(LOAD_PARALLEL_WGT)
 	cd ..
-	#Change parameter of XVDPU
+	#Change parameters in 'vitis_cfg.vh'
 	sed -i "s/define wrp_CPB_N               .*/define wrp_CPB_N               $(CPB_N)/g" $(CFG_VH_PATH)
 	sed -i "s/define wrp_BATCH_N             .*/define wrp_BATCH_N             $(BATCH_N)/g" $(CFG_VH_PATH)
 	sed -i "s/define wrp_BATCH_SHRWGT_N      .*/define wrp_BATCH_SHRWGT_N      $(BATCH_SHRWGT_N)/g" $(CFG_VH_PATH)
@@ -48,17 +46,18 @@ files:
 	sed -i "s/define wrp_UBANK_WGT_N         .*/define wrp_UBANK_WGT_N         $(UBANK_WGT_N)/g" $(CFG_VH_PATH)
 	sed -i "s/define wrp_LOAD_PARALLEL_IMG   .*/define wrp_LOAD_PARALLEL_IMG   $(LOAD_PARALLEL_IMG)/g" $(CFG_VH_PATH)
 	sed -i "s/define wrp_SAVE_PARALLEL_IMG   .*/define wrp_SAVE_PARALLEL_IMG   $(SAVE_PARALLEL_IMG)/g" $(CFG_VH_PATH)
+	printf  "\`define wrp_LOAD_PARALLEL_WGT   $(LOAD_PARALLEL_WGT)\n"  >> $(CFG_VH_PATH)
 
 ifeq  ($(DBG_ENA), 1)
-	echo -e "\`define wrp_DBG_ENA             1"  >> $(CFG_VH_PATH)
+	printf "\`define wrp_DBG_ENA             1\n"  >> $(CFG_VH_PATH)
 endif
 
 ifeq  ($(PROF_ENA), 1)
-	echo -e "\`define wrp_PROF_ENA            1"  >> $(CFG_VH_PATH)
+	printf "\`define wrp_PROF_ENA            1\n"  >> $(CFG_VH_PATH)
 endif
 
 ifeq  ($(BATCH_N), 6)
-	echo -e "\`define wrp_UBANK_IMG_MRS       1" >> $(CFG_VH_PATH)
-	echo -e "\`define wrp_UBANK_WGT_MRS       1" >> $(CFG_VH_PATH)
-	echo -e "\`define wrp_ELEW_MULT_ENA       0" >> $(CFG_VH_PATH)
+	printf "\`define wrp_UBANK_IMG_MRS       1\n" >> $(CFG_VH_PATH)
+	printf "\`define wrp_UBANK_WGT_MRS       1\n" >> $(CFG_VH_PATH)
+	printf "\`define wrp_ELEW_MULT_ENA       0\n" >> $(CFG_VH_PATH)
 endif

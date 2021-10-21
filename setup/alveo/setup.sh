@@ -39,18 +39,62 @@ echo "---------------------"
 echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
 echo "---------------------"
 
+PLATFORMS="u50_ u50lv_ u200_ u250_ u280_" 
+
+for platform in ${PLATFORMS};
+do
+xbutil scan | grep ${platform}
+if [ $? -eq 0 ]; then
+  echo "${platform} card detected"
+  break
+fi
+done
+
 case $1 in
 
   DPUCAHX8H | dpuv3e)
-    export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3e
+    if [ "${platform}" = "u50_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/dpuv3e_6E300_xilinx_u50_gen3x4_xdma_base_2.xclbin
+    elif [ "${platform}" = "u50lv_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/dpuv3e_10E275_xilinx_u50lv_gen3x4_xdma_base_2.xclbin
+    elif [ "${platform}" = "u280_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/dpuv3e_14E300_xilinx_u280_xdma_201920_3.xclbin
+    else
+      export XCLBIN_PATH=
+      export XLNX_VART_FIRMWARE=
+    fi
     ;;
   
   DPUCAHX8L | dpuv3me)
-    export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3me
+    if [ "${platform}" = "u50_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8L
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8L/dpuv3me_1E333_xilinx_u50_gen3x4_xdma_base_2.xclbin
+    elif [ "${platform}" = "u50lv_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8L
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8L/dpuv3me_1E250_xilinx_u50lv_gen3x4_xdma_base_2.xclbin
+    elif [ "${platform}" = "u280_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8L
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8L/dpuv3me_2E250_xilinx_u280_xdma_201920_3.xclbin
+    else
+      export XCLBIN_PATH=
+      export XLNX_VART_FIRMWARE=
+    fi
     ;;
   
   DPUCADF8H | dpuv3int8)
-    export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8
+    if [ "${platform}" = "u200_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCADF8H
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H/dpdpuv3_wrapper.hw.xilinx_u200_gen3x16_xdma_1_202110_1.xclbin
+    elif [ "${platform}" = "u250_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCADF8H
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H/dpdpuv3_wrapper.hw.xilinx_u250_gen3x16_xdma_3_1_202020_1.xclbin
+    else
+      export XCLBIN_PATH=
+      export XLNX_VART_FIRMWARE=
+    fi
     ;;
 
   *)
@@ -60,6 +104,7 @@ esac
 
 
 echo "---------------------"
+echo "XCLBIN_PATH = $XCLBIN_PATH"
 echo "XLNX_VART_FIRMWARE = $XLNX_VART_FIRMWARE"
 echo "---------------------"
 

@@ -30,21 +30,21 @@ files:
 - name: inception_v3_tf2
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: c07dee91484ca973cbe51da16bc1bfcb
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 8e9cc5b3173e9c904bdb171690b1e730
 - name: inception_v3_tf2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-vck190-r1.4.0.tar.gz
-  checksum: bedafce10cfca591915dc948033b10ba
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-vck190-r1.4.1.tar.gz
+  checksum: 1c7bb67289755748a9d22bcb1d9c47eb
 - name: inception_v3_tf2
   type: xmodel
   board: u50-DPUCAHX8H & u50lv-DPUCAHX8H & u280-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-u50-u50lv-u280-DPUCAHX8H-r1.4.0.tar.gz
-  checksum: 18e4e1b388401b41d6dcd6ab8902ea8d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+  checksum: b311d2a6e4d6a95667c6c933c6566e2f
 - name: inception_v3_tf2
   type: xmodel
   board: u50-DPUCAHX8L & u50lv-DPUCAHX8L & u280-DPUCAHX8L
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.0.tar.gz
-  checksum: 28c8123db3c063710024ee5eedafbd46
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-u50-u50lv-u280-DPUCAHX8L-r1.4.1.tar.gz
+  checksum: 66e9300e1a679fdd4ac59f4c323fd487
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -30,11 +30,11 @@ files:
 - name: mobilenet_v2_cityscapes_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: dbabb85e9b8248df3270d324400cb755
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: a7798c8d0fb7727e82ebab273223d0e0
 - name: mobilenet_v2_cityscapes_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-vck190-r1.4.0.tar.gz
-  checksum: 442baf8671d94896671c92ba6c8ed242
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-vck190-r1.4.1.tar.gz
+  checksum: a86acb6e3332838e6189070446af691a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

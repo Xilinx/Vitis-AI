@@ -1,0 +1,557 @@
+From f0970a405447791b40d0140395b6e4cb77461ad0 Mon Sep 17 00:00:00 2001
+From: Christian Kohn <christian.kohn@xilinx.com>
+Date: Fri, 30 Jul 2021 12:07:54 -0700
+Subject: [PATCH] media: xilinx: Add isppipeline driver
+
+---
+ drivers/media/platform/xilinx/Kconfig         |   9 +
+ drivers/media/platform/xilinx/Makefile        |   1 +
+ .../platform/xilinx/xilinx-isppipeline.c      | 504 ++++++++++++++++++
+ 3 files changed, 514 insertions(+)
+ create mode 100644 drivers/media/platform/xilinx/xilinx-isppipeline.c
+
+diff --git a/drivers/media/platform/xilinx/Kconfig b/drivers/media/platform/xilinx/Kconfig
+index dc9a5813f3b3..b970872647e2 100644
+--- a/drivers/media/platform/xilinx/Kconfig
++++ b/drivers/media/platform/xilinx/Kconfig
+@@ -77,6 +77,15 @@ config VIDEO_XILINX_HLS
+ 	help
+ 	  Driver for the Xilinx Video HLS Cores
+ 
++config VIDEO_XILINX_ISP
++	tristate "Xilinx Video ISP Pipeline"
++	depends on VIDEO_XILINX
++	help
++	  Driver for Xilinx Vitis Vision ISP Pipeline. This is a V4L sub-device
++          based driver for Vitis Vision ISP pipelin that takes a Bayer video
++          stream format as input and generates an RGB video output.
++	  Say M to modularize. Say N if unsure.
++
+ config VIDEO_XILINX_REMAPPER
+ 	tristate "Xilinx Video Remapper"
+ 	depends on VIDEO_XILINX
+diff --git a/drivers/media/platform/xilinx/Makefile b/drivers/media/platform/xilinx/Makefile
+index 8c822fb6a786..eaa1dce8236d 100644
+--- a/drivers/media/platform/xilinx/Makefile
++++ b/drivers/media/platform/xilinx/Makefile
+@@ -15,6 +15,7 @@ obj-$(CONFIG_VIDEO_XILINX_DPRXSS) += xilinx-dprxss.o
+ obj-$(CONFIG_VIDEO_XILINX_GAMMA) += xilinx-gamma.o
+ obj-$(CONFIG_VIDEO_XILINX_HDMI21RXSS) += xilinx-hdmirxss.o
+ obj-$(CONFIG_VIDEO_XILINX_HLS) += xilinx-hls.o
++obj-$(CONFIG_VIDEO_XILINX_ISP) += xilinx-isppipeline.o
+ obj-$(CONFIG_VIDEO_XILINX_M2M) += xilinx-m2m.o
+ obj-$(CONFIG_VIDEO_XILINX_MULTISCALER) += xilinx-multi-scaler.o
+ obj-$(CONFIG_VIDEO_XILINX_REMAPPER) += xilinx-remapper.o
+diff --git a/drivers/media/platform/xilinx/xilinx-isppipeline.c b/drivers/media/platform/xilinx/xilinx-isppipeline.c
+new file mode 100644
+index 000000000000..ce89b8e89f83
+--- /dev/null
++++ b/drivers/media/platform/xilinx/xilinx-isppipeline.c
+@@ -0,0 +1,504 @@
++/*
++ * Xilinx ISP IP
++ *
++ * Copyright (C) 2020 Xilinx, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++
++#include <media/v4l2-async.h>
++#include <media/v4l2-subdev.h>
++
++#include "xilinx-vip.h"
++
++#define XDEMOSAIC_AP_CTRL			(0x00)
++#define XDEMOSAIC_WIDTH				(0x0010)
++#define XDEMOSAIC_HEIGHT			(0x0018)
++#define XDEMOSAIC_RGAIN			    (0x0030)
++#define XDEMOSAIC_BGAIN			    (0x0038)
++#define XDEMOSAIC_MODE_REG          (0x0020)
++#define XDEMOSAIC_PAWB              (0x0054)
++#define XDEMOSAIC_GAMMA_LUT         (0x0800)
++#define XDEMOSAIC_INPUT_BAYER_FORMAT		(0x28)
++
++#define XDEMOSAIC_MIN_HEIGHT	(64)
++#define XDEMOSAIC_MAX_HEIGHT	(4320)
++#define XDEMOSAIC_DEF_HEIGHT	(720)
++#define XDEMOSAIC_MIN_WIDTH	(64)
++#define XDEMOSAIC_MAX_WIDTH	(8192)
++#define XDEMOSAIC_DEF_WIDTH	(1280)
++
++#define XDEMOSAIC_RESET_DEASSERT	(0)
++#define XDEMOSAIC_RESET_ASSERT		(1)
++#define XDEMOSAIC_START			BIT(0)
++#define XDEMOSAIC_AUTO_RESTART		BIT(7)
++#define XDEMOSAIC_STREAM_ON	(XDEMOSAIC_AUTO_RESTART | XDEMOSAIC_START)
++
++enum xdmsc_bayer_format {
++	XDEMOSAIC_RGGB = 0,
++	XDEMOSAIC_GRBG,
++	XDEMOSAIC_GBRG,
++	XDEMOSAIC_BGGR,
++};
++
++struct xdmsc_dev {
++	struct xvip_device xvip;
++	struct media_pad pads[2];
++	struct v4l2_mbus_framefmt formats[2];
++	struct v4l2_mbus_framefmt default_formats[2];
++
++	enum xdmsc_bayer_format bayer_fmt;
++	struct gpio_desc *rst_gpio;
++	u32 max_width;
++	u32 max_height;
++    u32 rgain;
++    u32 bgain;
++	const u8 *gamma_lut;
++    u32 mode_reg;
++    u32 pawb;
++};
++
++static inline u32 xdmsc_read(struct xdmsc_dev *xdmsc, u32 reg)
++{
++	u32 data;
++
++	data = xvip_read(&xdmsc->xvip, reg);
++	dev_dbg(xdmsc->xvip.dev,
++		"Reading 0x%x from reg offset 0x%x", data, reg);
++	return data;
++}
++
++static inline void xdmsc_write(struct xdmsc_dev *xdmsc, u32 reg, u32 data)
++{
++	xvip_write(&xdmsc->xvip, reg, data);
++	dev_dbg(xdmsc->xvip.dev,
++		"Writing 0x%x to reg offset 0x%x", data, reg);
++#ifdef DEBUG
++	if (xdmsc_read(xdmsc, reg) != data)
++		dev_err(xdmsc->xvip.dev,
++			"Wrote 0x%x does not match read back", data);
++#endif
++}
++
++static inline struct xdmsc_dev *to_xdmsc(struct v4l2_subdev *subdev)
++{
++	return container_of(subdev, struct xdmsc_dev, xvip.subdev);
++}
++
++static struct v4l2_mbus_framefmt
++*__xdmsc_get_pad_format(struct xdmsc_dev *xdmsc,
++			struct v4l2_subdev_pad_config *cfg,
++			unsigned int pad, u32 which)
++{
++	struct v4l2_mbus_framefmt *get_fmt;
++
++	switch (which) {
++	case V4L2_SUBDEV_FORMAT_TRY:
++		get_fmt = v4l2_subdev_get_try_format(&xdmsc->xvip.subdev,
++						     cfg, pad);
++		break;
++	case V4L2_SUBDEV_FORMAT_ACTIVE:
++		get_fmt = &xdmsc->formats[pad];
++		break;
++	default:
++		get_fmt = NULL;
++		break;
++	}
++
++	return get_fmt;
++}
++
++//corrections
++static void xdmsc_set_lut_entries(struct xdmsc_dev *xdmsc,
++			       const u32 lut_base, const u8 *lut)
++{
++	int itr;
++	u32 lut_offset, lut_data;
++
++	lut_offset = lut_base;
++
++	for (itr = 0; itr < 768; itr=itr+4) {
++		lut_data = (lut[itr+3] << 24) | (lut[itr+2] << 16) | (lut[itr+1] << 8) | lut[itr];
++		xdmsc_write(xdmsc, lut_offset, lut_data);
++		lut_offset += 4;
++	}
++}
++
++static int xdmsc_s_stream(struct v4l2_subdev *subdev, int enable)
++{
++	struct xdmsc_dev *xdmsc = to_xdmsc(subdev);
++
++	if (!enable) {
++		dev_dbg(xdmsc->xvip.dev, "%s : Off", __func__);
++		gpiod_set_value_cansleep(xdmsc->rst_gpio,
++					 XDEMOSAIC_RESET_ASSERT);
++		gpiod_set_value_cansleep(xdmsc->rst_gpio,
++					 XDEMOSAIC_RESET_DEASSERT);
++		return 0;
++	}
++
++	//u32 rgain = 156; u32 bgain=140;
++
++	//u32 pawb =256;
++
++	u8 gamma_lut[768]={0,6,10,13,15,18,20,23,25,27,29,31,33,35,36,38,40,41,43,45,46,48,49,51,52,54,55,57,58,59,61,62,63,65,66,67,69,70,71,72,74,75,76,77,79,80,81,82,83,84,86,87,88,89,90,91,92,93,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,132,133,134,135,136,137,138,139,140,141,142,142,143,144,145,146,147,148,149,149,150,151,152,153,154,155,155,156,157,158,159,160,161,161,162,163,164,165,166,166,167,168,169,170,170,171,172,173,174,175,175,176,177,178,179,179,180,181,182,182,183,184,185,186,186,187,188,189,189,190,191,192,193,193,194,195,196,196,197,198,199,199,200,201,202,202,203,204,205,205,206,207,208,208,209,210,211,211,212,213,213,214,215,216,216,217,218,219,219,220,221,221,222,223,224,224,225,226,226,227,228,228,229,230,231,231,232,233,233,234,235,235,236,237,238,238,239,240,240,241,242,242,243,244,244,245,246,246,247,248,248,249,250,250,251,252,252,253,254,255,0,6,10,13,15,18,20,23,25,27,29,31,33,35,36,38,40,41,43,45,46,48,49,51,52,54,55,57,58,59,61,62,63,65,66,67,69,70,71,72,74,75,76,77,79,80,81,82,83,84,86,87,88,89,90,91,92,93,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,132,133,134,135,136,137,138,139,140,141,142,142,143,144,145,146,147,148,149,149,150,151,152,153,154,155,155,156,157,158,159,160,161,161,162,163,164,165,166,166,167,168,169,170,170,171,172,173,174,175,175,176,177,178,179,179,180,181,182,182,183,184,185,186,186,187,188,189,189,190,191,192,193,193,194,195,196,196,197,198,199,199,200,201,202,202,203,204,205,205,206,207,208,208,209,210,211,211,212,213,213,214,215,216,216,217,218,219,219,220,221,221,222,223,224,224,225,226,226,227,228,228,229,230,231,231,232,233,233,234,235,235,236,237,238,238,239,240,240,241,242,242,243,244,244,245,246,246,247,248,248,249,250,250,251,252,252,253,254,255,0,6,10,13,15,18,20,23,25,27,29,31,33,35,36,38,40,41,43,45,46,48,49,51,52,54,55,57,58,59,61,62,63,65,66,67,69,70,71,72,74,75,76,77,79,80,81,82,83,84,86,87,88,89,90,91,92,93,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,132,133,134,135,136,137,138,139,140,141,142,142,143,144,145,146,147,148,149,149,150,151,152,153,154,155,155,156,157,158,159,160,161,161,162,163,164,165,166,166,167,168,169,170,170,171,172,173,174,175,175,176,177,178,179,179,180,181,182,182,183,184,185,186,186,187,188,189,189,190,191,192,193,193,194,195,196,196,197,198,199,199,200,201,202,202,203,204,205,205,206,207,208,208,209,210,211,211,212,213,213,214,215,216,216,217,218,219,219,220,221,221,222,223,224,224,225,226,226,227,228,228,229,230,231,231,232,233,233,234,235,235,236,237,238,238,239,240,240,241,242,242,243,244,244,245,246,246,247,248,248,249,250,250,251,252,252,253,254,255};
++
++	xdmsc_write(xdmsc, XDEMOSAIC_WIDTH,
++		    xdmsc->formats[XVIP_PAD_SINK].width);
++	xdmsc_write(xdmsc, XDEMOSAIC_HEIGHT,
++		    xdmsc->formats[XVIP_PAD_SINK].height);
++	xdmsc_write(xdmsc, XDEMOSAIC_RGAIN, xdmsc->rgain);
++	xdmsc_write(xdmsc, XDEMOSAIC_BGAIN, xdmsc->bgain);
++	xdmsc_write(xdmsc, XDEMOSAIC_MODE_REG, 1);
++	xdmsc_write(xdmsc, XDEMOSAIC_PAWB, xdmsc->pawb);
++	//xdmsc_write(xdmsc, XDEMOSAIC_INPUT_BAYER_FORMAT, xdmsc->bayer_fmt);
++	xdmsc_set_lut_entries(xdmsc, XDEMOSAIC_GAMMA_LUT, gamma_lut);
++
++
++	/* Start Demosaic Video IP */
++	xdmsc_write(xdmsc, XDEMOSAIC_AP_CTRL, XDEMOSAIC_STREAM_ON);
++	return 0;
++}
++
++static const struct v4l2_subdev_video_ops xdmsc_video_ops = {
++	.s_stream = xdmsc_s_stream,
++};
++
++static int xdmsc_get_format(struct v4l2_subdev *subdev,
++			    struct v4l2_subdev_pad_config *cfg,
++			    struct v4l2_subdev_format *fmt)
++{
++	struct xdmsc_dev *xdmsc = to_xdmsc(subdev);
++	struct v4l2_mbus_framefmt *get_fmt;
++
++	get_fmt = __xdmsc_get_pad_format(xdmsc, cfg, fmt->pad, fmt->which);
++	if (!get_fmt)
++		return -EINVAL;
++
++	fmt->format = *get_fmt;
++
++	return 0;
++}
++
++static bool
++xdmsc_is_format_bayer(struct xdmsc_dev *xdmsc, u32 code)
++{
++	switch (code) {
++	case MEDIA_BUS_FMT_SRGGB8_1X8:
++	case MEDIA_BUS_FMT_SRGGB10_1X10:
++	case MEDIA_BUS_FMT_SRGGB12_1X12:
++	case MEDIA_BUS_FMT_SRGGB16_1X16:
++		xdmsc->bayer_fmt = XDEMOSAIC_RGGB;
++		break;
++	case MEDIA_BUS_FMT_SGRBG8_1X8:
++	case MEDIA_BUS_FMT_SGRBG10_1X10:
++	case MEDIA_BUS_FMT_SGRBG12_1X12:
++	case MEDIA_BUS_FMT_SGRBG16_1X16:
++		xdmsc->bayer_fmt = XDEMOSAIC_GRBG;
++		break;
++	case MEDIA_BUS_FMT_SGBRG8_1X8:
++	case MEDIA_BUS_FMT_SGBRG10_1X10:
++	case MEDIA_BUS_FMT_SGBRG12_1X12:
++	case MEDIA_BUS_FMT_SGBRG16_1X16:
++		xdmsc->bayer_fmt = XDEMOSAIC_GBRG;
++		break;
++	case MEDIA_BUS_FMT_SBGGR8_1X8:
++	case MEDIA_BUS_FMT_SBGGR10_1X10:
++	case MEDIA_BUS_FMT_SBGGR12_1X12:
++	case MEDIA_BUS_FMT_SBGGR16_1X16:
++		xdmsc->bayer_fmt = XDEMOSAIC_BGGR;
++		break;
++	default:
++		dev_dbg(xdmsc->xvip.dev, "Unsupported format for Sink Pad");
++		return false;
++	}
++	return true;
++}
++
++static int xdmsc_set_format(struct v4l2_subdev *subdev,
++			    struct v4l2_subdev_pad_config *cfg,
++			    struct v4l2_subdev_format *fmt)
++{
++	struct xdmsc_dev *xdmsc = to_xdmsc(subdev);
++	struct v4l2_mbus_framefmt *__format;
++
++	__format = __xdmsc_get_pad_format(xdmsc, cfg, fmt->pad, fmt->which);
++	if (!__format)
++		return -EINVAL;
++
++	*__format = fmt->format;
++
++	__format->width = clamp_t(unsigned int, fmt->format.width,
++				  XDEMOSAIC_MIN_WIDTH, xdmsc->max_width);
++	__format->height = clamp_t(unsigned int, fmt->format.height,
++				   XDEMOSAIC_MIN_HEIGHT, xdmsc->max_height);
++
++	if (fmt->pad == XVIP_PAD_SOURCE) {
++		if (__format->code != MEDIA_BUS_FMT_RBG888_1X24 &&
++		    __format->code != MEDIA_BUS_FMT_RBG101010_1X30 &&
++		    __format->code != MEDIA_BUS_FMT_RBG121212_1X36 &&
++		    __format->code != MEDIA_BUS_FMT_RBG161616_1X48) {
++			dev_dbg(xdmsc->xvip.dev,
++				"%s : Unsupported source media bus code format",
++				__func__);
++			__format->code = MEDIA_BUS_FMT_RBG888_1X24;
++		}
++	}
++
++	if (fmt->pad == XVIP_PAD_SINK) {
++		if (!xdmsc_is_format_bayer(xdmsc, __format->code)) {
++			dev_dbg(xdmsc->xvip.dev,
++				"Unsupported Sink Pad Media format, defaulting to RGGB");
++			__format->code = MEDIA_BUS_FMT_SRGGB8_1X8;
++		}
++	}
++
++	fmt->format = *__format;
++	return 0;
++}
++
++static int xdmsc_open(struct v4l2_subdev *subdev, struct v4l2_subdev_fh *fh)
++{
++	struct xdmsc_dev *xdmsc = to_xdmsc(subdev);
++	struct v4l2_mbus_framefmt *format;
++
++	format = v4l2_subdev_get_try_format(subdev, fh->pad, XVIP_PAD_SINK);
++	*format = xdmsc->default_formats[XVIP_PAD_SINK];
++
++	format = v4l2_subdev_get_try_format(subdev, fh->pad, XVIP_PAD_SOURCE);
++	*format = xdmsc->default_formats[XVIP_PAD_SOURCE];
++	return 0;
++}
++
++static int xdmsc_close(struct v4l2_subdev *subdev, struct v4l2_subdev_fh *fh)
++{
++	return 0;
++}
++
++static const struct v4l2_subdev_internal_ops xdmsc_internal_ops = {
++	.open = xdmsc_open,
++	.close = xdmsc_close,
++};
++
++static const struct v4l2_subdev_pad_ops xdmsc_pad_ops = {
++	.enum_mbus_code = xvip_enum_mbus_code,
++	.enum_frame_size = xvip_enum_frame_size,
++	.get_fmt = xdmsc_get_format,
++	.set_fmt = xdmsc_set_format,
++};
++
++static const struct v4l2_subdev_ops xdmsc_ops = {
++	.video = &xdmsc_video_ops,
++	.pad = &xdmsc_pad_ops,
++};
++
++static const struct media_entity_operations xdmsc_media_ops = {
++	.link_validate = v4l2_subdev_link_validate,
++};
++
++static int xdmsc_parse_of(struct xdmsc_dev *xdmsc)
++{
++	struct device *dev = xdmsc->xvip.dev;
++	struct device_node *node = dev->of_node;
++	struct device_node *ports;
++	struct device_node *port;
++	u32 port_id = 0;
++	int rval;
++
++	rval = of_property_read_u32(node, "xlnx,max-height",
++				    &xdmsc->max_height);
++	if (rval < 0) {
++		dev_err(dev, "missing xlnx,max-height property!");
++		return -EINVAL;
++	} else if (xdmsc->max_height > XDEMOSAIC_MAX_HEIGHT ||
++		 xdmsc->max_height < XDEMOSAIC_MIN_HEIGHT) {
++		dev_err(dev, "Invalid height in dt");
++		return -EINVAL;
++	}
++
++	rval = of_property_read_u32(node, "xlnx,max-width",
++				    &xdmsc->max_width);
++	if (rval < 0) {
++		dev_err(dev, "missing xlnx,max-width property!");
++		return -EINVAL;
++	} else if (xdmsc->max_width > XDEMOSAIC_MAX_WIDTH ||
++		 xdmsc->max_width < XDEMOSAIC_MIN_WIDTH) {
++		dev_err(dev, "Invalid width in dt");
++		return -EINVAL;
++	}
++
++    rval = of_property_read_u32(node, "xlnx,rgain",
++                    &xdmsc->rgain);
++    if (rval < 0) {
++        dev_err(dev, "missing xlnx,rgain!");
++        return -EINVAL;
++    }
++
++    rval = of_property_read_u32(node, "xlnx,bgain",
++                    &xdmsc->bgain);
++    if (rval < 0) {
++        dev_err(dev, "missing xlnx,bgain!");
++        return -EINVAL;
++    }
++
++    rval = of_property_read_u32(node, "xlnx,pawb",
++                    &xdmsc->pawb);
++    if (rval < 0) {
++        dev_err(dev, "missing xlnx,pawb!");
++        return -EINVAL;
++    }
++
++    rval = of_property_read_u32(node, "xlnx,mode-reg",
++                    &xdmsc->mode_reg);
++    if (rval < 0) {
++        dev_err(dev, "missing xlnx,mode-reg!");
++        return -EINVAL;
++    }
++
++	ports = of_get_child_by_name(node, "ports");
++	if (!ports)
++		ports = node;
++	/* Get the format description for each pad */
++	for_each_child_of_node(ports, port) {
++		if (port->name && (of_node_cmp(port->name, "port") == 0)) {
++			rval = of_property_read_u32(port, "reg", &port_id);
++			if (rval < 0) {
++				dev_err(dev, "No reg in DT");
++				return rval;
++			}
++
++			if (port_id != 0 && port_id != 1) {
++				dev_err(dev, "Invalid reg in DT");
++				return -EINVAL;
++			}
++		}
++	}
++
++	xdmsc->rst_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(xdmsc->rst_gpio)) {
++		if (PTR_ERR(xdmsc->rst_gpio) != -EPROBE_DEFER)
++			dev_err(dev, "Reset GPIO not setup in DT");
++		return PTR_ERR(xdmsc->rst_gpio);
++	}
++	return 0;
++}
++
++static int xdmsc_probe(struct platform_device *pdev)
++{
++	struct xdmsc_dev *xdmsc;
++	struct v4l2_subdev *subdev;
++	struct v4l2_mbus_framefmt *def_fmt;
++	int rval;
++
++	xdmsc = devm_kzalloc(&pdev->dev, sizeof(*xdmsc), GFP_KERNEL);
++	if (!xdmsc)
++		return -ENOMEM;
++	xdmsc->xvip.dev = &pdev->dev;
++	rval = xdmsc_parse_of(xdmsc);
++	if (rval < 0)
++		return rval;
++	rval = xvip_init_resources(&xdmsc->xvip);
++	if (rval)
++		return -EIO;
++
++	/* Reset Demosaic IP */
++	gpiod_set_value_cansleep(xdmsc->rst_gpio,
++				 XDEMOSAIC_RESET_DEASSERT);
++
++	/* Init V4L2 subdev */
++	subdev = &xdmsc->xvip.subdev;
++	v4l2_subdev_init(subdev, &xdmsc_ops);
++	subdev->dev = &pdev->dev;
++	subdev->internal_ops = &xdmsc_internal_ops;
++	strlcpy(subdev->name, dev_name(&pdev->dev), sizeof(subdev->name));
++	subdev->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
++
++	/* Default Formats Initialization */
++	def_fmt = &xdmsc->default_formats[XVIP_PAD_SINK];
++	def_fmt->field = V4L2_FIELD_NONE;
++	def_fmt->colorspace = V4L2_COLORSPACE_SRGB;
++	def_fmt->width = XDEMOSAIC_DEF_WIDTH;
++	def_fmt->height = XDEMOSAIC_DEF_HEIGHT;
++
++	/*
++	 * Sink Pad can be any Bayer format.
++	 * Default Sink Pad format is RGGB.
++	 */
++	def_fmt->code = MEDIA_BUS_FMT_SRGGB10_1X10;
++	xdmsc->formats[XVIP_PAD_SINK] = *def_fmt;
++
++	def_fmt = &xdmsc->default_formats[XVIP_PAD_SOURCE];
++	*def_fmt = xdmsc->default_formats[XVIP_PAD_SINK];
++
++	/* Source Pad has a fixed media bus format of RGB */
++	def_fmt->code = MEDIA_BUS_FMT_RBG888_1X24;
++	xdmsc->formats[XVIP_PAD_SOURCE] = *def_fmt;
++
++	xdmsc->pads[XVIP_PAD_SINK].flags = MEDIA_PAD_FL_SINK;
++	xdmsc->pads[XVIP_PAD_SOURCE].flags = MEDIA_PAD_FL_SOURCE;
++
++//    xdmsc->gamma_lut = //gamma_lut from file;
++
++	/* Init Media Entity */
++	subdev->entity.ops = &xdmsc_media_ops;
++	rval = media_entity_pads_init(&subdev->entity, 2, xdmsc->pads);
++	if (rval < 0)
++		goto media_error;
++
++	platform_set_drvdata(pdev, xdmsc);
++	rval = v4l2_async_register_subdev(subdev);
++	if (rval < 0) {
++		dev_err(&pdev->dev, "failed to register subdev");
++		goto v4l2_subdev_error;
++	}
++	dev_info(&pdev->dev,
++		 "Xilinx Video Demosaic Probe Successful");
++	return 0;
++
++v4l2_subdev_error:
++	media_entity_cleanup(&subdev->entity);
++media_error:
++	xvip_cleanup_resources(&xdmsc->xvip);
++	return rval;
++}
++
++static int xdmsc_remove(struct platform_device *pdev)
++{
++	struct xdmsc_dev *xdmsc = platform_get_drvdata(pdev);
++	struct v4l2_subdev *subdev = &xdmsc->xvip.subdev;
++
++	v4l2_async_unregister_subdev(subdev);
++	media_entity_cleanup(&subdev->entity);
++	xvip_cleanup_resources(&xdmsc->xvip);
++	return 0;
++}
++
++static const struct of_device_id xdmsc_of_id_table[] = {
++	{.compatible = "xlnx,ISPPipeline_accel"},
++	{ }
++};
++MODULE_DEVICE_TABLE(of, xdmsc_of_id_table);
++
++static struct platform_driver xdmsc_driver = {
++	.driver = {
++		.name = "xilinx-isppipeline",
++		.of_match_table = xdmsc_of_id_table,
++	},
++	.probe = xdmsc_probe,
++	.remove = xdmsc_remove,
++
++};
++
++module_platform_driver(xdmsc_driver);
++MODULE_DESCRIPTION("Xilinx Demosaic IP Driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.17.1
+

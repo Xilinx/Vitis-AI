@@ -1,0 +1,148 @@
+{
+    "gui": false,
+    "name": "Xilinx Duplicate Record Match Demo", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u50"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "platform_properties": {
+        "u50": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        "--config PROJECT/conn_u50.cfg"
+                    ]
+                }
+            }
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": " -xclbin BUILD/TGP_Kernel.xclbin -in PROJECT/data/test.csv -golden PROJECT/data/golden.txt", 
+            "name": "generic launch for all flows",
+            "ld_library_path": [
+                "PROJECT/host/ext/re_compile",
+                "PROJECT/host/ext/re_compile/lib/lib"
+            ]
+        }
+    ], 
+    "pre_build": [
+        {
+            "build_cmd": "make -C PROJECT/host/ext/re_compile; make -C PROJECT/host/ext"
+        }
+    ],
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "host/main.cpp", 
+                "host/dup_match.cpp",
+                "host/dm/cluster.cpp",
+                "host/dm/common.cpp",
+                "host/dm/predicate.cpp",
+                "host/ext/hcluster.cpp",
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "host", 
+                "kernel", 
+                "LIB_DIR/L2/include/hw", 
+                "LIB_DIR/ext/xcl2",
+                "LIB_DIR/../utils/L1/include",
+                "PROJECT/host/ext/re_compile/lib/include"
+            ], 
+            "options": "-O3 "
+        },
+        "linker": {
+            "librarypaths": [
+                "PROJECT/host/ext/re_compile/lib/lib"
+            ],
+            "libraries": [
+                "onig"
+            ]
+        }
+    },
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/include/hw", 
+                "kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "kernel/predicate_kernel.cpp", 
+                    "frequency": 300.0, 
+                    "name": "TGP_Kernel", 
+                    "num_compute_units": 1, 
+                    "compute_units": [
+                        {
+                            "name": "TGP_Kernel", 
+                            "slr": "SLR0", 
+                            "arguments": [
+                                {
+                                    "name": "field", 
+                                    "memory": "HBM[0]"
+                                }, 
+                                {
+                                    "name": "offset", 
+                                    "memory": "HBM[1]"
+                                }, 
+                                {
+                                    "name": "idfValue", 
+                                    "memory": "HBM[2]"
+                                }, 
+                                {
+                                    "name": "tfAddr", 
+                                    "memory": "HBM[3]"
+                                }, 
+                                {
+                                    "name": "tfValue", 
+                                    "memory": "HBM[4]"
+                                }, 
+                                {
+                                    "name": "indexID", 
+                                    "memory": "HBM[5]"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "TGP_Kernel"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": 600
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw"
+        ], 
+        "category": "canary"
+    }
+}

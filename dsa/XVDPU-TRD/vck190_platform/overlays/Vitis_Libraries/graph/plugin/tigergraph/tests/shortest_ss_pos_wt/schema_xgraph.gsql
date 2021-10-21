@@ -1,0 +1,9 @@
+drop all
+
+TYPEDEF TUPLE<Id VERTEX, score DOUBLE> testResults
+
+create vertex Person (primary_id num int, num int)
+
+create directed edge Friend(from Person, to Person, weight double)
+
+create graph xgraph(*)

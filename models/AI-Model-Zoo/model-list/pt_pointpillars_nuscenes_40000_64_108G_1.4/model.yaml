@@ -30,21 +30,21 @@ files:
 - name: pointpillars_nuscenes_40000_64_0_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_0_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: 152956394aab0f49f0b9b3db30d242be
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_0_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: ec0f40603a415f6435480584d4a5aace
 - name: pointpillars_nuscenes_40000_64_1_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_1_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
-  checksum: c3a1459d199c380ffd53f20d78188764
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_1_pt-zcu102_zcu104_kv260-r1.4.1.tar.gz
+  checksum: 966a46dafae36fabb8aeb6904457cb07
 - name: pointpillars_nuscenes_40000_64_0_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_0_pt-vck190-r1.4.0.tar.gz
-  checksum: 532767bb6065207c55f178e803adacdf
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_0_pt-vck190-r1.4.1.tar.gz
+  checksum: e1f96ed9e624d506814345f7b33a961c
 - name: pointpillars_nuscenes_40000_64_1_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_1_pt-vck190-r1.4.0.tar.gz
-  checksum: af8e23d63e2be18b1aafbdb45b46f2dc
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_nuscenes_40000_64_1_pt-vck190-r1.4.1.tar.gz
+  checksum: 61210813d2c4a6713dedc278cf93c8e8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

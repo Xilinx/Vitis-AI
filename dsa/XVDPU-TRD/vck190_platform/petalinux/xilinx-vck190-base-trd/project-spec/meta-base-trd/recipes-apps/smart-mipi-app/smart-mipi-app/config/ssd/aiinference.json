@@ -1,0 +1,19 @@
+{
+  "xclbin-location":"/media/sd-mmcblk0p1/binary_container_1.xclbin",
+  "ivas-library-repo": "/usr/lib/",
+  "element-mode":"inplace",
+  "kernels" :[
+    {
+      "library-name":"libivas_xdpuinfer.so",
+      "config": {
+          "model-name" : "ssd_adas_pruned_0_95",
+          "model-class" : "SSD",
+          "model-path" : "/usr/share/vitis_ai_library/models",
+          "run_time_model" : false,
+          "need_preprocess" : false,
+          "performance_test" : false,
+          "debug_level" : 0
+      }
+    }
+  ]
+}

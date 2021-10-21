@@ -1,0 +1,39 @@
+{
+    "daily": {
+        "test_0_fir_11t_sym_hb_2d": {
+            "DATA_TYPE":"cint16",
+            "COEFF_TYPE":"int16",
+            "FIR_LEN":"11",
+            "SHIFT":"15",
+            "INPUT_WINDOW_VSIZE":"256"
+        },
+        "test_1_fir_15t_sym_hb_2d": {
+            "DATA_TYPE":"cint16",
+            "COEFF_TYPE":"int16",
+            "FIR_LEN":"15",
+            "SHIFT":"16",
+            "INPUT_WINDOW_VSIZE":"256"
+        },
+        "test_2_fir_23t_sym_hb_2d": {
+            "DATA_TYPE":"cint16",
+            "COEFF_TYPE":"int16",
+            "FIR_LEN":"23",
+            "SHIFT":"16",
+            "INPUT_WINDOW_VSIZE":"256"
+        },
+        "test_3_fir_27t_sym_hb_2d": {
+            "DATA_TYPE":"cint16",
+            "COEFF_TYPE":"int16",
+            "FIR_LEN":"27",
+            "SHIFT":"16",
+            "INPUT_WINDOW_VSIZE":"256"
+        },
+        "test_4_fir_55t_sym_hb_2d": {
+            "DATA_TYPE":"cint16",
+            "COEFF_TYPE":"int16",
+            "FIR_LEN":"55",
+            "SHIFT":"13",
+            "INPUT_WINDOW_VSIZE":"256"
+        }
+    }
+}

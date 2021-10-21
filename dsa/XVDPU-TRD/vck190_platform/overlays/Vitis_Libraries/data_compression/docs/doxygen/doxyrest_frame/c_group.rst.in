@@ -1,0 +1,30 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local group = argArray [1]
+
+if g_globalDefFile then
+}
+.. include:: $g_globalDefFile
+%{
+end -- if
+}
+.. index:: pair: group; $(getGroupName (group))
+.. _doxid-$(group.m_id):
+.. _cid-$(getItemCid (group)):
+
+$(getTitle (group.m_title, "="))
+
+%{
+includeFile ("c_compound.rst.in", group)
+}

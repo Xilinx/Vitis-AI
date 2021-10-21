@@ -1,0 +1,73 @@
+%{
+--------------------------------------------------------------------------------
+--
+--  This file is part of the Doxyrest toolkit.
+--
+--  Doxyrest is distributed under the MIT license.
+--  For details see accompanying license.txt file,
+--  the public copy of which is also available at:
+--  http://tibbo.com/downloads/archive/doxyrest/license.txt
+--
+--------------------------------------------------------------------------------
+
+local argArray = table.pack (...)
+local compound = argArray [1]
+
+local decl = getClassDeclString (compound, false, false, "\t")
+
+if not compound.m_baseTypeArray or #compound.m_baseTypeArray == 0 then
+}
+	$decl
+%{
+else
+	if #compound.m_baseTypeArray == 1 then
+		local item = compound.m_baseTypeArray [1]
+		local protection = compound.m_baseTypeProtectionArray [1]
+}
+	$decl: $(getBaseClassString (item, protection))
+%{
+	else
+}
+	$decl:
+%{
+		for i = 1, #compound.m_baseTypeArray do
+			local item = compound.m_baseTypeArray [i]
+			local protection = compound.m_baseTypeProtectionArray [i]
+			local comma = ""
+
+			if i < #compound.m_baseTypeArray then
+				comma = ","
+			end
+
+}
+	    $(getBaseClassString (item, protection))
+%{
+		end -- for
+	end -- if
+end -- if
+
+if compound.m_derivedTypeArray and #compound.m_derivedTypeArray > 0 then
+}
+
+	    // direct descendants
+
+%{
+	local isPrevMl = false
+
+	for i = 1, #compound.m_derivedTypeArray do
+		local item = compound.m_derivedTypeArray [i]
+		local decl = getClassDeclString (item, true, true, "\t    ")
+		local isMl = string.find (decl, "\n")
+		local extraSep = ""
+
+		if i > 1 and (isMl or isPrevMl) then
+			extraSep = "\n"
+		end
+
+		isPrevMl = isMl
+}
+$extraSep	    $decl
+%{
+	end -- for
+end -- if
+}

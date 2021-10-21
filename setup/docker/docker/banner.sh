@@ -11,8 +11,8 @@ __      ___ _   _                   _____
 ==========================================
 \e[m"
 echo -e "Docker Image Version: \e[32m $VERSION \e[m"
+echo -e "Vitis AI Git Hash: \e[32m $GIT_HASH \e[m"
 echo "Build Date: $BUILD_DATE"
-echo "VAI_ROOT: $VAI_ROOT"
 echo -e ""
 echo -e "For TensorFlow 1.15 Workflows do:"
 echo -e "    \e[31m conda activate vitis-ai-tensorflow \e[m"

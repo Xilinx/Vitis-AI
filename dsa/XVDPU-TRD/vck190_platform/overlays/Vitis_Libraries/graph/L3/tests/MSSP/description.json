@@ -1,0 +1,98 @@
+{
+    "gui": false, 
+    "name": "Xilinx Multi Source Shortest Path", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u50"
+    ], 
+    "platform_blacklist": [
+    ], 
+    "platform_properties": {
+        "u50": {
+	        "v++": {
+	            "compiler": {
+		        "cflags": [
+		            "--config PROJECT/conn_u50.ini"
+		            ]
+		        }
+	        }
+	    }
+    }, 
+    "launch": [
+        {
+            "cmd_args": " -dataSetDir PROJECT/data/ -refDir PROJECT/data/", 
+            "ld_library_path": "PROJECT/../../lib:$(XILINX_XRT)/lib:$(XILINX_XRM)/lib", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L3/tests/MSSP/test_mssp.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/include"
+            ], 
+            "options": "-O3 -I$(XILINX_XRM)/include"
+        },
+        "linker": {
+            "librarypaths": [
+                "LIB_DIR/L3/lib"
+            ], 
+            "libraries" : [
+                "graphL3"
+            ],
+            "options": "-L$(XILINX_XRM)/lib -lxrm "
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/include",
+                "LIB_DIR/L2/tests/shortest_path_float_pred/kernel",
+                "LIB_DIR/../database/L1/include/hw",
+                "LIB_DIR/../quantitative_finance/L1/include",
+		        "LIB_DIR/../utils/L1/include"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/shortest_path_float_pred/kernel/shortestPath_top.cpp", 
+                    "frequency": 300.0, 
+                    "clflags": " -D KERNEL_NAME=shortestPath_top", 
+                    "name": "shortestPath_top"
+                }
+            ], 
+            "frequency": 300.0, 
+            "name": "shortestPath_top"
+        }
+    ], 
+    "testinfo": {
+        "disable": true, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": 32768, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

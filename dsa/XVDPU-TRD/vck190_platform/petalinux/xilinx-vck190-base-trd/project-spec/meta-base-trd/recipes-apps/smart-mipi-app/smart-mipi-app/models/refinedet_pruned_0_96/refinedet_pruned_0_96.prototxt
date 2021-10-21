@@ -1,0 +1,89 @@
+model {
+  name : "refinedet_480x360_5G"
+  kernel {
+     name: "refinedet_480x360_5G"
+     mean: 104.0
+     mean: 117.0
+     mean: 123.0
+     scale: 1.0
+     scale: 1.0
+     scale: 1.0
+  }
+  model_type : REFINEDET
+  refine_det_param : {
+     num_classes : 2
+     nms_threshold : 0.4
+     conf_threshold : 0.7
+     conf_threshold : 0.7
+     keep_top_k : 200
+     top_k : 400
+     layer_name : "arm_loc"
+     layer_name : "arm_conf"
+     layer_name : "odm_loc"
+     layer_name : "odm_conf"
+     prior_box_param {
+        layer_width : 64,
+        layer_height: 48,
+        variances: 0.1
+        variances: 0.1
+        variances: 0.2
+        variances: 0.2
+        min_sizes: 32.0
+        # max_sizes : empty
+        aspect_ratios: 2.0
+        offset: 0.5
+        step_width: 8.0
+        step_height: 8.0
+        flip: true
+        clip: false
+     }
+     prior_box_param {
+        layer_width : 32,
+        layer_height: 24,
+        variances: 0.1
+        variances: 0.1
+        variances: 0.2
+        variances: 0.2
+        min_sizes: 64.0
+        # max_sizes : empty
+        aspect_ratios: 2.0
+        offset: 0.5
+        step_width: 16.0
+        step_height: 16.0
+        flip: true
+        clip: false
+     }
+     prior_box_param {
+        layer_width : 16,
+        layer_height: 12,
+        variances: 0.1
+        variances: 0.1
+        variances: 0.2
+        variances: 0.2
+        min_sizes: 128.0
+        # max_sizes : empty
+        aspect_ratios: 2.0
+        offset: 0.5
+        step_width: 32.0
+        step_height: 32.0
+        flip: true
+        clip: false
+     }
+     prior_box_param {
+        layer_width : 8,
+        layer_height: 6,
+        variances: 0.1
+        variances: 0.1
+        variances: 0.2
+        variances: 0.2
+        min_sizes: 256.0
+        # max_sizes : empty
+        aspect_ratios: 2.0
+        offset: 0.5
+        step_width: 64.0
+        step_height: 64.0
+        flip: true
+        clip: false
+     }
+   }
+}

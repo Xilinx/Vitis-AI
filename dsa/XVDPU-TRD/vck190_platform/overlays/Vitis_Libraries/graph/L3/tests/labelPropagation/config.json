@@ -1,0 +1,8 @@
+
+{
+    "operationName" : "labelPropagation",
+    "kernelName" : "LPKernel",
+    "requestLoad" : 100,
+    "xclbinPath" : "PROJECTPATH/build_dir.hw.xilinx_u50_gen3x16_xdma_201920_3/LPKernel.xclbin",
+    "deviceNeeded" : 1
+}

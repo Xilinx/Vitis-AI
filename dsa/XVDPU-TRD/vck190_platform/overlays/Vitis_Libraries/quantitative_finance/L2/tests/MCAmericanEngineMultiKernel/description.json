@@ -1,0 +1,166 @@
+{
+    "gui": true, 
+    "name": "Xilinx MC American Option Pricing Engine With MultiKernel Test", 
+    "description": "", 
+    "flow": "vitis", 
+    "platform_type": "pcie", 
+    "platform_whitelist": [
+        "u250", 
+        "u200", 
+        "u50"
+    ], 
+    "platform_blacklist": [
+        "zc"
+    ], 
+    "platform_properties": {
+        "u200": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": ["--config PROJECT/conn_u200.cfg"]
+                }
+            }, 
+            "containers": [
+                {
+                    "ldclflags_mk": "--connectivity.nk MCAE_k0:1:MCAE_k0_1 --connectivity.nk MCAE_k1:1:MCAE_k1_1 --connectivity.nk MCAE_k2:1:MCAE_k2_1", 
+                    "frequency": 300, 
+                    "name": "MCAE_k"
+                }
+            ]
+        }, 
+        "u250": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": ["--config PROJECT/conn_u250.cfg"]
+                }
+            }, 
+            "containers": [
+                {
+                    "ldclflags_mk": "--connectivity.nk MCAE_k0:1:MCAE_k0_1 --connectivity.nk MCAE_k1:1:MCAE_k1_1 --connectivity.nk MCAE_k2:1:MCAE_k2_1", 
+                    "frequency": 300, 
+                    "name": "MCAE_k"
+                }
+            ]
+        }, 
+        "u50": {
+            "host": {
+                "compiler": {
+                    "symbols": []
+                }
+            }, 
+            "v++": {
+                "compiler": {
+                    "cflags": ["--config PROJECT/conn_u50.cfg"]
+                }
+            }, 
+            "containers": [
+                {
+                    "ldclflags_mk": "--connectivity.nk MCAE_k0:1:MCAE_k0_1 --connectivity.nk MCAE_k1:1:MCAE_k1_1 --connectivity.nk MCAE_k2:1:MCAE_k2_1", 
+                    "frequency": 300, 
+                    "name": "MCAE_k"
+                }
+            ]
+        }
+    }, 
+    "launch": [
+        {
+            "cmd_args": " -mode fpga -xclbin BUILD/MCAE_k.xclbin", 
+            "name": "generic launch for all flows"
+        }
+    ], 
+    "host": {
+        "host_exe": "host.exe", 
+        "compiler": {
+            "sources": [
+                "host/main.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/MCAmericanEngineMultiKernel/host", 
+                "LIB_DIR/L2/tests/MCAmericanEngineMultiKernel/kernel", 
+                "LIB_DIR/ext/xcl2"
+            ], 
+            "options": "-O3 ", 
+            "symbols": []
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include", 
+                "LIB_DIR/L2/include", 
+                "LIB_DIR/L2/tests/MCAmericanEngineMultiKernel/kernel"
+            ]
+        }
+    }, 
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "kernel/MCAE_k0.cpp", 
+                    "frequency": 300, 
+                    "clflags": " -D DPRAGMA", 
+                    "name": "MCAE_k0", 
+                    "num_compute_units": 1
+                }, 
+                {
+                    "location": "kernel/MCAE_k1.cpp", 
+                    "frequency": 300, 
+                    "clflags": " -D DPRAGMA", 
+                    "name": "MCAE_k1", 
+                    "num_compute_units": 1
+                }, 
+                {
+                    "location": "kernel/MCAE_k2.cpp", 
+                    "frequency": 300, 
+                    "clflags": " -D DPRAGMA", 
+                    "name": "MCAE_k2", 
+                    "num_compute_units": 1
+                }
+            ], 
+            "frequency": 300, 
+            "name": "MCAE_k"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 81920, 
+                    "vitis_hw_emu": 20480, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 960, 
+                    "vitis_hw_emu": 300, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 10
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "canary"
+    }
+}

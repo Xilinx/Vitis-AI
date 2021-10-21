@@ -1,0 +1,51 @@
+/*
+ * Copyright 2020 Xilinx, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include <stdint.h>
+#include "xf_datamover/check_stream_with_master.hpp"
+#include "xf_datamover/write_result.hpp"
+
+extern "C" void {{ k["name"] }}({% for m in k["map"] %}
+    // {{ loop.index0 }}
+    hls::stream<ap_axiu<{{ m["in_port"]["width"] }}, 0, 0, 0> >& {{ m["in_port"]["name"] }},
+    ap_uint<{{ m["in_port"]["width"] }}>* {{ m["in_ref"]["name"] }},
+    xf::datamover::CheckResult::type* {{ m["out"]["name"] }},
+    uint64_t sz{{ loop.index0 }}{{ ',' if loop.index0 != (k["map"] | length) - 1 else '' }}
+{% endfor %}
+    ) {
+    using namespace xf::datamover;
+
+    ; // clang-format off{% for m in k["map"] %}
+#pragma HLS interface axis port={{ m["in_port"]["name"] }}
+#pragma HLS interface m_axi offset=slave bundle=gmem{{ loop.index0 }} port={{ m["in_ref"]["name"] }} \
+    max_read_burst_length=32 num_read_outstanding=4 latency=128
+#pragma HLS interface s_axilite bundle=control port={{ m["in_ref"]["name"] }}
+#pragma HLS interface m_axi offset=slave bundle=gmemr port={{ m["out"]["name"] }} \
+    max_read_burst_length=32 num_read_outstanding=4 latency=128
+#pragma HLS interface s_axilite bundle=control port={{ m["out"]["name"] }}
+#pragma HLS interface s_axilite bundle=control port=sz{{ loop.index0 }}{% endfor %}
+#pragma HLS interface s_axilite bundle=control port=return
+    ; // clang-format on
+
+#pragma HLS dataflow
+{% for m in k["map"] %}
+    hls::stream<CheckResult::type, 2> rs{{ loop.index0 }};{% endfor %}
+{% for m in k["map"] %}
+    checkStreamWithMaster({{ m["in_port"]["name"] }}, {{ m["in_ref"]["name"] }}, rs{{ loop.index0 }}, sz{{ loop.index0 }});{% endfor %}
+
+    writeResult({% for m in k["map"] %}rs{{ loop.index0 }}, {{ m["out"]["name"] }}{{ ', ' if loop.index0 != (k["map"] | length) - 1 else '' }}{% endfor %});
+}
+{# vim: set filetype=cpp : #}
