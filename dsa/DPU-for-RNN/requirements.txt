@@ -58,7 +58,7 @@ pathspec==0.8.1
 pbkdf2==1.3
 pexpect==4.8.0
 pickleshare==0.7.5
-Pillow==6.2.2
+Pillow==8.3.2
 plaster==1.0
 plaster-pastedeploy==0.7
 prettytable==2.0.0
