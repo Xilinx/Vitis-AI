@@ -23,7 +23,8 @@
                 "src/app/samples/src/resnet50.cpp"
             ], 
             "includepaths": [
-                "src/app/samples/include"
+                "src/app/samples/include",
+		"${SYSROOT}/usr/include/opencv4/"
             ],
             "options" : "-std=c++17"
         },
@@ -41,7 +42,9 @@
                 "opencv_imgproc",
                 "opencv_imgcodecs",
                 "vart-dpu-runner",
-                "vart-dpu-controller"
+                "vart-dpu-controller",
+		"vart-runner-assistant",
+		"vart-trace"
             ]
         }
     }, 
