@@ -7,6 +7,17 @@
 
 # Release Notes
 
+## Release 1.4.1
+### New Features/Highlights
+
+1. Vitis AI RNN docker public release, including RNN quantizer and compiler
+2. New unified xRNN runtime for U25 & U50LV based on VART Runner interface and XIR xmodels
+3. Release Versal DPU TRD based on 2021.1
+4. Versal WAA app updated to provide better throughput using the new XRT C++ APIs and zero copy
+5. TVM easy-of-use improvement 
+6. Support VCK190 and VCK5000 production boards
+7. Some bugs fixed, e.g. update on xcompiler data alignment issue affecting WAA, quantizer bug fix 
+
 ## Release 1.4
 ### New Features/Highlights
 1. Support new platforms, including Versal ACAP platforms VCK190, VCK5000 and Kria SoM 
