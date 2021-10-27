@@ -52,7 +52,22 @@ steps.**
 	
 	**For the details, please refer to [Setting Up the Evaluation Board](https://www.xilinx.com/html_docs/vitis_ai/1_4/installation.html#ariaid-title8)**
 
-2. (Optional) How to update Vitis AI Runtime and install them separately. 
+2. (Optional) How to install the Vitis AI for PetaLinux 2021.1  
+	There are two ways to install the dependent libraries of Vitis-AI. One is to rebuild the system by configuring PetaLinux and the other is to install the Vitis-AI online via `dnf`.
+	* Build-Time  
+	  To obtain the yocto recipes of VAI1.4 via `petalinux-upgrade` command, then rebuild the petalinux project . More details please refer to the [PetaLinux Tools Documentation:Reference Guide(UG1144)](https://www.xilinx.com/cgi-bin/docs/rdoc?v=latest;d=ug1144-petalinux-tools-reference-guide.pdf) Chapter 6 Upgrading the Workspace.  
+	  For `2021.1 update1` release, run the following command and source the tool's setting script.  
+	  ```
+	  rm <path to petalinux tool>/components/yocto/source/aarch64
+	  petalinux-upgrade -u 'http://petalinux.xilinx.com/sswreleases/rel-v2021/sdkupdate/2021.1_update1/' -p 'aarch64'
+	  source settings.sh
+	  ```
+	  Note that if you do not remove the old aarch64 file first, the upgrade may not be correct on some host system.
+	* Run-Time   
+	  Execute `dnf install packagegroup-petalinux-vitisai` to complete the installation on the target.  
+      Note: If you use this method, ensure that the board is connected to the Internet.	
+	
+3. (Optional) How to update Vitis AI Runtime and install them separately. 
 	
 	If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
 	* Copy the following folder to the board using scp.
@@ -65,7 +80,7 @@ steps.**
 	cd ~/vck190
 	bash target_vart_setup.sh
 	```
-3. (Optional) Download the model.  	
+4. (Optional) Download the model.  	
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
 	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
 	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
