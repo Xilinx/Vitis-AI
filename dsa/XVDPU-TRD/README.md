@@ -272,6 +272,7 @@ set cell_noc {*}
 ```
  ------
  
+ **Note:** Please check the known issue about the workaround for 2021.1 version ES1 platform.
 ## 7 Basic Requirement of Platform
 For platform which will integrate DPUCVDX8G, the basic requirements are listed as below:
 - One 'CIPS' IP.
@@ -290,8 +291,27 @@ For the detailed platform design, please refer to VCK190 platform in this TRD.
 Source files of VCK190 platform are in the folder '/vck190_platform/platforms'.
 
 ## 9 Known Issue 
-Unsupported Models:
+1, Unsupported Models:
 - SA_gate_pt
 - fadnet
 
 For the configuration 'CPB_N=32 & BATCH_N = 6', due to limited DSP resource in XCVC1902, 'ELEW_MULT_ENA' is disabled, model 'efficientnet-b0_tf2' is not supported.
+
+2, Workaround for ES1 platform
+
+For 2021.1 version ES1 platform , before running apps, need firstly run workaround for ES1 silicon.
+
+After VCK190-ES1 board is booting up, create a script with below content, and run it on the ES1 board.
+
+
+```
+for i in {0..39}
+do
+  for j in {1..8}
+  do
+    a=0x20000000000
+    b=0x31000
+    devmem $[a+b+(i<<23)+(j<<18)] 32 0
+  done
+done
+```
