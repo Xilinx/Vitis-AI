@@ -89,27 +89,10 @@
                     ]
                 }
             ], 
-            "name": "dpu"
+            "name": "dpu",
+            "ldclflags" : "--config PROJECT/config_gui.cfg"
         }
     ], 
-    "platform_properties" : {
-        "zcu102_base" : {
-            "containers": [
-                {
-                    "ldclflags" : "--config PROJECT/config_gui.cfg",
-                    "name" : "dpu"
-                }
-            ]
-        },
-        "zcu104_base" : {
-            "containers": [
-                {
-                    "ldclflags" : "--config PROJECT/config_gui.cfg",
-                    "name" : "dpu"
-                }
-            ]
-        }
-    }, 
     "launch": [
         {
             "cmd_args": "BUILD/dpu.xclbin", 
