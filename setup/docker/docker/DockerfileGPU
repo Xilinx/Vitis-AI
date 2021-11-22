@@ -269,6 +269,7 @@ RUN cd /scratch/ \
     && conda env create -f /scratch/vitis-ai-caffe.yml \
         && conda activate vitis-ai-caffe \
         && pip install -r /scratch/pip_requirements.txt \
+        && conda install --force --yes glog=0.4.0 \
     && conda env create -f /scratch/vitis-ai-tensorflow.yml \
         && conda activate vitis-ai-tensorflow \
         && pip install -r /scratch/pip_requirements.txt \
