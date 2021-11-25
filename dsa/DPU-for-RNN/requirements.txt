@@ -71,7 +71,7 @@ pybind11==2.5.0
 pycodestyle==2.5.0
 pycosat==0.6.3
 pycparser==2.20
-Pygments==2.7.3
+Pygments==2.7.4
 pyOpenSSL==19.1.0
 pyparsing==2.4.6
 pyramid==1.10.4
