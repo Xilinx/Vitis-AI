@@ -275,8 +275,7 @@ Cross-compile kernels and examples in cross-compiler environment in host machine
 
 ```sh
 cd <Vitis-AI>/tools/AKS
-tar -xvzf aks_edge.tar.gz
-export CMAKE_PREFIX_PATH=aks_edge/
+tar -xvzf aks_edge.tar.gz -C $SDKTARGETSYSROOT/usr/
 ./cmake-kernels.sh --type=release  --clean
 ./cmake-examples.sh --type=release  --clean
 ```
@@ -324,20 +323,12 @@ cd ~/AKS
 Install the AKS library from RPM package.
 
 ```sh
-dnf install aks-1.4.0-r70.aarch64.rpm
+dnf install aks-1.4.1-r77.aarch64.rpm
+
+# Change execution permissions
+chmod +x aks.sh
+chmod +x examples/bin/*
 ```
-
-### Build Kernels and Examples on the target device
-
-Use following commands to build these kernels and examples.
-
-  ```sh
-  # Buld kernels
-  ./cmake-kernels.sh --clean
-
-  # Build examples
-  ./cmake-examples.sh --clean
-  ```
 
 ### Run Examples
 
