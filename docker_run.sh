@@ -51,6 +51,7 @@ VERSION=latest
 
 CPU_IMAGE_TAG=${DOCKER_REPO}${BRAND}-cpu:${VERSION}
 GPU_IMAGE_TAG=${DOCKER_REPO}${BRAND}-gpu:${VERSION}
+ROCM_IMAGE_TAG=${DOCKER_REPO}${BRAND}-rocm:${VERSION}
 IMAGE_NAME="${1:-$CPU_IMAGE_TAG}"
 DEFAULT_COMMAND="bash"
 
@@ -108,6 +109,10 @@ if [[ $IMAGE_NAME == *"gpu"* ]]; then
     $docker_devices \
     --gpus all \
     $docker_run_params
+elif [[ $IMAGE_NAME == *"rocm"* ]]; then
+    docker run \
+    --group-add=video --group-add=render --device=/dev/dri --device=/dev/kfd \
+    $docker_run_params	   
 else
   docker run \
     $docker_devices \
