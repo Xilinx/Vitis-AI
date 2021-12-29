@@ -1,38 +1,41 @@
 #!/bin/bash
 # Copyright 2020 Xilinx Inc.
 
-sed -n '1, 5p' ./setup/docker/docker/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
+print_terms() {
+  sed -n '1, 5p' ./setup/docker/docker/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '5, 15p' ./setup/docker/docker/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
+  sed -n '5, 15p' ./setup/docker/docker/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '15, 28p' ./setup/docker/docker/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
+  sed -n '15, 28p' ./setup/docker/docker/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '28, 61p' ./setup/docker/docker/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
+  sed -n '28, 61p' ./setup/docker/docker/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '62, 224p' ./setup/docker/docker/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
+  sed -n '62, 224p' ./setup/docker/docker/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '224, 308p' ./setup/docker/docker/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
+  sed -n '224, 308p' ./setup/docker/docker/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
+}
 
 confirm() {
   echo -en "\n\nDo you agree to the terms and wish to proceed [y/n]? "
   read REPLY
   case $REPLY in
-    [Yy]) ;;
+    [Yy]) echo "accepted" > .docker_run_terms_status ;;
     [Nn]) exit 0 ;;
     *) confirm ;;
   esac
     REPLY=''
 }
 
-confirm
-
+if [[ `test -f .docker_run_terms_status && cat .docker_run_terms_status` != "accepted" ]]; then
+  print_terms
+  confirm
+fi
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     echo "Usage: $0 <image>"
