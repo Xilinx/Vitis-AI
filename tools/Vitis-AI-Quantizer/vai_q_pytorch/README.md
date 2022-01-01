@@ -96,7 +96,7 @@ To create deployed model, XIR library needs to be installed. If just run quantiz
 Refer to Vitis AI document for more information on deployment.
 
 **Note:**<br>
-If pytorch version you installed < 1.4, import pytorch_nndct before torch in your script. This is cuased by a pytorch bug before version 1.4.
+If pytorch version you installed < 1.4, import pytorch_nndct before torch in your script. This is caused by a pytorch bug before version 1.4.
 Refer to Pytorch github issue [28536](https://github.com/pytorch/pytorch/pull/28536) and [19668](https://github.com/pytorch/pytorch/issues/19668) for details. 
 ```python
 import pytorch_nndct
