@@ -70,6 +70,11 @@ For CPU version, remove all CUDA_HOME environment variable setting in your .bash
 
     unset CUDA_HOME
 
+To use HIP, you need to set your ROCm home and CPPFLAGS environment variables.
+
+    export ROCM_HOME=/opt/rocm
+    export CPPFLAGS=$(hipconfig --cpp_config)
+
 ##### Pre step 2: install Pytorch(1.1-1.7.1) and torchvision
 Here take pytorch 1.7.1 and torchvision 0.8.2 as an example, detailed instructions for other versions are in [pytorch](https://pytorch.org/) website.
 

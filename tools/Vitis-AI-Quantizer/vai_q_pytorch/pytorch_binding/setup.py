@@ -17,6 +17,7 @@ DEVELOP = False
 BDIST = False
 EMIT_WARNING = False
 CUDA_AVAILABLE = False
+HIP_AVAILABLE = False
 #MACROS = []
 package_name = "pytorch_nndct"
 version = open("version.txt", "r").read().strip()
@@ -42,21 +43,22 @@ class develop(setuptools.command.develop.develop):
 
 
 def check_env_args():
-  global INSTALL, DEVELOP, BDIST, EMIT_WARNING, CUDA_AVAILABLE
+  global INSTALL, DEVELOP, BDIST, EMIT_WARNING, CUDA_AVAILABLE, HIP_AVAILABLE
   #if torch.cuda.is_available() and "CUDA_HOME" in os.environ:
   if "CUDA_HOME" in os.environ:
     CUDA_AVAILABLE = True
     #MACROS += [("WITH_CUDA", None)]
+  elif "ROCM_HOME" in os.environ:
+      HIP_AVAILABLE = True
   else:
-    CUDA_AVAILABLE = False
-    print("CUDA is not available, or CUDA_HOME not found in the environment "
-          "so building without GPU support.")
+    print("CUDA and (HIP) is not available, or CUDA_HOME (ROCM_HOME) not found in the environment "
+          "so building without GPU support."
     '''
-    print("CUDA_HOME not found in the environment so building "
+    print("CUDA_HOME and ROCM_HOME not found in the environment so building "
           "without GPU support. To build with GPU support "
-          "please define the CUDA_HOME environment variable. "
-          "This should be a path which contains include/cuda.h")
+          "please define the CUDA_HOME (ROCM_HOME) environment variable. "
     '''
+    "This should be a path which contains include/cuda.h (include/hip/hip_runtime.h)")
 
   if "install" in sys.argv:
     INSTALL = True
@@ -91,7 +93,7 @@ def clean_install_info():
 
 
 def build_config_setup():
-  global INSTALL, DEVELOP, BDIST, CUDA_AVAILABLE
+  global INSTALL, DEVELOP, BDIST, CUDA_AVAILABLE, HIP_AVAILABLE
   install_packages = ["nndct_shared"]
   for package in install_packages:
     if os.path.exists(package):
@@ -157,6 +159,23 @@ def build_config_setup():
 
       include_dir.append(os.path.join(cwd, "../include/cuda"))
 
+      from torch.utils.cpp_extension import CUDAExtension
+      Extension = CUDAExtension
+    elif HIP_AVAILABLE:
+      extra_compile_args['hipcc'] = ['-O2','-arch=sm_35']
+      hip_src_path = os.path.join(cwd, "../csrc/cuda")
+      for name in os.listdir(hip_src_path):
+        if name.split(".")[-1] in ["cu", "cpp", "cc", "c"]:
+          source_files.append(os.path.join(hip_src_path, name))
+
+      cpp_src_path = os.path.join(cwd, "pytorch_nndct/nn/src/cuda")
+      for name in os.listdir(cpp_src_path):
+        if name.split(".")[-1] in ["cpp", "cc", "c"]:
+          source_files.append(os.path.join(cpp_src_path, name))
+
+      include_dir.append(os.path.join(cwd, "../include/cuda"))
+
+      # CUDAExtension class has checks for HIP backend
       from torch.utils.cpp_extension import CUDAExtension
       Extension = CUDAExtension
     else:
