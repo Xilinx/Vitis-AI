@@ -18,10 +18,16 @@
 
 #include <math.h>
 #include <algorithm>
-#include <math_constants.h>
 #include "../../include/cuda/nndct_fix_kernels.cuh"
 #include "../../include/cuda/nndct_cu_utils.h"
 #include "../../include/cuda/nndct_cuda_math.h"
+
+#ifdef __HIP_PLATFORM_AMD__
+#define CUDART_INF_F            __int_as_float(0x7f800000)
+#define CUDART_INF              __longlong_as_double(0x7ff0000000000000ULL)
+#else
+#include <math_constants.h>
+#endif
 
 template<typename Dtype>
 __global__ static void _set(const int N, 

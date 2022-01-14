@@ -91,9 +91,9 @@ class TorchQuantProcessor():
     
     # Check device available
     if device.type == "cuda":
-      if not (torch.cuda.is_available() and "CUDA_HOME" in os.environ):
+      if not (torch.cuda.is_available() and ("CUDA_HOME" or "ROCM_HOME" in os.environ)):
         device = torch.device("cpu")
-        NndctScreenLogger().warning(f"CUDA is not available, change device to CPU")
+        NndctScreenLogger().warning(f"CUDA (HIP) is not available, change device to CPU")
     
     # Transform torch module to quantized module format
     nndct_utils.create_work_dir(output_dir)
