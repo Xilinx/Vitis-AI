@@ -42,12 +42,12 @@ class ConfigurableDpuTask {
 
  public:
   virtual void setInputImageBGR(const cv::Mat& image) = 0;
-  virtual void setInputImageRGB(const cv::Mat& image) = 0;
-  virtual void setInputDataArray(const std::vector<int8_t>& array) = 0;
+  virtual void setInputImageRGB(const cv::Mat& image, size_t ind = 0) = 0;
+  virtual void setInputDataArray(const std::vector<int8_t>& array, size_t ind = 0) = 0;
   virtual void setInputImageBGR(const std::vector<cv::Mat>& images) = 0;
-  virtual void setInputImageRGB(const std::vector<cv::Mat>& images) = 0;
+  virtual void setInputImageRGB(const std::vector<cv::Mat>& images, size_t ind = 0) = 0;
   virtual void setInputDataArray(
-      const std::vector<std::vector<int8_t>>& array) = 0;
+      const std::vector<std::vector<int8_t>>& array, size_t ind = 0) = 0;
   virtual void run(int task_index) = 0;
   virtual void run_with_xrt_bo(
       const std::vector<vart::xrt_bo_t>& input_bos) = 0;

@@ -17,6 +17,7 @@
 #
 
 import numpy as np
+import math
 
 #for calibration process
 def max(data, name='', quantizer=None):
@@ -31,19 +32,16 @@ def quant_diff_s(data, bitwidth, range, round_method=2, name='',
 
 #for quantization process
 def __amplify_data(data, max, amp, method=2):
-  #1 for floor, 2 for dpu round; use number, not amplified
+  # method = -1 means to quantize a not quantized float tensor and converted it to integer tensor
+  # method > 0 means to convert a quantized float tensor to integer tensor
   data = data * amp
-  '''
-  if method == 1:
-    data = np.floor(data * amp)
+  if method == -1:
     data = np.clip(data, -max, max - 1)
-  elif method == 2:
-    data = data * amp
-    data = np.clip(data, -max, max - 1)
-    data = np.where(
-        np.logical_and(data < 0, (data - np.floor(data)) == 0.5), np.ceil(data),
-        np.round(data))
-  '''
+    data = np.array([math.floor(v + 0.5) if v >= 0.0 else 
+                     math.ceil(v) if (v - math.floor(v) == 0.5) else
+                     math.ceil(v - 0.5) 
+                     for v in data])
+
   return data
 
 def normal_quant_neuron(data,

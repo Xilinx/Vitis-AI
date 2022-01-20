@@ -39,9 +39,9 @@ using V7F = std::vector<V6F>;
 using V3I=std::vector<V2I>;
 
 typedef struct{
- int8_t* box_;
- int8_t* cls_;
- int8_t* dir_;
+ std::vector<int8_t*> box_;
+ std::vector<int8_t*> cls_;
+ std::vector<int8_t*> dir_;
  int size_;
  float scale_box_;
  float scale_cls_;
@@ -102,6 +102,16 @@ class preout_dict
 
 
 struct MyV1I{
+   MyV1I() : size_(0), maxsize_(0), buf(NULL){}
+   void initialize(int size) {
+      maxsize_ = size;
+      if (buf == NULL) {
+         buf = new int [size];
+      } else {
+         std::cerr <<"wrong usage for MyV1I \n";
+         exit(-1);
+      }
+   }
    MyV1I(int size) : size_(0), maxsize_(size), buf(new int[size]){
    } 
    ~MyV1I(){ delete []buf; }

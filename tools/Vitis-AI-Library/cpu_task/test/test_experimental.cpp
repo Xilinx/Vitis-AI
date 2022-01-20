@@ -18,13 +18,12 @@
 
 #include "vart/op_imp.h"
 struct X : public vart::experimental::OpImpBase {
-  X(xir::Op* op, xir::Attrs* attrs)
+  X(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {};
   int calculate(
-      vart::experimental::simple_tensor_buffer_t<float> r,   //
-      vart::experimental::simple_tensor_buffer_t<float> a1,  // required
-      std::unique_ptr<vart::experimental::simple_tensor_buffer_t<float>>
-          a2  // optional
+      vart::simple_tensor_buffer_t<float> r,                   //
+      vart::simple_tensor_buffer_t<float> a1,                  // required
+      std::unique_ptr<vart::simple_tensor_buffer_t<float>> a2  // optional
   ) {
     return 0;
   }
@@ -32,6 +31,6 @@ struct X : public vart::experimental::OpImpBase {
 
 int main(int argc, char* argv[]) {
   auto x = vart::experimental::make_vart_opt_imp<X>();
-  cout << (void*)&x;
+  std::cout << (void*)&x;
   return 0;
 }

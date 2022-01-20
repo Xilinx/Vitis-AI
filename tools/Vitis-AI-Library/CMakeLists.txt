@@ -16,10 +16,16 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-if(DEFINED ENV{BUILD_VER}) 
-  project(vitis_ai_library VERSION $ENV{BUILD_VER} LANGUAGES C CXX)
+if(DEFINED ENV{BUILD_VER})
+  project(
+    vitis_ai_library
+    VERSION $ENV{BUILD_VER}
+    LANGUAGES C CXX)
 else()
-  project(vitis_ai_library VERSION 1.4.1 LANGUAGES C CXX)
+  project(
+    vitis_ai_library
+    VERSION 2.0.0
+    LANGUAGES C CXX)
 endif()
 
 include(${CMAKE_SOURCE_DIR}/cmake/XilinxCommon.cmake)
@@ -38,7 +44,12 @@ option(ENABLE_FACEQUALITY5PT "enable face quality 5pt" OFF)
 option(ENABLE_LANEDETECT "enable lane detection" OFF)
 option(ENABLE_YOLOV2 "enable Yolov2" OFF)
 option(ENABLE_YOLOV3 "enable Yolov3" OFF)
-option(ENABLE_RGBDSEGMENTATION "enable Yolov3" OFF)
+option(ENABLE_YOLOV5 "enable Yolov5" OFF)
+option(ENABLE_YOLOVX "enable YolovX" OFF)
+option(ENABLE_SOLO "enable Solo" OFF)
+option(ENABLE_C2D2_LITE "enable c2d2_lite" OFF)
+option(ENABLE_RGBDSEGMENTATION "enable RGBDsegmentation" OFF)
+option(ENABLE_POLYPSEGMENTATION "enable polypsegmentation" OFF)
 option(ENABLE_LANDMARK "enable landmark face-5pt" OFF)
 option(ENABLE_SEGMENTATION "enable segmentation" OFF)
 option(ENABLE_COVID19SEGMENTATION "enable covid19segmentation" OFF)
@@ -49,6 +60,8 @@ option(ENABLE_HOURGLASS "enable hourglass" OFF)
 option(ENABLE_POSEDETECT "enable pose detect" OFF)
 option(ENABLE_REID "enable reid" OFF)
 option(ENABLE_RCAN "enable rcan" OFF)
+option(ENABLE_SOLO "enable solo" OFF)
+option(ENABLE_FAIRMOT "enable fairmot" OFF)
 option(ENABLE_REIDTRACKER "enable reidtracker" OFF)
 option(ENABLE_MULTITASK "enable multitask" OFF)
 option(ENABLE_MULTITASKV3 "enable multitaskv3" OFF)
@@ -56,6 +69,7 @@ option(ENABLE_PLATEDETECT "enable platedetect" OFF)
 option(ENABLE_PLATENUM "enable platenum" OFF)
 option(ENABLE_PLATERECOG "enable platerecog" OFF)
 option(ENABLE_CARPLATERECOG "enable carplaterecog" OFF)
+option(ENABLE_PSMNET "enable psmnet" OFF)
 if(IS_DIRECTORY overview)
   option(ENABLE_OVERVIEW "enable overview" ON)
 else(DIRECTORY overview)
@@ -74,6 +88,12 @@ option(ENABLE_MNISTCLASSIFICATION "enable mnistclassification" OFF)
 option(ENABLE_MEDICALSEGCELL "enable medicalsegcell" OFF)
 option(ENABLE_BCC "enable bcc" OFF)
 option(ENABLE_PMG "enable pmg" OFF)
+option(ENABLE_ULTRAFAST "enable ultrafast" OFF)
+#option(ENABLE_OCR "enable ocr" OFF)
+option(ENABLE_BTS "enable bts" OFF)
+option(ENABLE_FUSION_CNN "enable fusion_cnn " OFF)
+option(ENABLE_CLOCS "enable clocs " OFF)
+option(ENABLE_X_AUTONOMOUS3D "enable x_autonomous3d" OFF)
 option(ENABLE_DPUCADX8G_RUNNER "enable DPUV1 Runner" OFF)
 option(ENABLE_DPUCADF8H_RUNNER "enable DPUV3INT8 Runner" OFF)
 
@@ -129,6 +149,7 @@ find_package(
              dpu-runner
              runner-assistant
              mem-manager
+             trace
   REQUIRED)
 find_package(Protobuf 3.4.0 REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -155,6 +176,8 @@ add_subdirectory(usefultools)
 add_subdirectory(benchmark)
 
 set(PACKAGE_COMPONENTS
+    cxir
+    cvart
     extra_ops
     model_config
     math
@@ -162,9 +185,9 @@ set(PACKAGE_COMPONENTS
     dpu_task
     cpu_task
     graph_runner
+    xnnpp
     xmodel_jit
-    xmodel_image
-    xnnpp)
+    xmodel_image)
 
 if(ENABLE_CLASSIFICATION OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS classification)
@@ -194,8 +217,28 @@ if(ENABLE_YOLOV3 OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS yolov3)
 endif()
 
+if(ENABLE_YOLOV5 AND (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS yolov5)
+endif()
+
+if(ENABLE_YOLOVX OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS yolovx)
+endif()
+
+if(ENABLE_SOLO OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS solo)
+endif()
+
+if(ENABLE_C2D2_LITE OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS c2d2_lite)
+endif()
+
 if(ENABLE_RGBDSEGMENTATION OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS RGBDsegmentation)
+endif()
+
+if(ENABLE_POLYPSEGMENTATION OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS polypsegmentation)
 endif()
 
 if(ENABLE_LANDMARK OR (NOT DISABLE_ALL))
@@ -244,6 +287,11 @@ endif()
 
 if(ENABLE_RCAN OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS rcan)
+endif()
+
+
+if(ENABLE_FAIRMOT OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS fairmot)
 endif()
 
 if(ENABLE_REIDTRACKER OR (NOT DISABLE_ALL))
@@ -326,6 +374,30 @@ if(ENABLE_PMG OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS pmg)
 endif()
 
+if(ENABLE_ULTRAFAST OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS ultrafast)
+endif()
+
+#if(ENABLE_OCR OR (NOT DISABLE_ALL))
+#  list(APPEND PACKAGE_COMPONENTS ocr)
+#endif()
+
+if(ENABLE_BTS AND (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS bts)
+endif()
+
+if(ENABLE_FUSION_CNN OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS fusion_cnn)
+endif()
+
+if(ENABLE_CLOCS OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS clocs)
+endif()
+
+if(ENABLE_X_AUTONOMOUS3D AND (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS x_autonomous3d)
+endif()
+
 # NOTE: general1 refer to many other libs, so it must be the last components in
 # the list
 if(ENABLE_GENERAL OR (NOT DISABLE_ALL))
@@ -399,8 +471,7 @@ if(DEFINED ENV{BUILD_NUMBER})
 endif()
 set(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "cortexa72-cortexa53")
-    set(CPACK_RPM_PACKAGE_ARCHITECTURE "aarch64")
+  set(CPACK_RPM_PACKAGE_ARCHITECTURE "aarch64")
 endif()
-
 
 include(CPack)

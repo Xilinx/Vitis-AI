@@ -1,0 +1,39 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: 
+# Required-Start:
+# Required-Stop:
+# Default-Start: 3
+# Default-Stop:
+# Short-Description: Resize the root filesystem to fill partition
+# Description:
+### END INIT INFO
+
+ROOT_PART=$(mount | sed -n 's|^\(.*\) on / .*|\1|p')
+ROOT_DEV=$(echo $ROOT_PART | cut -c 1-12)
+PART_NUM=$(echo -n $ROOT_PART | tail -c 1)
+
+do_expand_rootfs() {
+
+    local target=$1
+    local root_part=$2
+    local part_num=$3
+    
+#    parted ${target} resizepart ${part_num} yes 100%
+    echo -e "yes\n100%" | parted /dev/mmcblk0 ---pretend-input-tty  resizepart 2
+}
+
+do_check_media() {
+
+    
+    if [ "$ROOT_DEV" != "/dev/mmcblk1" -a "$ROOT_DEV" != "/dev/mmcblk0" ]; then
+    	echo "$ROOT_DEV is not an emmc or sd card. Don't know how to expand"
+    	return 0
+    fi
+    
+    do_expand_rootfs $ROOT_DEV $ROOT_PART $PART_NUM
+}
+
+do_check_media && resize2fs $ROOT_PART
+rm -rf /etc/init.d/auto-resize
+rm -rf /etc/rc5.d/*auto-resize

@@ -121,7 +121,7 @@ class MultiTaskv3 {
    */
   virtual MultiTaskv3Result run_8UC1(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running results of the MultiTaskv3 neuron network in
+   * @brief Function to get running results of the MultiTaskv3 neural network in
    * batch mode.
    * @note The type is CV_8UC1 of all cv::Mat output.
    *
@@ -142,7 +142,7 @@ class MultiTaskv3 {
    */
   virtual MultiTaskv3Result run_8UC3(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running results of the MultiTaskv3 neuron network in
+   * @brief Function to get running results of the MultiTaskv3 neural network in
    * batch mode.
    * @note The type is CV_8UC3 of all cv::Mat result except depth estimation.
    *
@@ -243,7 +243,7 @@ class MultiTaskv38UC1 {
     return multitaskv3_->run_8UC1(image);
   }
   /**
-   * @brief Function to get running results of the MultiTaskv3 neuron network in
+   * @brief Function to get running results of the MultiTaskv3 neural network in
    * batch mode.
    * @note The type is CV_8UC1 of the MultiTaskv3Result.segmentation.
    *
@@ -350,7 +350,7 @@ class MultiTaskv38UC3 {
     return multitaskv3_->run_8UC3(image);
   }
   /**
-   * @brief Function to get running results of the MultiTaskv3 neuron network in
+   * @brief Function to get running results of the MultiTaskv3 neural network in
    * batch mode.
    * @note The type is CV_8UC3 of the MultiTaskv3Result.segmentation.
    *

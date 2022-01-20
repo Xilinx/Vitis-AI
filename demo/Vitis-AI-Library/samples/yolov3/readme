@@ -68,11 +68,11 @@ I1108 22:41:36.493327  5310 process_result.hpp:78] RESULT: 6	351.843	144.018	415
     sample : ./test_jpeg_yolov3 yolov3_voc_tf sample_yolov3.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1108 22:41:37.711395  5317 process_result.hpp:78] RESULT: 6	8.90686	132.615	125.361	254.461	0.998955
-I1108 22:41:37.711652  5317 process_result.hpp:78] RESULT: 6	112.95	137.506	189.258	183.163	0.9239
-I1108 22:41:37.711697  5317 process_result.hpp:78] RESULT: 6	402.753	128.378	512	250.224	0.71791
-I1108 22:41:37.711743  5317 process_result.hpp:78] RESULT: 6	360.634	144.038	406.917	165.605	0.320683
-I1108 22:41:37.711783  5317 process_result.hpp:78] RESULT: 6	291.458	137.144	332.074	155.318	0.320529
+I0317 12:51:08.973047  4309 demo.hpp:1183] batch: 0     image: sample_yolov3.jpg
+I0317 12:51:08.973166  4309 process_result.hpp:44] RESULT: 6	8.90686	132.615	125.361	254.461	0.999112
+I0317 12:51:08.973289  4309 process_result.hpp:44] RESULT: 6	114.067	137.168	190.375	182.825	0.970534
+I0317 12:51:08.973337  4309 process_result.hpp:44] RESULT: 6	402.753	128.378	512	250.224	0.666963
+I0317 12:51:08.973392  4309 process_result.hpp:44] RESULT: 6	291.458	137.144	332.074	155.318	0.377197
    
 
     sample : ./test_jpeg_yolov3 tiny_yolov3_vmss sample_yolov3_vmss.jpg

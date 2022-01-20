@@ -22,6 +22,7 @@
 #include "tensorflow/core/framework/register_types.h"
 
 #include "nndct_cuda_math.h"
+#include "nndct_cpu_math.h"
 
 namespace nndct {
 
@@ -38,11 +39,33 @@ struct ScaleFunctor;
 template <typename T>
 struct ScaleFunctor<CPUDevice, T> {
   void operator()(OpKernelContext* ctx,
-                  const Tensor* Tinput,
-                  Tensor* Toutput,
+                  const Tensor* input,
+                  Tensor* output,
                   float scale){
-    printf("NNDCT-warning: TF NNDCT does not support CPU flow yet!!!\n");
+    const T* input_buffer = input->flat<T>().data();
+    T* output_buffer = output->flat<T>().data();
+#ifdef QUANT_DEBUG
+    printf("\n......Scale OP conext i/o data: %p %p %p \
+count: %ld %ld, dims: %d dim --",
+            input_buffer,
+            output_buffer,
+            (long int)(input->NumElements()),
+            (long int)(output->NumElements()),
+            input->dims());
     fflush(stdout);
+    if ( input->dims() > 0 ) {
+      for ( int i = 0; i < input->dims(); ++i )
+        printf( " %d", (int)(input->dim_size(i)) ); fflush(stdout);
+    }
+    printf( " --\n" );fflush(stdout);
+#endif // QUANT_DEBUG
+
+    cpu_scale(input->NumElements(),
+               input_buffer,
+               output_buffer,
+               (T)scale);
+    // printf("NNDCT-warning: TF NNDCT does not support CPU flow yet!!! From scale op!\n");
+    // fflush(stdout);
   }
 };
 

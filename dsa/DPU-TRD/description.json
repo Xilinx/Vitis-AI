@@ -24,7 +24,7 @@
             ], 
             "includepaths": [
                 "src/app/samples/include",
-		"${SYSROOT}/usr/include/opencv4/"
+                "${SYSROOT}/usr/include/opencv4/"
             ],
             "options" : "-std=c++17"
         },
@@ -43,8 +43,8 @@
                 "opencv_imgcodecs",
                 "vart-dpu-runner",
                 "vart-dpu-controller",
-		"vart-runner-assistant",
-		"vart-trace"
+                "vart-runner-assistant",
+                "vart-trace"
             ]
         }
     }, 
@@ -58,17 +58,17 @@
                     "build_command" : "$(VIVADO) -mode batch -source PROJECT/src/prj/Vitis/scripts_gui/gen_dpu_xo.tcl -tclargs $(PROJECT) $@ $(KERNEL_NAME) $(TARGET) $(DEVICE) $(XSA)",
                     "clean_command" : "rm -rf *.log *.jou *.xo packaged_* tmp_kernel_*",
                     "dependencies" : [
-                        "src/prj/Vitis/kernel_xml/dpu/kernel.xml",
+                    "src/prj/Vitis/kernel_xml/dpu/kernel.xml",
 	                "src/prj/Vitis/scripts_gui/package_dpu_kernel.tcl",
 	                "src/prj/Vitis/scripts_gui/gen_dpu_xo.tcl",
 	                "src/prj/Vitis/dpu_conf.vh",
 	                "src/dpu_ip/Vitis/dpu/hdl/DPUCZDX8G.v",
 	                "src/dpu_ip/Vitis/dpu/inc/arch_def.vh",
 	                "src/dpu_ip/Vitis/dpu/xdc/timing_clocks.xdc",
-	                "src/dpu_ip/DPUCZDX8G_v3_3_0/ttcl/fingerprint_json.ttcl",
-	                "src/dpu_ip/DPUCZDX8G_v3_3_0/hdl/DPUCZDX8G_v3_3_0_vl_dpu.sv",
-	                "src/dpu_ip/DPUCZDX8G_v3_3_0/inc/function.vh",
-                        "src/dpu_ip/DPUCZDX8G_v3_3_0/inc/arch_para.vh"
+	                "src/dpu_ip/DPUCZDX8G_v3_4_0/ttcl/fingerprint_json.ttcl",
+	                "src/dpu_ip/DPUCZDX8G_v3_4_0/hdl/DPUCZDX8G_v3_4_0_vl_dpu.sv",
+	                "src/dpu_ip/DPUCZDX8G_v3_4_0/inc/function.vh",
+                    "src/dpu_ip/DPUCZDX8G_v3_4_0/inc/arch_para.vh"
                     ]
                 },
                 {
@@ -76,21 +76,21 @@
                     "name": "sfm_xrt_top",
                     "build_command" : "$(VIVADO) -mode batch -source PROJECT/src/prj/Vitis/scripts_gui/gen_sfm_xo.tcl -tclargs $(PROJECT) $@ $(KERNEL_NAME) $(TARGET) $(DEVICE) $(XSA)",
                     "dependencies" : [
-                        "src/prj/Vitis/kernel_xml/sfm/kernel.xml",
+                    "src/prj/Vitis/kernel_xml/sfm/kernel.xml",
 	                "src/prj/Vitis/scripts_gui/package_sfm_kernel.tcl",
 	                "src/prj/Vitis/scripts_gui/gen_sfm_xo.tcl",
 	                "src/dpu_ip/Vitis/sfm/hdl/sfm_xrt_top.v",
-	                "src/dpu_ip/DPUCZDX8G_v3_3_0/hdl/DPUCZDX8G_v3_3_0_vl_sfm.sv",
-	                "src/dpu_ip/DPUCZDX8G_v3_3_0/xci/sfm/fp_acc/fp_acc.xci",
-	                "src/dpu_ip/DPUCZDX8G_v3_3_0/xci/sfm/fp_add/fp_add.xci",
-	                "src/dpu_ip/DPUCZDX8G_v3_3_0/xci/sfm/fp_convert/fp_convert.xci",
-	                "src/dpu_ip/DPUCZDX8G_v3_3_0/xci/sfm/fp_div/fp_div.xci",
-	                "src/dpu_ip/DPUCZDX8G_v3_3_0/xci/sfm/fp_exp/fp_exp.xci"
+	                "src/dpu_ip/DPUCZDX8G_v3_4_0/hdl/DPUCZDX8G_v3_4_0_vl_sfm.sv",
+	                "src/dpu_ip/DPUCZDX8G_v3_4_0/xci/sfm/fp_acc/fp_acc.xci",
+	                "src/dpu_ip/DPUCZDX8G_v3_4_0/xci/sfm/fp_add/fp_add.xci",
+	                "src/dpu_ip/DPUCZDX8G_v3_4_0/xci/sfm/fp_convert/fp_convert.xci",
+	                "src/dpu_ip/DPUCZDX8G_v3_4_0/xci/sfm/fp_div/fp_div.xci",
+	                "src/dpu_ip/DPUCZDX8G_v3_4_0/xci/sfm/fp_exp/fp_exp.xci"
                     ]
                 }
             ], 
             "name": "dpu",
-            "ldclflags" : "--config PROJECT/config_gui.cfg"
+			"ldclflags" : "--config PROJECT/config_gui.cfg"
         }
     ], 
     "launch": [

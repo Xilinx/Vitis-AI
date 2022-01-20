@@ -21,6 +21,7 @@
 		/delete-node/ partition@100000;
 		/delete-node/ partition@600000;
 		/delete-node/ partition@620000;
+		/delete-node/ partition@c00000;
 		partition@0 {
 			label = "boot";
 			reg = <0x00000000 0x00040000>;

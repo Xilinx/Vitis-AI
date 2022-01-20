@@ -24,7 +24,9 @@
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("SigmoidTableLookup", &SigmoidTableLookup, "SigmoidTableLookup");
+    m.def("SigmoidSimulation", &SigmoidSimulation, "SigmoidSimulation");
     m.def("TanhTableLookup",    &TanhTableLookup,    "TanhTableLookup");
+    m.def("TanhSimulation",    &TanhSimulation,    "TanhSimulation");
     m.def("Scale",              &Scale,              "Scale");
     m.def("FixNeuronV2",        &FixNeuronV2,        "FixNeuronV2");
     m.def("DiffsFixPos",        &DiffsFixPos,        "DiffsFixPos");

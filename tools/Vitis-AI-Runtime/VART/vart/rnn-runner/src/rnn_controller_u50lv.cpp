@@ -29,11 +29,14 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 template <typename T>
-static std::string dump_binary_data(std::string filename, T* data,
-                                    size_t size) {
+static std::string dump_binary_data(std::string filename, T* data, size_t size,
+                                    bool hexify = true) {
   std::ofstream of(filename);
+  if (hexify) {
+    of << std::hex;
+  }
   for (size_t i = 0; i < size; ++i) {
-    of << std::hex << data[i] << '\n';
+    of << data[i] << '\n';
   }
   of << std::dec;
   return " Done";
@@ -46,7 +49,6 @@ std::vector<uint32_t> RnnControllerU50LV::get_reg_data(int frame,
                                                        int thread_index) {
   std::vector<uint32_t> regs_array(MAX_REG_ADDR / 4, 0);
 
-  auto core_id = xrt_cu_->get_core_id(idx_);
   std::string board = get_board_name();
 
   // TODO : How I/O address changes w.r.t core-id ?
@@ -56,11 +58,11 @@ std::vector<uint32_t> RnnControllerU50LV::get_reg_data(int frame,
     regs_array[REG_MODEL_BASE_ADDR_L / 4] = 0x0000'0000;
     regs_array[REG_PROF_START_ADDR_L / 4] = 0x0800'0000;
     regs_array[REG_PROF_EN / 4] = 0x0000'0001;
-    if (core_id == 0) {
+    if (idx_ == 0) {
       regs_array[REG_INSTR_BASE_ADDR_H / 4] = 0x0000'0001;
       regs_array[REG_INPUT_BASE_ADDR_H / 4] = 0x0000'0001;
       regs_array[REG_PROF_START_ADDR_H / 4] = 0x0000'0001;
-    } else if (core_id == 1) {
+    } else if (idx_ == 1) {
       regs_array[REG_INSTR_BASE_ADDR_H / 4] = 0x0000'0000;
       regs_array[REG_INPUT_BASE_ADDR_H / 4] = 0x0000'0000;
       regs_array[REG_PROF_START_ADDR_H / 4] = 0x0000'0000;
@@ -78,9 +80,8 @@ std::string RnnControllerU50LV::get_board_name() {
 }
 
 std::string RnnControllerU50LV::get_addr_name() {
-  auto core_id = xrt_cu_->get_core_id(idx_);
   std::string board = get_board_name();
-  return board + "_cu" + std::to_string(core_id);
+  return board + "_cu" + std::to_string(idx_);
 }
 
 size_t RnnControllerU50LV::get_base_addr(unsigned batch_num) {
@@ -109,8 +110,8 @@ RnnControllerU50LV::RnnControllerU50LV(size_t device_core_id,
       xrt_cu_{std::move(xrt_cu)},
       memory_{vitis::ai::WeakStore<size_t, xir::DeviceMemory>::create(
           xrt_cu_->get_device_id(idx_), xrt_cu_->get_device_id(idx_))} {
+  batch_ = idx_ == 0 ? 3 : 4;
   auto core_id = xrt_cu_->get_core_id(idx_);
-  batch_ = core_id == 0 ? 3 : 4;
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
       << "Initialised RnnControllerU50LV : idx_" << idx_ << "; core_id "
       << core_id << "; batch " << batch_;
@@ -145,7 +146,7 @@ void RnnControllerU50LV::run(char* in, uint64_t isize, char* out,
         << "Writing input to in_v2_b" << i << ".log... " << std::hex
         << dump_binary_data("in_v2_b" + std::to_string(i) + ".log",
                             reinterpret_cast<int16_t*>(in + i * isize),
-                            isize / 2);
+                            isize / 2, /*hexify*/ false);
     memory_->upload(
         (void*)(in + i * isize),
         (size_t)(base_addr + ADDR(VECTOR) + thread_index * THREAD_STEP),
@@ -194,7 +195,7 @@ void RnnControllerU50LV::run(char* in, uint64_t isize, char* out,
               << "Writing output to out_v2_b" << i << ".log... " << std::hex
               << dump_binary_data("out_v2_b" + std::to_string(i) + ".log",
                                   reinterpret_cast<int16_t*>(out + i * osize),
-                                  osize / 2);
+                                  osize / 2, /*hexify*/ false);
         }
         __TOC__(OUTPUT_DOWNLOAD)
       },

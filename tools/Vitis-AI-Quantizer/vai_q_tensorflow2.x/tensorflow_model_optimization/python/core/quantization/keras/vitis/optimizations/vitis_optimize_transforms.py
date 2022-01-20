@@ -86,18 +86,18 @@ def _get_folded_conv_weights(conv_layer_type, conv_kernel, conv_bias, bn_gamma,
   else:
     multiplier = 1 / np.sqrt(bn_mv + bn_epsilon)
 
-  if not conv_layer_type:
+  if conv_layer_type is None:
     folded_conv_kernel = multiplier
-  elif conv_layer_type in ['Conv2D', 'Dense']:
+  elif conv_layer_type in ['Dense']:
+    folded_conv_kernel = conv_kernel * multiplier
+  elif conv_layer_type in ['Conv2D']:
     mul_channel = conv_kernel.shape[-1]
-    folded_conv_kernel = (conv_kernel.reshape(-1, mul_channel) *
-                          multiplier).reshape(conv_kernel.shape)
+    folded_conv_kernel = conv_kernel * multiplier.reshape(
+        [1, 1, 1, mul_channel])
   elif conv_layer_type in ['DepthwiseConv2D', 'Conv2DTranspose']:
     mul_channel = conv_kernel.shape[-2]
-    conv_kernel_trans = conv_kernel.transpose(0, 1, 3, 2)
-    folded_conv_kernel_trans = (conv_kernel_trans.reshape(-1, mul_channel) *
-                                multiplier).reshape(conv_kernel_trans.shape)
-    folded_conv_kernel = folded_conv_kernel_trans.transpose(0, 1, 3, 2)
+    folded_conv_kernel = conv_kernel * multiplier.reshape(
+        [1, 1, mul_channel, 1])
 
   if conv_bias is not None:
     folded_conv_bias = bn_beta + (conv_bias - bn_mm) * multiplier
@@ -477,6 +477,10 @@ class ConvertQuantizeStrategy(transforms.Transform):
         quantizer = match_layer.layer['config']['quantizer']
         if quantizer['class_name'] == 'Vitis>LastValueLogThQuantizer':
           quantizer['class_name'] = 'Vitis>LastValueQuantPosQuantizer'
+          if 'symmetry' not in quantizer['config']:
+            quantizer['config']['symmetry'] = True
+          if 'per_channel' not in quantizer['config']:
+            quantizer['config']['per_channel'] = False
       elif layer_type == 'Vitis>QuantizeWrapper':
         quantize_config = match_layer.layer['config']['quantize_config']
         if not quantize_config['class_name'] == 'Vitis>NoQuantizeConfig':
@@ -486,6 +490,10 @@ class ConvertQuantizeStrategy(transforms.Transform):
           for quantizer in quantizers:
             if quantizer['quantizer_type'] == 'LastValueLogThQuantizer':
               quantizer['quantizer_type'] = 'LastValueQuantPosQuantizer'
+              if 'symmetry' not in quantizer['quantizer_params']:
+                quantizer['quantizer_params']['symmetry'] = True
+              if 'per_channel' not in quantizer['quantizer_params']:
+                quantizer['quantizer_params']['per_channel'] = False
 
       def _convert_weights(weights):
         new_weights = collections.OrderedDict()

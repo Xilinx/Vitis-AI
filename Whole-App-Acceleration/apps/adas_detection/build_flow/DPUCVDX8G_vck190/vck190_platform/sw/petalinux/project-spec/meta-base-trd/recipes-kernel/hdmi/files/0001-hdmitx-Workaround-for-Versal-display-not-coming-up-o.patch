@@ -1,0 +1,85 @@
+From 71e390e8ddaefa02ecc9ab01c68f9347acad00e0 Mon Sep 17 00:00:00 2001
+From: Vishal Sagar <vishal.sagar@xilinx.com>
+Date: Tue, 12 Jan 2021 00:09:02 +0530
+Subject: [LINUX PATCH] hdmitx: Workaround for Versal display not coming up on
+ boot
+
+On certain Versal boards, the HDMI Tx driver is not up and running as
+the LCPLL lock in the HDMI Phy hasn't occurred.
+A workaround is to reset the Tx PLL in encoder enable function.
+This is tested with VCU TRD design on VMK180.
+
+Signed-off-by: Vishal Sagar <vishal.sagar@xilinx.com>
+---
+ hdmi/phy-vphy.c                       | 1 +
+ hdmi/phy-xilinx-vphy/xhdmiphy1.h      | 1 +
+ hdmi/phy-xilinx-vphy/xhdmiphy1_hdmi.c | 9 +++++++++
+ hdmi/xilinx_drm_hdmi.c                | 4 ++++
+ 4 files changed, 15 insertions(+)
+
+diff --git a/hdmi/phy-vphy.c b/hdmi/phy-vphy.c
+index a3f9476..a8779df 100644
+--- a/hdmi/phy-vphy.c
++++ b/hdmi/phy-vphy.c
+@@ -189,6 +189,7 @@ EXPORT_SYMBOL_GPL(XHdmiphy1_SetHdmiTxParam);
+ //EXPORT_SYMBOL_GPL(XHdmiphy1_IsBonded);
+ EXPORT_SYMBOL_GPL(XHdmiphy1_ClkDetFreqReset);
+ EXPORT_SYMBOL_GPL(XHdmiphy1_ClkDetGetRefClkFreqHz);
++EXPORT_SYMBOL_GPL(XHdmiphy1_TxPllreset);
+ 
+ static void xvphy_intr_disable(struct xvphy_dev *vphydev)
+ {
+diff --git a/hdmi/phy-xilinx-vphy/xhdmiphy1.h b/hdmi/phy-xilinx-vphy/xhdmiphy1.h
+index 03f8dae..65b7349 100644
+--- a/hdmi/phy-xilinx-vphy/xhdmiphy1.h
++++ b/hdmi/phy-xilinx-vphy/xhdmiphy1.h
+@@ -973,6 +973,7 @@ u32 XHdmiphy1_Hdmi21Config(XHdmiphy1 *InstancePtr, u8 QuadId,
+         XHdmiphy1_DirectionType Dir,
+         u64 LineRate, u8 NChannels);
+ void XHdmiphy1_RegisterDebug(XHdmiphy1 *InstancePtr);
++void XHdmiphy1_TxPllreset(XHdmiphy1 *InstancePtr);
+ 
+ /******************* Macros (Inline Functions) Definitions ********************/
+ 
+diff --git a/hdmi/phy-xilinx-vphy/xhdmiphy1_hdmi.c b/hdmi/phy-xilinx-vphy/xhdmiphy1_hdmi.c
+index a3c7b04..4e64813 100644
+--- a/hdmi/phy-xilinx-vphy/xhdmiphy1_hdmi.c
++++ b/hdmi/phy-xilinx-vphy/xhdmiphy1_hdmi.c
+@@ -587,6 +587,15 @@ void XHdmiphy1_ClkDetFreqReset(XHdmiphy1 *InstancePtr, u8 QuadId,
+ 			RegVal);
+ }
+ 
++void XHdmiphy1_TxPllreset(XHdmiphy1 *InstancePtr)
++{
++	u32 RegVal;
++
++	RegVal = XHdmiphy1_ReadReg(InstancePtr->Config.BaseAddr, XHDMIPHY1_PLL_RESET_REG);
++	XHdmiphy1_WriteReg(InstancePtr->Config.BaseAddr, XHDMIPHY1_PLL_RESET_REG, RegVal | 0x1);
++	XHdmiphy1_WriteReg(InstancePtr->Config.BaseAddr, XHDMIPHY1_PLL_RESET_REG, RegVal & ~0x1);
++}
++
+ /*****************************************************************************/
+ /**
+ * This function sets the clock detector frequency lock counter threshold value.
+diff --git a/hdmi/xilinx_drm_hdmi.c b/hdmi/xilinx_drm_hdmi.c
+index 09176da..8343160 100644
+--- a/hdmi/xilinx_drm_hdmi.c
++++ b/hdmi/xilinx_drm_hdmi.c
+@@ -1151,10 +1151,14 @@ static void xlnx_drm_hdmi_encoder_enable(struct drm_encoder *encoder)
+ {
+ 	struct xlnx_drm_hdmi *xhdmi = encoder_to_hdmi(encoder);
+ 	XV_HdmiTxSs *HdmiTxSsPtr = &xhdmi->xv_hdmitxss;
++	XHdmiphy1 *XGtPhyPtr = xhdmi->xgtphy;
+ 
+ 	xlnx_drm_hdmi_encoder_dpms(encoder, DRM_MODE_DPMS_ON);
+ 	/* Enable the EXT VRST which actually starts the bridge */
+ 	XV_HdmiTxSs_SYSRST(HdmiTxSsPtr, FALSE);
++
++	if (XGtPhyPtr)
++		XHdmiphy1_TxPllreset(XGtPhyPtr);
+ }
+ 
+ static void xlnx_drm_hdmi_encoder_disable(struct drm_encoder *encoder)
+-- 
+2.28.0
+

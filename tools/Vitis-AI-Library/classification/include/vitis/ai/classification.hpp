@@ -81,7 +81,7 @@ class Classification : public ConfigurableDpuTaskBase {
    */
  public:
   /**
-   * @brief Function to get running results of the classification neuron
+   * @brief Function to get running results of the classification neural
    * network.
    *
    * @param image Input data of input image (cv::Mat).
@@ -91,7 +91,7 @@ class Classification : public ConfigurableDpuTaskBase {
    */
   virtual vitis::ai::ClassificationResult run(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running results of the classification neuron
+   * @brief Function to get running results of the classification neural
    * network in batch mode.
    *
    * @param images Input data of batch input images (vector<cv::Mat>). The size
@@ -103,7 +103,7 @@ class Classification : public ConfigurableDpuTaskBase {
   virtual std::vector<vitis::ai::ClassificationResult> run(
       const std::vector<cv::Mat>& images) = 0;
   /**
-   * @brief Function to get running results of the classification neuron network
+   * @brief Function to get running results of the classification neural network
    * in batch mode , used to receive user's xrt_bo to support zero copy.
    *
    * @param input_bos The vector of vart::xrt_bo_t.

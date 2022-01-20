@@ -1,0 +1,45 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: efficientNet-edgetpu-S classifier on ImageNet.
+input size: 224*224
+float ops: 4.72G
+task: classification
+framework: TPU
+prune: 'no'
+version: 2.0
+files:
+- name: tf_efficientnet-edgetpu-s_imagenet_224_224_4.72G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_efficientnet-edgetpu-s_imagenet_224_224_4.72G_2.0.zip
+  checksum: b8bb21e53faa82359df9255c087c6541
+- name: efficientNet-edgetpu-S_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-S_tf-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 59acdbc61bb44ab762dcc38ce2cf189a
+- name: efficientNet-edgetpu-S_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-S_tf-vck190-r2.0.0.tar.gz
+  checksum: 11eacf6fb9f4b76bb08385fd3652d89f
+- name: efficientNet-edgetpu-S_tf
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-S_tf-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 5724ca7c91289ed730b93346790a92cd
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

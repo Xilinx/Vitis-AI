@@ -13,8 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include <inttypes.h>
 
-#include "target.pb.h"
+#include <array>
+
+#include "vitis/ai/target_factory.hpp"
 
 namespace vitis {
 namespace ai {
@@ -28,10 +31,10 @@ const Target create_target_DPUCVDX8G_ISA1(const std::uint64_t fingerprint) {
   constexpr std::array<uint64_t, 3> PP_MAP{8, 8, 8};
   constexpr std::array<uint64_t, 3> ICP_MAP{16, 16, 16};
   constexpr std::array<uint64_t, 3> OCP_MAP{16, 32, 64};
-  std::array<std::string, 3> ALU_MAP{"NONE", "ALL", "MAXP"};
-  constexpr std::array<uint64_t, 5> IMG_RD_MAP{13, 13, 12, 13, 12};
-  constexpr std::array<uint64_t, 5> WGT_RD_MAP{14, 13, 13, 12, 12};
-  constexpr std::array<uint64_t, 5> BIAS_RD_MAP{11, 11, 11, 11, 11};
+  std::array<std::string, 3> ALU_MAP{"NONE", "ALL", "3D"};
+  constexpr std::array<uint64_t, 6> IMG_RD_MAP{13, 13, 12, 13, 12, 14};
+  constexpr std::array<uint64_t, 6> WGT_RD_MAP{14, 13, 13, 12, 12, 14};
+  constexpr std::array<uint64_t, 6> BIAS_RD_MAP{11, 11, 11, 11, 11, 11};
 
   auto ARCH = fingerprint & 0xf;
   auto PP = PP_MAP[ARCH];
@@ -58,7 +61,7 @@ const Target create_target_DPUCVDX8G_ISA1(const std::uint64_t fingerprint) {
 
   std::string NAME = "DPUCVDX8G_ISAx_CxBx_x";
   char finger_hex[17];
-  sprintf(finger_hex, "%016lX", fingerprint);
+  sprintf(finger_hex, "%016" PRIX64, fingerprint);
   NAME.replace(20, 1, finger_hex);
   NAME.replace(18, 1, std::to_string(BATCH));
   NAME.replace(16, 1, std::to_string(OCP));
@@ -84,7 +87,7 @@ const Target create_target_DPUCVDX8G_ISA1(const std::uint64_t fingerprint) {
   convw_bank_group->set_bank_width(ICP);
   convw_bank_group->set_bank_depth(1 << WGT_RD);
   base_id += WGT_BANK_NUM;
-  if (ALU_MODE == "ALL") {
+  if (ALU_MODE == "ALL" || ALU_MODE == "3D") {
     auto dwconvw_bank_group = target.add_bank_group();
     dwconvw_bank_group->set_name("DWCONVW");
     dwconvw_bank_group->set_type("Param");
@@ -102,7 +105,7 @@ const Target create_target_DPUCVDX8G_ISA1(const std::uint64_t fingerprint) {
   bias_bank_group->set_bank_width(WGT_BANK_NUM);
   bias_bank_group->set_bank_depth(1 << BIAS_RD);
   base_id += 1;
-  if (ALU_MODE == "ALL") {
+  if (ALU_MODE == "ALL" || ALU_MODE == "3D") {
     auto dwbias_bank_group = target.add_bank_group();
     dwbias_bank_group->set_name("DWCVBIAS");
     dwbias_bank_group->set_type("Param");
@@ -173,16 +176,16 @@ const Target create_target_DPUCVDX8G_ISA1(const std::uint64_t fingerprint) {
     alu_engine->add_input_bank("VB" + std::to_string(idx));
     alu_engine->add_output_bank("VB" + std::to_string(idx));
   }
-  if (ALU_MODE == "ALL") {
+  if (ALU_MODE == "ALL" || ALU_MODE == "3D") {
     alu_engine->set_weight_bank("DWCONVW");
     alu_engine->set_bias_bank("DWCVBIAS");
   }
   auto alu_nonlinear = alu_engine->mutable_nonlinear();
   alu_nonlinear->add_nonlinear_type(Target::Nonlinear::relu);
-  if (ALU_MODE == "ALL") {
+  if (ALU_MODE == "ALL" || ALU_MODE == "3D") {
     alu_nonlinear->add_nonlinear_type(Target::Nonlinear::relu_six);
   }
-  if (ALU_MODE == "ALL") {
+  if (ALU_MODE == "ALL" || ALU_MODE == "3D") {
     alu_engine->add_alu_type(Target::Alu::dwconv);
     alu_engine->add_alu_type(Target::Alu::prelu);
     alu_engine->add_alu_type(Target::Alu::avg_pool);
@@ -191,13 +194,17 @@ const Target create_target_DPUCVDX8G_ISA1(const std::uint64_t fingerprint) {
     alu_engine->add_alu_type(Target::Alu::max_reduce);
     alu_engine->add_alu_type(Target::Alu::dwconv_no_bias);
     alu_engine->add_alu_type(Target::Alu::hsigmoid);
-  } else if (ALU_MODE == "MAXP") {
-    alu_engine->add_alu_type(Target::Alu::max_pool);
-    alu_engine->add_alu_type(Target::Alu::max_reduce);
+  }
+  if (ALU_MODE == "3D") {
+    alu_engine->add_alu_type(Target::Alu::w16b0);
   }
   auto alu_limit = alu_engine->mutable_alu_limit();
   alu_limit->set_kernel_size("1-256");
-  alu_limit->set_stride("1-8");
+  if (ALU_MODE == "ALL") {
+    alu_limit->set_stride("1-8");
+  } else if (ALU_MODE == "3D") {
+    alu_limit->set_stride("1-256");
+  }
   auto pad_limit = alu_engine->mutable_pad_limit();
   pad_limit->set_pad_left("0-15");
   pad_limit->set_pad_top("0-15");

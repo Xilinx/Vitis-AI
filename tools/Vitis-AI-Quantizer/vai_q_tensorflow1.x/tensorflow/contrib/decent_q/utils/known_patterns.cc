@@ -703,277 +703,31 @@ DEFINE_GET_WEIGHTS_NODES(Swish) {
 }
 const SwishPattern swish_pattern_wrapper(swish_pattern, "swish");
 
-// - conv +  swish
-const OpTypePattern convfc_swish_pattern(
-    {"Mul",
-      {
-        convfc_pattern, // input node
-        {"Sigmoid",
-          {
-            convfc_pattern, // input node
-          }
-        },
-      }
-    });
-DEFINE_GET_INPUT_NODES(ConvfcSwish) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(ConvfcSwish) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  return weights_nodes;
-}
-const ConvfcSwishPattern  convfc_swish_pattern_wrapper(convfc_swish_pattern, "convfc_swish");
-
-// convfc + bias + swish
-const OpTypePattern convfc_bias_swish_pattern(
-    {"Mul",
-      {
-        convfc_bias_pattern, // input node
-        {"Sigmoid",
-          {
-            convfc_bias_pattern, // input node
-          }
-        },
-      }
-    });
-DEFINE_GET_INPUT_NODES(ConvfcBiasSwish) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(ConvfcBiasSwish) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  return weights_nodes;
-}
-const ConvfcBiasSwishPattern convfc_bias_swish_pattern_wrapper(convfc_bias_swish_pattern, "convfc_bias_swish");
-
-// hard swish v2 replace sigmoid_with hard_sigmoid
-const OpTypePattern hard_swish_v2_pattern(
-    {"Mul",
-      {
-        input_pattern, // input node
-        {"Mul",
-          {
-            {"Relu6",
-              {
-                {"Add|AddV2",
-                  {
-                    input_pattern, // input node
-                    {"Const"},    // add 3
-                  }
-                },
-              }
-            },
-            {"Const"}, // scale=1/6
-          }
-        },
-      }
-    });
-DEFINE_GET_INPUT_NODES(HardSwishV2) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(HardSwishV2) {
-  return std::vector<const NodeDef*> ();
-}
-const HardSwishV2Pattern hard_swish_v2_pattern_wrapper(hard_swish_v2_pattern, "hard_swish_v2");
-
-// - conv +  hard_swish_v2
-const OpTypePattern convfc_hard_swish_v2_pattern(
-    {"Mul",
-      {
-        convfc_pattern, // input node
-        {"Mul",
-          {
-            {"Relu6",
-              {
-                {"Add|AddV2",
-                  {
-                    convfc_pattern, // input node
-                    {"Const"},    // add 3
-                  }
-                },
-              }
-            },
-            {"Const"}, // scale=1/6
-          }
-        },
-      }
-    });
-DEFINE_GET_INPUT_NODES(ConvfcHardSwishV2) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(ConvfcHardSwishV2) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  return weights_nodes;
-}
-const ConvfcHardSwishV2Pattern  convfc_hard_swish_v2_pattern_wrapper(convfc_hard_swish_v2_pattern, "convfc_hard_swish_v2");
-
-// convfc + bias + hard_swish_v2
-const OpTypePattern convfc_bias_hard_swish_v2_pattern(
-    {"Mul",
-      {
-        convfc_bias_pattern, // input node
-        {"Mul",
-          {
-            {"Relu6",
-              {
-                {"Add|AddV2",
-                  {
-                    convfc_bias_pattern, // input node
-                    {"Const"},    // add 3
-                  }
-                },
-              }
-            },
-            {"Const"}, // scale=1/6
-          }
-        },
-      }
-    });
-DEFINE_GET_INPUT_NODES(ConvfcBiasHardSwishV2) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(ConvfcBiasHardSwishV2) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-  weights_nodes.push_back(&(match.inputs[0].inputs[1].node));
-  return weights_nodes;
-}
-const ConvfcBiasHardSwishV2Pattern convfc_bias_hard_swish_v2_pattern_wrapper(convfc_bias_hard_swish_v2_pattern, "convfc_bias_hard_swish_v2");
-
-// hard swish, place scale of hard_sigmoid to the end of pattern
-const OpTypePattern hard_swish_pattern(
-    {"Mul",
-      {
-        {"Mul",
-          {
-            input_pattern, // input node
-            {"Relu6",
-              {
-                {"Add|AddV2",
-                  {
-                    input_pattern, // input node
-                    {"Const"},    // add 3
-                  }
-                },
-              }
-            },
-          }
-        },
-        {"Const"}, // scale=1/6
-      }
-    });
-DEFINE_GET_INPUT_NODES(HardSwish) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(HardSwish) {
-  return std::vector<const NodeDef*> ();
-}
-const HardSwishPattern hard_swish_pattern_wrapper(hard_swish_pattern, "hard_swish");
-
-// - conv +  hard_swish
-const OpTypePattern convfc_hard_swish_pattern(
-    {"Mul",
-      {
-        {"Mul",
-          {
-            convfc_pattern, // input node
-            {"Relu6",
-              {
-                {"Add|AddV2",
-                  {
-                    convfc_pattern, // input node
-                    {"Const"}, // add 3
-                  }
-                },
-              }
-            },
-          }
-        },
-        {"Const"}, // scale = 1/6
-      }
-    });
-DEFINE_GET_INPUT_NODES(ConvfcHardSwish) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(ConvfcHardSwish) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-  return weights_nodes;
-}
-const ConvfcHardSwishPattern  convfc_hard_swish_pattern_wrapper(convfc_hard_swish_pattern, "convfc_hard_swish");
-
-// convfc + bias + hard_swish
-const OpTypePattern convfc_bias_hard_swish_pattern(
-    {"Mul",
-      {
-        {"Mul",
-          {
-            convfc_bias_pattern, // input node
-            {"Relu6",
-              {
-                {"Add|AddV2",
-                  {
-                    convfc_bias_pattern, // input node
-                    {"Const"},  // add 3
-                  }
-                },
-              }
-            },
-          }
-        },
-        {"Const"}, // scale = 1/6
-      }
-    });
-DEFINE_GET_INPUT_NODES(ConvfcBiasHardSwish) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(ConvfcBiasHardSwish) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].node));
-  return weights_nodes;
-}
-const ConvfcBiasHardSwishPattern convfc_bias_hard_swish_pattern_wrapper(convfc_bias_hard_swish_pattern, "convfc_bias_hard_swish");
-
 // Squeeze Excite gating function, hard-sigmoid
 const OpTypePattern hard_sigmoid_pattern(
     {"Mul",
       {
-        {"Relu6",
+        {"Mul",
           {
-            {"Add|AddV2",
-              {
-                input_pattern, // input node
-                {"Const"},    // add 3
-              }
-            },
+           {"Relu6",
+             {
+               {"Add|AddV2",
+                 {
+                   input_pattern, // input node
+                   {"Const"},    // add 3
+                 }
+               },
+             }
+           },
+           {"Const"}, // scale=1/6
           }
         },
-        {"Const"}, // scale=1/6
+        {"Const"}, // vitis dpu scale 6*2371/2^14
       }
     });
 DEFINE_GET_INPUT_NODES(HardSigmoid) {
   std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
   return input_nodes;
 }
 DEFINE_GET_WEIGHTS_NODES(HardSigmoid) {
@@ -981,64 +735,23 @@ DEFINE_GET_WEIGHTS_NODES(HardSigmoid) {
 }
 const HardSigmoidPattern hard_sigmoid_pattern_wrapper(hard_sigmoid_pattern, "hard_sigmoid");
 
-// - conv +  hard_sigmoid
-const OpTypePattern convfc_hard_sigmoid_pattern(
+// hard swish replace sigmoid_with hard_sigmoid
+const OpTypePattern hard_swish_pattern(
     {"Mul",
       {
-        {"Relu6",
-          {
-            {"Add|AddV2",
-              {
-                convfc_pattern, // input node
-                {"Const"},    // add 3
-              }
-            },
-          }
-        },
-        {"Const"}, // scale=1/6
+        input_pattern, // input node
+        hard_sigmoid_pattern,
       }
     });
-DEFINE_GET_INPUT_NODES(ConvfcHardSigmoid) {
+DEFINE_GET_INPUT_NODES(HardSwish) {
   std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
+  input_nodes.push_back(&(match.inputs[0].node));
   return input_nodes;
 }
-DEFINE_GET_WEIGHTS_NODES(ConvfcHardSigmoid) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
-  return weights_nodes;
+DEFINE_GET_WEIGHTS_NODES(HardSwish) {
+  return std::vector<const NodeDef*> ();
 }
-const ConvfcHardSigmoidPattern  convfc_hard_sigmoid_pattern_wrapper(convfc_hard_sigmoid_pattern, "convfc_hard_sigmoid");
-
-// convfc + bias + hard_sigmoid
-const OpTypePattern convfc_bias_hard_sigmoid_pattern(
-    {"Mul",
-      {
-        {"Relu6",
-          {
-            {"Add|AddV2",
-              {
-                convfc_bias_pattern, // input node
-                {"Const"},    // add 3
-              }
-            },
-          }
-        },
-        {"Const"}, // scale=1/6
-      }
-    });
-DEFINE_GET_INPUT_NODES(ConvfcBiasHardSigmoid) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(ConvfcBiasHardSigmoid) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].inputs[1].node));
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].node));
-  return weights_nodes;
-}
-const ConvfcBiasHardSigmoidPattern convfc_bias_hard_sigmoid_pattern_wrapper(convfc_bias_hard_sigmoid_pattern, "convfc_bias_hard_sigmoid");
+const HardSwishPattern hard_swish_pattern_wrapper(hard_swish_pattern, "hard_swish");
 
 // - tf.keras.LeakyRelu
 const OpTypePattern keras_leakyrelu_pattern(
@@ -1259,7 +972,7 @@ const BatchnormReluPattern batchnorm_relu_pattern_wrapper(batchnorm_relu_pattern
 
 // Array
 const OpTypePattern array_pattern(
-    {"Add|AddV2",
+    {"Add|AddV2|Mul",
       {
         {"*"}, // input node 1
         {"*"}, // input node 2
@@ -1375,24 +1088,12 @@ const std::vector<const OpTypePatternBase*> known_patterns ({
   &atrous_conv_bias_pattern_wrapper,
   &atrous_conv_relu_pattern_wrapper,
   &atrous_conv_pattern_wrapper,
-  &convfc_bias_hard_swish_v2_pattern_wrapper,
-  &convfc_bias_hard_swish_pattern_wrapper,
-  &convfc_bias_hard_sigmoid_pattern_wrapper,
-  &convfc_bias_swish_pattern_wrapper,
   &convfc_bias_leakyrelu_pattern_wrapper,
   &convfc_bias_fused_leakyrelu_pattern_wrapper,
   &convfc_bias_keras_leakyrelu_pattern_wrapper,
-  &convfc_hard_swish_v2_pattern_wrapper,
-  &convfc_hard_swish_pattern_wrapper,
-  &convfc_hard_sigmoid_pattern_wrapper,
-  &convfc_swish_pattern_wrapper,
   &convfc_leakyrelu_pattern_wrapper,
   &convfc_fused_leakyrelu_pattern_wrapper,
   &convfc_keras_leakyrelu_pattern_wrapper,
-  &hard_swish_v2_pattern_wrapper,
-  &hard_swish_pattern_wrapper,
-  &hard_sigmoid_pattern_wrapper,
-  &swish_pattern_wrapper,
   &leakyrelu_pattern_wrapper,
   &fused_leakyrelu_pattern_wrapper,
   &keras_leakyrelu_pattern_wrapper,
@@ -1413,14 +1114,17 @@ const std::vector<const OpTypePatternBase*> known_patterns ({
   &conv2d_backprop_input_bias_pattern_wrapper,
   &conv2d_backprop_input_relu_pattern_wrapper,
   &conv2d_backprop_input_pattern_wrapper,
+  &hard_swish_pattern_wrapper,
+  &hard_sigmoid_pattern_wrapper,
+  &swish_pattern_wrapper,
   &upsampling_pattern_wrapper,
   &resize_pattern_wrapper,
   &tpu_nearest_neighbor_upsampling_pattern_wrapper,
   &batchnorm_relu_pattern_wrapper,
   &batchnorm_pattern_wrapper,
+  &avgpool_mul_pattern_wrapper,
   &array_relu_pattern_wrapper,
   &array_pattern_wrapper,
-  &avgpool_mul_pattern_wrapper,
   &clip_by_value_pattern_wrapper,
   &other_relu_pattern_wrapper,
   &other_pattern_wrapper
@@ -1470,17 +1174,9 @@ const std::set<string> compute_patterns{
     atrous_conv_relu_pattern_wrapper.GetName(),
     atrous_conv_bias_pattern_wrapper.GetName(),
     atrous_conv_bias_relu_pattern_wrapper.GetName(),
-    convfc_hard_swish_v2_pattern_wrapper.GetName(),
-    convfc_hard_swish_pattern_wrapper.GetName(),
-    convfc_hard_sigmoid_pattern_wrapper.GetName(),
-    convfc_swish_pattern_wrapper.GetName(),
     convfc_leakyrelu_pattern_wrapper.GetName(),
     convfc_fused_leakyrelu_pattern_wrapper.GetName(),
     convfc_keras_leakyrelu_pattern_wrapper.GetName(),
-    convfc_bias_hard_swish_v2_pattern_wrapper.GetName(),
-    convfc_bias_hard_swish_pattern_wrapper.GetName(),
-    convfc_bias_hard_sigmoid_pattern_wrapper.GetName(),
-    convfc_bias_swish_pattern_wrapper.GetName(),
     convfc_bias_leakyrelu_pattern_wrapper.GetName(),
     convfc_bias_fused_leakyrelu_pattern_wrapper.GetName(),
     convfc_bias_keras_leakyrelu_pattern_wrapper.GetName(),
@@ -1495,7 +1191,9 @@ const std::set<string> compute_patterns{
     conv2d_backprop_input_pattern_wrapper.GetName(),
     conv2d_backprop_input_relu_pattern_wrapper.GetName(),
     conv2d_backprop_input_bias_pattern_wrapper.GetName(),
-    conv2d_backprop_input_bias_relu_pattern_wrapper.GetName()
+    conv2d_backprop_input_bias_relu_pattern_wrapper.GetName(),
+    array_relu_pattern_wrapper.GetName(),
+    array_pattern_wrapper.GetName()
 };
 
 const string get_pattern_name_from_id(const int pattern_id) {

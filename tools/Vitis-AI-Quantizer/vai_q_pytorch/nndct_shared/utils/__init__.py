@@ -15,3 +15,5 @@ from nndct_shared.utils.option_def import *
 from nndct_shared.utils.option_list import *
 from nndct_shared.utils.option_util import *
 from nndct_shared.utils.pattern_matcher import *
+from nndct_shared.utils.tensor_util import *
+from nndct_shared.utils.plot import *

@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+import math
 import torch
 
 import pytorch_nndct.utils as py_utils
@@ -52,24 +53,39 @@ class deephi_AdaptiveAvgPool2d(torch.nn.modules.AdaptiveAvgPool2d):
     kernel = [input.shape[3], input.shape[2]]
     self.node.set_node_attr(self.node.op.AttrName.KERNEL, kernel)
     self.node.set_node_attr(self.node.op.AttrName.STRIDE, kernel)   
-    
+
+    # scale to DPU accuracy
     needScale = False
     scale = 1.0
-    if input.shape[2] == 3 and input.shape[3] == 3:
+    if self.node.node_attr(self.node.op.AttrName.KERNEL) == [3, 3]:
       needScale = True
       scale = 9.0 * 7.0 / 64.0
-    elif input.shape[2] == 5 and input.shape[3] == 5:
+    elif self.node.node_attr(self.node.op.AttrName.KERNEL) == [5, 5]:
       needScale = True
       scale = 25.0 * 10.0 / 256.0
-    elif input.shape[2] == 6 and input.shape[3] == 6:
+    elif self.node.node_attr(self.node.op.AttrName.KERNEL) in [[6, 6], [3, 6], [6, 3]]:
       needScale = True
       scale = 36.0 * 7.0 / 256.0
-    elif input.shape[2] == 7 and input.shape[3] == 7:
+    elif self.node.node_attr(self.node.op.AttrName.KERNEL) == [7, 7]:
       needScale = True
       scale = 49.0 * 21.0 / 1024.0
-    elif input.shape[2] == 14 and input.shape[3] == 14:
+    elif self.node.node_attr(self.node.op.AttrName.KERNEL) == [14, 14]:
       needScale = True
       scale = 196.0 * 21.0 / 4096.0
+    else:
+      rec = self.node.node_attr(self.node.op.AttrName.KERNEL)[0] * self.node.node_attr(self.node.op.AttrName.KERNEL)[1]
+      max_factor =  math.ceil(math.log(rec * 128,2))
+      diff = 1.0
+      multi_factor = 0.0
+      shift_factor = 0.0
+      for shift_factor_ in range(max_factor):
+        factor = round((2 ** shift_factor_)/rec)
+        diff_ = abs(factor / (2 ** shift_factor_) - 1/rec)
+        if diff_ < diff:
+          multi_factor = factor
+          diff = diff_
+          shift_factor = shift_factor_
+      scale = rec * multi_factor / (2 ** shift_factor)
 
     if needScale:
       NndctScale(output, scale)

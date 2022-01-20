@@ -28,6 +28,13 @@ set(INSTALL_CMAKEDIR
     ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}
     CACHE PATH "Installation directory for cmake files")
 
+add_library(gcc_atomic INTERFACE)
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(microblazeel)")
+  # for a unknown reason, gcc on microblaze requires libatomic
+  # message(FATAL_ERROR "HELLO")
+  target_link_libraries(gcc_atomic INTERFACE -latomic)
+endif()
+
 function(vai_add_library)
   set(options STATIC SHARED MODULE NOT_GLOB_SRC)
   set(oneValueArgs NAME INCLUDE_DIR SRC_DIR TEST_DIR)
@@ -165,7 +172,8 @@ function(vai_add_library)
         DIRECTORY ${_header}
         DESTINATION ${INSTALL_INCLUDEDIR}
         FILES_MATCHING
-        PATTERN "*.h*")
+        PATTERN "*.h*"
+        PATTERN "*.inc")
     else()
       install(FILES ${_header} DESTINATION ${INSTALL_INCLUDEDIR})
     endif()
@@ -196,17 +204,15 @@ function(vai_add_test name)
   if(ARG_ENABLE_IF)
     set(_enable ${${ARG_ENABLE_IF}})
   endif(ARG_ENABLE_IF)
-  foreach(_d ${ARG_REQUIRE})
-    if(NOT TARGET ${_d})
-      set(_enable FALSE)
-      message(
-        WARNING
-          "${COMPONENT_NAME} test ${name} is disabled because ${_d} is not found"
-      )
-    endif()
-  endforeach(_d)
   if(_enable)
-    add_executable(${name} test/${name}.cpp)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test/${name}.cpp)
+      add_executable(${name} test/${name}.cpp)
+    elseif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test/${name}.c)
+      add_executable(${name} test/${name}.c)
+    else()
+      message(
+        FATAL_ERROR "cannot find either test/${name}.c or test/${name}.cpp")
+    endif()
     target_link_libraries(${name} ${PROJECT_NAME}::${COMPONENT_NAME})
     if(ARG_REQUIRE)
       target_link_libraries(${name} ${ARG_REQUIRE})
@@ -220,7 +226,7 @@ endfunction(vai_add_test)
 
 function(vai_add_sample name)
   set(options "")
-  set(oneValueArgs ENABLE_IF)
+  set(oneValueArgs DESTINATION)
   set(multiValueArgs REQUIRE SRCS)
   cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}"
                         ${ARGN})
@@ -230,38 +236,20 @@ function(vai_add_sample name)
   if(ARG_REQUIRE)
     target_link_libraries(${name} ${ARG_REQUIRE})
   endif(ARG_REQUIRE)
+  if(NOT ARG_DESTINATION)
+    set(ARG_DESTINATION ".")
+  endif(NOT ARG_DESTINATION)
   install(
     TARGETS ${name}
     DESTINATION
-      ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/samples/${COMPONENT_NAME})
+      ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/samples/${COMPONENT_NAME}/${ARG_DESTINATION}
+  )
   install(
     FILES ${ARG_SRCS}
     DESTINATION
-      ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/samples/${COMPONENT_NAME})
+      ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/samples/${COMPONENT_NAME}/${ARG_DESTINATION}
+  )
 endfunction(vai_add_sample)
-
-function(vai_add_graphrunner_sample name dir)
-  set(options "")
-  set(oneValueArgs ENABLE_IF)
-  set(multiValueArgs REQUIRE SRCS)
-  cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}"
-                        ${ARGN})
-
-  add_executable(${name} ${ARG_SRCS})
-  target_link_libraries(${name} ${PROJECT_NAME}::${COMPONENT_NAME})
-  if(ARG_REQUIRE)
-    target_link_libraries(${name} ${ARG_REQUIRE})
-  endif(ARG_REQUIRE)
-  install(
-    TARGETS ${name}
-    DESTINATION
-      ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/samples/${COMPONENT_NAME}/${dir})
-  install(
-    FILES ${ARG_SRCS}
-    DESTINATION
-      ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/samples/${COMPONENT_NAME}/${dir})
-endfunction(vai_add_graphrunner_sample)
-
 
 function(config_vitis_ai_lib_target target_name)
   set(options)

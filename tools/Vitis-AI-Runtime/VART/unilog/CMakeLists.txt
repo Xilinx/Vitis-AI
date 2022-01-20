@@ -13,10 +13,10 @@
 # the License.
 
 cmake_minimum_required(VERSION 3.5)
-project(unilog VERSION 1.4.1 LANGUAGES C CXX)
+project(unilog VERSION 2.0.0 LANGUAGES C CXX)
 
-include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
-include(${CMAKE_SOURCE_DIR}/cmake/vai_add_pybind11_module.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/VitisCommon.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/vai_add_pybind11_module.cmake)
 
 option(BUILD_TEST "build test" OFF)
 
@@ -35,7 +35,7 @@ file(RELATIVE_PATH REL_INCLUDE_DIR
      ${CMAKE_INSTALL_PREFIX}/include)
 set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME}_CMAKE_DIR}/${REL_INCLUDE_DIR}")
 configure_file(cmake/config.cmake.in
-               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake" @ONLY)
+               "${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.cmake" @ONLY)
 
 write_basic_package_version_file(
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
@@ -43,9 +43,9 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion)
 
 install(
-  FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
-        "${CMAKE_CURRENT_LIST_DIR}/cmake/vai_add_pybind11_module.cmake"
+  FILES "${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+        "${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
+        "${PROJECT_SOURCE_DIR}/cmake/vai_add_pybind11_module.cmake"
   DESTINATION share/cmake/${PROJECT_NAME})
 
 if(BUILD_TEST)
@@ -54,9 +54,9 @@ endif()
 
 set(CPACK_PACKAGE_NAME "libunilog")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A wrapper for glog")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/Copyright.txt")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/Copyright.txt")
 set(CPACK_PACKAGE_VENDOR "Humanity")
 set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})

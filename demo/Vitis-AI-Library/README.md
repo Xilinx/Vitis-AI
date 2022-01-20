@@ -1,6 +1,6 @@
 <table width="100%">
   <tr width="100%">
-    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Library v1.4</h1>
+    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Library v2.0</h1>
     </td>
  </tr>
  </table>
@@ -17,24 +17,27 @@ For cloud users, click
 [Quick Start For Cloud](#quick-start-for-cloud) to get started quickly.
 
 ## Directory Structure Introduction
-
 ```
 Vitis_AI_Library
 ├── apps
 │   ├── multitask_v3_quad_windows
 │   ├── seg_and_pose_detect
 │   └── segs_and_roadline_detect
+├── README.md
 └── samples
     ├── 3Dsegmentation
     ├── bcc
+    ├── c2d2_lite
     ├── centerpoint
     ├── classification
+    ├── clocs
     ├── covid19segmentation
     ├── dpu_task
     ├── facedetect
     ├── facefeature
     ├── facelandmark
     ├── facequality5pt
+    ├── fairmot
     ├── graph_runner
     ├── hourglass
     ├── lanedetect
@@ -50,6 +53,7 @@ Vitis_AI_Library
     ├── pointpainting
     ├── pointpillars
     ├── pointpillars_nuscenes
+    ├── polypsegmentation
     ├── posedetect
     ├── rcan
     ├── refinedet
@@ -57,12 +61,14 @@ Vitis_AI_Library
     ├── retinaface
     ├── RGBDsegmentation
     ├── segmentation
+    ├── solo
     ├── ssd
     ├── tfssd
+    ├── ultrafast
     ├── yolov2
     ├── yolov3
-    └── yolov4
-
+    ├── yolov4
+    └── yolovx
 ```
 
 ## Quick Start For Edge
@@ -77,8 +83,8 @@ For `VCK190`, follow [Setting Up the Target](../../setup/vck190/README.md#step2-
 ### Running Vitis AI Library Examples
 Follow [Running Vitis AI Library Examples](../../tools/Vitis-AI-Library/README.md#running-vitis-ai-library-examples) to run Vitis AI Library examples.
 
-Note: When you update from VAI1.3 to VAI1.4, refer to the following to modify your compilation options.
-1. For Petalinux 2021.1, it uses OpenCV4, and for Petalinux 2020.2, it uses OpenCV3. So set the `OPENCV_FLAGS` as needed. You can refer to the following.
+Note: When you update from VAI1.3 to VAI2.0, refer to the following to modify your compilation options.
+1. For Petalinux 2021.1 and 2021.2, it uses OpenCV4, and for Petalinux 2020.2, it uses OpenCV3. So set the `OPENCV_FLAGS` as needed. You can refer to the following.
 ```
 result=0 && pkg-config --list-all | grep opencv4 && result=1
 if [ $result -eq 1 ]; then
@@ -91,14 +97,14 @@ fi
 
 
 ## Quick Start For Cloud
-### Setting Up the Host for U50/U50lv/U280
-Follow [Setting Up the Host](../../tools/Vitis-AI-Library/README.md#setting-up-the-host-for-u50u50lvu280) to set up the host for U50/U50lv/U280.
+### Setting Up the Host for U50LV/U55C
+Follow [Setting Up the Host](../../tools/Vitis-AI-Library/README.md#setting-up-the-host-for-u50lvu55c) to set up the host for U50LV/U55C.
 
 ### Setting Up the Host for VCK5000
-Follow [Setting Up the Host](../../setup/vck5000) to set up the host for VCK5000.
+Follow [Setting Up the Host](../../setup/vck5000) to set up the host for VCK5000 PROD.
 
-### Running Vitis AI Library Examples for U50/U50lv/U280/VCK5000
-Follow [Running Vitis AI Library Examples](../../tools/Vitis-AI-Library/README.md#running-vitis-ai-library-examples-for-u50u50lvu280vck5000) to run Vitis AI Library examples.
+### Running Vitis AI Library Examples for U50LV/U55C/VCK5000
+Follow [Running Vitis AI Library Examples](../../tools/Vitis-AI-Library/README.md#running-vitis-ai-library-examples-for-u50lvu55cvck5000) to run Vitis AI Library examples.
 
 ### Setting Up the Host for U200/U250
 
@@ -109,4 +115,4 @@ For setting up the host for U200/U250 refer to [README](../../tools/Vitis-AI-Lib
 Demo samples are not supported for U200/U250. To run Vitis AI Library examples for U200/U250 refer to [README](../../tools/Vitis-AI-Library/README.md#running-vitis-ai-library-examples-on-alveo-u200alveo-u250-with-dpucadx8g).
 
 ## Reference
-For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_4/ug1354-xilinx-ai-sdk.pdf).
+For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/2_0/ug1354-xilinx-ai-sdk.pdf).

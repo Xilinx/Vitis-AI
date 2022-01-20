@@ -17,6 +17,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -27,7 +28,9 @@ class Bit4 {
   enum class Pos { LOW, HIGH };
 
  protected:
-  Bit4() : data_{.i = int8_t(0)}, pos_(Pos::LOW), if_signed_(true) {}
+  Bit4() : data_{}, pos_(Pos::LOW), if_signed_(true) {
+    data_.i = int8_t(0);
+  }
   ~Bit4() = default;
 
  public:

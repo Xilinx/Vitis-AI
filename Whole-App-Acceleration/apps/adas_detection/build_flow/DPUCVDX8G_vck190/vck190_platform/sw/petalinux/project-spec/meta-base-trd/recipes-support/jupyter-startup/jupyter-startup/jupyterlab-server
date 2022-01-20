@@ -1,0 +1,114 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          jupyter-lab
+# Default-Start:     3 5
+# Default-Stop:      0 1 2 6
+# Short-Description: Jupyter Lab server
+### END INIT INFO
+
+DAEMON_PATH=/usr/bin/jupyter-lab
+DAEMON_ARGS="--no-browser --allow-root"
+DAEMON_NAME=`basename $DAEMON_PATH`
+ip=""
+
+queryip() {
+    echo -n "waiting for IP address."
+    for i in {1..20}
+    do
+        echo -n "."
+        ip=`ifconfig eth0 | grep "inet addr" | cut -d : -f 2 | cut -d ' ' -f 1`
+        [ ! -z "$ip" ] && break
+        sleep 2
+    done
+}
+
+status() {
+    local pid
+    if [ "$#" = 0 ]; then
+        echo "Usage: status {program}"
+        return 1
+    fi
+    pid=`/usr/bin/pgrep -f $1`
+    if [ -n "$pid" ]; then
+        echo "$1 (pid $pid) is running..."
+        return 0
+    else
+        echo "$1 is stopped"
+    fi
+    return 3
+}
+
+test -x $DAEMON_PATH || exit 0
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+export PATH
+
+RETVAL=0
+
+case "$1" in
+    start)
+        echo -n "Starting $DAEMON_NAME server: "
+        queryip
+        if [ -z $ip ]; then
+            echo " TIMEOUT"
+            exit 1
+        else
+            # The runtime path is incorrect if this daemon is run as part of the
+            # init process. Override the runtime directory with this environment
+            # variable.
+            export JUPYTER_RUNTIME_DIR="/home/root/.local/share/jupyter/runtime"
+            $DAEMON_PATH $DAEMON_ARGS --ip=${ip} &
+            sleep 1
+            RETVAL=$?
+        fi
+        if [ $RETVAL -eq 0 ] ; then
+            echo " OK"
+            touch /var/lock/subsys/$DAEMON_NAME
+        else
+            echo "FAIL"
+        fi
+        ;;
+
+    stop)
+        echo -n "Stopping $DAEMON_NAME server: "
+        count=0
+        pid=$(/usr/bin/pgrep -f $DAEMON_PATH)
+        while [ -n "`/usr/bin/pgrep -f $DAEMON_PATH`" -a $count -lt 10 ] ; do
+            kill -9 $pid > /dev/null 2>&1
+            sleep 1
+            RETVAL=$?
+            if [ $RETVAL != 0 -o -n "`/usr/bin/pgrep -f $DAEMON_PATH`" ] ; then
+                sleep 3
+            fi
+            count=`expr $count + 1`
+        done
+        rm -f /var/lock/subsys/$DAEMON_NAME
+        if [ -n "`/usr/bin/pgrep -f $DAEMON_PATH`" ] ; then
+            echo "FAIL"
+        else
+            echo "OK"
+        fi
+        ;;
+
+    restart)
+        $0 stop
+        sleep 1
+        $0 start
+        ;;
+
+    status)
+        status $DAEMON_NAME
+        RETVAL=$?
+        ;;
+
+    condrestart)
+        [ -f /var/lock/subsys/$DAEMON_NAME ] && $0 restart
+        ;;
+
+    *)
+        echo "usage: $0 { start | stop | status | restart | condrestart | status }"
+        ;;
+esac
+
+exit $RETVAL
+

@@ -23,6 +23,7 @@ The version correspondence between Vitis AI and docker image is shown in the fol
 
 <table>
  <tr><th>Vitis AI Version</th><th>Docker image tag</th></tr>
+ <tr><td>Vitis AI v2.0.0</td><td>./docker_run.sh xilinx/vitis-ai-cpu:2.0.0.1103</td></tr>
  <tr><td>Vitis AI v1.4.1</td><td>./docker_run.sh xilinx/vitis-ai-cpu:1.4.1.978</td></tr>
  <tr><td>Vitis AI v1.4</td><td>./docker_run.sh xilinx/vitis-ai-cpu:1.4.916</td></tr>
  <tr><td>Vitis AI v1.3</td><td rowspan="3">./docker_run.sh xilinx/vitis-ai-cpu:1.3.411</td></tr>

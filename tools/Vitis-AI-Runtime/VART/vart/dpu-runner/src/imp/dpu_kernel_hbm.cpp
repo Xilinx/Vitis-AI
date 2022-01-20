@@ -138,7 +138,7 @@ void DpuKernelHbm::load_parameter(
           "reg_id_to_hw_segment");
   CHECK(subgraph != nullptr);
 
-  auto total = 0u;
+  size_t total = 0u;
   for (const auto& reg : parameters) {
     auto reg_id = reg.name_;
     auto reg_size = reg.size_;

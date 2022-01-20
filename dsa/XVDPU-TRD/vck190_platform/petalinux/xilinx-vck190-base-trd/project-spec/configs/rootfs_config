@@ -1271,7 +1271,6 @@ CONFIG_tcl=y
 # CONFIG_cairo-dbg is not set
 # CONFIG_cairo-dev is not set
 # CONFIG_cairo-script-interpreter is not set
-# CONFIG_cairo-perf-utils is not set
 # CONFIG_cairo-gobject is not set
 
 #
@@ -3091,7 +3090,6 @@ CONFIG_python3=y
 # CONFIG_qtxmlpatterns is not set
 # CONFIG_qtxmlpatterns-dev is not set
 # CONFIG_qtxmlpatterns-mkspecs is not set
-# CONFIG_qtxmlpatterns-examples is not set
 # CONFIG_qtxmlpatterns-dbg is not set
 # CONFIG_qtxmlpatterns-tools is not set
 
@@ -3490,7 +3488,6 @@ CONFIG_xf86-video-armsoc=y
 #
 # CONFIG_gstreamer1.0 is not set
 # CONFIG_gstreamer1.0-dev is not set
-# CONFIG_gstreamer1.0-bash-completion is not set
 # CONFIG_gstreamer1.0-dbg is not set
 
 #
@@ -3747,10 +3744,10 @@ CONFIG_xserver-xorg-module-exa=y
 # CONFIG_libgnome-desktop3 is not set
 
 #
-# gnome-themes-standard 
+# gnome-themes-extra 
 #
-# CONFIG_gnome-themes-standard-dev is not set
-# CONFIG_gnome-themes-standard-dbg is not set
+# CONFIG_gnome-themes-extra-dev is not set
+# CONFIG_gnome-themes-extra-dbg is not set
 # CONFIG_gnome-theme-adwaita is not set
 
 #
@@ -4138,7 +4135,7 @@ CONFIG_imagefeature-ssh-server-dropbear=y
 # CONFIG_imagefeature-ssh-server-openssh is not set
 CONFIG_imagefeature-hwcodecs=y
 CONFIG_imagefeature-package-management=y
-CONFIG_package-feed-uris="http://petalinux.xilinx.com/sswreleases/rel-v2021.1/generic/rpm http://petalinux.xilinx.com/sswreleases/rel-v2021.1/generic-updates/rpm"
+CONFIG_package-feed-uris="http://petalinux.xilinx.com/sswreleases/rel-v2021.2/generic/rpm http://petalinux.xilinx.com/sswreleases/rel-v2021.2/generic-updates/rpm"
 CONFIG_package-feed-archs=""
 CONFIG_imagefeature-debug-tweaks=y
 CONFIG_auto-login=y
@@ -4146,6 +4143,8 @@ CONFIG_auto-login=y
 #
 # user packages 
 #
+CONFIG_graphviz=y
+CONFIG_opencv-staticdev=y
 CONFIG_packagegroup-base-trd=y
 
 #

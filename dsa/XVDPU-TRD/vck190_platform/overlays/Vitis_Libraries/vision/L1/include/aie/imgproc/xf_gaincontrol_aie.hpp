@@ -16,7 +16,7 @@
 
 #include <adf.h>
 #include <aie_api/aie.hpp>
-#include <common/xf_aie_utils.hpp>
+#include <common/xf_aie_hw_utils.hpp>
 
 #ifndef _AIE_GAINCONTROL_H_
 #define _AIE_GAINCONTROL_H_
@@ -129,18 +129,35 @@ void gaincontrol_api(input_window_int16* img_in,
     int16_t* img_in_ptr = (int16_t*)img_in->ptr;
     int16_t* img_out_ptr = (int16_t*)img_out->ptr;
 
-    const int16_t img_width = xfcvGetTileWidth(img_in_ptr);
-    const int16_t img_height = xfcvGetTileHeight(img_in_ptr);
+    const int16_t img_width = xfGetTileWidth(img_in_ptr);
+    const int16_t img_height = xfGetTileHeight(img_in_ptr);
 
-    xfcvCopyMetaData(img_in_ptr, img_out_ptr);
-    xfcvUnsignedSaturation(img_out_ptr);
+    const int16_t posH = xfGetTilePosH(img_in_ptr);
+    const int16_t posV = xfGetTilePosV(img_in_ptr);
 
-    int16_t* in_ptr = (int16_t*)xfcvGetImgDataPtr(img_in_ptr);
-    int16_t* out_ptr = (int16_t*)xfcvGetImgDataPtr(img_out_ptr);
+    xfCopyMetaData(img_in_ptr, img_out_ptr);
+    xfUnsignedSaturation(img_out_ptr);
+
+    int16_t* in_ptr = (int16_t*)xfGetImgDataPtr(img_in_ptr);
+    int16_t* out_ptr = (int16_t*)xfGetImgDataPtr(img_out_ptr);
 
     ::aie::vector<int16_t, 16> coeff0;
     ::aie::vector<int16_t, 16> coeff1;
-    ComputeGainVector<int16_t, 16, code>::compute_gain_kernel_coeff(rgain, bgain, coeff0, coeff1);
+
+    if (posH % 2 == 0) {
+        if (posV % 2 == 0) {
+            ComputeGainVector<int16_t, 16, code>::compute_gain_kernel_coeff(rgain, bgain, coeff0, coeff1);
+        } else {
+            ComputeGainVector<int16_t, 16, code>::compute_gain_kernel_coeff(rgain, bgain, coeff1, coeff0);
+        }
+    } else {
+        if (posV % 2 == 0) {
+            ComputeGainVector<int16_t, 16, code>::compute_gain_kernel_coeff(bgain, rgain, coeff0, coeff1);
+        } else {
+            ComputeGainVector<int16_t, 16, code>::compute_gain_kernel_coeff(bgain, rgain, coeff1, coeff0);
+        }
+    }
+
     gaincontrol<int16_t, 16, code>(in_ptr, out_ptr, img_width, img_height, coeff0, coeff1);
 }
 

@@ -4,7 +4,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
-from torch.utils.data import *
+from torch.utils.data import dataset, dataloader
+#from torch.utils.data import BatchSampler
 
 parser = argparse.ArgumentParser(description='Lstm pytorch quantizer test')
 parser.add_argument('--quant_mode',
@@ -31,7 +32,7 @@ top_words = 5000 # vocab size
 
 max_review_length = 500
 X_test  = sequence.pad_sequences(X_test, maxlen=max_review_length)
-test_data  = TensorDataset(torch.LongTensor(X_test), torch.Tensor(y_test))
+test_data  = dataset.TensorDataset(torch.LongTensor(X_test), torch.Tensor(y_test))
 
 if args.subset_len:
     subset_len = args.subset_len
@@ -39,7 +40,7 @@ if args.subset_len:
     test_data = torch.utils.data.Subset(test_data, list(range(subset_len)))
 
 #train_loader = DataLoader(train_data, batch_size=50, shuffle=True)
-test_loader  = DataLoader(test_data, batch_size=50, shuffle=False)
+test_loader  = dataloader.DataLoader(test_data, batch_size=50, shuffle=False)
 
 class Model(nn.Module):
     def __init__(self, max_words, emb_size, hid_size):

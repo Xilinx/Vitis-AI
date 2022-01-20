@@ -32,15 +32,15 @@ from .insert_node import NodeInsertHandler
 #_ACT_TYPES = [NNDCT_OP.RELU, NNDCT_OP.RELU6]
 _ACT_TYPES = [NNDCT_OP.RELU, NNDCT_OP.RELUK]
 _POOL_TYPES = [NNDCT_OP.MAX_POOL, NNDCT_OP.ADAPTIVEAVGPOOL2D, NNDCT_OP.AVG_POOL]
-_CLE_TYPES = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, \
-              NNDCT_OP.CONV3D, NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]
-_CONV_TYPES = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, \
-               NNDCT_OP.CONV3D, NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]
+_CLE_TYPES = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D,\
+              NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]
+_CONV_TYPES = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D,\
+              NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]
 _BN_TYPES = [NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D]
 #_CONV3D_TYPES = [NNDCT_OP.CONV3D, NNDCT_OP.CONVTRANSPOSE3D]
 
 _OP_LAYOUTS = {NNDCT_OP.CONV2D: "OHWI", NNDCT_OP.CONVTRANSPOSE2D: "OHWI", \
-              NNDCT_OP.CONV3D: "OIDHW", NNDCT_OP.CONVTRANSPOSE3D: "OIDHW"}
+               NNDCT_OP.CONV3D: "OHDWI", NNDCT_OP.CONVTRANSPOSE3D: "OHDWI"}
 CleInfo = namedtuple("CleInfo", ["conv_group", "scale_factor"])
 
 class OptimizeCommander(object):
@@ -79,9 +79,15 @@ class OptimizeCommander(object):
                      action=fuse_bn_handler),
          PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.BATCH_NORM],
                      action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, NNDCT_OP.BATCH_NORM],
+                     action=fuse_bn_handler),
          PatternType(pattern=[NNDCT_OP.CONV3D, NNDCT_OP.BATCH_NORM3D],
                      action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.BATCH_NORM3D],
+                     action=fuse_bn_handler),
          PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.BATCH_NORM3D],
+                     action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D, NNDCT_OP.BATCH_NORM3D],
                      action=fuse_bn_handler),
          PatternType(pattern=[NNDCT_OP.CONV2D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM],
                      action=fuse_bn_handler), 
@@ -89,12 +95,16 @@ class OptimizeCommander(object):
                      action=fuse_bn_handler),
          PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM],
                      action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM],
+                     action=fuse_bn_handler),
          PatternType(pattern=[NNDCT_OP.CONV3D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM3D],
+                     action=fuse_bn_handler),
+         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM3D],
                      action=fuse_bn_handler),
          PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM3D],
                      action=fuse_bn_handler),
-         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, NNDCT_OP.BATCH_NORM],
-                     action=fuse_bn_handler)
+         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D, NNDCT_OP.CONCAT, NNDCT_OP.BATCH_NORM3D],
+                     action=fuse_bn_handler),
         ])
     removed_bn = set()
     for id, node_list in node_sets.items():
@@ -282,6 +292,12 @@ class OptimizeCommander(object):
       weight = weight.transpose(3, 1, 2, 0)
       # depthwise always put channel num as first dimension
       return weight
+    elif node.op.type in [NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]:
+      weight = node.op.params[node.op.ParamName.WEIGHTS].data.copy()
+      # [I, D, H, W, channel_multiplier]
+      weight = weight.transpose(4, 1, 2, 3, 0)
+      # depthwise always put channel num as first dimension
+      return weight
   
   '''
   @staticmethod
@@ -311,6 +327,9 @@ class OptimizeCommander(object):
       node.op.params[node.op.ParamName.WEIGHTS].from_ndarray(data)
     elif node.op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
       data = data.transpose(3, 1, 2, 0)
+      node.op.params[node.op.ParamName.WEIGHTS].from_ndarray(data)
+    elif node.op.type in [NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]:
+      data = data.transpose(4, 1, 2, 3, 0)
       node.op.params[node.op.ParamName.WEIGHTS].from_ndarray(data)
   
   '''
@@ -387,21 +406,27 @@ class OptimizeCommander(object):
   def _scale_weights_and_bias_with_conv_reluk(cls, group):
     ops_display_layout = {NNDCT_OP.CONV2D: "OHWI", NNDCT_OP.CONVTRANSPOSE2D: "OHWI", \
                           NNDCT_OP.DEPTHWISE_CONV2D: "OHWI", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: "OHWI", \
-                          NNDCT_OP.CONV3D: "ODHWI", NNDCT_OP.CONVTRANSPOSE3D: "ODHWI"}
+                          NNDCT_OP.CONV3D: "ODHWI", NNDCT_OP.CONVTRANSPOSE3D: "ODHWI",\
+                          NNDCT_OP.DEPTHWISE_CONV3D: "ODHWI", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: "ODHWI"}
     ops_scale_layout = {NNDCT_OP.CONV2D: "IHWO", NNDCT_OP.CONVTRANSPOSE2D: "IHWO", \
                           NNDCT_OP.DEPTHWISE_CONV2D: "IHWO", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: "IHWO", \
-                          NNDCT_OP.CONV3D: "IDHWO", NNDCT_OP.CONVTRANSPOSE3D: "IDHWO"}
-    # conv: [O,H, W, I] / depthwise_conv: [I, H, W, channel_multiplier]
+                          NNDCT_OP.CONV3D: "IDHWO", NNDCT_OP.CONVTRANSPOSE3D: "IDHWO",\
+                          NNDCT_OP.DEPTHWISE_CONV3D: "IDHWO", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: "IDHWO"}
+    # conv: [O, H, W, I] / depthwise_conv: [I, H, W, channel_multiplier]
     conv_0_weight = cls._get_weight_data(group[0], layout=ops_display_layout[group[0].op.type])
     conv_0_bias = None
     if group[0].node_attr(group[0].op.AttrName.BIAS_TERM):
       conv_0_bias = cls._get_bias_data(group[0])
     
-    # conv: [O, H, W, I] / depthwise_conv: [I, H, W, channel_multiplier]
+    # conv2d: [O, H, W, I] / depthwise_conv2d: [I, H, W, channel_multiplier]
+    # conv3d: [O, D, H, W, I] / depthwise_conv3d: [I, D, H, W, channel_multiplier]
     conv_1_weight = cls._get_weight_data(group[-1], layout=ops_display_layout[group[-1].op.type])
     if group[-1].op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
       # depthwise_conv:  [I, H, W, channel_multiplier] -> [channel_muliplier, H, W, I]
       conv_1_weight = conv_1_weight.transpose(3, 1, 2, 0)
+    elif group[-1].op.type in [NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]:
+      # depthwise_conv3d:  [I, D, H, W, channel_multiplier] -> [channel_muliplier, D, H, W, I]
+      conv_1_weight = conv_1_weight.transpose(4, 1, 2, 3, 0)
     # compute scale:
     conv_0_weight_ihw = conv_0_weight.reshape(conv_0_weight.shape[0], -1)
 
@@ -473,6 +498,9 @@ class OptimizeCommander(object):
     if group[-1].op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
       # depthwise_conv: [channel_muliplier, H, W, I] -> [I, H, W, channel_multiplier]
       conv_1_weight = conv_1_weight.transpose(3, 1, 2, 0) 
+    elif group[-1].op.type in [NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]:
+      # depthwise_conv: [channel_muliplier, D, H, W, I] -> [I, D, H, W, channel_multiplier]
+      conv_1_weight = conv_1_weight.transpose(4, 1, 2, 3, 0) 
     
     cls._set_weight_data(group[0], conv_0_weight, layout=ops_display_layout[group[0].op.type])
     if conv_0_bias is not None:
@@ -655,10 +683,12 @@ class OptimizeCommander(object):
   def _do_conv_weights_equalizing_shift(self, conv_nodes):
     ops_display_layout = {NNDCT_OP.CONV2D: "OHWI", NNDCT_OP.CONVTRANSPOSE2D: "OHWI", \
                           NNDCT_OP.DEPTHWISE_CONV2D: "OHWI", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: "OHWI", \
-                          NNDCT_OP.CONV3D: "ODHWI", NNDCT_OP.CONVTRANSPOSE3D: "ODHWI"}
+                          NNDCT_OP.CONV3D: "ODHWI", NNDCT_OP.CONVTRANSPOSE3D: "ODHWI",\
+                          NNDCT_OP.DEPTHWISE_CONV3D: "ODHWI", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: "ODHWI"}
     ops_scale_layout = {NNDCT_OP.CONV2D: "IHWO", NNDCT_OP.CONVTRANSPOSE2D: "IHWO", \
                           NNDCT_OP.DEPTHWISE_CONV2D: "IHWO", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: "IHWO", \
-                          NNDCT_OP.CONV3D: "IDHWO", NNDCT_OP.CONVTRANSPOSE3D: "IDHWO"}    
+                          NNDCT_OP.CONV3D: "IDHWO", NNDCT_OP.CONVTRANSPOSE3D: "IDHWO",\
+                          NNDCT_OP.DEPTHWISE_CONV3D: "IDHWO", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: "IDHWO"}    
     
     node_idx_max = np.array([node.idx for node in self._graph.nodes]).max()
     node_inserter = NodeInsertHandler(self._graph)

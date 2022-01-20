@@ -22,7 +22,6 @@ BASE_TRD_PACKAGES = " \
 	packagegroup-petalinux-vitisai-dev \
 	packagegroup-petalinux-v4lutils \
 	alsa-utils \
-	base-trd \
 	cmake \
 	custom-edid \
 	gstreamer1.0-python \
@@ -34,13 +33,11 @@ BASE_TRD_PACKAGES = " \
 	python3-periphery \
 	resize-part \
 	tcf-agent \
-	trd-files \
 	tree \
 	ttf-bitstream-vera \
 	tzdata \
 	xrt \
 	${MOVIE_PACKAGES} \
-	smart-mipi-app \
 	auto-resize \
 	"
 

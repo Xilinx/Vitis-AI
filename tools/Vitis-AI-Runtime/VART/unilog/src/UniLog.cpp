@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-#include "UniLog.hpp"
+#include "UniLog/UniLog.hpp"
 #include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;
-
+using std::map;
+using std::string;
+using std::vector;
 map<UniLogSet, bool> UniLog::mapLogConfig = {};
 string UniLog::UniLogPath = (fs::current_path() / "log").string();
 string UniLog::UniLogPrefix = "UNILOG";
@@ -68,31 +70,31 @@ UniLog::UniLog(char *argv, vector<UniLogSet> LogSet) {
 
   // config the log verbosity
   if (checkConfig(UNI_LOG_LEVEL_INFO)) {
-    FLAGS_minloglevel = google::INFO;
+    FLAGS_minloglevel = google::GLOG_INFO;
   }
   if (checkConfig(UNI_LOG_LEVEL_WARNING)) {
-    FLAGS_minloglevel = google::WARNING;
+    FLAGS_minloglevel = google::GLOG_WARNING;
   }
   if (checkConfig(UNI_LOG_LEVEL_ERROR)) {
-    FLAGS_minloglevel = google::ERROR;
+    FLAGS_minloglevel = google::GLOG_ERROR;
   }
   if (checkConfig(UNI_LOG_LEVEL_FATAL)) {
-    FLAGS_minloglevel = google::FATAL;
+    FLAGS_minloglevel = google::GLOG_FATAL;
   }
 
   if (checkConfig(UNI_LOG_STD_FILE)) {
     // only suitable under the stderr_file mode
     if (checkConfig(UNI_LOG_STD_LEVEL_INFO)) {
-      FLAGS_stderrthreshold = google::INFO;
+      FLAGS_stderrthreshold = google::GLOG_INFO;
     }
     if (checkConfig(UNI_LOG_STD_LEVEL_WARNING)) {
-      FLAGS_stderrthreshold = google::WARNING;
+      FLAGS_stderrthreshold = google::GLOG_WARNING;
     }
     if (checkConfig(UNI_LOG_STD_LEVEL_ERROR)) {
-      FLAGS_stderrthreshold = google::ERROR;
+      FLAGS_stderrthreshold = google::GLOG_ERROR;
     }
     if (checkConfig(UNI_LOG_STD_LEVEL_FATAL)) {
-      FLAGS_stderrthreshold = google::FATAL;
+      FLAGS_stderrthreshold = google::GLOG_FATAL;
     }
   }
 

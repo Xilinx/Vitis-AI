@@ -63,6 +63,10 @@ class TORCHQuantizer(BaseQuantizer):
               name,
               node=None,
               tensor_type='input'):
+    # keep quantization steps after fast finetune
+    if self.keep_fp:
+      return self.do_quantize(res, name, node, tensor_type)
+
     # forward quant graph but not quantize parameter and activation
     if NndctOption.nndct_quant_off.value:
       return res
@@ -71,7 +75,11 @@ class TORCHQuantizer(BaseQuantizer):
     if isinstance(res.values, torch.Tensor):
       res_save = res
       res = res.values.data
-
+      
+    if res.dtype != torch.float32 and res.dtype != torch.double:
+      NndctScreenLogger().warning_once(f'The tensor type of  {node.name} is {str(res.dtype)}. Only support float32/double quantization.')
+      return res_save if res_save is not None else res
+    
     quant_device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
     if res.device.type != quant_device.type:
       raise TypeError("Device of quantizer is {}, device of model and data should match device of quantizer".format(quant_device.type))
@@ -84,12 +92,12 @@ class TORCHQuantizer(BaseQuantizer):
     if tensor_type == 'param':
       mth = 3
 
-    range = 5
-    # set fix pos scanning range to 1 for some type of tensors
+    scope = 5 if NndctOption.nndct_diffs_mode.value == "mse" else 1
+    # set fix pos scanning scope to 1 for some type of tensors
     if (node.op.type in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB]):
-      range = 1
+      scope = 1
     if (self.lstm and tensor_type == 'input'):
-      range = 1
+      scope = 1
       res = res.detach().clone()
 
     '''
@@ -107,15 +115,23 @@ class TORCHQuantizer(BaseQuantizer):
     # activation always calculate fix pos
     # calcualte fix pos if it is None
     # always calculate fis pos in finetune mode
+    
+      
+    
     if tensor_type != 'param' or bnfp[1] is None or self.quant_mode == 3:
       py_nndct.nn.NndctDiffsFixPos(
           Tinput = res,
           Tbuffer = Tbuffer,
           Tfixpos = Tfixpos,
           bit_width = bnfp[0],
-          range = range,
+          range = scope,
           method = mth)
       bnfp[1] = (int)(Tfixpos.item())
+      # limit max fix pos to 12 if bit width <= 8, others limit to 15
+      if bnfp[0] <= 8 or self.lstm:
+        bnfp[1] = min(12, bnfp[1])
+      else:
+        bnfp[1] = min(15, bnfp[1])
       # record fix pos of activation
       if tensor_type != 'param':
         self.fp_history[tensor_type][name].append(bnfp[1])
@@ -141,11 +157,25 @@ class TORCHQuantizer(BaseQuantizer):
                                        maxamp = [bnfp[0], bnfp[1]],
                                        method = mth)
 
+        
       if (NndctOption.nndct_stat.value > 2):
+        #quant_data.all_close(res.cpu().detach().numpy())
         global global_snr_inv
-        quant_efficiency, sqnr = quant_data.quant_efficiency(res.cpu().detach().numpy(), 8)
+        quant_efficiency, sqnr = quant_data.quant_efficiency(res.cpu().detach().numpy(), math.log2(bnfp[0]))
         global_snr_inv += 1 / sqnr
-        print(f"quant_efficiency={quant_efficiency}, {quant_data._name}\n")
+        if quant_efficiency < 3.0:
+          print(f"quant_efficiency={quant_efficiency}, {quant_data._name}\n")
+          print('Statistic [Min, Max, Mean, Std]:')
+          print('[{}, {}, {}, {}]'.format( res.min(), res.max(), res.mean(), res.std() ))
+          print('histogram: {}'.format( res.histc(bins = 10).cpu().detach().numpy() ))
+          t = res
+          if tensor_type != 'param':
+            t = res.transpose(0, 1)
+          print('Channel number:{}'.format(t.shape[0]))
+          print('Channel-wise statistic [Min, Max, Mean, Std]:')
+          for c in range(t.shape[0]):
+            print('[{}, {}, {}, {}]'.format( t[c].min(), t[c].max(), t[c].mean(), t[c].std() ))
+            print('histogram: {}'.format( t[c].histc(bins = 10).cpu().detach().numpy() ))
 
     if res_save is not None:
       res_save.values.data = res
@@ -161,7 +191,11 @@ class TORCHQuantizer(BaseQuantizer):
     if isinstance(blob.values, torch.Tensor):
       blob_save = blob
       blob = blob.values.data
-
+    
+    if blob.dtype != torch.float32 and blob.dtype != torch.double:
+      NndctScreenLogger().warning_once(f'The tensor type of  {node.name} is {str(blob.dtype)}. Only support float32/double quantization.')
+      return blob_save if blob_save is not None else blob
+    
     quant_device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
     if blob.device.type != quant_device.type:
       raise TypeError("Device of quantizer is {}, device of model and data should match device of quantizer".format(quant_device.type))
@@ -187,7 +221,19 @@ class TORCHQuantizer(BaseQuantizer):
       global global_snr_inv
       quant_efficiency, sqnr = quant_data.quant_efficiency(blob.cpu().detach().numpy(), 8)
       global_snr_inv += 1 / sqnr
-      print(f"quant_efficiency={quant_efficiency}, global_snr_inv={global_snr_inv} {quant_data._name}\n")
+      if quant_efficiency < 3.0:
+        print(f"quant_efficiency={quant_efficiency}, global_snr_inv={global_snr_inv} {quant_data._name}\n")
+        print('Network input channel-wise statistic [Min, Max, Mean, Std]:')
+        print('[{}, {}, {}, {}]'.format( res.min(), res.max(), res.mean(), res.std() ))
+        print('histogram: {}'.format( res.histc(bins = 10).cpu().detach().numpy() ))
+        t = res
+        if tensor_type != 'param':
+          t = res.transpose(0, 1)
+        print('Channel number:{}'.format(t.shape[0]))
+        print('Channel-wise statistic [Min, Max, Mean, Std]:')
+        for c in range(t.shape[0]):
+          print('[{}, {}, {}, {}]'.format( t[c].min(), t[c].max(), t[c].mean(), t[c].std() ))
+          print('histogram: {}'.format( t[c].histc(bins = 10).cpu().detach().numpy() ))
 
     # update param to nndct graph
     if tensor_type == 'param':
@@ -248,7 +294,10 @@ class TORCHQuantizer(BaseQuantizer):
               bnfp = self.get_bnfp(node.name, False)
               #print('----set %s fix pos to %d' % (prevNode.name, bnfp[1]))
               target_name = self.configer.quant_output(prevNode.name).name
-              self.set_bnfp(target_name, bnfp)
+              # multiple output node is not grouped up with children,
+              # for example, strided_slice is not grouped up
+              if target_name in self.quant_config['output'].keys():
+                self.set_bnfp(target_name, bnfp)
       else: # to handle dlrm
         # fragpos of sigmoid and tanh keep 15
         for node in self.Nndctgraph.nodes:
@@ -284,7 +333,10 @@ class TORCHQuantizer(BaseQuantizer):
         fix_pos_i = self.get_bnfp(node.in_nodes[0], False, 'output')
         fix_pos_o = self.get_bnfp(conv_quant_output, False, 'output')
         fix_pos_w = self.get_bnfp(node.op.param['weights'].name, False, 'param')
-        # handle shift_cut
+        if fix_pos_i[-1] == None:
+          NndctScreenLogger().warning("Unsupported op type of input node: {}".format(node.in_nodes[0]))
+          break
+	# handle shift_cut
         shift_cut = fix_pos_w[-1] + fix_pos_i[-1] - fix_pos_o[-1]
         shift_cut_min = 0
         shift_cut_max = 16
@@ -342,11 +394,12 @@ class TORCHQuantizer(BaseQuantizer):
       if (node.in_quant_part and
           node.op.type == NNDCT_OP.STRIDED_SLICE):
         bnfp = None
-        src_name = self.configer.quant_output(node.name).name
-        bnfp = self.get_bnfp(src_name, False)
-        self.quant_config['output'][node.name] = [bnfp[0], bnfp[1]]
-        #print('Strided_Slice fix pos setting node: {} qout: {} pos: {}'.format(
-        #    node.name, src_name, bnfp[1]))
+        src_name = self.configer.quant_output(node.in_nodes[0]).name
+        if self.need_quantize_tensor(src_name):
+          bnfp = self.get_bnfp(src_name, False)
+          self.quant_config['output'][node.name] = [bnfp[0], bnfp[1]]
+          #print('Strided_Slice fix pos setting node: {} qout: {} pos: {}'.format(
+          #    node.name, src_name, bnfp[1]))
 
       # zero padding output fix pos align with input
       if (node.in_quant_part and
@@ -359,10 +412,12 @@ class TORCHQuantizer(BaseQuantizer):
         
       if (node.in_quant_part and node.op.type == NNDCT_OP.RESIZE and node.node_config('mode') == "'nearest'"):
         in_name = self.configer.quant_output(node.in_nodes[0]).name
-        out_name = self.configer.quant_output(node.name).name
-        bnfp = self.get_bnfp(in_name, False)
+        out_node = self.configer.quant_output(node.name)
+        out_name = out_node.name
+        if out_node.op.type != NNDCT_OP.CONCAT:
+          bnfp = self.get_bnfp(in_name, False)
         #print('---- set nearest upsampling output %s fix pos to %s : %d' % (out_name, in_name, bnfp[1]))
-        self.set_bnfp(out_name, bnfp)
+          self.set_bnfp(out_name, bnfp)
     
       # limit hardsigmoid output fix pos to >= 7
       if (node.in_quant_part and
@@ -386,7 +441,8 @@ class TORCHQuantizer(BaseQuantizer):
                               NNDCT_OP.CONV2D,
                               NNDCT_OP.CONVTRANSPOSE2D,
                               NNDCT_OP.DEPTHWISE_CONV2D,
-                              NNDCT_OP.DENSE]:
+                              NNDCT_OP.DENSE,
+                              NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
             if node.module.bias is not None:
               self.bias_corr[node.name] = node.module.bias_corr()
 
@@ -405,26 +461,26 @@ class TORCHQuantizer(BaseQuantizer):
   def update_param_to_nndct(self, node, param_name, param_data):
     for param_type, tensor in node.op.params.items():
       if tensor.name == param_name:
-        if node.op.type == NNDCT_OP.CONVTRANSPOSE2D:
-          if param_type == node.op.ParamName.WEIGHTS:
-            param_data = np.copy(param_data).transpose(1, 0, 2, 3)
-
-        if node.op.type == NNDCT_OP.DEPTHWISE_CONV2D and param_type == node.op.ParamName.WEIGHTS:
-            in_channels = node.node_config("in_channels")
-            out_channels = node.node_config("out_channels")
-            kernel_size = node.node_config("kernel_size")
-            channel_mutiplier = int(out_channels / in_channels)
-            param_data = param_data.reshape((channel_mutiplier, in_channels, *kernel_size))
-
-        if node.op.type == NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D and param_type == node.op.ParamName.WEIGHTS:
+        if node.op.type in [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
+            param_data = np.copy(param_data).swapaxes(1, 0)
+            param_data = np.ascontiguousarray(param_data)
+            
+        if node.op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONV3D] and param_type == node.op.ParamName.WEIGHTS:
+          in_channels = node.node_config("in_channels")
+          out_channels = node.node_config("out_channels")
+          kernel_size = node.node_config("kernel_size")
+          channel_mutiplier = int(out_channels / in_channels)
+          param_data = param_data.reshape((channel_mutiplier, in_channels, *kernel_size))
+        
+        if node.op.type in [NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
           in_channels = node.node_config("in_channels")
           out_channels = node.node_config("out_channels")
           kernel_size = node.node_config("kernel_size")
           channel_mutiplier = int(out_channels / in_channels)
           param_data = param_data.reshape((in_channels, channel_mutiplier, *kernel_size))
-          param_data = np.copy(param_data).transpose(1, 0, 2, 3)
+          param_data = np.copy(param_data).swapaxes(0, 1)
           param_data = np.ascontiguousarray(param_data)
-        
+          
         tensor.from_ndarray(param_data)
         tensor_util.convert_parameter_tensor_format(
             tensor, key_names.FrameworkType.TORCH,

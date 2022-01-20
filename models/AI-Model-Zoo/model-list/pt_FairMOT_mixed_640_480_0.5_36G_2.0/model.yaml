@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: FairMOT Joint detection and Tracking
+input size: 640*480
+float ops: 36G
+task: denoising
+framework: pytorch
+prune: '0.5'
+version: 1.4
+files:
+- name: pt_FairMOT_mixed_640_480_0.5_36G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_FairMOT_mixed_640_480_0.5_36G_2.0.zip
+  checksum: 0639b0645d60d605cba11d8ccf1baa09
+- name: FairMot_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FairMot_pt-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 1515645a7aebafdd0ac15b242f37b033
+- name: FairMot_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FairMot_pt-vck190-r2.0.0.tar.gz
+  checksum: ef4ca9ee00fc955235f673b8f8e1291a
+- name: FairMot_pt
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FairMot_pt-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: a51d0232604aaf3bd837dd4912c31bc2
+- name: FairMot_pt
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FairMot_pt-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: 44090d010070e2d468c89bcb16e15466
+- name: FairMot_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FairMot_pt-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 1afc9a382a2e41bc2272a5355d8f4c41
+- name: FairMot_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FairMot_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 66943cfd087fd3ea485cce227929a740
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

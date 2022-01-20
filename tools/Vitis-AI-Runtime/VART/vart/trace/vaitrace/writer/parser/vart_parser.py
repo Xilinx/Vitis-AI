@@ -15,10 +15,12 @@
 import time
 import math
 import logging
+import decimal
 from writer.parser.timelineUtil import *
 from writer.parser.tracepointUtil import *
 from writer.parser import xmodel_parser
 import writer.parser.statUtil
+from writer.parser.unitUtil import *
 
 
 POINT_PER_SECOND = 100
@@ -46,7 +48,6 @@ def ips_profile(dpu_timelines):
 
             totalRunCnt += batch
             eventFPS.append((run.startTime, batch))
-
 
     eventFPS.sort(key=lambda x: x[0])
 
@@ -93,19 +94,6 @@ def ips_profile(dpu_timelines):
     return ips_ret
 
 
-def to_unit(value, unit="m", precision=3):
-    if unit.lower().startswith("k"):
-        value = value / 1000
-    elif unit.lower().startswith("m"):
-        value = value / 1000 / 1000
-    elif unit.lower().startswith("g"):
-        value = value / 1000 / 1000 / 1000
-    else:
-        raise("Unit format error")
-
-    return "%%.%df" % precision % value
-
-
 class dpu_ip():
     def __init__(self):
         self.core_num = 0
@@ -146,7 +134,8 @@ class DPUEventParser():
             if model_name != trace_name:
                 continue
             model_workload = info["workload"]
-            model_workload_g = (int(model_workload) / 1000.0 / 1000.0 / 1000.0)
+            #model_workload_g = (int(model_workload) / 1000.0 / 1000.0 / 1000.0)
+            model_workload_g = to_Gi(int(model_workload))
             if math.fabs(float(trace_workload_g) - model_workload_g) < 0.02:
                 return (info)
         return {}
@@ -204,7 +193,8 @@ class DPUEventParser():
             cu_core_id = int(i.get("cu_core_id", -1))
             cu_device_id = int(i.get("cu_device_id", -1))
             if (cu_core_id == -1) or (cu_device_id == -1):
-                logging.error("Cannot find DPU id in dpu_controller_info, this trace is Error:")
+                logging.error(
+                    "Cannot find DPU id in dpu_controller_info, this trace is Error:")
                 logging.error("[%s]" % i)
                 continue
 
@@ -293,7 +283,7 @@ class DPUEventParser():
 
         return self.dpu_timelines
 
-    def get_dpu_profile_summary(self):
+    def get_dpu_profile_summary(self, fmt="vtf"):
         """
         DPU Profile Summary Format:
         Kernel Name,Number Of Runs,CU Full Name,Minimum Time (ms),Average Time (ms),Maximum Time (ms),Workload(GOP),DPU Performance(GOP/s),Mem IO(MB),Mem Bandwidth(MB/s),
@@ -338,24 +328,60 @@ class DPUEventParser():
                 display_name = "%s:batch-%d" % (cu_name, batch)
 
                 workload = self.xmodelInfo.get(subg_idx, {}).get(
-                    "workload", 0) / 1000.0 / 1000.0 / 1000.0
+                    "workload", 0)
+                #workload = to_Gi(workload)
+
                 perf = workload * batch / avg_t * 1000  # to GOP/ms
 
                 load_img_size = int(self.xmodelInfo.get(
                     subg_idx, {}).get("load_io_img_size", 0))
                 load_para_size = int(self.xmodelInfo.get(
                     subg_idx, {}).get("load_io_para_size", 0))
+                rank_id = int(self.xmodelInfo.get(
+                    subg_idx, {}).get("rank_id", 0))
 
-                read_size = load_img_size * batch + load_para_size
-                write_size = batch * int(self.xmodelInfo.get(
+                write_fm_size = batch * int(self.xmodelInfo.get(
                     subg_idx, {}).get("save_io_size", 0))
+                #write_fm_size = to_MB(write_fm_size)
 
-                mem_io = (read_size + write_size) / 1024.0 / 1024.0
+                read_fm_size = load_img_size * batch
+                #read_fm_size = to_MB(read_fm_size)
+
+                read_wb_size = load_para_size
+                #read_wb_size = to_MB(read_wb_size)
+
+                mem_io = read_fm_size + read_wb_size + write_fm_size
                 mem_io_bw = mem_io / avg_t * 1024  # to MB/ms
+                #print(subg_name, cu_name, min_t, avg_t, max_t, runs, workload, write_fm_size)
 
-                # print(subg_name, cu_name, min_t, avg_t, max_t, runs, workload, mem_io)
-                ret.append("%s,%d,%s,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,\n" % (
-                    subg_name, runs, display_name, min_t, avg_t, max_t, workload, perf, mem_io, mem_io_bw))
+                prt_data_set = {
+                    "subg_name": subg_name,
+                    "runs": runs,
+                    "display_name": display_name,
+                    "min_t": uConv(min_t),
+                    "avg_t": uConv(avg_t),
+                    "max_t": uConv(max_t),
+                    "workload": uConv(workload, "Gi"),
+                    "perf": uConv(perf, "Gi"),
+                    "read_wb_size": uConv(read_wb_size, "MB"),
+                    "read_fm_size": uConv(read_fm_size, "MB"),
+                    "write_fm_size": uConv(write_fm_size, "MB"),
+                    "mem_io_bw": uConv(mem_io_bw, "MB"),
+                    "mem_io": uConv(mem_io, "MB"),
+                    "rank_id": rank_id
+                }
+
+                txt_fmt = "{subg_name},{runs},{display_name},{min_t},{avg_t},{max_t},{workload},{perf},{read_wb_size},{read_fm_size},{write_fm_size},{mem_io_bw},{rank_id},\n"
+                vtf_fmt = "{subg_name},{runs},{display_name},{min_t:.3f},{avg_t:.3f},{max_t:.3f},{workload:.3f},{perf:.3f},{mem_io:.3f},{mem_io_bw:.3f},\n"
+                if (fmt == "txt"):
+                    ret.append(txt_fmt.format(**prt_data_set))
+                    # ret.append("%s,%d,%s,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.1f,%d,\n" % (
+                    #subg_name, runs, display_name, min_t, avg_t, max_t, workload, perf,
+                    # read_wb_size, read_fm_size, write_fm_size, mem_io_bw, rank_id))
+                else:
+                    ret.append(vtf_fmt.format(**prt_data_set))
+                    # ret.append("%s,%d,%s,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,\n" % (
+                    # subg_name, runs, display_name, min_t, avg_t, max_t, workload, perf, mem_io, mem_io_bw))
 
         return ret
 

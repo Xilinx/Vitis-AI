@@ -1,0 +1,288 @@
+WARNING: [v++ 60-2363] Duplicate entry found for 'vivado.prop' option: 'run.impl_1.{STEPS.ROUTE_DESIGN.ARGS.MORE OPTIONS}={-verbose}' will be overwritten by 'run.impl_1.{STEPS.ROUTE_DESIGN.ARGS.MORE OPTIONS}={-tns_cleanup}'
+WARNING: [v++ 60-1495] Deprecated parameter found: compiler.userPostSysLinkTcl. Please use this replacement parameter instead: compiler.userPostDebugProfileOverlayTcl
+INFO: [v++ 60-1306] Additional information associated with this v++ link can be found at:
+	Reports: /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/reports/link
+	Log files: /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/logs/link
+INFO: [v++ 60-1548] Creating build summary session with primary output /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv.xclbin.link_summary, at Wed Dec 22 14:42:35 2021
+INFO: [v++ 60-1316] Initiating connection to rulecheck server, at Wed Dec 22 14:42:35 2021
+INFO: [v++ 60-1315] Creating rulecheck session with output '/group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/reports/link/link_guidance.html', at Wed Dec 22 14:42:37 2021
+INFO: [v++ 60-895]   Target platform: /proj/xbuilds/2021.2_released/xbb/dsadev/opt/xilinx/platforms/xilinx_u50lv_gen3x4_xdma_2_202010_1/xilinx_u50lv_gen3x4_xdma_2_202010_1.xpfm
+INFO: [v++ 60-1578]   This platform contains Xilinx Shell Archive '/proj/xbuilds/2021.2_released/xbb/dsadev/opt/xilinx/platforms/xilinx_u50lv_gen3x4_xdma_2_202010_1/hw/hw.xsa'
+INFO: [v++ 74-78] Compiler Version string: 2021.2
+INFO: [v++ 60-629] Linking for hardware target
+INFO: [v++ 60-423]   Target device: xilinx_u50lv_gen3x4_xdma_2_202010_1
+INFO: [v++ 60-1332] Run 'run_link' status: Not started
+INFO: [v++ 60-1443] [14:42:40] Run run_link: Step system_link: Started
+INFO: [v++ 60-1453] Command Line: system_link --xo /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/release_u50lv_xo/DPUCAHX8H_5ENGINE.xo -keep --config /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/syslinkConfig.ini --xpfm /proj/xbuilds/2021.2_released/xbb/dsadev/opt/xilinx/platforms/xilinx_u50lv_gen3x4_xdma_2_202010_1/xilinx_u50lv_gen3x4_xdma_2_202010_1.xpfm --target hw --output_dir /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int --temp_dir /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link
+INFO: [v++ 60-1454] Run Directory: /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/run_link
+INFO: [SYSTEM_LINK 60-1316] Initiating connection to rulecheck server, at Wed Dec 22 14:42:42 2021
+INFO: [SYSTEM_LINK 82-70] Extracting xo v3 file /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/release_u50lv_xo/DPUCAHX8H_5ENGINE.xo
+INFO: [SYSTEM_LINK 82-53] Creating IP database /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/_sysl/.cdb/xd_ip_db.xml
+INFO: [SYSTEM_LINK 82-38] [14:42:42] build_xd_ip_db started: /proj/xbuilds/SWIP/2021.2_1021_0703/installs/lin64/Vitis/2021.2/bin/build_xd_ip_db -ip_search 0  -sds-pf /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/hw.hpfm -clkid 0 -ip /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/iprepo/deephi_com_kernel_DPUCAHX8H_5ENGINE_1_0,DPUCAHX8H_5ENGINE -o /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/_sysl/.cdb/xd_ip_db.xml
+INFO: [SYSTEM_LINK 82-37] [14:42:49] build_xd_ip_db finished successfully
+Time (s): cpu = 00:00:09 ; elapsed = 00:00:08 . Memory (MB): peak = 2147.973 ; gain = 0.000 ; free physical = 66204 ; free virtual = 269143
+INFO: [SYSTEM_LINK 82-51] Create system connectivity graph
+INFO: [SYSTEM_LINK 82-102] Applying explicit connections to the system connectivity graph: /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/cfgraph/cfgen_cfgraph.xml
+INFO: [SYSTEM_LINK 82-38] [14:42:49] cfgen started: /proj/xbuilds/SWIP/2021.2_1021_0703/installs/lin64/Vitis/2021.2/bin/cfgen  -nk DPUCAHX8H_5ENGINE:1:dpu_0 -nk DPUCAHX8H_5ENGINE:1:dpu_1 -sp dpu_0.DPU_AXI_0:HBM[00:31] -sp dpu_0.DPU_AXI_1:HBM[00:31] -sp dpu_0.DPU_AXI_4:HBM[00:31] -sp dpu_1.DPU_AXI_0:HBM[00:31] -sp dpu_1.DPU_AXI_1:HBM[00:31] -sp dpu_1.DPU_AXI_4:HBM[00:31] -sp dpu_0.DPU_AXI_I0:HBM[00:31] -sp dpu_1.DPU_AXI_I0:HBM[00:31] -sp dpu_0.DPU_AXI_2:HBM[00:31] -sp dpu_0.DPU_AXI_3:HBM[00:31] -sp dpu_1.DPU_AXI_2:HBM[00:31] -sp dpu_1.DPU_AXI_3:HBM[00:31] -sp dpu_0.DPU_AXI_W0:HBM[00:31] -sp dpu_0.DPU_AXI_W1:HBM[00:31] -sp dpu_1.DPU_AXI_W0:HBM[00:31] -sp dpu_1.DPU_AXI_W1:HBM[00:31] -dmclkid 0 -r /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/_sysl/.cdb/xd_ip_db.xml -o /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/cfgraph/cfgen_cfgraph.xml
+INFO: [CFGEN 83-0] Kernel Specs: 
+INFO: [CFGEN 83-0]   kernel: DPUCAHX8H_5ENGINE, num: 1  {dpu_0}
+INFO: [CFGEN 83-0]   kernel: DPUCAHX8H_5ENGINE, num: 1  {dpu_1}
+INFO: [CFGEN 83-0] Port Specs: 
+INFO: [CFGEN 83-0]   kernel: dpu_0, k_port: DPU_AXI_0, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_0, k_port: DPU_AXI_1, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_0, k_port: DPU_AXI_4, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_1, k_port: DPU_AXI_0, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_1, k_port: DPU_AXI_1, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_1, k_port: DPU_AXI_4, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_0, k_port: DPU_AXI_I0, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_1, k_port: DPU_AXI_I0, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_0, k_port: DPU_AXI_2, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_0, k_port: DPU_AXI_3, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_1, k_port: DPU_AXI_2, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_1, k_port: DPU_AXI_3, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_0, k_port: DPU_AXI_W0, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_0, k_port: DPU_AXI_W1, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_1, k_port: DPU_AXI_W0, sptag: HBM[00:31]
+INFO: [CFGEN 83-0]   kernel: dpu_1, k_port: DPU_AXI_W1, sptag: HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_0.DPU_AXI_0 to HBM[00:31] for directive dpu_0.DPU_AXI_0:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_0.DPU_AXI_1 to HBM[00:31] for directive dpu_0.DPU_AXI_1:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_0.DPU_AXI_2 to HBM[00:31] for directive dpu_0.DPU_AXI_2:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_0.DPU_AXI_3 to HBM[00:31] for directive dpu_0.DPU_AXI_3:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_0.DPU_AXI_4_ to HBM[00:31] for directive dpu_0.DPU_AXI_4:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_0.DPU_AXI_I0 to HBM[00:31] for directive dpu_0.DPU_AXI_I0:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_0.DPU_AXI_W0 to HBM[00:31] for directive dpu_0.DPU_AXI_W0:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_0.DPU_AXI_W1 to HBM[00:31] for directive dpu_0.DPU_AXI_W1:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_1.DPU_AXI_0 to HBM[00:31] for directive dpu_1.DPU_AXI_0:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_1.DPU_AXI_1 to HBM[00:31] for directive dpu_1.DPU_AXI_1:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_1.DPU_AXI_2 to HBM[00:31] for directive dpu_1.DPU_AXI_2:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_1.DPU_AXI_3 to HBM[00:31] for directive dpu_1.DPU_AXI_3:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_1.DPU_AXI_4_ to HBM[00:31] for directive dpu_1.DPU_AXI_4:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_1.DPU_AXI_I0 to HBM[00:31] for directive dpu_1.DPU_AXI_I0:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_1.DPU_AXI_W0 to HBM[00:31] for directive dpu_1.DPU_AXI_W0:HBM[00:31]
+INFO: [CFGEN 83-2228] Creating mapping for argument dpu_1.DPU_AXI_W1 to HBM[00:31] for directive dpu_1.DPU_AXI_W1:HBM[00:31]
+INFO: [SYSTEM_LINK 82-37] [14:43:01] cfgen finished successfully
+Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 2147.973 ; gain = 0.000 ; free physical = 66204 ; free virtual = 269142
+INFO: [SYSTEM_LINK 82-52] Create top-level block diagram
+INFO: [SYSTEM_LINK 82-38] [14:43:01] cf2bd started: /proj/xbuilds/SWIP/2021.2_1021_0703/installs/lin64/Vitis/2021.2/bin/cf2bd  --linux --trace_buffer 1024 --input_file /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/cfgraph/cfgen_cfgraph.xml --ip_db /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/_sysl/.cdb/xd_ip_db.xml --cf_name dr --working_dir /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/_sysl/.xsd --temp_dir /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link --output_dir /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int --target_bd ulp.bd
+INFO: [CF2BD 82-31] Launching cf2xd: cf2xd -linux -trace-buffer 1024 -i /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/cfgraph/cfgen_cfgraph.xml -r /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/_sysl/.cdb/xd_ip_db.xml -o dr.xml
+INFO: [CF2BD 82-28] cf2xd finished successfully
+INFO: [CF2BD 82-31] Launching cf_xsd: cf_xsd -disable-address-gen -bd ulp.bd -dn dr -dp /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/sys_link/_sysl/.xsd
+INFO: [CF2BD 82-28] cf_xsd finished successfully
+INFO: [SYSTEM_LINK 82-37] [14:43:06] cf2bd finished successfully
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2147.973 ; gain = 0.000 ; free physical = 66197 ; free virtual = 269141
+INFO: [v++ 60-1441] [14:43:06] Run run_link: Step system_link: Completed
+Time (s): cpu = 00:00:27 ; elapsed = 00:00:26 . Memory (MB): peak = 2159.516 ; gain = 0.000 ; free physical = 66236 ; free virtual = 269180
+INFO: [v++ 60-1443] [14:43:06] Run run_link: Step cf2sw: Started
+INFO: [v++ 60-1453] Command Line: cf2sw -sdsl /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/sdsl.dat -rtd /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/cf2sw.rtd -nofilter /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/cf2sw_full.rtd -xclbin /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/xclbin_orig.xml -o /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/xclbin_orig.1.xml
+INFO: [v++ 60-1454] Run Directory: /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/run_link
+INFO: [v++ 60-1441] [14:43:27] Run run_link: Step cf2sw: Completed
+Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 2159.516 ; gain = 0.000 ; free physical = 66237 ; free virtual = 269182
+INFO: [v++ 60-1443] [14:43:27] Run run_link: Step rtd2_system_diagram: Started
+INFO: [v++ 60-1453] Command Line: rtd2SystemDiagram
+INFO: [v++ 60-1454] Run Directory: /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/run_link
+INFO: [v++ 60-1441] [14:43:27] Run run_link: Step rtd2_system_diagram: Completed
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.34 . Memory (MB): peak = 2159.516 ; gain = 0.000 ; free physical = 66229 ; free virtual = 269174
+INFO: [v++ 60-1443] [14:43:27] Run run_link: Step vpl: Started
+INFO: [v++ 60-1453] Command Line: vpl -t hw -f xilinx_u50lv_gen3x4_xdma_2_202010_1 --kernel_frequency 0:275|1:100 --remote_ip_cache /group/dphi_cloud/workspace/common/u50/ip_cache.xilinx_u50lv_gen3x4_xdma_2_202010_1 -s --user_ip_repo_paths /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/../DPUCAHX8H_SRC/DPU --output_dir /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int --log_dir /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/logs/link --report_dir /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/reports/link --config /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/vplConfig.ini -k /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/kernel_info.dat --webtalk_flag Vitis --temp_dir /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link --no-info --iprepo /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/xo/ip_repo/deephi_com_kernel_DPUCAHX8H_5ENGINE_1_0 --messageDb /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/run_link/vpl.pb /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/dr.bd.tcl
+INFO: [v++ 60-1454] Run Directory: /group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/run_link
+
+****** vpl v2021.2 (64-bit)
+  **** SW Build 3363252 on 2021-10-14-04:41:01
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+INFO: [VPL 60-839] Read in kernel information from file '/group/dphi_cloud/jackiez/dpu_vitis/rtl_kernels/rtl_v3e/DPU_v3e_xo_gen_flow/bit_gen/u50lv_imp/link/int/kernel_info.dat'.
+WARNING: [VPL 60-1495] Deprecated parameter found: compiler.userPostSysLinkTcl. Please use this replacement parameter instead: compiler.userPostDebugProfileOverlayTcl
+INFO: [VPL 74-78] Compiler Version string: 2021.2
+INFO: [VPL 60-423]   Target device: xilinx_u50lv_gen3x4_xdma_2_202010_1
+INFO: [VPL 60-1317] Skipping hardware platform extraction and using '/proj/xbuilds/2021.2_released/xbb/dsadev/opt/xilinx/platforms/xilinx_u50lv_gen3x4_xdma_2_202010_1/hw/xsa' instead.
+[14:44:16] Run vpl: Step create_project: Started
+Creating Vivado project.
+[14:44:17] Run vpl: Step create_project: Completed
+[14:44:17] Run vpl: Step create_bd: Started
+[14:45:24] Run vpl: Step create_bd: Completed
+[14:45:24] Run vpl: Step update_bd: Started
+[14:46:39] Run vpl: Step update_bd: RUNNING...
+[14:47:23] Run vpl: Step update_bd: Completed
+[14:47:23] Run vpl: Step generate_target: Started
+[14:48:41] Run vpl: Step generate_target: RUNNING...
+[14:49:16] Run vpl: Step generate_target: Completed
+[14:49:16] Run vpl: Step config_hw_runs: Started
+[14:49:19] Run vpl: Step config_hw_runs: Completed
+[14:49:19] Run vpl: Step synth: Started
+[14:50:25] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:50:57] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:51:28] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:52:00] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:52:32] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:53:04] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:53:35] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:54:07] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:54:38] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:55:10] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:55:41] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:56:13] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:56:44] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:57:17] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:57:48] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:58:20] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:58:51] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:59:23] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[14:59:55] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:00:27] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:00:58] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:01:30] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:02:02] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:02:34] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:03:05] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:03:37] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:04:09] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:04:41] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:05:12] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:05:45] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:06:16] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:06:48] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:07:20] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:07:52] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:08:23] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:08:55] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:09:27] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:09:59] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:10:30] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:11:02] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:11:33] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:12:05] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:12:37] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:13:09] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:13:40] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:14:12] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:14:43] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:15:15] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:15:47] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:16:19] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:16:50] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:17:22] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:17:53] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:18:25] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:18:57] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:19:29] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:20:00] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:20:32] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:21:03] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:21:35] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:22:07] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:22:39] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:23:10] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:23:42] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:24:13] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:24:46] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:25:17] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:25:49] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:26:21] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:26:53] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:27:24] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:27:56] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:28:28] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:29:00] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:29:31] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:30:03] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:30:35] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:31:07] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:31:38] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:32:10] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:32:42] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:33:14] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:33:45] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:34:17] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:34:49] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:35:21] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:35:52] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:36:24] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:36:56] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:37:28] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:38:00] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:38:32] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:39:03] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:39:35] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:40:07] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:40:39] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:41:10] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:41:42] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:42:14] Block-level synthesis in progress, 0 of 2 jobs complete, 1 job running.
+[15:42:46] Block-level synthesis in progress, 1 of 2 jobs complete, 0 jobs running.
+[15:43:17] Block-level synthesis in progress, 1 of 2 jobs complete, 0 jobs running.
+[15:43:49] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:44:20] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:44:53] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:45:24] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:45:56] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:46:27] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:46:59] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:47:31] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:48:03] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:48:34] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:49:06] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:49:37] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:50:09] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:50:41] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:51:13] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:51:44] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:52:16] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:52:48] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:53:20] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:53:51] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:54:23] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:54:54] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:55:27] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:55:58] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:56:30] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:57:02] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:57:34] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:58:05] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:58:37] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:59:08] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[15:59:41] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:00:12] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:00:45] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:01:17] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:01:49] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:02:21] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:02:53] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:03:24] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:03:57] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:04:29] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:05:01] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:05:33] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:06:05] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:06:37] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:07:09] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:07:40] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:08:13] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:08:44] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:09:17] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:09:48] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:10:21] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:10:52] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:11:25] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:11:56] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:12:29] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:13:01] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:13:33] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:14:04] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:14:37] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:15:08] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:15:40] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:16:12] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:16:44] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:17:15] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:17:48] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:18:19] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:18:51] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:19:23] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:19:56] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:20:28] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:21:00] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:21:32] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:22:05] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:22:37] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:23:09] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.
+[16:23:41] Block-level synthesis in progress, 1 of 2 jobs complete, 1 job running.

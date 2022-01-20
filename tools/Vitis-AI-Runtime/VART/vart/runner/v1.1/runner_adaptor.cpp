@@ -26,6 +26,7 @@ DEF_ENV_PARAM(DEBUG_RUNNER, "0");
 
 namespace vitis {
 namespace ai {
+using std::unique_ptr;
 static std::vector<unique_ptr<vart::TensorBuffer>> convert_tensor_buffer(
     std::vector<TensorBuffer*> tensor_buffers) {
   auto ret = std::vector<unique_ptr<vart::TensorBuffer>>(tensor_buffers.size());

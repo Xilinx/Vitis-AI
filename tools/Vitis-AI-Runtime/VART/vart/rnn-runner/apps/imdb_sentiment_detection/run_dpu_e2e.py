@@ -240,9 +240,6 @@ while count < len(quantized_input):
     count += batch_size
     runner_idx = (runner_idx + 1) % num_cores
 
-while runners:
-    del runners[0]
-
 end = datetime.datetime.now()
 print("LSTM over")
 cv2b = datetime.datetime.now()
@@ -254,6 +251,10 @@ lstm_output_dense = lstm_model2.predict(lstmlayerout, batch_size=8)
 dense_end = datetime.datetime.now()
 hybrid_end = datetime.datetime.now()
 t2 = time.time()
+
+while runners:
+    del runners[0]
+
 lacc = []
 # print(lstm_output_dense)
 for ind, j in enumerate(lstm_output_dense):
@@ -272,9 +273,9 @@ print("====== IMDB Sentiment Detection Results ======")
 print("Accuracy: ", (countall - counterr)/countall)
 print("preprocessing time", (pre_end - pre_begin).total_seconds())
 print("embedding time", (ebd_end - ebd_begin).total_seconds())
-print("convert1", (cv1e - cv1b).total_seconds())
+print("convert float->int16", (cv1e - cv1b).total_seconds())
 print("total hw time", (end - begin).total_seconds())
-print("convert2", (cv2e - cv2b).total_seconds())
+print("convert int16->float", (cv2e - cv2b).total_seconds())
 print("dense lstm time", (dense_end - dense_begin).total_seconds())
 print("total hybrid time", (hybrid_end - hybrid_begin).total_seconds())
 print("num_records", out_np.shape[0])

@@ -20,23 +20,23 @@ def jit(graph):
     graph.set_attr("mean", [105.0, 117.0, 123.0])
     graph.set_attr("scale", [1.0, 1.0, 1.0])
     graph.set_attr("is_rgb_input", False)
-    graph.set_attr("ratio",  8)
+    graph.set_attr("ratio", 8)
     graph.set_attr("ipm_left", 5.0)
     graph.set_attr("ipm_right", 75.0)
     graph.set_attr("ipm_top", 23.75)
     graph.set_attr("ipm_bottom", 50.0)
     graph.set_attr("ipm_interpolation", 0.0)
-    graph.set_attr("ipm_vp_portion",   0.0)
+    graph.set_attr("ipm_vp_portion", 0.0)
     graph.set_attr("focal_length_x", 61.8)
     graph.set_attr("focal_length_y", 68.8)
     graph.set_attr("optical_center_x", 40.0)
     graph.set_attr("optical_center_y", 30.0)
     graph.set_attr("camera_height", 2179.8)
     graph.set_attr("pitch", 14.0)
-    graph.set_attr("yaw",  0.0)
+    graph.set_attr("yaw", 0.0)
 
     xir_extra_ops.set_postprocessor(
         graph,
-        "libxmodel_postprocessor_lane_detect.so.1",
-        {"input":
-         ['type-tile_fixed_']})
+        "libxmodel_postprocessor_lane_detect.so.2",
+        {"input": ["type-tile_fixed_"]},
+    )

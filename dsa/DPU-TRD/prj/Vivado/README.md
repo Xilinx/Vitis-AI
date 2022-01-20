@@ -1,4 +1,4 @@
-# Zynq UltraScale＋ MPSoC DPU TRD V3.3 Vivado 2021.1
+# Zynq UltraScale＋ MPSoC DPU TRD V3.4 Vivado 2021.2
 
 ## Table of Contents
 
@@ -26,21 +26,26 @@
 
 Change Log:
 
+V3.4 Change log:
+
+-  Updated IP name.
+-  Updated interrupt connection.
+
 V3.3 Change log:
 
--  Supported range of conv stride from 4 to 8
--  Supported Pool MaxReduce
--  Supported Elew Multiply
+-  Supported range of conv stride from 4 to 8.
+-  Supported Pool MaxReduce.
+-  Supported Elew Multiply.
 
 V3.2 Change log:
 
--  Updated IP Name
+-  Updated IP Name.
 -  Supported Bias-right-shift.
 -  Supported up-to 4 cores DPU
 
 V3.1 Change Log:
 
--  The first version of Vivado DPU TRD
+-  The first version of Vivado DPU TRD.
 
 ------
 
@@ -68,7 +73,8 @@ Required:
 ### 3.2 Software
 
   Required:
-  - Vivado 2021.1 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html)
+  - Vivado 2021.2 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html)
+  - Petalinux 2021.2 [Embedded Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools.html)
   - [Vitis AI](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional
 
 ------
@@ -81,12 +87,9 @@ The top-level directory structure shows the the major design components. The TRD
 
 ```
 ├── app
-│   ├── img
-│   ├── model
-│   ├── samples
 │   └── dpu_sw_optimize.tar.gz
 ├── dpu_ip
-│   ├── DPUCZDX8G_v3_3_0
+│   ├── DPUCZDX8G_v3_4_0
 │   └── Vitis
 └── prj
     └── Vivado
@@ -142,7 +145,7 @@ The following tutorials assume that the Vivado environment variable is set as gi
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <Vivado install path>/Vivado/2021.1/settings64.sh
+% source <Vivado install path>/Vivado/2021.2/settings64.sh
 
 ```
 
@@ -193,7 +196,7 @@ $TRD_HOME/prj/Vivado/srcs/top/ip/top_DPUCZDX8G_0/arch.json
 
 This tutorial shows how to build the Linux image and boot image using the PetaLinux build tool.
 
-**PetaLinux Working Environment Setup**: Refer to the [PetaLinux Tools Documentation ](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2021_1/ug1144-petalinux-tools-reference-guide.pdf)(UG1144) for installation.
+**PetaLinux Working Environment Setup**: Refer to the [PetaLinux Tools Documentation ](https://www.xilinx.com/content/dam/xilinx/support/documentation/sw_manuals/vitis_ai/1_4/ug1414-vitis-ai.pdf)(UG1144) for installation.
 
 For Bash as user login shell:
 
@@ -243,7 +246,7 @@ If the prebuilt design is wanted, please use the path for **--get-hw-description
 
 This part is about how to run the Resnet50 example from the source code.
 
-The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in [ug1144](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2021_1/ug1144-petalinux-tools-reference-guide.pdf) for PetaLinux 2021.1:
+The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in [ug1144](https://www.xilinx.com/content/dam/xilinx/support/documentation/sw_manuals/vitis_ai/1_4/ug1414-vitis-ai.pdf) for PetaLinux 2021.2:
 
 Copy the Image, BOOT.BIN, boot.scr and system.dtb files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to BOOT partition.
 
@@ -253,9 +256,7 @@ Extract the rootfs.tar.gz files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xili
 tar -zxvf rootfs.tar.gz -C <path-of-SD-card-ext4-partition>
 ```
 
-Copy the folder **$TRD_HOME/app/** to RootFs partition.
-
-Reboot, after the linux boot, run in the RootFs partition:
+Execute the following command in the RootFs partition:
 
 ```
 % cd ./app
@@ -274,7 +275,7 @@ score[939]  =  0.000904801  text: zucchini, courgette,
 score[949]  =  0.00054879   text: strawberry,
 ```
 
-###### **Note:** The resenet50 test case can support both Vitis and Vivado flow. If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/Vitis_ai/1_0/ug1414-Vitis-ai.pdf).
+###### **Note:** If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI).
 
 
 ### 5.3 Configurate the DPU

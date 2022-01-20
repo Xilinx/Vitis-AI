@@ -17,52 +17,71 @@
 # get the git repo branch and commit id and write them into config.hpp
 execute_process(
   COMMAND git rev-parse --abbrev-ref HEAD
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
   OUTPUT_VARIABLE PROJECT_GIT_BRANCH_NAME
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 execute_process(
   COMMAND git rev-parse HEAD
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
   OUTPUT_VARIABLE PROJECT_GIT_COMMIT_ID
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 configure_file(config.hpp.in config.hpp @ONLY)
 
 # run protoc
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS target.proto)
-set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_FLAGS -Wno-unused-variable)
-
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS EXPORT_MACRO TARGET_FACTORY_DLLESPEC target.proto)
+#set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_FLAGS -Wno-unused-variable)
+if(MSVC) 
+	set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_DEFINITIONS "TARGET_FACTORY_DLLESPEC=__declspec(dllexport)")
+else(MSVC)
+	set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_DEFINITIONS "TARGET_FACTORY_DLLESPEC=__attribute__((visibility(\"default\")))")
+endif(MSVC)
 # process target files
-file(GLOB PROTOTXT_FILE_LIST ${CMAKE_SOURCE_DIR}/targets/*.prototxt)
-set(PROCESS_ONE_FILE "sed -e '1i#begin' -e '$a#end' -e 's/\"/\\\\\\\"/g' -e 's/$/\\\\\\\\n/' | xargs echo -n")
+file(GLOB PROTOTXT_FILE_LIST ${PROJECT_SOURCE_DIR}/targets/*.prototxt)
+set(TARGET_PROTOTXT_LST "")
+set(TARGET_PROTOTXT_CODE "")
 foreach(PROTOTXT_FILE ${PROTOTXT_FILE_LIST})
-  execute_process(
-    COMMAND bash "-c" "cat ${PROTOTXT_FILE} | ${PROCESS_ONE_FILE}"
-    OUTPUT_VARIABLE PROCESS_OUTPUT)
-  set(TARGET_PROTOTXTS ${TARGET_PROTOTXTS}${PROCESS_OUTPUT})
+  file(READ ${PROTOTXT_FILE} _hex HEX)
+  # Separate into individual bytes.
+  string(REGEX MATCHALL "([A-Za-z0-9][A-Za-z0-9])" _separated_hex "${_hex}")
+  list(APPEND _separated_hex "00")
+  # Append the "0x" to each byte.
+  list(JOIN _separated_hex ",0x" _formatted_hex)
+  # JOIN misses the first byte's "0x", so add it here.
+  string(PREPEND _formatted_hex "0x")
+  string(MAKE_C_IDENTIFIER ${PROTOTXT_FILE} _c_name)
+  string(APPEND TARGET_PROTOTXT_CODE "static constexpr char ${_c_name} [] = { ${_formatted_hex} };\n")
+  list(APPEND TARGET_PROTOTXT_LST "(const char *)${_c_name}")
 endforeach()
-configure_file(${CMAKE_SOURCE_DIR}/src/target_list.hpp.in target_list.hpp
-  ESCAPE_QUOTES @ONLY)
+list(JOIN TARGET_PROTOTXT_LST "," TARGET_PROTOTXTS)
+configure_file(${PROJECT_SOURCE_DIR}/src/target_list.hpp.in target_list.hpp
+               ESCAPE_QUOTES @ONLY)
 
 # build library
 aux_source_directory(. CPP_SRCS)
 add_library(${PROJECT_NAME} SHARED ${PROTO_SRCS} ${CPP_SRCS})
+# Enable Export of public APIs
+target_compile_definitions(${PROJECT_NAME} PRIVATE -DTARGET_FACTORY_EXPORT
+	# for an unknown reason, g++ 9.3 produces compilation errors related to PRI64X
+	-D__STDC_FORMAT_MACROS=1)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}")
 target_include_directories(${PROJECT_NAME} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC protobuf::libprotobuf unilog::unilog glog::glog)
+target_link_libraries(${PROJECT_NAME} PUBLIC protobuf::libprotobuf PRIVATE unilog::unilog)
 
 install(
   TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}-targets
   RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
 install(
-  FILES ${PROTO_HDRS} ${CMAKE_SOURCE_DIR}/include/vitis/ai/target_factory.hpp
+  FILES ${PROTO_HDRS} ${PROJECT_SOURCE_DIR}/include/vitis/ai/target_factory.hpp
   DESTINATION include/vitis/ai)
 install(
   EXPORT ${PROJECT_NAME}-targets

@@ -30,14 +30,14 @@
     "data": [
         "LIB_DIR/data/4k.jpg",
         "LIB_DIR/data/512x512.png",
-        "LIB_DIR/data/HD.jpg",
+        "LIB_DIR/data/HD.jpg"
     ],
     "gui": false,
     "launch": [
         {
             "name": "hwemu-launch",
             "target": "hw_emu",
-            "cmd_args": "kernel.xclbin HD.jpg HD.jpg 2.0 3.0 4.0", 
+            "cmd_args": "kernel.xclbin LIB_DIR/data/HD.jpg LIB_DIR/data/HD.jpg 2.0 3.0 4.0", 
             "pkg-dir": "$(WORK_DIR)",
             "input-dir": "./",
             "output-dir": "./"
@@ -45,7 +45,7 @@
         {
             "name": "hw",
             "target": "hw",
-            "cmd_args": "kernel.xclbin 4k.jpg 4k.jpg 2.0 3.0 4.0", 
+            "cmd_args": "kernel.xclbin LIB_DIR/data/4k.jpg LIB_DIR/data/4k.jpg 2.0 3.0 4.0", 
             "pkg-dir": "$(WORK_DIR)",
             "input-dir": "./",
             "output-dir": "./"

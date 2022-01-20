@@ -72,11 +72,11 @@ static void compare(int cls, int group, signed char* input, float* output1,
       auto idx = g * cls + i;
       auto diff = output1[idx] - output2[idx];
       if (ENV_PARAM(DEBUG_TEST) || (diff != 0.0 && std::abs(diff) > 0.001)) {
-        cout << " i   = " << i 
+        std::cout << " i   = " << i 
              << " g   = " << g
              << " idx = " << idx << " "
              << (int)input[idx] << " : " << output1[idx] << " " << output2[idx]
-             << " " << std::abs(diff) << endl;
+             << " " << std::abs(diff) << std::endl;
       }
     }
   }
@@ -193,7 +193,7 @@ int main(int argc, char* argv[]) {
   auto fixpos = get_fix_pos(input_tensor);
   float scale = std::exp2f(-1.0f * (float)fixpos);
 
-  vector<float> output_c(cls * group);
+  std::vector<float> output_c(cls * group);
   LOG_IF(INFO, ENV_PARAM(DEBUG_TEST))
       << " fixpos=" << fixpos << " cls=" << cls << " group=" << group
       << " scale=" << scale;

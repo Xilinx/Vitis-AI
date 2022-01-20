@@ -71,7 +71,7 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
       # affine: True
       # track_running_stats: True
       # Args for this module
-      freeze_bn=False,
+      freeze_bn_stats=False,
       qconfig=None,
       dim=2):
     nn.modules.conv._ConvNd.__init__(self, in_channels, out_channels,
@@ -79,7 +79,7 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
                                      transposed, output_padding, groups, False,
                                      padding_mode)
     assert qconfig and qconfig.weight and qconfig.bias, 'qconfig must be provided for QAT module'
-    self.frozen = freeze_bn if self.training else True
+    self.bn_frozen = freeze_bn_stats if self.training else True
     self.dim = dim
     self.bn = _BN_CLASS_MAP[dim](out_channels, eps, momentum, True, True)
 
@@ -95,12 +95,14 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
     # this needs to be called after reset_bn_parameters,
     # as they modify the same state
     if self.training:
-      if freeze_bn:
-        self.freeze_bn()
+      if freeze_bn_stats:
+        self.freeze_bn_stats()
       else:
-        self.update_bn()
+        self.update_bn_stats()
     else:
-      self.freeze_bn()
+      self.freeze_bn_stats()
+
+    self.conv_bn_fused = False
 
   def reset_running_stats(self):
     self.bn.reset_running_stats()
@@ -176,11 +178,6 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
   def reset_parameters(self):
     super(_ConvBnNd, self).reset_parameters()
 
-  def update_bn(self):
-    self.frozen = False
-    self.bn.training = True
-    return self
-
   def merge_bn_to_conv(self):
     with torch.no_grad():
       # Use the same implementation in nndct_shared/optimzation/fuse_conv_bn.py
@@ -225,19 +222,17 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
         self.bias.copy_(bias)
       else:
         self.bias = nn.Parameter(bias)
+    self.conv_bn_fused = True
 
-  def freeze_bn(self):
-    if self.frozen:
-      return
+  def update_bn_stats(self):
+    self.bn_frozen = False
 
-    self.merge_bn_to_conv()
-
-    self.frozen = True
-    self.bn.training = False
+  def freeze_bn_stats(self):
+    self.bn_frozen = True
 
   def clear_non_native_bias(self):
     if self.bias is None:
-      print('WARNING: No bias to unmerge')
+      print('[WARNING] No bias to unmerge')
       return
 
     with torch.no_grad():
@@ -285,25 +280,31 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
     return super(_ConvBnNd, self).extra_repr()
 
   def forward(self, x, output_size=None):
+    """
+    See https://arxiv.org/pdf/1806.08342.pdf section 3.2.2.
+    bn(conv(x)) = (conv(x) - E(conv(x))) * gamma / std(conv(x)) + beta
+                = (x*W + B - E(x*W + B)) * gamma / sqrt(E((x*W + B - E(x*W + B))^2)) + beta
+                = (x*W - E(x*W)) * gamma / std(x*W) + beta
+    """
     gamma, beta = self.bn.weight, self.bn.bias
-    if self.frozen:
+    if self.conv_bn_fused:
       quantized_weight = self.weight_quantizer(self.weight)
       quantized_bias = self.bias_quantizer(self.bias)
       return self._conv_forward(x, quantized_weight, quantized_bias,
                                 output_size)
 
-    if self.training:
+    if self.training and not self.bn_frozen:
       batch_mean, batch_var = self.batch_stats(
           self._conv_forward(x, self.weight, output_size=output_size),
           self.bias)
       recip_sigma_batch = torch.rsqrt(batch_var + self.bn.eps)
       with torch.no_grad():
-        sigma_running = torch.sqrt(self.bn.running_var + self.bn.eps)
+        running_sigma = torch.sqrt(self.bn.running_var + self.bn.eps)
 
       w_corrected = self.weight * self.broadcast_correction_weight(
-          gamma / sigma_running)
+          gamma / running_sigma)
       w_quantized = self.weight_quantizer(w_corrected)
-      recip_c = self.broadcast_correction(sigma_running * recip_sigma_batch)
+      recip_c = self.broadcast_correction(running_sigma * recip_sigma_batch)
       bias_corrected = beta - gamma * batch_mean * recip_sigma_batch
       bias_quantized = self.broadcast_correction(
           self.bias_quantizer(bias_corrected))
@@ -312,13 +313,13 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
       y.mul_(recip_c).add_(bias_quantized)
     else:
       with torch.no_grad():
-        recip_sigma_running = torch.rsqrt(self.bn.running_var + self.bn.eps)
+        recip_running_sigma = torch.rsqrt(self.bn.running_var + self.bn.eps)
       w_corrected = self.weight * self.broadcast_correction_weight(
-          gamma * recip_sigma_running)
+          gamma * recip_running_sigma)
       w_quantized = self.weight_quantizer(w_corrected)
-      corrected_mean = self.bn.running_mean - (
+      mean_corrected = self.bn.running_mean - (
           self.bias if self.bias is not None else 0)
-      bias_corrected = beta - gamma * corrected_mean * recip_sigma_running
+      bias_corrected = beta - gamma * mean_corrected * recip_running_sigma
       bias_quantized = self.bias_quantizer(bias_corrected)
       y = self._conv_forward(x, w_quantized, bias_quantized, output_size)
     return y
@@ -328,12 +329,10 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
     changing it if BN is frozen. This makes sure that calling `model.train()`
     on a model with a frozen BN will behave properly.
     """
-    if mode and self.frozen:
-      raise RuntimeError('Training after freezing BN is not supported yet.')
-
     self.training = mode
-    for module in self.children():
-      module.train(mode)
+    if not self.bn_frozen:
+      for module in self.children():
+        module.train(mode)
     return self
 
   @property
@@ -356,7 +355,6 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
     convbn.bn.running_var = bn.running_var
     convbn.bn.num_batches_tracked = bn.num_batches_tracked
     convbn.bn.eps = bn.eps
-    #convbn.merge_bn_to_conv()
     return convbn
 
 class QuantizedConvBatchNorm2d(_ConvBnNd, nn.Conv2d):
@@ -391,7 +389,7 @@ class QuantizedConvBatchNorm2d(_ConvBnNd, nn.Conv2d):
       # affine: True
       # track_running_stats: True
       # Args for this module
-      freeze_bn=False,
+      freeze_bn_stats=False,
       qconfig=None):
     kernel_size = _pair(kernel_size)
     stride = _pair(stride)
@@ -412,7 +410,7 @@ class QuantizedConvBatchNorm2d(_ConvBnNd, nn.Conv2d):
         padding_mode,
         eps,
         momentum,
-        freeze_bn,
+        freeze_bn_stats,
         qconfig,
         dim=2)
 
@@ -458,7 +456,7 @@ class QuantizedConvBatchNorm3d(_ConvBnNd, nn.Conv3d):
       # affine: True
       # track_running_stats: True
       # Args for this module
-      freeze_bn=False,
+      freeze_bn_stats=False,
       qconfig=None,
   ):
     kernel_size = _triple(kernel_size)
@@ -480,7 +478,7 @@ class QuantizedConvBatchNorm3d(_ConvBnNd, nn.Conv3d):
         padding_mode,
         eps,
         momentum,
-        freeze_bn,
+        freeze_bn_stats,
         qconfig,
         dim=3,
     )
@@ -515,7 +513,6 @@ class _ConvTransposeBnNd(_ConvBnNd, nn.modules.conv._ConvTransposeMixin):
     convbn.bn.running_var = bn.running_var
     convbn.bn.num_batches_tracked = bn.num_batches_tracked
     convbn.bn.eps = bn.eps
-    #convbn.merge_bn_to_conv()
     return convbn
 
 class QuantizedConvTransposeBatchNorm2d(_ConvTransposeBnNd):
@@ -533,7 +530,7 @@ class QuantizedConvTransposeBatchNorm2d(_ConvTransposeBnNd):
                padding_mode='zeros',
                eps=1e-05,
                momentum=0.1,
-               freeze_bn=False,
+               freeze_bn_stats=False,
                qconfig=None):
 
     kernel_size = _pair(kernel_size)
@@ -544,7 +541,7 @@ class QuantizedConvTransposeBatchNorm2d(_ConvTransposeBnNd):
     super(QuantizedConvTransposeBatchNorm2d,
           self).__init__(in_channels, out_channels, kernel_size, stride,
                          padding, dilation, False, output_padding, groups, bias,
-                         padding_mode, eps, momentum, freeze_bn, qconfig)
+                         padding_mode, eps, momentum, freeze_bn_stats, qconfig)
 
   def _conv_forward(self, input, weight, bias=None, output_size=None):
     if self.padding_mode != 'zeros':
@@ -581,7 +578,7 @@ class QuantizedConvTransposeBatchNorm3d(_ConvTransposeBnNd):
                padding_mode='zeros',
                eps=1e-05,
                momentum=0.1,
-               freeze_bn=False,
+               freeze_bn_stats=False,
                qconfig=None):
 
     #kernel_size = _pair(kernel_size)
@@ -603,7 +600,7 @@ class QuantizedConvTransposeBatchNorm3d(_ConvTransposeBnNd):
         padding_mode,
         eps,
         momentum,
-        freeze_bn,
+        freeze_bn_stats,
         qconfig,
         dim=3)
 
@@ -632,14 +629,17 @@ _FUSED_CLS = [
     QuantizedConvTransposeBatchNorm2d, QuantizedConvTransposeBatchNorm3d
 ]
 
-# TODO(yuwang): Move to top api for user.
-def update_bn(mod):
+def update_bn_stats(mod):
   if type(mod) in _FUSED_CLS:
-    mod.update_bn()
+    mod.update_bn_stats()
 
-def freeze_bn(mod):
+def freeze_bn_stats(mod):
   if type(mod) in _FUSED_CLS:
-    mod.freeze_bn()
+    mod.freeze_bn_stats()
+
+def fuse_conv_bn(mod):
+  if type(mod) in _FUSED_CLS:
+    mod.merge_bn_to_conv()
 
 def clear_non_native_bias(mod):
   if type(mod) in _FUSED_CLS:

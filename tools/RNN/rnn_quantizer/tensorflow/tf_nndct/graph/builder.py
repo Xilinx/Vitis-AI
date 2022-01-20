@@ -15,8 +15,8 @@
 
 import imp
 
+from tensorflow import keras
 from tensorflow.python.ops import array_ops
-from tensorflow.python import keras
 from tensorflow.python.util import nest
 
 from tf_nndct.graph import OpTypes
@@ -29,8 +29,12 @@ from tf_nndct.utils import logging
 from tf_nndct.utils import tensor_utils
 
 class ClassSpec(object):
-  def __init__(self, name, base=keras.Model, call_fn_name='call',
-        quantized=False):
+
+  def __init__(self,
+               name,
+               base=keras.Model,
+               call_fn_name='call',
+               quantized=False):
     self.name = name
     self.base = base
     self.call_fn_name = call_fn_name
@@ -42,7 +46,7 @@ class KerasBuilder(object):
     self._graph = graph
 
   def build(self, filepath, quantized=False, as_layer=False):
-    class_name = self._graph.name
+    class_name = 'Model'
     base_class = keras.Model
     call_fn_name = 'call'
     if as_layer:
@@ -72,6 +76,7 @@ class KerasBuilder(object):
     dummy_inputs = nest.pack_sequence_as(self._graph.input_signature,
                                          dummy_inputs)
 
+    # Call the subclassed model once to build the model (mainly to create the weights)
     #input_data = dummy_inputs if len(dummy_inputs) > 1 else dummy_inputs[0]
     rebuilt_model(*dummy_inputs)
 
@@ -84,28 +89,33 @@ class KerasBuilder(object):
       # then export params in the order they are saved in the op.
       weights = []
       if hasattr(node.op, 'ParamName'):
-        params = keras_utils.keras_layer_params(layer)
-        for name in params.keys():
+        named_weights = keras_utils.get_named_weights(layer)
+        for name in named_weights:
           param = utils.op_param_by_name(node.op, name)
           if not param:
-            continue
-          ndarray = tensor_utils.to_tf_numpy(node.op.get_param(param))
+            raise ValueError('Can not get value of "{}" in node({})'.format(
+                name, node.name))
+          ndarray = tensor_utils.param_to_tf_numpy(node.op.get_param(param))
           weights.append(ndarray)
-          logging.vlog(2, 'Reload weights of {}: name={}, shape={}'.format(
-              layer.name, name, ndarray.shape))
+          logging.vlog(
+              2, 'Reload weights of {}: name={}, shape={}'.format(
+                  layer.name, name, ndarray.shape))
       else:
         for name, tensor in node.op.params.items():
-          ndarray = tensor_utils.to_tf_numpy(tensor)
+          ndarray = tensor_utils.param_to_tf_numpy(tensor)
           weights.append(ndarray)
-          logging.vlog(2, "Reload weights of {}: name={}, shape={}".format(
-              layer.name, name, ndarray.shape))
+          logging.vlog(
+              2, "Reload weights of {}: name={}, shape={}".format(
+                  layer.name, name, ndarray.shape))
       layer_nodes.append((layer, node))
       if weights:
         layer.set_weights(weights)
     return rebuilt_model, layer_nodes
 
-def rebuild_model(model, input_signature):
+def rebuild_model(model, input_signature, path=None):
   graph = parser.from_keras_model(model, input_signature)
   builder = KerasBuilder(graph)
-  rebuilt_model, layer_names = builder.build('%s_rebuilt.py' % model.name)
+  if not path:
+    path = '{}_rebuilt.py'.format(model.name)
+  rebuilt_model, layer_names = builder.build(path)
   return rebuilt_model

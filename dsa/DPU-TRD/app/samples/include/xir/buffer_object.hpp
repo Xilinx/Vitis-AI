@@ -17,13 +17,21 @@
 #include <functional>
 #include <memory>
 #include <vitis/ai/with_injection.hpp>
+#include "./buffer_object_export.hpp"
 namespace xir {
+struct XclBo {
+  void* xcl_handle;
+  unsigned int bo_handle;
+};
+
 /**
  * @brief a device memory management
  */
 class BufferObject : public vitis::ai::WithInjection<BufferObject> {
  public:
   explicit BufferObject() = default;
+  static VART_BUFFER_OBJECT_DLLSPEC std::unique_ptr<BufferObject> create(
+      size_t size, size_t device_id, const std::string& cu_name);
 
  public:
   BufferObject(const BufferObject&) = delete;
@@ -36,7 +44,7 @@ class BufferObject : public vitis::ai::WithInjection<BufferObject> {
   virtual void* data_w() = 0;
   virtual const void* data_r() const = 0;
   virtual uint64_t phy(size_t offset = 0) = 0;
-
+  virtual XclBo get_xcl_bo() const;
   /// sync_for_read before reading
   virtual void sync_for_read(uint64_t offset, size_t size) = 0;
   /// sync_for_write after write

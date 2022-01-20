@@ -1,6 +1,3 @@
-
-
-#
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,32 +19,52 @@ from __future__ import print_function
 
 import numpy as np
 
+from nndct_shared.utils.tensor_util import convert_parameter_tensor_format
+from nndct_shared.utils.tensor_util import DataFormatMap
 from tf_nndct.graph.ops import Tensor
+from tf_nndct.utils import keras_utils
 
-_tf_layouts = {2: 'IO', 4: 'HWIO'}
-_nndct_layouts = {2: 'OI', 4: 'OHWI'}
+#_tf_layouts = DataFormatMap._parameter_format_map['tensorflow']
+#_nndct_layouts = DataFormatMap._parameter_format_map['nndct']
+#
+#_tf_blob_layout = DataFormatMap._blob_format_map['tensorflow']
+#_nndct_blob_layout = DataFormatMap._blob_format_map['nndct']
 
-_tf_blob_layout = 'NHWC'
-_nndct_blob_layout = 'NHWC'
+def tf_blob_format(ndim):
+  blob_format = {
+    'channels_first': {
+      2: 'NH',
+      3: 'NCL',
+      4: 'NCHW',
+      5: 'NCDHW'
+    },
+    'channels_last': {
+      2: 'NH',
+      3: 'NLC',
+      4: 'NHWC',
+      5: 'NDHWC'
+    }
+  }
+  return blob_format[keras_utils.data_format()][ndim]
 
-def from_tf_numpy(name, ndarray):
+def param_from_tf_numpy(name, ndarray):
   tensor = Tensor.from_numpy(name, ndarray)
-  return tf_to_nndct(tensor)
+  return tf_param_to_nndct(tensor)
 
-def to_tf_numpy(tensor):
+def param_to_tf_numpy(tensor):
   t = Tensor.from_numpy(tensor.name, np.copy(tensor.data))
-  nndct_to_tf(t)
+  nndct_param_to_tf(t)
   return t.data
 
-def tf_to_nndct(tensor):
-  return transpose(tensor, _tf_layouts, _nndct_layouts)
+def tf_param_to_nndct(tensor):
+  return convert_parameter_tensor_format(tensor, 'tensorflow', 'nndct')
 
-def nndct_to_tf(tensor):
-  return transpose(tensor, _nndct_layouts, _tf_layouts)
+def nndct_param_to_tf(tensor):
+  return convert_parameter_tensor_format(tensor, 'nndct', 'tensorflow')
 
-# TODO(yuwang): Merge to tf_to_nndct ?
 def tf_blob_to_nndct(tensor):
-  return _transpose(tensor, _tf_blob_layout, _nndct_blob_layout)
+  return transpose(tensor, tf_blob_format(tensor.ndim),
+      DataFormatMap.blob_format('nndct', tensor.ndim))
 
 def _transpose(tensor, src_layout, dst_layout):
   if src_layout == dst_layout:
@@ -56,14 +73,15 @@ def _transpose(tensor, src_layout, dst_layout):
   axis = [src_layout.index(d) for d in dst_layout]
   return tensor.transpose(axis)
 
-def transpose(tensor, src_layouts, dst_layouts):
+def transpose(tensor, src_layout, dst_layout):
   if not isinstance(tensor, Tensor):
     raise TypeError("'tensor' must be Tensor, but given {}".format(
         type(tensor)))
 
-  if tensor.ndim != 4 and tensor.ndim != 2:
-    return tensor
-
-  src_layout = src_layouts[tensor.ndim]
-  dst_layout = dst_layouts[tensor.ndim]
   return _transpose(tensor, src_layout, dst_layout)
+
+def layer_weights_from_node(node):
+  weights = []
+  for tensor in node.op.params.values():
+    weights.append(param_to_tf_numpy(tensor))
+  return weights

@@ -20,9 +20,9 @@ static cv::Mat process_image(const cv::Mat& image,
                              const vitis::ai::proto::ClassificationResult& r) {
   cv::Mat ret;
   for (const auto& k : r.topk()) {
-    LOG_IF(INFO, false) << "index: " << k.index()  //
-                        << " score " << k.score()  //
-                        << " text: " << k.name()   //
+    LOG_IF(INFO, true)  << "r.index " << k.index()   //
+                        << " " << k.name()           //
+                        << " r.score " << k.score()  //
                         << "\n";
   }
   return ret;
@@ -34,13 +34,12 @@ static cv::Mat process_image(const cv::Mat& image,
   // 0.99371 0.16875 0.15625 0.125 0.140625
   cv::Mat ret;
   for (const auto& k : r.bounding_box()) {
-    LOG_IF(INFO, false) << " " << k.label().score()  //
+    LOG_IF(INFO, true)  << " " << k.label().index()  //
+	                << " " << k.label().score()  //
                         << " " << k.top_left().x()   //
                         << " " << k.top_left().y()   //
                         << " " << k.size().width()   //
                         << " " << k.size().height()  //
-                        << " " << k.label().index()  //
-                        << " " << k.label().name()   //
                         << "\n";
   }
   return ret;
@@ -51,26 +50,30 @@ static cv::Mat process_image(const cv::Mat& image,
   // 0.995669 0.45625 0.109375 0.125 0.15
   // 0.99371 0.16875 0.15625 0.125 0.140625
   cv::Mat ret;
-  LOG_IF(INFO, false) << r.plate_number() << "\n";
+  LOG_IF(INFO, true)  << "result.plate_color " << r.plate_color() << " "  //
+                      << "result.plate_number " << r.plate_number()       //
+                      << "\n";
   return ret;
 }
 
 static cv::Mat process_image(const cv::Mat& image,
                              const vitis::ai::proto::FaceFeatureResult& r) {
   cv::Mat ret;
-  for (auto i = 0; i < r.float_vec_size() && i < 10; ++i) {
-    LOG_IF(INFO, false) << " " << r.float_vec(i);
+  LOG_IF(INFO, true) << "float features :";
+  for (auto i = 0; i < r.float_vec_size(); ++i) {
+    std::cout <<  r.float_vec(i) << " ";
   }
+  std::cout << std::endl;
   return ret;
 }
 
 static cv::Mat process_image(const cv::Mat& image,
                              const vitis::ai::proto::LandmarkResult& r) {
   cv::Mat ret;
-  LOG_IF(INFO, false) << "quality=" << r.score() << "\n";
+  LOG_IF(INFO, true) << "score : " << r.score() << " points\n";
   for (auto i = 0; i < r.point_size(); ++i) {
-    LOG_IF(INFO, false) << " " << r.point(i).x() << " " << r.point(i).y()
-                        << "\n";
+    LOG_IF(INFO, true) << r.point(i).x() << " " << r.point(i).y()
+                       << "\n";
   }
   return ret;
 }
@@ -82,15 +85,16 @@ static cv::Mat process_image(const cv::Mat& image,
   std::vector<int> color2 = {0, 0, 255, 0, 100, 255};
   std::vector<int> color3 = {0, 0, 0, 255, 100, 255};
 
+  LOG_IF(INFO, true) << "lines.size " << r.line_attribute().size() << " ";
   for (auto& line : r.line_attribute()) {
     std::vector<cv::Point> points_poly;
     for (auto& point : line.point()) {
-      points_poly.emplace_back(cv::Point{(int)(point.x() * image.cols),
-                                         (int)(point.y() * image.rows)});
+      points_poly.emplace_back(cv::Point{(int)(point.x() * ret.cols),
+                                         (int)(point.y() * ret.rows)});
     }
     int type = line.type() < 5 ? line.type() : 5;
-    if (type == 2 && points_poly[0].x < image.rows * 0.5) continue;
-    cv::polylines(image, points_poly, false,
+    if (type == 2 && points_poly[0].x < ret.rows * 0.5) continue;
+    cv::polylines(ret, points_poly, false,
                   cv::Scalar(color1[type], color2[type], color3[type]), 3,
                   cv::LINE_AA, 0);
   }

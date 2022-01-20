@@ -24,33 +24,36 @@ namespace vitis { namespace ai {
 class PointPillarsPre
 {
   public:
-    PointPillarsPre( int8_t* in_addr1, int in_scale1, int in_width1, int in_height1, int in_channel1,
-                    int8_t* out_addr1, float out_scale1, int out_width1, int out_height1, int out_channel1,
-                    int8_t* in_addr2, int in_scale2, int in_width2, int in_height2, int in_channel2
+    PointPillarsPre(std::vector<int8_t*>& in_addr1,  int in_scale1, int in_width1, int in_height1, int in_channel1,
+                    std::vector<int8_t*>& out_addr1, float out_scale1, int out_width1, int out_height1, int out_channel1,
+                    std::vector<int8_t*>& in_addr2,  int in_scale2, int in_width2, int in_height2, int in_channel2,
+                    int batchnum, int& realbatchnum
     );
     ~PointPillarsPre();
 
-    void process_net0(const float* points, int len);
-    void process_net1();
+    void process_net0(const float* points, int len, int batchidx);
+    void process_net1(int batchidx);
     void process_net1_cleanmem();
-    void process_net1_thread( int start, int len);
+    void process_net1_thread( int start, int len, int batchidx);
 
 
-    inline bool judge_op_same(int canvas_index, int idx);
-    void process_net0_thread(const float* points , int idx, int start, int len, int&);
+    inline bool judge_op_same(int canvas_index, int threadidx);
+    void process_net0_thread(const float* points , int idx, int start, int len, int&, int batchidx);
 
-    std::shared_ptr<preout_dict>   pre_dict_;
+    std::vector<std::shared_ptr<preout_dict>>   pre_dict_;
 
   private:
 
     std::array<int, 3> voxelmap_shape_;
     V1I coor_to_voxelidx;
-    int8_t *in_addr1_;
+
+    std::vector<int8_t*> in_addr1_;
+
     int in_scale1_;
     int in_height1_;
-    int8_t *out_addr1_;
+    std::vector<int8_t*> out_addr1_;
     float out_scale1_;
-    int8_t *in_addr2_;
+    std::vector<int8_t*> in_addr2_;
     int in_scale2_, in_width2_, in_height2_, in_channel2_;
     int cfg_max_number_of_points_per_voxel;
     V1F cfg_voxel_size;
@@ -60,8 +63,11 @@ class PointPillarsPre
     std::vector<std::thread> vth0;
     std::mutex mtx;
     int PRE_MT_NUM = 2;
+    int XLNX_POINTPILLARS_MIDDLE_MT = 2;
     int canvas_index_arr[8];
 
+    int batchnum = 0;
+    int& realbatchnum;
 
     std::array<float, 3> scale_pclen;
     std::array<float, 3> scale_pcstartlen;

@@ -64,5 +64,13 @@ bool HbmChunk::download(xir::DeviceMemory* dm, void* data, size_t offset,
   return ok;
 }
 
+std::unique_ptr<HbmManager> HbmManager::create(uint64_t from, uint64_t size,
+                                               uint64_t alignment) {
+  return HbmManager::create0(from, size, alignment);
+}
+std::unique_ptr<HbmManager> HbmManager::create(
+    const vart::dpu::chunk_def_t& def) {
+  return HbmManager::create0(def);
+}
 }  // namespace dpu
 }  // namespace vart

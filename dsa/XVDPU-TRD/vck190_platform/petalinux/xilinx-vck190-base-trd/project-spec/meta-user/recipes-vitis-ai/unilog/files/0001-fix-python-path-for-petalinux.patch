@@ -1,0 +1,28 @@
+From 0f40c10b8f4b2313d3d9fb61139b296f9500acb1 Mon Sep 17 00:00:00 2001
+From: Tianfang Meng <tianfang@xcdldmz190092.xilinx.com>
+Date: Thu, 20 May 2021 17:30:46 +0800
+Subject: [PATCH] fix python path for petalinux
+
+---
+ cmake/vai_add_pybind11_module.cmake | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/cmake/vai_add_pybind11_module.cmake b/cmake/vai_add_pybind11_module.cmake
+index e76c299..7696786 100644
+--- a/cmake/vai_add_pybind11_module.cmake
++++ b/cmake/vai_add_pybind11_module.cmake
+@@ -3,8 +3,9 @@ option(INSTALL_HOME "install python lib in cmake install path" OFF)
+ option(INSTALL_USER "install python lib in user space" OFF)
+ if(BUILD_PYTHON)
+   if(CMAKE_CROSSCOMPILING)
+-    find_package (Python3 REQUIRED COMPONENTS Interpreter Development)
+-    EXECUTE_PROCESS(COMMAND ${Python3_EXECUTABLE} -c "from sys import stdout; from distutils import sysconfig; import os;stdout.write(os.path.basename(os.path.dirname(sysconfig.get_python_lib())))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
++	  #    find_package (Python3 REQUIRED COMPONENTS Interpreter Development)
++    find_package (Python3 REQUIRED COMPONENTS Development)
++    #    EXECUTE_PROCESS(COMMAND ${Python3_EXECUTABLE} -c "from sys import stdout; from distutils import sysconfig; import os;stdout.write(os.path.basename(os.path.dirname(sysconfig.get_python_lib())))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
+     find_path(
+       _PYBIND11_PATH pybind11
+       HINTS
+-- 
+2.17.1
+

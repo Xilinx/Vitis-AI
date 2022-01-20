@@ -81,7 +81,7 @@ class MyPostProcessor {
   }
 
   vitis::ai::proto::DpuModelResult process(
-      const vart::experimental::simple_tensor_buffer_t<float>& tensor_buffer);
+      const vart::simple_tensor_buffer_t<float>& tensor_buffer);
 
  private:
   int width_;
@@ -234,7 +234,7 @@ static int getMinX(const vector<cv::Point>& points) {
 }
 
 vitis::ai::proto::DpuModelResult MyPostProcessor::process(
-    const vart::experimental::simple_tensor_buffer_t<float>& tensor_buffer) {
+    const vart::simple_tensor_buffer_t<float>& tensor_buffer) {
   auto base = tensor_buffer.data;
   auto input_shape = tensor_buffer.tensor->get_shape();
   CHECK_EQ(input_shape.size(), 4u);

@@ -26,15 +26,17 @@ namespace xf {
 namespace cv {
 
 template <int PLANES, int NPC, int DEPTH, int WIN_SZ, int WIN_SZ_SQ>
-void xFMedianProc(XF_PTUNAME(DEPTH) OutputValues[XF_NPIXPERCYCLE(NPC)],
-                  XF_PTUNAME(DEPTH) src_buf[WIN_SZ][XF_NPIXPERCYCLE(NPC) + (WIN_SZ - 1)],
+void xFMedianProc(XF_DTUNAME(DEPTH, NPC) OutputValues[XF_NPIXPERCYCLE(NPC)],
+                  XF_DTUNAME(DEPTH, NPC) src_buf[WIN_SZ][XF_NPIXPERCYCLE(NPC) + (WIN_SZ - 1)],
                   ap_uint<8> win_size) {
 // clang-format off
     #pragma HLS INLINE off
     // clang-format on
-    XF_PTUNAME(DEPTH) out_val;
-    XF_PTUNAME(DEPTH) array[WIN_SZ_SQ];
-    XF_PTUNAME(DEPTH) array_channel[WIN_SZ_SQ];
+    XF_DTUNAME(DEPTH, NPC) out_val;
+    XF_DTUNAME(DEPTH, NPC) array[WIN_SZ_SQ];
+    XF_DTUNAME(DEPTH, NPC) array_channel[WIN_SZ_SQ];
+
+    const int STEP = XF_DTPIXELDEPTH(DEPTH, NPC);
 // clang-format off
     #pragma HLS ARRAY_PARTITION variable=array complete dim=1
     // clang-format on
@@ -55,7 +57,7 @@ Compute_Grad_Loop:
             array_ptr++;
         }
     }
-    for (int channel = 0, k = 0; channel < PLANES; channel++, k += 8) {
+    for (int channel = 0, k = 0; channel < PLANES; channel++, k += STEP) {
 // clang-format off
         #pragma HLS LOOP_TRIPCOUNT min=1 max=PLANES
         #pragma HLS UNROLL
@@ -65,7 +67,7 @@ Compute_Grad_Loop:
             #pragma HLS LOOP_TRIPCOUNT min=1 max=WIN_SZ_SQ
             #pragma HLS UNROLL
             // clang-format on
-            array_channel[p] = array[p].range(k + 7, k);
+            array_channel[p] = array[p].range(k + STEP - 1, k);
         }
 
     xFApplyMaskLoop:
@@ -87,7 +89,7 @@ Compute_Grad_Loop:
                     int c1 = (c + 1);
 
                     if (array_channel[c] < array_channel[c1]) {
-                        XF_PTUNAME(DEPTH) temp = array_channel[c];
+                        XF_DTUNAME(DEPTH, NPC) temp = array_channel[c];
                         array_channel[c] = array_channel[c1];
                         array_channel[c1] = temp;
                     }
@@ -104,7 +106,7 @@ Compute_Grad_Loop:
                     int c1 = (c + 1);
                     int c2 = (c + 2);
                     if (array_channel[c1] < array_channel[c2]) {
-                        XF_PTUNAME(DEPTH) temp = array_channel[c1];
+                        XF_DTUNAME(DEPTH, NPC) temp = array_channel[c1];
                         array_channel[c1] = array_channel[c2];
                         array_channel[c2] = temp;
                     }
@@ -112,7 +114,7 @@ Compute_Grad_Loop:
             }
         }
 
-        out_val.range(k + 7, k) = array_channel[(WIN_SZ_SQ) >> 1];
+        out_val.range(k + STEP - 1, k) = array_channel[(WIN_SZ_SQ) >> 1];
     }
 
     OutputValues[0] = out_val;
@@ -123,8 +125,8 @@ template <int ROWS, int COLS, int PLANES, int TYPE, int NPC, int WORDWIDTH, int 
 void ProcessMedianNxN(xf::cv::Mat<TYPE, ROWS, COLS, NPC>& _src_mat,
                       xf::cv::Mat<TYPE, ROWS, COLS, NPC>& _out_mat,
                       XF_TNAME(TYPE, NPC) buf[WIN_SZ][(COLS >> XF_BITSHIFT(NPC))],
-                      XF_PTUNAME(TYPE) src_buf[WIN_SZ][XF_NPIXPERCYCLE(NPC) + (WIN_SZ - 1)],
-                      XF_PTUNAME(TYPE) OutputValues[XF_NPIXPERCYCLE(NPC)],
+                      XF_DTUNAME(TYPE, NPC) src_buf[WIN_SZ][XF_NPIXPERCYCLE(NPC) + (WIN_SZ - 1)],
+                      XF_DTUNAME(TYPE, NPC) OutputValues[XF_NPIXPERCYCLE(NPC)],
                       XF_TNAME(TYPE, NPC) & P0,
                       uint16_t img_width,
                       uint16_t img_height,
@@ -193,8 +195,8 @@ Col_Loop:
                 }
             }
 
-            XF_PTUNAME(TYPE) src_buf_temp_copy[WIN_SZ][XF_NPIXPERCYCLE(NPC)];
-            XF_PTUNAME(TYPE) src_buf_temp_copy_extract[XF_NPIXPERCYCLE(NPC)];
+            XF_DTUNAME(TYPE, NPC) src_buf_temp_copy[WIN_SZ][XF_NPIXPERCYCLE(NPC)];
+            XF_DTUNAME(TYPE, NPC) src_buf_temp_copy_extract[XF_NPIXPERCYCLE(NPC)];
 
             for (int extract_px = 0; extract_px < WIN_SZ; extract_px++) {
 // clang-format off
@@ -245,7 +247,7 @@ Col_Loop:
                 }
             }
 
-            XF_PTUNAME(TYPE) src_buf_temp_med_apply[WIN_SZ][XF_NPIXPERCYCLE(NPC) + (WIN_SZ - 1)];
+            XF_DTUNAME(TYPE, NPC) src_buf_temp_med_apply[WIN_SZ][XF_NPIXPERCYCLE(NPC) + (WIN_SZ - 1)];
             for (int applymedian = 0; applymedian < npc; applymedian++) {
 // clang-format off
                 #pragma HLS UNROLL
@@ -255,7 +257,7 @@ Col_Loop:
                         src_buf_temp_med_apply[copyi][copyj] = src_buf[copyi][copyj + applymedian];
                     }
                 }
-                XF_PTUNAME(TYPE) OutputValues_percycle[XF_NPIXPERCYCLE(NPC)];
+                XF_DTUNAME(TYPE, NPC) OutputValues_percycle[XF_NPIXPERCYCLE(NPC)];
                 xFMedianProc<PLANES, NPC, TYPE, WIN_SZ, WIN_SZ_SQ>(OutputValues_percycle, src_buf_temp_med_apply,
                                                                    WIN_SZ);
                 OutputValues[applymedian] = OutputValues_percycle[0];
@@ -360,12 +362,12 @@ void xFMedianNxN(xf::cv::Mat<TYPE, ROWS, COLS, NPC>& _src,
 
     uint16_t shift_x = 0;
     ap_uint<13> row, col;
-    XF_PTUNAME(TYPE) OutputValues[XF_NPIXPERCYCLE(NPC)];
+    XF_DTUNAME(TYPE, NPC) OutputValues[XF_NPIXPERCYCLE(NPC)];
 // clang-format off
     #pragma HLS ARRAY_PARTITION variable=OutputValues complete dim=1
     // clang-format on
 
-    XF_PTUNAME(TYPE) src_buf[WIN_SZ][XF_NPIXPERCYCLE(NPC) + (WIN_SZ - 1)];
+    XF_DTUNAME(TYPE, NPC) src_buf[WIN_SZ][XF_NPIXPERCYCLE(NPC) + (WIN_SZ - 1)];
 // clang-format off
     #pragma HLS ARRAY_PARTITION variable=src_buf complete dim=1
     #pragma HLS ARRAY_PARTITION variable=src_buf complete dim=2

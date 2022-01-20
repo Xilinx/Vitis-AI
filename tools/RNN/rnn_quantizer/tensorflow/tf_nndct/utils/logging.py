@@ -116,14 +116,13 @@ def _log_prefix(level, timestamp=None, file_and_line=None):
     severity = _level_names[level][0]
 
   # TODO(yuwang): Format by environment variable.
-  s = '%c%02d%02d %02d:%02d:%02d.%06d %s:%d]' % (
+  s = '%c%02d%02d %02d:%02d:%02d %s:%d]' % (
       severity,
       now_tuple[1],  # month
       now_tuple[2],  # day
       now_tuple[3],  # hour
       now_tuple[4],  # min
       now_tuple[5],  # sec
-      now_microsecond,
       basename,
       line)
 

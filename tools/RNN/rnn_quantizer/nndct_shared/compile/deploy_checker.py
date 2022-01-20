@@ -22,7 +22,7 @@ import numpy as np
 import re
 from nndct_shared.nndct_graph import Graph
 from nndct_shared.quantization import quantize_data2int
-from nndct_shared.base import NNDCT_KEYS
+from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS, NNDCT_OP
 from nndct_shared import utils as nndct_utils
 from nndct_shared.utils import NndctScreenLogger
 
@@ -52,10 +52,19 @@ class DeployChecker(object):
 
   def _dump_floating_model(self, nndct_graph, enable_dump_weight, round_method, select_batch) -> NoReturn:
     for node in nndct_graph.nodes:
-      if not node.in_quant_part:
+      if node.has_custom_op():
+        # print('-------------------custom op---------------------')
+        self._dump_custom_op(node, round_method, select_batch)
         continue
+    
       if enable_dump_weight:
-        for _, param_tensor in node.op.params.items():
+        for param_type, param_tensor in node.op.params.items():
+          data = param_tensor.data
+          if node.op.type in [NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
+            data = np.flip(data.copy(), (1, 2, 3))
+          elif node.op.type in [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D] and param_type == node.op.ParamName.WEIGHTS:
+            data = np.flip(data.copy(), (1, 2))
+            
           self.dump_tensor_to_file(
               param_tensor.name,
               param_tensor.data,
@@ -72,18 +81,50 @@ class DeployChecker(object):
             tensor.data,
             select_batch=select_batch,
             round_method=round_method)
+        
+  def _dump_custom_op(self, node, round_method, select_batch) -> NoReturn:
+    for param_type, param_tensor in node.op.params.items():
+      data = param_tensor.data
+        
+      self.dump_tensor_to_file(
+          param_tensor.name,
+          param_tensor.data,
+          select_batch=False,
+          round_method=round_method)
+
+    for i, tensor in enumerate(node.out_tensors):
+      if i > 0:
+        break
+      self.dump_tensor_to_file(
+          node.name,
+          tensor.data,
+          select_batch=select_batch,
+          round_method=round_method)
+    
+    for i, tensor in enumerate(node.in_tensors):
+      if tensor.node:
+        self.dump_tensor_to_file(
+            tensor.node.name,
+            tensor.data,
+            select_batch=select_batch,
+            round_method=round_method)
 
   def _dump_fixed_model(self, nndct_graph, quant_configs, enable_dump_weight, round_method, select_batch) -> NoReturn:
       for node in nndct_graph.nodes:
         if not node.in_quant_part:
           continue
         if enable_dump_weight:
-          for _, param_tensor in node.op.params.items():
+          for param_type, param_tensor in node.op.params.items():
             if param_tensor.name in quant_configs['param']:
               bit_width, fix_point = quant_configs['param'][param_tensor.name]
+              data = param_tensor.data
+              if node.op.type in [NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
+                data = np.flip(data.copy(), (1, 2, 3))
+              elif node.op.type in [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D] and param_type == node.op.ParamName.WEIGHTS:
+                data = np.flip(data.copy(), (1, 2))
               self.dump_tensor_to_file(
                   param_tensor.name + NNDCT_KEYS.FIX_OP_SUFFIX,
-                  param_tensor.data,
+                  data,
                   bit_width,
                   fix_point,
                   select_batch=False,
@@ -91,6 +132,22 @@ class DeployChecker(object):
         if len(node.out_tensors) > 1:
           NndctScreenLogger().warning(f"Only dump first output of multi-output node:'{node.name}({node.op.type})'.")
         
+        if node.op.type == NNDCT_OP.QUANT_STUB:
+          for i, tensor in enumerate(node.out_tensors):
+            if i > 0:
+              break
+            if node.name not in quant_configs['output'].keys():
+              quantizer = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANTIZER)
+              end = quantizer.configer.quant_output(node).name
+              bit_width, fix_point = quant_configs['output'][end]
+              self.dump_tensor_to_file(
+                  node.name + NNDCT_KEYS.FIX_OP_SUFFIX,
+                  tensor.data,
+                  bit_width,
+                  fix_point,
+                  select_batch=select_batch,
+                  round_method=-1)
+
         if node.name in quant_configs['output']:
           for i, tensor in enumerate(node.out_tensors):
             if i > 0:
@@ -120,12 +177,11 @@ class DeployChecker(object):
       file_name = os.path.join(self._full_folder, "shape.txt")
       with open(file_name, "w") as file_obj:
         for node in nndct_graph.nodes:
-          if node.name in quant_configs['output']:
-            for tensor in node.out_tensors:
-              try:
-                file_obj.write("{}: {}\n".format(tensor.data.shape, node.name))
-              except AttributeError:
-                NndctScreenLogger().warning(f"{tensor.name} is not tensor.It's shape info is ignored.")
+          # if node.name in quant_configs['output']:
+          for tensor in node.out_tensors:
+            if tensor.shape is not None:
+              file_obj.write("{}: {}\n".format(tensor.shape, node.name))
+            
                   
   def dump_nodes_output(self, nndct_graph: Graph, quant_configs: NndctQuantInfo,
                         round_method: int, enable_dump_weight: bool = True, select_batch: bool = False) -> NoReturn:

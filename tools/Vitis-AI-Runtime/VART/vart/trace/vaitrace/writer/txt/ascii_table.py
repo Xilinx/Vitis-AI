@@ -16,15 +16,25 @@
 
 import sys
 
+
 def print_ascii_table(rows, saveTo=sys.stdout):
 
     output_ascii_table = saveTo
     headers = tuple(rows[0])
+    headers_width = len(headers)
 
     lens = []
 
     def str_len(_x):
         return len(str(_x))
+
+    for line in rows[1:]:
+        line_width = len(line)
+        if (line_width > headers_width):
+            line = line[0:headers_width]
+        if (line_width < headers_width):
+            len_diff = headers_width - line_width
+            line.extend(list(len_diff * '-'))
 
     for i in range(len(headers)):
         lens.append(

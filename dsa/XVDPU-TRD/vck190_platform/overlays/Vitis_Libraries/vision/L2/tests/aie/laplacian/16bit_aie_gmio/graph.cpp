@@ -47,18 +47,20 @@ auto float2fixed_coeff(float data[9]) {
 }
 
 #if defined(__AIESIM__) || defined(__X86SIM__)
-
+#include <common/xf_aie_utils.hpp>
 int main(int argc, char** argv) {
     int BLOCK_SIZE_in_Bytes = TILE_WINDOW_SIZE;
 
     int16_t* inputData = (int16_t*)GMIO::malloc(BLOCK_SIZE_in_Bytes);
     int16_t* outputData = (int16_t*)GMIO::malloc(BLOCK_SIZE_in_Bytes);
 
-    for (int i = 0; i < SMARTTILE_ELEMENTS; i++) inputData[i] = 0;
-    inputData[0] = TILE_WIDTH;
-    inputData[4] = TILE_HEIGHT;
-    for (int i = SMARTTILE_ELEMENTS; i < (BLOCK_SIZE_in_Bytes / sizeof(int16_t)); i++) {
-        inputData[i] = rand() % 256;
+    memset(inputData, 0, BLOCK_SIZE_in_Bytes);
+    xf::cv::aie::xfSetTileWidth(inputData, TILE_WIDTH);
+    xf::cv::aie::xfSetTileHeight(inputData, TILE_HEIGHT);
+
+    int16_t* dataIn = (int16_t*)xf::cv::aie::xfGetImgDataPtr(inputData);
+    for (int i = 0; i < TILE_ELEMENTS; i++) {
+        dataIn[i] = rand() % 256;
     }
 
     mygraph.init();
@@ -74,7 +76,8 @@ int main(int argc, char** argv) {
     int window[9];
     int acceptableError = 1;
     int errCount = 0;
-    for (int i = 0; i < TILE_HEIGHT * TILE_WIDTH; i++) {
+    int16_t* dataOut = (int16_t*)xf::cv::aie::xfGetImgDataPtr(outputData);
+    for (int i = 0; i < TILE_ELEMENTS; i++) {
         int row = i / TILE_WIDTH;
         int col = i % TILE_WIDTH;
         for (int j = -1; j <= 1; j++) {
@@ -83,12 +86,12 @@ int main(int argc, char** argv) {
                 int c = std::max(col + k, 0);
                 r = std::min(r, TILE_HEIGHT - 1);
                 c = std::min(c, TILE_WIDTH - 1);
-                window[(j + 1) * 3 + (k + 1)] = inputData[r * TILE_WIDTH + c + SMARTTILE_ELEMENTS];
+                window[(j + 1) * 3 + (k + 1)] = dataIn[r * TILE_WIDTH + c];
             }
         }
         float cValue = 0;
         for (int j = 0; j < 9; j++) cValue += window[j] * kData[j];
-        if (abs(cValue - outputData[i + SMARTTILE_ELEMENTS]) > acceptableError) {
+        if (abs(cValue - dataOut[i]) > acceptableError) {
             errCount++;
         }
     }
@@ -102,5 +105,4 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-
 #endif

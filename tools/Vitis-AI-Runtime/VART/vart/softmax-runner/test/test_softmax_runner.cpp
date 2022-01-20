@@ -66,11 +66,11 @@ static void compare(int cls, int group, signed char* input, float* output1,
       auto idx = g * cls + i;
       auto diff = output1[idx] - output2[idx];
       if (ENV_PARAM(DEBUG_TEST) || (diff != 0.0 && std::abs(diff) > 0.001)) {
-        cout << " i=" << i               //
-             << " g = " << g             //
-             << " idx = " << idx << " "  //
-             << (int)input[idx] << ": " << output1[idx] << " " << output2[idx]
-             << " " << diff << endl;
+        std::cout << " i=" << i               //
+                  << " g = " << g             //
+                  << " idx = " << idx << " "  //
+                  << (int)input[idx] << ": " << output1[idx] << " "
+                  << output2[idx] << " " << diff << std::endl;
       }
     }
   }
@@ -166,7 +166,7 @@ int main(int argc, char* argv[]) {
                                       << "; output_size: " << output_size;
 
   std::default_random_engine random(time(NULL));
-  std::uniform_int_distribution<int8_t> random_int8(0, 10);
+  std::uniform_int_distribution<int> random_int8(0, 10);
   for (auto i = 0; i < input_tensor_size; ++i) {
     // *((unsigned char*)input_addr + i) = random_int8(random);
     *((unsigned char*)input_addr + i) = i % 10 + 1;
@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
   auto cls = input_shape[2];
   auto fixpos = get_fix_pos(input_tensor);
   float scale = std::exp2f(-1.0f * (float)fixpos);
-  vector<float> output_c(cls * group);
+  std::vector<float> output_c(cls * group);
   LOG_IF(INFO, ENV_PARAM(DEBUG_TEST))
       << " fixpos=" << fixpos << " cls=" << cls << " group=" << group
       << " scale=" << scale;

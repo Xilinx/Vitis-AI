@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "ErrorCode.hpp"
-#include "UniLog.hpp"
+#include "UniLog/ErrorCode.hpp"
+#include "UniLog/UniLog.hpp"
 #include <exception>
 #include <iostream>
 

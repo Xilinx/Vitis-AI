@@ -12,7 +12,7 @@ REV ?= es1
 PLATFORM ?= vck190_mipiRxSingle_hdmiTx
 PFM ?= vck190_mipiRxSingle_hdmiTx
 
-VERSION ?= 202110_1
+VERSION ?= 202120_1
 
 PFM_DIR = xilinx_$(PLATFORM)_$(VERSION)
 PFM_PRJ_DIR = xsct/$(PLATFORM)/$(PLATFORM)/export/$(PLATFORM)
@@ -38,7 +38,7 @@ all: platform
 .PHONY: platform
 platform: $(PFM_XPFM)
 $(PFM_XPFM): $(VIV_XSA)
-	$(XSCT) -nodisp $(PFM_TCL) -xsa $(VIV_XSA)
+	$(XSCT) $(PFM_TCL) -xsa $(VIV_XSA)
 	@$(CP) $(PFM_PRJ_DIR) $(PFM_DIR)
 	@$(PFM_SCRIPTS_DIR)/pfm.sh $(PFM) $(PFM_DIR)
 	@echo 'Vitis platform available at $(PFM_DIR)'

@@ -1,0 +1,24 @@
+name: vitis-ai-tensorflow
+
+channels:
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - python=3.6
+  - vai_q_tensorflow
+  - keras
+  - pydot
+  - pyyaml
+  - jupyter
+  - ipywidgets
+  - dill
+  - progressbar2
+  - pytest
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - pillow
+  - vaic
+  - vart
+  - rt-engine

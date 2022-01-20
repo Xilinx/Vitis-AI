@@ -98,7 +98,7 @@ class Graph(GraphBase):
 
   def add_node(self, node: Node) -> None:
     if node.idx == -1:
-      node.idx = len(self._nodes_by_id)
+      node.idx = max([node.idx for node in self.nodes]) + 1
 
     if node.name in self._nodes_by_name or node.idx in self._nodes_by_id:
       raise ValueError("Node with same name {} or id {} has been added.".format(
@@ -132,15 +132,24 @@ class Graph(GraphBase):
       # refering the output tensor of B, which is B:0. Now we want to delete
       # node B and the directly set the output tensor of A to B:0, then there
       # is no need to update D's attribute.
+      # if len(parent.out_nodes) > 1:
+      #     return 
       tensorId2node = {}
       for i, tensor in enumerate(node.in_tensors):
         if tensor.is_param_tensor():
           continue
         index = tensor.node.out_tensors.index(tensor)
         node.out_tensors[i].name = tensor.name
+        old_out = tensor.node.out_tensors[index]
         tensor.node.out_tensors[index] = node.out_tensors[i]
         tensor.node.out_tensors[index].node = tensor.node
         tensorId2node[i] = tensor.node
+        for other in self.children(tensor.node):
+          if other is node:
+            continue
+          in_index = other.in_tensors.index(old_out)
+          other.in_tensors[in_index] = tensor.node.out_tensors[index]
+          
       children = self.children(node)
       if children:
         for cn in children:
@@ -188,8 +197,10 @@ class Graph(GraphBase):
     return conv_nodes
 
   def reconnect_nodes(self):
+    self._nodes_by_id.clear()
     for idx, node in enumerate(self.nodes):
       node.idx = idx
+      self._nodes_by_id[idx] = node
       node.clean_connections()
     self.connect_nodes()
 

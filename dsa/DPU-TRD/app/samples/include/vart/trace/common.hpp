@@ -23,11 +23,15 @@
 #include "vaitrace_dbg.hpp"
 
 namespace vitis::ai::trace {
-using namespace std;
-
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
+using std::map;
 using vai_trace_header_t = traceEventBase;
 using vai_trace_q_t = RingBuf<vai_trace_header_t>;
-using vai_trace_opt_t = pair<string, string>;
+using vai_trace_opt_t = std::pair<string, string>;
 using vai_trace_options_t = map<string, string>;
 
 class trace_controller {
@@ -43,7 +47,7 @@ class trace_controller {
   vector<trace_entry_t> infobase;
 
  private:
-  mutex infobase_lock;
+  std::mutex infobase_lock;
   string logger_file_path;
   string logger_dir_path;
   bool enabled;

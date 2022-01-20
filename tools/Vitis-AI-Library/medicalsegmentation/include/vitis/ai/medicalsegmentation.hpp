@@ -80,7 +80,7 @@ class MedicalSegmentation {
 
  public:
   /**
-   * @brief Function of get result of the MedicalSegmentation neuron network.
+   * @brief Function of get result of the MedicalSegmentation neural network.
    *
    * @param img Input data of input image (cv::Mat).
    *
@@ -90,7 +90,7 @@ class MedicalSegmentation {
   virtual vitis::ai::MedicalSegmentationResult run(const cv::Mat &img) = 0;
 
   /**
-   * @brief Function to get running results of the MedicalSegmentation neuron network in
+   * @brief Function to get running results of the MedicalSegmentation neural network in
    * batch mode.
    *
    * @param imgs Input data of input images (vector<cv::Mat>).The size of

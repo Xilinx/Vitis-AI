@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-#include "ErrorCode.hpp"
+#include "UniLog/ErrorCode.hpp"
+
 #include "ErrorCode.imp"
-#include "UniLog.hpp"
+#include "UniLog/UniLog.hpp"
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ios;
+using std::make_shared;
+using std::ofstream;
+using std::shared_ptr;
+using std::string;
 
 ErrorCode::ErrorCode(const ErrorCode &errCode) {
   errID_ = errCode.errID_;
@@ -38,7 +47,7 @@ ErrorCode &ErrorCode::operator<<(const string &errMsg) {
   return *this;
 }
 
-ostream &operator<<(ostream &os, ErrorCode &errCode) {
+std::ostream &operator<<(std::ostream &os, ErrorCode &errCode) {
   os << "[" << errCode.getErrID() << "]"
      << "[" << errCode.getErrDsp() << "]";
 #if defined(UNI_LOG_DEBUG_MODE)
@@ -46,6 +55,11 @@ ostream &operator<<(ostream &os, ErrorCode &errCode) {
 #endif
   os << "[" << errCode.getErrMsg() << "]";
   return os;
+}
+
+ErrorCodeFactory &ErrorCodeFactory::Instance() {
+  static ErrorCodeFactory instanceErrorCodeFactory{};
+  return instanceErrorCodeFactory;
 }
 
 void ErrorCodeFactory::registerErrorCode(
@@ -91,6 +105,6 @@ ErrorCodeRegister::ErrorCodeRegister(const string &errID, const string &errDsp,
       errID, make_shared<ErrorCode>(errID, errDsp, errDebugInfo));
 #else
   ErrorCodeFactory::Instance().registerErrorCode(
-      errID, make_shared<ErrorCode>(errID, errDsp));
+      errID, std::make_shared<ErrorCode>(errID, errDsp));
 #endif
 }

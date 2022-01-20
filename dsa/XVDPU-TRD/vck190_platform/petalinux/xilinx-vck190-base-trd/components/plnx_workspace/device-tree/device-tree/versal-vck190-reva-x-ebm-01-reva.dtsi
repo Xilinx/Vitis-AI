@@ -40,6 +40,9 @@
 &sdhci1 { /* PMC_MIO26-36/51 */
 	xlnx,mio-bank = <1>;
 	no-1-8-v;
+	sdhci-caps-mask = <0 0x200000>;
+	sdhci-caps = <0 0>;
+	max-frequency = <19000000>;
 };
 
 &gem0 { /* PMC_MIO_48, LPD_MIO0-11/24/25 */

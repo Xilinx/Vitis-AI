@@ -77,6 +77,9 @@ The following table lists the contents of the Vitis vision library.
 	|                                   | testbench, accel, config, Makefile|
 	|                                   | , Json file and a 'build' folder. |
 	+-----------------------------------+-----------------------------------+
+	| L1/include/aie                    | Contains the infrastructure       |
+	|                                   | headers and AIE kernel definitions|
+	+-----------------------------------+-----------------------------------+
 	| L1/include/common                 | Contains the common library       |
 	|                                   | infrastructure headers, such as   |
 	|                                   | types specific to the library.    |
@@ -115,6 +118,9 @@ The following table lists the contents of the Vitis vision library.
 	|                                   | varibales related to the particula|
 	|                                   | r example.                        |
 	+-----------------------------------+-----------------------------------+
+	| L1/lib/sw                         | Contains the AIE data-movers      |
+	|                                   | library object files              |
+	+-----------------------------------+-----------------------------------+
 	| L2/examples                       | Contains the sample testbench code|
 	|                                   | to facilitate running unit tests  |
 	|                                   | on Vitis. The examples/ contains  |
@@ -129,8 +135,18 @@ The following table lists the contents of the Vitis vision library.
 	|                                   | ains folders with algorithm names.|
 	|                                   | Each algorithm folder further cont|
 	|                                   | ains configuration folders, that  |
-	|                                   | has makefile and tcl files to run |
-	|                                   | tests.                            |
+	|                                   | has makefile and config files to  |
+	|                                   | run PL tests.                     |
+	+-----------------------------------+-----------------------------------+
+	| L2/tests/aie                      | Contains all test folders to run  |
+	|                                   | x86 simulation, hardware emulation|
+	|                                   | and hardware build. The tests cont|
+	|                                   | ains folders with algorithm names.|
+	|                                   | Each algorithm folder further cont|
+	|                                   | ains configuration folders, that  |
+	|                                   | has makefile, testbench, config   |
+	|                                   | and other required files to run   |
+	|                                   | the AIE tests                     |
 	+-----------------------------------+-----------------------------------+
 	| L2/examples/build                 | Contains xf_config_params.h file, |
 	|                                   | which has configurable macros and |

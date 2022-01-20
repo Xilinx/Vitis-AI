@@ -1,0 +1,9 @@
+name: vitis-ai-optimizer_darknet
+
+channels:
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - python=3.6
+  - vai_optimizer_darknet_gpu

@@ -28,11 +28,17 @@ We use the [Librispeech  dev clean dataset](http://www.openslr.org/resources/12/
 wget http://www.openslr.org/resources/12/dev-clean.tar.gz 
 ```
 
+Download the xclbin file
+```shell
+wget https://www.xilinx.com/bin/public/openDownload?filename=dpu4rnn_vck5000_xclbin.tar.gz
+```
+Then decompress the file and copy file 'xvrnn.hw.xclbin' to the xclbin directory: DPU-for-RNN/rnnt_asr_vck5000/xclbin/.
+
 ## Start Docker and activate the conda environment
 
 ```shell
 sh scripts/docker_run.sh
-conda activate rnn-pytorch-1.4
+conda activate rnn-pytorch-1.7.1
 ```
 
 ## Test dataset preparation

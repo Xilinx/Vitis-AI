@@ -47,7 +47,7 @@ static std::vector<std::unique_ptr<xir::BufferObject>> create_bo(
 TensorBufferExtImpHostPhy::TensorBufferExtImpHostPhy(
     const xir::Tensor* tensor, location_t location, size_t device_id,
     const std::string& cu_name, std::shared_ptr<std::vector<char>> content)
-    : TensorBuffer(xir::Tensor::clone(tensor).release()),
+    : TensorBufferExt(xir::Tensor::clone(tensor).release()),
       location_{location},
       tensor_{
           std::unique_ptr<xir::Tensor>(const_cast<xir::Tensor*>(get_tensor()))},
@@ -137,6 +137,15 @@ void TensorBufferExtImpHostPhy::copy_to_host(size_t batch_idx, void* buf,
                                              size_t size, size_t offset) {
   CHECK_LT(batch_idx, buffer_objects_.size());
   buffer_objects_[batch_idx]->copy_to_host(buf, size, offset);
+}
+
+XclBo TensorBufferExtImpHostPhy::get_xcl_bo(int batch_index) const {
+  auto ret = XclBo{nullptr, 0u};
+  CHECK_LT(batch_index, (int)buffer_objects_.size());
+  auto bo = buffer_objects_[batch_index]->get_xcl_bo();
+  ret.xcl_handle = bo.xcl_handle;
+  ret.bo_handle = bo.bo_handle;
+  return ret;
 }
 
 }  // namespace dpu

@@ -1,1 +1,0 @@
-../../../rst_L1/namespace_xf.rst

@@ -319,29 +319,71 @@ void NormalizeInputDataRGB(const uint8_t* input, int rows, int cols,
                            int channels, int stride,
                            const std::vector<float>& mean,
                            const std::vector<float>& scale, int8_t* data) {
+  if (ENV_PARAM(XLNX_ENABLE_ROUND_SETINPUT) == 1) {
+    GLOBAL_ENABLE_ROUND_SETINPUT = 1;
+  }
 #ifndef ENABLE_NEON
   for (auto h = 0; h < rows; ++h) {
     for (auto w = 0; w < cols; ++w) {
       for (auto c = 0; c < channels; ++c) {
-        auto value =
+        // Warning : Only support channels = 3
+        // HarDNet-MSEG model failed to compare golden data, adjust this
+        // to rounding
+        // The code in the comment will bring performance loss, do not use
+        // round when publishing
+        // auto value = (int)round(
+        //    (input[h * stride + w * channels + c] * 1.0f - mean[c]) *
+        //    scale[c]);
+        // value = std::max(-128, value);
+        // value = std::min(127, value);
+        int value = 0;
+        if (GLOBAL_ENABLE_ROUND_SETINPUT != 0) {
+          value =
+            (int)std::round(((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
+                  scale[c])); 
+        } else {
+          value =
             (int)((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
                   scale[c]);
-        // Warning : Only support channels = 3
+        }
         data[h * cols * channels + w * channels + abs(c - 2)] = (char)value;
       }
     }
   }
 #else
-  std::vector<int> scale_int;
-  if (!ENV_PARAM(USING_OLD_NEON) && cols >= 16 &&
-      calc_scale(scale, scale_int)) {
-    transform_mean_scale(cols, rows, input, data, mean, scale_int, false);
-  } else {
-    for (auto i = 0; i < rows; ++i) {
-      transform_rgb(cols, 1, const_cast<uint8_t*>(input) + i * stride,
+  if (GLOBAL_ENABLE_ROUND_SETINPUT == 0) {
+    std::vector<int> scale_int;
+    if (!ENV_PARAM(USING_OLD_NEON) && cols >= 16 &&
+        calc_scale(scale, scale_int)) {
+        transform_mean_scale(cols, rows, input, data, mean, scale_int, false);
+    } else {
+      for (auto i = 0; i < rows; ++i) {
+        transform_rgb(cols, 1, const_cast<uint8_t*>(input) + i * stride,
                     data + i * cols * 3, mean[0], scale[0], mean[1], scale[1],
                     mean[2], scale[2]);
+      }
     }
+  } else {
+    for (auto h = 0; h < rows; ++h) {
+      for (auto w = 0; w < cols; ++w) {
+        for (auto c = 0; c < channels; ++c) {
+          // Warning : Only support channels = 3
+          // HarDNet-MSEG model failed to compare golden data, adjust this
+          // to rounding
+          // The code in the comment will bring performance loss, do not use
+          // round when publishing
+          // auto value = (int)round(
+          //    (input[h * stride + w * channels + c] * 1.0f - mean[c]) *
+          //    scale[c]);
+          // value = std::max(-128, value);
+          // value = std::min(127, value);
+          auto value =
+              (int)std::round(((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
+                    scale[c])); 
+          data[h * cols * channels + w * channels + abs(c - 2)] = (char)value;
+        }
+      }
+    } 
   }
 #endif
 }

@@ -44,7 +44,7 @@ struct ReidResult {
 };
 
 /**
- * @brief Post-process of the reid neuron network.
+ * @brief Post-process of the reid neural network.
  * @param input_tensors A vector of all input-tensors in the network.
  *   Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.
@@ -59,7 +59,7 @@ ReidResult reid_post_process(
         output_tensors,
     const vitis::ai::proto::DpuModelParam& config, size_t batch_idx);
 /**
- * @brief Post-process of the reid neuron network in batch mode.
+ * @brief Post-process of the reid neural network in batch mode.
  * @param input_tensors A vector of all input-tensors in the network.
  *   Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.

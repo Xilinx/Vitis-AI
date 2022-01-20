@@ -1,0 +1,192 @@
+#include <dt-bindings/media/xilinx-vip.h>
+
+/ {
+	amba_pl: amba_pl@0 {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		compatible = "simple-bus";
+		ranges ;
+
+		axi_iic_0_sensor: i2c@a4070000 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			compatible = "xlnx,axi-iic-2.0", "xlnx,xps-iic-2.00.a";
+		        interrupt-names = "iic2intc_irpt";
+			interrupt-parent = <&gic>;
+			interrupts = <0 91 4>;
+			reg = <0x0 0xa4070000 0x0 0x10000>;
+		        clock-names = "s_axi_aclk";
+			clocks = <&misc_clk_4>;
+
+			imx274: sensor@1a{
+				compatible = "sony,imx274";
+				reg = <0x1a>;
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reset-gpios = <&gpio0 30 0>;
+
+				port@0 {
+					reg = <0>;
+
+					sensor_out: endpoint {
+						remote-endpoint = <&csiss_in>;
+					};
+				};
+			};
+		};
+
+		csiss_1: csiss@a4060000 {
+			compatible = "xlnx,mipi-csi2-rx-subsystem-5.0";
+			reg = <0x0 0xa4060000 0x0 0x10000>;
+			clock-names = "lite_aclk", "dphy_clk_200M", "video_aclk";
+			clocks = <&misc_clk_4>, <&misc_clk_5>, <&misc_clk_0>;
+			interrupt-parent = <&gic>;
+			interrupts = <0 90 4>;
+
+			xlnx,csi-pxl-format = "RAW10";
+			xlnx,axis-tdata-width = <0x20>;
+			xlnx,max-lanes = <0x4>;
+			xlnx,en-active-lanes;
+			xlnx,vc = <0x4>;
+			xlnx,ppc = <0x4>;
+			xlnx,vfb;
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				port@0 {
+					reg = <0>;
+
+					xlnx,video-format = <XVIP_VF_MONO_SENSOR>;
+					xlnx,video-width = <8>;
+					xlnx,cfa-pattern = "rggb";
+
+					csiss_out: endpoint {
+						remote-endpoint = <&demosaic_in>;
+					};
+				};
+				port@1 {
+					reg = <1>;
+
+					xlnx,video-format = <XVIP_VF_MONO_SENSOR>;
+					xlnx,video-width = <8>;
+					xlnx,cfa-pattern = "rggb";
+
+					csiss_in: endpoint {
+						data-lanes = <1 2 3 4>;
+						remote-endpoint = <&sensor_out>;
+					};
+				};
+			};
+		};
+
+		v_demosaic_0: v_demosaic@a40c0000 {
+			compatible = "xlnx,v-demosaic";
+			reg = <0x0 0xa40c0000 0x0 0x10000>;
+			clocks = <&misc_clk_0>;
+			reset-gpios = <&gpio0 27 1>;
+			xlnx,max-width = <3840>;
+			xlnx,max-height = <2160>;
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				port@0 {
+					reg = <0>;
+
+					xlnx,video-width = <8>;
+					xlnx,cfa-pattern = "rggb";
+
+					demosaic_in: endpoint {
+						remote-endpoint = <&csiss_out>;
+					};
+				};
+
+				port@1 {
+					reg = <1>;
+
+					xlnx,video-width = <8>;
+
+					demosaic_out: endpoint {
+						remote-endpoint = <&scaler_in>;
+					};
+				};
+			};
+		};
+
+		scaler_1: scaler@a4080000 {
+			compatible = "xlnx,v-vpss-scaler-2.2";
+			reg = <0x0 0xa4080000 0x0 0x40000>;
+			clock-names = "aclk_axis", "aclk_ctrl";
+			clocks = <&misc_clk_0>, <&misc_clk_0>;
+			xlnx,num-hori-taps = <6>;
+			xlnx,num-vert-taps = <6>;
+			xlnx,pix-per-clk = <4>;
+			reset-gpios = <&gpio0 28 1>;
+			xlnx,max-width = <3840>;
+			xlnx,max-height = <2160>;
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				port@0 {
+					reg = <0>;
+					xlnx,video-format = <XVIP_VF_RBG>;
+					xlnx,video-width = <8>;
+
+					scaler_in: endpoint {
+						remote-endpoint = <&demosaic_out>;
+					};
+				};
+				port@1 {
+					reg = <1>;
+					xlnx,video-format = <XVIP_VF_YUV_422>;
+					xlnx,video-width = <8>;
+
+					scaler_out: endpoint {
+						remote-endpoint = <&vcap_csi_in>;
+					};
+				};
+			};
+		};
+
+		fb_wr_csi: fb_wr@a40d0000 {
+			compatible = "xlnx,axi-frmbuf-wr-v2.1";
+			reg = <0x0 0xa40d0000 0x0 0x10000>;
+			#dma-cells = <1>;
+			interrupt-parent = <&gic>;
+			interrupts = <0 92 4>;
+			xlnx,vid-formats = "yuyv", "bgr888";
+			reset-gpios = <&gpio0 29 1>;
+			xlnx,dma-addr-width = <64>;
+			xlnx,pixels-per-clock = <4>;
+			xlnx,max-width = <3840>;
+			xlnx,max-height = <2160>;
+			clocks = <&misc_clk_0>;
+			clock-names = "ap_clk";
+		};
+
+		vcap_csi {
+			compatible = "xlnx,video";
+			dmas = <&fb_wr_csi 0>;
+			dma-names = "port0";
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				port@0 {
+					reg = <0>;
+					direction = "input";
+
+					vcap_csi_in: endpoint {
+						remote-endpoint = <&scaler_out>;
+					};
+				};
+			};
+		};
+	};
+};

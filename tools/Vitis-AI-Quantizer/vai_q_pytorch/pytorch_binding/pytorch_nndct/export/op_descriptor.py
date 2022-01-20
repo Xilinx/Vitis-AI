@@ -178,43 +178,98 @@ class OpDescriptor(object):
     return "{output}[{symbols}] = {input_tensor}".format(
         output=destination_str,
         input_tensor=source_str, symbols=indices_symbol)  
-    
+   
+  #@staticmethod
+  #def loop(ctx, node, output_str):
+  #  loop_pattern = None
+  #  if node.node_config("is_while_loop"):
+  #    raise NotImplementedError()
+  #  else:
+  #    loop_pattern = CodeTemplate("""$loop_outputs = $loop_vars
+  #      for $iter_var in range(0, $max_trip_count):
+  #          $block_inputs = $loop_outputs
+  #          $body
+  #          $loop_outputs = $body_ret
+  #    """)
+  #  loop_outputs = output_str
+  #  loop_vars = node.node_config("initial_loop_vars")
+  #  assert len(loop_vars) == len(ctx._get_module_output(node))
+  #  
+  #  def loop_var_to_str(var):
+  #    if isinstance(var, list):
+  #      start_str = '['
+  #      end_str = ']'
+  #      var_lst = []
+  #      for ele in var:
+  #        var_lst.append(loop_var_to_str(ele))
+  #      return start_str + ",".join(var_lst) + end_str
+  #    else:
+  #      return ctx.get_output_tensor_name(var)
+  #  
+  #  loop_vars_str = ",".join([loop_var_to_str(var) for var in loop_vars]) 
+  #    
+  #  body_str = ""
+  #  block_inputs_idx = 0
+  #  iter_var_str = ''
+  #  block_inputs = []
+  #  max_trip_count = node.node_config("max_trip_count")
+  #  if isinstance(max_trip_count, Tensor):
+  #    max_trip_count = ctx.get_output_tensor_name(max_trip_count) 
+  #      
+  #  for inner_node in node.blocks[0].nodes:
+  #    if inner_node.op.type == NNDCT_OP.INPUT:
+  #      output_str = ctx._to_list_str(ctx._get_module_output(inner_node))
+  #      if block_inputs_idx == 0:
+  #        iter_var_str = output_str
+  #      else:
+  #        if isinstance(ctx._get_module_output(inner_node), list) and len(ctx._get_module_output(inner_node)) > 1:
+  #          output_str = f"({output_str})"
+  #        block_inputs.append(output_str)
+  #      block_inputs_idx += 1
+  #    else:
+  #      forward_str, output_str = ctx._get_forward_str(inner_node)
+  #      body_str += forward_str + '\n'
+  #      
+  #  block_inputs_str = ",".join(block_inputs)
+  #  
+  #  def get_ret_val_str(ret_val):
+  #    if isinstance(ret_val, list):
+  #      ret_val_str = ""
+  #      head_str = "["
+  #      tail_str = "]"
+  #      for val in ret_val:
+  #        ret_val_str += get_ret_val_str(val) + ","
+  #      return head_str + ret_val_str + tail_str
+  #    elif isinstance(ret_val, Tensor):
+  #      return ctx.get_output_tensor_name(ret_val)
+  #    
+  #  body_ret_str = ",".join([get_ret_val_str(ret_val) for ret_val in node.blocks[0].return_struct[1:]])
+
+  #  
+  #  return loop_pattern.substitute(loop_outputs=loop_outputs, 
+  #                                 loop_vars=loop_vars_str, 
+  #                                 iter_var=iter_var_str,
+  #                                 max_trip_count=max_trip_count,
+  #                                 block_inputs=block_inputs_str,
+  #                                 body=body_str,
+  #                                 body_ret=body_ret_str)
+  
   @staticmethod
   def loop(ctx, node, output_str):
-    loop_pattern = None
-    if node.node_config("is_while_loop"):
-      raise NotImplementedError()
-    else:
-      loop_pattern = CodeTemplate("""$loop_outputs = $loop_vars
-        for $iter_var in range(0, $max_trip_count):
-            $block_inputs = $loop_outputs
-            $body
-            $loop_outputs = $body_ret
-      """)
+   
     loop_outputs = output_str
     loop_vars = node.node_config("initial_loop_vars")
+    loop_vars_str = ctx.infer_attr_value(loop_vars[0] if len(loop_vars) == 1 else loop_vars)
     assert len(loop_vars) == len(ctx._get_module_output(node))
-    
-    def loop_var_to_str(var):
-      if isinstance(var, list):
-        start_str = '['
-        end_str = ']'
-        var_lst = []
-        for ele in var:
-          var_lst.append(loop_var_to_str(ele))
-        return start_str + ",".join(var_lst) + end_str
-      else:
-        return ctx.get_output_tensor_name(var)
-    
-    loop_vars_str = ",".join([loop_var_to_str(var) for var in loop_vars]) 
+    init_condition_str = ctx.infer_attr_value(node.node_config("initial_condition"))
       
     body_str = ""
     block_inputs_idx = 0
     iter_var_str = ''
     block_inputs = []
+    iter_start_str = str(0)
     max_trip_count = node.node_config("max_trip_count")
-    if isinstance(max_trip_count, Tensor):
-      max_trip_count = ctx.get_output_tensor_name(max_trip_count) 
+    max_trip_count_str = ctx.infer_attr_value(max_trip_count)
         
     for inner_node in node.blocks[0].nodes:
       if inner_node.op.type == NNDCT_OP.INPUT:
@@ -226,34 +281,55 @@ class OpDescriptor(object):
             output_str = f"({output_str})"
           block_inputs.append(output_str)
         block_inputs_idx += 1
+      elif inner_node.op.type == NNDCT_OP.DERIVE_LOOP_INDEX:
+        iter_start_str = str(inner_node.node_config("start"))
+        output_str = ctx._to_list_str(ctx._get_module_output(inner_node))
+        iter_var_str = output_str
       else:
+        
         forward_str, output_str = ctx._get_forward_str(inner_node)
         body_str += forward_str + '\n'
         
     block_inputs_str = ",".join(block_inputs)
     
-    def get_ret_val_str(ret_val):
-      if isinstance(ret_val, list):
-        ret_val_str = ""
-        head_str = "["
-        tail_str = "]"
-        for val in ret_val:
-          ret_val_str += get_ret_val_str(val) + ","
-        return head_str + ret_val_str + tail_str
-      elif isinstance(ret_val, Tensor):
-        return ctx.get_output_tensor_name(ret_val)
+    body_ret_str = ",".join([ctx.infer_attr_value(ret_val) for ret_val in node.blocks[0].return_struct[1:]])
+    iter_end_str = "+".join([max_trip_count_str, iter_start_str])
+    iter_conditon_str = ctx.infer_attr_value(node.blocks[0].return_struct[0])
+    loop_pattern = None
+    if node.node_config("is_while_loop"):
       
-    body_ret_str = ",".join([get_ret_val_str(ret_val) for ret_val in node.blocks[0].return_struct[1:]])
-
-    
-    return loop_pattern.substitute(loop_outputs=loop_outputs, 
-                                   loop_vars=loop_vars_str, 
-                                   iter_var=iter_var_str,
-                                   max_trip_count=max_trip_count,
-                                   block_inputs=block_inputs_str,
-                                   body=body_str,
-                                   body_ret=body_ret_str)
-    
+      loop_pattern = CodeTemplate("""\
+$loop_outputs = $loop_vars
+condition = $initial_condition
+while condition:
+    $block_inputs = $loop_outputs
+    $body
+    $loop_outputs = $body_ret
+    condition = $iter_condition
+      """)
+      return loop_pattern.substitute(loop_outputs=loop_outputs, 
+                                     loop_vars=loop_vars_str,
+                                     initial_condition=init_condition_str,
+                                     block_inputs=block_inputs_str,
+                                     body = body_str,
+                                     body_ret = body_ret_str,
+                                     iter_condition=iter_conditon_str)
+    else:
+      loop_pattern = CodeTemplate("""\
+$loop_outputs = $loop_vars
+for $iter_var in range($iter_start, $iter_end):
+    $block_inputs = $loop_outputs
+    $body
+    $loop_outputs = $body_ret
+  """)
+      return loop_pattern.substitute(loop_outputs=loop_outputs, 
+                                    loop_vars=loop_vars_str, 
+                                    iter_var=iter_var_str,
+                                    iter_start=iter_start_str,
+                                    iter_end=iter_end_str,
+                                    block_inputs=block_inputs_str,
+                                    body=body_str,
+                                    body_ret=body_ret_str)
   @staticmethod
   def list_add(ctx, node, output_str):
     inputs = node.node_config("input")
@@ -287,6 +363,102 @@ class OpDescriptor(object):
     return f"{output_str} = {ctx.get_output_tensor_name(inputs)} // {ctx.get_output_tensor_name(others)}"
   
   @staticmethod
+  def sequence_unpack(ctx, node, output_str):
+    if len(node.out_tensors) == 1:
+      return f"{output_str}, = {ctx._to_list_str(ctx._get_module_input(node))}"
+    else:
+      return f"{output_str} = {ctx._to_list_str(ctx._get_module_input(node))}"
+
+
+  @staticmethod
+  def slice(ctx, node, output_str):
+    start = node.node_config('start')
+    end = node.node_config('end')
+    step = node.node_config('step')
+    dim = node.node_config('dim')
+    break_symbol = ':'
+    symbols = ""
+    starts = []
+    ends = []
+    steps = []
+    
+    for i in range(dim + 1):
+      if i != dim:
+        starts.append(str(0))
+        ends.append(str(NNDCT_CONSTANT.INT_MAX))
+        steps.append(str(1))
+      else:
+        starts.append(ctx.infer_attr_value(start))
+        ends.append(ctx.infer_attr_value(end))
+        steps.append(ctx.infer_attr_value(step))
+        
+    for i in range(dim + 1):
+      slice_symbol = break_symbol.join([starts[i], ends[i], steps[i]])
+      if i > 0:
+        symbols += "," + slice_symbol
+      else:
+        symbols = slice_symbol
+
+    input_str = ctx.infer_attr_value(node.node_config("input"))
+    return "{output} = {input_tensor}[{symbols}]".format(
+      output=output_str,
+      input_tensor=input_str,
+      symbols=symbols)
+  
+  @staticmethod
+  def length(ctx, node, output_str):
+    return "{output} = len({input})".format(output=output_str, input=ctx._to_list_str(ctx._get_module_input(node)))
+  
+  
+  @staticmethod
+  def If(ctx, node, output_str):
+    if_pattern = CodeTemplate("""\
+if ($condition):
+    $block_0_body
+    $if_out = $ret_0
+else:
+    $block_1_body
+    $if_out = $ret_1
+    """)
+    if_out_str = output_str
+    condition_str = ctx.infer_attr_value(node.node_config("condition"))
+    assert len(node.blocks) == 2
+    blocks = [""] * 2
+    block_ret = [""] * 2
+    for i, block in enumerate(node.blocks):
+      for inner_node in block.nodes:
+        forward_str, output_str = ctx._get_forward_str(inner_node)
+        blocks[i] += forward_str + '\n'
+      
+      block_ret[i] = ",".join([ctx.infer_attr_value(ret_val) for ret_val in block.return_struct])
+
+    block_0_body, block_1_body = blocks
+    ret_0_str, ret_1_str = block_ret
+    return if_pattern.substitute(condition=condition_str, 
+                                 block_0_body=block_0_body, 
+                                 block_1_body=block_1_body,
+                                 if_out=if_out_str,
+                                 ret_0=ret_0_str,
+                                 ret_1=ret_1_str 
+                                 )
+    
+    
+    
+    
+  @staticmethod
+  def lt(ctx, node, output_str):
+    input_str = ctx.infer_attr_value(node.node_config("input"))
+    other_str = ctx.infer_attr_value(node.node_config("other"))
+    return "{output} = {input} < {other}".format(output=output_str, input=input_str, other=other_str)
+     
+  
+  @staticmethod
+  def eq(ctx, node, output_str):
+    input_str = ctx.infer_attr_value(node.node_config("input"))
+    other_str = ctx.infer_attr_value(node.node_config("other"))
+    return "{output} = {input} == {other}".format(output=output_str, input=input_str, other=other_str)
+
+  @staticmethod
   def default(ctx, node, output_str):
     return "{output} = {op_name}({inputs})".format(
         output=output_str,
@@ -306,4 +478,10 @@ MISC_OP_DISCR_MAP = {
     NNDCT_OP.LOOP: OpDescriptor.loop,
     NNDCT_OP.LIST_ADD: OpDescriptor.list_add,
     NNDCT_OP.FLOOR_DIV: OpDescriptor.floor_div,
+    NNDCT_OP.TUPLE_UNPACK: OpDescriptor.sequence_unpack,
+    NNDCT_OP.SLICE: OpDescriptor.slice,
+    NNDCT_OP.LENGTH: OpDescriptor.length,
+    NNDCT_OP.IF: OpDescriptor.If,
+    NNDCT_OP.SCALAR_LESS_THAN: OpDescriptor.lt,
+    NNDCT_OP.SCALAR_EQUAL: OpDescriptor.eq
 }

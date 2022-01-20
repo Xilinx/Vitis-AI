@@ -39,8 +39,54 @@ echo "---------------------"
 echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
 echo "---------------------"
 
-export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCVDX8H/8pe
-export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/8pe/dpu_DPUCVDX8H_8PE350_xilinx_vck5000-es1_gen3x16_base_2.xclbin
+PLATFORMS="vck5000_" 
+find_card="false"
+
+for platform in ${PLATFORMS};
+do
+xbutil examine | grep ${platform}
+if [ $? -eq 0 ]; then
+  echo "${platform} card detected"
+  find_card="true"
+  break
+fi
+done
+
+case $1 in
+
+  DPUCVDX8H | dpuv4e)
+    if [ "${platform}" = "vck5000_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCVDX8H/8pe
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/8pe/dpu_DPUCVDX8H_8PE350M_xilinx_vck5000_gen3x16_xdma_base_1.xclbin
+    else
+      export XCLBIN_PATH=
+      export XLNX_VART_FIRMWARE=
+    fi
+    ;;
+
+  DPUCVDX8H-DWC | dpuv4e-dwc)
+    if [ "${platform}" = "vck5000_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCVDX8H/6pedwc
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/6pedwc/dpu_DPUCVDX8H_DWC_6PE350_xilinx_vck5000_gen3x16_xdma_base_1.xclbin
+    else
+      export XCLBIN_PATH=
+      export XLNX_VART_FIRMWARE=
+    fi
+    ;;
+
+  *)
+    echo "Invalid argument $1!!!!"
+    echo "Please choose to use the following command:"
+    echo "    source ./setup.sh DPUCVDX8H"
+    echo "    source ./setup.sh DPUCVDX8H-DWC"
+    ;;
+esac
+
+if [ "${find_card}" = "false" ]; then
+  echo "Error: Can't find the supported xilinx Visual card"
+  export XCLBIN_PATH=
+  export XLNX_VART_FIRMWARE=
+fi
 
 echo "---------------------"
 echo "XCLBIN_PATH = $XCLBIN_PATH"

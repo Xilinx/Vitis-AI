@@ -134,6 +134,16 @@ Status InferenceShape(const GraphDef& input_graph_def,
 Status ConvertMeanToAvgpool(const GraphDef& input_graph_def,
                             GraphDef* output_graph_def);
 
+// Add 6*2371/2**14 for hard sigmoid, hard_sigmoid --> hard_sigmoid * scale
+Status ConvertMeanToAvgpool(const GraphDef& input_graph_def,
+                            GraphDef* output_graph_def);
+
+// convert hard swish pattern from
+// add + relu6 + mul_x + mul_1/6 into hard_sigmoid + mul_x
+// i.e (add + relu6 + mul_1/6) + mul_x
+Status AdjustHardSwishComputeOrder(const GraphDef& input_graph_def,
+                                  GraphDef* output_graph_def);
+
 // Convert the graph to simulate DPU behaviour, such as avgpooling and leakyrelu
 Status SimulateDPU(const GraphDef& input_graph_def, GraphDef* output_graph_def,
                    const int scale_all_avgpool);

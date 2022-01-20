@@ -51,6 +51,7 @@ class BaseQuantizer():
       self.bias_corr = {}
     self.bias_corr_file = '/'.join([output_dir, 'bias_corr.pth'])
     self.param_file = '/'.join([output_dir, 'param.pth'])
+    self.keep_fp = False
 
   @classmethod
   def create_from_strategy(cls, quant_mode, output_dir, quant_strategy):

@@ -97,17 +97,20 @@ static void fillin_input(const std::string refdir, vart::TensorBuffer* tb) {
   auto data = vart::get_tensor_buffer_data(tb, 0u);
   CHECK_EQ(data.size, tb->get_tensor()->get_data_size())
       << "must be continous tensor buffer";
-  auto filename = refdir + "/" +
-                  replace(xir::remove_xfix(tb->get_tensor()->get_name())) +
-                  ".bin";
   auto batch = tb->get_tensor()->get_shape()[0];
-  // only support single batch.
-  CHECK(
-      std::ifstream(filename).read((char*)data.data, data.size / batch).good())
-      << "fail to read! filename=" << filename
-      << ";tensor=" << tb->get_tensor()->get_name() << endl;
-  LOG(INFO) << "read " << filename << " to " << data.data
-            << " size=" << data.size;
+  for (auto b = 0; b < batch; ++b) {
+    auto filename = refdir + "/" +
+                    replace(xir::remove_xfix(tb->get_tensor()->get_name())) +
+                    "_" + std::to_string(b) + ".bin";
+    auto size_per_batch = data.size / batch;
+    CHECK(std::ifstream(filename)
+              .read((char*)data.data + size_per_batch * b, size_per_batch)
+              .good())
+        << "fail to read! filename=" << filename
+        << ";tensor=" << tb->get_tensor()->get_name() << std::endl;
+    LOG(INFO) << "read " << filename << " to " << data.data
+              << " size=" << data.size;
+  }
 }
 
 static void dump_outputs(
@@ -158,9 +161,9 @@ int main(int argc, char* argv[]) {
   }
   if (!subgraph->has_attr("runner")) {
     subgraph->set_attr<std::map<std::string, std::string>>(
-        "runner", {{"ref", "libvitis_ai_library-graph_runner.so.1"},
-                   {"sim", "libvitis_ai_library-graph_runner.so.1"},
-                   {"run", "libvitis_ai_library-graph_runner.so.1"}});
+        "runner", {{"ref", "libvitis_ai_library-graph_runner.so.2"},
+                   {"sim", "libvitis_ai_library-graph_runner.so.2"},
+                   {"run", "libvitis_ai_library-graph_runner.so.2"}});
   }
   if (g_subgraph_index >= 0) {
     auto all = subgraph->children_topological_sort();
@@ -171,9 +174,9 @@ int main(int argc, char* argv[]) {
   if (ENV_PARAM(USE_CPU_TASK)) {
     if (subgraph->get_attr<std::string>("device") == "CPU") {
       subgraph->set_attr<std::map<std::string, std::string>>(
-          "runner", {{"ref", "libvitis_ai_library-cpu_task.so.1"},
-                     {"sim", "libvitis_ai_library-cpu_task.so.1"},
-                     {"run", "libvitis_ai_library-cpu_task.so.1"}});
+          "runner", {{"ref", "libvitis_ai_library-cpu_task.so.2"},
+                     {"sim", "libvitis_ai_library-cpu_task.so.2"},
+                     {"run", "libvitis_ai_library-cpu_task.so.2"}});
     }
   }
   auto runner = vart::Runner::create_runner(subgraph, ENV_PARAM(MODE));

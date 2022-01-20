@@ -25,7 +25,7 @@ using namespace std;
 namespace {
 enum MODE { BILINEAR };
 struct MyOp : public vart::experimental::OpImpBase {
-  MyOp(xir::Op* op, xir::Attrs* attrs)
+  MyOp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     auto input_op = op->get_input_op("input", 0);
     auto input_shape = input_op->get_output_tensor()->get_shape();
@@ -61,11 +61,9 @@ struct MyOp : public vart::experimental::OpImpBase {
     shift_fix_pos_ = output_fix_pos - input_fix_pos;
     shift_scale_ = pow(2, shift_fix_pos_);
   };
-  int calculate(
-      vart::experimental::simple_tensor_buffer_t<int8_t> output,
-      vart::experimental::simple_tensor_buffer_t<int8_t> input,
-      std::unique_ptr<vart::experimental::simple_tensor_buffer_t<int8_t>>
-          size) {
+  int calculate(vart::simple_tensor_buffer_t<int8_t> output,
+                vart::simple_tensor_buffer_t<int8_t> input,
+                std::unique_ptr<vart::simple_tensor_buffer_t<int8_t>> size) {
     CHECK(size == nullptr) << "not supported yet";
     for (auto b = 0; b < batch_; b++) {
       if (half_pixel_centers_ ||
@@ -219,6 +217,4 @@ struct MyOp : public vart::experimental::OpImpBase {
 
 }  // namespace
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOp>();
-}
+DEF_XIR_OP_IMP(MyOp)

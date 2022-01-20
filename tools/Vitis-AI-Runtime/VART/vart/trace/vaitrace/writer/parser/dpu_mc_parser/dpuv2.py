@@ -16,70 +16,38 @@
 from .dpuMcParserBase import *
 
 
-class dpuv2InstParser(dpuMcParserBase):
+class dpuv2_isa0InstParser(dpuMcParserBase):
     def __init__(self):
         name = "DPUCZDX8G_ISA0"
         super().__init__(name)
-        self.opcode_table = [
-            self.inst_desc("LOAD", 0b0000, 4),
-            self.inst_desc("SAVE", 0b0100, 4),
-            self.inst_desc("CONV", 0b1000, 5),
-            self.inst_desc("CONVINIT", 0b1001, 4),
-            self.inst_desc("DPTWISE", 0b1010, 5),
-            self.inst_desc("DWINIT", 0b1011, 3),
-            self.inst_desc("POOLINIT", 0b0110, 2),
-            self.inst_desc("POOL", 0b1100, 5),
-            self.inst_desc("ELEWINIT", 0b1101, 2),
-            self.inst_desc("ELEW", 0b1110, 3),
-            self.inst_desc("END", 0b0111, 1)
-        ]
 
-    class Load(LittleEndianStructure):
-        _pack_ = 1
-        _fields_ = [
-            ('bank_addr', c_uint, 12),
-            ('bank_id', c_uint, 6),
-            ('hp_id', c_uint, 2),
-            ('dpby', c_uint, 4),
-            ('dpdon', c_uint, 4),
-            ('opcode', c_uint, 4),
+        local_dir = os.path.dirname(__file__)
+        try:
+            self.mc_prser_cdll = CDLL("%s/dpuv2_isa0.so" % local_dir)
+            self.process_cpp = self.mc_prser_cdll.process
+        except:
+            self.mc_prser_cdll = None
+            self.process_cpp = None
 
-            ('jump_read', c_uint, 16),
-            ('pad_idx', c_uint, 5),
-            ('pad_end', c_uint, 5),
-            ('pad_start', c_uint, 5),
-            ('r0', c_uint, 1),
+    def process(self, mc, _debug=False):
+        if self.process_cpp != None:
+            debug_c = c_bool(_debug)
+            mc_c = c_char_p(mc)
+            mc_len_c = c_uint(len(mc))
 
-            ('channel', c_uint, 12),
-            ('mode_avg', c_uint, 2),
-            ('length', c_uint, 10),
-            ('jump_write', c_uint, 8),
+            load_img_size_c = c_uint(0)
+            load_para_size_c = c_uint(0)
+            save_size_c = c_uint(0)
 
-            ('ddr_addr', c_uint, 29),
-            ('reg_id', c_uint, 3)
-        ]
+            # void process(uint8_t *mc, bool debug, uint32_t *load_img_size, uint32_t *load_para_size, uint32_t *save_size)
+            self.process_cpp(mc_c, mc_len_c, debug_c, pointer(
+                load_img_size_c), pointer(load_para_size_c), pointer(save_size_c))
 
-    class Save(LittleEndianStructure):
-        _pack_ = 1
-        _fields_ = [
-            ('bank_addr', c_uint, 12),
-            ('bank_id', c_uint, 6),
-            ('hp_id', c_uint, 2),
-            ('dpby', c_uint, 4),
-            ('dpdon', c_uint, 4),
-            ('opcode', c_uint, 4),
-
-            ('jump_write', c_uint, 16),
-            ('r0', c_uint, 16),
-
-            ('channel', c_uint, 12),
-            ('r1', c_uint, 2),
-            ('length', c_uint, 10),
-            ('jump_read', c_uint, 8),
-
-            ('ddr_addr', c_uint, 29),
-            ('reg_id', c_uint, 3)
-        ]
+            self.data["load_img_size"] = load_img_size_c.value
+            self.data["load_para_size"] = load_para_size_c.value
+            self.data["save_size"] = save_size_c.value
+        else:
+            pass
 
 
-register(dpuv2InstParser())
+register(dpuv2_isa0InstParser())

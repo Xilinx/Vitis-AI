@@ -30,12 +30,12 @@ class ConfigurableDpuTaskImp : public ConfigurableDpuTask {
 
  private:
   virtual void setInputImageBGR(const cv::Mat& image) override;
-  virtual void setInputImageRGB(const cv::Mat& image) override;
+  virtual void setInputImageRGB(const cv::Mat& image, size_t ind) override;
   virtual void setInputImageBGR(const std::vector<cv::Mat>& image) override;
-  virtual void setInputImageRGB(const std::vector<cv::Mat>& image) override;
-  virtual void setInputDataArray(const std::vector<int8_t>& array) override;
+  virtual void setInputImageRGB(const std::vector<cv::Mat>& image, size_t ind) override;
+  virtual void setInputDataArray(const std::vector<int8_t>& array, size_t ind) override;
   virtual void setInputDataArray(
-      const std::vector<std::vector<int8_t>>& array) override;
+      const std::vector<std::vector<int8_t>>& array, size_t ind) override;
   virtual void run(int task_index) override;
   virtual void run_with_xrt_bo(
       const std::vector<vart::xrt_bo_t>& input_bos) override;
@@ -56,8 +56,9 @@ class ConfigurableDpuTaskImp : public ConfigurableDpuTask {
   virtual int get_input_fix_point() const override;
 
  private:
-  std::unique_ptr<DpuTask> tasks_;
+  std::unique_ptr<xir::Attrs> default_attrs_;
   vitis::ai::proto::DpuModelParam model_;
+  std::unique_ptr<DpuTask> tasks_;
 };
 
 }  // namespace ai

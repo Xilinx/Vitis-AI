@@ -15,7 +15,7 @@
  */
 
 #include <adf.h>
-#include <common/xf_aie_utils.hpp>
+#include <common/xf_aie_hw_utils.hpp>
 #include <algorithm>
 
 #define PARALLEL_FACTOR_16b 16 // Parallelization factor for 16b operations (16x mults)
@@ -48,14 +48,14 @@ __attribute__((noinline)) void gaussian_k3_border(input_window_int16* img_in,
     int16* restrict img_in_ptr = (int16*)img_in->ptr;
     int16* restrict img_out_ptr = (int16*)img_out->ptr;
 
-    const int16_t image_width = xfcvGetTileWidth(img_in_ptr);
-    const int16_t image_height = xfcvGetTileHeight(img_in_ptr);
+    const int16_t image_width = xfGetTileWidth(img_in_ptr);
+    const int16_t image_height = xfGetTileHeight(img_in_ptr);
     const int16_t stride = image_width;
 
-    xfcvCopyMetaData(img_in_ptr, img_out_ptr);
+    xfCopyMetaData(img_in_ptr, img_out_ptr);
 
-    v16int16* restrict ptr_img_buffer = (v16int16*)xfcvGetImgDataPtr(img_in_ptr);
-    v16int16* restrict ptr_img_out = (v16int16*)xfcvGetImgDataPtr(img_out_ptr);
+    v16int16* restrict ptr_img_buffer = (v16int16*)xfGetImgDataPtr(img_in_ptr);
+    v16int16* restrict ptr_img_out = (v16int16*)xfGetImgDataPtr(img_out_ptr);
 
     v32int16 data_buf1;
     v32int16 data_buf2;

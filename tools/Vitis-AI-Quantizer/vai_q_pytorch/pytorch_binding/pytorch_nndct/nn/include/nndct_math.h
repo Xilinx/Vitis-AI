@@ -30,10 +30,18 @@ void SigmoidTableLookup(Tensor Tinput,
                         int fragpos,
                         int device_id);
 
+void SigmoidSimulation(Tensor Tinput, 
+                        Tensor Toutput, 
+                        int device_id);
+
 void TanhTableLookup(Tensor Tinput, 
                      Tensor Ttable, 
                      Tensor Toutput, 
                      int fragpos,
+                     int device_id);
+
+void TanhSimulation(Tensor Tinput, 
+                     Tensor Toutput, 
                      int device_id);
 
 #endif

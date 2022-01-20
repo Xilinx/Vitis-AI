@@ -184,6 +184,7 @@ message Target {
         max_reduce = 5;
         dwconv_no_bias = 6;
         hsigmoid = 7;
+        w16b0 = 8;
     }
     repeated AluType alu_type = 7;
     Nonlinear nonlinear = 8;

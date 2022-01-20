@@ -40,7 +40,7 @@
         {
             "name": "hwemu-launch",
             "target": "hw_emu",
-            "cmd_args": "kernel.xclbin 512x512.png 512x512.jpg", 
+            "cmd_args": "kernel.xclbin LIB_DIR/data/HD.jpg LIB_DIR/data/HD.jpg", 
             "pkg-dir": "$(WORK_DIR)",
             "input-dir": "./",
             "output-dir": "./"
@@ -48,7 +48,7 @@
         {
             "name": "hw",
             "target": "hw",
-            "cmd_args": "kernel.xclbin 4k.jpg 4k_5.png", 
+            "cmd_args": "kernel.xclbin LIB_DIR/data/4k.jpg LIB_DIR/data/4k_5.png", 
             "pkg-dir": "$(WORK_DIR)",
             "input-dir": "./",
             "output-dir": "./"

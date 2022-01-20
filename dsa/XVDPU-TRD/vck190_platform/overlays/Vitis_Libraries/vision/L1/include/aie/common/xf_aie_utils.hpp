@@ -19,60 +19,154 @@
 
 #include <common/xf_aie_const.hpp>
 
-inline int16_t xfcvGetTileWidth(int16_t* img_ptr) {
-    return *img_ptr;
+namespace xf {
+namespace cv {
+namespace aie {
+
+//@Get functions {
+inline metadata_elem_t xfGetTileWidth(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_TILEWIDTH];
 }
 
-inline int16_t xfcvGetTileHeight(int16_t* img_ptr) {
-    return *(img_ptr + 4);
+inline metadata_elem_t xfGetTileHeight(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_TILEHEIGHT];
 }
 
-inline void xfcvSetTileWidth(int16_t* img_ptr, int width) {
-    *img_ptr = width;
+inline metadata_elem_t xfGetTilePosH(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_POSITIONH];
 }
 
-inline void xfcvSetTileHeight(int16_t* img_ptr, int height) {
-    *(img_ptr + 4) = height;
+inline metadata_elem_t xfGetTilePosV(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_POSITIONV];
 }
 
-inline void xfcvSetTilePosH(int16_t* img_ptr, int div_factor) {
-    int posH = *(img_ptr + 8);
-    *(img_ptr + 8) = posH / div_factor;
+inline metadata_elem_t xfGetTileOVLP_HL(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_OVLPH_LEFT];
 }
 
-inline void xfcvSetTilePosV(int16_t* img_ptr, int div_factor) {
-    int posV = *(img_ptr + 12);
-    *(img_ptr + 12) = posV / div_factor;
+inline metadata_elem_t xfGetTileOVLP_HR(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_OVLPH_RIGHT];
 }
 
-void xfcvSetUVMetaData(int16_t* img_ptr) {
-    *img_ptr = *(img_ptr) / 2;             // width
-    *(img_ptr + 4) = *(img_ptr + 4) / 2;   // height
-    *(img_ptr + 8) = *(img_ptr + 8) / 2;   // posh
-    *(img_ptr + 12) = *(img_ptr + 12) / 2; // posv
-    *(img_ptr + 44) = *(img_ptr + 44) / 2; // crctposh
-    *(img_ptr + 48) = *(img_ptr + 48) / 2; // crctposv
-    *(img_ptr + 52) = *(img_ptr + 52) / 2; // crcttw
-    *(img_ptr + 56) = *(img_ptr + 56) / 2; // crctth
+inline metadata_elem_t xfGetTileOVLP_VT(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_OVLPV_TOP];
 }
 
-inline void xfcvCopyMetaData(int16_t* img_in_ptr, int16_t* img_out_ptr) {
-    v64int16* restrict in = (v64int16*)img_in_ptr;
-    v64int16* restrict out = (v64int16*)img_out_ptr;
-    *(out) = *(in);
-    return;
+inline metadata_elem_t xfGetTileOVLP_VB(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_OVLPV_BOTTOM];
 }
 
-inline int16_t* xfcvGetImgDataPtr(int16_t* img_ptr) {
-    return (img_ptr + SMARTTILE_ELEMENTS);
+inline metadata_elem_t xfGetTileDatBitwidth(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_DATA_BITWIDTH];
 }
 
-inline void xfcvUnsignedSaturation(int16_t* img_ptr) {
-    img_ptr[SMARTTILE_ELEMENTS - 4] = 1;
+inline metadata_elem_t xfGetTileFinalWidth(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_FINAL_WIDTH];
 }
 
-inline void xfcvSignedSaturation(int16_t* img_ptr) {
-    img_ptr[SMARTTILE_ELEMENTS - 4] = 2;
+inline metadata_elem_t xfGetTileFinalHeight(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_FINAL_HEIGHT];
 }
 
+inline metadata_elem_t xfGetTileCrctPosH(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_CRCTPOSH];
+}
+
+inline metadata_elem_t xfGetTileCrctPosV(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_CRCTPOSV];
+}
+
+inline metadata_elem_t xfGetTileCrctTWidth(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_CRCT_TWIDTH];
+}
+
+inline metadata_elem_t xfGetTileCrctTHeight(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_CRCT_THEIGHT];
+}
+
+inline metadata_elem_t xfGetTileSat(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr)[POS_MDS_SAT_EN];
+}
+
+inline void* xfGetImgDataPtr(void* img_ptr) {
+    return ((metadata_elem_t*)img_ptr + POS_MDS_IMG_PTR);
+}
+//@}
+
+//@Set functions {
+inline void xfSetTileWidth(void* img_ptr, metadata_elem_t width) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_TILEWIDTH] = width;
+}
+
+inline void xfSetTileHeight(void* img_ptr, metadata_elem_t height) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_TILEHEIGHT] = height;
+}
+
+inline void xfSetTilePosH(void* img_ptr, metadata_elem_t posH) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_POSITIONH] = posH;
+}
+
+inline void xfSetTilePosV(void* img_ptr, metadata_elem_t posV) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_POSITIONV] = posV;
+}
+
+inline void xfSetTileOVLP_HL(void* img_ptr, metadata_elem_t ovrlp_HL) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_OVLPH_LEFT] = ovrlp_HL;
+}
+
+inline void xfSetTileOVLP_HR(void* img_ptr, metadata_elem_t ovrlp_HR) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_OVLPH_RIGHT] = ovrlp_HR;
+}
+
+inline void xfSetTileOVLP_VT(void* img_ptr, metadata_elem_t ovrlp_VT) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_OVLPV_TOP] = ovrlp_VT;
+}
+
+inline void xfSetTileOVLP_VB(void* img_ptr, metadata_elem_t ovrlp_VB) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_OVLPV_BOTTOM] = ovrlp_VB;
+}
+
+inline void xfSetTileDatBitwidth(void* img_ptr, metadata_elem_t data_bitwidth) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_DATA_BITWIDTH] = data_bitwidth;
+}
+
+inline void xfSetTileFinalWidth(void* img_ptr, metadata_elem_t final_width) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_FINAL_WIDTH] = final_width;
+}
+
+inline void xfSetTileFinalHeight(void* img_ptr, metadata_elem_t final_height) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_FINAL_HEIGHT] = final_height;
+}
+
+inline void xfSetTileCrctPosH(void* img_ptr, metadata_elem_t crct_posh) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_CRCTPOSH] = crct_posh;
+}
+
+inline void xfSetTileCrctPosV(void* img_ptr, metadata_elem_t crct_posv) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_CRCTPOSV] = crct_posv;
+}
+
+inline void xfSetTileCrctTWidth(void* img_ptr, metadata_elem_t crct_twidth) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_CRCT_TWIDTH] = crct_twidth;
+}
+
+inline void xfSetTileCrctTHeight(void* img_ptr, metadata_elem_t crct_theight) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_CRCT_THEIGHT] = crct_theight;
+}
+
+inline void xfUnsignedSaturation(void* img_ptr) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_SAT_EN] = 1;
+}
+
+inline void xfDefaultSaturation(void* img_ptr) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_SAT_EN] = 0;
+}
+
+inline void xfSignedSaturation(void* img_ptr) {
+    ((metadata_elem_t*)img_ptr)[POS_MDS_SAT_EN] = 2;
+}
+//@}
+}
+}
+}
 #endif

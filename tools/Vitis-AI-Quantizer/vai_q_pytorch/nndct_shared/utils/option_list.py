@@ -21,7 +21,7 @@ from .option_def import Option
 ####################################
 # Add Option list here
 ####################################
-
+# The option name include two parts: prefix "nndct" and name seperated by "_"
 class NndctOption(object):
   nndct_help = Option(name="help", dtype=bool, default=False, action="store_true", 
                       help="list all api usage description")
@@ -71,5 +71,17 @@ class NndctOption(object):
 
   nndct_finetune_lr_factor = Option(name="finetune_lr_factor", dtype=float, default=0.01, help="finetune learning rate factor")
 
+  nndct_partition_mode = Option(name="partition_mode", dtype=int, default=0, 
+                       help="0: quant stub controled. 1: custom op controled")
+
   nndct_stat = Option(name="stat", dtype=int, default=0, help="quantizer statistic level")
-  
+
+  nndct_jit_script_mode = Option(name="jit_script_mode", dtype=bool, default=False, action="store_true", help="enable torch script parser")
+
+  nndct_diffs_mode = Option(name="diffs_mode", dtype=str, default='mse', help="diffs_mode: mse, maxmin")
+
+  nndct_ft_mode = Option(name="ft_mode", dtype=int, default=1, help="1: mix mode 0: cache mode")
+  nndct_tanh_sigmoid_sim = Option(name="tanh_sigmoid_sim", dtype=int, default=0, help="0: look up from table 1: simulate by exp simulation")
+  nndct_visualize = Option(name="visualize", dtype=bool, default=False, action="store_true", help="visualize tensors")
+
+  nndct_dump_no_quant_part = Option(name="dump_no_quant_part", dtype=bool, default=False, action="store_true", help="dump no quantized nodes")

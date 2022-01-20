@@ -25,8 +25,8 @@ class QuantConfigerCommander(BaseCommander):
 
   def create_commands(self):
 
-    def SoftFuseClamp(graph, quant_groups):
-      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.CLAMP)
+    # def SoftFuseClamp(graph, quant_groups):
+    #   return graph_utils.group_up(graph, quant_groups, NNDCT_OP.CLAMP)
 
     def SoftFuseBatchSpaceNdToConv(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups,
@@ -38,9 +38,6 @@ class QuantConfigerCommander(BaseCommander):
 
     def SoftFuseHardtanh(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.HARDTANH)
-
-    def SoftFuseReduceSum(graph, quant_groups):
-      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.SUM)
 
     def SoftFuseRelu(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.RELU)
@@ -131,18 +128,13 @@ class QuantConfigerCommander(BaseCommander):
     def SoftFuseRepeat(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.REPEAT)
 
-    def SoftFuseSelect(graph, quant_groups):
-      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.SELECT)
+    # def SoftFuseSelect(graph, quant_groups):
+    #   return graph_utils.group_up(graph, quant_groups, NNDCT_OP.SELECT)
+    
+    def SoftFuseUnsqueeze(graph, quant_groups):
+      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.UNSQUEEZE)
 
     return locals()
 
 
-def soft_fuse_custom_ops(ctx, quant_groups):
-  fused_op = set()
-  for node in ctx.Nndctgraph.nodes:
-    if node.has_custom_op() and (not ctx.is_node_quantizable(node, False)):
-      if node.op.type not in fused_op:
-        fused_op.add(node.op.type)
-        quant_groups = graph_utils.group_up(ctx.Nndctgraph, quant_groups, node.op.type)    
-  return quant_groups
         

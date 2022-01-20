@@ -19,8 +19,6 @@ import tensorflow as tf
 
 from tensorflow.core.protobuf import config_pb2
 from tensorflow.lite.python.util import run_graph_optimizations as _run_graph_optimizations
-from tensorflow.python.keras import Sequential
-from tensorflow.python.keras.engine import base_layer
 from tensorflow.python.util import nest
 
 from tf_nndct.graph import OpTypes
@@ -33,38 +31,47 @@ from tf_nndct.utils import logging
 from tf_nndct.utils import tensor_utils
 from tf_nndct.utils import tf_utils
 
-def from_keras_model(model, input_signature):
+keras = tf.keras
+
+_EXPORT_DIR = '.vai_tf'
+_FROZEN_FUNC_GRAPH = '0_frozen_func_graph.pb'
+_OPT_TF_GRAPH = '1_opt_tf_graph.pb'
+_RAW_NNDCT_GRAPH = '2_raw_nndct.pb'
+_FINAL_NNDCT_GRAPH = '3_final_nndct.pb'
+
+def from_keras_model(model, input_signature=None):
+  """Trace model call to get a func graph and convert that func graph
+    to nndct graph.
+  """
+
   logging.vlog(1, 'input_signature: {}'.format(input_signature))
   if not generic_utils.is_list_or_tuple(input_signature):
     input_signature = generic_utils.to_list(input_signature)
 
-  #flat_input_signature = nest.flatten(input_signature)
-  #batch_input_signature = []
-  #for signature in flat_input_signature:
-  #  batch_input_signature.append(
-  #      tf.TensorSpec(shape=(1,) + signature.shape, dtype=signature.dtype))
-  #batch_input_signature = nest.pack_sequence_as(input_signature,
-  #                                              batch_input_signature)
-
   func_graph = get_func_graph(model, input_signature)
 
-  scope_to_layer = map_scope_to_layer(model, '')
+  scope_to_layer = map_scope_to_layer(model)
   logging.vlog(
       1, 'scope_name: (layer, parent_layer)\n{}'.format('\n'.join(
           [f'{key}: {value}' for key, value in scope_to_layer.items()])))
 
-  graph = parse_to_graph(func_graph, scope_to_layer)
+  graph = func_graph_to_nndct(func_graph, scope_to_layer)
   graph.name = model.name
+  graph.data_format = keras_utils.data_format()
   return graph
 
-def get_func_graph(model, input_signature=None, *args, **kwargs):
+def get_func_graph(model, input_signature=None):
+  # TODO(yuwang) Use trace_model_call from keras function directly.
+  #from tensorflow.python.keras.saving import saving_utils
+  #func = saving_utils.trace_model_call(model, input_signature)
   func = keras_utils.trace_model_call(model, input_signature)
-  concrete_func = func.get_concrete_function(*args, **kwargs)
+  concrete_func = func.get_concrete_function()
 
-  frozen_func = tf_utils.convert_to_constants(concrete_func,
-                                              lower_control_flow=False)
+  frozen_func = tf_utils.convert_to_constants(
+      concrete_func, lower_control_flow=False)
   graph_def = frozen_func.graph.as_graph_def()
-  utils.maybe_export_graph(_FROZEN_FUNC_GRAPH, graph_def)
+  utils.maybe_export_graph('{}/{}'.format(_EXPORT_DIR, _FROZEN_FUNC_GRAPH),
+                           graph_def)
 
   input_tensors = [
       tensor for tensor in frozen_func.inputs
@@ -76,43 +83,17 @@ def get_func_graph(model, input_signature=None, *args, **kwargs):
   rewrite_options = config.graph_options.rewrite_options
   #rewrite_options.constant_folding = rewrite_options.ON
   rewrite_options.optimizers.append('constfold')
-  graph_def = _run_graph_optimizations(graph_def,
-                                       input_tensors,
-                                       output_tensors,
-                                       config=config,
-                                       graph=frozen_func.graph)
+  graph_def = _run_graph_optimizations(
+      graph_def,
+      input_tensors,
+      output_tensors,
+      config=config,
+      graph=frozen_func.graph)
 
-  #from tensorflow.python.keras.saving import saving_utils as _saving_utils
-  #from tensorflow.python.framework import convert_to_constants as _convert_to_constants
-  #from tensorflow.python.framework import dtypes as _dtypes
-  #func = _saving_utils.trace_model_call(model, input_signature)
-  #concrete_func = func.get_concrete_function()
-  #funcs = [concrete_func]
+  utils.maybe_export_graph('{}/{}'.format(_EXPORT_DIR, _OPT_TF_GRAPH),
+                           graph_def)
 
-  #frozen_func, graph_def = (
-  #    _convert_to_constants.convert_variables_to_constants_v2_as_graph(
-  #        funcs[0], lower_control_flow=False))
-
-  #input_tensors = [
-  #    tensor for tensor in frozen_func.inputs
-  #    if tensor.dtype != _dtypes.resource
-  #]
-  #output_tensors = frozen_func.outputs
-
-  #config = config_pb2.ConfigProto()
-  #rewrite_options = config.graph_options.rewrite_options
-  ##rewrite_options.constant_folding = rewrite_options.ON
-  #rewrite_options.optimizers.append('constfold')
-  #graph_def = _run_graph_optimizations(
-  #    graph_def,
-  #    input_tensors,
-  #    output_tensors,
-  #    config=config,
-  #    graph=frozen_func.graph)
-
-  utils.maybe_export_graph(_OPT_TF_GRAPH, graph_def)
-
-  logging.vlog(4, 'Optimized GraphDef:\n{}'.format(str(graph_def)))
+  #logging.vlog(4, 'Optimized GraphDef:\n{}'.format(graph_def))
   with tf.Graph().as_default() as tf_graph:
     tf.import_graph_def(graph_def, name='')
 
@@ -120,8 +101,8 @@ def get_func_graph(model, input_signature=None, *args, **kwargs):
   return (tf_graph, func_graph.structured_input_signature,
           func_graph.structured_outputs)
 
-def map_scope_to_layer(layer, scope, parent=None):
-  if not isinstance(layer, base_layer.Layer):
+def map_scope_to_layer(layer, scope='', parent=None):
+  if not isinstance(layer, keras.layers.Layer):
     return {}
 
   scope_to_layer = {}
@@ -129,7 +110,7 @@ def map_scope_to_layer(layer, scope, parent=None):
   layer_scope = "/".join([scope, layer.name]) if scope else layer.name
   scope_to_layer[layer_scope] = (layer, parent)
 
-  # There is no _gather_unique_layers in old version.
+  # There is no _gather_unique_layers in earlier TF.
   # layers = layer._gather_unique_layers()
   layers = keras_utils.get_layers(layer)
   for sub_layer in layers:
@@ -138,8 +119,8 @@ def map_scope_to_layer(layer, scope, parent=None):
 
   return scope_to_layer
 
-def parse_to_graph(func_graph, scope_to_layer=None):
-  # op_name => ComputationNode name
+def func_graph_to_nndct(func_graph, scope_to_layer=None):
+  # op_name => Node name
   tf_graph, input_signature, structured_output_tensors = func_graph
 
   computation_graph = ComputationGraph.from_tf_graph(tf_graph, scope_to_layer)
@@ -148,7 +129,7 @@ def parse_to_graph(func_graph, scope_to_layer=None):
   # Parse computation nodes to nndct nodes.
   nndct_nodes = []
   for node in computation_graph.nodes:
-    nndct_nodes.extend(nest.flatten(converter.convert(node)))
+    nndct_nodes.extend(converter.convert(node))
 
   # Create all tensors
   tensors = {}
@@ -181,9 +162,11 @@ def parse_to_graph(func_graph, scope_to_layer=None):
   output_tensors = nest.pack_sequence_as(structured_output_tensors,
                                          output_tensors)
 
-  utils.maybe_export_graph(_RAW_NNDCT_GRAPH, graph)
+  utils.maybe_export_graph('{}/{}'.format(_EXPORT_DIR, _RAW_NNDCT_GRAPH), graph)
   graph = run_graph_refining(graph)
-  utils.maybe_export_graph(_FINAL_NNDCT_GRAPH, graph)
+  utils.maybe_export_graph('{}/{}'.format(_EXPORT_DIR, _FINAL_NNDCT_GRAPH),
+                           graph)
+  logging.vlog(2, 'NndctGraph before sorting:\n{}'.format(graph))
 
   graph = utils.topological_sort(graph)
   # Get args part from input_signature (args, kwargs)
@@ -199,20 +182,20 @@ def run_graph_refining(graph):
   # Executed in sequence.
   refiners = [
       FoldConst,
-      FoldBiasRefiner,
+      FoldBias,
       RemoveIdentity,
       RemoveRNNRedundantInput,
       RemoveIsolatedNode,
       MergeBidirectionalRNN,
       RenameParamTensor,
+      SetAttrForBinaryOp,
   ]
 
   for refiner_cls in refiners:
     refiner = refiner_cls()
     result = refiner.refine_graph(graph)
     logging.vlog(
-        2, 'Result of refining pass [{}]: {}'.format(result.refiner,
-                                                     result.message))
+        2, 'Refining pass [{}]: {}'.format(result.refiner, result.message))
   return graph
 
 class ComputationGraph(object):
@@ -222,30 +205,19 @@ class ComputationGraph(object):
     self._name_to_node = {}
     self._op_to_node = {}
 
-  @classmethod
-  def from_tf_graph(cls, tf_graph, scope_to_layer=None):
-    layer_to_inbound_nodes = map_layer_to_inbound_nodes(scope_to_layer)
-
-    graph = cls()
-    for op in tf_graph.get_operations():
-      graph._add_op(op, scope_to_layer, layer_to_inbound_nodes)
-
-    graph._mark_computation_edges()
-    return graph
-
-  def _add_op(self, op, scope_to_layer, layer_to_inbound_nodes):
+  def add_op(self, op, scope_to_layer, layer_inbound_nodes):
     # If an operation belongs to a keras layer, we add this op to the layer's
     # scope ops; Otherwise, we treat the op as a standalone computation node.
     layer = belongs_to_keras_layer(op, scope_to_layer)
     # tf.keras.layers.Layer or tf.Operation as a node
-    node = layer if layer else op
-    computation_node = self._name_to_node.get(node.name, ComputationNode(node))
-    computation_node.scope_ops.append(op)
-    computation_node.inbound_nodes = layer_to_inbound_nodes.get(node.name, [])
-    self._name_to_node[node.name] = computation_node
+    op_obj = layer if layer else op
+    node = self._name_to_node.get(op_obj.name, Node(op_obj))
+    node.scope_ops.append(op)
+    node.inbound_nodes = layer_inbound_nodes.get(op_obj.name, [])
+    self._name_to_node[node.name] = node
     self._op_to_node[op.name] = node.name
 
-  def _mark_computation_edges(self):
+  def connect_node_by_scopes(self):
     for node in self._name_to_node.values():
       for op in node.scope_ops:
         # Remove duplicate input names, although this is rare, but it does exist.
@@ -279,12 +251,26 @@ class ComputationGraph(object):
             if input not in input_node.output_names:
               input_node.output_names.append(input)
 
+  @classmethod
+  def from_tf_graph(cls, tf_graph, scope_to_layer=None):
+    layer_inbound_nodes = get_layer_inbound_nodes(
+        list(scope_to_layer.values())) if scope_to_layer else {}
+
+    graph = cls()
+    for op in tf_graph.get_operations():
+      graph.add_op(op, scope_to_layer, layer_inbound_nodes)
+
+    graph.connect_node_by_scopes()
+    return graph
+
   def node(self, name):
-    return self._name_to_node.get(name, None)
+    if name not in self._name_to_node:
+      raise ValueError('No such node in graph: {}'.format(name))
+    return self._name_to_node[name]
 
   @property
   def nodes(self):
-    return self._name_to_node.values()
+    return list(self._name_to_node.values())
 
   def __str__(self):
     return json.dumps(self.desp(), indent=2, separators=(',', ': '))
@@ -295,8 +281,8 @@ class ComputationGraph(object):
       nodes_desp.append(node.desp())
     return nodes_desp
 
-class ComputationNode(object):
-  """Intermediate representation of 'computing node' before converting to nndct op"""
+class Node(object):
+  """A computing node is a representation of a keras layer or tf.Operation."""
 
   def __init__(self, op):
     # keras.layers.Layer or tf.Operation
@@ -326,22 +312,19 @@ class ComputationNode(object):
     return desp
 
   @property
-  def orig_op(self):
+  def op(self):
     return self._op
 
   def get_config(self):
     if isinstance(self._op, tf.Operation):
       return tf_utils.parse_attr_proto(self._op.node_def.attr)
-
-    config = self._op.get_config()
-    if self.inbound_nodes:
-      config['inbound_nodes'] = self.inbound_nodes
-    return config
+    else:
+      return self._op.get_config()
 
   def get_params(self):
     if isinstance(self._op, tf.Operation):
       return None
-    return keras_utils.keras_layer_params(self._op)
+    return keras_utils.get_named_weights(self._op)
 
   @property
   def name(self):
@@ -381,35 +364,42 @@ def belongs_to_keras_layer(op, scope_to_layer):
     scope = parent_scope
 
   # Lambda layer is a wrapper, we need to parse ops in the layer individually.
-  if type(layer) == tf.keras.layers.Lambda or isinstance(layer, Sequential):
+  if type(layer) == keras.layers.Lambda or isinstance(layer, keras.Sequential):
     layer = None
   return layer
 
-def map_layer_to_inbound_nodes(scope_to_layer):
-  layer_to_inbound_nodes = {}
-  if not scope_to_layer:
-    return layer_to_inbound_nodes
+def get_layer_inbound_nodes(layer_parent_pairs):
+  """Get layer's inbound nodes.
 
+  The config of a layer does not include connectivity information,
+  nor the layer class name. These are handled by keras.Model.
+  So we extract them from model's config and associate them to the
+  corresponding layer.
+  """
+  layer_inbound_nodes = {}
   model = None
   # Get a keras model which is a top-level layer.
-  for layer, parent_layer in scope_to_layer.values():
+  for layer, parent_layer in layer_parent_pairs:
     if parent_layer is None:
       model = layer
       break
 
-  if model:
+  if getattr(model, '_is_graph_network', None):
+    # Only graph network has get_config.
     model_config = model.get_config()
+    logging.vlog(4, 'model_config: {}'.format(model_config))
+
     if 'layers' in model_config:
       layers_config = model_config['layers']
       for config in layers_config:
         if 'inbound_nodes' in config:
-          layer_to_inbound_nodes[config['name']] = config['inbound_nodes']
-  return layer_to_inbound_nodes
+          layer_inbound_nodes[config['name']] = config['inbound_nodes']
+  return layer_inbound_nodes
 
 class GraphRefiner(object):
 
-  class RefinerResult(
-      collections.namedtuple('RefinerResult', ['refiner', 'message'])):
+  class RefinerMessage(
+      collections.namedtuple('RefinerMessage', ['refiner', 'message'])):
     pass
 
   def refine_graph(self, graph):
@@ -431,6 +421,11 @@ class GraphRefiner(object):
       graph.remove_node(node)
     return graph, nodes_to_remove
 
+  def refiner_message(self, message, refiner=''):
+    if not refiner:
+      refiner = self.__class__.__name__
+    return self.RefinerMessage(refiner, message)
+
 class FoldConst(GraphRefiner):
 
   def fold_to_dense(self, const_op, dense_op):
@@ -444,7 +439,7 @@ class FoldConst(GraphRefiner):
 
   def default_fold(self, const_op, op):
     for param, value in const_op.params.items():
-      op.set_param(param, tensor_utils.tf_to_nndct(value))
+      op.set_param(param, value)
 
   def refine_graph(self, graph):
     """Fetch the input tensor's value, set it as op's param or attribute
@@ -458,7 +453,6 @@ class FoldConst(GraphRefiner):
       if op.type == OpTypes.RESHAPE:
         pass
         #in_tensor = node.input_names[1]
-        #print(in_tensor)
         #op.set_config('shape', in_tensor.data.tolist())
         #nodes_to_remove.append(in_tensor.node)
         #folded_pairs.append((in_tensor.node.name, node.name))
@@ -485,12 +479,11 @@ class FoldConst(GraphRefiner):
       graph.remove_node(node)
 
     msg = '\n'.join(['Fold {} to {}'.format(p[0], p[1]) for p in folded_pairs])
-    return self.RefinerResult('FoldConst', msg)
+    return self.refiner_message(msg)
 
-class FoldBiasRefiner(GraphRefiner):
+class FoldBias(GraphRefiner):
 
   def refine_graph(self, graph):
-    #biased_ops = ['Conv2D', 'MatMul']
     bias_nodes = []
     folded_pairs = []
     for node in graph.nodes:
@@ -509,15 +502,14 @@ class FoldBiasRefiner(GraphRefiner):
       graph.remove_node(node)
 
     msg = '\n'.join(['Fold {} to {}'.format(p[0], p[1]) for p in folded_pairs])
-    return self.RefinerResult('FoldBias', msg)
+    return self.refiner_message(msg)
 
 class RemoveIdentity(GraphRefiner):
 
   def refine_graph(self, graph):
     graph, removed_nodes = self._remove_nodes_if(
         graph, lambda x: x.op.type == OpTypes.IDENTITY)
-    return self.RefinerResult('RemoveIdentity',
-                              self._msg_for_removing(removed_nodes))
+    return self.refiner_message(self._msg_for_removing(removed_nodes))
 
 class RemoveRNNRedundantInput(GraphRefiner):
   """LSTM nodes usually have some redundant inputs, remove all these nodes."""
@@ -533,8 +525,7 @@ class RemoveRNNRedundantInput(GraphRefiner):
 
     for node in nodes_to_remove:
       graph.remove_node(node)
-    return self.RefinerResult('RemoveRNNRedundantInput',
-                              self._msg_for_removing(nodes_to_remove))
+    return self.refiner_message(self._msg_for_removing(nodes_to_remove))
 
 class RemoveIsolatedNode(GraphRefiner):
 
@@ -544,8 +535,7 @@ class RemoveIsolatedNode(GraphRefiner):
       return node.num_inputs == 0 and node.num_outputs == 0
 
     graph, removed_nodes = self._remove_nodes_if(graph, is_isolated)
-    return self.RefinerResult('RemoveIsolated',
-                              self._msg_for_removing(removed_nodes))
+    return self.refiner_message(self._msg_for_removing(removed_nodes))
 
 class MergeBidirectionalRNN(GraphRefiner):
 
@@ -557,8 +547,15 @@ class MergeBidirectionalRNN(GraphRefiner):
 
     for node in nodes_to_remove:
       graph.remove_node(node)
-    return self.RefinerResult('MergeBidirectional',
-                              self._msg_for_removing(nodes_to_remove))
+
+    for node in graph.nodes:
+      if node.op.type != OpTypes.BIDIRECTIONAL_RNN:
+        continue
+      in_tensors = node.in_tensors
+      assert in_tensors[0].name == in_tensors[1].name
+      node.remove_input(in_tensors[1])
+
+    return self.refiner_message(self._msg_for_removing(nodes_to_remove))
 
 class RenameParamTensor(GraphRefiner):
   """Rename param tensor with a more readable name."""
@@ -572,9 +569,24 @@ class RenameParamTensor(GraphRefiner):
         new_name = node.name + ':' + param_name
         msg.append('%s -> %s' % (tensor.name, new_name))
         tensor.name = new_name
-    return self.RefinerResult('RenameParamTensor', ', '.join(msg))
+    return self.refiner_message(', '.join(msg))
 
-_FROZEN_FUNC_GRAPH = '.tmp/0_frozen_func_graph.pb'
-_OPT_TF_GRAPH = '.tmp/1_opt_tf_graph.pb'
-_RAW_NNDCT_GRAPH = '.tmp/2_raw_nndct.pb'
-_FINAL_NNDCT_GRAPH = '.tmp/3_final_nndct.pb'
+class SetAttrForBinaryOp(GraphRefiner):
+  """Set 'input' and 'other' for binary operations. These two attrs are used
+  for exporting to xir.
+  """
+
+  def refine_graph(self, graph):
+    refined_ops = []
+    binary_ops = [OpTypes.MULTIPLY]
+    for node in graph.nodes:
+      if node.op.type not in binary_ops:
+        continue
+      assert len(
+          node.in_tensors
+      ) == 2, 'Binary operation should have 2 inputs, but got {}'.format(
+          len(node.in_tensors))
+      node.op.attr['input'] = node.in_tensors[0]
+      node.op.attr['other'] = node.in_tensors[1]
+      refined_ops.append(node.name)
+    return self.refiner_message('{}'.format(refined_ops))

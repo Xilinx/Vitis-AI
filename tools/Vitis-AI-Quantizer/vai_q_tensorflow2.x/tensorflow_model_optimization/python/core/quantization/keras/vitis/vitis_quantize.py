@@ -23,6 +23,7 @@ import numpy as np
 
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.base import quantize_annotate as quantize_annotate_mod
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.base import quantize_config as quantize_config_mod
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_custom_wrapper
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_aware_activation
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_registry
@@ -81,6 +82,8 @@ def quantize_scope(*args):
           vitis_quantize_aware_activation.NoQuantizeActivation,
       'QuantizeWrapper':
           vitis_quantize_wrapper.QuantizeWrapper,
+      'CustomOpWrapper':
+          vitis_custom_wrapper.CustomOpWrapper,
   }
   quantization_objects.update(vitis_quantizers._types_dict())
   quantization_objects.update(vitis_quantize_configs._types_dict())
@@ -132,7 +135,10 @@ class CollectQuantizeInfoCallback(keras.callbacks.Callback):
     for layer, q_info in pos_map.items():
       mc_pos_map[layer] = {}
       for k, v in q_info.items():
-        mc_pos_map[layer][k] = max(v, key=v.count)
+        if isinstance(v[0], np.ndarray):
+          mc_pos_map[layer][k] = v[0]
+        else:
+          mc_pos_map[layer][k] = max(v, key=v.count)
 
     _, mc_quantize_info = self._quantize_info.popitem()
     for layer, q_info in mc_quantize_info.items():
@@ -142,6 +148,8 @@ class CollectQuantizeInfoCallback(keras.callbacks.Callback):
       else:
         for k, v in q_info.items():
           if not v:
+            continue
+          if isinstance(mc_pos_map[layer][k], np.ndarray):
             continue
           if v['info']['quant_pos_var'] != mc_pos_map[layer][k]:
             v['info']['quant_pos_var'] = mc_pos_map[layer][k]
@@ -168,11 +176,19 @@ class VitisQuantizer(object):
     self._layer_metadata = None
 
     # Custom objects
+    self.custom_objects = custom_objects
+    self._check_custom_objects()
+    self.custom_layer_type = [
+        l.__class__.__name__
+        for l in float_model.layers
+        if l.__class__.__name__ in custom_objects
+    ]
     self._custom_object_scope = tf.keras.utils.custom_object_scope(
         custom_objects)
 
     # Built-in quantize strategy
     self._quantize_strategy = vitis_quantize_strategies.get(quantize_strategy)
+    self._parse_configs({}, {"custom_layer_type": self.custom_layer_type})
 
     # Custom quantize strategy
     if custom_quantize_strategy:
@@ -391,6 +407,31 @@ class VitisQuantizer(object):
     if configs:
       self._quantize_strategy.update(configs)
 
+  def _find_unregistered_layer(self):
+    custom_layer_type = set()
+    model_config = self._float_model.get_config()
+    tf_version = tf.__version__.split('.')
+    if int(tf_version[0]) == 2 and int(tf_version[1]) >= 6:
+      import keras.layers.serialization as serialization
+    else:
+      import tensorflow.python.keras.layers.serialization as serialization
+    serialization.populate_deserializable_objects()
+    for layer in self._float_model.layers:
+      # print(len(serialization.LOCAL.ALL_OBJECTS))
+      class_name = layer.__class__.__name__
+      cls = tf.keras.utils.get_registered_object(
+          class_name, {}, module_objects=serialization.LOCAL.ALL_OBJECTS)
+      if cls is None:
+        custom_layer_type.add(layer.__class__.__name__)
+    return custom_layer_type
+
+  def _check_custom_objects(self):
+    custom_layer_type = self._find_unregistered_layer()
+    for t in custom_layer_type:
+      if t not in self.custom_objects:
+        logger.warning("Un-registerd layer type {} is not supplied " \
+              "by init args 'custom_objects'".format(t))
+
   # Public Interfaces
   def optimize_model(self, configs={}, **kwargs):
     """Get optimized model.
@@ -465,7 +506,8 @@ class VitisQuantizer(object):
             calib_batch_size=calib_batch_size,
             calib_steps=calib_steps,
             eval_dataset=None,
-            verbose=0)
+            verbose=0,
+            add_shape_info=False)
         init_weights = self._qcbev_model.get_weights()
         self._qat_model.set_weights(init_weights)
         logger.info('Initialization with Quantize Calibration Done.')
@@ -481,10 +523,12 @@ class VitisQuantizer(object):
                      calib_steps=None,
                      eval_dataset=None,
                      verbose=0,
+                     add_shape_info=False,
+                     input_shape=None,
                      configs={},
                      **kwargs):
     """Interface of Post-Training Quantize.
-    
+
     Available configs:
        * input_bit=8
        * weight_bit=8
@@ -579,11 +623,23 @@ class VitisQuantizer(object):
 
         logger.info("Quantization Finished.")
 
+      shape_info = None
+      if add_shape_info:
+        logger.info("Start Getting Shape Information...")
+        shape_info = model_utils.get_shape(
+            self._qcbev_model,
+            calib_dataset=calib_dataset,
+            input_shape=input_shape)
+        if logger.debug_enabled():
+          model_utils.save_shape_info(shape_info, './debug/')
+          model_utils.save_model(self._qcbev_model,
+                                 'calibrated_model_add_shape.h5', './debug/')
+        logger.info("Getting Shape Information Done.")
     tf.get_logger().setLevel(log_level)
     return self._qcbev_model
 
   @staticmethod
-  def get_deploy_model(model):
+  def get_deploy_model(model, add_shape_info=False, input_shape=None):
     """Convert the QAT model to the deploy model which is compatible with the compiler
     and meet the DPU hardware constraints. """
     deploy_model = model_utils.clone_model_with_weights(model)
@@ -606,6 +662,14 @@ class VitisQuantizer(object):
         adjust_shift_cut=True,
         adjust_shift_bias=True)
     model_utils.set_quantize_info(deploy_model, adjusted_quantize_info)
+
+    if add_shape_info:
+      logger.info("Start Getting Shape Information...")
+      shape_info = model_utils.get_shape(deploy_model, input_shape=input_shape)
+      if logger.debug_enabled():
+        model_utils.save_shape_info(shape_info, './debug/')
+        model_utils.save_model(deploy_model, 'model_with_shape.h5', './debug/')
+      logger.info("Getting Shape Information Done.")
     return deploy_model
 
   @staticmethod
@@ -629,7 +693,7 @@ class VitisQuantizer(object):
 
 def create_optimize_model(model, candidate_layers, layer_metadata,
                           quantize_strategy):
-  """Optimize a `tf.keras` model before quantization, such as bn folding, 
+  """Optimize a `tf.keras` model before quantization, such as bn folding,
   activation folding."""
   optimize_pipeline = quantize_strategy.get_optimize_pipeline()
   optimized_model, layer_metadata = optimize_pipeline.apply(

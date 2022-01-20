@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 
 #include <assert.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <chrono>
 #include <cstring>
 #include <fstream>
@@ -31,13 +31,8 @@
 
 #include <xir/graph/graph.hpp>
 
-#include <sys/syscall.h>
-#include <sys/sysinfo.h>
-#include <sys/types.h>
-
 #include "common.hpp"
 #include "traceclass.hpp"
-#pragma once
 
 #ifdef ENABLE_XRT_TIMESTAMP
 namespace xrt_core {
@@ -46,7 +41,11 @@ unsigned long time_ns();
 #endif
 
 namespace vitis::ai::trace {
-using namespace std;
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
 enum state {  func_end = 0,func_start = 1, marker };
 
 void push_info(trace_entry_t i);

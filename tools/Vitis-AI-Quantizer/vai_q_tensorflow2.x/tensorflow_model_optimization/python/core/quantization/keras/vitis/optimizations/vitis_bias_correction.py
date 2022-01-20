@@ -17,7 +17,6 @@
 import tensorflow as tf
 import numpy as np
 
-from tensorflow.python.keras.engine import data_adapter
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
 

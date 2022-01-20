@@ -16,7 +16,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
-#include <unistd.h>
+
 #include <chrono>
 #include <cstring>
 #include <fstream>
@@ -28,27 +28,44 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <sys/syscall.h>
-#include <sys/sysinfo.h>
-#include <sys/types.h>
-
 #include <vitis/ai/event.hpp>
 #include <vitis/ai/fmt.hpp>
 
 #include "pid.h"
 #include "time.hpp"
 #include "util.hpp"
+#if _WIN32
+#include <windows.h>
+#else
+#include <sys/syscall.h>
+#include <sys/sysinfo.h>
+#include <sys/types.h>
 
+#define gettid() syscall(SYS_gettid)
+#define getpid() syscall(SYS_getpid)
+#endif
 namespace vitis::ai::trace {
-using namespace std;
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
 
 //#pragma pack(1)
 traceEventBase::traceEventBase(size_t payload_size) {
+#if _WIN32
+  pid = GetCurrentProcessId();
+#else
   pid = gettid();
+#endif
+
+#if _WIN32
+  cpu_id = 0;  // TODO
+#else
   cpu_id = sched_getcpu();
+#endif
   ts = get_xrt_ts();
-  size_ = sizeof(traceEventBase) + payload_size;
+  size_ = (uint16_t)sizeof(traceEventBase) + payload_size;
 };
 
 trace_entry_t traceEventBase::get() {

@@ -61,6 +61,8 @@ class QuantStrategyBase(ABC):
     2 .mixed bits for lstm 
     
     """
+    # import ipdb
+    # ipdb.set_trace()
     config = {'param': {}, 'output': {}, 'input': {}}
     for node in quant_info_mgr.Nndctgraph.nodes:
       # print('---- Handling node %s type: %s' % (node.name, node.op.type))
@@ -98,6 +100,35 @@ class QuantStrategyBase(ABC):
           if end not in config['output']:
             config['output'][end] = [self._bits_act, None]
             # print('---- Add fix of quant net input blob %s' % end)
+    
+    # check the input fix of all quantized ops 
+    # import ipdb
+    # ipdb.set_trace()
+    if not lstm:
+      for node in quant_info_mgr.Nndctgraph.nodes:
+        if quant_info_mgr.is_node_quantizable(node, lstm):
+          #print('---- Check input of node %s type: %s' % (node.name, node.op.type))
+          if node.op.type not in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB, NNDCT_OP.CONCAT]:
+            for p_n in quant_info_mgr.Nndctgraph.parents(node):
+              # if not quant_info_mgr.op_unquantizable(p_n.op.type):
+                end = quant_info_mgr.quant_output(p_n.name).name
+                end_node = quant_info_mgr.Nndctgraph.node(end)
+                out_is_tensor = True
+                for tensor in end_node.out_tensors:
+                  if tensor.shape == None:
+                    out_is_tensor = False
+                if end not in config['output'] and out_is_tensor:
+                  config['output'][end] = [self._bits_act, None]
+                  #print('---- Add fix of output blob %s type: %s' % (end, end_node.op.type))
+                  
+          elif node.op.type in [NNDCT_OP.INPUT]:
+            cn_nodes = quant_info_mgr.Nndctgraph.children(node)
+            if len(cn_nodes) == 1 and cn_nodes[0].op.is_custom_op:
+              end = quant_info_mgr.quant_output(node.name).name
+              if end in config['output']:
+                del config['output'][end]
+                node.in_quant_part = False
+              
     return config
 
   @property

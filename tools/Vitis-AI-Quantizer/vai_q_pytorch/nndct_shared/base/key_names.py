@@ -89,6 +89,8 @@ class NNDCT_KEYS(object):
   TORCH_IR_ATTRS_MAP = 'torch_ir_attrs_map'
   TORCH_SCHEMA_OP_TABLE = 'torch_schema_op_table'
   NODE_CALLER_MAP = 'node_caller_map'
+  CUSTOM_OP_ATTRS_MAP = 'custom_op_attrs_map'
+  CUSTOM_TO_XIR_LIST = 'custom_to_xir_list'
 
   #for quantization module:
   QUANT_MODE = "quant_mode"
@@ -136,9 +138,11 @@ class NNDCT_KEYS(object):
   DEVOP_PREFFIX = 'fpga_op_'
   FIX_OP_SUFFIX = '_fix'
   PRE_FIX_OP_SUFFIX = '_pre_fix'
-
+  TRANSPOSE_OP_SUFFIX = '_t'
   #deploy
   DEPLOY_CHECK_DATA_FOLDER = 'deploy_check_data'
+
+  
 
 
 
@@ -150,6 +154,7 @@ class NNDCT_OP(object):
   ARANGE = 'arange'
   ARGMAX = 'argmax'
   AVG_POOL = 'avgpool'
+  ADDMM = 'addmm'
   BASIC_GRU = 'basic_gru'
   BASIC_LSTM = 'basic_lstm'
   BATCH_NORM = 'batch_norm'
@@ -161,6 +166,7 @@ class NNDCT_OP(object):
   BMM = "bmm"
   BUFFER_GET_NEXT = 'buffer_get_next'
   CAST = 'cast'
+  CEIL = 'ceil'
   CHANNEL_SCALE = 'channel_scale'
   CHUNK = 'chunk'
   CLAMP = 'clamp'
@@ -176,14 +182,17 @@ class NNDCT_OP(object):
   DEPTHWISE_CONV2D = 'depthwise_conv2d'
   DEPTHWISE_CONV3D = 'depthwise_conv3d'
   DEPTHWISE_CONVTRANSPOSE2D = 'depthwise_conv_transpose_2d'
+  DEPTHWISE_CONVTRANSPOSE3D = 'depthwise_conv_transpose_3d'
   DEQUANT_STUB = 'dequant_stub'
   DETACH = 'detach'
   DIV = 'elemwise_div'
+  DERIVE_LOOP_INDEX = 'derive_loop_index'
   DROPOUT = 'dropout'
   EMBEDDING = 'embedding'
   EMBEDDING_BAG = 'embedding_bag'
   EMPTY = 'empty'
   EQUAL = 'equal'
+  SCALAR_EQUAL = 'scalar_equal'
   EXP = 'elemwise_exp'
   EXPAND = 'expand'
   EXPAND_AS = 'expand_as'
@@ -211,6 +220,8 @@ class NNDCT_OP(object):
   ITER_GET_NEXT = 'iter_get_next'
   LAYER_NORM = 'layer_norm'
   LEAKY_RELU = 'leaky_relu'
+  LENGTH = 'len'
+  LINEAR = 'linear'
   LINEAR = 'linear'
   LIST = 'list'
   LIST_ADD = "list_add"
@@ -249,12 +260,16 @@ class NNDCT_OP(object):
   RESHAPE = 'reshape'
   RESIZE = 'resize'
   RESIZE_3D = 'resize_3d'
+  RESIZE_NEAREST_3D = 'resize_nearest_3d'
+  REORG = 'reorg'
   RNN = 'rnn'
   RNN_LAYER = 'rnn_layer'
   RSQRT = 'rsqrt'
   RSUB = 'rsub'
   SCALAR_ADD = "add"
   SCALAR_MUL = 'mul'
+  SCALAR_SUB = 'sub'
+  SCALAR_LESS_THAN = 'scalar_lt'
   SELECT = 'select'
   SHAPE = 'shape'
   SIGMOID = 'sigmoid'
@@ -271,14 +286,16 @@ class NNDCT_OP(object):
   STACKED_RNN_CELLS = 'stacked_rnn_cells'
   STRIDED_SLICE = 'strided_slice'
   STRIDED_SLICE_INPLACE_COPY = "strided_slice_inplace_copy"
-  SUB = 'sub'
+  SUB = 'elementwise_sub'
   SUM = 'sum'
   TANH = 'tanh'
   TENSOR = 'tensor'
   TENSOR_ARRAY_GATHER = 'tensor_array_gather'
+  TENSOR_TO_SCALAR = 'tensor_to_scalar'
   THRESHOLD = 'threshold'
   TILE = 'tile'
   TRANSPOSE = 'transpose'
+  TUPLE_UNPACK = 'tuple_unpack'
   UNSQUEEZE = "unsqueeze"
   UP_SAMPLING = 'up_sampling'
   ZEROS = 'zeros'

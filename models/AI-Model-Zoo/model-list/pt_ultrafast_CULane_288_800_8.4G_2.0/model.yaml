@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: Ultra-Fast for lane detection
+input size: 288*800
+float ops: 8.4G
+task: lane detection
+framework: pytorch
+prune: 'no'
+version: 2.0
+files:
+- name: pt_ultrafast_CULane_288_800_8.4G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_ultrafast_CULane_288_800_8.4G_2.0.zip
+  checksum: b96e7d4c3b62ab5f01886a5ae4614f9e
+- name: ultrafast_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ultrafast_pt-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 13156fa701b09dfbd6a64fe86a656881
+- name: ultrafast_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ultrafast_pt-vck190-r2.0.0.tar.gz
+  checksum: 6f5d807d090bff68482e81dbe1c9a391
+- name: ultrafast_pt
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ultrafast_pt-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: eccfc749b620998d7352e75d7e95a42a
+- name: ultrafast_pt
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ultrafast_pt-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: e358de9faaf367819b0f577b8599bdbe
+- name: ultrafast_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ultrafast_pt-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 13ddbdb3570879f187a2ee30d36ed7b4
+- name: ultrafast_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ultrafast_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: c8809678c2ef8978504c21b7f6973574
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

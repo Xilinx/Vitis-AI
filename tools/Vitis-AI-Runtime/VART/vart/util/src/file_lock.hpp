@@ -33,8 +33,10 @@ class FileLock : public Lock {
   void unlock();
 
  public:
+#if ! _WIN32
   const int fd_;
   const size_t offset_;
+#endif
 };
 
 }  // namespace ai

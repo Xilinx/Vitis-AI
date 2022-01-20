@@ -52,6 +52,9 @@ def pyRunCtx(pyCmd):
     exec(code, globs, None)
 
 
+force_exit = False
+
+
 def handler(signum, frame):
     global pyProc
 
@@ -61,6 +64,12 @@ def handler(signum, frame):
         logging.info("Processing trace data, please wait...")
     else:
         logging.info("Processing trace data, please wait...")
+
+    global force_exit
+    if force_exit:
+        logging.error("Force exit...")
+        exit(-1)
+    force_exit = True
 
 
 def run(globalOptions: dict):

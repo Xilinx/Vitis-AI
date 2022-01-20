@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "./xir_util.hpp"
-
+#include <algorithm>
 #include <functional>
 #include <iostream>
 #include <map>

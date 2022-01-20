@@ -46,7 +46,7 @@ static inline char* go_offset(void* p, int offset) {
 }
 
 struct MyOpImp : public vart::experimental::OpImpBase {
-  MyOpImp(xir::Op* op, xir::Attrs* attrs)
+  MyOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     auto axis = op->get_attr<int>("axis");
     auto ins = op->get_input_tensors();
@@ -60,9 +60,8 @@ struct MyOpImp : public vart::experimental::OpImpBase {
     }
     num_of_strides_ = strides_[0].num_of_strides;
   }
-  int calculate(
-      vart::experimental::simple_tensor_buffer_t<void> output,
-      std::vector<vart::experimental::simple_tensor_buffer_t<void>> input) {
+  int calculate(vart::simple_tensor_buffer_t<void> output,
+                std::vector<vart::simple_tensor_buffer_t<void>> input) {
     CHECK_EQ(input.size(), strides_.size());
     auto sz = input.size();
     auto p = output.data;
@@ -85,6 +84,4 @@ struct MyOpImp : public vart::experimental::OpImpBase {
 };
 }  // namespace
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOpImp>();
-}
+DEF_XIR_OP_IMP(MyOpImp)

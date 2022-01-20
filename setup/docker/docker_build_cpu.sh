@@ -14,11 +14,12 @@
 # limitations under the License.
 
 DOCKER_REPO="${DOCKER_REPO:-xilinx/}"
-VERSION="${VERSION:-`cat docker/VERSION.txt`}"
-DOCKERFILE="${DOCKERFILE:-docker/DockerfileCPU}"
-XRT_URL="${XRT_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrt_202110.2.11.648_18.04-amd64-xrt.deb}"
-XRM_URL="${XRT_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_18.04-x86_64.deb}"
-PETALINUX_URL="${XRT_URL:-https://www.xilinx.com/bin/public/openDownload?filename=sdk-2021.1.0.0.sh}"
+VERSION="${VERSION:-`cat dockerfiles/VERSION.txt`}"
+DOCKERFILE="${DOCKERFILE:-dockerfiles/vitis-ai-cpu.Dockerfile}"
+XRT_URL="${XRT_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrt_202120.2.12.427_18.04-amd64-xrt.deb}"
+XRM_URL="${XRM_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1.3.29_18.04-x86_64.deb}"
+PETALINUX_URL="${PETALINUX_URL:-https://www.xilinx.com/bin/public/openDownload?filename=sdk-2021.2.0.0.sh}"
+VAI_CONDA_CHANNEL="${VAI_CONDA_CHANNEL:-https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_2.0.0.1103-02.tar.gz}"
 
 BRAND="${BRAND:-vitis-ai-cpu}"
 DATE="$(date)"

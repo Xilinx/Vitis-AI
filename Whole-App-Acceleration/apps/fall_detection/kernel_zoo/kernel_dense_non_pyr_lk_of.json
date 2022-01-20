@@ -1,0 +1,15 @@
+{
+  "kernel_name": "OpticalFlowDenseNonPyrLK",
+  "description": "Run non-pyramidal LK Optical Flow",
+  "kernel_type": "cpp",
+  "device_type": "fpga",
+  "kernel_lib": "libs/libOpticalFlowDenseNonPyrLK.so",
+  "num_cu": 1,
+
+  "param_list": {
+    "xclbin": { "type" : "string", "optional": false },
+    "of_w": {"type": "int", "optional": false},
+    "of_h": {"type": "int", "optional": false},
+    "lk_kName": {"type":"string"}
+  }
+}

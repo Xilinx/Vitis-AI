@@ -17,6 +17,7 @@
 #include "vitis/ai/nnpp/apply_nms.hpp"
 
 #include <math.h>
+
 #include <algorithm>
 #include <iostream>
 #include <map>
@@ -76,16 +77,25 @@ void print(vector<T> date) {
 }
 
 void applyNMS(const vector<vector<float>>& boxes, const vector<float>& scores,
-              const float nms, const float conf, vector<size_t>& res) {
+              const float nms, const float conf, vector<size_t>& res,
+              bool stable) {
   const size_t count = boxes.size();
   vector<pair<float, size_t>> order;
   for (size_t i = 0; i < count; ++i) {
     order.push_back({scores[i], i});
   }
-  stable_sort(order.begin(), order.end(),
-              [](const pair<float, size_t>& ls, const pair<float, size_t>& rs) {
-                return ls.first > rs.first;
-              });
+  if (stable) {
+    stable_sort(
+        order.begin(), order.end(),
+        [](const pair<float, size_t>& ls, const pair<float, size_t>& rs) {
+          return ls.first > rs.first;
+        });
+  } else {
+    sort(order.begin(), order.end(),
+         [](const pair<float, size_t>& ls, const pair<float, size_t>& rs) {
+           return ls.first > rs.first;
+         });
+  }
   vector<size_t> ordered;
   transform(order.begin(), order.end(), back_inserter(ordered),
             [](auto& km) { return km.second; });

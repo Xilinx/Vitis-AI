@@ -44,11 +44,39 @@ class XGraph(object):
     self._const_ops: Dict[str, Op] = {}
     self._ops: Dict[str, Op] = {}
 
+  
+  def _check_inputs(self, input_ops):
+    if any([ip is None for ip in input_ops]):
+      raise RuntimeError('The input op is `None`, please check graph.')
+    
   def create_const_op(self, name: str, data: Optional[np.ndarray]) -> NoReturn:
     const_op = self._graph.create_const_op(name, data)
     if name in self._const_ops:
       raise RuntimeError('The const op {} has already in graph'.format(name))
     return const_op
+  
+  
+  def create_input_transpose_ops(self, input_list: List[Op], input_tensors: 'List[base_tensor::Tensor]'):
+    t_ops = []
+    for i, (input, tensor) in enumerate(zip(input_list, input_tensors)):
+      if tensor.ndim in [4, 5]:
+        attrs: Dict[str, Any] = {}
+        attrs['order'] = [0, 3, 1, 2] if tensor.ndim == 4 else [0, 4, 3, 1, 2]
+        input_ops: Dict[str, List[Op]] = {}
+        input_ops['input'] = [input]
+        op_name = input.get_name() + NNDCT_KEYS.TRANSPOSE_OP_SUFFIX
+        t_op = self.get_op_by_name(op_name)
+        if t_op is None:
+          t_op = self.create_normal_op(
+              op_name,
+              'transpose',
+              attrs=attrs,
+              input_ops=input_ops)
+
+        t_ops.append(t_op)
+      else:
+        t_ops.append(input)
+    return t_ops
 
   def create_normal_op(self,
                        name: str,
@@ -56,6 +84,8 @@ class XGraph(object):
                        tensor: Optional[np.ndarray] = None,
                        attrs: Optional[Dict[str, Any]] = None,
                        input_ops: Optional[List[Op]] = None) -> Op:
+    if input_ops is not None:
+      self._check_inputs(input_ops['input'])
     op = self._graph.create_op(name, kind, attrs, input_ops)
     return op
 
@@ -64,6 +94,7 @@ class XGraph(object):
 
     formal_name = re.sub(_XMODEL_NAME_PATTERN, "_", name)
     const_op = self.create_const_op(formal_name, data)
+    # print(const_op.get_name(), "const", const_op.get_output_tensor().dims)    
     fixed_const_op = self.create_fix_op(const_op, name, quant_info)
     return fixed_const_op if fixed_const_op else const_op
 
@@ -81,6 +112,7 @@ class XGraph(object):
         tensor=tensor,
         attrs=attrs,
         input_ops=input_ops)
+    # print(op.get_name(), kind, op.get_output_tensor().dims)
     post_fixed_op = self.create_fix_op(op, name, quant_info)
     return post_fixed_op if post_fixed_op else op
 
@@ -94,6 +126,7 @@ class XGraph(object):
         pre_fix_ops.append(op)
     return pre_fix_ops
 
+  
   def create_fix_op(self, input: Op, key_name: str,
                     quant_info: NndctQuantInfo, id: Optional[int] = None, post_fix: bool = True) -> Optional[Op]:
 
@@ -146,7 +179,14 @@ class XGraph(object):
     if op is None:
       op = self._graph.get_op(formal_name)
     return op
-
+  
+  def get_op_output_shape(self, name: str) -> List[int]:
+    op = self.get_op_by_name(name)
+    if op:
+      return op.get_output_tensor().dims
+    else:
+      NndctScreenLogger().warning("{name} is not in xmodel. Please check it.")
+      
   def export_to_xmodel(self, fname: str) -> NoReturn:
     fname += NNDCT_KEYS.XMODEL_SUFFIX
     try:

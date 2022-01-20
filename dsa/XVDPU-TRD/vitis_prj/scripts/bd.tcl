@@ -82,3 +82,4 @@ proc bip_set_time_stamp {ip} {
     set_property "CONFIG.TIME_QUARTER"  [expr [scan [clock format [clock seconds] -format %M] %d] /15   ] $ip
   }
 }
+

@@ -16,7 +16,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-
 from xdputil_component import *
 import xdputil_component
 
@@ -25,19 +24,19 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="xilinx tools")
-    parser.add_argument("-v", "--version", action="version", version="%(prog)s 1.0")
-    subparsers = parser.add_subparsers(
-        title="sub command ", description="xmodel tools", help="sub-command help"
-    )
+    parser.add_argument("-v",
+                        "--version",
+                        action="version",
+                        version="%(prog)s 1.0")
+    subparsers = parser.add_subparsers(title="sub command ",
+                                       description="xmodel tools",
+                                       help="sub-command help")
     for i in xdputil_component.__all__:
         m = getattr(xdputil_component, i)
         m.help(subparsers)
     args = parser.parse_args()
 
-    try:
-        args.func(args)
-    except AttributeError:
-        parser.exit(1, parser.format_help())
+    args.func(args)
 
 
 if __name__ == "__main__":

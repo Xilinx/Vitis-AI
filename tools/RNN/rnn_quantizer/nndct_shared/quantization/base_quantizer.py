@@ -51,6 +51,7 @@ class BaseQuantizer():
       self.bias_corr = {}
     self.bias_corr_file = '/'.join([output_dir, 'bias_corr.pth'])
     self.param_file = '/'.join([output_dir, 'param.pth'])
+    self.keep_fp = False
 
   @classmethod
   def create_from_strategy(cls, quant_mode, output_dir, quant_strategy):
@@ -157,7 +158,8 @@ class BaseQuantizer():
           if node.op.type in [NNDCT_OP.CONV2D,
                               NNDCT_OP.CONVTRANSPOSE2D,
                               NNDCT_OP.DEPTHWISE_CONV2D,
-                              NNDCT_OP.DENSE]:
+                              NNDCT_OP.DENSE,
+                              NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
             self.bias_corr[node.name] = None
 
   def need_quantize_tensor(self, node_name, tensor_type='output'):

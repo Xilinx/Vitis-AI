@@ -16,11 +16,14 @@
 #include <xrt.h>
 
 #include <iostream>
+#include <vitis/ai/env_config.hpp>
 
 #include "vitis/ai/parse_value.hpp"
 #include "vitis/ai/profiling.hpp"
 #include "xir/dpu_controller.hpp"
 #include "xir/xrt_device_handle.hpp"
+DEF_ENV_PARAM_2(CU_NAME, "DPUCZDX8G", std::string);
+
 using namespace std;
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
@@ -52,7 +55,7 @@ int main(int argc, char* argv[]) {
   auto count = std::stoi(argv[5]);
 
   //
-  auto cu_name = std::string("dpu_xrt_top");
+  auto cu_name = ENV_PARAM(CU_NAME);
   auto handle = h->get_handle(cu_name, idx);
   auto cu_addr = h->get_cu_addr(cu_name, idx);
   for (auto i = 0; i < count; ++i) {

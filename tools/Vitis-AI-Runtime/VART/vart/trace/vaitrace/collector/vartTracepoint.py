@@ -17,6 +17,7 @@ import sys
 import os
 import collector
 import logging
+import json
 from tempfile import TemporaryDirectory
 
 
@@ -41,11 +42,11 @@ Trace data is stored in dict & sorted by classname
 """
 
 
-def trans_row(data):
+def trans_row(trace_data, xmodel_info):
     current_section = "null"
     result = []
 
-    for d in data:
+    for d in trace_data:
         if d.startswith('#'):
             if d.startswith("#SECTION"):
                 current_section = trans_col(d).get('#SECTION', "null")
@@ -54,6 +55,13 @@ def trans_row(data):
         item = trans_col(d)
         item.update({"section": current_section})
         cname = item.get("classname", "null")
+
+        result.append(item)
+
+    for d in xmodel_info:
+        item = json.loads(d)
+        item.pop("mc_code_sstr.str()")
+        item.update({"section": "XMODEL"})
 
         result.append(item)
 
@@ -111,13 +119,17 @@ class tracepointCollector(collector.collectorBase.Collector):
 
     def getData(self):
         traceEvents = []
+        xmodelInfo = []
 
         for root, dirs, files in os.walk(self.logdirName):
             for name in files:
                 f = os.path.join(root, name)
-                traceEvents += open(f).readlines()
+                if name.find("subgraph_info") > 0:
+                    xmodelInfo += open(f).readlines()
+                else:
+                    traceEvents += open(f).readlines()
 
-        return trans_row(traceEvents)
+        return trans_row(traceEvents, xmodelInfo)
 
 
 collector.collectorBase.register(tracepointCollector())

@@ -19,7 +19,7 @@
 #include "xir/op/shape_inference.hpp"
 
 using namespace xir;
-
+using std::string;
 #define XIR_REGISTER_BUILT_IN_OP(OP)                                           \
   static BuiltInOPsRegister BUILT_IN_OPDEFS_##OP(OP);
 
@@ -163,7 +163,7 @@ std::function<void(xir::OpDef&)> ConvOpDefGenerator(xir::DataType::Type T) {
         "The value must be: `{dilation_width, dilation_height}`, "
         "The dilation in the batch or depth are 1 in default.",
         {1, 1});
-    auto pad_mode = xir::AttrDefBuilder<string>::build(
+    auto pad_mode = xir::AttrDefBuilder<std::string>::build(
         "pad_mode", AttrDef::REQUIRED,
         "`Datatype`: `string`\n\n"
         "We support 4 padding mode: `FLOOR, CEIL, SAME, VALID`. "
@@ -358,6 +358,113 @@ XIR_REGISTER_BUILT_IN_OP(depthwiseconv2d);
 XIR_REGISTER_BUILT_IN_OP(transposed_conv2d);
 XIR_REGISTER_BUILT_IN_OP(transposed_depthwise_conv2d);
 
+std::function<void(xir::OpDef&)> Conv3dOpDefGenerator(xir::DataType::Type T) {
+  return [=](xir::OpDef& op_def) {
+    auto input = xir::OpArgDef{"input", OpArgDef::REQUIRED, T,
+                               "An input tensor with shape "
+                               "`[batch, in_height, in_width, depth, in_channels]`."};
+    auto weights = xir::OpArgDef{
+        "weights", OpArgDef::REQUIRED, T,
+        "A filter tensor with shape "
+        "`[output_channels, kernel_height, kernel_width, kernel_depth, in_channels]`."};
+    auto bias = xir::OpArgDef{"bias", OpArgDef::OPTIONAL, T,
+                              "A bias tensor with shape "
+                              "`[output_channels]`."};
+    auto kernel = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        "kernel", AttrDef::REQUIRED, 3,
+        "`Datatype`: `vector<int>`\n\n"
+        "The kernel sizes of the filter. "
+        "The value must be: `{kernel_width, kernel_height, kernel_depth}`.");
+    auto stride = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        "stride", AttrDef::REQUIRED, 3,
+        "`Datatype`: `vector<int>`\n\n"
+        "The strides of the filter. "
+        "The value must be: `{stride_width, stride_height, stride_depth}`.");
+    auto dilation = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        "dilation", AttrDef::OPTIONAL, 3,
+        "`Datatype`: `vector<int>`\n\n"
+        "The dilation of the filter. "
+        "The value must be: `{dilation_width, dilation_height, dilation_depth}`, "
+        "The dilation in the batch or depth are 1 in default.",
+        {1, 1, 1});
+    auto pad_mode = xir::AttrDefBuilder<string>::build(
+        "pad_mode", AttrDef::REQUIRED,
+        "`Datatype`: `string`\n\n"
+        "We support 4 padding mode: `FLOOR, CEIL, SAME, VALID`. "
+        "For example, when you parsing models from other frameworks, "
+        "`caffe, pytorch->\"FLOOR\", tensorflow->\"SAME\" or \"VALID\"`.");
+    auto pad = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        "pad", AttrDef::OPTIONAL, 6,
+        "`Datatype`: `vector<int>`\n\n"
+        "The padding sizes of input feature maps. "
+        "The value must be `{left, right, top, bottom, near, far}`.\n\n"
+        "For transposed convolutions, the padding here denotes the "
+        "`{kernel_size - 1 - actual_padding}`."
+        "This is an optional attribute, when the pad_mode is SAME or VALID, "
+        "you don't need to specify this attribute.",
+        {0, 0, 0, 0, 0, 0});
+    op_def.add_input_arg(input)
+        .add_input_arg(weights)
+        .add_input_arg(bias)
+        .add_attr(kernel)
+        .add_attr(stride)
+        .add_attr(dilation)
+        .add_attr(pad_mode)
+        .add_attr(pad);
+  };
+}
+
+auto conv3d = xir::OpDef("conv3d")
+                  .inherit_from(Conv3dOpDefGenerator(xir::DataType::FLOAT))
+                  .set_annotation(
+                      "3D convolution.\n\n")
+                  .set_shape_infer(xir::shape_infer_conv3d);
+
+auto transposed_conv3d = xir::OpDef("transposed-conv3d")
+                  .inherit_from(Conv3dOpDefGenerator(xir::DataType::FLOAT))
+                  .set_annotation(
+                      "Transposed 3D convolution.\n\n")
+                  .set_shape_infer(xir::shape_infer_transposed_conv3d);
+
+auto depthwise_conv3d =
+    xir::OpDef("depthwise-conv3d")
+        .inherit_from(Conv3dOpDefGenerator(xir::DataType::FLOAT))
+        .set_annotation(
+            "Depth-wise 3D convolution.\n\n")
+        .set_shape_infer(xir::shape_infer_depthwise_conv3d)
+        .add_constraint([](xir::Op* op) {
+          auto weights = op->get_input_tensor("weights");
+          auto w_shape = weights->get_shape();
+          auto in = op->get_input_tensor("input");
+          auto in_shape = in->get_shape();
+          UNI_LOG_CHECK(w_shape[4] == in_shape[4], XIR_INVALID_ARG_OCCUR)
+              << "The channel of weights should be equal to the channel of "
+                 "input in "
+                 "depthwise conv3d";
+        });
+
+auto transposed_depthwise_conv3d =
+    xir::OpDef("transposed-depthwise-conv3d")
+        .inherit_from(Conv3dOpDefGenerator(xir::DataType::FLOAT))
+        .set_annotation(
+            "Transposed depth-wise 3D convolution.\n\n")
+        .set_shape_infer(xir::shape_infer_transposed_depthwise_conv3d)
+        .add_constraint([](xir::Op* op) {
+          auto weights = op->get_input_tensor("weights");
+          auto w_shape = weights->get_shape();
+          auto in = op->get_input_tensor("input");
+          auto in_shape = in->get_shape();
+          UNI_LOG_CHECK(w_shape[4] == in_shape[4], XIR_INVALID_ARG_OCCUR)
+              << "The channel of weights should be equal to the channel of "
+                 "input in "
+                 "depthwise conv3d";
+        });
+
+XIR_REGISTER_BUILT_IN_OP(conv3d);
+XIR_REGISTER_BUILT_IN_OP(depthwise_conv3d);
+XIR_REGISTER_BUILT_IN_OP(transposed_conv3d);
+XIR_REGISTER_BUILT_IN_OP(transposed_depthwise_conv3d);
+
 std::function<void(xir::OpDef&)> FixedConvOpDefGenerator(
     xir::DataType::Type T) {
   return [=](xir::OpDef& op_def) {
@@ -478,6 +585,129 @@ XIR_REGISTER_BUILT_IN_OP(conv2d_fix);
 XIR_REGISTER_BUILT_IN_OP(depthwise_conv2d_fix);
 XIR_REGISTER_BUILT_IN_OP(transposed_conv2d_fix);
 XIR_REGISTER_BUILT_IN_OP(transposed_depthwise_conv2d_fix);
+
+std::function<void(xir::OpDef&)> FixedConv3dOpDefGenerator(
+    xir::DataType::Type T) {
+  return [=](xir::OpDef& op_def) {
+    auto input = xir::OpArgDef{"input", OpArgDef::REQUIRED, T,
+                               "An input tensor with shape "
+                               "`[batch, in_height, in_width, in_depth, in_channels]`."};
+    auto weights = xir::OpArgDef{
+        "weights", OpArgDef::REQUIRED, T,
+        "A filter tensor with shape "
+        "`[output_channels, kernel_height, kernel_width, kernel_depth, in_channels]`."};
+    auto bias = xir::OpArgDef{"bias", OpArgDef::OPTIONAL, T,
+                              "A bias tensor with shape "
+                              "`[output_channels]`."};
+    auto kernel = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        "kernel", AttrDef::REQUIRED, 3,
+        "`Datatype`: `vector<int>`\n\n"
+        "The kernel sizes of the filter. "
+        "The value must be: `{kernel_width, kernel_height}`.");
+    auto stride = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        "stride", AttrDef::REQUIRED, 3,
+        "`Datatype`: `vector<int>`\n\n"
+        "The strides of the filter. "
+        "The value must be: `{stride_width, stride_height}`.");
+    auto dilation = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        "dilation", AttrDef::OPTIONAL, 3,
+        "`Datatype`: `vector<int>`\n\n"
+        "The dilation of the filter. "
+        "The value must be: `{dilation_width, dilation_height}`, "
+        "The dilation in the batch or depth are 1 in default.",
+        {1, 1, 1});
+    auto pad = xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        "pad", AttrDef::OPTIONAL, 6,
+        "`Datatype`: `vector<int>`\n\n"
+        "The padding sizes of input feature maps. "
+        "The value must be `{left, right, top, bottom}`.\n\n"
+        "For transposed convolutions, the padding here denotes the "
+        "`{kernel_size - 1 - actual_padding}`."
+        "This is an optional attribute, when the pad_mode is SAME or VALID, "
+        "you don't need to specify this attribute.",
+        {0, 0, 0, 0, 0, 0});
+    auto nonlinear = xir::AttrDefBuilder<std::string>::build(
+        "nonlinear", AttrDef::OPTIONAL,
+        "`Datatype`: `string`\n\n"
+        "nonlinear type, \"NONE\", \"RELU\", \"PRELU\", "
+        "\"LEAKYRELU\",\"RELU6\",\"HSIGMOID\",\"HSWISH\".",
+        "");
+    op_def.add_input_arg(input)
+        .add_input_arg(weights)
+        .add_input_arg(bias)
+        .add_attr(kernel)
+        .add_attr(stride)
+        .add_attr(dilation)
+        .add_attr(pad)
+        .add_attr(nonlinear);
+  };
+}
+
+auto conv3d_fix =
+    xir::OpDef("conv3d-fix")
+        .inherit_from(FixedConv3dOpDefGenerator(xir::DataType::XINT))
+        .add_attr(xir::AttrDefBuilder<int>::build("hsigmoid_in",
+                                                  AttrDef::OPTIONAL,
+                                                  "`Datatype`: `int`\n\n"
+                                                  "fix_point of hsigmoid",
+                                                  -128))
+        .add_attr(xir::AttrDefBuilder<int>::build("shift_hsigmoid",
+                                                  AttrDef::OPTIONAL,
+                                                  "`Datatype`: `int`\n\n"
+                                                  "shift value after hsigmoid",
+                                                  -128))
+        .add_attr(xir::AttrDefBuilder<int>::build("shift_hswish",
+                                                  AttrDef::OPTIONAL,
+                                                  "`Datatype`: `int`\n\n"
+                                                  "shift value after hswish",
+                                                  -128))
+        .add_constraint([](xir::Op* op) {
+          if (op->has_attr("nonlinear")) {
+            if (op->get_attr<std::string>("nonlinear") == "HSIGMOID" ||
+                op->get_attr<std::string>("nonlinear") == "HSWISH") {
+              UNI_LOG_CHECK(op->get_attr<int>("hsigmoid_in") != -128 &&
+                                op->get_attr<int>("shift_hsigmoid") != -128,
+                            XIR_INVALID_ARG_OCCUR)
+                  << "the activation type of conv3d-fix is "
+                  << op->get_attr<std::string>("nonlinear")
+                  << " but you do not set the shift value for this operation.";
+              if (op->get_attr<std::string>("nonlinear") == "HSWISH")
+                UNI_LOG_CHECK(op->get_attr<int>("shift_hswish") != -128,
+                              XIR_INVALID_ARG_OCCUR)
+                    << "the activation type of conv3d-fix is "
+                    << op->get_attr<std::string>("nonlinear")
+                    << " but you do not set the shift_hswish for this "
+                       "operation.";
+              UNI_LOG_CHECK(
+                  op->has_attr("shift_bias") && op->has_attr("shift_cut"),
+                  XIR_INVALID_ARG_OCCUR)
+                  << "the activation type of conv3d-fix is "
+                  << op->get_attr<std::string>("nonlinear")
+                  << " you need to set shift_bias and shift_cut for it..";
+            }
+          }
+        })
+        .set_shape_infer(xir::shape_infer_conv3d_fix);
+
+auto depthwise_conv3d_fix =
+    xir::OpDef("depthwise-conv3d-fix")
+        .inherit_from(FixedConv3dOpDefGenerator(xir::DataType::XINT))
+        .set_shape_infer(xir::shape_infer_depthwise_conv3d_fix);
+
+auto transposed_conv3d_fix =
+    xir::OpDef("transposed-conv3d-fix")
+        .inherit_from(FixedConv3dOpDefGenerator(xir::DataType::XINT))
+        .set_shape_infer(xir::shape_infer_transposed_conv3d_fix);
+
+auto transposed_depthwise_conv3d_fix =
+    xir::OpDef("transposed-depthwise-conv3d-fix")
+        .inherit_from(FixedConv3dOpDefGenerator(xir::DataType::XINT))
+        .set_shape_infer(xir::shape_infer_transposed_depthwise_conv3d_fix);
+
+XIR_REGISTER_BUILT_IN_OP(conv3d_fix);
+XIR_REGISTER_BUILT_IN_OP(depthwise_conv3d_fix);
+XIR_REGISTER_BUILT_IN_OP(transposed_conv3d_fix);
+XIR_REGISTER_BUILT_IN_OP(transposed_depthwise_conv3d_fix);
 
 std::function<void(xir::OpDef&)> Pool2dOpDefGenerator(xir::DataType::Type T) {
   return [=](xir::OpDef& op_def) {
@@ -1187,7 +1417,7 @@ std::function<void(xir::OpDef&)> ResizeOpDefGenerator(xir::DataType::Type T) {
         .add_attr(
             xir::AttrDefBuilder<std::string>::build("mode", AttrDef::REQUIRED,
                                                     "`Datatype`: `string`\n\n"
-                                                    "NEAREST or BILINEAR"))
+                                                    "NEAREST, BILINEAR or TRILINEAR"))
         .add_attr(xir::AttrDefBuilder<bool>::build(
             "align_corners", AttrDef::OPTIONAL,
             "`Datatype`: `bool`\n\n"
@@ -1206,15 +1436,15 @@ auto resize =
     xir::OpDef("resize")
         .inherit_from(ResizeOpDefGenerator(xir::DataType::FLOAT))
         .add_attr(xir::AttrDefBuilder<std::vector<float>>::build(
-            "scale", AttrDef::OPTIONAL, 2,
+            "scale", AttrDef::OPTIONAL, 0,
             "`Datatype`: `vector<float>`\n\n"
             "Constant values denotes the scale to resize the input. "
             "scale = out / in",
-            {1, 1}))
+            {}))
         .set_annotation(
             "Operator resize the feature maps. For example, if the input "
             "is an image, and the shape of this image is [h, w, c], after "
-            "resize, "
+            "2d resize, "
             "the shape of the output image is [oh, ow, c].\n\n"
             "    scale = (align_corners && out > 1)\n"
             "            ? (in - 1) / (out - 1)\n"
@@ -1245,16 +1475,30 @@ auto resize =
             "                        (image[bottom, left, c] * (1 - x_lerp) +\n"
             "                         image[bottom, right, c] * x_lerp) * "
             "y_lerp\n")
+        .add_constraint([](xir::Op* op) {
+            auto mode = op->get_attr<std::string>("mode");
+          	auto in = op->get_input_tensor("input");
+          	auto in_shape = in->get_shape();
+			if (mode == "NEAREST" || mode == "BILINEAR") {
+				UNI_LOG_CHECK(in_shape.size() == 4, XIR_INVALID_ARG_OCCUR)
+				<< "We only support NEAREST and BILINEAR resize for 4-D "
+					"feature maps.";
+			}
+			if (mode == "TRILINEAR") {
+				UNI_LOG_CHECK(in_shape.size() == 5, XIR_INVALID_ARG_OCCUR)
+				<< "We only support TRILINEAR resize for 5-D feature maps.";
+			}     
+        })
         .set_shape_infer(xir::shape_infer_resize);
 
 auto upsample_fix =
     xir::OpDef("upsample-fix")
         .inherit_from(ResizeOpDefGenerator(xir::DataType::XINT))
-        .add_attr(xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        .add_attr(xir::AttrDefBuilder<std::vector<float>>::build(
             "scale",                                     //
             AttrDef::REQUIRED,                           //
             2,                                           //
-            "`DataType` : `std::vector<std::int32_t>` "  //
+            "`DataType` : `std::vector<float>` "         //
             "{scale_w, scale_h}"                         //
             ))
         .set_shape_infer(xir::shape_infer_upsample_fix);
@@ -1262,11 +1506,11 @@ auto upsample_fix =
 auto downsample_fix =
     xir::OpDef("downsample-fix")
         .inherit_from(ResizeOpDefGenerator(xir::DataType::XINT))
-        .add_attr(xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+        .add_attr(xir::AttrDefBuilder<std::vector<float>>::build(
             "scale",                                     //
             AttrDef::REQUIRED,                           //
             2,                                           //
-            "`DataType` : `std::vector<std::int32_t>` "  //
+            "`DataType` : `std::vector<float>` "         //
             "{scale_w, scale_h}"                         //
             ))
         .set_shape_infer(xir::shape_infer_downsample_fix);
@@ -1362,6 +1606,35 @@ auto reorg_fix = xir::OpDef("reorg-fix")
 
 XIR_REGISTER_BUILT_IN_OP(reorg);
 XIR_REGISTER_BUILT_IN_OP(reorg_fix);
+
+std::function<void(xir::OpDef&)> PixelShuffleOpDefGenerator(xir::DataType::Type T) {
+  return [=](xir::OpDef& op_def) {
+    op_def
+        .add_input_arg(
+            xir::OpArgDef{"input", OpArgDef::REQUIRED, xir::DataType::FLOAT,
+                          "`[batch, in_height, in_width, in_channels]`."})
+        .add_attr(
+            xir::AttrDefBuilder<std::int32_t>::build("scale", AttrDef::REQUIRED,
+                                                     "`Datatype`: `int`\n\n"
+                                                     "scale for PixelShuffle"))
+        .add_attr(xir::AttrDefBuilder<bool>::build("upscale", AttrDef::REQUIRED,
+                                                   "`Datatype`: `bool`\n\n"
+                                                   "upscale or downscale PixelShuffle."));
+  };
+}
+
+auto pixel_shuffle = xir::OpDef("pixel-shuffle")
+                 .inherit_from(PixelShuffleOpDefGenerator(xir::DataType::FLOAT))
+                 .set_annotation(
+                     "https://pytorch.org/docs/stable/generated/torch.nn.PixelShuffle.html")
+                 .set_shape_infer(xir::shape_infer_pixel_shuffle);
+
+auto pixel_shuffle_fix = xir::OpDef("pixel-shuffle-fix")
+                     .inherit_from(ReorgOpDefGenerator(xir::DataType::XINT))
+                     .set_shape_infer(xir::shape_infer_pixel_shuffle_fix);
+
+XIR_REGISTER_BUILT_IN_OP(pixel_shuffle);
+XIR_REGISTER_BUILT_IN_OP(pixel_shuffle_fix);
 
 auto softmax =
     xir::OpDef("softmax")

@@ -23,7 +23,6 @@ project_name=$(basename ${script_path})
 declare -a args
 args+=(-DBUILD_TEST=ON)
 args+=(-DENABLE_DPU_RUNNER=ON)
-args+=(-DENABLE_RNN_RUNNER=ON)
 
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \
@@ -69,6 +68,7 @@ done
 # conda
 if [ ${conda:=false} == true ]; then
     args+=(-DCMAKE_PREFIX_PATH=${CONDA_PREFIX})
+    install_prefix=${CONDA_PREFIX}
 fi
 
 # set build type

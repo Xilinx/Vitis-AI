@@ -137,7 +137,7 @@ std::vector<CarPlateRecogResult> CarPlateRecogImp::run(const std::vector<cv::Mat
     }
     auto rs = plate_recog_->run(car_mat.second);
     for(size_t i = 0; i < rs.size(); i++) {
-      plate_results.push_back(make_pair(car_mat.first[i], rs[i]));        
+      plate_results.push_back(std::make_pair(car_mat.first[i], rs[i]));        
     }
     nrs.push_back( CarPlateRecogResult{getInputWidth(),
                           getInputHeight(),                          //

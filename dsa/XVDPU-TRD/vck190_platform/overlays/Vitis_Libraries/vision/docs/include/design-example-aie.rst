@@ -179,6 +179,13 @@ The data transfer to AIE via datamovers is initiated along with graph run and fu
 Makefile
 ========
 
-Run 'make help' to get list of commands and flows supported. Running below command will initiate a hardware build.
+Run 'make help' to get list of commands and flows supported. Running below commands will initiate a hardware build.
 
-make all TARGET=hw DEVICE=<FPGA platform>
+.. code:: c
+
+	source < path-to-Vitis-installation-directory >/settings64.sh
+	export SYSROOT=< path-to-platform-sysroot >
+	export EDGE_COMMON_SW=< path-to-rootfs-and-Image-files >
+	make all TARGET=hw DEVICE=< path-to-platform-directory >/< platform >.xpfm
+	
+.. include:: include/f2d-l3-pipeline.rst

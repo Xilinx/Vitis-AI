@@ -16,7 +16,7 @@
 
 #!/bin/sh
 cp utils/run_oie.py ./run_oie.py
-cp utils/stacked_alternating_lstm_dpu_v2.py allennlp/modules/stacked_alternating_lstm.py
+sudo cp utils/stacked_alternating_lstm_dpu_v2.py $CONDA_PREFIX/lib/python3.*/site-packages/allennlp/modules/stacked_alternating_lstm.py
 export PYTHONPATH=../common:$PYTHONPATH
 python run_oie.py --in=./test/test.oie.sent --out=./output/output_dpu.txt --model-path=./weights/ --batch-size=1 --cuda-device=-1
 python ./oie-benchmark/moveConf.py --in=./output/output_dpu.txt --out=./output/output_dpu_tab.txt

@@ -1,23 +1,26 @@
 #
 # Copyright 2019 Xilinx Inc.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
 #
 
 cmake_minimum_required(VERSION 3.9)
-project(xir VERSION 1.4.1 LANGUAGES C CXX)
+project(
+  xir
+  VERSION 2.0.0
+  LANGUAGES C CXX)
 
-include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(BUILD_CONTRIB "build contrib lib" OFF)
 option(BUILD_TEST "build test bin" OFF)
@@ -26,31 +29,33 @@ option(BUILD_PYTHON "build python interface" OFF)
 option(INSTALL_HOME "install python lib in cmake install path" OFF)
 option(INSTALL_USER "install python lib in user space" OFF)
 
-find_package(unilog REQUIRED)
-find_package(OpenSSL REQUIRED)
+# find_package(glog REQUIRED)
+if(NOT TARGET unilog::unilog)
+  find_package(unilog REQUIRED)
+endif()
+
 find_package(Boost REQUIRED)
 find_package(Protobuf REQUIRED)
+find_package(Threads REQUIRED)
 
 add_subdirectory(src)
 add_subdirectory(tools)
 
 file(RELATIVE_PATH REL_INCLUDE_DIR
-  ${CMAKE_INSTALL_PREFIX}/share/cmake/${PROJECT_NAME}
-  ${CMAKE_INSTALL_PREFIX}/include)
+     ${CMAKE_INSTALL_PREFIX}/share/cmake/${PROJECT_NAME}
+     ${CMAKE_INSTALL_PREFIX}/include)
 set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME}_CMAKE_DIR}/${REL_INCLUDE_DIR}")
 configure_file(cmake/config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
-  @ONLY)
+               "${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.cmake" @ONLY)
 
 write_basic_package_version_file(
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion)
 
-install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
-  DESTINATION share/cmake/${PROJECT_NAME})
+install(FILES "${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+              "${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
+        DESTINATION share/cmake/${PROJECT_NAME})
 
 if(BUILD_TEST)
   add_subdirectory(test)
@@ -61,10 +66,11 @@ if(BUILD_DOC)
 endif(BUILD_DOC)
 
 set(CPACK_PACKAGE_NAME "libxir")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Xilinx Intermediate Representation for deep learning algorithms")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/Copyright.txt")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
+    "Xilinx Intermediate Representation for deep learning algorithms")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/Copyright.txt")
 set(CPACK_PACKAGE_VENDOR "Humanity")
 set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
@@ -101,7 +107,7 @@ if(DEFINED ENV{BUILD_NUMBER})
 endif()
 set(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "cortexa72-cortexa53")
-    set(CPACK_RPM_PACKAGE_ARCHITECTURE "aarch64")
+  set(CPACK_RPM_PACKAGE_ARCHITECTURE "aarch64")
 endif()
 
 include(CPack)

@@ -24,6 +24,10 @@ namespace dpu {
 class DpuSession : public vitis::ai::WithInjection<DpuSession> {
  public:
   explicit DpuSession() = default;
+  static std::unique_ptr<DpuSession> create(const std::string& filename,
+                                            const std::string& kernel);
+  static std::unique_ptr<DpuSession> create(const xir::Subgraph* subgraph,
+                                            xir::Attrs* attrs);
 
  public:
   DpuSession(const DpuSession&) = delete;

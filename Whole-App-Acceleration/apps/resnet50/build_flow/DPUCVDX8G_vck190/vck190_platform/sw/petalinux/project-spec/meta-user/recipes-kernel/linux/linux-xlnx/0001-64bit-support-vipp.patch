@@ -1,0 +1,42 @@
+From 170440d60c7bac17df9e6084f14371107eeba326 Mon Sep 17 00:00:00 2001
+From: Devarsh Thakkar <devarsh.thakkar@xilinx.com>
+Date: Thu, 21 Jan 2021 21:42:23 -0800
+Subject: [PATCH] 64bit support vipp
+
+Signed-off-by: Devarsh Thakkar <devarsh.thakkar@xilinx.com>
+---
+ drivers/media/platform/xilinx/xilinx-vipp.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/media/platform/xilinx/xilinx-vipp.c b/drivers/media/platform/xilinx/xilinx-vipp.c
+index b32e38c..f00f10e 100644
+--- a/drivers/media/platform/xilinx/xilinx-vipp.c
++++ b/drivers/media/platform/xilinx/xilinx-vipp.c
+@@ -15,6 +15,7 @@
+ #include <linux/of_graph.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
++#include <linux/of_reserved_mem.h>
+ 
+ #include <media/v4l2-async.h>
+ #include <media/v4l2-common.h>
+@@ -822,6 +823,16 @@ static int xvip_composite_probe(struct platform_device *pdev)
+ 	ret = xvip_graph_init(xdev);
+ 	if (ret < 0)
+ 		goto error;
++	ret = of_reserved_mem_device_init(&pdev->dev);
++	if (ret) {
++		dev_info(&pdev->dev, "of_reserved_mem_device_init: %d\n", ret);
++	} 
++
++	ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64));
++	if (ret) {
++		dev_err(&pdev->dev, "dma_set_coherent_mask: %d\n", ret);
++		goto error;
++	}
+ 
+ 	platform_set_drvdata(pdev, xdev);
+ 
+-- 
+2.7.4
+

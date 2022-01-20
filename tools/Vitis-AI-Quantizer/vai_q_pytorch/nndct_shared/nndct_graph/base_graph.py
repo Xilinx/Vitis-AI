@@ -1,5 +1,3 @@
-
-
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -23,8 +21,8 @@ from nndct_shared import utils as nndct_utils
 from nndct_shared.base import NNDCT_KEYS, NNDCT_OP
 from nndct_shared.nndct_graph.base_node import Node
 
-
 class GraphBase(ABC):
+
   @abstractmethod
   def children(self, node):
     """Get successors of a node in graph
@@ -78,12 +76,6 @@ class Graph(GraphBase):
     else:
       return node_or_name.name in self._nodes_by_name
 
-  def __contains__(self, node_or_name: Union[str, Node]) -> bool:
-    if isinstance(node_or_name, str):
-      return node_or_name in self._nodes_by_name
-    else:
-      return node_or_name.name in self._nodes_by_name
-
   def node(self, name):
     """Return node with the specified name"""
     return self._nodes_by_name.get(name, None)
@@ -106,7 +98,7 @@ class Graph(GraphBase):
 
   def add_node(self, node: Node) -> None:
     if node.idx == -1:
-      node.idx = len(self._nodes_by_id)
+      node.idx = max([node.idx for node in self.nodes]) + 1
 
     if node.name in self._nodes_by_name or node.idx in self._nodes_by_id:
       raise ValueError("Node with same name {} or id {} has been added.".format(
@@ -123,7 +115,9 @@ class Graph(GraphBase):
   def remove_node(self, node: Node) -> None:
 
     if len(node.in_nodes) != len(node.out_tensors):
-      raise RuntimeError(f"Can't remove node '{node.name}' in which number of inputs is not equal with that of outputs.")
+      raise RuntimeError(
+          f"Can't remove node '{node.name}' in which number of inputs is not equal with that of outputs."
+      )
 
     parents = self.parents(node)
     children = self.children(node)
@@ -138,15 +132,24 @@ class Graph(GraphBase):
       # refering the output tensor of B, which is B:0. Now we want to delete
       # node B and the directly set the output tensor of A to B:0, then there
       # is no need to update D's attribute.
+      # if len(parent.out_nodes) > 1:
+      #     return 
       tensorId2node = {}
       for i, tensor in enumerate(node.in_tensors):
         if tensor.is_param_tensor():
           continue
         index = tensor.node.out_tensors.index(tensor)
         node.out_tensors[i].name = tensor.name
+        old_out = tensor.node.out_tensors[index]
         tensor.node.out_tensors[index] = node.out_tensors[i]
         tensor.node.out_tensors[index].node = tensor.node
         tensorId2node[i] = tensor.node
+        for other in self.children(tensor.node):
+          if other is node:
+            continue
+          in_index = other.in_tensors.index(old_out)
+          other.in_tensors[in_index] = tensor.node.out_tensors[index]
+          
       children = self.children(node)
       if children:
         for cn in children:
@@ -173,7 +176,6 @@ class Graph(GraphBase):
 
     self.remove_node_forcely(node)
 
-
   def remove_node_by_types(self, node_types: List[str]) -> Dict[str, str]:
     if any([node_type in self.op_types for node_type in node_types]):
       nodes_to_remove = []
@@ -195,8 +197,10 @@ class Graph(GraphBase):
     return conv_nodes
 
   def reconnect_nodes(self):
+    self._nodes_by_id.clear()
     for idx, node in enumerate(self.nodes):
       node.idx = idx
+      self._nodes_by_id[idx] = node
       node.clean_connections()
     self.connect_nodes()
 
@@ -243,7 +247,6 @@ class Graph(GraphBase):
   def __str__(self):
     return json.dumps(self.description(), indent=4, separators=(',', ': '))
 
-
   def description(self):
     graph_des = {}
     graph_des['graph_name'] = f"{self.__class__.__name__}"
@@ -252,52 +255,6 @@ class Graph(GraphBase):
       graph_des['nodes'].append(n.description())
 
     return graph_des
-
-
-  def add_node_with_ctx(self, node, p_nodes=None, c_nodes=None):
-    r"""add node and connect it with context
-            Args:
-                node: the Nndct node to be added
-                p_nodes:  list of Nndctnode, each of the node is parent of the node, the parent node should exist
-                c_nodes:  list of Nndctnode, each of the node is child of the node, the parent node should exist
-            Return:
-                None
-        """
-    self.add_node(node.name, NndctNode=node)
-    #cut off the connection between p_nodes and c_nodes:
-    self.insert_node_with_ctx(node, p_nodes, c_nodes)
-
-  def insert_node_with_ctx(self, node, p_nodes: List[Node],
-                           c_nodes: List[Node]) -> NoReturn:
-    r"""insert node and connect it with context
-            Args:
-                node: the Nndct node to be added
-                p_nodes:  list of Nndctnode, each of the node is parent of the node, the parent node should exist
-                c_nodes:  list of Nndctnode, each of the node is child of the node, the parent node should exist
-            Return:
-                None
-        """
-    if p_nodes and c_nodes:
-      children_names = [c.name for c in c_nodes]
-      parent_names = [p.name for p in p_nodes]
-      for p in p_nodes:
-        for cur_c in self.children(p.name):
-          if cur_c.name in children_names:
-            self.remove_edge(p.name, cur_c.name)
-            cur_c.remove_inputs([p.name])
-      for c in c_nodes:
-        for cur_p in self.parents(c.name):
-          if cur_p.name in parent_names:
-            self.remove_edge(cur_p.name, c.name)
-            c.remove_inputs([cur_p.name])
-    if p_nodes:
-      for p in sorted(p_nodes, key=lambda n: n.idx):
-        self.add_edge(p.name, node.name)
-        node.add_input(p.name)
-    if c_nodes:
-      for c in sorted(c_nodes, key=lambda n: n.idx):
-        self.add_edge(node.name, c.name)
-        c.add_input(node.name)
 
   def set_node_id(self, index, node):
     node.idx = index
@@ -351,8 +308,6 @@ class Graph(GraphBase):
         for block in node.blocks:
           yield block
 
-
-
   @property
   def id2node_map(self):
     return self._nodes_by_id
@@ -382,7 +337,6 @@ class Graph(GraphBase):
   @end_tensors.setter
   def end_tensors(self, tensors):
     self._end_tensors = tensors
-
 
   @property
   def copy_tensor_map(self):

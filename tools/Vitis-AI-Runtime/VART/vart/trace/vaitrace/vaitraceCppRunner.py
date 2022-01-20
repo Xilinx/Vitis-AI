@@ -30,9 +30,17 @@ import vaitraceCfgManager
 import vaitraceSetting
 
 
+force_exit = False
+
+
 def handler(signum, frame):
     logging.info("Killing process...")
     logging.info("Processing trace data, please wait...")
+    global force_exit
+    if force_exit:
+        logging.error("Force exit...")
+        exit(-1)
+    force_exit = True
 
 
 def shell_find_exec_path(_exe):

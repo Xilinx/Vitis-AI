@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: Salsanextv2 segmentation on Semantic-Kitti
+input size: 1*5*64*2048
+float ops: 20.4G
+task: segmentation
+framework: pytorch
+prune: '0.75'
+version: 2.0
+files:
+- name: pt_salsanextv2_semantic-kitti_64_2048_0.75_32G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_salsanextv2_semantic-kitti_64_2048_0.75_32G_2.0.zip
+  checksum: e8c7489286a29e325ae6668cc6af3360
+- name: salsanext_v2_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 3e929ac6d32137857a78653fbc6b3034
+- name: salsanext_v2_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-vck190-r2.0.0.tar.gz
+  checksum: 9ef1f1bfe22923ca27d21a6233c2452f
+- name: salsanext_v2_pt
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 0f3e9cec24b625359650a561c3b683c8
+- name: salsanext_v2_pt
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: fd2a9e508a6ffac85622586f87c56868
+- name: salsanext_v2_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 7d0a9e1c57dbca96d7b25577ccaa5646
+- name: salsanext_v2_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: bb097a27cbfb41d7741bbeef3eb7b78f
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

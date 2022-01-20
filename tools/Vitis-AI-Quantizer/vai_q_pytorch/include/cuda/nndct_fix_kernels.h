@@ -27,6 +27,16 @@ void cuda_sigmoid_table_lookup(const int N,
                                int fragpos);  
 
 template<typename Dtype>
+void cuda_sigmoid_simulation(const int N, 
+                               const Dtype* input, 
+                               Dtype* output);  
+
+template<typename Dtype>
+void cuda_tanh_simulation(const int N, 
+                            const Dtype* input, 
+                            Dtype* output);  
+
+template<typename Dtype>
 void cuda_tanh_table_lookup(const int N, 
                             const Dtype* input, 
                             const Dtype* table,

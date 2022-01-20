@@ -27,10 +27,7 @@ class Tensor(object):
   In the latter case, `tensor.node` is None.
   For getting raw ndarray, call `tensor.data`.
   """
-  @unique
-  class Layout(Enum):
-    NHWC = auto()
-    NCHW = auto()
+  
 
   def __init__(self,
                name=None,
@@ -62,12 +59,7 @@ class Tensor(object):
 
     self._device = device
     self._requires_grad = requires_grad
-    self._layout = None
-    if layout == ['N', 'C', 'H', 'W']:
-      self._layout = Tensor.Layout.NCHW
-    elif layout == ['N', 'H', 'W', 'C']:
-      self._layout = Tensor.Layout.NHWC
-    #self._copy_from = None
+    
 
   def from_ndarray(self, data):
     if not isinstance(data, np.ndarray):
@@ -185,27 +177,4 @@ class Tensor(object):
   def requires_grad(self, need_grad):
     self._requires_grad = need_grad
 
-  @property
-  def layout(self):
-    return self._layout
-
-  @layout.setter
-  def layout(self, layout):
-    if self._layout is not None:
-      assert layout == self._layout, f"Check the layout of {self.name}"
-    else:
-      self._layout = layout
-
-  '''
-  @property
-  def copy_from(self):
-    if self._copy_from == None:
-      return self
-    else:
-      return self._copy_from
-
-  @copy_from.setter
-  def copy_from(self, tensor):
-    self._copy_from = tensor
-  '''
 

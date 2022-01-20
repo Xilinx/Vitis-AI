@@ -46,7 +46,7 @@ static inline std::ostream& operator<<(std::ostream& out,
                                        const std::set<T>& v) {
   int c = 0;
   out << "[";
-  for (const auto x : v) {
+  for (const auto& x : v) {
     if (c++ != 0) {
       out << ",";
     }

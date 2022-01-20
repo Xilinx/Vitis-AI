@@ -18,11 +18,11 @@ import tensorflow as tf
 
 from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import math_ops
-from tensorflow.python.keras.utils.generic_utils import register_keras_serializable
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
 
 __all__ = ['VitisSigmoid']
 
+register_keras_serializable = tf.keras.utils.register_keras_serializable
 serialize_keras_object = tf.keras.utils.serialize_keras_object
 deserialize_keras_object = tf.keras.utils.deserialize_keras_object
 logger = common_utils.VAILogger

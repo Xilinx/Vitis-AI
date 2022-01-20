@@ -1,0 +1,17 @@
+diff --git a/sound/soc/xilinx/xlnx_pl_snd_card.c b/sound/soc/xilinx/xlnx_pl_snd_card.c
+index 7e4684e..b4ddcca 100644
+--- a/sound/soc/xilinx/xlnx_pl_snd_card.c
++++ b/sound/soc/xilinx/xlnx_pl_snd_card.c
+@@ -238,10 +238,12 @@ static struct snd_soc_dai_link xlnx_snd_dai[][XLNX_MAX_PATHS] = {
+ 			SND_SOC_DAILINK_REG(xlnx_hdmi_tx),
+ 			.ops = &xlnx_hdmi_card_ops,
+ 		},
++#if 0
+ 		{
+ 			.name = "xilinx-hdmi-capture",
+ 			SND_SOC_DAILINK_REG(xlnx_hdmi_rx),
+ 		},
++#endif
+ 	},
+ 	[SDI_AUDIO] = {
+ 		{

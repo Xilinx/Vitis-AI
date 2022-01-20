@@ -500,151 +500,6 @@ NodeConfigMap LocateAtrousConv(const NodeMatch& match,
   return ops_to_quantize;
 }
 
-NodeConfigMap LocateConvfcBiasHardSwishV2(const NodeMatch& match,
-                                          const QuantizeConfig& config,
-                                          std::set<NodeGroup>& node_groups) {
-  NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& mul_node_1 = match.inputs[1].node;
-  const NodeDef& biasadd_node = match.inputs[0].node;
-  const NodeDef& bias_node = match.inputs[0].inputs[1].node;
-  const NodeDef& convfc_node = match.inputs[0].inputs[0].node;
-  const NodeDef& input_node = match.inputs[0].inputs[0].inputs[0].node;
-  const NodeDef& weight_node = match.inputs[0].inputs[0].inputs[1].node;
-  if (!CheckDtype(mul_node) || !CheckDtype(convfc_node)) return ops_to_quantize;
-
-  bool updated = UpdateNodeConfigMap(
-      weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(bias_node, GetWtConfig(config),
-                                           ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(mul_node, GetActConfig(config),
-                                           ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(biasadd_node, GetActConfig(config),
-                                           ops_to_quantize);
-  if (updated) {
-    DLOG_INFO(1) << "Quantize convfc + bias + hard_swish_v2: "
-                 << mul_node.name() << "(" << mul_node.op() << ") <-- "
-                 << mul_node_1.name() << "(" << mul_node_1.op() << ") <-- "
-                 << biasadd_node.name() << "(" << biasadd_node.op() << ") <-- "
-                 << convfc_node.name() << "(" << convfc_node.op() << ")";
-    node_groups.insert(std::vector<string>{
-        convfc_node.name(), input_node.name(), mul_node.name(),
-        weight_node.name(), bias_node.name()});
-  }
-  return ops_to_quantize;
-}
-
-NodeConfigMap LocateConvfcBiasHardSwish(const NodeMatch& match,
-                                        const QuantizeConfig& config,
-                                        std::set<NodeGroup>& node_groups) {
-  NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& mul_node_1 = match.inputs[0].node;
-  const NodeDef& biasadd_node = match.inputs[0].inputs[0].node;
-  const NodeDef& bias_node = match.inputs[0].inputs[0].inputs[1].node;
-  const NodeDef& convfc_node = match.inputs[0].inputs[0].inputs[0].node;
-  const NodeDef& input_node =
-      match.inputs[0].inputs[0].inputs[0].inputs[0].node;
-  const NodeDef& weight_node =
-      match.inputs[0].inputs[0].inputs[0].inputs[1].node;
-  if (!CheckDtype(mul_node) || !CheckDtype(convfc_node)) return ops_to_quantize;
-
-  bool updated = UpdateNodeConfigMap(
-      weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(bias_node, GetWtConfig(config),
-                                           ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(mul_node, GetActConfig(config),
-                                           ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(biasadd_node, GetActConfig(config),
-                                           ops_to_quantize);
-  if (updated) {
-    DLOG_INFO(1) << "Quantize convfc + bias + hard_swish: " << mul_node.name()
-                 << "(" << mul_node.op() << ") <-- " << mul_node_1.name() << "("
-                 << mul_node_1.op() << ") <-- " << biasadd_node.name() << "("
-                 << biasadd_node.op() << ") <-- " << convfc_node.name() << "("
-                 << convfc_node.op() << ")";
-    node_groups.insert(std::vector<string>{
-        convfc_node.name(), input_node.name(), mul_node.name(),
-        weight_node.name(), bias_node.name()});
-  }
-  return ops_to_quantize;
-}
-
-NodeConfigMap LocateConvfcBiasHardSigmoid(const NodeMatch& match,
-                                          const QuantizeConfig& config,
-                                          std::set<NodeGroup>& node_groups) {
-  NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& relu_6_node = match.inputs[0].node;
-  const NodeDef& add_node = match.inputs[0].inputs[0].node;
-  const NodeDef& biasadd_node = match.inputs[0].inputs[0].inputs[0].node;
-  const NodeDef& bias_node = match.inputs[0].inputs[0].inputs[0].inputs[1].node;
-  const NodeDef& convfc_node =
-      match.inputs[0].inputs[0].inputs[0].inputs[0].node;
-  const NodeDef& input_node =
-      match.inputs[0].inputs[0].inputs[0].inputs[0].inputs[0].node;
-  const NodeDef& weight_node =
-      match.inputs[0].inputs[0].inputs[0].inputs[0].inputs[1].node;
-  if (!CheckDtype(mul_node) || !CheckDtype(convfc_node)) return ops_to_quantize;
-
-  bool updated = UpdateNodeConfigMap(
-      weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(bias_node, GetWtConfig(config),
-                                           ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(mul_node, GetActConfig(config),
-                                           ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(biasadd_node, GetActConfig(config),
-                                           ops_to_quantize);
-  if (updated) {
-    DLOG_INFO(1) << "Quantize convfc + bias + hard_sigmoid: " << mul_node.name()
-                 << "(" << mul_node.op() << ") <-- " << relu_6_node.name()
-                 << "(" << relu_6_node.op() << ") <-- " << biasadd_node.name()
-                 << "(" << biasadd_node.op() << ") <-- " << convfc_node.name()
-                 << "(" << convfc_node.op() << ")";
-    node_groups.insert(std::vector<string>{
-        convfc_node.name(), input_node.name(), mul_node.name(),
-        weight_node.name(), bias_node.name()});
-  }
-  return ops_to_quantize;
-}
-
-NodeConfigMap LocateConvfcBiasSwish(const NodeMatch& match,
-                                    const QuantizeConfig& config,
-                                    std::set<NodeGroup>& node_groups) {
-  NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& sigmoid_node = match.inputs[1].node;
-  const NodeDef& biasadd_node = match.inputs[0].node;
-  const NodeDef& bias_node = match.inputs[0].inputs[1].node;
-  const NodeDef& convfc_node = match.inputs[0].inputs[0].node;
-  const NodeDef& input_node = match.inputs[0].inputs[0].inputs[0].node;
-  const NodeDef& weight_node = match.inputs[0].inputs[0].inputs[1].node;
-  if (!CheckDtype(sigmoid_node) || !CheckDtype(convfc_node))
-    return ops_to_quantize;
-
-  bool updated = UpdateNodeConfigMap(
-      weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(bias_node, GetWtConfig(config),
-                                           ops_to_quantize);
-  // updated = updated && UpdateNodeConfigMap(sigmoid_node,
-  // GetActConfig(config), ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(mul_node, GetActConfig(config),
-                                           ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(biasadd_node, GetActConfig(config),
-                                           ops_to_quantize);
-  if (updated) {
-    DLOG_INFO(1) << "Quantize convfc + bias + swish: " << mul_node.name() << "("
-                 << mul_node.op() << ") <-- " << sigmoid_node.name() << "("
-                 << sigmoid_node.op() << ") <-- " << biasadd_node.name() << "("
-                 << biasadd_node.op() << ") <-- " << convfc_node.name() << "("
-                 << convfc_node.op() << ")";
-    node_groups.insert(std::vector<string>{
-        convfc_node.name(), input_node.name(), mul_node.name(),
-        weight_node.name(), bias_node.name()});
-  }
-  return ops_to_quantize;
-}
-
 NodeConfigMap LocateConvfcBiasLeakyRelu(const NodeMatch& match,
                                         const QuantizeConfig& config,
                                         std::set<NodeGroup>& node_groups) {
@@ -676,127 +531,6 @@ NodeConfigMap LocateConvfcBiasLeakyRelu(const NodeMatch& match,
     node_groups.insert(std::vector<string>{
         convfc_node.name(), input_node.name(), leakyrelu_node.name(),
         weight_node.name(), bias_node.name()});
-  }
-  return ops_to_quantize;
-}
-
-NodeConfigMap LocateConvfcHardSigmoid(const NodeMatch& match,
-                                      const QuantizeConfig& config,
-                                      std::set<NodeGroup>& node_groups) {
-  NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& relu_6_node = match.inputs[0].node;
-  const NodeDef& add_node = match.inputs[0].inputs[0].node;
-  const NodeDef& convfc_node = match.inputs[0].inputs[0].inputs[0].node;
-  const NodeDef& input_node =
-      match.inputs[0].inputs[0].inputs[0].inputs[0].node;
-  const NodeDef& weight_node =
-      match.inputs[0].inputs[0].inputs[0].inputs[1].node;
-  if (!CheckDtype(mul_node) || !CheckDtype(convfc_node)) return ops_to_quantize;
-
-  bool updated = UpdateNodeConfigMap(
-      weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(convfc_node, GetActConfig(config),
-                                           ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(mul_node, GetActConfig(config),
-                                           ops_to_quantize);
-  if (updated) {
-    DLOG_INFO(1) << "Quantize convfc + hard_sigmoid: " << mul_node.name() << "("
-                 << mul_node.op() << ") <-- " << relu_6_node.name() << "("
-                 << relu_6_node.op() << ") <-- " << convfc_node.name() << "("
-                 << convfc_node.op() << ")";
-    node_groups.insert(std::vector<string>{convfc_node.name(),
-                                           input_node.name(), mul_node.name(),
-                                           weight_node.name(), "NULL"});
-  }
-  return ops_to_quantize;
-}
-
-NodeConfigMap LocateConvfcHardSwishV2(const NodeMatch& match,
-                                      const QuantizeConfig& config,
-                                      std::set<NodeGroup>& node_groups) {
-  NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& mul_node_1 = match.inputs[1].node;
-  const NodeDef& convfc_node = match.inputs[0].node;
-  const NodeDef& input_node = match.inputs[0].inputs[0].node;
-  const NodeDef& weight_node = match.inputs[0].inputs[1].node;
-  if (!CheckDtype(mul_node) || !CheckDtype(convfc_node)) return ops_to_quantize;
-
-  bool updated = UpdateNodeConfigMap(
-      weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
-  // updated = updated && UpdateNodeConfigMap(convfc_node, GetWtConfig(config),
-  //                                          ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(mul_node, GetActConfig(config),
-                                           ops_to_quantize);
-  if (updated) {
-    DLOG_INFO(1) << "Quantize convfc + hard_swish_v2: " << mul_node.name()
-                 << "(" << mul_node.op() << ") <-- " << mul_node_1.name() << "("
-                 << mul_node_1.op() << ") <-- " << convfc_node.name() << "("
-                 << convfc_node.op() << ")";
-    node_groups.insert(std::vector<string>{convfc_node.name(),
-                                           input_node.name(), mul_node.name(),
-                                           weight_node.name(), "NULL"});
-  }
-  return ops_to_quantize;
-}
-
-NodeConfigMap LocateConvfcHardSwish(const NodeMatch& match,
-                                    const QuantizeConfig& config,
-                                    std::set<NodeGroup>& node_groups) {
-  NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& mul_node_1 = match.inputs[0].node;
-  const NodeDef& convfc_node = match.inputs[0].inputs[0].node;
-  const NodeDef& input_node = match.inputs[0].inputs[0].inputs[0].node;
-  const NodeDef& weight_node = match.inputs[0].inputs[0].inputs[1].node;
-  if (!CheckDtype(mul_node) || !CheckDtype(convfc_node)) return ops_to_quantize;
-
-  bool updated = UpdateNodeConfigMap(
-      weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
-  // updated = updated && UpdateNodeConfigMap(convfc_node, GetWtConfig(config),
-  //                                          ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(mul_node, GetActConfig(config),
-                                           ops_to_quantize);
-  if (updated) {
-    DLOG_INFO(1) << "Quantize convfc + hard_swish: " << mul_node.name() << "("
-                 << mul_node.op() << ") <-- " << mul_node_1.name() << "("
-                 << mul_node_1.op() << ") <-- " << convfc_node.name() << "("
-                 << convfc_node.op() << ")";
-    node_groups.insert(std::vector<string>{convfc_node.name(),
-                                           input_node.name(), mul_node.name(),
-                                           weight_node.name(), "NULL"});
-  }
-  return ops_to_quantize;
-}
-
-NodeConfigMap LocateConvfcSwish(const NodeMatch& match,
-                                const QuantizeConfig& config,
-                                std::set<NodeGroup>& node_groups) {
-  NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& sigmoid_node = match.inputs[1].node;
-  const NodeDef& convfc_node = match.inputs[0].node;
-  const NodeDef& input_node = match.inputs[0].inputs[0].node;
-  const NodeDef& weight_node = match.inputs[0].inputs[1].node;
-  if (!CheckDtype(sigmoid_node) || !CheckDtype(convfc_node))
-    return ops_to_quantize;
-
-  bool updated = UpdateNodeConfigMap(
-      weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(mul_node, GetActConfig(config),
-                                           ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(sigmoid_node, GetActConfig(config),
-                                           ops_to_quantize);
-  updated = updated && UpdateNodeConfigMap(convfc_node, GetActConfig(config),
-                                           ops_to_quantize);
-  if (updated) {
-    DLOG_INFO(1) << "Quantize convfc + swish: " << mul_node.name() << "("
-                 << mul_node.op() << ") <-- " << convfc_node.name() << "("
-                 << convfc_node.op() << ")";
-    node_groups.insert(std::vector<string>{convfc_node.name(),
-                                           input_node.name(), mul_node.name(),
-                                           weight_node.name(), "NULL"});
   }
   return ops_to_quantize;
 }
@@ -834,32 +568,15 @@ NodeConfigMap LocateHardSigmoid(const NodeMatch& match,
                                 const QuantizeConfig& config,
                                 std::set<NodeGroup>& node_groups) {
   NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& relu_6_node = match.inputs[0].node;
-  const NodeDef& input_node = match.inputs[0].inputs[0].inputs[0].node;
-  if (!CheckDtype(mul_node)) return ops_to_quantize;
+  const NodeDef& vitis_scale_node = match.node;
+  const NodeDef& mul_node = match.inputs[0].node;
+  if (!CheckDtype(mul_node) || !CheckDtype(vitis_scale_node))
+    return ops_to_quantize;
 
-  bool updated =
-      UpdateNodeConfigMap(mul_node, GetActConfig(config), ops_to_quantize);
+  bool updated = UpdateNodeConfigMap(vitis_scale_node, GetActConfig(config),
+                                     ops_to_quantize);
   if (updated) {
     DLOG_INFO(1) << "Quantize hard sigmoid: " << mul_node.name();
-  }
-  return ops_to_quantize;
-}
-
-NodeConfigMap LocateHardSwishV2(const NodeMatch& match,
-                                const QuantizeConfig& config,
-                                std::set<NodeGroup>& node_groups) {
-  NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& mul_node_1 = match.inputs[1].node;
-  const NodeDef& input_node = match.inputs[0].node;
-  if (!CheckDtype(mul_node)) return ops_to_quantize;
-
-  bool updated =
-      UpdateNodeConfigMap(mul_node, GetActConfig(config), ops_to_quantize);
-  if (updated) {
-    DLOG_INFO(1) << "Quantize hard swish_v2: " << mul_node.name();
   }
   return ops_to_quantize;
 }
@@ -868,15 +585,18 @@ NodeConfigMap LocateHardSwish(const NodeMatch& match,
                               const QuantizeConfig& config,
                               std::set<NodeGroup>& node_groups) {
   NodeConfigMap ops_to_quantize;
-  const NodeDef& mul_node = match.node;
-  const NodeDef& mul_node_1 = match.inputs[0].node;
-  const NodeDef& input_node = match.inputs[0].inputs[0].node;
-  if (!CheckDtype(mul_node)) return ops_to_quantize;
+  const NodeDef& mul_x_node = match.node;
+  const NodeDef& vitis_scale_node = match.inputs[1].node;
+  const NodeDef& input_node = match.inputs[0].node;
+  if (!CheckDtype(mul_x_node)) return ops_to_quantize;
 
   bool updated =
-      UpdateNodeConfigMap(mul_node, GetActConfig(config), ops_to_quantize);
+      UpdateNodeConfigMap(mul_x_node, GetActConfig(config), ops_to_quantize);
+  updated =
+      updated && UpdateNodeConfigMap(vitis_scale_node, GetActConfig(config),
+                                     ops_to_quantize);
   if (updated) {
-    DLOG_INFO(1) << "Quantize hard swish: " << mul_node.name();
+    DLOG_INFO(1) << "Quantize hard swish: " << mul_x_node.name();
   }
   return ops_to_quantize;
 }
@@ -1278,6 +998,7 @@ NodeDef* CreateFixNeuronOp(const string& producer_name,
   AddNodeInput(producer_name, fn_node);
   SetNodeAttr("method", config.method, fn_node);
   SetNodeAttr("phase", config.phase, fn_node);
+  SetNodeAttr("T", DT_FLOAT, fn_node);
   SetNodeAttr("mode", config.mode, fn_node);
   if (config.mode == QuantizeMode::WEIGHT ||
       config.mode == QuantizeMode::DW_WEIGHT) {
@@ -1380,6 +1101,8 @@ Status QuantizeConfig::FromString(const string config_string) {
       scale_all_avgpool = std::stoi(value);
     } else if (param == "replace_relu6") {
       replace_relu6 = std::stoi(value);
+    } else if (param == "replace_sigmoid") {
+      replace_sigmoid = std::stoi(value);
     } else {
       return errors::InvalidArgument("Wrong QuantizeConfig Parameter: " +
                                      param);
@@ -1421,21 +1144,12 @@ Status GraphQuantizer::_LocateOpsToQuantize(const GraphDef& input_graph_def) {
       {"conv2d_backprop_input_bias", &LocateConv2dTransposeBias},
       {"conv2d_backprop_input_relu", &LocateConv2dTransposeRelu},
       {"conv2d_backprop_input", &LocateConv2dTranspose},
-      {"convfc_bias_hard_swish_v2", &LocateConvfcBiasHardSwishV2},
-      {"convfc_bias_hard_swish", &LocateConvfcBiasHardSwish},
-      {"convfc_bias_hard_sigmoid", &LocateConvfcBiasHardSigmoid},
-      {"convfc_bias_swish", &LocateConvfcBiasSwish},
       {"convfc_bias_leakyrelu", &LocateConvfcBiasLeakyRelu},
       {"convfc_bias_fused_leakyrelu", &LocateConvfcBiasFusedLeakyRelu},
       {"convfc_bias_keras_leakyrelu", &LocateConvfcBiasKerasLeakyRelu},
-      {"convfc_hard_swish_v2", &LocateConvfcHardSwishV2},
-      {"convfc_hard_swish", &LocateConvfcHardSwish},
-      {"convfc_hard_sigmoid", &LocateConvfcHardSigmoid},
-      {"convfc_swish", &LocateConvfcSwish},
       {"convfc_leakyrelu", &LocateConvfcLeakyRelu},
       {"convfc_fused_leakyrelu", &LocateConvfcFusedLeakyRelu},
       {"convfc_keras_leakyrelu", &LocateConvfcKerasLeakyRelu},
-      {"hard_swish_v2", &LocateHardSwishV2},
       {"hard_swish", &LocateHardSwish},
       {"hard_sigmoid", &LocateHardSigmoid},
       {"swish", &LocateSwish},
@@ -1624,11 +1338,21 @@ Status GraphQuantizer::_LocateOpsToQuantize(const GraphDef& input_graph_def) {
     } else {
       for (auto name : input_node_names) {
         if (!_ops_to_quantize.count(name)) {
-          DLOG_INFO(1) << "Add quantize op for unquantized input node: " << name
-                       << " of node: " << match.node.name()
-                       << "(op: " << match.node.op()
-                       << ", pattern: " << pattern_name << ")";
-          _ops_to_quantize.insert(std::make_pair(name, GetActConfig(_config)));
+          const NodeDef& current_node = match.node;
+          if (CheckDtype(current_node)) {
+            DLOG_INFO(1) << "Add quantize op for unquantized input node: "
+                         << name << " of node: " << match.node.name()
+                         << "(op: " << match.node.op()
+                         << ", pattern: " << pattern_name << ")";
+            _ops_to_quantize.insert(
+                std::make_pair(name, GetActConfig(_config)));
+          } else {
+            DLOG_INFO(1) << "dytpe is not float, so skip add quantize op for "
+                            "unquantized input node: "
+                         << name << " of node: " << match.node.name()
+                         << "(op: " << match.node.op()
+                         << ", pattern: " << pattern_name << ")";
+          }
         }
       }
     }
@@ -2140,6 +1864,62 @@ Status AdjustShiftCut(const GraphDef& input_graph_def,
   return Status::OK();
 }
 
+// for hard_sigmoid pattern quantize_pos, need input pos >= 0, output pos >= 7
+Status AdjustHardSigmoidPos(const GraphDef& input_graph_def,
+                            GraphDef& output_graph_def) {
+  GraphDef current_graph_def;
+
+  current_graph_def = input_graph_def;
+  std::map<string, const NodeDef*> names_to_nodes;
+  MapNamesToNodes(current_graph_def, &names_to_nodes);
+  std::map<string, int> nodes_to_adjust;
+
+  for (auto i = 0; i < current_graph_def.node_size(); i++) {
+    if (current_graph_def.node(i).op() == "FixNeuron") {
+      const NodeDef& out_fn_node = current_graph_def.node(i);
+      const NodeDef& vitis_mul_node = *(names_to_nodes[out_fn_node.input(0)]);
+      const string& viti_mul_name = vitis_mul_node.name();
+      const string& hardsigmoid_mul_posfix = "vitis_hard_sigmoid_mul";
+      // if vitis hardsigmoid mul node end with "vitis_hard_sigmoid_mul"
+      bool is_vitis_scale_node =
+          vitis_mul_node.op() == "Mul" &&
+          std::mismatch(hardsigmoid_mul_posfix.rbegin(),
+                        hardsigmoid_mul_posfix.rend(), viti_mul_name.rbegin())
+                  .first == hardsigmoid_mul_posfix.rend();
+      if (is_vitis_scale_node) {
+        const NodeDef& mul_1_6_node =
+            *(names_to_nodes[vitis_mul_node.input(0)]);
+        const NodeDef& relu6_node = *(names_to_nodes[mul_1_6_node.input(0)]);
+        const NodeDef& add_3_node = *(names_to_nodes[relu6_node.input(0)]);
+        const NodeDef& in_fn_node = *(names_to_nodes[add_3_node.input(0)]);
+        int in_pos = in_fn_node.attr().at("quantize_pos").i();
+        int out_pos = out_fn_node.attr().at("quantize_pos").i();
+        if (in_pos < 0) {
+          DLOG_WARNING << "Adjust input quantize_pos of hard sigmoid node "
+                       << mul_1_6_node.name() << "  from " << in_pos
+                       << " to 0.";
+          nodes_to_adjust[in_fn_node.name()] = 0;
+        }
+        if (out_pos < 7) {
+          DLOG_WARNING << "Adjust output quantize_pos of hard sigmoid node "
+                       << mul_1_6_node.name() << "  from " << out_pos
+                       << " to 7.";
+          nodes_to_adjust[out_fn_node.name()] = 7;
+        }
+      }
+    }
+  }
+
+  output_graph_def = current_graph_def;
+  for (auto i = 0; i < output_graph_def.node_size(); i++) {
+    NodeDef* cur_node = output_graph_def.mutable_node(i);
+    if (nodes_to_adjust.count(cur_node->name())) {
+      SetNodeAttr("quantize_pos", nodes_to_adjust[cur_node->name()], cur_node);
+    }
+  }
+  return Status::OK();
+}
+
 Status GraphQuantizer::_AdjustQuantizePos(const GraphDef& input_graph_def,
                                           GraphDef& output_graph_def) {
   GraphDef current_graph_def, processed_graph_def;
@@ -2155,6 +1935,10 @@ Status GraphQuantizer::_AdjustQuantizePos(const GraphDef& input_graph_def,
   current_graph_def = processed_graph_def;
   TF_RETURN_IF_ERROR(AdjustShiftBias(current_graph_def, processed_graph_def,
                                      _config, _node_to_fn));
+
+  current_graph_def = processed_graph_def;
+  TF_RETURN_IF_ERROR(
+      AdjustHardSigmoidPos(current_graph_def, processed_graph_def));
 
   SaveGraphForDebugging(processed_graph_def, "adjust_quantize_pos.pb",
                         _config.output_dir);
@@ -2294,6 +2078,15 @@ Status GraphQuantizer::CreateOptimizedGraph(const GraphDef& input_graph_def,
   TF_RETURN_IF_ERROR(
       SeparateSharedConstants(current_graph_def, &processed_graph_def));
   SaveGraphForDebugging(processed_graph_def, "separate_shared_constants.pb",
+                        _config.output_dir);
+
+  // adjust hard swish compute order if the pattern is
+  // add + relu6 + mul_x + mul_1/6
+  current_graph_def = processed_graph_def;
+  TF_RETURN_IF_ERROR(
+      AdjustHardSwishComputeOrder(current_graph_def, &processed_graph_def));
+  SaveGraphForDebugging(processed_graph_def,
+                        "adjust_hard_swish_compute_order.pb",
                         _config.output_dir);
 
   // Simulate DPU
@@ -2466,20 +2259,22 @@ Status GraphQuantizer::CreateQuantizeCalibrationGraph(
   std::map<string, NodeDef> origin_input_nodes;
   TF_RETURN_IF_ERROR(PartitionGraph(input_graph_def, main_graph_def,
                                     aux_graph_def, origin_input_nodes));
+  processed_graph_def = main_graph_def;
+
+  // replace sigmoid with hard_sigmoid
+  current_graph_def = processed_graph_def;
+  if (_config.replace_sigmoid == 1) {
+    TF_RETURN_IF_ERROR(
+        ReplaceSigmoidWithHardSigmoid(current_graph_def, &processed_graph_def));
+    SaveGraphForDebugging(processed_graph_def,
+                          "replace_sigmoid_with_hard_sigmoid.pb",
+                          _config.output_dir);
+  }
 
   // Optimize main graph
-  current_graph_def = main_graph_def;
+  current_graph_def = processed_graph_def;
   TF_RETURN_IF_ERROR(
       CreateOptimizedGraph(current_graph_def, processed_graph_def));
-
-  // // replace sigmoid with hard_sigmoid
-  // current_graph_def = processed_graph_def;
-  // TF_RETURN_IF_ERROR(
-  //     ReplaceSigmoidWithHardSigmoid(current_graph_def,
-  //     &processed_graph_def));
-  // SaveGraphForDebugging(processed_graph_def,
-  //                       "replace_sigmoid_with_hard_sigmoid.pb",
-  //                       _config.output_dir);
 
   current_graph_def = processed_graph_def;
   // cross layers equalization
@@ -2527,13 +2322,17 @@ Status GraphQuantizer::CreateQuantizeTrainingGraph(
 
   SaveGraphForDebugging(input_graph_def, "input_model.pb", _config.output_dir);
 
-  // convert sigmoid to hard_sigmoid
-  current_graph_def = input_graph_def;
-  TF_RETURN_IF_ERROR(
-      ReplaceSigmoidWithHardSigmoid(current_graph_def, &processed_graph_def));
-  SaveGraphForDebugging(processed_graph_def,
-                        "replace_sigmoid_with_hard_sigmoid.pb",
-                        _config.output_dir);
+  processed_graph_def = input_graph_def;
+
+  // replace sigmoid with hard_sigmoid
+  current_graph_def = processed_graph_def;
+  if (_config.replace_sigmoid == 1) {
+    TF_RETURN_IF_ERROR(
+        ReplaceSigmoidWithHardSigmoid(current_graph_def, &processed_graph_def));
+    SaveGraphForDebugging(processed_graph_def,
+                          "replace_sigmoid_with_hard_sigmoid.pb",
+                          _config.output_dir);
+  }
 
   // Fold Batchnorms(is_training=true)
   current_graph_def = processed_graph_def;
@@ -2541,6 +2340,15 @@ Status GraphQuantizer::CreateQuantizeTrainingGraph(
   TF_RETURN_IF_ERROR(
       FoldBatchNorms(current_graph_def, &processed_graph_def, is_training));
   SaveGraphForDebugging(processed_graph_def, "fold_batchnorms_train.pb",
+                        _config.output_dir);
+
+  // adjust hard swish compute order if the pattern is
+  // add + relu6 + mul_x + mul_1/6
+  current_graph_def = processed_graph_def;
+  TF_RETURN_IF_ERROR(
+      AdjustHardSwishComputeOrder(current_graph_def, &processed_graph_def));
+  SaveGraphForDebugging(processed_graph_def,
+                        "adjust_hard_swish_compute_order.pb",
                         _config.output_dir);
 
   // Simulate DPU

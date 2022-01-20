@@ -33,19 +33,7 @@ static std::string to_string(const std::pair<uint64_t, size_t>& v) {
 
 template <typename T>
 std::string to_string(T begin, T end, char s = '[', char e = ']',
-                      char sep = ',') {
-  std::ostringstream str;
-  str << s;
-  int c = 0;
-  for (auto it = begin; it != end; ++it) {
-    if (c++ != 0) {
-      str << sep;
-    };
-    str << to_string(*it);
-  }
-  str << e;
-  return str.str();
-}
+                      char sep = ',');
 
 std::string to_string(const vitis::ai::TensorBuffer* tensor_buffer) {
   auto dims = tensor_buffer->get_tensor()->get_dims();
@@ -127,6 +115,28 @@ std::string to_string(
 std::string to_string(const std::vector<const xir::Tensor*>& tensors) {
   return to_string(tensors.begin(), tensors.end());
 }
+/*MSVC NOTE: msvc complain with a strange error code C2665, it is because
+ * std::to_string is not imported.*/
+/*GCC NOTE: some version of gcc import std::string AUTOMATICALLY, which pollute
+ * the namespace, using std::string hopefully works for all platforms and
+ * compiler versions. */
+using std::to_string;
+
+template <typename T>
+std::string to_string(T begin, T end, char s, char e, char sep) {
+  std::ostringstream str;
+  str << s;
+  int c = 0;
+  for (auto it = begin; it != end; ++it) {
+    if (c++ != 0) {
+      str << sep;
+    };
+    str << to_string(*it);
+  }
+  str << e;
+  return str.str();
+}
+
 namespace vitis {
 namespace ai {
 std::vector<std::unique_ptr<vitis::ai::TensorBuffer>>
@@ -191,8 +201,8 @@ std::vector<std::unique_ptr<vart::TensorBuffer>> alloc_cpu_flat_tensor_buffers(
 
 std::unique_ptr<vart::TensorBuffer> alloc_cpu_flat_tensor_buffer(
     const xir::Tensor* tensor) {
-  auto ret = std::unique_ptr<vart::TensorBuffer>(
-        new CpuFlatTensorBufferOwned(tensor));
+  auto ret =
+      std::unique_ptr<vart::TensorBuffer>(new CpuFlatTensorBufferOwned(tensor));
   return ret;
 }
 }  // namespace vart

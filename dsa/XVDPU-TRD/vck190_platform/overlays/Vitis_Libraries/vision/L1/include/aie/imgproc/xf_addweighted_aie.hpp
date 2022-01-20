@@ -16,7 +16,7 @@
 
 #include <adf.h>
 #include <aie_api/aie.hpp>
-#include <common/xf_aie_utils.hpp>
+#include <common/xf_aie_hw_utils.hpp>
 
 #ifndef _AIE_ADDWEIGHTED_H_
 #define _AIE_ADDWEIGHTED_H_
@@ -80,15 +80,15 @@ void addweighted_api(input_window_int16* img_in1,
     int16* ptr1 = (int16*)img_in2->ptr;
     int16* ptr_out = (int16*)img_out->ptr;
 
-    const int16_t img_width = xfcvGetTileWidth(ptr0);
-    const int16_t img_height = xfcvGetTileHeight(ptr0);
+    const int16_t img_width = xfGetTileWidth(ptr0);
+    const int16_t img_height = xfGetTileHeight(ptr0);
 
-    xfcvCopyMetaData(ptr0, ptr_out);
-    xfcvUnsignedSaturation(ptr_out);
+    xfCopyMetaData(ptr0, ptr_out);
+    xfUnsignedSaturation(ptr_out);
 
-    int16* ptr_src1 = xfcvGetImgDataPtr(ptr0);
-    int16* ptr_src2 = xfcvGetImgDataPtr(ptr1);
-    int16* ptr_dst = xfcvGetImgDataPtr(ptr_out);
+    int16* ptr_src1 = (int16*)xfGetImgDataPtr(ptr0);
+    int16* ptr_src2 = (int16*)xfGetImgDataPtr(ptr1);
+    int16* ptr_dst = (int16*)xfGetImgDataPtr(ptr_out);
 
     addweighted<int16_t, 16>(ptr_src1, ptr_src2, ptr_dst, img_width, img_height, alpha, beta, gamma);
     /*

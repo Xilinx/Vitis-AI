@@ -23,7 +23,7 @@ from nndct_shared.quantization import process_inputs_and_params
 from nndct_shared.quantization import post_quant_process
 import pytorch_nndct.utils as py_utils
 from pytorch_nndct.utils import TorchOpClassType
-from nndct_shared.utils import  NNDCT_KEYS, NNDCT_OP, GLOBAL_MAP
+from nndct_shared.utils import  NNDCT_KEYS, NNDCT_OP, GLOBAL_MAP, NndctScreenLogger
 from nndct_shared.nndct_graph import NndctGraphHolder
 
 __all__ = ['Module']
@@ -120,8 +120,12 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
               self.node,
               self.quantizer,
               inputs=inputs)
-                  
-          output = caller(*args, **kwargs)
+          try:
+            output = caller(*args, **kwargs)
+          except TypeError as e:
+            NndctScreenLogger().warning_once(f"{str(e)}. The arguments of function will convert to positional arguments.")
+            inputs = list(args) +  list(kwargs.values())
+            output = caller(*inputs)
           
           [output] = post_quant_process(self.node, [output])
             
@@ -196,7 +200,24 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
           return output
         
     return DeephiBuiltinFuncModule() 
-     
+  
+  elif torch_op_attr.op_class_type == TorchOpClassType.CUSTOM_FUNCTION:
+    class DeephiCustomModule(torch.nn.Module):
+        def __init__(self):
+          super().__init__()
+          self.node = None
+          self.quant_mode, self.quantizer = maybe_get_quantizer()
+        
+        def extra_repr(self):
+          return f"'{torch_op_type}'"
+         
+        def forward(self, *args):
+          caller_map = GLOBAL_MAP.get_ele(NNDCT_KEYS.NODE_CALLER_MAP)
+          output = caller_map[self.node.name](*args) 
+          [output] = post_quant_process(self.node, [output])         
+          return output
+        
+    return DeephiCustomModule() 
   else:
     raise RuntimeError("Unkown op type:{torch_op_type}")
    

@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: SESR-S for Single Image Super-Resolution.
+input size: 360*640
+float ops: 7.48G
+task: super-resolution
+framework: pytorch
+prune: 'no'
+version: 2.0
+files:
+- name: pt_SESR-S_DIV2K_360_640_7.48G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_SESR-S_DIV2K_360_640_7.48G_2.0.zip
+  checksum: bf5ab39c06d28e71511c7296e5f9c009
+- name: SESR_S_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SESR_S_pt-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 6991f69e9ced898f2fbd40167c8085e2
+- name: SESR_S_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SESR_S_pt-vck190-r2.0.0.tar.gz
+  checksum: 0910332e2b4545297c903e9606c7434a
+- name: SESR_S_pt
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SESR_S_pt-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 1cb7147fe0b84016d20b0249e72da0d6
+- name: SESR_S_pt
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SESR_S_pt-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: 121ff0cbbcb37b8a7ba53e4ee4f709fb
+- name: SESR_S_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SESR_S_pt-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 495a10ace5bafc5ff786735a1da570be
+- name: SESR_S_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=SESR_S_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 3867a04b035c730f77cfc4a5b2638385
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

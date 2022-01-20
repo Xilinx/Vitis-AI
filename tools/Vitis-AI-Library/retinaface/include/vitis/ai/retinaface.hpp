@@ -112,7 +112,7 @@ class RetinaFace : public ConfigurableDpuTaskBase {
   virtual RetinaFaceResult run(const cv::Mat& img) = 0;
 
   /**
-   * @brief Function to get running results of the retinaface neuron network in
+   * @brief Function to get running results of the retinaface neural network in
    * batch mode.
    *
    * @param imgs Input data of input images (std:vector<cv::Mat>). The size of
@@ -127,7 +127,7 @@ class RetinaFace : public ConfigurableDpuTaskBase {
       const std::vector<cv::Mat>& imgs) = 0;
 
   /**
-   * @brief Function to get running results of the retina neuron network in
+   * @brief Function to get running results of the retina neural network in
    * batch mode , used to receive user's xrt_bo to support zero copy.
    *
    * @param input_bos The vector of vart::xrt_bo_t.

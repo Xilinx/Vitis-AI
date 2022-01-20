@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #ifndef _XF_AEC_CONFIG_H_
 #define _XF_AEC_CONFIG_H_
 

@@ -33,7 +33,7 @@ namespace ai {
 
 /**
  * @struct MedicalSegcellResult
- * @brief Struct of the result returned by the segmentation neuron network.
+ * @brief Struct of the result returned by the segmentation neural network.
  */
 struct MedicalSegcellResult {
   /// Width of input image.
@@ -91,7 +91,7 @@ class MedicalSegcell {
 
  public:
   /**
-   * @brief Function of get result of the MedicalSegcell neuron network.
+   * @brief Function of get result of the MedicalSegcell neural network.
    *
    * @param img Input data of input image (cv::Mat).
    *
@@ -101,7 +101,7 @@ class MedicalSegcell {
   virtual vitis::ai::MedicalSegcellResult run(const cv::Mat& img) = 0;
 
   /**
-   * @brief Function to get running results of the MedicalSegcell neuron network
+   * @brief Function to get running results of the MedicalSegcell neural network
    * in batch mode.
    *
    * @param imgs Input data of input images (vector<cv::Mat>).The size of

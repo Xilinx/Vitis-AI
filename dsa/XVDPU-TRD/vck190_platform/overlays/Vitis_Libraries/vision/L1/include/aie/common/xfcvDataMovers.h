@@ -19,6 +19,7 @@
 
 #include <adf/adf_api/XRTConfig.h>
 #include <array>
+#include <algorithm>
 #include <common/smartTilerStitcher.hpp>
 #include <experimental/xrt_kernel.h>
 #include <fstream>
@@ -30,6 +31,7 @@
 #include <thread>
 #include <vector>
 #include <common/xf_aie_const.hpp>
+#include <common/xf_aie_utils.hpp>
 
 int xrtSyncBOAIENB(xrtDeviceHandle handle,
                    xrtBufferHandle bohdl,
@@ -143,9 +145,12 @@ class xfcvDataMovers {
    private:
     uint16_t mOverlapH;
     uint16_t mOverlapV;
+    uint16_t mTileRowsPerCore;
+    uint16_t mTileColsPerCore;
     uint16_t mTileRows;
     uint16_t mTileCols;
     bool mbUserHndl;
+    uint16_t mBurstLength;
 
     cv::Mat* mpImage;
     std::array<uint16_t, 3> mImageSize;
@@ -153,7 +158,8 @@ class xfcvDataMovers {
     std::vector<smartTileMetaData> mMetaDataList;
     std::vector<EmulAxiData<PL_AXI_BITWIDTH> > mMetaDataVec;
 
-    xrtBufferHandle mMetadataBOHndl;
+    std::array<int, CORES> mMetadataSize;
+    std::array<xrtBufferHandle, CORES> mMetadataBOHndl;
     xrtBufferHandle mImageBOHndl;
 
     std::array<xrtKernelHandle, CORES> mPLKHandleArr;
@@ -162,22 +168,67 @@ class xfcvDataMovers {
     int imgSize() { return (mImageSize[0] * mImageSize[1] * mImageSize[2]); }
 
     template <DataMoverKind _t = KIND, typename std::enable_if<(_t == TILER)>::type* = nullptr>
-    int metadataSize() {
-        return mMetaDataVec.size() * sizeof(EmulAxiData<PL_AXI_BITWIDTH>);
+    int metaDataSizePerTile() {
+        return (mMetaDataVec.size() * sizeof(EmulAxiData<PL_AXI_BITWIDTH>)) / mMetaDataList.size();
     }
 
     template <DataMoverKind _t = KIND, typename std::enable_if<(_t == STITCHER)>::type* = nullptr>
-    int metadataSize() {
+    int metaDataSizePerTile() {
         return 0;
     }
+
+    template <DataMoverKind _t = KIND, typename std::enable_if<(_t == TILER)>::type* = nullptr>
+    int metadataSize(int core) {
+        return mMetadataSize[core];
+    }
+
+    template <DataMoverKind _t = KIND, typename std::enable_if<(_t == STITCHER)>::type* = nullptr>
+    int metadataSize(int core) {
+        return 0;
+    }
+
+    auto metadataSize() { return mMetadataSize; }
 
     // Tiler copy {
     template <DataMoverKind _t = KIND, typename std::enable_if<(_t == TILER)>::type* = nullptr>
     void copy() {
         // Pack meta-data and image buffer in device buffer handle
-        assert(mMetadataBOHndl);
-        void* metadata_buffer = xrtBOMap(mMetadataBOHndl);
-        memcpy(metadata_buffer, mMetaDataVec.data(), metadataSize());
+        if (mTileColsPerCore == mTileCols) {
+            // No column wise partition
+            char* MetaDataVecP = (char*)mMetaDataVec.data();
+            for (int i = 0; i < CORES; i++) {
+                assert(mMetadataBOHndl[i]);
+                char* metadata_buffer = (char*)xrtBOMap(mMetadataBOHndl[i]);
+                memcpy(metadata_buffer, MetaDataVecP, metadataSize(i));
+                MetaDataVecP += metadataSize(i);
+            }
+        } else {
+            // Column wise partitioning
+            int r = 0;
+            int c = 0;
+            for (int i = 0; i < CORES; i++) {
+                assert(mMetadataBOHndl[i]);
+                char* metadata_buffer = (char*)xrtBOMap(mMetadataBOHndl[i]);
+                char* MetaDataVecP = ((char*)mMetaDataVec.data()) + (r * mTileCols + c) * metaDataSizePerTile();
+
+                int x_r = tileRowsPerCore(i);
+                int x_c = tileColsPerCore(i);
+
+                int sz = x_c * metaDataSizePerTile();
+                int stride = mTileCols * metaDataSizePerTile();
+                for (int j = 0; j < x_r; j++) {
+                    memcpy(metadata_buffer, MetaDataVecP, sz);
+                    metadata_buffer += sz;
+                    MetaDataVecP += stride;
+                }
+
+                c = c + mTileColsPerCore;
+                if (c >= mTileCols) {
+                    c = c - mTileCols;
+                    r = (r + mTileRowsPerCore);
+                }
+            }
+        }
 
         if (mbUserHndl == false) {
             assert(mpImage);
@@ -204,19 +255,32 @@ class xfcvDataMovers {
     }
     //}
 
-    void free_metadata_buffer() {
-        if (mMetadataBOHndl != nullptr) {
-            xrtBOFree(mMetadataBOHndl);
+    void free_metadata_buffer(int core) {
+        if (mMetadataBOHndl[core] != nullptr) {
+            xrtBOFree(mMetadataBOHndl[core]);
         }
-        mMetadataBOHndl = nullptr;
+        mMetadataBOHndl[core] = nullptr;
+        mMetadataSize[core] = 0;
+    }
+
+    void free_metadata_buffer() {
+        for (int i = 0; i < CORES; i++) {
+            free_metadata_buffer(i);
+        }
     }
 
     void alloc_metadata_buffer() {
-        if (mMetadataBOHndl == nullptr) {
-            assert(metadataSize() > 0);
-            std::cout << "Allocating metadata device buffer (Tiler), "
-                      << " Size : " << metadataSize() << " bytes" << std::endl;
-            mMetadataBOHndl = xrtBOAlloc(gpDhdl, metadataSize(), 0, 0);
+        for (int i = 0; i < CORES; i++) {
+            if (mMetadataBOHndl[i] == nullptr) {
+                // Update size
+                mMetadataSize[i] = metaDataSizePerTile() * tilesPerCore(i);
+
+                // Allocate buffer
+                // assert(metadataSize(i) > 0);
+                std::cout << "Allocating metadata device buffer (Tiler), "
+                          << " Size : " << metadataSize(i) << " bytes" << std::endl;
+                mMetadataBOHndl[i] = xrtBOAlloc(gpDhdl, metadataSize(i), 0, 0);
+            }
         }
     }
 
@@ -266,11 +330,13 @@ class xfcvDataMovers {
     void setArgs() {
         std::cout << "Setting kernel args (Tiler) ..." << std::endl;
         for (int i = 0; i < CORES; i++) {
-            (void)xrtRunSetArg(mPLRHandleArr[i], 1, mMetadataBOHndl);
+            uint16_t r = tileRowsPerCore(i);
+            uint16_t c = tileColsPerCore(i);
+            (void)xrtRunSetArg(mPLRHandleArr[i], 1, mMetadataBOHndl[i]);
             (void)xrtRunSetArg(mPLRHandleArr[i], 2, mImageBOHndl);
-            (void)xrtRunSetArg(mPLRHandleArr[i], 3, mTileRows);
-            (void)xrtRunSetArg(mPLRHandleArr[i], 4, mTileCols);
-            (void)xrtRunSetArg(mPLRHandleArr[i], 5, 1);
+            (void)xrtRunSetArg(mPLRHandleArr[i], 3, r);
+            (void)xrtRunSetArg(mPLRHandleArr[i], 4, c);
+            (void)xrtRunSetArg(mPLRHandleArr[i], 5, std::min(mBurstLength, c));
             (void)xrtRunSetArg(mPLRHandleArr[i], 6, mImageSize[1]);
         }
     }
@@ -279,10 +345,12 @@ class xfcvDataMovers {
     void setArgs() {
         std::cout << "Setting kernel args (Stitcher) ..." << std::endl;
         for (int i = 0; i < CORES; i++) {
+            uint16_t r = tileRowsPerCore(i);
+            uint16_t c = tileColsPerCore(i);
             (void)xrtRunSetArg(mPLRHandleArr[i], 1, mImageBOHndl);
-            (void)xrtRunSetArg(mPLRHandleArr[i], 2, mTileRows);
-            (void)xrtRunSetArg(mPLRHandleArr[i], 3, mTileCols);
-            (void)xrtRunSetArg(mPLRHandleArr[i], 4, 1);
+            (void)xrtRunSetArg(mPLRHandleArr[i], 2, r);
+            (void)xrtRunSetArg(mPLRHandleArr[i], 3, c);
+            (void)xrtRunSetArg(mPLRHandleArr[i], 4, std::min(mBurstLength, c));
             (void)xrtRunSetArg(mPLRHandleArr[i], 5, mImageSize[1]);
             (void)xrtRunSetArg(mPLRHandleArr[i], 6, mImageSize[0]);
         }
@@ -296,7 +364,7 @@ class xfcvDataMovers {
     }
 
     template <DataMoverKind _t = KIND, typename std::enable_if<(_t == TILER)>::type* = nullptr>
-    xfcvDataMovers(uint16_t overlapH, uint16_t overlapV) {
+    xfcvDataMovers(uint16_t overlapH, uint16_t overlapV, int burst = 1) {
         if (gpDhdl == nullptr) {
             throw std::runtime_error("No valid device handle found. Make sure using xF::deviceInit(...) is called.");
         }
@@ -307,12 +375,18 @@ class xfcvDataMovers {
         // Initialize overlaps
         mOverlapH = overlapH;
         mOverlapV = overlapV;
+        mBurstLength = burst;
 
+        mTileRowsPerCore = 0;
+        mTileColsPerCore = 0;
         mTileRows = 0;
         mTileCols = 0;
         mbUserHndl = false;
 
-        mMetadataBOHndl = nullptr;
+        for (int i = 0; i < CORES; i++) {
+            mMetadataBOHndl[i] = nullptr;
+            mMetadataSize[i] = 0;
+        }
         mImageBOHndl = nullptr;
 
         // Load the PL kernel
@@ -320,7 +394,7 @@ class xfcvDataMovers {
     }
 
     template <DataMoverKind _t = KIND, typename std::enable_if<(_t == STITCHER)>::type* = nullptr>
-    xfcvDataMovers() {
+    xfcvDataMovers(int burst = 1) {
         if (gpDhdl == nullptr) {
             throw std::runtime_error("No valid device handle found. Make sure using xF::deviceInit(...) is called.");
         }
@@ -331,12 +405,18 @@ class xfcvDataMovers {
         // Initialize overlaps
         mOverlapH = 0;
         mOverlapV = 0;
+        mBurstLength = burst;
 
+        mTileRowsPerCore = 0;
+        mTileColsPerCore = 0;
         mTileRows = 0;
         mTileCols = 0;
         mbUserHndl = false;
 
-        mMetadataBOHndl = nullptr;
+        for (int i = 0; i < CORES; i++) {
+            mMetadataBOHndl[i] = nullptr;
+            mMetadataSize[i] = 0;
+        }
         mImageBOHndl = nullptr;
 
         // Load the PL kernel
@@ -370,10 +450,10 @@ class xfcvDataMovers {
 
     // Theese functions will start the data transfer protocol {
     template <DataMoverKind _t = KIND, typename std::enable_if<(_t == TILER)>::type* = nullptr>
-    std::array<uint16_t, 2> host2aie_nb(cv::Mat& img, xrtBufferHandle imgHndl = nullptr) {
+    auto host2aie_nb(cv::Mat& img, xrtBufferHandle imgHndl = nullptr) {
         assert(sizeof(DATA_TYPE) >= img.elemSize());
 
-        int old_metadata_buffer_size = metadataSize();
+        auto old_metadata_buffer_size = metadataSize();
         int old_img_buffer_size = imgSize();
 
         bool bRecompute = false;
@@ -388,11 +468,13 @@ class xfcvDataMovers {
             compute_metadata(img.size());
         }
 
-        int new_metadata_buffer_size = metadataSize();
+        auto new_metadata_buffer_size = metadataSize();
         int new_img_buffer_size = imgSize();
 
-        if (new_metadata_buffer_size > old_metadata_buffer_size) {
-            free_metadata_buffer();
+        for (int i = 0; i < CORES; i++) {
+            if (new_metadata_buffer_size[i] > old_metadata_buffer_size[i]) {
+                free_metadata_buffer(i);
+            }
         }
 
         if ((new_img_buffer_size > old_img_buffer_size) || (imgHndl != nullptr)) {
@@ -415,26 +497,28 @@ class xfcvDataMovers {
         // Start the kernel
         start();
 
-        std::array<uint16_t, 2> ret = {mTileRows, mTileCols};
+        std::array<uint16_t, 4> ret = {mTileRowsPerCore, mTileColsPerCore, mTileRows, mTileCols};
         return ret;
     }
 
     template <DataMoverKind _t = KIND, typename std::enable_if<(_t == TILER)>::type* = nullptr>
-    std::array<uint16_t, 2> host2aie_nb(xrtBufferHandle imgHndl, const cv::Size& size) {
+    auto host2aie_nb(xrtBufferHandle imgHndl, const cv::Size& size) {
         cv::Mat img(size, CV_8UC1); // This image is redundant in case a handle is passed
         return host2aie_nb(img, imgHndl);
     }
 
     template <DataMoverKind _t = KIND, typename std::enable_if<(_t == STITCHER)>::type* = nullptr>
-    void aie2host_nb(cv::Mat& img, std::array<uint16_t, 2> tiles, xrtBufferHandle imgHndl = nullptr) {
+    void aie2host_nb(cv::Mat& img, std::array<uint16_t, 4> tiles, xrtBufferHandle imgHndl = nullptr) {
         assert(sizeof(DATA_TYPE) >= img.elemSize());
 
         int old_img_buffer_size = imgSize();
 
         mpImage = &img;
         mImageSize = {(uint16_t)img.rows, (uint16_t)img.cols, (uint16_t)img.elemSize()};
-        mTileRows = tiles[0];
-        mTileCols = tiles[1];
+        mTileRowsPerCore = tiles[0];
+        mTileColsPerCore = tiles[1];
+        mTileRows = tiles[2];
+        mTileCols = tiles[3];
 
         int new_img_buffer_size = imgSize();
         if ((new_img_buffer_size > old_img_buffer_size) || (imgHndl != nullptr)) {
@@ -455,7 +539,7 @@ class xfcvDataMovers {
     }
 
     template <DataMoverKind _t = KIND, typename std::enable_if<(_t == STITCHER)>::type* = nullptr>
-    void aie2host_nb(xrtBufferHandle imgHndl, const cv::Size& size, std::array<uint16_t, 2> tiles) {
+    void aie2host_nb(xrtBufferHandle imgHndl, const cv::Size& size, std::array<uint16_t, 4> tiles) {
         cv::Mat img(size, CV_8UC1); // This image is redundant in case a handle is passed
         aie2host_nb(img, tiles, imgHndl);
     }
@@ -476,6 +560,50 @@ class xfcvDataMovers {
 
         // Copy data from device buffer to host
         copy();
+    }
+
+    uint16_t tilesPerCore() {
+        if ((mTileRowsPerCore * mTileColsPerCore * CORES) != (mTileRows * mTileCols)) {
+            std::cerr << "ERR: Tile rows distribution is not even across cores. Total number of generated tiles for "
+                         "given resolution image and requested tile size is "
+                      << "Rows(" << mTileRows << ") x Cols(" << mTileCols << ") and number of cores is " << CORES
+                      << ". Please use core specific tile count function by passing core index of the corresponding "
+                         "core as arguement value (eg. tilesPerCore(<core index>))."
+                      << std::endl;
+            exit(-1);
+        }
+
+        return (mTileRowsPerCore * mTileColsPerCore);
+    }
+
+    uint16_t tileColsPerCore(int core) {
+        int hcore_distribution_factor = (mTileCols + mTileColsPerCore - 1) / mTileColsPerCore;
+        int hidx = core % hcore_distribution_factor;
+
+        uint16_t c_s = hidx * mTileColsPerCore;
+        uint16_t c_e = std::min(mTileCols, uint16_t(c_s + mTileColsPerCore));
+
+        return (c_e - c_s);
+    }
+
+    uint16_t tileRowsPerCore(int core) {
+        int hcore_distribution_factor = (mTileCols + mTileColsPerCore - 1) / mTileColsPerCore;
+        int vidx = core / hcore_distribution_factor;
+
+        uint16_t r_s = vidx * mTileRowsPerCore;
+        uint16_t r_e = std::min(mTileRows, uint16_t(r_s + mTileRowsPerCore));
+
+        return (r_e - r_s);
+    }
+
+    uint16_t tilesPerCore(int core) {
+        if (core >= CORES) {
+            std::cerr << "ERR: Out of bound access. Trying to access " << core << " core in a " << CORES << " design."
+                      << std::endl;
+            exit(-1);
+        }
+
+        return tileRowsPerCore(core) * tileColsPerCore(core);
     }
 };
 
@@ -508,6 +636,9 @@ void xfcvDataMovers<KIND,
             TILE_HEIGHT_MAX, TILE_WIDTH_MAX, mMetaDataList[0].tileHeight(), mMetaDataList[0].tileWidth(), mTileRows,
             mTileCols);
     std::cout << sMesg << std::endl;
+
+    mTileRowsPerCore = (mTileRows + CORES - 1) / CORES;
+    mTileColsPerCore = mTileCols;
 
     for (auto& metaData : mMetaDataList) {
         mMetaDataVec.emplace_back((int16_t)metaData.tileWidth());
@@ -560,38 +691,42 @@ class xfcvDataMovers<KIND, DATA_TYPE, TILE_HEIGHT_MAX, TILE_WIDTH_MAX, AIE_VECTO
 
     int imgSize() { return (mImageSize[0] * mImageSize[1] * mImageSize[2]); }
 
-    int tileWindowSize() { return ((SMARTTILE_ELEMENTS + (TILE_HEIGHT_MAX * TILE_WIDTH_MAX))); }
+    int tileWindowSize() {
+        return ((xf::cv::aie::METADATA_SIZE + (TILE_HEIGHT_MAX * TILE_WIDTH_MAX * sizeof(DATA_TYPE))));
+    }
 
-    int tileImgSize() { return (sizeof(DATA_TYPE) * tileWindowSize() * (mTileRows * mTileCols)); }
+    int tileImgSize() { return (tileWindowSize() * (mTileRows * mTileCols)); }
 
-    int bufferSizePerCore() { return (sizeof(DATA_TYPE) * tileWindowSize() * ((mTileRows * mTileCols) / CORES)); }
+    int bufferSizePerCore() { return (tileWindowSize() * ((mTileRows * mTileCols) / CORES)); }
 
     // Helper function for Tiler copy {
     template <DataMoverKind _t = KIND, typename std::enable_if<(_t == TILER)>::type* = nullptr>
     void input_copy(uint16_t startInd, uint16_t endInd) {
         assert(mpImgData);
 
-        DATA_TYPE* buffer = (DATA_TYPE*)xrtBOMap(mImageBOHndl);
+        char* buffer = (char*)xrtBOMap(mImageBOHndl);
         int tileSize = tileWindowSize();
         for (int t = startInd; t < endInd; t++) {
-            for (int j = 0; j < SMARTTILE_ELEMENTS; j++) buffer[t * tileSize + j] = 0;
+            xf::cv::aie::metadata_elem_t* meta_data_p = (xf::cv::aie::metadata_elem_t*)(buffer + (t * tileSize));
+            memset(meta_data_p, 0, xf::cv::aie::METADATA_SIZE);
 
-            int16_t tileWidth = mMetaDataList[t].tileWidth();
+            xf::cv::aie::xfSetTileWidth(meta_data_p, mMetaDataList[t].tileWidth());
+            xf::cv::aie::xfSetTileHeight(meta_data_p, mMetaDataList[t].tileHeight());
+            xf::cv::aie::xfSetTilePosH(meta_data_p, mMetaDataList[t].positionH());
+            xf::cv::aie::xfSetTilePosV(meta_data_p, mMetaDataList[t].positionV());
+            xf::cv::aie::xfSetTileOVLP_HL(meta_data_p, mMetaDataList[t].overlapSizeH_left());
+            xf::cv::aie::xfSetTileOVLP_HR(meta_data_p, mMetaDataList[t].overlapSizeH_right());
+            xf::cv::aie::xfSetTileOVLP_VT(meta_data_p, mMetaDataList[t].overlapSizeV_top());
+            xf::cv::aie::xfSetTileOVLP_VB(meta_data_p, mMetaDataList[t].overlapSizeV_bottom());
+
+            DATA_TYPE* image_data_p = (DATA_TYPE*)xf::cv::aie::xfGetImgDataPtr(meta_data_p);
             int16_t tileHeight = mMetaDataList[t].tileHeight();
-            int16_t positionH = mMetaDataList[t].positionH();
+            int16_t tileWidth = mMetaDataList[t].tileWidth();
             int16_t positionV = mMetaDataList[t].positionV();
-            buffer[t * tileSize + 0] = (DATA_TYPE)mMetaDataList[t].tileWidth();
-            buffer[t * tileSize + 4] = (DATA_TYPE)mMetaDataList[t].tileHeight();
-            buffer[t * tileSize + 8] = (DATA_TYPE)mMetaDataList[t].positionH();
-            buffer[t * tileSize + 12] = (DATA_TYPE)mMetaDataList[t].positionV();
-            buffer[t * tileSize + 16] = (DATA_TYPE)mMetaDataList[t].overlapSizeH_left();
-            buffer[t * tileSize + 20] = (DATA_TYPE)mMetaDataList[t].overlapSizeH_right();
-            buffer[t * tileSize + 24] = (DATA_TYPE)mMetaDataList[t].overlapSizeV_top();
-            buffer[t * tileSize + 28] = (DATA_TYPE)mMetaDataList[t].overlapSizeV_bottom();
-
+            int16_t positionH = mMetaDataList[t].positionH();
             for (int ti = 0; ti < tileHeight; ti++) {
-                memcpy(buffer + (t * tileSize + SMARTTILE_ELEMENTS + (ti * tileWidth)),
-                       mpImgData + (((positionV + ti) * mImageSize[1]) + positionH), tileWidth * sizeof(DATA_TYPE));
+                memcpy(image_data_p + (ti * tileWidth), mpImgData + (((positionV + ti) * mImageSize[1]) + positionH),
+                       tileWidth * sizeof(DATA_TYPE));
             }
         }
     }
@@ -624,28 +759,29 @@ class xfcvDataMovers<KIND, DATA_TYPE, TILE_HEIGHT_MAX, TILE_WIDTH_MAX, AIE_VECTO
     void output_copy(uint16_t startInd, uint16_t endInd) {
         assert(mpImgData != nullptr);
 
-        DATA_TYPE* buffer = (DATA_TYPE*)xrtBOMap(mImageBOHndl);
-
+        char* buffer = (char*)xrtBOMap(mImageBOHndl);
         int tileSize = tileWindowSize();
         for (int t = startInd; t < endInd; t++) {
-            int16_t tileWidth = (int16_t)buffer[t * tileSize + 0];
-            int16_t tileHeight = (int16_t)buffer[t * tileSize + 4];
-            int16_t positionH = (int16_t)buffer[t * tileSize + 8];
-            int16_t positionV = (int16_t)buffer[t * tileSize + 12];
-            int16_t overlapSizeH_left = (int16_t)buffer[t * tileSize + 16];
-            int16_t overlapSizeH_right = (int16_t)buffer[t * tileSize + 20];
-            int16_t overlapSizeV_top = (int16_t)buffer[t * tileSize + 24];
-            int16_t overlapSizeV_bottom = (int16_t)buffer[t * tileSize + 28];
+            xf::cv::aie::metadata_elem_t* meta_data_p = (xf::cv::aie::metadata_elem_t*)(buffer + (t * tileSize));
+
+            int16_t tileWidth = xf::cv::aie::xfGetTileWidth(meta_data_p);
+            int16_t tileHeight = xf::cv::aie::xfGetTileHeight(meta_data_p);
+            int16_t positionH = xf::cv::aie::xfGetTilePosH(meta_data_p);
+            int16_t positionV = xf::cv::aie::xfGetTilePosV(meta_data_p);
+            int16_t overlapSizeH_left = xf::cv::aie::xfGetTileOVLP_HL(meta_data_p);
+            int16_t overlapSizeH_right = xf::cv::aie::xfGetTileOVLP_HR(meta_data_p);
+            int16_t overlapSizeV_top = xf::cv::aie::xfGetTileOVLP_VT(meta_data_p);
+            int16_t overlapSizeV_bottom = xf::cv::aie::xfGetTileOVLP_VB(meta_data_p);
 
             int16_t correctedPositionH = positionH + overlapSizeH_left;
             int16_t correctedPositionV = positionV + overlapSizeV_top;
             int16_t correctedTileWidth = TILE_WIDTH_MAX - (overlapSizeH_left + overlapSizeH_right);
             int16_t correctedTileHeight = TILE_HEIGHT_MAX - (overlapSizeV_top + overlapSizeV_bottom);
 
+            DATA_TYPE* image_data_p = (DATA_TYPE*)xf::cv::aie::xfGetImgDataPtr(meta_data_p);
             for (int ti = 0; ti < correctedTileHeight; ti++) {
                 memcpy(mpImgData + (((correctedPositionV + ti) * mImageSize[1]) + correctedPositionH),
-                       buffer + ((t * tileSize) + SMARTTILE_ELEMENTS + ((overlapSizeV_top + ti) * TILE_WIDTH_MAX) +
-                                 overlapSizeH_left),
+                       image_data_p + (((overlapSizeV_top + ti) * TILE_WIDTH_MAX) + overlapSizeH_left),
                        correctedTileWidth * sizeof(DATA_TYPE));
             }
         }

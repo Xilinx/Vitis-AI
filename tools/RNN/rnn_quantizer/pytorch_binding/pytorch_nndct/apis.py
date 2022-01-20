@@ -21,10 +21,10 @@ import copy
 import os
 from typing import Any, Optional, Sequence, Union, List, Dict
 import torch
-from nndct_shared.utils import NndctScreenLogger
+from nndct_shared.utils import NndctScreenLogger, NndctOption
 from .qproc import TorchQuantProcessor
 from .qproc import base as qp
-from .qproc import LSTMTorchQuantProcessor
+from .qproc import LSTMTorchQuantProcessor, RNNQuantProcessor
 from .quantization import QatProcessor
 
 # API class
@@ -54,7 +54,8 @@ class torch_quantizer():
                                     device = device)
       self._qat_proc = True
     elif lstm:
-      self.processor = LSTMTorchQuantProcessor(quant_mode = quant_mode,
+      if NndctOption.nndct_jit_script_mode.value is True:
+        self.processor = RNNQuantProcessor(quant_mode = quant_mode,
                                                module = module,
                                                input_args = input_args,
                                                state_dict_file = state_dict_file,
@@ -64,6 +65,17 @@ class torch_quantizer():
                                                bitwidth_a = 16,
                                                device = device,
                                                lstm_app = lstm_app)
+      else:
+        self.processor = LSTMTorchQuantProcessor(quant_mode = quant_mode,
+                                                module = module,
+                                                input_args = input_args,
+                                                state_dict_file = state_dict_file,
+                                                output_dir = output_dir,
+                                                bitwidth_w = bitwidth,
+                                                # lstm IP only support 16 bit activation
+                                                bitwidth_a = 16,
+                                                device = device,
+                                                lstm_app = lstm_app)
     else:
       self.processor = TorchQuantProcessor(quant_mode = quant_mode,
                                            module = module,

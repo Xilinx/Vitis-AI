@@ -16,5 +16,5 @@
 
 export PYTHONPATH=../common:$PYTHONPATH
 cp utils/run_oie.py ./run_oie.py
-cp utils/stacked_alternating_lstm_dpu_new_v2.py allennlp/modules/stacked_alternating_lstm.py
+sudo cp utils/stacked_alternating_lstm_dpu_new_v2.py $CONDA_PREFIX/lib/python3.*/site-packages/allennlp/modules/stacked_alternating_lstm.py
 python run_oie.py --in=./test/test_in.txt --out=./output/result_test.txt --model-path=./weights/ --batch-size=1 --cuda-device=-1

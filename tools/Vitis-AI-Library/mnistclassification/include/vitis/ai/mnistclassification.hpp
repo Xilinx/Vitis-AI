@@ -87,7 +87,7 @@ class MnistClassification {
 
  public:
   /**
-   * @brief Function of get result of the MnistClassification neuron network.
+   * @brief Function of get result of the MnistClassification neural network.
    *
    * @param img Input data of input image (cv::Mat).
    *
@@ -97,7 +97,7 @@ class MnistClassification {
   virtual vitis::ai::MnistClassificationResult run(const cv::Mat &img) = 0;
 
   /**
-   * @brief Function to get running results of the MnistClassification neuron network in
+   * @brief Function to get running results of the MnistClassification neural network in
    * batch mode.
    *
    * @param images Input data of input images (vector<cv::Mat>).The size of

@@ -21,6 +21,7 @@ import os
 import json
 import pickle
 import gzip as compress
+
 _ORIGIN = {
     "caffe": "decent-caffe",
     "tensorflow": "decent-tensorflow",
@@ -42,75 +43,70 @@ def generate(xmodel_file, root_path):
     g = xir.Graph.deserialize(xmodel_file)
     modelfilename, extension = os.path.splitext(xmodel_file)
     folder_path, model_name = os.path.split(modelfilename)
-    path = os.path.dirname(os.path.join(
-        '/', os.path.relpath(xmodel_file, root_path)))
+    path = os.path.dirname(os.path.join("/", os.path.relpath(xmodel_file, root_path)))
     type = "UNKNOWN"
-    if not g.has_attr('origin'):
+    if not g.has_attr("origin"):
         type = "pytorch"
         json_title = model_name + "-" + "pytorch"
     else:
-        type = _ORIGIN[g.get_attr('origin')]
-        json_title = model_name + "-" + g.get_attr('origin')
-    logging.warning('processing %s' % (xmodel_file, ))
+        type = _ORIGIN[g.get_attr("origin")]
+        json_title = model_name + "-" + g.get_attr("origin")
+    logging.warning("processing %s" % (xmodel_file,))
     return {
         json_title: {
             "meta": {
                 "type": type,
                 "path": path,
                 "xmodel": model_name + ".xmodel",
-                "init_tensors":
-                generate_input_tensors(g),
-                "dump_tensors_ref":
-                generate_output_tensors(g),
+                "init_tensors": generate_input_tensors(g),
+                "dump_tensors_ref": generate_output_tensors(g, type),
             }
         }
     }
 
 
 def generate_input_tensors(g):
-    name_and_sizes = [(op.get_output_tensor().name,
-                       op.get_output_tensor().get_data_size())
-                      for op in g.get_head_ops() if op.get_type() == "data-fix"
-                      ]
+    name_and_sizes = [
+        (op.get_output_tensor().name, op.get_output_tensor().get_data_size())
+        for op in g.get_head_ops()
+        if op.get_type() == "data-fix" or op.get_type() == "data"
+    ]
     return {
-        xir_extra_ops.remove_xfix(name):
-        guess_and_maybe_copy_golden(name, size)
+        xir_extra_ops.remove_xfix(name): guess_and_maybe_copy_golden(name, size)
         for (name, size) in name_and_sizes
     }
 
 
 def guess_and_maybe_copy_golden(name, size):
     tfname = xir_extra_ops.remove_xfix(name)
-    filename = tfname.replace('/', '_') + ".bin"
+    filename = tfname.replace("/", "_") + ".bin"
     files = []
     file = os.path.join("golden", "fake", filename)
-    md5sum = '0' * 32
-    files.append({
-        'file': file,
-        'md5sum': md5sum,
-        'size': size
-    })
+    md5sum = "0" * 32
+    files.append({"file": file, "md5sum": md5sum, "size": size})
     return files
 
 
-def generate_output_tensors(g):
+def generate_output_tensors(g, type):
     return {
-        xir_extra_ops.remove_xfix(tensor.name):
-        guess_and_maybe_copy_golden(
-            tensor.name, tensor.get_data_size())
+        xir_extra_ops.remove_xfix(tensor.name): guess_and_maybe_copy_golden(
+            tensor.name, tensor.get_data_size()
+        )
         for sg in g.get_root_subgraph().toposort_child_subgraph()
-        if sg.has_attr('device') and sg.get_attr('device') != 'USER'
+        if sg.has_attr("device") and sg.get_attr("device") != "USER"
         for tensor0 in sg.get_output_tensors()
-        for tensor in [workaround_bug_in_tf_maybe_remove_last_fixneuron(g, tensor0)]
+        for tensor in [
+            workaround_bug_in_tf_maybe_remove_last_fixneuron(g, tensor0, type)
+        ]
     }
 
 
-def workaround_bug_in_tf_maybe_remove_last_fixneuron(g, tensor):
+def workaround_bug_in_tf_maybe_remove_last_fixneuron(g, tensor, type):
     op = tensor.producer
-    if op.get_type() == 'fix':
-        return op.get_input_op('input', 0).get_output_tensor()
+    if type != "pytorch" and op.get_type() == "fix":
+        return op.get_input_op("input", 0).get_output_tensor()
     return tensor
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

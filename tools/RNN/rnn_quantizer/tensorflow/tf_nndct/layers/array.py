@@ -18,6 +18,7 @@ import tensorflow as tf
 from tf_nndct.graph import OpTypes
 from tf_nndct.quantization.utils import QuantizedModule
 from nndct_shared.quantization import maybe_get_quantizer
+from nndct_shared.utils import NndctOption
 
 @QuantizedModule(OpTypes.INPUT)
 class Identity(tf.Module):
@@ -40,6 +41,10 @@ class Identity(tf.Module):
         fp_name=self.valid_output[0])
 
   def __call__(self, input):
+    if NndctOption.nndct_quant_off.value:
+      output = tf.identity(input)
+      return output
+
     if self.valid_output is not None and not self.quant_vars_initialized:
       self._quant_vars_init()
       self.quant_vars_initialized = True

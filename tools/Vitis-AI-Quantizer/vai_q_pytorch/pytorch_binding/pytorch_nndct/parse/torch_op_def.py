@@ -20,9 +20,10 @@ from enum import auto, unique
 
 import pytorch_nndct.utils as utils
 from nndct_shared.base import NNDCT_CONSTANT, NNDCT_OP
-from nndct_shared.nndct_graph import Operation, transformed_axis
+from nndct_shared.nndct_graph import Operation
 from nndct_shared.nndct_graph import operator_definition as base_op
 from nndct_shared.nndct_graph import Tensor
+from nndct_shared.utils import transformed_axis, DataFormat
 
 class TorchFlatten(base_op.Flatten):
 
@@ -67,7 +68,7 @@ class TorchLeakyReLU(base_op.LeakyReLU):
     super().__init__()
     utils.op_register(NNDCT_OP.LEAKY_RELU, 'LeakyReLU')
     self._negative_slope = 0.01
-    
+
   @property
   def negative_slope(self):
     return self._negative_slope
@@ -103,7 +104,7 @@ class TorchLinear(base_op.Dense):
   class ParamName(base_op.AutoName):
     WEIGHTS = "weight"
     BIAS = auto()
-    
+
   def __init__(self, *args, **kwargs):
     super(TorchLinear, self).__init__(NNDCT_OP.DENSE, *args, **kwargs)
     utils.op_register(NNDCT_OP.DENSE, 'Linear')
@@ -152,7 +153,7 @@ class TorchBatchNorm(base_op.BatchNorm):
     else:
       nndct_op_type = NNDCT_OP.BATCH_NORM3D
       torch_op_type = "BatchNorm3d"
-      
+
     super().__init__(nndct_op_type)
     utils.op_register(nndct_op_type, torch_op_type)
 
@@ -171,7 +172,6 @@ class TorchBatchNorm(base_op.BatchNorm):
   @num_features.setter
   def num_features(self, value):
     self._attr_value_mem[self.AttrName.OUT_DIM][:] = [value]
-
 
 class _TorchConv1d(base_op.Conv1d):
 
@@ -196,14 +196,15 @@ class _TorchConv1d(base_op.Conv1d):
 
   @property
   def padding(self):
-    return self.get_attr(self.AttrName.PAD)
-   
+    return self.get_attr(self.AttrName.PAD)[0]
+
 
   @padding.setter
   def padding(self, value):
-    self.set_attr(self.AttrName.PAD, value)
-    self.set_attr(self.AttrName.PAD_MODE, 0)
- 
+    
+    self.set_attr(self.AttrName.PAD, [value[0], value[0]])
+    self.set_attr(self.AttrName.PAD_MODE, 'FLOOR')
+
 
   @property
   def stride(self):
@@ -219,7 +220,7 @@ class _TorchConv1d(base_op.Conv1d):
 
   @in_channels.setter
   def in_channels(self, value):
-    self.set_attr(self.AttrName.IN_DIM, [value])
+    self.set_attr(self.AttrName.IN_DIM, value)
 
   @property
   def out_channels(self):
@@ -227,7 +228,7 @@ class _TorchConv1d(base_op.Conv1d):
 
   @out_channels.setter
   def out_channels(self, value):
-    self.set_attr(self.AttrName.OUT_DIM, [value])
+    self.set_attr(self.AttrName.OUT_DIM, value)
 
   @property
   def groups(self):
@@ -235,7 +236,7 @@ class _TorchConv1d(base_op.Conv1d):
 
   @groups.setter
   def groups(self, value):
-    self.set_attr(self.AttrName.GROUP, [value])
+    self.set_attr(self.AttrName.GROUP, value)
 
   @property
   def bias(self):
@@ -243,9 +244,9 @@ class _TorchConv1d(base_op.Conv1d):
 
   @bias.setter
   def bias(self, value):
-    self.set_attr(self.AttrName.BIAS_TERM, [bool(value)])
-    
-    
+    self.set_attr(self.AttrName.BIAS_TERM, bool(value))
+
+
 class TorchConv1d(_TorchConv1d):
 
   def __init__(self, nndct_op_type, *args, **kwargs):
@@ -260,13 +261,14 @@ class TorchConvTranspose1d(_TorchConv1d):
     utils.op_register(nndct_op_type, "ConvTranspose1d")
 
 
+
 class _TorchConv2d(base_op.Conv2d):
 
   @unique
   class ParamName(base_op.AutoName):
     WEIGHTS = "weight"
     BIAS = auto()
-    
+
   def __init__(self, op_type, *args, **kwargs):
     super(_TorchConv2d, self).__init__(op_type, *args, **kwargs)
 
@@ -356,6 +358,123 @@ class TorchConvTranspose2d(_TorchConv2d):
 
 
 class _TorchConv3d(base_op.Conv3d):
+
+  def __init__(self, op_type, *args, **kwargs):
+    super().__init__(op_type, *args, **kwargs)
+
+  @property
+  def kernel_size(self):
+    return self.get_attr(self.AttrName.KERNEL)[::-1]
+
+  @kernel_size.setter
+  def kernel_size(self, value):
+    self.set_attr(self.AttrName.KERNEL, value[::-1])
+
+  @property
+  def dilation(self):
+    return self.get_attr(self.AttrName.DILATION)[::-1]
+
+  @dilation.setter
+  def dilation(self, value):
+   self.set_attr(self.AttrName.DILATION, value[::-1])
+
+  @property
+  def groups(self):
+    return self.get_attr(self.AttrName.GROUP)
+
+  @groups.setter
+  def groups(self, value):
+    self.set_attr(self.AttrName.GROUP, value)
+
+  @property
+  def padding(self):
+    pad = self.get_attr(self.AttrName.PAD)
+    output_pad = self.get_attr(self.AttrName.OUTPUT_PAD)
+    pad = [p + op for p, op in zip(pad, output_pad)]
+    torch_pad = []
+    for v in pad[::-2]:
+      torch_pad.append(v)
+    return torch_pad
+
+
+  @padding.setter
+  def padding(self, value):
+    assert len(value) == 3
+    pad = []
+    for v in value[::-1]:
+      pad.append(v)
+      pad.append(v)
+
+    output_pad = self.get_attr(self.AttrName.OUTPUT_PAD)
+    pad = [p - op for p, op in zip(pad, output_pad)]
+    self.set_attr(self.AttrName.PAD, pad)
+    self.set_attr(self.AttrName.PAD_MODE, 'FLOOR')
+
+  @property
+  def output_padding(self):
+    output_pad = []
+    for v in self.get_attr(self.AttrName.OUTPUT_PAD)[::-2]:
+      output_pad.append(v)
+    return output_pad
+
+  @output_padding.setter
+  def output_padding(self, value):
+    assert len(value) == 3
+    output_pad = []
+    for v in value[::-1]:
+      output_pad.append(0)
+      output_pad.append(v)
+    self.set_attr(self.AttrName.OUTPUT_PAD, output_pad)
+    pad = self.get_attr(self.AttrName.PAD)
+    pad = [p - op for p, op in zip(pad, output_pad)]
+    self.set_attr(self.AttrName.PAD, pad)
+
+  @property
+  def stride(self):
+    return self.get_attr(self.AttrName.STRIDE)[::-1]
+
+  @stride.setter
+  def stride(self, value):
+    self.set_attr(self.AttrName.STRIDE, value[::-1])
+
+  @property
+  def in_channels(self):
+    return self.get_attr(self.AttrName.IN_DIM)
+
+  @in_channels.setter
+  def in_channels(self, value):
+    self.set_attr(self.AttrName.IN_DIM, value)
+
+  @property
+  def out_channels(self):
+    return self.get_attr(self.AttrName.OUT_DIM)
+
+  @out_channels.setter
+  def out_channels(self, value):
+    self.set_attr(self.AttrName.OUT_DIM, value)
+
+
+  @property
+  def bias(self):
+    return self.get_attr(self.AttrName.BIAS_TERM)
+
+  @bias.setter
+  def bias(self, value):
+    self.set_attr(self.AttrName.BIAS_TERM, bool(value))
+
+
+class TorchConv3d(_TorchConv3d):
+
+  def __init__(self, nndct_op_type, *args, **kwargs):
+    super().__init__(nndct_op_type, *args, **kwargs)
+    utils.op_register(nndct_op_type, "Conv3d")
+
+
+class TorchConvTranspose3d(_TorchConv3d):
+
+  def __init__(self, nndct_op_type, *args, **kwargs):
+    super().__init__(nndct_op_type, *args, **kwargs)
+    utils.op_register(nndct_op_type, "ConvTranspose3d")
 
   def __init__(self, op_type, *args, **kwargs):
     super().__init__(op_type, *args, **kwargs)
@@ -485,7 +604,6 @@ class TorchMaxPool(base_op.MaxPool):
   def stride(self, value):
     self._attr_value_mem[self.AttrName.STRIDE][:] = value[::-1]
 
-
 class TorchMaxPool1d(base_op.MaxPool1d):
 
   def __init__(self, *args, **kwargs):
@@ -494,39 +612,36 @@ class TorchMaxPool1d(base_op.MaxPool1d):
 
   @property
   def kernel_size(self):
-    return self._attr_value_mem[self.AttrName.KERNEL][::-1]
+    return self.get_attr(self.AttrName.KERNEL)
 
   @kernel_size.setter
   def kernel_size(self, value):
-    self._attr_value_mem[self.AttrName.KERNEL][:] = value[::-1]
+    self.set_attr(self.AttrName.KERNEL, value)
 
   @property
   def ceil_mode(self):
-    return bool(self._attr_value_mem[self.AttrName.PAD_MODE][0])
+    
+    return bool(self.get_attr(self.AttrName.PAD_MODE))
 
   @ceil_mode.setter
   def ceil_mode(self, mode):
-    self._attr_value_mem[self.AttrName.PAD_MODE][:] = [int(mode)]
+    self.set_attr(self.AttrName.PAD_MODE, int(mode))
 
   @property
   def padding(self):
-    return [
-        self._attr_value_mem[self.AttrName.PAD][0]
-    ]
+    return self.get_attr(self.AttrName.PAD)[0]
 
   @padding.setter
   def padding(self, value):
-    self._attr_value_mem[self.AttrName.PAD][:] = [
-        value[0], value[0]
-    ]
-
+    self.set_attr(self.AttrName.PAD, [value[0], value[0]])
+   
   @property
   def stride(self):
-    return self._attr_value_mem[self.AttrName.STRIDE][::-1]
+    return self.get_attr(self.AttrName.STRIDE)
 
   @stride.setter
   def stride(self, value):
-    self._attr_value_mem[self.AttrName.STRIDE][:] = value[::-1]
+    self.set_attr(self.AttrName.STRIDE, value)
 
 
 class TorchAvgPool(base_op.AvgPool):
@@ -575,10 +690,16 @@ class TorchAvgPool(base_op.AvgPool):
   @property
   def count_include_pad(self):
     return self.get_attr(self.AttrName.COUNT_INCLUDE_PAD)
-  
+
   @count_include_pad.setter
   def count_include_pad(self, value):
     self.set_attr(self.AttrName.COUNT_INCLUDE_PAD, bool(value))
+
+
+class TorchAdaptiveAvgPool(base_op.AvgPool):
+   def __init__(self, *args, **kwargs):
+    super(TorchAdaptiveAvgPool, self).__init__(NNDCT_OP.ADAPTIVEAVGPOOL2D, *args, **kwargs)
+    utils.op_register(NNDCT_OP.ADAPTIVEAVGPOOL2D, "AdaptiveAvgPool2d")
 
 
 class TorchAdaptiveAvgPool(base_op.AvgPool):
@@ -597,8 +718,8 @@ class TorchSize(base_op.Shape):
   @property
   def dim(self):
     return transformed_axis(
-        src="NHWC",
-        dst="NCHW",
+        src=DataFormat.channel_first,
+        dst=DataFormat.channel_first,
         ndim=self._input_ndim,
         dim=self._attr_value_mem[self.AttrName.AXIS][0])
 
@@ -606,7 +727,7 @@ class TorchSize(base_op.Shape):
   def dim(self, value):
     self._attr_value_mem[self.AttrName.AXIS][:] = [
         transformed_axis(
-            src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=value)
+            src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=value)
     ]
 
 
@@ -620,8 +741,8 @@ class TorchCat(base_op.Concat):
   @property
   def dim(self):
     return transformed_axis(
-        src="NHWC",
-        dst="NCHW",
+        src=DataFormat.channel_first,
+        dst=DataFormat.channel_first,
         ndim=self._input_ndim,
         dim=self._attr_value_mem[self.AttrName.AXIS][0])
 
@@ -629,47 +750,30 @@ class TorchCat(base_op.Concat):
   def dim(self, value):
     self._attr_value_mem[self.AttrName.AXIS][:] = [
         transformed_axis(
-            src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=value)
+            src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=value)
     ]
 
 
 class TorchView(base_op.Reshape):
 
-  def __init__(self, input_ndim, output_ndim, output_layout, *args, **kwargs):
-    super(TorchView, self).__init__(NNDCT_OP.RESHAPE, *args, **kwargs)
-    utils.op_register(NNDCT_OP.RESHAPE, 'view')
-    self._input_ndim = input_ndim
-    self._output_ndim = output_ndim
-    self._output_layout = output_layout
-    
+  def __init__(self):
+    super(TorchView, self).__init__(NNDCT_OP.RESHAPE)
+    utils.op_register(NNDCT_OP.RESHAPE, 'reshape')
+
   @property
-  def size(self):
+  def shape(self):
     if len(self.get_attr(self.AttrName.SHAPE)) == 1:
       return self.get_attr(self.AttrName.SHAPE)[0]
     else:
-      # if self._output_ndim == 4 and self._output_layout == Tensor.Layout.NCHW:
-      #   sizes = [None] * 4
-      #   for dim, size in enumerate(self.get_attr(self.AttrName.SHAPE)):
-      #     new_dim = transformed_axis(src="NHWC", dst="NCHW", ndim=4, dim=dim)
-      #     sizes[new_dim] = size 
-      #   return sizes
-      # else:
       return self.get_attr(self.AttrName.SHAPE)
 
-  @size.setter
-  def size(self, value):
+  @shape.setter
+  def shape(self, value):
     if isinstance(value, (tuple, list)):
       value = list(value)
     else:
       value = [value]
 
-    # if self._output_ndim == 4 and self._output_layout == Tensor.Layout.NCHW:
-    #   sizes = [None] * 4
-    #   for dim, size in enumerate(value):
-    #     new_dim = transformed_axis(src="NCHW", dst="NHWC", ndim=4, dim=dim)
-    #     sizes[new_dim] = size
-    #   self.set_attr(self.AttrName.SHAPE, sizes)
-    # else:
     self.set_attr(self.AttrName.SHAPE, value)
 
 
@@ -681,7 +785,7 @@ class TorchDropout(Operation):
 
 
 class TorchPermuteInvarOp(base_op.PermuteInvariantOp):
- 
+
   def __init__(self, input_ndim, nndct_op_type, torch_op_type, *args, **kwargs):
     super().__init__(nndct_op_type, *args, **kwargs)
     utils.op_register(nndct_op_type, torch_op_type)
@@ -689,11 +793,11 @@ class TorchPermuteInvarOp(base_op.PermuteInvariantOp):
 
   @property
   def dim(self):
-    dims = []  
+    dims = []
     for dim in self.get_attr(self.AttrName.DIMS):
       dims.append(
           transformed_axis(
-              src="NHWC", dst="NCHW", ndim=self._input_ndim, dim=dim))
+              src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim))
     return tuple(dims)
 
   @dim.setter
@@ -706,9 +810,9 @@ class TorchPermuteInvarOp(base_op.PermuteInvariantOp):
     for dim in value:
       dims.append(
           transformed_axis(
-              src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=dim))
-    
-    self.set_attr(self.AttrName.DIMS, [dims[:]])
+              src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim))
+
+    self.set_attr(self.AttrName.DIMS, dims)
 
   @property
   def keepdim(self):
@@ -732,7 +836,7 @@ class TorchPermute(base_op.Permute):
     for dim in self._attr_value_mem[self.AttrName.ORDER]:
       dims.append(
           transformed_axis(
-              src="NHWC", dst="NCHW", ndim=self._input_ndim, dim=dim))
+              src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim))
     return dims
 
   @dims.setter
@@ -741,7 +845,7 @@ class TorchPermute(base_op.Permute):
     for dim in value:
       dims.append(
           transformed_axis(
-              src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=dim))
+              src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim))
     self._attr_value_mem[self.AttrName.ORDER][:] = dims[:]
 
 
@@ -756,19 +860,15 @@ class TorchTranspose(base_op.Permute):
     self._attr_value_mem[self.AttrName.ORDER][:] = list(range(self._input_ndim)) if self._input_ndim else  list(range(2))
 
   def _exchange_dims_in_attrs(self):
-    self._attr_value_mem[self.AttrName.ORDER][transformed_axis(
-        src="NCHW", dst="NHWC", ndim=self._input_ndim,
-        dim=self._dim0)] = transformed_axis(
-            src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=self._dim1)
-    self._attr_value_mem[self.AttrName.ORDER][transformed_axis(
-        src="NCHW", dst="NHWC", ndim=self._input_ndim,
-        dim=self._dim1)] = transformed_axis(
-            src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=self._dim0)
+    dim0_t = transformed_axis(src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=self._dim0)
+    dim1_t = transformed_axis(src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=self._dim1)
+    self._attr_value_mem[self.AttrName.ORDER][dim0_t] = dim1_t
+    self._attr_value_mem[self.AttrName.ORDER][dim1_t] = dim0_t
+
 
   @property
   def dim0(self):
-    return self._attr_value_mem[self.AttrName.ORDER][transformed_axis(
-        src="NHWC", dst="NCHW", ndim=self._input_ndim, dim=self._dim1)]
+    return self._dim0
 
   @dim0.setter
   def dim0(self, value):
@@ -778,8 +878,7 @@ class TorchTranspose(base_op.Permute):
 
   @property
   def dim1(self):
-    return self._attr_value_mem[self.AttrName.ORDER][transformed_axis(
-        src="NHWC", dst="NCHW", ndim=self._input_ndim, dim=self._dim0)]
+    return self._dim1
 
   @dim1.setter
   def dim1(self, value):
@@ -809,7 +908,7 @@ class TorchInterpolate(base_op.Resize):
     # self._scale_factor_bc = [1.0, 1.0]
     if input_ndim != 4:
         raise RuntimeError("Only support 2D unsampling.")
- 
+
   @property
   def size(self):
     size = self.get_attr(self.AttrName.SIZE)[:]
@@ -821,7 +920,7 @@ class TorchInterpolate(base_op.Resize):
   @size.setter
   def size(self, size):
     self.set_attr(self.AttrName.SIZE, size[:])
-    
+
   @property
   def scale_factor(self):
     scale = self.get_attr(self.AttrName.SCALE)[::-1]
@@ -829,7 +928,7 @@ class TorchInterpolate(base_op.Resize):
       return None
     else:
       return scale
-  
+
   @scale_factor.setter
   def scale_factor(self, factor):
     if isinstance(factor, float):
@@ -838,24 +937,25 @@ class TorchInterpolate(base_op.Resize):
         scale_factor = factor[::-1]
     self.set_attr(self.AttrName.SCALE, scale_factor)
 
-  
+
   @property
   def mode(self):
     mode = self.get_attr(self.AttrName.MODE)
-    return "'nearest'" if mode == 0 else "'bilinear'"
-    
+    return f"'{mode.lower()}'"
+
   @mode.setter
   def mode(self, mode):
     if mode not in ["'nearest'", "'bilinear'"]:
       raise RuntimeError(f"Don't support {mode} mode in upsampling.")
-    mode = 0 if mode == "'nearest'" else 3
-    self.set_attr(self.AttrName.MODE, mode)
+    # mode = 0 if mode == "'nearest'" else 3
+    # self.set_attr(self.AttrName.MODE, mode)
+    self.set_attr(self.AttrName.MODE, mode.strip("'").upper())
 
-    
+
 class TorchResizeLinear(TorchInterpolate):
   def __init__(self, input_ndim):
     super().__init__(input_ndim)
-  
+
   @property
   def align_corners(self):
     return self.get_attr(self.AttrName.ALIGN_CORNERS)
@@ -866,28 +966,141 @@ class TorchResizeLinear(TorchInterpolate):
     self.set_attr(self.AttrName.HALF_PIXEL_CENTERS, not(bool(value)))
 
 
+class TorchInterpolate3d(base_op.Resize3d):
+  def __init__(self, input_ndim):
+    super().__init__()
+    utils.op_register(NNDCT_OP.RESIZE_3D, 'interpolate')
+    # self._scale_factor_bc = [1.0, 1.0]
+    assert input_ndim == 5
+
+  @property
+  def size(self):
+    size = self.get_attr(self.AttrName.SIZE)
+    if all([s == 0 for s in size]):
+      return None
+    else:
+      return [size[2]] + size[:2]
+
+  @size.setter
+  def size(self, size):
+    self.set_attr(self.AttrName.SIZE, size[1:] + [size[0]])
+
+  @property
+  def scale_factor(self):
+    scale = self.get_attr(self.AttrName.SCALE)
+    if all([s == 1.0 for s in scale]):
+      return None
+    else:
+      return [scale[2]] + scale[:2]
+
+  @scale_factor.setter
+  def scale_factor(self, factor):
+    if isinstance(factor, float):
+        scale_factor = 3 * [factor]
+    else:
+        scale_factor = factor[1:] + [factor[0]]
+    self.set_attr(self.AttrName.SCALE, scale_factor)
+
+
+  @property
+  def mode(self):
+    mode = self.get_attr(self.AttrName.MODE)
+    return f"'{mode.lower()}'"
+
+  @mode.setter
+  def mode(self, mode):
+    if mode != "'trilinear'":
+      raise RuntimeError(f"Don't support {mode} mode in upsampling3d.")
+    self.set_attr(self.AttrName.MODE, mode.strip("'").upper())
+
+
+class TorchResizeTrilinear(TorchInterpolate3d):
+  def __init__(self, input_ndim):
+    super().__init__(input_ndim)
+
+  @property
+  def align_corners(self):
+    return self.get_attr(self.AttrName.ALIGN_CORNERS)
+
+  @align_corners.setter
+  def align_corners(self, value):
+    self.set_attr(self.AttrName.ALIGN_CORNERS, bool(value))
+    self.set_attr(self.AttrName.HALF_PIXEL_CENTERS, not(bool(value)))
+
 class TorchConst(base_op.Constant):
   def __init__(self):
     super().__init__(NNDCT_OP.CONST)
     utils.op_register(NNDCT_OP.CONST, 'tensor')
-  
+
   @property
   def data(self):
     return self.get_attr(self.AttrName.DATA)
-  
+
+  @data.setter
+  def data(self, data):
+    self.set_attr(self.AttrName.DATA, data)
+    
+
+class TorchTensor(base_op.Constant):
+  def __init__(self):
+    super().__init__(NNDCT_OP.TENSOR)
+    utils.op_register(NNDCT_OP.TENSOR, 'tensor')
+
+  @property
+  def data(self):
+    return self.get_attr(self.AttrName.DATA)
+
   @data.setter
   def data(self, data):
     self.set_attr(self.AttrName.DATA, data)
 
-    
-    
-class TorchMul(Operation):
+
+
+class TorchMul(base_op.BinaryOp):
 
   def __init__(self, *args, **kwargs):
     super(TorchMul, self).__init__(NNDCT_OP.MULTIPLY, *args, **kwargs)
     utils.op_register(NNDCT_OP.MULTIPLY, 'mul')
 
+  @property
+  def input(self):
+    return self.get_attr(self.AttrName.INPUT)
 
+  @input.setter
+  def input(self, input):
+    self.set_attr(self.AttrName.INPUT, input)
+
+  @property
+  def other(self):
+    return self.get_attr(self.AttrName.OTHER)
+
+  @other.setter
+  def other(self, other):
+    self.set_attr(self.AttrName.OTHER, other)
+  
+class TorchDiv(base_op.BinaryOp):
+
+  def __init__(self, *args, **kwargs):
+    super(TorchDiv, self).__init__(NNDCT_OP.DIV, *args, **kwargs)
+    utils.op_register(NNDCT_OP.DIV, 'div')
+
+  @property
+  def input(self):
+    return self.get_attr(self.AttrName.INPUT)
+
+  @input.setter
+  def input(self, input):
+    self.set_attr(self.AttrName.INPUT, input)
+
+  @property
+  def other(self):
+    return self.get_attr(self.AttrName.OTHER)
+
+  @other.setter
+  def other(self, other):
+    self.set_attr(self.AttrName.OTHER, other)
+    
+    
 class TorchCast(Operation):
 
   def __init__(self, *args, **kwargs):
@@ -908,7 +1121,7 @@ class TorchBinaryOp(base_op.BinaryOp):
   def __init__(self, nndct_op_type, torch_op_type, force_to_primitive=False):
     super().__init__(nndct_op_type)
     utils.op_register(nndct_op_type, torch_op_type, force_to_primitive=force_to_primitive)
-    
+
   @property
   def input(self):
     return self.get_attr(self.AttrName.INPUT)
@@ -924,13 +1137,13 @@ class TorchBinaryOp(base_op.BinaryOp):
   @other.setter
   def other(self, other):
     self.set_attr(self.AttrName.OTHER, other)
-    
-    
+
+
 class TorchUnaryOp(base_op.UnaryOp):
   def __init__(self, nndct_op_type, torch_op_type, force_to_primitive=False):
     super().__init__(nndct_op_type)
     utils.op_register(nndct_op_type, torch_op_type, force_to_primitive=force_to_primitive)
-    
+
   @property
   def input(self):
     return self.get_attr(self.AttrName.INPUT)
@@ -938,7 +1151,7 @@ class TorchUnaryOp(base_op.UnaryOp):
   @input.setter
   def input(self, input):
     self.set_attr(self.AttrName.INPUT, input)
-    
+
 
 class TorchFloorDiv(Operation):
   def __init__(self, *args, **kwargs):
@@ -956,8 +1169,8 @@ class TorchSoftmax(base_op.Softmax):
   @property
   def dim(self):
     return transformed_axis(
-        src="NHWC",
-        dst="NCHW",
+        src=DataFormat.channel_first,
+        dst=DataFormat.channel_first,
         ndim=self._input_ndim,
         dim=self._attr_value_mem[self.AttrName.AXIS][0])
 
@@ -965,7 +1178,7 @@ class TorchSoftmax(base_op.Softmax):
   def dim(self, value):
     self._attr_value_mem[self.AttrName.AXIS][:] = [
         transformed_axis(
-            src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=value)
+            src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=value)
     ]
 
 
@@ -1029,7 +1242,7 @@ class TorchRsub(base_op.Sub):
     self.set_attr(self.AttrName.OTHER, other)
 
 
-class TorchSelect(Operation):
+class TorchSelect(base_op.CustomOp):
 
   def __init__(self, *args, **kwargs):
     super(TorchSelect, self).__init__(NNDCT_OP.SELECT, *args, **kwargs)
@@ -1058,11 +1271,11 @@ class TorchInplaceCopy(Operation):
     utils.op_register(NNDCT_OP.INPLACE_COPY, 'copy_')
 
 
-class TorchExpand(Operation):
+# class TorchExpand(Operation):
 
-  def __init__(self, *args, **kwargs):
-    super(TorchExpand, self).__init__(NNDCT_OP.EXPAND, *args, **kwargs)
-    utils.op_register(NNDCT_OP.EXPAND, 'expand')
+#   def __init__(self, *args, **kwargs):
+#     super(TorchExpand, self).__init__(NNDCT_OP.EXPAND, *args, **kwargs)
+#     utils.op_register(NNDCT_OP.EXPAND, 'expand')
 
 
 class TorchEmpty(Operation):
@@ -1136,48 +1349,48 @@ class TorchGru(base_op.Gru):
   def __init__(self, *args, **kwargs):
     super(TorchGru, self).__init__(NNDCT_OP.BASIC_GRU, *args, **kwargs)
     utils.op_register(NNDCT_OP.BASIC_GRU, 'GRU')
-  
+
   @property
   def input_size(self):
     return self._attr_value_mem[self.AttrName.INPUT_SIZE][0]
-  
+
   @input_size.setter
   def input_size(self, value):
     self._attr_value_mem[self.AttrName.INPUT_SIZE][:] = [value]
-  
+
   @property
   def hidden_size(self):
     return self._attr_value_mem[self.AttrName.HIDDEN_SIZE][0]
-  
+
   @hidden_size.setter
   def hidden_size(self, value):
     self._attr_value_mem[self.AttrName.HIDDEN_SIZE][:] = [value]
-    
+
   @property
   def bidirectional(self):
     return self._attr_value_mem[self.AttrName.BIDIRECTIONAL][0]
-  
+
   @bidirectional.setter
   def bidirectional(self, value):
     self._attr_value_mem[self.AttrName.BIDIRECTIONAL][:] = [bool(value)]
-  
+
   @property
   def num_layers(self):
     return self._attr_value_mem[self.AttrName.NUM_LAYERS][0]
-  
+
   @num_layers.setter
   def num_layers(self, value):
     self._attr_value_mem[self.AttrName.NUM_LAYERS][:] = [value]
-  
+
   @property
   def batch_first(self):
     return self._attr_value_mem[self.AttrName.BATCH_FIRST][0]
-  
+
   @batch_first.setter
   def batch_first(self, value):
-    self._attr_value_mem[self.AttrName.BATCH_FIRST][:] = [bool(value)]  
+    self._attr_value_mem[self.AttrName.BATCH_FIRST][:] = [bool(value)]
 
-  
+
 class TorchSplit(Operation):
 
   def __init__(self, input_ndim, *args, **kwargs):
@@ -1200,12 +1413,21 @@ class TorchZeros(base_op.ConstFromShape):
     assert isinstance(size, (list, tuple))
     self.set_attr(self.AttrName.SHAPE, list(size))
 
+  @property
+  def size(self):
+    return self.get_attr(self.AttrName.SHAPE)
+
+  @size.setter
+  def size(self, size):
+    assert isinstance(size, (list, tuple))
+    self.set_attr(self.AttrName.SHAPE, list(size))
+
 
 class TorchPad(base_op.Pad):
-  mode_map = {"'constant'": 0, 
-            "'reflect'": 1, 
-            "'replicate'": 2}  
-  
+  mode_map = {"'constant'": 0,
+            "'reflect'": 1,
+            "'replicate'": 2}
+
   def __init__(self):
     super().__init__()
     utils.op_register(self.type, "pad")
@@ -1216,7 +1438,7 @@ class TorchPad(base_op.Pad):
     # HW -> WH
     pad = pad[-4:-2] + pad[2:4]
     return pad
-   
+
   @pad.setter
   def pad(self, value):
     if len(value) != 4:
@@ -1255,7 +1477,7 @@ class TorchMatmul(Operation):
     utils.op_register(NNDCT_OP.MATMUL, 'matmul')
 
 
-class TorchClamp(Operation):
+class TorchClamp(base_op.CustomOp):
 
   def __init__(self, *args, **kwargs):
     super(TorchClamp, self).__init__(NNDCT_OP.CLAMP, *args, **kwargs)
@@ -1268,22 +1490,22 @@ class TorchSlice(base_op.StridedSlice):
     super().__init__()
     self._input_ndim = input_ndim
     utils.op_register(NNDCT_OP.STRIDED_SLICE, NNDCT_OP.STRIDED_SLICE, force_to_primitive=True)
-    
+
   @property
   def start(self):
-    if self._input_ndim != 4:
+    if self._input_ndim < 4:
       return self.get_attr(self.AttrName.BEGIN)
     else:
-      begin = [0] * 4
+      begin = [0] * self._input_ndim
       for dim, pos in enumerate(self.get_attr(self.AttrName.BEGIN)):
         new_dim = transformed_axis(
-            src="NHWC", dst="NCHW", ndim=self._input_ndim, dim=dim)
+            src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim)
         begin[new_dim] = pos
       return begin
 
   @start.setter
   def start(self, start):
-    if self._input_ndim != 4:
+    if self._input_ndim < 4:
       begin_mask = 0
       for dim, pos in enumerate(start):
         if pos == 0:
@@ -1292,11 +1514,11 @@ class TorchSlice(base_op.StridedSlice):
       self.set_attr(self.AttrName.BEGIN, start)
 
     else:
-      begin = [0] * 4
+      begin = [0] * self._input_ndim
       begin_mask = 0
       for dim, pos in enumerate(start):
         new_dim = transformed_axis(
-            src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=dim)
+            src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim)
         begin[new_dim] = pos
 
       for dim, pos in enumerate(begin):
@@ -1308,19 +1530,19 @@ class TorchSlice(base_op.StridedSlice):
 
   @property
   def end(self):
-    if self._input_ndim != 4:
+    if self._input_ndim < 4:
       return self.get_attr(self.AttrName.END)
     else:
-      end = [NNDCT_CONSTANT.INT_MAX] * 4
+      end = [NNDCT_CONSTANT.INT_MAX] * self._input_ndim
       for dim, pos in enumerate(self.get_attr(self.AttrName.END)):
         new_dim = transformed_axis(
-            src="NHWC", dst="NCHW", ndim=self._input_ndim, dim=dim)
+            src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim)
         end[new_dim] = pos
       return end
 
   @end.setter
   def end(self, end):
-    if self._input_ndim != 4:
+    if self._input_ndim < 4:
       end_mask = 0
       for dim, pos in enumerate(end):
         if isinstance(pos, int) and pos >= NNDCT_CONSTANT.INT_MAX:
@@ -1328,11 +1550,11 @@ class TorchSlice(base_op.StridedSlice):
       self.set_attr(self.AttrName.END_MASK, end_mask)
       self.set_attr(self.AttrName.END, end)
     else:
-      new_end = [NNDCT_CONSTANT.INT_MAX] * 4
+      new_end = [NNDCT_CONSTANT.INT_MAX] * self._input_ndim
       end_mask = 0
       for dim, pos in enumerate(end):
         new_dim = transformed_axis(
-            src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=dim)
+            src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim)
         new_end[new_dim] = pos
 
       for dim, pos in enumerate(new_end):
@@ -1344,25 +1566,25 @@ class TorchSlice(base_op.StridedSlice):
 
   @property
   def step(self):
-    if self._input_ndim != 4:
+    if self._input_ndim < 4:
       return self.get_attr(self.AttrName.STRIDES)
     else:
-      strides = [1] * 4
+      strides = [1] * self._input_ndim
       for dim, step in enumerate(self.get_attr(self.AttrName.STRIDES)):
         new_dim = transformed_axis(
-            src="NHWC", dst="NCHW", ndim=self._input_ndim, dim=dim)
+            src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim)
         strides[new_dim] = step
       return strides
 
   @step.setter
   def step(self, steps):
-    if self._input_ndim != 4:
+    if self._input_ndim < 4:
       self.set_attr(self.AttrName.STRIDES, steps)
     else:
-      strides = [1] * 4
+      strides = [1] * self._input_ndim
       for dim, step in enumerate(steps):
         new_dim = transformed_axis(
-            src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=dim)
+            src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim)
         strides[new_dim] = step
 
       self.set_attr(self.AttrName.STRIDES, strides)
@@ -1385,17 +1607,29 @@ class TorchEmbeddingBag(base_op.EmbeddingBag):
   def __init__(self):
     super().__init__(NNDCT_OP.EMBEDDING_BAG)
     utils.op_register(NNDCT_OP.EMBEDDING_BAG, "EmbeddingBag")
-    
-    
-class TorchBaseOperation(Operation):
+
+class TorchEmbedding(base_op.Embedding):
+  def __init__(self):
+    super().__init__(NNDCT_OP.EMBEDDING)
+    utils.op_register(NNDCT_OP.EMBEDDING, "Embedding")
+
+
+class TorchBaseOperation(base_op.CustomOp):
   def __init__(self, nndct_op_type, torch_op_type=None, force_to_primitive=False, schema=None):
     super().__init__(nndct_op_type)
     if torch_op_type is not None:
       utils.op_register(nndct_op_type, torch_op_type, force_to_primitive=force_to_primitive, schema=schema)
 
 
+class TorchCustomOperation(base_op.CustomOp):
+  def __init__(self, nndct_op_type, torch_op_type):
+    super().__init__(nndct_op_type)
+    utils.op_register(nndct_op_type, torch_op_type, class_type=utils.TorchOpClassType.CUSTOM_FUNCTION)
+
+
+
 class TorchSqueeze(base_op.Squeeze):
- 
+
   def __init__(self, input_ndim):
     super().__init__()
     utils.op_register(NNDCT_OP.SQUEEZE, "squeeze")
@@ -1403,11 +1637,10 @@ class TorchSqueeze(base_op.Squeeze):
 
   @property
   def dim(self):
-    dims = []  
+    dims = []
     for dim in self.get_attr(self.AttrName.DIMS):
-      dims.append(
-          transformed_axis(
-              src="NHWC", dst="NCHW", ndim=self._input_ndim, dim=dim))
+        dims.append(transformed_axis(src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim))
+
     return tuple(dims)
 
   @dim.setter
@@ -1418,48 +1651,46 @@ class TorchSqueeze(base_op.Squeeze):
       value = [value]
     dims = []
     for dim in value:
-      dims.append(
-          transformed_axis(
-              src="NCHW", dst="NHWC", ndim=self._input_ndim, dim=dim))
-    
-    self.set_attr(self.AttrName.DIMS, [dims[:]])
+      dims.append(transformed_axis(src=DataFormat.channel_first, dst=DataFormat.channel_first, ndim=self._input_ndim, dim=dim))
+
+    self.set_attr(self.AttrName.DIMS, dims[:])
 
 
 class TorchLayerNorm(base_op.LayerNorm):
   def __init__(self):
     super().__init__(NNDCT_OP.LAYER_NORM)
     utils.op_register(NNDCT_OP.LAYER_NORM, "LayerNorm")
-    
+
 
 class TorchUnknownOperation(Operation):
   def __init__(self, nndct_op_type):
     super().__init__(nndct_op_type)
-    
 
-class TorchPixShuffle(base_op.Reorg):
+
+class TorchPixelShuffle(base_op.PixelShuffle):
   def __init__(self):
     super().__init__(NNDCT_OP.PIXEL_SHUFFLE)
     utils.op_register(NNDCT_OP.PIXEL_SHUFFLE, "PixelShuffle")
-  
-  @property 
+
+  @property
   def upscale_factor(self):
     return self.get_attr(self.AttrName.SCALE)
-  
+
   @upscale_factor.setter
   def upscale_factor(self, value):
     self.set_attr(self.AttrName.SCALE, value)
-    
-    
-class TorchPixUnShuffle(base_op.Reorg):
+
+
+class TorchPixelUnshuffle(base_op.PixelShuffle):
   def __init__(self):
     super().__init__(NNDCT_OP.PIXEL_UNSHUFFLE)
-    utils.op_register(NNDCT_OP.PIXEL_UNSHUFFLE, "PixelUnShuffle")
-  
-  @property 
+    utils.op_register(NNDCT_OP.PIXEL_UNSHUFFLE, "PixelUnshuffle")
+
+  @property
   def downscale_factor(self):
     return self.get_attr(self.AttrName.SCALE)
 
   @downscale_factor.setter
   def downscale_factor(self, value):
     self.set_attr(self.AttrName.SCALE, value)
-  
+

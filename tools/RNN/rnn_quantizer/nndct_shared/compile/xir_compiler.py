@@ -24,12 +24,13 @@ import numpy as np
 
 from nndct_shared.base import NNDCT_OP
 from nndct_shared.nndct_graph import Graph
+from nndct_shared.nndct_graph import operator_definition as base_op
 from nndct_shared.quantization import BaseQuantizer
-from nndct_shared.utils import (AddXopError, NndctOption)
+from nndct_shared.utils import (AddXopError, NndctOption, GLOBAL_MAP, NNDCT_KEYS, NndctScreenLogger)
 
 from .deploy_optimizer import DevGraphOptimizer
 from .xgraph import XGraph
-from .xop_creator import NNDCTIR2XIR_CONVERTOR, unsupported_xop
+from .xop_creator import NNDCTIR2XIR_CONVERTOR, custom_xop, to_xir
 
 NndctQuantInfo = Dict[str, Dict[str, List[int]]]
 
@@ -39,20 +40,28 @@ DeployGraphInfo = namedtuple("DeployGraphInfo", ["dev_graph", "quant_info"])
 class XirCompiler(object):
   
   @staticmethod
+  def get_xmodel_and_dump_infos(quantizer: BaseQuantizer, deploy_graphs_list: List[List[Graph]]):
+    if len(deploy_graphs_list) == 1:
+      graph_quant_info = XirCompiler.get_deloy_graph_infos(quantizer, deploy_graphs_list[0])
+      return graph_quant_info, graph_quant_info
+    elif len(deploy_graphs_list) == 2:
+      xmodel_quant_info = XirCompiler.get_deloy_graph_infos(quantizer, deploy_graphs_list[0])
+      dump_quant_info = XirCompiler.get_deloy_graph_infos(quantizer, deploy_graphs_list[1])
+      return xmodel_quant_info, dump_quant_info
+    else:
+      raise RuntimeError(f"Length of graphs list to deploy should be 1 or 2")
+
+  @staticmethod
   def get_deloy_graph_infos(quantizer: BaseQuantizer, deploy_graphs: List[Graph]) -> List[DeployGraphInfo]:
-    # g_optmizer = DevGraphOptimizer(copied_nndct_graph)
-    # g_optmizer.freeze_graph()
-    # deploy_graphs = g_optmizer.partition_by_quant_part()
     graph_quant_info_list = []
     quant_groups = copy.deepcopy(quantizer.configer.quant_groups)
-    # for dev_graph in deploy_graphs:
     quant_config = {"param": {}, "output": {}, "input": {}}
     if not NndctOption.nndct_quant_off.value:
       quant_config["param"].update(quantizer.quant_config["param"])
       quant_config["input"].update(quantizer.quant_config["input"])
       for blob_name, quant_info in quantizer.quant_config["output"].items():
-        if any([v is None for v in quant_info]):
-          continue
+        # if any([v is None for v in quant_info]):
+        #   continue
         
         if any([blob_name in dev_graph for dev_graph in deploy_graphs]):
           quant_config["output"][blob_name] = copy.deepcopy(quant_info)
@@ -98,8 +107,10 @@ class XirCompiler(object):
     if graph_attr_kwargs is not None:
       for name, attr in graph_attr_kwargs.items():
         xgraph.graph.set_attr(name, attr)
-        
-    for node in compile_graph.nodes:
+    
+    #sorted_nodes = compile_graph.top_sort_nodeset(list(compile_graph.nodes))
+    sorted_nodes = list(compile_graph.nodes)
+    for node in sorted_nodes:
       for param_type, param_tensor in node.op.params.items():
         if (node.op.type in [NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D] 
             and param_type not in [node.op.ParamName.GAMMA, node.op.ParamName.BETA]):
@@ -108,15 +119,13 @@ class XirCompiler(object):
           continue
         # print(f"{node.name}: {param_tensor.name}, {id(param_tensor)}")
         data = np.copy(param_tensor.data)
-        if node.op.type == NNDCT_OP.CONVTRANSPOSE2D and param_type == node.op.ParamName.WEIGHTS:
+        if node.op.type in [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D] and param_type == node.op.ParamName.WEIGHTS:
           # OHWI -> OH'W'I reverse the order of ele in both h and w axis
           data = np.flip(data, (1, 2))
           data = np.ascontiguousarray(data)
-        elif node.op.type == NNDCT_OP.CONV3D and param_type == node.op.ParamName.WEIGHTS:
-          data = data.transpose(0, 2, 3, 4, 1)
-          data = np.ascontiguousarray(data)
-        elif node.op.type == NNDCT_OP.CONVTRANSPOSE3D and param_type == node.op.ParamName.WEIGHTS:
-          data = data.transpose(1, 2, 3, 4, 0)
+        elif node.op.type in [NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
+           # OHWDI -> OH'W'D'I reverse the order of ele in both h and w axis
+          data = np.flip(data, (1, 2, 3))
           data = np.ascontiguousarray(data)
         try:
           xgraph.create_fixed_const_op(
@@ -126,17 +135,21 @@ class XirCompiler(object):
         except Exception as e:
           raise AddXopError(param_tensor.name, 'const', str(e))
 
-    unknown_op_types = {f"{node.op.type}({node.name})" for node in compile_graph.nodes 
-                        if node.op.type not in NNDCTIR2XIR_CONVERTOR}
-    if not unknown_op_types:
-      for node in compile_graph.nodes:
-        try:
-          NNDCTIR2XIR_CONVERTOR.get(node.op.type, unsupported_xop)(xgraph, node, quant_config_info)
-        except Exception as e:
-          raise AddXopError(node.name, node.op.type, str(e))
-    else:
-      # NndctScreenLogger().error(f"Please support these ops in XIR:{unknown_op_types}.")
-      raise AddXopError(unknown_op_types) 
+    custom2xir = GLOBAL_MAP.get_ele(NNDCT_KEYS.CUSTOM_TO_XIR_LIST)
+    if custom2xir:
+      for op_type in custom2xir:
+        NNDCTIR2XIR_CONVERTOR[op_type] = to_xir(op_type)
+    
+    for node in sorted_nodes:
+      # print("convert...:", node.op.type, node.name, node.in_quant_part)
+      # import sys
+      # sys.stdout.flush()
+      try:
+        NNDCTIR2XIR_CONVERTOR.get(node.op.type, custom_xop)(xgraph, node, quant_config_info)
+          
+      except Exception as e:
+        raise AddXopError(node.name, node.op.type, str(e))
+    
       
     return_ops = []
     for tensor in compile_graph.end_tensors:
@@ -152,4 +165,19 @@ class XirCompiler(object):
         output_file_name += '_int'
               
       xgraph.export_to_xmodel(output_file_name)
-      # xgraph.export_to_img(output_file_name)       
+      
+    return xgraph
+
+  @staticmethod
+  def verify_xmodel(compile_graph: Graph, xgraph: XGraph):
+    """verify the xmodel by nndct node shape"""
+    sorted_nodes = compile_graph.top_sort_nodeset(list(compile_graph.nodes))
+    for node in sorted_nodes:
+      if node.out_tensors[0].ndim and node.out_tensors[0].ndim > 1:
+        xop_shape = xgraph.get_op_output_shape(node.name)
+        if tuple(xop_shape) != tuple(node.out_tensors[0].shape):
+          NndctScreenLogger().error(f"output shape of {node.name}({node.out_tensors[0].shape}) is different from the output shape of XIR ({xop_shape})")
+
+        
+                
+    

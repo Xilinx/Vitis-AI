@@ -1,12 +1,12 @@
 <table width="100%">
   <tr width="100%">
-    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Library v1.4</h1>
+    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Library v2.0</h1>
     </td>
  </tr>
  </table>
 
 # Introduction
-The Vitis AI Library is a set of high-level libraries and APIs built for efficient AI inference with Deep-Learning Processor Unit (DPU). It is built based on the Vitis AI Runtime with Unified APIs, and it fully supports XRT 2020.2.
+The Vitis AI Library is a set of high-level libraries and APIs built for efficient AI inference with Deep-Learning Processor Unit (DPU). It is built based on the Vitis AI Runtime with Unified APIs, and it fully supports XRT 2021.2.
 
 The Vitis AI Library provides an easy-to-use and unified interface by encapsulating many efficient and high-quality neural networks. This simplifies the use of deep-learning neural networks, even for users without knowledge of deep-learning or FPGAs. The Vitis AI Library allows users to focus more on the development of their applications, rather than the underlying hardware.
 
@@ -16,28 +16,21 @@ For edge users, click
 For cloud users, click 
 [Quick Start For Cloud](#quick-start-for-cloud) to get started quickly.
 
-## Key Features And Enhancements in 1.4 Release
-1. New Boards Support:
-	* SoM KV260
-2. New Model Libraries:
-	* pointpainting sensor fusion
-	* pointpillars nuscenes
-	* centerpoint detection
-	* SA-Gate segmentaton
-	* bayesian crowd counting
-	* production recognition
-	* multi-task V3
-	* rcan super resolution
-3. Up to 16 new models are supported:
-	* Added 10 new Pytorch models
-	* Added 5 new TensorFlow models, including 1 TensorfFow2 models
-	* Added 1 new Caffe models
-4. New DPU Support:
-	* Enhanced DPUCVDX8G with ALU
-5. New Deploy APIs Support:
-	* graph_runner is introduced to deploy model with multiple subgraphs
-6. New Tool Support:
-	* xdputil is introduced for dpu and xmodel debug
+## Key Features And Enhancements in 2.0 Release
+1. New Model Libraries:
+	* polypsegmentation
+	* ultrafast
+	* yolox
+	* clocs
+	* fairmot
+	* solo
+2. Up to 16 new models are supported:
+	* Added 15 new Pytorch models
+	* Added 1 TensorfFow2 model
+3. New CPU Ops Support:
+	* Added 12 CPU Ops
+4. Custom Op Registration Supported
+5. xdputil Tool Enhancement
 
 ## Block Diagram
 
@@ -66,17 +59,17 @@ For `VCK190`, follow steps in [Setting Up the Target](../../setup/vck190#step2-s
 	 	  
 ### Running Vitis AI Library Examples
 
-1. Download the [vitis_ai_library_r1.4.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.4.0_images.tar.gz) and 
-the [vitis_ai_library_r1.4.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.4.0_video.tar.gz). Copy them from host to the target using scp with the following command.
+1. Download the [vitis_ai_library_r2.0.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.0.0_images.tar.gz) and 
+the [vitis_ai_library_r2.0.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.0.0_video.tar.gz). Copy them from host to the target using scp with the following command.
 ```
-[Host]$scp vitis_ai_library_r1.4.*_images.tar.gz root@IP_OF_BOARD:~/
-[Host]$scp vitis_ai_library_r1.4.*_video.tar.gz root@IP_OF_BOARD:~/
+[Host]$scp vitis_ai_library_r2.0.*_images.tar.gz root@IP_OF_BOARD:~/
+[Host]$scp vitis_ai_library_r2.0.*_video.tar.gz root@IP_OF_BOARD:~/
 ```
 2. Untar the image and video packages on the target.
 ```
 cd ~
-tar -xzvf vitis_ai_library_r1.4.*_images.tar.gz -C Vitis-AI/demo/Vitis-AI-Library
-tar -xzvf vitis_ai_library_r1.4.*_video.tar.gz -C Vitis-AI/demo/Vitis-AI-Library
+tar -xzvf vitis_ai_library_r2.0.*_images.tar.gz -C Vitis-AI/demo/Vitis-AI-Library
+tar -xzvf vitis_ai_library_r2.0.*_video.tar.gz -C Vitis-AI/demo/Vitis-AI-Library
 ```
 3. Enter the directory of example in target board, take `facedetect` as an example.
 ```
@@ -114,21 +107,20 @@ If you want to support video data in other formats, you need to install the rele
 ```
 
 ## Quick Start For Cloud
-### Setting Up the Host for U50/U50LV/U280
+### Setting Up the Host for U50LV/U55C
 
 1. Follow [Setup Alveo Accelerator Card](../../setup/alveo) to set up the Alveo Card.
 
 2. Suppose you have followed the above steps to enter docker container and executed the following commands.  
-	Take `U50 DPUCAHX8H` as an example.
+	Take `U50LV DPUCAHX8H` as an example.
 	```
-	cd /workspace/setup/alveo
-	source setup.sh DPUCAHX8H
+	source /workspace/setup/alveo/setup.sh DPUCAHX8H
 	```
 
 ### Setting Up the Host for VCK5000
-Follow [Setting Up the Host](../../setup/vck5000) to set up the host for VCK5000.
+Follow [Setting Up the Host](../../setup/vck5000) to set up the host for VCK5000 PROD card.
 
-### Running Vitis AI Library Examples for U50/U50lv/U280/VCK5000
+### Running Vitis AI Library Examples for U50LV/U55C/VCK5000
 
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
 Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/demo/Vitis-AI-Library/` in the docker system. 
@@ -139,30 +131,30 @@ If you encounter any path errors in running examples, check to see if you follow
 
 1. Select the model for your platform.  
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
-	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models. For DPUCAHX8H of U50, take `resnet50` as an example.
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models. For DPUCAHX8H of U50LV, take `resnet50` as an example.
 
 	* Download the model according to the model's yaml file.
 	```
-	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz -O resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50lv-DPUCAHX8H-r2.0.0.tar.gz -O resnet50-u50lv-DPUCAHX8H-r2.0.0.tar.gz
 	```
 
 	* Install the model package.  
 	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
 	```
 	  sudo mkdir /usr/share/vitis_ai_library/models
-	  tar -xzvf resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+	  tar -xzvf resnet50-u50lv-DPUCAHX8H-r2.0.0.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```	
 
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
-2. Download the [vitis_ai_library_r1.4.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.4.0_images.tar.gz) and [vitis_ai_library_r1.4.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.4.0_video.tar.gz) packages and untar them.
+2. Download the [vitis_ai_library_r2.0.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.0.0_images.tar.gz) and [vitis_ai_library_r2.0.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.0.0_video.tar.gz) packages and untar them.
 ```
 cd /workspace
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.4.0_images.tar.gz -O vitis_ai_library_r1.4.0_images.tar.gz
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.4.0_video.tar.gz -O vitis_ai_library_r1.4.0_video.tar.gz
-tar -xzvf vitis_ai_library_r1.4.0_images.tar.gz -C demo/Vitis-AI-Library/
-tar -xzvf vitis_ai_library_r1.4.0_video.tar.gz -C demo/Vitis-AI-Library/
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.0.0_images.tar.gz -O vitis_ai_library_r2.0.0_images.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.0.0_video.tar.gz -O vitis_ai_library_r2.0.0_video.tar.gz
+tar -xzvf vitis_ai_library_r2.0.0_images.tar.gz -C demo/Vitis-AI-Library/
+tar -xzvf vitis_ai_library_r2.0.0_video.tar.gz -C demo/Vitis-AI-Library/
 ```
 3. Enter the directory of sample and then compile it.
 ```
@@ -195,8 +187,7 @@ Video_input.mp4: The video file's name for input. The user needs to prepare the 
 2. Suppose you have followed the above steps to enter docker container and executed the following commands.  
 	Take `DPUCADF8H` as an example.
 	```
-	cd /workspace/setup/alveo
-	source setup.sh DPUCADF8H
+	source /workspace/setup/alveo/setup.sh DPUCADF8H
 	```
 
 :pushpin: **Note:** Please make sure you are already inside Vitis-AI docker
@@ -213,18 +204,18 @@ This will generate AI libraries and executable files to under `build_dir_default
 ### Running Vitis AI Library Examples on Alveo-U200/Alveo-U250 with `DPUCADF8H`:
 1. Download and untar the model package.
 ```
-wget -O inception_v1_tf-u200-u250-r1.4.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-u200-u250-r1.4.0.tar.gz
-wget -O resnet_v1_50_tf-u200-u250-r1.4.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u200-u250-r1.4.0.tar.gz
-tar -xvf inception_v1_tf-u200-u250-r1.4.0.tar.gz
-tar -xvf resnet_v1_50_tf-u200-u250-r1.4.0.tar.gz 
+wget -O inception_v1_tf-u200-u250-r2.0.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-u200-u250-r2.0.0.tar.gz
+wget -O resnet_v1_50_tf-u200-u250-r2.0.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u200-u250-r2.0.0.tar.gz
+tar -xvf inception_v1_tf-u200-u250-r2.0.0.tar.gz
+tar -xvf resnet_v1_50_tf-u200-u250-r2.0.0.tar.gz 
 ```
-:pushpin: **Note:** Currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_1.4` and `tf_resnetv1_50_imagenet_224_224_6.97G_1.4`.
+:pushpin: **Note:** Currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_2.0` and `tf_resnetv1_50_imagenet_224_224_6.97G_2.0`.
 
-2. Download the [vitis_ai_library_r1.4.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.4.0_images.tar.gz) package and untar. Extracted images can be found under `samples` folder.
+2. Download the [vitis_ai_library_r2.0.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.0.0_images.tar.gz) package and untar. Extracted images can be found under `samples` folder.
 ```
 cd /vitis_ai_home/tools/Vitis-AI-Library
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r1.4.0_images.tar.gz -O vitis_ai_library_r1.4.0_images.tar.gz
-tar -xzvf vitis_ai_library_r1.4.0_images.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.0.0_images.tar.gz -O vitis_ai_library_r2.0.0_images.tar.gz
+tar -xzvf vitis_ai_library_r2.0.0_images.tar.gz
 ```
 
 3. Setup the environment.
@@ -258,7 +249,7 @@ xdputil status
 xdputil run <xmodel> [-i <subgraph_index>] <input_bin>
 
 xmodel: The model run on DPU
--i : The subgraph_index of the model, the default value is 0
+-i : The subgraph_index of the model, index starts from 0, -1 means running the whole graph, the default value is 1
 input_bin: The input file for the model
 ```
 * Show xmodel information, including xmodel's inputs&outputs and kernels
@@ -274,10 +265,14 @@ xdputil xmodel <xmodel> -p <PNG>
 * Test xmodel performance
 ```
 xdputil benchmark <xmodel> [-i subgraph_index] <num_of_threads>
+
+-i : The subgraph_index of the model, index starts from 0, -1 means running the whole graph.
+```
+* Test custom Op
+```
+xdputil run_op <xmodel> <op_name> [-r REF_DIR] [-d DUMP_DIR]
 ```
 For more usage of `xdputil`, execute `xdputil -h`.
 
-Note that `xdputil` is not available for cloud DPUs in VAI1.4.
-
 ## Reference
-For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_4/ug1354-xilinx-ai-sdk.pdf).
+For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/2_0/ug1354-xilinx-ai-sdk.pdf).

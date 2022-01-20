@@ -27,14 +27,14 @@ namespace ai {
 class ThreadPool {
  public:
   static std::unique_ptr<ThreadPool> create(size_t num_of_threads);
-#if defined(__cpp_lib_result_of_sfinae)
-  template <class Function, class... Args>
-  using result_t =
-      std::result_of_t<std::decay_t<Function>(std::decay_t<Args>...)>;
-#elif defined(__cpp_lib_is_invocable)
+#if __cplusplus > 201700
   template <class Function, class... Args>
   using result_t =
       std::invoke_result_t<std::decay_t<Function>, std::decay_t<Args>...>;
+#elif __cplusplus > 201400
+  template <class Function, class... Args>
+  using result_t =
+      std::result_of_t<std::decay_t<Function>(std::decay_t<Args>...)>;
 #else
 #error "not supported, c++14 or c++17 is needed."
 #endif

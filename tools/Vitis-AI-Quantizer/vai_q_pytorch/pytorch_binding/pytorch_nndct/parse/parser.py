@@ -19,12 +19,12 @@
 
 from collections import ChainMap, defaultdict
 from enum import Enum
-
+from tqdm import tqdm
 import torch
 
 from nndct_shared.base.key_names import FrameworkType
 from nndct_shared.nndct_graph import (Graph, Tensor,
-                                      reorder_multi_subgraph_nodes)
+                                      reorder_multi_subgraph_nodes, collect_all_blocks)
 from nndct_shared.utils import NndctDebugLogger, NndctOption, NndctScreenLogger
 from pytorch_nndct.utils import build_aten_torch_ops_table
 
@@ -40,17 +40,17 @@ def unknown_op_type_check(graph: Graph):
   custom_ops = set()
   for graph in graphs:
     for node in graph.nodes:
-      if type(node.op) == TorchUnknownOperation:
+      if isinstance(node.op, TorchUnknownOperation):
         unkown_ops.add(node.op.type)
       elif node.has_custom_op():
         custom_ops.add(node.op.type)
         
   for op in custom_ops:
-      NndctScreenLogger().warning(f"The quantizer ignores new op `{op}` by default.")
+      NndctScreenLogger().warning(f"The quantizer recognize new op `{op}` as a float operator by default.")
 
-  if custom_ops:
-    NndctScreenLogger().info(f"You can make these new ops quantizable by add them to custom_quant_ops, \
-e.g. quantizer= torch_quantizer(..., custom_quant_ops=['{list(custom_ops)[0]}',...])")
+#   if custom_ops:
+#     NndctScreenLogger().info(f"You can make these new ops quantizable by add them to custom_quant_ops, \
+# e.g. quantizer= torch_quantizer(..., custom_quant_ops=['{list(custom_ops)[0]}',...])")
 
   NndctScreenLogger().check(f"Unsupported Ops: {unkown_ops}", len(unkown_ops)==0)
 
@@ -68,10 +68,12 @@ class TorchParser(object):
     raw_graph, raw_params = graph_handler.build_torch_graph(graph_name, module, input_args) 
    
     self._convert_params(raw_params, raw_graph.name)
+    NndctScreenLogger().info("Processing ops...")
     nndct_graph = self._convert_graph(raw_graph, self._get_device_info(module, input_args))
     unknown_op_type_check(nndct_graph)  
     graphs = [nndct_graph]
-    graphs.extend(list(nndct_graph.block_subgraphs()))
+    #graphs.extend(list(nndct_graph.block_subgraphs()))
+    collect_all_blocks(nndct_graph, graphs)
     reorder_multi_subgraph_nodes(graphs)      
     self._convert_blob_tensor_type(nndct_graph)
     self._load_data(nndct_graph, module)
@@ -106,7 +108,11 @@ class TorchParser(object):
     nndct_graph = Graph(graph_name=raw_graph.name)
     node_convertor = NodeConvertor()
     op_creator = OpCreator(device_type)
-    for raw_node in raw_graph.nodes:
+    pbar = tqdm(list(raw_graph.nodes), bar_format="{bar:50}{r_bar}")
+    #for raw_node in raw_graph.nodes:
+    for raw_node in pbar:
+      pbar.set_postfix_str(f"OpInfo: name = {raw_node.name}, type = {raw_node.kind}")
+      pbar.update()
       nndct_node = node_convertor(self, raw_node, node_scope=nndct_graph.name)
       if nndct_node:
         nndct_graph.add_node(nndct_node)
@@ -125,7 +131,7 @@ class TorchParser(object):
           return_struct.append(inner_list)
         else:
           end_tensor = self.get_nndct_value(value)
-          assert end_tensor
+          assert end_tensor is not None
           return_struct.append(end_tensor)
           nndct_graph.add_end_tensor(end_tensor)
             
@@ -139,9 +145,9 @@ class TorchParser(object):
   def _convert_blob_tensor_type(graph):
     r"""convert torch tensor info to nndct tensor info"""
     for blob_tensor in graph.tensors:
-      tensor_util.convert_blob_tensor_format(blob_tensor,
-                                             tensor_util.FrameworkType.TORCH,
-                                             tensor_util.FrameworkType.NNDCT)
+      # tensor_util.convert_blob_tensor_format(blob_tensor,
+      #                                        tensor_util.FrameworkType.TORCH,
+      #                                        tensor_util.FrameworkType.NNDCT)
       blob_tensor.dtype = convert_dtype(blob_tensor.dtype)
   
   @staticmethod
@@ -171,18 +177,19 @@ class TorchParser(object):
                 bias_list.append(bias)
                 i = i + 2
               node.op.set_param(bias_term, bias_list)
-      elif node.op.type == NNDCT_OP.CONVTRANSPOSE2D:
+              
+      elif node.op.type in [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.CONVTRANSPOSE3D]:
         for param_name, tensor in node.op.params.items():
           data = module.state_dict()[get_short_name(tensor.name)].cpu().numpy()
           if param_name == node.op.ParamName.WEIGHTS:
-            data = np.copy(data).transpose(1, 0, 2, 3)
+            data = np.copy(data).swapaxes(0, 1)
             data = np.ascontiguousarray(data)
 
           tensor.from_ndarray(data)
           tensor = tensor_util.convert_parameter_tensor_format(
               tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
 
-      elif node.op.type == NNDCT_OP.DEPTHWISE_CONV2D:
+      elif node.op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONV3D]:
         for param_name, tensor in node.op.params.items():
           data = module.state_dict()[get_short_name(tensor.name)].cpu().numpy()
           if param_name == node.op.ParamName.WEIGHTS:
@@ -195,8 +202,7 @@ class TorchParser(object):
           tensor.from_ndarray(data)
           tensor = tensor_util.convert_parameter_tensor_format(
               tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
-      
-      elif node.op.type == NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D:
+      elif node.op.type in [NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]:
           for param_name, tensor in node.op.params.items():
             data = module.state_dict()[get_short_name(tensor.name)].cpu().numpy()
             if param_name == node.op.ParamName.WEIGHTS:
@@ -207,13 +213,14 @@ class TorchParser(object):
               kernel_size = node.node_config("kernel_size")
               channel_mutiplier = int(out_channels / in_channels)
               data = np.copy(data).reshape((in_channels, channel_mutiplier, *kernel_size))
-              data = np.copy(data).transpose(1, 0, 2, 3)
+              data = np.copy(data).swapaxes(0, 1)
               data = np.ascontiguousarray(data)
 
             tensor.from_ndarray(data)
             tensor = tensor_util.convert_parameter_tensor_format(
               tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
-   
+           
+          
       elif node.blocks:
         for block in node.blocks:
           TorchParser._load_data(block, module)

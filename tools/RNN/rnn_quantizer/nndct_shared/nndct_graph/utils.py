@@ -1,6 +1,6 @@
 
 import sys
-from typing import List
+from typing import List, Optional
 
 from nndct_shared.base import NNDCT_OP
 from nndct_shared.nndct_graph import Graph, Operation
@@ -29,6 +29,9 @@ def reset_group_members(graph, groups, host, servent):
 def group_up(graph, groups, OpType=None, POpType=None):
 
   def __is_valid_parent(node):
+    if len(graph.children(node)) > 1 or node.op.is_custom_op:
+      return False
+    
     if POpType is None:
       return True
     elif node.op.type == POpType:
@@ -67,15 +70,14 @@ def merge_multi_subgraphs(graphs: List[Graph],
   return top_graph
 
 
-def transformed_axis(src: str, dst: str, ndim: int, dim: int) -> int:
-  """NCHW -> NHWC/ NHWC ->NCHW"""
-  if ndim != 4:
-    return dim
-  if src == dst:
-    return dim
-  if src == "NCHW" and dst == "NHWC":
-    return dim + [0, 2, -1, -1][dim]
-  elif src == "NHWC" and dst == "NCHW":
-    return dim + [0, 1, 1, -2][dim]
   
+def collect_all_blocks(graph: Graph, blocks: Optional[List[Graph]] = None) -> List[Graph]:
+  if blocks is None:
+    blocks: List[Graph] = []
+            
+  for subgraph in graph.block_subgraphs():
+    blocks.append(subgraph)
+    if list(subgraph.block_subgraphs()):
+      collect_all_blocks(subgraph, blocks)
 
+  return blocks  

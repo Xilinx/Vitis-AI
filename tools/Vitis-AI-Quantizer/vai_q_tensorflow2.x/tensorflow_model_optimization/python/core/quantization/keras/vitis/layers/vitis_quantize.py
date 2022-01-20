@@ -16,13 +16,12 @@
 
 import tensorflow as tf
 
-from tensorflow.python.keras.utils import tf_utils
-from tensorflow.python.keras.utils.generic_utils import register_keras_serializable
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.base import quantizer as quantizer_mod
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
 
 __all__ = ['VitisQuantize']
 
+register_keras_serializable = tf.keras.utils.register_keras_serializable
 serialize_keras_object = tf.keras.utils.serialize_keras_object
 deserialize_keras_object = tf.keras.utils.deserialize_keras_object
 logger = common_utils.VAILogger
@@ -76,8 +75,8 @@ class VitisQuantize(tf.keras.layers.Layer):
 
       return quantizer_fn
 
-    return tf_utils.smart_cond(training, _make_quantizer_fn(True),
-                               _make_quantizer_fn(False))
+    return common_utils.smart_cond(training, _make_quantizer_fn(True),
+                                   _make_quantizer_fn(False))
 
   def get_config(self):
     base_config = super(VitisQuantize, self).get_config()

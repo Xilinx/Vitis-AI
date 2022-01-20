@@ -62,6 +62,7 @@ if not os.path.exists(os.path.join(NNDCT_LIB_DIR, libnndct)):
 
 root_path = os.path.realpath(os.path.dirname(__file__))
 include_dirs = [os.path.join(root_path, '../include/cuda'), tf.sysconfig.get_include()]
+include_dirs += [os.path.join(root_path, '../include/cpu'), tf.sysconfig.get_include()]
 tf_cflags = tf.sysconfig.get_compile_flags()
 tf_lflags = tf.sysconfig.get_link_flags()
 ver_list = tf.__version__.split('-')[0].split('.')
@@ -106,7 +107,7 @@ setup(
     name=PROJECT_NAME,
     description='Neural Network Deep Compression Toolkit(NNDCT) for TensorFlow.',
     author='Xilinx Inc.',
-    version='0.9.0',
+    version='1.0.0',
     url='',
     packages=find_packages(),
     cmdclass={'build_ext': build_ext},

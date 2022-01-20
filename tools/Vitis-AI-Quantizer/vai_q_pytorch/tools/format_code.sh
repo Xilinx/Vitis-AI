@@ -4,7 +4,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 yapf_format() {
-  yapf -i --style='{based_on_style: chromium, indent_width: 2, blank_lines_around_top_level_definition: 1}' $1
+  yapf -i --style='{based_on_style: yapf, indent_width: 2, blank_lines_around_top_level_definition: 1}' $1
 }
 
 strip_trailing_ctrlm() {

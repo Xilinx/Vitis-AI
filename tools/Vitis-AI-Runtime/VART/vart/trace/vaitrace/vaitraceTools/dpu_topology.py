@@ -157,9 +157,9 @@ def getMemTopo():
 
 def checkPath():
     alt_dirs = [
-            "/sys/devices/platform/amba/amba:zyxclmm_drm/",
-            "/sys/devices/platform/axi/axi:zyxclmm_drm/",
-            "/sys/devices/platform/amba_pl@0/amba_pl@0:zyxclmm_drm/"
+        "/sys/devices/platform/amba/amba:zyxclmm_drm/",
+        "/sys/devices/platform/axi/axi:zyxclmm_drm/",
+        "/sys/devices/platform/amba_pl@0/amba_pl@0:zyxclmm_drm/"
     ]
 
     for d in alt_dirs:

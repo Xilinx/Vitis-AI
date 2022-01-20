@@ -15,10 +15,10 @@
 include_directories(${CMAKE_BINARY_DIR}/src)
 
 add_executable(test_factory test_factory.cpp)
-target_link_libraries(test_factory ${PROJECT_NAME} protobuf::libprotobuf unilog::unilog glog::glog)
+target_link_libraries(test_factory ${PROJECT_NAME} protobuf::libprotobuf unilog::unilog)
 
 add_executable(test_fingerprint test_fingerprint.cpp)
-target_link_libraries(test_fingerprint ${PROJECT_NAME} protobuf::libprotobuf unilog::unilog glog::glog)
+target_link_libraries(test_fingerprint ${PROJECT_NAME} protobuf::libprotobuf unilog::unilog)
 
 add_executable(test_lib_info test_lib_info.cpp)
-target_link_libraries(test_lib_info ${PROJECT_NAME} unilog::unilog glog::glog)
+target_link_libraries(test_lib_info ${PROJECT_NAME} unilog::unilog)

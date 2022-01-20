@@ -27,6 +27,11 @@
 
 ## 1 Revision History
 
+Vitis2.0 Change log:
+- Change platform as VCK190-prod 2021.2 version
+- Change AI Engine Core Frequency from 1333 MHz to 1250 MHz
+- Add XVDPU configuration： C64B1，C64B2，C64B4，C64B5. All supported configurations are C32B[1:6] and C64B[1:5]
+
 Vitis1.4.1 Change log:
 - Change platform as VCK190-prod 2021.1 version
 - Update scripts to make changing platform more easier, update 'vitis_prj/Makefile' to simple the HW build steps
@@ -41,7 +46,7 @@ It includes a set of highly optimized instructions, and supports most convolutio
 This tutorial contains information about:
 
 - How to set up the VCK190 evaluation board.
-- How to build and run the DPUCVDX8G TRD with VCK190 platform in Vitis 2021.1 environment.
+- How to build and run the DPUCVDX8G TRD with VCK190 platform in Vitis environment.
 - How to change platform.
 ------
 
@@ -51,7 +56,7 @@ This tutorial contains information about:
 
 Required:
 
-- VCK190 evaluation board
+- VCK190 Prod evaluation board
 
 - Micro-USB cable, connected to laptop or desktop for the terminal emulator
 
@@ -60,8 +65,8 @@ Required:
 ### 3.2 Software
 
   Required:
-  - Vitis 2021.1
-  - XRT 2021.1
+  - Vitis 2021.2
+  - XRT 2021.2
   - Python (version 2.7.5 or 3.6.8)
 
 ------
@@ -130,7 +135,7 @@ When platform is ready, please set the Vitis and XRT environment variable as giv
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <vitis install path>/Vitis/2021.1/settings64.sh
+% source <vitis install path>/Vitis/2021.2/settings64.sh
 
 % source opt/xilinx/xrt/setup.sh
 ```
@@ -160,6 +165,10 @@ Implemented Vivado project: $TRD_HOME/vitis_prj/hw/binary_container_1/link/vivad
 **Note2:** Implementation strategy is set in the file '$TRD_HOME/vitis_prj/scripts/system.cfg', the default strategy is " prop=run.impl_1.strategy=Performance_ExploreWithRemap ".
            Changing implementation strategy can be done by changing this line in 'system.cfg'. 
 
+**Note3:** With same configuration of XVDPU, 'libadf.a' file of AIE can be re-used. By disabling the last line of '$TRD_HOME/vitis_prj/Makefile', to save the compile time for re-building the hardware design.
+```
+# -@rm -rf aie
+```
 		   
 #### 5.2.2 Get Json File
 
@@ -167,7 +176,7 @@ The 'arch.json' file is an important file required by Vitis AI. It works togethe
 
 It can also be found in the following path:
 
-$TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj/prj.gen/sources_1/bd/vck190*/ip/*_DPUCVDX8G_0/arch.json
+$TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj/prj.gen/sources_1/bd/vck190*/ip/*_DPUCVDX8G_1_0/arch.json
 
 
 #### 5.2.3 Run Resnet50 Example
@@ -183,24 +192,24 @@ Then copy the folder '$TRD_HOME/app' in this TRD to the target folder "~/", and 
 ```
 % cd ~/app/model/
 
-% test_dpu_runner_mt resnet50.xmodel x_0 1
+% xdputil benchmark resnet50.xmodel -i -1 1
 
 ```
 Expect result like below: 
 
 ```
-I0130 22:02:10.517663   755 test_dpu_runner_mt.cpp:399] create runner ... 0/1
-I0130 22:02:11.101772   755 performance_test.hpp:73] 0% ...
-I0130 22:02:17.101913   755 performance_test.hpp:76] 10% ...
+I0617 10:35:50.797550  1962 test_dpu_runner_mt.cpp:473] shuffle results for batch...
+I0617 10:35:50.799772  1962 performance_test.hpp:73] 0% ...
+I0617 10:35:56.799910  1962 performance_test.hpp:76] 10% ...
 .
 .
 .
-I0130 22:03:11.103199   755 performance_test.hpp:76] 100% ...
-I0130 22:03:11.103253   755 performance_test.hpp:79] stop and waiting for all threads terminated....
-I0130 22:03:11.104063   755 performance_test.hpp:85] thread-0 processes 73776 frames
-I0130 22:03:11.104090   755 performance_test.hpp:93] it takes 815 us for shutdown
-I0130 22:03:11.104107   755 performance_test.hpp:94] FPS= 1229.55 number_of_frames= 73776 time= 60.0023 seconds.
-I0130 22:03:11.104150   755 performance_test.hpp:96] BYEBYE
+I0617 10:36:50.801367  1962 performance_test.hpp:76] 100% ...
+I0617 10:36:50.801432  1962 performance_test.hpp:79] stop and waiting for all threads terminated....
+I0617 10:36:50.802978  1962 performance_test.hpp:85] thread-0 processes 75300 frames
+I0617 10:36:50.803010  1962 performance_test.hpp:93] it takes 1564 us for shutdown
+I0617 10:36:50.803024  1962 performance_test.hpp:94] FPS= 1254.93 number_of_frames= 75300 time= 60.0033 seconds.
+I0617 10:36:50.803059  1962 performance_test.hpp:96] BYEBYE
 ```
 ###### **Note:** For running other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_0/ug1414-vitis-ai.pdf).
 
@@ -209,8 +218,8 @@ I0130 22:03:11.104150   755 performance_test.hpp:96] BYEBYE
 
 The DPUCVDX8G IP provides some user-configurable parameters, please refer to the document PG389 'Xilinx Versal DPU (DPUCVDX8G) Product Guide' .
 In this TRD, user-configurable parameters are in the file '$TRD_HOME/vitis_prj/xvdpu_config.mk'. They are:
-- CPB_N       -- number of AI Engine cores per batch handler, support 32 (BATCH_N = 1~6) and 64 (BATCH_N = 3)
-- BATCH_N     -- number of batch engine integrated in DPUCVDX8G IP, range from 1 to 6 for CPB_N=32, and 3 for CPB_N=64.
+- CPB_N       -- number of AI Engine cores per batch handler, support 32 and 64.
+- BATCH_N     -- number of batch engine integrated in DPUCVDX8G IP. Support 1 to 6 for CPB_N=32, and 1 to 5 for CPB_N=64.
 - UBANK_IMG_N -- number of IMG BANKs are composed of UltraRAM, the Max is 16.
 - UBANK_WGT_N -- number of WGT BANKs are composed of UltraRAM, the Max is 17.
 - PL_FREQ     -- Frequency of 'm_axi_aclk', support range from 200M to 333M Hz. 
@@ -244,7 +253,7 @@ DPUCVDX8G's connection with AIE and LPDDR's NOC are all defined in the '$TRD_HOM
 
 For the clock design, please make sure that:
 - s_axi_aclk for 's_axi_control' should use clock with lower frequency, such as 150M Hz, to get better timing.
-- 'AI Engine Core Frequency' should be 4 times of DPUCVDX8G's m_axi_clk. In this TRD, it is 1333M Hz (4 x 333M). The value of 'AI Engine Core Frequency' can be set in the platform design files or '/vitis_prj/scripts/postlink.tcl'.
+- 'AI Engine Core Frequency' should be 4 times of DPUCVDX8G's m_axi_clk, or the maximum AIE frequency. In this TRD, it is 1250M Hz (the maximum AIE frequency of XCVC1902-2MP part on the VCK190 board). The value of 'AI Engine Core Frequency' can be set in the platform design files or '/vitis_prj/scripts/postlink.tcl'.
 
 ### 6.2 Changing Platform
 
@@ -271,13 +280,14 @@ Changing platform needs to modify 3 files: 'vitis_prj/Makefile', 'vitis_prj/scri
 set cell_noc {*}
 ```
  ------
+
+**Note:** Please check the known issue about the workaround for 2021.2 version ES1 platform.
  
- **Note:** Please check the known issue about the workaround for 2021.1 version ES1 platform.
 ## 7 Basic Requirement of Platform
 For platform which will integrate DPUCVDX8G, the basic requirements are listed as below:
 - One 'CIPS' IP.
 - One 'NOC' IP. Its slave AXI interfaces should be with 'sptag', and its DDR interface should provide best DDR bandwidth for DPUCVDX8G. For VCK190 board as example, the NOC should have 2x Memory Controller(for 2 LPDDR on board) and 4x MC ports. 
-- One 'AI Engine' IP name 'ai_engine_0', and its Core Frequency should be 1333 MHz.
+- One 'AI Engine' IP name 'ai_engine_0', and its Core Frequency should be 1250 MHz.
 - One 'Clocking Wizard' IP, with at least 2 output clocks for DPUCVDX8G (150 MHz and 333 MHz).   
 - Two 'Processor System Resets' IP, for 150 MHz and 333 MHz.
 - One 'AXI smartconnect' IP with its master port enabled in the platform (for connection with DPUCVDX8G's 's_axi_control' port), and its slave interface connected to the CIPS master port. 
@@ -291,15 +301,11 @@ For the detailed platform design, please refer to VCK190 platform in this TRD.
 Source files of VCK190 platform are in the folder '/vck190_platform/platforms'.
 
 ## 9 Known Issue 
-1, Unsupported Models:
-- SA_gate_pt
-- fadnet
-
-For the configuration 'CPB_N=32 & BATCH_N = 6', due to limited DSP resource in XCVC1902, 'ELEW_MULT_ENA' is disabled, model 'efficientnet-b0_tf2' is not supported.
+1, Psmnet is not supprted by configuration CPB_N=64.
 
 2, Workaround for ES1 platform
 
-For 2021.1 version ES1 platform , before running apps, need firstly run workaround for ES1 silicon.
+For 2021.2 version ES1 platform , before running apps, need firstly run workaround for ES1 silicon.
 
 After VCK190-ES1 board is booting up, create a script with below content, and run it on the ES1 board.
 

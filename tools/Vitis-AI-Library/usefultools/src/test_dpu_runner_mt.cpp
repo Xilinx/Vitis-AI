@@ -16,6 +16,7 @@
 #include <glog/logging.h>
 #include <google/protobuf/message.h>
 #include <openssl/md5.h>
+#include <pybind11/pybind11.h>
 
 #include <chrono>
 #include <fstream>
@@ -30,9 +31,12 @@
 #include <vart/runner_ext.hpp>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/performance_test.hpp>
+#include <xir/graph/subgraph.hpp>
 #include <xir/tensor/tensor.hpp>
 
-using Clock = chrono::steady_clock;
+#include "vitis/ai/graph_runner.hpp"
+
+using Clock = std::chrono::steady_clock;
 
 DEF_ENV_PARAM(DEBUG_TEST, "0");
 DEF_ENV_PARAM(LOG_ERROR_COUNTER, "0");
@@ -44,6 +48,7 @@ DEF_ENV_PARAM(SAVE_ERROR_OUTPUT_TO_FILE, "0");
 DEF_ENV_PARAM(COPY_INPUT, "1");
 DEF_ENV_PARAM(COPY_OUTPUT, "1");
 DEF_ENV_PARAM(ENABLE_MEMCMP, "1");
+DEF_ENV_PARAM(ENABLE_SHUFFLE, "1");
 
 using namespace std;
 
@@ -60,12 +65,14 @@ class MyPerformanceTestRunner : public vitis::ai::PerformanceTestRunner {
  public:
   virtual void step(size_t idx, int thread_id) override;
   void generate_output(uint32_t runner_num);
+  void shuffle_batch();
   virtual size_t get_result() override;
   vart::Runner* get_runner() { return runner_.get(); };
 
  private:
-  unique_ptr<vart::Runner> runner_;
-  const vector<vector<vector<char>>> inputs_;
+  std::unique_ptr<xir::Attrs> attrs_;
+  unique_ptr<vart::RunnerExt> runner_;
+  vector<vector<vector<char>>> inputs_;
   vector<vector<vector<char>>> ref_outputs_;
   vector<vector<char>> output_buffers_;
   size_t result_ = 0;
@@ -92,16 +99,18 @@ static vector<char> random_vector_char(size_t sz, int batch_size) {
   return ret;
 }
 
+// ret[input_idx][batch_idx * size_per_batch + idx]
 static vector<vector<char>> allocate_buffer(
     vector<const xir::Tensor*> tensors) {
   auto ret = vector<vector<char>>(tensors.size());
   for (auto i = 0u; i < ret.size(); ++i) {
-    auto size_of_input = tensors[i]->get_element_num();
+    auto size_of_input = tensors[i]->get_data_size();
     ret[i] = random_vector_char(size_of_input, tensors[i]->get_shape()[0]);
   }
   return ret;
 }
 
+// ret[N][input_idx][batch_idx * size_per_batch + idx]
 static vector<vector<vector<char>>> generate_inputs(vart::Runner* runner) {
   auto input_tensors = runner->get_input_tensors();
   auto sz = (size_t)ENV_PARAM(NUM_OF_REF);
@@ -111,6 +120,7 @@ static vector<vector<vector<char>>> generate_inputs(vart::Runner* runner) {
   }
   return ret;
 }
+
 static vector<vector<vector<char>>> fill_tensors(
     vector<const xir::Tensor*> tensors, const vector<string>& input_filenames) {
   auto tensors_size = tensors.size();
@@ -121,7 +131,7 @@ static vector<vector<vector<char>>> fill_tensors(
     ret[i].resize(tensors_size);
     for (auto b = 0u; b < num_of_batch; ++b) {
       for (auto j = 0u; j < tensors_size; ++j) {
-        auto element_num = tensors[j]->get_element_num();
+        auto element_num = tensors[j]->get_data_size();
         auto each_file_size = element_num / num_of_batch;
         ret[i][j].resize(element_num);
         auto& filename = input_filenames[(i * num_of_batch * tensors_size +
@@ -138,6 +148,7 @@ static vector<vector<vector<char>>> fill_tensors(
   }
   return ret;
 }
+
 static void copy_input(const vector<char>& data, vart::TensorBuffer* tb) {
   size_t batch_size = tb->get_tensor()->get_shape()[0];
   for (auto i = 0u; i < batch_size; ++i) {
@@ -234,7 +245,11 @@ inline void run(vart::Runner* runner,
     copy_outputs(output_buffers, dpu_outputs);
   }
 }
-
+// inputs[N][input_index][batch_index*size_per_batch + data_index] all batches
+// share the same vector<char>.
+//
+// return[N][output_index][batch_index*size_per_batch + data_index]
+//
 inline vector<vector<vector<char>>> generate_outputs(
     vart::Runner* runner, const vector<vector<vector<char>>>& inputs,
     uint32_t runner_num) {
@@ -262,11 +277,95 @@ inline vector<vector<vector<char>>> generate_outputs(
   return ret;
 }
 
+static std::vector<size_t> random_indices(size_t num_of_results) {
+  auto indices = std::vector<size_t>(num_of_results);
+  auto values = std::vector<size_t>(num_of_results);
+  std::iota(indices.begin(), indices.end(), 0u);
+  static mt19937 rng(100);
+  static uniform_int_distribution<char> dist;
+  for (auto i = 0u; i < num_of_results; ++i) {
+    values[i] = dist(rng);
+  }
+  std::sort(indices.begin(), indices.end(),
+            [values](size_t a, size_t b) { return values[a] < values[b]; });
+  return indices;
+}
+
+static vector<vector<vector<char>>> clone_buffers(
+    const vector<vector<vector<char>>>& in) {
+  auto ret = vector<vector<vector<char>>>(in.size());
+  for (auto i = 0u; i < ret.size(); ++i) {
+    ret[i] = vector<vector<char>>(in[i].size());
+    for (auto j = 0u; j < ret[i].size(); ++j) {
+      ret[i][j] = in[i][j];
+    }
+  }
+  return ret;
+}
+
+static void copy_ref_batch(const vector<vector<vector<char>>>& from,
+                           vector<vector<vector<char>>>& to, size_t ref_idx,
+                           size_t input_idx, size_t batch_idx,
+                           size_t random_idx, size_t num_of_batch) {
+  auto size_per_batch = from[ref_idx][input_idx].size() / num_of_batch;
+  auto src = &from[ref_idx][input_idx][batch_idx * size_per_batch];
+  auto new_ref_idx = random_idx / num_of_batch;
+  auto new_batch_idx = random_idx % num_of_batch;
+  auto dst = &to[new_ref_idx][input_idx][new_batch_idx * size_per_batch];
+  memcpy(dst, src, size_per_batch);
+  return;
+}
+
+void MyPerformanceTestRunner::shuffle_batch() {
+  auto num_of_ref = inputs_.size();
+  auto output_tensors = runner_->get_output_tensors();
+  auto num_of_batchs = (size_t)output_tensors[0]->get_shape()[0];
+  CHECK_EQ(num_of_ref, ref_outputs_.size());
+  auto num_of_results = num_of_ref * num_of_batchs;
+  auto indices = random_indices(num_of_results);
+  auto origin_inputs = clone_buffers(inputs_);
+  auto origin_outputs = clone_buffers(ref_outputs_);
+  auto result_idx = 0u;
+  for (auto ref_idx = 0u; ref_idx < num_of_ref; ++ref_idx) {
+    for (auto batch_idx = 0u; batch_idx < num_of_batchs; ++batch_idx) {
+      for (auto input_idx = 0u; input_idx < inputs_[ref_idx].size();
+           ++input_idx) {
+        // inputs[N][input_index][batch_index*size_per_batch + data_index] all
+        // batches
+        copy_ref_batch(origin_inputs, inputs_, ref_idx, input_idx, batch_idx,
+                       indices[result_idx], num_of_batchs);
+      }
+      for (auto output_idx = 0u; output_idx < ref_outputs_[ref_idx].size();
+           ++output_idx) {
+        // outputs[N][output_index][batch_index*size_per_batch + data_index] all
+        // batches
+        copy_ref_batch(origin_outputs, ref_outputs_, ref_idx, output_idx,
+                       batch_idx, indices[result_idx], num_of_batchs);
+      }
+      result_idx = result_idx + 1;
+    }
+  }
+}
+
+static std::unique_ptr<vart::RunnerExt> create_runner(
+    const xir::Subgraph* subgraph, xir::Attrs* attrs) {
+  auto ret = std::unique_ptr<vart::RunnerExt>();
+  if (subgraph->is_root()) {
+    ret = vitis::ai::GraphRunner::create_graph_runner(subgraph->get_graph(),
+                                                      attrs);
+  } else {
+    ret = vart::RunnerExt::create_runner(subgraph, attrs);
+  }
+  return ret;
+}
+
 MyPerformanceTestRunner::MyPerformanceTestRunner(const xir::Subgraph* subgraph)
-    : runner_{vart::Runner::create_runner(subgraph, "run")},
+    : attrs_{xir::Attrs::create()},
+      runner_{create_runner(subgraph, attrs_.get())},
       inputs_{generate_inputs(runner_.get())},
       // ref_outputs_{generate_outputs(runner_.get(), inputs_)},
       output_buffers_{allocate_buffer(runner_->get_output_tensors())} {}
+
 void MyPerformanceTestRunner::generate_output(uint32_t runner_num) {
   ref_outputs_ = generate_outputs(runner_.get(), inputs_, runner_num);
 }
@@ -274,7 +373,8 @@ void MyPerformanceTestRunner::generate_output(uint32_t runner_num) {
 MyPerformanceTestRunner::MyPerformanceTestRunner(
     const xir::Subgraph* subgraph, const vector<string>& input_filenames,
     const vector<string>& output_filenames)
-    : runner_{vart::Runner::create_runner(subgraph, "run")},
+    : attrs_{xir::Attrs::create()},
+      runner_{create_runner(subgraph, attrs_.get())},
       inputs_{fill_tensors(runner_->get_input_tensors(), input_filenames)},
       ref_outputs_{
           fill_tensors(runner_->get_output_tensors(), output_filenames)},
@@ -352,12 +452,11 @@ size_t MyPerformanceTestRunner::get_result() { return result_; }
 bool test_dpu_runner_mt(const xir::Subgraph* subgraph, uint32_t runner_num,
                         const vector<string>& input_filenames,
                         const vector<string>& output_filenames) {
+  pybind11::gil_scoped_release release;
   CHECK_GT(runner_num, 0);
   {
     auto runners = vector<unique_ptr<vitis::ai::PerformanceTestRunner>>();
     for (auto i = 0u; i < runner_num; ++i) {
-      LOG(INFO) << "create runner ... " << i << "/" << runner_num;
-
       if (input_filenames.empty() || output_filenames.empty()) {
         runners.emplace_back(
             move(make_unique<MyPerformanceTestRunner>(subgraph)));
@@ -372,10 +471,22 @@ bool test_dpu_runner_mt(const xir::Subgraph* subgraph, uint32_t runner_num,
             ->generate_output(i);
       }
     }
+    if (ENV_PARAM(ENABLE_SHUFFLE)) {
+      LOG(INFO) << "shuffle results for batch...";
+      for (auto i = 0u; i < runner_num; ++i) {
+        dynamic_cast<MyPerformanceTestRunner*>(runners[i].get())
+            ->shuffle_batch();
+      }
+    } else {
+      LOG(WARNING) << "shuffling result is disabled, some error might not be "
+                      "triggerred.";
+    }
     // not use
     int argc = 0;
     char* argv[] = {};
     make_unique<vitis::ai::PerformanceTest>()->main(argc, argv, move(runners));
   }
+
+  pybind11::gil_scoped_acquire acquire;
   return errors_total == 0;
 }

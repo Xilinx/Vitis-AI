@@ -1,6 +1,6 @@
 
 .. meta::
-   :keywords: Vision, Library, Vitis Vision Library, user guide
+   :keywords: Vision, Library, Vitis Vision Library, xfopencv, xf_opencv, user guide
    :description: Vitis vision library provides a software interface for computer vision functions accelerated on an FPGA device.
    :xlnxdocumentclass: Document
    :xlnxdocumenttype: Tutorials
@@ -11,9 +11,9 @@
 Vitis Vision Library
 ##############################
 
-The Vitis Vision library is a FPGA device optimized Vitis vision library intended for application
-developers using Zynq®-7000 SoC and Zynq® UltraScale+™ MPSoC and PCIE based Alveo® U200, U50 devices. 
-Vitis vision library provides a software interface for computer vision functions accelerated on an FPGA device. 
+The Vitis Vision library is a set of FPGA and AI Engine™ device optimized functions, intended for application
+developers using Zynq®-7000 SoC, Zynq® UltraScale+™ MPSoC, ACAP Versal VCK190 and PCIE based Alveo® U200, U50 devices. 
+Vitis vision library provides a software interface for computer vision functions accelerated on FPGA and AI Engine™ devices. 
 
 .. note:: 
    Vitis Vision library functions are mostly similar in functionality to their OpenCV equivalent. Any deviations, if present, are documented.

@@ -1,5 +1,4 @@
 
-
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -48,12 +47,13 @@ class NndctGraphHolder(NndctDebugger):
         NNDCT_OP.DENSE, NNDCT_OP.ADD, NNDCT_OP.MULTIPLY, NNDCT_OP.DIV,
         NNDCT_OP.MAX_POOL, NNDCT_OP.MAX, NNDCT_OP.MEAN,
         NNDCT_OP.MAX_POOL1D,
-        NNDCT_OP.MIN, NNDCT_OP.RESIZE, NNDCT_OP.SIGMOID, NNDCT_OP.TANH,
+        NNDCT_OP.MIN, NNDCT_OP.RESIZE, 
         NNDCT_OP.SUB, NNDCT_OP.RSUB, NNDCT_OP.PAD, NNDCT_OP.QUANT_STUB,
         NNDCT_OP.INPUT, NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.RESIZE_3D,
         NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.SUM, NNDCT_OP.HSWISH, NNDCT_OP.HSIGMOID,
         NNDCT_OP.MATMUL, #,NNDCT_OP.CHANNEL_SCALE
-        NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D,
+        NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, 
+        NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D
     ]
     self.LSTM_QUANTIZABLE_OPS = [
         #NNDCT_OP.PLACEHOLDER,
@@ -62,15 +62,16 @@ class NndctGraphHolder(NndctDebugger):
         NNDCT_OP.SIGMOID, NNDCT_OP.TANH,
         NNDCT_OP.SUB, NNDCT_OP.RSUB,
         NNDCT_OP.CONCAT, 
-        NNDCT_OP.INPUT
+        NNDCT_OP.INPUT,
+        NNDCT_OP.MATMUL, 
+        NNDCT_OP.ADDMM
     ]
     self.QUANTIZABLE_OPS_WITH_PARAMS = [
         NNDCT_OP.DENSE,
         NNDCT_OP.CONV1D,
-        NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D,
-        NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D,
-        NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D,
-        NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D
+        NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D,
+        NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D,
+        NNDCT_OP.BATCH_NORM, NNDCT_OP.BATCH_NORM1D, NNDCT_OP.BATCH_NORM3D, 
     ]
     self.MULTIPLE_OUTPUTS_OPS = [ # OP types where cannot do quantization 
         NNDCT_OP.CHUNK, # has multiple outputs and cannot be deployed
@@ -81,6 +82,7 @@ class NndctGraphHolder(NndctDebugger):
         NNDCT_OP.PIXEL_SHUFFLE, # no calculation and only tensor in-place operation
         NNDCT_OP.CONTIGUOUS, # no calculation and only tensor in-place operation
         NNDCT_OP.SQUEEZE, # no calculation and only tensor in-place operation
+        NNDCT_OP.UNSQUEEZE
     ]
     self.QUANTIZABLE_DTYPES = ['float32', 'float64']
     self.DPU_APPROXIMATION_OPS = [
@@ -101,7 +103,7 @@ class NndctGraphHolder(NndctDebugger):
     ]
     
     self.SOFT_FUSED_OPS = [
-      NNDCT_OP.CLAMP,
+      # NNDCT_OP.CLAMP,
       NNDCT_OP.HARDTANH,
       NNDCT_OP.RELU,
       NNDCT_OP.RELU6,
@@ -119,7 +121,8 @@ class NndctGraphHolder(NndctDebugger):
       NNDCT_OP.EXPAND,
       NNDCT_OP.INPLACE_COPY,
       NNDCT_OP.REPEAT,
-      NNDCT_OP.SELECT,
+      # NNDCT_OP.SELECT,
+      NNDCT_OP.UNSQUEEZE,
       
     ]
       
@@ -241,6 +244,8 @@ class NndctGraphHolder(NndctDebugger):
 
   def quant_output(self, node_or_name):
     node = self._find_node(node_or_name)
+    if not node.in_quant_part:
+      return node
     idx = -1
     end_node = self.__Nndctgraph.node(self._QuantGroups[node.name][idx])
     if self.is_concat_input(end_node):

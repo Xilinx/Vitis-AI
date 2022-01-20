@@ -18,17 +18,16 @@
 #define __CONFIG_H_
 
 #include <common/xf_aie_const.hpp>
-#define PARALLEL_FACTOR_16b 32
 
 // tile dimensions are normally computed by tiler but we need to
 // hardcode these values to set the graph window sizes
-#define TILE_WIDTH 240
-#define TILE_HEIGHT 16
-#define TILE_BUFFER_SIZE ((TILE_WIDTH * TILE_HEIGHT) + SMARTTILE_ELEMENTS)
-#define TILE_WINDOW_SIZE (2 * TILE_BUFFER_SIZE)
+using DATA_TYPE = int16_t;
+static constexpr int TILE_WIDTH = 480;
+static constexpr int TILE_HEIGHT = 8;
+static constexpr int TILE_ELEMENTS = (TILE_WIDTH * TILE_HEIGHT);
+static constexpr int TILE_WINDOW_SIZE = ((TILE_ELEMENTS * sizeof(DATA_TYPE)) + xf::cv::aie::METADATA_SIZE);
 
-#define MAX_TILE_WIDTH 240
-#define MAX_TILE_HEIGHT 16
-#define VECTORIZATION_FACTOR PARALLEL_FACTOR_16b
+/* Graph specific configuration */
+static constexpr int VECTORIZATION_FACTOR = 32;
 
 #endif //__CONFIG_H_

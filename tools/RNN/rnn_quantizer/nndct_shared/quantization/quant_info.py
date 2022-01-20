@@ -19,7 +19,7 @@
 import copy
 from nndct_shared.nndct_graph import NndctGraphHolder
 from nndct_shared.utils import NndctScreenLogger
-from .commander import QuantConfigerCommander, soft_fuse_custom_ops
+from .commander import QuantConfigerCommander
 from .quant_strategy import create_quant_strategy
 from nndct_shared.utils import NndctOption
 from nndct_shared.base import NNDCT_OP
@@ -65,7 +65,7 @@ class QuantInfoMgr(NndctGraphHolder):
         elif node.op.type in ignored_list:
           isIgnored = True
       if not findQuantizableNode and not isIgnored:
-        NndctScreenLogger().warning(f'No quantizable node is found in group:')
+        NndctScreenLogger().warning(f'No quantizable node is found in group, confirm no numerical calculation in the nodes:')
         NndctScreenLogger().warning(f'{v}')
 
   def group_graph(self):
@@ -77,7 +77,6 @@ class QuantInfoMgr(NndctGraphHolder):
       for c in commands:
         quant_groups = self.scan_commander[c](self.Nndctgraph, quant_groups)
       
-      quant_groups = soft_fuse_custom_ops(self, quant_groups)
       if org_groups == quant_groups:
         break
     for k, v in quant_groups.items():

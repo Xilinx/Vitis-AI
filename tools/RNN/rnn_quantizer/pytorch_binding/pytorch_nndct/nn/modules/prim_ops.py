@@ -18,7 +18,7 @@
 
 import torch
 import torch.nn.functional as F
-from nndct_shared.utils import NndctOption
+from nndct_shared.utils import NndctOption, NndctScreenLogger
 from nndct_shared.base import NNDCT_CONSTANT
 from nndct_shared.quantization import maybe_get_quantizer
 from nndct_shared.quantization import process_inputs_and_params
@@ -110,10 +110,10 @@ class deephi_Input(_PrimModule):
     )
     # check input shape
     if self.node.out_tensors[0].is_complete_tensor() and self.node.out_tensors[0].ndim == 4:
-      py_utils.blob_to_torch_format(self.node.out_tensors[0])
+      # py_utils.blob_to_torch_format(self.node.out_tensors[0])
       if not (self.node.out_tensors[0].shape[1:] == list(input.size())[1:]):
-        raise RuntimeError(f"The shape of input ({input.size()}) should be the same with that of dummy input ({[None] + self.node.out_tensors[0].shape[1:]})")
-      py_utils.blob_to_nndct_format(self.node.out_tensors[0])
+        NndctScreenLogger().warning(f"The shape of input ({input.shape[1:]}) should be the same with that of dummy input ({self.node.out_tensors[0].shape[1:]})")
+      # py_utils.blob_to_nndct_format(self.node.out_tensors[0])
     output = input
 
     if (self.node.in_quant_part and NndctOption.nndct_stat.value > 2):
@@ -152,6 +152,8 @@ class deephi_StridedSlice(_PrimModule):
 
     output = input
 
+    [output] = post_quant_process(self.node, [output])
+
     return output
 
 
@@ -167,6 +169,7 @@ class deephi_SliceInplaceCopy(_PrimModule):
   def forward(self, input, source, dim, index):
     index = torch.tensor([index]).to(input.device)
     output = input.index_copy_(dim, index, source.unsqueeze(dim))
+    [output] = post_quant_process(self.node, [output])
     return output
 
 
@@ -180,7 +183,7 @@ class deephi_Index(_PrimModule):
     super().__init__()
 
   def forward(self, input, index):
-    if len(index) == 2:
+    if isinstance(index, (list, tuple)) and len(index) == 2:
       if index[0] is None:
         output = input[:, index[1]]
       elif index[1] is None:
@@ -282,3 +285,46 @@ class deephi_ChannelScale(_PrimModule):
 def Channel_Scale(*args, **kwargs):
   return deephi_ChannelScale(*args, **kwargs)
 
+
+class deephi_ExpandAs(_PrimModule):
+  def __init__(self):
+    super().__init__()
+
+  def forward(self, input, other):
+    [input], _ = process_inputs_and_params(
+        self.node,
+        self.quantizer,
+        inputs=[input],
+    )
+    output = input.expand_as(other).clone()
+
+    [output] = post_quant_process(self.node, [output])
+
+    return output
+
+
+@py_utils.register_quant_op
+def expand_as(*args, **kwargs):
+  return deephi_ExpandAs(*args, **kwargs)
+
+
+class deephi_Expand(_PrimModule):
+  def __init__(self):
+    super().__init__()
+
+  def forward(self, input, size):
+    [input], _ = process_inputs_and_params(
+        self.node,
+        self.quantizer,
+        inputs=[input],
+    )
+    output = input.expand(size).clone()
+
+    [output] = post_quant_process(self.node, [output])
+
+    return output
+
+
+@py_utils.register_quant_op
+def expand(*args, **kwargs):
+  return deephi_Expand(*args, **kwargs)

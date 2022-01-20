@@ -15,8 +15,6 @@ limitations under the License.
 """
 
 import os
-import ctypes
-from ctypes import *
 from os import environ
 import json
 import string
@@ -38,10 +36,6 @@ from nltk import word_tokenize
 from tensorflow.python.keras import Model
 
 import time
-
-#from imdb_reader import load_data
-#import nltk
-#nltk.download('punkt')
 
 current_dir = os.path.dirname(__file__)
 model_filename = os.path.join(current_dir, "data", "LSTM.h5")
@@ -82,9 +76,6 @@ print ("Load model")
 model = load_model(model_filename, compile = False)
 print ("Model ready")
 model.summary()
-if not os.path.exists(word_dict_path):
-    imdb.get_word_index(path=word_dic_path)
-print("start preprocessing")
 
 pre_begin = datetime.datetime.now()
 is_train = False
@@ -108,23 +99,18 @@ else:
 np.random.seed(7)
 # load the dataset top n words only
 top_words = 5000
-(X_train, y_train), (X_test, y_test) = imdb.load_data(path=data_path, num_words=top_words)
+(_, _), (X_test, y_test) = imdb.load_data(path=data_path, num_words=top_words)
+
 # truncate and pad input sequences
 max_review_length = 500
-X_train = sequence.pad_sequences(X_train, maxlen=max_review_length)
 X_test = sequence.pad_sequences(X_test, maxlen=max_review_length)
 np.random.seed(7)
 # load the dataset top n words only
-print("preprocessing over")
 pre_end = datetime.datetime.now()
-
 
 a = np.array(y_test)
 a = a.reshape([a.shape[0],1])
 print("running on tensorflow cpu")
-#cpu_begin = datetime.datetime.now()
-#cpu_result = model.predict(X_test, batch_size = 1)
-#cpu_end = datetime.datetime.now()
 
 t1 = time.time()
 
@@ -134,30 +120,31 @@ embd_model = Model(inputs=model.input, outputs=model.get_layer("embedding").outp
 ebd_begin = datetime.datetime.now()
 embd_output = embd_model.predict(X_test, batch_size = 1)
 ebd_end = datetime.datetime.now()
-print('Embedding forward done:', ebd_end - ebd_begin)
 
 original_lstm = Model(inputs=model.input, outputs=model.get_layer('lstm').output)
 cpu_lstm_begin = datetime.datetime.now()
-original_lstm_output = original_lstm.predict(X_test, batch_size = 1)
+original_lstm_output = original_lstm.predict(X_test, batch_size = 1024)
 cpu_lstm_end = datetime.datetime.now()
 
-lstm_model2= Sequential()
+lstm_model2 = Sequential()
 lstm_model2.add(Dense(1, activation='sigmoid'))
 lstm_model2.build((1, 100))
 layer_dict_fix = dict([(layer.name, layer) for layer in model.layers])
 lstm_model2.layers[0].set_weights(layer_dict_fix['dense'].get_weights())
-dense_in = np.zeros((25000, 100), dtype=np.float32)
+
 dense_begin = datetime.datetime.now()
-lstm_output_dense = lstm_model2.predict(dense_in, batch_size = 1)
+lstm_output_dense = lstm_model2.predict(original_lstm_output, batch_size = 8)
 dense_end = datetime.datetime.now()
+
 t2 = time.time()
-print ("preprocessing time", (pre_end - pre_begin).total_seconds())
+print("preprocessing time = {:.2f} s".format((pre_end - pre_begin).total_seconds()))
 ebd_time = (ebd_end - ebd_begin).total_seconds()
-print ("embedding time", ebd_time)
+print("embedding time = {:.2f} s".format(ebd_time))
 cpu_lstm_time = (cpu_lstm_end - cpu_lstm_begin).total_seconds() - (ebd_end - ebd_begin).total_seconds()
-print ("cpu lstm time", cpu_lstm_time)
+print("cpu lstm time = {:.2f} s".format(cpu_lstm_time))
 dense_time = (dense_end - dense_begin).total_seconds()
-print ("dense lstm time", dense_time)
-print ("total cpu time", ebd_time + cpu_lstm_time + dense_time)
-print ("total cpu2 time", t2-t1)
-#print (tf.__version__)
+print("dense lstm time = {:.2f} s".format(dense_time))
+print("total cpu time = {:.2f} s".format(ebd_time + cpu_lstm_time + dense_time))
+print("total cpu2 time = {:.2f} s".format(t2-t1))
+
+print("Accuracy = {:.2f} %".format(100 * np.sum(np.where(lstm_output_dense > 0.5, 1, 0) == a)/a.size))

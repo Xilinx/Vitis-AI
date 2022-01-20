@@ -83,7 +83,7 @@ class YOLOv2 {
    */
  public:
   /**
-   * @brief Function to get running result of the YOLOv2 neuron network.
+   * @brief Function to get running result of the YOLOv2 neural network.
    *
    * @param image Input data of input image (cv::Mat).
    *
@@ -92,7 +92,7 @@ class YOLOv2 {
    */
   virtual YOLOv2Result run(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running result of the YOLOv2 neuron network
+   * @brief Function to get running result of the YOLOv2 neural network
    * in batch mode.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of

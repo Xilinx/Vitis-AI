@@ -17,9 +17,8 @@
 #include "vitis/ai/lock.hpp"
 
 #include <glog/logging.h>
-
+#include <locale>
 #include <algorithm>
-#include <boost/mpl/assert.hpp>
 #include <iostream>
 #include <memory>
 #include <string>

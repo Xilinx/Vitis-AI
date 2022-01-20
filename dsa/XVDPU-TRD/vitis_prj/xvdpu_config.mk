@@ -19,8 +19,10 @@
 # Setting the arch of XVDPU. For more details, please refer to PG389.
 # Default parameters: LOAD_PARALLEL_IMG = 2
 
-# CPB_N can be 32 ( BATCH_N can be 1 ~ 6) or 64 (BATCH_N =3 )
+# CPB_N can be 32, or 64
 CPB_N       = 32
+
+#For CPB_N=32, BATCH_N can be 1 ~ 6; For CPB_N=64, BATCH_N can be 1 ~ 5
 BATCH_N     = 3
 
 #PL_FREQ is the frequency of XVDPU's 'm_axi_aclk'. Default is 333M Hz.

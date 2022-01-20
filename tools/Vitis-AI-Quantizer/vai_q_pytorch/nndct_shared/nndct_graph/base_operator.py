@@ -1,5 +1,4 @@
 
-
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -27,6 +26,7 @@ from typing import Dict, List, Callable, Optional, Union, Any, Set
 from nndct_shared.nndct_graph.base_tensor import Tensor
 
 
+
 def _default_read_and_write_value(value_mem: List[Any],
                                   in_out: int,
                                   attr_value: Optional[Any] = None):
@@ -37,22 +37,20 @@ def _default_read_and_write_value(value_mem: List[Any],
     else:
       value_mem[:] = [attr_value]
   else:
-    if len(value_mem) == 1:
+    #if len(value_mem) == 1:
+    if len(value_mem) == 1 and (not isinstance(value_mem[0], (tuple, list))):
       return value_mem[0]
     else:
       return value_mem[:]
-
 
 class AutoName(Enum):
 
   def _generate_next_value_(name, start, count, last_values):
     return name.lower()
 
-
 class OccurenceType(Enum):
   REQUIRED = auto()
   OPTIONAL = auto()
-
 
 class NndctIrAttr(object):
   r"""
@@ -93,7 +91,7 @@ class NndctIrAttr(object):
     self._occurence_type = occurence_type
     self._annotation = annotation
     self._is_xir_attr = map_to_xir
-
+    self._is_container = None
     if read_and_write_value_func is not None:
       self._read_and_write_value_func = read_and_write_value_func
     elif self._value_mem is not None:
@@ -113,22 +111,30 @@ class NndctIrAttr(object):
 
   @property
   def value(self) -> Any:
-    return self._read_and_write_value_func(in_out=1)
+    ret = self._read_and_write_value_func(in_out=1)
+    if self._is_container and (not isinstance(ret, (list, tuple))):
+      ret = [ret]
+    return ret
 
   @value.setter
   def value(self, value):
     if not isinstance(value, (list, tuple, set)):
       value = [value]
+      self._is_container = False
     else:
       value = list(value)
-    if not isinstance(value[0], self._type):
-      raise TypeError(
+      self._is_container = True
+    if value:
+      if self._type is not Any and (not isinstance(value[0], self._type)):
+        raise TypeError(
           f"The type of attr '{self._name.value}' should be {self._type} instead of {type(value[0])}"
-      )
-    if self._size is not None and len(value) != self._size:
-      raise ValueError(
+        )
+      if self._size is not None and len(value) != self._size:
+        from pdb import set_trace
+        set_trace()
+        raise ValueError(
           f"the length of  value of {self._name.value} is not equal to {self._size}"
-      )
+        )
     self._read_and_write_value_func(in_out=0, attr_value=value)
 
   @property
@@ -161,11 +167,39 @@ class Operation(object):
   def __init__(self, optype: str):
     self._attrs: Dict[Enum, NndctIrAttr] = {}
     # Attr names defined in the framework.
-    self._configs: Set[str] = set()
+    self._configs: List[str] = []
     self._params: Dict[Enum, Tensor] = OrderedDict()
     self._type = optype
-
+    self._is_custom_op = False
     self._export_attr_and_param()
+
+  def _define_attr(self,
+                   name,
+                   value_type,
+                   size,
+                   value_mem=None,
+                   required=True,
+                   default_value=None,
+                   annotation=None,
+                   read_and_write_value_func=None):
+    if not hasattr(self, '_attr_value_mem'):
+      self._attr_value_mem = {}
+    if name not in self._attr_value_mem:
+      self._attr_value_mem[name] = [None]
+
+    if not value_mem:
+      value_mem = self._attr_value_mem[name]
+
+    occurence_type = OccurenceType.REQUIRED if required else OccurenceType.OPTIONAL
+
+    self._attrs[name] = NndctIrAttr(
+        name=name,
+        value_type=value_type,
+        size=size,
+        value_mem=value_mem,
+        occurence_type=occurence_type,
+        annotation=annotation,
+        read_and_write_value_func=read_and_write_value_func)
 
   def _export_attr_and_param(self):
     """Wrappers for self._attrs and self._params."""
@@ -263,6 +297,17 @@ class Operation(object):
     # if attr_value and not isinstance(attr_value, list):
     #   raise TypeError(f"the attr value of {attr_name} should be list")
 
+  def has_attr(self, attr_name: Union[Enum, str]):
+    if isinstance(attr_name, Enum):
+      return attr_name in self._attrs
+    elif isinstance(attr_name, str) and hasattr(self, 'AttrName'):
+      for name in self.AttrName:
+        if attr_name == name.value:
+          return True
+      return False
+    else:
+      raise ValueError('"attr_name" must be either Enum or string')
+
   def get_attr(self, attr_name) -> Any:
     self._check_attr_valid(attr_name)
     return self._attrs[attr_name].value
@@ -275,7 +320,8 @@ class Operation(object):
     return getattr(self, config_name)
 
   def set_config(self, config_name: str, value: Any) -> None:
-    self._configs.add(config_name)
+    if config_name not in self._configs:
+      self._configs.append(config_name)
     setattr(self, config_name, value)
 
   def get_param(self, name: Enum):
@@ -325,7 +371,6 @@ class Operation(object):
   def is_xir_attr(self, attr_name: Enum):
     return self._attrs[attr_name].is_xir_attr
 
-
   @property
   def type(self):
     return self._type
@@ -345,3 +390,11 @@ class Operation(object):
   @property
   def configs(self):
     return self._configs
+
+  @property
+  def is_custom_op(self):
+    return self._is_custom_op
+
+  @is_custom_op.setter
+  def is_custom_op(self, is_custom_op):
+    self._is_custom_op = is_custom_op

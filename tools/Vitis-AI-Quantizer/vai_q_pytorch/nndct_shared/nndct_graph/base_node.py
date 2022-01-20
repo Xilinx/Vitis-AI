@@ -20,6 +20,8 @@ import copy
 import json
 from nndct_shared.base import NNDCT_OP
 from .base_operator import Operation
+from .base_tensor import Tensor
+from .operator_definition import CustomOp
 from typing import Optional
 import weakref
 from abc import ABC, abstractproperty
@@ -32,16 +34,16 @@ class NodeBase(ABC):
     Returns:
     str: node op type
     """
-    
-    
+
+
 class Node(NodeBase):
   """A node contains an op and its input and output tensor.
   """
 
-  def __init__(self, name: str, 
-               op: Optional[str] = None, 
-               dtype: Optional[str] = None, 
-               idx: Optional[int] = -1, 
+  def __init__(self, name: str,
+               op: Optional[str] = None,
+               dtype: Optional[str] = None,
+               idx: Optional[int] = -1,
                in_quant_part: Optional[bool] = False):
     super().__init__()
     self._name = name
@@ -58,10 +60,11 @@ class Node(NodeBase):
     self._blocks = []
     self._is_quantizable = in_quant_part
     self._is_merged = False
+    self._transpose_order = None
 
   def __repr__(self):
     return f"Node(name={self.name}, id={self.idx}, op_type={self.op.type}, quant_state={self.in_quant_part})"
-  
+
   def __str__(self):
     return json.dumps(self.description(), indent=4, separators=(',', ': '))
 
@@ -75,6 +78,7 @@ class Node(NodeBase):
     for ot in new.out_tensors:
       ot.node = new
     return new
+
   @property
   def scope_name(self):
     return self._scope_name
@@ -217,15 +221,11 @@ class Node(NodeBase):
 
   def has_bound_params(self):
     return self._op.has_native_params()
-  
+
   @property
   def op_type(self):
     return self.op.type
-  
-  @property
-  def op_type(self):
-    return self.op.type
-  
+
   @property
   def name(self):
     return self._name
@@ -257,7 +257,7 @@ class Node(NodeBase):
   @property
   def alias(self):
     return self._alias
-  
+
   @property
   def in_quant_part(self) -> bool:
     return self._is_quantizable
@@ -269,25 +269,29 @@ class Node(NodeBase):
   # @property
   # def in_quant_part(self) -> bool:
   #   return self._is_quantizable
-    
+
   @property
   def module(self):
     return self._module()
-  
+
   @module.setter
   def module(self, module):
     self._module = weakref.ref(module)
-  
+
   @property
   def blocks(self):
     return self._blocks
-  
+
   def add_block(self, block):
     self._blocks.append(block)
-    
-  def has_custom_op(self):
-    return self.op.type not in NNDCT_OP.__dict__.values()
 
+  def has_custom_op(self):
+    return isinstance(self.op, CustomOp)
+
+  def get_attr_val(self, attr_name):
+    attr = self.node_attr(attr_name)
+    return attr.data if isinstance(attr, Tensor) else attr
+  
   @property
   def merged(self):
     return self._is_merged
@@ -295,4 +299,18 @@ class Node(NodeBase):
   @merged.setter
   def merged(self, flag):
     self._is_merged = flag
+
+
+  @property
+  def transpose_order(self):
+    return self._transpose_order
   
+  @transpose_order.setter
+  def transpose_order(self, order):
+    self._transpose_order = order
+    
+  
+  def update_node_attr_tensor_value(self, old_tensor, new_tensor):
+    for attr_name, attr_value in self.op.attrs.items():
+      if attr_value.value is old_tensor:
+        self.set_node_attr(attr_name, new_tensor)

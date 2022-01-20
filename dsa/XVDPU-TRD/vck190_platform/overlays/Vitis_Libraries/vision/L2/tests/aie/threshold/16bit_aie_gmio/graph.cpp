@@ -30,18 +30,20 @@ connect<> net1(mygraph.out1, platform.sink[0]);
 
 // initialize and run mygraphe dataflow graph
 #if defined(__AIESIM__) || defined(__X86SIM__)
-
+#include <common/xf_aie_utils.hpp>
 int main(int argc, char** argv) {
     int BLOCK_SIZE_in_Bytes = TILE_WINDOW_SIZE;
 
     int16_t* inputData = (int16_t*)GMIO::malloc(BLOCK_SIZE_in_Bytes);
     int16_t* outputData = (int16_t*)GMIO::malloc(BLOCK_SIZE_in_Bytes);
+    memset(inputData, 0, BLOCK_SIZE_in_Bytes);
 
-    for (int i = 0; i < SMARTTILE_ELEMENTS; i++) inputData[i] = 0;
-    inputData[0] = TILE_WIDTH;
-    inputData[4] = TILE_HEIGHT;
-    for (int i = SMARTTILE_ELEMENTS; i < (BLOCK_SIZE_in_Bytes / sizeof(int16_t)); i++) {
-        inputData[i] = rand() % 256;
+    xf::cv::aie::xfSetTileWidth(inputData, TILE_WIDTH);
+    xf::cv::aie::xfSetTileHeight(inputData, TILE_HEIGHT);
+
+    int16_t* dataIn = (int16_t*)xf::cv::aie::xfGetImgDataPtr(inputData);
+    for (int i = 0; i < TILE_ELEMENTS; i++) {
+        dataIn[i] = rand() % 256;
     }
 
     int16_t thresh_val = 100;
@@ -58,10 +60,12 @@ int main(int argc, char** argv) {
     // Compare the results
     int acceptableError = 1;
     int errCount = 0;
-    for (int i = SMARTTILE_ELEMENTS; i < BLOCK_SIZE_in_Bytes / sizeof(int16_t); i++) {
-        int cValue = (inputData[i] > thresh_val) ? max_val : 0;
-        if (abs(outputData[i] - cValue) > acceptableError) errCount++;
+    int16_t* dataOut = (int16_t*)xf::cv::aie::xfGetImgDataPtr(outputData);
+    for (int i = 0; i < TILE_ELEMENTS; i++) {
+        int cValue = (dataIn[i] > thresh_val) ? max_val : 0;
+        if (abs(dataOut[i] - cValue) > acceptableError) errCount++;
     }
+
     if (errCount) {
         std::cout << "Test failed!" << std::endl;
         exit(-1);

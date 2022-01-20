@@ -16,6 +16,7 @@
 
 #include "graph.cpp"
 
+#include <common/xf_aie_utils.hpp>
 #include <stdio.h>
 
 #include <stdlib.h>
@@ -42,7 +43,7 @@ extern "C" {
 #include <xaiengine.h>
 }
 
-int16_t sizein = TILE_WINDOW_ELEMENTS;
+int16_t sizein = TILE_WINDOW_SIZE / sizeof(int16_t);
 
 static std::vector<char>
 
@@ -291,17 +292,15 @@ int main(int argc, char** argv)
 
         run_test(dhdl, top, bufferHandles);
 
-        printf("verfifying teh results\n");
+        printf("verifying the results\n");
 
         int errorCount = 0;
 
         {
-            for (int i = SMARTTILE_ELEMENTS; i < sizein; i++)
-
-            {
-                if ((int16_t)bufferMapped[1][i] != golden[i])
-
-                {
+            int16_t* outp = (int16_t*)xf::cv::aie::xfGetImgDataPtr(bufferMapped[1]);
+            int16_t* refp = (int16_t*)xf::cv::aie::xfGetImgDataPtr(golden);
+            for (int i = 0; i < TILE_ELEMENTS; i++) {
+                if (outp[i] != refp[i]) {
                     printf("Error found @ %d, %d != %d	%d\n", i, (int16_t)bufferMapped[1][i], golden[i],
                            (int16_t)bufferMapped[0][i]);
                     errorCount++;
@@ -309,11 +308,8 @@ int main(int argc, char** argv)
             }
 
             if (errorCount)
-
                 printf("Test failed with %d errors\n", errorCount);
-
             else
-
                 printf("Test passed\n");
         }
 

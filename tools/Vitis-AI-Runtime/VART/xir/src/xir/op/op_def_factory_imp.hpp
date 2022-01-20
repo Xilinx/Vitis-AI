@@ -32,6 +32,7 @@ class OpDefFactoryImp : public OpDefFactory {
   std::unordered_map<std::string, OpDef> store_;
 };
 
-const OpDefFactoryImp* op_def_factory();
+// const OpDefFactoryImp* op_def_factory();
+OpDefFactoryImp* op_def_factory();
 
 }  // namespace xir

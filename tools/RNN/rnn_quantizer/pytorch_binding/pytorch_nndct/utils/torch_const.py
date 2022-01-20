@@ -41,4 +41,5 @@ class TorchOpClassType(Enum):
   MATH_BUILTIN_FUNCTION = 'math_builtin'
   GLOBAL_BUILTIN_FUNCTION = 'global_builtin'
   NN_CORE_FUNCTION = 'torch._C.nn'
+  CUSTOM_FUNCTION = 'custom_function'
   

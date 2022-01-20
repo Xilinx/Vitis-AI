@@ -1,0 +1,52 @@
+# This is a boot script for U-Boot
+# Generate boot.scr:
+# mkimage -c none -A arm -T script -d boot.cmd.default boot.scr
+#
+################
+## Please change the kernel_offset and kernel_size if the kernel image size more than
+## the 100MB and BOOT.BIN size more than the 30MB
+## kernel_offset --> is the address of qspi which you want load the kernel image
+## kernel_size --> size of the kernel image in hex
+###############
+fdt_addr=0x1000
+imageub_addr=0x10000000
+kernel_addr=0x80000
+kernel_offset=0x1E00200
+kernel_size=0x7800000
+kernel_type=image.ub
+
+for boot_target in ${boot_targets};
+do
+	if test "${boot_target}" = "jtag" ; then
+		booti ${kernel_addr} - ${fdt_addr};
+		exit;
+	fi
+	if test "${boot_target}" = "mmc0" || test "${boot_target}" = "mmc1" ; then
+		if test -e ${devtype} ${devnum}:${distro_bootpart} /image.ub; then
+			fatload ${devtype} ${devnum}:${distro_bootpart} ${imageub_addr} image.ub;
+			bootm ${imageub_addr};
+			exit;
+		fi
+		if test -e ${devtype} ${devnum}:${distro_bootpart} /Image; then
+			fatload ${devtype} ${devnum}:${distro_bootpart} ${kernel_addr} Image;
+			booti ${kernel_addr} - ${fdt_addr};
+			exit;
+		fi
+		booti ${kernel_addr} - ${fdt_addr};
+		exit;
+	fi
+	if test "${boot_target}" = "xspi0"; then
+		sf probe 0 0 0;
+		if test "${kernel_type}" = "image.ub"; then
+			sf read ${imageub_addr} ${kernel_offset} ${kernel_size};
+			bootm ${imageub_addr};
+			exit;
+		fi
+		if test "${kernel_type}" = "Image"; then
+			sf read ${kernel_addr} ${kernel_offset} ${kernel_size};
+			booti ${kernel_addr} - ${fdt_addr};
+			exit;
+		fi
+		exit;
+	fi
+done

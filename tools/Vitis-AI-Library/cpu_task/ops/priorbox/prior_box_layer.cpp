@@ -34,7 +34,7 @@ void caffe_set(const int N, const Dtype alpha, Dtype* Y) {
 }
 
 struct MyOpImp : public vart::experimental::OpImpBase {
-  MyOpImp(xir::Op* op, xir::Attrs* attrs)
+  MyOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     min_sizes_ = op->get_attr<std::vector<float>>("min_sizes");
     for (auto min_size : min_sizes_) {
@@ -203,9 +203,8 @@ struct MyOpImp : public vart::experimental::OpImpBase {
     CHECK_EQ(idx, dim * 2);
   }
 
-  int calculate(
-      vart::experimental::simple_tensor_buffer_t<float> output,
-      std::vector<vart::experimental::simple_tensor_buffer_t<float>> inputs) {
+  int calculate(vart::simple_tensor_buffer_t<float> output,
+                std::vector<vart::simple_tensor_buffer_t<float>> inputs) {
     // TODO: optimization
     CHECK_EQ(output.mem_size, top_data_.size() * sizeof(top_data_[0]));
     memcpy(&output.data[0], &top_data_[0], output.mem_size);
@@ -230,6 +229,4 @@ struct MyOpImp : public vart::experimental::OpImpBase {
   std::vector<float> top_data_;
 };
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOpImp>();
-}
+DEF_XIR_OP_IMP(MyOpImp)

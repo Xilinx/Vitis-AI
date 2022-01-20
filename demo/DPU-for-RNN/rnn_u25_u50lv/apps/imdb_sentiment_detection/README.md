@@ -3,13 +3,12 @@
 1. **This application should be run inside Vitis-AI-RNN docker container.**
 
     ```sh
-    cd <Vitis-AI-repo>/demo/rnn_u25_u50lv/apps/imdb_sentiment_detection/
+    cd ${VAI_HOME}/demo/DPU-for-RNN/rnn_u25_u50lv/apps/imdb_sentiment_detection/
     ```
 
-1. Log on to the kaggle website and download the `IMDB Dataset.csv` file from https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews. (If the downloaded file is a .zip file, extract it).
+1. Download the dataset. Log on to the kaggle website and download the .csv file from https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews.
     ```sh
-    mkdir -p data
-    mv ./IMDB\ Dataset.csv ./data/IMDB.csv
+    cp ./IMDB\ Dataset.csv ./data/IMDB.csv
     ```
 
 1. Setup the environment.

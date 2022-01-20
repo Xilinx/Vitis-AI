@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "xir/buffer_object.hpp"
-// #include "./buffer_object_view.hpp"
+
 #include <glog/logging.h>
 
 #include <map>
@@ -25,3 +25,12 @@ DEF_ENV_PARAM(DEBUG_BUFFER_OBJECT, "0");
 // DECLARE_INJECTION_NULLPTR(xir::BufferObject, size_t&);
 DECLARE_INJECTION_NULLPTR(xir::BufferObject, size_t&, size_t&,
                           const std::string&);
+namespace xir {
+std::unique_ptr<BufferObject> BufferObject::create(size_t size,
+                                                   size_t device_id,
+                                                   const std::string& cu_name) {
+  return BufferObject::create0(size, device_id, cu_name);
+}
+
+XclBo BufferObject::get_xcl_bo() const { return XclBo{nullptr, 0}; }
+}  // namespace xir

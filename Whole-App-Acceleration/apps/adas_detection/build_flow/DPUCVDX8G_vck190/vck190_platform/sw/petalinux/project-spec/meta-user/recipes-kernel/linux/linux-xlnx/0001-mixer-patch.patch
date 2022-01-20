@@ -1,0 +1,28 @@
+From 98f20986e783d95b83c9ca45652a0f65107812dc Mon Sep 17 00:00:00 2001
+From: vivekana <vivekana@xilinx.com>
+Date: Fri, 5 Feb 2021 15:34:39 -0800
+Subject: [PATCH] mixer patch
+
+---
+ drivers/gpu/drm/xlnx/xlnx_mixer.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/gpu/drm/xlnx/xlnx_mixer.c b/drivers/gpu/drm/xlnx/xlnx_mixer.c
+index 826217b7..4dd7655 100644
+--- a/drivers/gpu/drm/xlnx/xlnx_mixer.c
++++ b/drivers/gpu/drm/xlnx/xlnx_mixer.c
+@@ -2969,6 +2969,11 @@ static int xlnx_mix_probe(struct platform_device *pdev)
+ 	if (!mixer)
+ 		return -ENOMEM;
+ 
++    ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
++       if (ret) {
++               dev_err(&pdev->dev, "dma_set_coherent_mask: %d\n", ret);
++               goto err;
++       }
+ 	/* Sub-driver will access mixer from drvdata */
+ 	platform_set_drvdata(pdev, mixer);
+ 	ret = xlnx_mix_dt_parse(&pdev->dev, mixer);
+-- 
+2.7.4
+

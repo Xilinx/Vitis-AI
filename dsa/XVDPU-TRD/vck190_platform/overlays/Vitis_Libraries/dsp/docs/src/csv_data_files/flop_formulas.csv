@@ -1,3 +1,0 @@
-FFT Type,Size,Formula
-1D,N,5*N*log2(N)
-2D,N*N,10*N*N*log2(N)

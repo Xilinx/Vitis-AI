@@ -30,13 +30,13 @@ from nndct_shared.base import FrameworkType
 from nndct_shared.nndct_graph import Graph
 from nndct_shared.optimization import QuantOptimizer
 from pytorch_nndct.export import get_script_writer
-from nndct_shared.utils import NndctDebugLogger, NndctOption, NndctScreenLogger
+from nndct_shared.utils import NndctDebugLogger, NndctOption, NndctScreenLogger, NNDCT_OP, permute_data
 from pytorch_nndct.parse import TorchParser
 from pytorch_nndct.quantization import TORCHQuantizer
 from pytorch_nndct.utils import TorchSymbol
 from pytorch_nndct.nn.modules import reluk, channel_scale
 from nndct_shared.compile import DevGraphOptimizer
-
+from pytorch_nndct.nn import stacked_lstm
 from .ModuleHooker import ModuleHooker
 
 
@@ -70,8 +70,8 @@ def parse_module(module: Union[torch.nn.Module, torch.jit.ScriptModule],
     elif NndctOption.nndct_relu6_replace.value == 'relu':
       replace_relu6_with_relu(module)
   
-  if NndctOption.nndct_wes.value:
-    insert_scale_after_conv2d(module)
+  # if NndctOption.nndct_wes.value:
+  #   insert_scale_after_conv2d(module)
   
   parser = TorchParser()
   graph = parser(module._get_name() if graph_name is None else graph_name,
@@ -142,7 +142,28 @@ def update_nndct_blob_data(module: torch.nn.Module,
                            graph: Graph,
                            time_step: Optional[int] = None) -> NoReturn:
   ModuleHooker.update_blobs_once(module, graph, time_step)
-
+  
+  def dfs(node, visited):
+    visited.append(node)
+    
+    if node.op.type == NNDCT_OP.PERMUTE:
+      in_data = node.in_tensors[0].data
+      data = permute_data(in_data, node.node_attr(node.op.AttrName.ORDER))
+      node.out_tensors[0].from_ndarray(data)
+    
+    for cn in graph.children(node):
+      if cn not in visited:
+        dfs(cn, visited)
+    
+  source_nodes = []
+  for node in graph.nodes:
+    if not node.in_tensors:
+      source_nodes.append(node)
+    
+  visited = []
+  for source in source_nodes:
+    dfs(source, visited)
+ 
 
 def set_outputs_recorder_status(module, turn_on) -> NoReturn:
   ModuleHooker.clear_record_outputs(module)
@@ -257,7 +278,8 @@ def insert_scale_after_batchnorm2d(module: torch.nn.Module):
 
 def get_deploy_graph_list(quant_model, nndct_graph):
   g_optmizer = DevGraphOptimizer(nndct_graph)
-  g_optmizer.infer_tensor_layout()
+  # g_optmizer.infer_tensor_layout()
+  g_optmizer.layout_tranform()
   g_optmizer.strip_redundant_ops()
   
   # for node in g_optmizer._dev_graph.nodes:
@@ -275,3 +297,23 @@ def get_deploy_graph_list(quant_model, nndct_graph):
   deploy_graphs = g_optmizer.partition_by_quant_part() 
   
   return deploy_graphs
+
+
+def convert_lstm(ori_module: torch.nn.Module):
+  """replace_torch_lstm_with_stacked_lstm
+
+  """
+  
+  if isinstance(ori_module, torch.nn.LSTM):
+    return stacked_lstm(ori_module)
+  
+  for n, m in ori_module.named_children():
+    if isinstance(m, torch.nn.LSTM):
+      setattr(ori_module, n, stacked_lstm(m))
+    else:
+      convert_lstm(m)    
+  return ori_module
+  
+  
+    
+ 

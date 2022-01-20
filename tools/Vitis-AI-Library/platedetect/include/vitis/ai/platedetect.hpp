@@ -114,7 +114,7 @@ class PlateDetect {
    */
   virtual PlateDetectResult run(const cv::Mat &image) = 0;
   /**
-   * @brief Function to get running results of the platedetect neuron network in
+   * @brief Function to get running results of the platedetect neural network in
    * batch mode.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of

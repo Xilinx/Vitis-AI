@@ -344,12 +344,10 @@ xfcvDataMovers class object takes input some simple parameters from users and pr
 .. csv-table:: Table. xfcvDataMovers Template Parameters
    :file: tables/xfcvDataMoversTemplate.csv
    :widths: 20, 50
-   :width: 70
 
 .. csv-table:: Table. xfcvDataMovers constructor parameters
    :file: tables/xfcvDataMoversCtor.csv
    :widths: 20, 50
-   :width: 70
 
 .. note::
    Horizontal overlap and Vertical overlaps should be computed for the complete pipeline. For example if the pipeline has a single 3x3 2D filter then overlap sizes (both horizontal and vertical) will be 1. However in case of two such filter operations which are back to back the overlap size will be 2. Currently if it is expected from users to provide this input correctly.
@@ -383,7 +381,6 @@ The data transfer using xfcvDataMovers class can be done in one out of 2 ways.
 
    .. table:: Tiler / Stitcher resource utilization (8_16 config)
       :widths: 10,15,15,15,15,15
-      :width: 85
 
       +----------------+--------+-------+-------+--------+---------+
       |                |  LUTs  |  FFs  | BRAMs |  DSPs  |   Fmax  |

@@ -26,6 +26,7 @@ import nndct_shared.utils as nndct_utils
 from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS, NNDCT_OP
 from nndct_shared.compile import CompilerFactory, DeployChecker
 from nndct_shared.utils import AddXopError, NndctOption, NndctScreenLogger, option_util
+from pytorch_nndct.utils.module_util import visualize_tensors
 from nndct_shared.quantization import DefaultQstrategy
 from pytorch_nndct.quantization import TORCHQuantizer
 from .adaquant import AdvancedQuantProcessor
@@ -112,6 +113,9 @@ class TorchQuantProcessor():
     if lstm_app: option_util.set_option_value("nndct_cv_app", False)
     else: option_util.set_option_value("nndct_cv_app", True)
     
+    
+     
+      
     # Prepare quantizable module
     quant_module, graph = prepare_quantizable_module(
         module=module,
@@ -136,6 +140,10 @@ class TorchQuantProcessor():
     self._lstm_app = lstm_app
     self.quantizer = quantizer
     self.adaquant = None
+    
+    # dump blob dist 
+    if NndctOption.nndct_visualize.value is True:
+      visualize_tensors(quantizer.quant_model)
 
   def advanced_quant_setup(self):
     if (self.adaquant is None):
@@ -147,14 +155,21 @@ class TorchQuantProcessor():
   # function needs forwarding iteration control
   def finetune(self, run_fn, run_args):
     self.advanced_quant_setup()
+    grad_enabled = torch.is_grad_enabled()
+    torch.set_grad_enabled(True)
     if self.adaquant is not None:
-      self.adaquant.finetune(run_fn, run_args)
-  
+      if NndctOption.nndct_ft_mode.value == 0:
+        self.adaquant.finetune(run_fn, run_args)
+      else:
+        self.adaquant.finetune_v2(run_fn, run_args)
+    torch.set_grad_enabled(grad_enabled)
+  """
   # function needs forwarding iteration control
   def quantize(self, run_fn, run_args):
     self.advanced_quant_setup()
     if self.adaquant is not None:
       self.adaquant.quantize(run_fn, run_args)
+  """
 
   # quantization steps of quantized tensors
   def export_quant_config(self):
@@ -186,9 +201,10 @@ def dump_xmodel(output_dir="quantize_result", deploy_check=False, lstm_app=False
       
     NndctScreenLogger().info("=>Converting to xmodel ...")
     deploy_graphs = get_deploy_graph_list(quantizer.quant_model, quantizer.Nndctgraph)
-    depoly_infos = compiler.get_deloy_graph_infos(quantizer, deploy_graphs)
+    #depoly_infos = compiler.get_deloy_graph_infos(quantizer, deploy_graphs)
+    xmodel_depoly_infos, dump_deploy_infos = compiler.get_xmodel_and_dump_infos(quantizer, deploy_graphs)
     if not lstm_app:
-      for node in depoly_infos[0].dev_graph.nodes:
+      for node in xmodel_depoly_infos[0].dev_graph.nodes:
         error_out = False
         if node.op.type not in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB]:
           continue
@@ -200,17 +216,7 @@ def dump_xmodel(output_dir="quantize_result", deploy_check=False, lstm_app=False
         if error_out:
           break
       
-    for depoly_info in depoly_infos:
-      try:
-        compiler.do_compile(
-            depoly_info.dev_graph,
-            quant_config_info=depoly_info.quant_info,
-            output_file_name=os.path.join(output_dir, depoly_info.dev_graph.name))
-
-      except AddXopError as e:
-        NndctScreenLogger().error(f"Failed convert graph '{depoly_info.dev_graph.name}' to xmodel.")
-        raise e
-       
+    for depoly_info in dump_deploy_infos:
       # dump data for accuracy check
       if deploy_check:
         NndctScreenLogger().info(f"=>Dumping '{depoly_info.dev_graph.name}'' checking data...")
@@ -228,5 +234,17 @@ def dump_xmodel(output_dir="quantize_result", deploy_check=False, lstm_app=False
             round_method=quantizer.quant_opt['round_method'], select_batch=select_batch)
         
         NndctScreenLogger().info(f"=>Finsh dumping data.({checker.dump_folder})")
-        
+      
+    for depoly_info in xmodel_depoly_infos:
+      try:
+        xgraph = compiler.do_compile(
+            depoly_info.dev_graph,
+            quant_config_info=depoly_info.quant_info,
+            output_file_name=os.path.join(output_dir, depoly_info.dev_graph.name))
+
+      except AddXopError as e:
+        NndctScreenLogger().error(f"Failed convert graph '{depoly_info.dev_graph.name}' to xmodel.")
+        raise e
+      
+      compiler.verify_xmodel(depoly_info.dev_graph, xgraph)
     set_outputs_recorder_status(quantizer.quant_model, False)

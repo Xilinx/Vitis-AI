@@ -330,7 +330,7 @@ $(EMCONFIG_DIR)/emconfig.json:
 # ###############Setting Essential Checks And Running Rules For Vitis Flow #############
 # Setting default value for vitis flow
 RESULT_VAL ?= 
-RUN_LEVEL ?= 7
+RUN_LEVEL ?= 9
 run: all
 ifeq ($(TARGET),$(filter $(TARGET),sw_emu hw_emu))
 ifeq ($(HOST_ARCH), x86)

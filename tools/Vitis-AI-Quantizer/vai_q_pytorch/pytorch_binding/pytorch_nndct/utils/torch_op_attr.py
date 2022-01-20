@@ -37,8 +37,10 @@ class TorchOpAttr:
     self.attrs = []  #List[str]
     self.input_args = []  #List[str]
 
-  def set_op_class_type(self, force_to_primitive: bool, schema: "Schema"):
-    if schema is not None:
+  def set_op_class_type(self, force_to_primitive: bool, schema: "Schema", class_type=None):
+    if class_type is not None:
+      self.op_class_type = TorchOpClassType.CUSTOM_FUNCTION
+    elif schema is not None:
       schema2torchop = GLOBAL_MAP.get_ele(NNDCT_KEYS.TORCH_SCHEMA_OP_TABLE)
       schema_handler = SchemaHelper(schema)
       torchop = schema2torchop[schema_handler.toString()]
@@ -88,11 +90,11 @@ class TorchOpAttr:
             eval('inspect.signature({}).parameters'.format(self.op_name)))[:]
         self.input_args[:] = self.attrs[:]
 
-def gen_attr(torch_op: str, force_to_primitive: bool, schema: "Schema"):
+def gen_attr(torch_op: str, force_to_primitive: bool, schema: "Schema", class_type=None):
   global _TORCH_OP_ATTR_MAP
   if torch_op not in _TORCH_OP_ATTR_MAP:
     op_attr = TorchOpAttr(torch_op)
-    op_attr.set_op_class_type(force_to_primitive, schema)
+    op_attr.set_op_class_type(force_to_primitive, schema, class_type)
     op_attr.fill_in_attr_and_inputs_table(schema)
     _TORCH_OP_ATTR_MAP[torch_op] = op_attr
 

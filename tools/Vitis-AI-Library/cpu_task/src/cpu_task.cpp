@@ -19,6 +19,8 @@
 #include <glog/logging.h>
 
 #include <thread>
+#include <vitis/ai/profiling.hpp>
+#include <vart/trace/trace.hpp>
 
 #include "tensor_buffer_proxy.hpp"
 #include "vart/op_imp.h"
@@ -71,6 +73,7 @@ CpuTask::CpuTask(const xir::Subgraph* subgraph, xir::Attrs* attrs)
   LOG_IF(INFO, ENV_PARAM(DEBUG_CPU_TASK))
       << "@" << (void*)this << " cpu task is created for subgraph "
       << subgraph->get_name();
+  vitis::ai::trace::add_subgraph(subgraph_);
   // Q: why we need to copy input and output tensors?
   // A: converting std::set to std::vector
   inputs_ = copy_set_to_vector_tensor(subgraph->get_input_tensors());
@@ -157,9 +160,20 @@ std::pair<uint32_t, int> CpuTask::execute_async(
     const std::vector<vart::TensorBuffer*>& output) {
   auto size = op_imp_.size();
   CHECK_EQ(size, my_op_args_.size()) << "must be equal";
+  auto subgraph_name = subgraph_->get_name();
+  auto subgraph_depth = subgraph_->get_depth();
+  vitis::ai::trace::add_trace("cpu-task", subgraph_name, subgraph_depth,
+          vitis::ai::trace::func_start);
+
+  __TIC__(CPU_UPDATE_INPUT)
   update_proxy(input);
+  __TOC__(CPU_UPDATE_INPUT)
+  __TIC__(CPU_UPDATE_OUTPUT)
   update_proxy(output);
+  __TOC__(CPU_UPDATE_OUTPUT)
+  __TIC__(CPU_SYNC_FOR_READ)
   maybe_sync_for_read(input);
+  __TOC__(CPU_SYNC_FOR_READ)
   for (auto i = 0u; i < size; ++i) {
     LOG_IF(INFO, ENV_PARAM(DEBUG_CPU_TASK))
         << "op: " << ops_[i]->get_type()                         //
@@ -169,7 +183,9 @@ std::pair<uint32_t, int> CpuTask::execute_async(
         ;
     auto& inputs = my_op_args_[i].inputs;
     auto& output = my_op_args_[i].output;
+    __TIC__(CPU_OP_EXEC)
     auto error_code = op_imp_[i]->calculate(inputs, output);
+    __TOC__(CPU_OP_EXEC)
     if (ENV_PARAM(XLNX_ENABLE_DUMP)) {
       auto dir = std::string("dump") + "/" +
                  vitis::ai::to_valid_file_name(subgraph_->get_name()) + "/";
@@ -181,8 +197,12 @@ std::pair<uint32_t, int> CpuTask::execute_async(
     }
     CHECK_EQ(error_code, 0);
   }
+  __TIC__(CPU_SYNC_FOR_WRITE)
   maybe_sync_for_write(output);
+  __TOC__(CPU_SYNC_FOR_WRITE)
   // TODO: do we need to restore the proxy?
+  vitis::ai::trace::add_trace("cpu-task", subgraph_name, subgraph_depth,
+          vitis::ai::trace::func_end);
   return std::make_pair(0u, 0);
 }
 

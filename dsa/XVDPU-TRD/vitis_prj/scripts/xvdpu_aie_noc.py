@@ -23,16 +23,12 @@ Batch_N    = int(sys.argv[1])
 CPB        = int(sys.argv[2])
 LOAD_I_P   = int(sys.argv[3])
 BAT_SHRWGT = int(sys.argv[4])
-WGT_ports  = int(sys.argv[5])
+LOAD_W_P   = int(sys.argv[5])
+
+cu_num     = 1
 
 WGTBC_N    = int((Batch_N+BAT_SHRWGT-1)/BAT_SHRWGT)
 IMG_ports  = Batch_N*LOAD_I_P
-
-result=[]
-Char1 = "[connectivity]\n"
-Char2 = "nk=DPUCVDX8G:1:DPUCVDX8G\n"
-result.append(Char1)
-result.append(Char2)
 
 if CPB==16:
     ifm_number = 8*Batch_N 
@@ -48,62 +44,66 @@ elif CPB==64:
     wgt_number = 16*WGTBC_N
 else:
     pass
+ 
+ 
+result  = "[connectivity]\n"
+result += "nk=DPUCVDX8G:1:DPUCVDX8G_1\n"
 
 ###########AXI-stream connection between XVDPU and AIE#################################
-#ofm connection
-for i in range (ofm_number): 
-    number_o = str(i).rjust(2,'0')
-    list_buf ="stream_connect=ai_engine_0.M" + number_o + "_AXIS:DPUCVDX8G.S" + number_o + "_OFM_AXIS\n"
-    str_buf  ="".join(list_buf) 
-    result.append(str_buf)      
-
-#ifm connection
-for i in range (ifm_number):
-    number_i = str(i).rjust(2,'0')
-    list_buf ="stream_connect=DPUCVDX8G.M" + number_i + "_IFM_AXIS:ai_engine_0.S" + number_i + "_AXIS\n"
-    str_buf  ="".join(list_buf) 
-    result.append(str_buf)  
-
-#wgt connection
-for i in range (wgt_number):
-    number_w = str(i).rjust(2,'0')
-    wgt_s = i+ifm_number
-    number_ws = str(wgt_s).rjust(2,'0')
-    list_buf ="stream_connect=DPUCVDX8G.M" + number_w + "_WGT_AXIS:ai_engine_0.S" + number_ws + "_AXIS\n"
-    str_buf  ="".join(list_buf)
-    result.append(str_buf)
-
-###########sptag section for XVDPU and NOC#################################
-# sptag for INSTR&BIAS. Name of sptag is ' "NOC_Sxx"
-result.append(
-r'''sp=DPUCVDX8G.M00_INSTR_AXI:NOC_S13
-sp=DPUCVDX8G.M00_BIAS_AXI:NOC_S14
-''')
-
-S_AXI_N = 15
-# sptag for WGT_ports. Name of sptag is ' "NOC_S" + number_axi '.
-for i in range (WGT_ports): 
-    number_wgt = str(i).rjust(2,'0')    
-    number_axi = str(S_AXI_N)
-    sptag_name = "NOC_S" + number_axi
-    list_buf="sp=DPUCVDX8G.M" + number_wgt + "_WGT_AXI:" + sptag_name + "\n"
-    S_AXI_N = S_AXI_N + 1
-    str_buf="".join(list_buf) 
-    result.append(str_buf) 
     
-# sptag for IMG_ports. Name of sptag is ' "NOC_S" + number_axi '.
-for i in range (IMG_ports): 
-    number_img = str(i).rjust(2,'0')    
-    number_axi = str(S_AXI_N)
-    sptag_name = "NOC_S" + number_axi
-    list_buf="sp=DPUCVDX8G.M" + number_img + "_IMG_AXI:" + sptag_name + "\n"
-    S_AXI_N = S_AXI_N + 1
-    str_buf="".join(list_buf) 
-    result.append(str_buf) 
+def genOFM(cu, ofm_num):
+    char = ""
+    for i in range (ofm_num):
+        sc_num    = str(i).rjust(2,'0')
+        sc_num_cu = str(i+cu*ofm_num).rjust(2,'0')
+        char     += "stream_connect=ai_engine_0.M" + sc_num_cu + "_AXIS:DPUCVDX8G_" + str(cu+1) + ".S" + sc_num + "_OFM_AXIS\n"
+    return char
+
+def genIFM(cu, ifm_num):
+    char = ""
+    for i in range (ifm_num):
+        sc_num    = str(i).rjust(2,'0')
+        sc_num_cu = str(i+cu*ifm_num).rjust(2,'0')
+        char     += "stream_connect=DPUCVDX8G_" + str(cu+1) +".M" + sc_num + "_IFM_AXIS:ai_engine_0.S" + sc_num_cu + "_AXIS\n"
+    return char
+
+def genWGT(cu, wgt_num, ifm_total):
+    char = ""
+    for i in range (wgt_num):
+        sc_num    = str(i).rjust(2,'0')
+        sc_num_cu = str(i+cu*wgt_num+ifm_total).rjust(2,'0')
+        char     += "stream_connect=DPUCVDX8G_" + str(cu+1) +".M" + sc_num + "_WGT_AXIS:ai_engine_0.S" + sc_num_cu + "_AXIS\n"
+    return char
+
+for i in range (cu_num):
+    result += genOFM(i,ofm_number)
+
+for i in range (cu_num):
+    result += genIFM(i,ifm_number)
+
+for i in range (cu_num):
+    result += genWGT(i,wgt_number,ifm_number*cu_num)
     
-result_str="".join(result) 
+###########sptag section for XVDPU and NOC########################################
+global S_AXI_N 
+S_AXI_N = 13
+
+#Name of sptag is: "NOC_S" + str(S_AXI_N)
+def genSP(cu, axi_name, ports_num):
+    char = ""
+    global S_AXI_N 
+    for i in range (ports_num):
+        char += "sp=DPUCVDX8G_" + str(cu+1) + ".M" + str(i).rjust(2,'0') + "_" + axi_name + "_AXI:" + "NOC_S" + str(S_AXI_N) + "\n"
+        S_AXI_N = S_AXI_N + 1
+    return char   
+       
+for i in range (cu_num):
+    result += genSP(i, "INSTR", 1)
+    result += genSP(i, "BIAS", 1)
+    result += genSP(i, "WGT", LOAD_W_P)
+    result += genSP(i, "IMG", IMG_ports)
+    
 file_name="xvdpu_aie_noc" + ".cfg"
 new_file = open(file_name, "w+")
-new_file.write(result_str)
-
+new_file.write(result)
 new_file.close()

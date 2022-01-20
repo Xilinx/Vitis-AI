@@ -31,17 +31,20 @@ connect<> net1(gc.out, platform.sink[0]);
 // initialize and run the dataflow graph
 #if defined(__AIESIM__) || defined(__X86SIM__)
 
+#include <common/xf_aie_utils.hpp>
 int main(int argc, char** argv) {
     int BLOCK_SIZE_in_Bytes = TILE_WINDOW_SIZE;
 
     int16_t* inputData = (int16_t*)GMIO::malloc(BLOCK_SIZE_in_Bytes);
     int16_t* outputData = (int16_t*)GMIO::malloc(BLOCK_SIZE_in_Bytes);
 
-    for (int i = 0; i < SMARTTILE_ELEMENTS; i++) inputData[i] = 0;
-    inputData[0] = TILE_WIDTH;
-    inputData[4] = TILE_HEIGHT;
-    for (int i = SMARTTILE_ELEMENTS; i < (BLOCK_SIZE_in_Bytes / sizeof(int16_t)); i++) {
-        inputData[i] = rand() % 256;
+    memset(inputData, 0, BLOCK_SIZE_in_Bytes);
+    xf::cv::aie::xfSetTileWidth(inputData, TILE_WIDTH);
+    xf::cv::aie::xfSetTileHeight(inputData, TILE_HEIGHT);
+
+    int16_t* dataIn = (int16_t*)xf::cv::aie::xfGetImgDataPtr(inputData);
+    for (int i = 0; i < TILE_ELEMENTS; i++) {
+        dataIn[i] = rand() % 256;
     }
 
     int16_t rgain = 140;
@@ -62,9 +65,10 @@ int main(int argc, char** argv) {
 
     int acceptableError = 1;
     int errCount = 0;
+    int16_t* dataOut = (int16_t*)xf::cv::aie::xfGetImgDataPtr(outputData);
     for (int i = 0; i < TILE_HEIGHT; i++) {
         for (int j = 0; j < TILE_WIDTH; j++) {
-            int pixel = inputData[SMARTTILE_ELEMENTS + i * TILE_WIDTH + j];
+            int pixel = dataIn[i * TILE_WIDTH + j];
             bool cond1, cond2;
             cond1 = (j % 2 == 0);
             cond2 = (j % 2 != 0);
@@ -90,7 +94,7 @@ int main(int argc, char** argv) {
                     pixel = (maxSize)((pixel * rgain) >> 7);
             }
             //          pixel = cv::saturate_cast<int16_t>(pixel);
-            if (abs(outputData[SMARTTILE_ELEMENTS + i * TILE_WIDTH + j] - pixel) > acceptableError) {
+            if (abs(dataOut[i * TILE_WIDTH + j] - pixel) > acceptableError) {
                 errCount++;
             }
         }

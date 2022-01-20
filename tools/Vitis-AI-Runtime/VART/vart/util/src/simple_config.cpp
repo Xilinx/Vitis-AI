@@ -16,7 +16,6 @@
 #include "../include/vitis/ai/simple_config.hpp"
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>

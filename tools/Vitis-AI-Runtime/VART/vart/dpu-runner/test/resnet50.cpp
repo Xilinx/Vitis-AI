@@ -210,11 +210,11 @@ static std::vector<std::pair<int, float>> topk(const std::vector<float>& score,
 
 static void print_topk(const std::vector<std::pair<int, float>>& topk) {
   for (const auto& v : topk) {
-    std::cout << setiosflags(ios::left) << std::setw(11)
+    std::cout << std::setiosflags(std::ios::left) << std::setw(11)
               << "score[" + std::to_string(v.first) + "]"
               << " =  " << std::setw(12) << v.second
-              << " text: " << lookup(v.first) << resetiosflags(ios::left)
-              << std::endl;
+              << " text: " << lookup(v.first)
+              << std::resetiosflags(std::ios::left) << std::endl;
   }
 }
 

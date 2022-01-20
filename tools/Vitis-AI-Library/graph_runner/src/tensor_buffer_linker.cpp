@@ -59,7 +59,7 @@ std::string TensorBufferLinker::to_string() {
   return str.str();
 }
 
-void TensorBufferLinker::finalize(std::string device) {
+void TensorBufferLinker::finalize() {
   // LOG(ERROR) << " please override this function";
 }
 

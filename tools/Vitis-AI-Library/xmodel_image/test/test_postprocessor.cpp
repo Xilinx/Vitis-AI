@@ -106,14 +106,14 @@ static vitis::ai::XmodelPostprocessorInputs build_post_processor_inputs(
       input.args[i].tensor_buffer =
           vart::alloc_cpu_flat_tensor_buffer(tensor).release();
       // std::make_unique<vart::mm::HostFlatTensorBuffer>(tensor).release();
-      auto tb = vart::experimental::simple_tensor_buffer_t<void>::create(
+      auto tb = vart::simple_tensor_buffer_t<void>::create(
           input.args[i].tensor_buffer);
       auto refdir = std::string("ref");
       auto filename = refdir + "/" +
                       replace(xir::remove_xfix(tb.tensor->get_name())) + ".bin";
       CHECK(std::ifstream(filename).read((char*)tb.data, tb.mem_size).good())
           << "fail to read! filename=" << filename
-          << ";tensor=" << tb.tensor->get_name() << endl;
+          << ";tensor=" << tb.tensor->get_name() << std::endl;
       LOG(INFO) << "read " << filename << " to " << tb.data
                 << " size=" << tb.mem_size;
     }

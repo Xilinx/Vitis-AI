@@ -22,6 +22,7 @@
 #include "tensorflow/core/framework/register_types.h"
 
 #include "nndct_fix_kernels.h"
+#include "nndct_fix_kernels_cpu.h"
 
 namespace nndct {
 
@@ -38,13 +39,42 @@ struct FixNeuronFunctor;
 template <typename T>
 struct FixNeuronFunctor<CPUDevice, T> {
   void operator()(OpKernelContext* ctx,
-                  const Tensor* Tinput,
-                  Tensor* Toutput,
+                  const Tensor* input,
+                  Tensor* output,
                   const Tensor* fp,
                   int bit_width,
                   int method){
-    printf("NNDCT-warning: TF NNDCT does not support CPU flow yet!!!\n");
+
+    const T* input_buffer = input->flat<T>().data();
+    const T* fp_buffer = fp->flat<T>().data();
+    T* output_buffer = output->flat<T>().data();
+
+#ifdef QUANT_DEBUG
+    printf("\n......FixNeuron OP conext i/fp/o data: %p %p %p \
+count: %ld %ld, dims: %d dim --",
+            input_buffer,
+            fp_buffer,
+            output_buffer,
+            (long int)(input->NumElements()),
+            (long int)(output->NumElements()),
+            input->dims());
     fflush(stdout);
+    if ( input->dims() > 0 ) {
+      for ( int i = 0; i < input->dims(); ++i )
+        printf( " %d", (int)(input->dim_size(i)) ); fflush(stdout);
+    }
+    printf( " --\n" );fflush(stdout);
+#endif // QUANT_DEBUG
+
+    cpu_fix_neuron_v1(input->NumElements(),
+                       input_buffer,
+                       fp_buffer,
+                       output_buffer,
+                       1<<(bit_width-1),
+                       1, // keep_scale
+                       method);
+    // printf("NNDCT-warning: Test TF NNDCT support CPU flow!!! From fix neuron op!\n");
+    // fflush(stdout);
   }
 };
 

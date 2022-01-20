@@ -100,7 +100,7 @@ class RefineDet : public ConfigurableDpuTaskBase {
    */
  public:
   /**
-   * @brief Function to get running result of the RefineDet neuron network.
+   * @brief Function to get running result of the RefineDet neural network.
    *
    * @param image Input data of input image (cv::Mat).
    *
@@ -110,7 +110,7 @@ class RefineDet : public ConfigurableDpuTaskBase {
 
   virtual RefineDetResult run(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running result of the RefineDet neuron network in
+   * @brief Function to get running result of the RefineDet neural network in
    * batch mode.
    *
    * @param images Input data of input images (vector<cv::Mat>).
@@ -122,7 +122,7 @@ class RefineDet : public ConfigurableDpuTaskBase {
       const std::vector<cv::Mat>& images) = 0;
 
   /**
-   * @brief Function to get running results of the RefineDet neuron network in
+   * @brief Function to get running results of the RefineDet neural network in
    * batch mode, used to receive user's xrt_bo to support zero copy.
    *
    * @param input_bos The vector of vart::xrt_bo_t.

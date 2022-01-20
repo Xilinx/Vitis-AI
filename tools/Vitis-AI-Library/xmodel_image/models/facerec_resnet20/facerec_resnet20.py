@@ -22,6 +22,6 @@ def jit(graph):
     graph.set_attr("is_rgb_input", True)
     xir_extra_ops.set_postprocessor(
         graph,
-        "libxmodel_postprocessor_face_recognition.so.1",
-        {"input":
-         ['Addmm_1_fixed_']})
+        "libxmodel_postprocessor_face_recognition.so.2",
+        {"input": ["Addmm_1_fixed_"]},
+    )

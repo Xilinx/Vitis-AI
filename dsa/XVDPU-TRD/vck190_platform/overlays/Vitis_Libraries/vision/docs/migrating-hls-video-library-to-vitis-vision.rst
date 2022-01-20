@@ -693,13 +693,4 @@ Note: All the functions except Reduce can process N-pixels per clock
 where N is power of 2.
 
 
-
-.. |image0| image:: ./images/wuz1554997295362.png
-   :class: image
-   
-.. |image1| image:: ./images/wuz1554997295362.png
-   :class: image
-  
-.. |image2| image:: ./images/wuz1554997295362.png
-   :class: image
   

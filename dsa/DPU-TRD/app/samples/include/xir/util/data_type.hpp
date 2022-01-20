@@ -18,10 +18,11 @@
 #include <climits>
 #include <cstdint>
 #include <string>
+#include "xir/XirExport.hpp"
 
 namespace xir {
 
-struct DataType {
+struct XIR_DLLESPEC DataType {
   enum Type { INT, UINT, XINT, XUINT, FLOAT, UNKNOWN };
 
   DataType();
@@ -31,8 +32,8 @@ struct DataType {
   const bool valid() const;
   const std::string to_string() const;
 
-  friend bool operator==(const DataType& lhs, const DataType& rhs);
-  friend bool operator!=(const DataType& lhs, const DataType& rhs);
+  XIR_DLLESPEC friend bool operator==(const DataType& lhs, const DataType& rhs);
+  XIR_DLLESPEC friend bool operator!=(const DataType& lhs, const DataType& rhs);
 
   Type type;
   std::int32_t bit_width;

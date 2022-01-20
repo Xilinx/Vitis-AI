@@ -7941,7 +7941,7 @@ The following table describes the template and the function parameters.
 .. rubric:: Resource Utilization
 
 
-The following table summarizes the resource utilization for custom CCA, generated using Vivado HLS 2021.1 tool for the xczu9eg-ffvb1156-1-i-es1, to process a FHD (1080x1920) image.
+The following table summarizes the resource utilization for custom CCA, generated using Vitis HLS 2021.1 tool for the xczu9eg-ffvb1156-1-i-es1, to process a FHD (1080x1920) image.
 
 .. table:: Table customCCA Function Resource Utilization Summary
 
@@ -7955,7 +7955,7 @@ The following table summarizes the resource utilization for custom CCA, generate
     +----------------+---------------------------+----------------------+-----------+-------+------+------+
 
 
-The following table summarizes the resource utilization for custom CCA, generated using Vivado HLS 2021.1 tool for the xczu9eg-ffvb1156-1-i-es1, to process a 4K image.
+The following table summarizes the resource utilization for custom CCA, generated using Vitis HLS 2021.1 tool for the xczu9eg-ffvb1156-1-i-es1, to process a 4K image.
 
 .. table:: Table 16. customCCA Function Resource Utilization Summary
 
@@ -9213,6 +9213,8 @@ The following table summarizes a performance estimate of the kernel in different
     +----------------+---------------------+------------------+
     | 4 pixel        | 300                 | 7                |
     +----------------+---------------------+------------------+
+
+.. include:: include/gtm_api.rst
 
 
 .. _hdrmerge:
@@ -15341,6 +15343,11 @@ latencies obtained for different interpolation types.
     +================+=====================+=======================+===========+===========+=========+==========+=========+
     | 1 pixel        | 300                 | 6.94                  | 6.97      | 7.09      | 27.71   | 27.75    | 27.74   |
     +----------------+---------------------+-----------------------+-----------+-----------+---------+----------+---------+
+	
+
+.. _rgbir2bayer:
+
+.. include:: include/rgbir_api.rst
 
 .. _bgr2hsv:
 

@@ -16,7 +16,7 @@
 
 #include <adf.h>
 #include <aie_api/aie.hpp>
-#include <common/xf_aie_utils.hpp>
+#include <common/xf_aie_hw_utils.hpp>
 
 #ifndef _AIE_MULTIPLICATION_H_
 #define _AIE_MULTIPLICATION_H_
@@ -82,14 +82,14 @@ __attribute__((noinline)) void multiplication_api(input_window_int16* restrict i
     int16_t* img_in_ptr1 = (int16_t*)img_in1->ptr;
     int16_t* img_out_ptr = (int16_t*)img_out->ptr;
 
-    const int16_t image_width = xfcvGetTileWidth(img_in_ptr);
-    const int16_t image_height = xfcvGetTileHeight(img_in_ptr);
+    const int16_t image_width = xfGetTileWidth(img_in_ptr);
+    const int16_t image_height = xfGetTileHeight(img_in_ptr);
 
-    xfcvCopyMetaData(img_in_ptr, img_out_ptr);
+    xfCopyMetaData(img_in_ptr, img_out_ptr);
 
-    int16_t* restrict ptr_in = xfcvGetImgDataPtr(img_in_ptr);
-    int16_t* restrict ptr_in1 = xfcvGetImgDataPtr(img_in_ptr1);
-    int16_t* restrict ptr_out = xfcvGetImgDataPtr(img_out_ptr);
+    int16_t* restrict ptr_in = (int16_t*)xfGetImgDataPtr(img_in_ptr);
+    int16_t* restrict ptr_in1 = (int16_t*)xfGetImgDataPtr(img_in_ptr1);
+    int16_t* restrict ptr_out = (int16_t*)xfGetImgDataPtr(img_out_ptr);
 
     multiplication<int16_t, 16>(ptr_in, ptr_in1, ptr_out, image_width, image_height, scale);
 }

@@ -15,6 +15,8 @@
  */
 
 #include "xir/graph/serialize_v2.hpp"
+// must include this first to define XIR_DLLSPEC;
+#include "xir/XirExport.hpp"
 
 #include <fstream>
 #include <type_traits>
@@ -23,6 +25,7 @@
 
 #include "config.hpp"
 #include "graph_proto_v2.pb.h"
+
 #include "xir/attrs/attr_def.hpp"
 #include "xir/attrs/attrs.hpp"
 #include "xir/graph/graph.hpp"
@@ -497,7 +500,7 @@ xir::AttrDef convert_t<serial_v2::AttrDef, xir::AttrDef>::fun(
       << "type = " << default_value.type().name()
       << "annotation = " << attr_def.annotation() << " "
       << "attr_def.annotation() " << attr_def.annotation() << " "  //
-      << endl;
+      << std::endl;
   return ret;
 }
 
@@ -704,10 +707,10 @@ unique_ptr<Graph> Serialize::read_from_string(const std::string& str) {
   serial_v2::Graph pb_graph;
   if (!pb_graph.ParseFromString(str)) {
     UNI_LOG_FATAL(XIR_READ_PB_FAILURE)
-      << "fail to generate pb struct from string.";
+        << "fail to generate pb struct from string.";
   }
   return convert_from_pb_type_tp_cpp_type(
-    *(static_cast<serial_v2::Graph*>(&pb_graph)));
+      *(static_cast<serial_v2::Graph*>(&pb_graph)));
 }
 
 void Serialize::write(const Graph* graph, const string& pb_fname) {
@@ -726,8 +729,7 @@ void Serialize::write_to_string(const Graph* graph, std::string* str) {
   serial_v2::Graph pb_graph = convert_from_cpp_type_to_pb(g);
   g.release();
   if (!pb_graph.SerializeToString(str)) {
-    UNI_LOG_FATAL(XIR_WRITE_PB_FAILURE)
-      << "fail to parse pb struct to string.";
+    UNI_LOG_FATAL(XIR_WRITE_PB_FAILURE) << "fail to parse pb struct to string.";
   }
 }
 

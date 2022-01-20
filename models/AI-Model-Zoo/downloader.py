@@ -22,14 +22,19 @@ def find_Filename(keyword):
     model_list=[]
     for filename in os.listdir(listpath):
         model_file=filename.casefold().split("_")
-        if keyword[0]!=model_file[0]:
+        if keyword[0]=="all":
+            model_list.append(filename)
+        elif keyword[0]!=model_file[0]:
             continue
         else:
-            l=len(keyword[1])
-            if l>len(model_file[1]):
-                continue
-            elif keyword[1]==model_file[1][:l]:
+            if len(keyword)==1:
                 model_list.append(filename)
+            else:
+                l=len(keyword[1])
+                if l>len(model_file[1]):
+                    continue
+                elif keyword[1]==model_file[1][:l]:
+                    model_list.append(filename)
     return model_list
 
 def yaml2list(txt):
@@ -61,56 +66,93 @@ def yaml2list(txt):
     return yaml_list
 
 
-def read_Ymal(yamlPath):
-    yaml_txt=open(yamlPath)
-    yaml_list=yaml2list(yaml_txt)
-    index_dict={}
-    index=0
-    for i,ss in enumerate(yaml_list):
-        if ss[0]=='type':
-            index=index+1
-            print(str(index)+': ',ss,end='')
-        elif ss[0]=='board':
-            print(ss)
-        elif ss[0]=='download link':
-            index_dict.update({index:[i,ss[1]]})
+def read_Ymal(yamlPathList):
+    loadLinkDict={}
+    for yamlPath in yamlPathList:
+        yaml_txt=open(yamlPath)
+        yaml_list=yaml2list(yaml_txt)
+        index=''
+        for i,ss in enumerate(yaml_list):
+            if ss[0]=='board':
+                index=ss[1]
+                if index not in loadLinkDict:
+                    loadLinkDict.update({index:[]})
+            elif ss[0]=='download link':
+                loadLinkDict[index].append(ss[1])
+    loadLinkList=[]
+    print("chose model type")
+    print('0:','all')
+    loadLinkDictName=[]
+    for i, name in enumerate(loadLinkDict):
+        print(i+1,":",name)
+        loadLinkDictName.append(name)
     num = int(input("input num:"))
-    load_Link = index_dict[num][1]
-    f=load_Link.index("filename=")
-    name=load_Link[f+9:]
 
-    return load_Link,name
+    if num==0:
+        for i, name in enumerate(loadLinkDict):
+            for link in loadLinkDict[name]:
+                loadLinkList.append(link)
+    else:
+        name=loadLinkDictName[num-1]
+        loadLinkList=loadLinkDict[name]
 
+    return loadLinkList
 
-def download(load_Link,name):
+def process_bar(percent, start_str='', end_str='', total_length=0):
+    bar = ''.join(["\033[31m%s\033[0m" % '   '] * int(percent * total_length)) + ''
+    bar = '\r' + start_str + bar.ljust(total_length) + ' {:0>4.1f}%|'.format(percent * 100) + end_str
+    print(bar, end='', flush=True)
+
+def download(loadLinkList):
+
     def Schedule(a,b,c):
         per=100.0*a*b/c
         if per >100:
             per=100
-        print('%.2f%%'%per)
-    urllib.request.urlretrieve(load_Link, name,Schedule)
+        end_str = '100%'
+        process_bar(per/100, start_str='', end_str=end_str, total_length=15)
+    for load_Link in loadLinkList:
+        f = load_Link.index("filename=")
+        name = load_Link[f + 9:]
+        print(name)
+        urllib.request.urlretrieve(load_Link, name,Schedule)
+        print()
     print("done")
 
 def main():
     print('Tip:')
     print("you need to input framework and model name, use space divide such as tf vgg16")
-    print("tf:tensorflow1.x  tf2:tensorflow2.x  cf:caffe  dk:darknet  pt:pytorch")
-    framework_list=['tf','tf2','cf','dk','pt','torchvision']
+    print("tf:tensorflow1.x  tf2:tensorflow2.x  cf:caffe  dk:darknet  pt:pytorch  all: list all model")
+    framework_list=['tf','tf2','cf','dk','pt','torchvision','all']
     keyword=list(input("input:").casefold().split())
     if keyword[0] not in framework_list:
         print("Please use correct framework keyword and framework ahead of model name")
         return 0
     model_list=find_Filename(keyword)
+    yamlPathList=[]
     if len(model_list)==0:
         print("None")
+        return 0
     elif len(model_list)==1:
         yamlPath=listpath+"/"+model_list[0]+"/model.yaml"
+        yamlPathList.append(yamlPath)
     else:
+        #chose model
+        print("chose model")
+        print(0,":",'all')
         for i,model in enumerate(model_list):
-            print(i,":",model)
+            print(i+1,":",model)
         num=int(input("input num:"))
-        yamlPath=listpath+"/"+model_list[num]+"/model.yaml"
-    load_Link,name=read_Ymal(yamlPath)
-    download(load_Link,name)
+
+        if num==0:
+            for i, model in enumerate(model_list):
+                yamlPath = listpath + "/" + model_list[i] + "/model.yaml"
+                yamlPathList.append(yamlPath)
+        else:
+            yamlPath = listpath + "/" + model_list[num-1] + "/model.yaml"
+            yamlPathList.append(yamlPath)
+
+    loadLinkList=read_Ymal(yamlPathList)
+    download(loadLinkList)
 
 main()

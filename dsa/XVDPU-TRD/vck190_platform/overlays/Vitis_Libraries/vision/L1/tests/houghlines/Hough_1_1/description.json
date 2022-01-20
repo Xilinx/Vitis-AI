@@ -55,9 +55,9 @@
                 "max_time_min": {
                     "hls_vivado_syn": 600, 
                     "hls_csim": 60, 
-                    "hls_cosim": 600, 
+                    "hls_cosim": 720, 
                     "hls_vivado_impl": 600, 
-                    "hls_csynth": 60
+                    "hls_csynth": 300
                 }
             }
         ], 

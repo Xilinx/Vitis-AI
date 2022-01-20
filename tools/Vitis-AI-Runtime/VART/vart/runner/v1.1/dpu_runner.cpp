@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <dlfcn.h>
 #include <glog/logging.h>
 #include <json-c/json.h>
+#include <vitis/ai/plugin.hpp>
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <xir/attrs/attrs.hpp>
@@ -83,8 +84,11 @@ static std::vector<std::string> safe_read_string_or_vec_string(
 }
 static json_object* read_json_from_directory(
     const std::string& model_directory) {
-  auto meta_filename = model_directory + "/" + "meta.json";
-  json_object* value = json_object_from_file(meta_filename.c_str());
+  auto meta_filename = std::filesystem::path(model_directory) / "meta.json";
+  // Why (const char*)?: json-c might have a bad design in API, it is wchar_t *
+  // on Windows.
+  json_object* value =
+      json_object_from_file((const char*)meta_filename.c_str());
   LOG_IF(WARNING, value != nullptr)
       << "failed to read meta file! filename=" << meta_filename
       << " use default value. {}";
@@ -97,14 +101,14 @@ static json_object* read_json_from_directory(
 }
 
 static std::string basename(const std::string& filename) {
-  string ret;
+  std::string ret;
   CHECK(!filename.empty());
-  if (filename.back() == '/') {
+  if (filename.back() == std::filesystem::path::preferred_separator) {
     ret.assign(filename.begin(), filename.begin() + filename.size() - 1);
   } else {
     ret.assign(filename.begin(), filename.end());
   }
-  auto pos = ret.rfind('/');
+  auto pos = ret.rfind(std::filesystem::path::preferred_separator);
   if (pos == std::string::npos) {
     pos = 0;
   } else {
@@ -117,14 +121,18 @@ static std::string safe_read_string_as_file_name(json_object* value,
                                                  const std::string& key,
                                                  const std::string& dirname) {
   auto filename = safe_read_string(value, key);
-  return (filename[0] == '/') ? filename : dirname + "/" + filename;
+  return (filename[0] == std::filesystem::path::preferred_separator)
+             ? filename
+             : (std::filesystem::path(dirname) / filename).string();
 }
 
 static std::string safe_read_string_as_file_name_with_default_value(
     json_object* value, const std::string& key, const std::string& dirname,
     const std::string& default_value) {
   auto filename = safe_read_string_with_default(value, key, default_value);
-  return (filename[0] == '/') ? filename : dirname + "/" + filename;
+  return (filename[0] == std::filesystem::path::preferred_separator)
+             ? filename
+             : (std::filesystem::path(dirname) / filename).string();
 }
 
 static std::unique_ptr<xir::Attrs> create_attrs_from_meta_dot_json(
@@ -138,7 +146,7 @@ static std::unique_ptr<xir::Attrs> create_attrs_from_meta_dot_json(
             << "dirname " << dirname << " "                  //
             << "model_directory " << model_directory << " "  //
       ;
-  ret->set_attr<string>(
+  ret->set_attr<std::string>(
       "filename", safe_read_string_as_file_name_with_default_value(
                       value, "filename", model_directory, dirname + ".xmodel"));
   // used attrs:
@@ -161,11 +169,11 @@ static std::unique_ptr<xir::Attrs> create_attrs_from_meta_dot_json(
     ret->set_attr<bool>("async", ENV_PARAM(XLNX_ENABLE_ASYNC_RUNNER) != 0);
   }
   if (ret->get_attr<bool>("async")) {
-    ret->set_attr<string>("interception",
+    ret->set_attr<std::string>("interception",
                           std::string("libvart-async-runner.so"));
   }
   if (!ENV_PARAM(XLNX_RUNNER_INTERCEPTION).empty()) {
-    ret->set_attr<string>("interception", ENV_PARAM(XLNX_RUNNER_INTERCEPTION));
+    ret->set_attr<std::string>("interception", ENV_PARAM(XLNX_RUNNER_INTERCEPTION));
   }
   if (!ret->has_attr("num_of_dpu_runners")) {
     ret->set_attr<size_t>("num_of_dpu_runners", 4u);

@@ -16,7 +16,7 @@
 
 #include <adf.h>
 #include <aie_api/aie.hpp>
-#include <common/xf_aie_utils.hpp>
+#include <common/xf_aie_hw_utils.hpp>
 
 #ifndef _AIE_ABSDIFF_H_
 #define _AIE_ABSDIFF_H_
@@ -53,15 +53,15 @@ void absdiff_api(input_window_int16* img_in1, input_window_int16* img_in2, outpu
     int16* restrict img_in_ptr1 = (int16*)img_in2->ptr;
     int16* restrict img_out_ptr = (int16*)img_out->ptr;
 
-    const int16_t img_width = xfcvGetTileWidth(img_in_ptr);
-    const int16_t img_height = xfcvGetTileHeight(img_in_ptr);
+    const int16_t img_width = xfGetTileWidth(img_in_ptr);
+    const int16_t img_height = xfGetTileHeight(img_in_ptr);
 
-    xfcvCopyMetaData(img_in_ptr, img_out_ptr);
-    xfcvUnsignedSaturation(img_out_ptr);
+    xfCopyMetaData(img_in_ptr, img_out_ptr);
+    xfUnsignedSaturation(img_out_ptr);
 
-    int16_t* restrict ptr0 = xfcvGetImgDataPtr(img_in_ptr);
-    int16_t* restrict ptr1 = xfcvGetImgDataPtr(img_in_ptr1);
-    int16_t* restrict ptr_out = xfcvGetImgDataPtr(img_out_ptr);
+    int16_t* restrict ptr0 = (int16_t*)xfGetImgDataPtr(img_in_ptr);
+    int16_t* restrict ptr1 = (int16_t*)xfGetImgDataPtr(img_in_ptr1);
+    int16_t* restrict ptr_out = (int16_t*)xfGetImgDataPtr(img_out_ptr);
 
     absdiff<int16_t, PARALLEL_FACTOR_16b>(ptr0, ptr1, ptr_out, img_width, img_height);
 }

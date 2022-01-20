@@ -1,5 +1,3 @@
-
-
 #
 # Copyright 2019 Xilinx Inc.
 #

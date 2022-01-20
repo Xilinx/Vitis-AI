@@ -17,11 +17,28 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <ostream>
 
-#include <xir/graph/graph.hpp>
 #include <vitis/ai/traceclass.hpp>
+#include <xir/graph/graph.hpp>
+#if _WIN32
+#include <windows.h>
+#endif
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte': ambiguous
+// symbol, because c++17 introduce std::byte and MSVC use byte internally
+//
+// using namespace std;
+using std::map;
+using std::string;
+using std::vector;
+using std::pair;
+using std::stringstream;
+using std::ofstream;
+using std::ostringstream;
+using std::ios;
+using std::make_pair;
+using trace_entry_t = map<string, string>;
 
-using namespace std;
 
 #define _j(x) (j_format(make_pair(#x, x)))
 
@@ -31,7 +48,7 @@ string _q(string s) {
 }
 
 template <typename T>
-ostream& operator<<(ostream& os, const vector<T>& vec) {
+std::ostream& operator<<(std::ostream& os, const vector<T>& vec) {
   os << "[";
   for (size_t i = 0; i < vec.size(); i++) {
     os << vec[i];
@@ -69,6 +86,7 @@ class subgraph_info {
   uint32_t depth;
   uint64_t workload;
   uint32_t op_num;
+  string op_list;
   vector<vector<int>> i_tensors_shape;
   vector<vector<int>> o_tensors_shape;
   ostringstream mc_code_sstr;
@@ -81,12 +99,18 @@ subgraph_info::subgraph_info(const xir::Subgraph* subg)
       depth(0),
       workload(0),
       op_num(0),
+      op_list(""),
       mc_code_sstr("") {
   vector<char> mc_code;
 
   subgraph_name = subg->get_name();
-  op_num = subg->get_op_num();
   depth = subg->get_depth();
+  op_num = subg->get_op_num();
+  for (auto op : subg->get_ops()) {
+      string op_desc;
+      op_desc = op->get_name() + "@" + op->get_type() + "|";
+      op_list += op_desc;
+  }
 
   if (subg->has_attr("device"))
     device = subg->get_attr<decltype(device)>("device");
@@ -121,6 +145,7 @@ void subgraph_info::to_json(ofstream& o) {
   rec.push_back(_j(depth));
   rec.push_back(_j(workload));
   rec.push_back(_j(op_num));
+  rec.push_back(_j(op_list));
   rec.push_back(_j(i_tensors_shape));
   rec.push_back(_j(o_tensors_shape));
   rec.push_back(_j(mc_code_sstr.str()));
@@ -139,7 +164,14 @@ string add_subgraph_raw(const xir::Subgraph* subg) {
   auto dir =
       getenv("VAI_TRACE_DIR") ? getenv("VAI_TRACE_DIR") : string("/tmp/");
 
-  string path =  dir + "vaitrace_subgraph_info_" + to_string(getpid()) + "_" + to_string(subgraph_id++);
+  auto pid = 
+#if _WIN32
+	  GetCurrentProcessId();
+#else 
+	  getpid();
+#endif
+  string path = dir + "vaitrace_subgraph_info_" + to_string(pid) + "_" +
+                to_string(subgraph_id++);
 
   ofstream output_f;
   output_f.open(path, ios::out | ios::trunc);
@@ -148,7 +180,7 @@ string add_subgraph_raw(const xir::Subgraph* subg) {
   auto root = subgraph_info(subg);
 
   root.to_json(output_f);
-  for (auto c : subg->get_children()) {
+  for (auto c : subg->children_topological_sort()) {
     auto s_info = subgraph_info(c);
     s_info.to_json(output_f);
   }

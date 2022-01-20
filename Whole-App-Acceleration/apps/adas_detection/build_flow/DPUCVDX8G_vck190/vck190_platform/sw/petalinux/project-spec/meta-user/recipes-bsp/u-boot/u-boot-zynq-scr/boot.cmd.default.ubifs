@@ -1,0 +1,55 @@
+# This is a boot script for U-Boot
+# Generate boot.scr:
+# mkimage -c none -A arm -T script -d boot.cmd.default boot.scr
+#
+################
+@@PRE_BOOTENV@@
+
+for boot_target in ${boot_targets};
+do
+	if test "${boot_target}" = "xspi0" || test "${boot_target}" = "qspi" || test "${boot_target}" = "qspi0"; then
+		ubifsls @@FIT_IMAGE@@
+		if test $? = 0; then
+			ubifsload @@QSPI_FIT_IMAGE_LOAD_ADDRESS@@ @@FIT_IMAGE@@;
+			bootm @@QSPI_FIT_IMAGE_LOAD_ADDRESS@@;
+			exit;
+		fi
+		ubifsls @@KERNEL_IMAGE@@
+		if test $? = 0; then
+			ubifsload @@KERNEL_LOAD_ADDRESS@@ @@KERNEL_IMAGE@@;
+		fi
+		ubifsls system.dtb
+		if test $? = 0; then
+			ubifsload @@DEVICETREE_ADDRESS@@ system.dtb
+		fi
+		ubifsls @@RAMDISK_IMAGE@@
+		if test $? = 0; then
+			ubifsload @@RAMDISK_IMAGE_ADDRESS@@ @@RAMDISK_IMAGE@@
+			@@KERNEL_BOOTCMD@@ @@KERNEL_LOAD_ADDRESS@@ @@RAMDISK_IMAGE_ADDRESS@@ @@DEVICETREE_ADDRESS@@
+			exit;
+		fi
+		@@KERNEL_BOOTCMD@@ @@KERNEL_LOAD_ADDRESS@@ - @@DEVICETREE_ADDRESS@@
+		exit;
+	fi
+	if test "${boot_target}" = "mmc0" || test "${boot_target}" = "mmc1" ; then
+		run bootcmd_${boot_target};
+		if test -e ${devtype} ${devnum}:${distro_bootpart} /@@FIT_IMAGE@@; then
+			ext4load ${devtype} ${devnum}:${distro_bootpart} @@FIT_IMAGE_LOAD_ADDRESS@@ @@FIT_IMAGE@@;
+			bootm @@FIT_IMAGE_LOAD_ADDRESS@@;
+			exit;
+		fi
+		if test -e ${devtype} ${devnum}:${distro_bootpart} /@@KERNEL_IMAGE@@; then
+			ext4load ${devtype} ${devnum}:${distro_bootpart} @@KERNEL_LOAD_ADDRESS@@ @@KERNEL_IMAGE@@;
+		fi
+		if test -e ${devtype} ${devnum}:${distro_bootpart} /system.dtb; then
+			ext4load ${devtype} ${devnum}:${distro_bootpart} @@DEVICETREE_ADDRESS@@ system.dtb;
+		fi
+		if test -e ${devtype} ${devnum}:${distro_bootpart} /@@RAMDISK_IMAGE@@; then
+			ext4load ${devtype} ${devnum}:${distro_bootpart} @@RAMDISK_IMAGE_ADDRESS@@ @@RAMDISK_IMAGE@@;
+			@@KERNEL_BOOTCMD@@ @@KERNEL_LOAD_ADDRESS@@ @@RAMDISK_IMAGE_ADDRESS@@ @@DEVICETREE_ADDRESS@@
+			exit;
+		fi
+		@@KERNEL_BOOTCMD@@ @@KERNEL_LOAD_ADDRESS@@ - @@DEVICETREE_ADDRESS@@
+		exit;
+	fi
+done

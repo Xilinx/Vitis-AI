@@ -22,13 +22,6 @@
 #include "vitis/ai/thread_pool.hpp"
 DEF_ENV_PARAM(NUM_OF_THREADS, "1")
 DEF_ENV_PARAM(NUM_OF_REQUESTS, "625000")
-std::future<int> func() {
-  std::promise<int> p;
-  std::future<int> f = p.get_future();
-  auto f2 = [_p = std::move(p)]() mutable { _p.set_value(100); };
-  f2();
-  return f;
-}
 using namespace std;
 
 int foo(int a, int b) {

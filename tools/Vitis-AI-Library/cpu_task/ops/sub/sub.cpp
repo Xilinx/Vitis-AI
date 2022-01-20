@@ -19,6 +19,4 @@ struct SubOp {
   inline float operator()(float a, float b) { return a - b; }
 };
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOpImp<SubOp>>();
-}
+DEF_XIR_OP_IMP(MyOpImp<SubOp>)

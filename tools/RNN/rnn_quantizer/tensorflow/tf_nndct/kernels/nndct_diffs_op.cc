@@ -22,6 +22,7 @@
 #include "tensorflow/core/framework/register_types.h"
 
 #include "nndct_fix_kernels.h"
+#include "nndct_fix_kernels_cpu.h"
 
 namespace nndct {
 
@@ -47,8 +48,15 @@ struct DiffSFunctor<CPUDevice,T> {
                   int bitwidth,
                   int range,
                   int method){
-    printf("NNDCT-warning: TF NNDCT does not support CPU flow yet!!!\n");
-    fflush(stdout);
+    cpu_diff_S(N,
+                input,
+                buffer,
+                output,
+                bitwidth,
+                range,
+                method);
+    // printf("NNDCT-warning: Test TF NNDCT support CPU flow!!! From nndct diffs op!\n");
+    // fflush(stdout);
   }
 };
 

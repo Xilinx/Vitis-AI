@@ -50,7 +50,7 @@ struct Segmentation {
     width_ = input_shape[2];
   }
   vitis::ai::proto::DpuModelResult process(
-      const vart::experimental::simple_tensor_buffer_t<float>& input);
+      const vart::simple_tensor_buffer_t<float>& input);
 
  private:
   int width_;
@@ -58,10 +58,10 @@ struct Segmentation {
 };
 
 vitis::ai::proto::DpuModelResult Segmentation::process(
-    const vart::experimental::simple_tensor_buffer_t<float>& input) {
-  LOG(INFO) << "segmentation";
+    const vart::simple_tensor_buffer_t<float>& input) {
+  //LOG(INFO) << "segmentation";
   auto input_shape = input.tensor->get_shape();
-  LOG(INFO) << "bit width" << input.tensor->get_data_type().bit_width;
+  //LOG(INFO) << "bit width" << input.tensor->get_data_type().bit_width;
   CHECK_EQ(input_shape.size(), 4u);
   size_t height = input_shape[1];
   size_t width = input_shape[2];

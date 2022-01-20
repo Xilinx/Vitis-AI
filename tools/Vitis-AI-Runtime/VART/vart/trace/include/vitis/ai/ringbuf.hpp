@@ -16,7 +16,6 @@
 
 #pragma once
 
-#include <unistd.h>
 #include <algorithm>
 #include <chrono>
 #include <cstring>
@@ -33,8 +32,18 @@
 #include "vaitrace_dbg.hpp"
 
 namespace vitis::ai::trace {
-using namespace std;
-
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
+using std::list;
+using std::lock_guard;
+using std::mutex;
+using std::cout;
+using std::endl;
+using std::vector;
+using std::string;
 template <typename T>
 class RingBuf : public list<T*> {
  public:
@@ -69,7 +78,7 @@ class RingBuf : public list<T*> {
   size_t max_size_;
   size_t cur_size_;
   size_t substitution_rate;
-  mutex m_lock;
+  std::mutex m_lock;
   bool overflowed(void) { return (cur_size_ > max_size_); }
 
   void put_slots(void) {

@@ -34,16 +34,19 @@
 
   "quantize_registry_config":
   {
-    "input_bit": -1,
-    "weight_bit": -1,
-    "activation_bit": -1,
+    "input_bit": null,
+    "weight_bit": null,
+    "activation_bit": null,
+    "symmetry": null,
+    "per_channel": false,
+    "custom_layer_type": [],
     "input_quantize_config":
     {
       "input_layers": [],
       "input_quantizer":
       {
         "quantizer_type": "LastValueQuantPosQuantizer",
-        "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1}
+        "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false}
       }
     },
 
@@ -55,18 +58,18 @@
         "weight_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": true}
           },
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -77,18 +80,18 @@
         "weight_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": 2}
           },
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -99,18 +102,18 @@
         "weight_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": true}
           },
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -121,18 +124,18 @@
         "weight_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": true}
           },
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -143,7 +146,7 @@
         "activation_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -154,7 +157,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -165,7 +168,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -176,7 +179,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -187,18 +190,18 @@
         "weight_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": true}
           },
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": true}
           }
         ],
         "quantizable_outputs": [0],
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -209,7 +212,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -220,7 +223,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -231,7 +234,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -242,7 +245,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -253,7 +256,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -276,7 +279,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -287,7 +290,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -298,7 +301,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -309,7 +312,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -320,18 +323,18 @@
         "weight_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": true}
           },
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       },
@@ -342,18 +345,18 @@
         "weight_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": 2}
           },
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0, "symmetry": true, "per_channel": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "LastValueQuantPosQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}
+            "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1, "symmetry": true, "per_channel": false}
           }
         ]
       }

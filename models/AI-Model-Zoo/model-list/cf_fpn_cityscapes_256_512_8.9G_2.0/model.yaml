@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: FPN(Inception-v1) segmentation on Cityscapes.
+input size: 256*512
+float ops: 8.9G
+task: segmentation
+framework: caffe
+prune: 'no'
+version: 2.0
+files:
+- name: cf_fpn_cityscapes_256_512_8.9G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_fpn_cityscapes_256_512_8.9G_2.0.zip
+  checksum: 34fecc890b8fc623951945f3657ad79c
+- name: fpn
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: c59c61ee17c973b2e16c5144eb47e475
+- name: fpn
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck190-r2.0.0.tar.gz
+  checksum: 312e912b7be7fc0c7629d9e46819695d
+- name: fpn
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 8357b472eaf3e7bf1fe4dc5f3adfff82
+- name: fpn
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: 308aafe00a442934a112b6a17a14db15
+- name: fpn
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 81ed371d8acd8310a4f10553e7356beb
+- name: fpn
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=fpn-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 5cbd1087c5b78eb291a44d6c623aeb28
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

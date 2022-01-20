@@ -20,7 +20,6 @@ import os
 import tensorflow as tf
 
 from nndct_shared.base import NNDCT_KEYS, NNDCT_OP, GLOBAL_MAP
-from nndct_shared.base import key_names
 from nndct_shared.utils import option_util, NndctOption, NndctScreenLogger
 
 from tf_nndct.graph import OpTypes
@@ -32,6 +31,8 @@ from tf_nndct.layers import recurrent
 from tf_nndct.quantization import TFQuantizer
 from tf_nndct.utils import keras_utils
 from tf_nndct.utils import tf_utils
+
+from tensorflow.keras import activations
 
 def _init_quant_mode(quant_mode):
   if isinstance(quant_mode, int):
@@ -51,12 +52,12 @@ def _init_quant_mode(quant_mode):
 
   if NndctOption.nndct_quant_mode.value > 0:
     qmode = NndctOption.nndct_quant_mode.value
-  
+
   if qmode == 1:
     NndctScreenLogger().info(f"Quantization calibration process start up...")
   elif qmode == 2:
     NndctScreenLogger().info(f"Quantization test process start up...")
-    
+
   return qmode
 
 def tf_quantizer(model,
@@ -146,25 +147,27 @@ def _merge_cell_graphs(cell_graphs):
   return graph
 
 def _maybe_rebuild_rnn(model):
-  cell_rebuilding_results = []
+  rebuilding_results = []
   layers = keras_utils.gather_layers(model)
   for layer in layers:
     # TODO(yuwang): Support StackedRNNCells, RNN
     if not isinstance(layer, recurrent.LSTM):
       continue
+
     cell = layer.cell
-    graph_name = 'rnn_cell_%d' % len(cell_rebuilding_results)
+    assert cell.recurrent_activation == activations.get('sigmoid'), 'recurrent_activation must be "sigmoid"'
+    graph_name = 'rnn_cell_%d' % len(rebuilding_results)
     cell_graph = _parse_rnn_cell(cell)
     cell_graph.name = graph_name
     rebuilt_cell, layer_nodes = builder.KerasBuilder(cell_graph).build(
         os.path.join('quantize_result', graph_name + '.py'), quantized=True)
-    cell_rebuilding_results.append((cell_graph, layer_nodes))
+    rebuilding_results.append((cell_graph, layer_nodes))
 
     _copy_attr('units', cell, rebuilt_cell)
     _copy_attr('state_size', cell, rebuilt_cell)
     _copy_attr('output_size', cell, rebuilt_cell)
     layer.cell = rebuilt_cell
-  return cell_rebuilding_results
+  return rebuilding_results
 
 def _copy_attr(attr, src, dst):
   """Copy attr from src to dst."""
@@ -183,4 +186,4 @@ def _parse_rnn_cell(cell):
   input_signature = [input_spec, [state_spec] * 2]
 
   func_graph = parser.get_func_graph(cell, input_signature)
-  return parser.parse_to_graph(func_graph)
+  return parser.func_graph_to_nndct(func_graph)

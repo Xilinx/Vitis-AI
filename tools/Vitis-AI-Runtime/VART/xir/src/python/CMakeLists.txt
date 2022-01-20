@@ -14,5 +14,5 @@
 
 vai_add_pybind11_module(wrapper MODULE_NAME xir wrapper/wrapper.cpp
                         wrapper/pyxir_error_code.cpp)
-target_link_libraries(wrapper PRIVATE xir)
-target_include_directories(wrapper PRIVATE ${CMAKE_SOURCE_DIR}/src)
+target_link_libraries(wrapper PRIVATE xir unilog::unilog)
+target_include_directories(wrapper PRIVATE ${PROJECT_SOURCE_DIR}/src)

@@ -22,7 +22,9 @@
 #include "tensorflow/core/framework/register_types.h"
 
 #include "nndct_fix_kernels.h"
+#include "nndct_fix_kernels_cpu.h"
 #include "nndct_cuda_math.h"
+#include "nndct_cpu_math.h"
 
 namespace nndct {
 
@@ -43,8 +45,17 @@ struct FixNeuronV2<CPUDevice,T> {
                   int valmax,
                   T valamp,
                   int method){
-    printf("NNDCT-warning: TF NNDCT does not support CPU flow yet!!!\n");
-    fflush(stdout);
+    const T* input = Tinput->flat<T>().data();
+    T* output = Toutput->flat<T>().data();
+    cpu_fix_neuron_v2(Tinput->NumElements(),
+                       input,
+                       output,
+                       valmax,
+                       valamp,
+                       1, // keep_scale
+                       method);
+    // printf("NNDCT-warning: Test TF NNDCT support CPU flow!!! From nndct fixneuron op!\n");
+    // fflush(stdout);
   }
 };
 

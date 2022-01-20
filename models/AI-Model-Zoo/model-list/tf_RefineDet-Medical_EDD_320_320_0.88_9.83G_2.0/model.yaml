@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: RefineDet(vgg16) detection on EDD2020.
+input size: 320*320
+float ops: 9.83G
+task: detection
+framework: tensorflow
+prune: '0.88'
+version: 2.0
+files:
+- name: tf_RefineDet-Medical_EDD_320_320_0.88_9.83G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_RefineDet-Medical_EDD_320_320_0.88_9.83G_2.0.zip
+  checksum: 22113a051bdce39c04f188edd6bd15c0
+- name: RefineDet-Medical_EDD_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 42e29c36f34570a37475a8b553b27002
+- name: RefineDet-Medical_EDD_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck190-r2.0.0.tar.gz
+  checksum: fbecfb79ae0bb0c9d52a3efdf6307347
+- name: RefineDet-Medical_EDD_tf
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 7a2eb3988aa210a9b962e68a8b106979
+- name: RefineDet-Medical_EDD_tf
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: 9bbfda49add6f8f1c87f53d8e54196b0
+- name: RefineDet-Medical_EDD_tf
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: b168f55ac7b00b7355d69fae32fe0785
+- name: RefineDet-Medical_EDD_tf
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 0a9b1c8024194208c7560b7d9318d75c
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

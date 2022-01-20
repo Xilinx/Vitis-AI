@@ -29,7 +29,7 @@ connect<> net1(platform.src[1], absdiff_graph.inprt2);
 
 connect<> net2(absdiff_graph.outprt, platform.sink[0]);
 
-#if defined(__AIESIM__) || defined(__NEW_X86Sim__)
+#if defined(__AIESIM__) || defined(__X86SIM__)
 int main(int argc, char** argv) {
     absdiff_graph.init();
 

@@ -33,7 +33,7 @@ namespace vitis {
 namespace ai {
 /**
  * @struct TFSSDResult
- * @brief Struct of the result returned by the TFSSD neuron network.
+ * @brief Struct of the result returned by the TFSSD neural network.
  */
 struct TFSSDResult {
   /// Width of input image.
@@ -83,6 +83,7 @@ class TFSSDPostProcess {
    * @return A unique printer of TFSSDPostProcess.
    */
   static std::unique_ptr<TFSSDPostProcess> create(
+      const std::string& model_name,
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
       const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
       const vitis::ai::proto::DpuModelParam& config, const std::string& dirname,

@@ -24,9 +24,9 @@
 
 template <typename Dtype>
 void _FixNeuronV2(Tensor Tinput,
-                 Tensor Toutput, 
-                 int valmax, 
-                 Dtype valamp, 
+                 Tensor Toutput,
+                 int valmax,
+                 Dtype valamp,
                  int method,
                  int device_id){
 
@@ -35,44 +35,47 @@ void _FixNeuronV2(Tensor Tinput,
     int64_t num_ele = Tinput.numel();
 
     if(device_id == 0){
-      cuda_fix_neuron_v2(num_ele, 
-                         input, 
+      cuda_fix_neuron_v2(num_ele,
+                         input,
                          output,
-                         valmax, 
-                         valamp, 
+                         valmax,
+                         valamp,
                          1, //keep_scale
                          method);
     }
     else if(device_id == 1){
-      cpu_fix_neuron_v2(num_ele, 
-                        input, 
+      cpu_fix_neuron_v2(num_ele,
+                        input,
                         output,
-                        valmax, 
-                        valamp, 
+                        valmax,
+                        valamp,
                         1, //keep_scale
                         method);
     }
 }
 
 void FixNeuronV2(Tensor Tinput,
-                 Tensor Toutput, 
-                 int valmax, 
-                 float valamp, 
+                 Tensor Toutput,
+                 int valmax,
+                 float valamp,
                  int method,
                  int device_id){
-  if (Tinput.dtype() == at::kFloat)
+  if (Tinput.dtype() == at::kFloat) {
     _FixNeuronV2<float>(Tinput,
-                        Toutput, 
-                        valmax, 
-                        valamp, 
+                        Toutput,
+                        valmax,
+                        valamp,
                         method,
                         device_id);
-  else if (Tinput.dtype() == at::kDouble)
+  } else if (Tinput.dtype() == at::kDouble) {
     _FixNeuronV2<double>(Tinput,
-                         Toutput, 
-                         valmax, 
-                         valamp, 
+                         Toutput,
+                         valmax,
+                         valamp,
                          method,
                          device_id);
+  } else {
+    LOG(FATAL) << "Unsupported tensor type: " << Tinput.toString();
+  }
 }
 

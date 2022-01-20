@@ -1,2 +1,0 @@
-45e8762ac4cd956f58382c8a81cad64a  yolov3_adas_pruned_0_9.prototxt
-8830cb56badd60dd41856e0e601bf4d7  yolov3_adas_pruned_0_9.xmodel

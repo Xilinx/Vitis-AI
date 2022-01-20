@@ -21,6 +21,8 @@
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+
+#include "xir/util/tool_function.hpp"
 using namespace std;
 
 CmdDumpReg::CmdDumpReg(const std::string& name) : Cmd(name) {}
@@ -32,16 +34,6 @@ static std::string get_device(const xir::Subgraph* s) {
     ret = s->get_attr<std::string>("device");
   }
   return ret;
-}
-
-static std::string md5sum(const char* val, size_t s) {
-  std::vector<unsigned char> result((size_t)MD5_DIGEST_LENGTH, '0');
-  std::ostringstream str;
-  MD5((const unsigned char*)&val[0], s, (unsigned char*)&result[0]);
-  for (const auto x : result) {
-    str << std::hex << std::setfill('0') << std::setw(2) << ((unsigned int)x);
-  }
-  return str.str();
 }
 
 static std::string reg_info(const xir::Subgraph* s, int n) {
@@ -71,7 +63,8 @@ static std::string reg_info(const xir::Subgraph* s, int n) {
   str << indent(n + 1) << "reg_id_to_parameter_value:" << '\n';
   for (auto& r : reg_id_to_parameter_value) {
     str << indent(n + 1) << r.first << " => " << r.second.size()
-        << " bytes md5sum= " << md5sum(&r.second[0], r.second.size()) << '\n';
+        << " bytes md5sum= "
+        << xir::get_md5_of_buffer(&r.second[0], r.second.size()) << '\n';
   }
   auto reg_id_to_size =
       s->get_attr<std::map<std::string, int32_t>>("reg_id_to_size");

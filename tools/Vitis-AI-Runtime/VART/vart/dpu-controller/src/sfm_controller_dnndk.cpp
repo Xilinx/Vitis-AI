@@ -25,23 +25,8 @@
 #include <xir/buffer_object.hpp>
 DEF_ENV_PARAM(DEBUG_SFM_CONTROLLER, "0");
 DEF_ENV_PARAM_2(XLNX_SMFC_BUFFER_SIZE, "5242880", size_t);
+#include "../../buffer-object/src/dpu.h"
 #include "xir/sfm_controller.hpp"
-struct req_softmax_t {
-  uint32_t width;  /* width dimention of Tensor */
-  uint32_t height; /* height dimention of Tensor */
-  uint32_t input;  /* physical address of input Tensor */
-  uint32_t output; /* physical address of output Tensor */
-  uint32_t scale;  /* quantization info of input Tensor */
-  uint32_t offset; /* offset value for input Tensor */
-};
-
-#ifndef __QNX__
-#define DPU_IOCTL_MAGIC 'D'
-#define REQ_RUN_SOFTMAX _IOWR(DPU_IOCTL_MAGIC, 13, struct req_softmax_t*)
-#else
-#define _DCMD_XDPU _DCMD_MISC
-#define REQ_RUN_SOFTMAX __DIOTF(_DCMD_XDPU, 13, struct req_softmax_t*)
-#endif
 
 namespace xir {
 
@@ -93,66 +78,34 @@ std::shared_ptr<SfmController> SfmController::get_instance() {
         << "cannot open /dev/dpu for smfc";
     return nullptr;
   }
-#if defined __aarch64__
-  auto phy = 0x8ff00000;
-#elif defined __arm__
-  auto phy = 0x4ff00000;
-#elif defined __microblaze__
-  auto phy = 0x1f00000;
-#else
-#error "Platform not support!"
-#endif
-  auto capacity = 4096;
-#ifdef __QNX__
-  auto data = (void*)mmap_device_io(capacity, phy);
-#else
-  auto mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
-  if (mem_fd < 0) {
-    LOG(WARNING) << "cannot open /dev/mem for smfc";
-    close(fd);
-    return nullptr;
-  }
-  auto data =
-      mmap(NULL, capacity, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, phy);
-#endif
-  if (data == MAP_FAILED) {
-#ifndef __QNX__
-    close(mem_fd);
-#endif
-    close(fd);
-    return nullptr;
-  }
+  uint32_t flags = 0;
+  auto retval = ioctl(fd, DPUIOC_G_INFO, (void*)(&flags));
+  close(fd);
+  auto sfm_num = SFM_NUM(flags);
+  auto dpu_num = DPU_NUM(flags);
 
-  volatile uint32_t* reg_base = reinterpret_cast<volatile uint32_t*>(data);
-  union {
-    struct {
-      unsigned int hdmi_valid : 1;
-      unsigned int hdmi_version : 3;
-      unsigned int hdmi_interrupt_number : 4;
-      unsigned int bt1120_valid : 1;
-      unsigned int bt1120_version : 3;
-      unsigned int bt1120_interrupt_number : 4;
-      unsigned int fc_valid : 1;
-      unsigned int fc_version : 3;
-      unsigned int fc_interrupt_number : 4;
-      unsigned int softmax_valid : 1;
-      unsigned int softmax_version : 3;
-      unsigned int softmax_interrupt_number : 4;
-    };
-    uint32_t u32;
-  } smfc;
-  smfc.u32 = *(reg_base + (0x24 / 4));
-  if (!smfc.softmax_valid) {
-    // LOG(INFO) << "HW SMFC is not available";
-#ifndef __QNX__
-    close(mem_fd);
-#endif
-    close(fd);
+  CHECK_EQ(retval, 0) << "read sfm info failed.";
+  LOG_IF(INFO, ENV_PARAM(DEBUG_SFM_CONTROLLER))
+      << "sfm_num " << sfm_num << " "  //
+      << "dpu_num " << dpu_num << " "  //
+      ;
+  auto softmax_valid = sfm_num > 0;
+  if (!softmax_valid) {
     return nullptr;
   }
-#ifndef __QNX__
-  close(mem_fd);
+  // open it again for sfm controller
+  fd = open(
+#ifdef __QNX__
+      "/dev/xdpu/0",
+#else
+      "/dev/dpu",
 #endif
+      O_RDWR);
+  if (fd < 0) {
+    LOG_IF(WARNING, ENV_PARAM(DEBUG_SFM_CONTROLLER))
+        << "cannot open /dev/dpu for smfc";
+    return nullptr;
+  }
   return std::unique_ptr<SfmControllerDnndk>(new SfmControllerDnndk(fd));
 }
 size_t WORKSPACE_SIZE = (sizeof(int8_t) + sizeof(float)) * 1024u * 1024u;
@@ -171,13 +124,19 @@ bool SfmControllerDnndk::supported(float scale, unsigned int cls,
                                    unsigned int group) const {
   int fix_pos = -(int8_t)log2f(scale);
   auto ok = fix_pos >= 3;
+  LOG_IF(INFO, ENV_PARAM(DEBUG_SFM_CONTROLLER))
+      << "ok " << ok << " "            //
+      << "fix_pos " << fix_pos << " "  //
+      << "group " << group << " "      //
+      << "cls " << cls << " "          //
+      ;
   return ok;
 }
 
 void SfmControllerDnndk::run(const int8_t* input, float scale, unsigned int cls,
                              unsigned int group, float* output) {
   std::lock_guard<std::mutex> lock(mtx_);
-  struct req_softmax_t reg;
+  struct ioc_softmax_t reg;
   auto exCls = align(cls, 4u);
   do {
     auto workspace_size = workspace_->size();
@@ -217,13 +176,15 @@ void SfmControllerDnndk::run(const int8_t* input, float scale, unsigned int cls,
       reg.height = this_batch;
       reg.input = input_phy;
       reg.output = output_phy;
+      CHECK_LE(input_phy, 0xffffffff) << "only support 32bit input address";
+      CHECK_LE(output_phy, 0xffffffff) << "only support 32bit output address";
       reg.scale = fix_pos;
       reg.offset = offset;
 #ifdef __QNX__
       auto ioctl_ret = devctl(fd_, REQ_RUN_SOFTMAX, &reg, sizeof(reg), NULL);
       CHECK_EQ(ioctl_ret, EOK);
 #else
-      auto ioctl_ret = ioctl(fd_, REQ_RUN_SOFTMAX, &reg);
+      auto ioctl_ret = ioctl(fd_, DPUIOC_RUN_SOFTMAX, &reg);
       CHECK_EQ(ioctl_ret, 0);
 #endif
       LOG_IF(INFO, ENV_PARAM(DEBUG_SFM_CONTROLLER))

@@ -192,7 +192,7 @@ static inline uint8_t get_data_4bit(uint8_t* ptr,
 }
 
 static uint32_t get_file_size(std::string file_name) {
-  std::ifstream infile(file_name, ios::binary | ios::ate);
+  std::ifstream infile(file_name, std::ios::binary | std::ios::ate);
   UNI_LOG_CHECK(infile.is_open(), VAIEDIFF_BAD_FILE)
       << "Cannot open file " << file_name;
   return infile.tellg();

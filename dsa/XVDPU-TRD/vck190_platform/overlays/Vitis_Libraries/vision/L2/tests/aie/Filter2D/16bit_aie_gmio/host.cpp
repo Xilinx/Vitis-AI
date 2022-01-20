@@ -99,10 +99,8 @@ int main(int argc, char** argv) {
         cv::Mat dst(op_height, op_width, CV_16SC1, (void*)dstData.data());
         cv::Mat dstOutImage(op_height, op_width, srcImageR.type());
 
-        xF::xfcvDataMovers<xF::TILER, int16_t, MAX_TILE_HEIGHT, MAX_TILE_WIDTH, VECTORIZATION_FACTOR, 1, 0, true> tiler(
-            1, 1);
-        xF::xfcvDataMovers<xF::STITCHER, int16_t, MAX_TILE_HEIGHT, MAX_TILE_WIDTH, VECTORIZATION_FACTOR, 1, 0, true>
-            stitcher;
+        xF::xfcvDataMovers<xF::TILER, int16_t, TILE_HEIGHT, TILE_WIDTH, VECTORIZATION_FACTOR, 1, 0, true> tiler(1, 1);
+        xF::xfcvDataMovers<xF::STITCHER, int16_t, TILE_HEIGHT, TILE_WIDTH, VECTORIZATION_FACTOR, 1, 0, true> stitcher;
 
         std::cout << "Graph init. This does nothing because CDO in boot PDI "
                      "already configures AIE.\n";

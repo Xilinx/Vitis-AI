@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: mobilenetv1_0.5 classifier on ImageNet.
+input size: 160*160
+float ops: 150M
+task: classification
+framework: tensorflow
+prune: 'no'
+version: 2.0
+files:
+- name: tf_mobilenetv1_0.5_imagenet_160_160_150M_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_0.5_imagenet_160_160_150M_2.0.zip
+  checksum: abc62e0d1c6a26f5063c63f72d9491c9
+- name: mobilenet_v1_0_5_160_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 3ac9e9db097a89f6c101ad9fa3041e3c
+- name: mobilenet_v1_0_5_160_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-vck190-r2.0.0.tar.gz
+  checksum: dfb5367a6bedfb8ec391da7ce18c472d
+- name: mobilenet_v1_0_5_160_tf
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 6a5e962e2195bc3a223c1b304022546a
+- name: mobilenet_v1_0_5_160_tf
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_5_160_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 55285b7e8cacfe27dfeab3ae154d6101
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

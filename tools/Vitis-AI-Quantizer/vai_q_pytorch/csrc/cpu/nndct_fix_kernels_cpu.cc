@@ -206,7 +206,7 @@ void cpu_diff_S(const int N,
       fixed_diff_min = fixed_diff;
     }
   }
-  final_scale = final_scale > 12 ? 12: final_scale;
+  //final_scale = final_scale > 15 ? 15: final_scale;
   cpu_set(1, output, final_scale);
 #if 0
   printf( "$$$$$$$$$$$ diffs scale is %g, setting to %p...\n", 

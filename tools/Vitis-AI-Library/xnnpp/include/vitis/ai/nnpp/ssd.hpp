@@ -32,7 +32,7 @@ namespace vitis {
 namespace ai {
 /**
  * @struct SSDResult
- * @brief Struct of the result returned by the SSD neuron network.
+ * @brief Struct of the result returned by the SSD neural network.
  */
 struct SSDResult {
   /// Width of input image.

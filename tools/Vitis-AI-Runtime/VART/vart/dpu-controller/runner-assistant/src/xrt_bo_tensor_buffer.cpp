@@ -15,13 +15,16 @@
  */
 
 #include "vart/assistant/xrt_bo_tensor_buffer.hpp"
-
+#ifdef XRT_FOUND
 #include <xrt.h>
+#endif
 
 #include "vart/runner.hpp"
 
 namespace vart {
 namespace assistant {
+
+#ifdef XRT_FOUND
 static uint64_t get_physical_address(const xclDeviceHandle& handle,
                                      const unsigned int bo) {
   xclBOProperties p;
@@ -33,6 +36,14 @@ static uint64_t get_physical_address(const xclDeviceHandle& handle,
   phy = error_code == 0 ? p.paddr : -1;
   return phy;
 }
+#else
+typedef void* xclDeviceHandle;
+static uint64_t get_physical_address(const xclDeviceHandle& handle,
+                                     const unsigned int bo) {
+  LOG(FATAL) << "not implemented, no XRT found";
+  return 0ull;
+}
+#endif
 
 std::unique_ptr<vart::TensorBuffer> XrtBoTensorBuffer::create(
     vart::xrt_bo_t bo, const xir::Tensor* tensor) {

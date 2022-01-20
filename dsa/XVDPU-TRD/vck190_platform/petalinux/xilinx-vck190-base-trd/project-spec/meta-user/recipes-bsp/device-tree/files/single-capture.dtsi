@@ -88,9 +88,9 @@
 			reset-gpios = <&gpio0 27 1>;
 			xlnx,max-width = <3840>;
 			xlnx,max-height = <2160>;
-			xlnx,rgain = <160>;
-			xlnx,bgain = <154>;
-			xlnx,pawb = <512>;
+			xlnx,rgain = <128>;
+			xlnx,bgain = <210>;
+			xlnx,pawb = <350>;
 			xlnx,mode-reg = <1>;
 
 			ports {

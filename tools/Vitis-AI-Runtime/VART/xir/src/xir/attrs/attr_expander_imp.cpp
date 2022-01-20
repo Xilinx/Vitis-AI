@@ -17,11 +17,11 @@
 #include "xir/attrs/attr_expander_imp.hpp"
 #include "UniLog/UniLog.hpp"
 
-#include <dlfcn.h>
 #include <algorithm>
 #include <iostream>
 #include <iterator>
 #include <sstream>
+#include "xir/util/dynamic_load.hpp"
 
 namespace xir {
 

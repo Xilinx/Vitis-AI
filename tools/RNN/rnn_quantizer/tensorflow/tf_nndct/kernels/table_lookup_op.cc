@@ -22,7 +22,9 @@
 #include "tensorflow/core/framework/register_types.h"
 
 #include "nndct_fix_kernels.h"
+#include "nndct_fix_kernels_cpu.h"
 #include "nndct_cuda_math.h"
+#include "nndct_cpu_math.h"
 
 namespace nndct {
 
@@ -44,8 +46,25 @@ struct TableLookupFunctor<CPUDevice, T> {
                   Tensor* output,
                   int fragpos,
                   int type){
-    printf("NNDCT-warning: TF NNDCT does not support CPU flow yet!!!\n");
-    fflush(stdout);
+    const T* input_buffer = input->flat<T>().data();
+    const T* table_buffer = table->flat<T>().data();
+    T* output_buffer = output->flat<T>().data();
+    if (type == 0) 
+      cpu_sigmoid_table_lookup(
+          input->NumElements(),
+          input_buffer,
+          table_buffer,
+          output_buffer,
+          fragpos);
+    else
+      cpu_tanh_table_lookup(
+          input->NumElements(),
+          input_buffer,
+          table_buffer,
+          output_buffer,
+          fragpos);             
+    // printf("NNDCT-warning: Test TF NNDCT support CPU flow!!! From table look up op!\n");
+    // fflush(stdout);
   }
 };
 

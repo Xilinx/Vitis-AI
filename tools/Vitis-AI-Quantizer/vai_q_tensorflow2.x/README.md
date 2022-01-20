@@ -44,7 +44,8 @@ $ conda install --use-local ./conda_pkg/linux-64/*.tar.bz2
 ## Test Environment
 
 * Python 3.6, 3.7 
-* Tensorflow 2.3.1 
+* Tensorflow 2.6.0
+* Keras 2.6.0
 
 ## Quick Start
 
@@ -308,6 +309,13 @@ For example, how to choose hyper-parameters like optimizer type and learning rat
 
 ### Quantizing with custom layers
 
+Tensorflow 2 provides a lot of common built-in layers to build the machine learning models, as well as easy ways to for you to write your own 
+application-specific layers either from scratch or as the composition of existing layers. `Layer` is one of the central abstractions in tf.keras, 
+subclassing Layer is the recommended way to create custom layers. Please refer to tensorflow [user guide](https://www.tensorflow.org/guide/keras/custom_layers_and_models) for more information.
+
+Vai_q_tensorflow2 provides support for new custom layers via subclassing, including quantizing models with custom layers and an experimental 
+support for quantizing the custom layers with custom quantize strategies.
+
 Some models may have custom layers inside, vai_q_tensorflow2 provides interfaces to load them, for example:
 
 ```python
@@ -338,17 +346,27 @@ class MyCustomLayer(keras.layers.Layer):
 float_model = tf.keras.models.load_model(‘float_model.h5’, custom_objects={'MyCustomLayer': MyCustomLayer})
 ```
 
-Here float model contains a custom layer named "MyCustomLayer". To correctly load it into memory, we need to use costom_objects argument in tf.keras.model.load_model API.
+Here float model contains a custom layer named "MyCustomLayer". The `custom_objects` argument in tf.keras.model.load_model API is needed to load it.
 Similarly, VitisQuantizer class provide 'custom_objects' argument to handle the custom layers, below is an example and you can find a full example in [example](https://github.com/Xilinx/Vitis-AI/blob/master/tools/Vitis-AI-Quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/python/examples/quantization/keras/vitis/mnist_cnn_ptq_custom_layer.py).
+The argument `custom_objects` is a dict containing the `{"custom_layer_class_name":"custom_layer_class"}`, multiple custom layers should be separated by a comma. 
+Moreover, `add_shape_info` should also be set to True for the `quantize_model` API when quantizing models with custom layers to add shape inference information for them.
 
 ```python
 from tensorflow_model_optimization.quantization.keras import vitis_quantize
 # Register the custom layer to VitisQuantizer by custom_objects argument.
 quantizer = vitis_quantize.VitisQuantizer(float_model, custom_objects={'MyCustomLayer': MyCustomLayer})
-quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, calib_step=100, calib_batch_size=10)
+quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, calib_step=100, calib_batch_size=10, add_shape_info=True)
 ```
 
-With the default quantize strategy, the custom layers will not bequantized and remain float during quantization, as they are not in the list of supported APIs of vai_q_tensorflow2. 
+During the quantization, these custom layers will be wrapped by CustomLayerWrapper and kept unquantized.
+
+Notes:
+1. When calling the `dump_model` API to dump golden results for data checking during deployment, we need to set `dump_float=True` to dump float weights and activation for 
+the custom layers, since they are not quantized.
+
+### (Experimental)Quantizing custom layers with custom quantize strategy
+
+With the default quantize strategy, the custom layers will not be quantized and remain float during quantization, as they are not in the list of supported APIs of vai_q_tensorflow2. 
 We provide an interface named 'custom_quantize_strategy' for advanced users to make custom quantize strategies to do quantize experiments on them. The custom quantize strategy is
 a Dict object containing the quantize strategy items or a json file of the Dict. 
 
@@ -392,7 +410,7 @@ Table 4. vai_q_tensorflow2 Supported Layers
 | ----- | ------ | ------ |
 | Core | tf.keras.layers.InputLayer ||
 | Core | tf.keras.layers.Dense ||
-| Core | tf.keras.layers.Activation | If 'activation' is 'relu' or 'linear', will be quantized.<br>If 'activation' is 'sigmoid' or 'swish', will be converted to hard-sigmoid or hard-swish and then be quantized.<br>Otherwise will not be quantized.|
+| Core | tf.keras.layers.Activation | If 'activation' is 'relu' or 'linear', will be quantized.<br>If 'activation' is 'sigmoid' or 'swish', will be converted to hard-sigmoid or hard-swish and then be quantized by default.<br>Otherwise will not be quantized.|
 | Convolution | tf.keras.layers.Conv2D ||
 | Convolution | tf.keras.layers.DepthwiseConv2D ||
 | Convolution | tf.keras.layers.Conv2DTranspose ||
@@ -411,6 +429,7 @@ Table 4. vai_q_tensorflow2 Supported Layers
 | Activation | tf.keras.layers.ReLU ||
 | Activation | tf.keras.layers.Softmax | Softmax layer's input will be quantized, can run on standalone Softmax IP to accelerate. |
 | Activation | tf.keras.layers.LeakyReLU | Only 'alpha'=0.1 is supported to run on DPU, otherwise will not be quantized and mapped to CPU. |
+| Hard_sigmoid | tf.keras.layers.ReLU(6.)(x+3.)*(1./6.) | The supported hard_sigmoid is from [Mobilenet_v3](https://github.com/tensorflow/tensorflow/blob/v2.4.0/tensorflow/python/keras/applications/mobilenet_v3.py#L440). <br>`tf.keras.Activation.hard_sigmoid` is not supported now and will not be quantized. |
 
 ## vai_q_tensorflow2 APIs
 
@@ -450,7 +469,8 @@ vitis_quantize.VitisQuantizer.quantize_model(
     cle_steps=10,
     forced_cle=False,
     include_fast_ft=False,
-    fast_ft_epochs=10)
+    fast_ft_epochs=10
+    add_shape_info=False)
 ```
 
 This function to do post-training quantization(PTQ) of the float model, including model optimization, weights quantization and activation quantize calibration.
@@ -476,6 +496,7 @@ If the "calib_dataset" is in the form of a numpy.array object, the default batch
 It will take much longer time than normal PTQ (still shorter than QAT as calib_dataset is much smaller than train dataset) and is disabled by default to save time, 
 and can be turned on to try to improve the performance if you see accuracy issues.
 *  **fast_ft_epochs**: An int object, the iteration epochs to do fast finetuning for each layer.
+*  **add_shape_info**: An bool object, whether to add shape inference information for custom layers. Must be set True for models with custom layers. 
 
 #### dump_model method
 
@@ -539,7 +560,8 @@ If the "calib_dataset" is in the form of a numpy.array object, the default batch
 #### get_deploy_model method
 
 ```python
-vitis_quantize.VitisQuantizer.get_deploy_model(model)
+vitis_quantize.VitisQuantizer.get_deploy_model(
+    model)
 ```
 
 This function to convert the QAT models and generates the deployable model, results can be fed into vai_c_tensorflow compiler.

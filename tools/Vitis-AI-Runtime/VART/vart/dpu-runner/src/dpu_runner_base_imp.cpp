@@ -15,10 +15,10 @@
  */
 #include "dpu_runner_base_imp.hpp"
 
-#include <openssl/md5.h>
 #include <sys/stat.h>
 
 #include <algorithm>
+#include <filesystem>
 #include <iomanip>
 #include <limits>  // std::numeric_limits
 #include <vitis/ai/dim_calc.hpp>
@@ -28,6 +28,7 @@
 #include <xir/util/tool_function.hpp>
 
 #include "../../runner/src/runner_helper.hpp"
+#include "./my_openssl_md5.hpp"
 #include "dpu_kernel.hpp"
 #include "my_tensor.hpp"
 DEF_ENV_PARAM(XLNX_ENABLE_DUMP, "0");
@@ -142,7 +143,8 @@ static std::string layer_name(const std::string& name) {
                    bool ok = c >= '0' && c <= '9';
                    ok = ok || (c >= 'a' && c <= 'z');
                    ok = ok || (c >= 'A' && c <= 'Z');
-                   // ok = ok || (c == '/');
+                   // ok = ok || (c ==
+                   // std::filesystem::path::preferred_separator);
                    ok = ok || (c == '_');
                    return ok ? c : '_';
                  });
@@ -157,14 +159,10 @@ static std::string get_dump_filename(const std::string& subgraph_name,
                                      const std::string& tensor_type_str,
                                      const int engine_id,
                                      const std::string& tensor_layer_name) {
-  const std::string dump = "./dump";
-  const std::string dump_slash_subgraph = dump + "/" + subgraph_name;
-  const std::string dump_slash_subgraph_slash_type =
-      dump_slash_subgraph + "/" + tensor_type_str;
-  auto dump_featuremap_filename = dump_slash_subgraph_slash_type + "/" +
-                                  std::to_string(engine_id) + "." +
-                                  tensor_layer_name + ".bin";
-  return dump_featuremap_filename;
+  const auto dump = std::filesystem::path("dump");
+  const auto filename = std::filesystem::path(std::to_string(engine_id) + "." +
+                                              tensor_layer_name + ".bin");
+  return (dump / subgraph_name / tensor_type_str / filename).string();
 }
 
 template <typename T>
@@ -210,30 +208,24 @@ static std::unique_ptr<vitis::ai::DimCalc> create_dim_calc(
 }
 
 static void mkdir_minus_p(const std::string& dirname) {
-  struct stat st = {0};
-  if (stat(dirname.c_str(), &st) == -1) {
-    PCHECK(mkdir(dirname.c_str(), 0777) == 0)
-        << "mkdir error; dirname=" << dirname;
-  }
-  PCHECK(stat(dirname.c_str(), &st) == 0)
-      << "stat dir error: dirname=" << dirname;
-  CHECK(S_ISDIR(st.st_mode)) << "error not a directory: dirname=" << dirname;
+  CHECK(std::filesystem::create_directories(dirname))
+      << "cannot create directories: " << dirname;
 }
 
 bool is_exist_path(const std::string& filename) {
-  struct stat buffer;
-  return (stat(filename.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode));
+  return std::filesystem::exists(filename);
 }
 
 static std::string get_full_filename(const std::string& filename) {
-  if (filename[0] == '/') {
+  if (filename[0] == std::filesystem::path::preferred_separator) {
     return filename;
   }
-  std::string current_p(getcwd(NULL, 0));
-  return current_p + "/" + filename;
+  return (std::filesystem::current_path() / filename).string();
 }
+
 static std::string get_parent_path(const std::string& path) {
-  return path.substr(0, path.find_last_of("/"));
+  return path.substr(
+      0, path.find_last_of(std::filesystem::path::preferred_separator));
 }
 
 static void create_parent_path(const std::string& path) {
@@ -369,7 +361,8 @@ void DpuRunnerBaseImp::upload_tensor(const my_tensor_t& tensor) {
 
   auto golden_dirname = ENV_PARAM(XLNX_GOLDEN_DIR);
   std::string golden_filename =
-      golden_dirname + "/" + tensor_layer_name + ".bin";
+      (std::filesystem::path(golden_dirname) / (tensor_layer_name + ".bin"))
+          .string();
   if (!is_exist_file(golden_filename)) {
     LOG(INFO)
         << "XLNX_GOLDEN_DIR: upload data fail ! golden file is not exist : "
@@ -435,18 +428,6 @@ void DpuRunnerBaseImp::clear_tensor(const my_tensor_t& tensor) {
   }
 }  // namespace dpu
 
-static std::string get_md5(const unsigned char* d, size_t size) {
-  unsigned char md5sum[MD5_DIGEST_LENGTH];
-  MD5(d, size, md5sum);
-  std::stringstream ss;
-  for (std::uint32_t idx = 0; idx < MD5_DIGEST_LENGTH; idx++) {
-    ss << std::setfill('0') << std::setw(2) << std::hex
-       << static_cast<std::uint32_t>(md5sum[idx]);
-  }
-  std::string ret = ss.str();
-  return ret;
-}
-
 void DpuRunnerBaseImp::compare_tensor(const my_tensor_t& tensor) {
   if (tensor.get_location() != 1) {
     return;
@@ -473,10 +454,13 @@ void DpuRunnerBaseImp::compare_tensor(const my_tensor_t& tensor) {
 
   // auto ok = device_memory_->download(&buf[0], offset, tensor_size);
   if (ok) {
-    auto dump_md5 = get_md5((const unsigned char*)&buf[0], tensor_size);
+    auto dump_md5 = md5sum((const char*)&buf[0], tensor_size);
     auto golden_dirname = ENV_PARAM(XLNX_GOLDEN_DIR);
     std::string golden_filename =
-        golden_dirname + "/" + tensor_layer_name + ".bin";
+        (std::filesystem::path(golden_dirname) /
+         std::filesystem::path(tensor_layer_name + ".bin"))
+            .string();
+
     if (!is_exist_file(golden_filename)) {
       LOG(INFO) << "XLNX_GOLDEN_DIR: compare data fail ! golden file is "
                    "not exist : "
@@ -656,7 +640,10 @@ void DpuRunnerBaseImp::start_dpu2(size_t device_core_id) {
       auto depth = sg_and_code[idx].subgraph->get_depth();
       auto name = sg_and_code[idx].subgraph->get_name();
       auto batch = session_->get_num_of_engines();
+      // MSVC NOTE: it is not safe to call template function across DLL.
+#if !_WIN32
       vitis::ai::trace::add_trace("dpu-runner", name, batch, workload, depth);
+#endif
     }
     LOG_IF(FATAL, ENV_PARAM(XLNX_ENABLE_FINGERPRINT_CHECK) &&
                       !check_fingerprint(session_->get_device_core_id()))

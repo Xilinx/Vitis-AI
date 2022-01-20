@@ -31,13 +31,13 @@ Vitis AI is composed of the following key components:
 
 ## [See What's New](docs//learn/release_notes.md)
 - [Release Notes](docs//learn/release_notes.md)
-- Support new platforms, including Versal ACAP platforms VCK190, VCK5000 and Kria SoM 
-- Better Pytorch and Tensorflow model support: Pytorch 1.5-1.7.1, improved quantization for Tensorflow 2.x models
-- New models, including 4D Radar detection, Image-Lidar sensor fusion, 3D detection & segmentation, multi-task, depth estimation, super resolution for automotive, smart medical and industrial vision applications
-- New Graph Runner API to deploy models with multiple subgraphs
-- DPUCADX8G (DPUv1)deprecated with DPUCADF8H (DPUv3Int8)
-- DPUCAHX8H (DPUv3E) and DPUCAHX8L (DPUv3ME) release with xo
-- Classification & Detection WAA examples for Versal (VCK190)
+- General Availability (GA) for VCK190(Production Silicon), VCK5000(Production Silicon) and U55C
+- Add support for newer Pytorch and Tensorflow version: Pytorch 1.8-1.9, Tensorflow 2.4-2.6
+- Add 22 new models, including Solo, Yolo-X, UltraFast, CLOCs, PSMNet, FairMOT, SESR, DRUNet, SSR as well as 3 NLP models and 2 OFA (Once-for-all) models 
+- Add the new custom OP flow to run models with DPU un-supported OPs with enhancement across quantizer, compiler and runtime 
+- Add more layers and configurations of DPU for VCK190 and DPU for VCK5000
+- Add OFA pruning and TF2 keras support for AI optimizer
+- Run inference directly from Tensorflow (Demo)
 
 ## Getting Started
 
@@ -134,6 +134,15 @@ sudo chown vitis-ai-user:vitis-ai-group ~/.Xauthority
 Please note before running this script, please make sure either you have local X11 server running if you are using Windows based ssh terminal to connect to remote server, or you have run **xhost +** command at a command terminal if you are using Linux with Desktop. Also if you are using ssh to connect to the remote server, remember to enable *X11 Forwarding* option either with Windows ssh tools setting or with *-X* options in ssh command line.
 
 
+## Previous Vitis AI Version
+
+Previous releases of Vitis AI are [marked with a git tag](https://github.com/Xilinx/Vitis-AI/releases).
+
+Previously released Vitis AI CPU Docker images are [available from Docker Hub](https://hub.docker.com/r/xilinx/vitis-ai-cpu/tags?page=1&ordering=last_updated). 
+
+| Version | Github Link          | Checkout Git Version            | Docker Command  |
+|----|-----------------------|---------------------|------------|
+| 1.4.1  | https://github.com/Xilinx/Vitis-AI/releases/tag/v1.4.1              | git clone https://github.com/Xilinx/Vitis-AI.git <br />git checkout tags/v1.4.1 -b v1.4.1  | docker pull xilinx/vitis-ai-cpu:1.4.1.978      | 
 
  ### Get Started with Examples
   - [VART](demo/VART/README.md)

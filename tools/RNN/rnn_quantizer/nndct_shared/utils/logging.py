@@ -258,7 +258,7 @@ class NndctScreenLogger(metaclass=SingletonMeta):
                         INFO: f"\n{GREEN}[VAIQ_NOTE]: ",
                         ERROR: f"\n{RED}[VAIQ_ERROR]: "
                         }
-
+    self._cached_msg = []
 
   def warning(self, msg, *args, **kwargs):
     msg = self.full_message(msg, prefix=self._log_prefix[WARN])
@@ -274,7 +274,17 @@ class NndctScreenLogger(metaclass=SingletonMeta):
     msg = self.full_message(msg, prefix=self._log_prefix[INFO])
     self._logger().info(msg, *args, **kwargs)
     self.flush()
-
+    
+  def warning_once(self, msg, *args, **kwargs):
+    if msg not in self._cached_msg:
+      self.warning(msg)
+      self._cached_msg.append(msg)
+  
+  def info_once(self, msg, *args, **kwargs):
+    if msg not in self._cached_msg:
+      self.info(msg, args, kwargs)
+      self._cached_msg.append(msg)
+  
   @staticmethod
   def _logger():
     logger = get_logger(name="nndct_screen", level=INFO)

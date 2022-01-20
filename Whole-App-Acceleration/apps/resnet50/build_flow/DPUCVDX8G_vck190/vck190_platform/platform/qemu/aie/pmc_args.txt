@@ -1,0 +1,79 @@
+#######################################################################
+# This is file which used to generate QEMU(which emulates PMC/Microblaze)
+# commandline(start_pmc.sh script) which used in Versal-PMC HW-EMU. 
+# This is a template file which is packaged in platform and it gets 
+# processed by Vitis tool to generate meaningful file.
+#
+# This file contains flag and value pairs and they must be seperated 
+# into two lines value followed by flag. Below are the common/mandated 
+# flag and value pairs used for emulating Versal-PMC. User can add more 
+# commandline args to this file depends on requirements.
+# 
+# For more details on the QEMU commandline, please refer to 
+# the QEMU user guide UG1169.
+########################################################################
+#
+#
+# -M (or -machine) for selecting emulated machine.
+-M
+microblaze-fdt
+#
+#
+# -display none(or -nographics) By default, QEMU attempts to create 
+# a display for user I/O. This option instructs the QEMU that there is 
+# no need for a display and I/O is serial.
+-display
+none
+#
+#
+# Loading the boot headers into PPU1 RAM
+-device
+loader,file=<BOOT_bh.bin>,addr=0xf201e000,force-raw
+#
+#
+# Loading static configuration(pm_cdo.bin) details to PMC RAM 
+# @0xF2000000 location
+-device
+loader,file=<pmc_cdo.bin>,addr=0xF2000000,force-raw
+#
+#
+# loading plm.bin plm binariy which is executed as first program on PMC on QEMU,
+# loading at location 0xF0200000
+# PPU1 process(PMC) will start executing plm loaded on 0xf0200000
+-device
+loader,file=<plm.bin>,addr=0xF0200000,force-raw
+#
+#
+# Setting PPU1 PC to 0xf0200000
+-device
+loader,addr=0xf0200000,cpu-num=1
+#
+#
+# Keeping PPU0 in bootloop
+-device
+loader,addr=0xf0000000,data=0xba020004,data-len=4
+-device
+loader,addr=0xf0000004,data=0xb800fffc,data-len=4
+#
+#
+# Putting PMC mode to executing mode  when reset is released
+-device
+loader,addr=0xF1110624,data=0x0,data-len=4
+-device
+loader,addr=0xF1110620,data=0x1,data-len=4
+#
+#
+# By default, QEMU is configured to mimic memory regions as present
+# on VCK190 board i.e 8GB DDR4 and 8GB LPDDR4
+# If your platform has different memory, then you need to create
+# a hardware device tree for QEMU. An example device tree
+# is present at <Vitis>/data/emulation/dtbs/....
+# Users need to modify and hw dts by uncommenting corresponding
+# memory regions and specifying the size as present in your design.
+# Then compile the dts into dtb and put it into platform's qemu folder
+#-hw-dtb
+#sw/<platform>/qemu/board-versal-pmc-vc-p-a2197-00.dtb
+-serial
+null
+-serial
+null

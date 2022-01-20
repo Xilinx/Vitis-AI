@@ -1,4 +1,4 @@
-PLNX_VER = 2021.1
+PLNX_VER = 2021.2
 PLNX_PRJ = xilinx-vck190-base-trd
 PLNX_BSP = $(PLNX_PRJ)-$(PLNX_VER).bsp
 

@@ -18,18 +18,25 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/VitisVersion.cmake)
 
 set(MY_PROJECT_SOURCES
   include/xir/buffer_object.hpp
+  include/xir/buffer_object_export.hpp
   src/buffer_object.cpp
   include/xir/device_memory.hpp
   src/device_memory.cpp
-  src/buffer_object_dpcma.hpp
-  src/buffer_object_dpcma.cpp
-  src/buffer_object_map.cpp
-  src/buffer_object_map.hpp
-  src/buffer_object_fd.cpp
-  src/buffer_object_fd.hpp
+
   )
 set(MY_PROJECT_DEPS glog::glog)
 
+if(MSVC)
+else(MSVC)
+	# dpcma is linux only.
+	list(APPEND MY_PROJECT_SOURCES
+		src/buffer_object_map.cpp
+	  src/buffer_object_map.hpp
+	  src/buffer_object_fd.cpp
+	  src/buffer_object_fd.hpp
+	  src/buffer_object_dpcma.hpp
+	  src/buffer_object_dpcma.cpp)
+endif(MSVC)
 if(XRT_CLOUD_FOUND)
   add_definitions(-DENABLE_CLOUD)
 endif(XRT_CLOUD_FOUND)
@@ -43,7 +50,7 @@ if(XRT_FOUND)
     ${CMAKE_CURRENT_SOURCE_DIR}/src/buffer_object_xrt_imp.cpp
   )
   list(APPEND MY_PROJECT_DEPS xrt-device-handle)
-  list(APPEND MY_PROJECT_DEPS XRT::XRT)
+  list(APPEND MY_PROJECT_DEPS XRT::xrt_core)
 endif(XRT_FOUND)
 
 ## optional implementation on QNX platform
@@ -71,6 +78,7 @@ if(IS_EDGE)
 endif(IS_EDGE)
 
 add_library(${COMPONENT_NAME} SHARED ${MY_PROJECT_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/version.c)
+target_compile_definitions(${COMPONENT_NAME} PRIVATE VART_BUFFER_OBJECT_EXPORT)
 if(IS_EDGE)
   target_compile_definitions (${COMPONENT_NAME} PRIVATE "-DIS_EDGE=1")
 else(IS_EDGE)
@@ -95,6 +103,7 @@ install(
   TARGETS ${COMPONENT_NAME}
   COMPONENT dpu
   EXPORT ${COMPONENT_NAME}-targets
+  ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib)
 install(FILES
@@ -136,5 +145,6 @@ target_link_libraries(dump_op_weights_2 ${COMPONENT_NAME} glog::glog )
 install(
   TARGETS mem_write mem_read mem_save dump_op_weights dump_op_weights_2
   COMPONENT dpu
+  ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib)

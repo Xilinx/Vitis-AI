@@ -9,19 +9,19 @@ RNN quantizer is designed to quantize recurrent neural network(RNN) models. Curr
 1. Support version 3.6 ~ 3.7. 
     
 * Pytorch
-1. Support version 1.1 ~ 1.7.1. 
+1. Support version 1.1 ~ 1.9.1. 
 2. Data Parallelism is NOT supported.
 
 * TensorFlow
-1. Support version 2.0. 
+1. Support version 2.0 ~ 2.6. 
     
 * Models
 1. Standard LSTM Models. 
     
 ### Quick Start in Docker environment
 
-If you work in Vitis-AI 1.4 docker, there is a conda environment "vitis-ai-lstm", in which RNN quantizer is already installed. 
-In this conda environment, python version is 3.6, pytorch version is 1.4.0 and tensorflow version is 2.0. You can directly start lstm example without installation steps.
+If you work in Vitis-AI 2.0 docker, there is two conda environments, "vitis-ai-rnn-pytorch" and "vitis-ai-rnn-tensorflow", in which RNN quantizers for pytorch and tensorflow are already installed. 
+In this conda environment "vitis-ai-rnn-pytorch", python version is 3.6, pytorch version is 1.7.1. And in the conda environment "vitis-ai-rnn-tensorflow", python version is 3.6, tensorflow version is 2.0. You can directly start lstm example without installation steps.
 - Copy example/lstm_quant_pytorch to docker environment
 - Quantize, using a subset(1000 sequences) of validation data for calibration. Because we are in quantize calibration process, the displayed loss and accuracy are meaningless.
   ```shell
@@ -44,7 +44,7 @@ For GPU version, if CUDA library is installed in /usr/local/cuda, add the follow
 
     export CUDA_HOME=/usr/local/cuda 
 
-##### Pre step 2 : install Pytorch(1.1-1.7.1) and torchvision
+##### Pre step 2 : install Pytorch(1.1-1.9.1) and torchvision
 Here take pytorch 1.7.1 and torchvision 0.8.2 as an example, detailed instructions for other versions are in [pytorch](https://pytorch.org/) website.
 
     pip install torch==1.7.1 torchvision==0.8.2 
@@ -77,6 +77,7 @@ To install tensorflow tools of RNN quantizer, do as follows:
 
 ##### Now install the main component:
     cd ../tensorflow
+    pip install -r requirements.txt 
     python setup.py install 
 
 ##### Verify the installation:
@@ -142,7 +143,7 @@ An example is available in example/lstm_quant_tensorflow/quantize_lstm.py.
 2. Generate a quantizer with quantization needed input, and the batch size of input data must be 1,  then get the converted model. <br>
    ```py
     single_batch_data = X_test[:1, ]
-    input_signature = tf.TensorSpec(single_batch_data.shape[1:], tf.int32)
+    input_signature = tf.TensorSpec(single_batch_data.shape, tf.int32)
     quantizer = tf_quantizer(model, 
                             input_signature, 
                             quant_mode=args.quant_mode,
@@ -168,7 +169,7 @@ Take the PyTorch version as an example.<br>
 ```py
     python quant_lstm.py --quant_mode calib --subset_len 1000
 ```
-When calibrating forward, borrow the float evaluation flow to minimize code change from float script. If there are loss and accuracy messages displayed in the end, you can ignore them. Note the colorful log messages with the special keyword, "NNDCT".
+When calibrating forward, borrow the float evaluation flow to minimize code change from float script. If there are loss and accuracy messages displayed in the end, you can ignore them. Note the colorful log messages with the special keyword, "VAIQ_*".
 
 If this quantization command runs successfully, two important files are generated in the output directory “./quantize_result”.
 ```
@@ -204,7 +205,8 @@ class torch_quantizer():
                  device: torch.device = torch.device("cuda"),
                  lstm: bool = False,
                  app_deploy: str = "CV",
-                 qat_proc: bool = False):
+                 qat_proc: bool = False,
+                 custom_quant_ops: List[str] = None):
 ```
     quant_mode: A string that indicates which quantization mode the process is using. "calib" for calibration of quantization. "test" for evaluation of quantized model.
     module: Float module to be quantized.
@@ -236,10 +238,10 @@ The APIs are in module [tensorflow/tf_nndct/quantization/api.py](tensorflow/tf_n
 ##### Function tf_quantizer does quantization process of LSTM model..
 ```py
 def tf_quantizer(model,
-                    input_signature,
-                    quant_mode: int = 0,
-                    output_dir: str = "quantize_result",
-                    bitwidth: int = 8)
+                 input_signature,
+                 quant_mode: str = "calib",
+                 output_dir: str = "quantize_result",
+                 bitwidth: int = 8)
 ```
     model: Float module to be quantized.
     input_signature: Input tensor with the same shape as real input of float module to be quantized, but the values can be random number.

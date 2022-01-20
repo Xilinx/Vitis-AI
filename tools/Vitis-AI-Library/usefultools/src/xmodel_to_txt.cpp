@@ -115,7 +115,7 @@ std::map<std::string, std::string> get_reg_id_to_parameter(
     auto values = s->get_attr<std::map<std::string, std::vector<char>>>(
         "reg_id_to_parameter_value");
     for (auto& it : values) {
-      md5s[it.first] = md5sum(string(it.second.begin(), it.second.end()));
+      md5s[it.first] = md5sum(std::string(it.second.begin(), it.second.end()));
     }
   }
   return md5s;

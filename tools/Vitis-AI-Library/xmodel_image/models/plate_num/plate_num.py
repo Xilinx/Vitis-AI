@@ -14,18 +14,23 @@
 # limitations under the License.
 import xir_extra_ops
 
-list0 = ["unknown", "jing", "hu", "jin", "yu", "ji", "jin", "meng", "liao", "ji",
-         "hei", "su", "zhe", "wan", "min", "gan",
-         "lu", "yu", "e", "xiang", "yue", "gui", "qiong", "chuan", "gui", "yun",
-         "zang", "shan", "gan", "qing", "ning", "xin"]
+list0 = [
+    "unknown", "jing", "hu", "jin", "yu", "ji", "jin", "meng", "liao", "ji",
+    "hei", "su", "zhe", "wan", "min", "gan", "lu", "yu", "e", "xiang", "yue",
+    "gui", "qiong", "chuan", "gui", "yun", "zang", "shan", "gan", "qing",
+    "ning", "xin"
+]
 
-list1 = ["unknown", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L",
-         "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+list1 = [
+    "unknown", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N",
+    "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+]
 
-list2 = ["unknown", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B",
-         "C", "D", "E",
-         "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U",
-         "V", "W", "X", "Y", "Z"]
+list2 = [
+    "unknown", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C",
+    "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T",
+    "U", "V", "W", "X", "Y", "Z"
+]
 
 
 def jit(graph):
@@ -36,15 +41,13 @@ def jit(graph):
     list_map = [list0, list1, list2, list2, list2, list2, list2]
     for i in range(7):
         op = graph.get_op("prob" + str(i + 1))
-        op1 = graph.create_op("my_topk" + str(i + 1), "topk",
+        op1 = graph.create_op("my_topk" + str(i + 1),
+                              "topk",
                               attrs={"K": 1},
                               input_ops={"input": [op]},
                               subgraph=graph.get_leaf_subgraph(op))
         op1.get_output_tensor().set_attr("labels", list_map[i])
 
     xir_extra_ops.set_postprocessor(
-        graph,
-        "libxmodel_postprocessor_plate_number.so.1",
-        {"input":
-         [
-             "my_topk" + str(i + 1) for i in range(7)]})
+        graph, "libxmodel_postprocessor_plate_number.so.2",
+        {"input": ["my_topk" + str(i + 1) for i in range(7)]})

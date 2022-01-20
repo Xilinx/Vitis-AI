@@ -1,21 +1,6 @@
-#
-# Copyright 2019 Xilinx Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 from collections import defaultdict
-
+from typing import Dict, List
 from nndct_shared.nndct_graph import GraphSearcher
 from nndct_shared.utils import (NndctDebugLogger, NndctOption,
                                 PatternType)
@@ -33,13 +18,15 @@ class TorchScriptModuleHandler(object):
       for i, inp in enumerate(list(graph.inputs())[1:]):
         set_unique_name(inp, 'input_' + str(i))
     script_graph = script_module.graph.copy()
-    script_graph = optimize_graph(script_graph)
+    script_graph = optimize_graph(script_graph, is_jit_graph=True)
     rename_graph_inputs(script_graph)
-    print(script_graph) 
+    # print(script_graph) 
+    post_process_script_graph(script_graph)
     params = self._create_params_value(script_graph, script_module)
+    # print("new:\n", script_graph)
     raw_graph, raw_params = self._build_raw_graph(graph_name if graph_name else script_module.__class__.__name__, script_graph, params=params)
     self._optimize_raw_graph(raw_graph)
-    print(raw_graph)
+    # print(raw_graph)
 
     return raw_graph, raw_params
   
@@ -61,7 +48,7 @@ class TorchScriptModuleHandler(object):
     self._create_attrs_value(fw_graph, raw_graph)
     self._create_inputs_value(fw_graph, raw_graph)
   
-    for fw_name, fw_node in get_fw_op_nodes(fw_graph.nodes()):
+    for fw_name, fw_node in get_fw_op_nodes(fw_graph):
       if list(fw_node.blocks()):
         self._add_node(fw_node, raw_graph)
         blobs = []
@@ -73,7 +60,7 @@ class TorchScriptModuleHandler(object):
           raw_block, _ = self._build_raw_graph(f"{fw_name}_block_{i}", fw_block, params, blobs)
           block_node.add_block(raw_block)
           
-      elif get_node_type(fw_node) == "prim::ListConstruct" and should_construct_dynamic_list(fw_node):
+      elif node_type(fw_node) == "prim::ListConstruct" and should_construct_dynamic_list(fw_node):
         list_val = TorchValue(list(fw_node.outputs())[0])
         list_node = TorchNode(fw_node)
         list_val.node = list_node
@@ -90,12 +77,15 @@ class TorchScriptModuleHandler(object):
   def _create_ret_value(self, graph, raw_graph):
      for ip in get_fw_graph_ret_value(graph):
       ret_value = raw_graph.get_blob_value_by_name(unique_name(ip))
+      raw_graph.add_ret_value(ret_value)
+      """
       if ret_value.node and ret_value.node.kind in ["TupleConstruct"]:
         for ip in ret_value.node.inputs:
           raw_graph.add_ret_value(ip)
         raw_graph.remove_node(ret_value.node)
       else:
         raw_graph.add_ret_value(ret_value)
+      """
     
   def _create_inputs_value(self, graph, raw_graph):
      for ip in get_fw_graph_inputs(graph):
@@ -106,8 +96,8 @@ class TorchScriptModuleHandler(object):
       raw_graph.add_node(input_node)
       
   def _create_attrs_value(self, graph, raw_graph):
-    for fw_name, fw_node in get_fw_op_nodes(graph.nodes()):
-      if get_node_type(fw_node) != "prim::Constant":
+    for fw_name, fw_node in get_fw_op_nodes(graph):
+      if node_type(fw_node) != "prim::Constant":
         extra_count = 0
         for attr_name in fw_node.attributeNames():
           value = get_attr_value(fw_node, attr_name)
@@ -123,15 +113,15 @@ class TorchScriptModuleHandler(object):
           raw_graph.add_blob_value(const_value)
           
         else:
-          const_node = TorchNode(fw_node, fw_name)
+          const_node = TorchNode(fw_node)
           const_value.node = const_node
           const_node.add_output(const_value)
           raw_graph.add_node(const_node)
     
   def _create_params_value(self, graph, script_module):
-    params = []
+    params: List[TorchValue] = []
     getattr_nodes = graph.findAllNodes("prim::GetAttr", recurse=True)
-    visited = set()
+    visited: Dict[str, torch.Value] = {}
     state_dict = script_module.state_dict()
     for node in getattr_nodes:
       if get_node_output_name(node) in visited:
@@ -140,15 +130,21 @@ class TorchScriptModuleHandler(object):
       for getattrs in get_attr_chains(node):
         full_attr = getattr_full_name(getattrs)  # self.conv.weight -> conv.weight
         if full_attr in state_dict and full_attr not in visited:
+          # print(f"set {unique_name(getattrs[-1].output())} => {full_attr}")
           set_unique_name(getattrs[-1].output(), full_attr)
           torch_tensor = state_dict[full_attr]
           value = TorchValue(getattrs[-1].output())
           value.dtype = {torch.float: 'torch.float', 
                           torch.float64: 'torch.double'}.get(torch_tensor.dtype, None)
           assert value.dtype
+          value.shape = list(torch_tensor.size())
+          visited[full_attr] = getattrs[-1].output()
           # raw_graph.add_param_value(value)
           # self._visited_values[value.name] = value
           params.append(value)
+        elif full_attr in visited:
+          re_use_param = visited[full_attr]
+          getattrs[-1].output().replaceAllUsesWith(re_use_param) 
     return params
   
   def _add_node(self, fw_node, raw_graph):
@@ -187,20 +183,20 @@ class TorchScriptModuleHandler(object):
                                                         PatternType(pattern=["TupleUnpack"])])
     OptPass.unpack_ListUnpack_op(raw_graph, node_sets)
     
-    node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["slice"])])
+    # node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["slice"])])
     
-    OptPass.slice_to_strided_slice(raw_graph, node_sets)
+    # OptPass.slice_to_strided_slice(raw_graph, node_sets)
       
     # yolo_v3
-    node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["select", "copy_"])])
-    OptPass.select_to_slice_inplace_copy(raw_graph, node_sets)
+    # node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["select", "copy_"])])
+    # OptPass.select_to_slice_inplace_copy(raw_graph, node_sets)
     
     # 3d pointpillar
-    node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["strided_slice", "index_put_"])])
-    OptPass.stride_slice_to_index_inplace_put(raw_graph, node_sets)
+    # node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["strided_slice", "index_put_"])])
+    # OptPass.stride_slice_to_index_inplace_put(raw_graph, node_sets)
     
-    node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["strided_slice", "copy_"])])
-    OptPass.create_stride_slice_inplace_copy(raw_graph, node_sets)
+    # node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["strided_slice", "copy_"])])
+    # OptPass.create_stride_slice_inplace_copy(raw_graph, node_sets)
     
     # nd(>2) linear (JIRA 2646)
     node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["matmul", "add"]),

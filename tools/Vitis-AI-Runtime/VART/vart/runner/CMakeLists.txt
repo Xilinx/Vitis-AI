@@ -21,7 +21,6 @@ add_library(
   src/dpu_runner.cpp
   src/error_code.cpp
   src/tensor_buffer.cpp
-  src/vart_c_api.cpp
   src/runner_helper.hpp
   src/runner_helper.cpp
   src/runner_ext.cpp
@@ -38,7 +37,6 @@ add_library(
   include/vart/runner.hpp
   include/vart/runner_ext.hpp
   include/vart/tensor_buffer.hpp
-  include/vart/vart.h
   include/vitis/ai/dpu_runner.hpp
   include/vitis/ai/runner.hpp
   include/vitis/ai/tensor.hpp
@@ -62,21 +60,21 @@ endif()
 # Add JSON library, needed by DPUV1
 target_link_libraries(
   ${COMPONENT_NAME}
-  PUBLIC unilog::unilog xir::xir
-  PRIVATE ${PROJECT_NAME}::util ${LIB_JSON_C} dl)
+  PUBLIC xir::xir
+  PRIVATE ${PROJECT_NAME}::util ${LIB_JSON_C} unilog::unilog)
 
 install(
   TARGETS ${COMPONENT_NAME}
   EXPORT ${COMPONENT_NAME}-targets
   COMPONENT base
   RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
 foreach(
   PUBLIC_HEADER
   # v1.3
   vart/runner_ext.hpp
   # v1.2 interface
-  vart/vart.h
   vart/runner.hpp
   vart/tensor_buffer.hpp
   # v1.1 interface
@@ -107,10 +105,10 @@ if(BUILD_TEST)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/test)
   add_executable(test_runner test/test_runner.cpp)
   target_link_libraries(test_runner ${COMPONENT_NAME} ${PROJECT_NAME}::util
-                        pthread)
+                        ${CMAKE_THREAD_LIBS_INIT})
   add_executable(test_tensor_buffer test/test_tensor_buffer.cpp)
   target_link_libraries(test_tensor_buffer ${COMPONENT_NAME}
-                        ${PROJECT_NAME}::util pthread)
+                        ${PROJECT_NAME}::util ${CMAKE_THREAD_LIBS_INIT})
 
 endif()
 
@@ -118,5 +116,5 @@ if(BUILD_PYTHON)
   vai_add_pybind11_module(py_runner MODULE_NAME vart
                           python/runner_py_module.cpp)
   target_link_libraries(py_runner PRIVATE ${PROJECT_NAME}::util
-                          ${PROJECT_NAME}::${COMPONENT_NAME})
+                                          ${PROJECT_NAME}::${COMPONENT_NAME})
 endif(BUILD_PYTHON)

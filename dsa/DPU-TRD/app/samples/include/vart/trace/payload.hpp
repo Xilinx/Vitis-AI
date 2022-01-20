@@ -16,7 +16,6 @@
 
 #pragma once
 #include <stdlib.h>
-#include <unistd.h>
 #include <iostream>
 #include <map>
 #include <string>
@@ -28,9 +27,12 @@
 #define TRACE_VAR(x) #x, (x)
 
 namespace vitis::ai::trace {
-
-using namespace std;
-
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
+	using std::vector;
 #pragma pack(push, 1)
 template <typename... Ts>
 class trace_payload {
@@ -39,22 +41,22 @@ class trace_payload {
   trace_payload(){};
 
   template <int N>
-  inline enable_if_t<(N == 0), bool> get_(vector<std::string>& buf) {
-    auto data = get<N>(payload_);
+  inline std::enable_if_t<(N == 0), bool> get_(vector<std::string>& buf) {
+    auto data = std::get<N>(payload_);
     buf.push_back(to_string(data));
     return true;
   }
 
   template <int N>
-  inline enable_if_t<(N > 0), bool> get_(vector<std::string>& buf) {
+  inline std::enable_if_t<(N > 0), bool> get_(vector<std::string>& buf) {
     get_<N - 1>(buf);
-    auto data = get<N>(payload_);
+    auto data = std::get<N>(payload_);
     buf.push_back(to_string(data));
     return true;
   }
 
   inline void to_vector(vector<std::string>& buf) {
-    constexpr int payload_size = tuple_size<decltype(payload_)>::value - 1;
+    constexpr int payload_size = std::tuple_size<decltype(payload_)>::value - 1;
     get_<payload_size>(buf);
   }
 
@@ -62,7 +64,7 @@ class trace_payload {
 
  private:
   std::tuple<Ts...> payload_;
-  enum : uint16_t { size_ = sizeof(payload_) };
+  enum : uint16_t { size_ = sizeof(std::tuple<Ts...>) };
 };
 
 template <typename... Ts>

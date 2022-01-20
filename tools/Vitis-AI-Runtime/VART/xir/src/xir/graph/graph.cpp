@@ -26,24 +26,10 @@ std::unique_ptr<Graph> Graph::create(std::string name) {
   return std::unique_ptr<Graph>{static_cast<Graph*>(new GraphImp{name})};
 }
 
-extern int g_use_proto_version;  // defined in GraphImp.cpp
-static bool is_elf(const std::string& filename) {
-  std::string magic;
-  magic.resize(4);
-  CHECK(std::ifstream(filename).read(&magic[0], magic.size()).good())
-      << "read fail! filename=" << filename;
-  return magic[0] == 0x7f && magic[1] == 0x45 && magic[2] == 0x4c &&
-         magic[3] == 0x46;
-}
-// defined in elf2xir.cpp
-extern std::unique_ptr<Graph> my_elf2xir(const std::string&);
 std::unique_ptr<Graph> Graph::deserialize(const std::string& pb_fname) {
-  if (!is_elf(pb_fname)) {
-    v2::Serialize s;
-    auto g = s.read(pb_fname);
-    return g;
-  }
-  return my_elf2xir(pb_fname);
+  v2::Serialize s;
+  auto g = s.read(pb_fname);
+  return g;
 }
 
 std::unique_ptr<Graph> Graph::deserialize_from_string(const std::string& str) {

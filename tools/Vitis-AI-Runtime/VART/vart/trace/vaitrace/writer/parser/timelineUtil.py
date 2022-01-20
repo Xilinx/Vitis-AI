@@ -28,9 +28,9 @@ class vaiTimelineEventState(Enum):
 class vaiTimelineEvent:
     def __str__(self):
         if self.type == 'period':
-            t = "Duration:%7d" % self.duration
+            t = "Duration:%10.8f" % self.duration
         else:
-            t = "TimeStamp:%10d" % self.ts
+            t = "TimeStamp:%10.8f" % self.ts
 
         return "Core %10s-%02d: Type:%6s, pid:%06d ts:%f" % \
             (self.coreType, self.coreId, self.type, self.pid, self.ts) + " " + t

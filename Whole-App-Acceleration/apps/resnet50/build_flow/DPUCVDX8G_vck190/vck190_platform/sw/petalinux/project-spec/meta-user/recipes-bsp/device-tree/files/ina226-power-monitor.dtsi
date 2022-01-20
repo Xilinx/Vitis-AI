@@ -1,0 +1,152 @@
+&i2c0 {
+	i2c-switch@74 {
+		compatible = "nxp,pca9548";
+		status = "okay";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x74>;
+
+		i2c@0 { /* pmbus 0 */
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0>;
+		};
+		i2c@1 { /* pmbus 1 */
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <1>;
+
+			ina226@40 { /* vccint */
+				compatible = "ti,ina226";
+				reg = <0x40>;
+				shunt-resistor = <500>;
+			};
+
+			ina226@41 { /* vcc soc */
+				compatible = "ti,ina226";
+				reg = <0x41>;
+				shunt-resistor = <500>;
+			};
+
+			ina226@42 { /* vcc pmc */
+				compatible = "ti,ina226";
+				reg = <0x42>;
+				shunt-resistor = <5000>;
+			};
+
+			ina226@43 { /* vcc ram */
+				compatible = "ti,ina226";
+				reg = <0x43>;
+				shunt-resistor = <5000>;
+			};
+
+			ina226@44 { /* vcc pslp */
+				compatible = "ti,ina226";
+				reg = <0x44>;
+				shunt-resistor = <5000>;
+			};
+
+			ina226@45 { /* vcc psfp */
+				compatible = "ti,ina226";
+				reg = <0x45>;
+				shunt-resistor = <5000>;
+			};
+		};
+		i2c@2 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <2>;
+		};
+		i2c@3 { /* pmbus 3 */
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <3>;
+
+			ina226@40 { /* vccaux */
+				compatible = "ti,ina226";
+				reg = <0x40>;
+				shunt-resistor = <5000>;
+			};
+
+			ina226@41 { /* vccaux pmc */
+				compatible = "ti,ina226";
+				reg = <0x41>;
+				shunt-resistor = <5000>;
+			};
+
+			ina226@45 { /* vcco mio */
+				compatible = "ti,ina226";
+				reg = <0x45>;
+				shunt-resistor = <5000>;
+			};
+
+			ina226@46 { /* vcc 1v8 */
+				compatible = "ti,ina226";
+				reg = <0x46>;
+				shunt-resistor = <5000>;
+			};
+
+			ina226@47 { /* vcc 3v3 */
+				compatible = "ti,ina226";
+				reg = <0x47>;
+				shunt-resistor = <5000>;
+			};
+
+			ina226@48 { /* vcc 1v2 ddr4 */
+				compatible = "ti,ina226";
+				reg = <0x48>;
+				shunt-resistor = <5000>;
+			};
+
+			ina226@49 { /* vcc1v1 lp4 */
+				compatible = "ti,ina226";
+				reg = <0x49>;
+				shunt-resistor = <5000>;
+			};
+
+			ina226@4a { /* vadj fmc */
+				compatible = "ti,ina226";
+				reg = <0x4a>;
+				shunt-resistor = <2000>;
+			};
+
+			ina226@4b { /* mgtyavcc */
+				compatible = "ti,ina226";
+				reg = <0x4b>;
+				shunt-resistor = <2000>;
+			};
+
+			ina226@4c { /* mgtyavtt */
+				compatible = "ti,ina226";
+				reg = <0x4c>;
+				shunt-resistor = <2000>;
+			};
+
+			ina226@4d { /* mgty vccaux */
+				compatible = "ti,ina226";
+				reg = <0x4d>;
+				shunt-resistor = <5000>;
+			};
+		};
+		i2c@4 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <4>;
+		};
+		i2c@5 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <5>;
+		};
+		i2c@6 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <6>;
+		};
+		i2c@7 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <7>;
+		};
+	};
+};

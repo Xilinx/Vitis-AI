@@ -35,10 +35,12 @@ bool test_dpu_runner_mt(const xir::Subgraph* subgraph, uint32_t runner_num,
                         const std::vector<std::string>& output_filenames);
 
 template <class T>
-string to_string(T t, ios_base& (*f)(ios_base&), string prefix = "0x") {
-  ostringstream oss;
+std::string to_string(T t, std::ios_base& (*f)(std::ios_base&), std::string prefix = "0x") {
+  std::ostringstream oss;
   oss << prefix << f << t;
   return oss.str();
 }
 std::map<std::string, std::string> get_reg_id_to_parameter(
     const xir::Subgraph* s);
+bool test_op_run(const std::string& graph, const std::string& op,
+                 const std::string& ref_dir, const std::string& dump_dir);

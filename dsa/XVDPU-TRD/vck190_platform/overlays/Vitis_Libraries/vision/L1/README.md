@@ -29,4 +29,4 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:< path-to-opencv-lib-folder >
 
 make run CSIM=1 CSYNTH=1 COSIM=0
 
-Note : Please read "Getting started with HLS" section of [Vitis Vision documentation](https://xilinx.github.io/Vitis_Libraries/vision/2021.1/index.html) for special cases, constraints and other full details.
+Note : Please read "Getting started with HLS" section of [Vitis Vision documentation](https://xilinx.github.io/Vitis_Libraries/vision/2021.2/index.html) for special cases, constraints and other full details.

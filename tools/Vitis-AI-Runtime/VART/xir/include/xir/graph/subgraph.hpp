@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include "xir/XirExport.hpp"
 #include "xir/graph/graph_template.hpp"
 #include "xir/op/op.hpp"
 #include "xir/util/any.hpp"
@@ -35,7 +36,7 @@ class Graph;
  *
  * @brief A class for subgraph
  */
-class Subgraph {
+class XIR_DLLESPEC Subgraph {
  public:
   /**
    * @brief Get the name of subgraph.

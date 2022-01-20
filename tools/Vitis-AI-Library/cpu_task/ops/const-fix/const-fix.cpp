@@ -24,11 +24,11 @@ using namespace std;
 
 namespace {
 struct MyOpImp : public vart::experimental::OpImpBase {
-  MyOpImp(xir::Op* op, xir::Attrs* attrs)
+  MyOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     data_ = op->get_attr<vector<char>>("data");
   }
-  int calculate(vart::experimental::simple_tensor_buffer_t<int8_t> result) {
+  int calculate(vart::simple_tensor_buffer_t<int8_t> result) {
     CHECK_EQ(data_.size(), result.mem_size) << "data size mismatch";
     auto num_of_elements = result.tensor->get_element_num();
     memcpy(result.data, &data_[0], num_of_elements * sizeof(int8_t));
@@ -40,6 +40,4 @@ struct MyOpImp : public vart::experimental::OpImpBase {
 };  // namespace
 }  // namespace
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOpImp>();
-}
+DEF_XIR_OP_IMP(MyOpImp)

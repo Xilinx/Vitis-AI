@@ -106,7 +106,7 @@ def transform_image(image):
 
 if len(sys.argv) < 2:
     raise ValueError("No DPU target specified. Please run with 'python3 compile_mxnet_resnet_18.py `DPU_TARGET`'"\
-                     " DPU_TARGET options: 'DPUCADF8H', 'DPUCAHX8H-u50', 'DPUCAHX8H-u280', 'DPUCAHX8L', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'")
+                     " DPU_TARGET options: 'DPUCADF8H', 'DPUCAHX8H-u50lv', 'DPUCAHX8H-u50lv_dwc', 'DPUCAHX8H-u55c_dwc', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'")
 
 input_name  = 'data'
 input_shape = (1,3,224,224)
@@ -162,8 +162,8 @@ with tvm.transform.PassContext(opt_level=3, config={'relay.ext.vitis_ai.options'
 ## 
 ## Usually, to be able to accelerate inference of Neural 
 ## Network models with Vitis-AI DPU accelerators, those models 
-## need to quantized upfront. In the ONNXRuntime Vitis-AI 
-## execution provider we make use of On-The-Fly (OTF) Quantization 
+## need to quantized upfront. In the TVM Vitis AI 
+## flow we make use of On-The-Fly (OTF) Quantization 
 ## to remove this additional preprocessing step. In this flow,
 ## one doesn't need to quantize his/her model upfront but can 
 ## make use of the typical inference execution calls 

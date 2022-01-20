@@ -16,6 +16,7 @@
 
 #include "graph.h"
 
+#include <common/xf_aie_utils.hpp>
 #include <stdio.h>
 
 #include <stdlib.h>
@@ -42,7 +43,7 @@ extern "C" {
 #include <xaiengine.h>
 }
 
-int16_t sizein = TILE_WINDOW_ELEMENTS;
+int16_t sizein = TILE_WINDOW_SIZE / sizeof(int32_t);
 
 gaussianGraph gauss2_graph;
 
@@ -289,18 +290,16 @@ int main(int argc, char** argv)
 
         run_test(dhdl, top, bufferHandles);
 
-        printf("verfifying teh results\n");
+        printf("verifying the results\n");
 
         int error_threshold = 2;
         int errorCount = 0;
 
         {
-            for (int i = 0; i < sizein; i++)
-
-            {
-                if (bufferMapped[1][i] != int32golden[i])
-
-                {
+            int32_t* outp = (int32_t*)xf::cv::aie::xfGetImgDataPtr(bufferMapped[1]);
+            int32_t* refp = (int32_t*)xf::cv::aie::xfGetImgDataPtr(int32golden);
+            for (int i = 0; i < TILE_ELEMENTS; i++) {
+                if (outp[i] != refp[i]) {
                     int diff = abs(int(bufferMapped[1][i] - int32golden[i]));
                     if (diff > error_threshold) {
                         printf("Error found @ %d, %d != %d	%d\n", i, bufferMapped[1][i], int32golden[i],
@@ -311,11 +310,8 @@ int main(int argc, char** argv)
             }
 
             if (errorCount)
-
                 printf("Test failed with %d errors\n", errorCount);
-
             else
-
                 printf("Test passed\n");
         }
 

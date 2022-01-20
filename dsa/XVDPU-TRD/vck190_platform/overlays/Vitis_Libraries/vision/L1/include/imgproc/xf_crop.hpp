@@ -102,6 +102,9 @@ void write_roi_row(int cnt,
                    XF_TNAME(SRC_T, NPC) temp[COLS >> XF_BITSHIFT(NPC)],
                    int write_offset,
                    xf::cv::Mat<SRC_T, ROWS, COLS, NPC>& _dst_mat) {
+// clang-format off
+    #pragma HLS INLINE off
+    // clang-format on
     for (int k = 0; k < cnt; k++) {
 // clang-format off
         #pragma HLS LOOP_TRIPCOUNT min=COLS_TRIP max=COLS_TRIP

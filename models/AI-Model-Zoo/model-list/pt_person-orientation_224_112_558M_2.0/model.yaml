@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: Pedestrian's orientation classifier
+input size: 640*480
+float ops: 36G
+task: denoising
+framework: pytorch
+prune: 'no'
+version: 2.0
+files:
+- name: pt_person-orientation_224_112_558M_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_person-orientation_224_112_558M_2.0.zip
+  checksum: 481d57ad14b578ba299ef77d8bc2b56a
+- name: person-orientation_pruned_558m_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=person-orientation_pruned_558m_pt-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 235b3f49e2dbeb60e3f8936fd2582e82
+- name: person-orientation_pruned_558m_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=person-orientation_pruned_558m_pt-vck190-r2.0.0.tar.gz
+  checksum: f29ff11a67411b0d4f82cfa4bff8431f
+- name: person-orientation_pruned_558m_pt
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=person-orientation_pruned_558m_pt-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: fb2e8ee27b1cec9b6bc0fedf59020b5d
+- name: person-orientation_pruned_558m_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=person-orientation_pruned_558m_pt-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 821be3d07acbf06d3d69b132dfdc8ee2
+- name: person-orientation_pruned_558m_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=person-orientation_pruned_558m_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 184c5f99f91f8cc1a03d37a66cab6d74
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

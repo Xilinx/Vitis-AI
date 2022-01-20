@@ -1,6 +1,6 @@
 <table width="100%">
   <tr width="100%">
-    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Runtime v1.4</h1>
+    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Runtime v2.0</h1>
     </td>
  </tr>
  </table>
@@ -70,8 +70,8 @@ For `VCK190`, follow [Setting Up the Target](../../setup/vck190/README.md#step2-
 
 Follow [Running Vitis AI Examples](../../setup/mpsoc/VART/README.md#step3-run-the-vitis-ai-examples) to run Vitis AI examples.
 
-Note: When you update from VAI1.3 to VAI1.4, refer to the following to modify your compilation options.
-1. For Petalinux 2021.1, it uses OpenCV4, and for Petalinux 2020.2, it uses OpenCV3. So set the `OPENCV_FLAGS` as needed. You can refer to the following.
+Note: When you update from VAI1.3 to VAI2.0, refer to the following to modify your compilation options.
+1. For Petalinux 2021.1 and 2021.2, it uses OpenCV4, and for Petalinux 2020.2, it uses OpenCV3. So set the `OPENCV_FLAGS` as needed. You can refer to the following.
 ```
 result=0 && pkg-config --list-all | grep opencv4 && result=1
 if [ $result -eq 1 ]; then
@@ -86,37 +86,35 @@ fi
 
 1. Click [Setup Alveo Accelerator Card](../../setup/alveo) to set up the Alveo Card.
 
-2. Take U50 DPUCAHX8H as an example, suppose you have followed the above steps to enter docker container and executed the following commands.
+2. Take U50LV DPUCAHX8H as an example, suppose you have followed the above steps to enter docker container and executed the following commands.
 
 	```
-	conda activate vitis-ai-caffe
-	cd /workspace/setup/alveo
-	source setup.sh DPUCAHX8H
+	source /workspace/setup/alveo/setup.sh DPUCAHX8H
 	```
 ### Setting Up the Host for VCK5000
 
-1. Click [Setup VCK5000 Accelerator Card](../../setup/vck5000) to set up the VCK5000 Card.
+1. Click [Setup VCK5000 Accelerator Card](../../setup/vck5000) to set up the VCK5000 PROD Card.
 
 2. Suppose you have followed the above steps and entered the docker container.
 
 ### Running Vitis AI Examples
 In the docker system, `/workspace/demo/VART/` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample.
 
-1. Download the [vitis_ai_runtime_r1.4.0_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.4.0_image_video.tar.gz) package and unzip it.
+1. Download the [vitis_ai_runtime_r2.0.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r2.0.0_image_video.tar.gz) package and unzip it.
 	```
 	cd /workspace/demo
-	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r1.4.0_image_video.tar.gz -O vitis_ai_runtime_r1.4.0_image_video.tar.gz
-	tar -xzvf vitis_ai_runtime_r1.4.0_image_video.tar.gz -C VART
+	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r2.0.0_image_video.tar.gz -O vitis_ai_runtime_r2.0.0_image_video.tar.gz
+	tar -xzvf vitis_ai_runtime_r2.0.0_image_video.tar.gz -C VART
 	```
 2. Download the model.  	
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
 	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
 	Click [Xilinx AI Model Zoo](../../models/AI-Model-Zoo/model-list) to view all the models.
 	
-	* Take `resnet50` of U50 as an example.
+	* Take `resnet50` of U50LV as an example.
 	```
 	  cd /workspace
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz -O resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50lv-DPUCAHX8H-r2.0.0.tar.gz -O resnet50-u50lv-DPUCAHX8H-r2.0.0.tar.gz
 	```	
 	* Install the model package.  
 	If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
@@ -125,7 +123,7 @@ In the docker system, `/workspace/demo/VART/` is the path for the following exam
 	```  
 	Then install the model package.
 	```
-	  tar -xzvf resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz
+	  tar -xzvf resnet50-u50lv-DPUCAHX8H-r2.0.0.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 
@@ -134,14 +132,14 @@ In the docker system, `/workspace/demo/VART/` is the path for the following exam
 	cd /workspace/demo/VART/resnet50
 	bash -x build.sh
 	```
-4. Run the example, take `U50` platform as an example.
+4. Run the example, take `U50LV` platform as an example.
 	```
 	./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
 	```
 	**Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
 
- <summary><b>Launching Commands for VART Samples on U50/U50lv/U280/VCK5000 </b></summary>
+ <summary><b>Launching Commands for VART Samples on U50lv/U55C/VCK5000-PROD </b></summary>
  
 | No\. | Example Name             | Command                                                   |
 | :--- | :----------------------- | :-------------------------------------------------------- |

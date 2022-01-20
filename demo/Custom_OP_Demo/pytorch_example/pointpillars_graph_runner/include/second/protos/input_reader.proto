@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package second.protos;
+
+import "second/protos/target.proto";
+import "second/protos/preprocess.proto";
+import "second/protos/sampler.proto";
+message InputReader {
+  string record_file_path = 1;
+  repeated string class_names = 2;
+  uint32 batch_size = 3;
+  uint32 max_num_epochs = 4;
+  uint32 prefetch_size = 5;
+  uint32 max_number_of_voxels = 6;
+  TargetAssigner target_assigner = 7;
+  string kitti_info_path = 8;
+  string kitti_root_path = 9;
+  bool shuffle_points = 10;
+  repeated float groundtruth_localization_noise_std = 11;
+  repeated float groundtruth_rotation_uniform_noise = 12;
+  repeated float global_rotation_uniform_noise = 13;
+  repeated float global_scaling_uniform_noise = 14;
+  bool remove_unknown_examples = 15;
+  uint32 num_workers = 16;
+  float anchor_area_threshold = 17;
+  bool remove_points_after_sample = 18;
+  float groundtruth_points_drop_percentage = 19;
+  uint32 groundtruth_drop_max_keep_points = 20;
+  bool remove_environment = 21;
+  bool unlabeled_training = 22;
+  repeated float global_random_rotation_range_per_object = 23;
+  repeated DatabasePreprocessingStep database_prep_steps = 24;
+  Sampler database_sampler = 25;
+  bool use_group_id = 26; // this will enable group sample and noise
+  Sampler unlabeled_database_sampler = 27;
+}

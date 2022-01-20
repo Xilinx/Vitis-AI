@@ -85,7 +85,7 @@ class BCC {
 
  public:
   /**
-   * @brief Function of get result of the BCC neuron network.
+   * @brief Function of get result of the BCC neural network.
    *
    * @param img Input data of input image (cv::Mat).
    *
@@ -95,7 +95,7 @@ class BCC {
   virtual vitis::ai::BCCResult run(const cv::Mat& img) = 0;
 
   /**
-   * @brief Function to get running results of the BCC neuron network in
+   * @brief Function to get running results of the BCC neural network in
    * batch mode.
    *
    * @param imgs Input data of input images (vector<cv::Mat>).

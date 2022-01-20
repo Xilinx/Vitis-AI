@@ -19,31 +19,27 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from tensorflow.python.distribute import distribution_strategy_context as ds_context
-from tensorflow.python.eager import context
-from tensorflow.python.framework import ops
-from tensorflow.python.framework import tensor_shape
-from tensorflow.python.keras import activations
-from tensorflow.python.keras import backend as K
-from tensorflow.python.keras import constraints
-from tensorflow.python.keras import initializers
-from tensorflow.python.keras import layers as keras_layers
-from tensorflow.python.keras import regularizers
-from tensorflow.python.keras.engine.base_layer import Layer
-from tensorflow.python.keras.engine.input_spec import InputSpec
-from tensorflow.python.keras.utils import generic_utils
-from tensorflow.python.keras.utils import tf_utils
+from distutils.version import LooseVersion
+
+from tensorflow.keras import activations
+from tensorflow.keras import backend as K
+from tensorflow.keras import constraints
+from tensorflow.keras import initializers
+from tensorflow.keras import layers as keras_layers
+from tensorflow.keras import regularizers
 from tensorflow.python.ops import array_ops
-from tensorflow.python.ops import math_ops
-from tensorflow.python.ops import state_ops
-from tensorflow.python.platform import tf_logging as logging
-from tensorflow.python.training.tracking import base as trackable
 from tensorflow.python.training.tracking import data_structures
-from tensorflow.python.util import nest
 
 from tf_nndct.utils import tf_utils as _tf_utils
 
-class LSTMCell(keras_layers.recurrent.DropoutRNNCellMixin, Layer):
+if _tf_utils.tf_version() >= LooseVersion('2.6'):
+  from keras.utils import tf_utils
+  from keras.layers import recurrent
+else:
+  from tensorflow.python.keras.utils import tf_utils
+  from tensorflow.python.keras.layers import recurrent
+
+class LSTMCell(recurrent.DropoutRNNCellMixin, keras_layers.Layer):
   """Cell class for the LSTM layer.
 
   Arguments:
@@ -54,7 +50,7 @@ class LSTMCell(keras_layers.recurrent.DropoutRNNCellMixin, Layer):
       (ie. "linear" activation: `a(x) = x`).
     recurrent_activation: Activation function to use
       for the recurrent step.
-      Default: hard sigmoid (`hard_sigmoid`).
+      Default: hard sigmoid (`sigmoid`).
       If you pass `None`, no activation is applied
       (ie. "linear" activation: `a(x) = x`).
     use_bias: Boolean, whether the layer uses a bias vector.
@@ -97,7 +93,7 @@ class LSTMCell(keras_layers.recurrent.DropoutRNNCellMixin, Layer):
   def __init__(self,
                units,
                activation='tanh',
-               recurrent_activation='hard_sigmoid',
+               recurrent_activation='sigmoid',
                use_bias=True,
                kernel_initializer='glorot_uniform',
                recurrent_initializer='orthogonal',
@@ -208,62 +204,6 @@ class LSTMCell(keras_layers.recurrent.DropoutRNNCellMixin, Layer):
 
   @tf_utils.shape_type_conversion
   def _build_v210(self, input_shape):
-    default_caching_device = _caching_device(self)
-    input_dim = input_shape[-1]
-    kernel_args = {
-        'shape': (input_dim, self.units),
-        'initializer': self.kernel_initializer,
-        'regularizer': self.kernel_regularizer,
-        'constraint': self.kernel_constraint,
-        'default_caching_device': default_caching_device
-    }
-    self.kernel_i = self.add_weight(name='kernel_i', **kernel_args)
-    self.kernel_f = self.add_weight(name='kernel_f', **kernel_args)
-    self.kernel_c = self.add_weight(name='kernel_c', **kernel_args)
-    self.kernel_o = self.add_weight(name='kernel_o', **kernel_args)
-
-    recurrent_args = {
-        'shape': (self.units, self.units),
-        'initializer': self.recurrent_initializer,
-        'regularizer': self.recurrent_regularizer,
-        'constraint': self.recurrent_constraint,
-    }
-    self.recurrent_kernel_i = self.add_weight(
-        name='recurrent_kernel_i', **recurrent_args)
-    self.recurrent_kernel_f = self.add_weight(
-        name='recurrent_kernel_f', **recurrent_args)
-    self.recurrent_kernel_c = self.add_weight(
-        name='recurrent_kernel_c', **recurrent_args)
-    self.recurrent_kernel_o = self.add_weight(
-        name='recurrent_kernel_o', **recurrent_args)
-
-    if self.use_bias:
-      bias_initializer = self.bias_initializer
-      if self.unit_forget_bias:
-        forget_bias_initializer = initializers.Ones
-      else:
-        forget_bias_initializer = bias_initializer
-
-      bias_args = {
-          'shape': (self.units,),
-          'regularizer': self.bias_regularizer,
-          'constraint': self.bias_constraint,
-      }
-      self.bias_i = self.add_weight(
-          name='bias_i', initializer=bias_initializer, **bias_args)
-      self.bias_f = self.add_weight(
-          name='bias_f', initializer=forget_bias_initializer, **bias_args)
-      self.bias_c = self.add_weight(
-          name='bias_c', initializer=bias_initializer, **bias_args)
-      self.bias_o = self.add_weight(
-          name='bias_o', initializer=bias_initializer, **bias_args)
-    else:
-      self.bias_i = None
-      self.bias_f = None
-      self.bias_c = None
-      self.bias_o = None
-    self.built = True
-
     input_dim = input_shape[-1]
     args = {
         'shape': (input_dim, self.units),
@@ -567,7 +507,7 @@ class LSTM(keras_layers.RNN):
       (ie. "linear" activation: `a(x) = x`).
     recurrent_activation: Activation function to use
       for the recurrent step.
-      Default: hard sigmoid (`hard_sigmoid`).
+      Default: sigmoid (`sigmoid`).
       If you pass `None`, no activation is applied
       (ie. "linear" activation: `a(x) = x`).
     use_bias: Boolean, whether the layer uses a bias vector.
@@ -646,7 +586,7 @@ class LSTM(keras_layers.RNN):
   def __init__(self,
                units,
                activation='tanh',
-               recurrent_activation='hard_sigmoid',
+               recurrent_activation='sigmoid',
                use_bias=True,
                kernel_initializer='glorot_uniform',
                recurrent_initializer='orthogonal',
@@ -699,11 +639,11 @@ class LSTM(keras_layers.RNN):
         unroll=unroll,
         **kwargs)
     self.activity_regularizer = regularizers.get(activity_regularizer)
-    self.input_spec = [InputSpec(ndim=3)]
+    self.input_spec = [keras_layers.InputSpec(ndim=3)]
 
-_generate_zero_filled_state_for_cell = keras_layers.recurrent._generate_zero_filled_state_for_cell
+_generate_zero_filled_state_for_cell = recurrent._generate_zero_filled_state_for_cell
 
-if _tf_utils.tf_version() < '2.1.0':
+if _tf_utils.tf_version() < LooseVersion('2.1.0'):
   _caching_device = None
 else:
-  _caching_device = keras_layers.recurrent._caching_device
+  _caching_device = recurrent._caching_device

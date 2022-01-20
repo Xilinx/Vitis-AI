@@ -267,20 +267,6 @@ Following packages are required to run example on edge device:
 
 Please follow the instructions [here](../../setup/mpsoc/VART/README.md#step2-setup-the-target) to setup your target device with correct SD-card image.
 
-### Setup the cross-compiler on host
-
-Please follow the instructions [here](../../demo/VART/README.md#step1-setup-cross-compiler) to setup cross-compiler on your host device. It is setup on the host machine directly, not inside Vitis-AI docker.
-
-Cross-compile kernels and examples in cross-compiler environment in host machine:
-
-```sh
-cd <Vitis-AI>/tools/AKS
-tar -xvzf aks_edge.tar.gz
-export CMAKE_PREFIX_PATH=aks_edge/
-./cmake-kernels.sh --type=release  --clean
-./cmake-examples.sh --type=release  --clean
-```
-
 ### Get Image Dataset
 
 :pushpin: **Note:** If you have active internet connectivity on the target board, you can download the dataset directly on the target. If not, copy the dataset to the SD-Card after downloading it on the host system.
@@ -319,23 +305,17 @@ cp <path-to-copied-files>/dataset-imagenet-ilsvrc2012-val-min ~/
 cd ~/AKS
 ```
 
-### Install the AKS library
-
-Install the AKS library from RPM package.
-
-```sh
-dnf install aks-1.4.0-r70.aarch64.rpm
-```
-
 ### Build Kernels and Examples on the target device
 
 Use following commands to build these kernels and examples.
 
   ```sh
   # Buld kernels
+  chmod +x cmake-kernels.sh
   ./cmake-kernels.sh --clean
 
   # Build examples
+  chmod +x cmake-examples.sh
   ./cmake-examples.sh --clean
   ```
 
@@ -344,6 +324,7 @@ Use following commands to build these kernels and examples.
 - Resnet50
 
     ```sh
+    chmod +x aks.sh
     ./aks.sh -m cf_resnet50_zcu_102_104 -d1 ~/dataset-imagenet-ilsvrc2012-val-min
     ```
 

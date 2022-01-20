@@ -20,7 +20,8 @@ namespace vart {
 namespace dpu {
 enum class RegType {
   CODE = 0,
-  CONST = 1,
+  // MSVC NOTE:: CONST seems a predefined macro on windows.
+  XCONST = 1,
   DATA = 2,
 };
 struct DpuReg {

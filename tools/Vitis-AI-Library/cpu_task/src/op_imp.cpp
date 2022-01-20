@@ -19,6 +19,8 @@
 #include <dlfcn.h>
 #include <glog/logging.h>
 
+#include <regex>
+
 #include "vart/runner_helper.hpp"
 #include "xir/op/op_def.hpp"
 namespace vart {
@@ -80,14 +82,27 @@ std::string to_string(const vart::OpImpArg& input) {
 }  // namespace vart
 
 static std::string find_dl_lib_for_op(const xir::Op* op) {
-  auto ret = std::string("") + "libvart_op_imp_" + op->get_type() + ".so";
+  auto op_type = std::string(op->get_type());
+  for(auto c : {':', '/', '\\'}) {
+      std::replace(op_type.begin(), op_type.end(), c, '_');
+  }
+  auto ret = std::string("") + "libvart_op_imp_" + op_type + ".so";
   return ret;
 }
 
 static vart_op_imp_t get_op_imp(const std::string& lib, const xir_op_t op) {
   vart_op_imp_t ret;
+
   typedef vart_op_imp_t (*INIT_FUN)(const xir_op_t op);
-  auto handle = dlopen(lib.c_str(), RTLD_LAZY | RTLD_LOCAL);
+  // python_cpu_op required RTLD_GLOBAL instead of RTLD_LOCAL,
+  // otherwise, importing any python c extension will result in a
+  // error, like undefined reference Py_Import. then it is end user's
+  // resposibility to avoid symbol conflict as much as possible.
+  // Solve the problem that the call to the symbolic link library does
+  // not meet the expectations, and include the realization of op with
+  // namespace{}
+
+  auto handle = dlopen(lib.c_str(), RTLD_LAZY | RTLD_GLOBAL);
   CHECK(handle != NULL) << "cannot open library!"
                         << " lib=" << lib << ";error=" << dlerror() << ";"
                         << "op=" << ((const xir::Op*)(op))->to_string();

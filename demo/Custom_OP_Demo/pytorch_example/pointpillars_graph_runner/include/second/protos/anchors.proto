@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package second.protos;
+
+message AnchorGeneratorOld {
+  string class_name = 1;
+  repeated float bev_range = 2;
+  float anchor_center_z = 3;
+  repeated float anchor_sizes = 4;
+  float matched_threshold = 5;
+  float unmatched_threshold = 6;
+}
+
+message AnchorGeneratorStride {
+  string class_name = 1;
+  repeated float sizes = 2;
+  repeated float strides = 3;
+  repeated float offsets = 4;
+  repeated float rotations = 5;
+  float matched_threshold = 6;
+  float unmatched_threshold = 7;
+}
+
+message AnchorGeneratorRange {
+  string class_name = 1;
+  repeated float sizes = 2;
+  repeated float anchor_ranges = 3;
+  repeated float rotations = 4;
+  float matched_threshold = 5;
+  float unmatched_threshold = 6;
+}
+
+message AnchorGeneratorCollection {
+  oneof anchor_generator {
+    AnchorGeneratorStride anchor_generator_stride = 1;
+    AnchorGeneratorRange anchor_generator_range = 2;
+    AnchorGeneratorOld anchor_generator_old = 3;
+  }
+}
+
+message AnchorGenerator_depara {
+  string class_name = 1;
+  repeated float sizes = 2;
+  repeated float strides = 3;
+  repeated float offsets = 4;
+  repeated float rotations = 5;
+  float matched_threshold = 6;
+  float unmatched_threshold = 7;
+}
+message AnchorGeneratorV1 {
+  float anchor_center_z = 1;
+  repeated float anchor_sizes = 2;
+  float matched_threshold = 3;
+  float unmatched_threshold = 4;
+}

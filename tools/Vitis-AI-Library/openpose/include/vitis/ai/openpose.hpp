@@ -71,7 +71,8 @@ namespace ai {
    @endcode
  *
  * Display of the openpose model results:
- * @image latex images/sample_openpose_result.jpg "openpose result image" width=\textwidth
+ * @image latex images/sample_openpose_result.jpg "openpose result image"
+ width=\textwidth
  */
 
 class OpenPose {
@@ -86,30 +87,30 @@ class OpenPose {
    * @return An instance of OpenPose class.
    *
    */
-  static std::unique_ptr<OpenPose> create(const std::string &model_name,
+  static std::unique_ptr<OpenPose> create(const std::string& model_name,
                                           bool need_preprocess = true);
   /**
    * @cond NOCOMMENTS
    */
  public:
   explicit OpenPose();
-  OpenPose(const OpenPose &) = delete;
+  OpenPose(const OpenPose&) = delete;
   virtual ~OpenPose();
   /**
    * @endcond
    */
  public:
   /**
-   * @brief Function to get running result of the openpose neuron network.
+   * @brief Function to get running result of the openpose neural network.
    *
    * @param image Input data of input image (cv::Mat).
    *
    * @return OpenPoseResult.
    *
    */
-  virtual OpenPoseResult run(const cv::Mat &image) = 0;
+  virtual OpenPoseResult run(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running results of the openpose neuron
+   * @brief Function to get running results of the openpose neural
    * network in batch mode.
    *
    * @param images Input data of batch input images (vector<cv::Mat>). The size
@@ -119,7 +120,7 @@ class OpenPose {
    *
    */
   virtual std::vector<OpenPoseResult> run(
-      const std::vector<cv::Mat> &images) = 0;
+      const std::vector<cv::Mat>& images) = 0;
   /**
    * @brief Function to get InputWidth of the openpose network (input image
    *columns).

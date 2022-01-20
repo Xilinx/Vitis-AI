@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-// 67d7842dbbe25473c3c32b93c0da8047785f30d78e8a024de1b57352245f9689
-
 #include "graph.h"
 
 PLIO* in1 = new PLIO("DataIn1", adf::plio_64_bits, "data/input1.txt");

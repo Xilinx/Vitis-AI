@@ -101,5 +101,5 @@ bool HbmManagerImp::CompareBO::operator()(const vart::dpu::HbmChunk* a,
 }
 }  // namespace
 
-DECLARE_INJECTION(vart::dpu::HbmManager, HbmManagerImp, const uint64_t&,
-                  const uint64_t&, const uint64_t&)
+DECLARE_INJECTION(vart::dpu::HbmManager, HbmManagerImp, uint64_t&, uint64_t&,
+                  uint64_t&)

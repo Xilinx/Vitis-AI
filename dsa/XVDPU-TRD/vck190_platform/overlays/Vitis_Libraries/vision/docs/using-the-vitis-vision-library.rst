@@ -156,7 +156,9 @@ folder name, which contains the library function.
    +-------------------------------------------+-----------------------------------+
    | xf::cv::gaincontrol                       | imgproc/xf_gaincontrol.hpp        |
    +-------------------------------------------+-----------------------------------+
-   | xf::cv::gammacorrection                   | imgproc/xf_gammacorrection        |
+   | xf::cv::gammacorrection                   | imgproc/xf_gammacorrection.hpp    |
+   +-------------------------------------------+-----------------------------------+
+   | xf::cv::gtm                               | imgproc/xf_gtm.hpp                |
    +-------------------------------------------+-----------------------------------+
    | xf::cv::cornerHarris                      | features/xf_harris.hpp            |
    +-------------------------------------------+-----------------------------------+
@@ -217,6 +219,8 @@ folder name, which contains the library function.
    | xf::cv::remap                             | imgproc/xf_remap.hpp              |
    +-------------------------------------------+-----------------------------------+
    | xf::cv::resize                            | imgproc/xf_resize.hpp             |
+   +-------------------------------------------+-----------------------------------+
+   | xf::cv::rgbir2bayer                       | imgproc/xf_rgbir.hpp              |
    +-------------------------------------------+-----------------------------------+
    | xf::cv::convertScaleAbs                   | imgproc/xf_convertscaleabs.hpp    |
    +-------------------------------------------+-----------------------------------+
@@ -472,6 +476,9 @@ design is completely built and the board has booted up correctly.
    | Gammacorrec  | xf::cv::gammacorrection   | ./<executable name>.elf  |
    | tion         |                           | <path to input image>    |
    +--------------+---------------------------+--------------------------+
+   | Global Tone  | xf::cv::gtm               | ./<executable name>.elf  |
+   | Mapping      |                           | <path to input image>    |
+   +--------------+---------------------------+--------------------------+
    | Harris       | xf::cv::cornerHarris      | ./<executable name>.elf  |
    |              |                           | <path to input image>    |
    +--------------+---------------------------+--------------------------+
@@ -580,6 +587,9 @@ design is completely built and the board has booted up correctly.
    | Resize       | xf::cv::resize            | ./<executable name>.elf  |
    |              |                           | <path to input image>    |
    +--------------+---------------------------+--------------------------+
+   | rgbir2bayer  | xf::cv::rgbir2bayer       | ./<executable name>.elf  |
+   |              |                           | <path to input image>    |
+   +--------------+---------------------------+--------------------------+
    | scharrfilter | xf::cv::Scharr            | ./<executable name>.elf  |
    |              |                           | <path to input image>    |
    +--------------+---------------------------+--------------------------+
@@ -626,12 +636,4 @@ design is completely built and the board has booted up correctly.
    |              |                           | <path to input image>    |
    +--------------+---------------------------+--------------------------+
 
-.. |image0| image:: ./images/wuz1554997295362.png
-   :class: image
-   
-.. |image1| image:: ./images/wuz1554997295362.png
-   :class: image
-  
-.. |image2| image:: ./images/wuz1554997295362.png
-   :class: image
    

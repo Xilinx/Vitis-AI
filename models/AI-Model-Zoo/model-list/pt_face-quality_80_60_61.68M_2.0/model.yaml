@@ -1,0 +1,61 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: face quality model. This model outputs a face quality score, which is
+  usually used to filter low-quality faces to further improve face recognition accuracy.
+input size: 80*60
+float ops: 61.68M
+task: face quality
+framework: pytorch
+prune: 'no'
+version: 2.0
+files:
+- name: pt_face-quality_80_60_61.68M_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_face-quality_80_60_61.68M_2.0.zip
+  checksum: aec1ed6973c9736ec284ed5e83dfca5d
+- name: face-quality_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: d2179b4a19270154248e067b8277576a
+- name: face-quality_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck190-r2.0.0.tar.gz
+  checksum: 29182515f37ae823a33deeb79a70818e
+- name: face-quality_pt
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: c3e418d592c8b60585c1e802dae461cb
+- name: face-quality_pt
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: ffdf4629a18d90f26cf9966c02f8a6ea
+- name: face-quality_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 6bb6e1e7478a93d467241fa71f220bb4
+- name: face-quality_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 3769e67371c5ed8c2bec0510b1d88a7e
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

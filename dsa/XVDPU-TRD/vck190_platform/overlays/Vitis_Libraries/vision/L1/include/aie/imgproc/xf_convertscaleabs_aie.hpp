@@ -15,7 +15,7 @@
  */
 
 #include <adf.h>
-#include <common/xf_aie_utils.hpp>
+#include <common/xf_aie_hw_utils.hpp>
 
 #ifndef _AIE_CONVERTSCALEABS_H_
 #define _AIE_CONVERTSCALEABS_H_
@@ -77,13 +77,13 @@ void convertscaleabs_api(input_window_int16* img_in,
     int16_t* img_in_ptr = (int16_t*)img_in->ptr;
     int16_t* img_out_ptr = (int16_t*)img_out->ptr;
 
-    const int16_t img_width = xfcvGetTileWidth(img_in_ptr);
-    const int16_t img_height = xfcvGetTileHeight(img_in_ptr);
+    const int16_t img_width = xfGetTileWidth(img_in_ptr);
+    const int16_t img_height = xfGetTileHeight(img_in_ptr);
 
-    xfcvCopyMetaData(img_in_ptr, img_out_ptr);
+    xfCopyMetaData(img_in_ptr, img_out_ptr);
 
-    int16_t* ptr0 = (int16_t*)xfcvGetImgDataPtr(img_in_ptr);
-    int16_t* ptr_out = (int16_t*)xfcvGetImgDataPtr(img_out_ptr);
+    int16_t* ptr0 = (int16_t*)xfGetImgDataPtr(img_in_ptr);
+    int16_t* ptr_out = (int16_t*)xfGetImgDataPtr(img_out_ptr);
 
     convertscaleabs<16, int16_t>(ptr0, ptr_out, img_width, img_height, alpha, beta);
 }

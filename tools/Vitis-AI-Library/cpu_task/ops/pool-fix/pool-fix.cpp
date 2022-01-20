@@ -91,7 +91,7 @@ float get_avgpool_dpu_coefficient(const std::vector<std::int32_t>& kernels) {
 
 enum class POOLTYPE { MAX, AVG };
 struct PoolFix_OpImp : public vart::experimental::OpImpBase {
-  PoolFix_OpImp(xir::Op* op, xir::Attrs* attrs)
+  PoolFix_OpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     auto kernel = op->get_attr<std::vector<int32_t>>("kernel");
     CHECK_EQ(kernel.size(), 2u)
@@ -144,8 +144,8 @@ struct PoolFix_OpImp : public vart::experimental::OpImpBase {
     iw = input_shape[2];
     scale_ = get_avgpool_dpu_coefficient({kernel_h, kernel_w});
   }
-  int calculate(vart::experimental::simple_tensor_buffer_t<int8_t> result,
-                vart::experimental::simple_tensor_buffer_t<int8_t> input) {
+  int calculate(vart::simple_tensor_buffer_t<int8_t> result,
+                vart::simple_tensor_buffer_t<int8_t> input) {
     auto input_shape = input.tensor->get_shape();
     auto output_shape = result.tensor->get_shape();
     // input tensor shape is [batch, in_height, in_width, in_channels]
@@ -270,6 +270,5 @@ struct PoolFix_OpImp : public vart::experimental::OpImpBase {
 };
 
 }  // namespace
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<PoolFix_OpImp>();
-}
+
+DEF_XIR_OP_IMP(PoolFix_OpImp)

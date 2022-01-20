@@ -21,9 +21,8 @@
 #include <common/xf_aie_const.hpp>
 #include "kernels.h"
 
-static constexpr int IMG_ELEMENTS = 2048;
-static constexpr int TILE_WINDOW_ELEMENTS = (IMG_ELEMENTS + SMARTTILE_ELEMENTS);
-static constexpr int TILE_WINDOW_SIZE = TILE_WINDOW_ELEMENTS * sizeof(int16_t);
+static constexpr int TILE_ELEMENTS = 2048;
+static constexpr int TILE_WINDOW_SIZE = TILE_ELEMENTS * sizeof(int32_t) + xf::cv::aie::METADATA_SIZE;
 
 using namespace adf;
 

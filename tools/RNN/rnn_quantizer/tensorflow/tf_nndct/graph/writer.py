@@ -18,12 +18,10 @@ import os
 import tensorflow as tf
 
 from collections import OrderedDict
+from distutils.version import LooseVersion
+from tensorflow.keras import activations
+from tensorflow.keras import layers as keras_layers
 from tensorflow.python.framework import dtypes as tf_dtypes
-from tensorflow.python.keras import activations
-from tensorflow.python.keras import layers as keras_layers
-from tensorflow.python.keras.engine import base_layer_utils
-from tensorflow.python.keras.engine import input_layer as input_layer_module
-from tensorflow.python.keras.utils import tf_utils as keras_tf_utils
 from tensorflow.python.util import nest
 from tensorflow.python.util import tf_inspect
 
@@ -36,8 +34,14 @@ from tf_nndct.graph import utils
 from tf_nndct.ops.signal import fft_ops
 from tf_nndct.quantization import utils as quant_utils
 from tf_nndct.utils import generic_utils
+from tf_nndct.utils import keras_utils
 from tf_nndct.utils import registry
 from tf_nndct.utils import tf_utils
+
+if tf_utils.tf_version() >= LooseVersion('2.6'):
+  from keras.utils import tf_utils as tf_keras_utils
+else:
+  from tensorflow.python.keras.utils import tf_utils as tf_keras_utils
 
 _INPUT_ARG_PREFIX = '%input%_'
 
@@ -51,7 +55,7 @@ class CodeFormatter(object):
     self._init_indent_level = init_indent_level
     self._indent_length = indent_length
     self._start_of_line = False
-    self._statements = []
+    self._text = []
 
   def indent(self):
     self._indent_level += 1
@@ -65,9 +69,13 @@ class CodeFormatter(object):
     return self._indent_length * self._indent_level
 
   def newline(self):
-    self.add_statement('\n')
+    self.add_text('\n')
 
-  def add_statement(self, text):
+  def add_statement(self, statement):
+    self.add_text(statement)
+    self.newline()
+
+  def add_text(self, text):
     text = str(text)
     if self._indent_level > 0:
       pos = 0
@@ -83,7 +91,7 @@ class CodeFormatter(object):
         self._start_of_line = True
 
   def code(self):
-    return ''.join(self._statements)
+    return ''.join(self._text)
 
   def _append(self, text):
     if not text:
@@ -92,14 +100,14 @@ class CodeFormatter(object):
       self._start_of_line = False
       self._append_indent()
 
-    self._statements.append(text)
+    self._text.append(text)
 
   def _append_indent(self):
     if self._indent_level == 0:
       return
 
     size = self.current_indentation()
-    self._statements.append(size * ' ')
+    self._text.append(size * ' ')
 
 class GraphCodeGenerator(object):
   """Generate python code from graph and write it to a given path.
@@ -115,27 +123,42 @@ class GraphCodeGenerator(object):
     self._module_alias = {}
 
     self._graph = graph
-    # TODO(yuwang): Remove these two members ?
     self._input_signature = graph.input_signature
     self._structured_output_tensors = graph.structured_output_tensors
 
     self._translator = GraphTranslator(graph, self._class_spec.quantized)
-    self._code_formatter = CodeFormatter()
 
   def write(self, filepath):
     self._translator.translate()
 
-    self._code_formatter.add_statement(
-        '# This file is generated programmatically, do not modify it manually.\n'
-    )
-    self._code_formatter.newline()
+    import_statements = self.generate_imports()
+    class_def, init_statements, call_statements = self.generate_class_def()
 
-    self.generate_imports()
-    self.generate_class_def()
+    def format_function_statements(code_formatter, statements):
+      code_formatter.indent()
+      code_formatter.add_statement(statements[0])
+      code_formatter.indent()
+      for statement in statements[1:]:
+        code_formatter.add_statement(statement)
+      code_formatter.outdent()
+      code_formatter.outdent()
+
+    code_formatter = CodeFormatter()
+    code_formatter.add_statement(
+        '# THIS FILE IS GENERATED PROGRAMMATICALLY, DO NOT MODIFY IT MANUALLY.\n'
+    )
+    for imp in import_statements:
+      code_formatter.add_statement(imp)
+
+    code_formatter.newline()
+    code_formatter.add_statement(class_def)
+    format_function_statements(code_formatter, init_statements)
+    code_formatter.newline()
+    format_function_statements(code_formatter, call_statements)
 
     generic_utils.mkdir_if_not_exist(os.path.dirname(filepath))
     with open(filepath, 'w') as f:
-      f.write(self._code_formatter.code())
+      f.write(code_formatter.code())
       f.flush()
       os.fsync(f.fileno())
 
@@ -158,12 +181,11 @@ class GraphCodeGenerator(object):
     for obj in objects:
       imports.add(self._generate_obj_import(obj))
 
-    # TODO(yuwang): Do not use code formatter directly, just return statements.
-    imports = sorted(imports)
-    for impt in imports:
-      self._code_formatter.add_statement(impt)
-      self._code_formatter.newline()
-    self._code_formatter.newline()
+    return sorted(imports)
+    #for impt in imports:
+    #  self._code_formatter.add_statement(impt)
+    #  self._code_formatter.newline()
+    #self._code_formatter.newline()
 
   def _generate_obj_import(self, obj):
     module, pkg, name = _get_module(obj)
@@ -184,37 +206,28 @@ class GraphCodeGenerator(object):
 
   def generate_class_def(self):
     module, _, _ = _get_module(self._class_spec.base)
-    self._code_formatter.add_statement('class {cls_name}({base_cls}):\n'.format(
+    class_def = 'class {cls_name}({base_cls}):\n'.format(
         cls_name=self._class_spec.name,
         base_cls='.'.join(
-            [self._module_alias[module], self._class_spec.base.__name__])))
-    self._code_formatter.indent()
-    self.generate_init()
-    self.generate_call_fn(self._class_spec.call_fn_name)
-    self._code_formatter.outdent()
+            [self._module_alias[module], self._class_spec.base.__name__]))
+    init_statements = self.generate_init()
+    call_statements = self.generate_call_fn(self._class_spec.call_fn_name)
+    return class_def, init_statements, call_statements
 
   def generate_init(self):
-    self._code_formatter.add_statement('def __init__(self):')
-    self._code_formatter.newline()
-    self._code_formatter.indent()
+    statements = []
+    statements.append('def __init__(self):')
 
-    self._code_formatter.add_statement(
-        'super({}, self).__init__(name={})'.format(
-            self._class_spec.name,
-            utils.stringfy_to_write(self._class_spec.name)))
-    self._code_formatter.newline()
+    statements.append('super({}, self).__init__(name={})'.format(
+        self._class_spec.name, utils.stringfy_to_write(self._class_spec.name)))
 
     for entity in self._translator.entities:
       if not entity.init_needed:
         continue
 
       init_str = self._init_string(entity)
-      self._code_formatter.add_statement('self.{} = {}'.format(
-          entity.name, init_str, entity))
-      self._code_formatter.newline()
-
-    self._code_formatter.newline()
-    self._code_formatter.outdent()
+      statements.append('self.{} = {}'.format(entity.name, init_str, entity))
+    return statements
 
   def _init_string(self, entity):
 
@@ -254,13 +267,11 @@ class GraphCodeGenerator(object):
         args=', '.join(args))
 
   def generate_call_fn(self, fn_name):
+    statements = []
     call_args = ['self']
     for i in range(len(self._input_signature)):
       call_args.append(_CALL_ARG_TEMPLATE % i)
-    self._code_formatter.add_statement('def {}({}):'.format(
-        fn_name, ', '.join(call_args)))
-    self._code_formatter.newline()
-    self._code_formatter.indent()
+    statements.append('def {}({}):'.format(fn_name, ', '.join(call_args)))
 
     placeholders = []
     for node in self._graph.nodes:
@@ -349,8 +360,8 @@ class GraphCodeGenerator(object):
             yield res
       elif nest._is_namedtuple(arg):
         for field in arg._fields:
-          for res in arg_retriving_path(getattr(arg, field),
-                                        path + (('.', field),)):
+          for res in arg_retriving_path(
+              getattr(arg, field), path + (('.', field),)):
             yield res
       # Doesn't support composite_tensor comprared with _yield_sorted_items.
       elif nest._is_type_spec(arg):
@@ -380,16 +391,12 @@ class GraphCodeGenerator(object):
         placeholder_name = args_to_placeholder[arg_name]
         entity = self._translator.get_entity(placeholder_name)
         call_arg = _CALL_ARG_TEMPLATE % i
-        #self._code_formatter.add_statement('{} = {}{}'.format(
-        #    entity.outputs[0].name, call_arg, retriving))
-        #self._code_formatter.newline()
         entity.inputs.append(
             Entity('{}{}'.format(call_arg, retriving), EntityTypes.Tensor))
 
     # TODO(yuwang): Use entities directly, no longer use node.
     for node in self._graph.nodes:
-      self._code_formatter.add_statement(self._call_string(node))
-      self._code_formatter.newline()
+      statements.append(self._call_string(node))
 
     output_tensors = [
         t.name for t in nest.flatten(self._structured_output_tensors)
@@ -400,31 +407,31 @@ class GraphCodeGenerator(object):
     else:
       returns = nest.pack_sequence_as(self._structured_output_tensors, returns)
 
-    def return_str(returns):
+    def return_string(returns):
       return_strs = []
       if isinstance(returns, Entity):
         s = returns.name
       elif isinstance(returns, list):
         for ret in returns:
-          return_strs.append(return_str(ret))
+          return_strs.append(return_string(ret))
         s = ''.join(['[', ', '.join(return_strs), ']'])
       elif isinstance(returns, tuple):
         for ret in returns:
-          return_strs.append(return_str(ret))
+          return_strs.append(return_string(ret))
         s = ''.join(['(', ', '.join(return_strs), ')'])
       elif isinstance(returns, dict):
         for key in returns:
-          return_strs.append('{}: {}'.format(utils.stringfy_to_write(key),
-                                             ''.join(return_str(returns[key]))))
+          return_strs.append('{}: {}'.format(
+              utils.stringfy_to_write(key),
+              ''.join(return_string(returns[key]))))
         s = ''.join(['{', ', '.join(return_strs), '}'])
       else:
         raise NotImplementedError(
             'Can not rewrite return object of type '.format(type(returns)))
       return s
 
-    self._code_formatter.add_statement('return %s' % return_str(returns))
-    self._code_formatter.newline()
-    self._code_formatter.outdent()
+    statements.append('return %s' % return_string(returns))
+    return statements
 
   def _call_string(self, node):
     entity = self._translator.get_entity(node.name)
@@ -482,6 +489,9 @@ class Entity(object):
   def __repr__(self):
     return self.name
 
+  def desp(self):
+    return '({}, {})'.format(self.name, self.obj)
+
   @property
   def init_needed(self):
     return self.type == EntityTypes.Layer
@@ -494,10 +504,14 @@ class GraphTranslator(object):
   in `Node` to entities.
   """
   _op_to_layer = {
+      OpTypes.BATCH_NORM:
+          keras_layers.BatchNormalization,
       OpTypes.BIDIRECTIONAL_RNN:
           keras_layers.Bidirectional,
       OpTypes.CONV1D:
           keras_layers.Conv1D,
+      OpTypes.CONV2D:
+          keras_layers.Conv2D,
       OpTypes.DENSE:
           keras_layers.Dense,
       OpTypes.EMBEDDING:
@@ -529,6 +543,7 @@ class GraphTranslator(object):
       OpTypes.LINEAR: activations.linear,
       OpTypes.RELU: activations.relu,
       OpTypes.SIGMOID: activations.sigmoid,
+      OpTypes.SOFTMAX: activations.softmax,
       OpTypes.TANH: activations.tanh,
       OpTypes.MULTIPLY: tf.math.multiply,
       OpTypes.STRIDED_SLICE: tf.strided_slice,
@@ -559,26 +574,6 @@ class GraphTranslator(object):
     # Op type -> count
     self._op_count = {}
 
-    #for node in graph.nodes:
-    #  entities = self.translate_op_to_entities(node.op)
-    #  self._entities.extend(entities)
-    #  # Post-order traversing in `self.translate_op_to_entities`,
-    #  # the last element in returned list is the entity converted from node.op.
-    #  self._name_to_entity[node.name] = len(self._entities) - 1
-
-    #  node_entity = self.get_entity(node.name)
-    #  for i, tensor in enumerate(node.out_tensors):
-    #    # Use node entity's name as prefix
-    #    tensor_entity = Entity('%s_%d' % (node_entity.name, i),
-    #                           EntityTypes.Tensor)
-    #    self._add_entity(tensor.name, tensor_entity)
-    #    node_entity.outputs.append(tensor_entity)
-
-    #for node in graph.nodes:
-    #  entity = self.get_entity(node.name)
-    #  for i, tensor in enumerate(node.in_tensors):
-    #    entity.inputs.append(self.get_entity(tensor.name))
-
   def _append_entity(self, entity, name=None):
     """
       Args:
@@ -601,11 +596,8 @@ class GraphTranslator(object):
     elif op.type in self._op_to_func:
       obj = self._op_to_func[op.type]
       entity_type = EntityTypes.Function
-    elif op.type == OpTypes.RNN_LAYER:
+    elif op.type == OpTypes.RNN_LAYER or op.type == OpTypes.GENERIC:
       obj = op.attr['layer_class']
-      entity_type = EntityTypes.Layer
-    elif op.type == OpTypes.GENERIC:
-      obj = op.attr['orig_layer_class']
       entity_type = EntityTypes.Layer
     else:
       raise NotImplementedError("Unable to rewrite operation '{}'".format(
@@ -615,12 +607,6 @@ class GraphTranslator(object):
   def translate(self):
     for node in self._graph.nodes:
       entity = self._translate_node(node)
-      # Append config entity first, then append node's entity so that we can
-      # keep entities in the topological order.
-      for key in node.op.configs:
-        value = node.op.get_config(key)
-        if isinstance(value, Entity):
-          self._append_entity(value)
       self._append_entity(entity, node.name)
 
       for index, tensor in enumerate(node.out_tensors):
@@ -644,14 +630,12 @@ class GraphTranslator(object):
       ]
       entity = self.get_entity(node.name)
       if node.op.type != OpTypes.INPUT and entity.type == EntityTypes.Layer:
-        if 'inbound_nodes' in node.op.configs:
-          inbound_nodes_data = node.op.get_config('inbound_nodes')
-          inbound_nodes_data = keras_tf_utils.convert_inner_node_data(
-              inbound_nodes_data, wrap=True)
+        if node.inbound_nodes:
+          inbound_nodes_data = tf_keras_utils.convert_inner_node_data(
+              node.inbound_nodes, wrap=True)
           node_data = [inbound_nodes_data[0]]
           input_entities = nest.pack_sequence_as(node_data, input_entities)
-          input_entities = base_layer_utils.unnest_if_single_tensor(
-              input_entities)
+          input_entities = keras_utils.unnest_if_single_tensor(input_entities)
           if isinstance(input_entities, Entity):
             input_entities = [input_entities]
       entity.inputs = input_entities
@@ -659,16 +643,16 @@ class GraphTranslator(object):
   def _translate_node(self, node):
     obj, ent_type = self._get_tf_object(node.op)
     if ent_type == EntityTypes.Layer:
-      self._op_config_to_entity(node.op)
+      self._op_to_entity(node.op)
       argspec = tf_inspect.getfullargspec(obj.__init__)
       arg_to_value = self._arguments_for_keras_layer_init(node.op, argspec)
     else:
       argspec = tf_inspect.getfullargspec(obj)
       arg_to_value = self._arguments_for_tf_operation_calling(node, argspec)
-    return Entity(self._unique_entity_name(node.op), ent_type, obj,
-                  arg_to_value)
+    return Entity(
+        self._unique_entity_name(node.op), ent_type, obj, arg_to_value)
 
-  def _op_config_to_entity(self, op):
+  def _op_to_entity(self, op):
     """Given an `Operation`, traverse its configs and find all `Operation`
     items, then:
     1. Convert these ops to `Entity` objects
@@ -699,7 +683,8 @@ class GraphTranslator(object):
       converted_values = []
       for value in config_values:
         if isinstance(value, ops.Operation):
-          entity = self._op_config_to_entity(value)
+          entity = self._op_to_entity(value)
+          self._append_entity(entity)
           converted_values.append(entity)
         else:
           converted_values.append(value)

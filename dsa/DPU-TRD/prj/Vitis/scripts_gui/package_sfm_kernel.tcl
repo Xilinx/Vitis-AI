@@ -20,7 +20,7 @@ set path_to_packaged "./packaged_kernel_${suffix}"
 set path_to_tmp_project "./tmp_kernel_pack_${suffix}"
 
 create_project -force kernel_pack $path_to_tmp_project 
-add_files -norecurse [glob $path_to_hdl/Vitis/sfm/hdl/*.v $path_to_hdl/DPUCZDX8G_*/hdl/DPUCZDX8G_*_sfm.sv $path_to_hdl/DPUCZDX8G_v3_3_0/xci/sfm/fp_*/fp_*.xci]
+add_files -norecurse [glob $path_to_hdl/Vitis/sfm/hdl/*.v $path_to_hdl/DPUCZDX8G_*/hdl/DPUCZDX8G_*_sfm.sv $path_to_hdl/DPUCZDX8G_*/xci/sfm/fp_*/fp_*.xci]
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1
 ipx::package_project -root_dir $path_to_packaged -vendor xilinx.com -library RTLKernel -taxonomy /KernelIP -import_files -set_current false

@@ -17,6 +17,7 @@
 #ifndef _XF_AIE_SW_UTILS_H_
 #define _XF_AIE_SW_UTILS_H_
 
+#include <common/xf_aie_const.hpp>
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>

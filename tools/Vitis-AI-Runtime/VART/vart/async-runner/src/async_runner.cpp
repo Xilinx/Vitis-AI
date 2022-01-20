@@ -179,7 +179,7 @@ AsyncRunnerImpl::AsyncRunnerImpl(vart::Runner* (*init_fun)(const xir::Subgraph*,
       attrs->has_attr("num_of_dpu_runners")
           ? attrs->get_attr<size_t>("num_of_dpu_runners")
           : 10u;
-  runners_ = vector<AsyncRunnerImpl::runner_t>(num_of_dpu_runners);
+  runners_ = std::vector<AsyncRunnerImpl::runner_t>(num_of_dpu_runners);
   for (auto i = 0u; i < runners_.size(); ++i) {
     // TODO: remove black list
     runners_[i].attrs = xir::Attrs::clone(attrs);
@@ -312,13 +312,13 @@ int AsyncRunnerImpl::wait(int jobid, int timeout) {
   }
   try {
     auto future = job->promise.get_future();
-    std::future_status cv = future_status::ready;
+    std::future_status cv = std::future_status::ready;
     if (timeout == -1) {
       future.wait();
     } else {
       cv = future.wait_for(std::chrono::milliseconds(timeout));
     }
-    if (cv == future_status::ready) {
+    if (cv == std::future_status::ready) {
       ret = future.get();
     }
   } catch (std::exception& e) {

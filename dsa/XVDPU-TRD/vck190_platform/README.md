@@ -13,8 +13,8 @@ To build the Vitis embedded platforms from source code in this repository, you w
 installed and follow the build instructions:
 
 - A Linux-based host OS supported by Vitis and PetaLinux
-- [Vitis][1] 2021.1
-- [PetaLinux][2] 2021.1
+- [Vitis][1] 2021.2
+- [PetaLinux][2] 2021.2
 
 [1]: https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis.html
 [2]: https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools.html
@@ -24,7 +24,7 @@ To learn how to customize Vitis embedded platforms, please refer to [Vitis Platf
 Vitis and PetaLinux environment need to be setup before building the platform.
 
 ```bash
-source <Vitis_install_path>/Vitis/2021.1/settings64.sh
+source <Vitis_install_path>/Vitis/2021.2/settings64.sh
 source <PetaLinux_install_path>/settings.sh
 ```
 This package comes with sources to generate the Vitis platform with these steps:
@@ -40,7 +40,7 @@ make all
 
 Notes:
 
-- When building PetaLinux image from source code, the build temp directory is set to **/tmp/xilinx_vck190_base-2021.1**. You can update the build temp directory by modifying CONFIG_TMP_DIR_LOCATION option in **<platform_name>/petalinux/xilinx-vck190-base-trd/project-spec/configs/config** file.
+- When building PetaLinux image from source code, the build temp directory is set to **/tmp/xilinx_vck190_base-2021.2**. You can update the build temp directory by modifying CONFIG_TMP_DIR_LOCATION option in **<platform_name>/petalinux/xilinx-vck190-base-trd/project-spec/configs/config** file.
 
 The platform file .xpfm will be genereated at **'platforms/xilinx_vck190_mipiRxSingle_hdmiTx_202110_1/vck190_mipiRxSingle_hdmiTx.xpfm'**
 

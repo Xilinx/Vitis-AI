@@ -26,6 +26,7 @@ import time
 PARSE_TIME_ERR = 30
 LOG_PATH = "./test_dpu_mc.log"
 
+
 def find_xmodel(dir):
     suffix = ".xmodel"
     ret = []
@@ -48,7 +49,7 @@ def xmodel_to_subgraphs(xmodel):
     for dp1_subgraph in root.toposort_child_subgraph():
         for dp2_subgraph in dp1_subgraph.toposort_child_subgraph():
             ret.append(dp2_subgraph)
-    #return ret
+
     return root.toposort_child_subgraph()
 
 
@@ -61,6 +62,7 @@ def subgraph_to_mc_str(subg):
         return mc_str
 
     return None
+
 
 def process_mc_str(dpu_name, mc_str):
     mc_data = dpu_mc_parser.process_mc(dpu_name, mc_str, True)
@@ -80,8 +82,10 @@ if __name__ == "__main__":
     logging.getLogger().addHandler(fhlr)
 
     # process args
-    cmd_parser = argparse.ArgumentParser(usage="Usage: ./test_dpu_mc.py <xmodel_dir_path> -d <depth>\ne.g: ./writer/parser/test_dpu_mc.py /usr/share/vitis_ai_library/models/ -d 1")
-    cmd_parser.add_argument('-d','--depth', default=1, choices=[1, 2], type=int, help="xmodel parse depth, default: 1")
+    cmd_parser = argparse.ArgumentParser(
+        usage="Usage: ./test_dpu_mc.py <xmodel_dir_path> -d <depth>\ne.g: ./writer/parser/test_dpu_mc.py /usr/share/vitis_ai_library/models/ -d 1")
+    cmd_parser.add_argument('-d', '--depth', default=1,
+                            choices=[1, 2], type=int, help="xmodel parse depth, default: 1")
     cmd_parser.add_argument("xmodel_dir", nargs=1, help="path to xmodel dir")
     args = cmd_parser.parse_args()
 
@@ -98,7 +102,7 @@ if __name__ == "__main__":
     for m in xmodels:
         subgs = xmodel_to_subgraphs(m)
         logging.info("Processing xmodel [%d/%d]: %s, # of subgraphs: %d" %
-                     (xmodels.index(m), n_models, m, len(subgs)))
+                     (xmodels.index(m) + 1, n_models, m, len(subgs)))
         logging_prefix = 4 * " "
 
         for subg in subgs:
@@ -113,24 +117,26 @@ if __name__ == "__main__":
             else:
                 logging.error("Cannot find <dpu_name> in xmodel")
 
-
             # process depth=1 subgraphs
             mc_str = subgraph_to_mc_str(subg)
             if mc_str != None:
                 logging.info(logging_prefix + "Processing subgraph: %s, dpu_name: %s" %
-                         (subg.get_name(), dpu_name))
-                load_img_size, load_para_size, save_size, workload = process_mc_str(dpu_name, mc_str)
+                             (subg.get_name(), dpu_name))
+                load_img_size, load_para_size, save_size, workload = process_mc_str(
+                    dpu_name, mc_str)
                 if workload == 0:
                     """Try to get workload from xmodel"""
                     if subg.has_attr("workload"):
-                        workload =  subg.get_attr("workload")
-                logging.info(logging_prefix + "Result: LoadImgSize: {:,}, LoadParaSize: {:,}, SaveSize: {:,}, Workload: {:,}".format\
+                        workload = subg.get_attr("workload")
+                logging.info(logging_prefix + "Result: LoadImgSize: {:,}, LoadParaSize: {:,}, SaveSize: {:,}, Workload: {:,}".format
                              (load_img_size, load_para_size, save_size, workload))
                 t_subgraph_dur = (time.time() - t_subgraph_start)
                 if t_subgraph_dur < PARSE_TIME_ERR:
-                    logging.info(logging_prefix + "Parsing time consuming: {:.3f} s, mc_size: {:,}".format(t_subgraph_dur, len(mc_str)))
+                    logging.info(
+                        logging_prefix + "Parsing time consuming: {:.3f} s, mc_size: {:,}".format(t_subgraph_dur, len(mc_str)))
                 else:
-                    logging.error(logging_prefix + "ERROR: Parsing time consuming: {:.3f} s, mc_size: {:,}".format(t_subgraph_dur, len(mc_str)))
+                    logging.error(
+                        logging_prefix + "ERROR: Parsing time consuming: {:.3f} s, mc_size: {:,}".format(t_subgraph_dur, len(mc_str)))
                 logging.info(logging_prefix + 80 * "-")
 
             # process depth=1 subgraphs
@@ -141,17 +147,17 @@ if __name__ == "__main__":
                 if mc_str != None:
                     logging.info(logging_prefix + "Processing subgraph of depth=2: %s, dpu_name: %s" %
                                  (dp2_subg.get_name(), dpu_name))
-                    load_img_size, load_para_size, save_size, workload = process_mc_str(dpu_name, mc_str)
+                    load_img_size, load_para_size, save_size, workload = process_mc_str(
+                        dpu_name, mc_str)
 
                     if workload == 0:
                         """Try to get workload from xmodel"""
                         if dp2_subg.has_attr("workload"):
-                            workload =  dp2_subg.get_attr("workload")
-                    logging.info(logging_prefix + "Result: LoadImgSize: {:,}, LoadParaSize: {:,}, SaveSize: {:,}, Workload: {:,}".format\
+                            workload = dp2_subg.get_attr("workload")
+                    logging.info(logging_prefix + "Result: LoadImgSize: {:,}, LoadParaSize: {:,}, SaveSize: {:,}, Workload: {:,}".format
                                  (load_img_size, load_para_size, save_size, workload))
                     logging.info(logging_prefix + 80 * "-")
         logging.info(80 * "-")
-
 
     logging.info("%s%s%s" % (50 * "=", "[END]", 50 * "="))
     logging.warning("Log File: [%s]" % os.path.abspath(LOG_PATH))

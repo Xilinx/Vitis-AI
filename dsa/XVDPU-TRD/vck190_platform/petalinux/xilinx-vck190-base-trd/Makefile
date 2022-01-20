@@ -2,7 +2,7 @@ RM = rm -rf
 
 # to be passed from top-level Makefile
 PFM ?= vck190_mipiRxSingle_hdmiTx 
-YES ?= 0
+YES ?= 1
 
 PLNX_IMG_DIR = images/linux
 PLNX_SDK = $(PLNX_IMG_DIR)/sdk.sh
@@ -57,7 +57,7 @@ $(PLNX_WIC): $(PLNX_WIC_OBJS) $(PLNX_BOOT)
 	petalinux-package --wic $(PLNX_WIC_ARGS)
 
 .PHONY: pfm
-pfm: $(PLNX_WIC)
+pfm: $(PLNX_WIC_OBJS) $(PLNX_BOOT)
 	@mkdir -p $(PFM_TOP)/sw/$(PFM)/xrt
 	@mkdir -p $(PFM_TOP)/sw/$(PFM)/xrt/image
 	@mkdir -p $(PFM_TOP)/sw/$(PFM)/xrt/filesystem

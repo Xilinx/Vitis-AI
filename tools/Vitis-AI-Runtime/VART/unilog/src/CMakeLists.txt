@@ -19,22 +19,34 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}")
 target_include_directories(${PROJECT_NAME} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 find_package(Boost COMPONENTS system filesystem REQUIRED)
+# for MSVC we must add it into LIBPATH even the lib file is full path.
+target_link_directories(${PROJECT_NAME} PRIVATE "${Boost_LIBRARY_DIRS}")
 target_link_libraries(${PROJECT_NAME} 
-  PRIVATE ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
+  PRIVATE Boost::system Boost::filesystem
   PUBLIC glog::glog)
+  # Enable Export of public APIs
+target_compile_definitions(${PROJECT_NAME} PRIVATE -DUNILOG_EXPORT)
+if(CMAKE_BUILD_TYPE MATCHES "Release")
+  target_compile_definitions(${PROJECT_NAME} PUBLIC -DUNI_LOG_NDEBUG)
+endif()
+if(NOT MSVC)
+  target_compile_options(${PROJECT_NAME} PUBLIC $<$<CONFIG:DEBUG>:-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0>)
+endif(NOT MSVC)
 
 install(
   TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}-targets
-  RUNTIME DESTINATION ${INSTALL_BIN_DIR}
+  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
 install(FILES
-  ${CMAKE_SOURCE_DIR}/include/UniLog.hpp
-  ${CMAKE_SOURCE_DIR}/include/ErrorCode.hpp
+  ${PROJECT_SOURCE_DIR}/include/UniLog/UniLog.hpp
+  ${PROJECT_SOURCE_DIR}/include/UniLog/UniLogExport.hpp
+  ${PROJECT_SOURCE_DIR}/include/UniLog/ErrorCode.hpp
   DESTINATION include/UniLog)
 install(
   EXPORT ${PROJECT_NAME}-targets

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx, Inc.
+ * Copyright 2021 Xilinx, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5058,7 +5058,7 @@ void xfbgr2xyz(xf::cv::Mat<SRC_T, ROWS, COLS, NPC>& src,
                xf::cv::Mat<DST_T, ROWS, COLS, NPC>& dst,
                unsigned short int height,
                unsigned short int width) {
-    ap_uint<8> RGB[3];
+    XF_CTUNAME(SRC_T, NPC) RGB[3 * XF_NPIXPERCYCLE(NPC)];
 // clang-format off
 #pragma HLS ARRAY_PARTITION variable=RGB complete
     // clang-format on
@@ -5066,6 +5066,10 @@ void xfbgr2xyz(xf::cv::Mat<SRC_T, ROWS, COLS, NPC>& src,
     XF_TNAME(SRC_T, NPC) RGB_packed = 0;
     XF_TNAME(DST_T, NPC) XYZ_packed = 0;
     XF_DTUNAME(DST_T, NPC) XYZ[XF_NPIXPERCYCLE(NPC)];
+// clang-format off
+#pragma HLS ARRAY_PARTITION variable=XYZ complete
+    // clang-format on
+
     XF_TNAME(DST_T, NPC) X, Y, Z;
     short int depth = XF_PIXELWIDTH(DST_T, NPC) / XF_CHANNELS(SRC_T, NPC);
     int k = 0;
@@ -5079,19 +5083,20 @@ rowloop:
         for (ap_uint<13> j = 0; j<width>> XF_BITSHIFT(NPC); j++) {
 // clang-format off
 #pragma HLS pipeline
-#pragma HLS LOOP_TRIPCOUNT min=COLS max=COLS
+#pragma HLS LOOP_TRIPCOUNT min=TC max=TC
             // clang-format on
 
             RGB_packed = src.read((i * (width >> XF_BITSHIFT(NPC))) + j);
-            ExtractUYVYPixels<WORDWIDTH_SRC>(RGB_packed, RGB);
+            ExtractUYVYPixels<SRC_T, NPC, WORDWIDTH_SRC>(RGB_packed, RGB);
 
             for (int k = 0, offset = 0; k < XF_NPIXPERCYCLE(NPC); k++, offset += 3) {
 // clang-format off
 #pragma HLS UNROLL
                 // clang-format on
-                X = Calculate_X(RGB[offset + 2], RGB[offset + 1], RGB[offset]);
-                Y = Calculate_Y(RGB[offset + 2], RGB[offset + 1], RGB[offset]);
-                Z = Calculate_Z(RGB[offset + 2], RGB[offset + 1], RGB[offset]);
+
+                X = _Calculate_X(RGB[offset + 2], RGB[offset + 1], RGB[offset]);
+                Y = _Calculate_Y(RGB[offset + 2], RGB[offset + 1], RGB[offset]);
+                Z = _Calculate_Z(RGB[offset + 2], RGB[offset + 1], RGB[offset]);
 
                 XYZ[k].range((XF_DTPIXELDEPTH(DST_T, NPC) - 1), 0) = X;
                 XYZ[k].range((XF_DTPIXELDEPTH(DST_T, NPC) * 2) - 1, XF_DTPIXELDEPTH(DST_T, NPC)) = Y;
@@ -5111,14 +5116,14 @@ void bgr2xyz(xf::cv::Mat<SRC_T, ROWS, COLS, NPC>& _src, xf::cv::Mat<DST_T, ROWS,
 #pragma HLS INLINE OFF
 // clang-format on
 #ifndef __SYNTHESIS__
-    assert((SRC_T == XF_8UC3) && " BGR image Type must be XF_8UC3");
-    assert((DST_T == XF_8UC3) && " XYZ image Type must be XF_8UC3");
+    assert(((SRC_T == XF_8UC3) || (SRC_T == XF_16UC3)) && " BGR image Type must be XF_8UC3 or XF_16UC3");
+    assert(((DST_T == XF_8UC3) || (DST_T == XF_16UC3)) && " XYZ image Type must be XF_8UC3 or XF_16UC3");
     assert(((_src.rows <= ROWS) && (_src.cols <= COLS)) && " BGR image rows and cols should be less than ROWS, COLS");
     assert(((_dst.cols == _src.cols) && (_dst.rows == _src.rows)) && "BGR and XYZ plane dimensions mismatch");
-    assert(((NPC == XF_NPPC1) || (NPC == XF_NPPC8)) && " 1,8 pixel parallelism is supported  ");
+    assert(((NPC == XF_NPPC1) || (NPC == XF_NPPC2)) && " 1,2 pixel parallelism is supported  ");
 #endif
     xfbgr2xyz<SRC_T, DST_T, ROWS, COLS, NPC, XF_WORDWIDTH(SRC_T, NPC), XF_WORDWIDTH(DST_T, NPC),
-              (ROWS * (COLS >> (XF_NPIXPERCYCLE(NPC))))>(_src, _dst, _src.rows, _src.cols);
+              (COLS >> (XF_NPIXPERCYCLE(NPC)))>(_src, _dst, _src.rows, _src.cols);
 }
 /////////////////////////////////	XYZ2RGB
 ////////////////////////////////////////
@@ -5199,6 +5204,10 @@ void xfxyz2bgr(xf::cv::Mat<SRC_T, ROWS, COLS, NPC>& src,
     // clang-format on
 
     XF_TNAME(DST_T, NPC) RGB[XF_NPIXPERCYCLE(NPC)];
+// clang-format off
+#pragma HLS ARRAY_PARTITION variable=RGB complete
+    // clang-format on
+
     XF_TNAME(DST_T, NPC) XYZ_packed = 0, RGB_packed = 0;
     XF_TNAME(DST_T, NPC) R, G, B;
 rowloop:
@@ -5211,7 +5220,7 @@ rowloop:
         for (ap_uint<13> j = 0; j < (width >> XF_BITSHIFT(NPC)); j++) {
 // clang-format off
 #pragma HLS pipeline
-#pragma HLS LOOP_TRIPCOUNT min=COLS max=COLS
+#pragma HLS LOOP_TRIPCOUNT min=TC max=TC
             // clang-format on
             XYZ_packed = src.read((i * (width >> XF_BITSHIFT(NPC))) + j);
             ExtractUYVYPixels<WORDWIDTH_SRC>(XYZ_packed, XYZ);
@@ -5245,10 +5254,10 @@ void xyz2bgr(xf::cv::Mat<SRC_T, ROWS, COLS, NPC>& _src, xf::cv::Mat<DST_T, ROWS,
     assert((DST_T == XF_8UC3) && " BGR image Type must be XF_8UC3");
     assert(((_src.rows <= ROWS) && (_src.cols <= COLS)) && " XYZ image rows and cols should be less than ROWS, COLS");
     assert(((_dst.cols == _src.cols) && (_dst.rows == _src.rows)) && "BGR and XYZ plane dimensions mismatch");
-    assert(((NPC == XF_NPPC1) || (NPC == XF_NPPC8)) && " 1,8 pixel parallelism is supported  ");
+    assert(((NPC == XF_NPPC1) || (NPC == XF_NPPC2)) && " 1,2 pixel parallelism is supported  ");
 #endif
     xfxyz2bgr<SRC_T, DST_T, ROWS, COLS, NPC, XF_WORDWIDTH(SRC_T, NPC), XF_WORDWIDTH(DST_T, NPC),
-              (ROWS * (COLS >> (XF_NPIXPERCYCLE(NPC))))>(_src, _dst, _src.rows, _src.cols);
+              (COLS >> (XF_NPIXPERCYCLE(NPC)))>(_src, _dst, _src.rows, _src.cols);
 }
 
 /////////////////////////////////	RGB2YCRCB

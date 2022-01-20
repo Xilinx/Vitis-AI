@@ -1,5 +1,3 @@
-
-
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -30,10 +28,10 @@ from tf_nndct.graph import ops
 from tf_nndct.utils import generic_utils
 from tf_nndct.utils import viz
 
-
 def maybe_export_graph(path, graph):
   if not os.environ.get('VAI_TF_PARSER_DEBUG', ''):
     return
+
   dir_name = os.path.dirname(path)
   generic_utils.mkdir_if_not_exist(dir_name)
 
@@ -102,8 +100,8 @@ def topological_sort(graph):
       detailed_message.append('{}: {} vs. {}'.format(
           node_name, num_ready_inputs[node_name], node.num_inputs))
     raise RuntimeError(('Couldn\'t sort the graph in topological order as '
-        'there is at least one cycle in the graph. Not ready '
-        'nodes: \n{}'.format('\n'.join(detailed_message))))
+                        'there is at least one cycle in the graph. Not ready '
+                        'nodes: \n{}'.format('\n'.join(detailed_message))))
 
   topo_graph = ops.Graph()
   for node in reordered_nodes:

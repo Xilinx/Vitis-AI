@@ -132,7 +132,7 @@ class FaceLandmark {
   virtual FaceLandmarkResult run(const cv::Mat &input_image) = 0;
 
   /**
-   * @brief Function to get running results of the face landmark neuron network
+   * @brief Function to get running results of the face landmark neural network
    * in batch mode.
    *
    * @param input_images Input data of input images (std:vector<cv::Mat>). The size of

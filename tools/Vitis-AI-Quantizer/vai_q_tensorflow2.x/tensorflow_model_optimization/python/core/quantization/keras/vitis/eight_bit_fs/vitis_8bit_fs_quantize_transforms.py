@@ -19,7 +19,6 @@ import inspect
 import copy
 
 import tensorflow as tf
-from tensorflow.python.keras import activations
 
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_aware_activation
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
@@ -33,6 +32,7 @@ from tensorflow_model_optimization.python.core.quantization.keras.vitis.graph_tr
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.optimizations import vitis_optimize_transforms
 
+activations = tf.keras.activations
 serialize_keras_object = tf.keras.utils.serialize_keras_object
 deserialize_keras_object = tf.keras.utils.deserialize_keras_object
 LayerNode = transforms.LayerNode

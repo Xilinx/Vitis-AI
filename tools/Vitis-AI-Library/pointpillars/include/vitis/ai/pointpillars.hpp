@@ -58,7 +58,7 @@ struct DISPLAY_PARAM {
 
 /**
  * @struct ANNORET
- * @brief Struct of the result returned by the pointpillars neuron network in
+ * @brief Struct of the result returned by the pointpillars neural network in
  * the annotation mode. It is mainly used for accuracy test or bev image drawing
  */
 struct ANNORET {
@@ -105,7 +105,7 @@ struct ANNORET {
 
 /**
  * @struct PPResult
- * @brief Struct of the final result returned by the pointpillars neuron
+ * @brief Struct of the final result returned by the pointpillars neural
  * network.
  */
 struct PPResult {
@@ -120,14 +120,14 @@ struct PPResult {
 /**
  * @struct PointPillarsResult
  * @brief Struct of the final result returned by the pointpillars
- *  neuron network encapsulated with width/height information.
+ *  neural network encapsulated with width/height information.
  */
 struct PointPillarsResult {
   /// Width of network input.
   int width = 0;
   /// Height of network input.
   int height = 0;
-  /// Final result returned by the pointpillars neuron network.
+  /// Final result returned by the pointpillars neural network.
   PPResult ppresult;
 };
 
@@ -179,7 +179,7 @@ class PointPillars {
 
  public:
   /**
-   * @brief Function of get result of the PointPillars neuron network.
+   * @brief Function of get result of the PointPillars neural network.
    *
    * @param v1f: point data in vector<float>
    *
@@ -187,9 +187,19 @@ class PointPillars {
    *
    */
   virtual vitis::ai::PointPillarsResult run(const V1F& v1f) = 0;
+  /**
+   * @brief Function of get result of the PointPillars neural network in batch
+   * mode
+   *
+   * @param v2f: vector of point data in vector<float>
+   *
+   * @return vector of PointPillarsResult.
+   *
+   */
+  virtual std::vector<vitis::ai::PointPillarsResult> run(const V2F& v2f) = 0;
 
   /**
-   * @brief Function of get result of the PointPillars neuron network.
+   * @brief Function of get result of the PointPillars neural network.
    *
    * @param points: point data refered by float*
    * @len: length of the points data ( float data length, not byte data length )
@@ -198,6 +208,20 @@ class PointPillars {
    *
    */
   virtual vitis::ai::PointPillarsResult run(const float* points, int len) = 0;
+  /**
+   * @brief Function of get result of the PointPillars neural network in batch
+   * mode.
+   *
+   * @param points: vector of point data refered by float*
+   * @len: vector of length of the points data ( float data length, not byte
+   * data length )
+   *
+   * @return vector of PointPillarsResult.
+   *
+   */
+  virtual std::vector<vitis::ai::PointPillarsResult> run(
+      const std::vector<const float*>& vpoints,
+      const std::vector<int>& vlen) = 0;
   /**
    * @brief Function to get input batch of the PointPillars network.
    *

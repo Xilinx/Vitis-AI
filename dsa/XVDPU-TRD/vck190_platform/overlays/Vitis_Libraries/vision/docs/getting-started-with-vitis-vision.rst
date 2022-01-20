@@ -19,11 +19,11 @@ hardware.
 Prerequisites
 =============
 
-#. Valid installation of Vitis™ 2021.1 or later version and the
+#. Valid installation of Vitis™ 2021.2 or later version and the
    corresponding licenses.
 #. Install the Vitis Vision libraries, if you intend to use libraries
    compiled differently than what is provided in Vitis.
-#. Install the card for which the platform is supported in Vitis 2021.1 or
+#. Install the card for which the platform is supported in Vitis 2021.2 or
    later versions.
 #. If targeting an embedded platform, set up the evaluation board.
 #. Xilinx® Runtime (XRT) must be installed. XRT provides software
@@ -663,21 +663,15 @@ the steps to build the kernel and run on a hardware:
 
    $ make host xclbin TARGET=hw HOST_ARCH=< aarch32 | aarch64 >
    
-   $ make run TARGET=hw HOST_ARCH=< aarch32 | aarch64 >
+   $ make run TARGET=< sw_emu|hw_emu|hw > HOST_ARCH=< aarch32 | aarch64 > #This command will generate only the sd_card folder in case of hardware build.
 
-*Note1*. For non-DFX platforms, BOOT.BIN has to be manually copied from < build-directory >/< xclbin-folder >/sd\_card / to the top level sd_card folder.
+**Note**. For hw run on embedded devices, copy the generated sd_card folder content under package_hw to an SD Card. More information on preparing the SD Card is available [here](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18842385/How+to+format+SD+card+for+SD+boot#HowtoformatSDcardforSDboot-CopingtheImagestotheNewPartitions). After successful booting of the board, run the following commands:
 
-*Note2*. For hw run on embedded devices, copy the generated sd_card folder content under package_hw directory to an SDCARD and run the following commands on the board:
+    cd /mnt
 
-.. code:: c
+    export XCL_BINDIR=< xclbin-folder-present-in-the-sd_card > #For example, "export XCL_BINDIR=xclbin_zcu102_base_hw"
 
-   source /opt/xilinx/xrt/setup.sh
-   
-   cd /mnt
-   
-   export XCL_BINDIR=< xclbin-folder-present-in-the-sd_card > #For example, "export XCL_BINDIR=xclbin_zcu102_base_hw"
-   
-   ./< executable > < arguments >
+    ./run_script.sh
 
 
 

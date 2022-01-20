@@ -68,7 +68,7 @@ static Matrix3f solve_rotate(MatrixXf A, VectorXf b) {
   return t;
 }
 
-static MatrixXf get_rotate_matrix(const vector<float>& points) {
+static MatrixXf get_rotate_matrix(const std::vector<float>& points) {
 
   Map<MatrixXf> m_points(const_cast<float *>(points.data()), 2, 5);
   MatrixXf m_points_t = m_points.transpose();
@@ -175,15 +175,15 @@ static std::pair<cv::Rect, cv::Rect> expand_and_align(
                                  std::get<2>(relative), std::get<3>(relative)});
 }
 
-static vector<string> find_model_search_path() {
-  auto ret = vector<string>{};
+static std::vector<std::string> find_model_search_path() {
+  auto ret = std::vector<std::string>{};
   ret.push_back(ENV_PARAM(VAI_LIBRARY_MODELS_DIR));
   ret.push_back("/usr/share/vitis_ai_library/models");
   ret.push_back("/usr/share/vitis_ai_library/.models");
   return ret;
 }
 
-static size_t filesize(const string& filename) {
+static size_t filesize(const std::string& filename) {
   size_t ret = 0u;
   struct stat statbuf;
   const auto r_stat = stat(filename.c_str(), &statbuf);
@@ -192,7 +192,7 @@ static size_t filesize(const string& filename) {
   }
   return ret;
 }
-static string find_model(const string& name) {
+static std::string find_model(const std::string& name) {
 //# Disable the unused functions when DPUV1 Enable
 #ifndef ENABLE_DPUCADX8G_RUNNER
   if (filesize(name) > 0u) {
@@ -235,16 +235,16 @@ static string find_model(const string& name) {
   }
 #endif
 
-  stringstream str;
+  std::stringstream str;
   str << "cannot find model <" << name << "> after checking following dir:";
   for (const auto& p : find_model_search_path()) {
     str << "\n\t" << p;
   }
   LOG(FATAL) << str.str();
-  return string{""};
+  return std::string{""};
 }
 
-static std::string find_name_in_line(const string& line, const string& type_name){
+static std::string find_name_in_line(const std::string& line, const std::string& type_name){
   std::string ret;
   auto pos = line.find(type_name);
   
@@ -267,7 +267,7 @@ static std::vector<std::string> get_real_model_names(const std::string &fake_nam
   auto full_name = find_model(fake_name);
   LOG_IF(INFO, ENV_PARAM(ENABLE_DEBUG_FACE_DETECT_RECOG)) 
         << "model name: " << full_name;
-  ifstream ifile(full_name);
+  std::ifstream ifile(full_name);
   char s[1024];
   std::string detect_name;
   std::string landmark_name;
@@ -431,7 +431,7 @@ FaceDetectRecogImp::run_recog_fixed_batch_internal(
                   img1);
     }
 
-    vector<float> points_src(10);
+    std::vector<float> points_src(10);
     //  valid_face_tl_x=0.0; //added by lyn
     // valid_face_tl_y=0.0; //added by lyn
     for (int j = 0; j < 5; j++) {
@@ -443,7 +443,7 @@ FaceDetectRecogImp::run_recog_fixed_batch_internal(
     __TIC__(RECOG_ALIGN)
     // need aligned;
     MatrixXf m = get_rotate_matrix(points_src);
-    vector<float> data(m.size());
+    std::vector<float> data(m.size());
     for (auto n = 0; n < m.rows(); ++n) {
       for (auto k = 0; k < m.cols(); ++k) {
         data[n * m.cols() + k] = m(n, k);

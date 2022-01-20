@@ -22,8 +22,12 @@ from nndct_shared.base import NNDCT_OP
 BN_MERGED_TYPES = [NNDCT_OP.CONV2D, 
                    NNDCT_OP.DEPTHWISE_CONV2D, 
                    NNDCT_OP.CONVTRANSPOSE2D,
+                   NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D,
                    NNDCT_OP.CONV3D, 
-                   NNDCT_OP.CONVTRANSPOSE3D]
+                   NNDCT_OP.DEPTHWISE_CONV3D,
+                   NNDCT_OP.CONVTRANSPOSE3D,
+                   NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]
+
 
 class ConvBnHandler(object):
   def __call__(self, *args, **kwargs):
@@ -41,6 +45,7 @@ class ConvBnHandler(object):
     bn_node.merged = True
 
     # print(f"fuse conv {conv_node.name} with bn {bn_node.name}")
+    # print(f"fuse conv {conv_node.name} with bn {bn_node.name}")
     if conv_node.node_attr(conv_node.op.AttrName.BIAS_TERM):
       bias_param_name = conv_node.op.params[
           conv_node.op.ParamName.BIAS].name
@@ -51,9 +56,17 @@ class ConvBnHandler(object):
       # bias_param_name = '.'.join(
       #     conv_node.op.params[conv_node.op.ParamName.WEIGHTS].name.split(
       #         split_sym)[:-1]) + split_sym + 'bias'
-      bias_param_name = '.'.join(
-          conv_node.op.params[conv_node.op.ParamName.WEIGHTS].name.split(
-              split_sym)) + split_sym + 'bias'
+      
+      end_str = conv_node.op.params[conv_node.op.ParamName.WEIGHTS].name.split(split_sym)[-1]
+      if end_str.isdigit():
+        bias_param_name = '.'.join(
+            conv_node.op.params[conv_node.op.ParamName.WEIGHTS].name.split(
+                split_sym)[:-2]) + split_sym + 'bias' + split_sym + end_str
+      else:
+        bias_param_name = '.'.join(
+            conv_node.op.params[conv_node.op.ParamName.WEIGHTS].name.split(
+                split_sym)[:-1]) + split_sym + 'bias'
+
       bias_data = 0
       conv_node.set_node_attr(conv_node.op.AttrName.BIAS_TERM, True)
 
@@ -100,15 +113,26 @@ class ConvBnHandler(object):
         new_conv_weights = new_conv_weights.reshape((channel_multiplier, in_dim, *kernel_size))
         # [channel_multiplier, in_channles, h, w] -> [channel_multiplier, h, w, in_channles]
         new_conv_weights = new_conv_weights.transpose(0, 2, 3, 1)
-      elif conv_node.op.type == NNDCT_OP.CONV3D:
-        new_conv_weights = conv_weights.transpose(1, 2, 3, 4, 0) * scale
-        new_conv_weights = new_conv_weights.transpose(4, 0, 1, 2, 3)
-      elif conv_node.op.type == NNDCT_OP.CONVTRANSPOSE3D:
-        new_conv_weights = conv_weights.transpose(2, 3, 4, 0, 1) * scale
-        new_conv_weights = new_conv_weights.transpose(3, 4, 0, 1, 2)
+      elif conv_node.op.type in [NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]:
+        # [channel_multiplier, h, w, d, in_channels] -> [channel_multiplier, in_channles, h, w, d]
+        conv_weights = conv_weights.transpose(0, 4, 1, 2, 3)
+        in_dim = conv_node.node_attr(conv_node.op.AttrName.IN_DIM)
+        out_dim = conv_node.node_attr(conv_node.op.AttrName.OUT_DIM)
+        *kernel_wh, d = conv_node.node_attr(conv_node.op.AttrName.KERNEL)
+        channel_multiplier = int(out_dim / in_dim)
+        # [channel_multiplier, in_channles, h, w] -> [channel_multiplier * in_channles,  1, h, w, d]
+        conv_weights = conv_weights.reshape((channel_multiplier * in_dim, 1, *kernel_wh[::-1], d))
+        # [channel_multiplier * in_channles,  1, h, w, d] -> [h, w, d, 1, channel_multiplier * in_channles]
+        new_conv_weights = conv_weights.transpose(2, 3, 4, 1, 0) * scale
+        # [h, w, d, 1, channel_multiplier * in_channles] -> [channel_multiplier * in_channles, 1, h, w, d]
+        new_conv_weights = new_conv_weights.transpose(4, 3, 0, 1, 2)
+        # [channel_multiplier * in_channles, 1, h, w, d] -> [channel_multiplier, in_channles, h, w, d]
+        new_conv_weights = new_conv_weights.reshape((channel_multiplier, in_dim, *kernel_wh[::-1], d))
+        # [channel_multiplier, in_channles, h, w, d] -> [channel_multiplier, h, w, d, in_channles]
+        new_conv_weights = new_conv_weights.transpose(0, 2, 3, 4, 1)
       else:
-        new_conv_weights = conv_weights.transpose(2, 3, 1, 0) * scale
-        new_conv_weights = new_conv_weights.transpose(3, 2, 0, 1)
+        new_conv_weights = conv_weights.swapaxes(0, conv_weights.ndim - 1) * scale
+        new_conv_weights = new_conv_weights.swapaxes(0, conv_weights.ndim - 1)
 
       conv_node.op.set_param_from_data(
           conv_node.op.ParamName.WEIGHTS,

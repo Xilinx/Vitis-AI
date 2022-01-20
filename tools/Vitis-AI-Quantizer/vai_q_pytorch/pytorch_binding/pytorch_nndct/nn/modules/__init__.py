@@ -4,8 +4,8 @@ from .linear import *
 from .rnn_builder import *
 from .add import *
 from .sub import *
-from .maxpool1d import *
 from .maxpool import *
+from .maxpool1d import *
 from .avgpool import *
 from .concat import *
 from .multiply import *

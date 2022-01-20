@@ -88,7 +88,7 @@ public:
 
 public:
   /**
-   * @brief Function of get result of the MedicalDetection neuron network.
+   * @brief Function of get result of the MedicalDetection neural network.
    *
    * @param img Input data of input image (cv::Mat).
    *
@@ -98,7 +98,7 @@ public:
   virtual vitis::ai::MedicalDetectionResult run(const cv::Mat &img) = 0;
 
   /**
-   * @brief Function to get running results of the MedicalDetection neuron network in
+   * @brief Function to get running results of the MedicalDetection neural network in
    * batch mode.
    *
    * @param imgs Input data of input images (vector<cv::Mat>).The size of

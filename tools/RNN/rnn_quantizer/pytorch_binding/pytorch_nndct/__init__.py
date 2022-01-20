@@ -63,7 +63,7 @@ def _init_torch_nndct_module():
     option_util.set_option_value("nndct_quant_opt", 0)
     option_util.set_option_value("nndct_param_corr", False)
     option_util.set_option_value("nndct_equalization", False)
-    option_util.set_option_value("nndct_wes", False)
+    # option_util.set_option_value("nndct_wes", False)
     option_util.set_option_value("nndct_wes_in_cle", False)
 
   #if NndctOption.nndct_quant_opt.value > 2:
@@ -79,4 +79,3 @@ import pytorch_nndct.apis
 import pytorch_nndct.nn
 import pytorch_nndct.utils
 
-# from pytorch_nndct.pruning import Pruner

@@ -20,13 +20,11 @@ limitations under the License.
 #include <iomanip>
 #include <iostream>
 #include <string>
-
 using namespace vitis::ai;
-
+using namespace std;
 int main(int, char* argv[]) {
   UniLog::Initial(argv[0], UNI_LOG_STD, UNI_LOG_LEVEL_INFO,
                   UNI_LOG_STD_LEVEL_INFO);
-
   auto name = std::string{argv[1]};
   auto target = target_factory()->create(name);
   UNI_LOG_INFO << "Create target " << target.name();
@@ -38,9 +36,8 @@ int main(int, char* argv[]) {
   UNI_LOG_INFO << "  fingerprint  0x" << std::hex << std::setw(16)
                << setfill('0')
                << target_factory()->get_fingerprint(target.name());
-
-  target_factory()->dump(target, "./tmp");
-  std::cout << "Dump target " << name << " to ./tmp" << std::endl;
+  target_factory()->dump(target, "tmp.txt");
+  std::cout << "Dump target " << name << " to tmp.txt" << std::endl;
 
   return 0;
 }

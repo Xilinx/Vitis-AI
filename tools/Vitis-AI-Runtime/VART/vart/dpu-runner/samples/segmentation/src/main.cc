@@ -122,8 +122,8 @@ void runSegmentation(vart::Runner* runner, bool& is_running) {
     for (int h = 0; h < inHeight; h++) {
       for (int w = 0; w < inWidth; w++) {
         for (int c = 0; c < 3; c++) {
-          imageInputs[h * inWidth * 3 + w * 3 + c] =
-              (int8_t)(((float)img.at<Vec3b>(h, w)[c] - mean[c]) * input_scale);
+          imageInputs[h * inWidth * 3 + w * 3 + c] = (int8_t)(
+              ((float)image2.at<Vec3b>(h, w)[c] - mean[c]) * input_scale);
         }
       }
     }

@@ -1,6 +1,6 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-SRC_URI += "file://0001-Jupyterlab-Serve-notebooks-form-user-defined-dir.patch"
+SRC_URI += "file://0001-recipes-utils-jupyterlab-server.patch"
 
 do_install() {
 

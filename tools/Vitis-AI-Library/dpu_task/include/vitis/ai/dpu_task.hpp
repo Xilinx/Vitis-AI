@@ -98,20 +98,20 @@ class DpuTask {
    * @brief Copy a input image in RGB format to the input tensor.
    * @param img The input image(cv::Mat).
    */
-  virtual void setImageRGB(const cv::Mat& img) = 0;
+  virtual void setImageRGB(const cv::Mat& img, size_t ind=0) = 0;
   /**
    * @cond NOCOMMENTS
    */
-  virtual void setImageRGB(const std::vector<cv::Mat>& imgs) = 0;
+  virtual void setImageRGB(const std::vector<cv::Mat>& imgs, size_t ind=0) = 0;
   /**
    * @cond NOCOMMENTS
    */
-  virtual void setInputDataArray(const std::vector<int8_t> input) = 0;
+  virtual void setInputDataArray(const std::vector<int8_t> input, size_t ind) = 0;
   /**
    * @cond NOCOMMENTS
    */
   virtual void setInputDataArray(
-      const std::vector<std::vector<int8_t>> input) = 0;
+      const std::vector<std::vector<int8_t>> input, size_t ind) = 0;
   /**
    * @endcond
    */

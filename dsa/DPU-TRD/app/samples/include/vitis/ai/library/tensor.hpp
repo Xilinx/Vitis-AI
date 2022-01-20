@@ -15,11 +15,11 @@
  */
 
 #pragma once
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <ostream>
 #include <string>
-#include <array>
 namespace vitis {
 namespace ai {
 namespace library {
@@ -77,6 +77,12 @@ enum DataType {
   DT_UINT64_REF = 123
 };
 
+struct XclBoInfo {
+  unsigned int offset;
+  void* xcl_handle;
+  unsigned int bo_handle;
+};
+
 /**
  *@struct Tensor
  *@brief The basic abstract structure of neural network layer.
@@ -98,6 +104,7 @@ struct Tensor {
   DataType dtype;
   /// name for debug purpose
   std::string name;
+  std::array<XclBoInfo, 16> xcl_bo;
 };
 
 /**
@@ -137,7 +144,12 @@ inline std::ostream& operator<<(std::ostream& out,
       << ", fixpos=" << v.fixpos         //
       << ", virt= (";
   for (size_t b = 0; b < v.batch; ++b) {
-    out << v.get_data(b) << " ";  //
+    out << "{"                              //
+        << v.get_data(b) << " "             //
+        << v.xcl_bo[b].offset << " "        //
+        << v.xcl_bo[b].xcl_handle << " "    //
+        << v.xcl_bo[b].bo_handle << " " <<  //
+        "}";                                //
   }
   out << ")}";  //
 
@@ -146,7 +158,7 @@ inline std::ostream& operator<<(std::ostream& out,
 
 inline std::ostream& operator<<(std::ostream& out,
                                 const vitis::ai::library::OutputTensor& v) {
-  out << "Output [ " << v.name << " ] {"  //
+  out << "Output [ " << v.name << " ] {"  //、·
       << ", size=" << v.size              //
       << ", h=" << v.height               //
       << ", w=" << v.width                //
@@ -154,7 +166,12 @@ inline std::ostream& operator<<(std::ostream& out,
       << ", fixpos=" << v.fixpos          //
       << ", virt= (";
   for (size_t b = 0; b < v.batch; ++b) {
-    out << v.get_data(b) << " ";  //
+    out << "{"                              //
+        << v.get_data(b) << " "             //
+        << v.xcl_bo[b].offset << " "        //
+        << v.xcl_bo[b].xcl_handle << " "    //
+        << v.xcl_bo[b].bo_handle << " " <<  //
+        "}";                                //
   }
   out << ")}";  //
   return out;

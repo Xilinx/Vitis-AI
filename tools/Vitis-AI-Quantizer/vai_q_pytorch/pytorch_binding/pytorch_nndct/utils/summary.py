@@ -15,33 +15,34 @@
 
 """Statistics utilities of model complexity."""
 
-from torch import nn
-import functools
 import torch
+from torch import nn
+
+from nndct_shared.utils import common
 
 class MetricName(object):
   Flops = 'flops'
   TrainableParams = 'trainable'
   NonTrainableParams = 'non-trainable'
 
+def _accumulate_metric_value(module, metric_name, value):
+  setattr(module, metric_name, getattr(module, metric_name) + value)
+
 def count_convNd(module, input, output):
   # kw x kh
-  spatial_kernels = (module.weight.size()[2:]).numel()
+  num_kernels = (module.weight.size()[2:]).numel()
   bias = 1 if module.bias is not None else 0
 
   # c_out x w x h  x (c_in x kw x kh + bias)
-  single_output = output[0]
-  setattr(
-      module, MetricName.Flops,
-      torch.tensor([
-          single_output.numel() *
-          (module.in_channels // module.groups * spatial_kernels + bias)
-      ]))
+  single_batch_output = output[0]
+  _accumulate_metric_value(module, MetricName.Flops,
+          single_batch_output.numel() *
+          (module.in_channels // module.groups * num_kernels + bias))
 
 def count_linear(module, input, output):
   # (N, *, Hin) x (Hin, Hout) = (N, *, Hout)
-  setattr(module, MetricName.Flops,
-          torch.tensor([module.in_features * output[0].numel()]))
+  _accumulate_metric_value(module, MetricName.Flops,
+          module.in_features * output[0].numel())
 
 flops_counters = {
     nn.Conv1d: count_convNd,
@@ -92,16 +93,9 @@ class FlopsMetric(MetricHook):
       module._buffers.pop(MetricName.Flops)
 
   def value(self, module):
-    #if not self._flops:
-    #  for module, hook in self._module_hooks:
-    #    self._flops[module] = module.flops
-    #    module._buffers.pop('flops')
-    #return self._flops
-    value = None
     if type(module) in flops_counters:
-      #return module.flops.item()
       return module._buffers.get(MetricName.Flops).item()
-    return value
+    return None
 
 class HookedStat(object):
 
@@ -138,8 +132,8 @@ class HookedStat(object):
       values[module_key] = metric_values
     return values
 
-  def add_metric(self, metric_cls):
-    self._metrics.append(metric_cls())
+  def add_metric(self, metric):
+    self._metrics.append(metric)
 
   def run(self, model, inputs):
     model.apply(self._register_metric)
@@ -159,7 +153,7 @@ class HookedStat(object):
 
 def stat_flops(model, inputs):
   stat = HookedStat()
-  stat.add_metric(FlopsMetric)
+  stat.add_metric(FlopsMetric())
   metrics = stat.run(model, inputs)
   flops = {}
   # {module: {metric.name: metric.value}}
@@ -187,7 +181,7 @@ def stat_params(model):
 
 def model_complexity(model, inputs, readable=False):
   """Stat the complexity of the given model. Currently includes flops and params.
-  flops: multiply–accumulate operations that performs a += b x c
+  MACs: multiply–accumulate operations that performs a += b x c
   Params: total number of parameters of a model.
 
   Args:
@@ -210,25 +204,6 @@ def model_complexity(model, inputs, readable=False):
       total_params += params[name][MetricName.TrainableParams]
 
   if readable:
-    total_flops = readable_num(total_flops)
-    total_params = readable_num(total_params)
+    total_flops = common.readable_num(total_flops)
+    total_params = common.readable_num(total_params)
   return total_flops, total_params
-
-def readable_num(number):
-  s = ''
-  if number < 0:
-    s += '-'
-    number = -number
-
-  if number < 1000:
-    s += '%d' % number
-  elif number > 1e15:
-    s += '%0.3G' % number
-  else:
-    units = 'KMGT'
-    unit_index = 0
-    while number > 1000000:
-      number /= 1000
-      unit_index += 1
-    s += '%.2f%s' % (number / 1000.0, units[unit_index])
-  return s

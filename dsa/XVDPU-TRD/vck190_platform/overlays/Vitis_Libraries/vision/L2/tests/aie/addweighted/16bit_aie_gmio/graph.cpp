@@ -28,8 +28,29 @@ connect<> net0(platform.src[0], mygraph.in1);
 connect<> net1(platform.src[1], mygraph.in2);
 connect<> net2(mygraph.out, platform.sink[0]);
 
-#if defined(__AIESIM__) || defined(__NEW_X86Sim__)
+#if defined(__AIESIM__) || defined(__X86SIM__)
+#include <common/xf_aie_utils.hpp>
 int main(int argc, char** argv) {
+    int BLOCK_SIZE_in_Bytes = TILE_WINDOW_SIZE;
+
+    int16_t* inputData = (int16_t*)GMIO::malloc(BLOCK_SIZE_in_Bytes);
+    int16_t* inputData1 = (int16_t*)GMIO::malloc(BLOCK_SIZE_in_Bytes);
+    int16_t* outputData = (int16_t*)GMIO::malloc(BLOCK_SIZE_in_Bytes);
+
+    memset(inputData, 0, BLOCK_SIZE_in_Bytes);
+    memset(inputData1, 0, BLOCK_SIZE_in_Bytes);
+    xf::cv::aie::xfSetTileWidth(inputData, TILE_WIDTH);
+    xf::cv::aie::xfSetTileHeight(inputData, TILE_HEIGHT);
+    xf::cv::aie::xfSetTileWidth(inputData1, TILE_WIDTH);
+    xf::cv::aie::xfSetTileHeight(inputData1, TILE_HEIGHT);
+
+    int16_t* dataIn = (int16_t*)xf::cv::aie::xfGetImgDataPtr(inputData);
+    int16_t* dataIn1 = (int16_t*)xf::cv::aie::xfGetImgDataPtr(inputData1);
+    for (int i = 0; i < TILE_ELEMENTS; i++) {
+        dataIn[i] = rand() % 256;
+        dataIn1[i] = rand() % 256;
+    }
+
     float alpha = 2.0f;
     float beta = 3.0f;
     float gamma = 4.0f;
@@ -38,6 +59,26 @@ int main(int argc, char** argv) {
     mygraph.update(mygraph.beta, beta);
     mygraph.update(mygraph.gamma, gamma);
     mygraph.run(1);
+
+    gmioIn[0].gm2aie_nb(inputData, BLOCK_SIZE_in_Bytes);
+    gmioIn[1].gm2aie_nb(inputData1, BLOCK_SIZE_in_Bytes);
+    gmioOut[0].aie2gm_nb(outputData, BLOCK_SIZE_in_Bytes);
+    gmioOut[0].wait();
+
+    // Compare the results
+    int acceptableError = 1;
+    int errCount = 0;
+    int16_t* dataOut = (int16_t*)xf::cv::aie::xfGetImgDataPtr(outputData);
+    for (int i = 0; i < TILE_ELEMENTS; i++) {
+        float cValue = alpha * dataIn[i] + beta * dataIn1[i] + gamma;
+        if (abs(dataOut[i] - cValue) > acceptableError) errCount++;
+    }
+    if (errCount) {
+        std::cout << "Test failed!" << std::endl;
+        exit(-1);
+    }
+    std::cout << "Test passed" << std::endl;
+
     mygraph.end();
 
     return 0;

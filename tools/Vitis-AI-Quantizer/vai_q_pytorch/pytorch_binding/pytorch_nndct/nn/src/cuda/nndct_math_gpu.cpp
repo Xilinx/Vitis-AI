@@ -80,6 +80,31 @@ void SigmoidTableLookup(Tensor Tinput,
 }
 
 template <typename Dtype>
+void _SigmoidSimulation(Tensor Tinput, 
+                         Tensor Toutput, 
+                         int device_id)
+{
+    auto input  = Tinput.data<Dtype>();
+    auto output = Toutput.data<Dtype>();
+    int64_t num_ele = Tinput.numel();
+    if(device_id == 0)
+      cuda_sigmoid_simulation(num_ele, input, output);
+}
+
+void SigmoidSimulation(Tensor Tinput, 
+                        Tensor Toutput, 
+                        int device_id){
+  if (Tinput.dtype() == at::kFloat)
+    _SigmoidSimulation<float>(Tinput, 
+                               Toutput, 
+                               device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _SigmoidSimulation<double>(Tinput, 
+                                Toutput, 
+                                device_id);
+}
+
+template <typename Dtype>
 void _TanhTableLookup(Tensor Tinput, 
                       Tensor Ttable, 
                       Tensor Toutput, 
@@ -112,5 +137,30 @@ void TanhTableLookup(Tensor Tinput,
                              Ttable, 
                              Toutput, 
                              fragpos,
+                             device_id);
+}
+
+template <typename Dtype>
+void _TanhSimulation(Tensor Tinput, 
+                      Tensor Toutput, 
+                      int device_id)
+{
+    auto input  = Tinput.data<Dtype>();
+    auto output = Toutput.data<Dtype>();
+    int64_t num_ele = Tinput.numel();
+    if(device_id == 0)
+      cuda_tanh_simulation(num_ele, input, output);
+}
+
+void TanhSimulation(Tensor Tinput, 
+                     Tensor Toutput, 
+                     int device_id) {
+  if (Tinput.dtype() == at::kFloat)
+    _TanhSimulation<float>(Tinput, 
+                            Toutput, 
+                            device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _TanhSimulation<double>(Tinput, 
+                             Toutput, 
                              device_id);
 }

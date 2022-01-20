@@ -1,5 +1,7 @@
 import torch
-#Quantizable LSTM layer Module
+from torch import Tensor
+from typing import Tuple
+# Quantizable LSTM layer Module
 class QuantLstmLayer(torch.nn.Module):
 
   def __init__(self,
@@ -177,3 +179,19 @@ class QuantGruLayer(torch.nn.Module):
         full_batch_h.unsqueeze(0),
     )
     return output, final_state
+
+  
+class LSTMLayer(torch.nn.Module):
+    def __init__(self, cell, input_size: int, hidden_size: int, bias: bool = True):
+        super().__init__()
+        cell_dummy_input = torch.randn(1, input_size)
+        cell_dummy_state = (torch.randn(1, hidden_size), torch.randn(1, hidden_size))
+        self.cell = torch.jit.trace(cell(input_size, hidden_size, bias), (cell_dummy_input, cell_dummy_state))
+
+    def forward(self, input: Tensor, state: Tuple[Tensor, Tensor]) -> Tuple[Tensor, Tuple[Tensor, Tensor]]:
+        outputs = []
+        for i in range(input.size(0)):
+            state = self.cell(input[i], state)
+            outputs += [state[0]]
+        return torch.stack(outputs), state
+      

@@ -44,8 +44,41 @@ def set_training(model, mode):
   finally:
     if old_mode != mode:
       model.train(old_mode)
+      
+def _optimize_graph_19(graph):
+    from torch.onnx.utils import _split_tensor_list_constants
+    # Inline everything
+    torch._C._jit_pass_inline(graph)
 
+    # Remove fork/wait nodes
+    torch._C._jit_pass_inline_fork_wait(graph)
+    torch._C._jit_pass_lint(graph)
+    torch._C._jit_pass_lower_all_tuples(graph)
 
+    # we record now record some ops like ones/zeros
+    # into a trace where we previously recorded constants
+    # use constant prop to maintain our current level of onnx support
+    # without implementing symbolics for all of them
+   
+    torch._C._jit_pass_constant_propagation(graph)
+
+    _split_tensor_list_constants(graph, graph)
+    # run dce to eliminate dead parts of the graph that might have been
+    # left behind by things like symbolic_override
+    torch._C._jit_pass_dce(graph)
+    torch._C._jit_pass_lint(graph)
+
+    torch._C._jit_pass_canonicalize_graph_fuser_ops(graph)
+    torch._C._jit_pass_lint(graph)
+    torch._C._jit_pass_peephole(graph, True)
+    torch._C._jit_pass_fuse_addmm(graph)
+    torch._C._jit_pass_lint(graph)
+  
+    graph = torch._C._jit_pass_canonicalize(graph)
+    torch._C._jit_pass_lint(graph)
+  
+    return graph
+  
 def _optimize_graph_17(graph):
   # Inline everything
   from torch.onnx.utils import _split_tensor_list_constants
@@ -84,17 +117,85 @@ def _optimize_graph_17(graph):
   return graph
 
 
-def _get_torch_version():
+def get_torch_version():
   pattern = re.compile(r'[0-9].[0-9].[0-9]')
   version = re.findall(pattern, torch.__version__)
   version = ''.join(version[0].split('.'))
   return int(version)
 
 
-def optimize_graph(graph):
-  if _get_torch_version() > 159:
+def post_process_script_graph(graph):
+  remove_redundant_ops(graph)
+
+
+def remove_redundant_ops(graph):
+  remove_nodes = []
+  remove_nodes = _collect_tuple_index(graph, remove_nodes)
+  remove_nodes = _collect_pack_unpack_pair(graph, remove_nodes)
+  for node in remove_nodes:
+    node.destroy()
+
+
+def _collect_pack_unpack_pair(graph, remove_nodes=None):
+  # TupleConstruct + TupleUnpack
+  if remove_nodes is None:
+    remove_nodes = []
+    
+  for _, node in get_fw_op_nodes(graph):
+    if node_type(node) in ["prim::TupleConstruct", "prim::ListConstruct"]:
+      use_by_other = False
+      for user in _get_users(node):
+        if node_type(user) in ["prim::TupleUnpack", "prim::ListUnpack"]:
+          remove_nodes.append(user)
+          for index, out in enumerate(node_outputs(user)):
+            out.replaceAllUsesWith(node_inputs(node)[index])    
+        else:
+          use_by_other = True
+      if not use_by_other:
+        remove_nodes.append(node)
+    elif has_block(node):
+      for block in node_blocks(node):
+        _collect_pack_unpack_pair(block, remove_nodes)
+    
+  return remove_nodes
+
+
+def _collect_tuple_index(graph, remove_nodes=None):
+  #  TupleConstruct + TupleIndex
+  if remove_nodes is None:
+    remove_nodes = []
+    
+  for _, node in get_fw_op_nodes(graph):
+    if node_type(node) == "prim::TupleConstruct":
+      use_by_other = False
+      for user in _get_users(node):
+        if node_type(user) == "prim::TupleIndex":
+          index = node_inputs(user)[-1]
+          if node_type(index.node()) == "prim::Constant":
+            index_value = get_attr_value(index.node(), "value")
+            node_outputs(user)[0].replaceAllUsesWith(node_inputs(node)[index_value])
+            remove_nodes.append(user)
+        else:
+          use_by_other = True
+      if not use_by_other:
+        remove_nodes.append(node)
+    elif has_block(node):
+      for block in node_blocks(node):
+        _collect_tuple_index(block, remove_nodes)
+    
+  return remove_nodes
+  
+def optimize_graph(graph, is_jit_graph=False):
+  if get_torch_version() > 159 and get_torch_version() < 190:
     _optimize_graph_17(graph)
     return graph
+  
+  if get_torch_version() >= 190:
+    _optimize_graph_19(graph)
+    return graph
+  
+  if is_jit_graph:
+    torch._C._jit_pass_inline(graph)
   # Remove fork/wait nodes
   torch._C._jit_pass_inline_fork_wait(graph)
   torch._C._jit_pass_dce(graph)
@@ -120,7 +221,7 @@ def optimize_graph(graph):
 
   torch._C._jit_pass_dce(graph)
   torch._C._jit_pass_lint(graph)
-  if _get_torch_version() < 150:
+  if get_torch_version() < 150:
     torch._C._jit_pass_fixup_onnx_loops(graph)
   torch._C._jit_pass_lint(graph)
   graph = torch._C._jit_pass_canonicalize(graph)
@@ -157,28 +258,35 @@ def _tracing_name(module):
   if not _TRACED_STACK_MODULES:
       return None
 
-  def _extract_child_recursively(module, prefix, name_to_child=None):
+  def _extract_child_recursively(module, prefix='', name_to_child=None):
     if name_to_child is None:
       name_to_child = {}
 
+    name_to_child[prefix] = module
     # If the child is a ModuleList,
     # we need to use the child in the list as the actual child.
     if isinstance(module, ModuleList):
       for index, child in enumerate(module):
-        # XXX(yuwang): Add missing hierarchy to the name so that
+        # Add missing hierarchy to the name so that
         # we can fetch the corresponding module by the name.
         # Note that the odd child name is meant to match the
         # string concatenatation in _set_trace_module_map.
-        child_name = f"{prefix}]/ModuleList[{index}"
+        if prefix:
+          child_name = f"{prefix}]/ModuleList[{index}"
+        else:
+          child_name = f"ModuleList[{index}"
         _extract_child_recursively(child, child_name, name_to_child)
     else:
-      name_to_child[prefix] = module
+      for name, child in module.named_children():
+        if prefix:
+          child_name = f"{prefix}]/{child._get_name()}[{name}"
+        else:
+          child_name = name
+        _extract_child_recursively(child, child_name, name_to_child)
     return name_to_child
 
-  name_to_child = {}
   parent = _TRACED_STACK_MODULES[-1]
-  for name, child in parent.named_children():
-    _extract_child_recursively(child, name, name_to_child)
+  name_to_child = _extract_child_recursively(parent)
 
   for name, child in name_to_child.items():
     if child is module:
@@ -355,24 +463,40 @@ def getattr_full_name(getattrs):
     return ".".join([getattr_attr_name(node) for node in getattrs])
 
 
-def get_fw_op_nodes(nodes):
+def get_fw_op_nodes(graph):
   ops = []
-  for node in nodes:
+  for node in graph.nodes():
     if node.outputsSize() == 0:
       continue
     if node.outputsSize() > 1:
       node_name = "_".join(get_node_outputs_name(node))
     else:
       node_name = get_node_output_name(node)
-
+    
     if node.kind() != "prim::GetAttr":
       ops.append((node_name, node))
-
+  
   return ops
 
 
-def get_node_type(node):
+
+def node_type(node):
   return node.kind()
+
+def node_inputs(node):
+  return [inp for inp in node.inputs()]
+
+
+def node_outputs(node):
+  return [out for out in node.outputs()]
+
+
+def node_blocks(node):
+  return [block for block in node.blocks()]
+
+def has_block(node):
+  return False if not list(node.blocks()) else True
+
 
 
 def get_fw_graph_inputs(graph):
@@ -397,19 +521,19 @@ def should_construct_dynamic_list(list_construct_node):
 
 
 def find_builtin(fn):
-  if _get_torch_version() < 150:
+  if get_torch_version() < 150:
     return torch.jit._find_builtin(fn)
   else:
     return torch.jit._builtins._find_builtin(fn)
-  
+
 def modules_containing_builtins():
-  if _get_torch_version() < 150:
+  if get_torch_version() < 150:
     return torch.jit._modules_containing_builtins
   else:
     return torch.jit._builtins._modules_containing_builtins
-    
+
 def builtin_ops():
-  if _get_torch_version() <= 120:
+  if get_torch_version() <= 120:
     import math
     import torch.backends.cudnn as cudnn
     import warnings
@@ -485,11 +609,11 @@ def builtin_ops():
         (warnings.warn, "aten::warn"),
     ]
     return builtin_ops
-  if  _get_torch_version() < 150 and _get_torch_version() > 120:
+  if  get_torch_version() < 150 and get_torch_version() > 120:
     return torch.jit._builtin_ops
   else:
     return torch.jit._builtins._builtin_ops
-  
+
 
 def parse_node_signature(node):
   node_type = node.kind()
@@ -497,32 +621,33 @@ def parse_node_signature(node):
   out_args_type = []
   for inp in node.inputs():
     input_args_type.append(str(inp.type()))
-  
+
   for out in node.outputs():
     out_args_type.append(str(out.type()))
-  
+
   input_str = ", ".join(input_args_type)
   output_str = ", ".join(out_args_type)
   return node_type + "::" + "(" + input_str + ")" + " -> " + output_str
-    
+
 def get_node_schema(node):
-  schema_op = get_node_type(node)
+  schema_op = node_type(node)
   schemas = torch._C._jit_get_schemas_for_operator(schema_op)
   for schema in schemas:
     if is_schema_matching(node, schema):
-      if NndctOption.nndct_parse_debug.value >= 1: 
+      if NndctOption.nndct_parse_debug.value >= 1:
         NndctDebugLogger.write(f"%{get_node_outputs_name(node)[0]} signature: {parse_node_signature(node)}\n")
         schema_handler = SchemaHelper(schema)
         NndctDebugLogger.write(f"matched schema: {schema_handler.toString()}\n")
       return schema
   if schema_op.split("::")[0] == "aten":
+    #assert False
     NndctScreenLogger().warning(f"Can't find schema for {node}.If you can get quantizable model successfully, please ignore it.\n")
-    
+
 
 def is_schema_matching(node, schema):
   if len(list(node.inputs())) != len(schema.arguments):
     return False
-  
+
   if len(list(node.outputs())) != len(schema.returns):
     return False
 
@@ -530,18 +655,18 @@ def is_schema_matching(node, schema):
   for inp, arg in zip(node.inputs(), schema.arguments):
     inp_type = str(inp.type())
     arg_type = schema_handler.arg_type(arg)
-    if inp_type == "None" and "Optional" in arg_type:
+    if inp_type in ["None", "NoneType"] and "Optional" in arg_type:
       continue
-    
+
     inp_type = inp_type.replace("int", "number")
     inp_type = inp_type.replace("float", "number")
-    
+
     arg_type = arg_type.replace("int", "number")
     arg_type = arg_type.replace("float", "number")
     if convert_type_str(inp_type).replace("?", "") not in convert_type_str(arg_type).replace("?", ""):
       return False
-  
+
   return True
-    
-  
-      
+
+
+

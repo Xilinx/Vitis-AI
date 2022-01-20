@@ -1,9 +1,0 @@
-log
-.Xil
-bin_*
-obj_*
-_x_*
-xo_*
-xclbin_*
-*.dat
-*.log

@@ -16,19 +16,21 @@
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/VitisVersion.cmake)
 
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
 add_library(
   ${COMPONENT_NAME} SHARED
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
+  include/vart/util_export.hpp
   include/vitis/ai/simple_config.hpp
   include/vitis/ai/time_measure.hpp
   include/vitis/ai/dim_calc.hpp
   include/vitis/ai/lock.hpp
   include/vitis/ai/variable_bit.hpp
-  include/vart/dpu/device_scheduler.hpp
-  include/vitis/ai/thread_pool.hpp
+  include/vitis/ai/util_export.hpp
   include/vitis/ai/erl_msg_box.hpp
+  include/vitis/ai/weak.hpp
+  include/vitis/ai/with_injection.hpp
   src/simple_config.cpp
   src/dim_calc.cpp
   src/util_4bit.cpp
@@ -37,18 +39,27 @@ add_library(
   src/time_measure.cpp
   src/lock.cpp
   src/file_lock.hpp
-  src/file_lock.cpp
   src/variable_bit.cpp
-  src/device_scheduler.cpp
-  src/device_scheduler_imp.hpp
-  src/device_scheduler_imp.cpp
-  src/thread_pool.cpp)
+  include/vitis/ai/plugin.hpp
+  src/plugin.cpp)
 
 if(hiredis_FOUND)
   target_sources(${COMPONENT_NAME} PRIVATE src/redis_lock.hpp
                                            src/redis_lock.cpp)
 endif(hiredis_FOUND)
+if(MSVC)
+  target_sources(${COMPONENT_NAME} PRIVATE src/file_lock_msvc.cpp)
+else(MSVC)
 
+  target_sources(
+    ${COMPONENT_NAME}
+    PRIVATE
+      src/file_lock_lnx.cpp
+      # thread pool does not work on MSVC because the bug
+      # https://developercommunity.visualstudio.com/t/unable-to-move-stdpackaged-task-into-any-stl-conta/108672
+      include/vitis/ai/thread_pool.hpp
+      src/thread_pool.cpp)
+endif(MSVC)
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 set_target_properties(
   ${COMPONENT_NAME}
@@ -65,13 +76,20 @@ if(hiredis_FOUND)
   target_compile_definitions(${COMPONENT_NAME} PRIVATE ENABLE_REDIS)
 endif(hiredis_FOUND)
 
-target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir glog::glog pthread)
+target_link_libraries(${COMPONENT_NAME} PUBLIC xir::xir glog::glog
+                                               ${CMAKE_THREAD_LIBS_INIT})
+if(MSVC)
 
+else(MSVC)
+  target_link_libraries(${COMPONENT_NAME} PUBLIC ${CMAKE_DL_LIBS})
+endif(MSVC)
+target_compile_definitions(${COMPONENT_NAME} PRIVATE VART_UTIL_EXPORT)
 install(
   TARGETS ${COMPONENT_NAME}
   EXPORT ${COMPONENT_NAME}-targets
   COMPONENT base
   RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
 install(
   DIRECTORY include/vitis include/vart
@@ -85,10 +103,12 @@ install(
   DESTINATION share/cmake/${PROJECT_NAME})
 
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
-  set(TOOL_NAME "vart_version")
-  add_executable(${TOOL_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/vart_version.c)
-  target_link_libraries(${TOOL_NAME} dl)
-  install(TARGETS ${TOOL_NAME} DESTINATION bin)
+  if(NOT MSVC)
+    set(TOOL_NAME "vart_version")
+    add_executable(${TOOL_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/vart_version.c)
+    target_link_libraries(${TOOL_NAME} dl)
+    install(TARGETS ${TOOL_NAME} DESTINATION bin)
+  endif(NOT MSVC)
 endif()
 
 if(BUILD_TEST)
@@ -98,10 +118,11 @@ if(BUILD_TEST)
   add_executable(test_env_config test/test_env_config.cpp)
   target_link_libraries(test_env_config ${COMPONENT_NAME})
 
-  add_library(test_injector_lib test/device_scheduler_imp.cpp
-                                test/device_scheduler.cpp)
-  target_link_libraries(test_injector_lib glog::glog dl ${COMPONENT_NAME})
-
+  add_library(
+    test_injector_lib test/device_scheduler_imp.cpp test/device_scheduler.cpp
+                      test/device_scheduler.hpp)
+  target_link_libraries(test_injector_lib glog::glog ${COMPONENT_NAME})
+  target_compile_definitions(test_injector_lib PRIVATE test_injector_EXPORT)
   add_executable(test_injector test/test_injector.cpp)
   target_link_libraries(test_injector test_injector_lib)
 
@@ -120,9 +141,12 @@ if(BUILD_TEST)
   add_executable(test_erl_msg_box test/test_erl_msg_box.cpp)
   target_link_libraries(test_erl_msg_box ${COMPONENT_NAME})
 
-  add_executable(test_thread_pool test/test_thread_pool.cpp)
-  target_link_libraries(test_thread_pool ${COMPONENT_NAME})
-
+  if(NOT MSVC)
+    # thread pool does not work on MSVC because the bug
+    # https://developercommunity.visualstudio.com/t/unable-to-move-stdpackaged-task-into-any-stl-conta/108672
+    add_executable(test_thread_pool test/test_thread_pool.cpp)
+    target_link_libraries(test_thread_pool ${COMPONENT_NAME})
+  endif(NOT MSVC)
   add_executable(test_zero_copy_helper test/test_zero_copy_helper.cpp)
   target_link_libraries(test_zero_copy_helper ${COMPONENT_NAME} xir::xir)
 endif()

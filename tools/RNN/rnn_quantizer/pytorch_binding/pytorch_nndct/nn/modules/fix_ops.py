@@ -28,7 +28,9 @@ __all__ = ["NndctScale", \
            "NndctFixNeuron",
            "NndctDiffsFixPos",\
            "NndctSigmoidTableLookup",\
-           "NndctTanhTableLookup"]
+           "NndctSigmoidSimulation",\
+           "NndctTanhTableLookup",\
+           "NndctTanhSimulation"]
 # try:
 #   dir_path = os.path.dirname(os.path.realpath(__file__))
 #   extra_include_paths=[os.path.join(dir_path,"../include")]
@@ -114,8 +116,22 @@ def NndctSigmoidTableLookup(Tinput, Ttable, Toutput, fragpos):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   nndct_kernels.SigmoidTableLookup(Tinput, Ttable, Toutput, fragpos, device_id)
 
+def NndctSigmoidSimulation(Tinput, Toutput):
+  device_id = 1 if Tinput.device == torch.device("cpu") else 0
+  if device_id == 1:
+    print("Sigmoid simulation dose not support CPU")
+  else:
+    nndct_kernels.SigmoidSimulation(Tinput, Toutput, device_id)
+
 
 def NndctTanhTableLookup(Tinput, Ttable, Toutput, fragpos):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   nndct_kernels.TanhTableLookup(Tinput, Ttable, Toutput, fragpos, device_id)
+
+def NndctTanhSimulation(Tinput, Toutput):
+  device_id = 1 if Tinput.device == torch.device("cpu") else 0
+  if device_id == 1:
+    print("Tanh simulation dose not support CPU")
+  else:
+    nndct_kernels.TanhSimulation(Tinput, Toutput, device_id)
 

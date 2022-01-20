@@ -24,7 +24,7 @@ using namespace std;
 namespace {
 template <typename Op>
 struct MyOpImp : public vart::experimental::OpImpBase {
-  MyOpImp(xir::Op* op, xir::Attrs* attrs)
+  MyOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     axis_ = op->get_attr<decltype(axis_)>("axis");
     is_continuous_ = true;
@@ -45,8 +45,8 @@ struct MyOpImp : public vart::experimental::OpImpBase {
     CHECK_GT(stride_, 0);
     num_of_elements_ = input_tensor->get_element_num();
   }
-  int calculate(vart::experimental::simple_tensor_buffer_t<float> output,
-                vart::experimental::simple_tensor_buffer_t<float> input) {
+  int calculate(vart::simple_tensor_buffer_t<float> output,
+                vart::simple_tensor_buffer_t<float> input) {
     auto input_shape = input.tensor->get_shape();
     auto output_shape = output.tensor->get_shape();
     CHECK_EQ(input_shape.size(), output_shape.size());

@@ -98,6 +98,7 @@ int main(int argc, char *argv[]) {
   auto det = vitis::ai::Segmentation3D::create(argv[1], false);
   vector<string> names;
   LoadImageNames(argv[2], names);
+  string out_dir = argv[3];
   for (auto name : names) {
     vector<vector<float>> arrays(4);
     auto namesp = split(name, "-");
@@ -114,7 +115,7 @@ int main(int argc, char *argv[]) {
     readfile(scan_z, arrays[2]);
     readfile(remission, arrays[3]);
     auto res = det->run(arrays);
-    string result_bin_name = "result/" + outname + ".label";
+    string result_bin_name = out_dir + "/" + outname + ".label";
     writefilebin(result_bin_name, res.array);
   }
   return 0;

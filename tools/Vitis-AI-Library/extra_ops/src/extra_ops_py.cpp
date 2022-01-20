@@ -30,7 +30,7 @@ static std::vector<char> get_vec_char(py::buffer buffer) {
   auto info = buffer.request();
   auto ptr = info.ptr;
   auto size = info.size;
-  auto ret = vector<char>((size_t)size);
+  auto ret = std::vector<char>((size_t)size);
   // TODO: handle stride
   std::memcpy(&ret[0], ptr, size);
   return ret;

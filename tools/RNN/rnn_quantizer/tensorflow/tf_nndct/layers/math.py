@@ -18,21 +18,20 @@
 
 import tensorflow as tf
 
-from tensorflow.python.keras.layers import core
+from tensorflow.keras import layers
 from tensorflow.python.ops import math_ops
 
+from nndct_shared.quantization import maybe_get_quantizer
+from nndct_shared.utils import NndctOption
 from tf_nndct.graph import OpTypes
 from tf_nndct.quantization.utils import QuantizedModule
 from tf_nndct.quantization.ops import scaleop
-from tf_nndct.quantization.ops import table_lookup
-from nndct_shared.quantization import maybe_get_quantizer
-from nndct_shared.utils import NndctOption
-
-from .sigmoid_table import *
-from .tanh_table import *
+from tf_nndct.quantization.ops import table_lookup, simulation
+from tf_nndct.layers.sigmoid_table import *
+from tf_nndct.layers.tanh_table import *
 
 @QuantizedModule(OpTypes.DENSE)
-class Dense(core.Dense):
+class Dense(layers.Dense):
   def __init__(self,
                units,
                activation=None,
@@ -92,6 +91,10 @@ class Dense(core.Dense):
         fp_name=self.valid_output[0])
 
   def call(self, x):
+    if NndctOption.nndct_quant_off.value:
+      output = super().call(x)
+      return output
+
     if self.valid_output is not None and not self.quant_vars_initialized:
       self._quant_vars_init()
       self.quant_vars_initialized = True
@@ -167,6 +170,10 @@ class Add(tf.Module):
         fp_name=self.valid_output[0])
 
   def __call__(self, x, y):
+    if NndctOption.nndct_quant_off.value:
+      output = tf.math.add(x, y)
+      return output
+
     if self.valid_output is not None and not self.quant_vars_initialized:
       self._quant_vars_init()
       self.quant_vars_initialized = True
@@ -202,6 +209,10 @@ class Multiply(tf.Module):
         fp_name=self.valid_output[0])
 
   def __call__(self, x, y):
+    if NndctOption.nndct_quant_off.value:
+      output = math_ops.multiply(x, y)
+      return output
+
     if self.valid_output is not None and not self.quant_vars_initialized:
       self._quant_vars_init()
       self.quant_vars_initialized = True
@@ -235,9 +246,12 @@ class Sigmoid(tf.Module):
     if NndctOption.nndct_quant_off.value:
       output = math_ops.sigmoid(x)
     elif self.quant_mode > 0 and self.node is not None:
-      input_name = self.node.in_nodes[0]
-      fragpos = self.quantizer.get_bnfp(input_name, False)[1]
-      output = table_lookup(x, SIGMOID_TABLE.table, fragpos, type=0)
+      if NndctOption.nndct_tanh_sigmoid_sim.value:
+        output = simulation(x, type=0)
+      else:
+        input_name = self.node.in_nodes[0]
+        fragpos = self.quantizer.get_bnfp(input_name, False)[1]
+        output = table_lookup(x, SIGMOID_TABLE.table, fragpos, type=0)
     else:
       output = math_ops.sigmoid(x)
 
@@ -265,9 +279,12 @@ class Tanh(tf.Module):
     if NndctOption.nndct_quant_off.value:
       output = math_ops.tanh(x)
     elif self.quant_mode > 0 and self.node is not None:
-      input_name = self.node.in_nodes[0]
-      fragpos = self.quantizer.get_bnfp(input_name, False)[1]
-      output = table_lookup(x, TANH_TABLE.table, fragpos, type=1)
+      if NndctOption.nndct_tanh_sigmoid_sim.value:
+        output = simulation(x, type=1)
+      else:
+        input_name = self.node.in_nodes[0]
+        fragpos = self.quantizer.get_bnfp(input_name, False)[1]
+        output = table_lookup(x, TANH_TABLE.table, fragpos, type=1)
     else:
       output = math_ops.tanh(x)
 

@@ -56,7 +56,7 @@ static inline uint8_t float2fix_u(float data) {
 }
 
 struct Float2FixOpImp : public vart::experimental::OpImpBase {
-  Float2FixOpImp(xir::Op* op, xir::Attrs* attrs)
+  Float2FixOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     CHECK(op->has_attr("fix_point"))
         << "get op fix_point error! has no fix_point attr, op name is "
@@ -70,8 +70,8 @@ struct Float2FixOpImp : public vart::experimental::OpImpBase {
     if_signed_ = op->template get_attr<bool>("if_signed");
   }
 
-  int calculate(vart::experimental::simple_tensor_buffer_t<void> result,
-                vart::experimental::simple_tensor_buffer_t<float> input) {
+  int calculate(vart::simple_tensor_buffer_t<void> result,
+                vart::simple_tensor_buffer_t<float> input) {
     auto input_shape = input.tensor->get_shape();
     auto output_shape = result.tensor->get_shape();
     auto num_of_dims = input_shape.size();
@@ -98,6 +98,5 @@ struct Float2FixOpImp : public vart::experimental::OpImpBase {
   bool if_signed_;
 };
 }  // namespace
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<Float2FixOpImp>();
-}
+
+DEF_XIR_OP_IMP(Float2FixOpImp)

@@ -20,6 +20,5 @@ foreach(FNAME ${TEST_SRC})
 
   add_executable(${ELF} ${FNAME})
   target_link_libraries(${ELF}
-    ${COMPONENT_NAME} xir::xir glog::glog opencv_core opencv_video XRT::XRT
-    opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui pthread)
+    ${COMPONENT_NAME} xir::xir glog::glog ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 endforeach()

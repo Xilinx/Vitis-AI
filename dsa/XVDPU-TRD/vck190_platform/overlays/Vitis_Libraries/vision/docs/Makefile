@@ -49,19 +49,19 @@ install: .stamp/sphinx
 .stamp/doxygen:
 	rm -rf doxygen/L1/xml doxygen/L2/xml doxygen/L3/xml
 	mkdir -p .stamp
-	cd doxygen/L1
-	doxygen ./Doxyfile
-	cd ../../
+	#cd doxygen/L1
+	#doxygen ./Doxyfile
+	#cd ../../
 	touch .stamp/doxygen
 
 .ONESHELL:
 .stamp/doxyrest: .stamp/doxygen
 	rm -rf doxygen/L1/rst 
-	mkdir doxygen/L1/rst 
-	cd ./doxygen/L1
-	doxyrest xml/index.xml -o rst/api_index.rst \
-		-F ../doxyrest_frame -f c_index.rst.in -Dg_verbatimToCodeBlock
-	cd ../../
+	#mkdir doxygen/L1/rst 
+	#cd ./doxygen/L1
+	#doxyrest xml/index.xml -o rst/api_index.rst \
+	#	-F ../doxyrest_frame -f c_index.rst.in -Dg_verbatimToCodeBlock
+	#cd ../../
 	touch .stamp/doxyrest
 
 

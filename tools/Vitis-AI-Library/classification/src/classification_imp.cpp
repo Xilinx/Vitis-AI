@@ -60,7 +60,6 @@ static void inception_preprocess(const cv::Mat& image, int height, int width,
                                  bool iscentral_crop = true) {
   LOG_IF(INFO, ENV_PARAM(ENABLE_CLASSIFICATION_DEBUG))
       << "incepiton_preprocess";
-  cv::Mat res_crop = image;
   if (iscentral_crop) {
     float img_hd = image.rows;
     float img_wd = image.cols;
@@ -68,11 +67,10 @@ static void inception_preprocess(const cv::Mat& image, int height, int width,
     int offset_w = (img_wd - img_wd * central_fraction) / 2;
     cv::Rect box(offset_w, offset_h, image.cols - offset_w * 2,
                  image.rows - offset_h * 2);
-    res_crop = image(box).clone();
-  }
-
-  if (height && width) {
+    cv::Mat res_crop = image(box).clone();
     cv::resize(res_crop, pro_res, cv::Size(width, height));
+  } else {
+    cv::resize(image, pro_res, cv::Size(width, height));
   }
 }
 
@@ -115,27 +113,68 @@ static void inception_pt(const cv::Mat& image, int height, int width,
   }
 }
 
-static void efficientnet_preprocess(const cv::Mat& input, int height, int width, 
-				 cv::Mat& output) {
+static void efficientnet_preprocess(const cv::Mat& input, int height, int width,
+                                    cv::Mat& output) {
   int CROP_PADDING = 32;
-  CHECK_EQ(height, width)
-      << "width must be equal with height";
+  CHECK_EQ(height, width) << "width must be equal with height";
   int output_size = height;
   int input_height = input.rows;
   int input_width = input.cols;
 
   float scale = (float)(output_size) / (output_size + CROP_PADDING);
-  int padded_center_crop_size = 
-      (int)(scale * ((input_height > input_width) ? input_width : input_height));
+  int padded_center_crop_size =
+      (int)(scale *
+            ((input_height > input_width) ? input_width : input_height));
   int offset_height = ((input_height - padded_center_crop_size) + 1) / 2;
   int offset_width = ((input_width - padded_center_crop_size) + 1) / 2;
 
   cv::Mat cropped_img;
-  cv::Rect box(offset_width, offset_height, padded_center_crop_size,  padded_center_crop_size);
+  cv::Rect box(offset_width, offset_height, padded_center_crop_size,
+               padded_center_crop_size);
   cropped_img = input(box).clone();
 
-  cv::resize(cropped_img, output,
-             cv::Size(output_size, output_size), 0, 0, cv::INTER_CUBIC);
+  cv::resize(cropped_img, output, cv::Size(output_size, output_size), 0, 0,
+             cv::INTER_CUBIC);
+}
+
+static void ofa_resnet50_preprocess(const cv::Mat& image, int height, int width,
+                                    cv::Mat& pro_res) {
+  int smallest_side = 183;
+  cv::Mat resized_image;
+  cv::Size size;  // w,h
+  if ((image.cols <= image.rows && image.cols == smallest_side) ||
+      (image.cols >= image.rows && image.rows == smallest_side)) {
+    resized_image = image;
+  } else {
+    if (image.cols < image.rows) {
+      size = cv::Size(smallest_side, float(smallest_side) * float(image.rows) /
+                                         float(image.cols));
+    } else {
+      size =
+          cv::Size(float(smallest_side) * float(image.cols) / float(image.rows),
+                   smallest_side);
+    }
+    cv::resize(image, resized_image, size);
+  }
+
+  int offset_h = round(float(resized_image.rows - height) / 2.0f);
+  int offset_w = round(float(resized_image.cols - width) / 2.0f);
+  cv::Rect box(offset_w, offset_h, width, height);
+  pro_res = resized_image(box).clone();
+}
+
+static void ofadepthwise_preprocess(const cv::Mat& input, int height, int width,
+                                    cv::Mat& output) {
+  int shorter = std::min(input.rows, input.cols);
+  int size_init = std::ceil(320.0 / 0.875);
+  int newwidth = size_init * ((input.cols * 1.0) / (shorter * 1.0));
+  int newheight = size_init * ((input.rows * 1.0) / (shorter * 1.0));
+  cv::Mat middle_img, cropped_img;
+  cv::resize(input, middle_img, cv::Size(newwidth, newheight), 0, 0,
+             cv::INTER_AREA);
+  croppedImage(middle_img, 320, 320, cropped_img);
+  cv::resize(cropped_img, output, cv::Size(width, height), 0, 0,
+             cv::INTER_CUBIC);
 }
 
 vitis::ai::ClassificationResult ClassificationImp::run(
@@ -144,7 +183,7 @@ vitis::ai::ClassificationResult ClassificationImp::run(
   int width = getInputWidth();
   int height = getInputHeight();
   auto size = cv::Size(width, height);
-  if (size == input_image.size()) {
+  if (size == input_image.size() && (preprocess_type != 8)) {
     image = input_image;
   } else {
     switch (preprocess_type) {
@@ -178,13 +217,24 @@ vitis::ai::ClassificationResult ClassificationImp::run(
       case 6:
         efficientnet_preprocess(input_image, height, width, image);
         break;
+      case 7:
+        ofa_resnet50_preprocess(input_image, height, width, image);
+        break;
+      case 8:
+        ofadepthwise_preprocess(input_image, height, width, image);
+        break;
+      case 9:
+        cv::resize(input_image, image, size);
+        break;
       default:
         break;
     }
   }
   //__TIC__(CLASSIFY_E2E_TIME)
   __TIC__(CLASSIFY_SET_IMG)
-  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4 || preprocess_type == 6) {
+  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4 ||
+      preprocess_type == 6 || preprocess_type == 7 || preprocess_type == 8 ||
+      preprocess_type == 9) {
     configurable_dpu_task_->setInputImageRGB(image);
   } else {
     configurable_dpu_task_->setInputImageBGR(image);
@@ -247,6 +297,8 @@ vitis::ai::ClassificationResult ClassificationImp::run(
       ret[0].type = 1;
     } else if (label_type == "FMNIST") {
       ret[0].type = 2;
+    } else if (label_type == "ORIEN") {
+      ret[0].type = 3;
     }
   }
 
@@ -264,7 +316,7 @@ std::vector<ClassificationResult> ClassificationImp::run(
   auto size = cv::Size(width, height);
 
   for (auto i = 0u; i < input_images.size(); i++) {
-    if (size == input_images[i].size()) {
+    if (size == input_images[i].size() && (preprocess_type != 8)) {
       images.push_back(input_images[i]);
     } else {
       cv::Mat image;
@@ -299,6 +351,15 @@ std::vector<ClassificationResult> ClassificationImp::run(
         case 6:
           efficientnet_preprocess(input_images[i], height, width, image);
           break;
+        case 7:
+          ofa_resnet50_preprocess(input_images[i], height, width, image);
+          break;
+        case 8:
+          ofadepthwise_preprocess(input_images[i], height, width, image);
+          break;
+        case 9:
+          cv::resize(input_images[i], image, size);
+          break;
         default:
           break;
       }
@@ -307,7 +368,9 @@ std::vector<ClassificationResult> ClassificationImp::run(
   }
 
   __TIC__(CLASSIFY_SET_IMG)
-  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4 || preprocess_type == 6) {
+  if (preprocess_type == 2 || preprocess_type == 3 || preprocess_type == 4 ||
+      preprocess_type == 6 || preprocess_type == 7 || preprocess_type == 8 ||
+      preprocess_type == 9) {
     configurable_dpu_task_->setInputImageRGB(images);
   } else {
     configurable_dpu_task_->setInputImageBGR(images);
@@ -379,6 +442,8 @@ std::vector<ClassificationResult> ClassificationImp::run(
         ret.type = 1;
       } else if (label_type == "FMNIST") {
         ret.type = 2;
+      } else if (label_type == "ORIEN") {
+        ret.type = 3;
       }
     }
   }
@@ -453,6 +518,8 @@ std::vector<ClassificationResult> ClassificationImp::run(
         ret.type = 1;
       } else if (label_type == "FMNIST") {
         ret.type = 2;
+      } else if (label_type == "ORIEN") {
+        ret.type = 3;
       }
     }
   }

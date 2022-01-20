@@ -8,9 +8,9 @@
 Getting Started with HLS
 #########################
 
-The Vitis vision library can be used to build applications in Vivado® HLS as well as Vitis HLS.
+The Vitis vision library can be used to build applications in Vitis HLS.
 This section of the document provides steps on how to run a single library component through
-the Vivado HLS or Vitis HLS 2020.2 flow which includes, C-simulation,
+the Vitis HLS 2021.2 flow which includes, C-simulation,
 C-synthesis, C/RTL co-simulation, and exporting the RTL as an IP.
 
 All the functions under L1 folder of the Vitis Vision library can be built through Vitis HLS flow
@@ -20,8 +20,7 @@ in the following two modes:
 #. GUI Mode
 
 
-Tcl Script Mode
-----------------
+.. rubric:: Tcl Script Mode
 
 Each configuration of all functions in L1 are provided with TCL script which can be run through the
 available Makefile.
@@ -44,13 +43,12 @@ Open a terminal and run the following commands to set the environment and build 
 
    make run CSIM=1 CSYNTH=1 COSIM=1 VIVADO_IMPL=1
 
-GUI Mode
---------
+.. rubric:: GUI Mode
 
 Use the following steps to operate the HLS Standalone Mode using GUI:
 
 #. Open a terminal and update the LD_LIBRARY_PATH to point to OpenCV lib folder.
-#. From the same terminal, open Vivado® HLS or Vitis HLS in GUI mode and create a new project
+#. From the same terminal, open Vitis HLS in GUI mode and create a new project
 #. Specify the name of the project. For example - Dilation.
 #. Click Browse to enter a workspace folder used to store your projects.
 #. Click Next.
@@ -71,9 +69,6 @@ Use the following steps to operate the HLS Standalone Mode using GUI:
    ``-I<path-to-L1-include-directory> -std=c++0x
    -I<path-to-opencv-include-folder>``.
    
-   Note: When using Vivado HLS in the Windows operating system, make
-   sure to provide the ``-std=c++0x`` flag only for C-Sim and Co-Sim. Do
-   not include the flag when performing synthesis.
 #. In the Linker Flags section, enter the opencv libs and path to the opencv libs
    ``-L<path-to-opencv-lib-folder> -lopencv_core -lopencv_imgcodecs -lopencv_imgproc``
 #. Select Synthesis and repeat the above step for all the displayed
@@ -89,8 +84,7 @@ Use the following steps to operate the HLS Standalone Mode using GUI:
 #. The status of co-simulation can be observed on the console.
 
 
-Constraints for Co-simulation
-------------------------------
+.. rubric:: Constraints for Co-simulation
 
 There are few limitations in performing co-simulation of the Vitis vision
 functions. They are:

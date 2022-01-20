@@ -23,9 +23,9 @@ import torch
 
 import nndct_shared.quantization as nndct_quant
 import pytorch_nndct.parse.torch_op_def as torch_op_def
-import pytorch_nndct.utils.tensor_utils as py_tensor_utils
+import pytorch_nndct.utils.tensor_util as py_tensor_util
 from nndct_shared.base import NNDCT_OP, GLOBAL_MAP, NNDCT_KEYS
-from nndct_shared.utils import NndctScreenLogger, NndctOption
+from nndct_shared.utils import NndctScreenLogger, NndctOption, permute_data
 from typing import Sequence
 
 
@@ -55,11 +55,12 @@ class ModuleHooker(object):
       torch_op_def.TorchBatchNorm.ParamName.MOVING_MEAN: "running_mean",
       torch_op_def.TorchBatchNorm.ParamName.MOVING_VAR: "running_var",
       torch_op_def.TorchLayerNorm.ParamName.GAMMA: "weight",
-      torch_op_def.TorchLayerNorm.ParamName.BETA: "bias", 
+      torch_op_def.TorchLayerNorm.ParamName.BETA: "bias",
+      torch_op_def.TorchEmbedding.ParamName.WEIGHT: "weight"
 
   }
-  
-  
+
+
   @staticmethod
   def name_modules(module):
     for name, op in module.named_modules():
@@ -75,17 +76,17 @@ class ModuleHooker(object):
   def apply_to_children(module, func):
     for child in module.children():
       child.apply(func)
-  
+
   @staticmethod
   def turn_on_record_outputs(module):
     for op in module.modules():
       op.__enable_record__ = True
-  
+
   @staticmethod
   def turn_off_record_outputs(module):
     for op in module.modules():
       op.__enable_record__ = False
-  
+
   @staticmethod
   def clear_record_outputs(module):
     for op in module.modules():
@@ -93,8 +94,8 @@ class ModuleHooker(object):
         if isinstance(op.__outputs__, TimeStepData):
           op.__outputs__.clear()
         else:
-          op.__outputs__ = None  
-          
+          op.__outputs__ = None
+
   @classmethod
   def register_state_dict_hook(cls, module):
     def _resume_state_dict_key(op, destination, prefix, local_meta_data):
@@ -108,20 +109,20 @@ class ModuleHooker(object):
           if prefix + name in destination:
             destination[new_prefix + name] = data
             del destination[prefix + name]
-    
+
     def _state_dict_hooker(op, hooker):
       if len(op._parameters):
         op._register_state_dict_hook(hooker)
-    
+
     partial_func = partial(_state_dict_hooker, hooker=_resume_state_dict_key)
     cls.apply_to_children(module, partial_func)
-              
+
   @classmethod
   def register_output_hook(cls, module, record_once=True):
 
     def _record_outputs(op, inputs, outputs):
-      if op.__enable_record__ is True and hasattr(op, "node") and op.node.in_quant_part:
-        
+      if op.__enable_record__ is True and hasattr(op, "node"):
+
         def get_outputs_value(outputs):
           if isinstance(outputs, torch.Tensor):
             return outputs.cpu().detach().clone()
@@ -131,17 +132,17 @@ class ModuleHooker(object):
             return type(outputs)([get_outputs_value(op) for op in outputs])
           else:
             return None
-        
+
         if isinstance(op.__outputs__, TimeStepData) or (op.__outputs__ is None) or \
-        (NndctOption.nndct_record_slow_mode.value is True): 
-        
-          output_data = get_outputs_value(outputs) 
-          
+        (NndctOption.nndct_record_slow_mode.value is True):
+
+          output_data = get_outputs_value(outputs)
+
           if isinstance(op.__outputs__, TimeStepData):
             op.__outputs__.append(output_data)
           else:
             op.__outputs__ = output_data
-      
+
     def _output_hooker(op, record_func):
       op.register_forward_hook(record_func)
 
@@ -155,18 +156,24 @@ class ModuleHooker(object):
   def detach_node_from_module(cls, module):
     def _del_node(op):
       if hasattr(op, "node"):
+        op.attached_node_name = op.node.name
         del op.node
+  
       if hasattr(op, "params_name"):
         del op.params_name
-      
+
     cls.apply_to_children(module, _del_node)
-    
+
   @classmethod
   def hook_module_with_node(cls, module, graph):
 
     def _add_node_on_module(op):
-      idx = int(op.name.split('_')[-1])
-      node = graph.get_node_by_idx(idx)
+      if not hasattr(op, "attached_node_name"):
+        idx = int(op.name.split('_')[-1])
+        node = graph.get_node_by_idx(idx)
+      else:
+        node = graph.node(op.attached_node_name)
+        
       if node is not None:
         node.module = op
         op.node = node
@@ -174,7 +181,7 @@ class ModuleHooker(object):
 
     if not hasattr(module, "name"):
       cls.name_modules(module)
-      
+
     if _is_module_hooked(module):
       cls.detach_node_from_module(module)
 
@@ -192,23 +199,24 @@ class ModuleHooker(object):
     def _graph2module(op):
       node = getattr(op, "node", None)
       for param_type, tensor in node.op.params.items():
-        py_tensor_utils.param_to_torch_format(tensor)
+        py_tensor_util.param_to_torch_format(tensor)
 
         data = np.copy(tensor.data)
-        if node.op.type == NNDCT_OP.CONVTRANSPOSE2D and param_type == torch_op_def.TorchConv2d.ParamName.WEIGHTS:
-          data = data.transpose(1, 0, 2, 3)
+        if node.op.type in [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
+          # data = data.transpose(1, 0, 2, 3)
+          data = data.swapaxes(0, 1)
           data = np.ascontiguousarray(data)
-        
-        if node.op.type == NNDCT_OP.DEPTHWISE_CONV2D and param_type == torch_op_def.TorchConv2d.ParamName.WEIGHTS:
+
+        if node.op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONV3D] and param_type == node.op.ParamName.WEIGHTS:
           out_channels = node.node_config("out_channels")
           kernel_size = node.node_config("kernel_size")
-          data = data.reshape((out_channels, 1, *kernel_size)) 
-        
-        if node.op.type == NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D and param_type == torch_op_def.TorchConv2d.ParamName.WEIGHTS:
+          data = data.reshape((out_channels, 1, *kernel_size))
+
+        if node.op.type in [NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
           in_channels = node.node_config("in_channels")
           kernel_size = node.node_config("kernel_size")
-          data = data.reshape((1, in_channels, *kernel_size)) 
-          data = data.transpose(1, 0, 2, 3)
+          data = data.reshape((1, in_channels, *kernel_size))
+          data = data.swapaxes(0, 1)
           data = np.ascontiguousarray(data)
 
         torch_tensor = torch.from_numpy(data)
@@ -221,7 +229,7 @@ class ModuleHooker(object):
             else:
               torch_tensor = torch_tensor.to(
                   getattr(op, param_name).data)
-              
+
             if param_name in op._buffers:
               op._buffers[param_name] = torch_tensor
             else:
@@ -233,37 +241,35 @@ class ModuleHooker(object):
         else:
           torch_tensor = torch_tensor.to(device=GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE))
           module.register_parameter(param_name, torch.nn.Parameter(torch_tensor))
-          
-          
 
-        py_tensor_utils.param_to_nndct_format(tensor)
+        py_tensor_util.param_to_nndct_format(tensor)
 
     # No one will call it and will be removed later.
     def _module2graph(op):
       node = getattr(op, "node", None)
       for param_name, tensor in node.op.params.items():
         if hasattr(op, cls._parameter_map[param_name]):
-          if param_name in [torch_op_def.TorchBatchNorm.ParamName.MOVING_MEAN, 
+          if param_name in [torch_op_def.TorchBatchNorm.ParamName.MOVING_MEAN,
                             torch_op_def.TorchBatchNorm.ParamName.MOVING_VAR]:
             torch_tensor = getattr(op, cls._parameter_map[param_name])
           else:
             torch_tensor = getattr(op, cls._parameter_map[param_name]).data
-            
+
           torch_tensor_data = np.copy(torch_tensor.detach().cpu().numpy())
 
-          if node.op.type == NNDCT_OP.CONVTRANSPOSE2D and param_name == torch_op_def.TorchConv2d.ParamName.WEIGHTS:
+          if node.op.type == NNDCT_OP.CONVTRANSPOSE2D and param_name == node.op.ParamName.WEIGHTS:
             torch_tensor_data = torch_tensor_data.transpose(1, 0, 2, 3)
             torch_tensor_data = np.ascontiguousarray(torch_tensor_data)
-            
-          if node.op.type == NNDCT_OP.DEPTHWISE_CONV2D and param_name == torch_op_def.TorchConv2d.ParamName.WEIGHTS:
+
+          if node.op.type == NNDCT_OP.DEPTHWISE_CONV2D and param_name == node.op.ParamName.WEIGHTS:
             in_channels = node.node_config("in_channels")
             out_channels = node.node_config("out_channels")
             kernel_size = node.node_config("kernel_size")
             channel_mutiplier = int(out_channels / in_channels)
             torch_tensor_data = torch_tensor_data.reshape((channel_mutiplier, in_channels, *kernel_size))
-            
+
           tensor.from_ndarray(torch_tensor_data)
-          py_tensor_utils.param_to_nndct_format(tensor)
+          py_tensor_util.param_to_nndct_format(tensor)
 
     if not _is_module_hooked(module):
       cls.hook_module_with_node(module, graph)
@@ -273,7 +279,7 @@ class ModuleHooker(object):
     #     _graph2module if graph2module else _module2graph,
     #     param_map=cls._parameter_map)
     cls.apply_to_children(module, func)
-    
+
   @staticmethod
   def _get_output_data(outptus, outptus_name):
     try:
@@ -284,29 +290,31 @@ class ModuleHooker(object):
       return None
     else:
       return output_data
-    
+
   @classmethod
   def update_blobs_once(cls, module, graph, time_step=None):
-      
+
     def _update_node_outputs(op):
       if hasattr(op, "node") and op.node is not None:
         node = op.node
         if not hasattr(op, "__outputs__") or op.__outputs__ is None or (isinstance(op.__outputs__, TimeStepData) and len(op.__outputs__) == 0):
-          return   
+          return
         one_step_outputs = op.__outputs__[
             time_step] if time_step is not None else op.__outputs__
         if len(node.out_tensors) > 1:
           for idx, tensor in enumerate(node.out_tensors):
             output_data = cls._get_output_data(one_step_outputs[idx], tensor.name)
             if output_data is not None:
+              output_data = permute_data(output_data, node.transpose_order)
               tensor.from_ndarray(output_data)
-              py_tensor_utils.blob_to_nndct_format(tensor)
+              # py_tensor_util.blob_to_nndct_format(tensor)
         else:
           tensor = node.out_tensors[0]
           output_data = cls._get_output_data(one_step_outputs, tensor.name)
           if output_data is not None:
+            output_data = permute_data(output_data, node.transpose_order)
             tensor.from_ndarray(output_data)
-            py_tensor_utils.blob_to_nndct_format(tensor)
+            # py_tensor_util.blob_to_nndct_format(tensor)
 
     if not _is_module_hooked(module):
       cls.hook_module_with_node(module, graph)

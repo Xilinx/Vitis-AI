@@ -1,0 +1,25 @@
+From f49a1ee084b79d7fe20d803f84585e0745e5dbdf Mon Sep 17 00:00:00 2001
+From: yish <yish@xilinx.com>
+Date: Thu, 22 Apr 2021 10:25:05 +0800
+Subject: [PATCH] enable primary layer default
+
+---
+ drivers/gpu/drm/xlnx/xlnx_mixer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/xlnx/xlnx_mixer.c b/drivers/gpu/drm/xlnx/xlnx_mixer.c
+index b29c2497bc9e..3930c5e72e00 100644
+--- a/drivers/gpu/drm/xlnx/xlnx_mixer.c
++++ b/drivers/gpu/drm/xlnx/xlnx_mixer.c
+@@ -238,7 +238,7 @@ static const u32 color_table[] = {
+ 	DRM_FORMAT_XV20,
+ };
+ 
+-static bool xlnx_mixer_primary_enable = false;
++static bool xlnx_mixer_primary_enable = true;
+ module_param_named(mixer_primary_enable, xlnx_mixer_primary_enable, bool, 0600);
+ MODULE_PARM_DESC(mixer_primary_enable, "Enable mixer primary plane (default: 0)");
+ 
+-- 
+2.17.1
+

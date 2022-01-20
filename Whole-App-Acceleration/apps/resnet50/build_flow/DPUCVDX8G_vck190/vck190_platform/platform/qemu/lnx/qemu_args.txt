@@ -1,0 +1,74 @@
+########################################################################
+# This is file which used to generate QEMU(which emulates A72 cores) 
+# commandline(start_qemu.sh script) which used in Versal-PS HW-EMU. 
+# This is a template file which is packaged in platform and it gets 
+# processed by Vitis tool to generate meaningful file.
+#
+# This file contains flag and value pairs and they must be seperated 
+# into two lines value followed by flag. Below are the common/mandated 
+# flag and value pairs used for emulating Versal-PS. User can add more 
+# commandline args to this file depends on requirements.
+# 
+# For more details on the QEMU commandline, please refer to 
+# the QEMU user guide UG1169.
+########################################################################
+#
+#
+# -M (or -machine) for selecting emulated machine.
+# (eg. for zynq=arm-generic-fdt-7series and zynqmp/versal=arm-generic-fdt)
+-M
+arm-generic-fdt
+#
+#
+# -display none(or -nographics) By default, QEMU attempts to create 
+# a display for user I/O. This option instructs the QEMU that 
+# there is no need for a display and I/O is serial.
+-display
+none
+#
+#
+# -serial : Redirect the virtual serial port to host character device
+# eg. "-serial null -serial stdio"
+# There are 4 UARTs in Versal PS.
+# First and second serial port is for debug and not used in emulation. 
+# Hence redirected to null Third serial port is stdout of PS, 
+# so this is redirected to monitor
+# Fourth serial port is not specified and defaults to null
+-serial
+null
+-serial
+null
+-serial
+mon:stdio
+#
+#
+# -sync-quantum spefies how frequently QEMU will sync with RTL simulator
+# Modifying this can have impact on speed of simulation
+-sync-quantum
+"1000000000"
+#
+#
+# Specify boot mode on your platform
+# 1 = qspi24
+# 2 = qspi32
+# 3 = sd0
+# 5 = sd1
+# 6 = emmc0
+# 8 = ospi
+# uncomment the boot related lines below(eg: for sd0 mode=5)
+#-boot
+#mode=5
+#
+#
+# By default, QEMU is configured to mimic memory regions as present
+# on VCK190 board i.e 8GB DDR4 and 8GB LPDDR4
+# If your platform has different memory, then you need to create
+# a hardware device tree for QEMU. An example device tree
+# is present at <Vitis>/data/emulation/dtbs/....
+# Users need to modify and hw dts by uncommenting corresponding
+# memory regions and specifying the size as present in your design.
+# Then compile the dts into dtb and put it into platform's qemu folder
+#-hw-dtb
+#sw/<platform>/qemu/board-versal-ps-cosim-vc-p-a2197-00.dtb
+-boot
+mode=5

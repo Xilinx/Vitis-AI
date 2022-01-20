@@ -39,9 +39,12 @@ class Functional(abc.ABC, torch.nn.Module):
 class Add(Functional):
   """Operation equivalent to ``torch.add(Tensor, Tensor)``"""
 
-  def forward(self, x, y):
+  def forward(self, input, other, alpha=1, out=None):
     # type: (Tensor, Tensor) -> Tensor
-    return torch.add(x, y)
+    if out is None:
+      return torch.add(input, other, alpha=alpha)
+    else:
+      return torch.add(input, other, alpha=alpha, out=out)
 
 class AddScalar(Functional):
   """Operation equivalent to ``torch.add(Tensor, float)``"""
@@ -121,5 +124,12 @@ class Pad(Functional):
   def forward(self, input, pad, mode='constant', value=0):
     if mode != 'replicate':
         print(('[WARN] DPU only supports padding mode=replicate. '
-            'Other modes of padding will be run on the CPU, which will result in poor performance.'))
+            'Other modes of padding will be run on CPU, which will results in poor performance.'))
     return F.pad(input, pad, mode, value)
+
+class Mean(Functional):
+  def forward(self, x, dim, keepdim=False, out=None):
+    if out is not None:
+      return torch.mean(x, dim, keepdim, out)
+    return torch.mean(x, dim, keepdim)
+

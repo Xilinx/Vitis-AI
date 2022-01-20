@@ -34,7 +34,7 @@ namespace vitis {
 namespace ai {
 
 static std::string get_so_name(const xir::Graph* graph) {
-  auto ret = std::string("libxmodel_postprocessor_common.so.1");
+  auto ret = std::string("libxmodel_postprocessor_common.so.2");
   if (graph->has_attr("xmodel_postprocessor")) {
     ret = graph->get_attr<std::string>("xmodel_postprocessor");
   } else {
@@ -58,7 +58,14 @@ XmodelPostprocessorBase::XmodelPostprocessorBase() {
 std::unique_ptr<XmodelPostprocessorBase> XmodelPostprocessorBase::create(
     const xir::Graph* graph) {
   auto so_name = get_so_name(graph);
-  auto handle = dlopen(so_name.c_str(), RTLD_LAZY);
+  //add RTLD_GLOBAL, dlopen default RTLD_LOCAL. if RTLD_LOCAL:
+  //[libprotobuf ERROR google/protobuf/descriptor_database.cc:644] File already
+  //exists in database: vitis/ai/proto/dpu_model_param.proto
+  //[libprotobuf FATAL google/protobuf/descriptor.cc:1371] CHECK failed:
+  //GeneratedDatabase()->Add(encoded_file_descriptor, size):
+  //terminate called after throwing an instance of
+  //'google::protobuf::FatalException'
+  auto handle = dlopen(so_name.c_str(), RTLD_LAZY | RTLD_GLOBAL);
   if (!handle) {
     LOG(FATAL) << "cannot open plugin: name=" << so_name;
   };

@@ -1,1 +1,0 @@
-../../../rst_L2/global.rst

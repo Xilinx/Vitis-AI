@@ -205,13 +205,107 @@ void cuda_diff_S(const int N,
       fixed_diff_min = fixed_diff;
     }
   }
-  final_scale = final_scale > 12 ? 12: final_scale;
+  //final_scale = final_scale > 15 ? 15: final_scale;
   cuda_set(1, output, final_scale);
 #if 0
   printf( "$$$$$$$$$$$ diffs scale is %g, setting to %p...\n", 
           final_scale,
           output ); fflush(stdout);
 #endif
+}
+
+#define C_P0       1.98364257812E-4
+#define CF_P1      1.3981999507E-3 
+#define CF_P2      8.3334519073E-3 
+#define CF_P3      4.1665795894E-2 
+#define CF_P4      1.6666665459E-1 
+#define CF_P5      5.0000001201E-1 
+
+__device__ static inline short bfloat16(float x){
+ int itmp =  *(int*)&x;
+  if((itmp&0x00008000) == 0x00008000)
+    itmp += 0x00010000;
+  return (short)((itmp>>16)&0xFFFF);
+}
+
+__device__ static inline float rbfloat(short x){
+  int itmp = (x<<16)&0xFFFF0000;
+  return *((float *)&itmp);
+}
+
+__device__ static inline float as_bfloat16(float x){
+  int itmp =  *(int*)&x;
+  if((itmp&0x00008000) == 0x00008000)
+    itmp += 0x00010000;
+  itmp &= 0xFFFF0000;
+  return *(float *)&itmp;
+}
+
+__device__ float exp_sim(short x)
+{
+  float ftmp, fz, fres, fx;
+
+  ftmp = rbfloat(x);
+  fres = ftmp*1.4375+0.5;
+  //round
+  fres += 12582912.0;
+  fres -= 12582912.0;
+  //round end
+  fz = fres;
+  fx = ftmp - fres*0.69140625;
+  fres = as_bfloat16(fx)*C_P0 + CF_P1; 
+  fres = as_bfloat16(fx)*as_bfloat16(fres) + CF_P2; 
+  fres = as_bfloat16(fx)*as_bfloat16(fres) + CF_P3; 
+  fres = as_bfloat16(fx)*as_bfloat16(fres) + CF_P4; 
+  fres = as_bfloat16(fx)*as_bfloat16(fres) + CF_P5; 
+  fres = as_bfloat16(fx)*as_bfloat16(fres) + 1.0; 
+  fres = as_bfloat16(fx)*as_bfloat16(fres) + 1.0; 
+
+  fres = as_bfloat16(fres)*as_bfloat16(pow(2, fz));
+
+  return as_bfloat16(fres);
+}
+
+__device__ float inv_sim(float x)
+{
+  float a = x;
+  int tt = 0x7F000000 - *(int*)&a;
+  float r = *(float *)&tt;
+  float m;
+  
+  a = as_bfloat16(a);
+
+  for (int k=0; k<4; k++){
+    m = 2.0 - as_bfloat16(a)*as_bfloat16(r);
+    r = as_bfloat16(m)*as_bfloat16(r);
+  }
+
+  return r;
+}
+
+__device__ float sigmoid_sim(short x)
+{
+  float fres = exp_sim(x);
+  float r = inv_sim(as_bfloat16(fres)+1.0);
+  fres = as_bfloat16(fres)*as_bfloat16(r);
+  return as_bfloat16(fres);
+}
+
+__device__ short sigmoid_short_sim(short x, int ishift, int oshift)
+{
+
+  float fx = (float)x;
+  float iscale = pow(2, -ishift);
+  float res = as_bfloat16(iscale)*as_bfloat16(fx);
+  res = sigmoid_sim(bfloat16(res));
+  float oscale = pow(2, oshift);
+  res = as_bfloat16(oscale)*as_bfloat16(res);
+  
+  float fy = as_bfloat16(res) + 12582912.0;
+  int y = *((int*)&fy);
+  y -= 0x4B400000;
+
+  return y&0xFFFF;
 }
 
 template 
@@ -230,6 +324,45 @@ void cuda_diff_S<double>(const int N,
                          int bitwidth, 
                          int range, 
                          int method);
+
+template<typename Dtype>
+__global__ static void _sigmoid_simulation(const int N,
+                                             const Dtype fuzz,
+                                             const Dtype* input,
+                                             Dtype* output) {
+  NNDCT_KERNEL_LOOP(i, N){
+    if (input[i] >= 8.0) 
+      output[i] = 1.0 - fuzz;
+    else if (input[i] < -8.0)
+      output[i] = 0.0;
+    else {
+      int x = int(input[i] * pow(2, 9));
+      output[i] = sigmoid_short_sim(x, 9, 8) / (pow(2.0, 8));
+    }
+  }
+}
+
+template<typename Dtype>
+void cuda_sigmoid_simulation(const int N, 
+                               const Dtype* input, 
+                               Dtype* output)
+{
+  Dtype fuzz = 1.0 / 32768;
+  _sigmoid_simulation<<<NNDCT_GET_BLOCKS(N),NNDCT_CUDA_NUM_THREADS>>>(
+      N, 
+      fuzz, 
+      input, 
+      output);
+} 
+
+template
+void cuda_sigmoid_simulation<float>(const int N, 
+                                      const float* input, 
+                                      float* output);
+template
+void cuda_sigmoid_simulation<double>(const int N, 
+                                       const double* input, 
+                                       double* output);
 
 template<typename Dtype>
 __global__ static void _sigmoid_table_lookup(const int N,
@@ -300,6 +433,70 @@ void cuda_sigmoid_table_lookup<double>(const int N,
                                        const double* table,
                                        double* output,
                                        int fragpos);
+
+__device__ float tanh_sim(short x)
+{
+  float fres = exp_sim(x);
+  fres = as_bfloat16(fres)*as_bfloat16(fres);
+  float r = inv_sim(as_bfloat16(fres)+1.0);
+  fres = as_bfloat16(fres)-1.0;
+  fres = as_bfloat16(fres)*as_bfloat16(r);
+  return as_bfloat16(fres);
+}
+
+__device__ short tanh_short_sim(short x, int ishift, int oshift)
+{
+  float fx = (float)x;
+  float iscale = pow(2, -ishift);
+  float res = as_bfloat16(iscale)*as_bfloat16(fx);
+  res = tanh_sim(bfloat16(res));
+  float oscale = pow(2, oshift);
+  res = as_bfloat16(oscale)*as_bfloat16(res);
+  float fy = as_bfloat16(res) + 12582912.0;
+  int y = *((int*)&fy);
+  y -= 0x4B400000;
+  
+  return y&0xFFFF;
+}
+
+template<typename Dtype>
+__global__ static void _tanh_simulation(const int N,
+                                          const Dtype fuzz,
+                                          const Dtype* input,
+                                          Dtype* output) {
+  NNDCT_KERNEL_LOOP(i, N){
+    if (input[i] >= 4.0) 
+      output[i] = 1.0 - fuzz;
+    else if (input[i] < -4.0)
+      output[i] = -1.0;
+    else {
+      int x = int(input[i] * pow(2, 9));
+      output[i] = tanh_short_sim(x, 9, 8) / (pow(2.0, 8));
+    }
+  }
+}
+
+template<typename Dtype>
+void cuda_tanh_simulation(const int N, 
+                            const Dtype* input, 
+                            Dtype* output)
+{
+  Dtype fuzz = 1.0 / 32768;
+  _tanh_simulation<<<NNDCT_GET_BLOCKS(N),NNDCT_CUDA_NUM_THREADS>>>(
+      N, 
+      fuzz, 
+      input, 
+      output);
+} 
+
+template
+void cuda_tanh_simulation<float>(const int N, 
+                                   const float* input, 
+                                   float* output);
+template
+void cuda_tanh_simulation<double>(const int N, 
+                                    const double* input, 
+                                    double* output);
 
 template<typename Dtype>
 __global__ static void _tanh_table_lookup(const int N,

@@ -61,8 +61,8 @@ struct MyOp : public vart::experimental::OpImpBase {
     auto output_fix_pos = op->get_output_tensor()->get_attr<int>("fix_point");
     shift_fix_pos_ = output_fix_pos - input_fix_pos;
   };
-  int calculate(vart::experimental::simple_tensor_buffer_t<int8_t> output,
-                vart::experimental::simple_tensor_buffer_t<int8_t> input) {
+  int calculate(vart::simple_tensor_buffer_t<int8_t> output,
+                vart::simple_tensor_buffer_t<int8_t> input) {
     for (auto b = 0; b < batch_; b++) {
       calculate_batch(&output.data[b * output_h_ * output_w_ * channel_],
                       &input.data[b * input_h_ * input_w_ * channel_]);
@@ -174,6 +174,4 @@ struct MyOp : public vart::experimental::OpImpBase {
 
 }  // namespace
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOp>();
-}
+DEF_XIR_OP_IMP(DEF_XIR_OP_IMP)

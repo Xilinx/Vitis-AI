@@ -4,6 +4,6 @@ DATA_TYPE,Data type of AIE core kernel input or output
 TILE_HEIGHT_MAX,Maximum tile height
 TILE_WIDTH_MAX,Maximum tile width
 AIE_VECTORIZATION_FACTOR,AIE core vectorization factor
-CORES,Number of AIE cores to be used. *Currently only 1 core is supported*
+CORES,Number of AIE cores to be used
 PL_AXI_BITWIDTH,For PL based data movers. It is the data width for AXI transfers between DDR - PL
 USE_GMIO,Set to true to use GMIO based data transfer

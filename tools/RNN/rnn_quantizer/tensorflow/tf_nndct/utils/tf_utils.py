@@ -32,7 +32,6 @@ from tensorflow.core.framework import types_pb2
 from tensorflow.python.eager import def_function
 from tensorflow.python.framework import dtypes as tf_dtypes
 from tensorflow.python.framework import tensor_util
-from tensorflow.python.keras import layers
 
 from tf_nndct.graph import dtypes as nndct_dtypes
 from tf_nndct.utils.convert_to_constants import convert_variables_to_constants_v2 as convert_to_constants

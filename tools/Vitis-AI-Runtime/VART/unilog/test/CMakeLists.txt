@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 aux_source_directory(. TAR_FILE_LIST)
 foreach(TAR_FILE ${TAR_FILE_LIST})

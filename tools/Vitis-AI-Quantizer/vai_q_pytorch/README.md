@@ -15,7 +15,7 @@ vai_q_pytorch is designed as a part of a standard platform for neural network de
 1. Support version 3.6 ~ 3.7. 
     
 * Pytorch
-1. Support version 1.1 ~ 1.7.1. 
+1. Support version 1.2 ~ 1.9. 
 2. QAT does NOT work with pytorch 1.1.
 3. Data Parallelism is NOT supported.
     
@@ -27,8 +27,8 @@ vai_q_pytorch is designed as a part of a standard platform for neural network de
 ### Quick Start in Docker environment
 
 If you work in Vitis-AI 1.3 and later version of docker, there is a conda environment "vitis-ai-pytorch", in which vai_q_pytorch package is already installed. 
-In this conda environment, python version is 3.6, pytorch version is 1.4.0 and torchvision version is 0.5.0. You can directly start our "resnet18" example without installation steps.
-A new Conda environment with a specified PyTorch version (1.2~1.7.1) can be created using the /opt/vitis_ai/scripts/replace_pytorch.sh script. This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
+In this conda environment, python version is 3.6, pytorch version is 1.7.1 and torchvision version is 0.8.2. You can directly start our "resnet18" example without installation steps.
+A new Conda environment with a specified PyTorch version (1.2~1.9) can be created using the /opt/vitis_ai/scripts/replace_pytorch.sh script. This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
 packages, and then installs the specified version of PyTorch, Torchvision, and re-installs vai_q_pytorch from source code.
 - Copy example/resnet18_quant.py to docker environment
 - Download pre-trained [Resnet18 model](https://download.pytorch.org/models/resnet18-5c106cde.pth)
@@ -70,10 +70,10 @@ For CPU version, remove all CUDA_HOME environment variable setting in your .bash
 
     unset CUDA_HOME
 
-##### Pre step 2: install Pytorch(1.1-1.7.1) and torchvision
+##### Pre step 2: install Pytorch(1.2-1.9) and torchvision
 Here take pytorch 1.7.1 and torchvision 0.8.2 as an example, detailed instructions for other versions are in [pytorch](https://pytorch.org/) website.
 
-    pip install torch==1.7.1+cu101 torchvision==0.8.2+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+    pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 -f https://download.pytorch.org/whl/torch_stable.html
 
 ##### Pre step 3: install other dependencies
     pip install -r requirements.txt 
@@ -147,15 +147,15 @@ It is a good idea to check the difference between float and quantized script, li
    ```
 
 ##### Run and output results
-Before running commands, let's introduce the log message in vai_q_pytorch. vai_q_pytorch log messages have special color and special keyword "NNDCT". 
-"NNDCT" is our internal project name and we will change it later. vai_q_pytorch log message types include "error", "warning" and "note". 
+Before running commands, let's introduce the log message in vai_q_pytorch. vai_q_pytorch log messages have special color and special keyword prefix "VAIQ_*". 
+vai_q_pytorch log message types include "error", "warning" and "note". 
 Pay attention to vai_q_pytorch log messages to check the flow status.<br>
 * Run command with "--quant_mode calib" to quantize model.
 ```py
     python resnet18_quant.py --quant_mode calib --subset_len 200
 ```
 When doing calibration forward, we borrow float evaluation flow to minimize code change from float script. So there are loss and accuracy displayed in the end. 
-They are meaningless, just skip them. Pay more attention to the colorful log messages with special keywords "NNDCT".
+They are meaningless, just skip them. Pay more attention to the colorful log messages with special keywords prefix "VAIQ_*".
 
 Another important thing is to control iteration numbers during quantization and evaluation. 
 Generally, 100-1000 images are enough for quantization and the whole validation set are required for evaluation. 
@@ -186,6 +186,7 @@ Xmodel file for Vitis AI compiler will be generated under output directory “./
 In conda env vitis-ai-pytorch in Vitis-AI docker, XIR is ready. But if vai_q_pytorch is installed by source code, it needs to install XIR in advance.<br>
 If XIR is not installed, xmodel file can't be generated, this command will raise error in the end.
 
+
 ##### Module partial quantization
 Sometimes not all the sub-modules in a module will be quantized. Besides call general vai_q_pytorch APIS, QuantStub/DeQuantStub OP pair can be used to realize it.<br>
 Example code for quantizing subm0 and subm2, but not to quantize subm1: 
@@ -213,10 +214,49 @@ class WholeModule(torch.nn.module):
         output2 = self.subm2(output1)
         output2 = self.dequant(output2) # end of part to be quantized
 ```
+##### Register Custom Operation
+In the XIR Op library, there's a well-defined set of operators to cover the wildly used deep learning frameworks, e.g. TensorFlow, Pytorch and Caffe, and all of the build-in operators for DPU. This enhanced the expression ability and achieved one of the core goals, which is eliminating the difference between these frameworks and providing a unified representation for users and developers. However, this Op library can’t cover all of Ops in the upstream frameworks. So, the XIR provide a new op definition to express all other unknown Ops for Op library. In order to convert a quantized model to xmodel，vai_q_pytorch provide a decorator to register a operation or a group of operations as a custom operation which is unknown for XIR.
+```py
+# Decorator API
+def register_custom_op(op_type: str, attrs_list: Optional[List[str]] = None):
+  """The decorator is used to register the function as a custom operation.
+  Args:
+  op_type(str) - the operator type registered into quantizer. 
+                 The type should not conflict with pytorch_nndct
+                
+  attrs_list(Optional[List[str]], optional) - 
+  the name list of attributes that define operation flavor. 
+  For example, Convolution operation has such attributes as padding, dilation, stride and groups. 
+  The order of name in attrs_list should be consistent with that of the arguments list. 
+  Default: None
+  
+  """
+```
+How to use: <br>
+-	Aggregate some operations as a function. The first argument name of this function should be ctx. The meaning of ctx is the same as that in torch.autograd.Function.
+-	Decorate this function with the decorator described above. 
+-	Example model code is in example/resnet18_quant_custom_op.py. On how to run it, please refer to example/resnet18_quant.py.
+```py
+from pytorch_nndct.utils import register_custom_op
+
+@register_custom_op(op_type="MyOp", attrs_list=["scale_1", "scale_2"])
+def custom_op(ctx, x: torch.Tensor, y:torch.Tensor, scale_1:float, scale_2:float) -> torch.Tensor:
+	return scale_1 * x + scale_2 * y  
+
+class MyModule(torch.nn.Module):
+def __init__(self):
+   ...
+
+def forward(self, x, y):
+   return custom_op(x, y, 0.5, 0.5)
+```
+Limitations<br>
+-	Loop operation is not allowed in a custom operation
+-	The number of return values for a custom operation can only be one.
 
 ##### Fast finetune model 
 Sometimes direct quantization accuracy is not high enough, then it needs finetune model parameters. <br>
-- The fast finetuning is not real training of the model, and only needs limited number of iterations. For classification models on Imagenet dataset, 1000 images are enough in general.
+- The fast finetuning is not real training of the model, and only needs limited number of iterations. For classification models on Imagenet dataset, 5120 images are enough in general.
 - It only needs do some modification based on evaluation model script and does not need setup optimizer for training.
 - A function for model forwarding iteration is needed and will be called among fast finetuning. 
 - Re-calibration with original inference code is highly recommended.
@@ -225,10 +265,10 @@ Sometimes direct quantization accuracy is not high enough, then it needs finetun
 # fast finetune model or load finetuned parameter before test 
   if finetune == True:
       ft_loader, _ = load_data(
-          subset_len=1024,
+          subset_len=5120,
           train=False,
           batch_size=batch_size,
-          sample_method=None,
+          sample_method='random',
           data_dir=args.data_dir,
           model_name=model_name)
       if quant_mode == 'calib':
@@ -236,48 +276,56 @@ Sometimes direct quantization accuracy is not high enough, then it needs finetun
       elif quant_mode == 'test':
         quantizer.load_ft_param()
 ```
-- For example/resnet18_quant.py, command line to do parameter finetuning and re-calibration,
+- For example/resnet18_quant.py, command line to do parameter fast finetuning and re-calibration,
   ```shell
   python resnet18_quant.py --quant_mode calib --fast_finetune
   
   ```
-- command line to test finetuned quantized model accuracy,
+- command line to test fast finetuned quantized model accuracy,
   ```shell
   python resnet18_quant.py --quant_mode test --fast_finetune
+
+  ```
+- command line to deploy fast finetuned quantized model,
+  ```shell
+  python resnet18_quant.py --quant_mode test --fast_finetune --subset_len 1 --batch_size 1 --deploy
 
   ```
 
 ##### Finetune quantized model
 - This mode can be used to finetune a quantized model (loading float model parameters), also can be used to do quantization-aware-training (QAT) from scratch.
 - It needs to add some vai_q_pytorch interface functions based on the float model training script.
-- The mode does not work with pytorch version 1.1. 
-- The mode requests the trained model can not use +/- operator in model forwarding code. It needs to replace them with torch.add/torch.sub module.
+- The mode requests the trained model cannot use +/- operator in model forwarding code. It needs to replace them with torch.add/torch.sub module.
 - Example code in example/resnet18_qat.py:
 ```py
-  # vai_q_pytorch interface function: create quantizer can do QAT
+  # create quantizer can do QAT
   input = torch.randn([batch_size, 3, 224, 224], dtype=torch.float32)
-  quantizer = torch_quantizer(quant_mode = 'calib',
-                              module = model, 
-                              input_args = input,
-                              bitwidth = 8,
-                              mix_bit = False,
-                              qat_proc = True)
-  quantized_model = quantizer.quant_model
+  from pytorch_nndct import QatProcessor
+  qat_processor = QatProcessor(model, inputs, bitwidth=8)
+  quantized_model = qat_processor.trainable_model()
 ```
 ```py
-    # vai_q_pytorch interface function: deploy the trained model and convert xmodel
-    # need at least 1 iteration of inference with batch_size=1 
-    quantizer.deploy(quantized_model)
-    deployable_model = quantizer.deploy_model
-    val_dataset2 = torch.utils.data.Subset(val_dataset, list(range(1)))
-    val_loader2 = torch.utils.data.DataLoader(
-        val_dataset2,
-        batch_size=1,
-        shuffle=False,
-        num_workers=workers,
-        pin_memory=True)
-    validate(val_loader2, deployable_model, criterion, gpu)
-    quantizer.export_xmodel()
+  # get the deployable model and test it
+  output_dir = 'qat_result'
+  deployable_model = qat_processor.to_deployable(quantized_model, output_dir)
+  validate(val_loader, deployable_model, criterion, gpu)
+```
+```py
+  # export xmodel from deployable model
+  # need at least 1 iteration of inference with batch_size=1 
+  # Use cpu mode to export xmodel.
+  deployable_model.cpu()
+  val_subset = torch.utils.data.Subset(val_dataset, list(range(1)))
+  subset_loader = torch.utils.data.DataLoader(
+    val_subset,
+    batch_size=1,
+    shuffle=False,
+    num_workers=8,
+    pin_memory=True)
+  # Must forward deployable model at least 1 iteration with batch_size=1
+  for images, _ in subset_loader:
+    deployable_model(images)
+  qat_processor.export_xmodel(output_dir)
 ```
 
 

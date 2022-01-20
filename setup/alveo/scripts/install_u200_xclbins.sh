@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_xclbins_1_4_1.tar.gz"
+XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_xclbins_2_0_0.tar.gz"
 XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
 INSTALLER=tar
 INSTALL_PATH=/

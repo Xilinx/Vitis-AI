@@ -58,7 +58,7 @@ class Vitis8BitOptimizeTransformsPipeline(TransformsPipeline):
     """Implement vitis 8-bit optimize transforms to make it more quantize-friendly.
 
     All the transforms should not break the float model structure, and
-    the output of the transformed model should be consistant with the float 
+    the output of the transformed model should be consistant with the float
     model.
     """
     configs = self.get_configs()
@@ -190,6 +190,7 @@ class Vitis8BitQuantizeTransformsPipeline(TransformsPipeline):
     if freeze_bn_delay < 0:
       freeze_bn_delay = None
     quantize_transforms = [
+        vitis_8bit_quantize_transforms.CustomLayerWrapper(quantize_registry),
         vitis_8bit_quantize_transforms.InputLayerQuantize(
             quantize_registry, mode),
         vitis_8bit_quantize_transforms.ConvBNQuantize(quantize_registry, mode,

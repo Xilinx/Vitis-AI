@@ -25,7 +25,7 @@ class TensorBufferLinkerHostVirt : public TensorBufferLinker {
   virtual ~TensorBufferLinkerHostVirt();
 
  private:
-  virtual void finalize(std::string device) override;
+  virtual void finalize() override;
   virtual void after_invoke_runner(const xir::Subgraph* subgraph) override;
 
  private:

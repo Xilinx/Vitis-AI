@@ -29,7 +29,7 @@ from nndct_shared.base.key_names import FrameworkType
 from nndct_shared.compile import CompilerFactory
 from nndct_shared.compile import DeployChecker
 from nndct_shared.quantization import BaseQuantizer
-from nndct_shared.utils import NndctOption
+from nndct_shared.utils import NndctOption, NndctScreenLogger
 
 from tf_nndct.graph import OpTypes
 from tf_nndct.quantization.ops import diffs_fix_pos
@@ -77,6 +77,10 @@ class TFQuantizer(BaseQuantizer):
     # Forward the graph but not quantize parameter and activation
     if (self.quant_mode < 1 or NndctOption.nndct_quant_off.value):
       return input_tensor
+    
+    if input_tensor.dtype != tf.float32 and input_tensor.dtype != tf.float64:
+      NndctScreenLogger().warning_once(f'The tensor type of  {fp_name} is {str(input_tensor.dtype)}. Only support float32/double quantization.')
+      return input_tensor
 
     # get fixed position
     mth = 3
@@ -90,6 +94,8 @@ class TFQuantizer(BaseQuantizer):
       fp_tensor.assign(
           diffs_fix_pos(input=input_tensor, bit_width=bw, range=5, method=mth))
       bnfp[1] = (int)(fp_tensor.numpy())
+      # limit max fix pos to 12
+      bnfp[1] = min(12, bnfp[1])
       # record fix pos of input/output by fp_stat_tensor
       if tensor_type != 'param':
         #fp_tensor.assign(stat_act_pos(fp_tensor,
@@ -171,7 +177,7 @@ class TFQuantizer(BaseQuantizer):
         #  if param_name == node.op.ParamName.WEIGHTS:
         #    value = np.copy(value).transpose(1, 0, 2, 3)
         tensor.from_ndarray(value)
-        tensor_utils.tf_to_nndct(tensor)
+        tensor_utils.tf_param_to_nndct(tensor)
 
   def organize_quant_pos(self):
     # Transfer inplace operation fragpos forward

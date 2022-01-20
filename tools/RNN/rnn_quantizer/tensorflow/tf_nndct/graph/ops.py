@@ -1,5 +1,3 @@
-
-
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -15,11 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """Classes and functions used to build a graph."""
 import enum
 import numpy as np
 import types
+
 from tensorflow.python.util import nest
 
 from nndct_shared.nndct_graph import base_graph
@@ -28,15 +26,18 @@ from nndct_shared.nndct_graph import base_tensor
 from nndct_shared.nndct_graph import base_node
 
 import nndct_shared
+AutoName = nndct_shared.nndct_graph.base_operator.AutoName
 Attr = nndct_shared.nndct_graph.base_operator.NndctIrAttr
 Node = nndct_shared.nndct_graph.base_node.Node
 OpTypes = nndct_shared.base.NNDCT_OP
 OccurenceType = nndct_shared.nndct_graph.base_operator.OccurenceType
 
 class Graph(base_graph.Graph):
+
   def __init__(self, name=None):
     super(Graph, self).__init__(name)
 
+    self.data_format = None
     self.input_signature = None
     self.structured_output_tensors = None
 
@@ -49,14 +50,17 @@ class Graph(base_graph.Graph):
       self._add_tensor(tensor)
 
   def remove_node(self, node):
-    assert node.num_inputs <= 1, 'Not allowed: %s has multiple inputs' % node.name
+    if node.num_inputs > 1:
+      raise ValueError(
+          'Node has multiple inputs is not allowed to remove: {}'.format(node))
+
     parents = self.parents(node)
     children = self.children(node)
 
     parent = parents[0] if len(parents) else None
     if parent:
-      assert parent.num_outputs == 1 and node.num_inputs == 1, ('Can not '
-          'remove node "{}" as its parent "{}" has {} outputs'.format(node.name, parent.name, parent.num_outputs))
+      assert parent.num_outputs < 2 and node.num_outputs < 2, (
+          'Not allowd to remove node {}'.format(node))
 
     for child in children:
       inputs_to_remove = []
@@ -78,7 +82,8 @@ class Graph(base_graph.Graph):
     self._tensors[tensor.name] = tensor
 
   def add_tensor(self, tensor):
-    raise ValueError('Add a tensor to a graph directly is not allowed.'
+    raise ValueError(
+        'Add a tensor to a graph directly is not allowed.'
         'When a node is added to a graph, its output tensors are also added to'
         'the graph')
 
@@ -99,15 +104,18 @@ class Graph(base_graph.Graph):
     return end_tensors.values()
 
 class Node(base_node.Node):
+
   def __init__(self, name, op=None, dtype=None):
     super(Node, self).__init__(name, op, dtype)
-    self.in_quant_part = True
-
     self._graph = None
 
     # i/o tensor names
     self.input_names = []
     self.output_names = []
+
+    self.layer_name = None
+    self.inbound_nodes = []
+    self.in_quant_part = True
 
   def consume(self, tensor, index=None):
     if index is None:
@@ -176,40 +184,12 @@ class Node(base_node.Node):
 
   @graph.setter
   def graph(self, graph):
-   self._graph = graph
+    self._graph = graph
 
 class Operation(base_operator.Operation):
 
   def __init__(self, op_type):
     super(Operation, self).__init__(op_type)
-
-  def _define_attr(self,
-                   name,
-                   value_type,
-                   size,
-                   value_mem=None,
-                   required=True,
-                   default_value=None,
-                   annotation=None,
-                   read_and_write_value_func=None):
-    if not hasattr(self, '_attr_value_mem'):
-      self._attr_value_mem = {}
-    if name not in self._attr_value_mem:
-      self._attr_value_mem[name] = [None]
-
-    if not value_mem:
-      value_mem = self._attr_value_mem[name]
-
-    occurence_type = OccurenceType.REQUIRED if required else OccurenceType.OPTIONAL
-
-    self._attrs[name] = Attr(
-        name=name,
-        value_type=value_type,
-        size=size,
-        value_mem=value_mem,
-        occurence_type=occurence_type,
-        annotation=annotation,
-        read_and_write_value_func=read_and_write_value_func)
 
   def get_param(self, name):
     if name not in self._params:
@@ -226,12 +206,16 @@ class Operation(base_operator.Operation):
 
   @property
   def params(self):
-   return types.MappingProxyType(self._params)
+    return types.MappingProxyType(self._params)
 
 class Tensor(base_tensor.Tensor):
 
-  def __init__(self, name=None, shape=None, dtype=None, data=None,
-        producer=None):
+  def __init__(self,
+               name=None,
+               shape=None,
+               dtype=None,
+               data=None,
+               producer=None):
     super(Tensor, self).__init__(name, shape, dtype, data=data, node=producer)
 
     self._producer = producer

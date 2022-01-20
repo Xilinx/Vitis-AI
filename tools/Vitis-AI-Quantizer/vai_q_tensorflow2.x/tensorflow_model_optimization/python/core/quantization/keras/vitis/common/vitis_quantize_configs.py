@@ -14,13 +14,15 @@
 # ==============================================================================
 """Vitis Quantize Configurations."""
 
-from tensorflow.python.keras.utils.generic_utils import register_keras_serializable
+import tensorflow as tf
+
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.base import quantize_config
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantizers
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
 
 QuantizeConfig = quantize_config.QuantizeConfig
 logger = common_utils.VAILogger
+register_keras_serializable = tf.keras.utils.register_keras_serializable
 
 
 def _make_quantizer(quantizer_type_name, quantizer_params):

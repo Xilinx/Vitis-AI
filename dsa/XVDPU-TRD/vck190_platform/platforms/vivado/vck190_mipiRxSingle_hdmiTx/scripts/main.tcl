@@ -95,7 +95,7 @@ launch_runs impl_1 -to_step write_device_image
 wait_on_run impl_1
 
 # Generate XSA
-write_hw_platform -force -file $proj_dir/${proj_name}.xsa
+write_hw_platform -hw -force -file $proj_dir/${proj_name}.xsa
 validate_hw_platform -verbose $proj_dir/${proj_name}.xsa
 
 exit

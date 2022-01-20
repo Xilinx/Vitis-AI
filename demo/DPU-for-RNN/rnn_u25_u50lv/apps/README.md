@@ -1,13 +1,12 @@
 # Testing Application Models
 
 1. Log into a xilinx vitis-ai-rnn docker container
-```
-sh ../../setup/docker_run_rnn.sh
-```
-2. Now follow the instructions in each app's directory
+
+1. Now follow the instructions in each app's directory
     1. [Customer Satisfaction](./customer_satisfaction)
     1. [IMDB Sentiment Analysis](./imdb_sentiment_detection)
     1. [OpenIE](./open_information_extraction)
+    1. [IMDB Sentiment Analysis using GRU](./gru_imdb_sentiment_detection)
 
 
 #### License

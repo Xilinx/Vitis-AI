@@ -2,7 +2,7 @@
 
 1. **This application should be run inside Vitis-AI-RNN docker container.**
     ```sh
-    cd <Vitis-AI-repo>/demo/rnn_u25_u50lv/apps/customer_satisfaction/
+    cd ${VAI_HOME}/demo/DPU-for-RNN/rnn_u25_u50lv/apps/customer_satisfaction/
     ```
 
 1. Setup the environment

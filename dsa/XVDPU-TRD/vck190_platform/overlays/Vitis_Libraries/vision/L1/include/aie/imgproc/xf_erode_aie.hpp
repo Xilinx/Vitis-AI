@@ -27,7 +27,7 @@
 #include <adf/window/types.h>
 #include <aie_api/aie.hpp>
 #include <aie_api/utils.hpp>
-#include <common/xf_aie_utils.hpp>
+#include <common/xf_aie_hw_utils.hpp>
 
 #ifndef _AIE_ERODE_H_
 #define _AIE_ERODE_H_
@@ -41,13 +41,13 @@ void erode_rect_3x3_api(input_window<T>* img_in, output_window<T>* img_out) {
     T* img_in_ptr = (T*)img_in->ptr;
     T* img_out_ptr = (T*)img_out->ptr;
 
-    const int16_t img_width = xfcvGetTileWidth(img_in_ptr);
-    const int16_t img_height = xfcvGetTileHeight(img_in_ptr);
+    const int16_t img_width = xfGetTileWidth(img_in_ptr);
+    const int16_t img_height = xfGetTileHeight(img_in_ptr);
 
-    xfcvCopyMetaData(img_in_ptr, img_out_ptr);
+    xfCopyMetaData(img_in_ptr, img_out_ptr);
 
-    T* _input = (T*)xfcvGetImgDataPtr(img_in_ptr);
-    T* _res = (T*)xfcvGetImgDataPtr(img_out_ptr);
+    T* _input = (T*)xfGetImgDataPtr(img_in_ptr);
+    T* _res = (T*)xfGetImgDataPtr(img_out_ptr);
 
     auto out = ::aie::begin_vector<VECTORIZATION_FACTOR>(_res);
 

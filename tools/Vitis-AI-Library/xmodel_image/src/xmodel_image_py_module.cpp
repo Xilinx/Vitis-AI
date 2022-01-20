@@ -67,7 +67,7 @@ static std::vector<vitis::ai::Mat> convert_to_mat(
 
 PYBIND11_MODULE(MODULE_NAME, m) {
   m.doc() = "xmodel_image python bindings";
-  m.add_object("pb2", py::module::import("vitis.ai.xmodel_image_pb2"));
+  m.add_object("pb2", py::module::import("vitis.ai.proto.dpu_model_param_pb2"));
   m.def("init_glog", [](const std::string& dir) {
     FLAGS_logtostderr = true;
     FLAGS_alsologtostderr = true;
@@ -90,7 +90,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
              for (auto& result : results) {
                std::string buf;
                CHECK(result.SerializeToString(&buf)) << "serialization error";
-               auto py_xmodel_result = m.attr("pb2").attr("XmodelResult")();
+               auto py_xmodel_result = m.attr("pb2").attr("DpuModelResult")();
                LOG(INFO) << "size of buf=" << buf.size();
                py_xmodel_result.attr("ParseFromString")(
                    py::bytes(&buf[0], buf.size()));

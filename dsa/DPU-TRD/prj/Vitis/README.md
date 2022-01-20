@@ -1,4 +1,4 @@
-# Zynq UltraScale＋ MPSoC DPU TRD Vitis 2021.1
+# Zynq UltraScale＋ MPSoC DPU TRD Vitis 2021.2
 
 ## Table of Contents
 
@@ -29,13 +29,17 @@
 
 ## 1 Revision History
 
-This wiki page complements the Vitis 2021.1 version of the DPU TRD.
+This wiki page complements the Vitis 2021.2 version of the DPU TRD.
+
+Vitis2.0 Change log:
+
+-  update GUI scrits.
 
 Vitis1.3 Change log:
 
 -  support DRAM replace of Luts resources
 -  support GUI flow
--  support MaxPooling kernel from 1~8 to 1~256
+-  support MaxPooling kernel from 1-8 to 1-256
 
 Vitis1.2 Change Log:
 
@@ -52,7 +56,7 @@ This tutorial contains information about:
 
 - How to set up the ZCU102 evaluation board and run the TRD.
 - How to change the Configuration of DPU.
-- How to integrate the DPU in the customer platform in vitis 2021.1 environment.
+- How to integrate the DPU in the customer platform in vitis 2021.2 environment.
 
 ------
 
@@ -71,16 +75,16 @@ Required:
 ### 3.2 Software
 
   Required:
-  - Vitis 2021.1[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2021-1.html) 
+  - Vitis 2021.2[Vitis Core Development Kit](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2021-2.html) 
   - [CP210x_Universal_Windows_Driver](https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip)
   - Serial terminal emulator e.g. [teraterm](http://logmett.com/tera-term-the-latest-version)
-  - [XRT 2021.1](https://github.com/Xilinx/XRT/tree/2021.1)
-  - [zcu102 base platform 2021.1](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
-  - [ZYNQMP common image 2021.1](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
+  - [XRT 2021.2](https://github.com/Xilinx/XRT/tree/2021.2)
+  - [zcu102 base platform 2021.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
+  - [ZYNQMP common image 2021.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
   - [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/tools/Vitis-AI-Library) to configure DPU in Vitis AI Library ZCU102 and ZCU104 pacakge, Optional
 
 
-###### **Note:** The user can also refer the [zcu102 dpu platform](https://github.com/Xilinx/Vitis_Embedded_Platform_Source/tree/2021.1/Xilinx_Official_Platforms/xilinx_zcu102_base), The giuuthub page includes all the details, such as how to generage the zcu102 dpu platform, how to create the SD card after compiling the DPU project.
+###### **Note:** The user can also refer the [zcu102 dpu platform](https://github.com/Xilinx/Vitis_Embedded_Platform_Source/tree/2021.2/Xilinx_Official_Platforms/xilinx_zcu102_base), The giuuthub page includes all the details, such as how to generage the zcu102 dpu platform, how to create the SD card after compiling the DPU project.
 ------
 
 ## 4 Design Files
@@ -179,7 +183,7 @@ The following tutorials assume that the Vitis and XRT environment variable is se
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <vitis install path>/Vitis/2021.1/settings64.sh
+% source <vitis install path>/Vitis/2021.2/settings64.sh
 
 % source opt/xilinx/xrt/setup.sh
 ```
@@ -191,9 +195,9 @@ Build the hardware design.
 ```
 % cd $TRD_HOME/prj/Vitis
 
-% export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2021.1 
+% export EDGE_COMMON_SW=<mpsoc common system>/xilinx-zynqmp-common-v2021.2 
 
-% export SDX_PLATFORM=<zcu102 base platform path>/xilinx_zcu102_base_202010_1/xilinx_zcu102_base_202010_1.xpfm
+% export SDX_PLATFORM=<zcu102 base platform path>/xilinx_zcu102_base_202120_1/xilinx_zcu102_base_202120_1.xpfm
 
 % make KERNEL=DPU_SM DEVICE=zcu102
 ```
@@ -654,8 +658,8 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
 
   ![PROJECT_NAME](./doc/6.6.png) 
 
-	c. Enter the Sysroot, Root FS, Kernel Image paths and click Next. Find them in the common system. The user can get the related in the ZYNQMP common image 2021.1 
-[ZYNQMP common image 2021.1](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
+	c. Enter the Sysroot, Root FS, Kernel Image paths and click Next. Find them in the common system. The user can get the related in the ZYNQMP common image 2021.2 
+[ZYNQMP common image 2021.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html)
 
   ![SYSROOT](./doc/sysroot.png) 
  

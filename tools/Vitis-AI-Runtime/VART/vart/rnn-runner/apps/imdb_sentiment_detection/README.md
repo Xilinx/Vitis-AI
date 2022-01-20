@@ -1,64 +1,49 @@
 # Run IMDB Sentiment Detection Network
 
-```sh
-cd /workspace/vart/rnn-runner/apps/imdb_sentiment_detection/
+1. **This application should be run inside Vitis-AI-RNN docker container.**
 
-# [For U25]
-cp /workspace/vart/rnn-runner/xclbin/u25/dpu.xclbin /usr/lib/dpu.xclbin
+    ```sh
+    cd <Vitis-AI-repo>/demo/rnn_u25_u50lv/apps/imdb_sentiment_detection/
+    ```
 
-# [For U50LV]
-cp /workspace/vart/rnn-runner/xclbin/u50lv/dpu.xclbin /usr/lib/dpu.xclbin
-```
-
-1. Download the model files
-```sh
-mkdir -p data/
-
-cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/LSTM.h5 data/
-
-# [For U25]
-cp ../../models/u25/xmodels-v1.0/lstm_sentiment_detection/*.xmodel data/
-
-# [For U50LV]
-cp ../../models/u50/xmodels-v1.3/lstm_sentiment_detection/*.xmodel data/
-```
-
-1. Download the datasets
-```sh
-cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/IMDB.csv data/
-cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/imdb.npz data/
-cp /proj/rdi/staff/akorra/data/imdb_sentiment_detection/imdb_word_index.json data/
-```
+1. Download the dataset. Log on to the kaggle website and download the .csv file from https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews.
+    ```sh
+    cp ./IMDB\ Dataset.csv ./data/IMDB.csv
+    ```
 
 1. Setup the environment.
-```sh
-source ./setup.sh
-```
+    ```sh
+    # For U25
+    TARGET_DEVICE=U25 source ./setup.sh
+
+    # For U50LV
+    TARGET_DEVICE=U50LV source ./setup.sh
+    ```
 
 1. Run the CPU mode with all transactions.
-```sh
-python run_cpu_e2e.py
-```
+    ```sh
+    python run_cpu_e2e.py
+    ```
 
 1. Run the DPU mode with all transactions.
-```sh
-# For U25
-TARGET_DEVICE=U25 python run_dpu_e2e.py
+    ```sh
+    # For U25
+    TARGET_DEVICE=U25 python run_dpu_e2e.py
 
-# For U50LV
-TARGET_DEVICE=U50LV python run_dpu_e2e.py
-```
+    # For U50LV
+    TARGET_DEVICE=U50LV python run_dpu_e2e.py
+    ```
 
-1. run the dpu mode with multithread support
-```sh
-# For U25
-TARGET_DEVICE=U25 python run_dpu_e2e_mt.py -n 4
+1. Run the dpu mode with multithread support
+    ```sh
+    # For U25
+    TARGET_DEVICE=U25 python run_dpu_e2e_mt.py -n 4
 
-# For U50LV
-TARGET_DEVICE=U50LV python run_dpu_e2e_mt.py -n 4
-````
+    # For U50LV
+    TARGET_DEVICE=U50LV python run_dpu_e2e_mt.py -n 4
+    ````
 
-> The accuracy for the end-to-end mdoel test should be: `0.8689`
+> The accuracy for the end-to-end mdoel test should be around `0.8689`
 
 
 #### License

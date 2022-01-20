@@ -16,10 +16,8 @@
 #include "dpu_runner_hbm.hpp"
 
 #include <glog/logging.h>
-#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
 
 #include <algorithm>
 #include <fstream>
@@ -269,7 +267,7 @@ void DpuRunnerHbm::fill_gen_reg(size_t device_core_id,
           << "reg_idx " << reg_idx << " "                //
           << "num_of_engines " << num_of_engines << " "  //
           << "gen_reg.size() " << gen_reg.size() << " "  //
-          << endl;
+          << std::endl;
       gen_reg[idx] = chunk->get_offset();
     }
   }

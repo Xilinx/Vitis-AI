@@ -14,7 +14,11 @@
 # limitations under the License.
 #
 
-MODEL_DIR="../vai-rnn-models-1.4.1"
+source "../common/setup.sh"
+APP_CONDA_ENV="rnn-pytorch-1.7.1"
+VAI_CONDA_PKG_PATH="/scratch/conda-channel/linux-64"
+
+MODEL_DIR="../vai-rnn-models-2.0"
 
 if [[ $TARGET_DEVICE != "U50LV" && $TARGET_DEVICE != "U25" ]]; then
   echo "[ERROR] TARGET_DEVICE should be U50LV or U25"
@@ -26,8 +30,8 @@ fi
 
 echo "Get compiled models ..."
 if [[ ! -d $MODEL_DIR ]]; then
-  wget -nc -O /tmp/vai-rnn-models-1.4.1.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vai-rnn-models-1.4.1.tar.gz
-  tar -xvf /tmp/vai-rnn-models-1.4.1.tar.gz -C ..
+  wget -nc -O /tmp/vai-rnn-models-2.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vai-rnn-models-2.0.tar.gz
+  tar -xvf /tmp/vai-rnn-models-2.0.tar.gz -C ..
 fi
 
 echo "Copying the data ..."
@@ -55,14 +59,19 @@ cp utils/tabReader.py oie-benchmark/oie_readers/
 cp utils/test.oie     oie-benchmark/oie_corpus/
 
 echo "Checking xclbin ..."
-src_xclbin=../../xclbin/$device/dpu.xclbin
+src_xclbin="../dpu.xclbin"
 dst_xclbin=/usr/lib/dpu.xclbin
-if [[ ! -f $dst_xclbin || `diff -q $dst_xclbin $src_xclbin` ]]; then
+xclbin_md5sum=RNN_${TARGET_DEVICE}_XCLBIN_MD5SUM
+if [[ ! -f $dst_xclbin || `md5sum $dst_xclbin` != ${!xclbin_md5sum} ]]; then
+  if [[ ! -f $src_xclbin || `md5sum $src_xclbin` != ${!xclbin_md5sum} ]]; then
+    get_rnn_xclbin ${TARGET_DEVICE} ..
+  fi
   sudo cp $src_xclbin $dst_xclbin
 fi
 
-echo "Activating environment, rnn_pytorch_1.4"
-conda activate rnn-pytorch-1.4
+echo "Activating environment, ${APP_CONDA_ENV}"
+export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:$LD_LIBRARY_PATH
+conda activate ${APP_CONDA_ENV}
 mkdir -p output
 mkdir -p test
 python convert.py

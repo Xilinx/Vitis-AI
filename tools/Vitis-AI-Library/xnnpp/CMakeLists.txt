@@ -93,6 +93,15 @@ add_custom_command(
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/classification/convert_word_list.sh
           ${CMAKE_CURRENT_SOURCE_DIR}/src/classification/fmnist_label.txt)
 
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/orien_label.inc
+  COMMAND
+    bash -ex ${CMAKE_CURRENT_SOURCE_DIR}/src/classification/convert_word_list.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/classification/orien_label.txt
+    ${CMAKE_CURRENT_BINARY_DIR}/orien_label.inc
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/classification/convert_word_list.sh
+          ${CMAKE_CURRENT_SOURCE_DIR}/src/classification/orien_label.txt)
+
 vai_add_library(
   SRCS src/segmentation.cpp
        src/centerpoint/centerpoint.cpp
@@ -106,6 +115,7 @@ vai_add_library(
        ${CMAKE_CURRENT_BINARY_DIR}/word_list.inc
        ${CMAKE_CURRENT_BINARY_DIR}/cifar10_label.inc
        ${CMAKE_CURRENT_BINARY_DIR}/fmnist_label.inc
+       ${CMAKE_CURRENT_BINARY_DIR}/orien_label.inc
        src/openpose.cpp
        src/hourglass.cpp
        src/facequality5pt.cpp
@@ -120,6 +130,9 @@ vai_add_library(
        src/multitaskv3/ssd_detector.cpp
        src/yolov2.cpp
        src/yolov3.cpp
+       src/yolov5.cpp
+       src/yolovx.cpp
+       src/solo.cpp
        src/posedetect.cpp
        src/reid.cpp
        src/rcan.cpp
@@ -163,6 +176,15 @@ vai_add_library(
        src/pointpillars_nuscenes/anchor.cpp
        src/pointpillars_nuscenes/utils.cpp
        src/pointpillars_nuscenes/sigmoid_table.cpp
+       src/ultrafast/ultrafast.cpp
+       src/ultrafast/ultrafast_postimp.cpp
+       src/ocr/ocr.cpp
+       src/ocr/ocr_postimp.cpp
+       src/x_autonomous3d/x_autonomous3d.cpp
+       src/x_autonomous3d/x_autonomous3d_post.hpp
+       src/x_autonomous3d/x_autonomous3d_post.cpp
+       src/x_autonomous3d/utils.hpp
+       src/x_autonomous3d/utils.cpp
   PUBLIC_REQUIRE vart::util ${PROJECT_NAME}::math ${PROJECT_NAME}::model_config
                  glog::glog ${OpenCV_LIBS})
 

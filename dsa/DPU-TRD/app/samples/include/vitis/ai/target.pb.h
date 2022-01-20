@@ -35,7 +35,7 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-#define PROTOBUF_INTERNAL_EXPORT_target_2eproto
+#define PROTOBUF_INTERNAL_EXPORT_target_2eproto TARGET_FACTORY_DLLESPEC
 PROTOBUF_NAMESPACE_OPEN
 namespace internal {
 class AnyMetadata;
@@ -43,7 +43,7 @@ class AnyMetadata;
 PROTOBUF_NAMESPACE_CLOSE
 
 // Internal implementation detail -- do not use these members.
-struct TableStruct_target_2eproto {
+struct TARGET_FACTORY_DLLESPEC TableStruct_target_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTableField entries[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
@@ -54,116 +54,116 @@ struct TableStruct_target_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
 };
-extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_target_2eproto;
+extern TARGET_FACTORY_DLLESPEC const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_target_2eproto;
 namespace vitis {
 namespace ai {
 class Target;
 class TargetDefaultTypeInternal;
-extern TargetDefaultTypeInternal _Target_default_instance_;
+TARGET_FACTORY_DLLESPEC extern TargetDefaultTypeInternal _Target_default_instance_;
 class Target_Alu;
 class Target_AluDefaultTypeInternal;
-extern Target_AluDefaultTypeInternal _Target_Alu_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_AluDefaultTypeInternal _Target_Alu_default_instance_;
 class Target_Alu_AluLimit;
 class Target_Alu_AluLimitDefaultTypeInternal;
-extern Target_Alu_AluLimitDefaultTypeInternal _Target_Alu_AluLimit_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Alu_AluLimitDefaultTypeInternal _Target_Alu_AluLimit_default_instance_;
 class Target_BankGroup;
 class Target_BankGroupDefaultTypeInternal;
-extern Target_BankGroupDefaultTypeInternal _Target_BankGroup_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_BankGroupDefaultTypeInternal _Target_BankGroup_default_instance_;
 class Target_BankGroup_AdjustableWordWidth;
 class Target_BankGroup_AdjustableWordWidthDefaultTypeInternal;
-extern Target_BankGroup_AdjustableWordWidthDefaultTypeInternal _Target_BankGroup_AdjustableWordWidth_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_BankGroup_AdjustableWordWidthDefaultTypeInternal _Target_BankGroup_AdjustableWordWidth_default_instance_;
 class Target_Conv;
 class Target_ConvDefaultTypeInternal;
-extern Target_ConvDefaultTypeInternal _Target_Conv_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_ConvDefaultTypeInternal _Target_Conv_default_instance_;
 class Target_Conv_ChannelAugmentation;
 class Target_Conv_ChannelAugmentationDefaultTypeInternal;
-extern Target_Conv_ChannelAugmentationDefaultTypeInternal _Target_Conv_ChannelAugmentation_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Conv_ChannelAugmentationDefaultTypeInternal _Target_Conv_ChannelAugmentation_default_instance_;
 class Target_Conv_ConvLimit;
 class Target_Conv_ConvLimitDefaultTypeInternal;
-extern Target_Conv_ConvLimitDefaultTypeInternal _Target_Conv_ConvLimit_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Conv_ConvLimitDefaultTypeInternal _Target_Conv_ConvLimit_default_instance_;
 class Target_Conv_OutputBankGroup;
 class Target_Conv_OutputBankGroupDefaultTypeInternal;
-extern Target_Conv_OutputBankGroupDefaultTypeInternal _Target_Conv_OutputBankGroup_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Conv_OutputBankGroupDefaultTypeInternal _Target_Conv_OutputBankGroup_default_instance_;
 class Target_Dwconv;
 class Target_DwconvDefaultTypeInternal;
-extern Target_DwconvDefaultTypeInternal _Target_Dwconv_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_DwconvDefaultTypeInternal _Target_Dwconv_default_instance_;
 class Target_Dwconv_DwconvLimit;
 class Target_Dwconv_DwconvLimitDefaultTypeInternal;
-extern Target_Dwconv_DwconvLimitDefaultTypeInternal _Target_Dwconv_DwconvLimit_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Dwconv_DwconvLimitDefaultTypeInternal _Target_Dwconv_DwconvLimit_default_instance_;
 class Target_Eltwise;
 class Target_EltwiseDefaultTypeInternal;
-extern Target_EltwiseDefaultTypeInternal _Target_Eltwise_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_EltwiseDefaultTypeInternal _Target_Eltwise_default_instance_;
 class Target_Eltwise_ConvCascade;
 class Target_Eltwise_ConvCascadeDefaultTypeInternal;
-extern Target_Eltwise_ConvCascadeDefaultTypeInternal _Target_Eltwise_ConvCascade_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Eltwise_ConvCascadeDefaultTypeInternal _Target_Eltwise_ConvCascade_default_instance_;
 class Target_Load;
 class Target_LoadDefaultTypeInternal;
-extern Target_LoadDefaultTypeInternal _Target_Load_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_LoadDefaultTypeInternal _Target_Load_default_instance_;
 class Target_Load_FixIFMPortWidth;
 class Target_Load_FixIFMPortWidthDefaultTypeInternal;
-extern Target_Load_FixIFMPortWidthDefaultTypeInternal _Target_Load_FixIFMPortWidth_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Load_FixIFMPortWidthDefaultTypeInternal _Target_Load_FixIFMPortWidth_default_instance_;
 class Target_Load_MeanvalueReduction;
 class Target_Load_MeanvalueReductionDefaultTypeInternal;
-extern Target_Load_MeanvalueReductionDefaultTypeInternal _Target_Load_MeanvalueReduction_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Load_MeanvalueReductionDefaultTypeInternal _Target_Load_MeanvalueReduction_default_instance_;
 class Target_Load_WeightSplit;
 class Target_Load_WeightSplitDefaultTypeInternal;
-extern Target_Load_WeightSplitDefaultTypeInternal _Target_Load_WeightSplit_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Load_WeightSplitDefaultTypeInternal _Target_Load_WeightSplit_default_instance_;
 class Target_Move;
 class Target_MoveDefaultTypeInternal;
-extern Target_MoveDefaultTypeInternal _Target_Move_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_MoveDefaultTypeInternal _Target_Move_default_instance_;
 class Target_Nonlinear;
 class Target_NonlinearDefaultTypeInternal;
-extern Target_NonlinearDefaultTypeInternal _Target_Nonlinear_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_NonlinearDefaultTypeInternal _Target_Nonlinear_default_instance_;
 class Target_PadLimit;
 class Target_PadLimitDefaultTypeInternal;
-extern Target_PadLimitDefaultTypeInternal _Target_PadLimit_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_PadLimitDefaultTypeInternal _Target_PadLimit_default_instance_;
 class Target_Pool;
 class Target_PoolDefaultTypeInternal;
-extern Target_PoolDefaultTypeInternal _Target_Pool_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_PoolDefaultTypeInternal _Target_Pool_default_instance_;
 class Target_Pool_AvgLimit;
 class Target_Pool_AvgLimitDefaultTypeInternal;
-extern Target_Pool_AvgLimitDefaultTypeInternal _Target_Pool_AvgLimit_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Pool_AvgLimitDefaultTypeInternal _Target_Pool_AvgLimit_default_instance_;
 class Target_Pool_MaxLimit;
 class Target_Pool_MaxLimitDefaultTypeInternal;
-extern Target_Pool_MaxLimitDefaultTypeInternal _Target_Pool_MaxLimit_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Pool_MaxLimitDefaultTypeInternal _Target_Pool_MaxLimit_default_instance_;
 class Target_Save;
 class Target_SaveDefaultTypeInternal;
-extern Target_SaveDefaultTypeInternal _Target_Save_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_SaveDefaultTypeInternal _Target_Save_default_instance_;
 class Target_Save_FixIFMPortWidth;
 class Target_Save_FixIFMPortWidthDefaultTypeInternal;
-extern Target_Save_FixIFMPortWidthDefaultTypeInternal _Target_Save_FixIFMPortWidth_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_Save_FixIFMPortWidthDefaultTypeInternal _Target_Save_FixIFMPortWidth_default_instance_;
 class Target_Threshold;
 class Target_ThresholdDefaultTypeInternal;
-extern Target_ThresholdDefaultTypeInternal _Target_Threshold_default_instance_;
+TARGET_FACTORY_DLLESPEC extern Target_ThresholdDefaultTypeInternal _Target_Threshold_default_instance_;
 }  // namespace ai
 }  // namespace vitis
 PROTOBUF_NAMESPACE_OPEN
-template<> ::vitis::ai::Target* Arena::CreateMaybeMessage<::vitis::ai::Target>(Arena*);
-template<> ::vitis::ai::Target_Alu* Arena::CreateMaybeMessage<::vitis::ai::Target_Alu>(Arena*);
-template<> ::vitis::ai::Target_Alu_AluLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Alu_AluLimit>(Arena*);
-template<> ::vitis::ai::Target_BankGroup* Arena::CreateMaybeMessage<::vitis::ai::Target_BankGroup>(Arena*);
-template<> ::vitis::ai::Target_BankGroup_AdjustableWordWidth* Arena::CreateMaybeMessage<::vitis::ai::Target_BankGroup_AdjustableWordWidth>(Arena*);
-template<> ::vitis::ai::Target_Conv* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv>(Arena*);
-template<> ::vitis::ai::Target_Conv_ChannelAugmentation* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv_ChannelAugmentation>(Arena*);
-template<> ::vitis::ai::Target_Conv_ConvLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv_ConvLimit>(Arena*);
-template<> ::vitis::ai::Target_Conv_OutputBankGroup* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv_OutputBankGroup>(Arena*);
-template<> ::vitis::ai::Target_Dwconv* Arena::CreateMaybeMessage<::vitis::ai::Target_Dwconv>(Arena*);
-template<> ::vitis::ai::Target_Dwconv_DwconvLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Dwconv_DwconvLimit>(Arena*);
-template<> ::vitis::ai::Target_Eltwise* Arena::CreateMaybeMessage<::vitis::ai::Target_Eltwise>(Arena*);
-template<> ::vitis::ai::Target_Eltwise_ConvCascade* Arena::CreateMaybeMessage<::vitis::ai::Target_Eltwise_ConvCascade>(Arena*);
-template<> ::vitis::ai::Target_Load* Arena::CreateMaybeMessage<::vitis::ai::Target_Load>(Arena*);
-template<> ::vitis::ai::Target_Load_FixIFMPortWidth* Arena::CreateMaybeMessage<::vitis::ai::Target_Load_FixIFMPortWidth>(Arena*);
-template<> ::vitis::ai::Target_Load_MeanvalueReduction* Arena::CreateMaybeMessage<::vitis::ai::Target_Load_MeanvalueReduction>(Arena*);
-template<> ::vitis::ai::Target_Load_WeightSplit* Arena::CreateMaybeMessage<::vitis::ai::Target_Load_WeightSplit>(Arena*);
-template<> ::vitis::ai::Target_Move* Arena::CreateMaybeMessage<::vitis::ai::Target_Move>(Arena*);
-template<> ::vitis::ai::Target_Nonlinear* Arena::CreateMaybeMessage<::vitis::ai::Target_Nonlinear>(Arena*);
-template<> ::vitis::ai::Target_PadLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_PadLimit>(Arena*);
-template<> ::vitis::ai::Target_Pool* Arena::CreateMaybeMessage<::vitis::ai::Target_Pool>(Arena*);
-template<> ::vitis::ai::Target_Pool_AvgLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Pool_AvgLimit>(Arena*);
-template<> ::vitis::ai::Target_Pool_MaxLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Pool_MaxLimit>(Arena*);
-template<> ::vitis::ai::Target_Save* Arena::CreateMaybeMessage<::vitis::ai::Target_Save>(Arena*);
-template<> ::vitis::ai::Target_Save_FixIFMPortWidth* Arena::CreateMaybeMessage<::vitis::ai::Target_Save_FixIFMPortWidth>(Arena*);
-template<> ::vitis::ai::Target_Threshold* Arena::CreateMaybeMessage<::vitis::ai::Target_Threshold>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target* Arena::CreateMaybeMessage<::vitis::ai::Target>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Alu* Arena::CreateMaybeMessage<::vitis::ai::Target_Alu>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Alu_AluLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Alu_AluLimit>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_BankGroup* Arena::CreateMaybeMessage<::vitis::ai::Target_BankGroup>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_BankGroup_AdjustableWordWidth* Arena::CreateMaybeMessage<::vitis::ai::Target_BankGroup_AdjustableWordWidth>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Conv* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Conv_ChannelAugmentation* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv_ChannelAugmentation>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Conv_ConvLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv_ConvLimit>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Conv_OutputBankGroup* Arena::CreateMaybeMessage<::vitis::ai::Target_Conv_OutputBankGroup>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Dwconv* Arena::CreateMaybeMessage<::vitis::ai::Target_Dwconv>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Dwconv_DwconvLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Dwconv_DwconvLimit>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Eltwise* Arena::CreateMaybeMessage<::vitis::ai::Target_Eltwise>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Eltwise_ConvCascade* Arena::CreateMaybeMessage<::vitis::ai::Target_Eltwise_ConvCascade>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Load* Arena::CreateMaybeMessage<::vitis::ai::Target_Load>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Load_FixIFMPortWidth* Arena::CreateMaybeMessage<::vitis::ai::Target_Load_FixIFMPortWidth>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Load_MeanvalueReduction* Arena::CreateMaybeMessage<::vitis::ai::Target_Load_MeanvalueReduction>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Load_WeightSplit* Arena::CreateMaybeMessage<::vitis::ai::Target_Load_WeightSplit>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Move* Arena::CreateMaybeMessage<::vitis::ai::Target_Move>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Nonlinear* Arena::CreateMaybeMessage<::vitis::ai::Target_Nonlinear>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_PadLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_PadLimit>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Pool* Arena::CreateMaybeMessage<::vitis::ai::Target_Pool>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Pool_AvgLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Pool_AvgLimit>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Pool_MaxLimit* Arena::CreateMaybeMessage<::vitis::ai::Target_Pool_MaxLimit>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Save* Arena::CreateMaybeMessage<::vitis::ai::Target_Save>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Save_FixIFMPortWidth* Arena::CreateMaybeMessage<::vitis::ai::Target_Save_FixIFMPortWidth>(Arena*);
+template<> TARGET_FACTORY_DLLESPEC ::vitis::ai::Target_Threshold* Arena::CreateMaybeMessage<::vitis::ai::Target_Threshold>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace vitis {
 namespace ai {
@@ -174,12 +174,12 @@ enum Target_BankGroup_AdjustableWordWidth_WordWidthSwitch : int {
   Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
-bool Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_IsValid(int value);
+TARGET_FACTORY_DLLESPEC bool Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_IsValid(int value);
 constexpr Target_BankGroup_AdjustableWordWidth_WordWidthSwitch Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_WordWidthSwitch_MIN = Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_DataBit_x_BankDepth;
 constexpr Target_BankGroup_AdjustableWordWidth_WordWidthSwitch Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_WordWidthSwitch_MAX = Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_DataBit_x_BankWidth;
 constexpr int Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_WordWidthSwitch_ARRAYSIZE = Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_WordWidthSwitch_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_descriptor();
+TARGET_FACTORY_DLLESPEC const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_descriptor();
 template<typename T>
 inline const std::string& Target_BankGroup_AdjustableWordWidth_WordWidthSwitch_Name(T enum_t_value) {
   static_assert(::std::is_same<T, Target_BankGroup_AdjustableWordWidth_WordWidthSwitch>::value ||
@@ -203,12 +203,12 @@ enum Target_Nonlinear_NonlinearType : int {
   Target_Nonlinear_NonlinearType_Target_Nonlinear_NonlinearType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   Target_Nonlinear_NonlinearType_Target_Nonlinear_NonlinearType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
-bool Target_Nonlinear_NonlinearType_IsValid(int value);
+TARGET_FACTORY_DLLESPEC bool Target_Nonlinear_NonlinearType_IsValid(int value);
 constexpr Target_Nonlinear_NonlinearType Target_Nonlinear_NonlinearType_NonlinearType_MIN = Target_Nonlinear_NonlinearType_relu;
 constexpr Target_Nonlinear_NonlinearType Target_Nonlinear_NonlinearType_NonlinearType_MAX = Target_Nonlinear_NonlinearType_hswish;
 constexpr int Target_Nonlinear_NonlinearType_NonlinearType_ARRAYSIZE = Target_Nonlinear_NonlinearType_NonlinearType_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Nonlinear_NonlinearType_descriptor();
+TARGET_FACTORY_DLLESPEC const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Nonlinear_NonlinearType_descriptor();
 template<typename T>
 inline const std::string& Target_Nonlinear_NonlinearType_Name(T enum_t_value) {
   static_assert(::std::is_same<T, Target_Nonlinear_NonlinearType>::value ||
@@ -228,12 +228,12 @@ enum Target_Eltwise_ElewType : int {
   Target_Eltwise_ElewType_Target_Eltwise_ElewType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   Target_Eltwise_ElewType_Target_Eltwise_ElewType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
-bool Target_Eltwise_ElewType_IsValid(int value);
+TARGET_FACTORY_DLLESPEC bool Target_Eltwise_ElewType_IsValid(int value);
 constexpr Target_Eltwise_ElewType Target_Eltwise_ElewType_ElewType_MIN = Target_Eltwise_ElewType_add;
 constexpr Target_Eltwise_ElewType Target_Eltwise_ElewType_ElewType_MAX = Target_Eltwise_ElewType_mult;
 constexpr int Target_Eltwise_ElewType_ElewType_ARRAYSIZE = Target_Eltwise_ElewType_ElewType_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Eltwise_ElewType_descriptor();
+TARGET_FACTORY_DLLESPEC const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Eltwise_ElewType_descriptor();
 template<typename T>
 inline const std::string& Target_Eltwise_ElewType_Name(T enum_t_value) {
   static_assert(::std::is_same<T, Target_Eltwise_ElewType>::value ||
@@ -254,12 +254,12 @@ enum Target_Pool_PoolType : int {
   Target_Pool_PoolType_Target_Pool_PoolType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   Target_Pool_PoolType_Target_Pool_PoolType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
-bool Target_Pool_PoolType_IsValid(int value);
+TARGET_FACTORY_DLLESPEC bool Target_Pool_PoolType_IsValid(int value);
 constexpr Target_Pool_PoolType Target_Pool_PoolType_PoolType_MIN = Target_Pool_PoolType_max;
 constexpr Target_Pool_PoolType Target_Pool_PoolType_PoolType_MAX = Target_Pool_PoolType_max_reduce;
 constexpr int Target_Pool_PoolType_PoolType_ARRAYSIZE = Target_Pool_PoolType_PoolType_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Pool_PoolType_descriptor();
+TARGET_FACTORY_DLLESPEC const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Pool_PoolType_descriptor();
 template<typename T>
 inline const std::string& Target_Pool_PoolType_Name(T enum_t_value) {
   static_assert(::std::is_same<T, Target_Pool_PoolType>::value ||
@@ -282,15 +282,16 @@ enum Target_Alu_AluType : int {
   Target_Alu_AluType_max_reduce = 5,
   Target_Alu_AluType_dwconv_no_bias = 6,
   Target_Alu_AluType_hsigmoid = 7,
+  Target_Alu_AluType_w16b0 = 8,
   Target_Alu_AluType_Target_Alu_AluType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   Target_Alu_AluType_Target_Alu_AluType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
-bool Target_Alu_AluType_IsValid(int value);
+TARGET_FACTORY_DLLESPEC bool Target_Alu_AluType_IsValid(int value);
 constexpr Target_Alu_AluType Target_Alu_AluType_AluType_MIN = Target_Alu_AluType_dwconv;
-constexpr Target_Alu_AluType Target_Alu_AluType_AluType_MAX = Target_Alu_AluType_hsigmoid;
+constexpr Target_Alu_AluType Target_Alu_AluType_AluType_MAX = Target_Alu_AluType_w16b0;
 constexpr int Target_Alu_AluType_AluType_ARRAYSIZE = Target_Alu_AluType_AluType_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Alu_AluType_descriptor();
+TARGET_FACTORY_DLLESPEC const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Target_Alu_AluType_descriptor();
 template<typename T>
 inline const std::string& Target_Alu_AluType_Name(T enum_t_value) {
   static_assert(::std::is_same<T, Target_Alu_AluType>::value ||
@@ -306,7 +307,7 @@ inline bool Target_Alu_AluType_Parse(
 }
 // ===================================================================
 
-class Target_BankGroup_AdjustableWordWidth PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_BankGroup_AdjustableWordWidth PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.BankGroup.AdjustableWordWidth) */ {
  public:
   inline Target_BankGroup_AdjustableWordWidth() : Target_BankGroup_AdjustableWordWidth(nullptr) {}
@@ -484,7 +485,7 @@ class Target_BankGroup_AdjustableWordWidth PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_BankGroup PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_BankGroup PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.BankGroup) */ {
  public:
   inline Target_BankGroup() : Target_BankGroup(nullptr) {}
@@ -734,7 +735,7 @@ class Target_BankGroup PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Load_MeanvalueReduction PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Load_MeanvalueReduction PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Load.MeanvalueReduction) */ {
  public:
   inline Target_Load_MeanvalueReduction() : Target_Load_MeanvalueReduction(nullptr) {}
@@ -878,7 +879,7 @@ class Target_Load_MeanvalueReduction PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Load_FixIFMPortWidth PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Load_FixIFMPortWidth PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Load.FixIFMPortWidth) */ {
  public:
   inline Target_Load_FixIFMPortWidth() : Target_Load_FixIFMPortWidth(nullptr) {}
@@ -1015,7 +1016,7 @@ class Target_Load_FixIFMPortWidth PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Load_WeightSplit PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Load_WeightSplit PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Load.WeightSplit) */ {
  public:
   inline Target_Load_WeightSplit() : Target_Load_WeightSplit(nullptr) {}
@@ -1152,7 +1153,7 @@ class Target_Load_WeightSplit PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Load PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Load PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Load) */ {
  public:
   inline Target_Load() : Target_Load(nullptr) {}
@@ -1379,7 +1380,7 @@ class Target_Load PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Save_FixIFMPortWidth PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Save_FixIFMPortWidth PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Save.FixIFMPortWidth) */ {
  public:
   inline Target_Save_FixIFMPortWidth() : Target_Save_FixIFMPortWidth(nullptr) {}
@@ -1516,7 +1517,7 @@ class Target_Save_FixIFMPortWidth PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Save PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Save PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Save) */ {
  public:
   inline Target_Save() : Target_Save(nullptr) {}
@@ -1701,7 +1702,7 @@ class Target_Save PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Nonlinear PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Nonlinear PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Nonlinear) */ {
  public:
   inline Target_Nonlinear() : Target_Nonlinear(nullptr) {}
@@ -1885,7 +1886,7 @@ class Target_Nonlinear PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_PadLimit PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_PadLimit PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.PadLimit) */ {
  public:
   inline Target_PadLimit() : Target_PadLimit(nullptr) {}
@@ -2083,7 +2084,7 @@ class Target_PadLimit PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Conv_OutputBankGroup PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Conv_OutputBankGroup PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Conv.OutputBankGroup) */ {
  public:
   inline Target_Conv_OutputBankGroup() : Target_Conv_OutputBankGroup(nullptr) {}
@@ -2235,7 +2236,7 @@ class Target_Conv_OutputBankGroup PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Conv_ChannelAugmentation PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Conv_ChannelAugmentation PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Conv.ChannelAugmentation) */ {
  public:
   inline Target_Conv_ChannelAugmentation() : Target_Conv_ChannelAugmentation(nullptr) {}
@@ -2372,7 +2373,7 @@ class Target_Conv_ChannelAugmentation PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Conv_ConvLimit PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Conv_ConvLimit PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Conv.ConvLimit) */ {
  public:
   inline Target_Conv_ConvLimit() : Target_Conv_ConvLimit(nullptr) {}
@@ -2534,7 +2535,7 @@ class Target_Conv_ConvLimit PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Conv PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Conv PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Conv) */ {
  public:
   inline Target_Conv() : Target_Conv(nullptr) {}
@@ -2865,7 +2866,7 @@ class Target_Conv PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Eltwise_ConvCascade PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Eltwise_ConvCascade PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Eltwise.ConvCascade) */ {
  public:
   inline Target_Eltwise_ConvCascade() : Target_Eltwise_ConvCascade(nullptr) {}
@@ -3002,7 +3003,7 @@ class Target_Eltwise_ConvCascade PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Eltwise PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Eltwise PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Eltwise) */ {
  public:
   inline Target_Eltwise() : Target_Eltwise(nullptr) {}
@@ -3294,7 +3295,7 @@ class Target_Eltwise PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Pool_AvgLimit PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Pool_AvgLimit PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Pool.AvgLimit) */ {
  public:
   inline Target_Pool_AvgLimit() : Target_Pool_AvgLimit(nullptr) {}
@@ -3456,7 +3457,7 @@ class Target_Pool_AvgLimit PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Pool_MaxLimit PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Pool_MaxLimit PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Pool.MaxLimit) */ {
  public:
   inline Target_Pool_MaxLimit() : Target_Pool_MaxLimit(nullptr) {}
@@ -3618,7 +3619,7 @@ class Target_Pool_MaxLimit PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Pool PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Pool PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Pool) */ {
  public:
   inline Target_Pool() : Target_Pool(nullptr) {}
@@ -3933,7 +3934,7 @@ class Target_Pool PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Dwconv_DwconvLimit PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Dwconv_DwconvLimit PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Dwconv.DwconvLimit) */ {
  public:
   inline Target_Dwconv_DwconvLimit() : Target_Dwconv_DwconvLimit(nullptr) {}
@@ -4095,7 +4096,7 @@ class Target_Dwconv_DwconvLimit PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Dwconv PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Dwconv PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Dwconv) */ {
  public:
   inline Target_Dwconv() : Target_Dwconv(nullptr) {}
@@ -4373,7 +4374,7 @@ class Target_Dwconv PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Move PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Move PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Move) */ {
  public:
   inline Target_Move() : Target_Move(nullptr) {}
@@ -4584,7 +4585,7 @@ class Target_Move PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Threshold PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Threshold PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Threshold) */ {
  public:
   inline Target_Threshold() : Target_Threshold(nullptr) {}
@@ -4802,7 +4803,7 @@ class Target_Threshold PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Alu_AluLimit PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Alu_AluLimit PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Alu.AluLimit) */ {
  public:
   inline Target_Alu_AluLimit() : Target_Alu_AluLimit(nullptr) {}
@@ -4964,7 +4965,7 @@ class Target_Alu_AluLimit PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target_Alu PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target_Alu PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target.Alu) */ {
  public:
   inline Target_Alu() : Target_Alu(nullptr) {}
@@ -5093,6 +5094,8 @@ class Target_Alu PROTOBUF_FINAL :
     Target_Alu_AluType_dwconv_no_bias;
   static constexpr AluType hsigmoid =
     Target_Alu_AluType_hsigmoid;
+  static constexpr AluType w16b0 =
+    Target_Alu_AluType_w16b0;
   static inline bool AluType_IsValid(int value) {
     return Target_Alu_AluType_IsValid(value);
   }
@@ -5324,7 +5327,7 @@ class Target_Alu PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class Target PROTOBUF_FINAL :
+class TARGET_FACTORY_DLLESPEC Target PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vitis.ai.Target) */ {
  public:
   inline Target() : Target(nullptr) {}

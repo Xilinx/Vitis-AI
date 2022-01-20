@@ -30,3 +30,6 @@ def scaleop(input, scale):
 
 def table_lookup(input, table, fragpos, type):
   return kernels.nndct_table_lookup(input, table, fragpos, type)
+
+def simulation(input, type):
+  return kernels.nndct_simulation(input, type)

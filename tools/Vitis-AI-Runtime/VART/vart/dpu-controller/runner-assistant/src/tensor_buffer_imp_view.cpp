@@ -27,7 +27,7 @@ namespace dpu {
 TensorBufferExtImpView::TensorBufferExtImpView(
     const xir::Tensor* tensor, size_t offset,
     std::shared_ptr<vart::TensorBuffer> backstore)
-    : TensorBuffer(xir::Tensor::clone(tensor).release()),
+    : TensorBufferExt(xir::Tensor::clone(tensor).release()),
       tensor_{
           std::unique_ptr<xir::Tensor>(const_cast<xir::Tensor*>(get_tensor()))},
       offset_{offset},
@@ -100,5 +100,13 @@ void TensorBufferExtImpView::copy_to_host(size_t batch_idx, void* buf,
   return backstore_->copy_to_host(batch_idx, buf, size, offset + offset_);
 }
 
+XclBo TensorBufferExtImpView::get_xcl_bo(int batch_index) const {
+  auto ret = XclBo{nullptr, 0u};
+  auto p = dynamic_cast<vart::TensorBufferExt*>(backstore_.get());
+  if (p) {
+    ret = p->get_xcl_bo(batch_index);
+  }
+  return ret;
+}
 }  // namespace dpu
 }  // namespace vart

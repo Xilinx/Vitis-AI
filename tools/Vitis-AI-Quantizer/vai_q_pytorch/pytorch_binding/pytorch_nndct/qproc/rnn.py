@@ -37,8 +37,11 @@ from pytorch_nndct.quantization import TORCHQuantizer
 from pytorch_nndct.utils import TorchSymbol
 from .utils import (connect_module_with_graph,
                     parse_module, recreate_nndct_module,
-                    set_outputs_recorder_status, update_nndct_blob_data, register_output_hook)
+                    set_outputs_recorder_status, update_nndct_blob_data, register_output_hook,
+                    convert_lstm, prepare_quantizable_module)
 from .base import TorchQuantProcessor
+from pytorch_nndct.utils.jit_utils import optimize_graph
+
 
 class LSTMTorchQuantProcessor(TorchQuantProcessor):
     
@@ -347,3 +350,64 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
           set_outputs_recorder_status(cell, False)
 
         print("[NNDCT_NOTE]: Finsh dumping data.")
+
+
+
+class RNNQuantProcessor(TorchQuantProcessor):
+    
+  def _check_args(self, module):
+    if not isinstance(module, torch.nn.Module):
+      raise TypeError(f"type of 'module' should be 'torch.nn.Module'.")
+    
+  def __init__(self,
+               quant_mode: str,
+               module: torch.nn.Module,
+               input_args: Union[torch.Tensor, Sequence[Any]] = None,
+               state_dict_file: Optional[str] = None,
+               output_dir: str = "quantize_result",
+               bitwidth_w: int = 8,
+               bitwidth_a: int = 8,
+               device: torch.device = torch.device("cuda"),
+               lstm_app: bool = True):
+    self._export_folder = output_dir
+    # Check arguments type
+    self._check_args(module)
+    
+    # Check device available
+    if device.type == "cuda":
+      if not (torch.cuda.is_available() and "CUDA_HOME" in os.environ):
+        device = torch.device("cpu")
+        NndctScreenLogger().warning(f"CUDA is not available, change device to CPU")
+    
+    # Transform torch module to quantized module format
+    nndct_utils.create_work_dir(output_dir)
+    
+    # turn off weights equalization and bias correction
+    option_util.set_option_value("nndct_quant_opt", 0)
+    option_util.set_option_value("nndct_param_corr", False)
+    option_util.set_option_value("nndct_equalization", False)
+    option_util.set_option_value("nndct_cv_app", False)
+    
+    transformed_module = convert_lstm(module)
+    script_module = torch.jit.script(transformed_module)
+    quant_module, graph = prepare_quantizable_module(
+        module=script_module,
+        input_args=None,
+        export_folder=output_dir,
+        state_dict_file=state_dict_file,
+        quant_mode=quant_mode,
+        device=device)
+    
+    quant_strategy = DefaultQstrategy(bits_weight=bitwidth_w,
+                                      bits_bias=bitwidth_w,
+                                      bits_activation=bitwidth_a)
+    
+    quantizer, qmode = self._init_quant_env(quant_mode, 
+                                            output_dir,
+                                            quant_strategy)
+    quantizer.quant_model = quant_module.to(device)
+    
+    quantizer.setup(graph, rnn_front_end=True, lstm=True)
+
+    self.quantizer = quantizer
+  

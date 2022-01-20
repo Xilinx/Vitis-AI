@@ -92,7 +92,7 @@ static float get_output_scale(const xir::Tensor* tensor) {
 
 int main(int argc, char* argv[]) {
   if (argc < 3) {
-    cout << "usage: " << argv[0]
+    std::cout << "usage: " << argv[0]
          << " <resnet50.xmodel> sample_image [sample_image ...] \n";
     return 0;
   }
@@ -236,10 +236,10 @@ static std::vector<std::pair<int, float>> topk(const std::vector<float>& score,
 
 static void print_topk(const std::vector<std::pair<int, float>>& topk) {
   for (const auto& v : topk) {
-    std::cout << setiosflags(ios::left) << std::setw(11)
+    std::cout << std::setiosflags(std::ios::left) << std::setw(11)
               << "score[" + std::to_string(v.first) + "]"
               << " =  " << std::setw(12) << v.second
-              << " text: " << lookup(v.first) << resetiosflags(ios::left)
+              << " text: " << lookup(v.first) << std::resetiosflags(std::ios::left)
               << std::endl;
   }
   std::cout << std::endl;

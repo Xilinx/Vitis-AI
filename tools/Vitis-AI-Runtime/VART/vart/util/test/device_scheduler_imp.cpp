@@ -46,7 +46,8 @@ int DeviceSchedulerImp::next() {
     x = x - v;
   }
   *it = (*it) + 1;
-  return std::distance(busy_time_.begin(), it);
+  int ret = (int) std::distance(busy_time_.begin(), it);
+  return ret;
 }
 
 void DeviceSchedulerImp::mark_busy_time(int device_id, int time) {

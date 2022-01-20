@@ -15,18 +15,21 @@
 #
 set (CMAKE_CXX_STANDARD 14)
 set (CMAKE_C_STANDARD 99)
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -ggdb -O0 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -fno-inline")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -Wall -Werror")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14 -Wall -Werror")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
-set(CMAKE_EXE "${CMAKE_C_FLAGS} -Wall -Werror")
-set(CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
-
-set(CMAKE_MACOSX_RPATH 1)
+#set(CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 
 if(CMAKE_BUILD_TYPE MATCHES "Release")
   ADD_DEFINITIONS(-DUNI_LOG_NDEBUG)
 endif()
+if(NOT MSVC)
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -ggdb -O0 -fno-inline")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -Wall -Werror")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14 -Wall -Werror")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
+	set(CMAKE_EXE "${CMAKE_C_FLAGS} -Wall -Werror")
+	set(CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+
+	set(CMAKE_MACOSX_RPATH 1)
+endif(NOT MSVC)
 
 include(CMakePackageConfigHelpers)
 

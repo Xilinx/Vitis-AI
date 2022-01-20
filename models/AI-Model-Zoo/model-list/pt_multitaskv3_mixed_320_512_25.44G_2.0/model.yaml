@@ -1,0 +1,41 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: Multi-task for detection & segmentation on BDD100K & Cityscapes & Waymo.
+input size: 320*512
+float ops: 25.44G
+task: object detection, segmetation, drivable area segmentation, lane segmentation,
+  depth estimation
+framework: pytorch
+prune: 'no'
+version: 2.0
+files:
+- name: pt_multitaskv3_mixed_320_512_25.44G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_multitaskv3_mixed_320_512_25.44G_2.0.zip
+  checksum: a416318df4ac211f0e900833f8df1a63
+- name: multi_task_v3_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task_v3_pt-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 8ed9a6a41c3b4fe3d37dbc2ffd3c32c3
+- name: multi_task_v3_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task_v3_pt-vck190-r2.0.0.tar.gz
+  checksum: cc874e7e5b8fd5ae365c5d88548bfc12
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -60,6 +60,7 @@
             ],
             "includepaths": [
                 "$(SYSROOT)/usr/include/xrt/",
+                "LIB_DIR/L1/include/aie",
                 "./"
             ],
             "options": "--sysroot=$(SYSROOT)",

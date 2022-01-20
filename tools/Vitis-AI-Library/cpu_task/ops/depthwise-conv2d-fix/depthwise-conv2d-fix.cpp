@@ -62,7 +62,7 @@ static enum NONLINEAR get_nonlinear(const std::string& nonlinear_type_str) {
 //                                      strides[2] * j + rate[1] * dj, k]
 //
 struct MyOp : public vart::experimental::OpImpBase {
-  MyOp(xir::Op* op, xir::Attrs* attrs)
+  MyOp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     auto weight_ops = op->get_input_ops("weights");
     CHECK_EQ(weight_ops.size(), 1u);
@@ -117,12 +117,10 @@ struct MyOp : public vart::experimental::OpImpBase {
     stride_h = stride[0];
     stride_w = stride[1];
   };
-  int calculate(
-      vart::experimental::simple_tensor_buffer_t<int8_t> output,
-      vart::experimental::simple_tensor_buffer_t<int8_t> input,
-      vart::experimental::simple_tensor_buffer_t<int8_t> weight,
-      std::unique_ptr<vart::experimental::simple_tensor_buffer_t<int8_t>>
-          bias) {
+  int calculate(vart::simple_tensor_buffer_t<int8_t> output,
+                vart::simple_tensor_buffer_t<int8_t> input,
+                vart::simple_tensor_buffer_t<int8_t> weight,
+                std::unique_ptr<vart::simple_tensor_buffer_t<int8_t>> bias) {
     auto input_shape = input.tensor->get_shape();
     auto output_shape = output.tensor->get_shape();
     CHECK_EQ(input_shape.size(), output_shape.size());
@@ -275,6 +273,4 @@ struct MyOp : public vart::experimental::OpImpBase {
 };  // namespace
 }  // namespace
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOp>();
-}
+DEF_XIR_OP_IMP(MyOp)

@@ -12,8 +12,8 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-vai_add_library(SRCS src/extra_ops.cpp PUBLIC_REQUIRE xir::xir)
-
+vai_add_library(SRCS src/extra_ops.cpp PUBLIC_REQUIRE xir::xir unilog::unilog)
+target_link_libraries(${COMPONENT_NAME} PRIVATE gcc_atomic)
 if(BUILD_PYTHON)
   vai_add_pybind11_module(xir_extra_ops src/extra_ops_py.cpp)
   target_link_libraries(xir_extra_ops PRIVATE ${COMPONENT_NAME})

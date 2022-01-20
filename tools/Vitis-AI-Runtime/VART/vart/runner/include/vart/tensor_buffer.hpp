@@ -28,7 +28,7 @@ class Tensor;
 namespace vart {
 
 class TensorBuffer {
- protected:
+ public:
   explicit TensorBuffer(const xir::Tensor* tensor);
 
  public:
@@ -71,11 +71,11 @@ class TensorBuffer {
 
  public:
   /**
-   * @brief Get the data address of the index and 
+   * @brief Get the data address of the index and
    * the left accessible data size.
-   * @param The index of the data to be accessed, 
+   * @param The index of the data to be accessed,
    * its dimension same to the tensor shape.
-   * @return A pair of the data address of the index and 
+   * @return A pair of the data address of the index and
    * the left accessible data size in byte unit.
    */
   virtual std::pair<std::uint64_t, std::size_t> data(
@@ -99,7 +99,7 @@ class TensorBuffer {
   }
 
   /**
-   * @brief Invalid cache for reading Before read, it is no-op 
+   * @brief Invalid cache for reading Before read, it is no-op
    * in case get_location() returns DEVICE_ONLY or HOST_VIRT.
    * @param The start offset address.
    * @param The data size.
@@ -143,6 +143,19 @@ class TensorBuffer {
 
  protected:
   const xir::Tensor* tensor_;
+};
+
+struct XclBo {
+  void* xcl_handle;
+  unsigned int bo_handle;
+};
+
+class TensorBufferExt : public TensorBuffer {
+ protected:
+  explicit TensorBufferExt(const xir::Tensor* tensor) : TensorBuffer{tensor} {}
+
+ public:
+  virtual XclBo get_xcl_bo(int batch_index) const = 0;
 };
 
 }  // namespace vart

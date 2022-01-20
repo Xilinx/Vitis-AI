@@ -16,7 +16,7 @@
 
 #include <adf.h>
 #include <aie_api/aie.hpp>
-#include <common/xf_aie_utils.hpp>
+#include <common/xf_aie_hw_utils.hpp>
 
 #ifndef _AIE_CVT_COLOR_H_
 #define _AIE_CVT_COLOR_H_
@@ -38,6 +38,17 @@ namespace aie {
  const int16_t  WEI=float2fix(0.5,11) ;
 
  printf("weights are %d %d  %d\n",R_WEI,G_WEI,B_WEI,WEI);*/
+
+inline void SetUV_420MetaData(metadata_elem_t* img_ptr) {
+    xfSetTileWidth(img_ptr, xfGetTileWidth(img_ptr) / 2);
+    xfSetTileHeight(img_ptr, xfGetTileHeight(img_ptr) / 2);
+    xfSetTilePosH(img_ptr, xfGetTilePosH(img_ptr) / 2);
+    xfSetTilePosV(img_ptr, xfGetTilePosV(img_ptr) / 2);
+    xfSetTileCrctPosH(img_ptr, xfGetTileCrctPosH(img_ptr) / 2);
+    xfSetTileCrctPosV(img_ptr, xfGetTileCrctPosV(img_ptr) / 2);
+    xfSetTileCrctTWidth(img_ptr, xfGetTileCrctTWidth(img_ptr) / 2);
+    xfSetTileCrctTHeight(img_ptr, xfGetTileCrctTHeight(img_ptr) / 2);
+}
 
 int16_t y_wei[16] = {526, 1032, 201, 2048};
 int16_t const_val1[16] = {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16};
@@ -83,16 +94,16 @@ void calculate_Y_api(input_window_int16* ptr1_img_buffer,
 
     int16_t* y_out_ptr = (int16_t*)ptr_out1->ptr;
 
-    const int16_t img_width = xfcvGetTileWidth(r_in_ptr);
-    const int16_t img_height = xfcvGetTileHeight(r_in_ptr);
+    const int16_t img_width = xfGetTileWidth(r_in_ptr);
+    const int16_t img_height = xfGetTileHeight(r_in_ptr);
 
-    xfcvCopyMetaData(r_in_ptr, y_out_ptr);
-    xfcvUnsignedSaturation(y_out_ptr);
+    xfCopyMetaData(r_in_ptr, y_out_ptr);
+    xfUnsignedSaturation(y_out_ptr);
 
-    int16* restrict ptr1 = xfcvGetImgDataPtr(r_in_ptr);
-    int16* restrict ptr2 = xfcvGetImgDataPtr(g_in_ptr);
-    int16* restrict ptr3 = xfcvGetImgDataPtr(b_in_ptr);
-    int16* restrict data_out = xfcvGetImgDataPtr(y_out_ptr);
+    int16* restrict ptr1 = (int16*)xfGetImgDataPtr(r_in_ptr);
+    int16* restrict ptr2 = (int16*)xfGetImgDataPtr(g_in_ptr);
+    int16* restrict ptr3 = (int16*)xfGetImgDataPtr(b_in_ptr);
+    int16* restrict data_out = (int16*)xfGetImgDataPtr(y_out_ptr);
 
     calculate_Y<int16_t, 16>(ptr1, ptr2, ptr3, data_out, img_width, img_height);
 }
@@ -198,22 +209,22 @@ void calculate_UV_api(input_window_int16* ptr1_img_buffer,
     int16_t* u_out_ptr = (int16_t*)ptr_out2->ptr;
     int16_t* v_out_ptr = (int16_t*)ptr_out3->ptr;
 
-    const int16_t img_width = xfcvGetTileWidth(g_in_ptr);
-    const int16_t img_height = xfcvGetTileHeight(b_in_ptr);
+    const int16_t img_width = xfGetTileWidth(g_in_ptr);
+    const int16_t img_height = xfGetTileHeight(b_in_ptr);
 
-    xfcvCopyMetaData(g_in_ptr, u_out_ptr);
-    xfcvCopyMetaData(b_in_ptr, v_out_ptr);
-    xfcvUnsignedSaturation(u_out_ptr);
-    xfcvUnsignedSaturation(v_out_ptr);
-    xfcvSetUVMetaData(u_out_ptr);
-    xfcvSetUVMetaData(v_out_ptr);
+    xfCopyMetaData(g_in_ptr, u_out_ptr);
+    xfCopyMetaData(b_in_ptr, v_out_ptr);
+    xfUnsignedSaturation(u_out_ptr);
+    xfUnsignedSaturation(v_out_ptr);
+    SetUV_420MetaData(u_out_ptr);
+    SetUV_420MetaData(v_out_ptr);
 
-    int16* restrict ptr1 = xfcvGetImgDataPtr(r_in_ptr);
-    int16* restrict ptr2 = xfcvGetImgDataPtr(g_in_ptr);
-    int16* restrict ptr3 = xfcvGetImgDataPtr(b_in_ptr);
+    int16* restrict ptr1 = (int16*)xfGetImgDataPtr(r_in_ptr);
+    int16* restrict ptr2 = (int16*)xfGetImgDataPtr(g_in_ptr);
+    int16* restrict ptr3 = (int16*)xfGetImgDataPtr(b_in_ptr);
 
-    int16* restrict data_out2 = xfcvGetImgDataPtr(u_out_ptr);
-    int16* restrict data_out3 = xfcvGetImgDataPtr(v_out_ptr);
+    int16* restrict data_out2 = (int16*)xfGetImgDataPtr(u_out_ptr);
+    int16* restrict data_out3 = (int16*)xfGetImgDataPtr(v_out_ptr);
 
     calculate_UV<int16_t, 16>(ptr1, ptr2, ptr3, data_out2, data_out3, img_width, img_height);
 }

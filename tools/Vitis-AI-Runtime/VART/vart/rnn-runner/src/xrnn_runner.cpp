@@ -16,6 +16,7 @@
 
 #include <xrt.h>
 
+#include <sstream>
 #include <thread>
 #include <vart/runner.hpp>
 #include <vitis/ai/env_config.hpp>
@@ -40,7 +41,7 @@ static std::string vector_to_str(const std::vector<T>& v,
   if (v.empty()) {
     return {"[]"};
   }
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "[";
   for (size_t i = 0; i < v.size() - 1; ++i) {
     ss << v[i] << delim;
@@ -54,7 +55,7 @@ static std::string vector_to_str(const std::vector<T>& v,
 template <typename T>
 static std::string expected_shape_to_str(const std::vector<T>& v,
                                          std::string delim = ", ") {
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "[";
   ss << "<=" << v[0] << delim;
   ss << "-1" << delim;

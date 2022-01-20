@@ -32,12 +32,12 @@ std::vector<int32_t> trans_idx(std::vector<int32_t> input_idx,
 }
 
 struct MyOpImp : public vart::experimental::OpImpBase {
-  MyOpImp(xir::Op* op, xir::Attrs* attrs)
+  MyOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     order_ = op->get_attr<std::vector<int32_t>>("order");
   }
-  int calculate(vart::experimental::simple_tensor_buffer_t<float> output,
-                vart::experimental::simple_tensor_buffer_t<float> input) {
+  int calculate(vart::simple_tensor_buffer_t<float> output,
+                vart::simple_tensor_buffer_t<float> input) {
     auto input_shape = input.tensor->get_shape();
     auto output_shape = output.tensor->get_shape();
     CHECK_EQ(input_shape.size(), order_.size());
@@ -59,6 +59,5 @@ struct MyOpImp : public vart::experimental::OpImpBase {
 };
 
 }  // namespace
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOpImp>();
-}
+
+DEF_XIR_OP_IMP(MyOpImp)

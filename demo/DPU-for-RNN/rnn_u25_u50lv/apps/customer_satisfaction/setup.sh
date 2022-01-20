@@ -14,7 +14,8 @@
 # limitations under the License.
 #
 
-MODEL_DIR="../vai-rnn-models-1.4.1"
+source "../common/setup.sh"
+MODEL_DIR="../vai-rnn-models-2.0"
 
 if [[ $TARGET_DEVICE != "U50LV" && $TARGET_DEVICE != "U25" ]]; then
   echo "[ERROR] TARGET_DEVICE should be U50LV or U25"
@@ -26,8 +27,8 @@ fi
 
 echo "Get compiled models ..."
 if [[ ! -d $MODEL_DIR ]]; then
-  wget -nc -O /tmp/vai-rnn-models-1.4.1.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vai-rnn-models-1.4.1.tar.gz
-  tar -xvf /tmp/vai-rnn-models-1.4.1.tar.gz -C ..
+  wget -nc -O /tmp/vai-rnn-models-2.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=vai-rnn-models-2.0.tar.gz
+  tar -xvf /tmp/vai-rnn-models-2.0.tar.gz -C ..
 fi
 
 echo "Copying the data ..."
@@ -38,12 +39,18 @@ cp $MODEL_DIR/float/lstm_customer_satisfaction/*.h5 data/
 wget -nc https://raw.githubusercontent.com/IBM/watson-machine-learning-samples/master/cloud/data/cars-4-you/car_rental_training_data.csv -P data/
 
 echo "Checking xclbin ..."
-src_xclbin=../../xclbin/$device/dpu.xclbin
+src_xclbin="../dpu.xclbin"
 dst_xclbin=/usr/lib/dpu.xclbin
-if [[ ! -f $dst_xclbin || `diff -q $dst_xclbin $src_xclbin` ]]; then
+xclbin_md5sum=RNN_${TARGET_DEVICE}_XCLBIN_MD5SUM
+if [[ ! -f $dst_xclbin || `md5sum $dst_xclbin` != ${!xclbin_md5sum} ]]; then
+  if [[ ! -f $src_xclbin || `md5sum $src_xclbin` != ${!xclbin_md5sum} ]]; then
+    get_rnn_xclbin ${TARGET_DEVICE} ..
+  fi
   sudo cp $src_xclbin $dst_xclbin
 fi
 
 echo "Activate the environment ..."
-conda activate rnn-tf-2.0
-sudo cp utils/hdf5_format.py ${CONDA_PREFIX}/lib/python3.6/site-packages/tensorflow_core/python/keras/saving/hdf5_format.py
+export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:$LD_LIBRARY_PATH
+conda activate rnn-tensorflow-2.0
+sudo cp utils/hdf5_format.py ${CONDA_PREFIX}/lib/python3.*/site-packages/tensorflow_core/python/keras/saving/hdf5_format.py
+export PYTHONPATH=../common:$PYTHONPATH

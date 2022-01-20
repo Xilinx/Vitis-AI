@@ -115,7 +115,9 @@ def post_quant_process(node, outputs=[]):
   quant_mode, quantizer = maybe_get_quantizer()
   # ignore parameters quantization if the node is not to be quantized
   #print('---- quant o: {}, in quant part:{}'.format(node.name, node.in_quant_part))
-  if not node.in_quant_part or quantizer is None:
+  if ((not node.in_quant_part and 
+       not node.op.is_custom_op) or 
+      quantizer is None):
     return outputs
 
   if quantizer.need_quantize_tensor(node.name, 'output'):
@@ -308,3 +310,6 @@ class QuantizeData(object):
       quant_data = np.mean(quant_data, axis=(1, 2, 3))
       shift = quant_data - float_data
       return (shift / float_data * 100).mean(), shift
+    
+  def all_close(self, quant_data):
+    np.allclose(self._data, quant_data)

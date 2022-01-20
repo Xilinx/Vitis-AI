@@ -16,22 +16,33 @@
 
 #pragma once
 #include <stdlib.h>
-#include <unistd.h>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
 #include <utility>
-
-#include <sys/syscall.h>
-#include <sys/sysinfo.h>
-#include <sys/types.h>
-
+#if _WIN32
+using MY_DWORD = uint32_t;
+// MSVC NOTE: it is dangerous to include windows.h in public header files. it
+// introduces too many MACROS, like, max,min, CONST etc, which leads to many
+// strange compilation errors. so we should avoid include windows.h in public
+// header files.
+// 
+// #include <windows.h>
+#else
+#include <unistd.h>  // for getpid
+#endif
 enum TraceEventTimeType { VAI_TS_BOOT, VAI_TS_TSC, VAI_TS_XRT_NS };
 
 namespace vitis::ai::trace {
-using namespace std;
 
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
+using std::map;
+using std::string;
 using trace_entry_t = map<string, string>;
 
 struct traceTimestamp {
@@ -52,7 +63,11 @@ class traceEventBase {
 
  public:
   uint16_t size_;
+#if _WIN32
+  MY_DWORD pid;
+#else
   pid_t pid;
+#endif
   uint8_t cpu_id;
   // struct traceTimestamp ts;
   double ts;

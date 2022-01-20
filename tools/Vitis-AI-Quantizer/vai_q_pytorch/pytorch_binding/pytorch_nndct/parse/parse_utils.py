@@ -35,6 +35,15 @@ scalar_type_to_pytorch_type = [
     'torch.bool',  # 11
 ]
 
+def convert_np_type_to_pytorch_type(np_type):
+  return {
+  'int64': 'torch.int64',
+  'int32': 'torch.int32',
+  'float32': 'torch.float',
+  'float64': 'torch.double'
+  }.get(np_type, np_type)
+  
+  
 
 def get_full_name(graph_name: str, name: str) -> str:
   """get the full name of node/tensor in graph
@@ -98,6 +107,6 @@ def python_dtype(value):
     str: "str",
   }
   if isinstance(value, Tensor):
-    return type_map[value.dtype]
+    return type_map.get(value.dtype, value.dtype)
   else:
     return type_map[type(value)]

@@ -37,7 +37,9 @@ class PointPillarsPost {
       const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
       std::vector<int>* g_grid_size,
       G_ANCHOR* g_anchor,
-      ::second::protos::TrainEvalPipelineConfig* cfg 
+      ::second::protos::TrainEvalPipelineConfig* cfg ,
+      int batchnum,
+      int& realbatchnum
   );
 
   PointPillarsPost(
@@ -45,19 +47,23 @@ class PointPillarsPost {
       const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
       std::vector<int>* g_grid_size,
       G_ANCHOR* g_anchor,
-      ::second::protos::TrainEvalPipelineConfig* cfg 
+      ::second::protos::TrainEvalPipelineConfig* cfg ,
+      int batchnum,
+      int& realbatchnum
   );
   virtual ~PointPillarsPost();
 
-  virtual PointPillarsResult post_process() ;
+  virtual PointPillarsResult post_process(int) ;
+  virtual std::vector<PointPillarsResult> post_process() ;
   virtual void do_pointpillar_display(PointPillarsResult & res, int flag, DISPLAY_PARAM& g_test, cv::Mat& rgb_map, cv::Mat& bev_map, int, int, ANNORET& annoret) ;
-  virtual void get_anchors_mask( std::shared_ptr<preout_dict>) ;
+  void get_anchors_mask( const std::vector<std::shared_ptr<preout_dict>>&) ;
+  // void get_anchors_mask( std::shared_ptr<preout_dict>) ;
 
  private:
   void get_dpu_data();
-  void fused_get_anchors_area();
+  void fused_get_anchors_area(int);
   void fused_get_anchors_area_thread(int, int, V1I&);
-  V1F get_decode_box( int );
+  V1F get_decode_box( int batchidx, int );
   V2I unravel_index_2d(const V1I& index, const V1I& dims );
   V3F corners_nd_2d(const V2F& dims);
   V2F center_to_corner_box2d_to_standup_nd(const V2F& box);
@@ -68,6 +74,8 @@ class PointPillarsPost {
   std::vector<int>* g_grid_size_;
   G_ANCHOR* g_anchor_;
   ::second::protos::TrainEvalPipelineConfig* cfg_;
+  int batchnum;
+  int& realbatchnum;
 
  private:
   DPU_DATA dpu_data;
@@ -80,7 +88,8 @@ class PointPillarsPost {
   V2I corners_norm;
 
   V2I anchors_maskx;  
-  MyV1I anchors_mask;
+  std::vector<MyV1I> anchors_mask;
+
   V1F top_scores;
   V2F box_preds; 
   V1I dir_labels;
