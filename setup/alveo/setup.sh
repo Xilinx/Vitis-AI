@@ -39,7 +39,7 @@ echo "---------------------"
 echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
 echo "---------------------"
 
-PLATFORMS="u55c_ u50lv_ u200_ u250_ AWS_" 
+PLATFORMS="u55c_ u50lv_ u200_ u250_ aws" 
 find_card="false"
 
 for platform in ${PLATFORMS};
@@ -84,7 +84,7 @@ case $1 in
     elif [ "${platform}" = "u250_" ]; then
       export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCADF8H
       export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H/dpdpuv3_wrapper.hw.xilinx_u250_gen3x16_xdma_3_1_202020_1.xclbin
-    elif [ "${platform}" = "AWS_" ]; then
+    elif [ "${platform}" = "aws" ]; then
       export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCADF8H
       export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H/dpu-aws.xclbin
     else
