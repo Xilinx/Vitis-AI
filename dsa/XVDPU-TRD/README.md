@@ -301,7 +301,10 @@ For the detailed platform design, please refer to VCK190 platform in this TRD.
 Source files of VCK190 platform are in the folder '/vck190_platform/platforms'.
 
 ## 9 Known Issue 
-1, Psmnet is not supprted by configuration CPB_N=64.
+1, Additional patch is needed for Psmnet supported by configuration CPB_N=64.
+
+   
+   Please follow 'https://github.com/Xilinx/Vitis-AI/blob/master/README.md#installing-patch-in-docker' to install the patch.
 
 2, Workaround for ES1 platform
 

@@ -23,7 +23,7 @@ Currently, applications accelerating pre-processing for classification networks 
 :pushpin: **Note:** In this application pre-processed data is directly stored at ML accelerator physical address. Hence avoiding device to host data transfers.
 
 <div align="center">
-  <img width="75%" height="75%" src="./doc_images/block_dia_classification.PNG">
+  <img width="75%" height="75%" src="./block_dia_classification.PNG">
 </div>
 
 
@@ -114,7 +114,7 @@ Resnet50 example runs with 2 different ways.
         model_zcu102
         img
         app_test.sh
-        word.txt
+        words.txt
     ```
 
 
@@ -303,12 +303,12 @@ Resnet50 example runs with 2 different ways.
 
 * Download the WAA package 
 
-```
+```sh
 wget https://www.xilinx.com/bin/public/openDownload?filename=waa_versal_sd_card_vai2.0.tar.gz -O waa_versal_sd_card_vai2.0.tar.gz
 
 tar -xzvf waa_versal_sd_card_vai2.0.tar.gz
 ```
-* copy the contents of the WAA package to the SD card.The xmodel file is also present in the package.
+* Copy the contents of the WAA package to the SD card to the location `/media/sd-mmcblk0p1/`.The xmodel file is also present in the package.
 
 * Run Resnet50 Example
 
@@ -316,41 +316,43 @@ tar -xzvf waa_versal_sd_card_vai2.0.tar.gz
 
   * Download the images at http://image-net.org/download-images and copy images to ` ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50/img` directory 
 
-  * Copy following content of  ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50 directory to the BOOT partition of the SD Card.
+  * Copy following content of  ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50 directory to the BOOT partition `/media/sd-mmcblk0p1/` of the SD Card.
     ```
+        src_vck190
+        app_build_vck190.sh
         img
-        app_test.sh
-        word.txt
+        words.txt
     ```
 
 
-  * Please insert SD_CARD on the VCK190 board. After the linux boot, run:
+  * Please insert SD_CARD on the VCK190 board. After the linux boot, run the following.
 
-  * compile `resnet50` example.
-    ```
+  * Compile `resnet50` example.
+    ```sh
     cd /media/sd-mmcblk0p1/
-    bash -x build.sh
+    bash -x app_build_vck190.sh
     ```
       If the compilation process does not report any error and the executable file `./bin/resnet50.exe` is generated.
 
-  * Performance test with & without waa
-
+  * Performance test without waa
+    ```sh
+    cd /media/sd-mmcblk0p1/
+    ./bin/resnet50.exe ./model_vck190/resnet_v1_50_tf.xmodel ./img/ 0 0
     ```
-    % cd /media/sd-mmcblk0p1/
-    % ./app_test.sh --xmodel_file ./model_vck190/resnet_v1_50_tf.xmodel --image_dir ./img/ --performance_diff
-
-    ```
-
-  * Functionality test with waa
-    ```
-    % ./app_test.sh --xmodel_file ./model_vck190/resnet_v1_50_tf.xmodel --image_dir ./img/ --verbose
-
+  * Performance test with waa
+    ```sh
+    cd /media/sd-mmcblk0p1/
+    ./bin/resnet50.exe ./model_vck190/resnet_v1_50_tf.xmodel ./img/ 1 0
     ```
 
   * Functionality test without waa
+    ```sh
+    ./bin/resnet50.exe ./model_vck190/resnet_v1_50_tf.xmodel ./img/ 0 1
     ```
-    % ./app_test.sh --xmodel_file ./model_vck190/resnet_v1_50_tf.xmodel --image_dir ./img/ --verbose --use_sw_pre_proc
 
+  * Functionality test with waa
+    ```sh
+    ./bin/resnet50.exe ./model_vck190/resnet_v1_50_tf.xmodel ./img/ 1 1
     ```
 
 ### Build flow

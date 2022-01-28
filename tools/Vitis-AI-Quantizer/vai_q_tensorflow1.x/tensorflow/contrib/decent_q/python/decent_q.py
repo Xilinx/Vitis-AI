@@ -469,7 +469,7 @@ def quantize_frozen(input_graph_def,
   print("********************* Quantization Summary *********************\
       \nINFO: Output: \
       \n  quantize_eval_model: {} ".format(
-      os.path.join(q_config.output_dir, " quantize_eval_model.pb"))
+      os.path.join(q_config.output_dir, "quantize_eval_model.pb"))
       + deploy_model_describe)
 
   #  if dump_as_xir:
@@ -750,6 +750,14 @@ def dump(input_graph_def,
   print("INFO: Dump results are saved in {}.".format(output_dir))
   return
 
+def update_old_model(input_graph_def, save_path):
+  """Update model pb for compatible"""
+  for n in input_graph_def.node:
+    if n.op == "FixNeuron":
+      n.attr['T'].type = dtypes.float32.as_datatype_enum
+  save_pb_file(input_graph_def, save_path)
+  print("INFO: Old version quantized model pb file has been updated to new version and save inplace")
+
 
 def main(unused_args, flags):
   os.environ["CUDA_VISIBLE_DEVICES"] = flags.gpu
@@ -900,6 +908,10 @@ def main(unused_args, flags):
     dump(input_graph_def, input_fn, flags.output_dir, flags.max_dump_batches,
          flags.dump_float, s_config, flags.dump_input_tensors,
          flags.fuse_op_config, custom_op_set)
+  elif flags.command == "update":
+    input_graph_def = _parse_input_frozen_graph(flags.input_frozen_graph)
+    update_old_model(input_graph_def, flags.input_frozen_graph)
+
 
   else:
     print("Unknown Command: " + flags.command)
@@ -923,6 +935,7 @@ def usage_string():
       quantize a model: vai_q_tensorflow quantize --input_frozen_graph frozen_graph.pb --input_nodes xxx --output_nodes yyy --input_shapes zzz --input_fn module.calib_input
       inspect a model : vai_q_tensorflow inspect --input_frozen_graph frozen_graph.pb
       dump quantized model : vai_q_tensorflow dump --input_frozen_graph quantize_results/quantize_eval_model.pb --input_fn module.dump_input
+      update old quantized model: vai_q_tensorflow update --input_frozen_graph quantize_results/quantize_eval_model.pb
   """
   return usage
 
@@ -939,7 +952,7 @@ def run_main():
                       type=str,
                       default="",
                       help="Specify a command for vai_q_tensorflow",
-                      choices=['quantize', 'inspect', 'dump', 'deploy'])
+                      choices=['quantize', 'inspect', 'dump', 'deploy', 'update'])
 
   ####################
   #  Main Arguments  #
@@ -985,7 +998,8 @@ def run_main():
       form a pair of parameter joined by a colon, and parameters \
       are comma separated. When specify conv op name only vai_q_tensorflow \
       will quantize weights of conv op using specified bit width . \
-      e.g 'conv1/Relu:16,conv1/weights:8,conv1:16'")
+      e.g 'conv1/Relu:16,conv1/weights:8,conv1:16'  If using python api then \
+      should be used like this, nodes_bit=['input:16','Conv2D:16', 'add:16']")
   parser.add_argument(
       "--nodes_method",
       type=str,
@@ -994,7 +1008,8 @@ def run_main():
       form a pair of parameter joined by a colon, and parameter pairs \
       are comma separated. When specify conv op name only vai_q_tensorflow \
       will quantize weights of conv op using specified method. \
-      e.g 'conv1/Relu:1,depthwise_conv1/weights:2,conv1:1'")
+      e.g 'conv1/Relu:1,depthwise_conv1/weights:2,conv1:1',  If using python api then \
+      should be used like this, nodes_method=['input:0','Conv2D:1', 'add:2']")
   parser.add_argument("--method",
                       type=int,
                       default=1,

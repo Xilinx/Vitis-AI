@@ -35,11 +35,20 @@ DEF_ENV_PARAM(IGNORE_DPU, "0");
 
 using namespace std;
 
-//DEF_ENV_PARAM_2(PSMNET_MODEL_DIR, "./PSMnet", std::string);
+// DEF_ENV_PARAM_2(PSMNET_MODEL_DIR, "./PSMnet", std::string);
 
-DEF_ENV_PARAM_2(PSMNET_MODEL_0, "/usr/share/vitis_ai_library/models/PSMNet_pruned_0_pt/PSMNet_pruned_0_pt.xmodel", std::string);
-DEF_ENV_PARAM_2(PSMNET_MODEL_1, "/usr/share/vitis_ai_library/models/PSMNet_pruned_1_pt/PSMNet_pruned_1_pt.xmodel", std::string);
-DEF_ENV_PARAM_2(PSMNET_MODEL_2, "/usr/share/vitis_ai_library/models/PSMNet_pruned_2_pt/PSMNet_pruned_2_pt.xmodel", std::string);
+DEF_ENV_PARAM_2(PSMNET_MODEL_0,
+                "/usr/share/vitis_ai_library/models/PSMNet_pruned_0_pt/"
+                "PSMNet_pruned_0_pt.xmodel",
+                std::string);
+DEF_ENV_PARAM_2(PSMNET_MODEL_1,
+                "/usr/share/vitis_ai_library/models/PSMNet_pruned_1_pt/"
+                "PSMNet_pruned_1_pt.xmodel",
+                std::string);
+DEF_ENV_PARAM_2(PSMNET_MODEL_2,
+                "/usr/share/vitis_ai_library/models/PSMNet_pruned_2_pt/"
+                "PSMNet_pruned_2_pt.xmodel",
+                std::string);
 
 namespace vitis {
 namespace ai {
@@ -68,18 +77,18 @@ class PsmNetImp : public PsmNet {
   vector<vitis::ai::library::InputTensor> inputs_r_;
   vector<vitis::ai::library::OutputTensor> outputs_r_;
 
-//  std::vector<std::unique_ptr<vai_resize>> vai_res_;
-//  std::unique_ptr<DpuSfm> dpu_sfm_;
+  //  std::vector<std::unique_ptr<vai_resize>> vai_res_;
+  //  std::unique_ptr<DpuSfm> dpu_sfm_;
   std::vector<std::unique_ptr<Resize>> cpu_res_;
   std::unique_ptr<CPUsfm> cpu_sfm_;
 };
 
 static vector<vitis::ai::library::InputTensor> sort_tensors(
     const vector<vitis::ai::library::InputTensor>& tensors,
-    vector<string>& layer_names);
+    vector<size_t>& chas, vector<string>& layer_names);
 static vector<vitis::ai::library::OutputTensor> sort_tensors(
     const vector<vitis::ai::library::OutputTensor>& tensors,
-    vector<string>& layer_names);
+    vector<size_t>& chas, vector<string>& layer_names);
 
 PsmNet::PsmNet() {}
 
@@ -89,34 +98,34 @@ std::unique_ptr<PsmNet> PsmNet::create() {
   return std::make_unique<PsmNetImp>();
 }
 
-//PsmNetImp::PsmNetImp() : tasks_{}, vai_res_{}, dpu_sfm_{}, cpu_res_{}, cpu_sfm_{} {
+// PsmNetImp::PsmNetImp() : tasks_{}, vai_res_{}, dpu_sfm_{}, cpu_res_{},
+// cpu_sfm_{} {
 PsmNetImp::PsmNetImp() : tasks_{}, cpu_res_{}, cpu_sfm_{} {
-  tasks_.emplace_back(vitis::ai::DpuTask::create(
-      ENV_PARAM(PSMNET_MODEL_0)));
-  tasks_.emplace_back(vitis::ai::DpuTask::create(
-      ENV_PARAM(PSMNET_MODEL_1)));
-  tasks_.emplace_back(vitis::ai::DpuTask::create(
-      ENV_PARAM(PSMNET_MODEL_2)));
+  tasks_.emplace_back(vitis::ai::DpuTask::create(ENV_PARAM(PSMNET_MODEL_0)));
+  tasks_.emplace_back(vitis::ai::DpuTask::create(ENV_PARAM(PSMNET_MODEL_1)));
+  tasks_.emplace_back(vitis::ai::DpuTask::create(ENV_PARAM(PSMNET_MODEL_2)));
   tasks_[0]->setMeanScaleBGR({103.53, 116.28, 123.675},
                              {0.017429, 0.017507, 0.01712475});
   tasks_[1]->setMeanScaleBGR({103.53, 116.28, 123.675},
                              {0.017429, 0.017507, 0.01712475});
   // ### kernel 0 part ###
-  vector<string> kernel0_task0_outs = {"input_106", "1478",     "input_152",
-                                       "input_148", "input_144", "input_140"};
-  vector<string> kernel0_task1_inps = {"input_106", "1478", "fix_0",
-                                       "fix_1",     "fix_2", "fix_3"};
+  vector<size_t> kernel0_concat_channel = {64, 128};
+  vector<string> kernel0_task0_outs = {"input_152", "input_148", "input_144",
+                                       "input_140"};
+  vector<string> kernel0_task1_inps = {"fix_0", "fix_1", "fix_2", "fix_3"};
   // ### kernel 1 part ###
-  vector<string> kernel1_task0_outs = {"input_262", "2591",     "input_308",
-                                       "input_304", "input_300", "input_296"};
-  vector<string> kernel1_task1_inps = {"input_262", "2591", "fix_0",
-                                       "fix_1",     "fix_2", "fix_3"};
+  vector<size_t> kernel1_concat_channel = {64, 128};
+  vector<string> kernel1_task0_outs = {"input_308", "input_304", "input_300",
+                                       "input_296"};
+  vector<string> kernel1_task1_inps = {"fix_0", "fix_1", "fix_2", "fix_3"};
 
   auto outputs_l_unsort = tasks_[0]->getOutputTensor(0u);
-  outputs_l_ = sort_tensors(outputs_l_unsort, kernel0_task0_outs);
+  outputs_l_ = sort_tensors(outputs_l_unsort, kernel0_concat_channel,
+                            kernel0_task0_outs);
 
   auto inputs_l_unsort = tasks_[0]->getInputTensor(1u);
-  inputs_l_ = sort_tensors(inputs_l_unsort, kernel0_task1_inps);
+  inputs_l_ =
+      sort_tensors(inputs_l_unsort, kernel0_concat_channel, kernel0_task1_inps);
   if (ENV_PARAM(DEBUG_PSMNET)) {
     for (size_t i = 0; i < inputs_l_.size(); ++i)
       LOG(INFO) << outputs_l_unsort[i].name;
@@ -124,40 +133,44 @@ PsmNetImp::PsmNetImp() : tasks_{}, cpu_res_{}, cpu_sfm_{} {
       LOG(INFO) << inputs_l_unsort[i].name;
   }
   auto outputs_r_unsort = tasks_[1]->getOutputTensor(0u);
-  outputs_r_ = sort_tensors(outputs_r_unsort, kernel1_task0_outs);
+  outputs_r_ = sort_tensors(outputs_r_unsort, kernel1_concat_channel,
+                            kernel1_task0_outs);
 
   auto inputs_r_unsort = tasks_[1]->getInputTensor(1u);
-  inputs_r_ = sort_tensors(inputs_r_unsort, kernel1_task1_inps);
+  inputs_r_ =
+      sort_tensors(inputs_r_unsort, kernel1_concat_channel, kernel1_task1_inps);
 
   if (ENV_PARAM(DEBUG_PSMNET)) {
-    for (size_t i = 0; i < inputs_r_.size(); ++i) 
+    for (size_t i = 0; i < inputs_r_.size(); ++i)
       LOG(INFO) << outputs_r_unsort[i].name;
-    for (size_t i = 0; i < inputs_r_.size(); ++i) 
+    for (size_t i = 0; i < inputs_r_.size(); ++i)
       LOG(INFO) << inputs_r_unsort[i].name;
   }
 
-//#ifndef ENABLE_AIE
+  //#ifndef ENABLE_AIE
   for (auto i : {2, 3, 4, 5}) {
-    cpu_res_.emplace_back(std::make_unique<Resize>(outputs_l_[i], inputs_l_[i]));
+    cpu_res_.emplace_back(
+        std::make_unique<Resize>(outputs_l_[i], inputs_l_[i]));
   }
   for (auto i : {2, 3, 4, 5}) {
-    cpu_res_.emplace_back(std::make_unique<Resize>(outputs_r_[i], inputs_r_[i]));
+    cpu_res_.emplace_back(
+        std::make_unique<Resize>(outputs_r_[i], inputs_r_[i]));
   }
   cpu_sfm_ = std::make_unique<CPUsfm>(tasks_[2]->getOutputTensor(0u)[0]);
 
-//#else
-//  for (auto i : {2, 3, 4, 5}) {
-//    vai_res_.emplace_back(std::make_unique<vai_resize>(
-//        "/media/sd-mmcblk0p1/dpu.xclbin", outputs_l_[i], inputs_l_[i]));
-//  }
-//  for (auto i : {2, 3, 4, 5}) {
-//    vai_res_.emplace_back(std::make_unique<vai_resize>(
-//        "/media/sd-mmcblk0p1/dpu.xclbin", outputs_r_[i], inputs_r_[i]));
-//  }
-//
-//  dpu_sfm_ = std::make_unique<DpuSfm>("/media/sd-mmcblk0p1/dpu.xclbin",
-//                                      tasks_[2]->getOutputTensor(0u)[0]);
-//#endif
+  //#else
+  //  for (auto i : {2, 3, 4, 5}) {
+  //    vai_res_.emplace_back(std::make_unique<vai_resize>(
+  //        "/media/sd-mmcblk0p1/dpu.xclbin", outputs_l_[i], inputs_l_[i]));
+  //  }
+  //  for (auto i : {2, 3, 4, 5}) {
+  //    vai_res_.emplace_back(std::make_unique<vai_resize>(
+  //        "/media/sd-mmcblk0p1/dpu.xclbin", outputs_r_[i], inputs_r_[i]));
+  //  }
+  //
+  //  dpu_sfm_ = std::make_unique<DpuSfm>("/media/sd-mmcblk0p1/dpu.xclbin",
+  //                                      tasks_[2]->getOutputTensor(0u)[0]);
+  //#endif
 }
 PsmNetImp::~PsmNetImp() {}
 
@@ -474,8 +487,14 @@ void copy_into_tensor(const vitis::ai::library::OutputTensor input,
 // reorder the tensors with name
 static vector<vitis::ai::library::InputTensor> sort_tensors(
     const vector<vitis::ai::library::InputTensor>& tensors,
-    vector<string>& layer_names) {
+    vector<size_t>& chas, vector<string>& layer_names) {
   vector<vitis::ai::library::InputTensor> ordered_tensors;
+  for (auto i = 0u; i < chas.size(); ++i)
+    for (auto j = 0u; j < tensors.size(); ++j)
+      if (tensors[j].channel == chas[i]) {
+        ordered_tensors.push_back(tensors[j]);
+        break;
+      }
   for (auto i = 0u; i < layer_names.size(); ++i)
     for (auto j = 0u; j < tensors.size(); ++j)
       if (tensors[j].name.find(layer_names[i]) != std::string::npos) {
@@ -487,8 +506,14 @@ static vector<vitis::ai::library::InputTensor> sort_tensors(
 
 static vector<vitis::ai::library::OutputTensor> sort_tensors(
     const vector<vitis::ai::library::OutputTensor>& tensors,
-    vector<string>& layer_names) {
+    vector<size_t>& chas, vector<string>& layer_names) {
   vector<vitis::ai::library::OutputTensor> ordered_tensors;
+  for (auto i = 0u; i < chas.size(); ++i)
+    for (auto j = 0u; j < tensors.size(); ++j)
+      if (tensors[j].channel == chas[i]) {
+        ordered_tensors.push_back(tensors[j]);
+        break;
+      }
   for (auto i = 0u; i < layer_names.size(); ++i)
     for (auto j = 0u; j < tensors.size(); ++j)
       if (tensors[j].name.find(layer_names[i]) != std::string::npos) {
@@ -500,12 +525,12 @@ static vector<vitis::ai::library::OutputTensor> sort_tensors(
 
 //#ifdef ENABLE_AIE
 //// aie op: resize
-//static void dpu_resize(vai_resize* vai_res) {
-//  static std::shared_ptr<std::mutex> mtx =
-//      vitis::ai::WeakStore<std::string, std::mutex>::create("aie-sfm");
-//  std::lock_guard<std::mutex> lock(*mtx);
-//  vai_res->run();
-//}
+// static void dpu_resize(vai_resize* vai_res) {
+//   static std::shared_ptr<std::mutex> mtx =
+//       vitis::ai::WeakStore<std::string, std::mutex>::create("aie-sfm");
+//   std::lock_guard<std::mutex> lock(*mtx);
+//   vai_res->run();
+// }
 //#endif
 
 template <typename TensorType>
@@ -565,15 +590,15 @@ void PsmNetImp::PSMnet_run(const vector<pair<cv::Mat, cv::Mat>>& input_images) {
 
   __TIC__(PSMNET_RESIZE_LEFT)
   // store the outputs of kernel_0
-//#ifndef ENABLE_AIE
+  //#ifndef ENABLE_AIE
   for (auto i : {0, 1, 2, 3}) {
     cpu_res_[i]->run();
   }
-//#else
-//  for (auto i : {0, 1, 2, 3}) {
-//    dpu_resize(vai_res_[i].get());
-//  }
-//#endif
+  //#else
+  //  for (auto i : {0, 1, 2, 3}) {
+  //    dpu_resize(vai_res_[i].get());
+  //  }
+  //#endif
   copy_into_tensor(outputs_l_[0], inputs_l_[0]);
   copy_into_tensor(outputs_l_[1], inputs_l_[1]);
 
@@ -615,15 +640,15 @@ void PsmNetImp::PSMnet_run(const vector<pair<cv::Mat, cv::Mat>>& input_images) {
 
   __TIC__(PSMNET_RESIZE_RIGHT)
   // store the outputs of kernel_0
-//#ifndef ENABLE_AIE
+  //#ifndef ENABLE_AIE
   for (auto i : {4, 5, 6, 7}) {
     cpu_res_[i]->run();
   }
-//#else
-//  for (auto i : {4, 5, 6, 7}) {
-//    dpu_resize(vai_res_[i].get());
-//  }
-//#endif
+  //#else
+  //  for (auto i : {4, 5, 6, 7}) {
+  //    dpu_resize(vai_res_[i].get());
+  //  }
+  //#endif
   copy_into_tensor(outputs_r_[0], inputs_r_[0]);
   copy_into_tensor(outputs_r_[1], inputs_r_[1]);
 
@@ -665,11 +690,11 @@ void PsmNetImp::PSMnet_run(const vector<pair<cv::Mat, cv::Mat>>& input_images) {
   __TOC__(PSMNET_DPU_LAST)
 
   __TIC__(PSMNET_SFM)
-//#ifndef ENABLE_AIE
+  //#ifndef ENABLE_AIE
   cpu_sfm_->run();
-//#else
-//  dpu_sfm_->run_with();
-//#endif
+  //#else
+  //  dpu_sfm_->run_with();
+  //#endif
   __TOC__(PSMNET_SFM)
 
   if (ENV_PARAM(DUMP_PSMNET)) {
@@ -691,16 +716,17 @@ void PsmNetImp::run(const std::vector<std::pair<cv::Mat, cv::Mat>>& imgs) {
 std::vector<cv::Mat> PsmNetImp::get_result() {
   std::vector<cv::Mat> rets;
   float* sfm_output;
-//#ifndef ENABLE_AIE
+  //#ifndef ENABLE_AIE
   sfm_output = cpu_sfm_->get_output();
-//#else
-//  sfm_output = dpu_sfm_->get_output();
-//#endif
+  //#else
+  //  sfm_output = dpu_sfm_->get_output();
+  //#endif
   auto final_tensor = tasks_[2]->getOutputTensor(0u)[0];
   for (size_t b = 0; b < final_tensor.batch; ++b) {
     float mmax = std::numeric_limits<float>::min();
     float mmin = std::numeric_limits<float>::max();
-    cv::Mat ret = cv::Mat(cv::Size(final_tensor.width, final_tensor.height), CV_8UC3);
+    cv::Mat ret =
+        cv::Mat(cv::Size(final_tensor.width, final_tensor.height), CV_8UC3);
     int c = 0;
     for (auto h = 0u; h < final_tensor.height; ++h) {
       for (auto w = 0u; w < final_tensor.width; ++w) {

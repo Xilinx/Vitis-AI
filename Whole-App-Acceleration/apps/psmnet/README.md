@@ -71,8 +71,8 @@ PSMNet example runs in 2 different ways:
 ## *Running on **VCK190***
 
 #### Run on VCK190:
-
 ```sh
+export XLNX_ENABLE_FINGERPRINT_CHECK=0
 env ./demo_psmnet demo_psmnet_left.png demo_psmnet_right.png
 ```
 > After execution, the result is stored as an image: result_psmnet_0.jpg

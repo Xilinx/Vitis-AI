@@ -1,24 +1,23 @@
 #!/bin/bash
-# Copyright 2020 Xilinx Inc.
+# Copyright 2022 Xilinx Inc.
 
-sed -n '1, 5p' ./setup/docker/docker/PROMPT.txt
+sed -n '1, 5p' ./setup/docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '5, 15p' ./setup/docker/docker/PROMPT.txt
+sed -n '5, 15p' ./setup/docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '15, 28p' ./setup/docker/docker/PROMPT.txt
+sed -n '15, 28p' ./setup/docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '28, 61p' ./setup/docker/docker/PROMPT.txt
+sed -n '28, 61p' ./setup/docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '62, 224p' ./setup/docker/docker/PROMPT.txt
+sed -n '62, 224p' ./setup/docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '224, 308p' ./setup/docker/docker/PROMPT.txt
+sed -n '224, 308p' ./setup/docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
-
 
 confirm() {
   echo -en "\n\nDo you agree to the terms and wish to proceed [y/n]? "
@@ -78,7 +77,7 @@ do
 done
 
 DOCKER_RUN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-if [ "$PWD" != "$DOCKER_RUN_DIR" ]; then
+if [ "$HERE" != "$DOCKER_RUN_DIR" ]; then
   echo "WARNING: Please start 'docker_run.sh' from the Vitis-AI/ source directory";
 fi
 
@@ -86,7 +85,6 @@ docker_run_params=$(cat <<-END
     -v /dev/shm:/dev/shm \
     -v /opt/xilinx/dsa:/opt/xilinx/dsa \
     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
-    -v /etc/xbutler:/etc/xbutler \
     -e USER=$user -e UID=$uid -e GID=$gid \
     -e VERSION=$VERSION \
     -v $DOCKER_RUN_DIR:/vitis_ai_home \

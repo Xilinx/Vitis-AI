@@ -37,9 +37,9 @@ Custom_OP_Demo
 
 ## Step 1 : Quantize
 
-For the Tensorflow2 model, refer to Tensorflow2 model quantize in Custom OP Workflow section of UG1414 and download the source code package [tf2_custom_op_demo.tar.gz](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=tf2_custom_op_demo.tar.gz) to do the quantization.
+For the Tensorflow2 model, refer to Tensorflow2 model quantize in Custom OP Workflow section of UG1414 and download the source code package [tf2_custom_op_demo.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=tf2_custom_op_demo.tar.gz) to do the quantization.
 
-For the Pytorch model, refer to Pytorch model quantize in Custom OP Workflow section of UG1414 and download the float model and source code package [pointpillars-code-20211206.tar.gz](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=pointpillars-code-20211206.tar.gz) to do the quantization.
+For the Pytorch model, refer to Pytorch model quantize in Custom OP Workflow section of UG1414 and download the float model and source code package [pointpillars-code-20211206.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=pointpillars-code-20211206.tar.gz) to do the quantization.
 
 ## Step 2 : Compile
 Use the latest 2.0 docker to compile the model.  

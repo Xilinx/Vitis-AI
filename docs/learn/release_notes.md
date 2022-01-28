@@ -149,6 +149,8 @@
 - vai_q_caffe hangs when TRAIN and TEST phases point to the same LMDB file
 - TVM compiled Inception_v3 model gives low accuracy with DPUCADF8H (DPUv3Int8)
 - TensorFlow 1.15 quantizer error in QAT caused by an incorrect pattern match
+- The compiler will generate incorrect instructions for transpose operation when input and output shapes match the pattern
+that after removing the axis with only 1 element, the remaining shapes are the same and number of axes is more than 1.
 
 ## Release 1.4.1
 ### New Features/Highlights

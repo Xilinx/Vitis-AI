@@ -1078,12 +1078,122 @@ DEFINE_GET_WEIGHTS_NODES(OtherRelu) {
 }
 const OtherReluPattern other_relu_pattern_wrapper(other_relu_pattern, "other_relu");
 
+// folded conv + bn in QAT
+const OpTypePattern convfc_bn_qat_pattern(
+    {"BiasAdd|Add|AddV2",
+      {
+        {"Conv2D|DepthwiseConv2d|DepthwiseConv2dNative|MatMul|Conv3D",
+          {
+            {"*"},   // input
+            {"Mul",  // mul_1
+              {
+                {"*"}, // for conv:mul_0, for dw: reshape
+                {"*"}, // weights
+              }
+            },
+          }
+        },
+        {"Sub",
+          {
+            {"*"},   // beta
+            {"Mul",  // mul_2
+              {
+                {"Mul", // mul_0
+                  {
+                    {"Rsqrt",
+                      {
+                        {"Add",
+                          {
+                            {"*"}, // eps
+                            {"*"}, // moving variance
+                          }
+                        },
+                      }
+                    },
+                    {"*"}, // gamma
+                  }
+                },
+                {"*"},  // moving mean
+              }
+            },
+          }
+        }, // bias node
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcBnQat) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBnQat) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].inputs[1].node)); // weights
+  weights_nodes.push_back(&(match.inputs[1].inputs[0].node)); // beta
+  weights_nodes.push_back(&(match.inputs[1].inputs[1].inputs[1].node)); // moving mean
+  weights_nodes.push_back(&(match.inputs[1].inputs[1].inputs[0].inputs[1].node)); // gamma
+  weights_nodes.push_back(&(match.inputs[1].inputs[1].inputs[0].inputs[0].inputs[0].inputs[1].node)); // moving variance
+  return weights_nodes;
+}
+const ConvfcBnQatPattern convfc_bn_qat_pattern_wrapper(convfc_bn_qat_pattern, "convfc_bn_qat");
+
+// ConvFc + bn_qat + relu
+const OpTypePattern convfc_bn_qat_relu_pattern(
+    {"Relu|Relu6", // relu node
+      {
+        convfc_bn_qat_pattern,
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcBnQatRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBnQatRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].inputs[1].node)); // weights
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].inputs[0].node)); // beta
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].inputs[1].inputs[1].node)); // moving mean
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].inputs[1].inputs[0].inputs[1].node)); // gamma
+  weights_nodes.push_back(&(match.inputs[0].inputs[1].inputs[1].inputs[0].inputs[0].inputs[0].inputs[1].node)); // moving variance
+  return weights_nodes;
+}
+const ConvfcBnQatReluPattern convfc_bn_qat_relu_pattern_wrapper(convfc_bn_qat_relu_pattern, "convfc_bn_qat_relu");
+
+// ConvFc + bn_qat + identity + relu
+const OpTypePattern convfc_bn_qat_id_relu_pattern(
+    {"Relu|Relu6", // relu node
+      {
+       {"Identity",
+         {
+          convfc_bn_qat_pattern,
+         }
+       },
+      }
+    });
+DEFINE_GET_INPUT_NODES(ConvfcBnQatIdRelu) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(ConvfcBnQatIdRelu) {
+  std::vector<const NodeDef*> weights_nodes;
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].inputs[1].node)); // weights
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].inputs[0].node)); // beta
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].inputs[1].inputs[1].node)); // moving mean
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].inputs[1].inputs[0].inputs[1].node)); // gamma
+  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].inputs[1].inputs[0].inputs[0].inputs[0].inputs[1].node)); // moving variance
+  return weights_nodes;
+}
+const ConvfcBnQatIdReluPattern convfc_bn_qat_id_relu_pattern_wrapper(convfc_bn_qat_id_relu_pattern, "convfc_bn_qat_id_relu");
 
 // Known patterns
 // The quantization will perform in the order of this vector, the previously matched
 // pattern will not be matched again. Watch out for the order
 const std::vector<const OpTypePatternBase*> known_patterns ({
   &placeholder_pattern_wrapper,
+  &convfc_bn_qat_id_relu_pattern_wrapper,
+  &convfc_bn_qat_relu_pattern_wrapper,
+  &convfc_bn_qat_pattern_wrapper,
   &atrous_conv_bias_relu_pattern_wrapper,
   &atrous_conv_bias_pattern_wrapper,
   &atrous_conv_relu_pattern_wrapper,
@@ -1159,9 +1269,25 @@ const OpTypePattern convfc_id_fusedbn_pattern(
       }
     });
 
+// Sub + Mul + AssignSub,  from ssd mobilenet v1 fpn batch norm, there is a control
+// dependence to a identity op, so can not strip this during partition graph
+const OpTypePattern assign_mul_sub_pattern(
+    {"AssignSub",                // batchnorm
+      {
+        {"*"},  // moving mean
+        {"Mul",
+          {
+            {"Sub"},
+            {"*"}, // decay
+          }
+        },
+      }
+    });
+
 const std::vector<std::tuple<const string, const OpTypePattern>> known_ignore_patterns({
   std::make_tuple("convfc_fusedbn", convfc_fusedbn_pattern),
   std::make_tuple("convfc_id_fusedbn", convfc_id_fusedbn_pattern),
+  std::make_tuple("assgin_mul_sub", assign_mul_sub_pattern),
   });
 
 const std::set<string> compute_patterns{
@@ -1192,6 +1318,9 @@ const std::set<string> compute_patterns{
     conv2d_backprop_input_relu_pattern_wrapper.GetName(),
     conv2d_backprop_input_bias_pattern_wrapper.GetName(),
     conv2d_backprop_input_bias_relu_pattern_wrapper.GetName(),
+    convfc_bn_qat_pattern_wrapper.GetName(),
+    convfc_bn_qat_id_relu_pattern_wrapper.GetName(),
+    convfc_bn_qat_relu_pattern_wrapper.GetName(),
     array_relu_pattern_wrapper.GetName(),
     array_pattern_wrapper.GetName()
 };
@@ -1230,6 +1359,8 @@ std::vector<const NodeDef*> get_ignore_nodes(const NodeMatch& match,
     ignore_nodes.push_back(&(match.inputs[0].node));
   } else if (pattern_name == "convfc_id_fusedbn") {
     ignore_nodes.push_back(&(match.inputs[0].inputs[0].node));
+  } else if (pattern_name == "assgin_mul_sub") {
+    ignore_nodes.push_back(&(match.inputs[1].node));
   } else {
     LOG(FATAL) << "Unknown pattern_name: " << pattern_name;
   }

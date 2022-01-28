@@ -25,7 +25,7 @@ include scripts/makefile
 ABS_PATH                := $(shell pwd -P)
 $(eval FATHER_PATH      := $(realpath $(ABS_PATH)/..))
 #Platform setting
-PLATFORM                 = $(FATHER_PATH)/../../../../../dsa/XVDPU-TRD/vck190_platform/platforms/xilinx_vck190_mipiRxSingle_hdmiTx_202120_1/vck190_mipiRxSingle_hdmiTx.xpfm 
+PLATFORM                 = $(FATHER_PATH)/vck190_platform/platforms/xilinx_vck190_mipiRxSingle_hdmiTx_202110_1/vck190_mipiRxSingle_hdmiTx.xpfm 
 DEVICE                   ?= vck190
 XCL_EMULATION_MODE      ?= hw
 unexport XCL_EMULATION_MODE
@@ -50,7 +50,7 @@ VXX                      = $(XILINX_VITIS)/bin/v++
 AIE_OBJECTS              = $(ABS_PATH)/aie/ip/libadf.a
 BINARY_CONTAINERS       += $(BUILD_DIR)/binary_container_1.xclbin
 BUILD_SUBDIRS           += $(BUILD_DIR)/binary_container_1
-BINARY_CONTAINER_1_OBJS += $(BUILD_DIR)/binary_container_1/DPUCVDX8G.xo $(BUILD_DIR)/binary_container_1/libadf.a ./xo_files/mm2s.xo ./xo_files/s2mm.xo $(CV_ACCEL)/cost_volume.xo
+BINARY_CONTAINER_1_OBJS += $(BUILD_DIR)/binary_container_1/DPUCVDX8G.xo $(BUILD_DIR)/binary_container_1/libadf.a ./xo_files/mm2s_enc.xo ./xo_files/s2mm_enc.xo $(CV_ACCEL)/cost_volume.xo
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Package RTL kernel 
@@ -108,7 +108,7 @@ $(BUILD_DIR)/dpu.xclbin: $(BUILD_DIR)/binary_container_1.xclbin $(BUILD_DIR)/bin
 	-@rm -rf package_out
 	@cd $(BUILD_DIR); $(VXX) -t $(XCL_EMULATION_MODE) --platform $(PLATFORM)  --save-temps --temp_dir binary_container_1 -p binary_container_1.xclbin binary_container_1/libadf.a -o "$@" \
 	  --package.out_dir ../package_out \
-	  --package.boot_mode sd  \
+	  --package.boot_mode sd \
 	  --package.rootfs $(dir $(PLATFORM))sw/*/xrt/filesystem/rootfs.ext4 \
 	  --package.sd_file $(dir $(PLATFORM))sw/*/xrt/image/Image
 	cp  $(ABS_PATH)/hw/binary_container_1/link/vivado/vpl/prj/prj.gen/sources_1/bd/*/ip/*_DPUCVDX8G_1_0/arch.json $(ABS_PATH)/package_out/sd_card

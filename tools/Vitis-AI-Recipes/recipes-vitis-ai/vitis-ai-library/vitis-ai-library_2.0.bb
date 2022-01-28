@@ -3,8 +3,6 @@ DESCRIPTION = "Xilinx Vitis AI components - VITIS AI LIBRARY"
 
 require recipes-vitis-ai/vitis-ai-library/vitisai.inc
 
-SRC_URI = "git://gitenterprise.xilinx.com/Vitis/vitis-ai-staging;protocol=https;branch=2.0"
-SRCREV = "700297f6e45c7fddfd4450adf1703ce12de4ae97"
 S = "${WORKDIR}/git/tools/Vitis-AI-Library"
 
 DEPENDS = "protobuf-native vart opencv googletest libeigen libeigen-native"

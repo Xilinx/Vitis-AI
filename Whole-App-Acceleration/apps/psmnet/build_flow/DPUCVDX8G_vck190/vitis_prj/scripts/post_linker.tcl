@@ -22,7 +22,7 @@ set cfg_noc_num_mcp   [get_property CONFIG.NUM_MCP  [get_bd_cells $cell_noc]]
 set noc_saxi_list [get_bd_intf_pins $cell_noc/S??_AXI]
 
 #Set AIE core Freq
-set_property -dict [list CONFIG.AIE_CORE_REF_CTRL_FREQMHZ {1333}] [get_bd_cells $cell_aie]
+set_property -dict [list CONFIG.AIE_CORE_REF_CTRL_FREQMHZ {1250}] [get_bd_cells $cell_aie]
 
 #Change setting of LPDDR
 set_property -dict [list CONFIG.MC_CHANNEL_INTERLEAVING {true} CONFIG.MC_CH_INTERLEAVING_SIZE {128_Bytes} CONFIG.MC_LPDDR4_REFRESH_TYPE {PER_BANK} CONFIG.MC_TRC {60000} CONFIG.MC_ADDR_BIT9 {CA5}] [get_bd_cells $cell_noc]

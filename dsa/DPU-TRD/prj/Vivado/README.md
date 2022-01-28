@@ -196,7 +196,7 @@ $TRD_HOME/prj/Vivado/srcs/top/ip/top_DPUCZDX8G_0/arch.json
 
 This tutorial shows how to build the Linux image and boot image using the PetaLinux build tool.
 
-**PetaLinux Working Environment Setup**: Refer to the [PetaLinux Tools Documentation ](https://www.xilinx.com/content/dam/xilinx/support/documentation/sw_manuals/vitis_ai/1_4/ug1414-vitis-ai.pdf)(UG1144) for installation.
+**PetaLinux Working Environment Setup**: Refer to the [PetaLinux Tools Documentation ](https://www.xilinx.com/content/dam/xilinx/support/documentation/sw_manuals/vitis_ai/2_0/ug1414-vitis-ai.pdf)(UG1144) for installation.
 
 For Bash as user login shell:
 
@@ -246,7 +246,7 @@ If the prebuilt design is wanted, please use the path for **--get-hw-description
 
 This part is about how to run the Resnet50 example from the source code.
 
-The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in [ug1144](https://www.xilinx.com/content/dam/xilinx/support/documentation/sw_manuals/vitis_ai/1_4/ug1414-vitis-ai.pdf) for PetaLinux 2021.2:
+The user must create the SD card. Refer section "Configuring SD Card ext File System Boot" in [UG1414](https://www.xilinx.com/content/dam/xilinx/support/documentation/sw_manuals/vitis_ai/2_0/ug1414-vitis-ai.pdf) for PetaLinux 2021.2:
 
 Copy the Image, BOOT.BIN, boot.scr and system.dtb files in **$TRD_HOME/prj/Vivado/dpu_petalinux_bsp/xilinx-zcu102-trd/images/linux** to BOOT partition.
 
@@ -285,7 +285,7 @@ The DPU IP provides some user-configurable parameters to optimize resource utili
 
 The TRD also support the softmax function.
 
-For more details about the DPU, please read [DPU IP Product Guide](https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=latest;d=pg338-dpu.pdf)
+For more details about the DPU, please read [DPU IP Product Guide](https://www.xilinx.com/support/documentation/ip_documentation/dpu/v2_0/pg338-dpu.pdf)
 
 
 #### 5.3.1 Modify the Frequency
@@ -493,28 +493,4 @@ Copy **$TRD_HOME/app/dpu_sw_optimize.tar.gz** to target board, after linux boot-
 
 (refer to dpu_sw_optimize/zynqmp/README.md get more info)
 
-```
-
-2. Application hang
-
-If the design of DPU connection is changed, such as using FPD port instead of LPD port, then the address of DPU is not start from 0x8F000000 by default.
-
-In this case, the line "KCFLAGS +=-DSIG_BASE_ADDR=0x8FF00000" in "xilinx-zcu102-trd/project-spec/meta-user/recipes-modules/dpu/files/Makefile" should be modified.
-
-The value of "KCFLAGS +=-DSIG_BASE_ADDR=value" is equal to the DPU start address plus offset 0xF00000.
-
-For LPD port, the default DPU start address is 0x8F000000， so "KCFLAGS +=-DSIG_BASE_ADDR=0x8FF00000".
-
-For FPD port, the start address is 0xB0000000， so "KCFLAGS +=-DSIG_BASE_ADDR=0xB0F00000".
-
-After making the above modification, the abnormal conditions such as crashes, hanging may occur when run the program with DPU.
-
-This is caused by the “get_dpu_fingerprint” function in “Vitis-AI/tools/Vitis-AI-Runtime/VART/vart/dpu-controller/src/dpu_controller_dnndk.cpp”.
-
-The solution is as follows:
-
-Use the following command to skip the fingerprint check when run the program.
-
-```
-env XLNX_ENABLE_FINGERPRINT_CHECK=0 <program running command>
 ```

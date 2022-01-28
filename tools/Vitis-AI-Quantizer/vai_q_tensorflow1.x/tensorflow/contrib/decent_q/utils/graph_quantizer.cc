@@ -180,6 +180,97 @@ NodeConfigMap LocateConvfcBiasIdRelu(const NodeMatch& match,
   return ops_to_quantize;
 }
 
+NodeConfigMap LocateConvfcBnQatIdRelu(const NodeMatch& match,
+                                      const QuantizeConfig& config,
+                                      std::set<NodeGroup>& node_groups) {
+  NodeConfigMap ops_to_quantize;
+  const NodeDef& relu_node = match.node;
+  const NodeDef& identity_node = match.inputs[0].node;
+  const NodeDef& biasadd_node = match.inputs[0].inputs[0].node;
+  const NodeDef& bias_node = match.inputs[0].inputs[0].inputs[1].node;
+  const NodeDef& convfc_node = match.inputs[0].inputs[0].inputs[0].node;
+  const NodeDef& input_node =
+      match.inputs[0].inputs[0].inputs[0].inputs[0].node;
+  const NodeDef& weight_node =
+      match.inputs[0].inputs[0].inputs[0].inputs[1].node;
+  if (!CheckDtype(convfc_node)) return ops_to_quantize;
+
+  bool updated =
+      UpdateNodeConfigMap(weight_node, GetWtConfig(config), ops_to_quantize);
+  updated = updated && UpdateNodeConfigMap(bias_node, GetWtConfig(config),
+                                           ops_to_quantize);
+  updated = updated && UpdateNodeConfigMap(relu_node, GetActConfig(config),
+                                           ops_to_quantize);
+  if (updated) {
+    DLOG_INFO(1) << "Quantize convfc(BN(Qat)) + bias + identity + relu: "
+                 << relu_node.name() << " + " << identity_node.name() << " + "
+                 << biasadd_node.name() << "(" << biasadd_node.op() << ") <-- "
+                 << convfc_node.name() << " + " << bias_node.name();
+    node_groups.insert(std::vector<string>{
+        convfc_node.name(), input_node.name(), relu_node.name(),
+        weight_node.name(), bias_node.name()});
+  }
+  return ops_to_quantize;
+}
+
+NodeConfigMap LocateConvfcBnQatRelu(const NodeMatch& match,
+                                    const QuantizeConfig& config,
+                                    std::set<NodeGroup>& node_groups) {
+  NodeConfigMap ops_to_quantize;
+  const NodeDef& relu_node = match.node;
+  const NodeDef& biasadd_node = match.inputs[0].node;
+  const NodeDef& bias_node = match.inputs[0].inputs[1].node;
+  const NodeDef& convfc_node = match.inputs[0].inputs[0].node;
+  const NodeDef& input_node = match.inputs[0].inputs[0].inputs[0].node;
+  const NodeDef& weight_node = match.inputs[0].inputs[0].inputs[1].node;
+  if (!CheckDtype(convfc_node)) return ops_to_quantize;
+
+  bool updated = UpdateNodeConfigMap(
+      weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
+  updated = updated && UpdateNodeConfigMap(bias_node, GetWtConfig(config),
+                                           ops_to_quantize);
+  updated = updated && UpdateNodeConfigMap(relu_node, GetActConfig(config),
+                                           ops_to_quantize);
+  if (updated) {
+    DLOG_INFO(1) << "Quantize convfc(BN(Qat)) + Bias + relu: "
+                 << relu_node.name() << " + " << biasadd_node.name() << "("
+                 << biasadd_node.op() << ") <-- " << convfc_node.name() << " + "
+                 << bias_node.name();
+    node_groups.insert(std::vector<string>{
+        convfc_node.name(), input_node.name(), relu_node.name(),
+        weight_node.name(), bias_node.name()});
+  }
+  return ops_to_quantize;
+}
+
+NodeConfigMap LocateConvfcBnQat(const NodeMatch& match,
+                                const QuantizeConfig& config,
+                                std::set<NodeGroup>& node_groups) {
+  NodeConfigMap ops_to_quantize;
+  const NodeDef& biasadd_node = match.node;
+  const NodeDef& bias_node = match.inputs[1].node;
+  const NodeDef& convfc_node = match.inputs[0].node;
+  const NodeDef& input_node = match.inputs[0].inputs[0].node;
+  const NodeDef& weight_node = match.inputs[0].inputs[1].node;
+  if (!CheckDtype(convfc_node)) return ops_to_quantize;
+
+  bool updated = UpdateNodeConfigMap(
+      weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
+  updated = updated && UpdateNodeConfigMap(bias_node, GetWtConfig(config),
+                                           ops_to_quantize);
+  updated = updated && UpdateNodeConfigMap(biasadd_node, GetActConfig(config),
+                                           ops_to_quantize);
+  if (updated) {
+    DLOG_INFO(1) << "Quantize convfc(BN(Qat)) + Bias : " << biasadd_node.name()
+                 << "(" << biasadd_node.op() << ") <-- " << convfc_node.name()
+                 << " + " << bias_node.name();
+    node_groups.insert(std::vector<string>{
+        convfc_node.name(), input_node.name(), biasadd_node.name(),
+        weight_node.name(), bias_node.name()});
+  }
+  return ops_to_quantize;
+}
+
 NodeConfigMap LocateConvfcBiasRelu(const NodeMatch& match,
                                    const QuantizeConfig& config,
                                    std::set<NodeGroup>& node_groups) {
@@ -1119,6 +1210,9 @@ Status GraphQuantizer::_LocateOpsToQuantize(const GraphDef& input_graph_def) {
   // deatails of pattern_id
   std::map<string, LocationFuncHandle> map_pattern_func({
       {"placeholder", &LocatePlaceholder},
+      {"convfc_bn_qat_id_relu", &LocateConvfcBnQatIdRelu},
+      {"convfc_bn_qat_relu", &LocateConvfcBnQatRelu},
+      {"convfc_bn_qat", &LocateConvfcBnQat},
       {"atrous_conv_bias_relu", &LocateAtrousConvBiasRelu},
       {"atrous_conv_bias", &LocateAtrousConvBias},
       {"atrous_conv_relu", &LocateAtrousConvRelu},
@@ -2300,6 +2394,7 @@ Status GraphQuantizer::CreateQuantizeCalibrationGraph(
   // _config.nodes_method Insert fix_neuron in the main graph
   TF_RETURN_IF_ERROR(_ModifyFixNeuronConfig(current_graph_def));
 
+  // Insert fix_neuron in the graph
   TF_RETURN_IF_ERROR(
       _InsertFixNeuronOps(current_graph_def, processed_graph_def));
 
@@ -2325,8 +2420,8 @@ Status GraphQuantizer::CreateQuantizeTrainingGraph(
   processed_graph_def = input_graph_def;
 
   // replace sigmoid with hard_sigmoid
-  current_graph_def = processed_graph_def;
   if (_config.replace_sigmoid == 1) {
+    current_graph_def = processed_graph_def;
     TF_RETURN_IF_ERROR(
         ReplaceSigmoidWithHardSigmoid(current_graph_def, &processed_graph_def));
     SaveGraphForDebugging(processed_graph_def,
@@ -2379,6 +2474,10 @@ Status GraphQuantizer::CreateQuantizeTrainingGraph(
     }
   }
   TF_RETURN_IF_ERROR(_LocateOpsToQuantize(current_graph_def));
+
+  // modify _ops_to_quantize according to _config.nodes_bit and
+  // _config.nodes_method Insert fix_neuron in the main graph
+  TF_RETURN_IF_ERROR(_ModifyFixNeuronConfig(current_graph_def));
 
   // Insert fix_neuron in the graph
   TF_RETURN_IF_ERROR(
