@@ -6261,7 +6261,7 @@ rowloop:
             shift = 0;
             for (int l = 0; l < (XF_NPIXPERCYCLE(NPC)); l++) {
 // clang-format off
-#pragma HLS LOOP_TRIPCOUNT min=iTC max=iTC
+#pragma HLS LOOP_TRIPCOUNT min=TC max=TC
 #pragma HLS unroll
                 // clang-format on
 
@@ -6369,7 +6369,7 @@ rowloop:
             shift = 0;
             for (int l = 0; l < (XF_NPIXPERCYCLE(NPC)); l++) {
 // clang-format off
-#pragma HLS LOOP_TRIPCOUNT min=iTC max=iTC
+#pragma HLS LOOP_TRIPCOUNT min=TC max=TC
 #pragma HLS unroll
                 // clang-format on
 
@@ -6449,7 +6449,7 @@ rowloop:
             Packed_rgb1 = src.read(idx++);
             for (int l = 0; l < (XF_NPIXPERCYCLE(NPC)); l++) {
 // clang-format off
-#pragma HLS LOOP_TRIPCOUNT min=iTC max=iTC
+#pragma HLS LOOP_TRIPCOUNT min=TC max=TC
 #pragma HLS unroll
                 // clang-format on
                 RGB[l] = Packed_rgb1(l * 24 + 23, l * 24);
@@ -6971,7 +6971,7 @@ rowloop:
             shift = 0;
             for (int l = 0; l < (XF_NPIXPERCYCLE(NPC)); l++) {
 // clang-format off
-#pragma HLS LOOP_TRIPCOUNT min=iTC max=iTC
+#pragma HLS LOOP_TRIPCOUNT min=TC max=TC
 #pragma HLS unroll
                 // clang-format on
 
@@ -7080,7 +7080,7 @@ rowloop:
             shift = 0;
             for (int l = 0; l < (XF_NPIXPERCYCLE(NPC)); l++) {
 // clang-format off
-#pragma HLS LOOP_TRIPCOUNT min=iTC max=iTC
+#pragma HLS LOOP_TRIPCOUNT min=TC max=TC
 #pragma HLS unroll
                 // clang-format on
 
@@ -7159,7 +7159,7 @@ rowloop:
             Packed_rgb1 = src.read(idx++);
             for (int l = 0; l < (XF_NPIXPERCYCLE(NPC)); l++) {
 // clang-format off
-#pragma HLS LOOP_TRIPCOUNT min=iTC max=iTC
+#pragma HLS LOOP_TRIPCOUNT min=TC max=TC
 #pragma HLS unroll
                 // clang-format on
                 xfExtractPixels<NPC, XF_WORDWIDTH(SRC_T, NPC), XF_DEPTH(SRC_T, NPC)>(BGR, Packed_rgb1, 0);
