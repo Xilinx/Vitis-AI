@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <vector>
+using namespace std;
 using std::vector;
 namespace vitis {
 namespace ai {

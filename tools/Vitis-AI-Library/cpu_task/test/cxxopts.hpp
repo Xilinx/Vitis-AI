@@ -44,6 +44,7 @@ THE SOFTWARE.
 #include <cctype>
 #include <exception>
 #include <iostream>
+#include <limits>
 #include <map>
 #include <memory>
 #include <regex>
