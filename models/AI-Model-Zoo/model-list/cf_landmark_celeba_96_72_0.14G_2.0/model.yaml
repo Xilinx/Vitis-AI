@@ -58,4 +58,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: 45a57c7a7335324d955d30d6cda1f26b
+- name: face_landmark
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-u200-u250-r2.0.0.tar.gz
+  checksum: 69dd98e8ac333f152ee5e4dc9ce92817
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

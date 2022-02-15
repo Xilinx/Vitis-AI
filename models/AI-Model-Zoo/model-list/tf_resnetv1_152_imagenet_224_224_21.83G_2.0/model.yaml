@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: 1b19ba5f6d95036b69b8e52605d64ce6
+- name: resnet_v1_152_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-u200-u250-r2.0.0.tar.gz
+  checksum: 37ea6bc9e94d232d70d91c4f068aa5a9
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

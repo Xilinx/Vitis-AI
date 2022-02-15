@@ -68,6 +68,7 @@ Required:
   - Vitis 2021.2
   - XRT 2021.2
   - Python (version 2.7.5 or 3.6.8)
+  - csh
 
 ------
 
@@ -259,6 +260,8 @@ For the clock design, please make sure that:
 
 Changing platform needs to modify 3 files: 'vitis_prj/Makefile', 'vitis_prj/scripts/xvdpu_aie_noc.py', and 'vitis_prj/scripts/postlink.tcl'.
 
+**Note:** If the target platform is based on ES1 device, please check the known issue about the workaround for ES1 device.
+
 1) 'vitis_prj/Makefile':
 - Change the path of 'xpfm' file for varibale 'PLATFORM'
 ```
@@ -271,7 +274,10 @@ Changing platform needs to modify 3 files: 'vitis_prj/Makefile', 'vitis_prj/scri
 ```
 
 2) 'vitis_prj/scripts/xvdpu_aie_noc.py':
-- Change the name of 'sptag'.
+- Change the name of 'SP Tag'.
+
+**Note:** The 'SP Tag' name of the slave AXI interfaces of LPDDR's NOC, is set in the platform design.
+Take the default platform 'TRD platform1' as example, its 'SP Tag' are 'NOC_Sxx'. In 'vitis_prj/scripts/xvdpu_aie_noc.py', the name of 'SP Tag' is: "NOC_S" + str(S_AXI_N) . 
 
 3) 'vitis_prj/scripts/postlink.tcl':
 
@@ -281,12 +287,17 @@ set cell_noc {*}
 ```
  ------
 
-**Note:** Please check the known issue about the workaround for 2021.2 version ES1 platform.
- 
+**Note:** Change setting of LPDDR to get the better performance of LPDDR, then better performance of DPUCVDX8G.
+Some platform design may be confilict with below LPDDR setting. In this case, disable below line in 'vitis_prj/scripts/postlink.tcl' to get building step passed. But the performance of DPUCVDX8G may be affected.
+
+```
+set_property -dict [list CONFIG.MC_CHANNEL_INTERLEAVING {true} CONFIG.MC_CH_INTERLEAVING_SIZE {128_Bytes} CONFIG.MC_LPDDR4_REFRESH_TYPE {PER_BANK} CONFIG.MC_TRC {60000} CONFIG.MC_ADDR_BIT9 {CA5}] [get_bd_cells $cell_noc]
+```
+  
 ## 7 Basic Requirement of Platform
 For platform which will integrate DPUCVDX8G, the basic requirements are listed as below:
 - One 'CIPS' IP.
-- One 'NOC' IP. Its slave AXI interfaces should be with 'sptag', and its DDR interface should provide best DDR bandwidth for DPUCVDX8G. For VCK190 board as example, the NOC should have 2x Memory Controller(for 2 LPDDR on board) and 4x MC ports. 
+- One 'NOC' IP. Its slave AXI interfaces should be with 'SP Tag', and its DDR interface should provide best DDR bandwidth for DPUCVDX8G. For VCK190 board as example, the NOC should have 2x Memory Controller(for 2 LPDDR on board) and 4x MC ports. 
 - One 'AI Engine' IP name 'ai_engine_0', and its Core Frequency should be 1250 MHz.
 - One 'Clocking Wizard' IP, with at least 2 output clocks for DPUCVDX8G (150 MHz and 333 MHz).   
 - Two 'Processor System Resets' IP, for 150 MHz and 333 MHz.
@@ -302,19 +313,18 @@ Source files of VCK190 platform are in the folder '/vck190_platform/platforms'.
 
 ## 9 Known Issue 
 1, Additional patch is needed for Psmnet supported by configuration CPB_N=64.
-
    
    Please follow 'https://github.com/Xilinx/Vitis-AI/blob/master/README.md#installing-patch-in-docker' to install the patch.
 
-2, Workaround for ES1 platform
+2, Workaround for ES1 device
 
-For 2021.2 version ES1 platform , before running apps, need firstly run workaround for ES1 silicon.
+For 2021.2 version platform based on ES1 device, before running apps, need firstly run workaround for ES1 device.
 
-After VCK190-ES1 board is booting up, create a script with below content, and run it on the ES1 board.
+After board is booting up, create a script with below content, and run it on the ES1 board.
 
 
 ```
-for i in {0..39}
+for i in {0..49}
 do
   for j in {1..8}
   do

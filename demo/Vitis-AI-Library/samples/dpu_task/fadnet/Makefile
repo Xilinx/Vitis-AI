@@ -30,8 +30,6 @@ LD_FLAGS +=-lvitis_ai_library-model_config
 LD_FLAGS +=-lprotobuf
 LD_FLAGS +=-lvitis_ai_library-dpu_task
 LD_FLAGS += $(shell pkg-config opencv4 --libs)
-LD_FLAGS += -lxrt_coreutil
-LD_FLAGS += -lxrt_core
 LD_FLAGS += -pthread
 
 all: $(OUTPUT_DIR) demo_fadnet test_performance_fadnet

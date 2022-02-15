@@ -25,7 +25,7 @@ include scripts/makefile
 ABS_PATH                := $(shell pwd -P)
 $(eval FATHER_PATH      := $(realpath $(ABS_PATH)/..))
 #Platform setting
-PLATFORM                 = $(FATHER_PATH)/vck190_platform/platforms/xilinx_vck190_mipiRxSingle_hdmiTx_202110_1/vck190_mipiRxSingle_hdmiTx.xpfm 
+PLATFORM                 = $(FATHER_PATH)/../../../../../dsa/XVDPU-TRD/vck190_platform/platforms/xilinx_vck190_mipiRxSingle_hdmiTx_202120_1/vck190_mipiRxSingle_hdmiTx.xpfm 
 DEVICE                   ?= vck190
 XCL_EMULATION_MODE      ?= hw
 unexport XCL_EMULATION_MODE

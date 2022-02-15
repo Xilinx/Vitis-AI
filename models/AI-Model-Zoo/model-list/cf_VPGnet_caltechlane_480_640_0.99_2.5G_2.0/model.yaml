@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: 5959b118ce5e8a5605ac05624654c58c
+- name: vpgnet_pruned_0_99
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-u200-u250-r2.0.0.tar.gz
+  checksum: 57037d37ecf7b5e35ad4c3a3ed859eb1
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

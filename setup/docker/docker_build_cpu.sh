@@ -27,6 +27,10 @@ DATE="$(date)"
 # Final Build Image Tag
 IMAGE_TAG=${DOCKER_REPO}${BRAND}:${VERSION}
 IMAGE_LATEST_TAG=${DOCKER_REPO}${BRAND}:latest
+IMAGE_MINOR_TAG=${DOCKER_REPO}${BRAND}:2.0.0
+IMAGE_MAJOR_TAG=${DOCKER_REPO}${BRAND}:2.0
 
 docker build --network=host --build-arg VERSION=${VERSION} --build-arg GIT_HASH=`git rev-parse --short HEAD` --build-arg CACHEBUST="$(date +%s)" --build-arg DATE="$(date -I)" -f ${DOCKERFILE} -t $IMAGE_TAG ./
+docker tag ${IMAGE_TAG} ${IMAGE_MINOR_TAG}
+docker tag ${IMAGE_TAG} ${IMAGE_MAJOR_TAG}
 docker tag ${IMAGE_TAG} ${IMAGE_LATEST_TAG}

@@ -33,7 +33,7 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pointpainting_nuscenes_2.0.zip
   checksum: 03ea43a65ac4b14ace67ad0dc3736c48
-- name: ppointpainting_nuscenes_40000_64_0_pt
+- name: pointpainting_nuscenes_40000_64_0_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: download link

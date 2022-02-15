@@ -317,7 +317,7 @@ For a Pytorch model, you should see the following directory structure:
         
                                           
                                           
-**Note:** For more information on `vai_q_caffe`, `vai_q_tensorflow` and `vai_q_pytorch`, please see the [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/1_4/ug1414-vitis-ai.pdf).
+**Note:** For more information on `vai_q_caffe`, `vai_q_tensorflow` and `vai_q_pytorch`, please see the [Vitis AI User Guide](http://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/2_0/ug1414-vitis-ai.pdf).
 
 
 

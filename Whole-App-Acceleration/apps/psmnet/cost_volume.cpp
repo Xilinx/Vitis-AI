@@ -38,9 +38,9 @@ CostVolumeAccel::CostVolumeAccel(std::string xclbin, unsigned device_index) {
 	runner = xrt::run(krnl);
 
 	// std::cout << "[INFO] Creating buffer objects" << std::endl;
-	left_input = xrt::bo(device, IN_DATA_BYTES, krnl.group_id(0));
-	right_input = xrt::bo(device, IN_DATA_BYTES, krnl.group_id(1));
-	output = xrt::bo(device, OUT_DATA_BYTES, krnl.group_id(2));
+	left_input = xrt::bo(device, IN_DATA_BYTES, 0);
+	right_input = xrt::bo(device, IN_DATA_BYTES, 0);
+	output = xrt::bo(device, OUT_DATA_BYTES, 0);
 
 	// // Create input memory maps
 	// std::cout << "[INFO] Creating memory maps" << std::endl;

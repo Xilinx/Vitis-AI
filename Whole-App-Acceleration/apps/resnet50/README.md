@@ -108,7 +108,7 @@ Resnet50 example runs with 2 different ways.
 
   * Download the images at http://image-net.org/download-images and copy images to ` ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50/img` directory 
 
-  * Copy following content of  ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50 directory to the BOOT partition of the SD Card.
+  * Copy following contents of  ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50 directory to the BOOT partition of the SD Card.
     ```sh
         bin
         model_zcu102
@@ -262,7 +262,7 @@ Resnet50 example runs with 2 different ways.
           The percentage improvement in throughput is 27.22 %
     ```
 
-  * Functionality test using single image with WAA
+  * Functionality test with single image using WAA
     ```sh
     ./app_test.sh --xmodel_file ./model_dir/resnet50/resnet50.xmodel --image_dir ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/ --verbose
 
@@ -277,7 +277,7 @@ Resnet50 example runs with 2 different ways.
     top[4] prob = 0.015201  name = American alligator, Alligator mississipiensis
     ```
 
-  * Functionality test using single image without WAA (software preprocess)
+  * Functionality test with single image without WAA (software preprocessing)
     ```sh
     ./app_test.sh --xmodel_file ./model_dir/resnet50/resnet50.xmodel --image_dir ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/ --verbose --use_sw_pre_proc
 
@@ -304,23 +304,32 @@ Resnet50 example runs with 2 different ways.
 * Download the WAA package 
 
 ```sh
-wget https://www.xilinx.com/bin/public/openDownload?filename=waa_versal_sd_card_vai2.0.tar.gz -O waa_versal_sd_card_vai2.0.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=waa_versal_resnet50_v2_0_0.tar.gz -O waa_versal_resnet50_v2_0_0.tar.gz
 
-tar -xzvf waa_versal_sd_card_vai2.0.tar.gz
+tar -xzvf waa_versal_resnet50_v2_0_0.tar.gz
 ```
-* Copy the contents of the WAA package to the SD card to the location `/media/sd-mmcblk0p1/`.The xmodel file is also present in the package.
+* Copy following contents of the WAA package to the SD card to the location `/media/sd-mmcblk0p1/`.The xmodel file is also present in the package. Create `/media/sd-mmcblk0p1/resnet50` and move model_vck190 to this folder.
+    ```
+        BOOT.BIN
+        dpu.xclbin
+        include
+        model_vck190
+    ```
 
 * Run Resnet50 Example
 
   This part is about how to run the Resnet50 example on vck190 board.
 
-  * Download the images at http://image-net.org/download-images and copy images to ` ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50/img` directory 
+  * Download the images at http://image-net.org/download-images and copy images to ` ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50/img` directory. 
+  
+  * Copy ` waa_versal_resnet50_v2_0_0/include` from the WAA package to ` ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50/src`
 
-  * Copy following content of  ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50 directory to the BOOT partition `/media/sd-mmcblk0p1/` of the SD Card.
+  * Copy following contents of  ${VAI_HOME}/Whole-App-Acceleration/apps/resnet50 directory to the BOOT partition `/media/sd-mmcblk0p1/resnet50` of the SD Card.
     ```
-        src_vck190
-        app_build_vck190.sh
+        src
         img
+        app_build.sh
+        app_test.sh
         words.txt
     ```
 
@@ -330,29 +339,66 @@ tar -xzvf waa_versal_sd_card_vai2.0.tar.gz
   * Compile `resnet50` example.
     ```sh
     cd /media/sd-mmcblk0p1/
-    bash -x app_build_vck190.sh
+    bash -x app_build.sh
     ```
       If the compilation process does not report any error and the executable file `./bin/resnet50.exe` is generated.
 
-  * Performance test without waa
+  * Performance test with & without WAA
     ```sh
     cd /media/sd-mmcblk0p1/
-    ./bin/resnet50.exe ./model_vck190/resnet_v1_50_tf.xmodel ./img/ 0 0
+    export XLNX_VART_FIRMWARE=/media/sd-mmcblk0p1/dpu.xclbin
+    ./app_test.sh --xmodel_file ./model_vck190/resnet_v1_50.xmodel --image_dir ./img/ --performance_diff
+    
+    # Expect similar output
+        Running Performance Diff: 
+
+          Running Application with Software Preprocessing 
+
+          E2E Performance: 208.768 fps
+          Pre-process Latency: 3.634 ms
+          Execution Latency: 0.779 ms
+          Post-process Latency: 0.37 ms
+
+          Running Application with Hardware Preprocessing 
+
+          E2E Performance: 626.566 fps
+          Pre-process Latency: 0.455 ms
+          Execution Latency: 0.761 ms
+          Post-process Latency: 0.371 ms
+
+          The percentage improvement in throughput is 200.12 %
+		  
     ```
-  * Performance test with waa
+  * Functionality test with single image using WAA
     ```sh
     cd /media/sd-mmcblk0p1/
-    ./bin/resnet50.exe ./model_vck190/resnet_v1_50_tf.xmodel ./img/ 1 0
+    ./app_test.sh --xmodel_file ./model_vck190/resnet_v1_50.xmodel --image_dir ./img/ --verbose
+
+    # Expect similar output:
+    WARNING: Logging before InitGoogleLogging() is written to STDERR
+    I0119 12:50:58.796797  1135 main.cc:510] create running for subgraph: subgraph_resnet_v1_50/block1/unit_1/bottleneck_v1/add
+    Number of images in the image directory is: 1
+    top[0] prob = 0.992312  name = brain coral
+    top[1] prob = 0.004055  name = coral reef
+    top[2] prob = 0.000905  name = puffer, pufferfish, blowfish, globefish
+    top[3] prob = 0.000905  name = eel
+    top[4] prob = 0.000427  name = rock beauty, Holocanthus tricolor
     ```
 
-  * Functionality test without waa
+  * Functionality test with single image without WAA (software preprocessing)
     ```sh
-    ./bin/resnet50.exe ./model_vck190/resnet_v1_50_tf.xmodel ./img/ 0 1
-    ```
+    cd /media/sd-mmcblk0p1/
+    ./app_test.sh --xmodel_file ./model_vck190/resnet_v1_50.xmodel --image_dir ./img/ --verbose --use_sw_pre_proc
 
-  * Functionality test with waa
-    ```sh
-    ./bin/resnet50.exe ./model_vck190/resnet_v1_50_tf.xmodel ./img/ 1 1
+    # Expect similar output:
+    WARNING: Logging before InitGoogleLogging() is written to STDERR
+    I0119 12:50:28.357049  1133 main.cc:510] create running for subgraph: subgraph_resnet_v1_50/block1/unit_1/bottleneck_v1/add
+    Number of images in the image directory is: 1
+    top[0] prob = 0.990261  name = brain coral
+    top[1] prob = 0.005196  name = coral reef
+    top[2] prob = 0.001159  name = puffer, pufferfish, blowfish, globefish
+    top[3] prob = 0.000903  name = eel
+    top[4] prob = 0.000427  name = rock beauty, Holocanthus tricolor
     ```
 
 ### Build flow
@@ -418,9 +464,9 @@ For `Resnet-50`, the performance numbers are achieved by running 500 images rand
 
   <tr>
     <td>VCK190 </td>
-    <td>183.08 </td>
-    <td>787.4 </td>
-    <td>330.08 %</td>
+    <td>208.768 </td>
+    <td>626.566 </td>
+    <td>200.12 %</td>
   </tr>
 
 </table>

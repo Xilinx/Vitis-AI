@@ -6,7 +6,7 @@ In this example, we implement an XIR OP `add`, it simply adds two
 input tensors and assuming the two tensors have the same shape.
 
 Regarding to how to register a new XIR OP, please refer to XIR user
-manual or Xcompiler user manual. [Vitis AI Compiler](https://www.xilinx.com/html_docs/vitis_ai/1_4/compiling_model.html#ariaid-title2). Here we assume
+manual or Xcompiler user manual. [Vitis AI Compiler](https://www.xilinx.com/html_docs/vitis_ai/2_0/compiling_model.html#ariaid-title2). Here we assume
 that `add` OP is already registered.
 
 To implement an XIR OP, we need to follow the below steps.
@@ -250,4 +250,4 @@ usual.
 
 ## Conclusion
 
-We demostrate how to implement a customized Op in this article, please refer to the manual for more detail.[Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/1_4/zmw1606771874842.html)
+We demostrate how to implement a customized Op in this article, please refer to the manual for more detail.[Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/2_0/index.html)

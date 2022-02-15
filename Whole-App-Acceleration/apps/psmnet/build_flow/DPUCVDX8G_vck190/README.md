@@ -13,9 +13,8 @@ Open a linux terminal. Set the linux to Bash mode.
 ```sh
     source < vitis-install-directory >/Vitis/2021.1/settings64.sh
     source < path-to-XRT-installation-directory >/setup.sh
+    source <PetaLinux_install_path>/settings.sh
     cd ${VAI_HOME}/Whole-App-Acceleration/apps/psmnet/build_flow/DPUCVDX8G_vck190/
-    wget https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G_vck190_platform_2021.1.tar.gz -O DPUCVDX8G_vck190_platform_2021.1.tar.gz
-    tar -xzvf DPUCVDX8G_vck190_platform_2021.1.tar.gz
     ./run.sh
 ```
 

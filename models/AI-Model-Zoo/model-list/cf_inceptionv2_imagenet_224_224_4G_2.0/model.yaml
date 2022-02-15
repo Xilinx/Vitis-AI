@@ -25,7 +25,7 @@ files:
 - name: cf_inceptionv2_imagenet_224_224_4G_2.0
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv2_imagenet_224_224_4G_1.4.zip
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_inceptionv2_imagenet_224_224_4G_2.0.zip
   checksum: 43dcb6ca59325a5867704a40fb87ce6f
 - name: inception_v2
   type: xmodel

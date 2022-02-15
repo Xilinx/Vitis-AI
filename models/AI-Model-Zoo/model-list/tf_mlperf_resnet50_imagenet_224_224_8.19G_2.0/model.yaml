@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: 18d2b4dae73c483117c5b1ed9f33da70
+- name: MLPerf_resnet50_v1.5_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-u200-u250-r2.0.0.tar.gz
+  checksum: f635fecd131c2f00487ea214a12f9eb2
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

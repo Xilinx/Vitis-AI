@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DW
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: b7ecdf3f60da1a0c3ae222cf7b17c343
+- name: yolov3_adas_pruned_0_9
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u200-u250-r2.0.0.tar.gz
+  checksum: d49caa0180d0a260e2746cd07393626e
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

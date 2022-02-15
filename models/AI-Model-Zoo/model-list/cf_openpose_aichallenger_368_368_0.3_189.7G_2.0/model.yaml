@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: b77f4f410b96f3d76ec928099628cdb0
+- name: openpose_pruned_0_3
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-u200-u250-r2.0.0.tar.gz
+  checksum: f484a1f4343d98eb99d8bf8fa25ca123
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

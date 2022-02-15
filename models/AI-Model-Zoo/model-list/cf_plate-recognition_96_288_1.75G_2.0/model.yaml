@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: 2a6159d97a8507230524c3bef723014e
+- name: plate_num
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-u200-u250-r2.0.0.tar.gz
+  checksum: 1bdb1a1cd2961a8b21336e67dd7606f8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

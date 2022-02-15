@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: aea235af943b7db173ccd873435b2716
+- name: tiny_yolov3_vmss
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-u200-u250-r2.0.0.tar.gz
+  checksum: d1514398a3322185177112f0d356b104
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

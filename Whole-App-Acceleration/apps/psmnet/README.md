@@ -23,7 +23,7 @@ PSMNet example runs in 2 different ways:
 
 * Download the VCK190 SD card image file using the below link.
 
-    [VCK190](https://www.xilinx.com/bin/public/openDownload?filename=waa_vck190_costV_sd_card_vai2.0.tar.gz)
+    [VCK190](https://www.xilinx.com/bin/public/openDownload?filename=waa_vck190_costV21_2_sd_card_vai2.0.tar.gz)
 
 * Unzip the file and flash the .img file to SD card using tools like Etcher.
 

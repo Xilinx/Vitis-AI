@@ -7,4 +7,4 @@ make xo TARGET=hw BLOB_CHANNEL_SWAP_EN=1 BLOB_CROP_EN=0 BLOB_LETTERBOX_EN=1 BLOB
 #Generate xclbin files
 cd $CUR_DIR
 make clean
-make u50 BLOB_ACCEL=../../../../../plugins/blobfromimage/pl DPU_XO=../../../../../../dsa/DPUCAHX8H-XO/xo_release
+make u50 BLOB_ACCEL=../../../../../plugins/blobfromimage/pl DPU_XO=../../../../../../dsa/DPUCAHX8H-XO/release_u50_xo

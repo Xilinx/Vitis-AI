@@ -319,13 +319,13 @@ RUN chmod -R 777 /opt/vitis_ai/conda/envs/vitis-ai-pytorch/lib/python3.6/site-pa
 # Rebuild this layer every time
 ARG CACHEBUST=1
 RUN cd /tmp \
-    && wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog_1.4.1-r82_amd64.deb \
-    && wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory_1.4.1-r85_amd64.deb \
-    && wget -O libxir.deb https://www.xilinx.com/bin/public/openDownload?filename=libxir_1.4.1-r91_amd64.deb \
-    && wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_1.4.1-r130_amd64.deb \
-    && wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis_ai_library_1.4.1-r114_amd64.deb \
-    && wget -O librt-engine.deb https://www.xilinx.com/bin/public/openDownload?filename=librt-engine_1.4.1-r195_amd64.deb \
-    && wget -O aks.deb https://www.xilinx.com/bin/public/openDownload?filename=aks_1.4.1-r78_amd64.deb \
+    && wget -O libunilog.deb https://www.xilinx.com/bin/public/openDownload?filename=libunilog_2.0.0-r87_amd64.deb \
+    && wget -O libtarget-factory.deb https://www.xilinx.com/bin/public/openDownload?filename=libtarget-factory_2.0.0-r97_amd64.deb \
+    && wget -O libxir.deb https://www.xilinx.com/bin/public/openDownload?filename=libxir_2.0.0-r109_amd64.deb \
+    && wget -O libvart.deb https://www.xilinx.com/bin/public/openDownload?filename=libvart_2.0.0-r148_amd64.deb \
+    && wget -O libvitis_ai_library.deb https://www.xilinx.com/bin/public/openDownload?filename=libvitis_ai_library_2.0.0-r134_amd64.deb \
+    && wget -O librt-engine.deb https://www.xilinx.com/bin/public/openDownload?filename=librt-engine_2.0.0-r221_amd64.deb \
+    && wget -O aks.deb https://www.xilinx.com/bin/public/openDownload?filename=aks_2.0.0-r92_amd64.deb \
     && apt-get install -y --no-install-recommends /tmp/*.deb \
     && rm -rf /tmp/* \
     && ldconfig

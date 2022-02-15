@@ -52,4 +52,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: 1dff7533d128834d44f30ade02ac7e0b
+- name: inception_v3_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u200-u250-r2.0.0.tar.gz
+  checksum: 7fa3e60b65c0fadc75bfba4c4fbc2416
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

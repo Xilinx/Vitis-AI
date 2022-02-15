@@ -25,7 +25,7 @@ files:
 - name: cf_reid_market1501_160_80_0.95G_2.0
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_reid_market1501_160_80_0.95G_1.4.zip
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_reid_market1501_160_80_0.95G_2.0.zip
   checksum: a42de983533aba4a7ad39b9dcc40b8f9
 - name: reid
   type: xmodel
@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: de35a7e60a6ce1ae9eb95fc8af15cde9
+- name: reid
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u200-u250-r2.0.0.tar.gz
+  checksum: 06c59b27e20ff3e36b6f2cca3813c643
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

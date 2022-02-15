@@ -107,12 +107,13 @@ ADAS detection example runs with 3 different ways.
 
   * Download the images at https://cocodataset.org/#download or any other repositories and copy the images to ` ${VAI_HOME}/Whole-App-Acceleration/apps/adas_detection/img` directory. In the following performance test we used COCO dataset.
 
-  * Copy following content of  ${VAI_HOME}/Whole-App-Acceleration/apps/adas_detection directory to the BOOT partition of the SD Card.
+  * Copy following contents of  ${VAI_HOME}/Whole-App-Acceleration/apps/adas_detection directory to the BOOT partition of the SD Card.
     ```sh
         bin
         model_zcu102
         img
         app_test.sh
+        evaluation.py
     ```
 
   * Please insert SD_CARD on the ZCU102 board. After the linux boot, run:
@@ -126,9 +127,9 @@ ADAS detection example runs with 3 different ways.
     ./app_test.sh --xmodel_file ./model_zcu102/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel --image_dir ./img/ --performance_diff
 
     # Expect similar output:
-		  Running Performance Diff: 
+        Running Performance Diff: 
 
-       Running Application with Software Preprocessing 
+          Running Application with Software Preprocessing 
 
           E2E Performance: 17.53 fps
           Pre-process Latency: 16.14 ms
@@ -167,7 +168,7 @@ ADAS detection example runs with 3 different ways.
 		  xmin, ymin, xmax, ymax :171.326 325.928 261.314 364.758
     ```
 
-  * Functionality test without waa
+  * Functionality test using single image without WAA (software preprocessing)
     ```sh
     ./app_test.sh --xmodel_file ./model_zcu102/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel --image_dir ./img/ --verbose --use_sw_pre_proc
 
@@ -324,11 +325,17 @@ ADAS detection example runs with 3 different ways.
 * Download the WAA package 
 
 ```sh
-wget https://www.xilinx.com/bin/public/openDownload?filename=waa_versal_sd_card_vai2.0.tar.gz -O waa_versal_sd_card_vai2.0.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=waa_versal_adasdetection_v2_0_0.tar.gz -O waa_versal_adasdetection_v2_0_0.tar.gz
 
-tar -xzvf waa_versal_sd_card_vai2.0.tar.gz
+tar -xzvf waa_versal_adasdetection_v2_0_0.tar.gz
 ```
-* Copy the contents of the WAA package to the SD card to the location `/media/sd-mmcblk0p1/`. The xmodel file is also present in the package.
+* Copy following contents of the WAA package to the SD card to the location `/media/sd-mmcblk0p1/`.The xmodel file is also present in the package. Create `/media/sd-mmcblk0p1/adas_detection` and move model_vck190 to this folder.
+    ```
+        BOOT.BIN
+        dpu.xclbin
+        include
+        model_vck190
+    ```
 
 * Run ADAS detection Example
 
@@ -336,11 +343,15 @@ tar -xzvf waa_versal_sd_card_vai2.0.tar.gz
 
   * Download the images at https://cocodataset.org/#download or any other repositories and copy the images to ` ${VAI_HOME}/Whole-App-Acceleration/apps/adas_detection/img` directory. In the following performance test we used COCO dataset.
 
-  * Copy following content of  `${VAI_HOME}/Whole-App-Acceleration/apps/adas_detection` directory to the BOOT partition `/media/sd-mmcblk0p1/` of the SD Card.
+  * Copy ` waa_versal_adasdetection_v2_0_0/include` from the WAA package to ` ${VAI_HOME}/Whole-App-Acceleration/apps/adas_detection/src`
+  
+  * Copy following contents of  `${VAI_HOME}/Whole-App-Acceleration/apps/adas_detection` directory to the BOOT partition `/media/sd-mmcblk0p1/` of the SD Card.
     ```
-        src_vck190
-        app_build_vck190.sh
+        src
         img
+        app_build.sh
+        app_test.sh
+        evaluation.py
     ```
 
   * Please insert SD_CARD on the vck190 board. After the linux boot, run the following.
@@ -348,22 +359,76 @@ tar -xzvf waa_versal_sd_card_vai2.0.tar.gz
   * Compile `adas detection` example.
     ```sh
     cd /media/sd-mmcblk0p1/
-    bash -x app_build_vck190.sh
+    bash -x app_build.sh
     ```
       If the compilation process does not report any error and the executable file `./bin/adas_detection.exe` is generated.
 
-  * Performance test without waa
+  * Performance test with & without WAA
     ```sh
     cd /media/sd-mmcblk0p1/
-    /bin/adas_detection.exe ./model_vck190/yolov3_adas_compiled.xmodel 0
+    export XLNX_VART_FIRMWARE=/media/sd-mmcblk0p1/dpu.xclbin
+    ./app_test.sh --xmodel_file ./model_vck190/yolov3_adas_compiled.xmodel --image_dir ./img/ --performance_diff
+
+    # Expect similar output:
+        Running Performance Diff: 
+
+          Running Application with Software Preprocessing 
+
+          E2E Performance: 34.4495 fps
+          Pre-process Latency: 7.588 ms
+          Execution Latency: 1.114 ms
+          Post-process Latency: 20.313 ms
+
+       Running Application with Hardware Preprocessing 
+
+          E2E Performance: 70.0231 fps
+          Pre-process Latency: 0.585 ms
+          Execution Latency: 1.081 ms
+          Post-process Latency: 12.602 ms
+
+          The percentage improvement in throughput is 103.26 %
+
     ```
-  * Performance test with waa
+
+  * Functionality test using single image with WAA
     ```sh
-    cd /media/sd-mmcblk0p1/
-    env XILINX_XRT=/usr 
-	./bin/adas_detection.exe ./model_vck190/yolov3_adas_compiled.xmodel 1
+    ./app_test.sh --xmodel_file ./model_vck190/yolov3_adas_compiled.xmodel --image_dir ./img/ --verbose
+
+    # Expect similar output:
+		The Confidence Threshold used in this demo is 0.5
+		Total number of images in the dataset is 1
+		image name: image
+		  xmin, ymin, xmax, ymax :1023.22 372.571 1172.79 504.016
+		image name: image
+		  xmin, ymin, xmax, ymax :1264.86 308.747 1771.48 560.747
+		image name: image
+		  xmin, ymin, xmax, ymax :1226.47 379.522 1256.53 472.467
+		image name: image
+		  xmin, ymin, xmax, ymax :1197.53 380.348 1222.46 467.662
+		image name: image
+		  xmin, ymin, xmax, ymax :1163.45 382.788 1193.51 475.733
     ```
-	
+
+  * Functionality test using single image without WAA (software preprocessing)
+    ```sh
+    ./app_test.sh --xmodel_file ./model_vck190/yolov3_adas_compiled.xmodel --image_dir ./img/ --verbose --use_sw_pre_proc
+
+    # Expect similar output:
+		The Confidence Threshold used in this demo is 0.5
+		Total number of images in the dataset is 1
+		image name: image
+		  xmin, ymin, xmax, ymax :1019.76 373.862 1169.33 505.308
+		image name: image
+		  xmin, ymin, xmax, ymax :1261.38 311.325 1768 563.325
+		image name: image
+		  xmin, ymin, xmax, ymax :1004.69 409.349 1036.7 439.155
+		image name: image
+		  xmin, ymin, xmax, ymax :1196.12 379.151 1224.36 466.464
+		image name: image
+		  xmin, ymin, xmax, ymax :1227.45 375.78 1257.51 474.72
+		image name: image
+		  xmin, ymin, xmax, ymax :1162.96 378.397 1193.03 477.337
+    ```
 
 ### Build flow
 Both the pre-processing accelerator and DPU are built from sources.
@@ -431,9 +496,9 @@ For `ADAS detection`, the performance numbers are achieved by running ~5k images
 
   <tr>
     <td>VCK190</td>
-    <td>24.97</td>
-    <td>116.94</td>
-    <td>368.32 %</td>
+    <td>34.4495</td>
+    <td>70.0231</td>
+    <td>103.26 %</td>
   </tr>
 
 </table>

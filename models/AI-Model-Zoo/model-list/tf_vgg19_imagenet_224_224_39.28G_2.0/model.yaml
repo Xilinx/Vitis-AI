@@ -52,4 +52,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: 6e45da04f05fe782e7c6ee2a5af89c93
+- name: vgg_19_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_tf-u200-u250-r2.0.0.tar.gz
+  checksum: d419703a3354ecd8cca699c27d1d9e6e
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

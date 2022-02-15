@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: 4a9b2e79cb699f4bfe9f2f6ab175ac6e
+- name: densebox_320_320
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u200-u250-r2.0.0.tar.gz
+  checksum: 22f783398a3052e755d5eb0d3f8de7c5
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

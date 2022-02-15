@@ -36,6 +36,7 @@ $CXX -O2 -w\
   -fno-inline \
   -I. \
   -I=/usr/include/opencv4 \
+  -I./src/include/xrt \
   -I=/usr/include/xrt \
   -I/opt/xilinx/xrt/include/ \
   -o ./bin/$name \

@@ -1,3 +1,0 @@
-/workspace/Vitis-AI-Library/graph_runner/samples/pointpillars_graph_runner/build/CMakeFiles/rebuild_cache.dir
-/workspace/Vitis-AI-Library/graph_runner/samples/pointpillars_graph_runner/build/CMakeFiles/edit_cache.dir
-/workspace/Vitis-AI-Library/graph_runner/samples/pointpillars_graph_runner/build/CMakeFiles/sample_pointpillars_graph_runner.dir

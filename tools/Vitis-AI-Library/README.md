@@ -209,7 +209,6 @@ wget -O resnet_v1_50_tf-u200-u250-r2.0.0.tar.gz https://www.xilinx.com/bin/publi
 tar -xvf inception_v1_tf-u200-u250-r2.0.0.tar.gz
 tar -xvf resnet_v1_50_tf-u200-u250-r2.0.0.tar.gz 
 ```
-:pushpin: **Note:** Currently supported networks for `DPUCADF8H` are `tf_inceptionv1_imagenet_224_224_3G_2.0` and `tf_resnetv1_50_imagenet_224_224_6.97G_2.0`.
 
 2. Download the [vitis_ai_library_r2.0.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.0.0_images.tar.gz) package and untar. Extracted images can be found under `samples` folder.
 ```

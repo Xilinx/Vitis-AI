@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: 6eca72fa715806495adb7ddd0fc54618
+- name: plate_detect
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-u200-u250-r2.0.0.tar.gz
+  checksum: cdfabe70b5190ef3b1fc8c885048f164
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

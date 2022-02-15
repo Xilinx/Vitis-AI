@@ -57,4 +57,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
   checksum: a30c7624f73e5e576e69f1a15f1784e3
+- name: squeezenet
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u200-u250-r2.0.0.tar.gz
+  checksum: 69dace9922f33f415197d4c3a7475078
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
