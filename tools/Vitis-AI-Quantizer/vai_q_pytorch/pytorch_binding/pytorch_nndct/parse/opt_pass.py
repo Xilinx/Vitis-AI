@@ -1,5 +1,4 @@
 
-
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -329,7 +328,7 @@ class OptPass(object):
       raw_graph.remove_node(node)
     
     if matmul_nodes:
-      raw_graph.reconnect_nodes(raw_graph)
+      raw_graph.reconnect_nodes()
     
   @staticmethod
   def merge_param_transpose_with_addmm(raw_graph, node_sets):

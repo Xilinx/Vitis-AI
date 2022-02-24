@@ -443,8 +443,8 @@ class DevGraphOptimizer(object):
               new_order = len(order) * [None]
               tmp_order = trans.node_attr(trans.op.AttrName.ORDER)
               for i in range(len(order)):
-                t_i = order.index(i)
-                new_order[i] = tmp_order.index(t_i)
+                t_i = tmp_order[i]
+                new_order[i] = order[t_i]
               order = new_order 
           
           if reserved_trans is None:

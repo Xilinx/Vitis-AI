@@ -22,8 +22,8 @@ if [ -z "$1" ]; then
 fi
 
 if [ -d "/usr/local/cuda" ]; then
-  sudo apt update
-  sudo apt-get install cuda-toolkit-10-0
+  sudo apt update -y
+  sudo apt-get install -y cuda-toolkit-10-2
   sudo rm /etc/alternatives/g++
   sudo rm /etc/alternatives/gcc
   sudo rm /etc/alternatives/gcov
@@ -42,7 +42,13 @@ fi
 eval "$(command conda 'shell.bash' 'hook' 2> /dev/null)"
 
 echo -e "\n#### Creating a new conda environment by cloning vitis-ai-pytorch and activate it..."
-conda create -n $1 --clone vitis-ai-pytorch 
+sudo chmod 777 /opt/vitis_ai/conda 
+cd /scratch/
+wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_2.0.0.1103-02.tar.gz
+tar -xzvf conda-channel.tar.gz
+source /opt/vitis_ai/conda/etc/profile.d/conda.sh
+conda create -n $1  --clone vitis-ai-pytorch  
+
 if [ $? -eq 0 ]; then
   echo -e "\n#### New conda environment is created successfully."
 else
@@ -58,17 +64,16 @@ else
   exit 2
 fi
 
-echo -e "\n#### Removing original pytorch packages ..."
-pip uninstall -y torch torchvision  
+echo -e "\n#### Removing original pytorch related packages ..."
+mamba uninstall -y pytorch torchvision pytorch_nndct
 
-echo -e "\n#### Removing original vai_q_pytorch ..."
-pip uninstall  -y pytorch_nndct
-
-echo -e "\n#### Installing pytorch 1.7.1 packages ..."
+echo -e "\n#### Installing pytorch 1.9 packages ..."
 echo -e "\e[91m>>>> Edit this line of command to set the target version, refer to https://pytorch.org/get-started/previous-versions/ <<<<\e[m"
-pip install torch==1.7.1+cu101 torchvision==0.8.2+cu101 -f https://download.pytorch.org/whl/torch_stable.html
-#pip install torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
-#pip install torch==1.5.1+cu101 torchvision==0.6.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+mamba install -y pytorch==1.9.0 torchvision==0.10.0 torchaudio==0.9.0 cudatoolkit=10.2 -c pytorch
+#mamba install pytorch==1.8.1 torchvision==0.9.1 torchaudio==0.8.1 cudatoolkit=10.2 -c pytorch
+#mamba install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 cudatoolkit=10.2 -c pytorch
+#mamba install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.2 -c pytorch
+
 
 if [ $? -eq 0 ]; then
   echo -e "\n#### Pytorch packages is replaced successfully."
@@ -94,7 +99,7 @@ else
 fi
 
 echo -e "\n#### Installing vai_q_pytorch ..."
-pip install -r requirements.txt
+#pip install -r requirements.txt
 cd pytorch_binding 
 if [ ! -d "/usr/local/cuda" ]; then
   unset CUDA_HOME
@@ -107,3 +112,7 @@ else
   echo -e "\n#### Vai_q_pytorch is NOT compiled and installed successfully."
   exit 2
 fi
+
+mamba install -y python=3.6 --force-reinstall
+sudo rm -rf /scratch/*
+echo -e "\n#### Cleaned up /scratch ."

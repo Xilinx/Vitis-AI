@@ -972,6 +972,7 @@ const BatchnormReluPattern batchnorm_relu_pattern_wrapper(batchnorm_relu_pattern
 
 // Array
 const OpTypePattern array_pattern(
+    // Mul for hard-swish 2-nd mul
     {"Add|AddV2|Mul",
       {
         {"*"}, // input node 1
@@ -1006,6 +1007,44 @@ DEFINE_GET_WEIGHTS_NODES(ArrayRelu) {
   return std::vector<const NodeDef*> ();
 }
 const ArrayReluPattern array_relu_pattern_wrapper(array_relu_pattern, "array_relu");
+
+// mul_v1
+const OpTypePattern mul_v1_pattern(
+    {"Mul",
+      {
+        {"*"}, // input node 1
+        {"Const"}, // constant scale
+      }
+    });
+DEFINE_GET_INPUT_NODES(Mul_v1) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].node));
+  input_nodes.push_back(&(match.inputs[1].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Mul_v1) {
+  return std::vector<const NodeDef*> ();
+}
+const Mul_v1Pattern mul_v1_pattern_wrapper(mul_v1_pattern, "mul_v1");
+
+// Mul_v2
+const OpTypePattern mul_v2_pattern(
+    {"Mul",
+      {
+        {"Const"}, // constant scale
+        {"*"}, // input node 2
+      }
+    });
+DEFINE_GET_INPUT_NODES(Mul_v2) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].node));
+  input_nodes.push_back(&(match.inputs[1].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(Mul_v2) {
+  return std::vector<const NodeDef*> ();
+}
+const Mul_v2Pattern mul_v2_pattern_wrapper(mul_v2_pattern, "mul_v2");
 
 // AvgPool + scale
 const OpTypePattern avgpool_mul_pattern(
@@ -1078,122 +1117,12 @@ DEFINE_GET_WEIGHTS_NODES(OtherRelu) {
 }
 const OtherReluPattern other_relu_pattern_wrapper(other_relu_pattern, "other_relu");
 
-// folded conv + bn in QAT
-const OpTypePattern convfc_bn_qat_pattern(
-    {"BiasAdd|Add|AddV2",
-      {
-        {"Conv2D|DepthwiseConv2d|DepthwiseConv2dNative|MatMul|Conv3D",
-          {
-            {"*"},   // input
-            {"Mul",  // mul_1
-              {
-                {"*"}, // for conv:mul_0, for dw: reshape
-                {"*"}, // weights
-              }
-            },
-          }
-        },
-        {"Sub",
-          {
-            {"*"},   // beta
-            {"Mul",  // mul_2
-              {
-                {"Mul", // mul_0
-                  {
-                    {"Rsqrt",
-                      {
-                        {"Add",
-                          {
-                            {"*"}, // eps
-                            {"*"}, // moving variance
-                          }
-                        },
-                      }
-                    },
-                    {"*"}, // gamma
-                  }
-                },
-                {"*"},  // moving mean
-              }
-            },
-          }
-        }, // bias node
-      }
-    });
-DEFINE_GET_INPUT_NODES(ConvfcBnQat) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(ConvfcBnQat) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[1].inputs[1].node)); // weights
-  weights_nodes.push_back(&(match.inputs[1].inputs[0].node)); // beta
-  weights_nodes.push_back(&(match.inputs[1].inputs[1].inputs[1].node)); // moving mean
-  weights_nodes.push_back(&(match.inputs[1].inputs[1].inputs[0].inputs[1].node)); // gamma
-  weights_nodes.push_back(&(match.inputs[1].inputs[1].inputs[0].inputs[0].inputs[0].inputs[1].node)); // moving variance
-  return weights_nodes;
-}
-const ConvfcBnQatPattern convfc_bn_qat_pattern_wrapper(convfc_bn_qat_pattern, "convfc_bn_qat");
-
-// ConvFc + bn_qat + relu
-const OpTypePattern convfc_bn_qat_relu_pattern(
-    {"Relu|Relu6", // relu node
-      {
-        convfc_bn_qat_pattern,
-      }
-    });
-DEFINE_GET_INPUT_NODES(ConvfcBnQatRelu) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(ConvfcBnQatRelu) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].inputs[1].node)); // weights
-  weights_nodes.push_back(&(match.inputs[0].inputs[1].inputs[0].node)); // beta
-  weights_nodes.push_back(&(match.inputs[0].inputs[1].inputs[1].inputs[1].node)); // moving mean
-  weights_nodes.push_back(&(match.inputs[0].inputs[1].inputs[1].inputs[0].inputs[1].node)); // gamma
-  weights_nodes.push_back(&(match.inputs[0].inputs[1].inputs[1].inputs[0].inputs[0].inputs[0].inputs[1].node)); // moving variance
-  return weights_nodes;
-}
-const ConvfcBnQatReluPattern convfc_bn_qat_relu_pattern_wrapper(convfc_bn_qat_relu_pattern, "convfc_bn_qat_relu");
-
-// ConvFc + bn_qat + identity + relu
-const OpTypePattern convfc_bn_qat_id_relu_pattern(
-    {"Relu|Relu6", // relu node
-      {
-       {"Identity",
-         {
-          convfc_bn_qat_pattern,
-         }
-       },
-      }
-    });
-DEFINE_GET_INPUT_NODES(ConvfcBnQatIdRelu) {
-  std::vector<const NodeDef*> input_nodes;
-  input_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[0].node));
-  return input_nodes;
-}
-DEFINE_GET_WEIGHTS_NODES(ConvfcBnQatIdRelu) {
-  std::vector<const NodeDef*> weights_nodes;
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[0].inputs[1].inputs[1].node)); // weights
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].inputs[0].node)); // beta
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].inputs[1].inputs[1].node)); // moving mean
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].inputs[1].inputs[0].inputs[1].node)); // gamma
-  weights_nodes.push_back(&(match.inputs[0].inputs[0].inputs[1].inputs[1].inputs[0].inputs[0].inputs[0].inputs[1].node)); // moving variance
-  return weights_nodes;
-}
-const ConvfcBnQatIdReluPattern convfc_bn_qat_id_relu_pattern_wrapper(convfc_bn_qat_id_relu_pattern, "convfc_bn_qat_id_relu");
 
 // Known patterns
 // The quantization will perform in the order of this vector, the previously matched
 // pattern will not be matched again. Watch out for the order
 const std::vector<const OpTypePatternBase*> known_patterns ({
   &placeholder_pattern_wrapper,
-  &convfc_bn_qat_id_relu_pattern_wrapper,
-  &convfc_bn_qat_relu_pattern_wrapper,
-  &convfc_bn_qat_pattern_wrapper,
   &atrous_conv_bias_relu_pattern_wrapper,
   &atrous_conv_bias_pattern_wrapper,
   &atrous_conv_relu_pattern_wrapper,
@@ -1234,6 +1163,8 @@ const std::vector<const OpTypePatternBase*> known_patterns ({
   &batchnorm_pattern_wrapper,
   &avgpool_mul_pattern_wrapper,
   &array_relu_pattern_wrapper,
+  &mul_v1_pattern_wrapper,
+  &mul_v2_pattern_wrapper,
   &array_pattern_wrapper,
   &clip_by_value_pattern_wrapper,
   &other_relu_pattern_wrapper,
@@ -1318,11 +1249,6 @@ const std::set<string> compute_patterns{
     conv2d_backprop_input_relu_pattern_wrapper.GetName(),
     conv2d_backprop_input_bias_pattern_wrapper.GetName(),
     conv2d_backprop_input_bias_relu_pattern_wrapper.GetName(),
-    convfc_bn_qat_pattern_wrapper.GetName(),
-    convfc_bn_qat_id_relu_pattern_wrapper.GetName(),
-    convfc_bn_qat_relu_pattern_wrapper.GetName(),
-    array_relu_pattern_wrapper.GetName(),
-    array_pattern_wrapper.GetName()
 };
 
 const string get_pattern_name_from_id(const int pattern_id) {

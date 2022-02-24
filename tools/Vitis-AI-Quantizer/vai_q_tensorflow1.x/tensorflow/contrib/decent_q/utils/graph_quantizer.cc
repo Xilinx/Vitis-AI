@@ -1014,6 +1014,42 @@ NodeConfigMap LocateArray(const NodeMatch& match, const QuantizeConfig& config,
   return ops_to_quantize;
 }
 
+NodeConfigMap LocateMul_v1(const NodeMatch& match, const QuantizeConfig& config,
+                           std::set<NodeGroup>& node_groups) {
+  NodeConfigMap ops_to_quantize;
+  const NodeDef& mul_node = match.node;
+  const NodeDef& scale_node = match.inputs[0].node;
+  if (!CheckDtype(mul_node)) return ops_to_quantize;
+
+  bool updated =
+      UpdateNodeConfigMap(mul_node, GetActConfig(config), ops_to_quantize);
+  updated = updated & UpdateNodeConfigMap(scale_node, GetActConfig(config),
+                                          ops_to_quantize);
+  if (updated) {
+    DLOG_INFO(1) << "Quantize mul v1: " << mul_node.name() << "("
+                 << mul_node.op() << ")";
+  }
+  return ops_to_quantize;
+}
+
+NodeConfigMap LocateMul_v2(const NodeMatch& match, const QuantizeConfig& config,
+                           std::set<NodeGroup>& node_groups) {
+  NodeConfigMap ops_to_quantize;
+  const NodeDef& mul_node = match.node;
+  const NodeDef& scale_node = match.inputs[1].node;
+  if (!CheckDtype(mul_node)) return ops_to_quantize;
+
+  bool updated =
+      UpdateNodeConfigMap(mul_node, GetActConfig(config), ops_to_quantize);
+  updated = updated & UpdateNodeConfigMap(scale_node, GetActConfig(config),
+                                          ops_to_quantize);
+  if (updated) {
+    DLOG_INFO(1) << "Quantize mul v2: " << mul_node.name() << "("
+                 << mul_node.op() << ")";
+  }
+  return ops_to_quantize;
+}
+
 NodeConfigMap LocateAvgpoolMul(const NodeMatch& match,
                                const QuantizeConfig& config,
                                std::set<NodeGroup>& node_groups) {
@@ -1256,6 +1292,8 @@ Status GraphQuantizer::_LocateOpsToQuantize(const GraphDef& input_graph_def) {
       {"batchnorm_relu", &LocateBatchNormRelu},
       {"batchnorm", &LocateBatchNorm},
       {"array_relu", &LocateArrayRelu},
+      {"mul_v1", &LocateMul_v1},
+      {"mul_v2", &LocateMul_v2},
       {"array", &LocateArray},
       {"avgpool_mul", &LocateAvgpoolMul},
       {"clip_by_value", &LocateClipByValue},
@@ -2446,6 +2484,14 @@ Status GraphQuantizer::CreateQuantizeTrainingGraph(
                         "adjust_hard_swish_compute_order.pb",
                         _config.output_dir);
 
+  // Partition
+  current_graph_def = processed_graph_def;
+  GraphDef main_graph_def, aux_graph_def;
+  std::map<string, NodeDef> origin_input_nodes;
+  TF_RETURN_IF_ERROR(PartitionGraph(current_graph_def, main_graph_def,
+                                    aux_graph_def, origin_input_nodes));
+  processed_graph_def = main_graph_def;
+
   // Simulate DPU
   if (_config.simulate_dpu == 1) {
     current_graph_def = processed_graph_def;
@@ -2455,15 +2501,8 @@ Status GraphQuantizer::CreateQuantizeTrainingGraph(
                           _config.output_dir);
   }
 
-  // Partition
-  current_graph_def = processed_graph_def;
-  GraphDef main_graph_def, aux_graph_def;
-  std::map<string, NodeDef> origin_input_nodes;
-  TF_RETURN_IF_ERROR(PartitionGraph(current_graph_def, main_graph_def,
-                                    aux_graph_def, origin_input_nodes));
-
   // Parse main graph for pattern matching and locate ops to quantize
-  current_graph_def = main_graph_def;
+  current_graph_def = processed_graph_def;
   TF_RETURN_IF_ERROR(ParseGraph(current_graph_def, _matched_node_patterns,
                                 _matched_nodes, _config.ignore_nodes,
                                 _unmatched_nodes));
