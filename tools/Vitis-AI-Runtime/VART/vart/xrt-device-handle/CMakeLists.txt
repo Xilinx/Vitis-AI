@@ -16,7 +16,7 @@
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/VitisVersion.cmake)
 
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
 if(XRT_CLOUD_FOUND)
   add_definitions(-DENABLE_CLOUD)
@@ -24,7 +24,7 @@ endif(XRT_CLOUD_FOUND)
 
 find_package(Boost COMPONENTS filesystem)
 find_package(OpenSSL)
-# find_package(butler PATHS ${CMAKE_SOURCE_DIR}/cmake)
+# find_package(butler PATHS ${PROJECT_SOURCE_DIR}/cmake)
 
 add_library(
   ${COMPONENT_NAME} SHARED
@@ -33,7 +33,7 @@ add_library(
 
 if(XRT_FOUND)
   set(CMAKE_REQUIRED_INCLUDES "${XRT_INCLUDE_DIRS}")
-  set(CMAKE_REQUIRED_LIBRARIES "${XRT_LIBRARYIES}")
+  set(CMAKE_REQUIRED_LIBRARIES "${XRT_CORE_LIBRARIES}")
   include(CheckCSourceCompiles)
   check_c_source_compiles(
     "#include <xrt.h>
@@ -86,10 +86,10 @@ set_target_properties(
              BUILD_RPATH "\$ORIGIN/../util")
 target_link_libraries(
   ${COMPONENT_NAME}
-  PRIVATE pthread Boost::filesystem OpenSSL::Crypto
+  PRIVATE ${CMAKE_THREAD_LIBS_INIT} Boost::filesystem OpenSSL::Crypto
   PUBLIC glog::glog util)
 if(XRT_FOUND)
-  target_link_libraries(${COMPONENT_NAME} PRIVATE XRT::XRT)
+  target_link_libraries(${COMPONENT_NAME} PRIVATE XRT::xrt_core)
 endif(XRT_FOUND)
 
 target_include_directories(
@@ -103,6 +103,7 @@ install(
   EXPORT ${COMPONENT_NAME}-targets
   COMPONENT dpu
   RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
 install(
   EXPORT ${COMPONENT_NAME}-targets
@@ -117,10 +118,11 @@ install(
 
 if(XRT_FOUND)
   add_executable(xrt_read_register test/read_counter.cpp)
-  target_link_libraries(xrt_read_register ${COMPONENT_NAME} XRT::XRT glog::glog)
+  target_link_libraries(xrt_read_register ${COMPONENT_NAME} XRT::xrt_core glog::glog)
   install(
     TARGETS xrt_read_register
     RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib)
 endif(XRT_FOUND)
 
@@ -139,23 +141,23 @@ endif()
 
 if(XRT_FOUND)
   add_executable(test_xrt_device_handle test/test_xrt_device_handle.cpp)
-  target_link_libraries(test_xrt_device_handle ${COMPONENT_NAME} XRT::XRT
+  target_link_libraries(test_xrt_device_handle ${COMPONENT_NAME} XRT::xrt_core
                         glog::glog)
   install(TARGETS test_xrt_device_handle DESTINATION bin)
   if(BUILD_TEST)
 
     # add_executable(write_counter test/write_counter.cpp)
-    # target_link_libraries(write_counter ${COMPONENT_NAME} XRT::XRT glog::glog)
+    # target_link_libraries(write_counter ${COMPONENT_NAME} XRT::xrt_core glog::glog)
 
     add_executable(write_counter test/write_counter.cpp)
-    target_link_libraries(write_counter ${COMPONENT_NAME} XRT::XRT glog::glog)
+    target_link_libraries(write_counter ${COMPONENT_NAME} XRT::xrt_core glog::glog)
 
     add_executable(test_ecmd test/test_ecmd.cpp)
-    target_link_libraries(test_ecmd ${COMPONENT_NAME} XRT::XRT -lpthread)
+    target_link_libraries(test_ecmd ${COMPONENT_NAME} XRT::xrt_core -lpthread)
 
     add_executable(test_bin_stream test/test_bin_stream.cpp)
-    target_link_libraries(test_bin_stream ${COMPONENT_NAME} XRT::XRT glog::glog)
+    target_link_libraries(test_bin_stream ${COMPONENT_NAME} XRT::xrt_core glog::glog)
   endif()
   add_executable(test_alloc_bo test/test_alloc_bo.cpp)
-  target_link_libraries(test_alloc_bo ${COMPONENT_NAME} XRT::XRT glog::glog)
+  target_link_libraries(test_alloc_bo ${COMPONENT_NAME} XRT::xrt_core glog::glog)
 endif()

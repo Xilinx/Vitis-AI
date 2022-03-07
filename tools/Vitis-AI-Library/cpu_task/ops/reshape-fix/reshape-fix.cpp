@@ -22,13 +22,14 @@
 #include "vart/runner_helper.hpp"
 #include "vitis/ai/env_config.hpp"
 using namespace std;
+namespace {
 
 struct MyOpImp : public vart::experimental::OpImpBase {
-  MyOpImp(xir::Op* op, xir::Attrs* attrs)
+  MyOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {}
 
-  int calculate(vart::experimental::simple_tensor_buffer_t<void> result,
-                vart::experimental::simple_tensor_buffer_t<void> input) {
+  int calculate(vart::simple_tensor_buffer_t<void> result,
+                vart::simple_tensor_buffer_t<void> input) {
     CHECK_EQ(result.mem_size, input.mem_size);
     memcpy(result.data, input.data, input.mem_size);
     return 0;
@@ -36,7 +37,6 @@ struct MyOpImp : public vart::experimental::OpImpBase {
 
  private:
 };
+}  // namespace
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOpImp>();
-}
+DEF_XIR_OP_IMP(MyOpImp)

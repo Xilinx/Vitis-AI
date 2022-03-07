@@ -1,0 +1,12 @@
+/dpu_0/DPU_AXI_0 0
+/dpu_1/DPU_AXI_0 1
+/dpu_0/DPU_AXI_W0 4
+/dpu_0/DPU_AXI_W1 5
+/dpu_1/DPU_AXI_W0 6
+/dpu_1/DPU_AXI_W1 7
+/dpu_0/DPU_AXI_I0 8
+/dpu_1/DPU_AXI_I0 9
+/dpu_0/DPU_AXI_1 10
+/dpu_0/DPU_AXI_2 11
+/dpu_1/DPU_AXI_1 12
+/dpu_1/DPU_AXI_2 13

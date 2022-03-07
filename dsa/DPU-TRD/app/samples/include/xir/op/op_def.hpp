@@ -40,7 +40,7 @@ namespace xir {
  *@brief Op argument definition
  *This struct defines an input argument of an op.
  */
-struct OpArgDef {
+struct XIR_DLLESPEC OpArgDef {
   /**
    * @brief Element Occurence Specifier
    */
@@ -55,15 +55,20 @@ struct OpArgDef {
     REQUIRED_AND_REPEATED,
     NUM
   };
+  /// MSVC NOTE: member variable cannot be const, because
+  /// vector<AttrDef> in OpDef requires it is copiable.  // when
+  /// exported with XIR_DLLESPEC, a special default copy constructor
+  /// is created, which is deleted.
+  //
 
   /// Name of the op argument
-  const std::string name;
+  std::string name;
   /// Occurence type
-  const OccurenceType occur_type;
+  OccurenceType occur_type;
   /// DataType
-  const xir::DataType::Type data_type;
+  xir::DataType::Type data_type;
   /// Some comments
-  const std::string annotation;
+  std::string annotation;
 };
 
 /*
@@ -71,7 +76,7 @@ struct OpArgDef {
  *@brief Op definition
  *This class defines an op.
  */
-class OpDef {
+class XIR_DLLESPEC OpDef {
  public:
   /// Create a definition of an op by name
   OpDef(const std::string& name);
@@ -112,12 +117,14 @@ class OpDef {
   const std::string& annotation() const;
 
  private:
-  std::string name_{};
-  std::vector<OpArgDef> input_args_{};
-  std::vector<AttrDef> attrs_{};
+  // MSVC NOTE: when export with XIR_DLLESPEC, we must not have
+  // variable constructor syntax here, it causes `operator=()` deleted.
+  std::string name_;
+  std::vector<OpArgDef> input_args_;
+  std::vector<AttrDef> attrs_;
   std::function<void(Op* op)> shape_infer_;
-  std::vector<std::function<void(Op* op)>> constraints_{};
-  std::string annotation_{};
+  std::vector<std::function<void(Op* op)>> constraints_;
+  std::string annotation_;
 };
 
 class OpDefFactory {

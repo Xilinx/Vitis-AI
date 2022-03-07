@@ -16,6 +16,7 @@
 
 #include <csignal>
 #include <execinfo.h>
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <sys/stat.h>
@@ -65,29 +66,29 @@ int main( int argc, char *argv[])
 {
   if (argc != 5) {
     std::cout << "usage: " << argv[0] << " model0_name model1_name bin_file pic_file \n"
-              << "         model0_name can be: pointpillars_kitti_12000_0_pt" 
+              << "         model0_name can be: pointpillars_kitti_12000_0_pt"
               << "         model1_name can be: pointpillars_kitti_12000_1_pt"
               << "\n";
     abort();
   }
-  auto net = vitis::ai::PointPillars::create(argv[1], argv[2] );  
+  auto net = vitis::ai::PointPillars::create(argv[1], argv[2] );
 
   DISPLAY_PARAM g_test;
   get_display_data(g_test);
 
-  // int flag = E_RGB; 
+  // int flag = E_RGB;
   // int flag = E_BEV;
   int flag = E_BEV|E_RGB;
 
-  std::string lidar_path(argv[3]); 
-  std::string image_path(argv[4]); 
+  std::string lidar_path(argv[3]);
+  std::string image_path(argv[4]);
 
   cv::Mat rgbmat;
   cv::Mat bevmat;
-  std::future<cv::Mat> fut_rgb;  
+  std::future<cv::Mat> fut_rgb;
 
   __TIC__(readfile_cloud_vec2)
-  V1F PointCloud ; 
+  V1F PointCloud ;
   int len = getfloatfilelen( lidar_path);
   PointCloud.resize( len );
   myreadfile(PointCloud.data(), len, lidar_path);
@@ -136,21 +137,21 @@ int main( int argc, char *argv[])
   // print result
   for (unsigned int i=0; i< res.ppresult.final_box_preds.size(); i++) {
      std::cout << res.ppresult.label_preds[i] << "     "   << std::fixed << std::setw( 11 ) << std::setprecision( 6 ) << std::setfill( ' ' )
-               << res.ppresult.final_box_preds[i][0] << " " 
-               << res.ppresult.final_box_preds[i][1] << " " 
-               << res.ppresult.final_box_preds[i][2] << " " 
-               << res.ppresult.final_box_preds[i][3] << " " 
-               << res.ppresult.final_box_preds[i][4] << " " 
-               << res.ppresult.final_box_preds[i][5] << " " 
-               << res.ppresult.final_box_preds[i][6] << "     " 
-               << res.ppresult.final_scores[i] << "\n" ; 
+               << res.ppresult.final_box_preds[i][0] << " "
+               << res.ppresult.final_box_preds[i][1] << " "
+               << res.ppresult.final_box_preds[i][2] << " "
+               << res.ppresult.final_box_preds[i][3] << " "
+               << res.ppresult.final_box_preds[i][4] << " "
+               << res.ppresult.final_box_preds[i][5] << " "
+               << res.ppresult.final_box_preds[i][6] << "     "
+               << res.ppresult.final_scores[i] << "\n" ;
   }
   //   V2F final_box_preds;
   //     V1F final_scores;
   //       V1I label_preds;
   //
 
-  return 0;	  
+  return 0;
 }
 
 void get_display_data(DISPLAY_PARAM& g_v)

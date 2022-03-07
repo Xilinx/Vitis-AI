@@ -15,12 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import math
 import itertools
 from typing import List, Dict, Any, NoReturn, Tuple
 import numpy as np
 from functools import partial
 from nndct_shared.base import NNDCT_OP, NNDCT_KEYS
-from nndct_shared.nndct_graph import Tensor, Node, transformed_axis
+from nndct_shared.nndct_graph import Tensor, Node
 from .xgraph import XGraph
 from xir import Op
 
@@ -30,7 +31,8 @@ NndctQuantInfo = Dict[str, Dict[str, List[int]]]
 class _Converter:
   _nndct2xir_type = {np.float32: "FLOAT32", 
                 np.float64: "FLOAT64", 
-                np.int64: "INT64"
+                np.int64: "INT64",
+                np.int32: "INT32",
                 }
   
   _nndct2numpy_type = {
@@ -50,9 +52,9 @@ class _Converter:
   _nndct2xir_value = {NNDCT_OP.CONV2D: _pad_mode,
                       NNDCT_OP.DEPTHWISE_CONV2D: _pad_mode,
                       NNDCT_OP.CONVTRANSPOSE2D: _pad_mode,
-                      NNDCT_OP.CONV3D: _pad_mode,
-                      NNDCT_OP.CONVTRANSPOSE3D: _pad_mode,
+                      NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: _pad_mode,
                       NNDCT_OP.MAX_POOL: _pad_mode,
+                      NNDCT_OP.MAX_POOL1D: _pad_mode,
                       NNDCT_OP.AVG_POOL: _pad_mode,
                       NNDCT_OP.ADAPTIVEAVGPOOL2D: _pad_mode,
                       NNDCT_OP.PAD: {"mode": {0: "CONSTANT", 1: "REFLECT", 2: "SYMMETRIC"}}
@@ -63,9 +65,7 @@ class _Converter:
   
   @classmethod
   def to_xir_dtype(cls, numpy_dtype):
-    if not hasattr(numpy_dtype, "type"):
-      raise TypeError("Only accept numpy dtype when convert to xir.")
-    return cls._nndct2xir_type[numpy_dtype.type]
+    return cls._nndct2xir_type[numpy_dtype]
   
   @classmethod
   def to_xir_attr_value(cls, node_op_type, nndct_attr_name: str, nndct_attr_value: Any):
@@ -120,18 +120,28 @@ def _pack(xgraph: XGraph, node: Node, pack_name: str, packed_item: List[Any],
   return sub_op_pack, pack_list
 
 
-def _sub(xgraph, name, operand1, operand2, quant_config):
-  if isinstance(operand1, Tensor) and (not isinstance(operand2, Tensor)):
-    operand1 = xgraph.get_op_by_name(operand1.node.name)
-    operand2 = np.ones(operand1.shape, dtype=type(operand2)) * operand2
+def _sub(xgraph, name, input, other, quant_config):
+  if isinstance(input, Tensor) and (not isinstance(other, Tensor)):
+    operand1 = xgraph.get_op_by_name(input.node.name)
+    new_type = other.dtype if isinstance(other, np.ndarray) else type(other)
+    # if input.node.transpose_order:
+    #   shape = permute_axes(input.shape, input.node.transpose_order)
+    # else:
+    #   shape = input.shape
+    operand2 = np.ones(input.shape, dtype=new_type) * other
     operand2 = xgraph.create_const_op(f"{name}_other", operand2)
-  elif isinstance(operand2, Tensor) and (not isinstance(operand1, Tensor)):
-    operand1 = np.ones(operand2.shape, dtype=type(operand1)) * operand1
+  elif isinstance(other, Tensor) and (not isinstance(input, Tensor)):
+    new_type = input.dtype if isinstance(input, np.ndarray) else type(input)
+    # if other.node.transpose_order:
+    #   shape = permute_axes(other.shape, other.node.transpose_order)
+    # else:
+    #   shape = other.shape
+    operand1 = np.ones(other.shape, dtype=new_type) * input
     operand1 = xgraph.create_const_op(f"{name}_input", operand1)
-    operand2 = xgraph.get_op_by_name(operand2.node.name)
+    operand2 = xgraph.get_op_by_name(other.node.name)
   else:
-    operand1 = xgraph.get_op_by_name(operand1.node.name)
-    operand2 = xgraph.get_op_by_name(operand2.node.name)
+    operand1 = xgraph.get_op_by_name(input.node.name)
+    operand2 = xgraph.get_op_by_name(other.node.name)
 
   input_ops: Dict[str, List[Op]] = {}
   input_ops["input"] = [operand1, operand2]
@@ -143,11 +153,15 @@ def data_xop(xgraph: XGraph, node: Node,
              quant_config: NndctQuantInfo) -> NoReturn:
   
   shape = node.out_tensors[0].shape
+  if not shape:
+    shape = [1]
   
+  # shape = permute_axes(shape, node.transpose_order)
+    
   out_tensor = np.zeros(shape, dtype=np.float32)
   attrs: Dict[str, Any] = {}
   attrs["shape"] = shape
-  attrs["data_type"] = _Converter.to_xir_dtype(out_tensor.dtype)
+  attrs["data_type"] = _Converter.to_xir_dtype(out_tensor.dtype.type)
   xgraph.create_fixed_normal_op(
       node.name, "data", quant_config, tensor=out_tensor, attrs=attrs)
 
@@ -160,6 +174,7 @@ def const_xop(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoRet
     data = [data]
   
   data = np.array(data, dtype=data_type)
+  data = np.transpose(data, node.transpose_order) if node.transpose_order else data
   xgraph.create_fixed_const_op(name=node.name, 
                                data=data, 
                                quant_info=quant_config)
@@ -197,56 +212,15 @@ def reshape(xgraph: XGraph, node: Node,
             quant_config: NndctQuantInfo) -> NoReturn:
   r""" nndct reshape is a macro operator, including pack, reshape
       """
-  # raise NotImplementedError("reshape")
-  if node.in_tensors[0].layout == Tensor.Layout.NHWC:
-    shape = node.node_attr(node.op.AttrName.SHAPE)
-    sub_op_pack, pack_list = _pack(xgraph, node, "shape", shape, quant_config)
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["shape"] = [sub_op_pack]
-    input_ops["input"] = [xgraph.get_op_by_name(node.in_nodes[0])]
-    xgraph.create_fixed_normal_op(
-        node.name, "reshape", quant_config, input_ops=input_ops)
-  elif node.out_tensors[0].ndim == 4:
-    shape = node.node_attr(node.op.AttrName.SHAPE)
-    sub_op_pack, pack_list = _pack(xgraph, node, "shape", shape, quant_config)
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["shape"] = [sub_op_pack]
-    input_ops["input"] = [xgraph.get_op_by_name(node.in_nodes[0])]
-    xgraph.create_fixed_normal_op(
-        node.name + "_i0", "reshape", quant_config, input_ops=input_ops)
+  shape = node.node_attr(node.op.AttrName.SHAPE)
+  sub_op_pack, pack_list = _pack(xgraph, node, "shape", shape, quant_config)
+  input_ops: Dict[str, List[Op]] = {}
+  input_ops["shape"] = [sub_op_pack]
+  input_ops["input"] = [xgraph.get_op_by_name(node.in_nodes[0])]
+  xgraph.create_fixed_normal_op(
+      node.name, "reshape", quant_config, input_ops=input_ops)
 
-    attrs: Dict[str, Any] = {}
-    # NCHW -> NHWC
-    attrs["order"] = [0, 2, 3, 1]
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["input"] = [xgraph.get_op_by_name(node.name + "_i0")]
-    xgraph.create_fixed_normal_op(
-        node.name, "transpose", quant_config, attrs=attrs, input_ops=input_ops)
-  elif node.in_tensors[0].ndim == 4:
-    shape = node.node_attr(node.op.AttrName.SHAPE)
-    sub_op_pack, pack_list = _pack(xgraph, node, "shape", shape, quant_config)
-    attrs: Dict[str, Any] = {}
-    # NHWC -> NCHW
-    attrs["order"] = [0, 3, 1, 2]
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["input"] = [xgraph.get_op_by_name(node.in_nodes[0])]
-    xgraph.create_fixed_normal_op(
-        node.name + "_i0", "transpose", quant_config, attrs=attrs, input_ops=input_ops)
-    
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["shape"] = [sub_op_pack]
-    input_ops["input"] = [xgraph.get_op_by_name(node.name + "_i0")]
-    xgraph.create_fixed_normal_op(
-        node.name, "reshape", quant_config, input_ops=input_ops)
-    
-  else:
-    shape = node.node_attr(node.op.AttrName.SHAPE)
-    sub_op_pack, pack_list = _pack(xgraph, node, "shape", shape, quant_config)
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["shape"] = [sub_op_pack]
-    input_ops["input"] = [xgraph.get_op_by_name(node.in_nodes[0])]
-    xgraph.create_fixed_normal_op(
-        node.name, "reshape", quant_config, input_ops=input_ops)
+
 
    
 
@@ -263,10 +237,29 @@ def sub(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
   _sub(xgraph, node.name, operand1, operand2, quant_config)
 
 
+def binary_op(op_type: str, xgraph: XGraph, node: Node, quant_config: NndctQuantInfo):
+  input, other = node.node_attr(node.op.AttrName.INPUT), node.node_attr(node.op.AttrName.OTHER)
+  if isinstance(input, Tensor) and (not isinstance(other, Tensor)):
+    operand1 = xgraph.get_op_by_name(input.node.name)
+    dtype = other.dtype if isinstance(other, np.ndarray) else type(other)
+    operand2 = np.ones(input.shape, dtype=dtype) * other
+    operand2 = xgraph.create_const_op(f"{node.name}_other", operand2)
+  else:
+    operand1 = xgraph.get_op_by_name(input.node.name)
+    operand2 = xgraph.get_op_by_name(other.node.name)
+
+  input_ops: Dict[str, List[Op]] = {}
+  input_ops["input"] = [operand1, operand2]
+  input_ops["input"] = xgraph.create_input_fix_ops(input_ops["input"], node.name, quant_config)
+  xgraph.create_fixed_normal_op(node.name, op_type, quant_config, input_ops=input_ops)
+  
+  
+
+  
+  
 def default_xop(xop_type: str, xgraph: XGraph, node: Node,
                 quant_config: NndctQuantInfo) -> NoReturn:
 
-  attrs = _get_xir_attr_from_node(node)
   
   input_ops: Dict[str, List[Op]] = {}
   if node.has_bound_params():
@@ -286,8 +279,10 @@ def default_xop(xop_type: str, xgraph: XGraph, node: Node,
     
   input_ops["input"] = xgraph.create_input_fix_ops(input_list, node.name, quant_config)
   
+  attrs = _get_xir_attr_from_node(node)
   xgraph.create_fixed_normal_op(
       node.name, xop_type, quant_config, attrs=attrs, input_ops=input_ops)
+
 
 
 def resize(xgraph: XGraph, node: Node,
@@ -296,14 +291,18 @@ def resize(xgraph: XGraph, node: Node,
   resize is a macro operator, including concat , resize
   """
   attrs: Dict[str, Any] = {}
-  attrs["scale"] = node.node_attr(node.op.AttrName.SCALE)
+  # attrs["scale"] = node.node_attr(node.op.AttrName.SCALE)
+  
   attrs["align_corners"] = node.node_attr(node.op.AttrName.ALIGN_CORNERS)
   attrs["half_pixel_centers"] = node.node_attr(
       node.op.AttrName.HALF_PIXEL_CENTERS)
   attrs["mode"] = node.node_attr(node.op.AttrName.MODE)
-  attrs["mode"] = {0: "NEAREST", 3: "BILINEAR"}.get(attrs["mode"])
+  # attrs["mode"] = {0: "NEAREST", 3: "BILINEAR"}.get(attrs["mode"])
   size = node.node_attr(node.op.AttrName.SIZE)
-  if size[0] == 0 and size[1] == 0:
+  scale = node.node_attr(node.op.AttrName.SCALE)
+  # if size[0] == 0 and size[1] == 0:
+  if all([s == 0 for s in size]):
+    attrs["scale"] = scale
     input_ops: Dict[str, List[Op]] = {}
     input_list = []
     for input in node.in_nodes:
@@ -371,150 +370,72 @@ def matmul(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn
   xgraph.create_fixed_normal_op(
       node.name, "matmul", quant_config, attrs=attrs, input_ops=input_ops)
 
-def permute_invar_op(xop_type, xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
-  if not node.node_attr(node.op.AttrName.KEEP_DIMS) \
-    and node.in_tensors[0].ndim == 4 \
-    and len(node.node_attr(node.op.AttrName.DIMS)) == 1 \
-    and node.node_attr(node.op.AttrName.DIMS)[0] != 3:
-    layout = ["N", "H", "W", "C"]
-    del layout[node.node_attr(node.op.AttrName.DIMS)[0]]
-    # create mean which keep_dim is True
-    attrs: Dict[str, Any] = {}
-    attrs["axis"] = node.node_attr(node.op.AttrName.DIMS)
-    attrs["keep_dims"] = True
-    input_ops: Dict[str, List[Op]] = {}
-    input_list = []
-    for input in node.in_nodes:
-      input_op = xgraph.get_op_by_name(input)
-      input_list.append(input_op)
-    input_ops["input"] = xgraph.create_input_fix_ops(input_list, node.name, quant_config)
-    xgraph.create_fixed_normal_op(
-        node.name + "_i0", xop_type, quant_config, attrs=attrs, input_ops=input_ops)
-    
-    attrs: Dict[str, Any] = {}
-    if layout == ["N", "H", "C"]:
-      attrs["order"] = [0, 3, 1, 2]
-    else:
-      attrs["order"] = [0, 3, 2, 1]
 
-    # resume dimension to NCHW
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["input"] = [xgraph.get_op_by_name(node.name + "_i0")]
-    xgraph.create_fixed_normal_op(
-        node.name + "_i1", "transpose", quant_config, attrs=attrs, input_ops=input_ops)
-    
-    attrs: Dict[str, Any] = {}
-    if layout == ["N", "H", "C"]:
-      attrs["axis"] = [3]
-    else:
-      attrs["axis"] = [2]
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["input"] = [xgraph.get_op_by_name(node.name + "_i1")]
-    xgraph.create_fixed_normal_op(
-        node.name, "squeeze", quant_config, attrs=attrs, input_ops=input_ops)
-  else:
-    to_xir(xop_type)(xgraph, node, quant_config)
+
+# def permute_invar_op(xop_type, xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
+#   to_xir(xop_type)(xgraph, node, quant_config)
     
 
-def flatten(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
-  
-  if node.in_tensors[0].ndim != 4 or node.in_tensors[0].layout == Tensor.Layout.NHWC:
-    to_xir("flatten")(xgraph, node, quant_config)
-  else:
-    attrs: Dict[str, Any] = {}
-    # NHWC -> NCHW
-    attrs["order"] = [0, 3, 1, 2]
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["input"] = [xgraph.get_op_by_name(node.in_nodes[0])]
-    xgraph.create_fixed_normal_op(
-        node.name + "_i0", "transpose", quant_config, attrs=attrs, input_ops=input_ops)
-    
-    # attrs = None
-    # if len(node.op.attrs) > 0:
-    #   attrs: Dict[str, Any] = {}
-    #   for attr_name, attr_value in node.op.attrs.items():
-    #     attrs[attr_name.value] = attr_value.value
-    attrs = _get_xir_attr_from_node(node)
-
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["input"] = [xgraph.get_op_by_name(node.name + "_i0")]
-
-    xgraph.create_fixed_normal_op(
-        node.name, "flatten", quant_config, attrs=attrs, input_ops=input_ops)
-    
-    
+# def flatten(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
+#   to_xir("flatten")(xgraph, node, quant_config)
+ 
 
 def avgpool(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
   
-  needScale = False
   scale = 1.0
   if node.node_attr(node.op.AttrName.KERNEL) == [3, 3]:
-    needScale = True
     scale = 9.0 * 7.0 / 64.0
   elif node.node_attr(node.op.AttrName.KERNEL) == [5, 5]:
-    needScale = True
     scale = 25.0 * 10.0 / 256.0
   elif node.node_attr(node.op.AttrName.KERNEL) in [[6, 6], [3, 6], [6, 3]]:
-    needScale = True
     scale = 36.0 * 7.0 / 256.0
   elif node.node_attr(node.op.AttrName.KERNEL) == [7, 7]:
-    needScale = True
     scale = 49.0 * 21.0 / 1024.0
   elif node.node_attr(node.op.AttrName.KERNEL) == [14, 14]:
-    needScale = True
     scale = 196.0 * 21.0 / 4096.0
-    
-  if needScale:
-    attrs = _get_xir_attr_from_node(node)
-    # attrs: Dict[str, Any] = {}
-    # for attr_name, attr_value in node.op.attrs.items():
-    #   attrs[attr_name.value] = _Converter.to_xir_attr_value(attr_name.value, attr_value.value)
-
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["input"] = [xgraph.get_op_by_name(node.in_nodes[0])]
-    input_ops["input"] = xgraph.create_input_fix_ops(input_ops["input"], node.name, quant_config)
-    xgraph.create_fixed_normal_op(
-        node.name + "_i0", "avgpool2d", quant_config, attrs=attrs, input_ops=input_ops)
-    
-    scale = [scale]
-    xgraph.create_fixed_const_op(name=node.name + "_i1", 
-                                data=np.array(scale, dtype=np.float32), 
-                                quant_info=quant_config)
-    
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["input"] = [xgraph.get_op_by_name(node.name + "_i0"), xgraph.get_op_by_name(node.name + "_i1")]
-    xgraph.create_fixed_normal_op(
-        node.name, "mul", quant_config, input_ops=input_ops)
   else:
-    to_xir("avgpool2d")(xgraph, node, quant_config)
+    rec = node.node_attr(node.op.AttrName.KERNEL)[0] * node.node_attr(node.op.AttrName.KERNEL)[1]
+    max_factor =  math.ceil(math.log(rec * 128,2))
+    diff = 1.0
+    multi_factor = 0.0
+    shift_factor = 0.0
+    for shift_factor_ in range(max_factor):
+      factor = round((2 ** shift_factor_)/rec)
+      diff_ = abs(factor / (2 ** shift_factor_) - 1/rec)
+      if diff_ < diff:
+        multi_factor = factor
+        diff = diff_
+        shift_factor = shift_factor_
+    scale = rec * multi_factor / (2 ** shift_factor)
+
+  attrs = _get_xir_attr_from_node(node)
+  # attrs: Dict[str, Any] = {}
+  # for attr_name, attr_value in node.op.attrs.items():
+  #   attrs[attr_name.value] = _Converter.to_xir_attr_value(attr_name.value, attr_value.value)
+
+  input_ops: Dict[str, List[Op]] = {}
+  input_ops["input"] = [xgraph.get_op_by_name(node.in_nodes[0])]
+  input_ops["input"] = xgraph.create_input_fix_ops(input_ops["input"], node.name, quant_config)
+  xgraph.create_fixed_normal_op(
+      node.name + "_i0", "avgpool2d", quant_config, attrs=attrs, input_ops=input_ops)
+  
+  scale = [scale]
+  xgraph.create_fixed_const_op(name=node.name + "_i1", 
+                              data=np.array(scale, dtype=np.float32), 
+                              quant_info=quant_config)
+  
+  input_ops: Dict[str, List[Op]] = {}
+  input_ops["input"] = [xgraph.get_op_by_name(node.name + "_i0"), xgraph.get_op_by_name(node.name + "_i1")]
+  xgraph.create_fixed_normal_op(
+      node.name, "mul", quant_config, input_ops=input_ops)
 
 
-def squeeze(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
-  if node.in_tensors[0].ndim == 4 and len(node.node_attr(node.op.AttrName.DIMS)) == 1:
-    attrs: Dict[str, Any] = {}
-    attrs["order"] = [0, 3, 1, 2]
 
-    # resume dimension to NCHW
-    input_ops: Dict[str, List[Op]] = {}
-    input_list = []
-    for input in node.in_nodes:
-      input_op = xgraph.get_op_by_name(input)
-      input_list.append(input_op)
-    input_ops["input"] = input_list
-    xgraph.create_fixed_normal_op(
-        node.name + "_i0", "transpose", quant_config, attrs=attrs, input_ops=input_ops)
+# def squeeze(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
+#   to_xir("squeeze")(xgraph, node, quant_config)
+
     
-    attrs: Dict[str, Any] = {}
-    dim = node.node_attr(node.op.AttrName.DIMS)[0]
-    dim = transformed_axis("NHWC", "NCHW", ndim=4, dim=dim)
-    attrs["axis"] = [dim]
-    input_ops: Dict[str, List[Op]] = {}
-    input_ops["input"] = [xgraph.get_op_by_name(node.name + "_i0")]
-    xgraph.create_fixed_normal_op(
-        node.name, "squeeze", quant_config, attrs=attrs, input_ops=input_ops)
-  else:
-    to_xir("squeeze")(xgraph, node, quant_config)
-      
+    
 def zeros(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
   shape = node.node_attr(node.op.AttrName.SHAPE)
   data = np.zeros(shape, dtype=_Converter.to_numpy_dtype(node.out_tensors[0].dtype))
@@ -660,27 +581,54 @@ def hswish(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn
       node.name, "mul", quant_config, input_ops=input_ops)
 
 
-def unsupported_xop(xgraph: XGraph, node: Node,
-                    quant_config: NndctQuantInfo) -> NoReturn:
-  raise NotImplementedError(f"Please add op type:{node.op.type} for xmodel.")
+def custom_xop(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
+  
+  shape = node.out_tensors[0].shape
+  if not shape:
+    shape = [1]
+ 
+  attrs = _get_xir_attr_from_node(node)
+  attrs = {} if attrs is None else attrs
+  
+  attrs["shape"] = shape
+  numpy_type = _Converter.to_numpy_dtype(node.out_tensors[0].dtype)
+  attrs["data_type"] = _Converter.to_xir_dtype(numpy_type)
+  
+  input_ops: Dict[str, List[Op]] = {}
+  input_list = []
+  for input in node.in_tensors:
+    if input.is_param_tensor():
+      input_op = xgraph.get_op_by_name(input.name)
+    else:
+      input_op = xgraph.get_op_by_name(input.node.name)
+    input_list.append(input_op)
+    
+  input_ops["input"] = xgraph.create_input_fix_ops(input_list, node.name, quant_config)  
+  xgraph.create_fixed_normal_op(
+      node.name, node.op.type, quant_config, attrs=attrs, input_ops=input_ops)
 
 
 def to_xir(xop_type):
   return partial(default_xop, xop_type)
 
 
-def to_permute_invar_op(xop_type):
-  return partial(permute_invar_op, xop_type)
+# def to_permute_invar_op(xop_type):
+#   return partial(permute_invar_op, xop_type)
+
+def to_binary_op(xop_type):
+  return partial(binary_op, xop_type)
 
 
 NNDCTIR2XIR_CONVERTOR = {
     NNDCT_OP.INPUT: data_xop,
+    NNDCT_OP.CONV1D: to_xir("conv1d"),
     NNDCT_OP.CONV2D: to_xir("conv2d"),
     NNDCT_OP.DEPTHWISE_CONV2D: to_xir("depthwise-conv2d"),
     NNDCT_OP.CONVTRANSPOSE2D: to_xir("transposed-conv2d"),
     NNDCT_OP.AVG_POOL: avgpool,
     NNDCT_OP.ADAPTIVEAVGPOOL2D: avgpool,
     NNDCT_OP.MAX_POOL: to_xir("maxpool2d"),
+    NNDCT_OP.MAX_POOL1D: to_xir("maxpool1d"),
     NNDCT_OP.RELU: to_xir("relu"),
     NNDCT_OP.LEAKY_RELU: to_xir("leaky-relu"),
     NNDCT_OP.TANH: to_xir("tanh"),
@@ -690,38 +638,40 @@ NNDCTIR2XIR_CONVERTOR = {
     NNDCT_OP.RESHAPE: reshape,
     NNDCT_OP.ADD: to_xir("add"),
     NNDCT_OP.SCALAR_ADD: to_xir("add"),
-    NNDCT_OP.FLATTEN: flatten,
+    NNDCT_OP.FLATTEN: to_xir("flatten"),
     NNDCT_OP.CONCAT: to_xir("concat"),
-    NNDCT_OP.MULTIPLY: to_xir("mul"),
-    NNDCT_OP.SCALAR_MUL: to_xir("mul"),
+    NNDCT_OP.MULTIPLY: to_binary_op("mul"),
+    NNDCT_OP.SCALAR_MUL: to_binary_op("mul"),
     NNDCT_OP.STRIDED_SLICE: to_xir("strided_slice"),
     NNDCT_OP.RSUB: rsub,
     NNDCT_OP.SUB: sub,
     NNDCT_OP.PAD: to_xir("pad"),
-    # NNDCT_OP.RESIZE: to_xir("resize"),
     NNDCT_OP.RESIZE: resize,
     NNDCT_OP.SOFTMAX: to_xir("softmax"),
     NNDCT_OP.PERMUTE: to_xir("transpose"),
     NNDCT_OP.CONST: const_xop,
+    NNDCT_OP.TENSOR: const_xop,
     NNDCT_OP.RELU6: to_xir("relu6"),
-    NNDCT_OP.MEAN: to_permute_invar_op("reduction_mean"),
+    NNDCT_OP.MEAN: to_xir("reduction_mean"),
     NNDCT_OP.BATCH_NORM: scale,
     NNDCT_OP.BATCH_NORM1D: scale,
     NNDCT_OP.BATCH_NORM3D: scale,
     NNDCT_OP.QUANT_STUB: data_xop,
-    NNDCT_OP.MAX: to_permute_invar_op("reduction_max"),
+    NNDCT_OP.MAX: to_xir("reduction_max"),
     NNDCT_OP.TRANSPOSE: to_xir("transpose"),
-    NNDCT_OP.SQUEEZE: squeeze,
+    NNDCT_OP.SQUEEZE: to_xir("squeeze"),
     NNDCT_OP.ZEROS: zeros,
     NNDCT_OP.NEG: to_xir("neg"),
-    NNDCT_OP.DIV: to_xir("div"),
-    NNDCT_OP.SUM: to_permute_invar_op("reduction_sum"),
-    #NNDCT_OP.HSIGMOID: to_xir("hard-sigmoid"),
+    NNDCT_OP.DIV: to_binary_op("div"),
+    NNDCT_OP.SUM: to_xir("reduction_sum"),
     NNDCT_OP.HSIGMOID: hsigmoid,
     NNDCT_OP.HSWISH: hswish,
-    NNDCT_OP.PIXEL_SHUFFLE: to_xir("reorg"),
-    # NNDCT_OP.CONV3D: conv3d,
-    # NNDCT_OP.CONVTRANSPOSE3D: conv_transpose_3d,
-    # NNDCT_OP.RESIZE_3D: to_xir("resize3d")
-    # NNDCT_OP.SHAPE: to_xir("shape"),
+    NNDCT_OP.PIXEL_SHUFFLE: to_xir("pixel-shuffle"),
+    NNDCT_OP.PIXEL_UNSHUFFLE: to_xir("pixel-shuffle"),
+    NNDCT_OP.CONV3D: to_xir("conv3d"),
+    NNDCT_OP.DEPTHWISE_CONV3D: to_xir("depthwise-conv3d"),
+    NNDCT_OP.CONVTRANSPOSE3D: to_xir("transposed-conv3d"),
+    NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: to_xir("transposed-depthwise-conv3d"),
+    NNDCT_OP.RESIZE_3D: resize,
+    NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: to_xir("transposed-depthwise-conv2d")
 }

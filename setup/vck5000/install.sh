@@ -66,4 +66,5 @@ echo "installing xclbins for vck5000"
 platform=vck5000_
 source ${LSCRIPTS}/install_${platform}xclbins.sh
 
+source ${LSCRIPTS}/install_vck5000_shell.sh
 source ${SCRIPTS}/install_xrm.sh

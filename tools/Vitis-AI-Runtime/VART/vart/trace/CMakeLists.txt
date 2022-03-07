@@ -17,17 +17,30 @@
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
-add_library(${COMPONENT_NAME} SHARED include/vitis/ai/trace.hpp
-    src/str.cpp
-    src/subgraph.cpp
-    src/event.cpp
-    src/util.cpp
-    src/time.cpp
-    src/traceclass.cpp
-    src/trace.cpp
-    src/trace_py.cpp)
+add_library(${COMPONENT_NAME} SHARED include/vitis/ai/common.hpp
+include/vitis/ai/event.hpp
+include/vitis/ai/fmt.hpp
+include/vitis/ai/payload.hpp
+include/vitis/ai/ringbuf.hpp
+include/vitis/ai/trace.hpp
+include/vitis/ai/traceclass.hpp
+include/vitis/ai/vaitrace_dbg.hpp
+src/event.cpp
+src/internal.hpp
+src/pid.h
+src/str.cpp
+src/str.hpp
+src/subgraph.cpp
+src/time.cpp
+src/time.hpp
+src/traceclass.cpp
+src/trace.cpp
+src/trace_py.cpp
+src/util.cpp
+src/util.hpp
+)
 
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 
@@ -37,9 +50,9 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
     LIBRARY_OUTPUT_NAME ${PROJECT_NAME}-${COMPONENT_NAME}
     CXX_STANDARD 17)
 
-target_link_libraries(${COMPONENT_NAME} PRIVATE pthread xir::xir util)
+target_link_libraries(${COMPONENT_NAME} PRIVATE ${CMAKE_THREAD_LIBS_INIT} xir::xir util)
 if (XRT_FOUND AND ENABLE_DPU_RUNNER)
-    target_link_libraries(${COMPONENT_NAME} PRIVATE pthread XRT::XRT)
+    target_link_libraries(${COMPONENT_NAME} PRIVATE ${CMAKE_THREAD_LIBS_INIT} XRT::xrt_core XRT::xrt_coreutil)
     target_compile_definitions(${COMPONENT_NAME} PRIVATE ENABLE_XRT_TIMESTAMP)
 endif()
 
@@ -47,7 +60,7 @@ target_include_directories(${COMPONENT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include> PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-install(TARGETS ${COMPONENT_NAME} EXPORT ${COMPONENT_NAME}-targets COMPONENT trace RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
+install(TARGETS ${COMPONENT_NAME} EXPORT ${COMPONENT_NAME}-targets COMPONENT trace ARCHIVE DESTINATION lib  RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
 install(EXPORT ${COMPONENT_NAME}-targets NAMESPACE ${PROJECT_NAME}:: COMPONENT trace DESTINATION share/cmake/${PROJECT_NAME})
 
 install(
@@ -59,7 +72,9 @@ install(
   PATTERN "*.h"
   )
 
-add_subdirectory(vaitrace)
+if(BUILD_PYTHON)
+  add_subdirectory(vaitrace)
+endif(BUILD_PYTHON)
 
 if (BUILD_TEST)
 #

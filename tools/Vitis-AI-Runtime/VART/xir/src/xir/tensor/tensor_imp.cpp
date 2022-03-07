@@ -134,40 +134,6 @@ Tensor* TensorImp::set_attr(const std::string& key, const xir::any& value) {
   return this;
 }
 
-}  // namespace xir
-
-/* C API implementations */
-#include "xir/xir.h"
-
-extern "C" xir_tensor_t xir_tensor_create(const char* name, const int32_t* dims,
-                                          const int32_t dim_num,
-                                          enum xir_tensor_data_type_t data_type,
-                                          const int32_t bit_width) {
-  std::vector<std::int32_t> v_dims(dims, dims + dim_num);
-  auto t = xir::Tensor::create(
-      std::string(name), v_dims,
-      xir::DataType{static_cast<xir::DataType::Type>(data_type), bit_width});
-  return static_cast<xir_tensor_t>(t.release());
-}
-extern "C" int xir_tensor_destroy(xir_tensor_t tensor) {
-  auto t = static_cast<xir::Tensor*>(tensor);
-  delete t;
-  return 0;
-}
-
-namespace xir {
-class c_api {
- public:
-  static const char* tensor_get_name(xir_tensor_t tensor) {
-    auto self = static_cast<xir::TensorImp*>(tensor);
-    return self->name_.c_str();
-  }
-  static const xir_attrs_t tensor_get_attrs(xir_tensor_t tensor) {
-    auto self = static_cast<xir::TensorImp*>(tensor);
-    return static_cast<xir_tensor_t>(self->attrs_.get());
-  }
-};
-
 Tensor* TensorImp::rename(const std::string& name) {
   if (this->name_ != name) {
     if (nullptr != this->producer_) {
@@ -201,33 +167,3 @@ const std::string TensorImp::to_string(const std::string& delimiter,     //
 }
 
 };  // namespace xir
-
-extern "C" const char* xir_tensor_get_name(xir_tensor_t tensor) {
-  return xir::c_api::tensor_get_name(tensor);
-}
-extern "C" int32_t xir_tensor_get_bit_width(xir_tensor_t tensor) {
-  return static_cast<xir::Tensor*>(tensor)->get_data_type().bit_width;
-}
-extern "C" int32_t xir_tensor_get_dim_size(xir_tensor_t tensor, int32_t idx) {
-  return static_cast<xir::Tensor*>(tensor)->get_shape().at(idx);
-}
-
-extern "C" int32_t xir_tensor_get_dim_num(xir_tensor_t tensor) {
-  return static_cast<xir::Tensor*>(tensor)->get_shape().size();
-}
-
-extern "C" enum xir_tensor_data_type_t xir_tensor_get_data_type(
-    xir_tensor_t tensor) {
-  return static_cast<xir_tensor_data_type_t>(
-      static_cast<xir::Tensor*>(tensor)->get_data_type().type);
-}
-extern "C" int32_t xir_tensor_get_element_num(xir_tensor_t tensor) {
-  return static_cast<xir::Tensor*>(tensor)->get_element_num();
-}
-
-extern "C" int32_t xir_tensor_get_data_size(xir_tensor_t tensor) {
-  return static_cast<xir::Tensor*>(tensor)->get_data_size();
-}
-extern "C" xir_attrs_t xir_tensor_get_attrs(xir_tensor_t tensor) {
-  return xir::c_api::tensor_get_attrs(tensor);
-}

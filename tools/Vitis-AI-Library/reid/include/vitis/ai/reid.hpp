@@ -86,7 +86,7 @@ class Reid : public ConfigurableDpuTaskBase {
    */
  public:
   /**
-   * @brief Function to get running result of the ReID neuron network.
+   * @brief Function to get running result of the ReID neural network.
    *
    * @param image Input data of input image (cv::Mat).
    *
@@ -96,7 +96,7 @@ class Reid : public ConfigurableDpuTaskBase {
   virtual ReidResult run(const cv::Mat& image) = 0;
 
   /**
-   * @brief Function to get running result of the ReID neuron network in batch
+   * @brief Function to get running result of the ReID neural network in batch
    * mode.
    *
    * @param images Input data of input images (vector<cv::Mat>).
@@ -107,7 +107,7 @@ class Reid : public ConfigurableDpuTaskBase {
   virtual std::vector<ReidResult> run(const std::vector<cv::Mat>& images) = 0;
 
   /**
-   * @brief Function to get running results of the reid neuron network in
+   * @brief Function to get running results of the reid neural network in
    * batch mode , used to receive user's xrt_bo to support zero copy.
    *
    * @param input_bos The vector of vart::xrt_bo_t.

@@ -18,7 +18,6 @@
 #include <glog/logging.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
 
 #include <fstream>
 #include <vitis/ai/env_config.hpp>

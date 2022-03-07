@@ -17,8 +17,19 @@
 compile:
 sh build.sh
 
-run in edge: 
-./demo_fadnet /usr/share/vitis_ai_library/models/FADNet_0_pt/FADNet_0_pt.xmodel /usr/share/vitis_ai_library/models/FADNet_1_pt/FADNet_1_pt.xmodel \
-/usr/share/vitis_ai_library/models/FADNet_2_pt/FADNet_2_pt.xmodel demo_fadneet_left.png demo_fadneet_right.png
+# run in edge: 
+(baseline model)
+./demo_fadnet demo_fadnet_left.png demo_fadnet_right.png
+
+(pruned model)
+env FADNET_MODEL_0=/usr/share/vitis_ai_library/models/FADNet_pruned_0_pt/FADNet_pruned_0_pt.xmodel FADNET_MODEL_1=/usr/share/vitis_ai_library/models/FADNet_pruned_1_pt/FADNet_pruned_1_pt.xmodel FADNET_MODEL_2=/usr/share/vitis_ai_library/models/FADNet_pruned_2_pt/FADNet_pruned_2_pt.xmodel ./demo_fadnet demo_fadnet_left.png demo_fadnet_right.png
 
 after execute, the result will store as a picture named result_fadnet.jpg.
+
+# run the performance
+
+(baseline model)
+./test_performance_fadnet -t 3 -s 60 test_performance_fadnet.list
+
+(pruned model)
+env FADNET_MODEL_0=/usr/share/vitis_ai_library/models/FADNet_pruned_0_pt/FADNet_pruned_0_pt.xmodel FADNET_MODEL_1=/usr/share/vitis_ai_library/models/FADNet_pruned_1_pt/FADNet_pruned_1_pt.xmodel FADNET_MODEL_2=/usr/share/vitis_ai_library/models/FADNet_pruned_2_pt/FADNet_pruned_2_pt.xmodel ./test_performance_fadnet -t 3 -s 60 test_performance_fadnet.list

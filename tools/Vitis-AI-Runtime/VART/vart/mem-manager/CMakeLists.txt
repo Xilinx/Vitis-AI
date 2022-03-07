@@ -38,6 +38,7 @@ install(
   EXPORT ${COMPONENT_NAME}-targets
   COMPONENT base
   RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
 foreach(PUBLIC_HEADER
     vart/mm/host_flat_tensor_buffer.hpp)

@@ -18,7 +18,11 @@
 
 namespace vitis::ai::trace {
 
-using namespace std;
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
 
 str_pool g_pool_;
 
@@ -54,5 +58,5 @@ str::str(const char* str_) { idx_ = pool_instance().add_str(str_); };
 //};
 //
 const char* str::to_string(void) { return pool_instance().idx_to_str(idx_); };
-std::string to_srting(str s_) { return string(s_.to_string()); };
+std::string to_srting(str s_) { return std::string(s_.to_string()); };
 }  // namespace vitis::ai::trace

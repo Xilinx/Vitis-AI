@@ -70,3 +70,4 @@ target_include_directories(${COMPONENT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
 vai_add_test(test_pointpillars)
 vai_add_test(test_pointpillars_ptr)
 vai_add_test(test_pointpillars_accuracy)
+vai_add_test(test_pointpillars_batch)

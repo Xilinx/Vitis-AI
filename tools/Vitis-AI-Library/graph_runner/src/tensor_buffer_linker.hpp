@@ -32,7 +32,7 @@ class TensorBufferLinker {
   }
   std::string to_string();
 
-  virtual void finalize(std::string device);
+  virtual void finalize();
   virtual void after_invoke_runner(const xir::Subgraph* subgraph);
 
  protected:

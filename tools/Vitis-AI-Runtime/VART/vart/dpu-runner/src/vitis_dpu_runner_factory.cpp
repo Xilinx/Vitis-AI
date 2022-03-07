@@ -102,9 +102,9 @@ std::vector<vart::TensorBuffer*> DpuRunnerImp::get_inputs() {
 std::vector<vart::TensorBuffer*> DpuRunnerImp::get_outputs() {
   return dpu_session_->get_outputs();
 }
-
 }  // namespace dpu
 }  // namespace vart
+
 #include <mutex>
 extern "C" vart::Runner* create_runner(const xir::Subgraph* subgraph) {
   static std::mutex mtx;
@@ -118,29 +118,4 @@ extern "C" vart::Runner* create_runner_with_attrs(const xir::Subgraph* subgraph,
   std::lock_guard<std::mutex> lock(mtx);
   auto ret = vart::dpu::DpuRunnerFactory::create_dpu_runner(subgraph, attrs);
   return ret.release();
-}
-
-// extened APIS in C
-#include "vart/vart.h"
-extern "C" void vart_runner_get_inputs(vart_runner_t runner,
-                                       vart_tensor_buffer_t inputs[]) {
-  auto self1 = static_cast<vart::Runner*>(runner);
-  auto self2 = dynamic_cast<vart::RunnerExt*>(self1);
-  CHECK(self2) << "runtime error: it is not an instance of vart::RunnerExt";
-  auto ibs = self2->get_inputs();
-  std::copy(ibs.begin(), ibs.end(), (void**)inputs);
-  return;
-}
-/** @brief return the allocated output tensor buffers.
- *
- * potentially more efficient
- * */
-extern "C" void vart_runner_get_outputs(vart_runner_t runner,
-                                        vart_tensor_buffer_t outputs[]) {
-  auto self1 = static_cast<vart::Runner*>(runner);
-  auto self2 = dynamic_cast<vart::RunnerExt*>(self1);
-  CHECK(self2) << "runtime error: it is not an instance of vart::RunnerExt";
-  auto obs = self2->get_outputs();
-  std::copy(obs.begin(), obs.end(), (void**)outputs);
-  return;
 }

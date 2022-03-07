@@ -19,6 +19,7 @@
 
 #include <memory>
 #include <sstream>
+#include <algorithm>
 
 namespace vitis {
 namespace ai {

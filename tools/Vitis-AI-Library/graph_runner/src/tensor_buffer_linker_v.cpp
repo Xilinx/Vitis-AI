@@ -32,22 +32,16 @@ TensorBufferLinkerHostVirt::TensorBufferLinkerHostVirt(
 
 TensorBufferLinkerHostVirt::~TensorBufferLinkerHostVirt() {}
 
-void TensorBufferLinkerHostVirt::finalize(std::string device) {
-  static constexpr int DPU_HOST_PHY = 0;  // select one of them and keep others
-  static constexpr int HOST_PHY =
-      1;  // select one of them and remove/keep others?
-  static constexpr int HOST_VIRT = 2;  // remove
-  static constexpr int DEVICE = 3;     // keep
+void TensorBufferLinkerHostVirt::finalize() {
+  static constexpr int HOST_PHY = 0;   // select one of them and keep others
+  static constexpr int HOST_VIRT = 1;  // remove
+  static constexpr int DEVICE = 2;     // keep
 
   //---------------------
-  auto kind = [device](std::unique_ptr<vart::TensorBuffer>* s) {
+  auto kind = [](std::unique_ptr<vart::TensorBuffer>* s) {
     auto ret = DEVICE;
     if ((*s)->get_location() == vart::TensorBuffer::location_t::HOST_PHY) {
-      if (device == "DPU") {
-        ret = DPU_HOST_PHY;
-      } else {
-        ret = HOST_PHY;
-      }
+      ret = HOST_PHY;
     } else if ((*s)->get_location() ==
                vart::TensorBuffer::location_t::HOST_VIRT) {
       ret = HOST_VIRT;
@@ -78,15 +72,8 @@ void TensorBufferLinkerHostVirt::finalize(std::string device) {
       ret = THE_SELECTED;
     } else {
       switch (kind(s)) {
-        case DPU_HOST_PHY:
-          ret = KEEP;
-          break;
         case HOST_PHY:
-          // TODO: keep it or replace it? IP-X
-          ret = REPLACE;
-          break;
         case DEVICE:
-          // keep it
           ret = KEEP;
           break;
         case HOST_VIRT:
@@ -128,8 +115,8 @@ void TensorBufferLinkerHostVirt::after_invoke_runner(
   for (auto s : slaves_) {
     if (linker_decisions_[index] == KEEP) {
       LOG_IF(INFO, ENV_PARAM(DEBUG_GRAPH_RUNNER))
-          << " copy tensor buffer from " << replacement_->get()->to_string()
-          << " to " << s->get()->to_string();
+          << " copy tensor buffer \n\tfrom " << replacement_->get()->to_string()
+          << " \n\tto   " << s->get()->to_string();
       vart::TensorBuffer::copy_tensor_buffer(replacement_->get(), s->get());
     }
     index++;

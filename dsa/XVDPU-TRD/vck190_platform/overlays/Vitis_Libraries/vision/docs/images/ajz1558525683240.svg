@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:pmml2svg="https://sourceforge.net/projects/pmml2svg/"
+     xmlns="http://www.w3.org/2000/svg"
+     version="1.1"
+     width="143.17833000000002px"
+     height="18.794999999999998px"
+     viewBox="0 0 143.17833000000002 18.794999999999998">
+   <metadata>
+      <pmml2svg:baseline-shift>5.542499999999997</pmml2svg:baseline-shift>
+   </metadata>
+   <g stroke="none"
+      fill="#000000"
+      text-rendering="optimizeLegibility"
+      font-family="STIXGeneral,STIXSizeOneSym">
+      <g xmlns:doc="http://nwalsh.com/xsl/documentation/1.0"
+         style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+         <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+               x="3"
+               y="13.252500000000001"
+               font-size="15">V</text>
+         <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+               x="13.319999999999999"
+               y="13.252500000000001"
+               font-size="15">m</text>
+         <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+               x="24.15"
+               y="13.252500000000001"
+               font-size="15">a</text>
+         <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+               x="32.07"
+               y="13.252500000000001"
+               font-size="15">x</text>
+         <text x="42.94167"
+               y="13.252500000000001"
+               font-size="15"
+               style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; ">=</text>
+         <g style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+            <g style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+               <text style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; "
+                     x="57.383340000000004"
+                     y="13.252500000000001"
+                     font-size="15">max</text>
+            </g>
+            <g style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+               <g style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+                  <g style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; ">
+                     <text x="83.21334" y="13.14" font-size="15">(</text>
+                  </g>
+                  <g style="font-family: STIXGeneral,STIXSizeOneSym; fill: ; background-color: transparent; ">
+                     <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                           x="88.40334"
+                           y="13.252500000000001"
+                           font-size="15">R</text>
+                     <text x="97.56834"
+                           y="13.252500000000001"
+                           font-size="15"
+                           style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; ">,</text>
+                     <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                           x="106.318335"
+                           y="13.252500000000001"
+                           font-size="15">G</text>
+                     <text x="117.148335"
+                           y="13.252500000000001"
+                           font-size="15"
+                           style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; ">,</text>
+                     <text style="font-family: STIXGeneral, STIXSizeOneSym; font-style: italic; fill: black; background-color: transparent; "
+                           x="126.01833"
+                           y="13.252500000000001"
+                           font-size="15">B</text>
+                  </g>
+                  <g style="font-family: STIXGeneral, STIXSizeOneSym; fill: black; background-color: transparent; ">
+                     <text x="135.18333" y="13.14" font-size="15">)</text>
+                  </g>
+               </g>
+            </g>
+         </g>
+      </g>
+   </g>
+</svg>

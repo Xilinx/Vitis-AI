@@ -16,13 +16,124 @@
 # limitations under the License.
 #
 
-from enum import auto, unique
-
+from enum import auto, unique, Enum
+from typing import Any
 from nndct_shared.base import NNDCT_OP
 from nndct_shared.nndct_graph.base_operator import (AutoName, NndctIrAttr,
                                                     OccurenceType, Operation)
 from nndct_shared.nndct_graph.base_tensor import Tensor
 import numpy as np
+
+class Conv1d(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    KERNEL = auto()
+    STRIDE = auto()
+    DILATION = auto()
+    PAD_MODE = auto()
+    PAD = auto()
+    GROUP = auto()
+    BIAS_TERM = auto()
+    IN_DIM = auto()
+    OUT_DIM = auto()
+
+  @unique
+  class ParamName(AutoName):
+    WEIGHTS = auto()
+    BIAS = auto()
+
+  def __init__(self, *args, **kwargs) -> None:
+    super(Conv1d, self).__init__(*args, **kwargs)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.KERNEL: [None],
+        self.AttrName.STRIDE: [None],
+        self.AttrName.DILATION: [None],
+        self.AttrName.PAD_MODE: [None],
+        self.AttrName.PAD: [None, None],
+        self.AttrName.GROUP: [None],
+        self.AttrName.BIAS_TERM: [None],
+        self.AttrName.IN_DIM: [None],
+        self.AttrName.OUT_DIM: [None],
+    }
+    self._attrs[self.AttrName.KERNEL] = NndctIrAttr(
+        name=self.AttrName.KERNEL,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.KERNEL],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""kernel size, [kernel_w, kernel_h]""")
+
+    self._attrs[self.AttrName.STRIDE] = NndctIrAttr(
+        name=self.AttrName.STRIDE,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.STRIDE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""stride [stride_w, stride_h]""")
+
+    self._attrs[self.AttrName.DILATION] = NndctIrAttr(
+        name=self.AttrName.DILATION,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.DILATION],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[1],
+        annotation=r"""dilation, [dilation_w, dilation_h]""")
+
+    self._attrs[self.AttrName.PAD_MODE] = NndctIrAttr(
+        name=self.AttrName.PAD_MODE,
+        value_type=str,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.PAD_MODE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""padding mode, 0-PADDING, 1-SAME, 2-VALID, 3-CEIL
+    for the FUTURE. use attr pad. SAME, make output with same
+    width and height as input. VALID, no padding""")
+
+    self._attrs[self.AttrName.PAD] = NndctIrAttr(
+        name=self.AttrName.PAD,
+        value_type=int,
+        size=2,
+        value_mem=self._attr_value_mem[self.AttrName.PAD],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[0,0],
+        annotation=r"""padding size, only effective when pad mode is PADDING, ["
+                "left, right, top, bottom],""")
+
+    self._attrs[self.AttrName.GROUP] = NndctIrAttr(
+        name=self.AttrName.GROUP,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.GROUP],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=1,
+        annotation=r"""group""")
+
+    self._attrs[self.AttrName.BIAS_TERM] = NndctIrAttr(
+        name=self.AttrName.BIAS_TERM,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.BIAS_TERM],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""whether bias exist""")
+
+    self._attrs[self.AttrName.IN_DIM] = NndctIrAttr(
+        name=self.AttrName.IN_DIM,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.IN_DIM],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""in_channels""")
+
+    self._attrs[self.AttrName.OUT_DIM] = NndctIrAttr(
+        name=self.AttrName.OUT_DIM,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.OUT_DIM],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""out_channels""")
 
 class Conv2d(Operation):
 
@@ -108,7 +219,7 @@ class Conv2d(Operation):
         size=1,
         value_mem=self._attr_value_mem[self.AttrName.GROUP],
         occurence_type=OccurenceType.OPTIONAL,
-        default_value=[1],
+        default_value=1,
         annotation=r"""group""")
 
     self._attrs[self.AttrName.BIAS_TERM] = NndctIrAttr(
@@ -143,12 +254,13 @@ class Conv3d(Operation):
     KERNEL = auto()
     STRIDE = auto()
     DILATION = auto()
+    GROUP = auto()
     PAD_MODE = auto()
     PAD = auto()
-    GROUP = auto()
     BIAS_TERM = auto()
     IN_DIM = auto()
     OUT_DIM = auto()
+    OUTPUT_PAD = auto()
 
   @unique
   class ParamName(AutoName):
@@ -159,12 +271,13 @@ class Conv3d(Operation):
     super().__init__(*args, **kwargs)
     # allocate memory for attr value
     self._attr_value_mem = {
-        self.AttrName.KERNEL: [None, None],
-        self.AttrName.STRIDE: [None, None],
-        self.AttrName.DILATION: [None, None],
-        self.AttrName.PAD_MODE: [None],
-        self.AttrName.PAD: [None, None, None, None],
+        self.AttrName.KERNEL: [None, None, None],
+        self.AttrName.STRIDE: [None, None, None],
+        self.AttrName.DILATION: [None, None, None],
         self.AttrName.GROUP: [None],
+        self.AttrName.PAD_MODE: [None],
+        self.AttrName.PAD: [None, None, None, None, None, None],
+        self.AttrName.OUTPUT_PAD: [None, None, None, None, None, None],
         self.AttrName.BIAS_TERM: [None],
         self.AttrName.IN_DIM: [None],
         self.AttrName.OUT_DIM: [None],
@@ -172,10 +285,10 @@ class Conv3d(Operation):
     self._attrs[self.AttrName.KERNEL] = NndctIrAttr(
         name=self.AttrName.KERNEL,
         value_type=int,
-        size=None,
+        size=3,
         value_mem=self._attr_value_mem[self.AttrName.KERNEL],
         occurence_type=OccurenceType.REQUIRED,
-        annotation=r"""kernel size, [kernel_w, kernel_h]""")
+        annotation=r"""kernel size, [kernel_w, kernel_h, kernel_d]""")
 
     self._attrs[self.AttrName.STRIDE] = NndctIrAttr(
         name=self.AttrName.STRIDE,
@@ -183,7 +296,7 @@ class Conv3d(Operation):
         size=None,
         value_mem=self._attr_value_mem[self.AttrName.STRIDE],
         occurence_type=OccurenceType.REQUIRED,
-        annotation=r"""stride [stride_w, stride_h]""")
+        annotation=r"""stride [stride_w, stride_h, stride_d]""")
 
     self._attrs[self.AttrName.DILATION] = NndctIrAttr(
         name=self.AttrName.DILATION,
@@ -192,36 +305,46 @@ class Conv3d(Operation):
         value_mem=self._attr_value_mem[self.AttrName.DILATION],
         occurence_type=OccurenceType.OPTIONAL,
         default_value=[1, 1, 1],
-        annotation=r"""dilation, [dilation_w, dilation_h]""")
-
-    self._attrs[self.AttrName.PAD_MODE] = NndctIrAttr(
-        name=self.AttrName.PAD_MODE,
-        value_type=int,
-        size=None,
-        value_mem=self._attr_value_mem[self.AttrName.PAD_MODE],
-        occurence_type=OccurenceType.REQUIRED,
-        annotation=r"""padding mode, 0-PADDING, 1-SAME, 2-VALID, 3-CEIL
-    for the FUTURE. use attr pad. SAME, make output with same
-    width and height as input. VALID, no padding""")
-
-    self._attrs[self.AttrName.PAD] = NndctIrAttr(
-        name=self.AttrName.PAD,
-        value_type=int,
-        size=None,
-        value_mem=self._attr_value_mem[self.AttrName.PAD],
-        occurence_type=OccurenceType.OPTIONAL,
-        default_value=[0, 0, 0],
-        annotation=r"""padding size, only effective when pad mode is PADDING, ["
-                "left, right, top, bottom],""")
+        annotation=r"""dilation, [dilation_w, dilation_h, dilation_d]""")
 
     self._attrs[self.AttrName.GROUP] = NndctIrAttr(
         name=self.AttrName.GROUP,
         value_type=int,
-        size=None,
+        size=1,
         value_mem=self._attr_value_mem[self.AttrName.GROUP],
         occurence_type=OccurenceType.OPTIONAL,
-        default_value=[1],
+        default_value=1,
         annotation=r"""group""")
+
+    self._attrs[self.AttrName.PAD_MODE] = NndctIrAttr(
+        name=self.AttrName.PAD_MODE,
+        value_type=str,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.PAD_MODE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""We support 4 padding mode: `FLOOR, CEIL, SAME, VALID`. "
+        "For example, when you parsing models from other frameworks, "
+        "`caffe, pytorch->\"FLOOR\", tensorflow->\"SAME\" or \"VALID\"`""")
+
+    self._attrs[self.AttrName.PAD] = NndctIrAttr(
+        name=self.AttrName.PAD,
+        value_type=int,
+        size=6,
+        value_mem=self._attr_value_mem[self.AttrName.PAD],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[0, 0, 0, 0, 0, 0],
+        annotation=r"""padding size, only effective when pad mode is PADDING, ["
+                "left, right, top, bottom, near, far],""")
+
+    self._attrs[self.AttrName.OUTPUT_PAD] = NndctIrAttr(
+        name=self.AttrName.OUTPUT_PAD,
+        value_type=int,
+        size=6,
+        value_mem=self._attr_value_mem[self.AttrName.OUTPUT_PAD],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[0, 0, 0, 0, 0, 0],
+        annotation=r"""additional size added to one side of each dimension in the output, ["
+                "left, right, top, bottom, near, far],""")
 
     self._attrs[self.AttrName.BIAS_TERM] = NndctIrAttr(
         name=self.AttrName.BIAS_TERM,
@@ -492,8 +615,85 @@ class MaxPool(Operation):
         size=1,
         value_mem=self._attr_value_mem[self.AttrName.GLOBAL],
         occurence_type=OccurenceType.OPTIONAL,
-        default_value=[False],
+        default_value=False,
         annotation=r"""global""")
+
+class MaxPool1d(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    KERNEL = auto()
+    STRIDE = auto()
+    DILATION = auto()
+    PAD_MODE = auto()
+    PAD = auto()
+    GLOBAL = auto()
+    COUNT_INCLUDE_PAD = auto()
+
+  def __init__(self, *args, **kwargs) -> None:
+    super(MaxPool1d, self).__init__(*args, **kwargs)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.KERNEL: [None],
+        self.AttrName.STRIDE: [None],
+        self.AttrName.PAD_MODE: [None],
+        self.AttrName.PAD: [None, None],
+        self.AttrName.GLOBAL: [None],
+        self.AttrName.COUNT_INCLUDE_PAD: [None]
+    }
+    self._attrs[self.AttrName.KERNEL] = NndctIrAttr(
+        name=self.AttrName.KERNEL,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.KERNEL],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""kernel size, [kernel_w, kernel_h]""")
+
+    self._attrs[self.AttrName.STRIDE] = NndctIrAttr(
+        name=self.AttrName.STRIDE,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.STRIDE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""stride [stride_w, stride_h]""")
+
+    self._attrs[self.AttrName.PAD_MODE] = NndctIrAttr(
+        name=self.AttrName.PAD_MODE,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.PAD_MODE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""padding mode, 0-PADDING, 1-SAME, 2-VALID, 3-CEIL
+    for the FUTURE. use attr pad. SAME, make output with same
+    width and height as input. VALID, no padding""")
+
+    self._attrs[self.AttrName.PAD] = NndctIrAttr(
+        name=self.AttrName.PAD,
+        value_type=int,
+        size=2,
+        value_mem=self._attr_value_mem[self.AttrName.PAD],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[0, 0],
+        annotation=r"""padding size, only effective when pad mode is PADDING, ["
+                "left, right, top, bottom],""")
+
+    self._attrs[self.AttrName.GLOBAL] = NndctIrAttr(
+        name=self.AttrName.GLOBAL,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.GLOBAL],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=False,
+        annotation=r"""global""")
+
+    self._attrs[self.AttrName.COUNT_INCLUDE_PAD] = NndctIrAttr(
+        name=self.AttrName.COUNT_INCLUDE_PAD,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.COUNT_INCLUDE_PAD],
+        occurence_type=OccurenceType.OPTIONAL,
+        default_value=[True],
+        annotation=r"""when True, will include the zero-padding in the averaging calculation""")
 
 
 class AvgPool(Operation):
@@ -561,7 +761,7 @@ class AvgPool(Operation):
         size=1,
         value_mem=self._attr_value_mem[self.AttrName.GLOBAL],
         occurence_type=OccurenceType.OPTIONAL,
-        default_value=[False],
+        default_value=False,
         annotation=r"""global""")
 
     self._attrs[self.AttrName.COUNT_INCLUDE_PAD] = NndctIrAttr(
@@ -622,7 +822,7 @@ class PermuteInvariantOp(Operation):
     }
     self._attrs[self.AttrName.DIMS] = NndctIrAttr(
         name=self.AttrName.DIMS,
-        value_type=list,
+        value_type=int,
         size=None,
         value_mem=self._attr_value_mem[self.AttrName.DIMS],
         occurence_type=OccurenceType.REQUIRED,
@@ -643,8 +843,8 @@ class Permute(Operation):
   class AttrName(AutoName):
     ORDER = auto()
 
-  def __init__(self, *args, **kwargs) -> None:
-    super(Permute, self).__init__(*args, **kwargs)
+  def __init__(self, op_type, *args, **kwargs) -> None:
+    super(Permute, self).__init__(op_type)
     # allocate memory for attr value
     self._attr_value_mem = {
         self.AttrName.ORDER: [],
@@ -933,7 +1133,7 @@ class StridedSlice(Operation):
 
 
 class BinaryOp(Operation):
-  
+
   @unique
   class AttrName(AutoName):
     INPUT = auto()
@@ -1124,7 +1324,7 @@ class Resize(Operation):
 
     self._attrs[self.AttrName.MODE] = NndctIrAttr(
         name=self.AttrName.MODE,
-        value_type=int,
+        value_type=str,
         size=1,
         value_mem=self._attr_value_mem[self.AttrName.MODE],
         occurence_type=OccurenceType.REQUIRED,
@@ -1132,6 +1332,76 @@ class Resize(Operation):
                 Tensorflow-NEAREST -> 2, Tensorflow-BILINEAR -> 3,
                 To be improved!""")
 
+class Resize3d(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    SIZE = auto()
+    SCALE = auto()
+    ALIGN_CORNERS = auto()
+    HALF_PIXEL_CENTERS = auto()
+    MODE = auto()
+
+  def __init__(self) -> None:
+    super().__init__(NNDCT_OP.RESIZE_3D)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.SIZE: [None, None, None],
+        self.AttrName.SCALE: [None, None, None],
+        self.AttrName.ALIGN_CORNERS: [None],
+        self.AttrName.HALF_PIXEL_CENTERS: [None],
+        self.AttrName.MODE: [None],
+    }
+
+    self._attrs[self.AttrName.SIZE] = NndctIrAttr(
+        name=self.AttrName.SIZE,
+        value_type=(int, Tensor),
+        size=3,
+        value_mem=self._attr_value_mem[self.AttrName.SIZE],
+        default_value=[0, 0, 0],
+        occurence_type=OccurenceType.OPTIONAL,
+        annotation=r"""output spatial size, [size_h, size_w, size_d]""")
+
+    self._attrs[self.AttrName.SCALE] = NndctIrAttr(
+        name=self.AttrName.SCALE,
+        value_type=float,
+        size=3,
+        value_mem=self._attr_value_mem[self.AttrName.SCALE],
+        default_value=[1.0, 1.0, 1.0],
+        occurence_type=OccurenceType.OPTIONAL,
+        annotation=r"""New size = Origin size * scale. {scale_h, scale_w, scale_d}.""")
+
+    self._attrs[self.AttrName.ALIGN_CORNERS] = NndctIrAttr(
+        name=self.AttrName.ALIGN_CORNERS,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.ALIGN_CORNERS],
+        default_value=False,
+        occurence_type=OccurenceType.OPTIONAL,
+        annotation=r"""It must be set When mode is 3.If true, the centers of
+                the 4 corner pixels of the input and output tensors are
+                aligned, preserving the values at the corner pixels.
+                Defaults to false.""")
+
+    self._attrs[self.AttrName.HALF_PIXEL_CENTERS] = NndctIrAttr(
+        name=self.AttrName.HALF_PIXEL_CENTERS,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.HALF_PIXEL_CENTERS],
+        default_value=False,
+        occurence_type=OccurenceType.OPTIONAL,
+        annotation=r"""half_pixel_centers is false by default in,
+                tf.resize_bilinear() and tf.resize_nearest_neighbor().
+                is true by default in tf.upsampling2d(), but the version
+                of tf should be > r1.13""")
+
+    self._attrs[self.AttrName.MODE] = NndctIrAttr(
+        name=self.AttrName.MODE,
+        value_type=str,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.MODE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""Trilinear""")
 
 class Constant(Operation):
 
@@ -1148,7 +1418,7 @@ class Constant(Operation):
 
     self._attrs[self.AttrName.DATA] = NndctIrAttr(
         name=self.AttrName.DATA,
-        value_type=(int, float, list),
+        value_type=(int, float, list, Tensor),
         size=None,
         value_mem=self._attr_value_mem[self.AttrName.DATA],
         occurence_type=OccurenceType.REQUIRED,
@@ -1170,7 +1440,7 @@ class Squeeze(Operation):
 
     self._attrs[self.AttrName.DIMS] = NndctIrAttr(
         name=self.AttrName.DIMS,
-        value_type=list,
+        value_type=int,
         size=None,
         value_mem=self._attr_value_mem[self.AttrName.DIMS],
         occurence_type=OccurenceType.REQUIRED,
@@ -1186,12 +1456,12 @@ class EmbeddingBag(Operation):
 
 
 class LayerNorm(Operation):
-  
+
   @unique
   class ParamName(AutoName):
     GAMMA = auto()
     BETA = auto()
-    
+
 
 # e.g. ones, zeros
 class ConstFromShape(Operation):
@@ -1205,9 +1475,9 @@ class ConstFromShape(Operation):
     # allocate memory for attr value
     self._attr_value_mem = {
         self.AttrName.SHAPE: [],
-  
+
     }
-    
+
     self._attrs[self.AttrName.SHAPE] = NndctIrAttr(
         name=self.AttrName.SHAPE,
         value_type=(int, Tensor),
@@ -1215,8 +1485,8 @@ class ConstFromShape(Operation):
         value_mem=self._attr_value_mem[self.AttrName.SHAPE],
         occurence_type=OccurenceType.REQUIRED,
         annotation=r"""the target shape""")
-  
-  
+
+
 class UnaryOp(Operation):
   @unique
   class AttrName(AutoName):
@@ -1230,13 +1500,13 @@ class UnaryOp(Operation):
     }
     self._attrs[self.AttrName.INPUT] = NndctIrAttr(
         name=self.AttrName.INPUT,
-        value_type=(int, float, bool, Tensor, np.ndarray),
+        value_type=(int, str, float, bool, Tensor, np.ndarray),
         size=1,
         value_mem=self._attr_value_mem[self.AttrName.INPUT],
         occurence_type=OccurenceType.REQUIRED,
         map_to_xir=False,
         annotation=r"""the first input tensor.""")
-    
+
 
 class Reorg(Operation):
 
@@ -1269,4 +1539,111 @@ class Reorg(Operation):
         occurence_type=OccurenceType.REQUIRED,
         annotation=r"""reverse""")
 
-    
+
+class Gstiling(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    STRIDE = auto()
+    REVERSE = auto()
+
+  def __init__(self, nndct_op_type) -> None:
+    super().__init__(nndct_op_type)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.STRIDE: [None],
+        self.AttrName.REVERSE: [None],
+    }
+
+    self._attrs[self.AttrName.STRIDE] = NndctIrAttr(
+        name=self.AttrName.STRIDE,
+        value_type=(int, Tensor),
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.STRIDE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""stride for feature maps""")
+
+    self._attrs[self.AttrName.REVERSE] = NndctIrAttr(
+        name=self.AttrName.REVERSE,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.REVERSE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""reverse""")
+
+
+
+class PixelShuffle(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    SCALE = auto()
+    UPSCALE = auto()
+
+  def __init__(self, nndct_op_type) -> None:
+    super().__init__(nndct_op_type)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.SCALE: [None],
+        self.AttrName.UPSCALE: [None],
+    }
+
+    self._attrs[self.AttrName.SCALE] = NndctIrAttr(
+        name=self.AttrName.SCALE,
+        value_type=(int, Tensor),
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.SCALE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""scale for feature maps""")
+
+    self._attrs[self.AttrName.UPSCALE] = NndctIrAttr(
+        name=self.AttrName.UPSCALE,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.UPSCALE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""upscale or downscale PixelShuffle.""")
+
+class Embedding(Operation):
+  @unique
+  class ParamName(AutoName):
+    WEIGHT = auto()
+
+
+class CustomOp(Operation):
+
+  AttrName = Enum("AttrName", '')
+
+
+  def __init__(self, nndct_op_type) -> None:
+    super().__init__(nndct_op_type)
+    self._attr_value_mem = {}
+    self.is_custom_op = True
+
+
+  def get_attr_name_from_str(self, attr_name):
+    attr_names = [(name, val.value) for name, val in self.AttrName.__members__.items()]
+    if(not attr_names) or (attr_names and all([attr_name != attr[1] for attr in attr_names])):
+      attr_names += [(attr_name.upper(), attr_name.lower())]
+      self.AttrName = Enum("AttrName", attr_names)
+    return getattr(self.AttrName, attr_name.upper())
+
+  def _register_attr_by_name(self, attr_name):
+    if attr_name in self.AttrName.__members__:
+      return
+
+    attr_name = self.get_attr_name_from_str(attr_name)
+    self._attr_value_mem[attr_name] = [None]
+    self._attrs[attr_name] = NndctIrAttr(
+        name=attr_name,
+        value_type=Any,
+        size=None,
+        occurence_type=OccurenceType.REQUIRED,
+        value_mem=self._attr_value_mem[attr_name])
+
+  def set_attr_by_name(self, attr_name, value):
+    if attr_name not in self.AttrName.__members__:
+      self._register_attr_by_name(attr_name)
+    attr_name = self.get_attr_name_from_str(attr_name)
+    self.set_attr(attr_name, value)
+

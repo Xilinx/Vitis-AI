@@ -1,0 +1,41 @@
+From 9fcac11b56df9b575f90686a5e7b4d33cdb9ce52 Mon Sep 17 00:00:00 2001
+From: Vishal Sagar <vishal.sagar@xilinx.com>
+Date: Tue, 3 Sep 2019 00:49:54 +0530
+Subject: [PATCH 4/5] ar0231: Fix the media bus format to GRBG
+
+Signed-off-by: Vishal Sagar <vishal.sagar@xilinx.com>
+---
+ drivers/media/i2c/avt_multi_sensor_fmc/ar0231.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/ar0231.c b/drivers/media/i2c/avt_multi_sensor_fmc/ar0231.c
+index 2d19400..93de2c6 100644
+--- a/drivers/media/i2c/avt_multi_sensor_fmc/ar0231.c
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/ar0231.c
+@@ -117,14 +117,8 @@ static const struct ar0231_resolution supported_source_resolutions[] = {
+ };
+ 
+ static const struct ar0231_video_format supported_video_formats[] = {
+-	{ XVIP_VF_MONO_SENSOR, 8, "rggb", MEDIA_BUS_FMT_SRGGB8_1X8,
+-	  1, 8, V4L2_PIX_FMT_SGRBG8, 1, 1, 1, 1, "Bayer 8-bit RGGB" },
+ 	{ XVIP_VF_MONO_SENSOR, 8, "grbg", MEDIA_BUS_FMT_SGRBG8_1X8,
+ 	  1, 8, V4L2_PIX_FMT_SGRBG8, 1, 1, 1, 1, "Bayer 8-bit GRBG" },
+-	{ XVIP_VF_MONO_SENSOR, 8, "gbrg", MEDIA_BUS_FMT_SGBRG8_1X8,
+-	  1, 8, V4L2_PIX_FMT_SGBRG8, 1, 1, 1, 1, "Bayer 8-bit GBRG" },
+-	{ XVIP_VF_MONO_SENSOR, 8, "bggr", MEDIA_BUS_FMT_SBGGR8_1X8,
+-	  1, 8, V4L2_PIX_FMT_SBGGR8, 1, 1, 1, 1, "Bayer 8-bit BGGR" },
+ };
+ 
+ /* -----------------------------------------------------------------------
+@@ -802,7 +796,7 @@ static int ar0231_probe(struct i2c_client *client,
+ 	ar0231->formats[0].width = ar0231_framesizes[0].width;
+ 	ar0231->formats[0].height = ar0231_framesizes[0].height;
+ 	ar0231->formats[0].field = V4L2_FIELD_NONE;
+-	ar0231->formats[0].code = MEDIA_BUS_FMT_UYVY8_1X16;
++	ar0231->formats[0].code = MEDIA_BUS_FMT_SGRBG8_1X8;
+ 	ar0231->formats[0].colorspace = V4L2_COLORSPACE_SRGB;
+ 
+ 	ret = v4l2_async_register_subdev(sd);
+-- 
+2.7.4
+

@@ -87,6 +87,23 @@ BufferObjectXrtEdgeImp::BufferObjectXrtEdgeImp(size_t size, size_t device_id,
     data_ = nullptr;
   } else {
     data_ = (int*)xclMapBO(xrt_.handle, bo_, true);  //
+    // XRT memory allocation is dynamic. After xclMapBO() , only the vritual
+    // address is returned, and the physical memory is not immediately applied.
+    // Only when a 'page falut' is generated when the memory is written for the
+    // first time, the physical memory is applied for and then the write
+    // operation is performed.
+    // It takes 26ms to apply for 106MB of physical memory.
+    // In order not to affect the performance measurement of the first write
+    // operation, mmset is executed after mmap to actively apply for physical
+    // memory.
+    std::memset(data_, 0, size_);  //
+    // cache flush.
+    // When the cache is enabled, after memset is executed, the time for cpu to
+    // write back to the cache is not fixed, If it alternats with DPU writing,
+    // dirty data will appear in the cache, causeing some very difficult to
+    // debug errors. eg. DPU outputs random 64 bits zero .
+    // Execute cache flush ， write data to cache immediately.
+    xclSyncBO(xrt_.handle, bo_, XCL_BO_SYNC_BO_TO_DEVICE, size_, 0);
   }
   phy_ = get_physical_address(xrt_.handle, bo_);  //
   LOG_IF(INFO, ENV_PARAM(DEBUG_BUFFER_OBJECT))
@@ -201,6 +218,9 @@ void BufferObjectXrtEdgeImp::copy_to_host(void* buf, size_t size,
                    << "phy " << std::hex << "0x" << phy_ << " ";
 }
 
+xir::XclBo BufferObjectXrtEdgeImp::get_xcl_bo() const {
+  return xir::XclBo{xrt_.handle, bo_};
+}
 }  // namespace
 
 REGISTER_INJECTION_BEGIN(xir::BufferObject, 1, BufferObjectXrtEdgeImp, size_t&,

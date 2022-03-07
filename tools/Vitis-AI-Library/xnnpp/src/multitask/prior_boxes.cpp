@@ -42,8 +42,8 @@ PriorBoxes::PriorBoxes(int image_width, int image_height, int layer_width,
   // if (!max_sizes.empty()) CHECK_EQ(min_sizes.size(), max_sizes.size());
 
   // Store image dimensions and layer dimensions
-  image_dims_ = make_pair(image_width, image_height);
-  layer_dims_ = make_pair(layer_width, layer_height);
+  image_dims_ = std::make_pair(image_width, image_height);
+  layer_dims_ = std::make_pair(layer_width, layer_height);
 
   // Compute step width and height
   if (step_width == 0 || step_height == 0) {
@@ -51,7 +51,7 @@ PriorBoxes::PriorBoxes(int image_width, int image_height, int layer_width,
         make_pair(static_cast<float>(image_dims_.first) / layer_dims_.first,
                   static_cast<float>(image_dims_.second) / layer_dims_.second);
   } else {
-    step_dims_ = make_pair(step_width, step_height);
+    step_dims_ = std::make_pair(step_width, step_height);
   }
 
   // Store box variances

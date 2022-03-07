@@ -105,7 +105,7 @@ class PoseDetect {
    */
   virtual size_t get_input_batch() const = 0;
   /**
-   * @brief Function to get running results of the posedetect neuron network.
+   * @brief Function to get running results of the posedetect neural network.
    *
    * @param image Input data of input image (cv::Mat).
    *
@@ -114,7 +114,7 @@ class PoseDetect {
    */
   virtual PoseDetectResult run(const cv::Mat &image) = 0;
   /**
-   * @brief Function to get running results of the posedetect neuron network in
+   * @brief Function to get running results of the posedetect neural network in
    * batch mode.
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of

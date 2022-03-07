@@ -105,8 +105,8 @@ T arg_converter_t<T>::convert(
 }
 
 template <typename T>
-struct arg_converter_t<vart::experimental::simple_tensor_buffer_t<T>> {
-  static vart::experimental::simple_tensor_buffer_t<T> convert(
+struct arg_converter_t<vart::simple_tensor_buffer_t<T>> {
+  static vart::simple_tensor_buffer_t<T> convert(
       const XmodelPostprocessorInputs& graph_output_tensor_buffers,
       const xir::OpDef* opdef, size_t arg_index) {
     auto input_arg_defs = opdef->input_args();
@@ -117,15 +117,15 @@ struct arg_converter_t<vart::experimental::simple_tensor_buffer_t<T>> {
         << "it must be required single argument.";
     CHECK_EQ(graph_output_tensor_buffers.inputs[arg_index].args.size(), 1u)
         << "it must be single argument. name=" << arg_def.name;
-    return vart::experimental::simple_tensor_buffer_t<T>::create(
+    return vart::simple_tensor_buffer_t<T>::create(
         graph_output_tensor_buffers.inputs[arg_index].args[0].tensor_buffer);
   }
 };
 
 template <typename T>
 struct arg_converter_t<
-    std::unique_ptr<vart::experimental::simple_tensor_buffer_t<T>>> {
-  static std::unique_ptr<vart::experimental::simple_tensor_buffer_t<T>> convert(
+    std::unique_ptr<vart::simple_tensor_buffer_t<T>>> {
+  static std::unique_ptr<vart::simple_tensor_buffer_t<T>> convert(
       const XmodelPostprocessorInputs& graph_output_tensor_buffers,
       const xir::OpDef* opdef, size_t arg_index) {
     auto input_arg_defs = opdef->input_args();
@@ -135,8 +135,8 @@ struct arg_converter_t<
     CHECK(arg_def.occur_type == xir::OpArgDef::OPTIONAL)
         << "it must be required single argument.";
     if (graph_output_tensor_buffers.inputs[arg_index].args.size() == 1) {
-      return std::make_unique<vart::experimental::simple_tensor_buffer_t<T>>(
-          vart::experimental::simple_tensor_buffer_t<T>::create(
+      return std::make_unique<vart::simple_tensor_buffer_t<T>>(
+          vart::simple_tensor_buffer_t<T>::create(
               graph_output_tensor_buffers.inputs[arg_index]
                   .args[0]
                   .tensor_buffer));
@@ -147,8 +147,8 @@ struct arg_converter_t<
 
 template <typename T>
 struct arg_converter_t<
-    std::vector<vart::experimental::simple_tensor_buffer_t<T>>> {
-  static std::vector<vart::experimental::simple_tensor_buffer_t<T>> convert(
+    std::vector<vart::simple_tensor_buffer_t<T>>> {
+  static std::vector<vart::simple_tensor_buffer_t<T>> convert(
       const XmodelPostprocessorInputs& graph_output_tensor_buffers,
       const xir::OpDef* opdef, size_t arg_index) {
     auto input_arg_defs = opdef->input_args();
@@ -157,10 +157,10 @@ struct arg_converter_t<
     auto& arg_def = input_arg_defs[arg_index];
     CHECK(arg_def.occur_type == xir::OpArgDef::REQUIRED_AND_REPEATED)
         << "it must be required_and_repeated argument.";
-    auto ret = std::vector<vart::experimental::simple_tensor_buffer_t<T>>();
+    auto ret = std::vector<vart::simple_tensor_buffer_t<T>>();
     ret.reserve(graph_output_tensor_buffers.inputs[arg_index].args.size());
     for (auto& arg : graph_output_tensor_buffers.inputs[arg_index].args) {
-      ret.emplace_back(vart::experimental::simple_tensor_buffer_t<T>::create(
+      ret.emplace_back(vart::simple_tensor_buffer_t<T>::create(
           arg.tensor_buffer));
     };
     return ret;

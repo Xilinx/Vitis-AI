@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include <sys/syscall.h>
-#include <sys/sysinfo.h>
-#include <sys/types.h>
-
-#define gettid() syscall(SYS_gettid)
-#define getpid() syscall(SYS_getpid)
+//#include <sys/syscall.h>
+//#include <sys/sysinfo.h>
+//#include <sys/types.h>
+//
+//#define gettid() syscall(SYS_gettid)
+//#define getpid() syscall(SYS_getpid)

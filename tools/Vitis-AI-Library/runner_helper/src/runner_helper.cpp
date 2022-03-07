@@ -24,6 +24,7 @@
 #include "vitis/ai/env_config.hpp"
 #include "vitis/ai/path_util.hpp"
 DEF_ENV_PARAM(DEBUG_RUNNER_HELPER, "0")
+using std::to_string;
 static std::string to_string(const std::pair<void*, size_t>& v) {
   std::ostringstream str;
   str << "@(" << v.first << "," << std::dec << v.second << ")";
@@ -370,7 +371,7 @@ template <typename T, class = void>
 struct is_cout_able : public std::false_type {};
 template <typename T>
 struct is_cout_able<
-    T, std::void_t<decltype(declval<std::ostream&>() << declval<T>())>>
+    T, std::void_t<decltype(std::declval<std::ostream&>() << std::declval<T>())>>
     : public std::true_type {};
 
 template <typename T>

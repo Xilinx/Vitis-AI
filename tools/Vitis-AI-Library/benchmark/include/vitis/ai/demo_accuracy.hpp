@@ -159,9 +159,8 @@ struct ReadImagesThread : public MyThread {
       single_name = get_single_name(line);
       int w = image.cols;
       int h = image.rows;
-      while (!queue_->push(FrameInfo{++frame_id_, image, single_name, w, h},
-                           std::chrono::milliseconds(500))) {
-        --frame_id_;
+      auto frame = FrameInfo{++frame_id_, std::move(image), single_name, w, h};
+      while (!queue_->push(frame, std::chrono::milliseconds(500))) {
         if (is_stopped()) {
           return -1;
         }

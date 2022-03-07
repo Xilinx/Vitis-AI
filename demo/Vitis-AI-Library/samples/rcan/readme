@@ -17,6 +17,8 @@ Important:
   ./test_jpeg_rcan, ./test_performance_rcan, ./test_video_rcan first param followed must be with model name.
   Valid model name:
     rcan_pruned_tf
+    drunet_pt
+    SESR_S_pt
 
 1, compile
 
@@ -31,3 +33,8 @@ Important:
     sample : ./test_jpeg_rcan rcan_pruned_tf sample_rcan.png
     output : 
    
+    sample : ./test_jpeg_rcan drunet_pt sample_drunet.png
+    output : 
+  
+    sample : ./test_jpeg_rcan SESR_S_pt sample_sesr.png
+    output :

@@ -23,33 +23,13 @@
 
 namespace vitis { namespace ai{ 
 
-template <typename Interface>
-class TConfigurableDpuTask2 : public Interface {
- public:
-  explicit TConfigurableDpuTask2(const std::string& model_name)
-      : configurable_dpu_task_{
-            ConfigurableDpuTask::create(model_name, false)} {};
-  TConfigurableDpuTask2(const TConfigurableDpuTask2&) = delete;
-  virtual ~TConfigurableDpuTask2(){};
-
-  virtual size_t get_input_batch() const override {
-    return configurable_dpu_task_->get_input_batch();
-  }
-  virtual PointPillarsResult run(const V1F&) override { return PointPillarsResult{}; }
-  virtual PointPillarsResult run(const float*, int len) override { return PointPillarsResult{}; }
-  virtual void do_pointpillar_display(vitis::ai::PointPillarsResult&, int flag, vitis::ai::DISPLAY_PARAM&, 
-                  cv::Mat&, cv::Mat&, int, int, ANNORET& annoret) override {}
- public: // change here: from protected to public
-  std::unique_ptr<ConfigurableDpuTask> configurable_dpu_task_;
-};
-
 class PointPillarsImp:  public PointPillars
 {
-    vitis::ai::TConfigurableDpuTask2<PointPillars> m0_;
-    vitis::ai::TConfigurableDpuTask2<PointPillars> m1_;
 public:
+  std::unique_ptr<vitis::ai::ConfigurableDpuTask> m0_;
+  std::unique_ptr<vitis::ai::ConfigurableDpuTask> m1_;
   virtual size_t get_input_batch() const override {
-    return m0_.configurable_dpu_task_->get_input_batch();
+    return m0_->get_input_batch();
   }
   PointPillarsImp(const std::string &model_name, const std::string &model_name1);
   virtual ~PointPillarsImp();
@@ -57,9 +37,13 @@ public:
 private:
   virtual PointPillarsResult run( const V1F& v1f) override;
   virtual PointPillarsResult run( const float*, int) override;
+  virtual std::vector<PointPillarsResult> run( const V2F& v2f) override;
+  virtual std::vector<PointPillarsResult> run( const std::vector<const float*>&,const std::vector<int>&) override;
   virtual void do_pointpillar_display(PointPillarsResult& res, int flag, DISPLAY_PARAM& g_test,
             cv::Mat& rgb_map, cv::Mat& bev_map, int, int, ANNORET& annoret)  override;
 
+  int batchnum = 0;
+  int realbatchnum = 0;
   std::unique_ptr<PointPillarsPost> post_;
   std::unique_ptr<PointPillarsPre> pre_;
 };

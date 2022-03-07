@@ -228,10 +228,10 @@ def quantization(title='optimize',
   # fast finetune model or load finetuned parameter before test
   if finetune == True:
       ft_loader, _ = load_data(
-          subset_len=1024,
+          subset_len=5120,
           train=False,
           batch_size=batch_size,
-          sample_method=None,
+          sample_method='random',
           data_dir=data_dir,
           model_name=model_name)
       if quant_mode == 'calib':

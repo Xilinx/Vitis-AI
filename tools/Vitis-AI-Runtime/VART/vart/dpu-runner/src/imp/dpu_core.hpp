@@ -16,6 +16,7 @@
 #pragma once
 #include <memory>
 #include <mutex>
+#include <array>
 
 #include "../dpu_reg.hpp"
 #include "hbm_config.hpp"

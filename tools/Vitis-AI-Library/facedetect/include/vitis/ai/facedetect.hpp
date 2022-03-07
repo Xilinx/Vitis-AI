@@ -92,6 +92,10 @@ class FaceDetect : public ConfigurableDpuTaskBase {
  public:
   virtual ~FaceDetect();
   /**
+   * @endcond
+   */
+
+  /**
    * @brief Function to get detect threshold.
    * @return The detect threshold. The value ranges from 0 to 1.
    */
@@ -118,7 +122,7 @@ class FaceDetect : public ConfigurableDpuTaskBase {
   virtual FaceDetectResult run(const cv::Mat& img) = 0;
 
   /**
-   * @brief Function to get running results of the facedetect neuron network in
+   * @brief Function to get running results of the facedetect neural network in
    * batch mode.
    *
    * @param imgs Input data of input images (std:vector<cv::Mat>). The size of
@@ -133,7 +137,7 @@ class FaceDetect : public ConfigurableDpuTaskBase {
       const std::vector<cv::Mat>& imgs) = 0;
 
   /**
-   * @brief Function to get running results of the facedetect neuron network in
+   * @brief Function to get running results of the facedetect neural network in
    * batch mode , used to receive user's xrt_bo to support zero copy.
    *
    * @param input_bos The vector of vart::xrt_bo_t.

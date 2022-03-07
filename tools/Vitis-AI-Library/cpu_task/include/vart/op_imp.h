@@ -13,14 +13,82 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
-#include <functional>
 
-#include "vart/runner_helper.hpp"
+/*
+ * Filename: op_imp.h
+ *
+ * Description: A utility macro DEF_XIR_OP_IMP to define customized xir::Op
+ * implementation
+ *
+ */
+
+#pragma once
+
+/** @brief this macro is used to define an entry point for a customized xir::Op
+ *
+ * `KLASS` is required to have a public member function KLASS::calculate(...)
+ * and a constructor function KLASS::KLASS(xir::Op* op, xir::Attrs* attrs)
+ *
+ * A KLASS object is created by the CPU runner for every xir::Op on a
+ * xir::Graph, when it is created parameter `op` is passed to the
+ * constructor. `attrs` is runner level attributes which is shared
+ * among all runners, it is not in use yet.
+ *
+ * It is encouraged to read op attributes via xir::Op::get_attr in
+ * the constructor for efficiency purpose.
+ *
+ * `calculate` function has one `output` parameter and zero or more `input`
+ parameter as below
+ *
+ * @code
+   KLASS::calculate(T1 output, T2 input ...)
+   @endcode
+
+ * It is a fatal error if the number of input parameters does not
+ * match the xir::Op definition, i.e. xir::OpDef, see XIR user manual
+ * for more details about xir::Op definition.
+ *
+ * The type of output must be vart::simple_tensor_buffer_t<T> where T
+ * can be `void`, `uint8_t`, `int8_t` and `float`. It is a fatal error
+ * if the type does not match the xir::Op definition.
+ *
+ * The types of input parameters could be one of following type
+ *
+ * 1. vart::simple_tensor_buffer<T> : the parameter is required and occured only
+ once.
+ *
+ * 2. std::unique_ptr<vart::simple_tensor_buffer<T>> : the parameter
+ * is optional and occured only once if it is present. It is nullptr
+ * otherwise.
+ *
+ * 3. std::vector<vart::simple_tensor_buffer<T>> : the parameter is
+ * required and occured zero or more times.
+ *
+ * 4. std::unique_ptr<std::vector<vart::simple_tensor_buffer<T>>> :
+ * the parameter is optional and occured zero or more times if it is
+ * present. It is nullptr otherwise.
+ *
+ * It is a fatal error if the types of input parameters do not match
+ * the xir::Op definition.
+ *
+ */
+
+#define DEF_XIR_OP_IMP(KLASS)                                                  \
+  extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {               \
+    return vart::experimental::make_vart_opt_imp<KLASS>();                     \
+  }
+
+#include <functional>
+#include <xir/op/op_def.hpp>
+namespace xir {
+std::string to_string(
+    const xir::OpDef* opdef);  // this function is defined in
+                               // runner_helper/src/runner_helper.cpp
+}
 #include "vart/simple_tensor_buffer.hpp"
 #ifdef __cplusplus
 #include <vart/vart.h>
-#include <xir/xir.h>
+#include <xir/cxir.h>
 extern "C" {
 // we define the interface in C
 #endif
@@ -102,11 +170,24 @@ vart_op_imp_t make_vart_opt_imp() {
 
 namespace experimental {
 
+template <class T, class = void>
+struct HasOpMemVar {
+  static constexpr bool value = false;
+};
+template <class T>
+struct HasOpMemVar<T, std::void_t<decltype(std::declval<T*>()->op)>> {
+  static constexpr bool value = std::is_same_v<
+      decltype(std::declval<T*>()->op),
+      std::add_const_t<std::add_pointer_t<std::add_const_t<xir::Op>>>>;
+};
+template <class T>
+inline constexpr bool HasOpMemVar_v = HasOpMemVar<T>::value;
+
 struct OpImpBase {
-  explicit OpImpBase(xir::Op* op1, xir::Attrs* attrs1)
+  explicit OpImpBase(const xir::Op* op1, xir::Attrs* attrs1)
       : op{op1}, attrs{attrs1} {};
-  xir::Op* op;
-  xir::Attrs* attrs;
+  const xir::Op* const op;
+  xir::Attrs* const attrs;
 };
 
 template <typename T>
@@ -114,6 +195,20 @@ struct arg_converter_t {
   static T convert(vart::OpImpArg& arg, const xir::OpDef* opdef,
                    size_t arg_index);
 };
+template <typename T, class = void>
+struct arg_convertible_t : public std::false_type {};
+template <typename T>
+inline constexpr bool arg_convertible_v = arg_convertible_t<T>::value;
+
+inline int required_input_num(const xir::OpDef* opdef) {
+  auto size = 0;
+  for (auto argdef : opdef->input_args()) {
+    if (argdef.occur_type == xir::OpArgDef::REQUIRED ||
+        argdef.occur_type == xir::OpArgDef::REQUIRED_AND_REPEATED)
+      size++;
+  }
+  return size;
+}
 
 template <typename R, typename T, typename... Args, size_t... Index>
 int calculate_proxy0(vart::TensorBuffer* output, T* self,
@@ -121,9 +216,20 @@ int calculate_proxy0(vart::TensorBuffer* output, T* self,
                      std::vector<vart::OpImpArg>& inputs,
                      std::integer_sequence<size_t, Index...> int_seq) {
   auto simple_output = simple_tensor_buffer_t<R>::create(output);
+  static_assert(HasOpMemVar_v<T>,
+                "class T must has a public member variable op whose type is "
+                "const xir::Op* const, for example: "
+                "\n    class MyOp {"
+                "\n    public:"
+                "\n       MyOp(const xir::Op* op1, xir::Attrs* attrs1)"
+                "\n          : op{op1}, attrs{attrs1} {};"
+                "\n"
+                "\n       const xir::Op* const op;"
+                "\n       xir::Attrs* const attrs;"
+                "\n    }");
   auto op_def = self->op->get_opdef();
-  CHECK_EQ(op_def->input_args().size(), sizeof...(Index))
-      << "num of input arguments mismatch."
+  CHECK_LE(required_input_num(op_def), sizeof...(Index))
+      << "num of required input arguments mismatch."
       << "op: " << to_string(op_def);
   return std::invoke(
       f, self, simple_output,
@@ -138,11 +244,21 @@ int calculate_proxy(vart::TensorBuffer* output, T* self,
                           std::make_index_sequence<sizeof...(Args)>());
 }
 
-template <typename T>
-T arg_converter_t<T>::convert(vart::OpImpArg& arg, const xir::OpDef* opdef,
-                              size_t arg_index) {
-  LOG(FATAL) << "cannot convert argument: T=" << typeid(T).name();
-  return T();
+// Note: naming ArgType for better error message.
+template <typename ArgType>
+ArgType arg_converter_t<ArgType>::convert(vart::OpImpArg& arg,
+                                          const xir::OpDef* opdef,
+                                          size_t arg_index) {
+  static_assert(
+      arg_convertible_v<ArgType>,
+      "cannot convert argument type T, only following type are supported."
+      "\n   1. vart::simple_tensor_buffer_t<U>"
+      "\n   2. unique_ptr<vart::simple_tensor_buffer_t><U>"
+      "\n   3. vector<vart::simple_tensor_buffer_t><U>"
+      "\n   4. unique_ptr<vector<vart::simple_tensor_buffer_t>><U>"
+      "\n   where U is int8_t, uint8_t, float or void.");
+  LOG(FATAL) << "cannot convert argument: ArgType=" << typeid(ArgType).name();
+  return ArgType();
 }
 
 template <typename T>
@@ -154,7 +270,8 @@ struct arg_converter_t<simple_tensor_buffer_t<T>> {
     CHECK_LT(arg_index, input_arg_defs.size()) << "wrong number of argument";
     auto& arg_def = input_arg_defs[arg_index];
     CHECK(arg_def.occur_type == xir::OpArgDef::REQUIRED)
-        << "it must be required single argument.";
+        << "it must be required single argument."
+        << "\nop def:" << to_string(opdef);
     // CHECK_EQ(arg.arg_name, arg_def.name) << "name mismatch";
     CHECK_EQ(arg.args.size(), 1u)
         << "it must be single argument. name=" << arg.arg_name;
@@ -192,8 +309,9 @@ struct arg_converter_t<std::vector<simple_tensor_buffer_t<T>>> {
     auto input_arg_defs = opdef->input_args();
     CHECK_LT(arg_index, input_arg_defs.size()) << "wrong number of argument";
     auto& arg_def = input_arg_defs[arg_index];
-    CHECK(arg_def.occur_type == xir::OpArgDef::REQUIRED_AND_REPEATED)
-        << "it must be required_and_repeated argument.";
+    CHECK(arg_def.occur_type == xir::OpArgDef::REQUIRED_AND_REPEATED ||
+          arg_def.occur_type == xir::OpArgDef::REPEATED)
+        << "it must be required_and_repeated or required argument.";
     CHECK_EQ(arg.arg_name, arg_def.name)
         << "name mismatch! opdef:" << to_string(opdef);
     auto ret = std::vector<simple_tensor_buffer_t<T>>();
@@ -209,7 +327,7 @@ template <typename T>
 vart_op_imp_t make_vart_opt_imp() {
   vart_op_imp_t ret;
   ret.init = [](const xir_op_t op, xir_attrs_t attrs) -> void* {
-    return reinterpret_cast<void*>(new T(reinterpret_cast<xir::Op*>(op),
+    return reinterpret_cast<void*>(new T(reinterpret_cast<const xir::Op*>(op),
                                          reinterpret_cast<xir::Attrs*>(attrs)));
   };
   ret.cleanup = [](void* self) -> void { delete reinterpret_cast<T*>(self); };
@@ -230,7 +348,6 @@ vart_op_imp_t make_vart_opt_imp() {
   };
   return ret;
 }
-
 }  // namespace experimental
 }  // namespace vart
 #endif

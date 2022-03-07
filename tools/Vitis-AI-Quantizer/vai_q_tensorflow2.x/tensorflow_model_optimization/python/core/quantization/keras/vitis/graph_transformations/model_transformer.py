@@ -31,6 +31,12 @@ K = tf.keras.backend
 logger = common_utils.VAILogger
 
 
+def _is_tf_version_above(major, minor):
+  """Check if tensorflow version is above (or equal) to major.minor."""
+  tf_version = tf.__version__.split('.')
+  return int(tf_version[0]) == major and int(tf_version[1]) >= minor
+
+
 class ModelTransformer(object):
   """Matches patterns to apply transforms in a tf.keras model graph."""
 
@@ -73,14 +79,24 @@ class ModelTransformer(object):
            and not isinstance(model, keras.Sequential) \
            and model._is_graph_network    # pylint: disable=protected-access
 
+  @staticmethod
+  def _is_tf_op_lambda_layer(layer):
+    """Check if the layer is a TFOpLambda layer."""
+    return layer['class_name'] == 'TFOpLambda'
+
   def _get_consuming_layers(self, check_layer):
     """Returns all the layers which are out nodes from the layer."""
     consuming_layers = []
     for layer in self._config['layers']:
       for inbound_node in layer['inbound_nodes']:
-        for connection_info in inbound_node:
-          if connection_info[0] == self._get_layer_name(check_layer):
+        # Fix for TFOpLambda when tensorflow versions >=2.4
+        if _is_tf_version_above(2, 4) and self._is_tf_op_lambda_layer(layer):
+          if inbound_node[0] == self._get_layer_name(check_layer):
             consuming_layers.append(layer)
+        else:
+          for connection_info in inbound_node:
+            if connection_info[0] == self._get_layer_name(check_layer):
+              consuming_layers.append(layer)
     return consuming_layers
 
   def _get_output_consumers(self, check_layer):
@@ -102,19 +118,15 @@ class ModelTransformer(object):
 
   def _get_layers(self, layer_names):
     """Returns layers with given names, keeps the order."""
-    layers = []
-    for name in layer_names:
-      for layer in self._config['layers']:
-        if self._get_layer_name(layer) == name:
-          layers.append(layer)
-          found = True
-          break
-      if not found:
-        logger.error('Layer {} not found in the model.'.format(name))
-    return layers
+    return [
+        layer for layer in self._config['layers']
+        if self._get_layer_name(layer) in layer_names
+    ]
 
-  def _get_layer_weights(self, layer_name):
-    return self._layer_weights_map.get(layer_name, {})
+  def _get_layer_weights(self, layer):
+    layer_name = self._get_layer_name(layer)
+    weights = self._layer_weights_map.get(layer_name, {})
+    return weights
 
   def _get_layer_metadata(self, layer_name):
     return self._layer_metadata_map.get(layer_name, {})
@@ -191,7 +203,15 @@ class ModelTransformer(object):
     """Get the names of a layer's input layers."""
     if self._is_functional_model(self.model):
       inbound_nodes = layer['inbound_nodes']
-      return [connection_info[0] for connection_info in inbound_nodes[0]]
+      # Fix for TFOpLambda when tensorflow versions >=2.4
+      input_layer_names = []
+      for inbound_node in inbound_nodes:
+        if _is_tf_version_above(2, 4) and self._is_tf_op_lambda_layer(layer):
+          input_layer_names.append(inbound_node[0])
+        else:
+          for connection_info in inbound_node:
+            input_layer_names.append(connection_info[0])
+      return input_layer_names
     else:  # Sequential model.
       layers = self._config['layers']
       i = layers.index(layer)
@@ -200,10 +220,6 @@ class ModelTransformer(object):
         return []
       else:
         return [layers[i - 1]['config']['name']]
-
-  def _is_tf_op_layer(self, layer):
-    """Check if the layer is a TensorflowOpLayer."""
-    return
 
   def _match_layer_with_inputs(self, layer, pattern, is_head_node):
     """Match pattern at this layer, and continue to match at its inputs."""
@@ -217,8 +233,7 @@ class ModelTransformer(object):
 
     if len(pattern.inputs) == 0:
       # Leaf layer in pattern.
-      return LayerNode(layer,
-                       self._get_layer_weights(self._get_layer_name(layer)), [],
+      return LayerNode(layer, self._get_layer_weights(layer), [],
                        self._get_layer_metadata(self._get_layer_name(layer)))
 
     # There is a possible edge case where a single layer may output multiple
@@ -247,8 +262,7 @@ class ModelTransformer(object):
         return None
       input_match_layer_nodes.append(match_layer_node)
 
-    return LayerNode(layer,
-                     self._get_layer_weights(self._get_layer_name(layer)),
+    return LayerNode(layer, self._get_layer_weights(layer),
                      input_match_layer_nodes,
                      self._get_layer_metadata(self._get_layer_name(layer)))
 
@@ -321,10 +335,16 @@ class ModelTransformer(object):
     consuming_layers = self._get_consuming_layers(match_layer_node.layer)
     for consumer in consuming_layers:
       for inbound_node in consumer['inbound_nodes']:
-        for connection_info in inbound_node:
-          if connection_info[0] == self._get_layer_name(match_layer_node.layer):
-            connection_info[0] = self._get_layer_name(
-                replacement_layer_node.layer)
+        # Fix for TFOpLambda when tensorflow versions >=2.4
+        if _is_tf_version_above(2, 4) and self._is_tf_op_lambda_layer(consumer):
+          if inbound_node[0] == self._get_layer_name(match_layer_node.layer):
+            inbound_node[0] = self._get_layer_name(replacement_layer_node.layer)
+        else:
+          for connection_info in inbound_node:
+            if connection_info[0] == self._get_layer_name(
+                match_layer_node.layer):
+              connection_info[0] = self._get_layer_name(
+                  replacement_layer_node.layer)
 
     output_consumers = self._get_output_consumers(match_layer_node.layer)
     for output_consumer in output_consumers:
@@ -359,15 +379,9 @@ class ModelTransformer(object):
     # the leaves in the original layer.
 
     original_leaf_layers = self._get_leaf_layers(match_layer_node)
-    original_inbound_nodes = [
-        layer['inbound_nodes'] for layer in original_leaf_layers
-    ]
-
-    for inbound_node in original_inbound_nodes:
-      for connection_info in inbound_node:
-        # For transformation of TFOplambda layers, need to clear the call_kwargs
-        # in the connection_info.
-        connection_info[0][3] = {}
+    #  original_inbound_nodes = [
+    #      layer['inbound_nodes'] for layer in original_leaf_layers
+    #  ]
 
     replacement_leaf_layers = self._get_leaf_layers(replacement_layer_node)
 
@@ -381,9 +395,39 @@ class ModelTransformer(object):
     if len(original_leaf_layers) != len(replacement_leaf_layers):
       raise RuntimeError('Different size of leaf layers not supported yet.')
 
-    for original_inbound_nodes, replacement_leaf_layer in zip(
-        original_inbound_nodes, replacement_leaf_layers):
-      replacement_leaf_layer['inbound_nodes'] = original_inbound_nodes
+    # TODO(Xiao) Currently we do not support generation of TFOpLambda layers,
+    # as it needs extra configurations in inbound_nodes.
+    # As TFOpLambda layers have different structure of inbound_nodes than normal layers,
+    # we need to pay more attention to them:
+    #   normal leaf layer -> normal leaf layer: copy inbound_nodes
+    #   lambda leaf layer -> normal leaf layer: convert inbound_nodes, erase params
+    #   normal leaf layer -> lambda leaf layer: convert inbound_nodes, need extra params (not supported)
+    #   lambda leaf layer -> lambda leaf layer: copy inbound_nodes
+
+    for original_leaf_layer, replacement_leaf_layer in zip(
+        original_leaf_layers, replacement_leaf_layers):
+      if self._is_tf_op_lambda_layer(replacement_leaf_layer):
+        if self._is_tf_op_lambda_layer(original_leaf_layer):
+          logger.debug(
+              'Copy leaf_layer\'s inbound_nodes from TFOpLambda layer `{}` to `{}`'
+              .format(original_leaf_layer, replacement_leaf_layer))
+          replacement_leaf_layer['inbound_nodes'] = original_leaf_layer[
+              'inbound_nodes']
+        else:
+          logger.error(
+              'TFOpLambda layer `{}` is not supported as generated replacement leaf layer.'
+              .format(replacement_leaf_layer))
+      elif self._is_tf_op_lambda_layer(original_leaf_layer):
+        replacement_leaf_layer['inbound_nodes'] = [
+            original_leaf_layer['inbound_nodes']
+        ]
+        if _is_tf_version_above(2, 4):
+          replacement_leaf_layer['inbound_nodes'][0][0][3] = {}
+        else:
+          replacement_leaf_layer['inbound_nodes'][0][0][0][3] = {}
+      else:
+        replacement_leaf_layer['inbound_nodes'] = original_leaf_layer[
+            'inbound_nodes']
 
     # 4. Remove the original matched layers
     layers_to_remove_names = self._get_layer_names(match_layer_node)
@@ -454,36 +498,97 @@ class ModelTransformer(object):
     _add_replacement_nodes(first_layer_removed_index, replacement_nodes)
 
   @staticmethod
-  def _weight_name(name):
+  def _is_custom_layer(layer):
+    if layer is None:
+      return False
+
+    real_custom_objects = {"CustomOpWrapper", "Vitis>CustomOpWrapper"}
+    custom_objects = tf.keras.utils.get_custom_objects()
+    # TODO: get vitis_objects automatically
+    vitis_objects = set([
+        'Vitis>CustomOpWrapper', 'Vitis>NoQuantizeActivation',
+        'Vitis>QuantizeAwareActivation', 'Vitis>QuantizeWrapper',
+        'Vitis>LastValueMinMaxQuantizer', 'Vitis>MovingAvgMinMaxQuantizer',
+        'Vitis>LastValueQuantPosQuantizer', 'Vitis>LastValueLogThQuantizer',
+        'Vitis>VitisQuantizeConfig', 'Vitis>NoQuantizeConfig',
+        'Vitis>VitisQuantize', 'Vitis>VitisSigmoid',
+        'Vitis>VitisGlobalAveragePooling2D', 'Vitis>AveragePooling2D',
+        'Vitis>VitisConvBN', 'Vitis>VitisConvBNQuantize',
+        'Vitis>VitisDepthwiseConvBN', 'Vitis>VitisDepthwiseConvBNQuantize',
+        'QuantizeAwareActivation', 'NoQuantizeActivation', 'QuantizeWrapper',
+        'CustomOpWrapper', 'LastValueMinMaxQuantizer',
+        'LastValueQuantPosQuantizer', 'LastValueLogThQuantizer',
+        'VitisQuantizeConfig', 'NoQuantizeConfig', 'Vitis8BitQuantizeConfig',
+        'VitisQuantize', 'QuantizeLayer', 'VitisSigmoid',
+        'VitisAveragePooling2D', 'VitisGlobalAveragePooling2D'
+    ])
+
+    # remove "CustomOpWrapper", "Vitis>CustomOpWrapper" from vitis_objects
+    vitis_objects = vitis_objects - real_custom_objects
+    for cls in custom_objects:
+      if cls not in vitis_objects:
+        real_custom_objects.add(cls)
+
+    if isinstance(layer, dict):
+      cls_name = layer['class_name']
+    else:
+      cls_name = layer.__class__.__name__
+    return (cls_name in real_custom_objects)
+
+  @staticmethod
+  def _weight_name(name, layer=None):
     """Extracts the weight name by removing layer from TF variable name.
 
     For example, returns 'kernel:0' for 'dense_2/kernel:0'.
 
     Args:
       name: TensorFlow variable name.
+      layer: a keras layer or a layer config dict
 
     Returns:
       Extracted weight name.
     """
-    return name.split('/')[-1]
+    if ModelTransformer._is_custom_layer(layer):
+      return name
+    else:
+      return name.split('/')[-1]
 
   def _get_keras_layer_weights(self, keras_layer):
     """Returns a map of weight name, weight matrix. Keeps keras ordering."""
     weights_map = collections.OrderedDict()
     for weight_tensor, weight_numpy in \
         zip(keras_layer.weights, keras_layer.get_weights()):
-      weights_map[self._weight_name(weight_tensor.name)] = weight_numpy
+      weights_map[self._weight_name(weight_tensor.name,
+                                    keras_layer)] = weight_numpy
 
     return weights_map
 
   def _set_layer_weights(self, layer, weights_map):
     """Sets the values of weights in a Keras layer."""
-
     weight_value_tuples = []
+    weight_names = []
     for weight_tensor in layer.weights:
-      weight_name = self._weight_name(weight_tensor.name)
+      weight_names.append(self._weight_name(weight_tensor.name, layer))
+
+    # for custom layer, if not specify arg name when init layer,
+    # every time from_config operation will init a new layer
+    if self._is_custom_layer(layer):
+      logger.info("setting custom layer weights, layer name: {}".format(
+          layer.name))
+      weights_map_new = collections.OrderedDict()
+      for weight_name_old, weight_name_new in zip(weights_map.keys(),
+                                                  weight_names):
+        weights_map_new[weight_name_new] = weights_map[weight_name_old]
+      weights_map_old = weights_map
+      weights_map = weights_map_new
+
+    for weight_tensor in layer.weights:
+      weight_name = self._weight_name(weight_tensor.name, layer)
       if weight_name in weights_map:
         weight_value_tuples.append((weight_tensor, weights_map[weight_name]))
+    if weight_value_tuples == []:
+      logger.warning("Got empty weight_value_tuples during set layer weights," \
+              "layer name: {}".format(layer.name))
 
     K.batch_set_value(weight_value_tuples)
 
@@ -594,9 +699,9 @@ class ModelTransformer(object):
                                                        custom_objects)
 
     for layer in transformed_model.layers:
-      weights = self._layer_weights_map.get(layer.name)
-      if weights:
-        self._set_layer_weights(layer, weights)
+      weights_map = self._layer_weights_map.get(layer.name)
+      if weights_map:
+        self._set_layer_weights(layer, weights_map)
 
     return transformed_model, copy.deepcopy(self._layer_metadata_map)
 

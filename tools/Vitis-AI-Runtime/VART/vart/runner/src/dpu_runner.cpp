@@ -14,20 +14,38 @@
  * limitations under the License.
  */
 
-#include <dlfcn.h>
 #include <json-c/json.h>
 
 #include <UniLog/UniLog.hpp>
+#include <filesystem>
 #include <xir/graph/graph.hpp>
 #include <xir/graph/subgraph.hpp>
 
 #include "vart/runner.hpp"
 #include "vitis/ai/env_config.hpp"
-
+#include "vitis/ai/plugin.hpp"
 DEF_ENV_PARAM(DEBUG_RUNNER, "0");
 
 namespace vart {
-
+static std::string guess_plugin_name(const std::string& name) {
+  auto ret = name;
+#if _WIN32
+  auto sz = ret.size();
+  auto begin_with_lib =
+      sz > 3u && ret[0] == 'l' && ret[1] == 'i' && ret[2] == 'b';
+  if (begin_with_lib) {
+    ret = ret.substr(3);
+  }
+  sz = ret.size();
+  auto end_with_so =
+      sz > 3u && ret[sz - 3] == '.' && ret[sz - 2] == 's' && ret[2] == 'o';
+  if (end_with_so) {
+    ret = ret.substr(0, sz - 3u);
+  }
+  ret = ret + ".dll";
+#endif
+  return ret;
+}
 //# Bring back older meta json read utility functions
 static std::string safe_read_string_with_default(
     json_object* value, const std::string& key,
@@ -80,8 +98,11 @@ static std::vector<std::string> safe_read_string_or_vec_string(
 }
 static json_object* read_json_from_directory(
     const std::string& model_directory) {
-  auto meta_filename = model_directory + "/" + "meta.json";
-  json_object* value = json_object_from_file(meta_filename.c_str());
+  auto meta_filename = std::filesystem::path(model_directory) / "meta.json";
+  // Why (const char*)?: json-c might have a bad design in API, it is wchar_t *
+  // on Windows.
+  json_object* value =
+      json_object_from_file((const char*)meta_filename.c_str());
   CHECK(value != nullptr) << "failed to read meta file! filename="
                           << meta_filename;
   CHECK(json_object_is_type(value, json_type_object))
@@ -97,14 +118,18 @@ static std::string safe_read_string_as_file_name(json_object* value,
                                                  const std::string& key,
                                                  const std::string& dirname) {
   auto filename = safe_read_string(value, key);
-  return (filename[0] == '/') ? filename : dirname + "/" + filename;
+  return (filename[0] == std::filesystem::path::preferred_separator)
+             ? filename
+             : (std::filesystem::path(dirname) / filename).string();
 }
 
 static std::string safe_read_string_as_file_name_with_default_value(
     json_object* value, const std::string& key, const std::string& dirname,
     const std::string& default_value) {
   auto filename = safe_read_string_with_default(value, key, default_value);
-  return (filename[0] == '/') ? filename : dirname + "/" + filename;
+  return (filename[0] == std::filesystem::path::preferred_separator)
+             ? filename
+             : (std::filesystem::path(dirname) / filename).string();
 }
 
 static DpuMeta read_dpu_meta_from_value(json_object* value,
@@ -128,13 +153,15 @@ static std::vector<std::unique_ptr<vart::Runner>>* create_dpu_runner_by_meta(
   typedef std::vector<std::unique_ptr<vart::Runner>>* (*INIT_FUN)(
       const DpuMeta& dpuMeta);
   INIT_FUN init_fun = NULL;
-  auto handle = dlopen(dpuMeta.lib.c_str(), RTLD_LAZY);
+  auto handle = vitis::ai::open_plugin(guess_plugin_name(dpuMeta.lib),
+                                       vitis::ai::scope_t::PUBLIC);
   CHECK(handle != NULL) << "cannot open library!"
-                        << " lib=" << dpuMeta.lib << ";error=" << dlerror();
-  dlerror();
-  init_fun = (INIT_FUN)dlsym(handle, "create_runner");
+                        << " lib=" << dpuMeta.lib
+                        << ";error=" << vitis::ai::plugin_error(handle);
+  init_fun = (INIT_FUN)vitis::ai::plugin_sym(handle, "create_runner");
   CHECK(init_fun != NULL) << "cannot load symbol 'create_runner'!"
-                          << "! lib=" << dpuMeta.lib << ";error=" << dlerror();
+                          << "! lib=" << dpuMeta.lib
+                          << ";error=" << vitis::ai::plugin_error(handle);
   return init_fun(dpuMeta);
 }
 
@@ -154,14 +181,17 @@ std::unique_ptr<Runner> Runner::create_runner(const xir::Subgraph* subgraph,
       << "! subgraph name: " << subgraph->get_name();
   typedef vart::Runner* (*INIT_FUN)(const xir::Subgraph* subgraph);
   INIT_FUN init_fun = NULL;
-  auto handle = dlopen(iter_lib->second.c_str(), RTLD_LAZY);
+  auto handle = vitis::ai::open_plugin(guess_plugin_name(iter_lib->second),
+                                       vitis::ai::scope_t::PUBLIC);
   UNI_LOG_CHECK(handle != NULL, VART_RUNNER_CONSTRUCTION_FAIL)
       << "cannot open library!"
-      << " lib=" << iter_lib->second << ", error=" << dlerror();
-  init_fun = (INIT_FUN)dlsym(handle, "create_runner");
+      << " lib=" << iter_lib->second
+      << ", error=" << vitis::ai::plugin_error(handle);
+  init_fun = (INIT_FUN)vitis::ai::plugin_sym(handle, "create_runner");
   UNI_LOG_CHECK(init_fun != NULL, VART_RUNNER_CONSTRUCTION_FAIL)
       << "cannot load symbol 'create_runner'!"
-      << " lib=" << iter_lib->second << ", error=" << dlerror();
+      << " lib=" << iter_lib->second
+      << ", error=" << vitis::ai::plugin_error(handle);
   return std::unique_ptr<vart::Runner>(init_fun(subgraph));
 }
 
@@ -231,26 +261,30 @@ std::unique_ptr<Runner> Runner::create_runner_with_attrs(
           << "] in attrs, use default lib in the subgraph, i.e. " << libname;
     }
   }
-  auto handle = dlopen(libname.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+  auto handle = vitis::ai::open_plugin(guess_plugin_name(libname),
+                                       vitis::ai::scope_t::PUBLIC);
   UNI_LOG_CHECK(handle != NULL, VART_RUNNER_CONSTRUCTION_FAIL)
       << "cannot open library!"
-      << " lib=" << libname << ", error=" << dlerror();
+      << " lib=" << libname << ", error=" << vitis::ai::plugin_error(handle);
   // finally we look up for the init function.
-  init_fun = (INIT_FUN)dlsym(handle, "create_runner_with_attrs");
+  init_fun =
+      (INIT_FUN)vitis::ai::plugin_sym(handle, "create_runner_with_attrs");
   UNI_LOG_CHECK(init_fun != NULL, VART_RUNNER_CONSTRUCTION_FAIL)
       << "cannot load symbol 'create_runner'!"
-      << " lib=" << iter_lib->second << ", error=" << dlerror();
+      << " lib=" << iter_lib->second
+      << ", error=" << vitis::ai::plugin_error(handle);
   // attrs
   if (attrs && attrs->has_attr("interception")) {
     auto interception_lib = attrs->get_attr<std::string>("interception");
     typedef vart::Runner* (*INTERCEPT_INIT_FUN)(
         INIT_FUN fun, const xir::Subgraph* subgraph, xir::Attrs* attrs);
-    auto interception_handle =
-        dlopen(interception_lib.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+    auto interception_handle = vitis::ai::open_plugin(
+        guess_plugin_name(interception_lib), vitis::ai::scope_t::PUBLIC);
     UNI_LOG_CHECK(interception_handle != NULL, VART_RUNNER_CONSTRUCTION_FAIL)
         << "cannot open library!"
-        << " lib=" << interception_lib << ", error=" << dlerror();
-    auto interception_fun = (INTERCEPT_INIT_FUN)dlsym(
+        << " lib=" << interception_lib
+        << ", error=" << vitis::ai::plugin_error(handle);
+    auto interception_fun = (INTERCEPT_INIT_FUN)vitis::ai::plugin_sym(
         interception_handle, "create_runner_with_attrs");
     LOG_IF(INFO, ENV_PARAM(DEBUG_RUNNER))
         << "create runner via interception lib " << interception_lib;

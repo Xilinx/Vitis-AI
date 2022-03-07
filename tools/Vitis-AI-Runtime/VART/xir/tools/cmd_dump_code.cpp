@@ -16,13 +16,11 @@
 
 #include "cmd_dump_code.hpp"
 
-#include <dirent.h>
 #include <glog/logging.h>
 #include <google/protobuf/text_format.h>
-#include <openssl/md5.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -31,19 +29,12 @@
 
 using namespace std;
 static void mkdir_minus_p(const std::string& dirname) {
-  struct stat st = {0};
-  if (stat(dirname.c_str(), &st) == -1) {
-    PCHECK(mkdir(dirname.c_str(), 0777) == 0)
-        << "mkdir error; dirname=" << dirname;
-  }
-  PCHECK(stat(dirname.c_str(), &st) == 0)
-      << "stat dir error: dirname=" << dirname;
-  CHECK(S_ISDIR(st.st_mode)) << "error not a directory: dirname=" << dirname;
+  CHECK(std::filesystem::create_directories(dirname))
+      << "cannot create directories: " << dirname;
 }
 
 static bool is_exist_path(const std::string& filename) {
-  struct stat buffer;
-  return (stat(filename.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode));
+  return std::filesystem::exists(filename);
 }
 
 static std::string get_parent_path(const std::string& path) {

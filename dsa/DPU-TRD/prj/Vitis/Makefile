@@ -14,8 +14,8 @@ VIVADO:=${VIVADO_ROOT}/bin/vivado
 MPSOC_CXX:=aarch64-linux-gnu-g++
 TARGET := hw
 
-#EDGE_COMMON_SW := /proj/rdi/staff/jiaz/common_rootfs/xilinx-zynqmp-common-v2020.2
-#SDX_PLATFORM = /proj/xbuilds/2021.1_daily_latest/internal_platforms/xilinx_zcu102_base_202110_1/xilinx_zcu102_base_202110_1.xpfm
+#EDGE_COMMON_SW = /proj/xbuilds/2021.1_0609_1/internal_platforms/sw/zynqmp/xilinx-zynqmp-common-v2021.1
+#SDX_PLATFORM = /proj/xbuilds/2021.1_0609_1/internal_platforms/xilinx_zcu102_base_202110_1/xilinx_zcu102_base_202110_1.xpfm 
 
 XOCC_OPTS = -t ${TARGET} --platform ${SDX_PLATFORM} --save-temps --config ${DIR_PRJ}/config_file/prj_config --xp param:compiler.userPostSysLinkOverlayTcl=${DIR_PRJ}/syslink/strip_interconnects.tcl 
 dpu_HDLSRCS= ${DIR_PRJ}/kernel_xml/dpu/kernel.xml\

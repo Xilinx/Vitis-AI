@@ -16,6 +16,8 @@
 
 #include "vitis/ai/nnpp/classification.hpp"
 
+#include <glog/logging.h>
+
 #include <iostream>
 #include <queue>
 #include <vector>
@@ -37,6 +39,9 @@ const char* ClassificationResult::lookup(int index) {
   static const char* table_fmnist[] = {
 #include "fmnist_label.inc"
   };
+  static const char* table_orien[] = {
+#include "orien_label.inc"
+  };
 
   if (index < 0) {
     return "";
@@ -45,6 +50,8 @@ const char* ClassificationResult::lookup(int index) {
     return table_cifar10[index];
   } else if (this->type == 2) {
     return table_fmnist[index];
+  } else if (this->type == 3) {
+    return table_orien[index];
   }
   return table_1000[index];
 }  // namespace ai
@@ -84,20 +91,31 @@ ClassificationResult classification_post_process(
   } else {
     virtual_output.push_back(output_tensors[0]);
   }
+  auto use_graph_runner = config.use_graph_runner();
+  auto ret = ClassificationResult{};
   std::vector<float> softres(virtual_output[0].channel);
+  if (use_graph_runner) {
+    // There is generally no softmax on the model diagram
+    vitis::ai::softmax((float*)virtual_output[0].get_data(batch_idx), 1.0f,
+                       virtual_output[0].channel, 1, &softres[0]);
+    ret = topk(&softres[0], virtual_output[0].channel, top_k,
+               input_tensors[0].width, input_tensors[0].height);
 
+  } else {
 #ifdef ENABLE_DPUCADX8G_RUNNER
-  vitis::ai::softmax((float*)virtual_output[0].get_data(batch_idx),
-                     vitis::ai::library::tensor_scale(virtual_output[0]),
-                     virtual_output[0].channel, 1, &softres[0]);
+    vitis::ai::softmax((float*)virtual_output[0].get_data(batch_idx),
+                       vitis::ai::library::tensor_scale(virtual_output[0]),
+                       virtual_output[0].channel, 1, &softres[0]);
 #else
-  vitis::ai::softmax((int8_t*)virtual_output[0].get_data(batch_idx),
-                     vitis::ai::library::tensor_scale(virtual_output[0]),
-                     virtual_output[0].channel, 1, &softres[0]);
+    vitis::ai::softmax((int8_t*)virtual_output[0].get_data(batch_idx),
+                       vitis::ai::library::tensor_scale(virtual_output[0]),
+                       virtual_output[0].channel, 1, &softres[0]);
 #endif
-  // std::cout << std::endl;
-  return topk(&softres[0], virtual_output[0].channel, top_k,
-              input_tensors[0].width, input_tensors[0].height);
+    // std::cout << std::endl;
+    ret = topk(&softres[0], virtual_output[0].channel, top_k,
+               input_tensors[0].width, input_tensors[0].height);
+  }
+  return ret;
 }
 
 std::vector<ClassificationResult> classification_post_process(

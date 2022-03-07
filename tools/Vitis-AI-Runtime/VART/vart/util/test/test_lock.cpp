@@ -1,7 +1,6 @@
 // This example requires an empty, local redis-server instance running with
 // default settings.
 #include <glog/logging.h>
-#include <unistd.h>
 
 #include <iostream>
 #include <mutex>

@@ -56,7 +56,7 @@ def idx_to_name(idx):
     return idx.rsplit('|', 2)[0]
 
 
-def get_subg_info(sub_g: dict):
+def get_subg_info(sub_g: dict, rank_id):
     """ Example subg data
     {
     "subgraph_name":"subgraph_pool5","id":"0-3","dpu_name":"","device":"","workload":100352,"op_num":1,"i_tensors_shape":[[1,7,7,2048]],"o_tensors_shape":[[1,1,1,2048]],
@@ -84,13 +84,14 @@ def get_subg_info(sub_g: dict):
     mc = sub_g.get("mc_code_sstr.str()", "")
     mc_size = len(mc)
 
-
-    if (mc_size < 5_000_000):
-        if (mc_size > 1_000_000):
-            logging.warning("vaitrace is analyzing .xmodel, this model is large, please wait for a while ")
+    if (mc_size < 50_000_000):
+        if (mc_size > 5_000_000):
+            logging.warning(
+                "vaitrace is analyzing .xmodel, this model is large, please wait for a while ")
         mc_info = dpu_mc_parser.process_mc(DPU_NAME, mc)
     else:
-        logging.error("vaitrace is analyzing .xmodel, this model is too large, vaitrace can not handle it now ")
+        logging.error(
+            "vaitrace is analyzing .xmodel, this model is too large, vaitrace can not handle it now ")
         mc_info = [0, 0, 0, 0]
 
     load_io_img_size = mc_info[0]
@@ -109,12 +110,13 @@ def get_subg_info(sub_g: dict):
                      "load_io_para_size": load_io_para_size,
                      "save_io_size": save_io_size,
                      "i_tensor_shape": i_tensor_shape,
-                     "o_tensor_shape": o_tensor_shape}}
+                     "o_tensor_shape": o_tensor_shape,
+                     "rank_id": rank_id}}
 
     if idx_w not in SUBGRAPH_DB.keys():
         SUBGRAPH_DB.update(subg_info)
     else:
-        logging.warning("SubGraph index duplication: [%s]" % idx_w)
+        logging.info("SubGraph index duplication: [%s]" % idx_w)
 
 
 """input: {'classname': 'subgraph_info', 'info_file': '/tmp/vaitrace_subgraph_info_15230', 'section': 'INFO'}"""
@@ -131,9 +133,9 @@ def xmodel_get_info(raw_trace: []):
     try:
         for item in raw_trace:
             info_file = item.get('info_file')
-            logging.info("Open xmodel information file: %s" % info_file)
+            logging.debug("Open xmodel information file: %s" % info_file)
             subgs = open(info_file, "r+t").readlines()
-            logging.info("Subgraphs to process: %d" % len(subgs))
+            logging.debug("Subgraphs to process: %d" % len(subgs))
             for subg in subgs:
                 raw_x_info.append(subg)
     except:
@@ -141,12 +143,14 @@ def xmodel_get_info(raw_trace: []):
         return {}
 
     logging.info("Processing xmodel information")
+    rank_id = 0
     for subg_str in raw_x_info:
         try:
             subg = json.loads(subg_str)
         except:
             logging.warning("Subgraph information format error")
 
-        get_subg_info(subg)
+        get_subg_info(subg, rank_id)
+        rank_id += 1
 
     return SUBGRAPH_DB

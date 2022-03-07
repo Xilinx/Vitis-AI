@@ -263,7 +263,7 @@ class StackedAlternatingLstm(torch.nn.Module):
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.num_layers = num_layers
-        model_dir = "model"
+        model_dir = "data"
         model_name = "openie"
         device_name = os.getenv("TARGET_DEVICE", default="").upper()
         assert(device_name in ("U50LV", "U25")
@@ -274,7 +274,10 @@ class StackedAlternatingLstm(torch.nn.Module):
         self.batch = []
         self.total_batch = 0
 
-        xmodel = os.path.join("models", "compiled_batch_3.xmodel")
+        if(device_name == "U50LV"):
+            xmodel = os.path.join("data", "compiled_batch_3.xmodel")
+        elif(device_name == "U25"):
+            xmodel = os.path.join("data", "compiled_batch_1.xmodel")
         self.xgraph = xir.Graph.deserialize(xmodel)
         self.model_lstm = vart.Runner.create_runner(
                 self.xgraph.get_root_subgraph(), "run")

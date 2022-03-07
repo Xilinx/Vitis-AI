@@ -18,7 +18,7 @@ import os
 
 import tracer.tracerBase
 #import tracer.xir
-import tracer.xrt
+#import tracer.xrt
 import tracer.hwInfo
 import tracer.function
 import tracer.sched

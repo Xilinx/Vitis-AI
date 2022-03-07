@@ -50,7 +50,6 @@ class AttrsImp : public Attrs {
 
  private:
   AttrMap attrs_;
-  friend class c_api;
 };
 
 }  // namespace xir

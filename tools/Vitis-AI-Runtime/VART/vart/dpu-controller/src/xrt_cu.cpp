@@ -244,16 +244,14 @@ XrtCu::~XrtCu() {
         << "fingerprint 0x" << std::hex << x.fingerprint << std::dec << " "  //
         ;
     auto uuid = x.uuid;
-    if (0) {
-      auto r = xclCloseContext(x.handle, &uuid[0], x.cu_index);
-      PCHECK(r == 0) << "cannot close context! "
-                     << " cu_mask " << x.cu_mask    //
-                     << " cu_index " << x.cu_index  //
-                     << " cu_addr " << std::hex << "0x" << x.cu_addr
-                     << std::dec  //
-          ;
-      xclClose(x.handle);
-    }
+    auto r = xclCloseContext(x.handle, &uuid[0], x.cu_index);
+    PCHECK(r == 0) << "cannot close context! "
+                   << " cu_mask " << x.cu_mask    //
+                   << " cu_index " << x.cu_index  //
+                   << " cu_addr " << std::hex << "0x" << x.cu_addr
+                   << std::dec  //
+        ;
+    xclClose(x.handle);
     idx = idx + 1;
   }
 }

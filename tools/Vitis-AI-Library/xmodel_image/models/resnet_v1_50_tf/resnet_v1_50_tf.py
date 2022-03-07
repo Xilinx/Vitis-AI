@@ -17,22 +17,29 @@ import xir_extra_ops
 
 
 def jit(graph):
-    graph.set_attr("xmodel_preprocessor", "libxmodel_preprocessor_vgg.so.1")
+    graph.set_attr("xmodel_preprocessor", "libxmodel_preprocessor_vgg.so.2")
     graph.set_attr("need_preprocess", True)
     graph.set_attr("mean", [103.94, 116.78, 123.68])
     graph.set_attr("scale", [1.0, 1.0, 1.0])
     graph.set_attr("is_rgb_input", True)
-    graph.set_attr("labels", open(os.path.join(
-        graph.get_attr("__dir__"), "word_list.txt"), "r").read().splitlines())
+    graph.set_attr(
+        "labels",
+        open(os.path.join(graph.get_attr("__dir__"), "word_list.txt"), "r")
+        .read()
+        .splitlines(),
+    )
     xir_extra_ops.set_postprocessor(
-        graph, "libxmodel_postprocessor_classification.so.1", {"input": ["my_topk"]})
-    graph.remove_op(graph.get_op(
-        "resnet_v1_50/predictions/Softmax_fix"))
-    graph.create_op("my_topk", "topk",
-                    attrs={"K": 5},
-                    input_ops={"input": [graph.get_op(
-                        "resnet_v1_50/predictions/Softmax")]},
-                    subgraph=graph.get_leaf_subgraph(graph.get_op("resnet_v1_50/predictions/Softmax")))
-    #graph.save_as_image(os.path.join(graph.get_attr("__dir__"), graph.get_attr("__basename__") + ".jit.svg"), "svg")
-    #graph.serialize(os.path.join(graph.get_attr("__dir__"), graph.get_attr("__basename__") + ".jit.xmodel"))
+        graph, "libxmodel_postprocessor_classification.so.2", {"input": ["my_topk"]}
+    )
+    graph.create_op(
+        "my_topk",
+        "topk",
+        attrs={"K": 5},
+        input_ops={"input": [graph.get_op("resnet_v1_50/predictions/Softmax")]},
+        subgraph=graph.get_leaf_subgraph(
+            graph.get_op("resnet_v1_50/predictions/Softmax")
+        ),
+    )
+    # graph.save_as_image(os.path.join(graph.get_attr("__dir__"), graph.get_attr("__basename__") + ".jit.svg"), "svg")
+    # graph.serialize(os.path.join(graph.get_attr("__dir__"), graph.get_attr("__basename__") + ".jit.xmodel"))
     print(graph.get_name())

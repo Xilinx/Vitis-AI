@@ -21,4 +21,3 @@ static char @PROJECT_NAME@_version[] = "Xilinx @PROJECT_NAME@ Version: @PROJECT_
 const char* xilinx_version() {
   return @PROJECT_NAME@_version;
 }
-

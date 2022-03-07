@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root versionMajor="1" versionMinor="6">
+  <kernel name="DPUCADF8H" language="ip_c" vlnv="xilinx.com:RTLKernel:dpdpuv3_wrapper:1.0" attributes="" preferredWorkGroupSizeMultiple="0" workGroupSize="1" interrupt="true" hwControlProtocol="ap_ctrl_chain">
+    <ports>
+      <port name="m00_axi" mode="master" range="0x3FFFFFFFF" dataWidth="512" portType="addressable" base="0x0"/>
+      <port name="s_axi_control" mode="slave" range="0x1000" dataWidth="32" portType="addressable" base="0x0"/>
+    </ports>
+    <args>
+      <arg name="task_dpu_addr_instr"            addressQualifier="1" id="0"    port="m00_axi"  size="0x8" offset="0x10" hostOffset="0x0" hostSize="0x8" type="int*"/>
+      <arg name="task_dpu_addr_params"           addressQualifier="1" id="1"    port="m00_axi"  size="0x8" offset="0x18" hostOffset="0x0" hostSize="0x8" type="int*"/>
+      <arg name="task_dpu_addr_swap"             addressQualifier="1" id="2"    port="m00_axi"  size="0x8" offset="0x20" hostOffset="0x0" hostSize="0x8" type="int*"/>
+      <arg name="task_dpu_addr_rslt"             addressQualifier="1" id="3"    port="m00_axi"  size="0x8" offset="0x28" hostOffset="0x0" hostSize="0x8" type="int*"/>
+      <arg name="task_fu_addr_src"               addressQualifier="1" id="4"    port="m00_axi"  size="0x8" offset="0x30" hostOffset="0x0" hostSize="0x8" type="int*"/>
+      <arg name="task_fu_addr_dst"               addressQualifier="1" id="5"    port="m00_axi"  size="0x8" offset="0x38" hostOffset="0x0" hostSize="0x8" type="int*"/>
+      <arg name="reg_dpu_prof_addr"              addressQualifier="1" id="6"    port="m00_axi"  size="0x8" offset="0x88" hostOffset="0x0" hostSize="0x8" type="int*"/>
+      <arg name="task_fu_addr_strd"              addressQualifier="0" id="7"    port="s_axi_control" size="0x4" offset="0x40" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_kw"                     addressQualifier="0" id="8"    port="s_axi_control" size="0x4" offset="0x44" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_sw"                     addressQualifier="0" id="9"    port="s_axi_control" size="0x4" offset="0x48" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_ic"                     addressQualifier="0" id="10"   port="s_axi_control" size="0x4" offset="0x4c" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_ow"                     addressQualifier="0" id="11"   port="s_axi_control" size="0x4" offset="0x50" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_oh"                     addressQualifier="0" id="12"   port="s_axi_control" size="0x4" offset="0x54" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_src_ntrans"             addressQualifier="0" id="13"   port="s_axi_control" size="0x4" offset="0x58" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_dst_ntrans"             addressQualifier="0" id="14"   port="s_axi_control" size="0x4" offset="0x5c" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_pl_corr"                addressQualifier="0" id="15"   port="s_axi_control" size="0x4" offset="0x60" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_pr_corr"                addressQualifier="0" id="16"   port="s_axi_control" size="0x4" offset="0x64" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_iw_corr"                addressQualifier="0" id="17"   port="s_axi_control" size="0x4" offset="0x68" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_sw_corr"                addressQualifier="0" id="18"   port="s_axi_control" size="0x4" offset="0x6c" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_wcg_corr"               addressQualifier="0" id="19"   port="s_axi_control" size="0x4" offset="0x70" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_fu_read_mode"              addressQualifier="0" id="20"   port="s_axi_control" size="0x4" offset="0x74" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="task_mode"                      addressQualifier="0" id="21"   port="s_axi_control" size="0x4" offset="0x78" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_version"                    addressQualifier="0" id="22"   port="s_axi_control" size="0x4" offset="0x7c" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_axcache_axos"               addressQualifier="0" id="23"   port="s_axi_control" size="0x4" offset="0x80" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_enable"            addressQualifier="0" id="24"   port="s_axi_control" size="0x4" offset="0x84" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_flag"              addressQualifier="0" id="25"   port="s_axi_control" size="0x4" offset="0x90" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_tstamp"            addressQualifier="0" id="26"   port="s_axi_control" size="0x4" offset="0x94" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_lsnum"             addressQualifier="0" id="27"   port="s_axi_control" size="0x4" offset="0x98" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_ssnum"             addressQualifier="0" id="28"   port="s_axi_control" size="0x4" offset="0x9c" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_csnum"             addressQualifier="0" id="29"   port="s_axi_control" size="0x4" offset="0xa0" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_msnum"             addressQualifier="0" id="30"   port="s_axi_control" size="0x4" offset="0xa4" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_lfnum"             addressQualifier="0" id="31"   port="s_axi_control" size="0x4" offset="0xa8" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_sfnum"             addressQualifier="0" id="32"   port="s_axi_control" size="0x4" offset="0xac" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_cfnum"             addressQualifier="0" id="33"   port="s_axi_control" size="0x4" offset="0xb0" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_prof_mfnum"             addressQualifier="0" id="34"   port="s_axi_control" size="0x4" offset="0xb4" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_dpu_status"                 addressQualifier="0" id="35"   port="s_axi_control" size="0x4" offset="0xb8" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_status"                  addressQualifier="0" id="36"   port="s_axi_control" size="0x4" offset="0xbc" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="done_cnt"                       addressQualifier="0" id="37"   port="s_axi_control" size="0x4" offset="0xc0" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_enable"             addressQualifier="0" id="38"   port="s_axi_control" size="0x4" offset="0xc4" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_work_cyc"           addressQualifier="0" id="39"   port="s_axi_control" size="0x4" offset="0xc8" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_wait_dpu_cyc"       addressQualifier="0" id="40"   port="s_axi_control" size="0x4" offset="0xcc" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_dpu_ack_cyc"        addressQualifier="0" id="41"   port="s_axi_control" size="0x4" offset="0xd0" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_wait_rd_data_cyc"   addressQualifier="0" id="42"   port="s_axi_control" size="0x4" offset="0xd4" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_write_buf_full_cyc" addressQualifier="0" id="43"   port="s_axi_control" size="0x4" offset="0xd8" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_datareorg_cyc"      addressQualifier="0" id="44"   port="s_axi_control" size="0x4" offset="0xdc" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_bus_rd_trans"       addressQualifier="0" id="45"   port="s_axi_control" size="0x4" offset="0xe0" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_bus_wt_trans"       addressQualifier="0" id="46"   port="s_axi_control" size="0x4" offset="0xe4" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_bus_rd_cyc"         addressQualifier="0" id="47"   port="s_axi_control" size="0x4" offset="0xe8" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_bus_wt_cyc"         addressQualifier="0" id="48"   port="s_axi_control" size="0x4" offset="0xec" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_bus_rreq_wait_cyc"  addressQualifier="0" id="49"   port="s_axi_control" size="0x4" offset="0xf0" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_bus_awreq_wait_cyc" addressQualifier="0" id="50"   port="s_axi_control" size="0x4" offset="0xf4" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_bus_wreq_wait_cyc"  addressQualifier="0" id="51"   port="s_axi_control" size="0x4" offset="0xf8" hostOffset="0x0" hostSize="0x4" type="int"/>
+      <arg name="reg_fu_prof_overflow"           addressQualifier="0" id="52"   port="s_axi_control" size="0x4" offset="0xfc" hostOffset="0x0" hostSize="0x4" type="int"/>
+    </args>                                                               
+  </kernel>                                                               
+</root>                                                                   
+
+

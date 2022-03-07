@@ -44,7 +44,7 @@ struct RcanResult {
 };
 
 /**
- * @brief Post-process of the rcan neuron network.
+ * @brief Post-process of the rcan neural network.
  * @param input_tensors A vector of all input-tensors in the network.
  *   Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.
@@ -58,7 +58,7 @@ RcanResult rcan_post_process(
         output_tensors,
     size_t batch_idx);
 /**
- * @brief Post-process of the rcan neuron network in batch mode.
+ * @brief Post-process of the rcan neural network in batch mode.
  * @param input_tensors A vector of all input-tensors in the network.
  *   Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.

@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 #include <glog/logging.h>
-#include <iostream>
+
 #include <fstream>
+#include <iostream>
 #include <memory>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <vitis/ai/demo_accuracy.hpp>
 #include <vitis/ai/classification.hpp>
+#include <vitis/ai/demo_accuracy.hpp>
 #include <vitis/ai/nnpp/classification.hpp>
 using namespace std;
 using namespace cv;
@@ -32,12 +33,17 @@ namespace vitis {
 namespace ai {
 
 struct ClassificationAccThread : public AccThread {
-
-  static std::shared_ptr<ClassificationAccThread> instance() {
+  ClassificationAccThread(std::string output_file)
+      : AccThread(), of(output_file, std::ofstream::out) {
+    dpu_result.frame_id = -1;
+  }
+  virtual ~ClassificationAccThread() { of.close(); }
+  static std::shared_ptr<ClassificationAccThread> instance(
+      std::string output_file) {
     static std::weak_ptr<ClassificationAccThread> the_instance;
     std::shared_ptr<ClassificationAccThread> ret;
     if (the_instance.expired()) {
-      ret = std::make_shared<ClassificationAccThread>();
+      ret = std::make_shared<ClassificationAccThread>(output_file);
       the_instance = ret;
     }
     ret = the_instance.lock();
@@ -46,56 +52,37 @@ struct ClassificationAccThread : public AccThread {
   }
 
   virtual int run() override {
-    std::cout<<g_output_file<<endl;
-    std::ofstream of(g_output_file, std::ofstream::out);
-
-    while(1){
-      DpuResultInfo dpu_result;
-      if (!queue_->pop(dpu_result, std::chrono::milliseconds(5000))) {
-        cout<<" get dpu_result timeout"<<endl; 
-        exit(0);
+    if (g_last_frame_id == int(dpu_result.frame_id)) return -1;
+    if (getQueue()->pop(dpu_result, std::chrono::milliseconds(5000))) {
+      auto res = (ClassificationResult*)dpu_result.result_ptr.get();
+      for (auto score : res->scores) {
+        of << "/" << dpu_result.single_name << " " << score.index << endl;
       }
-      void *r = dpu_result.result_ptr.get();
-      auto res = (ClassificationResult*)r;
-      for (size_t j = 0; j < res->scores.size(); ++j) {
-      int index = res->scores[j].index;
-      //cout << dpu_result.single_name << " " << index << " "
-      //     <<dpu_result.w << " "<<dpu_result.h << " "
-      //     << res->scores[j].score << " " << endl;
-      of << "/"<<dpu_result.single_name << " " << index << endl;
-      }
-      LOG_IF(INFO, 0)
-      <<"test class, queue size: "<<queue_->size()
-      <<" dpu_result id: "<<dpu_result.frame_id;
-      if(g_last_frame_id == int(dpu_result.frame_id)){
-        of.close();
-        LOG(INFO)
-        <<"test class accuracy done! byebye "<<queue_->size();
-        exit(0);
+      if (is_stopped()) {
+        return -1;
       }
     }
     return 0;
   }
+  DpuResultInfo dpu_result;
+  std::ofstream of;
 };
 
-} // namespace ai
-} // namespace vitis
+}  // namespace ai
+}  // namespace vitis
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc < 4) {
     cout << "Please input a model name as the first param!" << endl;
     cout << "Please input your image path list as the second param!" << endl;
     cout << "The third param is a txt to store results!" << endl;
-    cout << "The fourth param is thread nums, eg: '-t 4', default single thread if not filled " << endl;
+    cout << "The fourth param is thread nums, eg: '-t 4', default single "
+            "thread if not filled "
+         << endl;
   }
   string model = argv[1] + string("_acc");
   g_output_file = argv[3];
   return vitis::ai::main_for_accuracy_demo(
-      argc, argv,
-      [model] {
-        return vitis::ai::Classification::create(model);
-      },
-      vitis::ai::ClassificationAccThread::instance(),
-      2);
+      argc, argv, [model] { return vitis::ai::Classification::create(model); },
+      vitis::ai::ClassificationAccThread::instance(argv[3]), 2);
 }
-

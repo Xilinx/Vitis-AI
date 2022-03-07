@@ -25,8 +25,10 @@ using namespace std;
  * @param scores. vector of scores.
  * @param nms.  the nms threshhold.
  * @param conf. confidence to filter the selected result.
+ * @param stable. True to sort the scores stably.
  *
  * @return The vector holding returned selected position after nms
  */
 void applyNMS(const vector<vector<float>>& boxes, const vector<float>& scores,
-              const float nms, const float conf, vector<size_t>& res);
+              const float nms, const float conf, vector<size_t>& res,
+              bool stable = true);

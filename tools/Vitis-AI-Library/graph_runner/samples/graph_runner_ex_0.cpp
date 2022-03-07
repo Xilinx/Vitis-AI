@@ -90,7 +90,7 @@ static void read_input(vart::TensorBuffer* input) {
     auto data = get_tensor_buffer_data(input, i);
     CHECK(std::ifstream(filename).read((char*)data.data, size).good())
         << "fail to read! filename=" << filename
-        << ";tensor=" << input->get_tensor()->get_name() << endl;
+        << ";tensor=" << input->get_tensor()->get_name() << std::endl;
     LOG(INFO) << "read " << filename << " to " << data.data << " size=" << size;
   }
 }
@@ -109,7 +109,7 @@ static void dump_output(vart::TensorBuffer* output) {
     auto data = get_tensor_buffer_data(output, i);
     CHECK(std::ofstream(filename).write((char*)data.data, size).good())
         << "fail to write! filename=" << filename
-        << ";tensor=" << output->get_tensor()->get_name() << endl;
+        << ";tensor=" << output->get_tensor()->get_name() << std::endl;
     LOG(INFO) << "write " << filename << " to " << data.data
               << " size=" << size;
   }

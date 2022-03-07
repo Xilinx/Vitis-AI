@@ -1,0 +1,27 @@
+From e421c90317bbe29415abfc7c1a722474310dd79d Mon Sep 17 00:00:00 2001
+From: Thomas Nizan <tnizan@witekio.com>
+Date: Thu, 5 Aug 2021 14:23:44 +0000
+Subject: [PATCH] media: i2c: max96705: fix color issue due to bad frame sync
+
+---
+ drivers/media/i2c/max96705.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/media/i2c/max96705.c b/drivers/media/i2c/max96705.c
+index d0f7a2b0c7eb..cc47bfb1417e 100644
+--- a/drivers/media/i2c/max96705.c
++++ b/drivers/media/i2c/max96705.c
+@@ -295,6 +295,10 @@ int max96705_configure_gmsl_link(struct max96705_device *dev)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	// align at HS rising edge
++	ret = max96705_write(dev, 0x67, 0xC4);
++	if (ret < 0)
++		return ret;
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
+

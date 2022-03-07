@@ -25,17 +25,17 @@ using namespace std;
 namespace {
 
 struct MyOp : public vart::experimental::OpImpBase {
-  MyOp(xir::Op* op, xir::Attrs* attrs)
+  MyOp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     fix_point_ = op->get_attr<int>("fix_point");
     auto round_mode = op->get_attr<std::string>("round_mode");
     CHECK_EQ(round_mode, "DPU_ROUND") << "TODO:";
-    auto bit_width = op->get_attr<int>("quant_in_bit_width");
-    CHECK_EQ(bit_width, 8) << "TODO:";
+    // auto bit_width = op->get_attr<int>("quant_in_bit_width");
+    // CHECK_EQ(bit_width, 8) << "TODO:";
     scale_ = std::pow(2.0f, fix_point_);
   };
-  int calculate(vart::experimental::simple_tensor_buffer_t<float> output,
-                vart::experimental::simple_tensor_buffer_t<float> input) {
+  int calculate(vart::simple_tensor_buffer_t<float> output,
+                vart::simple_tensor_buffer_t<float> input) {
     auto input_shape = input.tensor->get_shape();
     auto output_shape = output.tensor->get_shape();
     auto num_of_dims = input_shape.size();
@@ -68,6 +68,4 @@ struct MyOp : public vart::experimental::OpImpBase {
 };
 }  // namespace
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOp>();
-}
+DEF_XIR_OP_IMP(MyOp)

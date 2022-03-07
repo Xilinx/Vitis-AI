@@ -25,7 +25,7 @@ namespace xir {
 class DeviceMemory : public vitis::ai::WithInjection<DeviceMemory> {
  public:
   explicit DeviceMemory() = default;
-
+  static std::unique_ptr<DeviceMemory> create(size_t);
  public:
   DeviceMemory(const DeviceMemory&) = delete;
   DeviceMemory& operator=(const DeviceMemory& other) = delete;

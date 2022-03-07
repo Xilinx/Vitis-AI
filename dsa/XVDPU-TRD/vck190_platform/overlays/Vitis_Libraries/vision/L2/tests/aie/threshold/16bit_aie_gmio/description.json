@@ -1,0 +1,130 @@
+{
+    "name": "Xilinx threshold AIE Test",
+    "description": "threshold AIE function example",
+    "flow": "versal",
+    "platform_whitelist": [
+        "vck190"
+    ],
+    "platform_blacklist": [],
+    "platform_properties": {
+        "vck190": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        ""
+                    ]
+                },
+                "linker": {
+                    "cflags": [
+                        "--config PROJECT/system.cfg"
+                    ]
+                },
+                "package": {
+                    "cflags": [
+                        "--package.defer_aie_run"
+                    ]
+                }
+            }
+        }
+    },
+    "data": [
+        "LIB_DIR/data/4k.jpg",
+        "LIB_DIR/data/HD.jpg"
+    ],
+    "gui": false,
+    "launch": [
+        {
+            "name": "hwemu-launch",
+            "target": "hw_emu",
+            "cmd_args": "kernel.xclbin LIB_DIR/data/HD.jpg 100 50", 
+            "pkg-dir": "$(WORK_DIR)",
+            "input-dir": "./",
+            "output-dir": "./"
+        },
+        {
+            "name": "hw",
+            "target": "hw",
+            "cmd_args": "kernel.xclbin LIB_DIR/data/4k.jpg 100 50", 
+            "pkg-dir": "$(WORK_DIR)",
+            "input-dir": "./",
+            "output-dir": "./"
+        }
+    ],
+    "host": {
+        "host_exe": "host.elf",
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/tests/aie/threshold/16bit_aie_gmio/host.cpp",
+                "./Work/ps/c_rts/aie_control_xrt.cpp"
+            ],
+            "includepaths": [
+                "$(SYSROOT)/usr/include/xrt/",
+                "$(SYSROOT)/usr/include/",
+                "$(SYSROOT)/usr/include/opencv4",
+                "LIB_DIR/L1/include/aie",
+                "./"
+            ],
+            "options": "--sysroot=$(SYSROOT) -O3",
+            "symbols": ["__PS_ENABLE_AIE__"]
+        },
+        "linker": {
+            "librarypaths": [
+                "$(SYSROOT)/usr/lib/",
+                "LIB_DIR/L1/lib/sw/aarch64-linux"
+            ],
+            "libraries": [
+                "smartTilerStitcher"
+            ],
+            "options": "--sysroot=$(SYSROOT)"
+        }
+    },
+    "aiecompiler": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/aie"
+            ]
+        }
+    },
+    "aiecontainers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/aie/threshold/16bit_aie_gmio/graph.cpp",
+                    "workdir": "./Work",
+                    "name": "libadf.a",
+                    "aie_kernel_files":["xf_threshold.cc"]
+                }
+            ]
+        }
+    ],
+    "containers": [
+        {
+            "name": "kernel"
+        }
+    ],
+    "testinfo": {
+        "disable": false,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": 32768,
+                "max_time_min": {
+                    "vitis_aie_sim": 50,
+                    "vitis_aie_x86sim": 50,
+                    "vitis_hw_build": 470,
+                    "vitis_hw_emu": 200,
+                    "vitis_hw_run": 30
+                }
+            }
+        ],
+        "targets": [
+            "vitis_hw_emu",
+            "vitis_hw_build",
+            "vitis_hw_run"
+        ],
+        "category": "canary"
+    }
+}

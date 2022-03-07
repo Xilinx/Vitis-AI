@@ -92,10 +92,10 @@ dir_exists ${TESTDATA_DIR}
 EXECUTABLE=${BUILD_DIR}/vart/rnn-runner/test_rnn_runner_${DEVICE}
 file_exists ${EXECUTABLE}
 
-MODELS=("lstm_customer_satisfaction" "lstm_sentiment_detection" "openie-new" "openie-new")
-MODEL_NAMES=("satisfaction" "sentiment" "openie-36" "openie-59")
-FRAMES=(25 500 36 59)
-DATA_DIR=("satis" "sent" "oie/36" "oie/59")
+MODELS=("lstm_customer_satisfaction" "lstm_sentiment_detection" "openie-new" "openie-new" "gru_sentiment_detection")
+MODEL_NAMES=("satisfaction" "sentiment" "openie-36" "openie-59" "gru")
+FRAMES=(25 500 36 59 500)
+DATA_DIR=("satis" "sent" "oie/36" "oie/59" "gru")
 NUM_RUNNERS=(1 ${NRUNNERS})
 
 if [[ ${MODE} == "func" || ${MODE} == "all" ]]; then

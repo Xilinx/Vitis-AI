@@ -19,7 +19,7 @@
 #include <string>
 using namespace std;
 
-#include "UniLog.hpp"
+#include "UniLog/UniLog.hpp"
 
 int main(int argc, char *argv[]) {
   UniLog::Initial(

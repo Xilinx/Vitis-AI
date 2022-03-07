@@ -29,7 +29,6 @@
 
 #include "model_config.hpp"
 #include "rnn_model_parser.hpp"
-#include "vitis/ai/env_config.hpp"
 #include "vitis/ai/weak.hpp"
 #include "xir/buffer_object.hpp"
 #include "xir/device_memory.hpp"
@@ -37,7 +36,6 @@
 #include "xrt_cu.hpp"
 
 DEF_ENV_PARAM(DEBUG_XRNN_CONTROLLER, "0");
-DEF_ENV_PARAM(DEBUG_DUMP_DATA, "0");
 DEF_ENV_PARAM(XRNN_MAX_THREAD, "16");
 DEF_ENV_PARAM_2(XRNN_KERNEL_NAME, "xrnn", std::string);
 DEF_ENV_PARAM_2(XRNN_INSTANCE_NAME, "xrnn_1", std::string);
@@ -62,6 +60,7 @@ class XrnnController {
                    int batch, int frame, int thread_index) = 0;
   virtual std::string get_board_name() = 0;
   virtual int get_batch_size() = 0;
+
   virtual void set_model_config(const ModelConfig* model_config) {
     model_config_ = model_config;
   };
@@ -71,8 +70,8 @@ class XrnnController {
   const ModelConfig* model_config_;
 };
 
-using GenFunc = std::function<std::unique_ptr<XrnnController>(
-    unsigned int, std::string)>;
+using GenFunc =
+    std::function<std::unique_ptr<XrnnController>(unsigned int, std::string)>;
 
 class RnnControllerCreate {
   static std::map<std::string, GenFunc>& getRegistry();
@@ -94,8 +93,7 @@ class RnnControllerCreate {
   struct Register##value {                                                     \
     Register##value() {                                                        \
       vart::xrnn::RnnControllerCreate::Register(                               \
-          key, [](unsigned int device_core_id,                                 \
-                  const std::string& device) {                                 \
+          key, [](unsigned int device_core_id, const std::string& device) {    \
             return make_unique<value>(device_core_id,                          \
                                       std::make_unique<xir::XrtCu>(device));   \
           });                                                                  \

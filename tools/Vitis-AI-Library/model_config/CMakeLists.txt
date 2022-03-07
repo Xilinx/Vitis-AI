@@ -27,19 +27,35 @@ add_custom_command(
   VERBATIM)
 
 vai_add_library(
-  SRCS ${CMAKE_CURRENT_BINARY_DIR}/vitis/ai/proto/dpu_model_param.pb.cc
-       ${CMAKE_CURRENT_BINARY_DIR}/vitis/ai/proto/dpu_model_param.pb.h
-       src/config.cpp #
-  PUBLIC_REQUIRE protobuf::libprotobuf glog::glog)
+  SRCS
+  ${CMAKE_CURRENT_BINARY_DIR}/vitis/ai/proto/dpu_model_param.pb.cc
+  ${CMAKE_CURRENT_BINARY_DIR}/vitis/ai/proto/dpu_model_param.pb.h
+  src/config.cpp #
+  PUBLIC_REQUIRE
+  protobuf::libprotobuf
+  glog::glog)
 
 target_include_directories(
   ${COMPONENT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
-
-target_include_directories(
-  ${COMPONENT_NAME}
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>/test_publ)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/vitis/ai/proto/dpu_model_param.pb.h
               include/vitis/ai/proto/dpu_model_param.proto
         DESTINATION include/vitis/ai/proto)
 # include/vitis/ai/proto/config.hpp include/vitis/ai/proto/dpu_model_param.proto
+
+if(BUILD_PYTHON)
+  add_custom_target(
+    py_dpu_model_param_proto
+    DEPENDS
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/vitis/ai/proto/dpu_model_param.proto
+    COMMAND
+      protobuf::protoc --python_out ${CMAKE_CURRENT_BINARY_DIR} --proto_path
+      ${CMAKE_CURRENT_SOURCE_DIR}/include
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/vitis/ai/proto/dpu_model_param.proto
+    COMMENT
+      "Running PYTHON protocol buffer compiler on proto dpu_model_param.proto"
+    VERBATIM)
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/vitis/ai/proto/dpu_model_param_pb2.py
+    DESTINATION ${PYTHON_SITE_PACKAGES}/vitis/ai/proto/)
+endif(BUILD_PYTHON)

@@ -19,8 +19,8 @@
 
 vitis::ai::Tensor::DataType convert_data_type(xir::DataType data_type);
 
-unique_ptr<vitis::ai::Tensor> convert_tensor(const xir::Tensor* xir_tensor);
-unique_ptr<xir::Tensor> convert_tensor(const vitis::ai::Tensor* xir_tensor);
+std::unique_ptr<vitis::ai::Tensor> convert_tensor(const xir::Tensor* xir_tensor);
+std::unique_ptr<xir::Tensor> convert_tensor(const vitis::ai::Tensor* xir_tensor);
 
-std::vector<unique_ptr<vitis::ai::Tensor>> convert_tensors(
+std::vector<std::unique_ptr<vitis::ai::Tensor>> convert_tensors(
     const std::vector<const xir::Tensor*>& xir_tensors);

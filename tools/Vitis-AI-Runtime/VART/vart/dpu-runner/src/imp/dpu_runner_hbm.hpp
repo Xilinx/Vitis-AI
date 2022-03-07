@@ -21,7 +21,6 @@
 #include "../dpu_runner_base_imp.hpp"
 #include "../my_tensor.hpp"
 #include "dpu_core.hpp"
-#include "vart/dpu/device_scheduler.hpp"
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 namespace vart {

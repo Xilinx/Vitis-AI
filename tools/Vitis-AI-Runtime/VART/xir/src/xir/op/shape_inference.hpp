@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <array>
 #include <iostream>
 #include <tuple>
 #include <vector>
@@ -29,6 +30,10 @@ void shape_infer_conv2d(xir::Op* cur);
 void shape_infer_depthwise_conv2d(xir::Op* cur);
 void shape_infer_transposed_conv2d(xir::Op* cur);
 void shape_infer_transposed_depthwise_conv2d(xir::Op* cur);
+void shape_infer_conv3d(xir::Op* cur);
+void shape_infer_depthwise_conv3d(xir::Op* cur);
+void shape_infer_transposed_conv3d(xir::Op* cur);
+void shape_infer_transposed_depthwise_conv3d(xir::Op* cur);
 void shape_infer_pool2d(xir::Op* cur);
 void shape_infer_maxpool2d(xir::Op* cur);
 void shape_infer_avgpool2d(xir::Op* cur);
@@ -82,6 +87,7 @@ void shape_infer_priorbox(xir::Op* cur);
 void shape_infer_stack(xir::Op* cur);
 void shape_infer_matmul(xir::Op* cur);
 void shape_infer_gstiling(xir::Op* cur);
+void shape_infer_pixel_shuffle(xir::Op* cur);
 void shape_infer_exp(xir::Op* cur);
 void shape_infer_neg(xir::Op* cur);
 void shape_infer_scale(xir::Op* cur);
@@ -96,8 +102,12 @@ void shape_infer_ddr_flatten_concat(xir::Op* cur);
 // shape_infer function for fixed ops
 void shape_infer_conv2d_fix(xir::Op* cur);
 void shape_infer_depthwise_conv2d_fix(xir::Op* cur);
+void shape_infer_depthwise_conv3d_fix(xir::Op* cur);
 void shape_infer_transposed_conv2d_fix(xir::Op* cur);
 void shape_infer_transposed_depthwise_conv2d_fix(xir::Op* cur);
+void shape_infer_conv3d_fix(xir::Op* cur);
+void shape_infer_transposed_conv3d_fix(xir::Op* cur);
+void shape_infer_transposed_depthwise_conv3d_fix(xir::Op* cur);
 void shape_infer_const_fix(xir::Op* cur);
 void shape_infer_data_fix(xir::Op* cur);
 void shape_infer_split_fix(xir::Op* cur);
@@ -109,6 +119,7 @@ void shape_infer_reorg_fix(xir::Op* cur);
 void shape_infer_ddr_flatten_concat_fix(xir::Op* cur);
 void shape_infer_reshape_fix(xir::Op* cur);
 void shape_infer_tile_fix(xir::Op* cur);
+void shape_infer_pixel_shuffle_fix(xir::Op* cur);
 void shape_infer_pad_fix(xir::Op* cur);
 void shape_infer_upsample_fix(xir::Op* cur);
 void shape_infer_downsample_fix(xir::Op* cur);

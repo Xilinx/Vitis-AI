@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <string>
@@ -34,40 +35,48 @@ static std::vector<std::string> bdd_map_yolo{
     "rider", "light", "sign", "train", "truck"};
 
 static std::vector<std::string> coco_map_yolo{
-     "person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",  
-     "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",  
-     "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack",  
-     "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball",  
-     "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket", 
-     "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",  
-     "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair",  
-     "sofa", "pottedplant","bed", "diningtable", "toilet", "tvmonitor", "laptop", "mouse",  
-     "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator",  
-     "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"}; 
+    "person",        "bicycle",       "car",           "motorbike",
+    "aeroplane",     "bus",           "train",         "truck",
+    "boat",          "traffic light", "fire hydrant",  "stop sign",
+    "parking meter", "bench",         "bird",          "cat",
+    "dog",           "horse",         "sheep",         "cow",
+    "elephant",      "bear",          "zebra",         "giraffe",
+    "backpack",      "umbrella",      "handbag",       "tie",
+    "suitcase",      "frisbee",       "skis",          "snowboard",
+    "sports ball",   "kite",          "baseball bat",  "baseball glove",
+    "skateboard",    "surfboard",     "tennis racket", "bottle",
+    "wine glass",    "cup",           "fork",          "knife",
+    "spoon",         "bowl",          "banana",        "apple",
+    "sandwich",      "orange",        "broccoli",      "carrot",
+    "hot dog",       "pizza",         "donut",         "cake",
+    "chair",         "sofa",          "pottedplant",   "bed",
+    "diningtable",   "toilet",        "tvmonitor",     "laptop",
+    "mouse",         "remote",        "keyboard",      "cell phone",
+    "microwave",     "oven",          "toaster",       "sink",
+    "refrigerator",  "book",          "clock",         "vase",
+    "scissors",      "teddy bear",    "hair drier",    "toothbrush"};
 
 vector<int> coco_id_map_dict() {
   vector<int> category_ids;
-  category_ids = {1,2,3,4,5,6,7,8,9,10, 
-                  11,13,14,15,16,17,18,19,20,21, 
-                  22,23,24,25,27,28,31,32,33,34, 
-                  35,36,37,38,39,40,41,42,43,44, 
-                  46,47,48,49,50,51,52,53,54,55, 
-                  56,57,58,59,60,61,62,63,64,65, 
-                  67,70,72,73,74,75,76,77,78,79, 
-                  80,81,82,84,85,86,87,88,89,90}; 
+  category_ids = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 13, 14, 15,
+                  16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 31, 32,
+                  33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 47,
+                  48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61,
+                  62, 63, 64, 65, 67, 70, 72, 73, 74, 75, 76, 77, 78, 79,
+                  80, 81, 82, 84, 85, 86, 87, 88, 89, 90};
   return category_ids;
 }
 
 int imagename_to_id(string imagename) {
-  int idx1 = imagename.find_last_of('.'); 
-  int idx2 = imagename.find_last_of('_'); 
-  string id = imagename.substr(idx2+1, idx1-idx2-1); 
-  int image_id = atoi(id.c_str()); 
+  int idx1 = imagename.find_last_of('.');
+  int idx2 = imagename.find_last_of('_');
+  string id = imagename.substr(idx2 + 1, idx1 - idx2 - 1);
+  int image_id = atoi(id.c_str());
   return image_id;
 }
 
-static std::vector<std::string> split(const std::string &s,
-                                      const std::string &delim) {
+static std::vector<std::string> split(const std::string& s,
+                                      const std::string& delim) {
   std::vector<std::string> elems;
   size_t pos = 0;
   size_t len = s.length();
@@ -85,12 +94,12 @@ static std::vector<std::string> split(const std::string &s,
   return elems;
 }
 
-void LoadImageNames(std::string const &filename,
-                    std::vector<std::string> &images) {
+void LoadImageNames(std::string const& filename,
+                    std::vector<std::string>& images) {
   images.clear();
 
   /*Check if path is a valid directory path. */
-  FILE *fp = fopen(filename.c_str(), "r");
+  FILE* fp = fopen(filename.c_str(), "r");
   if (NULL == fp) {
     fprintf(stdout, "open file: %s  error\n", filename.c_str());
     exit(1);
@@ -107,7 +116,7 @@ void LoadImageNames(std::string const &filename,
   fclose(fp);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   std::map<std::string, std::string> namemap{
       {"YOLOV3_VOC_416x416", "yolov3_voc_416"},
       {"YOLOV3_ADAS_512x256", "yolov3_adas_512x256"},
@@ -140,13 +149,13 @@ int main(int argc, char *argv[]) {
   ofstream out(argv[2]);
   auto model_name = namemap[g_model_name] + string("_acc");
   auto yolo = vitis::ai::YOLOv3::create(model_name, true);
-  if(g_model_name == "yolov4"){
+  if (g_model_name == "yolov4") {
     auto ccoco_id_map_dict = coco_id_map_dict();
     out << "[" << endl;
     for (auto name : names) {
       cv::Mat img = cv::imread(name);
       auto results = yolo->run(img);
-      for (auto &box : results.bboxes) {
+      for (auto& box : results.bboxes) {
         float xmin = box.x * img.cols;
         float ymin = box.y * img.rows;
         float xmax = (box.x + box.width) * img.cols;
@@ -156,19 +165,23 @@ int main(int argc, char *argv[]) {
         if (xmax > img.cols) xmax = img.cols;
         if (ymax > img.rows) ymax = img.rows;
         float confidence = box.score;
-        cout << fixed << setprecision(0) <<"{\"image_id\":" << imagename_to_id(name) << 
-        ", \"category_id\":" << ccoco_id_map_dict[box.label]<< ", \"bbox\":[" << fixed << 
-        setprecision(6) << xmin << ", " << ymin << ", " << xmax-xmin << ", " << ymax-ymin << "], \"score\":"
-        << confidence << "}," << endl;
-        out << fixed << setprecision(0) <<"{\"image_id\":" << imagename_to_id(name) << 
-        ", \"category_id\":" << ccoco_id_map_dict[box.label]<< ", \"bbox\":[" << fixed << 
-        setprecision(6) << xmin << ", " << ymin << ", " << xmax-xmin << ", " << ymax-ymin << "], \"score\":"
-        << confidence << "}," << endl;
+        cout << fixed << setprecision(0)
+             << "{\"image_id\":" << imagename_to_id(name)
+             << ", \"category_id\":" << ccoco_id_map_dict[box.label]
+             << ", \"bbox\":[" << fixed << setprecision(6) << xmin << ", "
+             << ymin << ", " << xmax - xmin << ", " << ymax - ymin
+             << "], \"score\":" << confidence << "}," << endl;
+        out << fixed << setprecision(0)
+            << "{\"image_id\":" << imagename_to_id(name)
+            << ", \"category_id\":" << ccoco_id_map_dict[box.label]
+            << ", \"bbox\":[" << fixed << setprecision(6) << xmin << ", "
+            << ymin << ", " << xmax - xmin << ", " << ymax - ymin
+            << "], \"score\":" << confidence << "}," << endl;
 
         out.flush();
       }
     }
-    out.seekp(-2L, ios::end); 
+    out.seekp(-2L, ios::end);
     out << endl << "]" << endl;
     out.close();
     return 0;
@@ -179,7 +192,7 @@ int main(int argc, char *argv[]) {
     auto namesp = split(name, "/");
     auto single_name = namesp[namesp.size() - 1];
     single_name = split(single_name, ".")[0];
-    for (auto &box : results.bboxes) {
+    for (auto& box : results.bboxes) {
       std::string label_name = "none";
       if (g_model_name == "YOLOV3_VOC_416x416") {
         label_name = VOC_map[box.label];

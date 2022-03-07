@@ -18,18 +18,35 @@ import tensorflow as tf
 
 from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import math_ops
-from tensorflow.python.keras.utils.generic_utils import register_keras_serializable
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
 
 __all__ = ['VitisAveragePooling2D', 'VitisGlobalAveragePooling2D']
 
+register_keras_serializable = tf.keras.utils.register_keras_serializable
 serialize_keras_object = tf.keras.utils.serialize_keras_object
 deserialize_keras_object = tf.keras.utils.deserialize_keras_object
 logger = common_utils.VAILogger
 
 
+def _gcd_f(a, b):
+  """Get the greatest common dividisor."""
+  return a if b == 0 else _gcd_f(b, a % b)
+
+
+def _lcm_f(a, b):
+  """Get the least common multiple."""
+  return int((a * b) / _gcd_f(a, b))
+
+
+def _get_dpu_kernel_size(kh, kw):
+  """For global_average_pooling, DPU will do padding to replace rectangle 
+  kernel to squre kernel."""
+  new_k = _lcm_f(kh, kw)
+  return new_k, new_k
+
+
 @tf.function
-def _get_avgpool_scale(kw, kh):
+def _get_avgpool_scale(kh, kw):
   if kh > 255 or kw > 255:
     return 1.0
   elif kh == 3 and kw == 3:
@@ -73,19 +90,50 @@ class VitisGlobalAveragePooling2D(tf.keras.layers.GlobalAveragePooling2D):
       **kwargs: Additional keyword arguments to be passed to the keras layer.
     """
     super(VitisGlobalAveragePooling2D, self).__init__(**kwargs)
+    self.rescale_factor = None
 
   def build(self, input_shape):
     super(VitisGlobalAveragePooling2D, self).build(input_shape)
+    # Simulate DPU hahavior of AvgPooling for static input shape
+    kh, kw = input_shape[1], input_shape[2]
+    if None not in [kh, kw]:
+      if kh == kw:
+        self.rescale_factor = _get_avgpool_scale(kh, kw)
+      else:
+        # Try to convert rectangle kernel to square if this is a global_average_pooling
+        if self._is_global_pooling(input_shape):
+          new_kh, new_kw = _get_dpu_kernel_size(kh, kw)
+          # Now DPU only supports square kernel size <= 8
+          if new_kh <= 8:
+            logger.debug(
+                'Convert GlobalAveragePooling2D layer {}\'s kernel from {} to {} to simulate DPU behavior.'
+                .format(self.name, (kh, kw), (new_kh, new_kw)))
+            self.rescale_factor = _get_avgpool_scale(new_kh, new_kw)
+          else:
+            self.rescale_factor = _get_avgpool_scale(kh, kw)
+        else:
+          self.rescale_factor = _get_avgpool_scale(kh, kw)
+
+    if self.rescale_factor is not None:
+      logger.debug(
+          'Rescale GlobalAveragePooling2D layer {} kernel size {} with factor {} to simulate DPU behavior.'
+          .format(self.name, (kh, kw), self.rescale_factor))
 
   def call(self, inputs):
     outputs = super(VitisGlobalAveragePooling2D, self).call(inputs)
 
-    # Simulate DPU hahavior of AvgPooling
-    input_shape = array_ops.shape(inputs)
-    rescale_factor = _get_avgpool_scale(input_shape[1], input_shape[2])
+    # Simulate DPU hahavior of AvgPooling for dynamic input shape
+    if self.rescale_factor is None:
+      input_shape = array_ops.shape(inputs)
+      kh, kw = input_shape[1], input_shape[2]
+      #TODO(Xiao) support rectangle kernel conversion for dynamic input shape
+      rescale_factor = _get_avgpool_scale(kw, kh)
+      #  tf.print('GlobalAveragePooling2D: ', self.name, ' k:', (kh, kw),
+      #           ' rescale_factor:', rescale_factor)
+    else:
+      rescale_factor = self.rescale_factor
 
-    if rescale_factor != 1.0:
-      outputs *= rescale_factor
+    outputs *= rescale_factor
     return outputs
 
 
@@ -106,19 +154,45 @@ class VitisAveragePooling2D(tf.keras.layers.AveragePooling2D):
     """
     super(VitisAveragePooling2D, self).__init__(**kwargs)
 
+  def _is_global_pooling(self, input_shape):
+    """Check if this average_pooling can be converted to global_average_pooling."""
+    output_shape = self.compute_output_shape(input_shape).as_list()
+    return output_shape[1] == 1 and output_shape[2] == 1
+
   def build(self, input_shape):
     super(VitisAveragePooling2D, self).build(input_shape)
+
     # Compute rescale factor in build() since the pool_size is determined.
-    self.rescale_factor = _get_avgpool_scale(self.pool_size[0],
-                                             self.pool_size[1])
+    self.rescale_factor = None
+    kh, kw = self.pool_size[0], self.pool_size[1]
+
+    if kh == kw:
+      self.rescale_factor = _get_avgpool_scale(kh, kw)
+    else:
+      # Try to convert rectangle kernel to square if this is a global_average_pooling
+      if self._is_global_pooling(input_shape):
+        new_kh, new_kw = _get_dpu_kernel_size(kh, kw)
+        # Now DPU only supports square kernel size <= 8
+        if new_kh <= 8:
+          logger.debug(
+              'Convert AveragePooling2D layer {}\'s kernel from {} to {} to simulate DPU behavior.'
+              .format(self.name, (kh, kw), (new_kh, new_kw)))
+          self.rescale_factor = _get_avgpool_scale(new_kh, new_kw)
+        else:
+          rescale_factor = _get_avgpool_scale(kh, kw)
+      else:
+        rescale_factor = _get_avgpool_scale(kh, kw)
+
+    if self.rescale_factor is not None:
+      logger.debug(
+          'Rescale GlobalAveragePooling2D layer {} kernel size {} with factor {} to simulate DPU behavior.'
+          .format(self.name, (kh, kw), self.rescale_factor))
 
   def call(self, inputs):
     outputs = super(VitisAveragePooling2D, self).call(inputs)
 
     # Simulate DPU hahavior of AvgPooling
-    input_shape = array_ops.shape(inputs)
-
-    if self.rescale_factor != 1.0:
+    if self.rescale_factor is not None:
       outputs *= self.rescale_factor
     return outputs
 

@@ -55,27 +55,27 @@ void sparse_sum_for_anchors_mask(const std::vector<std::pair<int,int>>& coors, i
 
 int cumsum(V2F& v);
 
-int get_max3(int8_t* in){
-  if (in[0] > in[1]) {
-    return in[0]>in[2] ? 0 : 2;
-  } // else
-  return in[1]>in[2] ? 1 : 2;
+int get_max(int8_t* in, int num){
+   auto pos = std::max_element(in, in+num);
+   return pos-in;
 }
 
-void PointPillarsPost::get_anchors_mask( std::shared_ptr<preout_dict> pre_dict_)
+void PointPillarsPost::get_anchors_mask( const std::vector<std::shared_ptr<preout_dict>>& v_pre_dict_)
 {
-  __TIC__(inner_anchors_mask)
-  __TIC__(dense_voxel_map)
-  sparse_sum_for_anchors_mask(  pre_dict_->coorData ,  pre_dict_->GetSize() , dense_voxel_map );
-  __TOC__(dense_voxel_map)
-  __TIC__(cumsum)    // 4ms
-  cumsum(dense_voxel_map);
-  __TOC__(cumsum)
-
-  __TIC__(fused_get_anchors_area)
-  fused_get_anchors_area( );
-  __TOC__(fused_get_anchors_area)
-  __TOC__(inner_anchors_mask)
+  for(int i=0; i<realbatchnum; i++) {
+      __TIC__(inner_anchors_mask)
+      __TIC__(dense_voxel_map)
+      sparse_sum_for_anchors_mask(  v_pre_dict_[i]->coorData, v_pre_dict_[i]->GetSize() , dense_voxel_map );
+      __TOC__(dense_voxel_map)
+      __TIC__(cumsum)    // 4ms
+      cumsum(dense_voxel_map);
+      __TOC__(cumsum)
+    
+      __TIC__(fused_get_anchors_area)
+      fused_get_anchors_area(i );
+      __TOC__(fused_get_anchors_area)
+      __TOC__(inner_anchors_mask)
+   }
 }
 
 std::vector<int> topk(const V1F& scores, int k, V2F& bboxes_in, V2F& bboxes_out)
@@ -276,17 +276,17 @@ V3F einsum(const V3F& points, const V3F& rot_mat_T)
 }
 
 
-V1F PointPillarsPost::get_decode_box(int idx) {
+V1F PointPillarsPost::get_decode_box(int batchidx, int idx) {
   V1F o(7, 0);
   float za = g_anchor_->anchors[ idx ][2] + g_anchor_->anchors[  idx ][5]/2;
   float diagonal = sqrt( pow(g_anchor_->anchors[  idx  ][4], 2.0) + pow(g_anchor_->anchors[ idx  ][3], 2.0));
-  o[0] = (dpu_data.box_[  idx *7+0]*dpu_data.scale_box_) * diagonal + g_anchor_->anchors[ idx  ][0];
-  o[1] = (dpu_data.box_[  idx *7+1]*dpu_data.scale_box_) * diagonal + g_anchor_->anchors[ idx  ][1];
-  o[2] = (dpu_data.box_[  idx *7+2]*dpu_data.scale_box_) * g_anchor_->anchors[  idx  ][5] + za;
-  o[3] = exp(  (dpu_data.box_[ idx *7+3]*dpu_data.scale_box_)) * g_anchor_->anchors[ idx ][3];
-  o[4] = exp(  (dpu_data.box_[ idx *7+4]*dpu_data.scale_box_)) * g_anchor_->anchors[ idx ][4];
-  o[5] = exp(  (dpu_data.box_[ idx *7+5]*dpu_data.scale_box_)) * g_anchor_->anchors[ idx ][5];
-  o[6] = (dpu_data.box_[ idx *7+6]*dpu_data.scale_box_) + g_anchor_->anchors[ idx ][6];
+  o[0] = (dpu_data.box_[batchidx][  idx *7+0]*dpu_data.scale_box_) * diagonal + g_anchor_->anchors[ idx  ][0];
+  o[1] = (dpu_data.box_[batchidx][  idx *7+1]*dpu_data.scale_box_) * diagonal + g_anchor_->anchors[ idx  ][1];
+  o[2] = (dpu_data.box_[batchidx][  idx *7+2]*dpu_data.scale_box_) * g_anchor_->anchors[  idx  ][5] + za;
+  o[3] = exp(  (dpu_data.box_[batchidx][ idx *7+3]*dpu_data.scale_box_)) * g_anchor_->anchors[ idx ][3];
+  o[4] = exp(  (dpu_data.box_[batchidx][ idx *7+4]*dpu_data.scale_box_)) * g_anchor_->anchors[ idx ][4];
+  o[5] = exp(  (dpu_data.box_[batchidx][ idx *7+5]*dpu_data.scale_box_)) * g_anchor_->anchors[ idx ][5];
+  o[6] = (dpu_data.box_[batchidx][ idx *7+6]*dpu_data.scale_box_) + g_anchor_->anchors[ idx ][6];
   o[2] = o[2] - o[5]/2;
   return o;
 }
@@ -330,7 +330,7 @@ void PointPillarsPost::fused_get_anchors_area_thread(int start, int len, V1I& an
   }
 }
 
-void PointPillarsPost::fused_get_anchors_area()
+void PointPillarsPost::fused_get_anchors_area(int batchidx)
 {
     std::vector<std::thread> vth;
     int start=0, len=0, size = g_anchor_->anchors_bv.size();
@@ -352,8 +352,8 @@ void PointPillarsPost::fused_get_anchors_area()
     for(int i=0; i<anchors_mask_thread_num; i++) {
        total_size += anchors_maskx[i].size();
     } 
-    anchors_mask.resize(total_size);
-    int*p_dst = anchors_mask.data();
+    anchors_mask[batchidx].resize(total_size);
+    int*p_dst = anchors_mask[batchidx].data();
     for(int i=0; i<anchors_mask_thread_num; i++) { 
        memcpy(p_dst, anchors_maskx[i].data(), sizeof(int)*anchors_maskx[i].size());
        p_dst += anchors_maskx[i].size() ;
@@ -366,25 +366,32 @@ std::unique_ptr<PointPillarsPost> PointPillarsPost::create(
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
     std::vector<int>* g_grid_size,
     G_ANCHOR* g_anchor,
-    ::second::protos::TrainEvalPipelineConfig* cfg
+    ::second::protos::TrainEvalPipelineConfig* cfg,
+    int batchnum,
+    int& realbatchnum
 ) {
   return std::unique_ptr<PointPillarsPost>(
-      new PointPillarsPost(input_tensors, output_tensors, g_grid_size, g_anchor, cfg ));
+      new PointPillarsPost(input_tensors, output_tensors, g_grid_size, g_anchor, cfg, batchnum, realbatchnum ));
 }
 
 PointPillarsPost::~PointPillarsPost(){}
+
 PointPillarsPost::PointPillarsPost(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
     std::vector<int>* g_grid_size,
     G_ANCHOR* g_anchor,
-    ::second::protos::TrainEvalPipelineConfig* cfg  )
+    ::second::protos::TrainEvalPipelineConfig* cfg ,
+    int batchnumin,
+    int& realbatchnumin )
     : input_tensors_(input_tensors), 
       output_tensors_(output_tensors),
       g_grid_size_(g_grid_size),
       g_anchor_(g_anchor),
       cfg_(cfg),
-      anchors_mask( ENV_PARAM(ANCHORMASK_MAXSIZE) )
+      batchnum(batchnumin),
+      realbatchnum(realbatchnumin),
+      anchors_mask(batchnum)
 {
   cfg_nms_pre_max_size = cfg_->model().second().nms_pre_max_size();
   cfg_nms_post_max_size = cfg_->model().second().nms_post_max_size();
@@ -410,12 +417,13 @@ PointPillarsPost::PointPillarsPost(
       anchors_maskx[i].reserve(  ENV_PARAM(ANCHORMASK_MAXSIZE)/2 );
     }
   }
+  for(int i=0; i<batchnum; i++) {
+     anchors_mask[i].initialize( ENV_PARAM(ANCHORMASK_MAXSIZE) );
+  }
 }
 
 void PointPillarsPost::get_dpu_data()
 {
-  size_t batch = input_tensors_[0].batch;
-
   int BOX_IDX=2, CLS_IDX=1, DIR_IDX=0;
   // box cls dir : size 7 1 2 
   // std::cout << "ouput size:" << output_tensors_[0].size << " " << output_tensors_[1].size << " " << output_tensors_[2].size << "\n"; 
@@ -426,13 +434,28 @@ void PointPillarsPost::get_dpu_data()
   dpu_data.scale_cls_ = vitis::ai::library::tensor_scale(output_tensors_[CLS_IDX]);
   dpu_data.scale_dir_ = vitis::ai::library::tensor_scale(output_tensors_[DIR_IDX]);
 
-  dpu_data.box_ = (int8_t*)(output_tensors_[BOX_IDX].get_data(0));
-  dpu_data.cls_ = (int8_t*)(output_tensors_[CLS_IDX].get_data(0));
-  dpu_data.dir_ = (int8_t*)(output_tensors_[DIR_IDX].get_data(0));
-  dpu_data.size_ = output_tensors_[BOX_IDX].size / (batch*7);
+  dpu_data.box_.resize(batchnum);
+  dpu_data.cls_.resize(batchnum);
+  dpu_data.dir_.resize(batchnum);
+
+  for(int i=0; i<(int)batchnum; i++) {  
+    dpu_data.box_[i] = (int8_t*)(output_tensors_[BOX_IDX].get_data(i));
+    dpu_data.cls_[i] = (int8_t*)(output_tensors_[CLS_IDX].get_data(i));
+    dpu_data.dir_[i] = (int8_t*)(output_tensors_[DIR_IDX].get_data(i));
+  }
+
 }
 
-PointPillarsResult PointPillarsPost::post_process( )
+std::vector<PointPillarsResult> PointPillarsPost::post_process( )
+{
+   std::vector<PointPillarsResult> ret(realbatchnum);
+   for(int i=0; i<realbatchnum; i++) {
+      ret[i] = post_process(i);
+   }
+   return ret;
+}
+
+PointPillarsResult PointPillarsPost::post_process( int batchidx )
 {
   if(0) {
     int BOX_IDX=2, CLS_IDX=1, DIR_IDX=0;
@@ -450,13 +473,13 @@ PointPillarsResult PointPillarsPost::post_process( )
   top_labels.clear();
 
   int pos = 0;
-  for(int i=0; i<anchors_mask.size(); i++){
-    pos = cfg_num_class == 1 ? 0 : get_max3(  &dpu_data.cls_[  anchors_mask[i]*cfg_num_class ]);
-    if( float(dpu_data.cls_[   anchors_mask[i]*cfg_num_class +pos ]) >= nms_confidence_) {
-      top_scores.emplace_back( dpu_data.cls_[   anchors_mask[i]*cfg_num_class +pos  ] *dpu_data.scale_cls_ );
-      box_preds.emplace_back( get_decode_box( anchors_mask[i]) );
+  for(int i=0; i<anchors_mask[batchidx].size(); i++){
+    pos = cfg_num_class == 1 ? 0 : get_max(  &dpu_data.cls_[batchidx][  anchors_mask[batchidx][i]*cfg_num_class ], cfg_num_class);
+    if( float(dpu_data.cls_[batchidx][   anchors_mask[batchidx][i]*cfg_num_class +pos ]) >= nms_confidence_) {
+      top_scores.emplace_back( dpu_data.cls_[batchidx][   anchors_mask[batchidx][i]*cfg_num_class +pos  ] *dpu_data.scale_cls_ );
+      box_preds.emplace_back( get_decode_box(batchidx,  anchors_mask[batchidx][i]) );
       dir_labels.emplace_back( 
-        dpu_data.dir_[anchors_mask[i]*2+0 ] >= dpu_data.dir_[anchors_mask[i]*2+1 ]  ? 0 : 1
+        dpu_data.dir_[batchidx][anchors_mask[batchidx][i]*2+0 ] >= dpu_data.dir_[batchidx][anchors_mask[batchidx][i]*2+1 ]  ? 0 : 1
       );
       top_labels.emplace_back( pos ); 
     }

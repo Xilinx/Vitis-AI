@@ -133,8 +133,9 @@ class QuantizedConv3d(_QuantizedConvNd):
       padding_mode="zeros",
       qconfig=None,
   ):
-    super().__init__(in_channels, out_channels, kernel_size, stride, padding, dilation,
-            False, _triple(0), groups, bias, padding_mode, qconfig)
+    super().__init__(in_channels, out_channels, kernel_size, stride, padding,
+                     dilation, False, _triple(0), groups, bias, padding_mode,
+                     qconfig)
 
   def forward(self, input):
     quantized_weight = self.weight_quantizer(self.weight)
@@ -142,9 +143,12 @@ class QuantizedConv3d(_QuantizedConvNd):
         self.bias) if self.bias is not None else None
 
     if self.padding_mode != 'zeros':
-        return F.conv3d(F.pad(input, self._reversed_padding_repeated_twice, mode=self.padding_mode),
-                        quantized_weight, quantized_bias, self.stride, _triple(0),
-                        self.dilation, self.groups)
+      return F.conv3d(
+          F.pad(
+              input,
+              self._reversed_padding_repeated_twice,
+              mode=self.padding_mode), quantized_weight, quantized_bias,
+          self.stride, _triple(0), self.dilation, self.groups)
     return F.conv3d(input, quantized_weight, quantized_bias, self.stride,
                     self.padding, self.dilation, self.groups)
 
@@ -177,8 +181,10 @@ class QuantizedConv3d(_QuantizedConvNd):
     conv.bias = mod.bias
     return conv
 
-class QuantizedConvTranspose2d(nn.modules.conv._ConvTransposeMixin,
-                               _QuantizedConvNd):
+# XXX(yuwang): Must first inherit from _QuantizedConvNd so that its
+# __init__ will be selected for calling for super().__init__.
+class QuantizedConvTranspose2d(_QuantizedConvNd,
+                               nn.modules.conv._ConvTransposeMixin):
   """A ConvTranspose2d module attached with FakeQuantizer modules for weight and bias,
     used for quantization aware training.
 
@@ -245,8 +251,8 @@ class QuantizedConvTranspose2d(nn.modules.conv._ConvTransposeMixin,
     conv_transpose.bias = mod.bias
     return conv_transpose
 
-class QuantizedConvTranspose3d(nn.modules.conv._ConvTransposeMixin,
-                               _QuantizedConvNd):
+class QuantizedConvTranspose3d(_QuantizedConvNd,
+                               nn.modules.conv._ConvTransposeMixin):
   """A ConvTranspose3d module attached with FakeQuantizer modules for weight and bias,
     used for quantization aware training.
 

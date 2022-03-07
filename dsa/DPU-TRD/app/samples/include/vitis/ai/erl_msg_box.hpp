@@ -210,7 +210,12 @@ class ErlMsgBox {
   // if add someting like std::cerr << "hello", no such error again, I guess
   // it might due the function inline.
  private:
-  void __attribute__((noinline))
+  void
+#if _WIN32
+      __declspec(noinline)
+#else
+   __attribute__((noinline))
+#endif
   send_elt(std::unique_ptr<typename ErlMsgBox<MessageType>::Cons> p_new_elt) {
     //
     // 这里可以优化，变成无锁算法？

@@ -42,7 +42,7 @@ StrideInfo get_stride(int axis, const vector<int>& shape) {
 }
 
 struct MyOpImp : public vart::experimental::OpImpBase {
-  MyOpImp(xir::Op* op, xir::Attrs* attrs)
+  MyOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     axis_ = op->get_attr<decltype(axis_)>("axis");
     auto input = op->get_input_tensors("input");
@@ -54,13 +54,12 @@ struct MyOpImp : public vart::experimental::OpImpBase {
     CHECK_GE(axis_, 0);
     stride_ = get_stride(axis_, input_shape);
   }
-  int calculate(
-      vart::experimental::simple_tensor_buffer_t<float> output_v,
-      vart::experimental::simple_tensor_buffer_t<float> input_v,
-      vart::experimental::simple_tensor_buffer_t<float> gamma_v,
-      vart::experimental::simple_tensor_buffer_t<float> beta_v,
-      vart::experimental::simple_tensor_buffer_t<float> moving_mean_v,
-      vart::experimental::simple_tensor_buffer_t<float> moving_var_v) {
+  int calculate(vart::simple_tensor_buffer_t<float> output_v,
+                vart::simple_tensor_buffer_t<float> input_v,
+                vart::simple_tensor_buffer_t<float> gamma_v,
+                vart::simple_tensor_buffer_t<float> beta_v,
+                vart::simple_tensor_buffer_t<float> moving_mean_v,
+                vart::simple_tensor_buffer_t<float> moving_var_v) {
     // "implements batchnorm along the last dimension of input feature "
     //          "maps.\n\n"
     //          "    output = (input - moving_mean) /\n"
@@ -103,6 +102,4 @@ struct MyOpImp : public vart::experimental::OpImpBase {
 };  // namespace
 }  // namespace
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<MyOpImp>();
-}
+DEF_XIR_OP_IMP(MyOpImp)

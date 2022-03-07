@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <algorithm>
 #include "vart/zero_copy_helper.hpp"
 
 #include "vitis/ai/env_config.hpp"
@@ -227,7 +227,7 @@ std::vector<vart::reg_basic_info_t> extract_reg_info_from_subgraph(
                        << "reg_id_int " << reg_id_int << " "              //
                        << "is_input_reg_id " << is_input_reg_id << " "    //
                        << "is_output_reg_id " << is_output_reg_id << " "  //
-                       << endl;
+                       << std::endl;
         }
       }
       reg_info.size = reg_size;

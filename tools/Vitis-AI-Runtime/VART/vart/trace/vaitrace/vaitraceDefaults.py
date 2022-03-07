@@ -135,8 +135,8 @@ builtInFunctions = {
 trace_va_timeout = 30
 trace_xat_timeout = 30
 trace_max_timeout = 30
-trace_fg_timeout = 10
-trace_max_fg_timeout = 10
+trace_fg_timeout = 30
+trace_max_fg_timeout = 30
 
 default_runmode = "normal"
 #default_runmode = "debug"

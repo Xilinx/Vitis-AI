@@ -16,7 +16,7 @@
 include(FindDoxygen)
 
 # doxygen setting
-set(DOXYGEN_CONFIG_DIR ${CMAKE_SOURCE_DIR}/doc/doxygen)
+set(DOXYGEN_CONFIG_DIR ${PROJECT_SOURCE_DIR}/doc/doxygen)
 configure_file(${DOXYGEN_CONFIG_DIR}/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile @ONLY)
 add_custom_target(doc ALL
   COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
@@ -27,5 +27,5 @@ add_custom_target(doc ALL
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   COMMENT "Generating Documentation with Doxygen" VERBATIM
   )
-install(FILES ${CMAKE_BINARY_DIR}/c-doc/latex/refman.pdf DESTINATION ${CMAKE_SOURCE_DIR}/doc
+install(FILES ${CMAKE_BINARY_DIR}/c-doc/latex/refman.pdf DESTINATION ${PROJECT_SOURCE_DIR}/doc
   RENAME xir-reference-manual.pdf)

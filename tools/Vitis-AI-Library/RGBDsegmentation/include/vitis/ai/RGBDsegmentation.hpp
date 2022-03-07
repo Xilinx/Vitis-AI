@@ -87,7 +87,7 @@ class RGBDsegmentation : public ConfigurableDpuTaskBase {
    */
  public:
   /**
-   * @brief Function to get running result of the RGBDsegmentation neuron
+   * @brief Function to get running result of the RGBDsegmentation neural
    * network.
    *
    * @param image_bgr Input data of input image (cv::Mat).

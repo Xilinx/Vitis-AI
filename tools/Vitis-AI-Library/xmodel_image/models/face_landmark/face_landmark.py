@@ -22,6 +22,6 @@ def jit(graph):
     graph.set_attr("is_rgb_input", False)
     xir_extra_ops.set_postprocessor(
         graph,
-        "libxmodel_postprocessor_face_landmark.so.1",
-        {"input":
-         ['fc6_points_fixed_']})
+        "libxmodel_postprocessor_face_landmark.so.2",
+        {"input": ["fc6_points_fixed_"]},
+    )

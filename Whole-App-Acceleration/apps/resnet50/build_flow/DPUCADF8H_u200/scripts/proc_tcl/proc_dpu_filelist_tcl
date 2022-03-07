@@ -1,0 +1,15 @@
+#!/bin/bash
+
+cp ../../ml_ip/cnnv3/rtl/dpdpuv3_top.f                                                              ./scripts/syn_tcl/read_fileset.tcl
+sed -i "/incdir/d"                                                                                  ./scripts/syn_tcl/read_fileset.tcl 
+sed -i "/c_add_2_32_sim_netlist/d"                                                                  ./scripts/syn_tcl/read_fileset.tcl 
+sed -i "s/^\./\$SDA_PATH\/..\/..\/ml_ip\/cnnv3\/rtl/g"                                              ./scripts/syn_tcl/read_fileset.tcl
+sed -i "/^$/d"                                                                                      ./scripts/syn_tcl/read_fileset.tcl
+sed -i "s/\.v/\.v \\\/g"                                                                            ./scripts/syn_tcl/read_fileset.tcl
+sed -i "s/\.sv/\.sv \\\/g"                                                                          ./scripts/syn_tcl/read_fileset.tcl
+sed -i "1i\set SDA_PATH \[pwd\]"                                                                    ./scripts/syn_tcl/read_fileset.tcl 
+sed -i "2i\read_verilog -sv [glob \ \\"                                                            ./scripts/syn_tcl/read_fileset.tcl 
+sed -i "3i\$SDA_PATH/src/hdl/dpuv3_shell/dpdpuv3_wrapper.v\ \\\\"                                  ./scripts/syn_tcl/read_fileset.tcl 
+sed -i "4i\$SDA_PATH/../../ml_ip/cnnv3/rtl/inc/*.vh\ \\\\"                                         ./scripts/syn_tcl/read_fileset.tcl 
+sed -i "s/\ *$//g"                                                                                  ./scripts/syn_tcl/read_fileset.tcl
+sed -i -e '$a\\]'                                                                                   ./scripts/syn_tcl/read_fileset.tcl 

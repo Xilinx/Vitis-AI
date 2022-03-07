@@ -43,16 +43,14 @@ void RnnControllerCreate::Register(std::string device_name, GenFunc func) {
 }
 
 std::unique_ptr<XrnnController> RnnControllerCreate::Create(
-    std::string device_name, unsigned int device_core_id,
-    std::string device) {
+    std::string device_name, unsigned int device_core_id, std::string device) {
   auto& registry = getRegistry();
   if (registry.find(device_name) != registry.end()) {
     return registry[device_name](device_core_id, device);
   } else {  // TODO : abidk : Throw proper error here.
-    std::cout << "Available devices : " << std::endl;
     LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
         << "Couldn't find : " << device_name << std::endl
-        << "Available Devices : " << std::endl;
+        << "Available Devices : ";
     for (auto& item : registry) {
       LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER)) << item.first << std::endl;
     }

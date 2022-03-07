@@ -15,7 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.5)
-project(vaitrace VERSION 1.4.20211)
+project(vaitrace VERSION 2.0.20212)
 set(VAITRACE_DEST_PATH bin/xlnx/${PROJECT_NAME})
 
 # Generate Version Flags
@@ -47,6 +47,26 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
   install(TARGETS xapm DESTINATION lib)
 endif()
 
+# Build DpuMcParser Library
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
+  set(DPU_MC_PATH writer/parser/dpu_mc_parser)
+  set(DPU_MC_SRC ${CMAKE_CURRENT_SOURCE_DIR}/${DPU_MC_PATH})
+  set(DPU_MC_DEST ${VAITRACE_DEST_PATH}/${DPU_MC_PATH})
+  include_directories(${DPU_MC_SRC})
+  aux_source_directory(${DPU_MC_SRC} DPU_MC_SRC_FILES)
+  foreach(SRC IN ITEMS  ${DPU_MC_SRC_FILES})
+    get_filename_component(_N ${SRC} NAME_WE)
+    add_library(${_N} SHARED ${SRC})
+    #set_target_properties(${_N} PROPERTIES VERSION "${PROJECT_VERSION}"
+    #                       SOVERSION "${PROJECT_VERSION_MAJOR}")
+    install(
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${_N}.so
+      DESTINATION ${DPU_MC_DEST}
+      RENAME ${_N}.so
+    )
+  endforeach()
+endif()
+
 install(
   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
   DESTINATION ${VAITRACE_DEST_PATH}
@@ -64,10 +84,13 @@ install(
                                   GROUP_READ OWNER_EXECUTE OWNER_READ)
 
 # Create Symbol Link
-execute_process(
-  COMMAND ${CMAKE_COMMAND} -E create_symlink ./xlnx/${PROJECT_NAME}/vaitrace.py
-          ${CMAKE_CURRENT_BINARY_DIR}/vaitrace)
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/vaitrace DESTINATION bin)
+if(NOT MSVC)
+  # MSVC does not support symlink properly.
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ./xlnx/${PROJECT_NAME}/vaitrace.py
+    ${CMAKE_CURRENT_BINARY_DIR}/vaitrace)
+  install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/vaitrace DESTINATION bin)
+endif(NOT MSVC)
 
 # Build Python
 if(BUILD_PYTHON)

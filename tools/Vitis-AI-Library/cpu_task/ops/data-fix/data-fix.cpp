@@ -39,7 +39,7 @@ static std::string md5sum(const unsigned char* val, size_t size) {
 }
 
 struct DataFixOpImp : public vart::experimental::OpImpBase {
-  DataFixOpImp(xir::Op* op, xir::Attrs* attrs)
+  DataFixOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     if (op->has_attr("data")) {
       auto datas = op->get_attr<std::vector<std::vector<char>>>("data");
@@ -56,7 +56,7 @@ struct DataFixOpImp : public vart::experimental::OpImpBase {
       check_md5sum(i);
     }
   }
-  int calculate(vart::experimental::simple_tensor_buffer_t<int8_t> result) {
+  int calculate(vart::simple_tensor_buffer_t<int8_t> result) {
     auto batch_base = (size_t)attrs->get_attr<int>("__batch_base__");
     if (!data_with_batch_.empty()) {
       auto& data = data_with_batch_[batch_base % data_with_batch_.size()];
@@ -79,6 +79,5 @@ struct DataFixOpImp : public vart::experimental::OpImpBase {
   std::vector<std::string> md5sum_;
 };
 }  // namespace
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<DataFixOpImp>();
-}
+
+DEF_XIR_OP_IMP(DataFixOpImp)

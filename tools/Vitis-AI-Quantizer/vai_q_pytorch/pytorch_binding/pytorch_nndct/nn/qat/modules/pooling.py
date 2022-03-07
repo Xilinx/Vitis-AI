@@ -14,6 +14,7 @@
 #
 
 import torch
+import math
 
 from pytorch_nndct.nn.modules.fix_ops import NndctScale
 
@@ -23,26 +24,33 @@ class DPUAvgPool2d(torch.nn.modules.AvgPool2d):
     output = super().forward(input)
 
     # scale to DPU accuracy
-    need_scale = False
     scale = 1.0
     if self.kernel_size == [3, 3]:
-      need_scale = True
       scale = 9.0 * 7.0 / 64.0
     elif self.kernel_size == [5, 5]:
-      need_scale = True
       scale = 25.0 * 10.0 / 256.0
-    elif self.kernel_size == [[6, 6], [3, 6], [6, 3]]:
-      need_scale = True
+    elif self.kernel_size in [[6, 6], [3, 6], [6, 3]]:
       scale = 36.0 * 7.0 / 256.0
     elif self.kernel_size == [7, 7]:
-      need_scale = True
       scale = 49.0 * 21.0 / 1024.0
     elif self.kernel_size == [14, 14]:
-      need_scale = True
       scale = 196.0 * 21.0 / 4096.0
+    else:
+      rec = self.kernel_size[0] * self.kernel_size[1]
+      max_factor =  math.ceil(math.log(rec * 128,2))
+      diff = 1.0
+      multi_factor = 0.0
+      shift_factor = 0.0
+      for shift_factor_ in range(max_factor):
+        factor = round((2 ** shift_factor_)/rec)
+        diff_ = abs(factor / (2 ** shift_factor_) - 1/rec)
+        if diff_ < diff:
+          multi_factor = factor
+          diff = diff_
+          shift_factor = shift_factor_
+      scale = rec * multi_factor / (2 ** shift_factor)
 
-    if need_scale:
-      NndctScale(output, scale)
+    NndctScale(output, scale)
 
     return output
 
@@ -55,29 +63,36 @@ class DPUAdaptiveAvgPool2d(torch.nn.modules.AdaptiveAvgPool2d):
                    (tuple, list)) and tuple(self.output_size) !=
         (1, 1)) or self.output_size != 1:
       print(
-          "Warning: For adaptive average pooling, DPU only supports output size=1"
+          "[WARNING] For adaptive average pooling, DPU only supports output size=1"
       )
 
 
-    need_scale = False
     scale = 1.0
     if input.shape[2] == 3 and input.shape[3] == 3:
-      need_scale = True
       scale = 9.0 * 7.0 / 64.0
     elif input.shape[2] == 5 and input.shape[3] == 5:
-      need_scale = True
       scale = 25.0 * 10.0 / 256.0
-    elif input.shape[2] == 6 and input.shape[3] == 6:
-      need_scale = True
+    elif (input.shape[2] == 6 and input.shape[3] == 6) or (input.shape[2] == 3 and input.shape[3] == 6) or (input.shape[2] == 6 and input.shape[3] == 3):
       scale = 36.0 * 7.0 / 256.0
     elif input.shape[2] == 7 and input.shape[3] == 7:
-      need_scale = True
       scale = 49.0 * 21.0 / 1024.0
     elif input.shape[2] == 14 and input.shape[3] == 14:
-      need_scale = True
       scale = 196.0 * 21.0 / 4096.0
+    else:
+      rec = input.shape[2] * input.shape[3]
+      max_factor =  math.ceil(math.log(rec * 128,2))
+      diff = 1.0
+      multi_factor = 0.0
+      shift_factor = 0.0
+      for shift_factor_ in range(max_factor):
+        factor = round((2 ** shift_factor_)/rec)
+        diff_ = abs(factor / (2 ** shift_factor_) - 1/rec)
+        if diff_ < diff:
+          multi_factor = factor
+          diff = diff_
+          shift_factor = shift_factor_
+      scale = rec * multi_factor / (2 ** shift_factor)
 
-    if need_scale:
-      NndctScale(output, scale)
+    NndctScale(output, scale)
 
     return output

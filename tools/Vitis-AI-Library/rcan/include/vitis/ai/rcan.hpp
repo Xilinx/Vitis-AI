@@ -84,7 +84,7 @@ class Rcan : public ConfigurableDpuTaskBase {
    */
  public:
   /**
-   * @brief Function to get running result of the RCAN neuron network.
+   * @brief Function to get running result of the RCAN neural network.
    *
    * @param image Input data of input image (cv::Mat).
    *
@@ -94,7 +94,7 @@ class Rcan : public ConfigurableDpuTaskBase {
   virtual RcanResult run(const cv::Mat& image) = 0;
 
   /**
-   * @brief Function to get running result of the RCAN neuron network in batch
+   * @brief Function to get running result of the RCAN neural network in batch
    * mode.
    *
    * @param images Input data of input images (vector<cv::Mat>).
@@ -105,7 +105,7 @@ class Rcan : public ConfigurableDpuTaskBase {
   virtual std::vector<RcanResult> run(const std::vector<cv::Mat>& images) = 0;
 
   /**
-   * @brief Function to get running results of the rcan neuron network in
+   * @brief Function to get running results of the rcan neural network in
    * batch mode , used to receive user's xrt_bo to support zero copy.
    *
    * @param input_bos The vector of vart::xrt_bo_t.

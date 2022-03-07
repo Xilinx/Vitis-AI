@@ -116,7 +116,7 @@ class PlateNum {
    */
   virtual PlateNumResult run(const cv::Mat &img) = 0;
   /**
-   * @brief Function to get running results of the platenum neuron network in
+   * @brief Function to get running results of the platenum neural network in
    * batch mode.
    *
    * @param imgs Input data of input images (std:vector<cv::Mat>). The size of

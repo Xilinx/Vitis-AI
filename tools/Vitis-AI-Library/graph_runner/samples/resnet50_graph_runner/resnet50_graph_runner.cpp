@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 #include <glog/logging.h>
+
+#include <iomanip>
 #include <iostream>
 #include <numeric>
 #include <opencv2/opencv.hpp>
 
 #include "vitis/ai/graph_runner.hpp"
-
 
 static int get_fix_point(const xir::Tensor* tensor);
 static std::vector<std::int32_t> get_index_zeros(const xir::Tensor* tensor);
@@ -32,9 +33,10 @@ static std::vector<std::pair<int, float>> topk(const std::vector<float>& score,
 static void print_topk(const std::vector<std::pair<int, float>>& topk);
 static const char* lookup(int index);
 
-//resnet50 preprocess
-static void preprocess_resnet50(const std::vector<std::string>& files, 
-		                const std::vector<vart::TensorBuffer*>& input_tensor_buffers) {
+// resnet50 preprocess
+static void preprocess_resnet50(
+    const std::vector<std::string>& files,
+    const std::vector<vart::TensorBuffer*>& input_tensor_buffers) {
   auto input_tensor = input_tensor_buffers[0]->get_tensor();
   auto batch = input_tensor->get_shape().at(0);
   auto height = input_tensor->get_shape().at(1);
@@ -45,8 +47,8 @@ static void preprocess_resnet50(const std::vector<std::string>& files,
 
   auto size = cv::Size(width, height);
   auto images = read_images(files, batch);
-  CHECK_EQ(images.size(), batch) 
-	  << "images number be read into input buffer must be equal to batch";
+  CHECK_EQ(images.size(), batch)
+      << "images number be read into input buffer must be equal to batch";
 
   for (int index = 0; index < batch; ++index) {
     cv::Mat resize_image;
@@ -64,23 +66,25 @@ static void preprocess_resnet50(const std::vector<std::string>& files,
   }
 }
 
-//resnet50 postprocess
-static void postprocess_resnet50(const std::vector<vart::TensorBuffer*>& output_tensor_buffers) {
+// resnet50 postprocess
+static void postprocess_resnet50(
+    const std::vector<vart::TensorBuffer*>& output_tensor_buffers) {
   auto output_tensor = output_tensor_buffers[0]->get_tensor();
   auto batch = output_tensor->get_shape().at(0);
   auto size = output_tensor_buffers.size();
   CHECK_EQ(size, 1) << "output_tensor_buffers.size() must be 1";
   for (int batch_index = 0; batch_index < batch; ++batch_index) {
-      uint64_t data_out = 0u;
-      size_t size_out = 0u;
-      auto idx = get_index_zeros(output_tensor_buffers[0]->get_tensor());
-      idx[0] = (int)batch_index;
-      std::tie(data_out, size_out) = output_tensor_buffers[0]->data(idx);
-      auto elem_num = output_tensor_buffers[0]->get_tensor()->get_element_num() / batch;
-      auto softmax_output = softmax((void*)data_out, elem_num);
-      auto tb_top5 = topk(softmax_output, 5);
-      std::cout << "batch_index: " << batch_index << std::endl;
-      print_topk(tb_top5);
+    uint64_t data_out = 0u;
+    size_t size_out = 0u;
+    auto idx = get_index_zeros(output_tensor_buffers[0]->get_tensor());
+    idx[0] = (int)batch_index;
+    std::tie(data_out, size_out) = output_tensor_buffers[0]->data(idx);
+    auto elem_num =
+        output_tensor_buffers[0]->get_tensor()->get_element_num() / batch;
+    auto softmax_output = softmax((void*)data_out, elem_num);
+    auto tb_top5 = topk(softmax_output, 5);
+    std::cout << "batch_index: " << batch_index << std::endl;
+    print_topk(tb_top5);
   }
 }
 
@@ -96,38 +100,38 @@ int main(int argc, char* argv[]) {
     g_image_files.push_back(std::string(argv[i]));
   }
 
-  //create graph runner
+  // create graph runner
   auto graph = xir::Graph::deserialize(g_xmodel_file);
   auto attrs = xir::Attrs::create();
   auto runner =
       vitis::ai::GraphRunner::create_graph_runner(graph.get(), attrs.get());
   CHECK(runner != nullptr);
 
-  //get input/output tensor buffers
+  // get input/output tensor buffers
   auto input_tensor_buffers = runner->get_inputs();
   auto output_tensor_buffers = runner->get_outputs();
 
-  //preprocess and fill input
+  // preprocess and fill input
   preprocess_resnet50(g_image_files, input_tensor_buffers);
 
-  //sync input tensor buffers
+  // sync input tensor buffers
   for (auto& input : input_tensor_buffers) {
-      input->sync_for_write(0, input->get_tensor()->get_data_size() /
-                                   input->get_tensor()->get_shape()[0]);
-    }
+    input->sync_for_write(0, input->get_tensor()->get_data_size() /
+                                 input->get_tensor()->get_shape()[0]);
+  }
 
-  //run graph runner
+  // run graph runner
   auto v = runner->execute_async(input_tensor_buffers, output_tensor_buffers);
   auto status = runner->wait((int)v.first, -1);
   CHECK_EQ(status, 0) << "failed to run the graph";
 
-  //sync output tensor buffers
+  // sync output tensor buffers
   for (auto output : output_tensor_buffers) {
-      output->sync_for_read(0, output->get_tensor()->get_data_size() /
-                                   output->get_tensor()->get_shape()[0]);
-    }
+    output->sync_for_read(0, output->get_tensor()->get_data_size() /
+                                 output->get_tensor()->get_shape()[0]);
+  }
 
-  //postprocess and print resnet50 result
+  // postprocess and print resnet50 result
   postprocess_resnet50(output_tensor_buffers);
 
   return 0;
@@ -135,8 +139,8 @@ int main(int argc, char* argv[]) {
 
 static int get_fix_point(const xir::Tensor* tensor) {
   CHECK(tensor->has_attr("fix_point"))
-        << "get tensor fix_point error! has no fix_point attr, tensor name is "
-        << tensor->get_name();
+      << "get tensor fix_point error! has no fix_point attr, tensor name is "
+      << tensor->get_name();
   return tensor->template get_attr<int>("fix_point");
 }
 
@@ -147,7 +151,7 @@ static std::vector<std::int32_t> get_index_zeros(const xir::Tensor* tensor) {
 }
 
 static std::vector<cv::Mat> read_images(const std::vector<std::string>& files,
-		                                        size_t batch) {
+                                        size_t batch) {
   std::vector<cv::Mat> images(batch);
   for (auto index = 0u; index < batch; ++index) {
     const auto& file = files[index % files.size()];
@@ -196,11 +200,11 @@ static std::vector<std::pair<int, float>> topk(const std::vector<float>& score,
 
 static void print_topk(const std::vector<std::pair<int, float>>& topk) {
   for (const auto& v : topk) {
-    std::cout << setiosflags(ios::left) << std::setw(11)
+    std::cout << std::setiosflags(std::ios::left) << std::setw(11)
               << "score[" + std::to_string(v.first) + "]"
               << " =  " << std::setw(12) << v.second
-              << " text: " << lookup(v.first) << resetiosflags(ios::left)
-              << std::endl;
+              << " text: " << lookup(v.first)
+              << std::resetiosflags(std::ios::left) << std::endl;
   }
 }
 

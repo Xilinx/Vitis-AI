@@ -13,13 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * Filename: simple_tensor_buffer.hpp
+ *
+ * Description: A utility class to simplify the usage of vart::TensorBuffer
+ *
+ */
+
 #pragma once
 #include <tuple>
-
-#include "vart/tensor_buffer.hpp"
-#include "xir/tensor/tensor.hpp"
+#include <vart/tensor_buffer.hpp>
+#include <xir/tensor/tensor.hpp>
 namespace vart {
-namespace experimental {
+
+/**
+ * @brief A utility class to simplify the usage of vart::TensorBuffer
+ *
+ * template parameter `T` can be one of `void`, `uint8_t`, `int8_t`,
+ * `float`. Other types are not supported yet.
+ *
+ * A simple_tensor_buffer_t object does not own underlying memory.
+ *
+ * Sample code:
+ * @code
+   simple_tensor_buffer_t<int8_t> x =
+   simple_tensor_buffer_t<int8_t>::create(a_vart_tensor_buffer);
+
+   for(auto i = 0u; i < x.mem_size/sizeof(int8_t); ++i) {
+     x.data[i] ++;
+   }
+   @endcode
+ *
+ */
 template <typename T = void>
 struct simple_tensor_buffer_t {
   static simple_tensor_buffer_t create(TensorBuffer* t);
@@ -29,66 +54,16 @@ struct simple_tensor_buffer_t {
       : data{(T*)other.data}, mem_size(other.mem_size), tensor(other.tensor) {}
   simple_tensor_buffer_t(T* d, size_t s, const xir::Tensor* t)
       : data{(T*)d}, mem_size(s), tensor(t) {}
+  /** @brief data pointer to the underlying memory. It does not take the
+   * ownership of the memory. */
   T* data;
+  /** @brief the size of underlying memory in bytes */
   size_t mem_size;
+  /** @brief the tensor object ownedy by the tensor buffer object. It
+   * is necessary to use XIR API e.g. xir::Tensor::get_shape etc to
+   * inspect the shape and data type of underlying memory */
   const xir::Tensor* tensor;
 };
-
-template <typename T>
-struct type_matcher_t {
-  static inline bool match(const xir::DataType& dtype) { return false; }
-};
-
-template <>
-struct type_matcher_t<float> {
-  static inline bool match(const xir::DataType& dtype) {
-    return dtype.type == xir::DataType::FLOAT && dtype.bit_width == 32;
-  }
-};
-
-template <>
-struct type_matcher_t<int8_t> {
-  static inline bool match(const xir::DataType& dtype) {
-    auto is_xint = dtype.type == xir::DataType::XINT && dtype.bit_width == 8;
-    auto is_int = dtype.type == xir::DataType::INT && dtype.bit_width == 8;
-    return is_xint || is_int;
-  }
-};
-
-template <>
-struct type_matcher_t<uint8_t> {
-  static inline bool match(const xir::DataType& dtype) {
-    auto is_xuint = dtype.type == xir::DataType::XUINT && dtype.bit_width == 8;
-    auto is_uint = dtype.type == xir::DataType::UINT && dtype.bit_width == 8;
-    return is_xuint || is_uint;
-  }
-};
-
-template <>
-struct type_matcher_t<void> {
-  static inline bool match(const xir::DataType& dtype) { return true; }
-};
-
-template <typename T>
-simple_tensor_buffer_t<T> simple_tensor_buffer_t<T>::create(
-    vart::TensorBuffer* t) {
-  auto shape = t->get_tensor()->get_shape();
-  auto idx = std::vector<int>(shape.size(), 0);
-  uint64_t data = 0u;
-  size_t size = 0u;
-  std::tie(data, size) = t->data(idx);
-  if (t->get_tensor()->get_data_size() != (int)size) {
-    std::tie(data, size) = t->data(idx);
-  }
-  CHECK_EQ(t->get_tensor()->get_data_size(), (int)size)
-      << "only support tensor buffer with continuous memory region:"
-      << t->to_string();
-  CHECK(type_matcher_t<T>::match(t->get_tensor()->get_data_type()))
-      << "type mismatch: T=" << typeid(T).name()
-      << " dtype=" << t->get_tensor()->get_data_type().to_string()
-      << " tensor_buffer=" << t->to_string();
-  return simple_tensor_buffer_t<T>{(T*)data, size, t->get_tensor()};
-}
-
-}  // namespace experimental
 }  // namespace vart
+
+#include "./detail/simple_tensor_buffer.inc"

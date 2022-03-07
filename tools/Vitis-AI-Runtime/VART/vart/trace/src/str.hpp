@@ -17,7 +17,6 @@
 #pragma once
 #include <assert.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <chrono>
 #include <cstring>
 #include <fstream>
@@ -29,10 +28,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <sys/syscall.h>
-#include <sys/sysinfo.h>
-#include <sys/types.h>
 
 using str_id = uint16_t;
 

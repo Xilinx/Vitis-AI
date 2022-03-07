@@ -24,13 +24,13 @@
 #include "xir/graph/graph.hpp"
 
 namespace {
-static vector<vector<float>> FilterBox(const float det_threshold, float* bbout,
+static std::vector<std::vector<float>> FilterBox(const float det_threshold, float* bbout,
                                        int w, int h, float* pred) {
-  vector<vector<float>> boxes;
+  std::vector<std::vector<float>> boxes;
   for (int i = 0; i < h; i++) {
     for (int j = 0; j < w; j++) {
       int position = i * w + j;
-      vector<float> box;
+      std::vector<float> box;
       if (pred[position * 2 + 1] > det_threshold) {
         box.push_back(bbout[position * 4 + 0] + j * 4);
         box.push_back(bbout[position * 4 + 1] + i * 4);
@@ -43,8 +43,8 @@ static vector<vector<float>> FilterBox(const float det_threshold, float* bbout,
   }
   return boxes;
 }
-static void getResult(const vector<vector<float>>& box, const vector<int>& keep,
-                      vector<vector<float>>& results) {
+static void getResult(const std::vector<std::vector<float>>& box, const std::vector<int>& keep,
+                      std::vector<std::vector<float>>& results) {
   results.clear();
   results.reserve(keep.size());
   for (auto i = 0u; i < keep.size(); ++i) {
@@ -55,21 +55,21 @@ static void getResult(const vector<vector<float>>& box, const vector<int>& keep,
   }
 }
 
-static void NMS(const float nms_threshold, const vector<vector<float>>& box,
-                vector<vector<float>>& results) {
+static void NMS(const float nms_threshold, const std::vector<std::vector<float>>& box,
+                std::vector<std::vector<float>>& results) {
   auto count = box.size();
-  vector<pair<size_t, float>> order(count);
+  std::vector<std::pair<size_t, float>> order(count);
   for (auto i = 0u; i < count; ++i) {
     order[i].first = i;
     order[i].second = box[i][4];
   }
   sort(order.begin(), order.end(),
-       [](const pair<int, float>& ls, const pair<int, float>& rs) {
+       [](const std::pair<int, float>& ls, const std::pair<int, float>& rs) {
          return ls.second > rs.second;
        });
 
-  vector<int> keep;
-  vector<bool> exist_box(count, true);
+  std::vector<int> keep;
+  std::vector<bool> exist_box(count, true);
   for (auto i = 0u; i < count; ++i) {
     auto idx = order[i].first;
     if (!exist_box[idx]) continue;
@@ -77,11 +77,11 @@ static void NMS(const float nms_threshold, const vector<vector<float>>& box,
     for (auto j = i + 1; j < count; ++j) {
       auto kept_idx = order[j].first;
       if (!exist_box[kept_idx]) continue;
-      auto x1 = max(box[idx][0], box[kept_idx][0]);
-      auto y1 = max(box[idx][1], box[kept_idx][1]);
-      auto x2 = min(box[idx][2], box[kept_idx][2]);
-      auto y2 = min(box[idx][3], box[kept_idx][3]);
-      auto intersect = max(0.f, x2 - x1 + 1) * max(0.f, y2 - y1 + 1);
+      auto x1 = std::max(box[idx][0], box[kept_idx][0]);
+      auto y1 = std::max(box[idx][1], box[kept_idx][1]);
+      auto x2 = std::min(box[idx][2], box[kept_idx][2]);
+      auto y2 = std::min(box[idx][3], box[kept_idx][3]);
+      auto intersect = std::max(0.f, x2 - x1 + 1) * std::max(0.f, y2 - y1 + 1);
       auto sum_area =
           (box[idx][2] - box[idx][0] + 1) * (box[idx][3] - box[idx][1] + 1) +
           (box[kept_idx][2] - box[kept_idx][0] + 1) *
@@ -94,9 +94,12 @@ static void NMS(const float nms_threshold, const vector<vector<float>>& box,
 }
 
 static float my_div(float a, size_t b) { return a / static_cast<float>(b); };
-vitis::ai::proto::BoundingBox build_bbobx(float x, float y, float w, float h,
-                                          float score) {
+
+static vitis::ai::proto::BoundingBox build_bbobx(float x, float y, float w, float h,
+                                          float score, float label = 0) {
   auto ret = vitis::ai::proto::BoundingBox();
+  auto index = (unsigned int)label;
+  ret.mutable_label()->set_index(index);
   ret.mutable_label()->set_score(score);
   ret.mutable_size()->set_width(w);
   ret.mutable_size()->set_height(h);
@@ -130,8 +133,8 @@ struct DenseBox {
     nms_threshold_ = (float)args.graph->get_attr<double>("nms_threshold");
   }
   vitis::ai::proto::DpuModelResult process(
-      const vart::experimental::simple_tensor_buffer_t<float>& bbobx,
-      const vart::experimental::simple_tensor_buffer_t<float>& conf);
+      const vart::simple_tensor_buffer_t<float>& bbobx,
+      const vart::simple_tensor_buffer_t<float>& conf);
 
  private:
   int width_;
@@ -141,8 +144,8 @@ struct DenseBox {
 };
 
 vitis::ai::proto::DpuModelResult DenseBox::process(
-    const vart::experimental::simple_tensor_buffer_t<float>& bb,
-    const vart::experimental::simple_tensor_buffer_t<float>& conf) {
+    const vart::simple_tensor_buffer_t<float>& bb,
+    const vart::simple_tensor_buffer_t<float>& conf) {
   auto bb_shape = bb.tensor->get_shape();
   auto conf_shape = conf.tensor->get_shape();
   CHECK_EQ(bb_shape.size(), 4u);
@@ -157,9 +160,9 @@ vitis::ai::proto::DpuModelResult DenseBox::process(
   auto input_width = width_;
   auto input_height = height_;
   auto ret = vitis::ai::proto::DpuModelResult();
-  vector<vector<float>> boxes =
+  std::vector<std::vector<float>> boxes =
       FilterBox(det_threshold_, bb.data, w, h, conf.data);
-  vector<vector<float>> results;
+  std::vector<std::vector<float>> results;
   NMS(nms_threshold_, boxes, results);
   auto dr = ret.mutable_detect_result();
   for (auto& x : results) {

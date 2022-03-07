@@ -108,7 +108,7 @@ class Covid19Segmentation {
    */
   virtual Covid19SegmentationResult run_8UC1(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running results of the covid19segmentation neuron network
+   * @brief Function to get running results of the covid19segmentation neural network
    * in batch mode.
    *
    * @note The type of CV_8UC1 of the covid19segmentation result.
@@ -133,7 +133,7 @@ class Covid19Segmentation {
    */
   virtual Covid19SegmentationResult run_8UC3(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running results of the covid19segmentation neuron network
+   * @brief Function to get running results of the covid19segmentation neural network
    * in batch mode.
    *
    * @note The type of CV_8UC3 of the Result's covid19segmentation.
@@ -212,7 +212,7 @@ class Covid19Segmentation8UC1 {
    */
   Covid19SegmentationResult run(const cv::Mat& image);
   /**
-   * @brief Function to get running results of the covid19segmentation neuron network
+   * @brief Function to get running results of the covid19segmentation neural network
    * in batch mode.
    *
    * @note The type of CV_8UC1 of the Result's covid19segmentation.
@@ -299,7 +299,7 @@ class Covid19Segmentation8UC3 {
    */
   Covid19SegmentationResult run(const cv::Mat& image);
   /**
-   * @brief Function to get running results of the covid19segmentation neuron network
+   * @brief Function to get running results of the covid19segmentation neural network
    * in batch mode.
    *
    * @note The type of CV_8UC3 of the Result's covid19segmentation.

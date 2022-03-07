@@ -47,8 +47,8 @@ class MyPostProcessor {
   }
 
   vitis::ai::proto::DpuModelResult process(
-      const vart::experimental::simple_tensor_buffer_t<float>& L1,
-      const vart::experimental::simple_tensor_buffer_t<float>& L2);
+      const vart::simple_tensor_buffer_t<float>& L1,
+      const vart::simple_tensor_buffer_t<float>& L2);
 
  private:
   int width_;
@@ -56,28 +56,28 @@ class MyPostProcessor {
 };
 
 using Peak = std::tuple<int, float, cv::Point2f>;
-using Peaks = vector<Peak>;
-using AllPeaks = vector<Peaks>;
-using Candidate = tuple<int, int, float, float>;
-using Connection = tuple<int, int, float, int, int>;
-using AllConnection = vector<Connection>;
+using Peaks = std::vector<Peak>;
+using AllPeaks = std::vector<Peaks>;
+using Candidate = std::tuple<int, int, float, float>;
+using Connection = std::tuple<int, int, float, int, int>;
+using AllConnection = std::vector<Connection>;
 
-static vector<vector<int>> limbSeq = {
+static std::vector<std::vector<int>> limbSeq = {
     {0, 1}, {1, 2}, {2, 3},  {3, 4},  {1, 5},   {5, 6},  {6, 7},
     {1, 8}, {8, 9}, {9, 10}, {1, 11}, {11, 12}, {12, 13}};
-static vector<vector<int>> mapIdx = {
+static std::vector<std::vector<int>> mapIdx = {
     {15, 16}, {17, 18}, {19, 20}, {21, 22}, {23, 24}, {25, 26}, {27, 28},
     {29, 30}, {31, 32}, {33, 34}, {35, 36}, {37, 38}, {39, 40}};
-bool isThreeInConnection(const vector<Connection>& connections, int index) {
+bool isThreeInConnection(const std::vector<Connection>& connections, int index) {
   for (size_t i = 0; i < connections.size(); ++i) {
-    if (index == get<3>(connections[i])) return true;
+    if (index == std::get<3>(connections[i])) return true;
   }
   return false;
 }
 
-bool isFourInConnection(const vector<Connection>& connections, int index) {
+bool isFourInConnection(const std::vector<Connection>& connections, int index) {
   for (size_t i = 0; i < connections.size(); ++i) {
-    if (index == get<4>(connections[i])) return true;
+    if (index == std::get<4>(connections[i])) return true;
   }
   return false;
 }
@@ -99,10 +99,10 @@ void find_peak(cv::Mat ori_img, Peaks& peaks, int& idx) {
     }
 }
 
-void findLines(int width, const vector<cv::Mat>& pafs,
-               const AllPeaks& all_peaks, vector<AllConnection>& connection_all,
-               vector<int>& special_k) {
-  vector<Connection> connection;
+void findLines(int width, const std::vector<cv::Mat>& pafs,
+               const AllPeaks& all_peaks, std::vector<AllConnection>& connection_all,
+               std::vector<int>& special_k) {
+  std::vector<Connection> connection;
   int mid_num = 10;
   for (size_t k = 0; k < mapIdx.size(); ++k) {
     cv::Mat score_midx = pafs[mapIdx[k][0] - 15];
@@ -111,26 +111,26 @@ void findLines(int width, const vector<cv::Mat>& pafs,
     Peaks candB = all_peaks[limbSeq[k][1]];
     size_t nA = candA.size();
     size_t nB = candB.size();
-    vector<float> vec;
+    std::vector<float> vec;
     vec.reserve(2);
     if (!candA.empty() && !candB.empty()) {
-      vector<Candidate> connection_candidate;
+      std::vector<Candidate> connection_candidate;
       for (size_t i = 0; i < candA.size(); ++i) {
         for (size_t j = 0; j < candB.size(); ++j) {
-          vec[0] = get<2>(candA[i]).x - get<2>(candB[j]).x;
-          vec[1] = get<2>(candA[i]).y - get<2>(candB[j]).y;
+          vec[0] = std::get<2>(candA[i]).x - std::get<2>(candB[j]).x;
+          vec[1] = std::get<2>(candA[i]).y - std::get<2>(candB[j]).y;
           float norm = sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
-          vector<cv::Point2f> points;
+          std::vector<cv::Point2f> points;
           for (int a = 0; a < mid_num; ++a) {
             points.emplace_back(cv::Point2f(
-                int(round(get<2>(candA[i]).x - a * vec[0] / (mid_num - 1))),
-                int(round(get<2>(candA[i]).y - a * vec[1] / (mid_num - 1)))));
+                int(round(std::get<2>(candA[i]).x - a * vec[0] / (mid_num - 1))),
+                int(round(std::get<2>(candA[i]).y - a * vec[1] / (mid_num - 1)))));
           }
           vec[0] = vec[0] / norm;
           vec[1] = vec[1] / norm;
-          vector<float> vec_x;
-          vector<float> vec_y;
-          vector<float> score_midpts;
+          std::vector<float> vec_x;
+          std::vector<float> vec_y;
+          std::vector<float> score_midpts;
           float sum = 0;
           int lencir = 0;
           for (size_t b = 0; b < points.size(); ++b) {
@@ -142,30 +142,30 @@ void findLines(int width, const vector<cv::Mat>& pafs,
             if (score_midpts[b] > 0.05) lencir++;
           }
           float score_with_dist_prior =
-              sum / score_midpts.size() + min(0.5 * width / norm - 1, 0.0);
+              sum / score_midpts.size() + std::min(0.5 * width / norm - 1, 0.0);
           bool cirterion1 = lencir > 0.8 * score_midpts.size();
           bool cirterion2 = score_with_dist_prior > 0;
           if (cirterion1 && cirterion2) {
             connection_candidate.emplace_back(
                 i, j, score_with_dist_prior,
-                score_with_dist_prior + get<1>(candA[i]) + get<1>(candB[j]));
+                score_with_dist_prior + std::get<1>(candA[i]) + std::get<1>(candB[j]));
           }
         }
       }
       std::sort(connection_candidate.begin(), connection_candidate.end(),
-                [](const tuple<int, int, float, float>& lhs,
-                   const tuple<int, int, float, float>& rhs) {
-                  return get<2>(lhs) > get<2>(rhs);
+                [](const std::tuple<int, int, float, float>& lhs,
+                   const std::tuple<int, int, float, float>& rhs) {
+                  return std::get<2>(lhs) > std::get<2>(rhs);
                 });
       connection.clear();
       for (size_t c = 0; c < connection_candidate.size(); ++c) {
-        int i = get<0>(connection_candidate[c]);
-        int j = get<1>(connection_candidate[c]);
-        float s = get<2>(connection_candidate[c]);
+        int i = std::get<0>(connection_candidate[c]);
+        int j = std::get<1>(connection_candidate[c]);
+        float s = std::get<2>(connection_candidate[c]);
         if (!isThreeInConnection(connection, i) &&
             !isFourInConnection(connection, j)) {
-          connection.emplace_back(get<0>(candA[i]), get<0>(candB[j]), s, i, j);
-          if (connection.size() >= min(nA, nB)) break;
+          connection.emplace_back(std::get<0>(candA[i]), std::get<0>(candB[j]), s, i, j);
+          if (connection.size() >= std::min(nA, nB)) break;
         }
       }
       connection_all.emplace_back(connection);
@@ -193,9 +193,9 @@ struct OpenPoseResult {
 };
 
 std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
-    const AllPeaks& all_peaks, vector<AllConnection>& connection_all,
-    vector<int>& special_k) {
-  vector<vector<int>> subset(0, vector<int>(16, -1));
+    const AllPeaks& all_peaks, std::vector<AllConnection>& connection_all,
+    std::vector<int>& special_k) {
+  std::vector<std::vector<int>> subset(0, std::vector<int>(16, -1));
   Peaks candidate;
   for (auto peaks : all_peaks) {
     for (auto peak : peaks) {
@@ -208,9 +208,9 @@ std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
       int indexB = limbSeq[k][1];
       for (size_t i = 0; i < connection_all[k].size(); ++i) {
         int found = 0;
-        int partA = get<0>(connection_all[k][i]);
-        int partB = get<1>(connection_all[k][i]);
-        vector<int> subset_idx(2, -1);
+        int partA = std::get<0>(connection_all[k][i]);
+        int partB = std::get<1>(connection_all[k][i]);
+        std::vector<int> subset_idx(2, -1);
         for (size_t j = 0; j < subset.size(); ++j) {
           if (subset[j][indexA] == partA || subset[j][indexB] == partB) {
             subset_idx[found] = j;
@@ -223,12 +223,12 @@ std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
             subset[j][indexB] = partB;
             subset[j][15] += 1;
             subset[j][14] +=
-                get<0>(candidate[partA]) + get<2>(connection_all[k][i]);
+                std::get<0>(candidate[partA]) + std::get<2>(connection_all[k][i]);
           }
         } else if (found == 2) {
           int j1 = subset_idx[0];
           int j2 = subset_idx[1];
-          vector<int> membership(14, 0);
+          std::vector<int> membership(14, 0);
           for (size_t a = 0; a < membership.size(); ++a) {
             int x = subset[j1][a] >= 0 ? 1 : 0;
             int y = subset[j2][a] >= 0 ? 1 : 0;
@@ -242,20 +242,20 @@ std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
             for (size_t a = subset.size() - 2; a < subset.size(); ++a) {
               subset[j1][a] += subset[j2][a];
             }
-            subset[j1][13] += get<2>(connection_all[k][i]);
+            subset[j1][13] += std::get<2>(connection_all[k][i]);
           } else {
             subset[j1][indexB] = partA;
             subset[j1][15] += 1;
             subset[j1][14] +=
-                get<0>(candidate[partB]) + get<2>(connection_all[k][i]);
+                std::get<0>(candidate[partB]) + std::get<2>(connection_all[k][i]);
           }
         } else if (found == 0 && k < 14) {
-          vector<int> row(16, -1);
+          std::vector<int> row(16, -1);
           row[indexA] = partA;
           row[indexB] = partB;
           row[15] = 2;
-          row[14] = get<0>(candidate[partA]) + get<0>(candidate[partB]) +
-                    get<2>(connection_all[k][i]);
+          row[14] = std::get<0>(candidate[partA]) + std::get<0>(candidate[partB]) +
+                    std::get<2>(connection_all[k][i]);
           subset.emplace_back(row);
         }
       }
@@ -271,7 +271,7 @@ std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
   }
   OpenPoseResult::PosePoint posePoint;
   std::vector<std::vector<OpenPoseResult::PosePoint>> poses(
-      subset.size() + 1, vector<OpenPoseResult::PosePoint>(14, posePoint));
+      subset.size() + 1, std::vector<OpenPoseResult::PosePoint>(14, posePoint));
   for (size_t i = 0; i < subset.size(); ++i) {
     for (int j = 0; j < 14; ++j) {
       int idx = subset[i][j];
@@ -280,15 +280,15 @@ std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
         continue;
       }
       (poses[subset.size() - i][j]).type = 1;
-      (poses[subset.size() - i][j]).point = get<2>(candidate[idx]);
+      (poses[subset.size() - i][j]).point = std::get<2>(candidate[idx]);
     }
   }
   return poses;
 }
 
 vitis::ai::proto::DpuModelResult MyPostProcessor::process(
-    const vart::experimental::simple_tensor_buffer_t<float>& chwdataL1_dpu,
-    const vart::experimental::simple_tensor_buffer_t<float>& chwdataL2_dpu) {
+    const vart::simple_tensor_buffer_t<float>& chwdataL1_dpu,
+    const vart::simple_tensor_buffer_t<float>& chwdataL2_dpu) {
   auto L1_shape = chwdataL1_dpu.tensor->get_shape();
   CHECK_EQ(L1_shape.size(), 4u);
   auto hL1 = L1_shape[1];
@@ -299,7 +299,7 @@ vitis::ai::proto::DpuModelResult MyPostProcessor::process(
   auto wL2 = L2_shape[2];
   auto channelL2 = L2_shape[3];
 
-  vector<float> chwdataL2;
+  std::vector<float> chwdataL2;
   chwdataL2.reserve(hL2 * wL2 * channelL2);
   // transpose NHWC to NCHW
   for (int ih = 0; ih < hL2; ++ih) {
@@ -325,7 +325,7 @@ vitis::ai::proto::DpuModelResult MyPostProcessor::process(
     all_peaks.emplace_back(peaks);
   }
 
-  vector<float> chwdataL1;
+  std::vector<float> chwdataL1;
   chwdataL1.reserve(hL1 * wL1 * channelL1);
   for (int ih = 0; ih < hL1; ++ih) {
     for (int iw = 0; iw < wL1; ++iw) {
@@ -336,14 +336,14 @@ vitis::ai::proto::DpuModelResult MyPostProcessor::process(
       }
     }
   }
-  vector<cv::Mat> pafs;
+  std::vector<cv::Mat> pafs;
   for (int i = 0; i < channelL1; ++i) {
     cv::Mat um(hL1, wL1, CV_32F, chwdataL1.data() + i * wL1 * hL1);
     cv::resize(um, um, cv::Size(0, 0), 8, 8, cv::INTER_CUBIC);
     pafs.emplace_back(um);
   }
-  vector<int> special_k;
-  vector<AllConnection> connection_all;
+  std::vector<int> special_k;
+  std::vector<AllConnection> connection_all;
   auto sWidth = width_;
   auto sHeight = height_;
   findLines(sWidth, pafs, all_peaks, connection_all, special_k);

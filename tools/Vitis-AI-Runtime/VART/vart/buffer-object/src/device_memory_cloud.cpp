@@ -57,5 +57,7 @@ bool DeviceMemoryCloud::download(void* data, uint64_t offset, size_t size) {
 
 }  // namespace
 
-DECLARE_INJECTION(xir::DeviceMemory, DeviceMemoryCloud, size_t&);
-DECLARE_INJECTION(xir::DeviceMemory, DeviceMemoryCloud, size_t&&);
+REGISTER_INJECTION_BEGIN(xir::DeviceMemory, 1, DeviceMemoryCloud, size_t&) {
+  return true;
+}
+REGISTER_INJECTION_END

@@ -1,0 +1,24 @@
+From 8f302c054604f6acaa5c6f484e1a3abd821ff630 Mon Sep 17 00:00:00 2001
+From: vivekana <vivekana@xilinx.com>
+Date: Mon, 1 Jun 2020 14:31:53 -0700
+Subject: [PATCH] free_clk: imx274 sensor
+
+---
+ drivers/media/i2c/imx274.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+index 6011cec..b1a2141 100644
+--- a/drivers/media/i2c/imx274.c
++++ b/drivers/media/i2c/imx274.c
+@@ -405,6 +405,7 @@ static const struct reg_8 imx274_start_2[] = {
+  */
+ static const struct reg_8 imx274_start_3[] = {
+ 	{0x30F4, 0x00},
++	{0x3A43, 0x00},
+ 	{0x3018, 0xA2}, /* XHS VHS OUTPUT */
+ 	{IMX274_TABLE_END, 0x00}
+ };
+-- 
+2.7.4
+

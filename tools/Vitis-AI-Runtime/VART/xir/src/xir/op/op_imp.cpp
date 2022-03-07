@@ -15,6 +15,7 @@
  */
 
 #include "xir/op/op_imp.hpp"
+#include "xir/op/shape_inference.hpp"
 #include "xir/util/internal_util.hpp"
 #include "xir/util/tool_function.hpp"
 
@@ -47,12 +48,17 @@ OpImp::OpImp(GraphImp::VertexD vd, const std::string& name,
              const std::map<std::string, std::vector<Op*>>& input_ops,
              std::unique_ptr<Tensor> output_tensor, GraphImp* graph,
              const DataType& output_data_type)
-    : vd_{vd},
-      to_be_removed_{false},
-      name_{name},
-      type_{type},
-      def_{op_def_factory()->create(type)},
+    : vd_{vd},                //
+      to_be_removed_{false},  //
+      name_{name},            //
+      type_{type},            //
       graph_{graph} {
+  auto build_in_ops = op_def_factory()->get_registered_ops();
+  if (std::find(build_in_ops.begin(), build_in_ops.end(), type) ==
+      build_in_ops.end()) {
+    xir::register_customized_operator_definition(name, type);
+  }
+  def_ = op_def_factory()->create(type);
   set_attrs(std::move(attrs));
 
   std::for_each(def_->input_args().begin(), def_->input_args().end(),
@@ -339,7 +345,7 @@ std::unique_ptr<Tensor> OpImp::create_output_tensor_(
     const DataType& output_data_type) {
   std::vector<std::int32_t> output_tensor_shape{1};
   DataType data_type;
-  if (!this->input_ops_.size()) {
+  if ((!this->input_ops_.size()) || (!this->get_input_num("input"))) {
     UNI_LOG_CHECK(
         this->attrs_->has_attr("shape") && this->attrs_->has_attr("data_type"),
         XIR_INVALID_ATTR_OCCUR);

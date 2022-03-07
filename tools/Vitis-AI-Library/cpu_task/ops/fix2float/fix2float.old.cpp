@@ -26,7 +26,7 @@ using namespace std;
 namespace {
 class Fix2FloatOpImp : public vart::OpImp {
  public:
-  explicit Fix2FloatOpImp(const xir::Op* op, xir::Attrs * attrs);
+  explicit Fix2FloatOpImp(const xir::Op* op, xir::Attrs* attrs);
   virtual ~Fix2FloatOpImp();
   Fix2FloatOpImp(const Fix2FloatOpImp& other) = delete;
   Fix2FloatOpImp& operator=(const Fix2FloatOpImp& rhs) = delete;
@@ -36,7 +36,8 @@ class Fix2FloatOpImp : public vart::OpImp {
                         vart::TensorBuffer* output) override;
 };
 
-Fix2FloatOpImp::Fix2FloatOpImp(const xir::Op* op, xir::Attrs * attrs) : vart::OpImp(op){};
+Fix2FloatOpImp::Fix2FloatOpImp(const xir::Op* op, xir::Attrs* attrs)
+    : vart::OpImp(op){};
 Fix2FloatOpImp::~Fix2FloatOpImp() {}
 
 static int get_fix_point(const xir::Tensor* tensor) {

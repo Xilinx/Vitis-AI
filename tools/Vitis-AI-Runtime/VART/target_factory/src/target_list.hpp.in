@@ -16,4 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#cmakedefine TARGET_PROTOTXTS "@TARGET_PROTOTXTS@"
+@TARGET_PROTOTXT_CODE@
+typedef const char * const_char_p;
+static constexpr const_char_p TARGET_PROTOTXTS[] = {@TARGET_PROTOTXTS@};

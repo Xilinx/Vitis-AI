@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <vector>
+#include "xir/XirExport.hpp"
 
 namespace xir {
 
@@ -32,7 +33,7 @@ class Graph;
  *
  * This class defines the basic XIR OP Interface.
  */
-class Op {
+class XIR_DLLESPEC Op {
  public:
   /**
    * @brief Get name of the OP

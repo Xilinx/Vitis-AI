@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "vart/tensor_buffer.hpp"
-
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <sstream>

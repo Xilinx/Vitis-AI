@@ -53,6 +53,34 @@ static void preprocess(const cv::Mat& image, int height, int width,
   croppedImage(resized_image, height, width, pro_res);
 }
 
+float get_avgpool_dpu_coefficient(const std::vector<std::int32_t>& kernels) {
+  auto rec = kernels[0] * kernels[1];
+  float multi_factor = 0;
+  float shift_factor = 0;
+  auto diff = 1.f;
+  auto max_factor = std::ceil(std::log2(rec * 128));
+  for (auto shift_factor_ = 0; shift_factor_ < max_factor; shift_factor_++) {
+    auto factor = std::round(std::exp2(shift_factor_) / rec);
+    auto diff_ = std::abs(factor / std::exp2(shift_factor_) - 1.f / rec);
+    if (diff_ < diff) {
+      multi_factor = factor;
+      diff = diff_;
+      shift_factor = shift_factor_;
+    }
+  }
+  return multi_factor / std::exp2(shift_factor);
+}
+void AvePool(int8_t* src, int channel, int width, int height, float* dst) {
+  auto scale = get_avgpool_dpu_coefficient({width, height});
+  float sum;
+  for (int i = 0; i < channel; i++) {
+    sum = 0.0f;
+    for (int j = 0; j < width * height; j++) {
+      sum += src[i + channel * j];
+    }
+    dst[i] = sum * scale;
+  }
+}
 int main(int argc, char* argv[]) {
   if (argc < 4) {
     cout << "First param is the model name." << endl
@@ -75,6 +103,7 @@ int main(int argc, char* argv[]) {
     task->setMeanScaleBGR({104.0f, 107.0f, 123.0f}, {1.0f, 1.0f, 1.0f});
   else
     cout << "Model name should be squeezenet or squeezenet_pt" << endl;
+
   auto input_tensor = task->getInputTensor(0u);
   auto width = input_tensor[0].width;
   auto height = input_tensor[0].height;
@@ -102,9 +131,14 @@ int main(int argc, char* argv[]) {
       task->setImageBGR(image);
     task->run(0u);
     auto pre_data = (int8_t*)task->getOutputTensor(0u)[0].get_data(0);
-    std::vector<int8_t> data(cls);
-    vitis::ai::globalAvePool(pre_data, cls, ot_w, ot_h, data.data());
-
+    std::vector<float> data(cls);
+    if (model.compare("squeezenet_pt") == 0) {
+      AvePool(pre_data, cls, ot_w, ot_h, data.data());
+    } else {
+      std::vector<int8_t> data_i(cls);
+      vitis::ai::globalAvePool(pre_data, cls, ot_w, ot_h, data_i.data());
+      data = std::vector<float>(data_i.begin(), data_i.end());
+    }
     auto score = std::vector<float>(cls);
     auto sum = 0.0f;
     for (auto i = 0u; i < score.size(); ++i) {

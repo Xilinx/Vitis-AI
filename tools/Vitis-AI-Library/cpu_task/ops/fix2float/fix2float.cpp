@@ -24,7 +24,7 @@ using namespace std;
 
 namespace {
 struct Fix2FloatOpImp : public vart::experimental::OpImpBase {
-  Fix2FloatOpImp(xir::Op* op, xir::Attrs* attrs)
+  Fix2FloatOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     CHECK(op->has_attr("fix_point"))
         << "get op fix_point error! has no fix_point attr, op name is "
@@ -37,8 +37,8 @@ struct Fix2FloatOpImp : public vart::experimental::OpImpBase {
     scale_ = std::exp2f(-1.0f * (float)fix_point);
     if_signed_ = op->template get_attr<bool>("if_signed");
   };
-  int calculate(vart::experimental::simple_tensor_buffer_t<float> result,
-                vart::experimental::simple_tensor_buffer_t<void> input) {
+  int calculate(vart::simple_tensor_buffer_t<float> result,
+                vart::simple_tensor_buffer_t<void> input) {
     auto input_shape = input.tensor->get_shape();
     auto output_shape = result.tensor->get_shape();
     auto num_of_dims = input_shape.size();
@@ -66,6 +66,4 @@ struct Fix2FloatOpImp : public vart::experimental::OpImpBase {
 
 }  // namespace
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<Fix2FloatOpImp>();
-}
+DEF_XIR_OP_IMP(Fix2FloatOpImp)

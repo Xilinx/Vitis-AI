@@ -217,7 +217,7 @@ class PointPillarsNuscenes {
       const std::vector<vitis::ai::pointpillars_nus::PointsInfo>&
           batch_input) = 0;
   /**
-   * @brief Function of get result of the PointPillarsNuscenes neuron network.
+   * @brief Function of get result of the PointPillarsNuscenes neural network.
    *
    * @param input_points Filtered points data.
    *
@@ -228,7 +228,7 @@ class PointPillarsNuscenes {
       const std::vector<float>& input_points) = 0;
 
   /**
-   * @brief Function of get result of the PointPillarsNuscenes neuron network in
+   * @brief Function of get result of the PointPillarsNuscenes neural network in
    * batch mode.
    *
    * @param batch_points Filtered points data in batch mode.
@@ -240,7 +240,7 @@ class PointPillarsNuscenes {
       const std::vector<std::vector<float>>& batch_points) = 0;
 
   /**
-   * @brief Function of get result of the PointPillarsNuscenes neuron network.
+   * @brief Function of get result of the PointPillarsNuscenes neural network.
    *
    * @param input An object of structure PointsInfo, include points data and
    * other params.
@@ -252,7 +252,7 @@ class PointPillarsNuscenes {
       const vitis::ai::pointpillars_nus::PointsInfo& input) = 0;
 
   /**
-   * @brief Function of get result of the PointPillarsNuscenes neuron network.
+   * @brief Function of get result of the PointPillarsNuscenes neural network.
    *
    * @param batch_input Vector of PointsInfo, the size of batch_input should be
    * equal to batch num.

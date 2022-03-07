@@ -33,19 +33,14 @@ TensorBufferLinkerHostPhy::TensorBufferLinkerHostPhy(
 
 TensorBufferLinkerHostPhy::~TensorBufferLinkerHostPhy() {}
 
-void TensorBufferLinkerHostPhy::finalize(std::string device) {
-  static constexpr int DPU_HOST_PHY = 0;
-  static constexpr int HOST_PHY = 1;
-  static constexpr int HOST_VIRT = 2;
+void TensorBufferLinkerHostPhy::finalize() {
+  static constexpr int HOST_PHY = 0;
+  static constexpr int HOST_VIRT = 1;
   //----------------------------
-  auto kind = [device](std::unique_ptr<vart::TensorBuffer>* s) {
+  auto kind = [](std::unique_ptr<vart::TensorBuffer>* s) {
     auto ret = HOST_VIRT;
     if ((*s)->get_location() == vart::TensorBuffer::location_t::HOST_PHY) {
-      if (device == "DPU") {
-        ret = DPU_HOST_PHY;
-      } else {
-        ret = HOST_PHY;
-      }
+      ret = HOST_PHY;
     } else if ((*s)->get_location() ==
                vart::TensorBuffer::location_t::HOST_VIRT) {
       ret = HOST_VIRT;
@@ -75,11 +70,8 @@ void TensorBufferLinkerHostPhy::finalize(std::string device) {
       ret = THE_SELECTED;
     } else {
       switch (kind(s)) {
-        case DPU_HOST_PHY:
-          ret = KEEP;
-          break;
         case HOST_PHY:
-          ret = REPLACE;
+          ret = KEEP;
           break;
         case HOST_VIRT:
           ret = REPLACE;

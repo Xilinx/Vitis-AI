@@ -5,18 +5,18 @@ Apache TVM is a versatile framework that integrates the high-performance computi
 The current Vitis AI flow inside TVM enables acceleration of Neural Network model inference on edge and cloud. The identifiers for the supported edge and cloud Deep Learning Processor Units (DPU's) are:
 
 #### DPU Targets
-| Target Board  | DPU ID                    | TVM Target ID |
+| Target Board  | DPU ID                           | TVM Target ID                               |
 |:-:|:-:|:-:|
-| [U200]        | DPUCADF8H                 | DPUCADF8H  |
-| [U250]        | DPUCADF8H                 | DPUCADF8H  |
-| [U50]         | DPUCAHX8H / DPUCAHX8L     | DPUCAHX8H-u50 / DPUCAHX8L  |
-| [U280]        | DPUCAHX8H / DPUCAHX8L     | DPUCAHX8H-u280 / DPUCAHX8L  |
-| [VCK5000]     | DPUCVDX8H                 | DPUCVDX8H  |
-| [VCK190]      | DPUCVDX8G                 | DPUCVDX8G  |
-| [ZCU104]      | DPUCZDX8G                 | DPUCZDX8G-zcu104  |
-| [ZCU102]      | DPUCZDX8G                 | DPUCZDX8G-zcu102  |
-| [Kria SOM]    | DPUCZDX8G                 | DPUCZDX8G-kv260   |
-| [Ultra96]     | DPUCZDX8G                 | DPUCZDX8G-ultra96 |
+| [U200]        | DPUCADF8H                        | DPUCADF8H                                   |
+| [U250]        | DPUCADF8H                        | DPUCADF8H                                   |
+| [U50]         | DPUCAHX8H <br /> DPUCAHX8H-DWC   | DPUCAHX8H-u50lv <br /> DPUCAHX8H-u50lv_dwc  |
+| [U55C]        | DPUCAHX8H-DWC                    | DPUCAHX8H-u55c_dwc                          |
+| [VCK5000]     | DPUCVDX8H <br /> DPUCVDX8H-DWC   | DPUCVDX8H <br /> DPUCVDX8H-dwc              |
+| [VCK190]      | DPUCVDX8G                        | DPUCVDX8G                                   |
+| [ZCU104]      | DPUCZDX8G                        | DPUCZDX8G-zcu104                            |
+| [ZCU102]      | DPUCZDX8G                        | DPUCZDX8G-zcu102                            |
+| [Kria SOM]    | DPUCZDX8G                        | DPUCZDX8G-kv260                             |
+| [Ultra96]     | DPUCZDX8G                        | DPUCZDX8G-ultra96                           |
 
 In this directory you will find information on how to build TVM with Vitis AI and on how to get started with an example.
 
@@ -32,14 +32,14 @@ This section provide the instructions for setting up the TVM with Vitis AI flow 
 The following command will create the TVM with Vitis AI image on the host machine
 
 ```sh
-$ ./build.sh ci_vai_1x bash
+$ ./build.sh vitis_ai bash
 ```
 This command downloads the latest Apache TVM repository, installs the necessary dependencies, and builds it with Vitis-AI support.
 
-Once finished builiding the container, run the docker image using the run script.
+Once finished building the container, run the docker image using the run script.
 ```sh
 $ cd ../../
-$ ./docker_run.sh tvm.ci_vai_1x
+$ ./docker_run.sh tvm.vitis_ai
 # ...
 # Now inside docker...
 $ conda activate vitis-ai-tensorflow
@@ -60,8 +60,22 @@ Check out following page for setup information: [Alveo Setup].
 
 ```
 conda activate vitis-ai-tensorflow
-cd /workspace/setup/alveo
-source setup.sh [DPU-IDENTIFIER]
+# For Alveo DPU's
+source /workspace/setup/alveo/setup.sh [DPU-IDENTIFIER]
+```
+
+The DPU identifier for this can be found in the second column of the [DPU Targets](#dpu-targets) table.
+
+### Versal VCK5000 Setup
+
+Check out following page for setup information: [VCK5000 Setup].
+
+**DPU IP Selection**
+
+```
+conda activate vitis-ai-tensorflow
+# For Versal DPU's 
+source /workspace/setup/vck5000/setup.sh [DPU-IDENTIFIER]
 ```
 
 The DPU identifier for this can be found in the second column of the [DPU Targets](#dpu-targets) table.
@@ -109,10 +123,11 @@ Apache TVM with Vitis-AI uses a number of projects as follows:
    [Running on Zynq]: ./docs/running_on_zynq.md
    [Alveo]: https://www.xilinx.com/products/boards-and-kits/alveo.html
    [Alveo Setup]: ../../setup/alveo/README.md
+   [VCK5000 Setup]: ../../setup/vck5000/README.md
    [U200]: https://www.xilinx.com/products/boards-and-kits/alveo/u200.html
    [U250]: https://www.xilinx.com/products/boards-and-kits/alveo/u250.html
    [U50]: https://www.xilinx.com/products/boards-and-kits/alveo/u50.html
-   [U280]: https://www.xilinx.com/products/boards-and-kits/alveo/u280.html
+   [U55C]: https://www.xilinx.com/products/boards-and-kits/alveo/u55c.html
    [VCK5000]: https://www.xilinx.com/products/boards-and-kits/vck5000.html
    [VCK190]: https://www.xilinx.com/products/boards-and-kits/vck190.html
    [Vitis AI Integration]: https://github.com/apache/incubator-tvm/blob/main/docs/deploy/vitis_ai.rst

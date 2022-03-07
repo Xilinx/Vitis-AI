@@ -1,0 +1,141 @@
+{
+    "name": "Xilinx zero AIE Test",
+    "description": "zero AIE function example",
+    "flow": "versal",
+    "platform_whitelist": [
+        "vck190"
+    ],
+    "platform_blacklist": [],
+    "platform_properties": {
+        "vck190": {
+            "v++": {
+                "compiler": {
+                    "cflags": [
+                        ""
+                    ]
+                },
+                "linker": {
+                    "cflags": [
+                        "--config PROJECT/system.cfg"
+                    ]
+                },
+                "package": {
+                    "cflags": [
+                        "--package.defer_aie_run"
+                    ]
+                }
+            }
+        }
+    },
+    "gui": false,
+    "launch": [
+        {
+            "name": "hwemu-launch",
+            "target": "hw_emu",
+            "pkg-dir": "$(WORK_DIR)",
+            "input-dir": "./",
+            "output-dir": "./"
+        },
+        {
+            "name": "aiesim-launch",
+            "target": "aiesim",
+            "pkg-dir": "$(WORK_DIR)",
+            "input-dir": "./",
+            "output-dir": "./"
+        },
+        {
+            "name": "x86-launch",
+            "target": "x86sim",
+            "pkg-dir": "$(WORK_DIR)",
+            "input-dir": "./",
+            "output-dir": "./"
+        }
+    ],
+    "host": {
+        "host_exe": "host.elf",
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L2/tests/aie/zero/16bit_aie/host.cpp",
+                "./Work/ps/c_rts/aie_control_xrt.cpp"
+            ],
+            "includepaths": [
+                "$(SYSROOT)/usr/include/xrt/",
+                "LIB_DIR/L1/include/aie/",
+                "./"
+            ],
+            "options": "--sysroot=$(SYSROOT)",
+            "symbols": ["__PS_ENABLE_AIE__"]
+        },
+        "linker": {
+            "librarypaths": [
+                "$(SYSROOT)/usr/lib/"
+            ],
+            "options": "--sysroot=$(SYSROOT)"
+        }
+    },
+    "aiecompiler": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L1/include/aie"
+            ]
+        }
+    },
+    "aiecontainers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/aie/zero/16bit_aie/graph.cpp",
+                    "pl-freq": 300,
+                    "workdir": "./Work",
+                    "option": "-pl-axi-lite=true",
+                    "name": "libadf.a",
+                    "aie_kernel_files":["xf_zero.cc"]
+                }
+            ]
+        }
+    ],
+    "containers": [
+        {
+            "accelerators": [
+                {
+                    "location": "LIB_DIR/L2/tests/aie/zero/16bit_aie/mm2s.cpp",
+                    "frequency": 300.0,
+                    "clflags": " ",
+                    "name": "mm2s"
+                },
+                {
+                    "location": "LIB_DIR/L2/tests/aie/zero/16bit_aie/s2mm.cpp",
+                    "frequency": 300.0,
+                    "clflags": " ",
+                    "name": "s2mm"
+                }
+            ],
+            "name": "kernel"
+        }
+    ],
+    "testinfo": {
+        "disable": false,
+        "jobs": [
+            {
+                "index": 0,
+                "dependency": [],
+                "env": "",
+                "cmd": "",
+                "max_memory_MB": 32768,
+                "max_time_min": {
+                    "vitis_aie_sim": 55,
+                    "vitis_aie_x86sim": 55,
+                    "vitis_hw_build": 470,
+                    "vitis_hw_emu": 200,
+                    "vitis_hw_run": 30
+                }
+            }
+        ],
+        "targets": [
+            "vitis_hw_emu",
+            "vitis_hw_build",
+            "vitis_hw_run"
+        ],
+        "category": "canary"
+    }
+}

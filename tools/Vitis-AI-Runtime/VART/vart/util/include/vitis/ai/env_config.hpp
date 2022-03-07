@@ -32,7 +32,14 @@ struct env_config {
   static T init() {
     const char* name = env_name::get_name();
     const char* defvalue = env_name::get_default_value();
+#if _WIN32
+#pragma warning(push)
+#pragma warning(disable : 4996)
+#endif
     const char* p = getenv(name);
+#if _WIN32
+#pragma warning(pop)
+#endif
     const char* pstr = p != nullptr ? p : defvalue;
     const T value = env_config_helper<T>::from_string(pstr);
     return value;

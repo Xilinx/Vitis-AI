@@ -1,0 +1,43 @@
+From 1b7d877156bca5b474478aa9ad36a9faa5bed312 Mon Sep 17 00:00:00 2001
+From: Thomas Nizan <tnizan@witekio.com>
+Date: Tue, 20 Apr 2021 20:05:33 +0000
+Subject: [PATCH 10/14] max9286: WIP, fix endpoint fwnode
+
+Because the xilinx vipp uses device fwnode, you have to register the
+max9286 subdevice without the endpoint (so it will use the device
+fwnode)
+
+Otherwise:
+
+[   16.154111] xilinx-video
+amba_pl@0:vcap_fmc_quad_mipi_csi2_rx_capture_pipeline_0_v_proc_ss_scaler_0:
+Driver xilinx-video uses device fwnode, incorrect match may occur
+[   16.168970] xilinx-video
+amba_pl@0:vcap_fmc_quad_mipi_csi2_rx_capture_pipeline_0_v_proc_ss_scaler_0:
+Consider updating driver xilinx-video to match on endpoints
+[   16.183318] xilinx-video
+amba_pl@0:vcap_fmc_quad_mipi_csi2_rx_capture_pipeline_0_v_proc_ss_scaler_0:
+no entity for subdev max9286 7-0048
+[   16.195574] max9286 7-0048: Unable to register subdevice
+[   16.200883] max9286 7-0048: Failed to register with V4L2
+[   16.207850] max9286: probe of 7-0048 failed with error -22
+---
+ drivers/media/i2c/max9286.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+index d3f4cfd..b304a1f 100644
+--- a/drivers/media/i2c/max9286.c
++++ b/drivers/media/i2c/max9286.c
+@@ -917,7 +917,7 @@ static int max9286_v4l2_register(struct max9286_priv *priv)
+ 		ret = -ENOENT;
+ 		goto err_async;
+ 	}
+-	priv->sd.fwnode = ep;
++	//priv->sd.fwnode = ep;
+ 
+ 	ret = v4l2_async_register_subdev(&priv->sd);
+ 	if (ret < 0) {
+-- 
+2.7.4
+

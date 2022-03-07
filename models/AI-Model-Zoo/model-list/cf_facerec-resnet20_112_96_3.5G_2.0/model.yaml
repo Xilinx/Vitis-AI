@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: face recognition model with resnet20.
+input size: 112*96
+float ops: 3.5G
+task: face recognition
+framework: caffe
+prune: 'no'
+version: 2.0
+files:
+- name: cf_facerec-resnet20_112_96_3.5G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_facerec-resnet20_112_96_3.5G_2.0.zip
+  checksum: 6be2acfd237ecb5f56a09f3ad893aa4a
+- name: facerec_resnet20
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: e4f3a7d111fe745dc4a50e3f6e0d1a57
+- name: facerec_resnet20
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-vck190-r2.0.0.tar.gz
+  checksum: 0422d8391afe5b694d9e633eccefcd07
+- name: facerec_resnet20
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 8883f93902500a3f9cdfaa36336bbbdb
+- name: facerec_resnet20
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 3d17674d6cc56caae4f6fc7072a87ae6
+- name: facerec_resnet20
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec_resnet20-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: d196c813a138aeb8f5b11e9169bc514b
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

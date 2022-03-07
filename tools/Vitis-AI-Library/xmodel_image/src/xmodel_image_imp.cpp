@@ -56,9 +56,9 @@ static std::unique_ptr<vart::RunnerExt> create_runner(xir::Graph* graph,
   }
   if (!s->has_attr("runner")) {
     s->set_attr<std::map<std::string, std::string>>(
-        "runner", {{"ref", "libvitis_ai_library-graph_runner.so.1"},
-                   {"sim", "libvitis_ai_library-graph_runner.so.1"},
-                   {"run", "libvitis_ai_library-graph_runner.so.1"}});
+        "runner", {{"ref", "libvitis_ai_library-graph_runner.so.2"},
+                   {"sim", "libvitis_ai_library-graph_runner.so.2"},
+                   {"run", "libvitis_ai_library-graph_runner.so.2"}});
   }
   auto r1 = vart::Runner::create_runner_with_attrs(s, attrs).release();
   auto r2 = dynamic_cast<vart::RunnerExt*>(r1);

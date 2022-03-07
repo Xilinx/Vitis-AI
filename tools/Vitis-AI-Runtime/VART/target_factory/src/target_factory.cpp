@@ -17,6 +17,9 @@ limitations under the License.
 #include "vitis/ai/target_factory.hpp"
 
 #include <fcntl.h>
+#ifdef _WIN32
+  #include <io.h>
+#endif
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/text_format.h>
 
@@ -94,6 +97,7 @@ std::string to_string(const std::map<std::string, std::uint64_t>& value) {
 const Target create_target_v2(const std::uint64_t fingerprint);
 const Target create_target_DPUCVDX8G_ISA0(const std::uint64_t fingerprint);
 const Target create_target_DPUCVDX8G_ISA1(const std::uint64_t fingerprint);
+const Target create_target_DPUCVDX8G_ISA2(const std::uint64_t fingerprint);
 
 class TargetFactoryImp : public TargetFactory {
  public:
@@ -118,6 +122,8 @@ class TargetFactoryImp : public TargetFactory {
         return create_target_DPUCVDX8G_ISA0(fingerprint);
       } else if (type == "DPUCVDX8G" && isa_version == 1) {
         return create_target_DPUCVDX8G_ISA1(fingerprint);
+      } else if (type == "DPUCVDX8G" && isa_version == 2) {
+        return create_target_DPUCVDX8G_ISA2(fingerprint);
       } else {
         UNI_LOG_FATAL(TARGET_FACTORY_UNREGISTERED_TARGET)
             << "Cannot find or create target with fingerprint=0x" << std::hex
@@ -140,10 +146,10 @@ class TargetFactoryImp : public TargetFactory {
     uint64_t fingureprint = 0U;
     UNI_LOG_CHECK((feature_code & 0xffff000000000000) == 0,
                   TARGET_FACTORY_INVALID_ISA_VERSION)
-        << "0x" << std::hex << setfill('0') << setw(16) << feature_code;
+        << "0x" << std::hex << std::setfill('0') << std::setw(16) << feature_code;
     UNI_LOG_CHECK((isa_version & 0xffffffffffffff00) == 0,
                   TARGET_FACTORY_INVALID_FEATURE_CODE)
-        << "0x" << std::hex << setfill('0') << setw(16) << isa_version;
+        << "0x" << std::hex << std::setfill('0') << std::setw(16) << isa_version;
     fingureprint |= feature_code;
     fingureprint |= isa_version << 48;
     fingureprint |= type2int(type) << 56;
@@ -184,15 +190,8 @@ class TargetFactoryImp : public TargetFactory {
 
 static std::unique_ptr<std::vector<std::string>> get_target_prototxt_list() {
   auto ret = std::make_unique<std::vector<std::string>>();
-  auto target_prototxts = std::string{TARGET_PROTOTXTS};
-  std::string::size_type pos_begin = 0, pos_end = 0;
-  while ((pos_begin = target_prototxts.find("#begin", pos_begin)) !=
-             std::string::npos &&
-         (pos_end = target_prototxts.find("#end", pos_begin)) !=
-             std::string::npos) {
-    ret->emplace_back(
-        target_prototxts.substr(pos_begin + 6, pos_end - pos_begin - 6));
-    ++pos_begin;
+	for (auto target_proto : TARGET_PROTOTXTS) {
+    ret->emplace_back(std::string(target_proto));
   }
   return ret;
 }

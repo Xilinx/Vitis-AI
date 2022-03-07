@@ -20,12 +20,25 @@
 #include <string>
 #include <vitis/ai/with_injection.hpp>
 #include <xir/device_memory.hpp>
+
 namespace vart {
 namespace dpu {
+constexpr uint64_t _1M = 1024ull * 1024ull;
+constexpr uint64_t _256M = 256ull * _1M;
+constexpr uint64_t _4K = 4ull * 1024ull;
+struct hbm_channel_def_t {
+  uint64_t offset;
+  uint64_t capacity = _256M;
+  uint64_t alignment = _4K;
+};
 
+using chunk_def_t = std::vector<hbm_channel_def_t>;
 class HbmChunk;
 class HbmManager : public vitis::ai::WithInjection<HbmManager> {
  public:
+  static std::unique_ptr<HbmManager> create(const vart::dpu::chunk_def_t& def);
+  static std::unique_ptr<HbmManager> create(uint64_t from, uint64_t size,
+                                            uint64_t alignment);
   explicit HbmManager() = default;
   HbmManager(const HbmManager&) = delete;
   HbmManager& operator=(const HbmManager& other) = delete;

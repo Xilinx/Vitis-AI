@@ -27,6 +27,7 @@ REGISTER_OP("FixNeuron")
     .Attr("phase: int")
     .Attr("output_dir: string= ''")
     .Attr("quantize_pos: int = 0")
+    .Attr("T: type = DT_FLOAT")
     .SetShapeFn(shape_inference::UnchangedShape)
     .Doc(R"doc(
 Applies quantize for input tensor.

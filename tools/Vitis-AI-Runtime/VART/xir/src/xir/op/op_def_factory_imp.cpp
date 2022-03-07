@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-#include "xir/op/op_def_factory_imp.hpp"
-#include "xir/attrs/attrs.hpp"
-#include "xir/op/built_in_ops.hpp"
-
-#include "UniLog/UniLog.hpp"
-
-#include <dlfcn.h>
 #include <iostream>
 #include <iterator>
+#include <mutex>
 #include <sstream>
+#include "xir/util/dynamic_load.hpp"
 
+#include "UniLog/UniLog.hpp"
+#include "xir/attrs/attrs.hpp"
+#include "xir/op/built_in_ops.hpp"
+#include "xir/op/op_def_factory_imp.hpp"
 namespace xir {
-
+using namespace std;
 static vector<string> str_split(const string& str) {
   auto ret = vector<string>{};
   istringstream iss(str);
@@ -52,7 +51,9 @@ static void load_ops_library(OpDefFactoryImp* self,
   reg_func(self);
 }
 
-const OpDefFactoryImp* op_def_factory() {
+std::mutex factory_mutex;
+OpDefFactoryImp* op_def_factory() {
+  std::lock_guard<std::mutex> gaurd(factory_mutex);
   static unique_ptr<OpDefFactoryImp> self;
   if (!self) {
     self = make_unique<OpDefFactoryImp>();

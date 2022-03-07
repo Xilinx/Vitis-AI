@@ -56,8 +56,8 @@ class base_device {
   virtual py::dict get_private_data(const device_info_struct& info);
   virtual py::dict read_dpu_register(const device_info_struct& info) {
     py::dict res;
-    res["Unsupported IP, fingerprint"] = to_string(info.fingerprint, hex);
-    res["name"] = "DPU Registers Core " + to_string(info.core_idx);
+    res["Unsupported IP, fingerprint"] = to_string(info.fingerprint, std::hex);
+    res["name"] = "DPU Registers Core " + std::to_string(info.core_idx);
     return res;
   }
 };
@@ -109,6 +109,18 @@ class DPUCAHX8H_device : public base_device {
   std::vector<uint32_t> addr;
 };
 
+class DPUCVDX8H_device : public base_device {
+ public:
+  virtual py::dict get_public_data(const device_info_struct& info,
+                                   size_t core_count);
+  virtual py::dict read_dpu_register(const device_info_struct& info);
+  DPUCVDX8H_device();
+
+ private:
+  std::vector<std::string> key;
+  std::vector<uint32_t> addr;
+};
+
 void device_info(xir::XrtDeviceHandle* h,
                  std::vector<device_info_struct>& infos) {
   __TIC__(DEVICE_INFO)
@@ -137,6 +149,8 @@ void device_info(xir::XrtDeviceHandle* h,
       info.device = std::unique_ptr<base_device>(new DPUCVDX8G_device());
     } else if (info.dpu_arch_type == "DPUCAHX8H") {
       info.device = std::unique_ptr<base_device>(new DPUCAHX8H_device());
+    } else if (info.dpu_arch_type == "DPUCVDX8H") {
+      info.device = std::unique_ptr<base_device>(new DPUCVDX8H_device());
     } else {
       info.device = std::unique_ptr<base_device>(new base_device());
       LOG(ERROR) << "Unsupported platform fingerprint: " << info.fingerprint
@@ -244,14 +258,14 @@ py::dict xdputil_status() {
 // base_device
 py::dict base_device::get_private_data(const device_info_struct& info) {
   py::dict res;
-  res["fingerprint"] = to_string(info.fingerprint, hex);
-  res["cu_handle"] = to_string((uint64_t)info.cu_handle, hex);
+  res["fingerprint"] = to_string(info.fingerprint, std::hex);
+  res["cu_handle"] = to_string((uint64_t)info.cu_handle, std::hex);
   res["cu_idx"] = info.core_idx;
   res["cu_mask"] = info.cu_mask;
   res["cu_name"] = info.cu_name;
   res["device_id"] = info.device_id;
-  res["cu_addr"] = to_string(info.cu_addr, hex);
-  res["name"] = "DPU Core " + to_string(info.core_idx);
+  res["cu_addr"] = to_string(info.cu_addr, std::hex);
+  res["name"] = "DPU Core " + std::to_string(info.core_idx);
   res["DPU Arch"] = info.dpu_arch;
   return res;
 }
@@ -260,13 +274,13 @@ py::dict base_device::get_private_data(const device_info_struct& info) {
 py::dict DPUCZDX8G_VIVADO_FLOW_DEVICE::get_private_data(
     const device_info_struct& info) {
   py::dict res;
-  res["fingerprint"] = to_string(info.fingerprint, hex);
+  res["fingerprint"] = to_string(info.fingerprint, std::hex);
   res["cu_idx"] = info.cu_idx;
   res["DPU Arch"] = info.dpu_arch;
-  res["cu_addr"] = to_string(info.cu_addr, hex);
+  res["cu_addr"] = to_string(info.cu_addr, std::hex);
   res["is_vivado_flow"] = true;
 
-  res["name"] = "DPU Core " + to_string(info.cu_idx);
+  res["name"] = "DPU Core " + std::to_string(info.cu_idx);
   uint32_t frequency;
   device_memory->download(&frequency, info.cu_addr + 0xF00004, 4);
   res["DPU Frequency (MHz)"] = data_slice(frequency, 1, 11);
@@ -304,20 +318,20 @@ py::dict DPUCZDX8G_VIVADO_FLOW_DEVICE::read_dpu_register(
 
   // DPU code addr
   device_memory->download(&tmp, info.cu_addr + 0x20C, 4);
-  common_registers["ADDR_CODE"] = to_string(tmp, hex);
+  common_registers["ADDR_CODE"] = to_string(tmp, std::hex);
   res["common_registers"] = common_registers;
 
   // 2. addrs_registers
   py::dict addrs_registers;
   for (auto j = 0u; j < 8; j++) {
-    addrs_registers[(string("dpu0_base_addr_") + to_string(j)).c_str()] =
+    addrs_registers[(std::string("dpu0_base_addr_") + std::to_string(j)).c_str()] =
         to_string(data_slice(read_reg(0x228 + j * 8), read_reg(0x224 + j * 8)),
-                  hex);
+                  std::hex);
   }
   res["addrs_registers"] = addrs_registers;
 
   // 3. name
-  res["name"] = "DPU Registers Core " + to_string(info.cu_idx);
+  res["name"] = "DPU Registers Core " + std::to_string(info.cu_idx);
   return res;
 }
 
@@ -336,8 +350,8 @@ std::vector<std::string> DPUCVDX8G_device::create_key() {
   std::vector<std::string> key;
   for (auto i = 0u; i < 6; i++) {
     for (auto j = 0u; j < 4; j++) {
-      key.push_back("dpu" + to_string(i) + "_base_addr_" + to_string(j));
-      key.push_back("dpu" + to_string(i) + "_base_addr_" + to_string(j) + "_h");
+      key.push_back("dpu" + std::to_string(i) + "_base_addr_" + std::to_string(j));
+      key.push_back("dpu" + std::to_string(i) + "_base_addr_" + std::to_string(j) + "_h");
     }
   }
   return key;
@@ -365,35 +379,35 @@ py::dict DPUCZDX8G_device::get_public_data(const device_info_struct& info,
   //"SYS","SUB_VERSION","TIMESTAMP","GIT_COMMIT_ID","GIT_COMMIT_TIME"
   py::dict dpu_inf;
   // GIT_COMMIT_ID
-  dpu_inf["git commit id"] = to_string(data_slice(read_res[3], 0, 28), hex, "");
+  dpu_inf["git commit id"] = to_string(data_slice(read_res[3], 0, 28), std::hex, "");
   // GIT_COMMIT_TIME
   dpu_inf["git commit time"] = data_slice(read_res[4], 0, 32);
 
   // TIMESTAMP yyyy-MM-dd HH-mm-ss
   std::string tmp, timestamp;
-  timestamp = "20" + to_string(data_slice(read_res[2], 24, 32)) + "-";
-  tmp = to_string(data_slice(read_res[2], 20, 24));
+  timestamp = "20" + std::to_string(data_slice(read_res[2], 24, 32)) + "-";
+  tmp = std::to_string(data_slice(read_res[2], 20, 24));
   timestamp += ((tmp.size() < 2) ? "0" + tmp : tmp) + "-";
-  tmp = to_string(data_slice(read_res[2], 12, 20));
+  tmp = std::to_string(data_slice(read_res[2], 12, 20));
   timestamp += ((tmp.size() < 2) ? "0" + tmp : tmp) + " ";
-  tmp = to_string(data_slice(read_res[2], 4, 12));
+  tmp = std::to_string(data_slice(read_res[2], 4, 12));
   timestamp += ((tmp.size() < 2) ? "0" + tmp : tmp) + "-";
-  tmp = to_string(data_slice(read_res[2], 0, 4) * 15);
+  tmp = std::to_string(data_slice(read_res[2], 0, 4) * 15);
   timestamp += ((tmp.size() < 2) ? "0" + tmp : tmp) + "-00";
   dpu_inf["generation timestamp"] = timestamp;
 
   // SYS
-  tmp = to_string(data_slice(read_res[0], 24, 32), hex, "");
+  tmp = to_string(data_slice(read_res[0], 24, 32), std::hex, "");
   tmp = (tmp.size() < 2) ? "0" + tmp : tmp;
-  dpu_inf["IP version"] = string("v") + tmp[0] + "." + tmp[1] + "." +
-                          to_string(data_slice(read_res[1], 12, 20), hex, "");
-  tmp = to_string(data_slice(read_res[1], 0, 12), hex, "");
+  dpu_inf["IP version"] = std::string("v") + tmp[0] + "." + tmp[1] + "." +
+                          to_string(data_slice(read_res[1], 12, 20), std::hex, "");
+  tmp = to_string(data_slice(read_res[1], 0, 12), std::hex, "");
   tmp = (tmp.size() < 3) ? "0" + tmp : tmp;
   tmp = (tmp.size() < 3) ? "0" + tmp : tmp;
   dpu_inf["DPU Target Version"] =
-      string("v") + tmp[0] + "." + tmp[1] + "." + tmp[2];
+      std::string("v") + tmp[0] + "." + tmp[1] + "." + tmp[2];
 
-  vector<string> regmap_version = {"Initial version", "1toN version",
+  std::vector<std::string> regmap_version = {"Initial version", "1toN version",
                                    "1to1 version"};
   dpu_inf["regmap"] = (data_slice(read_res[0], 0, 8) < 3)
                           ? regmap_version[data_slice(read_res[0], 0, 8)]
@@ -408,7 +422,7 @@ py::dict DPUCZDX8G_device::get_private_data(const device_info_struct& info) {
   auto read_res = read_register(info.cu_handle, info.cu_idx, info.cu_addr,
                                 {0x20, 0x28, 0x118, 0x120});
   //                            "SYS","FREQ","LOAD","SAVE"
-  vector<string> ip_type = {"",       "DPU",  "softmax", "sigmoid",
+  std::vector<std::string> ip_type = {"",       "DPU",  "softmax", "sigmoid",
                             "resize", "SMFC", "YRR"};
   res["IP Type"] = ip_type[data_slice(read_res[0], 16, 24)];
   res["DPU Frequency (MHz)"] = data_slice(read_res[1], 0, 12);
@@ -433,9 +447,9 @@ DPUCZDX8G_device::DPUCZDX8G_device(std::vector<std::string> key_i,
           0x48,  0x50,  0x54};
   if (key_i.empty()) {
     for (auto j = 0u; j < 8; j++) {
-      key.push_back("dpu0_base_addr_" + to_string(j));
+      key.push_back("dpu0_base_addr_" + std::to_string(j));
       addr.push_back(0x60 + j * 8);
-      key.push_back("dpu0_base_addr_" + to_string(j) + "_h");
+      key.push_back("dpu0_base_addr_" + std::to_string(j) + "_h");
       addr.push_back(0x64 + j * 8);
     }
   } else {
@@ -471,7 +485,7 @@ py::dict DPUCZDX8G_device::read_dpu_register(const device_info_struct& info) {
   common_registers["HP_AWLEN"] = data_slice(registers[idx], 8, 16);
   common_registers["HP_ARLEN"] = data_slice(registers[idx++], 0, 8);
   common_registers["ADDR_CODE"] =
-      to_string(data_slice(registers[idx + 1], registers[idx]), hex);
+      to_string(data_slice(registers[idx + 1], registers[idx]), std::hex);
   idx += 2;
   res["common_registers"] = common_registers;
   // 2. addrs_registers
@@ -479,11 +493,11 @@ py::dict DPUCZDX8G_device::read_dpu_register(const device_info_struct& info) {
 
   for (; idx + 1 < key.size(); idx += 2) {
     addrs_registers[key[idx].c_str()] =
-        to_string(data_slice(registers[idx + 1], registers[idx]), hex);
+        to_string(data_slice(registers[idx + 1], registers[idx]), std::hex);
   }
   res["addrs_registers"] = addrs_registers;
   // 3. name
-  res["name"] = "DPU Registers Core " + to_string(info.core_idx);
+  res["name"] = "DPU Registers Core " + std::to_string(info.core_idx);
   return res;
 }
 
@@ -539,16 +553,16 @@ DPUCAHX8H_device::DPUCAHX8H_device() {
           0x098, 0x088, 0x094, 0x084,  //
           0x020, 0x140, 0x144};
   for (auto j = 0u; j < 8; j++) {
-    key.push_back("dpu0_reg_base_addr_" + to_string(j));
+    key.push_back("dpu0_reg_base_addr_" + std::to_string(j));
     addr.push_back(0x100 + j * 8);
-    key.push_back("dpu0_reg_base_addr_" + to_string(j) + "_h");
+    key.push_back("dpu0_reg_base_addr_" + std::to_string(j) + "_h");
     addr.push_back(0x104 + j * 8);
   }
   for (auto i = 1u; i < 8; i++) {
     for (auto j = 0u; j < 8; j++) {
-      key.push_back("dpu" + to_string(i) + "_reg_base_addr_" + to_string(j));
+      key.push_back("dpu" + std::to_string(i) + "_reg_base_addr_" + std::to_string(j));
       addr.push_back(0x200 + (i * 4 + j) * 8);
-      key.push_back("dpu" + to_string(i) + "_reg_base_addr_" + to_string(j) +
+      key.push_back("dpu" + std::to_string(i) + "_reg_base_addr_" + std::to_string(j) +
                     "_h");
       addr.push_back(0x204 + (i * 4 + j) * 8);
     }
@@ -570,11 +584,10 @@ py::dict DPUCAHX8H_device::read_dpu_register(const device_info_struct& info) {
     common_registers[key[i].c_str()] = registers[i];
   }
   idx += 8;
-  common_registers["HP_COUNT_MAX"] = data_slice(registers[idx], 16, 24);
-  common_registers["HP_AWLEN"] = data_slice(registers[idx], 8, 16);
-  common_registers["HP_ARLEN"] = data_slice(registers[idx++], 0, 8);
+  common_registers["HP_AR_OUTSTANDING"] = data_slice(registers[idx], 8, 16);
+  common_registers["HP_AW_OUTSTANDING"] = data_slice(registers[idx++], 0, 8);
   common_registers["ADDR_CODE"] =
-      to_string(data_slice(registers[idx + 1], registers[idx]), hex);
+      to_string(data_slice(registers[idx + 1], registers[idx]), std::hex);
   idx += 2;
   res["common_registers"] = common_registers;
   // 2. addrs_registers
@@ -583,12 +596,162 @@ py::dict DPUCAHX8H_device::read_dpu_register(const device_info_struct& info) {
   for (auto i = 0u; i < 8; i++) {
     for (auto j = 0u; j < 8; j++) {
       addrs_registers[key[idx].c_str()] =
-          to_string(data_slice(registers[idx + 1], registers[idx]), hex);
+          to_string(data_slice(registers[idx + 1], registers[idx]), std::hex);
       idx += 2;
     }
   }
   res["addrs_registers"] = addrs_registers;
   // 3. name
-  res["name"] = "DPU Registers Core " + to_string(info.core_idx);
+  res["name"] = "DPU Registers Core " + std::to_string(info.core_idx);
+  return res;
+}
+
+// DPUCVDX8H_device
+
+py::dict DPUCVDX8H_device::get_public_data(const device_info_struct& info,
+                                           size_t core_count) {
+  auto read_res =
+      read_register(info.cu_handle, info.cu_idx, info.cu_addr, {0x1F0, 0x1F4});
+
+  auto hard_ver = data_slice(read_res[1], read_res[0]);
+  py::dict dpu_inf;
+  dpu_inf["dwc"] = data_slice(hard_ver, 0, 1) ? "enable" : "disable";
+  dpu_inf["leakyrelu"] = data_slice(hard_ver, 1, 2) ? "enable" : "disable";
+  dpu_inf["misc_parallesim"] = data_slice(hard_ver, 2, 3) ? "2p" : "1p";
+  switch (data_slice(hard_ver, 3, 5)) {
+    case 0b11:
+      dpu_inf["Bank Group Volume"] = "VB";
+      break;
+    case 0b01:
+      dpu_inf["Bank Group Volume"] = "2MB BKG";
+      break;
+    case 0b00:
+      dpu_inf["Bank Group Volume"] = "512KB BKG";
+      break;
+    default:
+      dpu_inf["Bank Group Volume"] = "none";
+      break;
+  }
+  dpu_inf["long weight"] =
+      data_slice(hard_ver, 5, 6) ? "support" : "not support";
+  dpu_inf["pooling kernel size 5x5 operation"] =
+      data_slice(hard_ver, 6, 7) ? "support" : "not support";
+  dpu_inf["pooling kernel size 8x8 operation"] =
+      data_slice(hard_ver, 7, 8) ? "support" : "not support";
+  dpu_inf["pooling kernel size 4x4 operation"] =
+      data_slice(hard_ver, 8, 9) ? "support" : "not support";
+  dpu_inf["pooling kernel size 6x6 operation"] =
+      data_slice(hard_ver, 9, 10) ? "support" : "not support";
+  dpu_inf["conv-elew cascade"] =
+      data_slice(hard_ver, 10, 11) ? "support" : "not support";
+  dpu_inf["image bonding"] =
+      data_slice(hard_ver, 11, 12) ? "support" : "not support";
+  switch (data_slice(hard_ver, 12, 15)) {
+    case 0:
+      dpu_inf["Feature-Map bank size"] = "2 MB";
+      break;
+    case 1:
+      dpu_inf["Feature-Map bank size"] = "3 MB";
+      break;
+    case 2:
+      dpu_inf["Feature-Map bank size"] = "4 MB";
+      break;
+    case 6:
+      dpu_inf["Feature-Map bank size"] = "8 MB";
+      break;
+    case 7:
+      dpu_inf["Feature-Map bank size"] = "1 MB";
+      break;
+    default:
+      dpu_inf["Feature-Map bank size"] = "Reserved";
+      break;
+  }
+  switch (data_slice(hard_ver, 15, 18)) {
+    case 0:
+      dpu_inf["Weight bank size"] = "2 MB";
+      break;
+    case 4:
+      dpu_inf["Weight bank size"] = "4 MB";
+      break;
+    case 5:
+      dpu_inf["Weight bank size"] = "0.5 MB";
+      break;
+    case 6:
+      dpu_inf["Weight bank size"] = "1 MB";
+      break;
+    case 7:
+      dpu_inf["Weight bank size"] = "1.5 MB";
+      break;
+    default:
+      dpu_inf["Weight bank size"] = "Reserved";
+      break;
+  }
+  dpu_inf["isa encoding"] = data_slice(hard_ver, 48, 56);
+  dpu_inf["ip encoding"] = data_slice(hard_ver, 56, 64);
+  dpu_inf["DPU Core Count"] = core_count;
+  return dpu_inf;
+}
+
+DPUCVDX8H_device::DPUCVDX8H_device() {
+  key = {"AP status",  //
+         "LOAD START",     "LOAD END",     "SAVE START",  "SAVE END",
+         "CONV START",     "CONV END",     "MISC START",  "MISC END",  //
+         "reg_hp_setting", "INSTR_ADDR_L", "INSTR_ADDR_H"};
+  addr = {0x000,                       //
+          0x0A0, 0x090, 0x09C, 0x08C,  //
+          0x098, 0x088, 0x094, 0x084,  //
+          0x020, 0x140, 0x144};
+  for (auto j = 0u; j < 8; j++) {
+    key.push_back("dpu0_reg_base_addr_" + std::to_string(j));
+    addr.push_back(0x100 + j * 8);
+    key.push_back("dpu0_reg_base_addr_" + std::to_string(j) + "_h");
+    addr.push_back(0x104 + j * 8);
+  }
+  for (auto i = 1u; i < 8; i++) {
+    for (auto j = 0u; j < 8; j++) {
+      key.push_back("dpu" + std::to_string(i) + "_reg_base_addr_" + std::to_string(j));
+      addr.push_back(0x200 + (i * 4 + j) * 8);
+      key.push_back("dpu" + std::to_string(i) + "_reg_base_addr_" + std::to_string(j) +
+                    "_h");
+      addr.push_back(0x204 + (i * 4 + j) * 8);
+    }
+  }
+}
+
+py::dict DPUCVDX8H_device::read_dpu_register(const device_info_struct& info) {
+  py ::dict res;
+  // 1. common_registers
+  py::dict common_registers;
+  auto registers =
+      read_register(info.cu_handle, info.cu_idx, info.cu_addr, addr);
+  auto idx = 0u;
+  // AP_REG
+  std::map<uint32_t, std::string> ap_status = {
+      {0b00001, "start"}, {0b00010, "done"}, {0b00100, "idle"}, {0b01000, "ready"}, {0b10000, "continue"}};
+  common_registers["AP status"] = ap_status[data_slice(registers[idx++], 0, 3)];
+  for (auto i = idx; i < idx + 8; i++) {
+    common_registers[key[i].c_str()] = registers[i];
+  }
+  idx += 8;
+  common_registers["HP_CONV_OUTSTANDING"] = data_slice(registers[idx], 16, 24);
+  common_registers["HP_AR_OUTSTANDING"] = data_slice(registers[idx], 8, 16);
+  common_registers["HP_AW_OUTSTANDING"] = data_slice(registers[idx++], 0, 8);
+  common_registers["ADDR_CODE"] =
+      to_string(data_slice(registers[idx + 1], registers[idx]), std::hex);
+  idx += 2;
+  res["common_registers"] = common_registers;
+  // 2. addrs_registers
+  py::dict addrs_registers;
+
+  for (auto i = 0u; i < 8; i++) {
+    for (auto j = 0u; j < 8; j++) {
+      addrs_registers[key[idx].c_str()] =
+          to_string(data_slice(registers[idx + 1], registers[idx]), std::hex);
+      idx += 2;
+    }
+  }
+  res["addrs_registers"] = addrs_registers;
+  // 3. name
+  res["name"] = "DPU Registers Core " + std::to_string(info.core_idx);
   return res;
 }

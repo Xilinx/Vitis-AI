@@ -15,9 +15,9 @@
  */
 #include <glog/logging.h>
 #include <google/protobuf/message.h>
-#include <openssl/md5.h>
 
 #include <chrono>
+
 using Clock = std::chrono::steady_clock;
 #include <fstream>
 #include <future>
@@ -76,9 +76,10 @@ static vector<char> random_vector_char(size_t sz, int batch_size) {
     }
   } else {
     static std::mt19937 rng(100);
-    static std::uniform_int_distribution<char> dist;
+    // MSVC NOTE: msvs does not support uniform_int_distribution<char>
+    static std::uniform_int_distribution<int> dist;
     for (auto i = 0u; i < sz; ++i) {
-      ret[i] = dist(rng);
+      ret[i] = (char)dist(rng);
     }
   }
   return ret;
@@ -286,7 +287,7 @@ MyPerformanceTestRunner::MyPerformanceTestRunner(
 }
 thread_local int error_counter = 0;
 thread_local int ok_counter = 0;
-u_int64_t errors_total = 0;
+int64_t errors_total = 0;
 MyPerformanceTestRunner::~MyPerformanceTestRunner() {
   errors_total += error_counter;
   LOG_IF(INFO, error_counter) << "error_counter = " << error_counter

@@ -33,11 +33,11 @@ class MyPostProcessor {
       vitis::ai::XmodelPostprocessorInitializationArgs&& args) {}
 
   vitis::ai::proto::DpuModelResult process(
-      const vart::experimental::simple_tensor_buffer_t<float>& tensor_buffer);
+      const vart::simple_tensor_buffer_t<float>& tensor_buffer);
 };
 
 vitis::ai::proto::DpuModelResult MyPostProcessor::process(
-    const vart::experimental::simple_tensor_buffer_t<float>& tensor_buffer) {
+    const vart::simple_tensor_buffer_t<float>& tensor_buffer) {
   auto ret = vitis::ai::proto::DpuModelResult();
   auto r1 = ret.mutable_landmark_result();
   // auto feature = r1->mutable_float_vec();

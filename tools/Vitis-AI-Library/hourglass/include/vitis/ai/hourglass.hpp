@@ -51,7 +51,7 @@ namespace ai {
   vector<vector<int>> limbSeq = {{0, 1},  {1, 2},   {2, 6},  {3, 6},  {3, 4}, {4, 5},
                                  {6, 7},   {7, 8},  {8, 9}, {7, 12},
                                  {12, 11}, {11, 10}, {7, 13}, {13, 14}, {14, 15}};
-  
+
   auto results = det->run(image.clone());
   for (size_t i = 0; i < results.poses.size(); ++i) {
     cout<< results.poses[i].point<<endl;
@@ -98,7 +98,7 @@ class Hourglass {
    */
  public:
   /**
-   * @brief Function to get running result of the hourglass neuron network.
+   * @brief Function to get running result of the hourglass neural network.
    *
    * @param image Input data of input image (cv::Mat).
    *
@@ -107,7 +107,7 @@ class Hourglass {
    */
   virtual HourglassResult run(const cv::Mat &image) = 0;
   /**
-   * @brief Function to get running results of the hourglass neuron
+   * @brief Function to get running results of the hourglass neural
    * network in batch mode.
    *
    * @param images Input data of batch input images (vector<cv::Mat>). The size of

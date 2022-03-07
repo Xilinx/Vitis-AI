@@ -90,7 +90,7 @@ static std::vector<xir::OpDef> my_op_defs() {
               "`Datatype`: `bool`\n\n"
               "whether dump result in case of errors",
               true))
-          .add_attr(xir::AttrDefBuilder<string>::build(
+          .add_attr(xir::AttrDefBuilder<std::string>::build(
               "dump_directory", AttrDef::OPTIONAL,
               "`Datatype`: `string`\n\n"
               "the directory for dumping input tensor buffers",

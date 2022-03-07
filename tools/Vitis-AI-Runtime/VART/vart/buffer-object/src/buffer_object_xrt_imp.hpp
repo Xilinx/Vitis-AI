@@ -54,6 +54,7 @@ class BufferObjectXrtEdgeImp : public xir::BufferObject {
   virtual void copy_from_host(const void* buf, size_t size,
                               size_t offset) override;
   virtual void copy_to_host(void* buf, size_t size, size_t offset) override;
+  virtual xir::XclBo get_xcl_bo() const override;
 
  private:
   const std::shared_ptr<xir::XrtDeviceHandle> holder_;

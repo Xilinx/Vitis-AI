@@ -13,6 +13,7 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 #
+option(ENABLE_PACK_TRD "Enable create tar.gz for TRD" OFF)
 aux_source_directory(. TEST_SRC)
 
 execute_process(
@@ -23,7 +24,13 @@ execute_process(
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 find_package(OpenCV REQUIRED)
-foreach(FNAME resnet50.cpp test_dpu_runner.cpp test_dpu_runner_mt.cpp)
+if(MSVC)
+  set(TEST_SRCS test_dpu_runner.cpp test_dpu_runner_mt.cpp)
+else(MSVC)
+  # for WINDOWS, because word_list.inc is not generated, we remove resnet50.cpp
+  set(TEST_SRCS test_dpu_runner.cpp resnet50.cpp test_dpu_runner_mt.cpp)
+endif(MSVC)
+foreach(FNAME ${TEST_SRCS})
   get_filename_component(F_PREFIX ${FNAME} NAME_WE)
   set(ELF ${F_PREFIX})
 
@@ -33,28 +40,37 @@ foreach(FNAME resnet50.cpp test_dpu_runner.cpp test_dpu_runner_mt.cpp)
     ${COMPONENT_NAME}
     xir::xir
     glog::glog
-    opencv_core
-    opencv_video
-    opencv_videoio
-    opencv_imgproc
-    opencv_imgcodecs
-    opencv_highgui
     util
-    pthread
-    mem-manager)
+    mem-manager
+    ${OpenCV_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT})
 endforeach()
-install(TARGETS test_dpu_runner_mt DESTINATION bin)
 
-add_executable(show_kernel show_kernel.cpp)
-target_link_libraries(show_kernel xir::xir)
-install(
-  CODE "execute_process (
+if(MSVC)
+
+else(MSVC)
+  # TRD packaging is not supported for windows yet.
+  if(ENABLE_PACK_TRD)
+    install(
+      CODE "execute_process (
     COMMAND env CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR} CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR} bash ${CMAKE_CURRENT_SOURCE_DIR}/pack_for_trd.sh
 )")
+  endif(ENABLE_PACK_TRD)
+endif(MSVC)
 
-add_executable(test_dpu_runner_c test_dpu_runner_c.c)
-target_link_libraries(test_dpu_runner_c ${COMPONENT_NAME})
-
+if(XRT_FOUND)
+  add_executable(xvdpu_profiler ${CMAKE_CURRENT_SOURCE_DIR}/xvdpu_profiler.cpp)
+  target_link_libraries(
+    xvdpu_profiler 
+    xir::xir 
+    glog::glog 
+    XRT::xrt_core
+    xrt-device-handle 
+    buffer-object 
+    runner
+    dpu-runner) 
+  install(TARGETS xvdpu_profiler DESTINATION bin)
+endif(XRT_FOUND)
 # add_executable (resnet50_zero_copy ../samples/resnet50_zero_copy/resnet50.cpp)
 # target_link_libraries (resnet50_zero_copy ${COMPONENT_NAME}
 # ${PROJECT_NAME}::runner dpu-controller opencv_core opencv_video opencv_videoio

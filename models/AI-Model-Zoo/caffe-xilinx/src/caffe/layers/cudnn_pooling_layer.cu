@@ -1,8 +1,9 @@
+#include <cmath>
 #ifdef USE_CUDNN
 #include <vector>
-
 #include "caffe/util/quantize.hpp"
 #include "caffe/layers/cudnn_pooling_layer.hpp"
+
 
 namespace caffe {
 
@@ -21,13 +22,17 @@ void CuDNNPoolingLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   // simulate DPU average pooling, which convert dividing to bit shifting
   float scale = 0.f;
   bool needScaling = false;
+  auto rec = this->kernel_h_ * this->kernel_w_;
+  auto multi_factor = 0;
+  auto shift_factor = 0;
+  auto diff = 1.f;
   if (this->kernel_h_ == 3 && this->kernel_w_ == 3) {
     needScaling = true;
     scale = 9.0 * 7.f / 64.f;
   } else if (this->kernel_h_ == 5 && this->kernel_w_ == 5) {
     needScaling = true;
     scale = 25.0 * 10.f / 256.f;
-  } else if (this->kernel_h_ == 6 && this->kernel_w_ == 6) {
+  } else if ((this->kernel_h_ == 6 && this->kernel_w_ == 6) || (this->kernel_h_ == 3 && this->kernel_w_ == 6) || (this->kernel_h_ == 6 && this->kernel_w_ == 3)) {
     needScaling = true;
     scale = 36.0 * 7.f / 256.f;
   } else if (this->kernel_h_ == 7 && this->kernel_w_ == 7){
@@ -36,7 +41,19 @@ void CuDNNPoolingLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   } else if (this->kernel_h_ == 14 && this->kernel_w_ == 14){
     needScaling = true;
     scale = 196.0 * 21.f / 4096.f;
-  } 
+  } else{
+    auto max_factor = std::ceil(std::log2(rec * 128));
+    for (auto shift_factor_ = 0; shift_factor_ < max_factor; shift_factor_++) {
+      auto factor = std::round(std::exp2(shift_factor_) / rec);
+      auto diff_ = std::abs(factor / std::exp2(shift_factor_) - 1.f / rec);
+      if (diff_ < diff) {
+        multi_factor = factor;
+        diff = diff_;
+        shift_factor = shift_factor_;
+      }
+    }
+    scale = float(rec * multi_factor) / std::exp2(shift_factor);
+  }
 
   if ( needScaling )
     caffe_pooling_scale( top[0]->count(), 

@@ -21,7 +21,7 @@
 
 namespace vart {
 namespace dpu {
-class TensorBufferExtImpHostPhy : public vart::TensorBuffer {
+class TensorBufferExtImpHostPhy : public vart::TensorBufferExt {
  public:
   explicit TensorBufferExtImpHostPhy(
       const xir::Tensor* tensor, location_t location, size_t device_id,
@@ -45,6 +45,7 @@ class TensorBufferExtImpHostPhy : public vart::TensorBuffer {
                             size_t offset) override;
   std::pair<uint64_t, size_t> data_x(const std::vector<std::int32_t> idx,
                                      int phy);
+  virtual XclBo get_xcl_bo(int batch_index) const override;
 
  private:
   const location_t location_;

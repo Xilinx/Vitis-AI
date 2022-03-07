@@ -42,8 +42,8 @@ class MyPostProcessor {
   }
 
   vitis::ai::proto::DpuModelResult process(
-      const vart::experimental::simple_tensor_buffer_t<float>& quality,
-      const vart::experimental::simple_tensor_buffer_t<float>& _5pt);
+      const vart::simple_tensor_buffer_t<float>& quality,
+      const vart::simple_tensor_buffer_t<float>& _5pt);
 
  private:
   const xir::Attrs* attrs_;
@@ -63,8 +63,8 @@ static float map(float original_score, bool day) {
   return day ? mapped_quality_day(original_score) : mapped_quality_night(day);
 }
 vitis::ai::proto::DpuModelResult MyPostProcessor::process(
-    const vart::experimental::simple_tensor_buffer_t<float>& quality,
-    const vart::experimental::simple_tensor_buffer_t<float>& _5pt) {
+    const vart::simple_tensor_buffer_t<float>& quality,
+    const vart::simple_tensor_buffer_t<float>& _5pt) {
   bool day = true;
   if (attrs_->has_attr("face_quality:day")) {
     day = attrs_->get_attr<bool>("face_quality:day");

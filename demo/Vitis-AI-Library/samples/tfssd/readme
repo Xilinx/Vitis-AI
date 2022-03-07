@@ -37,8 +37,10 @@ Important:
     sample : ./test_jpeg_tfssd ssd_mobilenet_v1_coco_tf sample_tfssd.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1122 00:07:51.289961 15705 process_result.hpp:77] RESULT: 18   5.56727 10.859  96.8591 257.321 0.939913
-I1122 00:07:51.290259 15705 process_result.hpp:77] RESULT: 18   111.551 30.9807 291.346 286.122 0.924142   
+I0317 12:35:59.122107  4235 demo.hpp:1183] batch: 0     image: sample_tfssd.jpg
+I0317 12:35:59.122210  4235 process_result.hpp:43] RESULT: 18	6.46762	13.5106	93.3071	259.973	0.952574
+I0317 12:35:59.122351  4235 process_result.hpp:43] RESULT: 18	118.046	28.8428	293.402	283.984	0.939913
+
     
     sample : ./test_jpeg_tfssd ssd_mobilenet_v2_coco_tf sample_tfssd.jpg
     output : 

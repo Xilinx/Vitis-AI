@@ -13,14 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "dpu_session.hpp"
 #include <glog/logging.h>
 #include <functional>
 #include <map>
 #include <memory>
 #include <vitis/ai/env_config.hpp>
+#include "dpu_session.hpp"
 
 DEF_ENV_PARAM(DEBUG_DPU_SESSION, "0");
 namespace vart {
-namespace dpu {}  // namespace dpu
+namespace dpu {
+std::unique_ptr<DpuSession> DpuSession::create(const std::string& filename,
+                                               const std::string& kernel) {
+  return DpuSession::create0(filename, kernel);
+}
+std::unique_ptr<DpuSession> DpuSession::create(const xir::Subgraph* subgraph,
+                                               xir::Attrs* attrs) {
+  return DpuSession::create0(subgraph, attrs);
+}
+}  // namespace dpu
 }  // namespace vart

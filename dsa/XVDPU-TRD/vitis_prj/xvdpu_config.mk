@@ -17,13 +17,16 @@
 # *******************************************************************************/
 
 # Setting the arch of XVDPU. For more details, please refer to PG389.
-# Default parameters:CPB_N = 32, LOAD_PARALLEL_IMG = 2
+# Default parameters: LOAD_PARALLEL_IMG = 2
 
-# BATCH_N can be 1 ~ 6
+# CPB_N can be 32, or 64
+CPB_N       = 32
+
+#For CPB_N=32, BATCH_N can be 1 ~ 6; For CPB_N=64, BATCH_N can be 1 ~ 5
 BATCH_N     = 3
 
 #PL_FREQ is the frequency of XVDPU's 'm_axi_aclk'. Default is 333M Hz.
-PL_FREQ     = 333
+PL_FREQ     = 333000000
 
 #Max value of 'UBANK_IMG_N' is 16, and Max value of 'UBANK_WGT_N' is 17.
 UBANK_IMG_N = 16

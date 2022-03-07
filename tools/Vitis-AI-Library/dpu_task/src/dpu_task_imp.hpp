@@ -42,13 +42,13 @@ class DpuTaskImp : public DpuTask {
   virtual void setMeanScaleBGR(const std::vector<float>& mean,
                                const std::vector<float>& scale) override;
   virtual void setImageBGR(const cv::Mat& img) override;
-  virtual void setImageRGB(const cv::Mat& img) override;
-  virtual void setInputDataArray(const std::vector<int8_t> input) override;
+  virtual void setImageRGB(const cv::Mat& img, size_t ind) override;
+  virtual void setInputDataArray(const std::vector<int8_t> input, size_t ind) override;
   virtual void setInputDataArray(
-      const std::vector<std::vector<int8_t>> input) override;
+      const std::vector<std::vector<int8_t>> input, size_t ind) override;
 
   virtual void setImageBGR(const std::vector<cv::Mat>& imgs) override;
-  virtual void setImageRGB(const std::vector<cv::Mat>& imgs) override;
+  virtual void setImageRGB(const std::vector<cv::Mat>&, size_t ind) override;
   //  virtual void setImageBGR(const uint8_t *input, int stride) override;
   // virtual void setImageRGB(const uint8_t *input, int stride) override;
 
@@ -69,7 +69,7 @@ class DpuTaskImp : public DpuTask {
 
  private:
   void setImageBGR(const uint8_t* input, int stride);
-  void setImageRGB(const uint8_t* input, int stride);
+  void setImageRGB(const uint8_t* input, int stride, size_t ind);
   void set_num_of_inputs(size_t n);
   // size_t get_num_of_inputs(size_t n);
   // void clear_num_of_inputs(size_t n);
@@ -81,10 +81,15 @@ class DpuTaskImp : public DpuTask {
   const std::string dirname_;
   std::unique_ptr<xir::Attrs> default_attrs_;
   std::vector<std::unique_ptr<vart::Runner>> runners_;
+  // # cache input_tensors & output_tensors
+  // The function tensor.get_attr() is frequently called by deployed code,  there will be a certain performance loss.
+  std::vector<std::vector<vitis::ai::library::InputTensor>> all_input_tensors_;
+  std::vector<std::vector<vitis::ai::library::OutputTensor>> all_output_tensors_;
   std::vector<float> mean_;
   std::vector<float> scale_;
   bool do_mean_scale_;
   int num_of_inputs_ = -1;
+
 };
 
 }  // namespace ai

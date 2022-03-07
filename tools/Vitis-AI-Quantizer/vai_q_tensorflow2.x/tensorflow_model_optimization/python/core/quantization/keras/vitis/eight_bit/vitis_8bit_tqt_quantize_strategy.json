@@ -32,16 +32,19 @@
 
   "quantize_registry_config":
   {
-    "input_bit": -1,
-    "weight_bit": -1,
-    "activation_bit": -1,
+    "input_bit": null,
+    "weight_bit": null,
+    "activation_bit": null,
+    "symmetry": null,
+    "per_channel": false,
+    "custom_layer_type": [],
     "input_quantize_config":
     {
       "input_layers": [],
       "input_quantizer":
       {
         "quantizer_type": "LastValueQuantPosQuantizer",
-        "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1}
+        "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false}
       }
     },
 

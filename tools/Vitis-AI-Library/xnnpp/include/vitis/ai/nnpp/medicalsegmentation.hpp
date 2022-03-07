@@ -35,7 +35,7 @@ namespace vitis {
 namespace ai {
 /**
  * @struct MedicalSegmentationResult
- * @brief Struct of the result returned by the MedicalSegmentation neuron network.
+ * @brief Struct of the result returned by the MedicalSegmentation neural network.
  */
 struct MedicalSegmentationResult {
   /// Width of input image.

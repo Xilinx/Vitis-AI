@@ -111,7 +111,8 @@ SegmentationResult RGBDsegmentationImp::run(const cv::Mat& image_bgr,
       auto img_data = (int8_t*)input_tensor[0].get_data(j - i);
       auto disp_data = (int8_t*)input_tensor[1].get_data(j - i);
       LOG_IF(INFO, ENV_PARAM(DEBUG_RGBDSEGMENTATION))
-          << "Rect x,y : " << img_map[j].first << " " << img_map[j].second;
+          << "j: " << j << " Rect x,y : " << img_map[j].first << " "
+          << img_map[j].second;
 
       vitis::ai::rgbdsegmentation::process_image_rgbd(
           img_pad(cv::Rect(img_map[j].first, img_map[j].second, crop_size,
@@ -119,6 +120,16 @@ SegmentationResult RGBDsegmentationImp::run(const cv::Mat& image_bgr,
           disp_pad(cv::Rect(img_map[j].first, img_map[j].second, crop_size,
                             crop_size)),
           mean, img_scale, disp_scale, img_data, disp_data);
+      if (ENV_PARAM(DEBUG_RGBDSEGMENTATION)) {
+        ofstream(to_string(j) + "_debug_rgbdsegmentation_" + to_string(j - i) +
+                     "_input_0.bin",
+                 ios::out | ios::binary)
+            .write((char*)img_data, crop_size * crop_size * 3);
+        ofstream(to_string(j) + "_debug_rgbdsegmentation_" + to_string(j - i) +
+                     "_input_1.bin",
+                 ios::out | ios::binary)
+            .write((char*)disp_data, crop_size * crop_size * 3);
+      }
     }
 
     __TIC__(RGBDsegmentation_DPU)
@@ -130,6 +141,12 @@ SegmentationResult RGBDsegmentationImp::run(const cv::Mat& image_bgr,
       int8_t* output_data =
           (int8_t*)configurable_dpu_task_->getOutputTensor()[0][0].get_data(j -
                                                                             i);
+      if (ENV_PARAM(DEBUG_RGBDSEGMENTATION)) {
+        ofstream(to_string(j) + "_debug_rgbdsegmentation_" + to_string(j - i) +
+                     "_output.bin",
+                 ios::out | ios::binary)
+            .write((char*)output_data, output_stride * output_height);
+      }
       for (size_t h = img_map[j].second, th = 0; th < output_height;
            h++, th++) {
         for (size_t w = img_map[j].first, tw = 0; tw < output_width;
@@ -153,6 +170,8 @@ SegmentationResult RGBDsegmentationImp::run(const cv::Mat& image_bgr,
   // post processing
 
   cv::Mat segMat(image_bgr.size(), CV_8UC1);
+  LOG_IF(INFO, ENV_PARAM(DEBUG_RGBDSEGMENTATION))
+      << "score_height: " << score_height << " score_width : " << score_width;
   for (size_t h = 0; h < score_height; h++) {
     for (size_t w = 0; w < score_width; w++) {
       auto begin = score.data() + h * score_stride + w * score_channels;

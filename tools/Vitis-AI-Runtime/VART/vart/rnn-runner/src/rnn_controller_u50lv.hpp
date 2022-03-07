@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include "regmap_rnn_u50lv.hpp"
 #include "xrnn_controller.hpp"
 
 namespace vart {
@@ -37,10 +38,11 @@ class RnnControllerU50LV : public XrnnController {
   std::string get_board_name() override;
   int get_batch_size() override;
 
- private:
-  std::vector<uint32_t> get_reg_data(int frame, int thread_index);
-  size_t get_base_addr(unsigned batch_num);
-  std::string get_addr_name();
+ protected:
+  virtual std::vector<uint32_t> get_reg_data(int frame, int thread_index);
+  virtual std::string get_addr_name();
+  virtual size_t get_base_addr(unsigned batch_num);
+  virtual const std::vector<size_t>& get_init_addr();
 
   const size_t idx_ = 0;
   std::unique_ptr<xir::XrtCu> xrt_cu_;
@@ -49,7 +51,16 @@ class RnnControllerU50LV : public XrnnController {
   int batch_ = 1;
   int nlayers_ = 1;
 
-  static std::mutex mutex_;
+ private:
+  using MapBaseAddr = std::map<const std::string, std::vector<size_t>*>;
+  MapBaseAddr batch_addr_map = {
+      {"u50_cu0", &U50_HBM_BATCH3_CU0},
+      {"u50_cu1", &U50_HBM_BATCH4_CU1},
+  };
+  MapBaseAddr init_addr_map = {
+      {"u50_cu0", &U50_DDR_INIT_ADDR_CU0},
+      {"u50_cu1", &U50_DDR_INIT_ADDR_CU1},
+  };
 };
 
 }  // namespace xrnn

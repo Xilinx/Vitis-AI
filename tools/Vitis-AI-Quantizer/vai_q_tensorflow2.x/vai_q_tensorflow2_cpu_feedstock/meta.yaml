@@ -1,4 +1,4 @@
-{% set version = "1.4" %}
+{% set version = "2.0" %}
 
 package:
   name: vai_q_tensorflow2

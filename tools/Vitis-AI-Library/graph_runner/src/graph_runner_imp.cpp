@@ -50,7 +50,7 @@ GraphTask::GraphTask(const xir::Subgraph* subgraph, xir::Attrs* attrs)
       nondpu_batch_size_{0u} {
   // dirty hack override original cpu-runner.so
   attrs_->set_attr("lib", std::map<std::string, std::string>{
-                              {"CPU", "libvitis_ai_library-cpu_task.so.1"}});
+                              {"CPU", "libvitis_ai_library-cpu_task.so.2"}});
   internal_ = vitis::ai::vec_map(
       subgraph->children_topological_sort(),
       [](const xir::Subgraph* subgraph) { return GraphInternal{subgraph}; });
@@ -444,7 +444,7 @@ void GraphTask::finalize_linkers() {
     for (auto& output : i.outputs) {
       auto linker = output.linker.get();
       if (linker) {
-        linker->finalize(i.device);
+        linker->finalize();
         LOG_IF(INFO, ENV_PARAM(DEBUG_GRAPH_RUNNER))
             << "finalize linker: " << linker->to_string();
       }

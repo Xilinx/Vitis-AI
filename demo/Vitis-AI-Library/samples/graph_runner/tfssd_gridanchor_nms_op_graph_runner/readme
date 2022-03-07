@@ -1,0 +1,35 @@
+/*
+ * Copyright 2021 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+1, compile
+
+    execute the following command:
+
+        bash build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+   For ZCU102/ZCU104/KV260, execute the following command.
+      tfssd_gridanchor_nms_op_graph_runner  ssd_mobilenet_v1_coco_tf_trt_op_b4096.xmodel   sample_tfssd.jpg
+   
+   For VCK190, execute the following command.
+      tfssd_gridanchor_nms_op_graph_runner  ssd_mobilenet_v1_coco_tf_trt_op_vck190.xmodel   sample_tfssd.jpg
+
+   note: the sd_mobilenet_v1_coco_tf_op_*.xmodel is special model with 2 ops: GridAnchor_TRT & NMS_TRT
+      ssd_mobilenet_v1_coco_tf_trt_op_b4096.xmodel is model for ZCU102/ZCU104/KV260 board with B4096 DPU;
+      ssd_mobilenet_v1_coco_tf_trt_op_vck190.xmodel is model for VCK190 board with C32B3 DPU;

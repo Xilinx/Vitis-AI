@@ -21,10 +21,6 @@ from tensorflow.python.framework import dtypes
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import nn
-from tensorflow.python.keras import activations
-from tensorflow.python.keras import backend
-from tensorflow.python.keras.utils import tf_utils
-from tensorflow.python.keras.utils.generic_utils import register_keras_serializable
 
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.base import quantizer as quantizer_mod
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_aware_activation
@@ -35,6 +31,9 @@ __all__ = [
     'VitisDepthwiseConvBNQuantize'
 ]
 
+activations = tf.keras.activations
+backend = tf.keras.backend
+register_keras_serializable = tf.keras.utils.register_keras_serializable
 serialize_keras_object = tf.keras.utils.serialize_keras_object
 deserialize_keras_object = tf.keras.utils.deserialize_keras_object
 logger = common_utils.VAILogger
@@ -275,7 +274,7 @@ class VitisConvBNQuantize(tf.keras.layers.Layer):
     # Quantize the folded kernel and bias
     for weight, quantizer, quantizer_vars in self._weight_vars:
       weight_tensor = getattr(self, weight)
-      quantized_weight = tf_utils.smart_cond(
+      quantized_weight = common_utils.smart_cond(
           training,
           self._make_quantizer_fn(quantizer, weight_tensor, True, self.mode,
                                   quantizer_vars),
@@ -323,13 +322,13 @@ class VitisConvBNQuantize(tf.keras.layers.Layer):
     if training is None:
       training = tf.keras.backend.learning_phase()
 
-    bias = tf_utils.smart_cond(self.conv_layer.use_bias,
-                               lambda: self.conv_layer.bias, lambda: 0)
+    bias = common_utils.smart_cond(self.conv_layer.use_bias,
+                                   lambda: self.conv_layer.bias, lambda: 0)
 
     if training:
       self.optimizer_step.assign_add(1)
 
-    freeze_bn = tf_utils.smart_cond(
+    freeze_bn = common_utils.smart_cond(
         self.freeze_bn_delay is not None, lambda: math_ops.greater_equal(
             self.optimizer_step, self.freeze_bn_delay), lambda: False)
     #  tf.print('step: {}, freeze_bn: {}'.format(self.optimizer_step, freeze_bn))
@@ -616,7 +615,7 @@ class VitisDepthwiseConvBNQuantize(tf.keras.layers.Layer):
     # Quantize the folded kernel and bias
     for weight, quantizer, quantizer_vars in self._weight_vars:
       weight_tensor = getattr(self, weight)
-      quantized_weight = tf_utils.smart_cond(
+      quantized_weight = common_utils.smart_cond(
           training,
           self._make_quantizer_fn(quantizer, weight_tensor, True, self.mode,
                                   quantizer_vars),
@@ -652,13 +651,13 @@ class VitisDepthwiseConvBNQuantize(tf.keras.layers.Layer):
     if training is None:
       training = tf.keras.backend.learning_phase()
 
-    bias = tf_utils.smart_cond(self.conv_layer.use_bias,
-                               lambda: self.conv_layer.bias, lambda: 0)
+    bias = common_utils.smart_cond(self.conv_layer.use_bias,
+                                   lambda: self.conv_layer.bias, lambda: 0)
 
     if training:
       self.optimizer_step.assign_add(1)
 
-    freeze_bn = tf_utils.smart_cond(
+    freeze_bn = common_utils.smart_cond(
         self.freeze_bn_delay is not None, lambda: math_ops.greater_equal(
             self.optimizer_step, self.freeze_bn_delay), lambda: False)
     #  tf.print('step: {}, freeze_bn: {}'.format(self.optimizer_step, freeze_bn))

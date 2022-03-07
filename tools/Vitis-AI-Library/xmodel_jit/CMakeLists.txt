@@ -15,7 +15,7 @@
 #
 
 vai_add_library(SRCS ./include/vitis/ai/xmodel_jit.hpp src/xmodel_jit.cpp
-  PRIVATE_REQUIRE dl xir::xir)
+  PRIVATE_REQUIRE dl xir::xir glog::glog)
 if(BUILD_PYTHON)
   vai_add_library(
     NAME xmodel_jit_python

@@ -13,10 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=dpuv4e_xclbins_1_4_0.tar.gz"
+XCLBIN_URL="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_xclbins_2_0_0.tar.gz"
 XCLBIN_INSTALLER="/tmp/xclbins.tar.gz"
 INSTALLER=tar
 INSTALL_PATH=/
 
 wget $XCLBIN_URL -O $XCLBIN_INSTALLER && sudo ${INSTALLER} -xzf $XCLBIN_INSTALLER --directory $INSTALL_PATH && rm $XCLBIN_INSTALLER
+sudo ln -sf DPUCVDX8H /opt/xilinx/overlaybins/dpuv4e
 

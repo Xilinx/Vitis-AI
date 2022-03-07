@@ -21,7 +21,10 @@ add_library(${COMPONENT_NAME} SHARED
   src/batch_tensor_buffer.hpp
 )
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
-target_link_libraries(${COMPONENT_NAME} ${PROJECT_NAME}::runner ${PROJECT_NAME}::util)
+target_link_libraries(
+	${COMPONENT_NAME} 
+	PUBLIC ${PROJECT_NAME}::runner ${PROJECT_NAME}::util
+	PRIVATE unilog::unilog)
 target_include_directories(${COMPONENT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -34,4 +37,5 @@ set_target_properties(${COMPONENT_NAME} PROPERTIES
 install(
   TARGETS ${COMPONENT_NAME}
   RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)

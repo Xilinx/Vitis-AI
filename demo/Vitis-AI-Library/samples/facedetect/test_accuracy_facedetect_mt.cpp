@@ -45,7 +45,7 @@ static ModelInfo get_model_zise(const std::string& filename ) {
   auto root = graph->get_root_subgraph();
   auto children = root->children_topological_sort();
   if (children.empty()) {
-    cout << "no subgraph" << endl;
+    std::cout << "no subgraph" << std::endl;
   }
   for (auto c : children) {
     CHECK(c->has_attr("device"));

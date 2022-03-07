@@ -199,7 +199,6 @@ class SubgraphImp : public Subgraph {
   std::set<Op*> ops_;
 
   std::unique_ptr<Attrs> attrs_;
-  friend class c_api;
 };
 
 }  // namespace xir

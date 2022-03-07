@@ -36,10 +36,10 @@ void globalAvePool(float* src, int height, int width, int channel, float* dst) {
 }
 
 struct AvgPool2d_OpImp : public vart::experimental::OpImpBase {
-  AvgPool2d_OpImp(xir::Op* op, xir::Attrs* attrs)
+  AvgPool2d_OpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {}
-  int calculate(vart::experimental::simple_tensor_buffer_t<float> result,
-                vart::experimental::simple_tensor_buffer_t<float> input) {
+  int calculate(vart::simple_tensor_buffer_t<float> result,
+                vart::simple_tensor_buffer_t<float> input) {
     auto input_shape = input.tensor->get_shape();
     auto output_shape = result.tensor->get_shape();
     auto num_of_dims = input_shape.size();
@@ -63,6 +63,5 @@ struct AvgPool2d_OpImp : public vart::experimental::OpImpBase {
 };
 
 }  // namespace
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<AvgPool2d_OpImp>();
-}
+
+DEF_XIR_OP_IMP(AvgPool2d_OpImp)

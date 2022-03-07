@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 
+#include "xir/XirExport.hpp"
 #include "xir/graph/graph_template.hpp"
 #include "xir/graph/subgraph.hpp"
 #include "xir/op/op.hpp"
@@ -45,7 +46,7 @@ namespace xir {
  * will support LSTM in another way rather than adding an edge directly.
  * Maintaining a graph with rings is much harder than acyclic graph.
  */
-class Graph {
+class XIR_DLLESPEC Graph {
  public:
   /**
    * @brief Static function to create a graph with a name.

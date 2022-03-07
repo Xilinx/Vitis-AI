@@ -150,7 +150,7 @@ class Segmentation {
    */
   virtual SegmentationResult run_8UC1(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running results of the segmentation neuron network
+   * @brief Function to get running results of the segmentation neural network
    * in batch mode.
    *
    * @note The type of CV_8UC1 of the segmentation result.
@@ -175,7 +175,7 @@ class Segmentation {
    */
   virtual SegmentationResult run_8UC3(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running results of the segmentation neuron network
+   * @brief Function to get running results of the segmentation neural network
    * in batch mode.
    *
    * @note The type of CV_8UC3 of the segmentation result.
@@ -272,7 +272,7 @@ class Segmentation8UC1 {
    */
   SegmentationResult run(const cv::Mat& image);
   /**
-   * @brief Function to get running results of the segmentation neuron network
+   * @brief Function to get running results of the segmentation neural network
    * in batch mode.
    *
    * @note The type of CV_8UC1 of the Result's segmentation.
@@ -372,7 +372,7 @@ class Segmentation8UC3 {
    */
   SegmentationResult run(const cv::Mat& image);
   /**
-   * @brief Function to get running results of the segmentation neuron network
+   * @brief Function to get running results of the segmentation neural network
    * in batch mode.
    *
    * @note The type of CV_8UC3 of the segmentation result.

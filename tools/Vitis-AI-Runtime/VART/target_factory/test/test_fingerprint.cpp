@@ -22,7 +22,7 @@ limitations under the License.
 #include <string>
 
 using namespace vitis::ai;
-
+using namespace std;
 int main(int, char* argv[]) {
   UniLog::Initial(argv[0], UNI_LOG_STD, UNI_LOG_LEVEL_INFO,
                   UNI_LOG_STD_LEVEL_INFO);

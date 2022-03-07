@@ -1,3 +1,4 @@
+
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -85,7 +86,7 @@ def generate(xmodel_file, root_path):
 def generate_input_tensors(g, gdirs, path):
     name_and_sizes = [(op.get_output_tensor().name,
                        op.get_output_tensor().get_data_size())
-                      for op in g.get_head_ops() if op.get_type() == "data-fix"
+                      for op in g.get_head_ops() if op.get_type() == "data-fix" or op.get_type() == "data"
                       ]
     return {
         xir_extra_ops.remove_xfix(name):

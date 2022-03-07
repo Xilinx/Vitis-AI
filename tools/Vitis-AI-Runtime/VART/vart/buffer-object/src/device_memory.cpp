@@ -14,45 +14,36 @@
  * limitations under the License.
  */
 
-#include "xir/device_memory.hpp"
-#include <dirent.h>
 #include <glog/logging.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#include <filesystem>
 #include <fstream>
 #include <map>
-
 #include "vitis/ai/env_config.hpp"
+#include "xir/device_memory.hpp"
 DEF_ENV_PARAM(DEBUG_DEVICE_MEMORY, "0");
 
 namespace xir {
 
 static void mkdir_minus_p(const std::string& dirname) {
-  struct stat st = {0};
-  if (stat(dirname.c_str(), &st) == -1) {
-    PCHECK(mkdir(dirname.c_str(), 0777) == 0)
-        << "mkdir error; dirname=" << dirname;
-  }
-  PCHECK(stat(dirname.c_str(), &st) == 0)
-      << "stat dir error: dirname=" << dirname;
-  CHECK(S_ISDIR(st.st_mode)) << "error not a directory: dirname=" << dirname;
+  CHECK(std::filesystem::create_directories(dirname))
+      << "cannot create directories: " << dirname;
 }
 
 bool is_exist_path(const std::string& filename) {
-  struct stat buffer;
-  return (stat(filename.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode));
+  return std::filesystem::exists(filename);
 }
 
 static std::string get_full_filename(const std::string& filename) {
-  if (filename[0] == '/') {
+  if (filename[0] == std::filesystem::path::preferred_separator) {
     return filename;
   }
-  std::string current_p(getcwd(NULL, 0));
-  return current_p + "/" + filename;
+  return (std::filesystem::current_path() / filename).string();
 }
 
 static std::string get_parent_path(const std::string& path) {
-  return path.substr(0, path.find_last_of("/"));
+  return path.substr(
+      0, path.find_last_of(std::filesystem::path::preferred_separator));
 }
 
 static void create_parent_path(const std::string& path) {
@@ -98,6 +89,10 @@ bool DeviceMemory::save(const std::string& filename, uint64_t offset,
       << " faild to write to " << filename;
   return true;
 }
+
+std::unique_ptr<DeviceMemory> DeviceMemory::create(size_t v) {
+  return DeviceMemory::create0(v);
+}
 /*
 {
   LOG_IF(INFO, false) << "filename " << filename << " \n"  //
@@ -118,3 +113,6 @@ bool DeviceMemory::save(const std::string& filename, uint64_t offset,
 }
 */
 }  // namespace xir
+// ON MSVC: no implementation yet. so that is possible that no factory method is
+// defined. cause runtime error.
+DECLARE_INJECTION_NULLPTR(xir::DeviceMemory, size_t&);

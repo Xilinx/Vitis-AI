@@ -17,7 +17,7 @@
 
 #pragma once
 #include <vart/vart.h>
-#include <xir/xir.h>
+#include <xir/cxir.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

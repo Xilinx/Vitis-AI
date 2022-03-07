@@ -50,6 +50,9 @@ static std::shared_ptr<::pybind11::scoped_interpreter> init_interpreter() {
     CHECK(ret != nullptr) << "cannot create python interpreter";
   }
   py::module::import("xir");
+  // we have to import vart, otherwise, vart::TensorBuffer is not accessible
+  // from Python.
+  py::module::import("vart");
   return ret;
 }
 
@@ -73,9 +76,12 @@ class PythonCpuOp : public vart::OpImp {
 PythonCpuOp::PythonCpuOp(const xir::Op* op, xir::Attrs* attrs)
     : vart::OpImp(op), interpreter_{init_interpreter()} {
   auto op_type = op->get_type();
-  auto m = py::module::import(op_type.c_str());
+  // we add a namespace here. I think it is OK to import a module many times.
+  auto m = py::module::import((std::string("vart_op_imp.") + op_type).c_str());
+  // find the proper python class and create a new python object.
   auto op_type_cls = m.attr(op_type.c_str());
   the_op_imp_ = op_type_cls(py::cast(op));
+  // find the member function.
   the_op_imp_method_ = the_op_imp_.attr("calculate");
 };
 PythonCpuOp::~PythonCpuOp() {}
@@ -97,6 +103,7 @@ int PythonCpuOp::calculate(const std::vector<vart::OpImpArg>& inputs,
 }
 
 }  // namespace
+
 extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
   return vart::make_vart_opt_imp<PythonCpuOp>();
 }

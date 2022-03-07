@@ -16,6 +16,7 @@
 # limitations under the License.
 
 import ctypes
+import json
 import tracer.tracerBase
 
 
@@ -66,7 +67,7 @@ class pyfuncTracer(tracer.tracerBase.Tracer):
     def getData(self):
         if self.saveTo != None:
             with open(self.saveTo, "w+t") as save:
-                save.writelines(self.traceLog)
+                save.writelines(json.dumps(self.traceLog))
         return self.traceLog
 
 

@@ -33,7 +33,7 @@ namespace ai {
 
 /**
  *@struct YOLOv3Result
- *@brief Struct of the result returned by the YOLOv3 neuron network.
+ *@brief Struct of the result returned by the YOLOv3 neural network.
  *@note VOC dataset category:string label[20] = {"aeroplane", "bicycle", "bird",
  *"boat", "bottle", "bus","car", "cat", "chair", "cow", "diningtable", "dog",
  *"horse", "motorbike","person", "pottedplant", "sheep", "sofa", "train",
@@ -72,7 +72,7 @@ struct YOLOv3Result {
 };
 
 /**
- *@brief Post-process of the YOLOv3 neuron network.
+ *@brief Post-process of the YOLOv3 neural network.
  *@param input_tensors A vector of all input-tensors in the network.
  * Usage: input_tensors[input_tensor_index].
  *@param output_tensors A vector of all output-tensors in the network.
@@ -88,7 +88,7 @@ YOLOv3Result yolov3_post_process(
     const vitis::ai::proto::DpuModelParam& config, const int w, const int h);
 
 /**
- *@brief Post-process of the YOLOv3 neuron network in batch mode.
+ *@brief Post-process of the YOLOv3 neural network in batch mode.
  *@param input_tensors A vector of all input-tensors in the network.
  * Usage: input_tensors[input_tensor_index].
  *@param output_tensors A vector of all output-tensors in the network.

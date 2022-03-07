@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: inception-v3 classifier on ImageNet.
+input size: 299*299
+float ops: 11.45G
+task: classification
+framework: tensorflow
+prune: 'no'
+version: 2.0
+files:
+- name: tf_inceptionv3_imagenet_299_299_11.45G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv3_imagenet_299_299_11.45G_2.0.zip
+  checksum: 8b0265fdfa7ea7c8b184983bb0ae8b0f
+- name: inception_v3_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: fc67c830861f52ba395437db912df2ec
+- name: inception_v3_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-vck190-r2.0.0.tar.gz
+  checksum: 7389c4f119e20f8f81af2806a42ac344
+- name: inception_v3_tf
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: fa833d831ae1408a83895fa03acd474f
+- name: inception_v3_tf
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 8290c8ed047e6ec3e8ed04c4da3dbbec
+- name: inception_v3_tf
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 1dff7533d128834d44f30ade02ac7e0b
+- name: inception_v3_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-u200-u250-r2.0.0.tar.gz
+  checksum: 7fa3e60b65c0fadc75bfba4c4fbc2416
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -20,7 +20,7 @@
 
 #include "./softmax.hpp"
 #include "./xrt_cu.hpp"
-#include "vart/dpu/device_scheduler.hpp"
+// #include "vart/dpu/device_scheduler.hpp"
 #include "xir/sfm_controller.hpp"
 namespace {
 
@@ -78,7 +78,7 @@ class SfmControllerXrtEdgeWithScheduler : public xir::SfmController {
 
  private:
   std::vector<std::unique_ptr<SfmControllerXrtEdge>> controllers_;
-  std::unique_ptr<vart::dpu::DeviceScheduler> scheduler_;
+  // std::unique_ptr<vart::dpu::DeviceScheduler> scheduler_;
 };
 
 }  // namespace

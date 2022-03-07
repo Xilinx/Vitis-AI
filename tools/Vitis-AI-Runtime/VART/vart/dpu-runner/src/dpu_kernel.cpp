@@ -129,7 +129,7 @@ void DpuKernel::my_load_parameter() {
           << " faild to dump code to " << filename;
       LOG(INFO) << "dump parameter to " << filename;
     }
-    parameters.emplace_back(reg_id, RegType::CONST,
+    parameters.emplace_back(reg_id, vart::dpu::RegType::XCONST,
                             std::move(it_value->second));
   }
   // CHECK_GT(total, 0u) << "no parameter loaded.";

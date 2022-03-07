@@ -17,8 +17,8 @@ vai_add_library(
   SRCS include/vart/op_imp.h src/tensor_buffer_proxy.hpp
        src/tensor_buffer_proxy.cpp src/cpu_task.hpp src/cpu_task.cpp
        src/op_imp.cpp
-  PUBLIC_REQUIRE ${PROJECT_NAME}::runner_helper
-  PRIVATE_REQUIRE vart::runner vart::runner-assistant dl)
+  PUBLIC_REQUIRE ${PROJECT_NAME}::runner_helper ${PROJECT_NAME}::cvart
+  PRIVATE_REQUIRE vart::runner vart::runner-assistant vart::trace dl)
 
 function(add_op_imp OP_TYPE)
   set(options "")
@@ -52,6 +52,9 @@ add_op_imp(compare ops/compare/compare.cpp PRIVATE_REQUIRE crypto)
 add_op_imp(const ops/const/const.cpp)
 add_op_imp(const-fix ops/const-fix/const-fix.cpp)
 add_op_imp(data-fix ops/data-fix/data-fix.cpp PRIVATE_REQUIRE crypto)
+add_op_imp(data ops/data/data.cpp PRIVATE_REQUIRE crypto)
+add_op_imp(depthwise-fix ops/depthwise-fix/depthwise-fix.cpp)
+add_op_imp(depthwise-conv2d ops/depthwise-conv2d/depthwise-conv2d.cpp)
 add_op_imp(depthwise-conv2d-fix
            ops/depthwise-conv2d-fix/depthwise-conv2d-fix.cpp)
 add_op_imp(
@@ -72,15 +75,33 @@ add_op_imp(exp ops/exp/exp.cpp)
 add_op_imp(reduction_sum ops/reduction_sum/reduction_sum.cpp)
 add_op_imp(div ops/div/div.cpp)
 add_op_imp(mul ops/mul/mul.cpp)
+add_op_imp(nn_channel_shuffle ops/nn_channel_shuffle/nn_channel_shuffle.cpp)
 add_op_imp(concat-fix ops/concat/concat.cpp)
 add_op_imp(concat ops/concat/concat.cpp)
 add_op_imp(batchnorm ops/batchnorm/batchnorm.cpp)
 add_op_imp(sigmoid ops/sigmoid/sigmoid.cpp)
+add_op_imp(hard-sigmoid-fix ops/hard-sigmoid-fix/hard-sigmoid-fix.cpp)
+add_op_imp(leaky-relu ops/leaky-relu/leaky-relu.cpp)
 add_op_imp(pool-fix ops/pool-fix/pool-fix.cpp)
 add_op_imp(transpose ops/transpose/transpose.cpp PRIVATE_REQUIRE vart::util)
 add_op_imp(strided_slice ops/strided_slice/strided_slice.cpp PRIVATE_REQUIRE
            vart::util)
 add_op_imp(pad-fix ops/pad-fix/pad-fix.cpp)
+add_op_imp(region ops/region/region.cpp)
+add_op_imp(NMS_TRT ops/NMS_TRT/NMS_TRT.cpp  PRIVATE_REQUIRE pthread )
+add_op_imp(GridAnchor_TRT ops/GridAnchor_TRT/GridAnchor_TRT.cpp)
+add_op_imp(batchTilePlugin ops/batchTilePlugin/batchTilePlugin.cpp)
+add_op_imp(my_normalize ops/my_normalize/my_normalize.cpp)
+add_op_imp(normalize ops/my_normalize/my_normalize.cpp)
+
+add_op_imp(select ops/select/select.cpp)
+add_op_imp(sin ops/sin/sin.cpp)
+add_op_imp(aten__sin ops/sin/sin.cpp)
+add_op_imp(cos ops/cos/cos.cpp)
+add_op_imp(aten__cos ops/cos/cos.cpp)
+add_op_imp(clamp ops/clamp/clamp.cpp)
+add_op_imp(tanh ops/tanh/tanh.cpp)
+add_op_imp(ClippedRelu ops/clipped-relu/clipped-relu.cpp)
 
 if(BUILD_PYTHON)
   add_op_imp(python-cpu-op ops/python-cpu-op/python-cpu-op.cpp)
@@ -98,11 +119,13 @@ if(BUILD_PYTHON)
 endif(BUILD_PYTHON)
 
 vai_add_test(test_cpu_task)
-vai_add_test(test_op_imp test/test_op_imp.cpp)
-vai_add_test(test_experimental test/test_experimental.cpp)
+vai_add_test(test_op_imp)
+vai_add_test(compare_float_bin)
+vai_add_test(test_experimental)
 vai_add_test(show_binary_image)
-vai_add_test(check_supported_op test/check_supported_op.cpp)
-target_link_libraries(check_supported_op dl)
+vai_add_test(check_supported_op)
+target_link_libraries(check_supported_op -ldl)
+vai_add_test(generate_xir_op_imp)
 
 add_test(
   NAME test_softmax

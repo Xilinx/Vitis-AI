@@ -23,7 +23,7 @@
 #****************************************************************
 dict set dict_prj dict_sys pwd_dir            [pwd]
 dict set dict_prj dict_sys srcs_dir           [file dirname [file dirname [file dirname [dict get $dict_prj dict_sys work_dir]]]]/dpu_ip
-dict set dict_prj dict_sys ip_dir             [dict get $dict_prj dict_sys srcs_dir]/DPUCZDX8G_v3_3_0
+dict set dict_prj dict_sys ip_dir             [dict get $dict_prj dict_sys srcs_dir]/DPUCZDX8G_v3_4_0
 dict set dict_prj dict_sys xdc_dir            [file dirname [dict get $dict_prj dict_sys work_dir]]/constrs
 dict set dict_prj dict_sys prj_dir            [file dirname [dict get $dict_prj dict_sys work_dir]]/prj
 dict set dict_prj dict_sys bd_dir             [file dirname [dict get $dict_prj dict_sys work_dir]]/srcs
@@ -498,9 +498,10 @@ proc lib_dpu_irq_info_lib { dict_verreg } {
 proc lib_dpu_irq_info_list { dict_verreg irq_lib } {
   set dpu_num       [lib_info info_sys DPU_NUM            ]
   set pack_ena      [lib_info info_sys DPU_PACK_ENA       ]
+  set concat_ena    [expr $pack_ena == {1} && [lib_info info_sys DPU_IRQ_PACK_DIS ] != {1} ]
   set dpu_dsp48_ver [dict get $dict_verreg info_sys DPU_DSP48_VER ]
   set ip_list       [dict keys [dict get $dict_verreg info_ip]    ]
-  set irq_min       [expr {($dpu_dsp48_ver=={DSP48E1}?{0}:{8})}   ]
+  set irq_min       [expr {($dpu_dsp48_ver=={DSP48E1}||$concat_ena=={0})?{0}:{8}}   ]
   set irq_max       {16}
   set irq_list      {}
   for {set irq_i $irq_min} {$irq_i<$irq_max} {incr irq_i} {
@@ -508,6 +509,7 @@ proc lib_dpu_irq_info_list { dict_verreg irq_lib } {
     dict set irq_list $irq_i BW {1}
   }
   foreach ip $ip_list {
+    if { $concat_ena != {0} } {
     dict set irq_list [dict get $irq_lib $ip] IP $ip
     if { $pack_ena == {1} && $dpu_num > {1} } {
       for {set dpu_i 1} {$dpu_i<$dpu_num} {incr dpu_i} {
@@ -516,6 +518,18 @@ proc lib_dpu_irq_info_list { dict_verreg irq_lib } {
     }
     if { [lib_info info_ip dpu PROP SFM_ENA] == {1} } {
       dict set irq_list [dict get $irq_lib softmax] IP softmax
+    }
+    } else {
+      set irq_i $irq_min
+      dict set irq_list $irq_i IP $ip
+      incr irq_i
+      for {set dpu_i 1} {$dpu_i<$dpu_num} {incr dpu_i} {
+        dict set irq_list $irq_i IP $ip$dpu_i
+        incr irq_i
+      }
+      if { [lib_info info_ip dpu PROP SFM_ENA] == {1} } {
+        dict set irq_list $irq_i IP softmax
+      }
     }
   }
   for {set irq_i [expr $irq_max-1]} {$irq_i>=$irq_min} {incr irq_i -1} {
@@ -534,6 +548,7 @@ proc lib_dpu_irq_info_list { dict_verreg irq_lib } {
 # irq_concat
 #****************************************************************
 proc lib_dpu_irq_info_concat { irq_list } {
+  set concat_ena  [expr [lib_info info_sys DPU_PACK_ENA ] == {1} && [lib_info info_sys DPU_IRQ_PACK_DIS ] != {1} ]
   set irq_i     {0}
   set irq_num   {0}
   set irq_dpu_0 {0}
@@ -541,7 +556,7 @@ proc lib_dpu_irq_info_concat { irq_list } {
   dict for { irq irq_info } $irq_list {
     incr irq_i
     dict with irq_info {
-      if { [string match "dpu*" $IP] } {
+      if { [string match "dpu*" $IP] && $concat_ena } {
         if { $IP == {dpu0} || $IP == {dpu} } {
           set irq_dpu_0 $irq
           incr irq_num
@@ -825,7 +840,7 @@ proc lib_dpu_ips_irq { dict_verreg dict_ip } {
       if { $BW > {1} } {
         dict set dict_ip d_ip_irq_concat_inner PROP "IN$irq_i\_WIDTH.VALUE_SRC"  {USER}
         dict set dict_ip d_ip_irq_concat_inner PROP "IN$irq_i\_WIDTH"            $BW
-      } else {
+      } elseif { $IP == {c1b0} } {
         set need_c1b0 {1}
       }
     }
@@ -1172,18 +1187,23 @@ proc lib_dpu_cns_irq { dict_verreg dict_cn } {
   set dict_ip_ps  [dict get $dict_verreg info_sys DICT_IP_PS    ]
   set irq_list    [dict get $dict_verreg info_sys IRQ_INFO IRQ_LIST ]
   set pack_ena    [lib_info info_sys DPU_PACK_ENA       ]
+  set concat_ena  [expr [lib_info info_sys DPU_PACK_ENA ] == {1} && [lib_info info_sys DPU_IRQ_PACK_DIS ] != {1} ]
 
   #****************************************************************
   # irq
   #****************************************************************
   set num_ports   [dict size $irq_list]
   set irq_i       {0}
+  set dpu_i       {0}
   dict for { irq irq_info } $irq_list {
     dict with irq_info {
       if { $IP == {c1b0} }  {set pin_src [lib_cell d_ip_irq_c1b0]/dout
       } elseif { $pack_ena == {1} } {
         if { $IP == {softmax} } {
                              set pin_src [lib_cell d_ip_dpu]/sfm_interrupt
+        } elseif { $concat_ena != {1} } {
+                             set pin_src [lib_cell d_ip_dpu]/dpu$dpu_i\_interrupt
+                             incr dpu_i
         } else {
                              set pin_src [lib_cell d_ip_dpu]/dpu_interrupt
         }
@@ -1197,7 +1217,7 @@ proc lib_dpu_cns_irq { dict_verreg dict_cn } {
   #****************************************************************
   # ps
   #****************************************************************
-  set pin_ps_irq  [lib_cell $dict_ip_ps]/[expr {($dsp48_ver=={DSP48E1}?{IRQ_F2P}:{pl_ps_irq1})}]
+  set pin_ps_irq  [lib_cell $dict_ip_ps]/[expr {($dsp48_ver=={DSP48E1}?{IRQ_F2P}:($concat_ena=={0})?{pl_ps_irq0}:{pl_ps_irq1})}]
   dict set dict_cn cp_dpu_irq {PIN from PIN} [lib_pin pd_irq_INTR] [lib_cell d_ip_irq_concat_inner]/dout
   dict set dict_cn cp_dpu_irq {PIN from PIN} [lib_cell d_ip_irq_concat]/In0 [lib_pin pd_irq_INTR]
   dict set dict_cn cp_dpu_irq {PIN from PIN} $pin_ps_irq [lib_cell d_ip_irq_concat]/dout
@@ -1505,7 +1525,10 @@ proc lib_create_ips { dict_ip } {
     CONFIG.PSU__CRL_APB__ADMA_REF_CTRL__SRCSEL      {IOPLL}         \
     CONFIG.PSU__CRL_APB__TIMESTAMP_REF_CTRL__SRCSEL {IOPLL}         \
     CONFIG.PSU__CRL_APB__CPU_R5_CTRL__SRCSEL        {IOPLL}         \
-    CONFIG.PSU__CRF_APB__ACPU_CTRL__FREQMHZ         {1200}          \
+    CONFIG.PSU__CRF_APB__APLL_CTRL__FBDIV           {80}            \
+    CONFIG.PSU__CRF_APB__ACPU_CTRL__FREQMHZ         {1334}          \
+    CONFIG.PSU__CRF_APB__GDMA_REF_CTRL__FREQMHZ     {667}           \
+    CONFIG.PSU__CRF_APB__DPDMA_REF_CTRL__FREQMHZ    {667}           \
     CONFIG.PSU__CRF_APB__GPU_REF_CTRL__FREQMHZ      {500}           \
     CONFIG.PSU__CRL_APB__QSPI_REF_CTRL__FREQMHZ     {125}           \
     CONFIG.PSU__CRL_APB__CPU_R5_CTRL__FREQMHZ       {500}           \
@@ -2560,6 +2583,7 @@ dict set dict_prj dict_verreg                           \
     DPU_LDP_ENA         {1}                             \
     DPU_HP_DATA_BW      [lib_param DPU_HP_DATA_BW]      \
     DPU_CLK_MHz         [lib_param DPU_CLK_MHz]         \
+    DPU_IRQ_PACK_DIS    {1}                             \
     HP_CC_EN            [lib_param DPU_HP_CC_EN]        \
     HIER_PATH_DPU       [lib_hier h_dpu]                \
     HIER_PATH_CLK       [lib_hier h_dpu_clk]            \
@@ -2580,7 +2604,7 @@ dict set dict_prj dict_verreg                           \
     ]
 dict set dict_prj dict_verreg info_ip         \
   dpu           [dict create                  \
-    NAME        "DPUCZDX8G"                   \
+    NAME        "dpuczdx8g"                   \
     PROP        [dict create                  \
                 "VER_DPU_NUM"           [lib_param DPU_NUM]               \
                 "ARCH"                  [lib_param DPU_ARCH]              \

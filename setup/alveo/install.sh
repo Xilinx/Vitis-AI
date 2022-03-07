@@ -61,11 +61,11 @@ sleep 3
 
 source /opt/xilinx/xrt/setup.sh
 
-PLATFORMS="u50_ u50lv_ u200_ u250_ u280_" 
+PLATFORMS="u50lv_ u200_ u250_ u55c_" 
 
 for platform in ${PLATFORMS};
 do
-xbutil scan | grep ${platform}
+xbutil examine | grep ${platform}
 if [ $? -eq 0 ]; then
   echo "${platform} card detected, installing shell and xclbins"
   source ${SCRIPTS}/install_${platform}shell.sh

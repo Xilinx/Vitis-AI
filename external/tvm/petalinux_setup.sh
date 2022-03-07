@@ -14,6 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Set date/time
+date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
+
 export TVM_VAI_HOME=/opt/tvm-vai
 export TVM_HOME="${TVM_VAI_HOME}"/tvm
 export PYXIR_HOME="${TVM_VAI_HOME}"/pyxir
@@ -37,7 +40,10 @@ if [ ! -f "/swapfile" ]; then
 else
   echo "Couldn't allocate swap space as /swapfile already exists"
 fi
- 
+
+# INSTALL PIP3
+sudo dnf install -y python3-pip
+
 # INSTALL DEPENDENCIES
 if ! command -v h5cc &> /dev/null; then
   cd /tmp && \
@@ -55,9 +61,9 @@ cd ${TVM_VAI_HOME}
 pip3 install Cython==0.29.23 h5py==2.10.0 pillow
  
 # DOWNLOAD PYXIR AND TVM
-git clone --recursive --branch rel-v0.3.0 --single-branch https://github.com/Xilinx/pyxir.git "${PYXIR_HOME}"
+git clone --recursive --branch rel-v0.3.3 --single-branch https://github.com/Xilinx/pyxir.git "${PYXIR_HOME}"
 git clone --recursive --single-branch https://github.com/apache/tvm.git "${TVM_HOME}" &&\
-    cd ${TVM_HOME} && git checkout 40d5193 && git submodule update --init --recursive
+    cd ${TVM_HOME} && git checkout 627e92e7 && git submodule update --init --recursive
     
 # BUILD PYXIR FOR EDGE
 cd "${PYXIR_HOME}"

@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: 'Person re-identification model (backbone: resnet50).'
+input size: 256*128
+float ops: 5.4G
+task: person reid
+framework: pytorch
+prune: 'no'
+version: 2.0
+files:
+- name: pt_personreid-res50_market1501_256_128_5.4G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_personreid-res50_market1501_256_128_5.4G_2.0.zip
+  checksum: 2c954793a136282c006844e246b24117
+- name: personreid-res50_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 3730b9af25e85fef9eacd156d97f3656
+- name: personreid-res50_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-vck190-r2.0.0.tar.gz
+  checksum: 850609158cc8885cafe7acb7bc37f051
+- name: personreid-res50_pt
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 34d650baf93f88aaf40cb87ea84f7d2c
+- name: personreid-res50_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 5b55090203f912a137e604971db817c9
+- name: personreid-res50_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid-res50_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 5281a7f13ff3085edee3a6408245c5bf
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

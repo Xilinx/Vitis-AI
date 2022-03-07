@@ -22,13 +22,20 @@ def jit(graph):
     graph.set_attr("scale", [1.0, 1.0, 1.0])
     graph.set_attr("is_rgb_input", False)
     conf_op = graph.get_op("pixel-conv-tiled_fixed_")
-    graph.create_op("pixel-conv-tiled_fixed_softmax", "softmax",
-                    attrs={"axis": -1},
-                    input_ops={"input": [conf_op]},
-                    subgraph=graph.get_leaf_subgraph(conf_op))
+    graph.create_op(
+        "pixel-conv-tiled_fixed_softmax",
+        "softmax",
+        attrs={"axis": -1},
+        input_ops={"input": [conf_op]},
+        subgraph=graph.get_leaf_subgraph(conf_op),
+    )
     graph.set_attr("det_threshold", 0.9)
     graph.set_attr("nms_threshold", 0.3)
     xir_extra_ops.set_postprocessor(
-        graph, "libxmodel_postprocessor_densebox.so.1",
-        {"bbox": ["bb-output-tiled_fixed_"],
-         "conf": ["pixel-conv-tiled_fixed_softmax"]})
+        graph,
+        "libxmodel_postprocessor_densebox.so.2",
+        {
+            "bbox": ["bb-output-tiled_fixed_"],
+            "conf": ["pixel-conv-tiled_fixed_softmax"],
+        },
+    )

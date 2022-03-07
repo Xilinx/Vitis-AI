@@ -1,0 +1,123 @@
+#include <dt-bindings/media/xilinx-vip.h>
+
+&amba_pl {
+	hdmi_rxss: v_hdmi_rx_ss@a4070000 {
+		compatible = "xlnx,v-hdmi-rx-ss-3.1";
+		reg = <0x0 0xa4070000 0x0 0x10000>;
+		reg-names = "hdmi-rxss";
+		interrupts = <0 92 4>;
+		interrupt-parent = <&gic>;
+		interrupt-names = "irq";
+		clocks = <&misc_clk_1>, <&misc_clk_1>, <&misc_clk_3>, <&misc_clk_0>;
+		clock-names = "s_axi_cpu_aclk", "s_axis_audio_aclk", "video_clk", "s_axis_video_aclk";
+		phys = <&vphy_lane0 0 1 1 0>, <&vphy_lane1 0 1 1 0>, <&vphy_lane2 0 1 1 0>;
+		phy-names = "hdmi-phy0", "hdmi-phy1", "hdmi-phy2";
+		xlnx,input-pixels-per-clock = <4>;
+		xlnx,edid-ram-size = <0x100>;
+		xlnx,max-bits-per-component = <8>;
+		xlnx,snd-pcm = <&audio_pipe_audio_formatter_0>;
+		xlnx,audio-enabled;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				xlnx,video-format = <XVIP_VF_RBG>;
+				xlnx,video-width = <8>;
+
+				hdmi_rxss_out: endpoint {
+					remote-endpoint = <&scaler_2_in>;
+				};
+			};
+		};
+	};
+
+	scaler_2: scaler@a4080000 {
+		compatible = "xlnx,v-vpss-scaler-2.2";
+		reg = <0x0 0xa4080000 0x0 0x40000>;
+		clock-names = "aclk_axis", "aclk_ctrl";
+		clocks = <&misc_clk_0>, <&misc_clk_0>;
+		xlnx,num-hori-taps = <6>;
+		xlnx,num-vert-taps = <6>;
+		xlnx,pix-per-clk = <4>;
+		reset-gpios = <&gpio0 28 1>;
+		xlnx,max-width = <3840>;
+		xlnx,max-height = <2160>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				xlnx,video-format = <XVIP_VF_RBG>;
+				xlnx,video-width = <8>;
+
+				scaler_2_in: endpoint {
+					remote-endpoint = <&hdmi_rxss_out>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+				xlnx,video-format = <XVIP_VF_YUV_422>;
+				xlnx,video-width = <8>;
+
+				scaler_2_out: endpoint {
+					remote-endpoint = <&vcap_hdmi_in>;
+				};
+			};
+		};
+	};
+
+	fb_wr_hdmirx: fb_wr@a40d0000 {
+		compatible = "xlnx,axi-frmbuf-wr-v2.1";
+		reg = <0x0 0xa40d0000 0x0 0x10000>;
+		#dma-cells = <1>;
+		interrupt-parent = <&gic>;
+		interrupts = <0 91 4>;
+		xlnx,vid-formats = "rgb888", "yuyv";
+		reset-gpios = <&gpio0 29 1>;
+		xlnx,dma-addr-width = <64>;
+		xlnx,pixels-per-clock = <4>;
+		clock-names = "ap_clk";
+		clocks = <&misc_clk_0>;
+		xlnx,max-width = <3840>;
+		xlnx,max-height = <2160>;
+	};
+
+	vcap_hdmi {
+		compatible = "xlnx,video";
+		dmas = <&fb_wr_hdmirx 0>;
+		dma-names = "port0";
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				direction = "input";
+				vcap_hdmi_in: endpoint {
+					remote-endpoint = <&scaler_2_out>;
+				};
+			};
+		};
+	};
+};
+
+&audio_pipe_audio_formatter_0 {
+	clock-names = "s_axi_lite_aclk", "m_axis_mm2s_aclk", "aud_mclk", "s_axis_s2mm_aclk";
+	clocks = <&misc_clk_1>, <&si570_1>, <&si570_1>, <&misc_clk_1>;
+	interrupt-names = "irq_mm2s", "irq_s2mm";
+	interrupts = <0 89 4 0 90 4>;
+	xlnx,include-s2mm = <0x1>;
+	xlnx,max-num-channels-s2mm = <0x2>;
+	xlnx,packing-mode-s2mm = <0x0>;
+	xlnx,s2mm-addr-width = <0x40>;
+	xlnx,s2mm-async-clock = <0x1>;
+	xlnx,s2mm-dataformat = <0x1>;
+	xlnx,rx = <&hdmi_rxss>;
+};

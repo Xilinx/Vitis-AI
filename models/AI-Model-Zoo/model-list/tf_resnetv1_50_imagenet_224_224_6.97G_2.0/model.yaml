@@ -1,0 +1,65 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: resnetv1_50 classifier on ImageNet.
+input size: 224*224
+float ops: 6.97G
+task: classification
+framework: tensorflow
+prune: 'no'
+version: 2.0
+files:
+- name: tf_resnetv1_50_imagenet_224_224_6.97G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_6.97G_2.0.zip
+  checksum: f54262612f40f612d188ae05a05a591a
+- name: resnet_v1_50_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 6c6322c945b9ae6826991be70f0389ee
+- name: resnet_v1_50_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-vck190-r2.0.0.tar.gz
+  checksum: 1efd235fcc01ca767a92e3dfcd63e8e8
+- name: resnet_v1_50_tf
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: d36c9f095454b46322a606da304448b6
+- name: resnet_v1_50_tf
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: 198bf9fd049b03aac70f6cf95e6ce702
+- name: resnet_v1_50_tf
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 91401a14c2c3258e25ec315dc25a5243
+- name: resnet_v1_50_tf
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 9515147b13482f4def57f52cdd23f9ca
+- name: resnet_v1_50_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u200-u250-r2.0.0.tar.gz
+  checksum: 81147d7633e3ef29f22614ab13c496d9
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

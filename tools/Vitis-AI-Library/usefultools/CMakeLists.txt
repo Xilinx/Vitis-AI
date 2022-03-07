@@ -14,13 +14,6 @@
 # the License.
 #
 
-project(
-  usefultools
-  VERSION 1.1.0
-  LANGUAGES C CXX)
-
-include(XilinxCommon)
-
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
   set(TOOL_NAME "xilinx_test_camera")
   add_executable(${TOOL_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/test_camera.cpp)
@@ -78,8 +71,13 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
   endif(XRT_FOUND)
 
   set(XDPUTIL_SRC
-      src/tools_extra_ops.hpp src/read_register.cpp src/xmodel_to_txt.cpp
-      src/xilinx_version.cpp src/test_dpu_runner_mt.cpp src/xdputil_query.cpp
+      src/tools_extra_ops.hpp
+      src/read_register.cpp
+      src/xmodel_to_txt.cpp
+      src/xilinx_version.cpp
+      src/test_dpu_runner_mt.cpp
+      src/xdputil_query.cpp
+      src/test_op_run.cpp
       ${CMAKE_CURRENT_BINARY_DIR}/xir_graph_proto_v2.pb.h)
   find_package(target-factory)
 
@@ -91,7 +89,8 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
                                PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
     target_link_libraries(
       ${MODULE_NAME}
-      PRIVATE glog::glog
+      PRIVATE ${PROJECT_NAME}::cxir
+              glog::glog
               protobuf::libprotobuf
               xir::xir
               crypto
@@ -100,7 +99,11 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
               vart::dpu-runner
               vart::util
               vart::mem-manager
-              target-factory::target-factory)
+              vart::xrt-device-handle
+              target-factory::target-factory
+              ${PROJECT_NAME}::graph_runner
+              ${PROJECT_NAME}::cpu_task
+              gcc_atomic)
     if(XRT_FOUND)
       target_link_libraries(${MODULE_NAME} PRIVATE XRT::XRT
                                                    vart::xrt-device-handle)

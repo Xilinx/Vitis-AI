@@ -25,6 +25,7 @@ import copy
 import collections
 import pprint
 
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_custom_wrapper
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_aware_activation
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers import vitis_quantize as vitis_quantize_layer
@@ -130,6 +131,120 @@ def save_quantize_info(quantize_info, output_dir='./'):
   return
 
 
+def save_shape_info(shape_info, output_dir='./'):
+  """Save the shape info to the disk."""
+  if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+  filename = os.path.join(output_dir, 'shape_info.txt')
+  with open(filename, 'w') as f:
+    for k, v in shape_info.items():
+      f.write("{} : {}\n".format(k, v))
+  logger.debug(filename + ' saved.')
+  return
+
+
+class SSOptimizer(keras.optimizers.Optimizer):
+  # shape saving optimizer
+  def __init__(self, shape_info={}, name="SSOptimizer", **kwargs):
+    super().__init__(name, **kwargs)
+    self._set_hyper("shape_info", shape_info)
+    # for k, v in shape_info.items():
+    #   self._set_hyper(k, v))
+
+  def _resource_apply_dense(self, grad, var, apply_state=None):
+    return None
+
+  def _resource_apply_sparse(self, grad, var, indices, apply_state=None):
+    return None
+
+  def get_config(self):
+    config = super(SSOptimizer, self).get_config()
+    config.update({
+        "shape_info": self._serialize_hyperparameter("shape_info"),
+    })
+    return config
+
+
+def get_shape(model, calib_dataset=None, input_shape=None):
+  """ get the shape of the layer output tensor and save it into layer.weight"""
+  logger.info("Getting model layer shape information")
+  if not hasattr(model, "shape_info"):
+    input_data = None
+    if input_shape is not None:
+      input_data = np.random.random(input_shape)
+      if not (input_data.ndim == model.input.shape.ndims):
+        logger.debug("ndims of input_shape's({}) is not equal to ndims of " \
+            "model.input.shape({}) ".format(input_data.shape, model.input.shape))
+    elif calib_dataset is not None:
+      input_data = calib_dataset
+    else:
+      logger.error(
+          'Please assign calib_dataset or input_shape to do shape inference.')
+
+    shape_info = {}
+    for layer in model.layers:
+      output_shape = None
+      try:
+        output_shape = layer.output_shape
+      except AttributeError:
+          pass
+      except RuntimeError:  # output_shape unknown in Eager mode.
+          pass
+      if output_shape:
+        if isinstance(output_shape, list):
+          output_shape = list(output_shape[0])
+        elif isinstance(output_shape, tuple):
+          output_shape = list(output_shape)
+        else:
+          logger.warning(
+              'unknown output shape')
+          output_shape = output_shape
+        output_shape[0] = 1
+        shape_info[layer.name] = np.array(output_shape)
+
+    prog_bar = tf.keras.utils.Progbar(len(model.layers))
+    outputs = []
+    for layer in model.layers:
+      if layer.name in shape_info:
+        continue
+      tmp_model = tf.keras.Model(inputs=model.input, outputs=layer.output)
+      layer_output_shape = np.array(
+          tmp_model.predict(input_data, batch_size=1, steps=1).shape)
+      layer_output_shape[0] = 1
+      shape_info[layer.name] = layer_output_shape
+      prog_bar.add(1)
+    model.shape_info = shape_info
+
+  # save shape info into optimizer weights
+  if not model.optimizer or \
+          not isinstance(model.optimizer, SSOptimizer):
+    model.optimizer = SSOptimizer(shape_info=model.shape_info)
+
+  org_weights = model.optimizer.weights
+  for layer_name, shape_array in model.shape_info.items():
+    has_add_weight = False
+    for w in org_weights:
+      if w.name == layer_name + ":0":
+        has_add_weight = True
+        break
+    if not has_add_weight:
+      w = model.optimizer.add_weight(
+          name=layer_name,
+          dtype=tf.int32,
+          shape=np.shape(shape_array),
+          trainable=False)
+      model.optimizer._weights.append(w)
+
+  dst_weights = []
+  for w in model.optimizer.weights:
+    name = w.name.split(":")[0]
+    dst_weights.append(model.shape_info[name])
+  model.optimizer.set_weights(dst_weights)
+
+  return model.shape_info
+
+
 def save_model(model, filename, output_dir='./'):
   """Save the model to the disk."""
   if not os.path.exists(output_dir):
@@ -169,13 +284,16 @@ def dump_model_weights(model, dump_float, output_dir):
   # Get weight quantize info
   w_q_map = {}
   for layer in model.layers:
+    if isinstance(layer, vitis_custom_wrapper.CustomOpWrapper):
+      for w in layer.weights:
+        w_q_map[w.name.rstrip(":0")] = None
     if is_quantize_layer(layer):
       if isinstance(layer, vitis_quantize_layer.VitisQuantize):
         continue
       layer_quantize_info = layer.get_quantize_info()
       for name, value in layer_quantize_info.items():
         if value.get('type') == 'weight':
-          w_name = name.rstrip(':0')
+          w_name = "quant_" + name.rstrip(':0')
           w_q_map[w_name] = value['info']['quant_pos_var']
 
   logger.info("Dumping weights/biases...")
@@ -199,7 +317,7 @@ def dump_model_weights(model, dump_float, output_dir):
       res.tofile(filename + '_float.bin')
       np.savetxt(filename + "_float.txt", res, fmt="%s", delimiter=",")
 
-    if w_name in w_q_map:
+    if w_name in w_q_map and w_q_map[w_name]:
       res = np.round(res * 2**w_q_map[w_name])
       res = res.clip(-128, 127)
       res.astype(np.int8).tofile(filename + ".bin")
@@ -264,77 +382,120 @@ def dump_model_activations(model, dataset, dump_float, output_dir):
             filename + ".txt", res.astype(np.int8), fmt="%s", delimiter=",")
 
 
-def post_quant_adjust(model, quantize_info, adjust_shift_cut,
-                      adjust_shift_bias):
-  """Adjust the quantize info to meet the compiler constraints."""
+def _get_pos(layer, quantize_info, key):
+  """Get the quantize pos of layer:key in quantize_info."""
+  if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
+    q_info = quantize_info[layer.layer.name]
 
-  def _get_pos(layer, quantize_info, key):
-    if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
-      q_info = quantize_info[layer.layer.name]
+    # Recursive searching for layers with empty quantize info to skip some
+    # special layers which are transparent to quantization, such as Reshape,
+    # Flatten and ZeroPadding2D layers.
+    if not q_info:
+      pre_layer = layer.inbound_nodes[0].inbound_layers
+      return _get_pos(pre_layer, quantize_info, key)
 
-      # Recursive searching for layers with empty quantize info to skip some
-      # special layers which are transparent to quantization, such as Reshape,
-      # Flatten and ZeroPadding2D layers.
-      if not q_info:
-        pre_layer = layer.inbound_nodes[0].inbound_layers
-        return _get_pos(pre_layer, quantize_info, key)
-
-      for k, v in q_info.items():
-        if key == 'w' and v.get('type') == 'weight' and k.endswith('kernel:0'):
+    for k, v in q_info.items():
+      if key == 'w' and v.get('type') == 'weight' and k.endswith('kernel:0'):
+        return v['info']['quant_pos_var']
+      elif key == 'b' and v.get('type') == 'weight' and k.endswith('bias:0'):
+        return v['info']['quant_pos_var']
+      elif key == 'o':
+        if v.get('type') in ['post_activation', 'pre_activation', 'output']:
           return v['info']['quant_pos_var']
-        elif key == 'b' and v.get('type') == 'weight' and k.endswith('bias:0'):
-          return v['info']['quant_pos_var']
-        elif key == 'o':
-          if v.get('type') in ['post_activation', 'pre_activation', 'output']:
-            return v['info']['quant_pos_var']
-    elif isinstance(layer, vitis_quantize_layer.VitisQuantize):
-      if key == 'o':
-        q_info = quantize_info[layer.name]
-        return q_info['info']['quant_pos_var']
-    else:
-      return None
+  elif isinstance(layer, vitis_quantize_layer.VitisQuantize):
+    if key == 'o':
+      q_info = quantize_info[layer.name]
+      return q_info['info']['quant_pos_var']
+  else:
+    return None
 
-  def _set_pos(layer, quantize_info, key, new_pos):
-    if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
-      q_info = quantize_info[layer.layer.name]
-      for k, v in q_info.items():
-        if k == 'NoQuantizeActivation':
-          continue
-        if key == 'w' and v.get('type') == 'weight' and k.endswith('kernel:0'):
-          v['info']['quant_pos_var'] = new_pos
-          return
-        elif key == 'b' and v.get('type') == 'weight' and k.endswith('bias:0'):
-          v['info']['quant_pos_var'] = new_pos
-          return
-        elif key == 'o' and v.get('type') in [
-            'post_activation', 'pre_activation', 'output'
-        ]:
-          v['info']['quant_pos_var'] = new_pos
-    elif isinstance(layer, vitis_quantize_layer.VitisQuantize):
-      if key == 'o':
-        q_info = quantize_info[layer.name]
-        q_info['info']['quant_pos_var'] = new_pos
+
+def _set_pos(layer, quantize_info, key, new_pos):
+  """Set the quantize pos of layer:key in quantize_info to new_pos."""
+  if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
+    q_info = quantize_info[layer.layer.name]
+    for k, v in q_info.items():
+      if k == 'NoQuantizeActivation':
+        continue
+      if key == 'w' and v.get('type') == 'weight' and k.endswith('kernel:0'):
+        v['info']['quant_pos_var'] = new_pos
         return
+      elif key == 'b' and v.get('type') == 'weight' and k.endswith('bias:0'):
+        v['info']['quant_pos_var'] = new_pos
+        return
+      elif key == 'o' and v.get('type') in [
+          'post_activation', 'pre_activation', 'output'
+      ]:
+        v['info']['quant_pos_var'] = new_pos
+  elif isinstance(layer, vitis_quantize_layer.VitisQuantize):
+    if key == 'o':
+      q_info = quantize_info[layer.name]
+      q_info['info']['quant_pos_var'] = new_pos
+  return
 
+
+def _get_iwob_pos(layer, quantize_info):
+  """Get the input/weight/output/bias quantize pos of layer in quantize_info."""
+  wp = _get_pos(layer, quantize_info, 'w')
+  bp = _get_pos(layer, quantize_info, 'b')
+
+  if isinstance(layer.layer.activation.activation,
+                vitis_quantize_aware_activation.NoQuantizeActivation):
+    post_layer = layer.outbound_nodes[0].outbound_layer
+    op = _get_pos(post_layer, quantize_info, 'o')
+  else:
+    op = _get_pos(layer, quantize_info, 'o')
+
+  pre_layer = layer.inbound_nodes[0].inbound_layers
+  ip = _get_pos(pre_layer, quantize_info, 'o')
+  return ip, wp, op, bp
+
+
+def _is_valid(ip, wp, op, bp=0):
+  """Check if the input/weight/output/bias quantize pos is valid."""
+  if None in [ip, op]:
+    return False
+  if (isinstance(wp, np.ndarray) and None in wp) or wp is None:
+    return False
+  if (isinstance(bp, np.ndarray) and None in bp) or bp is None:
+    return False
+  return True
+
+
+def _adjust_shift_cut(model, quantize_info):
+  """Adjust the shift cut of layer.
+
+  shift_cut = wp + ip - op
+
+  DPU compiler constraints of shift_cut:
+    1. 0 <= shift_cut <= 16
+  """
   adjusted_quantize_info = copy.deepcopy(quantize_info)
 
-  # VitisSigmoid adjustment
   for i in range(1, len(model.layers)):
     layer = model.layers[i]
-    if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper) and isinstance(
-        layer.layer, vitis_activation.VitisSigmoid):
-      opos = _get_pos(layer, adjusted_quantize_info, 'o')
-      if opos < 7.0:
-        _set_pos(layer, adjusted_quantize_info, 'o', 7.0)
-        logger.debug(
-            'Quantize pos of VitisSimoid layer {} is {}, modify it to 7 '
-            'to meet the DPU constraints.'.format(layer.name, int(opos)))
+    if not isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
+      continue
 
-  # Adjust shift_cut and shift_bias
-  if not adjust_shift_cut and not adjust_shift_bias:
-    return adjusted_quantize_info
+    # Only adjust shift_cut and shift_bias for Conv-like layers
+    if not (isinstance(layer.layer, keras.layers.Conv2D) or
+            isinstance(layer.layer, keras.layers.DepthwiseConv2D) or
+            isinstance(layer.layer, keras.layers.Conv2DTranspose) or
+            isinstance(layer.layer, keras.layers.Dense)):
+      continue
 
-  def _adjust_shift_cut(layer, adjusted_quantize_info, ip, wp, bp, op):
+    ip, wp, op, bp = _get_iwob_pos(layer, adjusted_quantize_info)
+
+    if isinstance(wp, np.ndarray):
+      logger.debug('Not support adjust shift cut for per_channel quantization.')
+      return adjusted_quantize_info
+
+    if not _is_valid(ip, wp, op):
+      logger.debug('Skip shift cut adjustment for layer {}, '
+                   'its quantize pos is [i={}, w={}, b={}, o={}]'.format(
+                       layer.name, ip, wp, bp, op))
+      return adjusted_quantize_info
+
     min_sc = 0
     max_sc = 16
     sc = wp + ip - op
@@ -345,15 +506,51 @@ def post_quant_adjust(model, quantize_info, adjust_shift_cut,
     elif sc > max_sc:
       new_sc = max_sc
 
-    if new_sc:
-      new_wp = min_sc + op - ip
+    if new_sc is not None:
+      new_wp = new_sc + op - ip
       _set_pos(layer, adjusted_quantize_info, 'w', new_wp)
       logger.debug('Shift cut of layer {} is {}. It exceeds range [{}, {}]. '
                    'Modify wpos from {} to {}.'.format(layer.name, int(sc),
                                                        int(min_sc), int(max_sc),
                                                        int(wp), int(new_wp)))
+  return adjusted_quantize_info
 
-  def _adjust_shift_bias(layer, adjusted_quantize_info, ip, wp, bp, op):
+
+def _adjust_shift_bias(model, quantize_info):
+  """Adjust the shift bias of layer.
+
+  shift_bias = wp + ip - bp
+
+  DPU compiler constraints of shift_bias:
+    1. min(0, -(24 - (8 + shift_cut))) <= shfit_bias <= 16, while shift_cut = wp + ip - op
+  """
+  adjusted_quantize_info = copy.deepcopy(quantize_info)
+
+  for i in range(1, len(model.layers)):
+    layer = model.layers[i]
+    if not isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
+      continue
+
+    # Only adjust shift_cut and shift_bias for Conv-like layers
+    if not (isinstance(layer.layer, keras.layers.Conv2D) or
+            isinstance(layer.layer, keras.layers.DepthwiseConv2D) or
+            isinstance(layer.layer, keras.layers.Conv2DTranspose) or
+            isinstance(layer.layer, keras.layers.Dense)):
+      continue
+
+    ip, wp, op, bp = _get_iwob_pos(layer, adjusted_quantize_info)
+
+    if isinstance(wp, np.ndarray):
+      logger.debug(
+          'Not support adjust shift bias for per_channel quantization.')
+      return adjusted_quantize_info
+
+    if not _is_valid(ip, wp, op, bp):
+      logger.debug('Skip shift bias adjustment for layer {}, '
+                   'its quantize pos is [i={}, w={}, b={}, o={}]'.format(
+                       layer.name, ip, wp, bp, op))
+      return adjusted_quantize_info
+
     sc = wp + ip - op
     min_sb = min(0, -(24 - (8 + sc)))
     max_sb = 16
@@ -365,49 +562,62 @@ def post_quant_adjust(model, quantize_info, adjust_shift_cut,
     elif sb > max_sb:
       new_sb = max_sb
 
-    if new_sb:
+    if new_sb is not None:
       new_bp = wp + ip - new_sb
       _set_pos(layer, adjusted_quantize_info, 'b', new_bp)
       logger.debug('Shift bias of layer {} is {}. It exceeds range [{}, {}]. '
                    'Modify bpos from {} to {}.'.format(layer.name, int(sb),
                                                        int(min_sb), int(max_sb),
                                                        int(bp), int(new_bp)))
+  return adjusted_quantize_info
+
+
+def _adjust_vitis_sigmoid(model, quantize_info):
+  """Adjust quantize info of VitisSigmoid layers.
+
+  DPU compiler constraints for VitisSigmoid:
+    1. input pos of VitisSigmoid >= 0
+    2. output pos of VitisSigmoid >= 7
+  """
+  adjusted_quantize_info = copy.deepcopy(quantize_info)
 
   for i in range(1, len(model.layers)):
     layer = model.layers[i]
-    if not isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
-      continue
+    if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper) and isinstance(
+        layer.layer, vitis_activation.VitisSigmoid):
+      pre_layer = layer.inbound_nodes[0].inbound_layers
+      ipos = _get_pos(pre_layer, adjusted_quantize_info, 'o')
+      if ipos < 0:
+        _set_pos(pre_layer, adjusted_quantize_info, 'o', 0)
+        logger.debug(
+            'Input quantize pos of VitisSimoid layer {} is {}, modify it to 0 '
+            'to meet the DPU constraints.'.format(layer.name, int(ipos)))
 
-    if not (isinstance(layer.layer, keras.layers.Conv2D) or
-            isinstance(layer.layer, keras.layers.DepthwiseConv2D) or
-            isinstance(layer.layer, keras.layers.Conv2DTranspose) or
-            isinstance(layer.layer, keras.layers.Dense)):
-      continue
+      opos = _get_pos(layer, adjusted_quantize_info, 'o')
+      if opos < 7.0:
+        _set_pos(layer, adjusted_quantize_info, 'o', 7.0)
+        logger.debug(
+            'Output quantize pos of VitisSimoid layer {} is {}, modify it to 7 '
+            'to meet the DPU constraints.'.format(layer.name, int(opos)))
 
-    wp = _get_pos(layer, quantize_info, 'w')
-    bp = _get_pos(layer, quantize_info, 'b')
+  return adjusted_quantize_info
 
-    if isinstance(layer.layer.activation.activation,
-                  vitis_quantize_aware_activation.NoQuantizeActivation):
-      post_layer = layer.outbound_nodes[0].outbound_layer
-      op = _get_pos(post_layer, quantize_info, 'o')
-    else:
-      op = _get_pos(layer, quantize_info, 'o')
 
-    pre_layer = layer.inbound_nodes[0].inbound_layers
-    ip = _get_pos(pre_layer, quantize_info, 'o')
+def post_quant_adjust(model, quantize_info, adjust_shift_cut,
+                      adjust_shift_bias):
+  """Adjust the quantize info to meet the compiler constraints."""
 
-    if adjust_shift_cut and None not in [ip, wp, op]:
-      _adjust_shift_cut(layer, adjusted_quantize_info, ip, wp, bp, op)
-    else:
-      logger.debug('Skip shift cut adjustment for layer {}, '
-                   'its quantize pos is [i={}, w={}, b={}, o={}]'.format(
-                       layer.name, ip, wp, bp, op))
+  adjusted_quantize_info = copy.deepcopy(quantize_info)
 
-    if adjust_shift_bias and None not in [ip, wp, bp, op]:
-      _adjust_shift_bias(layer, adjusted_quantize_info, ip, wp, bp, op)
-    else:
-      logger.debug('Skip shift bias adjustment for layer {}, '
-                   'its quantize pos is [i={}, w={}, b={}, o={}]'.format(
-                       layer.name, ip, wp, bp, op))
+  # Adjustment VitisSigmoid quantize info
+  adjusted_quantize_info = _adjust_vitis_sigmoid(model, adjusted_quantize_info)
+
+  # Adjust shift_cut and shift_bias
+  if not adjust_shift_cut and not adjust_shift_bias:
+    return adjusted_quantize_info
+
+  if adjust_shift_cut:
+    adjusted_quantize_info = _adjust_shift_cut(model, adjusted_quantize_info)
+  if adjust_shift_bias:
+    adjusted_quantize_info = _adjust_shift_bias(model, adjusted_quantize_info)
   return adjusted_quantize_info

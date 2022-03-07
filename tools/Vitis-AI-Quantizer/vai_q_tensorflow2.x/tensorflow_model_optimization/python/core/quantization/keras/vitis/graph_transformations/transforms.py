@@ -124,22 +124,49 @@ class LayerNode(object):
     else:
       layer_config['name'] = name
 
-    def _weight_name(name):
+    def _is_custom_layer(layer):
+      if layer is None:
+        return False
+
+      real_custom_objects = {"CustomOpWrapper", "Vitis>CustomOpWrapper"}
+      custom_objects = tf.keras.utils.get_custom_objects()
+      vitis_objects = set()
+      for cls in custom_objects:
+        if cls.startswith("Vitis>"):
+          vitis_objects.add(cls)
+          vitis_objects.add(cls.lstrip("Vitis>"))
+      # remove "CustomOpWrapper", "Vitis>CustomOpWrapper" from vitis_objects
+      vitis_objects = vitis_objects - real_custom_objects
+      for cls in custom_objects:
+        if cls not in vitis_objects:
+          real_custom_objects.add(cls)
+
+      if isinstance(layer, dict):
+        cls_name = layer['class_name']
+      else:
+        cls_name = layer.__class__.__name__
+      return (cls_name in real_custom_objects)
+
+    def _weight_name(name, keras_layer):
       """Extracts the weight name by removing layer from TF variable name.
       For example, returns 'kernel:0' for 'dense_2/kernel:0'.
       Args:
         name: TensorFlow variable name.
+        layer: a keras layer or a layer config dict
       Returns:
         Extracted weight name.
       """
-      return name.split('/')[-1]
+      if _is_custom_layer(keras_layer):
+        return name
+      else:
+        return name.split('/')[-1]
 
     def _get_keras_layer_weights(keras_layer):
       """Returns a map of weight name, weight matrix. Keeps keras ordering."""
       weights_map = collections.OrderedDict()
       for weight_tensor, weight_numpy in \
       zip(keras_layer.weights, keras_layer.get_weights()):
-        weights_map[_weight_name(weight_tensor.name)] = weight_numpy
+        weights_map[_weight_name(weight_tensor.name, keras_layer)] = weight_numpy
 
       return weights_map
 

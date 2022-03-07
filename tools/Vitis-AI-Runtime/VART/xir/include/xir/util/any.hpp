@@ -17,9 +17,6 @@
 #pragma once
 #if __has_include(<any>)  && __cplusplus > 201700
 #include <any>
-#if !__cpp_lib_any > 0
-#error "must enable -std=c++17 to use std::any"
-#endif
 namespace xir {
 using any = std::any;
 namespace stdx = ::std;

@@ -68,6 +68,7 @@ done
 # conda
 if [ ${conda:=false} == true ]; then
     args+=(-DCMAKE_PREFIX_PATH=${CONDA_PREFIX})
+    install_prefix=${CONDA_PREFIX}
 fi
 
 # set build type

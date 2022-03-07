@@ -1,0 +1,245 @@
+{
+    "name": "Xilinx Colordetect L3 Test", 
+    "description": [
+        "Colordetect L3 function example"
+    ], 
+    "flow": "vitis", 
+    "platform_whitelist": [
+        "u200",
+        "aws-vu9p-f1", 
+        "vck190", 
+        "zcu102", 
+        "zcu104", 
+        "u50"
+    ], 
+    "platform_blacklist": [
+        "u280", 
+        "u250"
+    ], 
+    "platform_properties": {
+        "u200": {
+            "host": {
+                "compiler": {
+                    "includepaths": [
+                        "$(OPENCV_INCLUDE)"
+                    ]
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(OPENCV_LIB)"
+                    ]
+                }
+            }
+        },
+        "aws-vu9p-f1": {
+            "host": {
+                "compiler": {
+                    "includepaths": [
+                        "$(OPENCV_INCLUDE)"
+                    ]
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(OPENCV_LIB)"
+                    ]
+                }
+            }
+        }, 
+        "u50": {
+            "host": {
+                "compiler": {
+                    "includepaths": [
+                        "$(OPENCV_INCLUDE)"
+                    ]
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(OPENCV_LIB)"
+                    ]
+                }
+            }
+        }, 
+        "zcu102": {
+            "host": {
+                "compiler": {
+                    "includepaths": [
+                        "$(SYSROOT)/usr/include",
+                        "$(SYSROOT)/usr/include/opencv4"
+                    ], 
+                    "options": "--sysroot=$(SYSROOT)"
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(SYSROOT)/usr/lib", 
+                        "${SYSROOT}/lib"
+                    ]
+                }
+            }
+        }, 
+        "zcu104": {
+            "host": {
+                "compiler": {
+                    "includepaths": [
+						"$(SYSROOT)/usr/include",
+                        "$(SYSROOT)/usr/include/opencv4"
+                    ], 
+                    "options": "--sysroot=$(SYSROOT)"
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(SYSROOT)/usr/lib", 
+                        "${SYSROOT}/lib"
+                    ]
+                }
+            }
+        },
+        "vck190": {
+            "host": {
+                "compiler": {
+                    "includepaths": [
+						"$(SYSROOT)/usr/include",
+                        "$(SYSROOT)/usr/include/opencv4"
+                    ], 
+                    "options": "--sysroot=$(SYSROOT)"
+                }, 
+                "linker": {
+                    "librarypaths": [
+                        "$(SYSROOT)/usr/lib", 
+                        "${SYSROOT}/lib"
+                    ]
+                }
+            }
+        }
+    }, 
+    "gui": true, 
+    "launch": [
+        {
+            "target": "sw_emu", 
+            "cmd_args": "LIB_DIR/data/colordetect_128x128.jpeg ", 
+            "name": "sw_emu", 
+            "ld_library_path": [
+                "$(OPENCV_LIB)", 
+                "$(LD_LIBRARY_PATH)", 
+                "$(XILINX_XRT)/lib"
+            ]
+        }, 
+        {
+            "target": "hw_emu", 
+            "cmd_args": "LIB_DIR/data/colordetect_128x128.jpeg ", 
+            "name": "hw_emu", 
+            "ld_library_path": [
+                "$(OPENCV_LIB)", 
+                "$(LD_LIBRARY_PATH)", 
+                "$(XILINX_XRT)/lib"
+            ]
+        }, 
+        {
+            "target": "hw", 
+            "cmd_args": "LIB_DIR/data/colordetect_128x128.jpeg ", 
+            "name": "hardware_build", 
+            "ld_library_path": [
+                "$(OPENCV_LIB)", 
+                "$(LD_LIBRARY_PATH)", 
+                "$(XILINX_XRT)/lib"
+            ]
+        }
+    ], 
+    "data": [
+        "LIB_DIR/data/colordetect_128x128.jpeg"
+    ], 
+    "host": {
+        "host_exe": "colordetect", 
+        "compiler": {
+            "sources": [
+                "LIB_DIR/L3/examples/colordetect/xf_colordetect_tb.cpp", 
+                "LIB_DIR/ext/xcl2/xcl2.cpp"
+            ], 
+            "includepaths": [
+                "LIB_DIR/L3/examples/colordetect/build"
+            ], 
+            "options": "-O3", 
+            "symbols": [
+                "__SDSVHLS__"
+            ]
+        }
+    }, 
+    "v++": {
+        "compiler": {
+            "symbols": [], 
+            "includepaths": [
+                "LIB_DIR/L3/examples/colordetect/build"
+            ], 
+            "clflags": []
+        }
+    }, 
+    "containers": [
+        {
+            "name": "krnl_colordetect", 
+            "accelerators": [
+                {
+                    "name": "color_detect", 
+                    "location": "LIB_DIR/L3/examples/colordetect/xf_colordetect_accel.cpp"
+                }
+            ]
+        }
+    ], 
+    "check_env": [
+        {
+            "env": "OPENCV_INCLUDE",
+            "platform" :[
+                "u200",
+                "u50",
+				"aws-vu9p-f1"
+            ], 
+            "echo": "Cannot find OpenCV include path. Please set OPENCV_INCLUDE variable"
+        }, 
+        {
+            "env": "OPENCV_LIB",
+            "platform" :[
+                "u200",
+                "u50",
+				"aws-vu9p-f1"
+            ], 
+            "echo": "Cannot find Opencv lib path. Please set OPENCV_LIB variable"
+        },
+		{
+            "env": "EDGE_COMMON_SW",
+            "platform" :[
+                "zcu102",
+                "zcu104",
+				"vck190"
+            ], 
+            "echo": "Please set EDGE_COMMON_SW variable"
+        }
+    ], 
+    "testinfo": {
+        "disable": false, 
+        "jobs": [
+            {
+                "index": 0, 
+                "dependency": [], 
+                "env": "", 
+                "cmd": "", 
+                "max_memory_MB": {
+                    "vitis_hw_build": 40960, 
+                    "vitis_hw_emu": 28672, 
+                    "vitis_sw_emu": 10240, 
+                    "vitis_hw_run": 10240
+                }, 
+                "max_time_min": {
+                    "vitis_hw_build": 470, 
+                    "vitis_hw_emu": 470, 
+                    "vitis_sw_emu": 60, 
+                    "vitis_hw_run": 30
+                }
+            }
+        ], 
+        "targets": [
+            "vitis_sw_emu", 
+            "vitis_hw_emu", 
+            "vitis_hw_build", 
+            "vitis_hw_run"
+        ], 
+        "category": "full"
+    }
+}

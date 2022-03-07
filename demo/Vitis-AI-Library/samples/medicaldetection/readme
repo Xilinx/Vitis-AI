@@ -34,15 +34,14 @@ Important:
     
     sample : ./test_jpeg_medicaldetection RefineDet-Medical_EDD_tf sample_medicaldetection.jpg
     output : 
-I0707 03:35:03.130751 197156 process_result.hpp:39] RESULT: BE   0.999982   9.54234 237.319 39.1286 310.09
-I0707 03:35:03.131114 197156 process_result.hpp:39] RESULT: BE   0.999975   1.85087 77.1468 222.948 296.734
-I0707 03:35:03.131263 197156 process_result.hpp:39] RESULT: suspicious   0.999893   27.3788 146.802 107.754 227.177
-I0707 03:35:03.131328 197156 process_result.hpp:39] RESULT: BE   0.999891   238.95 223.803 300.001 318.36
-I0707 03:35:03.131433 197156 process_result.hpp:39] RESULT: BE   0.999444   289.945 89.4758 318.719 140.932
-I0707 03:35:03.131480 197156 process_result.hpp:39] RESULT: BE   0.0229714   281.602 133.199 291.833 150.162
-I0707 03:35:03.131530 197156 process_result.hpp:39] RESULT: BE   0.0085744   224.567 118.707 235.322 143.235
-I0707 03:35:03.131575 197156 process_result.hpp:39] RESULT: suspicious   0.00676348   16.957 84.8549 176.256 269.933
-   
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0317 11:00:45.876993  3759 demo.hpp:1183] batch: 0     image: sample_medicaldetection.jpg
+I0317 11:00:45.877079  3759 process_result.hpp:39] RESULT: BE   0.990099   -3.35321 72.3176 229.08 297.6
+I0317 11:00:45.877221  3759 process_result.hpp:39] RESULT: BE   0.933227   7.67506 236.273 40.1888 309.044
+I0317 11:00:45.877265  3759 process_result.hpp:39] RESULT: suspicious   0.90479   28.2807 142.651 105.215 226.621
+I0317 11:00:45.877313  3759 process_result.hpp:39] RESULT: BE   0.847918   236.762 219.754 303.208 318.879
+I0317 11:00:45.877357  3759 process_result.hpp:39] RESULT: BE   0.775535   288.085 88.6029 318.715 139.103
+
     sample : ./test_performance_medicaldetection RefineDet-Medical_EDD_tf   -t 1 -s 20   test_performance_medicaldetection.list
     sample : ./test_performance_medicaldetection RefineDet-Medical_EDD_tf   -t 2 -s 20   test_performance_medicaldetection.list
     sample : ./test_performance_medicaldetection RefineDet-Medical_EDD_tf   -t 4 -s 20   test_performance_medicaldetection.list

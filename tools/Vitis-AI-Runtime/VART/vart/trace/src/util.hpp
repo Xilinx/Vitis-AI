@@ -18,9 +18,13 @@
 #include <map>
 #include <vector>
 
-using namespace std;
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
 namespace vitis::ai::trace {
-void dump_map(map<string, string>& m);
-void dump_to(vector<map<string, string>>& trace_data, string file_path);
+void dump_map(std::map<std::string, std::string>& m);
+void dump_to(std::vector<std::map<std::string, std::string>>& trace_data, std::string file_path);
 void dump();
 };  // namespace vitis::ai::trace

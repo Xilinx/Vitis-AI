@@ -21,83 +21,93 @@ import numpy as np
 import xir
 import vart
 import tools_extra_ops as tools
+import os
 
 
-def fillin_inputs(file_path_list: List["string"], tb: "TensorBuffer"):
-    tensor = np.array(tb, copy=False)
+def fillin_inputs(file_path_list: List["string"], tensor: "ndarray"):
     input_shape = tuple(tensor.shape[1:])
     for i in range(tensor.shape[0]):
-        tensor[i, ...] = np.fromfile(
-            file_path_list[i % len(file_path_list)],
-            dtype=np.uint8,
-            count=np.prod(input_shape),
-        ).reshape(input_shape)
+        tensor[i, ...] = np.fromfile(file_path_list[i % len(file_path_list)],
+                                     dtype=tensor.dtype,
+                                     count=np.prod(input_shape)).reshape(input_shape)
 
 
-def dump_outputs(tbs: List["TensorBuffer"]):
-    for tb in tbs:
-        tensor_name = tools.remove_xfix(tb.get_tensor().name).replace("/", "_")
-        tensor = np.array(tb, copy=False)
-        # print("batch is ", tensor.shape[0])
-        for batch_idx in range(tensor.shape[0]):
+def dump_outputs(outputs: List["ndarray"], tensors: List["Tensor"]):
+    for output, tensor in zip(outputs, tensors):
+        tensor_name = tools.remove_xfix(tensor.name).replace("/", "_")
+        for batch_idx in range(output.shape[0]):
             output_file = str(batch_idx) + "." + tensor_name + ".bin"
             print("dump output to ", output_file)
-            tensor[batch_idx, ...].tofile(output_file)
+            output[batch_idx, ...].tofile(output_file)
 
 
-def get_child_subgraph_dpu(graph: "Graph") -> List["Subgraph"]:
-    """
-    obtain dpu subgrah
-    """
-    assert graph is not None, "'graph' should not be None."
-    root_subgraph = graph.get_root_subgraph()
-    assert (root_subgraph
-            is not None), "Failed to get root subgraph of input Graph object."
-    if root_subgraph.is_leaf:
-        return []
-    child_subgraphs = root_subgraph.toposort_child_subgraph()
-    assert child_subgraphs is not None and len(child_subgraphs) > 0
-    return [
-        cs for cs in child_subgraphs
-        if cs.has_attr("device") and cs.get_attr("device").upper() == "DPU"
+def run(subgraph: "Subgraph", args):
+    # create runner
+    runner = vart.Runner.create_runner(subgraph, "run")
+
+    # get input&output tensors
+    inputTensors = runner.get_input_tensors()
+    outputTensors = runner.get_output_tensors()
+    inputs = [
+        np.empty(tuple(t.dims), dtype=t.dtype.lstrip("x"), order="C")
+        for t in inputTensors
+    ]
+    outputs = [
+        np.empty(tuple(t.dims), dtype=t.dtype.lstrip("x"), order="C")
+        for t in outputTensors
     ]
 
+    order_inputs = list(inputTensors)
+    order = sorted(range(len(order_inputs)), key=lambda k: order_inputs[k].name)
 
-def run(child_subgraph, args):
-    # create runner
-    runner = vart.RunnerExt.create_runner(child_subgraph[args.subgraph_index],
-                                          "run")
-    """get input&output  tensor_buffers"""
-    inputs = runner.get_inputs()
-    outputs = runner.get_outputs()
-    """ fillin input data """
-    fillin_inputs(args.input_bin, inputs[0])
+    # fillin input data
+    for i in range(len(inputTensors)):
+        print("fillin", inputTensors[order[i]].name)
+        fillin_inputs(args.input_bin[i::len(inputTensors)], inputs[order[i]])
 
-    # run dpu
+    # run runner
     v = runner.execute_async(inputs, outputs)
     status = runner.wait(v)
-    assert status == 0, "failed to run dpu"
+    assert status == 0, "failed to run runner"
 
-    dump_outputs(outputs)
+    dump_outputs(outputs, outputTensors)
 
 
 def main(args):
     # get subgraph
     graph = xir.Graph.deserialize(args.xmodel)
-    child_subgraph = get_child_subgraph_dpu(graph)
-    assert len(child_subgraph) > args.subgraph_index, (
-        "cannot get child_subgraph[" + str(args.subgraph_index) + "]")
-    run(child_subgraph, args)
+    assert graph is not None, "'graph' should not be None."
+    subgraph = graph.get_root_subgraph()
+    assert (subgraph is not None), "Failed to get root subgraph of input Graph object."
+
+    if args.subgraph_index >= 0:
+        child_subgraphs = subgraph.toposort_child_subgraph()
+        assert (len(child_subgraphs) > args.subgraph_index
+                ), "cannot get child_subgraph[" + str(args.subgraph_index) + "]"
+        subgraph = child_subgraphs[args.subgraph_index]
+        disable_vart_cpu_runner = os.getenv("USE_VART_CPU_RUNNER", "null") == "null"
+        if subgraph.has_attr("device") and subgraph.get_attr(
+                "device").upper() == "CPU" and disable_vart_cpu_runner:
+            subgraph.set_attr("runner", {"run": "libvitis_ai_library-cpu_task.so.2"})
+    else:
+        if not subgraph.has_attr("device"):
+            subgraph.set_attr("device", "graph")
+        if not subgraph.has_attr("runner"):
+            subgraph.set_attr("runner", {"run": "libvitis_ai_library-graph_runner.so.2"})
+    run(subgraph, args)
 
 
 def help(subparsers):
     parser = subparsers.add_parser(
-        "run", help="<xmodel> [-i <subgraph_index>] <input_bin>")
+        "run",
+        help="<xmodel> [-i <subgraph_index>] <input_tensor_0_bin_0> " +
+        "[input_tensor_1_bin_0 input_tensor_0_bin_1 input_tensor_1_bin_1 ... ]",
+    )
     parser.add_argument("xmodel", help="xmodel file path ")
     parser.add_argument("-i",
                         "--subgraph_index",
                         type=int,
-                        default=0,
+                        default=1,
                         help="<subgraph_index>")
-    parser.add_argument("input_bin", nargs="+", help="input_bin ")
+    parser.add_argument("input_bin", nargs="+", help="input_bin")
     parser.set_defaults(func=main)

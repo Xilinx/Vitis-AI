@@ -24,12 +24,6 @@ using namespace std;
 
 namespace {
 
-constexpr uint64_t make_key(uint32_t size, uint32_t align) {
-  uint64_t k = size;
-
-  return (k << 32 | align);
-}
-
 struct PairHash {
  public:
   template <typename T, typename U>
@@ -54,19 +48,50 @@ struct ApproximateParam {
   float scale;
 };
 
-std::unordered_map<uint64_t, ApproximateParam> ap = {
-    {make_key(1, 1), ApproximateParam{1, 1, 1, 0, 1.0000000000}},
-    {make_key(2, 2), ApproximateParam{2, 2, 1, 2, 1.0000000000}},
-    {make_key(3, 3), ApproximateParam{3, 3, 7, 6, 1.0019531250}},
-    {make_key(4, 4), ApproximateParam{4, 4, 1, 4, 1.0000000000}},
-    {make_key(5, 5), ApproximateParam{5, 5, 10, 8, 1.0009765625}},
-    {make_key(6, 6), ApproximateParam{6, 6, 7, 8, 1.0019531250}},
-    {make_key(7, 7), ApproximateParam{7, 7, 21, 10, 1.0048828125}},
-    {make_key(14, 14), ApproximateParam{14, 14, 21, 12, 1.0048828125}},
-};
+std::pair<int32_t, int32_t> get_avgpool_dpu_factors(
+    const std::vector<std::int32_t>& kernels) {
+  auto rec = kernels[0] * kernels[1];
+  auto multi_factor = 0;
+  auto shift_factor = 0;
+  auto diff = 1.f;
+  if (kernels[0] == 3 && kernels[1] == 3) {
+    multi_factor = 7;
+    shift_factor = 6;
+  } else if (kernels[0] == 5 && kernels[1] == 5) {
+    multi_factor = 10;
+    shift_factor = 8;
+  } else if (kernels[0] == 6 && kernels[1] == 6) {
+    multi_factor = 7;
+    shift_factor = 8;
+  } else if (kernels[0] == 7 && kernels[1] == 7) {
+    multi_factor = 21;
+    shift_factor = 10;
+  } else if (kernels[0] == 14 && kernels[1] == 14) {
+    multi_factor = 21;
+    shift_factor = 12;
+  } else {
+    auto max_factor = std::ceil(std::log2(rec * 128));
+    for (auto shift_factor_ = 0; shift_factor_ < max_factor; shift_factor_++) {
+      auto factor = std::round(std::exp2(shift_factor_) / rec);
+      auto diff_ = std::abs(factor / std::exp2(shift_factor_) - 1.f / rec);
+      if (diff_ < diff) {
+        multi_factor = factor;
+        diff = diff_;
+        shift_factor = shift_factor_;
+      }
+    }
+  }
+  return {multi_factor, shift_factor};
+}
+
+float get_avgpool_dpu_coefficient(const std::vector<std::int32_t>& kernels) {
+  auto factors = get_avgpool_dpu_factors(kernels);
+  return float(factors.first) / std::exp2(factors.second);
+}
+
 enum class POOLTYPE { MAX, AVG };
 struct PoolFix_OpImp : public vart::experimental::OpImpBase {
-  PoolFix_OpImp(xir::Op* op, xir::Attrs* attrs)
+  PoolFix_OpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     auto kernel = op->get_attr<std::vector<int32_t>>("kernel");
     CHECK_EQ(kernel.size(), 2u)
@@ -117,9 +142,10 @@ struct PoolFix_OpImp : public vart::experimental::OpImpBase {
     auto input_shape = input_op->get_output_tensor()->get_shape();
     ih = input_shape[1];
     iw = input_shape[2];
+    scale_ = get_avgpool_dpu_coefficient({kernel_h, kernel_w});
   }
-  int calculate(vart::experimental::simple_tensor_buffer_t<int8_t> result,
-                vart::experimental::simple_tensor_buffer_t<int8_t> input) {
+  int calculate(vart::simple_tensor_buffer_t<int8_t> result,
+                vart::simple_tensor_buffer_t<int8_t> input) {
     auto input_shape = input.tensor->get_shape();
     auto output_shape = result.tensor->get_shape();
     // input tensor shape is [batch, in_height, in_width, in_channels]
@@ -160,9 +186,6 @@ struct PoolFix_OpImp : public vart::experimental::OpImpBase {
       default:
         break;
     }
-    auto key = make_key(kernel_h, kernel_w);
-    auto scale = ap.find(key) != ap.end() ? ap.at(key).scale
-                                          : 1.0f / kernel_h / kernel_w;
     for (int di = 0; di < kernel_h; di++) {
       for (int dj = 0; dj < kernel_w; dj++) {
         auto input_h_idx = ((i * stride_h - pad_top) + di);
@@ -183,12 +206,13 @@ struct PoolFix_OpImp : public vart::experimental::OpImpBase {
                        input_w_idx * oc +       //
                        k];
 
-        LOG_IF(INFO, false) << "in " << in << " "                     //
-                            << "di " << di << " "                     //
-                            << "dj " << dj << " "                     //
-                            << "input_h_indx " << input_h_idx << " "  //
-                            << "input_w_indx " << input_w_idx << " "  //
-                            << endl;
+        LOG_IF(INFO, i == 0 && j == 0 && k == 745 && false)
+            << "in " << in << " "                     //
+            << "di " << di << " "                     //
+            << "dj " << dj << " "                     //
+            << "input_h_indx " << input_h_idx << " "  //
+            << "input_w_indx " << input_w_idx << " "  //
+            << endl;
 
         switch (pool_type_) {
           case POOLTYPE::AVG:
@@ -202,9 +226,9 @@ struct PoolFix_OpImp : public vart::experimental::OpImpBase {
         }
       }
     }
-
+    LOG_IF(INFO, i == 0 && j == 0 && k == 745 && false) << "ret = " << ret;
     if (pool_type_ == POOLTYPE::AVG) {
-      ret = ret * scale;
+      ret = ret * scale_;
     }
 
     return ret;
@@ -242,9 +266,9 @@ struct PoolFix_OpImp : public vart::experimental::OpImpBase {
   int oc;
   int ih;
   int iw;
+  float scale_;
 };
 
 }  // namespace
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<PoolFix_OpImp>();
-}
+
+DEF_XIR_OP_IMP(PoolFix_OpImp)

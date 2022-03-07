@@ -28,8 +28,19 @@ ostream& operator<<(ostream& s, const std::vector<size_t>& v) {
   s << "]";
   return s;
 }
-
+template <typename Function>
+void call(Function&& f) {
+  f();
+}
+void test_call() {
+  auto a = std::vector<std::unique_ptr<int>>();
+  a.emplace_back(std::make_unique<int>(100));
+  call([a2 = std::move(a)] (){
+	  cout << "ok" << endl; });
+  return;
+ }
 int main(int argc, char* argv[]) {
+   test_call();
   auto dims = std::vector<size_t>{7, 5, 3, 2};
   auto strides = std::vector<size_t>{60, 6, 2, 1};
   auto dim_calc = std::make_unique<vitis::ai::DimCalc>(dims, strides);

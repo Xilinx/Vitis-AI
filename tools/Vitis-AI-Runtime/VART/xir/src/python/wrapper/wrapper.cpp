@@ -352,6 +352,11 @@ xir::Op* add_op(xir::Graph* graph, const std::string& name,
   if (!py::isinstance<py::none>(py_attrs)) {
     UNI_LOG_CHECK(py::isinstance<py::dict>(py_attrs), PYXIR_INVALID_DATA_TYPE)
         << "attrs should be a dict";
+    auto build_in_ops = xir::op_def_factory()->get_registered_ops();
+    if (std::find(build_in_ops.begin(), build_in_ops.end(), type) ==
+        build_in_ops.end()) {
+      xir::register_customized_operator_definition(name, type);
+    }
     auto defs = xir::op_def_factory()->create(type)->attrs();
     for (auto attr : py::cast<py::dict>(py_attrs)) {
       auto key = py::cast<std::string>(attr.first);

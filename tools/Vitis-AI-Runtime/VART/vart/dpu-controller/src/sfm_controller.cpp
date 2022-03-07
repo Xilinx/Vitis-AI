@@ -13,3 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "xir/sfm_controller.hpp"
+
+#include <glog/logging.h>

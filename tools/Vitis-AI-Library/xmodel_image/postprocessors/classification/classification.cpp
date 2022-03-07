@@ -41,14 +41,14 @@ class Classification {
   }
 
   vitis::ai::proto::DpuModelResult process(
-      const vart::experimental::simple_tensor_buffer_t<float>& tensor_buffer);
+      const vart::simple_tensor_buffer_t<float>& tensor_buffer);
 
  private:
   std::vector<std::string> labels_;
 };
 
 vitis::ai::proto::DpuModelResult Classification::process(
-    const vart::experimental::simple_tensor_buffer_t<float>&
+    const vart::simple_tensor_buffer_t<float>&
         input_tensor_buffer) {
   const auto& shape = input_tensor_buffer.tensor->get_shape();
   CHECK_EQ(shape.size(), 2u) << "shape mismatch";

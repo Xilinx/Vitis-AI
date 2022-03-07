@@ -19,10 +19,10 @@ import inspect
 import copy
 
 import tensorflow as tf
-from tensorflow.python.keras import activations
 
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_aware_activation
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_custom_wrapper
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_configs
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantizers
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers import vitis_quantize
@@ -33,6 +33,7 @@ from tensorflow_model_optimization.python.core.quantization.keras.vitis.graph_tr
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.optimizations import vitis_optimize_transforms
 
+activations = tf.keras.activations
 serialize_keras_object = tf.keras.utils.serialize_keras_object
 deserialize_keras_object = tf.keras.utils.deserialize_keras_object
 LayerNode = transforms.LayerNode
@@ -43,6 +44,15 @@ keras = tf.keras
 
 # To be completed after release
 ug_link = 'User Guide'
+
+
+def _is_leaky_relu_quantizable(layer_node, alpha_target=0.1, threshold=1e-7):
+  """Due to DPU constraints, only leaky_relu with alpha=0.1 is quantizable."""
+  alpha = layer_node['config']['alpha']
+  if abs(alpha - alpha_target) < threshold:
+    return True
+  else:
+    return False
 
 
 class InputLayerQuantize(transforms.Transform):
@@ -85,6 +95,41 @@ class InputLayerQuantize(transforms.Transform):
         'VitisQuantize': vitis_quantize.VitisQuantize,
     })
     return objs
+
+class CustomLayerWrapper(transforms.Transform):
+  """Wrap the custom layer specifid by arguments. So that the subsequent
+  operation will know which layer is custom layer
+
+  Layer => CustomLayerWrapperr(Layer inside)
+  """
+
+  def __init__(self, quantize_registry):
+    super(CustomLayerWrapper, self).__init__()
+    self.quantize_registry = quantize_registry
+    self.custom_layer_type = quantize_registry.get_configs()["custom_layer_type"]
+
+  def pattern(self):
+    return LayerPattern('.*')
+
+  def replacement(self, match_layer):
+    layer_node = match_layer.layer
+
+    if layer_node['class_name'] not in self.custom_layer_type:
+      return match_layer
+
+    layer = keras.layers.deserialize(
+        layer_node, custom_objects=self.custom_objects())
+
+    wrapped_layer = vitis_custom_wrapper.CustomOpWrapper(
+        layer)
+
+    wrapped_layer_node = LayerNode.from_layer(
+        wrapped_layer, weights=match_layer.weights)
+    return wrapped_layer_node
+
+  def custom_objects(self):
+    return {}
+
 
 
 class LayersQuantize(transforms.Transform):
@@ -143,8 +188,8 @@ class LayersQuantize(transforms.Transform):
         return match_layer
 
     if layer_node['class_name'] == 'LeakyReLU':
-      alpha = layer_node['config']['alpha']
-      if not abs(alpha - 26. / 256.) < 1e-7:
+      if not _is_leaky_relu_quantizable(layer_node, alpha_target=26. / 256.):
+        alpha = layer_node['config']['alpha']
         info_msg = (
             'LeakyReLU layer {}(alpha={}) is not supported by DPU, '
             'currently DPU only supports LeakyReLU layer with `alpha=0.1`.'
@@ -390,7 +435,7 @@ class ConvActivationAnnotate(transforms.Transform):
 
   def pattern(self):
     return LayerPattern(
-        'ReLU|Activation',
+        'ReLU|Activation|LeakyReLU',
         inputs=[
             LayerPattern(
                 'Conv2D|DepthwiseConv2D|Conv2DTranspose|Dense',
@@ -405,6 +450,11 @@ class ConvActivationAnnotate(transforms.Transform):
         'class_name'] == 'Activation' and act_layer_node.layer['config'][
             'activation'] not in ['relu', 'linear']:
       return match_layer
+    elif act_layer_node.layer[
+        'class_name'] == 'LeakyReLU' and not _is_leaky_relu_quantizable(
+            act_layer_node.layer, 26. / 256.):
+      return match_layer
+
 
     conv_layer_node.layer['config']['activation'] = \
       keras.activations.serialize(vitis_quantize_aware_activation.NoQuantizeActivation())
@@ -423,7 +473,7 @@ class ConvBNActivationAnnotate(transforms.Transform):
 
   def pattern(self):
     return LayerPattern(
-        'ReLU|Activation',
+        'ReLU|Activation|LeakyReLU',
         inputs=[LayerPattern('Vitis>VitisConvBN|Vitis>VitisDepthwiseConvBN')])
 
   def replacement(self, match_layer):
@@ -433,6 +483,10 @@ class ConvBNActivationAnnotate(transforms.Transform):
     if act_layer_node.layer[
         'class_name'] == 'Activation' and act_layer_node.layer['config'][
             'activation'] not in ['relu', 'linear']:
+      return match_layer
+    elif act_layer_node.layer[
+        'class_name'] == 'LeakyReLU' and not _is_leaky_relu_quantizable(
+            act_layer_node.layer, 26. / 256.):
       return match_layer
 
     conv_layer_node.layer['config']['activation'] = \
@@ -696,6 +750,6 @@ class ReplaceLeakyReLU(transforms.Transform):
     relu_layer_node = match_layer
 
     alpha = relu_layer_node.layer['config']['alpha']
-    if abs(alpha - 0.1) < 1e-7:
+    if _is_leaky_relu_quantizable(relu_layer_node.layer):
       relu_layer_node.layer['config']['alpha'] = 26. / 256.
     return relu_layer_node

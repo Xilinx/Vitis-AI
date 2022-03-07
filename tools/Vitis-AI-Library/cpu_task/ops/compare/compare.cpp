@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include <openssl/md5.h>
-
 #include <cmath>
 #include <iomanip>
 #include <iostream>
@@ -24,6 +22,7 @@
 #include "vart/runner_helper.hpp"
 #include "vitis/ai/env_config.hpp"
 #include "vitis/ai/path_util.hpp"
+#include "xir/cxir.h"
 #include "xir/util/tool_function.hpp"
 
 using namespace std;
@@ -52,6 +51,15 @@ std::string to_value(float v) {
   return str.str();
 }
 
+std::string to_hex(float v) {
+  char* p = (char*)&v;
+  ostringstream str;
+  for (auto i = 0u; i < sizeof(float); ++i) {
+    unsigned int v = p[i];
+    str << std::hex << " " << v;
+  }
+  return str.str();
+}
 template <typename T>
 std::string to_binary_string(T v) {
   ostringstream str;
@@ -64,23 +72,12 @@ std::string to_binary_string(T v) {
 }
 
 static std::string md5sum(const unsigned char* val, size_t size) {
-  std::vector<unsigned char> result((size_t)MD5_DIGEST_LENGTH, '0');
-  std::ostringstream str;
-  MD5(val, size, (unsigned char*)&result[0]);
-  for (const auto x : result) {
-    str << std::hex << std::setfill('0') << std::setw(2) << ((unsigned int)x);
-  }
-  return str.str();
+  return xir::get_md5_of_buffer(val, size);
 }
 
 struct CompareOpImp : public vart::experimental::OpImpBase {
-  CompareOpImp(xir::Op* op, xir::Attrs* attrs)
+  CompareOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
-    // CHECK(op->has_attr("baseline")) << "no baseline" << op->get_name();
-    // if (op->has_attr("baseline")) {
-    //   baseline_with_batch_ =
-    //       op->template get_attr<std::vector<std::vector<char>>>("baseline");
-    // }
     // if (baseline_with_batch_.empty()) {
     //   if (op->has_attr("from_file")) {
     //     auto files = op->get_attr<std::vector<std::string>>("from_file");
@@ -97,41 +94,82 @@ struct CompareOpImp : public vart::experimental::OpImpBase {
     if (op->has_attr("md5sum")) {
       md5sum_ = op->get_attr<std::vector<std::string>>("md5sum");
     }
-    // CHECK_LE(baseline_with_batch_.size(), md5sum_.size(), );
-    // for (auto i = 0u; i < baseline_with_batch_.size(); ++i) {
-    //   check_md5sum(i);
-    // }
-    // CHECK(!baseline_with_batch_.empty()) << "cannot init baseline";
     log_limit_ = op->template get_attr<int>("log_limit");
     save_on_error_ = op->template get_attr<bool>("save_on_error");
     input_tensor_name_ =
         xir::remove_xfix(op->get_input_tensor("input", 0)->get_name());
     dump_directory_ = op->template get_attr<std::string>("dump_directory");
-    input_op_name_ = op->get_input_op("input", 0)->get_name();
-    input_op_type_ = op->get_input_op("input", 0)->get_type();
+    input_op_ = op->get_input_op("input", 0);
+    input_op_name_ = input_op_->get_name();
+    input_op_type_ = input_op_->get_type();
+    if (op->has_attr("baseline")) {
+      baseline_with_batch_ =
+          op->template get_attr<std::vector<std::vector<char>>>("baseline");
+    }
+    if (ENV_PARAM(DEBUG_COMPARE)) {
+      auto bi = 0;
+      for (const auto& b : baseline_with_batch_) {
+        CHECK_LT(bi, (int)md5sum_.size());
+        LOG(INFO) << "input_tensor_name_: " << input_tensor_name_
+                  << "MD5: " << md5sum_[bi] << " "
+                  << " base line " << bi << "; size = " << b.size();
+        bi = bi + 1;
+      }
+      for (auto i = 0u; i < baseline_with_batch_.size(); ++i) {
+        check_md5sum(i);
+      }
+    }
   };
-  int calculate(vart::experimental::simple_tensor_buffer_t<int8_t> result,
-                vart::experimental::simple_tensor_buffer_t<void> input) {
+  int calculate(vart::simple_tensor_buffer_t<int8_t> result,
+                vart::simple_tensor_buffer_t<void> input) {
     auto batch_base = (size_t)attrs->get_attr<int>("__batch_base__");
-    auto baseline = std::vector<char>();
+    const auto& baseline = baseline_with_batch_[batch_base % md5sum_.size()];
     return calculate1<void>(result, input, baseline, batch_base);
   }
 
   template <typename T>
-  int calculate1(vart::experimental::simple_tensor_buffer_t<int8_t> result,
-                 vart::experimental::simple_tensor_buffer_t<T> input,
+  int calculate1(vart::simple_tensor_buffer_t<int8_t> result,
+                 vart::simple_tensor_buffer_t<T> input,
                  const std::vector<char>& baseline, size_t batch_base) {
-    int counter = 0;
     auto check_sum = md5sum((const unsigned char*)input.data, input.mem_size);
     auto expected = md5sum_[batch_base % md5sum_.size()];
-    if (check_sum == expected) {  // TODO image bundling.
-      counter = 0;
-    } else {
-      counter = 1;
+    bool is_correct = (check_sum == expected);
+    bool is_float = input_op_->get_output_tensor()->get_data_type().type ==
+                    xir::DataType::FLOAT;
+    bool has_baseline = !baseline.empty();
+    if (!is_correct && is_float && has_baseline) {
+      is_correct = true;
+      CHECK_EQ(baseline.size(), input.mem_size);
+      float* baseline_ptr = (float*)&baseline[0];
+      float* input_ptr = (float*)input.data;
+      auto size = input.mem_size / sizeof(float);
+      auto error_count = 0;
+      for (auto i = 0u; i < size; ++i) {
+        bool is_same =
+            fabs((input_ptr[i] - baseline_ptr[i]) / baseline_ptr[i]) <
+            0.01f * 0.01f;  // accept 0.01% error
+        is_correct = is_correct && is_same;
+        if (!is_same) {
+          LOG_IF(INFO, ENV_PARAM(DEBUG_COMPARE) && error_count < 10)
+              << " error at " << i << " input_ptr[i] " << input_ptr[i] << " "
+              << to_hex(input_ptr[i]) << " "  //
+              << "baseline_ptr[i] " << baseline_ptr[i] << " "
+              << to_hex(baseline_ptr[i])  //
+              << " std::numeric_limits<float>::epsilon() "
+              << std::numeric_limits<float>::epsilon() << " "  //
+              << "input.tensor->get_name() " << input.tensor->get_name()
+              << " "  //
+              ;
+        }
+      }
+      if (is_correct) {
+        // pretend the result is correct, ignore md5sum check
+        memcpy(&check_sum[0], &expected[0], 32);
+      }
     }
     memcpy(&result.data[0], &check_sum[0], 32);
     memcpy(&result.data[32], &expected[0], 32);
-    if (counter != 0 && save_on_error_) {
+    if (!is_correct && save_on_error_) {
       auto maybe_remove_trail_slah = [](const std::string& s) {
         if (s.back() == '/') {
           return s.substr(0, s.size() - 1);
@@ -173,6 +211,9 @@ struct CompareOpImp : public vart::experimental::OpImpBase {
     if (expected == "00000000000000000000000000000000") {
       return;
     }
+    if (baseline_with_batch_[i].empty()) {
+      return;
+    }
     auto actual = md5sum((const unsigned char*)&baseline_with_batch_[i][0],
                          baseline_with_batch_[i].size());
     CHECK_EQ(actual, expected) << " i=" << i;
@@ -184,6 +225,7 @@ struct CompareOpImp : public vart::experimental::OpImpBase {
   int log_limit_;
   bool save_on_error_;
   std::string input_tensor_name_;
+  const xir::Op* input_op_;
   std::string input_op_name_;
   std::string input_op_type_;
   std::string dump_directory_;
@@ -191,6 +233,4 @@ struct CompareOpImp : public vart::experimental::OpImpBase {
 
 }  // namespace
 
-extern "C" vart_op_imp_t vart_init_op_imp(const xir_op_t op) {
-  return vart::experimental::make_vart_opt_imp<CompareOpImp>();
-}
+DEF_XIR_OP_IMP(CompareOpImp)

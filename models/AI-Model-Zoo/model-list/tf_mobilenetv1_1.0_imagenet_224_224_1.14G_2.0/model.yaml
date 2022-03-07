@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: mobilenetv1_1.0 classifier on ImageNet.
+input size: 224*224
+float ops: 1.14G
+task: classification
+framework: tensorflow
+prune: 'no'
+version: 2.0
+files:
+- name: tf_mobilenetv1_1.0_imagenet_224_224_1.14G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_1.0_imagenet_224_224_1.14G_2.0.zip
+  checksum: ba009bee39b03ca7654af7b05d2adbc5
+- name: mobilenet_v1_1_0_224_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_tf-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: fd1e14b172649589e5263a10d99ca4c4
+- name: mobilenet_v1_1_0_224_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_tf-vck190-r2.0.0.tar.gz
+  checksum: f70827e654c75fb2f71c0d7ba6a57a55
+- name: mobilenet_v1_1_0_224_tf
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_tf-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 84121db8637a265e0ba0caa65359e4d6
+- name: mobilenet_v1_1_0_224_tf
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 295035999c7ea01990193902f217576d
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -19,18 +19,10 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "./hbm_manager.hpp"
 namespace vart {
 namespace dpu {
-constexpr uint64_t _1M = 1024ull * 1024ull;
-constexpr uint64_t _256M = 256ull * _1M;
-constexpr uint64_t _4K = 4ull * 1024ull;
-struct hbm_channel_def_t {
-  uint64_t offset;
-  uint64_t capacity = _256M;
-  uint64_t alignment = _4K;
-};
 
-using chunk_def_t = std::vector<hbm_channel_def_t>;
 struct HbmChannelProperty {
   const std::string name = "N/A";
   const unsigned int core_id = 0;

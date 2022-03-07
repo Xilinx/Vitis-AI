@@ -39,12 +39,12 @@ struct PlateNumber {
         [](const vitis::ai::XmodelPostprocessorArgOpAndTensorBuffer&
                op_and_tb) {
           return op_and_tb.op->get_output_tensor()
-              ->get_attr<std::vector<string>>("labels");
+              ->get_attr<std::vector<std::string>>("labels");
         });
   };
 
   vitis::ai::proto::DpuModelResult process(
-      const std::vector<vart::experimental::simple_tensor_buffer_t<float>>&
+      const std::vector<vart::simple_tensor_buffer_t<float>>&
           tensor_buffers) {
     if (tensor_buffers.empty()) {
       return {};

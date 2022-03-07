@@ -32,11 +32,11 @@
 #include <vart/zero_copy_helper.hpp>
 #include <vitis/ai/collection_helper.hpp>
 #include <vitis/ai/env_config.hpp>
+#include <vitis/ai/graph_runner.hpp>
 #include <vitis/ai/image_util.hpp>
 #include <vitis/ai/time_measure.hpp>
 #include <vitis/ai/weak.hpp>
 #include <xir/tensor/tensor.hpp>  // for xir
-
 using namespace vitis::ai;
 using namespace std;
 
@@ -51,7 +51,9 @@ static std::string get_full_filename(const std::string& filename) {
   if (filename[0] == '/') {
     return filename;
   }
-  std::string current_p(getcwd(NULL, 0));
+  auto cwd = getcwd(NULL, 0);
+  std::string current_p(cwd);
+  free(cwd);
   return current_p + "/" + filename;
 }
 
@@ -102,35 +104,50 @@ static std::vector<std::unique_ptr<vart::Runner>> create_runners_with_attrs(
   auto runners = std::vector<std::unique_ptr<vart::Runner>>();
   runners.reserve(subgraphs.size());
   auto batch_size = 0;
-  for (auto subgraph : subgraphs) {
-    LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
-        << "create runner for " << subgraph->get_name();
-    if (batch_size == 0) {
-      // create the very first runner
-      auto r = vart::Runner::create_runner_with_attrs(subgraph, attrs);
-      batch_size = get_batch_size_of_runner(r.get());
-      runners.emplace_back(std::move(r));
-    } else {
-      // the following runners must have the batch size as same as the
-      // first runner's.
-      auto r = vart::Runner::create_runner_with_attrs(subgraph, attrs);
-      CHECK_EQ(get_batch_size_of_runner(r.get()), batch_size)
-          << "batch size not same as first runner";
-      runners.emplace_back(std::move(r));
+  auto use_graph_runner = attrs->has_attr("use_graph_runner") &&
+                          attrs->get_attr<bool>("use_graph_runner");
+  if (use_graph_runner) {
+    runners.push_back(vitis::ai::GraphRunner::create_graph_runner(
+        graph_holder->get_graph(), attrs));
+  } else {
+    for (auto subgraph : subgraphs) {
+      LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
+          << "create runner for " << subgraph->get_name();
+      if (batch_size == 0) {
+        // create the very first runner
+        auto r = vart::Runner::create_runner_with_attrs(subgraph, attrs);
+        batch_size = get_batch_size_of_runner(r.get());
+        runners.emplace_back(std::move(r));
+      } else {
+        // the following runners must have the batch size as same as the
+        // first runner's.
+        auto r = vart::Runner::create_runner_with_attrs(subgraph, attrs);
+        CHECK_EQ(get_batch_size_of_runner(r.get()), batch_size)
+            << "batch size not same as first runner";
+        runners.emplace_back(std::move(r));
+      }
+      LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
+          << "create runner for " << subgraph->get_name()
+          << " done. batch_size=" << batch_size;
     }
-    LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
-        << "create runner for " << subgraph->get_name()
-        << " done. batch_size=" << batch_size;
+    CHECK_EQ(runners.size(), subgraphs.size());
   }
-  CHECK_EQ(runners.size(), subgraphs.size());
   return runners;
 }
+
+static std::vector<std::vector<vitis::ai::library::InputTensor>>
+get_all_input_tensors(std::vector<std::unique_ptr<vart::Runner>>& runners);
+
+static std::vector<std::vector<vitis::ai::library::OutputTensor>>
+get_all_output_tensors(std::vector<std::unique_ptr<vart::Runner>>& runners);
 
 DpuTaskImp::DpuTaskImp(const std::string& model_name)
     : model_name_{model_name},
       graph_holder_{create_graph_holder(model_name)},
       default_attrs_{xir::Attrs::create()},
       runners_{create_runners_with_attrs(graph_holder_, default_attrs_.get())},
+      all_input_tensors_{get_all_input_tensors(runners_)},
+      all_output_tensors_{get_all_output_tensors(runners_)},
       mean_{std::vector<float>(3, 0.f)},   //
       scale_{std::vector<float>(3, 1.f)},  //
       do_mean_scale_{false} {}
@@ -140,6 +157,8 @@ DpuTaskImp::DpuTaskImp(const std::string& model_name, xir::Attrs* attrs)
       graph_holder_{create_graph_holder(model_name)},
       default_attrs_{xir::Attrs::create()},
       runners_{create_runners_with_attrs(graph_holder_, attrs)},
+      all_input_tensors_{get_all_input_tensors(runners_)},
+      all_output_tensors_{get_all_output_tensors(runners_)},
       mean_{std::vector<float>(3, 0.f)},   //
       scale_{std::vector<float>(3, 1.f)},  //
       do_mean_scale_{false} {}
@@ -193,6 +212,8 @@ DpuTaskImp::DpuTaskImp(const std::string& model_name)
     : model_name_{model_name},
       dirname_{find_module_dir_name(model_name)},
       runners_{vart::Runner::create_runner(dirname_)},
+      all_input_tensors_{get_all_input_tensors(runners_)},
+      all_output_tensors_{get_all_output_tensors(runners_)},
       mean_{std::vector<float>(3, 0.f)},   //
       scale_{std::vector<float>(3, 1.f)},  //
       do_mean_scale_{false} {}
@@ -201,6 +222,8 @@ DpuTaskImp::DpuTaskImp(const std::string& model_name, xir::Attrs* attrs)
     : model_name_{model_name},
       dirname_{find_module_dir_name(model_name)},
       runners_{vart::Runner::create_runner(dirname_)},
+      all_input_tensors_{get_all_input_tensors(runners_)},
+      all_output_tensors_{get_all_output_tensors(runners_)},
       mean_{std::vector<float>(3, 0.f)},   //
       scale_{std::vector<float>(3, 1.f)},  //
       do_mean_scale_{false} {}
@@ -298,8 +321,8 @@ void DpuTaskImp::setImageBGR(const cv::Mat& img) {
   setImageBGR(img.data, img.step);
 }
 
-void DpuTaskImp::setImageRGB(const cv::Mat& img) {
-  setImageRGB(img.data, img.step);
+void DpuTaskImp::setImageRGB(const cv::Mat& img, size_t ind) {
+  setImageRGB(img.data, img.step, ind);
 }
 
 //# Templatized the input data type
@@ -319,13 +342,13 @@ static void copy_line_by_line(T* data, int rows, int cols, int channels,
   }
 }
 
-void DpuTaskImp::setInputDataArray(const std::vector<int8_t> input) {
+void DpuTaskImp::setInputDataArray(const std::vector<int8_t> input, size_t ind) {
   set_num_of_inputs(1u);
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
   // assuming the first input
-  const auto& layer_data = inputs[0];
-  float input_fixed_scale = tensor_scale(inputs[0]);
+  const auto& layer_data = inputs[ind];
+  float input_fixed_scale = tensor_scale(inputs[ind]);
   // vector<float> real_scale{scale_[0] * input_fixed_scale,
   //                         scale_[1] * input_fixed_scale,
   //                         scale_[2] * input_fixed_scale};
@@ -344,26 +367,19 @@ void DpuTaskImp::setInputDataArray(const std::vector<int8_t> input) {
   auto data = (int8_t*)layer_data.get_data(0);
 #endif
 
-  if (do_mean_scale_) {
-    LOG(FATAL) << "pleaseset do_mean_scale_= false and do it yourself";
-    // NormalizeInputData(input, rows, cols, channels, stride, mean_,
-    // real_scale,
-    //                   data);
-  } else {
-    copy_line_by_line(data, rows, cols, channels, stride, input.data());
-  }
+  copy_line_by_line(data, rows, cols, channels, stride, input.data());
 }
 
 void DpuTaskImp::setInputDataArray(
-    const std::vector<std::vector<int8_t>> input) {
+    const std::vector<std::vector<int8_t>> input, size_t ind) {
   set_num_of_inputs(input.size());
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
   // assuming the first input
-  const auto& layer_data = inputs[0];
+  const auto& layer_data = inputs[ind];
   CHECK_EQ(input.size(), layer_data.batch);
   CHECK_LE(input.size(), get_input_batch(0, 0));
-  float input_fixed_scale = tensor_scale(inputs[0]);
+  float input_fixed_scale = tensor_scale(inputs[ind]);
   // vector<float> real_scale{scale_[0] * input_fixed_scale,
   //                         scale_[1] * input_fixed_scale,
   //                         scale_[2] * input_fixed_scale};
@@ -383,14 +399,7 @@ void DpuTaskImp::setInputDataArray(
     auto data = (int8_t*)layer_data.get_data(i);
 #endif
 
-    if (do_mean_scale_) {
-      LOG(FATAL) << "pleaseset do_mean_scale_= false and do it yourself";
-      // NormalizeInputData(input, rows, cols, channels, stride, mean_,
-      // real_scale,
-      //                   data);
-    } else {
-      copy_line_by_line(data, rows, cols, channels, stride, input[i].data());
-    }
+    copy_line_by_line(data, rows, cols, channels, stride, input[i].data());
   }
 }
 
@@ -415,20 +424,34 @@ void DpuTaskImp::setImageBGR(const uint8_t* input, int stride) {
   auto data = (int8_t*)layer_data.get_data(0);
 #endif
 
+  if (ENV_PARAM(DEBUG_DPBASE) >= 5) {
+    LOG(INFO) << "rows " << rows << " "  //
+              << "cols " << cols;
+    LOG(INFO) << "write before_setinput_image.bmp from " << (void*)input;
+    auto img = cv::Mat((int)rows, (int)cols, CV_8UC3, (void*)input);
+    cv::imwrite(std::string("before_setinput_image.bmp"), img);
+  }
+
   if (do_mean_scale_) {
     NormalizeInputData(input, rows, cols, channels, stride, mean_, real_scale,
                        data);
   } else {
     copy_line_by_line(data, rows, cols, channels, stride, input);
   }
+
+  if (ENV_PARAM(DEBUG_DPBASE) >= 5) {
+    LOG(INFO) << "write after_setinput_image.bmp from " << (void*)data;
+    auto img = cv::Mat((int)rows, (int)cols, CV_8UC3, (void*)data);
+    cv::imwrite(std::string("after_setinput_image.bmp"), img);
+  }
 }
 
-void DpuTaskImp::setImageRGB(const uint8_t* input, int stride) {
+void DpuTaskImp::setImageRGB(const uint8_t* input, int stride, size_t ind) {
   set_num_of_inputs(1u);
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
-  const auto& layer_data = inputs[0];
-  float input_fixed_scale = tensor_scale(inputs[0]);
+  const auto& layer_data = inputs[ind];
+  float input_fixed_scale = tensor_scale(inputs[ind]);
   vector<float> real_scale{scale_[0] * input_fixed_scale,
                            scale_[1] * input_fixed_scale,
                            scale_[2] * input_fixed_scale};
@@ -442,7 +465,7 @@ void DpuTaskImp::setImageRGB(const uint8_t* input, int stride) {
 #else
   auto data = (int8_t*)layer_data.get_data(0);
 #endif
-  if (ENV_PARAM(DEBUG_DPBASE)) {
+  if (ENV_PARAM(DEBUG_DPBASE) >= 5) {
     LOG(INFO) << "rows " << rows << " "  //
               << "cols " << cols;
     LOG(INFO) << "write before_setinput_image.bmp from " << (void*)input;
@@ -455,7 +478,7 @@ void DpuTaskImp::setImageRGB(const uint8_t* input, int stride) {
   } else {
     copy_line_by_line(data, rows, cols, channels, stride, input);
   }
-  if (ENV_PARAM(DEBUG_DPBASE)) {
+  if (ENV_PARAM(DEBUG_DPBASE) >= 5) {
     LOG(INFO) << "write after_setinput_image.bmp from " << (void*)data;
     auto img = cv::Mat((int)rows, (int)cols, CV_8UC3, (void*)data);
     cv::imwrite(std::string("after_setinput_image.bmp"), img);
@@ -497,18 +520,18 @@ void DpuTaskImp::setImageBGR(const std::vector<cv::Mat>& imgs) {
   }
 }
 
-void DpuTaskImp::setImageRGB(const std::vector<cv::Mat>& imgs) {
+void DpuTaskImp::setImageRGB(const std::vector<cv::Mat>& imgs, size_t ind) {
   set_num_of_inputs(imgs.size());
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
-  const auto& layer_data = inputs[0];
+  const auto& layer_data = inputs[ind];
   // set num of inputs before getInputTensor, so that the size should
   // be same.
   CHECK_EQ(imgs.size(), layer_data.batch);
   // the num of inputs must be less than the batch size which is the
   // hardware limitation.
   CHECK_LE(imgs.size(), get_input_batch(0, 0));
-  float input_fixed_scale = tensor_scale(inputs[0]);
+  float input_fixed_scale = tensor_scale(inputs[ind]);
   vector<float> real_scale{scale_[0] * input_fixed_scale,
                            scale_[1] * input_fixed_scale,
                            scale_[2] * input_fixed_scale};
@@ -543,26 +566,30 @@ std::vector<float> DpuTaskImp::getScale() { return scale_; }
 
 //# Add tensor format argument (NHWC / NCHW)
 static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
-    vart::TensorBuffer* tb, float scale, int num_of_input,
-    vart::Runner::TensorFormat fmt) {
+    vart::TensorBuffer* tb, vart::Runner::TensorFormat fmt) {
+  float scale = 1.0f;
   auto ret = vitis::ai::library::InputTensor{};
   auto tensor = tb->get_tensor();
   auto dim_num = tensor->get_shape().size();
   auto batch = dim_num <= 0 ? 1 : tensor->get_shape().at(0);
   ret.batch = batch;
-  if (num_of_input != -1) {
-    ret.batch = (unsigned)num_of_input;
-  }
   ret.size = tensor->get_element_num() *
-             std::ceil(tensor->get_data_type().bit_width / 8.f) * ret.batch /
-             batch;
+             std::ceil(tensor->get_data_type().bit_width / 8.f);
   //# Store the params as per format
   if (fmt == vart::Runner::TensorFormat::NHWC) {
     ret.height = dim_num <= 1 ? 1 : tensor->get_shape().at(1);
     ret.width = dim_num <= 2 ? 1 : tensor->get_shape().at(2);
     ret.channel = dim_num <= 3 ? 1 : tensor->get_shape().at(3);
-    ret.fixpos = (int8_t)log2f(scale);
-    ret.dtype = library::DT_INT8;
+    if (tensor->get_data_type().type == xir::DataType::XINT) {
+      ret.fixpos = (int8_t)log2f(scale);
+      ret.dtype = library::DT_INT8;
+      ret.fixpos = tensor->template get_attr<int>("fix_point");
+    } else if (tensor->get_data_type().type == xir::DataType::FLOAT) {
+      ret.fixpos = 0;
+      ret.dtype = library::DT_FLOAT;
+    } else {
+      LOG(FATAL) << "unsupported";
+    }
   } else {
 #ifdef ENABLE_DPUCADX8G_RUNNER
     //# DPUV1 has datatype float
@@ -581,14 +608,25 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
   auto dims = tensor->get_shape();
   auto index = dims;
   auto size = 0ul;
+  auto idx = std::vector<int>(tb->get_tensor()->get_shape().size(), 0);
   // CHECK_LT(dims[0], ret.data.size());
+  auto tb_ext = dynamic_cast<vart::TensorBufferExt*>(tb);
   for (auto batch_idx = 0; batch_idx < dims[0]; ++batch_idx) {
-    auto data = tb->data({batch_idx, 0, 0, 0});
+    idx[0] = batch_idx;
+    auto data = tb->data(idx);
     ret.get_data(batch_idx) = (void*)data.first;
     size = data.second;
     //    std::tie(ret.get_data(batch_idx), size) = tb->data({batch_idx, 0,
     //    0, 0});
     CHECK_GE(size, ret.height * ret.width * ret.channel);
+    ret.xcl_bo[batch_idx] = vitis::ai::library::XclBoInfo{0, nullptr, 0u};
+    if (tb_ext) {
+      auto bo = tb_ext->get_xcl_bo(batch_idx);
+      ret.xcl_bo[batch_idx].xcl_handle = bo.xcl_handle;
+      ret.xcl_bo[batch_idx].bo_handle = bo.bo_handle;
+      ret.xcl_bo[batch_idx].offset =
+          (unsigned int)tensor->template get_attr<int>("ddr_addr");
+    }
   }
 
   return ret;
@@ -596,21 +634,16 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
 
 //# Add tensor format argument (NHWC / NCHW)
 static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
-    vart::TensorBuffer* tb, float scale,
-    /* num of real input images, it might be less than or equal to batch size */
-    int num_of_input, vart::Runner::TensorFormat fmt) {
+    vart::TensorBuffer* tb, vart::Runner::TensorFormat fmt) {
+  float scale = 1.0f;
   auto ret = vitis::ai::library::OutputTensor{};
   auto tensor = tb->get_tensor();
   auto dim_num = tensor->get_shape().size();
   auto batch = dim_num <= 0 ? 1 : tensor->get_shape().at(0);
   ret.batch = batch;
-  if (num_of_input != -1) {
-    CHECK_LE((unsigned)num_of_input, ret.batch) << "logical error";
-    ret.batch = (unsigned)num_of_input;
-  }
+
   ret.size = tensor->get_element_num() *
-             std::ceil(tensor->get_data_type().bit_width / 8.f) * ret.batch /
-             batch;
+             std::ceil(tensor->get_data_type().bit_width / 8.f);
   //# Store the params as per format
   if (fmt == vart::Runner::TensorFormat::NHWC) {
     if (dim_num == 2) {
@@ -622,8 +655,16 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
       ret.width = dim_num <= 2 ? 1 : tensor->get_shape().at(2);
       ret.channel = dim_num <= 3 ? 1 : tensor->get_shape().at(3);
     }
-    ret.fixpos = -(int8_t)log2f(scale);
-    ret.dtype = library::DT_INT8;
+    if (tensor->get_data_type().type == xir::DataType::XINT) {
+      ret.fixpos = (int8_t)log2f(scale);
+      ret.dtype = library::DT_INT8;
+      ret.fixpos = tensor->template get_attr<int>("fix_point");
+    } else if (tensor->get_data_type().type == xir::DataType::FLOAT) {
+      ret.fixpos = 0;
+      ret.dtype = library::DT_FLOAT;
+    } else {
+      LOG(FATAL) << "unsupported";
+    }
   } else {
 #ifdef ENABLE_DPUCADX8G_RUNNER
     //# DPUV1 has datatype float
@@ -642,6 +683,7 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
   auto dims = tensor->get_shape();
   auto size = 0ul;
   // CHECK_LT(dims[0], ret.data.size());
+  auto tb_ext = dynamic_cast<vart::TensorBufferExt*>(tb);
   for (auto batch_idx = 0; batch_idx < dims[0]; ++batch_idx) {
     auto idx = std::vector<int32_t>(dims.size());
     idx[0] = batch_idx;
@@ -649,50 +691,111 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
     ret.get_data(batch_idx) = (void*)data.first;
     size = data.second;
     CHECK_GE(size, ret.height * ret.width * ret.channel);
+    ret.xcl_bo[batch_idx] = vitis::ai::library::XclBoInfo{0, nullptr, 0u};
+    if (tb_ext) {
+      auto bo = tb_ext->get_xcl_bo(batch_idx);
+      ret.xcl_bo[batch_idx].xcl_handle = bo.xcl_handle;
+      ret.xcl_bo[batch_idx].bo_handle = bo.bo_handle;
+      ret.xcl_bo[batch_idx].offset =
+          (unsigned int)tensor->template get_attr<int>("ddr_addr");
+    }
   }
 
   return ret;
+}
+
+static std::vector<std::vector<vitis::ai::library::InputTensor>>
+get_all_input_tensors(std::vector<std::unique_ptr<vart::Runner>>& runners) {
+  auto input_tensors =
+      std::vector<std::vector<vitis::ai::library::InputTensor>>();
+  input_tensors.reserve(runners.size());
+  for (auto& runner : runners) {
+    auto dpu_runner_ext = dynamic_cast<vart::RunnerExt*>(runner.get());
+    auto inputs = dpu_runner_ext->get_inputs();
+    //# Get the current format
+    auto fmt = runner->get_tensor_format();
+    auto ret = std::vector<vitis::ai::library::InputTensor>{};
+    ret.reserve(inputs.size());
+    int c = 0;
+    for (auto& t : inputs) {
+      ret.emplace_back(convert_tensor_buffer_to_input_tensor(t, fmt));
+      LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
+          << "input tensor[" << c << "]: " << ret.back();
+      c++;
+    }
+    input_tensors.emplace_back(ret);
+  }
+  return input_tensors;
 }
 
 std::vector<vitis::ai::library::InputTensor> DpuTaskImp::getInputTensor(
     size_t idx) {
-  auto dpu_runner_ext = dynamic_cast<vart::RunnerExt*>(runners_[idx].get());
-  auto inputs = dpu_runner_ext->get_inputs();
-  //# Get the current format
-  auto fmt = runners_[idx]->get_tensor_format();
-  auto scales = vart::get_input_scale(dpu_runner_ext->get_input_tensors());
-  auto ret = std::vector<vitis::ai::library::InputTensor>{};
-  ret.reserve(inputs.size());
-  int c = 0;
-  for (auto& t : inputs) {
-    ret.emplace_back(convert_tensor_buffer_to_input_tensor(
-        t, scales[c], num_of_inputs_, fmt));
-    LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
-        << "input tensor[" << c << "]: " << ret.back();
-    c++;
+  auto input_tensors = all_input_tensors_[idx];
+  if (num_of_inputs_ != -1) {
+    // run batch modified to the number of incoming images
+    // copy InputTensor and modify batch
+    auto ret = std::vector<vitis::ai::library::InputTensor>();
+    ret.reserve(input_tensors.size());
+    for (auto& t : input_tensors) {
+      auto tensor = vitis::ai::library::InputTensor(t);
+      // num_of_inputs_ : num of real input images, it might be less than or
+      // equal to batch size
+      CHECK_LE((unsigned)num_of_inputs_, t.batch) << "logical error";
+      auto hw_batch = tensor.batch;
+      tensor.batch = (unsigned)num_of_inputs_;
+      tensor.size = tensor.size * tensor.batch / hw_batch;
+      ret.emplace_back(tensor);
+    }
+    return ret;
+  } else {
+    return input_tensors;
   }
-  return ret;
+}
+
+static std::vector<std::vector<vitis::ai::library::OutputTensor>>
+get_all_output_tensors(std::vector<std::unique_ptr<vart::Runner>>& runners) {
+  auto output_tensors =
+      std::vector<std::vector<vitis::ai::library::OutputTensor>>();
+  output_tensors.reserve(runners.size());
+  for (auto& runner : runners) {
+    auto dpu_runner_ext = dynamic_cast<vart::RunnerExt*>(runner.get());
+    auto outputs = dpu_runner_ext->get_outputs();
+    //# Get the current format
+    auto fmt = runner->get_tensor_format();
+    auto ret = std::vector<vitis::ai::library::OutputTensor>{};
+    ret.reserve(outputs.size());
+    int c = 0;
+    for (auto& t : outputs) {
+      ret.emplace_back(convert_tensor_buffer_to_output_tensor(t, fmt));
+      LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
+          << "output tensor[" << c << "]: " << ret.back();
+      c++;
+    }
+    output_tensors.emplace_back(ret);
+  }
+  return output_tensors;
 }
 
 std::vector<vitis::ai::library::OutputTensor> DpuTaskImp::getOutputTensor(
     size_t idx) {
-  auto dpu_runner_ext = dynamic_cast<vart::RunnerExt*>(runners_[idx].get());
-  auto outputs = dpu_runner_ext->get_outputs();
-  //# Get the current format
-  auto fmt = runners_[idx]->get_tensor_format();
-  auto scales = vart::get_output_scale(dpu_runner_ext->get_output_tensors());
-
-  auto ret = std::vector<vitis::ai::library::OutputTensor>{};
-  ret.reserve(outputs.size());
-  int c = 0;
-  for (auto& t : outputs) {
-    ret.emplace_back(convert_tensor_buffer_to_output_tensor(
-        t, scales[c], num_of_inputs_, fmt));
-    LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
-        << "output tensor[" << c << "]: " << ret.back();
-    c++;
+  auto output_tensors = all_output_tensors_[idx];
+  if (num_of_inputs_ != -1) {
+    auto ret = std::vector<vitis::ai::library::OutputTensor>();
+    ret.reserve(output_tensors.size());
+    for (auto& t : output_tensors) {
+      auto tensor = vitis::ai::library::OutputTensor(t);
+      // num_of_inputs_ : num of real input images, it might be less than or
+      // equal to batch size
+      CHECK_LE((unsigned)num_of_inputs_, t.batch) << "logical error";
+      auto hw_batch = tensor.batch;
+      tensor.batch = (unsigned)num_of_inputs_;
+      tensor.size = tensor.size * tensor.batch / hw_batch;
+      ret.emplace_back(tensor);
+    }
+    return ret;
+  } else {
+    return output_tensors;
   }
-  return ret;
 }
 
 size_t DpuTaskImp::get_input_batch(size_t kernel_idx, size_t node_idx) const {

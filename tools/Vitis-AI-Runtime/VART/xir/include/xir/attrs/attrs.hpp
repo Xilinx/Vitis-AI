@@ -20,6 +20,7 @@
 #include <string>
 
 #include "UniLog/UniLog.hpp"
+#include "xir/XirExport.hpp"
 #include "xir/util/any.hpp"
 
 namespace xir {
@@ -28,7 +29,7 @@ namespace xir {
  * @brief Attrs is a interface class for users to access a set of attributes.
  *
  */
-class Attrs {
+class XIR_DLLESPEC Attrs {
  public:
   Attrs() = default;
   Attrs(const Attrs& other) = default;

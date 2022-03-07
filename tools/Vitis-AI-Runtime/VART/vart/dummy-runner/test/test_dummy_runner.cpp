@@ -67,9 +67,20 @@ int main(int argc, char* argv[]) {
                                   vitis::ai::vector_unique_ptr_get(outputs));
         if (job.second == 0) {
           // LOG(INFO) << "begin async wait";
-          raw_pool2->async([&runner, job, &num_of_finished_tasks,
-                            inputs = std::move(inputs),
-                            outputs = std::move(outputs)]() mutable {
+          // TODO: MSVC does not support move lambda well
+          /*Error
+              C2280
+             'std::unique_ptr<vart::TensorBuffer,std::default_delete<_Ty>>::unique_ptr(const
+             std::unique_ptr<_Ty,std::default_delete<_Ty>> &)' : attempting to
+             reference a deleted function test_dummy_runner C
+              :\msvsn2017\VC\Tools\MSVC\14.14.26428\include \xmemory0 920
+           */
+
+         
+		  raw_pool2->async([
+            &runner, job, &num_of_finished_tasks, inputs2 = std::move(inputs),
+            outputs2 = std::move(outputs)
+          ]() mutable {
             LOG_IF(INFO, false)
                 << "waiting for job "
                 << " job_id=" << job.first << " status=" << job.second;
@@ -78,6 +89,7 @@ int main(int argc, char* argv[]) {
             num_of_finished_tasks++;
           });
           LOG_IF(INFO, false) << "after async wait";
+		  
         } else {
           LOG(ERROR) << " cannot create job "
                      << " job_id=" << job.first << " status=" << job.second;

@@ -128,8 +128,8 @@ static std::string slurp(const char* filename) {
   return sstr.str();
 }
 
-static vitis::ai::proto::DpuModelParam get_config(
-    const std::string& model_name) {
+static vitis::ai::proto::DpuModelParam get_config(const std::string& model_name,
+                                                  xir::Attrs* attrs) {
 #ifdef ENABLE_DPUCADX8G_RUNNER
   //# skip xmodel reading for DPUV1
   auto config_file = find_config_file(model_name);
@@ -145,6 +145,10 @@ static vitis::ai::proto::DpuModelParam get_config(
       << "config_file " << config_file << " "       //
       << "content: " << mlist.DebugString() << " "  //
       ;
+  const auto& model = mlist.model(0);
+  if (model.use_graph_runner()) {
+    attrs->set_attr("use_graph_runner", true);
+  }
   return mlist.model(0);
 }
 
@@ -159,17 +163,11 @@ static std::vector<float> get_scales(
 
 #ifdef ENABLE_DPUCADX8G_RUNNER
 //# Skip xmodel reding for DPUV1
-static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name) {
-  return DpuTask::create(model_name);
-}
 static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name,
                                            xir::Attrs* attrs) {
   return DpuTask::create(model_name, attrs);
 }
 #else
-static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name) {
-  return DpuTask::create(find_model(model_name));
-}
 static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name,
                                            xir::Attrs* attrs) {
   return DpuTask::create(find_model(model_name), attrs);
@@ -178,20 +176,22 @@ static std::unique_ptr<DpuTask> init_tasks(const std::string& model_name,
 
 ConfigurableDpuTaskImp::ConfigurableDpuTaskImp(const std::string& model_name,
                                                bool need_preprocess)
-    : tasks_{init_tasks(model_name)},  //
-      model_{get_config(model_name)} {
+    : default_attrs_{xir::Attrs::create()},
+      model_{get_config(model_name, default_attrs_.get())},
+      tasks_{init_tasks(model_name, default_attrs_.get())}  //
+{
   if (need_preprocess) {
     auto mean = get_means(model_.kernel(0));
     auto scale = get_scales(model_.kernel(0));
     tasks_->setMeanScaleBGR(mean, scale);
   }
-}
+}  // namespace ai
 
 ConfigurableDpuTaskImp::ConfigurableDpuTaskImp(const std::string& model_name,
                                                xir::Attrs* attrs,
                                                bool need_preprocess)
-    : tasks_{init_tasks(model_name, attrs)},  //
-      model_{get_config(model_name)} {
+    : model_{get_config(model_name, attrs)},  //
+      tasks_{init_tasks(model_name, attrs)} {
   if (need_preprocess) {
     auto mean = get_means(model_.kernel(0));
     auto scale = get_scales(model_.kernel(0));
@@ -252,13 +252,13 @@ ConfigurableDpuTaskImp::getOutputTensor() const {
 }
 
 void ConfigurableDpuTaskImp::setInputDataArray(
-    const std::vector<int8_t>& array) {
-  tasks_->setInputDataArray(array);
+    const std::vector<int8_t>& array, size_t ind=0) {
+  tasks_->setInputDataArray(array, ind);
 }
 
 void ConfigurableDpuTaskImp::setInputDataArray(
-    const std::vector<std::vector<int8_t>>& arrays) {
-  tasks_->setInputDataArray(arrays);
+    const std::vector<std::vector<int8_t>>& arrays,size_t ind=0) {
+  tasks_->setInputDataArray(arrays, ind);
 }
 
 void ConfigurableDpuTaskImp::setInputImageBGR(const cv::Mat& input_image) {
@@ -288,7 +288,7 @@ void ConfigurableDpuTaskImp::setInputImageBGR(
   tasks_->setImageBGR(images);
 }
 
-void ConfigurableDpuTaskImp::setInputImageRGB(const cv::Mat& input_image) {
+void ConfigurableDpuTaskImp::setInputImageRGB(const cv::Mat& input_image, size_t ind) {
   cv::Mat image;
   auto size = cv::Size(getInputWidth(), getInputHeight());
   if (size != input_image.size()) {
@@ -296,11 +296,11 @@ void ConfigurableDpuTaskImp::setInputImageRGB(const cv::Mat& input_image) {
   } else {
     image = input_image;
   }
-  tasks_->setImageRGB(image);
+  tasks_->setImageRGB(image, ind);
 }
 
 void ConfigurableDpuTaskImp::setInputImageRGB(
-    const std::vector<cv::Mat>& input_images) {
+    const std::vector<cv::Mat>& input_images, size_t ind) {
   std::vector<cv::Mat> images;
   auto size = cv::Size(getInputWidth(), getInputHeight());
   for (auto i = 0u; i < input_images.size(); i++) {
@@ -312,7 +312,7 @@ void ConfigurableDpuTaskImp::setInputImageRGB(
       images.push_back(input_images[i]);
     }
   }
-  tasks_->setImageRGB(images);
+  tasks_->setImageRGB(images, ind);
 }
 
 void ConfigurableDpuTaskImp::run(int task_index) {

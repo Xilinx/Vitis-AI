@@ -15,10 +15,9 @@
  */
 
 #include "cmd_dump_txt.hpp"
-
+// must include this first to define XIR_DLLSPEC;
 #include <glog/logging.h>
 #include <google/protobuf/text_format.h>
-#include <openssl/md5.h>
 
 #include <fstream>
 #include <iomanip>
@@ -26,6 +25,8 @@
 #include <vector>
 
 #include "graph_proto_v2.pb.h"
+#include "xir/XirExport.hpp"
+#include "xir/util/tool_function.hpp"
 static inline std::string xxd(const unsigned char* p, int size, int column,
                               int group) {
   std::ostringstream str;
@@ -47,15 +48,6 @@ static inline std::string xxd(const unsigned char* p, int size, int column,
   return str.str();
 }
 
-static std::string md5sum(const std::string& val) {
-  std::vector<unsigned char> result((size_t)MD5_DIGEST_LENGTH, '0');
-  std::ostringstream str;
-  MD5((const unsigned char*)&val[0], val.size(), (unsigned char*)&result[0]);
-  for (const auto x : result) {
-    str << std::hex << std::setfill('0') << std::setw(2) << ((unsigned int)x);
-  }
-  return str.str();
-}
 static std::string dump_string(const std::string& val, const std::string& md5) {
   std::ostringstream str;
   const std::string::size_type max_size = 160u;
@@ -73,7 +65,7 @@ struct MyPrinter : public google::protobuf::TextFormat::FastFieldValuePrinter {
   virtual void PrintBytes(const std::string& val,
                           google::protobuf::TextFormat::BaseTextGenerator*
                               generator) const override {
-    auto md5value = md5sum(val);
+    auto md5value = xir::get_md5_of_buffer(&val[0], val.size());
     std::string n = dump_string(val, md5value);
     generator->PrintString(n);
     if (dump_) {
@@ -108,7 +100,7 @@ std::string CmdDumpTxt::help() const {
       << "\n\t"
       << "e.g. xir " << get_name() << " a.xmodel a.txt"
       << "\n\t"
-      << "when <txt> is missing, it dumps to standard output." << endl;
+      << "when <txt> is missing, it dumps to standard output." << std::endl;
   return str.str();
 }
 

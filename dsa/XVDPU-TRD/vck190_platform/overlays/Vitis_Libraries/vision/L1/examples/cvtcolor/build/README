@@ -1,0 +1,43 @@
+Instructions to test color conversion accel function
+######################################################
+By default the repository contains test data to test RGBA2IYUV color conversion. If additional color conversion needs to be tested then user will need to follow below steps.
+
+Step 1:
+    Create test data directory in ${XF_PROJ_ROOT}/data/cvtcolor. The directory name should match color conversion (all uppercase)
+    Example: For testing NNV12 2 BGR
+        mkdir ${XF_PROJ_ROOT}/data/cvtcolor/NV212BGR
+
+    Note this directory can be created at any other location as well. If created elsewhere then while running test the path needs to specified as TESTDATADIR=<path to directory inside which the new directory above was created>
+
+    Create input and output subfolders in the newly created directory
+    Example: 
+        mkdir ${XF_PROJ_ROOT}/data/cvtcolor/NV212BGR/input
+        mkdir ${XF_PROJ_ROOT}/data/cvtcolor/NV212BGR/output
+    
+Spep 2:
+     Place input test image in 'input' directory and golden output reference image in 'output' directory
+     Example:
+         cp testcase1_RGBA2NV21_Y.png ${XF_PROJ_ROOT}/data/cvtcolor/NV212BGR/input/
+         cp out_VU.png ${XF_PROJ_ROOT}/data/cvtcolor/NV212BGR/input/
+         cp testcase1_NV212RGBA.png ${XF_PROJ_ROOT}/data/cvtcolor/NV212BGR/output/
+
+Step 3:
+     Create a file with file name same as color conversion to be tested (i.e. same as above directory name, all uppercase) in ${XF_PROJ_ROOT}/L1/examples/cvtcolor/build folder.
+     In this file put references to input and output images in order (inputs followed by output)
+     Example:
+      File - NV212BGR
+      Contents
+      $TESTDATADIR/$TEST/input/testcase1_RGBA2NV21_Y.png
+      $TESTDATADIR/$TEST/input/out_VU.png
+      $TESTDATADIR/$TEST/output/testcase1_NV212RGBA.png
+
+      Note in case of IYUV and YUV4 format order of image in above file should be 'Y', 'U' and 'V'
+      Note in case of NV12 and NV21 format order of image in above file should be 'Y', 'UV' 
+
+Step 4:
+     Run the test by passing additional TEST=<color conversion> with make
+     Example:
+         make CSIM=1 TEST=NV212BGR DEVICE='xilinx_u200_xdma_201830_1'
+     
+     In case test data was put in any other location
+         make CSIM=1 TEST=NV212BGR DEVICE='xilinx_u200_xdma_201830_1' TESTDATADIR=<path to directory inside which the new directory above was created>

@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 r"""VAI_Q_TENSORFLOW: Xilinx's Quantize Tool For Tensorflow
 
 This script is designed to quantize a frozen floating point model into fixed point graph and
@@ -83,9 +84,11 @@ Users can use Xilinx's compilers to compile the models using this file and deplo
 import os
 import shutil
 import argparse
+import importlib
 import sys
 import time
 import tempfile
+from copy import deepcopy
 from progressbar import ProgressBar
 
 from tensorflow.python import pywrap_tensorflow
@@ -96,10 +99,12 @@ from tensorflow.python.client.session import Session
 from tensorflow.python.framework import dtypes
 from tensorflow.python.framework import graph_util
 from tensorflow.python.framework import importer
+from tensorflow.python.framework import load_library
 from tensorflow.python.framework import ops
 from tensorflow.python.ops import array_ops
-from tensorflow.python.platform import gfile
 from tensorflow.python.platform import app
+from tensorflow.python.platform import gfile
+from tensorflow.python.platform import resource_loader
 from tensorflow.python.training import checkpoint_management
 from tensorflow.python.training import saver as saver_lib
 
@@ -115,6 +120,7 @@ from tensorflow.contrib.decent_q.python.quantize_graph import *
 #    )
 
 FLAGS = None
+
 
 
 def _parse_input_frozen_graph(input_frozen_graph):
@@ -258,13 +264,14 @@ def _parse_input_fn(input_fn_str):
   return input_fn
 
 
-def _parse_session_config(gpu, gpu_memory_fraction):
+def _parse_session_config(gpu_memory_fraction):
   """Parse session configurations"""
   s_config = config_pb2.ConfigProto()
   s_config.gpu_options.per_process_gpu_memory_fraction = gpu_memory_fraction
   # Disable graph optimizer and rewiter to make sure every quantize node works correctly
-  s_config.graph_options.optimizer_options.opt_level = -1
-  s_config.graph_options.rewrite_options.disable_meta_optimizer = True
+  # the next two operation have been moved into `quantize_frozen` and `dump` function
+  # s_config.graph_options.optimizer_options.opt_level = -1
+  # s_config.graph_options.rewrite_options.disable_meta_optimizer = True
   return s_config
 
 
@@ -289,6 +296,45 @@ def check_float_graph(input_graph_def, input_fn, q_config, s_config):
       sess.run(output_tensors, feed_dict)
   print("INFO: Float Graph Check Done.")
 
+IGNORE_OP_TYPES = ["Enter", "Merge", "LoopCond", "Switch", "Exit", "Less", \
+        "LogicalAnd", "LogicalOr", "LogicalNot", "Assert"]
+def get_shape_info(input_graph_def, input_fn, s_config, ignore_node_names):
+  graph = ops.Graph()
+  with graph.as_default():
+    importer.import_graph_def(input_graph_def, name='')
+    input_tensors = [
+        op.outputs[0] for op in graph.get_operations()
+        if op.type == 'Placeholder'
+    ]
+
+    output_tensors = []
+    output_names = []
+    for op in graph.get_operations():
+      if len(op.outputs) > 0 and op.type not in IGNORE_OP_TYPES \
+           and op.name not in ignore_node_names:
+        output_tensors.append(op.outputs[0])
+        output_names.append(op.name)
+
+
+    output_tensor_val = []
+    with Session(graph=graph, config=s_config) as sess:
+      inputs = input_fn(iter=0)
+      ## just use one image
+      for k,v in inputs.items():
+        inputs[k] = v[0:1]
+      feed_dict = gen_feed_dict(input_tensors, inputs)
+      for t in output_tensors:
+        try:
+          output_tensor_val.append(sess.run(t, feed_dict))
+        except Exception as e:
+          output_tensor_val.append(None)
+      #################################
+    shape_info = {}
+    for name, tensor in zip(output_names, output_tensor_val):
+      if tensor is not None:
+        shape_info[name] = tensor.shape
+    pass
+  return shape_info
 
 def calibrate_frozen(input_graph_def, input_fn, q_config, s_config):
   """Transform float graph to quantized graph and do calibration"""
@@ -323,8 +369,6 @@ def calibrate_frozen(input_graph_def, input_fn, q_config, s_config):
   # Quantized Evaluation
   quantize_eval_graph_def = CreateQuantizeEvaluationGraphDef(
       calib_graph_def, q_config)
-  save_pb_file(quantize_eval_graph_def,
-               os.path.join(q_config.output_dir, "quantize_eval_model.pb"))
   shutil.rmtree(temp_path)
   return quantize_eval_graph_def
 
@@ -347,7 +391,9 @@ def quantize_frozen(input_graph_def,
                     q_config=QuantizeConfig(),
                     s_config=config_pb2.ConfigProto(),
                     skip_check=0,
-                    dump_as_xir=False):
+                    dump_as_xir=False,
+                    fuse_op_config=None,
+                    custom_op_set=set()):
   """Quantize calibrate and then deploy to DPU.
 
   Args:
@@ -366,19 +412,65 @@ def quantize_frozen(input_graph_def,
     deploy_graph_def: A `GraphDef` object, the quantized model for dpu deployment.
   """
 
+  s_config.graph_options.optimizer_options.opt_level = -1
+  s_config.graph_options.rewrite_options.disable_meta_optimizer = True
   if not skip_check:
     check_float_graph(input_graph_def, input_fn, q_config, s_config)
 
   quantize_eval_graph_def = calibrate_frozen(input_graph_def, input_fn,
                                              q_config, s_config)
   # deploy_graph_def = deploy_frozen(quantize_eval_graph_def, q_config)
-  print("INFO: skip create deploy_model.pb")
+  # print("INFO: skip create deploy_model.pb, not support create \
+  #         deploy_model.pb in the future")
+
+  plugin_nodes = {} ##{plugin_name:[node name]}
+  plugin_output_nodes = {}##{plugin_name:[node name]}
+  deploy_model_describe = ""
+  if fuse_op_config:
+    deploy_graph_def = deepcopy(quantize_eval_graph_def)
+
+    namescope_map = get_fuse_config(fuse_op_config)
+    namescope_map = check_namescope_map(namescope_map,
+            deploy_graph_def)
+
+    plugin_nodes, plugin_output_nodes = get_plugin_output(input_graph_def,
+            namescope_map)
+    exclude_nodes = [node for node in deploy_graph_def.node if node.op
+            == "FixNeuron"]
+
+    deploy_graph_def = fuse_ops(deploy_graph_def, namescope_map, exclude_nodes=exclude_nodes)
+
+  ignore_node_names = []
+  target_node_names = []
+  for pn, nodes_lst in plugin_output_nodes.items():
+    target_node_names.extend(nodes_lst)
+  for node in quantize_eval_graph_def.node:
+    if not (node.op in custom_op_set or node.name in target_node_names):
+      ignore_node_names.append(node.name)
+
+  shape_info = get_shape_info(quantize_eval_graph_def, input_fn, s_config,
+          ignore_node_names)
+
+  quantize_eval_graph_def = set_shape_info(quantize_eval_graph_def,
+          shape_info, plugin_output_nodes)
+  save_pb_file(quantize_eval_graph_def,
+               os.path.join(q_config.output_dir, "quantize_eval_model.pb"))
+
+  if fuse_op_config:
+    deploy_graph_def = set_shape_info(deploy_graph_def,
+            shape_info, plugin_output_nodes)
+    deploy_graph_path = os.path.join(q_config.output_dir, "deploy_model.pb")
+    deploy_model_describe = "\n  deploy_model: {} \nplease use this " \
+            " deploy_model.pb to deploy model".format(deploy_graph_path)
+    save_pb_file(deploy_graph_def,
+                 os.path.join(q_config.output_dir, "deploy_model.pb"))
 
   # Summarize Quantize Results
   print("********************* Quantization Summary *********************\
       \nINFO: Output: \
       \n  quantize_eval_model: {} ".format(
-      os.path.join(q_config.output_dir, "quantize_eval_model.pb")))
+      os.path.join(q_config.output_dir, "quantize_eval_model.pb"))
+      + deploy_model_describe)
 
   #  if dump_as_xir:
   #    in_shapes = None
@@ -511,9 +603,13 @@ def dump(input_graph_def,
          output_dir,
          max_dump_batches,
          dump_float,
-         s_config,
-         dump_input_tensors=''):
+         s_config=config_pb2.ConfigProto(),
+         dump_input_tensors='',
+         fuse_op_config=None,
+         custom_op_set=None):
   """Dump weights and activation data"""
+  s_config.graph_options.optimizer_options.opt_level = -1
+  s_config.graph_options.rewrite_options.disable_meta_optimizer = True
   w_q_map = dict()
   a_q_map = dict()
   for node in input_graph_def.node:
@@ -539,6 +635,24 @@ def dump(input_graph_def,
     else:
       importer.import_graph_def(input_graph_def, name='')
 
+    ignore_node_names = []
+    if fuse_op_config:
+      namescope_map = get_fuse_config(fuse_op_config)
+      namescope_map = check_namescope_map(namescope_map,
+              input_graph_def)
+
+      plugin_nodes, plugin_output_nodes = get_plugin_output(input_graph_def,
+              namescope_map)
+
+      output_nodes_path = os.path.join(output_dir, "output_nodes.txt")
+      with open(output_nodes_path, "w") as f:
+        for ns, node_names in plugin_output_nodes.items():
+          f.write("namescope_map [{} : {}] \n".format(ns, " ".join(node_names)))
+      for pn, nodes_lst in plugin_nodes.items():
+        for node_name in nodes_lst:
+          if node_name not in plugin_output_nodes[pn]:
+            ignore_node_names.append(node_name)
+
     # Get fetches
     w_fetch_tensors = []
     w_fetch_names = []
@@ -554,8 +668,17 @@ def dump(input_graph_def,
           a_fetch_names.append(op.name)
       elif dump_float:
         try:
-          a_fetch_tensors.append(op.outputs[0])
-          a_fetch_names.append(op.name)
+          if op.type not in IGNORE_OP_TYPES and \
+                  op.name not in ignore_node_names:
+            a_fetch_tensors.append(op.outputs[0])
+            a_fetch_names.append(op.name)
+          if op.type in custom_op_set:
+            for i in range(1, len(op.inputs)):
+              w_tensor = op.inputs[i]
+              w_op = w_tensor.op
+              if w_op.type == "Const":
+                w_fetch_tensors.append(w_tensor)
+                w_fetch_names.append(w_op.name)
         except KeyError:
           continue
 
@@ -627,6 +750,14 @@ def dump(input_graph_def,
   print("INFO: Dump results are saved in {}.".format(output_dir))
   return
 
+def update_old_model(input_graph_def, save_path):
+  """Update model pb for compatible"""
+  for n in input_graph_def.node:
+    if n.op == "FixNeuron":
+      n.attr['T'].type = dtypes.float32.as_datatype_enum
+  save_pb_file(input_graph_def, save_path)
+  print("INFO: Old version quantized model pb file has been updated to new version and save inplace")
+
 
 def main(unused_args, flags):
   os.environ["CUDA_VISIBLE_DEVICES"] = flags.gpu
@@ -634,6 +765,18 @@ def main(unused_args, flags):
     os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
   if not os.getenv("TF_CPP_MIN_VLOG_LEVEL"):
     os.environ["TF_CPP_MIN_VLOG_LEVEL"] = "2"
+
+
+  custom_op_set = set()
+  if flags.custom_op_so:
+    custom_op_so = flags.custom_op_so.split(",")
+    for so_pair in custom_op_so:
+      op_type, so_path = so_pair.split(":")
+      op_type = op_type.strip()
+      so_path = so_path.strip()
+      custom_op_set.add(op_type)
+      _custom_ops = load_library.load_op_library(
+          resource_loader.get_path_to_datafile(so_path))
 
   if flags.command == "quantize":
     # Parse flags
@@ -663,12 +806,14 @@ def main(unused_args, flags):
                                 simulate_dpu=flags.simulate_dpu,
                                 scale_all_avgpool=flags.scale_all_avgpool,
                                 do_cle=flags.do_cle,
-                                replace_relu6=flags.replace_relu6)
+                                replace_relu6=flags.replace_relu6,
+                                replace_sigmoid=flags.replace_sigmoid)
       input_fn = _parse_input_fn(flags.input_fn)
-      s_config = _parse_session_config(flags.gpu, flags.gpu_memory_fraction)
+      s_config = _parse_session_config(flags.gpu_memory_fraction)
 
       quantize_frozen(input_graph_def, input_fn, q_config, s_config,
-                      flags.skip_check, flags.dump_as_xir)
+                      flags.skip_check, flags.dump_as_xir,
+                      flags.fuse_op_config, custom_op_set)
 
     elif flags.mode == "train":
       input_meta_graph_def = _parse_input_meta_graph(flags.input_meta_graph)
@@ -759,9 +904,14 @@ def main(unused_args, flags):
     os.environ["ARCH_TYPE"] = flags.arch_type
     input_graph_def = _parse_input_frozen_graph(flags.input_frozen_graph)
     input_fn = _parse_input_fn(flags.input_fn)
-    s_config = _parse_session_config(flags.gpu, flags.gpu_memory_fraction)
+    s_config = _parse_session_config(flags.gpu_memory_fraction)
     dump(input_graph_def, input_fn, flags.output_dir, flags.max_dump_batches,
-         flags.dump_float, s_config, flags.dump_input_tensors)
+         flags.dump_float, s_config, flags.dump_input_tensors,
+         flags.fuse_op_config, custom_op_set)
+  elif flags.command == "update":
+    input_graph_def = _parse_input_frozen_graph(flags.input_frozen_graph)
+    update_old_model(input_graph_def, flags.input_frozen_graph)
+
 
   else:
     print("Unknown Command: " + flags.command)
@@ -769,7 +919,7 @@ def main(unused_args, flags):
 
 
 def version_string():
-  version_number = "v1.2.0"
+  version_number = "v2.0.0"
   version = "Vai_q_tensorflow " + version_number
   version += " build for Tensorflow " + pywrap_tensorflow.__version__
   version += "\ngit version " + pywrap_tensorflow.__git_version__
@@ -785,6 +935,7 @@ def usage_string():
       quantize a model: vai_q_tensorflow quantize --input_frozen_graph frozen_graph.pb --input_nodes xxx --output_nodes yyy --input_shapes zzz --input_fn module.calib_input
       inspect a model : vai_q_tensorflow inspect --input_frozen_graph frozen_graph.pb
       dump quantized model : vai_q_tensorflow dump --input_frozen_graph quantize_results/quantize_eval_model.pb --input_fn module.dump_input
+      update old quantized model: vai_q_tensorflow update --input_frozen_graph quantize_results/quantize_eval_model.pb
   """
   return usage
 
@@ -801,7 +952,7 @@ def run_main():
                       type=str,
                       default="",
                       help="Specify a command for vai_q_tensorflow",
-                      choices=['quantize', 'inspect', 'dump', 'deploy'])
+                      choices=['quantize', 'inspect', 'dump', 'deploy', 'update'])
 
   ####################
   #  Main Arguments  #
@@ -847,7 +998,8 @@ def run_main():
       form a pair of parameter joined by a colon, and parameters \
       are comma separated. When specify conv op name only vai_q_tensorflow \
       will quantize weights of conv op using specified bit width . \
-      e.g 'conv1/Relu:16,conv1/weights:8,conv1:16'")
+      e.g 'conv1/Relu:16,conv1/weights:8,conv1:16'  If using python api then \
+      should be used like this, nodes_bit=['input:16','Conv2D:16', 'add:16']")
   parser.add_argument(
       "--nodes_method",
       type=str,
@@ -856,7 +1008,8 @@ def run_main():
       form a pair of parameter joined by a colon, and parameter pairs \
       are comma separated. When specify conv op name only vai_q_tensorflow \
       will quantize weights of conv op using specified method. \
-      e.g 'conv1/Relu:1,depthwise_conv1/weights:2,conv1:1'")
+      e.g 'conv1/Relu:1,depthwise_conv1/weights:2,conv1:1',  If using python api then \
+      should be used like this, nodes_method=['input:0','Conv2D:1', 'add:2']")
   parser.add_argument("--method",
                       type=int,
                       default=1,
@@ -980,6 +1133,24 @@ def run_main():
       "Set to 1 to enable replace relu6 with relu. \
       Set to 0 will skip replacement."
   )
+  parser.add_argument(
+      "--replace_sigmoid",
+      type=int,
+      default=0,
+      choices=[0, 1],
+      help=
+      "Set to 1 to enable replace sigmoid with hard-sigmoid. \
+      Set to 0 will skip replacement."
+  )
+  parser.add_argument(
+      "--custom_op_so",
+      type=str,
+      default="",
+      help=
+      "[experimental function]Pass the op type and path to vitis tensorflow 1.15 quantize tool.  The op type and path \
+      are connected by a colon to form a complete pair of custom op parameters.  If there are multiple \
+      custom *.so that need to be loaded, separate them with a comma.  For example \
+      ParamRelu:_param_relu_ops.so,TimeTwo:_time_two_ops.so")
 
   ############################################
   #  Input Function Configuration Arguments  #
@@ -993,6 +1164,13 @@ def run_main():
       `module_name.input_fn_name`, e.g. 'my_input_fn.input_fn'. The input_fn should take a `int` object as input \
       indicating the calibration step, and should return a dict`(placeholder_node_name : numpy.Array)` object \
       for each call, which will be fed into the model's placeholder nodes.")
+
+  parser.add_argument(
+      "--fuse_op_config",
+      type=str,
+      default="",
+      help=
+      "[experimental function] The json file that indicate how to fuse ops into one.")
 
   ##################################
   #  Dump Configuration Arguments  #

@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: yolov2 detection on voc dataset.
+input size: 448*448
+float ops: 11.56G
+task: detection
+framework: darknet
+prune: '0.66'
+version: 2.0
+files:
+- name: dk_yolov2_voc_448_448_0.66_11.56G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=dk_yolov2_voc_448_448_0.66_11.56G_2.0.zip
+  checksum: 97180a341c83f651c31cd637f8b09c9f
+- name: yolov2_voc_pruned_0_66
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: fd65f0ebbc6ec1a1b9a548a2ed6747ef
+- name: yolov2_voc_pruned_0_66
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-vck190-r2.0.0.tar.gz
+  checksum: 9c4563f950f8b15738198cc41c7cedb0
+- name: yolov2_voc_pruned_0_66
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 2b58d3ce2eb2eb047fbf0b05a57d7653
+- name: yolov2_voc_pruned_0_66
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: b2c4b639af248baf0ae4cc70dbdc9062
+- name: yolov2_voc_pruned_0_66
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 4568e78441f59a9264f26aa9db6314e3
+- name: yolov2_voc_pruned_0_66
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: b393f91fb90ff193e43d93ab05d72fab
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

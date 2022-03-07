@@ -183,14 +183,22 @@ TFSSDPost::~TFSSDPost() {}
 
 static std::string slurp(const char* filename) {
   std::ifstream in;
-  in.open(filename, std::ifstream::in);
   std::stringstream sstr;
-  sstr << in.rdbuf();
-  in.close();
+  try {
+    in.open(filename, std::ifstream::in);
+    sstr << in.rdbuf();
+    in.close();
+    if (sstr.str().empty()) {
+      throw -1;
+    }
+  } catch (...) {
+     std::cerr << "failed to open file " << filename <<"\n";
+  }
   return sstr.str();
 }
 
 TFSSDPost::TFSSDPost(
+    const std::string& model_name,
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
     const vitis::ai::proto::DpuModelParam& config, 
@@ -200,8 +208,22 @@ TFSSDPost::TFSSDPost(
       output_tensors_(output_tensors),
       real_batch_size(real_batch_sizex) {
   // read official tensorflow ssd configure file
-  auto path = dirname + "/" + config.tfssd_param().official_cfg();
-  auto text = slurp(path.c_str());
+  std::string model_namex(model_name);
+  if (model_name.size() > 7 && model_name.substr( model_name.size()-7, 7) == ".xmodel") {
+     size_t pos = 0;
+     if ((pos = model_name.rfind("/")) != std::string::npos) {
+        model_namex = model_name.substr(pos+1, model_name.size()-7-(pos+1) );
+     } else {
+        model_namex = model_name.substr(0, model_name.size()-7);
+     }
+  }
+  std::string cfgpath = dirname + "/" + model_namex + "_officialcfg.prototxt";
+
+  auto text = slurp(cfgpath.c_str());
+  if(text.empty()) {
+     LOG(FATAL) << "parse error for tensorflow offical config file: " << cfgpath;
+  }
+
   google::protobuf::LogSilencer* s1 = new google::protobuf::LogSilencer;
   if (0) {
     std::cerr << "suppress warning of unused variable " << s1 << std::endl;
@@ -210,8 +232,9 @@ TFSSDPost::TFSSDPost(
   object_detection::protos::TrainEvalPipelineConfig tfcfg;
   auto ok = google::protobuf::TextFormat::ParseFromString(text, &tfcfg);
   if (!ok) {
-    LOG(FATAL) << "parse error for tensorflow offical config file: " << path;
+    LOG(FATAL) << "parse error for tensorflow offical config file: " << cfgpath;
   }
+  delete s1;
 
   num_classes_ = (tfcfg.model().ssd().num_classes() + 1);
   score_converter_ =

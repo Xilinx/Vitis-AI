@@ -23,18 +23,20 @@
 #include <utility>
 #include <vitis/ai/profiling.hpp>
 
-#include "regmap_rnn_u50lv.hpp"
 #include "vitis/ai/weak.hpp"
 #include "xir/xrt_device_handle.hpp"
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 template <typename T>
-static std::string dump_binary_data(std::string filename, T* data,
-                                    size_t size) {
+static std::string dump_binary_data(std::string filename, T* data, size_t size,
+                                    bool hexify = true) {
   std::ofstream of(filename);
+  if (hexify) {
+    of << std::hex;
+  }
   for (size_t i = 0; i < size; ++i) {
-    of << std::hex << data[i] << '\n';
+    of << data[i] << '\n';
   }
   of << std::dec;
   return " Done";
@@ -43,23 +45,10 @@ static std::string dump_binary_data(std::string filename, T* data,
 namespace vart {
 namespace xrnn {
 
-static std::map<const std::string, std::vector<size_t>*> batch_addr_map{
-    {"u50_cu0", &U50_HBM_BATCH3_CU0},
-    {"u50_cu1", &U50_HBM_BATCH4_CU1},
-};
-
-static std::map<const std::string, std::vector<size_t>*> init_addr_map{
-    {"u50_cu0", &U50_DDR_INIT_ADDR_CU0},
-    {"u50_cu1", &U50_DDR_INIT_ADDR_CU1},
-};
-
-std::mutex RnnControllerU50LV::mutex_;
-
 std::vector<uint32_t> RnnControllerU50LV::get_reg_data(int frame,
                                                        int thread_index) {
   std::vector<uint32_t> regs_array(MAX_REG_ADDR / 4, 0);
 
-  auto core_id = xrt_cu_->get_core_id(idx_);
   std::string board = get_board_name();
 
   // TODO : How I/O address changes w.r.t core-id ?
@@ -69,11 +58,11 @@ std::vector<uint32_t> RnnControllerU50LV::get_reg_data(int frame,
     regs_array[REG_MODEL_BASE_ADDR_L / 4] = 0x0000'0000;
     regs_array[REG_PROF_START_ADDR_L / 4] = 0x0800'0000;
     regs_array[REG_PROF_EN / 4] = 0x0000'0001;
-    if (core_id == 0) {
+    if (idx_ == 0) {
       regs_array[REG_INSTR_BASE_ADDR_H / 4] = 0x0000'0001;
       regs_array[REG_INPUT_BASE_ADDR_H / 4] = 0x0000'0001;
       regs_array[REG_PROF_START_ADDR_H / 4] = 0x0000'0001;
-    } else if (core_id == 1) {
+    } else if (idx_ == 1) {
       regs_array[REG_INSTR_BASE_ADDR_H / 4] = 0x0000'0000;
       regs_array[REG_INPUT_BASE_ADDR_H / 4] = 0x0000'0000;
       regs_array[REG_PROF_START_ADDR_H / 4] = 0x0000'0000;
@@ -91,9 +80,8 @@ std::string RnnControllerU50LV::get_board_name() {
 }
 
 std::string RnnControllerU50LV::get_addr_name() {
-  auto core_id = xrt_cu_->get_core_id(idx_);
   std::string board = get_board_name();
-  return board + "_cu" + std::to_string(core_id);
+  return board + "_cu" + std::to_string(idx_);
 }
 
 size_t RnnControllerU50LV::get_base_addr(unsigned batch_num) {
@@ -106,6 +94,14 @@ size_t RnnControllerU50LV::get_base_addr(unsigned batch_num) {
   return base_addrs[batch_num];
 }
 
+const std::vector<size_t>& RnnControllerU50LV::get_init_addr() {
+  std::string addr_name = get_addr_name();
+  CHECK(init_addr_map.count(addr_name) == 1)
+      << "Can Not Find Addr For " << addr_name;
+  const std::vector<size_t>& base_addrs = *init_addr_map[addr_name];
+  return base_addrs;
+}
+
 int RnnControllerU50LV::get_batch_size() { return batch_; }
 
 RnnControllerU50LV::RnnControllerU50LV(size_t device_core_id,
@@ -114,8 +110,8 @@ RnnControllerU50LV::RnnControllerU50LV(size_t device_core_id,
       xrt_cu_{std::move(xrt_cu)},
       memory_{vitis::ai::WeakStore<size_t, xir::DeviceMemory>::create(
           xrt_cu_->get_device_id(idx_), xrt_cu_->get_device_id(idx_))} {
+  batch_ = idx_ == 0 ? 3 : 4;
   auto core_id = xrt_cu_->get_core_id(idx_);
-  batch_ = core_id == 0 ? 3 : 4;
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
       << "Initialised RnnControllerU50LV : idx_" << idx_ << "; core_id "
       << core_id << "; batch " << batch_;
@@ -135,8 +131,8 @@ void RnnControllerU50LV::run(char* in, uint64_t isize, char* out,
   std::vector<uint32_t> reg_data = get_reg_data(frame, thread_index);
   __TOC__(REG_COMPUTE)
   LOG_IF(INFO, ENV_PARAM(DEBUG_DUMP_DATA))
-      << "Dumping u50 register to u50_reg_v2.log ..."
-      << dump_binary_data("u50_reg_v2.log", reg_data.data(), reg_data.size());
+      << "Dumping basic register to reg_v2.log ..."
+      << dump_binary_data("reg_v2.log", reg_data.data(), reg_data.size());
 
   __TIC__(INPUT_UPLOAD)
   for (auto i = 0; i < batch; i++) {
@@ -150,7 +146,7 @@ void RnnControllerU50LV::run(char* in, uint64_t isize, char* out,
         << "Writing input to in_v2_b" << i << ".log... " << std::hex
         << dump_binary_data("in_v2_b" + std::to_string(i) + ".log",
                             reinterpret_cast<int16_t*>(in + i * isize),
-                            isize / 2);
+                            isize / 2, /*hexify*/ false);
     memory_->upload(
         (void*)(in + i * isize),
         (size_t)(base_addr + ADDR(VECTOR) + thread_index * THREAD_STEP),
@@ -158,12 +154,12 @@ void RnnControllerU50LV::run(char* in, uint64_t isize, char* out,
   }
   __TOC__(INPUT_UPLOAD)
 
-  // mutex_.lock();
   auto func = [=](ert_start_kernel_cmd* ecmd) -> void {
-    auto rsz = (0x2e0 / 4 + 1) + 1;  // regmap array size
+    auto rsz = (MAX_REG_ADDR / 4 + 1) + 1;  // regmap array size
     ecmd->count = 1 + rsz;
 
     ecmd->data[0x00] = 0x00;
+
     for (unsigned i = 1; i < reg_data.size(); i++) {
       ecmd->data[i] = reg_data[i];
     }
@@ -199,7 +195,7 @@ void RnnControllerU50LV::run(char* in, uint64_t isize, char* out,
               << "Writing output to out_v2_b" << i << ".log... " << std::hex
               << dump_binary_data("out_v2_b" + std::to_string(i) + ".log",
                                   reinterpret_cast<int16_t*>(out + i * osize),
-                                  osize / 2);
+                                  osize / 2, /*hexify*/ false);
         }
         __TOC__(OUTPUT_DOWNLOAD)
       },
@@ -208,17 +204,12 @@ void RnnControllerU50LV::run(char* in, uint64_t isize, char* out,
         LOG(INFO) << "xrnn controller timeout! "
                   << "core_id = " << core_id << "\n";
       });
-
-  // mutex_.unlock();
 }
 
 RnnControllerU50LV::~RnnControllerU50LV() {}
 
 void RnnControllerU50LV::init(char* ddr, uint64_t size) {
-  std::string addr_name = get_addr_name();
-  CHECK(init_addr_map.count(addr_name) == 1)
-      << "Can Not Find DDR Init Addr For " << addr_name;
-  std::vector<size_t>& init_addrs = *init_addr_map[addr_name];
+  const std::vector<size_t>& init_addrs = get_init_addr();
 
   for (unsigned i = 0; i < init_addrs.size(); i++) {
     LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
@@ -230,18 +221,25 @@ void RnnControllerU50LV::init(char* ddr, uint64_t size) {
 void RnnControllerU50LV::update(int frame, ModelConfig* mc, uint32_t* p_ddr,
                                 size_t size) {
   __TIC__(INSTR_COMPUTE)
+  constexpr uint32_t NREGS_PER_ROW = 4;
+  constexpr uint32_t HEADER_REGS = 8;   // 2 rows (head_len && instr_count)
+  constexpr uint32_t L0_SKIP_REGS = 4;  // Layer 0 has extra row for end_instr
+
+  constexpr int reg_step = 0x30;
+  constexpr int reg_load0 = 0x00;
+  constexpr int reg_load1 = 0x04;
+  // constexpr int reg_save0 = 0x20;
+  constexpr int reg_save1 = 0x24;
   nlayers_ = mc->get_layer_num();
-  int reg_step = 0x30;
-  int reg_load0 = 0x30;
-  int reg_load1 = 0x34;
-  // int reg_save0 = 0x50;
-  int reg_save1 = 0x54;
 
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER)) << "layers: " << nlayers_;
 
-  int ddr_regs_ptr = 0;
+  const auto& ddr_layout = mc->get_ddr_layout();
   for (int i = 0; i < nlayers_; i++) {
-    ddr_regs_ptr += (i == 0) ? 0 : (mc->get_layer_instr_len(i - 1, batch_));
+    int ddr_regs_ptr = ddr_layout[i * 3] * NREGS_PER_ROW + HEADER_REGS;
+    if (i == 0) {
+      ddr_regs_ptr += L0_SKIP_REGS;
+    }
 
     int dir_val = (mc->get_reg_dir(i, CONFIG_NAME::LOAD0) == 1) ? 0 : 1;
     int offset_load0 =
@@ -254,36 +252,33 @@ void RnnControllerU50LV::update(int frame, ModelConfig* mc, uint32_t* p_ddr,
     for (int b = 0; b < batch_; b++) {
       uint32_t batch_base = get_base_addr(b) & 0xFFFFFFFF;
       if (i % 2 == 0) {
-        p_ddr[(ddr_regs_ptr + (reg_load0 + reg_step * b)) / 4] =
+        p_ddr[ddr_regs_ptr + (reg_load0 + reg_step * b) / 4] =
             batch_base + ADDR(VECTOR) + offset_load0;
-        p_ddr[(ddr_regs_ptr + (reg_load1 + reg_step * b)) / 4] =
+        p_ddr[ddr_regs_ptr + (reg_load1 + reg_step * b) / 4] =
             batch_base + ADDR(RESL) + offset_load1;
-        p_ddr[(ddr_regs_ptr + (reg_save1 + reg_step * b)) / 4] =
+        p_ddr[ddr_regs_ptr + (reg_save1 + reg_step * b) / 4] =
             batch_base + ADDR(RESL) + offset_save1;
       } else {
-        p_ddr[(ddr_regs_ptr + (reg_load0 + reg_step * b)) / 4] =
+        p_ddr[ddr_regs_ptr + (reg_load0 + reg_step * b) / 4] =
             batch_base + ADDR(RESL) + offset_load0;
-        p_ddr[(ddr_regs_ptr + (reg_load1 + reg_step * b)) / 4] =
+        p_ddr[ddr_regs_ptr + (reg_load1 + reg_step * b) / 4] =
             batch_base + ADDR(VECTOR) + offset_load1;
-        p_ddr[(ddr_regs_ptr + (reg_save1 + reg_step * b)) / 4] =
+        p_ddr[ddr_regs_ptr + (reg_save1 + reg_step * b) / 4] =
             batch_base + ADDR(VECTOR) + offset_save1;
       }
     }
   }
 
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER)) << "update ddr";
-  std::string addr_name = get_addr_name();
-  CHECK(init_addr_map.count(addr_name) == 1)
-      << "Can Not Find DDR Init Addr For " << addr_name;
-  std::vector<size_t>& init_addrs = *init_addr_map[addr_name];
+  const std::vector<size_t>& init_addrs = get_init_addr();
 
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
       << "instruction: " << std::hex << init_addrs[0] + ADDR(INSTR);
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRNN_CONTROLLER))
       << "p_ddr @" << p_ddr << "size: " << size;
   LOG_IF(INFO, ENV_PARAM(DEBUG_DUMP_DATA))
-      << "Dumping ddr register to u50_ddr_reg_v2.log ..."
-      << dump_binary_data("u50_ddr_reg_v2.log", (uint32_t*)p_ddr, size / 4);
+      << "Dumping ddr register to ddr_reg_v2.log ..."
+      << dump_binary_data("ddr_reg_v2.log", (uint32_t*)p_ddr, size / 4);
   __TOC__(INSTR_COMPUTE)
 
   __TIC__(INSTR_UPLOAD)

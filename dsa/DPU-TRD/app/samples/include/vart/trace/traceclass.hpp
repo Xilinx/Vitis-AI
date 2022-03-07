@@ -17,7 +17,6 @@
 #pragma once
 #include <assert.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <algorithm>
 #include <chrono>
 #include <fstream>
@@ -36,18 +35,20 @@
 #include "vaitrace_dbg.hpp"
 
 namespace vitis::ai::trace {
-using namespace std;
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
 extern bool is_enabled(void);
 
 template <typename TrFun, typename T>
 class tevent : public traceEventBase {
  public:
   tevent(TrFun& tf, T& pl)
-      : traceEventBase(sizeof(pl)), translate_f(tf), payload(pl) {
-  }
+      : traceEventBase(sizeof(pl)), translate_f(tf), payload(pl) {}
 
-  ~tevent() {
-  }
+  ~tevent() {}
 
   trace_entry_t get() {
     auto trace_entry = traceEventBase::get();
@@ -103,17 +104,19 @@ class traceClass {
       auto pos = 2 * i;
       ret.insert(make_pair(buf[pos], buf[pos + 1]));
     }
-    //get_infobase()->push_back(ret);
+    // get_infobase()->push_back(ret);
     push_info(ret);
   };
 
-  function<trace_entry_t(vector<string>)> translate_f =
-      [this](vector<string> data) {
+  std::function<trace_entry_t(std::vector<std::string>)> translate_f =
+      [this](std::vector<std::string> data) {
         trace_entry_t ret;
 
-        ret.insert(make_pair("classname", this->classname));
-
-        auto col_num = std::min((uint32_t)data.size(), column_num);
+        ret.insert(std::make_pair("classname", this->classname));
+        uint32_t data_size = (uint32_t)data.size();
+        // MSVC NOTE: must use std::min<uint32_t> instead of std::min, otherwise
+        // strange compilation error illegal token.
+        auto col_num = std::min<uint32_t>(data_size, column_num);
 
         for (size_t i = 0; i < col_num; i++) {
           ret.insert(make_pair(this->column_names[i], data[i]));

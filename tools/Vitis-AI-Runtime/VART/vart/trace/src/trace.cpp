@@ -15,13 +15,30 @@
  */
 
 #include <signal.h>
+
 #include <map>
 #include <vitis/ai/trace.hpp>
-#include "internal.hpp"
 
+#include "internal.hpp"
+#if _WIN32
+#include <windows.h>
+#else
+#include <sys/syscall.h>
+#include <sys/sysinfo.h>
+#include <sys/types.h>
+
+#define gettid() syscall(SYS_gettid)
+#define getpid() syscall(SYS_getpid)
+#endif
 namespace vitis::ai::trace {
-using namespace std;
-using namespace chrono;
+
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
+
+using namespace std::chrono;
 
 DEF_ENV_PARAM(DEBUG_VAITRACE, "0");
 
@@ -30,51 +47,47 @@ void handler(int param) {
   exit(param);
 }
 
-void print_opt(vai_trace_options_t &options) {
-    for(auto &o : options){
-        VAITRACE_DBG << "[options]" << o.first << ":" << o.second;
-    }
+void print_opt(vai_trace_options_t& options) {
+  for (auto& o : options) {
+    VAITRACE_DBG << "[options]" << o.first << ":" << o.second;
+  }
 };
 
-trace_controller::trace_controller(vai_trace_options_t options): enabled(false) {
-    enabled = bool(stoi(options["enable"], nullptr));
+trace_controller::trace_controller(vai_trace_options_t options)
+    : enabled(false) {
+  enabled = bool(stoi(options["enable"], nullptr));
 
-    if (!enabled)
-        return;
+  if (!enabled) return;
 
-    print_opt(options);
+  print_opt(options);
 
-    size_t buf_size_mb = stoi(options["buf_size_mb"], nullptr);
-    p_rbuf = new vai_trace_q_t(buf_size_mb);
+  size_t buf_size_mb = stoi(options["buf_size_mb"], nullptr);
+  p_rbuf = new vai_trace_q_t(buf_size_mb);
 
-    CHECK(p_rbuf != nullptr);
+  CHECK(p_rbuf != nullptr);
 
-    logger_dir_path = options["trace_log_dir"];
-    logger_file_path = options["logger_file_path"];
+  logger_dir_path = options["trace_log_dir"];
+  logger_file_path = options["logger_file_path"];
 
-    signal(SIGINT, handler);
-    signal(SIGTERM, handler);
-  };
+  signal(SIGINT, handler);
+  signal(SIGTERM, handler);
+};
 
 trace_controller::~trace_controller() {
-    dump();
-    free (p_rbuf);
+  dump();
+  free(p_rbuf);
 };
 
-string trace_controller::get_logger_file_path() {
-    return logger_file_path;
-};
-string trace_controller::get_logger_dir_path() {
-    return logger_dir_path;
-};
+string trace_controller::get_logger_file_path() { return logger_file_path; };
+string trace_controller::get_logger_dir_path() { return logger_dir_path; };
 
 void trace_controller::push_info(trace_entry_t i) {
-  lock_guard<mutex> lock(infobase_lock);
+  std::lock_guard<std::mutex> lock(infobase_lock);
   infobase.push_back(i);
 }
 
-//vector<trace_entry_t> infobase;
-//mutex infobase_lock;
+// vector<trace_entry_t> infobase;
+// mutex infobase_lock;
 
 void trace_time_sync(const char* tag) {
   auto tp = steady_clock::now().time_since_epoch();
@@ -85,8 +98,13 @@ void trace_time_sync(const char* tag) {
 }
 
 /* Return 1 if env VAI_TRACE_ENABLE set */
-bool check_env(vai_trace_options_t &options) {
-  auto pid = getpid();
+bool check_env(vai_trace_options_t& options) {
+  auto pid =
+#if _WIN32
+      GetCurrentProcessId();
+#else
+      gettid();
+#endif
   options["pid"] = to_string(pid);
 
   auto enable = getenv("VAI_TRACE_ENABLE") ? true : false;
@@ -94,7 +112,8 @@ bool check_env(vai_trace_options_t &options) {
 
   if (!enable) return false;
 
-  auto buf_size_mb = getenv("VAI_TRACE_RBUF_MB") ? getenv("VAI_TRACE_RBUF_MB") : "2";
+  auto buf_size_mb =
+      getenv("VAI_TRACE_RBUF_MB") ? getenv("VAI_TRACE_RBUF_MB") : "2";
   options["buf_size_mb"] = buf_size_mb;
 
   auto trace_log_dir =
@@ -116,18 +135,14 @@ vai_trace_options_t initialize() {
   return options;
 };
 
-bool is_enabled() {
-    return get_trace_controller_inst().is_enabled();
-};
+bool is_enabled() { return get_trace_controller_inst().is_enabled(); };
 
 void disable_trace() {
   VAITRACE_DBG << "Disabling...";
   get_trace_controller_inst().disable();
 };
 
-void push_info(trace_entry_t i) {
-  get_trace_controller_inst().push_info(i);
-};
+void push_info(trace_entry_t i) { get_trace_controller_inst().push_info(i); };
 
 void dump() {
   if (!is_enabled()) return;
@@ -140,7 +155,7 @@ void dump() {
 
   trace_entry_t section_flag;
 
-  section_flag.insert(make_pair("#SECTION", "INFO"));
+  section_flag.insert(std::make_pair("#SECTION", "INFO"));
 
   // Add timesync
   trace_time_sync("vart_tracer");
@@ -153,7 +168,7 @@ void dump() {
 
   // Get Trace
   section_flag.erase("#SECTION");
-  section_flag.insert(make_pair("#SECTION", "TRACE"));
+  section_flag.insert(std::make_pair("#SECTION", "TRACE"));
   o_data.push_back(section_flag);
   get_rbuf()->lock();
 

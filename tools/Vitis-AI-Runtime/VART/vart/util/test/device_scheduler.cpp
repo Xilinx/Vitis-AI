@@ -19,6 +19,17 @@ using namespace std;
 
 namespace vart {
 namespace dpu {
+	test_injector_DLLSPEC std::unique_ptr<DeviceScheduler> DeviceScheduler::create(
+    int v) {
+  cout << "creating device scheduler1." << endl;
+  cout << "factory method = " << (void*)with_injection_t::the_factory_method<int&&> << endl;
+  return DeviceScheduler::create0(std::move(v));
+}
+test_injector_DLLSPEC std::unique_ptr<DeviceScheduler> DeviceScheduler::create(
+    const char* x, int v){
+  cout << "creating device scheduler2. x=" << x << endl;
+  return DeviceScheduler::create0(std::move(x), std::move(v));
+}
 void DeviceScheduler::initialize() {
   std::cerr << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__ << "]"  //
             << std::endl;

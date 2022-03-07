@@ -15,19 +15,43 @@
  */
 
 #include "xir/util/tool_function.hpp"
-#include <openssl/md5.h>
+
 #include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <typeindex>
+
+#include "./md5.h"
 #include "UniLog/UniLog.hpp"
 #include "config.hpp"
 #include "internal_util.hpp"
+#include "xir/op/op_def.hpp"
+#include "xir/op/op_def_factory_imp.hpp"
+#include "xir/op/shape_inference.hpp"
 #include "xir/util/data_type.hpp"
 
 namespace xir {
+
+static const std::string md5sum_to_string(const unsigned char* md5sum) {
+  std::stringstream ss;
+  for (std::uint32_t idx = 0; idx < MD5_DIGEST_LENGTH; idx++) {
+    ss << std::setfill('0') << std::setw(2) << std::hex
+       << static_cast<std::uint32_t>(md5sum[idx]);
+  }
+  return ss.str();
+}
+
+const std::string get_md5_of_buffer(const void* buf, size_t size) {
+  MD5_CTX ctx;
+  MD5Init(&ctx);
+  MD5Update(&ctx, buf, size);
+  unsigned char md5sum[MD5_DIGEST_LENGTH];
+  MD5Final(&md5sum[0], &ctx);
+  return md5sum_to_string(&md5sum[0]);
+}
 
 const std::string get_md5_of_file(const std::string& filepath) {
   std::ifstream file(filepath.c_str(), std::ifstream::in);
@@ -39,24 +63,18 @@ const std::string get_md5_of_file(const std::string& filepath) {
   const std::uint32_t buffer_size = 1024;
   char* buffer;
   buffer = new char[buffer_size];
-
   auto read_size = file.readsome(buffer, buffer_size);
   unsigned char md5sum[MD5_DIGEST_LENGTH];
   MD5_CTX md5_context;
-  MD5_Init(&md5_context);
+  MD5Init(&md5_context);
   while (read_size) {
-    MD5_Update(&md5_context, buffer, read_size);
+    MD5Update(&md5_context, buffer, read_size);
     read_size = file.readsome(buffer, buffer_size);
   }
-  MD5_Final(md5sum, &md5_context);
-  std::stringstream ss;
-  for (std::uint32_t idx = 0; idx < MD5_DIGEST_LENGTH; idx++) {
-    ss << std::setfill('0') << std::setw(2) << std::hex
-       << static_cast<std::uint32_t>(md5sum[idx]);
-  }
-  const std::string ret = ss.str();
+  MD5Final(md5sum, &md5_context);
   delete[] buffer;
   file.close();
+  auto ret = md5sum_to_string(md5sum);
   UNI_LOG_DEBUG_INFO << "md5sum(" << filepath << ") = " << ret << ".";
   return ret;
 }
@@ -163,6 +181,51 @@ float xround(const float& data, const std::string& round_mode) {
            "contact us.";
   }
   return ret;
+}
+
+void register_customized_operator_definition(const std::string& name,
+                                             const std::string& type) {
+  UNI_LOG_WARNING
+      << "The operator named " << name << ", type: " << type
+      << ", is not defined in XIR. XIR creates the definition of this "
+         "operator automatically. "
+      << "You should specify the shape and "
+         "the data_type of the output tensor of this operation by "
+         "set_attr(\"shape\", std::vector<int>) and "
+         "set_attr(\"data_type\", std::string)";
+  auto new_operator =
+      xir::OpDef(type)
+          .add_input_arg(xir::OpArgDef{"input", OpArgDef::REPEATED,
+                                       xir::DataType::FLOAT, ""})
+          .add_attr(xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+              "shape", AttrDef::REQUIRED, 0,
+              "`Datatype`: `vector<int>`\n\n"
+              "The shape of the output tensor"))
+          .add_attr(xir::AttrDefBuilder<std::string>::build(
+              "data_type", AttrDef::REQUIRED,
+              "`Datatype`: `string`\n\n"
+              "The data type of the data of output feature maps, "
+              "we use FLOAT32 as the default."))
+          .set_annotation("This operator is not defined by XIR.")
+          .set_shape_infer(xir::shape_infer_data);
+  op_def_factory()->register_h(new_operator);
+}
+
+std::vector<float> get_float_vec_from_any(const xir::any& any) {
+  auto type = std::type_index(any.type());
+  auto f_vec = std::type_index(typeid(std::vector<float>));
+  auto i_vec = std::type_index(typeid(std::vector<std::int32_t>));
+  std::vector<float> fs;
+  if (type == i_vec) {
+    auto is = std::any_cast<std::vector<std::int32_t>>(any);
+    for (auto i : is) fs.push_back(static_cast<float>(i));
+  } else if (type == f_vec) {
+    fs = std::any_cast<std::vector<float>>(any);
+  } else {
+    UNI_LOG_ERROR(XIR_INVALID_ARG_OCCUR)
+        << "I cannot transform this xir::any to float.";
+  }
+  return fs;
 }
 
 }  // namespace xir

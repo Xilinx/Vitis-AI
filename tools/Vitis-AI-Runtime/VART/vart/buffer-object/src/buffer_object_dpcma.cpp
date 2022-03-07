@@ -26,9 +26,9 @@
 #include <vitis/ai/env_config.hpp>
 
 #include "./buffer_object_fd.hpp"
-#include "./dpcma_driver.h"
+#include "./dpu.h"
 #include "vitis/ai/xxd.hpp"
-
+#define DEV "/dev/dpu"
 DEF_ENV_PARAM(DEBUG_BUFFER_OBJECT, "0")
 
 namespace {
@@ -41,10 +41,10 @@ static int read_env(const char* name, int default_value) {
 BufferObjectDpCma::BufferObjectDpCma(
     size_t size, size_t device_id /* not used */,
     const std::string& cu_name /* std::string("") not used*/)
-    : BufferObject(),                                                   //
-      size_{size},                                                      //
-      cache_{read_env("BUFFER_OBJECT_CACHE", 1) != 0},                  //
-      fd_{vitis::xir::buffer_object_fd::create("/dev/dpcma", O_RDWR)},  //
+    : BufferObject(),                                          //
+      size_{size},                                             //
+      cache_{read_env("BUFFER_OBJECT_CACHE", 1) != 0},         //
+      fd_{vitis::xir::buffer_object_fd::create(DEV, O_RDWR)},  //
       mm_fd_{cache_ ? nullptr
                     : vitis::xir::buffer_object_fd::create("/dev/mem",
                                                            O_RDWR | O_SYNC)},
@@ -52,8 +52,8 @@ BufferObjectDpCma::BufferObjectDpCma(
       data_{nullptr},          //
       data_dev_mem_{nullptr},  //
       phy_{0} {
-  buffer_object_req_alloc req_alloc{size_, 0, 0};
-  auto r = ioctl(fd_->fd(), BUFFER_OBJECT_ALLOC, &req_alloc);
+  dpcma_req_alloc req_alloc{size_, 0, 0};
+  auto r = ioctl(fd_->fd(), DPUIOC_CREATE_BO, &req_alloc);
   CHECK_EQ(r, 0) << ", cannot allocate memory";
   phy_ = req_alloc.phy_addr;
   CHECK_EQ(static_cast<decltype(req_alloc.phy_addr)>(phy_), req_alloc.phy_addr)
@@ -73,8 +73,8 @@ BufferObjectDpCma::BufferObjectDpCma(
 BufferObjectDpCma::~BufferObjectDpCma() {
   munmap(data_, capacity_);
   if (!cache_) munmap(data_dev_mem_, capacity_);
-  buffer_object_req_free req_free{(phy_addr_t)phy_};
-  auto r = ioctl(fd_->fd(), BUFFER_OBJECT_FREE, &req_free);
+  auto req_free = dpcma_req_free{(u64)phy_};
+  auto r = ioctl(fd_->fd(), DPUIOC_FREE_BO, &req_free);
   CHECK_EQ(r, 0) << ", cannot free memory";
 }
 
@@ -98,9 +98,9 @@ void BufferObjectDpCma::sync_for_read(uint64_t offset, size_t size) {
                                                << "size " << size << " "      //
                                                << std::endl;
   if (cache_) {
-    buffer_object_req_sync req_sync{(phy_addr_t)(phy_ + offset), size,
-                                    BUFFER_OBJECT_FROM_DEVICE_TO_CPU};
-    auto r = ioctl(fd_->fd(), BUFFER_OBJECT_SYNC, &req_sync);
+    dpcma_req_sync req_sync{(u64)(phy_ + offset), size,
+                            DPCMA_FROM_DEVICE_TO_CPU};
+    auto r = ioctl(fd_->fd(), DPUIOC_SYNC_BO, &req_sync);
     CHECK_EQ(r, 0) << ",ioctl error";
   }
   /*  LOG(INFO) << "CACHE:\n"
@@ -131,9 +131,9 @@ void BufferObjectDpCma::sync_for_write(uint64_t offset, size_t size) {
                                                << "size " << size << " "      //
                                                << std::endl;
   if (cache_) {
-    buffer_object_req_sync req_sync{(phy_addr_t)(phy_ + offset), size,
-                                    BUFFER_OBJECT_FROM_CPU_TO_DEVICE};
-    auto r = ioctl(fd_->fd(), BUFFER_OBJECT_SYNC, &req_sync);
+    dpcma_req_sync req_sync{(u64)(phy_ + offset), size,
+                            DPCMA_FROM_CPU_TO_DEVICE};
+    auto r = ioctl(fd_->fd(), DPUIOC_SYNC_BO, &req_sync);
     CHECK_EQ(r, 0) << ",ioctl error";
   }
 }
@@ -164,7 +164,7 @@ void BufferObjectDpCma::copy_to_host(void* buf, size_t size, size_t offset) {
 }  // namespace
 REGISTER_INJECTION_BEGIN(xir::BufferObject, 2, BufferObjectDpCma, size_t&,
                          size_t&, const std::string&) {
-  auto fd = open("/dev/dpcma", O_RDWR);
+  auto fd = open(DEV, O_RDWR);
   auto ret = fd >= 0;
   close(fd);
   LOG_IF(INFO, ENV_PARAM(DEBUG_BUFFER_OBJECT))

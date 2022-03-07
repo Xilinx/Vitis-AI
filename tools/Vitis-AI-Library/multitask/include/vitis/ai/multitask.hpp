@@ -125,7 +125,7 @@ class MultiTask {
    */
   virtual MultiTaskResult run_8UC1(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running results of the MultiTask neuron network in
+   * @brief Function to get running results of the MultiTask neural network in
    * batch mode.
    * @note The type is CV_8UC1 of the MultiTaskResult.segmentation.
    *
@@ -146,7 +146,7 @@ class MultiTask {
    */
   virtual MultiTaskResult run_8UC3(const cv::Mat& image) = 0;
   /**
-   * @brief Function to get running results of the MultiTask neuron network in
+   * @brief Function to get running results of the MultiTask neural network in
    * batch mode.
    * @note The type is CV_8UC3 of the MultiTaskResult.segmentation.
    *
@@ -247,7 +247,7 @@ class MultiTask8UC1 {
     return multitask_->run_8UC1(image);
   }
   /**
-   * @brief Function to get running results of the MultiTask neuron network in
+   * @brief Function to get running results of the MultiTask neural network in
    * batch mode.
    * @note The type is CV_8UC1 of the MultiTaskResult.segmentation.
    *
@@ -354,7 +354,7 @@ class MultiTask8UC3 {
     return multitask_->run_8UC3(image);
   }
   /**
-   * @brief Function to get running results of the MultiTask neuron network in
+   * @brief Function to get running results of the MultiTask neural network in
    * batch mode.
    * @note The type is CV_8UC3 of the MultiTaskResult.segmentation.
    *

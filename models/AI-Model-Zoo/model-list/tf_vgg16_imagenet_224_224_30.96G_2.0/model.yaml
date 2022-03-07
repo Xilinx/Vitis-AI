@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: vgg16 classifier on ImageNet.
+input size: 224*224
+float ops: 30.96G
+task: classification
+framework: tensorflow
+prune: 'no'
+version: 2.0
+files:
+- name: tf_vgg16_imagenet_224_224_30.96G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg16_imagenet_224_224_30.96G_2.0.zip
+  checksum: 94ea16d5c3b0e00e20c9c4b37fbeb540
+- name: vgg_16_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 3a23699349f29a2c31c2a85e1309b048
+- name: vgg_16_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-vck190-r2.0.0.tar.gz
+  checksum: e8cca853bb0fe61c7590f8b9d56793da
+- name: vgg_16_tf
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: a463dbaec58018479494592b124da6dc
+- name: vgg_16_tf
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: d175f6c313bac431d9b55cad3419773b
+- name: vgg_16_tf
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 1514cd5bfc6b74c89f79278e507cf2d2
+- name: vgg_16_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-u200-u250-r2.0.0.tar.gz
+  checksum: 6a55cfd42a3e423b6f5f113a62134f97
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -39,27 +39,78 @@ echo "---------------------"
 echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
 echo "---------------------"
 
+PLATFORMS="u55c_ u50lv_ u200_ u250_ AWS_" 
+find_card="false"
+
+for platform in ${PLATFORMS};
+do
+xbutil examine | grep ${platform}
+if [ $? -eq 0 ]; then
+  echo "${platform} card detected"
+  find_card="true"
+  break
+fi
+done
+
 case $1 in
 
   DPUCAHX8H | dpuv3e)
-    export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3e
+    if [ "${platform}" = "u50lv_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/dpu_DPUCAHX8H_10PE275_xilinx_u50lv_gen3x4_xdma_base_2.xclbin
+    else
+      export XCLBIN_PATH=
+      export XLNX_VART_FIRMWARE=
+    fi
     ;;
   
-  DPUCAHX8L | dpuv3me)
-    export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3me
+  DPUCAHX8H-DWC | dpuv3e-dwc)
+    if [ "${platform}" = "u50lv_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H/dwc
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/dwc/dpu_DPUCAHX8H_DWC_8PE275_xilinx_u50lv_gen3x4_xdma_base_2.xclbin
+    elif [ "${platform}" = "u55c_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H/dwc
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/dwc/dpu_DPUCAHX8H_DWC_11PE300_xilinx_u55c_gen3x16_xdma_base_2.xclbin
+    else
+      export XCLBIN_PATH=
+      export XLNX_VART_FIRMWARE=
+    fi
     ;;
-  
+
   DPUCADF8H | dpuv3int8)
-    export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8
+    if [ "${platform}" = "u200_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCADF8H
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H/dpdpuv3_wrapper.hw.xilinx_u200_gen3x16_xdma_1_202110_1.xclbin
+    elif [ "${platform}" = "u250_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCADF8H
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H/dpdpuv3_wrapper.hw.xilinx_u250_gen3x16_xdma_3_1_202020_1.xclbin
+    elif [ "${platform}" = "AWS_" ]; then
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCADF8H
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H/dpu-aws.xclbin
+    else
+      export XCLBIN_PATH=
+      export XLNX_VART_FIRMWARE=
+    fi
     ;;
 
   *)
     echo "Invalid argument $1!!!!"
+    echo "Please choose to use the following command:"
+    echo "    source ./setup.sh DPUCADF8H"
+    echo "    source ./setup.sh DPUCAHX8H"
+    echo "    source ./setup.sh DPUCAHX8H-DWC"
     ;;
+
 esac
 
+if [ "${find_card}" = "false" ]; then
+  echo "Error: Can't find the supported xilinx Alvio card"
+  export XCLBIN_PATH=
+  export XLNX_VART_FIRMWARE=
+fi
 
 echo "---------------------"
+echo "XCLBIN_PATH = $XCLBIN_PATH"
 echo "XLNX_VART_FIRMWARE = $XLNX_VART_FIRMWARE"
 echo "---------------------"
 

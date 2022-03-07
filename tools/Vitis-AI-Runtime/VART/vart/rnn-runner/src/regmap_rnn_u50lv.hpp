@@ -100,7 +100,7 @@
 
 #define THREAD_STEP            (0x0010'0000)  //  1 MB
 
-#define MAX_REG_ADDR           (0x02C0)       // 704 B
+#define MAX_REG_ADDR           (0x60)         // 96 B
 
 
 struct XRNN_REG_T

@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: ENet for segmentation on Cityscapes.
+input size: 512*1024
+float ops: 8.6G
+task: segmentation
+framework: pytorch
+prune: 'no'
+version: 2.0
+files:
+- name: pt_ENet_cityscapes_512_1024_8.6G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_ENet_cityscapes_512_1024_8.6G_2.0.zip
+  checksum: 723bacf08f836423b328c5185bc8535b
+- name: ENet_cityscapes_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 934557b5c2eae7540004eeb567ab4578
+- name: ENet_cityscapes_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck190-r2.0.0.tar.gz
+  checksum: a12586b33f68d97e5645a8cfe581c351
+- name: ENet_cityscapes_pt
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 8f528fd3de57c53103f7c67e7122c7d9
+- name: ENet_cityscapes_pt
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: fe07726324b25dbfb111d3c34feaff85
+- name: ENet_cityscapes_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 00387789ae764166df496719622764cb
+- name: ENet_cityscapes_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: d8801068b4549f00979419f333e60fab
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

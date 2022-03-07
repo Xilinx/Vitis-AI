@@ -58,6 +58,14 @@ message SSDParam {
   repeated OutputInfo output_info = 9;
 }
 
+message FairMotParam {
+  float nms_threshold = 1;
+  float conf_threshold = 2;
+  int32 keep_top_k = 3;
+  int32 top_k = 4;
+  repeated string layer_name = 5;
+}
+
 message RefineDetParam {
   repeated PriorBoxParam prior_box_param = 1;
   int32 num_classes = 2;
@@ -112,6 +120,9 @@ message ClassificationParam {
     INCEPTION_PT = 4;
     RESNET50_TF2 = 5;
     EFFICIENTNET_PREPROCESS = 6;
+    OFA_RESNET50_PT = 7;
+    OFA_DEPTHWISE_RES50 = 8;
+    RGB_PREPROCESS = 9;
   }
   message AvgPoolParam {
     int32 scale = 1;
@@ -186,6 +197,18 @@ message PlatenumParam {
   repeated int32 first = 1;
   repeated int32 second = 2;
   repeated string output_tensor_name = 3;
+}
+
+message SoloParam {
+  repeated int32 first = 1;
+  repeated int32 second = 2;
+  repeated string input_tensor_name = 3;
+  repeated string output_tensor_name = 4;
+  float score_thr = 5;
+  float mask_thr = 6;
+  uint32 nms_pre = 7;
+  float update_thr = 8;
+  uint32 max_per_img = 9;
 }
 
 message LaneParam {
@@ -271,8 +294,6 @@ message TfssdParam {
   }
   repeated OutputInfo output_info = 1;
   repeated int32 feature_map_list = 2;
-  // object_detection.protos.TrainEvalPipelineConfig modeltf = 3;
-  string official_cfg = 3;
 }
 
 message PointPillarsNusParam {
@@ -285,7 +306,7 @@ message PointPillarsNusParam {
     }
     repeated Ranges ranges = 1;
     repeated Sizes sizes = 2;
-    repeated float rotations = 3; 
+    repeated float rotations = 3;
     repeated float custom_value = 4;
     bool align_corner = 5;
     float scale = 6;
@@ -309,10 +330,65 @@ message PointPillarsNusParam {
 message Segmentation3DParam {
   bool enable_knn = 1;
 }
+message YoloV5Param {
+  YoloV3Param yolo_param = 1;
+  repeated float stride = 2;
+  float max_boxes_num = 3;
+  float max_nms_num = 4;
+}
+
+message BTSParam {
+  float mul_factor = 1;
+  float depth_scaled_factor = 2;
+  float hard_sigmoid_output_scale = 3;
+  float multiple_output_scale = 4;
+}
+
+message PointPillarsBaseParam {
+  repeated float point_cloud_range = 1;
+  repeated float voxel_size = 2;
+  int32 points_dim = 3;
+  int32 max_points_num = 4;
+  int32 max_voxels_num = 5;
+  int32 in_channels = 6;
+}
+
+message PointPillarsKittiParam {
+  PointPillarsBaseParam base = 1;
+}
+
+
+message X_Autonomous3DParam{
+  message CenterPointOutputLayer{
+    string reg_layer_name = 1;
+    string height_layer_name = 2;
+    string dim_layer_name = 3;
+    string rot_layer_name = 4;
+    string heatmap_layer_name = 5;
+    string iou_quality_layer_name = 6;
+  }
+  repeated float point_cloud_range = 1;
+  repeated float voxel_size = 2;
+  int32 points_dim = 3;
+  int32 max_points_num = 4;
+  int32 max_voxels_num = 5;
+  int32 in_channels = 6;
+  CenterPointOutputLayer output_names = 7;
+  int32 num_classes = 8;
+  float out_size_facter = 9;
+  repeated float iou_quality_alpha = 10;
+  repeated float post_point_cloud_range = 11;
+  int32 bbox_pre_size = 12;
+  int32 bbox_max_size = 13;
+  repeated float nms_thresh = 14;
+  float score_thresh = 15;
+}
+
 
 message DpuModelParam {
   string name = 1;
   repeated DpuKernelParam kernel = 2;
+  bool use_graph_runner = 28;
   enum ModelType {
     UNKNOWN_TYPE = 0;
     REFINEDET = 1;
@@ -349,6 +425,12 @@ message DpuModelParam {
     RETINAFACE = 32;
     TFREFINEDET = 33;
     POINTPILLARS_NUS = 34;
+    YOLOv5 = 35;
+    BTSParam = 36;
+    FAIRMOT = 37;
+    X_AUTONOMOUS3D = 38;
+    POINTPILLARS = 39;
+    SOLO = 40;
   }
   enum OrderType {
     UNKNOWNORDER = 0;
@@ -383,6 +465,12 @@ message DpuModelParam {
   TFRefineDetParam tfrefinedet_param = 25;
   PointPillarsNusParam pointpillars_nus_param = 26;
   Segmentation3DParam segmentation_3d_param = 27;
+  YoloV5Param yolo_v5_param = 29;
+  BTSParam bts_param = 30;
+  FairMotParam fair_mot_param = 31;
+  X_Autonomous3DParam x_autonomous3d_param = 32;
+  PointPillarsKittiParam pointpillars_kitti_param = 33;
+  SoloParam solo_param = 34;
 }
 
 message DpuModelParamList {

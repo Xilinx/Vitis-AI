@@ -1,0 +1,65 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: Single Person Pose Estimation Model
+input size: 224*128
+float ops: 548.6M
+task: pose estimation
+framework: caffe
+prune: 'no'
+version: 2.0
+files:
+- name: cf_SPnet_aichallenger_224_128_0.54G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_SPnet_aichallenger_224_128_0.54G_2.0.zip
+  checksum: 0135a1a61423332b84255842958c0908
+- name: sp_net
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 25f8e3d75485bb5a65fabef74edf4ba9
+- name: sp_net
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck190-r2.0.0.tar.gz
+  checksum: f4441233e340b727ba21068d3a7edcde
+- name: sp_net
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 56092bc17e057499a57aa62dd3b4a68f
+- name: sp_net
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: 0ca78e24367e7f463b315572f03fe7a4
+- name: sp_net
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 35a0041772568a1dc7ea8bc5979ab443
+- name: sp_net
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 78fc542c26f498c20330a0a0c38474d5
+- name: sp_net
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u200-u250-r2.0.0.tar.gz
+  checksum: 4b1cf2e009fa80cca46413fed9863422
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

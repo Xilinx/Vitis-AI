@@ -1,0 +1,75 @@
+From 7dc44bd06f94dcb9ad6cfc8a3aa60bb2a10397f9 Mon Sep 17 00:00:00 2001
+From: Vishal Sagar <vishal.sagar@xilinx.com>
+Date: Tue, 3 Sep 2019 00:51:19 +0530
+Subject: [PATCH 3/5] max9286 serdes : Fix source pad media format
+
+The pad format of all the sinks and source will be same. So if any sink
+pad format changes, apply that to all the sink and source pad. If source
+pad format is tried to be changed then don't let it happen.
+
+Signed-off-by: Vishal Sagar <vishal.sagar@xilinx.com>
+---
+ .../i2c/avt_multi_sensor_fmc/max9286_serdes.c      | 39 +++++++++++++++++++++-
+ 1 file changed, 38 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.c b/drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.c
+index 2779d86..4971aa8 100644
+--- a/drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.c
++++ b/drivers/media/i2c/avt_multi_sensor_fmc/max9286_serdes.c
+@@ -1242,7 +1242,7 @@ static int max9286_serdes_set_format(struct v4l2_subdev *subdev,
+ 	struct max9286_serdes_device *serdes = to_serdes(subdev);
+ 	struct v4l2_mbus_framefmt *fmt_ptr;
+ 	struct v4l2_mbus_framefmt resp_fmt;
+-
++#if 0
+ 	fmt_ptr = max9286_serdes_get_pad_format(serdes, cfg,
+ 						fmt->pad, fmt->which);
+ 	resp_fmt = fmt->format;
+@@ -1261,7 +1261,44 @@ static int max9286_serdes_set_format(struct v4l2_subdev *subdev,
+ 
+ 	*fmt_ptr = resp_fmt;
+ 	fmt->format = resp_fmt;
++#else
++	if ((serdes->pads[fmt->pad].flags & MEDIA_PAD_FL_SINK) ==
++	    MEDIA_PAD_FL_SINK) {
++		struct v4l2_mbus_framefmt *src_fmt_ptr;
++		u32 i;
+ 
++		for (i = 0; i < serdes->nsinks; i++) {
++
++			fmt_ptr = max9286_serdes_get_pad_format(serdes, cfg,
++								i, fmt->which);
++			resp_fmt = fmt->format;
++			dev_dbg(serdes->dev, "Configure sink pad %d\n",
++				i);
++			max9286_serdes_try_mbus_fmt(subdev, &resp_fmt,
++						    PAD_TYPE_SINK);
++			*fmt_ptr = resp_fmt;
++		}
++
++		fmt->format = resp_fmt;
++
++		/* nsinks will be the offset of the source pad */
++		/* So get its mbus format */
++		src_fmt_ptr = max9286_serdes_get_pad_format(serdes, cfg,
++							    serdes->nsinks,
++							    fmt->which);
++		/*
++		 * Set it to the sink pad format as sink and source
++		 * can't be different here
++		 */
++		*src_fmt_ptr = resp_fmt;
++	} else {
++		/* Source pad format will only be returned here */
++		fmt_ptr = max9286_serdes_get_pad_format(serdes, cfg,
++							fmt->pad, fmt->which);
++		fmt->format = *fmt_ptr;
++
++	}
++#endif
+ 	return 0;
+ }
+ 
+-- 
+2.7.4
+

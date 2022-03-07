@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include "xir/XirExport.hpp"
 #include "xir/op/op.hpp"
 
 namespace xir {
@@ -48,7 +49,7 @@ class OpTemplate {
   virtual ~OpTemplate() = default;
 };
 
-class GraphTemplate {
+class XIR_DLLESPEC GraphTemplate {
  public:
   static std::unique_ptr<GraphTemplate> create(std::string name);
 

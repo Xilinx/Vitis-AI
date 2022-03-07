@@ -16,7 +16,6 @@
 #include "dpu_core.hpp"
 
 #include <glog/logging.h>
-#include <sys/mman.h>
 
 #include <cstring>
 #include <iostream>

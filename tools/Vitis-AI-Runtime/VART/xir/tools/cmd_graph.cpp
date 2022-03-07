@@ -103,13 +103,13 @@ struct is_cout_able<
     : public std::true_type {};
 
 template <typename T>
-constexpr auto is_cout_able_v = is_cout_able<T>::value;
+constexpr bool is_cout_able_v = is_cout_able<T>::value;
 
 template <typename K, typename V>
 std::enable_if_t<is_cout_able_v<K> && is_cout_able_v<V>, std::ostream&>
 operator<<(std::ostream& out, const std::map<K, V>& v) {
   out << "{";
-  for (const auto x : v) {
+  for (const auto& x : v) {
     out << "\n\t\"" << x.first << "\" = " << x.second;
   }
   out << "\n}";

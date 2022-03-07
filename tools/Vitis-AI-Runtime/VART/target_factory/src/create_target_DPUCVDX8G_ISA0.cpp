@@ -13,9 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include <inttypes.h>
 
-#include "target.pb.h"
+#include <array>
 
+#include "vitis/ai/target_factory.hpp"
 namespace vitis {
 namespace ai {
 
@@ -59,7 +61,7 @@ const Target create_target_DPUCVDX8G_ISA0(const std::uint64_t fingerprint) {
 
   std::string NAME = "DPUCVDX8G_ISAx_CxBx_x";
   char finger_hex[17];
-  sprintf(finger_hex, "%016lX", fingerprint);
+  sprintf(finger_hex, "%016" PRIX64, fingerprint);
   NAME.replace(20, 1, finger_hex);
   NAME.replace(18, 1, std::to_string(BATCH));
   NAME.replace(16, 1, std::to_string(OCP));

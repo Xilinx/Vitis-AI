@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 """quantize graph python api"""
 from __future__ import absolute_import
 from __future__ import division
@@ -62,7 +63,8 @@ class QuantizeConfig:
                simulate_dpu=1,
                scale_all_avgpool=1,
                do_cle=0,
-               replace_relu6=1):
+               replace_relu6=1,
+               replace_sigmoid=0):
     if not (isinstance(input_nodes, list)):
       raise TypeError('input_nodes should be list(str)')
     if not (isinstance(input_shapes, list)):
@@ -90,6 +92,7 @@ class QuantizeConfig:
     self.scale_all_avgpool = scale_all_avgpool
     self.do_cle = do_cle
     self.replace_relu6 = replace_relu6
+    self.replace_sigmoid = replace_sigmoid
 
   def to_string(self):
     config_string = ''
@@ -120,6 +123,7 @@ class QuantizeConfig:
     config_string += 'scale_all_avgpool,' + str(self.scale_all_avgpool) + ','
     config_string += 'do_cle,' + str(self.do_cle) + ','
     config_string += 'replace_relu6,' + str(self.replace_relu6) + ','
+    config_string += 'replace_sigmoid,' + str(self.replace_sigmoid) + ','
     return compat.as_bytes(config_string)
 
 

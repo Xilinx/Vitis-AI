@@ -69,7 +69,7 @@ def TopK(datain, size, filePath):
     for i in range(5):
         flag = 0
         for line in data1:
-            if flag == cnt_new[i]:
+            if (flag+1) == cnt_new[i]:
                 print("Top[%d] %d %s" % (i, flag, (line.strip)("\n")))
             flag = flag + 1
 
@@ -77,23 +77,42 @@ def TopK(datain, size, filePath):
 """
 pre-process for resnet50 (caffe)
 """
-_B_MEAN = 104.0
-_G_MEAN = 117.0
-_R_MEAN = 123.0
+_B_MEAN = 127.5
+_G_MEAN = 127.5
+_R_MEAN = 127.5
 MEANS = [_B_MEAN, _G_MEAN, _R_MEAN]
-SCALES = [1.0, 1.0, 1.0]
+SCALES = [0.007843137, 0.007843137, 0.007843137]
 
+def resize_shortest_edge(image, size):
+    H, W = image.shape[:2]
+    if H >= W:
+        nW = size
+        nH = int(float(H)/W * size)
+    else:
+        nH = size
+        nW = int(float(W)/H * size)
+    #print("nW:nH=",nW,nH)
+    return cv2.resize(image,(nW,nH))
+def central_crop(image, crop_height, crop_width):
+    image_height = image.shape[0]
+    image_width = image.shape[1]
+    offset_height = (image_height - crop_height) // 2
+    offset_width = (image_width - crop_width) // 2
+    return image[offset_height:offset_height + crop_height, offset_width:offset_width + crop_width, :]
 
 def preprocess_one_image_fn(image_path, fix_scale, width=224, height=224):
     means = MEANS
     scales = SCALES
     image = cv2.imread(image_path)
-    image = cv2.resize(image, (width, height))
+    #image = cv2.resize(image, (width, height))
+    image = resize_shortest_edge(image,256)
+    image = central_crop(image, height, width)
     B, G, R = cv2.split(image)
     B = (B - means[0]) * scales[0] * fix_scale
     G = (G - means[1]) * scales[1] * fix_scale
     R = (R - means[2]) * scales[2] * fix_scale
-    image = cv2.merge([B, G, R])
+    #image = cv2.merge([B, G, R])
+    image = cv2.merge([R, G, B])
     image = image.astype(np.int8)
     return image
 

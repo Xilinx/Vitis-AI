@@ -16,13 +16,13 @@
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/VitisVersion.cmake)
 
-find_package(OpenSSL REQUIRED)
 link_directories(${CMAKE_INSTALL_PREFIX}/lib)
-set(DEPS_PUBLIC xir::xir unilog::unilog crypto runner)
-set(DEPS_PRIVATE dpu-controller xrt-device-handle runner-assistant trace)
+set(DEPS_PUBLIC runner)
+set(DEPS_PRIVATE xir::xir unilog::unilog dpu-controller xrt-device-handle
+                 runner-assistant trace)
 
 if(XRT_FOUND)
-  list(APPEND DEPS_PRIVATE XRT::XRT)
+  list(APPEND DEPS_PRIVATE XRT::xrt_core)
 endif(XRT_FOUND)
 
 set(MY_PROJECT_SOURCES
@@ -96,6 +96,7 @@ install(
   EXPORT ${COMPONENT_NAME}-targets
   COMPONENT dpu
   RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
 install(
   FILES include/vart/dpu/vitis_dpu_runner_factory.hpp

@@ -22,6 +22,7 @@
 #include <string>
 #include <type_traits>
 #include <vector>
+
 #include "UniLog/UniLog.hpp"
 #include "xir/graph/subgraph.hpp"
 #include "xir/op/op.hpp"
@@ -30,13 +31,24 @@
 namespace xir {
 
 /**
+ * @brief Get the md5sum of a buff.
+ *
+ * @param buf The buffer base address.
+ *
+ * @param size The buffer's size, in bytes.
+ *
+ * @return A string contains the md5sum in hex format.
+ */
+XIR_DLLESPEC const std::string get_md5_of_buffer(const void* buf, size_t size);
+
+/**
  * @brief Get the md5sum of a file.
  *
  * @param filepath The path of the input file.
  *
  * @return A string contains the md5sum in hex format.
  */
-const std::string get_md5_of_file(const std::string& filepath);
+XIR_DLLESPEC const std::string get_md5_of_file(const std::string& filepath);
 
 /**
  * @brief Get the xir-lib name.
@@ -181,7 +193,7 @@ std::string add_suffix(const std::string& name, const Args&... suffixs) {
  *
  * @return The original name.
  */
-std::string remove_xfix(const std::string& name);
+XIR_DLLESPEC std::string remove_xfix(const std::string& name);
 
 /**
  * @brief Extract all the prefix, suffix and the original name.
@@ -204,5 +216,9 @@ std::vector<std::string> extract_xfix(const std::string& name);
  * @return The result in float.
  */
 float xround(const float& data, const std::string& round_mode = "STD_ROUND");
+
+void register_customized_operator_definition(const std::string& name,
+                                             const std::string& type);
+std::vector<float> get_float_vec_from_any(const xir::any& any);
 
 }  // namespace xir

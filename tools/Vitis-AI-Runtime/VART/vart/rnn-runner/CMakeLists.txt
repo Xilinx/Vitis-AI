@@ -18,19 +18,19 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(DEPS_PUBLIC xir::xir unilog::unilog runner uuid util json-c)
-set(DEPS_PRIVATE XRT::XRT xrt-device-handle buffer-object)
+set(DEPS_PRIVATE XRT::xrt_core xrt-device-handle buffer-object)
 
 include_directories(/opt/xilinx/xrt/include)
-include_directories(${CMAKE_SOURCE_DIR}/buffer-object/include)
-include_directories(${CMAKE_SOURCE_DIR}/xrt-device-handle/src)
-include_directories(${CMAKE_SOURCE_DIR}/dpu-controller/src)
+include_directories(${PROJECT_SOURCE_DIR}/buffer-object/include)
+include_directories(${PROJECT_SOURCE_DIR}/xrt-device-handle/src)
+include_directories(${PROJECT_SOURCE_DIR}/dpu-controller/src)
 
 
 add_definitions(-DENABLE_CLOUD)
 aux_source_directory(src MY_PROJECT_SOURCES)
 list(APPEND MY_PROJECT_SOURCES
-    ${CMAKE_SOURCE_DIR}/dpu-controller/src/xrt_cu.hpp
-    ${CMAKE_SOURCE_DIR}/dpu-controller/src/xrt_cu.cpp
+    ${PROJECT_SOURCE_DIR}/dpu-controller/src/xrt_cu.hpp
+    ${PROJECT_SOURCE_DIR}/dpu-controller/src/xrt_cu.cpp
     )
 
 get_filename_component(COMPONENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
@@ -57,13 +57,14 @@ target_link_libraries(${COMPONENT_NAME} PUBLIC ${DEPS_PUBLIC} PRIVATE ${DEPS_PRI
 install(
   TARGETS ${COMPONENT_NAME}
   RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   )
 
 if(BUILD_TEST)
-  include_directories(${CMAKE_SOURCE_DIR}/rnn-runner/src/)
-  include_directories(${CMAKE_SOURCE_DIR}/runner/include)
-  include_directories(${CMAKE_SOURCE_DIR}/runner/src)
+  include_directories(${PROJECT_SOURCE_DIR}/rnn-runner/src/)
+  include_directories(${PROJECT_SOURCE_DIR}/runner/include)
+  include_directories(${PROJECT_SOURCE_DIR}/runner/src)
 
   add_executable(test_rnn_runner_u50 test/test_rnn_runner_u50.cpp)
   target_link_libraries (test_rnn_runner_u50 runner xir::xir glog::glog util)

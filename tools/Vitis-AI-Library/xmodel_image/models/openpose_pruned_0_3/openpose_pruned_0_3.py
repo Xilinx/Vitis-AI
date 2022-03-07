@@ -23,8 +23,6 @@ def jit(graph):
 
     xir_extra_ops.set_postprocessor(
         graph,
-        "libxmodel_postprocessor_open_pose.so.1",
-        {
-            "L1": ['Mconv7_stage6_L1_fixed_'],
-            "L2": ['Mconv7_stage6_L2_fixed_']
-        })
+        "libxmodel_postprocessor_open_pose.so.2",
+        {"L1": ["Mconv7_stage6_L1_fixed_"], "L2": ["Mconv7_stage6_L2_fixed_"]},
+    )

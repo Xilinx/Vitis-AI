@@ -19,8 +19,16 @@
 #include <string>
 #include <vitis/ai/event.hpp>
 
-using namespace std;
-
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
+//
+// using namespace std;
+using std::cout;
+using std::endl;
+using std::ofstream;
+using std::vector;
+using std::string;
 namespace vitis::ai::trace {
 void dump_map(trace_entry_t& m) {
   for (const auto& i : m) {

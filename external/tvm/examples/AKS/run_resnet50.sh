@@ -66,10 +66,10 @@ fi;
 
 # Add Library Paths
 LD_LIBRARY_PATH=${AKS_ROOT}:${LD_LIBRARY_PATH}
-LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/python3.6/site-packages/pyxir-0.3.0-py3.6-linux-x86_64.egg/
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/python3.6/site-packages/pyxir-0.3.3-py3.6-linux-x86_64.egg/
 
-export PYTHONPATH=$PYTHONPATH:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/python3.6/site-packages/pyxir-0.3.0-py3.6-linux-x86_64.egg
-export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8
+export PYTHONPATH=$PYTHONPATH:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/lib/python3.6/site-packages/pyxir-0.3.3-py3.6-linux-x86_64.egg
+export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCADF8H
 export TVM_NUM_THREADS=1
 export TVM_BIND_THREADS=0
 

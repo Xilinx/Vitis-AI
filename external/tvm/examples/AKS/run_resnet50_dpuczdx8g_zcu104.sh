@@ -66,7 +66,7 @@ fi;
 # Add Library Paths
 LD_LIBRARY_PATH=${AKS_ROOT}:${LD_LIBRARY_PATH}
 
-export PYTHONPATH=$PYTHONPATH:/usr/lib/python3.7/site-packages/pyxir-0.3.0-py3.7-linux-aarch64.egg
+export PYTHONPATH=$PYTHONPATH:/usr/lib/python3.7/site-packages/pyxir-0.3.3-py3.7-linux-aarch64.egg
 export XLNX_VART_FIRMWARE=/usr/lib/dpu.xclbin
 export TVM_NUM_THREADS=1
 export TVM_BIND_THREADS=0

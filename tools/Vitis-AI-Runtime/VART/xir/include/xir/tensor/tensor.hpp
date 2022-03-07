@@ -19,6 +19,7 @@
 #include <memory>
 #include <vector>
 
+#include "xir/XirExport.hpp"
 #include "xir/attrs/attrs.hpp"
 #include "xir/util/data_type.hpp"
 
@@ -31,7 +32,7 @@ class Op;
  *
  * This class defines the basic XIR Tensor Interface.
  */
-class Tensor {
+class XIR_DLLESPEC Tensor {
  public:
   /**
    * @brief Create a Tensor instance.

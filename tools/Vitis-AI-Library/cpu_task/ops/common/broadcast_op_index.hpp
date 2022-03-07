@@ -91,7 +91,7 @@ struct BroadcastOpIndex {
     return ret;
   }
   static std::vector<int32_t> get_strides(const std::vector<int32_t>& a) {
-    auto ret = std::vector<int32_t>(a.size());
+    auto ret = std::vector<int32_t>(a.size() + 1);
     auto index = a.size();
     ret[index] = 1;
     for (auto i = 0u; i < a.size(); ++i) {

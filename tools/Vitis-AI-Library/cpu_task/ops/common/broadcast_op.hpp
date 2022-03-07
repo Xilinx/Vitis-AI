@@ -23,7 +23,7 @@ using namespace std;
 namespace {
 template <typename Op>
 struct MyOpImp : public vart::experimental::OpImpBase {
-  MyOpImp(xir::Op* op, xir::Attrs* attrs)
+  MyOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
     auto input_ops = op->get_input_ops("input");
     CHECK_EQ(input_ops.size(), 2u);
@@ -33,9 +33,8 @@ struct MyOpImp : public vart::experimental::OpImpBase {
                                  input_b->get_output_tensor()->get_shape()};
   }
 
-  int calculate(
-      vart::experimental::simple_tensor_buffer_t<float> output,
-      std::vector<vart::experimental::simple_tensor_buffer_t<float>> inputs) {
+  int calculate(vart::simple_tensor_buffer_t<float> output,
+                std::vector<vart::simple_tensor_buffer_t<float>> inputs) {
     CHECK_EQ(inputs.size(), 2u);
     auto input_a = inputs[0];
     auto input_b = inputs[1];

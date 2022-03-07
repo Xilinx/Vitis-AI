@@ -30,7 +30,7 @@ import vaitraceWriter
 
 
 def getVersion():
-    head = "Vitis-AI Tracer Ver:\n"
+    head = "vaitrace ver:\n"
     version = ""
     project = ""
     internal_version = ""
@@ -64,7 +64,8 @@ def checkPermisson():
     """Checking Permission"""
     if os.getgid() != 0:
         logging.warning("This tool need run as 'root'")
-        logging.warning("with out 'root' permission, CPU function profiling feature is invalid")
+        logging.warning(
+            "without 'root' permission, CPU function profiling feature is invalid")
 
 
 def parseCmdLine():
@@ -77,7 +78,7 @@ def parseCmdLine():
     """
 
     default_conf_json = ""
-    cmd_parser = argparse.ArgumentParser(prog="Xilinx Vitis AI Trace")
+    cmd_parser = argparse.ArgumentParser(prog="vaitrace")
     cmd_parser.add_argument("cmd", nargs=argparse.REMAINDER)
     cmd_parser.add_argument("-c", dest="config", nargs='?',
                             default=default_conf_json, help="Specify the config file")
@@ -154,8 +155,7 @@ def main(args, cmd_parser):
     if args.fg:
         logging.warning("The fine grained profiling model is enabled. Models will be run subgraph-by-subgraph.\n"
                         "1. It will interduce significant scheduling and memory access overhead, especially for small models.\n"
-                        "2. Some xcompiler's optimizations will be turned-off.\n"
-                        "3. The default trace time is limited to 10 seconds.\n")
+                        "2. Some xcompiler's optimizations will be turned-off.\n")
         options['runmode'] = 'debug'
         options['cmdline_args']['fg'] = True
 

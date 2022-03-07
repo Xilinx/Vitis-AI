@@ -7,6 +7,162 @@
 
 # Release Notes
 
+## Release 2.0
+### New Features/Highlights
+1. General Availability (GA) for VCK190(Production Silicon), VCK5000(Production Silicon) and U55C
+2. Add support for newer Pytorch and Tensorflow version: Pytorch 1.8-1.9, Tensorflow 2.4-2.6
+3. Add 22 new models, including Solo, Yolo-X, UltraFast, CLOCs, PSMNet, FairMOT, SESR, DRUNet, SSR as well as 3 NLP models and 2 OFA (Once-for-all) models 
+4. Add the new custom OP flow to run models with DPU un-supported OPs with enhancement across quantizer, compiler and runtime 
+5. Add more layers and configurations of DPU for VCK190 and DPU for VCK5000
+6. Add OFA pruning and TF2 keras support for AI optimizer
+7. Run inference directly from Tensorflow (Demo) for cloud DPU
+
+
+### Release Notes
+### Model Zoo
+- 22 new models added, 130 total
+  - 19 new Pytorch models including 3 NLP and 2 OFA models
+  - 3 new Tensorflow models
+- Added new application models
+  - AD/ADAS: Solo for instance segmentation, Yolo-X for traffic sign detection, UltraFast for lane detection, CLOCs for sensor fusion
+  - Medical: SESR for super resolution, DRUNet for image denoise, SSR for spectral remove
+  - Smart city and industrial vision: PSMNet for binocular depth estimation, FairMOT for joint detection and Re-ID 
+- EoU Enhancements
+  - Updated automatic script to search and download required models 
+
+### Quantizer
+- TF2 quantizer
+  - Add support TF 2.4-2.6
+  - Add support for custom OP flow, including shape inference, quantization and dumping
+  - Add support for CUDA 11
+  - Add support for input_shape assignment when deploying QAT models
+  - Improve support for TFOpLambda layers
+  - Update support for hardware simulation, including sigmoid layer, leaky_relu layer, global and non-global average pooling layer
+  - Bugfixs for sequential models and quantize position adjustment
+- TF1 quantizer
+  - Add quantization support for new ops, including hard-sigmoid, hard-swish, element-wise multiply ops
+  - Add support for replacing normal sigmoid with hard sigmoid
+  - Update support for float weights dumping when dumping golden results
+  - Bugfixs for inconsistency of python APIs and cli APIs
+- Pytorch quantizer
+  - Add support for pytorch 1.8 and 1.9
+  - Support CUDA 11
+  - Support custom OP flow
+  - Improve fast finetune performance on memory consumption and accuracy
+  - Reduce memory consumption by feature map among quantization
+  - Improve QAT functions including better initialization of quantization scale and new API for getting quantizer’s parameters
+  - Support more quantization of operations: some 1D and 3D ops, DepthwiseConvTranspose2D, pixel-shuffle, pixel-unshuffle, const
+  - Support CONV/BN merging in pattern of CONV+CONCAT+BN
+  - Some message enhancement to help user locate problem
+  - Bugfixs about consistency with hardware
+
+### Optimizer
+- TensorFlow 1.15
+  - Support tf.keras.Optimizer for model training
+- TensorFlow 2.x
+  - Support TensorFlow 2.3-2.6
+  - Add iterative pruning
+- PyTorch
+  - Support PyTorch 1.4-1.9.1
+  - Support shared parameters in pruning
+  - Add one-step pruning
+  - Add once-for-all(OFA)
+  - Unified APIs for iterative and one-step pruning
+  - Enable pruned model to be used by quantizer
+  - Support nn.Conv3d and nn.ConvTranspose3d
+
+
+### Compiler
+- DPU on embedded platforms
+   - Support and optimize conv3d, transposedconv3d, upsample3d and upsample2d for DPUCVDX8G(xvDPU)
+   - Improve the efficiency of high resolution input for DPUCVDX8G(xvDPU)
+   - Support ALUv2 new features
+- DPU on Alveo/Cloud
+   - Support depthwise-conv2d, h-sigmoid and h-swish for DPUCVDX8H(DPUv4E)
+   - Support depthwise-conv2d for DPUCAHX8H(DPUv3E)
+   - Support high resolution model inference 
+- Support custom OP flow
+
+### AI Library and VART
+- Support all the new models in Model Zoo: end-to-end deployment in Vitis AI Library
+- Improved GraphRunner to better support custom OP flow
+- Add examples on how to integrate custom OPs
+- Add more pre-implemented CPU OPs
+- DPU driver/runtime update to support Xilinx Device Tree Generator (DTG) for Vivado flow
+
+### AI Profiler
+- Support CPU tasks tracking in graph runner
+- Better memory bandwidth analysis in text summary
+- Better performance to enable the analysis of large models 
+
+### Custom OP Flow
+- Provides new capability of deploying models with DPU unsupported OPs
+  - Define custom OPs in quantization 
+  - Register and implement custom OPs before the deployment by graph runner
+- Add two examples
+  - Pointpillars Pytorch model
+  - MNIST Tensorflow 2 model 
+
+### DPU
+- CNN DPU for Zynq SoC / MPSoC, DPUCZDX8G (DPUv2)
+  - Upgraded to 2021.2
+  - Update interrupt connection in Vivado flow
+- CNN DPU for Alveo-HBM, DPUCAHX8H (DPUv3E)
+  - Support depth-wise convolution 
+  - Support U55C
+- CNN DPU for Alveo-DDR, DPUCADF8H (DPUv3Int8)
+  - Updated U200/U250 xlcbins with XRT 2021.2
+  - Released XO Flow
+  - Released IP Product Guide (PG400)
+- CNN DPU for Versal, DPUCVDX8G (xvDPU)
+  - C32 (32-aie cores for a single batch) and C64 (64-aie cores for a single batch) configurable 
+  - Support configurable batch size 1~5 for C64 
+  - Support and optimize new OPs: conv3d, transposedconv3d, upsample3d and upsample2d
+  - Reduce Conv bubbles and compute redundancy 
+  - Support 16-bit const weights in ALUv2
+- CNN DPU for Versal, DPUCVDX8H (DPUv4E)
+  - Support depth-wise convolution with 6 PE configuration
+  - Support h-sigmoid and h-swish
+
+### Whole App Acceleration
+- Upgrade to Vitis and Vivado 2021.2
+- Custom plugin example: PSMNet using Cost Volume (RTL Based) accelerator on VCK190
+- New accelerator for Optical Flow (TV-L1) on U50
+- High resolution segmentation application on VCK190
+- Options to compare throughput & accuracy between FPGA and CPU Versions
+  - Throughput improvements ranging from 25% to 368%
+- Reorganized for better usability and visibility
+
+### TVM
+- Add support of DPUs for U50 and U55C 
+
+### WeGO (Whole Graph Optimizer) 
+- Run inference directly from Tensorflow framework for cloud DPU
+  - Automatically perform subgraph partitioning and apply optimization/acceleration for DPU subgraphs
+  - Dispatch non-DPU subgraphs to TensorFlow running on CPU
+- Resnet50 and Yolov3 demos on VCK5000 
+
+### Inference Server 
+- Support xmodel serving in cloud / on-premise (EA)
+
+### Known Issues
+- vai_q_caffe hangs when TRAIN and TEST phases point to the same LMDB file
+- TVM compiled Inception_v3 model gives low accuracy with DPUCADF8H (DPUv3Int8)
+- TensorFlow 1.15 quantizer error in QAT caused by an incorrect pattern match
+- The compiler will generate incorrect instructions for transpose operation when input and output shapes match the pattern
+that after removing the axis with only 1 element, the remaining shapes are the same and number of axes is more than 1.
+
+## Release 1.4.1
+### New Features/Highlights
+
+1. Vitis AI RNN docker public release, including RNN quantizer and compiler
+2. New unified xRNN runtime for U25 & U50LV based on VART Runner interface and XIR xmodels
+3. Release Versal DPU TRD based on 2021.1
+4. Versal WAA app updated to provide better throughput using the new XRT C++ APIs and zero copy
+5. TVM easy-of-use improvement 
+6. Support VCK190 and VCK5000 production boards (EA)
+7. Some bugs fixed, e.g. update on xcompiler data alignment issue affecting WAA, quantizer bug fix 
+
 ## Release 1.4
 ### New Features/Highlights
 1. Support new platforms, including Versal ACAP platforms VCK190, VCK5000 and Kria SoM 
@@ -19,7 +175,7 @@
 
 
 ### Release Notes
-#### Model Zoo
+### Model Zoo
 - 17 new models added, 109 total
   - 11 new Pytorch models
   - 5 new Tensorlfow models

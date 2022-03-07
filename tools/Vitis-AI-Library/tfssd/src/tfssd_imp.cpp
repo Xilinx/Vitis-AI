@@ -31,6 +31,7 @@ DEF_ENV_PARAM(ENABLE_SSD_DEBUG, "0");
 TFSSDImp::TFSSDImp(const std::string& model_name, bool need_preprocess)
     : vitis::ai::TConfigurableDpuTask<TFSSD>(model_name, need_preprocess),
       processor_{vitis::ai::TFSSDPostProcess::create(
+          model_name,
           configurable_dpu_task_->getInputTensor()[0],
           configurable_dpu_task_->getOutputTensor()[0],
           configurable_dpu_task_->getConfig(),

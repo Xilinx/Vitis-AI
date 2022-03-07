@@ -135,6 +135,10 @@ class TorchGraph(GraphBase):
         for block in node.blocks:
           yield block
 
+  def clean_nodes(self):
+    self._nodes.clear()
+    
+  
   def reconnect_nodes(self):
     for idx, node in enumerate(self.nodes):
       node.idx = idx
@@ -154,6 +158,7 @@ class TorchGraph(GraphBase):
     for node in self._nodes:
       yield node
       
+
   @property
   def name(self):
     return self._name
@@ -223,10 +228,15 @@ class TorchValue(object):
                              ]) if dtype in known_types else dtype
 
   def is_tensor(self):
-    return self._type == "Tensor"
+    return self._type == 'Tensor'
 
   def is_plain_value(self):
     return self._is_plain_value
+  
+  def convert_plain_value_to_tensor(self):
+    self._is_plain_value = False
+    self._dtype = 'torch.float'
+    self._type = 'Tensor'
 
   def is_none(self):
     return self._is_none
@@ -264,6 +274,24 @@ class TorchValue(object):
     if self._shape is not None:
       return len(self._shape)
 
+  @shape.setter
+  def shape(self, shape):
+    self._shape = shape
+  
+  @property
+  def ndim(self):
+    if self._shape is not None:
+      return len(self._shape)
+
+  @property
+  def layout(self):
+    return self._layout
+  
+  @layout.setter
+  def layout(self, layout):
+    self._layout = layout
+    
+    
   @property
   def layout(self):
     return self._layout
@@ -287,11 +315,21 @@ class TorchNode(NodeBase):
   def __init__(self, node: torch.Node = None):
     self._idx = None
     self._kind = None
+    self._is_custom_pyop = False
+    self._pyobj = None
+     
     if node:
       if node.kind().split("::")[-1] != "PythonOp":
         self._kind = node.kind().split("::")[-1]
       else:
         self._kind = node.pyname()
+        import pytorch_nndct.nn.modules.function as fn
+        import inspect
+        native_fn = [obj.__name__ for _, obj in inspect.getmembers(fn) if inspect.isclass(obj)]
+        if self._kind not in native_fn:
+          self._is_custom_pyop = True
+          self._pyobj = node.pyobj()
+          
     self._inputs = []
     self._outputs = []
     self._in_nodes = []
@@ -299,6 +337,7 @@ class TorchNode(NodeBase):
     self._blocks = []
     self._dtype = "unknown"
     self._schema = None
+   
 
   def __str__(self):
     return json.dumps(self.description(), indent=4, separators=(',', ': '))
@@ -313,11 +352,23 @@ class TorchNode(NodeBase):
     node_des['out_nodes'] = [o.name for o in self._out_nodes]
 
     node_des['in_value'] = []
+
+    def append_in_value(ip):
+      if isinstance(ip, (list, tuple)):
+        for value in ip:
+          append_in_value(value)
+      else:
+        node_des['in_value'].append(ip.name)
+    
+    for ip in self._inputs:
+      append_in_value(ip)
+    """
     for ip in self._inputs:
       if isinstance(ip, list):
         node_des['in_value'].append([it.name for it in ip])
       else:
         node_des['in_value'].append(ip.name)
+    """
 
     node_des['out_value'] = [ot.name for ot in self._outputs]
     
@@ -345,6 +396,7 @@ class TorchNode(NodeBase):
     self._out_nodes.clear()
     self._in_nodes.clear()
   
+  
   @property
   def blocks(self):
     return self._blocks
@@ -358,12 +410,23 @@ class TorchNode(NodeBase):
 
   @property
   def flatten_inputs(self):
+    def _flatten_inputs(inputs):
+      if isinstance(inputs, (list, tuple)):
+        for i in inputs:
+          yield from _flatten_inputs(i)
+      else:
+        yield inputs
+        
+    for ip in self._inputs:
+      yield from _flatten_inputs(ip)
+    """
     for ip in self._inputs:
       if isinstance(ip, list):
         for i in ip:
           yield i
       else:
         yield ip
+    """
 
   @property
   def outputs(self):
@@ -431,6 +494,15 @@ class TorchNode(NodeBase):
   @schema.setter
   def schema(self, schema):
     self._schema = schema
+    
+    
+  @property
+  def is_custom_pyop(self):
+    return self._is_custom_pyop
+  
+  @property
+  def pyobj(self):
+    return self._pyobj
 
 
   

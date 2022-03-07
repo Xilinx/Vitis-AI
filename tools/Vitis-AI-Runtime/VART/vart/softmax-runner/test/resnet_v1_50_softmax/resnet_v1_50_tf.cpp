@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include <glog/logging.h>
-#include <xrt.h>
 
 #include <algorithm>
 #include <cmath>
@@ -32,6 +31,8 @@
 #include "vart/runner_ext.hpp"
 #include "vart/softmax_runner.hpp"
 #include "vitis/ai/collection_helper.hpp"
+
+using namespace std;
 
 static cv::Mat read_image(const std::string& image_file_name);
 static std::vector<std::pair<int, float>> topk(const float* score, size_t size,

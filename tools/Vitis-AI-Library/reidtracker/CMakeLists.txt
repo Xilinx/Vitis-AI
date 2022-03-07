@@ -35,7 +35,8 @@ vai_add_library(
 
 vai_add_test(test_images_reidtracker REQUIRE ${PROJECT_NAME}::refinedet)
 vai_add_test(test_accuracy_reidtracker)
+#vai_add_test(test_accuracy_fairmot REQUIRE ${PROJECT_NAME}::fairmot)
 set(SAMPLE_INATLL_PATH share/${PROJECT_NAME}/samples)
-#install(TARGETS test_accuracy_reidtracker
-#        DESTINATION ${SAMPLE_INATLL_PATH}/reidtracker/)
+#install(TARGETS test_accuracy_fairmot
+#        DESTINATION ${SAMPLE_INATLL_PATH}/fairmot/)
 vai_add_test(test_video_reidtracker REQUIRE ${PROJECT_NAME}::refinedet)

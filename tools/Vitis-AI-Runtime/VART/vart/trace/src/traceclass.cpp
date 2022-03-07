@@ -29,6 +29,7 @@ vector<traceClass*> traceclass_table;
 static traceClass time_sync("trace_timesync", {});
 static traceClass dpu_controller("dpu-controller", {"event_state", "device_core_idx"});
 static traceClass dpu_runner("dpu-runner", {"subgraph", "batch", "workload", "depth"});
+static traceClass cpu_task("cpu-task", {"subgraph", "depth", "event_state"});
 
 traceClass::traceClass(const char* name_, vector<string> items) {
   classname = std::string(name_);

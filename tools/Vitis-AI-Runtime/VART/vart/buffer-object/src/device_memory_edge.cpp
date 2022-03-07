@@ -89,5 +89,7 @@ bool DeviceMemoryEdge::download(void* data, uint64_t offsetaddr, size_t size) {
 }
 }  // namespace
 
-DECLARE_INJECTION(xir::DeviceMemory, DeviceMemoryEdge, size_t&&);
-DECLARE_INJECTION(xir::DeviceMemory, DeviceMemoryEdge, size_t&);
+REGISTER_INJECTION_BEGIN(xir::DeviceMemory, 2, DeviceMemoryEdge, size_t&) {
+  return true;
+}
+REGISTER_INJECTION_END

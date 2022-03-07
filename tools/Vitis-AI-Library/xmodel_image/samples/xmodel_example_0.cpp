@@ -24,7 +24,7 @@
 #include "vitis/ai/xmodel_image.hpp"
 //
 #include "./process_image.hpp"
-#include "./xmodel_result_to_string.hpp"
+//#include "./xmodel_result_to_string.hpp"
 
 std::vector<std::string> g_image_files;
 std::string g_xmodel_file;
@@ -99,9 +99,11 @@ int main(int argc, char* argv[]) {
   auto image_buffers = from_opencv(images);
   auto results = xmodel->run(image_buffers);
 
-  for (const auto& r : results) {
-    LOG(INFO) << "xmodel result:\n" << to_string(r);
+  std::string image = "";
+  for (const auto& g : g_image_files){
+    image += g;
   }
+  LOG(INFO) << "batch: " << xmodel->get_batch() << "     image: " << image << "\n";
 
   int c = 0;
   for (const auto& r : results) {
@@ -113,6 +115,5 @@ int main(int argc, char* argv[]) {
     c = c + 1;
   }
 
-  LOG(INFO) << "BYEBYE";
   return 0;
 }

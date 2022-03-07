@@ -1,0 +1,65 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: face detection model.
+input size: 320*320
+float ops: 0.49G
+task: face detection
+framework: caffe
+prune: 'no'
+version: 2.0
+files:
+- name: cf_densebox_wider_320_320_0.49G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_densebox_wider_320_320_0.49G_2.0.zip
+  checksum: 712ce2cb800639b6c92567b053c4af1b
+- name: densebox_320_320
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: 4f1ffab57d88457942c5c0e389dec101
+- name: densebox_320_320
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck190-r2.0.0.tar.gz
+  checksum: bdd16e2667f3459df2a4bec4137ab97f
+- name: densebox_320_320
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: 4d7dd14741b73fa7d6f49e5495b13377
+- name: densebox_320_320
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: 26b8aac6bc057ef6005fc774e7322710
+- name: densebox_320_320
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 7742a0c1c9e5bc264bb8ba28eeb7c100
+- name: densebox_320_320
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 4a9b2e79cb699f4bfe9f2f6ab175ac6e
+- name: densebox_320_320
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u200-u250-r2.0.0.tar.gz
+  checksum: 22f783398a3052e755d5eb0d3f8de7c5
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

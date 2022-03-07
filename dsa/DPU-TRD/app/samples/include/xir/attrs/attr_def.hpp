@@ -67,7 +67,7 @@ extern std::type_index TYPE_INDEX_MAP_STR_2_STR;
  *@brief attribute definition
  *This struct defines an attribute, like 'kernel_w' for conv2d
  */
-struct AttrDef {
+struct XIR_DLLESPEC AttrDef {
   /**
    * @brief Element Occurence Specifier
    */
@@ -78,19 +78,23 @@ struct AttrDef {
     OPTIONAL,
     NUM
   };
-
+  /// MSVC NOTE: member variable cannot be const, because
+  /// vector<AttrDef> in OpDef requires it is copiable.  // when
+  /// exported with XIR_DLLESPEC, a special default copy constructor
+  /// is created, which is deleted.
+  //
   /// Name of the op attribute
-  const std::string name;
+  std::string name;
   /// Data type
-  const std::type_index data_type;
+  std::type_index data_type;
   /// Occurence type
-  const OccurenceType occur_type;
+  OccurenceType occur_type;
   /// List size for validation, 0 for variable length
-  const std::uint32_t list_length;
+  std::uint32_t list_length;
   /// Some comments
-  const std::string annotation;
+  std::string annotation;
   /// Default value of the attribute
-  const xir::any default_value;
+  xir::any default_value;
 };
 
 template <typename T>
@@ -125,7 +129,7 @@ const AttrDef build_required_attr(const std::string& name,
                                   const std::string& annotation) {
   UNI_LOG_CHECK(occur_type == AttrDef::OccurenceType::REQUIRED,
                 XIR_UNEXPECTED_VALUE)
-    << "REQUIRED item does not need to have a default value";
+      << "REQUIRED item does not need to have a default value";
   return AttrDef{name,
                  std::type_index{typeid(T)},
                  AttrDef::OccurenceType::REQUIRED,
@@ -142,7 +146,7 @@ const AttrDef build_optional_attr(const std::string& name,
                                   const T& default_value) {
   UNI_LOG_CHECK(occur_type == AttrDef::OccurenceType::OPTIONAL,
                 XIR_UNEXPECTED_VALUE)
-    << "OPTIONAL item needs to have a default value";
+      << "OPTIONAL item needs to have a default value";
   return AttrDef{name,
                  std::type_index{typeid(T)},
                  AttrDef::OccurenceType::OPTIONAL,
@@ -155,26 +159,19 @@ const AttrDef build_optional_attr(const std::string& name,
 // for scale type
 template <typename T>
 struct AttrDefBuilder<
-  T, typename std::enable_if<is_one_of<
-       T, bool, std::int8_t, std::uint8_t, std::int16_t, std::uint16_t,
-       std::int32_t, std::uint32_t, std::int64_t, std::uint64_t, float,
-       double, std::string, char>::value>::type> {
+    T, typename std::enable_if<is_one_of<
+           T, bool, std::int8_t, std::uint8_t, std::int16_t, std::uint16_t,
+           std::int32_t, std::uint32_t, std::int64_t, std::uint64_t, float,
+           double, std::string, char>::value>::type> {
   static const AttrDef build(std::string name,
                              AttrDef::OccurenceType occur_type,
                              std::string annotation) {
-    return build_required_attr<T>(name,
-                                  occur_type,
-                                  1,
-                                  annotation);
+    return build_required_attr<T>(name, occur_type, 1, annotation);
   }
   static const AttrDef build(std::string name,
                              AttrDef::OccurenceType occur_type,
-                             std::string annotation,
-                             const T& default_value) {
-    return build_optional_attr<T>(name,
-                                  occur_type,
-                                  1,
-                                  annotation,
+                             std::string annotation, const T& default_value) {
+    return build_optional_attr<T>(name, occur_type, 1, annotation,
                                   default_value);
   }
 };
@@ -182,32 +179,25 @@ struct AttrDefBuilder<
 // for map type
 template <typename T>
 struct AttrDefBuilder<
-  T, typename std::enable_if<
-       is_std_map<T>::value &&
-       is_one_of<typename T::key_type, bool, std::int8_t, std::uint8_t,
-                 std::int16_t, std::uint16_t, std::int32_t, std::uint32_t,
-                 std::int64_t, std::uint64_t, float, double, std::string,
-                 char>::value &&
-       is_one_of<typename T::mapped_type, bool, std::int8_t, std::uint8_t,
-                 std::int16_t, std::uint16_t, std::int32_t, std::uint32_t,
-                 std::int64_t, std::uint64_t, float, double, std::string,
-                 char, std::vector<char>>::value>::type> {
+    T, typename std::enable_if<
+           is_std_map<T>::value &&
+           is_one_of<typename T::key_type, bool, std::int8_t, std::uint8_t,
+                     std::int16_t, std::uint16_t, std::int32_t, std::uint32_t,
+                     std::int64_t, std::uint64_t, float, double, std::string,
+                     char>::value &&
+           is_one_of<typename T::mapped_type, bool, std::int8_t, std::uint8_t,
+                     std::int16_t, std::uint16_t, std::int32_t, std::uint32_t,
+                     std::int64_t, std::uint64_t, float, double, std::string,
+                     char, std::vector<char>>::value>::type> {
   static const AttrDef build(std::string name,
                              AttrDef::OccurenceType occur_type,
                              std::string annotation) {
-    return build_required_attr<T>(name,
-                                  occur_type,
-                                  1,
-                                  annotation);
+    return build_required_attr<T>(name, occur_type, 1, annotation);
   }
   static const AttrDef build(std::string name,
                              AttrDef::OccurenceType occur_type,
-                             std::string annotation,
-                             const T& default_value) {
-    return build_optional_attr<T>(name,
-                                  occur_type,
-                                  1,
-                                  annotation,
+                             std::string annotation, const T& default_value) {
+    return build_optional_attr<T>(name, occur_type, 1, annotation,
                                   default_value);
   }
 };
@@ -215,30 +205,22 @@ struct AttrDefBuilder<
 // for vector type
 template <typename T>
 struct AttrDefBuilder<
-  T, typename std::enable_if<
-       is_std_vector<T>::value &&
-       is_one_of<typename T::value_type, bool, std::int8_t, std::uint8_t,
-                 std::int16_t, std::uint16_t, std::int32_t, std::uint32_t,
-                 std::int64_t, std::uint64_t, float, double, std::string,
-                 char>::value>::type> {
+    T, typename std::enable_if<
+           is_std_vector<T>::value &&
+           is_one_of<typename T::value_type, bool, std::int8_t, std::uint8_t,
+                     std::int16_t, std::uint16_t, std::int32_t, std::uint32_t,
+                     std::int64_t, std::uint64_t, float, double, std::string,
+                     char>::value>::type> {
   static const AttrDef build(std::string name,
                              AttrDef::OccurenceType occur_type,
-                             std::uint32_t length,
-                             std::string annotation) {
-    return build_required_attr<T>(name,
-                                  occur_type,
-                                  length,
-                                  annotation);
+                             std::uint32_t length, std::string annotation) {
+    return build_required_attr<T>(name, occur_type, length, annotation);
   }
   static const AttrDef build(std::string name,
                              AttrDef::OccurenceType occur_type,
-                             std::uint32_t length,
-                             std::string annotation,
+                             std::uint32_t length, std::string annotation,
                              const T& default_value) {
-    return build_optional_attr<T>(name,
-                                  occur_type,
-                                  length,
-                                  annotation,
+    return build_optional_attr<T>(name, occur_type, length, annotation,
                                   default_value);
   }
 };

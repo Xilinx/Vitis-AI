@@ -1,0 +1,20 @@
+name: vitis-ai-pytorch
+
+channels:
+  - pytorch
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - python=3.6
+  - pytorch_nndct_cpu
+  - pyyaml
+  - jupyter
+  - ipywidgets
+  - dill
+  - progressbar2
+  - pytest
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - vaic

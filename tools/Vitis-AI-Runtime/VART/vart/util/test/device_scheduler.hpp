@@ -18,6 +18,17 @@
 #include <memory>
 #include <vitis/ai/with_injection.hpp>
 
+#ifndef test_injector_DLLSPEC
+#if defined(_WIN32)
+#ifdef test_injector_EXPORT
+#define test_injector_DLLSPEC __declspec(dllexport)
+#else
+#define test_injector_DLLSPEC __declspec(dllimport)
+#endif
+#else
+#define test_injector_DLLSPEC __attribute__((visibility("default")))
+#endif
+#endif
 namespace vart {
 namespace dpu {
 /**
@@ -28,6 +39,9 @@ class DeviceScheduler : public vitis::ai::WithInjection<DeviceScheduler> {
   explicit DeviceScheduler() = default;
 
  public:
+  test_injector_DLLSPEC static std::unique_ptr<DeviceScheduler> create(int v);
+  test_injector_DLLSPEC static std::unique_ptr<DeviceScheduler> create(
+      const char* x, int v);
   DeviceScheduler(const DeviceScheduler&) = delete;
   DeviceScheduler& operator=(const DeviceScheduler& other) = delete;
 
@@ -55,5 +69,6 @@ class DeviceScheduler : public vitis::ai::WithInjection<DeviceScheduler> {
    */
   virtual void mark_busy_time(int device_id, int time) = 0;
 };
+static constexpr int hello = 1;
 }  // namespace dpu
 }  // namespace vart

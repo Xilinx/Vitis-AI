@@ -94,9 +94,10 @@ void SfmControllerXrtEdge::run(const int8_t* input, float scale,
     LOG_IF(INFO, ENV_PARAM(DEBUG_SFM_RUNNER)) << "pages: " << n_of_run;
 
     // The output start address will be set after the input's tail address,
-    // the split_offset store the input data size(aligned by page_size).
-    auto split_offset = input_aligned_size;
+    // the split_offset store the batch input data size(aligned by page_size).
     auto batch_per_run = group / n_of_run;
+    auto split_offset =
+        align(exCls * batch_per_run * sizeof(int8_t), page_size_);
     auto last_batch = group - (n_of_run - 1) * batch_per_run;
     auto workspace_input = workspace_->get_w<char>(0);
     auto workspace_output = workspace_->get_r<char>(split_offset);
@@ -140,6 +141,7 @@ void SfmControllerXrtEdge::run(const int8_t* input, float scale,
           << "last_batch " << last_batch << " "                      //
           << "batch_per_run " << batch_per_run << " "                //
           << "n_of_run " << n_of_run << " "                          //
+          << "r " << r << " "                                        //
           << "fix_pos " << fix_pos << " "                            //
           << "offset " << offset << " "                              //
           << "input_phy " << std::hex << "0x" << input_phy << " "    //
@@ -239,26 +241,26 @@ SfmControllerXrtEdgeWithScheduler::SfmControllerXrtEdgeWithScheduler() {
           std::make_unique<SfmControllerXrtEdge>(core_idx, std::move(xrt_cu)));
     }
   }
-  scheduler_ = vart::dpu::DeviceScheduler::create(controllers_.size());
+  // scheduler_ = vart::dpu::DeviceScheduler::create(controllers_.size());
   return;
 }
 
 void SfmControllerXrtEdgeWithScheduler::run(const int8_t* input, float scale,
                                             unsigned int cls,
                                             unsigned int group, float* output) {
-  auto core_idx = scheduler_->next();
+  auto core_idx = 0;  // scheduler_->next();
   controllers_[core_idx]->run(input, scale, cls, group, output);
-  scheduler_->mark_busy_time(core_idx, -1);
+  // scheduler_->mark_busy_time(core_idx, -1);
 }
 
 void SfmControllerXrtEdgeWithScheduler::run_xrt_cu(
     size_t core_idx_, const uint64_t input, const unsigned int cls,
     const unsigned int group, const int fixpos, uint64_t output,
     uint32_t offset) {
-  auto core_idx = scheduler_->next();
+  auto core_idx = 0;  // scheduler_->next();
   controllers_[core_idx]->run_xrt_cu(core_idx, input, cls, group, fixpos,
                                      output, offset);
-  scheduler_->mark_busy_time(core_idx, -1);
+  // scheduler_->mark_busy_time(core_idx, -1);
 }
 
 bool SfmControllerXrtEdgeWithScheduler::supported(float scale, unsigned int cls,

@@ -99,7 +99,7 @@ class VitisQuantizeRegistry(QuantizeRegistry):
   def print_configs(self):
     """Print the configurations."""
     for k, v in self._configs.items():
-      if not k in ['input_quantize_config', 'layer_quantize_config'] and v > 0:
+      if not k in ['input_quantize_config', 'layer_quantize_config']:
         logger.debug('- {}: {}'.format(k, v))
 
   def is_valid_config(self, config):
@@ -120,7 +120,8 @@ class VitisQuantizeRegistry(QuantizeRegistry):
         logger.error('Invalid config {} for {}.'.format(config, self.__class__))
 
       if config[0] in [
-          'input_bit', 'weight_bit', 'activation_bit', 'input_quantize_config'
+          'input_bit', 'weight_bit', 'activation_bit', 'per_channel',
+          'symmetry', 'input_quantize_config', "custom_layer_type"
       ]:
         self._configs.update({config[0]: config[1]})
         logger.info('Update {}: {}'.format(config[0], config[1]))
@@ -133,24 +134,28 @@ class VitisQuantizeRegistry(QuantizeRegistry):
 
   def get_input_bit(self):
     """Get input bit width."""
-    if self._configs['input_bit'] > 0:
-      return self._configs['input_bit']
-    else:
-      return None
+    return self._configs['input_bit']
 
   def get_weight_bit(self):
     """Get weight bit width."""
-    if self._configs['weight_bit'] > 0:
-      return self._configs['weight_bit']
-    else:
-      return None
+    return self._configs['weight_bit']
 
   def get_activation_bit(self):
     """Get activation bit width."""
-    if self._configs['activation_bit'] > 0:
-      return self._configs['activation_bit']
+    return self._configs['activation_bit']
+
+  def get_per_channel(self):
+    """Get per_channel configuration."""
+    # per_channel is set to False by default to be compatible with DPU now,
+    # even if the quantizer's default value is true
+    if 'per_channel' in self._configs and not self._configs['per_channel']:
+      return self._configs['per_channel']
     else:
       return None
+
+  def get_symmetry(self):
+    """Get symmetry configuration."""
+    return self._configs['symmetry']
 
   def get_input_quantize_config(self):
     """Get input quantize config."""
@@ -159,6 +164,10 @@ class VitisQuantizeRegistry(QuantizeRegistry):
     if input_bit:
       config['input_quantizer']['quantizer_params']['bit_width'] = input_bit
       logger.debug('Override default bit_width: input -> {}'.format(input_bit))
+    symmetry = self.get_symmetry()
+    if symmetry is not None:
+      config['input_quantizer']['quantizer_params']['symmetry'] = symmetry
+      logger.debug('Override default symmetry: input -> {}'.format(symmetry))
     return config
 
   def supports(self, layer):
@@ -178,33 +187,63 @@ class VitisQuantizeRegistry(QuantizeRegistry):
 
   def _get_quantize_config(self, layer_type):
     quantize_config = copy.deepcopy(self._layer_quantize_map.get(layer_type))
+    config = quantize_config.get_config()
 
-    # Override bit width with global settings
+    # Maybe override with global settings
     weight_bit = self.get_weight_bit()
-    activation_bit = self.get_activation_bit()
-    if weight_bit or activation_bit:
-      config = quantize_config.get_config()
-      if weight_bit:
-        for quantizer in config['weight_quantizers']:
-          old_weight_bit = quantizer['quantizer_params']['bit_width']
-          quantizer['quantizer_params']['bit_width'] = weight_bit
-          logger.debug('Override default bit_width: {}:weight {} -> {}'.format(
-              layer_type, old_weight_bit, weight_bit))
-      if activation_bit:
-        for quantizer in config['activation_quantizers']:
-          old_activation_bit = quantizer['quantizer_params']['bit_width']
-          quantizer['quantizer_params']['bit_width'] = activation_bit
-          logger.debug(
-              'Override default bit_width: {}:activation {} -> {}'.format(
-                  layer_type, old_activation_bit, activation_bit))
-        for quantizer in config['output_quantizers']:
-          old_output_bit = quantizer['quantizer_params']['bit_width']
-          quantizer['quantizer_params']['bit_width'] = activation_bit
-          logger.debug('Override default bit_width: {}:output {} -> {}'.format(
-              layer_type, old_output_bit, activation_bit))
-      return self._parse_layer_quantize_config(config)
+    if weight_bit is not None:
+      for quantizer in config['weight_quantizers']:
+        old_weight_bit = quantizer['quantizer_params']['bit_width']
+        quantizer['quantizer_params']['bit_width'] = weight_bit
+        logger.debug('Override default bit_width: {}:weight {} -> {}'.format(
+            layer_type, old_weight_bit, weight_bit))
 
-    return quantize_config
+    activation_bit = self.get_activation_bit()
+    if activation_bit is not None:
+      for quantizer in config['activation_quantizers']:
+        old_activation_bit = quantizer['quantizer_params']['bit_width']
+        quantizer['quantizer_params']['bit_width'] = activation_bit
+        logger.debug(
+            'Override default bit_width: {}:activation {} -> {}'.format(
+                layer_type, old_activation_bit, activation_bit))
+      for quantizer in config['output_quantizers']:
+        old_output_bit = quantizer['quantizer_params']['bit_width']
+        quantizer['quantizer_params']['bit_width'] = activation_bit
+        logger.debug('Override default bit_width: {}:output {} -> {}'.format(
+            layer_type, old_output_bit, activation_bit))
+
+    per_channel = self.get_per_channel()
+    if per_channel is not None:
+      config = quantize_config.get_config()
+      for quantizer in config['weight_quantizers']:
+        if 'per_channel' in quantizer['quantizer_params']:
+          old_per_channel = quantizer['quantizer_params']['per_channel']
+          quantizer['quantizer_params']['per_channel'] = per_channel
+          logger.debug(
+              'Override default per_channel: {}:weight {} -> {}'.format(
+                  layer_type, old_per_channel, per_channel))
+
+    symmetry = self.get_symmetry()
+    if symmetry is not None:
+      config = quantize_config.get_config()
+      for quantizer in config['weight_quantizers']:
+        if 'symmetry' in quantizer['quantizer_params']:
+          old_symmetry = quantizer['quantizer_params']['symmetry']
+          quantizer['quantizer_params']['symmetry'] = symmetry
+          logger.debug('Override default symmetry: {}:weight {} -> {}'.format(
+              layer_type, old_symmetry, symmetry))
+      for quantizer in config['activation_quantizers']:
+        old_symmetry = quantizer['quantizer_params']['symmetry']
+        quantizer['quantizer_params']['symmetry'] = symmetry
+        logger.debug('Override default symmetry: {}:activation {} -> {}'.format(
+            layer_type, old_symmetry, symmetry))
+      for quantizer in config['output_quantizers']:
+        old_symmetry = quantizer['quantizer_params']['symmetry']
+        quantizer['quantizer_params']['symmetry'] = symmetry
+        logger.debug('Override default symmetry: {}:output {} -> {}'.format(
+            layer_type, old_symmetry, symmetry))
+
+    return self._parse_layer_quantize_config(config)
 
   def get_quantize_config(self, layer):
     """Returns the quantization config for the given layer.

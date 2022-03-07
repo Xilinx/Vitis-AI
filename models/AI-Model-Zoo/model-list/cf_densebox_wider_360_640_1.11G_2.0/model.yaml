@@ -1,0 +1,65 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: face detection model.
+input size: 360*640
+float ops: 1.11G
+task: face detection
+framework: caffe
+prune: 'no'
+version: 2.0
+files:
+- name: cf_densebox_wider_360_640_1.11G_2.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=cf_densebox_wider_360_640_1.11G_2.0.zip
+  checksum: e8ff6c354fdd6e2f0a94cdff7636e99c
+- name: densebox_640_360
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-zcu102_zcu104_kv260-r2.0.0.tar.gz
+  checksum: bff9024389bb97d655ab136fe8b80b2d
+- name: densebox_640_360
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-vck190-r2.0.0.tar.gz
+  checksum: 1130c3f30c3ccb167562a98bb1e54b96
+- name: densebox_640_360
+  type: xmodel
+  board: vck50006pe-DPUCVDX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
+  checksum: c135d76f84db41b867bc4def61de712c
+- name: densebox_640_360
+  type: xmodel
+  board: vck50008pe-DPUCVDX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
+  checksum: c7bb3a86dce69a239d10422adb7ddbdf
+- name: densebox_640_360
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u50lv-DPUCAHX8H-r2.0.0.tar.gz
+  checksum: 873499273c0706e8deec30694a07579c
+- name: densebox_640_360
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
+  checksum: 2dc303174eb83a81290c18560ccbd2b0
+- name: densebox_640_360
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-u200-u250-r2.0.0.tar.gz
+  checksum: 9ffe55e2515cb7aacf29b3ef7234fc2e
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

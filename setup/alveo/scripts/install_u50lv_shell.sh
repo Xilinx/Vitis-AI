@@ -31,12 +31,12 @@ fi
 ##############################
 # Get Gen3x4 Platform Link
 ##############################
-if [[ $distroname == *"Ubuntu"* ]]; then
-  echo "Ubuntu 16/18/20"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u50lv-gen3x4-xdma-platform_2-1_all.deb.tar.gz"
+if [[ $distroname == *"Ubuntu 18.04"* ]] || [[ $distroname == *"Ubuntu 20.04"* ]]; then
+  echo "Ubuntu 18.04/20.04"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u50lv-gen3x4-xdma-platform_2-2_all.deb.tar.gz"
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"Red Hat"* ]]; then
   echo "CentOS/RHEL"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u50lv-gen3x4-xdma-platform-2-1.noarch.rpm.tar.gz"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u50lv-gen3x4-xdma-platform-2-2.noarch.rpm.tar.gz"
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
@@ -49,7 +49,7 @@ mkdir ./temp
 cd ./temp
 wget $DEPLOY_PLFM_URL -O shell.tgz
 tar xfz shell.tgz
-if [[ $distroname == *"Ubuntu"* ]]; then
+if [[ $distroname == *"Ubuntu 18.04"* ]] || [[ $distroname == *"Ubuntu 20.04"* ]]; then
   sudo apt install ./*cmc* -y
   sudo apt install ./*sc-fw* -y
   sudo apt install ./*validate* -y
@@ -69,4 +69,4 @@ rm -rf ./temp
 ##############################
 # Flash alveo
 ##############################
-sudo /opt/xilinx/xrt/bin/xbmgmt flash --update --shell xilinx_u50lv_gen3x4_xdma_base_2
+sudo /opt/xilinx/xrt/bin/xbmgmt --legacy flash --update --shell xilinx_u50lv_gen3x4_xdma_base_2

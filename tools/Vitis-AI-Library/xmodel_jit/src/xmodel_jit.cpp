@@ -20,14 +20,15 @@
 namespace vitis {
 namespace ai {
 std::unique_ptr<XmodelJit> XmodelJit::create(xir::Graph* graph) {
-  auto jit = std::string("libvitis_ai_library-xmodel_jit_python.so.1");
+  auto jit = std::string("libvitis_ai_library-xmodel_jit_python.so.2");
   if (graph->has_attr("xmodel_image:jit")) {
     jit = graph->get_attr<std::string>("xmodel_image:jit");
   }
   auto so_name = jit;
   auto handle = dlopen(so_name.c_str(), RTLD_LAZY | RTLD_GLOBAL);
   if (!handle) {
-    LOG(FATAL) << "cannot open plugin: name=" << so_name;
+    LOG(FATAL) << "cannot open plugin: name=" << so_name
+               << " error: " << dlerror();
   };
   typedef std::unique_ptr<XmodelJit> (*fm_type)(xir::Graph * graph);
   auto factory_method_p = (fm_type)dlsym(handle, "create_xmodel_jit");

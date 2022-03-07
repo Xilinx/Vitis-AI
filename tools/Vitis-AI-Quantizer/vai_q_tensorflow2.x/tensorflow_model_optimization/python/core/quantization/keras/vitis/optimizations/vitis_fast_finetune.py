@@ -17,7 +17,6 @@
 import tensorflow as tf
 import numpy as np
 
-from tensorflow.python.keras.engine import data_adapter
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_aware_activation
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
@@ -62,7 +61,6 @@ class SubModel(keras.Model):
     return [self.loss_tracker]
 
   def test_step(self, data):
-    data = data_adapter.expand_1d(data)
     x, y, sample_weight = tf.keras.utils.unpack_x_y_sample_weight(data)
     y_pred = self.call(x, training=False)
     loss_value = self.loss(y, y_pred, sample_weight)
@@ -70,7 +68,6 @@ class SubModel(keras.Model):
     return {'loss': self.loss_tracker.result()}
 
   def train_step(self, data):
-    data = data_adapter.expand_1d(data)
     x, y, sample_weight = tf.keras.utils.unpack_x_y_sample_weight(data)
     with tf.GradientTape(persistent=True) as tape:
       y_pred = self.call(x, training=True)

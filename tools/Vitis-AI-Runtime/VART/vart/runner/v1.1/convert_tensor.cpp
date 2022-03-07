@@ -117,6 +117,7 @@ xir::DataType convert_data_type(vitis::ai::Tensor::DataType data_type) {
   return ret;
 }
 
+using std::unique_ptr;
 unique_ptr<vitis::ai::Tensor> convert_tensor(const xir::Tensor* xir_tensor) {
   return std::unique_ptr<vitis::ai::Tensor>(
       new vitis::ai::Tensor(xir_tensor->get_name(), xir_tensor->get_shape(),

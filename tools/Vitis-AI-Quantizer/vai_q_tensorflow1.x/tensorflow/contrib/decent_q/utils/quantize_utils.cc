@@ -483,6 +483,7 @@ Status ConvertMeanToAvgpool(const GraphDef& input_graph_def,
     return Status::OK();
   }
 
+  DLOG_WARNING << "Start convert mean to Avgpool";
   std::unordered_map<string, std::vector<int>> shape_of_means;
   TF_RETURN_IF_ERROR(
       GetShapeOfNodes(input_graph_def, mean_nodes, 1, &shape_of_means));
@@ -570,6 +571,184 @@ Status ConvertMeanToAvgpool(const GraphDef& input_graph_def,
   return Status::OK();
 }
 
+Status AddScaleForHardSigmoid(const GraphDef& input_graph_def,
+                              GraphDef* output_graph_def) {
+  GraphDef current_graph_def, processed_graph_def;
+  std::map<string, string> inputs_to_rename;
+  std::unordered_set<string> nodes_to_ignore;
+
+  std::vector<std::string> mean_nodes;
+  for (auto i = 0; i < input_graph_def.node_size(); i++) {
+    const NodeDef& node = input_graph_def.node(i);
+    if (node.op() == "Mean") {
+      mean_nodes.push_back(node.name());
+      mean_nodes.push_back(node.input(0));
+    }
+  }
+  if (mean_nodes.size() == 0) {
+    *output_graph_def = input_graph_def;
+    return Status::OK();
+  }
+
+  DLOG_WARNING << "Start convert mean to Avgpool";
+  std::unordered_map<string, std::vector<int>> shape_of_means;
+  TF_RETURN_IF_ERROR(
+      GetShapeOfNodes(input_graph_def, mean_nodes, 1, &shape_of_means));
+
+  current_graph_def = input_graph_def;
+  TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
+      current_graph_def,  // clang-format off
+      {"Mean",
+        {
+          {"*"}, // input node
+          {"Const"}, // reduction_indices node
+        }
+      },  // clang-format on
+      [&inputs_to_rename, &nodes_to_ignore, &shape_of_means](
+          const NodeMatch& match, const std::set<string>& input_nodes,
+          const std::set<string>& output_nodes,
+          std::vector<NodeDef>* new_nodes) {
+        const NodeDef& mean_node = match.node;
+        const NodeDef& input_node = match.inputs[0].node;
+        const NodeDef& ri_node = match.inputs[1].node;
+        new_nodes->push_back(input_node);
+
+        bool keep_dims = mean_node.attr().at("keep_dims").b();
+        Tensor ri_tensor = GetNodeTensorAttr(ri_node, "value");
+        if (keep_dims && ri_tensor.flat<int>()(0) == 1 &&
+            ri_tensor.flat<int>()(1) == 2) {
+          DLOG_WARNING << "Convert mean node " << mean_node.name()
+                       << " to AvgPool";
+          int kernel_h = shape_of_means.at(input_node.name())[1] /
+                         shape_of_means.at(mean_node.name())[1];
+          int kernel_w = shape_of_means.at(input_node.name())[2] /
+                         shape_of_means.at(mean_node.name())[2];
+
+          // Build avgpool node
+          NodeDef avgpool_node;
+          avgpool_node.set_name(mean_node.name());
+          avgpool_node.set_op("AvgPool");
+          AddNodeInput(input_node.name(), &avgpool_node);
+          SetNodeAttr("ksize", std::vector<int>({1, kernel_h, kernel_w, 1}),
+                      &avgpool_node);
+          SetNodeAttr("padding", "VALID", &avgpool_node);
+          SetNodeAttr("T", DT_FLOAT, &avgpool_node);
+          SetNodeAttr("strides", std::vector<int>({1, 1, 1, 1}), &avgpool_node);
+          SetNodeAttr("data_format", "NHWC", &avgpool_node);
+
+          new_nodes->push_back(avgpool_node);
+        } else if (!keep_dims && ri_tensor.flat<int>()(0) == 1 &&
+                   ri_tensor.flat<int>()(1) == 2) {
+          DLOG_WARNING << "Convert mean node " << mean_node.name()
+                       << " to AvgPool + Squeeze";
+          int kernel_h = shape_of_means.at(input_node.name())[1];
+          int kernel_w = shape_of_means.at(input_node.name())[2];
+
+          // Build avgpool node
+          NodeDef avgpool_node;
+          avgpool_node.set_name(mean_node.name());
+          avgpool_node.set_op("AvgPool");
+          AddNodeInput(input_node.name(), &avgpool_node);
+          SetNodeAttr("ksize", std::vector<int>({1, kernel_h, kernel_w, 1}),
+                      &avgpool_node);
+          SetNodeAttr("padding", "VALID", &avgpool_node);
+          SetNodeAttr("T", DT_FLOAT, &avgpool_node);
+          SetNodeAttr("strides", std::vector<int>({1, 1, 1, 1}), &avgpool_node);
+          SetNodeAttr("data_format", "NHWC", &avgpool_node);
+          new_nodes->push_back(avgpool_node);
+
+          NodeDef squeeze_node;
+          squeeze_node.set_name(mean_node.name() + "/squeeze");
+          squeeze_node.set_op("Squeeze");
+          SetNodeAttr("squeeze_dims", std::vector<int>({1, 2}), &squeeze_node);
+          SetNodeAttr("T", DT_FLOAT, &squeeze_node);
+          AddNodeInput(avgpool_node.name(), &squeeze_node);
+          new_nodes->push_back(squeeze_node);
+          inputs_to_rename[mean_node.name()] = squeeze_node.name();
+          nodes_to_ignore.insert(squeeze_node.name());
+        } else {
+          new_nodes->push_back(ri_node);
+          new_nodes->push_back(mean_node);
+        }
+        return Status::OK();
+      },
+      {}, &processed_graph_def));
+  TF_RETURN_IF_ERROR(RenameNodeInputs(processed_graph_def, inputs_to_rename,
+                                      nodes_to_ignore, output_graph_def));
+  return Status::OK();
+}
+
+Status AdjustHardSwishComputeOrder(const GraphDef& input_graph_def,
+                                   GraphDef* output_graph_def) {
+  GraphDef current_graph_def, processed_graph_def;
+  std::map<string, string> inputs_to_rename;
+  std::unordered_set<string> nodes_to_ignore;
+
+  current_graph_def = input_graph_def;
+  TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
+      current_graph_def,  // clang-format off
+      {"Mul",
+        {
+          {"Mul",
+            {
+              {"*"}, // input node
+              {"Relu6",
+                {
+                  {"Add|AddV2",
+                    {
+                      {"*"}, // input node
+                      {"Const"},    // add 3
+                    }
+                  },
+                }
+              },
+            }
+          },
+          {"Const"}, // scale=1/6
+        }
+      },  // clang-format on
+      [&inputs_to_rename, &nodes_to_ignore](
+          const NodeMatch& match, const std::set<string>& input_nodes,
+          const std::set<string>& output_nodes,
+          std::vector<NodeDef>* new_nodes) {
+        const NodeDef& mul_1_6 = match.node;
+        const NodeDef& mul_x = match.inputs[0].node;
+        const NodeDef& val_1_6_node = match.inputs[1].node;
+        const NodeDef& input_node = match.inputs[0].inputs[0].node;
+        const NodeDef& relu_6_node = match.inputs[0].inputs[1].node;
+        const NodeDef& add_node = match.inputs[0].inputs[1].inputs[0].node;
+        const NodeDef& val_3_node =
+            match.inputs[0].inputs[1].inputs[0].inputs[1].node;
+        new_nodes->push_back(input_node);
+        new_nodes->push_back(relu_6_node);
+        new_nodes->push_back(add_node);
+        new_nodes->push_back(val_3_node);
+        new_nodes->push_back(val_1_6_node);
+
+        NodeDef sigmoid_mul;
+        sigmoid_mul.set_name(mul_x.name());
+        sigmoid_mul.set_op("Mul");
+        SetNodeAttr("T", DT_FLOAT, &sigmoid_mul);
+        AddNodeInput(relu_6_node.name(), &sigmoid_mul);
+        AddNodeInput(val_1_6_node.name(), &sigmoid_mul);
+        new_nodes->push_back(sigmoid_mul);
+
+        NodeDef swish_mul;
+        swish_mul.set_name(mul_1_6.name());
+        swish_mul.set_op("Mul");
+        SetNodeAttr("T", DT_FLOAT, &swish_mul);
+        AddNodeInput(input_node.name(), &swish_mul);
+        AddNodeInput(sigmoid_mul.name(), &swish_mul);
+        new_nodes->push_back(swish_mul);
+
+        return Status::OK();
+      },
+      {}, &processed_graph_def));
+  TF_RETURN_IF_ERROR(RenameNodeInputs(processed_graph_def, inputs_to_rename,
+                                      nodes_to_ignore, output_graph_def));
+  return Status::OK();
+}
+
 Status SimulateDPU(const GraphDef& input_graph_def, GraphDef* output_graph_def,
                    const int scale_all_avgpool) {
   GraphDef current_graph_def, processed_graph_def;
@@ -581,6 +760,11 @@ Status SimulateDPU(const GraphDef& input_graph_def, GraphDef* output_graph_def,
   current_graph_def = input_graph_def;
   TF_RETURN_IF_ERROR(
       ConvertMeanToAvgpool(current_graph_def, &processed_graph_def));
+
+  current_graph_def = processed_graph_def;
+  TF_RETURN_IF_ERROR(
+      AddScaleForHardSigmoid(current_graph_def, &processed_graph_def));
+
   current_graph_def = processed_graph_def;
   TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
       current_graph_def,  // clang-format off
@@ -836,6 +1020,77 @@ Status SimulateDPU(const GraphDef& input_graph_def, GraphDef* output_graph_def,
           new_nodes->push_back(leakyrelu_node);
         }
 
+        return Status::OK();
+      },
+      {}, &processed_graph_def));
+  TF_RETURN_IF_ERROR(RenameNodeInputs(processed_graph_def, inputs_to_rename,
+                                      nodes_to_ignore, &current_graph_def));
+
+  // reset hard sigmoid scale value to simulate dpu
+  // hard_sigmoid: out = relu6(x + 3.) * 1. / 6.
+  // hard_sigmoid_dpu: out = (relu6(x + 3.) * 1. / 6 ) * (6 * 2731 / 2 ^ 14)
+  inputs_to_rename.clear();
+  nodes_to_ignore.clear();
+  TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
+      current_graph_def,  // clang-format off
+      {"Mul",
+        {
+          {"Relu6",
+            {
+              {"Add|AddV2",
+                {
+                  {"*"}, // input node
+                  {"Const"},    // add 3
+                }
+              },
+            }
+          },
+          {"Const"}, // scale=1/6
+        }
+      },  // clang-format on
+      [&inputs_to_rename, &nodes_to_ignore](
+          const NodeMatch& match, const std::set<string>& input_nodes,
+          const std::set<string>& output_nodes,
+          std::vector<NodeDef>* new_nodes) {
+        const NodeDef& mul_node = match.node;
+        const NodeDef& val_1_6_node = match.inputs[1].node;
+        const NodeDef& relu_6_node = match.inputs[0].node;
+        const NodeDef& add_node = match.inputs[0].inputs[0].node;
+        const NodeDef& val_3_node = match.inputs[0].inputs[0].inputs[1].node;
+        const NodeDef& input_node = match.inputs[0].inputs[0].inputs[0].node;
+
+        new_nodes->push_back(mul_node);
+        new_nodes->push_back(val_1_6_node);
+        new_nodes->push_back(relu_6_node);
+        new_nodes->push_back(add_node);
+        new_nodes->push_back(val_3_node);
+        new_nodes->push_back(input_node);
+
+        DLOG_WARNING << "Scale output of hard_sigmoid node " << mul_node.name()
+                     << " to simulate DPU.";
+
+        // Construct the new nodes.
+        NodeDef scale_value_node;
+        scale_value_node.set_op("Const");
+        scale_value_node.set_name(mul_node.name() +
+                                  "/vitis_hard_sigmoid_mul/scale");
+        SetNodeAttr("dtype", DT_FLOAT, &scale_value_node);
+
+        Tensor scale_tensor(DT_FLOAT, {1});
+        scale_tensor.flat<float>()(0) = 6.0 * 2731 / 16384.0;
+        SetNodeTensorAttr<float>("value", scale_tensor, &scale_value_node);
+        new_nodes->push_back(scale_value_node);
+
+        NodeDef vitis_mul_node;
+        vitis_mul_node.set_name(mul_node.name() + "/vitis_hard_sigmoid_mul");
+        vitis_mul_node.set_op("Mul");
+        SetNodeAttr("T", DT_FLOAT, &vitis_mul_node);
+        AddNodeInput(mul_node.name(), &vitis_mul_node);
+        AddNodeInput(scale_value_node.name(), &vitis_mul_node);
+        new_nodes->push_back(vitis_mul_node);
+
+        inputs_to_rename[mul_node.name()] = vitis_mul_node.name();
+        nodes_to_ignore.insert(vitis_mul_node.name());
         return Status::OK();
       },
       {}, &processed_graph_def));
