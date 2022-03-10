@@ -7,11 +7,6 @@
 
 # Release Notes
 
-## Release 1.3.2
-### New Features/Highlights
-1. Enable Ubuntu 20.04 on MPSoC (Vitis AI Runtime and Vitis AI Library)
-2. Added environment variable for Vitis AI Library’s model search path
-
 ## Release 1.3.1
 ### New Features/Highlights
 1. Update compiler to improve performance by 5% in average for most models
