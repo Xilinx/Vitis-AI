@@ -75,6 +75,8 @@ To use HIP, you need to set your ROCm home and CPPFLAGS environment variables.
     export ROCM_HOME=/opt/rocm
     export CPPFLAGS=$(hipconfig --cpp_config)
 
+**NB**: As of 3/14/2022, the only docker image tested for ROCm backend is *rocm4.3_ubuntu18.04_py3.6_pytorch1.7.0*
+
 ##### Pre step 2: install Pytorch(1.1-1.7.1) and torchvision
 Here take pytorch 1.7.1 and torchvision 0.8.2 as an example, detailed instructions for other versions are in [pytorch](https://pytorch.org/) website.
 
