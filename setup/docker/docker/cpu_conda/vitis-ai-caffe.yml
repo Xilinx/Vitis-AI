@@ -28,3 +28,4 @@ dependencies:
   - ddump
   - vart
   - rt-engine
+  - glog=0.4.0
