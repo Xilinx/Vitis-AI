@@ -167,13 +167,18 @@ void cuda_diff_S(const int N,
   cudaMemcpy(&x_min, buffer, sizeof(Dtype), cudaMemcpyDeviceToHost);
   
   // Find max_scale
-  Dtype step = std::max(x_min / fix_lb, x_max / fix_ub);
+  // Hipify thinks std::max is kernel code so converts it to ::max
+  // which doesn't behave correctly on the host side
+  // Dtype step = std::max(x_min / fix_lb, x_max / fix_ub);
+  Dtype step = x_min / fix_lb;
+  Dtype maxs = x_max / fix_ub;
+  if (maxs > step) step = maxs;
   if (step == 0) {
     max_scale = 18;
   } else {
     max_scale = floor(log2(1 / step));
   }
-#if 0
+#if 1
   printf( "$$$$$$$$$$$ bw: %d range: %d method: %d\n",
          bitwidth, range, method ); 
   printf( "$$$$$$$$$$$ max: %g min: %g\n",

@@ -178,7 +178,7 @@ void cpu_diff_S(const int N,
   } else {
     max_scale = floor(log2(1 / step));
   }
-#if 0
+#if 1
   printf( "$$$$$$$$$$$ bw: %d range: %d method: %d\n",
          bitwidth, range, method ); 
   printf( "$$$$$$$$$$$ max: %g min: %g\n",

@@ -221,7 +221,7 @@ def quantization(title='optimize',
       subset_len=subset_len,
       train=False,
       batch_size=batch_size,
-      sample_method='random',
+      sample_method=None,
       data_dir=data_dir,
       model_name=model_name)
 
