@@ -172,7 +172,7 @@ static void _vec_transform_reduce(const int dim,const Dtype* src, Dtype* dst,
   const int vec_len = dim;
   const int grid_stride = gridDim.x * blockDim.x;
   int i = (blockIdx.x * blockDim.x + tid);
-  
+
   // Grid reduce. Loop over the whole vector v.
   for (; i < vec_len; i += grid_stride) {
     tdata = op.Reduce(tdata, op.Transform(src[i]));
@@ -190,10 +190,11 @@ static void _vec_transform_reduce(const int dim,const Dtype* src, Dtype* dst,
     __syncthreads();
   }
 
-  // Reduce last warp. Threads implicitly synchronized within a warp.
+  // Reduce last warp.
   if (tid < warpSize) {
     for (int shift = warpSize; shift > 0; shift >>= 1) {
       sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
+      __syncthreads();
     }
   }
   
@@ -233,10 +234,11 @@ static void _vec_transform_reduce_inplace(const int dim,Dtype* data,
     __syncthreads();
   }
 
-  // Reduce last warp. Threads implicitly synchronized within a warp.
+  // Reduce last warp.
   if (tid < warpSize) {
     for (int shift = warpSize; shift > 0; shift >>= 1) {
       sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
+      __syncthreads();
     }
   }
   
