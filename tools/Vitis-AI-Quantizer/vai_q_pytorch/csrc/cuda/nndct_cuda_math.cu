@@ -160,6 +160,31 @@ struct TransReduceOp<MIN, Dtype> {
   }
 };
 
+// HIP needs volatile due to compiler optimizations that don't flush our of registers 
+// back into shared memory properly.
+template<typename Dtype>
+__device__ void volatileReduce(volatile Dtype& sdata, int tid, int TransReduceType )
+{
+  if (TransReduceType == MAX){
+    sdata[tid] = fmax(sdata[tid], sdata[tid + 64]);
+    sdata[tid] = fmax(sdata[tid], sdata[tid + 32]);
+    sdata[tid] = fmax(sdata[tid], sdata[tid + 16]);
+    sdata[tid] = fmax(sdata[tid], sdata[tid + 8]);
+    sdata[tid] = fmax(sdata[tid], sdata[tid + 4]);
+    sdata[tid] = fmax(sdata[tid], sdata[tid + 2]);
+    sdata[tid] = fmax(sdata[tid], sdata[tid + 1]);
+  }
+  if (TransReduceType == MIN){
+    sdata[tid] = min(sdata[tid], sdata[tid + 64]);
+    sdata[tid] = min(sdata[tid], sdata[tid + 32]);
+    sdata[tid] = min(sdata[tid], sdata[tid + 16]);
+    sdata[tid] = min(sdata[tid], sdata[tid + 8]);
+    sdata[tid] = min(sdata[tid], sdata[tid + 4]);
+    sdata[tid] = min(sdata[tid], sdata[tid + 2]);
+    sdata[tid] = min(sdata[tid], sdata[tid + 1]);
+  }
+}
+
 template<EnumTransformReduce TransReduceType, typename Dtype>
 __global__
 static void _vec_transform_reduce(const int dim,const Dtype* src, Dtype* dst,
@@ -191,14 +216,7 @@ static void _vec_transform_reduce(const int dim,const Dtype* src, Dtype* dst,
   }
 
   // Reduce last warp.
-  if (tid < warpSize) {
-    for (int shift = warpSize; shift > 0; shift >>= 1) {
-      sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
-#ifdef __HIP_PLATFORM_AMD__
-      __syncthreads();
-#endif
-    }
-  }
+  if (tid < warpSize) volatileReduce(sdata, tid, TransReduceType);
   
   // Output to vector dst.
   if (tid == 0)
@@ -237,15 +255,8 @@ static void _vec_transform_reduce_inplace(const int dim,Dtype* data,
   }
 
   // Reduce last warp.
-  if (tid < warpSize) {
-    for (int shift = warpSize; shift > 0; shift >>= 1) {
-      sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
-#ifdef __HIP_PLATFORM_AMD__
-      __syncthreads();
-#endif
-    }
-  }
-  
+  if (tid < warpSize) volatileReduce(sdata, tid, TransReduceType);
+
   // Output to vector dst.
   if (tid == 0)
     data[blockIdx.x] = op.PostReduce(sdata[0], data[blockIdx.x]);
