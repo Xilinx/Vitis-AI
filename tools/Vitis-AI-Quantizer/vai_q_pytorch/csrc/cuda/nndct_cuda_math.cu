@@ -164,34 +164,16 @@ struct TransReduceOp<MIN, Dtype> {
 // HIP needs volatile due to compiler optimizations that don't flush our of registers 
 // back into shared memory properly.
 template<typename Dtype>
-__device__ void volatileReduce(volatile Dtype& sdata, int tid, int TransReduceType )
-{
+__forceinline__
+__device__ Dtype volatileReduce(volatile Dtype& sdata_a, volatile Dtype& sdata_b, int TransReduceType) {
   if (TransReduceType == MAX){
-    sdata[tid] = fmax(sdata[tid], sdata[tid + 64]);
-    sdata[tid] = fmax(sdata[tid], sdata[tid + 32]);
-    sdata[tid] = fmax(sdata[tid], sdata[tid + 16]);
-    sdata[tid] = fmax(sdata[tid], sdata[tid + 8]);
-    sdata[tid] = fmax(sdata[tid], sdata[tid + 4]);
-    sdata[tid] = fmax(sdata[tid], sdata[tid + 2]);
-    sdata[tid] = fmax(sdata[tid], sdata[tid + 1]);
+    return fmax(sdata_a, sdata_b);
   }
   if (TransReduceType == MIN){
-    sdata[tid] = min(sdata[tid], sdata[tid + 64]);
-    sdata[tid] = min(sdata[tid], sdata[tid + 32]);
-    sdata[tid] = min(sdata[tid], sdata[tid + 16]);
-    sdata[tid] = min(sdata[tid], sdata[tid + 8]);
-    sdata[tid] = min(sdata[tid], sdata[tid + 4]);
-    sdata[tid] = min(sdata[tid], sdata[tid + 2]);
-    sdata[tid] = min(sdata[tid], sdata[tid + 1]);
+    return min(sdata_a, sdata_b);
   }
   if (TransReduceType == SUM){
-    sdata[tid] += sdata[tid + 64];
-    sdata[tid] += sdata[tid + 32];
-    sdata[tid] += sdata[tid + 16];
-    sdata[tid] += sdata[tid + 8];
-    sdata[tid] += sdata[tid + 4];
-    sdata[tid] += sdata[tid + 2];
-    sdata[tid] += sdata[tid + 1];
+    return sdata_a + sdata_b;
   }
 }
 #endif
@@ -227,15 +209,15 @@ static void _vec_transform_reduce(const int dim,const Dtype* src, Dtype* dst,
   }
 
   // Reduce last warp.
-#ifdef __HIP_PLATFORM_AMD__
-  if (tid < warpSize) volatileReduce(sdata, tid, TransReduceType);
-#else
   if (tid < warpSize) {
     for (int shift = warpSize; shift > 0; shift >>= 1) {
+#ifdef __HIP_PLATFORM_AMD__
+      sdata[tid] = volatileReduce(sdata[tid], sdata[tid + shift], TransReduceType);
+#else
       sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
+#endif
     }
   }
-#endif
   
   // Output to vector dst.
   if (tid == 0)
@@ -274,19 +256,20 @@ static void _vec_transform_reduce_inplace(const int dim,Dtype* data,
   }
 
   // Reduce last warp.
-#ifdef __HIP_PLATFORM_AMD__
-  if (tid < warpSize) volatileReduce(sdata, tid, TransReduceType);
-#else
   if (tid < warpSize) {
     for (int shift = warpSize; shift > 0; shift >>= 1) {
+#ifdef __HIP_PLATFORM_AMD__
+      sdata[tid] = volatileReduce(sdata[tid], sdata[tid + shift], TransReduceType);
+#else
       sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
+#endif
     }
   }
-#endif
 
   // Output to vector dst.
-  if (tid == 0)
+  if (tid == 0){
     data[blockIdx.x] = op.PostReduce(sdata[0], data[blockIdx.x]);
+  }
 }
 
 template<EnumTransformReduce TransReduceType, typename Dtype>
