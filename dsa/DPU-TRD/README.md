@@ -40,7 +40,7 @@ The detailed hardware architecture of the DPU is shown in the following figure. 
 
 There are three dimensions of parallelism in the DPU convolution architecture - pixel parallelism, input channel parallelism, and output channel parallelism. The input channel parallelism is always equal to the output channel parallelism. The different architectures require different programmable logic resources. The larger architectures can achieve higher performance with more resources. The parallelism for the different architectures is listed in the table.
 
-|Connolution Architecture|Pixel Parallelism(PP)|Input Channel Parallelism(ICP)|Output Channel Parallelism(OCP)|Peak(operations/per clock)|
+|Convolution Architecture|Pixel Parallelism(PP)|Input Channel Parallelism(ICP)|Output Channel Parallelism(OCP)|Peak(operations/per clock)|
 |:---|:---|:---|:---|:---|
 |B512|4|8|8|512|
 |B800|4|10|10|800|
