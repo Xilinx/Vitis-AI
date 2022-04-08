@@ -195,7 +195,7 @@ static void _vec_transform_reduce(const int dim,const Dtype* src, Dtype* dst,
     for (int shift = warpSize; shift > 0; shift >>= 1) {
       sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
 #ifdef __HIP_PLATFORM_AMD__
-      __threadfence();
+      __threadfence_block();
 #endif
     }
   }
@@ -241,7 +241,7 @@ static void _vec_transform_reduce_inplace(const int dim,Dtype* data,
     for (int shift = warpSize; shift > 0; shift >>= 1) {
       sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
 #ifdef __HIP_PLATFORM_AMD__
-      __threadfence();
+      __threadfence_block();
 #endif
     }
   }
