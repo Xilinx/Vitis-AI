@@ -160,24 +160,6 @@ struct TransReduceOp<MIN, Dtype> {
   }
 };
 
-#ifdef __HIP_PLATFORM_AMD__
-// HIP needs volatile due to compiler optimizations that don't flush our of registers 
-// back into shared memory properly.
-template<typename Dtype>
-__forceinline__
-__device__ Dtype volatileReduce(volatile Dtype& sdata_a, volatile Dtype& sdata_b, int TransReduceType) {
-  if (TransReduceType == MAX){
-    return fmax(sdata_a, sdata_b);
-  }
-  if (TransReduceType == MIN){
-    return min(sdata_a, sdata_b);
-  }
-  if (TransReduceType == SUM){
-    return sdata_a + sdata_b;
-  }
-}
-#endif
-
 template<EnumTransformReduce TransReduceType, typename Dtype>
 __global__
 static void _vec_transform_reduce(const int dim,const Dtype* src, Dtype* dst,
@@ -211,10 +193,9 @@ static void _vec_transform_reduce(const int dim,const Dtype* src, Dtype* dst,
   // Reduce last warp.
   if (tid < warpSize) {
     for (int shift = warpSize; shift > 0; shift >>= 1) {
-#ifdef __HIP_PLATFORM_AMD__
-      sdata[tid] = volatileReduce(sdata[tid], sdata[tid + shift], TransReduceType);
-#else
       sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
+#ifdef __HIP_PLATFORM_AMD__
+      __threadfence_block();
 #endif
     }
   }
@@ -258,10 +239,9 @@ static void _vec_transform_reduce_inplace(const int dim,Dtype* data,
   // Reduce last warp.
   if (tid < warpSize) {
     for (int shift = warpSize; shift > 0; shift >>= 1) {
-#ifdef __HIP_PLATFORM_AMD__
-      sdata[tid] = volatileReduce(sdata[tid], sdata[tid + shift], TransReduceType);
-#else
       sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
+#ifdef __HIP_PLATFORM_AMD__
+      __threadfence_block();
 #endif
     }
   }
