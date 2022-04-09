@@ -19,8 +19,6 @@
 
 freqHz=300000000:DPUCZDX8G_1.aclk
 freqHz=600000000:DPUCZDX8G_1.ap_clk_2
-freqHz=300000000:DPUCZDX8G_2.aclk
-freqHz=600000000:DPUCZDX8G_2.ap_clk_2
 freqHz=300000000:blobfromimage_accel_1.ap_clk
 
 
@@ -29,9 +27,6 @@ freqHz=300000000:blobfromimage_accel_1.ap_clk
 sp=DPUCZDX8G_1.M_AXI_GP0:HPC0
 sp=DPUCZDX8G_1.M_AXI_HP0:HP0
 sp=DPUCZDX8G_1.M_AXI_HP2:HP1
-sp=DPUCZDX8G_2.M_AXI_GP0:HPC0
-sp=DPUCZDX8G_2.M_AXI_HP0:HP2
-sp=DPUCZDX8G_2.M_AXI_HP2:HP3
 sp=blobfromimage_accel_1.Y_OR_RGB_img_inp:HP0
 sp=blobfromimage_accel_1.U_img_inp:HP0
 sp=blobfromimage_accel_1.V_img_inp:HP0
@@ -45,7 +40,7 @@ param=compiler.worstNegativeSlack=-1
 #param=compiler.skipTimingCheckAndFrequencyScaling=1
 
 [vivado]
-prop=run.impl_1.strategy=Performance_Explore
+prop=run.impl_1.strategy=Performance_ExploreWithRemap
 #param=place.runPartPlacer=0
 #prop=run.impl_1.STEPS.PLACE_DESIGN.ARGS.DIRECTIVE=EarlyBlockPlacement
 prop=run.impl_1.STEPS.PLACE_DESIGN.ARGS.DIRECTIVE=AltSpreadLogic_low
