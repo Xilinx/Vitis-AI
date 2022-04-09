@@ -72,7 +72,9 @@ ifneq ($(findstring u50, $(DEVICE)), u50)
 ifneq ($(findstring aws-vu9p-f1, $(DEVICE)), aws-vu9p-f1)
 ifneq ($(findstring vck190, $(DEVICE)), vck190)
 ifneq ($(findstring zcu102, $(DEVICE)), zcu102)
+ifneq ($(findstring zcu104, $(DEVICE)), zcu104)
 $(warning [WARNING]: This project has not been tested for $(DEVICE). It may or may not work.)
+endif
 endif
 endif
 endif
@@ -150,6 +152,12 @@ else ifneq (,$(shell echo $(XPLATFORM) | awk '/u200/'))
 CXXFLAGS += -I$(OPENCV_INCLUDE)
 LDFLAGS += -L$(OPENCV_LIB)
 else ifneq (,$(shell echo $(XPLATFORM) | awk '/zcu102/'))
+CXXFLAGS += -I$(SYSROOT)/usr/include
+CXXFLAGS += -I$(SYSROOT)/usr/include/opencv4
+CXXFLAGS += --sysroot=$(SYSROOT)
+LDFLAGS += -L$(SYSROOT)/usr/lib
+LDFLAGS += -L${SYSROOT}/lib
+else ifneq (,$(shell echo $(XPLATFORM) | awk '/zcu104/'))
 CXXFLAGS += -I$(SYSROOT)/usr/include
 CXXFLAGS += -I$(SYSROOT)/usr/include/opencv4
 CXXFLAGS += --sysroot=$(SYSROOT)
@@ -271,6 +279,11 @@ ifeq (,$(OPENCV_LIB))
 endif
 endif
 ifneq (,$(shell echo $(XPLATFORM) | awk '/zcu102/'))
+ifeq (,$(EDGE_COMMON_SW))
+	@echo "Please set EDGE_COMMON_SW variable" && false
+endif
+endif
+ifneq (,$(shell echo $(XPLATFORM) | awk '/zcu104/'))
 ifeq (,$(EDGE_COMMON_SW))
 	@echo "Please set EDGE_COMMON_SW variable" && false
 endif
