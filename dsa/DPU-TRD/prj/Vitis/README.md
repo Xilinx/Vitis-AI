@@ -33,7 +33,7 @@ This wiki page complements the Vitis 2021.2 version of the DPU TRD.
 
 Vitis2.0 Change log:
 
--  update GUI scrits.
+-  update GUI scripts.
 
 Vitis1.3 Change log:
 
