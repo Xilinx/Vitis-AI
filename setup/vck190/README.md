@@ -47,7 +47,7 @@ steps.**
 	* Plug in the power and boot the board using the serial port to operate on the system.
 	* Set up the IP information of the board using the serial port.
 	
-	**For the details, please refer to [Setting Up the Evaluation Board](https://www.xilinx.com/html_docs/vitis_ai/2_0/installation.html#ariaid-title8)**
+	**For the details, please refer to [Setting Up the Evaluation Board](https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board)**
 
 2. (Optional) How to install the Vitis AI for PetaLinux 2021.2  
 	There are two ways to install the dependent libraries of Vitis-AI. One is to rebuild the system by configuring PetaLinux and the other is to install the Vitis-AI online via `dnf`.
