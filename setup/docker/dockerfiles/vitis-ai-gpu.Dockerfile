@@ -26,6 +26,19 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+RUN set -x \
+    && apt-key list \
+    && ls -al /etc/apt/sources.list.d/ \
+    # Remove the CUDA Tools Public Key which is outdated \
+    && apt-key del 7fa2af80 \
+    # Fetch the new CUDA Public Key \
+    && apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/3bf863cc.pub \
+    && apt-key list \
+    # Fetch the NVIDIA ML Key \
+    && apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub \
+    && apt-key list \
+    && apt-get update -y
+
 RUN chmod 1777 /tmp \
     && mkdir /scratch \
     && chmod 1777 /scratch \
