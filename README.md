@@ -169,6 +169,14 @@ Vitis AI offers a unified set of high-level C++/Python programming APIs to run A
 
 For more information, please refer to [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/2_0/index.html)
 
+## Inference Server
+
+The [AMD/Xilinx Inference Server](https://github.com/Xilinx/inference-server) offers an easy-to-use inference deployment solution for Vitis-AI and other models targeting CPUs and FPGAs.
+It can be deployed as a server to accept client requests over REST, gRPC or websockets.
+Alternatively, its native C++ API can be used to create custom compiled applications.
+The inference server is also compatible with [KServe](https://github.com/kserve/kserve) for deployment on a Kubernetes cluster.
+The server is under active development to add new features like GPU support and improving integration with KServe.
+
 
 ## References
 - [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)
