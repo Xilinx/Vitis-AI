@@ -56,8 +56,8 @@ case $1 in
 
   DPUCAHX8H | dpuv3e)
     if [ "${platform}" = "u50lv_" ]; then
-      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H
-      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/dpu_DPUCAHX8H_10PE275_xilinx_u50lv_gen3x4_xdma_base_2.xclbin
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H/u50lv
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/u50lv/dpu_DPUCAHX8H_10PE275_xilinx_u50lv_gen3x4_xdma_base_2.xclbin
     else
       export XCLBIN_PATH=
       export XLNX_VART_FIRMWARE=
@@ -66,11 +66,11 @@ case $1 in
   
   DPUCAHX8H-DWC | dpuv3e-dwc)
     if [ "${platform}" = "u50lv_" ]; then
-      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H/dwc
-      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/dwc/dpu_DPUCAHX8H_DWC_8PE275_xilinx_u50lv_gen3x4_xdma_base_2.xclbin
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H/u50lvdwc
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/u50lvdwc/dpu_DPUCAHX8H_DWC_8PE275_xilinx_u50lv_gen3x4_xdma_base_2.xclbin
     elif [ "${platform}" = "u55c_" ]; then
-      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H/dwc
-      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/dwc/dpu_DPUCAHX8H_DWC_11PE300_xilinx_u55c_gen3x16_xdma_base_2.xclbin
+      export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCAHX8H/u55cdwc
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCAHX8H/u55cdwc/dpu_DPUCAHX8H_DWC_11PE300_xilinx_u55c_gen3x16_xdma_base_2.xclbin
     else
       export XCLBIN_PATH=
       export XLNX_VART_FIRMWARE=

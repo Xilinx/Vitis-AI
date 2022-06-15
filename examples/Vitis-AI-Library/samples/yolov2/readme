@@ -1,0 +1,68 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_yolov2, ./test_performance_yolov2, ./test_video_yolov2 first param followed must be with model name.
+  Valid model name:
+    yolov2_voc
+    yolov2_voc_pruned_0_66
+    yolov2_voc_pruned_0_71
+    yolov2_voc_pruned_0_77
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_yolov2 yolov2_voc sample_yolov2.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0317 12:41:45.929090  4269 demo.hpp:1183] batch: 0     image: sample_yolov2.jpg
+I0317 12:41:45.929194  4269 process_result.hpp:43] RESULT: 18	140.935	208.376	208.356	300.829	0.8916
+   
+    
+    sample : ./test_jpeg_yolov2 yolov2_voc_pruned_0_66 sample_yolov2.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0317 12:43:28.343837  4273 demo.hpp:1183] batch: 0     image: sample_yolov2.jpg
+I0317 12:43:28.343940  4273 process_result.hpp:43] RESULT: 18	138.761	198.458	210.53	309.978	0.827755
+   
+    
+    sample : ./test_jpeg_yolov2 yolov2_voc_pruned_0_71 sample_yolov2.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0317 12:44:17.406581  4278 demo.hpp:1183] batch: 0     image: sample_yolov2.jpg
+I0317 12:44:17.406682  4278 process_result.hpp:43] RESULT: 18	141.301	198.458	213.07	309.978	0.85717
+   
+    
+    sample : ./test_jpeg_yolov2 yolov2_voc_pruned_0_77 sample_yolov2.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0317 12:45:04.604945  4282 demo.hpp:1183] batch: 0     image: sample_yolov2.jpg
+I0317 12:45:04.605058  4282 process_result.hpp:43] RESULT: 18	143.092	193.24	214.861	311.952	0.886926
+
+
+
+Accuracy:
+    ./test_accuracy_yolov2_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_yolov2_mt yolov2_voc image_list.txt result.txt -t 2 

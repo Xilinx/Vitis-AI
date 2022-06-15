@@ -35,11 +35,11 @@ INSTALLER=""
 # Download DSA
 ##############################
 if [[ $distroname == *"Ubuntu 16.04"* || $distroname == *"Ubuntu 18.04"* || $distroname == *"Ubuntu 20.04"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-gen3x16-xdma-all_3.1-3063142.deb_2.tar.gz"
+  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-gen3x16-xdma_3.1_all.deb.tar.gz"
   XSA_INSTALLER=/tmp/xsa.tar.gz
   INSTALLER="apt"
 elif [[ $distroname == *"CentOS"* || $distroname == *"Red Hat"* ]]; then
-  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-gen3x16-xdma-noarch_3.1-3063142.rpm_2.tar.gz"
+  XSA_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-u250-gen3x16-xdma_3.1.noarch.rpm.tar.gz"
   XSA_INSTALLER=/tmp/xsa.tar.gz
   INSTALLER="yum"
 else

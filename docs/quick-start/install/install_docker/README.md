@@ -39,7 +39,7 @@ Vitis AI Docker images is based on Ubuntu Bonic 18.04. The software packages sou
   deb http://us.archive.ubuntu.com/ubuntu/ bionic universe   
 ```
 
-These hostname "archive.ubuntu.com" by default resolve to servers in the United States. Any customers building the Vitis AI GPU image https://github.com/Xilinx/Vitis-AI/blob/master/setup/docker/dockerfiles/vitis-ai-gpu.Dockerfile will pull from these servers. Users accessing from China, might experience slow download speeds using these servers.
+These hostname "archive.ubuntu.com" by default resolve to servers in the United States. Any customers building the Vitis AI GPU image https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/vitis-ai-gpu.Dockerfile will pull from these servers. Users accessing from China, might experience slow download speeds using these servers.
 
 ### Workaround
 Change the Ubuntu apt sources.list to use servers in China.

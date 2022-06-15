@@ -1,22 +1,22 @@
 #!/bin/bash
 # Copyright 2022 Xilinx Inc.
 
-sed -n '1, 5p' ./setup/docker/dockerfiles/PROMPT.txt
+sed -n '1, 5p' ./docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '5, 15p' ./setup/docker/dockerfiles/PROMPT.txt
+sed -n '5, 15p' ./docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '15, 28p' ./setup/docker/dockerfiles/PROMPT.txt
+sed -n '15, 28p' ./docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '28, 61p' ./setup/docker/dockerfiles/PROMPT.txt
+sed -n '28, 61p' ./docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '62, 224p' ./setup/docker/dockerfiles/PROMPT.txt
+sed -n '62, 224p' ./docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
-sed -n '224, 308p' ./setup/docker/dockerfiles/PROMPT.txt
+sed -n '224, 308p' ./docker/dockerfiles/PROMPT.txt
 read -n 1 -s -r -p "Press any key to continue..." key
 
 confirm() {

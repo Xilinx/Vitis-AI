@@ -1,0 +1,150 @@
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: "DPUCVDX8G_ISA3_C32B3_PSMNET"
+type: "DPUCVDX8G"
+isa_version: 0x03
+feature_code: 0x000b16026831
+bank_group {
+  name: "VB0"
+  type: "Virtual"
+  base_id: 0
+  bank_num: 8
+  bank_width: 16
+  bank_depth: 16384
+}
+bank_group {
+  name: "VB1"
+  type: "Virtual"
+  base_id: 8
+  bank_num: 8
+  bank_width: 16
+  bank_depth: 16384
+}
+bank_group {
+  name: "CONVW"
+  type: "Param"
+  base_id: 16
+  bank_num: 16
+  bank_width: 16
+  bank_depth: 8192
+}
+bank_group {
+  name: "DWCONVW"
+  type: "Param"
+  base_id: 32
+  bank_num: 1
+  bank_width: 16
+  bank_depth: 8192
+}
+bank_group {
+  name: "BIAS"
+  type: "Param"
+  base_id: 33
+  bank_num: 1
+  bank_width: 16
+  bank_depth: 2048
+}
+bank_group {
+  name: "DWCVBIAS"
+  type: "Param"
+  base_id: 34
+  bank_num: 1
+  bank_width: 16
+  bank_depth: 2048
+}
+load_engine {
+  channel_parallel: 16
+  output_bank: "VB0"
+  output_bank: "VB1"
+}
+save_engine {
+  channel_parallel: 16
+  input_bank: "VB0"
+  input_bank: "VB1"
+}
+conv_engine {
+  input_channel_parallel: 16
+  output_channel_parallel: 32
+  pixel_parallel: 8
+  input_bank: "VB0"
+  input_bank: "VB1"
+  output_bank: "VB0"
+  output_bank: "VB1"
+  weight_bank: "CONVW"
+  bias_bank: "BIAS"
+  channel_augmentation {
+    channel_num: 32
+  }
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: leaky_relu
+    nonlinear_type: hsigmoid
+    nonlinear_type: hswish
+    nonlinear_type: relu_six
+  }
+  conv_limit {
+    kernel_size: "1-16"
+    stride: "1-8"
+    stride_out_h: "1-8"
+  }
+}
+eltwise_engine {
+  channel_parallel: 16
+  pixel_parallel: 8
+  input_bank: "VB0"
+  input_bank: "VB1"
+  output_bank: "VB0"
+  output_bank: "VB1"
+  nonlinear {
+    nonlinear_type: relu
+  }
+  elew_type: add
+  elew_type: mult
+}
+alu_engine {
+  channel_parallel: 16
+  pixel_parallel: 8
+  input_bank: "VB0"
+  input_bank: "VB1"
+  output_bank: "VB0"
+  output_bank: "VB1"
+  weight_bank: "DWCONVW"
+  bias_bank: "DWCVBIAS"
+  alu_type: dwconv
+  alu_type: prelu
+  alu_type: avg_pool
+  alu_type: max_pool
+  alu_type: leaky_relu
+  alu_type: max_reduce
+  alu_type: dwconv_no_bias
+  alu_type: hsigmoid
+  alu_type: w16b0
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: relu_six
+  }
+  alu_limit {
+    kernel_size: "1-256"
+    stride: "1-256"
+    stride_out_h: "1-2"
+  }
+  pad_limit {
+    pad_left: "0-15"
+    pad_right: "0-255"
+    pad_top: "0-15"
+    pad_bottom: "0-255"
+  }
+}
+batch: 3

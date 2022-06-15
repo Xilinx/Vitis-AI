@@ -1,0 +1,29 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+compile:
+  sh build.sh
+  or
+  sh builddrm.sh(board only)
+
+4 ways multitask(segmetation + detect) + roadline, running on board ZCU102.
+  This sample include 4 ways multitask and 1 way roadline detection.Multitask windows are in the left of screen anf the roadline detection is in the right.
+  It's neccesary to follow the instruction to run this sample. The first five parameters are each video input and last five parameters are thread number.
+  drm mode: ./segs_and_roadline_detect_drm seg_512_288.avi seg_512_288.avi seg_512_288.avi seg_512_288.avi lane_640_480.avi -t 2 -t 2 -t 2 -t 2 -t 2 > /dev/null 2>&1
+  X mode: ./segs_and_roadline_detect_x seg_512_288.avi seg_512_288.avi seg_512_288.avi seg_512_288.avi lane_640_480.avi -t 2 -t 2 -t 2 -t 2 -t 2 > /dev/null 2>&1
+
+
+  
+

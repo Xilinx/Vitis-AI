@@ -1,9 +1,0 @@
-name: vitis-ai-optimizer_caffe
-
-channels:
-  - conda-forge
-  - anaconda
-
-dependencies:
-  - python=3.7
-  - vai_optimizer_caffe_gpu

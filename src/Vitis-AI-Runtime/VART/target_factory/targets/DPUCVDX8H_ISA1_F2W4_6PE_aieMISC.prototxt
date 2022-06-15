@@ -1,0 +1,122 @@
+# Copyright 2019 Xilinx Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: "DPUCVDX8H_ISA1_F2W4_6PE_aieMISC"
+type: "DPUCVDX8H"
+isa_version: 0x01
+feature_code: 0x1e082e
+bank_group {
+  name: "VB0"
+  type: "Virtual"
+  base_id: 0
+  bank_num: 8
+  bank_width: 64
+  bank_depth: 2048
+}
+bank_group {
+  name: "VB1"
+  type: "Virtual"
+  base_id: 8
+  bank_num: 8
+  bank_width: 64
+  bank_depth: 2048
+}
+bank_group {
+  name: "CONVW"
+  type: "Param"
+  base_id: 16
+  bank_num: 128
+  bank_width: 64
+  bank_depth: 512
+}
+bank_group {
+  name: "CONVB"
+  type: "Param"
+  base_id: 144
+  bank_num: 1
+  bank_width: 128
+  bank_depth: 1024
+}
+load_engine {
+  channel_parallel: 64
+  output_bank: "VB0"
+  output_bank: "VB1"
+  load_mode {
+    src_type: ddr
+    src_type: imm
+  }
+}
+save_engine {
+  channel_parallel: 128
+  input_bank: "VB0"
+  input_bank: "VB1"
+}
+conv_engine {
+  input_channel_parallel: 64
+  output_channel_parallel: 128
+  pixel_parallel: 8
+  input_bank: "VB0"
+  input_bank: "VB1"
+  output_bank: "VB0"
+  output_bank: "VB1"
+  weight_bank: "CONVW"
+  bias_bank: "CONVB"
+  channel_augmentation {
+    channel_num: 64
+  }
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: relu_six
+    nonlinear_type: leaky_relu
+    nonlinear_type: hsigmoid
+    nonlinear_type: hswish
+  }
+  conv_limit {
+    kernel_size: "1-16"
+    stride: "1-4"
+  }
+}
+eltwise_engine {
+  channel_parallel: 64
+  pixel_parallel: 2
+  input_bank: "VB0"
+  input_bank: "VB1"
+  output_bank: "VB0"
+  output_bank: "VB1"
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: hsigmoid
+  }
+  elew_type: add
+  elew_type: mult
+}
+pool_engine {
+  channel_parallel: 64
+  pixel_parallel: 2
+  input_bank: "VB0"
+  input_bank: "VB1"
+  output_bank: "VB0"
+  output_bank: "VB1"
+  pool_type: max
+  pool_type: avg
+  nonlinear {}
+  avg_limit {
+    kernel_size: "1-128"
+    stride: "1-128"
+  }
+  max_limit {
+    kernel_size: "1-128"
+    stride: "1-128"
+  }
+}

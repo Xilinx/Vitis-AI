@@ -1,0 +1,19 @@
+name: vitis-ai-wego-tf1
+
+channels:
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - python=3.6
+  - vai_wego_tensorflow
+  - vart
+  - pyyaml
+  - jupyter
+  - ipywidgets
+  - dill
+  - progressbar2
+  - pytest
+  - scikit-learn
+  - pandas
+  - matplotlib

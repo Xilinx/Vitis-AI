@@ -1,0 +1,108 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# VAI docker
+ARG BASE_IMAGE=xilinx/vitis-ai:2.5.0
+FROM $BASE_IMAGE
+
+ARG PYXIR_REPO=https://github.com/Xilinx/pyxir
+ARG PYXIR_BRANCH=rel-v0.4.0
+ARG PYXIR_FLAGS="--use_vart_cloud_dpu --use_dpuczdx8g_vart"
+ARG TVM_COMMIT=627e92e7
+
+ENV TVM_VAI_HOME /opt/tvm-vai/
+ENV TVM_HOME /opt/tvm-vai/tvm
+ENV PYXIR_HOME /opt/tvm-vai/pyxir
+RUN mkdir /opt/tvm-vai
+RUN mkdir "${TVM_HOME}"
+RUN mkdir "${PYXIR_HOME}"
+
+RUN git clone --recursive --single-branch https://github.com/apache/tvm.git "${TVM_HOME}" && \
+    cd "${TVM_HOME}" && \
+    git checkout ${TVM_COMMIT} && \
+    git submodule update --init --recursive
+
+RUN apt-get update --fix-missing
+RUN apt-get -y install  graphviz gnupg2 gpg-agent gcc-aarch64-linux-gnu
+
+RUN apt-get -y install libhdf5-dev
+RUN pip3 install pydot==1.4.1 h5py==2.8.0
+ 
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_core.sh
+ 
+#RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_python.sh
+ 
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_llvm.sh
+ 
+# NNPACK deps
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_nnpack.sh
+ 
+ENV PATH $PATH:$CARGO_HOME/bin:/usr/lib/go-1.10/bin
+ 
+# ANTLR deps
+RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_java.sh
+ 
+# Install Vitis-AI ubuntu dependencies
+#RUN bash "${TVM_HOME}"/docker/install/ubuntu_install_vitis_ai_core.sh
+ 
+# Install dependencies inside vitis-ai-tensorflow conda
+RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
+    conda activate vitis-ai-tensorflow && \
+    pip install --no-cache-dir antlr4-python3-runtime==4.9.2 && \
+    pip install mxnet==1.7.0.post1 image==1.5.33 cffi==1.14.5 h5py==2.10.0 onnx==1.9.0
+
+# BUILD PYXIR
+RUN git clone --recursive --branch ${PYXIR_BRANCH} --single-branch ${PYXIR_REPO} "${PYXIR_HOME}"
+RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
+    conda activate vitis-ai-tensorflow && \
+    cd "${PYXIR_HOME}" && \
+    git submodule update --init --recursive && \
+    python3 setup.py install ${PYXIR_FLAGS}
+ 
+
+# BUILD TVM
+RUN mkdir "${TVM_HOME}"/build
+ENV LD_LIBRARY_PATH /opt/xilinx/xrt/lib/:$LD_LIBRARY_PATH
+RUN cp "${TVM_HOME}"/cmake/config.cmake "${TVM_HOME}"/build/
+RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
+    conda activate vitis-ai-tensorflow && \
+    cd "${TVM_HOME}"/build && \
+    echo set\(USE_LLVM ON\) >> config.cmake && \
+    echo set\(USE_GTEST  OFF\) >> config.cmake && \
+    echo set\(USE_VITIS_AI ON\) >> config.cmake && \
+    cmake .. && \
+    make -j$(nproc)
+ 
+RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
+    conda activate vitis-ai-tensorflow && \
+    cd  "${TVM_HOME}"/python && \
+    python3 ./setup.py install 
+ 
+ 
+# CK-TOOLS INSTALL
+ENV HOME $TVM_VAI_HOME
+RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh && \
+    conda activate vitis-ai-tensorflow && \
+    cd $TVM_VAI_HOME/ &&\
+    python -m ck pull repo:ck-env && \
+    python -m ck install package:imagenet-2012-val-min
+
+# Make sure conda libraries are found before /usr/lib (necessary for librt-engine.so)
+RUN echo "export LD_LIBRARY_PATH=\$CONDA_PREFIX/lib:\${LD_LIBRARY_PATH}" >> \
+    /opt/vitis_ai/conda/envs/vitis-ai-tensorflow/etc/conda/activate.d/env_vars.sh
+
+ENV USER="root"

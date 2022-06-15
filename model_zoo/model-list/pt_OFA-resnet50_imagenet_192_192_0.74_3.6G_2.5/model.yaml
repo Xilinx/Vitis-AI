@@ -1,0 +1,35 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: ofa-resnet50 for Image Classification.
+input size: 192*192
+float ops: 3.6G
+task: classification
+framework: pytorch
+prune: '0.74'
+version: 2.5
+files:
+- name: pt_OFA-resnet50_imagenet_192_192_0.74_3.6G_2.5
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_OFA-resnet50_imagenet_192_192_0.74_3.6G_2.5.zip
+  checksum: e6b1856179cc719090ad75f2d99655b9
+- name: pt_OFA-resnet50_imagenet_192_192_0.74_3.6G_2.5_1.0_Z3.3
+  type: float & quantized
+  board: CPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_OFA-resnet50_imagenet_192_192_0.74_3.6G_2.5_1.0_Z3.3.zip
+  checksum: fdc8761ef2ab1ed50975698bd0069319
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

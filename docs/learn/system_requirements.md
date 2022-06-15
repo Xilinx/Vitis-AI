@@ -25,5 +25,5 @@ The following table lists system requirements for running docker containers as w
   <tr><td>AMD EPYC 7F52 64-bit CPU</td></tr>
 <tr><td colspan="2">GPU (Optional to accelerate quantization)</td><td>	NVIDIA GPU supports CUDA 11.0 or higher, like NVIDIA P100, V100, A100</td></tr>
 <tr><td colspan="2">CUDA Driver (Optional to accelerate quantization)</td><td>Driver compatible to CUDA version, NVIDIA-450 or higher for CUDA 11.0</td></tr>
-<tr><td colspan="2">Docker Version</td><td>19.03 or higher</td></tr>
+<tr><td colspan="2">Docker Version</td><td>19.03 or higher, nvidia-docker2</td></tr>
 </table>

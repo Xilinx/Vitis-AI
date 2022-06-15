@@ -31,13 +31,13 @@ Vitis AI is composed of the following key components:
 
 ## [See What's New](docs//learn/release_notes.md)
 - [Release Notes](docs//learn/release_notes.md)
-- General Availability (GA) for VCK190(Production Silicon), VCK5000(Production Silicon) and U55C
-- Add support for newer Pytorch and Tensorflow version: Pytorch 1.8-1.9, Tensorflow 2.4-2.6
-- Add 22 new models, including Solo, Yolo-X, UltraFast, CLOCs, PSMNet, FairMOT, SESR, DRUNet, SSR as well as 3 NLP models and 2 OFA (Once-for-all) models 
-- Add the new custom OP flow to run models with DPU un-supported OPs with enhancement across quantizer, compiler and runtime 
-- Add more layers and configurations of DPU for VCK190 and DPU for VCK5000
-- Add OFA pruning and TF2 keras support for AI optimizer
-- Run inference directly from Tensorflow (Demo)
+- AI Model Zoo added 14 new models, including BERT-based NLP, Vision Transformer (ViT), Optical Character Recognition (OCR), Simultaneous Localization and Mapping (SLAM), and more Once-for-All (OFA) models
+- Added 38 base & optimized models for AMD EPYC server processors
+- AI Quantizer added model inspector, now supports TensorFlow 2.8 and Pytorch 1.10
+- Whole Graph Optimizer (WeGO) supports Pytorch 1.x and TensorFlow 2.x
+- Deep Learning Processing Unit (DPU) for Versal® ACAP supports multiple compute units (CU), new Arithmetic Logic Unit (ALU) engine, Depthwise convolution and more operators supported by the DPUs on VCK5000 and Alveo™ data center accelerator cards
+- Inference server supports ZenDNN as backend on AMD EPYC™ server processors
+- New examples added to Whole Application Acceleration (WAA) for VCK5000 Versal development card and Zynq® UltraScale+™ evaluation kits
 
 ## Getting Started
 
@@ -145,13 +145,13 @@ Previously released Vitis AI CPU Docker images are [available from Docker Hub](h
 | 1.4.1  | https://github.com/Xilinx/Vitis-AI/releases/tag/v1.4.1              | git clone https://github.com/Xilinx/Vitis-AI.git <br />git checkout tags/v1.4.1 -b v1.4.1  | docker pull xilinx/vitis-ai-cpu:1.4.1.978      | 
 
  ### Get Started with Examples
-  - [VART](demo/VART/README.md)
-  - [Vitis AI Library](demo/Vitis-AI-Library/README.md)
+  - [VART](examples/VART/README.md)
+  - [Vitis AI Library](examples/Vitis-AI-Library/README.md)
 
 
 ## Programming with Vitis AI
 
-Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo, and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa. 10 samples in [VART Samples](demo/VART) are available to help you get familiar with the unfied programming APIs.
+Vitis AI offers a unified set of high-level C++/Python programming APIs to run AI applications across edge-to-cloud platforms, including DPU for Alveo, and DPU for Zynq Ultrascale+ MPSoC and Zynq-7000. It brings the benefits to easily port AI applications from cloud to edge and vice versa. 10 samples in [VART Samples](examples/VART) are available to help you get familiar with the unfied programming APIs.
 
 
 | ID | Example Name          | Models              | Framework  | Notes                                                                     |

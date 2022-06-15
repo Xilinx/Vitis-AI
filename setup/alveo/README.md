@@ -1,20 +1,30 @@
 # Setup Alveo Accelerator Card
 
-Xilinx DPU IP family for convolution neural network (CNN) inference application supports Alveo accelerator cards with HBM now, including Alveo U50LV, U55C, U200 and U250 cards. The Xilinx DPUs for U50LV and U55C card is ***DPUCAHX8H***, the former is for optimized for high throughput and the latter is optimized for MobileNet model and ultra low latency. The Xilinx DPUs for U200 and U250 card is a High Performance CNN processing engine ***DPUCADF8H***.
+Xilinx DPU IP family for convolution neural network (CNN) inference application supports Alveo accelerator cards with HBM now, including Alveo U50LV, U55C, U200 and U250 cards. The Xilinx DPUs for U50LV and U55C card is ***DPUCAHX8H***, the former is for optimized for high throughput and the latter is optimized for MobileNet model and ultra low latency. The Xilinx DPUs for U200 and U250 card is a High Performance CNN processing engine ***DPUCADF8H***. The detailed combination of Alveo card and DPU IP is shown in the table below, you can choose one of them according to your own situation.
 
-:pushpin: **Note:** For DPU DPUCAHX8L IP, Alveo U50 card, and Alveo U280 card, they are no longer updated. If you want to use them, please refer to [Vitis AI 1.4.1](https://github.com/Xilinx/Vitis-AI/tree/v1.4.1).
+| No\. | Accelerator Card | DPU IP |
+| ---- | ---- | ----   |
+| 1 | U50LV        | DPUCAHX8H         |
+| 2 | U50LV        | DPUCAHX8H-DWC     |
+| 3 | U55C         | DPUCAHX8H-DWC     |
+| 4 | U200         | DPUCADF8H         |
+| 5 | U250         | DPUCADF8H         |
+
+:pushpin: **Note:** For DPU DPUCAHX8L IP, Alveo U50 card, and Alveo U280 card, they are no longer updated since Vitis AI 2.0. If you want to use them, please refer to [Vitis AI 1.4.1](https://github.com/Xilinx/Vitis-AI/tree/v1.4.1).
 
 Following section will guide you through the Alveo card preparation steps for Vitis AI.
 
 ## Alveo Card Setup in Host
 
-We provide some scripts to help to automatically finish the Alveo card setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect the cards type (U50LV, U55C, U200 or U250) and Operating System you are using, then download and install the appropriate packages.
+We provide some scripts to help to automatically finish the Alveo card setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect the cards type (U50LV, U55C, U200 or U250) and Operating System you are using, then download and install the appropriate packages. Suppose you have downloaded Vitis-AI, entered Vitis-AI directory.
 
 :pushpin: **Note:** 
 * You should use this script in host environment, namely out of the Docker container.
 * After the script is executed successfully, manually reboot the host server once.
+* For cloud DPU, Vitis AI 2.5 applies 2021.2 Tools/Platform/XRT/XRM.
 
 ~~~
+cd ./setup/alveo/
 source ./install.sh
 ~~~
 
@@ -37,18 +47,27 @@ sudo /opt/xilinx/xrt/bin/xbmgmt partition --program --name xilinx_u250_gen3x16_x
 Suppose you have downloaded Vitis-AI, entered Vitis-AI directory, and then started Docker. In the docker container, execute the following steps.
 
 ### DPU IP selection
-You can use the following command to set environment variables. It should be noted that the xclbin file should be in the /opt/xilinx/overlaybins directory.
+You can use the following command to set environment variables. It should be noted that the xclbin file should be in the /opt/xilinx/overlaybins directory. There are 4 xclbins to choose from depending on the card and parameters you use.
 
-```
-# For U200 or U250 card, you can select DPU IP via the following command.
-source /workspace/setup/alveo/setup.sh DPUCADF8H
+1. For U200 or U250 card, you can select DPU IP via the following command.
+    ```
+    source /workspace/setup/alveo/setup.sh DPUCADF8H
+    ```
 
-# For U50LV, you can select 10PE 275MHz DPU IP via the following command.
-source /workspace/setup/alveo/setup.sh DPUCAHX8H
+2. For U50LV card, you can select 10PE 275MHz or 8PE 275MHz with DWC DPU IP.
+    * For 10PE 275MHz DPU IP, you can select the DPU IP via the following command.
+    ```
+    source /workspace/setup/alveo/setup.sh DPUCAHX8H
+    ```
+    * For 8PE-DWC 275MHz DPU IP, you can select the DPU IP via the following command.
+    ```
+    source /workspace/setup/alveo/setup.sh DPUCAHX8H-DWC
+    ```
 
-# For U50LV or U55C card, you can also select 8PE-DWC 275MHz or 11PE 300MHz DPU IP via the following command.
-source /workspace/setup/alveo/setup.sh DPUCAHX8H-DWC
-```
+3. For U55C card, you can select 11PE 300MHz with DWC DPU IP via the following command.
+    ```
+    source /workspace/setup/alveo/setup.sh DPUCAHX8H-DWC
+    ```
 
 ### Multi-card selection (optional)
 If there are more than one supported cards installed on the host, all available cards will be used for DPU applications by default. You can use following command to check the installed Alveo card on the host:

@@ -1,0 +1,24 @@
+name: vitis-ai-wego-torch
+
+channels:
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - python=3.7
+  - wego_torch
+  - pyyaml
+  - jupyter
+  - ipywidgets
+  - dill
+  - progressbar2
+  - pytest
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - pip 
+  - pip:
+    - ck
+    - orderedset
+    - opencv-contrib-python
+    - torchvision==0.11.3

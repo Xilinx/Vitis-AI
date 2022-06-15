@@ -1,0 +1,53 @@
+#
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+vck190_4mipi is a demo running on VCK190 platform. It processes four channels with MIPI as input and runs different models for each channel. Then display the results of each channel to 4K display via HDMI interface.
+For more details about this demo, refer to the fifth chapter of UG1354.
+
+Note: This demo uses the xilinx-vck190-dpu-v2022.1-v2.5.0-c32b1-3cu-4mipi.img.gz image file, please refer to the fifth chapter of UG1354 to set the board environment.
+The image download link is https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-vck190-dpu-v2022.1-v2.5.0-c32b1-3cu-4mipi.img.gz
+
+#First start up
+/etc/init.d/xserver-nodm stop
+sh quad_640x360_bgr.sh
+
+#Modifying camera Parameters
+v4l2-ctl -d /dev/v4l-subdev11 -c ar0231_green_balance=170
+v4l2-ctl -d /dev/v4l-subdev12 -c ar0231_green_balance=170
+v4l2-ctl -d /dev/v4l-subdev13 -c ar0231_green_balance=170
+v4l2-ctl -d /dev/v4l-subdev14 -c ar0231_green_balance=170
+v4l2-ctl -d /dev/v4l-subdev11 -c ar0231_blue_balance=500
+v4l2-ctl -d /dev/v4l-subdev11 -c ar0231_red_balance=140
+v4l2-ctl -d /dev/v4l-subdev11 -c ar0231_exposure=1000
+v4l2-ctl -d /dev/v4l-subdev11 -c ar0231_digital_gain=800
+v4l2-ctl -d /dev/v4l-subdev12 -c ar0231_blue_balance=500
+v4l2-ctl -d /dev/v4l-subdev12 -c ar0231_red_balance=140
+v4l2-ctl -d /dev/v4l-subdev12 -c ar0231_exposure=1000
+v4l2-ctl -d /dev/v4l-subdev12 -c ar0231_digital_gain=800
+v4l2-ctl -d /dev/v4l-subdev13 -c ar0231_blue_balance=500
+v4l2-ctl -d /dev/v4l-subdev13 -c ar0231_red_balance=140
+v4l2-ctl -d /dev/v4l-subdev13 -c ar0231_exposure=1000
+v4l2-ctl -d /dev/v4l-subdev13 -c ar0231_digital_gain=800
+v4l2-ctl -d /dev/v4l-subdev14 -c ar0231_blue_balance=500
+v4l2-ctl -d /dev/v4l-subdev14 -c ar0231_red_balance=140
+v4l2-ctl -d /dev/v4l-subdev14 -c ar0231_exposure=1000
+v4l2-ctl -d /dev/v4l-subdev14 -c ar0231_digital_gain=800
+
+#build target
+sh build_4mipi_spnet.sh
+
+#Begin to run
+sh run_4mipi_spnet.sh

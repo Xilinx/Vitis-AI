@@ -7,6 +7,96 @@
 
 # Release Notes
 
+## Release 2.5
+### New Features/Highlights
+- AI Model Zoo added 14 new models, including BERT-based NLP, Vision Transformer (ViT), Optical Character Recognition (OCR), Simultaneous Localization and Mapping (SLAM), and more Once-for-All (OFA) models
+- Added 38 base & optimized models for AMD EPYC server processors
+- AI Quantizer added model inspector, now supports TensorFlow 2.8 and Pytorch 1.10
+- Whole Graph Optimizer (WeGO) supports Pytorch 1.x and TensorFlow 2.x
+- Deep Learning Processing Unit (DPU) for Versal® ACAP supports multiple compute units (CU), new Arithmetic Logic Unit (ALU) engine, Depthwise convolution and more operators supported by the DPUs on VCK5000 and Alveo™ data center accelerator cards
+- Inference server supports ZenDNN as backend on AMD EPYC™ server processors
+- New examples added to Whole Application Acceleration (WAA) for VCK5000 Versal development card and Zynq® UltraScale+™ evaluation kits
+
+### Release Notes
+### AI Model Zoo
+- Added 14 new models, and 134 models in total
+- Expanded model categories for diverse AI workloads :
+   - Added models for data center application requirements including text detection and end-to-end OCR
+   - Added BERT-based NLP and Vision Transformer (ViT) models on VCK5000
+   - More OFA-optimized models, including OFA-RCAN for Super-Resolution and OFA-YOLO for Object Detection 
+   - Added models for industrial vision and SLAM, including Interest Point Detection & Description model and Hierarchical Localization model.
+- Added 38 base & optimized models for AMD EPYC CPU
+- EoU enhancement:
+   - Improved model index by application categories
+
+### AI Quantizer-CNN
+- Added Model Inspector that inspects a float model and shows partition results
+- Support Tensorflow 2.8 and Pytorch 1.10
+- Support float-scale and per-channel quantization
+- Support configuration for different quantize strategies
+
+### AI Optimizer
+- OFA enhancement:
+   - Support even kernel size of convolution
+   - Support ConvTranspose2d
+   - Updated examples
+- One-step and iterative pruning enhancement:
+   - Resumed model analysis or search after exception
+
+### AI Compiler
+- Support ALU for DPUCZDX8G
+- Support new models
+
+### AI Library / VART
+- Added 6 new model libraries and support 17 new models
+- Custom Op Enhancement
+- Added new CPU operators
+- Xdputil Tool Enhancement
+- Two new demos on VCK190 Versal development board
+
+### AI Profiler
+- Full support on custom OP and Graph Runner
+- Stability optimization
+
+### Edge DPU-DPUCZDX8G
+- New ALU engine to replace pool engine and DepthWiseConv engine in MISC:
+   - ALU: support new features, e.g. large-kernel-size MaxPool, AveragePool, rectangle-kernel-size AveragePool, 16bit const weights
+   - ALU: support HardSigmoid and HardSwish
+   - ALU: support DepthwiseConv + LeakyReLU
+   - ALU: support the parallelism configuration
+- DPU IP and TRD on ZCU102 with encrypted RTL IP based on 2022.1 Vitis platform
+
+### Edge DPU-DPUCVDX8G
+- Optimized ALU that better support features like channel-attention
+- Support multiple compute units
+- Support DepthwiseConv + LeakyReLU
+- Support Versal DPU IP and TRD on VCK190 with encrypted RTL and AIE code which still in C32B1-6/C64B1-5, and based on 2022.1 Vitis platform
+
+### Cloud DPU-DPUCVDX8H
+- Enlarged DepthWise convolution kernel size that ranges from 1x1 to 8x8
+- Support AIE based pooling and ElementWise add & multiply, and big kernel size pooling
+- Support more DepthWise convolution kernel sizes
+
+### Cloud DPU-DPUCADF8H
+- Support ReLU6/LeakyReLU and MobileNet series models
+- Fixed the issue of missing directories in some cases in the .XO flow
+
+### Whole Graph Optimizer (WeGO)
+- Support PyTorch 1.x and TensorFlow 2.x in-framework inference
+- Added 19 PyTorch 1.x/Tensorflow 2.x/Tensorflow 1.x examples, including classification, object detection, segmentation and more
+
+### Inference Server 
+- Added gRPC API to inference server flow
+- Support Tensorflow/Pytorch
+- Support AMD ZenDNN as backend
+
+### WAA
+- New examples for VCK5000 & ZCU104 - ResNet & adas_detection
+- New ResNet example containing AIE based pre-prorcessing kernel 
+- Xclbin generation using Pre-built DPU flow for ZCU102/U50 ResNet and adas_detection applications
+- Xclbin generation using build flow for ZCU104/VCK190 ResNet and adas_detection applications
+- Porting of all VCK190 examples from ES1 to production version and use base platform instead of custom platform
+
 ## Release 2.0
 ### New Features/Highlights
 1. General Availability (GA) for VCK190(Production Silicon), VCK5000(Production Silicon) and U55C
