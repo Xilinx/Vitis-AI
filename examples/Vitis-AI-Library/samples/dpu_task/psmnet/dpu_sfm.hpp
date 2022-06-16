@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
- * Filename: facedetect.hpp
+ * Filename: dpu_sfm.hpp
  *
  * Description:
  * This network is used to getting position and score of faces in the input
@@ -30,6 +30,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 #include <vitis/ai/library/tensor.hpp>
 
 #include "./my_xrt_bo.hpp"
@@ -47,7 +48,11 @@ class DpuSfm {
   std::shared_ptr<vai_graph> graph_;
   // one bo per batch
   std::vector<vitis::ai::ImportedXrtBo> inBO_;
+  void* in_ptr_;
+  xrtBufferHandle inBO;
   xrtBufferHandle outBO_;
+  //xrtBufferHandle outBO_;
+  std::vector<float> exp_lut_;
   float* out_;
   //void* g_sfm_;
 };

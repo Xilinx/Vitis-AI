@@ -50,27 +50,36 @@ static constexpr auto SFM_INPUT_BYTE = (SFM_INPUT_SIZE * sizeof(int8));
 static constexpr auto SFM_OUTPUT_BYTE =
     (SFM_INPUT_SIZE / CHANNEL * sizeof(float));
 
+static void fill_exp_lut(std::vector<float>& exp_lut, int8_t input_fix_point) {
+    float scale = pow(2.0, float(-1.0 * input_fix_point));
+    const int offset = -127;
+    for (int i = 0; i < 256; i++) {
+        exp_lut[i] = expf((i + offset) * scale);
+	//cout << exp_lut[i] << " ";
+    }
+    //cout << endl;
+}
+
 DpuSfm::DpuSfm(const char* xclbin, vitis::ai::library::OutputTensor& input) {
   auto batch = input.batch;
   graph_ = vitis::ai::WeakStore<std::string, vai_graph>::create(
       "graph_sfm", std::string(xclbin), std::string("graph_sfm"));
   inBO_ = vitis::ai::ImportedXrtBo::create(graph_->h_->dhdl, input);
+  inBO = xrtBOAlloc(graph_->h_->dhdl, SFM_INPUT_BYTE, XCL_BO_FLAGS_CACHEABLE, 0);
+  in_ptr_ = xrtBOMap(inBO);
   outBO_ =
       xrtBOAlloc(graph_->h_->dhdl, SFM_OUTPUT_BYTE * NUM_OF_CORE * batch, 0, 0);
   out_ = ((float*)xrtBOMap(outBO_));
-  int32 control_params[6] = {0};
-  control_params[0] = 1;
-  control_params[1] = 192;
-  control_params[2] = 1;
-  control_params[3] = 1;
-  control_params[4] = 0;
-  control_params[5] = 0;
+  int32 control_params[6] = {1, 192, 1, 0, 0, 0};
+  exp_lut_.resize(256);
+  fill_exp_lut(exp_lut_, 1);
   for (auto c = 0; c < NUM_OF_CORE; ++c) {
-    xrtGraphUpdateRTP(
-        graph_->g_,
-        (std::string("graph_sfm.superkernel[") + std::to_string(c) + "].in[1]")
-            .c_str(),
-        (char*)control_params, 6 * sizeof(int32));
+    char cfg_rtp_name[256] = {0};
+    char lut_rtp_name[256] = {0};
+    sprintf(cfg_rtp_name, "graph_sfm.superkernel[%d].in[1]", c);
+    sprintf(lut_rtp_name, "graph_sfm.superkernel[%d].in[2]", c);
+    xrtGraphUpdateRTP(graph_->g_, cfg_rtp_name, (char*)control_params, 6*sizeof(int32_t));
+    xrtGraphUpdateRTP(graph_->g_, lut_rtp_name, (char*)exp_lut_.data(), 256*sizeof(float));
   }
   // xrtGraphRun(graph_->g_, 0);
 }
@@ -89,22 +98,45 @@ void DpuSfm::run_with() {
   auto batch = inBO_.size();
   // LOG(INFO) << "input = " << *input;
   for (auto b = 0u; b < batch; ++b) {
+    if(ENV_PARAM(DEBUG_SFM_X8)) {
+      memcpy(in_ptr_, inBO_[b].ptr_, SFM_INPUT_BYTE);
+      ofstream fout("x2_" + to_string(b) + ".out", ios::binary);
+      fout.write((char*)in_ptr_, SFM_INPUT_BYTE);
+      fout.close();
+    }
     for (auto c = 0; c < NUM_OF_CORE; ++c) {
       xrtSyncBOAIENB(graph_->h_->dhdl, inBO_[b].real->bo,
-                     (std::string("gmio_sfm_a") + std::to_string(c)).c_str(),
+                     //(std::string("gmio_sfm_a") + std::to_string(c)).c_str(),
+                     (std::string("graph_sfm.datain[") + std::to_string(c)+"]").c_str(),
                      XCL_BO_SYNC_BO_GMIO_TO_AIE, SFM_INPUT_BYTE,
                      inBO_[b].offset + SFM_INPUT_BYTE * c);
     }
+
+//    for (auto c = 0; c < NUM_OF_CORE; ++c) {
+//      char sfm_inport_name[256] = {0};
+//      sprintf(sfm_inport_name, "gmio_sfm_a%d", c);
+//      if(ENV_PARAM(DEBUG_SFM_X8)==0){
+//        xrtSyncBOAIENB(graph_->h_->dhdl, inBO_[b].real->bo, sfm_inport_name,
+//          	      XCL_BO_SYNC_BO_GMIO_TO_AIE, SFM_INPUT_BYTE,
+//          	      inBO_[b].offset);
+//      } else {
+//        xrtSyncBOAIENB(graph_->h_->dhdl, inBO, sfm_inport_name,
+//          	      XCL_BO_SYNC_BO_GMIO_TO_AIE, SFM_INPUT_BYTE,
+//          	      0);
+//      }
+//    }
     auto batch_offset = b * SFM_OUTPUT_BYTE * NUM_OF_CORE;
     for (auto c = 0; c < NUM_OF_CORE; ++c) {
       xrtSyncBOAIENB(graph_->h_->dhdl, outBO_,
-                     (std::string("gmio_sfm_c") + std::to_string(c)).c_str(),
+                     //(std::string("gmio_sfm_c") + std::to_string(c)).c_str(),
+                     (std::string("graph_sfm.dataout[") + std::to_string(c)+"]").c_str(),
                      XCL_BO_SYNC_BO_AIE_TO_GMIO, SFM_OUTPUT_BYTE,
                      batch_offset + SFM_OUTPUT_BYTE * c);
     }
     for (auto c = 0; c < NUM_OF_CORE; ++c) {
       xrtGMIOWait(graph_->h_->dhdl,
-                  (std::string("gmio_sfm_c") + std::to_string(c)).c_str());
+                  //(std::string("gmio_sfm_c") + std::to_string(c)).c_str());
+                  (std::string("graph_sfm.dataout[") + std::to_string(c)+"]").c_str());
     }
   }
 }

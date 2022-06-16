@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
- * Filename: facedetect.hpp
+ * Filename: fmy_xrt_bo.hpp
  *
  * Description:
  * This network is used to getting position and score of faces in the input

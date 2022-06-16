@@ -29,7 +29,18 @@
 #include <xrt/experimental/xrt_device.h>
 #include <xrt/experimental/xrt_kernel.h>
 #include <xrt/xrt.h>
-#define DEF_XCLBIN "/media/sd-mmcblk0p1/dpu.xclbin"
+#include <thread>
+
+#include <vitis/ai/env_config.hpp>
+DEF_ENV_PARAM(DEBUG_AIE_DEVICE, "0");
+DEF_ENV_PARAM(DEBUG_AIE_DEVICE_SLEEP, "500");
+DEF_ENV_PARAM(DEBUG_AIE_DEVICE_RETRIES, "10");
+
+DEF_ENV_PARAM_2(DPU_XCLBIN,
+                "/run/media/mmcblk0p1/dpu.xclbin",
+                std::string);
+//const std::string dpuxclbin = "/run/media/mmcblk0p1/dpu.xclbin";
+
 /**
  *  * xrtDeviceOpenFromXcl() - Open a device from a shim xclDeviceHandle
  *  *
@@ -42,20 +53,56 @@
 
 class vai_aie_task_handler {
  public:
-  vai_aie_task_handler(const char* xclbin_path = DEF_XCLBIN, int dev_id = 0) {
+  vai_aie_task_handler(const char* xclbin_path = ENV_PARAM(DPU_XCLBIN).c_str(), int dev_id = 0) {
 #if !defined(__AIESIM__)
     dhdl = nullptr;
+    int value = 0;
     // Create XRT device handle for XRT API
     xclbinFilename = xclbin_path;
-    dhdl = xrtDeviceOpen(dev_id);  // device index=0
-    CHECK(dhdl != nullptr) << "cannot open device";
-    xrtDeviceLoadXclbinFile(dhdl, xclbinFilename);
-    xrtDeviceGetXclbinUUID(dhdl, uuid);
+    auto counter = 0;
+    do {
+      counter++;
+      dhdl = xrtDeviceOpen(dev_id);  // device index=0
+      CHECK(dhdl != nullptr) << "cannot open device";
+      value = xrtDeviceLoadXclbinFile(dhdl, xclbinFilename);
+      LOG_IF(INFO, ENV_PARAM(DEBUG_AIE_DEVICE))
+          << "xrtDeviceLoadXclbinFile error: "
+          << "value " << value << " "                    //
+          << "xclbinFilename " << xclbinFilename << " "  //
+          << "dhdl " << dhdl << " "                      //
+          << "counter = " << counter << " "
+          ;
+      if (value != 0) {
+        value = xrtDeviceClose(dhdl);
+        LOG_IF(INFO, ENV_PARAM(DEBUG_AIE_DEVICE))
+            << "close board failure when retry. value=" << value;
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(ENV_PARAM(DEBUG_AIE_DEVICE_SLEEP)));
+        continue;
+      }
+      auto value1 = xrtDeviceGetXclbinUUID(dhdl, uuid);
+      CHECK_EQ(value1, 0) << "xrtDeviceGetXclbinUUID error: "
+                         << "value " << value1 << " "                    //
+                         << "xclbinFilename " << xclbinFilename << " "  //
+                         << "dhdl " << dhdl << " "                      //
+			 << "counter = " << counter << " "
+          ;
+      LOG_IF(INFO, ENV_PARAM(DEBUG_AIE_DEVICE))
+          << "xrtDeviceOpen/xrtDeviceLoadXclbinFile/xrtDeviceGetXclbinUUID OK";
+      break;
+    } while (counter < ENV_PARAM(DEBUG_AIE_DEVICE_RETRIES));
+    CHECK_EQ(value, 0) << "cannot init board";
 #endif
   };
   ~vai_aie_task_handler() {
 #if !defined(__AIESIM__)
-    xrtDeviceClose(dhdl);
+    auto value = xrtDeviceClose(dhdl);
+    CHECK_EQ(value, 0) << "xrtDeviceClose error: "
+                       << "value " << value << " "                    //
+                       << "xclbinFilename " << xclbinFilename << " "  //
+                       << "dhdl " << dhdl << " "                      //
+        ;
+    //LOG(INFO) << "xrtDeviceClose OK";
 #endif
   };
 

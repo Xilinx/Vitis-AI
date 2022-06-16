@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
- * Filename: facedetect.hpp
+ * Filename: cpu_op.hpp
  *
  * Description:
  * This network is used to getting position and score of faces in the input

@@ -15,10 +15,13 @@
  */
 ### How to use it ###
 compile:
+(normal version)
 sh build.sh
+(AIE optimize version)
+sh build_aie.sh
 
 # run in vck190: 
-env ./demo_psmnet demo_psmnet_left.png demo_psmnet_right.png
+./demo_psmnet demo_psmnet_left.png demo_psmnet_right.png
 
 after execute, the result will store as a picture named result_psmnet_0.jpg.
 

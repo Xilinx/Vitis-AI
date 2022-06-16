@@ -27,12 +27,10 @@
 #include <vitis/ai/weak.hpp>
 #include "vai_aie_task_handler.hpp"
 
-const std::string dpuxclbin = "/media/sd-mmcblk0p1/dpu.xclbin";
-
 class vai_graph {
  public:
   vai_graph(const std::string filename, const std::string cate) {
-    // LOG(INFO) << filename << " " << cate;
+    LOG(INFO) << filename << " " << cate;
     h_ = vitis::ai::WeakStore<std::string, vai_aie_task_handler>::create(
       filename, filename.c_str());
     g_ = xrtGraphOpen(h_->dhdl, h_->uuid, cate.c_str());
@@ -44,5 +42,25 @@ class vai_graph {
 
   std::shared_ptr<vai_aie_task_handler> h_;
   xrtGraphHandle g_;
+};
+
+class vai_pl_kernel {
+ public:
+  vai_pl_kernel(const std::string filename, const std::string cate) {
+    // LOG(INFO) << filename << " " << cate;
+    h_ = vitis::ai::WeakStore<std::string, vai_aie_task_handler>::create(
+      filename, filename.c_str());
+    k_ = xrtPLKernelOpen(h_->dhdl, h_->uuid, cate.c_str());
+    r_ = xrtRunOpen(k_);
+  }
+  ~vai_pl_kernel() {
+    xrtRunClose(r_);
+    xrtKernelClose(k_);
+    h_ = nullptr;
+  }
+
+  std::shared_ptr<vai_aie_task_handler> h_;
+  xrtKernelHandle k_;
+  xrtRunHandle r_;
 };
 

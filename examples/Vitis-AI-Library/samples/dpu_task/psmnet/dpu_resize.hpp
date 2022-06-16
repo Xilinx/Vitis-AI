@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
- * Filename: facedetect.hpp
+ * Filename: dpu_resize.hpp
  *
  * Description:
  * This network is used to getting position and score of faces in the input
@@ -40,13 +40,15 @@ class vai_resize {
              vitis::ai::library::OutputTensor&
                  input,  // output of DPU is input of resize
              vitis::ai::library::InputTensor&
-                 output  // input of next DPU is output of resize
+                 output,  // input of next DPU is output of resize
+             std::vector<size_t>& channels
   );
   ~vai_resize();
 
   void run();
-  void run_internal(xrtBufferHandle input_xrt_bo, size_t input_offset,
-                    xrtBufferHandle output_xrt_bo, size_t output_offset);
+  void run_internal(xrtBufferHandle input_xrt_bo,
+                    xrtBufferHandle output_xrt_bo,
+		    size_t offset, size_t stride);
 
  private:
   std::shared_ptr<vai_graph> graph_;
@@ -55,9 +57,18 @@ class vai_resize {
   int ih_, iw_, ic_, oh_, ow_, oc_;
   int input_fix_point_;
   int output_fix_point_;
-  const int bytes_of_value = 1;
+  //const int bytes_of_value = 1;
   xrtBufferHandle inBO_;
   void* in_ptr_;
   xrtBufferHandle outBO_;
   void* out_ptr_;
+
+  std::vector<size_t> channels_;
+
+  std::shared_ptr<vai_pl_kernel> mm2s_;
+  std::shared_ptr<vai_pl_kernel> s2mm_;
+  //xrtKernelHandle mm2s_khdl_;
+  //xrtRunHandle mm2s_;
+  //xrtKernelHandle s2mm_khdl_;
+  //xrtRunHandle s2mm_;
 };

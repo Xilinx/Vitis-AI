@@ -27,9 +27,12 @@
 #include <opencv2/core.hpp>
 #include <memory>
 
-//#include "./dpu_resize.hpp"
-//#include "./dpu_sfm.hpp"
+#ifndef ENABLE_AIE
 #include "./cpu_op.hpp"
+#else
+#include "./dpu_resize.hpp"
+#include "./dpu_sfm.hpp"
+#endif
 
 namespace vitis {
 namespace ai {
