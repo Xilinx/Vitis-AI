@@ -8,14 +8,14 @@
 **ZCU102 xclbin and SD card files generation**
 * Download and unzip [mpsoc common system](https://www.xilinx.com/member/forms/download/xef.html?filename=xilinx-zynqmp-common-v2022.1.tar.gz) & [zcu102 base platform](https://www.xilinx.com/member/forms/download/design-license-zcu102-base.html?filename=xilinx_zcu102_base_202210_1.zip) package.
 
-	Please note that Xilinx account sign-in may be required to download some of the above files.
+    Please note that Xilinx account sign-in may be required to download some of the above files.
 
 * The following tutorials assume that the Vitis and XRT environment variable is set as given below.
 
 * Download DPU-TRD setup
     ```sh
     cd ${VAI_HOME}/examples/Whole-App-Acceleration/apps/resnet50_jpeg/build_flow/DPUCZDX8G_zcu102
-	mkdir DPU-TRD
+    mkdir DPU-TRD
     wget https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G.tar.gz
     tar -xzvf DPUCZDX8G.tar.gz --directory DPU-TRD
     ```

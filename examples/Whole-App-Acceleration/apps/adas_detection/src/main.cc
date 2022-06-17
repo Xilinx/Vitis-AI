@@ -270,6 +270,9 @@ void runYOLO(vart::Runner *runner, string baseImagePath, vector<string>images, i
 	string name=xclbin_obj.get_xsa_name();
 	string platform_name=name.substr(7,4);
 
+	if (platform_name == "vck5")
+	   platform_name = "vck5000";
+
 	if(platform_name == "u200"&& no_zcpy == 0)
 	{
 		cout<<"Currently, u200 doesnot support zero copy. Running without zero copy"<<endl;
@@ -295,7 +298,7 @@ void runYOLO(vart::Runner *runner, string baseImagePath, vector<string>images, i
 		auto idx = std::vector<int32_t>(out_dims.size());
 		idx[0] = batch_idx;
 
-        if(platform_name == "u200" || platform_name == "u280" || platform_name == "u50" ||  platform_name == "VCK5000")
+        if(platform_name == "u200" || platform_name == "u280" || platform_name == "u50_" ||  platform_name == "VCK5000")
 		{
 			for(int i = 0; i<4; i++)
 			{

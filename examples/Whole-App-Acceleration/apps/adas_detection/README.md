@@ -142,6 +142,7 @@ Once the SD card is set with sd_card.img system, cross-compilation environment i
     wget <Download Link> -O <model-files.tar.gz>
     tar -xzvf <model-files.tar.gz>
     ```
+  Please note that the extracted folder and the model name may vary. Use appropriate name or path to the model file while running the application.
 
 * Download the image dataset 
   * Download images at http://image-net.org/download-images and copy images to ` ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img` directory. 
@@ -310,7 +311,7 @@ Please expand the following to see the instructions to run different tests on th
 
           Running Application with Software Preprocessing 
 
-          E2E Performance: 16.119 fps
+          E2E Performance: 16.12 fps
           Pre-process Latency: 16.02 ms
           Execution Latency: 8.39 ms
           Post-process Latency: 37.58 ms
@@ -379,17 +380,17 @@ Please expand the following to see the instructions to run different tests on th
 
           Running Application with Software Preprocessing 
 
-          E2E Performance: 34.4495 fps
-          Pre-process Latency: 7.588 ms
-          Execution Latency: 1.114 ms
-          Post-process Latency: 20.313 ms
+          E2E Performance: 34.45 fps
+          Pre-process Latency: 7.59 ms
+          Execution Latency: 1.11 ms
+          Post-process Latency: 20.31 ms
 
        Running Application with Hardware Preprocessing 
 
-          E2E Performance: 70.0231 fps
-          Pre-process Latency: 0.585 ms
-          Execution Latency: 1.081 ms
-          Post-process Latency: 12.602 ms
+          E2E Performance: 70.02 fps
+          Pre-process Latency: 0.58 ms
+          Execution Latency: 1.08 ms
+          Post-process Latency: 12.60 ms
 
           The percentage improvement in throughput is 103.26 %
 		  
@@ -430,8 +431,8 @@ These steps are summarizied as follows:
   | No. | DPU        | Device           | WAA Package Link                                                                                                           |
   |-----|------------|------------------|----------------------------------------------------------------------------------------------------------------------------|
   | 1   | DPUCAHX8H  | U50              | [waa_u50_xclbins_v2_5_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_u50_xclbins_v2_5_0.tar.gz)            |
-  | 2   | DPUCAHX8H  | U280             | [waa_u280_xclbins_v2_5_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_u280_xclbins_v2_5_0.tar.gz)          |
-  | 3   | DPUCADF8H  | U200             | [waa_u200_xclbins_v2_5_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_u200_xclbins_v2_5_0.tar.gz)          |
+  | 2   | DPUCAHX8H  | U280             | [waa_u280_xclbins_v2_0_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_u280_xclbins_v2_0_0.tar.gz)          |
+  | 3   | DPUCADF8H  | U200             | [waa_u200_xclbins_v2_0_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_u200_xclbins_v2_0_0.tar.gz)          |
   
   #### **2. Using build flow**  
   In this approach, the pre-processing accelerator and DPU are built from sources following the build flow.
@@ -451,8 +452,8 @@ These steps are summarizied as follows:
     | Platform    | Command                                                                                             |
     |-------------|-----------------------------------------------------------------------------------------------------|
     | U50         | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_u50_xclbins_v2_5_0/adas_detection/dpu.xclbin `     |
-    | U280        | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_u280_xclbins_v2_5_0/adas_detection/dpu.xclbin `    |
-    | U200        | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_u200_xclbins_v2_5_0/adas_detection/dpu.xclbin `    |
+    | U280        | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_u280_xclbins_v2_0_0/adas_detection/dpu.xclbin `    |
+    | U200        | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_u200_xclbins_v2_0_0/adas_detection/dpu.xclbin `    |
         
 ### **2. Download setup files**
 * Download model files for ADAS detection
@@ -460,7 +461,7 @@ These steps are summarizied as follows:
   The following table gives links to model files corresponding to the device. 
   | No. | Device                    | Download Link             |
   |-----|---------------------------|---------------------------|
-  | 1   | U50/U280             | [adas_detection-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-u280-DPUCAHX8H-r2.5.0.tar.gz)        |
+  | 1   | U50/U280             | [adas_detection-u50-u280-DPUCAHX8H-r2.5.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u50-u280-DPUCAHX8H-r2.5.0.tar.gz)        |
   | 2   | U200          | [adas_detection-u200-u250-r1.4.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u200-u250-r1.4.0.tar.gz)        |
 
 
@@ -472,6 +473,8 @@ These steps are summarizied as follows:
     wget <Download Link> -O <model-files.tar.gz>
     tar -xzvf <model-files.tar.gz>
     ```
+  Please note that the extracted folder and the model name may vary. Use appropriate name or path to the model file while running the application.
+
 * Download the image dataset 
   * Download images at http://image-net.org/download-images and copy images to ` ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img` directory. 
 
@@ -495,6 +498,157 @@ Please expand the following to see the instructions to run different tests on th
 
 <details>
 <summary>Click to expand different tests and expected output for U50:</summary>
+
+  * Functionality test with single image using WAA
+    ```sh
+    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9_u50-u280-DPUCAHX8H-r2.5.0/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --verbose
+    
+    # Expect similar output:
+		The Confidence Threshold used in this demo is 0.5
+		Total number of images in the dataset is 1
+
+		image name: image
+		  xmin, ymin, xmax, ymax :12.3173 312.835 89.8562 364.71
+		image name: image
+		  xmin, ymin, xmax, ymax :108.805 328.219 144.592 353.546
+		image name: image
+		  xmin, ymin, xmax, ymax :83.6033 328.275 119.39 349.272
+		image name: image
+		  xmin, ymin, xmax, ymax :1.9616 324.017 21.5726 345.06
+		image name: image
+		  xmin, ymin, xmax, ymax :139.033 321.582 191.414 362.169
+		image name: image
+		  xmin, ymin, xmax, ymax :171.326 325.928 261.314 364.758
+    ```
+
+  * Functionality test with single image without WAA (software preprocessing)
+    ```sh
+    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9_u50-u280-DPUCAHX8H-r2.5.0/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --verbose --use_sw_pre_proc
+    
+    # Expect similar output:
+		The Confidence Threshold used in this demo is 0.5
+		Total number of images in the dataset is 1
+
+		image name: image
+		  xmin, ymin, xmax, ymax :12.1682 313.02 89.707 364.895
+		image name: image
+		  xmin, ymin, xmax, ymax :109.099 328.121 144.886 353.449
+		image name: image
+		  xmin, ymin, xmax, ymax :83.6033 328.426 119.39 349.423
+		image name: image
+		  xmin, ymin, xmax, ymax :173.604 326.026 258.141 364.855
+		image name: image
+		  xmin, ymin, xmax, ymax :139.336 321.671 191.717 362.259
+		image name: image
+		  xmin, ymin, xmax, ymax :1.87612 324.302 21.4872 345.345
+    ```
+	
+  * Performance test with & without WAA
+
+    ```sh
+    export XLNX_ENABLE_FINGERPRINT_CHECK=0
+    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9_u50-u280-DPUCAHX8H-r2.5.0/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --performance_diff
+
+    # Expect similar output:
+        Running Performance Diff: 
+
+        Running Application with Software Preprocessing 
+
+        E2E Performance: 68.45 fps
+        Pre-process Latency: 4.44 ms
+        Execution Latency: 3.52 ms
+        Post-process Latency: 6.64 ms
+
+        Running Application with Hardware Preprocessing 
+
+        E2E Performance: 93.12 fps
+        Pre-process Latency: 0.99 ms
+        Execution Latency: 3.33 ms
+        Post-process Latency: 6.42 ms
+
+        The percentage improvement in throughput is 36.04 %
+    ```	
+</details>
+
+<details>
+<summary>Click to expand different tests and expected output for U280:</summary>
+
+  * Functionality test with single image using WAA
+    ```sh
+    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9_u50-u280-DPUCAHX8H-r2.5.0/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --verbose
+    
+    # Expect similar output:
+		The Confidence Threshold used in this demo is 0.5
+		Total number of images in the dataset is 1
+
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1020.05 373.011 1169.63 504.456
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1252.69 329.102 1759.31 581.102
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1004.49 410.347 1036.5 440.153
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1197.78 375.235 1222.7 468.18
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1227.93 376.278 1257.99 475.218
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :679.323 346.293 709.384 414.293
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1164.6 377.952 1192.84 476.891
+    ```
+
+  * Functionality test with single image without WAA (software preprocessing)
+    ```sh
+    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9_u50-u280-DPUCAHX8H-r2.5.0/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --verbose --use_sw_pre_proc
+    
+    # Expect similar output:
+		The Confidence Threshold used in this demo is 0.5
+		Total number of images in the dataset is 1
+
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1019.76 373.862 1169.33 505.308
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1261.38 311.325 1768 563.325
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1004.69 409.349 1036.7 439.155
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1196.12 379.151 1224.36 466.464
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1227.45 375.78 1257.51 474.72
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :1162.96 378.397 1193.03 477.337
+		image name: frankfurt_000000_000294_leftImg8bit
+		  xmin, ymin, xmax, ymax :680.01 346.497 710.071 414.497
+    ```
+  * Performance test with & without WAA
+
+    ```sh
+    export XLNX_ENABLE_FINGERPRINT_CHECK=0
+    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9_u50-u280-DPUCAHX8H-r2.5.0/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --performance_diff
+
+    # Expect similar output:
+        Running Performance Diff: 
+
+          Running Application with Software Preprocessing 
+
+          E2E Performance: 82.48 fps
+          Pre-process Latency: 3.78 ms
+          Execution Latency: 2.53 ms
+          Post-process Latency: 5.82 ms
+
+        Running Application with Hardware Preprocessing 
+
+          E2E Performance: 100.45 fps
+          Pre-process Latency: 0.70 ms
+          Execution Latency: 2.44 ms
+          Post-process Latency: 6.81 ms
+
+          The percentage improvement in throughput is 21.79 %
+    ```	
+</details>
+
+<details>
+<summary>Click to expand different tests and expected output for U200:</summary>
 
   * Functionality test with single image using WAA
     ```sh
@@ -539,7 +693,7 @@ Please expand the following to see the instructions to run different tests on th
 		image name: image
 		  xmin, ymin, xmax, ymax :1.87612 324.302 21.4872 345.345
     ```
-	
+
   * Performance test with & without WAA
 
     ```sh
@@ -549,168 +703,21 @@ Please expand the following to see the instructions to run different tests on th
     # Expect similar output:
         Running Performance Diff: 
 
-          Running Application with Software Preprocessing 
+        Running Application with Software Preprocessing 
 
-          E2E Performance: 68.45 fps
-          Pre-process Latency: 4.44 ms
-          Execution Latency: 3.52 ms
-          Post-process Latency: 6.64 ms
-
-        Running Application with Hardware Preprocessing 
-
-          E2E Performance: 93.12 fps
-          Pre-process Latency: 0.99 ms
-          Execution Latency: 3.33 ms
-          Post-process Latency: 6.42 ms
-
-          The percentage improvement in throughput is 36.04 %
-    ```	
-</details>
-
-<details>
-<summary>Click to expand different tests and expected output for U280:</summary>
-
-  * Functionality test with single image using WAA#TODO
-    ```sh
-    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --verbose
-    
-    # Expect similar output:
-		The Confidence Threshold used in this demo is 0.5
-		Total number of images in the dataset is 1
-
-		image name: image
-		  xmin, ymin, xmax, ymax :12.3173 312.835 89.8562 364.71
-		image name: image
-		  xmin, ymin, xmax, ymax :108.805 328.219 144.592 353.546
-		image name: image
-		  xmin, ymin, xmax, ymax :83.6033 328.275 119.39 349.272
-		image name: image
-		  xmin, ymin, xmax, ymax :1.9616 324.017 21.5726 345.06
-		image name: image
-		  xmin, ymin, xmax, ymax :139.033 321.582 191.414 362.169
-		image name: image
-		  xmin, ymin, xmax, ymax :171.326 325.928 261.314 364.758
-    ```
-
-  * Functionality test with single image without WAA (software preprocessing)#TODO
-    ```sh
-    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --verbose --use_sw_pre_proc
-    
-    # Expect similar output:
-		The Confidence Threshold used in this demo is 0.5
-		Total number of images in the dataset is 1
-
-		image name: image
-		  xmin, ymin, xmax, ymax :12.1682 313.02 89.707 364.895
-		image name: image
-		  xmin, ymin, xmax, ymax :109.099 328.121 144.886 353.449
-		image name: image
-		  xmin, ymin, xmax, ymax :83.6033 328.426 119.39 349.423
-		image name: image
-		  xmin, ymin, xmax, ymax :173.604 326.026 258.141 364.855
-		image name: image
-		  xmin, ymin, xmax, ymax :139.336 321.671 191.717 362.259
-		image name: image
-		  xmin, ymin, xmax, ymax :1.87612 324.302 21.4872 345.345
-    ```
-  * Performance test with & without WAA#TODO
-
-    ```sh
-    export XLNX_ENABLE_FINGERPRINT_CHECK=0
-    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --performance_diff
-
-    # Expect similar output:
-        Running Performance Diff: 
-
-          Running Application with Software Preprocessing 
-
-          E2E Performance: 66.34 fps
-          Pre-process Latency: 4.60 ms
-          Execution Latency: 3.51 ms
-          Post-process Latency: 6.95 ms
+        E2E Performance: 34.80 fps
+        Pre-process Latency: 4.01 ms
+        Execution Latency: 15.88 ms
+        Post-process Latency: 8.84 ms
 
         Running Application with Hardware Preprocessing 
 
-          E2E Performance: 88.29 fps
-          Pre-process Latency: 0.94 ms
-          Execution Latency: 3.30 ms
-          Post-process Latency: 7.08 ms
+        E2E Performance: 39.66 fps
+        Pre-process Latency: 0.81 ms
+        Execution Latency: 15.77 ms
+        Post-process Latency: 8.63 ms
 
-          The percentage improvement in throughput is 33.09 %
-    ```	
-</details>
-
-<details>
-<summary>Click to expand different tests and expected output for U200:</summary>
-
-  * Functionality test with single image using WAA#TODO
-    ```sh
-    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --verbose
-    
-    # Expect similar output:
-		The Confidence Threshold used in this demo is 0.5
-		Total number of images in the dataset is 1
-
-		image name: image
-		  xmin, ymin, xmax, ymax :12.3173 312.835 89.8562 364.71
-		image name: image
-		  xmin, ymin, xmax, ymax :108.805 328.219 144.592 353.546
-		image name: image
-		  xmin, ymin, xmax, ymax :83.6033 328.275 119.39 349.272
-		image name: image
-		  xmin, ymin, xmax, ymax :1.9616 324.017 21.5726 345.06
-		image name: image
-		  xmin, ymin, xmax, ymax :139.033 321.582 191.414 362.169
-		image name: image
-		  xmin, ymin, xmax, ymax :171.326 325.928 261.314 364.758
-    ```
-
-  * Functionality test with single image without WAA (software preprocessing)#TODO
-    ```sh
-    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --verbose --use_sw_pre_proc
-    
-    # Expect similar output:
-		The Confidence Threshold used in this demo is 0.5
-		Total number of images in the dataset is 1
-
-		image name: image
-		  xmin, ymin, xmax, ymax :12.1682 313.02 89.707 364.895
-		image name: image
-		  xmin, ymin, xmax, ymax :109.099 328.121 144.886 353.449
-		image name: image
-		  xmin, ymin, xmax, ymax :83.6033 328.426 119.39 349.423
-		image name: image
-		  xmin, ymin, xmax, ymax :173.604 326.026 258.141 364.855
-		image name: image
-		  xmin, ymin, xmax, ymax :139.336 321.671 191.717 362.259
-		image name: image
-		  xmin, ymin, xmax, ymax :1.87612 324.302 21.4872 345.345
-    ```
-
-  * Performance test with & without WAA#TODO
-
-    ```sh
-    export XLNX_ENABLE_FINGERPRINT_CHECK=0
-    ./app_test.sh --xmodel_file ./model_files/yolov3_adas_pruned_0_9/yolov3_adas_pruned_0_9.xmodel --image_dir ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/img/ --performance_diff
-
-    # Expect similar output:
-        Running Performance Diff: 
-
-          Running Application with Software Preprocessing 
-
-          E2E Performance: 66.34 fps
-          Pre-process Latency: 4.60 ms
-          Execution Latency: 3.51 ms
-          Post-process Latency: 6.95 ms
-
-        Running Application with Hardware Preprocessing 
-
-          E2E Performance: 88.29 fps
-          Pre-process Latency: 0.94 ms
-          Execution Latency: 3.30 ms
-          Post-process Latency: 7.08 ms
-
-          The percentage improvement in throughput is 33.09 %
+        The percentage improvement in throughput is 13.97 %
     ```	
 </details>
 
@@ -752,15 +759,15 @@ For `ADAS detection`, the performance numbers are achieved by running ~5k images
 
   <tr>
     <td>ZCU104</td>
-    <td>16.1192</td>
+    <td>16.12</td>
     <td>27.09</td>
     <td>68.11 %</td>
   </tr>
 
   <tr>
     <td>VCK190</td>
-    <td>34.4495</td>
-    <td>70.0231</td>
+    <td>34.45</td>
+    <td>70.02</td>
     <td>103.26 %</td>
   </tr>
   
@@ -773,16 +780,16 @@ For `ADAS detection`, the performance numbers are achieved by running ~5k images
 
   <tr>
     <td>U280</td>
-    <td>64.82</td>
-    <td>81.99</td>
-    <td>26.49 %</td>
+    <td>82.48</td>
+    <td>100.45</td>
+    <td>21.79 %</td>
   </tr>
 
   <tr>
     <td>U200</td>
-    <td>37.71</td>
-    <td>45.95</td>
-    <td>23.62 %</td>
+    <td>34.80</td>
+    <td>39.66</td>
+    <td>13.97 %</td>
   </tr>
   
 
