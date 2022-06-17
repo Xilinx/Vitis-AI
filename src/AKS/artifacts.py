@@ -20,15 +20,9 @@ import argparse
 import subprocess
 
 # Device artifacts
-u50 = {
-  "tf_resnet_v1_50" : "https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50-r1.3.1.tar.gz",
-  "cf_resnet50" : "https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-r1.3.1.tar.gz",
-  "densebox_320_320" : "https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50-r1.3.1.tar.gz"
-}
-
 u50lv_v3e = {
-  "tf_resnet_v1_50" : "https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50lv-DPUCAHX8H-r2.0.0.tar.gz",
-  "densebox_320_320" : "https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50lv-DPUCAHX8H-r2.0.0.tar.gz"
+  "tf_resnet_v1_50" : "https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u50lv-DPUCAHX8H-r2.5.0.tar.gz",
+  "densebox_320_320" : "https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-u50lv-DPUCAHX8H-r2.5.0.tar.gz"
 }
 
 u200_u250 = {
@@ -37,12 +31,11 @@ u200_u250 = {
 }
 
 zcu_102_104 = {
-  "cf_resnet50" : "https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104-r1.3.1.tar.gz"
+  "cf_resnet50" : "https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r2.5.0.tar.gz"
 }
 
 # All artifacts
 artifacts = {
-  "u50" : u50,
   "u50lv_v3e" : u50lv_v3e,
   "u200_u250" : u200_u250,
   "zcu_102_104": zcu_102_104

@@ -15,8 +15,8 @@
 
 # Supported Modes & Models
 declare -A SUPPORTED_GRAPHS
-for name in "cf_resnet50_zcu_102_104" "cf_resnet50_u50" "tf_resnet_v1_50_u200_u250" "tf_resnet_v1_50_u50lv_v3e"  \
-            "tf_resnet_v1_50_u50" "cf_densebox_320_320_u50" "cf_densebox_320_320_u200_u250" "cf_densebox_320_320_u50lv_v3e"
+for name in "cf_resnet50_zcu_102_104" "tf_resnet_v1_50_u200_u250" "tf_resnet_v1_50_u50lv_v3e"  \
+            "cf_densebox_320_320_u200_u250" "cf_densebox_320_320_u50lv_v3e"
 do
     SUPPORTED_GRAPHS[$name]=1
 done
@@ -33,10 +33,10 @@ usage() {
 
   echo "Examples (DPUCAHX8H):"
   echo "------------------------------------------------"
-  echo "Run ResNet50 on Alveo-U50: "
-  echo "  ./aks.sh -m cf_resnet50_u50 --dir1 <image-dir>"
+  echo "Run ResNet50 on Alveo-U50LV: "
+  echo "  ./aks.sh -m tf_resnet50_v1_50_u50lv_v3e --dir1 <image-dir>"
   echo "Run Face Detect on Alveo-U50: "
-  echo "  ./aks.sh -m cf_densebox_320_320_u50 --dir1 <image-dir>"
+  echo "  ./aks.sh -m cf_densebox_320_320_u50lv_v3e --dir1 <image-dir>"
   echo -e ""
 
   echo "Examples (DPUCZDX8G):"
@@ -137,32 +137,18 @@ PY_EXE=""
 if [ "${MODEL}" == "tf_resnet_v1_50_u200_u250" ]; then
   CPP_EXE=examples/bin/tf_resnet_v1_50.exe
   exec_args="u200_u250 ${DIRECTORY1}"
-  export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8
-
-elif [ "${MODEL}" == "tf_resnet_v1_50_u50" ]; then
-  CPP_EXE=examples/bin/tf_resnet_v1_50.exe
-  exec_args="u50 ${DIRECTORY1}"
 
 elif [ "${MODEL}" == "tf_resnet_v1_50_u50lv_v3e" ]; then
   CPP_EXE=examples/bin/tf_resnet_v1_50.exe
   exec_args="u50lv_v3e ${DIRECTORY1}"
 
-elif [ "${MODEL}" == "cf_resnet50_u50" ]; then
-  CPP_EXE=examples/bin/cf_resnet50.exe
-  exec_args="u50 ${DIRECTORY1}"
-
 elif [ "${MODEL}" == "cf_resnet50_zcu_102_104" ]; then
   CPP_EXE=examples/bin/cf_resnet50.exe
   exec_args="zcu_102_104 ${DIRECTORY1}"
 
-elif [ "${MODEL}" == "cf_densebox_320_320_u50" ]; then
-  CPP_EXE=examples/bin/cf_densebox_320_320.exe
-  exec_args="$DIRECTORY1"
-
 elif [ "${MODEL}" == "cf_densebox_320_320_u200_u250" ]; then
   CPP_EXE=examples/bin/cf_densebox_320_320.exe
   exec_args="u200_u250 $DIRECTORY1"
-  export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/dpuv3int8
 
 elif [ "${MODEL}" == "cf_densebox_320_320_u50lv_v3e" ]; then
   CPP_EXE=examples/bin/cf_densebox_320_320.exe

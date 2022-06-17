@@ -194,6 +194,11 @@ python3 artifacts.py -d u50lv_v3e
     ./aks.sh -m tf_resnet_v1_50_u50lv_v3e -d1 ${HOME}/CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min
     ```
 
+- Face Detect (DenseBox 320x320)
+    ```sh
+    ./aks.sh -m cf_densebox_320_320_u50lv_v3e -d1 ${HOME}/FDDB/2002/07/19/big
+    ```
+
 ## **Run Examples on Alveo-U200/Alveo-U250 with Batch DPU**
 
 These examples use **DPUCADF8H** IP for CNN Inference Acceleration on Alveo-U200/Alveo-U250 devices.
