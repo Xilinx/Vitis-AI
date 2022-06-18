@@ -789,4 +789,4 @@ For `Resnet-50`, the performance numbers are achieved by running 500 images rand
 
 ## Known Issue
 ### Running the application on VCK190 ES1 device
-Please refer the [Workaround for ES1 device ](https://github.com/Xilinx/Vitis-AI/tree/master/dsa/XVDPU-TRD#9-known-issue) for running the resnet50 application on ES1 devices.
+Please refer the [Workaround for ES1 device ](https://github.com/Xilinx/Vitis-AI/tree/v2.0/dsa/XVDPU-TRD#9-known-issue) for running the resnet50 application on ES1 devices.

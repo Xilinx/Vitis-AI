@@ -278,4 +278,4 @@ The performance numbers are obtained by running the app for 984 full-HD images r
 
 ## Known Issue
 ### Running the Resnet50 application on VCK190 ES1 device
-Following the build flow, xclbin for an ES1 device can be obtained. Later, please refer the [Workaround for ES1 device](../../../../reference_design/XVDPU-TRD#9-known-issue) for running the resnet50_waa_aie application on VCK190 ES1 devices.
+Following the build flow, xclbin for an ES1 device can be obtained. Later, please refer the [Workaround for ES1 device](https://github.com/Xilinx/Vitis-AI/tree/v2.0/dsa/XVDPU-TRD#9-known-issue) for running the resnet50_waa_aie application on VCK190 ES1 devices.

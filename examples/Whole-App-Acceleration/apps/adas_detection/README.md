@@ -803,4 +803,4 @@ For `ADAS detection`, the performance numbers are achieved by running ~5k images
 
 ## Known Issue
 ### Running the application on VCK190 ES1 device
-Please refer the [Workaround for ES1 device ](https://github.com/Xilinx/Vitis-AI/tree/master/dsa/XVDPU-TRD#9-known-issue) for running the ADAS detection application on ES1 devices.
+Please refer the [Workaround for ES1 device ](https://github.com/Xilinx/Vitis-AI/tree/v2.0/dsa/XVDPU-TRD#9-known-issue) for running the ADAS detection application on ES1 devices.
