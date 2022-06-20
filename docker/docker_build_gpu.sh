@@ -40,7 +40,7 @@ DOCKERFILE="${DOCKERFILE:-dockerfiles/vitis-ai-gpu.Dockerfile}"
 XRT_URL="${XRT_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrt_202120.2.12.427_18.04-amd64-xrt.deb}"
 XRM_URL="${XRM_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1.3.29_18.04-x86_64.deb}"
 PETALINUX_URL="${PETALINUX_URL:-https://www.xilinx.com/bin/public/openDownload?filename=sdk-2022.1.0.0.sh}"
-VAI_CONDA_CHANNEL="${VAI_CONDA_CHANNEL:-https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_2.0.0.1103-02.tar.gz}"
+VAI_CONDA_CHANNEL="${VAI_CONDA_CHANNEL:-https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_2.5.0.1260-01.tar.gz}"
 
 
 BRAND="${BRAND:-vitis-ai-gpu}"
