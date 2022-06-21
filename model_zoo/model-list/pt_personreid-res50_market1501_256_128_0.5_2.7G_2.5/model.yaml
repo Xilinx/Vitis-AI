@@ -27,11 +27,6 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_personreid-res50_market1501_256_128_0.5_2.7G_2.5.zip
   checksum: e98d5c76eff4d3d7ee1e27906a5e3ccd
-- name: pt_personreid-res50_market1501_256_128_0.5_2.7G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_personreid-res50_market1501_256_128_0.5_2.7G_2.5_1.0_Z3.3.zip
-  checksum: efc4deaf5defa9e6bea277d170f6d9a3
 - name: personreid_res50_pruned_0_5_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

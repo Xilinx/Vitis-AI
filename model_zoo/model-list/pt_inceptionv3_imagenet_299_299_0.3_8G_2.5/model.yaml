@@ -27,11 +27,6 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_inceptionv3_imagenet_299_299_0.3_8G_2.5.zip
   checksum: dce5dbcccc704b415aa19c3ccbc12ea1
-- name: pt_inceptionv3_imagenet_299_299_0.3_8G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_inceptionv3_imagenet_299_299_0.3_8G_2.5_1.0_Z3.3.zip
-  checksum: 6909d6d6245c539a08376813de54e56c
 - name: inception_v3_pruned_0_3_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

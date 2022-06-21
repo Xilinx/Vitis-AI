@@ -27,11 +27,6 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_1.0_imagenet_224_224_1.14G_2.5.zip
   checksum: 47a7fe5231c2fff9ee46a6305a411dad
-- name: tf_mobilenetv1_1.0_imagenet_224_224_1.14G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_1.0_imagenet_224_224_1.14G_2.5_1.0_Z3.3.zip
-  checksum: 6e2e89e25305c674438a5c784b93cb02
 - name: mobilenet_v1_1_0_224_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

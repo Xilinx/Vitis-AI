@@ -27,11 +27,6 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg16_imagenet_224_224_0.5_15.64G_2.5.zip
   checksum: cc3828d091ad8c4eb1600e750ef5468c
-- name: tf_vgg16_imagenet_224_224_0.5_15.64G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg16_imagenet_224_224_0.5_15.64G_2.5_1.0_Z3.3.zip
-  checksum: 87050aa9c1e54620894b6c8e71e58735
 - name: vgg_16_pruned_0_5_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

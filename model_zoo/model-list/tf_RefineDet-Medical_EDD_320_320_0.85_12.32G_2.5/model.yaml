@@ -27,11 +27,6 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_RefineDet-Medical_EDD_320_320_0.85_12.32G_2.5.zip
   checksum: 25892e745bae0414b6177fd494e86ced
-- name: tf_RefineDet-Medical_EDD_320_320_0.85_12.32G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_RefineDet-Medical_EDD_320_320_0.85_12.32G_2.5_1.0_Z3.3.zip
-  checksum: e68cfa8bb3fc42d233611b06d84e25eb
 - name: RefineDet-Medical_EDD_pruned_0_85_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

@@ -27,11 +27,6 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_resnet50_imagenet_224_224_0.3_5.8G_2.5.zip
   checksum: 22175f935257fd9d2ccebf3d41b78dcf
-- name: pt_resnet50_imagenet_224_224_0.3_5.8G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_resnet50_imagenet_224_224_0.3_5.8G_2.5_1.0_Z3.3.zip
-  checksum: aa3a00565bd853c6c1c8ee3dce77b26f
 - name: resnet50_pruned_0_3_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
