@@ -38,7 +38,7 @@ Vitis AI is composed of the following key components:
 -   DPU - Efficient and scalable IP cores can be customized to meet the
     needs for many different applications
 
-For more details on the different DPUs available, see [DPU Naming](https://github.com/Xilinx/Vitis-AI/blob/master/docs/images/dpu_naming.md).
+For more details on the different DPUs available, see [DPU Nomenclature](https://github.com/Xilinx/Vitis-AI/blob/master/docs/images/dpu_naming.md).
 
 ## References
 - [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)
