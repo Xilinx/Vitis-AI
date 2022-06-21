@@ -189,7 +189,7 @@ The server is under active development to add new features like GPU support and 
 
 ## Questions and Support
 - [FAQ](docs/quick-start/faq.md)
-- [Vitis AI Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
+- [Vitis AI Forum](https://support.xilinx.com/s/topic/0TO2E000000YKY9WAO/vitis-ai-ai)
 - [Third Party Source](docs/reference/Thirdpartysource.md)
 
 [models]: docs/models.md
