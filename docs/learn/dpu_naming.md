@@ -1,29 +1,23 @@
 <table class="sphinxhide">
  <tr>
-   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
+   <td align="center"><https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
    </td>
  </tr>
 </table>
 
-# DPU Naming
+# DPU Nomenclature
 
-Vitis AI 1.2 introduces a new DPU naming scheme. This new naming scheme will help you select the right DPU for your application or platform, by highlighting the characteristics of each DPU.
-
-The old DPUv1/v2/v3 naming will be deprecated.  
-
-Refer to the guide below to understand the available DPU options.
+There are a variety of different DPUs available for different tasks and Xilinx platforms.  The below decoder is useful to extract the features, characteristics and target hardware platforms from a given DPU name.
 
 <div align="center">
   <img width="100%" height="100%" src="../images/dpu_naming.PNG">
 </div>
 
 <br />
-We may have new DPUs available in the near future. The fields of the DPU naming can be expanded and updated accordingly.
-<br />
 
-## DPU Naming Example
+## Historic DPU Nomenclature
 
-To better understand how to map the old DPU names into this naming, refer to the following table.
+As of the Vitis 1.2 release, the historic DPUv1/v2/v3 nomenclature was deprecated.  To better understand how these historic DPU names map into this current nomenclature, refer to the following table.
 
 <br />
 
