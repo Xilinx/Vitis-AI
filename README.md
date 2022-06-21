@@ -179,11 +179,11 @@ The server is under active development to add new features like GPU support and 
 
 
 ## References
-- [Vitis AI Overview](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)
-- [Vitis AI User Guide](https://www.xilinx.com/html_docs/vitis_ai/2_0/index.html)
+- [Vitis AI Homepage on Xilinx.com](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html)
+- [Vitis AI User Guide](https://docs.xilinx.com/v/u/en-US/ug1431-vitis-ai-documentation)
 - [Vitis AI Model Zoo with Performance & Accuracy Data](model_zoo)
 - [Vitis AI Tutorials](https://github.com/Xilinx/Vitis-AI-Tutorials)
-- [Developer Articles](https://developer.xilinx.com/en/get-started/ai.html)
+- [Developer Articles](https://www.xilinx.com/developer/products/vitis-ai.html)
 
 ## [System Requirements](docs/learn/system_requirements.md)
 
