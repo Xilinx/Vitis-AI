@@ -460,7 +460,7 @@ This section gives details to run the Resnet50 example on U50/U280/U200/VCK5000 
   export XLNX_ENABLE_FINGERPRINT_CHECK=0
   ```
 
-Please expand the following to see the instructions to run different tests on the ZCU102/ZCU104/VCK190 platforms.
+Please expand the following to see the instructions to run different tests on the U50/U280/U200/VCK5000 platforms.
 
 <details>
 <summary>Click to expand different tests and expected output for U50:</summary>
