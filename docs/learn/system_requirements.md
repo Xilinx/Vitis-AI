@@ -8,7 +8,7 @@
 
 # System Requirements
 
-The following table lists system requirements required for Vitis-AI development containers:  
+The following table lists system requirements required for Vitis-AI developer machines:  
 
 <table>
 <tr><th colspan="2">Component</th><th>Requirement</th></tr>
