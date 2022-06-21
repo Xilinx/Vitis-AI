@@ -32,4 +32,14 @@ files:
   board: CPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg16_imagenet_224_224_0.5_15.64G_2.5_1.0_Z3.3.zip
   checksum: 87050aa9c1e54620894b6c8e71e58735
+- name: vgg_16_pruned_0_5_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_pruned_0_5_tf-zcu102_zcu104_kv260-r2.5.0.tar.gz
+  checksum: 68c4f539ecedf5fa96fdcba6d984cc80
+- name: vgg_16_pruned_0_5_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_pruned_0_5_tf-vck190-r2.5.0.tar.gz
+  checksum: f682b54e57cd800bccfb7a3b5e39e13a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

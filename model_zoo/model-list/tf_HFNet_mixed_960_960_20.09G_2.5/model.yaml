@@ -37,8 +37,4 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=hfnet_tf-vck190-r2.5.0.tar.gz
   checksum: 3de8c06d323f4018d0ed77f1da80678f
-- name: hfnet_tf
-  type: xmodel
-- name: hfnet_tf
-  type: xmodel
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -37,12 +37,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: cfa02e38c7afeb6f79469f1fffd66df0
+  checksum: ac159aedca95cfee96f10155f1859daf
 - name: resnet50_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck190-r2.5.0.tar.gz
-  checksum: f9a529014efca9bdefd71148aab8fc69
+  checksum: 33b46b9c06e1b3c457b7e646672b5d2b
 - name: resnet50_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

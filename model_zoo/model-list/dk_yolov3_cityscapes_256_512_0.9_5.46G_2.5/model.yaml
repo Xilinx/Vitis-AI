@@ -62,6 +62,4 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_adas_pruned_0_9-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: a6050f6a6b86f6c4b2bc523aa41c5a1b
-- name: yolov3_adas_pruned_0_9
-  type: xmodel
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

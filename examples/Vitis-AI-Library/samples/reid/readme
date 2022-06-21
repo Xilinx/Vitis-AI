@@ -21,6 +21,10 @@ Important:
     personreid-res18_pt
     facereid-large_pt
     facereid-small_pt
+    personreid_res50_pruned_0_4_pt
+    personreid_res50_pruned_0_5_pt
+    personreid_res50_pruned_0_6_pt
+    personreid_res50_pruned_0_7_pt
 
 1, compile
 
@@ -52,6 +56,21 @@ dismat : 1.021
     output : 
 dismat : 1.161 
 
+    sample : ./test_jpeg_reid personreid_res50_pruned_0_4_pt face_reid_001.jpg face_reid_002.jpg
+    output : 
+distmat : 0.499
+
+    sample : ./test_jpeg_reid personreid_res50_pruned_0_5_pt face_reid_001.jpg face_reid_002.jpg
+    output : 
+distmat :  0.532
+
+    sample : ./test_jpeg_reid personreid_res50_pruned_0_6_pt face_reid_001.jpg face_reid_002.jpg
+    output : 
+distmat : 0.483
+
+    sample : ./test_jpeg_reid personreid_res50_pruned_0_7_pt face_reid_001.jpg face_reid_002.jpg
+    output : 
+distmat :  0.605
 
 
 Accuracy:

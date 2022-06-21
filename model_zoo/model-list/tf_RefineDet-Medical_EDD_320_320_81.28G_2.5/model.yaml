@@ -32,4 +32,14 @@ files:
   board: CPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_RefineDet-Medical_EDD_320_320_81.28G_2.5_1.0_Z3.3.zip
   checksum: 1d7ab36f0abd2352d3759ec374a1400c
+- name: RefineDet-Medical_EDD_baseline_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_baseline_tf-zcu102_zcu104_kv260-r2.5.0.tar.gz
+  checksum: c74b64ed1f16411f7d56dc0ebea779c3
+- name: RefineDet-Medical_EDD_baseline_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_baseline_tf-vck190-r2.5.0.tar.gz
+  checksum: dc362795e66eccff0a4a687eeeaead03
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
