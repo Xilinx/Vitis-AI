@@ -11,8 +11,8 @@
     cd ${VAI_HOME}/examples/Whole-App-Acceleration/apps/resnet50/build_flow/DPUCADF8H_u200
     wget https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H.tar.gz
     tar -xzvf DPUCADF8H.tar.gz
-	mkdir xo_release
-	cp -rf DPUCADF8H/* xo_release
+    mkdir xo_release
+    cp -rf DPUCADF8H/* xo_release
     ```
 
 * Open a linux terminal. Set the linux as Bash mode and execute following instructions.

@@ -15,7 +15,7 @@
 * Download DPU-TRD setup
     ```sh
     cd ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/build_flow/DPUCZDX8G_zcu102
-	mkdir DPU-TRD
+    mkdir DPU-TRD
     wget https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G.tar.gz
     tar -xzvf DPUCZDX8G.tar.gz --directory DPU-TRD
     ```

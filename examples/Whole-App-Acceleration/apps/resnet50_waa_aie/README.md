@@ -31,7 +31,6 @@ In this example, application with accelerated pre-processing using AIE kernels i
     ├── app_test.sh
     ├── block_dia_classification_aie.png
     ├── build_flow
-    ├── data
     ├── pre-built_image
     ├── README.md
     ├── resnet50.xmodel
@@ -45,7 +44,6 @@ In this example, application with accelerated pre-processing using AIE kernels i
     ├── app_test.sh --> scriprt to test the resnet50_waa_aie app on vck190 board
     ├── block_dia_classification_aie.png --> Top-level diagram of the pipeline
     ├── build_flow --> directory to build a fresh sd_card.img
-    ├── data --> directory with 2 test images
     ├── pre-built_image --> directory with pre-built sd_card.img
     ├── README.md --> Readme file with instructions
     ├── resnet50.xmodel --> Resnet50 network xmodel file
@@ -69,8 +67,8 @@ In this approach, an existing sd_card.img file containing the xclbin, including 
 #### *Setting up VCK190 platform with the pre-built image*
 
 * Download the VCK190 SD card image file using the below link
-	
-	[VCK190](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=waa_vck190_resnet50_waa_aie_v2_5_0.img.gz)
+    
+    [VCK190](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=waa_vck190_resnet50_waa_aie_v2_5_0.img.gz)
 
   Please note that Xilinx account sign-in is required to download the above file.
 * Unzip the file and flash the `sd_card.img` file on the SD card using tools like Etcher.
@@ -102,15 +100,15 @@ Once the sd card is flashed with sd_card.img file, either by using pre-built xcl
     ```
     Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
-  * Cross compile `resnet50` example.
+  * Cross compile `resnet50_waa_aie` example.
     ```sh
     source < vitis-install-directory >/Vitis/2022.1/settings64.sh
     source < path-to-XRT-installation-directory >/setenv.sh
-	export SYSROOT=<path to sysroot>/sysroots/aarch64-xilinx-linux/
-	unset LD_LIBRARY_PATH
-	source ~/petalinux_sdk/environment-setup-cortexa72-cortexa53-xilinx-linux
+    export SYSROOT=<path to sysroot>/sysroots/aarch64-xilinx-linux/
+    unset LD_LIBRARY_PATH
+    source ~/petalinux_sdk/environment-setup-cortexa72-cortexa53-xilinx-linux
     export CROSS_COMPILE_ENV=~/petalinux_sdk/sysroots/cortexa72-cortexa53-xilinx-linux/
-    cd  resnet50_waa_aie
+    cd  ${VAI_HOME}/examples/Whole-App-Acceleration/apps/resnet50_waa_aie
     bash -x app_build.sh
     ```
       If the compilation process does not report any error and the executable file `./bin/resnet50_waa_aie.exe` is generated , then the host environment is installed correctly.
@@ -118,126 +116,131 @@ Once the sd card is flashed with sd_card.img file, either by using pre-built xcl
 ### **Run Resnet50 Example**
   This section gives details to run the Resnet50 example on vck190 board.
 
-  * Download/copy your full-HD images to ` resnet50_waa_aie/img` directory.
-  * A test dataset with 2 images is provided in the app. ` resnet50_waa_aie/data` is the directory containing these test images.
+  * Download/copy your full-HD images to ` ${VAI_HOME}/examples/Whole-App-Acceleration/apps/resnet50_waa_aie/img` directory.
+
   * Download the Vitis-AI runtime
 
-	```sh
-	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-2.5.0.tar.gz -O vitis-ai-runtime-2.5.0.tar.gz
+    ```sh
+    wget https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-2.5.0.tar.gz -O vitis-ai-runtime-2.5.0.tar.gz
 
-	tar -xzvf vitis-ai-runtime-2.5.0.tar.gz
-	```
+    tar -xzvf vitis-ai-runtime-2.5.0.tar.gz
+    ```
   * Download model files for Resnet50
-	```sh  
-    mkdir model_vck190
-    cd model_vck190
+    ```sh  
+    cd ${VAI_HOME}/examples/Whole-App-Acceleration/apps/resnet50_waa_aie
+    mkdir model_files
+    cd model_files
     wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck190-r2.0.0.tar.gz -O resnet50-vck190-r2.0.0.tar.gz
     tar -xzvf resnet50-vck190-r2.0.0.tar.gz
-	```
-	
-  * Create `resnet50_waa_aie` in the BOOT partition `/media/sd-mmcblk0p1/` of the SD Card. Then copy the following contents to the `resnet50_waa_aie` directory.
+    ```
+  Please note that the extracted folder and the model name may vary. Use appropriate name or path to the model file while running the application.
+    
+  * Create `resnet50_waa_aie` in the BOOT partition `/run/media/mmcblk0p1/` of the SD Card. Then copy the following contents to the `resnet50_waa_aie` directory.
     ```
         app_test.sh
         bin
-        img/data
-        model_vck190
-        words.txt	
+        img
+        model_files
+        words.txt
         vitis-ai-runtime-2.5.0
     ```
 
   * Please insert SD_CARD into the VCK190 board. After the linux boot, run the following to install Vitis AI runtime libraries and to perform various tests.
   * Installing Vitis AI Runtime on the Evaluation Board
     ```sh
-    cd /media/sd-mmcblk0p1/vitis-ai-runtime-2.5.0
-    bash -x setup.sh
+    cd /run/media/mmcblk0p1/
+    cp -r vitis-ai-runtime-2.5.0/2022.1/aarch64/centos ~/
+    cd ~/centos
+    bash setup.sh
     ```
   
   * Performance test with & without WAA
     ```sh
-    cd /media/sd-mmcblk0p1/resnet50_waa_aie
-    export XLNX_VART_FIRMWARE=/media/sd-mmcblk0p1/dpu.xclbin
-	./app_test.sh --xmodel_file ./model_vck190/resnet50/resnet50.xmodel --image_dir 1kimg/ --no_zero_copy --performance_diff
+    cd /run/media/mmcblk0p1/resnet50_waa_aie
+    export XLNX_VART_FIRMWARE=/run/media/mmcblk0p1/dpu.xclbin
+    ./app_test.sh --xmodel_file ./model_files/resnet50/resnet50.xmodel --image_dir img/ --no_zero_copy --performance_diff
     
     # Expect similar output
-		 Running Performance Diff: 
+         Running Performance Diff: 
 
-		   Running Application with Software Preprocessing 
+           Running Application with Software Preprocessing 
 
-		   E2E Performance: 255.95 fps
-		   Pre-process Latency: 3.06 ms
-		   Execution Latency: 0.77 ms
-		   Post-process Latency: 0.08 ms
+           E2E Performance: 255.95 fps
+           Pre-process Latency: 3.06 ms
+           Execution Latency: 0.77 ms
+           Post-process Latency: 0.08 ms
 
-		   Running Application with Hardware Preprocessing 
+           Running Application with Hardware Preprocessing 
 
-		   E2E Performance: 396.67 fps
-		   Pre-process Latency: 1.67 ms
-		   Execution Latency: 0.77 ms
-		   Post-process Latency: 0.08 ms
+           E2E Performance: 396.67 fps
+           Pre-process Latency: 1.67 ms
+           Execution Latency: 0.77 ms
+           Post-process Latency: 0.08 ms
 
-		   The percentage improvement in throughput is 54.98 %	  
+           The percentage improvement in throughput is 54.98 %  
     ```
-	The performance_diff numbers are obtained for 1kimg directory containing 984 full-HD images randomly picked from ImageNet dataset.
+    The performance_diff numbers are obtained for img directory containing 984 full-HD images randomly picked from ImageNet dataset.
+
   * Functionality test with two images using WAA
     ```sh
-    cd /media/sd-mmcblk0p1/resnet50_waa_aie
-    export XLNX_VART_FIRMWARE=/media/sd-mmcblk0p1/dpu.xclbin
-	./app_test.sh --xmodel_file ./model_vck190/resnet50/resnet50.xmodel --image_dir data/ --verbose --no_zero_copy
-    # Expect similar output:	
-		Initializing ADF API...
-		WARNING: Logging before InitGoogleLogging() is written to STDERR
-		I0118 22:47:16.290235  2315 main.cc:545] create running for subgraph: subgraph_conv1
-		XAIEFAL: INFO: Resource group Avail is created.
-		XAIEFAL: INFO: Resource group Static is created.
-		XAIEFAL: INFO: Resource group Generic is created.
-		Number of images in the image directory is: 2
-		XAIEFAL: INFO: Resource group Avail is created.
-		XAIEFAL: INFO: Resource group Static is created.
-		XAIEFAL: INFO: Resource group Generic is created.
-		Loading kernel Tiler_top:{Tiler_top_1}
-		Loading kernel stitcher_top:{stitcher_top_1}
+    cd /run/media/mmcblk0p1/resnet50_waa_aie
+    export XLNX_VART_FIRMWARE=/run/media/mmcblk0p1/dpu.xclbin
+    ./app_test.sh --xmodel_file ./model_files/resnet50/resnet50.xmodel --image_dir img/ --verbose --no_zero_copy
+    # Expect similar output:
+        Initializing ADF API...
+        WARNING: Logging before InitGoogleLogging() is written to STDERR
+        I0118 22:47:16.290235  2315 main.cc:545] create running for subgraph: subgraph_conv1
+        XAIEFAL: INFO: Resource group Avail is created.
+        XAIEFAL: INFO: Resource group Static is created.
+        XAIEFAL: INFO: Resource group Generic is created.
+        Number of images in the image directory is: 2
+        XAIEFAL: INFO: Resource group Avail is created.
+        XAIEFAL: INFO: Resource group Static is created.
+        XAIEFAL: INFO: Resource group Generic is created.
+        Loading kernel Tiler_top:{Tiler_top_1}
+        Loading kernel stitcher_top:{stitcher_top_1}
 
-		top[0] prob = 0.082919  name = digital clock
-		top[1] prob = 0.064577  name = matchstick
-		top[2] prob = 0.050293  name = spotlight, spot
-		top[3] prob = 0.050293  name = nematode, nematode worm, roundworm
-		top[4] prob = 0.030504  name = analog clock
-		top[0] prob = 0.541243  name = espresso
-		top[1] prob = 0.155069  name = eggnog
-		top[2] prob = 0.120768  name = coffee mug
-		top[3] prob = 0.094054  name = cup
-		top[4] prob = 0.044428  name = soup bowl
-		top[0] prob = 0.992576  name = collie
-		top[1] prob = 0.006688  name = Shetland sheepdog, Shetland sheep dog, Shetland
-		top[2] prob = 0.000549  name = borzoi, Russian wolfhound
-		top[3] prob = 0.000027  name = groenendael
-		top[4] prob = 0.000027  name = Afghan hound, Afghan
+        top[0] prob = 0.082919  name = digital clock
+        top[1] prob = 0.064577  name = matchstick
+        top[2] prob = 0.050293  name = spotlight, spot
+        top[3] prob = 0.050293  name = nematode, nematode worm, roundworm
+        top[4] prob = 0.030504  name = analog clock
+        top[0] prob = 0.541243  name = espresso
+        top[1] prob = 0.155069  name = eggnog
+        top[2] prob = 0.120768  name = coffee mug
+        top[3] prob = 0.094054  name = cup
+        top[4] prob = 0.044428  name = soup bowl
+        top[0] prob = 0.992576  name = collie
+        top[1] prob = 0.006688  name = Shetland sheepdog, Shetland sheep dog, Shetland
+        top[2] prob = 0.000549  name = borzoi, Russian wolfhound
+        top[3] prob = 0.000027  name = groenendael
+        top[4] prob = 0.000027  name = Afghan hound, Afghan
     ```
 :pushpin: **Note:** The hardware pre-processing accelerator outputs the pre-processed image one frame later. For example, the pre-processed output of `(i)th` image from the hardware accelerator is at `(i+1)th` iteration.
 
   * Functionality test with two images without WAA (software preprocessing)
     ```sh
-    cd /media/sd-mmcblk0p1/
-    ./app_test.sh --xmodel_file ./model_vck190/resnet50/resnet50.xmodel --image_dir ./data/ --verbose --use_sw_pre_proc
+    cd /run/media/mmcblk0p1/resnet50_waa_aie
+    ./app_test.sh --xmodel_file ./model_files/resnet50/resnet50.xmodel --image_dir img/ --verbose --use_sw_pre_proc
 
     # Expect similar output:
-		Initializing ADF API...
-		WARNING: Logging before InitGoogleLogging() is written to STDERR
-		I0118 22:49:05.984040  2320 main.cc:545] create running for subgraph: subgraph_conv1
-		XAIEFAL: INFO: Resource group Avail is created.
-		XAIEFAL: INFO: Resource group Static is created.
-		XAIEFAL: INFO: Resource group Generic is created.
-		Number of images in the image directory is: 2
-		top[0] prob = 0.568391  name = espresso
-		top[1] prob = 0.126825  name = eggnog
-		top[2] prob = 0.098772  name = cup
-		top[3] prob = 0.098772  name = coffee mug
-		top[4] prob = 0.059908  name = soup bowl
-		top[0] prob = 0.992575  name = collie
-		top[1] prob = 0.006688  name = Shetland sheepdog, Shetland sheep dog, Shetland
-		top[2] prob = 0.000549  name = borzoi, Russian wolfhound
-		top[3] prob = 0.000027  name = groenendael
-		top[4] prob = 0.000021  name = Afghan hound, Afghan
+        Initializing ADF API...
+        WARNING: Logging before InitGoogleLogging() is written to STDERR
+        I0118 22:49:05.984040  2320 main.cc:545] create running for subgraph: subgraph_conv1
+        XAIEFAL: INFO: Resource group Avail is created.
+        XAIEFAL: INFO: Resource group Static is created.
+        XAIEFAL: INFO: Resource group Generic is created.
+        Number of images in the image directory is: 2
+        top[0] prob = 0.568391  name = espresso
+        top[1] prob = 0.126825  name = eggnog
+        top[2] prob = 0.098772  name = cup
+        top[3] prob = 0.098772  name = coffee mug
+        top[4] prob = 0.059908  name = soup bowl
+        top[0] prob = 0.992575  name = collie
+        top[1] prob = 0.006688  name = Shetland sheepdog, Shetland sheep dog, Shetland
+        top[2] prob = 0.000549  name = borzoi, Russian wolfhound
+        top[3] prob = 0.000027  name = groenendael
+        top[4] prob = 0.000021  name = Afghan hound, Afghan
     ```
 
 ## Performance
@@ -275,4 +278,4 @@ The performance numbers are obtained by running the app for 984 full-HD images r
 
 ## Known Issue
 ### Running the Resnet50 application on VCK190 ES1 device
-Following the build flow, xclbin for an ES1 device can be obtained. Later, please refer the [Workaround for ES1 device](../../../../reference_design/XVDPU-TRD#9-known-issue) for running the resnet50_waa_aie application on VCK190 ES1 devices.
+Following the build flow, xclbin for an ES1 device can be obtained. Later, please refer the [Workaround for ES1 device](https://github.com/Xilinx/Vitis-AI/tree/v2.0/dsa/XVDPU-TRD#9-known-issue) for running the resnet50_waa_aie application on VCK190 ES1 devices.

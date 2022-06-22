@@ -11,7 +11,7 @@
     cd ${VAI_HOME}/examples/Whole-App-Acceleration/apps/resnet50/build_flow/DPUCVDX8H_vck5000
     wget https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_8pe_normal.tar.gz
     tar -xzvf DPUCVDX8H_8pe_normal.tar.gz
-	cp -rf 8pe.mk ./DPUCVDX8H_8pe_normal/
+    cp -rf 8pe.mk ./DPUCVDX8H_8pe_normal/
     ```
 
 * Open a linux terminal. Set the linux as Bash mode and execute following instructions.

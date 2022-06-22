@@ -11,9 +11,9 @@
     cd ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/build_flow/DPUCAHX8H_u50_u280
     wget https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8H.tar.gz
     tar -xzvf DPUCAHX8H.tar.gz
-	cp -rf DPUCAHX8H/release_u50_xo release_u50_xo
+    cp -rf DPUCAHX8H/release_u50_xo release_u50_xo
     ```
-	
+    
 * Open a linux terminal. Set the linux as Bash mode and execute following instructions.
     ```sh
     source < vitis-install-directory >/Vitis/2021.2/settings64.sh
@@ -31,7 +31,7 @@
     cd ${VAI_HOME}/examples/Whole-App-Acceleration/apps/adas_detection/build_flow/DPUCAHX8H_u50_u280
     wget https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8H.tar.gz
     tar -xzvf DPUCAHX8H.tar.gz
-	cp -rf DPUCAHX8H/release_u280_xo release_u280_xo
+    cp -rf DPUCAHX8H/release_u280_xo release_u280_xo
     ```
 * Open a linux terminal. Set the linux as Bash mode and execute following instructions.
     ```sh

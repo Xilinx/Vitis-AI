@@ -22,12 +22,14 @@ Download XVDPU-TRD Setup
 Open a linux terminal. Set the linux to Bash mode.
 
 ```sh
+    cd ${VAI_HOME}/examples/Whole-App-Acceleration/apps/psmnet/build_flow/DPUCVDX8G_vck190
     source < vitis-install-directory >/Vitis/2022.1/settings64.sh
     source < path-to-XRT-installation-directory >/setenv.sh
     export PLATFORM=< path-to-vck190-platform >/xilinx_vck190_base_202210_1/xilinx_vck190_base_202210_1.xpfm
     export DEVICE=$PLATFORM
     export EDGE_COMMON_SW=< path-to-vck190-common-system >/versal/xilinx-versal-common-v2022.1/ 
     ./run.sh
+```
 
 
 

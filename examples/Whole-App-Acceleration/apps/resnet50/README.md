@@ -143,6 +143,7 @@ Once the SD card is set with sd_card.img system, cross-compilation environment i
     wget <Download Link> -O <model-files.tar.gz>
     tar -xzvf <model-files.tar.gz>
     ```
+  Please note that the extracted folder and the model name may vary. Use appropriate name or path to the model file while running the application.
 
 * Download the image dataset 
   * Download images at http://image-net.org/download-images and copy images to ` ${VAI_HOME}/examples/Whole-App-Acceleration/apps/resnet50/img` directory. 
@@ -235,7 +236,7 @@ Please expand the following to see the instructions to run different tests on th
 
           The percentage improvement in throughput is 49.95 %
        
-    ```	
+    ```
 </details>
 
 <details>
@@ -295,7 +296,7 @@ Please expand the following to see the instructions to run different tests on th
 
           The percentage improvement in throughput is 50.47 %
        
-    ```	
+    ```
 </details>
 
 <details>
@@ -353,8 +354,8 @@ Please expand the following to see the instructions to run different tests on th
           Post-process Latency: 0.57 ms
 
           The percentage improvement in throughput is 115.77 %
-		  
-    ```	
+ 
+    ```
 </details>
 
 &nbsp;
@@ -392,8 +393,8 @@ These steps are summarizied as follows:
   | No. | DPU        | Device           | WAA Package Link                                                                                                           |
   |-----|------------|------------------|----------------------------------------------------------------------------------------------------------------------------|
   | 1   | DPUCAHX8H  | U50              | [waa_u50_xclbins_v2_5_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_u50_xclbins_v2_5_0.tar.gz)            |
-  | 2   | DPUCAHX8H  | U280             | [waa_u280_xclbins_v2_5_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_u280_xclbins_v2_5_0.tar.gz)          |
-  | 3   | DPUCADF8H  | U200             | [waa_u200_xclbins_v2_5_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_u200_xclbins_v2_5_0.tar.gz)          |
+  | 2   | DPUCAHX8H  | U280             | [waa_u280_xclbins_v2_0_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_u280_xclbins_v2_0_0.tar.gz)          |
+  | 3   | DPUCADF8H  | U200             | [waa_u200_xclbins_v2_0_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_u200_xclbins_v2_0_0.tar.gz)          |
   | 4   | DPUCVDX8H  | VCK5000          | [waa_vck5000_xclbins_v2_5_0](https://www.xilinx.com/bin/public/openDownload?filename=waa_vck5000_xclbins_v2_5_0.tar.gz)    |
 
   #### **2. Using build flow**  
@@ -415,8 +416,8 @@ These steps are summarizied as follows:
     | Platform    | Command                                                                                             |
     |-------------|-----------------------------------------------------------------------------------------------------|
     | U50         | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_u50_xclbins_v2_5_0/resnet50/dpu.xclbin `     |
-    | U280        | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_u280_xclbins_v2_5_0/resnet50/dpu.xclbin `    |
-    | U200        | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_u200_xclbins_v2_5_0/resnet50/dpu.xclbin `    |
+    | U280        | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_u280_xclbins_v2_0_0/resnet50/dpu.xclbin `    |
+    | U200        | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_u200_xclbins_v2_0_0/resnet50/dpu.xclbin `    |
     | VCK50000    | `export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/waa_vck5000_xclbins_v2_5_0/resnet50/dpu.xclbin ` |
         
 ### **2. Download setup files**
@@ -425,7 +426,7 @@ These steps are summarizied as follows:
   The following table gives links to model files corresponding to the device. 
   | No. | Device                    | Download Link             |
   |-----|---------------------------|---------------------------|
-  | 1   | U50/U280             | [resnet50-u50-u50lv-u280-DPUCAHX8H-r1.4.1.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u280-DPUCAHX8H-r2.5.0.tar.gz)        |
+  | 1   | U50/U280             | [resnet50-u50-u280-DPUCAHX8H-r2.5.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50-u280-DPUCAHX8H-r2.5.0.tar.gz)        |
   | 2   | U200          | [resnet50-u200-u250-r1.4.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u200-u250-r1.4.0.tar.gz)        |
   | 3   | VCK5000          | [resnet50-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz)        |
 
@@ -438,6 +439,8 @@ These steps are summarizied as follows:
     wget <Download Link> -O <model-files.tar.gz>
     tar -xzvf <model-files.tar.gz>
     ```
+  Please note that the extracted folder and the model name may vary. Use appropriate name or path to the model file while running the application.
+
 * Download the image dataset 
   * Download images at http://image-net.org/download-images and copy images to ` ${VAI_HOME}/examples/Whole-App-Acceleration/apps/resnet50/img` directory. 
 
@@ -457,7 +460,7 @@ This section gives details to run the Resnet50 example on U50/U280/U200/VCK5000 
   export XLNX_ENABLE_FINGERPRINT_CHECK=0
   ```
 
-Please expand the following to see the instructions to run different tests on the ZCU102/ZCU104/VCK190 platforms.
+Please expand the following to see the instructions to run different tests on the U50/U280/U200/VCK5000 platforms.
 
 <details>
 <summary>Click to expand different tests and expected output for U50:</summary>
@@ -491,7 +494,7 @@ Please expand the following to see the instructions to run different tests on th
     top[3] prob = 0.031348  name = American alligator, Alligator mississipiensis
     top[4] prob = 0.024414  name = African crocodile, Nile crocodile, Crocodylus niloticus
     ```
-	
+
   * Performance test with & without WAA
 
     ```sh
@@ -516,43 +519,43 @@ Please expand the following to see the instructions to run different tests on th
           Post-process Latency: 0.39 ms
 
           The percentage improvement in throughput is 29.07 %
-    ```	
+    ```
 </details>
 
 <details>
 <summary>Click to expand different tests and expected output for U280:</summary>
 
-  * Functionality test with single image using WAA#TODO
+  * Functionality test with single image using WAA
     ```sh
     ./app_test.sh --xmodel_file ./model_files/resnet50/resnet50.xmodel --image_dir ./img/ --verbose
 
     # Expect similar output:
     WARNING: Logging before InitGoogleLogging() is written to STDERR
-    I0712 10:16:33.656128  1587 main.cc:465] create running for subgraph: subgraph_conv1
-    Number of images in the image directory is: 1
-    top[0] prob = 0.829972  name = sea snake
-    top[1] prob = 0.068128  name = hognose snake, puff adder, sand viper
-    top[2] prob = 0.032181  name = water snake
-    top[3] prob = 0.015201  name = horned viper, cerastes, sand viper, horned asp, Cerastes cornutus
-    top[4] prob = 0.015201  name = American alligator, Alligator mississipiensis
+    I0616 03:41:02.972975   764 main.cc:510] create running for subgraph: subgraph_quant_conv1_conv
+    Number of images in the image directory is: 3
+    top[0] prob = 0.816577  name = sea snake
+    top[1] prob = 0.086067  name = water snake
+    top[2] prob = 0.040655  name = hognose snake, puff adder, sand viper
+    top[3] prob = 0.019204  name = rock python, rock snake, Python sebae
+    top[4] prob = 0.014956  name = horned viper, cerastes, sand viper, horned asp, Cerastes cornutus
     ```
 
-  * Functionality test with single image without WAA (software preprocessing)#TODO
+  * Functionality test with single image without WAA (software preprocessing)
     ```sh
     ./app_test.sh --xmodel_file ./model_files/resnet50/resnet50.xmodel --image_dir ./img/ --verbose --use_sw_pre_proc
 
     # Expect similar output:
     WARNING: Logging before InitGoogleLogging() is written to STDERR
-    I0712 10:16:42.329468  1612 main.cc:465] create running for subgraph: subgraph_conv1
+    I0616 03:40:44.617273   698 main.cc:510] create running for subgraph: subgraph_quant_conv1_conv
     Number of images in the image directory is: 1
-    top[0] prob = 0.808481  name = sea snake
-    top[1] prob = 0.066364  name = hognose snake, puff adder, sand viper
-    top[2] prob = 0.031348  name = water snake
-    top[3] prob = 0.031348  name = American alligator, Alligator mississipiensis
-    top[4] prob = 0.024414  name = African crocodile, Nile crocodile, Crocodylus niloticus
+    top[0] prob = 0.864593  name = sea snake
+    top[1] prob = 0.055272  name = water snake
+    top[2] prob = 0.026108  name = hognose snake, puff adder, sand viper
+    top[3] prob = 0.020333  name = rock python, rock snake, Python sebae
+    top[4] prob = 0.012333  name = horned viper, cerastes, sand viper, horned asp, Cerastes cornutus
     ```
-	
-  * Performance test with & without WAA#TODO
+
+  * Performance test with & without WAA
 
     ```sh
     export XLNX_ENABLE_FINGERPRINT_CHECK=0
@@ -563,47 +566,32 @@ Please expand the following to see the instructions to run different tests on th
 
           Running Application with Software Preprocessing 
 
-          E2E Performance: 167.39 fps
-          Pre-process Latency: 2.78 ms
-          Execution Latency: 2.84 ms
-          Post-process Latency: 0.35 ms
+          E2E Performance: 183.02 fps
+          Pre-process Latency: 2.67 ms
+          Execution Latency: 2.52 ms
+          Post-process Latency: 0.27 ms
 
           Running Application with Hardware Preprocessing 
 
-          E2E Performance: 212.95 fps
-          Pre-process Latency: 1.42 ms
-          Execution Latency: 2.78 ms
-          Post-process Latency: 0.48 ms
+          E2E Performance: 253.29 fps
+          Pre-process Latency: 1.18 ms
+          Execution Latency: 2.45 ms
+          Post-process Latency: 0.31 ms
 
-          The percentage improvement in throughput is 27.22 %
-    ```	
+          The percentage improvement in throughput is 38.39 %
+    ```
 </details>
 
 <details>
 <summary>Click to expand different tests and expected output for U200:</summary>
 
-  * Functionality test with single image using WAA#TODO
+  * Functionality test with single image using WAA
     ```sh
     ./app_test.sh --xmodel_file ./model_files/resnet50/resnet50.xmodel --image_dir ./img/ --verbose
 
     # Expect similar output:
     WARNING: Logging before InitGoogleLogging() is written to STDERR
-    I0712 10:16:33.656128  1587 main.cc:465] create running for subgraph: subgraph_conv1
-    Number of images in the image directory is: 1
-    top[0] prob = 0.829972  name = sea snake
-    top[1] prob = 0.068128  name = hognose snake, puff adder, sand viper
-    top[2] prob = 0.032181  name = water snake
-    top[3] prob = 0.015201  name = horned viper, cerastes, sand viper, horned asp, Cerastes cornutus
-    top[4] prob = 0.015201  name = American alligator, Alligator mississipiensis
-    ```
-
-  * Functionality test with single image without WAA (software preprocessing)#TODO
-    ```sh
-    ./app_test.sh --xmodel_file ./model_files/resnet50/resnet50.xmodel --image_dir ./img/ --verbose --use_sw_pre_proc
-
-    # Expect similar output:
-    WARNING: Logging before InitGoogleLogging() is written to STDERR
-    I0712 10:16:42.329468  1612 main.cc:465] create running for subgraph: subgraph_conv1
+    I0616 04:38:59.037778   276 main.cc:510] create running for subgraph: subgraph_conv1
     Number of images in the image directory is: 1
     top[0] prob = 0.808481  name = sea snake
     top[1] prob = 0.066364  name = hognose snake, puff adder, sand viper
@@ -611,8 +599,24 @@ Please expand the following to see the instructions to run different tests on th
     top[3] prob = 0.031348  name = American alligator, Alligator mississipiensis
     top[4] prob = 0.024414  name = African crocodile, Nile crocodile, Crocodylus niloticus
     ```
-	
-  * Performance test with & without WAA#TODO
+
+  * Functionality test with single image without WAA (software preprocessing)
+    ```sh
+    ./app_test.sh --xmodel_file ./model_files/resnet50/resnet50.xmodel --image_dir ./img/ --verbose --use_sw_pre_proc
+
+    # Expect similar output:
+    WARNING: Logging before InitGoogleLogging() is written to STDERR
+    I0616 04:39:07.074311   342 main.cc:510] create running for subgraph: subgraph_conv1
+    Number of images in the image directory is: 1
+    Currently u200 doesnot support zero copy. Hence running without zero copy
+    top[0] prob = 0.829972  name = sea snake
+    top[1] prob = 0.068128  name = hognose snake, puff adder, sand viper
+    top[2] prob = 0.032181  name = water snake
+    top[3] prob = 0.015201  name = horned viper, cerastes, sand viper, horned asp, Cerastes cornutus
+    top[4] prob = 0.015201  name = American alligator, Alligator mississipiensis
+    ```
+
+  * Performance test with & without WAA
 
     ```sh
     export XLNX_ENABLE_FINGERPRINT_CHECK=0
@@ -623,26 +627,26 @@ Please expand the following to see the instructions to run different tests on th
 
           Running Application with Software Preprocessing 
 
-          E2E Performance: 167.39 fps
-          Pre-process Latency: 2.78 ms
-          Execution Latency: 2.84 ms
-          Post-process Latency: 0.35 ms
+          E2E Performance: 157.65 fps
+          Pre-process Latency: 2.77 ms
+          Execution Latency: 3.21 ms
+          Post-process Latency: 0.36 ms
 
           Running Application with Hardware Preprocessing 
 
-          E2E Performance: 212.95 fps
-          Pre-process Latency: 1.42 ms
-          Execution Latency: 2.78 ms
-          Post-process Latency: 0.48 ms
+          E2E Performance: 204.46 fps
+          Pre-process Latency: 1.22 ms
+          Execution Latency: 3.23 ms
+          Post-process Latency: 0.44 ms
 
-          The percentage improvement in throughput is 27.22 %
-    ```	
+          The percentage improvement in throughput is 29.69 %
+    ```
 </details>
 
 <details>
 <summary>Click to expand different tests and expected output for VCK5000:</summary>
 
-  * Functionality test with single image using WAA#TODO
+  * Functionality test with single image using WAA
     ```sh
     ./app_test.sh --xmodel_file ./model_files/resnet50/resnet50.xmodel --image_dir ./img/ --verbose
 
@@ -657,7 +661,7 @@ Please expand the following to see the instructions to run different tests on th
     top[4] prob = 0.015201  name = American alligator, Alligator mississipiensis
     ```
 
-  * Functionality test with single image without WAA (software preprocessing)#TODO
+  * Functionality test with single image without WAA (software preprocessing)
     ```sh
     ./app_test.sh --xmodel_file ./model_files/resnet50/resnet50.xmodel --image_dir ./img/ --verbose --use_sw_pre_proc
 
@@ -683,20 +687,20 @@ Please expand the following to see the instructions to run different tests on th
 
           Running Application with Software Preprocessing 
 
-          E2E Performance: 339.905 fps
-          Pre-process Latency: 2.332 ms
-          Execution Latency: 0.344 ms
-          Post-process Latency: 0.263 ms
+          E2E Performance: 339.90 fps
+          Pre-process Latency: 2.3 ms
+          Execution Latency: 0.34 ms
+          Post-process Latency: 0.26 ms
 
           Running Application with Hardware Preprocessing 
 
-          E2E Performance: 621.118 fps
-          Pre-process Latency: 1.043 ms
-          Execution Latency: 0.299 ms
-          Post-process Latency: 0.264 ms
+          E2E Performance: 621.19 fps
+          Pre-process Latency: 1.04 ms
+          Execution Latency: 0.3 ms
+          Post-process Latency: 0.26 ms
 
           The percentage improvement in throughput is 82.73 %
-    ```	
+    ```
 </details>
 
 
@@ -756,22 +760,22 @@ For `Resnet-50`, the performance numbers are achieved by running 500 images rand
 
   <tr>
     <td>U280</td>
-    <td>167.39</td>
-    <td>212.95</td>
-    <td>27.22 %</td>
+    <td>183.02</td>
+    <td>253.29</td>
+    <td>38.39 %</td>
   </tr>
 
   <tr>
     <td>U200</td>
-    <td>149.68</td>
-    <td>187.30</td>
-    <td>25.13 %</td>
+    <td>157.65</td>
+    <td>204.46</td>
+    <td>29.69 %</td>
   </tr>
 
   <tr>
     <td>VCK5000</td>
-    <td>339.905</td>
-    <td>621.118</td>
+    <td>339.90</td>
+    <td>621.19</td>
     <td>82.73 %</td>
   </tr>
 
@@ -785,4 +789,4 @@ For `Resnet-50`, the performance numbers are achieved by running 500 images rand
 
 ## Known Issue
 ### Running the application on VCK190 ES1 device
-Please refer the [Workaround for ES1 device ](https://github.com/Xilinx/Vitis-AI/tree/master/dsa/XVDPU-TRD#9-known-issue) for running the resnet50 application on ES1 devices.
+Please refer the [Workaround for ES1 device ](https://github.com/Xilinx/Vitis-AI/tree/v2.0/dsa/XVDPU-TRD#9-known-issue) for running the resnet50 application on ES1 devices.

@@ -18,7 +18,6 @@
 #include <unordered_map>
 
 static std::unordered_map<std::string, int> dpu_batch = {
-  {"u50", 3},
   {"u50lv_v3e", 5},
   {"u200_u250", 4},
   {"zcu_102_104", 1}
@@ -26,20 +25,17 @@ static std::unordered_map<std::string, int> dpu_batch = {
 
 static std::unordered_map<std::string,
  std::pair<std::string, std::string>> tf_resnet_v1_50 {
-  {"u50"       , {"resnet50", "graph_zoo/graph_tf_resnet_v1_50.json"}},
   {"u50lv_v3e", {"resnet50", "graph_zoo/graph_tf_resnet_v1_50_u50lv_v3e.json"}},
   {"u200_u250" , {"resnet50", "graph_zoo/graph_tf_resnet_v1_50_u200_u250.json"}}
 };
 
 static std::unordered_map<std::string,
  std::pair<std::string, std::string>> cf_resnet50 {
-  {"u50", {"resnet50", "graph_zoo/graph_resnet50_u50.json"}},
   {"zcu_102_104", {"resnet50", "graph_zoo/graph_resnet50_zcu102_zcu104.json"}}
 };
 
 static std::unordered_map<std::string,
  std::pair<std::string, std::string>> cf_densebox_320_320 {
-  {"u50", {"facedetect", "graph_zoo/graph_facedetect_u50.json"}},
   {"u50lv_v3e", {"facedetect", "graph_zoo/graph_facedetect_u50lv_v3e.json"}},
   {"u200_u250", {"facedetect", "graph_zoo/graph_facedetect_u200_u250.json"}}
 };
