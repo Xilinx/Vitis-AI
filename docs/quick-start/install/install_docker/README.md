@@ -1,9 +1,6 @@
-<table class="sphinxhide">
- <tr>
-   <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1>
-   </td>
- </tr>
-</table>
+<div align="center">
+  <img width="30%" height="30%" src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png"><h1>Vitis AI</h1>
+</div>
 
 # Installing Docker
 Please refer to official Docker Documentation
