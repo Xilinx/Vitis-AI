@@ -99,6 +99,7 @@ Resnet50_JPEG example runs with 3 different ways.
   wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r2.5.0.tar.gz -O resnet50-zcu102_zcu104_kv260-r2.5.0.tar.gz
   tar -xzvf resnet50-zcu102_zcu104_kv260-r2.5.0.tar.gz
   ```
+  Please note that the extracted folder and the model name may vary. Use appropriate name or path to the model file while running the application.
 
 * Run Resnet50_JPEG Example
 

@@ -38,24 +38,22 @@ def run_func():
     fp = open(filePath, "r")
     data1 = fp.readlines()
     fp.close()
-    for idx in range(r.shape[0]):
-        s = tf.nn.softmax(r[idx])
-        result = tf.math.top_k(s.numpy(),5)
-        for k in range(5):
-            cnt = 0
-            for line in data1:
-                if cnt == result[1][k]:
-                    print("Top[%d] %f %s" % (k, result[0][k], (line.strip)("\n")))
-                    break
-                cnt = cnt + 1
-        
+    s = tf.nn.softmax(r)
+    result = tf.math.top_k(s,5)
+    for k in range(5):
+        cnt = 0
+        for line in data1:
+            if cnt == result[1][0][k]:
+                print("Top[%d] %f %s" % (k, result[0][0][k], (line.strip)("\n")))
+                break
+            cnt = cnt + 1
+
 def run_thread(cnt):
     for count in range(cnt, n_of_group, FLAGS.nthreads):
 
         r = model(x[0])[0]
-        for idx in range(r.shape[0]):
-            s = tf.nn.softmax(r[idx])
-            result = tf.math.top_k(s.numpy(),5)
+        s = tf.nn.softmax(r)
+        result = tf.math.top_k(s,5)
 
 def do_run():
     threads = []

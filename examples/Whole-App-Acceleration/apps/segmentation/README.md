@@ -127,7 +127,7 @@ The performance numbers are achieved by running the application over 1000 images
   </tr>
 
   <tr>
-    <td>U280</td>
+    <td>VCK190</td>
     <td>25.10</td>
     <td>50.67</td>
     <td>101.87 %</td>

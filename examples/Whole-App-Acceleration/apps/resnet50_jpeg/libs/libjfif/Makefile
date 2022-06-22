@@ -6,7 +6,7 @@ ALIB=build/libjfif.a
 EXEC=jfif
 OBJDIR=./obj/
 
-SYSROOT?=/proj/xbuilds/2020.1_released/internal_platforms/sw/zynqmp/xilinx-zynqmp/sysroots/aarch64-xilinx-linux
+#SYSROOT?= <path for SYSROOT>
 															 
 #CC=gcc
 AR=ar

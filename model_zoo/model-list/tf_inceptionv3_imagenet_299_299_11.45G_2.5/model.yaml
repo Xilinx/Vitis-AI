@@ -27,21 +27,16 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv3_imagenet_299_299_11.45G_2.5.zip
   checksum: 2178f1195a924494b1b0b0ce36f924ff
-- name: tf_inceptionv3_imagenet_299_299_11.45G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv3_imagenet_299_299_11.45G_2.5_1.0_Z3.3.zip
-  checksum: 046511448d9ed79d2bf25dd0cf17dbeb
 - name: inception_v3_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 234a1c8729d8293a2c87e7021b5a20fd
+  checksum: 0bf18b92cec4a1041359519c4214fb6d
 - name: inception_v3_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf-vck190-r2.5.0.tar.gz
-  checksum: 9c87cf89cb8bf731c0b0119226e90a7b
+  checksum: 8b44c7c7c4d9bdc8da2ac21197b8acc6
 - name: inception_v3_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

@@ -61,7 +61,7 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: 331f1e987e58afa0777d914b0d3f27c9 
+  checksum: 331f1e987e58afa0777d914b0d3f27c9
 - name: FADNet_1_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
@@ -96,7 +96,7 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: 4484f38d25660ae0358e87eb094173c4 
+  checksum: 4484f38d25660ae0358e87eb094173c4
 - name: FADNet_2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC

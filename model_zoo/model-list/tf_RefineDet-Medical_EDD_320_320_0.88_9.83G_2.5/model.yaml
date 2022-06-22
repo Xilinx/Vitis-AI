@@ -27,21 +27,16 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_RefineDet-Medical_EDD_320_320_0.88_9.83G_2.5.zip
   checksum: 0ff6cb004292657e346499c92e932d8f
-- name: tf_RefineDet-Medical_EDD_320_320_0.88_9.83G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_RefineDet-Medical_EDD_320_320_0.88_9.83G_2.5_1.0_Z3.3.zip
-  checksum: 06dc0d68f4496799edc37d523e81aa9c
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 8dbeb81a11962cc41c7704ed8abf2ed8
+  checksum: 1588a55a9e5db6b288180a83fcac2574
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_tf-vck190-r2.5.0.tar.gz
-  checksum: 3c19277667c9287f988023a64286f0e0
+  checksum: 28a8f56c13917009375acca373594e28
 - name: RefineDet-Medical_EDD_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

@@ -27,21 +27,16 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_6.97G_2.5.zip
   checksum: 2c4115c8c58fd01984d18237856631bb
-- name: tf_resnetv1_50_imagenet_224_224_6.97G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_6.97G_2.5_1.0_Z3.3.zip
-  checksum: 468a3f8b4a6d442bde442542e8ed45f2
 - name: resnet_v1_50_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 8959a6ac33b09f757fbabda495f046d9
+  checksum: 54b54c65a60b980ba3ef761aec7cd00a
 - name: resnet_v1_50_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-vck190-r2.5.0.tar.gz
-  checksum: d4b0f46a6d594e3b0351ec16cd3b7c42
+  checksum: 1060c6bfe8fae64a24a5fee60dc2f0e7
 - name: resnet_v1_50_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

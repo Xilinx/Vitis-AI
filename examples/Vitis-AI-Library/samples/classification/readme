@@ -32,8 +32,6 @@ Important:
     mobilenet_v1_0_25_128_tf
     mobilenet_v1_0_5_160_tf
     mobilenet_v1_1_0_224_tf
-    mobilenet_v1_1_0_224_pruned_0_11_tf
-    mobilenet_v1_1_0_224_pruned_0_12_tf
     mobilenet_v2_1_0_224_tf
     mobilenet_v2_1_4_224_tf
     mobilenet_edge_0_75_tf
@@ -45,8 +43,6 @@ Important:
     resnet_v2_152_tf
     resnet_v2_50_tf
     vgg_16_tf
-    vgg_16_pruned_0_43_tf
-    vgg_16_pruned_0_5_tf
     vgg_19_tf
     MLPerf_resnet50_v1.5_tf
     resnet50_tf2
@@ -64,6 +60,27 @@ Important:
     ofa_depthwise_res50_pt
     mobilenet_v3_small_1_0_tf2
     chen_color_resnet18_pt
+    inception_v3_pruned_0_2_tf
+    inception_v3_pruned_0_4_tf
+    inception_v3_pruned_0_3_pt
+    inception_v3_pruned_0_4_pt
+    inception_v3_pruned_0_5_pt
+    inception_v3_pruned_0_6_pt
+    mobilenet_v1_1_0_224_pruned_0_11_tf
+    mobilenet_v1_1_0_224_pruned_0_12_tf
+    ofa_resnet50_baseline_pt
+    ofa_resnet50_pruned_0_45_pt
+    ofa_resnet50_pruned_0_60_pt
+    ofa_resnet50_pruned_0_74_pt
+    resnet50_pruned_0_3_pt
+    resnet50_pruned_0_4_pt
+    resnet50_pruned_0_5_pt
+    resnet50_pruned_0_6_pt
+    resnet50_pruned_0_7_pt
+    resnet_v1_50_pruned_0_38_tf
+    resnet_v1_50_pruned_0_65_tf
+    vgg_16_pruned_0_43_tf
+    vgg_16_pruned_0_5_tf
 
 1, compile
 
@@ -231,27 +248,6 @@ I0317 08:48:06.028372  3276 process_result.hpp:24] r.index 328 sea urchin, r.sco
 I0317 08:48:06.028479  3276 process_result.hpp:24] r.index 997 bolete, r.score 0.00015813
 
 
-    sample : ./test_jpeg_classification mobilenet_v1_1_0_224_pruned_0_11_tf sample_classification.jpg
-    output :
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I0119 16:53:43.730471 36141 demo.hpp:1183] batch: 0     image: sample_classification.jpg
-I0119 16:53:43.730620 36141 process_result.hpp:24] r.index 109 brain coral, r.score 0.998688
-I0119 16:53:43.730871 36141 process_result.hpp:24] r.index 973 coral reef, r.score 0.000709243
-I0119 16:53:43.730967 36141 process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 5.82182e-05
-I0119 16:53:43.731100 36141 process_result.hpp:24] r.index 363 armadillo, r.score 5.82182e-05
-I0119 16:53:43.731185 36141 process_result.hpp:24] r.index 997 bolete, r.score 4.53404e-05
-
-
-    sample : ./test_jpeg_classification mobilenet_v1_1_0_224_pruned_0_12_tf sample_classification.jpg
-    output :
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I0119 16:45:14.966674 36124 demo.hpp:1183] batch: 0     image: sample_classification.jpg
-I0119 16:45:14.969470 36124 process_result.hpp:24] r.index 109 brain coral, r.score 0.998743
-I0119 16:45:15.005535 36124 process_result.hpp:24] r.index 611 jigsaw puzzle, r.score 0.000709282
-I0119 16:45:15.005763 36124 process_result.hpp:24] r.index 973 coral reef, r.score 0.00026093
-I0119 16:45:15.005896 36124 process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 7.47577e-05
-I0119 16:45:15.006073 36124 process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 3.53131e-05
-
     sample : ./test_jpeg_classification mobilenet_v2_1_0_224_tf sample_classification.jpg
     output :
 WARNING: Logging before InitGoogleLogging() is written to STDERR
@@ -366,28 +362,6 @@ I0317 08:52:08.901548  3289 process_result.hpp:24] r.index 973 coral reef, r.sco
 I0317 08:52:08.901666  3289 process_result.hpp:24] r.index 997 bolete, r.score 2.74942e-05
 I0317 08:52:08.901777  3289 process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 3.72093e-06
 I0317 08:52:08.901969  3289 process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 1.06607e-06
-
-
-    sample : ./test_jpeg_classification vgg_16_pruned_0_43_tf sample_classification.jpg
-    output :
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I0119 16:55:58.261140 36158 demo.hpp:1183] batch: 0     image: sample_classification.jpg
-I0119 16:55:58.261264 36158 process_result.hpp:24] r.index 109 brain coral, r.score 0.995878
-I0119 16:55:58.261425 36158 process_result.hpp:24] r.index 973 coral reef, r.score 0.00406993
-I0119 16:55:58.262641 36158 process_result.hpp:24] r.index 997 bolete, r.score 1.29537e-05
-I0119 16:55:58.262756 36158 process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 1.29537e-05
-I0119 16:55:58.262906 36158 process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 1.29537e-05
-  
-
-    sample : ./test_jpeg_classification vgg_16_pruned_0_5_tf sample_classification.jpg
-    output :
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I0119 16:57:23.230478 36162 demo.hpp:1183] batch: 0     image: sample_classification.jpg
-I0119 16:57:23.230770 36162 process_result.hpp:24] r.index 109 brain coral, r.score 0.996567
-I0119 16:57:23.230961 36162 process_result.hpp:24] r.index 973 coral reef, r.score 0.00317185
-I0119 16:57:23.231096 36162 process_result.hpp:24] r.index 997 bolete, r.score 9.57817e-05
-I0119 16:57:23.231224 36162 process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 7.45948e-05
-I0119 16:57:23.231400 36162 process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 3.52361e-05
 
 
     sample : ./test_jpeg_classification vgg_19_tf sample_classification.jpg
@@ -628,6 +602,197 @@ I0329 01:48:05.891245 26701 process_result.hpp:24] r.index 1 blue, r.score 0.132
 I0329 01:48:05.891343 26701 process_result.hpp:24] r.index 5 red, r.score 0.000373032
 I0329 01:48:05.891431 26701 process_result.hpp:24] r.index 4 green, r.score 0.0003292
 I0329 01:48:05.891531 26701 process_result.hpp:24] r.index 3 gray, r.score 0.000290518
+
+    sample : ./test_jpeg_classification inception_v3_pruned_0_2_tf sample_classification.jpg
+    output :
+I1119 15:04:47.884323 290748 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.989995
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00404588
+process_result.hpp:24] r.index 328 sea urchin, r.score 0.000376326
+process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000228253
+process_result.hpp:24] r.index 108 sea anemone, anemone, r.score 0.000177764
+
+    sample : ./test_jpeg_classification inception_v3_pruned_0_4_tf sample_classification.jpg
+    output :
+I1119 14:55:55.822362 286685 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.994994
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00132014
+process_result.hpp:24] r.index 108 sea anemone, anemone, r.score 0.000122792
+process_result.hpp:24] r.index 327 starfish, sea star, r.score 0.000108364
+process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 9.56305e-05
+
+    sample : ./test_jpeg_classification inception_v3_pruned_0_3_pt sample_classification.jpg
+    output :
+I1119 15:16:37.959403 291968 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.987655
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00587281
+process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.00048207
+process_result.hpp:24] r.index 390 eel, r.score 0.000227714
+process_result.hpp:24] r.index 329 sea cucumber, holothurian, r.score 0.000227714
+
+    sample : ./test_jpeg_classification inception_v3_pruned_0_4_pt sample_classification.jpg
+    output :
+I1119 15:07:45.207545 287901 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.99754
+process_result.hpp:24] r.index 973 coral reef, r.score 0.0019257
+process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 4.52882e-05
+process_result.hpp:24] r.index 328 sea urchin, r.score 4.52882e-05
+process_result.hpp:24] r.index 108 sea anemone, anemone, r.score 4.52882e-05
+
+
+    sample : ./test_jpeg_classification inception_v3_pruned_0_5_pt sample_classification.jpg
+    output :
+I1119 15:20:36.804108 292375 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.996264
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00317089
+process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 7.45722e-05
+process_result.hpp:24] r.index 390 eel, r.score 4.52303e-05
+process_result.hpp:24] r.index 108 sea anemone, anemone, r.score 4.52303e-05
+
+    sample : ./test_jpeg_classification inception_v3_pruned_0_6_pt sample_classification.jpg
+    output :
+I1119 15:11:50.492993 288305 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.99779
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00192619
+process_result.hpp:24] r.index 108 sea anemone, anemone, r.score 5.81658e-05
+process_result.hpp:24] r.index 328 sea urchin, r.score 3.52794e-05
+process_result.hpp:24] r.index 327 starfish, sea star, r.score 3.52794e-05
+    
+    sample : ./test_jpeg_classification mobilenet_v1_1_0_224_pruned_0_11_tf sample_classification.jpg
+    output :
+I1119 14:52:46.520598 289549 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.998688
+process_result.hpp:24] r.index 973 coral reef, r.score 0.000709243
+process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 5.82182e-05
+process_result.hpp:24] r.index 363 armadillo, r.score 5.82182e-05
+process_result.hpp:24] r.index 997 bolete, r.score 4.53404e-05
+    
+    sample : ./test_jpeg_classification mobilenet_v1_1_0_224_pruned_0_12_tf sample_classification.jpg
+    output :
+I1119 14:43:58.294860 285480 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.998743
+process_result.hpp:24] r.index 611 jigsaw puzzle, r.score 0.000709282
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00026093
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 7.47577e-05
+process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 3.53131e-05
+    
+    sample : ./test_jpeg_classification ofa_resnet50_baseline_pt sample_classification.jpg
+    output :
+I1119 15:24:06.235543 289514 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.865453
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00275455
+process_result.hpp:24] r.index 646 maze, labyrinth, r.score 0.00243088
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.00089427
+process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000696458
+    
+    sample : ./test_jpeg_classification ofa_resnet50_pruned_0_45_pt sample_classification.jpg
+    output :
+I1119 15:36:32.930680 293982 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.878346
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00316781
+process_result.hpp:24] r.index 646 maze, labyrinth, r.score 0.00169561
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.00132054
+process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000706834
+    
+    sample : ./test_jpeg_classification ofa_resnet50_pruned_0_60_pt sample_classification.jpg
+    output :
+I1119 15:28:06.838694 289919 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.87997
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00247165
+process_result.hpp:24] r.index 646 maze, labyrinth, r.score 0.00132298
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.000802429
+process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000624932
+    
+    sample : ./test_jpeg_classification ofa_resnet50_pruned_0_74_pt sample_classification.jpg
+    output :
+I1119 15:40:33.533044 294390 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.902281
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00223653
+process_result.hpp:24] r.index 646 maze, labyrinth, r.score 0.00135652
+process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 0.000932324
+process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000440399
+
+    sample : ./test_jpeg_classification resnet50_pruned_0_3_pt sample_classification.jpg
+    output :
+I1119 15:24:36.190034 292783 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.99653
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00192375
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.000551165
+process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000202762
+process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 9.57781e-05
+
+    sample : ./test_jpeg_classification resnet50_pruned_0_4_pt sample_classification.jpg
+    output :
+I1119 15:15:49.227962 288714 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.999525
+process_result.hpp:24] r.index 973 coral reef, r.score 0.000203372
+process_result.hpp:24] r.index 390 eel, r.score 5.8267e-05
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 5.8267e-05
+process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 4.53784e-05
+
+    sample : ./test_jpeg_classification resnet50_pruned_0_5_pt sample_classification.jpg
+    output :
+I1119 15:28:35.128738 293183 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.99903
+process_result.hpp:24] r.index 973 coral reef, r.score 0.000552548
+process_result.hpp:24] r.index 390 eel, r.score 9.60184e-05
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 9.60184e-05
+process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 3.53232e-05
+        
+    sample : ./test_jpeg_classification resnet50_pruned_0_6_pt sample_classification.jpg
+    output :
+I1119 15:19:56.840881 289114 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.998661
+process_result.hpp:24] r.index 973 coral reef, r.score 0.000709224
+process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 7.47516e-05
+process_result.hpp:24] r.index 390 eel, r.score 7.47516e-05
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 7.47516e-05
+
+    sample : ./test_jpeg_classification resnet50_pruned_0_7_pt sample_classification.jpg
+    output :
+I1119 15:32:33.034521 293583 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.988219
+process_result.hpp:24] r.index 973 coral reef, r.score 0.0051857
+process_result.hpp:24] r.index 390 eel, r.score 0.00148573
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.000901139
+process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 0.000701808
+
+    sample : ./test_jpeg_classification resnet_v1_50_pruned_0_38_tf sample_classification.jpg
+    output :
+I1119 15:00:48.497821 290349 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.957514
+process_result.hpp:24] r.index 973 coral reef, r.score 0.0175375
+process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 0.0136582
+process_result.hpp:24] r.index 390 eel, r.score 0.00184844
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.00184844
+
+    sample : ./test_jpeg_classification resnet_v1_50_pruned_0_65_tf sample_classification.jpg
+    output :
+I1119 14:51:58.162142 286282 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.995135
+process_result.hpp:24] r.index 973 coral reef, r.score 0.0031673
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.000550394
+process_result.hpp:24] r.index 997 bolete, r.score 0.000333831
+process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 0.000333831
+
+    sample : ./test_jpeg_classification vgg_16_pruned_0_43_tf sample_classification.jpg
+    output :
+I1119 14:56:47.145188 289949 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.995878
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00406993
+process_result.hpp:24] r.index 997 bolete, r.score 1.29537e-05
+process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 1.29537e-05
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 1.29537e-05
+
+    sample : ./test_jpeg_classification vgg_16_pruned_0_5_tf sample_classification.jpg
+    output :
+I1119 14:47:59.369518 285880 demo.hpp:1183] batch: 0 image: sample_classification.jpg
+process_result.hpp:24] r.index 109 brain coral, r.score 0.996567
+process_result.hpp:24] r.index 973 coral reef, r.score 0.00317185
+process_result.hpp:24] r.index 997 bolete, r.score 9.57817e-05
+process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 7.45948e-05
+process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.score 3.52361e-05
+
 
 Accuracy:
     ./test_accuracy_classification <model_name> <input_image_path> <output_filename>

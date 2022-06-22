@@ -37,8 +37,4 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=superpoint_tf-vck190-r2.5.0.tar.gz
   checksum: c1d2a3b5caa24e9a7fc6f7b6ecd5e786
-- name: superpoint_tf
-  type: xmodel
-- name: superpoint_tf
-  type: xmodel
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

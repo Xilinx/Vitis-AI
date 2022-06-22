@@ -38,22 +38,20 @@ def run_func():
     fp = open(filePath, "r")
     data1 = fp.readlines()
     fp.close()
-    for idx in range(r.shape[0]):
-        result = tf.math.top_k(r.numpy()[idx],5)
-        for k in range(5):
-            cnt = 0
-            for line in data1:
-                if cnt == result[1][k]:
-                    print("Top[%d] %f %s" % (k, result[0][k], (line.strip)("\n")))
-                    break
-                cnt = cnt + 1
+    result = tf.math.top_k(r,5)
+    for k in range(5):
+        cnt = 0
+        for line in data1:
+            if cnt == result[1][0][k]:
+                print("Top[%d] %f %s" % (k, result[0][0][k], (line.strip)("\n")))
+                break
+            cnt = cnt + 1
         
 def run_thread(cnt):
     for count in range(cnt, n_of_group, FLAGS.nthreads):
 
         r = model(x[0])[0]
-        for idx in range(r.shape[0]):
-            result = tf.math.top_k(r.numpy()[idx],5)
+        result = tf.math.top_k(r,5)
 
 def do_run():
     threads = []

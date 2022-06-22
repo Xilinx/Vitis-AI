@@ -27,21 +27,16 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg16_imagenet_224_224_30.96G_2.5.zip
   checksum: 670c321d87f0f485d95cde198aa487fc
-- name: tf_vgg16_imagenet_224_224_30.96G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg16_imagenet_224_224_30.96G_2.5_1.0_Z3.3.zip
-  checksum: 57ceaf5f646b94f731173f3d7b879f41
 - name: vgg_16_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: d8973162f8f58d3cfa08cc23b5fe4a6a
+  checksum: 0782049f21cc5b95aea82e1ccfde56f4
 - name: vgg_16_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_tf-vck190-r2.5.0.tar.gz
-  checksum: 0a140bb6dc4842c1b5a4c054e4ffda0f
+  checksum: f831568ad99e578cc7c9ca06ddd1437b
 - name: vgg_16_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

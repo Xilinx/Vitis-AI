@@ -94,25 +94,20 @@ def label_img_to_color(img):
 
 def run_func():
     r=model(data)
-    for i in range(r[0].shape[0]):
-        z = tf.squeeze(r[0][i])
-        y = tf.math.argmax(z.numpy(), axis=2)
-       
-        out = cv2.resize(y.numpy(), dsize=(W, H), interpolation=cv2.INTER_NEAREST)
-        color_mask = label_img_to_color(out)
-        color_mask = Image.fromarray(color_mask.astype(np.uint8)).convert('RGB')
-        color_mask.save(os.path.join(args.save_path, 'color_'+ images_run[0]))
-        print("[Info] output result image: %s/color_%s" % (args.save_path, images_run[0]))
+    z = tf.squeeze(r[0][0])
+    y = tf.math.argmax(z, axis=2)
+
+    out = cv2.resize(y.numpy(), dsize=(W, H), interpolation=cv2.INTER_NEAREST)
+    color_mask = label_img_to_color(out)
+    color_mask = Image.fromarray(color_mask.astype(np.uint8)).convert('RGB')
+    color_mask.save(os.path.join(args.save_path, 'color_'+ images_run[0]))
+    print("[Info] output result image: %s/color_%s" % (args.save_path, images_run[0]))
 
 def run_thread(cnt):
     for j in range(cnt, n_of_group_run, nthreads):
         r=model(data)
-        for i in range(r[0].shape[0]):
-            #z = r[0].numpy()
-            #z = np.squeeze(r[0][i])
-            #y = np.argmax(z, axis=2)
-            z = tf.squeeze(r[0][i])
-            y = tf.math.argmax(z.numpy(), axis=2)
+        z = tf.squeeze(r[0])
+        y = tf.math.argmax(z, axis=2)
            
 
 def do_run():

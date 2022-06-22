@@ -27,9 +27,14 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_personreid-res50_market1501_256_128_0.4_3.3G_2.5.zip
   checksum: d14e946b8e65633f9639ada8fea3a711
-- name: pt_personreid-res50_market1501_256_128_0.4_3.3G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_personreid-res50_market1501_256_128_0.4_3.3G_2.5_1.0_Z3.3.zip
-  checksum: 7dad41504d1e6243ca498f757ee6c620
+- name: personreid_res50_pruned_0_4_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid_res50_pruned_0_4_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
+  checksum: 47a9a892cbf93e475c5f0eaa39487642
+- name: personreid_res50_pruned_0_4_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid_res50_pruned_0_4_pt-vck190-r2.5.0.tar.gz
+  checksum: d2490159ba0a4e207f7889de456c7aff
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

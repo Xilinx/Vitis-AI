@@ -27,9 +27,14 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_inceptionv3_imagenet_299_299_0.4_6.8G_2.5.zip
   checksum: 0457ba3ae939157d133607b526eb3a09
-- name: pt_inceptionv3_imagenet_299_299_0.4_6.8G_2.5_1.0_Z3.3
-  type: float & quantized
-  board: CPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_inceptionv3_imagenet_299_299_0.4_6.8G_2.5_1.0_Z3.3.zip
-  checksum: ee0dfe648198be4fd8ad2469a6f7bc2e
+- name: inception_v3_pruned_0_4_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pruned_0_4_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
+  checksum: 87d11f0e36dc5c8517101829923358a7
+- name: inception_v3_pruned_0_4_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pruned_0_4_pt-vck190-r2.5.0.tar.gz
+  checksum: 4464b56433f70e71b84d03840d40ff34
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
