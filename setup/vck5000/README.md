@@ -19,7 +19,7 @@ We provide some scripts to help to automatically finish the VCK5000-PROD card se
 * For cloud DPU, Vitis AI 2.5 applies 2021.2 Tools/Platform/XRT/XRM.
 
 ~~~
-cd ./setup/alveo/
+cd ./setup/vck5000/
 source ./install.sh
 ~~~
 

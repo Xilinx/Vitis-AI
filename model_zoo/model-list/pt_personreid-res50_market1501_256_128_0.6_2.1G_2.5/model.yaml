@@ -37,4 +37,34 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid_res50_pruned_0_6_pt-vck190-r2.5.0.tar.gz
   checksum: b7113bbd4d809976450283191f494b6a
+- name: personreid_res50_pruned_0_6_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid_res50_pruned_0_6_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
+  checksum: dd6ce6a2b4a7c3467c3d7df46c259650
+- name: personreid_res50_pruned_0_6_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid_res50_pruned_0_6_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
+  checksum: e12315262477251ed95aae91c68e96b2
+- name: personreid_res50_pruned_0_6_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid_res50_pruned_0_6_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
+  checksum: 207e55ec5339dca41213641692186f04
+- name: personreid_res50_pruned_0_6_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid_res50_pruned_0_6_pt-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz
+  checksum: 287b53d872e305822cb70667779427f9
+- name: personreid_res50_pruned_0_6_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid_res50_pruned_0_6_pt-u50lv-DPUCAHX8H-r2.5.0.tar.gz
+  checksum: 4a69b19e4b21cd6109d164df66f7af4e
+- name: personreid_res50_pruned_0_6_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=personreid_res50_pruned_0_6_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
+  checksum: e5eb7557c73bfaff208c80073d5456dc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

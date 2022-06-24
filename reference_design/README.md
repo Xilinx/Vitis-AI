@@ -30,14 +30,14 @@ Please find the IP suits best based on the following tables.
     <td align="center">MPSoC</td>
     <td align="center">General purpose CNN inference 16nm DPU to support full Vitis AI ModelZoo. DPU core is fully built with FPGA programming logic. Support Vitis flow and Vivado flow on edge devices.</td>
     <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G.tar.gz">Download</a></td>
-    <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg338-dpu?tocId=~72l0MosWV8p9MbkDlnw8Q">PG338</a></td>
+    <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg338-dpu">PG338</a></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8G</td>
     <td align="center">VCK190</td>
     <td align="center">General purpose CNN inference 7nm DPU for ACAP platform to support full Vitis AI ModelZoo. DPU core is fully built with FPGA AIE cores and programming logic. Support Vitis flow on edge devices.</td>
     <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G.tar.gz">Download</a></td>
-    <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg389-dpucvdx8g/Introduction">PG389</a></td>
+    <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg389-dpucvdx8g">PG389</a></td>
   </tr>
 </tbody>
 </table>
@@ -66,7 +66,7 @@ Please find the IP suits best based on the following tables.
     <td align="center">DPUCADF8H</td>
     <td align="center">U200/U250</td>
     <td align="center">High throughput CNN inference 16nm DPU. Optimized with DDR. DPU core is fully built with FPGA programming logic. Support Xilinx shell integration.</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8H.tar.gz">Download</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H.tar.gz">Download</a></td>
     <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg400-dpucadf8h">PG400</a></td>
   </tr>
   <tr>

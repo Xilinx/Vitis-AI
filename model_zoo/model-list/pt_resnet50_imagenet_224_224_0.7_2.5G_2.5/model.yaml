@@ -37,4 +37,34 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pruned_0_7_pt-vck190-r2.5.0.tar.gz
   checksum: a103b133505933ef2415e17e644480ce
+- name: resnet50_pruned_0_7_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pruned_0_7_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
+  checksum: 693a3a687a654d89586fa909aa6b47ef
+- name: resnet50_pruned_0_7_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pruned_0_7_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
+  checksum: c66798ed33ffb3f1521caf4d388d5564
+- name: resnet50_pruned_0_7_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pruned_0_7_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
+  checksum: 0d87fb3ba81eee9ee1e4bbe2b4abbeab
+- name: resnet50_pruned_0_7_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pruned_0_7_pt-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz
+  checksum: 3b66f82d9fef07112c294db422b9ef75
+- name: resnet50_pruned_0_7_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pruned_0_7_pt-u50lv-DPUCAHX8H-r2.5.0.tar.gz
+  checksum: dca546adb6e61a39ce3d6473b26a01cf
+- name: resnet50_pruned_0_7_pt
+  type: xmodel
+  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pruned_0_7_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
+  checksum: 24e97b5662513c22741382e30d86264a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
