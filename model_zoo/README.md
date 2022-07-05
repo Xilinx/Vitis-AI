@@ -46,7 +46,8 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 
 ### Model Index
 
-- Computation in the table are counted as FLOPs
+- Computation OPS in the table are counted as FLOPs
+- Float & Quantized Accuracy unless otherwise specified, the default refers to top1 or top1/top5
 - Supported Tasks
     - [Classification](#Classification) 
     - [Detection](#Detection) 
@@ -62,7 +63,7 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 ## Classification
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy                 |                          Input Size                          |                  OPS                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | General                                                 | tf\_inceptionresnetv2\_imagenet\_299\_299\_26\.35G_2.5    |                           0\.8037                            |                           0\.7946                            |                           299\*299                           |                26\.35G                |
 | 2    | General                                                 | tf\_inceptionv1\_imagenet\_224\_224\_3G_2.5               |                           0\.6976                            |                           0\.6794                            |                           224\*224                           |                  3G                   |
@@ -130,7 +131,7 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 ## Detection
 <font size=2> 
 
-| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy                |                          Input Size                          |                  OPS                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | General                                                 | tf\_ssdmobilenetv1\_coco\_300\_300\_2\.47G_2.5            |                           0\.2080                            |                           0\.2100                            |                           300\*300                           |                2\.47G                 |
 | 2    | General                                                 | tf\_ssdmobilenetv2\_coco\_300\_300\_3\.75G_2.5            |                           0\.2150                            |                           0\.2110                            |                           300\*300                           |                3\.75G                 |
@@ -168,7 +169,7 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 ## Segmentation
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy               |                          Input Size                          |                  OPS                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | ADAS 2D Segmentation                                    | pt_ENet_cityscapes_512_1024_8.6G_2.5                      |                            0.6442                            |                            0.6315                            |                           512*1024                           |                 8.6G                  |
 | 2    | ADAS 2D Segmentation                                    | pt_SemanticFPN-resnet18_cityscapes_256_512_10G_2.5        |                            0.6290                            |                            0.6230                            |                           256*512                            |                  10G                  |
@@ -190,7 +191,7 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 ## NLP
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy               |                          Input Size                          |                  OPS                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
   | 1    | Question and Answering                                  | tf_bert-base_SQuAD_128_11.17G_2.5                         |                            0.8694                            |                            0.8656                            |                             128                              |                11.17G                 |
 | 2    | Sentiment Detection                                     | tf2_sentiment-detection_IMDB_500_32_53.3M_2.5             |                            0.8708                            |                            0.8695                            |                            500*32                            |                 53.3M                 |
@@ -202,7 +203,7 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 ## Text-OCR
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy                   |               Quantized Accuracy                |                          Input Size                          |                  OPS                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | Text Detection                                          | pt_textmountain_ICDAR_960_960_575.2G_2.5                  |                            0.8863                            |                            0.8851                            |                           960*960                            |                575.2G                 |
 | 2    | E2E OCR                                                 | pt_OCR_ICDAR2015_960_960_875G_2.5                         |                            0.6758                            |                            0.6776                            |                           960*960                            |                 875G                  |
@@ -212,7 +213,7 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 ## Surveillance
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy                 |                          Input Size                          |                  OPS                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | Face Recognition                                        | pt_facerec-resnet20_mixed_112_96_3.5G_2.5                 |                            0.9955                            |                            0.9947                            |                            112*96                            |                 3.5G                  |
 | 2    | Face Quality                                            | pt_face-quality_80_60_61.68M_2.5                          |                            0.1233                            |                            0.1258                            |                            80*60                             |                61.68M                 |
@@ -236,7 +237,7 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 ## Industrial-Vision-Robotics
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy                   |               Quantized Accuracy               |                          Input Size                          |                  OPS                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | Depth Estimation                                        | pt_fadnet_sceneflow_576_960_441G_2.5                      |                          EPE: 0.926                          |                          EPE: 1.169                          |                           576*960                            |                 359G                  |
 | 2    | Binocular depth estimation                              | pt_fadnet_sceneflow_576_960_0.65_154G_2.5                 |                          EPE: 0.823                          |                          EPE: 1.158                          |                           576*960                            |                 154G                  |
@@ -251,7 +252,7 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 ## Medical-Image-Enhancement
 <font size=2>
 
-| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy                |                          Input Size                          |                  OPS                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | Super Resolution                                        | tf_rcan_DIV2K_360_640_0.98_86.95G_2.5                     |            Set5 Y_PSNR : 37.640<br/>SSIM : 0.959             |           Set5 Y_PSNR : 37.2495<br/>SSIM : 0.9556            |                           360*640                            |                86.95G                 |
 | 2    | Super Resolution                                        | pt_SESR-S_DIV2K_360_640_7.48G_2.5                         | (Set5) PSNR/SSIM= 37.309/0.958<br/>(Set14) PSNR/SSIM= 32.894/ 0.911<br/>(B100)  PSNR/SSIM= 31.663/ 0.893<br/>(Urban100)  PSNR/SSIM = 30.276/0.908<br/> | (Set5) PSNR/SSIM= 36.813/0.954<br/>(Set14) PSNR/SSIM= 32.607/ 0.906<br/>(B100)  PSNR/SSIM= 31.443/ 0.889<br/>(Urban100)  PSNR/SSIM = 29.901/0.899<br/> |                           360*640                            |                 7.48G                 |
@@ -669,7 +670,7 @@ Measured with Vitis AI 2.5 and Vitis AI Library 2.5
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Versal` board with 96 AIEs running at 1250 MHz:
+The following table lists the performance number including end-to-end throughput and latency for each model on the `Versal` board with 192 AIEs running at 1250 MHz:
   
 
 | No\. | Model                                | GPU Model Standard Name                               | E2E throughput \(fps) <br/>Single Thread | E2E throughput \(fps) <br/>Multi Thread |
