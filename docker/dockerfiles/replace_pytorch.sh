@@ -44,7 +44,7 @@ eval "$(command conda 'shell.bash' 'hook' 2> /dev/null)"
 echo -e "\n#### Creating a new conda environment by cloning vitis-ai-pytorch and activate it..."
 sudo chmod 777 /opt/vitis_ai/conda 
 cd /scratch/
-wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_2.0.0.1103-02.tar.gz
+wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_2.5.0.1260-01.tar.gz
 tar -xzvf conda-channel.tar.gz
 source /opt/vitis_ai/conda/etc/profile.d/conda.sh
 conda create -n $1  --clone vitis-ai-pytorch  
