@@ -130,7 +130,7 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 | 59   | Car color classification                                | pt_vehicle-color-classification_color_224_224_3.63G_2.5   |                            0.9549                            |                            0.9549                            |                           224*224                            |                 3.63G                 |
 
 </font>
-Note: #30 is resnet_v1.5,  #33 & #44-#49 are resnet_v1,  #50-#54 are resnet-D.
+Note: #30 & #44-#49 are resnet_v1.5,  #33 is resnet_v1,  #50-#54 are resnet-D.
 <br>
 
 ## Detection
