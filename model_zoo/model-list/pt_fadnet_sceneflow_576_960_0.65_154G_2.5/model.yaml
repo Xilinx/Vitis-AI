@@ -37,11 +37,11 @@ files:
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_1_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
   checksum: 272c1d75d48abf42a275998f0181f797
-- name: FADNet_pruned_1_pt
+- name: FADNet_pruned_2_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_1_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 272c1d75d48abf42a275998f0181f797
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_2_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
+  checksum: bafaa3ed51cf3565b793b7c263010d6c
 - name: FADNet_pruned_0_pt
   type: xmodel
   board: vck190
