@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-#include <openssl/md5.h>
-
 #include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 
+#include "xir/util/tool_function.hpp"
 #include "vart/op_imp.h"
 #include "vart/runner_helper.hpp"
 #include "vitis/ai/env_config.hpp"
@@ -29,13 +28,7 @@ using namespace std;
 
 namespace {
 static std::string md5sum(const unsigned char* val, size_t size) {
-  std::vector<unsigned char> result((size_t)MD5_DIGEST_LENGTH, '0');
-  std::ostringstream str;
-  MD5(val, size, (unsigned char*)&result[0]);
-  for (const auto x : result) {
-    str << std::hex << std::setfill('0') << std::setw(2) << ((unsigned int)x);
-  }
-  return str.str();
+  return xir::get_md5_of_buffer(val, size);
 }
 
 struct DataOpImp : public vart::experimental::OpImpBase {

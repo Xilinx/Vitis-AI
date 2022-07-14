@@ -16,13 +16,13 @@
 
 #include <glog/logging.h>
 #include <google/protobuf/text_format.h>
-#include <openssl/md5.h>
 
 #include <fstream>
 #include <iomanip>
 #include <sstream>
 #include <vector>
 
+#include "xir/util/tool_function.hpp"
 #include "tools_extra_ops.hpp"
 #include "xir_graph_proto_v2.pb.h"
 static inline std::string xxd(const unsigned char* p, int size, int column,
@@ -47,13 +47,7 @@ static inline std::string xxd(const unsigned char* p, int size, int column,
 }
 
 static std::string md5sum(const std::string& val) {
-  std::vector<unsigned char> result((size_t)MD5_DIGEST_LENGTH, '0');
-  std::ostringstream str;
-  MD5((const unsigned char*)&val[0], val.size(), (unsigned char*)&result[0]);
-  for (const auto x : result) {
-    str << std::hex << std::setfill('0') << std::setw(2) << ((unsigned int)x);
-  }
-  return str.str();
+  return xir::get_md5_of_buffer((const unsigned char*)&val[0], val.size());
 }
 static std::string dump_string(const std::string& val, const std::string& md5) {
   std::ostringstream str;

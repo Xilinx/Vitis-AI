@@ -15,7 +15,6 @@
  */
 #include <glog/logging.h>
 #include <google/protobuf/message.h>
-#include <openssl/md5.h>
 #include <pybind11/pybind11.h>
 
 #include <chrono>
