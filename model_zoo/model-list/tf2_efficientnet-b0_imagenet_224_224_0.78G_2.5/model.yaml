@@ -16,17 +16,17 @@
 
 description: efficientnet-b0 classifier on ImageNet
 input size: 224*224
-float ops: 0.36G
+float ops: 0.78G
 task: classification
 framework: tensorflow 2.x
 prune: 'no'
 version: 2.5
 files:
-- name: tf2_efficientnet-b0_imagenet_224_224_0.36G_2.5
+- name: tf2_efficientnet-b0_imagenet_224_224_0.78G_2.5
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_efficientnet-b0_imagenet_224_224_0.36G_2.5.zip
-  checksum: 03d7a5e38525e6a15afd7690ee385b18
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_efficientnet-b0_imagenet_224_224_0.78G_2.5.zip
+  checksum: 897fa5f99caee4dac909e12c7c836375
 - name: efficientnet-b0_tf2
   type: xmodel
   board: zcu102 & zcu104 & kv260

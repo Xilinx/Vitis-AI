@@ -16,15 +16,15 @@
 
 description: Pre-Norm BERT Base for question answering on SQuADv1.1.
 input size: 128
-float ops: 11.17G
+float ops: 22.34G
 task: Question Answering
 framework: tensorflow
 prune: 'no'
 version: 2.5
 files:
-- name: tf_bert-base_SQuAD_128_11.17G_2.5
+- name: tf_bert-base_SQuAD_128_22.34G_2.5
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_bert-base_SQuAD_128_11.17G_2.5.zip
-  checksum: 0a9dc68c9234cc3ad7d51e1912bf3f03
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_bert-base_SQuAD_128_22.34G_2.5.zip
+  checksum: 652998100c6a0c04fcd604d27a739e58
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
