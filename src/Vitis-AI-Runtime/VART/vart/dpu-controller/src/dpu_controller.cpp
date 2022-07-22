@@ -26,28 +26,33 @@ DEF_ENV_PARAM_2(DPU_KERNEL_NAME, "unknown", std::string);
 DEF_ENV_PARAM_2(DPU_INSTANCE_NAME, "dpu0", std::string);
 
 namespace xir {
-static std::map<std::string, std::function<std::shared_ptr<DpuController>()>>
-    the_factory_methods;
+
+static std::map<std::string, std::function<std::shared_ptr<DpuController>()>>& get_factory_methods()
+{
+    static std::map<std::string, std::function<std::shared_ptr<DpuController>()>>
+        the_factory_methods;
+    return the_factory_methods;
+}
 
 void DpuController::registar(
     const std::string& name,
     std::function<std::shared_ptr<DpuController>()> m) {
-  auto it = the_factory_methods.begin();
+  auto it = get_factory_methods().begin();
   auto ok = false;
-  std::tie(it, ok) = the_factory_methods.emplace(std::make_pair(name, m));
+  std::tie(it, ok) = get_factory_methods().emplace(std::make_pair(name, m));
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_CONTROLLER))
       << "add factory method " << name;
   CHECK(ok);
 }
 
 std::shared_ptr<DpuController> DpuController::get_instance() {
-  CHECK(!the_factory_methods.empty());
-  auto ret = the_factory_methods.begin()->second();
+  CHECK(!get_factory_methods().empty());
+  auto ret = get_factory_methods().begin()->second();
   // one dpu controllers per sessions
   // each dpu controller has its own xrt_cu
   // xrt_cu shares the xrt_device_handle
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_CONTROLLER))
-      << "create dpu controller via " << the_factory_methods.begin()->first
+      << "create dpu controller via " << get_factory_methods().begin()->first
       << " ret= " << (void*)ret.get();
   return ret;
 }
