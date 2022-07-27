@@ -25,7 +25,7 @@ RUN . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && wget --progress=dot:mega -O xir-1.4.1-py37h20355c0_91.tar.bz2 ${CONDA_PACKAGE_PREFIX}xir-1.4.1-py37h20355c0_91.tar.bz2 \
     && wget --progress=dot:mega -O target_factory-1.4.1-h2914a11_84.tar.bz2 ${CONDA_PACKAGE_PREFIX}target_factory-1.4.1-h2914a11_84.tar.bz2 \
     && wget --progress=dot:mega -O unilog-1.4.1-h20355c0_82.tar.bz2 ${CONDA_PACKAGE_PREFIX}unilog-1.4.1-h20355c0_82.tar.bz2 \
-    && wget --progress=dot:mega -O vai_c_rnn-1.4.1-py36ha196a54_4.tar.bz2 ${CONDA_PACKAGE_PREFIX}vai_c_rnn-1.4.1-py36ha196a54_4.tar.bz2 \
+    && wget --progress=dot:mega -O vai_c_rnn-1.4.1-py36h32e1ea0_5.tar.bz2 ${CONDA_PACKAGE_PREFIX}vai_c_rnn-1.4.1-py36h32e1ea0_5.tar.bz2 \
     && wget --progress=dot:mega -O tf_nndct_lstm-1.4.1-py36h7564e9b_32.tar.bz2 ${CONDA_PACKAGE_PREFIX}tf_nndct_lstm-1.4.1-py36h7564e9b_32.tar.bz2 \
     && wget --progress=dot:mega -O pytorch_nndct_lstm-1.4.1-py36h7d579db_32.tar.bz2 ${CONDA_PACKAGE_PREFIX}pytorch_nndct_lstm-1.4.1-py36h7d579db_32.tar.bz2 \
     && conda index /scratch/conda-channel \
