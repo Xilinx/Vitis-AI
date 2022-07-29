@@ -452,7 +452,10 @@ class QatProcessor(object):
   def deployable_model(self, src_dir, used_for_xmodel=False):
     if used_for_xmodel:
       device = torch.device('cpu')
-      inputs = self._inputs.to(device)
+      if isinstance(self._inputs, torch.Tensor):
+        inputs = self._inputs.to(device)
+      elif isinstance(self._inputs, tuple) or isinstance(self._inputs, list):
+        inputs = type(self._inputs)(map(lambda x: x.to(device), self._inputs))
     else:
       device = self._device
       inputs = self._inputs
