@@ -548,10 +548,52 @@ void transform_mean_scale(int w, int h, const uint8_t* src, int8_t* dst,
       // vabdq_u8(in_u8, low_mean)), scale);
       return int8x16_t();
     } else if (scale < 0) {
-      // scale < 0
-      return vreinterpretq_s8_u8(
-          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), -scale),
-                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), -scale)));
+
+      switch (scale)
+      {
+      case -1:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), 1),
+                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), 1)));
+        break;
+      case -2:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), 2),
+                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), 2)));
+        break;
+      case -3:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), 3),
+                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), 3)));
+        break;
+      case -4:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), 4),
+                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), 4)));
+        break;
+      case -5:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), 5),
+                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), 5)));
+        break;
+      case -6:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), 6),
+                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), 6)));
+        break;
+      case -7:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), 7),
+                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), 7)));
+        break;
+      case -8:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), 8),
+                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), 8)));
+        break;
+      
+      }
+    }
     }
     // scale =0
     return vreinterpretq_s8_u8(
@@ -565,10 +607,51 @@ void transform_mean_scale(int w, int h, const uint8_t* src, int8_t* dst,
       return int8x16_t();
       // temp = vshlq_n_u8(vabdq_u8(in_u8, mean), scale);
     } else if (scale < 0) {
-      // scale < 0
-      return vreinterpretq_s8_u8(
-          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean), -scale),
-                   vshrq_n_u8(vqsubq_u8(mean, in_u8), -scale)));
+
+      switch (scale)
+      {
+      case -1:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean), 1),
+                   vshrq_n_u8(vqsubq_u8(mean, in_u8), 1)));
+        break;
+      case -2:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean), 2),
+                   vshrq_n_u8(vqsubq_u8(mean, in_u8), 2)));
+        break;
+      case -3:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean), 3),
+                   vshrq_n_u8(vqsubq_u8(mean, in_u8), 3)));
+        break;
+      case -4:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean), 4),
+                   vshrq_n_u8(vqsubq_u8(mean, in_u8), 4)));
+        break;
+      case -5:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean), 5),
+                   vshrq_n_u8(vqsubq_u8(mean, in_u8), 5)));
+        break;
+      case -6:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean), 6),
+                   vshrq_n_u8(vqsubq_u8(mean, in_u8), 6)));
+        break;
+      case -7:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean), 7),
+                   vshrq_n_u8(vqsubq_u8(mean, in_u8), 7)));
+        break;
+      case -8:
+        return vreinterpretq_s8_u8(
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean), 8),
+                   vshrq_n_u8(vqsubq_u8(mean, in_u8), 8)));
+        break;
+      
+      }
     }
     // scale =0
     return vreinterpretq_s8_u8(
