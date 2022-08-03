@@ -57,7 +57,15 @@ XrtBinStream::~XrtBinStream() {
 }
 void XrtBinStream::init_fd(const std::string filename) {
   fd_ = open(filename.c_str(), O_RDONLY | O_CLOEXEC);
-  CHECK_GT(fd_, 0) << ", open(" << filename << ") failed.";
+  //CHECK_GT(fd_, 0) << ", open(" << filename << ") failed.";
+  if(fd_ < 0) {
+    LOG(INFO) << "open(" << filename << ") failed.";
+    LOG(INFO) << "Please check your /etc/vart.conf\n"
+              << "Its format should be :\n    firmware: xx\n"
+              << "Example:\n"
+              << "    firmware: /run/media/mmcblk0p1/dpu.xclbin";
+    exit(0);
+  }
   data_ = mmap(NULL, get_size(fd_), PROT_READ, MAP_PRIVATE, fd_, 0);
   CHECK_NE(data_, MAP_FAILED) << "cannot mmap";
 }
