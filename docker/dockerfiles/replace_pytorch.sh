@@ -39,6 +39,11 @@ if [ -d "/usr/local/cuda" ]; then
   fi
 fi
 
+if [ -f "/home/vitis-ai-user/.condarc" ]; then
+    rm /home/vitis-ai-user/.condarc -f
+fi
+
+
 eval "$(command conda 'shell.bash' 'hook' 2> /dev/null)"
 
 echo -e "\n#### Creating a new conda environment by cloning vitis-ai-pytorch and activate it..."
@@ -47,7 +52,13 @@ cd /scratch/
 wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_2.5.0.1260-01.tar.gz
 tar -xzvf conda-channel.tar.gz
 source /opt/vitis_ai/conda/etc/profile.d/conda.sh
-conda create -n $1  --clone vitis-ai-pytorch  
+sudo conda env export -n vitis-ai-pytorch >/tmp/pytorch.yaml
+sed -i '/artifactory/d' /tmp/pytorch.yaml
+sed -i '/prefix/d' /tmp/pytorch.yaml
+sed -i '/torchvision/d' /tmp/pytorch.yaml
+sed -i 's/python-graphviz/graphviz/g' /tmp/pytorch.yaml
+conda config --env --append channels file:///scratch/conda-channel
+conda env create  -n $1 -f /tmp/pytorch.yaml -v
 if [ $? -eq 0 ]; then
   echo -e "\n#### New conda environment is created successfully."
 else
@@ -64,15 +75,23 @@ else
 fi
 
 echo -e "\n#### Removing original pytorch related packages ..."
-mamba uninstall -y pytorch torchvision pytorch_nndct
+mamba uninstall -y pytorch pytorch_nndct
+pip uninstall torchvision
 
 echo -e "\n#### Installing pytorch 1.9 packages ..."
 echo -e "\e[91m>>>> Edit this line of command to set the target version, refer to https://pytorch.org/get-started/previous-versions/ <<<<\e[m"
 #### Installing pytorch 1.7.1 packages ...torchvision==0.5.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html
-mamba install -y pytorch==1.9.0 torchvision==0.10.0 torchaudio==0.9.0 cudatoolkit=10.2 -c pytorch
-#conda install pytorch==1.8.1 torchvision==0.9.1 torchaudio==0.8.1 cudatoolkit=10.2 -c pytorch
-#conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 cudatoolkit=10.2 -c pytorch
-#conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.2 -c pytorch
+if [ -d "/usr/local/cuda" ]; then
+  mamba install -y pytorch==1.7.1 cudatoolkit=10.2 -c pytorch
+  pip install torchvision==0.8.2
+  #mamba install -y pytorch==1.9.1 cudatoolkit=10.2 -c pytorch
+  #pip install torchvision==0.10.1+cu102 -f https://download.pytorch.org/whl/torch_stable.html
+else
+  mamba install -y pytorch==1.7.1 cpuonly -c pytorch
+  pip install torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html
+  #mamba install -y pytorch==1.9.1 cpuonly -c pytorch
+  #pip install torchvision==0.10.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+fi
 
 if [ $? -eq 0 ]; then
   echo -e "\n#### Pytorch packages is replaced successfully."
