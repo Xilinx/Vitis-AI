@@ -3,6 +3,6 @@ Examples are meant to showcase features of Vitis AI, from simple inference to co
 
 # Examples
 
-   - [VART](../../../demo/VART/README.md)
-   - [Vitis AI Library](../../../demo/Vitis-AI-Library/README.md)
+   - [VART](./VART/README.md)
+   - [Vitis AI Library](./Vitis-AI-Library/README.md)
 
