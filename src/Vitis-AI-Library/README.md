@@ -127,7 +127,7 @@ If you encounter any path errors in running examples, check to see if you follow
 
 1. Select the model for your platform.  
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
-	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](../../models_zoo/model-list) to view all the models. Take [resnet50 yaml file](../../model_zoo/model-list/cf_resnet50_imagenet_224_224_7.7G_2.5/model.yaml) as an example.
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](../../model_zoo/model-list) to view all the models. Take [resnet50 yaml file](../../model_zoo/model-list/cf_resnet50_imagenet_224_224_7.7G_2.5/model.yaml) as an example.
 
 	* If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
 	```
