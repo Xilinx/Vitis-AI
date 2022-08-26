@@ -413,6 +413,7 @@ def filter_depthwise_conv2d(node, target):
   pad_limit = {}
   if DPUTargetHelper.has_alu_engine(target):
     alu_engine = DPUTargetHelper.get_alu_engine(target)
+    channel_parallel = alu_engine.channel_parallel
     if DPUTargetHelper.has_attr(alu_engine, "alu_limit"):
       alu_limit = alu_engine.alu_limit
       if alu_limit.kernel_size:

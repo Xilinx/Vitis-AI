@@ -30,13 +30,13 @@ __device__ void _fix_neuron_v2_device(const Real& src,int& res,
   //4: new RNN
   if(4==method){ //floor
     res = floor(res_real_);
-  }else if(2==method){  
+  }else if(2==method){  //half_up
     if(res_real_<0 && (res_real_-floor(res_real_))==0.5) {
       res = ceil(res_real_);
     }else{
       res = round(res_real_);
     }
-  }else if(3==method){ //half_up
+  }else if(3==method){ //std_round
     res = round(res_real_);
   }else if(5==method){
     if(res_real_<0 && (res_real_-floor(res_real_))==0.5) {
@@ -60,6 +60,22 @@ __device__ void _fix_neuron_v2_device(const Real& src,int& res,
     }
   }else if(7==method){ //ceil
     res = ceil(res_real_);
+  }else if(-1==method){ //half_even
+    if(res_real_<0 && (res_real_-floor(res_real_))==0.5) {
+      if(int(ceil(res_real_)) % 2 == 0){
+        res = ceil(res_real_);
+      }else{
+        res = floor(res_real_);
+      }
+    }else if(res_real_ - floor(res_real_) == 0.5) {
+      if( int(floor(res_real_)) % 2 == 0){
+        res = floor(res_real_);
+      }else{
+        res = ceil(res_real_);
+      }
+    }else{
+      res = round(res_real_);
+    }
   }
   res = res + zero_point;
   if (res > val_max) {

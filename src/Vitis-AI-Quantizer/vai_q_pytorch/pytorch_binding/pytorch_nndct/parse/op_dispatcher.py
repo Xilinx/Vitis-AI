@@ -37,7 +37,11 @@ class OpCreator(object):
     "_cast_Int": "cast_int",
     "add_": "add",
     "__interpolate": "_interpolate",
-    "floordiv": "floor_divide"
+    "floordiv": "div",
+    "ListConstruct": "list_construct",
+    "TupleConstruct": "tuple_construct",
+    "TupleIndex": "tuple_index",
+    "ScalarImplicit": "item"
   }
   
   def __init__(self):
@@ -517,7 +521,7 @@ class OpCreator(object):
       if isinstance(tensor.data, np.ndarray):
           tensor.from_ndarray(tensor.data)
       else:
-        np_data = np.array(tensor.data, dtype=np.float32)
+        np_data = np.array(tensor.data )
         tensor.from_ndarray(np_data)
       
     op.set_config('data', tensor.data.tolist())
@@ -905,7 +909,6 @@ class OpCreator(object):
     return op
 
   def norm(self, input, p, dim, keepdim):
-    assert p == 2, "Only Support L2 norm"
     op = TorchBaseOperation(NNDCT_OP.NORM, "norm")
     op.set_config("input", input)
     op.set_config("dim", dim)
@@ -922,19 +925,23 @@ class OpCreator(object):
     op.set_config("other", other)
     return op
 
-  def max(self, input, dim, keepdim):
+  def max(self, input, dim=None, keepdim=None):
     op = TorchPermuteInvarOp(NNDCT_OP.MAX, "max")
     # op = TorchBaseOperation(NNDCT_OP.MAX, "max")
     op.set_config("input", input)
-    op.set_config("dim", dim)
-    op.set_config("keepdim", bool(keepdim))
+    if dim is not None:
+      op.set_config("dim", dim)
+    if keepdim is not None:
+      op.set_config("keepdim", bool(keepdim))
     return op
 
-  def min(self, input, dim, keepdim):
+  def min(self, input, dim=None, keepdim=None):
     op = TorchPermuteInvarOp(NNDCT_OP.MIN, "min")
     op.set_config("input", input)
-    op.set_config("dim", dim)
-    op.set_config("keepdim", bool(keepdim))
+    if dim is not None:
+      op.set_config("dim", dim)
+    if keepdim is not None:
+      op.set_config("keepdim", bool(keepdim))
     return op
 
   def squeeze(self, input, dim=None):
@@ -1312,3 +1319,53 @@ class OpCreator(object):
     op.set_config("input_2", input_2)
     op.set_config("maxdisp", maxdisp)
     return op
+
+  def log_softmax(self, input, dim, dtype=None):
+    op = TorchLogSoftmax()
+    op.set_config("dim", dim)
+    return op
+
+  def list_construct(self, *args):
+    op = TorchBaseOperation(NNDCT_OP.LIST, NNDCT_OP.LIST)
+    if self.cur_node.in_tensors:
+      op.set_config("input", list(args))
+    else:
+      op.set_config("input", [])
+    return op
+
+  def tuple_construct(self, *args):
+    op = TorchBaseOperation(NNDCT_OP.TUPLE, NNDCT_OP.TUPLE)
+    if self.cur_node.in_tensors:
+      op.set_config("input", list(args))
+    else:
+      op.set_config("input", [])
+    return op
+
+  def tuple_index(self, input, index):
+    op = TorchBaseOperation(NNDCT_OP.TUPLE_INDEX, NNDCT_OP.TUPLE_INDEX)
+    op.set_config("input", input)
+    op.set_config("index", index)
+    return op
+
+  def device(self, input):
+    op = TorchBaseOperation(NNDCT_OP.DEVICE, ".device")
+    op.set_config("input", input)
+    return op
+
+  def dtype(self, input):
+    op = TorchBaseOperation(NNDCT_OP.DTYPE, ".dtype")
+    op.set_config("input", input)
+    return op
+
+  
+  #def remainder(self, input, other):
+  #  if (isinstance(input, Tensor) and input.is_real_tensor()) \
+  #   or (isinstance(other, Tensor) and other.is_real_tensor()):
+  #    op = TorchBinaryOp(NNDCT_OP.REMAINDER, "remainder")
+  #  else:
+  #    op = TorchBinaryOp(NNDCT_OP.SCALAR_REMAINDER, "%")
+
+  #  op.set_config("input", input)
+  #  op.set_config("other", other)
+  #  return op
+

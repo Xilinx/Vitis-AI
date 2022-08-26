@@ -197,7 +197,9 @@ class TorchBlock(GraphBase):
     
   def insert_node_with_idx(self, node, idx):
     node.owning_block = self
+    original_node = self._nodes[idx]
     self._nodes[idx] = node
+    self._graph.free_node(original_node)
 
 
 class TorchValue(object): 
@@ -262,7 +264,7 @@ class TorchValue(object):
   
   def convert_plain_value_to_tensor(self):
     self._is_plain_value = False
-    self._dtype = 'torch.float'
+    # self._dtype = self.dtype 
     self._type = 'Tensor'
 
   def is_none(self):

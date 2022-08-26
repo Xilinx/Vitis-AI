@@ -22,7 +22,7 @@ from scipy.stats import entropy
 from scipy import stats
 import torch
 from collections import Counter
-#import pytorch_nndct as py_nndct
+import pytorch_nndct as py_nndct
 from nndct_shared.utils import NndctOption, NndctScreenLogger
 from nndct_shared.base import NNDCT_OP
 from pytorch_nndct.nn import fake_quantize_per_tensor, fake_quantize_per_channel
@@ -38,33 +38,44 @@ _CONV_TRANSPOSE_TYPES = [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSP
 def create_quant_algo(tensor_type, quant_strategy_info, node):
   algo_config = quant_strategy_info
   quant_algo = None
-  
+  scale_type = algo_config.get("scale_type")
   granularity = algo_config.get("granularity")
+  
   if granularity == "per_channel":
     if (int(torch.__version__.split('.')[1]) < 5) and (int(torch.__version__.split('.')[0]) <= 1):
       NndctScreenLogger().error()(f"Torch should uptate to 1.5.0 or higher version if per_channel quantization")
-      raise
-    op_type = node.op.type
-    axis = None
-    #group = node.node_attr[node.op.AttrName.GROUP]
-    if tensor_type != "weights":
-      raise ValueError("Only support per_channel quantization for weights for now")
-    if op_type in _CONV_LINEAR_TYPES:
-      axis = 0
-    elif op_type in _CONV_TRANSPOSE_TYPES:
-      axis = 1
-    quant_algo = PerChannelQuantAlgo(algo_config, axis)
-  elif granularity == "per_tensor":
-    method = algo_config.get("method")
-    if method == "maxmin":
-      quant_algo = MaxMinQuantPerTensorAlgo(algo_config)
-    elif method == "percentile":
-      quant_algo = PercentileQuantPerTensorAlgo(algo_config)
-    elif method == "mse":
-      quant_algo = MSEQuantPerTensorAlgo(algo_config)
-    elif method == "entropy":
-      quant_algo = EntropyQuantPerTensorAlgo(algo_config)
-    
+      exit(2)
+  op_type = node.op.type
+  if scale_type == "float":
+    if granularity == "per_channel":
+      axis = None
+      #group = node.node_attr[node.op.AttrName.GROUP]
+      if op_type in _CONV_LINEAR_TYPES:
+        axis = 0
+      elif op_type in _CONV_TRANSPOSE_TYPES:
+        axis = 1
+      quant_algo = FloatQuantPerChannelAlgo(algo_config, axis)
+    elif granularity == "per_tensor":
+      method = algo_config.get("method")
+      if method == "maxmin":
+        quant_algo = MaxMinQuantPerTensorAlgo(algo_config)
+      elif method == "percentile":
+        quant_algo = PercentileQuantPerTensorAlgo(algo_config)
+      elif method == "mse":
+        quant_algo = MSEQuantPerTensorAlgo(algo_config)
+      elif method == "entropy":
+        quant_algo = EntropyQuantPerTensorAlgo(algo_config)
+  elif scale_type == "poweroftwo":
+    if granularity == "per_tensor":
+      quant_algo = PowerofTwoQuantPerTensorAlgo(algo_config, op_type)
+    elif granularity == "per_channel":
+      axis = None
+      #group = node.node_attr[node.op.AttrName.GROUP]
+      if op_type in _CONV_LINEAR_TYPES:
+        axis = 0
+      elif op_type in _CONV_TRANSPOSE_TYPES:
+        axis = 1
+      quant_algo = PowerofTwoQuantPerChannelAlgo(algo_config, axis, op_type)
   return quant_algo
 
 # def algo_select(**algo_kwargs):
@@ -86,11 +97,10 @@ class UniformQuantAlgo(ABC):
     self._round_method = config.get("round_method")
     self._symmetric_mode = config.get("symmetric_mode")
     self._signed = config.get("signed", True)
-    self._granularity = config.get("granularity")
-    self._scale_type = config.get("scale_type")
     self._range_stat_method = config.get("calib_statistic_method", None)
     self._bitwidth =  config.get("bit_width")
     self._narrow_range = config.get("narrow_range")
+    self._method = config.get("method")
     self._scale = None
     self._zero_point = None
     self._float_max = None
@@ -213,120 +223,20 @@ class PerChannelQuantAlgo(UniformQuantAlgo):
       return fake_quantize_per_channel(input, 1.0/self._scale, self._zero_point,
                                        self._axis, self._quant_min, self._quant_max, method, inplace)
 
-  def calibrate(self, tensor):
-    with torch.no_grad():
-      #tensor = tensor.abs()
-      axis = self._axis if isinstance(self._axis, (list, tuple)) else [self._axis]
-      reduce_axis = []
-      for i in range(tensor.dim()):
-        if not i in axis:
-          reduce_axis.append(i)
-      #local_max = self.reduce_amax(tensor,axis=reduce_axis).detach()
-      local_max, local_min = self.reduce_min_max(tensor,axis=reduce_axis)
-      local_max = torch.squeeze(local_max)
-      local_min = torch.squeeze(local_min)
-      if self._symmetric_mode == "symmetric": 
-        local_max, local_min = self._get_float_max_min(local_max, local_min)
-      
-      if self._float_max is None or self._statistic_local:
-        self._float_max = local_max
-      else:
-        if local_max.shape != self._float_max.shape:
-          raise RuntimeError("max shape changed!")
-        self._float_max.copy_(torch.max(self._float_max, local_max).data)
-      
-      if self._float_min is None or self._statistic_local:
-        self._float_min = local_min
-      else:
-        if local_min.shape != self._float_min.shape:
-          raise RuntimeError("mix shape changed!")
-        self._float_min.copy_(torch.min(self._float_min, local_min).data)
-      
-      if self._statistic_local:
-        self.calib_scale(device=tensor.device)
-  
-  def _get_float_max_min(self, float_max, float_min):
-    if self._signed:
-      float_max = float_max.abs()
-      float_min = float_min.abs()
-      float_max_min = torch.stack((float_max, float_min), dim=0)
-      stack_max, _ = torch.max(float_max_min, dim=0)
-      stack_min = -stack_max
-      return stack_max, stack_min
-    else:
-      amin = float_min.min()
-      if amin >= 0:
-        return 0, float_max
-      else:
-        self._quant_max = int(2 ** (self._bitwidth - 1)) - 1
-        if not self._narrow_range:
-          self._quant_min = -int(2 ** (self._bitwidth - 1))
-        else:
-          self._quant_min = -int(2 ** (self._bitwidth - 1)) + 1
-      float_max = float_max.abs()
-      float_min = float_min.abs()
-      float_max_min = torch.stack((float_max, float_min), dim=0)
-      stack_max, _ = torch.max(float_max_min, dim=0)
-      stack_min = -stack_max
-      self._signed = True
-      return stack_max, stack_min
+  @abstractmethod
+  def calibrate(self, *args, **kwargs):
+    pass
 
   def act_scale_stats(self, param_array):
     pass
-
-  def calib_scale(self, device):
-    if self._symmetric_mode == "symmetric":
-      self._scale = self._float_max/self._quant_max
-      self._zero_point = torch.zeros(self._scale.shape[0], device=device).long()
-    else:
-      self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
-      self._zero_point = (-self._float_min/self._scale).round().long()
-  
+    
+  @abstractmethod
   def calib_global_statis(self, device):
-    #self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
-    #self._zero_point = [0]*len(self._scale)
-    self.calib_scale(device)
-
-  @staticmethod
-  def reduce_min_max(input, axis=None, keepdims=True):
-    with torch.no_grad():
-      o_max = input.detach().clone()
-      o_min = input.detach().clone()
-      if axis is None:
-        o_max = torch.max(o_max)
-        o_min = torch.min(o_min)
-      else:
-        if isinstance(axis, int):
-          o_max, _ = torch.max(o_max, dim=axis, keepdim=keepdims)
-          o_min, _ = torch.min(o_min, dim=axis, keepdim=keepdims)
-        else:
-          if isinstance(axis, tuple) and len(axis) > input.dim():
-            raise ValueError("Cannot reduce more axes than tensor's dim.")
-          for i in axis:
-            o_max, _ = torch.max(o_max, dim=i, keepdim=True)
-            o_min, _ = torch.min(o_min, dim=i, keepdim=True)
-          if not keepdims or o_max.numel() == 1:
-            o_max.squeeze_()
-            o_min.squeeze_()
-      return o_max, o_min
+    pass
   
-  @staticmethod
-  def reduce_amax(input, axis=None, keepdims=True):
-    with torch.no_grad():
-      output = input.abs()
-      if axis is None:
-        output = torch.max(output)
-      else:
-        if isinstance(axis, int):
-          output, _ = torch.max(output, dim=axis, keepdim=keepdims)
-        else:
-          if isinstance(axis, tuple) and len(axis) > input.dim():
-            raise ValueError("Cannot reduce more axes than tensor's dim.")
-          for i in axis:
-            output, _ = torch.max(output, dim=i, keepdim=True)
-          if not keepdims or output.numel() == 1:
-            output.squeeze_()
-      return output  
+  @abstractmethod
+  def calibrate(self, *args, **kwargs):
+    pass
     
   @property
   def scale(self):
@@ -359,6 +269,167 @@ class PerChannelQuantAlgo(UniformQuantAlgo):
   @float_min.setter
   def float_min(self, value):
     self._float_min = value
+
+class FloatQuantPerChannelAlgo(PerChannelQuantAlgo):
+  def __init__(self, config, axis):
+      super().__init__(config, axis)
+  
+  def calibrate(self, tensor):
+    with torch.no_grad():
+      #tensor = tensor.abs()
+      axis = self._axis if isinstance(self._axis, (list, tuple)) else [self._axis]
+      reduce_axis = []
+      for i in range(tensor.dim()):
+        if not i in axis:
+          reduce_axis.append(i)
+      #local_max = self.reduce_amax(tensor,axis=reduce_axis).detach()
+      local_max, local_min = self.reduce_min_max(tensor,axis=reduce_axis)
+      local_max = torch.squeeze(local_max)
+      local_min = torch.squeeze(local_min)
+      if self._symmetric_mode == "symmetric": 
+        local_max, local_min = self._get_float_max_min(local_max, local_min)
+      
+      if self._float_max is None or self._statistic_local:
+        self._float_max = local_max
+      else:
+        if local_max.shape != self._float_max.shape:
+          raise RuntimeError("max shape changed!")
+        self._float_max.copy_(torch.max(self._float_max, local_max).data)
+      
+      if self._float_min is None or self._statistic_local:
+        self._float_min = local_min
+      else:
+        if local_min.shape != self._float_min.shape:
+          raise RuntimeError("mix shape changed!")
+        self._float_min.copy_(torch.min(self._float_min, local_min).data)
+      
+      if self._statistic_local:
+        self.calib_scale(device=tensor.device)
+  
+  def calib_scale(self, device):
+    if self._symmetric_mode == "symmetric":
+      self._scale = self._float_max/self._quant_max
+      self._zero_point = torch.zeros(self._scale.shape[0], device=device).long()
+    else:
+      self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
+      self._zero_point = (-self._float_min/self._scale).round().long()
+  
+  def calib_global_statis(self, device):
+    self.calib_scale(device)
+  
+  @staticmethod
+  def reduce_min_max(input, axis=None, keepdims=True):
+    with torch.no_grad():
+      o_max = input.detach().clone()
+      o_min = input.detach().clone()
+      if axis is None:
+        o_max = torch.max(o_max)
+        o_min = torch.min(o_min)
+      else:
+        if isinstance(axis, int):
+          o_max, _ = torch.max(o_max, dim=axis, keepdim=keepdims)
+          o_min, _ = torch.min(o_min, dim=axis, keepdim=keepdims)
+        else:
+          if isinstance(axis, tuple) and len(axis) > input.dim():
+            raise ValueError("Cannot reduce more axes than tensor's dim.")
+          for i in axis:
+            o_max, _ = torch.max(o_max, dim=i, keepdim=True)
+            o_min, _ = torch.min(o_min, dim=i, keepdim=True)
+          if not keepdims or o_max.numel() == 1:
+            o_max.squeeze_()
+            o_min.squeeze_()
+      return o_max, o_min
+  
+  def _get_float_max_min(self, float_max, float_min):
+    if self._signed:
+      float_max = float_max.abs()
+      float_min = float_min.abs()
+      float_max_min = torch.stack((float_max, float_min), dim=0)
+      stack_max, _ = torch.max(float_max_min, dim=0)
+      stack_min = -stack_max
+      return stack_max, stack_min
+    else:
+      amin = float_min.min()
+      if amin >= 0:
+        return 0, float_max
+      else:
+        self._quant_max = int(2 ** (self._bitwidth - 1)) - 1
+        if not self._narrow_range:
+          self._quant_min = -int(2 ** (self._bitwidth - 1))
+        else:
+          self._quant_min = -int(2 ** (self._bitwidth - 1)) + 1
+      float_max = float_max.abs()
+      float_min = float_min.abs()
+      float_max_min = torch.stack((float_max, float_min), dim=0)
+      stack_max, _ = torch.max(float_max_min, dim=0)
+      stack_min = -stack_max
+      self._signed = True
+      return stack_max, stack_min
+    
+class PowerofTwoQuantPerChannelAlgo(PerChannelQuantAlgo):
+  def __init__(self, config, axis, node_type):
+    super().__init__(config, axis)
+    self._fix_pos = None
+    self._node_type = node_type
+  
+  def calibrate(self, tensor):
+    scope = 5
+    with torch.no_grad():
+      if self._method == "modal":
+          scope = 5
+      elif self._method == "maxmin":
+        scope = 1
+        
+      if (self._node_type in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB]):
+        scope = 1
+        
+      if self._round_method == "half_up":
+        mth = 2
+      elif self._round_method == "half_down":
+        mth = 6
+      elif self._round_method == "std_round":
+        mth = 3
+      elif self._round_method == "half_even":
+        mth = -1
+      
+      device = tensor.device
+      out_num = tensor.shape[self._axis]
+      Tbuffer = torch.empty_like(tensor).to(device)
+      self._fix_pos = torch.ones(out_num, dtype=torch.get_default_dtype()).to(device)
+        
+      self._calib_cnt = self._calib_cnt + 1
+      
+      py_nndct.nn.NndctDiffsFixPosChannel(
+            Tinput = tensor,
+            Tbuffer = Tbuffer,
+            Tfixpos = self._fix_pos,
+            axis = self._axis,
+            bit_width = self.bitwidth,
+            scope = scope,
+            method = mth)
+      
+      if self._bitwidth <= 8:
+        max_fp = NndctOption.nndct_max_fix_position.value
+        #self._fix_pos = min(max_fp, self._fix_pos)
+        self._fix_pos = torch.where(self._fix_pos.long()>max_fp, max_fp, self._fix_pos.long())
+      else:
+        #self._fix_pos = min(15, self._fix_pos)
+        self._fix_pos = torch.where(self._fix_pos.long()>15, 15, self._fix_pos.long())
+      
+      if self._statistic_local:
+        self.calib_scale(device=device)
+        
+  def calib_scale(self, device):
+    try:
+      #self._scale = 1.0/2**self._fix_pos if self._fix_pos > 0 else 2**(-self._fix_pos)
+      self._scale = torch.where(self._fix_pos.to(torch.float32)>0, 1.0/2**self._fix_pos.to(torch.float32), 2**(-self._fix_pos.to(torch.float32)))
+    except OverflowError as e:
+      print("{}".format(repr(e)))
+    self._zero_point = torch.zeros(self._scale.shape[0], device=device).long()
+    self._float_max = self._scale*self._quant_max
+  
+  def calib_global_statis(self, device):
+    self.calib_scale(device)
 
 class PerTensorQuantAlgo(UniformQuantAlgo):
   def __init__(self, config):
@@ -405,8 +476,8 @@ class PerTensorQuantAlgo(UniformQuantAlgo):
       scale = param_array[0].mean()
     elif self._range_stat_method == 'median':
       scale = np.median(param_array[0])
-    else:
-      raise ValueError("Only support max, mean and median scale calibration methond in float quantization")
+    elif self._range_stat_method == 'modal':
+      scale = stats.mode(param_array[0])[0][0]
     self._scale = scale
 
     zero_point = stats.mode(param_array[1])[0][0]
@@ -419,8 +490,8 @@ class PerTensorQuantAlgo(UniformQuantAlgo):
       float_max = param_array[2].mean()
     elif self._range_stat_method == 'median':
       float_max = np.median(param_array[2])
-    else:
-      raise ValueError("Only support max, mean and median max calibration methond in float quantization")
+    elif self._range_stat_method == 'modal':
+      float_max = stats.mode(param_array[2])[0][0]
     self._float_max = float_max
     
     return scale, zero_point, float_max
@@ -439,24 +510,21 @@ class MaxMinQuantPerTensorAlgo(PerTensorQuantAlgo):
 
   def calibrate(self, tensor):
     self._calib_cnt = self._calib_cnt + 1
-    if self._scale_type == "float":
-      tensor_max = torch.max(tensor)
-      tensor_min = torch.min(tensor)
-      if self._symmetric_mode =="symmetric":
-        new_max, new_min = self._get_float_max_min(tensor_max, tensor_min)
-      else:
-        new_max = tensor_max.item()
-        new_min = tensor_min.item()
-      if self._float_max is None or self._statistic_local:
-        self._float_max = new_max
-      else:
-        self._float_max = new_max if new_max > self._float_max else self._float_max
-      if self._float_min is None or self._statistic_local:
-        self._float_min = new_min
-      else:
-        self._float_min = new_min if new_min < self._float_min else self._float_min
-    elif self._scale_type == "poweroftwo":
-      raise ValueError("Not support power of two quantization method in maxmin per_tensor quantization")
+    tensor_max = torch.max(tensor)
+    tensor_min = torch.min(tensor)
+    if self._symmetric_mode =="symmetric":
+      new_max, new_min = self._get_float_max_min(tensor_max, tensor_min)
+    else:
+      new_max = tensor_max.item()
+      new_min = tensor_min.item()
+    if self._float_max is None or self._statistic_local:
+      self._float_max = new_max
+    else:
+      self._float_max = new_max if new_max > self._float_max else self._float_max
+    if self._float_min is None or self._statistic_local:
+      self._float_min = new_min
+    else:
+      self._float_min = new_min if new_min < self._float_min else self._float_min
     if self._statistic_local:
       self.calib_scale()
   
@@ -482,39 +550,32 @@ class HistogramQuantPerTensorAlgo(PerTensorQuantAlgo):
   def calibrate(self, tensor):
     self._calib_cnt = self._calib_cnt + 1
     device = tensor.device
-    if self._scale_type == "float":
-      if self._symmetric_mode == "symmetric":
-        self._get_histogram(tensor, self._symmetric_mode)
-        if self._statistic_local:
-          calib_hist = self._calib_hist.long().cpu().numpy()
-          calib_bin_edges = self._calib_bin_edges.cpu().numpy()
-          self.calib_scale(calib_hist, calib_bin_edges, device)
-      else:
-        raise ValueError("Only support symmetric quantization method in histogram-based method")
+    self._get_histogram(tensor, self._symmetric_mode)
+    if self._statistic_local:
+      calib_hist = self._calib_hist.long().cpu().numpy()
+      calib_bin_edges = self._calib_bin_edges.cpu().numpy()
+      self.calib_scale(calib_hist, calib_bin_edges, device)
   
   def _get_histogram(self, tensor, symmetric_mode):
     if torch.min(tensor) < 0:
       tensor = tensor.abs()
     tensor = tensor.float()
-    if symmetric_mode == "symmetric":
-      with torch.no_grad():
-        tensor_max, _ = self._get_float_max_min(torch.max(tensor), torch.min(tensor))
-        tensor_min = 0.0
+    with torch.no_grad():
+      tensor_max, _ = self._get_float_max_min(torch.max(tensor), torch.min(tensor))
+      tensor_min = 0.0
+      
+      if (self._calib_bin_edges is None and self._calib_hist is None) or self._statistic_local:
+        self._calib_hist = torch.histc(tensor, bins=self._num_bins, min=tensor_min, max=tensor_max)
+        self._calib_bin_edges = torch.linspace(tensor_min, tensor_max, self._num_bins+1, device=tensor.device)
+      else:
+        if tensor_max > self._calib_bin_edges[-1]:
+          width = self._calib_bin_edges[1] - self._calib_bin_edges[0]
+          self._num_bins = int((tensor_max/width).ceil().item())
+          self._calib_bin_edges = torch.arange(0, tensor_max+width, width, device=tensor.device)
         
-        if (self._calib_bin_edges is None and self._calib_hist is None) or self._statistic_local:
-          self._calib_hist = torch.histc(tensor, bins=self._num_bins, min=tensor_min, max=tensor_max)
-          self._calib_bin_edges = torch.linspace(tensor_min, tensor_max, self._num_bins+1, device=tensor.device)
-        else:
-          if tensor_max > self._calib_bin_edges[-1]:
-            width = self._calib_bin_edges[1] - self._calib_bin_edges[0]
-            self._num_bins = int((tensor_max/width).ceil().item())
-            self._calib_bin_edges = torch.arange(0, tensor_max+width, width, device=tensor.device)
-          
-          hist = torch.histc(tensor, bins=self._num_bins, min=0, max=self._calib_bin_edges[-1])
-          hist[:self._calib_hist.numel()] += self._calib_hist
-          self._calib_hist = hist
-    else:
-      raise ValueError("Only support symmetric quantization method in histogram-based method")
+        hist = torch.histc(tensor, bins=self._num_bins, min=0, max=self._calib_bin_edges[-1])
+        hist[:self._calib_hist.numel()] += self._calib_hist
+        self._calib_hist = hist
     
     return self._calib_hist, self._calib_bin_edges
   
@@ -686,74 +747,64 @@ class EntropyQuantPerTensorAlgo(HistogramQuantPerTensorAlgo):
     self._scale = calib_max/self._quant_max
     self._zero_point = 0
     self._float_max = calib_max
-    
-  # def calib_scale(self, calib_hist, calib_bin_edges, device):
-  #   def _normalize_distr(distr):
-  #     summ = distr.sum()
-  #     if summ != 0:
-  #       distr = distr/summ
-        
-  #   start_bin = NndctOption.nndct_entropy_start_bin.value
-  #   stride = NndctOption.nndct_entropy_stride.value
-    
-  #   bins = calib_hist[:]
-  #   bins[0] = bins[1]
-    
-  #   total_data = torch.sum(bins)
-    
-  #   divergences = []
-  #   arguments = []
-    
-  #   unsigned_bit = 0 if self._signed else 0
-  #   nbins = 1 << (self.bitwidth - 1 + unsigned_bit)
-    
-  #   starting = start_bin
-  #   stop = len(bins)
-  #   new_density_counts = torch.zeros(nbins, dtype=torch.float64, device=device)
-    
-  #   for i in range(starting, stop+1, stride):
-  #     new_density_counts.fill_(0)
-  #     space = torch.linspace(0, i, nbins+1).to(device)
-  #     digitized_space = torch.bucketize(torch.arange(i).to(device), space, right=True)-1
-  #     digitized_space[bins[:i] == 0] = -1
+
+class PowerofTwoQuantPerTensorAlgo(PerTensorQuantAlgo):
+  def __init__(self, config, node_type):
+    super().__init__(config)
+    self._fix_pos = None
+    self._node_type = node_type
+
+  def calibrate(self, tensor):
+    scope = 5
+    if self._method == "modal":
+      scope = 5
+    elif self._method == "maxmin":
+      scope = 1
       
-  #     for idx, digitized in enumerate(digitized_space):
-  #       if digitized.item() != -1:
-  #         new_density_counts[digitized.item()] += bins[idx]
+    if (self._node_type in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB]):
+      scope = 1
       
-  #     counter = Counter(digitized_space.cpu().detach().numpy())
-  #     for key, val in counter.items():
-  #       if key != -1:
-  #         new_density_counts[key] = new_density_counts[key]/val
-      
-  #     new_density = torch.zeros(i, dtype=torch.float64, device=device)
-  #     for idx, digitized in enumerate(digitized_space):
-  #       if digitized.item() != -1:
-  #         new_density[idx] = new_density_counts[digitized.item()]
-      
-  #     total_counts_new = torch.sum(new_density) + torch.sum(bins[i:])
-  #     _normalize_distr(new_density)
-      
-  #     #reference_density = torch.tensor(bins[:len(digitized_space)])
-  #     reference_density = bins[:len(digitized_space)].clone().detach()
-  #     reference_density[-1] += torch.sum(bins[i:])
-      
-  #     total_counts_old = torch.sum(reference_density)
-  #     if torch.round(total_counts_new) != total_data or torch.round(total_counts_old) != total_data:
-  #       raise RuntimeError("Count mismatch! total_counts_new={}, total_counts_old={}, total_data={}".format(
-  #           total_counts_new, total_counts_old, total_data))
-      
-  #     _normalize_distr(reference_density)
-      
-  #     ent = stats.entropy(reference_density.cpu(), new_density.cpu())
-  #     divergences.append(ent)
-  #     arguments.append(i)
+    if self._round_method == "half_up":
+      mth = 2
+    elif self._round_method == "half_down":
+      mth = 6
+    elif self._round_method == "std_round":
+      mth = 3
+    elif self._round_method == "half_even":
+      mth = -1
     
-  #   divergences = np.array(divergences)
-  #   last_argmin = len(divergences) - 1 - np.argmin(divergences[::-1])
-  #   #divergences =  torch.tensor(divergences).to(device)
-  #   #last_argmin = len(divergences) - 1 - torch.argmin(divergences[::-1]).item()
-  #   calib_max = calib_bin_edges[last_argmin*stride+starting]
-  #   calib_min = -calib_max
-  #   self._scale = (calib_max-calib_min)/(self._quant_max-self._quant_min)
-  #   self._zero_point = 0
+    device = tensor.device
+    Tbuffer = torch.empty_like(tensor).to(device)
+    Tfixpos = torch.tensor([1], dtype=torch.get_default_dtype()).to(device)
+      
+    self._calib_cnt = self._calib_cnt + 1
+    
+    py_nndct.nn.NndctDiffsFixPos(
+          Tinput = tensor,
+          Tbuffer = Tbuffer,
+          Tfixpos = Tfixpos,
+          bit_width = self.bitwidth,
+          range = scope,
+          method = mth)
+    
+    self._fix_pos = (int)(Tfixpos.item())
+    if self._bitwidth <= 8:
+      max_fp = NndctOption.nndct_max_fix_position.value
+      self._fix_pos = min(max_fp, self._fix_pos)
+    else:
+      self._fix_pos = min(15, self._fix_pos)
+    
+    if self._statistic_local:
+      self.calib_scale()
+  
+  def calib_scale(self):
+    try:
+      self._scale = 1.0/2**self._fix_pos if self._fix_pos > 0 else 2**(-self._fix_pos)
+    except OverflowError as e:
+      print("{}".format(repr(e)))
+    self._zero_point = 0
+    self._float_max = self._scale*self._quant_max
+    
+  def calib_global_statis(self, device):
+    #self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
+    self.calib_scale()

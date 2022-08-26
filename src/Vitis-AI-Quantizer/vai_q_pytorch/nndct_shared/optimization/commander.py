@@ -35,7 +35,8 @@ _POOL_TYPES = [NNDCT_OP.MAX_POOL, NNDCT_OP.ADAPTIVEAVGPOOL2D, NNDCT_OP.AVG_POOL]
 _CLE_TYPES = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D,\
               NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]
 _CONV_TYPES = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D,\
-              NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]
+              NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D, \
+              NNDCT_OP.CONV1D, NNDCT_OP.DEPTHWISE_CONV1D]
 _BN_TYPES = [NNDCT_OP.BATCH_NORM]
 #_CONV3D_TYPES = [NNDCT_OP.CONV3D, NNDCT_OP.CONVTRANSPOSE3D]
 
@@ -182,7 +183,7 @@ class OptimizeCommander(object):
     # do weight equalizing shift
     if NndctOption.nndct_wes_in_cle.value:
       equalized_conv = set([node for group in equalized_groups for node in group if node.op.type in _CLE_TYPES])
-      conv_nodes = set(self._graph.find_nodes_by_types(_CONV_TYPES))
+      conv_nodes = set(self._graph.find_nodes_by_types(_CLE_TYPES))
       
       wes_conv_nodes = list(conv_nodes - equalized_conv)
       wes_conv_nodes.sort(key=lambda x:x.idx)

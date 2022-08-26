@@ -56,7 +56,7 @@ else:
     ]
     
     with_cuda = False
-    #if torch.cuda.is_available() and "CUDA_HOME" in os.environ:
+    extra_cflags = ""
     if "CUDA_HOME" in os.environ:
       cuda_src_path = os.path.join(cwd, "../../../csrc/cuda")
       for name in os.listdir(cuda_src_path):
@@ -70,8 +70,22 @@ else:
       
       extra_include_paths.append(os.path.join(cwd, "../../../include/cuda"))
       with_cuda = None
+    elif "ROCM_HOME" in os.environ:
+      hip_src_path = os.path.join(cwd, "../../../csrc/cuda")
+      for name in os.listdir(hip_src_path):
+        if name.split(".")[-1] in ["cu", "cpp", "cc", "c"]:
+          source_files.append(os.path.join(hip_src_path, name))
+
+      cpp_src_path = os.path.join(cwd, "src/cuda")
+      for name in os.listdir(cpp_src_path):
+        if name.split(".")[-1] in ["cpp", "cc", "c"]:
+          source_files.append(os.path.join(cpp_src_path, name))
+
+      extra_include_paths.append(os.path.join(cwd, "../../../include/cuda"))
+      extra_cflags = os.environ.get('CPPFLAGS')
+      with_cuda = None
     else:
-      print("CUDA is not available, or CUDA_HOME not found in the environment " 
+      print("CUDA (HIP) is not available, or CUDA_HOME (ROCM_HOME) not found in the environment " 
           "so building without GPU support.")
       cpp_src_path = os.path.join(cwd, "src/cpu")
       for name in os.listdir(cpp_src_path):
@@ -84,6 +98,7 @@ else:
         sources=source_files,
         verbose=False,
         build_directory=lib_path,
+        extra_cflags=[extra_cflags],
         extra_include_paths=extra_include_paths,
         with_cuda=with_cuda,
         is_python_module=is_python_module)

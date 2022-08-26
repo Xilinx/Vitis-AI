@@ -52,9 +52,6 @@ class TORCHQuantizer(OriginBaseQuantizer):
                      output_dir,
                      quant_config,
                      is_lstm)
-    self._quant_model = None
-    self._bias_corr_loaded = False
-    self._finetuned_para_loaded = False
     if NndctOption.nndct_param_corr.value > 0:
       if self.quant_mode == 2:
         path = pathlib.Path(self.bias_corr_file)
@@ -115,6 +112,10 @@ command line option \"--nndct_param_corr\" to load it.')
     if isinstance(res.values, torch.Tensor):
       res_save = res
       res = res.values.data
+    
+    # Don't support quantizing multi-output
+    if isinstance(res,  (list, tuple)):
+      return res
       
     if res.dtype != torch.float32 and res.dtype != torch.double:
       NndctScreenLogger().warning_once(f'The tensor type of  {node.name} is {str(res.dtype)}. Only support float32/double quantization.')
@@ -224,6 +225,9 @@ command line option \"--nndct_param_corr\" to load it.')
     if isinstance(blob.values, torch.Tensor):
       blob_save = blob
       blob = blob.values.data
+
+    if isinstance(blob, (list, tuple)):
+      return blob
     
     if blob.dtype != torch.float32 and blob.dtype != torch.double:
       NndctScreenLogger().warning_once(f'The tensor type of  {node.name} is {str(blob.dtype)}. Only support float32/double quantization.')
@@ -539,28 +543,6 @@ Please check calibration with fast finetune is done or not.")
         exit(2)
       self.quant_model.load_state_dict(torch.load(self.param_file))
       self._finetuned_para_loaded = True
-
-  @property
-  def quant_model(self):
-    return self._quant_model
-
-  @quant_model.setter
-  def quant_model(self, quant_model):
-    self._quant_model = quant_model
-
-  @property
-  def fast_finetuned(self):
-    return self.quant_config['fast_finetuned']
- 
-  @fast_finetuned.setter
-  def fast_finetuned(self, val):
-    self.quant_config['fast_finetuned'] = val
-
-  @property
-  def bias_corrected(self):
-    return self.quant_config['bias_corrected']
- 
-  @bias_corrected.setter
-  def bias_corrected(self, val):
-    self.quant_config['bias_corrected'] = val
-
+      
+  def contain_channel_quantize(self):
+    return False

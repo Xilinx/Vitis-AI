@@ -19,10 +19,16 @@
 
 #include <math.h>
 #include <algorithm>
-#include <math_constants.h>
 #include "../../include/cuda/nndct_fix_kernels.cuh"
 #include "../../include/cuda/nndct_cu_utils.h"
 #include "../../include/cuda/nndct_cuda_math.h"
+
+#ifdef __HIP_PLATFORM_AMD__
+#define CUDART_INF_F            __int_as_float(0x7f800000)
+#define CUDART_INF              __longlong_as_double(0x7ff0000000000000ULL)
+#else
+#include <math_constants.h>
+#endif
 
 template<typename Dtype>
 __global__ static void _set(const int N, 
@@ -185,10 +191,13 @@ static void _vec_transform_reduce(const int dim,const Dtype* src, Dtype* dst,
     __syncthreads();
   }
 
-  // Reduce last warp. Threads implicitly synchronized within a warp.
+  // Reduce last warp.
   if (tid < warpSize) {
     for (int shift = warpSize; shift > 0; shift >>= 1) {
       sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
+#ifdef __HIP_PLATFORM_AMD__
+      __threadfence_block();
+#endif
     }
   }
   
@@ -228,16 +237,20 @@ static void _vec_transform_reduce_inplace(const int dim,Dtype* data,
     __syncthreads();
   }
 
-  // Reduce last warp. Threads implicitly synchronized within a warp.
+  // Reduce last warp.
   if (tid < warpSize) {
     for (int shift = warpSize; shift > 0; shift >>= 1) {
       sdata[tid] = op.Reduce(sdata[tid], sdata[tid + shift]);
+#ifdef __HIP_PLATFORM_AMD__
+      __threadfence_block();
+#endif
     }
   }
   
   // Output to vector dst.
-  if (tid == 0)
+  if (tid == 0){
     data[blockIdx.x] = op.PostReduce(sdata[0], data[blockIdx.x]);
+  }
 }
 
 template<EnumTransformReduce TransReduceType, typename Dtype>

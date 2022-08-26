@@ -19,8 +19,6 @@
 
 # import os
 # import sys
-from ipaddress import v4_int_to_packed
-from xml.dom import NotFoundErr
 import torch
 # from ..load_kernels import nndct_kernels
 from ..load_kernels import *
@@ -31,6 +29,7 @@ from nndct_shared.utils import NndctOption, NndctScreenLogger
 # from torch.utils.cpp_extension import load
 __all__ = ["NndctFixNeuron",
            "NndctDiffsFixPos",\
+           "NndctDiffsFixPosChannel",\
            "NndctSigmoidTableLookup",\
            "NndctSigmoidSimulation",\
            "NndctTanhTableLookup",\
@@ -132,6 +131,16 @@ def NndctDiffsFixPos(Tinput, Tbuffer, Tfixpos, bit_width=8, range=5, method=2):
   else:
     nndct_kernels.DiffsFixPos(Tinput, Tbuffer, Tfixpos, bit_width, range, method, device_id)
 
+def NndctDiffsFixPosChannel(Tinput, Tbuffer, Tfixpos, axis, bit_width=8, scope=5, method=2):
+  device_id = 1 if Tinput.device == torch.device("cpu") else 0
+  input_split = torch.split(Tinput, 1, dim=axis)
+  buffer_split = torch.split(Tbuffer, 1, dim=axis)
+  if support_onnx_export():
+    for i in range(len(input_split)):
+      torch.ops.vai.diffs_fix_pos(input_split[i], buffer_split[i], Tfixpos[i], bit_width, scope, method, device_id)
+  else:
+    for i in range(len(input_split)):
+      nndct_kernels.DiffsFixPos(input_split[i], buffer_split[i], Tfixpos[i], bit_width, scope, method, device_id)
 
 def NndctSigmoidTableLookup(Tinput, Ttable, Toutput, fragpos):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0

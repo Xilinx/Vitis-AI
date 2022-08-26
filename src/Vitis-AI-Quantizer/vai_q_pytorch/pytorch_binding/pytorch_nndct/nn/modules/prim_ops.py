@@ -146,9 +146,9 @@ class deephi_StridedSlice(_PrimModule):
       step_symbol.append(str(1))
 
     for i in range(len(start)):
-      start_symbol.append(str(start[i]))
-      end_symbol.append(str(end[i]))
-      step_symbol.append(str(step[i]))
+      start_symbol.append(str(int(start[i])))
+      end_symbol.append(str(int(end[i])))
+      step_symbol.append(str(int(step[i])))
     
     for i in range(len(start_symbol)):
       slice_symbol = break_symbol.join([start_symbol[i], end_symbol[i], step_symbol[i]])

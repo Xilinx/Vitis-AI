@@ -47,6 +47,7 @@ class QuantInfoMgr(NndctGraphHolder):
     if NndctOption.nndct_stat.value > 0:
       print('Quantization groups:')
       pp.pprint(self._QuantGroups)
+      print('Initialized quantization infos:')
       pp.pprint(self._quant_info)
 
     # check groups, only permit one quantizable node in one group in quant part
@@ -68,9 +69,9 @@ class QuantInfoMgr(NndctGraphHolder):
             findQuantizableNode = True
         elif node.op.type in ignored_list:
           isIgnored = True
-      if not findQuantizableNode and not isIgnored:
-        NndctScreenLogger().warning(f'No quantizable node is found in group, confirm no numerical calculation in the nodes:')
-        NndctScreenLogger().warning(f'{v}')
+      #if not findQuantizableNode and not isIgnored:
+      #  NndctScreenLogger().warning(f'No quantizable node is found in group, confirm no numerical calculation in the nodes:')
+      #  NndctScreenLogger().warning(f'{v}')
 
   def group_graph(self):
     QuantConfigerCommander.register(self, 'scan_commander')

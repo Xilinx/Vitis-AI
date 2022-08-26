@@ -186,6 +186,8 @@ class TorchParser(object):
         nndct_node.add_out_tensor(nndct_tensor)
 
     for ip in raw_node.flatten_inputs:
+      if ip.name is None:
+          continue
       full_name = get_full_name(node_scope, ip.name) 
       if self.cur_graph and self.cur_graph.is_tensor_in_graph(full_name):
         nndct_node.add_in_tensor(self.cur_graph.tensor(full_name))

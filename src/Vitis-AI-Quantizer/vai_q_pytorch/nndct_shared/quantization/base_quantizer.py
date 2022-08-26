@@ -27,6 +27,8 @@ from nndct_shared import utils as nndct_utils
 from nndct_shared.base import NNDCT_KEYS, NNDCT_OP
 from nndct_shared.utils import NndctScreenLogger, NndctOption
 from .quant_info import QuantInfoMgr
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
 
 
 class BaseQuantizer():
@@ -39,6 +41,7 @@ class BaseQuantizer():
     # initialization
     self.quant_mode = quant_mode
     self._quant_strategy_info = quant_strategy_info
+    self._quant_model = None
     self.bitwidth_w = quant_strategy_info['weights']['bit_width']
     self.bitwidth_a = quant_strategy_info['activation']['bit_width']
     self.mix_bit = quant_strategy_info['mix_bit']
@@ -52,6 +55,8 @@ class BaseQuantizer():
     self.rnn_front_end = False
     self.lstm = False
     self.bias_corr = None
+    self._bias_corr_loaded = False
+    self._finetuned_para_loaded = False
     if NndctOption.nndct_param_corr.value > 0:
       self.bias_corr = {}
     self.bias_corr_file = '/'.join([output_dir, 'bias_corr.pth'])
@@ -95,7 +100,24 @@ class BaseQuantizer():
       if self.quant_mode in [1, 3]:
         self.init_quant_config()
       if self.quant_mode > 1:
+        # param/output/input names 
+        paramBak = self._QuantInfo['param'].keys()
+        outputBak = self._QuantInfo['output'].keys()
+        inputBak = self._QuantInfo['input'].keys()
         self.load_quant_config()
+        # check node names in loaded quant_info.json are all the same as those in test mode
+        if (paramBak != self._QuantInfo['param'].keys() or
+            outputBak != self._QuantInfo['output'].keys() or
+            inputBak != self._QuantInfo['input'].keys()):
+          NndctScreenLogger().error(f"Node name mismatch is found when \
+loading quantization steps of tensors. \
+Please make sure Vai_q_pytorch version and pytorch version for test mode \
+are the same as those in calibration (or QAT training) mode.") 
+          #exit(2)
+        if NndctOption.nndct_stat.value > 0:
+          print('Loaded quantization infos:')
+          pp.pprint(self._QuantInfo)
+          
       
       # initialize param correction
       self.init_param_correction()
@@ -207,6 +229,30 @@ Please check calibration is done or not.")
   def weight_correction(self):
     return self.weight_corr
 
+  @property
+  def quant_model(self):
+    return self._quant_model
+
+  @quant_model.setter
+  def quant_model(self, quant_model):
+    self._quant_model = quant_model
+
+  @property
+  def fast_finetuned(self):
+    return self.quant_config['fast_finetuned']
+ 
+  @fast_finetuned.setter
+  def fast_finetuned(self, val):
+    self.quant_config['fast_finetuned'] = val
+
+  @property
+  def bias_corrected(self):
+    return self.quant_config['bias_corrected']
+ 
+  @bias_corrected.setter
+  def bias_corrected(self, val):
+    self.quant_config['bias_corrected'] = val
+
 class OriginBaseQuantizer(BaseQuantizer):
 
   def get_quant_config(self, name, real_value=True, tensor_type='output'):
@@ -290,9 +336,4 @@ class NewBaseQuantizer(BaseQuantizer):
     quant_algo = self._QuantAlgo[tensor_type].get(name, None)
     return quant_algo
 
-  # def set_quant_algo(self, name, algo, tensor_type='output'):
-  #   if (tensor_type == 'output' and 
-  #       name not in self._QuantInfo[tensor_type].keys()):
-  #     name = self.configer.quant_output(name).name
-  #   self._QuantAlgo[tensor_type][name]=algo
 

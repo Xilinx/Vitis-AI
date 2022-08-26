@@ -132,7 +132,7 @@ class QConfigBase(metaclass=ABCMeta):
         self._qconfig = copy.deepcopy(self._default_qconfig)
 
     @abstractmethod
-    def parse_bit_width(self, name, key, config_value):
+    def parse_bit_width(self, name, key, config_value, config_use):
         pass
 
     def parse_config_file(self, config_file: Optional[str], bit_width_w = None, bit_width_a = None, mix_bit = None):
@@ -153,7 +153,7 @@ class QConfigBase(metaclass=ABCMeta):
         self._keywords_legel(json_config)
         self._nndct_switch_option(json_config)
         self._qconfig['target_device'] = json_config['target_device']
-        self._qconfig['quantizable_data_type'] = json_config['quantizable_data_type']
+        #self._qconfig['quantizable_data_type'] = json_config['quantizable_data_type']
         self.set_tensor_quant_config(json_config, self._qconfig)
         self.set_layer_quant_config(json_config, self._qconfig)
         
@@ -170,39 +170,9 @@ class QConfigBase(metaclass=ABCMeta):
         if mix_bit:
             if self._qconfig['mix_bit'] != mix_bit:
                 NndctScreenLogger().warning(f"Mix_bit parameter in configuration file is different from that passed from torch_quantizer api, use mix_bit parameter in configuration file")
-            
-        # if bit_width_w:
-        #     self._qconfig['weights']['bit_width'] = bit_width_w
-        #     self._qconfig['bias']['bit_width'] = bit_width_w
-        # if bit_width_a:
-        #     self._qconfig['activation']['bit_width'] = bit_width_a
-        #     self._qconfig['input']['bit_width'] = bit_width_a
-        # if mix_bit:
-        #     self._qconfig['mix_bit'] = mix_bit
-        
-        # for name, config in json_config.items():
-        #     if name == 'weights' or name == 'bias' or name == 'activation' or name == 'input':
-        #         for key, key_config in config.items():
-        #             if key == 'bit_width':
-        #                 self.parse_bit_width(name, key, key_config)
-        #             elif key in self._legal_qconfigs[name].keys():
-        #                 if key_config in self._legal_qconfigs[name][key]:
-        #                     self._qconfig[name][key] = key_config
-        #                 else:
-        #                     raise TypeError("The {key} configuration of {name} should be in the list {self._legal_qconfigs[name][key]}")
-        #             else:
-        #                 self._qconfig[name][key] = key_config
-        #     else:
-        #         if name in self._legal_qconfigs.keys():
-        #             if config in self._legal_qconfigs[name]:
-        #                 self._qconfig[name] = config
-        #             else:
-        #                 raise TypeError("The {name} configuration should be in the list {self._legal_qconfigs[name]}")
-        #         else:
-        #             self._qconfig[name] = config
         
         self._compute_q_maxmin()
-        #self._qconfig_handle_conflict()
+        self._qconfig_handle_conflict()
     
     @staticmethod
     def _keywords_legel(json_configs):
@@ -304,7 +274,7 @@ class QConfigBase(metaclass=ABCMeta):
             q_config = {}
         overall_quant_config = json_configs.get("overall_quantize_config", None)
         if overall_quant_config:
-            for tensor_type in json_configs["quantizable_data_type"]:
+            for tensor_type in q_config["quantizable_data_type"]:
                 self._map_tensor_type_config(tensor_type, overall_quant_config, q_config)
         tensor_quant_configs = json_configs.get("tensor_quantize_config", None)
         if tensor_quant_configs:
@@ -321,7 +291,7 @@ class QConfigBase(metaclass=ABCMeta):
                     layer_tensor_types = layer_config.get('quantizable_data_type')
                     nndct_layer_config = {'quantizable_data_type':layer_tensor_types}
                     for tensor_type in nndct_layer_config['quantizable_data_type']:
-                        nndct_layer_config[tensor_type] = copy.deepcopy(self._default_qconfig[tensor_type])
+                        nndct_layer_config[tensor_type] = copy.deepcopy(self._qconfig[tensor_type])
                     
                     self.set_tensor_quant_config(layer_config, nndct_layer_config)
                     #q_config['layer_type_config'].append(nndct_layer_config)
@@ -331,44 +301,82 @@ class QConfigBase(metaclass=ABCMeta):
                     layer_tensor_types = layer_config.get('quantizable_data_type')
                     nndct_layer_config = {'quantizable_data_type':layer_tensor_types}
                     for tensor_type in nndct_layer_config['quantizable_data_type']:
-                        nndct_layer_config[tensor_type] = copy.deepcopy(self._default_qconfig[tensor_type])
+                        nndct_layer_config[tensor_type] = copy.deepcopy(self._qconfig[tensor_type])
                     self.set_tensor_quant_config(layer_config, nndct_layer_config)
                     #q_config['layer_type_config'].append(nndct_layer_config)
                     q_config['layer_name_config'][nndct_layer_name] = nndct_layer_config
     
-    @staticmethod
-    def _map_tensor_type_config(tensor_type, export_config, q_config):
+    def _map_tensor_type_config(self, tensor_type, export_config, q_config):
         if q_config.get(tensor_type, None) is None:
             q_config[tensor_type] = {}
         config_to_use = q_config[tensor_type]
-        q_config[tensor_type] = QConfigBase._generate_config_from_export(tensor_type, export_config, config_to_use)
+        q_config[tensor_type] = self._generate_config_from_export(tensor_type, export_config, config_to_use)
     
-    @staticmethod
-    def _generate_config_from_export(tensor_type, export_config, config_to_use):
-        if export_config.get('bit_width', None) and isinstance(export_config.get('bit_width', None), int):
-            config_to_use['bit_width'] = export_config.get('bit_width')
-        if (export_config.get('method', None)) and \
-            (export_config['method'] in QConfigBase._legal_qconfigs[tensor_type]['method']):
-            config_to_use['method'] = export_config.get('method')        
-        if (export_config.get('round_mode', None)) and \
-            (export_config['round_mode'] in QConfigBase._legal_qconfigs[tensor_type]['round_method']):
-            config_to_use['round_method'] = export_config.get('round_mode')
-        if (export_config.get('scale_type', None)) and \
-            (export_config['scale_type'] in QConfigBase._legal_qconfigs[tensor_type]['scale_type']):
-            config_to_use['scale_type'] = export_config.get('scale_type')
+    def _generate_config_from_export(self, tensor_type, export_config, config_to_use):
+        if export_config.get('bit_width', None):
+            self.parse_bit_width(tensor_type, 'bit_width', export_config.get('bit_width'), config_to_use)
+            #config_to_use['bit_width'] = export_config.get('bit_width')
+            
+        if (export_config.get('method', None)):
+            if (export_config['method'] in self._legal_qconfigs[tensor_type]['method']):
+                config_to_use['method'] = export_config.get('method')
+            else:
+                method_legels = self._legal_qconfigs[tensor_type]['method']
+                NndctScreenLogger().error(f"The method of {tensor_type} should be in the list {method_legels}")
+                exit(2)
+                
+        if (export_config.get('round_mode', None)):
+            if (export_config['round_mode'] in self._legal_qconfigs[tensor_type]['round_method']):
+                config_to_use['round_method'] = export_config.get('round_mode')
+            else:
+                round_legels = self._legal_qconfigs[tensor_type]['round_method']
+                NndctScreenLogger().error(f"The round_mode of {tensor_type} should be in the list {round_legels}")
+                exit(2)
+                
+        if (export_config.get('scale_type', None)):
+            if (export_config['scale_type'] in self._legal_qconfigs[tensor_type]['scale_type']):
+                config_to_use['scale_type'] = export_config.get('scale_type')
+            else:
+                scale_legels = self._legal_qconfigs[tensor_type]['scale_type']
+                NndctScreenLogger().error(f"The scale_type of {tensor_type} should be in the list {scale_legels}")
+                exit(2)
+            
         if (not export_config.get('symmetry', None) is None):
-            config_to_use['symmetric_mode'] = 'symmetric' if export_config.get('symmetry') else 'asymmetric'
+            if isinstance(export_config.get('symmetry'), bool):
+                config_to_use['symmetric_mode'] = 'symmetric' if export_config.get('symmetry') else 'asymmetric'
+            else:
+                NndctScreenLogger().error(f"The symmetry parameter of {tensor_type} should be a boolean")
+                exit(2)
+            
         if (not export_config.get('per_channel', None) is None):
-            config_to_use['granularity'] = 'per_channel' if export_config.get('per_channel') else 'per_tensor'
+            if isinstance(export_config.get('per_channel'), bool):
+                config_to_use['granularity'] = 'per_channel' if export_config.get('per_channel') else 'per_tensor'
+            else:
+                NndctScreenLogger().error(f"The per_channel parameter of {tensor_type} should be a boolean")
+                exit(2)
+                
         if (not export_config.get('signed', None) is None):
-            config_to_use['signed'] = export_config.get('signed')
+            if isinstance(export_config.get('signed'), bool):
+                config_to_use['signed'] = export_config.get('signed')
+            else:
+                NndctScreenLogger().error(f"The signed parameter of {tensor_type} should be a boolean")
+                exit(2)
+            
         if (not export_config.get('narrow_range', None) is None):
-            config_to_use['narrow_range'] = export_config.get('narrow_range')
+            if isinstance(export_config.get('narrow_range'), bool):
+                config_to_use['narrow_range'] = export_config.get('narrow_range')
+            else:
+                NndctScreenLogger().error(f"The narrow_range parameter of {tensor_type} should be a boolean")
+                exit(2)
 
         if tensor_type in ['activation', 'input']:
-            if (export_config.get('calib_statistic_method', None)) and \
-                (export_config['calib_statistic_method'] in QConfigBase._legal_qconfigs[tensor_type]['calib_statistic_method']):
-                config_to_use['calib_statistic_method'] = export_config.get('calib_statistic_method')
+            if (export_config.get('calib_statistic_method', None)):
+                if (export_config['calib_statistic_method'] in self._legal_qconfigs[tensor_type]['calib_statistic_method']):
+                    config_to_use['calib_statistic_method'] = export_config.get('calib_statistic_method')
+                else:
+                    calib_legels = self._legal_qconfigs[tensor_type]['calib_statistic_method']
+                    NndctScreenLogger().error(f"The calib_statistic_method of {tensor_type} should be in the list {calib_legels}")
+                    exit(2)
         
         if config_to_use.get('method') == 'percentile':
             if export_config.get('percentage', None) is None:
@@ -377,7 +385,8 @@ class QConfigBase(metaclass=ABCMeta):
                 if ((not isinstance(export_config.get('percentage'), float)) or \
                     (export_config['percentage'] <= 0.0) or \
                     (export_config['percentage'] > 100.0)):
-                    raise TypeError("Percentage should be larger than 0.0 and smaller than 100.0")
+                    NndctScreenLogger().error(f"Percentage should be larger than 0.0 and smaller than 100.0")
+                    exit(2)
                 else:
                     config_to_use['percentage'] = export_config['percentage']
                 
@@ -430,37 +439,128 @@ class QConfigBase(metaclass=ABCMeta):
                                                                                                              layer_quant_config[tensor_type]['symmetric_mode'],
                                                                                                              layer_quant_config[tensor_type]['signed'],
                                                                                                              layer_quant_config[tensor_type]['narrow_range'])
-
-    # def _qconfig_handle_conflict(self):
-    #     if self._qconfig['mix_bit']:
-    #         if (self._qconfig['weights']['bit_width'] != self._qconfig['bias']['bit_width'] or  
-    #             self._qconfig['weights']['bit_width'] != self._qconfig['activation']['bit_width']):
-    #             raise TypeError("The bit_width configurations are conflict with the mix_bit configuration")
-    #     if self._qconfig['weights']['method'] == 'percentile':
-    #         if ((self._qconfig['weights'].get('percentage') == None) or 
-    #             (not isinstance(self._qconfig['weights'].get('percentage'), float)) or 
-    #             (self._qconfig['weights']['percentage'] <= 0.0) or 
-    #             (self._qconfig['weights']['percentage'] > 100.0)):
-    #             raise TypeError("Percentage should be larger than 0.0 and smaller than 100.0")
-    #     if self._qconfig['bias']['method'] == 'percentile':
-    #         if ((self._qconfig['bias'].get('percentage') == None) or 
-    #             (not isinstance(self._qconfig['bias'].get('percentage'), float)) or 
-    #             (self._qconfig['bias']['percentage'] <= 0.0) or 
-    #             (self._qconfig['bias']['percentage'] > 100.0)):
-    #             raise TypeError("Percentage should be larger than 0.0 and smaller than 100.0")
-    #     if self._qconfig['activation']['method'] == 'percentile':
-    #         if ((self._qconfig['activation'].get('percentage') == None) or 
-    #             (not isinstance(self._qconfig['activation'].get('percentage'), float)) or 
-    #             (self._qconfig['activation']['percentage'] <= 0.0) or 
-    #             (self._qconfig['activation']['percentage'] > 100.0)):
-    #             raise TypeError("Percentage should be larger than 0.0 and smaller than 100.0")
-    #     if self._qconfig['input']['method'] == 'percentile':
-    #         if ((self._qconfig['input'].get('percentage') == None) or 
-    #             (not isinstance(self._qconfig['input'].get('percentage'), float)) or 
-    #             (self._qconfig['input']['percentage'] <= 0.0) or 
-    #             (self._qconfig['input']['percentage'] > 100.0)):
-    #             raise TypeError("Percentage should be larger than 0.0 and smaller than 100.0")
     
+    def _qconfig_handle_conflict(self):
+        target_device = self._qconfig['target_device']
+        for data_type in self._qconfig['quantizable_data_type']:
+            self._handle_tensor_conflict(self._qconfig, data_type, target_device)
+        for _, tensor_config in self._qconfig['layer_type_config'].items():
+            for data_type in tensor_config['quantizable_data_type']:
+                self._handle_tensor_conflict(tensor_config, data_type, target_device)
+        for _, tensor_config in self._qconfig['layer_name_config'].items():
+            for data_type in tensor_config['quantizable_data_type']:
+                self._handle_tensor_conflict(tensor_config, data_type, target_device)
+
+    @staticmethod
+    def _handle_tensor_conflict(tensor_config, tensor_type, target_device):
+        if target_device == 'DPU':
+            QConfigBase._handle_dpu_tensor_conflict(tensor_config, tensor_type)
+        elif target_device == 'CPU':
+            QConfigBase._handle_cpu_gpu_tensor_conflict(tensor_config, tensor_type)
+        elif target_device == 'GPU':
+            QConfigBase._handle_cpu_gpu_tensor_conflict(tensor_config, tensor_type)
+            
+    @staticmethod
+    def _handle_cpu_gpu_tensor_conflict(tensor_config, tensor_type):
+        quant_param = tensor_config[tensor_type]
+        granularity = quant_param.get("granularity")
+        if granularity == "per_channel":
+            if tensor_type != "weights":
+                NndctScreenLogger().error(f"Only support per_channel quantization for weights for now")
+                exit(2)
+            scale_type = quant_param.get("scale_type")
+            method = quant_param.get("method")
+            if scale_type == "float":
+                if method != 'maxmin':
+                    NndctScreenLogger().error(f"Only support maxmin calibration method in per_channel float quantization")
+                    exit(2)
+            elif scale_type == "poweroftwo":
+                if method not in ['diffs', 'maxmin']:
+                    NndctScreenLogger().error(f"Only support diffs and maxmin calibration method in per_channel power_of_two quantization")
+                    exit(2)
+                symmetric_mode = quant_param.get("symmetric_mode")
+                if symmetric_mode == "asymmetric":
+                    NndctScreenLogger().error(f"Not support asymmetric quantization in per_channel power_of_two quantization")
+                    exit(2)
+                signed = quant_param.get("signed")
+                if not signed:
+                    NndctScreenLogger().error(f"Not support unsigned quantization in per_channel power_of_two quantization")
+                    exit(2)
+                
+        if granularity == "per_tensor":
+            method = quant_param.get("method")
+            scale_type = quant_param.get("scale_type")
+            if scale_type == "float":
+                if method not in ['maxmin', 'percentile', 'mse', 'entropy']:
+                    NndctScreenLogger().error(f"Only support maxmin, percentile, mse and entropy calibration method in per_tensor float quantization")
+                    exit(2)
+                if quant_param.get("calib_statistic_method", None):
+                    calib_statistic_method = quant_param.get("calib_statistic_method")
+                    if calib_statistic_method not in ["max", "mean", "median"]:
+                        NndctScreenLogger().error(f"Only support max, mean and median scale activation statistic method in per_tensor float quantization")
+                        exit(2)
+                symmetric_mode = quant_param.get("symmetric_mode")
+                if symmetric_mode == "asymmetric":
+                    if method in ['percentile', 'entropy', 'mse']:
+                        NndctScreenLogger().error(f"Not support asymmetric quantization in percentile, entropy and mse calibration method")
+                        exit(2)
+            elif scale_type == "poweroftwo":
+                if method not in ['diffs', 'maxmin']:
+                    NndctScreenLogger().error(f"Only support diffs and maxmin calibration method in per_tensor power_of_two quantization")
+                    exit(2)
+                symmetric_mode = quant_param.get("symmetric_mode")
+                if symmetric_mode == "asymmetric":
+                    NndctScreenLogger().error(f"Not support asymmetric quantization in per_tensor power_of_two quantization")
+                    exit(2)
+                signed = quant_param.get("signed")
+                if not signed:
+                    NndctScreenLogger().error(f"Not support unsigned quantization in per_tensor power_of_two quantization")
+                    exit(2)
+                if quant_param.get("calib_statistic_method", None):
+                    calib_statistic_method = quant_param.get("calib_statistic_method")
+                    if calib_statistic_method != "modal":
+                        NndctScreenLogger().error(f"Only support modal scale activation statistic method in per_tensor power_of_two quantization")
+                        exit(2)
+        
+    @staticmethod
+    def _handle_dpu_tensor_conflict(tensor_config, tensor_type):
+        quant_param = tensor_config[tensor_type]
+        
+        symmetric_mode = quant_param.get("symmetric_mode")
+        if symmetric_mode != "symmetric":
+            NndctScreenLogger().error(f"Only support symmetric quantization in DPU device")
+            exit(2)
+        method = quant_param.get("method")
+        if method != "diffs":
+            NndctScreenLogger().error(f"Only support diffs calibration method in DPU device")
+            exit(2)
+        granularity = quant_param.get("granularity")
+        if granularity != "per_tensor":
+            NndctScreenLogger().error(f"Only support per_tensor quantization in DPU device")
+            exit(2)
+        scale_type = quant_param.get("scale_type")
+        if scale_type != "poweroftwo":
+            NndctScreenLogger().error(f"Only support power_of_two scale type in DPU device")
+            exit(2)
+        narrow_range = quant_param.get("narrow_range")
+        if narrow_range:
+            NndctScreenLogger().error(f"Not support narrow_range in DPU device")
+            exit(2)
+        if quant_param.get("calib_statistic_method", None):
+            calib_statistic_method = quant_param.get("calib_statistic_method")
+            if calib_statistic_method != "modal":
+                NndctScreenLogger().error(f"Only support modal activation statistic method in DPU device")
+                exit(2)
+        round_method = quant_param.get("round_method")
+        if tensor_type == "activation":
+            if round_method != "half_up":
+                NndctScreenLogger().error(f"Only support half_up round method in activation quantization of DPU device")
+                exit(2)
+        else:
+            if round_method != "std_round":
+                NndctScreenLogger().error(f"Only support half_up round method in weights, bias and input quantization of DPU device")
+                exit(2)
+
     @staticmethod
     def _reset_range(qrange, num_bit, symmetric_mode, signed, narrow_range):
         if qrange == -sys.maxsize:

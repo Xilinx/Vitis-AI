@@ -74,6 +74,8 @@ def parse_module(module: Union[torch.nn.Module, torch.jit.ScriptModule],
       replace_relu6_with_reluk(module)
     elif NndctOption.nndct_relu6_replace.value == 'relu':
       replace_relu6_with_relu(module)
+  if NndctOption.nndct_sigmoid_replace.value == 1:
+    replace_sigmoid_with_hsigmoid(module)
   
   # if NndctOption.nndct_wes.value:
   #   insert_scale_after_conv2d(module)
@@ -237,6 +239,15 @@ def replace_relu6_with_reluk(module: torch.nn.Module):
   if any([isinstance(submodule, torch.nn.ReLU6) for submodule in module.modules()]):
     module.apply(_replace_func)
     NndctScreenLogger().warning(f"ReLU6 has been replaced by ReLUK.")
+
+def replace_sigmoid_with_hsigmoid(module: torch.nn.Module):
+  def _replace_func(op):
+    for op_name, c_op in op.named_children():
+      if isinstance(c_op, torch.nn.Sigmoid):
+        op._modules[op_name] = torch.nn.Hardsigmoid()
+  if any([isinstance(submodule, torch.nn.Sigmoid) for submodule in module.modules()]):
+    module.apply(_replace_func)
+    NndctScreenLogger().warning(f"Sigmoid has been replaced by Hardsigmoid.")
     
 def insert_scale_after_conv2d(module: torch.nn.Module):
   def _insert_func(op):

@@ -102,9 +102,11 @@ class TorchQuantProcessor():
     
     # Check device available
     if device.type == "cuda":
-      if not (torch.cuda.is_available() and "CUDA_HOME" in os.environ):
+      #if not (torch.cuda.is_available() and "CUDA_HOME" in os.environ):
+      if not (torch.cuda.is_available() and ("CUDA_HOME" or "ROCM_HOME" in os.environ)):
         device = torch.device("cpu")
-        NndctScreenLogger().warning(f"CUDA is not available, change device to CPU")
+        #NndctScreenLogger().warning(f"CUDA is not available, change device to CPU")
+        NndctScreenLogger().warning(f"CUDA (HIP) is not available, change device to CPU")
     
     # Transform torch module to quantized module format
     nndct_utils.create_work_dir(output_dir)
@@ -260,6 +262,11 @@ class TorchQuantProcessor():
       NndctScreenLogger().error(f'Only supprt exporting onnx model with pytorch 1.7 and later version')
       return
     
+    if self.quantizer.contain_channel_quantize():
+      if int(torch_version[0]) == 1 and int(torch_version[1]) < 10:
+        NndctScreenLogger().error(f'Only supprt exporting per_channel quantization onnx model with pytorch 1.10 and later version')
+        return
+    
     @parse_args("v", "i", "i", "f", "i", "i", "i", "i")
     def symbolic_fix_neuron(g, input, valmin, valmax, valamp, zero_point, method, device_id, inplace):
       #print(f'{valmax} {valamp} {method} {device_id}')
@@ -270,6 +277,7 @@ class TorchQuantProcessor():
       zero_point = torch.tensor(0, dtype=torch.int8)  # ONNX requires zero_point to be tensor
       return g.op("DequantizeLinear", g.op("QuantizeLinear", input, scale, zero_point), scale, zero_point)
     
+    nndct_utils.create_work_dir(output_dir)
     register_custom_op_symbolic("vai::fix_neuron", symbolic_fix_neuron, 9)
     output_file = os.path.join(output_dir, f"{self.quantizer.quant_model._get_name()}_int.onnx")
     opset_version = torch.onnx.symbolic_helper._onnx_stable_opsets[-1]
@@ -285,6 +293,7 @@ class TorchQuantProcessor():
     if int(torch_version[0]) == 1 and int(torch_version[1]) < 7:
       NndctScreenLogger().error(f'Only supprt exporting torch script with pytorch 1.7 and later version')
       return
+    nndct_utils.create_work_dir(output_dir)
     self.quantizer.reset_status_for_exporting()
     device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
     force_cpu = os.getenv('NNDCT_FORCE_CPU_DUMP')
@@ -353,17 +362,21 @@ def dump_xmodel(output_dir="quantize_result", deploy_check=False, lstm_app=False
             round_method=quantizer.quant_opt['round_method'], select_batch=select_batch)
         
         NndctScreenLogger().info(f"=>Finsh dumping data.({checker.dump_folder})")
-      
-    for depoly_info in xmodel_depoly_infos:
-      try:
-        xgraph = compiler.do_compile(
-            depoly_info.dev_graph,
-            quant_config_info=depoly_info.quant_info,
-            output_file_name=os.path.join(output_dir, depoly_info.dev_graph.name))
+    
+    if quantizer.quant_strategy_info['target_device'] == "DPU":
+      for depoly_info in xmodel_depoly_infos:
+        try:
+          xgraph = compiler.do_compile(
+              depoly_info.dev_graph,
+              quant_config_info=depoly_info.quant_info,
+              output_file_name=os.path.join(output_dir, depoly_info.dev_graph.name))
 
-      except AddXopError as e:
-        NndctScreenLogger().error(f"Failed convert graph '{depoly_info.dev_graph.name}' to xmodel.")
-        raise e
-      
-      compiler.verify_xmodel(depoly_info.dev_graph, xgraph)
+        except AddXopError as e:
+          NndctScreenLogger().error(f"Failed convert graph '{depoly_info.dev_graph.name}' to xmodel.")
+          raise e
+        
+        compiler.verify_xmodel(depoly_info.dev_graph, xgraph)
+    else:
+      NndctScreenLogger().warning(f"Not support to dump xmodel when target device is not DPU")
+    
     set_outputs_recorder_status(quantizer.quant_model, False)

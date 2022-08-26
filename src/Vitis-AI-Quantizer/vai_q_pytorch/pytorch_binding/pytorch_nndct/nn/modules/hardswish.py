@@ -1,5 +1,4 @@
 
-
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -37,7 +36,6 @@ class deephi_Hardswish(torch.nn.Module):
     self.quant_mode, self.quantizer = maybe_get_quantizer()
     self.node = None
     self.inplace = inplace
-    self.fix_neuron = FixNeuronWithBackward()
 
   def forward(self, input):
     if self.quant_mode is None or NndctOption.nndct_quant_off.value:
@@ -50,7 +48,7 @@ class deephi_Hardswish(torch.nn.Module):
       scale = 2731.0 / 16384.0
       output = output * scale
 
-      output = fake_quantize_per_tensor(output, scale_inv=128, zero_point=0, quant_min=-128, quant_max=127)
+      output = fake_quantize_per_tensor(output, scale_inv=128, zero_point=0, quant_min=-128, quant_max=127, method=2, inplace=self.inplace)
 
       output = torch.mul(qinput, output)
 

@@ -29,6 +29,7 @@ from nndct_shared.utils import NndctOption, tensor_util, NndctScreenLogger
 import nndct_shared.utils as nndct_utils
 
 from pytorch_nndct.quantization import NndctCGQstrategy, TensorRTCGQStrategy
+from pytorch_nndct.quantization import PerChannelQuantAlgo
 
 class FakeQuantizer(NewBaseQuantizer):
   
@@ -41,8 +42,6 @@ class FakeQuantizer(NewBaseQuantizer):
                      output_dir,
                      quant_config,
                      is_lstm)
-    self._quant_model = None
-    self._bias_corr_loaded = False
     if NndctOption.nndct_param_corr.value > 0:
       if self.quant_mode == 2:
         path = pathlib.Path(self.bias_corr_file)
@@ -57,7 +56,6 @@ Please check calibration with bias correction is done or not.")
     self.inplace = True
     self.serial = True
     #self._fast_finetuned = False
-    self._finetuned_para_loaded = False
     self.output_dir = output_dir
     
     if NndctOption.nndct_tensorrt_strategy.value:
@@ -80,6 +78,10 @@ Please check calibration with bias correction is done or not.")
               name, 
               node=None, 
               tensor_type='input'):
+    # keep quantization steps after fast finetune
+    if self.keep_fp:
+      return self.do_quantize(res, name, node, tensor_type)
+    
     # forward quant graph but not quantize parameter and activation
     if NndctOption.nndct_quant_off.value:
       if self.inplace:
@@ -91,6 +93,10 @@ Please check calibration with bias correction is done or not.")
     if isinstance(res.values, torch.Tensor):
       res_save = res
       res = res.values.data
+      
+    if res.dtype != torch.float32 and res.dtype != torch.double:
+      NndctScreenLogger().warning_once(f'The tensor type of  {node.name} is {str(res.dtype)}. Only support float32/double quantization.')
+      return res_save if res_save is not None else res
 
     quant_device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
     if res.device.type != quant_device.type:
@@ -100,11 +106,11 @@ Please check calibration with bias correction is done or not.")
     q_config = self.get_quant_config(name, False, tensor_type)
     
     # turn off quantization if bit width is more than 32
-    if q_config[0] >= 32:
-      if self.inplace:
-        return res
-      else:
-        return res.clone().detach()
+    # if q_config[0] >= 32:
+    #   if self.inplace:
+    #     return res
+    #   else:
+    #     return res.clone().detach()
     
     q_algorithm = self.get_quant_algo(name, tensor_type)
     # get quant algorithm
@@ -153,6 +159,10 @@ Please check calibration with bias correction is done or not.")
     if isinstance(blob.values, torch.Tensor):
       blob_save = blob
       blob = blob.values.data
+      
+    if blob.dtype != torch.float32 and blob.dtype != torch.double:
+      NndctScreenLogger().warning_once(f'The tensor type of  {node.name} is {str(blob.dtype)}. Only support float32/double quantization.')
+      return blob_save if blob_save is not None else blob
 
     quant_device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
     if blob.device.type != quant_device.type:
@@ -160,11 +170,11 @@ Please check calibration with bias correction is done or not.")
 
     q_config = self.get_quant_config(name, True, tensor_type)
     # turn off quantization ifbit width is more than 32
-    if q_config[0] >= 32:
-      if self.inplace:
-        return blob
-      else:
-        return blob.clone().detach()
+    # if q_config[0] >= 32:
+    #   if self.inplace:
+    #     return blob
+    #   else:
+    #     return blob.clone().detach()
     
     self._set_serial_or_not(node, tensor_type)
     
@@ -206,7 +216,7 @@ Please check calibration with bias correction is done or not.")
       output = quant_tensor
 
     # update param to nndct graph
-    if tensor_type == 'param':
+    if tensor_type == 'param' and not self.exporting:
       self.update_param_to_nndct(node, name, blob.cpu().detach().numpy())
 
     if blob_save is not None:
@@ -247,11 +257,15 @@ Please check calibration with bias correction is done or not.")
           param_data = param_data.reshape((in_channels, channel_mutiplier, *kernel_size))
           param_data = np.copy(param_data).swapaxes(0, 1)
           param_data = np.ascontiguousarray(param_data)
-          
+        
+        origin_shape = tensor.shape
+        
         tensor.from_ndarray(param_data)
         tensor_util.convert_parameter_tensor_format(
             tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
-
+        
+        NndctScreenLogger().check(f"The shape of data '{tensor.shape}' must be consistent with that of original data \
+          '{origin_shape}' for {tensor.name}", origin_shape == tensor.shape)
 
   def export_quant_config(self, export_file=None, adjust_pos=True):
     if NndctOption.nndct_param_corr.value > 0:
@@ -287,9 +301,11 @@ Please check calibration with bias correction is done or not.")
       for name, algo in algo_dict.items():
         if not algo.statistic_local:
           q_config = self.get_quant_config(name, False, tensor_type)
-          if q_config[0] < 32:
-            algo.calib_global_statis(quant_device)
-            q_config[1], q_config[2], q_config[3] = algo.scale, algo.zero_point, algo.float_max
+          # if q_config[0] < 32:
+          #   algo.calib_global_statis(quant_device)
+          #   q_config[1], q_config[2], q_config[3] = algo.scale, algo.zero_point, algo.float_max
+          algo.calib_global_statis(quant_device)
+          q_config[1], q_config[2], q_config[3] = algo.scale, algo.zero_point, algo.float_max
           self.set_quant_config(name, q_config, tensor_type)
           #self.set_quant_algo(name, algo, tensor_type)
         
@@ -399,18 +415,10 @@ Please check calibration with bias correction is done or not.")
       NndctScreenLogger().warning(f'Bias correction file is not loaded. Set \
                                   command line option \"--nndct_param_corr\" to load it.')
       
-  @property
-  def fast_finetuned(self):
-    return self.quant_config['fast_finetuned']
- 
-  @fast_finetuned.setter
-  def fast_finetuned(self, val):
-    self.quant_config['fast_finetuned'] = val
-    
-  @property
-  def bias_corrected(self):
-    return self.quant_config['bias_corrected']
- 
-  @bias_corrected.setter
-  def bias_corrected(self, val):
-    self.quant_config['bias_corrected'] = val
+  def contain_channel_quantize(self):
+    contain_channel_quantize_or_not = False
+    for key, algo in self.quant_algo['param'].items():
+      if isinstance(algo, PerChannelQuantAlgo):
+        contain_channel_quantize_or_not = True
+        break
+    return contain_channel_quantize_or_not

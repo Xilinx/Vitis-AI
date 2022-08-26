@@ -380,7 +380,7 @@ class OptPass(object):
     if not nodes_list:
       return
 
-    sorted_node_list = sorted(nodes_list, key=lambda nodeset: nodeset[0].idx)
+    sorted_node_list = sorted(nodes_list, key=lambda nodeset: nodeset[0].block_idx)
     for node_set in sorted_node_list:
       select_node = node_set[0]
       strided_slice = node_set[1]

@@ -54,6 +54,8 @@ class NndctOption(object):
   nndct_quant_opt = Option(name="quant_opt", dtype=int, default=3, help="quant opt level")
   
   nndct_relu6_replace = Option(name="relu6_replace", dtype=str, default='relu', help="relu6 replace operator")
+  
+  nndct_sigmoid_replace = Option(name="sigmoid_replace", dtype=int, default=0, help="0: keep sigmoid, 1: replace sigmoid to hsigmoid")
 
   nndct_equalization = Option(name="equalization", dtype=bool, default=True, action="store_true", 
                               help="enable weights equalization")
@@ -67,7 +69,7 @@ class NndctOption(object):
   nndct_param_corr = Option(name="param_corr", dtype=bool, default=True, action="store_true", 
                             help="enable parameter correction")
 
-  nndct_param_corr_rate = Option(name="param_corr_rate", dtype=float, default=0.1, help="parameter correction rate")
+  nndct_param_corr_rate = Option(name="param_corr_rate", dtype=float, default=0.05, help="parameter correction rate")
 
   nndct_cv_app = Option(name="cv_app", dtype=bool, default=True, action="store_true", help="cv application")
 
