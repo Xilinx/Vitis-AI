@@ -19,7 +19,7 @@ ARG XRM_URL=https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1
 ENV XRM_URL=$XRM_URL
 ARG PETALINUX_URL=https://www.xilinx.com/bin/public/openDownload?filename=sdk-2022.1.0.0.sh
 ENV PETALINUX_URL=$PETALINUX_URL
-ARG VAI_CONDA_CHANNEL="https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_2.5.0.1260-01.tar.gz"
+ARG VAI_CONDA_CHANNEL="https://www.xilinx.com/bin/public/openDownload?filename=conda-channel_2.5.0.1260-02.tar.gz"
 ENV VAI_CONDA_CHANNEL=$VAI_CONDA_CHANNEL
 ARG VAI_CONDA_CHANNEL_WEGO="https://www.xilinx.com/bin/public/openDownload?filename=conda-channel-wego_2.5.0.1260-01.tar.gz"
 ENV VAI_CONDA_CHANNEL_WEGO=$VAI_CONDA_CHANNEL_WEGO
@@ -32,9 +32,7 @@ ENV LC_ALL en_US.UTF-8
 RUN chmod 1777 /tmp \
     && mkdir /scratch \
     && chmod 1777 /scratch \
-    && apt-key del 7fa2af80 \
-    && apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub \
-    && apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub \
+    && rm -fr /etc/apt/sources.list.d/cuda* \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         apt-transport-https \
@@ -334,9 +332,9 @@ RUN if [[ ${VAI_CONDA_CHANNEL} =~ .*"tar.gz" ]]; then \
        wget -O conda-channel.tar.gz --progress=dot:mega ${VAI_CONDA_CHANNEL}; \
        tar -xzvf conda-channel.tar.gz; \
        export VAI_CONDA_CHANNEL=file:///scratch/conda-channel; \
-       wget -O conda-channel-wego.tar.gz --progress=dot:mega ${VAI_CONDA_CHANNEL}; \
+       wget -O conda-channel-wego.tar.gz --progress=dot:mega ${VAI_CONDA_CHANNEL_WEGO}; \
        tar -xzvf conda-channel-wego.tar.gz; \
-       export VAI_WEGO_CONDA_CHANNEL=file:///scratch/conda-channel-wego/wegotf1; \
+       export VAI_WEGO_CONDA_CHANNEL=file:///scratch/conda-channel-wego; \
     fi; \
     . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir $VAI_ROOT/conda/pkgs \
