@@ -82,23 +82,23 @@ There are two types of docker recipes provided - CPU recipe and GPU recipe. If y
 
 Use below commands to build the CPU docker:
 ```
-cd setup/docker
+cd docker
 ./docker_build_cpu.sh
 ```
 To run the CPU docker, use command:
 ```
-./docker_run.sh xilinx/vitis-ai-cpu:latest
+../docker_run.sh xilinx/vitis-ai-cpu:latest
 ```
 **GPU Docker**
 
 Use below commands to build the GPU docker:
 ```
-cd setup/docker
+cd docker
 ./docker_build_gpu.sh
 ```
 To run the GPU docker, use command:
 ```
-./docker_run.sh xilinx/vitis-ai-gpu:latest
+../docker_run.sh xilinx/vitis-ai-gpu:latest
 ```
 Please use the file **./docker_run.sh** as a reference for the docker launching scripts, you could make necessary modification to it according to your needs.
 
