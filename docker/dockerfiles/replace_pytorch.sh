@@ -78,7 +78,7 @@ echo -e "\n#### Removing original pytorch related packages ..."
 mamba uninstall -y pytorch pytorch_nndct
 pip uninstall torchvision
 
-echo -e "\n#### Installing pytorch 1.9 packages ..."
+echo -e "\n#### Installing target pytorch packages ..."
 echo -e "\e[91m>>>> Edit this line of command to set the target version, refer to https://pytorch.org/get-started/previous-versions/ <<<<\e[m"
 #### Installing pytorch 1.7.1 packages ...torchvision==0.5.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html
 if [ -d "/usr/local/cuda" ]; then
@@ -104,10 +104,10 @@ echo -e "\n#### Checkout code of vai_q_pytorch ..."
 echo -e "\e[91m>>>> You can apply your local code of vai_q_pytorch and comment out the following lines of git command <<<<\e[m"
 git init code_vaiq && cd code_vaiq 
 git config core.sparsecheckout true
-echo 'tools/Vitis-AI-Quantizer/vai_q_pytorch/' >> .git/info/sparse-checkout 
+echo 'src/Vitis-AI-Quantizer/vai_q_pytorch/' >> .git/info/sparse-checkout 
 git remote add origin https://github.com/Xilinx/Vitis-AI.git
 git pull origin master
-cd tools/Vitis-AI-Quantizer/vai_q_pytorch/
+cd src/Vitis-AI-Quantizer/vai_q_pytorch/
 
 if [ $? -eq 0 ]; then
   echo -e "\n#### Vai_q_pytorch code is checked out successfully."
