@@ -1,24 +1,6 @@
 #!/bin/bash
 # Copyright 2022 Xilinx Inc.
 
-sed -n '1, 5p' ./docker/dockerfiles/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-sed -n '5, 15p' ./docker/dockerfiles/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-sed -n '15, 28p' ./docker/dockerfiles/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-sed -n '28, 61p' ./docker/dockerfiles/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-sed -n '62, 224p' ./docker/dockerfiles/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
-sed -n '224, 308p' ./docker/dockerfiles/PROMPT.txt
-read -n 1 -s -r -p "Press any key to continue..." key
-
 confirm() {
   echo -en "\n\nDo you agree to the terms and wish to proceed [y/n]? "
   read REPLY
@@ -30,8 +12,29 @@ confirm() {
     REPLY=''
 }
 
-confirm
 
+if [[ ! -f ".confirm" ]]; then
+
+  sed -n '1, 5p' ./docker/dockerfiles/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
+
+  sed -n '5, 15p' ./docker/dockerfiles/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
+
+  sed -n '15, 28p' ./docker/dockerfiles/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
+
+  sed -n '28, 61p' ./docker/dockerfiles/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
+
+  sed -n '62, 224p' ./docker/dockerfiles/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
+
+  sed -n '224, 308p' ./docker/dockerfiles/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
+  
+  confirm
+fi
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     echo "Usage: $0 <image>"
@@ -100,7 +103,7 @@ END
 )
 
 ##############################
-
+touch .confirm 
 if [[ $IMAGE_NAME == *"gpu"* ]]; then
   docker run \
     $docker_devices \
