@@ -47,7 +47,7 @@ networkx==2.5
 ninja==1.9.0.post1
 numba==0.48.0
 numexpr==2.7.1
-numpy==1.19.1
+numpy==1.22.0
 oauthlib==3.1.0
 opencv-python==4.2.0.32
 pandas==1.0.3
