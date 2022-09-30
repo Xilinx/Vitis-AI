@@ -32,7 +32,7 @@ inflect==4.1.0
 ipython==7.16.1
 ipython-genutils==0.2.0
 jedi==0.17.2
-joblib==0.14.1
+joblib==1.2.0
 jsonpatch==1.25
 jsonpointer==2.0
 kiwisolver==1.2.0
