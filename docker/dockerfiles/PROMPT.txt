@@ -26,278 +26,490 @@ BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
 (AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
 UBUNTU'S MAIN REPO AND INSTALLED ON YOUR SYSTEM:
 http://us.archive.ubuntu.com/ubuntu/dists/bionic/
-1.  sudo  
-2.  git  
-3.  zstd  
-4.  tree  
-5.  vim  
-6.  wget  
-7.  bzip2  
-8.  ca-certificates  
-9.  curl  
-10. unzip  
-11. python3-minimal  
-12. python3-opencv  
-13. python3-venv  
-14. python3-pip  
-15. python3-setuptools  
-16. g++  
-17. make  
-18. cmake  
-19. build-essential  
-20. autoconf  
-21. libgoogle-glog-dev  
-22. libgflags-dev  
-23. libunwind-dev  
-24. libtool  
-25. libgtk2.0-dev
-26. libavcodec-dev
-27. libavformat-dev
-28. libavdevice-dev
+
+apt-transport-https 
+autoconf 
+automake 
+bc 
+build-essential 
+bzip2 
+ca-certificates 
+curl 
+g++ 
+gdb 
+git 
+gnupg 
+locales 
+libboost-all-dev 
+libgflags-dev 
+libgoogle-glog-dev 
+libgtest-dev 
+libjson-c-dev 
+libjsoncpp-dev 
+libssl-dev 
+libtool 
+libunwind-dev 
+make 
+openssh-client 
+openssl 
+python3 
+python3-dev 
+python3-minimal 
+python3-numpy 
+python3-opencv 
+python3-pip 
+python3-setuptools 
+python3-venv 
+software-properties-common 
+sudo 
+tree 
+unzip 
+vim 
+wget 
+yasm 
+zstd
+libavcodec-dev 
+libavformat-dev 
+libeigen3-dev 
+libgstreamer-plugins-base1.0-dev 
+libgstreamer1.0-dev 
+libgtest-dev 
+libgtk-3-dev 
+libgtk2.0-dev 
+libhdf5-dev 
+libjpeg-dev 
+libopenexr-dev 
+libpng-dev 
+libswscale-dev 
+libtiff-dev 
+libwebp-dev 
+opencl-clhpp-headers 
+opencl-headers 
+pocl-opencl-icd 
+rpm 
+
+https://ppa.launchpadcontent.net/timsc/opencv-3.4/ubuntu/
+
+libcv-dev
+libcv3.4
+libopencv-calib3d-dev
+libopencv-calib3d3.4-dbg
+libopencv-calib3d3.4
+libopencv-core-dev
+libopencv-core3.4
+libopencv-dev
+libopencv-dnn-dev
+libopencv-dnn3.4-dbg
+libopencv-dnn3.4
+libopencv-features2d-dev
+libopencv-features2d3.4-dbg
+libopencv-features2d3.4
+libopencv-flann-dev
+libopencv-flann3.4-dbg
+libopencv-flann3.4
+libopencv-highgui-dev
+libopencv-highgui3.4-dbg
+libopencv-highgui3.4
+libopencv-imgcodecs-dev
+libopencv-imgcodecs3.4-dbg
+libopencv-imgcodecs3.4
+libopencv-imgproc-dev
+libopencv-imgproc3.4-dbg
+libopencv-imgproc3.4
+libopencv-ml-dev
+libopencv-ml3.4-dbg
+libopencv-ml3.4
+libopencv-objdetect-dev
+libopencv-objdetect3.4-dbg
+libopencv-objdetect3.4
+libopencv-photo-dev
+libopencv-photo3.4-dbg
+libopencv-photo3.4
+libopencv-shape-dev
+libopencv-shape3.4-dbg
+libopencv-shape3.4
+libopencv-stitching-dev
+libopencv-stitching3.4-dbg
+libopencv-stitching3.4
+libopencv-superres-dev
+libopencv-superres3.4-dbg
+libopencv-superres3.4
+libopencv-ts-dev
+libopencv-video-dev
+libopencv-video3.4-dbg
+libopencv-video3.4
+libopencv-videoio-dev
+libopencv-videoio3.4-dbg
+libopencv-video3.4
+libopencv-videoio-dev
+libopencv-videoio3.4-dbg
+libopencv-videoio3.4
+libopencv-videostab-dev
+libopencv-videostab3.4-dbg
+libopencv-videostab3.4
+libopencv-viz-dev
+libopencv-viz3.4-dbg
+libopencv-viz3.4
+libopencv3.4-java
+opencv-data
+opencv-doc
+python-opencv
+python3-opencv
+
+https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test/+packages  
+
+gcc-8 
+g++-8 
+gcc-9 
+g++-9 
+
+https://apt.kitware.com/ubuntu/ 
+
+cmake
+cmake-data
+kitware-archive-keyring   
+
+
 
 BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
 (AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
 ANACONDA REPO AND INSTALLED ON YOUR SYSTEM:
 https://anaconda.org”
-1.  absl-py
-2.  astor
-3.  attrs
-4.  backcall
-5.  backports
-6.  backports.weakref
-7.  blas
-8.  bleach
-9.  boost
-10.  bzip2
-11.  ca-certificates
-12.  cairo
-13.  c-ares
-14.  certifi
-15.  cffi
-16.  chardet
-17.  cloudpickle
-18.  conda
-19.  conda-package-handling
-20.  cryptography
-21.  cycler
-22.  cytoolz
-23.  dask-core
-24.  dbus
-25.  decorator
-26.  defusedxml
-27.  dill
-28.  dpuv1_compiler
-29.  dpuv1-rt
-30.  dpuv1-rt-ext
-31.  dpuv1-rt-neptune
-32.  entrypoints
-33.  expat
-34.  ffmpeg
-35.  fontconfig
-36.  freeglut
-37.  freetype
-38.  fribidi
-39.  gast
-40.  gettext
-41.  gflags
-42.  giflib
-43.  glib
-44.  glog
-45.  gmp
-46.  gnutls
-47.  google-pasta
-48.  graphite2
-49.  graphviz
-50.  grpcio
-51.  gst-plugins-base
-52.  gstreamer
-53.  h5py
-54.  harfbuzz
-55.  hdf5
-56.  icu
-57.  idna
-58.  imageio
-59.  importlib_metadata
-60.  importlib-metadata
-61.  intel-openmp
-62.  ipykernel
-63.  ipython
-64.  ipython_genutils
-65.  ipywidgets
-66.  jasper
-67.  jedi
-68.  jinja2
-69.  joblib
-70.  jpeg
-71.  json-c
-72.  jsoncpp
-73.  jsonschema
-74.  jupyter
-75.  jupyter_client
-76.  jupyter_console
-77.  jupyter_core
-78.  keras
-79.  keras-applications
-80.  keras-base
-81.  keras-preprocessing
-82.  kiwisolver
-83.  krb5
-84.  lame
-85.  ld_impl_linux-64
-86.  leveldb
-87.  libblas
-88.  libboost
-89.  libcblas
-90.  libedit
-91.  libffi
-92.  _libgcc_mutex
-93.  libgcc-ng
-94.  libgfortran-ng
-95.  libglu
-96.  libiconv
-97.  liblapack
-98.  liblapacke
-99.  libopenblas
-100.  libopencv
-101.  libopus
-102.  libpng
-103.  libprotobuf
-104.  libsodium
-105.  libssh2
-106.  libstdcxx-ng
-107.  libtiff
-108.  libtool
-109.  libuuid
-110.  libvpx
-111.  libwebp
-112.  libxcb
-113.  libxml2
-114.  lmdb
-115.  lz4-c
-116.  markdown
-117.  markupsafe
-118.  marshmallow
-119.  matplotlib
-120.  matplotlib-base
-121.  mistune
-122.  mkl
-123.  mkl_fft
-124.  mkl_random
-125.  mkl-service
-126.  mock
-127.  more-itertools
-128.  nbconvert
-129.  nbformat
-130.  ncurses
-131.  nettle
-132.  networkx
-133.  notebook
-134.  numpy
-135.  numpy-base
-136.  olefile
-137.  openblas
-138.  opencv
-139.  openh264
-140.  openssl
-141.  opt_einsum
-142.  packaging
-143.  pandas
-144.  pandoc
-145.  pandocfilters
-146.  pango
-147.  parso
-148.  pexpect
-149.  pickleshare
-150.  pillow
-151.  pip
-152.  pixman
-153.  pluggy
-154.  progressbar2
-155.  prometheus_client
-156.  prompt_toolkit
-157.  prompt-toolkit
-158.  protobuf
-159.  ptyprocess
-160.  py
-161.  pybind11
-162.  py-boost
-163.  pycosat
-164.  pycparser
-165.  pydot
-166.  pygments
-167.  py-opencv
-168.  pyopenssl
-169.  pyparsing
-170.  pyqt
-171.  pyrsistent
-172.  pysocks
-173.  pytest
-174.  pytest-runner
-175.  python
-176.  python-dateutil
-177.  python-gflags
-178.  python-graphviz
-179.  python-leveldb
-180.  python-utils
-181.  pytz
-182.  pywavelets
-183.  pyyaml
-184.  pyzmq
-185.  qt
-186.  qtconsole
-187.  qtpy
-188.  readline
-189.  requests
-190.  ruamel_yaml
-191.  scikit-image
-192.  scikit-learn
-193.  scipy
-194.  send2trash
-195.  setuptools
-196.  sip
-197.  six
-198.  snappy
-199.  sqlite
-200.  tensorboard
-201.  tensorflow
-202.  tensorflow-base
-203.  tensorflow-estimator
-204.  termcolor
-205.  terminado
-206.  testpath
-207.  _tflow_select
-208.  threadpoolctl
-209.  tk
-210.  toolz
-211.  tornado
-212.  tqdm
-213.  traitlets
-214.  urllib3
-215.  wcwidth
-216.  webencodings
-217.  werkzeug
-218.  wheel
-219.  widgetsnbextension
-220.  wrapt
-221.  x264
-222.  xcompiler
-223.  xorg-libice
-224.  xorg-libsm
-225.  xorg-libx11
-226.  xorg-libxext
-227.  xorg-libxpm
-228.  xorg-libxrender
-229.  xorg-libxt
-230.  xorg-renderproto
-231.  xorg-xextproto
-232.  xorg-xproto
-233.  xz
-234.  yaml
-235.  yaml-cpp
-236.  zeromq
-237.  zipp
-238.  zlib
-239.  zstd
+
+_libgcc_mutex
+_openmp_mutex
+absl-py
+aiohttp
+aiosignal
+argon2-cffi
+argon2-cffi-bindings
+astor
+astunparse
+async-timeout
+async_generator
+asynctest
+attrs
+backcall
+backports
+backports.functools_lru_cache
+backports.weakref
+beautifulsoup4
+blas
+bleach
+blinker
+brotli
+brotli-bin
+brotlipy
+bzip2
+c-ares
+ca-certificates
+cachetools
+cairo
+certifi
+cffi
+chardet
+charset-normalizer
+ck
+click
+colorama
+conda
+conda-build
+conda-package-handling
+cpuonly
+cryptography
+cycler
+dbus
+debugpy
+decorator
+defusedxml
+dill
+dpuv3-pycompiler
+entrypoints
+expat
+ffmpeg
+filelock
+flatbuffers
+flit-core
+fontconfig
+fonttools
+freetype
+fribidi
+frozenlist
+future
+gast
+gettext
+gflags
+giflib
+glib
+glib-tools
+glob2
+glog
+gmp
+gnutls
+google-auth
+google-auth-oauthlib
+google-pasta
+graphite2
+graphviz
+grpcio
+gst-plugins-base
+gstreamer
+gtest
+h5py
+harfbuzz
+hdf5
+icu
+idna
+importlib-metadata
+importlib_metadata
+importlib_resources
+iniconfig
+intel-openmp
+ipykernel
+ipython
+ipython_genutils
+ipywidgets
+jasper
+jedi
+jinja2
+joblib
+jpeg
+json-c
+jsoncpp
+jsonschema
+jupyter
+jupyter_client
+jupyter_console
+jupyter_core
+jupyterlab_pygments
+jupyterlab_widgets
+keras
+keras-applications
+keras-preprocessing
+keyutils
+kiwisolver
+krb5
+lame
+lcms2
+ld_impl_linux-64
+libarchive
+libblas
+libboost
+libbrotlicommon
+libbrotlidec
+libbrotlienc
+libcblas
+libclang
+libcurl
+libedit
+libev
+libffi
+libgcc-ng
+libgfortran-ng
+libgfortran4
+libgfortran5
+libglib
+libgomp
+libiconv
+liblapack
+liblapacke
+liblief
+libnghttp2
+libnsl
+libopenblas
+libpng
+libprotobuf
+libsodium
+libsolv
+libssh2
+libstdcxx-ng
+libtiff
+libtool
+libuuid
+libuv
+libwebp
+libxcb
+libxml2
+libzlib
+lz4-c
+lzo
+mamba
+markdown
+markupsafe
+marshmallow
+matplotlib
+matplotlib-base
+matplotlib-inline
+mistune
+mkl
+mkl-service
+more-itertools
+multidict
+munkres
+nbclient
+nbconvert
+nbconvert-core
+nbconvert-pandoc
+nbformat
+ncurses
+nest-asyncio
+nettle
+ninja
+notebook
+numpy
+oauthlib
+olefile
+opencv
+opencv-contrib-python
+openh264
+openssl
+opt-einsum
+opt_einsum
+orderedset
+packaging
+pandas
+pandoc
+pandocfilters
+pango
+parso
+patchelf
+pcre
+pexpect
+pickleshare
+pillow
+pip
+pixman
+pkginfo
+pluggy
+progressbar2
+prometheus_client
+prompt-toolkit
+prompt_toolkit
+protobuf
+psutil
+pthread-stubs
+ptyprocess
+py
+py-lief
+pyasn1
+pyasn1-modules
+pybind11
+pybind11-global
+pycosat
+pycparser
+pydot
+pygments
+pyjwt
+pyopenssl
+pyparsing
+pyqt
+pyrsistent
+pysocks
+pytest
+python
+python-dateutil
+python-fastjsonschema
+python-flatbuffers
+python-graphviz
+python-libarchive-c
+python-utils
+python_abi
+pytorch
+pytorch-mutex
+pytorch_nndct_cpu
+pytz
+pyu2f
+pyyaml
+pyzmq
+qt
+qtconsole
+qtconsole-base
+qtpy
+readline
+reproc
+reproc-cpp
+requests
+requests-oauthlib
+ripgrep
+rsa
+rt-engine
+ruamel_yaml
+scikit-learn
+scipy
+send2trash
+setuptools
+sip
+six
+soupsieve
+sqlite
+tabulate
+target_explorer
+target_factory
+tensorboard
+tensorboard-data-server
+tensorboard-plugin-wit
+tensorflow
+tensorflow-base
+tensorflow-estimator
+tensorflow-io-gcs-filesystem
+termcolor
+terminado
+testpath
+tf-estimator-nightly
+threadpoolctl
+tinycss2
+tk
+toml
+tomli
+torchvision
+tornado
+tqdm
+traitlets
+typing-extensions
+typing_extensions
+tzdata
+unicodedata2
+unilog
+urllib3
+vai-wego-tensorflow2
+vai_q_tensorflow
+vai_q_tensorflow2
+vai_utf
+vai_wego_tensorflow
+vaic
+vart
+wcwidth
+webencodings
+wego_torch
+werkzeug
+wheel
+widgetsnbextension
+wrapt
+x264
+xcompiler
+xir
+xnnc
+xorg-kbproto
+xorg-libice
+xorg-libsm
+xorg-libx11
+xorg-libxau
+xorg-libxdmcp
+xorg-libxext
+xorg-libxpm
+xorg-libxrender
+xorg-libxt
+xorg-renderproto
+xorg-xextproto
+xorg-xproto
+xz
+yaml
+yarl
+zeromq
+zipp
+zlib
+zstd
+
 
 BY ELECTING TO CONTINUE, YOU ACKNOWLEDGE AND AGREE, FOR YOURSELF AND ON BEHALF
 OF YOUR EMPLOYER (IF APPLICABLE), THAT XILINX IS NOT DISTRIBUTING TO YOU IN

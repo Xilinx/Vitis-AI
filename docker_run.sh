@@ -32,6 +32,9 @@ if [[ ! -f ".confirm" ]]; then
 
   sed -n '224, 308p' ./docker/dockerfiles/PROMPT.txt
   read -n 1 -s -r -p "Press any key to continue..." key
+
+  sed -n '309, 520p' ./docker/dockerfiles/PROMPT.txt
+  read -n 1 -s -r -p "Press any key to continue..." key
   
   confirm
 fi
