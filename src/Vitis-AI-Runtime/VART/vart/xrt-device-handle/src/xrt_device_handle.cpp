@@ -22,26 +22,31 @@ DEF_ENV_PARAM(DEBUG_XRT_DEVICE_HANDLE, "0");
 
 namespace xir {
 
-static std::map<std::string, std::function<std::shared_ptr<XrtDeviceHandle>()>>
-    the_factory_methods;
+static std::map<std::string, std::function<std::shared_ptr<XrtDeviceHandle>()>>& get_factory_methods()
+{
+    static std::map<std::string, std::function<std::shared_ptr<XrtDeviceHandle>()>>
+        the_factory_methods;
+    return the_factory_methods;
+}
 
 void XrtDeviceHandle::registar(
     const std::string& name,
     std::function<std::shared_ptr<XrtDeviceHandle>()> m) {
-  auto it = the_factory_methods.begin();
+
+  auto it = get_factory_methods().begin();
   auto ok = false;
-  std::tie(it, ok) = the_factory_methods.emplace(std::make_pair(name, m));
+  std::tie(it, ok) = get_factory_methods().emplace(std::make_pair(name, m));
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_DEVICE_HANDLE))
       << "add factory method " << name;
   CHECK(ok);
 }
 
 std::shared_ptr<XrtDeviceHandle> XrtDeviceHandle::get_instance() {
-  CHECK(!the_factory_methods.empty());
-  auto ret = the_factory_methods.begin()->second();
+  CHECK(!get_factory_methods().empty());
+  auto ret = get_factory_methods().begin()->second();
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_DEVICE_HANDLE))
       << "return the xrt handle instance via "
-      << the_factory_methods.begin()->first << " "
+      << get_factory_methods().begin()->first << " "
       << " ret=" << (void*)ret.get();
   return ret;
 }
