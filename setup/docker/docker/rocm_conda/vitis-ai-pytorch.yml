@@ -1,0 +1,24 @@
+name: vitis-ai-pytorch
+
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.6
+  - pytorch_nndct
+  - pydot
+  - pyyaml
+  - jupyter
+  - ipywidgets
+  - dill
+  - progressbar2
+  - pytest
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - pillow
+  - vaic
+  - vart
+  - rt-engine
