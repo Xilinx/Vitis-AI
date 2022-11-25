@@ -1,3 +1,10 @@
+﻿<table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
+   </td>
+ </tr>
+</table>
+
 # ONNX Runtime with Xilinx Vitis AI DPU acceleration
 
 Microsoft ONNX Runtime is a framework designed for high performance execution of ONNX models on a variety of platforms.
@@ -18,7 +25,7 @@ The current Vitis AI execution provider inside ONNX Runtime enables acceleration
 In this directory you will find information on how to build ONNX Runtime with Vitis AI and on how to get started with an example.
 
 ## System Requirements
-The [System Requirements] page lists system requirements for running docker containers as well as Alveo cards.
+The [System Requirements](../../docs/reference/system_requirements.md) page lists system requirements for running docker containers as well as Alveo cards.
 
 ## Setup
 

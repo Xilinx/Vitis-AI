@@ -1,9 +1,17 @@
+
+﻿<table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
+   </td>
+ </tr>
+</table>
+
 # RNN Quantizer
 
 ### Introduction
 RNN quantizer is designed to quantize recurrent neural network(RNN) models. Currently RNN quantizer only supports standard LSTM.
 
-### Supported and Limitaion
+### Supported and Limitations
 
 * Python
 1. Support version 3.6 ~ 3.7. 

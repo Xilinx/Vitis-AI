@@ -1,1 +1,0 @@
-write_checkpoint post_logic_opt.dcp

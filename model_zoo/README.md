@@ -1,96 +1,86 @@
-<table width="100%">
-  <tr width="100%">
-    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Model Zoo</h1>
-    </td>
+﻿<table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
+   </td>
  </tr>
- </table>
+</table>
 
-# Introduction
-This repository includes optimized deep learning models to speed up the deployment of deep learning inference on Xilinx&trade; platforms. These models cover different applications, including but not limited to ADAS/AD, medical, video surveillance, robotics, data center, etc. You can get started with these free pre-trained models to enjoy the benefits of deep learning acceleration.
+
+# Vitis AI Model Zoo
+This repository provides access to optimized deep learning models that can be used to speed up the deployment of deep learning inference on Xilinx&trade; targets. These models cover different applications, including but not limited to ADAS/AD, medical, video surveillance, robotics, data center, etc. You can get started with these free pre-trained models to better understand the benefits of Xilinx accelerated inference.
 
 <p align="left">
   <img width="1264" height="420" src="images/vitis_ai_model_zoo.png">
 </p>
 
-## Vitis-AI 2.5 Model Zoo New Features！
-1.Add 14 new models and total 134 models with diverse deep learning frameworks (TensorFlow 1.x, TensorFlow 2.x and PyTorch).</br>
-
-2.The diversity of AI Model Zoo is continuously improved and fully cover a wider range of application fields.</br>
-
-2.1 Provide more reference models for cloud requirements, such as text detection, E2E OCR, etc.</br>
-
-2.2 Add transformer models on VCK5000，such as BERT-base NLP model，Vision Transformer (ViT), etc.</br>
-
-2.3 Enrich OFA optimized models, such as Super-Resolution OFA-RCAN and Object Detection OFA-YOLO.</br>
-
-2.4 For Industrial Vision and SLAM, provide Interest Point Detection & Description model and Hierarchical Localization model.</br>
-
-3.EoU enhancement: Improved model index by application category and provide more convenient use experience.</br>
-
-4.Provide 38 models for AMD EPYC™ CPU including popular base & optimized models. </br>
-
+****************
+**What's New?** Please see the release notes [here](../docs/reference/release_notes.md)
+****************
 
 ## Model Details
-The following tables include comprehensive information about all models, including application, framework, input size, computation Flops as well as float and quantized accuracy.
 
-### Naming Rules
-Model name: `F_M_(D)_H_W_(P)_C_V`
-* `F` specifies training framework: `tf` is Tensorflow 1.x, `tf2` is Tensorflow 2.x, `pt` is PyTorch
-* `M` specifies the model 
-* `D` specifies the dataset. It is optional depending on whether the dataset is public or private
-* `H` specifies the height of input data
-* `W` specifies the width of input data
-* `P` specifies the pruning ratio, it means how much computation is reduced. It is optional depending on whether the model is pruned or not
-* `C` specifies the computation of the model: how many Gops per image
-* `V` specifies the version of Vitis-AI
+The following tables include comprehensive information about all models, including application, framework, input size, computational cost as well as float and quantized accuracy.
 
-For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model trained with `Pytorch` using `SceneFlow` dataset, input size is `576*960`, `65%` pruned, the computation per image is `154 Gops` and Vitis-AI version is `2.5`.
+****************
+🖇️**Tip!**  *If you would like to download a local, sortable version of the master Vitis AI Model Zoo table which provides links to the original papers and datasets, you can do so [here](ModelZoo_VAI2.5_Github.xlsx)*
+****************
 
-### Model Index
+### Model File Nomenclature Decoder
+Xilinx Model Zoo file names assume the format: `F_M_(D)_H_W_(P)_C_V`, where:
+* `F` specifies training framework: `tf` is TensorFlow 1.x, `tf2` is TensorFlow 2.x, `pt` is PyTorch
+* `M` specifies the industry/base name of the model 
+* `D` specifies the public dataset used to train the model.  This field is not present if the model was trained using private datasets
+* `H` specifies the height of the input tensor to the first input layer
+* `W` specifies the width of the input tensor to the first input layer
+* `P` specifies the pruning ratio (percentage computational complexity reduction from the base model). This field is present only if the model has been pruned
+* `C` specifies the computational cost of the model for deployment in GOPs (billion quantized operations) per image
+* `V` specifies the version of Vitis-AI in which the model was deployed
 
-- Computation OPS in the table are counted as FLOPs
-- Float & Quantized Accuracy unless otherwise specified, the default refers to top1 or top1/top5
-- Models that have AMD EPYC™ CPU version are marked with <html>&#11088;</html>
-- For more details and downloading CPU models, please refer to [UIF](https://github.com/amd/UIF)
-- Supported Tasks
-    - [Classification](#Classification) 
-    - [Detection](#Detection) 
-    - [Segmentation](#Segmentation) 
-    - [NLP](#NLP) 
-    - [Text-OCR](#Text-OCR)
-    - [Surveillance](#Surveillance) 
-    - [Industrial-Vision-Robotics](#Industrial-Vision-Robotics) 
-    - [Medical-Image-Enhancement](#Medical-Image-Enhancement)
+For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is the `FADNet` model trained with `PyTorch` using the `SceneFlow` dataset, the input size for the network is `576*960`, `65%` pruned, the computational cost per image is `154 GOPs` and Vitis-AI version is `2.5`.
+
+****************
+📌**Note!**  *Unless otherwise specified, all models, and the related benchmarks can be assumed to employ three input channels (ie, Input Size field is formatted HW(C) where C = 3)*
+****************
+
+### Model Categories
+- [Classification](#Classification) 
+- [Detection](#Detection) 
+- [Segmentation](#Segmentation) 
+- [NLP](#NLP) 
+- [Text-OCR](#Text-OCR)
+- [Surveillance](#Surveillance) 
+- [Industrial-Vision-Robotics](#Industrial-Vision-Robotics) 
+- [Medical-Image-Enhancement](#Medical-Image-Enhancement)
 
 <br>
 
 ## Classification
-<font size=2> 
+<span style="font-family:Papyrus; font-size:4em;">
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy                 |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                  Computational Cost (OPs)                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | General                                                 | tf\_inceptionresnetv2\_imagenet\_299\_299\_26\.35G_2.5    |                           0\.8037                            |                           0\.7946                            |                           299\*299                           |                26\.35G                |
 | 2    | General                                                 | tf\_inceptionv1\_imagenet\_224\_224\_3G_2.5               |                           0\.6976                            |                           0\.6794                            |                           224\*224                           |                  3G                   |
 | 3    | General                                                 | tf_inceptionv2_imagenet_224_224_3.88G_2.5                 |                            0.7399                            |                            07331                             |                           224*224                            |                 3.88G                 |
-| 4    | General                                                 | tf\_inceptionv3\_imagenet\_299\_299\_11\.45G_2.5<html>&#11088;</html>          |                           0\.7798                            |                           0\.7735                            |                           299\*299                           |                11\.45G                |
-| 5    | General                                                 | tf_inceptionv3_imagenet_299_299_0.2_9.1G_2.5<html>&#11088;</html>              |                            0.7786                            |                            0.7668                            |                           299\*299                           |                 9.1G                  |
-| 6    | General                                                 | tf_inceptionv3_imagenet_299_299_0.4_6.9G_2.5<html>&#11088;</html>              |                            0.7669                            |                            0.7561                            |                           299\*299                           |                 6.9G                  |
+| 4    | General                                                 | tf\_inceptionv3\_imagenet\_299\_299\_11\.45G_2.5          |                           0\.7798                            |                           0\.7735                            |                           299\*299                           |                11\.45G                |
+| 5    | General                                                 | tf_inceptionv3_imagenet_299_299_0.2_9.1G_2.5              |                            0.7786                            |                            0.7668                            |                           299\*299                           |                 9.1G                  |
+| 6    | General                                                 | tf_inceptionv3_imagenet_299_299_0.4_6.9G_2.5              |                            0.7669                            |                            0.7561                            |                           299\*299                           |                 6.9G                  |
 | 7    | General                                                 | tf\_inceptionv4\_imagenet\_299\_299\_24\.55G_2.5          |                           0\.8018                            |                           0\.7928                            |                           299\*299                           |                24\.55G                |
 | 8    | General                                                 | tf\_mobilenetv1\_0\.25\_imagenet\_128\_128\_27M_2.5       |                           0\.4144                            |                           0\.3464                            |                           128\*128                           |                27\.15M                |
 | 9    | General                                                 | tf\_mobilenetv1\_0\.5\_imagenet\_160\_160\_150M\_2.5      |                           0\.5903                            |                           0\.5195                            |                           160\*160                           |                 150M                  |
-| 10   | General                                                 | tf\_mobilenetv1\_1\.0\_imagenet\_224\_224\_1\.14G_2.5<html>&#11088;</html>     |                           0\.7102                            |                           0\.6780                            |                           224\*224                           |                1\.14G                 |
-| 11   | General                                                 | tf_mobilenetv1_1.0_imagenet_224_224_0.11_1.02G_2.5<html>&#11088;</html>        |                            0.7056                            |                            0.6822                            |                           224\*224                           |                 1.02G                 |
-| 12   | General                                                 | tf_mobilenetv1_1.0_imagenet_224_224_0.12_1G_2.5<html>&#11088;</html>           |                            0.7060                            |                            0.6850                            |                           224\*224                           |                  1G                   |
+| 10   | General                                                 | tf\_mobilenetv1\_1\.0\_imagenet\_224\_224\_1\.14G_2.5     |                           0\.7102                            |                           0\.6780                            |                           224\*224                           |                1\.14G                 |
+| 11   | General                                                 | tf_mobilenetv1_1.0_imagenet_224_224_0.11_1.02G_2.5        |                            0.7056                            |                            0.6822                            |                           224\*224                           |                 1.02G                 |
+| 12   | General                                                 | tf_mobilenetv1_1.0_imagenet_224_224_0.12_1G_2.5           |                            0.7060                            |                            0.6850                            |                           224\*224                           |                  1G                   |
 | 13   | General                                                 | tf\_mobilenetv2\_1\.0\_imagenet\_224\_224\_602M_2.5       |                           0\.7013                            |                           0\.6767                            |                           224\*224                           |                 602M                  |
 | 14   | General                                                 | tf\_mobilenetv2\_1\.4\_imagenet\_224\_224\_1\.16G_2.5     |                           0\.7411                            |                           0\.7194                            |                           224\*224                           |                1\.16G                 |
-| 15   | General                                                 | tf\_resnetv1\_50\_imagenet\_224\_224\_6\.97G_2.5<html>&#11088;</html>          |                           0\.7520                            |                           0\.7436                            |                           224\*224                           |                6\.97G                 |
-| 16   | General                                                 | tf_resnetv1_50_imagenet_224_224_0.38_4.3G_2.5<html>&#11088;</html>             |                            0.7442                            |                            0.7375                            |                           224\*224                           |                 4.3G                  |
-| 17   | General                                                 | tf_resnetv1_50_imagenet_224_224_0.65_2.45G_2.5<html>&#11088;</html>            |                            0.7279                            |                            0.7167                            |                           224\*224                           |                 2.45G                 |
+| 15   | General                                                 | tf\_resnetv1\_50\_imagenet\_224\_224\_6\.97G_2.5          |                           0\.7520                            |                           0\.7436                            |                           224\*224                           |                6\.97G                 |
+| 16   | General                                                 | tf_resnetv1_50_imagenet_224_224_0.38_4.3G_2.5             |                            0.7442                            |                            0.7375                            |                           224\*224                           |                 4.3G                  |
+| 17   | General                                                 | tf_resnetv1_50_imagenet_224_224_0.65_2.45G_2.5            |                            0.7279                            |                            0.7167                            |                           224\*224                           |                 2.45G                 |
 | 18   | General                                                 | tf\_resnetv1\_101\_imagenet\_224\_224\_14\.4G_2.5         |                           0\.7640                            |                           0\.7560                            |                           224\*224                           |                14\.4G                 |
 | 19   | General                                                 | tf\_resnetv1\_152\_imagenet\_224\_224\_21\.83G_2.5        |                           0\.7681                            |                           0\.7463                            |                           224\*224                           |                21\.83G                |
-| 20   | General                                                 | tf\_vgg16\_imagenet\_224\_224\_30\.96G_2.5<html>&#11088;</html>                |                           0\.7089                            |                           0\.7069                            |                           224\*224                           |                30\.96G                |
-| 21   | General                                                 | tf_vgg16_imagenet_224_224_0.43_17.67G_2.5<html>&#11088;</html>                 |                            0.6929                            |                            0.6823                            |                           224\*224                           |                17.67G                 |
-| 22   | General                                                 | tf_vgg16_imagenet_224_224_0.5_15.64G_2.5<html>&#11088;</html>                  |                            0.6857                            |                            0.6729                            |                           224\*224                           |                15.64G                 |
+| 20   | General                                                 | tf\_vgg16\_imagenet\_224\_224\_30\.96G_2.5                |                           0\.7089                            |                           0\.7069                            |                           224\*224                           |                30\.96G                |
+| 21   | General                                                 | tf_vgg16_imagenet_224_224_0.43_17.67G_2.5                 |                            0.6929                            |                            0.6823                            |                           224\*224                           |                17.67G                 |
+| 22   | General                                                 | tf_vgg16_imagenet_224_224_0.5_15.64G_2.5                  |                            0.6857                            |                            0.6729                            |                           224\*224                           |                15.64G                 |
 | 23   | General                                                 | tf\_vgg19\_imagenet\_224\_224\_39\.28G_2.5                |                           0\.7100                            |                           0\.7026                            |                           224\*224                           |                39\.28G                |
 | 24   | General                                                 | tf_resnetv2_50_imagenet_299_299_13.1G_2.5                 |                            0.7559                            |                            0.7445                            |                           299*299                            |                 13.1G                 |
 | 25   | General                                                 | tf_resnetv2_101_imagenet_299_299_26.78G_2.5               |                            0.7695                            |                            0.7506                            |                           299*299                            |                26.78G                 |
@@ -104,25 +94,25 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 | 33   | General                                                 | tf2_resnet50_imagenet_224_224_7.76G_2.5                   |                            0.7513                            |                            0.7423                            |                           224*224                            |                 7.76G                 |
 | 34   | General                                                 | tf2_mobilenetv1_imagenet_224_224_1.15G_2.5                |                            0.7005                            |                            0.5603                            |                           224*224                            |                 1.15G                 |
 | 35   | General                                                 | tf2_inceptionv3_imagenet_299_299_11.5G_2.5                |                            0.7753                            |                            0.7694                            |                           299*299                            |                 11.5G                 |
-| 36   | General                                                 | tf2_efficientnet-b0_imagenet_224_224_0.78G_2.5            |                        0.7690/0.9320                         |                        0.7515/0.9273                         |                           224*224                            |                 0.36G                 |
+| 36   | General                                                 | tf2_efficientnet-b0_imagenet_224_224_0.36G_2.5            |                        0.7690/0.9320                         |                        0.7515/0.9273                         |                           224*224                            |                 0.36G                 |
 | 37   | General                                                 | tf2_mobilenetv3_imagenet_224_224_132M_2.5                 |                        0.6756/0.8728                         |                        0.6536/0.8544                         |                           224*224                            |                 132M                  |
-| 38   | General                                                 | pt_inceptionv3_imagenet_299_299_11.4G_2.5<html>&#11088;</html>                 |                         0.775/0.936                          |                         0.771/0.935                          |                           299*299                            |                 11.4G                 |
-| 39   | General                                                 | pt_inceptionv3_imagenet_299_299_0.3_8G_2.5<html>&#11088;</html>                |                         0.775/0.936                          |                         0.772/0.935                          |                           299*299                            |                  8G                   |
-| 40   | General                                                 | pt_inceptionv3_imagenet_299_299_0.4_6.8G_2.5<html>&#11088;</html>              |                         0.768/0.931                          |                         0.764/0.929                          |                           299*299                            |                 6.8G                  |
-| 41   | General                                                 | pt_inceptionv3_imagenet_299_299_0.5_5.7G_2.5<html>&#11088;</html>              |                         0.757/0.921                          |                         0.752/0.918                          |                           299*299                            |                 5.7G                  |
-| 42   | General                                                 | pt_inceptionv3_imagenet_299_299_0.6_4.5G_2.5<html>&#11088;</html>              |                         0.739/0.911                          |                         0.732/0.908                          |                           299*299                            |                 4.5G                  |
+| 38   | General                                                 | pt_inceptionv3_imagenet_299_299_11.4G_2.5                 |                         0.775/0.936                          |                         0.771/0.935                          |                           299*299                            |                 11.4G                 |
+| 39   | General                                                 | pt_inceptionv3_imagenet_299_299_0.3_8G_2.5                |                         0.775/0.936                          |                         0.772/0.935                          |                           299*299                            |                  8G                   |
+| 40   | General                                                 | pt_inceptionv3_imagenet_299_299_0.4_6.8G_2.5              |                         0.768/0.931                          |                         0.764/0.929                          |                           299*299                            |                 6.8G                  |
+| 41   | General                                                 | pt_inceptionv3_imagenet_299_299_0.5_5.7G_2.5              |                         0.757/0.921                          |                         0.752/0.918                          |                           299*299                            |                 5.7G                  |
+| 42   | General                                                 | pt_inceptionv3_imagenet_299_299_0.6_4.5G_2.5              |                         0.739/0.911                          |                         0.732/0.908                          |                           299*299                            |                 4.5G                  |
 | 43   | General                                                 | pt_squeezenet_imagenet_224_224_703.5M_2.5                 |                         0.582/0.806                          |                         0.582/0.806                          |                           224*224                            |                703.5M                 |
-| 44   | General                                                 | pt_resnet50_imagenet_224_224_8.2G_2.5<html>&#11088;</html>                     |                         0.761/0.929                          |                         0.760/0.928                          |                           224*224                            |                 8.2G                  |
-| 45   | General                                                 | pt_resnet50_imagenet_224_224_0.3_5.8G_2.5<html>&#11088;</html>                 |                         0.760/0.929                          |                         0.757/0.928                          |                           224*224                            |                 5.8G                  |
-| 46   | General                                                 | pt_resnet50_imagenet_224_224_0.4_4.9G_2.5<html>&#11088;</html>                 |                         0.755/0.926                          |                         0.752/0.925                          |                           224*224                            |                 4.9G                  |
-| 47   | General                                                 | pt_resnet50_imagenet_224_224_0.5_4.1G_2.5<html>&#11088;</html>                 |                         0.748/0.921                          |                         0.745/0.920                          |                           224*224                            |                 4.1G                  |
-| 48   | General                                                 | pt_resnet50_imagenet_224_224_0.6_3.3G_2.5<html>&#11088;</html>                 |                         0.742/0.917                          |                         0.738/0.915                          |                           224*224                            |                 3.3G                  |
-| 49   | General                                                 | pt_resnet50_imagenet_224_224_0.7_2.5G_2.5<html>&#11088;</html>                 |                         0.726/0.908                          |                         0.720/0.906                          |                           224*224                            |                 2.5G                  |
-| 50   | General                                                 | pt_OFA-resnet50_imagenet_224_224_15.0G_2.5<html>&#11088;</html>                |                         0.799/0.948                          |                         0.789/0.944                          |                           224*224                            |                 15.0G                 |
-| 51   | General                                                 | pt_OFA-resnet50_imagenet_224_224_0.45_8.2G_2.5<html>&#11088;</html>            |                         0.795/0.945                          |                         0.784/0.941                          |                           224*224                            |                 8.2G                  |
-| 52   | General                                                 | pt_OFA-resnet50_imagenet_224_224_0.60_6.0G_2.5<html>&#11088;</html>            |                         0.791/0.943                          |                         0.780/0.939                          |                           224*224                            |                 6.0G                  |
-| 53   | General                                                 | pt_OFA-resnet50_imagenet_192_192_0.74_3.6G_2.5<html>&#11088;</html>            |                         0.777/0.937                          |                         0.770/0.933                          |                           192*192                            |                 3.6G                  |
-| 54   | General                                                 | pt_OFA-resnet50_imagenet_160_160_0.88_1.8G_2.5<html>&#11088;</html>            |                         0.752/0.918                          |                         0.744/0.918                          |                           160*160                            |                 1.8G                  |
+| 44   | General                                                 | pt_resnet50_imagenet_224_224_8.2G_2.5                     |                         0.761/0.929                          |                         0.760/0.928                          |                           224*224                            |                 8.2G                  |
+| 45   | General                                                 | pt_resnet50_imagenet_224_224_0.3_5.8G_2.5                 |                         0.760/0.929                          |                         0.757/0.928                          |                           224*224                            |                 5.8G                  |
+| 46   | General                                                 | pt_resnet50_imagenet_224_224_0.4_4.9G_2.5                 |                         0.755/0.926                          |                         0.752/0.925                          |                           224*224                            |                 4.9G                  |
+| 47   | General                                                 | pt_resnet50_imagenet_224_224_0.5_4.1G_2.5                 |                         0.748/0.921                          |                         0.745/0.920                          |                           224*224                            |                 4.1G                  |
+| 48   | General                                                 | pt_resnet50_imagenet_224_224_0.6_3.3G_2.5                 |                         0.742/0.917                          |                         0.738/0.915                          |                           224*224                            |                 3.3G                  |
+| 49   | General                                                 | pt_resnet50_imagenet_224_224_0.7_2.5G_2.5                 |                         0.726/0.908                          |                         0.720/0.906                          |                           224*224                            |                 2.5G                  |
+| 50   | General                                                 | pt_OFA-resnet50_imagenet_224_224_15.0G_2.5                |                         0.799/0.948                          |                         0.789/0.944                          |                           224*224                            |                 15.0G                 |
+| 51   | General                                                 | pt_OFA-resnet50_imagenet_224_224_0.45_8.2G_2.5            |                         0.795/0.945                          |                         0.784/0.941                          |                           224*224                            |                 8.2G                  |
+| 52   | General                                                 | pt_OFA-resnet50_imagenet_224_224_0.60_6.0G_2.5            |                         0.791/0.943                          |                         0.780/0.939                          |                           224*224                            |                 6.0G                  |
+| 53   | General                                                 | pt_OFA-resnet50_imagenet_192_192_0.74_3.6G_2.5            |                         0.777/0.937                          |                         0.770/0.933                          |                           192*192                            |                 3.6G                  |
+| 54   | General                                                 | pt_OFA-resnet50_imagenet_160_160_0.88_1.8G_2.5            |                         0.752/0.918                          |                         0.744/0.918                          |                           160*160                            |                 1.8G                  |
 | 55   | General                                                 | pt_OFA-depthwise-res50_imagenet_176_176_2.49G_2.5         |                        0.7633/0.9292                         |                        0.7629/0.9306                         |                           176*176                            |                 2.49G                 |
 | 56   | General                                                 | tf_ViT_imagenet_352_352_21.3G_2.5                         |                            0.8282                            |                            0.8254                            |                           352*352                            |                 21.3G                 |
 | 57   | Car type classification                                 | pt_vehicle-type-classification_CompCars_224_224_3.63G_2.5 |                            0.9025                            |                            0.9011                            |                           224*224                            |                 3.63G                 |
@@ -130,13 +120,12 @@ For example, `pt_fadnet_sceneflow_576_960_0.65_154G_2.5` is `FADNet` model train
 | 59   | Car color classification                                | pt_vehicle-color-classification_color_224_224_3.63G_2.5   |                            0.9549                            |                            0.9549                            |                           224*224                            |                 3.63G                 |
 
 </font>
-Note: #30 & #44-#49 are resnet_v1.5,  #33 is resnet_v1,  #50-#54 are resnet-D.
 <br>
 
 ## Detection
 <font size=2> 
 
-| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                   Computational Cost (OPs)                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | General                                                 | tf\_ssdmobilenetv1\_coco\_300\_300\_2\.47G_2.5            |                           0\.2080                            |                           0\.2100                            |                           300\*300                           |                2\.47G                 |
 | 2    | General                                                 | tf\_ssdmobilenetv2\_coco\_300\_300\_3\.75G_2.5            |                           0\.2150                            |                           0\.2110                            |                           300\*300                           |                3\.75G                 |
@@ -153,11 +142,11 @@ Note: #30 & #44-#49 are resnet_v1.5,  #33 is resnet_v1,  #50-#54 are resnet-D.
 | 13   | General                                                 | pt_OFA-yolo_coco_640_640_48.88G_2.5                       |                            0.436                             |                            0.421                             |                           640*640                            |                48.88G                 |
 | 14   | General                                                 | pt_OFA-yolo_coco_640_640_0.3_34.72G_2.5                   |                            0.420                             |                            0.401                             |                           640*640                            |                34.72G                 |
 | 15   | General                                                 | pt_OFA-yolo_coco_640_640_0.5_24.62G_2.5                   |                            0.392                             |                            0.378                             |                           640*640                            |                24.62G                 |
-| 16   | Medical Detection                                       | tf_RefineDet-Medical_EDD_320_320_81.28G_2.5<html>&#11088;</html>               |                            0.7866                            |                            0.7857                            |                           320*320                            |                81.28G                 |
-| 17   | Medical Detection                                       | tf_RefineDet-Medical_EDD_320_320_0.5_41.42G_2.5<html>&#11088;</html>           |                            0.7798                            |                            0.7772                            |                           320*320                            |                41.42G                 |
-| 18   | Medical Detection                                       | tf_RefineDet-Medical_EDD_320_320_0.75_20.54G_2.5<html>&#11088;</html>          |                            0.7885                            |                            0.7826                            |                           320*320                            |                20.54G                 |
-| 19   | Medical Detection                                       | tf_RefineDet-Medical_EDD_320_320_0.85_12.32G_2.5<html>&#11088;</html>          |                            0.7898                            |                            0.7877                            |                           320*320                            |                12.32G                 |
-| 20   | Medical Detection                                       | tf_RefineDet-Medical_EDD_320_320_0.88_9.83G_2.5<html>&#11088;</html>           |                            0.7839                            |                            0.8002                            |                           320*320                            |                 9.83G                 |
+| 16   | Medical Detection                                       | tf_RefineDet-Medical_EDD_320_320_81.28G_2.5               |                            0.7866                            |                            0.7857                            |                           320*320                            |                81.28G                 |
+| 17   | Medical Detection                                       | tf_RefineDet-Medical_EDD_320_320_0.5_41.42G_2.5           |                            0.7798                            |                            0.7772                            |                           320*320                            |                41.42G                 |
+| 18   | Medical Detection                                       | tf_RefineDet-Medical_EDD_320_320_0.75_20.54G_2.5          |                            0.7885                            |                            0.7826                            |                           320*320                            |                20.54G                 |
+| 19   | Medical Detection                                       | tf_RefineDet-Medical_EDD_320_320_0.85_12.32G_2.5          |                            0.7898                            |                            0.7877                            |                           320*320                            |                12.32G                 |
+| 20   | Medical Detection                                       | tf_RefineDet-Medical_EDD_320_320_0.88_9.83G_2.5           |                            0.7839                            |                            0.8002                            |                           320*320                            |                 9.83G                 |
 | 21   | ADAS Traffic sign Detection                             | pt_yolox_TT100K_640_640_73G_2.5                           |                            0.623                             |                            0.621                             |                           640*640                            |                  73G                  |
 | 22   | ADAS Lane Detection                                     | pt_ultrafast_CULane_288_800_8.4G_2.5                      |                            0.6988                            |                            0.6922                            |                           288*800                            |                 8.4G                  |
 | 23   | ADAS 3D Detection                                       | pt_pointpillars_kitti_12000_100_10.8G_2.5                 | Car 3D AP@0.5(easy, moderate, hard) <br/>90.79, 89.66, 88.78 | Car 3D AP@0.5(easy, moderate, hard)<br/> 90.75, 87.04, 83.44 |                        12000\*100\*4                         |                 10.8G                 |
@@ -168,13 +157,13 @@ Note: #30 & #44-#49 are resnet_v1.5,  #33 is resnet_v1,  #50-#54 are resnet-D.
 | 28   | ADAS Multi Task                                         | pt_MT-resnet18_mixed_320_512_13.65G_2.5                   |                   mAP:39.51<br/>mIOU:44.03                   |                   mAP:38.41<br/>mIOU:42.71                   |                           320*512                            |                13.65G                 |
 | 29   | ADAS Multi Task                                         | pt_multitaskv3_mixed_320_512_25.44G_2.5                   | mAP:51.2<br>mIOU:58.14<br/>Drivable mIOU: 82.57<br/>Lane IOU:43.71<br/>Silog: 8.78 | mAP:50.9<br/>mIOU:57.52<br/>Drivable mIOU: 82.30<br/>Lane IOU:44.01<br/>Silog: 9.32 |                           320*512                            |                25.44G                 |
 
-</font>  
+</span>  
 <br>
 
 ## Segmentation
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy               |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                   Computational Cost (OPs)                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | ADAS 2D Segmentation                                    | pt_ENet_cityscapes_512_1024_8.6G_2.5                      |                            0.6442                            |                            0.6315                            |                           512*1024                           |                 8.6G                  |
 | 2    | ADAS 2D Segmentation                                    | pt_SemanticFPN-resnet18_cityscapes_256_512_10G_2.5        |                            0.6290                            |                            0.6230                            |                           256*512                            |                  10G                  |
@@ -196,9 +185,9 @@ Note: #30 & #44-#49 are resnet_v1.5,  #33 is resnet_v1,  #50-#54 are resnet-D.
 ## NLP
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy               |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                   Computational Cost (OPs)                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
-| 1    | Question and Answering                                  | tf_bert-base_SQuAD_128_22.34G_2.5                         |                            0.8694                            |                            0.8656                            |                             128                              |                11.17G                 |
+  | 1    | Question and Answering                                  | tf_bert-base_SQuAD_128_11.17G_2.5                         |                            0.8694                            |                            0.8656                            |                             128                              |                11.17G                 |
 | 2    | Sentiment Detection                                     | tf2_sentiment-detection_IMDB_500_32_53.3M_2.5             |                            0.8708                            |                            0.8695                            |                            500*32                            |                 53.3M                 |
 | 3    | Customer Satisfaction Assessment                        | tf2_customer-satisfaction_Cars4U_25_32_2.7M_2.5           |                            0.9565                            |                            0.9565                            |                            25*32                             |                 2.7M                  |
 | 4    | Open Information Extraction                             | pt_open-information-extraction_qasrl_100_200_1.5G_2.5     |               Acc/F1-score:<br/>58.70%/77.12%                |               Acc/F1-score:<br/>58.70%/77.19%                |                           100*200                            |                 1.5G                  |
@@ -208,7 +197,7 @@ Note: #30 & #44-#49 are resnet_v1.5,  #33 is resnet_v1,  #50-#54 are resnet-D.
 ## Text-OCR
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy                   |               Quantized Accuracy                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                   Computational Cost (OPs)                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | Text Detection                                          | pt_textmountain_ICDAR_960_960_575.2G_2.5                  |                            0.8863                            |                            0.8851                            |                           960*960                            |                575.2G                 |
 | 2    | E2E OCR                                                 | pt_OCR_ICDAR2015_960_960_875G_2.5                         |                            0.6758                            |                            0.6776                            |                           960*960                            |                 875G                  |
@@ -218,18 +207,18 @@ Note: #30 & #44-#49 are resnet_v1.5,  #33 is resnet_v1,  #50-#54 are resnet-D.
 ## Surveillance
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy                 |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                   Computational Cost (OPs)                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | Face Recognition                                        | pt_facerec-resnet20_mixed_112_96_3.5G_2.5                 |                            0.9955                            |                            0.9947                            |                            112*96                            |                 3.5G                  |
 | 2    | Face Quality                                            | pt_face-quality_80_60_61.68M_2.5                          |                            0.1233                            |                            0.1258                            |                            80*60                             |                61.68M                 |
 | 3    | Face ReID                                               | pt_facereid-large_96_96_515M_2.5                          |                    mAP:0.794  Rank1:0.955                    |                    mAP:0.790  Rank1:0.953                    |                            96*96                             |                 515M                  |
 | 4    | Face ReID                                               | pt_facereid-small_80_80_90M_2.5                           |                    mAP:0.560  Rank1:0.865                    |                    mAP:0.559  Rank1:0.865                    |                            80*80                             |                 90M5                  |
 | 5    | ReID                                                    | pt_personreid-res18_market1501_176_80_1.1G_2.5            |                    mAP:0.753  Rank1:0.898                    |                    mAP:0.746  Rank1:0.893                    |                            176*80                            |                 1.1G                  |
-| 6    | ReID                                                    | pt_personreid-res50_market1501_256_128_5.3G_2.5<html>&#11088;</html>           |                    mAP:0.866  Rank1:0.951                    |                    mAP:0.869  Rank1:0.948                    |                           256*128                            |                 5.3G                  |
-| 7    | ReID                                                    | pt_personreid-res50_market1501_256_128_0.4_3.3G_2.5<html>&#11088;</html>       |                    mAP:0.869  Rank1:0.948                    |                    mAP:0.869  Rank1:0.948                    |                           256*128                            |                 3.3G                  |
-| 8    | ReID                                                    | pt_personreid-res50_market1501_256_128_0.5_2.7G_2.5<html>&#11088;</html>       |                    mAP:0.864  Rank1:0.944                    |                    mAP:0.864  Rank1:0.944                    |                           256*128                            |                 2.7G                  |
-| 9    | ReID                                                    | pt_personreid-res50_market1501_256_128_0.6_2.1G_2.5<html>&#11088;</html>       |                    mAP:0.863  Rank1:0.946                    |                    mAP:0.859  Rank1:0.942                    |                           256*128                            |                 2.1G                  |
-| 10   | ReID                                                    | pt_personreid-res50_market1501_256_128_0.7_1.6G_2.5<html>&#11088;</html>       |                    mAP:0.850  Rank1:0.940                    |                    mAP:0.848  Rank1:0.938                    |                           256*128                            |                 1.6G                  |
+| 6    | ReID                                                    | pt_personreid-res50_market1501_256_128_5.3G_2.5           |                    mAP:0.866  Rank1:0.951                    |                    mAP:0.869  Rank1:0.948                    |                           256*128                            |                 5.3G                  |
+| 7    | ReID                                                    | pt_personreid-res50_market1501_256_128_0.4_3.3G_2.5       |                    mAP:0.869  Rank1:0.948                    |                    mAP:0.869  Rank1:0.948                    |                           256*128                            |                 3.3G                  |
+| 8    | ReID                                                    | pt_personreid-res50_market1501_256_128_0.5_2.7G_2.5       |                    mAP:0.864  Rank1:0.944                    |                    mAP:0.864  Rank1:0.944                    |                           256*128                            |                 2.7G                  |
+| 9    | ReID                                                    | pt_personreid-res50_market1501_256_128_0.6_2.1G_2.5       |                    mAP:0.863  Rank1:0.946                    |                    mAP:0.859  Rank1:0.942                    |                           256*128                            |                 2.1G                  |
+| 10   | ReID                                                    | pt_personreid-res50_market1501_256_128_0.7_1.6G_2.5       |                    mAP:0.850  Rank1:0.940                    |                    mAP:0.848  Rank1:0.938                    |                           256*128                            |                 1.6G                  |
 | 11   | Person orientation estimation                           | pt_person-orientation_224_112_558M_2.5                    |                            0.930                             |                            0.929                             |                           224*112                            |                 558M                  |
 | 12   | Joint detection and Tracking                            | pt_FairMOT_mixed_640_480_0.5_36G_2.5                      |                  MOTA 59.1%<br/>IDF1 62.5%                   |                  MOTA 58.1%<br/>IDF1 60.5%                   |                           640*480                            |                  36G                  |
 | 13   | Crowd Counting                                          | pt_BCC_shanghaitech_800_1000_268.9G_2.5                   |                  MAE: 65.83<br>MSE: 111.75                   |             MAE: 67.60<br>MSE: 117.36                        |                           800*1000                           |                268.9G                 |
@@ -242,7 +231,7 @@ Note: #30 & #44-#49 are resnet_v1.5,  #33 is resnet_v1,  #50-#54 are resnet-D.
 ## Industrial-Vision-Robotics
 <font size=2> 
   
-| No.  | Application                                             | Name                                                      |               Float Accuracy                   |               Quantized Accuracy               |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                   Computational Cost (OPs)                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | Depth Estimation                                        | pt_fadnet_sceneflow_576_960_441G_2.5                      |                          EPE: 0.926                          |                          EPE: 1.169                          |                           576*960                            |                 359G                  |
 | 2    | Binocular depth estimation                              | pt_fadnet_sceneflow_576_960_0.65_154G_2.5                 |                          EPE: 0.823                          |                          EPE: 1.158                          |                           576*960                            |                 154G                  |
@@ -257,7 +246,7 @@ Note: #30 & #44-#49 are resnet_v1.5,  #33 is resnet_v1,  #50-#54 are resnet-D.
 ## Medical-Image-Enhancement
 <font size=2>
 
-| No.  | Application                                             | Name                                                      |               Float Accuracy                    |               Quantized Accuracy                |                          Input Size                          |                  OPS                  |
+| No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                   Computational Cost (OPs)                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
 | 1    | Super Resolution                                        | tf_rcan_DIV2K_360_640_0.98_86.95G_2.5                     |            Set5 Y_PSNR : 37.640<br/>SSIM : 0.959             |           Set5 Y_PSNR : 37.2495<br/>SSIM : 0.9556            |                           360*640                            |                86.95G                 |
 | 2    | Super Resolution                                        | pt_SESR-S_DIV2K_360_640_7.48G_2.5                         | (Set5) PSNR/SSIM= 37.309/0.958<br/>(Set14) PSNR/SSIM= 32.894/ 0.911<br/>(B100)  PSNR/SSIM= 31.663/ 0.893<br/>(Urban100)  PSNR/SSIM = 30.276/0.908<br/> | (Set5) PSNR/SSIM= 36.813/0.954<br/>(Set14) PSNR/SSIM= 32.607/ 0.906<br/>(B100)  PSNR/SSIM= 31.443/ 0.889<br/>(Urban100)  PSNR/SSIM = 29.901/0.899<br/> |                           360*640                            |                 7.48G                 |
@@ -270,25 +259,31 @@ Note: #30 & #44-#49 are resnet_v1.5,  #33 is resnet_v1,  #50-#54 are resnet-D.
 <br>
 
 ## Model Download
-Please visit [model-list](/model_zoo/model-list) in this page. You will get download link and MD5 of all released models, including pre-compiled models that running on different platforms.                                 
+***************************
+:pushpin:  **Important Note!** Each model is associated with a .yaml file that encapsulates both the download link and MD5 checksum for the tar.gz file for each specific target platform.  These yaml files are found in the directory structure of the [model-list](/model_zoo/model-list).  A simple way to download an individual model is to use the URLs provided in this .yaml file.  This can be useful if you simply want to download the model outside of a Python environment.
+***************************
+
+The download package includes the pre-compiled, pre-trained model which you can leverage as a reference for your own implementation, or which you can directly deploy that model on a Xilinx target. 
 
 </details>
 
 ### Automated Download Script
-With downloader.py, you could quickly find the model you are interested in and specify a version to download it immediately. Please make sure that downloader.py and [model-list](/model_zoo/model-list) folder are at the same level directory. 
+The Vitis AI Model Zoo repository provides a Python [script](downloader.py) that can be used to quickly download specific models.  Please make sure that the downloader.py script and the [model-list](/model_zoo/model-list) folder are at the same level in the directory hierarchy.
+
+**Step1:** Execute the script:
 
  ```
  python3  downloader.py  
  ```
-Step1: You need input framework and model name keyword. Use space divide. If input `all` you will get list of all models.
+**Step2:** Input the framework keyword followed by a short form version of the model name (if known), (example: **resnet**).  Use a space as a separator (example **tf2 vgg16**).  If you input `all` you will get a list of all models.
 
-tf: tensorflow1.x,  tf2: tensorflow2.x,  pt: pytorch,  cf: caffe,  dk: darknet, all: list all model
+The available framework keywords are listed here:
 
-Step2: Select the specified model based on standard name.
+**tf**: tensorflow1.x,  **tf2**: tensorflow2.x,  **pt**: pytorch,  **cf**: caffe,  **dk**: darknet, **all**: list all models
 
-Step3: Select the specified hardware platform for your slected model.
+**Step4:** Select the desired target hardware platform for the version of the model that you need.
 
-For example, after running downloader.py and input `tf resnet` then you will see the alternatives such as:
+For example, after running downloader.py, input `tf resnet` and you will see a list of possible models:
 
 ```
 0:  all
@@ -297,7 +292,7 @@ For example, after running downloader.py and input `tf resnet` then you will see
 3:  tf_resnetv1_152_imagenet_224_224_21.83G_2.5
 ......
 ```
-After you input the num: 1, you will see the alternatives such as:
+Proceed by entering one of the numbers from the list.  As an example, if you input '1' the script will list all options that match your selection:
 
 ```
 0:  all
@@ -309,49 +304,47 @@ After you input the num: 1, you will see the alternatives such as:
 6:  resnet_v1_50_tf    u50lv-DPUCAHX8H
 ......
 ```
-Then you could choose it and input the number, the specified version of model will be automatically downloaded to the current directory.
-
-In addition, if you need download all models on all platforms at once, you just need enter number in the order indicated by the tips of Step 1/2/3 (select: all -> 0 -> 0).
+Once again you can now proceed by entering one of the numbers from list.  The specified version of model will then be automatically downloaded to the current directory.  Entering '0' will download all models matching your search criteria.
 
 ### Model Directory Structure
-Download and extract the model archive to your working area on the local hard disk. For details on the various models, download link and MD5 checksum for the zip file of each model, see [model-list](/model_zoo/model-list).
+Once you have downloaded one or more models, you can extract the model archive into your selected workspace. 
 
-#### Tensorflow Model Directory Structure
-For a Tensorflow model, you should see the following directory structure:
+#### TensorFlow Model Directory Structure
+TensorFlow models have the following directory structure:
 
 
-    ├── code                            # Contains test code which can run demo and evaluate model performance. 
+    ├── code                            # Contains test code which can execute the model on the target and showcase model performance. 
     │                          
     │
-    ├── readme.md                       # Contains the environment requirements, data preprocess and model information.
-    │                                     Refer this to know that how to test the model with scripts.
+    ├── readme.md                       # Documents the environment requirements, data pre-processing requirements and model information.
+    │                                     Developers should refer to this to understand how to test the model with scripts.
     │
-    ├── data                            # Contains the dataset that used for model test and training.
-    │                                     When test or training scripts run successfully, dataset will be automatically placed in it.
+    ├── data                            # The dataset target directory that can be used for model verification and training.
+    │                                     When test or training scripts run successfully, the dataset will be placed in this directory.
     │
     ├── quantized                          
     │   └── quantize_eval_model.pb      # Quantized model for evaluation.
     │
     └── float                             
-        └── frozen.pb                   # Float-point frozen model, the input to the `vai_q_tensorflow`.
-                                          The pb name of different models may be different.
+        └── frozen.pb                   # Floating-point frozen model used as the input to the quantizer.
+                                          The naming of the protobuf file may differ than the model naming used in the model-list.
 
 
-#### Pytorch Model Directory Structure
-For a Pytorch model, you should see the following directory structure:
+#### PyTorch Model Directory Structure
+PyTorch models have the following directory structure:
 
     ├── code                            # Contains test and training code.  
     │                                                        
     │                                   
-    ├── readme.md                       # Contains the environment requirements, data preprocess and model information.
-    │                                     Refer this to know that how to test and train the model with scripts.
+    ├── readme.md                       # Contains the environment requirements, data pre-processing requirements and model information.
+    │                                     Developers should refer to this to understand how to test and train the model with scripts.
     │                                        
-    ├── data                            # Contains the dataset that used for model test and training.
-    │                                     When test or training scripts run successfully, dataset will be automatically placed in it.
+    ├── data                            # The dataset target directory that can be used for model verification and training.
+    │                                     When test or training scripts run successfully, the dataset will be placed in this directory.
     │
-    ├── qat                             # Contains the QAT(Quantization Aware Training) results. 
-    │                                     The accuracy of QAT result is better than direct quantization called PTQ. 
-    │                                     Some models but not all provided QAT reference results, and only these models have qat folder. 
+    ├── qat                             # Contains the QAT (Quantization Aware Training) results. 
+    │                                     For some models, the accuracy of QAT is higher than with Post Training Quantization (PTQ) methods.
+    │                                     Some models, but not all, provide QAT reference results, and only these models have a QAT folder. 
     │                                         
     ├── quantized                          
     │   ├── _int.pth                    # Quantized model.
@@ -369,25 +362,24 @@ For a Pytorch model, you should see the following directory structure:
 
 
 ## Model Performance
-All the models in the Model Zoo have been deployed on Xilinx hardware with [Vitis AI](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/examples/Vitis-AI-Library). The performance number including end-to-end throughput and latency for each model on various boards with different DPU configurations are listed in the following sections.
+All the models in the Model Zoo have been deployed on Xilinx hardware with [Vitis AI](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/examples/Vitis-AI-Library). The performance number including end-to-end throughput and latency for each model on various targets with different DPU configurations are listed in the following sections.
 
-For more information about DPU, see [DPU IP Product Guide](https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=latest;d=pg338-dpu.pdf).
+For more information about the various Xilinx DPUs, see [DPU IP Product Guides](../docs/README.md#release-documentation).
 
-For RNN models such as NLP, please refer to [DPU-for-RNN](https://github.com/Xilinx/Vitis-AI/blob/master/demo/DPU-for-RNN) for dpu specification information.
+For recurrent neural network models for applications such as NLP, please refer to [DPU-for-RNN](https://github.com/Xilinx/Vitis-AI/blob/master/demo/DPU-for-RNN) for DPU specifications and use.
 
-Besides, for Transformer demos such as ViT, Bert-base you could refer to [Transformer](https://github.com/Xilinx/Vitis-AI/tree/master/examples/Transformer).
+Finally, for Transformer demos such as ViT and BERT-base you should refer to the [Transformer](https://github.com/Xilinx/Vitis-AI/tree/master/examples/Transformer) example documentation.
 
-**Note:** The model performance number listed in the following sections is generated with Vitis AI v2.5 and Vitis AI Lirary v2.5. For different platforms, the different DPU configurations are used. Vitis AI and Vitis AI Library can be downloaded for free from [Vitis AI Github](https://github.com/Xilinx/Vitis-AI) and [Vitis AI Library Github](https://github.com/Xilinx/Vitis-AI/tree/master/examples/Vitis-AI-Library).
-We will continue to improve the performance with Vitis AI. The performance number reported here is subject to change in the near future.
-
+******************
+📌**Note:** Unless otherwise specified, model performance benchmarks listed in the following tables were verified with v2.5 of Vitis AI and the Vitis AI Libraries. Note that different target platforms leverage different DPU architectures.  In each case, the specific details of the DPU used for benchmarking are provided.
+******************
 
 ### Performance on ZCU102 (0432055-05)
-Measured with Vitis AI 2.5 and Vitis AI Library 2.5  
 
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `ZCU102 (0432055-05)` board with a `3 * B4096  @ 281MHz` DPU configuration:
+The following table lists performance benchmarks, including end-to-end throughput and latency, for each model on the `ZCU102 (0432055-05)` board with a `3 * B4096  @ 281MHz` DPU configuration:
 
 
 | No\. | Model                                | GPU Model Standard Name                               | E2E throughput \(fps) <br/>Single Thread | E2E throughput \(fps) <br/>Multi Thread |
@@ -526,7 +518,6 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on ZCU104
-Measured with Vitis AI 2.5 and Vitis AI Library 2.5 
 
 <details>
  <summary><b>Click here to view details</b></summary>
@@ -670,12 +661,11 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on VCK190
-Measured with Vitis AI 2.5 and Vitis AI Library 2.5 
 
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Versal` board with 192 AIEs running at 1250 MHz:
+The following table lists performance benchmarks, including end-to-end throughput and latency, for each model on the `Versal` board with 96 AIEs running at 1250 MHz:
   
 
 | No\. | Model                                | GPU Model Standard Name                               | E2E throughput \(fps) <br/>Single Thread | E2E throughput \(fps) <br/>Multi Thread |
@@ -815,12 +805,11 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on Kria KV260 SOM
-Measured with Vitis AI 2.5 and Vitis AI Library 2.5 
 
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Kria KV260` board with a `1 * B4096F  @ 300MHz` DPU configuration:
+The following table lists the performance benchmarks, including end-to-end throughput and latency, for each model on the `Kria KV260` Starter Kit with a `1 * B4096F  @ 300MHz` DPU configuration:
   
 
 | No\. | Model                                | GPU Model Standard Name                               | E2E throughput \(fps) <br/>Single Thread | E2E throughput \(fps) <br/>Multi Thread |
@@ -959,13 +948,11 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on VCK5000
-Measured with Vitis AI 2.5 and Vitis AI Library 2.5 
 
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput for models on the `Versal ACAP VCK5000` board with DPUCVDX8H running at 4PE@350
-MHz in Gen3x16:
+The following table lists the performance benchmarks, including end-to-end throughput, for models on the `Versal ACAP VCK5000` board with DPUCVDX8H (4 PEs) clocked at 350MHz, and connected to the host CPU via a Gen3x16 PCIe host interface:
 
 | No\. | Model                                | GPU Model Standard Name                               | DPU Frequency(MHz) | E2E throughput \(fps) <br/>Multi Thread |
 | ---- | :----------------------------------- | :---------------------------------------------------- | ------------------ | --------------------------------------- |
@@ -1096,8 +1083,7 @@ MHz in Gen3x16:
 | 125  | yolov4_512_tf                        | tf_yolov4_coco_512_512_91.2G                          | 350                | 137.83                                  |
 
 
-The following table lists the performance number including end-to-end throughput for models on the `Versal ACAP VCK5000` board with DPUCVDX8H-aieDWC running at 6PE@350
-MHz in Gen3x16:
+The following table lists the performance benchmarks, including end-to-end throughput, for models on the `Versal ACAP VCK5000` board with DPUCVDX8H-aieDWC (6 PEs) clocked at 350MHz, and connected to the host CPU via a Gen3x16 PCIe host interface:
 
 
 | No\. | Model                                | GPU Model Standard Name                               | DPU Frequency(MHz) | E2E throughput \(fps) <br/>Multi Thread |
@@ -1215,8 +1201,7 @@ MHz in Gen3x16:
 | 111  | yolov3_coco_tf2                      | tf2_yolov3_coco_416_416_65.9G                         | 350                | 385.25                                  |
 
   
-The following table lists the performance number including end-to-end throughput for models on the `Versal ACAP VCK5000` board with DPUCVDX8H-aieMISC running at 6PE@350
-MHz in Gen3x16:
+The following table lists performance benchmarks, including end-to-end throughput and latency, for models on the `Versal ACAP VCK5000` board with DPUCVDX8H-aieMISC (6 PEs) clocked at 350MHz, and connected to the host CPU via a Gen3x16 PCIe host interface:
 
 
 | No\. | Model                                | GPU Model Standard Name                               | DPU Frequency(MHz) | E2E throughput \(fps) <br/>Multi Thread |
@@ -1312,8 +1297,7 @@ MHz in Gen3x16:
 | 89   | yolov4_512_tf                        | tf_yolov4_coco_512_512_91.2G                          | 350                | 171.52                                  |
 
 
-The following table lists the performance number including end-to-end throughput for models on the `Versal ACAP VCK5000` board with DPUCVDX8H running at 8PE@350
-MHz in Gen3x16:
+The following table lists performance benchmarks, including end-to-end throughput and latency, for models on the `Versal ACAP VCK5000` board with DPUCVDX8H (8 PEs) clocked at @350MHz, and connected to the host CPU via a Gen3x16 PCIe host interface:
 
 
 | No\. | Model                                | GPU Model Standard Name                               | DPU Frequency(MHz) | E2E throughput \(fps) <br/>Multi Thread |
@@ -1376,13 +1360,12 @@ MHz in Gen3x16:
 </details>
 
 
-### Performance on U50lv
-Measured with Vitis AI 2.5 and Vitis AI Library 2.5 
+### Performance on U50LV
 
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput for each model on the `Alveo U50lv` board with 10 DPUCAHX8H kernels running at 275Mhz in Gen3x4:
+The following table lists the performance benchmarks, including end-to-end throughput for each model, on the `Alveo U50lv` board with 10 DPUCAHX8H kernels clocked at 275Mhz, and connected to the host via a Gen3x4 PCIe host interface:
   
 
 | No\. | Model                                | GPU Model Standard Name                               | DPU Frequency(MHz) | E2E throughput \(fps) <br/>Multi Thread |
@@ -1472,7 +1455,7 @@ The following table lists the performance number including end-to-end throughput
 | 83   | yolov3_coco_tf2                      | tf2_yolov3_coco_416_416_65.9G                         | 165                | 77.83                                   |
 
 
-The following table lists the performance number including end-to-end throughput for each model on the `Alveo U50lv` board with 8 DPUCAHX8H-DWC kernels running at 275Mhz in Gen3x4:
+The following table lists performance benchmarks, including end-to-end throughput for each model, on the `Alveo U50lv` board with 8 DPUCAHX8H-DWC kernels clocked at 275Mhz, and connected to the host via a Gen3x4 PCIe host interface:
   
 
 | No\. | Model                                | GPU Model Standard Name                               | DPU Frequency(MHz) | E2E throughput \(fps) <br/>Multi Thread |
@@ -1592,12 +1575,11 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U55C DWC
-Measured with Vitis AI 2.5 and Vitis AI Library 2.5 
 
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput for each model on the `Alveo U55C` board with 11 DPUCAHX8H-DWC kernels running at 300Mhz in Gen3x4:
+The following table lists performance benchmarks, including end-to-end throughput for each model, on the `Alveo U55C` board with 11 DPUCAHX8H-DWC kernels clocked at 300Mhz, and connected to the host via a Gen3x4 PCIe host interface:
   
 
 | No\. | Model                                | GPU Model Standard Name                               | DPU Frequency(MHz) | E2E throughput \(fps) <br/>Multi Thread |
@@ -1711,12 +1693,10 @@ The following table lists the performance number including end-to-end throughput
 
 
 ### Performance on U200
-Measured with Vitis AI 2.5 and Vitis AI Library 2.5 
-
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUCADF8H kernels running at 300Mhz:
+The following table lists the performance benchmarks, including end-to-end throughput and latency, for each model on the `Alveo U200` board with 2 DPUCADF8H kernels clocked at 300Mhz:
   
 
 | No\. | Model        | Name                                    | E2E latency (ms) Thread num =20 | E2E throughput \-fps\(Multi Thread) |
@@ -1728,7 +1708,7 @@ The following table lists the performance number including end-to-end throughput
 | 5    | resnetv1_101 | tf_resnetv1_101_imagenet_224_224_14.4G  | 8.5                             | 472                                 |
 | 6    | resnetv1_152 | tf_resnetv1_152_imagenet_224_224_21.83G | 12.7                            | 316                                 |
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U200` board with 2 DPUCADX8G kernels running at 350Mhz with xilinx_u200_xdma_201830_2 shell:
+The following table lists the performance benchmarks, including end-to-end throughput and latency, for each model on the `Alveo U200` board with 2 DPUCADX8G kernels clocked at 350Mhz, and leveraging the xilinx_u200_xdma_201830_2 shell:
   
 
 | No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
@@ -1747,12 +1727,11 @@ The following table lists the performance number including end-to-end throughput
 </details>
 
 ### Performance on U250
-Measured with Vitis AI 2.5 and Vitis AI Library 2.5 
 
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUCADF8H kernels running at 300Mhz:
+The following table lists performance benchmarks, including end-to-end throughput and latency, for each model on the `Alveo U250` board with 4 DPUCADF8H kernels clocked at 300Mhz:
   
 
 | No\. | Model        | Name                                    | E2E latency (ms) Thread num =20 | E2E throughput \-fps\(Multi Thread) |
@@ -1764,7 +1743,7 @@ The following table lists the performance number including end-to-end throughput
 | 5    | resnetv1_101 | tf_resnetv1_101_imagenet_224_224_14.4G  | 4.24                            | 941.9                               |
 | 6    | resnetv1_152 | tf_resnetv1_152_imagenet_224_224_21.83G | 6.35                            | 630.3                               |
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Alveo U250` board with 4 DPUCADX8G kernels running at 350Mhz with xilinx_u250_xdma_201830_1 shell:
+The following table lists performance benchmarks, including end-to-end throughput and latency, for each model on the `Alveo U250` board with 4 DPUCADX8G kernels clocked at 350Mhz, and leveraging the xilinx_u250_xdma_201830_1 shell:
   
 
 | No\. | Model                      | Name                                         | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
@@ -1780,21 +1759,21 @@ The following table lists the performance number including end-to-end throughput
 | 9    | yolov3_bdd                 | dk_yolov3_bdd_288_512_53.7G                  | 14.27                           | 70.1                                   | 146.7                                  |
 | 10   | yolov3_voc                 | dk_yolov3_voc_416_416_65.42G                 | 9.46                           | 105.7                                   | 139.4                                |
 
-Note: For xilinx_u250_gen3x16_xdma_shell_3_1_202020_1 latest shell U250 xclbins, Alveo U250 board would be having only 3 DPUCADF8H kernels instead of 4, thereby the performance numbers for 1 Alveo U250 board with xilinx_u250_gen3x16_xdma_shell_3_1 shell xclbins would be 75% of the above reported performance numbers which is for 4 DPUCADF8H kernels. 
+ ******************
+📌**Note:** When leveraging the most recent xilinx_u250_gen3x16_xdma_shell_3_1_202020_1 shell, the Alveo U250 xclbin will incorporate three DPUCADF8H kernels instead of four.  The impact of this is that the image-per-second benchmarks for a single Alveo U250 board with the xilinx_u250_gen3x16_xdma_shell_3_1 shell will be 75% of the reported benchmark above.
+******************
 
 </details>
 
-
 ### Performance on Ultra96  
-The performance number shown below was measured with the previous AI SDK v2.0.4 on Ultra96 v1.
-The Vitis platform of Ultra96 v2 has not been released yet. So the performance numbers are therefore not reported for this Model Zoo release.  
+The performance benchmarks shown below were measured with the previous AI SDK v2.0.4 on Ultra96 v1.  Xilinx no longer updates performance benchmarks for Vitis AI on the Ultra96.  Please contact your local Avnet FAE with the specifics of the benchmark data that you require for your application.
 
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `Ultra96` board with a `1 * B1600  @ 287MHz   V1.4.0` DPU configuration:
+The following table lists the performance benchmarks, including end-to-end throughput and latency, for each model on the `Ultra96` v1 board with a `1 * B1600  @ 287MHz V1.4.0` DPU configuration:
 
-**Note:** The original power supply of Ultra96 is not designed for high performance AI workload. The board may occasionally hang to run few models, When multi-thread is used. For such situations, `NA` is specified in the following table.
+**Note:** The power supply design of the Ultra96 is such that it is insufficient to support high performance AI workloads. The result of this is that the board may occasionally hang when leveraging multi-threaded processing of several of these models.  In these cases `NA` is specified in the following table.
 
 
 | No\. | Model                          | Name                                                | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
@@ -1839,13 +1818,12 @@ The following table lists the performance number including end-to-end throughput
 </details>
 
 ### Performance on ZCU102 (0432055-04)  
-This version of ZCU102 is out of stock. The performance number shown below was measured with the previous AI SDK v2.0.4. Now this form has stopped updating.
-So the performance numbers are therefore not reported for this Model Zoo release.
+This version of ZCU102 is no longer in production and leveraged a [different memory configuration](https://support.xilinx.com/s/article/71961) than the current production board. The benchmarks shown below were measured with the previous AI SDK v2.0.4.  Benchmarks for this version of the ZCU102 are no longer updated.
 
 <details>
  <summary><b>Click here to view details</b></summary>
 
-The following table lists the performance number including end-to-end throughput and latency for each model on the `ZCU102 (0432055-04)` board with a  `3 * B4096  @ 287MHz   V1.4.0` DPU configuration:
+The following table lists performance benchmarks, including end-to-end throughput and latency, for each model on the `ZCU102 (0432055-04)` board with a  `3 * B4096  @ 287MHz   V1.4.0` DPU configuration:
 
 
 | No\. | Model                          | Name                                                | E2E latency \(ms\) Thread num =1 | E2E throughput \-fps\(Single Thread\) | E2E throughput \-fps\(Multi Thread\) |
@@ -1894,14 +1872,8 @@ The following table lists the performance number including end-to-end throughput
 We welcome community contributions. When contributing to this repository, first discuss the change you wish to make via:
 
 * [GitHub Issues](https://github.com/Xilinx/Vitis-AI/issues)
-* [Forum](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
+* [Vitis AI Forum](https://support.xilinx.com/s/topic/0TO2E000000YKY9WAO/vitis-ai-ai)
 * <a href="mailto:xilinx_ai_model_zoo@xilinx.com">Email</a>
 
 You can also submit a pull request with details on how to improve the product. Prior to submitting your pull request, ensure that you can build the product and run all the demos with your patch. In case of a larger feature, provide a relevant demo.
 
-## License
-
-Xilinx AI Model Zoo is licensed under [Apache License Version 2.0](reference-files/LICENSE). By contributing to the project, you agree to the license and copyright terms therein and release your contribution under these terms.
-
-<hr/>
-<p align="center"><sup>Copyright&copy; 2019 Xilinx</sup></p>

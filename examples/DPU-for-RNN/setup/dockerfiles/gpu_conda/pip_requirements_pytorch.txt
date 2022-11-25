@@ -1,3 +1,0 @@
-allennlp==0.9
-pytorch-pretrained-bert
-pytorch-transformers>=1.1.0,<2.0.0

@@ -1,14 +1,16 @@
-<table width="100%">
-  <tr width="100%">
-    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Runtime v1.3.1</h1>
-    </td>
+﻿<table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
+   </td>
  </tr>
- </table>
+</table>
+
+# Vitis AI Runtime v2.5 Quick-start for RNN
  
 ## Setting Up the Host
-Before you compile the VART for cloud, please load and run the docker container according to the [Getting Started](https://github.com/Xilinx/Vitis-AI#getting-started)
+Before you compile the VART for cloud, please load and run the docker container according to the [installation instructions](../../../docs/quick-start/install)
 
-## Compile the VART  
+## Compile VART  
 
 * Compile the VART and install the VART. Execute the following command in order.
 	* unilog

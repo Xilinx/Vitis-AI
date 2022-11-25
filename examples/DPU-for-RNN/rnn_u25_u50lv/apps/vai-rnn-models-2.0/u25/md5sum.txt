@@ -1,3 +1,0 @@
-6c2906d611a8ce735cb32999054bda3c  ./lstm_sentiment_detection/compiled_batch_1.xmodel
-a0a882c06bf36abc4202cf91bca31a4a  ./lstm_customer_satisfaction/compiled_batch_1.xmodel
-10e64ae86957687150b221d73634373d  ./openie-new/compiled_batch_1.xmodel

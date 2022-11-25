@@ -1,12 +1,15 @@
-<table width="100%">
-  <tr width="100%">
-    <td align="center"><img src="https://www.xilinx.com/content/dam/xilinx/imgs/press/media-kits/corporate/xilinx-logo.png" width="30%"/><h1>Vitis AI Runtime v2.5</h1>
-    </td>
+﻿<table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
+   </td>
  </tr>
- </table>
+</table>
+
+## Vitis AI Runtime v2.5
 
 # Introduction
-Vitis AI Run time enables applications to use the unified high-level runtime API for both cloud and edge. Therefore, making cloud-to-edge deployments seamless and efficient.
+
+Vitis AI Run time enables applications to use the unified high-level runtime API for both data center and embedded applications. Therefore, making cloud-to-edge deployments seamless and efficient.
 The Vitis AI Runtime API features are:
 * Asynchronous submission of jobs to the accelerator
 * Asynchronous collection of jobs from the accelerator
@@ -30,7 +33,7 @@ VART
 │   ├── cmake.sh
 │   ├── README.md
 │   └── samples
-├── quick_start_for_edge.md
+├── quick_start_for_embedded.md
 ├── quick_start_for_rnn.md
 ├── README.md
 ├── target_factory

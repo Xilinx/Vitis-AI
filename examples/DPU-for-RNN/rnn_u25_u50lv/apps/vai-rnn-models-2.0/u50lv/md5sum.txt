@@ -1,8 +1,0 @@
-bf47b2d1f25179ab4fedfc7bde90f662  ./lstm_customer_satisfaction/compiled_batch_3.xmodel
-d8c620f569d0566be6c5c47c249ad959  ./lstm_customer_satisfaction/compiled_batch_4.xmodel
-9f9ddd66013f7291cce2ece13a4adae8  ./lstm_sentiment_detection/compiled_batch_3.xmodel
-eda6445d7a63ad307212be390deb3e84  ./lstm_sentiment_detection/compiled_batch_4.xmodel
-f2763b4a40a6a86bd3c53b5dae711580  ./openie-new/compiled_batch_3.xmodel
-304a5dc8e7ce828996a090c22868a053  ./openie-new/compiled_batch_4.xmodel
-524a614a5d9a5c7662581a91d6771e3f  ./gru_sentiment_detection/compiled_batch_3.xmodel
-808ef331be3db4429ef3abaca25a9225  ./gru_sentiment_detection/compiled_batch_4.xmodel
