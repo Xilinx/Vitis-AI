@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Vitis Integration &mdash; Vitis AI 2.5 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Third-party Inference Stack Integration" href="workflow-third-party.html" />
+    <link rel="prev" title="Model Deployment" href="workflow-model-deployment.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../index.html" class="icon icon-home"> Vitis AI
+            <img src="../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Vitis AI Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_notes.html">Release Notes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html">Vitis AI Developer Machine Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html#vitis-ai-supported-board-targets">Vitis AI Supported Board Targets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html#alveo-card-system-requirements">Alveo Card System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/README.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Model Inspector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html#operator-support">Operator Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html#model-optimization">Model Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html#model-quantization">Model Quantization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html#model-compilation">Model Compilation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Model Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html#vitis-ai-library">Vitis AI Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html#vitis-ai-runtime">Vitis AI Runtime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html#whole-application-acceleration">Whole Application Acceleration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html#model-profiling">Model Profiling</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Vitis Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#vivado-integration">Vivado Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#vivado-integration-related-resources"><em>Vivado integration related resources:</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#linux-dpu-recipes">Linux DPU Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#whole-application-acceleration">Whole Application Acceleration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">Third-Party Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Model Zoo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Release Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">FAQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vitis AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Vitis Integration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/workflow-system-integration.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vitis-integration">
+<h1>Vitis Integration<a class="headerlink" href="#vitis-integration" title="Permalink to this heading">¶</a></h1>
+<p>The Vitis workflow specifically targets developers who wish to take a very software-centric approach to Xilinx SoC system development.  Vitis AI is differentiated from traditional FPGA flows, enabling the developer to build FPGA acceleration into their applications without the need to develop RTL kernels.</p>
+<p>The Vitis workflow enables the integration of the DPU IP as an acceleration kernel that is loaded at runtime in the form of an xclbin file.  To provide developers with a reference platform that can be used as a starting point, the Vitis AI repository includes several <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/dpu">reference designs</a> for the different DPU architectures and target platforms.</p>
+<p>In addition, within the Vitis Tutorials, a tutorial is available which provides the <a class="reference external" href="https://github.com/Xilinx/Vitis-Tutorials/tree/2022.1/Vitis_Platform_Creation/Design_Tutorials/02-Edge-AI-ZCU104">end-to-end workflow</a> for the creation of a Vitis Platform for ZCU104 targets.</p>
+</section>
+<section id="vivado-integration">
+<h1>Vivado Integration<a class="headerlink" href="#vivado-integration" title="Permalink to this heading">¶</a></h1>
+<p>The Vivado workflow targets traditional FPGA developers.  It is important to note that the DPU IP is not currently integrated into the Vivado IP catalog.  We recognize that this is a little less convenient for developers.  Unfortunately the reasons for this are historic and relate to the independent release scheduling of Vivado, Vitis and Vitis AI.  Currently, in order to update support the latest operators and network topologies at the time of Vitis AI release, the IP is released asynchronously, in the form of a <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/dpu">reference design and IP repository</a>.</p>
+<hr class="docutils" />
+<section id="vivado-integration-related-resources">
+<h2><em>Vivado integration related resources:</em><a class="headerlink" href="#vivado-integration-related-resources" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>A tutorial is provide that teaches the developer <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/Vitis-AI-Tutorials/tree/2.5/Tutorials/DPU_IP_Vivado_Vitis_AI">how to integrate</a> the DPU in a Vivado design</p></li>
+<li><p>A quick-start example that assists the user in deploying VART on Embedded targets is available <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Runtime/VART/quick_start_for_embedded.md">here</a></p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="linux-dpu-recipes">
+<h1>Linux DPU Recipes<a class="headerlink" href="#linux-dpu-recipes" title="Permalink to this heading">¶</a></h1>
+<p>Yocto and Petalinux users will require bitbake recipes for the Vitis AI components that are compiled for the target.  These recipes are provided in the <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/petalinux_recipes">source code folder</a>.</p>
+<hr class="docutils" />
+<p>📌<strong>Important Note!</strong> - For Vitis AI releases &gt;= v2.0, Vivado users (Zynq Ultrascale+ and Kria applications) must compile VART standalone without XRT.  However, Vitis users must compile VART with XRT (required for Vitis kernel integration).  All designs that leverage Vitis-AI require VART, while all Alveo and Versal designs must include XRT. By default, the Vitis AI Docker images <a class="reference external" href="../docker/docker_build_gpu.sh#L40">include XRT</a>.  In addition, the Linux bitbake recipe for VART <a class="reference external" href="../setup/petalinux/recipes-vitis-ai/vart/vart_2.5.bb#L10">assumes</a> by default that the user is leveraging the Vitis flow.  Users who are leveraging the DPU in Vivado with Linux must comment out the line <em>PACKAGECONFIG:append = “ vitis”</em> in the bitbake recipe in order to ensure that they are compiling VART without XRT.  Failing to do so will result in runtime errors when executing VART APIs.  Specifically, XRT will error out when it attempts to load an xclbin file, a kernel file that will not be present in the Vivado flow.</p>
+</section>
+<hr class="docutils" />
+<section id="whole-application-acceleration">
+<h1>Whole Application Acceleration<a class="headerlink" href="#whole-application-acceleration" title="Permalink to this heading">¶</a></h1>
+<p>It is typical in machine learning applications to require some degree of pre-processing such as is illustrated in the example below:</p>
+<div align="center">
+  <img width="100%" height="100%" src="reference/images/waa_preprocess.PNG">
+</div>
+</br><p>In addition, many real-world applications for machine learning do not simply employ a single machine learning model.  It is very common to cascade multiple object detection networks as a pre-cursor to a final stage (ie, classification, OCR).  Throughout this pipeline the meta data must be time-stamped or otherwise attached to the buffer address of the associated frame.  Pixels bounded by ROI (Region-of-Interest) predictions are cropped from the the associated frame.  Each of these cropped sub-frame images are then scaled such that the X/Y dimensions of the crop match the input layer dimensions of the downstream network.  Some pipelines, such as ReID, will localize, crop and scale ten or more ROIs from every frame.  Each of these crops may require a different scaling factor in order to match the input dimensions of the downstream model in the pipeline.  Below is an example:</p>
+<div align="center">
+  <img width="100%" height="100%" src="reference/images/waa_cascade.PNG">
+</div>
+</br><p>These pre, intermediate, and post processing operations can significantly impact the overall efficiency of the end-to-end application.  This makes “Whole Application Acceleration” or WAA a very important aspect of Xilinx machine learning solutions.  All developers leveraging Xilinx devices for high-performance machine learning applications should learn and understand the benefits of WAA.  An excellent starting point for this can be found <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/waa">here</a>.</p>
+<p>On a similar vein, users may wish to explore the relevance and capabilites of the <a class="reference external" href="https://xilinx.github.io/VVAS/">Xilinx VVAS SDK</a>, which while not part of Vitis AI, offers many important features for the development of end-to-end video analytics pipelines that employ multi-stage (cascaded) AI pipelines.  VVAS is also applicable to designs that leverage video decoding, transcoding, RTSP streaming and CMOS sensor interfaces.  Another important differentiator of VVAS is that it directly enables software developers to leverage <a class="reference external" href="https://gstreamer.freedesktop.org/">GStreamer</a> commands to interact with the video pipeline.</p>
+</section>
+
+
+           </div>
+          </div>
+          
+                  <style>
+                        .footer {
+                        position: fixed;
+                        left: 0;
+                        bottom: 0;
+                        width: 100%;
+                        }
+                  </style>
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="workflow-model-deployment.html" class="btn btn-neutral float-left" title="Model Deployment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow-third-party.html" class="btn btn-neutral float-right" title="Third-party Inference Stack Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021-2022, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on July 20, 2022.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,5 +1,5 @@
-[1] PR to re-upload WAA, RNN directories
-[2] Rename subdirectories in /src
+**Done** [1] PR to re-upload WAA, RNN directories
+**Done** [2] Rename subdirectories in /src
 **Done** [3] Move Petalinux recipes to /src
 **Done** [4] Separate online Linux install versus Petalinux build process into two documents.  Keep the online install instructions in /docs/board_setup and the Petalinux build instructions in either Doc or /src
 [5] Move VAI Libs and VART user documentation to a more appropriate location in /docs

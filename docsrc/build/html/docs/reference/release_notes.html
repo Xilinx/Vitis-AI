@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Vitis AI Compatibility With Vivado, Vitis and Petalinux &mdash; Vitis AI 2.5 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Vitis AI Developer Machine Requirements" href="system_requirements.html" />
+    <link rel="prev" title="Vitis AI - A Brief Introduction" href="../workflow.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../index.html" class="icon icon-home"> Vitis AI
+            <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Vitis AI Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#release-notes">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new-features-highlights">New Features/Highlights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ai-model-zoo">AI Model Zoo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ai-quantizer-cnn">AI Quantizer-CNN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ai-optimizer">AI Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ai-compiler">AI Compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ai-library-vart">AI Library / VART</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ai-profiler">AI Profiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edge-dpu-dpuczdx8g">Edge DPU-DPUCZDX8G</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edge-dpu-dpucvdx8g">Edge DPU-DPUCVDX8G</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cloud-dpu-dpucvdx8h">Cloud DPU-DPUCVDX8H</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cloud-dpu-dpucadf8h">Cloud DPU-DPUCADF8H</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#whole-graph-optimizer-wego">Whole Graph Optimizer (WeGO)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inference-server">Inference Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waa">WAA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">New Features/Highlights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">New Features/Highlights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-zoo">Model Zoo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantizer">Quantizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimizer">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compiler">Compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ai-library">AI Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">AI Profiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vart">VART</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dpu">DPU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#whole-app-acceleration">Whole App Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ai-kernel-scheduler">AI Kernel Scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tvm">TVM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#known-issues">Known Issues</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4"></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">New Features/Highlights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Model Zoo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Quantizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">AI Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">AI Profiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">VART</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">DPU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Whole App Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">AI Kernel Scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">TVM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">Known Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates">Updates</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id18"></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">New Features/Highlights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">Model Zoo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">Quantizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">Compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">AI Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runtime">Runtime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">AI Profiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">AI Kernel Scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">DPU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platforms">Platforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples-demo">Examples &amp; Demo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utilities">Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">Known Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id29">Updates</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id30"></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#new-features">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id31">Model Zoo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">Quantizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id33">Compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id34">Runtime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id35">DPU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vitis-ai-library">Vitis AI Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-demo">Example &amp; Demo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#others">Others</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">Known Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id37">Updates</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id38"></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id40">Model Zoo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimizer-a-separate-package-which-requires-licensing">Optimizer (A separate package which requires licensing)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id41">Quantizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id42">Compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id43">Runtime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id44">DPU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id45">Vitis AI Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id46">Others</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="system_requirements.html">Vitis AI Developer Machine Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_requirements.html#vitis-ai-supported-board-targets">Vitis AI Supported Board Targets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_requirements.html#alveo-card-system-requirements">Alveo Card System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/README.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Model Inspector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#operator-support">Operator Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#model-optimization">Model Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#model-quantization">Model Quantization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#model-compilation">Model Compilation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Model Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#vitis-ai-library">Vitis AI Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#vitis-ai-runtime">Vitis AI Runtime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#whole-application-acceleration">Whole Application Acceleration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#model-profiling">Model Profiling</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">Vitis Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#vivado-integration">Vivado Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#linux-dpu-recipes">Linux DPU Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#whole-application-acceleration">Whole Application Acceleration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">Third-Party Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Model Zoo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_documentation.html">Release Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Vitis AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Vitis AI Compatibility With Vivado, Vitis and Petalinux</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/reference/release_notes.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>﻿<table class="sphinxhide"></p>
+ <tr>
+   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
+   </td>
+ </tr>
+</table><section id="vitis-ai-compatibility-with-vivado-vitis-and-petalinux">
+<h1>Vitis AI Compatibility With Vivado, Vitis and Petalinux<a class="headerlink" href="#vitis-ai-compatibility-with-vivado-vitis-and-petalinux" title="Permalink to this heading">¶</a></h1>
+<p>Please refer to the compatibility documentation <a class="reference internal" href="version_compatibility.html"><span class="doc">here</span></a>.</p>
+<section id="release-notes">
+<h2>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">¶</a></h2>
+<details>
+  <summary>Release 2.5</summary><section id="new-features-highlights">
+<h3>New Features/Highlights<a class="headerlink" href="#new-features-highlights" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>AI Model Zoo added 14 new models, including BERT-based NLP, Vision Transformer (ViT), Optical Character Recognition (OCR), Simultaneous Localization and Mapping (SLAM), and more Once-for-All (OFA) models</p></li>
+<li><p>Added 38 base &amp; optimized models for AMD EPYC server processors</p></li>
+<li><p>AI Quantizer added model inspector, now supports TensorFlow 2.8 and Pytorch 1.10</p></li>
+<li><p>Whole Graph Optimizer (WeGO) supports Pytorch 1.x and TensorFlow 2.x</p></li>
+<li><p>Deep Learning Processing Unit (DPU) for Versal® ACAP supports multiple compute units (CU), new Arithmetic Logic Unit (ALU) engine, Depthwise convolution and more operators supported by the DPUs on VCK5000 and Alveo™ data center accelerator cards</p></li>
+<li><p>Inference server supports ZenDNN as backend on AMD EPYC™ server processors</p></li>
+<li><p>New examples added to Whole Application Acceleration (WAA) for VCK5000 Versal development card and Zynq® UltraScale+™ evaluation kits</p></li>
+</ul>
+</section>
+<section id="ai-model-zoo">
+<h3>AI Model Zoo<a class="headerlink" href="#ai-model-zoo" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added 14 new models, and 134 models in total</p></li>
+<li><p>Expanded model categories for diverse AI workloads :</p>
+<ul>
+<li><p>Added models for data center application requirements including text detection and end-to-end OCR</p></li>
+<li><p>Added BERT-based NLP and Vision Transformer (ViT) models on VCK5000</p></li>
+<li><p>More OFA-optimized models, including OFA-RCAN for Super-Resolution and OFA-YOLO for Object Detection</p></li>
+<li><p>Added models for industrial vision and SLAM, including Interest Point Detection &amp; Description model and Hierarchical Localization model.</p></li>
+</ul>
+</li>
+<li><p>Added 38 base &amp; optimized models for AMD EPYC CPU</p></li>
+<li><p>EoU enhancement:</p>
+<ul>
+<li><p>Improved model index by application categories</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="ai-quantizer-cnn">
+<h3>AI Quantizer-CNN<a class="headerlink" href="#ai-quantizer-cnn" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added Model Inspector that inspects a float model and shows partition results</p></li>
+<li><p>Support Tensorflow 2.8 and Pytorch 1.10</p></li>
+<li><p>Support float-scale and per-channel quantization</p></li>
+<li><p>Support configuration for different quantize strategies</p></li>
+</ul>
+</section>
+<section id="ai-optimizer">
+<h3>AI Optimizer<a class="headerlink" href="#ai-optimizer" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>OFA enhancement:</p>
+<ul>
+<li><p>Support even kernel size of convolution</p></li>
+<li><p>Support ConvTranspose2d</p></li>
+<li><p>Updated examples</p></li>
+</ul>
+</li>
+<li><p>One-step and iterative pruning enhancement:</p>
+<ul>
+<li><p>Resumed model analysis or search after exception</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="ai-compiler">
+<h3>AI Compiler<a class="headerlink" href="#ai-compiler" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support ALU for DPUCZDX8G</p></li>
+<li><p>Support new models</p></li>
+</ul>
+</section>
+<section id="ai-library-vart">
+<h3>AI Library / VART<a class="headerlink" href="#ai-library-vart" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added 6 new model libraries and support 17 new models</p></li>
+<li><p>Custom Op Enhancement</p></li>
+<li><p>Added new CPU operators</p></li>
+<li><p>Xdputil Tool Enhancement</p></li>
+<li><p>Two new demos on VCK190 Versal development board</p></li>
+</ul>
+</section>
+<section id="ai-profiler">
+<h3>AI Profiler<a class="headerlink" href="#ai-profiler" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Full support on custom OP and Graph Runner</p></li>
+<li><p>Stability optimization</p></li>
+</ul>
+</section>
+<section id="edge-dpu-dpuczdx8g">
+<h3>Edge DPU-DPUCZDX8G<a class="headerlink" href="#edge-dpu-dpuczdx8g" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>New ALU engine to replace pool engine and DepthWiseConv engine in MISC:</p>
+<ul>
+<li><p>ALU: support new features, e.g. large-kernel-size MaxPool, AveragePool, rectangle-kernel-size AveragePool, 16bit const weights</p></li>
+<li><p>ALU: support HardSigmoid and HardSwish</p></li>
+<li><p>ALU: support DepthwiseConv + LeakyReLU</p></li>
+<li><p>ALU: support the parallelism configuration</p></li>
+</ul>
+</li>
+<li><p>DPU IP and TRD on ZCU102 with encrypted RTL IP based on 2022.1 Vitis platform</p></li>
+</ul>
+</section>
+<section id="edge-dpu-dpucvdx8g">
+<h3>Edge DPU-DPUCVDX8G<a class="headerlink" href="#edge-dpu-dpucvdx8g" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Optimized ALU that better support features like channel-attention</p></li>
+<li><p>Support multiple compute units</p></li>
+<li><p>Support DepthwiseConv + LeakyReLU</p></li>
+<li><p>Support Versal DPU IP and TRD on VCK190 with encrypted RTL and AIE code which still in C32B1-6/C64B1-5, and based on 2022.1 Vitis platform</p></li>
+</ul>
+</section>
+<section id="cloud-dpu-dpucvdx8h">
+<h3>Cloud DPU-DPUCVDX8H<a class="headerlink" href="#cloud-dpu-dpucvdx8h" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Enlarged DepthWise convolution kernel size that ranges from 1x1 to 8x8</p></li>
+<li><p>Support AIE based pooling and ElementWise add &amp; multiply, and big kernel size pooling</p></li>
+<li><p>Support more DepthWise convolution kernel sizes</p></li>
+</ul>
+</section>
+<section id="cloud-dpu-dpucadf8h">
+<h3>Cloud DPU-DPUCADF8H<a class="headerlink" href="#cloud-dpu-dpucadf8h" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support ReLU6/LeakyReLU and MobileNet series models</p></li>
+<li><p>Fixed the issue of missing directories in some cases in the .XO flow</p></li>
+</ul>
+</section>
+<section id="whole-graph-optimizer-wego">
+<h3>Whole Graph Optimizer (WeGO)<a class="headerlink" href="#whole-graph-optimizer-wego" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support PyTorch 1.x and TensorFlow 2.x in-framework inference</p></li>
+<li><p>Added 19 PyTorch 1.x/Tensorflow 2.x/Tensorflow 1.x examples, including classification, object detection, segmentation and more</p></li>
+</ul>
+</section>
+<section id="inference-server">
+<h3>Inference Server<a class="headerlink" href="#inference-server" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added gRPC API to inference server flow</p></li>
+<li><p>Support Tensorflow/Pytorch</p></li>
+<li><p>Support AMD ZenDNN as backend</p></li>
+</ul>
+</section>
+<section id="waa">
+<h3>WAA<a class="headerlink" href="#waa" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>New examples for VCK5000 &amp; ZCU104 - ResNet &amp; adas_detection</p></li>
+<li><p>New ResNet example containing AIE based pre-prorcessing kernel</p></li>
+<li><p>Xclbin generation using Pre-built DPU flow for ZCU102/U50 ResNet and adas_detection applications</p></li>
+<li><p>Xclbin generation using build flow for ZCU104/VCK190 ResNet and adas_detection applications</p></li>
+<li><p>Porting of all VCK190 examples from ES1 to production version and use base platform instead of custom platform</p></li>
+</ul>
+</details><details>
+  <summary>Release 1.4.1</summary></section>
+<section id="id1">
+<h3>New Features/Highlights<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<ol class="simple">
+<li><p>Vitis AI RNN docker public release, including RNN quantizer and compiler</p></li>
+<li><p>New unified xRNN runtime for U25 &amp; U50LV based on VART Runner interface and XIR xmodels</p></li>
+<li><p>Release Versal DPU TRD based on 2021.1</p></li>
+<li><p>Versal WAA app updated to provide better throughput using the new XRT C++ APIs and zero copy</p></li>
+<li><p>TVM easy-of-use improvement</p></li>
+<li><p>Support VCK190 and VCK5000 production boards (EA)</p></li>
+<li><p>Some bugs fixed, e.g. update on xcompiler data alignment issue affecting WAA, quantizer bug fix</p></li>
+</ol>
+</details><details>
+  <summary>Release 1.4</summary></section>
+<section id="id2">
+<h3>New Features/Highlights<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<ol class="simple">
+<li><p>Support new platforms, including Versal ACAP platforms VCK190, VCK5000 and Kria SoM</p></li>
+<li><p>Better Pytorch and Tensorflow model support: Pytorch 1.5-1.7.1, improved quantization for Tensorflow 2.x models</p></li>
+<li><p>New models, including 4D Radar detection, Image-Lidar sensor fusion, 3D detection &amp; segmentation, multi-task, depth estimation, super resolution for automotive, smart medical and industrial vision applications</p></li>
+<li><p>New Graph Runner API to deploy models with multiple subgraphs</p></li>
+<li><p>DPUCADX8G (DPUv1)deprecated with DPUCADF8H (DPUv3Int8)</p></li>
+<li><p>DPUCAHX8H (DPUv3E) and DPUCAHX8L (DPUv3ME) release with xo</p></li>
+<li><p>Classification &amp; Detection WAA examples for Versal (VCK190)</p></li>
+</ol>
+</section>
+<section id="model-zoo">
+<h3>Model Zoo<a class="headerlink" href="#model-zoo" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>17 new models added, 109 total</p>
+<ul>
+<li><p>11 new Pytorch models</p></li>
+<li><p>5 new Tensorlfow models</p></li>
+<li><p>1 new Caffe model</p></li>
+</ul>
+</li>
+<li><p>Added support for Pytorch, Tensorflow 2.3 models</p></li>
+<li><p>Added new application models</p>
+<ul>
+<li><p>Medical and industrial vision: depth estimation, RGB-D segmentation, super resolution</p></li>
+<li><p>Automotive: 4D Radar detection, Image-Lidar sensor fusion, surround-view 3D detection, upgraded 3D segmentation and multi-task models</p></li>
+</ul>
+</li>
+<li><p>EoU Enhancements:</p>
+<ul>
+<li><p>provided automated download script to select models with model name and hardware platform</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="quantizer">
+<h3>Quantizer<a class="headerlink" href="#quantizer" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>TensorFlow 2.x version</p>
+<ul>
+<li><p>Support fast finetune in post-training quantization (PTQ)</p></li>
+<li><p>Improved quantize-aware training (QAT) functions</p></li>
+<li><p>Support more layers: swish/sigmoid, hard-swish, hard-sigmoid, LeakyRelu, nested tf.keras functional and sequential models</p></li>
+<li><p>Support custom layers via subclassing tf.keras.layers and support custom quantization strategies</p></li>
+</ul>
+</li>
+<li><p>Pytorch version</p>
+<ul>
+<li><p>Support Pytorch 1.5-1.7.1</p></li>
+<li><p>Support more operators including hard-swish, hard-sigmoid</p></li>
+<li><p>Support shared parameters in quantization</p></li>
+<li><p>Enhanced quantization profiling and error check functions</p></li>
+<li><p>Improved QAT functions</p>
+<ul>
+<li><p>support training from PTQ results</p></li>
+<li><p>support reused modules</p></li>
+<li><p>support resuming training</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="optimizer">
+<h3>Optimizer<a class="headerlink" href="#optimizer" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>TensorFlow</p>
+<ul>
+<li><p>Support tf.keras APIs in TF1</p></li>
+<li><p>Supports single GPU mode for model analysis</p></li>
+</ul>
+</li>
+<li><p>Pytorch version</p>
+<ul>
+<li><p>Improved easy-of-use with simplified APIs</p></li>
+<li><p>Support torch.nn.ConvTranspose2d</p></li>
+<li><p>Support reused modules</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="compiler">
+<h3>Compiler<a class="headerlink" href="#compiler" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support ALU for DPUCVDX8G (xvDPU)</p></li>
+<li><p>Support cross-layer prefetch optimization option</p></li>
+<li><p>Support xmodel output nodes assignment</p></li>
+<li><p>Enabled features to implement zero-copy for DPUCZDX8G(DPUv2), DPUCAHX8H(DPUv3E) and DPUCAHX8L(DPUv3ME)</p></li>
+<li><p>Open-source network visualization tool Netron officially supports XIR</p></li>
+</ul>
+</section>
+<section id="ai-library">
+<h3>AI Library<a class="headerlink" href="#ai-library" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for 17 new models from AI Model Zoo</p></li>
+<li><p>Introduced new deploy APIs graph_runner, especially for models with multiple subgraphs</p></li>
+<li><p>Introduced new tool xdputil for DPU and xmodel debug</p></li>
+<li><p>Support new KV260 SoM kit</p></li>
+<li><p>Support DPUCVDX8G(xvDPU) on VCK190</p></li>
+<li><p>Support DPUCVDX8H(DPUv4E) on VCK5000</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>AI Profiler<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support new DPU IPs: DPUCAHX8L(DPUv3ME), DPUCVDX8G(xvDPU) and DPUCVDX8H(DPUv4E)</p></li>
+<li><p>Support DPUCZDX8G(DPUv2) and DPUCVDX8G(xvDPU) in Vivado flow</p></li>
+<li><p>Add Memory IO statistics</p></li>
+</ul>
+</section>
+<section id="vart">
+<h3>VART<a class="headerlink" href="#vart" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support Petalinux 2021.1 and OpenCV v4</p></li>
+<li><p>Update samples to use INT8 as the input instead of FP32</p></li>
+</ul>
+</section>
+<section id="dpu">
+<h3>DPU<a class="headerlink" href="#dpu" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>CNN DPU for Zynq SoC / MPSoC, DPUCZDX8G (DPUv2)</p>
+<ul>
+<li><p>Upgraded to 2021.1</p></li>
+</ul>
+</li>
+<li><p>CNN DPU for Alveo-HBM, DPUCAHX8H (DPUv3E), DPUCAHX8L (DPUv3ME)</p>
+<ul>
+<li><p>Released xo</p></li>
+</ul>
+</li>
+<li><p>CNN DPU for Alveo-DDR, DPUCADF8H (DPUv3Int8)</p>
+<ul>
+<li><p>Support latest U250 platform (2020.2)</p></li>
+<li><p>Support latest U200 platform (2021.1)</p></li>
+<li><p>Support AWS F1</p></li>
+</ul>
+</li>
+<li><p>CNN DPU for Versal, DPUCVDX8G (xvDPU)</p>
+<ul>
+<li><p>VCK190 DPU TRD</p></li>
+<li><p>Provide basic unit C32 with 32-aie cores for a single batch</p></li>
+<li><p>Support configurable batch size 1~6</p></li>
+<li><p>Support new OPs: Global Average Pooling up to 256x256, Element Multiply, Hardsigmoid and Hardswish</p></li>
+</ul>
+</li>
+<li><p>CNN DPU for Versal, DPUCVDX8H (DPUv4E)</p>
+<ul>
+<li><p>Improved the DPU performance of small model inference with weight pre-fetch function</p></li>
+</ul>
+</li>
+<li><p>CNN DPU for Alveo-DDR, DPUCADX8G (DPUv1)</p>
+<ul>
+<li><p>Deprecated with DPUCADF8H (DPUv3Int8)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="whole-app-acceleration">
+<h3>Whole App Acceleration<a class="headerlink" href="#whole-app-acceleration" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Multi Object Tracking (SORT) example on ZCU102</p></li>
+<li><p>Classification &amp; Detection App examples for Versal (VCK190)</p></li>
+<li><p>Updated existing examples to XRT APIs and zero copy</p></li>
+<li><p>Added U200 (DPUv3INT8) based WAA TRD</p></li>
+<li><p>Ported U200/250 examples to DPUCADF8H (DPUv3INT8)</p></li>
+<li><p>SSD-MobileNet U280 example accelerates both pre and post-processing on hardware</p></li>
+</ul>
+</section>
+<section id="ai-kernel-scheduler">
+<h3>AI Kernel Scheduler<a class="headerlink" href="#ai-kernel-scheduler" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Unified DPU kernels into one and added samples for Alveo U200/250 (DPUv3INT8), U280, U50, U50lv</p></li>
+</ul>
+</section>
+<section id="tvm">
+<h3>TVM<a class="headerlink" href="#tvm" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support of all DPUs - ZCU102/4, U50, U200, U250, U280</p></li>
+<li><p>Using Petalinux for edge devices</p></li>
+<li><p>Increased throughput using AKS at the application level</p></li>
+<li><p>Yolov3 tutorial as python notebook</p></li>
+</ul>
+</section>
+<section id="known-issues">
+<h3>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>ZCU104 power patch fail to work in 2021.1. Board will hang or reboot with heavy workload</p></li>
+</ul>
+</details><section id="id4">
+<h4><a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h4>
+<details>
+  <summary>Release 1.3</summary></section>
+</section>
+<section id="id5">
+<h3>New Features/Highlights<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+<ol class="simple">
+<li><p>Added support for Pytorch and Tensorflow 2.3 frameworks</p></li>
+<li><p>Added more ready-to-use AI models for a wider range of applications, including 3D point cloud detection and segmentation, COVID-19 chest image segmentation and other reference models</p></li>
+<li><p>Unified XIR-based compilation flow from edge to cloud</p></li>
+<li><p>Vitis AI Runtime (VART) fully open source</p></li>
+<li><p>New RNN overlay for NLP applications</p></li>
+<li><p>New CNN DPUs for the low-latency and higher throughput applications on Alveo cards</p></li>
+<li><p>EoU enhancement with Beta version model partitioning and custom layer/operators plug-in</p></li>
+</ol>
+</section>
+<section id="id6">
+<h3>Model Zoo<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>28 new models added, over 92 total</p>
+<ul>
+<li><p>13 new Pytorch models</p></li>
+<li><p>17 new Tensorlfow models, including 5 Tensorflow 2 models</p></li>
+<li><p>6 new Caffe models</p></li>
+</ul>
+</li>
+<li><p>Added support for Pytorch, Tensorflow 2.3 models</p></li>
+<li><p>Added new application models</p>
+<ul>
+<li><p>Medical: CT segmentation, medical robot instrument segmentation, Covid-19 chest radiograph segmentation and other reference models.</p></li>
+<li><p>Automotive: added 3D point cloud detection, point cloud segmentation models</p></li>
+</ul>
+</li>
+<li><p>EoU Enhancements:</p>
+<ul>
+<li><p>Improved accuracy evaluation and quantization scripts for all models</p></li>
+<li><p>Model zoo restructured with clearer model information</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id7">
+<h3>Quantizer<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for Pytorch and Tensorflow 2 frameworks</p></li>
+<li><p>Calibration and fine-tune quantization methods upgraded to support TensorFlow 2.3</p></li>
+<li><p>Improved quantization performance and added support for fine-tuning for Pytorch</p></li>
+</ul>
+</section>
+<section id="id8">
+<h3>Optimizer<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Pytorch support added</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3>Compiler<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for  Tensorflow 2.3</p></li>
+<li><p>Added support for all the new CNN DPUs on Alveo and Versal platforms</p>
+<ol class="simple">
+<li><p>DPUCAHX8L (DPUv3ME)</p></li>
+<li><p>DPUCADF8H (DPUv3INT8)</p></li>
+<li><p>DPUCVDX8G (Versal CNN DPU)</p></li>
+</ol>
+</li>
+<li><p>EoU Enhancement</p>
+<ol class="simple">
+<li><p>Added support for model partition &amp; custom layer/operators Plugin (Beta)</p></li>
+<li><p>AI compilation unified to the XIR-based compilation flow from edge to cloud platforms</p></li>
+<li><p>Supports hybrid compilation for customer accelerator &amp; DPU for higher e2e performance</p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="id10">
+<h3>AI Library<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for 36 new models from AI Model Zoo</p></li>
+<li><p>Added supports for Xmodel compiled with XIR flow from edge to cloud</p></li>
+<li><p>Added support for DPUCAHX8L (DPUv3ME) on Alveo U280/U50</p></li>
+<li><p>Added support for supports DPUCVDX8G (Versal DPU) on VCK190</p></li>
+</ul>
+</section>
+<section id="id11">
+<h3>AI Profiler<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Integrated with Vitis Analyzer 2020.2</p>
+<ol class="simple">
+<li><p>Use Vitis Analyzer 2020.2 as default GUI</p></li>
+<li><p>Added the profiling .csv file to be compatible with Vitis Analyzer</p></li>
+</ol>
+</li>
+<li><p>Vaitrace supports profiling Python applications</p></li>
+</ul>
+</section>
+<section id="id12">
+<h3>VART<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fully open source in Vitis AI 1.3</p></li>
+<li><p>Added new Python APIs</p>
+<ol class="simple">
+<li><p>APIs for TensorBuffer Operation</p></li>
+<li><p>APIs of RunnerExt</p></li>
+</ol>
+</li>
+<li><p>Added support for Xmodel compiled with XIR flow from edge to cloud</p></li>
+<li><p>Added support for all DPU for CNN and RNN</p></li>
+<li><p>Added supports for CNN DPU on Versal platforms</p></li>
+</ul>
+</section>
+<section id="id13">
+<h3>DPU<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>CNN DPU for Zynq SoC / MPSoC, DPUCZDX8G (DPUv2)</p>
+<ul>
+<li><p>Extended stride from 1-4 to 1-8</p></li>
+<li><p>Extended MaxPooling kernel from 1-8 to 1-256 to support Pointpillar network</p></li>
+<li><p>Addd support for elew_mult feature</p></li>
+<li><p>Optimized save engine to improve efficiency</p></li>
+<li><p>Supported XIR based AI Compiler</p></li>
+<li><p>EoU Enhancement</p>
+<ul>
+<li><p>DPU TRD (DPUCZDX8G) upgraded from v3.2 to v3.3</p></li>
+<li><p>Added support for Vitis GUI flow for the integration</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>CNN DPU for Alveo-HBM, DPUCAHX8L (v3ME)</p>
+<ul>
+<li><p>Released as xclbin</p></li>
+<li><p>Added support for HBM Alveo cards U280, U50, U50LV</p></li>
+<li><p>Optimized with back-to-back Conv &amp; Depthwise Conv engines to increase computing parallelism</p></li>
+<li><p>Designed hierarchical memory system, URAM &amp; HBM, to maximize data movement</p></li>
+<li><p>Added support for low-latency CNN inference for high resolutions images</p></li>
+<li><p>Added support for XIR-based compilation flow</p></li>
+</ul>
+</li>
+<li><p>CNN DPU for Alveo-DDR, DPUCADF8H (DPUv3Int8)</p>
+<ul>
+<li><p>Released as xclbin</p></li>
+<li><p>Added support for DDR Alveo cards U200 and U250, Cloud FaaS</p></li>
+<li><p>2x throughput improvement over DPUv1 in INT8 mode</p></li>
+<li><p>High efficiency engine can reach ~80% efficiency</p></li>
+<li><p>Drop-in replacement for DPUv1 features</p>
+<ol class="simple">
+<li><p>Streaming execution</p></li>
+<li><p>Multi-process support</p></li>
+</ol>
+</li>
+<li><p>Ready for Whole Application Acceleration workloads</p></li>
+<li><p>Added Support for XIR-based compilation flow</p></li>
+</ul>
+</li>
+<li><p>RNN DPU, DPURAHR16L (xRNN)</p>
+<ul>
+<li><p>Released as xclbin</p></li>
+<li><p>Supported platforms:</p>
+<ol class="simple">
+<li><p>Alveo U25 for batch 1</p></li>
+<li><p>Alveo U50lv for batch 7</p></li>
+</ol>
+</li>
+<li><p>RNN quantizer, INT16 (16bit)</p></li>
+<li><p>RNN compiler</p></li>
+<li><p>Unified XRNN runner in VART;</p></li>
+<li><p>Supports three RNN models</p>
+<ol class="simple">
+<li><p>Customer Satisfaction</p></li>
+<li><p>IMDB Sentiment Detection</p></li>
+<li><p>Open Information Extraction</p></li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id14">
+<h3>Whole App Acceleration<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>DPUv2 TRD flow to build from sources (see <a class="reference external" href="https://github.com/xilinx/vitis-ai/dsa/WAA-TRD">WAA-TRD</a>)</p></li>
+<li><p>DFx based TRD flow to build from pre-built IPs</p>
+<ol class="simple">
+<li><p>DPUCZDZ8G</p></li>
+</ol>
+</li>
+<li><p>Existing WAA classification and detection examples ported to DPUv3e (earlier only for DPUv2 and DPUv1) (see <a class="reference external" href="https://github.com/xilinx/vitis-ai/demo/Whole-App-Acceleration">Whole-App-Acceleration</a>)</p></li>
+<li><p>Fall Detection App using DPUv1 and Accelerated Optical Flow (see <a class="reference external" href="https://github.com/xilinx/vitis-ai/demo/Whole-App-Acceleration/fall_detection">Fall Detection</a>)</p></li>
+<li><p>Detection Post Processing (NMS) Acceleration (see <a class="reference external" href="https://github.com/xilinx/vitis-ai/demo/Whole-App-Acceleration/ssd_mobilenet">ssd_mobilenet</a>)</p></li>
+</ul>
+</section>
+<section id="id15">
+<h3>AI Kernel Scheduler<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added kernels for new DPUs</p>
+<ul>
+<li><p>DPUCZDZ8G (for edge devices - ZCU102, ZCU104)</p></li>
+<li><p>DPUCAHX8H (for HBM devices - Alveo-U50)</p></li>
+</ul>
+</li>
+<li><p>Added kernels for Accelerated Optical Flow</p></li>
+</ul>
+</section>
+<section id="id16">
+<h3>TVM<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>New Flow (BYOC) or running TVM supported models on DPUv1, DPUv2</p></li>
+</ul>
+</section>
+<section id="id17">
+<h3>Known Issues<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Limitations for DPUCADF8H on U200/U250:</p>
+<ul>
+<li><p>Python API not yet supported</p></li>
+<li><p>Segmentation networks not yet supported</p></li>
+<li><p>Possible accuracy issue when accessing DPUCADF8H from multiple threads</p></li>
+</ul>
+</li>
+<li><p>ERROR: pip’s dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+vai-q-tensorflow2 1.3.0.dev0 requires dm-tree~=0.1.1, which is not installed.
+aiohttp 3.6.3 requires chardet&lt;4.0,&gt;=2.0, but you have chardet 4.0.0 which is incompatible.
+aiohttp 3.6.3 requires yarl&lt;1.6.0,&gt;=1.0, but you have yarl 1.6.3 which is incompatible.</p>
+<ul>
+<li><p>Errors like this can be safely ignored does not affect any Vitis AI functionality</p></li>
+</ul>
+</li>
+<li><p>Inconsistent accuracies observed in multi-threaded applications using DPUCADF8H</p>
+<ul>
+<li><p>View workaround <a class="reference external" href="https://github.com/xilinx/vitis-ai/examples/DPUCADF8H/tf_resnet50_multi_thread/scripts">here</a>.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="updates">
+<h3>Updates<a class="headerlink" href="#updates" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>v1.3.1</p>
+<ul>
+<li><p>Bug fixes and improvements for v1.3</p></li>
+<li><p>Updated Compiler to improve performance by 5% in average for most models</p></li>
+<li><p>Added Zero copy support (new APIs in VART / Vitis AI Library)</p></li>
+<li><p>Added Cross-layer equalization support in TensorFlow v1.15 (more benefits for mobilenet models)</p></li>
+<li><p>Added WAA U50 TRD</p></li>
+<li><p>Updated U280 Pre-Processing using Multi-Preprocessing JPEG decode kernels</p></li>
+</ul>
+</li>
+<li><p>v1.3.2</p>
+<ul>
+<li><p>Enable Ubuntu 20.04 on MPSoC (Vitis AI Runtime and Vitis AI Library)</p></li>
+<li><p>Added environment variable for Vitis AI Library’s model search path</p></li>
+</ul>
+</li>
+</ul>
+</details><section id="id18">
+<h4><a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h4>
+<details>
+  <summary>Release 1.2</summary></section>
+</section>
+<section id="id19">
+<h3>New Features/Highlights<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h3>
+<ol class="simple">
+<li><p>Vitis AI Quantizer and DNNDK runtime all open source</p></li>
+<li><p>14 new Reference Models  AI Model Zoo (Pytorch, Caffe, Tensorflow)</p></li>
+<li><p>VAI Quantizer supports optimized models (pruned)</p></li>
+<li><p>DPU naming scheme has been updated to be consistent across all configurations</p></li>
+<li><p>Introducing Vitis AI profiler for edge and cloud</p></li>
+<li><p>Added  Alveo U50/U50LV support</p></li>
+<li><p>Added  Alveo U280 support</p></li>
+<li><p>Alveo U50/U50LV DPU DPUCAHX8H micro-architecture improvement</p></li>
+<li><p>DPU TRD upgraded to support Vitis 2020.1 and Vivado 2020.1</p></li>
+<li><p>Vitis AI for Pytorch CNN general access (Beta version)</p></li>
+</ol>
+</section>
+<section id="id20">
+<h3>Model Zoo<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>8 new Pytorch models added in the AI Model Zoo (Beta version)</p>
+<ul>
+<li><p>ENet, SemanticFPN(ResNet18), facerec_pretrain_res20, face_quality, MT-resnet18, face_reid_large, face_reid_small, person_reid</p></li>
+</ul>
+</li>
+<li><p>Added new Caffe models , including license plate detection and recognition, face detection, medical image segmentation, etc.</p></li>
+<li><p>Support pruned model quantization</p></li>
+<li><p>Caffe_Dev open source for easier integration</p></li>
+<li><p>New Models added for DPUCADX8G on Alveo U200/U250</p>
+<ul>
+<li><p>Caffe: Refine-Det, U-Net, Pix2Pix (6 models), Re-identification, Face_Detect (360x640)</p></li>
+<li><p>TF: VGG16, VGG19</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id21">
+<h3>Quantizer<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Vitis AI for Pytorch CNN general access (Beta version)</p></li>
+<li><p>Vitis AI Quantizer open source on Github (Caffe, Tensorflow 1.15 and Pytorch)</p></li>
+<li><p>Add Caffe binary and pycaffe support in docker environment (python 2.7)</p></li>
+<li><p>Integrated quantization finetuning feature for Caffe and Tensorflow</p></li>
+<li><p>Option to specify which layer to be 16-bit</p></li>
+</ul>
+</section>
+<section id="id22">
+<h3>Optimizer<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for Tensorflow 1.15</p></li>
+<li><p>Added Support weight-shared conv pruning</p></li>
+<li><p>Optimizer compatible with docker environment</p></li>
+</ul>
+</section>
+<section id="id23">
+<h3>Compiler<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for 14 new models from Xilinx AI Model Zoo</p></li>
+<li><p>Added support NNDCT quantized pytorch model compilation</p></li>
+<li><p>Improved DPUCAHX8H (for Alveo U50) performance by enabling new IP enhancements and complier optimizations</p></li>
+<li><p>Reduced compiler times by 10x for DPUCAHX8H (Alveo U50)</p></li>
+<li><p>Optimized compiler memory planning to maximize HBM memory reuse for DPUCAHX8H (Alveo U50)</p></li>
+</ul>
+</section>
+<section id="id24">
+<h3>AI Library<a class="headerlink" href="#id24" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Add new Vitis AI examples, including license plate detection &amp; recognition, face detection, medical image segmentation</p></li>
+<li><p>Added support forDPUCADX8G (Alveo U200/U250). Users can build and run the documented models on U200/U250 now.</p></li>
+</ul>
+</section>
+<section id="runtime">
+<h3>Runtime<a class="headerlink" href="#runtime" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Open sourced DNNDK runtime</p></li>
+<li><p>VART adds support for Alveo U50LV, U280</p></li>
+<li><p>VART updated to use unified APIs, which explicitly uses XIR, as the unified data structure. All samples are updated to use the new APIs.</p></li>
+<li><p>Optimizations for single server, Multi-Card deployments</p></li>
+<li><p>Added support for TVM</p></li>
+<li><p>Added support for ONNXRuntime</p></li>
+</ul>
+</section>
+<section id="id25">
+<h3>AI Profiler<a class="headerlink" href="#id25" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for C++ function level profiling</p></li>
+<li><p>Added support for C++ graph level profiling like DPU graph and CPU graph and sub-graph, etc</p></li>
+<li><p>Added support for fined-grain level operator profiling (cloud only supports xmodel)</p></li>
+</ul>
+</section>
+<section id="id26">
+<h3>AI Kernel Scheduler<a class="headerlink" href="#id26" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Introduced in Vitis AI 1.1, AKS is an application to automatically and efficiently pipeline complex AI graphs.</p></li>
+<li><p>Vitis AI 1.2 adds support for AI graphs with</p>
+<ul>
+<li><p>Whole App Acceleration</p></li>
+<li><p>Multiple FPGAs</p></li>
+<li><p>Python based pre/post processing functions</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id27">
+<h3>DPU<a class="headerlink" href="#id27" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>DPU naming scheme has been updated to be consistant across all configurations</p></li>
+<li><p>Alveo U50 DPU DPUCAHX8H (DPUv3) micro-architecture enhanced to support feature-map stationary, instruction fusion and support long weight instructions, which will result in better data movement efficiency</p></li>
+<li><p>Edge DPU DPUCZDX8G (DPUv2) in Vitis 2020.1 adds support for Zynq / Zynq Ultrascale devices and supports low power modes</p></li>
+<li><p>Edge DPU DPUCZDX8G (DPUv2) TRD upgraded to be compatible with Vitis 2020.1 and Vivado 2020.1</p></li>
+</ul>
+</section>
+<section id="platforms">
+<h3>Platforms<a class="headerlink" href="#platforms" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added Alveo U50LV support</p></li>
+<li><p>Added Alveo U280 support</p></li>
+<li><p>Improved Alveo U50 performance</p></li>
+</ul>
+</section>
+<section id="examples-demo">
+<h3>Examples &amp; Demo<a class="headerlink" href="#examples-demo" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Whole application acceleration</p>
+<ul>
+<li><p>Resnet50 and ADAS examples for ZCU102</p></li>
+</ul>
+</li>
+<li><p>3 AllenNLP demos on U25 (EA)</p></li>
+<li><p>4-bit DPU demo on ZCU102 (EA)</p></li>
+</ul>
+</section>
+<section id="utilities">
+<h3>Utilities<a class="headerlink" href="#utilities" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added Darknet to Caffe Conversion Tool (alveo/apps/yolo/darknet_to_caffe)</p></li>
+<li><p>Added scripts to convert darknet yolo networks to caffe and test the accuracy</p></li>
+</ul>
+</section>
+<section id="id28">
+<h3>Known Issues<a class="headerlink" href="#id28" title="Permalink to this heading">¶</a></h3>
+<ol class="simple">
+<li><p>The model “ssd_pedestrain_pruned_0_97” in pre-compiled model packages has a typo, which should be “ssd_pedestrian_pruned_0.97”</p></li>
+<li><p>Force option “–force” should be used when installing updated packages over the default packages in edge board images</p></li>
+<li><p>The cloud demo cannot support drm for display because of the docker limitations</p></li>
+<li><p>VART does not validate model and DPU combinations. This feature will be added in future releases. users should ensure they have loaded the correct models for the target devices. If not, there will be an unexpected runtime error.</p></li>
+<li><p>The “builddrm.sh” under demo directories in Vitis AI Library can only be cross compiled, and cannot be native build on the board directly</p></li>
+</ol>
+</section>
+<section id="id29">
+<h3>Updates<a class="headerlink" href="#id29" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>v1.2.1</p>
+<ul>
+<li><p>Added Zynq Ultrascale Plus Whole App examples</p></li>
+<li><p>Updated U50 XRT and shell to <em>Xilinx-u50-gen3x4-xdma-2-202010.1-2902115</em></p></li>
+<li><p>Updated docker launch instructions</p></li>
+<li><p>Updated TRD makefile instructions</p></li>
+</ul>
+</li>
+<li><p>v1.3.2</p>
+<ul>
+<li><p>Enable Ubuntu 20.04 on MPSoC (Vitis AI Runtime and Vitis AI Library)</p></li>
+<li><p>Added environment variable for Vitis AI Library’s model search path</p></li>
+</ul>
+</li>
+</ul>
+</details><section id="id30">
+<h4><a class="headerlink" href="#id30" title="Permalink to this heading">¶</a></h4>
+<details>
+  <summary>Release 1.1</summary></section>
+</section>
+<section id="new-features">
+<h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id31">
+<h3>Model Zoo<a class="headerlink" href="#id31" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Model quantization accuracy update</p></li>
+<li><p>Model test and retraining improved</p></li>
+<li><p>Caffe_Xilinx updated to version 1.1</p></li>
+<li><p>U50, U200, U250 performance added</p></li>
+</ul>
+</section>
+<section id="id32">
+<h3>Quantizer<a class="headerlink" href="#id32" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Add Tensorflow 1.15 support</p></li>
+<li><p>Bugfixes</p></li>
+</ul>
+</section>
+<section id="id33">
+<h3>Compiler<a class="headerlink" href="#id33" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support cross compilation for Zynq and ZU+ based platforms</p></li>
+<li><p>Vitis AI Compiler for U50</p>
+<ul>
+<li><p>Based on the new XIR (Xilinx Intermediate Representation)</p></li>
+<li><p>Support DPUv3E</p></li>
+<li><p>Tested with 40 models from Vitis AI Model Zoo</p></li>
+</ul>
+</li>
+<li><p>Vitis AI Compiler for Zynq and ZU+</p>
+<ul>
+<li><p>Support DPUv2 1.4.1 instruction set</p></li>
+<li><p>Support bias rightward-shift computation to improve model accuracy</p></li>
+<li><p>Support bilinear upsampling operator</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id34">
+<h3>Runtime<a class="headerlink" href="#id34" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>VART (Vitis AI Runtime)</p>
+<ul>
+<li><p>Unified runtime based on XIR for Zynq, ZU+ and Alveo</p></li>
+<li><p>Include new APIs for NN performance improvement</p></li>
+<li><p>7 samples with VART APIs provided</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id35">
+<h3>DPU<a class="headerlink" href="#id35" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>DPUv2 for Zynq and ZU+</p></li>
+<li><p>DPUv2</p>
+<ul>
+<li><p>Upgrade to version 1.4.1</p></li>
+<li><p>DPU TRD update with Vitis 2019.2 and Vitis AI Library 1.1</p></li>
+</ul>
+</li>
+<li><p>DPUv3E</p>
+<ul>
+<li><p>https://github.com/Xilinx/Vitis-AI/tree/master/alveo-hbm</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="vitis-ai-library">
+<h3>Vitis AI Library<a class="headerlink" href="#vitis-ai-library" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>All source code open source</p></li>
+<li><p>Support VART</p></li>
+<li><p>Add support for Alveo</p></li>
+<li><p>Support batch model for DPUv3E</p></li>
+</ul>
+</section>
+<section id="example-demo">
+<h3>Example &amp; Demo<a class="headerlink" href="#example-demo" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Whole Application Acceleration Example</p></li>
+<li><p>End-to-end pipeline which includes JPEG decode, Resize, CNN inference on Alveo</p></li>
+<li><p>Neptune demo: Use FPGA for multi-stream and multi-model mode</p></li>
+<li><p>AKS demo: Building complex application using C++ and threads</p></li>
+</ul>
+</section>
+<section id="others">
+<h3>Others<a class="headerlink" href="#others" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>TVM (Early access, provide docker upon request)</p>
+<ul>
+<li><p>Supported frontends: TFLite, ONNX, MxNet and Pytorch</p></li>
+<li><p>Platform support: ZCU102, ZC104, U200 and U250</p></li>
+<li><p>Tested for 15 models including classification, detection and segmentation from various frameworks</p></li>
+</ul>
+</li>
+<li><p>xButler upgraded to version 3.0 and provides support for docker container.</p></li>
+<li><p>Improved support on upsampling, deconvolution and large convolutions for segmentation models including FPN for DPUv1</p></li>
+</ul>
+</section>
+<section id="id36">
+<h3>Known Issues<a class="headerlink" href="#id36" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Alveo U50 toolchain doesn’t support Conv2DTranspose trained in Keras and converted to TF 1.15, which will be fixed in Vitis AI 1.2 release.</p></li>
+</ul>
+</section>
+<section id="id37">
+<h3>Updates<a class="headerlink" href="#id37" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>5/6/20 - Fixed hardware bug which will lead to computation errors in some corner case for Alveo U50 Production shell xclbin.</p></li>
+<li><p>5/6/20 - Added support for Alveo U50 using EA x4 shell for increased performance.</p></li>
+</ul>
+</details><section id="id38">
+<h4><a class="headerlink" href="#id38" title="Permalink to this heading">¶</a></h4>
+<details>
+  <summary>Release 1.0</summary></section>
+</section>
+<section id="id39">
+<h3>New Features<a class="headerlink" href="#id39" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id40">
+<h3>Model Zoo<a class="headerlink" href="#id40" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Release custom Caffe framework distribution caffe_xilinx</p></li>
+<li><p>Add accuracy test code and retrain code for all Caffe models</p></li>
+<li><p>Increase Tensorflow models to 19 with float/fixed model versions and accuracy test code, including popular models such as SSD, YOLOv3, MLPerf:ssd_resnet34, etc.</p></li>
+<li><p>Add multi-task Caffe model for ADAS applications</p></li>
+</ul>
+</section>
+<section id="optimizer-a-separate-package-which-requires-licensing">
+<h3>Optimizer (A separate package which requires licensing)<a class="headerlink" href="#optimizer-a-separate-package-which-requires-licensing" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Caffe Pruning</p>
+<ul>
+<li><p>Support for depthwise convolution layer</p></li>
+<li><p>Remove internal implementation-related parameters in transformed prototxt</p></li>
+</ul>
+</li>
+<li><p>TensorFlow Pruning</p>
+<ul>
+<li><p>Release pruning tool based on TensorFlow 1.12</p></li>
+<li><p>Add more validations to user-specified parameters</p></li>
+<li><p>Bug fixes for supporting more networks</p></li>
+</ul>
+</li>
+<li><p>Darknet pruning</p>
+<ul>
+<li><p>new interface for pruning tool</p></li>
+<li><p>support yolov3-spp</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id41">
+<h3>Quantizer<a class="headerlink" href="#id41" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Tensorflow quantization</p>
+<ul>
+<li><p>Support DPU simulation and dumping quantize simulation results.</p></li>
+<li><p>Improve support for some layers and node patterns, including tf.keras.layers.Conv2DTranspose, tf.keras.Dense, tf.keras.layers.LeakyReLU, tf.conv2d + tf.mul</p></li>
+<li><p>Move temp quantize info files from /tmp/ to $output_dir/temp folder, to support multi-users on one machine</p></li>
+<li><p>Bugfixes</p></li>
+</ul>
+</li>
+<li><p>Caffe quantization</p>
+<ul>
+<li><p>Enhanced activation data dump function</p></li>
+<li><p>Ubuntu 18 support</p></li>
+<li><p>Non-unified bit width quantization support</p></li>
+<li><p>Support HDF5 data layer</p></li>
+<li><p>Support of scale layers without parameters but with multiple inputs</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id42">
+<h3>Compiler<a class="headerlink" href="#id42" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support cross compilation for Zynq and ZU+ based platforms</p></li>
+<li><p>Enhancements and bug fixes for a broader set of Tensorflow models</p></li>
+<li><p>New Split IO memory model enablement for performance optimization</p></li>
+<li><p>Improved code generation</p></li>
+<li><p>Support Caffe/TensorFlow model compilation over cloud DPU V3E (Early Access)</p></li>
+</ul>
+</section>
+<section id="id43">
+<h3>Runtime<a class="headerlink" href="#id43" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Enable edge to cloud deployment over XRT 2019.2</p></li>
+<li><p>Offer the unified Vitis AI C++/Python programming APIs</p></li>
+<li><p>DPU priority-based scheduling and DPU core affinity</p></li>
+<li><p>Introduce adaptive operating layer to unify runtime’s underlying interface for Linux, XRT and QNX</p></li>
+<li><p>QNX RTOS enablement to support automotive customers.</p></li>
+<li><p>Neptune API for X+ML</p></li>
+<li><p>Performance improvements</p></li>
+</ul>
+</section>
+<section id="id44">
+<h3>DPU<a class="headerlink" href="#id44" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>DPUv2 for Zynq and ZU+</p>
+<ul>
+<li><p>Support Vitis flow with reference design based on ZCU102</p></li>
+<li><p>The same DPU also supports Vivado flow</p></li>
+<li><p>All features are configurable</p></li>
+<li><p>Fixed several bugs</p></li>
+</ul>
+</li>
+<li><p>DPUv3 for U50/U280 (Early access)</p></li>
+</ul>
+</section>
+<section id="id45">
+<h3>Vitis AI Library<a class="headerlink" href="#id45" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support of new Vitis AI Runtime - Vitis AI Library is updated to be based on the new Vitis AI Runtime with unified APIs. It also fully supports XRT 2019.2.</p></li>
+<li><p>New DPU support - Besides DPUv2 for Zynq and ZU+, a new AI Library will support new DPUv3 IPs for Alveo/Cloud using same codes (Early access).</p></li>
+<li><p>New Tensorflow model support - There are up to 19 tensorflow models supported, which are from official tensorflow repository</p></li>
+<li><p>New libraries and demos - There are two new libraries “libdpmultitask” and “libdptfssd” which supports multi-task models and Tensorflow SSD models. An updated classification demo is included to shows how to uses unified APIs in Vitis AI runtime.</p></li>
+<li><p>New Open Source Library - The “libdpbase” library is open source in this release, which shows how to use unified APIs in Vitis AI runtime to construct high-level libraries.</p></li>
+<li><p>New Installation Method - The host side environment adopts uses image installation, which simplifies and unifies the installation process.</p></li>
+</ul>
+</section>
+<section id="id46">
+<h3>Others<a class="headerlink" href="#id46" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support for TVM which enables support for Pytorch, ONNX and SageMaker NEO</p></li>
+<li><p>Partitioning of Tensorflow models and support for xDNNv3 execution in Tensorflow natively</p></li>
+<li><p>Automated Tensorflow model partition, compilation and deployment over DPUv3 (Early access)</p></li>
+<li><p>Butler API for following:</p>
+<ul>
+<li><p>Automatic resource discovery and management</p></li>
+<li><p>Multiprocess support – Ability for many containers/processes to access single FPGA</p></li>
+<li><p>FPGA slicing – Ability to use part of FPGA</p></li>
+<li><p>Scaleout support for multiple FPGA on same server</p></li>
+</ul>
+</li>
+<li><p>Support for pix2pix models</p></li>
+</ul>
+</details></section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+                  <style>
+                        .footer {
+                        position: fixed;
+                        left: 0;
+                        bottom: 0;
+                        width: 100%;
+                        }
+                  </style>
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../workflow.html" class="btn btn-neutral float-left" title="Vitis AI - A Brief Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="system_requirements.html" class="btn btn-neutral float-right" title="Vitis AI Developer Machine Requirements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021-2022, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on July 20, 2022.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
