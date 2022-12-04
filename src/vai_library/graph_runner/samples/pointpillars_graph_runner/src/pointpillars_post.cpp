@@ -40,7 +40,6 @@ namespace vitis { namespace ai { namespace pp {
 
 extern  std::vector<int> g_grid_size;
 extern  G_ANCHOR g_anchor;
-extern  ::second::protos::TrainEvalPipelineConfig cfg;
 
 std::vector<int> topk(const V1F& scores, int k, V2F& bboxes_in, V2F& bboxes_out);
 std::vector<int> non_max_suppression_cpu(
@@ -378,20 +377,13 @@ PointPillarsPost::PointPillarsPost(
       realbatchnum(realbatchnumin),
       anchors_mask(batchnum)
 {
-  cfg_nms_pre_max_size = cfg.model().second().nms_pre_max_size();
-  cfg_nms_post_max_size = cfg.model().second().nms_post_max_size();
-  cfg_nms_iou_threshold = cfg.model().second().nms_iou_threshold() ;
-  cfg_num_class = cfg.model().second().num_class();
-  cfg_post_center_limit_range.assign(cfg.model().second().post_center_limit_range().begin(), cfg.model().second().post_center_limit_range().end());
-  cfg_class_names.assign(cfg.eval_input_reader().class_names().begin(), cfg.eval_input_reader().class_names().end());
   corners_norm = unravel_index_2d(V1I({0,1,2,3}), V1I({2,2}));
 
   V2F tmpv2f( g_grid_size[1], V1F( g_grid_size[0], 0));
   dense_voxel_map.swap(tmpv2f);
   get_dpu_data();
 
-  nms_confidence_ = -log(1.0/cfg.model().second().nms_score_threshold() -1.0 );
-  cfg_nms_score_threshold = cfg.model().second().nms_score_threshold();
+  nms_confidence_ = -log(1.0/cfg_nms_score_threshold -1.0 );
 
   anchors_mask_thread_num = 1;
 

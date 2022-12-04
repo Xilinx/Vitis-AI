@@ -69,11 +69,15 @@ class UltraFastPost {
      );
 
   /**
-   * @brief post process the UltraFast result.
+   * @brief Post-process the UltraFast result.
    * @param idx  batch index.
    * @return UltraFastResult.
    */
   virtual UltraFastResult post_process(unsigned int idx) =0;
+  /**
+   * @brief Post-process the UltraFast result.
+   * @return vector of UltraFastResult.
+   */
   virtual std::vector<UltraFastResult> post_process() =0;
   /**
    * @cond NOCOMMENTS

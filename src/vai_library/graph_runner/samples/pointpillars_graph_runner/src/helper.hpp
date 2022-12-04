@@ -38,6 +38,27 @@ using V7F = std::vector<V6F>;
 
 using V3I=std::vector<V2I>;
 
+// begin config file item 
+extern V1F cfg_voxel_size;
+extern V1F cfg_point_cloud_range;
+extern V1I cfg_layer_strides;
+extern V2F cfg_anchor_generator_stride_sizes;
+extern V2F cfg_anchor_generator_stride_strides;
+extern V2F cfg_anchor_generator_stride_offsets;
+extern V2F cfg_anchor_generator_stride_rotations;
+extern V1F cfg_anchor_generator_stride_matched_threshold;
+extern V1F cfg_anchor_generator_stride_unmatched_threshold;
+extern int cfg_max_number_of_points_per_voxel;
+extern int cfg_max_number_of_voxels;
+extern int cfg_nms_pre_max_size;  
+extern int cfg_nms_post_max_size; 
+extern float cfg_nms_iou_threshold;
+extern float cfg_nms_score_threshold;
+extern int cfg_num_class;
+extern V1F cfg_post_center_limit_range;
+extern std::vector<std::string> cfg_class_names;
+// end config file item 
+
 typedef struct{
  std::vector<float*> box_;
  std::vector<float*> cls_;

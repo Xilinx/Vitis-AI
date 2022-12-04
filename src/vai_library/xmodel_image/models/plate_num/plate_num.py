@@ -49,5 +49,5 @@ def jit(graph):
         op1.get_output_tensor().set_attr("labels", list_map[i])
 
     xir_extra_ops.set_postprocessor(
-        graph, "libxmodel_postprocessor_plate_number.so.2",
+        graph, "libxmodel_postprocessor_plate_number.so.3",
         {"input": ["my_topk" + str(i + 1) for i in range(7)]})

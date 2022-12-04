@@ -20,6 +20,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <UniLog/UniLog.hpp>
 #include <cassert>
 #include <chrono>
 #include <iostream>
@@ -81,7 +82,8 @@ static std::shared_ptr<GraphHolder> create_graph_holder(
 }
 
 static int get_batch_size_of_runner(vart::Runner* r) {
-  CHECK(!r->get_input_tensors().empty());
+  // CHECK(!r->get_input_tensors().empty());
+  UNI_LOG_CHECK(!r->get_input_tensors().empty(), VAILIB_DPU_TASK_TENSORS_EMPTY);
   return r->get_input_tensors()[0]->get_shape().at(0);
 }
 
@@ -99,7 +101,8 @@ static void enable_sw_softmax(const xir::Subgraph* subgraph) {
 static std::vector<std::unique_ptr<vart::Runner>> create_runners_with_attrs(
     std::shared_ptr<GraphHolder> graph_holder, xir::Attrs* attrs) {
   auto subgraphs = (graph_holder.get())->get_subgraphs();
-  CHECK_GT(subgraphs.size(), 0);
+  // CHECK_GT(subgraphs.size(), 0);
+  UNI_LOG_CHECK(subgraphs.size() > 0, VAILIB_DPU_TASK_SUBGRAPHS_EMPTY);
   enable_sw_softmax(subgraphs[0]);
   auto runners = std::vector<std::unique_ptr<vart::Runner>>();
   runners.reserve(subgraphs.size());
@@ -203,7 +206,8 @@ static string find_module_dir_name(const string& name) {
     const auto fullname = ret + "/" + "meta.json";
     str << "\n\t" << fullname;
   }
-  LOG(FATAL) << str.str();
+  // LOG(FATAL) << str.str();
+  UNI_LOG_FATAL(VAILIB_DPU_TASK_NOT_FIND) << str.str();
   return string{""};
 }
 
@@ -342,7 +346,8 @@ static void copy_line_by_line(T* data, int rows, int cols, int channels,
   }
 }
 
-void DpuTaskImp::setInputDataArray(const std::vector<int8_t> input, size_t ind) {
+void DpuTaskImp::setInputDataArray(const std::vector<int8_t> input,
+                                   size_t ind) {
   set_num_of_inputs(1u);
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
@@ -370,8 +375,8 @@ void DpuTaskImp::setInputDataArray(const std::vector<int8_t> input, size_t ind) 
   copy_line_by_line(data, rows, cols, channels, stride, input.data());
 }
 
-void DpuTaskImp::setInputDataArray(
-    const std::vector<std::vector<int8_t>> input, size_t ind) {
+void DpuTaskImp::setInputDataArray(const std::vector<std::vector<int8_t>> input,
+                                   size_t ind) {
   set_num_of_inputs(input.size());
   auto inputs = getInputTensor(0u);
   CHECK_GT(inputs.size(), 0u);
@@ -588,7 +593,8 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
       ret.fixpos = 0;
       ret.dtype = library::DT_FLOAT;
     } else {
-      LOG(FATAL) << "unsupported";
+      // LOG(FATAL) << "unsupported";
+      UNI_LOG_FATAL(VAILIB_DPU_TASK_NOT_SUPPORT) << "unsupported";
     }
   } else {
 #ifdef ENABLE_DPUCADX8G_RUNNER
@@ -663,7 +669,8 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
       ret.fixpos = 0;
       ret.dtype = library::DT_FLOAT;
     } else {
-      LOG(FATAL) << "unsupported";
+      // LOG(FATAL) << "unsupported";
+      UNI_LOG_FATAL(VAILIB_DPU_TASK_NOT_SUPPORT) << "unsupported";
     }
   } else {
 #ifdef ENABLE_DPUCADX8G_RUNNER

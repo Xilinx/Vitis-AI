@@ -37,6 +37,7 @@ YOLOv3Result YOLOv3Imp::run(const cv::Mat& input_images) {
   int sWidth = getInputWidth();
   int sHeight = getInputHeight();
   auto mAP = configurable_dpu_task_->getConfig().yolo_v3_param().test_map();
+  auto type = configurable_dpu_task_->getConfig().yolo_v3_param().type();
   LOG_IF(INFO, false) << "tf_flag_ " << tf_flag_ << " "  //
                       << "mAp " << mAP << " "            //
                       << std::endl;
@@ -61,7 +62,12 @@ YOLOv3Result YOLOv3Imp::run(const cv::Mat& input_images) {
       yolov3::convertInputImage(input_images, sWidth, sHeight, channel, scale,
                                 data);
     } else {
-      image = yolov3::letterbox_tf(input_images, sWidth, sHeight).clone();
+      if ((type == 1) ||
+          (type == 2)) {  // 1: yolov4-csp; 2: yolov5-large/yolov5-nano/yolov5s6
+        image = yolov3::letterbox(input_images, sWidth, sHeight).clone();
+      } else {
+        image = yolov3::letterbox_tf(input_images, sWidth, sHeight).clone();
+      }
       configurable_dpu_task_->setInputImageRGB(image);
     }
   } else {
@@ -90,12 +96,14 @@ YOLOv3Result YOLOv3Imp::run(const cv::Mat& input_images) {
 
   __TOC__(YOLOV3_POST_ARM)
   return ret;
-}
+}  // namespace ai
+
 vector<YOLOv3Result> YOLOv3Imp::run(const vector<cv::Mat>& input_images) {
   cv::Mat image;
   int sWidth = getInputWidth();
   int sHeight = getInputHeight();
   auto mAP = configurable_dpu_task_->getConfig().yolo_v3_param().test_map();
+  auto type = configurable_dpu_task_->getConfig().yolo_v3_param().type();
   LOG_IF(INFO, false) << "tf_flag_ " << tf_flag_ << " "  //
                       << "mAp " << mAP << " "            //
                       << std::endl;
@@ -123,8 +131,14 @@ vector<YOLOv3Result> YOLOv3Imp::run(const vector<cv::Mat>& input_images) {
     } else {
       vector<cv::Mat> images;
       for (auto input_image : input_images) {
-        images.push_back(
-            yolov3::letterbox_tf(input_image, sWidth, sHeight).clone());
+        if (type == 1 ||
+            type == 2) {  // 1: yolov4-csp; 2: yolov5-large/yolov5-nano/yolov5s6
+          images.push_back(
+              yolov3::letterbox(input_image, sWidth, sHeight).clone());
+        } else {
+          images.push_back(
+              yolov3::letterbox_tf(input_image, sWidth, sHeight).clone());
+        }
       }
       configurable_dpu_task_->setInputImageRGB(images);
     }

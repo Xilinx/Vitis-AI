@@ -15,24 +15,29 @@
  */
 
 #pragma once
-#include "xir/op/op_def.hpp"
-
 #include <string>
 #include <unordered_map>
 
+#include "xir/op/op_def.hpp"
+
 namespace xir {
 
-class OpDefFactoryImp : public OpDefFactory {
+class XIR_DLLESPEC OpDefFactoryImp : public OpDefFactory {
  public:
   void register_h(const OpDef& def) override;
   const OpDef* create(const std::string& type) const;
   const std::vector<std::string> get_registered_ops() const;
+  const OpDef* get_op_def(const std::string& type,
+                          bool register_custome_op_if_not_exists = true);
+  const OpDef& get_const_op_def(const std::string& type) const;
+
+ private:
+  void register_customized_operator_definition(const std::string& type);
 
  private:
   std::unordered_map<std::string, OpDef> store_;
 };
 
-// const OpDefFactoryImp* op_def_factory();
-OpDefFactoryImp* op_def_factory();
+XIR_DLLESPEC OpDefFactoryImp* op_def_factory();
 
 }  // namespace xir

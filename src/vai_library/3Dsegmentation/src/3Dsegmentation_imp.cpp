@@ -25,406 +25,394 @@
 #include "float.h"
 #include "vitis/ai/env_config.hpp"
 #include <fstream>
-#include "post.hpp"
+#include <numeric>
+#include <queue>
+
+using namespace std;
+
 namespace vitis {
 namespace ai {
-using namespace std;
+
+#define MAX_POINTS 131072
+
 const float PI = 3.141592653589793;
 const float proj_W = 2048.0;
 const float proj_H = 64.0;
 const float fov = 0.4886921905584123;
-const float fov_down = -0.4363323129985824;
+const float fov_down = 0.4363323129985824;
 std::vector<int>  map_inv_{0, 10, 11, 15, 18,
                          20, 30, 31, 32, 40,
                          44, 48, 49, 50, 51,
                          70, 71, 72, 80, 81};
-//const float fov_up = 0.05235987755982988;
-template<typename T> 
-void writefile(std::string& filename, std::vector<std::vector<std::vector<T>>>& data) {
-  std::ofstream output_file(filename);
-  for(size_t i = 0; i < data.size(); i++) { 
-  for(size_t j = 0; j < data[i].size(); j++) {
-  for(size_t k = 0; k < data[i][j].size(); k++) {
-    output_file << data[i][j][k] << std::endl;
-  }}}
-}
-template<typename T> 
-void writefile(std::string& filename, std::vector<T>& data) {
-  std::ofstream output_file(filename);
-  for(size_t i = 0; i < data.size(); i++) 
-    output_file << (int)data[i] << std::endl;
-}
-static void norm(std::vector<float>& input1, std::vector<float>& input2, std::vector<float>& input3,  std::vector<float>& output) {
+const std::vector<float> sensor_means_{12.12, 10.88, 0.23, -1.04, 0.21};
+const std::vector<float> sensor_stds_{12.32, 11.47, 6.91, 0.86, 0.16};
+
+int W = 2048;
+int center = 12;
+float cutoff = 1.0;
+float nclasses = 20;
+std::vector<float> inv_gauss_k{0.9970, 0.9867, 0.9781, 0.9867, 0.9970, 0.9867, 0.9404
+                    , 0.9017, 0.9404, 0.9867, 0.9781, 0.9017, 0.8379, 0.9017
+                    , 0.9781, 0.9867, 0.9404, 0.9017, 0.9404, 0.9867, 0.9970
+                    , 0.9867, 0.9781, 0.9867, 0.9970};
+int unfold_height = 25;
+int unfold_width = 131072;
+
+static void norm(const std::vector<float>& input1, const std::vector<float>& input2, const std::vector<float>& input3,  std::vector<float>& output) {
   for(size_t i = 0; i < input1.size(); i++) {
-    auto x = input1[i]; 
-    auto y = input2[i]; 
-    auto z = input3[i]; 
+    auto x = input1[i];
+    auto y = input2[i];
+    auto z = input3[i];
     output[i] = sqrt(x*x + y*y +z*z);
   }
 }
 
-float asinx(float x) {
-  return (x * (1+x*x*(1.0/6.0+ x*x*(3.0/(2.0*4.0*5.0) + x*x*((1.0*3.0*5.0)/(2.0*4.0*6.0*7.0))))));
-}
-
-static void proj_y(std::vector<float>& z, std::vector<float>& depth, std::vector<float>& result) {
-  for (size_t i = 0; i < z.size(); i++) {
-    float t = asin(z[i] / depth[i]);
-    t = floor((1.0 - (t + abs(fov_down)) / fov) * proj_H);
-    result[i] = std::max(std::min(t, proj_H - 1.f), 0.f);
+static void proj_y(const std::vector<float>& z, const std::vector<float>& depth, std::vector<float>& result) {
+  static float v1 = proj_H - fov_down*proj_H/fov;
+  static float v2 = proj_H/fov;
+  size_t size = z.size();
+  for (size_t i = 0; i < size; i++) {
+    float t = floor(v1 - v2*(asin(z[i] / depth[i])));
+    result[i] = std::clamp(t, 0.0f,  63.0f);
   }
 }
 
-/*static float atan2x(float y, float x) {
-  float ax = std::abs(x), ay = std::abs(y);
-  float a = std::min(ax, ay)/(std::max(ax, ay)+(float)DBL_EPSILON);
-  float s = a*a;
-  float r = ((-0.0464964749 * s + 0.15931422) * s - 0.327622764) * s * a + a;
-  if(ay > ax) r = 1.57079637 - r;
-  if(x < 0) r = 3.14159274f - r;
-  if(y < 0) r = -r;
-  return r;
-}*/
-
-static void proj_x(std::vector<float>& x, std::vector<float>& y, std::vector<float>& result) {
-  for(size_t i = 0; i < x.size(); i++) {
-    float t =-(atan2(y[i], x[i])); // cal yaw
-    t = floor((0.5 *  (t / PI + 1.0)) * proj_W);
-    result[i] = std::max(std::min(t, proj_W - 1.f), 0.f);
+static void proj_x(const std::vector<float>& x, const std::vector<float>& y, std::vector<float>& result) {
+  static float v1 = 1024.0/PI;
+  size_t size = x.size();
+  for(size_t i = 0; i < size; i++) {
+    float t = floor(1024.0 - v1* atan2(y[i], x[i]));
+    result[i] = std::clamp(t, 0.0f,  2047.0f);
   }
 }
 
-template<typename T> 
-static std::vector<int> argsort(const std::vector<T>& array)
-{
-	const int array_len(array.size());
-	std::vector<int> array_index(array_len, 0);
-	for (int i = 0; i < array_len; ++i)
-		array_index[i] = i;
+Segmentation3DImp::Segmentation3DImp(const std::string &model_name, bool need_preprocess)
+    : vitis::ai::TConfigurableDpuTask<Segmentation3D>(model_name, need_preprocess) {
 
-	std::sort(array_index.begin(), array_index.end(),
-		[&array](int pos1, int pos2) {return (array[pos1] > array[pos2]);});
+  enable_knn = configurable_dpu_task_->getConfig().segmentation_3d_param().enable_knn();
+  in_scale = vitis::ai::library::tensor_scale(configurable_dpu_task_->getInputTensor()[0][0]);
+  auto batch_size = get_input_batch();
 
-	return array_index;
-}
-
-template<typename T> 
-static void reorder(std::vector<T>& array, std::vector<int>& order) {
-  std::vector<T> array_re(array.size());
-  for(size_t i = 0; i < array.size(); i++) {
-    array_re[i] = array[order[i]];
+  proj_range.resize(batch_size);
+  input_ptr.resize(batch_size);
+  output_ptr.resize(batch_size);
+  depth.resize(batch_size);
+  py.resize(batch_size);
+  px.resize(batch_size);
+  pointsize.resize(batch_size);
+  idx_list.resize(batch_size);
+  for(int i=0; i<(int)batch_size; i++) {
+    proj_range[i].resize(64*2048);
+    depth[i].resize(MAX_POINTS);
+    py[i].resize(MAX_POINTS);
+    px[i].resize(MAX_POINTS);
+    idx_list[i].resize(MAX_POINTS);
+    input_ptr[i]  = (int8_t*)configurable_dpu_task_->getInputTensor( )[0][0].get_data(i);
+    output_ptr[i] = (int8_t*)configurable_dpu_task_->getOutputTensor()[0][0].get_data(i);
   }
-  array.swap(array_re);
-}
+  unproj_argmax.reserve(MAX_POINTS);
+  proj_argmax.resize(MAX_POINTS);
+  knn_idx.resize(5*MAX_POINTS);
+  knn_argmax.resize(5*MAX_POINTS);
 
-template<typename T1, typename T2> 
-static void unreorder(std::vector<T1>& array, std::vector<T2>& order) {
-  std::vector<T1> array_re(array.size());
-  for(size_t i = 0; i < array.size(); i++) {
-    array_re[order[i]] = array[i];
+  proj_idx = new int[64*2048];
+
+  sensor_std_scale.resize(sensor_means_.size());
+  sensor_mean_std_scale.resize(sensor_means_.size());
+  for(int i=0; i<(int)sensor_means_.size(); ++i) {
+    sensor_std_scale[i] = (float)in_scale/sensor_stds_[i];
+    sensor_mean_std_scale[i] = (sensor_means_[i]*in_scale)/sensor_stds_[i];
   }
-  array.swap(array_re);
+  size_all = int(proj_W * proj_H * 20);
+  proj_unfold.resize(25*64*2048);
+  proj_unfold2.resize(25*64*2048);
+  unproj_unfold_1_argmax.resize(25*64*2048);
+
+  k2_distances = std::shared_ptr<float>(new float[unfold_height*unfold_width]);
+  knn_argmax_onehot = std::shared_ptr<float>(new float [21*MAX_POINTS]);
 }
 
-template<typename T> 
-static void reorder2D(std::vector<T> in_array, std::vector<std::vector<T>>& out_array, std::vector<float>& order_x, std::vector<float>& order_y) {
-  for(size_t i = 0; i < order_x.size(); i++) {
-    out_array[order_y[i]][order_x[i]] = in_array[i];
-  }
-}
+Segmentation3DImp::~Segmentation3DImp() {  delete []proj_idx; }
 
-template<typename T1, typename T2> 
-static void unreorder2D(std::vector<T1> in_array,  std::vector<T2>& out_array, std::vector<float>& order_x, std::vector<float>& order_y) {
-  for(size_t i = 0; i < order_x.size(); i++) {
-    out_array[i] = in_array[order_y[i]*2048 + order_x[i]];
-    out_array[i] = map_inv_[out_array[i]];
-  }
-}
+void Segmentation3DImp::preprocess(const V2F& array, int idx) {
+  pointsize[idx] = array[0].size();
 
-template<typename T>
-void static permute(std::vector<std::vector<std::vector<T>>>& in_array, std::vector<int8_t>& out_array, int in_scale) {
-  auto channels = in_array.size();
-  auto height = in_array[0].size();
-  auto width =  in_array[0][0].size(); 
-  for(auto i = 0u; i < channels; i++) {
-    for(auto j = 0u; j < height; j++) {
-      for(auto k = 0u; k < width; k++ ) {
-        //auto q = in_array[i][j][k] * in_scale;
-        //if(q < -128 || q>127)
-         // std::cout << q << " " << std::min(std::max((int)(in_array[i][j][k] * in_scale), -128), 127)<< std::endl;
-        out_array[j * width * channels + k * channels + i] = (int8_t)std::min(std::max((int)(std::round(in_array[i][j][k] * in_scale)), -128), 127);
-        //out_array[j * width * channels + k * channels + i] = std::max(std::min((int8_t)(in_array[i][j][k] * in_scale), (int8_t)127), (int8_t)-128);
-      }
-    }
-  }
-}
-
-Segmentation3DImp::Segmentation3DImp(const std::string &model_name,
-                               bool need_preprocess)
-    : vitis::ai::TConfigurableDpuTask<Segmentation3D>(model_name,
-                                                   need_preprocess) {}
-
-Segmentation3DImp::~Segmentation3DImp() {}
-Segmentation3DResult Segmentation3DImp::run(std::vector<std::vector<float>>& array) {
-  __TIC__(SEGMENTATION3D)
-  __TIC__(PRE_PROCESS)
   __TIC__(get_depth)
-  std::vector<float> depth(array[0].size());
-  norm(array[0], array[1], array[2], depth);
+  norm(array[0], array[1], array[2], depth[idx]);
   __TOC__(get_depth)
-  auto unproj_range = depth;
-  std::vector<float> py(array[2].size());
-  std::vector<float> px(array[0].size());
+
+  __TIC__(assign)
+  memset (proj_idx, 0, 64*2048*sizeof(int));
+  memset(input_ptr[idx], 0, 5*64*2048);
+  if (enable_knn) {
+    proj_range[idx].assign( proj_range[idx].size(), -1);
+  }
+  __TOC__(assign)
+
   __TIC__(get_py)
-  proj_y(array[2], depth, py);
+  proj_y(array[2], depth[idx], py[idx]);
   __TOC__(get_py)
   __TIC__(get_px)
-  proj_x(array[0], array[1], px);
+  proj_x(array[0], array[1], px[idx]);
   __TOC__(get_px)
-  auto un_px = px;
-  auto un_py = py;
-  std::vector<int> indices(depth.size());
-  for (size_t i = 0; i < indices.size(); i++) {
-    indices[i] = i;
-  }
-  __TIC__(reorder)
-  auto order = argsort(depth);
-  /*
-  reorder(depth, order);
-  reorder(indices, order);
-  reorder(py, order);
-  reorder(px, order);
-  reorder(array[3], order);
-  reorder(array[2], order);
-  reorder(array[1], order);
-  reorder(array[0], order);
-  */
-  auto unproj_n_points = array[0];
-  __TOC__(reorder)
-  __TIC__(reorder2d)
-  std::vector<std::vector<std::vector<float>>> proj(5);
-  for (auto & pr : proj) {
-    pr.resize(64);
-    for (auto & p : pr) {
-      p.resize(2048, -1);
-    }
-  }
-  std::vector<std::vector<int>> proj_idx(64);
-  for (auto & p : proj_idx) {
-    p.resize(2048, -1);
-  }
-  reorder2D(depth, proj[0], px, py);
-  reorder2D(array[3], proj[4], px, py); //remission
-  reorder2D(array[0], proj[1], px, py); //x
-  reorder2D(array[1], proj[2], px, py); //y
-  reorder2D(array[2], proj[3], px, py); //z
-  reorder2D(indices, proj_idx, px, py); //idx
-  std::vector<float> proj_range(proj[0].size() * proj[0][0].size());   //proj_range get
-  for (auto i = 0u; i < proj[0].size(); i++) {
-    for (auto j = 0u; j < proj[0][0].size(); j++) {
-      proj_range[i * proj[0][0].size() + j] = proj[0][i][j];
-    }
-  }
 
-  // proj_range = torch.from_numpy(scan.proj_range).clone()
-  // unreorder(unproj_range,unproj_n_points);
-  //  unproj_range[:unproj_n_points] = torch.from_numpy(scan.unproj_range)
-  //
-  __TOC__(reorder2d)
-  __TIC__(mask_meanstd_permute)
-  for (size_t i = 0u; i < proj.size(); i++) {
-    for(size_t j = 0u; j < proj[0].size(); j++) {
-      for(size_t k = 0u; k < proj[0][0].size(); k++) {
-        proj[i][j][k] = (proj[i][j][k] - sensor_means_[i]) / sensor_stds_[i];
-        proj[i][j][k] = proj_idx[j][k] <= 0? 0 : proj[i][j][k];
+  __TIC__(permute_pre)
+  int channels = 5;
+  int width = 2048;
+  int8_t* p = input_ptr[idx];
+  int offset= 0;
+
+  for(int i = pointsize[idx]-1; i >= 0 ; --i) {  // i>=0
+    int pyi = py[idx][i], pxi = px[idx][i];
+    int flagpos = pyi*2048+pxi;
+    if (enable_knn) {
+       idx_list[idx][i] = flagpos;
+    } 
+
+    if( proj_idx[flagpos] == 0 ) {
+       proj_idx[flagpos] = 1;
+       offset = pyi*width*channels + pxi*channels;
+       p[offset + 0] = (int8_t)std::clamp(int(std::round( depth[idx][i] * sensor_std_scale[0] - sensor_mean_std_scale[0])), -128, 127);
+       p[offset + 1] = (int8_t)std::clamp(int(std::round( array[0][i]   * sensor_std_scale[1] - sensor_mean_std_scale[1])), -128, 127);
+       p[offset + 2] = (int8_t)std::clamp(int(std::round( array[1][i]   * sensor_std_scale[2] - sensor_mean_std_scale[2])), -128, 127);
+       p[offset + 3] = (int8_t)std::clamp(int(std::round( array[2][i]   * sensor_std_scale[3] - sensor_mean_std_scale[3])), -128, 127);
+       p[offset + 4] = (int8_t)std::clamp(int(std::round( array[3][i]   * sensor_std_scale[4] - sensor_mean_std_scale[4])), -128, 127);
+
+       if (enable_knn) {
+          proj_range[idx][flagpos] = depth[idx][i];
+       }
+    }
+  }
+  __TOC__(permute_pre)
+}
+
+void  Segmentation3DImp::postprocess(Segmentation3DResult& rs, int idx) {
+  int8_t max_v;
+  int max_pos;
+  int8_t* p = output_ptr[idx];
+
+  for (int i = 0, j=0; i < size_all; i = i + 20, j++) {  // 37ms
+    max_v = -128;
+    max_pos = 0;
+    for(int k=0;k<20;k++) {
+      if( p[k] > max_v ) {
+         max_v = p[k];  max_pos = k;
       }
     }
+    // max_element_nth(p,p+20,1)-p;
+    proj_argmax[j] = max_pos;
+    p += 20;
   }
-  //  string proj_name = "proj.txt";
-  //  writefile(proj_name, proj);
-  std::vector<int8_t> pr_permute(5 * 64 * 2048);
-  auto in_scale = vitis::ai::library::tensor_scale(configurable_dpu_task_->getInputTensor()[0][0]);
-  //std::cout << in_scale << std::endl;
-  permute(proj, pr_permute, in_scale);
-  //string permute_name = "permute.txt";
-  //writefile(permute_name, pr_permute);
-  __TOC__(mask_meanstd_permute)
-  __TOC__(PRE_PROCESS)
-  __TIC__(SET_IMG)
-  configurable_dpu_task_->setInputDataArray(pr_permute);
-  __TOC__(SET_IMG)
+
+  unproj_argmax.resize(pointsize[idx]);
+  if(!enable_knn) { 
+    for(int i = 0; i < pointsize[idx]; i++) {
+      unproj_argmax[i] = map_inv_[ proj_argmax[py[idx][i]*2048 + px[idx][i]] ];
+    }
+  } else {
+    post_prec(proj_range[idx], proj_argmax, idx, unproj_argmax);
+  }
+  rs.array.swap(unproj_argmax);
+}
+
+Segmentation3DResult Segmentation3DImp::run(V2F& array) {
+  __TIC__(SEGMENTATION3D)
+  __TIC__(pre)
+  preprocess(array, 0);
+  __TOC__(pre)
   __TIC__(DPU)
   configurable_dpu_task_->run(0);
   __TOC__(DPU)
-  auto t_size = configurable_dpu_task_->getOutputTensor()[0][0].height * configurable_dpu_task_->getOutputTensor()[0][0].width * configurable_dpu_task_->getOutputTensor()[0][0].channel;
-  //std::vector<float> data_float(t_size);
-  std::vector<int8_t> data_int(t_size);
-  std::vector<float> proj_argmax;
-  //float scale = vitis::ai::library::tensor_scale(configurable_dpu_task_->getOutputTensor()[0][0]);
-  __TIC__(POST)
-  memcpy(data_int.data(), ((int8_t*)configurable_dpu_task_->getOutputTensor()[0][0].get_data(0)), sizeof(char) * t_size);
-  //for (size_t i = 0; i < t_size; i++) {
-  //  data_float[i] = scale * data_int[i];
- // }
-  for (size_t i = 0; i < t_size; i = i + 20) {
-    auto max_ind = std::max_element(data_int.data() + i, data_int.data() + i + 20);
-    auto dis = std::distance(data_int.data() + i, max_ind);
-    proj_argmax.push_back(dis);
-  }
-  //string argmax_name = "argmax.txt";
-  //writefile(argmax_name, proj_argmax);
-  std::vector<int> unproj_argmax;
-    bool enable_knn = configurable_dpu_task_->getConfig().segmentation_3d_param().enable_knn();
-  if(!enable_knn) {
-    unproj_argmax.resize(un_px.size());
-    unreorder2D(proj_argmax, unproj_argmax, un_px, un_py);
-  } else {
-    unproj_argmax = vitis::ai::Segmentation3DPost::post_prec(proj_range, proj_argmax, unproj_range, un_px, un_py);
-    for (auto i = 0u; i < unproj_argmax.size(); i++) {
-      unproj_argmax[i] = map_inv_[unproj_argmax[i]];
-    }
-  }
-  __TOC__(POST)
-  Segmentation3DResult rs{getInputWidth(), getInputHeight(), unproj_argmax};
-  rs.array.swap(unproj_argmax);
+  __TIC__(post)
+  Segmentation3DResult rs{getInputWidth(), getInputHeight()};
+  postprocess( rs , 0);
+  __TOC__(post)
   __TOC__(SEGMENTATION3D)
   return rs;
 }
 
-
 std::vector<Segmentation3DResult> Segmentation3DImp::run(std::vector<std::vector<std::vector<float>>>& arrays) {
-  auto batch_size = std::min(get_input_batch(), arrays.size());
-  std::vector<std::vector<int8_t>> pr_permutes(batch_size);
-  std::vector<std::vector<float>> unproj_ranges(batch_size); 
-  std::vector<std::vector<float>> proj_ranges(batch_size); 
-  std::vector<std::vector<float>> unproj_n_points(batch_size);
-  for(auto & pr_permute : pr_permutes)
-    pr_permute.resize(5 * 64 * 2048);
-  std::vector<std::vector<float>> un_pxs(batch_size);
-  std::vector<std::vector<float>> un_pys(batch_size);
-  for (auto batch_ind = 0u; batch_ind < batch_size; batch_ind++) {
-    auto array = arrays[batch_ind];
-    __TIC__(PRE_PROCESS)
-    __TIC__(get_depth)
-    std::vector<float> depth(array[0].size());
-    norm(array[0], array[1], array[2], depth);
-    unproj_ranges[batch_ind] = depth;
-    __TOC__(get_depth)
-    std::vector<float> py(array[2].size());
-    std::vector<float> px(array[0].size());
-    __TIC__(get_py)
-    proj_y(array[2], depth, py);
-    __TOC__(get_py)
-    __TIC__(get_px)
-    proj_x(array[0], array[1], px);
-    __TOC__(get_px)
-    un_pxs[batch_ind] = px;
-    un_pys[batch_ind] = py;
-    std::vector<int> indices(depth.size());
-    for (size_t i = 0; i < indices.size(); i++) {
-      indices[i] = i;
-    }
-    __TIC__(reorder)
-    auto order = argsort(depth);
-    /*
-    reorder(depth, order);
-    reorder(indices, order);
-    reorder(py, order);
-    reorder(px, order);
-    reorder(array[3], order);
-    reorder(array[2], order);
-    reorder(array[1], order);
-    reorder(array[0], order);
-    */
-    unproj_n_points[batch_ind] = array[0];
-    __TOC__(reorder)
-    __TIC__(reorder2d)
-    std::vector<std::vector<std::vector<float>>> proj(5);
-    for (auto & pr : proj) {
-      pr.resize(64);
-      for (auto & p : pr) {
-        p.resize(2048, -1);
-      }
-    }
-    std::vector<std::vector<int>> proj_idx(64);
-    for (auto & p : proj_idx) {
-      p.resize(2048, -1);
-    }
-    reorder2D(depth, proj[0], px, py);
-    reorder2D(array[3], proj[4], px, py); //remission
-    reorder2D(array[0], proj[1], px, py); //x
-    reorder2D(array[1], proj[2], px, py); //y
-    reorder2D(array[2], proj[3], px, py); //z
-    reorder2D(indices, proj_idx, px, py); //idx
-    proj_ranges[batch_ind].resize(proj[0].size() * proj[0][0].size());   //proj_range get
-    for (auto i = 0u; i < proj[0].size(); i++) {
-      for (auto j = 0u; j < proj[0][0].size(); j++) {
-        proj_ranges[batch_ind][i * proj[0][0].size() + j] = proj[0][i][j];
-      }
-    }
-
-    // proj_range = torch.from_numpy(scan.proj_range).clone()
-    //unreorder(unproj_ranges[batch_ind],unproj_n_points[batch_ind]);
-    __TOC__(reorder2d)
-    __TIC__(mask_meanstd_permute)
-    for (size_t i = 0u; i < proj.size(); i++) {
-      for(size_t j = 0u; j < proj[0].size(); j++) {
-        for(size_t k = 0u; k < proj[0][0].size(); k++) {
-          proj[i][j][k] = (proj[i][j][k] - sensor_means_[i]) / sensor_stds_[i];
-          proj[i][j][k] = proj_idx[j][k] <= 0? 0 : proj[i][j][k];
-        }
-      }
-    }
-    auto in_scale = vitis::ai::library::tensor_scale(configurable_dpu_task_->getInputTensor()[0][0]);
-
-    permute(proj, pr_permutes[batch_ind], in_scale);
-    __TOC__(mask_meanstd_permute)
-    __TOC__(PRE_PROCESS)
+  __TIC__(SEGMENTATION3D)
+  __TIC__(pre)
+  int real_batch = std::min(get_input_batch(), arrays.size());
+  for(int i=0; i<real_batch; i++) {
+    preprocess(arrays[i], i);
   }
-  __TIC__(SET_IMG)
-  configurable_dpu_task_->setInputDataArray(pr_permutes);
-  __TOC__(SET_IMG)
+  __TOC__(pre)
   __TIC__(DPU)
   configurable_dpu_task_->run(0);
   __TOC__(DPU)
-  __TIC__(POST)
-  std::vector<std::vector<int>> unproj_argmaxs(batch_size);
-  for(auto batch_ind = 0u; batch_ind < batch_size; batch_ind++)
-    unproj_argmaxs[batch_ind].resize(un_pxs[batch_ind].size());
-  for (size_t batch_ind = 0; batch_ind < batch_size; batch_ind++) {
-    auto t_size = configurable_dpu_task_->getOutputTensor()[0][0].size/configurable_dpu_task_->getOutputTensor()[0][0].batch;
-    std::vector<float> data_float(t_size);
-    std::vector<int8_t> data_int(t_size);
-    std::vector<float> proj_argmax;
-    float scale = vitis::ai::library::tensor_scale(configurable_dpu_task_->getOutputTensor()[0][0]);
-    memcpy(data_int.data(), ((int8_t*)configurable_dpu_task_->getOutputTensor()[0][0].get_data(batch_ind)), sizeof(char) * t_size);
-    for (size_t i = 0; i < t_size; i++) {
-      data_float[i] = scale * data_int[i];
-    }
-    for (size_t i = 0; i < t_size; i = i + 20) {
-      auto max_ind = std::max_element(data_float.data() + i, data_float.data() + i + 20);
-      auto dis = std::distance(data_float.data() + i, max_ind);
-      proj_argmax.push_back(dis);
-    }
-    bool enable_knn = configurable_dpu_task_->getConfig().segmentation_3d_param().enable_knn();
-    if(!enable_knn) {
-      unproj_argmaxs[batch_ind].resize(un_pxs[batch_ind].size());
-      unreorder2D(proj_argmax, unproj_argmaxs[batch_ind], un_pxs[batch_ind], un_pys[batch_ind]);
-    } else {
-      unproj_argmaxs[batch_ind] = vitis::ai::Segmentation3DPost::post_prec(proj_ranges[batch_ind], proj_argmax, unproj_ranges[batch_ind], un_pxs[batch_ind], un_pys[batch_ind]);
-      for (auto i = 0u; i < unproj_argmaxs[batch_ind].size(); i++) {
-        unproj_argmaxs[batch_ind][i] = map_inv_[unproj_argmaxs[batch_ind][i]];
-      }
+  __TIC__(post)
+
+  std::vector<Segmentation3DResult> rs(real_batch);
+  for(int i=0; i<real_batch; i++) {
+    rs[i].width  = getInputWidth();
+    rs[i].height = getInputHeight();
+    postprocess( rs[i] , i);
   }
-  }
-  std::vector<Segmentation3DResult> all_rs(batch_size);
-  for(size_t batch_ind = 0; batch_ind < batch_size; batch_ind++) 
-    all_rs[batch_ind] = Segmentation3DResult{getInputWidth(), getInputHeight(), unproj_argmaxs[batch_ind]};
-  __TOC__(POST)
-  return all_rs;
+  __TOC__(post)
+  __TOC__(SEGMENTATION3D)
+  return rs;
 }
 
+template<class ForwardIt>
+ForwardIt max_element_nth(ForwardIt first, ForwardIt last, int step) {
+    if (first == last) {
+        return last;
+    }
+    ForwardIt largest = first;
+    first += step;
+    for (; first < last; first += step) {
+        if (*largest < *first) {
+            largest = first;
+        }
+    }
+    return largest;
+}
 
+void argmax_with_map(float* input, int W, int H, V1I& index) {
+  for(int i=0;i<W;i++) {
+    auto start = input+i+1*unfold_width;
+    index[i] = map_inv_[(max_element_nth(start, input+i+(H-1)*unfold_width, unfold_width) - start)/unfold_width+1];
+  }
+}
+
+template<typename T2>
+void scatter_add_(float* self, const std::vector<T2>& index, int H, int W ) {
+  for (auto h = 0; h < H; h++) {
+     for (auto w = 0; w < W; w++) {
+        auto index_chw = h*unfold_width + w;
+        auto self_chw = int(index[index_chw])*unfold_width + w;
+        self[self_chw] += 1;
+     }
+  }
+}
+
+template <typename T1, typename T2>
+void gather_1(float* input1, std::vector<T1>& input2, std::vector<T2>& index, int index_height, int index_width, std::vector<T1>& output1 ) {
+  for (auto j = 0; j < index_height; j++) {  // 5
+    for (auto k = 0; k < index_width; k++) {  // 127405
+      auto index_ijk = j*unfold_width+ k;
+      output1[index_ijk] = input1[ index[index_ijk]*unfold_width + k] > cutoff ? nclasses : input2[ index[index_ijk]*unfold_width + k];
+    }
+  }
+}
+
+void unfold(
+  const V1F& input1,  // 64*2048
+  const V1I& input2,  // 64*2048
+  vector<float>& output1,  // 25*64*2048 
+  vector<float>& output2 )  // 25*64*2048 
+{
+  const int kernel_height = 5;
+  const int kernel_width = 5;
+  const int pad_height = 2;
+  const int pad_width = 2;
+  const int input_height = 64;
+  const int input_width = 2048;
+  const int output_height = 64;
+  const int output_width = 2048;
+
+  for (int64_t c = 0; c <  kernel_height * kernel_width; ++c) {    // 5x5
+      int64_t w_offset = c % kernel_width;
+      int64_t h_offset = (c / kernel_width) % kernel_height;
+      for (int64_t h = 0; h < output_height; ++h) { // 64
+          int64_t h_im = h - pad_height + h_offset;
+          if (h_im<0|| h_im>=input_height ) continue;
+          for (int64_t w = 0; w < output_width; ++w) { // 2048
+              int64_t w_im = w - pad_width + w_offset;
+              if ( w_im >= 0 && w_im < input_width) {
+                output1[(c * output_height + h) * output_width + w] = input1[ h_im * input_width + w_im];
+                output2[(c * output_height + h) * output_width + w] = input2[ h_im * input_width + w_im];
+              }
+          }
+      }
+  }
+}
+
+void Segmentation3DImp::topk(int idx, float* inv, int k, V1I& out_idx )
+{  
+  struct cmp1 {
+    bool operator ()(const std::pair<int, float>& a, const std::pair<int, float>& b ) {
+      return std::get<1>(a) <= std::get<1>(b);
+    }
+  };
+  priority_queue<std::pair<int,float>, vector<std::pair<int, float>>,cmp1> minHeap;
+  float invf = 0.0;
+  int pos=0;
+  for(int index=0; index<pointsize[idx]; ++index){  // near 64*2048
+    for( int i=0; i<unfold_height; ++i) {  // 25
+      invf = inv[ index + i*unfold_width];
+      if (i<k) {
+        minHeap.push(std::make_pair(i, invf) );
+        continue;
+      }
+      if (invf>= std::get<1>(minHeap.top())) {
+        continue;
+      } else {
+        minHeap.pop();
+        minHeap.push(std::make_pair(i, invf) );
+      }
+    }
+    pos = k-1;
+    while(!minHeap.empty()){
+      out_idx[pos*unfold_width+index] = std::get<0>(minHeap.top());
+      minHeap.pop();
+      pos--;
+    }
+  }   
+}
+
+void Segmentation3DImp::post_prec(const std::vector<float>& proj_range, 
+                           const std::vector<int>& proj_argmax, 
+                           int idx,
+                           V1I& knn_argmax_out )
+{
+  __TIC__(post_pred_clear)
+  proj_unfold.assign( proj_unfold.size(),  0);
+  proj_unfold2.assign( proj_unfold2.size(), 0);
+  memset(knn_argmax_onehot.get(), 0, 21*unfold_width);
+  __TOC__(post_pred_clear)
+
+  __TIC__(unfold1)
+  unfold(proj_range, proj_argmax, proj_unfold, proj_unfold2);  // 25x64x2048
+  __TOC__(unfold1)
+
+  __TIC__(unproj_rang)
+  float tmp;
+  float* k2_distances_p = k2_distances.get();
+  for (auto i = 0; i < unfold_height; i++) { // 25
+    auto offset = unfold_width * i; //  131072*i
+    for (auto j = 0; j < pointsize[idx]; j++) {
+      unproj_unfold_1_argmax[ offset+j ] = proj_unfold2[offset + idx_list[idx][j]];
+      if (i!=12) {
+         if((tmp = proj_unfold[offset + idx_list[idx][j]])>=0) {
+            k2_distances_p[ offset+j ] = (abs(tmp - depth[idx][j]))*inv_gauss_k[i];
+         } else {
+            k2_distances_p[ offset+j ] = FLT_MAX*inv_gauss_k[i];
+         }
+      }
+    }
+  }
+  __TOC__(unproj_rang)
+ 
+  __TIC__(permute_topk)
+  topk(  idx, k2_distances.get() , 5, knn_idx);
+  __TOC__(permute_topk)
+
+  __TIC__(gather)
+  gather_1(k2_distances.get(), unproj_unfold_1_argmax, knn_idx, 5, pointsize[idx], knn_argmax);
+  __TOC__(gather)
+
+  __TIC__(scatter_add)
+  scatter_add_(knn_argmax_onehot.get(), knn_argmax, 5, pointsize[idx]);
+  __TOC__(scatter_add)
+
+  __TIC__(argmax)
+  argmax_with_map( knn_argmax_onehot.get(), (int)pointsize[idx], 21, knn_argmax_out);
+  __TOC__(argmax)
+}
 
 }  // namespace ai
 }  // namespace vitis
+

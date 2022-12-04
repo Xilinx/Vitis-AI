@@ -39,7 +39,13 @@ RcanResult RcanImp::run(const cv::Mat& input_image) {
     image = input_image;
   }
   __TIC__(RCAN_SET_IMG)
-  configurable_dpu_task_->setInputImageBGR(image);
+  if (configurable_dpu_task_->getConfig().order_type() == 1) {
+    configurable_dpu_task_->setInputImageBGR(image);
+  } else if (configurable_dpu_task_->getConfig().order_type() == 2) {
+    configurable_dpu_task_->setInputImageRGB(image);
+  } else {
+    LOG(FATAL) << "unknown image order type";
+  }
   __TOC__(RCAN_SET_IMG)
   __TIC__(RCAN_DPU)
   configurable_dpu_task_->run(0);
@@ -47,7 +53,9 @@ RcanResult RcanImp::run(const cv::Mat& input_image) {
   __TIC__(RCAN_POST_PROCESS)
   auto ret = vitis::ai::rcan_post_process(
       configurable_dpu_task_->getInputTensor(),
-      configurable_dpu_task_->getOutputTensor(), 0);
+      configurable_dpu_task_->getOutputTensor(), 0, configurable_dpu_task_->getConfig());
+  //LOG(INFO) << vitis::ai::library::tensor_scale(configurable_dpu_task_->getOutputTensor()[0][0]);
+  //LOG(INFO) << vitis::ai::library::tensor_scale(configurable_dpu_task_->getInputTensor()[0][0]);
   __TOC__(RCAN_POST_PROCESS)
   return ret;
 }
@@ -67,7 +75,15 @@ std::vector<RcanResult> RcanImp::run(const std::vector<cv::Mat>& input_images) {
     images.push_back(image);
   }
   __TIC__(RCAN_SET_IMG)
-  configurable_dpu_task_->setInputImageBGR(images);
+    //LOG(INFO) << configurable_dpu_task_->getConfig().order_type();
+  if (configurable_dpu_task_->getConfig().order_type() == 1) {
+    configurable_dpu_task_->setInputImageBGR(images);
+  } else if (configurable_dpu_task_->getConfig().order_type() == 2) {
+    //LOG(INFO) << "rgb";
+    configurable_dpu_task_->setInputImageRGB(images);
+  } else {
+    LOG(FATAL) << "unknown image order type";
+  }
   __TOC__(RCAN_SET_IMG)
   __TIC__(RCAN_DPU)
   configurable_dpu_task_->run(0);
@@ -75,7 +91,8 @@ std::vector<RcanResult> RcanImp::run(const std::vector<cv::Mat>& input_images) {
   __TIC__(RCAN_POST_PROCESS)
   auto ret =
       vitis::ai::rcan_post_process(configurable_dpu_task_->getInputTensor(),
-                                   configurable_dpu_task_->getOutputTensor());
+                                   configurable_dpu_task_->getOutputTensor(), configurable_dpu_task_->getConfig());
+  //LOG(INFO) << vitis::ai::library::tensor_scale(configurable_dpu_task_->getOutputTensor()[0][0]);
   __TOC__(RCAN_POST_PROCESS)
   return ret;
 }
@@ -87,7 +104,7 @@ std::vector<RcanResult> RcanImp::run(
   __TIC__(RCAN_POST_PROCESS)
   auto ret =
       vitis::ai::rcan_post_process(configurable_dpu_task_->getInputTensor(),
-                                   configurable_dpu_task_->getOutputTensor());
+                                   configurable_dpu_task_->getOutputTensor(), configurable_dpu_task_->getConfig());
   __TOC__(RCAN_POST_PROCESS)
   return ret;
 }

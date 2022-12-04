@@ -43,6 +43,7 @@ class CMakeBuild(build_ext):
         target_info = f"{_os}.{os_version}.{arch}.Debug"
         home = os.environ.get("HOME")
         install_prefix_default = f"{home}/.local/{target_info}"
+        conda_prefix=os.environ.get("CONDA_PREFIX")
 
 
         cmake_args = [
@@ -51,7 +52,8 @@ class CMakeBuild(build_ext):
             f"-DCMAKE_BUILD_TYPE=Debug",
             f"-DPYTHON_EXECUTABLE={sys.executable}",
             f"-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-            f"-DCMAKE_INSTALL_PREFIX={install_prefix_default}"
+            f"-DCMAKE_INSTALL_PREFIX={install_prefix_default}",
+            f"-DCMAKE_PREFIX_PATH={conda_prefix}",
         ]
         cwd = os.getcwd()
         if not os.path.exists(extdir):

@@ -88,12 +88,12 @@ def main(args):
         disable_vart_cpu_runner = os.getenv("USE_VART_CPU_RUNNER", "null") == "null"
         if subgraph.has_attr("device") and subgraph.get_attr(
                 "device").upper() == "CPU" and disable_vart_cpu_runner:
-            subgraph.set_attr("runner", {"run": "libvitis_ai_library-cpu_task.so.2"})
+            subgraph.set_attr("runner", {"run": "libvitis_ai_library-cpu_task.so.3"})
     else:
         if not subgraph.has_attr("device"):
             subgraph.set_attr("device", "graph")
         if not subgraph.has_attr("runner"):
-            subgraph.set_attr("runner", {"run": "libvitis_ai_library-graph_runner.so.2"})
+            subgraph.set_attr("runner", {"run": "libvitis_ai_library-graph_runner.so.3"})
     run(subgraph, args)
 
 

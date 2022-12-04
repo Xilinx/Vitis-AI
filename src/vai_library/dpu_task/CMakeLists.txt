@@ -27,10 +27,11 @@ vai_add_library(
        src/configurable_dpu_task_imp.cpp
        src/graph_holder.hpp
        src/graph_holder.cpp
+       src/error_code.cpp
   PUBLIC_REQUIRE ${OpenCV_LIBS} vart::util ${PROJECT_NAME}::model_config
                  # for Meta definitions
   PRIVATE_REQUIRE glog::glog xir::xir vart::dpu-runner vart::runner-assistant
-                  ${PROJECT_NAME}::graph_runner ${PROJECT_NAME}::math)
+                  ${PROJECT_NAME}::graph_runner ${PROJECT_NAME}::math) 
 
 vai_add_test(test_it REQUIRE vart::dpu-runner)
 vai_add_test(test_base)

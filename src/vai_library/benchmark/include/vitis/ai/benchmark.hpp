@@ -57,8 +57,8 @@ std::atomic<int> _counter(0);
 long act_time = 30000000;
 
 template <typename T>
-inline BenchMarkResult thread_main_for_performance(const ImageList *image_list,
-                                                   std::unique_ptr<T> &&model) {
+inline BenchMarkResult thread_main_for_performance(const ImageList* image_list,
+                                                   std::unique_ptr<T>&& model) {
   std::unique_lock<std::mutex> lock_t(g_mtx);
   lock_t.unlock();
   long ret = 0;
@@ -97,7 +97,7 @@ static void usage() {
                " <image list file> \n"
             << std::endl;
 }
-inline void parse_opt(int argc, char *argv[]) {
+inline void parse_opt(int argc, char* argv[]) {
   int opt = 0;
 
   while ((opt = getopt(argc, argv, "t:s:l:")) != -1) {
@@ -124,8 +124,8 @@ inline void parse_opt(int argc, char *argv[]) {
   return;
 }
 
-static void report(std::ostream *p_out) {
-  std::ostream &out = *p_out;
+static void report(std::ostream* p_out) {
+  std::ostream& out = *p_out;
   float sec = (float)act_time / 1000000.0;
   float fps = ((float)g_total) / sec;
   out << "FPS=" << fps << "\n";
@@ -135,8 +135,8 @@ static void report(std::ostream *p_out) {
   return;
 }
 
-static void report_for_mt(std::ostream *p_out) {
-  std::ostream &out = *p_out;
+static void report_for_mt(std::ostream* p_out) {
+  std::ostream& out = *p_out;
   float sec = (float)act_time / 1000000.0;
   float fps = ((float)g_total) / sec;
   out << "FPS=" << fps << "\n";
@@ -145,8 +145,8 @@ static void report_for_mt(std::ostream *p_out) {
 }
 int total_step = 0;
 int step = 10;
-static void report_step(std::ostream *p_out) {
-  std::ostream &out = *p_out;
+static void report_step(std::ostream* p_out) {
+  std::ostream& out = *p_out;
   float fps = ((float)total_step) / ((float)step);
   out << "step " << step << "FPS=" << fps << "\n";
   out << std::flush;
@@ -154,15 +154,16 @@ static void report_step(std::ostream *p_out) {
 }
 
 template <typename T>
-inline int main_for_performance(int argc, char *argv[], T factory_method) {
+inline int main_for_performance(int argc, char* argv[], T factory_method) {
   parse_opt(argc, argv);
   ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME) = 1;
   auto lazy_load_image = false;
   auto image_list =
       std::unique_ptr<ImageList>(new ImageList(g_list_name, lazy_load_image));
   if (image_list->empty()) {
-    LOG(FATAL) << "list of images are empty [" << image_list->to_string()
-               << "]";
+    LOG(FATAL) << "[UNILOG][FATAL][VAILIB_BENCHMARK_LIST_EMPTY][not found "
+                  "image!]list of images are empty ["
+               << image_list->to_string() << "]";
   }
   auto model = factory_method();
   using model_t = typename decltype(model)::element_type;
@@ -173,7 +174,7 @@ inline int main_for_performance(int argc, char *argv[], T factory_method) {
   std::vector<std::future<BenchMarkResult>> results;
   results.reserve(g_num_of_threads);
 
-  std::ostream *report_fs = &std::cout;
+  std::ostream* report_fs = &std::cout;
   auto fs = std::unique_ptr<std::ostream>{};
   if (!g_report_file_name.empty()) {
     LOG(INFO) << "writing report to " << g_report_file_name;
@@ -221,7 +222,7 @@ inline int main_for_performance(int argc, char *argv[], T factory_method) {
 
   StatSamples e2eStatSamples(0);
   StatSamples dpuStatSamples(0);
-  for (auto &r : results) {
+  for (auto& r : results) {
     auto result = r.get();
     total = total + result.ret;
     e2eStatSamples.merge(result.e2eSamples);
@@ -245,9 +246,9 @@ inline int main_for_performance(int argc, char *argv[], T factory_method) {
   } else {
       LOG(INFO) << "writing report to <STDOUT>";
       }*/
-  if (g_num_of_threads==1){
+  if (g_num_of_threads == 1) {
     report(report_fs);
-  }else{
+  } else {
     report_for_mt(report_fs);
   }
   return 0;

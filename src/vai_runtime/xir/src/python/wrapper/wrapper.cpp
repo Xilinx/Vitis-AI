@@ -16,7 +16,10 @@
 
 // python 3.7 deprecate PyCreateThread, but pybind11 2.2.3 still uses
 // this function.
+#if _WIN32
+#else
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -67,7 +70,7 @@ bool is_dict_type(py::handle value) {
 std::vector<char> get_vec_char(py::bytes bytes) {
   std::string str = py::cast<std::string>(bytes);
   std::vector<char> chars;
-  for (uint i = 0; i < str.size(); i++) chars.push_back(str[i]);
+  for (auto i = 0u; i < str.size(); i++) chars.push_back(str[i]);
   return chars;
 }
 
@@ -276,12 +279,13 @@ void set_attrs(Object* obj, py::dict dict) {
   if (std::is_same<Object, xir::Op>::value) {
     auto defs = ((xir::Op*)(obj))->get_opdef()->attrs();
     for (auto key : attrs->get_keys()) {
-      auto iter = std::find_if(defs.begin(), defs.end(), [key](const auto& def) {
-        return def.name == key;
-      });
+      auto iter =
+          std::find_if(defs.begin(), defs.end(),
+                       [key](const auto& def) { return def.name == key; });
       if (iter != defs.end()) {
-        AttrHelper<xir::Attrs>::set_hint(
-          attrs.get(), key, get_attr<xir::Attrs>(attrs.get(), key), iter->data_type);
+        AttrHelper<xir::Attrs>::set_hint(attrs.get(), key,
+                                         get_attr<xir::Attrs>(attrs.get(), key),
+                                         iter->data_type);
       }
     }
   }
@@ -768,6 +772,37 @@ PYBIND11_MODULE(xir, m) {
                         helper::get_attrs<Tensor>(t).attr("__str__")()) +  //
                     "}";                                                   //
            });                                                             //
+
+  py::class_<OpTemplate, std::unique_ptr<OpTemplate, py::nodelete>>(
+      m, "OpTemplate")
+      .def(py::init<>(
+          [](xir::OpTemplate* OpTemplate) { return OpTemplate; }))  //
+      .def("get_name",                                              //
+           &OpTemplate::get_name)                                   //
+      .def("get_types",                                             //
+           &OpTemplate::get_types)                                  //
+      .def("get_input_ops",                                         //
+           (&OpTemplate::get_input_ops),                            //
+           py::return_value_policy::reference_internal)             //
+      .def("get_fanout_ops",                                        //
+           (&OpTemplate::get_fanout_ops),                           //
+           py::return_value_policy::reference_internal);            //
+
+  py::class_<GraphTemplate, std::unique_ptr<GraphTemplate, py::nodelete>>(
+      m, "GraphTemplate")
+      .def(py::init<>(
+          [](xir::GraphTemplate* GraphTemplate) { return GraphTemplate; }))  //
+      .def("get_name",                                                       //
+           &GraphTemplate::get_name)                                         //
+      .def("get_op",                                                         //
+           (&GraphTemplate::get_op),                                         //
+           py::arg("name"),                                                  //
+           py::return_value_policy::reference_internal)                      //
+      .def("get_op_num",                                                     //
+           &GraphTemplate::get_op_num)                                       //
+      .def("toposort",                                                       //
+           (&GraphTemplate::topological_sort),                               //
+           py::return_value_policy::reference_internal);                     //
 
 }  // PYBIND11_MODULE
 

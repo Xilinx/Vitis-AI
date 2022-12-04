@@ -52,14 +52,14 @@ XIR_DLLESPEC const std::string get_md5_of_file(const std::string& filepath);
  *
  * @return A string of the xir-lib name
  */
-const std::string get_lib_name();
+XIR_DLLESPEC const std::string get_lib_name();
 
 /**
  * @brief Get the xir-lib version id.
  *
  * @return A string of the xir-lib id.
  */
-const std::string get_lib_id();
+XIR_DLLESPEC const std::string get_lib_id();
 
 // template helper
 namespace th {
@@ -128,7 +128,8 @@ std::string to_string(const T& content, const std::string& delimiter = ",",
  *
  * @param prefix The prefix.
  */
-void add_prefix_helper(std::string& name, const std::string& prefix);
+XIR_DLLESPEC void add_prefix_helper(std::string& name,
+                                    const std::string& prefix);
 
 /**
  * @brief A helper function to add a name suffix as the xir style.
@@ -137,7 +138,8 @@ void add_prefix_helper(std::string& name, const std::string& prefix);
  *
  * @param suffix The suffix.
  */
-void add_suffix_helper(std::string& name, const std::string& suffix);
+XIR_DLLESPEC void add_suffix_helper(std::string& name,
+                                    const std::string& suffix);
 
 /**
  * @brief Add a serial of prefixs for a name in the xir style.
@@ -148,10 +150,11 @@ void add_suffix_helper(std::string& name, const std::string& suffix);
  *
  * @return The name after adding all the prefixs.
  */
-template <typename... Args,
-          typename std::enable_if<th::var_and<std::is_constructible<
-              std::string, Args>::value...>::value>::type* = nullptr>
-std::string add_prefix(const std::string& name, const Args&... prefixs) {
+template <typename... Args>
+typename std::enable_if<
+    th::var_and<std::is_constructible<std::string, Args>::value...>::value,
+    std::string>::type
+add_prefix(const std::string& name, const Args&... prefixs) {
   std::vector<std::string> prefixs_vec{prefixs...};
   std::string ret = name;
   for (auto prefix = prefixs_vec.rbegin(); prefix != prefixs_vec.rend();
@@ -170,10 +173,11 @@ std::string add_prefix(const std::string& name, const Args&... prefixs) {
  *
  * @return The name after adding all the suffixs.
  */
-template <typename... Args,
-          typename std::enable_if<th::var_and<std::is_constructible<
-              std::string, Args>::value...>::value>::type* = nullptr>
-std::string add_suffix(const std::string& name, const Args&... suffixs) {
+template <typename... Args>
+typename std::enable_if<
+    th::var_and<std::is_constructible<std::string, Args>::value...>::value,
+    std::string>::type
+add_suffix(const std::string& name, const Args&... suffixs) {
   std::vector<std::string> suffixs_vec{suffixs...};
   std::string ret = name;
   for (auto suffix : suffixs_vec) {
@@ -216,7 +220,7 @@ float xround(const float& data, const std::string& round_mode = "STD_ROUND");
 
 void register_customized_operator_definition(const std::string& name,
                                              const std::string& type);
-std::vector<float> get_float_vec_from_any(const xir::any& any);
+XIR_DLLESPEC std::vector<float> get_float_vec_from_any(const xir::any& any);
 
 /**
  * @brief Tensor lexicographical order sort function
@@ -226,6 +230,22 @@ std::vector<float> get_float_vec_from_any(const xir::any& any);
  *
  * @return The original name.
  */
-bool TensorLexicographicalOrder(Tensor* a, Tensor* b);
+XIR_DLLESPEC bool TensorLexicographicalOrder(Tensor* a, Tensor* b);
 
+/**
+ * @brief Strided Slice Op standardization function.
+ * 
+ * @ref tensorflow\core\util\strided_slice_op.cc
+ * 
+ * @param the strided_slice op, 
+ *        begin, end, strides are 1-D vectors with the length of input dimension.
+ *        out_shape is an empty out_shape.
+ * 
+ * @return begin, end, strides, and output shape after standardization.
+ */
+XIR_DLLESPEC void validate_strided_slice(const xir::Op* op_strided_slice,
+                                         std::vector<int32_t>& begin,
+                                         std::vector<int32_t>& end,
+                                         std::vector<int32_t>& strides,
+                                         std::vector<int32_t>& out_shape);
 }  // namespace xir

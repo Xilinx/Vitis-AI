@@ -16,7 +16,7 @@
 
 vai_add_library(
   SRCS include/vitis/ai/3Dsegmentation.hpp src/3Dsegmentation.cpp
-       src/3Dsegmentation_imp.hpp src/3Dsegmentation_imp.cpp src/post.cpp src/post.hpp  src/post_util.hpp
+       src/3Dsegmentation_imp.hpp src/3Dsegmentation_imp.cpp
   PUBLIC_REQUIRE ${PROJECT_NAME}::xnnpp ${PROJECT_NAME}::dpu_task)
 
 

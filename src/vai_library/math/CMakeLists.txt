@@ -34,7 +34,8 @@ set(LIBRARY_SOURCE
     src/globalavepool.cpp
     src/image_util.cpp
     src/preprocess_c.cpp
-    src/preprocess_neon.cpp)
+    src/preprocess_neon.cpp
+    src/error_code.cpp)
 
 include(CheckIncludeFileCXX)
 check_include_file_cxx(arm_neon.h HAVE_NEON)

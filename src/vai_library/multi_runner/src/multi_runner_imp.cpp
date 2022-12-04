@@ -28,10 +28,12 @@
 #include <vitis/ai/collection_helper.hpp>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/graph_runner.hpp>
+#include <vitis/ai/path_util.hpp>
 #include <vitis/ai/profiling.hpp>
 
 DEF_ENV_PARAM_2(VAI_LIBRARY_MODELS_DIR, ".", std::string)
 DEF_ENV_PARAM(DEBUG_MULTI_RUNNER, "0")
+DEF_ENV_PARAM(XLNX_ENABLE_DUMP, "0")
 
 using namespace std;
 
@@ -127,6 +129,8 @@ static std::vector<std::string> split(const std::string& s,
 
 MultiRunnerImp::MultiRunnerImp(std::string model_name)
     : attrs_{xir::Attrs::create()} {
+  attrs_->set_attr("lib", std::map<std::string, std::string>{
+                              {"CPU", "libvitis_ai_library-cpu_task.so.3"}});
   auto config_file = find_config_file(model_name);
   create_models(config_file);
   std::string pre_name = config_file.substr(0, config_file.rfind("/") + 1);
@@ -147,10 +151,80 @@ MultiRunnerImp::MultiRunnerImp(std::string model_name)
   LOG_IF(INFO, ENV_PARAM(DEBUG_MULTI_RUNNER)) << to_string(subgraphs_);
   create_out_tensors_tbs();
 }
+static void dump_tensor_buffer(const std::string& dir0,
+                               vart::TensorBuffer* tensor_buffer) {
+  auto maybe_remove_trail_slah = [](const std::string& s) {
+    if (s.back() == '/') {
+      return s.substr(0, s.size() - 1);
+    }
+    return s;
+  };
+  std::string dir = maybe_remove_trail_slah(dir0);
+  vitis::ai::create_parent_path(dir);
+  CHECK(vitis::ai::is_directory(dir)) << "cannot create directory: dir=" << dir;
+  auto tensor_name = tensor_buffer->get_tensor()->get_name();
+  auto tensor_name_remove_fix = xir::remove_xfix(tensor_name);
+  auto filename0 = vitis::ai::to_valid_file_name(tensor_name_remove_fix);
+  dir += "/" + filename0;
+  std::vector<int> idx(tensor_buffer->get_tensor()->get_shape().size(), 0);
+  auto batch = tensor_buffer->get_tensor()->get_shape()[0];
+  auto datasize = tensor_buffer->get_tensor()->get_data_size() / batch;
+  for (auto b = 0; b < batch; ++b) {
+    idx[0] = b;
+    uint64_t data = tensor_buffer->data(idx).first;
+    auto filename = dir + "_" + std::to_string(b) + ".bin";
+    CHECK(std::ofstream(filename).write((char*)data, datasize).good())
+        << "failed to write: " << filename;
+  }
+  idx[0] = 0;
+  uint64_t data = tensor_buffer->data(idx).first;
+  auto filename = dir + ".bin";
+  CHECK(std::ofstream(filename).write((char*)data, datasize * batch).good())
+      << "failed to write: " << filename;
+  return;
+}
+
+static void maybe_dump_tensor_buffers(const vitis::ai::subgraphParam* sub) {
+  if (!ENV_PARAM(XLNX_ENABLE_DUMP)) {
+    return;
+  }
+  auto sname = vitis::ai::to_valid_file_name(sub->subgraph->get_name());
+  auto dir = "dump/" + std::to_string(sub->own_graph_idx) + sname + "/";
+  for (auto&& i : sub->inputs) {
+    auto dirname = dir + "i";
+    dump_tensor_buffer(dirname, i.tensor_buffer.get());
+  }
+  for (auto&& i : sub->outputs) {
+    auto dirname = dir + "o";
+    dump_tensor_buffer(dirname, i.tensor_buffer.get());
+  }
+}
+
+static void maybe_sync_for_read(vart::TensorBuffer* b) {
+  switch (b->get_location()) {
+    case vart::TensorBuffer::location_t::HOST_VIRT:
+      // do nothing
+      break;
+    case vart::TensorBuffer::location_t::HOST_PHY:
+      // TODO: check continous
+      b->sync_for_read(0, b->get_tensor()->get_data_size());
+      break;
+    default:
+      // update_proxy already copy the tensor buffer
+      // do nothing LOG(FATAL) << "Not supported!";
+      break;
+  }
+}
+
 std::pair<uint32_t, int> MultiRunnerImp::execute_async(
     const std::vector<vart::TensorBuffer*>& input,
     const std::vector<vart::TensorBuffer*>& output) {
-  for (auto&& sub : subgraphs_) {
+  LOG_IF(INFO, ENV_PARAM(DEBUG_MULTI_RUNNER))
+      << "MultiRunnerImp::execute_async";
+  for (auto sub_idx = 0u; sub_idx < subgraphs_.size(); sub_idx++) {
+    auto&& sub = subgraphs_[sub_idx];
+    __TIC__(MultiRunner_execute_async)
+
     int runner_batch = sub->runner->get_input_tensors()[0]->get_shape()[0];
 
     auto view_tb = [](auto& internals, size_t batch_index, size_t batch) {
@@ -166,18 +240,23 @@ std::pair<uint32_t, int> MultiRunnerImp::execute_async(
       end_batch = std::min(sub->cycles - i, runner_batch);
       auto input_ptr = view_tb(sub->inputs, i, end_batch);
       auto output_ptr = view_tb(sub->outputs, i, end_batch);
-      auto status = sub->runner->execute_async(
-          vitis::ai::vector_unique_ptr_get(input_ptr),
-          vitis::ai::vector_unique_ptr_get(output_ptr));
+      auto inputs = vitis::ai::vector_unique_ptr_get(input_ptr);
+      auto outputs = vitis::ai::vector_unique_ptr_get(output_ptr);
+      auto status = sub->runner->execute_async(inputs, outputs);
       auto ok = sub->runner->wait((int)status.first, -1);
       CHECK(ok == 0);
     }
     for (auto& output : sub->outputs) {
+      maybe_sync_for_read(output.tensor_buffer.get());
       auto linker = output.linker.get();
       if (linker) {
         linker->after_invoke_runner(sub->subgraph);
       }
     }
+    maybe_dump_tensor_buffers(sub.get());
+    LOG_IF(INFO, ENV_PARAM(DEEPHI_PROFILING))
+        << "MultiRunner_execute_async " << sub_idx;
+    __TOC__(MultiRunner_execute_async)
   }
   return std::make_pair(0u, 0);
 }
@@ -261,7 +340,7 @@ void MultiRunnerImp::create_tensor_buffers() {
   for (auto&& sub : subgraphs_) {
     std::vector<std::unique_ptr<vart::TensorBuffer>> input_tbs, output_tbs;
     auto r = dynamic_cast<vart::RunnerExt*>(sub->runner.get());
-    if (r && sub->inputs[0].runner_tensor->get_shape()[0] >= sub->cycles) {
+    if (r && sub->inputs[0].runner_tensor->get_shape()[0] == sub->cycles) {
       input_tbs = create_view_vector_get(r->get_inputs(), sub->cycles);
       output_tbs = create_view_vector_get(r->get_outputs(), sub->cycles);
     } else {
@@ -310,14 +389,17 @@ void MultiRunnerImp::create_tensor() {
 void MultiRunnerImp::create_runner() {
   for (auto&& i : subgraphs_) {
     if (i->subgraph->is_root()) {
+      LOG_IF(INFO, ENV_PARAM(DEBUG_MULTI_RUNNER))
+          << "create graph runner" << i->subgraph->get_name();
       i->runner = GraphRunner::create_graph_runner(i->subgraph->get_graph(),
                                                    attrs_.get());
     } else {
+      LOG_IF(INFO, ENV_PARAM(DEBUG_MULTI_RUNNER))
+          << "create vart runner" << i->subgraph->get_name();
       i->runner =
           vart::Runner::create_runner_with_attrs(i->subgraph, attrs_.get());
     }
   }
-  LOG(INFO) << "create_runner";
 }
 void MultiRunnerImp::create_graphs(const std::string& pre_name) {
   for (size_t j = 0; j < models_.size(); j++) {

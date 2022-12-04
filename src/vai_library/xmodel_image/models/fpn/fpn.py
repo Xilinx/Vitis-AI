@@ -34,5 +34,5 @@ def jit(graph):
         0, 0, 119, 255
     ])
     xir_extra_ops.set_postprocessor(
-        graph, "libxmodel_postprocessor_segmentation.so.2",
+        graph, "libxmodel_postprocessor_segmentation.so.3",
         {"input": ["pred_up_fixed_"]})

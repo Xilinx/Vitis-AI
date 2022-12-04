@@ -68,6 +68,12 @@ struct BroadcastOpIndex {
   int get_a() { return index_a_; }
   int get_b() { return index_b_; }
   int get_c() { return index_c_; }
+  void reset_to_zero() {
+    index_a_ = 0;
+    index_b_ = 0;
+    index_c_ = 0;
+    c_i_ = std::vector<int32_t>(c_.size(), 0);
+  }
 
  public:
   std::vector<int32_t> a_;

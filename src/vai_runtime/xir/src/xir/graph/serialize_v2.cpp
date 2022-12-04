@@ -507,7 +507,11 @@ xir::AttrDef convert_t<serial_v2::AttrDef, xir::AttrDef>::fun(
 // conversion between bytes_t and serial_v2::Bytes
 serial_v2::Bytes convert_t<bytes_t, serial_v2::Bytes>::fun(const bytes_t& x) {
   serial_v2::Bytes ret;
-  *(ret.mutable_value()) = std::string(&x[0], x.size());
+  if (x.empty()) {
+    *(ret.mutable_value()) = std::string();
+  } else {
+    *(ret.mutable_value()) = std::string(&x[0], x.size());
+  }
   return ret;
 }
 

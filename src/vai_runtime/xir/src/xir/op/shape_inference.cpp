@@ -52,6 +52,41 @@ void shape_infer_remain(xir::Op* cur) {
   cur->replace_output_tensor(std::move(output_tensor));
 }
 
+std::int32_t cal_out_1d(std::vector<std::int32_t> in_shape,
+                        std::vector<std::int32_t> padding,
+                        std::vector<std::int32_t> kernel,
+                        std::vector<std::int32_t> stride,
+                        std::vector<std::int32_t> dilation,
+                        std::string pad_mode) {
+  std::int32_t ol = 0;
+  if (pad_mode == "FLOOR") {
+    ol = std::floor(1.0 *
+                    (in_shape[1] + padding[0] + padding[1] -
+                     ((kernel[0] - 1) * dilation[0] + 1) + stride[0]) /
+                    stride[0]);
+  } else if (pad_mode == "CEIL") {
+    ol = std::ceil(1.0 *
+                   (in_shape[1] + padding[0] + padding[1] -
+                    ((kernel[0] - 1) * dilation[0] + 1) + stride[0]) /
+                   stride[0]);
+  } else if (pad_mode == "SAME") {
+    ol = std::ceil(1.0 * (in_shape[1] + padding[0] + padding[1]) / stride[0]);
+  } else if (pad_mode == "VALID") {
+    ol = std::ceil(1.0 *
+                   (in_shape[1] + padding[0] + padding[1] -
+                    (kernel[0] - 1) * dilation[0]) /
+                   stride[0]);
+  } else {
+    UNI_LOG_CHECK(pad_mode == "FLOOR" || pad_mode == "CEIL" ||
+                      pad_mode == "SAME" || pad_mode == "VALID",
+                  XIR_INVALID_ARG_OCCUR)
+        << "pad_mode here is " << pad_mode
+        << ", but it should be one of \"FLOOR\","
+           "\"CEIL\", \"SAME\" or \"VALID\".";
+  }
+  return ol;
+}
+
 std::vector<std::int32_t> cal_out(std::vector<std::int32_t> in_shape,
                                   std::vector<std::int32_t> padding,
                                   std::vector<std::int32_t> kernel,
@@ -217,6 +252,43 @@ std::vector<Dtype> read_data_in_attr(xir::Op* op) {
   return data_vec;
 }
 
+void shape_infer_conv1d(xir::Op* cur) {
+  auto in = cur->get_input_tensor("input");
+  auto in_shape = in->get_shape();
+  auto out = cur->get_output_tensor();
+  auto weights = cur->get_input_tensor("weights");
+  auto w_shape = weights->get_shape();
+  UNI_LOG_CHECK(w_shape.size() == 3, XIR_INVALID_ARG_OCCUR)
+      << "The number of dimension of weights here is " << w_shape.size()
+      << ", but the number of dimension should be 3.";
+  auto attrs = cur->get_attrs();
+  auto kernel = attrs->get_attr<std::vector<std::int32_t>>("kernel");
+  auto stride = attrs->get_attr<std::vector<std::int32_t>>("stride");
+  std::vector<std::int32_t> dilation = {1};
+  if (attrs->has_attr("dilation")) {
+    auto tmp = attrs->get_attr<std::vector<std::int32_t>>("dilation");
+    std::transform(tmp.begin(), tmp.end(), dilation.begin(),
+                   [](auto t) { return t; });
+  }
+  auto pad_mode = attrs->get_attr<std::string>("pad_mode");
+  std::vector<std::int32_t> padding = {0, 0};
+  if (attrs->has_attr("pad")) {
+    auto tmp = attrs->get_attr<std::vector<std::int32_t>>("pad");
+    UNI_LOG_CHECK(tmp.size() == 2, XIR_INVALID_ARG_OCCUR)
+        << "The number of dimension of paddings here is " << tmp.size()
+        << ", but the number of dimension should be 2.";
+    std::transform(tmp.begin(), tmp.end(), padding.begin(),
+                   [](auto i) { return i; });
+  }
+  auto ol = cal_out_1d(in_shape, padding, kernel, stride, dilation, pad_mode);
+  std::vector<std::int32_t> new_out_shape = {in->get_shape().at(0), ol,
+                                             w_shape[0]};
+  auto output_tensor =
+      xir::Tensor::create(out->get_name(), new_out_shape, out->get_data_type());
+  output_tensor->set_attrs(out->get_attrs());
+  cur->replace_output_tensor(std::move(output_tensor));
+}
+
 void shape_infer_conv2d(xir::Op* cur) {
   auto in = cur->get_input_tensor("input");
   auto in_shape = in->get_shape();
@@ -245,6 +317,19 @@ void shape_infer_conv2d(xir::Op* cur) {
     std::transform(tmp.begin(), tmp.end(), padding.begin(),
                    [](auto i) { return i; });
   }
+  std::int32_t group = 1;
+  if (attrs->has_attr("group")) {
+    group = attrs->get_attr<std::int32_t>("group");
+  }
+  UNI_LOG_CHECK(w_shape.back() == in_shape.back() / group,
+                XIR_INVALID_ARG_OCCUR)
+      << "The number of channel of weights is " << w_shape.back()
+      << ", but the number of channel of input / group is "
+      << in_shape.back() / group;
+  UNI_LOG_CHECK(in_shape.back() % group == 0, XIR_INVALID_ARG_OCCUR) 
+      << "The number of channel of input should be divisible by group.";
+  UNI_LOG_CHECK(w_shape.front() % group == 0, XIR_INVALID_ARG_OCCUR)
+      << "The number of weight kernel should be divisible by group.";
   auto oh_ow = cal_out(in_shape, padding, kernel, stride, dilation, pad_mode);
   std::vector<std::int32_t> new_out_shape = {in->get_shape().at(0), oh_ow[0],
                                              oh_ow[1], w_shape[0]};
@@ -458,12 +543,14 @@ void shape_infer_conv3d(xir::Op* cur) {
                    [](auto i) { return i; });
   }
   UNI_LOG_CHECK(w_shape[4] == in_shape[4], XIR_INVALID_ARG_OCCUR)
-    << "The channel of weights and the channel of input feature maps should be "
-       "the same."
-    << " But they are " << w_shape[4] << " and " << in_shape[4] << " now.";
-  auto oh_ow_od = cal_out_3d(in_shape, padding, kernel, stride, dilation, pad_mode);
-  std::vector<std::int32_t> new_out_shape = {in->get_shape().at(0), oh_ow_od[0],
-                                             oh_ow_od[1], oh_ow_od[2], w_shape[0]};
+      << "The channel of weights and the channel of input feature maps should "
+         "be "
+         "the same."
+      << " But they are " << w_shape[4] << " and " << in_shape[4] << " now.";
+  auto oh_ow_od =
+      cal_out_3d(in_shape, padding, kernel, stride, dilation, pad_mode);
+  std::vector<std::int32_t> new_out_shape = {
+      in->get_shape().at(0), oh_ow_od[0], oh_ow_od[1], oh_ow_od[2], w_shape[0]};
   auto output_tensor =
       xir::Tensor::create(out->get_name(), new_out_shape, out->get_data_type());
   output_tensor->set_attrs(out->get_attrs());
@@ -502,12 +589,14 @@ void shape_infer_depthwise_conv3d(xir::Op* cur) {
                    [](auto i) { return i; });
   }
   UNI_LOG_CHECK(w_shape[4] == in_shape[4], XIR_INVALID_ARG_OCCUR)
-    << "The channel of weights and the channel of input feature maps should be "
-       "the same."
-    << " But they are " << w_shape[4] << " and " << in_shape[4] << " now.";
-  auto oh_ow_od = cal_out_3d(in_shape, padding, kernel, stride, dilation, pad_mode);
-  std::vector<std::int32_t> new_out_shape = {in->get_shape().at(0), oh_ow_od[0],
-                                             oh_ow_od[1], oh_ow_od[2], w_shape[4]};
+      << "The channel of weights and the channel of input feature maps should "
+         "be "
+         "the same."
+      << " But they are " << w_shape[4] << " and " << in_shape[4] << " now.";
+  auto oh_ow_od =
+      cal_out_3d(in_shape, padding, kernel, stride, dilation, pad_mode);
+  std::vector<std::int32_t> new_out_shape = {
+      in->get_shape().at(0), oh_ow_od[0], oh_ow_od[1], oh_ow_od[2], w_shape[4]};
   auto output_tensor =
       xir::Tensor::create(out->get_name(), new_out_shape, out->get_data_type());
   output_tensor->set_attrs(out->get_attrs());
@@ -544,9 +633,10 @@ void shape_infer_transposed_conv3d(xir::Op* cur) {
                    [](auto i) { return i; });
   }
   UNI_LOG_CHECK(w_shape[4] == in_shape[4], XIR_INVALID_ARG_OCCUR)
-    << "The channel of weights and the channel of input feature maps should be "
-       "the same."
-    << " But they are " << w_shape[4] << " and " << in_shape[4] << " now.";
+      << "The channel of weights and the channel of input feature maps should "
+         "be "
+         "the same."
+      << " But they are " << w_shape[4] << " and " << in_shape[4] << " now.";
   auto pad_mode = attrs->get_attr<std::string>("pad_mode");
   int ow = 0, oh = 0, od = 0, oc = 0;
   if (pad_mode == "FLOOR" || pad_mode == "CEIL") {
@@ -574,9 +664,9 @@ void shape_infer_transposed_conv3d(xir::Op* cur) {
   }
   oc = w_shape[0];
   auto out = cur->get_output_tensor();
-  auto output_tensor =
-      xir::Tensor::create(out->get_name(), {in->get_shape().at(0), oh, ow, od, oc},
-                          out->get_data_type());
+  auto output_tensor = xir::Tensor::create(
+      out->get_name(), {in->get_shape().at(0), oh, ow, od, oc},
+      out->get_data_type());
   output_tensor->set_attrs(out->get_attrs());
   cur->replace_output_tensor(std::move(output_tensor));
 }
@@ -611,9 +701,10 @@ void shape_infer_transposed_depthwise_conv3d(xir::Op* cur) {
                    [](auto i) { return i; });
   }
   UNI_LOG_CHECK(w_shape[4] == in_shape[4], XIR_INVALID_ARG_OCCUR)
-    << "The channel of weights and the channel of input feature maps should be "
-       "the same."
-    << " But they are " << w_shape[4] << " and " << in_shape[4] << " now.";
+      << "The channel of weights and the channel of input feature maps should "
+         "be "
+         "the same."
+      << " But they are " << w_shape[4] << " and " << in_shape[4] << " now.";
   auto pad_mode = attrs->get_attr<std::string>("pad_mode");
   int ow = 0, oh = 0, od = 0, oc = 0;
   if (pad_mode == "FLOOR" || pad_mode == "CEIL") {
@@ -641,12 +732,50 @@ void shape_infer_transposed_depthwise_conv3d(xir::Op* cur) {
   }
   oc = w_shape[4];
   auto out = cur->get_output_tensor();
+  auto output_tensor = xir::Tensor::create(
+      out->get_name(), {in->get_shape().at(0), oh, ow, od, oc},
+      out->get_data_type());
+  output_tensor->set_attrs(out->get_attrs());
+  cur->replace_output_tensor(std::move(output_tensor));
+}
+
+void shape_infer_pool1d(xir::Op* cur) {
+  auto in = cur->get_input_tensor("input");
+  auto in_shape = in->get_shape();
+  UNI_LOG_CHECK(in_shape.size() == 3, XIR_INVALID_ARG_OCCUR)
+      << "The number of dimension of input feature maps here is "
+      << in_shape.size() << ", but the number of dimension should be 3.";
+  auto out = cur->get_output_tensor();
+  auto attrs = cur->get_attrs();
+  auto kernel = attrs->get_attr<std::vector<std::int32_t>>("kernel");
+  auto stride = attrs->get_attr<std::vector<std::int32_t>>("stride");
+  std::vector<std::int32_t> padding = {0, 0};
+  if (attrs->has_attr("pad")) {
+    auto tmp = attrs->get_attr<std::vector<std::int32_t>>("pad");
+    UNI_LOG_CHECK(tmp.size() == 2, XIR_INVALID_ARG_OCCUR)
+        << "The number of dimension of paddings here is " << tmp.size()
+        << ", but the number of dimension should be 2.";
+    std::transform(tmp.begin(), tmp.end(), padding.begin(),
+                   [](auto i) { return i; });
+  }
+  std::int32_t ol;
+  if ((attrs->has_attr("global")) && (attrs->get_attr<bool>("global"))) {
+    ol = 1;
+  } else {
+    std::string pad_mode = "";
+    if (attrs->has_attr("pad_mode"))
+      pad_mode = attrs->get_attr<std::string>("pad_mode");
+    ol = cal_out_1d(in_shape, padding, kernel, stride, {1}, pad_mode);
+  }
   auto output_tensor =
-      xir::Tensor::create(out->get_name(), {in->get_shape().at(0), oh, ow, od, oc},
+      xir::Tensor::create(out->get_name(),                           //
+                          {in->get_shape().at(0), ol, in_shape[2]},  //
                           out->get_data_type());
   output_tensor->set_attrs(out->get_attrs());
   cur->replace_output_tensor(std::move(output_tensor));
 }
+
+void shape_infer_maxpool1d(xir::Op* cur) { shape_infer_pool1d(cur); }
 
 void shape_infer_pool2d(xir::Op* cur) {
   auto in = cur->get_input_tensor("input");
@@ -785,6 +914,7 @@ void shape_infer_elu(xir::Op* cur) { shape_infer_remain(cur); }
 void shape_infer_celu(xir::Op* cur) { shape_infer_remain(cur); }
 void shape_infer_selu(xir::Op* cur) { shape_infer_remain(cur); }
 void shape_infer_gelu(xir::Op* cur) { shape_infer_remain(cur); }
+void shape_infer_mish(xir::Op* cur) { shape_infer_remain(cur); }
 void shape_infer_sigmoid(xir::Op* cur) { shape_infer_remain(cur); }
 void shape_infer_swish(xir::Op* cur) { shape_infer_remain(cur); }
 void shape_infer_tanh(xir::Op* cur) { shape_infer_remain(cur); }
@@ -821,6 +951,24 @@ void shape_infer_reorg(xir::Op* cur) {
 void shape_infer_fix(xir::Op* cur) { shape_infer_remain(cur); }
 
 void shape_infer_softmax(xir::Op* cur) { shape_infer_remain(cur); }
+
+void shape_infer_cast(xir::Op* cur) {
+  auto in = cur->get_input_tensor("input");
+  auto out = cur->get_output_tensor();
+  auto its = cur->get_input_tensors();
+  auto out_shape = in->get_shape();
+  auto dtype = cur->get_attr<std::string>("data_type");
+  auto output_tensor =
+      xir::Tensor::create(out->get_name(), out_shape, DataType(dtype));
+  output_tensor->set_attrs(out->get_attrs());
+  for (auto it : its) {
+    if (it->has_attr("shape_info")) {
+      auto si = it->get_attr<std::vector<std::int32_t>>("shape_info");
+      output_tensor->set_attr("shape_info", si);
+    }
+  }
+  cur->replace_output_tensor(std::move(output_tensor));
+}
 
 void shape_infer_squeeze(xir::Op* cur) {
   std::vector<std::int32_t> index;
@@ -950,8 +1098,8 @@ void shape_infer_reduction(xir::Op* cur) {
   auto in = cur->get_input_tensor("input");
   auto dims = cur->get_attr<std::vector<std::int32_t>>("axis");
   auto keep_dims = cur->get_attr<bool>("keep_dims");
-  std::vector<bool> bitmap(dims.size(), false);
   std::int32_t dim_size = in->get_shape().size();
+  std::vector<bool> bitmap(dim_size, false);
   for (auto index : dims) {
     UNI_LOG_CHECK(index >= -dim_size && index < dim_size, XIR_INVALID_ARG_OCCUR)
         << "ERROR: index < -data.dims() || index >= data.dims()";
@@ -1037,6 +1185,10 @@ void shape_infer_reduction_max(xir::Op* cur) {
   forward_reduction_max(cur);
 }
 
+void shape_infer_reduction_max_fix(xir::Op* cur) {
+  shape_infer_reduction_max(cur);
+}
+
 void shape_infer_l2_normalize(xir::Op* cur) { shape_infer_remain(cur); }
 
 void shape_infer_exp(xir::Op* cur) { shape_infer_remain(cur); }
@@ -1057,28 +1209,28 @@ void shape_infer_resize(xir::Op* cur) {
         if (size.size() == 2 || size.size() == 4) {
           UNI_LOG_CHECK(mode == "NEAREST" || mode == "BILINEAR",
                         XIR_INVALID_ARG_OCCUR)
-            << "the dimension number of the output feature maps of resize "
-               "operation is "
-            << size.size() << ", the mode of resize is " << mode
-            << ". We support dimension number of output feature maps to be 2 "
-               "or 4 for NEAREST and BILINEAR, 3 or 5 for TRILINEAR.";
+              << "the dimension number of the output feature maps of resize "
+                 "operation is "
+              << size.size() << ", the mode of resize is " << mode
+              << ". We support dimension number of output feature maps to be 2 "
+                 "or 4 for NEAREST and BILINEAR, 3 or 5 for TRILINEAR.";
           if (size.size() == 2) {
             out_shape[1] = size[0];
             out_shape[2] = size[1];
           } else {
             UNI_LOG_CHECK(out_shape[0] == size[0] && out_shape[3] == size[3],
                           XIR_INVALID_ARG_OCCUR)
-              << "resize 4-d feature maps could only implement along the "
-                 "diemnsion of the width and the height.";
+                << "resize 4-d feature maps could only implement along the "
+                   "diemnsion of the width and the height.";
             out_shape = size;
           }
         } else if (size.size() == 3 || size.size() == 5) {
           UNI_LOG_CHECK(mode == "TRILINEAR", XIR_INVALID_ARG_OCCUR)
-            << "the dimension number of the output feature maps of resize "
-               "operation is "
-            << size.size() << ", the mode of resize is " << mode
-            << ". We support dimension number of output feature maps to be 2 "
-               "or 4 for NEAREST and BILINEAR, 3 or 5 for TRILINEAR.";
+              << "the dimension number of the output feature maps of resize "
+                 "operation is "
+              << size.size() << ", the mode of resize is " << mode
+              << ". We support dimension number of output feature maps to be 2 "
+                 "or 4 for NEAREST and BILINEAR, 3 or 5 for TRILINEAR.";
           if (size.size() == 3) {
             out_shape[1] = size[0];
             out_shape[2] = size[1];
@@ -1086,8 +1238,8 @@ void shape_infer_resize(xir::Op* cur) {
           } else {
             UNI_LOG_CHECK(out_shape[0] == size[0] && out_shape[4] == size[4],
                           XIR_INVALID_ARG_OCCUR)
-              << "resize 5-d feature maps could only implement along the "
-                 "diemnsion of the width, the height and the depth.";
+                << "resize 5-d feature maps could only implement along the "
+                   "diemnsion of the width, the height and the depth.";
             out_shape = size;
           }
         }
@@ -1098,45 +1250,45 @@ void shape_infer_resize(xir::Op* cur) {
                "op.";
       } else if (out_tensor->has_attr("shape_info")) {
         auto size =
-          out_tensor->get_attr<std::vector<std::int32_t>>("shape_info");
+            out_tensor->get_attr<std::vector<std::int32_t>>("shape_info");
         UNI_LOG_CHECK(size.size() == 2 || size.size() == 3,
                       XIR_INVALID_ARG_OCCUR)
-          << "New size of feature maps should have two dimensions H, W or "
-             "three dimensions H, W, D.";
+            << "New size of feature maps should have two dimensions H, W or "
+               "three dimensions H, W, D.";
         out_shape[1] = size[0];
         out_shape[2] = size[1];
         if (size.size() == 3) out_shape[3] = size[2];
       }
       UNI_LOG_CHECK(
-        out_shape.size() == static_cast<unsigned int>(in->get_shape().size()),
-        XIR_INVALID_ARG_OCCUR)
-        << "the number of dimensions shoud be the same after the resize "
-           "op.";
+          out_shape.size() == static_cast<unsigned int>(in->get_shape().size()),
+          XIR_INVALID_ARG_OCCUR)
+          << "the number of dimensions shoud be the same after the resize "
+             "op.";
     }
   } else if (cur->has_attr("scale")) {
     auto scale = get_float_vec_from_any(cur->get_attr("scale"));
     UNI_LOG_CHECK(scale.size() == 2 || scale.size() == 3, XIR_INVALID_ARG_OCCUR)
-      << "Scale should have two dimensions (scale_w, scale_h) or three "
-         "dimensions (scale_w, scale_h, scale_d).";
+        << "Scale should have two dimensions (scale_w, scale_h) or three "
+           "dimensions (scale_w, scale_h, scale_d).";
     UNI_LOG_CHECK(
-      std::all_of(scale.begin(), scale.end(), [](auto s) { return s > 0; }),
-      XIR_INVALID_ARG_OCCUR)
-      << "Scale should be > 0.";
+        std::all_of(scale.begin(), scale.end(), [](auto s) { return s > 0; }),
+        XIR_INVALID_ARG_OCCUR)
+        << "Scale should be > 0.";
     if (scale.size() == 2) {
       UNI_LOG_CHECK(mode == "NEAREST" || mode == "BILINEAR",
                     XIR_INVALID_ARG_OCCUR)
-        << "the number of the attribute scale of resize "
-           "operation is "
-        << scale.size() << ", the mode of resize is " << mode
-        << ". We support the number of scale to be 2 for NEAREST and "
-           "BILINEAR, 3 for TRILINEAR.";
+          << "the number of the attribute scale of resize "
+             "operation is "
+          << scale.size() << ", the mode of resize is " << mode
+          << ". We support the number of scale to be 2 for NEAREST and "
+             "BILINEAR, 3 for TRILINEAR.";
     } else if (scale.size() == 3) {
       UNI_LOG_CHECK(mode == "TRILINEAR", XIR_INVALID_ARG_OCCUR)
-        << "the number of the attribute scale of resize "
-           "operation is "
-        << scale.size() << ", the mode of resize is " << mode
-        << ". We support the number of scale to be 2 for NEAREST and "
-           "BILINEAR, 3 for TRILINEAR.";
+          << "the number of the attribute scale of resize "
+             "operation is "
+          << scale.size() << ", the mode of resize is " << mode
+          << ". We support the number of scale to be 2 for NEAREST and "
+             "BILINEAR, 3 for TRILINEAR.";
     }
     auto ow = static_cast<std::int32_t>(in->get_shape().at(2) * scale[0]);
     auto oh = static_cast<std::int32_t>(in->get_shape().at(1) * scale[1]);
@@ -1148,10 +1300,10 @@ void shape_infer_resize(xir::Op* cur) {
     }
   } else {
     UNI_LOG_ERROR(XIR_INVALID_ARG_OCCUR)
-      << "I don't know how to resize the feature maps.";
+        << "I don't know how to resize the feature maps.";
   }
   auto output_tensor =
-    xir::Tensor::create(out->get_name(), out_shape, out->get_data_type());
+      xir::Tensor::create(out->get_name(), out_shape, out->get_data_type());
   output_tensor->set_attrs(out->get_attrs());
   cur->replace_output_tensor(std::move(output_tensor));
 }
@@ -1205,17 +1357,20 @@ void shape_infer_pixel_shuffle(xir::Op* cur) {
     ow = iw * scale;
     oh = ih * scale;
     UNI_LOG_CHECK(ic % scale_sq == 0, XIR_INVALID_ARG_OCCUR)
-        << "The number of input channels for pixel_shuffle layer must be multiples "
+        << "The number of input channels for pixel_shuffle layer must be "
+           "multiples "
         << "of the scale * scale.";
   } else {
     oc = ic * scale_sq;
     ow = iw / scale;
     oh = ih / scale;
     UNI_LOG_CHECK(iw % scale == 0, XIR_INVALID_ARG_OCCUR)
-        << "The number of input width for pixel_shuffle layer must be multiples "
+        << "The number of input width for pixel_shuffle layer must be "
+           "multiples "
         << "of the scale.";
     UNI_LOG_CHECK(ih % scale == 0, XIR_INVALID_ARG_OCCUR)
-        << "The number of input height for pixel_shuffle layer must be multiples "
+        << "The number of input height for pixel_shuffle layer must be "
+           "multiples "
         << "of the scale.";
   }
   std::vector<std::int32_t> out_shape = {in_shape[0], oh, ow, oc};
@@ -1241,6 +1396,10 @@ void shape_infer_batchnorm(xir::Op* cur) {
       << "the number of beta and gamma.";
   shape_infer_remain(cur);
 }
+
+void shape_infer_instancenorm(xir::Op* cur) { shape_infer_remain(cur); }
+
+void shape_infer_groupnorm(xir::Op* cur) { shape_infer_remain(cur); }
 
 /// Note: The shape info for constant operator has been written into
 /// its output tensor when generating XIR model , so there is no need to infer
@@ -1380,6 +1539,21 @@ void shape_infer_min(xir::Op* cur) { shape_infer_broadcast(cur); }
 
 void shape_infer_max(xir::Op* cur) { shape_infer_broadcast(cur); }
 
+void shape_infer_argmax(xir::Op* cur) {
+  auto in = cur->get_input_tensor("input");
+  auto axis = cur->get_attr<std::int32_t>("axis");
+  axis = axis < 0 ? axis + in->get_shape().size() : axis;
+  auto out_shape = in->get_shape();
+  out_shape[axis] = 1;
+  auto out = cur->get_output_tensor();
+  auto output_tensor =
+      xir::Tensor::create(out->get_name(), out_shape, out->get_data_type());
+  output_tensor->set_attrs(out->get_attrs());
+  cur->replace_output_tensor(std::move(output_tensor));
+}
+
+void shape_infer_argmax_fix(xir::Op* cur) { shape_infer_argmax(cur); }
+
 void shape_infer_threshold(xir::Op* cur) { shape_infer_remain(cur); }
 
 void forward_strided_slice(xir::Op* cur, std::vector<std::int32_t> begin,
@@ -1440,211 +1614,11 @@ void forward_strided_slice(xir::Op* cur, std::vector<std::int32_t> begin,
 void shape_infer_strided_slice(xir::Op* cur) {
   std::int32_t in_shape_num =
       cur->get_input_tensor("input")->get_shape().size();
-  auto in_dims = cur->get_input_tensor("input")->get_shape();
-  auto begin = cur->get_attr<std::vector<std::int32_t>>("begin");
-  auto end = cur->get_attr<std::vector<std::int32_t>>("end");
-  auto strides = cur->get_attr<std::vector<std::int32_t>>("strides");
-  if (strides.size() == 0 ||
-      std::find(strides.begin(), strides.end(), 0) != strides.end()) {
-    strides.clear();
-    strides.resize(begin.size(), 1);
-    cur->set_attr<std::vector<std::int32_t>>("strides", strides);
-  }
-  auto begin_mask = 0;
-  if (cur->has_attr("begin_mask"))
-    begin_mask = cur->get_attr<std::int32_t>("begin_mask");
-  auto end_mask = 0;
-  if (cur->has_attr("end_mask"))
-    end_mask = cur->get_attr<std::int32_t>("end_mask");
-  auto ellipsis_mask = 0;
-  if (cur->has_attr("ellipsis_mask"))
-    ellipsis_mask = cur->get_attr<std::int32_t>("ellipsis_mask");
-  auto new_axis_mask = 0;
-  if (cur->has_attr("new_axis_mask"))
-    new_axis_mask = cur->get_attr<std::int32_t>("new_axis_mask");
-  auto shrink_axis_mask = 0;
-  if (cur->has_attr("shrink_axis_mask"))
-    shrink_axis_mask = cur->get_attr<std::int32_t>("shrink_axis_mask");
-  UNI_LOG_CHECK(shrink_axis_mask <= in_shape_num, XIR_INVALID_ARG_OCCUR)
-      << "shrink the " << shrink_axis_mask << "th dimension of a "
-      << in_shape_num << " dimension tensor ?";
-  vector<int32_t> processing_dims;
-  vector<int32_t> out_shape;
-  constexpr int32_t kShrinkAxis = -1, kNewAxis = -2;
-  // Step 1: Account for ellipsis and new axis
-  bool ellipsis_seen = false;
-  int32_t num_add_axis_after_ellipsis = 0;
-  auto sparse_shape_num = in_shape_num;
-  auto sparse_ellipsis_mask = ellipsis_mask;
-
-  for (auto i = 0; i < sparse_shape_num; i++) {
-    if (ellipsis_seen && ((1 << i) & new_axis_mask) != 0) {
-      num_add_axis_after_ellipsis++;
-    }
-    if ((1 << i) & ellipsis_mask) {
-      ellipsis_seen = true;
-    }
-  }
-  if (!ellipsis_seen) {
-    sparse_ellipsis_mask |= (1 << sparse_shape_num);
-    sparse_shape_num++;  // this effects loop iteration below
-  }
-  // Step 2: Make a sparse spec into a full index spec
-  vector<int32_t> dense_begin(in_shape_num);
-  vector<int32_t> dense_end(in_shape_num);
-  vector<int32_t> dense_strides(in_shape_num);
-  int32_t dense_begin_mask = 0;
-  int32_t dense_end_mask = 0;
-  int32_t dense_shrink_axis_mask = 0;
-  int32_t dense_begin_valid;
-  int32_t dense_end_valid;
-  std::vector<int32_t> final_shape_gather_indices;
-  {
-    auto full_index = 0;
-    const int32_t* const strides_flat = strides.data();
-    dense_begin_valid = !begin.empty();
-    dense_end_valid = !end.empty();
-    const int32_t* const begin_flat = begin.empty() ? nullptr : begin.data();
-    const int32_t* const end_flat = end.empty() ? nullptr : end.data();
-
-    for (auto i = 0; i < sparse_shape_num; i++) {
-      if ((1 << i) & sparse_ellipsis_mask) {
-        auto next_index = std::min(in_shape_num - (sparse_shape_num - i) + 1 +
-                                       num_add_axis_after_ellipsis,
-                                   in_shape_num);
-        for (; full_index < next_index; full_index++) {
-          dense_begin[full_index] = dense_end[full_index] = 0;
-          dense_strides[full_index] = 1;
-          dense_begin_mask |= (1 << full_index);
-          dense_end_mask |= (1 << full_index);
-          final_shape_gather_indices.push_back(full_index);
-        }
-      } else if ((1 << i) & new_axis_mask) {
-        final_shape_gather_indices.push_back(kNewAxis);
-      } else {
-        if (full_index == (int)dense_begin.size()) {
-          UNI_LOG_ERROR(XIR_INVALID_ARG_OCCUR)
-              << "Index out of range using input dim " << full_index
-              << "; input has only " << in_shape_num << " dims";
-        }
-        if (begin_flat != nullptr) {
-          dense_begin[full_index] = begin_flat[i];
-        }
-        if (end_flat != nullptr) {
-          dense_end[full_index] = end_flat[i];
-        }
-        dense_strides[full_index] = strides_flat[i];
-        if (begin_mask & (1 << i)) {
-          dense_begin_mask |= (1 << full_index);
-        }
-        if (end_mask & (1 << i)) {
-          dense_end_mask |= (1 << full_index);
-        }
-        if (shrink_axis_mask & (1 << i)) {
-          final_shape_gather_indices.push_back(kShrinkAxis);
-          dense_shrink_axis_mask |= (1 << full_index);
-        } else {
-          final_shape_gather_indices.push_back(full_index);
-        }
-        full_index++;
-      }
-    }
-  }
-  // Step 3: Make implicit ranges (non-zero begin_masks and end_masks)
-  // explicit
-  //         and bounds check!
-  bool is_simple_slice = true;
-  for (auto i = 0; i < in_shape_num; ++i) {
-    auto& begin_i = begin[i];
-    auto& end_i = end[i];
-    auto& stride_i = strides[i];
-    auto dim_i = in_dims[i];
-    if (stride_i == 0) {
-      UNI_LOG_FATAL(XIR_INVALID_ARG_OCCUR)
-          << cur->to_string() << "'s strides[" << i << "] must be non-zero";
-    }
-    bool shrink_i = (dense_shrink_axis_mask & (1 << i));
-    if (dim_i == -1) {
-      processing_dims.push_back(static_cast<int32_t>(shrink_i ? 1 : -1));
-      continue;
-    }
-
-    const std::array<int64_t, 2> masks = {
-        {dense_begin_mask & (1 << i), dense_end_mask & (1 << i)}};
-    const std::array<int64_t, 2> valid_range = {
-        {stride_i > 0 ? 0 : -1, stride_i > 0 ? dim_i : dim_i - 1}};
-
-    auto canonical = [stride_i, dim_i, masks, valid_range](int64_t x,
-                                                           int32_t c) {
-      if (masks[c]) {
-        return stride_i > 0 ? valid_range[c] : valid_range[(c + 1) & 1];
-      } else {
-        int64_t x_fwd = x < 0 ? dim_i + x : x;
-        return x_fwd < valid_range[0]
-                   ? valid_range[0]
-                   : x_fwd > valid_range[1] ? valid_range[1] : x_fwd;
-      }
-    };
-    if (shrink_i && stride_i <= 0) {
-      UNI_LOG_ERROR(XIR_INVALID_ARG_OCCUR)
-          << "only stride 1 allowed on non-range indexing.";
-    }
-    is_simple_slice &= stride_i == 1;
-    const bool begin_and_end_masked =
-        (dense_begin_mask & (1 << i)) && (dense_end_mask & (1 << i));
-    if (dense_begin_valid && dense_end_valid) {
-      if (shrink_i) {
-        int64_t x_fwd = begin_i < 0 ? dim_i + begin_i : begin_i;
-        begin_i = x_fwd;
-        end_i = begin_i + 1;
-        if (x_fwd < 0 || x_fwd >= dim_i) {
-          UNI_LOG_ERROR(XIR_INVALID_ARG_OCCUR)
-              << "slice index " << begin_i << " of dimension " << i
-              << " out of bounds.";
-        }
-      } else {
-        begin_i = canonical(begin_i, 0);
-        end_i = canonical(end_i, 1);
-      }
-    }
-    int64_t interval_length;
-    bool known_interval = false;
-    if (dense_begin_valid && dense_end_valid) {
-      interval_length = end_i - begin_i;
-      known_interval = true;
-    } else if (shrink_i) {
-      interval_length = 1;
-      known_interval = true;
-    } else if (begin_and_end_masked) {
-      if (dim_i >= 0) {
-        if (stride_i < 0) {
-          interval_length = -dim_i;
-        } else {
-          interval_length = dim_i;
-        }
-        known_interval = true;
-      }
-    }
-    if (known_interval) {
-      int64_t size_i;
-      if (interval_length == 0 || ((interval_length < 0) != (stride_i < 0))) {
-        size_i = 0;
-      } else {
-        size_i = interval_length / stride_i +
-                 (interval_length % stride_i != 0 ? 1 : 0);
-      }
-      processing_dims.push_back(static_cast<int32_t>(size_i));
-    } else {
-      processing_dims.push_back(static_cast<int32_t>(-1));
-    }
-  }
-  for (auto gather_index : final_shape_gather_indices) {
-    if (gather_index >= 0) {
-      out_shape.push_back(processing_dims[gather_index]);
-    } else if (gather_index == kNewAxis) {
-      out_shape.push_back(1);
-    }
-  }
+  std::vector<int32_t> begin(in_shape_num);
+  std::vector<int32_t> end(in_shape_num);
+  std::vector<int32_t> strides(in_shape_num);
+  std::vector<int32_t> out_shape;
+  validate_strided_slice(cur, begin, end, strides, out_shape);
   auto out = cur->get_output_tensor();
   // This is a strange condition, if the input is an one-dimension tensor,
   // shrink makes the output tensor to be a zero-dimension tensor, but
@@ -1939,11 +1913,7 @@ std::tuple<bool, std::vector<std::int32_t>> size_broadcast(
     ret = in_a_local;
   } else if ((size_a == 0) || (size_b == 0)) {
     if_success = true;
-    if (size_a == 0) {
-      ret = in_b;
-    } else if (size_b == 0) {
-      ret = in_a;
-    }
+    ret = in_a_local;
   } else {
     std::int32_t idx_a = size_a - 1;
     std::int32_t idx_b = size_b - 1;
@@ -2013,6 +1983,19 @@ void shape_infer_conv2d_fix(xir::Op* cur) {
     std::transform(tmp.begin(), tmp.end(), padding.begin(),
                    [](auto i) { return i; });
   }
+  std::int32_t group = 1;
+  if (attrs->has_attr("group")) {
+    group = attrs->get_attr<std::int32_t>("group");
+  }
+  UNI_LOG_CHECK(w_shape.back() == in_shape.back() / group,
+                XIR_INVALID_ARG_OCCUR)
+      << "The number of channel of weights is " << w_shape.back()
+      << ", but the number of channel of input / group is "
+      << in_shape.back() / group;
+  UNI_LOG_CHECK(in_shape.back() % group == 0, XIR_INVALID_ARG_OCCUR) 
+      << "The number of channel of input should be divisible by group.";
+  UNI_LOG_CHECK(w_shape.front() % group == 0, XIR_INVALID_ARG_OCCUR)
+      << "The number of weight kernel should be divisible by group.";
   oh = std::floor(1.0f *
                   (in_shape[1] + padding[2] + padding[3] -
                    (kernel[1] - 1) * dilation[1] - 1) /
@@ -2163,26 +2146,27 @@ void shape_infer_conv3d_fix(xir::Op* cur) {
   auto weights = cur->get_input_tensor("weights");
   auto w_shape = weights->get_shape();
   UNI_LOG_CHECK(w_shape.size() == 5, XIR_INVALID_ARG_OCCUR)
-    << "Op" << cur->to_string() << ". The size of dimension of weights here is "
-    << w_shape.size() << ", but the size of dimension should be 5.";
+      << "Op" << cur->to_string()
+      << ". The size of dimension of weights here is " << w_shape.size()
+      << ", but the size of dimension should be 5.";
   auto attrs = cur->get_attrs();
   auto kernel = attrs->get_attr<std::vector<std::int32_t>>("kernel");
   auto stride = attrs->get_attr<std::vector<std::int32_t>>("stride");
   std::vector<std::int32_t> dilation = {1, 1, 1};
   if (attrs->has_attr("dilation")) {
     auto tmp = attrs->get_attr<std::vector<std::int32_t>>("dilation");
-    std::transform(
-      tmp.begin(), tmp.end(), dilation.begin(), [](auto t) { return t; });
+    std::transform(tmp.begin(), tmp.end(), dilation.begin(),
+                   [](auto t) { return t; });
   }
   int ow = 0, oh = 0, od = 0, oc = 0;
   std::vector<std::int32_t> padding = {0, 0, 0, 0, 0, 0};
   if (attrs->has_attr("pad")) {
     auto tmp = attrs->get_attr<std::vector<std::int32_t>>("pad");
     UNI_LOG_CHECK(tmp.size() == 6, XIR_INVALID_ARG_OCCUR)
-      << "The size of dimension of paddings here is " << tmp.size()
-      << ", but the size of dimension should be 6.";
-    std::transform(
-      tmp.begin(), tmp.end(), padding.begin(), [](auto i) { return i; });
+        << "The size of dimension of paddings here is " << tmp.size()
+        << ", but the size of dimension should be 6.";
+    std::transform(tmp.begin(), tmp.end(), padding.begin(),
+                   [](auto i) { return i; });
   }
   oh = std::floor(1.0 *
                   (in_shape[1] + padding[2] + padding[3] -
@@ -2200,10 +2184,10 @@ void shape_infer_conv3d_fix(xir::Op* cur) {
                   stride[2]) +
        1;
   oc = w_shape[0];
-  std::vector<std::int32_t> new_out_shape = {
-    in->get_shape().at(0), oh, ow, od, oc};
+  std::vector<std::int32_t> new_out_shape = {in->get_shape().at(0), oh, ow, od,
+                                             oc};
   auto output_tensor =
-    xir::Tensor::create(out->get_name(), new_out_shape, out->get_data_type());
+      xir::Tensor::create(out->get_name(), new_out_shape, out->get_data_type());
   output_tensor->set_attrs(out->get_attrs());
   cur->replace_output_tensor(std::move(output_tensor));
 }
@@ -2215,26 +2199,27 @@ void shape_infer_depthwise_conv3d_fix(xir::Op* cur) {
   auto weights = cur->get_input_tensor("weights");
   auto w_shape = weights->get_shape();
   UNI_LOG_CHECK(w_shape.size() == 5, XIR_INVALID_ARG_OCCUR)
-    << "Op" << cur->to_string() << ". The size of dimension of weights here is "
-    << w_shape.size() << ", but the size of dimension should be 5.";
+      << "Op" << cur->to_string()
+      << ". The size of dimension of weights here is " << w_shape.size()
+      << ", but the size of dimension should be 5.";
   auto attrs = cur->get_attrs();
   auto kernel = attrs->get_attr<std::vector<std::int32_t>>("kernel");
   auto stride = attrs->get_attr<std::vector<std::int32_t>>("stride");
   std::vector<std::int32_t> dilation = {1, 1, 1};
   if (attrs->has_attr("dilation")) {
     auto tmp = attrs->get_attr<std::vector<std::int32_t>>("dilation");
-    std::transform(
-      tmp.begin(), tmp.end(), dilation.begin(), [](auto t) { return t; });
+    std::transform(tmp.begin(), tmp.end(), dilation.begin(),
+                   [](auto t) { return t; });
   }
   int ow = 0, oh = 0, od = 0, oc = 0;
   std::vector<std::int32_t> padding = {0, 0, 0, 0, 0, 0};
   if (attrs->has_attr("pad")) {
     auto tmp = attrs->get_attr<std::vector<std::int32_t>>("pad");
     UNI_LOG_CHECK(tmp.size() == 6, XIR_INVALID_ARG_OCCUR)
-      << "The size of dimension of paddings here is " << tmp.size()
-      << ", but the size of dimension should be 6.";
-    std::transform(
-      tmp.begin(), tmp.end(), padding.begin(), [](auto i) { return i; });
+        << "The size of dimension of paddings here is " << tmp.size()
+        << ", but the size of dimension should be 6.";
+    std::transform(tmp.begin(), tmp.end(), padding.begin(),
+                   [](auto i) { return i; });
   }
   oh = std::floor(1.0 *
                   (in_shape[1] + padding[2] + padding[3] -
@@ -2252,10 +2237,10 @@ void shape_infer_depthwise_conv3d_fix(xir::Op* cur) {
                   stride[2]) +
        1;
   oc = w_shape[4];
-  std::vector<std::int32_t> new_out_shape = {
-    in->get_shape().at(0), oh, ow, od, oc};
+  std::vector<std::int32_t> new_out_shape = {in->get_shape().at(0), oh, ow, od,
+                                             oc};
   auto output_tensor =
-    xir::Tensor::create(out->get_name(), new_out_shape, out->get_data_type());
+      xir::Tensor::create(out->get_name(), new_out_shape, out->get_data_type());
   output_tensor->set_attrs(out->get_attrs());
   cur->replace_output_tensor(std::move(output_tensor));
 }
@@ -2294,9 +2279,9 @@ void shape_infer_transposed_conv3d_fix(xir::Op* cur) {
        padding[4] - padding[5];
   oc = w_shape[0];
   auto out = cur->get_output_tensor();
-  auto output_tensor =
-      xir::Tensor::create(out->get_name(), {in->get_shape().at(0), oh, ow, od, oc},
-                          out->get_data_type());
+  auto output_tensor = xir::Tensor::create(
+      out->get_name(), {in->get_shape().at(0), oh, ow, od, oc},
+      out->get_data_type());
   output_tensor->set_attrs(out->get_attrs());
   cur->replace_output_tensor(std::move(output_tensor));
 }
@@ -2335,9 +2320,9 @@ void shape_infer_transposed_depthwise_conv3d_fix(xir::Op* cur) {
        padding[4] - padding[5];
   oc = w_shape[4];
   auto out = cur->get_output_tensor();
-  auto output_tensor =
-      xir::Tensor::create(out->get_name(), {in->get_shape().at(0), oh, ow, od, oc},
-                          out->get_data_type());
+  auto output_tensor = xir::Tensor::create(
+      out->get_name(), {in->get_shape().at(0), oh, ow, od, oc},
+      out->get_data_type());
   output_tensor->set_attrs(out->get_attrs());
   cur->replace_output_tensor(std::move(output_tensor));
 }
@@ -2485,6 +2470,52 @@ void shape_infer_reshape_fix(xir::Op* cur) {
   auto output_tensor_new = xir::Tensor::create(
       output_tensor->get_name(), output_dims, output_tensor->get_data_type());
   cur->replace_output_tensor(std::move(output_tensor_new));
+}
+
+void shape_infer_correlation2d_elemwise(xir::Op* cur) {
+  auto pad_size = cur->get_attr<std::int32_t>("pad_size");
+  auto ins = cur->get_input_tensors("input");
+  auto in_shape = ins[0]->get_shape();
+  auto out = cur->get_output_tensor();
+  int od = 0;
+  od = std::floor((2 * pad_size + 1) * (2 * pad_size + 1));
+
+  std::vector<std::int32_t> new_out_shape = {in_shape[0], in_shape[1],
+                                             in_shape[2], od, in_shape[3]};
+  auto output_tensor =
+      xir::Tensor::create(out->get_name(), new_out_shape, out->get_data_type());
+  output_tensor->set_attrs(out->get_attrs());
+  cur->replace_output_tensor(std::move(output_tensor));
+}
+
+void shape_infer_correlation1d_elemwise(xir::Op* cur) {
+  auto pad_size = cur->get_attr<std::int32_t>("pad_size");
+  auto ins = cur->get_input_tensors("input");
+  auto in_shape = ins[0]->get_shape();
+  auto out = cur->get_output_tensor();
+  int od = pad_size + 1;
+
+  std::vector<std::int32_t> new_out_shape = {in_shape[0], in_shape[1],
+                                             in_shape[2], od, in_shape[3]};
+  auto output_tensor =
+      xir::Tensor::create(out->get_name(), new_out_shape, out->get_data_type());
+  output_tensor->set_attrs(out->get_attrs());
+  cur->replace_output_tensor(std::move(output_tensor));
+}
+
+void shape_infer_cost_volume(xir::Op* cur) {
+  auto maxdisp = cur->get_attr<std::int32_t>("maxdisp");
+  auto ins = cur->get_input_tensors("input");
+  auto in_shape = ins[0]->get_shape();
+  auto out = cur->get_output_tensor();
+  int od = 0;
+  od = std::floor(maxdisp / 4);
+  std::vector<std::int32_t> new_out_shape = {in_shape[0], in_shape[1],
+                                             in_shape[2], od, in_shape[3] * 2};
+  auto output_tensor =
+      xir::Tensor::create(out->get_name(), new_out_shape, out->get_data_type());
+  output_tensor->set_attrs(out->get_attrs());
+  cur->replace_output_tensor(std::move(output_tensor));
 }
 
 // helper function

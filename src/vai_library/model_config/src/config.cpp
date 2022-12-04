@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <UniLog/UniLog.hpp>
 
 #include <algorithm>
 #include <cassert>
@@ -34,13 +35,13 @@ namespace ai {
 using namespace std;
 static std::shared_ptr<vitis::ai::proto::DpuModelParamList> create();
 static std::vector<std::string> collect_proto_txt_file_names();
-static std::string slurp(const char *filename);
-static bool merge_file(const string &filename,
-                       vitis::ai::proto::DpuModelParamList *list);
+static std::string slurp(const char* filename);
+static bool merge_file(const string& filename,
+                       vitis::ai::proto::DpuModelParamList* list);
 static std::shared_ptr<vitis::ai::proto::DpuModelParamList> instance();
 
-extern "C" vitis::ai::proto::DpuModelParam *find(
-    const std::string &model_name) {
+extern "C" vitis::ai::proto::DpuModelParam* find(
+    const std::string& model_name) {
   auto model_list = instance();
   ostringstream names;
   auto size = model_list->model_size();
@@ -50,9 +51,9 @@ extern "C" vitis::ai::proto::DpuModelParam *find(
     if (m->name() == model_name) {
       if (0) {
         std::cerr << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__
-                  << "]"                                                   //
-                  << "m " << (void *)m << " "                              //
-                  << "model_list.get " << (void *)model_list.get() << " "  //
+                  << "]"                                                  //
+                  << "m " << (void*)m << " "                              //
+                  << "model_list.get " << (void*)model_list.get() << " "  //
                   << std::endl;
 
         /*
@@ -67,8 +68,11 @@ extern "C" vitis::ai::proto::DpuModelParam *find(
       return m;
     }
   }
-  LOG(FATAL) << "cannot find model " << model_name
-             << ", valid names are as below:" << names.str();
+  // LOG(FATAL) << "cannot find model " << model_name
+  //           << ", valid names are as below:" << names.str();
+  UNI_LOG_FATAL(VAILIB_MODEL_CONFIG_NOT_FIND)
+      << "cannot find model " << model_name
+      << ", valid names are as below:" << names.str();
   // never goes here
   {
     // static auto v = vitis::ai::proto::TrainEvalPipelineConfig{};  //
@@ -79,16 +83,16 @@ extern "C" vitis::ai::proto::DpuModelParam *find(
 }
 
 extern "C" vitis::ai::proto::DpuModelParam get_config(
-    const std::string &model_name) {
+    const std::string& model_name) {
   auto ret = vitis::ai::proto::DpuModelParam{};
   auto m = find(model_name);
   if (0)
-    std::cout << "get_config() address " << (void *)m << " "  //
+    std::cout << "get_config() address " << (void*)m << " "  //
               << std::endl;
   ret.CopyFrom(*m);
   if (0) {
     std::cerr << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__ << "]"  //
-              << "m " << (void *)m << " "                                     //
+              << "m " << (void*)m << " "                                      //
               << "&ret " << &ret << " "                                       //
               << "name() " << ret.name() << " " << std::endl;
     std::cerr << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__ << "]"  //
@@ -120,7 +124,7 @@ static std::shared_ptr<vitis::ai::proto::DpuModelParamList> instance() {
   static std::shared_ptr<vitis::ai::proto::DpuModelParamList> ret;
   std::lock_guard<std::mutex> lock(*mutex.get());
   if (!ret) {
-    google::protobuf::LogSilencer *s1 = new google::protobuf::LogSilencer;
+    google::protobuf::LogSilencer* s1 = new google::protobuf::LogSilencer;
     if (0) {
       std::cerr << "suppress warning of unused variable " << s1 << std::endl;
     }
@@ -134,7 +138,7 @@ static std::shared_ptr<vitis::ai::proto::DpuModelParamList> create() {
   auto file_names = collect_proto_txt_file_names();
   auto ret = std::make_shared<vitis::ai::proto::DpuModelParamList>();
   auto all_failed = true;
-  for (const auto &filename : file_names) {
+  for (const auto& filename : file_names) {
     if (0)
       std::cerr << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__
                 << "]"                             //
@@ -142,7 +146,7 @@ static std::shared_ptr<vitis::ai::proto::DpuModelParamList> create() {
                 << std::endl;
     all_failed = merge_file(filename, ret.get()) == false && all_failed;
     if (0) {
-      for (const auto &m : ret->model()) {
+      for (const auto& m : ret->model()) {
         std::cerr << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__
                   << "]"                           //
                   << "name() " << m.name() << " "  //
@@ -157,15 +161,21 @@ static std::shared_ptr<vitis::ai::proto::DpuModelParamList> create() {
       }
     }
   }
-  LOG_IF(FATAL, all_failed) << "cannot parse any config files";
+  // LOG_IF(FATAL, all_failed) << "cannot parse any config files";
+  if (all_failed) {
+    UNI_LOG_FATAL(VAILIB_MODEL_CONFIG_CONFIG_PARSE_ERROR)
+        << "cannot parse any config files";
+  }
   return ret;
 }
 
 static std::vector<std::string> collect_proto_txt_file_names() {
   const char suffix[] = {".prototxt"};
-  const char *dirname = "/etc/dpu_model_param.conf.d";
+  const char* dirname = "/etc/dpu_model_param.conf.d";
   auto dir = opendir(dirname);
-  CHECK(dir != nullptr) << " cannot open directory: dirname = " << dirname;
+  // CHECK(dir != nullptr) << " cannot open directory: dirname = " << dirname;
+  UNI_LOG_CHECK(dir != nullptr, VAILIB_MODEL_CONFIG_OPEN_ERROR)
+      << " cannot open directory: dirname = " << dirname;
   auto ret = std::vector<std::string>{};
   for (auto ent = readdir(dir); ent != nullptr; ent = readdir(dir)) {
     auto len = strlen(ent->d_name);
@@ -174,7 +184,10 @@ static std::vector<std::string> collect_proto_txt_file_names() {
         strcmp(&ent->d_name[len - sizeof(suffix) + 1], suffix) == 0;
     struct stat st;
     auto filename = std::string{dirname} + "/" + ent->d_name;
-    CHECK_EQ(stat(filename.c_str(), &st), 0)
+    // CHECK_EQ(stat(filename.c_str(), &st), 0)
+    //    << " cannot check stat of " << filename;
+    UNI_LOG_CHECK(stat(filename.c_str(), &st) == 0,
+                  VAILIB_MODEL_CONFIG_OPEN_ERROR)
         << " cannot check stat of " << filename;
     auto is_normal_file = S_ISREG(st.st_mode);
     if (is_normal_file && end_with_suffix) {
@@ -186,8 +199,8 @@ static std::vector<std::string> collect_proto_txt_file_names() {
   return ret;
 }
 
-static bool merge_file(const string &filename,
-                       vitis::ai::proto::DpuModelParamList *list) {
+static bool merge_file(const string& filename,
+                       vitis::ai::proto::DpuModelParamList* list) {
   auto text = slurp(filename.c_str());
   vitis::ai::proto::DpuModelParamList mlist;
   auto ok = google::protobuf::TextFormat::ParseFromString(text, &mlist);
@@ -203,7 +216,7 @@ static bool merge_file(const string &filename,
               << "ok " << ok << " "                                           //
               << "mlist " << mlist.DebugString() << " "                       //
               << std::endl;
-    for (const auto &m : mlist.model()) {
+    for (const auto& m : mlist.model()) {
       std::cerr << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__
                 << "]"                           //
                 << "name() " << m.name() << " "  //
@@ -223,7 +236,7 @@ static bool merge_file(const string &filename,
   return bOK;
 }
 
-static std::string slurp(const char *filename) {
+static std::string slurp(const char* filename) {
   std::ifstream in;
   in.open(filename, std::ifstream::in);
   std::stringstream sstr;

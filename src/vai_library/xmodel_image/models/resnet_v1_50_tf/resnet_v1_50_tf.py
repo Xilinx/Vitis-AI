@@ -17,7 +17,7 @@ import xir_extra_ops
 
 
 def jit(graph):
-    graph.set_attr("xmodel_preprocessor", "libxmodel_preprocessor_vgg.so.2")
+    graph.set_attr("xmodel_preprocessor", "libxmodel_preprocessor_vgg.so.3")
     graph.set_attr("need_preprocess", True)
     graph.set_attr("mean", [103.94, 116.78, 123.68])
     graph.set_attr("scale", [1.0, 1.0, 1.0])
@@ -29,7 +29,7 @@ def jit(graph):
         .splitlines(),
     )
     xir_extra_ops.set_postprocessor(
-        graph, "libxmodel_postprocessor_classification.so.2", {"input": ["my_topk"]}
+        graph, "libxmodel_postprocessor_classification.so.3", {"input": ["my_topk"]}
     )
     graph.create_op(
         "my_topk",

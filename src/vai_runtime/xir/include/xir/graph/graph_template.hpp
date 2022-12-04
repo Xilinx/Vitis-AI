@@ -16,12 +16,12 @@
 
 #pragma once
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <set>
 #include <string>
 #include <vector>
-#include <functional>
 #include "xir/XirExport.hpp"
 #include "xir/op/op.hpp"
 
@@ -32,6 +32,8 @@ class OpTemplate {
   virtual const std::string get_name() const = 0;
 
   virtual const std::set<std::string> get_types() const = 0;
+
+  virtual void set_types(std::set<std::string> types) = 0;
 
   virtual const int get_input_num() const = 0;
 
@@ -44,6 +46,8 @@ class OpTemplate {
   virtual void set_filter(const std::function<bool(Op*)>&) = 0;
 
   virtual const std::function<bool(Op*)>& get_filter() const = 0;
+
+  virtual void replace_input_op(OpTemplate* op_old, OpTemplate* op_new) = 0;
 
  public:
   virtual ~OpTemplate() = default;
@@ -64,9 +68,15 @@ class XIR_DLLESPEC GraphTemplate {
 
   virtual OpTemplate* get_op(const std::string op_name) = 0;
 
-  virtual void set_filter(const std::function<bool(std::map<OpTemplate*, Op*>)>&) = 0;
+  virtual void remove_op(OpTemplate* op) = 0;
 
-  virtual const std::function<bool(std::map<OpTemplate*, Op*>)>& get_filter() const = 0;
+  virtual std::set<OpTemplate*> get_ops() = 0;
+
+  virtual void set_filter(
+      const std::function<bool(std::map<OpTemplate*, Op*>)>&) = 0;
+
+  virtual const std::function<bool(std::map<OpTemplate*, Op*>)>& get_filter()
+      const = 0;
 
   virtual int get_op_num() const = 0;
 

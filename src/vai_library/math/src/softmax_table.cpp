@@ -17,6 +17,7 @@
 
 #include <arm_neon.h>
 #include <glog/logging.h>
+#include <UniLog/UniLog.hpp>
 
 #include <cmath>
 #include <cstdint>
@@ -159,7 +160,9 @@ static inline Table getTable(int point) {
               {vcreate_u8(0x0402010100000000), vcreate_u8(0xFF9A5D3822140C07),
                vcreate_u8(0x0000000000000000), vcreate_u8(0x0000000000000000)}};
     default:
-      LOG(FATAL) << "wrong fixpos! point=" << point;
+      // LOG(FATAL) << "wrong fixpos! point=" << point;
+      UNI_LOG_FATAL(VAILIB_MATH_FIX_POS_ERROR)
+          << "wrong fixpos! point=" << point;
   }
 }
 

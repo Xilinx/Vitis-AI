@@ -20,7 +20,7 @@
 namespace vitis {
 namespace ai {
 std::unique_ptr<XmodelJit> XmodelJit::create(xir::Graph* graph) {
-  auto jit = std::string("libvitis_ai_library-xmodel_jit_python.so.2");
+  auto jit = std::string("libvitis_ai_library-xmodel_jit_python.so.3");
   if (graph->has_attr("xmodel_image:jit")) {
     jit = graph->get_attr<std::string>("xmodel_image:jit");
   }

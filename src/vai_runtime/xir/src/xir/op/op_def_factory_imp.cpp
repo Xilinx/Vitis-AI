@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
+#include "xir/op/op_def_factory_imp.hpp"
+
 #include <iostream>
 #include <iterator>
 #include <mutex>
 #include <sstream>
-#include "xir/util/dynamic_load.hpp"
 
 #include "UniLog/UniLog.hpp"
 #include "xir/attrs/attrs.hpp"
 #include "xir/op/built_in_ops.hpp"
-#include "xir/op/op_def_factory_imp.hpp"
+#include "xir/op/shape_inference.hpp"
+#include "xir/util/dynamic_load.hpp"
 namespace xir {
 using namespace std;
 static vector<string> str_split(const string& str) {
@@ -109,6 +111,45 @@ const vector<string> OpDefFactoryImp::get_registered_ops() const {
                    return it.second.name();
                  });
   return ret;
+}
+
+const OpDef* OpDefFactoryImp::get_op_def(
+    const std::string& type, bool register_custome_op_if_not_exists) {
+  auto it = this->store_.find(type);
+  if (it == this->store_.end()) {
+    if (register_custome_op_if_not_exists) {
+      register_customized_operator_definition(type);
+    }
+  }
+  it = this->store_.find(type);
+  CHECK(it != this->store_.end());
+  return &it->second;
+}
+
+const OpDef& OpDefFactoryImp::get_const_op_def(const std::string& type) const {
+  auto it = store_.find(type);
+  CHECK(it != store_.end()) << "cannot find op def " << type;
+  return it->second;
+}
+
+void OpDefFactoryImp::register_customized_operator_definition(
+    const std::string& type) {
+  auto new_operator =
+      xir::OpDef(type)
+          .add_input_arg(xir::OpArgDef{"input", OpArgDef::REPEATED,
+                                       xir::DataType::FLOAT, ""})
+          .add_attr(xir::AttrDefBuilder<std::vector<std::int32_t>>::build(
+              "shape", AttrDef::REQUIRED, 0,
+              "`Datatype`: `vector<int>`\n\n"
+              "The shape of the output tensor"))
+          .add_attr(xir::AttrDefBuilder<std::string>::build(
+              "data_type", AttrDef::REQUIRED,
+              "`Datatype`: `string`\n\n"
+              "The data type of the data of output feature maps, "
+              "we use FLOAT32 as the default."))
+          .set_annotation("This operator is not defined by XIR.")
+          .set_shape_infer(xir::shape_infer_data);
+  register_h(new_operator);
 }
 
 }  // namespace xir

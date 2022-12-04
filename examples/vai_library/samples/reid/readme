@@ -16,7 +16,6 @@
 Important:
   ./test_jpeg_reid, ./test_performance_reid, ./test_video_reid first param followed must be with model name.
   Valid model name:
-    reid
     personreid-res50_pt
     personreid-res18_pt
     facereid-large_pt
@@ -36,17 +35,13 @@ Important:
 
    run the executable file.
     
-    sample : ./test_jpeg_reid reid sample_reid_001.jpg sample_reid_002.jpg
-    output : 
-dismat : 0.506 
-    
     sample : ./test_jpeg_reid personreid-res50_pt sample_reid_001.jpg sample_reid_002.jpg
     output : 
-dismat : 0.567
+dismat : 0.490
     
     sample : ./test_jpeg_reid personreid-res18_pt sample_reid_001.jpg sample_reid_002.jpg
     output : 
-dismat : 0.422
+dismat : 0.413
 
     sample : ./test_jpeg_reid facereid-large_pt face_reid_001.jpg face_reid_002.jpg
     output : 
@@ -58,23 +53,23 @@ dismat : 1.161
 
     sample : ./test_jpeg_reid personreid_res50_pruned_0_4_pt face_reid_001.jpg face_reid_002.jpg
     output : 
-distmat : 0.499
+distmat : 0.705
 
     sample : ./test_jpeg_reid personreid_res50_pruned_0_5_pt face_reid_001.jpg face_reid_002.jpg
     output : 
-distmat :  0.532
+distmat :  0.639
 
     sample : ./test_jpeg_reid personreid_res50_pruned_0_6_pt face_reid_001.jpg face_reid_002.jpg
     output : 
-distmat : 0.483
+distmat : 0.736
 
     sample : ./test_jpeg_reid personreid_res50_pruned_0_7_pt face_reid_001.jpg face_reid_002.jpg
     output : 
-distmat :  0.605
+distmat :  0.684
 
 
 Accuracy:
     ./test_accuracy_reid <model_name> <image_list_0_filename> <image_list_1_filename> <output_filename>
 
     sample:
-    ./test_accuracy_reid reid image_list_0.txt image_list_1.txt result.txt
+    ./test_accuracy_reid personreid-res50_pt image_list_0.txt image_list_1.txt result.txt

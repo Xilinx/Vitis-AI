@@ -46,9 +46,6 @@ class PointPillarsPre
     std::vector<float_t*> in_addr1_;
     int in_width1_;
     int in_height1_ ;
-    int cfg_max_number_of_points_per_voxel;
-    V1F cfg_voxel_size;
-    int cfg_max_number_of_voxels;
 
     std::vector<std::thread> vth0;
     std::mutex mtx;

@@ -29,6 +29,7 @@ function    usage() {
     echo "    --type[=TYPE]             build type. VAR {release, debug(default)}"
     echo "    --pack[=FORMAT]           enable packing and set package format. VAR {deb, rpm}"
     echo "    --build-dir[=DIR]         set customized build directory. default directory is ${build_dir_default}"
+    echo "    --src-dir[=DIR]           set customized src directory. default directory is ${src_dir_default}"
     echo "    --install-prefix[=PREFIX] set customized install prefix. default prefix is ${install_prefix_default}"
     echo "    --cmake-options[=OPTIONS] append more cmake options"
     exit 0
@@ -43,7 +44,7 @@ args+=(-DCMAKE_BUILD_TYPE=Debug)
 build_type=Debug
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \
-		         -l help,ninja,build-python,clean,build-only,type:,project:,pack:,build-dir:,install-prefix:,cmake-options:,home,user \
+		         -l help,ninja,build-python,clean,build-only,type:,project:,pack:,build-dir:,src-dir:,install-prefix:,cmake-options:,home,user \
 		         -- "$0" "$@")
 [ $? -eq 0 ] || {
     echo "Failed to parse arguments! try --help"
@@ -81,7 +82,8 @@ while true; do
 		        *) echo "Invalid pack format \"$1\"! try --help"; exit 1;;
 	        esac
 	        ;;
-	    --build-dir) shift; build_dir=$1;;
+	    --build-dir) shift; build_dir="$(realpath $1)";;
+	    --src-dir) shift; src_dir=$1;;
 	    --install-prefix) shift; install_prefix=$1;;
 	    --cmake-options) shift; args+=($1);;
         --ninja) args+=(-G Ninja);;
@@ -115,6 +117,8 @@ else
 fi
 args+=(-DCMAKE_INSTALL_PREFIX=${install_prefix:="${install_prefix_default}"})
 
+src_dir_default=$script_path
+[ -z ${src_dir:+x} ] && src_dir=${src_dir_default}
 # set build dir
 build_dir_default=$HOME/build/build.${target_info}/${project_name}
 [ -z ${build_dir:+x} ] && build_dir=${build_dir_default}
@@ -126,9 +130,10 @@ fi
 
 mkdir -p ${build_dir}
 cd -P ${build_dir}
-echo "cd $PWD"
-echo cmake "${args[@]}" "$script_path"
-cmake "${args[@]}" "$script_path"
+echo "cd $build_dir"
+args+=(-B "$build_dir" -S "$src_dir")
+echo cmake "${args[@]}"
+cmake "${args[@]}"
 cmake --build . -j $(nproc)
 ${build_only:=false} || cmake --install .
 ${build_package:=false} && cpack -G ${cpack_generator}

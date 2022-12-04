@@ -15,7 +15,7 @@
 name: "DPUCZDX8G_ISA1_B4096"
 type: "DPUCZDX8G"
 isa_version: 0x01
-feature_code: 0x000016010407
+feature_code: 0x000056010407
 bank_group {
   name: "VB0"
   type: "Virtual"
@@ -65,6 +65,7 @@ save_engine {
   channel_parallel: 16
   input_bank: "VB0"
   input_bank: "VB1"
+  argmax: true
 }
 conv_engine {
   input_channel_parallel: 16

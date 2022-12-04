@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 #include <vart/op_imp.h>
+#include <vitis/ai/env_config.hpp>
+DEF_ENV_PARAM(ENABLE_BENCHMARK_RUN, "1")
 class MyPPScatterOp {
  public:
   MyPPScatterOp(const xir::Op* op1, xir::Attrs* attrs) : op{op1} {
+    b_benchmarkrun = ENV_PARAM(ENABLE_BENCHMARK_RUN);
     // op and attrs is not in use.
   }
   int calculate(vart::simple_tensor_buffer_t<float> output,
@@ -49,6 +52,12 @@ class MyPPScatterOp {
      for (auto n = 0; n < coord_numbers; n++) {
        auto x = (int)inputs[1].data[x_idx + 3];
        auto y = (int)inputs[1].data[x_idx + 2];
+       if (b_benchmarkrun) {
+          if (x >= width || y >= height) {
+            LOG(WARNING) <<"x, y exceed limit, maybe in benchmark mode?";
+            return 0;
+          }
+       }
        if (x < 0) break;  // stop copy data when coord x == -1 .
        for(int i=0; i<channel; i++) {
           output_idx =i*height*width + y*width+x;
@@ -62,6 +71,7 @@ class MyPPScatterOp {
 
  public:
   const xir::Op* const op;
+  bool b_benchmarkrun;
 };
 
 DEF_XIR_OP_IMP(MyPPScatterOp)

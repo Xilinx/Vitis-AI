@@ -23,6 +23,39 @@ using namespace std;
 
 namespace vitis { namespace ai { namespace pp {
 
+// begin config file item 
+V1F cfg_voxel_size{0.16, 0.16, 4};
+V1F cfg_point_cloud_range{0, -39.68, -3, 69.12, 39.68, 1};
+V1I cfg_layer_strides{2, 2, 2};
+V2F cfg_anchor_generator_stride_sizes{
+ {1.6, 3.9, 1.56},
+ {0.6, 1.76, 1.73},
+ {0.6, 0.8, 1.73}    };
+V2F cfg_anchor_generator_stride_strides{
+ {0.32, 0.32, 0.0},
+ {0.32, 0.32, 0.0},
+ {0.32, 0.32, 0.0}  };
+V2F cfg_anchor_generator_stride_offsets{
+ {0.16, -39.52, -1.78},
+ {0.16, -39.52, -1.465},
+ {0.16, -39.52, -1.465}  };
+V2F cfg_anchor_generator_stride_rotations{
+ {0, 1.57},
+ {0, 1.57},
+ {0, 1.57} };
+V1F cfg_anchor_generator_stride_matched_threshold{0.6, 0.5, 0.5};
+V1F cfg_anchor_generator_stride_unmatched_threshold{0.45, 0.35, 0.35};
+int cfg_max_number_of_points_per_voxel{100};
+int cfg_max_number_of_voxels{12000};
+int cfg_nms_pre_max_size{1000};  
+int cfg_nms_post_max_size{300}; 
+float cfg_nms_iou_threshold{0.5};
+float cfg_nms_score_threshold{0.5};
+int cfg_num_class{3};
+V1F cfg_post_center_limit_range{0, -39.68, -5, 69.12, 39.68, 5};
+std::vector<std::string> cfg_class_names{ "Car", "Cyclist", "Pedestrian"};
+// end config file item 
+
 std::string slurp(const char* filename) {
   std::ifstream in;
   std::stringstream sstr;

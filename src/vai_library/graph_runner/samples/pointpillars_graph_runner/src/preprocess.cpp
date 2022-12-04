@@ -17,20 +17,17 @@
 #include <thread>
 
 #include <vitis/ai/profiling.hpp>
-#include "second/protos/pipeline.pb.h"
-#pragma GCC diagnostic ignored "-Wignored-attributes"
 #include "./helper.hpp"
 #include <eigen3/unsupported/Eigen/CXX11/Tensor>
 #include "./preprocess.hpp"
 
-DEF_ENV_PARAM(XLNX_POINTPILLARS_PRE_MT, "2");
+DEF_ENV_PARAM(XLNX_POINTPILLARS_PRE_MT, "1");
 DEF_ENV_PARAM(XLNX_POINTPILLARS_MIDDLE_MT, "2");
 
 namespace vitis { namespace ai {  namespace pp {
 
 int XLNX_POINTPILLARS_MIDDLE_MT = 2;
 extern std::vector<int> g_grid_size;
-extern ::second::protos::TrainEvalPipelineConfig cfg;
 
 PointPillarsPre::~PointPillarsPre() { }
 
@@ -47,25 +44,20 @@ PointPillarsPre::PointPillarsPre(
             in_addr0[i], in_height0, in_width0, in_channel0,
             in_addr1[i], in_height1, in_width1, 1));
     }
-    V1F point_cloud_range_;
     V1F pc_len;
 
-    point_cloud_range_.assign(cfg.model().second().voxel_generator().point_cloud_range().begin(), cfg.model().second().voxel_generator().point_cloud_range().end());
     for(int i=0; i<3; i++) {
-      pc_len.emplace_back(  point_cloud_range_[i+3] - point_cloud_range_[i]); 
+      pc_len.emplace_back( cfg_point_cloud_range[i+3] - cfg_point_cloud_range[i]); 
     }
-    cfg_voxel_size.assign(cfg.model().second().voxel_generator().voxel_size().begin(), cfg.model().second().voxel_generator().voxel_size().end());
     for ( int i = 0; i < 3; i++ ) {
-       voxelmap_shape_[2-i] = round(( point_cloud_range_[3+i] - point_cloud_range_[i]) / cfg_voxel_size[i]);
+       voxelmap_shape_[2-i] = round(( cfg_point_cloud_range[3+i] - cfg_point_cloud_range[i]) / cfg_voxel_size[i]);
     }
     coor_to_voxelidx.assign(voxelmap_shape_[1]*voxelmap_shape_[2], -1);
-    cfg_max_number_of_points_per_voxel = (int)cfg.model().second().voxel_generator().max_number_of_points_per_voxel();
-    cfg_max_number_of_voxels = (int)cfg.eval_input_reader().max_number_of_voxels();
 
     for(int i=0; i<3; i++) {
-      scale_pcstartlen[i] =  in_scale0_*point_cloud_range_[i]/pc_len[i];
+      scale_pcstartlen[i] =  in_scale0_*cfg_point_cloud_range[i]/pc_len[i];
       scale_pclen[i] = in_scale0_/pc_len[i];
-      point_range[i] =  point_cloud_range_[i]/cfg_voxel_size[i];
+      point_range[i] =  cfg_point_cloud_range[i]/cfg_voxel_size[i];
     }
 
     if(ENV_PARAM( XLNX_POINTPILLARS_PRE_MT) >= 1) {

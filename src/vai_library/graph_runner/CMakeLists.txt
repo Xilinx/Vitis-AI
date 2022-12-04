@@ -26,6 +26,7 @@ vai_add_library(
   src/tensor_buffer_linker_p.cpp
   src/tensor_buffer_shared.hpp
   src/tensor_buffer_shared.cpp
+  src/error_code.cpp
   # public interface
   include/vitis/ai/graph_runner.hpp
   include/vitis/ai/graph_runner.h

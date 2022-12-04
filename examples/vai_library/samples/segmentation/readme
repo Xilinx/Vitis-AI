@@ -16,14 +16,13 @@
 Important:
   ./test_jpeg_segmentation, ./test_performance_segmentation, ./test_video_segmentation first param followed must be with model name.
   Valid model name:
-    fpn
     semantic_seg_citys_tf2
     unet_chaos-CT_pt
-    FPN-resnet18_Endov
     SemanticFPN_cityscapes_pt
     ENet_cityscapes_pt
     mobilenet_v2_cityscapes_tf
     SemanticFPN_Mobilenetv2_pt
+    HRNet_pt
 
 
 1, compile
@@ -36,16 +35,10 @@ Important:
 
    run the executable file.
     
-    sample : ./test_jpeg_segmentation fpn sample_segmentation.jpg
-    output : 
-   
     sample : ./test_jpeg_segmentation semantic_seg_citys_tf2 sample_semantic_seg_citys_tf2.png
     output : 
 
     sample : ./test_jpeg_segmentation unet_chaos-CT_pt sample_segmentation_chaos.jpg
-    output : 
-
-    sample : ./test_jpeg_segmentation FPN-resnet18_Endov sample_segmentation_robot.jpg
     output : 
 
     sample : ./test_jpeg_segmentation SemanticFPN_cityscapes_pt sample_segmentation.jpg
@@ -60,6 +53,8 @@ Important:
     sample : ./test_jpeg_segmentation SemanticFPN_Mobilenetv2_pt sample_segmentation.jpg
     output :
 
+    sample : ./test_jpeg_segmentation HRNet_pt sample_segmentation.jpg
+    output :
 
 
 Accuracy:
@@ -73,6 +68,5 @@ Accuracy:
 
 
     sample:
-    ./test_accuracy_segmentation fpn image_list.txt result.txt
-    ./test_accuracy_endov FPN-resnet18_Endov image_list.txt result.txt
+    
     ./test_accuracy_unet unet_chaos-CT_pt image_set image_list.txt result.txt

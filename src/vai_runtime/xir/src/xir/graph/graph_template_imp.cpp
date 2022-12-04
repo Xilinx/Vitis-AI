@@ -29,7 +29,27 @@ OpTemplateImp::OpTemplateImp(const GraphTemplateImp::VertexD vd,
   filter_ = [](Op* op) { return true; };
 }
 
+void OpTemplateImp::replace_input_op(OpTemplate* op_old, OpTemplate* op_new) {
+  UNI_LOG_CHECK(op_old != nullptr && op_new != nullptr, XIR_UNEXPECTED_VALUE)
+      << "Op_old and op_new can not be empty!";
+  auto input_ops = get_input_ops();
+  for (auto iter = input_ops.begin(); iter != input_ops.end(); ++iter) {
+    if (op_old == static_cast<OpTemplateImp*>(*iter)) {
+      auto ed = boost::edge(static_cast<OpTemplateImp*>(op_old)->vd_, vd_,
+                            *graph_->get_boost_graph())
+                    .first;
+      boost::remove_edge(ed, *graph_->get_boost_graph());
+      boost::add_edge(static_cast<OpTemplateImp*>(op_new)->vd_, vd_,
+                      *graph_->get_boost_graph());
+    }
+  }
+}
+
 const std::string OpTemplateImp::get_name() const { return name_; }
+
+void OpTemplateImp::set_types(std::set<std::string> types) {
+  types_ = move(types);
+}
 
 const std::set<std::string> OpTemplateImp::get_types() const { return types_; }
 
@@ -130,8 +150,31 @@ OpTemplate* GraphTemplateImp::get_op(const std::string op_name) {
   return ret;
 }
 
+std::set<OpTemplate*> GraphTemplateImp::get_ops() {
+  auto ret = std::set<OpTemplate*>{};
+  for (auto vd : boost::make_iterator_range(boost::vertices(*graph_))) {
+    ret.insert((*graph_)[vd].get());
+  }
+  return ret;
+}
+
+void GraphTemplateImp::remove_op(OpTemplate* op) {
+  UNI_LOG_CHECK(op != nullptr, XIR_UNEXPECTED_VALUE) << "Null pointer!";
+  auto op_name = op->get_name();
+  UNI_LOG_CHECK(get_op(op_name) != nullptr, XIR_REMOVE_OP_FAIL)
+      << "Can not find " << op_name << " in graph template.";
+  auto fanout_ops = op->get_fanout_ops();
+  UNI_LOG_CHECK(fanout_ops.size() == 0, XIR_REMOVE_OP_FAIL)
+      << "Cannot remove " << op->get_name()
+      << " from graph. Because there is at least one op who takes its output "
+         "as input.";
+  auto ptr = static_cast<OpTemplateImp*>(op);
+  boost::clear_vertex(ptr->vd_, *graph_);
+  boost::remove_vertex(ptr->vd_, *graph_);
+}
+
 void GraphTemplateImp::set_filter(
-  const std::function<bool(std::map<OpTemplate*, Op*>)>& filter) {
+    const std::function<bool(std::map<OpTemplate*, Op*>)>& filter) {
   filter_ = filter;
 }
 

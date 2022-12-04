@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include <glog/logging.h>
-#include <google/protobuf/text_format.h>
 
 #include <iomanip>
 #include <iostream>
@@ -31,14 +30,12 @@
 #include "./pointpillars.hpp"
 #include "./pointpillars_post.hpp"
 #include "./preprocess.hpp"
-#include "second/protos/pipeline.pb.h"
 #include "vitis/ai/graph_runner.hpp"
 
 namespace vitis {
 namespace ai {
 namespace pp {
 
-::second::protos::TrainEvalPipelineConfig cfg;
 std::vector<int> g_grid_size;
 G_ANCHOR g_anchor;
 
@@ -73,26 +70,12 @@ struct tensors_attribute {
   float out_scale0;
 } g_ta;
 
-void get_cfg(const std::string& confPath) {
-  auto text = slurp(confPath.c_str());
-  google::protobuf::LogSilencer* s1 = new google::protobuf::LogSilencer;
-  if (0) {
-    std::cerr << "suppress warning of unused variable " << s1 << std::endl;
-  }
-
-  auto ok = google::protobuf::TextFormat::ParseFromString(text, &cfg);
-  if (!ok) {
-    std::cerr << "parse error for tensorflow offical config file: " << confPath;
-    exit(-1);
-  }
-}
-
 void get_grid_size() {
   for (int i = 0; i < 3; i++) {
     g_grid_size.emplace_back(
-        int((cfg.model().second().voxel_generator().point_cloud_range()[i + 3] -
-             cfg.model().second().voxel_generator().point_cloud_range()[i]) /
-            cfg.model().second().voxel_generator().voxel_size()[i]));
+        int((cfg_point_cloud_range[i + 3] -
+             cfg_point_cloud_range[i]) /
+            cfg_voxel_size[i]));
   }
 }
 
@@ -115,12 +98,8 @@ static std::vector<std::int32_t> get_index_zeros(const xir::Tensor* tensor) {
   return ret;
 }
 
-int initialize(const std::string& xm,
-               const std::vector<vart::TensorBuffer*>& input_tensor_buffers,
+int initialize(const std::vector<vart::TensorBuffer*>& input_tensor_buffers,
                const std::vector<vart::TensorBuffer*>& output_tensor_buffers) {
-  std::string cfgpath(xm.substr(0, xm.size() - 7));  // .xmodel
-  cfgpath.append("_officialcfg.prototxt");
-  get_cfg(cfgpath);
   get_grid_size();
   anchor_stride::create_all_anchors();
 
@@ -225,7 +204,7 @@ int main(int argc, char* argv[]) {
   auto output_tensor_buffers = runner->get_outputs();
 
   int ret =
-      initialize(g_xmodel_file, input_tensor_buffers, output_tensor_buffers);
+      initialize( input_tensor_buffers, output_tensor_buffers);
   CHECK_EQ(ret, 0) << "failed to initialize";
 
   // preprocess and fill input

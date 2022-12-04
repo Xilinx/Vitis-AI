@@ -30,11 +30,19 @@ configure_file(config.hpp.in config.hpp @ONLY)
 # run protoc
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS EXPORT_MACRO TARGET_FACTORY_DLLESPEC target.proto)
 #set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_FLAGS -Wno-unused-variable)
-if(MSVC) 
-	set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_DEFINITIONS "TARGET_FACTORY_DLLESPEC=__declspec(dllexport)")
-else(MSVC)
-	set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_DEFINITIONS "TARGET_FACTORY_DLLESPEC=__attribute__((visibility(\"default\")))")
-endif(MSVC)
+if(BUILD_SHARED_LIBS)
+    if(MSVC)
+        set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_DEFINITIONS "TARGET_FACTORY_DLLESPEC=__declspec(dllexport)")
+    else(MSVC)
+        set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_DEFINITIONS "TARGET_FACTORY_DLLESPEC=__attribute__((visibility(\"default\")))")
+    endif(MSVC)
+else(BUILD_SHARED_LIBS)
+    set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_DEFINITIONS "TARGET_FACTORY_DLLESPEC=")
+endif(BUILD_SHARED_LIBS)
+
+if(NOT MSVC)
+    set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_FLAGS -Wno-array-bounds)
+endif(NOT MSVC)
 # process target files
 file(GLOB PROTOTXT_FILE_LIST ${PROJECT_SOURCE_DIR}/targets/*.prototxt)
 set(TARGET_PROTOTXT_LST "")
@@ -58,11 +66,18 @@ configure_file(${PROJECT_SOURCE_DIR}/src/target_list.hpp.in target_list.hpp
 
 # build library
 aux_source_directory(. CPP_SRCS)
-add_library(${PROJECT_NAME} SHARED ${PROTO_SRCS} ${CPP_SRCS})
+add_library(${PROJECT_NAME}
+  ../include/vitis/ai/target_factory.hpp
+  ${PROTO_SRCS} ${CPP_SRCS})
 # Enable Export of public APIs
 target_compile_definitions(${PROJECT_NAME} PRIVATE -DTARGET_FACTORY_EXPORT
 	# for an unknown reason, g++ 9.3 produces compilation errors related to PRI64X
 	-D__STDC_FORMAT_MACROS=1)
+if(BUILD_SHARED_LIBS)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DTARGET_FACTORY_USE_DLL=1)
+else(BUILD_SHARED_LIBS)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DTARGET_FACTORY_USE_DLL=0)
+endif(BUILD_SHARED_LIBS)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION "${PROJECT_VERSION}"

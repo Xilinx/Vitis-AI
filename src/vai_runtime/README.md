@@ -5,7 +5,7 @@
  </tr>
 </table>
 
-## Vitis AI Runtime v2.5
+## Vitis AI Runtime v3.0
 
 # Introduction
 
@@ -26,7 +26,7 @@ Vitis AI Runtime directory structure introduction
 --------------------------------------------------
 
 ```
-VART
+vai_runtime
 ├── plugin-samples
 │   ├── cmake
 │   ├── CMakeLists.txt
@@ -79,6 +79,7 @@ VART
 │   ├── softmax-runner
 │   ├── softmax-runner-cpu
 │   ├── trace
+│   ├── trace-logging
 │   ├── util
 │   ├── xrnn-runner
 │   └── xrt-device-handle
@@ -98,7 +99,7 @@ VART
 ```
 # Quick Start
 For edge users, click 
-[Quick Start For Edge](./quick_start_for_edge.md) to get started quickly. 
+[Quick Start For Embedded](./quick_start_for_embedded.md) to get started quickly. 
 
 For rnn users, click 
 [Quick Start For RNN](./quick_start_for_rnn.md) to get started quickly.

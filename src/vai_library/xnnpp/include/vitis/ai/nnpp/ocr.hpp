@@ -68,11 +68,15 @@ class OCRPost {
   );
 
   /**
-   * @brief post process the ocr result.
+   * @brief Post-process the ocr result.
    * @param idx  batch index.
    * @return OCRResult.
    */
   virtual OCRResult process(int idx)=0;
+  /**
+   * @brief Post-process the ocr result.
+   * @return vector of OCRResult.
+   */
   virtual std::vector<OCRResult> process()=0;
   /**
    * @cond NOCOMMENTS

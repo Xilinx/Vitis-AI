@@ -1,13 +1,20 @@
 
 ## Release Documentation
 
+<style>
+tr td,th{
+border:1px solid grey;
+}
+</style>
+
 <div id="readme" class="Box-body readme blob js-code-block-container p-5 p-xl-6 gist-border-0">
     <article class="markdown-body entry-content container-lg" itemprop="text"><table>
+
 <tbody><tr>
 </th>
 </tr>
   <tr>
-    <th rowspan="6" width="17%">Developer User Guides</th>
+    <th rowspan="6" width="17%" style="color:#FFFFFF" Bgcolor=#000000><Font color=#FFFFFF >Developer User Guides </Font> </th>
    </tr>
 <tr>
 	<td align="center" colspan="6"><a href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai">Vitis AI User Guide (UG1414)</a></td>
@@ -23,10 +30,10 @@
      
 <tr></tr>
     <tr></tr>
-  <tr><th colspan="7"></th></tr>
+  <tr><th colspan="7" height="15" Bgcolor=#000000></th></tr>
      <tr></tr>
   <tr>
-     <th rowspan="7" width="17%">DPU IP Product Guides</th>
+     <th rowspan="7" width="17%" style="color:#FFFFFF" Bgcolor=#000000>DPU IP Product Guides</th>
    </tr>
 </tr>
 <tr>
@@ -52,6 +59,6 @@
 	<td align="center"><a href="https://docs.xilinx.com/r/en-US/pg367-dpucahx8h">DPUCAHX8H (PG367)</a></td>
 	<td align="center"><a href="https://docs.xilinx.com/r/en-US/pg366-dpucahx8l">DPUCAHX8L (PG366)</a></td>
 	<td align="center"><a href="https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h">DPUCVDX8H (PG403)</a></td>
- <tr><th colspan="7"></th></tr>
+ <tr><th colspan="7" height="15" Bgcolor=#000000></th></tr>
 
  </tbody></table>

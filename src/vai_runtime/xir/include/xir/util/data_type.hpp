@@ -18,12 +18,13 @@
 #include <climits>
 #include <cstdint>
 #include <string>
+
 #include "xir/XirExport.hpp"
 
 namespace xir {
 
 struct XIR_DLLESPEC DataType {
-  enum Type { INT, UINT, XINT, XUINT, FLOAT, UNKNOWN };
+  enum Type { INT, UINT, XINT, XUINT, FLOAT, BFLOAT, UNKNOWN };
 
   DataType();
   DataType(const std::string& type);
@@ -52,24 +53,24 @@ DataType create_data_type() {
 };
 
 template <>
-DataType create_data_type<float>();
+XIR_DLLESPEC DataType create_data_type<float>();
 template <>
-DataType create_data_type<double>();
+XIR_DLLESPEC DataType create_data_type<double>();
 template <>
-DataType create_data_type<char>();
+XIR_DLLESPEC DataType create_data_type<char>();
 template <>
-DataType create_data_type<std::int16_t>();
+XIR_DLLESPEC DataType create_data_type<std::int16_t>();
 template <>
-DataType create_data_type<std::int32_t>();
+XIR_DLLESPEC DataType create_data_type<std::int32_t>();
 template <>
-DataType create_data_type<std::int64_t>();
+XIR_DLLESPEC DataType create_data_type<std::int64_t>();
 template <>
-DataType create_data_type<unsigned char>();
+XIR_DLLESPEC DataType create_data_type<unsigned char>();
 template <>
-DataType create_data_type<std::uint16_t>();
+XIR_DLLESPEC DataType create_data_type<std::uint16_t>();
 template <>
-DataType create_data_type<std::uint32_t>();
+XIR_DLLESPEC DataType create_data_type<std::uint32_t>();
 template <>
-DataType create_data_type<std::uint64_t>();
+XIR_DLLESPEC DataType create_data_type<std::uint64_t>();
 
 }  // namespace xir

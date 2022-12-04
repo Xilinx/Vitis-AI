@@ -16,13 +16,13 @@
 #!/bin/bash
 
 
-wget https://www.xilinx.com/bin/public/openDownload?filename=sdk-2022.1.0.0.sh -O sdk-2022.1.0.0.sh
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2022.1-r2.5.0.tar.gz -O vitis_ai_2022.1-r2.5.0.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=sdk-2022.2.0.0.sh -O sdk-2022.2.0.0.sh
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2022.2-r3.0.0.tar.gz -O vitis_ai_2022.2-r3.0.0.tar.gz
 
-chmod +x sdk-2022.1.0.0.sh
+chmod +x sdk-2022.2.0.0.sh
 
-echo "The Cross Compiler will be installed in ~/petalinux_sdk_2022.1 by default"
-install_path=~/petalinux_sdk_2022.1
+echo "The Cross Compiler will be installed in ~/petalinux_sdk_2022.2 by default"
+install_path=~/petalinux_sdk_2022.2
 
 if [ -d $install_path ]
 then
@@ -31,11 +31,11 @@ else
 mkdir -p $install_path
 fi
 
-echo $install_path|./sdk-2022.1.0.0.sh
+echo $install_path|./sdk-2022.2.0.0.sh
 
 rm -r $install_path/sysroots/cortexa72-cortexa53-xilinx-linux/usr/share/cmake/XRT/
 
-tar -xzvf vitis_ai_2022.1-r2.5.0.tar.gz -C $install_path/sysroots/cortexa72-cortexa53-xilinx-linux/
+tar -xzvf vitis_ai_2022.2-r3.0.0.tar.gz -C $install_path/sysroots/cortexa72-cortexa53-xilinx-linux/
 
 echo "Complete Cross Compiler installation"
 echo ""

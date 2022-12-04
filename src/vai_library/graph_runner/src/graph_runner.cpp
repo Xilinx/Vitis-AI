@@ -19,11 +19,11 @@
 #include "vitis/ai/env_config.hpp"
 
 #ifndef GRAPH_RUNNER
-#define GRAPH_RUNNER "libvitis_ai_library-graph_runner.so.2"
+#define GRAPH_RUNNER "libvitis_ai_library-graph_runner.so.3"
 #endif
 
 #ifndef CPU_TASK
-#define CPU_TASK "libvitis_ai_library-cpu_task.so.2"
+#define CPU_TASK "libvitis_ai_library-cpu_task.so.3"
 #endif
 
 DEF_ENV_PARAM(DEBUG_GRAPH_RUNNER_USE_CPU_TASK, "1")

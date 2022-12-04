@@ -17,7 +17,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(
   xir
-  VERSION 2.5.0
+  VERSION 3.0.0
   LANGUAGES C CXX)
 
 include(${PROJECT_SOURCE_DIR}/cmake/VitisCommon.cmake)
@@ -35,6 +35,11 @@ if(NOT TARGET unilog::unilog)
 endif()
 
 find_package(Boost REQUIRED)
+if(BUILD_SHARED_LIBS)
+    set(Protobuf_USE_STATIC_LIBS OFF)
+else(BUILD_SHARED_LIBS)
+    set(Protobuf_USE_STATIC_LIBS ON)
+endif(BUILD_SHARED_LIBS)
 find_package(Protobuf REQUIRED)
 find_package(Threads REQUIRED)
 

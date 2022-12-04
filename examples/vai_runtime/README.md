@@ -23,7 +23,7 @@ Vitis AI Runtime directory structure introduction
 --------------------------------------------------
 
 ```
-VART
+vai_runtime
 ├── README.md
 ├── adas_detection
 │   ├── build.sh
@@ -59,18 +59,18 @@ VART
 
 ## Quick Start For Embedded
 ### Setting Up the Host
-For `MPSOC`, follow [Setting Up the Host](../../setup/mpsoc#step1-setup-cross-compiler) to set up the host for embedded.  
-For `VCK190`, follow [Setting Up the Host](../../setup/vck190#step1-setup-cross-compiler) to set up the host for embedded.
+For `MPSOC`, follow [Setting Up the Host](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/mpsoc/README.html#step1-setup-cross-compiler) to set up the host for embedded.  
+For `VCK190`, follow [Setting Up the Host](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/vck190/README.html#step1-setup-cross-compiler) to set up the host for embedded.
 
 ### Setting Up the Target
-For `MPSOC`, follow [Setting Up the Target](../../setup/mpsoc/README.md#step2-setup-the-target) to set up the target.  
-For `VCK190`, follow [Setting Up the Target](../../setup/vck190/README.md#step2-setup-the-target) to set up the target.
+For `MPSOC`, follow [Setting Up the Target](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/mpsoc/README.html#step2-setup-the-target) to set up the target.  
+For `VCK190`, follow [Setting Up the Target](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/mpsoc/README.html#step2-setup-the-target) to set up the target.
 	  
 ### Running Vitis AI Examples
 
-Follow [Running Vitis AI Examples](../../setup/mpsoc/README.md#step3-run-the-vitis-ai-examples) to run Vitis AI examples.
+Follow [Running Vitis AI Examples](../../docs/docs/board_setup/mpsoc/README.html#step3-run-the-vitis-ai-examples) to run Vitis AI examples.
 
-Note: When you update from VAI1.3 to VAI2.0 and VAI2.5, refer to the following to modify your compilation options.
+Note: When you update from VAI1.3 to VAI2.0, VAI2.5 or VAI3.0, refer to the following to modify your compilation options.
 1. For Petalinux 2021.1 and above, it uses OpenCV4, and for Petalinux 2020.2, it uses OpenCV3. So set the `OPENCV_FLAGS` as needed. You can refer to the following.
 ```
 result=0 && pkg-config --list-all | grep opencv4 && result=1
@@ -88,16 +88,12 @@ For demonstration purposes, we provide the following pre-compiled DPU IP with VA
 
 | No\. | Accelerator Card | DPU IP |
 | ---- | ---- | ----   |
-| 1 | U50LV        | DPUCAHX8H         |
-| 2 | U50LV        | DPUCAHX8H-DWC     |
-| 3 | U55C         | DPUCAHX8H-DWC     |
-| 4 | VCK5000-PROD | DPUCVDX8H_4pe_miscdwc |
-| 5 | VCK5000-PROD | DPUCVDX8H_6pe_dwc     |
-| 6 | VCK5000-PROD | DPUCVDX8H_6pe_misc    |
-| 7 | VCK5000-PROD | DPUCVDX8H_8pe_normal  |
+| 1 | VCK5000-PROD | DPUCVDX8H_4pe_miscdwc |
+| 2 | VCK5000-PROD | DPUCVDX8H_6pe_dwc     |
+| 3 | VCK5000-PROD | DPUCVDX8H_6pe_misc    |
+| 4 | VCK5000-PROD | DPUCVDX8H_8pe_normal  |
 
-For `U50LV` and `U55C` Alveo Card, follow [Setup Alveo Accelerator Card](../../setup/alveo/README.md) to set up the host.  
-For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../setup/vck5000/README.md) to set up the host.
+For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../docs/docs/vck5000/README.md) to set up the host.
 
 ### Running Vitis AI Examples
 In the docker system, `/workspace/examples/VART/` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample.

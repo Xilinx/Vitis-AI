@@ -39,12 +39,12 @@ Important:
     sample : ./test_jpeg_medicaldetection RefineDet-Medical_EDD_tf sample_medicaldetection.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I0317 11:00:45.876993  3759 demo.hpp:1183] batch: 0     image: sample_medicaldetection.jpg
-I0317 11:00:45.877079  3759 process_result.hpp:39] RESULT: BE   0.990099   -3.35321 72.3176 229.08 297.6
-I0317 11:00:45.877221  3759 process_result.hpp:39] RESULT: BE   0.933227   7.67506 236.273 40.1888 309.044
-I0317 11:00:45.877265  3759 process_result.hpp:39] RESULT: suspicious   0.90479   28.2807 142.651 105.215 226.621
-I0317 11:00:45.877313  3759 process_result.hpp:39] RESULT: BE   0.847918   236.762 219.754 303.208 318.879
-I0317 11:00:45.877357  3759 process_result.hpp:39] RESULT: BE   0.775535   288.085 88.6029 318.715 139.103
+I1130 09:58:27.691592 21919 demo.hpp:1190] batch: 0     image: sample_medicaldetection.jpg
+I1130 09:58:27.691716 21919 process_result.hpp:39] RESULT: BE   0.982344   -3.43982 74.9771 224.676 297.461
+I1130 09:58:27.691851 21919 process_result.hpp:39] RESULT: BE   0.933227   6.9815 235.247 40.5273 308.017
+I1130 09:58:27.691900 21919 process_result.hpp:39] RESULT: suspicious   0.920301   30.1318 150.183 105.637 230.057
+I1130 09:58:27.691951 21919 process_result.hpp:39] RESULT: BE   0.847918   236.555 220.063 302.176 318.571
+I1130 09:58:27.692001 21919 process_result.hpp:39] RESULT: BE   0.62172   288.623 88.7677 319.638 140.871
 
     sample : ./test_jpeg_medicaldetection RefineDet-Medical_EDD_baseline_tf  sample_medicaldetection.jpg
     output : 

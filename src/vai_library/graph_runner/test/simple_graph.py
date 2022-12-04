@@ -66,9 +66,9 @@ def normal_setting_for_graph(g):
     g.get_root_subgraph().set_attr(
         "runner",
         {
-            "ref": "libvitis_ai_library-graph_runner.so.2",
-            "sim": "libvitis_ai_library-graph_runner.so.2",
-            "run": "libvitis_ai_library-graph_runner.so.2",
+            "ref": "libvitis_ai_library-graph_runner.so.3",
+            "sim": "libvitis_ai_library-graph_runner.so.3",
+            "run": "libvitis_ai_library-graph_runner.so.3",
         },
     )
     for child in g.get_root_subgraph().get_children():
@@ -78,9 +78,9 @@ def normal_setting_for_graph(g):
                 child.set_attr(
                     "runner",
                     {
-                        "ref": "libvitis_ai_library-cpu_task.so.2",
-                        "sim": "libvitis_ai_library-cpu_task.so.2",
-                        "run": "libvitis_ai_library-cpu_task.so.2",
+                        "ref": "libvitis_ai_library-cpu_task.so.3",
+                        "sim": "libvitis_ai_library-cpu_task.so.3",
+                        "run": "libvitis_ai_library-cpu_task.so.3",
                     },
                 )
 

@@ -43,9 +43,15 @@ file(GLOB_RECURSE PROTO_FILES proto/*.proto)
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS EXPORT_MACRO XIR_DLLESPEC
                                                          ${PROTO_FILES})
 if(MSVC)
-  set_source_files_properties(
-    ${PROTO_SRCS} PROPERTIES COMPILE_DEFINITIONS
-                             "XIR_DLLESPEC=__declspec(dllexport)")
+    if(BUILD_SHARED_LIBS)
+      set_source_files_properties(
+        ${PROTO_SRCS} PROPERTIES COMPILE_DEFINITIONS
+                                 "XIR_DLLESPEC=__declspec(dllexport)")
+    else(BUILD_SHARED_LIBS)
+        set_source_files_properties(
+            ${PROTO_SRCS} PROPERTIES COMPILE_DEFINITIONS
+                                     "XIR_DLLESPEC=")
+    endif(BUILD_SHARED_LIBS)
 else(MSVC)
   set_source_files_properties(
     ${PROTO_SRCS}
@@ -62,8 +68,21 @@ aux_source_directory(tensor/ CPP_SRCS)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/../../3rd-party/hash-library
                      CPP_SRCS)
 
-add_library(${PROJECT_NAME} SHARED ${PROTO_SRCS} ${CPP_SRCS}
-                                   ${CMAKE_CURRENT_BINARY_DIR}/version.c)
+add_library(${PROJECT_NAME}  ${PROTO_SRCS} ${CPP_SRCS}
+   ${PROJECT_SOURCE_DIR}/include//xir/XirExport.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/op/op.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/op/op_def.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/attrs/attrs.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/attrs/attr_def.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/attrs/attr_expander.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/util/any.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/util/tool_function.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/util/data_type.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/graph/graph.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/graph/graph_template.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/graph/subgraph.hpp
+  ${PROJECT_SOURCE_DIR}/include/xir/tensor/tensor.hpp
+                             ${CMAKE_CURRENT_BINARY_DIR}/version.c)
 set_target_properties(
   ${PROJECT_NAME} PROPERTIES VERSION "${PROJECT_VERSION}"
                              SOVERSION "${PROJECT_VERSION_MAJOR}")
@@ -74,13 +93,24 @@ target_include_directories(
          $<INSTALL_INTERFACE:include>
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/util ${Boost_INCLUDE_DIRS}
           ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(
-  xir
-  PRIVATE protobuf::libprotobuf Threads::Threads ${CMAKE_DL_LIBS}
-  PUBLIC unilog::unilog)
+if(BUILD_SHARED_LIBS)
+    target_link_libraries(
+      xir
+      PRIVATE protobuf::libprotobuf Threads::Threads ${CMAKE_DL_LIBS}
+      PUBLIC unilog::unilog)
+else(BUILD_SHARED_LIBS)
+    target_link_libraries(
+      xir
+      PUBLIC protobuf::libprotobuf Threads::Threads ${CMAKE_DL_LIBS}
+      PUBLIC unilog::unilog)
+endif(BUILD_SHARED_LIBS)
 # Enable Export of public APIs
 target_compile_definitions(${PROJECT_NAME} PRIVATE -DXIR_EXPORT)
-
+if(BUILD_SHARED_LIBS)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DXIR_USE_DLL=1)
+else(BUILD_SHARED_LIBS)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DXIR_USE_DLL=0)
+endif(BUILD_SHARED_LIBS)
 install(
   TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}-targets

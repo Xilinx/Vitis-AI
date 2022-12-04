@@ -15,7 +15,7 @@
 name: "DPUCVDX8G_ISA3_C32B1"
 type: "DPUCVDX8G"
 isa_version: 0x03
-feature_code: 0x000b16011811
+feature_code: 0x000b56011811
 bank_group {
   name: "VB0"
   type: "Virtual"
@@ -73,6 +73,7 @@ save_engine {
   channel_parallel: 16
   input_bank: "VB0"
   input_bank: "VB1"
+  argmax: true
 }
 conv_engine {
   input_channel_parallel: 16

@@ -16,13 +16,17 @@ limitations under the License.
 
 #pragma once
 #if defined(_WIN32)
-  #ifdef TARGET_FACTORY_EXPORT
-    #define TARGET_FACTORY_DLLESPEC __declspec(dllexport)
-  #else
-    #define TARGET_FACTORY_DLLESPEC __declspec(dllimport)
-  #endif
+#if TARGET_FACTORY_USE_DLL == 1
+#ifdef TARGET_FACTORY_EXPORT
+#define TARGET_FACTORY_DLLESPEC __declspec(dllexport)
 #else
-  #define TARGET_FACTORY_DLLESPEC __attribute__((visibility("default")))
+#define TARGET_FACTORY_DLLESPEC __declspec(dllimport)
+#endif
+#else
+#define TARGET_FACTORY_DLLESPEC
+#endif
+#else
+#define TARGET_FACTORY_DLLESPEC __attribute__((visibility("default")))
 #endif
 
 #include <string>

@@ -19,6 +19,7 @@
 #endif
 #include <math.h>
 
+#include <UniLog/UniLog.hpp>
 #include <algorithm>
 #include <cstdint>
 #include <fstream>
@@ -338,13 +339,13 @@ void NormalizeInputDataRGB(const uint8_t* input, int rows, int cols,
         // value = std::min(127, value);
         int value = 0;
         if (GLOBAL_ENABLE_ROUND_SETINPUT != 0) {
-          value =
-            (int)std::round(((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
-                  scale[c])); 
+          value = (int)std::round(
+              ((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
+               scale[c]));
         } else {
           value =
-            (int)((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
-                  scale[c]);
+              (int)((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
+                    scale[c]);
         }
         data[h * cols * channels + w * channels + abs(c - 2)] = (char)value;
       }
@@ -355,12 +356,12 @@ void NormalizeInputDataRGB(const uint8_t* input, int rows, int cols,
     std::vector<int> scale_int;
     if (!ENV_PARAM(USING_OLD_NEON) && cols >= 16 &&
         calc_scale(scale, scale_int)) {
-        transform_mean_scale(cols, rows, input, data, mean, scale_int, false);
+      transform_mean_scale(cols, rows, input, data, mean, scale_int, false);
     } else {
       for (auto i = 0; i < rows; ++i) {
         transform_rgb(cols, 1, const_cast<uint8_t*>(input) + i * stride,
-                    data + i * cols * 3, mean[0], scale[0], mean[1], scale[1],
-                    mean[2], scale[2]);
+                      data + i * cols * 3, mean[0], scale[0], mean[1], scale[1],
+                      mean[2], scale[2]);
       }
     }
   } else {
@@ -377,13 +378,13 @@ void NormalizeInputDataRGB(const uint8_t* input, int rows, int cols,
           //    scale[c]);
           // value = std::max(-128, value);
           // value = std::min(127, value);
-          auto value =
-              (int)std::round(((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
-                    scale[c])); 
+          auto value = (int)std::round(
+              ((input[h * stride + w * channels + c] * 1.0f - mean[c]) *
+               scale[c]));
           data[h * cols * channels + w * channels + abs(c - 2)] = (char)value;
         }
       }
-    } 
+    }
   }
 #endif
 }
@@ -543,7 +544,8 @@ void transform_mean_scale(int w, int h, const uint8_t* src, int8_t* dst,
                             const uint8x16_t& low_mean) -> int8x16_t {
     if (scale > 0) {
       // scale > 0
-      LOG(FATAL) << "scale > 0 not implementation";
+      // LOG(FATAL) << "scale > 0 not implementation";
+      UNI_LOG_FATAL(VAILIB_MATH_NOT_SUPPORT) << "scale > 0 not implementation";
       // temp = vshlq_n_u8(vminq_u8(vabdq_u8(in_u8, high_mean),
       // vabdq_u8(in_u8, low_mean)), scale);
       return int8x16_t();
@@ -561,7 +563,8 @@ void transform_mean_scale(int w, int h, const uint8_t* src, int8_t* dst,
                           const uint8x16_t& mean) -> int8x16_t {
     if (scale > 0) {
       // scale >0
-      LOG(FATAL) << "scale > 0 not implementation";
+      // LOG(FATAL) << "scale > 0 not implementation";
+      UNI_LOG_FATAL(VAILIB_MATH_NOT_SUPPORT) << "scale > 0 not implementation";
       return int8x16_t();
       // temp = vshlq_n_u8(vabdq_u8(in_u8, mean), scale);
     } else if (scale < 0) {

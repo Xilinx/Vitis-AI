@@ -13,7 +13,7 @@
 # the License.
 
 cmake_minimum_required(VERSION 3.5)
-project(unilog VERSION 2.5.0 LANGUAGES C CXX)
+project(unilog VERSION 3.0.0 LANGUAGES C CXX)
 
 include(${PROJECT_SOURCE_DIR}/cmake/VitisCommon.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/vai_add_pybind11_module.cmake)

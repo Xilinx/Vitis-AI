@@ -117,6 +117,18 @@ class DPUCVDX8G_device : public DPUCZDX8G_device {
  public:
   virtual py::dict get_private_data(const device_info_struct& info);
   DPUCVDX8G_device();
+  DPUCVDX8G_device(std::vector<std::string> key_i,
+                   std::vector<uint32_t> addr_i);
+
+ private:
+  std::vector<std::string> create_key();
+  std::vector<uint32_t> create_addr();
+};
+
+class DPUCV2DX8G_device : public DPUCVDX8G_device {
+ public:
+  virtual py::dict get_private_data(const device_info_struct& info);
+  DPUCV2DX8G_device();
 
  private:
   std::vector<std::string> create_key();
@@ -158,13 +170,13 @@ void device_info(xir::XrtDeviceHandle* h,
   for (auto& info : infos) {
     info.device_id = h->get_device_id(cu_name, i);
     info.cu_name = h->get_cu_full_name(cu_name, i);
-    info.fingerprint = h->get_fingerprint(cu_name, i);
-    info.cu_handle = h->get_handle(cu_name, i);
-    info.cu_addr = h->get_cu_addr(cu_name, i);
-    info.cu_idx = h->get_cu_index(cu_name, i);
     info.core_idx = i;
-    info.cu_mask = h->get_cu_mask(cu_name, i);
-    if (info.fingerprint) {
+    if (info.cu_name.find("DPU") != std::string::npos) {
+      info.fingerprint = h->get_fingerprint(cu_name, i);
+      info.cu_handle = h->get_handle(cu_name, i);
+      info.cu_addr = h->get_cu_addr(cu_name, i);
+      info.cu_idx = h->get_cu_index(cu_name, i);
+      info.cu_mask = h->get_cu_mask(cu_name, i);
       auto target = vitis::ai::target_factory()->create(info.fingerprint);
       info.dpu_arch_type = target.type();
       info.dpu_arch = target.name();
@@ -177,6 +189,8 @@ void device_info(xir::XrtDeviceHandle* h,
       info.device = std::shared_ptr<base_device>(new DPUCAHX8H_device());
     } else if (info.dpu_arch_type == "DPUCVDX8H") {
       info.device = std::shared_ptr<base_device>(new DPUCVDX8H_device());
+    } else if (info.dpu_arch_type == "DPUCV2DX8G") {
+      info.device = std::shared_ptr<base_device>(new DPUCV2DX8G_device());
     } else {
       info.device = std::shared_ptr<base_device>(new base_device());
       LOG(ERROR) << "Unsupported platform fingerprint: " << info.fingerprint
@@ -228,6 +242,11 @@ py::dict create_vai_version() {
       std::string(vitis::ai::TargetFactory::get_lib_name()) + " " +
       std::string(vitis::ai::TargetFactory::get_lib_id());
 
+  std::vector<std::string> so_list2 = {"libvaip-core.so"};
+  auto so_res2 = xilinx_version2(so_list2);
+  for (auto i = 0u; i < so_list2.size(); i++) {
+    if (so_res2[i] != "") res[so_list2[i].c_str()] = so_res2[i];
+  }
   return res;
 }
 
@@ -430,6 +449,34 @@ std::vector<uint32_t> DPUCVDX8G_device::create_addr() {
 
 DPUCVDX8G_device::DPUCVDX8G_device()
     : DPUCZDX8G_device(create_key(), create_addr()) {}
+DPUCVDX8G_device::DPUCVDX8G_device(std::vector<std::string> key_i,
+                                   std::vector<uint32_t> addr_i)
+    : DPUCZDX8G_device(key_i, addr_i) {}
+
+// DPUCV2DX8G part
+py::dict DPUCV2DX8G_device::get_private_data(const device_info_struct& info) {
+  return DPUCVDX8G_device::get_private_data(info);
+}
+std::vector<std::string> DPUCV2DX8G_device::create_key() {
+  std::vector<std::string> key;
+  // max 16 batch with base addr l and h
+  for (auto i = 0u; i < 16; i++) {
+    key.push_back("dpu_batch" + std::to_string(i) + "_addr_l");
+    key.push_back("dpu_batch" + std::to_string(i) + "_addr_h");
+  }
+  return key;
+}
+std::vector<uint32_t> DPUCV2DX8G_device::create_addr() {
+  std::vector<uint32_t> addr;
+  // max 16 batch
+  for (auto i = 0u; i < 16; i++) {
+    addr.push_back(0x200 + i * 8);
+    addr.push_back(0x204 + i * 8);
+  }
+  return addr;
+}
+DPUCV2DX8G_device::DPUCV2DX8G_device()
+    : DPUCVDX8G_device(create_key(), create_addr()) {}
 
 // DPUCZDX8G_device
 py::dict DPUCZDX8G_device::get_public_data(const device_info_struct& info,

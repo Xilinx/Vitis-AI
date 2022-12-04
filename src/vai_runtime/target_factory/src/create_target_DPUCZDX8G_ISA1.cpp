@@ -50,6 +50,7 @@ const Target create_target_DPUCZDX8G_ISA1(const std::uint64_t fingerprint) {
   // auto LD_MEAN = (fingerprint & 0x8000000) >> 27;
   auto CV_LKRL = (fingerprint & 0x10000000) >> 28;
   auto DW_LKRL = (fingerprint & 0x20000000) >> 29;
+  auto SV_AM = (fingerprint & 0x40000000) >> 30;
   auto CV_WP = (uint64_t)pow(2,(fingerprint & 0x300000000) >> 32);
   auto ALU_WP = (uint64_t)pow(2,(fingerprint & 0xc00000000) >> 34);
   auto ISA = (fingerprint & 0x00ff000000000000) >> 48;
@@ -117,6 +118,7 @@ const Target create_target_DPUCZDX8G_ISA1(const std::uint64_t fingerprint) {
   for (auto idx = 0U; idx < IMG_BG; idx++) {
     save_engine->add_input_bank("VB" + std::to_string(idx));
   }
+  save_engine->set_argmax(SV_AM==1);
 
   auto conv_engine = target.mutable_conv_engine();
   conv_engine->set_input_channel_parallel(ICP);

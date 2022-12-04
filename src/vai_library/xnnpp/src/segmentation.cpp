@@ -17,9 +17,12 @@
 #include "vitis/ai/nnpp/segmentation.hpp"
 #include <vitis/ai/max_index.hpp>
 #include <vitis/ai/profiling.hpp>
+#include <vitis/ai/env_config.hpp>
 
 #include <queue>
 #include <vector>
+
+DEF_ENV_PARAM(HARDWARE_ARGMAX, "0");
 
 namespace vitis {
 namespace ai {
@@ -49,20 +52,29 @@ SegmentationResult segmentation_post_process_8UC1(
     const vitis::ai::library::OutputTensor& output_layer,
     size_t batch_idx) {
 
+  if (ENV_PARAM(HARDWARE_ARGMAX) == 0) {
   __TIC__(SEG_MAX_VALUE)
-  std::vector<uint8_t> output =
-           vitis::ai::max_index((int8_t*)output_layer.get_data(batch_idx),
-                                output_layer.width, 
-                                output_layer.height,
-                                output_layer.channel);
-  __TOC__(SEG_MAX_VALUE)
+    std::vector<uint8_t> output =
+             vitis::ai::max_index((int8_t*)output_layer.get_data(batch_idx),
+                                  output_layer.width, 
+                                  output_layer.height,
+                                  output_layer.channel);
+    __TOC__(SEG_MAX_VALUE)
 
-  __TIC__(SEG_COPY_IMAGE)
-  cv::Mat segMat = cv::Mat(output_layer.height, output_layer.width, CV_8UC1,
-                 output.data()).clone();
-  __TOC__(SEG_COPY_IMAGE)
-  return SegmentationResult{(int)input_tensors.width,
-                            (int)input_tensors.height, segMat};
+    __TIC__(SEG_COPY_IMAGE)
+    cv::Mat segMat = cv::Mat(output_layer.height, output_layer.width, CV_8UC1,
+                   output.data()).clone();
+    __TOC__(SEG_COPY_IMAGE)
+    return SegmentationResult{(int)input_tensors.width,
+                              (int)input_tensors.height, segMat};
+  } else {
+    __TIC__(SEG_COPY_IMAGE)
+    cv::Mat segMat = cv::Mat(output_layer.height, output_layer.width, CV_8UC1,
+                   (uint8_t*)output_layer.get_data(batch_idx));
+    __TOC__(SEG_COPY_IMAGE)
+    return SegmentationResult{(int)input_tensors.width,
+                              (int)input_tensors.height, segMat};
+  }
 }
 
 std::vector<SegmentationResult> segmentation_post_process_8UC1(
@@ -86,25 +98,47 @@ SegmentationResult segmentation_post_process_8UC3(
   std::vector<uint8_t> color_c3;
   load_color(config, color_c1, color_c2, color_c3);
 
-  __TIC__(SEG_MAX_VALUE)
-  std::vector<uint8_t> output =
-           vitis::ai::max_index((int8_t*)output_layer.get_data(batch_idx),
-                                output_layer.width, 
-                                output_layer.height,
-                                output_layer.channel);
-  __TOC__(SEG_MAX_VALUE)
-  
-  __TIC__(SEG_CREATE_COLOR_IMG)
-  cv::Mat segMat(output_layer.height, output_layer.width, CV_8UC3);
-  for(unsigned int row_ind = 0; row_ind < output_layer.height; ++row_ind)
-    for(unsigned int col_ind = 0; col_ind < output_layer.width; ++col_ind) {
-      uint8_t posit = output[row_ind*output_layer.width + col_ind];
-      segMat.at<cv::Vec3b>(row_ind, col_ind) = 
-        cv::Vec3b(color_c1[posit], color_c2[posit], color_c3[posit]);
+  if (ENV_PARAM(HARDWARE_ARGMAX) == 0) {
+    __TIC__(SEG_MAX_VALUE)
+    std::vector<uint8_t> output =
+             vitis::ai::max_index((int8_t*)output_layer.get_data(batch_idx),
+                                  output_layer.width, 
+                                  output_layer.height,
+                                  output_layer.channel);
+    __TOC__(SEG_MAX_VALUE)
+    
+    __TIC__(SEG_CREATE_COLOR_IMG)
+    cv::Mat segMat(output_layer.height, output_layer.width, CV_8UC3);
+    for(unsigned int row_ind = 0; row_ind < output_layer.height; ++row_ind)
+      for(unsigned int col_ind = 0; col_ind < output_layer.width; ++col_ind) {
+        uint8_t posit = output[row_ind*output_layer.width + col_ind];
+        segMat.at<cv::Vec3b>(row_ind, col_ind) = 
+          cv::Vec3b(color_c1[posit], color_c2[posit], color_c3[posit]);
+      }
+    __TOC__(SEG_CREATE_COLOR_IMG)
+    return SegmentationResult{(int)input_tensors.width,
+                              (int)input_tensors.height, segMat};
+  } else {
+    __TIC__(SEG_CREATE_COLOR_IMG)
+    //std::vector<uint8_t> output_permute(output_layer.width * output_layer.width * output_layer.channel);
+
+    //for(auto w = 0u; w < output_layer.width; w++) {
+      //for (auto h = 0u; h < output_layer.height; h++) {
+        //output_permute[output_layer.width * h + w] = ((int8_t*)output_layer.get_data(batch_idx))[output_layer.height * w + h];
+      //}
+    //}
+    cv::Mat segMat(output_layer.height, output_layer.width, CV_8UC3);
+    for(unsigned int row_ind = 0; row_ind < output_layer.height; ++row_ind) {
+      for(unsigned int col_ind = 0; col_ind < output_layer.width; ++col_ind) {
+        uint8_t posit = ((int8_t*)output_layer.get_data(batch_idx))[row_ind*output_layer.width + col_ind];
+        segMat.at<cv::Vec3b>(row_ind, col_ind) = 
+          cv::Vec3b(color_c1[posit], color_c2[posit], color_c3[posit]);
+      }
     }
-  __TOC__(SEG_CREATE_COLOR_IMG)
-  return SegmentationResult{(int)input_tensors.width,
-                            (int)input_tensors.height, segMat};
+    __TOC__(SEG_CREATE_COLOR_IMG)
+    return SegmentationResult{(int)input_tensors.width,
+                              (int)input_tensors.height, segMat};
+  }
 }
 
 std::vector<SegmentationResult> segmentation_post_process_8UC3(

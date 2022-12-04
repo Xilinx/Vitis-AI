@@ -32,6 +32,8 @@ DataType::Type str_to_type(const std::string& type) {
     return DataType::XUINT;
   } else if ("FLOAT" == type || "float" == type) {
     return DataType::FLOAT;
+  } else if ("BFLOAT" == type || "bfloat" == type) {
+    return DataType::BFLOAT;
   } else {
     UNI_LOG_WARNING << "The type \"" << type
                     << "\" is set to xir::DataType::UNKNOWN.";
@@ -51,6 +53,8 @@ std::string type_to_str(const DataType::Type& type) {
       return "XUINT";
     case DataType::FLOAT:
       return "FLOAT";
+    case DataType::BFLOAT:
+      return "BFLOAT";
     default:
       return "UNKNOWN";
   }

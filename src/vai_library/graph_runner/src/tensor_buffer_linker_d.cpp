@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <UniLog/UniLog.hpp>
 #include "./tensor_buffer_linker.hpp"
 
 #include <memory>
@@ -45,9 +46,13 @@ std::string TensorBufferLinker::to_string() {
 }
 
 void TensorBufferLinker::finalize() {
-  LOG(ERROR) << " please override this function";
+  // LOG(ERROR) << " please override this function";
+  UNI_LOG_ERROR(VAILIB_GRAPH_RUNNER_NOT_OVERRIDE)
+      << " please override this function";
 }
 
 void TensorBufferLinker::before_invoke_runner(const xir::Subgraph* subgraph) {
-  LOG(ERROR) << " please override this function";
+  // LOG(ERROR) << " please override this function";
+  UNI_LOG_ERROR(VAILIB_GRAPH_RUNNER_NOT_OVERRIDE)
+      << " please override this function";
 }

@@ -22,6 +22,7 @@
 #include <vart/trace/trace.hpp>
 #include <vitis/ai/profiling.hpp>
 
+#include <UniLog/UniLog.hpp>
 #include "tensor_buffer_proxy.hpp"
 #include "vart/op_imp.h"
 #include "vart/runner_helper.hpp"
@@ -138,7 +139,9 @@ std::vector<MyOpArgs> CpuTask::build_my_op_args() {
 vart::TensorBuffer* CpuTask::find_tensor_buffer(const std::string& name) {
   vart::TensorBuffer* ret =
       tensor_buffers_[tensor_name_2_index_.at(name)].get();
-  CHECK(ret != nullptr) << "cannot find tensor buffer. name = " << name;
+  // CHECK(ret != nullptr) << "cannot find tensor buffer. name = " << name;
+  UNI_LOG_CHECK(ret != nullptr, VAILIB_CPU_RUNNER_TENSOR_BUFFER_NOT_FIND)
+      << "name = " << name;
   return ret;
 }
 
@@ -146,7 +149,9 @@ vart::TensorBufferProxy* CpuTask::find_proxy_tensor_buffer(
     const std::string& name) {
   vart::TensorBufferProxy* ret =
       proxy_tensor_buffers_[tensor_name_2_index_.at(name)].get();
-  CHECK(ret != nullptr) << "cannot find tensor buffer. name = " << name;
+  // CHECK(ret != nullptr) << "cannot find tensor buffer. name = " << name;
+  UNI_LOG_CHECK(ret != nullptr, VAILIB_CPU_RUNNER_TENSOR_BUFFER_NOT_FIND)
+      << "name = " << name;
   return ret;
 }
 
@@ -159,7 +164,10 @@ std::pair<uint32_t, int> CpuTask::execute_async(
     const std::vector<vart::TensorBuffer*>& input,
     const std::vector<vart::TensorBuffer*>& output) {
   auto size = op_imp_.size();
-  CHECK_EQ(size, my_op_args_.size()) << "must be equal";
+  // CHECK_EQ(size, my_op_args_.size()) << "must be equal";
+  UNI_LOG_CHECK(size == my_op_args_.size(),
+                VAILIB_CPU_RUNNER_TENSOR_BUFFER_NOT_FIND)
+      << "must be equal";
   auto subgraph_name = subgraph_->get_name();
   auto subgraph_depth = subgraph_->get_depth();
   vitis::ai::trace::add_trace("cpu-task", subgraph_name, subgraph_depth,

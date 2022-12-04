@@ -43,27 +43,44 @@ static std::string replace(const std::string& s) {
 
 static void fillin_input(const std::string refdir, vart::TensorBuffer* tb) {
   auto data = vart::get_tensor_buffer_data(tb, 0u);
-  CHECK_EQ(data.size, tb->get_tensor()->get_data_size())
+  // CHECK_EQ(data.size, tb->get_tensor()->get_data_size())
+  //    << "must be continous tensor buffer";
+
+  UNI_LOG_CHECK(data.size == (unsigned long)tb->get_tensor()->get_data_size(),
+                VAILIB_CPU_RUNNER_TENSOR_BUFFER_NOT_CONTINOUS)
       << "must be continous tensor buffer";
   auto filename = refdir + "/" +
                   replace(xir::remove_xfix(tb->get_tensor()->get_name())) +
                   ".bin";
-  CHECK(std::ifstream(filename).read((char*)data.data, data.size).good())
-      << "fail to read! filename=" << filename
-      << ";tensor=" << tb->get_tensor()->get_name() << endl;
+  // CHECK(std::ifstream(filename).read((char*)data.data, data.size).good())
+  //    << "fail to read! filename=" << filename
+  //    << ";tensor=" << tb->get_tensor()->get_name() << endl;
+  UNI_LOG_CHECK(
+      std::ifstream(filename).read((char*)data.data, data.size).good(),
+      VAILIB_CPU_RUNNER_READ_FILE_ERROR)
+      << " filename=" << filename << ";tensor=" << tb->get_tensor()->get_name()
+      << endl;
   LOG(INFO) << "read " << filename << " to " << data.data
             << " size=" << data.size;
 }
 
 static void dump_output(const std::string dir, vart::TensorBuffer* tb) {
   auto data = vart::get_tensor_buffer_data(tb, 0u);
-  CHECK_EQ(data.size, tb->get_tensor()->get_data_size())
+  // CHECK_EQ(data.size, tb->get_tensor()->get_data_size())
+  //    << "must be continous tensor buffer";
+  UNI_LOG_CHECK(data.size == (unsigned long)tb->get_tensor()->get_data_size(),
+                VAILIB_CPU_RUNNER_TENSOR_BUFFER_NOT_CONTINOUS)
       << "must be continous tensor buffer";
   auto filename =
       dir + "/" +
       replace(xir::remove_xfix(tb->get_tensor()->get_name()) + ".bin");
-  CHECK(std::ofstream(filename).write((char*)data.data, data.size).good())
-      << "failed to write: " << filename;
+  // CHECK(std::ofstream(filename).write((char*)data.data, data.size).good())
+  //    << "failed to write: " << filename;
+
+  UNI_LOG_CHECK(
+      std::ofstream(filename).write((char*)data.data, data.size).good(),
+      VAILIB_CPU_RUNNER_WRITE_FILE_ERROR)
+      << "filename : " << filename;
   LOG(INFO) << "write output to " << filename << " from " << data.data
             << " size=" << data.size;
 }
@@ -100,7 +117,9 @@ int main(int argc, char* argv[]) {
   //
   auto graph = xir::Graph::deserialize(xmodel_file_name);
   auto op = graph->get_op(op_name);
-  CHECK(op != nullptr) << "cannot find op: " << op_name;
+  // CHECK(op != nullptr) << "cannot find op: " << op_name;
+  UNI_LOG_CHECK(op != nullptr, VAILIB_CPU_RUNNER_CPU_OP_NOT_FIND)
+      << " op name: " << op_name;
   LOG(INFO) << "try to test op: " << op->get_name();
   auto op_def = op->get_opdef();
   auto tensor_buffer_holder =
@@ -135,7 +154,9 @@ int main(int argc, char* argv[]) {
   auto op_imp = create_op_imp(op, attrs.get());
   auto output_tensor_buffer =
       vart::alloc_cpu_flat_tensor_buffer(op->get_output_tensor());
-  CHECK(op != nullptr) << "cannot find op: " << op_name;
+  // CHECK(op != nullptr) << "cannot find op: " << op_name;
+  UNI_LOG_CHECK(op != nullptr, VAILIB_CPU_RUNNER_CPU_OP_NOT_FIND)
+      << " op name: " << op_name;
   LOG(INFO) << "graph name:" << graph->get_name()
             << "testing op: " << to_string(inputs);
   op_imp->calculate(inputs, output_tensor_buffer.get());

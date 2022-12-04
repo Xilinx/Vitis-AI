@@ -20,15 +20,15 @@
 
 #include <math.h>
 
+#include <opencv2/highgui/highgui_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
+#include <opencv2/imgproc/types_c.h>
 #include <algorithm>
 #include <iomanip>
 #include <iosfwd>
 #include <memory>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/imgproc/imgproc_c.h>
-#include <opencv2/imgproc/types_c.h>
-#include <opencv2/highgui/highgui_c.h>
 #include <string>
 #include <utility>
 #include <vector>
@@ -42,16 +42,17 @@ typedef struct {
   int w;
   int h;
   int c;
-  float *data;
+  float* data;
 } image;
 
-void convertInputImage(const cv::Mat &frame, int width, int height, int channel,
-                       float scale, int8_t *data);
+void convertInputImage(const cv::Mat& frame, int width, int height, int channel,
+                       float scale, int8_t* data);
 //# Overload method with float input data for DPUV1
-void convertInputImage(const cv::Mat &frame, int width, int height, int channel,
-                       float scale, float *data);
+void convertInputImage(const cv::Mat& frame, int width, int height, int channel,
+                       float scale, float* data);
 
-cv::Mat letterbox_tf(const cv::Mat &im, int w, int h);
+cv::Mat letterbox(const cv::Mat& im, int w, int h);
+cv::Mat letterbox_tf(const cv::Mat& im, int w, int h);
 
 }  // namespace yolov3
 }  // namespace ai

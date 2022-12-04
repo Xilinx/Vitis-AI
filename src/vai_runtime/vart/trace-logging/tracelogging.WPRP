@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<WindowsPerformanceRecorder Version="1.0" Author="Microsoft Corporation" Copyright="Microsoft Corporation" Company="Microsoft Corporation">
+  <Profiles>
+    <EventCollector Id="EventCollector_VAITraceLoggingProvider" Name="VAITraceLoggingProvider">
+      <BufferSize Value="64" />
+      <Buffers Value="4" />
+    </EventCollector>
+
+    <EventProvider Id="EventProvider_VAITraceLoggingProvider" Name="e00db74d-c600-4092-890f-91c684853b50" />
+
+    <Profile Id="VAITraceLoggingProvider.Verbose.File" Name="VAITraceLoggingProvider" Description="VAITraceLoggingProvider" LoggingMode="File" DetailLevel="Verbose">
+      <Collectors>
+        <EventCollectorId Value="EventCollector_VAITraceLoggingProvider">
+          <EventProviders>
+            <EventProviderId Value="EventProvider_VAITraceLoggingProvider" />
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+
+    <Profile Id="VAITraceLoggingProvider.Light.File" Name="VAITraceLoggingProvider" Description="VAITraceLoggingProvider" Base="VAITraceLoggingProvider.Verbose.File" LoggingMode="File" DetailLevel="Light" />
+    <Profile Id="VAITraceLoggingProvider.Verbose.Memory" Name="VAITraceLoggingProvider" Description="VAITraceLoggingProvider" Base="VAITraceLoggingProvider.Verbose.File" LoggingMode="Memory" DetailLevel="Verbose" />
+    <Profile Id="VAITraceLoggingProvider.Light.Memory" Name="VAITraceLoggingProvider" Description="VAITraceLoggingProvider" Base="VAITraceLoggingProvider.Verbose.File" LoggingMode="Memory" DetailLevel="Light" />
+
+  </Profiles>
+</WindowsPerformanceRecorder>

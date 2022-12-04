@@ -16,6 +16,7 @@
 
 #include <dlfcn.h>
 #include <glog/logging.h>
+#include <UniLog/UniLog.hpp>
 
 #include <iostream>
 #include <xir/graph/graph.hpp>
@@ -31,7 +32,8 @@ static bool check_op(const xir::Op* op) {
   auto handle = dlopen(so_name.c_str(), RTLD_LAZY);
   auto ret = true;
   if (!handle) {
-    LOG(WARNING) << "unsupported op type: " << op->get_type();
+    // LOG(WARNING) << "unsupported op type: " << op->get_type();
+    UNI_LOG_WARNING << "unsupported op type: " << op->get_type();
     ret = false;
   } else {
     dlclose(handle);

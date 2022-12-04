@@ -30,7 +30,7 @@ namespace vitis {
 namespace ai {
 
 static std::string get_so_name(const xir::Graph* graph) {
-  auto ret = std::string("libxmodel_preprocessor_common.so.2");
+  auto ret = std::string("libxmodel_preprocessor_common.so.3");
   if (graph->has_attr("xmodel_preprocessor")) {
     ret = graph->get_attr<std::string>("xmodel_preprocessor");
   } else {

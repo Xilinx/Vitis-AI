@@ -9,6 +9,13 @@ message YoloV3Param {
   repeated float biases = 5;
   bool test_mAP = 6;
   repeated string layer_name = 7;
+  enum Type {
+    NORMAL = 0;
+    YOLOV4_CSP = 1;
+    YOLOV5 = 2; 
+    YOLOX_NANO = 3; 
+  }
+  Type type = 8;
 }
 
 message MedicalPriorBoxParam {
@@ -196,6 +203,10 @@ message RoadlineParam {
   repeated string layer_name = 17;
 }
 
+message RcanParam {
+  float scale = 1;
+}
+
 message RoadlineDeephiParam {
   int32 resize_w = 1;
   int32 resize_h = 2;
@@ -357,6 +368,21 @@ message YoloV5Param {
   float max_nms_num = 4;
 }
 
+message YoloV6Param {
+  int32 num_classes = 1;
+  int32 anchorCnt = 2;
+  float conf_threshold = 3;
+  float nms_threshold = 4;
+  repeated float biases = 5;
+  bool test_mAP = 6;
+  repeated string bbox_layer_name = 7;
+  repeated string cls_layer_name = 8;
+  repeated float stride = 9;
+  float max_boxes_num = 10;
+  float max_nms_num = 11;
+  bool without_dfl = 12;
+}
+
 message BTSParam {
   float mul_factor = 1;
   float depth_scaled_factor = 2;
@@ -494,6 +520,7 @@ message DpuModelParam {
     VEHICLECLASSIFICATION = 41;
     EFFICIENTDET_D2 = 42;
     MOVENET = 43;
+    YOLOv6 = 44;
   }
   enum OrderType {
     UNKNOWNORDER = 0;
@@ -538,6 +565,8 @@ message DpuModelParam {
   ClassificationParam vehicleclassification_param = 36;
   EfficientDetD2Param efficientdet_d2_param = 37;
   MovenetParam movenet_param = 38;
+  RcanParam rcan_param = 39;
+  YoloV6Param yolo_v6_param = 40;
 }
 
 message DpuModelParamList {

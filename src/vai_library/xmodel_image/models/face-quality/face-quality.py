@@ -22,6 +22,6 @@ def jit(graph):
     graph.set_attr("is_rgb_input", False)
     xir_extra_ops.set_postprocessor(
         graph,
-        "libxmodel_postprocessor_face_quality.so.2",
+        "libxmodel_postprocessor_face_quality.so.3",
         {"quality": ["Addmm_4_fixed_"], "5pt": ["Addmm_2_fixed_"]},
     )

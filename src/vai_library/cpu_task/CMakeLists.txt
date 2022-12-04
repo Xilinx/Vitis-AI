@@ -21,6 +21,7 @@ vai_add_library(
   src/cpu_task.hpp
   src/cpu_task.cpp
   src/op_imp.cpp
+  src/error_code.cpp
   PUBLIC_REQUIRE
   ${PROJECT_NAME}::runner_helper
   ${PROJECT_NAME}::cvart
@@ -91,6 +92,7 @@ add_op_imp(concat-fix ops/concat/concat.cpp)
 add_op_imp(concat ops/concat/concat.cpp)
 add_op_imp(batchnorm ops/batchnorm/batchnorm.cpp)
 add_op_imp(sigmoid ops/sigmoid/sigmoid.cpp)
+add_op_imp(l2_normalize ops/l2norm/l2norm.cpp)
 add_op_imp(hard-sigmoid-fix ops/hard-sigmoid-fix/hard-sigmoid-fix.cpp)
 add_op_imp(leaky-relu ops/leaky-relu/leaky-relu.cpp)
 add_op_imp(pool-fix ops/pool-fix/pool-fix.cpp)
@@ -123,6 +125,8 @@ add_op_imp(transposed-conv2d-fix
 add_op_imp(reorg-fix ops/reorg-fix/reorg-fix.cpp)
 add_op_imp(gstiling ops/tile-fix/tile-fix.cpp)
 add_op_imp(tile-fix ops/tile-fix/tile-fix.cpp)
+add_op_imp(add ops/add/add.cpp)
+add_op_imp(matmul ops/matmul/matmul.cpp)
 
 if(BUILD_PYTHON)
   add_op_imp(python-cpu-op ops/python-cpu-op/python-cpu-op.cpp)

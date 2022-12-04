@@ -17,7 +17,7 @@ import xir_extra_ops
 
 
 def jit(graph):
-    graph.set_attr("xmodel_preprocessor", "libxmodel_preprocessor_efficientnet.so.2")
+    graph.set_attr("xmodel_preprocessor", "libxmodel_preprocessor_efficientnet.so.3")
     graph.set_attr("need_preprocess", True)
     graph.set_attr("mean", [127.0, 127.0, 127.0])
     graph.set_attr("scale", [0.0078125, 0.0078125, 0.0078125])
@@ -28,7 +28,7 @@ def jit(graph):
     labels_list_1001 = ["background,"]
     labels_list_1001.extend(labels_list)
     graph.set_attr("labels", labels_list_1001)
-    xir_extra_ops.set_postprocessor(graph, "libxmodel_postprocessor_classification.so.2",
+    xir_extra_ops.set_postprocessor(graph, "libxmodel_postprocessor_classification.so.3",
                                     {"input": ["my_topk"]})
     conf_op = graph.get_op("logits_fix_")
     graph.create_op("aquant_logits_softmax",

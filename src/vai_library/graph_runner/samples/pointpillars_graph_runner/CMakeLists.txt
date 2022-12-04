@@ -15,47 +15,11 @@
 #
 
 set(sample_name "sample_pointpillars_graph_runner")
-set(PBF_NAME2
-    activations
-    anchors
-    box_coder
-    input_reader
-    layers
-    losses
-    model
-    optimizer
-    pipeline
-    preprocess
-    sampler
-    second
-    similarity
-    target
-    train
-    voxel_generator)
-
 set (CMAKE_CXX_STANDARD 17)
-find_package(protobuf)
 find_package(xir)
 find_package(Eigen3 REQUIRED)
 find_package(OpenCV )
 find_package(glog)
-
-foreach(PBF ${PBF_NAME2})
-  add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/second/protos/${PBF}.pb.cc
-           ${CMAKE_CURRENT_BINARY_DIR}/second/protos/${PBF}.pb.h
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/include/second/protos/${PBF}.proto
-    COMMAND
-      protoc ARGS --cpp_out ${CMAKE_CURRENT_BINARY_DIR} --proto_path
-      ${CMAKE_CURRENT_SOURCE_DIR}/include
-      ${CMAKE_CURRENT_SOURCE_DIR}/include/second/protos/${PBF}.proto
-    COMMENT "Running C++ protocol buffer compiler on proto ${PBF}"
-    VERBATIM)
-  list(APPEND LIST_PBSRC_CC
-       ${CMAKE_CURRENT_BINARY_DIR}/second/protos/${PBF}.pb.cc)
-  list(APPEND LIST_PBSRC_H2
-       ${CMAKE_CURRENT_BINARY_DIR}/second/protos/${PBF}.pb.h)
-endforeach()
 
 if(CPACK_DEBIAN_PACKAGE_ARCHITECTURE STREQUAL "arm64")
   add_compile_options(-Wno-error=attributes -Wno-strict-aliasing)
@@ -70,11 +34,10 @@ add_executable(${sample_name}
    src/pointpillars_post.cpp
    src/parse_display_result.cpp
    src/main.cpp
-   ${LIST_PBSRC_CC}
 )
 target_include_directories(${sample_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(${sample_name} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(${sample_name} PUBLIC ${OpenCV_LIBS}
-                      protobuf glog::glog Eigen3::Eigen   vitis_ai_library-graph_runner  vart-runner xir )
+                      glog::glog Eigen3::Eigen   vitis_ai_library-graph_runner  vart-runner xir )
 

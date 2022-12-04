@@ -32,12 +32,37 @@ class Segmentation3DImp : public vitis::ai::TConfigurableDpuTask<Segmentation3D>
  private:
   virtual Segmentation3DResult run(std::vector<std::vector<float>> &array) override;
   virtual std::vector<Segmentation3DResult> run(std::vector<std::vector<std::vector<float>>>& arrays) override;
-  const std::vector<float> sensor_means_{12.12, 10.88, 0.23, -1.04, 0.21};
-  const std::vector<float> sensor_stds_{12.32, 11.47, 6.91, 0.86, 0.16};
-  std::vector<int>  map_inv_{0, 10, 11, 15, 18,
-                         20, 30, 31, 32, 40,
-                         44, 48, 49, 50, 51,
-                         70, 71, 72, 80, 81};
+ 
+  void preprocess(const V2F& array, int idx) ;
+  void postprocess( Segmentation3DResult& rs, int idx);
+
+  void post_prec(const std::vector<float>& proj_range, 
+                           const std::vector<int>& proj_argmax, 
+                           int idx,  V1I& );
+  void topk(int idx, float* inv, int k,V1I& out_idx );
+  bool enable_knn;
+  int in_scale;
+  V2F depth;
+  V2F py, px;
+  int* proj_idx;
+  V1I pointsize;
+  V2F proj_range;
+  V1F proj_unfold;
+  V1F proj_unfold2;
+  V2I idx_list;  // should be V2I with batch
+  std::shared_ptr<float> k2_distances;
+  V1F unproj_unfold_1_argmax;
+  V1I knn_idx;
+  V1F knn_argmax;
+  std::shared_ptr<float> knn_argmax_onehot;
+  std::vector<int8_t*> input_ptr;
+  V1F sensor_std_scale;
+  V1F sensor_mean_std_scale;
+  std::vector<int8_t*> output_ptr;
+  V1I proj_argmax;
+  V1I unproj_argmax;
+  int size_all;
+
 };
 }  // namespace ai
 }  // namespace vitis

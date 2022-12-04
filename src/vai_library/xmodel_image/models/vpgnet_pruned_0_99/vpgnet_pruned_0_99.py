@@ -37,6 +37,6 @@ def jit(graph):
 
     xir_extra_ops.set_postprocessor(
         graph,
-        "libxmodel_postprocessor_lane_detect.so.2",
+        "libxmodel_postprocessor_lane_detect.so.3",
         {"input": ["type-tile_fixed_"]},
     )

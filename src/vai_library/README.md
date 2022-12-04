@@ -5,7 +5,7 @@
  </tr>
 </table>
 
-# Vitis AI Library v2.5
+# Vitis AI Library v3.0
 
 ## Introduction
 The Vitis AI Library is a set of high-level libraries and APIs built for efficient AI inference with Deep-Learning Processor Unit (DPU). It is built based on the Vitis AI Runtime with Unified APIs, and it fully supports XRT 2021.2.
@@ -18,22 +18,21 @@ For edge users, click
 For cloud users, click 
 [Quick Start For Cloud](#quick-start-for-cloud) to get started quickly.
 
-## Key Features And Enhancements in 2.5 Release
-1. New Model Libraries:
-    * efficientdet_d2
-	* ocr
-	* ofa_yolo
-	* textmountain
-	* vehicleclassification
+## Key Features And Enhancements in 3.0 Release
+1. New Board Support: Versal Series VEK280 is supported
+2. New Runtime Support:
+    ONNX Runtime is supported in this release. The quantized model in the ONNX format can be directly run on the target by ONNX Runtime.
+3. New Model Libraries:  
+	* Monodepth2
+	* YOLOv6 Detection
+	* BEVDet Detection
+	* cFlownet
 
-2. Up to 17 new models are supported:
-	* Added 11 new Pytorch models
-	* Added 5 Tensorflow models
+4. Up to 13 new models are supported:
+	* Added 12 new Pytorch models
 	* Added 1 Tensorflow2 model
-3. New CPU Ops Support:
-	* Added 8 CPU Ops
-4. Custom Op Enhancement
-5. xdputil Tool Enhancement
+5. New CPU Ops Support:
+	* Added 3 CPU Ops
 
 ## Block Diagram
 
@@ -44,20 +43,20 @@ For cloud users, click
 
 ## Quick Start For Edge
 ### Setting Up the Host
-1. Follow steps in [Setting Up the Host](../../setup/mpsoc#step1-setup-cross-compiler) to set up the host for edge.
+1. Follow steps in [Setting Up the Host](../vai_runtime/quick_start_for_embedded.md#setting-up-the-host) to set up the host for edge.
 
-2. To modify the library source code, view and modify them under `~/Vitis-AI/src/Vitis-AI-Library`.
+2. To modify the library source code, view and modify them under `~/Vitis-AI/src/vai_library`.
 	Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`.
 	If you want to change the default output path, please modify the `build_dir_default` in cmake.sh. 
 	Execute the following command to build the libraries all at once.
 ```
-cd ~/Vitis-AI/src/Vitis-AI-Library
+cd ~/Vitis-AI/src/vai_library
 ./cmake.sh --clean
 ```
 
 ### Setting Up the Target  
-For `MPSOC`, follow steps in [Setting Up the Target](../../setup/mpsoc#step2-setup-the-target) to set up the target.  
-For `VCK190`, follow steps in [Setting Up the Target](../../setup/vck190#step2-setup-the-target) to set up the target.
+For `MPSOC`, follow steps in [Setting Up the Target](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/mpsoc/README.html#step2-setup-the-target) to set up the target.  
+For `VCK190`, follow steps in [Setting Up the Target](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/vck190/README.html#step2-setup-the-target) to set up the target.
 
 	 	  
 ### Running Vitis AI Library Examples
@@ -71,12 +70,12 @@ the [vitis_ai_library_r2.5.x_video.tar.gz](https://www.xilinx.com/bin/public/ope
 2. Untar the image and video packages on the target.
 ```
 cd ~
-tar -xzvf vitis_ai_library_r2.5.*_images.tar.gz -C Vitis-AI/examples/Vitis-AI-Library
-tar -xzvf vitis_ai_library_r2.5.*_video.tar.gz -C Vitis-AI/examples/Vitis-AI-Library
+tar -xzvf vitis_ai_library_r2.5.*_images.tar.gz -C Vitis-AI/examples/vai_library
+tar -xzvf vitis_ai_library_r2.5.*_video.tar.gz -C Vitis-AI/examples/vai_library
 ```
 3. Enter the directory of example in target board, take `facedetect` as an example.
 ```
-cd ~/Vitis-AI/examples/Vitis-AI-Library/samples/facedetect
+cd ~/Vitis-AI/examples/vai_library/samples/facedetect
 ```
 4. Run the image test example.
 ```
@@ -114,8 +113,6 @@ If you want to support video data in other formats, you need to install the rele
 
 For `U50LV` and `U55C` Alveo Card, follow [Setup Alveo Accelerator Card](../../setup/alveo/README.md) to set up the host.
 
-For `U200` and `U250` Alveo Card, follow [Setup Alveo Accelerator Card](../../setup/alveo/README.md) to set up the host.
-
 For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../setup/vck5000/README.md) to set up the host.
 
 ### <div id="idu50"></div>Running Vitis AI Library Examples on U50LV/U55C/VCK5000
@@ -123,7 +120,7 @@ For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../se
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
 Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/examples/Vitis-AI-Library/` in the docker system. 
 
-**`/workspace/examples/Vitis-AI-Library/` is the path for the following example.**
+**`/workspace/examples/vai_library/` is the path for the following example.**
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
@@ -185,12 +182,12 @@ If you encounter any path errors in running examples, check to see if you follow
 cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.5.0_images.tar.gz -O vitis_ai_library_r2.5.0_images.tar.gz
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.5.0_video.tar.gz -O vitis_ai_library_r2.5.0_video.tar.gz
-tar -xzvf vitis_ai_library_r2.5.0_images.tar.gz -C examples/Vitis-AI-Library/
-tar -xzvf vitis_ai_library_r2.5.0_video.tar.gz -C examples/Vitis-AI-Library/
+tar -xzvf vitis_ai_library_r2.5.0_images.tar.gz -C examples/vai_library/
+tar -xzvf vitis_ai_library_r2.5.0_video.tar.gz -C examples/vai_library/
 ```
 3. Enter the directory of sample and then compile it.
 ```
-cd /workspace/examples/Vitis-AI-Library/samples/classification
+cd /workspace/examples/vai_library/samples/classification
 bash -x build.sh
 ```
 4. Run the image test example.

@@ -15,10 +15,17 @@
  */
 
 #include "vitis/ai/nnpp/yolov3.hpp"
+#include <fstream>
 
 #include <vector>
 
+#include <vitis/ai/env_config.hpp>
+#include <vitis/ai/profiling.hpp>
 #include "vitis/ai/nnpp/apply_nms.hpp"
+
+DEF_ENV_PARAM(DEBUG_YOLO, "0")
+DEF_ENV_PARAM(DEBUG_YOLO_LOAD, "0")
+DEF_ENV_PARAM(DEBUG_DECODE, "0")
 
 using namespace std;
 namespace vitis {
@@ -61,6 +68,7 @@ static void detect(vector<vector<float>>& boxes, int8_t* result, int height,
   auto biases = std::vector<float>(yolo_params.biases().begin(),
                                    yolo_params.biases().end());
   auto conf_desigmoid = -logf(1.0f / conf_thresh - 1.0f);
+  auto type = yolo_params.type();
 
   int conf_box = 5 + num_classes;
   for (int h = 0; h < height; ++h) {
@@ -73,14 +81,41 @@ static void detect(vector<vector<float>>& boxes, int8_t* result, int height,
         vector<float> box;
 
         float obj_score = sigmoid(result[idx + 4] * scale);
-        box.push_back((w + sigmoid(result[idx] * scale)) / width);
-        box.push_back((h + sigmoid(result[idx + 1] * scale)) / height);
-        box.push_back(exp(result[idx + 2] * scale) *
-                      biases[2 * c + 2 * anchor_cnt * num] / float(sWidth));
-        box.push_back(exp(result[idx + 3] * scale) *
-                      biases[2 * c + 2 * anchor_cnt * num + 1] /
-                      float(sHeight));
-        box.push_back(-1);
+        if (type == 1 ||
+            type == 2) {  // yolov4-csp/yolov5-large/yolov5-nano/yolov5s6
+          // int stride = sWidth / width;
+          // box.push_back((sigmoid(result[idx] * scale) * 2 - 0.5 + w) *
+          // stride);
+          if (ENV_PARAM(DEBUG_YOLO)) {
+            if (w == 0 && h == 0) {
+              auto ori_x = sigmoid(result[idx] * scale);
+              auto ori_y = sigmoid(result[idx + 1] * scale);
+              auto ori_w = sigmoid(result[idx + 2] * scale);
+              auto ori_h = sigmoid(result[idx + 3] * scale);
+              LOG(INFO) << "w:" << w << ", h:" << h << ", c:" << c
+                        << ", sigmoid:" << ori_x << ", " << ori_y << ", "
+                        << ori_w << ", " << ori_h;
+            }
+          }
+          box.push_back((sigmoid(result[idx] * scale) * 2 - 0.5 + w) / width);
+          box.push_back((sigmoid(result[idx + 1] * scale) * 2 - 0.5 + h) /
+                        height);
+          box.push_back(pow(sigmoid(result[idx + 2] * scale) * 2, 2) *
+                        biases[2 * c + 2 * anchor_cnt * num] / (float)(sWidth));
+          box.push_back(pow(sigmoid(result[idx + 3] * scale) * 2, 2) *
+                        biases[2 * c + 2 * anchor_cnt * num + 1] /
+                        (float)(sHeight));
+          box.push_back(-1);
+        } else {
+          box.push_back((w + sigmoid(result[idx] * scale)) / width);
+          box.push_back((h + sigmoid(result[idx + 1] * scale)) / height);
+          box.push_back(exp(result[idx + 2] * scale) *
+                        biases[2 * c + 2 * anchor_cnt * num] / float(sWidth));
+          box.push_back(exp(result[idx + 3] * scale) *
+                        biases[2 * c + 2 * anchor_cnt * num + 1] /
+                        float(sHeight));
+          box.push_back(-1);
+        }
         box.push_back(obj_score);
         for (int p = 0; p < num_classes; p++) {
           box.push_back(obj_score * sigmoid(result[idx + 5 + p] * scale));
@@ -122,7 +157,6 @@ static void detect(vector<vector<float>>& boxes, float* result, int height,
         // if (obj_score < CONF)
         if (swap_data[idx + 4] * scale < conf_desigmoid) continue;
         vector<float> box;
-
         float obj_score = sigmoid(swap_data[idx + 4] * scale);
         box.push_back((w + sigmoid(swap_data[idx] * scale)) / width);
         box.push_back((h + sigmoid(swap_data[idx + 1] * scale)) / height);
@@ -178,6 +212,29 @@ std::vector<YOLOv3Result> yolov3_post_process(
       }
     }
   }
+  if (ENV_PARAM(DEBUG_YOLO_LOAD)) {
+    for (auto i = 0u; i < output_tensors.size(); ++i) {
+      float scale = vitis::ai::library::tensor_scale(output_tensors[i]);
+      int scale_int = std::round(1.f / scale);
+      LOG(INFO) << "output tensor name:" << output_tensors[i].name
+                << ", scale:" << scale << " to " << scale_int;
+      LOG(INFO) << "shape:" << output_tensors[i].width << "*"
+                << output_tensors[i].height << "*" << output_tensors[i].channel;
+      std::string dump_file =
+          std::string("./dump_") + std::to_string(2 - i) + "_float.bin";
+      std::vector<float> load_buffer(output_tensors[i].size);
+      auto in = std::ifstream(dump_file);
+      in.read((char*)load_buffer.data(), load_buffer.size() * sizeof(float));
+      for (auto n = 0u; n < load_buffer.size(); ++n) {
+        ((int8_t*)output_tensors[i].get_data(0))[n] =
+            (int)std::round((load_buffer[n] * scale_int));
+      }
+      for (auto n = 0u; n < output_tensors[i].channel; ++n) {
+        std::cout << load_buffer[n] << " ";
+      }
+      std::cout << std::endl;
+    }
+  }
 
   std::vector<YOLOv3Result> res_vec;
   int batch_size = (ws.size() > output_tensors[0].batch)
@@ -200,6 +257,19 @@ std::vector<YOLOv3Result> yolov3_post_process(
 #endif
       float scale = vitis::ai::library::tensor_scale(output_tensors[i]);
       boxes.reserve(sizeOut);
+      if (ENV_PARAM(DEBUG_YOLO)) {
+        LOG(INFO) << "output tensor name:" << output_tensors[i].name;
+        LOG(INFO) << "shape:" << width << "*" << height << "*"
+                  << output_tensors[i].channel;
+        std::vector<float> output(sizeOut);
+        for (auto n = 0; n < sizeOut; ++n) {
+          output[n] = dpuOut[n] * scale;
+        }
+        for (auto n = 0u; n < output_tensors[i].channel; ++n) {
+          std::cout << output[n] << " ";
+        }
+        std::cout << std::endl;
+      }
 
       /* Store the object detection frames as coordinate information  */
       detect(boxes, dpuOut, height, width, j++, sHeight, sWidth, scale, config);

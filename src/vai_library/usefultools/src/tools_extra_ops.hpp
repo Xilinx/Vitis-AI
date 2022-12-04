@@ -30,12 +30,14 @@ std::vector<uint32_t> read_register(void* handle, uint32_t ip_index,
                                     uint64_t cu_base_addr,
                                     const std::vector<uint32_t>& addrs);
 std::vector<std::string> xilinx_version(std::vector<std::string> so_names);
+std::vector<std::string> xilinx_version2(std::vector<std::string> so_names);
 bool test_dpu_runner_mt(const xir::Subgraph* subgraph, uint32_t runner_num,
                         const std::vector<std::string>& input_filenames,
                         const std::vector<std::string>& output_filenames);
 
 template <class T>
-std::string to_string(T t, std::ios_base& (*f)(std::ios_base&), std::string prefix = "0x") {
+std::string to_string(T t, std::ios_base& (*f)(std::ios_base&),
+                      std::string prefix = "0x") {
   std::ostringstream oss;
   oss << prefix << f << t;
   return oss.str();

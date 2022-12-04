@@ -16,7 +16,6 @@
 Important:
   ./test_jpeg_facequality5pt, ./test_performance_facequality5pt the first param followed must be with model name.
   Valid model name:
-    face-quality
     face-quality_pt
 
 1, compile
@@ -29,24 +28,16 @@ Important:
 
    run the executable file.
     
-    sample : ./test_jpeg_facequality5pt face-quality sample_facequality5pt.jpg
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1102 06:39:55.572376  3602 process_result.hpp:26] score : 0.746494 points
-I1102 06:39:55.572516  3602 process_result.hpp:29] 0.333333 0.35
-I1102 06:39:55.572608  3602 process_result.hpp:29] 0.8 0.3625
-I1102 06:39:55.572647  3602 process_result.hpp:29] 0.6 0.5
-I1102 06:39:55.572685  3602 process_result.hpp:29] 0.366667 0.7375
-I1102 06:39:55.572721  3602 process_result.hpp:29] 0.75 0.75
-
     sample : ./test_jpeg_facequality5pt face-quality_pt sample_facequality5pt.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1126 03:48:03.879607  1636 process_result.hpp:26] score : 0.746494 points
-I1126 03:48:03.879714  1636 process_result.hpp:29] 0.333333 0.35
-I1126 03:48:03.879779  1636 process_result.hpp:29] 0.8 0.3625
-I1126 03:48:03.879807  1636 process_result.hpp:29] 0.6 0.5
-I1126 03:48:03.879833  1636 process_result.hpp:29] 0.366667 0.7375
-I1126 03:48:03.879858  1636 process_result.hpp:29] 0.75 0.75
+I1209 19:25:50.604651 66670 demo.hpp:1183] batch: 0     image: sample_facequality5pt.jpg
+I1209 19:25:50.604741 66670 process_result.hpp:26] score : 0.746494 points
+I1209 19:25:50.604785 66670 process_result.hpp:29] 0.333333 0.35
+I1209 19:25:50.604851 66670 process_result.hpp:29] 0.8 0.3625
+I1209 19:25:50.604882 66670 process_result.hpp:29] 0.6 0.5
+I1209 19:25:50.604910 66670 process_result.hpp:29] 0.366667 0.7375
+I1209 19:25:50.604938 66670 process_result.hpp:29] 0.75 0.75
 
 
 
@@ -54,5 +45,4 @@ Accuracy:
     ./test_accuracy_facequality5pt_mt <model_name> <image_list_filename> <output_filename> -t <thread>
 
     sample:
-    ./test_accuracy_facequality5pt_mt face-quality image_list.txt result.txt -t 2
     ./test_accuracy_facequality5pt_mt face-quality_pt image_list.txt result.txt -t 2

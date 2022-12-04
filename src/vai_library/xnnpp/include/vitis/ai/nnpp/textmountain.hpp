@@ -67,11 +67,15 @@ class TextMountainPost {
   );
 
   /**
-   * @brief post process the textmountain result.
+   * @brief Post-process the textmountain result.
    * @param idx  batch index.
    * @return TextMountainResult.
    */
   virtual TextMountainResult process(int idx)=0;
+  /**
+   * @brief Post-process the textmountain result.
+   * @return vector of TextMountainResult.
+   */
   virtual std::vector<TextMountainResult> process()=0;
   /**
    * @cond NOCOMMENTS

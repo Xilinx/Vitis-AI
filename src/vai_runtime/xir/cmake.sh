@@ -26,6 +26,7 @@ declare -a args
 args=(-DBUILD_TEST=ON)
 args+=(-DBUILD_CONTRIB=OFF)
 args+=(-DBUILD_DOC=OFF)
+args+=(-DBUILD_SHARED_LIBS=ON)
 
 # parse options
 options=$(getopt -a -n 'parse-options' -o h \

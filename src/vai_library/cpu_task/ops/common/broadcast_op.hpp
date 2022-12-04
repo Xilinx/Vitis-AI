@@ -38,6 +38,7 @@ struct MyOpImp : public vart::experimental::OpImpBase {
     CHECK_EQ(inputs.size(), 2u);
     auto input_a = inputs[0];
     auto input_b = inputs[1];
+    op_index_.reset_to_zero();
     for (; op_index_.is_end(); op_index_.tick()) {
       auto index_a = op_index_.get_a();
       auto index_b = op_index_.get_b();
@@ -52,5 +53,5 @@ struct MyOpImp : public vart::experimental::OpImpBase {
  private:
   BroadcastOpIndex op_index_;
   Op op_;
-};  // namespace
+};
 }  // namespace

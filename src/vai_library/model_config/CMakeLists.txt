@@ -31,9 +31,10 @@ vai_add_library(
   ${CMAKE_CURRENT_BINARY_DIR}/vitis/ai/proto/dpu_model_param.pb.cc
   ${CMAKE_CURRENT_BINARY_DIR}/vitis/ai/proto/dpu_model_param.pb.h
   src/config.cpp #
+  src/error_code.cpp
   PUBLIC_REQUIRE
   protobuf::libprotobuf
-  glog::glog)
+  glog::glog unilog::unilog)
 
 target_include_directories(
   ${COMPONENT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)

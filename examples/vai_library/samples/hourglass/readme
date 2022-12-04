@@ -30,6 +30,7 @@ Important:
     
     sample : ./test_jpeg_hourglass hourglass-pe_mpii sample_hourglass.png
     output : 
+    The result is written in sample_hourglass.png
 
 
 

@@ -21,6 +21,13 @@
 #pragma once
 #include <memory>
 #include <opencv2/core.hpp>
+
+using V1F=std::vector<float>;
+using V2F=std::vector<V1F>;
+using V3F=std::vector<V2F>;
+using V1I=std::vector<int>;
+using V2I=std::vector<V1I>;
+
 namespace vitis {
 namespace ai {
 

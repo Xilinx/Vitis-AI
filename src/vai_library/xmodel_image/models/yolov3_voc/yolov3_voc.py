@@ -31,7 +31,7 @@ def jit(graph):
 
     xir_extra_ops.set_postprocessor(
         graph,
-        "libxmodel_postprocessor_yolov3.so.2",
+        "libxmodel_postprocessor_yolov3.so.3",
         {
             "input": [
                 "layer81-conv_fixed_",

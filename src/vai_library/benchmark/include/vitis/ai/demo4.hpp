@@ -320,9 +320,11 @@ struct ClassificaitonDecodeThread : public MyThread {
     int tmp_vertical_num = page_layout_.height / mosaik_height_;
     horizontal_num_ = tmp_horizontal_num;
     vertical_num_ = tmp_vertical_num;
+    /*
     if (horizontal_num_ == 0 || vertical_num_ == 0) {
-      LOG(FATAL) << "Are you kidding me? Your face is too big";
+      return 0;
     }
+    */
     LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO)) << "get mosaik " << page_num_;
     mosaik_image.resize(page_num_);
     for (int i = 0; i < page_num_; i++) {
@@ -444,7 +446,7 @@ static std::unique_ptr<cv::VideoWriter> maybe_create_gst_video_writer(
       pipeline, cv::CAP_GSTREAMER, 0, 25.0, cv::Size(width, height), true));
   auto& writer = *video_stream.get();
   if (!writer.isOpened()) {
-    LOG(FATAL) << "cannot open gst: " << pipeline;
+    LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_GST_ERROR][failed to open gstreamer!] cannot open " << pipeline;
     return nullptr;
   } else {
     LOG(INFO) << "video writer is created: " << width << "x" << height << " "

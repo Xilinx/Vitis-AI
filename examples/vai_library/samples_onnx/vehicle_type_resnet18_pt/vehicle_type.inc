@@ -1,0 +1,12 @@
+"MPV,",
+"SUV,",
+"sedan,",
+"hatchback,",
+"minibus,",
+"fastback,",
+"estate,",
+"pickup,",
+"hardtop convertible,",
+"sports,",
+"crossover,",
+"convertible,"

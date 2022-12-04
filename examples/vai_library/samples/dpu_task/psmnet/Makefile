@@ -30,7 +30,7 @@ OUTPUT_DIR = ./build
 LD_FLAGS += -L=/install/Release/lib
 LD_FLAGS += -L/opt/petalinux/2021.1/sysroots/cortexa72-cortexa53-xilinx-linux/install/Release/lib/
 LD_FLAGS +=-lglog
-LD_FLAGS +=-lvitis_ai_library-model_config
+LD_FLAGS +=-lvitis_ai_library-runner_helper
 LD_FLAGS +=-lprotobuf
 LD_FLAGS +=-lvitis_ai_library-dpu_task
 LD_FLAGS += $(shell pkg-config opencv4 --libs)

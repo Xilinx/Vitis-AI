@@ -161,9 +161,9 @@ int main(int argc, char* argv[]) {
   }
   if (!subgraph->has_attr("runner")) {
     subgraph->set_attr<std::map<std::string, std::string>>(
-        "runner", {{"ref", "libvitis_ai_library-graph_runner.so.2"},
-                   {"sim", "libvitis_ai_library-graph_runner.so.2"},
-                   {"run", "libvitis_ai_library-graph_runner.so.2"}});
+        "runner", {{"ref", "libvitis_ai_library-graph_runner.so.3"},
+                   {"sim", "libvitis_ai_library-graph_runner.so.3"},
+                   {"run", "libvitis_ai_library-graph_runner.so.3"}});
   }
   if (g_subgraph_index >= 0) {
     auto all = subgraph->children_topological_sort();
@@ -174,9 +174,9 @@ int main(int argc, char* argv[]) {
   if (ENV_PARAM(USE_CPU_TASK)) {
     if (subgraph->get_attr<std::string>("device") == "CPU") {
       subgraph->set_attr<std::map<std::string, std::string>>(
-          "runner", {{"ref", "libvitis_ai_library-cpu_task.so.2"},
-                     {"sim", "libvitis_ai_library-cpu_task.so.2"},
-                     {"run", "libvitis_ai_library-cpu_task.so.2"}});
+          "runner", {{"ref", "libvitis_ai_library-cpu_task.so.3"},
+                     {"sim", "libvitis_ai_library-cpu_task.so.3"},
+                     {"run", "libvitis_ai_library-cpu_task.so.3"}});
     }
   }
   auto runner = vart::Runner::create_runner(subgraph, ENV_PARAM(MODE));

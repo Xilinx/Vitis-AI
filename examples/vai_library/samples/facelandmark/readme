@@ -31,12 +31,13 @@ Important:
     sample : ./test_jpeg_facelandmark face_landmark sample_facelandmark.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1108 22:41:20.770431  5090 process_result.hpp:57] points 
-I1108 22:41:20.770553  5090 process_result.hpp:59] 0.34375 0.367188 
-I1108 22:41:20.770637  5090 process_result.hpp:59] 0.773438 0.367188 
-I1108 22:41:20.770664  5090 process_result.hpp:59] 0.59375 0.53125 
-I1108 22:41:20.770690  5090 process_result.hpp:59] 0.382812 0.75 
-I1108 22:41:20.770716  5090 process_result.hpp:59] 0.726562 0.75 
+I1209 19:24:54.439440 66663 demo.hpp:1183] batch: 0     image: sample_facelandmark.jpg
+I1209 19:24:54.439532 66663 process_result.hpp:25] points
+I1209 19:24:54.439551 66663 process_result.hpp:27] 0.34375 0.367188
+I1209 19:24:54.439637 66663 process_result.hpp:27] 0.773438 0.367188
+I1209 19:24:54.439666 66663 process_result.hpp:27] 0.59375 0.53125
+I1209 19:24:54.439692 66663 process_result.hpp:27] 0.382812 0.75
+I1209 19:24:54.439721 66663 process_result.hpp:27] 0.726562 0.75 
 
 
 

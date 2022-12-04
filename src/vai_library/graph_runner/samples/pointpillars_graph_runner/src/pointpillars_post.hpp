@@ -16,7 +16,6 @@
 #pragma once
 
 #include "vitis/ai/graph_runner.hpp"
-#include "second/protos/pipeline.pb.h"
 #include "./pointpillars.hpp"
 #include "./helper.hpp"
 
@@ -66,10 +65,6 @@ class PointPillarsPost {
 
  private:
   DPU_DATA dpu_data;
-  int cfg_nms_pre_max_size ;  
-  int cfg_nms_post_max_size ; 
-  float cfg_nms_iou_threshold ;
-  int cfg_num_class;
   float nms_confidence_ ;
 
   V2I corners_norm;
@@ -86,8 +81,5 @@ class PointPillarsPost {
  private:
   // for test part   
   void predict_kitti_to_anno(V2F&, V2F&, V2F&, V1I&, V1F& ,  ANNORET& , int, int );
-  V1F cfg_post_center_limit_range;
-  std::vector<std::string> cfg_class_names;
-  float cfg_nms_score_threshold;
 };
 }}}

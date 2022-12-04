@@ -19,6 +19,7 @@
 #include <limits>
 #include <thread>
 
+#include <UniLog/UniLog.hpp>
 #include "graph_runner.hpp"
 #include "vart/batch_tensor_buffer_view.hpp"
 #include "vart/runner_helper.hpp"
@@ -40,7 +41,7 @@ GraphTask::GraphTask(const xir::Subgraph* subgraph, xir::Attrs* attrs)
       nondpu_batch_size_{0u} {
   // dirty hack override original cpu-runner.so
   attrs_->set_attr("lib", std::map<std::string, std::string>{
-                              {"CPU", "libvitis_ai_library-cpu_task.so.2"}});
+                              {"CPU", "libvitis_ai_library-cpu_task.so.3"}});
   internal_ = vitis::ai::vec_map(
       subgraph->children_topological_sort(),
       [](const xir::Subgraph* subgraph) { return GraphInternal(subgraph); });
@@ -49,8 +50,13 @@ GraphTask::GraphTask(const xir::Subgraph* subgraph, xir::Attrs* attrs)
   if (!attrs_->has_attr("__batch__")) {
     attrs_->set_attr<size_t>("__batch__", nondpu_batch_size_);
   }
-  CHECK(dpu_batch_size_ % nondpu_batch_size_ == 0u &&
-        dpu_batch_size_ >= nondpu_batch_size_)
+  // CHECK(dpu_batch_size_ % nondpu_batch_size_ == 0u &&
+  //      dpu_batch_size_ >= nondpu_batch_size_)
+  //    << "dpu_batch_size_= " << dpu_batch_size_
+  //    << ";nondpu_batch_size_= " << nondpu_batch_size_;
+  UNI_LOG_CHECK((dpu_batch_size_ % nondpu_batch_size_ == 0u &&
+                 dpu_batch_size_ >= nondpu_batch_size_),
+                VAILIB_GRAPH_RUNNER_DPU_BATCH_ERROR)
       << "dpu_batch_size_= " << dpu_batch_size_
       << ";nondpu_batch_size_= " << nondpu_batch_size_;
   tensor_buffer_allocator_ =
@@ -200,7 +206,10 @@ void GraphTask::update_batch_size(const std::vector<xir::Tensor*>& tensors) {
     if (dpu_batch_size_ == 0u) {
       dpu_batch_size_ = (size_t)b->get_shape()[0];
     } else {
-      CHECK_EQ(dpu_batch_size_, (size_t)b->get_shape()[0])
+      // CHECK_EQ(dpu_batch_size_, (size_t)b->get_shape()[0])
+      //    << "all tensor must have same batch size: " << b->to_string();
+      UNI_LOG_CHECK(dpu_batch_size_ == (size_t)b->get_shape()[0],
+                    VAILIB_GRAPH_RUNNER_DPU_BATCH_ERROR)
           << "all tensor must have same batch size: " << b->to_string();
     }
   }
@@ -411,7 +420,9 @@ const xir::Tensor* GraphTask::find_tensor(
       }
     }
   }
-  CHECK(ret != nullptr) << "cannot find tensor: name=" << tensor_name;
+  // CHECK(ret != nullptr) << "cannot find tensor: name=" << tensor_name;
+  UNI_LOG_CHECK(ret != nullptr, VAILIB_GRAPH_RUNNER_NOT_FIND)
+      << "cannot find tensor: name=" << tensor_name;
   return ret;
 }
 
@@ -427,7 +438,9 @@ vart::TensorBuffer* GraphTask::find_tensor_buffer(
       }
     }
   }
-  CHECK(ret != nullptr) << "cannot find tensor buffer: name=" << tensor_name;
+  // CHECK(ret != nullptr) << "cannot find tensor buffer: name=" << tensor_name;
+  UNI_LOG_CHECK(ret != nullptr, VAILIB_GRAPH_RUNNER_NOT_FIND)
+      << "cannot find tensor buffer: name=" << tensor_name;
   return ret;
 }
 

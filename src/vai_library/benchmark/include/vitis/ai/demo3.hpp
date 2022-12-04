@@ -317,7 +317,7 @@ static std::unique_ptr<cv::VideoWriter> maybe_create_gst_video_writer(
       pipeline, cv::CAP_GSTREAMER, 0, 25.0, cv::Size(width, height), true));
   auto& writer = *video_stream.get();
   if (!writer.isOpened()) {
-    LOG(FATAL) << "cannot open gst: " << pipeline;
+    LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_GST_ERROR][failed to open gstreamer!] cannot open " << pipeline;
     return nullptr;
   } else {
     LOG(INFO) << "video writer is created: " << width << "x" << height << " "

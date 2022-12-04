@@ -23,7 +23,7 @@ namespace vitis {
 namespace ai {
 namespace yolov3 {
 
-image load_image_cv(const cv::Mat &img);
+image load_image_cv(const cv::Mat& img);
 image letterbox_image(image im, int w, int h);
 image make_image(int w, int h, int c);
 image make_empty_image(int w, int h, int c);
@@ -34,12 +34,12 @@ void embed_image(image source, image dest, int dx, int dy);
 float get_pixel(image m, int x, int y, int c);
 void set_pixel(image m, int x, int y, int c, float val);
 void add_pixel(image m, int x, int y, int c, float val);
-image ipl_to_image(IplImage *src);
-void ipl_into_image(IplImage *src, image im);
+image ipl_to_image(IplImage* src);
+void ipl_into_image(IplImage* src, image im);
 
 //# Overload method with float input data for DPUV1
-void convertInputImage(const cv::Mat &frame, int width, int height, int channel,
-                       float scale, float *data) {
+void convertInputImage(const cv::Mat& frame, int width, int height, int channel,
+                       float scale, float* data) {
   int size = width * height * channel;
   image img_new = load_image_cv(frame);
   image img_yolo = letterbox_image(img_new, width, height);
@@ -64,8 +64,8 @@ void convertInputImage(const cv::Mat &frame, int width, int height, int channel,
   free_image(img_yolo);
 }
 
-void convertInputImage(const cv::Mat &frame, int width, int height, int channel,
-                       float scale, int8_t *data) {
+void convertInputImage(const cv::Mat& frame, int width, int height, int channel,
+                       float scale, int8_t* data) {
   int size = width * height * channel;
   image img_new = load_image_cv(frame);
   image img_yolo = letterbox_image(img_new, width, height);
@@ -87,13 +87,13 @@ void convertInputImage(const cv::Mat &frame, int width, int height, int channel,
   free_image(img_yolo);
 }
 
-image load_image_cv(const cv::Mat &img) {
+image load_image_cv(const cv::Mat& img) {
   int h = img.rows;
   int w = img.cols;
   int c = img.channels();
   image im = make_image(w, h, c);
 
-  unsigned char *data = img.data;
+  unsigned char* data = img.data;
 
   for (int i = 0; i < h; ++i) {
     for (int j = 0; j < w; ++j) {
@@ -127,7 +127,7 @@ image letterbox_image(image im, int w, int h) {
 
 image make_image(int w, int h, int c) {
   image out = make_empty_image(w, h, c);
-  out.data = (float *)calloc(h * w * c, sizeof(float));
+  out.data = (float*)calloc(h * w * c, sizeof(float));
   return out;
 }
 
@@ -207,7 +207,7 @@ void embed_image(image source, image dest, int dx, int dy) {
   }
 }
 
-image ipl_to_image(IplImage *src) {
+image ipl_to_image(IplImage* src) {
   int h = src->height;
   int w = src->width;
   int c = src->nChannels;
@@ -216,8 +216,8 @@ image ipl_to_image(IplImage *src) {
   return out;
 }
 
-void ipl_into_image(IplImage *src, image im) {
-  unsigned char *data = (unsigned char *)src->imageData;
+void ipl_into_image(IplImage* src, image im) {
+  unsigned char* data = (unsigned char*)src->imageData;
   int h = src->height;
   int w = src->width;
   int c = src->nChannels;
@@ -267,7 +267,22 @@ void convert_RGB(cv::Mat img) {
   }
 }
 
-cv::Mat letterbox_tf(const cv::Mat &im, int w, int h) {
+cv::Mat letterbox(const cv::Mat& im, int w, int h) {
+  float scale = min((float)w / (float)im.cols, (float)h / (float)im.rows);
+  int new_w = im.cols * scale;
+  int new_h = im.rows * scale;
+  cv::Mat img_res;
+  cv::resize(im, img_res, cv::Size(new_w, new_h), 0, 0, cv::INTER_LINEAR);
+
+  cv::Mat new_img(cv::Size(w, h), CV_8UC3, cv::Scalar(114, 114, 114));
+  int x = (w - new_w) / 2;
+  int y = (h - new_h) / 2;
+  auto rect = cv::Rect{x, y, new_w, new_h};
+  img_res.copyTo(new_img(rect));
+  return new_img;
+}
+
+cv::Mat letterbox_tf(const cv::Mat& im, int w, int h) {
   float scale = min((float)w / (float)im.cols, (float)h / (float)im.rows);
   int new_w = im.cols * scale;
   int new_h = im.rows * scale;

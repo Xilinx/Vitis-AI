@@ -15,6 +15,7 @@
  */
 #include "./tensor_buffer_linker.hpp"
 
+#include <UniLog/UniLog.hpp>
 #include <memory>
 #include <sstream>
 #include <vitis/ai/profiling.hpp>
@@ -33,9 +34,12 @@ std::unique_ptr<TensorBufferLinker> TensorBufferLinker::create(
       ret = std::make_unique<TensorBufferLinkerHostPhy>(master);
       break;
     default:
-      LOG(FATAL) << "Not supported yet";
+      // LOG(FATAL) << "Not supported yet";
+      UNI_LOG_FATAL(VAILIB_GRAPH_RUNNER_NOT_SUPPORT) << "Not supported yet";
   }
-  CHECK(ret != nullptr) << "Not supported yet";
+  // CHECK(ret != nullptr) << "Not supported yet";
+  UNI_LOG_CHECK(ret != nullptr, VAILIB_GRAPH_RUNNER_NOT_SUPPORT)
+      << "Not supported yet";
   return ret;
 }
 
@@ -65,7 +69,8 @@ void TensorBufferLinker::finalize() {
 }
 
 void TensorBufferLinker::after_invoke_runner(const xir::Subgraph* subgraph) {
-  LOG(WARNING) << " not so efficient, too much copying";
+  // LOG(WARNING) << " not so efficient, too much copying";
+  UNI_LOG_WARNING << " not so efficient, too much copying";
   for (auto s : slaves_) {
     LOG_IF(INFO, ENV_PARAM(DEEPHI_PROFILING))
         << "ZERO_COPY = 0  tensor name : "

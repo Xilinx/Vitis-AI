@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-#include <google/protobuf/stubs/common.h>
-#include <google/protobuf/text_format.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <cmath>
 #include <thread>
 
-#include "second/protos/second.pb.h"
-#include "second/protos/pipeline.pb.h"
-#include "second/protos/model.pb.h"
 #include <vitis/ai/profiling.hpp>
 #include "./anchor.hpp"
 #include "./helper.hpp"
 
 namespace vitis { namespace ai { namespace pp {
 
-extern second::protos::TrainEvalPipelineConfig cfg;
 extern std::vector<int> g_grid_size;
 extern G_ANCHOR g_anchor;
 
@@ -367,36 +361,26 @@ void anchor_stride::create_all_anchors_sub( V5F& anchors_v5) {
 
 int anchor_stride::create_all_anchors( ) {
   V5F anchors5_all;
-  V6F anchors6_all (  cfg.model().second().target_assigner().anchor_generators_size());
+  V6F anchors6_all ( 3);
 
-  // std::cout << "num_class_test:" << cfg.model().second().num_class() << "   size: " << cfg.model().second().target_assigner().anchor_generators_size() << "\n"; 
   std::vector<std::thread> vth;
-  int inum = 0;
-  std::unique_ptr<anchor_stride> ac[cfg.model().second().target_assigner().anchor_generators_size() ];
-  for (const auto& ags: cfg.model().second().target_assigner().anchor_generators()) {
-      ac[inum] = std::make_unique<anchor_stride>( 
-         std::vector<float>( ags.anchor_generator_stride().sizes().begin(), 
-                             ags.anchor_generator_stride().sizes().end()),
-         std::vector<float>( ags.anchor_generator_stride().strides().begin(), 
-                             ags.anchor_generator_stride().strides().end()),
-         std::vector<float>( ags.anchor_generator_stride().offsets().begin(), 
-                             ags.anchor_generator_stride().offsets().end()),
-         std::vector<float>( ags.anchor_generator_stride().rotations().begin(), 
-                             ags.anchor_generator_stride().rotations().end()),
-         ags.anchor_generator_stride().matched_threshold(),
-         ags.anchor_generator_stride().unmatched_threshold(),
-         std::vector<float>( cfg.model().second().voxel_generator().point_cloud_range().begin(),
-                             cfg.model().second().voxel_generator().point_cloud_range().end()),
-         std::vector<float>( cfg.model().second().voxel_generator().voxel_size().begin(),
-                             cfg.model().second().voxel_generator().voxel_size().end()),
+  std::unique_ptr<anchor_stride> ac[3 ];
+  for (int i=0; i<3; i++) {
+      ac[i] = std::make_unique<anchor_stride>( 
+         cfg_anchor_generator_stride_sizes[i],
+         cfg_anchor_generator_stride_strides[i],
+         cfg_anchor_generator_stride_offsets[i],
+         cfg_anchor_generator_stride_rotations[i],
+         cfg_anchor_generator_stride_matched_threshold[i],
+         cfg_anchor_generator_stride_unmatched_threshold[i],
+         cfg_point_cloud_range,
+         cfg_voxel_size,
          g_grid_size,
-         cfg.model().second().rpn().layer_strides()[0]
+         cfg_layer_strides[0]
       );
-      vth.emplace_back(&anchor_stride::create_all_anchors_sub, ac[inum].get(), std::ref( anchors6_all[inum]) );
-      inum++;
-      /// no use . anchors5_all.insert(anchors5_all.end(), anchors_v5.begin(), anchors_v5.end() );
+      vth.emplace_back(&anchor_stride::create_all_anchors_sub, ac[i].get(), std::ref( anchors6_all[i]) );
   }
-  for(int i=0; i< cfg.model().second().target_assigner().anchor_generators_size(); i++) {
+  for(int i=0; i<3; i++) {
       vth[i].join();
   }
   // anchors = np.concatenate(anchors_list, axis=-2)
@@ -418,10 +402,10 @@ int anchor_stride::create_all_anchors( ) {
   __TOC__(rbbox2d_to_near_bbox)
 
   // optimize: re-calculate anchors_bv for fast speed.
-  float voxel_size0 = cfg.model().second().voxel_generator().voxel_size()[0];
-  float voxel_size1 = cfg.model().second().voxel_generator().voxel_size()[1];
-  float off_str0 = cfg.model().second().voxel_generator().point_cloud_range()[0]/voxel_size0;
-  float off_str1 = cfg.model().second().voxel_generator().point_cloud_range()[1]/voxel_size1;
+  float voxel_size0 = cfg_voxel_size[0];
+  float voxel_size1 = cfg_voxel_size[1];
+  float off_str0 = cfg_point_cloud_range[0]/voxel_size0;
+  float off_str1 = cfg_point_cloud_range[1]/voxel_size1;
   for(unsigned int i=0; i<g_anchor.anchors_bv.size(); i++) {
     g_anchor.anchors_bv[i][0] = std::floor( g_anchor.anchors_bv[i][0] /voxel_size0 - off_str0 );
     g_anchor.anchors_bv[i][1] = std::floor( g_anchor.anchors_bv[i][1] /voxel_size1 - off_str1 );

@@ -23,5 +23,7 @@ vai_add_library(
        include/vitis/ai/image_list.hpp
        include/vitis/ai/stat_samples.hpp
        include/vitis/ai/demo_accuracy.hpp
+       include/vitis/ai/onnx_task.hpp
+       include/vitis/ai/getbatch.hpp
        # src/accuracy_facedetection.hpp src/main.cpp src/stat_samples.cpp
 )

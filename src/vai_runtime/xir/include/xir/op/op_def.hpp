@@ -127,7 +127,7 @@ class XIR_DLLESPEC OpDef {
   std::string annotation_;
 };
 
-class OpDefFactory {
+class XIR_DLLESPEC OpDefFactory {
  public:
   virtual void register_h(const OpDef& def) = 0;
 

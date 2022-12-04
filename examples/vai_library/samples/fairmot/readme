@@ -31,13 +31,13 @@ Important:
     sample : ./test_jpeg_fairmot FairMot_pt sample_fairmot.jpg
     output : 
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I0323 10:40:31.206498  7067 demo.hpp:1183] batch: 0     image: sample_fairmot.jpg
-I0323 10:40:31.208055  7067 process_result.hpp:39] RESULT 1 :	117	227	287	717	0.705785
-I0323 10:40:31.208163  7067 process_result.hpp:41] feat size: [256 x 1] First 5 digits: 155 173 169 189 76
-I0323 10:40:31.208302  7067 process_result.hpp:39] RESULT 1 :	404	99	639	759	0.637031
-I0323 10:40:31.208343  7067 process_result.hpp:41] feat size: [256 x 1] First 5 digits: 51 225 186 189 99
-I0323 10:40:31.208474  7067 process_result.hpp:39] RESULT 1 :	812	326	909	589	0.577495
-I0323 10:40:31.208513  7067 process_result.hpp:41] feat size: [256 x 1] First 5 digits: 81 197 2 189 71
+I1209 19:26:35.538357 66677 demo.hpp:1183] batch: 0     image: sample_fairmot.jpg
+I1209 19:26:35.539680 66677 process_result.hpp:39] RESULT 1 :   117     227     287     717     0.705785
+I1209 19:26:35.539829 66677 process_result.hpp:41] feat size: [256 x 1] First 5 digits: 155 173 169 189 76
+I1209 19:26:35.539961 66677 process_result.hpp:39] RESULT 1 :   404     99      639     759     0.637031
+I1209 19:26:35.539995 66677 process_result.hpp:41] feat size: [256 x 1] First 5 digits: 51 225 186 189 99
+I1209 19:26:35.540099 66677 process_result.hpp:39] RESULT 1 :   812     326     909     589     0.577495
+I1209 19:26:35.540131 66677 process_result.hpp:41] feat size: [256 x 1] First 5 digits: 81 197 2 189 71
 
 
 

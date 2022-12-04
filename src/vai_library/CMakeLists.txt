@@ -24,7 +24,7 @@ if(DEFINED ENV{BUILD_VER})
 else()
   project(
     vitis_ai_library
-    VERSION 2.5.0
+    VERSION 3.0.0
     LANGUAGES C CXX)
 endif()
 
@@ -47,9 +47,12 @@ option(ENABLE_YOLOV2 "enable Yolov2" OFF)
 option(ENABLE_YOLOV3 "enable Yolov3" OFF)
 option(ENABLE_OFAYOLO "enable OFA Yolo" OFF)
 option(ENABLE_YOLOVX "enable YolovX" OFF)
+option(ENABLE_YOLOV6 "enable Yolov6" OFF)
+option(ENABLE_PMRID "enable pmrid" OFF)
 option(ENABLE_ARFLOW "enable ARFlow" OFF)
 option(ENABLE_SOLO "enable Solo" OFF)
 option(ENABLE_C2D2_LITE "enable c2d2_lite" OFF)
+option(ENABLE_BEVDET "enable bevdet" OFF)
 option(ENABLE_RGBDSEGMENTATION "enable RGBDsegmentation" OFF)
 option(ENABLE_POLYPSEGMENTATION "enable polypsegmentation" OFF)
 option(ENABLE_LANDMARK "enable landmark face-5pt" OFF)
@@ -101,6 +104,11 @@ option(ENABLE_X_AUTONOMOUS3D "enable x_autonomous3d" OFF)
 option(ENABLE_EFFICIENTDET_D2 "enable efficientdet_d2 " ON)
 option(ENABLE_DPUCADX8G_RUNNER "enable DPUV1 Runner" OFF)
 option(ENABLE_DPUCADF8H_RUNNER "enable DPUV3INT8 Runner" OFF)
+option(ENABLE_BOSCH_FCNSEMSEG "enable bosch_fcnsemseg" OFF)
+option(ENABLE_BOSCH_SSDOBJDET "enable bosch_ssdobjdet" OFF)
+option(ENABLE_MONODEPTH2 "enable monodepth2" OFF)
+option(ENABLE_CFLOWNET "enable cflownet" OFF)
+option(ENABLE_CENTERNET "enable centernet" OFF)
 
 # variables
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/cmake")
@@ -235,6 +243,15 @@ if(ENABLE_YOLOVX OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS yolovx)
 endif()
 
+if(ENABLE_YOLOV6 OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS yolov6)
+endif()
+
+
+if(ENABLE_PMRID OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS pmrid)
+endif()
+
 if(ENABLE_ARFLOW OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS arflow)
 endif()
@@ -245,6 +262,10 @@ endif()
 
 if(ENABLE_C2D2_LITE OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS c2d2_lite)
+endif()
+
+if(ENABLE_BEVDET OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS bevdet)
 endif()
 
 if(ENABLE_RGBDSEGMENTATION OR (NOT DISABLE_ALL))
@@ -423,6 +444,21 @@ if(ENABLE_EFFICIENTDET_D2 OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS efficientdet_d2)
 endif()
 
+if(ENABLE_BOSCH_FCNSEMSEG OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS bosch_fcnsemseg)
+endif()
+if(ENABLE_BOSCH_SSDOBJDET OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS bosch_ssdobjdet)
+endif()
+if(ENABLE_MONODEPTH2 OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS monodepth2)
+endif()
+if(ENABLE_CFLOWNET OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS cflownet)
+endif()
+if(ENABLE_CENTERNET )
+  list(APPEND PACKAGE_COMPONENTS centernet)
+endif()
 
 # NOTE: general1 refer to many other libs, so it must be the last components in
 # the list

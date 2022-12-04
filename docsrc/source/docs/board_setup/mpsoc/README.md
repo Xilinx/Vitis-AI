@@ -19,11 +19,11 @@ With Vitis-AI, Xilinx has integrated all the edge and cloud solutions under a un
 ```
 ./host_cross_compiler_setup.sh
 ```
-Note that the Cross Compiler will be installed in `~/petalinux_sdk_2022.1` by default. 
+Note that the Cross Compiler will be installed in `~/petalinux_sdk_2022.2` by default. 
 
 2. When the installation is complete, follow the prompts and execute the following command.
 ```
-source ~/petalinux_sdk_2022.1/environment-setup-cortexa72-cortexa53-xilinx-linux
+source ~/petalinux_sdk_2022.2/environment-setup-cortexa72-cortexa53-xilinx-linux
 ```
 Note that if you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
 
@@ -39,14 +39,14 @@ steps.**
 1. Installing a Board Image.
 	* Download the SD card system image files from the following links:  
 	
-		[ZCU102](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu102-dpu-v2022.1-v2.5.0.img.gz)  
+		[ZCU102](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu102-dpu-v2022.2-v3.0.0.img.gz)  
 	
-		[ZCU104](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu104-dpu-v2022.1-v2.5.0.img.gz)  
+		[ZCU104](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu104-dpu-v2022.2-v3.0.0.img.gz)  
 		
-		[KV260](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-kv260-dpu-v2022.1-v2.5.0.img.gz) 
+		[KV260](https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-kv260-dpu-v2022.2-v3.0.0.img.gz) 
 		
 	
-      	Note: For ZCU102/ZCU104/KV260, the version of the board image should be 2022.1 or above.  
+      	Note: For ZCU102/ZCU104/KV260, the version of the board image should be 2022.2 or above.  
 
 	* Use Etcher software to burn the image file onto the SD card.
 	* Insert the SD card with the image into the destination board.
@@ -62,44 +62,46 @@ steps.**
 	```
 	cd ~/dpu_sw_optimize/zynqmp/
 	./zynqmp_dpu_optimize.sh
-	```	
+	```
 
-3. (Optional) How to install the Vitis AI for PetaLinux 2022.1  
+3. (Optional) How to install the Vitis AI for PetaLinux 2022.2  
 	There are two ways to install the dependent libraries of Vitis-AI. One is to rebuild the system by configuring PetaLinux and the other is to install the Vitis-AI online via `dnf`.
 	* Build-Time  
-	  For `VAI2.5 Recipes`, refer to [Vitis-AI-Recipes](../petalinux).  
+	  For `VAI3.0 Recipes`, refer to [Vitis-AI-Recipes](../../../../src/petalinux_recipes).  
 	* Run-Time   
-	  Execute `dnf install packagegroup-petalinux-vitisai` to complete the installation on the target. For more details, refer to [VAI2.5 Online Install](../petalinux#to-install-the-vai25-online) 
+	  Execute `dnf install packagegroup-petalinux-vitisai` to complete the installation on the target. For more details, refer to [VAI2.5 Online Install](../../../../src/petalinux_recipes#to-install-the-vai25-online) 
 	
 4. (Optional) How to update Vitis AI Runtime and install them separately.  
     If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
-	* Copy the following folder to the board using scp.
+	* Download [vitis-ai-runtime-3.0.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-3.0.0.tar.gz) package and copy it to the board using scp.
 	```
-	scp -r mpsoc root@IP_OF_BOARD:~/
+	scp vitis-ai-runtime-3.0.0.tar.gz root@IP_OF_BOARD:~/
 	```
 	* Log in to the board using ssh. You can also use the serial port to login.
 	* Install the Vitis AI Runtime. Execute the following command.
 	```
-	cd ~/mpsoc
-	bash target_vart_setup.sh
+	cd ~
+	tar -xzvf vitis-ai-runtime-3.0.0.tar.gz
+	cd vitis-ai-runtime-3.0.0/2022.2/aarch64/centos
+	bash setup.sh
 	```
 5. (Optional) Download the model.  	
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
 	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it.
-	Click [Xilinx AI Model Zoo](../../model_zoo/model-list) to view all the models.
+	Click [Xilinx AI Model Zoo](../../../../model_zoo/model-list) to view all the models.
 	
 	* Take `resnet50` of ZCU102 as an example.
 	```
 	  cd /workspace
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r2.5.0.tar.gz -O resnet50-zcu102_zcu104_kv260-r2.5.0.tar.gz
-	```	
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz -O resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
+	```
 	* Copy the downloaded file to the board using scp with the following command. 
 	```
-	  scp resnet50-zcu102_zcu104_kv260-r2.5.0.tar.gz root@IP_OF_BOARD:~/
+	  scp resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz root@IP_OF_BOARD:~/
 	```
 	* Log in to the board (using ssh or serial port) and install the model package.
 	```
-	  tar -xzvf resnet50-zcu102_zcu104_kv260-r2.5.0.tar.gz
+	  tar -xzvf resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
 	  cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 	  
@@ -112,11 +114,11 @@ steps.**
 2. Unzip the `vitis_ai_runtime_r2.5.x_image_video.tar.gz` package on the target.
 	```
 	cd ~
-	tar -xzvf vitis_ai_runtime_r*2.5*_image_video.tar.gz -C Vitis-AI/examples/VART
+	tar -xzvf vitis_ai_runtime_r*2.5*_image_video.tar.gz -C Vitis-AI/examples/vai_runtime
 	```
 3. Enter the directory of samples in the target board. Take `resnet50` as an example.
 	```
-	cd ~/Vitis-AI/examples/VART/resnet50
+	cd ~/Vitis-AI/examples/vai_runtime/resnet50
 	```
 4. Run the example.
 	```
@@ -126,8 +128,8 @@ steps.**
 	For examples with video input, only `webm` and `raw` format are supported by default with the official system image. 
 	If you want to support video data in other formats, you need to install the relevant packages on the system. 
 
- <summary><b>Launching Commands for VART Samples on edge </b></summary>
- 
+<b>Launching Commands for VART Samples on edge</b>
+
 | No\. | Example Name             | Command                                                      |
 | :--- | :----------------------- | :----------------------------------------------------------- |
 | 1    | resnet50                 | ./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel                              |

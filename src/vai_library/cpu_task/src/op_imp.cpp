@@ -18,6 +18,7 @@
 
 #include <dlfcn.h>
 #include <glog/logging.h>
+#include <UniLog/UniLog.hpp>
 
 #include <regex>
 
@@ -83,8 +84,8 @@ std::string to_string(const vart::OpImpArg& input) {
 
 static std::string find_dl_lib_for_op(const xir::Op* op) {
   auto op_type = std::string(op->get_type());
-  for(auto c : {':', '/', '\\'}) {
-      std::replace(op_type.begin(), op_type.end(), c, '_');
+  for (auto c : {':', '/', '\\'}) {
+    std::replace(op_type.begin(), op_type.end(), c, '_');
   }
   auto ret = std::string("") + "libvart_op_imp_" + op_type + ".so";
   return ret;
@@ -103,12 +104,18 @@ static vart_op_imp_t get_op_imp(const std::string& lib, const xir_op_t op) {
   // namespace{}
 
   auto handle = dlopen(lib.c_str(), RTLD_LAZY | RTLD_GLOBAL);
-  CHECK(handle != NULL) << "cannot open library!"
-                        << " lib=" << lib << ";error=" << dlerror() << ";"
-                        << "op=" << ((const xir::Op*)(op))->to_string();
+  // CHECK(handle != NULL) << "cannot open library!"
+  //                     << " lib=" << lib << ";error=" << dlerror() << ";"
+  //                      << "op=" << ((const xir::Op*)(op))->to_string();
+  UNI_LOG_CHECK(handle != NULL, VAILIB_CPU_RUNNER_OPEN_LIB_ERROR)
+      << " lib=" << lib << ";error=" << dlerror() << ";"
+      << "op=" << ((const xir::Op*)(op))->to_string();
   auto init_fun = (INIT_FUN)dlsym(handle, "vart_init_op_imp");
-  CHECK(init_fun != NULL) << "cannot load symbol 'vart_init_op_imp'!"
-                          << "! lib=" << lib << ";error=" << dlerror();
+  // CHECK(init_fun != NULL) << "cannot load symbol 'vart_init_op_imp'!"
+  //                        << "! lib=" << lib << ";error=" << dlerror();
+  UNI_LOG_CHECK(init_fun != NULL, VAILIB_CPU_RUNNER_LOAD_LIB_SYM_ERROR)
+      << "symbol = 'vart_init_op_imp'!"
+      << "! lib=" << lib << ";error=" << dlerror();
   ret = init_fun(op);
   return ret;
 }

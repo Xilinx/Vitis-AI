@@ -21,8 +21,10 @@
 #include <vitis/ai/3Dsegmentation.hpp>
 #include <vitis/ai/profiling.hpp>
 #include <fstream>
-
+#include <thread>
 using namespace std;
+using namespace vitis::ai;
+vector<string> names;
 
 static std::vector<std::string> split(const std::string &s,
                                       const std::string &delim) {
@@ -65,7 +67,6 @@ void LoadImageNames(std::string const &filename,
   fclose(fp);
 }
 
-
 void readfile(string& filename, vector<float>& data) {
   ifstream input_file(filename);
   std::string line;
@@ -92,19 +93,16 @@ void writefile(string& filename, vector<T>& data) {
     output_file << (int)data[i] << endl;
 }
 
-using namespace vitis::ai;
-int main(int argc, char *argv[]) {
-  // bool preprocess = !(getenv("PRE") != nullptr);
-  auto det = vitis::ai::Segmentation3D::create(argv[1], false);
-  vector<string> names;
-  LoadImageNames(argv[2], names);
-  for (auto name : names) {
+void accuracy_thread(Segmentation3D* seg, int i, int t_n){
+
+  for(int j=i; j<(int)names.size(); j+=t_n){
+    std::string name = names[j];
     vector<vector<float>> arrays(4);
     auto namesp = split(name, "-");
     auto path = namesp[0];
     auto outname = namesp[1];
-    cout << path << endl;
-    cout << outname << endl;
+    // cout << path << endl;
+    // cout << outname << endl;
     string scan_x = path + "scan_x.txt";
     string scan_y = path + "scan_y.txt";
     string scan_z = path + "scan_z.txt";
@@ -113,9 +111,33 @@ int main(int argc, char *argv[]) {
     readfile(scan_y, arrays[1]);
     readfile(scan_z, arrays[2]);
     readfile(remission, arrays[3]);
-    auto res = det->run(arrays);
+    auto res = seg->run(arrays);
     string result_bin_name = "result/" + outname + ".label";
     writefilebin(result_bin_name, res.array);
   }
+}
+
+int main(int argc, char *argv[]) {
+  // bool preprocess = !(getenv("PRE") != nullptr);
+  if (argc<2) {
+      std::cout <<" usage: " << argv[0] << " <model> [ thread_num ] \n";
+      return 0;
+  }
+
+  LoadImageNames(argv[2], names);
+
+  int t_n=2;
+  if (argc==2 ) t_n = atoi(argv[2]);
+
+  std::vector<std::thread> vth;
+  std::vector< std::unique_ptr<Segmentation3D>> vseg;
+  for(int i=0; i<t_n; i++) {
+    vseg.emplace_back(vitis::ai::Segmentation3D::create(argv[1]));
+    vth.emplace_back( std::thread( &accuracy_thread, vseg[i].get(), i , t_n));
+  }
+  for(int i=0; i<t_n; i++) {
+    vth[i].join();
+  }
+
   return 0;
 }

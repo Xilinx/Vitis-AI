@@ -41,3 +41,27 @@ std::vector<std::string> xilinx_version(std::vector<std::string> so_names) {
   }
   return version_list;
 }
+std::vector<std::string> xilinx_version2(std::vector<std::string> so_names) {
+  typedef char* (*CAC_FUNC)();
+  CAC_FUNC cac_func = NULL;
+  std::vector<std::string> version_list;
+  for (auto so : so_names) {
+    auto handle = dlopen(so.c_str(), RTLD_LAZY);
+    if (!handle) {
+      version_list.push_back("");
+      continue;
+    }
+
+    dlerror();
+
+    cac_func = (CAC_FUNC)dlsym(handle, "xilinx_version");
+    if (!cac_func) {
+      version_list.push_back("");
+      continue;
+    }
+
+    version_list.push_back(cac_func());
+    dlclose(handle);
+  }
+  return version_list;
+}

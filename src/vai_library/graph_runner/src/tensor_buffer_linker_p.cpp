@@ -17,6 +17,7 @@
 
 #include <glog/logging.h>
 
+#include <UniLog/UniLog.hpp>
 #include <map>
 #include <memory>
 #include <sstream>
@@ -55,7 +56,9 @@ void TensorBufferLinkerHostPhy::finalize() {
                vart::TensorBuffer::location_t::HOST_VIRT) {
       ret = HOST_VIRT;
     } else {
-      LOG(FATAL) << "TensorBufferLinkerHostPhy ： not support DEVICE";
+      // LOG(FATAL) << "TensorBufferLinkerHostPhy ： not support DEVICE";
+      UNI_LOG_FATAL(VAILIB_GRAPH_RUNNER_NOT_SUPPORT)
+          << "TensorBufferLinkerHostPhy ： not support DEVICE";
     }
     return ret;
   };

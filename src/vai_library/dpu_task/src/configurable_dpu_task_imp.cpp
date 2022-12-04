@@ -20,6 +20,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <UniLog/UniLog.hpp>
 #include <fstream>
 #include <iostream>
 #include <opencv2/highgui.hpp>
@@ -103,7 +104,8 @@ static string find_model(const string& name) {
   for (const auto& p : find_model_search_path()) {
     str << "\n\t" << p;
   }
-  LOG(FATAL) << str.str();
+  // LOG(FATAL) << str.str();
+  UNI_LOG_FATAL(VAILIB_DPU_TASK_NOT_FIND) << str.str();
   return string{""};
 }
 
@@ -114,14 +116,17 @@ static string find_config_file(const string& name) {
   if (filesize(config_file) > 0u) {
     return config_file;
   }
-  LOG(FATAL) << "cannot find " << config_file;
+  // LOG(FATAL) << "cannot find " << config_file;
+  UNI_LOG_FATAL(VAILIB_DPU_TASK_NOT_FIND) << config_file;
   return string{""};
 }
 
 static std::string slurp(const char* filename) {
   std::ifstream in;
   in.open(filename, std::ifstream::in);
-  CHECK(in.good()) << "failed to read config file. filename=" << filename;
+  // CHECK(in.good()) << "failed to read config file. filename=" << filename;
+  UNI_LOG_CHECK(in.good(), VAILIB_DPU_TASK_OPEN_ERROR)
+      << "failed to read config file. filename=" << filename;
   std::stringstream sstr;
   sstr << in.rdbuf();
   in.close();
@@ -139,12 +144,18 @@ static vitis::ai::proto::DpuModelParam get_config(const std::string& model_name,
   vitis::ai::proto::DpuModelParamList mlist;
   auto text = slurp(config_file.c_str());
   auto ok = google::protobuf::TextFormat::ParseFromString(text, &mlist);
-  CHECK(ok) << "cannot parse config file. config_file=" << config_file;
-  CHECK_EQ(mlist.model_size(), 1)
+  // CHECK(ok) << "cannot parse config file. config_file=" << config_file;
+  UNI_LOG_CHECK(ok, VAILIB_DPU_TASK_CONFIG_PARSE_ERROR)
+      << "cannot parse config file. config_file=" << config_file;
+  // CHECK_EQ(mlist.model_size(), 1)
+  //    << "only support one model per config file."
+  //    << "config_file " << config_file << " "       //
+  //    << "content: " << mlist.DebugString() << " "  //
+  //    ;
+  UNI_LOG_CHECK(mlist.model_size() == 1, VAILIB_DPU_TASK_NOT_SUPPORT)
       << "only support one model per config file."
-      << "config_file " << config_file << " "       //
-      << "content: " << mlist.DebugString() << " "  //
-      ;
+      << "config_file " << config_file << " "        //
+      << "content: " << mlist.DebugString() << " ";  //
   const auto& model = mlist.model(0);
   if (model.use_graph_runner()) {
     attrs->set_attr("use_graph_runner", true);
@@ -251,13 +262,13 @@ ConfigurableDpuTaskImp::getOutputTensor() const {
   return ret;
 }
 
-void ConfigurableDpuTaskImp::setInputDataArray(
-    const std::vector<int8_t>& array, size_t ind=0) {
+void ConfigurableDpuTaskImp::setInputDataArray(const std::vector<int8_t>& array,
+                                               size_t ind = 0) {
   tasks_->setInputDataArray(array, ind);
 }
 
 void ConfigurableDpuTaskImp::setInputDataArray(
-    const std::vector<std::vector<int8_t>>& arrays,size_t ind=0) {
+    const std::vector<std::vector<int8_t>>& arrays, size_t ind = 0) {
   tasks_->setInputDataArray(arrays, ind);
 }
 
@@ -288,10 +299,11 @@ void ConfigurableDpuTaskImp::setInputImageBGR(
   tasks_->setImageBGR(images);
 }
 
-void ConfigurableDpuTaskImp::setInputImageRGB(const cv::Mat& input_image, size_t ind) {
-  //cv::Mat image;
-  //auto size = cv::Size(getInputWidth(), getInputHeight());
-  //if (size != input_image.size()) {
+void ConfigurableDpuTaskImp::setInputImageRGB(const cv::Mat& input_image,
+                                              size_t ind) {
+  // cv::Mat image;
+  // auto size = cv::Size(getInputWidth(), getInputHeight());
+  // if (size != input_image.size()) {
   //  cv::resize(input_image, image, size, 0);
   //} else {
   //  image = input_image;

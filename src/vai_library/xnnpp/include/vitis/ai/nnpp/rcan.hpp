@@ -56,7 +56,7 @@ RcanResult rcan_post_process(
         input_tensors,
     const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
-    size_t batch_idx);
+    size_t batch_idx, const vitis::ai::proto::DpuModelParam& config);
 /**
  * @brief Post-process of the rcan neural network in batch mode.
  * @param input_tensors A vector of all input-tensors in the network.
@@ -69,7 +69,7 @@ std::vector<RcanResult> rcan_post_process(
     const std::vector<std::vector<vitis::ai::library::InputTensor>>&
         input_tensors,
     const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
-        output_tensors);
+        output_tensors, const vitis::ai::proto::DpuModelParam& config);
 
 }  // namespace ai
 }  // namespace vitis

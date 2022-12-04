@@ -66,11 +66,17 @@ class GraphTemplateImp : public GraphTemplate {
 
   OpTemplate* get_op(const std::string op_name) override;
 
+  std::set<OpTemplate*> get_ops() override;
+
+  void remove_op(OpTemplate* op) override;
+
   int get_op_num() const override;
 
-  void set_filter(const std::function<bool(std::map<OpTemplate*, Op*>)>&) override;
+  void set_filter(
+      const std::function<bool(std::map<OpTemplate*, Op*>)>&) override;
 
-  const std::function<bool(std::map<OpTemplate*, Op*>)>& get_filter() const override;
+  const std::function<bool(std::map<OpTemplate*, Op*>)>& get_filter()
+      const override;
 
   const std::vector<OpTemplate*> topological_sort() const override;
 
@@ -98,6 +104,8 @@ class OpTemplateImp : public OpTemplate {
 
   const std::string get_name() const override;
 
+  void set_types(std::set<std::string> types) override;
+
   const std::set<std::string> get_types() const override;
 
   const int get_input_num() const override;
@@ -112,12 +120,14 @@ class OpTemplateImp : public OpTemplate {
 
   const std::function<bool(Op*)>& get_filter() const override;
 
+  void replace_input_op(OpTemplate* op_old, OpTemplate* op_new) override;
+
  public:
   const GraphTemplateImp::VertexD vd_;
 
  private:
   const std::string name_;
-  const std::set<std::string> types_;
+  std::set<std::string> types_;
   std::function<bool(Op*)> filter_;
 
   GraphTemplateImp* graph_;

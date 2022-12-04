@@ -14,13 +14,18 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.5)
-project(target-factory VERSION 2.5.0 LANGUAGES C CXX)
+project(target-factory VERSION 3.0.0 LANGUAGES C CXX)
 
 include(${PROJECT_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(BUILD_TEST "build test" OFF)
 
 find_package(glog)
+if(BUILD_SHARED_LIBS)
+    set(Protobuf_USE_STATIC_LIBS OFF)
+else(BUILD_SHARED_LIBS)
+    set(Protobuf_USE_STATIC_LIBS ON)
+endif(BUILD_SHARED_LIBS)
 find_package(Protobuf REQUIRED)
 if(NOT TARGET unilog::unilog)
   find_package(unilog REQUIRED)

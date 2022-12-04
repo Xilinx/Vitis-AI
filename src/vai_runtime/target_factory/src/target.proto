@@ -39,6 +39,42 @@ message Target {
     AdjustableWordWidth adjustable_word_width = 8;
   }
 
+  message OverlayInfo {
+    uint32 aienum_row_num = 1;
+    uint32 aienum_col_num = 2;
+    uint32 memtile_num = 3;
+    uint32 shimtile_num = 4;
+  }
+
+  message Aietile {
+    string name = 1;
+    uint32 row = 2;
+    uint32 col = 3;
+    uint32 memory_size = 4;
+    uint32 stack_size = 5;
+    uint32 bd_nums = 6;
+    uint32 lock_nums = 7;
+  }
+
+  message Memtile {
+    string name = 1;
+    string type = 2;
+    uint32 row = 3;
+    uint32 col = 4;
+    uint32 bank_num = 5;
+    uint32 bank_size_per_bank = 6;
+    uint32 bd_nums = 7;
+    uint32 lock_nums = 8;
+  }
+
+  message Shimtile {
+    string name = 1;
+    uint32 row = 2;
+    uint32 col = 3;
+    uint32 bd_nums = 4;
+    uint32 lock_nums = 5;
+  }
+
   message Load {
     message MeanvalueReduction { string meanvalue_bank = 1; }
     message FixIFMPortWidth { uint32 port_width = 1; }
@@ -63,6 +99,7 @@ message Target {
     uint32 channel_parallel = 1;
     repeated string input_bank = 2;
     FixIFMPortWidth fix_ifm_port_width = 3;
+    bool argmax = 4;
   }
 
   message Nonlinear {
@@ -103,6 +140,10 @@ message Target {
       string stride_out_h = 3;
     }
     ConvLimit conv_limit = 11;
+    uint32 output_h_parallel = 12;
+    uint32 output_w_parallel = 13;
+    uint32 cascade_num = 14;
+    uint32 chain_num = 15;
   }
 
   message Eltwise {
@@ -120,6 +161,8 @@ message Target {
         uint32 pixel_parallel = 1;
     }
     ConvCascade conv_cascade = 7;
+    uint32 output_h_parallel = 8;
+    uint32 output_w_parallel = 9;
   }
 
   message Pool {
@@ -128,22 +171,24 @@ message Target {
     repeated string input_bank = 3;
     repeated string output_bank = 4;
     enum PoolType {
-        max = 0;
-        avg = 1;
-        max_reduce = 2;
+      max = 0;
+      avg = 1;
+      max_reduce = 2;
     }
     repeated PoolType pool_type = 5;
     Nonlinear nonlinear = 6;
     message AvgLimit {
-	string kernel_size = 1;
-	string stride = 2;
+	    string kernel_size = 1;
+	    string stride = 2;
     }
     AvgLimit avg_limit = 7;
     message MaxLimit {
-	string kernel_size = 1;
-	string stride = 2;
+	    string kernel_size = 1;
+	    string stride = 2;
     }
     MaxLimit max_limit = 8;
+    uint32 output_h_parallel = 9;
+    uint32 output_w_parallel = 10;
   }
 
   message Dwconv {
@@ -159,6 +204,8 @@ message Target {
       string stride = 2;
     }
     DwconvLimit dwconv_limit = 8;
+    uint32 output_h_parallel = 9;
+    uint32 output_w_parallel = 10;
   }
 
   message Move {
@@ -194,6 +241,11 @@ message Target {
         dwconv_no_bias = 6;
         hsigmoid = 7;
         w16b0 = 8;
+        macc_temp = 9;
+        comp_temp = 10;
+        elew_add = 11;
+        elew_mult = 12;
+        softmax = 13;
     }
     repeated AluType alu_type = 7;
     Nonlinear nonlinear = 8;
@@ -204,6 +256,27 @@ message Target {
     }
     AluLimit alu_limit = 9;
     PadLimit pad_limit = 10;
+  }
+
+  message SOP {
+    uint32 channel_parallel = 1;
+    uint32 output_h_parallel = 2;
+    uint32 output_w_parallel = 3;
+    repeated string input_bank = 4;
+    repeated string output_bank = 5;
+    enum SOPType {
+      reshape = 0;
+      hsigmoid = 1;
+      softmax = 2;
+      upsample = 3;
+    }
+    repeated SOPType alu_type = 6;
+    Nonlinear nonlinear = 7;
+    message SOPLimit {
+      string kernel_size = 1;
+      string stride = 2;
+    }
+    SOPLimit sop_limit = 8;
   }
 
   string name = 1;
@@ -222,6 +295,11 @@ message Target {
   Move move_engine = 12;
   Threshold threshold_engine = 13;
   Alu alu_engine = 15;
-
   uint32 batch = 14;
+
+  OverlayInfo overlay_info = 16;
+  repeated Memtile memtile = 17;
+  repeated Aietile aietile = 18;
+  repeated Shimtile shimtile = 19;
+  SOP aie_sp_engine = 20;
 }

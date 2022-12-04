@@ -24,6 +24,7 @@ std::vector<T> vchar_to_vT(const std::vector<char>& vc) {
   memcpy(value.data(), vc.data(), vc.size());
   return value;
 }
+
 struct MyOpImp : public vart::experimental::OpImpBase {
   MyOpImp(const xir::Op* op, xir::Attrs* attrs)
       : vart::experimental::OpImpBase{op, attrs} {
@@ -31,6 +32,10 @@ struct MyOpImp : public vart::experimental::OpImpBase {
         op->get_attr<std::vector<char>>("bev_start_position"));
     resolution_ =
         vchar_to_vT<float>(op->get_attr<std::vector<char>>("bev_resolution"));
+    geom_sub_.clear();
+    for (size_t i = 0; i < start_position_.size(); i++) {
+      geom_sub_.push_back(start_position_[i] - resolution_[i] / 2.0);
+    }
   }
   int calculate(vart::simple_tensor_buffer_t<float> output,
                 std::vector<vart::simple_tensor_buffer_t<float>> inputs) {
@@ -44,28 +49,25 @@ struct MyOpImp : public vart::experimental::OpImpBase {
     auto H = output_shape[1];
     auto W = output_shape[2];
     auto C = output_shape[3];
-    std::vector<float> geom_sub;
-    for (size_t i = 0; i < start_position_.size(); i++) {
-      geom_sub.push_back(start_position_[i] - resolution_[i] / 2.0);
-    }
-    memset(output.data, 0, output.tensor->get_element_num());
+
+    memset(output.data, 0, output.tensor->get_data_size());
     for (auto i = 0; i < Nprime; i++) {
-      int w = (g_data[i * 3] - geom_sub[0]) / resolution_[0];
-      int h = (g_data[i * 3 + 1] - geom_sub[1]) / resolution_[1];
-      int b = (g_data[i * 3 + 2] - geom_sub[2]) / resolution_[2];
+      int w = (g_data[i * 3] - geom_sub_[0]) / resolution_[0];
+      int h = (g_data[i * 3 + 1] - geom_sub_[1]) / resolution_[1];
+      int b = (g_data[i * 3 + 2] - geom_sub_[2]) / resolution_[2];
       if (w >= 0 && w < W && h >= 0 && h < H && b >= 0 && b < B) {
         auto o_data = output.data + (((b * H) + h) * W + w) * C;
         auto x_data = x.data + i * C;
         std::transform(x_data, x_data + C, o_data, o_data, std::plus<float>{});
       }
     }
-
     return 0;
   }
 
  private:
   std::vector<float> start_position_;
   std::vector<float> resolution_;
+  std::vector<float> geom_sub_;
 };
 
 }  // namespace

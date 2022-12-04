@@ -23,6 +23,7 @@ include(CheckIncludeFile)
 
 option(BUILD_DOXYGEN_DOC "enable doxygen or not" OFF)
 set(SAMPLE_INATLL_PATH share/${PROJECT_NAME}/samples)
+set(SAMPLE_ONNX_INSTALL_PATH share/${PROJECT_NAME}/samples_onnx)
 set(DEMO_INATLL_PATH share/${PROJECT_NAME}/apps)
 
 find_path(DRM_PATH drm)
@@ -325,6 +326,11 @@ vai_overview_add_performance(RGBDsegmentation RGBDsegmentation RGBDsegmentation
                              NO_CONFIG)
 vai_overview_add_accuracy(RGBDsegmentation RGBDsegmentation)
 
+# pmrid
+vai_overview_add_test(pmrid pmrid pmrid NO_VIDEO NO_CONFIG)
+vai_overview_add_performance(pmrid pmrid pmrid NO_CONFIG)
+vai_overview_add_accuracy(pmrid pmrid)
+
 # C2D2_lite
 vai_overview_add_test(c2d2_lite c2d2_lite C2D2_lite NO_VIDEO NO_CONFIG)
 vai_overview_add_performance(c2d2_lite c2d2_lite C2D2_lite NO_CONFIG)
@@ -373,8 +379,21 @@ vai_overview_add_accuracy(ofa_yolo_mt ofa_yolo)
 vai_overview_add_test(yolovx yolovx YOLOvX)
 vai_overview_add_performance(yolovx yolovx YOLOvX)
 vai_overview_add_accuracy(yolovx_mt yolovx)
+vai_overview_add_accuracy(yolovx_nano_mt yolovx)
 vai_overview_add_accuracy(yolovx_coco_mt yolovx REQUIRE ${PROJECT_NAME}::yolovx
-                                                        json-c)
+ json-c)
+
+
+# yolov6
+vai_overview_add_test(yolov6 yolov6 YOLOv6)
+vai_overview_add_accuracy(yolov6_mt yolov6)
+vai_overview_add_performance(yolov6 yolov6 YOLOv6 NO_CONFIG REQUIRE
+                             ${PROJECT_NAME}::yolov6)
+
+# bevdet
+vai_overview_add_test(bevdet bevdet bevdet NO_VIDEO NO_CONFIG)
+vai_overview_add_performance(bevdet bevdet bevdet NO_CONFIG)
+vai_overview_add_accuracy(bevdet_mt bevdet)
 
 # arflow
 vai_overview_add_test(arflow arflow ARFlow NO_VIDEO NO_CONFIG)
@@ -387,6 +406,13 @@ vai_overview_add_test(yolov4 yolov4 YOLOv3 NO_CONFIG REQUIRE
 vai_overview_add_performance(yolov4 yolov4 YOLOv3 NO_CONFIG REQUIRE
                              ${PROJECT_NAME}::yolov3)
 vai_overview_add_accuracy(yolov4_mt yolov4 REQUIRE ${PROJECT_NAME}::yolov3)
+
+# yolov5
+vai_overview_add_test(yolov5 yolov5 YOLOv3 NO_CONFIG REQUIRE
+                      ${PROJECT_NAME}::yolov3)
+vai_overview_add_performance(yolov5 yolov5 YOLOv3 NO_CONFIG REQUIRE
+                             ${PROJECT_NAME}::yolov3)
+vai_overview_add_accuracy(yolov5_mt yolov5 REQUIRE ${PROJECT_NAME}::yolov3)
 
 # ultrafast
 vai_overview_add_test(ultrafast ultrafast UltraFast NO_VIDEO)
@@ -407,6 +433,20 @@ vai_overview_add_accuracy(textmountain textmountain)
 vai_overview_add_test(efficientdet_d2 efficientdet_d2 EfficientDetD2)
 vai_overview_add_performance(efficientdet_d2 efficientdet_d2 EfficientDetD2)
 vai_overview_add_accuracy(efficientdet_d2 efficientdet_d2)
+
+# bosch related: bosch_ssdobjdet bosch_fcnsemseg
+vai_overview_add_performance(bosch_ssdobjdet bosch_ssdobjdet Bosch_Ssdobjdet)
+vai_overview_add_performance(bosch_fcnsemseg bosch_fcnsemseg Bosch_Fcnsemseg)
+
+# monodepth2
+vai_overview_add_test(monodepth2 monodepth2 Monodepth2 NO_VIDEO)
+vai_overview_add_performance(monodepth2 monodepth2 Monodepth2)
+vai_overview_add_accuracy(monodepth2 monodepth2)
+
+#cflownet
+vai_overview_add_test(test_bin_cflownet cflownet  Cflownet NO_VIDEO NO_CONFIG NAME test_bin_cflownet)
+vai_overview_add_performance(cflownet cflownet  Cflownet NO_CONFIG)
+vai_overview_add_accuracy(cflownet cflownet)
 
 # demos demo_yolov3
 vai_overview_add_demo(
@@ -437,6 +477,20 @@ vai_overview_add_dpu_task(
   samples/dpu_task/fadnet
   VAI_INSTALL_BUILD
   samples/dpu_task/fadnet/build.sh)
+
+vai_overview_add_dpu_task(
+  NAME
+  fadnet_corr
+  SRCS
+  samples/dpu_task/fadnet_corr/fadnet_corr.cpp
+  REQUIRE
+  ${PROJECT_NAME}::dpu_task
+  ${PROJECT_NAME}::xnnpp
+  ${PROJECT_NAME}::benchmark
+  VAI_INSTALL_FOLDER
+  samples/dpu_task/fadnet_corr
+  VAI_INSTALL_BUILD
+  samples/dpu_task/fadnet_corr/build.sh)
 
 vai_overview_add_dpu_task(
   NAME
@@ -572,4 +626,9 @@ endif()
 # demo
 if(ENABLE_DEMO AND (NOT DISABLE_ALL))
   add_subdirectory(demo)
+endif()
+
+# onnx sample
+if(ENABLE_ONNX AND (NOT DISABLE_ALL))
+  add_subdirectory(samples_onnx)
 endif()

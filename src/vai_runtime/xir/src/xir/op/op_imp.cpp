@@ -215,10 +215,17 @@ const std::vector<const Op*> OpImp::get_fanout_ops() const {
   for (auto ed : boost::make_iterator_range(
            boost::out_edges(vd_, *graph_->get_boost_graph()))) {
     ret.push_back(op_up_cast(
-        (*graph_->get_boost_graph())[boost::target(ed,
-                                                   *graph_->get_boost_graph())]
-            .get()));
+        (*graph_->get_boost_graph())[boost::target(ed, *graph_->get_boost_graph())].get()));
   }
+  // drop duplicates 
+  auto itr = ret.begin();
+  std::set<const Op*> s;
+  for (auto curr = ret.begin(); curr != ret.end(); ++curr) {
+    if (s.insert(*curr).second) {
+      *itr++ = *curr;
+    }
+  }
+  ret.erase(itr, ret.end());
   return ret;
 }
 

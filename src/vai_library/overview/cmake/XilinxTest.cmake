@@ -530,3 +530,52 @@ macro(XILINX_AI_SDK_TEST_BY_NAME LIB_NAME MODEL_CLASS)
 
   endif(XILINX_AI_SDK_HAVE_${LIB_NAME}_HEADER)
 endmacro()
+
+#for onnx
+function(vai_overview_add_onnx name model)
+  set(options NO_ACC)
+  set(oneValueArgs ENABLE_IF)
+  set(multiValueArgs REQUIRE)
+  cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  install(
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${model}
+    DESTINATION ${SAMPLE_ONNX_INSTALL_PATH})
+
+  add_executable( test_${name}_onnx
+    ${CMAKE_CURRENT_SOURCE_DIR}/${model}/test_${name}_onnx.cpp)
+
+  if(ARG_REQUIRE)
+    target_link_libraries(test_${name}_onnx PRIVATE ${ARG_REQUIRE} ${ORT_LIBRARY}  XRT::XRT vart-xrt-device-handle  glog::glog ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark)
+  else(ARG_REQUIRE)
+    target_link_libraries(test_${name}_onnx PRIVATE ${ORT_LIBRARY}  XRT::XRT vart-xrt-device-handle glog::glog ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark)
+  endif(ARG_REQUIRE)
+  install(TARGETS test_${name}_onnx DESTINATION ${SAMPLE_ONNX_INSTALL_PATH}/${model})
+
+  add_executable( test_performance_${name}_onnx
+    ${CMAKE_CURRENT_SOURCE_DIR}/${model}/test_performance_${name}_onnx.cpp)
+  if(ARG_REQUIRE)
+    target_link_libraries(test_performance_${name}_onnx PRIVATE ${ORT_LIBRARY} XRT::XRT vart-xrt-device-handle  glog::glog ${ARG_REQUIRE} ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark vart-util)
+  else(ARG_REQUIRE)
+    target_link_libraries( test_performance_${name}_onnx PRIVATE ${ORT_LIBRARY}  XRT::XRT vart-xrt-device-handle glog::glog ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark vart-util)
+  endif(ARG_REQUIRE)
+  install(TARGETS test_performance_${name}_onnx DESTINATION ${SAMPLE_ONNX_INSTALL_PATH}/${model})
+  
+  set(VAI_OVERVIEW_ONNX_WITH_ACC TRUE)
+  if(ARG_NO_ACC)
+    set(VAI_OVERVIEW_ONNX_WITH_ACC FALSE)
+  endif(ARG_NO_ACC)
+
+  if (VAI_OVERVIEW_ONNX_WITH_ACC) 
+    add_executable( test_accuracy_${name}_onnx
+      ${CMAKE_CURRENT_SOURCE_DIR}/${model}/test_accuracy_${name}_onnx.cpp)
+    if(ARG_REQUIRE)
+      target_link_libraries(test_accuracy_${name}_onnx PRIVATE ${ORT_LIBRARY}  XRT::XRT vart-xrt-device-handle  glog::glog ${ARG_REQUIRE} ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark)
+    else(ARG_REQUIRE)
+      target_link_libraries( test_accuracy_${name}_onnx PRIVATE ${ORT_LIBRARY}   XRT::XRT vart-xrt-device-handle glog::glog ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark)
+    endif(ARG_REQUIRE)
+    install(TARGETS test_accuracy_${name}_onnx DESTINATION ${SAMPLE_ONNX_INSTALL_PATH}/${model})
+  endif(VAI_OVERVIEW_ONNX_WITH_ACC) 
+
+endfunction(vai_overview_add_onnx)
+

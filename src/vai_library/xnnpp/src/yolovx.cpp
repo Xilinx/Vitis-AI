@@ -33,7 +33,7 @@ static float sigmoid(float p) { return 1.0f / (1.0f + exp(-p)); }
 
 static void detect(vector<vector<float>>& boxes, int8_t* result, int height,
                    int width, float scale, float stride, float conf_thresh,
-                   int anchor_cnt, int num_classes) {
+                   int anchor_cnt, int num_classes, int yolo_type = 0) {
   auto conf_desigmoid = -logf(1.0f / conf_thresh - 1.0f) / scale;
   int conf_box = 5 + num_classes;
   for (int h = 0; h < height; ++h) {
@@ -51,6 +51,10 @@ static void detect(vector<vector<float>>& boxes, int8_t* result, int height,
             -logf(obj_score / conf_thresh - 1.0f) / scale;
         int max_p = -1;
 
+        if (yolo_type == 3) {  // YOLOX_NANO
+          box[0] = box[0] - box[2] * 0.5;
+          box[1] = box[1] - box[3] * 0.5;
+        }
         for (int p = 0; p < num_classes; p++) {
           if (float(result[idx + 5 + p]) < conf_class_desigmoid) continue;
           max_p = p;
@@ -74,6 +78,7 @@ std::vector<YOLOvXResult> yolovx_post_process(
     const std::vector<float>& img_scale) {
   auto& yolo_v5_params = config.yolo_v5_param();
   auto& yolo_params = yolo_v5_params.yolo_param();
+  auto yolo_type = yolo_params.type();
 
   auto num_classes = yolo_params.num_classes();
   auto anchor_cnt = yolo_params.anchorcnt();
@@ -114,8 +119,13 @@ std::vector<YOLOvXResult> yolovx_post_process(
       boxes.reserve(boxes.size() + sizeOut);
 
       /* Store the object detection frames as coordinate information  */
+      if (ENV_PARAM(ENABLE_YOLOV5_DEBUG)) {
+        LOG(INFO) << "i:" << i << "anchor:" << anchor_cnt << ", w:" << width
+                  << ", h:" << height << "s:" << stride[i]
+                  << ", c:" << output_tensors[i].channel;
+      }
       detect(boxes, dpuOut, height, width, scale, stride[i], conf_thresh,
-             anchor_cnt, num_classes);
+             anchor_cnt, num_classes, yolo_type);
     }
 
     /* Apply the computation for NMS */
@@ -145,10 +155,18 @@ std::vector<YOLOvXResult> yolovx_post_process(
         yolo_res.score = r[5];
         yolo_res.label = r[4];
         yolo_res.box.resize(4);
-        yolo_res.box[0] = (r[0] - r[2] / 2.0) / img_scale[k];
-        yolo_res.box[1] = (r[1] - r[3] / 2.0) / img_scale[k];
-        yolo_res.box[2] = yolo_res.box[0] + r[2] / img_scale[k];
-        yolo_res.box[3] = yolo_res.box[1] + r[3] / img_scale[k];
+
+        if (yolo_type == 3) {  // 3: YOLOV5_NANO
+          yolo_res.box[0] = r[0] / img_scale[k];
+          yolo_res.box[1] = r[1] / img_scale[k];
+          yolo_res.box[2] = yolo_res.box[0] + r[2] / img_scale[k];
+          yolo_res.box[3] = yolo_res.box[1] + r[3] / img_scale[k];
+        } else {
+          yolo_res.box[0] = (r[0] - r[2] / 2.0) / img_scale[k];
+          yolo_res.box[1] = (r[1] - r[3] / 2.0) / img_scale[k];
+          yolo_res.box[2] = yolo_res.box[0] + r[2] / img_scale[k];
+          yolo_res.box[3] = yolo_res.box[1] + r[3] / img_scale[k];
+        }
         results.push_back(yolo_res);
       }
     }

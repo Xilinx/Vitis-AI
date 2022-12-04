@@ -178,6 +178,7 @@ vai_add_library(
   src/yolov3.cpp
   src/ofa_yolo.cpp
   src/yolovx.cpp
+  src/yolov6.cpp
   src/solo.cpp
   src/posedetect.cpp
   src/reid.cpp

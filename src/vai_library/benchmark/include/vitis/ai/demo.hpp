@@ -230,7 +230,9 @@ struct DecodeThread : public MyThread {
         is_camera_ ? new cv::VideoCapture(std::stoi(video_file_))
                    : new cv::VideoCapture(video_file_));
     if (!video_stream_->isOpened()) {
-      LOG(ERROR) << "cannot open file " << video_file_;
+      LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_VIDEO_OPEN_ERROR][cannot open "
+                    "video!]  video name: "
+                 << video_file_;
       stop();
     }
   }
@@ -316,9 +318,10 @@ struct ClassificaitonDecodeThread : public MyThread {
     int tmp_vertical_num = page_layout_.height / mosaik_height_;
     horizontal_num_ = tmp_horizontal_num;
     vertical_num_ = tmp_vertical_num;
+    /*
     if (horizontal_num_ == 0 || vertical_num_ == 0) {
-      LOG(FATAL) << "Are you kidding me? Your face is too big";
     }
+    */
     LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO)) << "get mosaik " << page_num_;
     mosaik_image.resize(page_num_);
     for (int i = 0; i < page_num_; i++) {
@@ -383,7 +386,9 @@ static std::unique_ptr<cv::VideoWriter> maybe_create_gst_video_writer(
       pipeline, cv::CAP_GSTREAMER, 0, 25.0, cv::Size(width, height), true));
   auto& writer = *video_stream.get();
   if (!writer.isOpened()) {
-    LOG(FATAL) << "cannot open gst: " << pipeline;
+    LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_GST_ERROR][failed to open "
+                  "gstreamer!] cannot open "
+               << pipeline;
     return nullptr;
   } else {
     LOG(INFO) << "video writer is created: " << width << "x" << height << " "
@@ -480,7 +485,8 @@ struct GuiThread : public MyThread {
           << "screen " << screen_size << "; r = " << rect;
       if ((rect.x + rect.width > width) || (rect.y + rect.height > height) ||
           (rect.x + rect.width < 1) || (rect.y + rect.height < 1)) {
-        LOG(FATAL) << "out of boundary";
+        LOG(FATAL)
+            << "[UNILOG][FATAL][VAILIB_DEMO_OUT_OF_BOUNDARY][out of boundary!]";
       }
     }
     int c = 0;
@@ -619,7 +625,8 @@ struct GridGuiThread : public MyThread {
           << "screen " << screen_size << "; r = " << rect;
       if ((rect.x + rect.width > width) || (rect.y + rect.height > height) ||
           (rect.x + rect.width < 1) || (rect.y + rect.height < 1)) {
-        LOG(FATAL) << "out of boundary";
+        LOG(FATAL)
+            << "[UNILOG][FATAL][VAILIB_DEMO_OUT_OF_BOUNDARY][out of boundary!]";
       }
     }
     // int c = 0;
@@ -1091,7 +1098,7 @@ int main_for_classification_demo(
                      cv::Size(96, 108)};
       LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO)) << "4 channels mode";
     } else {
-      LOG(ERROR)
+      LOG(INFO)
           << "unsupported Filter num in auto mode, only support 1, 2 or 4";
       return 0;
     }
@@ -1108,7 +1115,8 @@ int main_for_classification_demo(
         }
       }
     } else {
-      LOG(FATAL) << "not enough 2333333333333333333";
+      LOG(FATAL) << "UNILOG][FATAL][VAILIB_DEMO_CANVAS_ERROR][canvas size is "
+                    "too small!]";
     }
   }
   std::vector<Classification_Channel> channels;
@@ -1195,7 +1203,9 @@ int main_for_jpeg_demo(int argc, char* argv[],
       auto image_file_name = std::string{argv[i]};
       auto image = cv::imread(image_file_name);
       if (image.empty()) {
-        LOG(FATAL) << "cannot load " << image_file_name << std::endl;
+        LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_IMAGE_LOAD_ERROR][failed to "
+                      "load image!]cannot load "
+                   << image_file_name << std::endl;
         abort();
       }
       auto result = model->run(image);

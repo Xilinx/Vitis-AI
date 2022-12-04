@@ -33,7 +33,7 @@ def jit(graph):
     graph.set_attr("nms_threshold", 0.3)
     xir_extra_ops.set_postprocessor(
         graph,
-        "libxmodel_postprocessor_densebox.so.2",
+        "libxmodel_postprocessor_densebox.so.3",
         {
             "bbox": ["bb-output-tiled_fixed_"],
             "conf": ["pixel-conv-tiled_fixed_softmax"],

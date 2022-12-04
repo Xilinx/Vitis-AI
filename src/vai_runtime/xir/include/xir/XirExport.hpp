@@ -15,12 +15,16 @@
  */
 
 #pragma once
-#if defined(_WIN32)
-  #ifdef XIR_EXPORT
-    #define XIR_DLLESPEC __declspec(dllexport)
-  #else
-    #define XIR_DLLESPEC __declspec(dllimport)
-  #endif
+#if defined(_MSC_VER)
+#if XIR_USE_DLL == 1
+#ifdef XIR_EXPORT
+#define XIR_DLLESPEC __declspec(dllexport)
 #else
-  #define XIR_DLLESPEC __attribute__((visibility("default")))
+#define XIR_DLLESPEC __declspec(dllimport)
+#endif
+#else
+#define XIR_DLLESPEC
+#endif
+#else
+#define XIR_DLLESPEC __attribute__((visibility("default")))
 #endif

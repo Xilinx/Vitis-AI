@@ -120,7 +120,7 @@ def jit(graph):
     #    print(json_prior_box_param)
     graph.set_attr("prior_box_param", json_prior_box_param)
 
-    xir_extra_ops.set_postprocessor(graph, "libxmodel_postprocessor_ssd.so.2", {
+    xir_extra_ops.set_postprocessor(graph, "libxmodel_postprocessor_ssd.so.3", {
         "bbox": ["mbox_loc_fixed_"],
         "conf": ["mbox_conf_flatten"]
     })
