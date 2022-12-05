@@ -24,10 +24,9 @@ We provide some scripts to help to automatically finish the VCK5000-PROD card se
 :pushpin: **Note:** 
 * You should use this script in host environment, namely out of the Docker container.
 * After the script is executed successfully, manually reboot the host server once.
-* For cloud DPU, Vitis AI 2.5 applies 2021.2 Tools/Platform/XRT/XRM.
+* For cloud DPU, Vitis AI 3.0 applies 2022.2 Tools/Platform/XRT/XRM.
 
 ~~~
-cd ./setup/vck5000/
 source ./install.sh
 ~~~
 

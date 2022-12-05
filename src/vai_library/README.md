@@ -111,11 +111,9 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Cloud
 ### Setting Up the Host
 
-For `U50LV` and `U55C` Alveo Card, follow [Setup Alveo Accelerator Card](../../setup/alveo/README.md) to set up the host.
-
 For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../setup/vck5000/README.md) to set up the host.
 
-### <div id="idu50"></div>Running Vitis AI Library Examples on U50LV/U55C/VCK5000
+### <div id="idu50"></div>Running Vitis AI Library Examples on VCK5000
 
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
 Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/examples/Vitis-AI-Library/` in the docker system. 
@@ -131,20 +129,6 @@ If you encounter any path errors in running examples, check to see if you follow
 	* If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
 	```
 	  sudo mkdir /usr/share/vitis_ai_library/models
-	```
-
-	* For DPUCAHX8H DPU IP of U50LV card, install the model package as follows.
-	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50lv-DPUCAHX8H-r2.5.0.tar.gz -O resnet50-u50lv-DPUCAHX8H-r2.5.0.tar.gz
-	  tar -xzvf resnet50-u50lv-DPUCAHX8H-r2.5.0.tar.gz
-	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
-	```
-
-	* For DPUCAHX8H-DWC DPU IP of U50LV and U55C card, install the model package as follows.
-	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz -O resnet50-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-	  tar -xzvf resnet50-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 
 	* For DPUCVDX8H_4pe_miscdwc DPU IP of VCK5000-PROD card, install the model package as follows.

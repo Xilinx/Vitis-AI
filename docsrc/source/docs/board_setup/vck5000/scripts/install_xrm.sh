@@ -36,35 +36,35 @@ INSTALLER=""
 # Download XRM
 ##############################
 if [[ $distroname == *"Ubuntu 18.04"* ]]; then
-  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1.3.29_18.04-x86_64.deb"
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_18.04-x86_64.deb"
   XRM_INSTALLER=/tmp/xrm.deb
   INSTALLER="apt"
 elif [[ $distroname == *"Ubuntu 20.04"* ]]; then
-  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1.3.29_20.04-x86_64.deb"
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_20.04-x86_64.deb"
   XRM_INSTALLER=/tmp/xrm.deb
   INSTALLER="apt"
 elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.8"* ]]; then
-  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1.3.29_7.8.2003-x86_64.rpm"
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_7.8.2003-x86_64.rpm"
   XRM_INSTALLER=/tmp/xrm.rpm
   INSTALLER="yum"
 elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"7.9"* ]]; then
-  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1.3.29_7.8.2003-x86_64.rpm"
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_7.8.2003-x86_64.rpm"
   XRM_INSTALLER=/tmp/xrm.rpm
   INSTALLER="yum"
 elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"8.1"* ]]; then
-  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1.3.29_8.1.1911-x86_64.rpm"
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_8.1.1911-x86_64.rpm"
   XRM_INSTALLER=/tmp/xrm.rpm
   INSTALLER="yum"
 elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distroname == *"8.2"* ]]; then
-  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1.3.29_8.1.1911-x86_64.rpm"
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_8.1.1911-x86_64.rpm"
   XRM_INSTALLER=/tmp/xrm.rpm
   INSTALLER="yum"
 elif [[ $distroname == *"Red Hat Enterprise Linux"* && $distroname == *"8.3"* ]]; then
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1.3.29_2-x86_64.rpm"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_2-x86_64.rpm"
   XRT_INSTALLER=/tmp/xrt.rpm
   INSTALLER="yum"
 elif [[ $distroname == *"Red Hat Enterprise Linux"* && $distroname == *"8.4"* ]]; then
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202120.1.3.29_2-x86_64.rpm"
+  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_2-x86_64.rpm"
   XRT_INSTALLER=/tmp/xrt.rpm
   INSTALLER="yum"
 else

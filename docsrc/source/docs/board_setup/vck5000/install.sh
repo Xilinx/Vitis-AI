@@ -41,8 +41,7 @@ elif [[ $distroname == *"Red Hat"* ]]; then
   sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 fi
 
-SCRIPTS=../alveo/scripts
-LSCRIPTS=./scripts
+SCRIPTS=./scripts
 
 source ${SCRIPTS}/install_xrt.sh
 
@@ -64,7 +63,7 @@ source /opt/xilinx/xrt/setup.sh
 
 echo "installing xclbins for vck5000"
 platform=vck5000_
-source ${LSCRIPTS}/install_${platform}xclbins.sh
+source ${SCRIPTS}/install_${platform}xclbins.sh
 
-source ${LSCRIPTS}/install_vck5000_shell.sh
+source ${SCRIPTS}/install_vck5000_shell.sh
 source ${SCRIPTS}/install_xrm.sh

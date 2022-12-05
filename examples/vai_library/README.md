@@ -160,20 +160,15 @@ For demonstration purposes, we provide the following pre-compiled DPU IP with Vi
 
 | No\. | Accelerator Card | DPU IP |
 | ---- | ---- | ----   |
-| 1 | U50LV        | DPUCAHX8H         |
-| 2 | U50LV        | DPUCAHX8H-DWC     |
-| 3 | U55C         | DPUCAHX8H-DWC     |
-| 4 | U200         | DPUCADF8H         |
-| 5 | U250         | DPUCADF8H         |
-| 6 | VCK5000-PROD | DPUCVDX8H_4pe_miscdwc     |
-| 7 | VCK5000-PROD | DPUCVDX8H_6pe_dwc  |
-| 8 | VCK5000-PROD | DPUCVDX8H_6pe_misc |
-| 9 | VCK5000-PROD | DPUCVDX8H_8pe_normal     |
+| 1 | VCK5000-PROD | DPUCVDX8H_4pe_miscdwc     |
+| 2 | VCK5000-PROD | DPUCVDX8H_6pe_dwc  |
+| 3 | VCK5000-PROD | DPUCVDX8H_6pe_misc |
+| 4 | VCK5000-PROD | DPUCVDX8H_8pe_normal     |
 
 For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../setup/vck5000/README.md) to set up the host.
 
 ### Running Vitis AI Library Examples
-For `VCK5000-PROD` Versal Card, refer to `Running Vitis AI Library Examples on U50LV/U55C/VCK5000` section of [README](../../src/vai_library/README.md#idu50).
+For `VCK5000-PROD` Versal Card, refer to `Running Vitis AI Library Examples on VCK5000` section of [README](../../src/vai_library/README.md#idu50).
 
 ## Reference
 For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/2_5/ug1354-xilinx-ai-sdk.pdf).
