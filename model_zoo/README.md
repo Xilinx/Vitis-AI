@@ -162,6 +162,8 @@ For example, `pt_inceptionv3_imagenet_299_299_0.6_4.5G_3.0` is the `inception v3
 | 24   | Medical Detection                 | tf_RefineDet-Medical_EDD_320_320_0.75_20.54G_3.0             |              0.7885               |              0.7826               |   320*320   | 20.54G  |
 | 25   | Medical Detection                 | tf_RefineDet-Medical_EDD_320_320_0.85_12.32G_3.0             |              0.7898               |              0.7877               |   320*320   | 12.32G  |
 | 26   | Medical Detection                 | tf_RefineDet-Medical_EDD_320_320_0.88_9.83G_3.0              |              0.7839               |              0.8002               |   320*320   |  9.83G  |
+ 
+ 
 
 </span>  
 <br>
@@ -215,19 +217,6 @@ For example, `pt_inceptionv3_imagenet_299_299_0.6_4.5G_3.0` is the `inception v3
   
 | No.  | Application                                             | Name                                                      |               Float Accuracy     (Top1/ Top5\)               |               Quantized Accuracy (Top1/Top5\)                |                          Input Size                          |                   Computational Cost (OPs)                  |
 | ---- | :------------------------------------------------------ | :-------------------------------------------------------- | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------: |
-| 1    | Face Recognition                                        | pt_facerec-resnet20_mixed_112_96_3.5G_2.5                 |                            0.9955                            |                            0.9947                            |                            112*96                            |                 3.5G                  |
-| 2    | Face Quality                                            | pt_face-quality_80_60_61.68M_2.5                          |                            0.1233                            |                            0.1258                            |                            80*60                             |                61.68M                 |
-| 3    | Face ReID                                               | pt_facereid-large_96_96_515M_2.5                          |                    mAP:0.794  Rank1:0.955                    |                    mAP:0.790  Rank1:0.953                    |                            96*96                             |                 515M                  |
-| 4    | Face ReID                                               | pt_facereid-small_80_80_90M_2.5                           |                    mAP:0.560  Rank1:0.865                    |                    mAP:0.559  Rank1:0.865                    |                            80*80                             |                 90M5                  |
-| 5    | ReID                                                    | pt_personreid-res18_market1501_176_80_1.1G_2.5            |                    mAP:0.753  Rank1:0.898                    |                    mAP:0.746  Rank1:0.893                    |                            176*80                            |                 1.1G                  |
-| 6    | ReID                                                    | pt_personreid-res50_market1501_256_128_5.3G_2.5           |                    mAP:0.866  Rank1:0.951                    |                    mAP:0.869  Rank1:0.948                    |                           256*128                            |                 5.3G                  |
-| 7    | ReID                                                    | pt_personreid-res50_market1501_256_128_0.4_3.3G_2.5       |                    mAP:0.869  Rank1:0.948                    |                    mAP:0.869  Rank1:0.948                    |                           256*128                            |                 3.3G                  |
-| 8    | ReID                                                    | pt_personreid-res50_market1501_256_128_0.5_2.7G_2.5       |                    mAP:0.864  Rank1:0.944                    |                    mAP:0.864  Rank1:0.944                    |                           256*128                            |                 2.7G                  |
-| 9    | ReID                                                    | pt_personreid-res50_market1501_256_128_0.6_2.1G_2.5       |                    mAP:0.863  Rank1:0.946                    |                    mAP:0.859  Rank1:0.942                    |                           256*128                            |                 2.1G                  |
-| 10   | ReID                                                    | pt_personreid-res50_market1501_256_128_0.7_1.6G_2.5       |                    mAP:0.850  Rank1:0.940                    |                    mAP:0.848  Rank1:0.938                    |                           256*128                            |                 1.6G                  |
-| 11   | Person orientation estimation                           | pt_person-orientation_224_112_558M_2.5                    |                            0.930                             |                            0.929                             |                           224*112                            |                 558M                  |
-| 12   | Joint detection and Tracking                            | pt_FairMOT_mixed_640_480_0.5_36G_2.5                      |                  MOTA 59.1%<br/>IDF1 62.5%                   |                  MOTA 58.1%<br/>IDF1 60.5%                   |                           640*480                            |                  36G                  |
-| 13   | Crowd Counting                                          | pt_BCC_shanghaitech_800_1000_268.9G_2.5                   |                  MAE: 65.83<br>MSE: 111.75                   |             MAE: 67.60<br>MSE: 117.36                        |                           800*1000                           |                268.9G                 |
 | 14   | Face Mask Detection                                     | pt_face-mask-detection_512_512_0.59G_2.5                  |                            0.8860                            |                            0.8810                            |                           512*512                            |                 0.59G                 |
 | 15   | Pose Estimation                                         | pt_movenet_coco_192_192_0.5G_2.5                          |                            0.7972                            |                            0.7984                            |                           192*192                            |                 0.5G                  |
 
@@ -365,8 +354,8 @@ PyTorch models have the following directory structure:
                                           Path and model name in test scripts could be modified according to actual situation.
         
 **Note:** 
-1.For more information on Vitis-AI Quantizer such as `vai_q_tensorflow` and `vai_q_pytorch`, please see the [Vitis AI User Guide](https://docs.xilinx.com/r/en-US/ug1414-vitis-ai).
-2.Some models only provide documents and do not provide model weights. If you need these models, please contact AMD Marketing <a href="mailto:amd_ai_mkt@amd.com">Email</a>
+* 1.For more information on Vitis-AI Quantizer such as `vai_q_tensorflow` and `vai_q_pytorch`, please see the [Vitis AI User Guide](https://docs.xilinx.com/r/en-US/ug1414-vitis-ai).
+* 2.Some models only provide documents and do not provide model weights. If you need these models, please contact AMD Marketing <a href="mailto:amd_ai_mkt@amd.com">Email</a>
 
 
 ## Model Performance
