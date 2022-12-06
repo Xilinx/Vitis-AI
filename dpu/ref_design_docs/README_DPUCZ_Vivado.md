@@ -5,7 +5,7 @@
  </tr>
 </table>
 
-# Zynq UltraScale＋ MPSoC DPU TRD V4.0 Vivado 2022.1
+# Zynq UltraScale＋ MPSoC DPU TRD V4.1 Vivado 2022.2
 
 ## Table of Contents
 
@@ -27,11 +27,17 @@
 		- [5.3.1 Modify the Frequency](#531-modify-the-frequency)
 		- [5.3.2 Modify the Parameters](#532-modify-the-parameters)
 - [6 Run with Vitis AI Library](#6-run-with-vitis-ai-library)
-- [7 Known issues](#7-known-issues)
 
 ## 1 Revision History
 
 Change Log:
+
+V4.1 Change log:
+
+-  Vitis AI v3.0
+-  Supported Correlation 1D and 2D
+-  Supported Argmax and Max along channel dimension
+-  Optimized resources and timing
 
 V4.0 Change log:
 
@@ -95,8 +101,8 @@ Required:
 ### 3.2 Software
 
   Required:
-  - Vivado 2022.1 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html)
-  - Petalinux 2022.1 [Embedded Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools.html)
+  - Vivado 2022.2 [Vivado Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html)
+  - Petalinux 2022.2 [Embedded Design Tools](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools.html)
   - [Vitis AI](https://github.com/Xilinx/Vitis-AI) to run models other than Resnet50, Optional
 
 ------
@@ -108,19 +114,22 @@ Required:
 The top-level directory structure shows the the major design components. The TRD directory is provided with a basic README and legal notice file.
 
 ```
-├── app
-│   └── dpu_sw_optimize.tar.gz
 ├── dpu_ip
-│   ├── DPUCZDX8G_v4_0_0
+│   ├── DPUCZDX8G_v4_1_0
 │   └── Vitis
-└── prj
-    └── Vivado
-        ├── constrs
-        ├── doc
-        ├── scripts
-        │   ├── base
-        │   └── trd_prj.tcl
-        └── xilinx_zcu102_bsp
+├── prj
+│   ├── Vitis
+│   └── Vivado
+│       ├── hw
+│       │   ├── constrs
+│       │   ├── pre-built
+│       │   ├── scripts
+│       ├── README.md
+│       └── sw
+│           ├── helper_build_bsp.sh
+│           ├── meta-vitis
+│           └── README.md
+└── README.md
 ```
 
 ## 5 Tutorials
@@ -166,18 +175,18 @@ The following tutorials assume that the Vivado environment variable is set as gi
 Open a linux terminal. Set the linux as Bash mode.
 
 ```
-% source <Vivado install path>/Vivado/2022.1/settings64.sh
+% source <Vivado install path>/Vivado/2022.2/settings64.sh
 
 ```
 
 The default settings of DPU is 3 cores **B4096** with RAM_USAGE_LOW, CHANNEL_AUGMENTATION_ENABLE, DWCV_ENABLE, POOL_AVG_ENABLE, RELU_LEAKYRELU_RELU6, Softmax.
 
-Modify the $TRD_HOME/prj/Vivado/scripts/trd_prj.tcl file can change the default settings.
+Modify the $TRD_HOME/prj/Vivado/hw/scripts/trd_prj.tcl file can change the default settings.
 
 Build the hardware design.
 
 ```
-% cd $TRD_HOME/prj/Vivado
+% cd $TRD_HOME/prj/Vivado/hw
 
 % vivado -source scripts/trd_prj.tcl
 ```
@@ -200,7 +209,7 @@ After the generation of bitstream completed.
 
   ![INCLUDE BIT](./doc/5.2.1-4.png)
 
-The XSA file is created at $TRD_HOME/prj/Vivado/prj/top_wrapper.xsa
+The XSA file is created at $TRD_HOME/prj/Vivado/hw/prj/top_wrapper.xsa
 
 ###### **Note:** The actual results might graphically look different than the image shown
 
@@ -210,75 +219,28 @@ Json file is an important file that needed by the VAI Compiler. The file has bee
 
 The user can get the arch.json file in the following path.
 
-$TRD_HOME/prj/Vivado/srcs/top/ip/top_DPUCZDX8G_0/arch.json
+$TRD_HOME/prj/Vivado/hw/srcs/top/ip/top_DPUCZDX8G_0/arch.json
 
 
-#### 5.2.3  DPU PetaLinux BSP
+#### 5.2.3 DPU PetaLinux BSP
 
-This tutorial shows how to build the Linux image and boot image using the PetaLinux build tool.
+Please follow [$TRD_HOME/prj/Vivado/sw/README.md](./sw/README.md) to get more details on DPU Petalinux system customization.
 
-**PetaLinux Working Environment Setup**: Refer to the [PetaLinux Tools Documentation ](https://docs.xilinx.com/r/en-US/ug1144-petalinux-tools-reference-guide)(UG1144) for installation.
+Setup PetaLinux working environment according to [PetaLinux Tools Documentation (UG1144)](https://docs.xilinx.com/r/en-US/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment). 
 
-For Bash as user login shell:
-
+Build the petalinux project based on pre-built xsa under $TRD_HOME/prj/Vivado/hw/pre-built:
 ```
-$ source <path-to-installed-PetaLinux>/settings.sh
+$ cd $TRD_HOME/prj/Vivado/sw
+$ ./helper_build_bsp.sh
 ```
-
-For C shell as user login shell:
-
-```
-$ source <path-to-installed-PetaLinux>/settings.csh
-```
-
-Verify that the working environment has been set:
-
-```
-$ echo $PETALINUX
-```
-
-##### Configure and build the PetaLinux project
-
-For user defined design:
-
-```
-$ cd $TRD_HOME/prj/Vivado/xilinx_zcu102_bsp
-$ petalinux-config --get-hw-description=$TRD_HOME/prj/Vivado/prj/ --silentconfig
-$ petalinux-build
-```
-
-For pre-built design:
-
-```
-$ cd $TRD_HOME/prj/Vivado/xilinx_zcu102_bsp
-$ petalinux-build
-```
-
-##### Create a boot image (BOOT.BIN) including FSBL, ATF, bitstream, and u-boot.
-
-```
-$ cd images/linux
-$ petalinux-package --boot --fsbl zynqmp_fsbl.elf --u-boot u-boot.elf --pmufw pmufw.elf --fpga system.bit --force
-```
-
-##### Generate WIC Image for SD Card
-
-```
-$ petalinux-package --wic --bootfile "BOOT.BIN boot.scr Image system.dtb" --wic-extra-args "-c gzip"
-```
-
-All related files have been packaged in **$TRD_HOME/prj/ivado/xilinx_zcu102_bsp/images/linux/petalinux-sdimage.wic.gz**. Please use Ether to flash the SD card. Refer section "Flashing the OS Image to the SD Card" in [UG1414](https://docs.xilinx.com/r/en-US/ug1414-vitis-ai) for details.
+###### **Note:** All related files have been packaged in $TRD_HOME/prj/Vivado/sw/xilinx-zcu102-trd/images/linux/petalinux-sdimage.wic.gz. Please use Ether to flash the SD card. Refer section "Flashing the OS Image to the SD Card" in [UG1414](https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Flashing-the-OS-Image-to-the-SD-Card) for details.
 
 
 #### 5.2.4 Run Resnet50 Example
 
-**The TRD project has generated the matching model file in $TRD_HOME/app path as the default settings. If the user change the DPU settings. The model need to be created again.**
-
 This part is about how to run the Resnet50 example from the source code.
 
-
 Execute the following command in the RootFs partition:
-
 ```
 root@xilinx-zcu102-trd:~# cd app/
 root@xilinx-zcu102-trd:~/app# cp model/resnet50.xmodel .
@@ -291,18 +253,15 @@ score[949]  =  0.00054879   text: strawberry,
 root@xilinx-zcu102-trd:~/app#
 ```
 
-###### **Note:** If you want to run other network. Please refer to the [Vitis AI Github](https://github.com/Xilinx/Vitis-AI).
+###### **Note:** The matching model files has been provided in the app path as default settings, if the DPU settings changed, the model files need to be regenerated. For other models, please refer to [Run the VART Examples](https://github.com/Xilinx/Vitis-AI/tree/master/setup/mpsoc#step3-run-the-vitis-ai-examples) and [Running Vitis AI Library Examples](https://github.com/Xilinx/Vitis-AI/blob/master/src/Vitis-AI-Library/README.md#running-vitis-ai-library-examples).
 
-
-### 5.3 Configure the DPU
-
+### 5.3 Configurate the DPU
 
 The DPU IP provides some user-configurable parameters to optimize resource utilization and customize different features. Different configurations can be selected for DSP slices, LUT, block RAM(BRAM), and UltraRAM utilization based on the amount of available programmable logic resources. There are also options for addition functions, such as channel augmentation, average pooling, depthwise convolution.
 
 The TRD also support the softmax function.
 
-For more details about the DPU, please read [DPU IP Product Guide](https://docs.xilinx.com/v/u/2.5-English/pg338-dpu)
-
+For more details about the DPU, please read [DPU IP Product Guide](https://docs.xilinx.com/r/en-US/pg338-dpu)
 
 #### 5.3.1 Modify the Frequency
 
@@ -409,6 +368,22 @@ For details, please refer to **Channel Augmentation** of **Configuration Options
 
 ###### **Note:** It relates to models. If change, must update models.
 
+#### DPU_SAVE_ARGMAX_ENA
+
+Argmax and Max: The option enables argmax and max feature along channel dimension when restoring the outputs back to DDR space.
+
+Enable
+```
+dict set dict_prj dict_param  DPU_SAVE_ARGMAX_ENA {1}
+```
+Disable
+```
+dict set dict_prj dict_param  DPU_SAVE_ARGMAX_ENA {0}
+```
+For details, please refer to **Argmax and Max** of **Configuration Options** in Chapter 4 DPU Configuration of PG338.
+
+###### **Note:** It relates to models. If change, must update models.
+
 #### DPU_CONV_RELU_TYPE
 
 Conv ReLU Type: The option determines which kind of ReLU function can be used in the DPU. ReLU and ReLU6 are supported by default.
@@ -499,27 +474,6 @@ For details, please refer to **UltraRAM** of **Advanced Tab** in Chapter 4 DPU C
 ## 6 Run with Vitis AI Library
 
 For the instroduction of Vitis AI Library, please refer to **Quick Start For Edge** of this page [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/demo/Vitis-AI-Library)
-
-## 7 Known issues
-
-1. DDR QOS
-
-When AXI HP0 port connects to DPU and use DisplayPort to display, if the QoS settings are not modified, the DisplayPort transmission may under-run, producing black frames or screen flicker intermittently during DPU running. Apart from QoS settings, increasing the read and write issuing capability (outstanding commands) of DPU connected AXI FIFO interface S_AXI_HPC{0, 1}_FPD or S_AXI_HP{0:3}_FPD or S_AXI_LPD may keep the ports busy with always some requests in the queue, which could improve DPU performance highly. [solution](#solution)
-
-##### Solution
-
-User could execute **zynqmp_dpu_optimize.sh** on target board to address the issue.
-
-Copy **$TRD_HOME/app/dpu_sw_optimize.tar.gz** to target board, after linux boot-up, run:
-
-```shell
-% tar -zxvf dpu_sw_optimize.tar.gz
-
-% ./dpu_sw_optimize/zynqmp/zynqmp_dpu_optimize.sh
-
-(refer to dpu_sw_optimize/zynqmp/README.md get more info)
-
-```
 
 <hr/>
 <p align="center"><sup>Copyright&copy; 2022 Xilinx</sup></p>
