@@ -47,7 +47,6 @@ For example, `pt_inceptionv3_imagenet_299_299_0.6_4.5G_3.0` is the `inception v3
 - [Detection](#Detection) 
 - [Segmentation](#Segmentation) 
 - [NLP](#NLP) 
-- [Text-OCR](#Text-OCR)
 - [Surveillance](#Surveillance) 
 - [Industrial-Vision-Robotics](#Industrial-Vision-Robotics) 
 - [Medical-Image-Enhancement](#Medical-Image-Enhancement)
